@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 #endregion
 
-namespace UndeadClient.TileEngine
+namespace UltimaXNA.TileEngine
 {
     public interface IMapObject
     {

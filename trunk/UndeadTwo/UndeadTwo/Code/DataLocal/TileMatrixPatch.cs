@@ -22,7 +22,7 @@ using System;
 using System.IO;
 #endregion
 
-namespace UndeadClient.DataLocal
+namespace UltimaXNA.DataLocal
 {
     public class TileMatrixPatch
     {

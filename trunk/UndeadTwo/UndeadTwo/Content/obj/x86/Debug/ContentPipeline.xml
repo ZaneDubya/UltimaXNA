@@ -7,8 +7,8 @@
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
       <Options>None</Options>
-      <Output>C:\Users\Zane\Desktop\Old Stuff\UndeadTwo\UndeadTwo\bin\Debug\Content\Shaders\Basic.xnb</Output>
-      <Time>2009-05-22T00:48:50.2451375-07:00</Time>
+      <Output>C:\Users\Zane\Desktop\UltimaXNA\UndeadTwo\bin\Debug\Content\Shaders\Basic.xnb</Output>
+      <Time>2009-06-10T01:01:49.2407677-07:00</Time>
     </Item>
     <Item>
       <Source>GUI\cursors.bmp</Source>
@@ -16,7 +16,7 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
-      <Output>C:\Users\Zane\Desktop\Old Stuff\UndeadTwo\UndeadTwo\bin\Debug\Content\GUI\cursors.xnb</Output>
+      <Output>C:\Users\Zane\Desktop\UltimaXNA\UndeadTwo\bin\Debug\Content\GUI\cursors.xnb</Output>
       <Time>2009-05-18T08:49:44.2023532-07:00</Time>
     </Item>
     <Item>
@@ -25,7 +25,7 @@
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
       <Options>None</Options>
-      <Output>C:\Users\Zane\Desktop\Old Stuff\UndeadTwo\UndeadTwo\bin\Debug\Content\Fonts\ArialNarrow10.xnb</Output>
+      <Output>C:\Users\Zane\Desktop\UltimaXNA\UndeadTwo\bin\Debug\Content\Fonts\ArialNarrow10.xnb</Output>
       <Time>2009-05-31T19:23:38.0151476-07:00</Time>
     </Item>
     <BuildSuccessful>true</BuildSuccessful>
@@ -33,10 +33,10 @@
       <TargetPlatform>Windows</TargetPlatform>
       <BuildConfiguration>Debug</BuildConfiguration>
       <CompressContent>false</CompressContent>
-      <RootDirectory>C:\Users\Zane\Desktop\Old Stuff\UndeadTwo\UndeadTwo\Content\</RootDirectory>
-      <LoggerRootDirectory>C:\Users\Zane\Desktop\Old Stuff\UndeadTwo\UndeadTwo\</LoggerRootDirectory>
-      <IntermediateDirectory>C:\Users\Zane\Desktop\Old Stuff\UndeadTwo\UndeadTwo\Content\obj\x86\Debug\</IntermediateDirectory>
-      <OutputDirectory>C:\Users\Zane\Desktop\Old Stuff\UndeadTwo\UndeadTwo\bin\Debug\Content\</OutputDirectory>
+      <RootDirectory>C:\Users\Zane\Desktop\UltimaXNA\UndeadTwo\Content\</RootDirectory>
+      <LoggerRootDirectory>C:\Users\Zane\Desktop\UltimaXNA\UndeadTwo\</LoggerRootDirectory>
+      <IntermediateDirectory>C:\Users\Zane\Desktop\UltimaXNA\UndeadTwo\Content\obj\x86\Debug\</IntermediateDirectory>
+      <OutputDirectory>C:\Users\Zane\Desktop\UltimaXNA\UndeadTwo\bin\Debug\Content\</OutputDirectory>
     </Settings>
     <Assemblies>
       <Assembly>

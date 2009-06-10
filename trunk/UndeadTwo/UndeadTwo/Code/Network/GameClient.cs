@@ -8,8 +8,14 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 #endregion
 
-namespace UndeadClient.Network
+namespace UltimaXNA.Network
 {
+    public delegate void UserEventDlg(object sender,
+                                      SocketClient player);
+
+    public delegate void DataReceivedDlg(SocketClient nSender,
+                                        Packet nPacket);
+
     public enum ClientStatus
     {
         Unconnected,
@@ -26,6 +32,8 @@ namespace UndeadClient.Network
     public interface IGameClient
     {
         void Send_MoveRequest(int nDirection, int nSequence, int nFastWalkKey);
+        void Send_ConnectToLoginServer(string nIPAdress, int nPort, string nAccount, string nPassword);
+        void Disconnect();
     }
 
     class GameClient : GameComponent, IGameClient
@@ -48,7 +56,7 @@ namespace UndeadClient.Network
         internal MiscUtil.LogFile LogFile;
         GUI.IGUI m_GUIService;
         GameObjects.IGameObjects m_GameObjectsService;
-        UndeadClient.IGameState m_GameStateService;
+        IGameState m_GameStateService;
 
         public GameClient(Game game)
             : base(game)
@@ -180,7 +188,7 @@ namespace UndeadClient.Network
             nPackets.Clear();
         }
 
-        public void ConnectToLoginServer(string nIPAdress, int nPort, string nAccount, string nPassword)
+        public void Send_ConnectToLoginServer(string nIPAdress, int nPort, string nAccount, string nPassword)
         {
             ConnectionStatus iStatus;
             this.Status = ClientStatus.LoginServer_Connecting;
@@ -794,8 +802,11 @@ namespace UndeadClient.Network
 
         public void Disconnect()
         {
-            m_Client.Disconnect();
-            m_Client = null;
+            if (m_Client != null)
+            {
+                m_Client.Disconnect();
+                m_Client = null;
+            }
         }
 
         public void SendPacket(Packet nPacket)

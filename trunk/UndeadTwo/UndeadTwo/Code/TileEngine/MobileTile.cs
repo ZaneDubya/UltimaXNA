@@ -7,7 +7,7 @@
 using Microsoft.Xna.Framework;
 #endregion
 
-namespace UndeadClient.TileEngine
+namespace UltimaXNA.TileEngine
 {
     public class MobileTile : IMapObject
     {

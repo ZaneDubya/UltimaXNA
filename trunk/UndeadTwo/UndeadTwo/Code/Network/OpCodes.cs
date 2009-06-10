@@ -6,7 +6,7 @@
 //-----------------------------------------------------------------------------
 #endregion
 
-namespace UndeadClient.Network
+namespace UltimaXNA.Network
 {
     public enum OpCodes
     {

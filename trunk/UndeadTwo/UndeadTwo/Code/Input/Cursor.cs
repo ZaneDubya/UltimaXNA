@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 #endregion
 
-namespace UndeadClient.Input
+namespace UltimaXNA.Input
 {
     /// <summary>
     /// Cursor is a DrawableGameComponent that draws a cursor on the screen. It works

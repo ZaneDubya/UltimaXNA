@@ -24,7 +24,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 #endregion
 
-namespace UndeadClient.DataLocal
+namespace UltimaXNA.DataLocal
 {
     public class TileMatrix
     {
@@ -426,7 +426,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace UndeadClient
+namespace UltimaXNA
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     struct LandTile

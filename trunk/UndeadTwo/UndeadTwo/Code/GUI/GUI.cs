@@ -10,12 +10,13 @@ using Microsoft.Xna.Framework.Graphics;
 using xWinFormsLib;
 #endregion
 
-namespace UndeadClient.GUI
+namespace UltimaXNA.GUI
 {
     public interface IGUI
     {
         bool IsMouseOverGUI(Vector2 nPosition);
         void AddChatText(string nText);
+        void LoadInWorldGUI();
     }
 
     public class EngineGUI : DrawableGameComponent, IGUI
@@ -27,7 +28,8 @@ namespace UndeadClient.GUI
         public string DebugMessage;
         private Texture2D surfaceCursors;
 
-        GUIWindow m_ChatWindow;
+        Window m_ChatWindow;
+        Window m_LoginWindow;
 
         public EngineGUI(Game game)
             : base(game)
@@ -37,15 +39,17 @@ namespace UndeadClient.GUI
 
         public override void Initialize()
         {
+            base.Initialize();
+            
+            Events.Initialize(Game.Services);
             GraphicsDeviceManager graphics = Game.Services.GetService(typeof(IGraphicsDeviceService)) as GraphicsDeviceManager;
-            formCollection = new FormCollection(Game.Window, Game.Services, ref graphics, @"..\..\UndeadRes\");
+            formCollection = new FormCollection(Game.Window, Game.Services, ref graphics, @"..\..\res\");
             spriteBatch = new SpriteBatch(Game.GraphicsDevice);
             InitializeForms(graphics);
 
-            surfaceCursors = Texture2D.FromFile(graphics.GraphicsDevice, @"..\..\UndeadRes\GUI\cursors.png");
+            surfaceCursors = Texture2D.FromFile(graphics.GraphicsDevice, @"..\..\res\GUI\cursors.png");
 
             fontArial14 = Game.Content.Load<SpriteFont>(@"fonts\ArialNarrow10");
-            base.Initialize();
         }
 
         protected override void UnloadContent()
@@ -95,21 +99,28 @@ namespace UndeadClient.GUI
         {
             foreach (Form f in FormCollection.Forms)
             {
-                if (f.IsMouseOver())
-                    return true;
+                if (!f.IsDisposed)
+                    if (f.IsMouseOver())
+                        return true;
             }
             return false;
         }
 
         public void AddChatText(string nText)
         {
-            ((GUIWindow_Chat)m_ChatWindow).AddText(nText);
+            ((Window_Chat)m_ChatWindow).AddText(nText);
+        }
+
+        public void LoadInWorldGUI()
+        {
+            m_LoginWindow.Unload();
         }
 
         public void InitializeForms(GraphicsDeviceManager nManager)
         {
 
-            m_ChatWindow = new GUIWindow_Chat(formCollection);
+            m_ChatWindow = new Window_Chat(formCollection);
+            m_LoginWindow = new Window_Login(formCollection);
 
             #region MessageBox tests
             /*

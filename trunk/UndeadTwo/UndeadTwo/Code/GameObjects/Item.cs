@@ -6,9 +6,9 @@
 //-----------------------------------------------------------------------------
 #endregion
 
-namespace UndeadClient.GameObjects
+namespace UltimaXNA.GameObjects
 {
-    class Item : UndeadClient.GameObjects.BaseObject
+    class Item : UltimaXNA.GameObjects.BaseObject
     {
         public int DisplayID = 0;
         public int Hue = 0;
@@ -38,7 +38,7 @@ namespace UndeadClient.GameObjects
             set
             {
                 m_ItemTypeID = value;
-                m_ItemData = UndeadClient.DataLocal.TileData.ItemData[m_ItemTypeID];
+                m_ItemData = UltimaXNA.DataLocal.TileData.ItemData[m_ItemTypeID];
                 DisplayID = m_ItemData.AnimID;
             }
         }

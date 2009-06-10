@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 #endregion
 
-namespace UndeadClient.TileEngine
+namespace UltimaXNA.TileEngine
 {
     public class GroundTile : IMapObject
     {

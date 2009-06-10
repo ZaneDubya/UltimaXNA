@@ -9,11 +9,12 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 #endregion
 
-namespace UndeadClient
+namespace UltimaXNA
 {
     public interface IGameState
     {
         bool InWorld { get; set; }
+        bool EngineRunning { get; set; }
     }
 
     public class GameState : GameComponent, IGameState
@@ -28,14 +29,29 @@ namespace UndeadClient
 
         // Debug message
         public string DebugMessage { get { return m_DebugMessage(); } }
-        public bool TakeScreenshot { get; protected set; }
-
-        public bool InWorld { get; set; }
+        private bool m_InWorld;
+        public bool InWorld
+        {
+            get
+            {
+                return m_InWorld;
+            }
+            set
+            {
+                if (value == true)
+                {
+                    m_GUIService.LoadInWorldGUI();
+                }
+                m_InWorld = value;
+            }
+        }
+        public bool EngineRunning { get; set; }
 
         public GameState(Game game)
             : base(game)
         {
             game.Services.AddService(typeof(IGameState), this);
+            EngineRunning = true;
             InWorld = false;
         }
 
@@ -57,14 +73,20 @@ namespace UndeadClient
 
         public override void Update(GameTime gameTime)
         {
-            this.TakeScreenshot = false;
-
             base.Update(gameTime);
 
-            // Get a pick type
+            // Do we need to quit?
+            if (this.EngineRunning == false)
+            {
+                m_GameClientService.Disconnect();
+                Game.Exit();
+                return;
+            }
+
+            // Get a pick type for the cursor.
             if (m_GUIService.IsMouseOverGUI(m_InputService.Mouse.Position))
             {
-                m_TileEngineService.PickType = UndeadClient.TileEngine.PickTypes.PickNothing;
+                m_TileEngineService.PickType = UltimaXNA.TileEngine.PickTypes.PickNothing;
             }
             else
             {
@@ -114,15 +136,10 @@ namespace UndeadClient
         }
 
         private Vector3 m_LightDirection = new Vector3(0f, 0f, 1f);
-        private double m_LightRadians = 0d;
+        private double m_LightRadians = 1d;
 
         private void mParseKeyboard(Input.KeyboardHandler nKeyboard)
         {
-            if (nKeyboard.IsKeyDown(Keys.Q))
-            {
-                this.TakeScreenshot = true;
-            }
-
             if (InWorld)
             {
                 if (nKeyboard.IsKeyDown(Keys.I))
@@ -134,8 +151,8 @@ namespace UndeadClient
                 if (nKeyboard.IsKeyDown(Keys.L))
                     m_LightDirection.Z -= .001f;
 
-                m_LightDirection.X = (float)Math.Sin(m_LightRadians);
-                m_LightDirection.Y = (float)Math.Cos(m_LightRadians);
+                m_LightDirection.Z = -(float)Math.Cos(m_LightRadians);
+                m_LightDirection.Y = (float)Math.Sin(m_LightRadians);
 
                 m_TileEngineService.SetLightDirection(m_LightDirection);
                 #region KeyboardMovement

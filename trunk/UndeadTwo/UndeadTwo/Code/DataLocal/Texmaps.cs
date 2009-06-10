@@ -7,7 +7,7 @@
 using Microsoft.Xna.Framework.Graphics;
 #endregion
 
-namespace UndeadClient.DataLocal
+namespace UltimaXNA.DataLocal
 {
     class Texmaps
     {

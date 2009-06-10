@@ -9,7 +9,7 @@ using System.Net.Sockets;
 using System.Net;
 #endregion
 
-namespace UndeadClient.Network
+namespace UltimaXNA.Network
 {
     class SocketListener
     {

@@ -8,7 +8,7 @@ using System;
 using Microsoft.Xna.Framework;
 #endregion
 
-namespace UndeadClient.GameObjects
+namespace UltimaXNA.GameObjects
 {
     public enum Direction : byte
     {

@@ -10,7 +10,7 @@ using System.IO;
 using Microsoft.Xna.Framework.Graphics;
 #endregion
 
-namespace UndeadClient.DataLocal
+namespace UltimaXNA.DataLocal
 {
     /// <summary>
     /// Contains translation tables used for mapping body values to file subsets.

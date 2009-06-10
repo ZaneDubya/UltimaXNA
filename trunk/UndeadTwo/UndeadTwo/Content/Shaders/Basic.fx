@@ -28,7 +28,7 @@ PS_INPUT VertexShader(VS_INPUT IN)
 	
     return OUT;
 }
-
+/*
 float4 PixelShader(PS_INPUT IN) : COLOR0
 {		
 	float NDotL = saturate(dot(lightDirection, IN.Normal));
@@ -39,85 +39,38 @@ float4 PixelShader(PS_INPUT IN) : COLOR0
 	
 	return color;
 }
-
-technique StandardEffect
-{
-	pass p0
-	{
-		VertexShader = compile vs_2_0 VertexShader();
-		PixelShader = compile ps_2_0 PixelShader();
-	}
-}
-
-/*
-float4x4 world : WorldViewProjection;
-float3 lightDirection : Direction;
-bool DrawLighting;
-
-sampler textureSampler;
-
-struct VS_INPUT
-{
-	float4 Position : POSITION;
-	float3 Normal : NORMAL;
-	float2 TexCoord : TEXCOORD;
-};
-
-struct PS_INPUT
-{
-	float4 Position : POSITION;
-	float2 TexCoord : TEXCOORD0;
-	float4 Normal : TEXCOORD1;
-};
-
-PS_INPUT VertexShader(VS_INPUT Input)
-{
-	PS_INPUT Output;
-    Output.Position = mul(Input.Position, world);
-	Output.TexCoord = Input.TexCoord; 
-	Output.Normal = dot(normalize(lightDirection), Input.Normal);
-    return Output;
-}
-
-float4 PixelShader(PS_INPUT Input) : COLOR0
-{	
-	float4 Output;
-	if (DrawLighting)
-	{
-		Output = Input.Normal * tex2D(textureSampler, Input.TexCoord);
-	}
-	else
-	{
-		Output = tex2D(textureSampler, Input.TexCoord);
-	}
-	return Output;
-}
-
-technique StandardEffect
-{
-	pass p0
-	{
-		VertexShader = compile vs_2_0 VertexShader();
-		PixelShader = compile ps_2_0 PixelShader();
-	}
-}
 */
+// New pixelshader created by Jeff - simulates sunrise.
+
+float4 PixelShader(PS_INPUT IN) : COLOR0
+{	
+	float4 color = tex2D(textureSampler, IN.TexCoord);
+
+	if(DrawLighting)
+	{
+		float lightIntensity = clamp(dot(lightDirection, float3(0,1,0)), 0, 1);
+		float ambientLightIntensity = 0.2f;
+
+		float3 lightColor = float3(1, 0.5f + lightIntensity / 2, lightIntensity);
+		float3 ambientColor = float3(1 - lightIntensity / 5, 1 - lightIntensity / 10, 1 - lightIntensity / 5) * ambientLightIntensity;
+
+		float NDotL = saturate(dot(-lightDirection, IN.Normal));
+
+		color.rgb = (ambientColor * color.rgb) + (lightColor * NDotL * color.rgb);
+	}
+
+	return color;
+}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+technique StandardEffect
+{
+	pass p0
+	{
+		VertexShader = compile vs_2_0 VertexShader();
+		PixelShader = compile ps_2_0 PixelShader();
+	}
+}
 
 
 

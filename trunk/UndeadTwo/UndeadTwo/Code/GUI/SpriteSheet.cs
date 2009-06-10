@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 #endregion
 
-namespace UndeadClient.GUI
+namespace UltimaXNA.GUI
 {
     class SpriteSheet
     {

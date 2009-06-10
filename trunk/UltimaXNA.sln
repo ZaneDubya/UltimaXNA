@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual C# Express 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UltimaXNA", "UndeadTwo\UltimaXNA.csproj", "{205E21C9-4A74-4B0F-BDA0-270A38A0C4EA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{205E21C9-4A74-4B0F-BDA0-270A38A0C4EA}.Debug|x86.ActiveCfg = Debug|x86
+		{205E21C9-4A74-4B0F-BDA0-270A38A0C4EA}.Debug|x86.Build.0 = Debug|x86
+		{205E21C9-4A74-4B0F-BDA0-270A38A0C4EA}.Release|x86.ActiveCfg = Release|x86
+		{205E21C9-4A74-4B0F-BDA0-270A38A0C4EA}.Release|x86.Build.0 = Release|x86
+		{C4D0357F-85DD-4418-ABA4-7C7875BB3129}.Debug|x86.ActiveCfg = Debug|x86
+		{C4D0357F-85DD-4418-ABA4-7C7875BB3129}.Release|x86.ActiveCfg = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
