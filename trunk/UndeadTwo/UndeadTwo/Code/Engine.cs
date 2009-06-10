@@ -12,8 +12,8 @@ namespace UndeadClient
 {
     public class Engine : Game
     {
-        string Username = "Poplicola";
-        string Password = "sexytime";
+        string Username = "Username";
+        string Password = "Password";
 
         private Network.GameClient m_Client;
         // private Network.GameServer m_Server;
