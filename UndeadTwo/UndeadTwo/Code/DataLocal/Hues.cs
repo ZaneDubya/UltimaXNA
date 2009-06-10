@@ -10,7 +10,7 @@ using System.IO;
 using System.Text;
 #endregion
 
-namespace UndeadClient.DataLocal
+namespace UltimaXNA.DataLocal
 {
     public class Hues
     {

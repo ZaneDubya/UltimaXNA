@@ -1,0 +1,10 @@
+C:\Users\Zane\Desktop\UltimaXNA\UndeadTwo\bin\Release\Content\Shaders\Basic.xnb
+C:\Users\Zane\Desktop\UltimaXNA\UndeadTwo\bin\Release\Content\GUI\cursors.xnb
+C:\Users\Zane\Desktop\UltimaXNA\UndeadTwo\bin\Release\Content\Fonts\ArialNarrow10.xnb
+C:\Users\Zane\Desktop\UltimaXNA\UndeadTwo\bin\Release\UltimaXNA.exe
+C:\Users\Zane\Desktop\UltimaXNA\UndeadTwo\bin\Release\UltimaXNA.pdb
+C:\Users\Zane\Desktop\UltimaXNA\UndeadTwo\bin\Release\xWinFormsLib.pdb
+C:\Users\Zane\Desktop\UltimaXNA\UndeadTwo\obj\x86\Release\ResolveAssemblyReference.cache
+C:\Users\Zane\Desktop\UltimaXNA\UndeadTwo\obj\x86\Release\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\Users\Zane\Desktop\UltimaXNA\UndeadTwo\obj\x86\Release\UltimaXNA.exe
+C:\Users\Zane\Desktop\UltimaXNA\UndeadTwo\obj\x86\Release\UltimaXNA.pdb

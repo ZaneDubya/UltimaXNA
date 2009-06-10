@@ -8,7 +8,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 #endregion
 
-namespace UndeadClient.DataLocal
+namespace UltimaXNA.DataLocal
 {
     [StructLayout(LayoutKind.Sequential)]
     struct IndexEntry

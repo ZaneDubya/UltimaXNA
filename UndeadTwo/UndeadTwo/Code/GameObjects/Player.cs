@@ -7,9 +7,9 @@
 using Microsoft.Xna.Framework;
 #endregion
 
-namespace UndeadClient.GameObjects
+namespace UltimaXNA.GameObjects
 {
-    class Player : UndeadClient.GameObjects.Unit
+    class Player : UltimaXNA.GameObjects.Unit
     {
         public int FlagsPlayer = 0;
         public int GuildID = 0, GuildRank = 0;

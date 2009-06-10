@@ -7,7 +7,7 @@
 using Microsoft.Xna.Framework;
 #endregion
 
-namespace UndeadClient.Input
+namespace UltimaXNA.Input
 {
     public interface IInputHandler
     {

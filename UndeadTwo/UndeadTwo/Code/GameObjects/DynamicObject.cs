@@ -6,9 +6,9 @@
 //-----------------------------------------------------------------------------
 #endregion
 
-namespace UndeadClient.GameObjects
+namespace UltimaXNA.GameObjects
 {
-    class DynamicObject : UndeadClient.GameObjects.GameObject
+    class DynamicObject : UltimaXNA.GameObjects.GameObject
     {
         public int CasterGUID = 0;
         public int Bytes0 = 0;

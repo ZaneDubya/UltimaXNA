@@ -8,7 +8,7 @@ using System.IO;
 using Microsoft.Xna.Framework.Graphics;
 #endregion
 
-namespace UndeadClient.DataLocal
+namespace UltimaXNA.DataLocal
 {
     class Art
     {

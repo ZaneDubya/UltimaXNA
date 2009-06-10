@@ -7,9 +7,9 @@
 using Microsoft.Xna.Framework;
 #endregion
 
-namespace UndeadClient.GameObjects
+namespace UltimaXNA.GameObjects
 {
-    class GameObject : UndeadClient.GameObjects.BaseObject
+    class GameObject : UltimaXNA.GameObjects.BaseObject
     {
         public int DisplayID = 0;
         public int Flags = 0;
@@ -23,7 +23,7 @@ namespace UndeadClient.GameObjects
             ObjectType = ObjectType.GameObject;
         }
 
-        protected override void Draw(UndeadClient.TileEngine.MapCell nCell, Vector3 nLocation, Vector3 nOffset)
+        protected override void Draw(UltimaXNA.TileEngine.MapCell nCell, Vector3 nLocation, Vector3 nOffset)
         {
             nCell.AddGameObjectTile(
                 new TileEngine.GameObjectTile(DisplayID, nLocation, Movement.DrawFacing, this.GUID, 0));

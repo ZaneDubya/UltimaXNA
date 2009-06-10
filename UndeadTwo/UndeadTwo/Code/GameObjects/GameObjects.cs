@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 #endregion
 
-namespace UndeadClient.GameObjects
+namespace UltimaXNA.GameObjects
 {
     public interface IGameObjects
     {

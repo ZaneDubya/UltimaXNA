@@ -6,9 +6,9 @@
 //-----------------------------------------------------------------------------
 #endregion
 
-namespace UndeadClient.GameObjects
+namespace UltimaXNA.GameObjects
 {
-    class Container : UndeadClient.GameObjects.Item
+    class Container : UltimaXNA.GameObjects.Item
     {
         public int Container_NumSlots = 0;
         public int[] Container_Contents = new int[20];

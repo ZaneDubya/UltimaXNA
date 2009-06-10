@@ -8,7 +8,7 @@ using System;
 using System.IO;
 #endregion
 
-namespace UndeadClient.Network
+namespace UltimaXNA.Network
 {
     public class Packet
     {

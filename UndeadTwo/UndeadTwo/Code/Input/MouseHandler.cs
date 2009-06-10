@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 #endregion
 
-namespace UndeadClient.Input
+namespace UltimaXNA.Input
 {
     public class MouseHandler
     {

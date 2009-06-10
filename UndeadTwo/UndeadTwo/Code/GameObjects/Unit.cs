@@ -7,7 +7,7 @@
 using Microsoft.Xna.Framework;
 #endregion
 
-namespace UndeadClient.GameObjects
+namespace UltimaXNA.GameObjects
 {
     enum UnitActions : int 
     {
@@ -187,7 +187,7 @@ namespace UndeadClient.GameObjects
         LastValid = 0x1D
     }
 
-    class Unit : UndeadClient.GameObjects.BaseObject
+    class Unit : UltimaXNA.GameObjects.BaseObject
     {
         public int DisplayBodyID = 0, MountDisplayID = 0;
         public int DisplayHue = 0;
@@ -264,7 +264,7 @@ namespace UndeadClient.GameObjects
             this.m_Animation = new UnitAnimation();
         }
 
-        protected override void Draw(UndeadClient.TileEngine.MapCell nCell, Vector3 nLocation, Vector3 nOffset)
+        protected override void Draw(UltimaXNA.TileEngine.MapCell nCell, Vector3 nLocation, Vector3 nOffset)
         {
             if (Movement.IsMoving)
             {

@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 #endregion
 
-namespace UndeadClient.TileEngine
+namespace UltimaXNA.TileEngine
 {
     [Flags]
     public enum PickTypes : int

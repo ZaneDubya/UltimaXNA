@@ -6,9 +6,9 @@
 //-----------------------------------------------------------------------------
 #endregion
 
-namespace UndeadClient.GameObjects
+namespace UltimaXNA.GameObjects
 {
-    class Corpse : UndeadClient.GameObjects.GameObject
+    class Corpse : UltimaXNA.GameObjects.GameObject
     {
         public int OwnerGUID = 0;
         public int[] EquipSlotDisplayIDs = new int[12];

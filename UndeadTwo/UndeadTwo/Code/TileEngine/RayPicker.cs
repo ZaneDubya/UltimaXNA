@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 #endregion
 
 
-namespace UndeadClient.TileEngine
+namespace UltimaXNA.TileEngine
 {
     class RayPicker : DrawableGameComponent
     {

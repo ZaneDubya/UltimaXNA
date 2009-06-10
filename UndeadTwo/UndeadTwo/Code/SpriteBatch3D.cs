@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 #endregion
 
-namespace UndeadClient
+namespace UltimaXNA
 {
     class SpriteBatch3D : GameComponent
     {

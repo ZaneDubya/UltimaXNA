@@ -6,7 +6,7 @@
 //-----------------------------------------------------------------------------
 #endregion
 
-namespace UndeadClient.GameObjects
+namespace UltimaXNA.GameObjects
 {
     public enum ObjectType
     {

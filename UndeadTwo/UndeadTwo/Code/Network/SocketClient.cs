@@ -9,7 +9,7 @@ using System.Net.Sockets;
 using MiscUtil.Conversion;
 #endregion
 
-namespace UndeadClient.Network
+namespace UltimaXNA.Network
 {
     public enum ConnectionStatus
     {
