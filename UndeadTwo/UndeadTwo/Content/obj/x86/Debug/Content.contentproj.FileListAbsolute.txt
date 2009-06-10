@@ -1,0 +1,2 @@
+C:\Users\Zane\Desktop\UndeadTwo\UndeadTwo\Content\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\Zane\Desktop\Old Stuff\UndeadTwo\UndeadTwo\Content\obj\x86\Debug\ResolveAssemblyReference.cache

@@ -1,0 +1,21 @@
+C:\Users\Zane\Desktop\UndeadTwo\UndeadTwo\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\Zane\Desktop\UndeadTwo\UndeadTwo\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\Users\Zane\Desktop\UndeadTwo\UndeadTwo\bin\x86\Debug\UndeadTwo.exe
+C:\Users\Zane\Desktop\UndeadTwo\UndeadTwo\bin\x86\Debug\UndeadTwo.pdb
+C:\Users\Zane\Desktop\UndeadTwo\UndeadTwo\obj\x86\Debug\UndeadTwo.exe
+C:\Users\Zane\Desktop\UndeadTwo\UndeadTwo\obj\x86\Debug\UndeadTwo.pdb
+C:\Users\Zane\Desktop\UndeadTwo\UndeadTwo\bin\x86\Debug\Content\Shaders\Basic.xnb
+C:\Users\Zane\Desktop\Old Stuff\UndeadTwo\UndeadTwo\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\Zane\Desktop\Old Stuff\UndeadTwo\UndeadTwo\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\Users\Zane\Desktop\Old Stuff\UndeadTwo\UndeadTwo\obj\x86\Debug\UndeadTwo.exe
+C:\Users\Zane\Desktop\Old Stuff\UndeadTwo\UndeadTwo\obj\x86\Debug\UndeadTwo.pdb
+C:\Users\Zane\Desktop\Old Stuff\UndeadTwo\UndeadTwo\bin\x86\Debug\Content\Shaders\Basic.xnb
+C:\Users\Zane\Desktop\Old Stuff\UndeadTwo\UndeadTwo\bin\x86\Debug\UndeadTwo.exe
+C:\Users\Zane\Desktop\Old Stuff\UndeadTwo\UndeadTwo\bin\x86\Debug\UndeadTwo.pdb
+C:\Users\Zane\Desktop\Old Stuff\UndeadTwo\UndeadTwo\bin\Debug\Content\Shaders\Basic.xnb
+C:\Users\Zane\Desktop\Old Stuff\UndeadTwo\UndeadTwo\bin\Debug\UndeadTwo.exe
+C:\Users\Zane\Desktop\Old Stuff\UndeadTwo\UndeadTwo\bin\Debug\UndeadTwo.pdb
+C:\Users\Zane\Desktop\Old Stuff\UndeadTwo\UndeadTwo\bin\Debug\xWinFormsLib.dll
+C:\Users\Zane\Desktop\Old Stuff\UndeadTwo\UndeadTwo\bin\Debug\Content\GUI\cursors.xnb
+C:\Users\Zane\Desktop\Old Stuff\UndeadTwo\UndeadTwo\bin\Debug\xWinFormsLib.pdb
+C:\Users\Zane\Desktop\Old Stuff\UndeadTwo\UndeadTwo\bin\Debug\Content\Fonts\ArialNarrow10.xnb
