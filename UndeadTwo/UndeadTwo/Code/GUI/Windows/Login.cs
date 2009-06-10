@@ -21,15 +21,22 @@ namespace UltimaXNA.GUI
             m_FormCollection.Add(new Form("frmLogin", "Login to UO", new Vector2(270, 180), new Vector2(250, 200), Form.BorderStyle.Fixed));
             m_MyForm = m_FormCollection["frmLogin"];
 
-            m_MyForm.Controls.Add(new Button("btnLogin", new Vector2(100, 120), 140, "Log in", Color.White, Color.Black));
+            m_MyForm.Controls.Add(new Label("label1", new Vector2(10, 30), "Username:", Color.TransparentBlack, Color.Black, 80, Label.Align.Right));
+            m_MyForm.Controls.Add(new Textbox("txtUsername", new Vector2(100, 30), 140, ""));
+
+            m_MyForm.Controls.Add(new Label("label2", new Vector2(10, 60), "Password:", Color.TransparentBlack, Color.Black, 80, Label.Align.Right));
+            m_MyForm.Controls.Add(new Textbox("txtPassword", new Vector2(100, 60), 140, ""));
+
+            m_MyForm.Controls.Add(new Label("label3", new Vector2(10, 90), "Server:", Color.TransparentBlack, Color.Black, 80, Label.Align.Right));
+            m_MyForm.Controls.Add(new Textbox("txtServer", new Vector2(100, 90), 140, "localhost"));
+
+            m_MyForm.Controls.Add(new Label("label4", new Vector2(10, 120), "Port:", Color.TransparentBlack, Color.Black, 80, Label.Align.Right));
+            m_MyForm.Controls.Add(new Textbox("txtPort", new Vector2(100, 120), 140, "2593"));
+
+            m_MyForm.Controls.Add(new Button("btnLogin", new Vector2(100, 150), 140, "Log in", Color.White, Color.Black));
             m_MyForm["btnLogin"].OnPress += Button1_OnPress;
             m_MyForm["btnLogin"].OnRelease = Button1_OnRelease;
 
-            m_MyForm.Controls.Add(new Label("label1", new Vector2(10, 60), "Username:", Color.TransparentBlack, Color.Black, 80, Label.Align.Right));
-            m_MyForm.Controls.Add(new Label("label2", new Vector2(10, 90), "Password:", Color.TransparentBlack, Color.Black, 80, Label.Align.Right));
-
-            m_MyForm.Controls.Add(new Textbox("txtUsername", new Vector2(100, 60), 140, ""));
-            m_MyForm.Controls.Add(new Textbox("txtPassword", new Vector2(100, 90), 140, ""));
             //Show the form
             m_FormCollection["frmLogin"].Show();
             m_MyForm.CloseButton.OnRelease += Form_OnClose; // Respond when we close the login window ...
@@ -47,10 +54,10 @@ namespace UltimaXNA.GUI
         }
         private void Button1_OnRelease(object obj, EventArgs e)
         {
-            Events.Login(m_MyForm["txtUsername"].Text, m_MyForm["txtPassword"].Text);
-            m_MyForm["txtUsername"].Enabled = false;
-            m_MyForm["txtPassword"].Enabled = false;
+            // make sure we don't log in twice
             m_MyForm["btnLogin"].Enabled = false;
+            // send the login event
+            Events.Login(m_MyForm["txtServer"].Text, System.Convert.ToInt32(m_MyForm["txtPort"].Text), m_MyForm["txtUsername"].Text, m_MyForm["txtPassword"].Text);
         }
     }
 }

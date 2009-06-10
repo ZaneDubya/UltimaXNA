@@ -23,9 +23,9 @@ namespace UltimaXNA.GUI
             m_GameStateService.EngineRunning = false;
         }
 
-        public static void Login(string nUsername, string nPassword)
+        public static void Login(string nHost, int nPort, string nUsername, string nPassword)
         {
-            m_GameClientService.Send_ConnectToLoginServer("localhost", 2593, nUsername, nPassword);
+            m_GameClientService.Send_ConnectToLoginServer(nHost, nPort, nUsername, nPassword);
         }
     }
 }

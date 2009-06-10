@@ -30,6 +30,7 @@ namespace UltimaXNA.GUI
 
         Window m_ChatWindow;
         Window m_LoginWindow;
+        Window m_LoginWindowBG;
 
         public EngineGUI(Game game)
             : base(game)
@@ -114,13 +115,17 @@ namespace UltimaXNA.GUI
         public void LoadInWorldGUI()
         {
             m_LoginWindow.Unload();
+            m_LoginWindowBG.Unload();
         }
 
         public void InitializeForms(GraphicsDeviceManager nManager)
         {
 
             m_ChatWindow = new Window_Chat(formCollection);
+
+            m_LoginWindowBG = new Window_LoginBG(formCollection);
             m_LoginWindow = new Window_Login(formCollection);
+            
 
             #region MessageBox tests
             /*
