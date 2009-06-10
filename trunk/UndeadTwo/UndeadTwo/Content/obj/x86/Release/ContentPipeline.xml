@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:Pipeline="Microsoft.Xna.Framework.Content.Pipeline">
+  <Asset Type="Pipeline:BuildItemCollection">
+    <Item>
+      <Source>Shaders\Basic.fx</Source>
+      <Name>Shaders\Basic</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Zane\Desktop\Old Stuff\UndeadTwo\UndeadTwo\bin\Release\Content\Shaders\Basic.xnb</Output>
+      <Time>2009-06-08T16:02:57.8835388-07:00</Time>
+    </Item>
+    <Item>
+      <Source>GUI\cursors.bmp</Source>
+      <Name>GUI\cursors</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Zane\Desktop\Old Stuff\UndeadTwo\UndeadTwo\bin\Release\Content\GUI\cursors.xnb</Output>
+      <Time>2009-05-18T08:49:44.2023532-07:00</Time>
+    </Item>
+    <Item>
+      <Source>Fonts\ArialNarrow10.spritefont</Source>
+      <Name>Fonts\ArialNarrow10</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Zane\Desktop\Old Stuff\UndeadTwo\UndeadTwo\bin\Release\Content\Fonts\ArialNarrow10.xnb</Output>
+      <Time>2009-05-31T19:23:38.0151476-07:00</Time>
+    </Item>
+    <BuildSuccessful>true</BuildSuccessful>
+    <Settings>
+      <TargetPlatform>Windows</TargetPlatform>
+      <BuildConfiguration>Release</BuildConfiguration>
+      <CompressContent>true</CompressContent>
+      <RootDirectory>C:\Users\Zane\Desktop\Old Stuff\UndeadTwo\UndeadTwo\Content\</RootDirectory>
+      <LoggerRootDirectory>C:\Users\Zane\Desktop\Old Stuff\UndeadTwo\UndeadTwo\</LoggerRootDirectory>
+      <IntermediateDirectory>C:\Users\Zane\Desktop\Old Stuff\UndeadTwo\UndeadTwo\Content\obj\x86\Release\</IntermediateDirectory>
+      <OutputDirectory>C:\Users\Zane\Desktop\Old Stuff\UndeadTwo\UndeadTwo\bin\Release\Content\</OutputDirectory>
+    </Settings>
+    <Assemblies>
+      <Assembly>
+        <Key>C:\Program Files\Microsoft XNA\XNA Game Studio\v3.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.XImporter.dll</Key>
+        <Value>2008-10-10T17:42:32-07:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files\Microsoft XNA\XNA Game Studio\v3.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.TextureImporter.dll</Key>
+        <Value>2008-10-10T17:43:28-07:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files\Microsoft XNA\XNA Game Studio\v3.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.FBXImporter.dll</Key>
+        <Value>2008-10-10T17:43:18-07:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files\Microsoft XNA\XNA Game Studio\v3.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.EffectImporter.dll</Key>
+        <Value>2008-10-10T17:48:18-07:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files\Microsoft XNA\XNA Game Studio\v3.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.AudioImporters.dll</Key>
+        <Value>2008-10-10T17:48:50-07:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Windows\assembly\GAC_32\Microsoft.Xna.Framework.Content.Pipeline\3.0.0.0__6d5c3888ef60e27d\Microsoft.Xna.Framework.Content.Pipeline.dll</Key>
+        <Value>2009-04-12T10:40:42.3087061-07:00</Value>
+      </Assembly>
+    </Assemblies>
+  </Asset>
+</XnaContent>
