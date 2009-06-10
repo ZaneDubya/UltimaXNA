@@ -32,6 +32,10 @@ namespace UltimaXNA
 
         protected override void Initialize()
         {
+            // First initialize some of the local data classes with our graphicsdevice so 
+            // we don't have to continually pass it to them.
+            DataLocal.Gumps.GraphicsDevice = this.GraphicsDevice;
+            
             this.Content.RootDirectory = "Content";
 
             m_Client = new Network.GameClient(this);
