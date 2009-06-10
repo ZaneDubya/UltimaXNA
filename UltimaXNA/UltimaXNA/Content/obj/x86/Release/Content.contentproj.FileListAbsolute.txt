@@ -1,2 +1,3 @@
 C:\Users\Zane\Desktop\Old Stuff\UndeadTwo\UndeadTwo\Content\obj\x86\Release\ResolveAssemblyReference.cache
 C:\Users\Zane\Desktop\UltimaXNA\UndeadTwo\Content\obj\x86\Release\ResolveAssemblyReference.cache
+C:\Users\Zane\Desktop\ultimaxna\UltimaXNA\UltimaXNA\Content\obj\x86\Release\ResolveAssemblyReference.cache
