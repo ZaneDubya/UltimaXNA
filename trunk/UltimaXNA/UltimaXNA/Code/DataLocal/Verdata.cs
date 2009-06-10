@@ -21,7 +21,7 @@ namespace UltimaXNA.DataLocal
         {
             string path = FileManager.GetFilePath("verdata.mul");
 
-            if (path == null)
+            if (!File.Exists(path))
             {
                 m_Patches = new Entry5D[0];
                 m_Stream = Stream.Null;

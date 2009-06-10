@@ -7,8 +7,8 @@
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
       <Options>None</Options>
-      <Output>C:\Users\Zane\Desktop\UltimaXNA\UndeadTwo\bin\Release\Content\Shaders\Basic.xnb</Output>
-      <Time>2009-06-10T01:01:49.2407677-07:00</Time>
+      <Output>C:\Users\Zane\Desktop\ultimaxna\UltimaXNA\UltimaXNA\bin\Release\Content\Shaders\Basic.xnb</Output>
+      <Time>2009-06-10T14:46:42.6005343-07:00</Time>
     </Item>
     <Item>
       <Source>GUI\cursors.bmp</Source>
@@ -16,8 +16,8 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
-      <Output>C:\Users\Zane\Desktop\UltimaXNA\UndeadTwo\bin\Release\Content\GUI\cursors.xnb</Output>
-      <Time>2009-05-18T08:49:44.2023532-07:00</Time>
+      <Output>C:\Users\Zane\Desktop\ultimaxna\UltimaXNA\UltimaXNA\bin\Release\Content\GUI\cursors.xnb</Output>
+      <Time>2009-06-10T14:46:42.507529-07:00</Time>
     </Item>
     <Item>
       <Source>Fonts\ArialNarrow10.spritefont</Source>
@@ -25,18 +25,18 @@
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
       <Options>None</Options>
-      <Output>C:\Users\Zane\Desktop\UltimaXNA\UndeadTwo\bin\Release\Content\Fonts\ArialNarrow10.xnb</Output>
-      <Time>2009-05-31T19:23:38.0151476-07:00</Time>
+      <Output>C:\Users\Zane\Desktop\ultimaxna\UltimaXNA\UltimaXNA\bin\Release\Content\Fonts\ArialNarrow10.xnb</Output>
+      <Time>2009-06-10T14:46:42.5835333-07:00</Time>
     </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
       <TargetPlatform>Windows</TargetPlatform>
       <BuildConfiguration>Release</BuildConfiguration>
       <CompressContent>true</CompressContent>
-      <RootDirectory>C:\Users\Zane\Desktop\UltimaXNA\UndeadTwo\Content\</RootDirectory>
-      <LoggerRootDirectory>C:\Users\Zane\Desktop\UltimaXNA\UndeadTwo\</LoggerRootDirectory>
-      <IntermediateDirectory>C:\Users\Zane\Desktop\UltimaXNA\UndeadTwo\Content\obj\x86\Release\</IntermediateDirectory>
-      <OutputDirectory>C:\Users\Zane\Desktop\UltimaXNA\UndeadTwo\bin\Release\Content\</OutputDirectory>
+      <RootDirectory>C:\Users\Zane\Desktop\ultimaxna\UltimaXNA\UltimaXNA\Content\</RootDirectory>
+      <LoggerRootDirectory>C:\Users\Zane\Desktop\ultimaxna\UltimaXNA\UltimaXNA\</LoggerRootDirectory>
+      <IntermediateDirectory>C:\Users\Zane\Desktop\ultimaxna\UltimaXNA\UltimaXNA\Content\obj\x86\Release\</IntermediateDirectory>
+      <OutputDirectory>C:\Users\Zane\Desktop\ultimaxna\UltimaXNA\UltimaXNA\bin\Release\Content\</OutputDirectory>
     </Settings>
     <Assemblies>
       <Assembly>
