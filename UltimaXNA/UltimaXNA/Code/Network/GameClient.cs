@@ -4,6 +4,7 @@
 //
 // Created by Poplicola
 //-----------------------------------------------------------------------------
+using System.IO;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 #endregion
@@ -557,8 +558,12 @@ namespace UltimaXNA.Network
             while (true)
             {
                 uint iEquipmentSerial = nPacket.ReadUInt();
-                if (iEquipmentSerial == 0)
+                if ( iEquipmentSerial == 0 )
+				{
+                    // Creature has no equip, since we read the serial we need to go move back the pointer or we go out of the stream - Smjert
+                    nPacket.Stream.Seek(-4, SeekOrigin.Current);
                     break;
+                }
                 int iGraphic = nPacket.ReadUShort();
                 int iLayer = nPacket.ReadByte();
                 int iItemHue = 0;
