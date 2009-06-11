@@ -282,6 +282,9 @@ namespace UltimaXNA.TileEngine
 
                             DataLocal.FrameXNA[] iFrames = DataLocal.AnimationsXNA.GetAnimation(this.Game.GraphicsDevice,
                                 iMobile.ID, iMobile.Action, iMobile.Direction, iMobile.Hue, false);
+                            // GetAnimation fails so it returns null, temporary fix - Smjert
+                            if (iFrames == null)
+                                continue;
                             int iFrame = iMobile.Frame(iFrames.Length);
 
                             width = iFrames[iFrame].Texture.Width;
