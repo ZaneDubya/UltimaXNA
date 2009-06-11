@@ -52,17 +52,18 @@ namespace UltimaXNA.DataLocal
                     int anim4;
                     int anim5;
 
-                    if (split.Length >= 3 || !int.TryParse(split[2], out anim3))
+                    // The control here was wrong, previously it was always putting -1 without parsing the file - Smjert
+                    if (split.Length < 3 || !int.TryParse(split[2], out anim3))
                     {
                         anim3 = -1;
                     }
 
-                    if (split.Length >= 4 || !int.TryParse(split[3], out anim4))
+                    if (split.Length < 4 || !int.TryParse(split[3], out anim4))
                     {
                         anim4 = -1;
                     }
 
-                    if (split.Length >= 5 || !int.TryParse(split[4], out anim5))
+                    if (split.Length < 5 || !int.TryParse(split[4], out anim5))
                     {
                         anim5 = -1;
                     }
@@ -344,6 +345,14 @@ namespace UltimaXNA.DataLocal
         public static FrameXNA[] GetAnimation(GraphicsDevice nDevice, int body, int action, int direction, int hue, bool preserveHue)
         {
             int iCacheHue = 0; //hue + 1; // since hue is -1 if we don't want to hue it.
+
+            // I moved this line here since at line 497, previously, it uses m_Cache with real body as index and that index has no instance, AnimID has instance instead.
+            // Example with Hiryu (AnimID 243, real body has 201 after convert):
+            // Prev: m_Cache[AnimID] = new instance, convert AnimID to real body, if(m_Cache[realbody]..etc) <-Crash
+            // Now: convert AnimID to real body, m_Cache[realbody] = new instance, if(m_Cache[realbody]..etc) <- OK
+            // - Smjert
+            int fileType = BodyConverter.Convert(ref body);
+
             if (m_Cache == null)
             {
                 // max number of bodies is about 1000
@@ -369,7 +378,6 @@ namespace UltimaXNA.DataLocal
             else
                 Translate(ref body, ref hue);
 
-            int fileType = BodyConverter.Convert(ref body);
             FileIndex fileIndex;
 
             int index;

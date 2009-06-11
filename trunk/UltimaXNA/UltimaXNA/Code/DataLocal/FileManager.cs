@@ -27,13 +27,12 @@ namespace UltimaXNA.DataLocal
 
         public static string GetFilePath(string name)
         {
-            try
-            {
-                name = Path.Combine(m_FileDirectory, name);
-
+            name = Path.Combine(m_FileDirectory, name);
+            // Fix for opening files which don't exist -Smjert
+            if (File.Exists(name))
                 return name;
-            }
-            catch { return null; }
+
+            return null;
         }
 
         public static bool Exists(string name)
