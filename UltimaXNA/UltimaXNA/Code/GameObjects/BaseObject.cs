@@ -15,7 +15,7 @@ namespace UltimaXNA.GameObjects
         public Movement Movement;
         public ObjectType ObjectType;
         public int GUID;
-        private bool m_HasBeenDrawn;
+        internal bool m_HasBeenDrawn;
 
         public TileEngine.IWorld World
         {

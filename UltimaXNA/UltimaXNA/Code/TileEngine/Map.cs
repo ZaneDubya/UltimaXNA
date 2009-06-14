@@ -170,11 +170,20 @@ namespace UltimaXNA.TileEngine
             }
 
             groundTile = new GroundTile(m_TileMatrix.GetLandTile(nX, nY), new Vector2(nX,nY));
-            groundTile.Surroundings = new Surroundings();
-            groundTile.Surroundings.Down = m_TileMatrix.GetLandTile(nX + 1, nY + 1).Z;
-            groundTile.Surroundings.East = m_TileMatrix.GetLandTile(nX + 1, nY).Z;
-            groundTile.Surroundings.South = m_TileMatrix.GetLandTile(nX, nY + 1).Z;
-            groundTile.CalculateNormals(); // Added 5/24/2009
+            groundTile.Surroundings = new Surroundings(
+                m_TileMatrix.GetLandTile(nX + 1, nY + 1).Z,
+                m_TileMatrix.GetLandTile(nX + 1, nY).Z,
+                m_TileMatrix.GetLandTile(nX, nY + 1).Z);
+            groundTile.CalculateNormals(
+                m_TileMatrix.GetLandTile(nX - 1, nY).Z,
+                m_TileMatrix.GetLandTile(nX - 1, nY + 1).Z,
+                m_TileMatrix.GetLandTile(nX, nY - 1).Z,
+                m_TileMatrix.GetLandTile(nX + 1, nY - 1).Z,
+                m_TileMatrix.GetLandTile(nX, nY + 2).Z,
+                m_TileMatrix.GetLandTile(nX + 1, nY + 2).Z,
+                m_TileMatrix.GetLandTile(nX + 2, nY).Z,
+                m_TileMatrix.GetLandTile(nX + 2, nY + 1).Z
+                );
 
             if (Math.Abs(groundTile.Z - groundTile.Surroundings.Down) >= Math.Abs(groundTile.Surroundings.South - groundTile.Surroundings.East))
             {

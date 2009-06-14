@@ -133,7 +133,7 @@ namespace UltimaXNA.Network
             {
                 string iErrorMessage = e.Message;
                 // If we get an exception bytesread will remain 0 and we will disconnect.
-                // throw (e); !!!
+                throw (e);
             }
             if (bytesRead == 0)
             {
@@ -233,7 +233,6 @@ namespace UltimaXNA.Network
         private int mGetSize(ref byte[] data, int nPosition, int nTotalLength)
         {
             byte iOpCode = data[nPosition];
-            // debug
 
             int iret;
 
@@ -291,6 +290,10 @@ namespace UltimaXNA.Network
                     return 12;
                 case OpCodes.SMSG_MOVEREJ:
                     return 8;
+                case OpCodes.SMSG_CONTAINER:
+                    return 7;
+                case OpCodes.SMSG_ADDMULTIPLEITEMSTOCONTAINER:
+                    return (int)EndianBitConverter.Big.ToUInt16(data, nPosition + 1);
                 default :
                     //byte iOpCode = data[nPosition];
                     //byte[] iData = new byte[nTotalLength - nPosition];

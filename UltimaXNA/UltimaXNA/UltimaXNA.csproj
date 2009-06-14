@@ -103,6 +103,8 @@
     <Compile Include="Code\GameObjects\GameObjects.cs" />
     <Compile Include="Code\GameState.cs" />
     <Compile Include="Code\GUI\Events.cs" />
+    <Compile Include="Code\GUI\Windows\Container.cs" />
+    <Compile Include="Code\GUI\Windows\ErrorModal.cs" />
     <Compile Include="Code\GUI\Windows\Login.cs" />
     <Compile Include="Code\GUI\Windows\LoginBackdrop.cs" />
     <Compile Include="Code\GUI\Windows\Window.cs" />

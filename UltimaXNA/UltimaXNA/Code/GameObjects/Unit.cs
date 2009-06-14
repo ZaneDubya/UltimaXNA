@@ -50,7 +50,6 @@ namespace UltimaXNA.GameObjects
         onefootforwardfor2secs = 0x23,
         same = 0x24
     }
-
     public enum EquipLayer : int
     {
         /// <summary>

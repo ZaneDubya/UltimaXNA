@@ -90,9 +90,13 @@ namespace UltimaXNA
             }
             else
             {
-                if (m_InputService.Mouse.Buttons[0].IsDown)
+                if (m_InputService.Mouse.Buttons[0].Press)
                 {
                     m_TileEngineService.PickType = TileEngine.PickTypes.PickStatics | TileEngine.PickTypes.PickObjects | TileEngine.PickTypes.PickGroundTiles;
+                }
+                else if (m_InputService.Mouse.Buttons[1].Press)
+                {
+                    m_TileEngineService.PickType = TileEngine.PickTypes.PickStatics | TileEngine.PickTypes.PickObjects;
                 }
                 else
                 {
@@ -109,6 +113,7 @@ namespace UltimaXNA
         {
             if (m_InputService.Mouse.Buttons[0].Press)
             {
+                // Left button pressed ... move to the tile under the mouse cursor, if there is one...
                 TileEngine.IMapObject iGroundTile = m_TileEngineService.MouseOverGroundTile;
                 if (iGroundTile != null)
                 {
@@ -118,6 +123,29 @@ namespace UltimaXNA
                         (int)iGroundTile.Z);
                 }
             }
+            else if (m_InputService.Mouse.Buttons[1].Press)
+            {
+                // Right button pressed ... activate this object.
+                TileEngine.IMapObject iMapObject = m_TileEngineService.MouseOverObject;
+                if ((iMapObject != null) && (iMapObject.Type != UltimaXNA.TileEngine.MapObjectTypes.StaticTile))
+                {
+                    GameObjects.BaseObject iObject = m_GameObjectsService.GetObject(iMapObject.OwnerGUID);
+                    // default option is to simply 'use' this object, although this will doubtless be more complicated in the future.
+                    // Perhaps the use option is based on the type of object? Anyways, for right now, we only interact with gameobjects,
+                    // and we send a double-click to the server.
+                    switch (iObject.ObjectType)
+                    {
+                        case UltimaXNA.GameObjects.ObjectType.GameObject:
+                            m_GameClientService.Send_UseRequest(iObject.GUID);
+                            break;
+                        default:
+                            // do nothing?
+                            break;
+
+                    }
+                }
+            }
+
 
             // Check for a move event from the player ...
             try
@@ -136,7 +164,7 @@ namespace UltimaXNA
         }
 
         private Vector3 m_LightDirection = new Vector3(0f, 0f, 1f);
-        private double m_LightRadians = 1d;
+        private double m_LightRadians = -1d;
 
         private void mParseKeyboard(Input.KeyboardHandler nKeyboard)
         {
@@ -156,8 +184,20 @@ namespace UltimaXNA
 
                 m_TileEngineService.SetLightDirection(m_LightDirection);
                 #region KeyboardMovement
-                /*
                 GameObjects.Movement iMovement = m_GameObjectsService.GetObject(m_GameObjectsService.MyGUID).Movement;
+                if (nKeyboard.IsKeyDown(Keys.W))
+                    iMovement.SetPositionInstant(iMovement.TileX - 1, iMovement.TileY - 1, 0);
+                if (nKeyboard.IsKeyDown(Keys.A))
+                    iMovement.SetPositionInstant(iMovement.TileX - 1, iMovement.TileY + 1, 0);
+                if (nKeyboard.IsKeyDown(Keys.S))
+                    iMovement.SetPositionInstant(iMovement.TileX + 1, iMovement.TileY + 1, 0);
+                if (nKeyboard.IsKeyDown(Keys.D))
+                    iMovement.SetPositionInstant(iMovement.TileX + 1, iMovement.TileY - 1, 0);
+                if (nKeyboard.IsKeyPressed(Keys.B))
+                    m_GameClientService.Send_UseRequest(
+                        ((GameObjects.Player)m_GameObjectsService.GetObject(m_GameObjectsService.MyGUID))
+                        .Equipment[(int)GameObjects.EquipLayer.Backpack].GUID);
+                /*
                 if (iMovement.IsMoving == false)
                 {
                     if (nKeyboard.IsKeyDown(Keys.W))
@@ -279,7 +319,7 @@ namespace UltimaXNA
             }
 
             // iDebug += Environment.NewLine + m_GameObjectsService.GetObject(m_GameObjectsService.MyGUID).Movement.MoveSequence.ToString();
-            // iDebug += Environment.NewLine + m_LightDirection.ToString();
+            iDebug += Environment.NewLine + m_LightRadians.ToString();
             return iDebug;
         }
     }

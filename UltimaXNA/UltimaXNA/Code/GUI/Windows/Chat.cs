@@ -18,7 +18,7 @@ namespace UltimaXNA.GUI
             : base(nFormCollection)
         {
             //Create a new form
-            m_FormCollection.Add(new Form("frmChat", "ChatFrame", new Vector2(400, 128), new Vector2(0, 600 - 128), Form.BorderStyle.None));
+            m_FormCollection.Add(new Form("frmChat", "", new Vector2(400, 128), new Vector2(0, 600 - 128), Form.BorderStyle.None));
             m_MyForm = m_FormCollection["frmChat"];
             m_MyForm.BorderName = null;
             m_MyForm.MouseThrough = true;
@@ -39,7 +39,7 @@ namespace UltimaXNA.GUI
             m_MyForm["txtChat"].MouseThrough = true;
 
             //Show the form
-            m_FormCollection["frmChat"].Show();
+            this.Show();
         }
 
         public void AddText(string nText)

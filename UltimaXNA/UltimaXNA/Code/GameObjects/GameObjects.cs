@@ -15,6 +15,7 @@ namespace UltimaXNA.GameObjects
         int MyGUID { get; set; }
         BaseObject AddObject(BaseObject nObject);
         BaseObject GetObject(int nGUID);
+        BaseObject GetContainerObject(int nGUID);
     }
 
     class GameObjects : GameComponent, IGameObjects
@@ -84,6 +85,27 @@ namespace UltimaXNA.GameObjects
                 return m_Objects[nGUID];
             }
 
+            // The key does not exist, return the default.
+            return null;
+        }
+
+        public BaseObject GetContainerObject(int nGUID)
+        {
+            // Check for existence here.
+            if (m_Objects.ContainsKey(nGUID))
+            {
+                // We know that m_Objects has an object with this GUID. Now we determine if the object
+                // can expose a container object.
+                switch (m_Objects[nGUID].ObjectType)
+                {
+                    case ObjectType.Container:
+                        return m_Objects[nGUID];
+                    case ObjectType.GameObject:
+                        return ((GameObject)m_Objects[nGUID]).ContainerObject;
+                    default:
+                        return null;
+                }
+            }
             // The key does not exist, return the default.
             return null;
         }

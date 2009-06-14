@@ -20,7 +20,7 @@ namespace UltimaXNA.GUI
             ((PictureBox)m_MyForm["picturebox1"]).Texture = DataLocal.Gumps.GetGumpXNA(0x500);
 
             //Show the form
-            m_MyForm.Show();
+            this.Show();
         }
     }
 }

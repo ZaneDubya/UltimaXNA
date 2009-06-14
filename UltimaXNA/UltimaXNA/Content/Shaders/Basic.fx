@@ -49,7 +49,7 @@ float4 PixelShader(PS_INPUT IN) : COLOR0
 	if(DrawLighting)
 	{
 		float lightIntensity = clamp(dot(lightDirection, float3(0,1,0)), 0, 1);
-		float ambientLightIntensity = 0.2f;
+		float ambientLightIntensity = 0.5f;
 
 		float3 lightColor = float3(1, 0.5f + lightIntensity / 2, lightIntensity);
 		float3 ambientColor = float3(1 - lightIntensity / 5, 1 - lightIntensity / 10, 1 - lightIntensity / 5) * ambientLightIntensity;
