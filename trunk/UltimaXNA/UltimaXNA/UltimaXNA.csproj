@@ -90,7 +90,7 @@
     </Reference>
     <Reference Include="xWinFormsLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\xWinFormsLib_3_Beta_Src\xWinFormsLib\bin\x86\Debug\xWinFormsLib.dll</HintPath>
+      <HintPath>.\xWinFormsLib.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
