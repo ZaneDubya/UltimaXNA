@@ -823,10 +823,10 @@ namespace UltimaXNA.Network
             int iGUID = nPacket.ReadInt();
             int iGumpModel = nPacket.ReadUShort();
 
-            GameObjects.BaseObject iObject = m_GameObjectsService.GetContainerObject(iGUID);
             // Only try to open a container of type Container. Note that GameObjects can
-            // have container objects and will expose them. When called through GetContainerObject(int)
+            // have container objects and will expose them when called through GetContainerObject(int)
             // instead of GetObject(int).
+            GameObjects.BaseObject iObject = m_GameObjectsService.GetContainerObject(iGUID); // Changed from GetObject(iGUID) to GetContainerObject(iGUID) per issue8 (http://code.google.com/p/ultimaxna/issues/detail?id=8) --ZDW 6/14/2009
             if (iObject.ObjectType == UltimaXNA.GameObjects.ObjectType.Container)
             {
                 m_GUIService.Container_Open(iObject, iGumpModel);
@@ -857,7 +857,7 @@ namespace UltimaXNA.Network
                 // Add the item...
                 GameObjects.Item iObject = m_AddItem(iGUID, iItemID, iHue, iContainerGUID, iAmount);
                 // ... and add it the container contents of the container.
-                GameObjects.Container iContainerObject = (GameObjects.Container)m_GameObjectsService.GetObject((int)iContainerGUID);
+                GameObjects.Container iContainerObject = (GameObjects.Container)m_GameObjectsService.GetContainerObject((int)iContainerGUID);
                 iContainerObject.AddToContents(iObject);
             }
         }
