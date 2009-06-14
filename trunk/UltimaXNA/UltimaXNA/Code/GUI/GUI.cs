@@ -51,7 +51,8 @@ namespace UltimaXNA.GUI
             formCollection = new FormCollection(Game.Window, Game.Services, ref graphics, @"..\..\res\");
             spriteBatch = new SpriteBatch(Game.GraphicsDevice);
             mDrawForms = true;
-            surfaceCursors = Texture2D.FromFile(graphics.GraphicsDevice, @"..\..\res\GUI\cursors.png");
+            surfaceCursors = DataLocal.Art.GetStaticTexture(8307, graphics.GraphicsDevice);
+                // Texture2D.FromFile(graphics.GraphicsDevice, @"..\..\res\GUI\cursors.png");
 
             fontArial14 = Game.Content.Load<SpriteFont>(@"fonts\ArialNarrow10");
         }
@@ -70,7 +71,7 @@ namespace UltimaXNA.GUI
             base.Update(gameTime);
 
             FormCollection.Cursor.Texture = surfaceCursors;
-            FormCollection.Cursor.SourceRect = new Rectangle(0, 32, 32, 32);
+            FormCollection.Cursor.SourceRect = new Rectangle(1, 1, 31, 26);
             FormCollection.Cursor.HasShadow = true;
 
             // First update our collection of windows.

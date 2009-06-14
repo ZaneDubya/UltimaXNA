@@ -29,7 +29,7 @@ namespace UltimaXNA.Network
         public readonly int id;                             // unique id for use with the server
         public bool disconnected = false;                   // To keep track if we have already disconnected.
 
-        private const int m_OutBufferSize = 16388;
+        private const int m_OutBufferSize = 32776;          // Increased to 32kb from 16kb issue9 (http://code.google.com/p/ultimaxna/issues/detail?id=9) --ZDW 6/14/2009
         private byte[] outdata = new byte[m_OutBufferSize];
 
         private bool m_AppendNextMessage = false;
