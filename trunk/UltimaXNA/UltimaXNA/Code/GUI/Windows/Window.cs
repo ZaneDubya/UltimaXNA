@@ -15,19 +15,31 @@ namespace UltimaXNA.GUI
     {
         internal FormCollection m_FormCollection;
         internal Form m_MyForm;
+        public bool IsClosed = false;
 
         public Window(FormCollection nFormCollection)
         {
             m_FormCollection = nFormCollection;
         }
 
-        public void Unload()
+        public void Close()
         {
             if (m_MyForm != null)
             {
                 m_MyForm.Dispose();
                 m_MyForm = null;
+                IsClosed = true;
             }
+        }
+
+        public virtual void Update()
+        {
+
+        }
+
+        public void Show()
+        {
+            m_MyForm.Show();
         }
     }
 }

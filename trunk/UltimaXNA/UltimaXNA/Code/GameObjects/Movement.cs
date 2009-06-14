@@ -132,13 +132,17 @@ namespace UltimaXNA.GameObjects
         public void Update(GameTime gameTime)
         {
             mFlushDrawObjects();
-          
+            
+            // Are we moving? (if our current location != our destination, then we are moving)
             if (this.IsMoving)
             {
+                // UO movement is tile based. Have we reached the next tile yet?
+                // If we have, then get the next tile in the move sequence and move to that one.
                 if (m_CurrentTile.Location == m_NextTile.Location)
                 {
                     Direction iFacing;
                     m_NextTile = mGetNextTile(m_CurrentTile.Location, m_GoalTile.Location, out iFacing);
+                    // Is the next tile on-screen?
                     if (m_NextTile != null)
                     {
                         // If we are the player, set our move event so that the game
@@ -166,7 +170,10 @@ namespace UltimaXNA.GameObjects
                     }
                     else
                     {
-                        // They are no longer on our map.
+                        // This next tile is no longer in our map in memory.
+                        // Ideally, we should remove them from the map entirely.
+                        // Right now, we just set their location to the current tile
+                        // and refuse to move them further.
                         this.SetPositionInstant(
                             (int)m_CurrentTile.Location.X,
                             (int)m_CurrentTile.Location.Y,

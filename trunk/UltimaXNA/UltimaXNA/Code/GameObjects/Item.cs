@@ -12,6 +12,8 @@ namespace UltimaXNA.GameObjects
     {
         public int DisplayID = 0;
         public int Hue = 0;
+        public int StackCount = 0;
+        public int ContainedWithinGUID = 0;
 
         // These will be added later...
         // public int Item_Type = 0;

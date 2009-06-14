@@ -14,6 +14,7 @@ namespace UltimaXNA.Input
     public class KeyboardHandler
     {
         private List<Keys> m_PressedKeys;
+        private List<Keys> m_PressedKeys_Last;
 
         public KeyboardHandler()
         {
@@ -27,11 +28,19 @@ namespace UltimaXNA.Input
             return false;
         }
 
+        public bool IsKeyPressed(Keys key)
+        {
+            if (m_PressedKeys.Contains(key) && !m_PressedKeys_Last.Contains(key))
+                return true;
+            return false;
+        }
+
         public void Update(GameTime gameTime)
         {
             KeyboardState iKeyboardState;
             iKeyboardState = Keyboard.GetState();
 
+            m_PressedKeys_Last = new List<Keys>(m_PressedKeys);
             m_PressedKeys.Clear();
 
             foreach (Keys key in iKeyboardState.GetPressedKeys())

@@ -46,5 +46,8 @@ namespace UltimaXNA.Network
         SMSG_MOVEACK = 0x22,
         SMSG_MOVEREJ = 0x21,
         SMSG_PLAYSOUNDEFFECT = 0x54,
+        CMSG_USEOBJECT = 0x06,
+        SMSG_CONTAINER = 0x24,
+        SMSG_ADDMULTIPLEITEMSTOCONTAINER = 0x3C,
     }
 }

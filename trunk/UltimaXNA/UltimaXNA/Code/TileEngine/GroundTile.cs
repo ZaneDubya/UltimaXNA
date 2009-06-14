@@ -79,7 +79,41 @@ namespace UltimaXNA.TileEngine
             get { return m_Z; }
         }
 
-        public void CalculateNormals()
+        public void CalculateNormals(
+            int NorthWest0,
+            int NorthWest2,
+            int NorthEast0,
+            int NorthEast1,
+            int SouthWest2,
+            int SouthWest3,
+            int SouthEast1,
+            int SouthEast3)
+        {
+            Normals[0] = m_CalculateNormal(
+                NorthWest0, this.Surroundings.East,
+                NorthEast0, this.Surroundings.South);
+            Normals[1] = m_CalculateNormal(
+                this.Z, SouthEast1,
+                NorthEast1, this.Surroundings.Down);
+            Normals[2] = m_CalculateNormal(
+                NorthWest2, this.Surroundings.Down,
+                this.Z, SouthWest2);
+            Normals[3] = m_CalculateNormal(
+                this.Surroundings.South, SouthEast3,
+                this.Surroundings.East, SouthWest3);
+        }
+
+        private Vector3 m_CalculateNormal(float A, float B, float C, float D)
+        {
+            Vector3 iVector = new Vector3(
+                (A - B) / 2f,
+                1f,
+                (C - D) / 2f);
+            iVector.Normalize();
+            return iVector;
+        }
+
+        public void CalculateNormals_Old()
         {
             VertexPositionNormalTexture[] m_VertexBufferForStretchedTile = new VertexPositionNormalTexture[4];
 
@@ -115,5 +149,12 @@ namespace UltimaXNA.TileEngine
         public int Down;
         public int East;
         public int South;
+
+        public Surroundings(int nDown, int nEast, int nSouth)
+        {
+            Down = nDown;
+            East = nEast;
+            South = nSouth;
+        }
     }
 }

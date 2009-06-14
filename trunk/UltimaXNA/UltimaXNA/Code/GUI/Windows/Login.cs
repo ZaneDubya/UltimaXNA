@@ -23,6 +23,7 @@ namespace UltimaXNA.GUI
 
             m_MyForm.Controls.Add(new Label("label1", new Vector2(10, 30), "Username:", Color.TransparentBlack, Color.Black, 80, Label.Align.Right));
             m_MyForm.Controls.Add(new Textbox("txtUsername", new Vector2(100, 30), 140, ""));
+            m_MyForm["txtUsername"].Focus();
 
             m_MyForm.Controls.Add(new Label("label2", new Vector2(10, 60), "Password:", Color.TransparentBlack, Color.Black, 80, Label.Align.Right));
             m_MyForm.Controls.Add(new Textbox("txtPassword", new Vector2(100, 60), 140, ""));
@@ -34,11 +35,11 @@ namespace UltimaXNA.GUI
             m_MyForm.Controls.Add(new Textbox("txtPort", new Vector2(100, 120), 140, "2593"));
 
             m_MyForm.Controls.Add(new Button("btnLogin", new Vector2(100, 150), 140, "Log in", Color.White, Color.Black));
-            m_MyForm["btnLogin"].OnPress += Button1_OnPress;
+            m_MyForm["btnLogin"].OnPress = Button1_OnPress;
             m_MyForm["btnLogin"].OnRelease = Button1_OnRelease;
 
             //Show the form
-            m_FormCollection["frmLogin"].Show();
+            this.Show();
             m_MyForm.CloseButton.OnRelease += Form_OnClose; // Respond when we close the login window ...
         }
 

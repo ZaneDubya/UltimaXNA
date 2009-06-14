@@ -78,6 +78,9 @@ namespace UltimaXNA
             base.Update(gameTime);
             switch (m_Client.Status)
             {
+                case UltimaXNA.Network.ClientStatus.Unconnected:
+                    m_GUI.LoadLoginGUI();
+                    break;
                 case UltimaXNA.Network.ClientStatus.LoginServer_Connecting :
                     // do nothing ... wait until we have the server list.
                     break;
