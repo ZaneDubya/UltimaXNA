@@ -9,6 +9,14 @@ using Microsoft.Xna.Framework;
 
 namespace UltimaXNA.TileEngine
 {
+	// Issue 14 - Wrong layer draw order - http://code.google.com/p/ultimaxna/issues/detail?id=14 - Smjert
+	public enum MobileTileTypes
+	{
+		Mount = 0,
+		Body,
+		Equipment
+	}
+	// Issue 14 - End
     public class MobileTile : IMapObject
     {
         private int m_ID;
@@ -19,13 +27,16 @@ namespace UltimaXNA.TileEngine
 		// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
 		private bool m_Mounted;
 		// Issue 6 - End
+		// Issue 14 - Wrong layer draw order - http://code.google.com/p/ultimaxna/issues/detail?id=14 - Smjert
+		private MobileTileTypes m_SubType;
+		// Issue 14 - End
 
         private Vector3 m_Position;
         public Vector2 Position { get { return new Vector2(m_Position.X, m_Position.Y); } }
         private Vector3 m_Offset; public Vector3 Offset { get { return m_Offset; } }
 
 		// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
-		public MobileTile(int nID, Vector3 nPosition, Vector3 nOffset, int nDirection, int nAction, float nActionProgression, int nOwnerGUID, int nLayer, int nHue, bool nMounted)
+        public MobileTile(int nID, Vector3 nPosition, Vector3 nOffset, int nDirection, int nAction, float nActionProgression, int nOwnerGUID, int nLayer, int nHue, bool nMounted)
 		// Issue 6 - End
         {
             m_ID = nID;
@@ -114,7 +125,13 @@ namespace UltimaXNA.TileEngine
         {
             get { return MapObjectTypes.MobileTile; }
         }
-
+		// Issue 14 - Wrong layer draw order - http://code.google.com/p/ultimaxna/issues/detail?id=14 - Smjert
+		public MobileTileTypes SubType
+		{
+			get { return m_SubType; }
+			set { m_SubType = value; }
+		}
+		// Issue 14 - End
         public int Z
         {
             get { return (int)m_Position.Z; }

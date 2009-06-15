@@ -191,7 +191,7 @@ namespace UltimaXNA.GameObjects
 		// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
 		private int m_DisplayBodyID = 0;
 		public int MountDisplayID = 0;
-
+		
 		public int DisplayBodyID
 		{
 			get { return m_DisplayBodyID; }
@@ -248,16 +248,19 @@ namespace UltimaXNA.GameObjects
         // public BaseModValue Stat0, Stat1, Stat2, Stat3, Stat4;
         // public BaseModValue[] Resistances = new BaseModValue[8];
 
-        private int[] m_DrawLayers = new int[20]
-            {(int)EquipLayer.OneHanded,
+		// Issue 14 - Wrong layer draw order - http://code.google.com/p/ultimaxna/issues/detail?id=14 - Smjert
+		// Changed the order for Mount and Helm
+		private int[] m_DrawLayers = new int[20]
+		{
+			(int)EquipLayer.Mount,
+			(int)EquipLayer.OneHanded,
             (int)EquipLayer.TwoHanded,
             (int)EquipLayer.Shoes,
             (int)EquipLayer.Pants,
             (int)EquipLayer.Shirt,
-            (int)EquipLayer.Helm,
             (int)EquipLayer.Gloves,
             (int)EquipLayer.Neck,
-            (int)EquipLayer.Hair,
+			(int)EquipLayer.Hair,
             (int)EquipLayer.Waist,
             (int)EquipLayer.InnerTorso,
             (int)EquipLayer.FacialHair,
@@ -268,7 +271,9 @@ namespace UltimaXNA.GameObjects
             (int)EquipLayer.OuterLegs,
             (int)EquipLayer.OuterLegs,
             (int)EquipLayer.InnerLegs,
-            (int)EquipLayer.Mount};
+			(int)EquipLayer.Helm
+		};
+		// Issue 14 - End
 
         public UnitAnimation m_Animation;
 
@@ -287,7 +292,7 @@ namespace UltimaXNA.GameObjects
             // AttackPower = new CurrentMaxValue();
 
             Movement.RequiresUpdate = true;
-            this.m_Animation = new UnitAnimation();
+            m_Animation = new UnitAnimation();
 			// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
 			m_Animation.BodyID = DisplayBodyID;
 			// Issue 6 - End
@@ -305,14 +310,16 @@ namespace UltimaXNA.GameObjects
             {
                 m_Animation.SetAnimation(UnitActions.stopmovement);
             }
+			
             m_Animation.Update();
 
             int iDirection = Movement.DrawFacing;
+
 			// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
 			m_Animation.Mounted = false;
 			Item mount = Equipment[(int)EquipLayer.Mount];
 			TileEngine.MobileTile mobtile = null;
-			if ( mount != null && mount.ItemTypeID != 0 )
+			if ( mount != null && mount.ItemTypeID != 0)
 			{
 				Movement.Mounted = m_Animation.Mounted = true;
 				mobtile = new TileEngine.MobileTile(
@@ -330,21 +337,22 @@ namespace UltimaXNA.GameObjects
 			mobtile.SubType = TileEngine.MobileTileTypes.Body;
 			nCell.AddMobileTile(mobtile);
 			// Issue 6 - End
-
+				
+					
             for (int i = 0; i < m_DrawLayers.Length; i++)
             {
 				// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
 				if ( Equipment[m_DrawLayers[i]] != null && Equipment[m_DrawLayers[i]].DisplayID != 0 )
-				{
+                {
 					mobtile = new TileEngine.MobileTile(
 							Equipment[m_DrawLayers[i]].DisplayID, nLocation, nOffset,
 							iDirection, iAction, m_Animation.AnimationFrame,
 							GUID, i + 1, Equipment[m_DrawLayers[i]].Hue, m_Animation.Mounted);
-
+					
 					mobtile.SubType = TileEngine.MobileTileTypes.Equipment;
 					nCell.AddMobileTile(mobtile);
-
-				}
+					
+                }
 				// Issue 6 - End
             }
         }
@@ -369,7 +377,7 @@ namespace UltimaXNA.GameObjects
     class UnitAnimation
     {
 		// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
-		public UnitActions Action;
+        public UnitActions Action;
 		// Issue 6 - End
         public float AnimationFrame = 0f;
         private float m_AnimationStep = 0f;
@@ -388,19 +396,19 @@ namespace UltimaXNA.GameObjects
         {
             if (nAction == UnitActions.stopmovement)
             {
-                if ((this.Action == UnitActions.walk) ||
-                    (this.Action == UnitActions.walkfaster) ||
-                    (this.Action == UnitActions.run) ||
-                    (this.Action == UnitActions.runfaster))
+                if ((Action == UnitActions.walk) ||
+                    (Action == UnitActions.walkfaster) ||
+                    (Action == UnitActions.run) ||
+                    (Action == UnitActions.runfaster))
                 {
                     this.SetAnimation(UnitActions.nothing);
                 }
                 return;
             }
 
-            if (this.Action != nAction)
+            if (Action != nAction)
             {
-                this.Action = (UnitActions)nAction;
+                Action = (UnitActions)nAction;
                 AnimationFrame = 0f;
                 m_AnimationStep = 0f;
             }
@@ -408,9 +416,9 @@ namespace UltimaXNA.GameObjects
 
         public void SetAnimation(UnitActions action, int frameCount, int repeatCount, bool reverse, bool repeat, int delay)
         {
-            if (this.Action != action)
+            if (Action != action)
             {
-                this.Action = (UnitActions)action;
+                Action = (UnitActions)action;
                 AnimationFrame = 0f;
                 m_AnimationStep = 1f / (float)((frameCount * (delay + 1)) * 5);
             }
@@ -428,9 +436,9 @@ namespace UltimaXNA.GameObjects
         public int GetAction_People()
         {
 			// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
-			if ( Mounted )
+			if(Mounted)
 			{
-				switch ( Action )
+				switch (Action)
 				{
 					case UnitActions.walk:
 						return (int)23;
@@ -444,7 +452,7 @@ namespace UltimaXNA.GameObjects
 			}
 
 			// Hiryu has different stand animation
-			if ( BodyID == 243 && Action == UnitActions.nothing )
+			if(BodyID == 243 && Action == UnitActions.nothing)
 				return 2;
 
 			return (int)Action;
