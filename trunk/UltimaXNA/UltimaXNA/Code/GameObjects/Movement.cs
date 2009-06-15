@@ -67,7 +67,7 @@ namespace UltimaXNA.GameObjects
         {
             get
             {
-                int iFacing = (int)(this.Facing & Direction.Mask);
+                int iFacing = (int)(Facing & Direction.Mask);
                 if (iFacing >= 3)
                     return iFacing - 3;
                 else
@@ -107,8 +107,8 @@ namespace UltimaXNA.GameObjects
         public void MoveEventRej(int nSequence, int nX, int nY, int nZ, int nDirection)
         {
             // immediately return to the designated tile.
-            this.SetPositionInstant(nX, nY, nZ);
-            this.Facing = (Direction)nDirection;
+            SetPositionInstant(nX, nY, nZ);
+            Facing = (Direction)nDirection;
             m_MoveEvent.ResetMoveSequence();
         }
 
@@ -139,7 +139,7 @@ namespace UltimaXNA.GameObjects
             mFlushDrawObjects();
             
             // Are we moving? (if our current location != our destination, then we are moving)
-            if (this.IsMoving)
+            if (IsMoving)
             {
                 // UO movement is tile based. Have we reached the next tile yet?
                 // If we have, then get the next tile in the move sequence and move to that one.
@@ -157,9 +157,9 @@ namespace UltimaXNA.GameObjects
                             // Special exception for the player: if we are facing a new direction, we
                             // need to pause for a brief moment and let the server know that.
                             m_MoveEvent.NewEvent(iFacing);
-                            if (this.Facing != iFacing)
+                            if (Facing != iFacing)
                             {
-                                this.Facing = iFacing;
+                                Facing = iFacing;
                                 m_NextTile.Location = m_CurrentTile.Location;
                                 return;
                             }
@@ -167,9 +167,11 @@ namespace UltimaXNA.GameObjects
                         else
                         {
                             // if we are not the player, then we can just change the facing.
-                            this.Facing = iFacing;
+                            Facing = iFacing;
                         }
-                        TimeToCompleteMove = WalkFoot;
+						// Issue 10 - Speed problems (Partial) - http://code.google.com/p/ultimaxna/issues/detail?id=10 - Smjert
+                        TimeToCompleteMove = ComputeMovementSpeed();
+						// Issue 10 - End
                         m_LastTile = new TilePosition(m_CurrentTile);
                         MoveSequence = 0f;
                     }
@@ -179,7 +181,7 @@ namespace UltimaXNA.GameObjects
                         // Ideally, we should remove them from the map entirely.
                         // Right now, we just set their location to the current tile
                         // and refuse to move them further.
-                        this.SetPositionInstant(
+                        SetPositionInstant(
                             (int)m_CurrentTile.Location.X,
                             (int)m_CurrentTile.Location.Y,
                             (int)m_CurrentTile.Location.Z);
@@ -208,8 +210,16 @@ namespace UltimaXNA.GameObjects
             TileEngine.MapCell iLastMapCell = World.Map.GetMapCell(DrawPosition.TileX, DrawPosition.TileY);
             if (iLastMapCell != null)
                 iLastMapCell.FlushObjectsByGUID(m_GUID);
-        }
-
+        } 
+		// Issue 10 - Speed problems (Partial) - http://code.google.com/p/ultimaxna/issues/detail?id=10 - Smjert
+		public virtual float ComputeMovementSpeed()
+		{
+			if ( Mounted )
+				return (Facing & Direction.Running) == Direction.Running ? RunMount : WalkMount;
+			else
+				return (Facing & Direction.Running) == Direction.Running ? RunFoot : WalkFoot;
+		}
+		// Issue 10 - End
         private TilePosition mGetNextTile(Vector3 nCurrentLocation, Vector3 nGoalLocation, out Direction nFacing)
         {
             Vector3 iDifference = m_CurrentTile.Location;
@@ -271,6 +281,7 @@ namespace UltimaXNA.GameObjects
             TileEngine.MapCell iCell = World.Map.GetMapCell(
                 (int)iDifference.X, 
                 (int)iDifference.Y);
+
             if (iCell != null)
             {
 				// Issue 5 - Statics (bridge, stairs, etc) should be walkable - http://code.google.com/p/ultimaxna/issues/detail?id=5 - Smjert
@@ -284,12 +295,12 @@ namespace UltimaXNA.GameObjects
 					foreach ( StaticItem i in sitems )
 					{
 						UltimaXNA.DataLocal.ItemData iDataInfo = UltimaXNA.DataLocal.TileData.ItemData[i.ID - 0x4000];
-						if ( !iDataInfo.Surface )
+						if(!iDataInfo.Surface)
 							continue;
 
 						height = i.Z + iDataInfo.CalcHeight;
 
-						if ( height > iNextTileAltitude && height > ground && height <= (nCurrentLocation.Z + (iDataInfo.Stairs ? 5 : 2)) )
+						if ( height > iNextTileAltitude && height > ground && height <= (nCurrentLocation.Z + (iDataInfo.Stairs ? 5 : 2)))
 							iNextTileAltitude = height;
 					}
 				}
@@ -300,7 +311,7 @@ namespace UltimaXNA.GameObjects
 					foreach ( GameObjectTile i in goitems )
 					{
 						UltimaXNA.DataLocal.ItemData iDataInfo = UltimaXNA.DataLocal.TileData.ItemData[i.ID];
-						if ( !iDataInfo.Surface )
+						if(!iDataInfo.Surface)
 							continue;
 
 						height = i.Z + iDataInfo.CalcHeight;
@@ -310,6 +321,7 @@ namespace UltimaXNA.GameObjects
 					}
 				}
 				// Issue 5 - End
+
                 return new TilePosition((int)iDifference.X, (int)iDifference.Y, iNextTileAltitude);
             }
             else
