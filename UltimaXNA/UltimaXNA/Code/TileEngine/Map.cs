@@ -225,6 +225,16 @@ namespace UltimaXNA.TileEngine
                 m_MapCells.Remove(m_KeysToRemove[i]);
             }
         }
+
+		// Issue 10 - Speed problems (Partial) - http://code.google.com/p/ultimaxna/issues/detail?id=10 - Smjert
+		public static int GetDistanceToSqrt(int orgx, int orgy, int goalx, int goaly)
+		{
+			int xDelta = goalx - orgx;
+			int yDelta = goaly - orgy;
+
+			return (int)Math.Sqrt((xDelta * xDelta) + (yDelta * yDelta));
+		}
+		// Issue 10 - End
     }
 
     public class MapCell : DataLocal.IPoint2D
