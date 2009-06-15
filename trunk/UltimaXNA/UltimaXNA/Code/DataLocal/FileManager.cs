@@ -17,7 +17,12 @@ namespace UltimaXNA.DataLocal
 
         static FileManager()
         {
-            RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Origin Worlds Online\Ultima Online\1.0");
+            // Fix to address different base client install paths -BERT
+            string basePath = @"SOFTWARE\Origin Worlds Online\Ultima Online\";
+
+            RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(basePath);
+
+            registryKey = Registry.LocalMachine.OpenSubKey(basePath + registryKey.GetSubKeyNames()[0]); // assumes only one subkey for the basePath
 
             string exePath = registryKey.GetValue("ExePath") as string;
 
