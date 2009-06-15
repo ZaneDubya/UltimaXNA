@@ -344,6 +344,89 @@ namespace UltimaXNA.TileEngine
             Type t = typeof(MobileTile);
             return t == i.GetType() || i.GetType().IsSubclassOf(t);
         }
+		// Issue 5 - Statics (bridge, stairs, etc) should be walkable - http://code.google.com/p/ultimaxna/issues/detail?id=5 - Smjert
+		private static bool IsStaticItem(object i)
+		{
+			Type t = typeof(StaticItem);
+			return t == i.GetType() || i.GetType().IsSubclassOf(t);
+		}
+
+		private static bool IsGOTile(object i)
+		{
+			Type t = typeof(GameObjectTile);
+			return t == i.GetType() || i.GetType().IsSubclassOf(t);
+		}
+
+		public List<StaticItem> GetStatics()
+		{
+			List<IMapObject> objs = m_Objects.FindAll(IsStaticItem);
+
+			if ( objs == null || objs.Count == 0 )
+				return null;
+
+			List<StaticItem> sitems = new List<StaticItem>();
+			foreach ( IMapObject obj in objs )
+			{
+				sitems.Add((StaticItem)obj);
+			}
+
+			return sitems;
+		}
+
+		public List<GameObjectTile> GetGOTiles()
+		{
+			List<IMapObject> objs = m_Objects.FindAll(IsGOTile);
+
+			if ( objs == null || objs.Count == 0 )
+				return null;
+
+			List<GameObjectTile> goitems = new List<GameObjectTile>();
+			foreach ( IMapObject obj in objs )
+			{
+				goitems.Add((GameObjectTile)obj);
+			}
+
+			return goitems;
+		}
+		// I leave this since could be useful, even if now isn't used.
+		public bool OnStairs()
+		{
+			List<IMapObject> staticobjs = m_Objects.FindAll(IsStaticItem);
+
+			bool result = false;
+
+			if ( staticobjs == null || staticobjs.Count == 0 )
+				return false;
+
+			foreach ( IMapObject obj in staticobjs )
+			{
+				DataLocal.ItemData iData = DataLocal.TileData.ItemData[obj.ID - 0x4000];
+				if ( iData.Stairs )
+				{
+					result = true;
+					break;
+				}
+			}
+
+			if ( !result )
+			{
+				List<IMapObject> goobjs = m_Objects.FindAll(IsGOTile);
+				if ( goobjs == null || goobjs.Count == 0 )
+					return false;
+				foreach ( IMapObject obj in goobjs )
+				{
+					DataLocal.ItemData iData = DataLocal.TileData.ItemData[obj.ID];
+					if ( iData.Stairs )
+					{
+						result = true;
+						break;
+					}
+				}
+			}
+
+			return result;
+		}
+		// Issue 5 - End
 
         public void Add(GroundTile groundTile)
         {

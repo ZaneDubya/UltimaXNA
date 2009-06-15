@@ -5,7 +5,9 @@
 // Created by Poplicola
 //-----------------------------------------------------------------------------
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using UltimaXNA.TileEngine;
 #endregion
 
 namespace UltimaXNA.GameObjects
@@ -268,7 +270,43 @@ namespace UltimaXNA.GameObjects
                 (int)iDifference.Y);
             if (iCell != null)
             {
-                int iNextTileAltitude = iCell.GroundTile.Z;
+				// Issue 5 - Statics (bridge, stairs, etc) should be walkable - http://code.google.com/p/ultimaxna/issues/detail?id=5 - Smjert
+				int iNextTileAltitude = iCell.GroundTile.Z;
+				int ground = iNextTileAltitude;
+				List<StaticItem> sitems = iCell.GetStatics();
+				List<GameObjectTile> goitems = iCell.GetGOTiles();
+				if ( sitems != null )
+				{
+					int height = 0;
+					foreach ( StaticItem i in sitems )
+					{
+						UltimaXNA.DataLocal.ItemData iDataInfo = UltimaXNA.DataLocal.TileData.ItemData[i.ID - 0x4000];
+						if ( !iDataInfo.Surface )
+							continue;
+
+						height = i.Z + iDataInfo.CalcHeight;
+
+						if ( height > iNextTileAltitude && height > ground && height <= (nCurrentLocation.Z + (iDataInfo.Stairs ? 5 : 2)) )
+							iNextTileAltitude = height;
+					}
+				}
+
+				if ( goitems != null )
+				{
+					int height = 0;
+					foreach ( GameObjectTile i in goitems )
+					{
+						UltimaXNA.DataLocal.ItemData iDataInfo = UltimaXNA.DataLocal.TileData.ItemData[i.ID];
+						if ( !iDataInfo.Surface )
+							continue;
+
+						height = i.Z + iDataInfo.CalcHeight;
+
+						if ( height > iNextTileAltitude && height > ground && height <= (nCurrentLocation.Z + (iDataInfo.Stairs ? 5 : 2)) )
+							iNextTileAltitude = height;
+					}
+				}
+				// Issue 5 - End
                 return new TilePosition((int)iDifference.X, (int)iDifference.Y, iNextTileAltitude);
             }
             else
