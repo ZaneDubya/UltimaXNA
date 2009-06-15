@@ -15,6 +15,27 @@ namespace UltimaXNA.DataLocal
         public static LandData[] LandData = new LandData[0x4000];
         public static ItemData[] ItemData = new ItemData[0x4000];
 
+		// Issue 5 - Statics (bridge, stairs, etc) should be walkable - http://code.google.com/p/ultimaxna/issues/detail?id=5 - Smjert
+		// Stairs IDs, taken from RunUO Data folder (stairs.txt)
+		private static int[] m_StairsID = new int[]
+		{
+			1006, 1007, 1008, 1009, 1010, 1012, 1014, 1016, 1017,
+			1801, 1802, 1803, 1804, 1805, 1807, 1809, 1811, 1812, 
+			1822, 1823, 1825, 1826, 1827, 1828, 1829, 1831, 1833, 
+			1835, 1836, 1846, 1847, 1848, 1849, 1850, 1851, 1852, 
+			1854, 1856, 1861, 1862, 1865, 1867, 1869, 1872, 1873, 
+			1874, 1875, 1876, 1878, 1880, 1882, 1883, 1900, 1901, 
+			1902, 1903, 1904, 1906, 1908, 1910, 1911, 1928, 1929, 
+			1930, 1931, 1932, 1934, 1936, 1938, 1939, 1955, 1956, 
+			1957, 1958, 1959, 1961, 1963, 1978, 1979, 1980, 1991,
+			7600, 7601, 7602, 7603, 7604, 7605, 7606, 7607, 7608, 
+			7609, 7610, 7611, 7612, 7613, 7614, 7615, 7616, 7617, 
+			7618, 7619, 7620, 7621, 7622, 7623, 7624, 7625, 7626,	
+			7627, 7628, 7629, 7630, 7631, 7632, 7633, 7634, 7635, 
+			7636, 7639
+		};
+		// Issue 5 - End
+
         static TileData()
         {
             using (FileStream fileStream = FileManager.GetFile("tiledata.mul"))
@@ -61,7 +82,7 @@ namespace UltimaXNA.DataLocal
 
                     binaryReader.BaseStream.Seek(3, SeekOrigin.Current);
 
-                    itemData.Quanitity = binaryReader.ReadByte();
+                    itemData.Quantity = binaryReader.ReadByte();
                     itemData.AnimID = binaryReader.ReadInt16();
                     binaryReader.BaseStream.Seek(3, SeekOrigin.Current);
 
@@ -71,6 +92,11 @@ namespace UltimaXNA.DataLocal
                     itemData.Name = System.Text.ASCIIEncoding.ASCII.GetString((binaryReader.ReadBytes(20)));
                     itemData.Name = itemData.Name.Trim('\0');
                     // binaryReader.BaseStream.Seek(20, SeekOrigin.Current);
+
+					// Issue 5 - Statics (bridge, stairs, etc) should be walkable - http://code.google.com/p/ultimaxna/issues/detail?id=5 - Smjert
+					if(i > 1005 && i < 7640)
+						itemData.Stairs = !(Array.BinarySearch(m_StairsID, i) < 0);
+					// Issue 5 - End
 
                     ItemData[i] = itemData;
                 }
@@ -84,19 +110,23 @@ namespace UltimaXNA.DataLocal
         public TileFlags Flags;
         public int Height;
         public int Quality;
-        public int Quanitity;
+        public int Quantity;
         public int AnimID;
         public int Value;
         public string Name;
+		// Issue 5 - Statics (bridge, stairs, etc) should be walkable - http://code.google.com/p/ultimaxna/issues/detail?id=5 - Smjert
+		public bool Stairs;
+		// Issue 5 - End
+
 
         public bool Background
         {
-            get { return (this.Flags & TileFlags.Background) != 0; }
+            get { return (Flags & TileFlags.Background) != 0; }
         }
 
         public bool Bridge
         {
-            get { return (this.Flags & TileFlags.Bridge) != 0; }
+            get { return (Flags & TileFlags.Bridge) != 0; }
         }
 
         public int CalcHeight
@@ -105,53 +135,53 @@ namespace UltimaXNA.DataLocal
             {
                 if ((this.Flags & TileFlags.Bridge) != 0)
                 {
-                    return this.Height / 2;
+                    return Height / 2;
                 }
                 else
                 {
-                    return this.Height;
+                    return Height;
                 }
             }
         }
 
         public bool Container
         {
-            get { return (this.Flags & TileFlags.Container) != 0; }
+            get { return (Flags & TileFlags.Container) != 0; }
         }
 
         public bool Foliage
         {
-            get { return (this.Flags & TileFlags.Foliage) != 0; }
+            get { return (Flags & TileFlags.Foliage) != 0; }
         }
 
         public bool Impassable
         {
-            get { return (this.Flags & TileFlags.Impassable) != 0; }
+            get { return (Flags & TileFlags.Impassable) != 0; }
         }
 
         public bool PartialHue
         {
-            get { return (this.Flags & TileFlags.PartialHue) != 0; }
+            get { return (Flags & TileFlags.PartialHue) != 0; }
         }
 
         public bool Roof
         {
-            get { return (this.Flags & TileFlags.Roof) != 0; }
+            get { return (Flags & TileFlags.Roof) != 0; }
         }
 
         public bool Surface
         {
-            get { return (this.Flags & TileFlags.Surface) != 0; }
+            get { return (Flags & TileFlags.Surface) != 0; }
         }
 
         public bool Wall
         {
-            get { return (this.Flags & TileFlags.Wall) != 0; }
+            get { return (Flags & TileFlags.Wall) != 0; }
         }
 
         public bool Wet
         {
-            get { return (this.Flags & TileFlags.Wet) != 0; }
+            get { return (Flags & TileFlags.Wet) != 0; }
         }
     }
 
@@ -162,7 +192,7 @@ namespace UltimaXNA.DataLocal
 
         public bool Wet
         {
-            get { return (this.Flags & TileFlags.Wet) != 0; }
+            get { return (Flags & TileFlags.Wet) != 0; }
         }
     }
 
