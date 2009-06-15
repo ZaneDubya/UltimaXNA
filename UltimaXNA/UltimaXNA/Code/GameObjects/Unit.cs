@@ -333,18 +333,19 @@ namespace UltimaXNA.GameObjects
 
             for (int i = 0; i < m_DrawLayers.Length; i++)
             {
-                if ((this.Equipment[m_DrawLayers[i]] != null) && (this.Equipment[m_DrawLayers[i]].DisplayID != 0))
-                {
-                    nCell.AddMobileTile(
-                        new TileEngine.MobileTile(
-                            this.Equipment[m_DrawLayers[i]].DisplayID, nLocation, nOffset,
-                            iDirection, iAction, m_Animation.AnimationFrame,
-                            this.GUID, i + 1, this.Equipment[m_DrawLayers[i]].Hue));
-					// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
+				// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
+				if ( Equipment[m_DrawLayers[i]] != null && Equipment[m_DrawLayers[i]].DisplayID != 0 )
+				{
+					mobtile = new TileEngine.MobileTile(
+							Equipment[m_DrawLayers[i]].DisplayID, nLocation, nOffset,
+							iDirection, iAction, m_Animation.AnimationFrame,
+							GUID, i + 1, Equipment[m_DrawLayers[i]].Hue, m_Animation.Mounted);
+
 					mobtile.SubType = TileEngine.MobileTileTypes.Equipment;
 					nCell.AddMobileTile(mobtile);
-					// Issue 6 - End
-                }
+
+				}
+				// Issue 6 - End
             }
         }
 
