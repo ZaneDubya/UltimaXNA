@@ -23,6 +23,51 @@ namespace UltimaXNA.DataLocal
         private static int[] m_Table3 = new int[0];
         private static int[] m_Table4 = new int[0];
 
+		// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
+		// MountItemID , BodyID
+		private static int[][] m_MountIDConv = new int[][]
+		{
+			new int[]{0x3E94, 0xF3}, // Hiryu
+			new int[]{0x3E97, 0xC3}, // Beetle
+			new int[]{0x3E98, 0xC2}, // Swamp Dragon
+			new int[]{0x3E9A, 0xC1}, // Ridgeback
+			new int[]{0x3E9B, 0xC0}, // Unicorn
+			new int[]{0x3E9C, 0xBF}, // Ki-Rin
+			new int[]{0x3E9E, 0xBE}, // Fire Steed
+			new int[]{0x3E9F, 0xC8}, // Horse
+			new int[]{0x3EA0, 0xE2}, // Grey Horse
+			new int[]{0x3EA1, 0xE4}, // Horse
+			new int[]{0x3EA2, 0xCC}, // Brown Horse
+			new int[]{0x3EA3, 0xD2}, // Zostrich
+			new int[]{0x3EA4, 0xDA}, // Zostrich
+			new int[]{0x3EA5, 0xDB}, // Zostrich
+			new int[]{0x3EA6, 0xDC}, // Llama
+			new int[]{0x3EA7, 0x74}, // Nightmare
+			new int[]{0x3EA8, 0x75}, // Silver Steed
+			new int[]{0x3EA9, 0x72}, // Nightmare
+			new int[]{0x3EAA, 0x73}, // Ethereal Horse
+			new int[]{0x3EAB, 0xAA}, // Ethereal Llama
+			new int[]{0x3EAC, 0xAB}, // Ethereal Zostrich
+			new int[]{0x3EAD, 0x84}, // Ki-Rin
+			new int[]{0x3EAF, 0x78}, // Minax Warhorse
+			new int[]{0x3EB0, 0x79}, // ShadowLords Warhorse
+			new int[]{0x3EB1, 0x77}, // COM Warhorse
+			new int[]{0x3EB2, 0x76}, // TrueBritannian Warhorse
+			new int[]{0x3EB3, 0x90}, // Seahorse
+			new int[]{0x3EB4, 0x7A}, // Unicorn
+			new int[]{0x3EB5, 0xB1}, // Nightmare
+			new int[]{0x3EB6, 0xB2}, // Nightmare
+			new int[]{0x3EB7, 0xB3}, // Dark Nightmare
+			new int[]{0x3EB8, 0xBC}, // Ridgeback
+			new int[]{0x3EBA, 0xBB}, // Ridgeback
+			new int[]{0x3EBB, 0x319}, // Undead Horse
+			new int[]{0x3EBC, 0x317}, // Beetle
+			new int[]{0x3EBD, 0x31A}, // Swamp Dragon
+			new int[]{0x3EBE, 0x31F}, // Armored Swamp Dragon
+			new int[]{0x3F6F, 0x9} // Daemon
+		};
+		// Issue 6 - End
+
         private BodyConverter() { }
 
         static BodyConverter()
@@ -48,9 +93,9 @@ namespace UltimaXNA.DataLocal
 
                     int original = System.Convert.ToInt32(split[0]);
                     int anim2 = System.Convert.ToInt32(split[1]);
-                    int anim3;
-                    int anim4;
-                    int anim5;
+					int anim3;
+					int anim4;
+					int anim5;
 
                     // The control here was wrong, previously it was always putting -1 without parsing the file - Smjert
                     if (split.Length < 3 || !int.TryParse(split[2], out anim3))
@@ -67,6 +112,7 @@ namespace UltimaXNA.DataLocal
                     {
                         anim5 = -1;
                     }
+					// End Mod - Smjert
 
                     if (anim2 != -1)
                     {
@@ -208,6 +254,21 @@ namespace UltimaXNA.DataLocal
 
         public static int Convert(ref int body)
         {
+			// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
+			// Converts MountItemID to BodyID
+			if ( body > 0x3E93 )
+			{
+				for(int i = 0; i < m_MountIDConv.Length; ++i)
+				{
+					int[] conv = m_MountIDConv[i];
+					if (conv[0] == body)
+					{
+						body = conv[1];
+						break;
+					}
+				}
+			}
+			// Issue 6 - End
             if (m_Table1 != null && body >= 0 && body < m_Table1.Length)
             {
                 int val = m_Table1[body];
