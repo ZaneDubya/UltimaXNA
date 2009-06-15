@@ -7,6 +7,7 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using UltimaXNA.DataLocal;
 #endregion
 
 namespace UltimaXNA
@@ -117,15 +118,28 @@ namespace UltimaXNA
             // Changed to leverage movementFollowsMouse interface option -BERT
             if ( movementFollowsMouse ? m_InputService.Mouse.Buttons[0].IsDown : m_InputService.Mouse.Buttons[0].Press )
             {
+				// Issue 15 - Mouse left clicks on the wrong topmost object - http://code.google.com/p/ultimaxna/issues/detail?id=15 - Smjert
                 // Left button pressed ... move to the tile under the mouse cursor, if there is one...
-                TileEngine.IMapObject iGroundTile = m_TileEngineService.MouseOverGroundTile;
-                if (iGroundTile != null)
+				TileEngine.IMapObject iTopMostObject = m_TileEngineService.MouseOverGroundTile;
+
+				if ( iTopMostObject != null )
                 {
+					int offset = 0;
+					if ( m_TileEngineService.MouseOverObject != null && m_TileEngineService.MouseOverObject.Z >= iTopMostObject.Z )
+					{
+						iTopMostObject = m_TileEngineService.MouseOverObject;
+						if(iTopMostObject.Type == UltimaXNA.TileEngine.MapObjectTypes.StaticTile)
+							offset = TileData.ItemData[iTopMostObject.ID - 0x4000].CalcHeight;
+						else if(iTopMostObject.Type == UltimaXNA.TileEngine.MapObjectTypes.GameObjectTile)
+							offset = TileData.ItemData[iTopMostObject.ID].CalcHeight;
+					}
+
                     ((GameObjects.Unit)m_GameObjectsService.GetObject(m_GameObjectsService.MyGUID)).Move(
-                        (int)iGroundTile.Position.X,
-                        (int)iGroundTile.Position.Y,
-                        (int)iGroundTile.Z);
+						(int)iTopMostObject.Position.X,
+						(int)iTopMostObject.Position.Y,
+						(int)iTopMostObject.Z + offset);
                 }
+				// Issue 15 - End
             }
             else if (m_InputService.Mouse.Buttons[1].Press)
             {
