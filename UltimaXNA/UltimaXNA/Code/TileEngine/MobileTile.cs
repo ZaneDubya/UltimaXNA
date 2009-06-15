@@ -16,12 +16,17 @@ namespace UltimaXNA.TileEngine
         private int m_OwnerGUID;
         private int m_Action, m_Direction, m_Hue;
         private float m_Frame;
+		// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
+		private bool m_Mounted;
+		// Issue 6 - End
 
         private Vector3 m_Position;
         public Vector2 Position { get { return new Vector2(m_Position.X, m_Position.Y); } }
         private Vector3 m_Offset; public Vector3 Offset { get { return m_Offset; } }
 
-        public MobileTile(int nID, Vector3 nPosition, Vector3 nOffset, int nDirection, int nAction, float nActionProgression, int nOwnerGUID, int nLayer, int nHue)
+		// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
+		public MobileTile(int nID, Vector3 nPosition, Vector3 nOffset, int nDirection, int nAction, float nActionProgression, int nOwnerGUID, int nLayer, int nHue, bool nMounted)
+		// Issue 6 - End
         {
             m_ID = nID;
             m_Direction = nDirection;
@@ -32,6 +37,9 @@ namespace UltimaXNA.TileEngine
             m_Hue = nHue;
             m_Position = nPosition;
             m_Offset = nOffset;
+			// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
+			m_Mounted = nMounted;
+			// Issue 6 - End
         }
 
         /// <summary>
@@ -111,5 +119,12 @@ namespace UltimaXNA.TileEngine
         {
             get { return (int)m_Position.Z; }
         }
+
+		// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
+		public bool Mounted
+		{
+			get { return m_Mounted; }
+		}
+		// Issue 6 - End
     }
 }

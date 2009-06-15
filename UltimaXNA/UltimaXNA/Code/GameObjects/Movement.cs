@@ -39,6 +39,9 @@ namespace UltimaXNA.GameObjects
         public Direction Facing = Direction.Up;
         public float MoveSequence;
         public float TimeToCompleteMove;
+		// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
+		public bool Mounted;
+		// Issue 6 - End
 
         public int TileX { get { return (int)m_LastTile.Location.X; } }
         public int TileY { get { return (int)m_LastTile.Location.Y; } }
