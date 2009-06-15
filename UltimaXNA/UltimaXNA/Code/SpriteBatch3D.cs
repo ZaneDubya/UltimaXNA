@@ -8,17 +8,18 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using UltimaXNA.TileEngine;
 #endregion
 
 namespace UltimaXNA
 {
     class SpriteBatch3D : GameComponent
     {
-        private Dictionary<Texture2D, List<VertexPositionNormalTexture>> m_DrawQueue;
+        private Dictionary<Texture2D, List<VertexPositionNormalTextureHue>> m_DrawQueue;
         //private BasicEffect m_Effect2;
         private Effect m_Effect;
         private short[] m_IndexBuffer;
-        private Queue<List<VertexPositionNormalTexture>> m_VertexListQueue;
+        private Queue<List<VertexPositionNormalTextureHue>> m_VertexListQueue;
         private Matrix m_WorldMatrix;
         private BoundingBox m_BoundingBox;
 
@@ -28,9 +29,9 @@ namespace UltimaXNA
             : base(game)
         {
             m_BoundingBox = new BoundingBox(new Vector3(0, 0, Int32.MinValue), new Vector3(this.Game.GraphicsDevice.Viewport.Width, this.Game.GraphicsDevice.Viewport.Height, Int32.MaxValue));
-            m_DrawQueue = new Dictionary<Texture2D, List<VertexPositionNormalTexture>>(256);
+            m_DrawQueue = new Dictionary<Texture2D, List<VertexPositionNormalTextureHue>>(256);
             m_IndexBuffer = CreateIndexBuffer(0x1000);
-            m_VertexListQueue = new Queue<List<VertexPositionNormalTexture>>(256);
+            m_VertexListQueue = new Queue<List<VertexPositionNormalTextureHue>>(256);
 
             m_WorldMatrix = Matrix.CreateOrthographicOffCenter(0, this.Game.GraphicsDevice.Viewport.Width, this.Game.GraphicsDevice.Viewport.Height, 0, Int32.MinValue, Int32.MaxValue);
 
@@ -59,7 +60,7 @@ namespace UltimaXNA
             return indices;
         }
 
-        public void Draw(Texture2D texture, VertexPositionNormalTexture[] vertices)
+        public void Draw(Texture2D texture, VertexPositionNormalTextureHue[] vertices)
         {
             bool draw = false;
 
@@ -78,7 +79,7 @@ namespace UltimaXNA
                 return;
             }
 
-            List<VertexPositionNormalTexture> vertexList;
+            List<VertexPositionNormalTextureHue> vertexList;
 
             if (m_DrawQueue.ContainsKey(texture))
             {
@@ -94,7 +95,7 @@ namespace UltimaXNA
                 }
                 else
                 {
-                    vertexList = new List<VertexPositionNormalTexture>(1024);
+                    vertexList = new List<VertexPositionNormalTextureHue>(1024);
                 }
 
                 m_DrawQueue.Add(texture, vertexList);
@@ -114,12 +115,12 @@ namespace UltimaXNA
 
         public void Flush()
         {
-            this.Game.GraphicsDevice.VertexDeclaration = new VertexDeclaration(this.Game.GraphicsDevice, VertexPositionNormalTexture.VertexElements);
+            this.Game.GraphicsDevice.VertexDeclaration = new VertexDeclaration(this.Game.GraphicsDevice, VertexPositionNormalTextureHue.VertexElements);
 
             Texture2D iTexture;
-            List<VertexPositionNormalTexture> iVertexList;
+            List<VertexPositionNormalTextureHue> iVertexList;
 
-            IEnumerator<KeyValuePair<Texture2D, List<VertexPositionNormalTexture>>> keyValuePairs = m_DrawQueue.GetEnumerator();
+            IEnumerator<KeyValuePair<Texture2D, List<VertexPositionNormalTextureHue>>> keyValuePairs = m_DrawQueue.GetEnumerator();
             m_Effect.CurrentTechnique = m_Effect.Techniques["StandardEffect"];
             
             Game.GraphicsDevice.RenderState.DepthBufferEnable = true;
@@ -132,12 +133,14 @@ namespace UltimaXNA
             m_Effect.Begin();
             m_Effect.CurrentTechnique.Passes[0].Begin();
 
+            this.Game.GraphicsDevice.Textures[1] = UltimaXNA.DataLocal.HuesXNA.HueTexture;
+
             while (keyValuePairs.MoveNext())
             {
                 iTexture = keyValuePairs.Current.Key;
                 iVertexList = keyValuePairs.Current.Value;
                 this.Game.GraphicsDevice.Textures[0] = iTexture;
-                this.Game.GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionNormalTexture>(PrimitiveType.TriangleList, iVertexList.ToArray(), 0, iVertexList.Count, m_IndexBuffer, 0, iVertexList.Count / 2);
+                this.Game.GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionNormalTextureHue>(PrimitiveType.TriangleList, iVertexList.ToArray(), 0, iVertexList.Count, m_IndexBuffer, 0, iVertexList.Count / 2);
                 m_VertexListQueue.Enqueue(iVertexList);
             }
 

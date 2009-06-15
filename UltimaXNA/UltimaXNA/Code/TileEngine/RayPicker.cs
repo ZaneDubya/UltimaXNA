@@ -87,7 +87,7 @@ namespace UltimaXNA.TileEngine
         {
             m_PickObjects.Clear();
         }
-        public void AddObject(IMapObject nObject, VertexPositionNormalTexture[] nVertices)
+        public void AddObject(IMapObject nObject, VertexPositionNormalTextureHue[] nVertices)
         {
             Vector3[] iVertices = new Vector3[nVertices.Length];
             for (int i = 0; i < nVertices.Length; i++)

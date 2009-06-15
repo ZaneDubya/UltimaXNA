@@ -34,8 +34,8 @@ namespace UltimaXNA.TileEngine
     {
         public int ObjectsRendered { get; protected set; }
         private SpriteBatch3D m_SpriteBatch;
-        private VertexPositionNormalTexture[] m_VertexBuffer;
-        private VertexPositionNormalTexture[] m_VertexBufferForStretchedTile;
+        private VertexPositionNormalTextureHue[] m_VertexBuffer;
+        private VertexPositionNormalTextureHue[] m_VertexBufferForStretchedTile;
         private bool m_IsFirstUpdate = true; // This variable is used to skip the first 'update' cycle.
 
         // Used for mousepicking.
@@ -190,6 +190,11 @@ namespace UltimaXNA.TileEngine
                                 m_VertexBuffer[3].Position.Y += 44 - drawY;
                                 m_VertexBuffer[3].Position.Z = drawZ;
 
+                                m_VertexBuffer[0].Hue = Vector2.Zero;
+                                m_VertexBuffer[1].Hue = Vector2.Zero;
+                                m_VertexBuffer[2].Hue = Vector2.Zero;
+                                m_VertexBuffer[3].Hue = Vector2.Zero;
+
                                 m_SpriteBatch.Draw(texture, m_VertexBuffer);
                             }
                             else // Stretched
@@ -224,6 +229,11 @@ namespace UltimaXNA.TileEngine
                                 m_VertexBufferForStretchedTile[1].Position.Z = drawZ;
                                 m_VertexBufferForStretchedTile[2].Position.Z = drawZ;
                                 m_VertexBufferForStretchedTile[3].Position.Z = drawZ;
+
+                                m_VertexBufferForStretchedTile[0].Hue = Vector2.Zero;
+                                m_VertexBufferForStretchedTile[1].Hue = Vector2.Zero;
+                                m_VertexBufferForStretchedTile[2].Hue = Vector2.Zero;
+                                m_VertexBufferForStretchedTile[3].Hue = Vector2.Zero;
 
                                 m_SpriteBatch.Draw(texture, m_VertexBufferForStretchedTile);
 
@@ -266,6 +276,11 @@ namespace UltimaXNA.TileEngine
                             m_VertexBuffer[3].Position.X += width - drawX;
                             m_VertexBuffer[3].Position.Y += height - drawY;
                             m_VertexBuffer[3].Position.Z = drawZ;
+
+                            m_VertexBuffer[0].Hue = Vector2.Zero;
+                            m_VertexBuffer[1].Hue = Vector2.Zero;
+                            m_VertexBuffer[2].Hue = Vector2.Zero;
+                            m_VertexBuffer[3].Hue = Vector2.Zero;
 
                             m_SpriteBatch.Draw(texture, m_VertexBuffer);
 
@@ -312,6 +327,15 @@ namespace UltimaXNA.TileEngine
                             m_VertexBuffer[3].Position.Y += height - drawY;
                             m_VertexBuffer[3].Position.Z = drawZ;
 
+                            //TODO: Check to see if its a partial hue, if true set Y = 1, if false then set y = 0
+                            // We subtract 1 since hue = 0 is valid, and the client uses hue = 0 to indicate no hue.
+                            Vector2 hueVector = new Vector2(iMobile.Hue - 1, 0);
+
+                            m_VertexBuffer[0].Hue = hueVector;
+                            m_VertexBuffer[1].Hue = hueVector;
+                            m_VertexBuffer[2].Hue = hueVector;
+                            m_VertexBuffer[3].Hue = hueVector;
+
                             m_SpriteBatch.Draw(iFrames[iFrame].Texture, m_VertexBuffer);
 
                             if ((m_PickType & PickTypes.PickObjects) == PickTypes.PickObjects)
@@ -350,6 +374,14 @@ namespace UltimaXNA.TileEngine
                             m_VertexBuffer[3].Position.X += width - drawX;
                             m_VertexBuffer[3].Position.Y += height - drawY;
                             m_VertexBuffer[3].Position.Z = drawZ;
+
+                            //TODO: Check to see if its a partial hue, if true set Y = 1, if false then set y = 0
+                            Vector2 hueVector = new Vector2(iObject.Hue, 0);
+
+                            m_VertexBuffer[0].Hue = hueVector;
+                            m_VertexBuffer[1].Hue = hueVector;
+                            m_VertexBuffer[2].Hue = hueVector;
+                            m_VertexBuffer[3].Hue = hueVector;
 
                             m_SpriteBatch.Draw(texture, m_VertexBuffer);
 
@@ -393,19 +425,19 @@ namespace UltimaXNA.TileEngine
             m_WorldService = (IWorld)Game.Services.GetService(typeof(IWorld));
             m_GameStateService = (IGameState)Game.Services.GetService(typeof(IGameState));
 
-            m_VertexBuffer = new VertexPositionNormalTexture[] {
-                new VertexPositionNormalTexture(new Vector3(), new Vector3(0, 0, 1), new Vector2(0, 0)),
-                new VertexPositionNormalTexture(new Vector3(), new Vector3(0, 0, 1), new Vector2(1, 0)),
-                new VertexPositionNormalTexture(new Vector3(), new Vector3(0, 0, 1), new Vector2(0, 1)),
-                new VertexPositionNormalTexture(new Vector3(), new Vector3(0, 0, 1), new Vector2(1, 1))
+            m_VertexBuffer = new VertexPositionNormalTextureHue[] {
+                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(0, 0, 1), new Vector2(0, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(0, 0, 1), new Vector2(1, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(0, 0, 1), new Vector2(0, 1)),
+                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(0, 0, 1), new Vector2(1, 1))
             };
             const float iUVMin = .01f;
             const float iUVMax = .99f;
-            m_VertexBufferForStretchedTile = new VertexPositionNormalTexture[] {
-                new VertexPositionNormalTexture(new Vector3(), new Vector3(), new Vector2(iUVMin, iUVMin)),
-                new VertexPositionNormalTexture(new Vector3(), new Vector3(), new Vector2(iUVMax, iUVMin)),
-                new VertexPositionNormalTexture(new Vector3(), new Vector3(), new Vector2(iUVMin, iUVMax)),
-                new VertexPositionNormalTexture(new Vector3(), new Vector3(), new Vector2(iUVMax, iUVMax))
+            m_VertexBufferForStretchedTile = new VertexPositionNormalTextureHue[] {
+                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(), new Vector2(iUVMin, iUVMin)),
+                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(), new Vector2(iUVMax, iUVMin)),
+                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(), new Vector2(iUVMin, iUVMax)),
+                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(), new Vector2(iUVMax, iUVMax))
             };
         }
 

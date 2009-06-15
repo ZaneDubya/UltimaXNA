@@ -8,10 +8,70 @@ using System.Drawing.Imaging;
 //-----------------------------------------------------------------------------
 using System.IO;
 using System.Text;
+using Microsoft.Xna.Framework.Graphics;
 #endregion
 
 namespace UltimaXNA.DataLocal
 {
+    public class HuesXNA
+    {
+        private static GraphicsDevice graphicsDevice;
+        private static Texture2D hueTexture;
+
+        public static void Initialize(GraphicsDevice graphicsDevice)
+        {
+            HuesXNA.graphicsDevice = graphicsDevice;
+            graphicsDevice.DeviceReset += graphicsDevice_DeviceReset;
+            CreateTexture();
+        }
+
+        static void graphicsDevice_DeviceReset(object sender, System.EventArgs e)
+        {
+            CreateTexture();
+        }
+
+        private static void CreateTexture()
+        {
+            hueTexture = new Texture2D( graphicsDevice, 32, 4096, 1, TextureUsage.None, SurfaceFormat.Bgra5551 );
+            ushort[] iTextData = GetTextureData();
+            hueTexture.SetData(iTextData);
+        }
+
+        private static ushort[] GetTextureData()
+        {
+            BinaryReader reader = new BinaryReader( FileManager.GetFile( "hues.mul" ) );
+            int currentHue = 0;
+            ushort[] textureData = new ushort[32 * 4096];
+
+            while (reader.BaseStream.Position < reader.BaseStream.Length)
+            {
+                reader.ReadInt32(); //Header
+                
+                for (int entry = 0; entry < 8; entry++)
+                {
+                    for (int i = 0; i < 32; i++)
+                    {
+                        textureData[currentHue * 32 + i] = (ushort)(reader.ReadUInt16() | 0x8000);
+                    }
+                    currentHue++;
+                    reader.ReadInt16(); //table start
+                    reader.ReadInt16(); //table end
+                    reader.ReadBytes( 20 ); //name
+                }
+            }
+            reader.Close();
+            return textureData;
+        }
+
+        public static Texture2D HueTexture
+        {
+            get
+            {
+                return hueTexture;
+            }
+        }
+    }
+
     public class Hues
     {
         private static Hue[] m_List;
@@ -78,11 +138,11 @@ namespace UltimaXNA.DataLocal
             m_Colors = new short[34];
         }
 
-        public Color GetColor(int index)
+        public System.Drawing.Color GetColor(int index)
         {
             int c16 = m_Colors[index];
 
-            return Color.FromArgb((c16 & 0x7C00) >> 7, (c16 & 0x3E0) >> 2, (c16 & 0x1F) << 3);
+            return System.Drawing.Color.FromArgb((c16 & 0x7C00) >> 7, (c16 & 0x3E0) >> 2, (c16 & 0x1F) << 3);
         }
 
         public Hue(int index, BinaryReader bin)
