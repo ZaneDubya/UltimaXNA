@@ -5,8 +5,6 @@ bool DrawLighting;
 sampler textureSampler;
 sampler hueTextureSampler;
 
-float HUETEXTUREHEIGHT = 4096;
-
 struct VS_INPUT
 {
 	float4 Position : POSITION0;
@@ -49,6 +47,8 @@ float4 PixelShader(PS_INPUT IN) : COLOR0
 */
 // New pixelshader created by Jeff - simulates sunrise.
 
+float HuesPerColumn = 2024;
+float HuesPerRow = 2;
 float4 PixelShader(PS_INPUT IN) : COLOR0
 {	
 	float4 color = tex2D(textureSampler, IN.TexCoord);
@@ -72,8 +72,8 @@ float4 PixelShader(PS_INPUT IN) : COLOR0
 
 	if (IN.Hue.x > 0 && color.a > 0) //Is it Hued?
 	{
-		float hueY = (IN.Hue.x / HUETEXTUREHEIGHT);
-		float4 gray = (color.r + color.g + color.b) / 3.0;
+		float hueY = (((IN.Hue.x - (IN.Hue.x % 2)) / HuesPerRow) / (HuesPerColumn));
+		float4 gray = (color.r + color.g + color.b) / 3.0f / HuesPerRow + (IN.Hue.x % 2) * 0.5f;
 		float4 hue = tex2D(hueTextureSampler, float2(gray.r, hueY));
 		if (IN.Hue.y > 0) //Is it a Partial Hue?
 		{

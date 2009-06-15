@@ -100,7 +100,7 @@ namespace UltimaXNA.Network
                 switch (iPacket.OpCode)
                 {
                     case OpCodes.SMSG_STATUSINFO:
-                        m_ReceiveStatusIfno(iPacket);
+                        m_ReceiveStatusInfo(iPacket);
                         break;
                     case OpCodes.SMSG_MOBILEUPDATE:
                         m_ReceiveMobileUpdate(iPacket);
@@ -545,7 +545,7 @@ namespace UltimaXNA.Network
             short iY = nPacket.ReadShort();
             sbyte iZ = nPacket.ReadSByte();
             byte iFacing = nPacket.ReadByte();
-            int iHue = (int)nPacket.ReadUShort();
+            int iHue = nPacket.ReadUShort();
             byte iPacketFlags = nPacket.ReadByte();
             // These are the only flags sent by RunUO
             // 0x02 = female
@@ -567,6 +567,7 @@ namespace UltimaXNA.Network
                 new GameObjects.Unit((int)iMobileSerial));
             iMobile.Movement.SetPositionInstant((int)iX, (int)iY, (int)iZ);
             iMobile.SetFacing(iFacing & 0x0F);
+            iMobile.Hue = iHue;
             iMobile.DisplayBodyID = iBodyID;
 
             // Read equipment - nine bytes ea.
@@ -603,24 +604,24 @@ namespace UltimaXNA.Network
             }
         }
 
-        private void m_ReceiveStatusIfno(Packet nPacket)
+        private void m_ReceiveStatusInfo(Packet nPacket)
         {
-
+            // !!! Unhandled!
         }
 
         private void m_ReceiveSetWeather(Packet nPacket)
         {
-
+            // !!! Unhandled!
         }
 
         private void m_ReceiveWarMode(Packet nPacket)
         {
-
+            // !!! Unhandled!
         }
 
         private void m_ReceiveObjectPropertyList(Packet nPacket)
         {
-
+            // !!! Unhandled!
         }
 
         private void m_ReceiveLoginComplete(Packet nPacket)
@@ -633,7 +634,7 @@ namespace UltimaXNA.Network
 
         private void m_ReceiveTheTime(Packet nPacket)
         {
-
+            // !!! Unhandled!
         }
 
         private void m_ReceiveUnicodeMessage(Packet nPacket)
@@ -737,7 +738,7 @@ namespace UltimaXNA.Network
 
         private void m_ReceiveDeleteObject(Packet nPacket)
         {
-
+            // !!! Unhandled!
         }
 
         private void m_ReceivMobileMoving(Packet nPacket)
