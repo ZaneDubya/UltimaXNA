@@ -115,7 +115,8 @@ namespace UltimaXNA.TileEngine
 
         public void CalculateNormals_Old()
         {
-            VertexPositionNormalTexture[] m_VertexBufferForStretchedTile = new VertexPositionNormalTexture[4];
+            VertexPositionNormalTextureHue[] m_VertexBufferForStretchedTile = new VertexPositionNormalTextureHue[4];
+            // VertexPositionNormalTexture[] m_VertexBufferForStretchedTile = new VertexPositionNormalTexture[4];
 
             m_VertexBufferForStretchedTile[0].Position.X += 22;
             m_VertexBufferForStretchedTile[1].Position.X += 44;

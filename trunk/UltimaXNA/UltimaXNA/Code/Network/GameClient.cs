@@ -444,10 +444,10 @@ namespace UltimaXNA.Network
 
             switch (iSubCommand)
             {
-                case 0x8: // Set cursor hue / set map
+                case 0x8: // Set cursor color / set map
                     byte iMapID = nPacket.ReadByte();
-                    // 0 = Felucca, unhued / BRITANNIA map
-                    // 1 = Trammel, hued gold / BRITANNIA map
+                    // 0 = Felucca, cursor not colored / BRITANNIA map
+                    // 1 = Trammel, cursor colored gold / BRITANNIA map
                     // 2 = (switch to) ILSHENAR map
                     // !!! unhandled! We default to the fel/tram map
                     break;
@@ -492,7 +492,7 @@ namespace UltimaXNA.Network
             int iMobileSerial = nPacket.ReadInt();
             short iBodyID = nPacket.ReadShort();
             iZero = nPacket.ReadBytes(1); // Always 0
-            ushort iHue = (ushort)(nPacket.ReadUShort() / 32); // Skin hue
+            ushort iHue = (ushort)(nPacket.ReadUShort()); // Skin hue
             byte iPacketFlags = nPacket.ReadByte();
             // These are the only flags sent by RunUO
             // 0x02 = female
@@ -508,7 +508,7 @@ namespace UltimaXNA.Network
 
             GameObjects.Unit iObject = (GameObjects.Unit)m_GameObjectsService.GetObject(iMobileSerial);
             iObject.DisplayBodyID = iBodyID;
-            iObject.DisplayHue = (int)iHue;
+            iObject.Hue = (int)iHue;
 
             iObject.Movement.SetPositionInstant((int)iX, (int)iY, (int)iZ);
             iObject.SetFacing(iFacing & 0x0F);
@@ -545,7 +545,7 @@ namespace UltimaXNA.Network
             short iY = nPacket.ReadShort();
             sbyte iZ = nPacket.ReadSByte();
             byte iFacing = nPacket.ReadByte();
-            int iHue = (int)nPacket.ReadUShort() / 32;
+            int iHue = (int)nPacket.ReadUShort();
             byte iPacketFlags = nPacket.ReadByte();
             // These are the only flags sent by RunUO
             // 0x02 = female
@@ -586,7 +586,7 @@ namespace UltimaXNA.Network
                 if ((iGraphic & 0x8000) == 0x8000)
                 {
                     iGraphic = iGraphic - 0x8000;
-                    iItemHue = (int)nPacket.ReadUShort() / 32;
+                    iItemHue = (int)nPacket.ReadUShort();
                 }
                 iEquipCount++;
 

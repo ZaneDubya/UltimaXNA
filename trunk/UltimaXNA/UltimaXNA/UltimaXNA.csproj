@@ -153,6 +153,7 @@
     <Compile Include="Code\TileEngine\TileEngine.cs" />
     <Compile Include="Code\SpriteBatch3D.cs" />
     <Compile Include="Code\TileEngine\StaticItem.cs" />
+    <Compile Include="Code\TileEngine\VertexPositionNormalTextureHue.cs" />
     <Compile Include="Code\TileEngine\World.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Code\DataLocal\Animations.cs" />

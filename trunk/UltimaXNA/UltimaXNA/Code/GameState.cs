@@ -174,10 +174,6 @@ namespace UltimaXNA
                     m_LightRadians += .01f;
                 if (nKeyboard.IsKeyDown(Keys.K))
                     m_LightRadians -= .01f;
-                if (nKeyboard.IsKeyDown(Keys.O))
-                    m_LightDirection.Z += .001f;
-                if (nKeyboard.IsKeyDown(Keys.L))
-                    m_LightDirection.Z -= .001f;
 
                 m_LightDirection.Z = -(float)Math.Cos(m_LightRadians);
                 m_LightDirection.Y = (float)Math.Sin(m_LightRadians);
@@ -295,7 +291,8 @@ namespace UltimaXNA
                 {
                     iDebug += 
                         "AnimID: " + ((TileEngine.MobileTile)m_TileEngineService.MouseOverObject).ID + Environment.NewLine +
-                        "GUID: " + m_TileEngineService.MouseOverObject.OwnerGUID;
+                        "GUID: " + m_TileEngineService.MouseOverObject.OwnerGUID + Environment.NewLine +
+                        "Hue: " + ((TileEngine.MobileTile)m_TileEngineService.MouseOverObject).Hue;
                 }
                 else if (m_TileEngineService.MouseOverObject.Type == TileEngine.MapObjectTypes.GameObjectTile)
                 {

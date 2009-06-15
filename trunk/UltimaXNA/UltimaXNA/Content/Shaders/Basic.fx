@@ -3,19 +3,25 @@ float3 lightDirection;
 bool DrawLighting;
 
 sampler textureSampler;
+sampler hueTextureSampler;
+
+float HUETEXTUREHEIGHT = 4096;
 
 struct VS_INPUT
 {
-	float4 Position : POSITION;
-	float3 Normal	: NORMAL;
-	float2 TexCoord : TEXCOORD;
+	float4 Position : POSITION0;
+	float3 Normal	: NORMAL0;
+	float2 TexCoord : TEXCOORD0;
+	float2 Hue		: TEXCOORD1; //X = Hue, Y = 0 Normal Hue, Y = 1 Partial Hue
+
 };
 
 struct PS_INPUT
 {
-	float4 Position : POSITION;
+	float4 Position : POSITION0;
 	float2 TexCoord : TEXCOORD0;
 	float3 Normal	: TEXCOORD1;
+	float2 Hue		: TEXCOORD2;
 };
 
 PS_INPUT VertexShader(VS_INPUT IN)
@@ -25,6 +31,7 @@ PS_INPUT VertexShader(VS_INPUT IN)
     OUT.Position = mul(IN.Position, world);
 	OUT.TexCoord = IN.TexCoord; 
 	OUT.Normal = IN.Normal;
+	OUT.Hue = IN.Hue;
 	
     return OUT;
 }
@@ -50,14 +57,33 @@ float4 PixelShader(PS_INPUT IN) : COLOR0
 	{
 		float lightIntensity = clamp(dot(lightDirection, float3(0,1,0)), 0, 1);
 		float ambientLightIntensity = 0.5f;
-
-		// float3 lightColor = float3(1, 0.5f + lightIntensity / 2, lightIntensity);
+		
 		float3 lightColor = float3(0.5f + lightIntensity / 2, 0.5f + lightIntensity / 2, 0.5f + lightIntensity / 2);
 		float3 ambientColor = float3(1 - lightIntensity / 10, 1 - lightIntensity / 10, 1 - lightIntensity / 10) * ambientLightIntensity;
-
+	
+		// float3 lightColor = float3(1, 0.5f + lightIntensity / 2, lightIntensity);
+		// float3 lightColor = float3(0.5f + lightIntensity / 2, 0.5f + lightIntensity / 2, 0.5f + lightIntensity / 2);
+		// float3 ambientColor = float3(1 - lightIntensity / 10, 1 - lightIntensity / 10, 1 - lightIntensity / 10) * ambientLightIntensity;
+		
 		float NDotL = saturate(dot(-lightDirection, IN.Normal));
 
 		color.rgb = (ambientColor * color.rgb) + (lightColor * NDotL * color.rgb);
+	}
+
+	if (IN.Hue.x > 0 && color.a > 0) //Is it Hued?
+	{
+		float hueY = (IN.Hue.x / HUETEXTUREHEIGHT);
+		float4 gray = (color.r + color.g + color.b) / 3.0;
+		float4 hue = tex2D(hueTextureSampler, float2(gray.r, hueY));
+		if (IN.Hue.y > 0) //Is it a Partial Hue?
+		{
+			if (color.r == color.g && color.r == color.b && color.a != 0)
+				color = hue;
+		}
+		else //Else its a normal Hue
+		{
+			color = hue;
+		}
 	}
 
 	return color;

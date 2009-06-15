@@ -189,7 +189,7 @@ namespace UltimaXNA.GameObjects
     class Unit : UltimaXNA.GameObjects.BaseObject
     {
         public int DisplayBodyID = 0, MountDisplayID = 0;
-        public int DisplayHue = 0;
+        public int Hue = 0;
         public Item[] Equipment = new Item[(int)EquipLayer.LastValid + 1];
 
         // These will be added later ...
@@ -281,7 +281,7 @@ namespace UltimaXNA.GameObjects
             int iAction = m_Animation.GetAction_People();
 
             nCell.AddMobileTile(
-                new TileEngine.MobileTile(DisplayBodyID, nLocation, nOffset, iDirection, iAction, m_Animation.AnimationFrame, this.GUID, 1, 147));
+                new TileEngine.MobileTile(DisplayBodyID, nLocation, nOffset, iDirection, iAction, m_Animation.AnimationFrame, this.GUID, 1, this.Hue));
             for (int i = 0; i < m_DrawLayers.Length; i++)
             {
                 if ((this.Equipment[m_DrawLayers[i]] != null) && (this.Equipment[m_DrawLayers[i]].DisplayID != 0))
@@ -290,7 +290,7 @@ namespace UltimaXNA.GameObjects
                         new TileEngine.MobileTile(
                             this.Equipment[m_DrawLayers[i]].DisplayID, nLocation, nOffset,
                             iDirection, iAction, m_Animation.AnimationFrame,
-                            this.GUID, i + 1, 147));
+                            this.GUID, i + 1, this.Equipment[m_DrawLayers[i]].Hue));
                 }
             }
         }

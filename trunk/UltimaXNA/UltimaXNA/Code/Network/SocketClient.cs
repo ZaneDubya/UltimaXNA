@@ -183,7 +183,8 @@ namespace UltimaXNA.Network
                     {
                         byte[] jData = new byte[outsize - iPosition];
                         Array.Copy(outdata, iPosition, jData, 0, outsize - iPosition);
-                        LogFile.WritePacket(jData, "UNHANDLED");
+                        if (jData.Length > 0)
+                            LogFile.WritePacket(jData, "UNHANDLED");
                         return;
                     }
                     else if (((iPosition + iSize) > outsize) || (iSize == 0))
