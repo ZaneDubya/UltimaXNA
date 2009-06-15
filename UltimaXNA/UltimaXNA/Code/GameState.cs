@@ -164,7 +164,7 @@ namespace UltimaXNA
         }
 
         private Vector3 m_LightDirection = new Vector3(0f, 0f, 1f);
-        private double m_LightRadians = -1d;
+        private double m_LightRadians = -0.5d;
 
         private void mParseKeyboard(Input.KeyboardHandler nKeyboard)
         {
