@@ -6,6 +6,7 @@
 //-----------------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
+using UltimaXNA.GameObjects;
 using Microsoft.Xna.Framework;
 #endregion
 
@@ -38,6 +39,11 @@ namespace UltimaXNA.TileEngine
         public int Compare(IMapObject x, IMapObject y)
         {
             int result = (x.SortZ + x.Threshold) - (y.SortZ + y.Threshold);
+
+			// Issue 14 - Wrong layer draw order - http://code.google.com/p/ultimaxna/issues/detail?id=14 - Smjert
+			if ( x.Type == MapObjectTypes.MobileTile && y.Type == MapObjectTypes.MobileTile )
+				result = (x as MobileTile).SubType - (y as MobileTile).SubType;
+			// Issue 14 - End
 
             if (result == 0)
                 result = x.Type - y.Type;
@@ -371,11 +377,11 @@ namespace UltimaXNA.TileEngine
 		{
 			List<IMapObject> objs = m_Objects.FindAll(IsStaticItem);
 
-			if ( objs == null || objs.Count == 0 )
+			if ( objs == null || objs.Count == 0)
 				return null;
 
 			List<StaticItem> sitems = new List<StaticItem>();
-			foreach ( IMapObject obj in objs )
+			foreach (IMapObject obj in objs)
 			{
 				sitems.Add((StaticItem)obj);
 			}
@@ -402,23 +408,23 @@ namespace UltimaXNA.TileEngine
 		public bool OnStairs()
 		{
 			List<IMapObject> staticobjs = m_Objects.FindAll(IsStaticItem);
-
+			
 			bool result = false;
 
-			if ( staticobjs == null || staticobjs.Count == 0 )
+			if ( staticobjs == null || staticobjs.Count == 0) 
 				return false;
 
 			foreach ( IMapObject obj in staticobjs )
 			{
 				DataLocal.ItemData iData = DataLocal.TileData.ItemData[obj.ID - 0x4000];
-				if ( iData.Stairs )
+				if(iData.Stairs)
 				{
 					result = true;
 					break;
 				}
 			}
 
-			if ( !result )
+			if(!result)
 			{
 				List<IMapObject> goobjs = m_Objects.FindAll(IsGOTile);
 				if ( goobjs == null || goobjs.Count == 0 )
@@ -426,7 +432,7 @@ namespace UltimaXNA.TileEngine
 				foreach ( IMapObject obj in goobjs )
 				{
 					DataLocal.ItemData iData = DataLocal.TileData.ItemData[obj.ID];
-					if ( iData.Stairs )
+					if(iData.Stairs)
 					{
 						result = true;
 						break;
@@ -437,7 +443,7 @@ namespace UltimaXNA.TileEngine
 			return result;
 		}
 		// Issue 5 - End
-
+	
         public void Add(GroundTile groundTile)
         {
             m_Objects.Add(groundTile);
