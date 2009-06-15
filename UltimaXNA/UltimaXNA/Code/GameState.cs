@@ -27,6 +27,8 @@ namespace UltimaXNA
         GUI.IGUI m_GUIService;
         Network.IGameClient m_GameClientService;
 
+        bool movementFollowsMouse = true; // added for future interface option, allowing both continuous mouse movement and discrete clicks -BERT
+
         // Debug message
         public string DebugMessage { get { return m_DebugMessage(); } }
         private bool m_InWorld;
@@ -90,7 +92,8 @@ namespace UltimaXNA
             }
             else
             {
-                if (m_InputService.Mouse.Buttons[0].Press)
+                // Changed to leverage movementFollowsMouse interface option -BERT
+                if ( movementFollowsMouse ? m_InputService.Mouse.Buttons[0].IsDown : m_InputService.Mouse.Buttons[0].Press )
                 {
                     m_TileEngineService.PickType = TileEngine.PickTypes.PickStatics | TileEngine.PickTypes.PickObjects | TileEngine.PickTypes.PickGroundTiles;
                 }
@@ -111,7 +114,8 @@ namespace UltimaXNA
 
         public void UpdateAfter()
         {
-            if (m_InputService.Mouse.Buttons[0].Press)
+            // Changed to leverage movementFollowsMouse interface option -BERT
+            if ( movementFollowsMouse ? m_InputService.Mouse.Buttons[0].IsDown : m_InputService.Mouse.Buttons[0].Press )
             {
                 // Left button pressed ... move to the tile under the mouse cursor, if there is one...
                 TileEngine.IMapObject iGroundTile = m_TileEngineService.MouseOverGroundTile;
