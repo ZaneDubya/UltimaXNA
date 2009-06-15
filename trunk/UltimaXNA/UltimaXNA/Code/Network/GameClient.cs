@@ -7,6 +7,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.IO;
 using Microsoft.Xna.Framework;
 #endregion
 
@@ -628,8 +629,8 @@ namespace UltimaXNA.Network
         {
             // This packet is just one byte, the opcode.
             // Congrats, login complete!
-            this.Status = ClientStatus.InWorld;
-            m_GameStateService.InWorld = true;
+			this.Status = ClientStatus.InWorld;
+			m_GameStateService.InWorld = true;
         }
 
         private void m_ReceiveTheTime(Packet nPacket)
@@ -691,12 +692,14 @@ namespace UltimaXNA.Network
             ushort iAmount = 0;
             if ((iObjectSerial & 0x80000000) == 0x80000000)
                 iAmount = nPacket.ReadUShort();
-            byte iIncrement = 0;
+
+			// Doesn't exist this thing in the packet
+            /*byte iIncrement = 0;
             if ((iItemID & 0x8000) == 0x8000)
             {
                 iIncrement = nPacket.ReadByte();
                 iObjectSerial += iIncrement;
-            }
+            }*/
             ushort iX = nPacket.ReadUShort();
             ushort iY = nPacket.ReadUShort();
             byte iDirection = 0;
@@ -760,6 +763,16 @@ namespace UltimaXNA.Network
             byte iNotoriety = nPacket.ReadByte();
 
             GameObjects.Unit iObject = (GameObjects.Unit)m_GameObjectsService.GetObject(iSerial);
+			// Issue 16 - Pet not showing at login - http://code.google.com/p/ultimaxna/issues/detail?id=16 - Smjert
+			// Since no packet arrives to add your pet, when you move and your pet follows you the client crashes
+			if ( iObject == null )
+			{
+				iObject = m_GameObjectsService.AddObject(new GameObjects.Unit(iSerial)) as GameObjects.Unit;
+				iObject.SetFacing(iFacing);
+				iObject.DisplayBodyID = iBodyID;
+				iObject.Movement.SetPositionInstant(iX, iY, iZ);
+			}
+			// Issue 16 - End
             iObject.Move(iX, iY, iZ);
         }
 
