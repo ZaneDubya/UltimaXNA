@@ -301,7 +301,9 @@ namespace UltimaXNA.TileEngine
                             if (iFrames == null)
                                 continue;
                             int iFrame = iMobile.Frame(iFrames.Length);
-
+                            // If the frame data is corrupt, then the texture will not load. Fix for broken cleaver data, maybe others. --Poplicola 6/15/2009
+                            if (iFrames[iFrame].Texture == null)
+                                continue;
                             width = iFrames[iFrame].Texture.Width;
                             height = iFrames[iFrame].Texture.Height;
                             drawX = iFrames[iFrame].Center.X - 22 - (int)((iMobile.Offset.X - iMobile.Offset.Y) * 22);
@@ -486,8 +488,6 @@ namespace UltimaXNA.TileEngine
         {
             m_List.Add(nItem);
         }
-
-        
     }
 
     class MouseOverItem

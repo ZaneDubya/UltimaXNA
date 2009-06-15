@@ -353,25 +353,13 @@ namespace UltimaXNA.DataLocal
             // - Smjert
             int fileType = BodyConverter.Convert(ref body);
 
-            if (m_Cache == null)
-            {
-                // max number of bodies is about 1000
-                m_Cache = new FrameXNA[1000][][][][];
-            }
-
-            if (m_Cache[body] == null)
-                m_Cache[body] = new FrameXNA[35][][][];
-
-            if (m_Cache[body][action] == null)
-                m_Cache[body][action] = new FrameXNA[8][][];
-
-            if (m_Cache[body][action][direction] == null)
-                m_Cache[body][action][direction] = new FrameXNA[3000][];
-
-            if (m_Cache[body][action][direction][iCacheHue] != null)
-            {
-                return m_Cache[body][action][direction][iCacheHue];
-            }
+            // Make sure the cache is complete.
+            // max number of bodies is about 1000
+            if (m_Cache == null) m_Cache = new FrameXNA[1000][][][][];
+            if (m_Cache[body] == null) m_Cache[body] = new FrameXNA[35][][][];
+            if (m_Cache[body][action] == null) m_Cache[body][action] = new FrameXNA[8][][];
+            if (m_Cache[body][action][direction] == null) m_Cache[body][action][direction] = new FrameXNA[3000][];
+            if (m_Cache[body][action][direction][iCacheHue] != null) return m_Cache[body][action][direction][iCacheHue];
 
             if (preserveHue)
                 Translate(ref body);
@@ -501,8 +489,16 @@ namespace UltimaXNA.DataLocal
                 FrameXNA[] frames = new FrameXNA[frameCount];
                 for (int i = 0; i < frameCount; ++i)
                 {
-                    bin.BaseStream.Seek(lookups[i], SeekOrigin.Begin);
-                    frames[i] = new FrameXNA(nDevice, palette, bin, flip);
+                    // Fix for broken cleaver animation, perhaps others, per issue13 (http://code.google.com/p/ultimaxna/issues/detail?id=13) --ZDW 6/15/2009
+                    if (lookups[i] < lookups[0])
+                    {
+                        frames[i] = FrameXNA.Empty;
+                    }
+                    else
+                    {
+                        bin.BaseStream.Seek(lookups[i], SeekOrigin.Begin);
+                        frames[i] = new FrameXNA(nDevice, palette, bin, flip);
+                    }
                 }
                 m_Cache[body][action][direction][0] = frames;
             }

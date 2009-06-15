@@ -17,6 +17,8 @@ namespace UltimaXNA.DataLocal
     {
         private static GraphicsDevice graphicsDevice;
         private static Texture2D hueTexture;
+        private const int m_HueTextureWidth = 64; // Each hue is 32 pixels wide, so divided by 32 = 2 hues wide.
+        private const int m_HueTextureHeight = 2024;
 
         public static void Initialize(GraphicsDevice graphicsDevice)
         {
@@ -32,7 +34,7 @@ namespace UltimaXNA.DataLocal
 
         private static void CreateTexture()
         {
-            hueTexture = new Texture2D( graphicsDevice, 32, 4096, 1, TextureUsage.None, SurfaceFormat.Bgra5551 );
+            hueTexture = new Texture2D(graphicsDevice, m_HueTextureWidth, m_HueTextureHeight, 1, TextureUsage.None, SurfaceFormat.Bgra5551);
             ushort[] iTextData = GetTextureData();
             hueTexture.SetData(iTextData);
         }
@@ -41,7 +43,7 @@ namespace UltimaXNA.DataLocal
         {
             BinaryReader reader = new BinaryReader( FileManager.GetFile( "hues.mul" ) );
             int currentHue = 0;
-            ushort[] textureData = new ushort[32 * 4096];
+            ushort[] textureData = new ushort[m_HueTextureWidth * m_HueTextureHeight];
 
             while (reader.BaseStream.Position < reader.BaseStream.Length)
             {

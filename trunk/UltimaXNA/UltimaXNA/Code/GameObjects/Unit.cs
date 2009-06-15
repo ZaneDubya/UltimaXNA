@@ -189,8 +189,21 @@ namespace UltimaXNA.GameObjects
     class Unit : UltimaXNA.GameObjects.BaseObject
     {
         public int DisplayBodyID = 0, MountDisplayID = 0;
-        public int Hue = 0;
         public Item[] Equipment = new Item[(int)EquipLayer.LastValid + 1];
+
+        private int m_Hue;
+        public int Hue // Fix for large hue values per issue12 (http://code.google.com/p/ultimaxna/issues/detail?id=12) --ZDW 6/15/2009
+        {
+            get { return m_Hue; }
+            set
+            {
+                if (value > 2998)
+                    m_Hue = (int)(value / 32);
+                else
+                    m_Hue = value;
+            }
+        }
+
 
         // These will be added later ...
         // public int CharmingGUID = 0;

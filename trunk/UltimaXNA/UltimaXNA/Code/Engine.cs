@@ -102,20 +102,6 @@ namespace UltimaXNA
         {
             GraphicsDevice.Clear(Color.Black);
             base.Draw(gameTime);
-
-            /*
-            using (SpriteBatch sprite = new SpriteBatch(this.GraphicsDevice))
-            {
-                sprite.Begin();
-                for (int i = 0; i < (800 / 16); i++)
-                {
-                    sprite.Draw(DataLocal.HuesXNA.HueTexture,
-                        new Rectangle(i * 16, 0, 16, 256),
-                        new Rectangle(0, i * 256, 16, 256),
-                        Color.White);
-                }
-                sprite.End();
-            }*/
         }
 
         #region EntryPoint
