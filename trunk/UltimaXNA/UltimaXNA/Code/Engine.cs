@@ -22,12 +22,7 @@ namespace UltimaXNA
 
         public Engine()
         {
-            GraphicsDeviceManager iGraphicsDeviceManager = new GraphicsDeviceManager(this);
-            iGraphicsDeviceManager.PreferredBackBufferWidth = 800;
-            iGraphicsDeviceManager.PreferredBackBufferHeight = 600;
-            iGraphicsDeviceManager.SynchronizeWithVerticalRetrace = true;
-            this.IsFixedTimeStep = false;
-            iGraphicsDeviceManager.ApplyChanges();
+            m_SetupGraphicsDeviceManager();
         }
 
         protected override void Initialize()
@@ -67,7 +62,6 @@ namespace UltimaXNA
         
         protected override void LoadContent()
         {
-            m_GameState.LoadContent();
             base.LoadContent();
         }
 
@@ -102,6 +96,22 @@ namespace UltimaXNA
         {
             GraphicsDevice.Clear(Color.Black);
             base.Draw(gameTime);
+        }
+
+        // Some settings to designate a screen size and fps limit.
+        private void m_SetupGraphicsDeviceManager()
+        {
+            GraphicsDeviceManager iGraphicsDeviceManager = new GraphicsDeviceManager(this);
+            iGraphicsDeviceManager.PreferredBackBufferWidth = 800;
+            iGraphicsDeviceManager.PreferredBackBufferHeight = 600;
+            iGraphicsDeviceManager.SynchronizeWithVerticalRetrace = true;
+            iGraphicsDeviceManager.PreparingDeviceSettings += OnPreparingDeviceSettings;
+            this.IsFixedTimeStep = false;
+            iGraphicsDeviceManager.ApplyChanges();
+        }
+        private static void OnPreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
+        {
+            e.GraphicsDeviceInformation.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
         }
 
         #region EntryPoint
