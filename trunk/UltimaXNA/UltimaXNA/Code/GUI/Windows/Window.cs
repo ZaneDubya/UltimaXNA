@@ -11,7 +11,7 @@ using xWinFormsLib;
 
 namespace UltimaXNA.GUI
 {
-    class Window
+    public class Window
     {
         internal FormCollection m_FormCollection;
         internal Form m_MyForm;

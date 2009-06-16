@@ -125,7 +125,6 @@
     <Compile Include="Code\GameObjects\DynamicObject.cs" />
     <Compile Include="Code\GameObjects\GameObject.cs" />
     <Compile Include="Code\GameObjects\Shared.cs" />
-    <Compile Include="Code\GameObjects\Item.cs" />
     <Compile Include="Code\GameObjects\BaseObject.cs" />
     <Compile Include="Code\GameObjects\Player.cs" />
     <Compile Include="Code\GameObjects\Movement.cs" />

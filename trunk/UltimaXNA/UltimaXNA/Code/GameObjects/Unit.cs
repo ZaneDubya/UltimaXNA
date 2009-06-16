@@ -203,7 +203,7 @@ namespace UltimaXNA.GameObjects
 			}
 		}
 		// Issue 6 - End
-        public Item[] Equipment = new Item[(int)EquipLayer.LastValid + 1];
+        public GameObject[] Equipment = new GameObject[(int)EquipLayer.LastValid + 1];
 
         private int m_Hue;
         public int Hue // Fix for large hue values per issue12 (http://code.google.com/p/ultimaxna/issues/detail?id=12) --ZDW 6/15/2009
@@ -317,13 +317,13 @@ namespace UltimaXNA.GameObjects
 
 			// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
 			m_Animation.Mounted = false;
-			Item mount = Equipment[(int)EquipLayer.Mount];
+            GameObject mount = Equipment[(int)EquipLayer.Mount];
 			TileEngine.MobileTile mobtile = null;
-			if ( mount != null && mount.ItemTypeID != 0)
+			if ( mount != null && mount.ObjectTypeID != 0)
 			{
 				Movement.Mounted = m_Animation.Mounted = true;
 				mobtile = new TileEngine.MobileTile(
-								mount.ItemTypeID, nLocation, nOffset,
+                                mount.ObjectTypeID, nLocation, nOffset,
 								iDirection, m_Animation.Action == UnitActions.nothing ? 2 : (int)m_Animation.Action, m_Animation.AnimationFrame,
 								GUID, 0x1A, mount.Hue, false);
 
@@ -342,10 +342,10 @@ namespace UltimaXNA.GameObjects
             for (int i = 0; i < m_DrawLayers.Length; i++)
             {
 				// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
-				if ( Equipment[m_DrawLayers[i]] != null && Equipment[m_DrawLayers[i]].DisplayID != 0 )
+				if ( Equipment[m_DrawLayers[i]] != null && Equipment[m_DrawLayers[i]].AnimationDisplayID != 0 )
                 {
 					mobtile = new TileEngine.MobileTile(
-							Equipment[m_DrawLayers[i]].DisplayID, nLocation, nOffset,
+							Equipment[m_DrawLayers[i]].AnimationDisplayID, nLocation, nOffset,
 							iDirection, iAction, m_Animation.AnimationFrame,
 							GUID, i + 1, Equipment[m_DrawLayers[i]].Hue, m_Animation.Mounted);
 					
