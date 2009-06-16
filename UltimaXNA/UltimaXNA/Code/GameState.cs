@@ -20,35 +20,43 @@ namespace UltimaXNA
 
     public class GameState : GameComponent, IGameState
     {
-        // Input service
-        Input.IInputHandler m_InputService;
-        TileEngine.ITileEngine m_TileEngineService;
-        GameObjects.IGameObjects m_GameObjectsService;
-        TileEngine.IWorld m_WorldService;
-        GUI.IGUI m_GUIService;
-        Network.IGameClient m_GameClientService;
+        #region ServiceObjects
+        Input.IInputHandler mInputService;
+        TileEngine.ITileEngine mTileEngineService;
+        GameObjects.IGameObjects mGameObjectsService;
+        TileEngine.IWorld mWorldService;
+        GUI.IGUI mGUIService;
+        Network.IGameClient mGameClientService;
+        #endregion
 
-        bool movementFollowsMouse = true; // added for future interface option, allowing both continuous mouse movement and discrete clicks -BERT
+        // The debug message is generated from m_DebugMessage()
+        public string DebugMessage { get { return mGenerateDebugMessage(); } }
 
-        // Debug message
-        public string DebugMessage { get { return m_DebugMessage(); } }
-        private bool m_InWorld;
+        // added for future interface option, allowing both continuous mouse movement and discrete clicks -BERT
+        bool movementFollowsMouse = true;
+        private bool mContinuousMoveCheck = false;
+
+        // InWorld allows us to tell when our character object has been loaded in the world.
+        private bool mInWorld;
         public bool InWorld
-        {
-            get
-            {
-                return m_InWorld;
-            }
+        { 
+            get { return mInWorld; }
             set
             {
                 if (value == true)
-                {
-                    m_GUIService.LoadInWorldGUI();
-                }
-                m_InWorld = value;
+                    mGUIService.LoadInWorldGUI();
+                mInWorld = value;
             }
         }
+
+        // Set EngineRunning to false to cause the engine to immediately exit.
         public bool EngineRunning { get; set; }
+
+        // These variables move the light source around...
+        private Vector3 mLightDirection = new Vector3(0f, 0f, 1f);
+        private double mLightRadians = -0.5d;
+
+
 
         public GameState(Game game)
             : base(game)
@@ -61,17 +69,13 @@ namespace UltimaXNA
         public override void Initialize()
         {
             base.Initialize();
-            m_InputService = (Input.IInputHandler)Game.Services.GetService(typeof(Input.IInputHandler));
-            m_TileEngineService = (TileEngine.ITileEngine)Game.Services.GetService(typeof(TileEngine.ITileEngine));
-            m_GameObjectsService = (GameObjects.IGameObjects)Game.Services.GetService(typeof(GameObjects.IGameObjects));
-            m_WorldService = (TileEngine.IWorld)Game.Services.GetService(typeof(TileEngine.IWorld));
-            m_GUIService = (GUI.IGUI)Game.Services.GetService(typeof(GUI.IGUI));
-            m_GameClientService = (Network.IGameClient)Game.Services.GetService(typeof(Network.IGameClient));
-        }
-
-        public void LoadContent()
-        {
-            // Don't do anything...
+            // Load the service objects.
+            mInputService = (Input.IInputHandler)Game.Services.GetService(typeof(Input.IInputHandler));
+            mTileEngineService = (TileEngine.ITileEngine)Game.Services.GetService(typeof(TileEngine.ITileEngine));
+            mGameObjectsService = (GameObjects.IGameObjects)Game.Services.GetService(typeof(GameObjects.IGameObjects));
+            mWorldService = (TileEngine.IWorld)Game.Services.GetService(typeof(TileEngine.IWorld));
+            mGUIService = (GUI.IGUI)Game.Services.GetService(typeof(GUI.IGUI));
+            mGameClientService = (Network.IGameClient)Game.Services.GetService(typeof(Network.IGameClient));
         }
 
         public override void Update(GameTime gameTime)
@@ -81,80 +85,139 @@ namespace UltimaXNA
             // Do we need to quit?
             if (this.EngineRunning == false)
             {
-                m_GameClientService.Disconnect();
+                mGameClientService.Disconnect();
                 Game.Exit();
                 return;
             }
 
             // Get a pick type for the cursor.
-            if (m_GUIService.IsMouseOverGUI(m_InputService.Mouse.Position))
+            if (mGUIService.IsMouseOverGUI(mInputService.Mouse.Position))
             {
-                m_TileEngineService.PickType = UltimaXNA.TileEngine.PickTypes.PickNothing;
+                mTileEngineService.PickType = UltimaXNA.TileEngine.PickTypes.PickNothing;
             }
             else
             {
                 // Changed to leverage movementFollowsMouse interface option -BERT
-                if ( movementFollowsMouse ? m_InputService.Mouse.Buttons[0].IsDown : m_InputService.Mouse.Buttons[0].Press )
+                if ( movementFollowsMouse ? mInputService.Mouse.Buttons[0].IsDown : mInputService.Mouse.Buttons[0].Press )
                 {
-                    m_TileEngineService.PickType = TileEngine.PickTypes.PickStatics | TileEngine.PickTypes.PickObjects | TileEngine.PickTypes.PickGroundTiles;
+                    mTileEngineService.PickType = TileEngine.PickTypes.PickStatics | TileEngine.PickTypes.PickObjects | TileEngine.PickTypes.PickGroundTiles;
                 }
-                else if (m_InputService.Mouse.Buttons[1].Press)
+                else if (mInputService.Mouse.Buttons[1].Press)
                 {
-                    m_TileEngineService.PickType = TileEngine.PickTypes.PickStatics | TileEngine.PickTypes.PickObjects;
+                    mTileEngineService.PickType = TileEngine.PickTypes.PickStatics | TileEngine.PickTypes.PickObjects;
                 }
                 else
                 {
-                    m_TileEngineService.PickType = TileEngine.PickTypes.PickStatics | TileEngine.PickTypes.PickObjects;
+                    mTileEngineService.PickType = TileEngine.PickTypes.PickStatics | TileEngine.PickTypes.PickObjects;
                 }
             }
 
-            mParseKeyboard(m_InputService.Keyboard);
+            m_ParseKeyboard(mInputService.Keyboard);
 
-            mUpdateFPS(gameTime);
+            m_UpdateFPS(gameTime);
         }
 
         public void UpdateAfter()
         {
+            // If the left mouse button has been released, and movementFollowsMouse = true, reset mContinuousMovement.
+            if (mInputService.Mouse.Buttons[0].Release)
+                mContinuousMoveCheck = false;
+
+            // Check for continuous movement.
+            if (mContinuousMoveCheck)
+            {
+                if (mInputService.Mouse.Buttons[0].IsDown)
+                {
+                    m_CheckMovement(false);
+                }
+            }
+
+            // If the left mouse button has been released, we check to see if we were holding an item in the cursor.
+            // If we dropped the item into another slot, then the GUI will have already removed the MouseHoldingItem,
+            // and we will never reach this routine. If the MouseHoldingItem is still here, we need to take care of it.
+            #region DropItemFromMouse
+            if (mInputService.Mouse.Buttons[0].Release)
+            {
+                if (GUI.GUIHelper.MouseHoldingItem != null)
+                {
+                    if (mGUIService.IsMouseOverGUI(mInputService.Mouse.Position))
+                    {
+                        // The mouse is over the GUI. Just get rid of the item, as it hasn't been moved.
+                        GUI.GUIHelper.MouseHoldingItem = null;
+                    }
+                    else
+                    {
+                        // We dropped the icon in the world. This means we are trying to drop the item
+                        // into the world. Let's do it!
+                        mGameClientService.Send_PickUpItem(
+                            GUI.GUIHelper.MouseHoldingItem.GUID,
+                            ((GameObjects.GameObject)GUI.GUIHelper.MouseHoldingItem).Item_StackCount);
+                        mGameClientService.Send_DropItem(
+                            GUI.GUIHelper.MouseHoldingItem.GUID,
+                            mGameObjectsService.GetPlayerObject().Movement.TileX,
+                            mGameObjectsService.GetPlayerObject().Movement.TileY,
+                            0,
+                            -1);
+                        GameObjects.Container iContainer = (GameObjects.Container)mGameObjectsService.GetContainerObject(
+                            ((GameObjects.GameObject)GUI.GUIHelper.MouseHoldingItem).Item_ContainedWithinGUID);
+                        iContainer.RemoveItem(GUI.GUIHelper.MouseHoldingItem.GUID);
+                        GUI.GUIHelper.MouseHoldingItem = null;
+
+                    }
+                    
+                }
+            }
+            #endregion
+
+            // Check if the left mouse button has been pressed. We will either walk to the object under the cursor
+            // or pick it up, depending on what kind of object we are looking at.
+            if (mInputService.Mouse.Buttons[0].Press)
+            {
+                m_CheckMovement(true);
+            }
+
+            /*
             // Changed to leverage movementFollowsMouse interface option -BERT
-            if ( movementFollowsMouse ? m_InputService.Mouse.Buttons[0].IsDown : m_InputService.Mouse.Buttons[0].Press )
+            if ( movementFollowsMouse ? mInputService.Mouse.Buttons[0].IsDown : mInputService.Mouse.Buttons[0].Press )
             {
 				// Issue 15 - Mouse left clicks on the wrong topmost object - http://code.google.com/p/ultimaxna/issues/detail?id=15 - Smjert
                 // Left button pressed ... move to the tile under the mouse cursor, if there is one...
-				TileEngine.IMapObject iTopMostObject = m_TileEngineService.MouseOverGroundTile;
+				TileEngine.IMapObject iTopMostObject = mTileEngineService.MouseOverGroundTile;
 
 				if ( iTopMostObject != null )
                 {
-					int offset = 0;
-					if ( m_TileEngineService.MouseOverObject != null && m_TileEngineService.MouseOverObject.Z >= iTopMostObject.Z )
+                    int offset = 0;
+					if ( mTileEngineService.MouseOverObject != null && mTileEngineService.MouseOverObject.Z >= iTopMostObject.Z )
 					{
-						iTopMostObject = m_TileEngineService.MouseOverObject;
+						iTopMostObject = mTileEngineService.MouseOverObject;
 						if(iTopMostObject.Type == UltimaXNA.TileEngine.MapObjectTypes.StaticTile)
 							offset = TileData.ItemData[iTopMostObject.ID - 0x4000].CalcHeight;
 						else if(iTopMostObject.Type == UltimaXNA.TileEngine.MapObjectTypes.GameObjectTile)
 							offset = TileData.ItemData[iTopMostObject.ID].CalcHeight;
 					}
 
-                    ((GameObjects.Unit)m_GameObjectsService.GetObject(m_GameObjectsService.MyGUID)).Move(
+                    ((GameObjects.Unit)mGameObjectsService.GetObject(mGameObjectsService.MyGUID)).Move(
 						(int)iTopMostObject.Position.X,
 						(int)iTopMostObject.Position.Y,
 						(int)iTopMostObject.Z + offset);
                 }
 				// Issue 15 - End
-            }
-            else if (m_InputService.Mouse.Buttons[1].Press)
+            }*/
+
+            if (mInputService.Mouse.Buttons[1].Press)
             {
                 // Right button pressed ... activate this object.
-                TileEngine.IMapObject iMapObject = m_TileEngineService.MouseOverObject;
+                TileEngine.IMapObject iMapObject = mTileEngineService.MouseOverObject;
                 if ((iMapObject != null) && (iMapObject.Type != UltimaXNA.TileEngine.MapObjectTypes.StaticTile))
                 {
-                    GameObjects.BaseObject iObject = m_GameObjectsService.GetObject(iMapObject.OwnerGUID);
+                    GameObjects.BaseObject iObject = mGameObjectsService.GetObject(iMapObject.OwnerGUID);
                     // default option is to simply 'use' this object, although this will doubtless be more complicated in the future.
                     // Perhaps the use option is based on the type of object? Anyways, for right now, we only interact with gameobjects,
                     // and we send a double-click to the server.
                     switch (iObject.ObjectType)
                     {
                         case UltimaXNA.GameObjects.ObjectType.GameObject:
-                            m_GameClientService.Send_UseRequest(iObject.GUID);
+                            mGameClientService.Send_UseRequest(iObject.GUID);
                             break;
                         default:
                             // do nothing?
@@ -169,10 +232,10 @@ namespace UltimaXNA
             try
             {
                 int iDirection = 0, iSequence = 0, iKey = 0;
-                bool iMoveEvent = m_GameObjectsService.GetObject(m_GameObjectsService.MyGUID).Movement.GetMoveEvent(ref iDirection, ref iSequence, ref iKey);
+                bool iMoveEvent = mGameObjectsService.GetObject(mGameObjectsService.MyGUID).Movement.GetMoveEvent(ref iDirection, ref iSequence, ref iKey);
                 if (iMoveEvent)
                 {
-                    m_GameClientService.Send_MoveRequest(iDirection, iSequence, iKey);
+                    mGameClientService.Send_MoveRequest(iDirection, iSequence, iKey);
                 }
             }
             catch
@@ -181,160 +244,189 @@ namespace UltimaXNA
             }
         }
 
-        private Vector3 m_LightDirection = new Vector3(0f, 0f, 1f);
-        private double m_LightRadians = -0.5d;
-
-        private void mParseKeyboard(Input.KeyboardHandler nKeyboard)
+        private void m_CheckMovement(bool nPressEvent)
         {
-            if (InWorld)
+            int iZOffset = 0;
+            // We check the ground tile first.
+            // If there is no objects under the mouse cursor, but there is a groundtile, move to the ground tile.
+            // Same thing if the highest object under the mouse cursor is lower than the groundtile.
+            if (
+                (mTileEngineService.MouseOverGroundTile != null) &&
+                ((mTileEngineService.MouseOverObject == null) ||
+                (mTileEngineService.MouseOverObject.Z < mTileEngineService.MouseOverGroundTile.Z))
+                )
             {
-                if (nKeyboard.IsKeyDown(Keys.I))
-                    m_LightRadians += .01f;
-                if (nKeyboard.IsKeyDown(Keys.K))
-                    m_LightRadians -= .01f;
-
-                m_LightDirection.Z = -(float)Math.Cos(m_LightRadians);
-                m_LightDirection.Y = (float)Math.Sin(m_LightRadians);
-
-                m_TileEngineService.SetLightDirection(m_LightDirection);
-                #region KeyboardMovement
-                GameObjects.Movement iMovement = m_GameObjectsService.GetObject(m_GameObjectsService.MyGUID).Movement;
-                if (nKeyboard.IsKeyDown(Keys.W))
-                    iMovement.SetPositionInstant(iMovement.TileX - 1, iMovement.TileY - 1, 0);
-                if (nKeyboard.IsKeyDown(Keys.A))
-                    iMovement.SetPositionInstant(iMovement.TileX - 1, iMovement.TileY + 1, 0);
-                if (nKeyboard.IsKeyDown(Keys.S))
-                    iMovement.SetPositionInstant(iMovement.TileX + 1, iMovement.TileY + 1, 0);
-                if (nKeyboard.IsKeyDown(Keys.D))
-                    iMovement.SetPositionInstant(iMovement.TileX + 1, iMovement.TileY - 1, 0);
-                if (nKeyboard.IsKeyPressed(Keys.B))
-                    m_GameClientService.Send_UseRequest(
-                        ((GameObjects.Player)m_GameObjectsService.GetObject(m_GameObjectsService.MyGUID))
-                        .Equipment[(int)GameObjects.EquipLayer.Backpack].GUID);
-                /*
-                if (iMovement.IsMoving == false)
+                TileEngine.IMapObject iGroundTile = mTileEngineService.MouseOverGroundTile;
+                if (iGroundTile != null)
                 {
-                    if (nKeyboard.IsKeyDown(Keys.W))
+                    ((GameObjects.Unit)mGameObjectsService.GetPlayerObject()).Move(
+                           (int)iGroundTile.Position.X,
+                           (int)iGroundTile.Position.Y,
+                           (int)iGroundTile.Z);
+                    if (movementFollowsMouse)
+                        mContinuousMoveCheck = true;
+                }
+            }
+            else if (mTileEngineService.MouseOverObject != null)
+            {
+                // Local copy of the top most object.
+                TileEngine.IMapObject iTopMostObject = mTileEngineService.MouseOverObject;
+
+                // We react to mobiles differently than we do objects/statics
+                if (iTopMostObject.Type == TileEngine.MapObjectTypes.MobileTile)
+                {
+
+                }
+                else
+                {
+                    // Retreive the GameObject that owns the object under the cursor. Note that if this is a
+                    // static tile, iObject will equal null.
+                    GameObjects.GameObject iObject =
+                        ((iTopMostObject.Type == TileEngine.MapObjectTypes.GameObjectTile) ?
+                        (GameObjects.GameObject)mGameObjectsService.GetObject(iTopMostObject.OwnerGUID) :
+                        null);
+
+                    // Retreive the ItemData for this object.
+                    DataLocal.ItemData iItemData =
+                        ((mTileEngineService.MouseOverObject.OwnerGUID != -1) ?
+                        iObject.ItemData :
+                        DataLocal.TileData.ItemData[iTopMostObject.ID - 0x4000]);
+
+                    if (iItemData.Surface)
                     {
-                        if (nKeyboard.IsKeyDown(Keys.A))
-                        {
-                            iMovement.SetGoalTile(
-                                iMovement.TileX - 1,
-                                iMovement.TileY, 0);
-                        }
-                        else if (nKeyboard.IsKeyDown(Keys.D))
-                        {
-                            iMovement.SetGoalTile(
-                                iMovement.TileX,
-                                iMovement.TileY - 1, 0);
-                        }
-                        else
-                        {
-                            iMovement.SetGoalTile(
-                                iMovement.TileX - 1,
-                                iMovement.TileY - 1, 0);
-                        }
+                        // This is a walkable static or gameobject. Walk on it!
+
+                        if (iTopMostObject.Type == UltimaXNA.TileEngine.MapObjectTypes.StaticTile)
+                            iZOffset = TileData.ItemData[iTopMostObject.ID - 0x4000].CalcHeight;
+                        else if (iTopMostObject.Type == UltimaXNA.TileEngine.MapObjectTypes.GameObjectTile)
+                            iZOffset = TileData.ItemData[iTopMostObject.ID].CalcHeight;
+
+                        ((GameObjects.Unit)mGameObjectsService.GetPlayerObject()).Move(
+                               (int)iTopMostObject.Position.X,
+                               (int)iTopMostObject.Position.Y,
+                               (int)iTopMostObject.Z + iZOffset);
+                        if (movementFollowsMouse)
+                            mContinuousMoveCheck = true;
                     }
-                    else if (nKeyboard.IsKeyDown(Keys.S))
+                    else if (iObject != null)
                     {
-                        if (nKeyboard.IsKeyDown(Keys.A))
+                        // This is a GameObject. Pick it up if possible, as long as this is a press event.
+                        if (nPressEvent)
                         {
-                            iMovement.SetGoalTile(
-                                iMovement.TileX,
-                                iMovement.TileY + 1, 0);
-                        }
-                        else if (nKeyboard.IsKeyDown(Keys.D))
-                        {
-                            iMovement.SetGoalTile(
-                                iMovement.TileX + 1,
-                                iMovement.TileY, 0);
-                        }
-                        else
-                        {
-                            iMovement.SetGoalTile(
-                                iMovement.TileX + 1,
-                                iMovement.TileY + 1, 0);
+                            mGameClientService.Send_PickUpItem(iObject.GUID, iObject.Item_StackCount);
+                            // Set this item to be the MouseHoldingItem.
+                            GUI.GUIHelper.MouseHoldingItem = iObject;
                         }
                     }
                     else
                     {
-                        if (nKeyboard.IsKeyDown(Keys.A))
-                        {
-                            iMovement.SetGoalTile(
-                                iMovement.TileX - 1,
-                                iMovement.TileY + 1, 0);
-
-                        }
-                        if (nKeyboard.IsKeyDown(Keys.D))
-                        {
-                            iMovement.SetGoalTile(
-                                iMovement.TileX + 1,
-                                iMovement.TileY - 1, 0);
-                        }
+                        // This is a static that is not a surface.
+                        // We can't interact with it, so do nothing.
+                        // (although what about chairs, aren't they interactable?)
                     }
                 }
-                */
-                #endregion
             }
         }
 
-        // Poplicola 5/9/2009
-        private float FPS; private float m_frames = 0; private float m_elapsedSeconds = 0;
-        private bool mUpdateFPS(GameTime gameTime)
+        private void m_ParseKeyboard(Input.KeyboardHandler nKeyboard)
         {
-            m_frames++;
-            m_elapsedSeconds += (float)gameTime.ElapsedRealTime.TotalSeconds;
-            if (m_elapsedSeconds >= 1)
+            if (InWorld)
             {
-                FPS = m_frames / m_elapsedSeconds;
-                m_elapsedSeconds -= 1;
-                m_frames = 0;
+                if (nKeyboard.IsKeyDown(Keys.I))
+                    mLightRadians += .01f;
+                if (nKeyboard.IsKeyDown(Keys.K))
+                    mLightRadians -= .01f;
+
+                mLightDirection.Z = -(float)Math.Cos(mLightRadians);
+                mLightDirection.Y = (float)Math.Sin(mLightRadians);
+
+                mTileEngineService.SetLightDirection(mLightDirection);
+
+                // Toggle for backpack container window.
+                if (nKeyboard.IsKeyPressed(Keys.B) && (nKeyboard.IsKeyDown(Keys.LeftControl)))
+                {
+                    int iBackpackGUID = ((GameObjects.Player)mGameObjectsService.GetObject(mGameObjectsService.MyGUID))
+                        .Equipment[(int)GameObjects.EquipLayer.Backpack].GUID;
+                    if (mGUIService.Window("Container:" + iBackpackGUID) == null)
+                        mGameClientService.Send_UseRequest(iBackpackGUID);
+                    else
+                        mGUIService.CloseWindow("Container:" + iBackpackGUID);
+                }
+
+                // DEBUG MOVEMENT!!! Quickly move around the world without sending a message to the server.
+                // Note that if you attempt to move around normally after using this, the server will catch on
+                // and will eventually reject your movement.
+                #region DEBUG_KeyboardMovement
+                    GameObjects.Movement iMovement = mGameObjectsService.GetObject(mGameObjectsService.MyGUID).Movement;
+                    if (nKeyboard.IsKeyDown(Keys.W))
+                        iMovement.SetPositionInstant(iMovement.TileX - 1, iMovement.TileY - 1, 0);
+                    if (nKeyboard.IsKeyDown(Keys.A))
+                        iMovement.SetPositionInstant(iMovement.TileX - 1, iMovement.TileY + 1, 0);
+                    if (nKeyboard.IsKeyDown(Keys.S))
+                        iMovement.SetPositionInstant(iMovement.TileX + 1, iMovement.TileY + 1, 0);
+                    if (nKeyboard.IsKeyDown(Keys.D))
+                        iMovement.SetPositionInstant(iMovement.TileX + 1, iMovement.TileY - 1, 0);
+                #endregion
+
+            }
+        }
+
+        // Maintain an accurate count of frames per second.
+        private float FPS; private float mFrames = 0; private float mElapsedSeconds = 0;
+        private bool m_UpdateFPS(GameTime gameTime)
+        {
+            mFrames++;
+            mElapsedSeconds += (float)gameTime.ElapsedRealTime.TotalSeconds;
+            if (mElapsedSeconds >= 1)
+            {
+                FPS = mFrames / mElapsedSeconds;
+                mElapsedSeconds -= 1;
+                mFrames = 0;
                 return true;
             }
             return false;
         }
 
-        private string m_DebugMessage()
+        // Debug message - I put a lot of crap in here to test values.
+        // Feel free to add or remove variables.
+        private string mGenerateDebugMessage()
         {
             String iDebug = "FPS: " + FPS.ToString() + Environment.NewLine;
-            iDebug += "Objects on screen: " + m_TileEngineService.ObjectsRendered.ToString() + Environment.NewLine;
-            if (m_TileEngineService.MouseOverObject != null)
+            iDebug += "Objects on screen: " + mTileEngineService.ObjectsRendered.ToString() + Environment.NewLine;
+            if (mTileEngineService.MouseOverObject != null)
             {
-                iDebug += "OBJECT: " + m_TileEngineService.MouseOverObject.ToString() + Environment.NewLine;
-                if (m_TileEngineService.MouseOverObject.Type == TileEngine.MapObjectTypes.StaticTile)
+                iDebug += "OBJECT: " + mTileEngineService.MouseOverObject.ToString() + Environment.NewLine;
+                if (mTileEngineService.MouseOverObject.Type == TileEngine.MapObjectTypes.StaticTile)
                 {
-                    iDebug += "ArtID: " + ((TileEngine.StaticItem)m_TileEngineService.MouseOverObject).ID;
+                    iDebug += "ArtID: " + ((TileEngine.StaticItem)mTileEngineService.MouseOverObject).ID;
                 }
-                else if (m_TileEngineService.MouseOverObject.Type == TileEngine.MapObjectTypes.MobileTile)
+                else if (mTileEngineService.MouseOverObject.Type == TileEngine.MapObjectTypes.MobileTile)
                 {
                     iDebug += 
-                        "AnimID: " + ((TileEngine.MobileTile)m_TileEngineService.MouseOverObject).ID + Environment.NewLine +
-                        "GUID: " + m_TileEngineService.MouseOverObject.OwnerGUID + Environment.NewLine +
-                        "Hue: " + ((TileEngine.MobileTile)m_TileEngineService.MouseOverObject).Hue;
+                        "AnimID: " + ((TileEngine.MobileTile)mTileEngineService.MouseOverObject).ID + Environment.NewLine +
+                        "GUID: " + mTileEngineService.MouseOverObject.OwnerGUID + Environment.NewLine +
+                        "Hue: " + ((TileEngine.MobileTile)mTileEngineService.MouseOverObject).Hue;
                 }
-                else if (m_TileEngineService.MouseOverObject.Type == TileEngine.MapObjectTypes.GameObjectTile)
+                else if (mTileEngineService.MouseOverObject.Type == TileEngine.MapObjectTypes.GameObjectTile)
                 {
                     iDebug +=
-                        "ArtID: " + ((TileEngine.GameObjectTile)m_TileEngineService.MouseOverObject).ID + Environment.NewLine +
-                        "GUID: " + m_TileEngineService.MouseOverObject.OwnerGUID;
+                        "ArtID: " + ((TileEngine.GameObjectTile)mTileEngineService.MouseOverObject).ID + Environment.NewLine +
+                        "GUID: " + mTileEngineService.MouseOverObject.OwnerGUID;
                 }
-                iDebug += " Z: " + m_TileEngineService.MouseOverObject.Z;
+                iDebug += " Z: " + mTileEngineService.MouseOverObject.Z;
             }
             else
             {
                 iDebug += "OVER: " + "null";
             }
-            if (m_TileEngineService.MouseOverGroundTile != null)
+            if (mTileEngineService.MouseOverGroundTile != null)
             {
-                iDebug += Environment.NewLine + "GROUND: " + m_TileEngineService.MouseOverGroundTile.Position.ToString();
+                iDebug += Environment.NewLine + "GROUND: " + mTileEngineService.MouseOverGroundTile.Position.ToString();
             }
             else
             {
                 iDebug += Environment.NewLine + "GROUND: null";
             }
-
-            // iDebug += Environment.NewLine + m_GameObjectsService.GetObject(m_GameObjectsService.MyGUID).Movement.MoveSequence.ToString();
-            iDebug += Environment.NewLine + m_LightRadians.ToString();
             return iDebug;
         }
     }

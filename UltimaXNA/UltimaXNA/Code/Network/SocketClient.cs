@@ -20,21 +20,21 @@ namespace UltimaXNA.Network
     {
         internal MiscUtil.LogFile LogFile;
         public bool UnpackPackets = false;
-        private TcpClient m_client;
+        private TcpClient mClient;
 
-        private const int m_ReadBufferSize = 4096;          // The buffer where we will store the received data.
-        private byte[] m_ReadBuffer = new byte[m_ReadBufferSize];
+        private const int mReadBufferSize = 4096;          // The buffer where we will store the received data.
+        private byte[] mReadBuffer = new byte[mReadBufferSize];
         public event UserEventDlg UserDisconnected;         // Events to call when the client received data...
         public event DataReceivedDlg DataReceived;          // Or got disconnected
         public readonly int id;                             // unique id for use with the server
         public bool disconnected = false;                   // To keep track if we have already disconnected.
 
-        private const int m_OutBufferSize = 32776;          // Increased to 32kb from 16kb issue9 (http://code.google.com/p/ultimaxna/issues/detail?id=9) --ZDW 6/14/2009
-        private byte[] outdata = new byte[m_OutBufferSize];
+        private const int mOutBufferSize = 32776;          // Increased to 32kb from 16kb issue9 (http://code.google.com/p/ultimaxna/issues/detail?id=9) --ZDW 6/14/2009
+        private byte[] outdata = new byte[mOutBufferSize];
 
-        private bool m_AppendNextMessage = false;
-        private int m_AppendPosition = 0;
-        private byte[] m_AppendData;
+        private bool mAppendNextMessage = false;
+        private int mAppendPosition = 0;
+        private byte[] mAppendData;
 
         // This constructor should only be called from the listener
         // * client - The TcpClient received from the listner
@@ -42,8 +42,8 @@ namespace UltimaXNA.Network
         internal SocketClient(TcpClient client, int id)
         {
             this.id = id;
-            this.m_client = client;
-            this.m_client.NoDelay = true;
+            this.mClient = client;
+            this.mClient.NoDelay = true;
             this.StartListening();
         }
 
@@ -54,16 +54,16 @@ namespace UltimaXNA.Network
             // byte.max(255). This way you can easily separate client-SocketClients
             // and server-SocketClients when you debug.
             this.id = int.MaxValue;
-            this.m_client = new TcpClient();
+            this.mClient = new TcpClient();
             // If we do not set this to true the TcpClient might wait a couple of
             // millseconds before it sends away the data so it can pack more data
             // into one package and send everything at once. We are only interested
             // in delivering the data as fast as possible and do not realy care
             // about speed so we set it to true.
-            this.m_client.NoDelay = true;
+            this.mClient.NoDelay = true;
             try
             {
-                this.m_client.Connect(ip, port);
+                this.mClient.Connect(ip, port);
                 this.StartListening();
                 status = ConnectionStatus.Connected;
             }
@@ -94,14 +94,14 @@ namespace UltimaXNA.Network
                 this.disconnected = true;
                 try
                 {
-                    if (this.m_client.Connected)
-                        this.m_client.GetStream().Close(500);
+                    if (this.mClient.Connected)
+                        this.mClient.GetStream().Close(500);
                     else
-                        this.m_client.Close();
+                        this.mClient.Close();
                 }
                 catch (ObjectDisposedException)
                 {
-                    this.m_client.Close();
+                    this.mClient.Close();
                 }
                 // When we have disconnected we fire an event to tell the program that we have got disconnected.
                 if (this.UserDisconnected != null)
@@ -113,7 +113,7 @@ namespace UltimaXNA.Network
         {
             // When data has been received the method in the 4th parameter(this.StreamReceived)
             // will be called and an IAsyncResult will be passed to that method.
-            this.m_client.GetStream().BeginRead(m_ReadBuffer, 0, m_ReadBufferSize, this.StreamReceived, null);
+            this.mClient.GetStream().BeginRead(mReadBuffer, 0, mReadBufferSize, this.StreamReceived, null);
         }
 
         private void StreamReceived(IAsyncResult ar)
@@ -126,8 +126,8 @@ namespace UltimaXNA.Network
                 //  Lock the stream to prevent objects from other threads to access it at the same
                 // time Then call EndRead(ar) where ar is the IAsyncResult the TcpClient sent to us.
                 // This will return the number of bytes that has been received.
-                lock (m_client.GetStream())
-                bytesRead = this.m_client.GetStream().EndRead(ar);
+                lock (mClient.GetStream())
+                bytesRead = this.mClient.GetStream().EndRead(ar);
             }
             catch (Exception e)
             {
@@ -143,11 +143,11 @@ namespace UltimaXNA.Network
             }
 
             byte[] data;
-            if (m_AppendNextMessage)
+            if (mAppendNextMessage)
             {
-                data = new byte[m_AppendData.Length + bytesRead];
-                Array.Copy(m_AppendData, 0, data, 0, m_AppendData.Length);
-                Array.Copy(m_ReadBuffer, 0, data, m_AppendData.Length, bytesRead);
+                data = new byte[mAppendData.Length + bytesRead];
+                Array.Copy(mAppendData, 0, data, 0, mAppendData.Length);
+                Array.Copy(mReadBuffer, 0, data, mAppendData.Length, bytesRead);
             }
             else
             {
@@ -159,7 +159,7 @@ namespace UltimaXNA.Network
                 // DataReceived-event and new data is received before the DataReceived-method has
                 // finished the readBuffer will change and the DataReceived-method will process
                 // completly corrupt data.
-                Array.Copy(m_ReadBuffer, 0, data, 0, bytesRead);
+                Array.Copy(mReadBuffer, 0, data, 0, bytesRead);
             }
             // Start listening for new data
             this.StartListening();
@@ -173,19 +173,15 @@ namespace UltimaXNA.Network
                 for (int iPosition = 0; iPosition < outsize; )
                 {
                     // If we have just appended a message, reset the position variable and stop appending.
-                    if (m_AppendNextMessage)
+                    if (mAppendNextMessage)
                     {
-                        iPosition = m_AppendPosition;
-                        m_AppendNextMessage = false;
+                        iPosition = mAppendPosition;
+                        mAppendNextMessage = false;
                     }
                     int iSize = mGetSize(ref outdata, iPosition, outsize);
                     if (iSize == -1)
                     {
-                        byte[] jData = new byte[outsize - iPosition];
-                        Array.Copy(outdata, iPosition, jData, 0, outsize - iPosition);
-                        if (jData.Length > 0)
-                            LogFile.WritePacket(jData, "UNHANDLED");
-                        return;
+                        throw new Exception();
                     }
                     else if (((iPosition + iSize) > outsize) || (iSize == 0))
                     {
@@ -196,9 +192,9 @@ namespace UltimaXNA.Network
                         // data and is incomplete.
                         // This packet is incomplete and we cannot read it as is.
                         // We need to append the next packet to this one, and read it again.
-                        m_AppendNextMessage = true;
-                        m_AppendPosition = iPosition;
-                        m_AppendData = data;
+                        mAppendNextMessage = true;
+                        mAppendPosition = iPosition;
+                        mAppendData = data;
                         return;
                     }
                     else if ((iPosition + iSize) == outsize)
@@ -206,9 +202,9 @@ namespace UltimaXNA.Network
                         // The next packet might require some of this data.
                         // But since we have already received the entire packet,
                         // We might as well handle it.
-                        m_AppendNextMessage = true;
-                        m_AppendPosition = iPosition + iSize;
-                        m_AppendData = data;
+                        mAppendNextMessage = true;
+                        mAppendPosition = iPosition + iSize;
+                        mAppendData = data;
                     }
                     byte[] iData = new byte[iSize];
                     Array.Copy(outdata, iPosition, iData, 0, iSize);
@@ -295,15 +291,14 @@ namespace UltimaXNA.Network
                     return 7;
                 case OpCodes.SMSG_ADDMULTIPLEITEMSTOCONTAINER:
                     return (int)EndianBitConverter.Big.ToUInt16(data, nPosition + 1);
+                case OpCodes.SMSG_ADDSINGLEITEMTOCONTAINER:
+                    return 21;
+                case OpCodes.SMSG_REJECTMOVEITEMREQ:
+                    return 2;
                 default :
-                    //byte iOpCode = data[nPosition];
-                    //byte[] iData = new byte[nTotalLength - nPosition];
-                    //Array.Copy(data, nPosition, iData, 0, nTotalLength - nPosition);
-                    //LogFile.WritePacket(iData);
-                    return -1; // unhandled
+                    throw new Exception();
             }
         }
-
 
         public void SendData(byte[] b)
         {
@@ -315,8 +310,8 @@ namespace UltimaXNA.Network
                 // BeginWrite can throw an exception when the client has been disconnected or when you
                 // pass a buffer with incorrect size, we only catch the ones that occur when you have got
                 // disconnected.
-                lock (m_client.GetStream())
-                    this.m_client.GetStream().BeginWrite(b, 0, b.Length, null, null);
+                lock (mClient.GetStream())
+                    this.mClient.GetStream().BeginWrite(b, 0, b.Length, null, null);
             }
             catch (System.IO.IOException ioe)
             {

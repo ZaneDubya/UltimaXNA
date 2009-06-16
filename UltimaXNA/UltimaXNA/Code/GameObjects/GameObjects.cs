@@ -16,6 +16,7 @@ namespace UltimaXNA.GameObjects
         BaseObject AddObject(BaseObject nObject);
         BaseObject GetObject(int nGUID);
         BaseObject GetContainerObject(int nGUID);
+        BaseObject GetPlayerObject();
     }
 
     class GameObjects : GameComponent, IGameObjects
@@ -26,6 +27,7 @@ namespace UltimaXNA.GameObjects
 
         private TileEngine.IWorld m_WorldService;
         private IGameState m_GameStateService;
+        private Network.IGameClient m_GameClientService;
 
         public GameObjects(Game game)
             : base(game)
@@ -37,6 +39,7 @@ namespace UltimaXNA.GameObjects
         {
             m_WorldService = (TileEngine.IWorld)Game.Services.GetService(typeof(TileEngine.IWorld));
             m_GameStateService = (IGameState)Game.Services.GetService(typeof(IGameState));
+            m_GameClientService = (Network.IGameClient)Game.Services.GetService(typeof(Network.IGameClient));
             base.Initialize();
         }
 
@@ -54,6 +57,10 @@ namespace UltimaXNA.GameObjects
                     {
                         iObjectPair.Value.Update(gameTime);
                     }
+                    if ((iObjectPair.Value.ObjectType & ObjectType.Container) == ObjectType.Container)
+                    {
+                        iObjectPair.Value.Update(gameTime);
+                    }
                 }
             }
             base.Update(gameTime);
@@ -68,6 +75,10 @@ namespace UltimaXNA.GameObjects
                 // If this object is the client, designate it to return events.
                 if (nObject.GUID == MyGUID)
                     nObject.Movement.DesignateClientPlayer();
+                if ((nObject.ObjectType & ObjectType.GameObject) == ObjectType.GameObject)
+                {
+                    ((GameObject)nObject).SendPacket_MoveItemWithinContainer += this.Item_Packet_MoveItemWithinContainer;
+                }
             }
             catch
             {
@@ -89,6 +100,11 @@ namespace UltimaXNA.GameObjects
             return null;
         }
 
+        public BaseObject GetPlayerObject()
+        {
+            return m_Objects[MyGUID];
+        }
+
         public BaseObject GetContainerObject(int nGUID)
         {
             // Check for existence here.
@@ -108,6 +124,15 @@ namespace UltimaXNA.GameObjects
             }
             // The key does not exist, return the default.
             return null;
+        }
+
+        private void Item_Packet_MoveItemWithinContainer(BaseObject nObject)
+        {
+            GameObject iObject = ((GameObject)nObject);
+            m_GameClientService.Send_PickUpItem(iObject.GUID, iObject.Item_StackCount);
+            m_GameClientService.Send_DropItem(iObject.GUID,
+                iObject.Item_InvX_SlotIndex, iObject.Item_InvY_SlotChecksum,
+                0, iObject.Item_ContainedWithinGUID);
         }
     }
 }

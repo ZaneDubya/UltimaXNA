@@ -34,7 +34,7 @@ namespace UltimaXNA.GameObjects
             m_HasBeenDrawn = false;
         }
 
-        public void Update(GameTime gameTime)
+        public virtual void Update(GameTime gameTime)
         {
             if (Movement.RequiresUpdate)
             {
@@ -46,17 +46,20 @@ namespace UltimaXNA.GameObjects
             }
             else
             {
-                TileEngine.MapCell iThisMapCell = Movement.World.Map.GetMapCell(Movement.DrawPosition.TileX, Movement.DrawPosition.TileY);
-                if (iThisMapCell == null)
+                if (Movement.DrawPosition != null)
                 {
-                    m_HasBeenDrawn = false;
-                }
-                else
-                {
-                    if (m_HasBeenDrawn == false)
+                    TileEngine.MapCell iThisMapCell = Movement.World.Map.GetMapCell(Movement.DrawPosition.TileX, Movement.DrawPosition.TileY);
+                    if (iThisMapCell == null)
                     {
-                        this.Draw(iThisMapCell, Movement.DrawPosition.PositionV3, Movement.DrawPosition.OffsetV3);
-                        m_HasBeenDrawn = true;
+                        m_HasBeenDrawn = false;
+                    }
+                    else
+                    {
+                        if (m_HasBeenDrawn == false)
+                        {
+                            this.Draw(iThisMapCell, Movement.DrawPosition.PositionV3, Movement.DrawPosition.OffsetV3);
+                            m_HasBeenDrawn = true;
+                        }
                     }
                 }
             }

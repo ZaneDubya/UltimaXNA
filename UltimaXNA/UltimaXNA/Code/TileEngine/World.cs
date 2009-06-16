@@ -50,25 +50,25 @@ namespace UltimaXNA.TileEngine
 
             if (m_GameStateService.InWorld)
             {
-                GameObjects.Movement iCenterPosition = m_GameObjectsService.GetObject(m_GameObjectsService.MyGUID).Movement;
+                    GameObjects.Movement iCenterPosition = m_GameObjectsService.GetObject(m_GameObjectsService.MyGUID).Movement;
 
-                if ((X != iCenterPosition.DrawPosition.TileX) ||
-                    (Y != iCenterPosition.DrawPosition.TileY))
-                {
-                    X = iCenterPosition.DrawPosition.TileX;
-                    Y = iCenterPosition.DrawPosition.TileY;
-                    m_Map.UpdateLocation(X, Y);
+                    if ((X != iCenterPosition.DrawPosition.TileX) ||
+                        (Y != iCenterPosition.DrawPosition.TileY))
+                    {
+                        X = iCenterPosition.DrawPosition.TileX;
+                        Y = iCenterPosition.DrawPosition.TileY;
+                        m_Map.UpdateLocation(X, Y);
 
-                    // Are we inside (under a roof)? Do not draw tiles above our head.
-                    if (m_Map.GetMapCell(X, Y).UnderRoof(iCenterPosition.DrawPosition.TileZ))
-                    {
-                        MaxRoofAltitude = iCenterPosition.DrawPosition.TileZ + 20;
+                        // Are we inside (under a roof)? Do not draw tiles above our head.
+                        if (m_Map.GetMapCell(X, Y).UnderRoof(iCenterPosition.DrawPosition.TileZ))
+                        {
+                            MaxRoofAltitude = iCenterPosition.DrawPosition.TileZ + 20;
+                        }
+                        else
+                        {
+                            MaxRoofAltitude = 255;
+                        }
                     }
-                    else
-                    {
-                        MaxRoofAltitude = 255;
-                    }
-                }
             }
         }
         public static int X { get; set; }
