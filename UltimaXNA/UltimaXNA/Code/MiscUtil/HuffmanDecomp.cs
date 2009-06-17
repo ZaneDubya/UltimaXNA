@@ -1,5 +1,8 @@
 ﻿// xjake88x
 // http://www.codeguru.com/forum/archive/index.php/t-381495.html
+
+using System;
+
 namespace MiscUtil
 {
     class HuffmanDecomp
@@ -289,46 +292,103 @@ namespace MiscUtil
             return 1;
         }
 
-        public static void Decompress(byte[] src, int src_size, ref byte[] dest, ref int dest_size)
+        public static bool DecompressNew(ref byte[] src, int src_size, ref byte[] dest, ref int dest_size)
+        {
+            Array.Clear(dest, 0, dest.Length); dest_size = 0;
+            int node = 0, leaf = 0, leaf_value = 0, dest_pos = 0, bit_num = 8, src_pos = 0;
+
+            while (src_pos < src_size)
+            {
+                leaf = GetBit(src[src_pos], bit_num);
+                leaf_value = dec_tree[node, leaf];
+
+                // all numbers below 1 (0..-256) are codewords
+                // if the halt codeword has been found, skip this byte
+                if (leaf_value == -256)
+                {
+                    bit_num = 8; node = 0; src_pos++;
+                    byte[] newsource = new byte[src_size - src_pos];
+                    Array.Copy(src, src_pos, newsource, 0, src_size - src_pos);
+                    src = newsource;
+                    dest_size = dest_pos;
+                    return true;
+                }
+                else if (leaf_value < 1)
+                {
+                    dest[dest_pos] = (byte)-leaf_value;
+                    leaf_value = 0; dest_pos++;
+                }
+
+                bit_num--; node = leaf_value;
+                /* if its the end of the byte, go to the next byte */
+                if (bit_num < 1)
+                {
+                    bit_num = 8;
+                    src_pos++;
+                }
+
+                // check to see if the current codeword has no end
+                // if not, make it an incomplete byte
+                if (src_pos == src_size)
+                {
+                    if (node != 0)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        return false;
+                        //throw new Exception("Incomplete byte at node = 0");
+                    }
+                }
+                /*if(obj != NULL && src_pos == *src_size && node)
+                {
+                obj->incomplete_byte = src[src_pos-1];
+                obj->has_incomplete = 1;
+                }*/
+            }
+
+            dest_size = dest_pos;
+            return false;
+        }
+
+
+        public static void Decompress(ref byte[] src, int src_size, ref byte[] dest, ref int dest_size)
         {
             int node=0, leaf=0, leaf_value=0, dest_pos=0, bit_num=8, src_pos=0;
 
             while(src_pos < src_size)
             {
-            leaf = GetBit(src[src_pos], bit_num);
-            //leaf_value = dec_tree[node][leaf];
-            leaf_value = dec_tree[node,leaf];
-            /* LogPrint("Leaf: %d Value: %d CurNode: %d\r\n", leaf, leaf_value, node); */
-            /*if(obj!= NULL && bit_num == 1)
-            obj->incomplete_node = leaf_value;*/
+                leaf = GetBit(src[src_pos], bit_num);
+                leaf_value = dec_tree[node,leaf];
 
-            /*
-            * all numbers bellow 1 (0..-256) are codewords
-            * if the halt codeword has been found, skip this byte
-            */
-            if(leaf_value == -256)
-            {
-            bit_num=8; node=0; src_pos++; continue; 
-            }
-            else if(leaf_value < 1)
-            {
-            dest[dest_pos] = (byte) -leaf_value;
-            leaf_value=0; dest_pos++;
-            }
+                // all numbers below 1 (0..-256) are codewords
+                // if the halt codeword has been found, skip this byte
+                if(leaf_value == -256)
+                {
+                    bit_num=8; node=0; src_pos++; continue; 
+                }
+                else if(leaf_value < 1)
+                {
+                    dest[dest_pos] = (byte) -leaf_value;
+                    leaf_value=0; dest_pos++;
+                }
 
-            bit_num--; node=leaf_value;
-            /* if its the end of the byte, go to the next byte */
-            if(bit_num < 1)
-            { bit_num=8; src_pos++; }
+                bit_num--; node=leaf_value;
+                /* if its the end of the byte, go to the next byte */
+                if(bit_num < 1)
+                {
+                    bit_num=8;
+                    src_pos++;
+                }
 
-            /* check to see if the current codeword has no end
-            if not, make it an incomplete byte */
-
-            /*if(obj != NULL && src_pos == *src_size && node)
-            {
-            obj->incomplete_byte = src[src_pos-1];
-            obj->has_incomplete = 1;
-            }*/
+                // check to see if the current codeword has no end
+                // if not, make it an incomplete byte
+                /*if(obj != NULL && src_pos == *src_size && node)
+                {
+                obj->incomplete_byte = src[src_pos-1];
+                obj->has_incomplete = 1;
+                }*/
             }
 
             dest_size = dest_pos;

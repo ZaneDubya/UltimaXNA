@@ -158,9 +158,13 @@ namespace UltimaXNA
                             mGameObjectsService.GetPlayerObject().Movement.TileY,
                             0,
                             -1);
-                        GameObjects.Container iContainer = (GameObjects.Container)mGameObjectsService.GetContainerObject(
-                            ((GameObjects.GameObject)GUI.GUIHelper.MouseHoldingItem).Item_ContainedWithinGUID);
-                        iContainer.RemoveItem(GUI.GUIHelper.MouseHoldingItem.GUID);
+                        if (((GameObjects.GameObject)GUI.GUIHelper.MouseHoldingItem).Item_ContainedWithinGUID != 0)
+                        {
+                            GameObjects.Container iContainer = (GameObjects.Container)mGameObjectsService.GetContainerObject(
+                                ((GameObjects.GameObject)GUI.GUIHelper.MouseHoldingItem).Item_ContainedWithinGUID);
+                            iContainer.RemoveItem(GUI.GUIHelper.MouseHoldingItem.GUID);
+                        }
+
                         GUI.GUIHelper.MouseHoldingItem = null;
 
                     }
