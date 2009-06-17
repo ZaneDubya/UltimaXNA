@@ -22,6 +22,7 @@ namespace UltimaXNA.Network
         public bool UnpackPackets = false;
         private TcpClient mClient;
 
+        
         private const int mReadBufferSize = 4096;          // The buffer where we will store the received data.
         private byte[] mReadBuffer = new byte[mReadBufferSize];
         public event UserEventDlg UserDisconnected;         // Events to call when the client received data...
@@ -29,11 +30,10 @@ namespace UltimaXNA.Network
         public readonly int id;                             // unique id for use with the server
         public bool disconnected = false;                   // To keep track if we have already disconnected.
 
-        private const int mOutBufferSize = 32776;          // Increased to 32kb from 16kb issue9 (http://code.google.com/p/ultimaxna/issues/detail?id=9) --ZDW 6/14/2009
+        private const int mOutBufferSize = 4096;          // Increased to 32kb from 16kb issue9 (http://code.google.com/p/ultimaxna/issues/detail?id=9) --ZDW 6/14/2009
         private byte[] outdata = new byte[mOutBufferSize];
 
         private bool mAppendNextMessage = false;
-        private int mAppendPosition = 0;
         private byte[] mAppendData;
 
         // This constructor should only be called from the listener
@@ -145,6 +145,7 @@ namespace UltimaXNA.Network
             byte[] data;
             if (mAppendNextMessage)
             {
+                mAppendNextMessage = false;
                 data = new byte[mAppendData.Length + bytesRead];
                 Array.Copy(mAppendData, 0, data, 0, mAppendData.Length);
                 Array.Copy(mReadBuffer, 0, data, mAppendData.Length, bytesRead);
@@ -168,53 +169,32 @@ namespace UltimaXNA.Network
             if (this.UnpackPackets)
             {
                 int outsize = 0;
-                Array.Clear(outdata, 0, outdata.Length);
-                MiscUtil.HuffmanDecomp.Decompress(data, data.Length, ref outdata, ref outsize);
-                for (int iPosition = 0; iPosition < outsize; )
+                while (MiscUtil.HuffmanDecomp.DecompressNew(ref data, data.Length, ref outdata, ref outsize))
                 {
-                    // If we have just appended a message, reset the position variable and stop appending.
-                    if (mAppendNextMessage)
+                    for (int iPosition = 0; iPosition < outsize; )
                     {
-                        iPosition = mAppendPosition;
-                        mAppendNextMessage = false;
+                        int iSize = mGetSize(ref outdata, iPosition, outsize);
+                        if (iSize != outsize)
+                            throw new Exception("Weird packet size!");
+
+                        byte[] iData = new byte[iSize];
+                        Array.Copy(outdata, iPosition, iData, 0, iSize);
+                        // LogFile.WritePacket(iData, ((OpCodes)iData[0]).ToString());
+                        Packet iPacket = new Packet(iData);
+                        // Tell the program that owns the client that we have received data.
+                        if (this.DataReceived != null)
+                            this.DataReceived(this, iPacket);
+                        iPosition += iSize;
                     }
-                    int iSize = mGetSize(ref outdata, iPosition, outsize);
-                    if (iSize == -1)
-                    {
-                        throw new Exception();
-                    }
-                    else if (((iPosition + iSize) > outsize) || (iSize == 0))
-                    {
-                        // If we need more data to read this packet than is
-                        // in the packet, this packet is incomplete.
-                        // Also, sometimes we receive a packet that has
-                        // just the opcode - and is thus followed by zero'd
-                        // data and is incomplete.
-                        // This packet is incomplete and we cannot read it as is.
-                        // We need to append the next packet to this one, and read it again.
-                        mAppendNextMessage = true;
-                        mAppendPosition = iPosition;
-                        mAppendData = data;
-                        return;
-                    }
-                    else if ((iPosition + iSize) == outsize)
-                    {
-                        // The next packet might require some of this data.
-                        // But since we have already received the entire packet,
-                        // We might as well handle it.
-                        mAppendNextMessage = true;
-                        mAppendPosition = iPosition + iSize;
-                        mAppendData = data;
-                    }
-                    byte[] iData = new byte[iSize];
-                    Array.Copy(outdata, iPosition, iData, 0, iSize);
-                    // LogFile.WritePacket(iData, ((OpCodes)iData[0]).ToString());
-                    Packet iPacket = new Packet(iData);
-                    // Tell the program that owns the client that we have received data.
-                    if (this.DataReceived != null)
-                        this.DataReceived(this, iPacket);
-                    iPosition += iSize;
                 }
+                // We've run out of data to parse, or the packet was incomplete. If the packet was incomplete,
+                // we should save what's left for next time.
+                if (data.Length > 0)
+                {
+                    mAppendNextMessage = true;
+                    mAppendData = data;
+                }
+
             }
             else
             {
@@ -296,7 +276,7 @@ namespace UltimaXNA.Network
                 case OpCodes.SMSG_REJECTMOVEITEMREQ:
                     return 2;
                 default :
-                    throw new Exception();
+                    throw new Exception("Unknown packet!");
             }
         }
 
