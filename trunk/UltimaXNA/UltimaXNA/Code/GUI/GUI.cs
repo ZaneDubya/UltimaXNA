@@ -77,28 +77,32 @@ namespace UltimaXNA.GUI
         {
             base.Update(gameTime);
 
-            if (GUIHelper.MouseHoldingItem == null)
+            // Fix for issue 1. http://code.google.com/p/ultimaxna/issues/detail?id=1 --ZDW 6/17/09
+            if (Game.IsActive)
             {
-                FormCollection.Cursor.Texture = surfaceCursors;
-                FormCollection.Cursor.SourceRect = new Rectangle(1, 1, 31, 26);
-                FormCollection.Cursor.HasShadow = true;
-            }
-            else
-            {
-                FormCollection.Cursor.Texture = GUIHelper.GetItemIcon(((GameObjects.GameObject)GUIHelper.MouseHoldingItem).ObjectTypeID);
-                FormCollection.Cursor.SourceRect = new Rectangle(0, 0, 64, 64);
-                FormCollection.Cursor.HasShadow = true;
-            }
+                if (GUIHelper.MouseHoldingItem == null)
+                {
+                    FormCollection.Cursor.Texture = surfaceCursors;
+                    FormCollection.Cursor.SourceRect = new Rectangle(1, 1, 31, 26);
+                    FormCollection.Cursor.HasShadow = true;
+                }
+                else
+                {
+                    FormCollection.Cursor.Texture = GUIHelper.GetItemIcon(((GameObjects.GameObject)GUIHelper.MouseHoldingItem).ObjectTypeID);
+                    FormCollection.Cursor.SourceRect = new Rectangle(0, 0, 64, 64);
+                    FormCollection.Cursor.HasShadow = true;
+                }
 
-            // First update our collection of windows.
-            mUpdateWindows();
+                // First update our collection of windows.
+                mUpdateWindows();
 
-            if (mDrawForms)
-            {
-                //Update the form collection
-                formCollection.Update(gameTime);
-                //Render the form collection (required before drawing)
-                formCollection.Render();
+                if (mDrawForms)
+                {
+                    //Update the form collection
+                    formCollection.Update(gameTime);
+                    //Render the form collection (required before drawing)
+                    formCollection.Render();
+                }
             }
         }
 
