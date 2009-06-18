@@ -296,7 +296,7 @@ namespace UltimaXNA.Network
                 case OpCodes.MSG_REQUESTNAME:
                     return (int)EndianBitConverter.Big.ToUInt16(data, nPosition + 1);
                 default :
-                    throw new Exception("Unknown packet!");
+                    throw new Exception("Unknown packet! Opcocde: 0x" + MiscUtil.HexEncoding.ToString(iOpCode));
             }
         }
 
