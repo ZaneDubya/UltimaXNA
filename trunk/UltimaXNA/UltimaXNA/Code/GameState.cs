@@ -250,6 +250,9 @@ namespace UltimaXNA
 
         private void m_CheckMovement(bool nPressEvent)
         {
+            // Issue 15 - Mouse left clicks on the wrong topmost object - http://code.google.com/p/ultimaxna/issues/detail?id=15 - Smjert
+            // Issue 17 - Player is attempting to 'walk onto' objects? - http://code.google.com/p/ultimaxna/issues/detail?id=17 - ZDW
+            // Issue 18 - Player will not walk to a static unless there is a ground tile active - http://code.google.com/p/ultimaxna/issues/detail?id=18 - ZDW
             int iZOffset = 0;
             // We check the ground tile first.
             // If there is no objects under the mouse cursor, but there is a groundtile, move to the ground tile.
@@ -406,7 +409,9 @@ namespace UltimaXNA
                 }
                 else if (mTileEngineService.MouseOverObject.Type == TileEngine.MapObjectTypes.MobileTile)
                 {
-                    iDebug += 
+                    GameObjects.Unit iUnit = (GameObjects.Unit)mGameObjectsService.GetObject(mTileEngineService.MouseOverObject.OwnerGUID);
+                    iDebug +=
+                        "Name: " + iUnit.Name + Environment.NewLine +
                         "AnimID: " + ((TileEngine.MobileTile)mTileEngineService.MouseOverObject).ID + Environment.NewLine +
                         "GUID: " + mTileEngineService.MouseOverObject.OwnerGUID + Environment.NewLine +
                         "Hue: " + ((TileEngine.MobileTile)mTileEngineService.MouseOverObject).Hue;

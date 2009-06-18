@@ -144,15 +144,6 @@ namespace UltimaXNA.GameObjects
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
             base.Update(gameTime);
-
-            // do we have any new items that need to be reshuffled?
-            // foreach (Item i in mContentsBeingMoved)
-            // {
-            //     // Set the InvX of this item to the next open slot.
-            //     i.MoveToNewSlot(mContentsClass.NextAvailableSlot);
-            //     mContentsClass[i.InvX_SlotIndex] = i;
-            // }
-            // mContentsBeingMoved.Clear();
         }
 
         public void Event_MoveItemToSlot(GameObject nObject, int nSlot)

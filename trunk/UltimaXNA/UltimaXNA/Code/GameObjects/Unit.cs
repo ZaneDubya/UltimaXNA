@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework;
 
 namespace UltimaXNA.GameObjects
 {
+    #region UnitEnums
     enum UnitActions : int 
     {
         stopmovement = 0x7fffffff,
@@ -185,6 +186,9 @@ namespace UltimaXNA.GameObjects
         /// </summary>
         LastValid = 0x1D
     }
+    #endregion
+
+    delegate void EVENT_UpdateHealthStaminaMana(BaseObject nThis);
 
     class Unit : UltimaXNA.GameObjects.BaseObject
     {
@@ -218,6 +222,9 @@ namespace UltimaXNA.GameObjects
             }
         }
 
+        public string Name = string.Empty;
+        public CurrentMaxValue Health, Stamina, Mana;
+        public event EVENT_UpdateHealthStaminaMana UpdateHealthStaminaMana;
 
         // These will be added later ...
         // public int CharmingGUID = 0;
@@ -231,7 +238,7 @@ namespace UltimaXNA.GameObjects
         // public int ChannelObjectGUID = 0;
 
         // public int Bytes0 = 0, Bytes1 = 0, Bytes2 = 0;
-        // public CurrentMaxValue Health, Power1;
+        
         // public int Level = 0, PetLevel = 0;
         // public int FactionTemplate = 0;
 
@@ -282,20 +289,25 @@ namespace UltimaXNA.GameObjects
         {
             ObjectType = ObjectType.Unit;
 
-            // Health = new CurrentMaxValue();
-            // Power1 = new CurrentMaxValue();
-            // Stat0 = new BaseModValue();
-            // Stat1 = new BaseModValue();
-            // Stat2 = new BaseModValue();
-            // Stat3 = new BaseModValue();
-            // Stat4 = new BaseModValue();
-            // AttackPower = new CurrentMaxValue();
-
             Movement.RequiresUpdate = true;
             m_Animation = new UnitAnimation();
 			// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
 			m_Animation.BodyID = DisplayBodyID;
 			// Issue 6 - End
+        }
+
+        public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            // Check to see if our health, stamina, or mana has been updated. If so, announce it to the GUI.
+            if (Health.Updated || Stamina.Updated || Mana.Updated)
+            {
+                Health.Updated = false;
+                Stamina.Updated = false;
+                Mana.Updated = false;
+                UpdateHealthStaminaMana(this);
+            }
         }
 
         protected override void Draw(UltimaXNA.TileEngine.MapCell nCell, Vector3 nLocation, Vector3 nOffset)

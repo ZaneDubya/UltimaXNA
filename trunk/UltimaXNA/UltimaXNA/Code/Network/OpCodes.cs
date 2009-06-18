@@ -62,6 +62,6 @@ namespace UltimaXNA.Network
         SMSG_UPDATECURRENTSTAMINA = 0xA3,
         MSG_RESURRECTIONMENU = 0x2C,
         SMSG_WORNITEM = 0x2E,
-
+        MSG_REQUESTNAME = 0x98,
     }
 }
