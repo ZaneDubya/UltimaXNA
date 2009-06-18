@@ -4,6 +4,7 @@
 //
 // Created by Poplicola
 //-----------------------------------------------------------------------------
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 #endregion
@@ -115,6 +116,7 @@ namespace UltimaXNA
         }
 
         #region EntryPoint
+        [STAThread]
         private static void Main(string[] args)
         {
             using (Engine engine = new Engine())
