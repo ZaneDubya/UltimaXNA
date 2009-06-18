@@ -275,6 +275,24 @@ namespace UltimaXNA.Network
                     return 21;
                 case OpCodes.SMSG_REJECTMOVEITEMREQ:
                     return 2;
+                case OpCodes.MSG_SENDSKILLS:
+                    return (int)EndianBitConverter.Big.ToUInt16(data, nPosition + 1);
+                case OpCodes.SMSG_CORPSECLOTHING:
+                    return (int)EndianBitConverter.Big.ToUInt16(data, nPosition + 1); 
+                case OpCodes.SMSG_CLILOCMSG:
+                    return (int)EndianBitConverter.Big.ToUInt16(data, nPosition + 1);
+                case OpCodes.SMSG_GRAPHICALEFFECT:
+                    return 36;
+                case OpCodes.SMSG_UPDATECURRENTHEALTH:
+                    return 9;
+                case OpCodes.SMSG_UPDATECURRENTMANA:
+                    return 9;
+                case OpCodes.SMSG_UPDATECURRENTSTAMINA:
+                    return 9;
+                case OpCodes.MSG_RESURRECTIONMENU:
+                    return 2;
+                case OpCodes.SMSG_WORNITEM:
+                    return 15;
                 default :
                     throw new Exception("Unknown packet!");
             }

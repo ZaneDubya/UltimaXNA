@@ -197,6 +197,33 @@ namespace UltimaXNA.Network
                     case OpCodes.SMSG_REJECTMOVEITEMREQ:
                         m_ReceiveRejectMoveItemRequest(iPacket);
                         break;
+                    case OpCodes.MSG_SENDSKILLS:
+                        m_ReceiveSendSkills(iPacket);
+                        break;
+                    case OpCodes.SMSG_CORPSECLOTHING:
+                        m_ReceiveCorpseClothing(iPacket);
+                        break;
+                    case OpCodes.SMSG_CLILOCMSG:
+                        m_ReceiveCLILOCMessage(iPacket);
+                        break;
+                    case OpCodes.SMSG_GRAPHICALEFFECT:
+                        m_ReceiveGraphicalEffect(iPacket);
+                        break;
+                    case OpCodes.SMSG_UPDATECURRENTHEALTH:
+                        m_RecieveUpdateCurrentHealth(iPacket);
+                        break;
+                    case OpCodes.SMSG_UPDATECURRENTMANA:
+                        m_RecieveUpdateCurrentMana(iPacket);
+                        break;
+                    case OpCodes.SMSG_UPDATECURRENTSTAMINA:
+                        m_RecieveUpdateCurrentStamina(iPacket);
+                        break;
+                    case OpCodes.MSG_RESURRECTIONMENU:
+                        m_ReceiveResurrectionMenu(iPacket);
+                        break;
+                    case OpCodes.SMSG_WORNITEM:
+                        m_ReceiveWornItem(iPacket);
+                        break;
                     default:
                         // throw (new System.Exception("Unknown Opcode: " + nPacket.OpCode));
                         break;
@@ -889,7 +916,7 @@ namespace UltimaXNA.Network
             int iPacketLength = nPacket.ReadUShort();
             int iNumItems = nPacket.ReadUShort();
 
-            for (int i = 0; i < iNumItems; i++)
+            if (iNumItems == 1)
             {
                 int iGUID = nPacket.ReadInt();
                 int iItemID = nPacket.ReadUShort();
@@ -897,7 +924,6 @@ namespace UltimaXNA.Network
                 int iAmount = nPacket.ReadUShort();
                 int iX = nPacket.ReadShort();
                 int iY = nPacket.ReadShort();
-                int iGridLocation = nPacket.ReadByte(); // always 0 in RunUO.
                 int iContainerGUID = nPacket.ReadInt();
                 int iHue = nPacket.ReadUShort();
 
@@ -908,6 +934,29 @@ namespace UltimaXNA.Network
                 // ... and add it the container contents of the container.
                 GameObjects.Container iContainerObject = (GameObjects.Container)m_GameObjectsService.GetContainerObject((int)iContainerGUID);
                 iContainerObject.AddItem(iObject);
+            }
+            else
+            {
+                for (int i = 0; i < iNumItems; i++)
+                {
+                    int iGUID = nPacket.ReadInt();
+                    int iItemID = nPacket.ReadUShort();
+                    int iUnknown = nPacket.ReadByte(); // signed, itemID offset. always 0 in RunUO.
+                    int iAmount = nPacket.ReadUShort();
+                    int iX = nPacket.ReadShort();
+                    int iY = nPacket.ReadShort();
+                    int iGridLocation = nPacket.ReadByte(); // always 0 in RunUO.
+                    int iContainerGUID = nPacket.ReadInt();
+                    int iHue = nPacket.ReadUShort();
+
+                    // Add the item...
+                    GameObjects.GameObject iObject = m_AddItem(iGUID, iItemID, iHue, iContainerGUID, iAmount);
+                    iObject.Item_InvX_SlotIndex = iX;
+                    iObject.Item_InvY_SlotChecksum = iY;
+                    // ... and add it the container contents of the container.
+                    GameObjects.Container iContainerObject = (GameObjects.Container)m_GameObjectsService.GetContainerObject((int)iContainerGUID);
+                    iContainerObject.AddItem(iObject);
+                }
             }
         }
 
@@ -941,6 +990,81 @@ namespace UltimaXNA.Network
             // 0x3: Belongs to another
             // 0x4: Already holding something
             // 0x5: empty message on client?
+        }
+
+        private void m_ReceiveSendSkills(Packet nPacket)
+        {
+            // unhandled !!!
+            int iPacketType = nPacket.ReadByte();
+            // 0x00: Full List of skills
+            // 0xFF: Single skill update
+            // 0x02: Full List of skills with skill cap for each skill
+            // 0xDF: Single skill update with skill cap for skill
+
+            switch (iPacketType)
+            {
+                case 0x00: //Full List of skills
+
+                    break;
+                case 0xFF: // single skill update
+
+                    break;
+                case 0x02: // full List of skills with skill cap for each skill
+
+                    break;
+                case 0xDF: // Single skill update with skill cap for skill
+
+                    break;
+                default:
+                    throw (new Exception("Unknown PacketType"));
+            }
+        }
+
+        private void m_ReceiveCorpseClothing(Packet nPacket)
+        {
+            // unhandled !!!
+            int iBlockSize = nPacket.ReadShort();
+            int iGUID = nPacket.ReadInt();
+        }
+
+        private void m_ReceiveCLILOCMessage(Packet nPacket)
+        {
+            // unhandled !!!
+            int iPacketLength = nPacket.ReadShort(); 
+        }
+
+        private void m_ReceiveGraphicalEffect(Packet nPacket)
+        {
+            // unhandled !!!
+        }
+
+        private void m_RecieveUpdateCurrentHealth(Packet nPacket)
+        {
+            // unhandled !!
+        }
+
+        private void m_RecieveUpdateCurrentMana(Packet nPacket)
+        {
+            // unhandled !!
+        }
+
+        private void m_RecieveUpdateCurrentStamina(Packet nPacket)
+        {
+            // unhandled !!
+        }
+
+        private void m_ReceiveResurrectionMenu(Packet nPacket)
+        {
+            int iAction = nPacket.ReadByte();
+            // 0: Server sent
+            // 1: Resurrect
+            // 2: Ghost
+            // The only use on OSI for this packet is now sending "2C02" for the "You Are Dead" screen upon character death.
+        }
+
+        private void m_ReceiveWornItem(Packet nPacket)
+        {
+            // not handled !!!
         }
 
         private GameObjects.GameObject m_AddItem(int nGUID, int nItemID, int nHue, int nContainerGUID, int nAmount)
