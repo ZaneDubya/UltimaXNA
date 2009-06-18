@@ -28,6 +28,7 @@ namespace UltimaXNA.GameObjects
         private TileEngine.IWorld m_WorldService;
         private IGameState m_GameStateService;
         private Network.IGameClient m_GameClientService;
+        GUI.IGUI m_GUIService;
 
         public GameObjects(Game game)
             : base(game)
@@ -40,6 +41,7 @@ namespace UltimaXNA.GameObjects
             m_WorldService = (TileEngine.IWorld)Game.Services.GetService(typeof(TileEngine.IWorld));
             m_GameStateService = (IGameState)Game.Services.GetService(typeof(IGameState));
             m_GameClientService = (Network.IGameClient)Game.Services.GetService(typeof(Network.IGameClient));
+            m_GUIService = (GUI.IGUI)Game.Services.GetService(typeof(GUI.IGUI));
             base.Initialize();
         }
 
@@ -75,6 +77,11 @@ namespace UltimaXNA.GameObjects
                 // If this object is the client, designate it to return events.
                 if (nObject.GUID == MyGUID)
                     nObject.Movement.DesignateClientPlayer();
+
+                if ((nObject.ObjectType & ObjectType.Unit) == ObjectType.Unit)
+                {
+                    ((Unit)nObject).UpdateHealthStaminaMana += this.Unit_UpdateHealthStaminaMana;
+                }
                 if ((nObject.ObjectType & ObjectType.GameObject) == ObjectType.GameObject)
                 {
                     ((GameObject)nObject).SendPacket_MoveItemWithinContainer += this.Item_Packet_MoveItemWithinContainer;
@@ -133,6 +140,21 @@ namespace UltimaXNA.GameObjects
             m_GameClientService.Send_DropItem(iObject.GUID,
                 iObject.Item_InvX_SlotIndex, iObject.Item_InvY_SlotChecksum,
                 0, iObject.Item_ContainedWithinGUID);
+        }
+
+        private void Unit_UpdateHealthStaminaMana(BaseObject nObject)
+        {
+            Unit iObject = ((Unit)nObject);
+            if (iObject.GUID == MyGUID)
+            {
+                GUI.Window_StatusFrame w = (GUI.Window_StatusFrame)m_GUIService.Window("StatusFrame");
+                w.CurrentHealth = iObject.Health.Current;
+                w.MaxHealth = iObject.Health.Max;
+                w.CurrentMana = iObject.Mana.Current;
+                w.MaxMana= iObject.Mana.Max;
+                w.CurrentStamina = iObject.Stamina.Current;
+                w.MaxStamina = iObject.Stamina.Max;
+            }
         }
     }
 }

@@ -46,11 +46,20 @@ namespace UltimaXNA.GameObjects
     {
         public int Current;
         public int Max;
+        public bool Updated;
 
         CurrentMaxValue(int nCurrent, int nMax)
         {
             Current = nCurrent;
             Max = nMax;
+            Updated = true;
+        }
+
+        public void Update(int nCurrent, int nMax)
+        {
+            Current = nCurrent;
+            Max = nMax;
+            Updated = true;
         }
     }
 

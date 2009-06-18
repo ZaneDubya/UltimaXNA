@@ -108,6 +108,7 @@
     <Compile Include="Code\GUI\Windows\ErrorModal.cs" />
     <Compile Include="Code\GUI\Windows\Login.cs" />
     <Compile Include="Code\GUI\Windows\LoginBackdrop.cs" />
+    <Compile Include="Code\GUI\Windows\StatusFrame.cs" />
     <Compile Include="Code\GUI\Windows\Window.cs" />
     <Compile Include="Code\GUI\Windows\Chat.cs" />
     <Compile Include="Code\GUI\SpriteSheet.cs" />

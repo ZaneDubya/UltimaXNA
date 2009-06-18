@@ -224,6 +224,9 @@ namespace UltimaXNA.Network
                     case OpCodes.SMSG_WORNITEM:
                         m_ReceiveWornItem(iPacket);
                         break;
+                    case OpCodes.MSG_REQUESTNAME:
+                        m_ReceiveRequestName(iPacket);
+                        break;
                     default:
                         // throw (new System.Exception("Unknown Opcode: " + nPacket.OpCode));
                         break;
@@ -369,6 +372,14 @@ namespace UltimaXNA.Network
             iPacket.Write((byte)nZ);
             iPacket.Write((byte)0);
             iPacket.Write((int)nContainerGUID);
+            this.SendPacket(iPacket);
+        }
+
+        public void Send_RequestName(int nGUID)
+        {
+            Packet iPacket = new Packet(OpCodes.MSG_REQUESTNAME);
+            iPacket.Write((short)7);
+            iPacket.Write((int)nGUID);
             this.SendPacket(iPacket);
         }
 
@@ -571,6 +582,12 @@ namespace UltimaXNA.Network
 
             iObject.Movement.SetPositionInstant((int)iX, (int)iY, (int)iZ);
             iObject.SetFacing(iFacing & 0x0F);
+
+            if (iObject.Name == string.Empty)
+            {
+                iObject.Name = "Unknown";
+                Send_RequestName(iObject.GUID);
+            }
         }
 
         private void m_ReceiveLightLevel(Packet nPacket)
@@ -661,11 +678,80 @@ namespace UltimaXNA.Network
                 // zero terminated
                 byte iZero = nPacket.ReadByte();
             }
+
+            if (iMobile.Name == string.Empty)
+            {
+                iMobile.Name = "Unknown";
+                Send_RequestName(iMobile.GUID);
+            }
         }
 
         private void m_ReceiveStatusInfo(Packet nPacket)
         {
-            // !!! Unhandled!
+            int iPacketLength = nPacket.ReadUShort();
+            int iPlayerSerial = nPacket.ReadInt();
+            string iPlayerName = m_RemoveNullGarbageFromString(nPacket.ReadBytes(30));
+            int iCurrentHealth = nPacket.ReadShort();
+            int iMaxHealth = nPacket.ReadShort();
+            int iNameChangeFlag = nPacket.ReadByte(); // 0x1 = allowed, 0 = not allowed
+            int iStatusTypeFlag = nPacket.ReadByte();
+            int iSex = nPacket.ReadByte(); // 0=male, 1=female
+            int iStrength = nPacket.ReadShort();
+            int iDexterity = nPacket.ReadShort();
+            int iIntelligence = nPacket.ReadShort();
+            int iCurrentStamina = nPacket.ReadShort();
+            int iMaxStamina = nPacket.ReadShort();
+            int iCurrentMana = nPacket.ReadShort();
+            int iMaxMana = nPacket.ReadShort();
+            int iGoldInInventory = nPacket.ReadInt();
+            int iArmorRating = nPacket.ReadShort();
+            int iWeight = nPacket.ReadShort();
+
+            int iMaxWeight, iRace = 0;
+            if (iStatusTypeFlag >= 5)
+            {
+                iMaxWeight = nPacket.ReadShort();
+                iRace = nPacket.ReadByte();
+            }
+
+            int iStatCap, iFollowers, iMaxFollowers = 0;
+            if (iStatusTypeFlag >=3)
+            {
+                iStatCap = nPacket.ReadShort();
+                iFollowers = nPacket.ReadByte();
+                iMaxFollowers = nPacket.ReadByte();
+            }
+
+            int iFireResist, iColdResist, iPoisonResist, iEnergyResist = 0;
+            int iLuck, iDmgMin, iDmgMax, iTithingPts = 0;
+            if (iStatusTypeFlag >= 4)
+            {
+                iFireResist = nPacket.ReadShort();
+                iColdResist = nPacket.ReadShort();
+                iPoisonResist = nPacket.ReadShort();
+                iEnergyResist = nPacket.ReadShort();
+                iLuck = nPacket.ReadShort();
+                iDmgMin = nPacket.ReadShort();
+                iDmgMax = nPacket.ReadShort();
+                iTithingPts = nPacket.ReadShort();
+            }
+
+            if (iStatusTypeFlag >= 6)
+            {
+                throw (new Exception("KR Status not handled."));
+            }
+
+            if (iPlayerSerial != m_GameObjectsService.MyGUID)
+            {
+                throw new Exception("Assumption that StatusBarInfo packet always is for player is wrong!");
+            }
+
+            GameObjects.Unit u = (GameObjects.Unit)m_GameObjectsService.GetPlayerObject();
+            u.Name = iPlayerName;
+            u.Health.Update(iCurrentHealth, iMaxHealth);
+            u.Stamina.Update(iCurrentStamina, iMaxStamina);
+            u.Mana.Update(iCurrentMana, iMaxMana);
+            // other stuff unhandled !!!
         }
 
         private void m_ReceiveSetWeather(Packet nPacket)
@@ -1030,7 +1116,16 @@ namespace UltimaXNA.Network
         private void m_ReceiveCLILOCMessage(Packet nPacket)
         {
             // unhandled !!!
-            int iPacketLength = nPacket.ReadShort(); 
+            int iPacketLength = nPacket.ReadShort();
+            int iID = nPacket.ReadInt(); // 0xffff for system message
+            int iBody = nPacket.ReadShort(); // (0xff for system message
+            int iType = nPacket.ReadByte(); // 6 - lower left, 7 on player
+            int iHue = nPacket.ReadUShort();
+            int iFont = nPacket.ReadShort();
+            int iMessageNumber = nPacket.ReadInt();
+            string iSpeakerName = m_RemoveNullGarbageFromString(nPacket.ReadBytes(30));
+            // what about the arguments?
+            // http://docs.polserver.com/packets/index.php?Packet=0xC1
         }
 
         private void m_ReceiveGraphicalEffect(Packet nPacket)
@@ -1040,17 +1135,29 @@ namespace UltimaXNA.Network
 
         private void m_RecieveUpdateCurrentHealth(Packet nPacket)
         {
-            // unhandled !!
+            int iGUID = nPacket.ReadInt();
+            int iMax = nPacket.ReadShort();
+            int iCurrent = nPacket.ReadShort();
+            GameObjects.Unit u = (GameObjects.Unit)m_GameObjectsService.GetObject(iGUID);
+            u.Health.Update(iCurrent, iMax);
         }
 
         private void m_RecieveUpdateCurrentMana(Packet nPacket)
         {
-            // unhandled !!
+            int iGUID = nPacket.ReadInt();
+            int iMax = nPacket.ReadShort();
+            int iCurrent = nPacket.ReadShort();
+            GameObjects.Unit u = (GameObjects.Unit)m_GameObjectsService.GetObject(iGUID);
+            u.Mana.Update(iCurrent, iMax);
         }
 
         private void m_RecieveUpdateCurrentStamina(Packet nPacket)
         {
-            // unhandled !!
+            int iGUID = nPacket.ReadInt();
+            int iMax = nPacket.ReadShort();
+            int iCurrent = nPacket.ReadShort();
+            GameObjects.Unit u = (GameObjects.Unit)m_GameObjectsService.GetObject(iGUID);
+            u.Stamina.Update(iCurrent, iMax);
         }
 
         private void m_ReceiveResurrectionMenu(Packet nPacket)
@@ -1065,6 +1172,15 @@ namespace UltimaXNA.Network
         private void m_ReceiveWornItem(Packet nPacket)
         {
             // not handled !!!
+        }
+
+        private void m_ReceiveRequestName(Packet nPacket)
+        {
+            int iPacketLength = nPacket.ReadShort();
+            int iGUID = nPacket.ReadInt();
+            string iStrName = m_RemoveNullGarbageFromString(nPacket.ReadBytes(30));
+            GameObjects.Unit iObject = (GameObjects.Unit)m_GameObjectsService.GetObject(iGUID);
+            iObject.Name = iStrName;
         }
 
         private GameObjects.GameObject m_AddItem(int nGUID, int nItemID, int nHue, int nContainerGUID, int nAmount)

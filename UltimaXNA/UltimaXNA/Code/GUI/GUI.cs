@@ -116,7 +116,7 @@ namespace UltimaXNA.GUI
             spriteBatch.Begin();
             if (DebugMessage != null)
                 spriteBatch.DrawString(fontArial14, DebugMessage,
-                    new Vector2(10, 10), Color.White, 0f, Vector2.Zero, 1,
+                    new Vector2(5, 58), Color.White, 0f, Vector2.Zero, 1,
                     SpriteEffects.None, 1f);
             spriteBatch.DrawString(fontArial14, GUIHelper.TooltipMsg,
                     new Vector2(GUIHelper.TooltipX, GUIHelper.TooltipY), Color.White, 0f, Vector2.Zero, 1,
@@ -164,6 +164,7 @@ namespace UltimaXNA.GUI
             m_GUIWindows["LoginBG"].Close();
             m_GUIWindows["LoginWindow"].Close();
             m_GUIWindows.Add("ChatFrame", new Window_Chat(formCollection));
+            m_GUIWindows.Add("StatusFrame", new Window_StatusFrame(formCollection));
         }
 
         public void LoadLoginGUI()

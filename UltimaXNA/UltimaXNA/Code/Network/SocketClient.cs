@@ -293,6 +293,8 @@ namespace UltimaXNA.Network
                     return 2;
                 case OpCodes.SMSG_WORNITEM:
                     return 15;
+                case OpCodes.MSG_REQUESTNAME:
+                    return (int)EndianBitConverter.Big.ToUInt16(data, nPosition + 1);
                 default :
                     throw new Exception("Unknown packet!");
             }
