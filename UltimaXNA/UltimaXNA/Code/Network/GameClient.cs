@@ -227,6 +227,9 @@ namespace UltimaXNA.Network
                     case OpCodes.MSG_REQUESTNAME:
                         m_ReceiveRequestName(iPacket);
                         break;
+                    case OpCodes.SMSG_COMPRESSEDGUMP:
+                        m_ReceiveCompressedGump(iPacket);
+                        break;
                     default:
                         // throw (new System.Exception("Unknown Opcode: " + nPacket.OpCode));
                         break;
@@ -1193,6 +1196,11 @@ namespace UltimaXNA.Network
             string iStrName = m_RemoveNullGarbageFromString(nPacket.ReadBytes(30));
             GameObjects.Unit iObject = (GameObjects.Unit)m_GameObjectsService.GetObject(iGUID);
             iObject.Name = iStrName;
+        }
+
+        private void m_ReceiveCompressedGump(Packet nPacket)
+        {
+            // unhandled !!!
         }
 
         private GameObjects.GameObject m_AddItem(int nGUID, int nItemID, int nHue, int nContainerGUID, int nAmount)
