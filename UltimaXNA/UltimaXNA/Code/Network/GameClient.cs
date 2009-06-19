@@ -659,6 +659,7 @@ namespace UltimaXNA.Network
                 }
                 int iGraphic = nPacket.ReadUShort();
                 int iLayer = nPacket.ReadByte();
+
                 int iItemHue = 0;
                 if ((iGraphic & 0x8000) == 0x8000)
                 {
@@ -667,10 +668,8 @@ namespace UltimaXNA.Network
                 }
                 iEquipCount++;
 
-                // Create the object ... !!! We set the containerGUID to 0 here, should it be the guid of the wearer?
                 GameObjects.GameObject iObject = m_AddItem(iEquipmentSerial, iGraphic, iItemHue, 0, 0);
-                // Now equip the object to the unit we have created.
-                iMobile.Equipment[iLayer] =  iObject;
+                iMobile.Equipment[iLayer] = iObject;
             }
 
             if (iEquipCount == 0)
@@ -767,6 +766,8 @@ namespace UltimaXNA.Network
         private void m_ReceiveObjectPropertyList(Packet nPacket)
         {
             // !!! Unhandled!
+            int iGUID = nPacket.ReadInt();
+            int iRevisionHash = nPacket.ReadInt();
         }
 
         private void m_ReceiveLoginComplete(Packet nPacket)
@@ -887,7 +888,9 @@ namespace UltimaXNA.Network
 
         private void m_ReceiveDeleteObject(Packet nPacket)
         {
-            // !!! Unhandled!
+            int iGUID = nPacket.ReadInt();
+            GameObjects.BaseObject iObject = m_GameObjectsService.GetObject(iGUID);
+            m_GameObjectsService.RemoveObject(iGUID);
         }
 
         private void m_ReceivMobileMoving(Packet nPacket)
@@ -1171,7 +1174,16 @@ namespace UltimaXNA.Network
 
         private void m_ReceiveWornItem(Packet nPacket)
         {
-            // not handled !!!
+            int iEquipmentGUID = nPacket.ReadInt();
+            int iGraphic = nPacket.ReadUShort();
+            nPacket.ReadByte(); // always 0x00
+            int iLayer = nPacket.ReadByte();
+            int iPlayerGUID = nPacket.ReadInt();
+            int iItemHue = nPacket.ReadUShort();
+
+            GameObjects.GameObject iObject = m_AddItem(iEquipmentGUID, iGraphic, iItemHue, 0, 0);
+            GameObjects.Unit iMobile = (GameObjects.Unit)m_GameObjectsService.GetObject(iPlayerGUID);
+            iMobile.Equipment[iLayer] = iObject;
         }
 
         private void m_ReceiveRequestName(Packet nPacket)

@@ -16,6 +16,8 @@ namespace UltimaXNA.GameObjects
         public ObjectType ObjectType;
         public int GUID;
         internal bool m_HasBeenDrawn;
+        internal bool m_Dispose = false; // set this to true to have the object deleted.
+        public bool IsDisposed { get { return m_Dispose; } }
 
         public TileEngine.IWorld World
         {
@@ -68,6 +70,12 @@ namespace UltimaXNA.GameObjects
         protected virtual void Draw(TileEngine.MapCell nCell, Vector3 nLocation, Vector3 nOffset)
         {
             // do nothing. Base Objects do not draw.
+        }
+
+        public virtual void Dispose()
+        {
+            m_Dispose = true;
+            Movement.ClearImmediate();
         }
     }
 }

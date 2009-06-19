@@ -223,6 +223,20 @@ namespace UltimaXNA
                         case UltimaXNA.GameObjects.ObjectType.GameObject:
                             mGameClientService.Send_UseRequest(iObject.GUID);
                             break;
+                        case UltimaXNA.GameObjects.ObjectType.Unit:
+                            mGameClientService.Send_UseRequest(iObject.GUID);
+                            break;
+                        case UltimaXNA.GameObjects.ObjectType.Player:
+                            if (iObject.GUID == mGameObjectsService.MyGUID)
+                            {
+                                // if mounted, dismount.
+                                if (((GameObjects.Unit)iObject).IsMounted)
+                                {
+                                    mGameClientService.Send_UseRequest(iObject.GUID);
+                                }
+                            }
+                            // else other interaction?
+                            break;
                         default:
                             // do nothing?
                             break;
@@ -410,8 +424,9 @@ namespace UltimaXNA
                 else if (mTileEngineService.MouseOverObject.Type == TileEngine.MapObjectTypes.MobileTile)
                 {
                     GameObjects.Unit iUnit = (GameObjects.Unit)mGameObjectsService.GetObject(mTileEngineService.MouseOverObject.OwnerGUID);
+                    if (iUnit != null)
+                        iDebug += "Name: " + iUnit.Name + Environment.NewLine;
                     iDebug +=
-                        "Name: " + iUnit.Name + Environment.NewLine +
                         "AnimID: " + ((TileEngine.MobileTile)mTileEngineService.MouseOverObject).ID + Environment.NewLine +
                         "GUID: " + mTileEngineService.MouseOverObject.OwnerGUID + Environment.NewLine +
                         "Hue: " + ((TileEngine.MobileTile)mTileEngineService.MouseOverObject).Hue;

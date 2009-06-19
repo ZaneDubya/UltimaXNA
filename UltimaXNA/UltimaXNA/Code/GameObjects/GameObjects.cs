@@ -17,6 +17,7 @@ namespace UltimaXNA.GameObjects
         BaseObject GetObject(int nGUID);
         BaseObject GetContainerObject(int nGUID);
         BaseObject GetPlayerObject();
+        void RemoveObject(int nGUID);
     }
 
     class GameObjects : GameComponent, IGameObjects
@@ -47,23 +48,44 @@ namespace UltimaXNA.GameObjects
 
         public override void Update(GameTime gameTime)
         {
+            // We only need to update objects if we are in the world.
             if (m_GameStateService.InWorld)
             {
+                List<int> iRemoveObjects = new List<int>();
                 foreach (KeyValuePair<int, BaseObject> iObjectPair in m_Objects)
                 {
-                    if ((iObjectPair.Value.ObjectType & ObjectType.Unit) == ObjectType.Unit)
+                    // First check if we need to remove any objects. Objects that are due to be disposed
+                    // are not updated, but are added to a list to be removed after we enumerate m_Objects.
+                    if (iObjectPair.Value.IsDisposed)
                     {
-                        iObjectPair.Value.Update(gameTime);
+                        iRemoveObjects.Add(iObjectPair.Key);
+                        continue;
                     }
-                    if ((iObjectPair.Value.ObjectType & ObjectType.GameObject) == ObjectType.GameObject)
+
+                    // Some object types need to be updated. Others do not.
+                    switch (iObjectPair.Value.ObjectType)
                     {
-                        iObjectPair.Value.Update(gameTime);
-                    }
-                    if ((iObjectPair.Value.ObjectType & ObjectType.Container) == ObjectType.Container)
-                    {
-                        iObjectPair.Value.Update(gameTime);
+                        case ObjectType.GameObject:
+                        case ObjectType.Container:
+                        case ObjectType.Unit:
+                        case ObjectType.Player:
+                        {
+                            iObjectPair.Value.Update(gameTime);
+                            break;
+                        }
+                        default:
+                        {
+                            // no need to update.
+                            break;
+                        }
                     }
                 }
+
+                // Run through the list of objects needing to be removed from the collection.
+                foreach (int i in iRemoveObjects)
+                {
+                    m_Objects.Remove(i);
+                }         
             }
             base.Update(gameTime);
         }
@@ -92,6 +114,17 @@ namespace UltimaXNA.GameObjects
                 // This object is already in the collection.
             }
             return GetObject(nObject.GUID);
+        }
+
+        public void RemoveObject(int nGUID)
+        {
+            if (m_Objects.ContainsKey(nGUID))
+            {
+                m_Objects[nGUID].Dispose();
+                // When Dispose() is called, the object will tidy up and then
+                // set m_Dispose = true. Reference this with IsDisposed on the
+                // next update cycle.
+            }
         }
 
         public BaseObject GetObject(int nGUID)

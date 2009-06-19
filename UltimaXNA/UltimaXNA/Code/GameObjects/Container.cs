@@ -41,7 +41,6 @@ namespace UltimaXNA.GameObjects
             }
         }
 
-        //
         public GameObject this [int nIndex]
         {
             get

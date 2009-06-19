@@ -39,9 +39,17 @@ namespace UltimaXNA.GameObjects
                 new TileEngine.GameObjectTile(mObjectTypeID, nLocation, Movement.DrawFacing, this.GUID, 0));
         }
 
+        public override void Dispose()
+        {
+            // if is worn, let the wearer know we are disposing.
+            if (Wearer != null)
+                Wearer.UnWearItem(GUID);
+            base.Dispose();
+        }
 
         public event EVENT_AutomaticMoveWithinContainer SendPacket_MoveItemWithinContainer;
 
+        public Unit Wearer;
         // These will be added later...
         // public int Item_Type = 0;
         // public int Item_SubType = 0;
