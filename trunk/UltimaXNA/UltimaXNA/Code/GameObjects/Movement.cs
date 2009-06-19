@@ -203,13 +203,20 @@ namespace UltimaXNA.GameObjects
             m_DrawPosition = new DrawPosition(m_CurrentTile);
         }
 
+        public void ClearImmediate()
+        {
+            mFlushDrawObjects();
+        }
+
         private void mFlushDrawObjects()
         {
             if (DrawPosition == null)
                 return;
             TileEngine.MapCell iLastMapCell = World.Map.GetMapCell(DrawPosition.TileX, DrawPosition.TileY);
             if (iLastMapCell != null)
+            {
                 iLastMapCell.FlushObjectsByGUID(m_GUID);
+            }
         } 
 		// Issue 10 - Speed problems (Partial) - http://code.google.com/p/ultimaxna/issues/detail?id=10 - Smjert
 		public virtual float ComputeMovementSpeed()

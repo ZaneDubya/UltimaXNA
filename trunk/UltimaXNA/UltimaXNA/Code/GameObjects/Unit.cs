@@ -190,12 +190,69 @@ namespace UltimaXNA.GameObjects
 
     delegate void EVENT_UpdateHealthStaminaMana(BaseObject nThis);
 
+    class WornEquipment
+    {
+        private GameObject[] m_Equipment;
+        private Unit m_Owner;
+
+        public WornEquipment(Unit nOwner)
+        {
+            m_Equipment = new GameObject[(int)EquipLayer.LastValid + 1];
+            m_Owner = nOwner;
+        }
+
+        public GameObject this[int nIndex]
+        {
+            get
+            {
+                if (nIndex > (int)EquipLayer.LastValid)
+                    return null;
+                return m_Equipment[nIndex];
+            }
+            set
+            {
+                if (value == null)
+                {
+                    if (m_Equipment[nIndex] != null)
+                    {
+                        m_Equipment[nIndex].Wearer = null;
+                        m_Equipment[nIndex].Dispose();
+                        m_Equipment[nIndex] = null;
+                    }
+                }
+                else
+                {
+                    m_Equipment[nIndex] = value;
+                    value.Wearer = m_Owner;
+                }
+            }
+        }
+
+        public void ClearEquipment()
+        {
+            for (int i = 0; i <= (int)EquipLayer.LastValid; i++)
+            {
+                this[i] = null;
+            }
+        }
+
+        public void RemoveByGUID(int nGUID)
+        {
+            for (int i = 0; i <= (int)EquipLayer.LastValid; i++)
+            {
+                if (this[i] != null)
+                    if (this[i].GUID == nGUID)
+                    {
+                        this[i] = null;
+                    }
+            }
+        }
+    }
+
     class Unit : UltimaXNA.GameObjects.BaseObject
     {
 		// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
 		private int m_DisplayBodyID = 0;
-		public int MountDisplayID = 0;
-		
 		public int DisplayBodyID
 		{
 			get { return m_DisplayBodyID; }
@@ -207,8 +264,8 @@ namespace UltimaXNA.GameObjects
 			}
 		}
 		// Issue 6 - End
-        public GameObject[] Equipment = new GameObject[(int)EquipLayer.LastValid + 1];
 
+        public WornEquipment Equipment;
         private int m_Hue;
         public int Hue // Fix for large hue values per issue12 (http://code.google.com/p/ultimaxna/issues/detail?id=12) --ZDW 6/15/2009
         {
@@ -226,6 +283,10 @@ namespace UltimaXNA.GameObjects
         public CurrentMaxValue Health, Stamina, Mana;
         public event EVENT_UpdateHealthStaminaMana UpdateHealthStaminaMana;
 
+        public bool IsMounted
+        {
+            get { return Equipment[(int)EquipLayer.Mount] != null; }
+        }
         // These will be added later ...
         // public int CharmingGUID = 0;
         // public int SummoningGUID = 0;
@@ -289,6 +350,7 @@ namespace UltimaXNA.GameObjects
         {
             ObjectType = ObjectType.Unit;
 
+            Equipment = new WornEquipment(this);
             Movement.RequiresUpdate = true;
             m_Animation = new UnitAnimation();
 			// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
@@ -331,42 +393,59 @@ namespace UltimaXNA.GameObjects
 			m_Animation.Mounted = false;
             GameObject mount = Equipment[(int)EquipLayer.Mount];
 			TileEngine.MobileTile mobtile = null;
-			if ( mount != null && mount.ObjectTypeID != 0)
-			{
-				Movement.Mounted = m_Animation.Mounted = true;
-				mobtile = new TileEngine.MobileTile(
+            if (mount != null && mount.ObjectTypeID != 0)
+            {
+                Movement.Mounted = m_Animation.Mounted = true;
+                mobtile = new TileEngine.MobileTile(
                                 mount.ObjectTypeID, nLocation, nOffset,
-								iDirection, m_Animation.Action == UnitActions.nothing ? 2 : (int)m_Animation.Action, m_Animation.AnimationFrame,
-								GUID, 0x1A, mount.Hue, false);
+                                iDirection, m_Animation.Action == UnitActions.nothing ? 2 : (int)m_Animation.Action, m_Animation.AnimationFrame,
+                                GUID, 0x1A, mount.Hue, false);
 
-				mobtile.SubType = TileEngine.MobileTileTypes.Mount;
-				nCell.AddMobileTile(mobtile);
-			}
+                mobtile.SubType = TileEngine.MobileTileTypes.Mount;
+                nCell.AddMobileTile(mobtile);
+            }
+            else
+            {
+                Movement.Mounted = m_Animation.Mounted = false;
+            }
 
 			int iAction = m_Animation.GetAction_People();
-
+            
 			mobtile = new TileEngine.MobileTile(DisplayBodyID, nLocation, nOffset, iDirection, iAction, m_Animation.AnimationFrame, GUID, 1, Hue, m_Animation.Mounted);
 			mobtile.SubType = TileEngine.MobileTileTypes.Body;
 			nCell.AddMobileTile(mobtile);
 			// Issue 6 - End
-				
-					
+
+            
             for (int i = 0; i < m_DrawLayers.Length; i++)
             {
-				// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
-				if ( Equipment[m_DrawLayers[i]] != null && Equipment[m_DrawLayers[i]].AnimationDisplayID != 0 )
+                // Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
+                if ( Equipment[m_DrawLayers[i]] != null && Equipment[m_DrawLayers[i]].AnimationDisplayID != 0 )
                 {
-					mobtile = new TileEngine.MobileTile(
-							Equipment[m_DrawLayers[i]].AnimationDisplayID, nLocation, nOffset,
-							iDirection, iAction, m_Animation.AnimationFrame,
-							GUID, i + 1, Equipment[m_DrawLayers[i]].Hue, m_Animation.Mounted);
+                    mobtile = new TileEngine.MobileTile(
+                            Equipment[m_DrawLayers[i]].AnimationDisplayID, nLocation, nOffset,
+                            iDirection, iAction, m_Animation.AnimationFrame,
+                            GUID, i + 1, Equipment[m_DrawLayers[i]].Hue, m_Animation.Mounted);
 					
-					mobtile.SubType = TileEngine.MobileTileTypes.Equipment;
-					nCell.AddMobileTile(mobtile);
+                    mobtile.SubType = TileEngine.MobileTileTypes.Equipment;
+                    nCell.AddMobileTile(mobtile);
 					
                 }
-				// Issue 6 - End
+                // Issue 6 - End
             }
+        }
+
+        public override void Dispose()
+        {
+            // clear the objects that this mobile is wearing.
+            Equipment.ClearEquipment();
+            base.Dispose();
+        }
+
+        public void UnWearItem(int nGUID)
+        {
+            //unwear this item!
+            Equipment.RemoveByGUID(nGUID);
         }
 
         public void Animation(int action, int frameCount, int repeatCount, bool reverse, bool repeat, int delay)
