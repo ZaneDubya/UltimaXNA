@@ -683,8 +683,12 @@ namespace UltimaXNA.DataLocal
             int width = bin.ReadUInt16();
             int height = bin.ReadUInt16();
 
-            // Bitmap bmp = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format16bppRgb555);
-            // System.Drawing.Imaging.BitmapData bd = bmp.LockBits(new System.Drawing.Rectangle(0, 0, width, height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format16bppRgb555);
+            // Fix for animations with no data.
+            if ((width == 0) || (height == 0))
+            {
+                m_Texture = null;
+                return;
+            }
 
             ushort[] data = new ushort[width * height];
 
