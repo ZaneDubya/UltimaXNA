@@ -34,6 +34,7 @@ namespace UltimaXNA
             
             //load the hues texture
             UltimaXNA.DataLocal.HuesXNA.Initialize(GraphicsDevice);
+            UltimaXNA.DataLocal.StringList.LoadStringList("enu");
 
             this.Content.RootDirectory = "Content";
 
