@@ -11,13 +11,12 @@ namespace UltimaXNA.GameObjects
     public enum ObjectType
     {
         Object = 1,
-        Item = ObjectType.Object | 2,
-        Container = ObjectType.Item | 4,
-        Unit = ObjectType.Object | 8,
-        Player = ObjectType.Unit | 16,
-        GameObject = ObjectType.Object | 32,
-        DynamicObject = ObjectType.GameObject | 64,
-        Corpse = ObjectType.GameObject | 128
+        Unit = ObjectType.Object | 2,
+        Player = ObjectType.Unit | 4,
+        GameObject = ObjectType.Object | 8,
+        DynamicObject = ObjectType.GameObject | 16,
+        Corpse = ObjectType.GameObject | 32,
+        Container = ObjectType.GameObject | 64,
     }
 
     struct ItemEnchantment

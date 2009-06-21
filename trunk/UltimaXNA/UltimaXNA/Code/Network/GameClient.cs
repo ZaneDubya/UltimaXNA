@@ -39,6 +39,9 @@ namespace UltimaXNA.Network
         void Disconnect();
         void Send_PickUpItem(int nGUID, int nNumInStack);
         void Send_DropItem(int nGUID, int nX, int nY, int nZ, int nContainerGUID);
+        void Send_RequestContextMenu(int nGUID);
+        void Send_ContextMenuResponse(int nGUID, int nResponseCode);
+        void Send_BuyItemFromVendor(int nVendorGUID, int nItemGUID, int nAmount);
     }
 
     class GameClient : GameComponent, IGameClient
@@ -230,6 +233,21 @@ namespace UltimaXNA.Network
                     case OpCodes.SMSG_COMPRESSEDGUMP:
                         m_ReceiveCompressedGump(iPacket);
                         break;
+                    case OpCodes.SMSG_PlayMusic:
+                        m_ReceivePlayMusic(iPacket);
+                        break;
+                    case OpCodes.SMSG_OpenBuyWindow:
+                        m_ReceiveOpenBuyWindow(iPacket);
+                        break;
+                    case OpCodes.SMSG_OpenPaperdoll:
+                        m_ReceiveOpenPaperdoll(iPacket);
+                        break;
+                    case OpCodes.SMSG_MegaCliLoc:
+                        m_ReceiveMegaCliLoc(iPacket);
+                        break;
+                    case OpCodes.MSG_BuyItemFromVendor:
+                        m_ReceiveEndVendorSell(iPacket);
+                        break;
                     default:
                         // throw (new System.Exception("Unknown Opcode: " + nPacket.OpCode));
                         break;
@@ -358,6 +376,25 @@ namespace UltimaXNA.Network
             this.SendPacket(iPacket);
         }
 
+        public void Send_RequestContextMenu(int nGUID)
+        {
+            Packet iPacket = new Packet(OpCodes.MSG_GENERALINFO);
+            iPacket.Write((short)9); // Packet size.
+            iPacket.Write((short)0x13); // Subcommand requesting context menu.
+            iPacket.Write((int)nGUID);
+            this.SendPacket(iPacket);
+        }
+
+        public void Send_ContextMenuResponse(int nGUID, int iResponseCode)
+        {
+            Packet iPacket = new Packet(OpCodes.MSG_GENERALINFO);
+            iPacket.Write((short)11); // Packet size.
+            iPacket.Write((short)0x15); // Subcommand responding to context menu.
+            iPacket.Write((int)nGUID);
+            iPacket.Write((short)iResponseCode);
+            this.SendPacket(iPacket);
+        }
+
         public void Send_PickUpItem(int nGUID, int nNumInStack)
         {
             Packet iPacket = new Packet(OpCodes.CMSG_PICKUPITEM);
@@ -383,6 +420,19 @@ namespace UltimaXNA.Network
             Packet iPacket = new Packet(OpCodes.MSG_REQUESTNAME);
             iPacket.Write((short)7);
             iPacket.Write((int)nGUID);
+            this.SendPacket(iPacket);
+        }
+
+        public void Send_BuyItemFromVendor(int nVendorGUID, int nItemGUID, int nAmount)
+        {
+            Packet iPacket = new Packet(OpCodes.MSG_BuyItemFromVendor);
+            iPacket.Write((short)15); // Packet size - one item at a time, so this is a set value.
+            iPacket.Write((int)nVendorGUID);
+            iPacket.Write((byte)0x02); // flag: 0x00 - no items following, 0x02 - items following
+            // For each item... but only one in this packet.
+            iPacket.Write((byte)0x1A); // Always (0x1A)
+            iPacket.Write((int)nItemGUID); // (from 3C packet)
+            iPacket.Write((short)nAmount); // # bought
             this.SendPacket(iPacket);
         }
 
@@ -524,6 +574,9 @@ namespace UltimaXNA.Network
                     // 2 = (switch to) ILSHENAR map
                     // !!! unhandled! We default to the fel/tram map
                     break;
+                case 0x14: // return context menu
+                    m_ReceiveContextMenu(nPacket);
+                    break;
                 case 0x18: // Number of maps
                     m_ReceiveMapPatches(nPacket);
                     break;
@@ -544,6 +597,40 @@ namespace UltimaXNA.Network
                 iMapPatches[i] = new int[2];
                 iMapPatches[i][0] = nPacket.ReadInt();
                 iMapPatches[i][1] = nPacket.ReadInt();
+            }
+        }
+
+        private void m_ReceiveContextMenu(Packet nPacket)
+        {
+            nPacket.ReadByte(); // unknown (0x00)
+            int iSubCommand = nPacket.ReadByte(); // 0x01 for 2D, 0x02 for KR
+            int iGUID = nPacket.ReadInt();
+            int iNumEntriesInContext = nPacket.ReadByte();
+
+            GameObjects.Unit iMobile = (GameObjects.Unit)m_GameObjectsService.GetObject(iGUID);
+
+            ContextMenu iMenu = new ContextMenu();
+
+            for (int i = 0; i < iNumEntriesInContext; i++)
+            {
+                int iUniqueID = nPacket.ReadUShort();
+                int iClilocID = nPacket.ReadUShort() + 3000000;
+                int iFlags = nPacket.ReadUShort(); // 0x00=enabled, 0x01=disabled, 0x02=arrow, 0x20 = color
+                int iColor = 0;
+                if ((iFlags & 0x20) == 0x20)
+                {
+                    iColor = nPacket.ReadUShort();
+                }
+                iMenu.AddItem(iUniqueID, iClilocID, iFlags, iColor);
+            }
+            iMenu.FinalizeMenu();
+
+            if (iMenu.HasContextMenu)
+            {
+                if (iMenu.HasContext_Merchant)
+                {
+                    Send_ContextMenuResponse(iGUID, iMenu.Context("Buy").ResponseCode);
+                }
             }
         }
 
@@ -869,10 +956,19 @@ namespace UltimaXNA.Network
             iY &= 0x3FFF;
 
             // Now create the GameObject.
-            GameObjects.GameObject iObject = (GameObjects.GameObject)m_GameObjectsService.AddObject(
-                new GameObjects.GameObject((int)iObjectSerial));
-            iObject.ObjectTypeID = iItemID;
-            iObject.Movement.SetPositionInstant(iX, iY, iZ);
+            // If the iItemID < 0x4000, this is a regular game object.
+            // If the iItemID >= 0x4000, then this is a multiobject.
+            if (iItemID <= 0x4000)
+            {
+                GameObjects.GameObject iObject = (GameObjects.GameObject)m_GameObjectsService.AddObject(
+                    new GameObjects.GameObject((int)iObjectSerial));
+                iObject.ObjectTypeID = iItemID;
+                iObject.Movement.SetPositionInstant(iX, iY, iZ);
+            }
+            else
+            {
+                // create a multi object. Unhandled !!!
+            }
         }
 
         private void m_ReceiveMobileAnimation(Packet nPacket)
@@ -988,6 +1084,10 @@ namespace UltimaXNA.Network
         {
             int iGUID = nPacket.ReadInt();
             int iGumpModel = nPacket.ReadUShort();
+
+            // We can safely ignore 0x30 - this is the buy window.
+            if (iGumpModel == 48)
+                return;
 
             // Only try to open a container of type Container. Note that GameObjects can
             // have container objects and will expose them when called through GetContainerObject(int)
@@ -1134,6 +1234,37 @@ namespace UltimaXNA.Network
             // http://docs.polserver.com/packets/index.php?Packet=0xC1
         }
 
+        private void m_ReceiveMegaCliLoc(Packet nPacket)
+        {
+            nPacket.ReadUShort(); // packet length. Unused in this context.
+            nPacket.ReadUShort(); // Always 0001
+            int iGUID = nPacket.ReadInt(); // Serial of item/creature
+            nPacket.ReadUShort(); // Always 0002
+            int iGUID2 = nPacket.ReadInt(); // Serial of item/creature in all tests. This could be the serial of the item the entry to appear over.
+
+            // Loop of all the item/creature's properties to display in the order to display them. The name is always the first entry.
+            int iCliLocID = nPacket.ReadInt();
+            while (iCliLocID != 0)
+            {
+                int iLengthText = nPacket.ReadUShort();
+                char[] iChars = nPacket.ReadChars(iLengthText);
+                string iText = m_RemoveNullGarbageFromString(iChars);
+                iCliLocID = nPacket.ReadInt();
+            }
+            // BYTE[4] Cliloc ID
+            // BYTE[2] Length of (if any) Text to add into/with the cliloc
+            // BYTE[?] Unicode text to be added into the cliloc. Not sent if Length of text above is 0
+
+            // BYTE[4] 00000000 - Sent as end of packet/loop
+        }
+
+        private void m_ReceiveEndVendorSell(Packet nPacket)
+        {
+            nPacket.ReadShort(); // packet length = 8
+            int iVendorGUID = nPacket.ReadInt();
+            nPacket.ReadByte(); // always = 0
+        }
+
         private void m_ReceiveGraphicalEffect(Packet nPacket)
         {
             // unhandled !!!
@@ -1201,6 +1332,32 @@ namespace UltimaXNA.Network
         private void m_ReceiveCompressedGump(Packet nPacket)
         {
             // unhandled !!!
+        }
+
+        private void m_ReceivePlayMusic(Packet nPacket)
+        {
+            // unhandled !!!
+        }
+
+        private void m_ReceiveOpenBuyWindow(Packet nPacket)
+        {
+            nPacket.ReadShort(); // Packet Length
+            int iVendorPackGUID = nPacket.ReadInt();
+            int iNumItems = nPacket.ReadByte();
+            for (int i = 0; i < iNumItems; i++)
+            {
+                int iPrice = nPacket.ReadInt();
+                int iDescriptionLength = nPacket.ReadByte();
+                string iDescription = System.Text.ASCIIEncoding.ASCII.GetString((nPacket.ReadBytes(iDescriptionLength)));
+            }
+
+            GameObjects.Container iObject = ((GameObjects.Container)m_GameObjectsService.GetObject(iVendorPackGUID));
+            m_GUIService.Merchant_Open(iObject, 0);
+        }
+
+        private void m_ReceiveOpenPaperdoll(Packet nPacket)
+        {
+            // unhandled;
         }
 
         private GameObjects.GameObject m_AddItem(int nGUID, int nItemID, int nHue, int nContainerGUID, int nAmount)

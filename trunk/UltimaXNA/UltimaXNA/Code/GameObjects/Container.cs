@@ -182,56 +182,72 @@ namespace UltimaXNA.GameObjects
         {
             // The server often sends as list of all the items in a container.
             // We want to filter out items we already have in our list.
-            if (mContentsClass.ContainsItem(nObject.GUID))
+            if (this.Wearer.ObjectType != ObjectType.Player)
             {
-                // We know the object is already in our container. However, it might have moved
-                // between slots. We need to check to see if the object's InvX value validates,
-                // and if the item in slot[object.InvX] is equal to this object. If either of
-                // these checks come back as false, then we need to move the object to a new slot.
-                if (!nObject.Item_ChecksumValidates())
+                // We can't move items in that we don't own.
+                // This is only a temporary fix! What about moving things around in boxes?
+                if (mContentsClass.ContainsItem(nObject.GUID))
                 {
-                    mContentsClass.RemoveItemByGUID(nObject.GUID);
-                    nObject.Item_MoveToNewSlot(mContentsClass.NextAvailableSlot);
-                    mContentsClass[nObject.Item_InvX_SlotIndex] = nObject;
-                    return;
+                    // don't add, already included.
                 }
-
-                if (mContentsClass[nObject.Item_InvX_SlotIndex] != nObject)
+                else
                 {
-                    mContentsClass.RemoveItemByGUID(nObject.GUID);
-                    nObject.Item_MoveToNewSlot(mContentsClass.NextAvailableSlot);
-                    mContentsClass[nObject.Item_InvX_SlotIndex] = nObject;
-                    return;
+                    mContentsClass[mContentsClass.NextAvailableSlot] = nObject;
                 }
-
-                // At this point, we know that the object is already in the correct slot in mContents.
-                // Nothing else to do!
-                return;
             }
             else
             {
-                // The item is not in our container. We need to place it in a slot. First we check if
-                // this new item's InvX value validates - if it doesn't, then we need to place it in a
-                // new slot.
-                if (!nObject.Item_ChecksumValidates())
+                if (mContentsClass.ContainsItem(nObject.GUID))
                 {
-                    nObject.Item_MoveToNewSlot(mContentsClass.NextAvailableSlot);
-                    mContentsClass[nObject.Item_InvX_SlotIndex] = nObject;
-                    return;
-                }
-                
-                // The item's InvX value validates, so it thinks it occupies the slot == InvX. But what
-                // if we have already placed an item in that slot? We can't double book. Move the item to
-                // the next available slot.
-                if (mContentsClass[nObject.Item_InvX_SlotIndex] != null)
-                {
-                    nObject.Item_MoveToNewSlot(mContentsClass.NextAvailableSlot);
-                    mContentsClass[nObject.Item_InvX_SlotIndex] = nObject;
-                    return;
-                }
+                    // We know the object is already in our container. However, it might have moved
+                    // between slots. We need to check to see if the object's InvX value validates,
+                    // and if the item in slot[object.InvX] is equal to this object. If either of
+                    // these checks come back as false, then we need to move the object to a new slot.
+                    if (!nObject.Item_ChecksumValidates())
+                    {
+                        mContentsClass.RemoveItemByGUID(nObject.GUID);
+                        nObject.Item_MoveToNewSlot(mContentsClass.NextAvailableSlot);
+                        mContentsClass[nObject.Item_InvX_SlotIndex] = nObject;
+                        return;
+                    }
 
-                // The object's checksum validates and the slot it wants to move to is open. Move in!
-                mContentsClass[nObject.Item_InvX_SlotIndex] = nObject;
+                    if (mContentsClass[nObject.Item_InvX_SlotIndex] != nObject)
+                    {
+                        mContentsClass.RemoveItemByGUID(nObject.GUID);
+                        nObject.Item_MoveToNewSlot(mContentsClass.NextAvailableSlot);
+                        mContentsClass[nObject.Item_InvX_SlotIndex] = nObject;
+                        return;
+                    }
+
+                    // At this point, we know that the object is already in the correct slot in mContents.
+                    // Nothing else to do!
+                    return;
+                }
+                else
+                {
+                    // The item is not in our container. We need to place it in a slot. First we check if
+                    // this new item's InvX value validates - if it doesn't, then we need to place it in a
+                    // new slot.
+                    if (!nObject.Item_ChecksumValidates())
+                    {
+                        nObject.Item_MoveToNewSlot(mContentsClass.NextAvailableSlot);
+                        mContentsClass[nObject.Item_InvX_SlotIndex] = nObject;
+                        return;
+                    }
+
+                    // The item's InvX value validates, so it thinks it occupies the slot == InvX. But what
+                    // if we have already placed an item in that slot? We can't double book. Move the item to
+                    // the next available slot.
+                    if (mContentsClass[nObject.Item_InvX_SlotIndex] != null)
+                    {
+                        nObject.Item_MoveToNewSlot(mContentsClass.NextAvailableSlot);
+                        mContentsClass[nObject.Item_InvX_SlotIndex] = nObject;
+                        return;
+                    }
+
+                    // The object's checksum validates and the slot it wants to move to is open. Move in!
+                    mContentsClass[nObject.Item_InvX_SlotIndex] = nObject;
+                }
             }
         }
 
