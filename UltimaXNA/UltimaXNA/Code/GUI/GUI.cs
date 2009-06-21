@@ -20,6 +20,7 @@ namespace UltimaXNA.GUI
         void LoadInWorldGUI();
         void LoadLoginGUI();
         void Container_Open(GameObjects.BaseObject nContainerObject, int nGump);
+        void Merchant_Open(GameObjects.BaseObject nContainerObject, int nGump);
         void ErrorPopup_Modal(string nText);
         Window Window(string nWindowName);
         void CloseWindow(string nWindowName);
@@ -36,6 +37,7 @@ namespace UltimaXNA.GUI
 
         private Dictionary<string, Window> m_GUIWindows;
         GameObjects.IGameObjects m_GameObjectsService;
+        Network.IGameClient m_GameClientService;
 
         public EngineGUI(Game game)
             : base(game)
@@ -59,9 +61,11 @@ namespace UltimaXNA.GUI
             fontArial14 = Game.Content.Load<SpriteFont>(@"fonts\ArialNarrow10");
 
             m_GameObjectsService = (GameObjects.IGameObjects)Game.Services.GetService(typeof(GameObjects.IGameObjects));
+            m_GameClientService = (Network.IGameClient)Game.Services.GetService(typeof(Network.IGameClient));
 
             GUIHelper.SetDevice(graphics.GraphicsDevice);
             GUIHelper.Event_DropItemIntoSlot += m_DropItemIntoSlot;
+            GUIHelper.Event_BuyItemFromVendor += m_BuyItemFromVendor;
         }
 
         protected override void UnloadContent()
@@ -190,6 +194,19 @@ namespace UltimaXNA.GUI
             }
         }
 
+        public void Merchant_Open(GameObjects.BaseObject nContainerObject, int nGump)
+        {
+            string iContainerKey = "Merchant:" + nContainerObject.GUID;
+            if (m_GUIWindows.ContainsKey(iContainerKey))
+            {
+                // focus the window
+            }
+            else
+            {
+                m_GUIWindows.Add(iContainerKey, new Window_Merchant(nContainerObject, formCollection));
+            }
+        }
+
         public void ErrorPopup_Modal(string nText)
         {
             m_GUIWindows.Add("ErrorModal", new ErrorModal(formCollection, nText));
@@ -208,6 +225,17 @@ namespace UltimaXNA.GUI
             {
                 throw (new Exception("No support for moving items between containers."));
             }
+        }
+
+        private void m_BuyItemFromVendor(int nVendorGUID, int nItemGUID, int nAmount)
+        {
+            // Due to the way that the RunUO server ( and all UO servers ) are set up,
+            // if we want to buy one item at a item, we need to:
+            // 1. Buy the item.
+            // 2. Re-request the context menu.
+            // 3. Send the context menu response for buying. (handled automatically)
+            m_GameClientService.Send_BuyItemFromVendor(nVendorGUID, nItemGUID, nAmount);
+            m_GameClientService.Send_RequestContextMenu(nVendorGUID);
         }
 
         private void mUpdateWindows()
@@ -239,10 +267,12 @@ namespace UltimaXNA.GUI
     }
 
     delegate void GUIEVENT_DropItemIntoSlot(GameObjects.BaseObject nHeldObject, GameObjects.BaseObject nDestContainer, int nDestSlot);
+    delegate void GUIEVENT_BuyItemFromVendor(int nVendorGUID, int nItemGUID, int nAmount);
 
     static class GUIHelper
     {
         public static event GUIEVENT_DropItemIntoSlot Event_DropItemIntoSlot;
+        public static event GUIEVENT_BuyItemFromVendor Event_BuyItemFromVendor;
 
         private static bool m_IsPrepared = false;
         private static Texture2D m_TextureBorder = null;
@@ -268,6 +298,11 @@ namespace UltimaXNA.GUI
         {
             Event_DropItemIntoSlot(MouseHoldingItem, nContainerObject, nSlot);
             MouseHoldingItem = null;
+        }
+
+        public static void BuyItemFromVendor(int nVendorGUID, int nItemGUID, int nAmount)
+        {
+            Event_BuyItemFromVendor(nVendorGUID, nItemGUID, nAmount);
         }
 
         public static GameObjects.GameObject ToolTipItem

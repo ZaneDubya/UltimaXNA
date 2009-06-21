@@ -97,6 +97,7 @@
     <Compile Include="Code\DataLocal\Art.cs" />
     <Compile Include="Code\DataLocal\Gumps.cs" />
     <Compile Include="Code\DataLocal\SharedMethods.cs" />
+    <Compile Include="Code\DataLocal\StringList.cs" />
     <Compile Include="Code\Engine.cs" />
     <Compile Include="Code\DataLocal\FileManager.cs" />
     <Compile Include="Code\DataLocal\FileIndexClint.cs" />
@@ -108,6 +109,7 @@
     <Compile Include="Code\GUI\Windows\ErrorModal.cs" />
     <Compile Include="Code\GUI\Windows\Login.cs" />
     <Compile Include="Code\GUI\Windows\LoginBackdrop.cs" />
+    <Compile Include="Code\GUI\Windows\Merchant.cs" />
     <Compile Include="Code\GUI\Windows\StatusFrame.cs" />
     <Compile Include="Code\GUI\Windows\Window.cs" />
     <Compile Include="Code\GUI\Windows\Chat.cs" />
@@ -141,6 +143,7 @@
     <Compile Include="Code\MiscUtil\Conversion\LittleEndianBitConverter.cs" />
     <Compile Include="Code\MiscUtil\EndianBinaryWriter.cs" />
     <Compile Include="Code\MiscUtil\HexEncoding.cs" />
+    <Compile Include="Code\Network\ContextMenuResponse.cs" />
     <Compile Include="Code\Network\SocketClient.cs" />
     <Compile Include="Code\Network\GameClient.cs" />
     <Compile Include="Code\Network\SocketListener.cs" />

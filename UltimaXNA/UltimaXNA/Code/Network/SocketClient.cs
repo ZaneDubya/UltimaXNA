@@ -297,6 +297,16 @@ namespace UltimaXNA.Network
                     return (int)EndianBitConverter.Big.ToUInt16(data, nPosition + 1);
                 case OpCodes.SMSG_COMPRESSEDGUMP:
                     return (int)EndianBitConverter.Big.ToUInt16(data, nPosition + 1);
+                case OpCodes.SMSG_PlayMusic:
+                    return 3;
+                case OpCodes.SMSG_OpenBuyWindow:
+                    return (int)EndianBitConverter.Big.ToUInt16(data, nPosition + 1);
+                case OpCodes.SMSG_OpenPaperdoll:
+                    return 66;
+                case OpCodes.SMSG_MegaCliLoc:
+                    return (int)EndianBitConverter.Big.ToUInt16(data, nPosition + 1);
+                case OpCodes.MSG_BuyItemFromVendor:
+                    return (int)EndianBitConverter.Big.ToUInt16(data, nPosition + 1);
                 default :
                     throw new Exception("Unknown packet! Opcocde: 0x" + MiscUtil.HexEncoding.ToString(iOpCode));
             }

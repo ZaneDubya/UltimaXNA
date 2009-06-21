@@ -64,5 +64,10 @@ namespace UltimaXNA.Network
         SMSG_WORNITEM = 0x2E,
         MSG_REQUESTNAME = 0x98,
         SMSG_COMPRESSEDGUMP = 0xDD, 
+        SMSG_PlayMusic = 0x6D,
+        SMSG_OpenBuyWindow = 0x74,
+        SMSG_OpenPaperdoll = 0x88,
+        SMSG_MegaCliLoc = 0xD6,
+        MSG_BuyItemFromVendor = 0x3B,
     }
 }

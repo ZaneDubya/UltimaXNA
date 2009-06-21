@@ -123,7 +123,7 @@ namespace UltimaXNA
             if (mInputService.Mouse.Buttons[0].Release)
                 mContinuousMoveCheck = false;
 
-            // Check for continuous movement.
+            // Changed to leverage movementFollowsMouse interface option -BERT
             if (mContinuousMoveCheck)
             {
                 if (mInputService.Mouse.Buttons[0].IsDown)
@@ -180,34 +180,6 @@ namespace UltimaXNA
                 m_CheckMovement(true);
             }
 
-            /*
-            // Changed to leverage movementFollowsMouse interface option -BERT
-            if ( movementFollowsMouse ? mInputService.Mouse.Buttons[0].IsDown : mInputService.Mouse.Buttons[0].Press )
-            {
-				// Issue 15 - Mouse left clicks on the wrong topmost object - http://code.google.com/p/ultimaxna/issues/detail?id=15 - Smjert
-                // Left button pressed ... move to the tile under the mouse cursor, if there is one...
-				TileEngine.IMapObject iTopMostObject = mTileEngineService.MouseOverGroundTile;
-
-				if ( iTopMostObject != null )
-                {
-                    int offset = 0;
-					if ( mTileEngineService.MouseOverObject != null && mTileEngineService.MouseOverObject.Z >= iTopMostObject.Z )
-					{
-						iTopMostObject = mTileEngineService.MouseOverObject;
-						if(iTopMostObject.Type == UltimaXNA.TileEngine.MapObjectTypes.StaticTile)
-							offset = TileData.ItemData[iTopMostObject.ID - 0x4000].CalcHeight;
-						else if(iTopMostObject.Type == UltimaXNA.TileEngine.MapObjectTypes.GameObjectTile)
-							offset = TileData.ItemData[iTopMostObject.ID].CalcHeight;
-					}
-
-                    ((GameObjects.Unit)mGameObjectsService.GetObject(mGameObjectsService.MyGUID)).Move(
-						(int)iTopMostObject.Position.X,
-						(int)iTopMostObject.Position.Y,
-						(int)iTopMostObject.Z + offset);
-                }
-				// Issue 15 - End
-            }*/
-
             if (mInputService.Mouse.Buttons[1].Press)
             {
                 // Right button pressed ... activate this object.
@@ -224,7 +196,10 @@ namespace UltimaXNA
                             mGameClientService.Send_UseRequest(iObject.GUID);
                             break;
                         case UltimaXNA.GameObjects.ObjectType.Unit:
+                            // and we also 'use' this unit.
                             mGameClientService.Send_UseRequest(iObject.GUID);
+                            // We request a context sensitive menu...
+                            mGameClientService.Send_RequestContextMenu(iObject.GUID);
                             break;
                         case UltimaXNA.GameObjects.ObjectType.Player:
                             if (iObject.GUID == mGameObjectsService.MyGUID)
@@ -260,6 +235,36 @@ namespace UltimaXNA
             {
                 // The player has not yet been loaded
             }
+
+            #region oldmovecode
+            /*
+            // Changed to leverage movementFollowsMouse interface option -BERT
+            if ( movementFollowsMouse ? mInputService.Mouse.Buttons[0].IsDown : mInputService.Mouse.Buttons[0].Press )
+            {
+				// Issue 15 - Mouse left clicks on the wrong topmost object - http://code.google.com/p/ultimaxna/issues/detail?id=15 - Smjert
+                // Left button pressed ... move to the tile under the mouse cursor, if there is one...
+				TileEngine.IMapObject iTopMostObject = mTileEngineService.MouseOverGroundTile;
+
+				if ( iTopMostObject != null )
+                {
+                    int offset = 0;
+					if ( mTileEngineService.MouseOverObject != null && mTileEngineService.MouseOverObject.Z >= iTopMostObject.Z )
+					{
+						iTopMostObject = mTileEngineService.MouseOverObject;
+						if(iTopMostObject.Type == UltimaXNA.TileEngine.MapObjectTypes.StaticTile)
+							offset = TileData.ItemData[iTopMostObject.ID - 0x4000].CalcHeight;
+						else if(iTopMostObject.Type == UltimaXNA.TileEngine.MapObjectTypes.GameObjectTile)
+							offset = TileData.ItemData[iTopMostObject.ID].CalcHeight;
+					}
+
+                    ((GameObjects.Unit)mGameObjectsService.GetObject(mGameObjectsService.MyGUID)).Move(
+						(int)iTopMostObject.Position.X,
+						(int)iTopMostObject.Position.Y,
+						(int)iTopMostObject.Z + offset);
+                }
+				// Issue 15 - End
+            }*/
+            #endregion
         }
 
         private void m_CheckMovement(bool nPressEvent)
