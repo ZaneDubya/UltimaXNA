@@ -211,7 +211,13 @@ namespace UltimaXNA.GameObjects
                         return;
                     }
 
-                    if (mContentsClass[nObject.Item_InvX_SlotIndex] != nObject)
+                    if (mContentsClass[nObject.Item_InvX_SlotIndex].GUID == nObject.GUID)
+                    {
+                        mContentsClass.RemoveItemByGUID(nObject.GUID);
+                        mContentsClass[nObject.Item_InvX_SlotIndex] = nObject;
+                        return;
+                    }
+                    else
                     {
                         mContentsClass.RemoveItemByGUID(nObject.GUID);
                         nObject.Item_MoveToNewSlot(mContentsClass.NextAvailableSlot);
