@@ -44,6 +44,11 @@ namespace UltimaXNA.Input
                 m_Keyboard.Update(gameTime);
                 m_Mouse.Update(gameTime);
             }
+            else
+            {
+                m_Keyboard.NoInput();
+                m_Mouse.NoInput();
+            }
         }
     }
 }

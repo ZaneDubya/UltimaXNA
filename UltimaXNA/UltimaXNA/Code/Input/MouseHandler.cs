@@ -26,6 +26,14 @@ namespace UltimaXNA.Input
             }
         }
 
+        public void NoInput()
+        {
+            Position = new Vector2(99999, 99999);
+            Buttons[0].Update(ButtonState.Released, ButtonState.Released);
+            Buttons[1].Update(ButtonState.Released, ButtonState.Released);
+            m_MouseStateLast = m_MouseState;
+        }
+
         public void Update(GameTime gameTime)
         {
             m_MouseState = Microsoft.Xna.Framework.Input.Mouse.GetState();

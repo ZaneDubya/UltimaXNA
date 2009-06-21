@@ -35,6 +35,12 @@ namespace UltimaXNA.Input
             return false;
         }
 
+        public void NoInput()
+        {
+            m_PressedKeys.Clear();
+            m_PressedKeys_Last = new List<Keys>(m_PressedKeys);
+        }
+
         public void Update(GameTime gameTime)
         {
             KeyboardState iKeyboardState;
