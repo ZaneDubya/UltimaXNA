@@ -1116,6 +1116,7 @@ namespace UltimaXNA.Network
                 int iAmount = nPacket.ReadUShort();
                 int iX = nPacket.ReadShort();
                 int iY = nPacket.ReadShort();
+                int iGridLocation = nPacket.ReadByte(); // always 0 in RunUO. Added to fix issue24 http://code.google.com/p/ultimaxna/issues/detail?id=24 -ZDW
                 int iContainerGUID = nPacket.ReadInt();
                 int iHue = nPacket.ReadUShort();
 
