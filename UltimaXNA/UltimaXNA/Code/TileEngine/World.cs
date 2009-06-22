@@ -50,7 +50,7 @@ namespace UltimaXNA.TileEngine
 
             if (m_GameStateService.InWorld)
             {
-                    GameObjects.Movement iCenterPosition = m_GameObjectsService.GetObject(m_GameObjectsService.MyGUID).Movement;
+                    GameObjects.Movement iCenterPosition = m_GameObjectsService.GetPlayerObject().Movement;
 
                     if ((X != iCenterPosition.DrawPosition.TileX) ||
                         (Y != iCenterPosition.DrawPosition.TileY))

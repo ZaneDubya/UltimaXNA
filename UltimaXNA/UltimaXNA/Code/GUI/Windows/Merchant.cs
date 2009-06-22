@@ -9,7 +9,7 @@ namespace UltimaXNA.GUI
     {
         private Vector2 mWindowSize = new Vector2(345, 334);
         private Vector2 mBGOffset = new Vector2(-12, -13);
-        private GameObjects.Container mContainerObject;
+        private GameObjects.GameObject mContainerObject;
         private int mLastContainerUpdated = -1;
 
         private int mScrollY, mMaxScrollY = 0;
@@ -19,7 +19,7 @@ namespace UltimaXNA.GUI
         public Window_Merchant(GameObjects.BaseObject nContainerObject, FormCollection nFormCollection)
             : base(nFormCollection)
         {
-            mContainerObject = (GameObjects.Container)nContainerObject;
+            mContainerObject = (GameObjects.GameObject)nContainerObject;
 
             //Create a new form
             string iFormName = "frmMerchant:" + mContainerObject.GUID;
@@ -84,7 +84,7 @@ namespace UltimaXNA.GUI
         {
             // Buy this item!
             int iIndex = Int32.Parse(((CustomButton)obj).Name.Substring(6)) + mScrollY * 2;
-            GameObjects.GameObject iItem = mContainerObject.GetContents(iIndex);
+            GameObjects.GameObject iItem = mContainerObject.ContainerObject.GetContents(iIndex);
             if (iItem != null)
             {
                 // pick the item up!
@@ -105,7 +105,7 @@ namespace UltimaXNA.GUI
         private void btnInv_OnOver(object obj, EventArgs e)
         {
             int iIndex = Int32.Parse(((CustomButton)obj).Name.Substring(6)) + mScrollY * 2;
-            GameObjects.GameObject iItem = mContainerObject.GetContents(iIndex);
+            GameObjects.GameObject iItem = mContainerObject.ContainerObject.GetContents(iIndex);
 
             if (GUIHelper.MouseHoldingItem != null)
             {
@@ -126,7 +126,7 @@ namespace UltimaXNA.GUI
             }
 
             int iIndex = Int32.Parse(((CustomButton)obj).Name.Substring(6)) + mScrollY * 2;
-            GameObjects.GameObject iItem = mContainerObject.GetContents(iIndex);
+            GameObjects.GameObject iItem = mContainerObject.ContainerObject.GetContents(iIndex);
             if (GUIHelper.ToolTipItem == iItem)
             {
                 GUIHelper.ToolTipItem = null;
@@ -161,14 +161,14 @@ namespace UltimaXNA.GUI
             if (this.IsClosed)
                 return;
 
-            if (mContainerObject.UpdateTicker != mLastContainerUpdated)
+            if (mContainerObject.ContainerObject.UpdateTicker != mLastContainerUpdated)
             {
-                mMaxScrollY = (int)(mContainerObject.LastSlotOccupied / 2) + 1 - 6;
+                mMaxScrollY = (int)(mContainerObject.ContainerObject.LastSlotOccupied / 2) + 1 - 6;
 
                 for (int i = 0; i < 12; i++)
                 {
                     int iItemTypeID = 0;
-                    GameObjects.GameObject iItem = mContainerObject.GetContents(i + mScrollY * 2);
+                    GameObjects.GameObject iItem = mContainerObject.ContainerObject.GetContents(i + mScrollY * 2);
                     if (iItem != null)
                         iItemTypeID = iItem.ObjectTypeID;
                     string iBtnName = "btnInv" + i;
@@ -186,7 +186,7 @@ namespace UltimaXNA.GUI
                     }
 
                 }
-                mLastContainerUpdated = mContainerObject.UpdateTicker;
+                mLastContainerUpdated = mContainerObject.ContainerObject.UpdateTicker;
             }
 
             if (mScrollY == 0)

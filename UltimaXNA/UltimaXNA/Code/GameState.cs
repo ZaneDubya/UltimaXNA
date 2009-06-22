@@ -160,9 +160,11 @@ namespace UltimaXNA
                             -1);
                         if (((GameObjects.GameObject)GUI.GUIHelper.MouseHoldingItem).Item_ContainedWithinGUID != 0)
                         {
-                            GameObjects.Container iContainer = (GameObjects.Container)mGameObjectsService.GetContainerObject(
-                                ((GameObjects.GameObject)GUI.GUIHelper.MouseHoldingItem).Item_ContainedWithinGUID);
-                            iContainer.RemoveItem(GUI.GUIHelper.MouseHoldingItem.GUID);
+                            // We must manually remove the item from the container, as RunUO does not do this for us.
+                            GameObjects.GameObject iContainer = mGameObjectsService.GetObject(
+                                ((GameObjects.GameObject)GUI.GUIHelper.MouseHoldingItem).Item_ContainedWithinGUID, 
+                                UltimaXNA.GameObjects.ObjectType.GameObject) as GameObjects.GameObject;
+                            iContainer.ContainerObject.RemoveItem(GUI.GUIHelper.MouseHoldingItem.GUID);
                         }
 
                         GUI.GUIHelper.MouseHoldingItem = null;
@@ -186,7 +188,7 @@ namespace UltimaXNA
                 TileEngine.IMapObject iMapObject = mTileEngineService.MouseOverObject;
                 if ((iMapObject != null) && (iMapObject.Type != UltimaXNA.TileEngine.MapObjectTypes.StaticTile))
                 {
-                    GameObjects.BaseObject iObject = mGameObjectsService.GetObject(iMapObject.OwnerGUID);
+                    GameObjects.BaseObject iObject = mGameObjectsService.GetObject(iMapObject.OwnerGUID, UltimaXNA.GameObjects.ObjectType.Object);
                     // default option is to simply 'use' this object, although this will doubtless be more complicated in the future.
                     // Perhaps the use option is based on the type of object? Anyways, for right now, we only interact with gameobjects,
                     // and we send a double-click to the server.
@@ -225,7 +227,7 @@ namespace UltimaXNA
             try
             {
                 int iDirection = 0, iSequence = 0, iKey = 0;
-                bool iMoveEvent = mGameObjectsService.GetObject(mGameObjectsService.MyGUID).Movement.GetMoveEvent(ref iDirection, ref iSequence, ref iKey);
+                bool iMoveEvent = mGameObjectsService.GetPlayerObject().Movement.GetMoveEvent(ref iDirection, ref iSequence, ref iKey);
                 if (iMoveEvent)
                 {
                     mGameClientService.Send_MoveRequest(iDirection, iSequence, iKey);
@@ -257,7 +259,7 @@ namespace UltimaXNA
 							offset = TileData.ItemData[iTopMostObject.ID].CalcHeight;
 					}
 
-                    ((GameObjects.Unit)mGameObjectsService.GetObject(mGameObjectsService.MyGUID)).Move(
+                    ((GameObjects.Unit)mGameObjectsService.GetPlayerObject()).Move(
 						(int)iTopMostObject.Position.X,
 						(int)iTopMostObject.Position.Y,
 						(int)iTopMostObject.Z + offset);
@@ -309,7 +311,7 @@ namespace UltimaXNA
                     // static tile, iObject will equal null.
                     GameObjects.GameObject iObject =
                         ((iTopMostObject.Type == TileEngine.MapObjectTypes.GameObjectTile) ?
-                        (GameObjects.GameObject)mGameObjectsService.GetObject(iTopMostObject.OwnerGUID) :
+                        mGameObjectsService.GetObject(iTopMostObject.OwnerGUID, UltimaXNA.GameObjects.ObjectType.GameObject) as GameObjects.GameObject :
                         null);
 
                     // Retreive the ItemData for this object.
@@ -371,7 +373,7 @@ namespace UltimaXNA
                 // Toggle for backpack container window.
                 if (nKeyboard.IsKeyPressed(Keys.B) && (nKeyboard.IsKeyDown(Keys.LeftControl)))
                 {
-                    int iBackpackGUID = ((GameObjects.Player)mGameObjectsService.GetObject(mGameObjectsService.MyGUID))
+                    int iBackpackGUID = ((GameObjects.Player)mGameObjectsService.GetPlayerObject())
                         .Equipment[(int)GameObjects.EquipLayer.Backpack].GUID;
                     if (mGUIService.Window("Container:" + iBackpackGUID) == null)
                         mGameClientService.Send_UseRequest(iBackpackGUID);
@@ -383,7 +385,7 @@ namespace UltimaXNA
                 // Note that if you attempt to move around normally after using this, the server will catch on
                 // and will eventually reject your movement.
                 #region DEBUG_KeyboardMovement
-                    GameObjects.Movement iMovement = mGameObjectsService.GetObject(mGameObjectsService.MyGUID).Movement;
+                    GameObjects.Movement iMovement = mGameObjectsService.GetPlayerObject().Movement;
                     if (nKeyboard.IsKeyDown(Keys.W))
                         iMovement.SetPositionInstant(iMovement.TileX - 1, iMovement.TileY - 1, 0);
                     if (nKeyboard.IsKeyDown(Keys.A))
@@ -428,7 +430,8 @@ namespace UltimaXNA
                 }
                 else if (mTileEngineService.MouseOverObject.Type == TileEngine.MapObjectTypes.MobileTile)
                 {
-                    GameObjects.Unit iUnit = (GameObjects.Unit)mGameObjectsService.GetObject(mTileEngineService.MouseOverObject.OwnerGUID);
+                    GameObjects.Unit iUnit = mGameObjectsService.GetObject(mTileEngineService.MouseOverObject.OwnerGUID, 
+                        UltimaXNA.GameObjects.ObjectType.Unit) as GameObjects.Unit;
                     if (iUnit != null)
                         iDebug += "Name: " + iUnit.Name + Environment.NewLine;
                     iDebug +=

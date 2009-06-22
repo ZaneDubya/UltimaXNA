@@ -297,7 +297,6 @@ namespace UltimaXNA.TileEngine
                     if (iData.Surface)
                         return true;
                 }
-                int k = iObjects[i].Z;
             }
             return false;
         }

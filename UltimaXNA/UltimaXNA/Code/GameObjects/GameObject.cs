@@ -16,13 +16,13 @@ namespace UltimaXNA.GameObjects
         // GameObjects can potentially have inventory (chests, for example).
         // The GUID for the container for this inventory is the same as the
         // GameObject's GUID.
-        private Container m_ContainerObject = null;
-        public Container ContainerObject
+        private GameObject_Container m_ContainerObject = null;
+        public GameObject_Container ContainerObject
         {
             get
             {
                 if (m_ContainerObject == null)
-                    m_ContainerObject = new Container(this.GUID);
+                    m_ContainerObject = new GameObject_Container(this);
                 return m_ContainerObject;
             }
         }

@@ -550,8 +550,8 @@ namespace UltimaXNA.Network
 
             // When loading the player object, we must load the serial before the object.
             m_GameObjectsService.MyGUID = iPlayerSerial;
-            GameObjects.Player iPlayer = (GameObjects.Player)m_GameObjectsService.AddObject(
-                new GameObjects.Player(m_GameObjectsService.MyGUID));
+            GameObjects.Player iPlayer = (GameObjects.Player)m_GameObjectsService.GetObject(
+                m_GameObjectsService.MyGUID, UltimaXNA.GameObjects.ObjectType.Player);
             iPlayer.Movement.SetPositionInstant((int)iX, (int)iY, (int)iZ);
             iPlayer.SetFacing(iFacing & 0x0F);
 
@@ -607,7 +607,7 @@ namespace UltimaXNA.Network
             int iGUID = nPacket.ReadInt();
             int iNumEntriesInContext = nPacket.ReadByte();
 
-            GameObjects.Unit iMobile = (GameObjects.Unit)m_GameObjectsService.GetObject(iGUID);
+            GameObjects.Unit iMobile = m_GameObjectsService.GetObject(iGUID, UltimaXNA.GameObjects.ObjectType.Unit) as GameObjects.Unit;
 
             ContextMenu iMenu = new ContextMenu();
 
@@ -666,7 +666,7 @@ namespace UltimaXNA.Network
             byte iFacing = nPacket.ReadByte();
             sbyte iZ = nPacket.ReadSByte();
 
-            GameObjects.Unit iObject = (GameObjects.Unit)m_GameObjectsService.GetObject(iMobileSerial);
+            GameObjects.Unit iObject = m_GameObjectsService.GetObject(iMobileSerial, UltimaXNA.GameObjects.ObjectType.Unit) as GameObjects.Unit;
             iObject.DisplayBodyID = iBodyID;
             iObject.Hue = (int)iHue;
 
@@ -729,8 +729,8 @@ namespace UltimaXNA.Network
             // 0x6: Murderer (Red)
             // 0x7: Invulnerable (Yellow)
 
-            GameObjects.Unit iMobile = (GameObjects.Unit)m_GameObjectsService.AddObject(
-                new GameObjects.Unit((int)iMobileSerial));
+            GameObjects.Unit iMobile = (GameObjects.Unit)m_GameObjectsService.GetObject(
+                (int)iMobileSerial, UltimaXNA.GameObjects.ObjectType.Unit);
             iMobile.Movement.SetPositionInstant((int)iX, (int)iY, (int)iZ);
             iMobile.SetFacing(iFacing & 0x0F);
             iMobile.Hue = iHue;
@@ -960,8 +960,8 @@ namespace UltimaXNA.Network
             // If the iItemID >= 0x4000, then this is a multiobject.
             if (iItemID <= 0x4000)
             {
-                GameObjects.GameObject iObject = (GameObjects.GameObject)m_GameObjectsService.AddObject(
-                    new GameObjects.GameObject((int)iObjectSerial));
+                GameObjects.GameObject iObject = m_GameObjectsService.GetObject((int)iObjectSerial,
+                    UltimaXNA.GameObjects.ObjectType.GameObject) as GameObjects.GameObject;
                 iObject.ObjectTypeID = iItemID;
                 iObject.Movement.SetPositionInstant(iX, iY, iZ);
             }
@@ -981,14 +981,14 @@ namespace UltimaXNA.Network
             bool iRepeat = nPacket.ReadBool();
             byte iDelay = nPacket.ReadByte();
 
-            GameObjects.Unit iObject = (GameObjects.Unit)m_GameObjectsService.GetObject(iSerial);
+            GameObjects.Unit iObject = m_GameObjectsService.GetObject(iSerial, UltimaXNA.GameObjects.ObjectType.Unit) as GameObjects.Unit;
             iObject.Animation(iAction, iFrameCount, iRepeatCount, iReverse, iRepeat, iDelay);
         }
 
         private void m_ReceiveDeleteObject(Packet nPacket)
         {
             int iGUID = nPacket.ReadInt();
-            GameObjects.BaseObject iObject = m_GameObjectsService.GetObject(iGUID);
+            GameObjects.BaseObject iObject = m_GameObjectsService.GetObject(iGUID, UltimaXNA.GameObjects.ObjectType.Object);
             m_GameObjectsService.RemoveObject(iGUID);
         }
 
@@ -1010,16 +1010,12 @@ namespace UltimaXNA.Network
             // 0x80 = hidden
             byte iNotoriety = nPacket.ReadByte();
 
-            GameObjects.Unit iObject = (GameObjects.Unit)m_GameObjectsService.GetObject(iSerial);
+            GameObjects.Unit iObject = m_GameObjectsService.GetObject(iSerial, UltimaXNA.GameObjects.ObjectType.Unit) as GameObjects.Unit;
 			// Issue 16 - Pet not showing at login - http://code.google.com/p/ultimaxna/issues/detail?id=16 - Smjert
 			// Since no packet arrives to add your pet, when you move and your pet follows you the client crashes
-			if ( iObject == null )
-			{
-				iObject = m_GameObjectsService.AddObject(new GameObjects.Unit(iSerial)) as GameObjects.Unit;
-				iObject.SetFacing(iFacing);
-				iObject.DisplayBodyID = iBodyID;
-				iObject.Movement.SetPositionInstant(iX, iY, iZ);
-			}
+			iObject.SetFacing(iFacing);
+			iObject.DisplayBodyID = iBodyID;
+			iObject.Movement.SetPositionInstant(iX, iY, iZ);
 			// Issue 16 - End
             iObject.Move(iX, iY, iZ);
         }
@@ -1057,7 +1053,7 @@ namespace UltimaXNA.Network
         {
             int iSequence = nPacket.ReadByte(); // (matches sent sequence)
             int iNotoriety = nPacket.ReadByte(); // Not sure why it sends this.
-            m_GameObjectsService.GetObject(m_GameObjectsService.MyGUID).Movement.MoveEventAck(iSequence);
+            m_GameObjectsService.GetPlayerObject().Movement.MoveEventAck(iSequence);
         }
 
         private void m_ReceiveMoveRej(Packet nPacket)
@@ -1067,7 +1063,7 @@ namespace UltimaXNA.Network
             int iY = nPacket.ReadUShort();
             int iDirection = nPacket.ReadByte();
             int iZ = nPacket.ReadByte();
-            m_GameObjectsService.GetObject(m_GameObjectsService.MyGUID).Movement.MoveEventRej(iSequence, iX, iY, iZ, iDirection);
+            m_GameObjectsService.GetPlayerObject().Movement.MoveEventRej(iSequence, iX, iY, iZ, iDirection);
         }
 
         private void m_ReceivePlaySoundEffect(Packet nPacket)
@@ -1092,8 +1088,8 @@ namespace UltimaXNA.Network
             // Only try to open a container of type Container. Note that GameObjects can
             // have container objects and will expose them when called through GetContainerObject(int)
             // instead of GetObject(int).
-            GameObjects.BaseObject iObject = m_GameObjectsService.GetContainerObject(iGUID); // Changed from GetObject(iGUID) to GetContainerObject(iGUID) per issue8 (http://code.google.com/p/ultimaxna/issues/detail?id=8) --ZDW 6/14/2009
-            if (iObject.ObjectType == UltimaXNA.GameObjects.ObjectType.Container)
+            GameObjects.BaseObject iObject = m_GameObjectsService.GetObject(iGUID, UltimaXNA.GameObjects.ObjectType.Object);
+            if (iObject.ObjectType == UltimaXNA.GameObjects.ObjectType.GameObject)
             {
                 m_GUIService.Container_Open(iObject, iGumpModel);
             }
@@ -1125,8 +1121,8 @@ namespace UltimaXNA.Network
                 iObject.Item_InvX = iX;
                 iObject.Item_InvY = iY;
                 // ... and add it the container contents of the container.
-                GameObjects.Container iContainerObject = (GameObjects.Container)m_GameObjectsService.GetContainerObject((int)iContainerGUID);
-                iContainerObject.AddItem(iObject);
+                GameObjects.GameObject iContainerObject = m_GameObjectsService.GetObject(iContainerGUID, UltimaXNA.GameObjects.ObjectType.GameObject) as GameObjects.GameObject;
+                iContainerObject.ContainerObject.AddItem(iObject);
             }
             else
             {
@@ -1147,8 +1143,8 @@ namespace UltimaXNA.Network
                     iObject.Item_InvX = iX;
                     iObject.Item_InvY = iY;
                     // ... and add it the container contents of the container.
-                    GameObjects.Container iContainerObject = (GameObjects.Container)m_GameObjectsService.GetContainerObject((int)iContainerGUID);
-                    iContainerObject.AddItem(iObject);
+                    GameObjects.GameObject iContainerObject = m_GameObjectsService.GetObject(iContainerGUID, UltimaXNA.GameObjects.ObjectType.GameObject) as GameObjects.GameObject;
+                    iContainerObject.ContainerObject.AddItem(iObject);
                 }
             }
         }
@@ -1168,12 +1164,12 @@ namespace UltimaXNA.Network
             // Add the item...
             GameObjects.GameObject iObject = m_AddItem(iGUID, iItemID, iHue, iContainerGUID, iAmount);
             iObject.Item_InvX = iX;
-            iObject.Item_InvY = iY;
+            iObject.Item_InvY = iY; 
             // ... and add it the container contents of the container.
-            GameObjects.Container iContainerObject = (GameObjects.Container)m_GameObjectsService.GetContainerObject((int)iContainerGUID);
+            GameObjects.GameObject iContainerObject = m_GameObjectsService.GetObject(iContainerGUID, UltimaXNA.GameObjects.ObjectType.GameObject) as GameObjects.GameObject;
             // temp fix!!!
             if (iContainerObject != null)
-                iContainerObject.AddItem(iObject);
+                iContainerObject.ContainerObject.AddItem(iObject);
             else
             {
                 // Special case for game boards... the server will sometimes send us game pieces for a game board before it sends 
@@ -1287,7 +1283,7 @@ namespace UltimaXNA.Network
             int iGUID = nPacket.ReadInt();
             int iMax = nPacket.ReadShort();
             int iCurrent = nPacket.ReadShort();
-            GameObjects.Unit u = (GameObjects.Unit)m_GameObjectsService.GetObject(iGUID);
+            GameObjects.Unit u = m_GameObjectsService.GetObject(iGUID, UltimaXNA.GameObjects.ObjectType.Unit) as GameObjects.Unit;
             u.Health.Update(iCurrent, iMax);
         }
 
@@ -1296,7 +1292,7 @@ namespace UltimaXNA.Network
             int iGUID = nPacket.ReadInt();
             int iMax = nPacket.ReadShort();
             int iCurrent = nPacket.ReadShort();
-            GameObjects.Unit u = (GameObjects.Unit)m_GameObjectsService.GetObject(iGUID);
+            GameObjects.Unit u = m_GameObjectsService.GetObject(iGUID, UltimaXNA.GameObjects.ObjectType.Unit) as GameObjects.Unit;
             u.Mana.Update(iCurrent, iMax);
         }
 
@@ -1305,7 +1301,7 @@ namespace UltimaXNA.Network
             int iGUID = nPacket.ReadInt();
             int iMax = nPacket.ReadShort();
             int iCurrent = nPacket.ReadShort();
-            GameObjects.Unit u = (GameObjects.Unit)m_GameObjectsService.GetObject(iGUID);
+            GameObjects.Unit u = m_GameObjectsService.GetObject(iGUID, UltimaXNA.GameObjects.ObjectType.Unit) as GameObjects.Unit;
             u.Stamina.Update(iCurrent, iMax);
         }
 
@@ -1324,21 +1320,21 @@ namespace UltimaXNA.Network
             int iGraphic = nPacket.ReadUShort();
             nPacket.ReadByte(); // always 0x00
             int iLayer = nPacket.ReadByte();
-            int iPlayerGUID = nPacket.ReadInt();
+            int iMobileGUID = nPacket.ReadInt();
             int iItemHue = nPacket.ReadUShort();
 
             GameObjects.GameObject iObject = m_AddItem(iEquipmentGUID, iGraphic, iItemHue, 0, 0);
-            GameObjects.Unit iMobile = (GameObjects.Unit)m_GameObjectsService.GetObject(iPlayerGUID);
-            iMobile.Equipment[iLayer] = iObject;
+            GameObjects.Unit u = m_GameObjectsService.GetObject(iMobileGUID, UltimaXNA.GameObjects.ObjectType.Unit) as GameObjects.Unit;
+            u.Equipment[iLayer] = iObject;
         }
 
         private void m_ReceiveRequestName(Packet nPacket)
         {
             int iPacketLength = nPacket.ReadShort();
-            int iGUID = nPacket.ReadInt();
+            int iMobileGUID = nPacket.ReadInt();
             string iStrName = m_RemoveNullGarbageFromString(nPacket.ReadBytes(30));
-            GameObjects.Unit iObject = (GameObjects.Unit)m_GameObjectsService.GetObject(iGUID);
-            iObject.Name = iStrName;
+            GameObjects.Unit u = m_GameObjectsService.GetObject(iMobileGUID, UltimaXNA.GameObjects.ObjectType.Unit) as GameObjects.Unit;
+            u.Name = iStrName;
         }
 
         private void m_ReceiveCompressedGump(Packet nPacket)
@@ -1363,7 +1359,7 @@ namespace UltimaXNA.Network
                 string iDescription = System.Text.ASCIIEncoding.ASCII.GetString((nPacket.ReadBytes(iDescriptionLength)));
             }
 
-            GameObjects.Container iObject = ((GameObjects.Container)m_GameObjectsService.GetObject(iVendorPackGUID));
+            GameObjects.GameObject iObject = m_GameObjectsService.GetObject(iVendorPackGUID, UltimaXNA.GameObjects.ObjectType.GameObject) as GameObjects.GameObject;
             m_GUIService.Merchant_Open(iObject, 0);
         }
 
@@ -1375,17 +1371,7 @@ namespace UltimaXNA.Network
         private GameObjects.GameObject m_AddItem(int nGUID, int nItemID, int nHue, int nContainerGUID, int nAmount)
         {
             // Create the object. If an item has the 'Container' flag, then make it a container!
-            GameObjects.GameObject iObject;
-            if (DataLocal.TileData.ItemData[nItemID].Container)
-            {
-                iObject = (GameObjects.Container)m_GameObjectsService.AddObject(
-                    new GameObjects.Container((int)nGUID));
-            }
-            else
-            {
-                iObject = (GameObjects.GameObject)m_GameObjectsService.AddObject(
-                    new GameObjects.GameObject((int)nGUID));
-            }
+            GameObjects.GameObject iObject = m_GameObjectsService.GetObject(nGUID, UltimaXNA.GameObjects.ObjectType.GameObject) as GameObjects.GameObject;
 
             iObject.ObjectTypeID = nItemID;
             iObject.Hue = nHue;

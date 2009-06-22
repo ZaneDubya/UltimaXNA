@@ -11,7 +11,7 @@ using System.Collections.Generic;
 namespace UltimaXNA.GameObjects
 {
     // This is the class which contains the contents of a container's slots.
-    class ContainerContents
+    class GameObject_ContainerContents
     {
         private const int mNumSlots = 0x100;
         private GameObject[] mSlots = new GameObject[mNumSlots];
@@ -41,7 +41,7 @@ namespace UltimaXNA.GameObjects
             }
         }
 
-        public GameObject this [int nIndex]
+        public GameObject this[int nIndex]
         {
             get
             {
@@ -119,30 +119,21 @@ namespace UltimaXNA.GameObjects
         }
     }
 
-    class Container : UltimaXNA.GameObjects.GameObject
+    class GameObject_Container
     {
+        // The parent object. All Containers are part of GameObjects. We need a way to reference them.
+        private GameObject m_ParentObject;
         // All the contents of the container are kept in the mContents class,
         // unless they are being moved between slots or into or out of the container.
-        private ContainerContents mContentsClass = new ContainerContents();
-        
-        // Items that are being moved within or out of the container are in this list and not in mContents.
-        // private List<Item> mContentsBeingMoved = new List<Item>();
-
+        private GameObject_ContainerContents mContentsClass = new GameObject_ContainerContents();
+        // Update tickers are referenced by the GUI - when this value changes, the GUI knows to update.
         public int UpdateTicker { get { return mContentsClass.UpdateTicker; } }
-        public int LastSlotOccupied { get { return mContentsClass.LastSlotOccupied; } } 
+        // Get the last occupied slot, so the GUI knows how many slots to draw.
+        public int LastSlotOccupied { get { return mContentsClass.LastSlotOccupied; } }
 
-
-
-
-        public Container(int nGUID)
-            : base(nGUID)
+        public GameObject_Container(GameObject nParent)
         {
-            ObjectType = ObjectType.Container;
-        }
-
-        public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
-        {
-            base.Update(gameTime);
+            m_ParentObject = nParent;
         }
 
         public void Event_MoveItemToSlot(GameObject nObject, int nSlot)
@@ -184,7 +175,7 @@ namespace UltimaXNA.GameObjects
         {
             // The server often sends as list of all the items in a container.
             // We want to filter out items we already have in our list.
-            if (this.Wearer.ObjectType != ObjectType.Player)
+            if ((m_ParentObject.Wearer != null) && (m_ParentObject.Wearer.ObjectType != ObjectType.Player))
             {
                 // We can't move items in that we don't own.
                 // This is only a temporary fix! What about moving things around in boxes?
@@ -207,7 +198,7 @@ namespace UltimaXNA.GameObjects
                     // of this container temporarily so even if we encounter a bug, the item won't appear to ever be
                     // 'duped' in a player's inventory.
                     mContentsClass.RemoveItemByGUID(nObject.GUID);
-                    
+
                     // We need to check to see if the object's SlotIndex value validates, and if the item in slot[object.InvX]
                     // is this object. If either of these checks come back as false, then we need to move the object to a new slot.
                     if (nObject.Item_SlotIndex == -1)
