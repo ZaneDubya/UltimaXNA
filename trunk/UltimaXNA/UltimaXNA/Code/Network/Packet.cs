@@ -97,5 +97,10 @@ namespace UltimaXNA.Network
         public void Write(ushort value)                         { m_Writer.Write(value); }
         public void Write(byte[] buffer, int index, int count)  { m_Writer.Write(buffer, index, count); }
         // public void Write(char[] buffer, int index, int count)  { m_Writer.Write(buffer, index, count); }
+
+        public override string ToString()
+        {
+            return OpCode.ToString();
+        }
     }
 }

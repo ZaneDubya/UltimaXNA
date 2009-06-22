@@ -92,7 +92,8 @@ namespace UltimaXNA.GameObjects
 
         public BaseObject AddObject(BaseObject nObject)
         {
-            try
+            BaseObject iReturnObject = GetObject(nObject.GUID);
+            if (iReturnObject == null)
             {
                 m_Objects.Add(nObject.GUID, nObject);
                 nObject.World = m_WorldService;
@@ -108,12 +109,9 @@ namespace UltimaXNA.GameObjects
                 {
                     ((GameObject)nObject).SendPacket_MoveItemWithinContainer += this.Item_Packet_MoveItemWithinContainer;
                 }
+                iReturnObject = GetObject(nObject.GUID);
             }
-            catch
-            {
-                // This object is already in the collection.
-            }
-            return GetObject(nObject.GUID);
+            return iReturnObject;
         }
 
         public void RemoveObject(int nGUID)
@@ -133,6 +131,11 @@ namespace UltimaXNA.GameObjects
             if (m_Objects.ContainsKey(nGUID))
             {
                 // Return the value.
+                if (m_Objects[nGUID].IsDisposed)
+                {
+                    m_Objects.Remove(nGUID);
+                    return null;
+                }
                 return m_Objects[nGUID];
             }
 
@@ -171,7 +174,7 @@ namespace UltimaXNA.GameObjects
             GameObject iObject = ((GameObject)nObject);
             m_GameClientService.Send_PickUpItem(iObject.GUID, iObject.Item_StackCount);
             m_GameClientService.Send_DropItem(iObject.GUID,
-                iObject.Item_InvX_SlotIndex, iObject.Item_InvY_SlotChecksum,
+                iObject.Item_InvX, iObject.Item_InvY,
                 0, iObject.Item_ContainedWithinGUID);
         }
 

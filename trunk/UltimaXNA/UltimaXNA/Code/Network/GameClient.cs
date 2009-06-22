@@ -29,6 +29,7 @@ namespace UltimaXNA.Network
         GameServer_LoggingIn,
         InWorld,
         Error_CouldNotConnectToLoginServer,
+        Disconnected
     }
 
     public interface IGameClient
@@ -46,7 +47,6 @@ namespace UltimaXNA.Network
 
     class GameClient : GameComponent, IGameClient
     {
-        public bool Disconnected = false;
         public ServerList ServerList;
         public ClientStatus Status;
         private SocketClient m_Client;
@@ -1121,8 +1121,8 @@ namespace UltimaXNA.Network
 
                 // Add the item...
                 GameObjects.GameObject iObject = m_AddItem(iGUID, iItemID, iHue, iContainerGUID, iAmount);
-                iObject.Item_InvX_SlotIndex = iX;
-                iObject.Item_InvY_SlotChecksum = iY;
+                iObject.Item_InvX = iX;
+                iObject.Item_InvY = iY;
                 // ... and add it the container contents of the container.
                 GameObjects.Container iContainerObject = (GameObjects.Container)m_GameObjectsService.GetContainerObject((int)iContainerGUID);
                 iContainerObject.AddItem(iObject);
@@ -1143,8 +1143,8 @@ namespace UltimaXNA.Network
 
                     // Add the item...
                     GameObjects.GameObject iObject = m_AddItem(iGUID, iItemID, iHue, iContainerGUID, iAmount);
-                    iObject.Item_InvX_SlotIndex = iX;
-                    iObject.Item_InvY_SlotChecksum = iY;
+                    iObject.Item_InvX = iX;
+                    iObject.Item_InvY = iY;
                     // ... and add it the container contents of the container.
                     GameObjects.Container iContainerObject = (GameObjects.Container)m_GameObjectsService.GetContainerObject((int)iContainerGUID);
                     iContainerObject.AddItem(iObject);
@@ -1166,11 +1166,22 @@ namespace UltimaXNA.Network
 
             // Add the item...
             GameObjects.GameObject iObject = m_AddItem(iGUID, iItemID, iHue, iContainerGUID, iAmount);
-            iObject.Item_InvX_SlotIndex = iX;
-            iObject.Item_InvY_SlotChecksum = iY;
+            iObject.Item_InvX = iX;
+            iObject.Item_InvY = iY;
             // ... and add it the container contents of the container.
             GameObjects.Container iContainerObject = (GameObjects.Container)m_GameObjectsService.GetContainerObject((int)iContainerGUID);
-            iContainerObject.AddItem(iObject);
+            // temp fix!!!
+            if (iContainerObject != null)
+                iContainerObject.AddItem(iObject);
+            else
+            {
+                // Special case for game boards... the server will sometimes send us game pieces for a game board before it sends 
+                // the game board! Right now, I am discarding these messages, it might be better to queue them up for when the game
+                // board actually exists.
+                // Let's throw an exception if anything other than a gameboard is ever sent to us.
+                if (iObject.ItemData.Name != "game piece")
+                    throw new Exception("Item {" + iObject.ToString() + "} received before containing object received.");
+            }
         }
 
         private void m_ReceiveRejectMoveItemRequest(Packet nPacket)
@@ -1399,8 +1410,8 @@ namespace UltimaXNA.Network
 
         private void client_UserDisconnected(object sender, SocketClient player)
         {
-            // If the connection to the server is lost just exit the game.
-            this.Disconnected = true;
+            // If the connection to the server is lost, we should let the engine know through our status.
+            Status = ClientStatus.Disconnected;
         }
 
         protected void m_RemoveNullGarbageFromString(ref string str)
