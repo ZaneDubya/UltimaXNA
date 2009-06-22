@@ -16,7 +16,6 @@ namespace UltimaXNA.GameObjects
         GameObject = ObjectType.Object | 8,
         DynamicObject = ObjectType.GameObject | 16,
         Corpse = ObjectType.GameObject | 32,
-        Container = ObjectType.GameObject | 64,
     }
 
     struct ItemEnchantment

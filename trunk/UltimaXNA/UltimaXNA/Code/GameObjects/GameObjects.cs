@@ -4,6 +4,7 @@
 //
 // Created by Poplicola
 //-----------------------------------------------------------------------------
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 #endregion
@@ -13,9 +14,7 @@ namespace UltimaXNA.GameObjects
     public interface IGameObjects
     {
         int MyGUID { get; set; }
-        BaseObject AddObject(BaseObject nObject);
-        BaseObject GetObject(int nGUID);
-        BaseObject GetContainerObject(int nGUID);
+        BaseObject GetObject(int nGUID, ObjectType nObjectType);
         BaseObject GetPlayerObject();
         void RemoveObject(int nGUID);
     }
@@ -66,7 +65,6 @@ namespace UltimaXNA.GameObjects
                     switch (iObjectPair.Value.ObjectType)
                     {
                         case ObjectType.GameObject:
-                        case ObjectType.Container:
                         case ObjectType.Unit:
                         case ObjectType.Player:
                         {
@@ -89,28 +87,64 @@ namespace UltimaXNA.GameObjects
             }
             base.Update(gameTime);
         }
-
-        public BaseObject AddObject(BaseObject nObject)
+        
+        public BaseObject GetObject(int nGUID, ObjectType nObjectType)
         {
-            BaseObject iReturnObject = GetObject(nObject.GUID);
-            if (iReturnObject == null)
+            // Check for existence in the collection.
+            if (m_Objects.ContainsKey(nGUID))
             {
-                m_Objects.Add(nObject.GUID, nObject);
-                nObject.World = m_WorldService;
-                // If this object is the client, designate it to return events.
-                if (nObject.GUID == MyGUID)
-                    nObject.Movement.DesignateClientPlayer();
-
-                if ((nObject.ObjectType & ObjectType.Unit) == ObjectType.Unit)
+                // This object is in the m_Objects collection. If it is being disposed, then we should complete disposal
+                // of the object and then return a new object. If it is not being disposed, return the object in the collection.
+                if (m_Objects[nGUID].IsDisposed)
                 {
-                    ((Unit)nObject).UpdateHealthStaminaMana += this.Unit_UpdateHealthStaminaMana;
+                    m_Objects.Remove(nGUID);
+                    return m_AddObject(nGUID, nObjectType);
                 }
-                if ((nObject.ObjectType & ObjectType.GameObject) == ObjectType.GameObject)
-                {
-                    ((GameObject)nObject).SendPacket_MoveItemWithinContainer += this.Item_Packet_MoveItemWithinContainer;
-                }
-                iReturnObject = GetObject(nObject.GUID);
+                return m_Objects[nGUID];
             }
+
+            // No object with this GUID is in the collection. So we create a new one and return that, and hope that the server
+            // will fill us in on the details of this object soon.
+            return m_AddObject(nGUID, nObjectType);
+        }
+
+        private BaseObject m_AddObject(int nGUID, ObjectType nObjectType)
+        {
+            BaseObject iReturnObject;
+            switch (nObjectType)
+            {
+                case ObjectType.Object:
+                    iReturnObject = new BaseObject(nGUID);
+                    break;
+                case ObjectType.GameObject:
+                    iReturnObject = new GameObject(nGUID);
+                    break;
+                case ObjectType.Unit:
+                    iReturnObject = new Unit(nGUID);
+                    break;
+                case ObjectType.Player:
+                    iReturnObject = new Player(nGUID);
+                    break;
+                default:
+                    throw new Exception("Unhandled ObjectType in m_AddObject: " + nObjectType.ToString());
+            }
+            // Add the world service (for movement).
+            iReturnObject.World = m_WorldService;
+            // If this object is the client, designate it to return events.
+            if (iReturnObject.GUID == MyGUID)
+                iReturnObject.Movement.DesignateClientPlayer();
+            // Add update events.
+            if ((iReturnObject.ObjectType & ObjectType.Unit) == ObjectType.Unit)
+            {
+                ((Unit)iReturnObject).UpdateHealthStaminaMana += this.Unit_UpdateHealthStaminaMana;
+            }
+            if ((iReturnObject.ObjectType & ObjectType.GameObject) == ObjectType.GameObject)
+            {
+                ((GameObject)iReturnObject).SendPacket_MoveItemWithinContainer += this.Item_Packet_MoveItemWithinContainer;
+            }
+            // Add the object to the objects collection.
+            m_Objects.Add(iReturnObject.GUID, iReturnObject);
+            // Finally return the new object.
             return iReturnObject;
         }
 
@@ -125,48 +159,10 @@ namespace UltimaXNA.GameObjects
             }
         }
 
-        public BaseObject GetObject(int nGUID)
-        {
-            // Check for existence here.
-            if (m_Objects.ContainsKey(nGUID))
-            {
-                // Return the value.
-                if (m_Objects[nGUID].IsDisposed)
-                {
-                    m_Objects.Remove(nGUID);
-                    return null;
-                }
-                return m_Objects[nGUID];
-            }
-
-            // The key does not exist, return the default.
-            return null;
-        }
-
         public BaseObject GetPlayerObject()
         {
+            // This could be cached to save time.
             return m_Objects[MyGUID];
-        }
-
-        public BaseObject GetContainerObject(int nGUID)
-        {
-            // Check for existence here.
-            if (m_Objects.ContainsKey(nGUID))
-            {
-                // We know that m_Objects has an object with this GUID. Now we determine if the object
-                // can expose a container object.
-                switch (m_Objects[nGUID].ObjectType)
-                {
-                    case ObjectType.Container:
-                        return m_Objects[nGUID];
-                    case ObjectType.GameObject:
-                        return ((GameObject)m_Objects[nGUID]).ContainerObject;
-                    default:
-                        return null;
-                }
-            }
-            // The key does not exist, return the default.
-            return null;
         }
 
         private void Item_Packet_MoveItemWithinContainer(BaseObject nObject)

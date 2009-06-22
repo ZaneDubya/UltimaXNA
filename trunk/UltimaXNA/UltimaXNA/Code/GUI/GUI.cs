@@ -215,11 +215,11 @@ namespace UltimaXNA.GUI
         private void m_DropItemIntoSlot(GameObjects.BaseObject nHeldObject, GameObjects.BaseObject nDestContainer, int nDestSlot)
         {
             GameObjects.GameObject iHeldObject = (GameObjects.GameObject)nHeldObject;
-            GameObjects.Container iDestContainer = (GameObjects.Container)nDestContainer;
+            GameObjects.GameObject iDestContainer = (GameObjects.GameObject)nDestContainer;
 
             if (iHeldObject.Item_ContainedWithinGUID == iDestContainer.GUID)
             {
-                iDestContainer.Event_MoveItemToSlot(iHeldObject, nDestSlot);
+                iDestContainer.ContainerObject.Event_MoveItemToSlot(iHeldObject, nDestSlot);
             }
             else
             {

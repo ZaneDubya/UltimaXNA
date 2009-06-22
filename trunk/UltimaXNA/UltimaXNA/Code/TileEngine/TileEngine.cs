@@ -116,7 +116,7 @@ namespace UltimaXNA.TileEngine
             int MaxRoofAltitude = m_WorldService.MaxRoofAltitude;
 
             // Now determine where to draw. First retrieve the position of the center object.
-            GameObjects.DrawPosition iDrawPosition = m_ObjectsService.GetObject(m_ObjectsService.MyGUID).Movement.DrawPosition;
+            GameObjects.DrawPosition iDrawPosition = m_ObjectsService.GetPlayerObject().Movement.DrawPosition;
             
             float xOffset = (this.Game.GraphicsDevice.PresentationParameters.BackBufferWidth / 2) - 22;
             float yOffset = (this.Game.GraphicsDevice.PresentationParameters.BackBufferHeight / 2) -

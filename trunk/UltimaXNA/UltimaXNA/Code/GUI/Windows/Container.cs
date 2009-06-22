@@ -9,7 +9,7 @@ namespace UltimaXNA.GUI
     {
         private Vector2 mWindowSize = new Vector2(215, 233);
         private Vector2 mBGOffset = new Vector2(215 - 256 + 2, -1);
-        private GameObjects.Container mContainerObject;
+        private GameObjects.GameObject mContainerObject;
         private int mLastContainerUpdated = -1;
 
         private int mScrollY, mMaxScrollY = 0;
@@ -19,7 +19,7 @@ namespace UltimaXNA.GUI
         public Window_Container(GameObjects.BaseObject nContainerObject, FormCollection nFormCollection)
             : base(nFormCollection)
         {
-            mContainerObject = (GameObjects.Container)nContainerObject;
+            mContainerObject = (GameObjects.GameObject)nContainerObject;
 
             //Create a new form
             string iFormName = "frmContainer:" + mContainerObject.GUID;
@@ -31,7 +31,8 @@ namespace UltimaXNA.GUI
 
             m_MyForm.Controls.Add(new PictureBox("picBG", mBGOffset, @"GUI\CONTAINERFRAME\UI-Bag-4x4.png", 256, 256, 0));
 
-            m_MyForm.Controls.Add(new Label("lblContainer", new Vector2(16f, 7f), "ContainerFrame", Color.TransparentBlack, Color.White, 128, Label.Align.Left));
+            m_MyForm.Controls.Add(new Label("lblContainer", new Vector2(16f, 7f), "ContainerFrame | " + mContainerObject.GUID,
+                Color.TransparentBlack, Color.White, 160, Label.Align.Left));
             m_MyForm["lblContainer"].FontName = "ArialNarrow10";
 
             m_MyForm.Controls.Add(new CustomButton("btnClose", new Vector2(184, -1), new Rectangle(6, 7, 19, 18),
@@ -68,7 +69,7 @@ namespace UltimaXNA.GUI
         private void btnInv_OnPress(object obj, EventArgs e)
         {
             int iIndex = Int32.Parse(((CustomButton)obj).Name.Substring(6)) + mScrollY * 4;
-            GameObjects.GameObject iItem = mContainerObject.GetContents(iIndex);
+            GameObjects.GameObject iItem = mContainerObject.ContainerObject.GetContents(iIndex);
             if (iItem != null)
             {
                 // pick the item up!
@@ -88,7 +89,7 @@ namespace UltimaXNA.GUI
         private void btnInv_OnOver(object obj, EventArgs e)
         {
             int iIndex = Int32.Parse(((CustomButton)obj).Name.Substring(6)) + mScrollY * 4;
-            GameObjects.GameObject iItem = mContainerObject.GetContents(iIndex);
+            GameObjects.GameObject iItem = mContainerObject.ContainerObject.GetContents(iIndex);
 
             if (GUIHelper.MouseHoldingItem != null)
             {
@@ -109,7 +110,7 @@ namespace UltimaXNA.GUI
             }
 
             int iIndex = Int32.Parse(((CustomButton)obj).Name.Substring(6)) + mScrollY * 4;
-            GameObjects.GameObject iItem = mContainerObject.GetContents(iIndex);
+            GameObjects.GameObject iItem = mContainerObject.ContainerObject.GetContents(iIndex);
             if (GUIHelper.ToolTipItem == iItem)
             {
                 GUIHelper.ToolTipItem = null;
@@ -144,14 +145,14 @@ namespace UltimaXNA.GUI
             if (this.IsClosed)
                 return;
 
-            if (mContainerObject.UpdateTicker != mLastContainerUpdated)
+            if (mContainerObject.ContainerObject.UpdateTicker != mLastContainerUpdated)
             {
-                mMaxScrollY = (int)(mContainerObject.LastSlotOccupied / 4) + 1 - 4;
+                mMaxScrollY = (int)(mContainerObject.ContainerObject.LastSlotOccupied / 4) + 1 - 4;
 
                 for (int i = 0; i < 16; i++)
                 {
                     int iItemTypeID = 0;
-                    GameObjects.GameObject iItem = mContainerObject.GetContents(i + mScrollY * 4);
+                    GameObjects.GameObject iItem = mContainerObject.ContainerObject.GetContents(i + mScrollY * 4);
                     if (iItem != null)
                         iItemTypeID = iItem.ObjectTypeID;
                     string iBtnName = "btnInv" + i; 
@@ -161,7 +162,7 @@ namespace UltimaXNA.GUI
                     else
                         ((CustomButton)m_MyForm[iBtnName]).Disabled = false;
                 }
-                mLastContainerUpdated = mContainerObject.UpdateTicker;
+                mLastContainerUpdated = mContainerObject.ContainerObject.UpdateTicker;
             }
 
             if (mScrollY == 0)

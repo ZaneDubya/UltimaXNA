@@ -101,6 +101,7 @@
     <Compile Include="Code\Engine.cs" />
     <Compile Include="Code\DataLocal\FileManager.cs" />
     <Compile Include="Code\DataLocal\FileIndexClint.cs" />
+    <Compile Include="Code\GameObjects\GO_Container.cs" />
     <Compile Include="Code\GameObjects\GameObjects.cs" />
     <Compile Include="Code\GameState.cs" />
     <Compile Include="Code\GUI\Events.cs" />
@@ -124,7 +125,6 @@
     <Compile Include="Code\DataLocal\TileData.cs" />
     <Compile Include="Code\DataLocal\TileMatrix.cs" />
     <Compile Include="Code\DataLocal\TileMatrixPatch.cs" />
-    <Compile Include="Code\GameObjects\Container.cs" />
     <Compile Include="Code\GameObjects\Corpse.cs" />
     <Compile Include="Code\GameObjects\DynamicObject.cs" />
     <Compile Include="Code\GameObjects\GameObject.cs" />
