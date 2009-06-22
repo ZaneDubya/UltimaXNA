@@ -77,5 +77,10 @@ namespace UltimaXNA.GameObjects
             m_Dispose = true;
             Movement.ClearImmediate();
         }
+
+        public override string ToString()
+        {
+            return ObjectType.ToString() + " | " + GUID.ToString();
+        }
     }
 }

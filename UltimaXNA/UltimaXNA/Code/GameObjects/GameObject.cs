@@ -67,9 +67,7 @@ namespace UltimaXNA.GameObjects
         // public ItemEnchantment[] Item_Enchantments = new ItemEnchantment[6];
         public int Item_StackCount = 0;
         public int Item_ContainedWithinGUID = 0;
-        // Used for Inventory position.
-        public int Item_InvY_SlotChecksum = 0;
-        public int Item_InvX_SlotIndex = 0;
+        
 
         public int AnimationDisplayID = 0;
 
@@ -101,16 +99,52 @@ namespace UltimaXNA.GameObjects
             }
         }
 
-        public void Item_MoveToNewSlot(int nX)
+        // Inventory position is handled differently in this client than in the legacy UO client.
+        // All items have both an X and a Y position within the container. We use X for the SlotIndex
+        // which this item occupies, and the Y as a Checksum for the X value: if the Y checksum validates,
+        // then we know this item belongs in slot X.
+        private int m_InvX_SlotIndex, m_InvY_SlotChecksum = 0;
+        public int Item_InvX
         {
-            this.Item_InvX_SlotIndex = nX;
-            this.Item_InvY_SlotChecksum = m_InvYChecksum(nX);
-            SendPacket_MoveItemWithinContainer(this);
+            get { return m_InvX_SlotIndex; }
+            set { m_InvX_SlotIndex = value; }
+        }
+        public int Item_InvY
+        {
+            get { return m_InvY_SlotChecksum; }
+            set { m_InvY_SlotChecksum = value; }
+        }
+        public int Item_SlotIndex
+        {
+            get
+            {
+                if (m_SlotIndexChecksumValidates())
+                {
+                    return m_InvX_SlotIndex;
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+            set
+            {
+                if ((m_InvX_SlotIndex == value) && m_SlotIndexChecksumValidates())
+                {
+                    // do nothing - we are already in this slot.
+                }
+                else
+                {
+                    m_InvX_SlotIndex = value;
+                    m_InvY_SlotChecksum = m_InvYChecksum(value);
+                    SendPacket_MoveItemWithinContainer(this); // !!! fix this! Items should not send packets when they get moved around.
+                }
+            }
         }
 
-        public bool Item_ChecksumValidates()
+        private bool m_SlotIndexChecksumValidates()
         {
-            if (this.Item_InvY_SlotChecksum == m_InvYChecksum(this.Item_InvX_SlotIndex))
+            if (m_InvY_SlotChecksum == m_InvYChecksum(m_InvX_SlotIndex))
                 return true;
             else
                 return false;
@@ -119,6 +153,11 @@ namespace UltimaXNA.GameObjects
         private int m_InvYChecksum(int nInvX)
         {
             return nInvX ^ 0x7fff;
+        }
+
+        public override string ToString()
+        {
+            return base.ToString() + " | " + ItemData.Name;
         }
     }
 }

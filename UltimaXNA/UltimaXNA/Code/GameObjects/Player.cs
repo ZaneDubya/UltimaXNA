@@ -32,5 +32,10 @@ namespace UltimaXNA.GameObjects
         {
             this.ObjectType = ObjectType.Player;
         }
+
+        public override string ToString()
+        {
+            return base.ToString() + " | " + Name;
+        }
     }
 }
