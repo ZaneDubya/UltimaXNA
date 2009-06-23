@@ -250,6 +250,7 @@ namespace UltimaXNA.Network
                         break;
                     case OpCodes.SMSG_DRAGITEM:
                         m_ReceiveDragItem(iPacket);
+                        break;
                     default:
                         // throw (new System.Exception("Unknown Opcode: " + nPacket.OpCode));
                         break;
