@@ -248,6 +248,8 @@ namespace UltimaXNA.Network
                     case OpCodes.MSG_BuyItemFromVendor:
                         m_ReceiveEndVendorSell(iPacket);
                         break;
+                    case OpCodes.SMSG_DRAGITEM:
+                        m_ReceiveDragItem(iPacket);
                     default:
                         // throw (new System.Exception("Unknown Opcode: " + nPacket.OpCode));
                         break;
@@ -1366,6 +1368,39 @@ namespace UltimaXNA.Network
         private void m_ReceiveOpenPaperdoll(Packet nPacket)
         {
             // unhandled;
+        }
+
+        private void m_ReceiveDragItem(Packet nPacket)
+        {
+            int iGraphic = nPacket.ReadUShort();
+            nPacket.ReadByte();
+            nPacket.ReadUShort();
+            int iAmount = nPacket.ReadUShort();
+            uint iSourceContainer = nPacket.ReadUInt(); // 0xFFFFFFFF for ground
+            int iSourceX = nPacket.ReadUShort();
+            int iSourceY = nPacket.ReadUShort();
+            int iSourceZ = nPacket.ReadByte();
+            uint iDestContainer = nPacket.ReadUInt(); // 0xFFFFFFFF for ground
+            int iDestX = nPacket.ReadUShort();
+            int iDestY = nPacket.ReadUShort();
+            int iDestZ = nPacket.ReadByte();
+            bool iSourceGround = false;
+            bool iDestGround = false;
+            //This is sent by the server to display an item being dragged from one place to another.
+            // Note that this does not actually move the item, it just displays an animation.
+
+            if (iSourceContainer == 0xFFFFFFFF)
+            {
+                iSourceGround = true;
+            }
+
+            if (iDestContainer == 0xFFFFFFFF)
+            {
+                iDestGround = true;
+            }
+
+
+
         }
 
         private GameObjects.GameObject m_AddItem(int nGUID, int nItemID, int nHue, int nContainerGUID, int nAmount)
