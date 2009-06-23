@@ -15,6 +15,7 @@ namespace UltimaXNA.Network
         SMSG_WorldItem = 0x1A,
         SMSG_CHARLOCALE = 0x1B,
         SMSG_MOBILEUPDATE = 0x20,
+        SMSG_DRAGITEM = 0x23,
         SMSG_PERSONALLIGHTLEVEL = 0x4E,
         SMSG_LIGHTLEVEL = 0x4F,
         CMSG_LOGINCHARACTER = 0x5D,

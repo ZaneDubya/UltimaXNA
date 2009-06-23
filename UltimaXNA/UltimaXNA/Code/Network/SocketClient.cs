@@ -307,6 +307,8 @@ namespace UltimaXNA.Network
                     return (int)EndianBitConverter.Big.ToUInt16(data, nPosition + 1);
                 case OpCodes.MSG_BuyItemFromVendor:
                     return (int)EndianBitConverter.Big.ToUInt16(data, nPosition + 1);
+                case OpCodes.SMSG_DRAGITEM:
+                    return 26;
                 default :
                     throw new Exception("Unknown packet! Opcocde: 0x" + MiscUtil.HexEncoding.ToString(iOpCode));
             }
