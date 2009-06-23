@@ -216,14 +216,15 @@ namespace UltimaXNA.GUI
         {
             GameObjects.GameObject iHeldObject = (GameObjects.GameObject)nHeldObject;
             GameObjects.GameObject iDestContainer = (GameObjects.GameObject)nDestContainer;
-
+        
             if (iHeldObject.Item_ContainedWithinGUID == iDestContainer.GUID)
             {
                 iDestContainer.ContainerObject.Event_MoveItemToSlot(iHeldObject, nDestSlot);
             }
             else
             {
-                throw (new Exception("No support for moving items between containers."));
+                m_GameClientService.Send_DropItem(iHeldObject.GUID, 0, 0, 0, iDestContainer.GUID);
+               // throw (new Exception("No support for moving items between containers."));
             }
         }
 
