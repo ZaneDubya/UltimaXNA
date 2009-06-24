@@ -70,5 +70,6 @@ namespace UltimaXNA.Network
         SMSG_OpenPaperdoll = 0x88,
         SMSG_MegaCliLoc = 0xD6,
         MSG_BuyItemFromVendor = 0x3B,
+        CMSG_SpeechRequest = 0xAD,
     }
 }

@@ -92,6 +92,7 @@ namespace UltimaXNA.Network
         public void Write(sbyte value)                          { m_Writer.Write(value); }
         public void Write(short value)                          { m_Writer.Write(value); }
         public void Write(string value)                         { m_Writer.Write(value); }
+        public void Write(string value, bool unicode)           { m_Writer.Write(value, unicode); }
         public void Write(uint value)                           { m_Writer.Write(value); }
         public void Write(ulong value)                          { m_Writer.Write(value); }
         public void Write(ushort value)                         { m_Writer.Write(value); }
@@ -101,6 +102,14 @@ namespace UltimaXNA.Network
         public override string ToString()
         {
             return OpCode.ToString();
+        }
+
+        public void UpdateSize()
+        {
+            long iPosition = m_Writer.BaseStream.Position;
+            m_Writer.BaseStream.Position = 1;
+            this.Write((ushort)iPosition);
+            m_Writer.BaseStream.Position = iPosition;
         }
     }
 }
