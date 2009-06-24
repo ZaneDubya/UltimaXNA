@@ -385,6 +385,7 @@ namespace UltimaXNA
                 // Note that if you attempt to move around normally after using this, the server will catch on
                 // and will eventually reject your movement.
                 #region DEBUG_KeyboardMovement
+                /*
                     GameObjects.Movement iMovement = mGameObjectsService.GetPlayerObject().Movement;
                     if (nKeyboard.IsKeyDown(Keys.W))
                         iMovement.SetPositionInstant(iMovement.TileX - 1, iMovement.TileY - 1, 0);
@@ -394,6 +395,7 @@ namespace UltimaXNA
                         iMovement.SetPositionInstant(iMovement.TileX + 1, iMovement.TileY + 1, 0);
                     if (nKeyboard.IsKeyDown(Keys.D))
                         iMovement.SetPositionInstant(iMovement.TileX + 1, iMovement.TileY - 1, 0);
+                */
                 #endregion
 
             }
