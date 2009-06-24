@@ -23,14 +23,14 @@ namespace UltimaXNA.Network
         private TcpClient mClient;
 
         
-        private const int mReadBufferSize = 4096;          // The buffer where we will store the received data.
+        private const int mReadBufferSize = 4096 * 8;          // The buffer where we will store the received data.
         private byte[] mReadBuffer = new byte[mReadBufferSize];
         public event UserEventDlg UserDisconnected;         // Events to call when the client received data...
         public event DataReceivedDlg DataReceived;          // Or got disconnected
         public readonly int id;                             // unique id for use with the server
         public bool disconnected = false;                   // To keep track if we have already disconnected.
 
-        private const int mOutBufferSize = 4096;          // Increased to 32kb from 16kb issue9 (http://code.google.com/p/ultimaxna/issues/detail?id=9) --ZDW 6/14/2009
+        private const int mOutBufferSize = 4096 * 8;          // Increased to 32kb from 16kb issue9 (http://code.google.com/p/ultimaxna/issues/detail?id=9) --ZDW 6/14/2009
         private byte[] outdata = new byte[mOutBufferSize];
 
         private bool mAppendNextMessage = false;
