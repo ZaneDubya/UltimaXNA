@@ -290,6 +290,11 @@ namespace UltimaXNA.GUI
         public static GameObjects.BaseObject MouseHoldingItem;
         private static GameObjects.GameObject mToolTipItem;
 
+        public static void Chat_AddLine(string nChatText)
+        {
+            // add text.
+        }
+
         public static void PickUpItem(GameObjects.GameObject nObject)
         {
             MouseHoldingItem = nObject;
