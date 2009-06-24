@@ -1014,13 +1014,19 @@ namespace UltimaXNA.Network
             byte iNotoriety = nPacket.ReadByte();
 
             GameObjects.Unit iObject = m_GameObjectsService.GetObject(iSerial, UltimaXNA.GameObjects.ObjectType.Unit) as GameObjects.Unit;
-			// Issue 16 - Pet not showing at login - http://code.google.com/p/ultimaxna/issues/detail?id=16 - Smjert
+            iObject.SetFacing(iFacing);
+            iObject.DisplayBodyID = iBodyID;
+            // Issue 16 - Pet not showing at login - http://code.google.com/p/ultimaxna/issues/detail?id=16 - Smjert
 			// Since no packet arrives to add your pet, when you move and your pet follows you the client crashes
-			iObject.SetFacing(iFacing);
-			iObject.DisplayBodyID = iBodyID;
-			iObject.Movement.SetPositionInstant(iX, iY, iZ);
-			// Issue 16 - End
-            iObject.Move(iX, iY, iZ);
+            if (iObject.Movement.DrawPosition.PositionV3 == new Vector3(0, 0, 0))
+            {
+                iObject.Movement.SetPositionInstant(iX, iY, iZ);
+                // Issue 16 - End
+            }
+            else
+            {
+                iObject.Move(iX, iY, iZ);
+            }
         }
 
         private void m_ReceiveSendSpeech(Packet nPacket)
