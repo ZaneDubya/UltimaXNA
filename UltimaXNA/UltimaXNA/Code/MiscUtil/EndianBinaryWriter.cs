@@ -323,6 +323,38 @@ namespace MiscUtil.IO
 			WriteInternal(data, data.Length);
 		}
 
+        /// <summary>
+        /// Writes a string to the stream, using the encoding for this writer. Option to be written as unicode.
+        /// </summary>
+        /// <param name="value">The value to write. Must not be null.</param>
+        /// <exception cref="ArgumentNullException">value is null</exception>
+        public void Write(string value, bool unicode)
+        {
+            if (!unicode)
+            {
+                this.Write(value);
+                return;
+            }
+            if (value == null)
+            {
+                throw new ArgumentNullException("value");
+            }
+            CheckDisposed();
+            Encoding iEncoding = encoding;
+            encoding = Encoding.BigEndianUnicode;
+            byte[] data = Encoding.GetBytes(value);
+            // Write7BitEncodedInt(data.Length);
+            // reverse byte order.
+            /*for (int i = 0; i < (data.Length / 2); i = i + 2)
+            {
+                byte temp = data[i * 2];
+                data[i * 2] = data[i * 2 + 1];
+                data[i * 2 + 1] = temp;
+            }*/
+            WriteInternal(data, data.Length);
+            encoding = iEncoding;
+        }
+
 		/// <summary>
 		/// Writes a 7-bit encoded integer from the stream. This is stored with the least significant
 		/// information first, with 7 bits of information per byte of value, and the top

@@ -43,6 +43,7 @@ namespace UltimaXNA.Network
         void Send_RequestContextMenu(int nGUID);
         void Send_ContextMenuResponse(int nGUID, int nResponseCode);
         void Send_BuyItemFromVendor(int nVendorGUID, int nItemGUID, int nAmount);
+        void Send_ChatMsg(string nMsg);
     }
 
     class GameClient : GameComponent, IGameClient
@@ -436,6 +437,24 @@ namespace UltimaXNA.Network
             iPacket.Write((byte)0x1A); // Always (0x1A)
             iPacket.Write((int)nItemGUID); // (from 3C packet)
             iPacket.Write((short)nAmount); // # bought
+            this.SendPacket(iPacket);
+        }
+
+        public void Send_ChatMsg(string nChatMsg)
+        {
+            if (nChatMsg == string.Empty)
+                return;
+            // This is also used to send keywords, though this is unimplemented.
+            // details at: http://kec.cz/tartaros/steamengine/uploads/SE%20packet%20guide/www.twilightmanor.net/se/packetsdf86.html?style=gold&id=23
+            Packet iPacket = new Packet(OpCodes.CMSG_SpeechRequest);
+            iPacket.Write((short)0); // Packet size - we will need to revise this once we have the total length.
+            iPacket.Write((byte)0x00); // type is 0x00 normal. | 0xC0 for keywords.
+            iPacket.Write((ushort)0); // hue
+            iPacket.Write((ushort)0); // font
+            iPacket.Write(m_SafeCharFromString("ENU")); // language code, null terminated.
+            iPacket.Write(nChatMsg + '\0', true);
+            // Now return to the beginning of the packet and write the size.
+            iPacket.UpdateSize();
             this.SendPacket(iPacket);
         }
 
@@ -901,7 +920,7 @@ namespace UltimaXNA.Network
             string iStrName = m_RemoveNullGarbageFromString(nPacket.ReadBytes(30));
             string iText = m_RemoveNullGarbageFromString(nPacket.ReadChars((iLength - 48)));
 
-            m_GUIService.AddChatText(
+            GUI.GUIHelper.Chat_AddLine(
                 iStrName + ": " + iText
                 );
         }
@@ -1441,6 +1460,13 @@ namespace UltimaXNA.Network
         {
             // If the connection to the server is lost, we should let the engine know through our status.
             Status = ClientStatus.Disconnected;
+        }
+
+        protected char[] m_SafeCharFromString(string nStr)
+        {
+            char[] iReturn = new char[nStr.Length + 1];
+            nStr.CopyTo(0, iReturn, 0, nStr.Length);
+            return iReturn;
         }
 
         protected void m_RemoveNullGarbageFromString(ref string str)

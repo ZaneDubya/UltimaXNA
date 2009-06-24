@@ -16,7 +16,6 @@ namespace UltimaXNA.GUI
     public interface IGUI
     {
         bool IsMouseOverGUI(Vector2 nPosition);
-        void AddChatText(string nText);
         void LoadInWorldGUI();
         void LoadLoginGUI();
         void Container_Open(GameObjects.BaseObject nContainerObject, int nGump);
@@ -63,9 +62,7 @@ namespace UltimaXNA.GUI
             m_GameObjectsService = (GameObjects.IGameObjects)Game.Services.GetService(typeof(GameObjects.IGameObjects));
             m_GameClientService = (Network.IGameClient)Game.Services.GetService(typeof(Network.IGameClient));
 
-            GUIHelper.SetDevice(graphics.GraphicsDevice);
-            GUIHelper.Event_DropItemIntoSlot += m_DropItemIntoSlot;
-            GUIHelper.Event_BuyItemFromVendor += m_BuyItemFromVendor;
+            GUIHelper.SetObjects(graphics.GraphicsDevice, this, m_GameClientService);
         }
 
         protected override void UnloadContent()
@@ -82,31 +79,28 @@ namespace UltimaXNA.GUI
             base.Update(gameTime);
 
             // Fix for issue 1. http://code.google.com/p/ultimaxna/issues/detail?id=1 --ZDW 6/17/09
-            if (Game.IsActive)
+            if (GUIHelper.MouseHoldingItem == null)
             {
-                if (GUIHelper.MouseHoldingItem == null)
-                {
-                    FormCollection.Cursor.Texture = surfaceCursors;
-                    FormCollection.Cursor.SourceRect = new Rectangle(1, 1, 31, 26);
-                    FormCollection.Cursor.HasShadow = true;
-                }
-                else
-                {
-                    FormCollection.Cursor.Texture = GUIHelper.GetItemIcon(((GameObjects.GameObject)GUIHelper.MouseHoldingItem).ObjectTypeID);
-                    FormCollection.Cursor.SourceRect = new Rectangle(0, 0, 64, 64);
-                    FormCollection.Cursor.HasShadow = true;
-                }
+                FormCollection.Cursor.Texture = surfaceCursors;
+                FormCollection.Cursor.SourceRect = new Rectangle(1, 1, 31, 26);
+                FormCollection.Cursor.HasShadow = true;
+            }
+            else
+            {
+                FormCollection.Cursor.Texture = GUIHelper.GetItemIcon(((GameObjects.GameObject)GUIHelper.MouseHoldingItem).ObjectTypeID);
+                FormCollection.Cursor.SourceRect = new Rectangle(0, 0, 64, 64);
+                FormCollection.Cursor.HasShadow = true;
+            }
 
-                // First update our collection of windows.
-                mUpdateWindows();
+            // First update our collection of windows.
+            mUpdateWindows();
 
-                if (mDrawForms)
-                {
-                    //Update the form collection
-                    formCollection.Update(gameTime);
-                    //Render the form collection (required before drawing)
-                    formCollection.Render();
-                }
+            if (mDrawForms)
+            {
+                //Update the form collection
+                formCollection.Update(gameTime);
+                //Render the form collection (required before drawing)
+                formCollection.Render();
             }
         }
 
@@ -158,16 +152,12 @@ namespace UltimaXNA.GUI
                 w.Close();
         }
 
-        public void AddChatText(string nText)
-        {
-            ((Window_Chat)m_GUIWindows["ChatFrame"]).AddText(nText);
-        }
-
         public void LoadInWorldGUI()
         {
             m_GUIWindows["LoginBG"].Close();
             m_GUIWindows["LoginWindow"].Close();
             m_GUIWindows.Add("ChatFrame", new Window_Chat(formCollection));
+            m_GUIWindows.Add("ChatInput", new Window_ChatInput(formCollection));
             m_GUIWindows.Add("StatusFrame", new Window_StatusFrame(formCollection));
         }
 
@@ -212,32 +202,7 @@ namespace UltimaXNA.GUI
             m_GUIWindows.Add("ErrorModal", new ErrorModal(formCollection, nText));
         }
 
-        private void m_DropItemIntoSlot(GameObjects.BaseObject nHeldObject, GameObjects.BaseObject nDestContainer, int nDestSlot)
-        {
-            GameObjects.GameObject iHeldObject = (GameObjects.GameObject)nHeldObject;
-            GameObjects.GameObject iDestContainer = (GameObjects.GameObject)nDestContainer;
         
-            if (iHeldObject.Item_ContainedWithinGUID == iDestContainer.GUID)
-            {
-                iDestContainer.ContainerObject.Event_MoveItemToSlot(iHeldObject, nDestSlot);
-            }
-            else
-            {
-                m_GameClientService.Send_DropItem(iHeldObject.GUID, 0, 0, 0, iDestContainer.GUID);
-               // throw (new Exception("No support for moving items between containers."));
-            }
-        }
-
-        private void m_BuyItemFromVendor(int nVendorGUID, int nItemGUID, int nAmount)
-        {
-            // Due to the way that the RunUO server ( and all UO servers ) are set up,
-            // if we want to buy one item at a item, we need to:
-            // 1. Buy the item.
-            // 2. Re-request the context menu.
-            // 3. Send the context menu response for buying. (handled automatically)
-            m_GameClientService.Send_BuyItemFromVendor(nVendorGUID, nItemGUID, nAmount);
-            m_GameClientService.Send_RequestContextMenu(nVendorGUID);
-        }
 
         private void mUpdateWindows()
         {
@@ -272,10 +237,9 @@ namespace UltimaXNA.GUI
 
     static class GUIHelper
     {
-        public static event GUIEVENT_DropItemIntoSlot Event_DropItemIntoSlot;
-        public static event GUIEVENT_BuyItemFromVendor Event_BuyItemFromVendor;
-
         private static bool m_IsPrepared = false;
+        private static EngineGUI m_GUI = null;
+        private static Network.IGameClient m_GameClientService = null;
         private static Texture2D m_TextureBorder = null;
         private static Texture2D m_TextureBG = null;
         private static Texture2D m_TextureEmpty = null;
@@ -290,9 +254,15 @@ namespace UltimaXNA.GUI
         public static GameObjects.BaseObject MouseHoldingItem;
         private static GameObjects.GameObject mToolTipItem;
 
+        public static void Network_SendChat(string nChatText)
+        {
+            m_GameClientService.Send_ChatMsg(nChatText);
+        }
+
         public static void Chat_AddLine(string nChatText)
         {
             // add text.
+            ((Window_Chat)m_GUI.Window("ChatFrame")).AddText(nChatText);
         }
 
         public static void PickUpItem(GameObjects.GameObject nObject)
@@ -300,15 +270,31 @@ namespace UltimaXNA.GUI
             MouseHoldingItem = nObject;
         }
 
-        public static void DropItemIntoSlot(GameObjects.BaseObject nContainerObject, int nSlot)
+        public static void DropItemIntoSlot(GameObjects.BaseObject nDestContainer, int nDestSlot)
         {
-            Event_DropItemIntoSlot(MouseHoldingItem, nContainerObject, nSlot);
-            MouseHoldingItem = null;
+            GameObjects.GameObject iHeldObject = (GameObjects.GameObject)MouseHoldingItem;
+            GameObjects.GameObject iDestContainer = (GameObjects.GameObject)nDestContainer;
+
+            if (iHeldObject.Item_ContainedWithinGUID == iDestContainer.GUID)
+            {
+                iDestContainer.ContainerObject.Event_MoveItemToSlot(iHeldObject, nDestSlot);
+            }
+            else
+            {
+                m_GameClientService.Send_DropItem(iHeldObject.GUID, 0, 0, 0, iDestContainer.GUID);
+                // throw (new Exception("No support for moving items between containers."));
+            }
         }
 
         public static void BuyItemFromVendor(int nVendorGUID, int nItemGUID, int nAmount)
         {
-            Event_BuyItemFromVendor(nVendorGUID, nItemGUID, nAmount);
+            // Due to the way that the RunUO server ( and all UO servers ) are set up,
+            // if we want to buy one item at a item, we need to:
+            // 1. Buy the item.
+            // 2. Re-request the context menu.
+            // 3. Send the context menu response for buying. (handled automatically)
+            m_GameClientService.Send_BuyItemFromVendor(nVendorGUID, nItemGUID, nAmount);
+            m_GameClientService.Send_RequestContextMenu(nVendorGUID);
         }
 
         public static GameObjects.GameObject ToolTipItem
@@ -334,9 +320,11 @@ namespace UltimaXNA.GUI
             }
         }
 
-        public static void SetDevice(GraphicsDevice nDevice)
+        public static void SetObjects(GraphicsDevice nDevice, EngineGUI nGUI, Network.IGameClient nGameClientService)
         {
             m_GraphicsDevice = nDevice;
+            m_GUI = nGUI;
+            m_GameClientService = nGameClientService;
         }
 
         private static void m_PrepareHelper()
