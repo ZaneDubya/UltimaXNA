@@ -38,22 +38,32 @@ namespace UltimaXNA.GUI
             : base(nFormCollection)
         {
             //Create a new form
-            m_FormCollection.Add(new Form("frmStatusFrameMain", "", new Vector2(128, 128), new Vector2(0, 0), Form.BorderStyle.None));
+            m_FormCollection.Add(new Form("frmStatusFrameMain", "", new Vector2(128, 64), new Vector2(0, 0), Form.BorderStyle.None));
             m_MyForm = m_FormCollection["frmStatusFrameMain"];
             m_MyForm.BorderName = null;
 
-            m_MyForm.Controls.Add(new PictureBox("picBG", new Vector2(0,0), @"GUI\STATFRAME\UI-STATFRAME-MAIN.png", 128, 128, 0));
+            m_MyForm.Controls.Add(new PictureBox("picBG", new Vector2(0,0), @"GUI\STATFRAME\UI-STATFRAME-MAINNEW.png", 128, 64, 0));
+            m_MyForm.Controls.Add(new Label("lblCharName", new Vector2(4, -1), "Poplicola", Color.TransparentBlack, Color.White, 100, Label.Align.Left));
+            m_MyForm["lblCharName"].FontName = "Pericles9";
 
-            m_MyForm.Controls.Add(new PictureBox("barHealth", new Vector2(2, 22), @"GUI\STATFRAME\UI-StatFrame-Main-Bar.png", 128, 8, 0));
-            m_MyForm.Controls.Add(new PictureBox("barMana", new Vector2(2, 33), @"GUI\STATFRAME\UI-StatFrame-Main-Bar.png", 128, 8, 0));
-            m_MyForm.Controls.Add(new PictureBox("barStamina", new Vector2(2, 44), @"GUI\STATFRAME\UI-StatFrame-Main-Bar.png", 128, 8, 0));
+            m_MyForm.Controls.Add(new PictureBox("barStat0",   new Vector2(0, 16), @"GUI\STATFRAME\UI-STATFRAME-MAINNEW-HITS.png", 128, 16, 0));
+            m_MyForm.Controls.Add(new PictureBox("barStat1", new Vector2(0, 29), @"GUI\STATFRAME\UI-StatFrame-MAINNEW-MANA.png", 128, 16, 0));
+            m_MyForm.Controls.Add(new PictureBox("barStat2", new Vector2(0, 42), @"GUI\STATFRAME\UI-StatFrame-MAINNEW-STAM.png", 128, 16, 0));
 
-            m_MyForm["barHealth"].BackColor = Color.Red;
-            m_MyForm["barMana"].BackColor = Color.Blue;
-            m_MyForm["barStamina"].BackColor = Color.Yellow;
 
-            m_MyForm.Controls.Add(new Label("lblCharName", new Vector2(2, 3), "Poplicola", Color.TransparentBlack, Color.White, 126, Label.Align.Center));
 
+            m_MyForm.Controls.Add(new Label("lblStat%0", new Vector2(85, 15), string.Empty, Color.TransparentBlack, Color.White, 100, Label.Align.Left));
+            m_MyForm.Controls.Add(new Label("lblStat%1", new Vector2(85, 28), string.Empty, Color.TransparentBlack, Color.White, 100, Label.Align.Left));
+            m_MyForm.Controls.Add(new Label("lblStat%2", new Vector2(85, 41), string.Empty, Color.TransparentBlack, Color.White, 100, Label.Align.Left));
+            m_MyForm.Controls.Add(new Label("lblStatAmt0", new Vector2(4, 15), string.Empty, Color.TransparentBlack, Color.White, 100, Label.Align.Left));
+            m_MyForm.Controls.Add(new Label("lblStatAmt1", new Vector2(4, 28), string.Empty, Color.TransparentBlack, Color.White, 100, Label.Align.Left));
+            m_MyForm.Controls.Add(new Label("lblStatAmt2", new Vector2(4, 41), string.Empty, Color.TransparentBlack, Color.White, 100, Label.Align.Left));
+            for (int i = 0; i < 3; i++)
+            {
+                m_MyForm["lblStat%" + i].FontName = "MiramontBold7";
+                m_MyForm["lblStatAmt" + i].FontName = "MiramontBold7";
+            }
+            
             //Show the form
             this.Show();
         }
@@ -65,7 +75,7 @@ namespace UltimaXNA.GUI
 
         private void m_UpdateBar(int nBarIndex)
         {
-            const int iMaxWidth = 117;
+            const int iMaxWidth = 128 ;
             int iActualWidth;
             int iCurrent, iMax;
             switch (nBarIndex)
@@ -99,20 +109,9 @@ namespace UltimaXNA.GUI
                 iActualWidth = (int)((float)iMaxWidth * ((float)iCurrent / (float)iMax));
             }
 
-            switch (nBarIndex)
-            {
-                case 0:
-                    m_MyForm["barHealth"].Width = iActualWidth;
-                    break;
-                case 1:
-                    m_MyForm["barMana"].Width = iActualWidth;
-                    break;
-                case 2:
-                    m_MyForm["barStamina"].Width = iActualWidth;
-                    break;
-                default:
-                    throw (new Exception("Bar index should be 0-2"));
-            }
+            m_MyForm["barStat" + nBarIndex].Width = iActualWidth;
+            m_MyForm["lblStat%" + nBarIndex].Text = ((int)(((float)iCurrent / (float)iMax) * 100f)).ToString() + "%";
+            m_MyForm["lblStatAmt" + nBarIndex].Text = iCurrent.ToString();
         }
     }
 }
