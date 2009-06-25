@@ -71,5 +71,6 @@ namespace UltimaXNA.Network
         SMSG_MegaCliLoc = 0xD6,
         MSG_BuyItemFromVendor = 0x3B,
         CMSG_SpeechRequest = 0xAD,
+        MSG_TargetCursor = 0x6C,
     }
 }

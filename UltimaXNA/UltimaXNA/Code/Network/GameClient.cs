@@ -44,6 +44,9 @@ namespace UltimaXNA.Network
         void Send_ContextMenuResponse(int nGUID, int nResponseCode);
         void Send_BuyItemFromVendor(int nVendorGUID, int nItemGUID, int nAmount);
         void Send_ChatMsg(string nMsg);
+        void Send_TargetXYZ(int nX, int nY, int nZ, int nModelNumber);
+        void Send_TargetCancel();
+        void Send_TargetObject(int nObjectGUID, int nX, int nY, int nZ, int nModelNumber);
     }
 
     class GameClient : GameComponent, IGameClient
@@ -252,6 +255,9 @@ namespace UltimaXNA.Network
                     case OpCodes.SMSG_DRAGITEM:
                         m_ReceiveDragItem(iPacket);
                         break;
+                    case OpCodes.MSG_TargetCursor:
+                        m_ReceiveTargetCursor(iPacket);
+                        break;
                     default:
                         // throw (new System.Exception("Unknown Opcode: " + nPacket.OpCode));
                         break;
@@ -444,7 +450,7 @@ namespace UltimaXNA.Network
         {
             if (nChatMsg == string.Empty)
                 return;
-            // This is also used to send keywords, though this is unimplemented.
+            // This is also used to send keywords, though this is unimplemented in this client.
             // details at: http://kec.cz/tartaros/steamengine/uploads/SE%20packet%20guide/www.twilightmanor.net/se/packetsdf86.html?style=gold&id=23
             Packet iPacket = new Packet(OpCodes.CMSG_SpeechRequest);
             iPacket.Write((short)0); // Packet size - we will need to revise this once we have the total length.
@@ -457,6 +463,49 @@ namespace UltimaXNA.Network
             iPacket.UpdateSize();
             this.SendPacket(iPacket);
         }
+
+        public void Send_TargetXYZ(int nX, int nY, int nZ, int nModelNumber)
+        {
+            Packet iPacket = new Packet(OpCodes.MSG_TargetCursor);
+            iPacket.Write((byte)0x01); // BYTE[1] type: 0x00 = Select Object; 0x01 = Select X, Y, Z
+            iPacket.Write((int)0x00); // BYTE[4] cursorID 
+            iPacket.Write((byte)0x00); // BYTE[1] Cursor Type; 3 to cancel.
+            iPacket.Write((int)0x00); // BYTE[4] Clicked On ID
+            iPacket.Write((ushort)nX); // BYTE[2] click xLoc
+            iPacket.Write((ushort)nY); // BYTE[2] click yLoc
+            iPacket.Write((ushort)nZ); // BYTE unknown (0x00) + BYTE click zLoc
+            iPacket.Write((ushort)nModelNumber); // BYTE[2] model # (if a static tile, 0 if a map/landscape tile)
+            this.SendPacket(iPacket);
+        }
+
+        public void Send_TargetCancel()
+        {
+            Packet iPacket = new Packet(OpCodes.MSG_TargetCursor);
+            iPacket.Write((byte)0x00); // BYTE[1] type: 0x00 = Select Object; 0x01 = Select X, Y, Z
+            iPacket.Write((int)0x00); // BYTE[4] cursorID 
+            iPacket.Write((byte)0x03); // BYTE[1] Cursor Type; 3 to cancel.
+            iPacket.Write((int)0x00); // BYTE[4] Clicked On ID
+            iPacket.Write((ushort)0x00); // BYTE[2] click xLoc
+            iPacket.Write((ushort)0x00); // BYTE[2] click yLoc
+            iPacket.Write((ushort)0x00); // BYTE unknown (0x00) + BYTE click zLoc
+            iPacket.Write((ushort)0x00); // BYTE[2] model # (if a static tile, 0 if a map/landscape tile)
+            this.SendPacket(iPacket);
+        }
+
+        public void Send_TargetObject(int nObjectGUID, int nX, int nY, int nZ, int nModelNumber)
+        {
+            Packet iPacket = new Packet(OpCodes.MSG_TargetCursor);
+            iPacket.Write((byte)0x00); // BYTE[1] type: 0x00 = Select Object; 0x01 = Select X, Y, Z
+            iPacket.Write((int)0x00); // BYTE[4] cursorID 
+            iPacket.Write((byte)0x00); // BYTE[1] Cursor Type; 3 to cancel.
+            iPacket.Write((int)nObjectGUID); // BYTE[4] Clicked On ID
+            iPacket.Write((ushort)0x00); // BYTE[2] click xLoc
+            iPacket.Write((ushort)0x00); // BYTE[2] click yLoc
+            iPacket.Write((ushort)0x00); // BYTE unknown (0x00) + BYTE click zLoc
+            iPacket.Write((ushort)0x00); // BYTE[2] model # (if a static tile, 0 if a map/landscape tile)
+            this.SendPacket(iPacket);
+        }
+
 
         private void client_DataReceived(SocketClient sender, Packet nPacket)
         {
@@ -1368,6 +1417,7 @@ namespace UltimaXNA.Network
         private void m_ReceiveCompressedGump(Packet nPacket)
         {
             // unhandled !!!
+            GUI.GUIHelper.Chat_AddLine("DEBUG: Compressed gump received but not handled.");
         }
 
         private void m_ReceivePlayMusic(Packet nPacket)
@@ -1424,9 +1474,22 @@ namespace UltimaXNA.Network
             {
                 iDestGround = true;
             }
+        }
 
-
-
+        private void m_ReceiveTargetCursor(Packet nPacket)
+        {
+            int iCommandType = nPacket.ReadByte(); // 0x00 = Select Object; 0x01 = Select X, Y, Z
+            int iCursorID = nPacket.ReadInt();
+            int iCursorType = nPacket.ReadByte(); // 0 - 2 = unknown; 3 = Cancel current targetting RunUO seems to always send 0.
+            // The rest of the packet is not read by the client.
+            m_GameStateService.MouseTargeting(iCursorID, iCommandType);
+            // The following are always sent but are only valid if sent by client 
+            // BYTE[4] Clicked On ID
+            // BYTE[2] click xLoc
+            // BYTE[2] click yLoc
+            // BYTE unknown (0x00)
+            // BYTE click zLoc
+            // BYTE[2] model # (if a static tile, 0 if a map/landscape tile)
         }
 
         private GameObjects.GameObject m_AddItem(int nGUID, int nItemID, int nHue, int nContainerGUID, int nAmount)

@@ -16,6 +16,7 @@ namespace UltimaXNA
     {
         bool InWorld { get; set; }
         bool EngineRunning { get; set; }
+        void MouseTargeting(int nCursorID, int nTargetingType);
     }
 
     public class GameState : GameComponent, IGameState
@@ -33,8 +34,21 @@ namespace UltimaXNA
         public string DebugMessage { get { return mGenerateDebugMessage(); } }
 
         // added for future interface option, allowing both continuous mouse movement and discrete clicks -BERT
-        bool movementFollowsMouse = true;
+        private bool movementFollowsMouse = true;
         private bool mContinuousMoveCheck = false;
+
+        // Are we asking for a target?
+        private int mTargettingType = -1;
+        private bool IsTargeting 
+        {
+            get
+            {
+                if (mTargettingType == -1)
+                    return false;
+                else
+                    return true; 
+            }
+        }
 
         // InWorld allows us to tell when our character object has been loaded in the world.
         private bool mInWorld;
@@ -90,6 +104,9 @@ namespace UltimaXNA
                 return;
             }
 
+            // Parse keyboard input.
+            m_ParseKeyboard(mInputService.Keyboard);
+
             // Get a pick type for the cursor.
             if (mGUIService.IsMouseOverGUI(mInputService.Mouse.Position))
             {
@@ -97,145 +114,184 @@ namespace UltimaXNA
             }
             else
             {
-                // Changed to leverage movementFollowsMouse interface option -BERT
-                if ( movementFollowsMouse ? mInputService.Mouse.Buttons[0].IsDown : mInputService.Mouse.Buttons[0].Press )
+                // Check to see if we are actively targetting something, or we have normal mouse interaction.
+                if (IsTargeting)
                 {
+                    // We are targetting. Based on the targetting type, we will either select an object, or a location.
                     mTileEngineService.PickType = TileEngine.PickTypes.PickStatics | TileEngine.PickTypes.PickObjects | TileEngine.PickTypes.PickGroundTiles;
-                }
-                else if (mInputService.Mouse.Buttons[1].Press)
-                {
-                    mTileEngineService.PickType = TileEngine.PickTypes.PickStatics | TileEngine.PickTypes.PickObjects;
                 }
                 else
                 {
-                    mTileEngineService.PickType = TileEngine.PickTypes.PickStatics | TileEngine.PickTypes.PickObjects;
+                    // Changed to leverage movementFollowsMouse interface option -BERT
+                    if (movementFollowsMouse ? mInputService.Mouse.Buttons[0].IsDown : mInputService.Mouse.Buttons[0].Press)
+                    {
+                        mTileEngineService.PickType = TileEngine.PickTypes.PickStatics | TileEngine.PickTypes.PickObjects | TileEngine.PickTypes.PickGroundTiles;
+                    }
+                    else if (mInputService.Mouse.Buttons[1].Press)
+                    {
+                        mTileEngineService.PickType = TileEngine.PickTypes.PickStatics | TileEngine.PickTypes.PickObjects;
+                    }
+                    else
+                    {
+                        mTileEngineService.PickType = TileEngine.PickTypes.PickStatics | TileEngine.PickTypes.PickObjects;
+                    }
                 }
             }
-
-            m_ParseKeyboard(mInputService.Keyboard);
 
             m_UpdateFPS(gameTime);
         }
 
         public void UpdateAfter()
         {
-            // If the left mouse button has been released, and movementFollowsMouse = true, reset mContinuousMovement.
-            if (mInputService.Mouse.Buttons[0].Release)
-                mContinuousMoveCheck = false;
-
-            // Changed to leverage movementFollowsMouse interface option -BERT
-            if (mContinuousMoveCheck)
+            // Check to see if we are actively targetting something, or we have normal mouse interaction.
+            if (IsTargeting)
             {
-                if (mInputService.Mouse.Buttons[0].IsDown)
+                // We are targetting. 
+                TileEngine.IMapObject iMapObject = null;
+                // If we press the left mouse button, we send the targetting event.
+                if (mInputService.Mouse.Buttons[0].Press)
                 {
-                    m_CheckMovement(false);
-                }
-            }
-
-            // If the left mouse button has been released, we check to see if we were holding an item in the cursor.
-            // If we dropped the item into another slot, then the GUI will have already removed the MouseHoldingItem,
-            // and we will never reach this routine. If the MouseHoldingItem is still here, we need to take care of it.
-            #region DropItemFromMouse
-            if (mInputService.Mouse.Buttons[0].Release)
-            {
-                if (GUI.GUIHelper.MouseHoldingItem != null)
-                {
-                    if (mGUIService.IsMouseOverGUI(mInputService.Mouse.Position))
+                    switch (mTargettingType)
                     {
-                        // The mouse is over the GUI. Just get rid of the item, as it hasn't been moved.
-                        GUI.GUIHelper.MouseHoldingItem = null;
-                    }
-                    else
-                    {
-                        // We dropped the icon in the world. This means we are trying to drop the item
-                        // into the world. Let's do it!
-                        mGameClientService.Send_PickUpItem(
-                            GUI.GUIHelper.MouseHoldingItem.GUID,
-                            ((GameObjects.GameObject)GUI.GUIHelper.MouseHoldingItem).Item_StackCount);
-                        mGameClientService.Send_DropItem(
-                            GUI.GUIHelper.MouseHoldingItem.GUID,
-                            mGameObjectsService.GetPlayerObject().Movement.TileX,
-                            mGameObjectsService.GetPlayerObject().Movement.TileY,
-                            0,
-                            -1);
-                        if (((GameObjects.GameObject)GUI.GUIHelper.MouseHoldingItem).Item_ContainedWithinGUID != 0)
-                        {
-                            // We must manually remove the item from the container, as RunUO does not do this for us.
-                            GameObjects.GameObject iContainer = mGameObjectsService.GetObject(
-                                ((GameObjects.GameObject)GUI.GUIHelper.MouseHoldingItem).Item_ContainedWithinGUID, 
-                                UltimaXNA.GameObjects.ObjectType.GameObject) as GameObjects.GameObject;
-                            iContainer.ContainerObject.RemoveItem(GUI.GUIHelper.MouseHoldingItem.GUID);
-                        }
-
-                        GUI.GUIHelper.MouseHoldingItem = null;
-
-                    }
-                    
-                }
-            }
-            #endregion
-
-            // Check if the left mouse button has been pressed. We will either walk to the object under the cursor
-            // or pick it up, depending on what kind of object we are looking at.
-            if (mInputService.Mouse.Buttons[0].Press)
-            {
-                m_CheckMovement(true);
-            }
-
-            if (mInputService.Mouse.Buttons[1].Press)
-            {
-                // Right button pressed ... activate this object.
-                TileEngine.IMapObject iMapObject = mTileEngineService.MouseOverObject;
-                if ((iMapObject != null) && (iMapObject.Type != UltimaXNA.TileEngine.MapObjectTypes.StaticTile))
-                {
-                    GameObjects.BaseObject iObject = mGameObjectsService.GetObject(iMapObject.OwnerGUID, UltimaXNA.GameObjects.ObjectType.Object);
-                    // default option is to simply 'use' this object, although this will doubtless be more complicated in the future.
-                    // Perhaps the use option is based on the type of object? Anyways, for right now, we only interact with gameobjects,
-                    // and we send a double-click to the server.
-                    switch (iObject.ObjectType)
-                    {
-                        case UltimaXNA.GameObjects.ObjectType.GameObject:
-                            mGameClientService.Send_UseRequest(iObject.GUID);
+                        case 0:
+                            // Select Object
+                            mTileEngineService.PickType = TileEngine.PickTypes.PickStatics | TileEngine.PickTypes.PickObjects;
+                            iMapObject = mTileEngineService.MouseOverObject;
+                            MouseTargetingEventObject(iMapObject);
                             break;
-                        case UltimaXNA.GameObjects.ObjectType.Unit:
-                            // and we also 'use' this unit.
-                            mGameClientService.Send_UseRequest(iObject.GUID);
-                            // We request a context sensitive menu...
-                            mGameClientService.Send_RequestContextMenu(iObject.GUID);
-                            break;
-                        case UltimaXNA.GameObjects.ObjectType.Player:
-                            if (iObject.GUID == mGameObjectsService.MyGUID)
+                        case 1:
+                            // Select X, Y, Z
+                            iMapObject = mTileEngineService.MouseOverObject;
+                            if (iMapObject == null)
                             {
-                                // if mounted, dismount.
-                                if (((GameObjects.Unit)iObject).IsMounted)
-                                {
-                                    mGameClientService.Send_UseRequest(iObject.GUID);
-                                }
+                                iMapObject = mTileEngineService.MouseOverGroundTile;
                             }
-                            // else other interaction?
+                            MouseTargetingEventXYZ(iMapObject);
                             break;
                         default:
-                            // do nothing?
-                            break;
-
+                            throw new Exception("Unknown targetting type!");
                     }
                 }
             }
-
-
-            // Check for a move event from the player ...
-            try
+            else
             {
-                int iDirection = 0, iSequence = 0, iKey = 0;
-                bool iMoveEvent = mGameObjectsService.GetPlayerObject().Movement.GetMoveEvent(ref iDirection, ref iSequence, ref iKey);
-                if (iMoveEvent)
+                // If the left mouse button has been released, and movementFollowsMouse = true, reset mContinuousMovement.
+                if (mInputService.Mouse.Buttons[0].Release)
+                    mContinuousMoveCheck = false;
+
+                // Changed to leverage movementFollowsMouse interface option -BERT
+                if (mContinuousMoveCheck)
                 {
-                    mGameClientService.Send_MoveRequest(iDirection, iSequence, iKey);
+                    if (mInputService.Mouse.Buttons[0].IsDown)
+                    {
+                        m_CheckMovement(false);
+                    }
                 }
-            }
-            catch
-            {
-                // The player has not yet been loaded
+
+                // If the left mouse button has been released, we check to see if we were holding an item in the cursor.
+                // If we dropped the item into another slot, then the GUI will have already removed the MouseHoldingItem,
+                // and we will never reach this routine. If the MouseHoldingItem is still here, we need to take care of it.
+                #region DropItemFromMouse
+                if (mInputService.Mouse.Buttons[0].Release)
+                {
+                    if (GUI.GUIHelper.MouseHoldingItem != null)
+                    {
+                        if (mGUIService.IsMouseOverGUI(mInputService.Mouse.Position))
+                        {
+                            // The mouse is over the GUI. Just get rid of the item, as it hasn't been moved.
+                            GUI.GUIHelper.MouseHoldingItem = null;
+                        }
+                        else
+                        {
+                            // We dropped the icon in the world. This means we are trying to drop the item
+                            // into the world. Let's do it!
+                            mGameClientService.Send_PickUpItem(
+                                GUI.GUIHelper.MouseHoldingItem.GUID,
+                                ((GameObjects.GameObject)GUI.GUIHelper.MouseHoldingItem).Item_StackCount);
+                            mGameClientService.Send_DropItem(
+                                GUI.GUIHelper.MouseHoldingItem.GUID,
+                                mGameObjectsService.GetPlayerObject().Movement.TileX,
+                                mGameObjectsService.GetPlayerObject().Movement.TileY,
+                                0,
+                                -1);
+                            if (((GameObjects.GameObject)GUI.GUIHelper.MouseHoldingItem).Item_ContainedWithinGUID != 0)
+                            {
+                                // We must manually remove the item from the container, as RunUO does not do this for us.
+                                GameObjects.GameObject iContainer = mGameObjectsService.GetObject(
+                                    ((GameObjects.GameObject)GUI.GUIHelper.MouseHoldingItem).Item_ContainedWithinGUID,
+                                    UltimaXNA.GameObjects.ObjectType.GameObject) as GameObjects.GameObject;
+                                iContainer.ContainerObject.RemoveItem(GUI.GUIHelper.MouseHoldingItem.GUID);
+                            }
+
+                            GUI.GUIHelper.MouseHoldingItem = null;
+
+                        }
+
+                    }
+                }
+                #endregion
+
+                // Check if the left mouse button has been pressed. We will either walk to the object under the cursor
+                // or pick it up, depending on what kind of object we are looking at.
+                if (mInputService.Mouse.Buttons[0].Press)
+                {
+                    m_CheckMovement(true);
+                }
+
+                if (mInputService.Mouse.Buttons[1].Press)
+                {
+                    // Right button pressed ... activate this object.
+                    TileEngine.IMapObject iMapObject = mTileEngineService.MouseOverObject;
+                    if ((iMapObject != null) && (iMapObject.Type != UltimaXNA.TileEngine.MapObjectTypes.StaticTile))
+                    {
+                        GameObjects.BaseObject iObject = mGameObjectsService.GetObject(iMapObject.OwnerGUID, UltimaXNA.GameObjects.ObjectType.Object);
+                        // default option is to simply 'use' this object, although this will doubtless be more complicated in the future.
+                        // Perhaps the use option is based on the type of object? Anyways, for right now, we only interact with gameobjects,
+                        // and we send a double-click to the server.
+                        switch (iObject.ObjectType)
+                        {
+                            case UltimaXNA.GameObjects.ObjectType.GameObject:
+                                mGameClientService.Send_UseRequest(iObject.GUID);
+                                break;
+                            case UltimaXNA.GameObjects.ObjectType.Unit:
+                                // and we also 'use' this unit.
+                                mGameClientService.Send_UseRequest(iObject.GUID);
+                                // We request a context sensitive menu...
+                                mGameClientService.Send_RequestContextMenu(iObject.GUID);
+                                break;
+                            case UltimaXNA.GameObjects.ObjectType.Player:
+                                if (iObject.GUID == mGameObjectsService.MyGUID)
+                                {
+                                    // if mounted, dismount.
+                                    if (((GameObjects.Unit)iObject).IsMounted)
+                                    {
+                                        mGameClientService.Send_UseRequest(iObject.GUID);
+                                    }
+                                }
+                                // else other interaction?
+                                break;
+                            default:
+                                // do nothing?
+                                break;
+
+                        }
+                    }
+                }
+
+                // Check for a move event from the player ...
+                try
+                {
+                    int iDirection = 0, iSequence = 0, iKey = 0;
+                    bool iMoveEvent = mGameObjectsService.GetPlayerObject().Movement.GetMoveEvent(ref iDirection, ref iSequence, ref iKey);
+                    if (iMoveEvent)
+                    {
+                        mGameClientService.Send_MoveRequest(iDirection, iSequence, iKey);
+                    }
+                }
+                catch
+                {
+                    // The player has not yet been loaded
+                }
             }
 
             #region oldmovecode
@@ -360,6 +416,11 @@ namespace UltimaXNA
         {
             if (InWorld)
             {
+                // If we are targeting, cancel the target cursor if we hit escape.
+                if (IsTargeting)
+                    if (nKeyboard.IsKeyPressed(Keys.Escape))
+                        MouseTargetingCancel();
+
                 if (nKeyboard.IsKeyDown(Keys.I))
                     mLightRadians += .01f;
                 if (nKeyboard.IsKeyDown(Keys.K))
@@ -462,6 +523,83 @@ namespace UltimaXNA
                 iDebug += Environment.NewLine + "GROUND: null";
             }
             return iDebug;
+        }
+
+        
+        public void MouseTargeting(int nCursorID, int nTargetingType)
+        {
+            mTargettingType = nTargetingType;
+            // Set the GUI's cursor to a targetting cursor.
+            mGUIService.TargettingCursor = true;
+            // Stop continuous movement.
+            mContinuousMoveCheck = false;
+        }
+
+        private void MouseTargetingEventXYZ(TileEngine.IMapObject nObject)
+        {
+            // Send the targetting event back to the server!
+            int iModelNumber = 0;
+            switch (nObject.Type)
+            {
+                case UltimaXNA.TileEngine.MapObjectTypes.GroundTile:
+                    iModelNumber = 0;
+                    break;
+                case UltimaXNA.TileEngine.MapObjectTypes.StaticTile:
+                    iModelNumber = nObject.ID;
+                    break;
+                case UltimaXNA.TileEngine.MapObjectTypes.GameObjectTile:
+                    iModelNumber = 0;
+                    break;
+                case UltimaXNA.TileEngine.MapObjectTypes.MobileTile:
+                    iModelNumber = 0;
+                    break;
+            }
+            mGameClientService.Send_TargetXYZ((int)nObject.Position.X, (int)nObject.Position.Y, nObject.Z, iModelNumber);
+            // Clear our target cursor.
+            mTargettingType = -1;
+            mGUIService.TargettingCursor = false;
+        }
+
+        private void MouseTargetingEventObject(TileEngine.IMapObject nObject)
+        {
+            // If we are passed a null object, keep targeting.
+            if (nObject == null)
+                return;
+            int iObjectGUID = 0;
+            int iModelNumber = 0;
+            switch (nObject.Type)
+            {
+                case UltimaXNA.TileEngine.MapObjectTypes.GroundTile:
+                    iModelNumber = 0;
+                    iObjectGUID = 0;
+                    break;
+                case UltimaXNA.TileEngine.MapObjectTypes.StaticTile:
+                    iObjectGUID = 0;
+                    iModelNumber = nObject.ID;
+                    break;
+                case UltimaXNA.TileEngine.MapObjectTypes.GameObjectTile:
+                    iObjectGUID = nObject.OwnerGUID;
+                    iModelNumber = nObject.ID;
+                    break;
+                case UltimaXNA.TileEngine.MapObjectTypes.MobileTile:
+                    iObjectGUID = nObject.OwnerGUID;
+                    iModelNumber = 0;
+                    break;
+            }
+            // Send the targetting event back to the server!
+            mGameClientService.Send_TargetObject(iObjectGUID, (int)nObject.Position.X, (int)nObject.Position.Y, nObject.Z, iModelNumber);
+            // Clear our target cursor.
+            mTargettingType = -1;
+            mGUIService.TargettingCursor = false;
+        }
+
+        public void MouseTargetingCancel()
+        {
+            // Clear our target cursor.
+            mTargettingType = -1;
+            mGUIService.TargettingCursor = false;
+            // Send the cancel target message back to the server.
+            mGameClientService.Send_TargetCancel();
         }
     }
 }
