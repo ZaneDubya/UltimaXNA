@@ -23,6 +23,7 @@ namespace UltimaXNA.GUI
         void ErrorPopup_Modal(string nText);
         Window Window(string nWindowName);
         void CloseWindow(string nWindowName);
+        bool TargettingCursor { get; set; }
     }
 
     public class EngineGUI : DrawableGameComponent, IGUI
@@ -32,11 +33,84 @@ namespace UltimaXNA.GUI
         private FormCollection formCollection;
         private bool mDrawForms = false;
         public string DebugMessage;
-        private Texture2D surfaceCursors;
 
         private Dictionary<string, Window> m_GUIWindows;
         GameObjects.IGameObjects m_GameObjectsService;
         Network.IGameClient m_GameClientService;
+
+        private int m_MouseCursorIndex = int.MinValue; // set so it is always properly initialized to zero in Initialize();
+        private const int m_MouseCursorHolding = int.MaxValue;
+        private const int m_MouseCursorTargetting = int.MaxValue - 1;
+        public int MouseCursor
+        {
+            get { return m_MouseCursorIndex; }
+            set
+            {
+                // Only change the mouse cursor when you need to.
+                if (m_MouseCursorIndex != value)
+                {
+                    m_MouseCursorIndex = value;
+                    GraphicsDeviceManager graphics = Game.Services.GetService(typeof(IGraphicsDeviceService)) as GraphicsDeviceManager;
+                    switch (m_MouseCursorIndex)
+                    {
+                        case 0:
+                            // movement
+                            FormCollection.Cursor.Center = new Vector2(0, 0);
+                            FormCollection.Cursor.Texture = DataLocal.Art.GetStaticTexture(8307, graphics.GraphicsDevice);
+                            FormCollection.Cursor.SourceRect = new Rectangle(1, 1, 31, 26);
+                            break;
+                        case m_MouseCursorTargetting:
+                            // target
+                            FormCollection.Cursor.Center = new Vector2(13, 13);
+                            FormCollection.Cursor.Texture = DataLocal.Art.GetStaticTexture(8310, graphics.GraphicsDevice);
+                            FormCollection.Cursor.SourceRect = new Rectangle(1, 1, 46, 34);
+                            break;
+                        case m_MouseCursorHolding:
+                            // holding something.
+                            FormCollection.Cursor.Center = new Vector2(0, 0);
+                            FormCollection.Cursor.Texture = GUIHelper.GetItemIcon(((GameObjects.GameObject)GUIHelper.MouseHoldingItem).ObjectTypeID);
+                            FormCollection.Cursor.SourceRect = new Rectangle(0, 0, 64, 64);
+                            break;
+                        default:
+                            // unknown cursor type. Raise an exception!
+                            FormCollection.Cursor.Texture = DataLocal.Art.GetStaticTexture(1, graphics.GraphicsDevice);
+                            FormCollection.Cursor.SourceRect = new Rectangle(0, 0, 44, 44);
+                            break;
+                    }
+                }
+            }
+        }
+        private bool m_TargettingCursor = false;
+        public bool TargettingCursor
+        {
+            get
+            {
+                return m_TargettingCursor;
+            }
+            set
+            {
+                // Only change it if we have to...
+                if (m_TargettingCursor != value)
+                {
+                    m_TargettingCursor = value;
+                    if (m_TargettingCursor == true)
+                    {
+                        // If we're carrying something in the mouse cursor...
+                        if (MouseCursor == m_MouseCursorHolding)
+                        {
+                            // drop it!
+                            GUIHelper.MouseHoldingItem = null;
+                        }
+                        MouseCursor = m_MouseCursorTargetting;
+                    }
+                    else
+                    {
+                        // Reset the mouse cursor to default.
+                        MouseCursor = 0;
+                    }
+                }
+            }
+        }
 
         public EngineGUI(Game game)
             : base(game)
@@ -46,23 +120,18 @@ namespace UltimaXNA.GUI
 
         public override void Initialize()
         {
-            base.Initialize();
-
-            m_GUIWindows = new Dictionary<string, Window>();
-            
-            Events.Initialize(Game.Services);
             GraphicsDeviceManager graphics = Game.Services.GetService(typeof(IGraphicsDeviceService)) as GraphicsDeviceManager;
+            fontArial14 = Game.Content.Load<SpriteFont>(@"fonts\ArialNarrow10");
             formCollection = new FormCollection(Game.Window, Game.Services, ref graphics, @"..\..\res\");
             spriteBatch = new SpriteBatch(Game.GraphicsDevice);
-            mDrawForms = true;
-            surfaceCursors = DataLocal.Art.GetStaticTexture(8307, graphics.GraphicsDevice);
-
-            fontArial14 = Game.Content.Load<SpriteFont>(@"fonts\ArialNarrow10");
-
             m_GameObjectsService = (GameObjects.IGameObjects)Game.Services.GetService(typeof(GameObjects.IGameObjects));
             m_GameClientService = (Network.IGameClient)Game.Services.GetService(typeof(Network.IGameClient));
-
+            Events.Initialize(Game.Services);
             GUIHelper.SetObjects(graphics.GraphicsDevice, this, m_GameClientService);
+            m_GUIWindows = new Dictionary<string, Window>();
+            mDrawForms = true;
+            MouseCursor = 0;
+            base.Initialize();
         }
 
         protected override void UnloadContent()
@@ -79,17 +148,13 @@ namespace UltimaXNA.GUI
             base.Update(gameTime);
 
             // Fix for issue 1. http://code.google.com/p/ultimaxna/issues/detail?id=1 --ZDW 6/17/09
-            if (GUIHelper.MouseHoldingItem == null)
+            if ((MouseCursor == m_MouseCursorHolding) && (GUIHelper.MouseHoldingItem == null))
             {
-                FormCollection.Cursor.Texture = surfaceCursors;
-                FormCollection.Cursor.SourceRect = new Rectangle(1, 1, 31, 26);
-                FormCollection.Cursor.HasShadow = true;
+                MouseCursor = 0;
             }
-            else
+            else if (GUIHelper.MouseHoldingItem != null)
             {
-                FormCollection.Cursor.Texture = GUIHelper.GetItemIcon(((GameObjects.GameObject)GUIHelper.MouseHoldingItem).ObjectTypeID);
-                FormCollection.Cursor.SourceRect = new Rectangle(0, 0, 64, 64);
-                FormCollection.Cursor.HasShadow = true;
+                MouseCursor = m_MouseCursorHolding;
             }
 
             // First update our collection of windows.
