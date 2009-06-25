@@ -180,12 +180,15 @@ namespace UltimaXNA.GameObjects
             if (iObject.GUID == MyGUID)
             {
                 GUI.Window_StatusFrame w = (GUI.Window_StatusFrame)m_GUIService.Window("StatusFrame");
-                w.CurrentHealth = iObject.Health.Current;
-                w.MaxHealth = iObject.Health.Max;
-                w.CurrentMana = iObject.Mana.Current;
-                w.MaxMana= iObject.Mana.Max;
-                w.CurrentStamina = iObject.Stamina.Current;
-                w.MaxStamina = iObject.Stamina.Max;
+                if (w != null)
+                {
+                    w.CurrentHealth = iObject.Health.Current;
+                    w.MaxHealth = iObject.Health.Max;
+                    w.CurrentMana = iObject.Mana.Current;
+                    w.MaxMana = iObject.Mana.Max;
+                    w.CurrentStamina = iObject.Stamina.Current;
+                    w.MaxStamina = iObject.Stamina.Max;
+                }
             }
         }
     }
