@@ -651,6 +651,10 @@ namespace UltimaXNA.Network
                 case 0x18: // Number of maps
                     m_ReceiveMapPatches(nPacket);
                     break;
+                case 0x1D: // House revision
+                    break;
+                case 0x04: // Close generic gump
+                    break;
                 default:
                     throw (new System.Exception("Unhandled Subcommand in ServerInfo packet: " + iSubCommand));
             }
