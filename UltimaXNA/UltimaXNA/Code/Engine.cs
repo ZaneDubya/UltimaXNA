@@ -86,6 +86,11 @@ namespace UltimaXNA
                 case UltimaXNA.Network.ClientStatus.LoginServer_HasServerList:
                     m_Client.SelectServer(0);
                     break;
+                case UltimaXNA.Network.ClientStatus.Error :
+                    m_Client.Reset();
+                    m_GUI.Reset();
+                    m_GUI.LoadLoginGUI();
+                    break;
                 default :
                     break;
             }
@@ -106,7 +111,7 @@ namespace UltimaXNA
             GraphicsDeviceManager iGraphicsDeviceManager = new GraphicsDeviceManager(this);
             iGraphicsDeviceManager.PreferredBackBufferWidth = 800;
             iGraphicsDeviceManager.PreferredBackBufferHeight = 600;
-            iGraphicsDeviceManager.SynchronizeWithVerticalRetrace = true;
+            iGraphicsDeviceManager.SynchronizeWithVerticalRetrace = false;
             iGraphicsDeviceManager.PreparingDeviceSettings += OnPreparingDeviceSettings;
             this.IsFixedTimeStep = false;
             iGraphicsDeviceManager.ApplyChanges();

@@ -148,6 +148,8 @@ namespace UltimaXNA.GUI
             if (mContainerObject.ContainerObject.UpdateTicker != mLastContainerUpdated)
             {
                 mMaxScrollY = (int)(mContainerObject.ContainerObject.LastSlotOccupied / 4) + 1 - 4;
+                if (((mContainerObject.ContainerObject.LastSlotOccupied + 1) % 4) == 0)
+                    mMaxScrollY++;
 
                 for (int i = 0; i < 16; i++)
                 {

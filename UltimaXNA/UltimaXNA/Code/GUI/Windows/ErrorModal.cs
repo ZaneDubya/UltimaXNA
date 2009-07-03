@@ -9,7 +9,7 @@ namespace UltimaXNA.GUI
         public ErrorModal(FormCollection nFormCollection, string nText)
             : base(nFormCollection)
         {
-            MessageBox msgbox0 = new MessageBox(new Vector2(276, 100), "Error", nText, MessageBox.Type.MB_OK);
+            MessageBox msgbox0 = new MessageBox(new Vector2(300, 100), "Error", nText, MessageBox.Type.MB_OK);
             msgbox0.OnOk = msgbox0_OnOk;
         }
 

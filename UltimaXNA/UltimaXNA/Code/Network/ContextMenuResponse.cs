@@ -70,29 +70,35 @@ namespace UltimaXNA.Network
         {
             foreach (ContextMenuItem i in m_Entries)
             {
-                switch (i.Caption)
+                if ((i.Caption.Length >= 5) &&(i.Caption.Substring(0, 5) == "Train"))
                 {
-                    case "Buy":
-                        CanBuy = true;
-                        HasContext_Merchant = true;
-                        break;
-                    case "Sell":
-                        CanSell = true;
-                        HasContext_Merchant = true;
-                        break;
-                    case "Open Paperdoll":
-                    case "Open Backpack":
-                    case "Quest Conversation":
-                    case "Cancel Quest":
-                    case "Toggle Item Insurance":
-                    case "Auto Renew Inventory Insurance":
-                    case "Toggle Monster Title Display":
-                        // unhandled
-                        break;
-                    default:
-                        throw new Exception("Unknown context item: " + i.Caption);
+                    // train option
                 }
-
+                else
+                {
+                    switch (i.Caption)
+                    {
+                        case "Buy":
+                            CanBuy = true;
+                            HasContext_Merchant = true;
+                            break;
+                        case "Sell":
+                            CanSell = true;
+                            HasContext_Merchant = true;
+                            break;
+                        case "Open Paperdoll":
+                        case "Open Backpack":
+                        case "Quest Conversation":
+                        case "Cancel Quest":
+                        case "Toggle Item Insurance":
+                        case "Auto Renew Inventory Insurance":
+                        case "Toggle Monster Title Display":
+                            // unhandled
+                            break;
+                        default:
+                            throw new Exception("Unknown context item: " + i.Caption);
+                    }
+                }
             }
         }
     }

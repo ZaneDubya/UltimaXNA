@@ -42,9 +42,25 @@ namespace UltimaXNA.TileEngine
             set { m_ID = value; }
         }
 
+        private bool m_Ignored_Set = false;
+        private bool m_Ignored = false;
         public bool Ignored
         {
-            get { return (m_ID == 2 || m_ID == 0x1DB || (m_ID >= 0x1AE && m_ID <= 0x1B5)); }
+            // get { return (m_ID == 2 || m_ID == 0x1DB || (m_ID >= 0x1AE && m_ID <= 0x1B5)); }
+            get
+            {
+                if (m_Ignored_Set)
+                {
+                    return m_Ignored;
+                }
+                else
+                {
+                    m_Ignored = (m_ID == 2 || m_ID == 0x1DB || (m_ID >= 0x1AE && m_ID <= 0x1B5));
+                    m_Ignored_Set = true;
+                    return m_Ignored;
+                }
+            }
+            
         }
 
         public int SortZ
