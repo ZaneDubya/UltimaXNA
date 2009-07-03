@@ -101,7 +101,6 @@ namespace UltimaXNA.TileEngine
             GroundTile groundTile;
             int height;
             Map map = m_WorldService.Map;
-            MapCell mapCell;
             IMapObject mapObject;
             IMapObject[] mapObjects;
             StaticItem staticItem;
@@ -137,7 +136,8 @@ namespace UltimaXNA.TileEngine
             else
                 m_MouseOverGroundTile = null;
 
-            for (int x = 0; x < map.GameSize; x++)
+            // MapCell mapCell;
+            /*for (int x = 0; x < map.GameSize; x++)
             {
                 for (int y = 0; y < map.GameSize; y++)
                 {
@@ -148,7 +148,14 @@ namespace UltimaXNA.TileEngine
                     drawPosition.Y = (x + y) * 22 + yOffset;
 
                     mapCell = map.GetMapCell(currentX, currentY);
-
+            */
+            {
+                foreach(MapCell mapCell in map.m_MapCells.Values)
+                {
+                    int x = mapCell.X - startX;
+                    int y = mapCell.Y - startY;
+                    drawPosition.X = (x - y) * 22 + xOffset;
+                    drawPosition.Y = (x + y) * 22 + yOffset;
                     mapObjects = mapCell.GetSortedObjects();
 
                     for (int i = 0; i < mapObjects.Length; i++)

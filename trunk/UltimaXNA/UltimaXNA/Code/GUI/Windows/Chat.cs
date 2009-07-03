@@ -29,6 +29,7 @@ namespace UltimaXNA.GUI
             ((Textbox)m_MyForm["txtChat"]).TextOffset = new Vector2(0, 0);
             ((Textbox)m_MyForm["txtChat"]).DrawBackground = false;
             ((Textbox)m_MyForm["txtChat"]).ScrollFromBottom = true;
+            ((Textbox)m_MyForm["txtChat"]).WrapText = true;
             m_MyForm["txtChat"].ForeColor = Color.White;
             m_MyForm["txtChat"].FontName = "ArialNarrow10";
             m_MyForm["txtChat"].MouseThrough = true;

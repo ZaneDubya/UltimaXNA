@@ -72,5 +72,6 @@ namespace UltimaXNA.Network
         MSG_BuyItemFromVendor = 0x3B,
         CMSG_SpeechRequest = 0xAD,
         MSG_TargetCursor = 0x6C,
+        CMSG_WEARITEM = 0x13,
     }
 }

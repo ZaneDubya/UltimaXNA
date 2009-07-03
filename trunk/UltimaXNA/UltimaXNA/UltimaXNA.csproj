@@ -89,7 +89,6 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="xWinFormsLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>.\xWinFormsLib.dll</HintPath>
     </Reference>
   </ItemGroup>
@@ -112,6 +111,7 @@
     <Compile Include="Code\GUI\Windows\Login.cs" />
     <Compile Include="Code\GUI\Windows\LoginBackdrop.cs" />
     <Compile Include="Code\GUI\Windows\Merchant.cs" />
+    <Compile Include="Code\GUI\Windows\PaperDoll.cs" />
     <Compile Include="Code\GUI\Windows\StatusFrame.cs" />
     <Compile Include="Code\GUI\Windows\Window.cs" />
     <Compile Include="Code\GUI\Windows\Chat.cs" />

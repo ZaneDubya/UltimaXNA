@@ -133,7 +133,7 @@ namespace UltimaXNA
                     }
                     else
                     {
-                        mTileEngineService.PickType = TileEngine.PickTypes.PickStatics | TileEngine.PickTypes.PickObjects;
+                        mTileEngineService.PickType = TileEngine.PickTypes.PickNothing;
                     }
                 }
             }
@@ -194,6 +194,7 @@ namespace UltimaXNA
                 #region DropItemFromMouse
                 if (mInputService.Mouse.Buttons[0].Release)
                 {
+                    if (!(mInputService.Keyboard.IsKeyDown(Keys.U)))
                     if (GUI.GUIHelper.MouseHoldingItem != null)
                     {
                         if (mGUIService.IsMouseOverGUI(mInputService.Mouse.Position))
@@ -336,8 +337,8 @@ namespace UltimaXNA
             // Same thing if the highest object under the mouse cursor is lower than the groundtile.
             if (
                 (mTileEngineService.MouseOverGroundTile != null) &&
-                ((mTileEngineService.MouseOverObject == null) ||
-                (mTileEngineService.MouseOverObject.Z < mTileEngineService.MouseOverGroundTile.Z))
+                ((mTileEngineService.MouseOverObject == null)) // ||
+                // (mTileEngineService.MouseOverObject.Z < mTileEngineService.MouseOverGroundTile.Z))
                 )
             {
                 TileEngine.IMapObject iGroundTile = mTileEngineService.MouseOverGroundTile;
@@ -440,6 +441,17 @@ namespace UltimaXNA
                         mGameClientService.Send_UseRequest(iBackpackGUID);
                     else
                         mGUIService.CloseWindow("Container:" + iBackpackGUID);
+                }
+
+                // Toggle for paperdoll window.
+                if (nKeyboard.IsKeyPressed(Keys.C) && (nKeyboard.IsKeyDown(Keys.LeftControl)))
+                {
+                    int iMobileGUID = ((GameObjects.Player)mGameObjectsService.GetPlayerObject())
+                        .GUID;
+                    if (mGUIService.Window("PaperDoll:" + iMobileGUID) == null)
+                        mGUIService.PaperDoll_Open(mGameObjectsService.GetPlayerObject());
+                    else
+                        mGUIService.CloseWindow("PaperDoll:" + iMobileGUID);
                 }
 
                 // DEBUG MOVEMENT!!! Quickly move around the world without sending a message to the server.

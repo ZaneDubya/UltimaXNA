@@ -62,7 +62,7 @@ namespace UltimaXNA.TileEngine
     {
         private int m_GameSize, m_GameSizeUp, m_GameSizeDown;
         private List<int> m_KeysToRemove;
-        private Dictionary<int, MapCell> m_MapCells;
+        public SortedDictionary<int, MapCell> m_MapCells;
         private DataLocal.TileMatrix m_TileMatrix;
         private int m_X;
         private int m_Y;
@@ -74,7 +74,7 @@ namespace UltimaXNA.TileEngine
             m_GameSizeDown = gameSizeDown;
 
             m_KeysToRemove = new List<int>();
-            m_MapCells = new Dictionary<int, MapCell>((m_GameSize + gameSizeUp + gameSizeDown) ^ 2);
+            m_MapCells = new SortedDictionary<int, MapCell>();
             m_TileMatrix = new DataLocal.TileMatrix(index, index);
         }
 
@@ -91,7 +91,7 @@ namespace UltimaXNA.TileEngine
 
         private int GetKey(int x, int y)
         {
-            return x * 100000 + y;
+            return (x << 18) + y;
         }
 
         // This pulls a tile from the TileMatrix.
@@ -113,9 +113,10 @@ namespace UltimaXNA.TileEngine
             //reference an entry that doesn't exist - in a dictionary
             // of this size that might be slow.
             int iX = x - m_StartX;
-            int iY = y - m_StartY;
-            if ((iX < GameSize) && (iX >= 0))
-                if ((iY < GameSize) && (iY >= 0))
+            if ((iX < m_GameSize) && (iX >= 0))
+            {
+                int iY = y - m_StartY;
+                if ((iY < m_GameSize) && (iY >= 0))
                 {
                     try
                     {
@@ -127,6 +128,7 @@ namespace UltimaXNA.TileEngine
                         return null;
                     }
                 }
+            }
             return null;
         }
 

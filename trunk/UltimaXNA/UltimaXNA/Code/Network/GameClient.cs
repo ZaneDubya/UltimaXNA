@@ -28,7 +28,7 @@ namespace UltimaXNA.Network
         GameServer_ConnectedAndCharList,
         GameServer_LoggingIn,
         InWorld,
-        Error_CouldNotConnectToLoginServer,
+        Error,
         Disconnected
     }
 
@@ -40,6 +40,7 @@ namespace UltimaXNA.Network
         void Disconnect();
         void Send_PickUpItem(int nGUID, int nNumInStack);
         void Send_DropItem(int nGUID, int nX, int nY, int nZ, int nContainerGUID);
+        void Send_WearItem(int nItemGUID, int nLayer, int nPlayerGUID);
         void Send_RequestContextMenu(int nGUID);
         void Send_ContextMenuResponse(int nGUID, int nResponseCode);
         void Send_BuyItemFromVendor(int nVendorGUID, int nItemGUID, int nAmount);
@@ -84,6 +85,15 @@ namespace UltimaXNA.Network
             m_GameObjectsService = (GameObjects.IGameObjects)Game.Services.GetService(typeof(GameObjects.IGameObjects));
             m_GameStateService = (IGameState)Game.Services.GetService(typeof(IGameState));
             base.Initialize();
+        }
+
+        public void Reset()
+        {
+            if (this.Status != ClientStatus.Unconnected)
+            {
+                this.Disconnect();
+                this.Status = ClientStatus.Unconnected;
+            }
         }
 
         public override void Update(GameTime gameTime)
@@ -282,9 +292,9 @@ namespace UltimaXNA.Network
             else
             {
                 string iErrText = "Connection error: could not connect to " + nIPAdress + ":" + nPort.ToString() + ".";
-                LogFile.WriteLine(iErrText);
+                // LogFile.WriteLine(iErrText);
                 m_GUIService.ErrorPopup_Modal(iErrText);
-                this.Status = ClientStatus.Error_CouldNotConnectToLoginServer;
+                this.Status = ClientStatus.Error;
             }
         }
 
@@ -422,6 +432,15 @@ namespace UltimaXNA.Network
             iPacket.Write((byte)nZ);
             iPacket.Write((byte)0);
             iPacket.Write((int)nContainerGUID);
+            this.SendPacket(iPacket);
+        }
+
+        public void Send_WearItem(int nItemGUID, int nLayer, int nPlayerGUID)
+        {
+            Packet iPacket = new Packet(OpCodes.CMSG_WEARITEM);
+            iPacket.Write((int)nItemGUID);
+            iPacket.Write((byte)nLayer);
+            iPacket.Write((int)nPlayerGUID);
             this.SendPacket(iPacket);
         }
 

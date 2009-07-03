@@ -20,6 +20,7 @@ namespace UltimaXNA.GUI
         void LoadLoginGUI();
         void Container_Open(GameObjects.BaseObject nContainerObject, int nGump);
         void Merchant_Open(GameObjects.BaseObject nContainerObject, int nGump);
+        void PaperDoll_Open(GameObjects.BaseObject nMobileObject);
         void ErrorPopup_Modal(string nText);
         Window Window(string nWindowName);
         void CloseWindow(string nWindowName);
@@ -127,7 +128,7 @@ namespace UltimaXNA.GUI
             m_GameObjectsService = (GameObjects.IGameObjects)Game.Services.GetService(typeof(GameObjects.IGameObjects));
             m_GameClientService = (Network.IGameClient)Game.Services.GetService(typeof(Network.IGameClient));
             Events.Initialize(Game.Services);
-            GUIHelper.SetObjects(graphics.GraphicsDevice, this, m_GameClientService);
+            GUIHelper.SetObjects(graphics.GraphicsDevice, this, m_GameClientService, m_GameObjectsService);
             m_GUIWindows = new Dictionary<string, Window>();
             mDrawForms = true;
             MouseCursor = 0;
@@ -164,6 +165,8 @@ namespace UltimaXNA.GUI
             {
                 //Update the form collection
                 formCollection.Update(gameTime);
+                if (formCollection["msgbox"] != null)
+                    formCollection["msgbox"].Focus();
                 //Render the form collection (required before drawing)
                 formCollection.Render();
             }
@@ -217,6 +220,15 @@ namespace UltimaXNA.GUI
                 w.Close();
         }
 
+        public void Reset()
+        {
+            foreach (KeyValuePair<string, Window> kvp in m_GUIWindows)
+            {
+                if (!kvp.Key.Contains("Error"))
+                    CloseWindow(kvp.Key);
+            }
+        }
+
         public void LoadInWorldGUI()
         {
             m_GUIWindows["LoginBG"].Close();
@@ -230,9 +242,22 @@ namespace UltimaXNA.GUI
         {
             if (!m_GUIWindows.ContainsKey("LoginWindow"))
             {
-                m_GUIWindows.Clear();
+                this.Reset();
                 m_GUIWindows.Add("LoginBG", new Window_LoginBG(formCollection));
                 m_GUIWindows.Add("LoginWindow", new Window_Login(formCollection));
+            }
+        }
+
+        public void PaperDoll_Open(GameObjects.BaseObject nMobileObject)
+        {
+            string iContainerKey = "PaperDoll:" + nMobileObject.GUID;
+            if (m_GUIWindows.ContainsKey(iContainerKey))
+            {
+                // focus the window
+            }
+            else
+            {
+                m_GUIWindows.Add(iContainerKey, new Window_PaperDoll(nMobileObject, formCollection));
             }
         }
 
@@ -264,9 +289,10 @@ namespace UltimaXNA.GUI
 
         public void ErrorPopup_Modal(string nText)
         {
+            if (m_GUIWindows.ContainsKey("ErrorModal"))
+                m_GUIWindows.Remove("ErrorModal");
             m_GUIWindows.Add("ErrorModal", new ErrorModal(formCollection, nText));
         }
-
         
 
         private void mUpdateWindows()
@@ -297,14 +323,12 @@ namespace UltimaXNA.GUI
         }
     }
 
-    delegate void GUIEVENT_DropItemIntoSlot(GameObjects.BaseObject nHeldObject, GameObjects.BaseObject nDestContainer, int nDestSlot);
-    delegate void GUIEVENT_BuyItemFromVendor(int nVendorGUID, int nItemGUID, int nAmount);
-
     static class GUIHelper
     {
         private static bool m_IsPrepared = false;
         private static EngineGUI m_GUI = null;
         private static Network.IGameClient m_GameClientService = null;
+        private static GameObjects.IGameObjects m_GameObjectsService = null;
         private static Texture2D m_TextureBorder = null;
         private static Texture2D m_TextureBG = null;
         private static Texture2D m_TextureEmpty = null;
@@ -340,15 +364,51 @@ namespace UltimaXNA.GUI
             GameObjects.GameObject iHeldObject = (GameObjects.GameObject)MouseHoldingItem;
             GameObjects.GameObject iDestContainer = (GameObjects.GameObject)nDestContainer;
 
-            if (iHeldObject.Item_ContainedWithinGUID == iDestContainer.GUID)
+            if (iHeldObject.Wearer != null)
             {
-                iDestContainer.ContainerObject.Event_MoveItemToSlot(iHeldObject, nDestSlot);
+                // the object is being worn as equipment. We can only remove items that belong to us.
+                if (iHeldObject.Wearer.GUID == m_GameObjectsService.MyGUID)
+                {
+                    // we are wearing this item. Go ahead and drop it into the requested slot.
+                    m_GameClientService.Send_PickUpItem(iHeldObject.GUID, 0);
+                    m_GameClientService.Send_DropItem(iHeldObject.GUID, 0, 0, 0, iDestContainer.GUID);
+                    return;
+                }
+                else
+                {
+                    // this object is being worn by someone else. We can't move it.
+                    return;
+                }
             }
             else
             {
-                m_GameClientService.Send_DropItem(iHeldObject.GUID, 0, 0, 0, iDestContainer.GUID);
-                // throw (new Exception("No support for moving items between containers."));
+                if (iHeldObject.Item_ContainedWithinGUID == iDestContainer.GUID)
+                {
+                    iDestContainer.ContainerObject.Event_MoveItemToSlot(iHeldObject, nDestSlot);
+                }
+                else
+                {
+                    m_GameClientService.Send_PickUpItem(iHeldObject.GUID, 0);
+                    m_GameClientService.Send_DropItem(iHeldObject.GUID, 0, 0, 0, iDestContainer.GUID);
+                    // throw (new Exception("No support for moving items between containers."));
+                }
             }
+        }
+
+        public static void WearItem(GameObjects.BaseObject nDestMobile, int nDestSlot)
+        {
+            GameObjects.GameObject iHeldObject = (GameObjects.GameObject)MouseHoldingItem;
+            GameObjects.Unit iDestMobile = (GameObjects.Unit)nDestMobile;
+            
+
+            if (iHeldObject.Item_ContainedWithinGUID != 0)
+            {
+                GameObjects.GameObject iSourceContainer = (GameObjects.GameObject)m_GameObjectsService.GetObject(iHeldObject.Item_ContainedWithinGUID, UltimaXNA.GameObjects.ObjectType.GameObject);
+                iHeldObject.Item_ContainedWithinGUID = 0;
+                iSourceContainer.ContainerObject.RemoveItem(iHeldObject.GUID);
+            }
+            m_GameClientService.Send_PickUpItem(iHeldObject.GUID, 0);
+            m_GameClientService.Send_WearItem(iHeldObject.GUID, nDestSlot, iDestMobile.GUID);
         }
 
         public static void BuyItemFromVendor(int nVendorGUID, int nItemGUID, int nAmount)
@@ -385,11 +445,13 @@ namespace UltimaXNA.GUI
             }
         }
 
-        public static void SetObjects(GraphicsDevice nDevice, EngineGUI nGUI, Network.IGameClient nGameClientService)
+        public static void SetObjects(
+            GraphicsDevice nDevice, EngineGUI nGUI, Network.IGameClient nGameClientService, GameObjects.IGameObjects nGameObjectsService)
         {
             m_GraphicsDevice = nDevice;
             m_GUI = nGUI;
             m_GameClientService = nGameClientService;
+            m_GameObjectsService = nGameObjectsService;
         }
 
         private static void m_PrepareHelper()

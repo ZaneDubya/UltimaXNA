@@ -87,7 +87,6 @@ namespace UltimaXNA.GameObjects
 		{
 			(int)EquipLayer.Mount,
 			(int)EquipLayer.OneHanded,
-            (int)EquipLayer.TwoHanded,
             (int)EquipLayer.Shoes,
             (int)EquipLayer.Pants,
             (int)EquipLayer.Shirt,
@@ -104,7 +103,8 @@ namespace UltimaXNA.GameObjects
             (int)EquipLayer.OuterLegs,
             (int)EquipLayer.OuterLegs,
             (int)EquipLayer.InnerLegs,
-			(int)EquipLayer.Helm
+			(int)EquipLayer.Helm,
+            (int)EquipLayer.TwoHanded,
 		};
 		// Issue 14 - End
 
@@ -500,6 +500,12 @@ namespace UltimaXNA.GameObjects
     {
         private GameObject[] m_Equipment;
         private Unit m_Owner;
+        private int m_UpdateTicker = 0;
+
+        public int UpdateTicker
+        {
+            get { return m_UpdateTicker; }
+        }
 
         public WornEquipment(Unit nOwner)
         {
@@ -531,6 +537,7 @@ namespace UltimaXNA.GameObjects
                     m_Equipment[nIndex] = value;
                     value.Wearer = m_Owner;
                 }
+                m_UpdateTicker++;
             }
         }
 
@@ -540,6 +547,7 @@ namespace UltimaXNA.GameObjects
             {
                 this[i] = null;
             }
+            m_UpdateTicker++;
         }
 
         public void RemoveByGUID(int nGUID)
@@ -552,6 +560,7 @@ namespace UltimaXNA.GameObjects
                         this[i] = null;
                     }
             }
+            m_UpdateTicker++;
         }
     }
     #endregion
