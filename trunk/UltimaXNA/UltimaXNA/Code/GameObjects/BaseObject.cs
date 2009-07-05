@@ -18,6 +18,7 @@ namespace UltimaXNA.GameObjects
         internal bool m_HasBeenDrawn;
         internal bool m_Dispose = false; // set this to true to have the object deleted.
         public bool IsDisposed { get { return m_Dispose; } }
+        public PropertyList PropertyList = new PropertyList();
 
         public TileEngine.IWorld World
         {

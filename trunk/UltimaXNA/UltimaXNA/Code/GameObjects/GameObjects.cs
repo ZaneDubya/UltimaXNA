@@ -65,17 +65,19 @@ namespace UltimaXNA.GameObjects
                     switch (iObjectPair.Value.ObjectType)
                     {
                         case ObjectType.GameObject:
+                            iObjectPair.Value.Update(gameTime);
+                            if (((GameObject)iObjectPair.Value).UpdatePosition)
+                            {
+                                SendPacket_MoveItemWithinContainer(iObjectPair.Value);
+                            }
+                            break;
                         case ObjectType.Unit:
                         case ObjectType.Player:
-                        {
                             iObjectPair.Value.Update(gameTime);
                             break;
-                        }
                         default:
-                        {
                             // no need to update.
                             break;
-                        }
                     }
                 }
 
@@ -83,7 +85,7 @@ namespace UltimaXNA.GameObjects
                 foreach (int i in iRemoveObjects)
                 {
                     m_Objects.Remove(i);
-                }         
+                }  
             }
             base.Update(gameTime);
         }
@@ -138,10 +140,6 @@ namespace UltimaXNA.GameObjects
             {
                 ((Unit)iReturnObject).UpdateHealthStaminaMana += this.Unit_UpdateHealthStaminaMana;
             }
-            if ((iReturnObject.ObjectType & ObjectType.GameObject) == ObjectType.GameObject)
-            {
-                ((GameObject)iReturnObject).SendPacket_MoveItemWithinContainer += this.Item_Packet_MoveItemWithinContainer;
-            }
             // Add the object to the objects collection.
             m_Objects.Add(iReturnObject.GUID, iReturnObject);
             // Finally return the new object.
@@ -165,7 +163,7 @@ namespace UltimaXNA.GameObjects
             return m_Objects[MyGUID];
         }
 
-        private void Item_Packet_MoveItemWithinContainer(BaseObject nObject)
+        private void SendPacket_MoveItemWithinContainer(BaseObject nObject)
         {
             GameObject iObject = ((GameObject)nObject);
             m_GameClientService.Send_PickUpItem(iObject.GUID, iObject.Item_StackCount);

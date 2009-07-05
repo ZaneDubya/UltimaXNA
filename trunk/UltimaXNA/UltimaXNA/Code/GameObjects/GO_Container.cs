@@ -158,16 +158,27 @@ namespace UltimaXNA.GameObjects
                 int iSourceSlot = nObject.Item_SlotIndex;
                 GameObject iSwitchItem = mContentsClass[nSlot];
 
-                // Now temporarily remove both of the items from the container.
-                mContentsClass.RemoveItemByGUID(iSwitchItem.GUID);
-                if (mContentsClass.ContainsItem(nObject.GUID))
+                // is the dest object the same type as the source object type?
+                if (nObject.ItemData.Name == mContentsClass[nSlot].ItemData.Name)
+                {
+                    // We are merging two objects.
                     mContentsClass.RemoveItemByGUID(nObject.GUID);
+                    nObject.Item_SlotIndex = iSwitchItem.Item_SlotIndex;
+                    nObject.Item_ContainedWithinGUID = iSwitchItem.GUID;
+                }
+                else
+                {
+                    // Now temporarily remove both of the items from the container.
+                    mContentsClass.RemoveItemByGUID(iSwitchItem.GUID);
+                    if (mContentsClass.ContainsItem(nObject.GUID))
+                        mContentsClass.RemoveItemByGUID(nObject.GUID);
 
-                // Now replace them!
-                nObject.Item_SlotIndex = nSlot;
-                iSwitchItem.Item_SlotIndex = iSourceSlot;
-                mContentsClass[nSlot] = nObject;
-                mContentsClass[iSourceSlot] = iSwitchItem;
+                    // Now replace them!
+                    nObject.Item_SlotIndex = nSlot;
+                    iSwitchItem.Item_SlotIndex = iSourceSlot;
+                    mContentsClass[nSlot] = nObject;
+                    mContentsClass[iSourceSlot] = iSwitchItem;
+                }
             }
         }
 

@@ -13,6 +13,8 @@ namespace UltimaXNA.GameObjects
 
     class GameObject : UltimaXNA.GameObjects.BaseObject
     {
+        private bool m_UpdatePosition = false;
+        public bool UpdatePosition { get { return m_UpdatePosition; } }
         // GameObjects can potentially have inventory (chests, for example).
         // The GUID for the container for this inventory is the same as the
         // GameObject's GUID.
@@ -46,8 +48,6 @@ namespace UltimaXNA.GameObjects
                 Wearer.UnWearItem(GUID);
             base.Dispose();
         }
-
-        public event EVENT_AutomaticMoveWithinContainer SendPacket_MoveItemWithinContainer;
 
         public Unit Wearer;
         // These will be added later...
@@ -137,7 +137,7 @@ namespace UltimaXNA.GameObjects
                 {
                     m_InvX_SlotIndex = value;
                     m_InvY_SlotChecksum = m_InvYChecksum(value);
-                    SendPacket_MoveItemWithinContainer(this); // !!! fix this! Items should not send packets when they get moved around.
+                    m_UpdatePosition = true;
                 }
             }
         }

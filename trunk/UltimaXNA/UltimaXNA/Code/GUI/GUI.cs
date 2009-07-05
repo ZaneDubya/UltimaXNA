@@ -372,12 +372,10 @@ namespace UltimaXNA.GUI
                     // we are wearing this item. Go ahead and drop it into the requested slot.
                     m_GameClientService.Send_PickUpItem(iHeldObject.GUID, 0);
                     m_GameClientService.Send_DropItem(iHeldObject.GUID, 0, 0, 0, iDestContainer.GUID);
-                    return;
                 }
                 else
                 {
                     // this object is being worn by someone else. We can't move it.
-                    return;
                 }
             }
             else
@@ -388,18 +386,27 @@ namespace UltimaXNA.GUI
                 }
                 else
                 {
-                    m_GameClientService.Send_PickUpItem(iHeldObject.GUID, 0);
-                    m_GameClientService.Send_DropItem(iHeldObject.GUID, 0, 0, 0, iDestContainer.GUID);
-                    // throw (new Exception("No support for moving items between containers."));
+                    if (iDestContainer.ContainerObject.GetContents(nDestSlot) == null)
+                    {
+                        m_GameClientService.Send_PickUpItem(iHeldObject.GUID, 0);
+                        m_GameClientService.Send_DropItem(iHeldObject.GUID,
+                            nDestSlot,
+                            nDestSlot ^ 0x7fff, 0, iDestContainer.GUID);
+                    }
+                    else
+                    {
+                        m_GameClientService.Send_PickUpItem(iHeldObject.GUID, 0);
+                        m_GameClientService.Send_DropItem(iHeldObject.GUID, 0, 0, 0, iDestContainer.GUID);
+                    }
                 }
             }
+            GUI.GUIHelper.MouseHoldingItem = null;
         }
 
         public static void WearItem(GameObjects.BaseObject nDestMobile, int nDestSlot)
         {
             GameObjects.GameObject iHeldObject = (GameObjects.GameObject)MouseHoldingItem;
             GameObjects.Unit iDestMobile = (GameObjects.Unit)nDestMobile;
-            
 
             if (iHeldObject.Item_ContainedWithinGUID != 0)
             {
@@ -409,6 +416,7 @@ namespace UltimaXNA.GUI
             }
             m_GameClientService.Send_PickUpItem(iHeldObject.GUID, 0);
             m_GameClientService.Send_WearItem(iHeldObject.GUID, nDestSlot, iDestMobile.GUID);
+            GUI.GUIHelper.MouseHoldingItem = null;
         }
 
         public static void BuyItemFromVendor(int nVendorGUID, int nItemGUID, int nAmount)
@@ -435,14 +443,43 @@ namespace UltimaXNA.GUI
                 {
                     mToolTipItem = value;
                     DataLocal.ItemData iData = mToolTipItem.ItemData;
-                    TooltipMsg = iData.Name +
-                        Environment.NewLine + "GUID:" + mToolTipItem.GUID.ToString();
+                    string iItemName = string.Empty;
+                    if (mToolTipItem.Item_StackCount > 1)
+                        iItemName += mToolTipItem.Item_StackCount.ToString() + @" ";
+                    if (iData.Name.Contains(@"%"))
+                    {
+                        iItemName += mToolTipItem.Item_StackCount.ToString() + @" ";
+                        int iMultiplePosition = iData.Name.IndexOf(@"%");
+                        string iBaseString = iData.Name.Substring(0, iMultiplePosition);
+                        string iMultipleString = iData.Name.Substring(iMultiplePosition + 1, iData.Name.IndexOf(@"%", iMultiplePosition + 1) - iMultiplePosition - 1);
+                        iItemName = mToolTipItem.Item_StackCount.ToString() + @" " + iBaseString;
+                        if (mToolTipItem.Item_StackCount > 1)
+                            iItemName += iMultipleString;
+                    }
+                    else
+                    {
+                        iItemName += iData.Name;
+                    }
+                    TooltipMsg = iItemName + Environment.NewLine +
+                        "GUID:" + GUIDHex(mToolTipItem.GUID);
+                    if (mToolTipItem.PropertyList.HasProperties)
+                    {
+                        TooltipMsg += Environment.NewLine +
+                            mToolTipItem.PropertyList.Properties;
+                    }
                 }
             }
             get
             {
                 return mToolTipItem;
             }
+        }
+
+        public static string GUIDHex(int nGUID)
+        {
+            return MiscUtil.HexEncoding.ToString(
+                MiscUtil.Conversion.EndianBitConverter.Big.GetBytes(nGUID)
+            );
         }
 
         public static void SetObjects(
@@ -493,7 +530,7 @@ namespace UltimaXNA.GUI
 
                 using (SpriteBatch sprite = new SpriteBatch(m_GraphicsDevice))
                 {
-                    sprite.Begin();
+                    sprite.Begin(SpriteBlendMode.AlphaBlend);
 
                     if (nItemID == 0)
                     {
@@ -505,12 +542,14 @@ namespace UltimaXNA.GUI
 
                         if (iTextureArt != null)
                         {
-                            sprite.Draw(iTextureArt,
-                                new Rectangle(
+                            Rectangle iSrcRect = new Rectangle(
                                     -(int)((iTextureArt.Width * iScaleUp) - iDestSize) / 2,
-                                    -(int)(((iTextureArt.Height - 6) * iScaleUp) - iDestSize) / 2,
+                                    -(int)(((iTextureArt.Height) * iScaleUp) - iDestSize) / 2,
                                     (int)(iTextureArt.Width * iScaleUp),
-                                    (int)(iTextureArt.Height * iScaleUp)),
+                                    (int)(iTextureArt.Height * iScaleUp));
+                            sprite.Draw(iTextureArt,
+                                new Rectangle(1, 1, 37, 37), 
+                                iSrcRect,
                                 Color.White);
                         }
 

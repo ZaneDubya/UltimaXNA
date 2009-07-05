@@ -199,8 +199,9 @@ namespace UltimaXNA
                     {
                         if (mGUIService.IsMouseOverGUI(mInputService.Mouse.Position))
                         {
-                            // The mouse is over the GUI. Just get rid of the item, as it hasn't been moved.
-                            GUI.GUIHelper.MouseHoldingItem = null;
+                            // The mouse is over the GUI.
+                            // We have to expect that the GUI will take care of it.
+                            // GUI.GUIHelper.MouseHoldingItem = null;
                         }
                         else
                         {
