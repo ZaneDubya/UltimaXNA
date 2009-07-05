@@ -133,7 +133,9 @@ namespace UltimaXNA.Network
             {
                 string iErrorMessage = e.Message;
                 // If we get an exception bytesread will remain 0 and we will disconnect.
-                throw (e);
+                // throw (e);
+                this.Disconnect();
+                return;
             }
             if (bytesRead == 0)
             {

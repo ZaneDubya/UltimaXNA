@@ -17,6 +17,7 @@ namespace UltimaXNA.GameObjects
         BaseObject GetObject(int nGUID, ObjectType nObjectType);
         BaseObject GetPlayerObject();
         void RemoveObject(int nGUID);
+        void Reset();
     }
 
     class GameObjects : GameComponent, IGameObjects
@@ -161,6 +162,11 @@ namespace UltimaXNA.GameObjects
         {
             // This could be cached to save time.
             return m_Objects[MyGUID];
+        }
+
+        public void Reset()
+        {
+            m_Objects.Clear();
         }
 
         private void SendPacket_MoveItemWithinContainer(BaseObject nObject)
