@@ -25,6 +25,7 @@ namespace UltimaXNA.GUI
         Window Window(string nWindowName);
         void CloseWindow(string nWindowName);
         bool TargettingCursor { get; set; }
+        void Reset();
     }
 
     public class EngineGUI : DrawableGameComponent, IGUI
@@ -301,7 +302,8 @@ namespace UltimaXNA.GUI
 
             foreach (KeyValuePair<string, Window> w in m_GUIWindows)
             {
-                w.Value.Update();
+                if (!(w.Value.IsClosed))
+                    w.Value.Update();
                 if (w.Value.IsClosed)
                 {
                     iMustUpdateWindowList = true;

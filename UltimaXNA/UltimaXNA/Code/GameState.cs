@@ -455,6 +455,16 @@ namespace UltimaXNA
                         mGUIService.CloseWindow("PaperDoll:" + iMobileGUID);
                 }
 
+                // Toggle for logout
+                if (nKeyboard.IsKeyPressed(Keys.Q) && (nKeyboard.IsKeyDown(Keys.LeftControl)))
+                {
+                    mGameClientService.Disconnect();
+                    mGameObjectsService.Reset();
+                    mGUIService.Reset();
+                    mGUIService.LoadLoginGUI();
+                    InWorld = false;
+                }
+
                 // DEBUG MOVEMENT!!! Quickly move around the world without sending a message to the server.
                 // Note that if you attempt to move around normally after using this, the server will catch on
                 // and will eventually reject your movement.
