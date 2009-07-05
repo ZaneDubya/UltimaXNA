@@ -92,8 +92,6 @@ namespace UltimaXNA.TileEngine
             if (!m_GameStateService.InWorld)
                 return;
 
-            int currentX;
-            int currentY;
             Vector3 drawPosition = new Vector3();
             float drawX;
             float drawY;

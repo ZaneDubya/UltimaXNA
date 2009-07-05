@@ -68,7 +68,7 @@ namespace UltimaXNA.Network
         SMSG_PlayMusic = 0x6D,
         SMSG_OpenBuyWindow = 0x74,
         SMSG_OpenPaperdoll = 0x88,
-        SMSG_MegaCliLoc = 0xD6,
+        MSG_BatchQueryProperties = 0xD6,
         MSG_BuyItemFromVendor = 0x3B,
         CMSG_SpeechRequest = 0xAD,
         MSG_TargetCursor = 0x6C,

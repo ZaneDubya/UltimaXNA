@@ -256,8 +256,8 @@ namespace UltimaXNA.Network
                     case OpCodes.SMSG_OpenPaperdoll:
                         m_ReceiveOpenPaperdoll(iPacket);
                         break;
-                    case OpCodes.SMSG_MegaCliLoc:
-                        m_ReceiveMegaCliLoc(iPacket);
+                    case OpCodes.MSG_BatchQueryProperties:
+                        m_ReceiveBatchProperties(iPacket);
                         break;
                     case OpCodes.MSG_BuyItemFromVendor:
                         m_ReceiveEndVendorSell(iPacket);
@@ -525,6 +525,13 @@ namespace UltimaXNA.Network
             this.SendPacket(iPacket);
         }
 
+        public void Send_BatchQueryProperties(int nGUID)
+        {
+            Packet iPacket = new Packet(OpCodes.MSG_BatchQueryProperties);
+            iPacket.Write((ushort)7); // Packet size
+            iPacket.Write((int)nGUID);
+            this.SendPacket(iPacket);
+        }
 
         private void client_DataReceived(SocketClient sender, Packet nPacket)
         {
@@ -952,6 +959,10 @@ namespace UltimaXNA.Network
             // !!! Unhandled!
             int iGUID = nPacket.ReadInt();
             int iRevisionHash = nPacket.ReadInt();
+
+            GameObjects.BaseObject iObject = m_GameObjectsService.GetObject(iGUID, UltimaXNA.GameObjects.ObjectType.Object);
+            if (iObject.PropertyList.Hash != iRevisionHash)
+                Send_BatchQueryProperties(iGUID);
         }
 
         private void m_ReceiveLoginComplete(Packet nPacket)
@@ -1057,6 +1068,8 @@ namespace UltimaXNA.Network
                 GameObjects.GameObject iObject = m_GameObjectsService.GetObject((int)iObjectSerial,
                     UltimaXNA.GameObjects.ObjectType.GameObject) as GameObjects.GameObject;
                 iObject.ObjectTypeID = iItemID;
+                iObject.Item_StackCount = iAmount;
+                iObject.Hue = iHue;
                 iObject.Movement.SetPositionInstant(iX, iY, iZ);
             }
             else
@@ -1342,28 +1355,48 @@ namespace UltimaXNA.Network
             // http://docs.polserver.com/packets/index.php?Packet=0xC1
         }
 
-        private void m_ReceiveMegaCliLoc(Packet nPacket)
+        private void m_ReceiveBatchProperties(Packet nPacket)
         {
-            nPacket.ReadUShort(); // packet length. Unused in this context.
-            nPacket.ReadUShort(); // Always 0001
+            int iPacketLength = nPacket.ReadUShort(); // packet length. Unused in this context.
+            int iValue1 = nPacket.ReadShort(); // Always 0001
             int iGUID = nPacket.ReadInt(); // Serial of item/creature
-            nPacket.ReadUShort(); // Always 0002
-            int iGUID2 = nPacket.ReadInt(); // Serial of item/creature in all tests. This could be the serial of the item the entry to appear over.
+            int iValue0 = nPacket.ReadUShort(); // Always 0000
+            int iHash = nPacket.ReadInt(); // Serial of item/creature in all tests. This could be the serial of the item the entry to appear over.
+
+            GameObjects.BaseObject iObject = m_GameObjectsService.GetObject(iGUID, UltimaXNA.GameObjects.ObjectType.Object);
+            iObject.PropertyList.Hash = iHash;
+            iObject.PropertyList.Clear();
 
             // Loop of all the item/creature's properties to display in the order to display them. The name is always the first entry.
             int iCliLocID = nPacket.ReadInt();
             while (iCliLocID != 0)
             {
+                string iCliLoc = DataLocal.StringList.Table[iCliLocID].ToString();
                 int iLengthText = nPacket.ReadUShort();
-                char[] iChars = nPacket.ReadChars(iLengthText);
-                string iText = m_RemoveNullGarbageFromString(iChars);
+                if (iLengthText > 0)
+                {
+                    char[] iChars = nPacket.ReadChars(iLengthText);
+                    string[] iArgs = m_RemoveNullGarbageFromString(iChars).Split('\t');
+                    iObject.PropertyList.AddProperty(m_ConstructCliLoc(iCliLoc, iArgs));
+                }
+                else
+                {
+                    iObject.PropertyList.AddProperty(iCliLoc);
+                }
                 iCliLocID = nPacket.ReadInt();
             }
-            // BYTE[4] Cliloc ID
-            // BYTE[2] Length of (if any) Text to add into/with the cliloc
-            // BYTE[?] Unicode text to be added into the cliloc. Not sent if Length of text above is 0
+        }
 
-            // BYTE[4] 00000000 - Sent as end of packet/loop
+        private string m_ConstructCliLoc(string nBase, string[] nArgs)
+        {
+            string iConstruct = nBase;
+            for (int i = 0; i < nArgs.Length; i++)
+            {
+                int iBeginReplace = iConstruct.IndexOf('~', 0);
+                int iEndReplace = iConstruct.IndexOf('~', iBeginReplace + 1);
+                iConstruct = iConstruct.Substring(0, iBeginReplace) + nArgs[i] + iConstruct.Substring(iEndReplace + 1, iConstruct.Length - iEndReplace - 1);
+            }
+            return iConstruct;
         }
 
         private void m_ReceiveEndVendorSell(Packet nPacket)

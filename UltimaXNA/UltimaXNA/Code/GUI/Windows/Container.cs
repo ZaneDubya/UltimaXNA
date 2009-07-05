@@ -31,7 +31,7 @@ namespace UltimaXNA.GUI
 
             m_MyForm.Controls.Add(new PictureBox("picBG", mBGOffset, @"GUI\CONTAINERFRAME\UI-Bag-4x4.png", 256, 256, 0));
 
-            m_MyForm.Controls.Add(new Label("lblContainer", new Vector2(16f, 7f), "ContainerFrame | " + mContainerObject.GUID,
+            m_MyForm.Controls.Add(new Label("lblContainer", new Vector2(16f, 7f), "ContainerFrame | " + GUIHelper.GUIDHex(mContainerObject.GUID),
                 Color.TransparentBlack, Color.White, 160, Label.Align.Left));
             m_MyForm["lblContainer"].FontName = "ArialNarrow10";
 
@@ -70,6 +70,10 @@ namespace UltimaXNA.GUI
         {
             int iIndex = Int32.Parse(((CustomButton)obj).Name.Substring(6)) + mScrollY * 4;
             GameObjects.GameObject iItem = mContainerObject.ContainerObject.GetContents(iIndex);
+            if (GUIHelper.MouseHoldingItem != null)
+            {
+                GUIHelper.DropItemIntoSlot(mContainerObject, iIndex);
+            }
             if (iItem != null)
             {
                 // pick the item up!

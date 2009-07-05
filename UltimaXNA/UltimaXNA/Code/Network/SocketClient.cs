@@ -303,7 +303,7 @@ namespace UltimaXNA.Network
                     return (int)EndianBitConverter.Big.ToUInt16(data, nPosition + 1);
                 case OpCodes.SMSG_OpenPaperdoll:
                     return 66;
-                case OpCodes.SMSG_MegaCliLoc:
+                case OpCodes.MSG_BatchQueryProperties:
                     return (int)EndianBitConverter.Big.ToUInt16(data, nPosition + 1);
                 case OpCodes.MSG_BuyItemFromVendor:
                     return (int)EndianBitConverter.Big.ToUInt16(data, nPosition + 1);

@@ -102,6 +102,7 @@
     <Compile Include="Code\DataLocal\FileIndexClint.cs" />
     <Compile Include="Code\GameObjects\GO_Container.cs" />
     <Compile Include="Code\GameObjects\GameObjects.cs" />
+    <Compile Include="Code\GameObjects\PropertyList.cs" />
     <Compile Include="Code\GameState.cs" />
     <Compile Include="Code\GUI\Events.cs" />
     <Compile Include="Code\GUI\Windows\ChatInput.cs" />
