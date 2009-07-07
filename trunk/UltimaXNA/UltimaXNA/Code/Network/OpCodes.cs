@@ -73,5 +73,6 @@ namespace UltimaXNA.Network
         CMSG_SpeechRequest = 0xAD,
         MSG_TargetCursor = 0x6C,
         CMSG_WEARITEM = 0x13,
+        SMSG_KRIOSS = 0xF0,
     }
 }
