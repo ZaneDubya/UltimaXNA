@@ -313,6 +313,8 @@ namespace UltimaXNA.Network
                     return 26;
                 case OpCodes.MSG_TargetCursor:
                     return 19;
+                case OpCodes.SMSG_KRIOSS:
+                    return (int)EndianBitConverter.Big.ToUInt16(data, nPosition + 1);
                 default :
                     throw new Exception("Unknown packet! Opcocde: 0x" + MiscUtil.HexEncoding.ToString(iOpCode));
             }
