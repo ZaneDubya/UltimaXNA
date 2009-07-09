@@ -93,13 +93,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataLocal\Art.cs" />
-    <Compile Include="DataLocal\Gumps.cs" />
-    <Compile Include="DataLocal\SharedMethods.cs" />
-    <Compile Include="DataLocal\StringList.cs" />
+    <Compile Include="Data\Art.cs" />
+    <Compile Include="Data\Gumps.cs" />
+    <Compile Include="Data\SharedMethods.cs" />
+    <Compile Include="Data\StringList.cs" />
     <Compile Include="Engine.cs" />
-    <Compile Include="DataLocal\FileManager.cs" />
-    <Compile Include="DataLocal\FileIndexClint.cs" />
+    <Compile Include="Data\FileManager.cs" />
+    <Compile Include="Data\FileIndexClint.cs" />
     <Compile Include="GameObjects\GO_Container.cs" />
     <Compile Include="GameObjects\GameObjects.cs" />
     <Compile Include="GameObjects\PropertyList.cs" />
@@ -122,11 +122,11 @@
     <Compile Include="Input\Cursor.cs" />
     <Compile Include="Input\InputHandler.cs" />
     <Compile Include="Input\KeyboardHandler.cs" />
-    <Compile Include="DataLocal\StaticTileList.cs" />
-    <Compile Include="DataLocal\Texmaps.cs" />
-    <Compile Include="DataLocal\TileData.cs" />
-    <Compile Include="DataLocal\TileMatrix.cs" />
-    <Compile Include="DataLocal\TileMatrixPatch.cs" />
+    <Compile Include="Data\StaticTileList.cs" />
+    <Compile Include="Data\Texmaps.cs" />
+    <Compile Include="Data\TileData.cs" />
+    <Compile Include="Data\TileMatrix.cs" />
+    <Compile Include="Data\TileMatrixPatch.cs" />
     <Compile Include="GameObjects\Corpse.cs" />
     <Compile Include="GameObjects\DynamicObject.cs" />
     <Compile Include="GameObjects\GameObject.cs" />
@@ -156,16 +156,16 @@
     <Compile Include="TileEngine\GroundTile.cs" />
     <Compile Include="TileEngine\Map.cs" />
     <Compile Include="TileEngine\MobileTile.cs" />
+    <Compile Include="TileEngine\SpriteBatch3D.cs" />
     <Compile Include="TileEngine\TileEngine.cs" />
-    <Compile Include="SpriteBatch3D.cs" />
     <Compile Include="TileEngine\StaticItem.cs" />
     <Compile Include="TileEngine\VertexPositionNormalTextureHue.cs" />
     <Compile Include="TileEngine\World.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="DataLocal\Animations.cs" />
-    <Compile Include="DataLocal\FileIndex.cs" />
-    <Compile Include="DataLocal\Hues.cs" />
-    <Compile Include="DataLocal\Verdata.cs" />
+    <Compile Include="Data\Animations.cs" />
+    <Compile Include="Data\FileIndex.cs" />
+    <Compile Include="Data\Hues.cs" />
+    <Compile Include="Data\Verdata.cs" />
   </ItemGroup>
   <ItemGroup>
     <NestedContentProject Include="Content\Content.contentproj">
