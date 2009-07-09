@@ -22,7 +22,7 @@ namespace UltimaXNA.TileEngine
         public Vector2 Position { get { return m_Position; } }
         public Vector3[] Normals;
 
-        public GroundTile(DataLocal.Tile landTile, Vector2 nPosition)
+        public GroundTile(Data.Tile landTile, Vector2 nPosition)
         {
             m_ID = landTile.ID;
             m_SortZ = m_Z = landTile.Z;

@@ -1371,7 +1371,7 @@ namespace UltimaXNA.Network
             int iCliLocID = nPacket.ReadInt();
             while (iCliLocID != 0)
             {
-                string iCliLoc = DataLocal.StringList.Table[iCliLocID].ToString();
+                string iCliLoc = Data.StringList.Table[iCliLocID].ToString();
                 int iLengthText = nPacket.ReadUShort();
                 if (iLengthText > 0)
                 {

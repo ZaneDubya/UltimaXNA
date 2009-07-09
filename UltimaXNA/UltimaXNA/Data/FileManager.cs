@@ -9,7 +9,7 @@ using System.IO;
 using Microsoft.Win32;
 #endregion
 
-namespace UltimaXNA.DataLocal
+namespace UltimaXNA.Data
 {
     class FileManager
     {

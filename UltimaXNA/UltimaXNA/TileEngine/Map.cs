@@ -63,7 +63,7 @@ namespace UltimaXNA.TileEngine
         private int m_GameSize, m_GameSizeUp, m_GameSizeDown;
         private List<int> m_KeysToRemove;
         public SortedDictionary<int, MapCell> m_MapCells;
-        private DataLocal.TileMatrix m_TileMatrix;
+        private Data.TileMatrix m_TileMatrix;
         private int m_X;
         private int m_Y;
 
@@ -75,7 +75,7 @@ namespace UltimaXNA.TileEngine
 
             m_KeysToRemove = new List<int>();
             m_MapCells = new SortedDictionary<int, MapCell>();
-            m_TileMatrix = new DataLocal.TileMatrix(index, index);
+            m_TileMatrix = new Data.TileMatrix(index, index);
         }
 
         public int GameSize
@@ -95,7 +95,7 @@ namespace UltimaXNA.TileEngine
         }
 
         // This pulls a tile from the TileMatrix.
-        public DataLocal.Tile GetLandTile(int x, int y)
+        public Data.Tile GetLandTile(int x, int y)
         {
             return m_TileMatrix.GetLandTile(x, y);
         }
@@ -170,7 +170,7 @@ namespace UltimaXNA.TileEngine
             GroundTile groundTile;
             MapCell mapCell;
             IEnumerator<MapCell> mapCellsEnumerator;
-            DataLocal.Point2D worldLocation;
+            Data.Point2D worldLocation;
 
             if (m_MapCells.ContainsKey(GetKey(nX, nY)))
             {
@@ -205,7 +205,7 @@ namespace UltimaXNA.TileEngine
             mapCell = new MapCell(nX, nY);
             mapCell.Add(groundTile);
 
-            DataLocal.StaticTile[] staticTiles = m_TileMatrix.GetStaticTiles(nX, nY);
+            Data.StaticTile[] staticTiles = m_TileMatrix.GetStaticTiles(nX, nY);
 
             for (int i = 0; i < staticTiles.Length; i++)
             {
@@ -218,11 +218,11 @@ namespace UltimaXNA.TileEngine
 
             mapCellsEnumerator = m_MapCells.Values.GetEnumerator();
 
-            worldLocation = new DataLocal.Point2D(World.X, World.Y);
+            worldLocation = new Data.Point2D(World.X, World.Y);
 
             while (mapCellsEnumerator.MoveNext())
             {
-                if (!DataLocal.Helpers.InRange(worldLocation, mapCellsEnumerator.Current, m_GameSize / 2))
+                if (!Data.Helpers.InRange(worldLocation, mapCellsEnumerator.Current, m_GameSize / 2))
                 {
                     m_KeysToRemove.Add(GetKey(mapCellsEnumerator.Current));
                 }
@@ -245,7 +245,7 @@ namespace UltimaXNA.TileEngine
 		// Issue 10 - End
     }
 
-    public class MapCell : DataLocal.IPoint2D
+    public class MapCell : Data.IPoint2D
     {
         private bool m_NeedsSorting;
         private List<IMapObject> m_Objects;
@@ -293,7 +293,7 @@ namespace UltimaXNA.TileEngine
                     return false;
                 if (iObjects[i].Type == MapObjectTypes.StaticTile)
                 {
-                    DataLocal.ItemData iData = DataLocal.TileData.ItemData[((StaticItem)iObjects[i]).ID - 0x4000];
+                    Data.ItemData iData = Data.TileData.ItemData[((StaticItem)iObjects[i]).ID - 0x4000];
                     if (iData.Roof)
                         return true;
                     if (iData.Surface)
@@ -417,7 +417,7 @@ namespace UltimaXNA.TileEngine
 
 			foreach ( IMapObject obj in staticobjs )
 			{
-				DataLocal.ItemData iData = DataLocal.TileData.ItemData[obj.ID - 0x4000];
+				Data.ItemData iData = Data.TileData.ItemData[obj.ID - 0x4000];
 				if(iData.Stairs)
 				{
 					result = true;
@@ -432,7 +432,7 @@ namespace UltimaXNA.TileEngine
 					return false;
 				foreach ( IMapObject obj in goobjs )
 				{
-					DataLocal.ItemData iData = DataLocal.TileData.ItemData[obj.ID];
+					Data.ItemData iData = Data.TileData.ItemData[obj.ID];
 					if(iData.Stairs)
 					{
 						result = true;

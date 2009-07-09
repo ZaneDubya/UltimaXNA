@@ -58,13 +58,13 @@ namespace UltimaXNA.GUI
                         case 0:
                             // movement
                             FormCollection.Cursor.Center = new Vector2(0, 0);
-                            FormCollection.Cursor.Texture = DataLocal.Art.GetStaticTexture(8307, graphics.GraphicsDevice);
+                            FormCollection.Cursor.Texture = Data.Art.GetStaticTexture(8307, graphics.GraphicsDevice);
                             FormCollection.Cursor.SourceRect = new Rectangle(1, 1, 31, 26);
                             break;
                         case m_MouseCursorTargetting:
                             // target
                             FormCollection.Cursor.Center = new Vector2(13, 13);
-                            FormCollection.Cursor.Texture = DataLocal.Art.GetStaticTexture(8310, graphics.GraphicsDevice);
+                            FormCollection.Cursor.Texture = Data.Art.GetStaticTexture(8310, graphics.GraphicsDevice);
                             FormCollection.Cursor.SourceRect = new Rectangle(1, 1, 46, 34);
                             break;
                         case m_MouseCursorHolding:
@@ -75,7 +75,7 @@ namespace UltimaXNA.GUI
                             break;
                         default:
                             // unknown cursor type. Raise an exception!
-                            FormCollection.Cursor.Texture = DataLocal.Art.GetStaticTexture(1, graphics.GraphicsDevice);
+                            FormCollection.Cursor.Texture = Data.Art.GetStaticTexture(1, graphics.GraphicsDevice);
                             FormCollection.Cursor.SourceRect = new Rectangle(0, 0, 44, 44);
                             break;
                     }
@@ -444,7 +444,7 @@ namespace UltimaXNA.GUI
                 else
                 {
                     mToolTipItem = value;
-                    DataLocal.ItemData iData = mToolTipItem.ItemData;
+                    Data.ItemData iData = mToolTipItem.ItemData;
                     string iItemName = string.Empty;
                     if (mToolTipItem.Item_StackCount > 1)
                         iItemName += mToolTipItem.Item_StackCount.ToString() + @" ";
@@ -513,10 +513,10 @@ namespace UltimaXNA.GUI
 
             if (m_IconCache[nItemID] == null)
             {
-                // Retrieve the TextureArt from DataLocal for this ItemID. ItemID = 0 is empty.
+                // Retrieve the TextureArt from Data for this ItemID. ItemID = 0 is empty.
                 Texture2D iTextureArt = null;
                 if (nItemID != 0)
-                    iTextureArt = DataLocal.Art.GetStaticTexture(nItemID, FormCollection.Graphics.GraphicsDevice);
+                    iTextureArt = Data.Art.GetStaticTexture(nItemID, FormCollection.Graphics.GraphicsDevice);
 
                 float iScaleUp = 1f, iDestSize = 39f;
                 if (iTextureArt != null)

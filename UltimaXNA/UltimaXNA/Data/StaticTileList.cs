@@ -20,7 +20,7 @@
  ***************************************************************************/
 #endregion
 
-namespace UltimaXNA.DataLocal
+namespace UltimaXNA.Data
 {
     public class StaticTileList
     {

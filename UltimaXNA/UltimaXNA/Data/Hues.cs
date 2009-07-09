@@ -11,7 +11,7 @@ using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 #endregion
 
-namespace UltimaXNA.DataLocal
+namespace UltimaXNA.Data
 {
     public class HuesXNA
     {

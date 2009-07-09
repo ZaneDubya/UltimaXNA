@@ -301,7 +301,7 @@ namespace UltimaXNA.GameObjects
 					int height = 0;
 					foreach ( StaticItem i in sitems )
 					{
-						UltimaXNA.DataLocal.ItemData iDataInfo = UltimaXNA.DataLocal.TileData.ItemData[i.ID - 0x4000];
+						UltimaXNA.Data.ItemData iDataInfo = UltimaXNA.Data.TileData.ItemData[i.ID - 0x4000];
 						if(!iDataInfo.Surface)
 							continue;
 
@@ -317,7 +317,7 @@ namespace UltimaXNA.GameObjects
 					int height = 0;
 					foreach ( GameObjectTile i in goitems )
 					{
-						UltimaXNA.DataLocal.ItemData iDataInfo = UltimaXNA.DataLocal.TileData.ItemData[i.ID];
+						UltimaXNA.Data.ItemData iDataInfo = UltimaXNA.Data.TileData.ItemData[i.ID];
 						if(!iDataInfo.Surface)
 							continue;
 

@@ -24,7 +24,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 #endregion
 
-namespace UltimaXNA.DataLocal
+namespace UltimaXNA.Data
 {
     public class TileMatrix
     {

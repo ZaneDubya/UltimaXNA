@@ -3,7 +3,7 @@ using System.IO;
 using System.Text;
 using System.Collections;
 
-namespace UltimaXNA.DataLocal
+namespace UltimaXNA.Data
 {
     public static class StringList
     {

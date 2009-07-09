@@ -30,11 +30,11 @@ namespace UltimaXNA
         {
             // First initialize some of the local data classes with our graphicsdevice so 
             // we don't have to continually pass it to them.
-            DataLocal.Gumps.GraphicsDevice = this.GraphicsDevice;
+            Data.Gumps.GraphicsDevice = this.GraphicsDevice;
             
             //load the hues texture
-            UltimaXNA.DataLocal.HuesXNA.Initialize(GraphicsDevice);
-            UltimaXNA.DataLocal.StringList.LoadStringList("enu");
+            UltimaXNA.Data.HuesXNA.Initialize(GraphicsDevice);
+            UltimaXNA.Data.StringList.LoadStringList("enu");
 
             this.Content.RootDirectory = "Content";
 
