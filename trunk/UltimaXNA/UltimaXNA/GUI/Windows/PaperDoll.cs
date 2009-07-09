@@ -160,7 +160,7 @@ namespace UltimaXNA.GUI
             if (mMobileObject.Equipment.UpdateTicker != mLastContainerUpdated)
             {
 
-                ((PictureBox)m_MyForm["picEquip0"]).Texture = DataLocal.Gumps.GetGumpXNA(0x000C);
+                ((PictureBox)m_MyForm["picEquip0"]).Texture = Data.Gumps.GetGumpXNA(0x000C);
 
                 // Buttons index starting at 1.
                 for (int i = 1; i <= m_MaxButtons; i++)
@@ -183,7 +183,7 @@ namespace UltimaXNA.GUI
                     }
                     else
                     {
-                        ((PictureBox)m_MyForm[iPicName]).Texture = DataLocal.Gumps.GetGumpXNA(iItem.AnimationDisplayID + 50000);
+                        ((PictureBox)m_MyForm[iPicName]).Texture = Data.Gumps.GetGumpXNA(iItem.AnimationDisplayID + 50000);
                         ((CustomButton)m_MyForm[iBtnName]).Disabled = false;
                     }
                 }

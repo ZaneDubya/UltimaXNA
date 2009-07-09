@@ -171,11 +171,11 @@ namespace UltimaXNA.TileEngine
 
                             drawY = groundTile.Z << 2;
 
-                            DataLocal.LandData landData = DataLocal.TileData.LandData[groundTile.ID & 0x3FFF];
+                            Data.LandData landData = Data.TileData.LandData[groundTile.ID & 0x3FFF];
 
                             if (landData.TextureID <= 0 || landData.Wet) // Not Stretched
                             {
-                                texture = DataLocal.Art.GetLandTexture(groundTile.ID, this.GraphicsDevice);
+                                texture = Data.Art.GetLandTexture(groundTile.ID, this.GraphicsDevice);
 
                                 m_VertexBuffer[0].Position = drawPosition;
                                 m_VertexBuffer[0].Position.Y -= drawY;
@@ -204,7 +204,7 @@ namespace UltimaXNA.TileEngine
                             }
                             else // Stretched
                             {
-                                texture = DataLocal.Texmaps.GetTexmapTexture(landData.TextureID, this.GraphicsDevice);
+                                texture = Data.Texmaps.GetTexmapTexture(landData.TextureID, this.GraphicsDevice);
 
                                 m_VertexBufferForStretchedTile[0].Position = drawPosition;
                                 m_VertexBufferForStretchedTile[0].Position.X += 22;
@@ -255,9 +255,9 @@ namespace UltimaXNA.TileEngine
                             if (staticItem.Z >= MaxRoofAltitude)
                                 continue;
 
-                            DataLocal.Art.GetStaticDimensions(staticItem.ID, out width, out height);
+                            Data.Art.GetStaticDimensions(staticItem.ID, out width, out height);
 
-                            texture = DataLocal.Art.GetStaticTexture(staticItem.ID, this.GraphicsDevice);
+                            texture = Data.Art.GetStaticTexture(staticItem.ID, this.GraphicsDevice);
 
                             drawX = (width >> 1) - 22;
                             drawY = (staticItem.Z << 2) + height - 44;
@@ -300,7 +300,7 @@ namespace UltimaXNA.TileEngine
                             if (iMobile.Z >= MaxRoofAltitude)
                                 continue;
 
-                            DataLocal.FrameXNA[] iFrames = DataLocal.AnimationsXNA.GetAnimation(this.Game.GraphicsDevice,
+                            Data.FrameXNA[] iFrames = Data.AnimationsXNA.GetAnimation(this.Game.GraphicsDevice,
                                 iMobile.ID, iMobile.Action, iMobile.Direction, iMobile.Hue, false);
                             // GetAnimation fails so it returns null, temporary fix - Smjert
                             if (iFrames == null)
@@ -355,9 +355,9 @@ namespace UltimaXNA.TileEngine
                             if (iObject.Z >= MaxRoofAltitude)
                                 continue;
 
-                            DataLocal.Art.GetStaticDimensions(iObject.ID, out width, out height);
+                            Data.Art.GetStaticDimensions(iObject.ID, out width, out height);
 
-                            texture = DataLocal.Art.GetStaticTexture(iObject.ID, this.GraphicsDevice);
+                            texture = Data.Art.GetStaticTexture(iObject.ID, this.GraphicsDevice);
 
                             drawX = (width >> 1) - 22;
                             drawY = (iObject.Z << 2) + height - 44;

@@ -85,7 +85,7 @@ namespace UltimaXNA.GameObjects
         }
 
         private int mObjectTypeID = 0;
-        public DataLocal.ItemData ItemData;
+        public Data.ItemData ItemData;
 
         public int ObjectTypeID
         {
@@ -94,7 +94,7 @@ namespace UltimaXNA.GameObjects
             {
                 m_HasBeenDrawn = false;
                 mObjectTypeID = value;
-                ItemData = UltimaXNA.DataLocal.TileData.ItemData[mObjectTypeID];
+                ItemData = UltimaXNA.Data.TileData.ItemData[mObjectTypeID];
                 AnimationDisplayID = ItemData.AnimID;
             }
         }

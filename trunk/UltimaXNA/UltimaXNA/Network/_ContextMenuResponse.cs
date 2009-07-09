@@ -16,7 +16,7 @@ namespace UltimaXNA.Network
 
         public ContextMenuItem(int nResponseCode, int iStringID, int iFlags, int iHue)
         {
-            m_Caption = UltimaXNA.DataLocal.StringList.Table[iStringID].ToString();
+            m_Caption = UltimaXNA.Data.StringList.Table[iStringID].ToString();
             m_ResponseCode = nResponseCode;
 
         }

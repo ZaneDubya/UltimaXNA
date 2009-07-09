@@ -7,7 +7,7 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using UltimaXNA.DataLocal;
+using UltimaXNA.Data;
 #endregion
 
 namespace UltimaXNA
@@ -373,10 +373,10 @@ namespace UltimaXNA
                         null);
 
                     // Retreive the ItemData for this object.
-                    DataLocal.ItemData iItemData =
+                    Data.ItemData iItemData =
                         ((mTileEngineService.MouseOverObject.OwnerGUID != -1) ?
                         iObject.ItemData :
-                        DataLocal.TileData.ItemData[iTopMostObject.ID - 0x4000]);
+                        Data.TileData.ItemData[iTopMostObject.ID - 0x4000]);
 
                     if (iItemData.Surface)
                     {

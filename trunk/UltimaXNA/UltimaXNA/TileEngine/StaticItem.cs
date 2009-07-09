@@ -27,7 +27,7 @@ namespace UltimaXNA.TileEngine
             m_Position = nPosition;
         }
 
-        public StaticItem(DataLocal.StaticTile staticTile, int sortInfluence, Vector2 nPosition)
+        public StaticItem(Data.StaticTile staticTile, int sortInfluence, Vector2 nPosition)
         {
             m_ID = staticTile.ID;
             m_SortInfluence = sortInfluence;
@@ -54,7 +54,7 @@ namespace UltimaXNA.TileEngine
         {
             get
             {
-                DataLocal.ItemData itemData = DataLocal.TileData.ItemData[m_ID & 0x3FFF];
+                Data.ItemData itemData = Data.TileData.ItemData[m_ID & 0x3FFF];
 
                 int background;
 

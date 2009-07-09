@@ -17,7 +17,7 @@ namespace UltimaXNA.GUI
             m_MyForm.MouseThrough = true;
 
             m_MyForm.Controls.Add(new PictureBox("picturebox1", new Vector2(0, 0), @"", 800, 600, 0));
-            ((PictureBox)m_MyForm["picturebox1"]).Texture = DataLocal.Gumps.GetGumpXNA(0x500);
+            ((PictureBox)m_MyForm["picturebox1"]).Texture = Data.Gumps.GetGumpXNA(0x500);
 
             //Show the form
             this.Show();

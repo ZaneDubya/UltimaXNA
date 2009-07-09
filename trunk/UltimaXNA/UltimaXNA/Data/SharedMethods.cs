@@ -8,7 +8,7 @@ using System;
 using System.Runtime.InteropServices;
 #endregion
 
-namespace UltimaXNA.DataLocal
+namespace UltimaXNA.Data
 {
     class NativeMethods
     {

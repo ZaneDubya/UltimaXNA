@@ -8,7 +8,7 @@ using System;
 using System.IO;
 #endregion
 
-namespace UltimaXNA.DataLocal
+namespace UltimaXNA.Data
 {
     public class TileData
     {

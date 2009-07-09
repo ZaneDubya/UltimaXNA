@@ -133,7 +133,7 @@ namespace UltimaXNA.TileEngine
             m_Effect.Begin();
             m_Effect.CurrentTechnique.Passes[0].Begin();
 
-            this.Game.GraphicsDevice.Textures[1] = UltimaXNA.DataLocal.HuesXNA.HueTexture;
+            this.Game.GraphicsDevice.Textures[1] = UltimaXNA.Data.HuesXNA.HueTexture;
 
             while (keyValuePairs.MoveNext())
             {

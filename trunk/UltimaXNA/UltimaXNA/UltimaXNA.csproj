@@ -60,6 +60,10 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Xna.Framework, Version=3.0.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=x86">
       <Private>False</Private>
       <SpecificVersion>True</SpecificVersion>
@@ -97,6 +101,11 @@
     <Compile Include="Data\Gumps.cs" />
     <Compile Include="Data\SharedMethods.cs" />
     <Compile Include="Data\StringList.cs" />
+    <Compile Include="Diagnostics\ILoggable.cs" />
+    <Compile Include="Diagnostics\IStatusNotifier.cs" />
+    <Compile Include="Diagnostics\Logger.cs" />
+    <Compile Include="Diagnostics\StatusLevel.cs" />
+    <Compile Include="Diagnostics\StatusUpdateEventArgs.cs" />
     <Compile Include="Engine.cs" />
     <Compile Include="Data\FileManager.cs" />
     <Compile Include="Data\FileIndexClint.cs" />
@@ -145,12 +154,128 @@
     <Compile Include="MiscUtil\Conversion\LittleEndianBitConverter.cs" />
     <Compile Include="MiscUtil\EndianBinaryWriter.cs" />
     <Compile Include="MiscUtil\HexEncoding.cs" />
+    <Compile Include="Network\CharacterListEntry.cs" />
+    <Compile Include="Network\ClientNetwork.cs" />
+    <Compile Include="Network\Compression\HuffmanDecompression.cs" />
+    <Compile Include="Network\ContextMenu.cs" />
+    <Compile Include="Network\Interfaces\IClientNetwork.cs" />
+    <Compile Include="Network\Interfaces\IDecompression.cs" />
+    <Compile Include="Network\Interfaces\IRecvPacket.cs" />
+    <Compile Include="Network\Interfaces\ISendPacket.cs" />
+    <Compile Include="Network\IO\PacketReader.cs" />
+    <Compile Include="Network\IO\PacketWriter.cs" />
+    <Compile Include="Network\ItemInContainer.cs" />
+    <Compile Include="Network\NetworkException.cs" />
+    <Compile Include="Network\PacketHandler.cs" />
+    <Compile Include="Network\PacketRegistry.cs" />
+    <Compile Include="Network\Packets\Client\AsciiSpeechtPacket.cs" />
+    <Compile Include="Network\Packets\Client\AttackRequestPacket.cs" />
+    <Compile Include="Network\Packets\Client\BuyItemsPacket.cs" />
+    <Compile Include="Network\Packets\Client\ClientVersionPacket.cs" />
+    <Compile Include="Network\Packets\Client\CreateCharacterPacket.cs" />
+    <Compile Include="Network\Packets\Client\DeleteCharacterPacket.cs" />
+    <Compile Include="Network\Packets\Client\DisconnectNotificationPacket.cs" />
+    <Compile Include="Network\Packets\Client\DoubleClickPacket.cs" />
+    <Compile Include="Network\Packets\Client\DropItemPacket.cs" />
+    <Compile Include="Network\Packets\Client\DropToLayerPacket.cs" />
+    <Compile Include="Network\Packets\Client\GameLoginPacket.cs" />
+    <Compile Include="Network\Packets\Client\GetPlayerStatusPacket.cs" />
+    <Compile Include="Network\Packets\Client\GumpMenuSelectPacket.cs" />
+    <Compile Include="Network\Packets\Client\GumpTextEntryDialogReplyPacket.cs" />
+    <Compile Include="Network\Packets\Client\LoginCharacterPacket.cs" />
+    <Compile Include="Network\Packets\Client\LoginPacket.cs" />
+    <Compile Include="Network\Packets\Client\MoveRequestPacket.cs" />
+    <Compile Include="Network\Packets\Client\PathfindingPacket.cs" />
+    <Compile Include="Network\Packets\Client\PickupItemPacket.cs" />
+    <Compile Include="Network\Packets\Client\QueryPropertiesPacket.cs" />
+    <Compile Include="Network\Packets\Client\RenameCharacterPacket.cs" />
+    <Compile Include="Network\Packets\Client\RequestContextMenuPacket.cs" />
+    <Compile Include="Network\Packets\Client\RequestHelpPacket.cs" />
+    <Compile Include="Network\Packets\Client\RequestNamePacket.cs" />
+    <Compile Include="Network\Packets\Client\RequestNoticePacket.cs" />
+    <Compile Include="Network\Packets\Client\RequestSkillUsePacket.cs" />
+    <Compile Include="Network\Packets\Client\RequestTipPacket.cs" />
+    <Compile Include="Network\Packets\Client\RequestWarModePacket.cs" />
+    <Compile Include="Network\Packets\Client\ResponseToDialogBoxPacket.cs" />
+    <Compile Include="Network\Packets\Client\SeedPacket.cs" />
+    <Compile Include="Network\Packets\Client\SelectServerPacket.cs" />
+    <Compile Include="Network\Packets\Client\SellListReplyPacket.cs" />
+    <Compile Include="Network\Packets\Client\SingleClickPacket.cs" />
+    <Compile Include="Network\Packets\Client\TalkRequestPacket.cs" />
+    <Compile Include="Network\Packets\Client\UnicodeSpeechPacket.cs" />
+    <Compile Include="Network\Packets\Client\UOGInfoRequestPacket.cs" />
+    <Compile Include="Network\Packets\Incomplete\CompressedGumpPacket.cs" />
+    <Compile Include="Network\Packets\Incomplete\CorpseClothingPacket.cs" />
+    <Compile Include="Network\Packets\Incomplete\GraphicEffectPacket.cs" />
+    <Compile Include="Network\Packets\Incomplete\MessageLocalizedPacket.cs" />
+    <Compile Include="Network\Packets\Incomplete\MobileAnimationPacket.cs" />
+    <Compile Include="Network\Packets\Incomplete\OpenPaperdollPacket.cs" />
+    <Compile Include="Network\Packets\Incomplete\PlayMusicPacket.cs" />
+    <Compile Include="Network\Packets\Incomplete\PlaySoundEffectPacket.cs" />
+    <Compile Include="Network\Packets\Incomplete\ResurrectionMenuPacket.cs" />
+    <Compile Include="Network\Packets\Incomplete\SendSkillsPacket.cs" />
+    <Compile Include="Network\Packets\Incomplete\TimePacket.cs" />
+    <Compile Include="Network\Packets\RevcPacket.cs" />
+    <Compile Include="Network\Packets\SendPacket.cs" />
+    <Compile Include="Network\Packets\SendRecvPacket.cs" />
+    <Compile Include="Network\Packets\Server\AsciiMessagePacket.cs" />
+    <Compile Include="Network\Packets\Server\CharacterCityListPacket.cs" />
+    <Compile Include="Network\Packets\Server\ChatPacket.cs" />
+    <Compile Include="Network\Packets\Server\ContainerContentPacket.cs" />
+    <Compile Include="Network\Packets\Server\ContainerContentUpdatePacket.cs" />
+    <Compile Include="Network\Packets\Server\ContainerPacket.cs" />
+    <Compile Include="Network\Packets\Server\DamagePacket.cs" />
+    <Compile Include="Network\Packets\Server\DragEffectPacket.cs" />
+    <Compile Include="Network\Packets\Server\EquipmentEntry.cs" />
+    <Compile Include="Network\Packets\Server\GeneralInfoPacket.cs" />
+    <Compile Include="Network\Packets\Server\LiftRejectionPacket.cs" />
+    <Compile Include="Network\Packets\Server\LoginCompletePacket.cs" />
+    <Compile Include="Network\Packets\Server\LoginConfirmPacket.cs" />
+    <Compile Include="Network\Packets\Server\LoginRejectionPacket.cs" />
+    <Compile Include="Network\Packets\Server\MobileAttributesPacket.cs" />
+    <Compile Include="Network\Packets\Server\MobileIncomingPacket.cs" />
+    <Compile Include="Network\Packets\Server\MobileMovingPacket.cs" />
+    <Compile Include="Network\Packets\Server\MobileUpdatePacket.cs" />
+    <Compile Include="Network\Packets\Server\MoveAcknowledgePacket.cs" />
+    <Compile Include="Network\Packets\Server\MovementRejectPacket.cs" />
+    <Compile Include="Network\Packets\Server\ObjectInfoPacket.cs" />
+    <Compile Include="Network\Packets\Server\ObjectPropertyListPacket.cs" />
+    <Compile Include="Network\Packets\Server\ObjectPropertyListUpdatePacket.cs" />
+    <Compile Include="Network\Packets\Server\OverallLightLevelPacket.cs" />
+    <Compile Include="Network\Packets\Server\PersonalLightLevelPacket.cs" />
+    <Compile Include="Network\Packets\Server\PlayerMovePacket.cs" />
+    <Compile Include="Network\Packets\Server\PopupMessagePacket.cs" />
+    <Compile Include="Network\Packets\Server\RemoveEntityPacket.cs" />
+    <Compile Include="Network\Packets\Server\RequestNameResponsePacket.cs" />
+    <Compile Include="Network\Packets\Server\SeasonChangePacket.cs" />
+    <Compile Include="Network\Packets\Server\ServerListPacket.cs" />
+    <Compile Include="Network\Packets\Server\ServerRelayPacket.cs" />
+    <Compile Include="Network\Packets\Server\StatusInfoPacket.cs" />
+    <Compile Include="Network\Packets\Server\SubServerPacket.cs" />
+    <Compile Include="Network\Packets\Server\SupportedFeaturesPacket.cs" />
+    <Compile Include="Network\Packets\Server\SwingPacket.cs" />
+    <Compile Include="Network\Packets\Server\TargetCursorPacket.cs" />
+    <Compile Include="Network\Packets\Server\UnicodeMessagePacket.cs" />
+    <Compile Include="Network\Packets\Server\UOGInfoResponsePacket.cs" />
+    <Compile Include="Network\Packets\Server\UpdateHealthPacket.cs" />
+    <Compile Include="Network\Packets\Server\UpdateManaPacket.cs" />
+    <Compile Include="Network\Packets\Server\UpdateStaminaPacket.cs" />
+    <Compile Include="Network\Packets\Server\VendorBuyListPacket.cs" />
+    <Compile Include="Network\Packets\Server\VersionRequestPacket.cs" />
+    <Compile Include="Network\Packets\Server\WarModePacket.cs" />
+    <Compile Include="Network\Packets\Server\WeatherPacket.cs" />
+    <Compile Include="Network\Packets\Server\WornItemPacket.cs" />
+    <Compile Include="Network\Pair.cs" />
+    <Compile Include="Network\ServerListEntry.cs" />
+    <Compile Include="Network\SocketState.cs" />
+    <Compile Include="Network\StartingLocation.cs" />
     <Compile Include="Network\_ContextMenuResponse.cs" />
     <Compile Include="Network\_GameClient.cs" />
     <Compile Include="Network\_OpCodes.cs" />
     <Compile Include="Network\_Packet.cs" />
     <Compile Include="Network\_SocketClient.cs" />
     <Compile Include="Network\_SocketListener.cs" />
+    <Compile Include="Serial.cs" />
     <Compile Include="TileEngine\GameObjectTile.cs" />
     <Compile Include="TileEngine\RayPicker.cs" />
     <Compile Include="TileEngine\GroundTile.cs" />
@@ -166,6 +291,7 @@
     <Compile Include="Data\FileIndex.cs" />
     <Compile Include="Data\Hues.cs" />
     <Compile Include="Data\Verdata.cs" />
+    <Compile Include="Utility.cs" />
   </ItemGroup>
   <ItemGroup>
     <NestedContentProject Include="Content\Content.contentproj">
@@ -209,6 +335,9 @@
       <ProductName>Microsoft XNA Framework Redistributable 3.0</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Network\Packets\Both\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />

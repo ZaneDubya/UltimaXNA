@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace UltimaXNA.DataLocal
+namespace UltimaXNA.Data
 {
     public class Gumps
     {
