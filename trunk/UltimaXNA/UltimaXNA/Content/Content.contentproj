@@ -42,13 +42,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GUI\cursors.bmp">
-      <Name>cursors</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Fonts\ArialNarrow10.spritefont">
       <Name>ArialNarrow10</Name>
       <Importer>FontDescriptionImporter</Importer>

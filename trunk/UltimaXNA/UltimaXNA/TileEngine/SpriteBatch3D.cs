@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.TileEngine;
 #endregion
 
-namespace UltimaXNA
+namespace UltimaXNA.TileEngine
 {
     class SpriteBatch3D : GameComponent
     {
