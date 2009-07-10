@@ -100,7 +100,8 @@ namespace UltimaXNA.Network
                         case "Toggle Item Insurance":
                         case "Auto Renew Inventory Insurance":
                         case "Toggle Monster Title Display":
-                            // unhandled
+                        case "Tame":
+                        // unhandled
                             break;
                         default:
                             throw new Exception("Unknown context item: " + i.Caption);

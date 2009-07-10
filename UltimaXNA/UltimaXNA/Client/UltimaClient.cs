@@ -419,8 +419,10 @@ namespace UltimaXNA.Client
 
             for (int i = 0; i < p.Equipment.Length; i++)
             {
-                GameObject iObject = addItem(p.Equipment[i].Serial, p.Equipment[i].GumpId, p.Equipment[i].Hue, 0, 0);
-                iMobile.Equipment[p.Equipment[i].Layer] = iObject;
+                GameObject item = addItem(p.Equipment[i].Serial, p.Equipment[i].GumpId, p.Equipment[i].Hue, 0, 0);
+                iMobile.Equipment[p.Equipment[i].Layer] = item;
+                if (item.PropertyList.Hash == 0)
+                    this.Send(new QueryPropertiesPacket(item.Serial));
             }
 
             if (iMobile.Name == string.Empty)
@@ -829,9 +831,11 @@ namespace UltimaXNA.Client
         private void receive_WornItem(IRecvPacket packet)
         {
             WornItemPacket p = (WornItemPacket)packet;
-            GameObject iObject = addItem(p.Serial, p.ItemId, p.Hue, 0, 0);
+            GameObject item = addItem(p.Serial, p.ItemId, p.Hue, 0, 0);
             Unit u = _GameObjects.GetObject(p.ParentSerial, ObjectType.Unit) as Unit;
-            u.Equipment[p.Layer] = iObject;
+            u.Equipment[p.Layer] = item;
+            if (item.PropertyList.Hash == 0)
+                this.Send(new QueryPropertiesPacket(item.Serial));
         }
 
 
