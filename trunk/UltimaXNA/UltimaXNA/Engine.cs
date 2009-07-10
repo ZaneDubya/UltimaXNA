@@ -31,7 +31,7 @@ namespace UltimaXNA
             // First initialize some of the local data classes with our graphicsdevice so 
             // we don't have to continually pass it to them.
             Data.Gumps.GraphicsDevice = this.GraphicsDevice;
-            
+
             //load the hues texture
             UltimaXNA.Data.HuesXNA.Initialize(GraphicsDevice);
             UltimaXNA.Data.StringList.LoadStringList("enu");
@@ -61,7 +61,7 @@ namespace UltimaXNA
 
             base.Initialize();
         }
-        
+
         protected override void LoadContent()
         {
             base.LoadContent();
@@ -105,11 +105,18 @@ namespace UltimaXNA
         [STAThread]
         private static void Main(string[] args)
         {
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
             using (Engine engine = new Engine())
             {
                 engine.Run();
             }
         }
+        static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Diagnostics.Logger log = new Diagnostics.Logger(typeof(Engine));
+            log.Fatal(e.ExceptionObject);
+        }
+
         #endregion
     }
 }
