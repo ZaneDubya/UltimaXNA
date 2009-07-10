@@ -200,7 +200,7 @@ namespace UltimaXNA
                     {
                         if (_Input.Mouse.Buttons[0].IsDown)
                         {
-                            checkMovement(false);
+                            checkMove();
                         }
                     }
 
@@ -256,7 +256,7 @@ namespace UltimaXNA
                     // or pick it up, depending on what kind of object we are looking at.
                     if (_Input.Mouse.Buttons[0].Press)
                     {
-                        checkMovement(true);
+                        checkLeftClick();
                     }
 
                     if (_Input.Mouse.Buttons[1].Press)
@@ -316,91 +316,88 @@ namespace UltimaXNA
             }
         }
 
-        private void checkMovement(bool nPressEvent)
+        private void checkMove()
+        {
+            TileEngine.IMapObject iGroundTile = _TileEngine.MouseOverGroundTile;
+            TileEngine.IMapObject iTopObject = _TileEngine.MouseOverObject;
+
+            // We check the ground tile first.
+            // If there is no objects under the mouse cursor, but there is a groundtile, move to the ground tile.
+            // Same thing if the highest object under the mouse cursor is lower than the groundtile.
+            if ((iGroundTile != null) && ((iTopObject == null) || (iTopObject.Z < iGroundTile.Z)))
+            {
+                ((GameObjects.Unit)_GameObjects.GetPlayerObject()).Move(
+                       (int)iGroundTile.Position.X,
+                       (int)iGroundTile.Position.Y,
+                       (int)iGroundTile.Z);
+                if (_MovementFollowsMouse)
+                    _ContinuousMoveCheck = true;
+            }
+            else if (iTopObject != null)
+            {
+                Data.ItemData iItemData;
+                if (iTopObject.Type == UltimaXNA.TileEngine.MapObjectTypes.StaticTile)
+                    iItemData = Data.TileData.ItemData[iTopObject.ID - 0x4000];
+                else if (iTopObject.Type == UltimaXNA.TileEngine.MapObjectTypes.GameObjectTile)
+                {
+                    GameObjects.GameObject iObject =
+                        ((iTopObject.Type == TileEngine.MapObjectTypes.GameObjectTile) ?
+                        _GameObjects.GetObject(iTopObject.OwnerGUID, UltimaXNA.GameObjects.ObjectType.GameObject) as GameObjects.GameObject :
+                        null);
+                    iItemData = iObject.ItemData;
+                }
+                else
+                    return;
+
+                if (iItemData.Surface)
+                {
+                    // This is a walkable static or gameobject. Walk on it!
+                    ((GameObjects.Unit)_GameObjects.GetPlayerObject()).Move(
+                           (int)iTopObject.Position.X,
+                           (int)iTopObject.Position.Y,
+                           (int)iTopObject.Z + iItemData.CalcHeight);
+                    if (_MovementFollowsMouse)
+                        _ContinuousMoveCheck = true;
+                }
+                else
+                {
+                    // This is a static that is not a surface.
+                    // We can't interact with it, so do nothing.
+                    // (although what about chairs, aren't they interactable?)
+                }
+            }
+        }
+
+        private void checkLeftClick()
         {
             // Issue 15 - Mouse left clicks on the wrong topmost object - http://code.google.com/p/ultimaxna/issues/detail?id=15 - Smjert
             // Issue 17 - Player is attempting to 'walk onto' objects? - http://code.google.com/p/ultimaxna/issues/detail?id=17 - ZDW
             // Issue 18 - Player will not walk to a static unless there is a ground tile active - http://code.google.com/p/ultimaxna/issues/detail?id=18 - ZDW
-            int iZOffset = 0;
-            // We check the ground tile first.
-            // If there is no objects under the mouse cursor, but there is a groundtile, move to the ground tile.
-            // Same thing if the highest object under the mouse cursor is lower than the groundtile.
-            if (
-                (_TileEngine.MouseOverGroundTile != null) &&
-                ((_TileEngine.MouseOverObject == null)) // ||
-                // (mTileEngineService.MouseOverObject.Z < mTileEngineService.MouseOverGroundTile.Z))
-                )
+
+            TileEngine.IMapObject iTopObject = _TileEngine.MouseOverObject;
+
+            if (iTopObject != null)
             {
-                TileEngine.IMapObject iGroundTile = _TileEngine.MouseOverGroundTile;
-                if (iGroundTile != null)
+                if (iTopObject.Type == TileEngine.MapObjectTypes.MobileTile)
                 {
-                    ((GameObjects.Unit)_GameObjects.GetPlayerObject()).Move(
-                           (int)iGroundTile.Position.X,
-                           (int)iGroundTile.Position.Y,
-                           (int)iGroundTile.Z);
-                    if (_MovementFollowsMouse)
-                        _ContinuousMoveCheck = true;
+                    // Target this mobile.
+                    return;
                 }
-            }
-            else if (_TileEngine.MouseOverObject != null)
-            {
-                // Local copy of the top most object.
-                TileEngine.IMapObject iTopMostObject = _TileEngine.MouseOverObject;
-
-                // We react to mobiles differently than we do objects/statics
-                if (iTopMostObject.Type == TileEngine.MapObjectTypes.MobileTile)
+                if (iTopObject.Type == TileEngine.MapObjectTypes.GameObjectTile)
                 {
+                    // This is a GameObject. Pick it up if possible, as long as this is a press event.
 
-                }
-                else
-                {
-                    // Retreive the GameObject that owns the object under the cursor. Note that if this is a
-                    // static tile, iObject will equal null.
-                    GameObjects.GameObject iObject =
-                        ((iTopMostObject.Type == TileEngine.MapObjectTypes.GameObjectTile) ?
-                        _GameObjects.GetObject(iTopMostObject.OwnerGUID, UltimaXNA.GameObjects.ObjectType.GameObject) as GameObjects.GameObject :
-                        null);
-
-                    // Retreive the ItemData for this object.
-                    Data.ItemData iItemData =
-                        ((_TileEngine.MouseOverObject.OwnerGUID != -1) ?
-                        iObject.ItemData :
-                        Data.TileData.ItemData[iTopMostObject.ID - 0x4000]);
-
-                    if (iItemData.Surface)
+                    GameObjects.GameObject item = _GameObjects.GetObject(iTopObject.OwnerGUID, GameObjects.ObjectType.GameObject) as GameObjects.GameObject;
+                    if (item.ItemData.Weight != 255)
                     {
-                        // This is a walkable static or gameobject. Walk on it!
-
-                        if (iTopMostObject.Type == UltimaXNA.TileEngine.MapObjectTypes.StaticTile)
-                            iZOffset = TileData.ItemData[iTopMostObject.ID - 0x4000].CalcHeight;
-                        else if (iTopMostObject.Type == UltimaXNA.TileEngine.MapObjectTypes.GameObjectTile)
-                            iZOffset = TileData.ItemData[iTopMostObject.ID].CalcHeight;
-
-                        ((GameObjects.Unit)_GameObjects.GetPlayerObject()).Move(
-                               (int)iTopMostObject.Position.X,
-                               (int)iTopMostObject.Position.Y,
-                               (int)iTopMostObject.Z + iZOffset);
-                        if (_MovementFollowsMouse)
-                            _ContinuousMoveCheck = true;
-                    }
-                    else if (iObject != null)
-                    {
-                        // This is a GameObject. Pick it up if possible, as long as this is a press event.
-                        if (nPressEvent)
-                        {
-                            // _GameClient.Send(new PickupItemPacket(iObject.GUID, (short)iObject.Item_StackCount));
-                            // Set this item to be the MouseHoldingItem.
-                            GUI.GUIHelper.MouseHoldingItem = iObject;
-                        }
-                    }
-                    else
-                    {
-                        // This is a static that is not a surface.
-                        // We can't interact with it, so do nothing.
-                        // (although what about chairs, aren't they interactable?)
+                        // _GameClient.Send(new PickupItemPacket(iObject.GUID, (short)iObject.Item_StackCount));
+                        GUI.GUIHelper.MouseHoldingItem = item;
+                        return;
                     }
                 }
             }
+
+            checkMove();
         }
 
         private void parseKeyboard(Input.KeyboardHandler keyboard)

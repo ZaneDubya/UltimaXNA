@@ -135,7 +135,7 @@ namespace UltimaXNA.Data
             {
                 if ((this.Flags & TileFlags.Bridge) != 0)
                 {
-                    return Height / 2;
+                    return Height; // / 2;
                 }
                 else
                 {
