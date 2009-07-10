@@ -128,6 +128,8 @@ namespace UltimaXNA.GameObjects
         {
             base.Update(gameTime);
 
+            m_Animation.Update(gameTime);
+
             // Check to see if our health, stamina, or mana has been updated. If so, announce it to the GUI.
             if (Health.Updated || Stamina.Updated || Mana.Updated)
             {
@@ -150,8 +152,6 @@ namespace UltimaXNA.GameObjects
             {
                 m_Animation.SetAnimation(UnitActions.stopmovement);
             }
-			
-            m_Animation.Update();
 
             int iDirection = Movement.DrawFacing;
 
@@ -271,23 +271,32 @@ namespace UltimaXNA.GameObjects
             }
         }
 
+        private int _FrameCount;
+        private int _FrameDelay;
         public void SetAnimation(UnitActions action, int frameCount, int repeatCount, bool reverse, bool repeat, int delay)
         {
             if (Action != action)
             {
                 Action = (UnitActions)action;
                 AnimationFrame = 0f;
-                m_AnimationStep = 1f / (float)((frameCount * (delay + 1)) * 5);
+                _FrameCount = frameCount;
+                _FrameDelay = delay;
             }
         }
 
-        public void Update()
+        public void Update(GameTime gameTime)
         {
-            AnimationFrame = AnimationFrame + m_AnimationStep;
-            if (AnimationFrame >= 1f)
+            m_AnimationStep = (float)((_FrameCount * (_FrameDelay + 1)) * 5);
+            if (m_AnimationStep != 0)
             {
-                AnimationFrame = AnimationFrame - 1f;
+                AnimationFrame += 1f / m_AnimationStep / ((1f / 60f) / (float)(gameTime.ElapsedRealTime.TotalMilliseconds / 1000f));
+                if (AnimationFrame >= 1f)
+                {
+                    AnimationFrame %= 1f;
+                }
             }
+            else
+                AnimationFrame = 0;
         }
 
         public int GetAction_People()
