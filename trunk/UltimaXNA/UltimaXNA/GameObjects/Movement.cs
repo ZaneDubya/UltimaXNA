@@ -173,7 +173,6 @@ namespace UltimaXNA.GameObjects
                         TimeToCompleteMove = ComputeMovementSpeed();
 						// Issue 10 - End
                         m_LastTile = new TilePosition(m_CurrentTile);
-                        MoveSequence = 0f;
                     }
                     else
                     {
@@ -189,15 +188,21 @@ namespace UltimaXNA.GameObjects
                     }
                 }
 
-                MoveSequence += ((1f / 60f) / TimeToCompleteMove);
+                MoveSequence += ((float)(gameTime.ElapsedRealTime.TotalMilliseconds / 1000) / TimeToCompleteMove);
                 if (MoveSequence >= 1f)
                 {
+                    MoveSequence -= 1f;
                     m_CurrentTile.Location = m_NextTile.Location;
                 }
                 else
                 {
                     m_CurrentTile.Location = m_LastTile.Location + (m_NextTile.Location - m_LastTile.Location) * MoveSequence;
                 }
+            }
+            else
+            {
+                // we have reached our destination :)
+                MoveSequence = 0f;
             }
 
             m_DrawPosition = new DrawPosition(m_CurrentTile);
