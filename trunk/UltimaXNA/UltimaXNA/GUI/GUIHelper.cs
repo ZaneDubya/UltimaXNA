@@ -79,12 +79,12 @@ namespace UltimaXNA.GUI
             if (iHeldObject.Wearer != null)
             {
                 // the object is being worn as equipment. We can only remove items that belong to us.
-                if (iHeldObject.Wearer.GUID == _GameObjectsService.MyGUID)
+                if (iHeldObject.Wearer.Serial == _GameObjectsService.MySerial)
                 {
                     // we are wearing this item. Go ahead and drop it into the requested slot.
-                    _GameClientService.Send(new PickupItemPacket(iHeldObject.GUID, (short)0));
-                    _GameClientService.Send(new DropItemPacket(iHeldObject.GUID, (short)nDestSlot, (short)0x7FFF,
-                        0, 0, iDestContainer.GUID));
+                    _GameClientService.Send(new PickupItemPacket(iHeldObject.Serial, (short)0));
+                    _GameClientService.Send(new DropItemPacket(iHeldObject.Serial, (short)nDestSlot, (short)0x7FFF,
+                        0, 0, iDestContainer.Serial));
                 }
                 else
                 {
@@ -93,7 +93,7 @@ namespace UltimaXNA.GUI
             }
             else
             {
-                if (iHeldObject.Item_ContainedWithinGUID == iDestContainer.GUID)
+                if (iHeldObject.Item_ContainedWithinSerial == iDestContainer.Serial)
                 {
                     iDestContainer.ContainerObject.Event_MoveItemToSlot(iHeldObject, nDestSlot);
                 }
@@ -101,15 +101,15 @@ namespace UltimaXNA.GUI
                 {
                     if (iDestContainer.ContainerObject.GetContents(nDestSlot) == null)
                     {
-                        _GameClientService.Send(new PickupItemPacket(iHeldObject.GUID, (short)0));
-                        _GameClientService.Send(new DropItemPacket(iHeldObject.GUID, (short)nDestSlot, (short)0x7FFF,
-                            0, 0, iDestContainer.GUID));
+                        _GameClientService.Send(new PickupItemPacket(iHeldObject.Serial, (short)0));
+                        _GameClientService.Send(new DropItemPacket(iHeldObject.Serial, (short)nDestSlot, (short)0x7FFF,
+                            0, 0, iDestContainer.Serial));
                     }
                     else
                     {
-                        _GameClientService.Send(new PickupItemPacket(iHeldObject.GUID, (short)0));
-                        _GameClientService.Send(new DropItemPacket(iHeldObject.GUID, (short)0, (short)0,
-                            0, 0, iDestContainer.GUID));
+                        _GameClientService.Send(new PickupItemPacket(iHeldObject.Serial, (short)0));
+                        _GameClientService.Send(new DropItemPacket(iHeldObject.Serial, (short)0, (short)0,
+                            0, 0, iDestContainer.Serial));
                     }
                 }
             }
@@ -121,19 +121,19 @@ namespace UltimaXNA.GUI
             GameObjects.GameObject iHeldObject = (GameObjects.GameObject)MouseHoldingItem;
             GameObjects.Unit iDestMobile = (GameObjects.Unit)nDestMobile;
 
-            if (iHeldObject.Item_ContainedWithinGUID != 0)
+            if (iHeldObject.Item_ContainedWithinSerial != 0)
             {
-                GameObjects.GameObject iSourceContainer = (GameObjects.GameObject)_GameObjectsService.GetObject(iHeldObject.Item_ContainedWithinGUID, UltimaXNA.GameObjects.ObjectType.GameObject);
-                iHeldObject.Item_ContainedWithinGUID = 0;
-                iSourceContainer.ContainerObject.RemoveItem(iHeldObject.GUID);
+                GameObjects.GameObject iSourceContainer = (GameObjects.GameObject)_GameObjectsService.GetObject(iHeldObject.Item_ContainedWithinSerial, UltimaXNA.GameObjects.ObjectType.GameObject);
+                iHeldObject.Item_ContainedWithinSerial = 0;
+                iSourceContainer.ContainerObject.RemoveItem(iHeldObject.Serial);
             }
-            _GameClientService.Send(new PickupItemPacket(iHeldObject.GUID, (short)0));
-            _GameClientService.Send(new DropToLayerPacket(iHeldObject.GUID, (byte)nDestSlot, iDestMobile.GUID));
+            _GameClientService.Send(new PickupItemPacket(iHeldObject.Serial, (short)0));
+            _GameClientService.Send(new DropToLayerPacket(iHeldObject.Serial, (byte)nDestSlot, iDestMobile.Serial));
 
             GUI.GUIHelper.MouseHoldingItem = null;
         }
 
-        public static void BuyItemFromVendor(int nVendorGUID, int nItemGUID, int nAmount)
+        public static void BuyItemFromVendor(int nVendorSerial, int nItemSerial, int nAmount)
         {
             // Due to the way that the RunUO server ( and all UO servers ) are set up,
             // if we want to buy one item at a item, we need to:
@@ -141,10 +141,10 @@ namespace UltimaXNA.GUI
             // 2. Re-request the context menu.
             // 3. Send the context menu response for buying. (handled automatically)
             Network.Pair<int, short>[] iBuyItem = new Network.Pair<int, short>[1];
-            iBuyItem[0].ItemA = nItemGUID;
+            iBuyItem[0].ItemA = nItemSerial;
             iBuyItem[0].ItemB = (short)nAmount;
-            _GameClientService.Send(new BuyItemsPacket(nVendorGUID, iBuyItem));
-            _GameClientService.Send(new RequestContextMenuPacket(nVendorGUID));
+            _GameClientService.Send(new BuyItemsPacket(nVendorSerial, iBuyItem));
+            _GameClientService.Send(new RequestContextMenuPacket(nVendorSerial));
         }
 
         public static GameObjects.GameObject ToolTipItem
@@ -178,7 +178,7 @@ namespace UltimaXNA.GUI
                         iItemName += iData.Name;
                     }
                     TooltipMsg = iItemName + Environment.NewLine +
-                        "GUID:" + GUIDHex(_ToolTipItem.GUID);
+                        "Serial:" + SerialHex(_ToolTipItem.Serial);
                     if (_ToolTipItem.PropertyList.HasProperties)
                     {
                         TooltipMsg += Environment.NewLine +
@@ -192,10 +192,10 @@ namespace UltimaXNA.GUI
             }
         }
 
-        public static string GUIDHex(int nGUID)
+        public static string SerialHex(Serial serial)
         {
             return MiscUtil.HexEncoding.ToString(
-                MiscUtil.Conversion.EndianBitConverter.Big.GetBytes(nGUID)
+                MiscUtil.Conversion.EndianBitConverter.Big.GetBytes(serial)
             );
         }
 

@@ -13,7 +13,7 @@ namespace UltimaXNA.GUI
         private int mLastContainerUpdated = -1;
         private const int m_MaxButtons = 0x18;
 
-        public int GUID { get { return mMobileObject.GUID; } }
+        public Serial serial { get { return mMobileObject.Serial; } }
 
         public Window_PaperDoll(GameObjects.BaseObject nMobileObject, FormCollection nFormCollection)
             : base(nFormCollection)
@@ -21,7 +21,7 @@ namespace UltimaXNA.GUI
             mMobileObject = (GameObjects.Unit)nMobileObject;
 
             //Create a new form
-            string iFormName = "frmPaperDoll:" + mMobileObject.GUID;
+            string iFormName = "frmPaperDoll:" + mMobileObject.Serial;
             _MyForm = new Form(iFormName, "", mWindowSize, new Vector2(64, 64), Form.BorderStyle.None);
             _MyForm.BorderName = null;
             _MyForm.CustomDragArea = new Rectangle(2, 2, 192, 20);
@@ -29,7 +29,7 @@ namespace UltimaXNA.GUI
 
             _MyForm.Controls.Add(new PictureBox("picBG", mBGOffset, @"GUI\PAPERDOLL\PAPERDOLL-FRAME.png", 256, 512, 0));
 
-            _MyForm.Controls.Add(new Label("lblCaption", new Vector2(8f, 4f), "PaperDoll | " + mMobileObject.GUID,
+            _MyForm.Controls.Add(new Label("lblCaption", new Vector2(8f, 4f), "PaperDoll | " + mMobileObject.Serial,
                 Color.TransparentBlack, Color.White, 160, Label.Align.Left));
             _MyForm["lblCaption"].FontName = "ArialNarrow10";
 

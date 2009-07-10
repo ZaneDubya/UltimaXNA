@@ -9,7 +9,7 @@ namespace UltimaXNA
     {
         private int _serial;
 
-        private Serial(int serial)
+        private Serial(Serial serial)
         {
             _serial = serial;
         }

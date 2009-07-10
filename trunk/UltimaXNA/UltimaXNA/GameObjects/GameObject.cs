@@ -12,8 +12,8 @@ namespace UltimaXNA.GameObjects
     class GameObject : UltimaXNA.GameObjects.BaseObject
     {
         // GameObjects can potentially have inventory (chests, for example).
-        // The GUID for the container for this inventory is the same as the
-        // GameObject's GUID.
+        // The Serial for the container for this inventory is the same as the
+        // GameObject's Serial.
         private GameObject_Container m_ContainerObject = null;
         public GameObject_Container ContainerObject
         {
@@ -25,8 +25,8 @@ namespace UltimaXNA.GameObjects
             }
         }
 
-        public GameObject(int nGUID)
-            : base(nGUID)
+        public GameObject(Serial serial)
+            : base(serial)
         {
             ObjectType = ObjectType.GameObject;
         }
@@ -34,14 +34,14 @@ namespace UltimaXNA.GameObjects
         protected override void Draw(UltimaXNA.TileEngine.MapCell nCell, Vector3 nLocation, Vector3 nOffset)
         {
             nCell.AddGameObjectTile(
-                new TileEngine.GameObjectTile(mObjectTypeID, nLocation, Movement.DrawFacing, this.GUID, 0));
+                new TileEngine.GameObjectTile(mObjectTypeID, nLocation, Movement.DrawFacing, this.Serial, 0));
         }
 
         public override void Dispose()
         {
             // if is worn, let the wearer know we are disposing.
             if (Wearer != null)
-                Wearer.UnWearItem(GUID);
+                Wearer.UnWearItem(Serial);
             base.Dispose();
         }
 
@@ -49,10 +49,10 @@ namespace UltimaXNA.GameObjects
         // These will be added later...
         // public int Item_Type = 0;
         // public int Item_SubType = 0;
-        // public int Item_OwnerGUID = 0;
-        // public int Item_ContainedWithinGUID = 0;
-        // public int Item_CreatorGUID = 0;
-        // public int Item_GiftedByGUID = 0;
+        // public int Item_OwnerSerial = 0;
+        // public int Item_ContainedWithinSerial = 0;
+        // public int Item_CreatorSerial = 0;
+        // public int Item_GiftedBySerial = 0;
         // public int Item_StackCount = 0;
         // public int Item_Duration = 0;
         // public int Item_PropertySeed = 0;
@@ -62,7 +62,7 @@ namespace UltimaXNA.GameObjects
         // public int Item_CurrentSpellCharges = 0;
         // public ItemEnchantment[] Item_Enchantments = new ItemEnchantment[6];
         public int Item_StackCount = 0;
-        public int Item_ContainedWithinGUID = 0;
+        public int Item_ContainedWithinSerial = 0;
         
 
         public int AnimationDisplayID = 0;
@@ -88,7 +88,7 @@ namespace UltimaXNA.GameObjects
             get { return mObjectTypeID; }
             set
             {
-                m_HasBeenDrawn = false;
+                _HasBeenDrawn = false;
                 mObjectTypeID = value;
                 ItemData = UltimaXNA.Data.TileData.ItemData[mObjectTypeID];
                 AnimationDisplayID = ItemData.AnimID;

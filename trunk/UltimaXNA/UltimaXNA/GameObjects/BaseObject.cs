@@ -14,10 +14,10 @@ namespace UltimaXNA.GameObjects
     {
         public Movement Movement;
         public ObjectType ObjectType;
-        public int GUID;
-        internal bool m_HasBeenDrawn;
-        internal bool m_Dispose = false; // set this to true to have the object deleted.
-        public bool IsDisposed { get { return m_Dispose; } }
+        public Serial Serial;
+        internal bool _HasBeenDrawn;
+        internal bool _Disposed = false; // set this to true to have the object deleted.
+        public bool IsDisposed { get { return _Disposed; } }
         public PropertyList PropertyList = new PropertyList();
 
         public TileEngine.IWorld World
@@ -28,13 +28,12 @@ namespace UltimaXNA.GameObjects
             }
         }
 
-        public BaseObject(int nGUID)
+        public BaseObject(Serial serial)
         {
-
+            Serial = serial;
             ObjectType = ObjectType.Object;
-            GUID = nGUID;
-            Movement = new Movement(GUID);
-            m_HasBeenDrawn = false;
+            Movement = new Movement(Serial);
+            _HasBeenDrawn = false;
         }
 
         public virtual void Update(GameTime gameTime)
@@ -54,14 +53,14 @@ namespace UltimaXNA.GameObjects
                     TileEngine.MapCell iThisMapCell = Movement.World.Map.GetMapCell(Movement.DrawPosition.TileX, Movement.DrawPosition.TileY);
                     if (iThisMapCell == null)
                     {
-                        m_HasBeenDrawn = false;
+                        _HasBeenDrawn = false;
                     }
                     else
                     {
-                        if (m_HasBeenDrawn == false)
+                        if (_HasBeenDrawn == false)
                         {
                             this.Draw(iThisMapCell, Movement.DrawPosition.PositionV3, Movement.DrawPosition.OffsetV3);
-                            m_HasBeenDrawn = true;
+                            _HasBeenDrawn = true;
                         }
                     }
                 }
@@ -75,13 +74,13 @@ namespace UltimaXNA.GameObjects
 
         public virtual void Dispose()
         {
-            m_Dispose = true;
+            _Disposed = true;
             Movement.ClearImmediate();
         }
 
         public override string ToString()
         {
-            return ObjectType.ToString() + " | " + GUID.ToString();
+            return ObjectType.ToString() + " | " + Serial.ToString();
         }
     }
 }

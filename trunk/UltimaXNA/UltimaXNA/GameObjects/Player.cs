@@ -19,7 +19,7 @@ namespace UltimaXNA.GameObjects
         public int Coinage = 0;
 
         public int PartyID = 0;
-        public int DuelOpponentGUID = 0;
+        public int DuelOpponentSerial = 0;
 
         public int[] EquipSlots = new int[12];
         public int[] PackSlots = new int[20];
@@ -27,8 +27,8 @@ namespace UltimaXNA.GameObjects
 
         public PlayerQuest[] QuestLog = new PlayerQuest[20];
 
-        public Player(int nGUID)
-            : base(nGUID)
+        public Player(Serial serial)
+            : base(serial)
         {
             this.ObjectType = ObjectType.Player;
         }

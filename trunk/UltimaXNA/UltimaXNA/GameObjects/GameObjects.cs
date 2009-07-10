@@ -14,10 +14,10 @@ namespace UltimaXNA.GameObjects
 {
     public interface IGameObjects
     {
-        int MyGUID { get; set; }
-        BaseObject GetObject(int nGUID, ObjectType nObjectType);
+        int MySerial { get; set; }
+        BaseObject GetObject(Serial serial, ObjectType nObjectType);
         BaseObject GetPlayerObject();
-        void RemoveObject(int nGUID);
+        void RemoveObject(Serial serial);
         void Reset();
     }
 
@@ -25,7 +25,7 @@ namespace UltimaXNA.GameObjects
     {
         private Dictionary<int, BaseObject> m_Objects = new Dictionary<int, BaseObject>();
 
-        public int MyGUID { get; set; }
+        public int MySerial { get; set; }
 
         private TileEngine.IWorld m_WorldService;
         private IGameState m_GameStateService;
@@ -88,45 +88,45 @@ namespace UltimaXNA.GameObjects
             base.Update(gameTime);
         }
 
-        public BaseObject GetObject(int nGUID, ObjectType nObjectType)
+        public BaseObject GetObject(Serial serial, ObjectType nObjectType)
         {
             BaseObject iObject;
             // Check for existence in the collection.
-            if (m_Objects.ContainsKey(nGUID))
+            if (m_Objects.ContainsKey(serial))
             {
                 // This object is in the m_Objects collection. If it is being disposed, then we should complete disposal
                 // of the object and then return a new object. If it is not being disposed, return the object in the collection.
-                if (m_Objects[nGUID].IsDisposed)
+                if (m_Objects[serial].IsDisposed)
                 {
-                    m_Objects.Remove(nGUID);
-                    iObject = m_AddObject(nGUID, nObjectType);
+                    m_Objects.Remove(serial);
+                    iObject = m_AddObject(serial, nObjectType);
                     return iObject;
                 }
-                return m_Objects[nGUID];
+                return m_Objects[serial];
             }
 
-            // No object with this GUID is in the collection. So we create a new one and return that, and hope that the server
+            // No object with this Serial is in the collection. So we create a new one and return that, and hope that the server
             // will fill us in on the details of this object soon.
-            iObject = m_AddObject(nGUID, nObjectType);
+            iObject = m_AddObject(serial, nObjectType);
             return iObject;
         }
 
-        private BaseObject m_AddObject(int nGUID, ObjectType nObjectType)
+        private BaseObject m_AddObject(Serial serial, ObjectType nObjectType)
         {
             BaseObject iReturnObject;
             switch (nObjectType)
             {
                 case ObjectType.Object:
-                    iReturnObject = new BaseObject(nGUID);
+                    iReturnObject = new BaseObject(serial);
                     break;
                 case ObjectType.GameObject:
-                    iReturnObject = new GameObject(nGUID);
+                    iReturnObject = new GameObject(serial);
                     break;
                 case ObjectType.Unit:
-                    iReturnObject = new Unit(nGUID);
+                    iReturnObject = new Unit(serial);
                     break;
                 case ObjectType.Player:
-                    iReturnObject = new Player(nGUID);
+                    iReturnObject = new Player(serial);
                     break;
                 default:
                     throw new Exception("Unhandled ObjectType in m_AddObject: " + nObjectType.ToString());
@@ -134,7 +134,7 @@ namespace UltimaXNA.GameObjects
             // Add the world service (for movement).
             iReturnObject.World = m_WorldService;
             // If this object is the client, designate it to return events.
-            if (iReturnObject.GUID == MyGUID)
+            if (iReturnObject.Serial == MySerial)
                 iReturnObject.Movement.DesignateClientPlayer();
             // Add update events.
             if ((iReturnObject.ObjectType & ObjectType.Unit) == ObjectType.Unit)
@@ -142,26 +142,26 @@ namespace UltimaXNA.GameObjects
                 ((Unit)iReturnObject).UpdateHealthStaminaMana += this.Unit_UpdateHealthStaminaMana;
             }
             // Add the object to the objects collection.
-            m_Objects.Add(iReturnObject.GUID, iReturnObject);
+            m_Objects.Add(iReturnObject.Serial, iReturnObject);
             // Finally return the new object.
             return iReturnObject;
         }
 
-        public void RemoveObject(int nGUID)
+        public void RemoveObject(Serial serial)
         {
             // When Dispose() is called, the object will tidy up and then
             // set m_Dispose = true. Reference this with IsDisposed on the
             // next update cycle.
-            if (m_Objects.ContainsKey(nGUID))
+            if (m_Objects.ContainsKey(serial))
             {
-                m_Objects[nGUID].Dispose();
+                m_Objects[serial].Dispose();
             }
         }
 
         public BaseObject GetPlayerObject()
         {
             // This could be cached to save time.
-            return m_Objects[MyGUID];
+            return m_Objects[MySerial];
         }
 
         public void Reset()
@@ -172,7 +172,7 @@ namespace UltimaXNA.GameObjects
         private void Unit_UpdateHealthStaminaMana(BaseObject nObject)
         {
             Unit iObject = ((Unit)nObject);
-            if (iObject.GUID == MyGUID)
+            if (iObject.Serial == MySerial)
             {
                 GUI.Window_StatusFrame w = (GUI.Window_StatusFrame)m_GUIService.Window("StatusFrame");
                 if (w != null)

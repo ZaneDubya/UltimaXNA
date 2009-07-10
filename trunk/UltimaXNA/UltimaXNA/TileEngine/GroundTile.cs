@@ -16,7 +16,7 @@ namespace UltimaXNA.TileEngine
         private int m_SortZ;
         private Surroundings m_Surroundings;
         private int m_Z;
-        public int OwnerGUID { get { return -1; } }
+        public int OwnerSerial { get { return -1; } }
 
         private Vector2 m_Position;
         public Vector2 Position { get { return m_Position; } }

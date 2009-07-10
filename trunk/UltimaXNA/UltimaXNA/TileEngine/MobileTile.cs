@@ -19,76 +19,77 @@ namespace UltimaXNA.TileEngine
 	// Issue 14 - End
     public class MobileTile : IMapObject
     {
-        private int m_ID;
-        private int m_Tiebreaker;
-        private int m_OwnerGUID;
-        private int m_Action, m_Direction, m_Hue;
-        private float m_Frame;
+        private int _ID;
+        private int _Tiebreaker;
+        private int _OwnerSerial;
+        private int _Action, _Direction, _Hue;
+        private float _Frame;
 		// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
-		private bool m_Mounted;
+		private bool _Mounted;
 		// Issue 6 - End
 		// Issue 14 - Wrong layer draw order - http://code.google.com/p/ultimaxna/issues/detail?id=14 - Smjert
-		private MobileTileTypes m_SubType;
+		private MobileTileTypes _SubType;
 		// Issue 14 - End
 
-        private Vector3 m_Position;
-        public Vector2 Position { get { return new Vector2(m_Position.X, m_Position.Y); } }
-        private Vector3 m_Offset; public Vector3 Offset { get { return m_Offset; } }
+        private Vector3 _Position;
+        public Vector2 Position { get { return new Vector2(_Position.X, _Position.Y); } }
+        private Vector3 _Offset;
+        public Vector3 Offset { get { return _Offset; } }
 
 		// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
-        public MobileTile(int nID, Vector3 nPosition, Vector3 nOffset, int nDirection, int nAction, float nActionProgression, int nOwnerGUID, int nLayer, int nHue, bool nMounted)
+        public MobileTile(int nID, Vector3 nPosition, Vector3 nOffset, int nDirection, int nAction, float nActionProgression, int nOwnerSerial, int nLayer, int nHue, bool nMounted)
 		// Issue 6 - End
         {
-            m_ID = nID;
-            m_Direction = nDirection;
-            m_Action = nAction;
-            m_Frame = nActionProgression;
-            m_OwnerGUID = nOwnerGUID;
-            m_Tiebreaker = nLayer;
-            m_Hue = nHue;
-            m_Position = nPosition;
-            m_Offset = nOffset;
+            _ID = nID;
+            _Direction = nDirection;
+            _Action = nAction;
+            _Frame = nActionProgression;
+            _OwnerSerial = nOwnerSerial;
+            _Tiebreaker = nLayer;
+            _Hue = nHue;
+            _Position = nPosition;
+            _Offset = nOffset;
 			// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
-			m_Mounted = nMounted;
+			_Mounted = nMounted;
 			// Issue 6 - End
         }
 
         /// <summary>
-        /// The GUID (int) of the owner GameObject.
+        /// The Serial (int) of the owner GameObject.
         /// </summary>
-        public int OwnerGUID
+        public int OwnerSerial
         {
-            get { return m_OwnerGUID; }
-            set { m_OwnerGUID = value; }
+            get { return _OwnerSerial; }
+            set { _OwnerSerial = value; }
         }
 
         public int Action
         {
-            get { return m_Action; }
-            set { m_Action = value; }
+            get { return _Action; }
+            set { _Action = value; }
         }
 
         public int Direction
         {
-            get { return m_Direction; }
-            set { m_Direction = value; }
+            get { return _Direction; }
+            set { _Direction = value; }
         }
 
         public int Hue
         {
-            get { return m_Hue; }
-            set { m_Hue = value; }
+            get { return _Hue; }
+            set { _Hue = value; }
         }
 
         public int Frame(int nMaxFrames)
         {
-            return (int)(m_Frame * (float)nMaxFrames);
+            return (int)(_Frame * (float)nMaxFrames);
         }
 
         public float ActionProgression
         {
-            get { return m_Frame; }
-            set { m_Frame = value; if (m_Frame > 1.00f) { m_Frame = 1.00f; } }
+            get { return _Frame; }
+            set { _Frame = value; if (_Frame > 1.00f) { _Frame = 1.00f; } }
         }
 
         /// <summary>
@@ -96,12 +97,12 @@ namespace UltimaXNA.TileEngine
         /// </summary>
         public int ID
         {
-            get { return m_ID; }
+            get { return _ID; }
         }
 
         public int SortZ
         {
-            get { return (int)m_Position.Z; }
+            get { return (int)_Position.Z; }
         }
 
         public int Threshold
@@ -111,14 +112,14 @@ namespace UltimaXNA.TileEngine
 
         public int Layer
         {
-            get { return m_Tiebreaker; }
-            set { m_Tiebreaker = value; }
+            get { return _Tiebreaker; }
+            set { _Tiebreaker = value; }
         }
 
         public int Tiebreaker
         {
-            get { return m_Tiebreaker; }
-            set { m_Tiebreaker = value; }
+            get { return _Tiebreaker; }
+            set { _Tiebreaker = value; }
         }
 
         public MapObjectTypes Type
@@ -128,19 +129,19 @@ namespace UltimaXNA.TileEngine
 		// Issue 14 - Wrong layer draw order - http://code.google.com/p/ultimaxna/issues/detail?id=14 - Smjert
 		public MobileTileTypes SubType
 		{
-			get { return m_SubType; }
-			set { m_SubType = value; }
+			get { return _SubType; }
+			set { _SubType = value; }
 		}
 		// Issue 14 - End
         public int Z
         {
-            get { return (int)m_Position.Z; }
+            get { return (int)_Position.Z; }
         }
 
 		// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
 		public bool Mounted
 		{
-			get { return m_Mounted; }
+			get { return _Mounted; }
 		}
 		// Issue 6 - End
     }

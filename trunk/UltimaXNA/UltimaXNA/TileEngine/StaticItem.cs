@@ -17,7 +17,7 @@ namespace UltimaXNA.TileEngine
 
         private Vector2 m_Position;
         public Vector2 Position { get { return m_Position; } }
-        public int OwnerGUID { get { return -1; } }
+        public int OwnerSerial { get { return -1; } }
 
         public StaticItem(int id, int z, int sortInfluence, Vector2 nPosition)
         {

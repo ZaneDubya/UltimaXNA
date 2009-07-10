@@ -21,12 +21,12 @@ namespace UltimaXNA.GameObjects
     struct ItemEnchantment
     {
         int EnchantmentType;
-        int EnchantedByGUID;
+        int EnchantedBySerial;
 
-        ItemEnchantment(int nType, int nByGUID)
+        ItemEnchantment(int nType, int nBySerial)
         {
             EnchantmentType = nType;
-            EnchantedByGUID = nByGUID;
+            EnchantedBySerial = nBySerial;
         }
     }
 
@@ -117,7 +117,7 @@ namespace UltimaXNA.GameObjects
     enum OBJECT_UpdateMasks
     {
         OBJECT_Start = 0,
-        OBJECT_GUID = OBJECT_Start,
+        OBJECT_Serial = OBJECT_Start,
         OBJECT_Type,
         OBJECT_End = OBJECT_Type + 1,
     }
@@ -127,10 +127,10 @@ namespace UltimaXNA.GameObjects
         ITEM_Start = OBJECT_UpdateMasks.OBJECT_End,
         ITEM_Type = ITEM_UpdateMasks.ITEM_Start,
         ITEM_SubType,
-        ITEM_OwnerGUID,
-        ITEM_ContainedWithinGUID,
-        ITEM_CreatorGUID,
-        ITEM_GiftedByGUID,
+        ITEM_OwnerSerial,
+        ITEM_ContainedWithinSerial,
+        ITEM_CreatorSerial,
+        ITEM_GiftedBySerial,
         ITEM_StackCount,
         ITEM_Duration,
         ITEM_PropertySeed,
@@ -153,15 +153,15 @@ namespace UltimaXNA.GameObjects
     enum UNIT_UpdateMasks
     {
         UNIT_Start = OBJECT_UpdateMasks.OBJECT_End,
-        UNIT_CharmingGUID = UNIT_UpdateMasks.UNIT_Start,
-        UNIT_SummoningGUID,
-        UNIT_CharmedByGUID,
-        UNIT_SummonedByGUID,
-        UNIT_CreatedByGUID,
-        UNIT_CritterGUID,
-        UNIT_PetGUID,
-        UNIT_TargetGUID,
-        UNIT_ChannelObjectGUID,
+        UNIT_CharmingSerial = UNIT_UpdateMasks.UNIT_Start,
+        UNIT_SummoningSerial,
+        UNIT_CharmedBySerial,
+        UNIT_SummonedBySerial,
+        UNIT_CreatedBySerial,
+        UNIT_CritterSerial,
+        UNIT_PetSerial,
+        UNIT_TargetSerial,
+        UNIT_ChannelObjectSerial,
         UNIT_Bytes0,
         UNIT_Bytes1,
         UNIT_Bytes2,
@@ -200,7 +200,7 @@ namespace UltimaXNA.GameObjects
         PLAYER_PetExperience,
         PLAYER_PetExperienceNextLevel,
         PLAYER_PartyID,
-        PLAYER_DuelOpponentGUID,
+        PLAYER_DuelOpponentSerial,
         PLAYER_EquipSlots12,
         PLAYER_PackSlots20 = PLAYER_EquipSlots12 + 12,
         PLAYER_BankSlots30 = PLAYER_PackSlots20 + 20,

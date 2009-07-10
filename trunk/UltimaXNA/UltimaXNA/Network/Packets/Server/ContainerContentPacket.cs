@@ -30,10 +30,10 @@ namespace UltimaXNA.Network.Packets.Server
                 int iX = reader.ReadInt16();
                 int iY = reader.ReadInt16();
                 int iGridLocation = reader.ReadByte(); // always 0 in RunUO.
-                int iContainerGUID = reader.ReadInt32();
+                int iContainerSerial = reader.ReadInt32();
                 int iHue = reader.ReadUInt16();
 
-                items.Add(new ContentItem(serial, iItemID, iAmount, iX, iY, iGridLocation, iContainerGUID, iHue));
+                items.Add(new ContentItem(serial, iItemID, iAmount, iX, iY, iGridLocation, iContainerSerial, iHue));
             }
 
             _items = items.ToArray();

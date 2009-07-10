@@ -51,7 +51,7 @@ namespace UltimaXNA.GameObjects
         private bool m_IsClientPlayer = false;
         private MoveEvent m_MoveEvent;
 
-        private int m_GUID;
+        private int m_Serial;
 
         private static TimeSpan m_WalkFoot = TimeSpan.FromSeconds(0.4);
         private static TimeSpan m_RunFoot = TimeSpan.FromSeconds(0.2);
@@ -75,9 +75,9 @@ namespace UltimaXNA.GameObjects
             }
         }
 
-        public Movement(int nGUID)
+        public Movement(Serial serial)
         {
-            m_GUID = nGUID;
+            m_Serial = serial;
         }
 
         public void DesignateClientPlayer()
@@ -220,7 +220,7 @@ namespace UltimaXNA.GameObjects
             TileEngine.MapCell iLastMapCell = World.Map.GetMapCell(DrawPosition.TileX, DrawPosition.TileY);
             if (iLastMapCell != null)
             {
-                iLastMapCell.FlushObjectsByGUID(m_GUID);
+                iLastMapCell.FlushObjectsBySerial(m_Serial);
             }
         } 
 		// Issue 10 - Speed problems (Partial) - http://code.google.com/p/ultimaxna/issues/detail?id=10 - Smjert
