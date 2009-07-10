@@ -46,25 +46,8 @@ namespace UltimaXNA.GameObjects
         }
 
         public Unit Wearer;
-        // These will be added later...
-        // public int Item_Type = 0;
-        // public int Item_SubType = 0;
-        // public int Item_OwnerSerial = 0;
-        // public int Item_ContainedWithinSerial = 0;
-        // public int Item_CreatorSerial = 0;
-        // public int Item_GiftedBySerial = 0;
-        // public int Item_StackCount = 0;
-        // public int Item_Duration = 0;
-        // public int Item_PropertySeed = 0;
-        // public int Item_RandomPropertiesID = 0;
-        // public int Item_TextID = 0;
-        // public int Item_CurrentDurability = 0;
-        // public int Item_CurrentSpellCharges = 0;
-        // public ItemEnchantment[] Item_Enchantments = new ItemEnchantment[6];
         public int Item_StackCount = 0;
         public int Item_ContainedWithinSerial = 0;
-        
-
         public int AnimationDisplayID = 0;
 
         private int m_Hue;

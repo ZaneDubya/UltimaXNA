@@ -144,6 +144,10 @@ namespace UltimaXNA
                         {
                             _TileEngine.PickType = TileEngine.PickTypes.PickStatics | TileEngine.PickTypes.PickObjects;
                         }
+                        else if (_Input.Mouse.Buttons[0].Release)
+                        {
+                            _TileEngine.PickType = TileEngine.PickTypes.PickStatics | TileEngine.PickTypes.PickObjects | TileEngine.PickTypes.PickGroundTiles;
+                        }
                         else
                         {
                             _TileEngine.PickType = TileEngine.PickTypes.PickNothing;
@@ -215,6 +219,44 @@ namespace UltimaXNA
                             {
                                 if (!_GUI.IsMouseOverGUI(_Input.Mouse.Position))
                                 {
+                                    int x, y, z;
+                                    TileEngine.IMapObject groundObject = _TileEngine.MouseOverGroundTile;
+                                    TileEngine.IMapObject mouseoverObject = _TileEngine.MouseOverObject;
+                                    if (mouseoverObject != null)
+                                    {
+                                        if (mouseoverObject.Type == UltimaXNA.TileEngine.MapObjectTypes.MobileTile)
+                                        {
+                                            // special case, attempt to give this item.
+                                            return;
+                                        }
+                                        else
+                                        {
+                                            x = (int)mouseoverObject.Position.X;
+                                            y = (int)mouseoverObject.Position.Y;
+                                            z = mouseoverObject.Z;
+                                            if (mouseoverObject.Type == UltimaXNA.TileEngine.MapObjectTypes.StaticTile)
+                                            {
+                                                ItemData data = Data.TileData.ItemData[mouseoverObject.ID - 0x4000];
+                                                z += data.Height;
+                                            }
+                                            else if (mouseoverObject.Type == UltimaXNA.TileEngine.MapObjectTypes.GameObjectTile)
+                                            {
+                                                z += Data.TileData.ItemData[mouseoverObject.ID].Height;
+                                            }
+                                        }
+                                       
+                                    }
+                                    else if (groundObject != null)
+                                    {
+                                        x = (int)groundObject.Position.X;
+                                        y = (int)groundObject.Position.Y;
+                                        z = groundObject.Z;
+                                    }
+                                    else
+                                    {
+                                        GUI.GUIHelper.MouseHoldingItem = null;
+                                        return;
+                                    }
                                     // We dropped the icon in the world. This means we are trying to drop the item
                                     // into the world. Let's do it!
                                     if (((GameObjects.GameObject)GUI.GUIHelper.MouseHoldingItem).Item_ContainedWithinSerial != 0)
@@ -225,10 +267,7 @@ namespace UltimaXNA
                                             UltimaXNA.GameObjects.ObjectType.GameObject) as GameObjects.GameObject;
                                         iContainer.ContainerObject.RemoveItem(GUI.GUIHelper.MouseHoldingItem.Serial);
                                     }
-                                    GUI.GUIHelper.DropItemOntoGround(
-                                        _GameObjects.GetPlayerObject().Movement.TileX,
-                                        _GameObjects.GetPlayerObject().Movement.TileY,
-                                        0);
+                                    GUI.GUIHelper.DropItemOntoGround(x, y, z);
                                 }
 
                             }
