@@ -164,12 +164,15 @@ namespace UltimaXNA.GUI
 
             if (mDrawForms)
             {
-                //Update the form collection
-                formCollection.Update(gameTime);
-                if (formCollection["msgbox"] != null)
-                    formCollection["msgbox"].Focus();
-                //Render the form collection (required before drawing)
-                formCollection.Render();
+                lock (formCollection)
+                {
+                    //Update the form collection
+                    formCollection.Update(gameTime);
+                    if (formCollection["msgbox"] != null)
+                        formCollection["msgbox"].Focus();
+                    //Render the form collection (required before drawing)
+                    formCollection.Render();
+                }
             }
         }
 
@@ -177,7 +180,12 @@ namespace UltimaXNA.GUI
         {
             //Draw the form collection
             if (mDrawForms)
-                formCollection.Draw();
+            {
+                lock (formCollection)
+                {
+                    formCollection.Draw();
+                }
+            }
 
             // Draw debug message
             spriteBatch.Begin();
@@ -223,104 +231,126 @@ namespace UltimaXNA.GUI
 
         public void Reset()
         {
-            foreach (KeyValuePair<string, Window> kvp in m_GUIWindows)
+            lock (formCollection)
             {
-                if (!kvp.Key.Contains("Error"))
-                    CloseWindow(kvp.Key);
+                foreach (KeyValuePair<string, Window> kvp in m_GUIWindows)
+                {
+                    if (!kvp.Key.Contains("Error"))
+                        CloseWindow(kvp.Key);
+                }
             }
         }
 
         public void LoadInWorldGUI()
         {
-            m_GUIWindows["LoginBG"].Close();
-            m_GUIWindows["LoginWindow"].Close();
-            m_GUIWindows.Add("ChatFrame", new Window_Chat(formCollection));
-            m_GUIWindows.Add("ChatInput", new Window_ChatInput(formCollection));
-            m_GUIWindows.Add("StatusFrame", new Window_StatusFrame(formCollection));
+            lock (formCollection)
+            {
+                m_GUIWindows["LoginBG"].Close();
+                m_GUIWindows["LoginWindow"].Close();
+                m_GUIWindows.Add("ChatFrame", new Window_Chat(formCollection));
+                m_GUIWindows.Add("ChatInput", new Window_ChatInput(formCollection));
+                m_GUIWindows.Add("StatusFrame", new Window_StatusFrame(formCollection));
+            }
         }
 
         public void LoadLoginGUI()
         {
-            if (!m_GUIWindows.ContainsKey("LoginWindow"))
+            lock (formCollection)
             {
-                this.Reset();
-                m_GUIWindows.Add("LoginBG", new Window_LoginBG(formCollection));
-                m_GUIWindows.Add("LoginWindow", new Window_Login(formCollection));
+                if (!m_GUIWindows.ContainsKey("LoginWindow"))
+                {
+                    this.Reset();
+                    m_GUIWindows.Add("LoginBG", new Window_LoginBG(formCollection));
+                    m_GUIWindows.Add("LoginWindow", new Window_Login(formCollection));
+                }
             }
         }
 
         public void PaperDoll_Open(GameObjects.BaseObject nMobileObject)
         {
-            string iContainerKey = "PaperDoll:" + nMobileObject.GUID;
-            if (m_GUIWindows.ContainsKey(iContainerKey))
+            lock (formCollection)
             {
-                // focus the window
-            }
-            else
-            {
-                m_GUIWindows.Add(iContainerKey, new Window_PaperDoll(nMobileObject, formCollection));
+                string iContainerKey = "PaperDoll:" + nMobileObject.GUID;
+                if (m_GUIWindows.ContainsKey(iContainerKey))
+                {
+                    // focus the window
+                }
+                else
+                {
+                    m_GUIWindows.Add(iContainerKey, new Window_PaperDoll(nMobileObject, formCollection));
+                }
             }
         }
 
         public void Container_Open(GameObjects.BaseObject nContainerObject, int nGump)
         {
-            string iContainerKey = "Container:" + nContainerObject.GUID;
-            if (m_GUIWindows.ContainsKey(iContainerKey))
+            lock (formCollection)
             {
-                // focus the window
-            }
-            else
-            {
-                m_GUIWindows.Add(iContainerKey, new Window_Container(nContainerObject, formCollection));
+                string iContainerKey = "Container:" + nContainerObject.GUID;
+                if (m_GUIWindows.ContainsKey(iContainerKey))
+                {
+                    // focus the window
+                }
+                else
+                {
+                    m_GUIWindows.Add(iContainerKey, new Window_Container(nContainerObject, formCollection));
+                }
             }
         }
 
         public void Merchant_Open(GameObjects.BaseObject nContainerObject, int nGump)
         {
-            string iContainerKey = "Merchant:" + nContainerObject.GUID;
-            if (m_GUIWindows.ContainsKey(iContainerKey))
+            lock (formCollection)
             {
-                // focus the window
-            }
-            else
-            {
-                m_GUIWindows.Add(iContainerKey, new Window_Merchant(nContainerObject, formCollection));
+                string iContainerKey = "Merchant:" + nContainerObject.GUID;
+                if (m_GUIWindows.ContainsKey(iContainerKey))
+                {
+                    // focus the window
+                }
+                else
+                {
+                    m_GUIWindows.Add(iContainerKey, new Window_Merchant(nContainerObject, formCollection));
+                }
             }
         }
 
         public void ErrorPopup_Modal(string nText)
         {
-            if (m_GUIWindows.ContainsKey("ErrorModal"))
-                m_GUIWindows.Remove("ErrorModal");
-            m_GUIWindows.Add("ErrorModal", new ErrorModal(formCollection, nText));
-        }
+            lock (formCollection)
+            {
+                if (m_GUIWindows.ContainsKey("ErrorModal"))
+                    m_GUIWindows.Remove("ErrorModal");
+                m_GUIWindows.Add("ErrorModal", new ErrorModal(formCollection, nText));
+            }
+            }
 
 
         private void mUpdateWindows()
         {
-            bool iMustUpdateWindowList = false;
-
-            foreach (KeyValuePair<string, Window> w in m_GUIWindows)
+            lock (formCollection)
             {
-                if (!(w.Value.IsClosed))
-                    w.Value.Update();
-                if (w.Value.IsClosed)
-                {
-                    iMustUpdateWindowList = true;
-                }
-            }
+                bool iMustUpdateWindowList = false;
 
-            if (iMustUpdateWindowList)
-            {
-                Dictionary<string, Window> iGUIWindows = new Dictionary<string, Window>();
                 foreach (KeyValuePair<string, Window> w in m_GUIWindows)
                 {
-                    if (!w.Value.IsClosed)
-                    {
-                        iGUIWindows.Add(w.Key, w.Value);
-                    }
+                    if (!(w.Value.IsClosed))
+                        w.Value.Update();
+                    else
+                        iMustUpdateWindowList = true;
                 }
-                m_GUIWindows = iGUIWindows;
+
+                if (iMustUpdateWindowList)
+                {
+                    Dictionary<string, Window> iGUIWindows = new Dictionary<string, Window>();
+                    foreach (KeyValuePair<string, Window> w in m_GUIWindows)
+                    {
+                        if (!w.Value.IsClosed)
+                        {
+                            iGUIWindows.Add(w.Key, w.Value);
+                        }
+                    }
+                    m_GUIWindows = iGUIWindows;
+                }
             }
         }
     }

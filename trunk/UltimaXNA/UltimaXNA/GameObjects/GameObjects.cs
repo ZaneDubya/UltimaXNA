@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using UltimaXNA.Network.Packets.Client;
 #endregion
 
 namespace UltimaXNA.GameObjects
@@ -67,10 +68,6 @@ namespace UltimaXNA.GameObjects
                     {
                         case ObjectType.GameObject:
                             iObjectPair.Value.Update(gameTime);
-                            if (((GameObject)iObjectPair.Value).UpdatePosition)
-                            {
-                                SendPacket_MoveItemWithinContainer(iObjectPair.Value);
-                            }
                             break;
                         case ObjectType.Unit:
                         case ObjectType.Player:
@@ -86,13 +83,14 @@ namespace UltimaXNA.GameObjects
                 foreach (int i in iRemoveObjects)
                 {
                     m_Objects.Remove(i);
-                }  
+                }
             }
             base.Update(gameTime);
         }
-        
+
         public BaseObject GetObject(int nGUID, ObjectType nObjectType)
         {
+            BaseObject iObject;
             // Check for existence in the collection.
             if (m_Objects.ContainsKey(nGUID))
             {
@@ -101,14 +99,16 @@ namespace UltimaXNA.GameObjects
                 if (m_Objects[nGUID].IsDisposed)
                 {
                     m_Objects.Remove(nGUID);
-                    return m_AddObject(nGUID, nObjectType);
+                    iObject = m_AddObject(nGUID, nObjectType);
+                    return iObject;
                 }
                 return m_Objects[nGUID];
             }
 
             // No object with this GUID is in the collection. So we create a new one and return that, and hope that the server
             // will fill us in on the details of this object soon.
-            return m_AddObject(nGUID, nObjectType);
+            iObject = m_AddObject(nGUID, nObjectType);
+            return iObject;
         }
 
         private BaseObject m_AddObject(int nGUID, ObjectType nObjectType)
@@ -149,12 +149,12 @@ namespace UltimaXNA.GameObjects
 
         public void RemoveObject(int nGUID)
         {
+            // When Dispose() is called, the object will tidy up and then
+            // set m_Dispose = true. Reference this with IsDisposed on the
+            // next update cycle.
             if (m_Objects.ContainsKey(nGUID))
             {
                 m_Objects[nGUID].Dispose();
-                // When Dispose() is called, the object will tidy up and then
-                // set m_Dispose = true. Reference this with IsDisposed on the
-                // next update cycle.
             }
         }
 
@@ -167,16 +167,6 @@ namespace UltimaXNA.GameObjects
         public void Reset()
         {
             m_Objects.Clear();
-        }
-
-        private void SendPacket_MoveItemWithinContainer(BaseObject nObject)
-        {
-            GameObject iObject = ((GameObject)nObject);
-            // NEW!!!
-            // m_GameClientService.Send_PickUpItem(iObject.GUID, iObject.Item_StackCount);
-            // m_GameClientService.Send_DropItem(iObject.GUID,
-            //     iObject.Item_InvX, iObject.Item_InvY,
-            //     0, iObject.Item_ContainedWithinGUID);
         }
 
         private void Unit_UpdateHealthStaminaMana(BaseObject nObject)

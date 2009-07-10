@@ -12,7 +12,6 @@
         WorldServer_LoginComplete,
         WorldServer_InWorld,
         Error_Undefined,
-        Disconnected
     }
 
     interface IUltimaClient

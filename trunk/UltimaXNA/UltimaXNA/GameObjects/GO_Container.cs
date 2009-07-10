@@ -6,6 +6,7 @@
 //-----------------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 #endregion
 
 namespace UltimaXNA.GameObjects
@@ -126,6 +127,7 @@ namespace UltimaXNA.GameObjects
         // All the contents of the container are kept in the mContents class,
         // unless they are being moved between slots or into or out of the container.
         private GameObject_ContainerContents mContentsClass = new GameObject_ContainerContents();
+        private List<GameObject> mUnplacedItems = new List<GameObject>();
         // Update tickers are referenced by the GUI - when this value changes, the GUI knows to update.
         public int UpdateTicker { get { return mContentsClass.UpdateTicker; } }
         // Get the last occupied slot, so the GUI knows how many slots to draw.
@@ -141,12 +143,17 @@ namespace UltimaXNA.GameObjects
             // Is the destination slot empty?
             if (mContentsClass[nSlot] == null)
             {
+                int x = nSlot;
+                int y = x ^ 0x7fff;
+                GUI.Events.PickupItem(nObject);
+                GUI.Events.DropItem(nObject, x, y, 0, m_ParentObject.GUID);
                 // if this container already contains this item, then temporarily remove it so that 
                 // we don't end up with two copies.
-                if (mContentsClass.ContainsItem(nObject.GUID))
-                    mContentsClass.RemoveItemByGUID(nObject.GUID);
-                nObject.Item_SlotIndex = nSlot;
-                mContentsClass[nObject.Item_SlotIndex] = nObject;
+
+                // if (mContentsClass.ContainsItem(nObject.GUID))
+                //     mContentsClass.RemoveItemByGUID(nObject.GUID);
+                // nObject.Item_SlotIndex = nSlot;
+                // mContentsClass[nObject.Item_SlotIndex] = nObject;
             }
             else if (mContentsClass[nSlot] == nObject)
             {
@@ -168,22 +175,37 @@ namespace UltimaXNA.GameObjects
                 }
                 else
                 {
-                    // Now temporarily remove both of the items from the container.
-                    mContentsClass.RemoveItemByGUID(iSwitchItem.GUID);
-                    if (mContentsClass.ContainsItem(nObject.GUID))
-                        mContentsClass.RemoveItemByGUID(nObject.GUID);
-
-                    // Now replace them!
-                    nObject.Item_SlotIndex = nSlot;
-                    iSwitchItem.Item_SlotIndex = iSourceSlot;
-                    mContentsClass[nSlot] = nObject;
-                    mContentsClass[iSourceSlot] = iSwitchItem;
+                    // We are switching these two objects.
+                    int x = nSlot;
+                    int y = x ^ 0x7fff;
+                    GUI.Events.PickupItem(nObject);
+                    GUI.Events.DropItem(nObject, x, y, 0, m_ParentObject.GUID);
+                    x = iSourceSlot;
+                    y = x ^ 0x7fff;
+                    GUI.Events.PickupItem(iSwitchItem);
+                    GUI.Events.DropItem(iSwitchItem, x, y, 0, m_ParentObject.GUID);
                 }
+            }
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            if (mUnplacedItems.Count > 0)
+            {
+                int x = mContentsClass.NextAvailableSlot;
+                int y = x ^ 0x7fff;
+                GUI.Events.PickupItem(mUnplacedItems[0]);
+                GUI.Events.DropItem(mUnplacedItems[0], x, y, 0, m_ParentObject.GUID);
+                mUnplacedItems.Remove(mUnplacedItems[0]);
             }
         }
 
         public void AddItem(GameObject nObject)
         {
+            for (int i = mUnplacedItems.Count - 1; i >= 0; i--)
+                if (mUnplacedItems[i].GUID == nObject.GUID)
+                    mUnplacedItems.Remove(mUnplacedItems[i]);
+
             // The server often sends as list of all the items in a container.
             // We want to filter out items we already have in our list.
             if ((m_ParentObject.Wearer != null) && (m_ParentObject.Wearer.ObjectType != ObjectType.Player))
@@ -197,7 +219,7 @@ namespace UltimaXNA.GameObjects
                 }
                 else
                 {
-                    mContentsClass[mContentsClass.NextAvailableSlot] = nObject;
+                    // mContentsClass[mContentsClass.NextAvailableSlot] = nObject;
                     return;
                 }
             }
@@ -217,8 +239,7 @@ namespace UltimaXNA.GameObjects
                         // The item's InvX does not validate. This means that the item has not yet been sorted
                         // into an inventory slot. We correct this by sorting this object into the next available
                         // slot.
-                        nObject.Item_SlotIndex = mContentsClass.NextAvailableSlot;
-                        mContentsClass[nObject.Item_SlotIndex] = nObject;
+                        mUnplacedItems.Add(nObject);
                         return;
                     }
                     else
@@ -233,32 +254,12 @@ namespace UltimaXNA.GameObjects
                         }
                         else
                         {
-                            // There is something else in this slot. What we do now depends on whether the item
-                            // that is currently in the slot belongs there. If it does, we will move this item
-                            // into the next available slot. If it does not, then we will move our current item
-                            // into the next available slot.
-                            if (mContentsClass[nObject.Item_SlotIndex].Item_SlotIndex == -1)
-                            {
-                                // The current contents of this slot do not belong here. We will remove the current
-                                // contents of the slot, move that to the next available slot, and then move our
-                                // object into the newly vacated slot. So, first move the current contents:
-                                GameObject iSwitchItem = mContentsClass[nObject.Item_SlotIndex];
-                                mContentsClass.RemoveItemByGUID(iSwitchItem.GUID);
-                                iSwitchItem.Item_SlotIndex = mContentsClass.NextAvailableSlot;
-                                mContentsClass[iSwitchItem.Item_SlotIndex] = iSwitchItem;
-                                // Now that the slot we want is empty, move our object into it.
-                                nObject.Item_SlotIndex = mContentsClass.NextAvailableSlot;
-                                mContentsClass[nObject.Item_SlotIndex] = nObject;
-                                return;
-                            }
-                            else
-                            {
-                                // The current contents of this slot actually belong here. We will move our current
-                                // object into the next available slot and leave the contents of this slot undisturbed.
-                                nObject.Item_SlotIndex = mContentsClass.NextAvailableSlot;
-                                mContentsClass[nObject.Item_SlotIndex] = nObject;
-                                return;
-                            }
+                            // There is something else in this slot. We will switch the two items.
+                            GameObject iSwitchItem = mContentsClass[nObject.Item_SlotIndex];
+                            mContentsClass.RemoveItemByGUID(iSwitchItem.GUID);
+                            mContentsClass[nObject.Item_SlotIndex] = nObject;
+                            mUnplacedItems.Add(iSwitchItem);
+                            return;
                         }
                     }
                 }
@@ -269,8 +270,7 @@ namespace UltimaXNA.GameObjects
                     if (nObject.Item_SlotIndex == -1)
                     {
                         // The SlotIndex does not validate. We need to place it in a new slot.
-                        nObject.Item_SlotIndex = mContentsClass.NextAvailableSlot;
-                        mContentsClass[nObject.Item_SlotIndex] = nObject;
+                        mUnplacedItems.Add(nObject);
                         return;
                     }
                     else
@@ -280,8 +280,7 @@ namespace UltimaXNA.GameObjects
                         // the next available slot.
                         if (mContentsClass[nObject.Item_SlotIndex] != null)
                         {
-                            nObject.Item_SlotIndex = mContentsClass.NextAvailableSlot;
-                            mContentsClass[nObject.Item_SlotIndex] = nObject;
+                            mUnplacedItems.Add(nObject);
                             return;
                         }
                         else

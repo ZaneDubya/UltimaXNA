@@ -9,5 +9,11 @@ namespace UltimaXNA.Network
     {
         public T ItemA;
         public U ItemB;
+
+        public Pair(T a, U b)
+        {
+            ItemA = a;
+            ItemB = b;
+        }
     }
 }

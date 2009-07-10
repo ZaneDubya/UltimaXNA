@@ -34,5 +34,20 @@ namespace UltimaXNA.GUI
             m_GameClientService.SetAccountPassword(nUsername, nPassword);
             m_GameClientService.Send(new LoginPacket(nUsername, nPassword));
         }
+
+        public static void PickupItem(GameObjects.BaseObject nObject)
+        {
+            GameObjects.GameObject iObject = ((GameObjects.GameObject)nObject);
+            m_GameClientService.Send(new PickupItemPacket(iObject.GUID, (short)iObject.Item_StackCount));
+        }
+
+        public static void DropItem(GameObjects.BaseObject nObject, int x, int y, int z, Serial dest)
+        {
+            GameObjects.GameObject iObject = ((GameObjects.GameObject)nObject);
+            m_GameClientService.Send(new DropItemPacket(iObject.GUID, (short)x, (short)y, (byte)z, 0, dest));
+        }
+
+
+                   
     }
 }
