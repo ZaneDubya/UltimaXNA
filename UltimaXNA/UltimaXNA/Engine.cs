@@ -13,7 +13,7 @@ namespace UltimaXNA
 {
     public class Engine : Game
     {
-        private Network.GameClient m_Client;
+        private Client.UltimaClient m_Client;
         private Input.InputHandler m_Input;
         private GameState m_GameState;
         private GameObjects.GameObjects m_GameObjects;
@@ -38,7 +38,7 @@ namespace UltimaXNA
 
             this.Content.RootDirectory = "Content";
 
-            m_Client = new Network.GameClient(this);
+            m_Client = new Client.UltimaClient(this);
             this.Components.Add(m_Client);
 
             m_Input = new Input.InputHandler(this);
@@ -75,6 +75,7 @@ namespace UltimaXNA
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+            /*
             switch (m_Client.Status)
             {
                 case UltimaXNA.Network.ClientStatus.Unconnected:
@@ -94,7 +95,7 @@ namespace UltimaXNA
                 default :
                     break;
             }
-
+            */
             m_GameState.UpdateAfter();
             m_GUI.DebugMessage = m_GameState.DebugMessage;
         }

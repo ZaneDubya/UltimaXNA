@@ -60,10 +60,6 @@ namespace UltimaXNA.GUI
         }
         private void Button1_OnRelease(object obj, EventArgs e)
         {
-            // make sure we don't log in twice
-            m_MyForm["btnLogin"].Enabled = false;
-            // send the login event
-            Events.Login(m_MyForm["txtServer"].Text, System.Convert.ToInt32(m_MyForm["txtPort"].Text), m_MyForm["txtUsername"].Text, m_MyForm["txtPassword"].Text);
         }
     }
 }

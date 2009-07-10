@@ -114,6 +114,7 @@
     <Compile Include="GameObjects\PropertyList.cs" />
     <Compile Include="GameState.cs" />
     <Compile Include="GUI\Events.cs" />
+    <Compile Include="GUI\GUIHelper.cs" />
     <Compile Include="GUI\Windows\ChatInput.cs" />
     <Compile Include="GUI\Windows\LoginCharList.cs" />
     <Compile Include="GUI\Windows\Container.cs" />
@@ -165,6 +166,7 @@
     <Compile Include="Network\IO\PacketReader.cs" />
     <Compile Include="Network\IO\PacketWriter.cs" />
     <Compile Include="Network\ItemInContainer.cs" />
+    <Compile Include="Client\IUltimaClient.cs" />
     <Compile Include="Network\NetworkException.cs" />
     <Compile Include="Network\PacketHandler.cs" />
     <Compile Include="Network\PacketRegistry.cs" />
@@ -208,7 +210,7 @@
     <Compile Include="Network\Packets\Incomplete\CorpseClothingPacket.cs" />
     <Compile Include="Network\Packets\Incomplete\GraphicEffectPacket.cs" />
     <Compile Include="Network\Packets\Incomplete\MessageLocalizedPacket.cs" />
-    <Compile Include="Network\Packets\Incomplete\MobileAnimationPacket.cs" />
+    <Compile Include="Network\Packets\Server\MobileAnimationPacket.cs" />
     <Compile Include="Network\Packets\Incomplete\OpenPaperdollPacket.cs" />
     <Compile Include="Network\Packets\Incomplete\PlayMusicPacket.cs" />
     <Compile Include="Network\Packets\Incomplete\PlaySoundEffectPacket.cs" />
@@ -219,32 +221,46 @@
     <Compile Include="Network\Packets\SendPacket.cs" />
     <Compile Include="Network\Packets\SendRecvPacket.cs" />
     <Compile Include="Network\Packets\Server\AsciiMessagePacket.cs" />
+    <Compile Include="Network\Packets\Incomplete\ChangeCombatantPacket.cs" />
     <Compile Include="Network\Packets\Server\CharacterCityListPacket.cs" />
+    <Compile Include="Network\Packets\Incomplete\CharacterListUpdatePacket.cs" />
     <Compile Include="Network\Packets\Server\ChatPacket.cs" />
     <Compile Include="Network\Packets\Server\ContainerContentPacket.cs" />
     <Compile Include="Network\Packets\Server\ContainerContentUpdatePacket.cs" />
     <Compile Include="Network\Packets\Server\ContainerPacket.cs" />
     <Compile Include="Network\Packets\Server\DamagePacket.cs" />
+    <Compile Include="Network\Packets\Incomplete\DeathAnimationPacket.cs" />
+    <Compile Include="Network\Packets\Incomplete\DisplayGumpFastPacket.cs" />
+    <Compile Include="Network\Packets\Incomplete\DisplayMenuPacket.cs" />
     <Compile Include="Network\Packets\Server\DragEffectPacket.cs" />
     <Compile Include="Network\Packets\Server\EquipmentEntry.cs" />
+    <Compile Include="Network\Packets\Incomplete\Extended0x78Packet.cs" />
     <Compile Include="Network\Packets\Server\GeneralInfoPacket.cs" />
+    <Compile Include="Network\Packets\Incomplete\GlobalQueueCountPacket.cs" />
+    <Compile Include="Network\Packets\Incomplete\HuedEffectPacket.cs" />
+    <Compile Include="Network\Packets\Incomplete\InvalidMapEnablePacket.cs" />
     <Compile Include="Network\Packets\Server\LiftRejectionPacket.cs" />
     <Compile Include="Network\Packets\Server\LoginCompletePacket.cs" />
     <Compile Include="Network\Packets\Server\LoginConfirmPacket.cs" />
     <Compile Include="Network\Packets\Server\LoginRejectionPacket.cs" />
+    <Compile Include="Network\Packets\Incomplete\MessageLocalizedAffixPacket.cs" />
     <Compile Include="Network\Packets\Server\MobileAttributesPacket.cs" />
     <Compile Include="Network\Packets\Server\MobileIncomingPacket.cs" />
     <Compile Include="Network\Packets\Server\MobileMovingPacket.cs" />
     <Compile Include="Network\Packets\Server\MobileUpdatePacket.cs" />
     <Compile Include="Network\Packets\Server\MoveAcknowledgePacket.cs" />
     <Compile Include="Network\Packets\Server\MovementRejectPacket.cs" />
+    <Compile Include="Network\Packets\Incomplete\ObjectHelpResponsePacket.cs" />
     <Compile Include="Network\Packets\Server\ObjectInfoPacket.cs" />
     <Compile Include="Network\Packets\Server\ObjectPropertyListPacket.cs" />
     <Compile Include="Network\Packets\Server\ObjectPropertyListUpdatePacket.cs" />
+    <Compile Include="Network\Packets\Incomplete\OpenWebBrowserPacket.cs" />
     <Compile Include="Network\Packets\Server\OverallLightLevelPacket.cs" />
+    <Compile Include="Network\Packets\Incomplete\ParticleEffectPacket.cs" />
     <Compile Include="Network\Packets\Server\PersonalLightLevelPacket.cs" />
     <Compile Include="Network\Packets\Server\PlayerMovePacket.cs" />
     <Compile Include="Network\Packets\Server\PopupMessagePacket.cs" />
+    <Compile Include="Network\Packets\Incomplete\QuestArrowPacket.cs" />
     <Compile Include="Network\Packets\Server\RemoveEntityPacket.cs" />
     <Compile Include="Network\Packets\Server\RequestNameResponsePacket.cs" />
     <Compile Include="Network\Packets\Server\SeasonChangePacket.cs" />
@@ -255,12 +271,14 @@
     <Compile Include="Network\Packets\Server\SupportedFeaturesPacket.cs" />
     <Compile Include="Network\Packets\Server\SwingPacket.cs" />
     <Compile Include="Network\Packets\Server\TargetCursorPacket.cs" />
+    <Compile Include="Network\Packets\Incomplete\TipNoticeWindowPacket.cs" />
     <Compile Include="Network\Packets\Server\UnicodeMessagePacket.cs" />
     <Compile Include="Network\Packets\Server\UOGInfoResponsePacket.cs" />
     <Compile Include="Network\Packets\Server\UpdateHealthPacket.cs" />
     <Compile Include="Network\Packets\Server\UpdateManaPacket.cs" />
     <Compile Include="Network\Packets\Server\UpdateStaminaPacket.cs" />
     <Compile Include="Network\Packets\Server\VendorBuyListPacket.cs" />
+    <Compile Include="Network\Packets\Incomplete\VendorSellListPacket.cs" />
     <Compile Include="Network\Packets\Server\VersionRequestPacket.cs" />
     <Compile Include="Network\Packets\Server\WarModePacket.cs" />
     <Compile Include="Network\Packets\Server\WeatherPacket.cs" />
@@ -269,6 +287,7 @@
     <Compile Include="Network\ServerListEntry.cs" />
     <Compile Include="Network\SocketState.cs" />
     <Compile Include="Network\StartingLocation.cs" />
+    <Compile Include="Client\UltimaClient.cs" />
     <Compile Include="Network\_ContextMenuResponse.cs" />
     <Compile Include="Network\_GameClient.cs" />
     <Compile Include="Network\_OpCodes.cs" />
@@ -335,6 +354,11 @@
       <ProductName>Microsoft XNA Framework Redistributable 3.0</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="log4net.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Network\Packets\Both\" />
