@@ -13,13 +13,13 @@ namespace UltimaXNA
 {
     public class Engine : Game
     {
-        private Client.UltimaClient m_Client;
-        private Input.InputHandler m_Input;
-        private GameState m_GameState;
-        private GameObjects.GameObjects m_GameObjects;
-        private TileEngine.World m_World;
-        private TileEngine.TileEngine m_TileEngine;
-        private GUI.EngineGUI m_GUI;
+        private Client.UltimaClient _Client;
+        private Input.InputHandler _Input;
+        private GameState _GameState;
+        private GameObjects.GameObjects _GameObjects;
+        private TileEngine.World _World;
+        private TileEngine.TileEngine _TileEngine;
+        private GUI.EngineGUI _GUI;
 
         public Engine()
         {
@@ -38,26 +38,26 @@ namespace UltimaXNA
 
             this.Content.RootDirectory = "Content";
 
-            m_Client = new Client.UltimaClient(this);
-            this.Components.Add(m_Client);
+            _Client = new Client.UltimaClient(this);
+            this.Components.Add(_Client);
 
-            m_Input = new Input.InputHandler(this);
-            this.Components.Add(m_Input);
+            _Input = new Input.InputHandler(this);
+            this.Components.Add(_Input);
 
-            m_GameState = new GameState(this);
-            this.Components.Add(m_GameState);
+            _GameState = new GameState(this);
+            this.Components.Add(_GameState);
 
-            m_GameObjects = new GameObjects.GameObjects(this);
-            this.Components.Add(m_GameObjects);
+            _GameObjects = new GameObjects.GameObjects(this);
+            this.Components.Add(_GameObjects);
 
-            m_World = new TileEngine.World(this);
-            this.Components.Add(m_World);
+            _World = new TileEngine.World(this);
+            this.Components.Add(_World);
 
-            m_TileEngine = new TileEngine.TileEngine(this);
-            this.Components.Add(m_TileEngine);
+            _TileEngine = new TileEngine.TileEngine(this);
+            this.Components.Add(_TileEngine);
 
-            m_GUI = new GUI.EngineGUI(this);
-            this.Components.Add(m_GUI);
+            _GUI = new GUI.EngineGUI(this);
+            this.Components.Add(_GUI);
 
             base.Initialize();
         }
@@ -75,29 +75,8 @@ namespace UltimaXNA
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            /*
-            switch (m_Client.Status)
-            {
-                case UltimaXNA.Network.ClientStatus.Unconnected:
-                    m_GUI.LoadLoginGUI();
-                    break;
-                case UltimaXNA.Network.ClientStatus.LoginServer_Connecting :
-                    // do nothing ... wait until we have the server list.
-                    break;
-                case UltimaXNA.Network.ClientStatus.LoginServer_HasServerList:
-                    m_Client.SelectServer(0);
-                    break;
-                case UltimaXNA.Network.ClientStatus.Error :
-                    m_Client.Reset();
-                    m_GUI.Reset();
-                    m_GUI.LoadLoginGUI();
-                    break;
-                default :
-                    break;
-            }
-            */
-            m_GameState.UpdateAfter();
-            m_GUI.DebugMessage = m_GameState.DebugMessage;
+            _GameState.UpdateAfter();
+            _GUI.DebugMessage = _GameState.DebugMessage;
         }
 
         protected override void Draw(GameTime gameTime)
@@ -109,13 +88,13 @@ namespace UltimaXNA
         // Some settings to designate a screen size and fps limit.
         private void m_SetupGraphicsDeviceManager()
         {
-            GraphicsDeviceManager iGraphicsDeviceManager = new GraphicsDeviceManager(this);
-            iGraphicsDeviceManager.PreferredBackBufferWidth = 800;
-            iGraphicsDeviceManager.PreferredBackBufferHeight = 600;
-            iGraphicsDeviceManager.SynchronizeWithVerticalRetrace = false;
-            iGraphicsDeviceManager.PreparingDeviceSettings += OnPreparingDeviceSettings;
+            GraphicsDeviceManager graphicsDeviceManager = new GraphicsDeviceManager(this);
+            graphicsDeviceManager.PreferredBackBufferWidth = 800;
+            graphicsDeviceManager.PreferredBackBufferHeight = 600;
+            graphicsDeviceManager.SynchronizeWithVerticalRetrace = true;
+            graphicsDeviceManager.PreparingDeviceSettings += OnPreparingDeviceSettings;
             this.IsFixedTimeStep = false;
-            iGraphicsDeviceManager.ApplyChanges();
+            graphicsDeviceManager.ApplyChanges();
         }
         private static void OnPreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
         {

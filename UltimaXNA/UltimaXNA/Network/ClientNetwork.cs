@@ -283,6 +283,7 @@ namespace UltimaXNA.Network
                 _serverEndPoint = null;
                 _isDecompressionEnabled = false;
                 _log.Debug("Disconnected.");
+                _isConnected = false;
             }
         }
 
@@ -402,8 +403,9 @@ namespace UltimaXNA.Network
                             if (packetHandlers.Count > 0)
                                 name = packetHandlers[0].Name;
 
-                            LogPacket(packetBuffer, name, realLength);
-                            InvokeHandlers(packetHandlers, packetBuffer, realLength);
+                            _AddPacket(name, packetHandlers, packetBuffer, realLength);
+                            // LogPacket(packetBuffer, name, realLength);
+                            // InvokeHandlers(packetHandlers, packetBuffer, realLength);
                         }
 
                         // We've run out of data to parse, or the packet was incomplete. If the packet was incomplete,
@@ -445,8 +447,9 @@ namespace UltimaXNA.Network
                                 if (packetHandlers.Count > 0)
                                     name = packetHandlers[0].Name;
 
-                                LogPacket(packetBuffer, name, realLength);
-                                InvokeHandlers(packetHandlers, packetBuffer, realLength);
+                                _AddPacket(name, packetHandlers, packetBuffer, realLength);
+                                // LogPacket(packetBuffer, name, realLength);
+                                // InvokeHandlers(packetHandlers, packetBuffer, realLength);
 
                                 currentIndex += realLength;
                             }
@@ -474,6 +477,28 @@ namespace UltimaXNA.Network
             catch (Exception e)
             {
                 _log.Debug(e);
+            }
+        }
+
+        List<QueuedPacket> _QueuedPackets = new List<QueuedPacket>();
+        private void _AddPacket(string name, List<PacketHandler> packetHandlers, byte[] packetBuffer, int realLength)
+        {
+            lock (_QueuedPackets)
+            {
+                _QueuedPackets.Add(new QueuedPacket(name, packetHandlers, packetBuffer, realLength));
+            }
+        }
+
+        public void Update()
+        {
+            lock (_QueuedPackets)
+            {
+                foreach (QueuedPacket i in _QueuedPackets)
+                {
+                    LogPacket(i.PacketBuffer, i.Name, i.RealLength);
+                    InvokeHandlers(i.PacketHandlers, i.PacketBuffer, i.RealLength);
+                }
+                _QueuedPackets.Clear();
             }
         }
 

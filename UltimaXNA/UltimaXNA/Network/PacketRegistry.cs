@@ -40,7 +40,7 @@ namespace UltimaXNA.Network
             network.Register<LoginCompletePacket>(0x55, "Login Complete", 1, OnLoginComplete);
             network.Register<TimePacket>(0x5B, "Time", 4, OnTime);
             network.Register<WeatherPacket>(0x65, "Set Weather", 4, OnWeather);
-            network.Register<TargetCursorPacket>(0x6C, "TargetCursor", 3, OnTargetCursor);
+            network.Register<TargetCursorPacket>(0x6C, "TargetCursor", 19, OnTargetCursor);
             network.Register<PlayMusicPacket>(0x6D, "Play Music", 3, OnPlayMusic);
             network.Register<MobileAnimationPacket>(0x6E, "Character Animation", 14, OnMobileAnimation);
             network.Register<GraphicEffectPacket>(0x70, "Graphical Effect 1", 28, OnGraphicalEffect1);

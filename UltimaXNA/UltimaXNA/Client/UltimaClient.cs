@@ -48,6 +48,12 @@ namespace UltimaXNA.Client
             base.Initialize();
         }
 
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+            m_ClientNetwork.Update();
+        }
+
         private void m_RegisterPackets()
         {
             PacketRegistry.OnDamage += receive_Damage;
@@ -140,7 +146,7 @@ namespace UltimaXNA.Client
         {
             if (m_ClientNetwork.IsConnected)
                 m_ClientNetwork.Disconnect();
-            this.Status = UltimaClientStatus.Disconnected;
+            this.Status = UltimaClientStatus.Unconnected;
             clearAccountPassword();
         }
 
@@ -226,7 +232,6 @@ namespace UltimaXNA.Client
 
         private void receive_CompressedGump(IRecvPacket packet)
         {
-            // unhandled !!!
             GUI.GUIHelper.Chat_AddLine("DEBUG: Compressed gump received but not handled.");
         }
 
@@ -379,7 +384,10 @@ namespace UltimaXNA.Client
 
         private void receive_LoginRejection(IRecvPacket packet)
         {
+            Disconnect();
             LoginRejectionPacket p = (LoginRejectionPacket)packet;
+            m_GUI.Reset();
+            m_GUI.ErrorPopup_Modal(p.Reason);
         }
 
         private void receive_MessageLocalizedAffix(IRecvPacket packet)

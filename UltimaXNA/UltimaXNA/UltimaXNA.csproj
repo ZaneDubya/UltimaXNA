@@ -204,6 +204,9 @@
     <Compile Include="Network\Packets\Client\SellListReplyPacket.cs" />
     <Compile Include="Network\Packets\Client\SingleClickPacket.cs" />
     <Compile Include="Network\Packets\Client\TalkRequestPacket.cs" />
+    <Compile Include="Network\Packets\Client\TargetCancelPacket.cs" />
+    <Compile Include="Network\Packets\Client\TargetObjectPacket.cs" />
+    <Compile Include="Network\Packets\Client\TargetXYZPacket.cs" />
     <Compile Include="Network\Packets\Client\UnicodeSpeechPacket.cs" />
     <Compile Include="Network\Packets\Client\UOGInfoRequestPacket.cs" />
     <Compile Include="Network\Packets\Incomplete\CompressedGumpPacket.cs" />
@@ -284,6 +287,7 @@
     <Compile Include="Network\Packets\Server\WeatherPacket.cs" />
     <Compile Include="Network\Packets\Server\WornItemPacket.cs" />
     <Compile Include="Network\Pair.cs" />
+    <Compile Include="Network\QueuedPacket.cs" />
     <Compile Include="Network\ServerListEntry.cs" />
     <Compile Include="Network\SocketState.cs" />
     <Compile Include="Network\StartingLocation.cs" />

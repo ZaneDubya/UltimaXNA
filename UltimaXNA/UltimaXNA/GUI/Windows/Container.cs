@@ -14,6 +14,22 @@ namespace UltimaXNA.GUI
 
         private int mScrollY, mMaxScrollY = 0;
 
+        int _SlotsWide, _SlotsHigh;
+        int _SlotsTotal
+        {
+            get
+            {
+                int numberOfSlots = _SlotsWide * _SlotsHigh;
+                if ((_SlotsItemIDs == null) || (_SlotsItemIDs.Length != numberOfSlots))
+                {
+                    _SlotsItemIDs = new int[numberOfSlots];
+                    mLastContainerUpdated = -1;
+                }
+                return numberOfSlots;
+            }
+        }
+        int[] _SlotsItemIDs;
+
         public int GUID { get { return mContainerObject.GUID; } }
 
         public Window_Container(GameObjects.BaseObject nContainerObject, FormCollection nFormCollection)
@@ -50,12 +66,15 @@ namespace UltimaXNA.GUI
                 @"GUI\SCROLLBAR\UI-ScrollBar-ScrollDownButton-Disabled.png", @"GUI\SCROLLBAR\UI-ScrollBar-ScrollDownButton-Highlight.png"));
             m_MyForm.Controls["btnScrollDown"].OnRelease = btnScrollDown_OnRelease;
 
-            for (int i = 0; i < 16; i++)
+            _SlotsWide = 4;
+            _SlotsHigh = 4;
+
+            for (int i = 0; i < _SlotsTotal; i++)
             {
                 string iBtnName = "btnInv" + i;
                 Vector2 iPosition = new Vector2();
-                iPosition.Y = (int)(i / 4) * 41 + 34;
-                iPosition.X = (i - ((int)(i / 4)) * 4) * 42 + 17;
+                iPosition.Y = (int)(i / _SlotsWide) * 41 + 34;
+                iPosition.X = (i - ((int)(i / _SlotsWide)) * _SlotsWide) * 42 + 17;
                 m_MyForm.Controls.Add(new CustomButton(iBtnName, iPosition, new Rectangle(0, 0, 39, 39),
                     null, null, null, null, 1f));
                 m_MyForm[iBtnName].OnMouseOver += btnInv_OnOver;
@@ -68,7 +87,7 @@ namespace UltimaXNA.GUI
 
         private void btnInv_OnPress(object obj, EventArgs e)
         {
-            int iIndex = Int32.Parse(((CustomButton)obj).Name.Substring(6)) + mScrollY * 4;
+            int iIndex = Int32.Parse(((CustomButton)obj).Name.Substring(6)) + mScrollY * _SlotsWide;
             GameObjects.GameObject iItem = mContainerObject.ContainerObject.GetContents(iIndex);
             if (GUIHelper.MouseHoldingItem != null)
             {
@@ -85,14 +104,14 @@ namespace UltimaXNA.GUI
         {
             if (GUIHelper.MouseHoldingItem != null)
             {
-                int iIndex = Int32.Parse(((CustomButton)obj).Name.Substring(6)) + mScrollY * 4;
+                int iIndex = Int32.Parse(((CustomButton)obj).Name.Substring(6)) + mScrollY * _SlotsWide;
                 GUIHelper.DropItemIntoSlot(mContainerObject, iIndex);
             }
         }
 
         private void btnInv_OnOver(object obj, EventArgs e)
         {
-            int iIndex = Int32.Parse(((CustomButton)obj).Name.Substring(6)) + mScrollY * 4;
+            int iIndex = Int32.Parse(((CustomButton)obj).Name.Substring(6)) + mScrollY * _SlotsWide;
             GameObjects.GameObject iItem = mContainerObject.ContainerObject.GetContents(iIndex);
 
             if (GUIHelper.MouseHoldingItem != null)
@@ -113,7 +132,7 @@ namespace UltimaXNA.GUI
                 ((CustomButton)obj).RespondToAllReleaseEvents = false;
             }
 
-            int iIndex = Int32.Parse(((CustomButton)obj).Name.Substring(6)) + mScrollY * 4;
+            int iIndex = Int32.Parse(((CustomButton)obj).Name.Substring(6)) + mScrollY * _SlotsWide;
             GameObjects.GameObject iItem = mContainerObject.ContainerObject.GetContents(iIndex);
             if (GUIHelper.ToolTipItem == iItem)
             {
@@ -151,24 +170,29 @@ namespace UltimaXNA.GUI
 
             if (mContainerObject.ContainerObject.UpdateTicker != mLastContainerUpdated)
             {
-                mMaxScrollY = (int)(mContainerObject.ContainerObject.LastSlotOccupied / 4) + 1 - 4;
-                if (((mContainerObject.ContainerObject.LastSlotOccupied + 1) % 4) == 0)
+                mMaxScrollY = (int)(mContainerObject.ContainerObject.LastSlotOccupied / _SlotsWide) + 1 - _SlotsHigh;
+                if (((mContainerObject.ContainerObject.LastSlotOccupied + 1) % _SlotsWide) == 0)
                     mMaxScrollY++;
 
-                for (int i = 0; i < 16; i++)
+                for (int i = 0; i < _SlotsTotal; i++)
                 {
-                    int iItemTypeID = 0;
-                    GameObjects.GameObject iItem = mContainerObject.ContainerObject.GetContents(i + mScrollY * 4);
-                    if (iItem != null)
-                        iItemTypeID = iItem.ObjectTypeID;
-                    string iBtnName = "btnInv" + i; 
-                    ((CustomButton)m_MyForm[iBtnName]).Texture = GUIHelper.GetItemIcon(iItemTypeID);
-                    if (iItemTypeID == 0)
+                    GameObjects.GameObject iItem = mContainerObject.ContainerObject.GetContents(i + mScrollY * _SlotsWide);
+                    if (iItem == null)
+                        _SlotsItemIDs[i] = 0;
+                    else
+                        _SlotsItemIDs[i] = iItem.ObjectTypeID;
+                }
+                mLastContainerUpdated = mContainerObject.ContainerObject.UpdateTicker;
+
+                for (int i = 0; i < _SlotsTotal; i++)
+                {
+                    string iBtnName = "btnInv" + i;
+                    ((CustomButton)m_MyForm[iBtnName]).Texture = GUIHelper.GetItemIcon(_SlotsItemIDs[i]);
+                    if (_SlotsItemIDs[i] == 0)
                         ((CustomButton)m_MyForm[iBtnName]).Disabled = false;
                     else
                         ((CustomButton)m_MyForm[iBtnName]).Disabled = false;
                 }
-                mLastContainerUpdated = mContainerObject.ContainerObject.UpdateTicker;
             }
 
             if (mScrollY == 0)
