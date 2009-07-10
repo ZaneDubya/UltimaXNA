@@ -95,18 +95,27 @@ namespace UltimaXNA.GUI
             {
                 if (iHeldObject.Item_ContainedWithinSerial == iDestContainer.Serial)
                 {
+                    // moving between slots in a single container.
                     iDestContainer.ContainerObject.Event_MoveItemToSlot(iHeldObject, nDestSlot);
                 }
                 else
                 {
+                    // moving between two containers.
                     if (iDestContainer.ContainerObject.GetContents(nDestSlot) == null)
                     {
+                        // dest slot is empty.
+                        ((GameObjects.GameObject)_GameObjectsService.GetObject(
+                            iHeldObject.Item_ContainedWithinSerial,
+                            UltimaXNA.GameObjects.ObjectType.GameObject)).ContainerObject.RemoveItem(iHeldObject.Serial);
                         _GameClientService.Send(new PickupItemPacket(iHeldObject.Serial, (short)iHeldObject.Item_StackCount));
                         _GameClientService.Send(new DropItemPacket(iHeldObject.Serial, (short)nDestSlot, (short)0x7FFF,
                             0, 0, iDestContainer.Serial));
                     }
                     else
                     {
+                        ((GameObjects.GameObject)_GameObjectsService.GetObject(
+                            iHeldObject.Item_ContainedWithinSerial,
+                            UltimaXNA.GameObjects.ObjectType.GameObject)).ContainerObject.RemoveItem(iHeldObject.Serial);
                         _GameClientService.Send(new PickupItemPacket(iHeldObject.Serial, (short)iHeldObject.Item_StackCount));
                         _GameClientService.Send(new DropItemPacket(iHeldObject.Serial, (short)0, (short)0,
                             0, 0, iDestContainer.Serial));
