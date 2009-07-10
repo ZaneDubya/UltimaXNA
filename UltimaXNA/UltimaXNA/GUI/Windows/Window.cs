@@ -14,7 +14,7 @@ namespace UltimaXNA.GUI
     public class Window
     {
         internal FormCollection m_FormCollection;
-        internal Form m_MyForm;
+        internal Form _MyForm;
         public bool IsClosed = false;
 
         public Window(FormCollection nFormCollection)
@@ -24,10 +24,10 @@ namespace UltimaXNA.GUI
 
         public void Close()
         {
-            if (m_MyForm != null)
+            if (_MyForm != null)
             {
-                m_MyForm.Dispose();
-                m_MyForm = null;
+                _MyForm.Dispose();
+                _MyForm = null;
                 IsClosed = true;
             }
         }
@@ -39,7 +39,7 @@ namespace UltimaXNA.GUI
 
         public void Show()
         {
-            m_MyForm.Show();
+            _MyForm.Show();
         }
     }
 }

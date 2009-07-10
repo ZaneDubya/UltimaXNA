@@ -24,30 +24,30 @@ namespace UltimaXNA.GUI
             //Create a new form
             string iFormName = "frmMerchant:" + mContainerObject.GUID;
             m_FormCollection.Add(new Form(iFormName, "", mWindowSize, new Vector2(200, 200), Form.BorderStyle.None));
-            m_MyForm = m_FormCollection[iFormName];
-            m_MyForm.BorderName = null;
-            m_MyForm.CustomDragArea = new Rectangle(1, 1, 308, 20);
-            //m_MyForm.MouseThrough = true;
+            _MyForm = m_FormCollection[iFormName];
+            _MyForm.BorderName = null;
+            _MyForm.CustomDragArea = new Rectangle(1, 1, 308, 20);
+            //_MyForm.MouseThrough = true;
 
-            m_MyForm.Controls.Add(new PictureBox("picBG", mBGOffset, @"GUI\MERCHFRAME\MERCHFRAME-BG.png", 512, 512, 0));
+            _MyForm.Controls.Add(new PictureBox("picBG", mBGOffset, @"GUI\MERCHFRAME\MERCHFRAME-BG.png", 512, 512, 0));
 
-            m_MyForm.Controls.Add(new Label("lblContainer", new Vector2(8f, 4f), "MerchantFrame", Color.TransparentBlack, Color.White, 128, Label.Align.Left));
-            m_MyForm["lblContainer"].FontName = "ArialNarrow10";
+            _MyForm.Controls.Add(new Label("lblContainer", new Vector2(8f, 4f), "MerchantFrame", Color.TransparentBlack, Color.White, 128, Label.Align.Left));
+            _MyForm["lblContainer"].FontName = "ArialNarrow10";
 
-            m_MyForm.Controls.Add(new CustomButton("btnClose", new Vector2(308, -5), new Rectangle(6, 7, 19, 18),
+            _MyForm.Controls.Add(new CustomButton("btnClose", new Vector2(308, -5), new Rectangle(6, 7, 19, 18),
                 @"GUI\COMMON\UI-Panel-MinimizeButton-Up.png", @"GUI\COMMON\UI-Panel-MinimizeButton-Down.png",
                 @"GUI\COMMON\UI-Panel-MinimizeButton-Disabled.png", @"GUI\COMMON\UI-Panel-MinimizeButton-Highlight.png"));
-            m_MyForm.Controls["btnClose"].OnRelease = btnClose_OnRelease;
+            _MyForm.Controls["btnClose"].OnRelease = btnClose_OnRelease;
 
-            m_MyForm.Controls.Add(new CustomButton("btnScrollUp", new Vector2(307, 21), new Rectangle(6, 7, 19, 18),
+            _MyForm.Controls.Add(new CustomButton("btnScrollUp", new Vector2(307, 21), new Rectangle(6, 7, 19, 18),
                 @"GUI\SCROLLBAR\UI-ScrollBar-ScrollUpButton-Up.png", @"GUI\SCROLLBAR\UI-ScrollBar-ScrollUpButton-Down.png",
                 @"GUI\SCROLLBAR\UI-ScrollBar-ScrollUpButton-Disabled.png", @"GUI\SCROLLBAR\UI-ScrollBar-ScrollUpButton-Highlight.png"));
-            m_MyForm.Controls["btnScrollUp"].OnRelease = btnScrollUp_OnRelease;
+            _MyForm.Controls["btnScrollUp"].OnRelease = btnScrollUp_OnRelease;
 
-            m_MyForm.Controls.Add(new CustomButton("btnScrollDown", new Vector2(307, 273), new Rectangle(6, 7, 19, 18),
+            _MyForm.Controls.Add(new CustomButton("btnScrollDown", new Vector2(307, 273), new Rectangle(6, 7, 19, 18),
                 @"GUI\SCROLLBAR\UI-ScrollBar-ScrollDownButton-Up.png", @"GUI\SCROLLBAR\UI-ScrollBar-ScrollDownButton-Down.png",
                 @"GUI\SCROLLBAR\UI-ScrollBar-ScrollDownButton-Disabled.png", @"GUI\SCROLLBAR\UI-ScrollBar-ScrollDownButton-Highlight.png"));
-            m_MyForm.Controls["btnScrollDown"].OnRelease = btnScrollDown_OnRelease;
+            _MyForm.Controls["btnScrollDown"].OnRelease = btnScrollDown_OnRelease;
 
             for (int i = 0; i < 12; i++)
             {
@@ -56,11 +56,11 @@ namespace UltimaXNA.GUI
                 Vector2 iPosition = new Vector2();
                 iPosition.Y = (int)(i / 2) * 45 + 29;
                 iPosition.X = (i - ((int)(i / 2)) * 2) * 152  + 5;
-                m_MyForm.Controls.Add(new PictureBox(iControlName, iPosition, @"GUI\MERCHFRAME\MERCHFRAME-ITEM-BG.png", 0));
+                _MyForm.Controls.Add(new PictureBox(iControlName, iPosition, @"GUI\MERCHFRAME\MERCHFRAME-ITEM-BG.png", 0));
                 iPosition.X += 44;
                 iPosition.Y += 3;
-                m_MyForm.Controls.Add(new Label(iLabelName, iPosition, "",  Color.TransparentBlack, Color.White, 100, Label.Align.Left));
-                m_MyForm.Controls[iLabelName].FontName = "ArialNarrow10";
+                _MyForm.Controls.Add(new Label(iLabelName, iPosition, "",  Color.TransparentBlack, Color.White, 100, Label.Align.Left));
+                _MyForm.Controls[iLabelName].FontName = "ArialNarrow10";
             }
 
             for (int i = 0; i < 12; i++)
@@ -69,12 +69,12 @@ namespace UltimaXNA.GUI
                 Vector2 iPosition = new Vector2();
                 iPosition.Y = (int)(i / 2) * 45 + 30;
                 iPosition.X = (i - ((int)(i / 2)) * 2) * 152 + 6;
-                m_MyForm.Controls.Add(new CustomButton(iBtnName, iPosition, new Rectangle(0, 0, 39, 39),
+                _MyForm.Controls.Add(new CustomButton(iBtnName, iPosition, new Rectangle(0, 0, 39, 39),
                     null, null, null, null, 1f));
-                m_MyForm[iBtnName].OnMouseOver += btnInv_OnOver;
-                m_MyForm[iBtnName].OnMouseOut += btnInv_OnOut;
-                m_MyForm[iBtnName].OnPress += btnInv_OnPress;
-                m_MyForm[iBtnName].OnRelease += btnInv_OnRelease;
+                _MyForm[iBtnName].OnMouseOver += btnInv_OnOver;
+                _MyForm[iBtnName].OnMouseOut += btnInv_OnOut;
+                _MyForm[iBtnName].OnPress += btnInv_OnPress;
+                _MyForm[iBtnName].OnRelease += btnInv_OnRelease;
             }
 
             this.Show();
@@ -114,8 +114,8 @@ namespace UltimaXNA.GUI
             else
             {
                 GUIHelper.ToolTipItem = iItem;
-                GUIHelper.TooltipX = (int)m_MyForm.X + (int)((CustomButton)obj).X + 42;
-                GUIHelper.TooltipY = (int)m_MyForm.Y + (int)((CustomButton)obj).Y;
+                GUIHelper.TooltipX = (int)_MyForm.X + (int)((CustomButton)obj).X + 42;
+                GUIHelper.TooltipY = (int)_MyForm.Y + (int)((CustomButton)obj).Y;
             }
         }
         private void btnInv_OnOut(object obj, EventArgs e)
@@ -173,15 +173,15 @@ namespace UltimaXNA.GUI
                         iItemTypeID = iItem.ObjectTypeID;
                     string iBtnName = "btnInv" + i;
                     string iLblName = "lblItem" + i;
-                    ((CustomButton)m_MyForm[iBtnName]).Texture = GUIHelper.GetItemIcon(iItemTypeID);
+                    ((CustomButton)_MyForm[iBtnName]).Texture = GUIHelper.ItemIcon(iItemTypeID);
                     if (iItemTypeID == 0)
                     {
-                        ((CustomButton)m_MyForm[iBtnName]).Disabled = false;
+                        ((CustomButton)_MyForm[iBtnName]).Disabled = false;
                     }
                     else
                     {
-                        ((CustomButton)m_MyForm[iBtnName]).Disabled = false;
-                        ((Label)m_MyForm[iLblName]).Text = iItem.ItemData.Name
+                        ((CustomButton)_MyForm[iBtnName]).Disabled = false;
+                        ((Label)_MyForm[iLblName]).Text = iItem.ItemData.Name
                             + Environment.NewLine + iItem.ItemData.AnimID;
                     }
 
@@ -190,14 +190,14 @@ namespace UltimaXNA.GUI
             }
 
             if (mScrollY == 0)
-                ((CustomButton)m_MyForm.Controls["btnScrollUp"]).Disabled = true;
+                ((CustomButton)_MyForm.Controls["btnScrollUp"]).Disabled = true;
             else
-                ((CustomButton)m_MyForm.Controls["btnScrollUp"]).Disabled = false;
+                ((CustomButton)_MyForm.Controls["btnScrollUp"]).Disabled = false;
 
             if (mScrollY >= mMaxScrollY)
-                ((CustomButton)m_MyForm.Controls["btnScrollDown"]).Disabled = true;
+                ((CustomButton)_MyForm.Controls["btnScrollDown"]).Disabled = true;
             else
-                ((CustomButton)m_MyForm.Controls["btnScrollDown"]).Disabled = false;
+                ((CustomButton)_MyForm.Controls["btnScrollDown"]).Disabled = false;
         }
     }
 }

@@ -30,30 +30,30 @@ namespace UltimaXNA.GUI
 
     public class EngineGUI : DrawableGameComponent, IGUI
     {
-        SpriteFont fontArial14;
-        SpriteBatch spriteBatch;
-        private FormCollection formCollection;
-        private bool mDrawForms = false;
+        private SpriteFont _FontArial14;
+        private SpriteBatch _SpriteBatch;
+        private FormCollection _FormCollection;
+        private bool _DrawForms = false;
         public string DebugMessage;
 
-        private Dictionary<string, Window> m_GUIWindows;
-        GameObjects.IGameObjects m_GameObjectsService;
-        Client.IUltimaClient m_GameClientService;
+        private Dictionary<string, Window> _GUIWindows;
+        GameObjects.IGameObjects _GameObjectsService;
+        Client.IUltimaClient _GameClientService;
 
-        private int m_MouseCursorIndex = int.MinValue; // set so it is always properly initialized to zero in Initialize();
-        private const int m_MouseCursorHolding = int.MaxValue;
-        private const int m_MouseCursorTargetting = int.MaxValue - 1;
+        private int _MouseCursorIndex = int.MinValue; // set so it is always properly initialized to zero in Initialize();
+        private const int _MouseCursorHolding = int.MaxValue;
+        private const int _MouseCursorTargetting = int.MaxValue - 1;
         public int MouseCursor
         {
-            get { return m_MouseCursorIndex; }
+            get { return _MouseCursorIndex; }
             set
             {
                 // Only change the mouse cursor when you need to.
-                if (m_MouseCursorIndex != value)
+                if (_MouseCursorIndex != value)
                 {
-                    m_MouseCursorIndex = value;
+                    _MouseCursorIndex = value;
                     GraphicsDeviceManager graphics = Game.Services.GetService(typeof(IGraphicsDeviceService)) as GraphicsDeviceManager;
-                    switch (m_MouseCursorIndex)
+                    switch (_MouseCursorIndex)
                     {
                         case 0:
                             // movement
@@ -61,16 +61,16 @@ namespace UltimaXNA.GUI
                             FormCollection.Cursor.Texture = Data.Art.GetStaticTexture(8307, graphics.GraphicsDevice);
                             FormCollection.Cursor.SourceRect = new Rectangle(1, 1, 31, 26);
                             break;
-                        case m_MouseCursorTargetting:
+                        case _MouseCursorTargetting:
                             // target
                             FormCollection.Cursor.Center = new Vector2(13, 13);
                             FormCollection.Cursor.Texture = Data.Art.GetStaticTexture(8310, graphics.GraphicsDevice);
                             FormCollection.Cursor.SourceRect = new Rectangle(1, 1, 46, 34);
                             break;
-                        case m_MouseCursorHolding:
+                        case _MouseCursorHolding:
                             // holding something.
                             FormCollection.Cursor.Center = new Vector2(0, 0);
-                            FormCollection.Cursor.Texture = GUIHelper.GetItemIcon(((GameObjects.GameObject)GUIHelper.MouseHoldingItem).ObjectTypeID);
+                            FormCollection.Cursor.Texture = GUIHelper.ItemIcon(((GameObjects.GameObject)GUIHelper.MouseHoldingItem).ObjectTypeID);
                             FormCollection.Cursor.SourceRect = new Rectangle(0, 0, 64, 64);
                             break;
                         default:
@@ -82,28 +82,28 @@ namespace UltimaXNA.GUI
                 }
             }
         }
-        private bool m_TargettingCursor = false;
+        private bool _TargettingCursor = false;
         public bool TargettingCursor
         {
             get
             {
-                return m_TargettingCursor;
+                return _TargettingCursor;
             }
             set
             {
                 // Only change it if we have to...
-                if (m_TargettingCursor != value)
+                if (_TargettingCursor != value)
                 {
-                    m_TargettingCursor = value;
-                    if (m_TargettingCursor == true)
+                    _TargettingCursor = value;
+                    if (_TargettingCursor == true)
                     {
                         // If we're carrying something in the mouse cursor...
-                        if (MouseCursor == m_MouseCursorHolding)
+                        if (MouseCursor == _MouseCursorHolding)
                         {
                             // drop it!
                             GUIHelper.MouseHoldingItem = null;
                         }
-                        MouseCursor = m_MouseCursorTargetting;
+                        MouseCursor = _MouseCursorTargetting;
                     }
                     else
                     {
@@ -123,25 +123,25 @@ namespace UltimaXNA.GUI
         public override void Initialize()
         {
             GraphicsDeviceManager graphics = Game.Services.GetService(typeof(IGraphicsDeviceService)) as GraphicsDeviceManager;
-            fontArial14 = Game.Content.Load<SpriteFont>(@"fonts\ArialNarrow10");
-            formCollection = new FormCollection(Game.Window, Game.Services, ref graphics, @"..\..\res\");
-            spriteBatch = new SpriteBatch(Game.GraphicsDevice);
-            m_GameObjectsService = (GameObjects.IGameObjects)Game.Services.GetService(typeof(GameObjects.IGameObjects));
-            m_GameClientService = (Client.IUltimaClient)Game.Services.GetService(typeof(Client.IUltimaClient));
+            _FontArial14 = Game.Content.Load<SpriteFont>(@"fonts\ArialNarrow10");
+            _FormCollection = new FormCollection(Game.Window, Game.Services, ref graphics, @"..\..\res\");
+            _SpriteBatch = new SpriteBatch(Game.GraphicsDevice);
+            _GameObjectsService = (GameObjects.IGameObjects)Game.Services.GetService(typeof(GameObjects.IGameObjects));
+            _GameClientService = (Client.IUltimaClient)Game.Services.GetService(typeof(Client.IUltimaClient));
             Events.Initialize(Game.Services);
-            GUIHelper.SetObjects(graphics.GraphicsDevice, this, m_GameClientService, m_GameObjectsService);
-            m_GUIWindows = new Dictionary<string, Window>();
-            mDrawForms = true;
+            GUIHelper.SetObjects(graphics.GraphicsDevice, this, _GameClientService, _GameObjectsService);
+            _GUIWindows = new Dictionary<string, Window>();
+            _DrawForms = true;
             MouseCursor = 0;
             base.Initialize();
         }
 
         protected override void UnloadContent()
         {
-            if (mDrawForms)
+            if (_DrawForms)
             {
                 //Dispose of the form collection
-                formCollection.Dispose();
+                _FormCollection.Dispose();
             }
         }
 
@@ -150,28 +150,28 @@ namespace UltimaXNA.GUI
             base.Update(gameTime);
 
             // Fix for issue 1. http://code.google.com/p/ultimaxna/issues/detail?id=1 --ZDW 6/17/09
-            if ((MouseCursor == m_MouseCursorHolding) && (GUIHelper.MouseHoldingItem == null))
+            if ((MouseCursor == _MouseCursorHolding) && (GUIHelper.MouseHoldingItem == null))
             {
                 MouseCursor = 0;
             }
             else if (GUIHelper.MouseHoldingItem != null)
             {
-                MouseCursor = m_MouseCursorHolding;
+                MouseCursor = _MouseCursorHolding;
             }
 
             // First update our collection of windows.
             mUpdateWindows();
 
-            if (mDrawForms)
+            if (_DrawForms)
             {
-                lock (formCollection)
+                lock (_FormCollection)
                 {
                     //Update the form collection
-                    formCollection.Update(gameTime);
-                    if (formCollection["msgbox"] != null)
-                        formCollection["msgbox"].Focus();
+                    _FormCollection.Update(gameTime);
+                    if (_FormCollection["msgbox"] != null)
+                        _FormCollection["msgbox"].Focus();
                     //Render the form collection (required before drawing)
-                    formCollection.Render();
+                    _FormCollection.Render();
                 }
             }
         }
@@ -179,24 +179,24 @@ namespace UltimaXNA.GUI
         public override void Draw(GameTime gameTime)
         {
             //Draw the form collection
-            if (mDrawForms)
+            if (_DrawForms)
             {
-                lock (formCollection)
+                lock (_FormCollection)
                 {
-                    formCollection.Draw();
+                    _FormCollection.Draw();
                 }
             }
 
             // Draw debug message
-            spriteBatch.Begin();
+            _SpriteBatch.Begin();
             if (DebugMessage != null)
-                spriteBatch.DrawString(fontArial14, DebugMessage,
+                _SpriteBatch.DrawString(_FontArial14, DebugMessage,
                     new Vector2(5, 58), Color.White, 0f, Vector2.Zero, 1,
                     SpriteEffects.None, 1f);
-            spriteBatch.DrawString(fontArial14, GUIHelper.TooltipMsg,
+            _SpriteBatch.DrawString(_FontArial14, GUIHelper.TooltipMsg,
                     new Vector2(GUIHelper.TooltipX, GUIHelper.TooltipY), Color.White, 0f, Vector2.Zero, 1,
                     SpriteEffects.None, 1f);
-            spriteBatch.End();
+            _SpriteBatch.End();
 
             base.Draw(gameTime);
         }
@@ -214,7 +214,7 @@ namespace UltimaXNA.GUI
 
         public Window Window(string nWindowName)
         {
-            try { return m_GUIWindows[nWindowName]; }
+            try { return _GUIWindows[nWindowName]; }
             catch
             {
                 // This window is not open.
@@ -224,16 +224,16 @@ namespace UltimaXNA.GUI
 
         public void CloseWindow(string nWindowName)
         {
-            Window w = m_GUIWindows[nWindowName];
+            Window w = _GUIWindows[nWindowName];
             if (w != null)
                 w.Close();
         }
 
         public void Reset()
         {
-            lock (formCollection)
+            lock (_FormCollection)
             {
-                foreach (KeyValuePair<string, Window> kvp in m_GUIWindows)
+                foreach (KeyValuePair<string, Window> kvp in _GUIWindows)
                 {
                     if (!kvp.Key.Contains("Error"))
                         CloseWindow(kvp.Key);
@@ -243,95 +243,95 @@ namespace UltimaXNA.GUI
 
         public void LoadInWorldGUI()
         {
-            lock (formCollection)
+            lock (_FormCollection)
             {
-                m_GUIWindows["LoginBG"].Close();
-                m_GUIWindows["LoginWindow"].Close();
-                m_GUIWindows.Add("ChatFrame", new Window_Chat(formCollection));
-                m_GUIWindows.Add("ChatInput", new Window_ChatInput(formCollection));
-                m_GUIWindows.Add("StatusFrame", new Window_StatusFrame(formCollection));
+                _GUIWindows["LoginBG"].Close();
+                _GUIWindows["LoginWindow"].Close();
+                _GUIWindows.Add("ChatFrame", new Window_Chat(_FormCollection));
+                _GUIWindows.Add("ChatInput", new Window_ChatInput(_FormCollection));
+                _GUIWindows.Add("StatusFrame", new Window_StatusFrame(_FormCollection));
             }
         }
 
         public void LoadLoginGUI()
         {
-            lock (formCollection)
+            lock (_FormCollection)
             {
-                if (!m_GUIWindows.ContainsKey("LoginWindow"))
+                if (!_GUIWindows.ContainsKey("LoginWindow"))
                 {
                     this.Reset();
-                    m_GUIWindows.Add("LoginBG", new Window_LoginBG(formCollection));
-                    m_GUIWindows.Add("LoginWindow", new Window_Login(formCollection));
+                    _GUIWindows.Add("LoginBG", new Window_LoginBG(_FormCollection));
+                    _GUIWindows.Add("LoginWindow", new Window_Login(_FormCollection));
                 }
             }
         }
 
         public void PaperDoll_Open(GameObjects.BaseObject nMobileObject)
         {
-            lock (formCollection)
+            lock (_FormCollection)
             {
                 string iContainerKey = "PaperDoll:" + nMobileObject.GUID;
-                if (m_GUIWindows.ContainsKey(iContainerKey))
+                if (_GUIWindows.ContainsKey(iContainerKey))
                 {
                     // focus the window
                 }
                 else
                 {
-                    m_GUIWindows.Add(iContainerKey, new Window_PaperDoll(nMobileObject, formCollection));
+                    _GUIWindows.Add(iContainerKey, new Window_PaperDoll(nMobileObject, _FormCollection));
                 }
             }
         }
 
         public void Container_Open(GameObjects.BaseObject nContainerObject, int nGump)
         {
-            lock (formCollection)
+            lock (_FormCollection)
             {
                 string iContainerKey = "Container:" + nContainerObject.GUID;
-                if (m_GUIWindows.ContainsKey(iContainerKey))
+                if (_GUIWindows.ContainsKey(iContainerKey))
                 {
                     // focus the window
                 }
                 else
                 {
-                    m_GUIWindows.Add(iContainerKey, new Window_Container(nContainerObject, formCollection));
+                    _GUIWindows.Add(iContainerKey, new Window_Container(nContainerObject, _FormCollection));
                 }
             }
         }
 
         public void Merchant_Open(GameObjects.BaseObject nContainerObject, int nGump)
         {
-            lock (formCollection)
+            lock (_FormCollection)
             {
                 string iContainerKey = "Merchant:" + nContainerObject.GUID;
-                if (m_GUIWindows.ContainsKey(iContainerKey))
+                if (_GUIWindows.ContainsKey(iContainerKey))
                 {
                     // focus the window
                 }
                 else
                 {
-                    m_GUIWindows.Add(iContainerKey, new Window_Merchant(nContainerObject, formCollection));
+                    _GUIWindows.Add(iContainerKey, new Window_Merchant(nContainerObject, _FormCollection));
                 }
             }
         }
 
         public void ErrorPopup_Modal(string nText)
         {
-            lock (formCollection)
+            lock (_FormCollection)
             {
-                if (m_GUIWindows.ContainsKey("ErrorModal"))
-                    m_GUIWindows.Remove("ErrorModal");
-                m_GUIWindows.Add("ErrorModal", new ErrorModal(formCollection, nText));
+                if (_GUIWindows.ContainsKey("ErrorModal"))
+                    _GUIWindows.Remove("ErrorModal");
+                _GUIWindows.Add("ErrorModal", new ErrorModal(_FormCollection, nText));
             }
             }
 
 
         private void mUpdateWindows()
         {
-            lock (formCollection)
+            lock (_FormCollection)
             {
                 bool iMustUpdateWindowList = false;
 
-                foreach (KeyValuePair<string, Window> w in m_GUIWindows)
+                foreach (KeyValuePair<string, Window> w in _GUIWindows)
                 {
                     if (!(w.Value.IsClosed))
                         w.Value.Update();
@@ -342,14 +342,14 @@ namespace UltimaXNA.GUI
                 if (iMustUpdateWindowList)
                 {
                     Dictionary<string, Window> iGUIWindows = new Dictionary<string, Window>();
-                    foreach (KeyValuePair<string, Window> w in m_GUIWindows)
+                    foreach (KeyValuePair<string, Window> w in _GUIWindows)
                     {
                         if (!w.Value.IsClosed)
                         {
                             iGUIWindows.Add(w.Key, w.Value);
                         }
                     }
-                    m_GUIWindows = iGUIWindows;
+                    _GUIWindows = iGUIWindows;
                 }
             }
         }
