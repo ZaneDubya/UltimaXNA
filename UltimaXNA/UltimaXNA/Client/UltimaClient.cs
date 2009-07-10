@@ -20,29 +20,29 @@ namespace UltimaXNA.Client
     {
         public UltimaClientStatus Status { get; protected set; }
 
-        private string mAccount; private string mPassword;
-        public void SetAccountPassword(string nAccount, string nPassword) { mAccount = nAccount; mPassword = nPassword; } 
-        private void clearAccountPassword() { mAccount = string.Empty; mPassword = string.Empty; }
+        private string _Account; private string _Password;
+        public void SetAccountPassword(string account, string password) { _Account = account; _Password = password; } 
+        private void clearAccountPassword() { _Account = string.Empty; _Password = string.Empty; }
 
-        private UltimaXNA.Network.ClientNetwork m_ClientNetwork;
-        private UltimaXNA.GUI.IGUI m_GUI;
-        private IGameObjects m_GameObjects;
-        private UltimaXNA.IGameState m_GameState;
+        private UltimaXNA.Network.ClientNetwork _ClientNetwork;
+        private UltimaXNA.GUI.IGUI _GUI;
+        private IGameObjects _GameObjects;
+        private UltimaXNA.IGameState _GameState;
 
         public UltimaClient(Game game)
             : base(game)
         {
             game.Services.AddService(typeof(IUltimaClient), this);
-            this.Status = UltimaClientStatus.Unconnected;
+            Status = UltimaClientStatus.Unconnected;
         }
 
         public override void Initialize()
         {
-            m_GUI = Game.Services.GetService(typeof(GUI.IGUI)) as GUI.IGUI;
-            m_GameObjects = Game.Services.GetService(typeof(GameObjects.IGameObjects)) as GameObjects.IGameObjects;
-            m_GameState = Game.Services.GetService(typeof(IGameState)) as IGameState;
+            _GUI = Game.Services.GetService(typeof(GUI.IGUI)) as GUI.IGUI;
+            _GameObjects = Game.Services.GetService(typeof(GameObjects.IGameObjects)) as GameObjects.IGameObjects;
+            _GameState = Game.Services.GetService(typeof(IGameState)) as IGameState;
 
-            m_ClientNetwork = new ClientNetwork();
+            _ClientNetwork = new ClientNetwork();
             m_RegisterPackets();
 
             base.Initialize();
@@ -51,7 +51,7 @@ namespace UltimaXNA.Client
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            m_ClientNetwork.Update();
+            _ClientNetwork.Update();
         }
 
         private void m_RegisterPackets()
@@ -128,31 +128,31 @@ namespace UltimaXNA.Client
             PacketRegistry.OnToolTipRevision += receive_ToolTipRevision;
             PacketRegistry.OnCompressedGump += receive_CompressedGump;
 
-            PacketRegistry.RegisterNetwork(m_ClientNetwork);
+            PacketRegistry.RegisterNetwork(_ClientNetwork);
         }
 
         public bool Connect(string ipAddressOrHostName, int port)
         {
-            bool success = m_ClientNetwork.Connect(ipAddressOrHostName, port);
+            bool success = _ClientNetwork.Connect(ipAddressOrHostName, port);
             if (success)
             {
-                this.Status = UltimaClientStatus.LoginServer_Connecting;
-                m_ClientNetwork.Send(new SeedPacket(1, 6, 0, 6, 2));
+                Status = UltimaClientStatus.LoginServer_Connecting;
+                _ClientNetwork.Send(new SeedPacket(1, 6, 0, 6, 2));
             }
             return success;
         }
 
         public void Disconnect()
         {
-            if (m_ClientNetwork.IsConnected)
-                m_ClientNetwork.Disconnect();
-            this.Status = UltimaClientStatus.Unconnected;
+            if (_ClientNetwork.IsConnected)
+                _ClientNetwork.Disconnect();
+            Status = UltimaClientStatus.Unconnected;
             clearAccountPassword();
         }
 
         public void Send(ISendPacket packet)
         {
-            bool success = m_ClientNetwork.Send(packet);
+            bool success = _ClientNetwork.Send(packet);
             if (!success)
             {
                 this.Disconnect();
@@ -179,7 +179,7 @@ namespace UltimaXNA.Client
                 iObject.Item_InvX = i.X;
                 iObject.Item_InvY = i.Y;
                 // ... and add it the container contents of the container.
-                GameObject iContainerObject = m_GameObjects.GetObject(i.ContainerGUID, ObjectType.GameObject) as GameObject;
+                GameObject iContainerObject = _GameObjects.GetObject(i.ContainerGUID, ObjectType.GameObject) as GameObject;
                 iContainerObject.ContainerObject.AddItem(iObject);
             }
         }
@@ -193,7 +193,7 @@ namespace UltimaXNA.Client
             iObject.Item_InvX = p.X;
             iObject.Item_InvY = p.Y;
             // ... and add it the container contents of the container.
-            GameObject iContainerObject = m_GameObjects.GetObject(p.ContainerSerial, ObjectType.GameObject) as GameObject;
+            GameObject iContainerObject = _GameObjects.GetObject(p.ContainerSerial, ObjectType.GameObject) as GameObject;
             if (iContainerObject != null)
                 iContainerObject.ContainerObject.AddItem(iObject);
             else
@@ -246,10 +246,10 @@ namespace UltimaXNA.Client
             // Only try to open a container of type Container. Note that GameObjects can
             // have container objects and will expose them when called through GetContainerObject(int)
             // instead of GetObject(int).
-            GameObjects.BaseObject iObject = m_GameObjects.GetObject(p.Serial, ObjectType.Object);
+            GameObjects.BaseObject iObject = _GameObjects.GetObject(p.Serial, ObjectType.Object);
             if (iObject.ObjectType == ObjectType.GameObject)
             {
-                m_GUI.Container_Open(iObject, p.GumpId);
+                _GUI.Container_Open(iObject, p.GumpId);
             }
             else
             {
@@ -275,7 +275,7 @@ namespace UltimaXNA.Client
         private void receive_DeleteObject(IRecvPacket packet)
         {
             RemoveEntityPacket p = (RemoveEntityPacket)packet;
-            m_GameObjects.RemoveObject(p.Serial);
+            _GameObjects.RemoveObject(p.Serial);
         }
 
         private void receive_DragItem(IRecvPacket packet)
@@ -376,18 +376,18 @@ namespace UltimaXNA.Client
             // We want to make sure we have the client object before we load the world.
             // If we don't, just set the status to login complete, which will then
             // load the world when we finally receive our client object.
-            if (m_GameObjects.MyGUID != 0)
-                this.Status = UltimaClientStatus.WorldServer_InWorld;
+            if (_GameObjects.MyGUID != 0)
+                Status = UltimaClientStatus.WorldServer_InWorld;
             else
-                this.Status = UltimaClientStatus.WorldServer_LoginComplete;
+                Status = UltimaClientStatus.WorldServer_LoginComplete;
         }
 
         private void receive_LoginRejection(IRecvPacket packet)
         {
             Disconnect();
             LoginRejectionPacket p = (LoginRejectionPacket)packet;
-            m_GUI.Reset();
-            m_GUI.ErrorPopup_Modal(p.Reason);
+            _GUI.Reset();
+            _GUI.ErrorPopup_Modal(p.Reason);
         }
 
         private void receive_MessageLocalizedAffix(IRecvPacket packet)
@@ -404,14 +404,14 @@ namespace UltimaXNA.Client
         {
             MobileAnimationPacket p = (MobileAnimationPacket)packet;
 
-            Unit iObject = m_GameObjects.GetObject(p.Serial, ObjectType.Unit) as Unit;
+            Unit iObject = _GameObjects.GetObject(p.Serial, ObjectType.Unit) as Unit;
             iObject.Animation(p.Action, p.FrameCount, p.RepeatCount, p.Reverse, p.Repeat, p.Delay);
         }
 
         private void receive_MobileIncoming(IRecvPacket packet)
         {
             MobileIncomingPacket p = (MobileIncomingPacket)packet;
-            Unit iMobile = m_GameObjects.GetObject(p.Serial, ObjectType.Unit) as Unit;
+            Unit iMobile = _GameObjects.GetObject(p.Serial, ObjectType.Unit) as Unit;
             iMobile.DisplayBodyID = p.BodyID;
             iMobile.Hue = (int)p.Hue;
             iMobile.Movement.SetPositionInstant((int)p.X, (int)p.Y, (int)p.Z);
@@ -434,7 +434,7 @@ namespace UltimaXNA.Client
         {
             MobileMovingPacket p = (MobileMovingPacket)packet;
 
-            Unit iObject = m_GameObjects.GetObject(p.Serial, ObjectType.Unit) as Unit;
+            Unit iObject = _GameObjects.GetObject(p.Serial, ObjectType.Unit) as Unit;
             iObject.SetFacing(p.Direction);
             iObject.DisplayBodyID = p.BodyID;
             // Issue 16 - Pet not showing at login - http://code.google.com/p/ultimaxna/issues/detail?id=16 - Smjert
@@ -457,7 +457,7 @@ namespace UltimaXNA.Client
         private void receive_MobileUpdate(IRecvPacket packet)
         {
             MobileUpdatePacket p = (MobileUpdatePacket)packet;
-            Unit iObject = m_GameObjects.GetObject(p.Serial, ObjectType.Unit) as Unit;
+            Unit iObject = _GameObjects.GetObject(p.Serial, ObjectType.Unit) as Unit;
             iObject.DisplayBodyID = p.BodyID;
             iObject.Hue = (int)p.Hue;
             iObject.Movement.SetPositionInstant((int)p.X, (int)p.Y, (int)p.Z);
@@ -473,13 +473,13 @@ namespace UltimaXNA.Client
         private void receive_MoveAck(IRecvPacket packet)
         {
             MoveAcknowledgePacket p = (MoveAcknowledgePacket)packet;
-            m_GameObjects.GetPlayerObject().Movement.MoveEventAck(p.Sequence);
+            _GameObjects.GetPlayerObject().Movement.MoveEventAck(p.Sequence);
         }
 
         private void receive_MoveRej(IRecvPacket packet)
         {
             MovementRejectPacket p = (MovementRejectPacket)packet;
-            m_GameObjects.GetPlayerObject().Movement.MoveEventRej(p.Sequence, p.X, p.Y, p.Z, p.Direction);
+            _GameObjects.GetPlayerObject().Movement.MoveEventRej(p.Sequence, p.X, p.Y, p.Z, p.Direction);
         }
 
         private void receive_NewSubserver(IRecvPacket packet)
@@ -496,7 +496,7 @@ namespace UltimaXNA.Client
         {
             ObjectPropertyListPacket p = (ObjectPropertyListPacket)packet;
 
-            BaseObject iObject = m_GameObjects.GetObject(p.Serial, ObjectType.Object);
+            BaseObject iObject = _GameObjects.GetObject(p.Serial, ObjectType.Object);
             iObject.PropertyList.Hash = p.Hash;
             iObject.PropertyList.Clear();
 
@@ -518,7 +518,7 @@ namespace UltimaXNA.Client
         private void receive_ObjectPropertyListUpdate(IRecvPacket packet)
         {
             ObjectPropertyListUpdatePacket p = (ObjectPropertyListUpdatePacket)packet;
-            BaseObject iObject = m_GameObjects.GetObject(p.Serial, ObjectType.Object);
+            BaseObject iObject = _GameObjects.GetObject(p.Serial, ObjectType.Object);
             if (iObject.PropertyList.Hash != p.RevisionHash)
             {
                 this.Send(new QueryPropertiesPacket(p.Serial));
@@ -538,8 +538,8 @@ namespace UltimaXNA.Client
         private void receive_OpenBuyWindow(IRecvPacket packet)
         {
             VendorBuyListPacket p = (VendorBuyListPacket)packet;
-            GameObject iObject = m_GameObjects.GetObject(p.VendorPackSerial, ObjectType.GameObject) as GameObject;
-            m_GUI.Merchant_Open(iObject, 0);
+            GameObject iObject = _GameObjects.GetObject(p.VendorPackSerial, ObjectType.GameObject) as GameObject;
+            _GUI.Merchant_Open(iObject, 0);
         }
 
         private void receive_OpenPaperdoll(IRecvPacket packet)
@@ -578,14 +578,14 @@ namespace UltimaXNA.Client
             LoginConfirmPacket p = (LoginConfirmPacket)packet;
 
             // When loading the player object, we must load the serial before the object.
-            m_GameObjects.MyGUID = p.Serial;
-            Player iPlayer = (Player)m_GameObjects.GetObject(p.Serial, ObjectType.Player);
+            _GameObjects.MyGUID = p.Serial;
+            Player iPlayer = (Player)_GameObjects.GetObject(p.Serial, ObjectType.Player);
             iPlayer.Movement.SetPositionInstant((int)p.X, (int)p.Y, (int)p.Z);
             iPlayer.SetFacing(p.Direction & 0x0F);
 
             // We want to make sure we have the client object before we load the world...
             if (Status == UltimaClientStatus.WorldServer_LoginComplete)
-                this.Status = UltimaClientStatus.WorldServer_InWorld;
+                Status = UltimaClientStatus.WorldServer_InWorld;
         }
 
         private void receive_PlayerMove(IRecvPacket packet)
@@ -627,7 +627,7 @@ namespace UltimaXNA.Client
         private void receive_RequestNameResponse(IRecvPacket packet)
         {
             RequestNameResponsePacket p = (RequestNameResponsePacket)packet;
-            Unit u = m_GameObjects.GetObject(p.Serial, ObjectType.Unit) as Unit;
+            Unit u = _GameObjects.GetObject(p.Serial, ObjectType.Unit) as Unit;
             u.Name = p.MobileName;
         }
 
@@ -654,7 +654,7 @@ namespace UltimaXNA.Client
         private void receive_ServerList(IRecvPacket packet)
         {
             ServerListPacket p = (ServerListPacket)packet;
-            this.Send(new SelectServerPacket(0));
+            this.Send(new SelectServerPacket(p.Servers[0].Index));
         }
 
         private void receive_SetWeather(IRecvPacket packet)
@@ -668,8 +668,8 @@ namespace UltimaXNA.Client
             // Normally, upon receiving this packet you would disconnect and
             // log in to the specified server. Since we are using RunUO, we don't
             // actually need to do this.
-            m_ClientNetwork.IsDecompressionEnabled = true;
-            this.Send(new GameLoginPacket(p.AccountId, mAccount, mPassword));
+            _ClientNetwork.IsDecompressionEnabled = true;
+            this.Send(new GameLoginPacket(p.AccountId, _Account, _Password));
             clearAccountPassword();
         }
 
@@ -739,12 +739,12 @@ namespace UltimaXNA.Client
                 throw (new Exception("KR Status not handled."));
             }
 
-            if (p.Serial != m_GameObjects.MyGUID)
+            if (p.Serial != _GameObjects.MyGUID)
             {
                 throw new Exception("Assumption that StatusBarInfo packet always is for player is wrong!");
             }
 
-            Unit u = (GameObjects.Unit)m_GameObjects.GetPlayerObject();
+            Unit u = (GameObjects.Unit)_GameObjects.GetPlayerObject();
             u.Name = p.PlayerName;
             u.Health.Update(p.CurrentHealth, p.MaxHealth);
             u.Stamina.Update(p.CurrentStamina, p.MaxStamina);
@@ -755,7 +755,7 @@ namespace UltimaXNA.Client
         private void receive_TargetCursor(IRecvPacket packet)
         {
             TargetCursorPacket p = (TargetCursorPacket)packet;
-            m_GameState.MouseTargeting(p.CursorID, p.CommandType);
+            _GameState.MouseTargeting(p.CursorID, p.CommandType);
         }
 
         private void receive_Time(IRecvPacket packet)
@@ -782,21 +782,21 @@ namespace UltimaXNA.Client
         private void receive_UpdateHealth(IRecvPacket packet)
         {
             UpdateHealthPacket p = (UpdateHealthPacket)packet;
-            Unit u = m_GameObjects.GetObject(p.Serial, ObjectType.Unit) as Unit;
+            Unit u = _GameObjects.GetObject(p.Serial, ObjectType.Unit) as Unit;
             u.Health.Update(p.Current, p.Max);
         }
 
         private void receive_UpdateMana(IRecvPacket packet)
         {
             UpdateManaPacket p = (UpdateManaPacket)packet;
-            Unit u = m_GameObjects.GetObject(p.Serial, ObjectType.Unit) as Unit;
+            Unit u = _GameObjects.GetObject(p.Serial, ObjectType.Unit) as Unit;
             u.Health.Update(p.Current, p.Max);
         }
 
         private void receive_UpdateStamina(IRecvPacket packet)
         {
             UpdateStaminaPacket p = (UpdateStaminaPacket)packet;
-            Unit u = m_GameObjects.GetObject(p.Serial, ObjectType.Unit) as Unit;
+            Unit u = _GameObjects.GetObject(p.Serial, ObjectType.Unit) as Unit;
             u.Health.Update(p.Current, p.Max);
         }
 
@@ -819,7 +819,7 @@ namespace UltimaXNA.Client
             // If the iItemID >= 0x4000, then this is a multiobject.
             if (p.ItemID <= 0x4000)
             {
-                GameObject iObject = m_GameObjects.GetObject((int)p.Serial, ObjectType.GameObject) as GameObject;
+                GameObject iObject = _GameObjects.GetObject((int)p.Serial, ObjectType.GameObject) as GameObject;
                 iObject.ObjectTypeID = p.ItemID;
                 iObject.Item_StackCount = p.StackAmount;
                 iObject.Hue = p.Hue;
@@ -835,7 +835,7 @@ namespace UltimaXNA.Client
         {
             WornItemPacket p = (WornItemPacket)packet;
             GameObject iObject = m_AddItem(p.Serial, p.ItemId, p.Hue, 0, 0);
-            Unit u = m_GameObjects.GetObject(p.ParentSerial, ObjectType.Unit) as Unit;
+            Unit u = _GameObjects.GetObject(p.ParentSerial, ObjectType.Unit) as Unit;
             u.Equipment[p.Layer] = iObject;
         }
 
@@ -869,7 +869,7 @@ namespace UltimaXNA.Client
 
         private GameObject m_AddItem(int nGUID, int nItemID, int nHue, int nContainerGUID, int nAmount)
         {
-            GameObject iObject = m_GameObjects.GetObject(nGUID, ObjectType.GameObject) as GameObject;
+            GameObject iObject = _GameObjects.GetObject(nGUID, ObjectType.GameObject) as GameObject;
             
             iObject.ObjectTypeID = nItemID;
             iObject.Hue = nHue;
