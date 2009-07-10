@@ -7,7 +7,7 @@ namespace UltimaXNA.Network
 {
     public class ContentItem
     {
-        public readonly Serial serial;
+        public readonly Serial Serial;
         public readonly int ItemID;
         public readonly int Amount;
         public readonly int X;
@@ -18,7 +18,7 @@ namespace UltimaXNA.Network
 
         public ContentItem(Serial serial, int itemId, int amount, int x, int y, int gridLocation, int containerGUID, int hue)
         {
-            this.serial = serial;
+            this.Serial = serial;
             this.ItemID = itemId;
             this.Amount = amount;
             this.X = x;

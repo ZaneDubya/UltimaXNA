@@ -32,7 +32,7 @@ namespace UltimaXNA.Network
         Disconnected
     }
 
-    public interface IGameClient
+    public interface IGameClient_Depreciated
     {
         void Send_MoveRequest(int nDirection, int nSequence, int nFastWalkKey);
         void Send_ConnectToLoginServer(string nIPAdress, int nPort, string nAccount, string nPassword);
@@ -50,7 +50,7 @@ namespace UltimaXNA.Network
         void Send_TargetObject(int nObjectGUID, int nX, int nY, int nZ, int nModelNumber);
     }
 
-    class GameClient : GameComponent, IGameClient
+    class GameClient_Depreciated : GameComponent, IGameClient_Depreciated
     {
         public ServerList ServerList;
         public ClientStatus Status;
@@ -71,10 +71,10 @@ namespace UltimaXNA.Network
         GameObjects.IGameObjects m_GameObjectsService;
         IGameState m_GameStateService;
 
-        public GameClient(Game game)
+        public GameClient_Depreciated(Game game)
             : base(game)
         {
-            game.Services.AddService(typeof(IGameClient), this);
+            game.Services.AddService(typeof(IGameClient_Depreciated), this);
             this.Status = ClientStatus.Unconnected;
         }
 
@@ -1516,19 +1516,19 @@ namespace UltimaXNA.Network
             int iDestX = nPacket.ReadUShort();
             int iDestY = nPacket.ReadUShort();
             int iDestZ = nPacket.ReadByte();
-            bool iSourceGround = false;
-            bool iDestGround = false;
+            // bool iSourceGround = false;
+            // bool iDestGround = false;
             //This is sent by the server to display an item being dragged from one place to another.
             // Note that this does not actually move the item, it just displays an animation.
 
             if (iSourceContainer == 0xFFFFFFFF)
             {
-                iSourceGround = true;
+                // iSourceGround = true;
             }
 
             if (iDestContainer == 0xFFFFFFFF)
             {
-                iDestGround = true;
+                // iDestGround = true;
             }
         }
 

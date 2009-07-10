@@ -28,7 +28,7 @@ namespace UltimaXNA.GameObjects
 
         private TileEngine.IWorld m_WorldService;
         private IGameState m_GameStateService;
-        private Network.IGameClient m_GameClientService;
+        private Client.IUltimaClient m_GameClientService;
         GUI.IGUI m_GUIService;
 
         public GameObjects(Game game)
@@ -41,7 +41,7 @@ namespace UltimaXNA.GameObjects
         {
             m_WorldService = (TileEngine.IWorld)Game.Services.GetService(typeof(TileEngine.IWorld));
             m_GameStateService = (IGameState)Game.Services.GetService(typeof(IGameState));
-            m_GameClientService = (Network.IGameClient)Game.Services.GetService(typeof(Network.IGameClient));
+            m_GameClientService = (Client.IUltimaClient)Game.Services.GetService(typeof(Client.IUltimaClient));
             m_GUIService = (GUI.IGUI)Game.Services.GetService(typeof(GUI.IGUI));
             base.Initialize();
         }
@@ -172,10 +172,11 @@ namespace UltimaXNA.GameObjects
         private void SendPacket_MoveItemWithinContainer(BaseObject nObject)
         {
             GameObject iObject = ((GameObject)nObject);
-            m_GameClientService.Send_PickUpItem(iObject.GUID, iObject.Item_StackCount);
-            m_GameClientService.Send_DropItem(iObject.GUID,
-                iObject.Item_InvX, iObject.Item_InvY,
-                0, iObject.Item_ContainedWithinGUID);
+            // NEW!!!
+            // m_GameClientService.Send_PickUpItem(iObject.GUID, iObject.Item_StackCount);
+            // m_GameClientService.Send_DropItem(iObject.GUID,
+            //     iObject.Item_InvX, iObject.Item_InvY,
+            //     0, iObject.Item_ContainedWithinGUID);
         }
 
         private void Unit_UpdateHealthStaminaMana(BaseObject nObject)

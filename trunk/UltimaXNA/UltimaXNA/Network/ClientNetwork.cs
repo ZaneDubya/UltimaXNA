@@ -19,7 +19,7 @@ namespace UltimaXNA.Network
         IPAddress _serverAddress;
         IPEndPoint _serverEndPoint;
 
-        int[] packetLengths;
+        int[] packetLengths = new int[byte.MaxValue];
 
         List<PacketHandler>[] _handlers;
         List<PacketHandler>[] _typedHandlers;
@@ -106,7 +106,7 @@ namespace UltimaXNA.Network
 
         public virtual void Register(int id, string name, int length, PacketReceiveHandler onReceive)
         {
-            if (id > byte.MaxValue)
+            if (id >= byte.MaxValue)
             {
                 throw new NetworkException(string.Format("Unable to register packet id {0:X2} because it is greater than byte.MaxValue", id));
             }

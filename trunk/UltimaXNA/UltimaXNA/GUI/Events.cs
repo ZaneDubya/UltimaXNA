@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using UltimaXNA.Network.Packets.Client;
 
 namespace UltimaXNA.GUI
 {
@@ -10,12 +11,12 @@ namespace UltimaXNA.GUI
     public static class Events
     {
         private static IGameState m_GameStateService;
-        private static Network.IGameClient m_GameClientService;
+        private static Client.IUltimaClient m_GameClientService;
 
         public static void Initialize(GameServiceContainer nContainer)
         {
             m_GameStateService = (IGameState)nContainer.GetService(typeof(IGameState));
-            m_GameClientService = (Network.IGameClient)nContainer.GetService(typeof(Network.IGameClient));
+            m_GameClientService = (Client.IUltimaClient)nContainer.GetService(typeof(Client.IUltimaClient));
         }
 
         public static void QuitImmediate()
@@ -23,9 +24,15 @@ namespace UltimaXNA.GUI
             m_GameStateService.EngineRunning = false;
         }
 
-        public static void Login(string nHost, int nPort, string nUsername, string nPassword)
+        public static bool Connect(string nHost, int nPort)
         {
-            m_GameClientService.Send_ConnectToLoginServer(nHost, nPort, nUsername, nPassword);
+            return m_GameClientService.Connect(nHost, nPort);
+        }
+
+        public static void Login(string nUsername, string nPassword)
+        {
+            m_GameClientService.SetAccountPassword(nUsername, nPassword);
+            m_GameClientService.Send(new LoginPacket(nUsername, nPassword));
         }
     }
 }

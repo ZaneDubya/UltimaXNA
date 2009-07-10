@@ -10,7 +10,7 @@ namespace UltimaXNA.Network.Packets.Server
         public LoginCompletePacket(PacketReader reader)
             : base(0x55, "Login Complete")
         {
-
+            // No data in this packet.
         }
     }
 }
