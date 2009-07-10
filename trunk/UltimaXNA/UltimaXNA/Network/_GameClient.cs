@@ -75,7 +75,7 @@ namespace UltimaXNA.Network
             : base(game)
         {
             game.Services.AddService(typeof(IGameClient_Depreciated), this);
-            this.Status = ClientStatus.Unconnected;
+            Status = ClientStatus.Unconnected;
         }
 
         public override void Initialize()
@@ -89,10 +89,10 @@ namespace UltimaXNA.Network
 
         public void Reset()
         {
-            if (this.Status != ClientStatus.Unconnected)
+            if (Status != ClientStatus.Unconnected)
             {
                 this.Disconnect();
-                this.Status = ClientStatus.Unconnected;
+                Status = ClientStatus.Unconnected;
             }
         }
 
@@ -279,7 +279,7 @@ namespace UltimaXNA.Network
         public void Send_ConnectToLoginServer(string nIPAdress, int nPort, string nAccount, string nPassword)
         {
             ConnectionStatus iStatus;
-            this.Status = ClientStatus.LoginServer_Connecting;
+            Status = ClientStatus.LoginServer_Connecting;
             m_Client = new SocketClient(nIPAdress, nPort, out iStatus);
             m_Client.LogFile = this.LogFile;
             if (iStatus == ConnectionStatus.Connected)
@@ -294,7 +294,7 @@ namespace UltimaXNA.Network
                 string iErrText = "Connection error: could not connect to " + nIPAdress + ":" + nPort.ToString() + ".";
                 // LogFile.WriteLine(iErrText);
                 m_GUIService.ErrorPopup_Modal(iErrText);
-                this.Status = ClientStatus.Error;
+                Status = ClientStatus.Error;
             }
         }
 
@@ -338,7 +338,7 @@ namespace UltimaXNA.Network
             Packet iPacket = new Packet(OpCodes.CMSG_SERVERSELECT);
             iPacket.Write((ushort)ServerIndex);
             this.SendPacket(iPacket);
-            this.Status = ClientStatus.LoginServer_ServerSelected;
+            Status = ClientStatus.LoginServer_ServerSelected;
         }
 
         private void mSend_GameServerLogin(uint nEncryption)
@@ -348,7 +348,7 @@ namespace UltimaXNA.Network
             iPacket.Write(m_Account);
             iPacket.Write(m_Password);
             this.SendPacket(iPacket);
-            this.Status = ClientStatus.GameServer_Connecting;
+            Status = ClientStatus.GameServer_Connecting;
             m_Account = null;
             m_Password = null;
             m_Client.UnpackPackets = true;
@@ -366,7 +366,7 @@ namespace UltimaXNA.Network
             iPacket.Write(nSlotChosen);
             iPacket.Write(new byte[4] {127, 0, 0, 1 } );
             this.SendPacket(iPacket);
-            this.Status = ClientStatus.GameServer_LoggingIn;
+            Status = ClientStatus.GameServer_LoggingIn;
         }
 
         private void mSend_ClientVersion()
@@ -551,7 +551,7 @@ namespace UltimaXNA.Network
             byte iFlags = nPacket.ReadByte();
             ushort iNumServers = nPacket.ReadUShort();
             this.ServerList = new ServerList(nPacket, iNumServers);
-            this.Status = ClientStatus.LoginServer_HasServerList;
+            Status = ClientStatus.LoginServer_HasServerList;
         }
 
         private void m_ReceiveServerRedirect(Packet nPacket)
@@ -614,7 +614,7 @@ namespace UltimaXNA.Network
 
             uint iFlags = nPacket.ReadUInt();
 
-            this.Status = ClientStatus.GameServer_ConnectedAndCharList;
+            Status = ClientStatus.GameServer_ConnectedAndCharList;
             mSend_LoginCharacter(iFirstCharName, 0);
         }
 
@@ -653,7 +653,7 @@ namespace UltimaXNA.Network
             iPlayer.SetFacing(iFacing & 0x0F);
 
             // We want to make sure we have the client object before we load the world...
-            if (this.Status == ClientStatus.InWorld)
+            if (Status == ClientStatus.InWorld)
                 m_GameStateService.InWorld = true;
         }
 
@@ -969,7 +969,7 @@ namespace UltimaXNA.Network
         {
             // This packet is just one byte, the opcode.
             // Congrats, login complete!
-			this.Status = ClientStatus.InWorld;
+			Status = ClientStatus.InWorld;
             // We want to make sure we have the client object before we load the world...
             if (m_GameObjectsService.MyGUID != 0)
 			    m_GameStateService.InWorld = true;

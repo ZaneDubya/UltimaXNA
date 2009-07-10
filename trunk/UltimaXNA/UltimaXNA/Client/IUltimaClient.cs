@@ -17,9 +17,10 @@
     interface IUltimaClient
     {
         UltimaClientStatus Status { get; }
-        void SetAccountPassword(string nAccount, string nPassword);
+        
         bool Connect(string ipAddressOrHostName, int port);
         void Disconnect();
         void Send(UltimaXNA.Network.ISendPacket packet);
+        void SetAccountPassword(string nAccount, string nPassword);
     }
 }
