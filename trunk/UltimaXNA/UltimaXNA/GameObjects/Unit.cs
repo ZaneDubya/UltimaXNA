@@ -52,35 +52,6 @@ namespace UltimaXNA.GameObjects
         {
             get { return Equipment[(int)EquipLayer.Mount] != null; }
         }
-        // These will be added later ...
-        // public int CharmingSerial = 0;
-        // public int SummoningSerial = 0;
-        // public int CharmedBySerial = 0;
-        // public int SummonedBySerial = 0;
-        // public int CreatedBySerial = 0;
-        // public int CritterSerial = 0;
-        // public int PetSerial = 0;
-        // public int TargetSerial = 0;
-        // public int ChannelObjectSerial = 0;
-
-        // public int Bytes0 = 0, Bytes1 = 0, Bytes2 = 0;
-        
-        // public int Level = 0, PetLevel = 0;
-        // public int FactionTemplate = 0;
-
-        // public int Flags1 = 0, Flags2 = 0, FlagsDynamic = 0, FlagsNPC = 0;
-        // public int BaseAttackTime = 0, RangedAttackTime = 0;
-        
-        // public int[] VirtualDisplayID = new int[3];
-
-        // public int MinDamage = 0, MaxDamage = 0;
-        // public int MinDamageOffhand = 0, MaxDamageOffhand = 0;
-        // public int MinDamageRanged = 0, MaxDamageRanged = 0;
-        // public CurrentMaxValue AttackPower;
-
-        // public BaseModValue Stat0, Stat1, Stat2, Stat3, Stat4;
-        // public BaseModValue[] Resistances = new BaseModValue[8];
-
 		// Issue 14 - Wrong layer draw order - http://code.google.com/p/ultimaxna/issues/detail?id=14 - Smjert
 		// Changed the order for Mount and Helm
 		private int[] m_DrawLayers = new int[20]
@@ -97,12 +68,12 @@ namespace UltimaXNA.GameObjects
             (int)EquipLayer.InnerTorso,
             (int)EquipLayer.FacialHair,
             (int)EquipLayer.MiddleTorso,
-            (int)EquipLayer.OuterTorso,
-            (int)EquipLayer.Arms,
-            (int)EquipLayer.Cloak,
             (int)EquipLayer.OuterLegs,
             (int)EquipLayer.OuterLegs,
             (int)EquipLayer.InnerLegs,
+            (int)EquipLayer.OuterTorso,
+            (int)EquipLayer.Arms,
+            (int)EquipLayer.Cloak,
 			(int)EquipLayer.Helm,
             (int)EquipLayer.TwoHanded,
 		};
