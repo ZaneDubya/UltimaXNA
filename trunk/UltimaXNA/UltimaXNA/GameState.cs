@@ -213,28 +213,10 @@ namespace UltimaXNA
                         if (!(_Input.Keyboard.IsKeyDown(Keys.U)))
                             if (GUI.GUIHelper.MouseHoldingItem != null)
                             {
-                                if (_GUI.IsMouseOverGUI(_Input.Mouse.Position))
-                                {
-                                    // The mouse is over the GUI.
-                                    // We have to expect that the GUI will take care of it.
-                                    // GUI.GUIHelper.MouseHoldingItem = null;
-                                }
-                                else
+                                if (!_GUI.IsMouseOverGUI(_Input.Mouse.Position))
                                 {
                                     // We dropped the icon in the world. This means we are trying to drop the item
                                     // into the world. Let's do it!
-                                    // mGameClientService.Send(
-                                    //     new PickupItemPacket(
-                                    //         GUI.GUIHelper.MouseHoldingItem.Serial,
-                                    //         (short)((GameObjects.GameObject)GUI.GUIHelper.MouseHoldingItem).Item_StackCount
-                                    //         ));
-                                    // mGameClientService.Send(
-                                    //    new DropItemPacket(
-                                    //        GUI.GUIHelper.MouseHoldingItem.Serial,
-                                    //        (short)mGameObjectsService.GetPlayerObject().Movement.TileX,
-                                    //        (short)mGameObjectsService.GetPlayerObject().Movement.TileY,
-                                    //        0, 0, -1
-                                    //        ));
                                     if (((GameObjects.GameObject)GUI.GUIHelper.MouseHoldingItem).Item_ContainedWithinSerial != 0)
                                     {
                                         // We must manually remove the item from the container, as RunUO does not do this for us.
@@ -243,9 +225,10 @@ namespace UltimaXNA
                                             UltimaXNA.GameObjects.ObjectType.GameObject) as GameObjects.GameObject;
                                         iContainer.ContainerObject.RemoveItem(GUI.GUIHelper.MouseHoldingItem.Serial);
                                     }
-
-                                    GUI.GUIHelper.MouseHoldingItem = null;
-
+                                    GUI.GUIHelper.DropItemOntoGround(
+                                        _GameObjects.GetPlayerObject().Movement.TileX,
+                                        _GameObjects.GetPlayerObject().Movement.TileY,
+                                        0);
                                 }
 
                             }
@@ -420,23 +403,23 @@ namespace UltimaXNA
             // Toggle for backpack container window.
             if (keyboard.IsKeyPressed(Keys.B) && (keyboard.IsKeyDown(Keys.LeftControl)))
             {
-                int iBackpackSerial = ((GameObjects.Player)_GameObjects.GetPlayerObject())
+                Serial backpackSerial = ((GameObjects.Player)_GameObjects.GetPlayerObject())
                     .Equipment[(int)GameObjects.EquipLayer.Backpack].Serial;
-                if (_GUI.Window("Container:" + iBackpackSerial) == null)
-                    _GameClient.Send(new DoubleClickPacket(iBackpackSerial));
+                if (_GUI.Window("Container:" + backpackSerial) == null)
+                    _GameClient.Send(new DoubleClickPacket(backpackSerial));
                 else
-                    _GUI.CloseWindow("Container:" + iBackpackSerial);
+                    _GUI.CloseWindow("Container:" + backpackSerial);
             }
 
             // Toggle for paperdoll window.
             if (keyboard.IsKeyPressed(Keys.C) && (keyboard.IsKeyDown(Keys.LeftControl)))
             {
-                int iMobileSerial = ((GameObjects.Player)_GameObjects.GetPlayerObject())
+                Serial serial = ((GameObjects.Player)_GameObjects.GetPlayerObject())
                     .Serial;
-                if (_GUI.Window("PaperDoll:" + iMobileSerial) == null)
+                if (_GUI.Window("PaperDoll:" + serial) == null)
                     _GUI.PaperDoll_Open(_GameObjects.GetPlayerObject());
                 else
-                    _GUI.CloseWindow("PaperDoll:" + iMobileSerial);
+                    _GUI.CloseWindow("PaperDoll:" + serial);
             }
 
             // Toggle for logout
