@@ -82,7 +82,7 @@ namespace UltimaXNA.GUI
                 if (iHeldObject.Wearer.Serial == _GameObjectsService.MySerial)
                 {
                     // we are wearing this item. Go ahead and drop it into the requested slot.
-                    _GameClientService.Send(new PickupItemPacket(iHeldObject.Serial, (short)0));
+                    _GameClientService.Send(new PickupItemPacket(iHeldObject.Serial, (short)iHeldObject.Item_StackCount));
                     _GameClientService.Send(new DropItemPacket(iHeldObject.Serial, (short)nDestSlot, (short)0x7FFF,
                         0, 0, iDestContainer.Serial));
                 }
@@ -101,18 +101,26 @@ namespace UltimaXNA.GUI
                 {
                     if (iDestContainer.ContainerObject.GetContents(nDestSlot) == null)
                     {
-                        _GameClientService.Send(new PickupItemPacket(iHeldObject.Serial, (short)0));
+                        _GameClientService.Send(new PickupItemPacket(iHeldObject.Serial, (short)iHeldObject.Item_StackCount));
                         _GameClientService.Send(new DropItemPacket(iHeldObject.Serial, (short)nDestSlot, (short)0x7FFF,
                             0, 0, iDestContainer.Serial));
                     }
                     else
                     {
-                        _GameClientService.Send(new PickupItemPacket(iHeldObject.Serial, (short)0));
+                        _GameClientService.Send(new PickupItemPacket(iHeldObject.Serial, (short)iHeldObject.Item_StackCount));
                         _GameClientService.Send(new DropItemPacket(iHeldObject.Serial, (short)0, (short)0,
                             0, 0, iDestContainer.Serial));
                     }
                 }
             }
+            GUI.GUIHelper.MouseHoldingItem = null;
+        }
+
+        public static void DropItemOntoGround(int x, int y, int z)
+        {
+            GameObjects.GameObject iHeldObject = (GameObjects.GameObject)MouseHoldingItem;
+            _GameClientService.Send(new PickupItemPacket(iHeldObject.Serial, (short)iHeldObject.Item_StackCount));
+            _GameClientService.Send(new DropItemPacket(iHeldObject.Serial, (short)x, (short)y, (byte)z, 0, 0));
             GUI.GUIHelper.MouseHoldingItem = null;
         }
 
