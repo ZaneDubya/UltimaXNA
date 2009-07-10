@@ -175,6 +175,7 @@
     <Compile Include="Network\Packets\Client\AttackRequestPacket.cs" />
     <Compile Include="Network\Packets\Client\BuyItemsPacket.cs" />
     <Compile Include="Network\Packets\Client\ClientVersionPacket.cs" />
+    <Compile Include="Network\Packets\Client\ContextMenuResponse.cs" />
     <Compile Include="Network\Packets\Client\CreateCharacterPacket.cs" />
     <Compile Include="Network\Packets\Client\DeleteCharacterPacket.cs" />
     <Compile Include="Network\Packets\Client\DisconnectNotificationPacket.cs" />

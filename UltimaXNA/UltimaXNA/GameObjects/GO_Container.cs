@@ -184,53 +184,40 @@ namespace UltimaXNA.GameObjects
 
         }
 
-        public void AddItem(GameObject nObject)
+        public void AddItem(GameObject item)
         {
             // The server often sends as list of all the items in a container.
             // We want to filter out items we already have in our list.
-            if ((_ParentObject.Wearer != null) && (_ParentObject.Wearer.ObjectType != ObjectType.Player))
+            if (_contents.ContainsItem(item.Serial))
             {
-                // We can't move items in that we don't own.
-                // This is only a temporary fix! What about moving things around in boxes?
-                if (_contents.ContainsItem(nObject.Serial))
+                // We know the object is already in our container.
+            }
+            else
+            {
+                // The item is not in our container. We need to place it in a slot.
+                addItem(item);
+            }
+        }
+
+        private void addItem(GameObject item)
+        {
+            if (item.Item_InvY == 0x7FFF)
+            {
+                if (_contents[item.Item_InvX] == null)
                 {
-                    // don't add, already included.
-                    return;
+                    item.Item_InvSlot = item.Item_InvX;
+                    _contents[item.Item_InvSlot] = item;
                 }
                 else
                 {
-                    // mContentsClass[mContentsClass.NextAvailableSlot] = nObject;
-                    return;
+                    item.Item_InvSlot = _contents.NextAvailableSlot;
+                    _contents[item.Item_InvSlot] = item;
                 }
             }
             else
             {
-                if (_contents.ContainsItem(nObject.Serial))
-                {
-                    // We know the object is already in our container.
-                }
-                else
-                {
-                    // The item is not in our container. We need to place it in a slot.
-                    if (nObject.Item_InvY == 0x7FFF)
-                    {
-                        if (_contents[nObject.Item_InvX] == null)
-                        {
-                            nObject.Item_InvSlot = nObject.Item_InvX;
-                            _contents[nObject.Item_InvSlot] = nObject;
-                        }
-                        else
-                        {
-                            nObject.Item_InvSlot = _contents.NextAvailableSlot;
-                            _contents[nObject.Item_InvSlot] = nObject;
-                        }
-                    }
-                    else
-                    {
-                        nObject.Item_InvSlot = _contents.NextAvailableSlot;
-                        _contents[nObject.Item_InvSlot] = nObject;
-                    }
-                }
+                item.Item_InvSlot = _contents.NextAvailableSlot;
+                _contents[item.Item_InvSlot] = item;
             }
         }
 
