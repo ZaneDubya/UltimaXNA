@@ -14,29 +14,29 @@ namespace UltimaXNA.TileEngine
         private int m_ID;
         private int m_Hue;
         private int m_Tiebreaker;
-        private int m_OwnerGUID;
+        private int m_OwnerSerial;
         private int m_Direction;
 
         private Vector3 m_Position;
         public Vector2 Position { get { return new Vector2(m_Position.X, m_Position.Y); } }
 
-        public GameObjectTile(int nID, Vector3 nPosition, int nDirection, int nOwnerGUID, int nHue)
+        public GameObjectTile(int nID, Vector3 nPosition, int nDirection, int nOwnerSerial, int nHue)
         {
             m_ID = nID;
             m_Direction = nDirection;
-            m_OwnerGUID = nOwnerGUID;
+            m_OwnerSerial = nOwnerSerial;
             m_Tiebreaker = 0;
             m_Hue = nHue;
             m_Position = nPosition;
         }
 
         /// <summary>
-        /// The GUID (int) of the owner GameObject.
+        /// The Serial (int) of the owner GameObject.
         /// </summary>
-        public int OwnerGUID
+        public int OwnerSerial
         {
-            get { return m_OwnerGUID; }
-            set { m_OwnerGUID = value; }
+            get { return m_OwnerSerial; }
+            set { m_OwnerSerial = value; }
         }
 
         public int Direction

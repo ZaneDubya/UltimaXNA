@@ -105,7 +105,7 @@ namespace UltimaXNA.Network.Packets.Server
 
             for(int i = 0; i < equipCount; i++)
             {
-                int serial = reader.ReadInt32();
+                Serial serial = reader.ReadInt32();
 
                 ushort gumpId = reader.ReadUInt16();
                 byte layer = reader.ReadByte();

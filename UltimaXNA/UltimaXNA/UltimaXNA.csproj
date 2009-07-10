@@ -128,7 +128,6 @@
     <Compile Include="GUI\Windows\StatusFrame.cs" />
     <Compile Include="GUI\Windows\Window.cs" />
     <Compile Include="GUI\Windows\Chat.cs" />
-    <Compile Include="GUI\SpriteSheet.cs" />
     <Compile Include="GUI\GUI.cs" />
     <Compile Include="MiscUtil\HuffmanDecomp.cs" />
     <Compile Include="Input\Cursor.cs" />

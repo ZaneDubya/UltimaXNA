@@ -30,7 +30,7 @@ namespace UltimaXNA.GUI
         }
         int[] _SlotsItemIDs;
 
-        public int GUID { get { return mContainerObject.GUID; } }
+        public Serial serial { get { return mContainerObject.Serial; } }
 
         public Window_Container(GameObjects.BaseObject nContainerObject, FormCollection nFormCollection)
             : base(nFormCollection)
@@ -38,7 +38,7 @@ namespace UltimaXNA.GUI
             mContainerObject = (GameObjects.GameObject)nContainerObject;
 
             //Create a new form
-            string iFormName = "frmContainer:" + mContainerObject.GUID;
+            string iFormName = "frmContainer:" + mContainerObject.Serial;
             m_FormCollection.Add(new Form(iFormName, "", mWindowSize, new Vector2(800 - 256, 600 - 256), Form.BorderStyle.None));
             _MyForm = m_FormCollection[iFormName];
             _MyForm.BorderName = null;
@@ -47,7 +47,7 @@ namespace UltimaXNA.GUI
 
             _MyForm.Controls.Add(new PictureBox("picBG", mBGOffset, @"GUI\CONTAINERFRAME\UI-Bag-4x4.png", 256, 256, 0));
 
-            _MyForm.Controls.Add(new Label("lblContainer", new Vector2(16f, 7f), "ContainerFrame | " + GUIHelper.GUIDHex(mContainerObject.GUID),
+            _MyForm.Controls.Add(new Label("lblContainer", new Vector2(16f, 7f), "ContainerFrame | " + GUIHelper.SerialHex(mContainerObject.Serial),
                 Color.TransparentBlack, Color.White, 160, Label.Align.Left));
             _MyForm["lblContainer"].FontName = "ArialNarrow10";
 

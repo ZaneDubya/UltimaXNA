@@ -14,7 +14,7 @@ namespace UltimaXNA.GUI
 
         private int mScrollY, mMaxScrollY = 0;
 
-        public int GUID { get { return mContainerObject.GUID; } }
+        public Serial serial { get { return mContainerObject.Serial; } }
 
         public Window_Merchant(GameObjects.BaseObject nContainerObject, FormCollection nFormCollection)
             : base(nFormCollection)
@@ -22,7 +22,7 @@ namespace UltimaXNA.GUI
             mContainerObject = (GameObjects.GameObject)nContainerObject;
 
             //Create a new form
-            string iFormName = "frmMerchant:" + mContainerObject.GUID;
+            string iFormName = "frmMerchant:" + mContainerObject.Serial;
             m_FormCollection.Add(new Form(iFormName, "", mWindowSize, new Vector2(200, 200), Form.BorderStyle.None));
             _MyForm = m_FormCollection[iFormName];
             _MyForm.BorderName = null;
@@ -88,7 +88,7 @@ namespace UltimaXNA.GUI
             if (iItem != null)
             {
                 // pick the item up!
-                GUIHelper.BuyItemFromVendor(mContainerObject.Wearer.GUID, iItem.GUID, 1);
+                GUIHelper.BuyItemFromVendor(mContainerObject.Wearer.Serial, iItem.Serial, 1);
             }
         }
 

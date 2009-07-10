@@ -270,7 +270,7 @@ namespace UltimaXNA.GUI
         {
             lock (_FormCollection)
             {
-                string iContainerKey = "PaperDoll:" + nMobileObject.GUID;
+                string iContainerKey = "PaperDoll:" + nMobileObject.Serial;
                 if (_GUIWindows.ContainsKey(iContainerKey))
                 {
                     // focus the window
@@ -286,7 +286,7 @@ namespace UltimaXNA.GUI
         {
             lock (_FormCollection)
             {
-                string iContainerKey = "Container:" + nContainerObject.GUID;
+                string iContainerKey = "Container:" + nContainerObject.Serial;
                 if (_GUIWindows.ContainsKey(iContainerKey))
                 {
                     // focus the window
@@ -302,7 +302,7 @@ namespace UltimaXNA.GUI
         {
             lock (_FormCollection)
             {
-                string iContainerKey = "Merchant:" + nContainerObject.GUID;
+                string iContainerKey = "Merchant:" + nContainerObject.Serial;
                 if (_GUIWindows.ContainsKey(iContainerKey))
                 {
                     // focus the window

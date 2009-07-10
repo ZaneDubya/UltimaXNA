@@ -14,13 +14,14 @@ namespace UltimaXNA.GameObjects
     // This is the class which contains the contents of a container's slots.
     class GameObject_ContainerContents
     {
-        private const int mNumSlots = 0x100;
-        private GameObject[] mSlots = new GameObject[mNumSlots];
+        private const int _NumberOfSlots = 0x100;
+        private GameObject[] _SlotContents = new GameObject[_NumberOfSlots];
 
         // LastSlotOccupied is set to the value of the last slot within the container which has an object
         // within it. This is useful for: 1. Knowing how far through the container array to iterate when
         // looking for an object; 2. Knowing how many slots a ContainerFrame should show.
-        public int LastSlotOccupied { get { return mLastSlotOccupied; } } private int mLastSlotOccupied = 0;
+        private int _LastSlotOccupied = 0;
+        public int LastSlotOccupied { get { return _LastSlotOccupied; } } 
 
         // Whenever we change the contents of mContents in any way, we increment UpdateTicker.
         // When this value is different from the last time you checked it, you should update
@@ -33,9 +34,9 @@ namespace UltimaXNA.GameObjects
         {
             get
             {
-                for (int i = 0; i < mNumSlots; i++)
+                for (int i = 0; i < _NumberOfSlots; i++)
                 {
-                    if (mSlots[i] == null)
+                    if (_SlotContents[i] == null)
                         return i;
                 }
                 throw (new Exception("No open slot!"));
@@ -46,43 +47,43 @@ namespace UltimaXNA.GameObjects
         {
             get
             {
-                if (nIndex > mNumSlots)
+                if (nIndex > _NumberOfSlots)
                     return null;
-                return mSlots[nIndex];
+                return _SlotContents[nIndex];
             }
             set
             {
-                mSlots[nIndex] = value;
+                _SlotContents[nIndex] = value;
                 UpdateTicker++;
-                m_UpdateLastSlot(nIndex);
+                updateLastSlot(nIndex);
             }
         }
 
         // This should be called whenever we change the contents of a slot.
         // * nSlotIndex: the Index of the slot being changed.
-        private void m_UpdateLastSlot(int nIndex)
+        private void updateLastSlot(int nIndex)
         {
             // iSlotOccupied: set to true if the slot is currently occupied, false if not.
-            bool iSlotOccupied = mSlots[nIndex] != null ? true : false;
+            bool isSlotOccupied = _SlotContents[nIndex] != null ? true : false;
 
-            if (iSlotOccupied)
+            if (isSlotOccupied)
             {
                 // This slot has an item in it. Is it the last slot occupied?
                 // If so, set mLastSlotOccupied to the index of this slot.
-                if (mLastSlotOccupied < nIndex)
-                    mLastSlotOccupied = nIndex;
+                if (_LastSlotOccupied < nIndex)
+                    _LastSlotOccupied = nIndex;
             }
             else
             {
                 // This slot has been vacated. If it used to be the last slot occupied, count back until
                 // you find an occupied slot.
-                if (mLastSlotOccupied == nIndex)
+                if (_LastSlotOccupied == nIndex)
                 {
-                    for (int i = mLastSlotOccupied; i >= 0; i--)
+                    for (int i = _LastSlotOccupied; i >= 0; i--)
                     {
-                        if (mSlots[i] != null)
+                        if (_SlotContents[i] != null)
                         {
-                            mLastSlotOccupied = i;
+                            _LastSlotOccupied = i;
                             return;
                         }
                     }
@@ -90,29 +91,29 @@ namespace UltimaXNA.GameObjects
             }
         }
 
-        // Does mSlots[] contain an item with GUID = nGUID?
-        public bool ContainsItem(int nGUID)
+        // Does mSlots[] contain an item with Serial = serial?
+        public bool ContainsItem(Serial serial)
         {
-            for (int i = 0; i < mNumSlots; i++)
+            for (int i = 0; i < _NumberOfSlots; i++)
             {
-                if (mSlots[i] != null)
+                if (_SlotContents[i] != null)
                 {
-                    if (mSlots[i].GUID == nGUID)
+                    if (_SlotContents[i].Serial == serial)
                         return true;
                 }
             }
             return false;
         }
 
-        public void RemoveItemByGUID(int nGUID)
+        public void RemoveItemBySerial(Serial serial)
         {
-            for (int i = 0; i < mNumSlots; i++)
+            for (int i = 0; i < _NumberOfSlots; i++)
             {
-                if (mSlots[i] != null)
+                if (_SlotContents[i] != null)
                 {
-                    if (mSlots[i].GUID == nGUID)
+                    if (_SlotContents[i].Serial == serial)
                     {
-                        mSlots[i] = null;
+                        _SlotContents[i] = null;
                         UpdateTicker++;
                     }
                 }
@@ -123,33 +124,33 @@ namespace UltimaXNA.GameObjects
     class GameObject_Container
     {
         // The parent object. All Containers are part of GameObjects. We need a way to reference them.
-        private GameObject m_ParentObject;
+        private GameObject _ParentObject;
         // All the contents of the container are kept in the mContents class,
         // unless they are being moved between slots or into or out of the container.
-        private GameObject_ContainerContents mContentsClass = new GameObject_ContainerContents();
+        private GameObject_ContainerContents _contents = new GameObject_ContainerContents();
         // Update tickers are referenced by the GUI - when this value changes, the GUI knows to update.
-        public int UpdateTicker { get { return mContentsClass.UpdateTicker; } }
+        public int UpdateTicker { get { return _contents.UpdateTicker; } }
         // Get the last occupied slot, so the GUI knows how many slots to draw.
-        public int LastSlotOccupied { get { return mContentsClass.LastSlotOccupied; } }
+        public int LastSlotOccupied { get { return _contents.LastSlotOccupied; } }
 
         public GameObject_Container(GameObject nParent)
         {
-            m_ParentObject = nParent;
+            _ParentObject = nParent;
         }
 
         public void Event_MoveItemToSlot(GameObject nObject, int nSlot)
         {
             // Is the destination slot empty?
-            if (mContentsClass[nSlot] == null)
+            if (_contents[nSlot] == null)
             {
                 // if this container already contains this item, then temporarily remove it so that 
                 // we don't end up with two copies.
-                if (mContentsClass.ContainsItem(nObject.GUID))
-                    mContentsClass.RemoveItemByGUID(nObject.GUID);
+                if (_contents.ContainsItem(nObject.Serial))
+                    _contents.RemoveItemBySerial(nObject.Serial);
                 nObject.Item_InvSlot = nSlot;
-                mContentsClass[nObject.Item_InvSlot] = nObject;
+                _contents[nObject.Item_InvSlot] = nObject;
             }
-            else if (mContentsClass[nSlot] == nObject)
+            else if (_contents[nSlot] == nObject)
             {
                 // No need to do anything here - this object is already in this slot!
             }
@@ -157,23 +158,23 @@ namespace UltimaXNA.GameObjects
             {
                 // we need to put the other object in temporary storage...
                 int iSourceSlot = nObject.Item_InvSlot;
-                GameObject iSwitchItem = mContentsClass[nSlot];
+                GameObject iSwitchItem = _contents[nSlot];
 
                 // is the dest object the same type as the source object type?
-                if (nObject.ItemData.Name == mContentsClass[nSlot].ItemData.Name)
+                if (nObject.ItemData.Name == _contents[nSlot].ItemData.Name)
                 {
                     // We are merging two objects.
                     GUI.Events.PickupItem(nObject);
-                    GUI.Events.DropItem(nObject, 0, 0, 0, iSwitchItem.GUID);
-                    mContentsClass.RemoveItemByGUID(nObject.GUID);
+                    GUI.Events.DropItem(nObject, 0, 0, 0, iSwitchItem.Serial);
+                    _contents.RemoveItemBySerial(nObject.Serial);
                 }
                 else
                 {
                     // We are switching these two objects.
                     nObject.Item_InvSlot = nSlot;
-                    mContentsClass[nSlot] = nObject;
+                    _contents[nSlot] = nObject;
                     iSwitchItem.Item_InvSlot = iSourceSlot;
-                    mContentsClass[iSourceSlot] = iSwitchItem;
+                    _contents[iSourceSlot] = iSwitchItem;
                 }
             }
         }
@@ -187,11 +188,11 @@ namespace UltimaXNA.GameObjects
         {
             // The server often sends as list of all the items in a container.
             // We want to filter out items we already have in our list.
-            if ((m_ParentObject.Wearer != null) && (m_ParentObject.Wearer.ObjectType != ObjectType.Player))
+            if ((_ParentObject.Wearer != null) && (_ParentObject.Wearer.ObjectType != ObjectType.Player))
             {
                 // We can't move items in that we don't own.
                 // This is only a temporary fix! What about moving things around in boxes?
-                if (mContentsClass.ContainsItem(nObject.GUID))
+                if (_contents.ContainsItem(nObject.Serial))
                 {
                     // don't add, already included.
                     return;
@@ -204,7 +205,7 @@ namespace UltimaXNA.GameObjects
             }
             else
             {
-                if (mContentsClass.ContainsItem(nObject.GUID))
+                if (_contents.ContainsItem(nObject.Serial))
                 {
                     // We know the object is already in our container.
                 }
@@ -213,34 +214,34 @@ namespace UltimaXNA.GameObjects
                     // The item is not in our container. We need to place it in a slot.
                     if (nObject.Item_InvY == 0x7FFF)
                     {
-                        if (mContentsClass[nObject.Item_InvX] == null)
+                        if (_contents[nObject.Item_InvX] == null)
                         {
                             nObject.Item_InvSlot = nObject.Item_InvX;
-                            mContentsClass[nObject.Item_InvSlot] = nObject;
+                            _contents[nObject.Item_InvSlot] = nObject;
                         }
                         else
                         {
-                            nObject.Item_InvSlot = mContentsClass.NextAvailableSlot;
-                            mContentsClass[nObject.Item_InvSlot] = nObject;
+                            nObject.Item_InvSlot = _contents.NextAvailableSlot;
+                            _contents[nObject.Item_InvSlot] = nObject;
                         }
                     }
                     else
                     {
-                        nObject.Item_InvSlot = mContentsClass.NextAvailableSlot;
-                        mContentsClass[nObject.Item_InvSlot] = nObject;
+                        nObject.Item_InvSlot = _contents.NextAvailableSlot;
+                        _contents[nObject.Item_InvSlot] = nObject;
                     }
                 }
             }
         }
 
-        public void RemoveItem(int nGUID)
+        public void RemoveItem(Serial serial)
         {
-            mContentsClass.RemoveItemByGUID(nGUID);
+            _contents.RemoveItemBySerial(serial);
         }
 
         public GameObject GetContents(int nIndex)
         {
-            return mContentsClass[nIndex];
+            return _contents[nIndex];
         }
     }
 }

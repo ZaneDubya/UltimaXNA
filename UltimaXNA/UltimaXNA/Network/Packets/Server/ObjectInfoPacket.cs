@@ -65,7 +65,7 @@ namespace UltimaXNA.Network.Packets.Server
         public WorldItemPacket(PacketReader reader)
             : base(0x1A, "ObjectInfo")
         {
-            uint serial = reader.ReadUInt32();
+            Serial serial = reader.ReadInt32();
             ushort itemId = reader.ReadUInt16();
 
             _amount = 0;

@@ -53,15 +53,15 @@ namespace UltimaXNA.GameObjects
             get { return Equipment[(int)EquipLayer.Mount] != null; }
         }
         // These will be added later ...
-        // public int CharmingGUID = 0;
-        // public int SummoningGUID = 0;
-        // public int CharmedByGUID = 0;
-        // public int SummonedByGUID = 0;
-        // public int CreatedByGUID = 0;
-        // public int CritterGUID = 0;
-        // public int PetGUID = 0;
-        // public int TargetGUID = 0;
-        // public int ChannelObjectGUID = 0;
+        // public int CharmingSerial = 0;
+        // public int SummoningSerial = 0;
+        // public int CharmedBySerial = 0;
+        // public int SummonedBySerial = 0;
+        // public int CreatedBySerial = 0;
+        // public int CritterSerial = 0;
+        // public int PetSerial = 0;
+        // public int TargetSerial = 0;
+        // public int ChannelObjectSerial = 0;
 
         // public int Bytes0 = 0, Bytes1 = 0, Bytes2 = 0;
         
@@ -110,8 +110,8 @@ namespace UltimaXNA.GameObjects
 
         public UnitAnimation m_Animation;
 
-        public Unit(int nGUID)
-            : base(nGUID)
+        public Unit(Serial serial)
+            : base(serial)
         {
             ObjectType = ObjectType.Unit;
 
@@ -165,7 +165,7 @@ namespace UltimaXNA.GameObjects
                 mobtile = new TileEngine.MobileTile(
                                 mount.ObjectTypeID, nLocation, nOffset,
                                 iDirection, m_Animation.Action == UnitActions.nothing ? 2 : (int)m_Animation.Action, m_Animation.AnimationFrame,
-                                GUID, 0x1A, mount.Hue, false);
+                                Serial, 0x1A, mount.Hue, false);
 
                 mobtile.SubType = TileEngine.MobileTileTypes.Mount;
                 nCell.AddMobileTile(mobtile);
@@ -177,7 +177,7 @@ namespace UltimaXNA.GameObjects
 
 			int iAction = m_Animation.GetAction_People();
             
-			mobtile = new TileEngine.MobileTile(DisplayBodyID, nLocation, nOffset, iDirection, iAction, m_Animation.AnimationFrame, GUID, 1, Hue, m_Animation.Mounted);
+			mobtile = new TileEngine.MobileTile(DisplayBodyID, nLocation, nOffset, iDirection, iAction, m_Animation.AnimationFrame, Serial, 1, Hue, m_Animation.Mounted);
 			mobtile.SubType = TileEngine.MobileTileTypes.Body;
 			nCell.AddMobileTile(mobtile);
 			// Issue 6 - End
@@ -191,7 +191,7 @@ namespace UltimaXNA.GameObjects
                     mobtile = new TileEngine.MobileTile(
                             Equipment[m_DrawLayers[i]].AnimationDisplayID, nLocation, nOffset,
                             iDirection, iAction, m_Animation.AnimationFrame,
-                            GUID, i + 1, Equipment[m_DrawLayers[i]].Hue, m_Animation.Mounted);
+                            Serial, i + 1, Equipment[m_DrawLayers[i]].Hue, m_Animation.Mounted);
 					
                     mobtile.SubType = TileEngine.MobileTileTypes.Equipment;
                     nCell.AddMobileTile(mobtile);
@@ -208,10 +208,10 @@ namespace UltimaXNA.GameObjects
             base.Dispose();
         }
 
-        public void UnWearItem(int nGUID)
+        public void UnWearItem(Serial serial)
         {
             //unwear this item!
-            Equipment.RemoveByGUID(nGUID);
+            Equipment.RemoveBySerial(serial);
         }
 
         public void Animation(int action, int frameCount, int repeatCount, bool reverse, bool repeat, int delay)
@@ -559,12 +559,12 @@ namespace UltimaXNA.GameObjects
             m_UpdateTicker++;
         }
 
-        public void RemoveByGUID(int nGUID)
+        public void RemoveBySerial(Serial serial)
         {
             for (int i = 0; i <= (int)EquipLayer.LastValid; i++)
             {
                 if (this[i] != null)
-                    if (this[i].GUID == nGUID)
+                    if (this[i].Serial == serial)
                     {
                         this[i] = null;
                     }

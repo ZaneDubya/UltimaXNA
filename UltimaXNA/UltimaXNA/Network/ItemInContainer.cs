@@ -13,10 +13,10 @@ namespace UltimaXNA.Network
         public readonly int X;
         public readonly int Y;
         public readonly int GridLocation;
-        public readonly int ContainerGUID;
+        public readonly int ContainerSerial;
         public readonly int Hue;
 
-        public ContentItem(Serial serial, int itemId, int amount, int x, int y, int gridLocation, int containerGUID, int hue)
+        public ContentItem(Serial serial, int itemId, int amount, int x, int y, int gridLocation, int containerSerial, int hue)
         {
             this.Serial = serial;
             this.ItemID = itemId;
@@ -24,7 +24,7 @@ namespace UltimaXNA.Network
             this.X = x;
             this.Y = y;
             this.GridLocation = gridLocation;
-            this.ContainerGUID = containerGUID;
+            this.ContainerSerial = containerSerial;
             this.Hue = hue;
         }
     }

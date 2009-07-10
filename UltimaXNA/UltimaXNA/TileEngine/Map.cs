@@ -21,7 +21,7 @@ namespace UltimaXNA.TileEngine
         MapObjectTypes Type { get; }
         Vector2 Position { get; }
         int Z { get; }
-        int OwnerGUID { get; }
+        int OwnerSerial { get; }
     }
 
     public enum MapObjectTypes
@@ -311,12 +311,12 @@ namespace UltimaXNA.TileEngine
         }
 
         // Poplicola 5/14/2009.
-        public void FlushObjectsByGUID(int nGUID)
+        public void FlushObjectsBySerial(Serial serial)
         {
             List<IMapObject> iObjects = new List<IMapObject>();
             foreach (IMapObject iObject in m_Objects)
             {
-                if (iObject.OwnerGUID == nGUID)
+                if (iObject.OwnerSerial == serial)
                 {
                     // Do nothing. Object is skipped.
                 }

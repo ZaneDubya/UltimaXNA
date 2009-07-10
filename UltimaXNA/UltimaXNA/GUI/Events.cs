@@ -38,13 +38,13 @@ namespace UltimaXNA.GUI
         public static void PickupItem(GameObjects.BaseObject entity)
         {
             GameObjects.GameObject iObject = ((GameObjects.GameObject)entity);
-            _GameClientService.Send(new PickupItemPacket(iObject.GUID, (short)iObject.Item_StackCount));
+            _GameClientService.Send(new PickupItemPacket(iObject.Serial, (short)iObject.Item_StackCount));
         }
 
         public static void DropItem(GameObjects.BaseObject entity, int x, int y, int z, Serial destEntity)
         {
             GameObjects.GameObject iObject = ((GameObjects.GameObject)entity);
-            _GameClientService.Send(new DropItemPacket(iObject.GUID, (short)x, (short)y, (byte)z, 0, destEntity));
+            _GameClientService.Send(new DropItemPacket(iObject.Serial, (short)x, (short)y, (byte)z, 0, destEntity));
         }           
     }
 }

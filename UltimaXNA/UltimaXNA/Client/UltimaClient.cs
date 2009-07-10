@@ -43,7 +43,7 @@ namespace UltimaXNA.Client
             _GameState = Game.Services.GetService(typeof(IGameState)) as IGameState;
 
             _ClientNetwork = new ClientNetwork();
-            m_RegisterPackets();
+            registerPackets();
 
             base.Initialize();
         }
@@ -54,7 +54,7 @@ namespace UltimaXNA.Client
             _ClientNetwork.Update();
         }
 
-        private void m_RegisterPackets()
+        private void registerPackets()
         {
             PacketRegistry.OnDamage += receive_Damage;
             PacketRegistry.OnMobileStatusCompact += receive_StatusInfo;
@@ -175,11 +175,11 @@ namespace UltimaXNA.Client
             foreach (ContentItem i in p.Items)
             {
                 // Add the item...
-                GameObject iObject = m_AddItem(i.Serial, i.ItemID, i.Hue, i.ContainerGUID, i.Amount);
+                GameObject iObject = addItem(i.Serial, i.ItemID, i.Hue, i.ContainerSerial, i.Amount);
                 iObject.Item_InvX = i.X;
                 iObject.Item_InvY = i.Y;
                 // ... and add it the container contents of the container.
-                GameObject iContainerObject = _GameObjects.GetObject(i.ContainerGUID, ObjectType.GameObject) as GameObject;
+                GameObject iContainerObject = _GameObjects.GetObject(i.ContainerSerial, ObjectType.GameObject) as GameObject;
                 iContainerObject.ContainerObject.AddItem(iObject);
             }
         }
@@ -189,7 +189,7 @@ namespace UltimaXNA.Client
             ContainerContentUpdatePacket p = (ContainerContentUpdatePacket)packet;
 
             // Add the item...
-            GameObjects.GameObject iObject = m_AddItem(p.Serial, p.ItemId, p.Hue, p.ContainerSerial, p.Amount);
+            GameObjects.GameObject iObject = addItem(p.Serial, p.ItemId, p.Hue, p.ContainerSerial, p.Amount);
             iObject.Item_InvX = p.X;
             iObject.Item_InvY = p.Y;
             // ... and add it the container contents of the container.
@@ -376,7 +376,7 @@ namespace UltimaXNA.Client
             // We want to make sure we have the client object before we load the world.
             // If we don't, just set the status to login complete, which will then
             // load the world when we finally receive our client object.
-            if (_GameObjects.MyGUID != 0)
+            if (_GameObjects.MySerial != 0)
                 Status = UltimaClientStatus.WorldServer_InWorld;
             else
                 Status = UltimaClientStatus.WorldServer_LoginComplete;
@@ -419,7 +419,7 @@ namespace UltimaXNA.Client
 
             for (int i = 0; i < p.Equipment.Length; i++)
             {
-                GameObject iObject = m_AddItem(p.Equipment[i].Serial, p.Equipment[i].GumpId, p.Equipment[i].Hue, 0, 0);
+                GameObject iObject = addItem(p.Equipment[i].Serial, p.Equipment[i].GumpId, p.Equipment[i].Hue, 0, 0);
                 iMobile.Equipment[p.Equipment[i].Layer] = iObject;
             }
 
@@ -510,7 +510,7 @@ namespace UltimaXNA.Client
                 else
                 {
                     string[] iArgs = p.Arguements[i].Split('\t');
-                    iObject.PropertyList.AddProperty(m_ConstructCliLoc(iCliLoc, iArgs));
+                    iObject.PropertyList.AddProperty(constructCliLoc(iCliLoc, iArgs));
                 }
             }
         }
@@ -578,7 +578,7 @@ namespace UltimaXNA.Client
             LoginConfirmPacket p = (LoginConfirmPacket)packet;
 
             // When loading the player object, we must load the serial before the object.
-            _GameObjects.MyGUID = p.Serial;
+            _GameObjects.MySerial = p.Serial;
             Player iPlayer = (Player)_GameObjects.GetObject(p.Serial, ObjectType.Player);
             iPlayer.Movement.SetPositionInstant((int)p.X, (int)p.Y, (int)p.Z);
             iPlayer.SetFacing(p.Direction & 0x0F);
@@ -739,7 +739,7 @@ namespace UltimaXNA.Client
                 throw (new Exception("KR Status not handled."));
             }
 
-            if (p.Serial != _GameObjects.MyGUID)
+            if (p.Serial != _GameObjects.MySerial)
             {
                 throw new Exception("Assumption that StatusBarInfo packet always is for player is wrong!");
             }
@@ -834,7 +834,7 @@ namespace UltimaXNA.Client
         private void receive_WornItem(IRecvPacket packet)
         {
             WornItemPacket p = (WornItemPacket)packet;
-            GameObject iObject = m_AddItem(p.Serial, p.ItemId, p.Hue, 0, 0);
+            GameObject iObject = addItem(p.Serial, p.ItemId, p.Hue, 0, 0);
             Unit u = _GameObjects.GetObject(p.ParentSerial, ObjectType.Unit) as Unit;
             u.Equipment[p.Layer] = iObject;
         }
@@ -848,7 +848,7 @@ namespace UltimaXNA.Client
 
 
 
-        private string m_ConstructCliLoc(string nBase, string[] nArgs)
+        private string constructCliLoc(string nBase, string[] nArgs)
         {
             string iConstruct = nBase;
             for (int i = 0; i < nArgs.Length; i++)
@@ -860,21 +860,21 @@ namespace UltimaXNA.Client
             return iConstruct;
         }
 
-        private void m_ReceiveEndVendorSell(Packet reader)
+        private void receive_EndVendorSell(Packet reader)
         {
             reader.ReadShort(); // packet length = 8
-            int iVendorGUID = reader.ReadInt();
+            int iVendorSerial = reader.ReadInt();
             reader.ReadByte(); // always = 0
         }
 
-        private GameObject m_AddItem(int nGUID, int nItemID, int nHue, int nContainerGUID, int nAmount)
+        private GameObject addItem(Serial serial, int nItemID, int nHue, int nContainerSerial, int nAmount)
         {
-            GameObject iObject = _GameObjects.GetObject(nGUID, ObjectType.GameObject) as GameObject;
+            GameObject iObject = _GameObjects.GetObject(serial, ObjectType.GameObject) as GameObject;
             
             iObject.ObjectTypeID = nItemID;
             iObject.Hue = nHue;
             iObject.Item_StackCount = nAmount;
-            iObject.Item_ContainedWithinGUID = nContainerGUID;
+            iObject.Item_ContainedWithinSerial = nContainerSerial;
             
             return iObject;
         }
