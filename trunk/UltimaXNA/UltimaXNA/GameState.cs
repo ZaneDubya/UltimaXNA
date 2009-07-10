@@ -284,42 +284,7 @@ namespace UltimaXNA
                     if (_Input.Mouse.Buttons[1].Press)
                     {
                         // Right button pressed ... activate this object.
-                        TileEngine.IMapObject iMapObject = _TileEngine.MouseOverObject;
-                        if ((iMapObject != null) && (iMapObject.Type != UltimaXNA.TileEngine.MapObjectTypes.StaticTile))
-                        {
-                            GameObjects.BaseObject iObject = _GameObjects.GetObject(iMapObject.OwnerSerial, UltimaXNA.GameObjects.ObjectType.Object);
-                            // default option is to simply 'use' this object, although this will doubtless be more complicated in the future.
-                            // Perhaps the use option is based on the type of object? Anyways, for right now, we only interact with gameobjects,
-                            // and we send a double-click to the server.
-                            switch (iObject.ObjectType)
-                            {
-                                case UltimaXNA.GameObjects.ObjectType.GameObject:
-                                    _GameClient.Send(new DoubleClickPacket(iObject.Serial));
-                                    break;
-                                case UltimaXNA.GameObjects.ObjectType.Unit:
-                                    // and we also 'use' this unit.
-                                    _GameClient.Send(new DoubleClickPacket(iObject.Serial));
-                                    // We request a context sensitive menu...
-                                    _GameClient.Send(new RequestContextMenuPacket(iObject.Serial));
-                                    break;
-                                case UltimaXNA.GameObjects.ObjectType.Player:
-                                    if (iObject.Serial == _GameObjects.MySerial)
-                                    {
-                                        // this is my player.
-                                        // if mounted, dismount.
-                                        if (((GameObjects.Unit)iObject).IsMounted)
-                                        {
-                                            _GameClient.Send(new DoubleClickPacket(iObject.Serial));
-                                        }
-                                    }
-                                    // else other interaction?
-                                    break;
-                                default:
-                                    // do nothing?
-                                    break;
-
-                            }
-                        }
+                        checkRightClick();
                     }
 
                     // Check for a move event from the player ...
@@ -420,6 +385,46 @@ namespace UltimaXNA
             }
 
             checkMove();
+        }
+
+        private void checkRightClick()
+        {
+            TileEngine.IMapObject iMapObject = _TileEngine.MouseOverObject;
+            if ((iMapObject != null) && (iMapObject.Type != UltimaXNA.TileEngine.MapObjectTypes.StaticTile))
+            {
+                GameObjects.BaseObject iObject = _GameObjects.GetObject(iMapObject.OwnerSerial, UltimaXNA.GameObjects.ObjectType.Object);
+                // default option is to simply 'use' this object, although this will doubtless be more complicated in the future.
+                // Perhaps the use option is based on the type of object? Anyways, for right now, we only interact with gameobjects,
+                // and we send a double-click to the server.
+                switch (iObject.ObjectType)
+                {
+                    case UltimaXNA.GameObjects.ObjectType.GameObject:
+                        _GameClient.Send(new DoubleClickPacket(iObject.Serial));
+                        break;
+                    case UltimaXNA.GameObjects.ObjectType.Unit:
+                        // and we also 'use' this unit.
+                        // _GameClient.Send(new DoubleClickPacket(iObject.Serial));
+                        // We request a context sensitive menu...
+                        _GameClient.Send(new RequestContextMenuPacket(iObject.Serial));
+                        break;
+                    case UltimaXNA.GameObjects.ObjectType.Player:
+                        if (iObject.Serial == _GameObjects.MySerial)
+                        {
+                            // this is my player.
+                            // if mounted, dismount.
+                            if (((GameObjects.Unit)iObject).IsMounted)
+                            {
+                                _GameClient.Send(new DoubleClickPacket(iObject.Serial));
+                            }
+                        }
+                        // else other interaction?
+                        break;
+                    default:
+                        // do nothing?
+                        break;
+
+                }
+            }
         }
 
         private void parseKeyboard(Input.KeyboardHandler keyboard)

@@ -10,8 +10,8 @@ namespace UltimaXNA.Network.Packets.Client
         public RequestContextMenuPacket(Serial serial)
             : base(0xBF, "Context Menu Request")
         {
-            Stream.Write((short)0x13);
-            Stream.Write(serial);
+            Stream.Write((short)0x13); // subcommand 0x13, request context menu
+            Stream.Write((int)serial);
         }
     }
 }

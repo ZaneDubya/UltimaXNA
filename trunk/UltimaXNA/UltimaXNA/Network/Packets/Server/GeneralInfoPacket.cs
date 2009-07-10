@@ -8,7 +8,7 @@ namespace UltimaXNA.Network.Packets.Server
     public class GeneralInfoPacket : RecvPacket
     {
         readonly short _subcommand;
-        readonly ContextMenuNew _contextmenu;
+        ContextMenuNew _contextmenu;
         readonly byte _mapid;
 
         public short Subcommand
@@ -37,8 +37,7 @@ namespace UltimaXNA.Network.Packets.Server
                     _mapid = reader.ReadByte();
                     break;
                 case 0x14: // return context menu
-                    _contextmenu = new ContextMenuNew();
-                    m_ReceiveContextMenu(reader);
+                    receiveContextMenu(reader);
                     break;
                 case 0x18: // Number of maps
                     // !!! Not implemented yet.
@@ -55,11 +54,11 @@ namespace UltimaXNA.Network.Packets.Server
             }
         }
 
-        private void m_ReceiveContextMenu(PacketReader reader)
+        private void receiveContextMenu(PacketReader reader)
         {
             reader.ReadByte(); // unknown (0x00)
             int iSubCommand = reader.ReadByte(); // 0x01 for 2D, 0x02 for KR
-            Serial Serial = reader.ReadInt32();
+            _contextmenu = new ContextMenuNew(reader.ReadInt32());
             int iNumEntriesInContext = reader.ReadByte();
 
             for (int i = 0; i < iNumEntriesInContext; i++)
@@ -74,6 +73,7 @@ namespace UltimaXNA.Network.Packets.Server
                 }
                 _contextmenu.AddItem(iUniqueID, iClilocID, iFlags, iColor);
             }
+            _contextmenu.FinalizeMenu();
         }
     }
 }

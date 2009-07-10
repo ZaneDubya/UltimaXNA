@@ -330,7 +330,7 @@ namespace UltimaXNA.Client
                     // !!! unhandled! We default to the fel/tram map
                     break;
                 case 0x14: // return context menu
-                    // m_ReceiveContextMenu(reader);
+                    parseContextMenu(p.ContextMenu);
                     // !!! Unhandled
                     break;
                 case 0x18: // Number of maps
@@ -512,16 +512,6 @@ namespace UltimaXNA.Client
                     string[] iArgs = p.Arguements[i].Split('\t');
                     iObject.PropertyList.AddProperty(constructCliLoc(iCliLoc, iArgs));
                 }
-            }
-        }
-
-        private void receive_ObjectPropertyListUpdate(IRecvPacket packet)
-        {
-            ObjectPropertyListUpdatePacket p = (ObjectPropertyListUpdatePacket)packet;
-            BaseObject iObject = _GameObjects.GetObject(p.Serial, ObjectType.Object);
-            if (iObject.PropertyList.Hash != p.RevisionHash)
-            {
-                this.Send(new QueryPropertiesPacket(p.Serial));
             }
         }
 
@@ -770,7 +760,12 @@ namespace UltimaXNA.Client
 
         private void receive_ToolTipRevision(IRecvPacket packet)
         {
-
+            ObjectPropertyListUpdatePacket p = (ObjectPropertyListUpdatePacket)packet;
+            BaseObject iObject = _GameObjects.GetObject(p.Serial, ObjectType.Object);
+            if (iObject.PropertyList.Hash != p.RevisionHash)
+            {
+                this.Send(new QueryPropertiesPacket(p.Serial));
+            }
         }
 
         private void receive_UnicodeMessage(IRecvPacket packet)
@@ -846,7 +841,16 @@ namespace UltimaXNA.Client
 
 
 
-
+        private void parseContextMenu(ContextMenuNew context)
+        {
+            if (context.HasContextMenu)
+            {
+                if (context.CanBuy)
+                {
+                    this.Send(new ContextMenuResponsePacket(context.Serial, (short)context.ContextEntry("Buy").ResponseCode));
+                }
+            }
+        }
 
         private string constructCliLoc(string nBase, string[] nArgs)
         {
