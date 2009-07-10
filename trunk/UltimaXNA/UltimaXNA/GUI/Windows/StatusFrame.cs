@@ -18,7 +18,7 @@ namespace UltimaXNA.GUI
         {
             set
             {
-                ((Label)m_MyForm["lblCharName"]).Text = value;
+                ((Label)_MyForm["lblCharName"]).Text = value;
             }
         }
 
@@ -39,29 +39,29 @@ namespace UltimaXNA.GUI
         {
             //Create a new form
             m_FormCollection.Add(new Form("frmStatusFrameMain", "", new Vector2(128, 64), new Vector2(0, 0), Form.BorderStyle.None));
-            m_MyForm = m_FormCollection["frmStatusFrameMain"];
-            m_MyForm.BorderName = null;
+            _MyForm = m_FormCollection["frmStatusFrameMain"];
+            _MyForm.BorderName = null;
 
-            m_MyForm.Controls.Add(new PictureBox("picBG", new Vector2(0,0), @"GUI\STATFRAME\UI-STATFRAME-MAINNEW.png", 128, 64, 0));
-            m_MyForm.Controls.Add(new Label("lblCharName", new Vector2(4, -1), "Poplicola", Color.TransparentBlack, Color.White, 100, Label.Align.Left));
-            m_MyForm["lblCharName"].FontName = "Pericles9";
+            _MyForm.Controls.Add(new PictureBox("picBG", new Vector2(0,0), @"GUI\STATFRAME\UI-STATFRAME-MAINNEW.png", 128, 64, 0));
+            _MyForm.Controls.Add(new Label("lblCharName", new Vector2(4, -1), "Poplicola", Color.TransparentBlack, Color.White, 100, Label.Align.Left));
+            _MyForm["lblCharName"].FontName = "Pericles9";
 
-            m_MyForm.Controls.Add(new PictureBox("barStat0",   new Vector2(0, 16), @"GUI\STATFRAME\UI-STATFRAME-MAINNEW-HITS.png", 128, 16, 0));
-            m_MyForm.Controls.Add(new PictureBox("barStat1", new Vector2(0, 29), @"GUI\STATFRAME\UI-StatFrame-MAINNEW-MANA.png", 128, 16, 0));
-            m_MyForm.Controls.Add(new PictureBox("barStat2", new Vector2(0, 42), @"GUI\STATFRAME\UI-StatFrame-MAINNEW-STAM.png", 128, 16, 0));
+            _MyForm.Controls.Add(new PictureBox("barStat0",   new Vector2(0, 16), @"GUI\STATFRAME\UI-STATFRAME-MAINNEW-HITS.png", 128, 16, 0));
+            _MyForm.Controls.Add(new PictureBox("barStat1", new Vector2(0, 29), @"GUI\STATFRAME\UI-StatFrame-MAINNEW-MANA.png", 128, 16, 0));
+            _MyForm.Controls.Add(new PictureBox("barStat2", new Vector2(0, 42), @"GUI\STATFRAME\UI-StatFrame-MAINNEW-STAM.png", 128, 16, 0));
 
 
 
-            m_MyForm.Controls.Add(new Label("lblStat%0", new Vector2(85, 15), string.Empty, Color.TransparentBlack, Color.White, 100, Label.Align.Left));
-            m_MyForm.Controls.Add(new Label("lblStat%1", new Vector2(85, 28), string.Empty, Color.TransparentBlack, Color.White, 100, Label.Align.Left));
-            m_MyForm.Controls.Add(new Label("lblStat%2", new Vector2(85, 41), string.Empty, Color.TransparentBlack, Color.White, 100, Label.Align.Left));
-            m_MyForm.Controls.Add(new Label("lblStatAmt0", new Vector2(4, 15), string.Empty, Color.TransparentBlack, Color.White, 100, Label.Align.Left));
-            m_MyForm.Controls.Add(new Label("lblStatAmt1", new Vector2(4, 28), string.Empty, Color.TransparentBlack, Color.White, 100, Label.Align.Left));
-            m_MyForm.Controls.Add(new Label("lblStatAmt2", new Vector2(4, 41), string.Empty, Color.TransparentBlack, Color.White, 100, Label.Align.Left));
+            _MyForm.Controls.Add(new Label("lblStat%0", new Vector2(85, 15), string.Empty, Color.TransparentBlack, Color.White, 100, Label.Align.Left));
+            _MyForm.Controls.Add(new Label("lblStat%1", new Vector2(85, 28), string.Empty, Color.TransparentBlack, Color.White, 100, Label.Align.Left));
+            _MyForm.Controls.Add(new Label("lblStat%2", new Vector2(85, 41), string.Empty, Color.TransparentBlack, Color.White, 100, Label.Align.Left));
+            _MyForm.Controls.Add(new Label("lblStatAmt0", new Vector2(4, 15), string.Empty, Color.TransparentBlack, Color.White, 100, Label.Align.Left));
+            _MyForm.Controls.Add(new Label("lblStatAmt1", new Vector2(4, 28), string.Empty, Color.TransparentBlack, Color.White, 100, Label.Align.Left));
+            _MyForm.Controls.Add(new Label("lblStatAmt2", new Vector2(4, 41), string.Empty, Color.TransparentBlack, Color.White, 100, Label.Align.Left));
             for (int i = 0; i < 3; i++)
             {
-                m_MyForm["lblStat%" + i].FontName = "MiramontBold7";
-                m_MyForm["lblStatAmt" + i].FontName = "MiramontBold7";
+                _MyForm["lblStat%" + i].FontName = "MiramontBold7";
+                _MyForm["lblStatAmt" + i].FontName = "MiramontBold7";
             }
             
             //Show the form
@@ -109,9 +109,9 @@ namespace UltimaXNA.GUI
                 iActualWidth = (int)((float)iMaxWidth * ((float)iCurrent / (float)iMax));
             }
 
-            m_MyForm["barStat" + nBarIndex].Width = iActualWidth;
-            m_MyForm["lblStat%" + nBarIndex].Text = ((int)(((float)iCurrent / (float)iMax) * 100f)).ToString() + "%";
-            m_MyForm["lblStatAmt" + nBarIndex].Text = iCurrent.ToString();
+            _MyForm["barStat" + nBarIndex].Width = iActualWidth;
+            _MyForm["lblStat%" + nBarIndex].Text = ((int)(((float)iCurrent / (float)iMax) * 100f)).ToString() + "%";
+            _MyForm["lblStatAmt" + nBarIndex].Text = iCurrent.ToString();
         }
     }
 }

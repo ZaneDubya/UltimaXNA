@@ -99,62 +99,13 @@ namespace UltimaXNA.GameObjects
         // All items have both an X and a Y position within the container. We use X for the SlotIndex
         // which this item occupies, and the Y as a Checksum for the X value: if the Y checksum validates,
         // then we know this item belongs in slot X.
-        private int m_InvX_SlotIndex, m_InvY_SlotChecksum = 0;
-        public int Item_InvX
-        {
-            get { return m_InvX_SlotIndex; }
-            set { m_InvX_SlotIndex = value; }
-        }
-        public int Item_InvY
-        {
-            get { return m_InvY_SlotChecksum; }
-            set { m_InvY_SlotChecksum = value; }
-        }
-        public int Item_SlotIndex
-        {
-            get
-            {
-                if (m_SlotIndexChecksumValidates())
-                {
-                    return m_InvX_SlotIndex;
-                }
-                else
-                {
-                    return -1;
-                }
-            }
-            set
-            {
-                if ((m_InvX_SlotIndex == value) && m_SlotIndexChecksumValidates())
-                {
-                    // do nothing - we are already in this slot.
-                }
-                else
-                {
-                    m_InvX_SlotIndex = value;
-                    m_InvY_SlotChecksum = m_InvYChecksum(value);
-                }
-            }
-        }
+        public int Item_InvX, Item_InvY, Item_InvSlot = 0;
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
             if (m_ContainerObject != null)
                 m_ContainerObject.Update(gameTime);
-        }
-
-        private bool m_SlotIndexChecksumValidates()
-        {
-            if (m_InvY_SlotChecksum == m_InvYChecksum(m_InvX_SlotIndex))
-                return true;
-            else
-                return false;
-        }
-
-        private int m_InvYChecksum(int nInvX)
-        {
-            return nInvX ^ 0x7fff;
         }
 
         public override string ToString()

@@ -22,21 +22,21 @@ namespace UltimaXNA.GUI
 
             //Create a new form
             string iFormName = "frmPaperDoll:" + mMobileObject.GUID;
-            m_MyForm = new Form(iFormName, "", mWindowSize, new Vector2(64, 64), Form.BorderStyle.None);
-            m_MyForm.BorderName = null;
-            m_MyForm.CustomDragArea = new Rectangle(2, 2, 192, 20);
-            //m_MyForm.MouseThrough = true;
+            _MyForm = new Form(iFormName, "", mWindowSize, new Vector2(64, 64), Form.BorderStyle.None);
+            _MyForm.BorderName = null;
+            _MyForm.CustomDragArea = new Rectangle(2, 2, 192, 20);
+            //_MyForm.MouseThrough = true;
 
-            m_MyForm.Controls.Add(new PictureBox("picBG", mBGOffset, @"GUI\PAPERDOLL\PAPERDOLL-FRAME.png", 256, 512, 0));
+            _MyForm.Controls.Add(new PictureBox("picBG", mBGOffset, @"GUI\PAPERDOLL\PAPERDOLL-FRAME.png", 256, 512, 0));
 
-            m_MyForm.Controls.Add(new Label("lblCaption", new Vector2(8f, 4f), "PaperDoll | " + mMobileObject.GUID,
+            _MyForm.Controls.Add(new Label("lblCaption", new Vector2(8f, 4f), "PaperDoll | " + mMobileObject.GUID,
                 Color.TransparentBlack, Color.White, 160, Label.Align.Left));
-            m_MyForm["lblCaption"].FontName = "ArialNarrow10";
+            _MyForm["lblCaption"].FontName = "ArialNarrow10";
 
-            m_MyForm.Controls.Add(new CustomButton("btnClose", new Vector2(193, -4), new Rectangle(6, 7, 19, 18),
+            _MyForm.Controls.Add(new CustomButton("btnClose", new Vector2(193, -4), new Rectangle(6, 7, 19, 18),
                 @"GUI\COMMON\UI-Panel-MinimizeButton-Up.png", @"GUI\COMMON\UI-Panel-MinimizeButton-Down.png",
                 @"GUI\COMMON\UI-Panel-MinimizeButton-Disabled.png", @"GUI\COMMON\UI-Panel-MinimizeButton-Highlight.png"));
-            m_MyForm.Controls["btnClose"].OnRelease = btnClose_OnRelease;
+            _MyForm.Controls["btnClose"].OnRelease = btnClose_OnRelease;
 
             for (int i = 0x00; i <= 0x18; i++)
                 m_CreateGumpTexture(i, 20, 85);
@@ -66,7 +66,7 @@ namespace UltimaXNA.GUI
             m_CreateEquipButton(0x17, 172, 235); // skirt
             // skip 0x18: inner legs (?)
 
-            m_FormCollection.Add(m_MyForm);
+            m_FormCollection.Add(_MyForm);
             this.Show();
             
         }
@@ -77,7 +77,7 @@ namespace UltimaXNA.GUI
             Vector2 iPosition = new Vector2();
             iPosition.Y = nY;
             iPosition.X = nX;
-            m_MyForm.Controls.Add(new PictureBox(iPicName, iPosition, string.Empty, 0));
+            _MyForm.Controls.Add(new PictureBox(iPicName, iPosition, string.Empty, 0));
         }
 
         private void m_CreateEquipButton(int nEquipIndex, int nX, int nY)
@@ -86,12 +86,12 @@ namespace UltimaXNA.GUI
             Vector2 iPosition = new Vector2();
             iPosition.Y = nY;
             iPosition.X = nX;
-            m_MyForm.Controls.Add(new CustomButton(iBtnName, iPosition, new Rectangle(0, 0, 39, 39),
+            _MyForm.Controls.Add(new CustomButton(iBtnName, iPosition, new Rectangle(0, 0, 39, 39),
                 null, null, null, null, 1f));
-            m_MyForm[iBtnName].OnMouseOver += btnEquip_OnOver;
-            m_MyForm[iBtnName].OnMouseOut += btnEquip_OnOut;
-            m_MyForm[iBtnName].OnPress += btnEquip_OnPress;
-            m_MyForm[iBtnName].OnRelease += btnEquip_OnRelease;
+            _MyForm[iBtnName].OnMouseOver += btnEquip_OnOver;
+            _MyForm[iBtnName].OnMouseOut += btnEquip_OnOut;
+            _MyForm[iBtnName].OnPress += btnEquip_OnPress;
+            _MyForm[iBtnName].OnRelease += btnEquip_OnRelease;
         }
 
         private void btnEquip_OnPress(object obj, EventArgs e)
@@ -126,8 +126,8 @@ namespace UltimaXNA.GUI
             else
             {
                 GUIHelper.ToolTipItem = iItem;
-                GUIHelper.TooltipX = (int)m_MyForm.X + (int)((CustomButton)obj).X + 42;
-                GUIHelper.TooltipY = (int)m_MyForm.Y + (int)((CustomButton)obj).Y;
+                GUIHelper.TooltipX = (int)_MyForm.X + (int)((CustomButton)obj).X + 42;
+                GUIHelper.TooltipY = (int)_MyForm.Y + (int)((CustomButton)obj).Y;
             }
         }
         private void btnEquip_OnOut(object obj, EventArgs e)
@@ -160,7 +160,7 @@ namespace UltimaXNA.GUI
             if (mMobileObject.Equipment.UpdateTicker != mLastContainerUpdated)
             {
 
-                ((PictureBox)m_MyForm["picEquip0"]).Texture = Data.Gumps.GetGumpXNA(0x000C);
+                ((PictureBox)_MyForm["picEquip0"]).Texture = Data.Gumps.GetGumpXNA(0x000C);
 
                 // Buttons index starting at 1.
                 for (int i = 1; i <= m_MaxButtons; i++)
@@ -168,23 +168,23 @@ namespace UltimaXNA.GUI
                     string iPicName = "picEquip" + i;
                     string iBtnName = "btnEquip" + i;
                     // Check to make sure this button exists. If not, skip it.
-                    if (m_MyForm[iBtnName] == null)
+                    if (_MyForm[iBtnName] == null)
                         continue;
 
                     int iItemTypeID = 0;
                     GameObjects.GameObject iItem = mMobileObject.Equipment[i];
                     if (iItem != null)
                         iItemTypeID = iItem.ObjectTypeID;
-                    ((CustomButton)m_MyForm[iBtnName]).Texture = GUIHelper.GetItemIcon(iItemTypeID);
+                    ((CustomButton)_MyForm[iBtnName]).Texture = GUIHelper.ItemIcon(iItemTypeID);
                     if (iItemTypeID == 0)
                     {
-                        ((PictureBox)m_MyForm[iPicName]).Texture = null;
-                        ((CustomButton)m_MyForm[iBtnName]).Disabled = false;
+                        ((PictureBox)_MyForm[iPicName]).Texture = null;
+                        ((CustomButton)_MyForm[iBtnName]).Disabled = false;
                     }
                     else
                     {
-                        ((PictureBox)m_MyForm[iPicName]).Texture = Data.Gumps.GetGumpXNA(iItem.AnimationDisplayID + 50000);
-                        ((CustomButton)m_MyForm[iBtnName]).Disabled = false;
+                        ((PictureBox)_MyForm[iPicName]).Texture = Data.Gumps.GetGumpXNA(iItem.AnimationDisplayID + 50000);
+                        ((CustomButton)_MyForm[iBtnName]).Disabled = false;
                     }
                 }
                 mLastContainerUpdated = mMobileObject.Equipment.UpdateTicker;

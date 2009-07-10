@@ -10,44 +10,41 @@ namespace UltimaXNA.GUI
     // a simple interface for all interaction with the client.
     public static class Events
     {
-        private static IGameState m_GameStateService;
-        private static Client.IUltimaClient m_GameClientService;
+        private static IGameState _GameStateService;
+        private static Client.IUltimaClient _GameClientService;
 
-        public static void Initialize(GameServiceContainer nContainer)
+        public static void Initialize(GameServiceContainer container)
         {
-            m_GameStateService = (IGameState)nContainer.GetService(typeof(IGameState));
-            m_GameClientService = (Client.IUltimaClient)nContainer.GetService(typeof(Client.IUltimaClient));
+            _GameStateService = (IGameState)container.GetService(typeof(IGameState));
+            _GameClientService = (Client.IUltimaClient)container.GetService(typeof(Client.IUltimaClient));
         }
 
         public static void QuitImmediate()
         {
-            m_GameStateService.EngineRunning = false;
+            _GameStateService.EngineRunning = false;
         }
 
-        public static bool Connect(string nHost, int nPort)
+        public static bool Connect(string host, int port)
         {
-            return m_GameClientService.Connect(nHost, nPort);
+            return _GameClientService.Connect(host, port);
         }
 
-        public static void Login(string nUsername, string nPassword)
+        public static void Login(string username, string password)
         {
-            m_GameClientService.SetAccountPassword(nUsername, nPassword);
-            m_GameClientService.Send(new LoginPacket(nUsername, nPassword));
+            _GameClientService.SetAccountPassword(username, password);
+            _GameClientService.Send(new LoginPacket(username, password));
         }
 
-        public static void PickupItem(GameObjects.BaseObject nObject)
+        public static void PickupItem(GameObjects.BaseObject entity)
         {
-            GameObjects.GameObject iObject = ((GameObjects.GameObject)nObject);
-            m_GameClientService.Send(new PickupItemPacket(iObject.GUID, (short)iObject.Item_StackCount));
+            GameObjects.GameObject iObject = ((GameObjects.GameObject)entity);
+            _GameClientService.Send(new PickupItemPacket(iObject.GUID, (short)iObject.Item_StackCount));
         }
 
-        public static void DropItem(GameObjects.BaseObject nObject, int x, int y, int z, Serial dest)
+        public static void DropItem(GameObjects.BaseObject entity, int x, int y, int z, Serial destEntity)
         {
-            GameObjects.GameObject iObject = ((GameObjects.GameObject)nObject);
-            m_GameClientService.Send(new DropItemPacket(iObject.GUID, (short)x, (short)y, (byte)z, 0, dest));
-        }
-
-
-                   
+            GameObjects.GameObject iObject = ((GameObjects.GameObject)entity);
+            _GameClientService.Send(new DropItemPacket(iObject.GUID, (short)x, (short)y, (byte)z, 0, destEntity));
+        }           
     }
 }
