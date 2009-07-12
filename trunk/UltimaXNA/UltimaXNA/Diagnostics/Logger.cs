@@ -14,7 +14,7 @@ namespace UltimaXNA.Diagnostics
     /// <summary>
     /// The Logger class is a simple wrapper for log4net.
     /// </summary>
-    public class Logger : ILoggable
+    public class Logger : ILoggingService
     {
         static bool Initialized = false;
 

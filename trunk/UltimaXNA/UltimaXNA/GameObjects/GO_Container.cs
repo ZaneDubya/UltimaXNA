@@ -121,7 +121,7 @@ namespace UltimaXNA.GameObjects
         }
     }
 
-    class GameObject_Container
+    public class GameObject_Container
     {
         // The parent object. All Containers are part of GameObjects. We need a way to reference them.
         private GameObject _ParentObject;

@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework;
 
 namespace UltimaXNA.GameObjects
 {
-    class GameObject : UltimaXNA.GameObjects.BaseObject
+    public class GameObject : UltimaXNA.GameObjects.BaseObject
     {
         // GameObjects can potentially have inventory (chests, for example).
         // The Serial for the container for this inventory is the same as the

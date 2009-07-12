@@ -101,6 +101,16 @@ namespace UltimaXNA.Network
                         case "Auto Renew Inventory Insurance":
                         case "Toggle Monster Title Display":
                         case "Tame":
+                        case "Command: Guard":
+                        case "Command: Follow":
+                        case "Command: Drop":
+                        case "Command: Kill":
+                        case "Command: Stop":
+                        case "Command: Stay":
+                        case "Add Friend":
+                        case "Remove Friend":
+                        case "Transfer":
+                        case "Release":
                         // unhandled
                             break;
                         default:

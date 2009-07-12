@@ -9,13 +9,13 @@ using Microsoft.Xna.Framework;
 
 namespace UltimaXNA.Input
 {
-    public interface IInputHandler
+    public interface IInputService
     {
         MouseHandler Mouse { get; }
         KeyboardHandler Keyboard { get; }
     }
 
-    public class InputHandler : GameComponent, IInputHandler
+    public class InputHandler : GameComponent, IInputService
     {
         private KeyboardHandler m_Keyboard;
         public KeyboardHandler Keyboard { get { return m_Keyboard; } }
@@ -26,7 +26,7 @@ namespace UltimaXNA.Input
         public InputHandler(Game game)
             : base(game)
         {
-            game.Services.AddService(typeof(IInputHandler), this);
+            game.Services.AddService(typeof(IInputService), this);
         }
 
         public override void Initialize()

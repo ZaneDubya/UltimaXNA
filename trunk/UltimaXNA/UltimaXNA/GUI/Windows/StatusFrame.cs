@@ -14,54 +14,59 @@ namespace UltimaXNA.GUI
 {
     class Window_StatusFrame : Window
     {
-        public string CharacterName
-        {
-            set
-            {
-                ((Label)_MyForm["lblCharName"]).Text = value;
-            }
-        }
+        GameObjects.Unit _myEntity;
+        GameObjects.Unit _targetEntity;
+        public GameObjects.Unit MyEntity { set { _myEntity = value; } }
+        public GameObjects.Unit TargetEntity { set { _targetEntity = value; } }
 
-        private int m_CurrentHealth, m_MaxHealth;
-        public int CurrentHealth { set { m_CurrentHealth = value; m_UpdateBar(0); } }
-        public int MaxHealth { set { m_MaxHealth = value; m_UpdateBar(0); } }
+        private int width = 400;
 
-        private int m_CurrentMana, m_MaxMana;
-        public int CurrentMana { set { m_CurrentMana = value; m_UpdateBar(1); } }
-        public int MaxMana { set { m_MaxMana = value; m_UpdateBar(1); } }
-
-        private int m_CurrentStamina, m_MaxStamina;
-        public int CurrentStamina { set { m_CurrentStamina = value; m_UpdateBar(2); } }
-        public int MaxStamina { set { m_MaxStamina = value; m_UpdateBar(2); } }
-
-        public Window_StatusFrame(FormCollection nFormCollection)
-            : base(nFormCollection)
+        public Window_StatusFrame()
+            : base()
         {
             //Create a new form
-            m_FormCollection.Add(new Form("frmStatusFrameMain", "", new Vector2(128, 64), new Vector2(0, 0), Form.BorderStyle.None));
+            m_FormCollection.Add(new Form("frmStatusFrameMain", "", new Vector2(400, 75), new Vector2(200, 0), Form.BorderStyle.None));
             _MyForm = m_FormCollection["frmStatusFrameMain"];
             _MyForm.BorderName = null;
 
-            _MyForm.Controls.Add(new PictureBox("picBG", new Vector2(0,0), @"GUI\STATFRAME\UI-STATFRAME-MAINNEW.png", 128, 64, 0));
-            _MyForm.Controls.Add(new Label("lblCharName", new Vector2(4, -1), "Poplicola", Color.TransparentBlack, Color.White, 100, Label.Align.Left));
-            _MyForm["lblCharName"].FontName = "Pericles9";
+            _MyForm.Controls.Add(new PictureBox("picCenterFrame", new Vector2(width / 2 - 64, 0), @"GUI\STATFRAME\UI-STATFRAME-CENTER.png", 128, 128, 0));
 
-            _MyForm.Controls.Add(new PictureBox("barStat0",   new Vector2(0, 16), @"GUI\STATFRAME\UI-STATFRAME-MAINNEW-HITS.png", 128, 16, 0));
-            _MyForm.Controls.Add(new PictureBox("barStat1", new Vector2(0, 29), @"GUI\STATFRAME\UI-StatFrame-MAINNEW-MANA.png", 128, 16, 0));
-            _MyForm.Controls.Add(new PictureBox("barStat2", new Vector2(0, 42), @"GUI\STATFRAME\UI-StatFrame-MAINNEW-STAM.png", 128, 16, 0));
+            _MyForm.Controls.Add(new PictureBox("picFrameLeft", new Vector2(13, 0), @"GUI\STATFRAME\UI-STATFRAME-LEFT.png", 256, 64, 0));
+            _MyForm.Controls.Add(new PictureBox("picFrameRight", new Vector2(width - 14 - 256, 0), @"GUI\STATFRAME\UI-STATFRAME-RIGHT.png", 256, 64, 0));
 
+            // _MyForm.Controls.Add(new PictureBox("picBG", new Vector2(0,0), @"GUI\STATFRAME\UI-STATFRAME-MAINNEW.png", 128, 64, 0));
+            _MyForm.Controls.Add(new Label("lblNameLeft", new Vector2(20, -1), "Me", Color.TransparentBlack, Color.White, 144, Label.Align.Right));
+            _MyForm.Controls.Add(new Label("lblNameRight", new Vector2(232, -1), "Target", Color.TransparentBlack, Color.White, 144, Label.Align.Left));
+            _MyForm["lblNameLeft"].FontName = "Pericles9";
+            _MyForm["lblNameRight"].FontName = "Pericles9";
 
+            _MyForm.Controls.Add(new PictureBox("barStat0Left", new Vector2(58, 16), @"GUI\STATFRAME\UI-STATFRAME-HITS.png", 128, 16, 0));
+            _MyForm.Controls.Add(new PictureBox("barStat1Left", new Vector2(58, 29), @"GUI\STATFRAME\UI-STATFRAME-MANA.png", 128, 16, 0));
+            _MyForm.Controls.Add(new PictureBox("barStat2Left", new Vector2(58, 42), @"GUI\STATFRAME\UI-STATFRAME-STAMINA.png", 128, 16, 0));
 
-            _MyForm.Controls.Add(new Label("lblStat%0", new Vector2(85, 15), string.Empty, Color.TransparentBlack, Color.White, 100, Label.Align.Left));
-            _MyForm.Controls.Add(new Label("lblStat%1", new Vector2(85, 28), string.Empty, Color.TransparentBlack, Color.White, 100, Label.Align.Left));
-            _MyForm.Controls.Add(new Label("lblStat%2", new Vector2(85, 41), string.Empty, Color.TransparentBlack, Color.White, 100, Label.Align.Left));
-            _MyForm.Controls.Add(new Label("lblStatAmt0", new Vector2(4, 15), string.Empty, Color.TransparentBlack, Color.White, 100, Label.Align.Left));
-            _MyForm.Controls.Add(new Label("lblStatAmt1", new Vector2(4, 28), string.Empty, Color.TransparentBlack, Color.White, 100, Label.Align.Left));
-            _MyForm.Controls.Add(new Label("lblStatAmt2", new Vector2(4, 41), string.Empty, Color.TransparentBlack, Color.White, 100, Label.Align.Left));
+            _MyForm.Controls.Add(new PictureBox("barStat0Right", new Vector2(58 + 170, 16), @"GUI\STATFRAME\UI-STATFRAME-HITS.png", 128, 16, 0));
+            _MyForm.Controls.Add(new PictureBox("barStat1Right", new Vector2(58 + 170, 29), @"GUI\STATFRAME\UI-STATFRAME-MANA.png", 128, 16, 0));
+            _MyForm.Controls.Add(new PictureBox("barStat2Right", new Vector2(58 + 170, 42), @"GUI\STATFRAME\UI-STATFRAME-STAMINA.png", 128, 16, 0));
+
+            
             for (int i = 0; i < 3; i++)
             {
-                _MyForm["lblStat%" + i].FontName = "MiramontBold7";
-                _MyForm["lblStatAmt" + i].FontName = "MiramontBold7";
+                string iCtrlName;
+                iCtrlName = "lblStat%" + i + "Left";
+                _MyForm.Controls.Add(new Label(iCtrlName, new Vector2(30, 15 + i * 13), String.Empty, Color.TransparentBlack, Color.White, 100, Label.Align.Left));
+                _MyForm[iCtrlName].FontName = "MiramontBold7";
+
+                iCtrlName = "lblStatAmt" + i + "Left";
+                _MyForm.Controls.Add(new Label(iCtrlName, new Vector2(150, 15 + i * 13), String.Empty, Color.TransparentBlack, Color.White, 100, Label.Align.Left));
+                _MyForm[iCtrlName].FontName = "MiramontBold7";
+
+                iCtrlName = "lblStat%" + i + "Right";
+                _MyForm.Controls.Add(new Label(iCtrlName, new Vector2(344, 15 + i * 13), String.Empty, Color.TransparentBlack, Color.White, 100, Label.Align.Left));
+                _MyForm[iCtrlName].FontName = "MiramontBold7";
+
+                iCtrlName = "lblStatAmt" + i + "Right";
+                _MyForm.Controls.Add(new Label(iCtrlName, new Vector2(234, 15 + i * 13), String.Empty, Color.TransparentBlack, Color.White, 100, Label.Align.Left));
+                _MyForm[iCtrlName].FontName = "MiramontBold7";
             }
             
             //Show the form
@@ -70,27 +75,75 @@ namespace UltimaXNA.GUI
 
         public override void Update()
         {
-            CharacterName = "Poplicola";
+            for (int i = 0; i < 6; i++)
+            {
+                m_UpdateBar(i);
+            }
+        }
+
+        private void setTargetFrameVisibility(string leftOrRight, bool visible)
+        {
+            string iCtrlNameAppend = String.Empty;
+            if (leftOrRight == "Left")
+                iCtrlNameAppend = "Left";
+            else if (leftOrRight == "Right")
+                iCtrlNameAppend = "Right";
+            else
+                return;
+
+            _MyForm["picFrame" + iCtrlNameAppend].Visible = visible;
+            _MyForm["lblName" + iCtrlNameAppend].Visible = visible;
+            for (int i = 0; i < 3; i++)
+            {
+                _MyForm["barStat" + i + iCtrlNameAppend].Visible = visible;
+                _MyForm["lblStat%" + i + iCtrlNameAppend].Visible = visible;
+                _MyForm["lblStatAmt" + i + iCtrlNameAppend].Visible = visible;
+            }
         }
 
         private void m_UpdateBar(int nBarIndex)
         {
-            const int iMaxWidth = 128 ;
+            const int iMaxWidth = 128;
             int iActualWidth;
             int iCurrent, iMax;
+            int iPercent;
+            GameObjects.Unit entity;
+            string iControlNameAppend;
+            if (nBarIndex > 2)
+            {
+                entity = _targetEntity;
+                nBarIndex -= 3;
+                iControlNameAppend = "Right";
+            }
+            else
+            {
+                entity = _myEntity;
+                iControlNameAppend = "Left";
+            }
+
+            if (entity == null)
+            {
+                setTargetFrameVisibility(iControlNameAppend, false);
+                return;
+            }
+            else
+            {
+                setTargetFrameVisibility(iControlNameAppend, true);
+            }
+
             switch (nBarIndex)
             {
                 case 0:
-                    iCurrent = m_CurrentHealth;
-                    iMax = m_MaxHealth;
+                    iCurrent = entity.Health.Current;
+                    iMax = entity.Health.Max;
                     break;
                 case 1:
-                    iCurrent = m_CurrentMana;
-                    iMax = m_MaxMana;
+                    iCurrent = entity.Mana.Current;
+                    iMax = entity.Mana.Max;
                     break;
                 case 2:
-                    iCurrent = m_CurrentStamina;
-                    iMax = m_MaxStamina;
+                    iCurrent = entity.Stamina.Current;
+                    iMax = entity.Stamina.Max;
                     break;
                 default:
                     throw (new Exception("Bar index should be 0-2"));
@@ -98,20 +151,24 @@ namespace UltimaXNA.GUI
 
             if (iMax == 0)
             {
-                iActualWidth = iMaxWidth;
+                iActualWidth = 0;
+                iPercent = 0;
             }
             else if (iCurrent == 0)
             {
                 iActualWidth = 0;
+                iPercent = 0;
             }
             else
             {
                 iActualWidth = (int)((float)iMaxWidth * ((float)iCurrent / (float)iMax));
+                iPercent = ((int)(((float)iCurrent / (float)iMax) * 100f));
             }
 
-            _MyForm["barStat" + nBarIndex].Width = iActualWidth;
-            _MyForm["lblStat%" + nBarIndex].Text = ((int)(((float)iCurrent / (float)iMax) * 100f)).ToString() + "%";
-            _MyForm["lblStatAmt" + nBarIndex].Text = iCurrent.ToString();
+            _MyForm["barStat" + nBarIndex + iControlNameAppend].Width = iActualWidth;
+            _MyForm["lblStat%" + nBarIndex + iControlNameAppend].Text = iPercent + "%";
+            _MyForm["lblStatAmt" + nBarIndex + iControlNameAppend].Text = iCurrent.ToString();
+            _MyForm["lblName" + iControlNameAppend].Text = entity.Name;
         }
     }
 }

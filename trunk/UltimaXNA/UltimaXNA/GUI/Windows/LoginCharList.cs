@@ -15,7 +15,7 @@ namespace UltimaXNA.GUI
     class Window_CharacterList : Window
     {
         public Window_CharacterList(FormCollection nFormCollection)
-            : base(nFormCollection)
+            : base()
         {
             //Create a new form
             m_FormCollection.Add(new Form("frmLoginCharList", "Character List", new Vector2(270, 180), new Vector2(250, 200), Form.BorderStyle.Fixed));

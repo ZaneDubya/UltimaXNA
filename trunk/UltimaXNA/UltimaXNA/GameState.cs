@@ -18,17 +18,19 @@ namespace UltimaXNA
     {
         bool InWorld { get; set; }
         bool EngineRunning { get; set; }
+        Serial LastTarget { get; set; }
         void MouseTargeting(int nCursorID, int nTargetingType);
     }
 
     public class GameState : GameComponent, IGameState
     {
-        Input.IInputHandler _Input;
+        Input.IInputService _Input;
         TileEngine.ITileEngine _TileEngine;
         GameObjects.IGameObjects _GameObjects;
         TileEngine.IWorld _World;
         GUI.IGUI _GUI;
         Client.IUltimaClient _GameClient;
+        public Serial LastTarget { get; set; }
 
         public string DebugMessage { get { return generateDebugMessage(); } }
 
@@ -72,7 +74,7 @@ namespace UltimaXNA
         {
             base.Initialize();
             // Load the service objects.
-            _Input = (Input.IInputHandler)Game.Services.GetService(typeof(Input.IInputHandler));
+            _Input = (Input.IInputService)Game.Services.GetService(typeof(Input.IInputService));
             _TileEngine = (TileEngine.ITileEngine)Game.Services.GetService(typeof(TileEngine.ITileEngine));
             _GameObjects = (GameObjects.IGameObjects)Game.Services.GetService(typeof(GameObjects.IGameObjects));
             _World = (TileEngine.IWorld)Game.Services.GetService(typeof(TileEngine.IWorld));
@@ -84,39 +86,13 @@ namespace UltimaXNA
         {
             base.Update(gameTime);
 
-            // Do we need to quit?
-            if (this.EngineRunning == false)
+            if (InWorld)
             {
-                _GameClient.Disconnect();
-                Game.Exit();
-                return;
-            }
+                // Set the target frame stuff.
+                ((GUI.Window_StatusFrame)_GUI.Window("StatusFrame")).MyEntity = (GameObjects.Unit)_GameObjects.GetPlayerObject();
+                if (LastTarget.IsValid)
+                    ((GUI.Window_StatusFrame)_GUI.Window("StatusFrame")).TargetEntity = _GameObjects.GetObject<GameObjects.Unit>(LastTarget, false);
 
-            if (!InWorld)
-            {
-                // Not in the world yet
-                switch (_GameClient.Status)
-                {
-                    case UltimaClientStatus.Unconnected:
-                        _GUI.LoadLoginGUI();
-                        _GameObjects.Reset();
-                        break;
-                    case UltimaClientStatus.Error_Undefined:
-                        _GameClient.Disconnect();
-                        break;
-                    case UltimaClientStatus.WorldServer_InWorld:
-                        if (this.InWorld == false)
-                        {
-                            this.InWorld = true;
-                            _GUI.LoadInWorldGUI();
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
-            else
-            {
                 // Parse keyboard input.
                 parseKeyboard(_Input.Keyboard);
 
@@ -259,12 +235,11 @@ namespace UltimaXNA
                                     }
                                     // We dropped the icon in the world. This means we are trying to drop the item
                                     // into the world. Let's do it!
-                                    if (((GameObjects.GameObject)GUI.GUIHelper.MouseHoldingItem).Item_ContainedWithinSerial != 0)
+                                    if ((GUI.GUIHelper.MouseHoldingItem).Item_ContainedWithinSerial != 0)
                                     {
                                         // We must manually remove the item from the container, as RunUO does not do this for us.
-                                        GameObjects.GameObject iContainer = _GameObjects.GetObject(
-                                            ((GameObjects.GameObject)GUI.GUIHelper.MouseHoldingItem).Item_ContainedWithinSerial,
-                                            UltimaXNA.GameObjects.ObjectType.GameObject) as GameObjects.GameObject;
+                                        GameObjects.GameObject iContainer = _GameObjects.GetObject<GameObjects.GameObject>(
+                                            (GUI.GUIHelper.MouseHoldingItem).Item_ContainedWithinSerial, false);
                                         iContainer.ContainerObject.RemoveItem(GUI.GUIHelper.MouseHoldingItem.Serial);
                                     }
                                     GUI.GUIHelper.DropItemOntoGround(x, y, z);
@@ -329,8 +304,7 @@ namespace UltimaXNA
                 {
                     GameObjects.GameObject iObject =
                         ((iTopObject.Type == TileEngine.MapObjectTypes.GameObjectTile) ?
-                        _GameObjects.GetObject(iTopObject.OwnerSerial, UltimaXNA.GameObjects.ObjectType.GameObject) as GameObjects.GameObject :
-                        null);
+                        _GameObjects.GetObject<GameObjects.GameObject>(iTopObject.OwnerSerial, false) : null);
                     iItemData = iObject.ItemData;
                 }
                 else
@@ -367,6 +341,9 @@ namespace UltimaXNA
             {
                 if (iTopObject.Type == TileEngine.MapObjectTypes.MobileTile)
                 {
+                    LastTarget = iTopObject.OwnerSerial;
+                    _GameClient.Send(new SingleClickPacket(LastTarget));
+                    _GameClient.Send(new GetPlayerStatusPacket(0x04, LastTarget));
                     // Target this mobile.
                     return;
                 }
@@ -374,7 +351,7 @@ namespace UltimaXNA
                 {
                     // This is a GameObject. Pick it up if possible, as long as this is a press event.
 
-                    GameObjects.GameObject item = _GameObjects.GetObject(iTopObject.OwnerSerial, GameObjects.ObjectType.GameObject) as GameObjects.GameObject;
+                    GameObjects.GameObject item = _GameObjects.GetObject<GameObjects.GameObject>(iTopObject.OwnerSerial, false);
                     if (item.ItemData.Weight != 255)
                     {
                         // _GameClient.Send(new PickupItemPacket(iObject.Serial, (short)iObject.Item_StackCount));
@@ -392,7 +369,7 @@ namespace UltimaXNA
             TileEngine.IMapObject iMapObject = _TileEngine.MouseOverObject;
             if ((iMapObject != null) && (iMapObject.Type != UltimaXNA.TileEngine.MapObjectTypes.StaticTile))
             {
-                GameObjects.BaseObject iObject = _GameObjects.GetObject(iMapObject.OwnerSerial, UltimaXNA.GameObjects.ObjectType.Object);
+                GameObjects.BaseObject iObject = _GameObjects.GetObject<GameObjects.BaseObject>(iMapObject.OwnerSerial, false);
                 // default option is to simply 'use' this object, although this will doubtless be more complicated in the future.
                 // Perhaps the use option is based on the type of object? Anyways, for right now, we only interact with gameobjects,
                 // and we send a double-click to the server.
@@ -402,12 +379,12 @@ namespace UltimaXNA
                         _GameClient.Send(new DoubleClickPacket(iObject.Serial));
                         break;
                     case UltimaXNA.GameObjects.ObjectType.Unit:
-                        // and we also 'use' this unit.
-                        // _GameClient.Send(new DoubleClickPacket(iObject.Serial));
-                        // We request a context sensitive menu...
+                        // We request a context sensitive menu. This automatically sends a double click if no context menu is handled. See parseContextMenu...
+                        LastTarget = iObject.Serial;
                         _GameClient.Send(new RequestContextMenuPacket(iObject.Serial));
                         break;
                     case UltimaXNA.GameObjects.ObjectType.Player:
+                        LastTarget = iObject.Serial;
                         if (iObject.Serial == _GameObjects.MySerial)
                         {
                             // this is my player.
@@ -469,8 +446,7 @@ namespace UltimaXNA
             // Toggle for logout
             if (keyboard.IsKeyPressed(Keys.Q) && (keyboard.IsKeyDown(Keys.LeftControl)))
             {
-                _GameClient.Disconnect();
-                InWorld = false;
+                ((SceneManagement.ISceneService)Game.Services.GetService(typeof(SceneManagement.ISceneService))).CurrentScene = new SceneManagement.LoginScene(Game);
             }
         }
 
@@ -495,44 +471,46 @@ namespace UltimaXNA
         private string generateDebugMessage()
         {
             String debugMessage = "FPS: " + _FPS.ToString() + Environment.NewLine;
-            debugMessage += "Objects on screen: " + _TileEngine.ObjectsRendered.ToString() + Environment.NewLine;
-            if (_TileEngine.MouseOverObject != null)
+            if (InWorld)
             {
-                debugMessage += "OBJECT: " + _TileEngine.MouseOverObject.ToString() + Environment.NewLine;
-                if (_TileEngine.MouseOverObject.Type == TileEngine.MapObjectTypes.StaticTile)
+                debugMessage += "Objects on screen: " + _TileEngine.ObjectsRendered.ToString() + Environment.NewLine;
+                if (_TileEngine.MouseOverObject != null)
                 {
-                    debugMessage += "ArtID: " + ((TileEngine.StaticItem)_TileEngine.MouseOverObject).ID;
+                    debugMessage += "OBJECT: " + _TileEngine.MouseOverObject.ToString() + Environment.NewLine;
+                    if (_TileEngine.MouseOverObject.Type == TileEngine.MapObjectTypes.StaticTile)
+                    {
+                        debugMessage += "ArtID: " + ((TileEngine.StaticItem)_TileEngine.MouseOverObject).ID;
+                    }
+                    else if (_TileEngine.MouseOverObject.Type == TileEngine.MapObjectTypes.MobileTile)
+                    {
+                        GameObjects.Unit iUnit = _GameObjects.GetObject<GameObjects.Unit>(_TileEngine.MouseOverObject.OwnerSerial, false);
+                        if (iUnit != null)
+                            debugMessage += "Name: " + iUnit.Name + Environment.NewLine;
+                        debugMessage +=
+                            "AnimID: " + ((TileEngine.MobileTile)_TileEngine.MouseOverObject).ID + Environment.NewLine +
+                            "Serial: " + _TileEngine.MouseOverObject.OwnerSerial + Environment.NewLine +
+                            "Hue: " + ((TileEngine.MobileTile)_TileEngine.MouseOverObject).Hue;
+                    }
+                    else if (_TileEngine.MouseOverObject.Type == TileEngine.MapObjectTypes.GameObjectTile)
+                    {
+                        debugMessage +=
+                            "ArtID: " + ((TileEngine.GameObjectTile)_TileEngine.MouseOverObject).ID + Environment.NewLine +
+                            "Serial: " + _TileEngine.MouseOverObject.OwnerSerial;
+                    }
+                    debugMessage += " Z: " + _TileEngine.MouseOverObject.Z;
                 }
-                else if (_TileEngine.MouseOverObject.Type == TileEngine.MapObjectTypes.MobileTile)
+                else
                 {
-                    GameObjects.Unit iUnit = _GameObjects.GetObject(_TileEngine.MouseOverObject.OwnerSerial,
-                        UltimaXNA.GameObjects.ObjectType.Unit) as GameObjects.Unit;
-                    if (iUnit != null)
-                        debugMessage += "Name: " + iUnit.Name + Environment.NewLine;
-                    debugMessage +=
-                        "AnimID: " + ((TileEngine.MobileTile)_TileEngine.MouseOverObject).ID + Environment.NewLine +
-                        "Serial: " + _TileEngine.MouseOverObject.OwnerSerial + Environment.NewLine +
-                        "Hue: " + ((TileEngine.MobileTile)_TileEngine.MouseOverObject).Hue;
+                    debugMessage += "OVER: " + "null";
                 }
-                else if (_TileEngine.MouseOverObject.Type == TileEngine.MapObjectTypes.GameObjectTile)
+                if (_TileEngine.MouseOverGroundTile != null)
                 {
-                    debugMessage +=
-                        "ArtID: " + ((TileEngine.GameObjectTile)_TileEngine.MouseOverObject).ID + Environment.NewLine +
-                        "Serial: " + _TileEngine.MouseOverObject.OwnerSerial;
+                    debugMessage += Environment.NewLine + "GROUND: " + _TileEngine.MouseOverGroundTile.Position.ToString();
                 }
-                debugMessage += " Z: " + _TileEngine.MouseOverObject.Z;
-            }
-            else
-            {
-                debugMessage += "OVER: " + "null";
-            }
-            if (_TileEngine.MouseOverGroundTile != null)
-            {
-                debugMessage += Environment.NewLine + "GROUND: " + _TileEngine.MouseOverGroundTile.Position.ToString();
-            }
-            else
-            {
-                debugMessage += Environment.NewLine + "GROUND: null";
+                else
+                {
+                    debugMessage += Environment.NewLine + "GROUND: null";
+                }
             }
             return debugMessage;
         }

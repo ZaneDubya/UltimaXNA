@@ -14,7 +14,7 @@
         Error_Undefined,
     }
 
-    interface IUltimaClient
+    public interface IUltimaClient
     {
         UltimaClientStatus Status { get; }
         

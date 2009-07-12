@@ -16,7 +16,7 @@ namespace UltimaXNA.GUI
         public Serial serial { get { return mMobileObject.Serial; } }
 
         public Window_PaperDoll(GameObjects.BaseObject nMobileObject, FormCollection nFormCollection)
-            : base(nFormCollection)
+            : base()
         {
             mMobileObject = (GameObjects.Unit)nMobileObject;
 

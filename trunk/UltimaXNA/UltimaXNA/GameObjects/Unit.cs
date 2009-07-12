@@ -11,9 +11,7 @@ using Microsoft.Xna.Framework;
 
 namespace UltimaXNA.GameObjects
 {
-    delegate void EVENT_UpdateHealthStaminaMana(BaseObject nThis);
-
-    class Unit : UltimaXNA.GameObjects.BaseObject
+    public class Unit : UltimaXNA.GameObjects.BaseObject
     {
 		// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
 		private int m_DisplayBodyID = 0;
@@ -46,7 +44,6 @@ namespace UltimaXNA.GameObjects
 
         public string Name = string.Empty;
         public CurrentMaxValue Health, Stamina, Mana;
-        public event EVENT_UpdateHealthStaminaMana UpdateHealthStaminaMana;
 
         public bool IsMounted
         {
@@ -107,7 +104,6 @@ namespace UltimaXNA.GameObjects
                 Health.Updated = false;
                 Stamina.Updated = false;
                 Mana.Updated = false;
-                UpdateHealthStaminaMana(this);
             }
         }
 
@@ -202,7 +198,7 @@ namespace UltimaXNA.GameObjects
         }
     }
 
-    class UnitAnimation
+    public class UnitAnimation
     {
 		// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
         public UnitActions Action;
@@ -298,7 +294,7 @@ namespace UltimaXNA.GameObjects
     }
 
     #region UnitEnums
-    enum UnitActions : int
+    public enum UnitActions : int
     {
         stopmovement = 0x7fffffff,
         walk = 0x00,
@@ -476,7 +472,7 @@ namespace UltimaXNA.GameObjects
     }
     #endregion
     #region WornEquipmentClass
-    class WornEquipment
+    public class WornEquipment
     {
         private GameObject[] m_Equipment;
         private Unit m_Owner;

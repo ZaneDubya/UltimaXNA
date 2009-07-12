@@ -4,6 +4,7 @@ using UltimaXNA.Network.Packets.Client;
 
 namespace UltimaXNA.GUI
 {
+    public delegate void LoginEvent(string server, int port, string account, string password);
 
     // No scripted window should ever directly interact with the client.
     // All events should be handled through this class, which will provide
@@ -22,17 +23,6 @@ namespace UltimaXNA.GUI
         public static void QuitImmediate()
         {
             _GameStateService.EngineRunning = false;
-        }
-
-        public static bool Connect(string host, int port)
-        {
-            return _GameClientService.Connect(host, port);
-        }
-
-        public static void Login(string username, string password)
-        {
-            _GameClientService.SetAccountPassword(username, password);
-            _GameClientService.Send(new LoginPacket(username, password));
         }
 
         public static void PickupItem(GameObjects.BaseObject entity)
