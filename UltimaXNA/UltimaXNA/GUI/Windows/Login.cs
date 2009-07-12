@@ -14,11 +14,11 @@ namespace UltimaXNA.GUI
 {
     class Window_Login : Window
     {
-        public Window_Login(FormCollection nFormCollection)
-            : base(nFormCollection)
+        public Window_Login()
+            : base()
         {
             //Create a new form
-            m_FormCollection.Add(new Form("frmLogin", "Login to UO", new Vector2(270, 180), new Vector2(250, 200), Form.BorderStyle.Fixed));
+            m_FormCollection.Add(new Form("frmLogin", "Login to UO", new Vector2(270, 180), new Vector2(250, 260), Form.BorderStyle.Fixed));
             _MyForm = m_FormCollection["frmLogin"];
 
             _MyForm.Controls.Add(new Label("label1", new Vector2(10, 30), "Username:", Color.TransparentBlack, Color.Black, 80, Label.Align.Right));
@@ -58,13 +58,9 @@ namespace UltimaXNA.GUI
             // make sure we don't log in twice
             _MyForm["btnLogin"].Enabled = false;
             // send the login event
-            if (Events.Connect(_MyForm["txtServer"].Text, System.Convert.ToInt32(_MyForm["txtPort"].Text)))
-                Events.Login(_MyForm["txtUsername"].Text, _MyForm["txtPassword"].Text);
-            else
-            {
-                _MyForm["btnLogin"].Enabled = true;
-                // !!! raise error
-            }
+            OnLogin(_MyForm["txtServer"].Text, System.Convert.ToInt32(_MyForm["txtPort"].Text), _MyForm["txtUsername"].Text, _MyForm["txtPassword"].Text);
         }
+
+        public LoginEvent OnLogin;
     }
 }

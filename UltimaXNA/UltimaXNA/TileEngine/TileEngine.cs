@@ -45,7 +45,7 @@ namespace UltimaXNA.TileEngine
         private RayPicker m_RayPicker;
 
         // Reference for services
-        private Input.IInputHandler m_InputService;
+        private Input.IInputService m_InputService;
         private GameObjects.IGameObjects m_ObjectsService;
         private IWorld m_WorldService;
         private IGameState m_GameStateService;
@@ -337,6 +337,9 @@ namespace UltimaXNA.TileEngine
                             //TODO: Check to see if its a partial hue, if true set Y = 1, if false then set y = 0
                             // We subtract 1 since hue = 0 is valid, and the client uses hue = 0 to indicate no hue.
                             Vector2 hueVector = new Vector2(iMobile.Hue - 1, 0);
+                            if (m_GameStateService.LastTarget != null)
+                                if (m_GameStateService.LastTarget == iMobile.OwnerSerial)
+                                    hueVector.Y = 1;
 
                             m_VertexBuffer[0].Hue = hueVector;
                             m_VertexBuffer[1].Hue = hueVector;
@@ -427,7 +430,7 @@ namespace UltimaXNA.TileEngine
         {
             base.Initialize();
 
-            m_InputService = (Input.IInputHandler)Game.Services.GetService(typeof(Input.IInputHandler));
+            m_InputService = (Input.IInputService)Game.Services.GetService(typeof(Input.IInputService));
             m_ObjectsService = (GameObjects.IGameObjects)Game.Services.GetService(typeof(GameObjects.IGameObjects));
             m_WorldService = (IWorld)Game.Services.GetService(typeof(IWorld));
             m_GameStateService = (IGameState)Game.Services.GetService(typeof(IGameState));

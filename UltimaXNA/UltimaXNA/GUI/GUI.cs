@@ -16,13 +16,12 @@ namespace UltimaXNA.GUI
     public interface IGUI
     {
         bool IsMouseOverGUI(Vector2 nPosition);
-        void LoadInWorldGUI();
-        void LoadLoginGUI();
         void Container_Open(GameObjects.BaseObject nContainerObject, int nGump);
         void Merchant_Open(GameObjects.BaseObject nContainerObject, int nGump);
         void PaperDoll_Open(GameObjects.BaseObject nMobileObject);
         void ErrorPopup_Modal(string nText);
         Window Window(string nWindowName);
+        Window AddWindow(string windowName, Window window);
         void CloseWindow(string nWindowName);
         bool TargettingCursor { get; set; }
         void Reset();
@@ -129,7 +128,7 @@ namespace UltimaXNA.GUI
             _GameObjectsService = (GameObjects.IGameObjects)Game.Services.GetService(typeof(GameObjects.IGameObjects));
             _GameClientService = (Client.IUltimaClient)Game.Services.GetService(typeof(Client.IUltimaClient));
             Events.Initialize(Game.Services);
-            GUIHelper.SetObjects(graphics.GraphicsDevice, this, _GameClientService, _GameObjectsService);
+            GUIHelper.SetObjects(graphics.GraphicsDevice, this, _GameClientService, _GameObjectsService, _FormCollection);
             _GUIWindows = new Dictionary<string, Window>();
             _DrawForms = true;
             MouseCursor = 0;
@@ -191,7 +190,7 @@ namespace UltimaXNA.GUI
             _SpriteBatch.Begin();
             if (DebugMessage != null)
                 _SpriteBatch.DrawString(_FontArial14, DebugMessage,
-                    new Vector2(5, 58), Color.White, 0f, Vector2.Zero, 1,
+                    new Vector2(5, 5), Color.White, 0f, Vector2.Zero, 1,
                     SpriteEffects.None, 1f);
             _SpriteBatch.DrawString(_FontArial14, GUIHelper.TooltipMsg,
                     new Vector2(GUIHelper.TooltipX, GUIHelper.TooltipY), Color.White, 0f, Vector2.Zero, 1,
@@ -229,6 +228,19 @@ namespace UltimaXNA.GUI
                 w.Close();
         }
 
+        public Window AddWindow(string windowName, Window window)
+        {
+            if (_GUIWindows.ContainsKey(windowName))
+            {
+                if (_GUIWindows[windowName].IsClosed)
+                {
+                    _GUIWindows.Remove(windowName);
+                }
+            }
+            _GUIWindows.Add(windowName, window);
+            return _GUIWindows[windowName];
+        }
+
         public void Reset()
         {
             lock (_FormCollection)
@@ -237,31 +249,6 @@ namespace UltimaXNA.GUI
                 {
                     if (!kvp.Key.Contains("Error"))
                         CloseWindow(kvp.Key);
-                }
-            }
-        }
-
-        public void LoadInWorldGUI()
-        {
-            lock (_FormCollection)
-            {
-                _GUIWindows["LoginBG"].Close();
-                _GUIWindows["LoginWindow"].Close();
-                _GUIWindows.Add("ChatFrame", new Window_Chat(_FormCollection));
-                _GUIWindows.Add("ChatInput", new Window_ChatInput(_FormCollection));
-                _GUIWindows.Add("StatusFrame", new Window_StatusFrame(_FormCollection));
-            }
-        }
-
-        public void LoadLoginGUI()
-        {
-            lock (_FormCollection)
-            {
-                if (!_GUIWindows.ContainsKey("LoginWindow"))
-                {
-                    this.Reset();
-                    _GUIWindows.Add("LoginBG", new Window_LoginBG(_FormCollection));
-                    _GUIWindows.Add("LoginWindow", new Window_Login(_FormCollection));
                 }
             }
         }

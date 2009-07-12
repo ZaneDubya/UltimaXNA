@@ -20,6 +20,8 @@ namespace UltimaXNA
         private TileEngine.World _World;
         private TileEngine.TileEngine _TileEngine;
         private GUI.EngineGUI _GUI;
+        private SceneManagement.SceneManager _sceneManager;
+        private Diagnostics.Logger _logService;
 
         public Engine()
         {
@@ -37,6 +39,13 @@ namespace UltimaXNA
             UltimaXNA.Data.StringList.LoadStringList("enu");
 
             this.Content.RootDirectory = "Content";
+
+            _logService = new Diagnostics.Logger("UXNA");
+            Services.AddService<Diagnostics.ILoggingService>(_logService);
+
+            _sceneManager = new SceneManagement.SceneManager(this);
+            Services.AddService<SceneManagement.ISceneService>(_sceneManager);
+            this.Components.Add(_sceneManager);
 
             _Client = new Client.UltimaClient(this);
             this.Components.Add(_Client);
@@ -75,6 +84,10 @@ namespace UltimaXNA
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+            if (_sceneManager.CurrentScene == null)
+            {
+                _sceneManager.CurrentScene = new SceneManagement.LoginScene(this);
+            }
             _GameState.UpdateAfter();
             _GUI.DebugMessage = _GameState.DebugMessage;
         }

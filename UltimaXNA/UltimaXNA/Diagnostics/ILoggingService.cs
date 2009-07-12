@@ -8,7 +8,7 @@ namespace UltimaXNA.Diagnostics
     /// <summary>
     /// Defines functions to use for logging
     /// </summary>
-    public interface ILoggable : IStatusNotifier
+    public interface ILoggingService : IStatusNotifier
     {
         /// <summary>
         /// Logs debug information 

@@ -17,9 +17,9 @@ namespace UltimaXNA.GUI
         internal Form _MyForm;
         public bool IsClosed = false;
 
-        public Window(FormCollection nFormCollection)
+        public Window()
         {
-            m_FormCollection = nFormCollection;
+            m_FormCollection = GUIHelper.FormCollection;
         }
 
         public void Close()

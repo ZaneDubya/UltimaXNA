@@ -10,7 +10,7 @@ struct VS_INPUT
 	float4 Position : POSITION0;
 	float3 Normal	: NORMAL0;
 	float2 TexCoord : TEXCOORD0;
-	float2 Hue		: TEXCOORD1; //X = Hue, Y = 0 Normal Hue, Y = 1 Partial Hue
+	float2 Hue		: TEXCOORD1; //If X = 0, not hued. If X > 0 Hue, if X < 0 partial hue. If Y != 0, target
 
 };
 
@@ -70,12 +70,13 @@ float4 PixelShader(PS_INPUT IN) : COLOR0
 		color.rgb = (ambientColor * color.rgb) + (lightColor * NDotL * color.rgb);
 	}
 
-	if (IN.Hue.x > 0 && color.a > 0) //Is it Hued?
+	if (IN.Hue.x != 0 && color.a > 0) //Is it Hued?
 	{
-		float hueY = (((IN.Hue.x - (IN.Hue.x % 2)) / HuesPerRow) / (HuesPerColumn));
-		float4 gray = (color.r + color.g + color.b) / 3.0f / HuesPerRow + (IN.Hue.x % 2) * 0.5f;
+		float x = abs(IN.Hue.x);
+		float hueY = (((x - (x % 2)) / HuesPerRow) / (HuesPerColumn));
+		float4 gray = (color.r + color.g + color.b) / 3.0f / HuesPerRow + (x % 2) * 0.5f;
 		float4 hue = tex2D(hueTextureSampler, float2(gray.r, hueY));
-		if (IN.Hue.y > 0) //Is it a Partial Hue?
+		if (IN.Hue.x < 0) //Is it a Partial Hue?
 		{
 			if (color.r == color.g && color.r == color.b && color.a != 0)
 				color = hue;
@@ -83,6 +84,17 @@ float4 PixelShader(PS_INPUT IN) : COLOR0
 		else //Else its a normal Hue
 		{
 			color = hue;
+		}
+	}
+	
+	if (IN.Hue.y != 0)
+	{
+		if (color.a > 0)
+		{
+			color.r = clamp(color.r * 1.5, 0, 1);
+			// color.g = 0; //clamp(color.g * 1.4, 0, 1);
+			// color.b = 0; //clamp(color.b * 1.4, 0, 1);
+			// color.a = 1;
 		}
 	}
 

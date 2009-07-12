@@ -14,8 +14,8 @@ namespace UltimaXNA.GUI
 {
     class Window_Chat : Window
     {
-        public Window_Chat(FormCollection nFormCollection)
-            : base(nFormCollection)
+        public Window_Chat()
+            : base()
         {
             //Create a new form
             m_FormCollection.Add(new Form("frmChat", string.Empty, new Vector2(392, 128), new Vector2(4, 600 - 120 - 36), Form.BorderStyle.None));

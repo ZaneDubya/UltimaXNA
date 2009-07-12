@@ -12,7 +12,7 @@ namespace UltimaXNA.Network
 {
     public class ClientNetwork : IClientNetwork
     {
-        ILoggable _log;
+        ILoggingService _log;
         IDecompression _decompression;
 
         Socket _serverSocket;

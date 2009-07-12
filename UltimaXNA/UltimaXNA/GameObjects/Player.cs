@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework;
 
 namespace UltimaXNA.GameObjects
 {
-    class Player : UltimaXNA.GameObjects.Unit
+    public class Player : UltimaXNA.GameObjects.Unit
     {
         public int FlagsPlayer = 0;
         public int GuildID = 0, GuildRank = 0;

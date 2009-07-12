@@ -30,7 +30,7 @@ namespace UltimaXNA.GameObjects
         }
     }
 
-    class PlayerQuest
+    public class PlayerQuest
     {
         int[] QuestData;
 
@@ -40,7 +40,7 @@ namespace UltimaXNA.GameObjects
         }
     }
 
-    struct CurrentMaxValue
+    public struct CurrentMaxValue
     {
         public int Current;
         public int Max;

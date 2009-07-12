@@ -179,7 +179,7 @@ namespace UltimaXNA.Client
                 iObject.Item_InvX = i.X;
                 iObject.Item_InvY = i.Y;
                 // ... and add it the container contents of the container.
-                GameObject iContainerObject = _GameObjects.GetObject(i.ContainerSerial, ObjectType.GameObject) as GameObject;
+                GameObject iContainerObject = _GameObjects.GetObject<GameObjects.GameObject>(i.ContainerSerial, true);
                 iContainerObject.ContainerObject.AddItem(iObject);
             }
         }
@@ -193,7 +193,7 @@ namespace UltimaXNA.Client
             iObject.Item_InvX = p.X;
             iObject.Item_InvY = p.Y;
             // ... and add it the container contents of the container.
-            GameObject iContainerObject = _GameObjects.GetObject(p.ContainerSerial, ObjectType.GameObject) as GameObject;
+            GameObject iContainerObject = _GameObjects.GetObject<GameObjects.GameObject>(p.ContainerSerial, true);
             if (iContainerObject != null)
                 iContainerObject.ContainerObject.AddItem(iObject);
             else
@@ -246,10 +246,10 @@ namespace UltimaXNA.Client
             // Only try to open a container of type Container. Note that GameObjects can
             // have container objects and will expose them when called through GetContainerObject(int)
             // instead of GetObject(int).
-            GameObjects.BaseObject iObject = _GameObjects.GetObject(p.Serial, ObjectType.Object);
-            if (iObject.ObjectType == ObjectType.GameObject)
+            GameObjects.GameObject o = _GameObjects.GetObject<GameObjects.GameObject>(p.Serial, false);
+            if (o.ObjectType == ObjectType.GameObject)
             {
-                _GUI.Container_Open(iObject, p.GumpId);
+                _GUI.Container_Open(o, p.GumpId);
             }
             else
             {
@@ -343,6 +343,8 @@ namespace UltimaXNA.Client
                 case 0x04: // Close generic gump
                     // !!! Unhandled
                     break;
+                case 0x19: // Extended stats: http://docs.polserver.com/packets/index.php?Packet=0xBF
+                    break;
                 default:
                     throw (new System.Exception("Unhandled Subcommand in ServerInfo packet: " + p.Subcommand));
             }
@@ -404,14 +406,14 @@ namespace UltimaXNA.Client
         {
             MobileAnimationPacket p = (MobileAnimationPacket)packet;
 
-            Unit iObject = _GameObjects.GetObject(p.Serial, ObjectType.Unit) as Unit;
+            Unit iObject = _GameObjects.GetObject<Unit>(p.Serial, false);
             iObject.Animation(p.Action, p.FrameCount, p.RepeatCount, p.Reverse, p.Repeat, p.Delay);
         }
 
         private void receive_MobileIncoming(IRecvPacket packet)
         {
             MobileIncomingPacket p = (MobileIncomingPacket)packet;
-            Unit iMobile = _GameObjects.GetObject(p.Serial, ObjectType.Unit) as Unit;
+            Unit iMobile = _GameObjects.GetObject<Unit>(p.Serial, true);
             iMobile.DisplayBodyID = p.BodyID;
             iMobile.Hue = (int)p.Hue;
             iMobile.Movement.SetPositionInstant((int)p.X, (int)p.Y, (int)p.Z);
@@ -436,7 +438,7 @@ namespace UltimaXNA.Client
         {
             MobileMovingPacket p = (MobileMovingPacket)packet;
 
-            Unit iObject = _GameObjects.GetObject(p.Serial, ObjectType.Unit) as Unit;
+            Unit iObject = _GameObjects.GetObject<GameObjects.Unit>(p.Serial, true);
             iObject.SetFacing(p.Direction);
             iObject.DisplayBodyID = p.BodyID;
             // Issue 16 - Pet not showing at login - http://code.google.com/p/ultimaxna/issues/detail?id=16 - Smjert
@@ -459,7 +461,7 @@ namespace UltimaXNA.Client
         private void receive_MobileUpdate(IRecvPacket packet)
         {
             MobileUpdatePacket p = (MobileUpdatePacket)packet;
-            Unit iObject = _GameObjects.GetObject(p.Serial, ObjectType.Unit) as Unit;
+            Unit iObject = _GameObjects.GetObject<Unit>(p.Serial, true);
             iObject.DisplayBodyID = p.BodyID;
             iObject.Hue = (int)p.Hue;
             iObject.Movement.SetPositionInstant((int)p.X, (int)p.Y, (int)p.Z);
@@ -498,7 +500,7 @@ namespace UltimaXNA.Client
         {
             ObjectPropertyListPacket p = (ObjectPropertyListPacket)packet;
 
-            BaseObject iObject = _GameObjects.GetObject(p.Serial, ObjectType.Object);
+            BaseObject iObject = _GameObjects.GetObject<BaseObject>(p.Serial, false);
             iObject.PropertyList.Hash = p.Hash;
             iObject.PropertyList.Clear();
 
@@ -530,7 +532,9 @@ namespace UltimaXNA.Client
         private void receive_OpenBuyWindow(IRecvPacket packet)
         {
             VendorBuyListPacket p = (VendorBuyListPacket)packet;
-            GameObject iObject = _GameObjects.GetObject(p.VendorPackSerial, ObjectType.GameObject) as GameObject;
+            GameObject iObject = _GameObjects.GetObject<GameObject>(p.VendorPackSerial, false);
+            if (iObject == null)
+                return;
             _GUI.Merchant_Open(iObject, 0);
         }
 
@@ -571,7 +575,7 @@ namespace UltimaXNA.Client
 
             // When loading the player object, we must load the serial before the object.
             _GameObjects.MySerial = p.Serial;
-            Player iPlayer = (Player)_GameObjects.GetObject(p.Serial, ObjectType.Player);
+            Player iPlayer = _GameObjects.GetObject<Player>(p.Serial, true);
             iPlayer.Movement.SetPositionInstant((int)p.X, (int)p.Y, (int)p.Z);
             iPlayer.SetFacing(p.Direction & 0x0F);
 
@@ -619,7 +623,7 @@ namespace UltimaXNA.Client
         private void receive_RequestNameResponse(IRecvPacket packet)
         {
             RequestNameResponsePacket p = (RequestNameResponsePacket)packet;
-            Unit u = _GameObjects.GetObject(p.Serial, ObjectType.Unit) as Unit;
+            Unit u = _GameObjects.GetObject <Unit>(p.Serial, false);
             u.Name = p.MobileName;
         }
 
@@ -731,12 +735,7 @@ namespace UltimaXNA.Client
                 throw (new Exception("KR Status not handled."));
             }
 
-            if (p.Serial != _GameObjects.MySerial)
-            {
-                throw new Exception("Assumption that StatusBarInfo packet always is for player is wrong!");
-            }
-
-            Unit u = (GameObjects.Unit)_GameObjects.GetPlayerObject();
+            Unit u = _GameObjects.GetObject<Unit>(p.Serial, false);
             u.Name = p.PlayerName;
             u.Health.Update(p.CurrentHealth, p.MaxHealth);
             u.Stamina.Update(p.CurrentStamina, p.MaxStamina);
@@ -763,7 +762,7 @@ namespace UltimaXNA.Client
         private void receive_ToolTipRevision(IRecvPacket packet)
         {
             ObjectPropertyListUpdatePacket p = (ObjectPropertyListUpdatePacket)packet;
-            BaseObject iObject = _GameObjects.GetObject(p.Serial, ObjectType.Object);
+            BaseObject iObject = _GameObjects.GetObject<BaseObject>(p.Serial, false);
             if (iObject.PropertyList.Hash != p.RevisionHash)
             {
                 this.Send(new QueryPropertiesPacket(p.Serial));
@@ -779,22 +778,22 @@ namespace UltimaXNA.Client
         private void receive_UpdateHealth(IRecvPacket packet)
         {
             UpdateHealthPacket p = (UpdateHealthPacket)packet;
-            Unit u = _GameObjects.GetObject(p.Serial, ObjectType.Unit) as Unit;
+            Unit u = _GameObjects.GetObject<Unit>(p.Serial, false);
             u.Health.Update(p.Current, p.Max);
         }
 
         private void receive_UpdateMana(IRecvPacket packet)
         {
             UpdateManaPacket p = (UpdateManaPacket)packet;
-            Unit u = _GameObjects.GetObject(p.Serial, ObjectType.Unit) as Unit;
-            u.Health.Update(p.Current, p.Max);
+            Unit u = _GameObjects.GetObject<Unit>(p.Serial, false);
+            u.Mana.Update(p.Current, p.Max);
         }
 
         private void receive_UpdateStamina(IRecvPacket packet)
         {
             UpdateStaminaPacket p = (UpdateStaminaPacket)packet;
-            Unit u = _GameObjects.GetObject(p.Serial, ObjectType.Unit) as Unit;
-            u.Health.Update(p.Current, p.Max);
+            Unit u = _GameObjects.GetObject<Unit>(p.Serial, false);
+            u.Stamina.Update(p.Current, p.Max);
         }
 
         private void receive_VersionRequest(IRecvPacket packet)
@@ -816,7 +815,7 @@ namespace UltimaXNA.Client
             // If the iItemID >= 0x4000, then this is a multiobject.
             if (p.ItemID <= 0x4000)
             {
-                GameObject iObject = _GameObjects.GetObject((int)p.Serial, ObjectType.GameObject) as GameObject;
+                GameObject iObject = _GameObjects.GetObject<GameObject>((int)p.Serial, true);
                 iObject.ObjectTypeID = p.ItemID;
                 iObject.Item_StackCount = p.StackAmount;
                 iObject.Hue = p.Hue;
@@ -832,7 +831,7 @@ namespace UltimaXNA.Client
         {
             WornItemPacket p = (WornItemPacket)packet;
             GameObject item = addItem(p.Serial, p.ItemId, p.Hue, 0, 0);
-            Unit u = _GameObjects.GetObject(p.ParentSerial, ObjectType.Unit) as Unit;
+            Unit u = _GameObjects.GetObject<Unit>(p.ParentSerial, false);
             u.Equipment[p.Layer] = item;
             if (item.PropertyList.Hash == 0)
                 this.Send(new QueryPropertiesPacket(item.Serial));
@@ -853,6 +852,11 @@ namespace UltimaXNA.Client
                 {
                     this.Send(new ContextMenuResponsePacket(context.Serial, (short)context.ContextEntry("Buy").ResponseCode));
                 }
+            }
+            else
+            {
+                // no context menu entries are handled. Send a double click.
+                this.Send(new DoubleClickPacket(context.Serial));
             }
         }
 
@@ -877,7 +881,7 @@ namespace UltimaXNA.Client
 
         private GameObject addItem(Serial serial, int nItemID, int nHue, int nContainerSerial, int nAmount)
         {
-            GameObject iObject = _GameObjects.GetObject(serial, ObjectType.GameObject) as GameObject;
+            GameObject iObject = _GameObjects.GetObject<GameObject>(serial, true);
             
             iObject.ObjectTypeID = nItemID;
             iObject.Hue = nHue;

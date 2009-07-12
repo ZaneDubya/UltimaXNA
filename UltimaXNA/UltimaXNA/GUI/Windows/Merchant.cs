@@ -17,7 +17,7 @@ namespace UltimaXNA.GUI
         public Serial serial { get { return mContainerObject.Serial; } }
 
         public Window_Merchant(GameObjects.BaseObject nContainerObject, FormCollection nFormCollection)
-            : base(nFormCollection)
+            : base()
         {
             mContainerObject = (GameObjects.GameObject)nContainerObject;
 

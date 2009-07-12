@@ -9,9 +9,12 @@ namespace UltimaXNA.GUI
 {
     static class GUIHelper
     {
-        private static Client.IUltimaClient _GameClientService = null;
-        private static GameObjects.IGameObjects _GameObjectsService = null;
-        private static GUI.EngineGUI _GUI = null;
+        private static Client.IUltimaClient _GameClientService;
+        private static GameObjects.IGameObjects _GameObjectsService;
+        private static GUI.EngineGUI _GUI;
+        private static FormCollection _formCollection;
+        private static GraphicsDevice _GraphicsDevice;
+        public static FormCollection FormCollection { get { return _formCollection; } }
 
         private static bool _IsPrepared = false;
         private static Texture2D _TextureBorder = null;
@@ -19,7 +22,7 @@ namespace UltimaXNA.GUI
         private static Texture2D _TextureEmpty = null;
         private static RenderTarget2D _RenderTarget;
         private static Texture2D[] _IconCache;
-        private static GraphicsDevice _GraphicsDevice = null;
+        
 
         public static string TooltipMsg = string.Empty;
         public static int TooltipX = 0;
@@ -27,7 +30,7 @@ namespace UltimaXNA.GUI
 
         private static List<string> _QueuedChatText = new List<string>();
 
-        public static GameObjects.BaseObject MouseHoldingItem;
+        public static GameObjects.GameObject MouseHoldingItem;
         private static GameObjects.GameObject _ToolTipItem;
 
         public static void Network_SendChat(string nChatText)
@@ -104,18 +107,14 @@ namespace UltimaXNA.GUI
                     if (iDestContainer.ContainerObject.GetContents(nDestSlot) == null)
                     {
                         // dest slot is empty.
-                        ((GameObjects.GameObject)_GameObjectsService.GetObject(
-                            iHeldObject.Item_ContainedWithinSerial,
-                            UltimaXNA.GameObjects.ObjectType.GameObject)).ContainerObject.RemoveItem(iHeldObject.Serial);
+                        _GameObjectsService.GetObject<GameObjects.GameObject>(iHeldObject.Item_ContainedWithinSerial, false).ContainerObject.RemoveItem(iHeldObject.Serial);
                         _GameClientService.Send(new PickupItemPacket(iHeldObject.Serial, (short)iHeldObject.Item_StackCount));
                         _GameClientService.Send(new DropItemPacket(iHeldObject.Serial, (short)nDestSlot, (short)0x7FFF,
                             0, 0, iDestContainer.Serial));
                     }
                     else
                     {
-                        ((GameObjects.GameObject)_GameObjectsService.GetObject(
-                            iHeldObject.Item_ContainedWithinSerial,
-                            UltimaXNA.GameObjects.ObjectType.GameObject)).ContainerObject.RemoveItem(iHeldObject.Serial);
+                        _GameObjectsService.GetObject<GameObjects.GameObject>(iHeldObject.Item_ContainedWithinSerial, false).ContainerObject.RemoveItem(iHeldObject.Serial);
                         _GameClientService.Send(new PickupItemPacket(iHeldObject.Serial, (short)iHeldObject.Item_StackCount));
                         _GameClientService.Send(new DropItemPacket(iHeldObject.Serial, (short)0, (short)0,
                             0, 0, iDestContainer.Serial));
@@ -140,7 +139,7 @@ namespace UltimaXNA.GUI
 
             if (iHeldObject.Item_ContainedWithinSerial != 0)
             {
-                GameObjects.GameObject iSourceContainer = (GameObjects.GameObject)_GameObjectsService.GetObject(iHeldObject.Item_ContainedWithinSerial, UltimaXNA.GameObjects.ObjectType.GameObject);
+                GameObjects.GameObject iSourceContainer = _GameObjectsService.GetObject<GameObjects.GameObject>(iHeldObject.Item_ContainedWithinSerial, false);
                 iHeldObject.Item_ContainedWithinSerial = 0;
                 iSourceContainer.ContainerObject.RemoveItem(iHeldObject.Serial);
             }
@@ -217,12 +216,13 @@ namespace UltimaXNA.GUI
         }
 
         public static void SetObjects(
-            GraphicsDevice nDevice, EngineGUI nGUI, Client.IUltimaClient nGameClientService, GameObjects.IGameObjects nGameObjectsService)
+            GraphicsDevice nDevice, EngineGUI nGUI, Client.IUltimaClient nGameClientService, GameObjects.IGameObjects nGameObjectsService, FormCollection nFormCollection)
         {
             _GraphicsDevice = nDevice;
             _GUI = nGUI;
             _GameClientService = nGameClientService;
             _GameObjectsService = nGameObjectsService;
+            _formCollection = nFormCollection;
         }
 
         private static void _PrepareHelper()
