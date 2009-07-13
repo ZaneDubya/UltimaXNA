@@ -258,7 +258,14 @@ namespace UltimaXNA.GameObjects
                 AnimationFrame = 0f;
                 _FrameCount = frameCount;
                 _FrameDelay = delay;
-                _repeatCount = repeatCount;
+                if (repeat == false)
+                {
+                    _repeatCount = 0;
+                }
+                else
+                {
+                    _repeatCount = repeatCount;
+                }
             }
         }
 
@@ -271,7 +278,7 @@ namespace UltimaXNA.GameObjects
                 if (AnimationFrame >= 1f)
                 {
                     AnimationFrame %= 1f;
-                    if (_repeatCount == 0)
+                    if ((_repeatCount == 0))
                         SetAnimation(UnitActions.Stand, 0, 0, false, false, 0);
                     else
                     {
