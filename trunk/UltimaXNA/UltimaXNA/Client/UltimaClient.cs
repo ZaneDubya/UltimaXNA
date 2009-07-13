@@ -60,7 +60,7 @@ namespace UltimaXNA.Client
             PacketRegistry.OnMobileStatusCompact += receive_StatusInfo;
             PacketRegistry.OnWorldItem += receive_WorldItem;
             PacketRegistry.OnLoginConfirm += receive_PlayerLocaleAndBody;
-            PacketRegistry.OnAsciiMessage += receive_Speech;
+            PacketRegistry.OnAsciiMessage += receive_AsciiMessage;
             PacketRegistry.OnRemoveEntity += receive_DeleteObject;
             PacketRegistry.OnMobileUpdate += receive_MobileUpdate;
             PacketRegistry.OnMovementRejected += receive_MoveRej;
@@ -214,7 +214,10 @@ namespace UltimaXNA.Client
 
         private void receive_CLILOCMessage(IRecvPacket packet)
         {
-            receive_UnhandledPacket(packet);
+            MessageLocalizedPacket p = (MessageLocalizedPacket)packet;
+
+            string iCliLoc = constructCliLoc(Data.StringList.Table[p.CliLocNumber].ToString(), p.Arguements);
+            GUI.GUIHelper.Chat_AddLine(iCliLoc);
         }
 
         private void receive_ChangeCombatant(IRecvPacket packet)
@@ -520,8 +523,8 @@ namespace UltimaXNA.Client
                 }
                 else
                 {
-                    string[] iArgs = p.Arguements[i].Split('\t');
-                    iObject.PropertyList.AddProperty(constructCliLoc(iCliLoc, iArgs));
+
+                    iObject.PropertyList.AddProperty(constructCliLoc(iCliLoc, p.Arguements[i]));
                 }
             }
         }
@@ -688,7 +691,6 @@ namespace UltimaXNA.Client
 
         private void receive_SkillsList(IRecvPacket packet)
         {
-            // unhandled !!!
             int iPacketType = 0; // reader.ReadByte();
             // 0x00: Full List of skills
             // 0xFF: Single skill update
@@ -698,37 +700,35 @@ namespace UltimaXNA.Client
             switch (iPacketType)
             {
                 case 0x00: //Full List of skills
-                    receive_UnhandledPacket(packet);
+                    // receive_UnhandledPacket(packet);
                     break;
                 case 0xFF: // single skill update
-                    receive_UnhandledPacket(packet);
+                    // receive_UnhandledPacket(packet);
                     break;
                 case 0x02: // full List of skills with skill cap for each skill
-                    receive_UnhandledPacket(packet);
+                    // receive_UnhandledPacket(packet);
                     break;
                 case 0xDF: // Single skill update with skill cap for skill
-                    receive_UnhandledPacket(packet);
+                    // receive_UnhandledPacket(packet);
                     break;
                 default:
                     throw (new Exception("Unknown PacketType"));
             }
         }
 
-        private void receive_Speech(IRecvPacket packet)
+        private void receive_AsciiMessage(IRecvPacket packet)
         {
-            // BYTE[2] Packet len
-            // BYTE[4] itemID (FF FF FF FF = system) 
-            // BYTE[2] model (item # - FF FF = system) 
-            // BYTE[1] Type of Text
-            // BYTE[2] Text Color 
-            // BYTE[2] Font 
-            // BYTE[30] Name 
-            // BYTE[?] Null-Terminated Msg (? = Packet length - 44)
+            AsciiMessagePacket p = (AsciiMessagePacket)packet;
 
-            // Notes
-            // This is the packet POL uses to send names when you single click on items or NPCs.
-            // This is a much more optimized method (packet size) than OSI's method by using 0xC1
-
+            switch (p.Type)
+            {
+                case 0x00: // 0x00 - Normal 
+                    GUI.GUIHelper.Chat_AddLine(p.Name1 + ": " + p.Text);
+                    break;
+                default:
+                    receive_UnhandledPacket(packet);
+                    break;
+            }
             // The various types of text is as follows:
             // 0x00 - Normal 
             // 0x01 - Broadcast/System
@@ -741,7 +741,6 @@ namespace UltimaXNA.Client
             // 0x0D - Guild Chat
             // 0x0E - Alliance Chat
             // 0x0F - Command Prompts
-            receive_UnhandledPacket(packet);
         }
 
         private void receive_StatusInfo(IRecvPacket packet)
@@ -887,14 +886,23 @@ namespace UltimaXNA.Client
             }
         }
 
-        private string constructCliLoc(string nBase, string[] nArgs)
+        private string constructCliLoc(string nBase, string nArgs)
         {
+            string[] iArgs = nArgs.Split('\t');
             string iConstruct = nBase;
-            for (int i = 0; i < nArgs.Length; i++)
+            for (int i = 0; i < iArgs.Length; i++)
             {
                 int iBeginReplace = iConstruct.IndexOf('~', 0);
                 int iEndReplace = iConstruct.IndexOf('~', iBeginReplace + 1);
-                iConstruct = iConstruct.Substring(0, iBeginReplace) + nArgs[i] + iConstruct.Substring(iEndReplace + 1, iConstruct.Length - iEndReplace - 1);
+                if ((iBeginReplace != -1) && (iEndReplace != -1))
+                {
+                    iConstruct = iConstruct.Substring(0, iBeginReplace) + iArgs[i] + iConstruct.Substring(iEndReplace + 1, iConstruct.Length - iEndReplace - 1);
+                }
+                else
+                {
+                    iConstruct = nBase;
+                }
+                
             }
             return iConstruct;
         }

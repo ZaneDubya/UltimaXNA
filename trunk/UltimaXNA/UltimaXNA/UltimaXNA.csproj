@@ -100,7 +100,7 @@
   <ItemGroup>
     <Compile Include="Data\Art.cs" />
     <Compile Include="Data\Gumps.cs" />
-    <Compile Include="Data\Radalcol.cs" />
+    <Compile Include="Data\Radarcol.cs" />
     <Compile Include="Data\SharedMethods.cs" />
     <Compile Include="Data\StringList.cs" />
     <Compile Include="Diagnostics\ILoggingService.cs" />

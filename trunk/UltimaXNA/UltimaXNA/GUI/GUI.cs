@@ -147,6 +147,7 @@ namespace UltimaXNA.GUI
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+            GUIHelper.Update();
 
             // Fix for issue 1. http://code.google.com/p/ultimaxna/issues/detail?id=1 --ZDW 6/17/09
             if ((MouseCursor == _MouseCursorHolding) && (GUIHelper.MouseHoldingItem == null))
