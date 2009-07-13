@@ -237,6 +237,11 @@ namespace UltimaXNA.GUI
                 {
                     _GUIWindows.Remove(windowName);
                 }
+                else
+                {
+                    _GUIWindows[windowName].Close();
+                    _GUIWindows.Remove(windowName);
+                }
             }
             _GUIWindows.Add(windowName, window);
             return _GUIWindows[windowName];

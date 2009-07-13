@@ -223,7 +223,7 @@ namespace UltimaXNA.Client
         private void receive_ChangeCombatant(IRecvPacket packet)
         {
             ChangeCombatantPacket p = (ChangeCombatantPacket)packet;
-            _GameState.LastTarget = p.Id;
+            _GameState.LastTarget = p.Serial;
         }
 
         private void receive_CharacterList(IRecvPacket packet)
@@ -236,7 +236,9 @@ namespace UltimaXNA.Client
 
         private void receive_CompressedGump(IRecvPacket packet)
         {
-            receive_UnhandledPacket(packet);
+            CompressedGumpPacket p = (CompressedGumpPacket)packet;
+            string[] gumpPieces = interpretGumpPieces(p.GumpData);
+            _GUI.AddWindow("Gump:" + p.GumpID, new GUI.Window_CompressedGump(p.GumpID, gumpPieces, p.TextLines, p.X, p.Y));
         }
 
         private void receive_Container(IRecvPacket packet)
@@ -884,6 +886,38 @@ namespace UltimaXNA.Client
                 // no context menu entries are handled. Send a double click.
                 this.Send(new DoubleClickPacket(context.Serial));
             }
+        }
+
+        private string[] interpretGumpPieces(string gumpData)
+        {
+            List<string> i = new List<string>();;
+            bool isData = true;
+            int dataIndex = 0;
+            while (isData)
+            {
+                if (gumpData.Substring(dataIndex) == "\0")
+                {
+                    isData = false;
+                }
+                else
+                {
+                    int begin = gumpData.IndexOf("{ ", dataIndex);
+                    int end = gumpData.IndexOf(" }", dataIndex + 1);
+                    if ((begin != -1) && (end != -1))
+                    {
+                        string sub = gumpData.Substring(begin + 2, end - begin - 2);
+                        // iConstruct = iConstruct.Substring(0, iBeginReplace) + iArgs[i] + iConstruct.Substring(iEndReplace + 1, iConstruct.Length - iEndReplace - 1);
+                        i.Add(sub);
+                        dataIndex += end - begin + 2;
+                    }
+                    else
+                    {
+                        isData = false;
+                    }
+                }
+            }
+
+            return i.ToArray();
         }
 
         private string constructCliLoc(string nBase, string nArgs)

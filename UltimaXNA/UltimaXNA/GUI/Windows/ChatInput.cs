@@ -26,7 +26,7 @@ namespace UltimaXNA.GUI
             _MyForm.MouseThrough = false;
             _MyForm.FocusAlways = true;
 
-            _MyForm.Controls.Add(new Textbox("txtInput", new Vector2(0, 0), (int)_MyForm.Width));
+            Controls.Add(new Textbox("txtInput", new Vector2(0, 0), (int)_MyForm.Width));
             ((Textbox)_MyForm["txtInput"]).TexturePath = @"xwinforms\textures\controls\textbox-dark.png";
             ((Textbox)_MyForm["txtInput"]).TextureFocusPath = @"xwinforms\textures\controls\textbox-dark.png";
             ((Textbox)_MyForm["txtInput"]).DrawBackground = true;

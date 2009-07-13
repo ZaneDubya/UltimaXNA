@@ -21,20 +21,20 @@ namespace UltimaXNA.GUI
             m_FormCollection.Add(new Form("frmLogin", "Login to UO", new Vector2(270, 180), new Vector2(250, 260), Form.BorderStyle.Fixed));
             _MyForm = m_FormCollection["frmLogin"];
 
-            _MyForm.Controls.Add(new Label("label1", new Vector2(10, 30), "Username:", Color.TransparentBlack, Color.Black, 80, Label.Align.Right));
-            _MyForm.Controls.Add(new Textbox("txtUsername", new Vector2(100, 30), 140, ""));
+            Controls.Add(new Label("label1", new Vector2(10, 30), "Username:", Color.TransparentBlack, Color.Black, 80, Label.Align.Right));
+            Controls.Add(new Textbox("txtUsername", new Vector2(100, 30), 140, ""));
             _MyForm["txtUsername"].Focus();
 
-            _MyForm.Controls.Add(new Label("label2", new Vector2(10, 60), "Password:", Color.TransparentBlack, Color.Black, 80, Label.Align.Right));
-            _MyForm.Controls.Add(new Textbox("txtPassword", new Vector2(100, 60), 140, ""));
+            Controls.Add(new Label("label2", new Vector2(10, 60), "Password:", Color.TransparentBlack, Color.Black, 80, Label.Align.Right));
+            Controls.Add(new Textbox("txtPassword", new Vector2(100, 60), 140, ""));
 
-            _MyForm.Controls.Add(new Label("label3", new Vector2(10, 90), "Server:", Color.TransparentBlack, Color.Black, 80, Label.Align.Right));
-            _MyForm.Controls.Add(new Textbox("txtServer", new Vector2(100, 90), 140, "localhost"));
+            Controls.Add(new Label("label3", new Vector2(10, 90), "Server:", Color.TransparentBlack, Color.Black, 80, Label.Align.Right));
+            Controls.Add(new Textbox("txtServer", new Vector2(100, 90), 140, "localhost"));
 
-            _MyForm.Controls.Add(new Label("label4", new Vector2(10, 120), "Port:", Color.TransparentBlack, Color.Black, 80, Label.Align.Right));
-            _MyForm.Controls.Add(new Textbox("txtPort", new Vector2(100, 120), 140, "2593"));
+            Controls.Add(new Label("label4", new Vector2(10, 120), "Port:", Color.TransparentBlack, Color.Black, 80, Label.Align.Right));
+            Controls.Add(new Textbox("txtPort", new Vector2(100, 120), 140, "2593"));
 
-            _MyForm.Controls.Add(new Button("btnLogin", new Vector2(100, 150), 140, "Log in", Color.White, Color.Black));
+            Controls.Add(new Button("btnLogin", new Vector2(100, 150), 140, "Log in", Color.White, Color.Black));
             _MyForm["btnLogin"].OnPress = Button1_OnPress;
             _MyForm["btnLogin"].OnRelease = Button1_OnRelease;
 

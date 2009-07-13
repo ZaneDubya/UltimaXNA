@@ -240,6 +240,7 @@ namespace UltimaXNA.GameObjects
 
         private int _FrameCount;
         private int _FrameDelay;
+        private int _repeatCount;
         public void SetAnimation(UnitActions action, int frameCount, int repeatCount, bool reverse, bool repeat, int delay)
         {
             if (Action != action)
@@ -248,6 +249,7 @@ namespace UltimaXNA.GameObjects
                 AnimationFrame = 0f;
                 _FrameCount = frameCount;
                 _FrameDelay = delay;
+                _repeatCount = repeatCount;
             }
         }
 
@@ -260,6 +262,12 @@ namespace UltimaXNA.GameObjects
                 if (AnimationFrame >= 1f)
                 {
                     AnimationFrame %= 1f;
+                    if (_repeatCount == 0)
+                        SetAnimation(UnitActions.nothing, 0, 0, false, false, 0);
+                    else
+                    {
+                        _repeatCount--;
+                    }
                 }
             }
             else

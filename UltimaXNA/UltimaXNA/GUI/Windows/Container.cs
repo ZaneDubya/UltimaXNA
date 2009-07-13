@@ -45,26 +45,26 @@ namespace UltimaXNA.GUI
             _MyForm.CustomDragArea = new Rectangle(44, 8, 143, 18);
             //_MyForm.MouseThrough = true;
 
-            _MyForm.Controls.Add(new PictureBox("picBG", mBGOffset, @"GUI\CONTAINERFRAME\UI-Bag-4x4.png", 256, 256, 0));
+            Controls.Add(new PictureBox("picBG", mBGOffset, @"GUI\CONTAINERFRAME\UI-Bag-4x4.png", 256, 256, 0));
 
-            _MyForm.Controls.Add(new Label("lblContainer", new Vector2(16f, 7f), "ContainerFrame | " + GUIHelper.SerialHex(mContainerObject.Serial),
+            Controls.Add(new Label("lblContainer", new Vector2(16f, 7f), "ContainerFrame | " + GUIHelper.SerialHex(mContainerObject.Serial),
                 Color.TransparentBlack, Color.White, 160, Label.Align.Left));
             _MyForm["lblContainer"].FontName = "ArialNarrow10";
 
-            _MyForm.Controls.Add(new CustomButton("btnClose", new Vector2(184, -1), new Rectangle(6, 7, 19, 18),
+            Controls.Add(new CustomButton("btnClose", new Vector2(184, -1), new Rectangle(6, 7, 19, 18),
                 @"GUI\COMMON\UI-Panel-MinimizeButton-Up.png", @"GUI\COMMON\UI-Panel-MinimizeButton-Down.png",
                 @"GUI\COMMON\UI-Panel-MinimizeButton-Disabled.png", @"GUI\COMMON\UI-Panel-MinimizeButton-Highlight.png"));
-            _MyForm.Controls["btnClose"].OnRelease = btnClose_OnRelease;
+            Controls["btnClose"].OnRelease = btnClose_OnRelease;
 
-            _MyForm.Controls.Add(new CustomButton("btnScrollUp", new Vector2(183, 25), new Rectangle(6, 7, 19, 18),
+            Controls.Add(new CustomButton("btnScrollUp", new Vector2(183, 25), new Rectangle(6, 7, 19, 18),
                 @"GUI\SCROLLBAR\UI-ScrollBar-ScrollUpButton-Up.png", @"GUI\SCROLLBAR\UI-ScrollBar-ScrollUpButton-Down.png",
                 @"GUI\SCROLLBAR\UI-ScrollBar-ScrollUpButton-Disabled.png", @"GUI\SCROLLBAR\UI-ScrollBar-ScrollUpButton-Highlight.png"));
-            _MyForm.Controls["btnScrollUp"].OnRelease = btnScrollUp_OnRelease;
+            Controls["btnScrollUp"].OnRelease = btnScrollUp_OnRelease;
 
-            _MyForm.Controls.Add(new CustomButton("btnScrollDown", new Vector2(183, 174), new Rectangle(6, 7, 19, 18),
+            Controls.Add(new CustomButton("btnScrollDown", new Vector2(183, 174), new Rectangle(6, 7, 19, 18),
                 @"GUI\SCROLLBAR\UI-ScrollBar-ScrollDownButton-Up.png", @"GUI\SCROLLBAR\UI-ScrollBar-ScrollDownButton-Down.png",
                 @"GUI\SCROLLBAR\UI-ScrollBar-ScrollDownButton-Disabled.png", @"GUI\SCROLLBAR\UI-ScrollBar-ScrollDownButton-Highlight.png"));
-            _MyForm.Controls["btnScrollDown"].OnRelease = btnScrollDown_OnRelease;
+            Controls["btnScrollDown"].OnRelease = btnScrollDown_OnRelease;
 
             _SlotsWide = 4;
             _SlotsHigh = 4;
@@ -75,7 +75,7 @@ namespace UltimaXNA.GUI
                 Vector2 iPosition = new Vector2();
                 iPosition.Y = (int)(i / _SlotsWide) * 41 + 34;
                 iPosition.X = (i - ((int)(i / _SlotsWide)) * _SlotsWide) * 42 + 17;
-                _MyForm.Controls.Add(new CustomButton(iBtnName, iPosition, new Rectangle(0, 0, 39, 39),
+                Controls.Add(new CustomButton(iBtnName, iPosition, new Rectangle(0, 0, 39, 39),
                     null, null, null, null, 1f));
                 _MyForm[iBtnName].OnMouseOver += btnInv_OnOver;
                 _MyForm[iBtnName].OnMouseOut += btnInv_OnOut;
@@ -196,14 +196,14 @@ namespace UltimaXNA.GUI
             }
 
             if (mScrollY == 0)
-                ((CustomButton)_MyForm.Controls["btnScrollUp"]).Disabled = true;
+                ((CustomButton)Controls["btnScrollUp"]).Disabled = true;
             else
-                ((CustomButton)_MyForm.Controls["btnScrollUp"]).Disabled = false;
+                ((CustomButton)Controls["btnScrollUp"]).Disabled = false;
 
             if (mScrollY >= mMaxScrollY)
-                ((CustomButton)_MyForm.Controls["btnScrollDown"]).Disabled = true;
+                ((CustomButton)Controls["btnScrollDown"]).Disabled = true;
             else
-                ((CustomButton)_MyForm.Controls["btnScrollDown"]).Disabled = false;
+                ((CustomButton)Controls["btnScrollDown"]).Disabled = false;
         }
     }
 }

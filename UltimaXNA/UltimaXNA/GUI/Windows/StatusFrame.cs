@@ -29,46 +29,46 @@ namespace UltimaXNA.GUI
             _MyForm = m_FormCollection["frmStatusFrameMain"];
             _MyForm.BorderName = null;
 
-            _MyForm.Controls.Add(new PictureBox("picMiniMap", new Vector2(136, -34), string.Empty, 128, 128, 0));
+            Controls.Add(new PictureBox("picMiniMap", new Vector2(136, -34), string.Empty, 128, 128, 0));
 
-            _MyForm.Controls.Add(new PictureBox("picCenterFrame", new Vector2(width / 2 - 64, 0), @"GUI\STATFRAME\UI-STATFRAME-CENTER.png", 128, 128, 0));
+            Controls.Add(new PictureBox("picCenterFrame", new Vector2(width / 2 - 64, 0), @"GUI\STATFRAME\UI-STATFRAME-CENTER.png", 128, 128, 0));
             
 
-            _MyForm.Controls.Add(new PictureBox("picFrameLeft", new Vector2(13, 0), @"GUI\STATFRAME\UI-STATFRAME-LEFT.png", 256, 64, 0));
-            _MyForm.Controls.Add(new PictureBox("picFrameRight", new Vector2(width - 14 - 256, 0), @"GUI\STATFRAME\UI-STATFRAME-RIGHT.png", 256, 64, 0));
+            Controls.Add(new PictureBox("picFrameLeft", new Vector2(13, 0), @"GUI\STATFRAME\UI-STATFRAME-LEFT.png", 256, 64, 0));
+            Controls.Add(new PictureBox("picFrameRight", new Vector2(width - 14 - 256, 0), @"GUI\STATFRAME\UI-STATFRAME-RIGHT.png", 256, 64, 0));
 
-            // _MyForm.Controls.Add(new PictureBox("picBG", new Vector2(0,0), @"GUI\STATFRAME\UI-STATFRAME-MAINNEW.png", 128, 64, 0));
-            _MyForm.Controls.Add(new Label("lblNameLeft", new Vector2(20, -1), "Me", Color.TransparentBlack, Color.White, 144, Label.Align.Right));
-            _MyForm.Controls.Add(new Label("lblNameRight", new Vector2(232, -1), "Target", Color.TransparentBlack, Color.White, 144, Label.Align.Left));
+            // Controls.Add(new PictureBox("picBG", new Vector2(0,0), @"GUI\STATFRAME\UI-STATFRAME-MAINNEW.png", 128, 64, 0));
+            Controls.Add(new Label("lblNameLeft", new Vector2(20, -1), "Me", Color.TransparentBlack, Color.White, 144, Label.Align.Right));
+            Controls.Add(new Label("lblNameRight", new Vector2(232, -1), "Target", Color.TransparentBlack, Color.White, 144, Label.Align.Left));
             _MyForm["lblNameLeft"].FontName = "Pericles9";
             _MyForm["lblNameRight"].FontName = "Pericles9";
 
-            _MyForm.Controls.Add(new PictureBox("barStat0Left", new Vector2(58, 16), @"GUI\STATFRAME\UI-STATFRAME-HITS.png", 128, 16, 0));
-            _MyForm.Controls.Add(new PictureBox("barStat1Left", new Vector2(58, 29), @"GUI\STATFRAME\UI-STATFRAME-MANA.png", 128, 16, 0));
-            _MyForm.Controls.Add(new PictureBox("barStat2Left", new Vector2(58, 42), @"GUI\STATFRAME\UI-STATFRAME-STAMINA.png", 128, 16, 0));
+            Controls.Add(new PictureBox("barStat0Left", new Vector2(58, 16), @"GUI\STATFRAME\UI-STATFRAME-HITS.png", 128, 16, 0));
+            Controls.Add(new PictureBox("barStat1Left", new Vector2(58, 29), @"GUI\STATFRAME\UI-STATFRAME-MANA.png", 128, 16, 0));
+            Controls.Add(new PictureBox("barStat2Left", new Vector2(58, 42), @"GUI\STATFRAME\UI-STATFRAME-STAMINA.png", 128, 16, 0));
 
-            _MyForm.Controls.Add(new PictureBox("barStat0Right", new Vector2(58 + 170, 16), @"GUI\STATFRAME\UI-STATFRAME-HITS.png", 128, 16, 0));
-            _MyForm.Controls.Add(new PictureBox("barStat1Right", new Vector2(58 + 170, 29), @"GUI\STATFRAME\UI-STATFRAME-MANA.png", 128, 16, 0));
-            _MyForm.Controls.Add(new PictureBox("barStat2Right", new Vector2(58 + 170, 42), @"GUI\STATFRAME\UI-STATFRAME-STAMINA.png", 128, 16, 0));
+            Controls.Add(new PictureBox("barStat0Right", new Vector2(58 + 170, 16), @"GUI\STATFRAME\UI-STATFRAME-HITS.png", 128, 16, 0));
+            Controls.Add(new PictureBox("barStat1Right", new Vector2(58 + 170, 29), @"GUI\STATFRAME\UI-STATFRAME-MANA.png", 128, 16, 0));
+            Controls.Add(new PictureBox("barStat2Right", new Vector2(58 + 170, 42), @"GUI\STATFRAME\UI-STATFRAME-STAMINA.png", 128, 16, 0));
 
             
             for (int i = 0; i < 3; i++)
             {
                 string iCtrlName;
                 iCtrlName = "lblStat%" + i + "Left";
-                _MyForm.Controls.Add(new Label(iCtrlName, new Vector2(30, 15 + i * 13), String.Empty, Color.TransparentBlack, Color.White, 100, Label.Align.Left));
+                Controls.Add(new Label(iCtrlName, new Vector2(30, 15 + i * 13), String.Empty, Color.TransparentBlack, Color.White, 100, Label.Align.Left));
                 _MyForm[iCtrlName].FontName = "MiramontBold7";
 
                 iCtrlName = "lblStatAmt" + i + "Left";
-                _MyForm.Controls.Add(new Label(iCtrlName, new Vector2(150, 15 + i * 13), String.Empty, Color.TransparentBlack, Color.White, 100, Label.Align.Left));
+                Controls.Add(new Label(iCtrlName, new Vector2(150, 15 + i * 13), String.Empty, Color.TransparentBlack, Color.White, 100, Label.Align.Left));
                 _MyForm[iCtrlName].FontName = "MiramontBold7";
 
                 iCtrlName = "lblStat%" + i + "Right";
-                _MyForm.Controls.Add(new Label(iCtrlName, new Vector2(344, 15 + i * 13), String.Empty, Color.TransparentBlack, Color.White, 100, Label.Align.Left));
+                Controls.Add(new Label(iCtrlName, new Vector2(344, 15 + i * 13), String.Empty, Color.TransparentBlack, Color.White, 100, Label.Align.Left));
                 _MyForm[iCtrlName].FontName = "MiramontBold7";
 
                 iCtrlName = "lblStatAmt" + i + "Right";
-                _MyForm.Controls.Add(new Label(iCtrlName, new Vector2(234, 15 + i * 13), String.Empty, Color.TransparentBlack, Color.White, 100, Label.Align.Left));
+                Controls.Add(new Label(iCtrlName, new Vector2(234, 15 + i * 13), String.Empty, Color.TransparentBlack, Color.White, 100, Label.Align.Left));
                 _MyForm[iCtrlName].FontName = "MiramontBold7";
             }
             

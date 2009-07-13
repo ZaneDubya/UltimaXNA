@@ -122,6 +122,18 @@ namespace UltimaXNA.Network
             return _buffer[_index++];
         }
 
+        public byte[] ReadBytes(int length)
+        {
+            if ((_index + length) > _length)
+                return new byte[0];
+
+            byte[] b = new byte[length];
+
+            Array.Copy(_buffer, _index, b, 0, length);
+            _index += length;
+            return b;
+        }
+
         public uint ReadUInt32()
         {
             if ((_index + 4) > _length)
