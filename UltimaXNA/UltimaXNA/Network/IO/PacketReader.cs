@@ -410,6 +410,21 @@ namespace UltimaXNA.Network
             return sb.ToString();
         }
 
+        public string ReadUnicodeStringSafeReverse()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            int c;
+
+            while ((_index + 1) < _length && (c = ((_buffer[_index++]) | _buffer[_index++] << 8)) != 0)
+            {
+                if (IsSafeChar(c))
+                    sb.Append((char)c);
+            }
+
+            return sb.ToString();
+        }
+
         public string ReadUnicodeString(int fixedLength)
         {
             int bound = _index + (fixedLength << 1);

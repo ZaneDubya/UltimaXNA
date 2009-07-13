@@ -112,12 +112,12 @@ namespace UltimaXNA.GameObjects
             if (Movement.IsMoving)
             {
                 bool nRunning = false;
-                UnitActions iAnimationAction = (nRunning == true) ? UnitActions.run : UnitActions.walk;
+                UnitActions iAnimationAction = (nRunning == true) ? UnitActions.Run : UnitActions.Walk;
                 m_Animation.SetAnimation(iAnimationAction, 10, 0, false, false, 1);
             }
             else
             {
-                m_Animation.SetAnimation(UnitActions.stopmovement);
+                m_Animation.SetAnimation(UnitActions.StopMovement);
             }
 
             int iDirection = Movement.DrawFacing;
@@ -131,7 +131,7 @@ namespace UltimaXNA.GameObjects
                 Movement.Mounted = m_Animation.Mounted = true;
                 mobtile = new TileEngine.MobileTile(
                                 mount.ObjectTypeID, nLocation, nOffset,
-                                iDirection, m_Animation.Action == UnitActions.nothing ? 2 : (int)m_Animation.Action, m_Animation.AnimationFrame,
+                                iDirection, m_Animation.Action == UnitActions.Stand ? 2 : (int)m_Animation.Action, m_Animation.AnimationFrame,
                                 Serial, 0x1A, mount.Hue, false);
 
                 mobtile.SubType = TileEngine.MobileTileTypes.Mount;
@@ -142,7 +142,7 @@ namespace UltimaXNA.GameObjects
                 Movement.Mounted = m_Animation.Mounted = false;
             }
 
-			int iAction = m_Animation.GetAction_People();
+			int iAction = m_Animation.GetAction();
             
 			mobtile = new TileEngine.MobileTile(DisplayBodyID, nLocation, nOffset, iDirection, iAction, m_Animation.AnimationFrame, Serial, 1, Hue, m_Animation.Mounted);
 			mobtile.SubType = TileEngine.MobileTileTypes.Body;
@@ -207,25 +207,34 @@ namespace UltimaXNA.GameObjects
         private float m_AnimationStep = 0f;
 		// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
 		public bool Mounted = false;
-		public int BodyID;
+		private int _bodyID;
 		// Issue 6 - End
+        public int BodyID
+        {
+            get { return _bodyID; }
+            set { _bodyID = value; }
+        }
+        private int _animationType
+        {
+            get { return Data.Mobtypes.AnimationType(_bodyID); }
+        }
 
         public UnitAnimation()
         {
             m_AnimationStep = 0f;
-            Action = UnitActions.nothing;
+            Action = UnitActions.Stand;
         }
 
         public void SetAnimation(UnitActions nAction)
         {
-            if (nAction == UnitActions.stopmovement)
+            if (nAction == UnitActions.StopMovement)
             {
-                if ((Action == UnitActions.walk) ||
-                    (Action == UnitActions.walkfaster) ||
-                    (Action == UnitActions.run) ||
-                    (Action == UnitActions.runfaster))
+                if ((Action == UnitActions.Walk) ||
+                    (Action == UnitActions.WalkArmed) ||
+                    (Action == UnitActions.Run) ||
+                    (Action == UnitActions.RunArmed))
                 {
-                    this.SetAnimation(UnitActions.nothing);
+                    this.SetAnimation(UnitActions.Stand);
                 }
                 return;
             }
@@ -263,7 +272,7 @@ namespace UltimaXNA.GameObjects
                 {
                     AnimationFrame %= 1f;
                     if (_repeatCount == 0)
-                        SetAnimation(UnitActions.nothing, 0, 0, false, false, 0);
+                        SetAnimation(UnitActions.Stand, 0, 0, false, false, 0);
                     else
                     {
                         _repeatCount--;
@@ -274,43 +283,85 @@ namespace UltimaXNA.GameObjects
                 AnimationFrame = 0;
         }
 
-        public int GetAction_People()
+        public int GetAction()
         {
 			// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
-			if(Mounted)
-			{
-				switch (Action)
-				{
-					case UnitActions.walk:
-						return (int)23;
-					case UnitActions.run:
-						return (int)24;
-					case UnitActions.nothing:
-						return (int)25;
+            switch (_animationType)
+            {
+                case 0: // high detail
+                    return getAction_HighDetail();
+                case 1: // low detail
+                    return getAction_LowDetail();
+                case 2: // people & accessories
+                    return getAction_HighestDetail();
+                default:
+                    return -1;
+            }
+        }
 
-					default: return (int)Action;
-				}
-			}
+        private int getAction_HighDetail()
+        {
+            switch (Action)
+            {
+                case UnitActions.Walk:
+                    return 0;
+                case UnitActions.Stand:
+                    return 1;
+                default:
+                    return (int)Action;
+            }
+        }
 
-			// Hiryu has different stand animation
-			if(BodyID == 243 && Action == UnitActions.nothing)
-				return 2;
+        private int getAction_LowDetail()
+        {
+            switch (Action)
+            {
+                case UnitActions.Walk:
+                    return 0;
+                case UnitActions.Run:
+                    return 1;
+                case UnitActions.Stand:
+                    return 2;
+                default:
+                    return (int)Action;
+            }
+        }
 
-			return (int)Action;
-			// Issue 6 - End
+        private int getAction_HighestDetail()
+        {
+            if (Mounted)
+            {
+                switch (Action)
+                {
+                    case UnitActions.Walk:
+                        return (int)23;
+                    case UnitActions.RunArmed:
+                        return (int)24;
+                    case UnitActions.Stand:
+                        return (int)25;
+
+                    default: return (int)Action;
+                }
+            }
+
+            // Hiryu has different stand animation
+            if (BodyID == 243 && Action == UnitActions.Stand)
+                return 2;
+
+            return (int)Action;
         }
     }
 
     #region UnitEnums
-    public enum UnitActions : int
+    public enum UnitActions
     {
-        stopmovement = 0x7fffffff,
-        walk = 0x00,
-        walkfaster = 0x01,
-        run = 0x02,
-        runfaster = 0x03,
-        nothing = 0x04,
-        shiftshoulders = 0x05,
+        StopMovement = 0x7fffffff,
+        Walk = 0x00,
+        WalkArmed = 0x01,
+        Run = 0x02,
+        RunArmed = 0x03,
+        Stand = 0x04,
+        /* shiftshoulders = 0x05,
         handsonhips = 0x06,
         attackstanceshort = 0x07,
         attackstancelonger = 0x08,
@@ -341,7 +392,7 @@ namespace UltimaXNA.GameObjects
         salute = 0x21,
         scratchhead = 0x22,
         onefootforwardfor2secs = 0x23,
-        same = 0x24
+        same = 0x24*/
     }
     public enum EquipLayer : int
     {

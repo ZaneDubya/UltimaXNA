@@ -29,10 +29,8 @@ namespace UltimaXNA.GUI
             _MyForm = m_FormCollection["frmStatusFrameMain"];
             _MyForm.BorderName = null;
 
-            Controls.Add(new PictureBox("picMiniMap", new Vector2(136, -34), string.Empty, 128, 128, 0));
-
             Controls.Add(new PictureBox("picCenterFrame", new Vector2(width / 2 - 64, 0), @"GUI\STATFRAME\UI-STATFRAME-CENTER.png", 128, 128, 0));
-            
+            Controls.Add(new PictureBox("picMiniMap", new Vector2(136, -34), string.Empty, 128, 128, 0));
 
             Controls.Add(new PictureBox("picFrameLeft", new Vector2(13, 0), @"GUI\STATFRAME\UI-STATFRAME-LEFT.png", 256, 64, 0));
             Controls.Add(new PictureBox("picFrameRight", new Vector2(width - 14 - 256, 0), @"GUI\STATFRAME\UI-STATFRAME-RIGHT.png", 256, 64, 0));
@@ -50,7 +48,6 @@ namespace UltimaXNA.GUI
             Controls.Add(new PictureBox("barStat0Right", new Vector2(58 + 170, 16), @"GUI\STATFRAME\UI-STATFRAME-HITS.png", 128, 16, 0));
             Controls.Add(new PictureBox("barStat1Right", new Vector2(58 + 170, 29), @"GUI\STATFRAME\UI-STATFRAME-MANA.png", 128, 16, 0));
             Controls.Add(new PictureBox("barStat2Right", new Vector2(58 + 170, 42), @"GUI\STATFRAME\UI-STATFRAME-STAMINA.png", 128, 16, 0));
-
             
             for (int i = 0; i < 3; i++)
             {
@@ -87,7 +84,7 @@ namespace UltimaXNA.GUI
 
             Texture2D mask = GUIHelper.LoadTexture(@"GUI\STATFRAME\MINIMAP-MASK.png");
             // mask.
-            // ((PictureBox)_MyForm["picMiniMap"]).Texture = GUIHelper.MiniMapTexture;
+            ((PictureBox)_MyForm["picMiniMap"]).Texture = GUIHelper.MiniMapTexture;
         }
 
         private void setTargetFrameVisibility(string leftOrRight, bool visible)

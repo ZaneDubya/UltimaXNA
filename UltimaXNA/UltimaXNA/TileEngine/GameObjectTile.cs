@@ -16,6 +16,7 @@ namespace UltimaXNA.TileEngine
         private int m_Tiebreaker;
         private int m_OwnerSerial;
         private int m_Direction;
+        private int m_BodyID;
 
         private Vector3 m_Position;
         public Vector2 Position { get { return new Vector2(m_Position.X, m_Position.Y); } }
@@ -28,6 +29,17 @@ namespace UltimaXNA.TileEngine
             m_Tiebreaker = 0;
             m_Hue = nHue;
             m_Position = nPosition;
+        }
+
+        public GameObjectTile(int nID, Vector3 nPosition, int nDirection, int nOwnerSerial, int nHue, int nBodyID)
+        {
+            m_ID = nID;
+            m_Direction = nDirection;
+            m_OwnerSerial = nOwnerSerial;
+            m_Tiebreaker = 0;
+            m_Hue = nHue;
+            m_Position = nPosition;
+            m_BodyID = nBodyID;
         }
 
         /// <summary>
@@ -58,6 +70,9 @@ namespace UltimaXNA.TileEngine
         {
             get { return m_ID; }
         }
+
+        public bool IsCorpse { get { return (m_ID == 0x2006); } }
+        public int CorpseBody { get { return m_BodyID; } }
 
         public int SortZ
         {

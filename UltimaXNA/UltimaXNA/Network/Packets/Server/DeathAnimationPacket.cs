@@ -7,10 +7,14 @@ namespace UltimaXNA.Network.Packets.Server
 {
     public class DeathAnimationPacket : RecvPacket
     {
+        public readonly Serial PlayerSerial;
+        public readonly Serial CorpseSerial;
         public DeathAnimationPacket(PacketReader reader)
             : base(0xAF, "Death Animation")
         {
-            // TODO: Write this packet.
+            PlayerSerial = reader.ReadInt32();
+            CorpseSerial = reader.ReadInt32();
+            reader.ReadInt32(); // unknown - all zero's.
         }
     }
 }
