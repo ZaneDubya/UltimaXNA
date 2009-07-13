@@ -265,17 +265,23 @@ namespace UltimaXNA.Client
 
         private void receive_CorpseClothing(IRecvPacket packet)
         {
-            receive_UnhandledPacket(packet);
+            CorpseClothingPacket p = (CorpseClothingPacket)packet;
+
+            GameObject o = _GameObjects.GetObject<GameObject>(p.CorpseSerial, false);
+            o.LoadCorpseClothing(p.Items);
         }
 
         private void receive_Damage(IRecvPacket packet)
         {
             DamagePacket p = (DamagePacket)packet;
-            receive_UnhandledPacket(packet);
+            Unit u = _GameObjects.GetObject<Unit>(p.Serial, false);
+            GUI.GUIHelper.Chat_AddLine(u.Name + " takes " + p.Damage + " damage!");
         }
 
         private void receive_DeathAnimation(IRecvPacket packet)
         {
+            DeathAnimationPacket p = (DeathAnimationPacket)packet;
+            
             receive_UnhandledPacket(packet);
         }
 

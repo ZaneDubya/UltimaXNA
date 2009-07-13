@@ -7,7 +7,6 @@ namespace UltimaXNA.GUI
 {
     class Window_CompressedGump : Window
     {
-        int _TextIndex = 0;
         string[] _gumpText;
 
         public Window_CompressedGump(Serial gumpID, string[] gumpPieces, string[] gumpText, int x, int y)

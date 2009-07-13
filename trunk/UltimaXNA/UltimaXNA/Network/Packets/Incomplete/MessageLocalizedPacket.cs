@@ -27,7 +27,7 @@ namespace UltimaXNA.Network.Packets.Server
             Font = reader.ReadInt16();
             CliLocNumber = reader.ReadInt32();
             SpeakerName = reader.ReadString(30);
-            Arguements = reader.ReadUnicodeStringSafe();
+            Arguements = reader.ReadUnicodeStringSafeReverse();
             // what about the arguments?
             // http://docs.polserver.com/packets/index.php?Packet=0xC1
         }

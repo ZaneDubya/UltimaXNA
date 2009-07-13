@@ -5,6 +5,7 @@
 // Created by Poplicola
 //-----------------------------------------------------------------------------
 using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 #endregion
 
 namespace UltimaXNA.GameObjects
@@ -33,8 +34,16 @@ namespace UltimaXNA.GameObjects
 
         protected override void Draw(UltimaXNA.TileEngine.MapCell nCell, Vector3 nLocation, Vector3 nOffset)
         {
-            nCell.AddGameObjectTile(
-                new TileEngine.GameObjectTile(mObjectTypeID, nLocation, Movement.DrawFacing, this.Serial, 0));
+            if (IsCorpse)
+            {
+                nCell.AddGameObjectTile(
+                    new TileEngine.GameObjectTile(mObjectTypeID, nLocation, Movement.DrawFacing, this.Serial, Hue, corpseBody));
+            }
+            else
+            {
+                nCell.AddGameObjectTile(
+                    new TileEngine.GameObjectTile(mObjectTypeID, nLocation, Movement.DrawFacing, this.Serial, Hue));
+            }
         }
 
         public override void Dispose()
@@ -49,6 +58,21 @@ namespace UltimaXNA.GameObjects
         public int Item_StackCount = 0;
         public Serial Item_ContainedWithinSerial = 0;
         public int AnimationDisplayID = 0;
+
+        private int corpseBody { get { return Item_StackCount; } }
+        public bool IsCorpse
+        {
+            get
+            {
+                return (mObjectTypeID == 0x2006);
+            }
+        }
+        
+        public void LoadCorpseClothing(List<Network.Packets.Server.CorpseClothingItemWithLayer> items)
+        {
+            
+        }
+
 
         private int m_Hue;
         public int Hue // Fix for large hue values per issue12 (http://code.google.com/p/ultimaxna/issues/detail?id=12) --ZDW 6/15/2009

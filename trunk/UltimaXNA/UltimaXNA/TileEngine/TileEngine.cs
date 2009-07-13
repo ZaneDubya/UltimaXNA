@@ -363,13 +363,32 @@ namespace UltimaXNA.TileEngine
                             if (iObject.Z >= MaxRoofAltitude)
                                 continue;
 
-                            Data.Art.GetStaticDimensions(iObject.ID, out width, out height);
+                            if (iObject.IsCorpse)
+                            {
+                                Data.FrameXNA[] iFrames = Data.AnimationsXNA.GetAnimation(this.Game.GraphicsDevice,
+                                    iObject.CorpseBody, corpseAction(iObject.CorpseBody), iObject.Direction, iObject.Hue, false);
+                                // GetAnimation fails so it returns null, temporary fix - Smjert
+                                if (iFrames == null)
+                                    continue;
+                                int iFrame = iFrames.Length - 1;
+                                // If the frame data is corrupt, then the texture will not load. Fix for broken cleaver data, maybe others. --Poplicola 6/15/2009
+                                if (iFrames[iFrame].Texture == null)
+                                    continue;
+                                width = iFrames[iFrame].Texture.Width;
+                                height = iFrames[iFrame].Texture.Height;
+                                drawX = iFrames[iFrame].Center.X;
+                                drawY = iFrames[iFrame].Center.Y + (iObject.Z << 2) + height;
+                                texture = iFrames[iFrame].Texture;
+                            }
+                            else
+                            {
+                                Data.Art.GetStaticDimensions(iObject.ID, out width, out height);
 
-                            texture = Data.Art.GetStaticTexture(iObject.ID, this.GraphicsDevice);
+                                texture = Data.Art.GetStaticTexture(iObject.ID, this.GraphicsDevice);
 
-                            drawX = (width >> 1) - 22;
-                            drawY = (iObject.Z << 2) + height - 44;
-
+                                drawX = (width >> 1) - 22;
+                                drawY = (iObject.Z << 2) + height - 44;
+                            }
                             _vertexBuffer[0].Position = drawPosition;
                             _vertexBuffer[0].Position.X -= drawX;
                             _vertexBuffer[0].Position.Y -= drawY;
@@ -416,6 +435,11 @@ namespace UltimaXNA.TileEngine
             if ((_pickType & PickTypes.PickGroundTiles) == PickTypes.PickGroundTiles)
                 if (_rayPicker.PickTest(_inputService.Mouse.Position, Matrix.Identity, _spriteBatch.WorldMatrix))
                     _mouseOverGroundTile = _rayPicker.pickedObject;
+        }
+
+        private int corpseAction(int bodyID)
+        {
+            return 2;
         }
 
         private void updateMiniMap()
