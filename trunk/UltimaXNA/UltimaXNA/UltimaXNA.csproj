@@ -137,6 +137,7 @@
     <Compile Include="GUI\Window.cs" />
     <Compile Include="GUI\Windows\Chat.cs" />
     <Compile Include="GUI\GUI.cs" />
+    <Compile Include="GUI\Windows\Window_CompressedGump.cs" />
     <Compile Include="MiscUtil\HuffmanDecomp.cs" />
     <Compile Include="Input\InputHandler.cs" />
     <Compile Include="Input\KeyboardHandler.cs" />
@@ -166,6 +167,7 @@
     <Compile Include="Network\CharacterListEntry.cs" />
     <Compile Include="Network\ClientNetwork.cs" />
     <Compile Include="Network\Compression\HuffmanDecompression.cs" />
+    <Compile Include="Network\Compression\ZlibDecompression.cs" />
     <Compile Include="Network\ContextMenu.cs" />
     <Compile Include="Network\Interfaces\IClientNetwork.cs" />
     <Compile Include="Network\Interfaces\IDecompression.cs" />
@@ -382,6 +384,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="UltimaXNA Logo - Icon 64.png" />
+    <Content Include="zlib32.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Network\Packets\Both\" />

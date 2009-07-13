@@ -37,6 +37,11 @@ namespace UltimaXNA.GUI
 
         }
 
+        internal ControlCollection Controls
+        {
+            get { return _MyForm.Controls; }
+        }
+
         public void Show()
         {
             _MyForm.Show();

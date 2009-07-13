@@ -27,16 +27,16 @@ namespace UltimaXNA.GUI
             _MyForm.CustomDragArea = new Rectangle(2, 2, 192, 20);
             //_MyForm.MouseThrough = true;
 
-            _MyForm.Controls.Add(new PictureBox("picBG", mBGOffset, @"GUI\PAPERDOLL\PAPERDOLL-FRAME.png", 256, 512, 0));
+            Controls.Add(new PictureBox("picBG", mBGOffset, @"GUI\PAPERDOLL\PAPERDOLL-FRAME.png", 256, 512, 0));
 
-            _MyForm.Controls.Add(new Label("lblCaption", new Vector2(8f, 4f), "PaperDoll | " + mMobileObject.Serial,
+            Controls.Add(new Label("lblCaption", new Vector2(8f, 4f), "PaperDoll | " + mMobileObject.Serial,
                 Color.TransparentBlack, Color.White, 160, Label.Align.Left));
             _MyForm["lblCaption"].FontName = "ArialNarrow10";
 
-            _MyForm.Controls.Add(new CustomButton("btnClose", new Vector2(193, -4), new Rectangle(6, 7, 19, 18),
+            Controls.Add(new CustomButton("btnClose", new Vector2(193, -4), new Rectangle(6, 7, 19, 18),
                 @"GUI\COMMON\UI-Panel-MinimizeButton-Up.png", @"GUI\COMMON\UI-Panel-MinimizeButton-Down.png",
                 @"GUI\COMMON\UI-Panel-MinimizeButton-Disabled.png", @"GUI\COMMON\UI-Panel-MinimizeButton-Highlight.png"));
-            _MyForm.Controls["btnClose"].OnRelease = btnClose_OnRelease;
+            Controls["btnClose"].OnRelease = btnClose_OnRelease;
 
             for (int i = 0x00; i <= 0x18; i++)
                 m_CreateGumpTexture(i, 20, 85);
@@ -77,7 +77,7 @@ namespace UltimaXNA.GUI
             Vector2 iPosition = new Vector2();
             iPosition.Y = nY;
             iPosition.X = nX;
-            _MyForm.Controls.Add(new PictureBox(iPicName, iPosition, string.Empty, 0));
+            Controls.Add(new PictureBox(iPicName, iPosition, string.Empty, 0));
         }
 
         private void m_CreateEquipButton(int nEquipIndex, int nX, int nY)
@@ -86,7 +86,7 @@ namespace UltimaXNA.GUI
             Vector2 iPosition = new Vector2();
             iPosition.Y = nY;
             iPosition.X = nX;
-            _MyForm.Controls.Add(new CustomButton(iBtnName, iPosition, new Rectangle(0, 0, 39, 39),
+            Controls.Add(new CustomButton(iBtnName, iPosition, new Rectangle(0, 0, 39, 39),
                 null, null, null, null, 1f));
             _MyForm[iBtnName].OnMouseOver += btnEquip_OnOver;
             _MyForm[iBtnName].OnMouseOut += btnEquip_OnOut;

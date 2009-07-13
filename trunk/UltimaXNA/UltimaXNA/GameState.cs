@@ -33,7 +33,15 @@ namespace UltimaXNA
         TileEngine.IWorld _World;
         GUI.IGUI _GUI;
         Client.IUltimaClient _GameClient;
-        public Serial LastTarget { get; set; }
+        private Serial _lastTarget;
+        public Serial LastTarget {
+            get { return _lastTarget; }
+            set
+            {
+                _lastTarget = value;
+                _GameClient.Send(new GetPlayerStatusPacket(0x04, _lastTarget));
+            }
+        }
 
         public string DebugMessage { get { return generateDebugMessage(); } }
 
@@ -160,12 +168,19 @@ namespace UltimaXNA
                             case 1:
                                 // Select X, Y, Z
                                 iMapObject = _TileEngine.MouseOverObject;
-                                if (iMapObject == null)
-                                    iMapObject = _TileEngine.MouseOverGroundTile;
                                 if (iMapObject != null)
-                                    mouseTargetingEventXYZ(iMapObject);
+                                {
+                                    MouseTargetingEventObject(iMapObject);
+                                }
                                 else
-                                    mouseTargetingCancel();
+                                {
+                                    iMapObject = _TileEngine.MouseOverGroundTile;
+                                    if (iMapObject != null)
+                                        mouseTargetingEventXYZ(iMapObject);
+                                    else
+                                        mouseTargetingCancel();
+                                }
+                                
                                 break;
                             default:
                                 throw new Exception("Unknown targetting type!");
@@ -346,7 +361,6 @@ namespace UltimaXNA
                 {
                     LastTarget = iTopObject.OwnerSerial;
                     _GameClient.Send(new SingleClickPacket(LastTarget));
-                    _GameClient.Send(new GetPlayerStatusPacket(0x04, LastTarget));
                     // Target this mobile.
                     return;
                 }

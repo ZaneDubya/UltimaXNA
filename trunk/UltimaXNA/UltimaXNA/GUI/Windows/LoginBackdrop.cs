@@ -19,10 +19,10 @@ namespace UltimaXNA.GUI
             _MyForm.BorderName = null;
             _MyForm.MouseThrough = true;
 
-            // _MyForm.Controls.Add(new PictureBox("picturebox1", new Vector2(0, 0), @"", 800, 600, 0));
+            // Controls.Add(new PictureBox("picturebox1", new Vector2(0, 0), @"", 800, 600, 0));
             // ((PictureBox)_MyForm["picturebox1"]).Texture = Data.Gumps.GetGumpXNA(0x500);
 
-            _MyForm.Controls.Add(new PictureBox("picLogo", new Vector2((800 - logoWidth) / 2, 64), @"Logo\UltimaXNALogo1024.png", logoWidth, logoHeight, 0));
+            Controls.Add(new PictureBox("picLogo", new Vector2((800 - logoWidth) / 2, 64), @"Logo\UltimaXNALogo1024.png", logoWidth, logoHeight, 0));
             //Show the form
             this.Show();
         }

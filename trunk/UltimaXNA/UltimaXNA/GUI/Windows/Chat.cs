@@ -25,7 +25,7 @@ namespace UltimaXNA.GUI
             _MyForm.BorderName = null;
             _MyForm.MouseThrough = true;
 
-            _MyForm.Controls.Add(new Textbox("txtChat", new Vector2(0, 0), (int)_MyForm.Width, (int)_MyForm.Height, string.Empty));
+            Controls.Add(new Textbox("txtChat", new Vector2(0, 0), (int)_MyForm.Width, (int)_MyForm.Height, string.Empty));
             ((Textbox)_MyForm["txtChat"]).TextOffset = new Vector2(0, 0);
             ((Textbox)_MyForm["txtChat"]).DrawBackground = false;
             ((Textbox)_MyForm["txtChat"]).ScrollFromBottom = true;
@@ -35,10 +35,10 @@ namespace UltimaXNA.GUI
             _MyForm["txtChat"].MouseThrough = true;
 
             // float iButtonLeft = 4f;
-            // _MyForm.Controls.Add(new Button("btnChat", new Vector2(iButtonLeft, 0), @"GUI\CHATFRAME\UI-ChatIcon-Chat-Up.png", 1.0f, Color.White));
-            // _MyForm.Controls.Add(new Button("btnScrollUp", new Vector2(iButtonLeft, 32), @"GUI\CHATFRAME\UI-ChatIcon-ScrollUp-Up.png", 1.0f, Color.White));
-            // _MyForm.Controls.Add(new Button("btnScrollDown", new Vector2(iButtonLeft, 64), @"GUI\CHATFRAME\UI-ChatIcon-ScrollDown-Up.png", 1.0f, Color.White));
-            // _MyForm.Controls.Add(new Button("btnScrollEnd", new Vector2(iButtonLeft, 96), @"GUI\CHATFRAME\UI-ChatIcon-ScrollEnd-Up.png", 1.0f, Color.White));
+            // Controls.Add(new Button("btnChat", new Vector2(iButtonLeft, 0), @"GUI\CHATFRAME\UI-ChatIcon-Chat-Up.png", 1.0f, Color.White));
+            // Controls.Add(new Button("btnScrollUp", new Vector2(iButtonLeft, 32), @"GUI\CHATFRAME\UI-ChatIcon-ScrollUp-Up.png", 1.0f, Color.White));
+            // Controls.Add(new Button("btnScrollDown", new Vector2(iButtonLeft, 64), @"GUI\CHATFRAME\UI-ChatIcon-ScrollDown-Up.png", 1.0f, Color.White));
+            // Controls.Add(new Button("btnScrollEnd", new Vector2(iButtonLeft, 96), @"GUI\CHATFRAME\UI-ChatIcon-ScrollEnd-Up.png", 1.0f, Color.White));
             // _MyForm["btnChat"].OnPress += Button1_OnPress;
             // _MyForm["btnChat"].OnRelease = Button1_OnRelease; 
 
