@@ -8,10 +8,19 @@ namespace UltimaXNA.TileEngine
 {
     public class MiniMap
     {
-        public Texture2D Texture;
+        private Texture2D _texture;
         private Map _map;
         private GraphicsDevice _graphics;
         private int _lastUpdateTicker;
+
+        public Texture2D Texture
+        {
+            get
+            {
+                update();
+                return _texture;
+            }
+        }
 
         public MiniMap(GraphicsDevice graphics, Map map)
         {
@@ -19,13 +28,13 @@ namespace UltimaXNA.TileEngine
             _graphics = graphics;
         }
 
-        public unsafe void Update()
+        private unsafe void update()
         {
             if ((_map.UpdateTicker != _lastUpdateTicker) || (Texture == null))
             {
                 int size = _map.GameSize * 2;
                 _lastUpdateTicker = _map.UpdateTicker;
-                Texture = new Texture2D(_graphics, size, size, 1, TextureUsage.None, SurfaceFormat.Bgra5551);
+                _texture = new Texture2D(_graphics, size, size, 1, TextureUsage.None, SurfaceFormat.Bgra5551);
                 ushort[] data = new ushort[size * size];
                 fixed (ushort* pData = data)
                 {
@@ -55,7 +64,7 @@ namespace UltimaXNA.TileEngine
                         }
                     }
                 }
-                Texture.SetData<ushort>(data);
+                _texture.SetData<ushort>(data);
             }
         }
     }

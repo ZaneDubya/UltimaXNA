@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using xWinFormsLib;
+using System.IO;
 using UltimaXNA.Network.Packets.Client;
 
 namespace UltimaXNA.GUI

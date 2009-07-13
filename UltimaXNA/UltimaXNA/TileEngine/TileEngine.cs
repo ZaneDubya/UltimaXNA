@@ -137,8 +137,6 @@ namespace UltimaXNA.TileEngine
             else
                 _mouseOverGroundTile = null;
 
-            updateMiniMap();
-
             // MapCell mapCell;
             /*for (int x = 0; x < map.GameSize; x++)
             {
@@ -442,13 +440,6 @@ namespace UltimaXNA.TileEngine
             return 2;
         }
 
-        private void updateMiniMap()
-        {
-            if (MiniMap == null)
-                MiniMap = new MiniMap(Game.GraphicsDevice, _worldService.Map);
-            MiniMap.Update();
-        }
-
         private bool isMouseOverObject(Vector3 iMin, Vector3 iMax)
         {
             // Added cursor picking -Poplicola 5/19/2009
@@ -485,6 +476,9 @@ namespace UltimaXNA.TileEngine
                 new VertexPositionNormalTextureHue(new Vector3(), new Vector3(), new Vector2(iUVMin, iUVMax)),
                 new VertexPositionNormalTextureHue(new Vector3(), new Vector3(), new Vector2(iUVMax, iUVMax))
             };
+
+            if (MiniMap == null)
+                MiniMap = new MiniMap(Game.GraphicsDevice, _worldService.Map);
         }
 
         protected override void LoadContent()
