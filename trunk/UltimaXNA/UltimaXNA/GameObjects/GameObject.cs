@@ -47,7 +47,7 @@ namespace UltimaXNA.GameObjects
 
         public Unit Wearer;
         public int Item_StackCount = 0;
-        public int Item_ContainedWithinSerial = 0;
+        public Serial Item_ContainedWithinSerial = 0;
         public int AnimationDisplayID = 0;
 
         private int m_Hue;

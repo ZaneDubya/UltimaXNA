@@ -28,27 +28,37 @@ namespace UltimaXNA.TileEngine
         IMapObject MouseOverGroundTile { get; }
         PickTypes PickType { set; }
         int ObjectsRendered { get; }
+        MiniMap MiniMap { get; }
     }
 
     class TileEngine : DrawableGameComponent, ITileEngine
     {
+        public static int startX, startY;
+        public MiniMap MiniMap { get; protected set; }
         public int ObjectsRendered { get; protected set; }
-        private SpriteBatch3D m_SpriteBatch;
-        private VertexPositionNormalTextureHue[] m_VertexBuffer;
-        private VertexPositionNormalTextureHue[] m_VertexBufferForStretchedTile;
-        private bool m_IsFirstUpdate = true; // This variable is used to skip the first 'update' cycle.
+        private SpriteBatch3D _spriteBatch;
+        private VertexPositionNormalTextureHue[] _vertexBuffer;
+        private VertexPositionNormalTextureHue[] _vertexBufferForStretchedTile;
+        private bool _isFirstUpdate = true; // This variable is used to skip the first 'update' cycle.
 
         // Used for mousepicking.
-        private IMapObject m_MouseOverObject;
-        private IMapObject m_MouseOverGroundTile;
-        private PickTypes m_PickType = PickTypes.PickNothing;
-        private RayPicker m_RayPicker;
+        private IMapObject _mouseOverObject;
+        private IMapObject _mouseOverGroundTile;
+        private PickTypes _pickType = PickTypes.PickNothing;
+        private RayPicker _rayPicker;
 
         // Reference for services
-        private Input.IInputService m_InputService;
-        private GameObjects.IGameObjects m_ObjectsService;
-        private IWorld m_WorldService;
-        private IGameState m_GameStateService;
+        private Input.IInputService _inputService;
+        private GameObjects.IGameObjects _objectsService;
+        private IWorld _worldService;
+        private IGameState _gameStateService;
+
+        public IMapObject MouseOverObject
+        { get { return _mouseOverObject; } }
+        public IMapObject MouseOverGroundTile
+        { get { return _mouseOverGroundTile; } }
+        public PickTypes PickType
+        { set { _pickType = value; } }
 
         public TileEngine(Game game)
             : base(game)
@@ -56,40 +66,33 @@ namespace UltimaXNA.TileEngine
             game.Services.AddService(typeof(ITileEngine), this);
         }
 
-        public IMapObject MouseOverObject
-        { get { return m_MouseOverObject; } }
-        public IMapObject MouseOverGroundTile
-        { get { return m_MouseOverGroundTile; } }
-        public PickTypes PickType
-        { set { m_PickType = value; } }
-
         public override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
 
-            if (!m_GameStateService.InWorld)
+            if (!_gameStateService.InWorld)
                 return;
 
-            m_SpriteBatch.Flush();
-            if (m_MouseOverGroundTile != null)
-                m_RayPicker.DrawPickedTriangle(m_SpriteBatch.WorldMatrix);
+            _spriteBatch.Flush();
+            if (_mouseOverGroundTile != null)
+                _rayPicker.DrawPickedTriangle(_spriteBatch.WorldMatrix);
         }
 
         public void SetLightDirection(Vector3 nDirection)
         {
-            m_SpriteBatch.SetLightDirection(nDirection);
+            _spriteBatch.SetLightDirection(nDirection);
         }
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            if (m_IsFirstUpdate)
+            if (_isFirstUpdate)
             {
-                m_IsFirstUpdate = false;
+                _isFirstUpdate = false;
                 return;
             }
 
-            if (!m_GameStateService.InWorld)
+            if (!_gameStateService.InWorld)
                 return;
 
             Vector3 drawPosition = new Vector3();
@@ -98,7 +101,7 @@ namespace UltimaXNA.TileEngine
             float drawZ = 0;
             GroundTile groundTile;
             int height;
-            Map map = m_WorldService.Map;
+            Map map = _worldService.Map;
             IMapObject mapObject;
             IMapObject[] mapObjects;
             StaticItem staticItem;
@@ -110,10 +113,10 @@ namespace UltimaXNA.TileEngine
             ObjectsRendered = 0;
             // List of items for mouse over
             MouseOverList iMouseOverList = new MouseOverList();
-            int MaxRoofAltitude = m_WorldService.MaxRoofAltitude;
+            int MaxRoofAltitude = _worldService.MaxRoofAltitude;
 
             // Now determine where to draw. First retrieve the position of the center object.
-            GameObjects.DrawPosition iDrawPosition = m_ObjectsService.GetPlayerObject().Movement.DrawPosition;
+            GameObjects.DrawPosition iDrawPosition = _objectsService.GetPlayerObject().Movement.DrawPosition;
             
             float xOffset = (this.Game.GraphicsDevice.PresentationParameters.BackBufferWidth / 2) - 22;
             float yOffset = (this.Game.GraphicsDevice.PresentationParameters.BackBufferHeight / 2) -
@@ -122,17 +125,19 @@ namespace UltimaXNA.TileEngine
             xOffset -= (int)((iDrawPosition.OffsetX - iDrawPosition.OffsetY) * 22);
             yOffset -= (int)((iDrawPosition.OffsetX + iDrawPosition.OffsetY) * 22);
 
-            int startX = iDrawPosition.TileX - map.GameSize / 2;
-            int startY = iDrawPosition.TileY - map.GameSize / 2;
+            startX = iDrawPosition.TileX - map.GameSize / 2;
+            startY = iDrawPosition.TileY - map.GameSize / 2;
 
             Random iRand = new Random();
 
             // If we are going to be checking for GroundTiles, Clear the RayPicker.
             // If we're not, then make sure we clear the last picked ground tile.
-            if ((m_PickType & PickTypes.PickGroundTiles) == PickTypes.PickGroundTiles)
-                m_RayPicker.FlushObjects();
+            if ((_pickType & PickTypes.PickGroundTiles) == PickTypes.PickGroundTiles)
+                _rayPicker.FlushObjects();
             else
-                m_MouseOverGroundTile = null;
+                _mouseOverGroundTile = null;
+
+            updateMiniMap();
 
             // MapCell mapCell;
             /*for (int x = 0; x < map.GameSize; x++)
@@ -177,73 +182,73 @@ namespace UltimaXNA.TileEngine
                             {
                                 texture = Data.Art.GetLandTexture(groundTile.ID, this.GraphicsDevice);
 
-                                m_VertexBuffer[0].Position = drawPosition;
-                                m_VertexBuffer[0].Position.Y -= drawY;
-                                m_VertexBuffer[0].Position.Z = drawZ;
+                                _vertexBuffer[0].Position = drawPosition;
+                                _vertexBuffer[0].Position.Y -= drawY;
+                                _vertexBuffer[0].Position.Z = drawZ;
 
-                                m_VertexBuffer[1].Position = drawPosition;
-                                m_VertexBuffer[1].Position.X += 44;
-                                m_VertexBuffer[1].Position.Y -= drawY;
-                                m_VertexBuffer[1].Position.Z = drawZ;
+                                _vertexBuffer[1].Position = drawPosition;
+                                _vertexBuffer[1].Position.X += 44;
+                                _vertexBuffer[1].Position.Y -= drawY;
+                                _vertexBuffer[1].Position.Z = drawZ;
 
-                                m_VertexBuffer[2].Position = drawPosition;
-                                m_VertexBuffer[2].Position.Y += 44 - drawY;
-                                m_VertexBuffer[2].Position.Z = drawZ;
+                                _vertexBuffer[2].Position = drawPosition;
+                                _vertexBuffer[2].Position.Y += 44 - drawY;
+                                _vertexBuffer[2].Position.Z = drawZ;
 
-                                m_VertexBuffer[3].Position = drawPosition;
-                                m_VertexBuffer[3].Position.X += 44;
-                                m_VertexBuffer[3].Position.Y += 44 - drawY;
-                                m_VertexBuffer[3].Position.Z = drawZ;
+                                _vertexBuffer[3].Position = drawPosition;
+                                _vertexBuffer[3].Position.X += 44;
+                                _vertexBuffer[3].Position.Y += 44 - drawY;
+                                _vertexBuffer[3].Position.Z = drawZ;
 
-                                m_VertexBuffer[0].Hue = Vector2.Zero;
-                                m_VertexBuffer[1].Hue = Vector2.Zero;
-                                m_VertexBuffer[2].Hue = Vector2.Zero;
-                                m_VertexBuffer[3].Hue = Vector2.Zero;
+                                _vertexBuffer[0].Hue = Vector2.Zero;
+                                _vertexBuffer[1].Hue = Vector2.Zero;
+                                _vertexBuffer[2].Hue = Vector2.Zero;
+                                _vertexBuffer[3].Hue = Vector2.Zero;
 
-                                m_SpriteBatch.Draw(texture, m_VertexBuffer);
+                                _spriteBatch.Draw(texture, _vertexBuffer);
                             }
                             else // Stretched
                             {
                                 texture = Data.Texmaps.GetTexmapTexture(landData.TextureID, this.GraphicsDevice);
 
-                                m_VertexBufferForStretchedTile[0].Position = drawPosition;
-                                m_VertexBufferForStretchedTile[0].Position.X += 22;
+                                _vertexBufferForStretchedTile[0].Position = drawPosition;
+                                _vertexBufferForStretchedTile[0].Position.X += 22;
                                 
-                                m_VertexBufferForStretchedTile[1].Position = drawPosition;
-                                m_VertexBufferForStretchedTile[1].Position.X += 44;
-                                m_VertexBufferForStretchedTile[1].Position.Y += 22;
+                                _vertexBufferForStretchedTile[1].Position = drawPosition;
+                                _vertexBufferForStretchedTile[1].Position.X += 44;
+                                _vertexBufferForStretchedTile[1].Position.Y += 22;
 
-                                m_VertexBufferForStretchedTile[2].Position = drawPosition;
-                                m_VertexBufferForStretchedTile[2].Position.Y += 22;
+                                _vertexBufferForStretchedTile[2].Position = drawPosition;
+                                _vertexBufferForStretchedTile[2].Position.Y += 22;
 
-                                m_VertexBufferForStretchedTile[3].Position = drawPosition;
-                                m_VertexBufferForStretchedTile[3].Position.X += 22;
-                                m_VertexBufferForStretchedTile[3].Position.Y += 44;
+                                _vertexBufferForStretchedTile[3].Position = drawPosition;
+                                _vertexBufferForStretchedTile[3].Position.X += 22;
+                                _vertexBufferForStretchedTile[3].Position.Y += 44;
 
-                                m_VertexBufferForStretchedTile[0].Normal = groundTile.Normals[0];
-                                m_VertexBufferForStretchedTile[1].Normal = groundTile.Normals[1];
-                                m_VertexBufferForStretchedTile[2].Normal = groundTile.Normals[2];
-                                m_VertexBufferForStretchedTile[3].Normal = groundTile.Normals[3];
+                                _vertexBufferForStretchedTile[0].Normal = groundTile.Normals[0];
+                                _vertexBufferForStretchedTile[1].Normal = groundTile.Normals[1];
+                                _vertexBufferForStretchedTile[2].Normal = groundTile.Normals[2];
+                                _vertexBufferForStretchedTile[3].Normal = groundTile.Normals[3];
 
-                                m_VertexBufferForStretchedTile[0].Position.Y -= drawY;
-                                m_VertexBufferForStretchedTile[1].Position.Y -= (groundTile.Surroundings.East << 2);
-                                m_VertexBufferForStretchedTile[2].Position.Y -= (groundTile.Surroundings.South << 2);
-                                m_VertexBufferForStretchedTile[3].Position.Y -= (groundTile.Surroundings.Down << 2);
+                                _vertexBufferForStretchedTile[0].Position.Y -= drawY;
+                                _vertexBufferForStretchedTile[1].Position.Y -= (groundTile.Surroundings.East << 2);
+                                _vertexBufferForStretchedTile[2].Position.Y -= (groundTile.Surroundings.South << 2);
+                                _vertexBufferForStretchedTile[3].Position.Y -= (groundTile.Surroundings.Down << 2);
 
-                                m_VertexBufferForStretchedTile[0].Position.Z = drawZ;
-                                m_VertexBufferForStretchedTile[1].Position.Z = drawZ;
-                                m_VertexBufferForStretchedTile[2].Position.Z = drawZ;
-                                m_VertexBufferForStretchedTile[3].Position.Z = drawZ;
+                                _vertexBufferForStretchedTile[0].Position.Z = drawZ;
+                                _vertexBufferForStretchedTile[1].Position.Z = drawZ;
+                                _vertexBufferForStretchedTile[2].Position.Z = drawZ;
+                                _vertexBufferForStretchedTile[3].Position.Z = drawZ;
 
-                                m_VertexBufferForStretchedTile[0].Hue = Vector2.Zero;
-                                m_VertexBufferForStretchedTile[1].Hue = Vector2.Zero;
-                                m_VertexBufferForStretchedTile[2].Hue = Vector2.Zero;
-                                m_VertexBufferForStretchedTile[3].Hue = Vector2.Zero;
+                                _vertexBufferForStretchedTile[0].Hue = Vector2.Zero;
+                                _vertexBufferForStretchedTile[1].Hue = Vector2.Zero;
+                                _vertexBufferForStretchedTile[2].Hue = Vector2.Zero;
+                                _vertexBufferForStretchedTile[3].Hue = Vector2.Zero;
 
-                                m_SpriteBatch.Draw(texture, m_VertexBufferForStretchedTile);
+                                _spriteBatch.Draw(texture, _vertexBufferForStretchedTile);
 
-                                if ((m_PickType & PickTypes.PickGroundTiles) == PickTypes.PickGroundTiles)
-                                    m_RayPicker.AddObject(mapObject, m_VertexBufferForStretchedTile);
+                                if ((_pickType & PickTypes.PickGroundTiles) == PickTypes.PickGroundTiles)
+                                    _rayPicker.AddObject(mapObject, _vertexBufferForStretchedTile);
                             }
                         }
                         else if (mapObject.Type == MapObjectTypes.StaticTile) // StaticItem
@@ -262,36 +267,36 @@ namespace UltimaXNA.TileEngine
                             drawX = (width >> 1) - 22;
                             drawY = (staticItem.Z << 2) + height - 44;
 
-                            m_VertexBuffer[0].Position = drawPosition;
-                            m_VertexBuffer[0].Position.X -= drawX;
-                            m_VertexBuffer[0].Position.Y -= drawY;
-                            m_VertexBuffer[0].Position.Z = drawZ;
+                            _vertexBuffer[0].Position = drawPosition;
+                            _vertexBuffer[0].Position.X -= drawX;
+                            _vertexBuffer[0].Position.Y -= drawY;
+                            _vertexBuffer[0].Position.Z = drawZ;
 
-                            m_VertexBuffer[1].Position = drawPosition;
-                            m_VertexBuffer[1].Position.X += width - drawX;
-                            m_VertexBuffer[1].Position.Y -= drawY;
-                            m_VertexBuffer[1].Position.Z = drawZ;
+                            _vertexBuffer[1].Position = drawPosition;
+                            _vertexBuffer[1].Position.X += width - drawX;
+                            _vertexBuffer[1].Position.Y -= drawY;
+                            _vertexBuffer[1].Position.Z = drawZ;
 
-                            m_VertexBuffer[2].Position = drawPosition;
-                            m_VertexBuffer[2].Position.X -= drawX;
-                            m_VertexBuffer[2].Position.Y += height - drawY;
-                            m_VertexBuffer[2].Position.Z = drawZ;
+                            _vertexBuffer[2].Position = drawPosition;
+                            _vertexBuffer[2].Position.X -= drawX;
+                            _vertexBuffer[2].Position.Y += height - drawY;
+                            _vertexBuffer[2].Position.Z = drawZ;
 
-                            m_VertexBuffer[3].Position = drawPosition;
-                            m_VertexBuffer[3].Position.X += width - drawX;
-                            m_VertexBuffer[3].Position.Y += height - drawY;
-                            m_VertexBuffer[3].Position.Z = drawZ;
+                            _vertexBuffer[3].Position = drawPosition;
+                            _vertexBuffer[3].Position.X += width - drawX;
+                            _vertexBuffer[3].Position.Y += height - drawY;
+                            _vertexBuffer[3].Position.Z = drawZ;
 
-                            m_VertexBuffer[0].Hue = Vector2.Zero;
-                            m_VertexBuffer[1].Hue = Vector2.Zero;
-                            m_VertexBuffer[2].Hue = Vector2.Zero;
-                            m_VertexBuffer[3].Hue = Vector2.Zero;
+                            _vertexBuffer[0].Hue = Vector2.Zero;
+                            _vertexBuffer[1].Hue = Vector2.Zero;
+                            _vertexBuffer[2].Hue = Vector2.Zero;
+                            _vertexBuffer[3].Hue = Vector2.Zero;
 
-                            m_SpriteBatch.Draw(texture, m_VertexBuffer);
+                            _spriteBatch.Draw(texture, _vertexBuffer);
 
-                            if ((m_PickType & PickTypes.PickStatics) == PickTypes.PickStatics)
-                                if (mIsMouseOverObject(m_VertexBuffer[0].Position, m_VertexBuffer[3].Position))
-                                    iMouseOverList.AddItem(new MouseOverItem(texture, m_VertexBuffer[0].Position, mapObject));
+                            if ((_pickType & PickTypes.PickStatics) == PickTypes.PickStatics)
+                                if (isMouseOverObject(_vertexBuffer[0].Position, _vertexBuffer[3].Position))
+                                    iMouseOverList.AddItem(new MouseOverItem(texture, _vertexBuffer[0].Position, mapObject));
                         }
                         else if (mapObject.Type == MapObjectTypes.MobileTile) // Mobile
                         {
@@ -314,43 +319,43 @@ namespace UltimaXNA.TileEngine
                             drawX = iFrames[iFrame].Center.X - 22 - (int)((iMobile.Offset.X - iMobile.Offset.Y) * 22);
                             drawY = iFrames[iFrame].Center.Y + (iMobile.Z << 2) + height - 22 - (int)((iMobile.Offset.X + iMobile.Offset.Y) * 22);
 
-                            m_VertexBuffer[0].Position = drawPosition;
-                            m_VertexBuffer[0].Position.X -= drawX;
-                            m_VertexBuffer[0].Position.Y -= drawY;
-                            m_VertexBuffer[0].Position.Z = drawZ;
+                            _vertexBuffer[0].Position = drawPosition;
+                            _vertexBuffer[0].Position.X -= drawX;
+                            _vertexBuffer[0].Position.Y -= drawY;
+                            _vertexBuffer[0].Position.Z = drawZ;
 
-                            m_VertexBuffer[1].Position = drawPosition;
-                            m_VertexBuffer[1].Position.X += width - drawX;
-                            m_VertexBuffer[1].Position.Y -= drawY;
-                            m_VertexBuffer[1].Position.Z = drawZ;
+                            _vertexBuffer[1].Position = drawPosition;
+                            _vertexBuffer[1].Position.X += width - drawX;
+                            _vertexBuffer[1].Position.Y -= drawY;
+                            _vertexBuffer[1].Position.Z = drawZ;
 
-                            m_VertexBuffer[2].Position = drawPosition;
-                            m_VertexBuffer[2].Position.X -= drawX;
-                            m_VertexBuffer[2].Position.Y += height - drawY;
-                            m_VertexBuffer[2].Position.Z = drawZ;
+                            _vertexBuffer[2].Position = drawPosition;
+                            _vertexBuffer[2].Position.X -= drawX;
+                            _vertexBuffer[2].Position.Y += height - drawY;
+                            _vertexBuffer[2].Position.Z = drawZ;
 
-                            m_VertexBuffer[3].Position = drawPosition;
-                            m_VertexBuffer[3].Position.X += width - drawX;
-                            m_VertexBuffer[3].Position.Y += height - drawY;
-                            m_VertexBuffer[3].Position.Z = drawZ;
+                            _vertexBuffer[3].Position = drawPosition;
+                            _vertexBuffer[3].Position.X += width - drawX;
+                            _vertexBuffer[3].Position.Y += height - drawY;
+                            _vertexBuffer[3].Position.Z = drawZ;
 
                             //TODO: Check to see if its a partial hue, if true set Y = 1, if false then set y = 0
                             // We subtract 1 since hue = 0 is valid, and the client uses hue = 0 to indicate no hue.
-                            Vector2 hueVector = new Vector2(iMobile.Hue - 1, 0);
-                            if (m_GameStateService.LastTarget != null)
-                                if (m_GameStateService.LastTarget == iMobile.OwnerSerial)
+                            Vector2 hueVector = new Vector2(iMobile.Hue, 0);
+                            if (_gameStateService.LastTarget != null)
+                                if (_gameStateService.LastTarget == iMobile.OwnerSerial)
                                     hueVector.Y = 1;
 
-                            m_VertexBuffer[0].Hue = hueVector;
-                            m_VertexBuffer[1].Hue = hueVector;
-                            m_VertexBuffer[2].Hue = hueVector;
-                            m_VertexBuffer[3].Hue = hueVector;
+                            _vertexBuffer[0].Hue = hueVector;
+                            _vertexBuffer[1].Hue = hueVector;
+                            _vertexBuffer[2].Hue = hueVector;
+                            _vertexBuffer[3].Hue = hueVector;
 
-                            m_SpriteBatch.Draw(iFrames[iFrame].Texture, m_VertexBuffer);
+                            _spriteBatch.Draw(iFrames[iFrame].Texture, _vertexBuffer);
 
-                            if ((m_PickType & PickTypes.PickObjects) == PickTypes.PickObjects)
-                                if (mIsMouseOverObject(m_VertexBuffer[0].Position, m_VertexBuffer[3].Position))
-                                    iMouseOverList.AddItem(new MouseOverItem(iFrames[iFrame].Texture, m_VertexBuffer[0].Position, mapObject));
+                            if ((_pickType & PickTypes.PickObjects) == PickTypes.PickObjects)
+                                if (isMouseOverObject(_vertexBuffer[0].Position, _vertexBuffer[3].Position))
+                                    iMouseOverList.AddItem(new MouseOverItem(iFrames[iFrame].Texture, _vertexBuffer[0].Position, mapObject));
                         }
                         else if (mapObject.Type == MapObjectTypes.GameObjectTile)
                         {
@@ -365,39 +370,39 @@ namespace UltimaXNA.TileEngine
                             drawX = (width >> 1) - 22;
                             drawY = (iObject.Z << 2) + height - 44;
 
-                            m_VertexBuffer[0].Position = drawPosition;
-                            m_VertexBuffer[0].Position.X -= drawX;
-                            m_VertexBuffer[0].Position.Y -= drawY;
-                            m_VertexBuffer[0].Position.Z = drawZ;
+                            _vertexBuffer[0].Position = drawPosition;
+                            _vertexBuffer[0].Position.X -= drawX;
+                            _vertexBuffer[0].Position.Y -= drawY;
+                            _vertexBuffer[0].Position.Z = drawZ;
 
-                            m_VertexBuffer[1].Position = drawPosition;
-                            m_VertexBuffer[1].Position.X += width - drawX;
-                            m_VertexBuffer[1].Position.Y -= drawY;
-                            m_VertexBuffer[1].Position.Z = drawZ;
+                            _vertexBuffer[1].Position = drawPosition;
+                            _vertexBuffer[1].Position.X += width - drawX;
+                            _vertexBuffer[1].Position.Y -= drawY;
+                            _vertexBuffer[1].Position.Z = drawZ;
 
-                            m_VertexBuffer[2].Position = drawPosition;
-                            m_VertexBuffer[2].Position.X -= drawX;
-                            m_VertexBuffer[2].Position.Y += height - drawY;
-                            m_VertexBuffer[2].Position.Z = drawZ;
+                            _vertexBuffer[2].Position = drawPosition;
+                            _vertexBuffer[2].Position.X -= drawX;
+                            _vertexBuffer[2].Position.Y += height - drawY;
+                            _vertexBuffer[2].Position.Z = drawZ;
 
-                            m_VertexBuffer[3].Position = drawPosition;
-                            m_VertexBuffer[3].Position.X += width - drawX;
-                            m_VertexBuffer[3].Position.Y += height - drawY;
-                            m_VertexBuffer[3].Position.Z = drawZ;
+                            _vertexBuffer[3].Position = drawPosition;
+                            _vertexBuffer[3].Position.X += width - drawX;
+                            _vertexBuffer[3].Position.Y += height - drawY;
+                            _vertexBuffer[3].Position.Z = drawZ;
 
                             //TODO: Check to see if its a partial hue, if true set Y = 1, if false then set y = 0
                             Vector2 hueVector = new Vector2(iObject.Hue, 0);
 
-                            m_VertexBuffer[0].Hue = hueVector;
-                            m_VertexBuffer[1].Hue = hueVector;
-                            m_VertexBuffer[2].Hue = hueVector;
-                            m_VertexBuffer[3].Hue = hueVector;
+                            _vertexBuffer[0].Hue = hueVector;
+                            _vertexBuffer[1].Hue = hueVector;
+                            _vertexBuffer[2].Hue = hueVector;
+                            _vertexBuffer[3].Hue = hueVector;
 
-                            m_SpriteBatch.Draw(texture, m_VertexBuffer);
+                            _spriteBatch.Draw(texture, _vertexBuffer);
 
-                            if ((m_PickType & PickTypes.PickStatics) == PickTypes.PickStatics)
-                                if (mIsMouseOverObject(m_VertexBuffer[0].Position, m_VertexBuffer[3].Position))
-                                    iMouseOverList.AddItem(new MouseOverItem(texture, m_VertexBuffer[0].Position, mapObject));
+                            if ((_pickType & PickTypes.PickStatics) == PickTypes.PickStatics)
+                                if (isMouseOverObject(_vertexBuffer[0].Position, _vertexBuffer[3].Position))
+                                    iMouseOverList.AddItem(new MouseOverItem(texture, _vertexBuffer[0].Position, mapObject));
                         
                         }
 
@@ -406,21 +411,28 @@ namespace UltimaXNA.TileEngine
                     }
                 }
             }
-            m_MouseOverObject = iMouseOverList.GetForemostMouseOverItem(m_InputService.Mouse.Position);
+            _mouseOverObject = iMouseOverList.GetForemostMouseOverItem(_inputService.Mouse.Position);
 
-            if ((m_PickType & PickTypes.PickGroundTiles) == PickTypes.PickGroundTiles)
-                if (m_RayPicker.PickTest(m_InputService.Mouse.Position, Matrix.Identity, m_SpriteBatch.WorldMatrix))
-                    m_MouseOverGroundTile = m_RayPicker.pickedObject;
+            if ((_pickType & PickTypes.PickGroundTiles) == PickTypes.PickGroundTiles)
+                if (_rayPicker.PickTest(_inputService.Mouse.Position, Matrix.Identity, _spriteBatch.WorldMatrix))
+                    _mouseOverGroundTile = _rayPicker.pickedObject;
         }
 
-        private bool mIsMouseOverObject(Vector3 iMin, Vector3 iMax)
+        private void updateMiniMap()
+        {
+            if (MiniMap == null)
+                MiniMap = new MiniMap(Game.GraphicsDevice, _worldService.Map);
+            MiniMap.Update();
+        }
+
+        private bool isMouseOverObject(Vector3 iMin, Vector3 iMax)
         {
             // Added cursor picking -Poplicola 5/19/2009
             BoundingBox iBoundingBox = new BoundingBox(iMin, iMax);
             // Must correct for bounding box being one pixel larger than actual texture.
             iBoundingBox.Max.X--; iBoundingBox.Max.Y--;
 
-            Vector3 iMousePosition = new Vector3(m_InputService.Mouse.Position.X, m_InputService.Mouse.Position.Y, iMin.Z);
+            Vector3 iMousePosition = new Vector3(_inputService.Mouse.Position.X, _inputService.Mouse.Position.Y, iMin.Z);
             if (iBoundingBox.Contains(iMousePosition) == ContainmentType.Contains)
                 return true;
             return false;
@@ -430,12 +442,12 @@ namespace UltimaXNA.TileEngine
         {
             base.Initialize();
 
-            m_InputService = (Input.IInputService)Game.Services.GetService(typeof(Input.IInputService));
-            m_ObjectsService = (GameObjects.IGameObjects)Game.Services.GetService(typeof(GameObjects.IGameObjects));
-            m_WorldService = (IWorld)Game.Services.GetService(typeof(IWorld));
-            m_GameStateService = (IGameState)Game.Services.GetService(typeof(IGameState));
+            _inputService = (Input.IInputService)Game.Services.GetService(typeof(Input.IInputService));
+            _objectsService = (GameObjects.IGameObjects)Game.Services.GetService(typeof(GameObjects.IGameObjects));
+            _worldService = (IWorld)Game.Services.GetService(typeof(IWorld));
+            _gameStateService = (IGameState)Game.Services.GetService(typeof(IGameState));
 
-            m_VertexBuffer = new VertexPositionNormalTextureHue[] {
+            _vertexBuffer = new VertexPositionNormalTextureHue[] {
                 new VertexPositionNormalTextureHue(new Vector3(), new Vector3(0, 0, 1), new Vector2(0, 0)),
                 new VertexPositionNormalTextureHue(new Vector3(), new Vector3(0, 0, 1), new Vector2(1, 0)),
                 new VertexPositionNormalTextureHue(new Vector3(), new Vector3(0, 0, 1), new Vector2(0, 1)),
@@ -443,7 +455,7 @@ namespace UltimaXNA.TileEngine
             };
             const float iUVMin = .01f;
             const float iUVMax = .99f;
-            m_VertexBufferForStretchedTile = new VertexPositionNormalTextureHue[] {
+            _vertexBufferForStretchedTile = new VertexPositionNormalTextureHue[] {
                 new VertexPositionNormalTextureHue(new Vector3(), new Vector3(), new Vector2(iUVMin, iUVMin)),
                 new VertexPositionNormalTextureHue(new Vector3(), new Vector3(), new Vector2(iUVMax, iUVMin)),
                 new VertexPositionNormalTextureHue(new Vector3(), new Vector3(), new Vector2(iUVMin, iUVMax)),
@@ -454,8 +466,8 @@ namespace UltimaXNA.TileEngine
         protected override void LoadContent()
         {
             base.LoadContent();
-            m_SpriteBatch = new SpriteBatch3D(this.Game);
-            m_RayPicker = new RayPicker(this.Game);
+            _spriteBatch = new SpriteBatch3D(this.Game);
+            _rayPicker = new RayPicker(this.Game);
         }
     }
 

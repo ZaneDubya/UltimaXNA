@@ -111,6 +111,8 @@ namespace UltimaXNA.Network
                         case "Remove Friend":
                         case "Transfer":
                         case "Release":
+                        case "Ask Destination":
+                        case "Abandon Escort":
                         // unhandled
                             break;
                         default:

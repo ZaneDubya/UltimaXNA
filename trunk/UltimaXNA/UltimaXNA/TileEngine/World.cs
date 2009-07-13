@@ -42,7 +42,6 @@ namespace UltimaXNA.TileEngine
             m_GameObjectsService = (GameObjects.IGameObjects)Game.Services.GetService(typeof(GameObjects.IGameObjects));
             m_GameStateService = (IGameState)Game.Services.GetService(typeof(IGameState));
         }
-
         
         public override void Update(GameTime gameTime)
         {
@@ -50,25 +49,24 @@ namespace UltimaXNA.TileEngine
 
             if (m_GameStateService.InWorld)
             {
-                    GameObjects.Movement iCenterPosition = m_GameObjectsService.GetPlayerObject().Movement;
+                GameObjects.Movement iCenterPosition = m_GameObjectsService.GetPlayerObject().Movement;
 
-                    if ((X != iCenterPosition.DrawPosition.TileX) ||
-                        (Y != iCenterPosition.DrawPosition.TileY))
+                if ((X != iCenterPosition.DrawPosition.TileX) ||
+                    (Y != iCenterPosition.DrawPosition.TileY))
+                {
+                    X = iCenterPosition.DrawPosition.TileX;
+                    Y = iCenterPosition.DrawPosition.TileY;
+                    m_Map.Update(X, Y);
+                    // Are we inside (under a roof)? Do not draw tiles above our head.
+                    if (m_Map.GetMapCell(X, Y).UnderRoof(iCenterPosition.DrawPosition.TileZ))
                     {
-                        X = iCenterPosition.DrawPosition.TileX;
-                        Y = iCenterPosition.DrawPosition.TileY;
-                        m_Map.UpdateLocation(X, Y);
-
-                        // Are we inside (under a roof)? Do not draw tiles above our head.
-                        if (m_Map.GetMapCell(X, Y).UnderRoof(iCenterPosition.DrawPosition.TileZ))
-                        {
-                            MaxRoofAltitude = iCenterPosition.DrawPosition.TileZ + 20;
-                        }
-                        else
-                        {
-                            MaxRoofAltitude = 255;
-                        }
+                        MaxRoofAltitude = iCenterPosition.DrawPosition.TileZ + 20;
                     }
+                    else
+                    {
+                        MaxRoofAltitude = 255;
+                    }
+                }
             }
         }
         public static int X { get; set; }

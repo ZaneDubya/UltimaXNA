@@ -69,7 +69,12 @@ float4 PixelShader(PS_INPUT IN) : COLOR0
 
 		color.rgb = (ambientColor * color.rgb) + (lightColor * NDotL * color.rgb);
 	}
-
+	
+	if (IN.Hue.y != 0)
+	{
+		IN.Hue.x = 87;
+	}
+	
 	if (IN.Hue.x != 0 && color.a > 0) //Is it Hued?
 	{
 		float x = abs(IN.Hue.x);
@@ -84,17 +89,6 @@ float4 PixelShader(PS_INPUT IN) : COLOR0
 		else //Else its a normal Hue
 		{
 			color = hue;
-		}
-	}
-	
-	if (IN.Hue.y != 0)
-	{
-		if (color.a > 0)
-		{
-			color.r = clamp(color.r * 1.5, 0, 1);
-			// color.g = 0; //clamp(color.g * 1.4, 0, 1);
-			// color.b = 0; //clamp(color.b * 1.4, 0, 1);
-			// color.a = 1;
 		}
 	}
 
