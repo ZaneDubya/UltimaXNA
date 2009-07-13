@@ -11,7 +11,8 @@ namespace UltimaXNA.GUI
     {
         private static Client.IUltimaClient _GameClientService;
         private static GameObjects.IGameObjects _GameObjectsService;
-        private static GUI.EngineGUI _GUI;
+        private static GUI.IGUI _GUI;
+        private static TileEngine.ITileEngine _TileEngine;
         private static FormCollection _formCollection;
         private static GraphicsDevice _GraphicsDevice;
         public static FormCollection FormCollection { get { return _formCollection; } }
@@ -33,6 +34,34 @@ namespace UltimaXNA.GUI
         public static GameObjects.GameObject MouseHoldingItem;
         private static GameObjects.GameObject _ToolTipItem;
 
+        public static void SetObjects(GraphicsDevice nDevice, FormCollection nFormCollection, GameServiceContainer nServices)
+        {
+            _GraphicsDevice = nDevice;
+            _GUI = nServices.GetService<GUI.IGUI>();
+            _GameClientService = nServices.GetService<Client.IUltimaClient>();
+            _GameObjectsService = nServices.GetService<GameObjects.IGameObjects>();
+            _TileEngine = nServices.GetService<TileEngine.ITileEngine>();
+            _formCollection = nFormCollection;
+        }
+
+        private static void _PrepareHelper()
+        {
+            _TextureBorder = Texture2D.FromFile(_GraphicsDevice,
+               FormCollection.ContentManager.RootDirectory + @"GUI\COMMON\UI-Slot-Border.png");
+            _TextureBG = Texture2D.FromFile(_GraphicsDevice,
+                FormCollection.ContentManager.RootDirectory + @"GUI\COMMON\UI-Slot-BG.png");
+            _TextureEmpty = Texture2D.FromFile(_GraphicsDevice,
+                FormCollection.ContentManager.RootDirectory + @"GUI\COMMON\UI-Slot-Empty.png");
+            _RenderTarget = new RenderTarget2D(_GraphicsDevice, 64, 64, 0, SurfaceFormat.Color, RenderTargetUsage.PreserveContents);
+            _IconCache = new Texture2D[0x4000];
+            _IsPrepared = true;
+        }
+
+        public static Texture2D LoadTexture(string filepath)
+        {
+            return Texture2D.FromFile(_GraphicsDevice, FormCollection.ContentManager.RootDirectory + filepath);
+        }
+
         public static void Network_SendChat(string nChatText)
         {
             if (nChatText != string.Empty)
@@ -50,6 +79,14 @@ namespace UltimaXNA.GUI
             {
                 // The chat frame isn't loaded yet. Save this text for later.
                 _QueuedChatText.Add(nChatText);
+            }
+        }
+
+        public static Texture2D MiniMapTexture
+        {
+            get 
+            {
+                return _TileEngine.MiniMap.Texture;
             }
         }
 
@@ -103,18 +140,24 @@ namespace UltimaXNA.GUI
                 }
                 else
                 {
-                    // moving between two containers.
+                    // moving between two containers, or moving from ground to a container.
                     if (iDestContainer.ContainerObject.GetContents(nDestSlot) == null)
                     {
                         // dest slot is empty.
-                        _GameObjectsService.GetObject<GameObjects.GameObject>(iHeldObject.Item_ContainedWithinSerial, false).ContainerObject.RemoveItem(iHeldObject.Serial);
+                        if (iHeldObject.Item_ContainedWithinSerial.IsValid)
+                        {
+                            _GameObjectsService.GetObject<GameObjects.GameObject>(iHeldObject.Item_ContainedWithinSerial, false).ContainerObject.RemoveItem(iHeldObject.Serial);
+                        }
                         _GameClientService.Send(new PickupItemPacket(iHeldObject.Serial, (short)iHeldObject.Item_StackCount));
                         _GameClientService.Send(new DropItemPacket(iHeldObject.Serial, (short)nDestSlot, (short)0x7FFF,
                             0, 0, iDestContainer.Serial));
                     }
                     else
                     {
-                        _GameObjectsService.GetObject<GameObjects.GameObject>(iHeldObject.Item_ContainedWithinSerial, false).ContainerObject.RemoveItem(iHeldObject.Serial);
+                        if (iHeldObject.Item_ContainedWithinSerial.IsValid)
+                        {
+                            _GameObjectsService.GetObject<GameObjects.GameObject>(iHeldObject.Item_ContainedWithinSerial, false).ContainerObject.RemoveItem(iHeldObject.Serial);
+                        }
                         _GameClientService.Send(new PickupItemPacket(iHeldObject.Serial, (short)iHeldObject.Item_StackCount));
                         _GameClientService.Send(new DropItemPacket(iHeldObject.Serial, (short)0, (short)0,
                             0, 0, iDestContainer.Serial));
@@ -213,29 +256,6 @@ namespace UltimaXNA.GUI
             return MiscUtil.HexEncoding.ToString(
                 MiscUtil.Conversion.EndianBitConverter.Big.GetBytes(serial)
             );
-        }
-
-        public static void SetObjects(
-            GraphicsDevice nDevice, EngineGUI nGUI, Client.IUltimaClient nGameClientService, GameObjects.IGameObjects nGameObjectsService, FormCollection nFormCollection)
-        {
-            _GraphicsDevice = nDevice;
-            _GUI = nGUI;
-            _GameClientService = nGameClientService;
-            _GameObjectsService = nGameObjectsService;
-            _formCollection = nFormCollection;
-        }
-
-        private static void _PrepareHelper()
-        {
-            _TextureBorder = Texture2D.FromFile(_GraphicsDevice,
-               FormCollection.ContentManager.RootDirectory + @"GUI\COMMON\UI-Slot-Border.png");
-            _TextureBG = Texture2D.FromFile(_GraphicsDevice,
-                FormCollection.ContentManager.RootDirectory + @"GUI\COMMON\UI-Slot-BG.png");
-            _TextureEmpty = Texture2D.FromFile(_GraphicsDevice,
-                FormCollection.ContentManager.RootDirectory + @"GUI\COMMON\UI-Slot-Empty.png");
-            _RenderTarget = new RenderTarget2D(_GraphicsDevice, 64, 64, 0, SurfaceFormat.Color, RenderTargetUsage.PreserveContents);
-            _IconCache = new Texture2D[0x4000];
-            _IsPrepared = true;
         }
 
         public static Texture2D ItemIcon(int nItemID)

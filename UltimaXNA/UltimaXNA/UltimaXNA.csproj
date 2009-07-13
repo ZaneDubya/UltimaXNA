@@ -100,6 +100,7 @@
   <ItemGroup>
     <Compile Include="Data\Art.cs" />
     <Compile Include="Data\Gumps.cs" />
+    <Compile Include="Data\Radalcol.cs" />
     <Compile Include="Data\SharedMethods.cs" />
     <Compile Include="Data\StringList.cs" />
     <Compile Include="Diagnostics\ILoggingService.cs" />
@@ -316,6 +317,7 @@
     <Compile Include="Serial.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="TileEngine\GameObjectTile.cs" />
+    <Compile Include="TileEngine\MiniMap.cs" />
     <Compile Include="TileEngine\RayPicker.cs" />
     <Compile Include="TileEngine\GroundTile.cs" />
     <Compile Include="TileEngine\Map.cs" />

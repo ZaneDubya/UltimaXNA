@@ -29,7 +29,10 @@ namespace UltimaXNA.GUI
             _MyForm = m_FormCollection["frmStatusFrameMain"];
             _MyForm.BorderName = null;
 
+            _MyForm.Controls.Add(new PictureBox("picMiniMap", new Vector2(136, -34), string.Empty, 128, 128, 0));
+
             _MyForm.Controls.Add(new PictureBox("picCenterFrame", new Vector2(width / 2 - 64, 0), @"GUI\STATFRAME\UI-STATFRAME-CENTER.png", 128, 128, 0));
+            
 
             _MyForm.Controls.Add(new PictureBox("picFrameLeft", new Vector2(13, 0), @"GUI\STATFRAME\UI-STATFRAME-LEFT.png", 256, 64, 0));
             _MyForm.Controls.Add(new PictureBox("picFrameRight", new Vector2(width - 14 - 256, 0), @"GUI\STATFRAME\UI-STATFRAME-RIGHT.png", 256, 64, 0));
@@ -79,6 +82,12 @@ namespace UltimaXNA.GUI
             {
                 m_UpdateBar(i);
             }
+
+            
+
+            Texture2D mask = GUIHelper.LoadTexture(@"GUI\STATFRAME\MINIMAP-MASK.png");
+            // mask.
+            // ((PictureBox)_MyForm["picMiniMap"]).Texture = GUIHelper.MiniMapTexture;
         }
 
         private void setTargetFrameVisibility(string leftOrRight, bool visible)

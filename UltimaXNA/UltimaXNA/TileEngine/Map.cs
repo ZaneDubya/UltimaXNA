@@ -60,6 +60,7 @@ namespace UltimaXNA.TileEngine
 
     public class Map
     {
+        public int UpdateTicker;
         private int m_GameSize, m_GameSizeUp, m_GameSizeDown;
         private List<int> m_KeysToRemove;
         public SortedDictionary<int, MapCell> m_MapCells;
@@ -144,10 +145,11 @@ namespace UltimaXNA.TileEngine
                 return null;
             }
         }
+
         private int m_StartX, m_StartY;
-        public void UpdateLocation(int x, int y)
+        public void Update(int x, int y)
         {
-            if (m_X != x || m_Y != y)
+            if (m_X != World.X || m_Y != World.Y)
             {
                 m_X = x;
                 m_Y = y;
@@ -232,6 +234,8 @@ namespace UltimaXNA.TileEngine
             {
                 m_MapCells.Remove(m_KeysToRemove[i]);
             }
+
+            UpdateTicker++;
         }
 
 		// Issue 10 - Speed problems (Partial) - http://code.google.com/p/ultimaxna/issues/detail?id=10 - Smjert
@@ -247,6 +251,7 @@ namespace UltimaXNA.TileEngine
 
     public class MapCell : Data.IPoint2D
     {
+        public List<IMapObject> Objects { get { return m_Objects; } }
         private bool m_NeedsSorting;
         private List<IMapObject> m_Objects;
         private IMapObject[] m_Sorted;

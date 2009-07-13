@@ -128,7 +128,7 @@ namespace UltimaXNA.GUI
             _GameObjectsService = (GameObjects.IGameObjects)Game.Services.GetService(typeof(GameObjects.IGameObjects));
             _GameClientService = (Client.IUltimaClient)Game.Services.GetService(typeof(Client.IUltimaClient));
             Events.Initialize(Game.Services);
-            GUIHelper.SetObjects(graphics.GraphicsDevice, this, _GameClientService, _GameObjectsService, _FormCollection);
+            GUIHelper.SetObjects(graphics.GraphicsDevice, _FormCollection, Game.Services);
             _GUIWindows = new Dictionary<string, Window>();
             _DrawForms = true;
             MouseCursor = 0;

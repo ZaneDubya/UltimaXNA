@@ -20,10 +20,13 @@ namespace UltimaXNA
         bool EngineRunning { get; set; }
         Serial LastTarget { get; set; }
         void MouseTargeting(int nCursorID, int nTargetingType);
+        bool WarMode { get; set; }
     }
 
     public class GameState : GameComponent, IGameState
     {
+        bool _warMode;
+        public bool WarMode { get { return _warMode; } set { _warMode = value; } }
         Input.IInputService _Input;
         TileEngine.ITileEngine _TileEngine;
         GameObjects.IGameObjects _GameObjects;
@@ -381,7 +384,14 @@ namespace UltimaXNA
                     case UltimaXNA.GameObjects.ObjectType.Unit:
                         // We request a context sensitive menu. This automatically sends a double click if no context menu is handled. See parseContextMenu...
                         LastTarget = iObject.Serial;
-                        _GameClient.Send(new RequestContextMenuPacket(iObject.Serial));
+                        if (_warMode)
+                        {
+                            _GameClient.Send(new AttackRequestPacket(iObject.Serial));
+                        }
+                        else
+                        {
+                            _GameClient.Send(new RequestContextMenuPacket(iObject.Serial));
+                        }
                         break;
                     case UltimaXNA.GameObjects.ObjectType.Player:
                         LastTarget = iObject.Serial;
@@ -448,6 +458,15 @@ namespace UltimaXNA
             {
                 ((SceneManagement.ISceneService)Game.Services.GetService(typeof(SceneManagement.ISceneService))).CurrentScene = new SceneManagement.LoginScene(Game);
             }
+
+            // toggle for warmode
+            if (keyboard.IsKeyPressed(Keys.Tab))
+            {
+                if (_warMode)
+                    _GameClient.Send(new RequestWarModePacket(false));
+                else
+                    _GameClient.Send(new RequestWarModePacket(true));
+            }
         }
 
         // Maintain an accurate count of frames per second.
@@ -474,6 +493,7 @@ namespace UltimaXNA
             if (InWorld)
             {
                 debugMessage += "Objects on screen: " + _TileEngine.ObjectsRendered.ToString() + Environment.NewLine;
+                debugMessage += "WarMode: " + _warMode.ToString() + Environment.NewLine;
                 if (_TileEngine.MouseOverObject != null)
                 {
                     debugMessage += "OBJECT: " + _TileEngine.MouseOverObject.ToString() + Environment.NewLine;

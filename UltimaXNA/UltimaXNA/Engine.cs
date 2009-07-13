@@ -96,6 +96,14 @@ namespace UltimaXNA
         {
             GraphicsDevice.Clear(Color.Black);
             base.Draw(gameTime);
+            
+            if (_TileEngine.MiniMap != null)
+            {
+                SpriteBatch _SpriteBatch = new SpriteBatch(GraphicsDevice);
+                _SpriteBatch.Begin();
+                _SpriteBatch.Draw(_TileEngine.MiniMap.Texture, new Rectangle(400, 0, 40, 40), null, Color.White, (3f * (float)Math.PI) / 4, new Vector2(0,40),SpriteEffects.FlipVertically, 0);
+                _SpriteBatch.End();
+            }
         }
 
         // Some settings to designate a screen size and fps limit.
@@ -104,7 +112,7 @@ namespace UltimaXNA
             GraphicsDeviceManager graphicsDeviceManager = new GraphicsDeviceManager(this);
             graphicsDeviceManager.PreferredBackBufferWidth = 800;
             graphicsDeviceManager.PreferredBackBufferHeight = 600;
-            graphicsDeviceManager.SynchronizeWithVerticalRetrace = true;
+            graphicsDeviceManager.SynchronizeWithVerticalRetrace = false;
             graphicsDeviceManager.PreparingDeviceSettings += OnPreparingDeviceSettings;
             this.IsFixedTimeStep = false;
             graphicsDeviceManager.ApplyChanges();
