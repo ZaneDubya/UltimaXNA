@@ -166,6 +166,7 @@
     <Compile Include="MiscUtil\EndianBinaryWriter.cs" />
     <Compile Include="MiscUtil\HexEncoding.cs" />
     <Compile Include="Network\CharacterListEntry.cs" />
+    <Compile Include="Network\MobileFlags.cs" />
     <Compile Include="Network\ClientNetwork.cs" />
     <Compile Include="Network\Compression\HuffmanDecompression.cs" />
     <Compile Include="Network\Compression\ZlibDecompression.cs" />

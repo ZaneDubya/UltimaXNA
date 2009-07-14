@@ -25,8 +25,17 @@ namespace UltimaXNA
 
     public class GameState : GameComponent, IGameState
     {
-        bool _warMode;
-        public bool WarMode { get { return _warMode; } set { _warMode = value; } }
+        public bool WarMode
+        {
+            get
+            {
+                return ((GameObjects.Unit)_GameObjects.GetPlayerObject()).WarMode;
+            }
+            set
+            {
+                ((GameObjects.Unit)_GameObjects.GetPlayerObject()).WarMode = value;
+            }
+        }
         Input.IInputService _Input;
         TileEngine.ITileEngine _TileEngine;
         GameObjects.IGameObjects _GameObjects;
@@ -309,7 +318,7 @@ namespace UltimaXNA
                 ((GameObjects.Unit)_GameObjects.GetPlayerObject()).Move(
                        (int)iGroundTile.Position.X,
                        (int)iGroundTile.Position.Y,
-                       (int)iGroundTile.Z);
+                       (int)iGroundTile.Z, -1);
                 if (_MovementFollowsMouse)
                     _ContinuousMoveCheck = true;
             }
@@ -334,7 +343,7 @@ namespace UltimaXNA
                     ((GameObjects.Unit)_GameObjects.GetPlayerObject()).Move(
                            (int)iTopObject.Position.X,
                            (int)iTopObject.Position.Y,
-                           (int)iTopObject.Z + iItemData.CalcHeight);
+                           (int)iTopObject.Z + iItemData.CalcHeight, -1);
                     if (_MovementFollowsMouse)
                         _ContinuousMoveCheck = true;
                 }
@@ -398,7 +407,7 @@ namespace UltimaXNA
                     case UltimaXNA.GameObjects.ObjectType.Unit:
                         // We request a context sensitive menu. This automatically sends a double click if no context menu is handled. See parseContextMenu...
                         LastTarget = iObject.Serial;
-                        if (_warMode)
+                        if (WarMode)
                         {
                             _GameClient.Send(new AttackRequestPacket(iObject.Serial));
                         }
@@ -476,7 +485,7 @@ namespace UltimaXNA
             // toggle for warmode
             if (keyboard.IsKeyPressed(Keys.Tab))
             {
-                if (_warMode)
+                if (WarMode)
                     _GameClient.Send(new RequestWarModePacket(false));
                 else
                     _GameClient.Send(new RequestWarModePacket(true));
@@ -507,7 +516,7 @@ namespace UltimaXNA
             if (InWorld)
             {
                 debugMessage += "Objects on screen: " + _TileEngine.ObjectsRendered.ToString() + Environment.NewLine;
-                debugMessage += "WarMode: " + _warMode.ToString() + Environment.NewLine;
+                debugMessage += "WarMode: " + WarMode.ToString() + Environment.NewLine;
                 if (_TileEngine.MouseOverObject != null)
                 {
                     debugMessage += "OBJECT: " + _TileEngine.MouseOverObject.ToString() + Environment.NewLine;

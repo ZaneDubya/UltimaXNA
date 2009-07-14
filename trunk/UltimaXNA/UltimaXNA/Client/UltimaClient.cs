@@ -209,7 +209,7 @@ namespace UltimaXNA.Client
 
         private void receive_CharacterListUpdate(IRecvPacket packet)
         {
-            receive_UnhandledPacket(packet);
+            announce_UnhandledPacket(packet);
         }
 
         private void receive_CLILOCMessage(IRecvPacket packet)
@@ -281,8 +281,8 @@ namespace UltimaXNA.Client
         private void receive_DeathAnimation(IRecvPacket packet)
         {
             DeathAnimationPacket p = (DeathAnimationPacket)packet;
-            
-            receive_UnhandledPacket(packet);
+
+            announce_UnhandledPacket(packet);
         }
 
         private void receive_DeleteObject(IRecvPacket packet)
@@ -308,28 +308,28 @@ namespace UltimaXNA.Client
             {
                 // iDestGround = true;
             }
-            receive_UnhandledPacket(packet);
+            announce_UnhandledPacket(packet);
         }
 
         private void receive_DisplayGumpFast(IRecvPacket packet)
         {
-            receive_UnhandledPacket(packet);
+            announce_UnhandledPacket(packet);
         }
 
         private void receive_DisplayMenu(IRecvPacket packet)
         {
-            receive_UnhandledPacket(packet);
+            announce_UnhandledPacket(packet);
         }
 
         private void receive_EnableFeatures(IRecvPacket packet)
         {
             SupportedFeaturesPacket p = (SupportedFeaturesPacket)packet;
-            receive_UnhandledPacket(packet);
+            announce_UnhandledPacket(packet);
         }
 
         private void receive_Extended0x78(IRecvPacket packet)
         {
-            receive_UnhandledPacket(packet);
+            announce_UnhandledPacket(packet);
         }
 
         private void receive_GeneralInfo(IRecvPacket packet)
@@ -367,23 +367,22 @@ namespace UltimaXNA.Client
 
         private void receive_GlobalQueueCount(IRecvPacket packet)
         {
-            receive_UnhandledPacket(packet);
+            announce_UnhandledPacket(packet);
         }
 
         private void receive_GraphicEffect(IRecvPacket packet)
         {
-            // unhandled !!!
-            receive_UnhandledPacket(packet);
+            announce_UnhandledPacket(packet);
         }
 
         private void receive_HuedEffect(IRecvPacket packet)
         {
-            receive_UnhandledPacket(packet);
+            announce_UnhandledPacket(packet);
         }
 
         private void receive_InvalidMapEnable(IRecvPacket packet)
         {
-            receive_UnhandledPacket(packet);
+            announce_UnhandledPacket(packet);
         }
 
         private void receive_LoginComplete(IRecvPacket packet)
@@ -410,13 +409,13 @@ namespace UltimaXNA.Client
 
         private void receive_MessageLocalizedAffix(IRecvPacket packet)
         {
-            receive_UnhandledPacket(packet);
+            announce_UnhandledPacket(packet);
         }
 
         private void receive_MobileAttributes(IRecvPacket packet)
         {
             MobileAttributesPacket p = (MobileAttributesPacket)packet;
-            receive_UnhandledPacket(packet);
+            announce_UnhandledPacket(packet);
         }
 
         private void receive_MobileAnimation(IRecvPacket packet)
@@ -433,8 +432,9 @@ namespace UltimaXNA.Client
             Unit iMobile = _GameObjects.GetObject<Unit>(p.Serial, true);
             iMobile.DisplayBodyID = p.BodyID;
             iMobile.Hue = (int)p.Hue;
-            iMobile.Movement.SetPositionInstant((int)p.X, (int)p.Y, (int)p.Z);
-            iMobile.SetFacing(p.Direction & 0x0F);
+            iMobile.Movement.SetPositionInstant((int)p.X, (int)p.Y, (int)p.Z, p.Direction);
+            // iMobile.SetFacing(p.Direction);
+            iMobile.WarMode = p.Flags.IsWarMode;
 
             for (int i = 0; i < p.Equipment.Length; i++)
             {
@@ -456,22 +456,23 @@ namespace UltimaXNA.Client
             MobileMovingPacket p = (MobileMovingPacket)packet;
 
             Unit iObject = _GameObjects.GetObject<GameObjects.Unit>(p.Serial, true);
-            iObject.SetFacing(p.Direction);
+            // iObject.SetFacing(p.Direction);
             iObject.DisplayBodyID = p.BodyID;
+            iObject.WarMode = p.Flags.IsWarMode;
             // Issue 16 - Pet not showing at login - http://code.google.com/p/ultimaxna/issues/detail?id=16 - Smjert
             // Since no packet arrives to add your pet, when you move and your pet follows you the client crashes
             if (iObject.Movement.DrawPosition == null)
             {
-                iObject.Movement.SetPositionInstant(p.X, p.Y, p.Z);
+                iObject.Movement.SetPositionInstant(p.X, p.Y, p.Z, p.Direction);
             }
             else if (iObject.Movement.DrawPosition.PositionV3 == new Vector3(0, 0, 0))
             {
-                iObject.Movement.SetPositionInstant(p.X, p.Y, p.Z);
+                iObject.Movement.SetPositionInstant(p.X, p.Y, p.Z, p.Direction);
                 // Issue 16 - End
             }
             else
             {
-                iObject.Move(p.X, p.Y, p.Z);
+                iObject.Move(p.X, p.Y, p.Z, p.Direction);
             }
         }
 
@@ -481,8 +482,8 @@ namespace UltimaXNA.Client
             Unit iObject = _GameObjects.GetObject<Unit>(p.Serial, true);
             iObject.DisplayBodyID = p.BodyID;
             iObject.Hue = (int)p.Hue;
-            iObject.Movement.SetPositionInstant((int)p.X, (int)p.Y, (int)p.Z);
-            iObject.SetFacing(p.Direction & 0x0F);
+            iObject.Movement.SetPositionInstant((int)p.X, (int)p.Y, (int)p.Z, p.Direction);
+            // iObject.SetFacing(p.Direction);
 
             if (iObject.Name == string.Empty)
             {
@@ -506,12 +507,12 @@ namespace UltimaXNA.Client
         private void receive_NewSubserver(IRecvPacket packet)
         {
             SubServerPacket p = (SubServerPacket)packet;
-            receive_UnhandledPacket(packet);
+            announce_UnhandledPacket(packet);
         }
 
         private void receive_ObjectHelpResponse(IRecvPacket packet)
         {
-            receive_UnhandledPacket(packet);
+            announce_UnhandledPacket(packet);
         }
 
         private void receive_ObjectPropertyList(IRecvPacket packet)
@@ -539,13 +540,13 @@ namespace UltimaXNA.Client
 
         private void receive_OnParticleEffect(IRecvPacket packet)
         {
-            receive_UnhandledPacket(packet);
+            announce_UnhandledPacket(packet);
         }
 
         private void receive_OnSwing(IRecvPacket packet)
         {
             SwingPacket p = (SwingPacket)packet;
-            receive_UnhandledPacket(packet);
+            announce_UnhandledPacket(packet);
         }
 
         private void receive_OpenBuyWindow(IRecvPacket packet)
@@ -560,12 +561,12 @@ namespace UltimaXNA.Client
         private void receive_OpenPaperdoll(IRecvPacket packet)
         {
             // unhandled;
-            receive_UnhandledPacket(packet);
+            announce_UnhandledPacket(packet);
         }
 
         private void receive_OpenWebBrowser(IRecvPacket packet)
         {
-            receive_UnhandledPacket(packet);
+            announce_UnhandledPacket(packet);
         }
 
         private void receive_OverallLightLevel(IRecvPacket packet)
@@ -576,7 +577,7 @@ namespace UltimaXNA.Client
             // 0x1F - Black
             // Max normal val = 0x1F
             // !!! Unhandled
-            receive_UnhandledPacket(packet);
+            announce_UnhandledPacket(packet);
         }
 
         private void receive_PersonalLightLevel(IRecvPacket packet)
@@ -588,7 +589,7 @@ namespace UltimaXNA.Client
             // 0x1F - Black
             // Max normal val = 0x1F
             // !!! Unhandled
-            receive_UnhandledPacket(packet);
+            announce_UnhandledPacket(packet);
         }
 
         private void receive_PlayerLocaleAndBody(IRecvPacket packet)
@@ -598,8 +599,8 @@ namespace UltimaXNA.Client
             // When loading the player object, we must load the serial before the object.
             _GameObjects.MySerial = p.Serial;
             Player iPlayer = _GameObjects.GetObject<Player>(p.Serial, true);
-            iPlayer.Movement.SetPositionInstant((int)p.X, (int)p.Y, (int)p.Z);
-            iPlayer.SetFacing(p.Direction & 0x0F);
+            iPlayer.Movement.SetPositionInstant((int)p.X, (int)p.Y, (int)p.Z, p.Direction);
+            // iPlayer.SetFacing(p.Direction);
 
             // We want to make sure we have the client object before we load the world...
             if (Status == UltimaClientStatus.WorldServer_LoginComplete)
@@ -609,12 +610,12 @@ namespace UltimaXNA.Client
         private void receive_PlayerMove(IRecvPacket packet)
         {
             PlayerMovePacket p = (PlayerMovePacket)packet;
-            receive_UnhandledPacket(packet);
+            announce_UnhandledPacket(packet);
         }
 
         private void receive_PlayMusic(IRecvPacket packet)
         {
-            receive_UnhandledPacket(packet);
+            announce_UnhandledPacket(packet);
         }
 
         private void receive_PlaySoundEffect(IRecvPacket packet)
@@ -625,18 +626,18 @@ namespace UltimaXNA.Client
             // BYTE[2] xLoc
             // BYTE[2] yLoc
             // BYTE[2] zLoc
-            receive_UnhandledPacket(packet);
+            announce_UnhandledPacket(packet);
         }
 
         private void receive_PopupMessage(IRecvPacket packet)
         {
             PopupMessagePacket p = (PopupMessagePacket)packet;
-            receive_UnhandledPacket(packet);
+            announce_UnhandledPacket(packet);
         }
 
         private void receive_QuestArrow(IRecvPacket packet)
         {
-            receive_UnhandledPacket(packet);
+            announce_UnhandledPacket(packet);
         }
 
         private void receive_RejectMoveItemRequest(IRecvPacket packet)
@@ -659,19 +660,19 @@ namespace UltimaXNA.Client
             // 1: Resurrect
             // 2: Ghost
             // The only use on OSI for this packet is now sending "2C02" for the "You Are Dead" screen upon character death.
-            receive_UnhandledPacket(packet);
+            announce_UnhandledPacket(packet);
         }
 
         private void receive_SeasonalInformation(IRecvPacket packet)
         {
             // Unhandled!!! If iSeason2 = 1, then this is a season change.
             // If season change, then iSeason1 = (0=spring, 1=summer, 2=fall, 3=winter, 4 = desolation)
-            receive_UnhandledPacket(packet);
+            announce_UnhandledPacket(packet);
         }
 
         private void receive_SellList(IRecvPacket packet)
         {
-            receive_UnhandledPacket(packet);
+            announce_UnhandledPacket(packet);
         }
 
         private void receive_ServerList(IRecvPacket packet)
@@ -683,7 +684,7 @@ namespace UltimaXNA.Client
         private void receive_SetWeather(IRecvPacket packet)
         {
             // !!! Unhandled!
-            receive_UnhandledPacket(packet);
+            announce_UnhandledPacket(packet);
         }
 
         private void receive_ServerRelay(IRecvPacket packet)
@@ -734,7 +735,7 @@ namespace UltimaXNA.Client
                     GUI.GUIHelper.Chat_AddLine(p.Name1 + ": " + p.Text);
                     break;
                 default:
-                    receive_UnhandledPacket(packet);
+                    announce_UnhandledPacket(packet);
                     break;
             }
             // The various types of text is as follows:
@@ -777,12 +778,12 @@ namespace UltimaXNA.Client
         private void receive_Time(IRecvPacket packet)
         {
             // !!! Unhandled!
-            receive_UnhandledPacket(packet);
+            announce_UnhandledPacket(packet);
         }
 
         private void receive_TipNotice(IRecvPacket packet)
         {
-            receive_UnhandledPacket(packet);
+            announce_UnhandledPacket(packet);
         }
 
         private void receive_ToolTipRevision(IRecvPacket packet)
@@ -849,12 +850,12 @@ namespace UltimaXNA.Client
                 iObject.ObjectTypeID = p.ItemID;
                 iObject.Item_StackCount = p.StackAmount;
                 iObject.Hue = p.Hue;
-                iObject.Movement.SetPositionInstant(p.X, p.Y, p.Z);
+                iObject.Movement.SetPositionInstant(p.X, p.Y, p.Z, 0);
             }
             else
             {
                 // create a multi object. Unhandled !!!
-                receive_UnhandledPacket(packet);
+                announce_UnhandledPacket(packet);
             }
         }
 
@@ -873,9 +874,14 @@ namespace UltimaXNA.Client
 
 
 
-        private void receive_UnhandledPacket(IRecvPacket packet)
+        private void announce_UnhandledPacket(IRecvPacket packet)
         {
             GUI.GUIHelper.Chat_AddLine("DEBUG: Unhandled " + packet.Name + ". <" + packet.Id + ">");
+        }
+
+        private void announce_Packet(IRecvPacket packet)
+        {
+            // GUI.GUIHelper.Chat_AddLine("DEBUG: Recv'd " + packet.Name + ". <" + packet.Id + ">");
         }
 
         private void parseContextMenu(ContextMenuNew context)
