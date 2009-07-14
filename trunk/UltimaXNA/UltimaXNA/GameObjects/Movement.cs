@@ -22,7 +22,7 @@ namespace UltimaXNA.GameObjects
         Left = 0x5,
         West = 0x6,
         Up = 0x7,
-        Mask = 0x7,
+        FacingMask = 0x7,
         Running = 0x80,
         ValueMask = 0x87,
         Nothing = 0xED
@@ -54,6 +54,7 @@ namespace UltimaXNA.GameObjects
                 }
             }
         }
+        public bool IsRunning { get { return ((_facing & Direction.Running) == Direction.Running); } }
         public float MoveSequence;
         public float TimeToCompleteMove;
 		// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
@@ -84,7 +85,7 @@ namespace UltimaXNA.GameObjects
         {
             get
             {
-                int iFacing = (int)(_facing & Direction.Mask);
+                int iFacing = (int)(_facing & Direction.FacingMask);
                 if (iFacing >= 3)
                     return iFacing - 3;
                 else
@@ -145,7 +146,7 @@ namespace UltimaXNA.GameObjects
 
         public void SetPositionInstant(int nX, int nY, int nZ, int nFacing)
         {
-            _facing = (Direction)(nFacing & 0x0F);
+            _facing = (Direction)nFacing;
             mFlushDrawObjects();
             m_GoalTile = m_LastTile = m_NextTile = m_CurrentTile = new TilePosition(nX, nY, nZ);
             m_DrawPosition = new DrawPosition(m_CurrentTile);
@@ -313,6 +314,10 @@ namespace UltimaXNA.GameObjects
                     nFacing = Direction.Running;
                 }
             }
+
+            if (IsRunning)
+                nFacing |= Direction.Running;
+
             TileEngine.MapCell iCell = World.Map.GetMapCell(
                 (int)iDifference.X, 
                 (int)iDifference.Y);

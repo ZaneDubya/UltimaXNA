@@ -121,8 +121,7 @@ namespace UltimaXNA.GameObjects
         {
             if (Movement.IsMoving)
             {
-                bool nRunning = false;
-                UnitActions iAnimationAction = (nRunning == true) ? UnitActions.Run : UnitActions.Walk;
+                UnitActions iAnimationAction = (Movement.IsRunning) ? UnitActions.Run : UnitActions.Walk;
                 m_Animation.SetAnimation(iAnimationAction, 10, 0, false, false, 1);
             }
             else
@@ -141,7 +140,7 @@ namespace UltimaXNA.GameObjects
                 Movement.Mounted = m_Animation.Mounted = true;
                 mobtile = new TileEngine.MobileTile(
                                 mount.ObjectTypeID, nLocation, nOffset,
-                                iDirection, m_Animation.Action == UnitActions.Stand ? 2 : (int)m_Animation.Action, m_Animation.AnimationFrame,
+                                iDirection, (int)m_Animation.Action, m_Animation.AnimationFrame,
                                 Serial, 0x1A, mount.Hue, false);
 
                 mobtile.SubType = TileEngine.MobileTileTypes.Mount;
