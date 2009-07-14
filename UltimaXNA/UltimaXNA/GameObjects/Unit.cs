@@ -121,12 +121,13 @@ namespace UltimaXNA.GameObjects
         {
             if (Movement.IsMoving)
             {
-                UnitActions iAnimationAction = (Movement.IsRunning) ? UnitActions.Run : UnitActions.Walk;
-                m_Animation.SetAnimation(iAnimationAction, 10, 0, false, false, 1);
+                SupportedActions iAnimationAction = (Movement.IsRunning) ? SupportedActions.Run : SupportedActions.Walk;
+                m_Animation.SetAnimation(iAnimationAction, 10, 0, false, false, 0);
             }
             else
             {
-                m_Animation.SetAnimation(UnitActions.StopMovement);
+                if (m_Animation.Action != SupportedActions.Stand)
+                    m_Animation.HaltAnimation = true;
             }
 
             int iDirection = Movement.DrawFacing;
@@ -192,7 +193,7 @@ namespace UltimaXNA.GameObjects
 
         public void Animation(int action, int frameCount, int repeatCount, bool reverse, bool repeat, int delay)
         {
-            m_Animation.SetAnimation((UnitActions)action, frameCount, repeatCount, reverse, repeat, delay);
+            m_Animation.SetAnimation((SupportedActions)action, frameCount, repeatCount, reverse, repeat, delay);
         }
 
         public void Move(int nX, int nY, int nZ, int nFacing)
@@ -207,9 +208,14 @@ namespace UltimaXNA.GameObjects
 
     public class UnitAnimation
     {
+        public bool IsAnimating
+        {
+            get { return true; }
+        }
+
         public bool WarMode;
 		// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
-        public UnitActions Action;
+        public SupportedActions Action;
 		// Issue 6 - End
         public float AnimationFrame = 0f;
         private float m_AnimationStep = 0f;
@@ -230,39 +236,51 @@ namespace UltimaXNA.GameObjects
         public UnitAnimation()
         {
             m_AnimationStep = 0f;
-            Action = UnitActions.Stand;
+            Action = SupportedActions.Stand;
         }
 
-        public void SetAnimation(UnitActions nAction)
+        private bool _doHaltAnimation;
+        private int _timeHalted;
+        private const int _holdAnimationMilliseconds = 200;
+        public bool HaltAnimation
         {
-            if (nAction == UnitActions.StopMovement)
+            get { return _doHaltAnimation; }
+            set
             {
-                if ((Action == UnitActions.Walk) ||
-                    (Action == UnitActions.WalkArmed) ||
-                    (Action == UnitActions.Run) ||
-                    (Action == UnitActions.RunArmed))
+                if (value)
                 {
-                    this.SetAnimation(UnitActions.Stand);
+                    if ((!_doHaltAnimation) && (Action != SupportedActions.Stand))
+                    {
+                        _doHaltAnimation = true;
+                        _timeHalted = Int32.MaxValue;
+                    }
                 }
-                return;
+                else
+                {
+                    _doHaltAnimation = false;
+                    _timeHalted = Int32.MaxValue;
+                }
             }
+        }
 
+        public void SetAnimation(SupportedActions nAction)
+        {
+            HaltAnimation = false;
             if (Action != nAction)
             {
-                Action = (UnitActions)nAction;
+                Action = nAction;
                 AnimationFrame = 0f;
                 m_AnimationStep = 0f;
             }
         }
 
-        private int _FrameCount;
-        private int _FrameDelay;
-        private int _repeatCount;
-        public void SetAnimation(UnitActions action, int frameCount, int repeatCount, bool reverse, bool repeat, int delay)
+        private int _FrameCount, _FrameDelay, _repeatCount;
+        public void SetAnimation(SupportedActions action, int frameCount, int repeatCount, bool reverse, bool repeat, int delay)
         {
+            HaltAnimation = false;
             if (Action != action)
             {
-                Action = (UnitActions)action;
+                Action = action;
                 AnimationFrame = 0f;
                 _FrameCount = frameCount;
                 _FrameDelay = delay;
@@ -277,25 +295,82 @@ namespace UltimaXNA.GameObjects
             }
         }
 
+
+
+        private int msGameTime(GameTime gameTime)
+        {
+            return (int)(gameTime.TotalRealTime.Ticks / TimeSpan.TicksPerMillisecond);
+        }
+
         public void Update(GameTime gameTime)
         {
-            m_AnimationStep = (float)((_FrameCount * (_FrameDelay + 1)) * 5);
+            m_AnimationStep = (float)((_FrameCount * (_FrameDelay + 1)) * 8);
             if (m_AnimationStep != 0)
             {
-                AnimationFrame += 1f / m_AnimationStep / ((1f / 60f) / (float)(gameTime.ElapsedRealTime.TotalMilliseconds / 1000f));
-                if (AnimationFrame >= 1f)
+                if (HaltAnimation)
                 {
-                    AnimationFrame %= 1f;
-                    if ((_repeatCount == 0))
-                        SetAnimation(UnitActions.Stand, 0, 0, false, false, 0);
+                    if (_timeHalted == Int32.MaxValue)
+                        _timeHalted = msGameTime(gameTime);
+                }
+
+                if (Action != SupportedActions.Stand)
+                {
+                    // advance the animation one step, based on gametime passed.
+                    float iTimePassed = ((1f / 60f) / (float)(gameTime.ElapsedRealTime.TotalMilliseconds / 1000f));
+                    float iTimeStep = 1f / m_AnimationStep / iTimePassed;
+                    AnimationFrame += iTimeStep;
+
+                    // We have a special case for movement actions that have not been
+                    // explicity halted. All other actions end when they reach their
+                    // final frame.
+                    if (isMovementAction(Action) && !HaltAnimation)
+                    {
+                        if (AnimationFrame >= 1f)
+                            AnimationFrame %= 1f;
+                    }
                     else
                     {
-                        _repeatCount--;
+                        if (AnimationFrame >= 1f || HaltAnimation)
+                        {
+                            if (_repeatCount == 0)
+                            {
+                                // we have to return to the previous frame.
+                                AnimationFrame -= iTimeStep;
+                                if (HaltAnimation)
+                                {
+                                    // hold the animation for a quick moment, then set to stand.
+                                    if ((msGameTime(gameTime) - _timeHalted) >= _holdAnimationMilliseconds)
+                                    {
+                                        SetAnimation(SupportedActions.Stand);
+                                        HaltAnimation = false;
+                                    }
+                                }
+                                else
+                                {
+                                    HaltAnimation = true;
+                                }
+                            }
+                            else
+                            {
+                                AnimationFrame %= 1f;
+                                _repeatCount--;
+                            }
+                        }
                     }
                 }
             }
             else
+            {
                 AnimationFrame = 0;
+            }
+        }
+
+        private bool isMovementAction(SupportedActions a)
+        {
+            if (a == SupportedActions.Walk || a == SupportedActions.Run)
+                return true;
+            else
+                return false;
         }
 
         public int GetAction()
@@ -318,9 +393,9 @@ namespace UltimaXNA.GameObjects
         {
             switch (Action)
             {
-                case UnitActions.Walk:
+                case SupportedActions.Walk:
                     return 0;
-                case UnitActions.Stand:
+                case SupportedActions.Stand:
                     return 1;
                 default:
                     return (int)Action;
@@ -331,62 +406,70 @@ namespace UltimaXNA.GameObjects
         {
             switch (Action)
             {
-                case UnitActions.Walk:
+                case SupportedActions.Walk:
                     return 0;
-                case UnitActions.Run:
+                case SupportedActions.Run:
                     return 1;
-                case UnitActions.Stand:
+                case SupportedActions.Stand:
                     return 2;
                 default:
                     return (int)Action;
             }
         }
 
-        private UnitActions getAction_HighestDetail()
+        private int getAction_HighestDetail()
         {
             if (Mounted)
             {
                 switch (Action)
                 {
-                    case UnitActions.Walk:
-                        return (UnitActions)23;
-                    case UnitActions.RunArmed:
-                        return (UnitActions)24;
-                    case UnitActions.Stand:
-                        return (UnitActions)25;
+                    case SupportedActions.Walk:
+                        return 23;
+                    case SupportedActions.Run:
+                        return 24;
+                    case SupportedActions.Stand:
+                        return 25;
 
-                    default: return Action;
+                    default: 
+                        return (int)Action;
                 }
             }
 
             // Hiryu has different stand animation
-            if (BodyID == 243 && Action == UnitActions.Stand)
-                return (UnitActions)2;
+            // if (BodyID == 243 && Action == UnitActions.Stand)
+            //     return (UnitActions)2;
 
             switch (Action)
             {
-                case UnitActions.Walk:
+                case SupportedActions.Walk:
                     if (WarMode)
-                        return UnitActions.WalkInAttackStance;
+                        return (int)HighestDetailActions.WalkInAttackStance;
                     else
-                        return UnitActions.Walk;
-                case UnitActions.Run:
-                    return UnitActions.Run;
-                case UnitActions.Stand:
+                        return (int)HighestDetailActions.Walk;
+                case SupportedActions.Run:
+                    return (int)HighestDetailActions.Run;
+                case SupportedActions.Stand:
                     if (WarMode)
-                        return UnitActions.StandAttackStance;
+                        return (int)HighestDetailActions.StandAttackStance;
                     else
-                        return UnitActions.Stand;
+                        return (int)HighestDetailActions.Stand;
                 default:
-                    return Action;
+                    return (int)Action;
             }
         }
     }
 
     #region UnitEnums
-    public enum UnitActions
+    public enum SupportedActions
     {
-        StopMovement = 0x7fffffff,
+        Walk,
+        Run,
+        Stand
+    }
+
+
+    public enum HighestDetailActions
+    {
         Walk = 0x00,
         WalkArmed = 0x01,
         Run = 0x02,

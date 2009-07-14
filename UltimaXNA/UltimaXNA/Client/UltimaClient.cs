@@ -433,7 +433,6 @@ namespace UltimaXNA.Client
             iMobile.DisplayBodyID = p.BodyID;
             iMobile.Hue = (int)p.Hue;
             iMobile.Movement.SetPositionInstant((int)p.X, (int)p.Y, (int)p.Z, p.Direction);
-            // iMobile.SetFacing(p.Direction);
             iMobile.WarMode = p.Flags.IsWarMode;
 
             for (int i = 0; i < p.Equipment.Length; i++)
@@ -456,7 +455,6 @@ namespace UltimaXNA.Client
             MobileMovingPacket p = (MobileMovingPacket)packet;
 
             Unit iObject = _GameObjects.GetObject<GameObjects.Unit>(p.Serial, true);
-            // iObject.SetFacing(p.Direction);
             iObject.DisplayBodyID = p.BodyID;
             iObject.WarMode = p.Flags.IsWarMode;
             // Issue 16 - Pet not showing at login - http://code.google.com/p/ultimaxna/issues/detail?id=16 - Smjert
@@ -483,7 +481,6 @@ namespace UltimaXNA.Client
             iObject.DisplayBodyID = p.BodyID;
             iObject.Hue = (int)p.Hue;
             iObject.Movement.SetPositionInstant((int)p.X, (int)p.Y, (int)p.Z, p.Direction);
-            // iObject.SetFacing(p.Direction);
 
             if (iObject.Name == string.Empty)
             {

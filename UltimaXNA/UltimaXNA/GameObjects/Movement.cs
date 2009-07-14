@@ -38,7 +38,7 @@ namespace UltimaXNA.GameObjects
         private TilePosition m_NextTile;
         private TilePosition m_GoalTile;
         private Direction _facing = Direction.Up;
-        private Direction _queuedFacing;
+        private Direction _queuedFacing = Direction.Nothing;
         public Direction Facing
         {
             get { return _facing; }
@@ -133,7 +133,8 @@ namespace UltimaXNA.GameObjects
         {
             get
             {
-                if (m_CurrentTile.Location == m_GoalTile.Location)
+                if ((m_CurrentTile.Location == m_GoalTile.Location) &&
+                    m_DrawPosition.OffsetV3 == new Vector3())
                     return false;
                 return true;
             }
