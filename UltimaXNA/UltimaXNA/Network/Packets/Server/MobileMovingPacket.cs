@@ -14,7 +14,7 @@ namespace UltimaXNA.Network.Packets.Server
         readonly sbyte z;
         readonly byte direction;
         readonly ushort hue;
-        readonly byte flags;
+        public readonly MobileFlags Flags;
         readonly byte notoriety;
 
         public Serial Serial 
@@ -52,19 +52,6 @@ namespace UltimaXNA.Network.Packets.Server
             get { return hue; }
         }
 
-        public byte Flags
-        {
-            get { return flags; } 
-        }
-
-        /// <summary>
-        /// These are the only flags sent by RunUO
-        /// 0x02 = female
-        /// 0x04 = poisoned
-        /// 0x08 = blessed/yellow health bar
-        /// 0x40 = warmode
-        /// 0x80 = hidden
-        //// </summary>
         public byte Notoriety
         {
             get { return notoriety; }
@@ -80,7 +67,7 @@ namespace UltimaXNA.Network.Packets.Server
             this.z = reader.ReadSByte();
             this.direction = reader.ReadByte();
             this.hue = reader.ReadUInt16();
-            this.flags = reader.ReadByte();
+            this.Flags = new MobileFlags(reader.ReadByte());
             this.notoriety = reader.ReadByte();
         }
     }

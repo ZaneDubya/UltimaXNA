@@ -374,8 +374,8 @@ namespace UltimaXNA.TileEngine
                                     continue;
                                 width = iFrames[iFrame].Texture.Width;
                                 height = iFrames[iFrame].Texture.Height;
-                                drawX = iFrames[iFrame].Center.X;
-                                drawY = iFrames[iFrame].Center.Y + (iObject.Z << 2) + height;
+                                drawX = iFrames[iFrame].Center.X - 22;
+                                drawY = iFrames[iFrame].Center.Y + (iObject.Z << 2) + height - 22;
                                 texture = iFrames[iFrame].Texture;
                             }
                             else
@@ -437,7 +437,17 @@ namespace UltimaXNA.TileEngine
 
         private int corpseAction(int bodyID)
         {
-            return 2;
+            switch (Data.Mobtypes.AnimationType(bodyID))
+            {
+                case 0:
+                    return 2;
+                case 1:
+                    return 2;
+                case 2:
+                    return 21;
+                default:
+                    return 2;
+            }
         }
 
         private bool isMouseOverObject(Vector3 iMin, Vector3 iMax)

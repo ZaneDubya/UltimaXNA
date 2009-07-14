@@ -14,7 +14,17 @@ namespace UltimaXNA.GameObjects
     public class Unit : UltimaXNA.GameObjects.BaseObject
     {
 		// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
-		private int m_DisplayBodyID = 0;
+        private bool _warMode;
+        public bool WarMode
+        {
+            get { return _warMode; }
+            set
+            {
+                m_Animation.WarMode = value;
+                _warMode = value;
+            }
+        }
+        private int m_DisplayBodyID = 0;
 		public int DisplayBodyID
 		{
 			get { return m_DisplayBodyID; }
@@ -186,20 +196,19 @@ namespace UltimaXNA.GameObjects
             m_Animation.SetAnimation((UnitActions)action, frameCount, repeatCount, reverse, repeat, delay);
         }
 
-        public void SetFacing(int nDirection)
+        public void Move(int nX, int nY, int nZ, int nFacing)
         {
-            // This should be called exclusively from the server...
-            Movement.Facing = (Direction)(nDirection & 0x0F);
-        }
-
-        public void Move(int nX, int nY, int nZ)
-        {
+            if (nFacing != -1)
+            {
+                Movement.Facing = (Direction)nFacing;
+            }
             Movement.SetGoalTile((float)nX, (float)nY, (float)nZ);
         }
     }
 
     public class UnitAnimation
     {
+        public bool WarMode;
 		// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
         public UnitActions Action;
 		// Issue 6 - End
@@ -300,7 +309,7 @@ namespace UltimaXNA.GameObjects
                 case 1: // low detail
                     return getAction_LowDetail();
                 case 2: // people & accessories
-                    return getAction_HighestDetail();
+                    return (int)getAction_HighestDetail();
                 default:
                     return -1;
             }
@@ -334,28 +343,44 @@ namespace UltimaXNA.GameObjects
             }
         }
 
-        private int getAction_HighestDetail()
+        private UnitActions getAction_HighestDetail()
         {
             if (Mounted)
             {
                 switch (Action)
                 {
                     case UnitActions.Walk:
-                        return (int)23;
+                        return (UnitActions)23;
                     case UnitActions.RunArmed:
-                        return (int)24;
+                        return (UnitActions)24;
                     case UnitActions.Stand:
-                        return (int)25;
+                        return (UnitActions)25;
 
-                    default: return (int)Action;
+                    default: return Action;
                 }
             }
 
             // Hiryu has different stand animation
             if (BodyID == 243 && Action == UnitActions.Stand)
-                return 2;
+                return (UnitActions)2;
 
-            return (int)Action;
+            switch (Action)
+            {
+                case UnitActions.Walk:
+                    if (WarMode)
+                        return UnitActions.WalkInAttackStance;
+                    else
+                        return UnitActions.Walk;
+                case UnitActions.Run:
+                    return UnitActions.Run;
+                case UnitActions.Stand:
+                    if (WarMode)
+                        return UnitActions.StandAttackStance;
+                    else
+                        return UnitActions.Stand;
+                default:
+                    return Action;
+            }
         }
     }
 
@@ -368,6 +393,8 @@ namespace UltimaXNA.GameObjects
         Run = 0x02,
         RunArmed = 0x03,
         Stand = 0x04,
+        StandAttackStance = 0x07,
+        WalkInAttackStance = 0x0f,
         /* shiftshoulders = 0x05,
         handsonhips = 0x06,
         attackstanceshort = 0x07,

@@ -648,8 +648,8 @@ namespace UltimaXNA.Network
             // When loading the player object, we must load the serial before the object.
             m_GameObjectsService.MySerial = iPlayerSerial;
             GameObjects.Player iPlayer = m_GameObjectsService.GetObject<GameObjects.Player>(m_GameObjectsService.MySerial, true);
-            iPlayer.Movement.SetPositionInstant((int)iX, (int)iY, (int)iZ);
-            iPlayer.SetFacing(iFacing & 0x0F);
+            iPlayer.Movement.SetPositionInstant((int)iX, (int)iY, (int)iZ, iFacing);
+            // iPlayer.SetFacing(iFacing & 0x0F);
 
             // We want to make sure we have the client object before we load the world...
             if (Status == ClientStatus.InWorld)
@@ -770,8 +770,8 @@ namespace UltimaXNA.Network
             iObject.DisplayBodyID = iBodyID;
             iObject.Hue = (int)iHue;
 
-            iObject.Movement.SetPositionInstant((int)iX, (int)iY, (int)iZ);
-            iObject.SetFacing(iFacing & 0x0F);
+            iObject.Movement.SetPositionInstant((int)iX, (int)iY, (int)iZ, iFacing);
+            // iObject.SetFacing(iFacing & 0x0F);
 
             if (iObject.Name == string.Empty)
             {
@@ -830,8 +830,8 @@ namespace UltimaXNA.Network
             // 0x7: Invulnerable (Yellow)
 
             GameObjects.Unit iMobile = m_GameObjectsService.GetObject<GameObjects.Unit>((int)iMobileSerial, true);
-            iMobile.Movement.SetPositionInstant((int)iX, (int)iY, (int)iZ);
-            iMobile.SetFacing(iFacing & 0x0F);
+            iMobile.Movement.SetPositionInstant((int)iX, (int)iY, (int)iZ, iFacing);
+            // iMobile.SetFacing(iFacing & 0x0F);
             iMobile.Hue = iHue;
             iMobile.DisplayBodyID = iBodyID;
 
@@ -1068,7 +1068,7 @@ namespace UltimaXNA.Network
                 iObject.ObjectTypeID = iItemID;
                 iObject.Item_StackCount = iAmount;
                 iObject.Hue = iHue;
-                iObject.Movement.SetPositionInstant(iX, iY, iZ);
+                iObject.Movement.SetPositionInstant(iX, iY, iZ, 0);
             }
             else
             {
@@ -1116,18 +1116,18 @@ namespace UltimaXNA.Network
             byte iNotoriety = nPacket.ReadByte();
 
             GameObjects.Unit iObject = m_GameObjectsService.GetObject<GameObjects.Unit>(iSerial, true) as GameObjects.Unit;
-            iObject.SetFacing(iFacing);
+            // iObject.SetFacing(iFacing);
             iObject.DisplayBodyID = iBodyID;
             // Issue 16 - Pet not showing at login - http://code.google.com/p/ultimaxna/issues/detail?id=16 - Smjert
 			// Since no packet arrives to add your pet, when you move and your pet follows you the client crashes
             if (iObject.Movement.DrawPosition.PositionV3 == new Vector3(0, 0, 0))
             {
-                iObject.Movement.SetPositionInstant(iX, iY, iZ);
+                iObject.Movement.SetPositionInstant(iX, iY, iZ, iFacing);
                 // Issue 16 - End
             }
             else
             {
-                iObject.Move(iX, iY, iZ);
+                iObject.Move(iX, iY, iZ, iFacing);
             }
         }
 

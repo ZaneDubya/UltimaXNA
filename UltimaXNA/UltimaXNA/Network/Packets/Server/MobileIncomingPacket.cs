@@ -14,7 +14,7 @@ namespace UltimaXNA.Network.Packets.Server
         readonly short _z;
         readonly byte _direction;
         readonly ushort _hue;
-        readonly byte _flags;
+        public readonly MobileFlags Flags;
         readonly byte _notoriety;
         readonly EquipmentEntry[] _equipment;
 
@@ -58,18 +58,8 @@ namespace UltimaXNA.Network.Packets.Server
             get { return _equipment; }
         }
 
-        /// <summary>
-        /// These are the only flags sent by RunUO
-        /// 0x02 = female
-        /// 0x04 = poisoned
-        /// 0x08 = blessed/yellow health bar
-        /// 0x40 = warmode
-        /// 0x80 = hidden
-        /// </summary>
-        public byte Flags
-        {
-            get { return _flags; }
-        }
+        
+        
 
         /// <summary>
         /// 0x1: Innocent (Blue)
@@ -96,7 +86,7 @@ namespace UltimaXNA.Network.Packets.Server
             _z = reader.ReadSByte();
             _direction = reader.ReadByte();
             _hue = reader.ReadUInt16();
-            _flags = reader.ReadByte();
+            this.Flags = new MobileFlags(reader.ReadByte());
             _notoriety = reader.ReadByte();
 
             // Read equipment - nine bytes ea.

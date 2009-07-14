@@ -24,7 +24,8 @@ namespace UltimaXNA.GameObjects
         Up = 0x7,
         Mask = 0x7,
         Running = 0x80,
-        ValueMask = 0x87
+        ValueMask = 0x87,
+        Nothing = 0xED
     }
 
     public class Movement
@@ -36,7 +37,23 @@ namespace UltimaXNA.GameObjects
         private TilePosition m_CurrentTile;
         private TilePosition m_NextTile;
         private TilePosition m_GoalTile;
-        public Direction Facing = Direction.Up;
+        private Direction _facing = Direction.Up;
+        private Direction _queuedFacing;
+        public Direction Facing
+        {
+            get { return _facing; }
+            set
+            {
+                if (IsMoving)
+                {
+                    _queuedFacing = value;
+                }
+                else
+                {
+                    _facing = value;
+                }
+            }
+        }
         public float MoveSequence;
         public float TimeToCompleteMove;
 		// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
@@ -67,7 +84,7 @@ namespace UltimaXNA.GameObjects
         {
             get
             {
-                int iFacing = (int)(Facing & Direction.Mask);
+                int iFacing = (int)(_facing & Direction.Mask);
                 if (iFacing >= 3)
                     return iFacing - 3;
                 else
@@ -88,8 +105,8 @@ namespace UltimaXNA.GameObjects
 
         public void NewFacingToServer(Direction nDirection)
         {
-            Facing = nDirection;
-            m_MoveEvent.NewEvent(this.Facing);
+            _facing = nDirection;
+            m_MoveEvent.NewEvent(this._facing);
         }
 
         public bool GetMoveEvent(ref int direction, ref int sequence, ref int fastwalkkey)
@@ -107,8 +124,7 @@ namespace UltimaXNA.GameObjects
         public void MoveEventRej(int nSequence, int nX, int nY, int nZ, int nDirection)
         {
             // immediately return to the designated tile.
-            SetPositionInstant(nX, nY, nZ);
-            Facing = (Direction)nDirection;
+            SetPositionInstant(nX, nY, nZ, nDirection);
             m_MoveEvent.ResetMoveSequence();
         }
 
@@ -127,8 +143,9 @@ namespace UltimaXNA.GameObjects
             m_GoalTile = new TilePosition(nX, nY, nZ);
         }
 
-        public void SetPositionInstant(int nX, int nY, int nZ)
+        public void SetPositionInstant(int nX, int nY, int nZ, int nFacing)
         {
+            _facing = (Direction)(nFacing & 0x0F);
             mFlushDrawObjects();
             m_GoalTile = m_LastTile = m_NextTile = m_CurrentTile = new TilePosition(nX, nY, nZ);
             m_DrawPosition = new DrawPosition(m_CurrentTile);
@@ -157,9 +174,9 @@ namespace UltimaXNA.GameObjects
                             // Special exception for the player: if we are facing a new direction, we
                             // need to pause for a brief moment and let the server know that.
                             m_MoveEvent.NewEvent(iFacing);
-                            if (Facing != iFacing)
+                            if (_facing != iFacing)
                             {
-                                Facing = iFacing;
+                                _facing = iFacing;
                                 m_NextTile.Location = m_CurrentTile.Location;
                                 return;
                             }
@@ -167,7 +184,7 @@ namespace UltimaXNA.GameObjects
                         else
                         {
                             // if we are not the player, then we can just change the facing.
-                            Facing = iFacing;
+                            _facing = iFacing;
                         }
 						// Issue 10 - Speed problems (Partial) - http://code.google.com/p/ultimaxna/issues/detail?id=10 - Smjert
                         TimeToCompleteMove = ComputeMovementSpeed();
@@ -183,7 +200,8 @@ namespace UltimaXNA.GameObjects
                         SetPositionInstant(
                             (int)m_CurrentTile.Location.X,
                             (int)m_CurrentTile.Location.Y,
-                            (int)m_CurrentTile.Location.Z);
+                            (int)m_CurrentTile.Location.Z,
+                            (int)_facing);
                         return;
                     }
                 }
@@ -202,6 +220,11 @@ namespace UltimaXNA.GameObjects
             else
             {
                 // we have reached our destination :)
+                if (_queuedFacing != Direction.Nothing)
+                {
+                    _facing = _queuedFacing; // Occasionally we will have a queued facing for monsters.
+                    _queuedFacing = Direction.Nothing;
+                }
                 MoveSequence = 0f;
             }
 
@@ -227,9 +250,9 @@ namespace UltimaXNA.GameObjects
 		public virtual float ComputeMovementSpeed()
 		{
 			if ( Mounted )
-				return (Facing & Direction.Running) == Direction.Running ? RunMount : WalkMount;
+                return (_facing & Direction.Running) == Direction.Running ? RunMount : WalkMount;
 			else
-				return (Facing & Direction.Running) == Direction.Running ? RunFoot : WalkFoot;
+                return (_facing & Direction.Running) == Direction.Running ? RunFoot : WalkFoot;
 		}
 		// Issue 10 - End
         private TilePosition mGetNextTile(Vector3 nCurrentLocation, Vector3 nGoalLocation, out Direction nFacing)
