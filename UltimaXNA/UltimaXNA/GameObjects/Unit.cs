@@ -126,7 +126,7 @@ namespace UltimaXNA.GameObjects
             }
             else
             {
-                if (m_Animation.Action != SupportedActions.Stand)
+                if (m_Animation.IsMovementAction(m_Animation.Action))
                     m_Animation.HaltAnimation = true;
             }
 
@@ -172,7 +172,6 @@ namespace UltimaXNA.GameObjects
 					
                     mobtile.SubType = TileEngine.MobileTileTypes.Equipment;
                     nCell.AddMobileTile(mobtile);
-					
                 }
                 // Issue 6 - End
             }
@@ -241,7 +240,8 @@ namespace UltimaXNA.GameObjects
 
         private bool _doHaltAnimation;
         private int _timeHalted;
-        private const int _holdAnimationMilliseconds = 200;
+        private int _holdAnimationMilliseconds = 200;
+        public int HoldAnimationMS { set { _holdAnimationMilliseconds = value; } }
         public bool HaltAnimation
         {
             get { return _doHaltAnimation; }
@@ -270,7 +270,8 @@ namespace UltimaXNA.GameObjects
             {
                 Action = nAction;
                 AnimationFrame = 0f;
-                m_AnimationStep = 0f;
+                _FrameCount = 0;
+                _FrameDelay = 0;
             }
         }
 
@@ -304,7 +305,7 @@ namespace UltimaXNA.GameObjects
 
         public void Update(GameTime gameTime)
         {
-            m_AnimationStep = (float)((_FrameCount * (_FrameDelay + 1)) * 8);
+            m_AnimationStep = (float)((_FrameCount * (_FrameDelay + 1)) * 10);
             if (m_AnimationStep != 0)
             {
                 if (HaltAnimation)
@@ -323,7 +324,7 @@ namespace UltimaXNA.GameObjects
                     // We have a special case for movement actions that have not been
                     // explicity halted. All other actions end when they reach their
                     // final frame.
-                    if (isMovementAction(Action) && !HaltAnimation)
+                    if (IsMovementAction(Action) && !HaltAnimation)
                     {
                         if (AnimationFrame >= 1f)
                             AnimationFrame %= 1f;
@@ -365,7 +366,8 @@ namespace UltimaXNA.GameObjects
             }
         }
 
-        private bool isMovementAction(SupportedActions a)
+
+        public bool IsMovementAction(SupportedActions a)
         {
             if (a == SupportedActions.Walk || a == SupportedActions.Run)
                 return true;
