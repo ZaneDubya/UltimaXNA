@@ -337,6 +337,9 @@ namespace UltimaXNA.Client
             GeneralInfoPacket p = (GeneralInfoPacket)packet;
             switch (p.Subcommand)
             {
+                case 0x06:
+                    // party syste, unhandled.
+                    break;
                 case 0x08: // Set cursor color / set map
                     // p.MapID_MapID;
                     // 0 = Felucca, cursor not colored / BRITANNIA map
