@@ -339,34 +339,34 @@ namespace UltimaXNA.Client
             GeneralInfoPacket p = (GeneralInfoPacket)packet;
             switch (p.Subcommand)
             {
-                case 0x06:
-                    // party syste, unhandled.
+                case 0x06: // party system
+                    announce_UnhandledPacket(packet, "subcommand " + p.Subcommand);
                     break;
                 case 0x08: // Set cursor color / set map
                     // p.MapID_MapID;
                     // 0 = Felucca, cursor not colored / BRITANNIA map
                     // 1 = Trammel, cursor colored gold / BRITANNIA map
                     // 2 = (switch to) ILSHENAR map
-                    // !!! unhandled! We default to the fel/tram map
+                    announce_UnhandledPacket(packet, "subcommand " + p.Subcommand);
                     break;
                 case 0x14: // return context menu
                     parseContextMenu(p.ContextMenu);
-                    // !!! Unhandled
                     break;
                 case 0x18: // Number of maps
-                    // m_ReceiveMapPatches(reader);
-                    // !!! Unhandled
+                    announce_UnhandledPacket(packet, "subcommand " + p.Subcommand);
                     break;
                 case 0x1D: // House revision
-                    // !!! Unhandled
+                    announce_UnhandledPacket(packet, "subcommand " + p.Subcommand);
                     break;
                 case 0x04: // Close generic gump
-                    // !!! Unhandled
+                    announce_UnhandledPacket(packet, "subcommand " + p.Subcommand);
                     break;
                 case 0x19: // Extended stats: http://docs.polserver.com/packets/index.php?Packet=0xBF
+                    announce_UnhandledPacket(packet, "subcommand " + p.Subcommand);
                     break;
                 default:
-                    throw (new System.Exception("Unhandled Subcommand in ServerInfo packet: " + p.Subcommand));
+                    announce_UnhandledPacket(packet, "subcommand " + p.Subcommand);
+                    break;
             }
         }
 
@@ -565,7 +565,6 @@ namespace UltimaXNA.Client
 
         private void receive_OpenPaperdoll(IRecvPacket packet)
         {
-            // unhandled;
             announce_UnhandledPacket(packet);
         }
 
@@ -582,7 +581,7 @@ namespace UltimaXNA.Client
             // 0x1F - Black
             // Max normal val = 0x1F
             // !!! Unhandled
-            // announce_UnhandledPacket(packet);
+            announce_UnhandledPacket(packet);
         }
 
         private void receive_PersonalLightLevel(IRecvPacket packet)
@@ -594,7 +593,7 @@ namespace UltimaXNA.Client
             // 0x1F - Black
             // Max normal val = 0x1F
             // !!! Unhandled
-            // announce_UnhandledPacket(packet);
+            announce_UnhandledPacket(packet);
         }
 
         private void receive_PlayerLocaleAndBody(IRecvPacket packet)
@@ -683,7 +682,6 @@ namespace UltimaXNA.Client
 
         private void receive_SetWeather(IRecvPacket packet)
         {
-            // !!! Unhandled!
             announce_UnhandledPacket(packet);
         }
 
@@ -709,19 +707,20 @@ namespace UltimaXNA.Client
             switch (iPacketType)
             {
                 case 0x00: //Full List of skills
-                    // receive_UnhandledPacket(packet);
+                    announce_UnhandledPacket(packet, "0x00");
                     break;
                 case 0xFF: // single skill update
-                    // receive_UnhandledPacket(packet);
+                    announce_UnhandledPacket(packet, "0xFF");
                     break;
                 case 0x02: // full List of skills with skill cap for each skill
-                    // receive_UnhandledPacket(packet);
+                    announce_UnhandledPacket(packet, "0x02");
                     break;
                 case 0xDF: // Single skill update with skill cap for skill
-                    // receive_UnhandledPacket(packet);
+                    announce_UnhandledPacket(packet, "0xDF");
                     break;
                 default:
-                    throw (new Exception("Unknown PacketType"));
+                    announce_UnhandledPacket(packet, "Unknown subcommand " + iPacketType);
+                    break;
             }
         }
 
@@ -777,7 +776,6 @@ namespace UltimaXNA.Client
 
         private void receive_Time(IRecvPacket packet)
         {
-            // !!! Unhandled!
             announce_UnhandledPacket(packet);
         }
 
@@ -877,6 +875,11 @@ namespace UltimaXNA.Client
         private void announce_UnhandledPacket(IRecvPacket packet)
         {
             GUI.GUIHelper.Chat_AddLine("DEBUG: Unhandled " + packet.Name + ". <" + packet.Id + ">");
+        }
+
+        private void announce_UnhandledPacket(IRecvPacket packet, string addendum)
+        {
+            GUI.GUIHelper.Chat_AddLine("DEBUG: Unhandled " + packet.Name + ". <" + packet.Id + ">" + " " + addendum);
         }
 
         private void announce_Packet(IRecvPacket packet)
