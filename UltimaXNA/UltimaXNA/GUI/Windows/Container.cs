@@ -9,8 +9,8 @@ namespace UltimaXNA.GUI
     {
         private Vector2 mWindowSize = new Vector2(215, 233);
         private Vector2 mBGOffset = new Vector2(215 - 256 + 2, -1);
-        private GameObjects.Item mContainerObject;
-        private int mLastContainerUpdated = -1;
+        private GameObjects.Item _containerEntity;
+        private int _lastContainerUpdated = -1;
 
         private int mScrollY, mMaxScrollY = 0;
 
@@ -23,22 +23,22 @@ namespace UltimaXNA.GUI
                 if ((_SlotsItemIDs == null) || (_SlotsItemIDs.Length != numberOfSlots))
                 {
                     _SlotsItemIDs = new int[numberOfSlots];
-                    mLastContainerUpdated = -1;
+                    _lastContainerUpdated = -1;
                 }
                 return numberOfSlots;
             }
         }
         int[] _SlotsItemIDs;
 
-        public Serial serial { get { return mContainerObject.Serial; } }
+        public Serial serial { get { return _containerEntity.Serial; } }
 
         public Window_Container(GameObjects.Entity nContainerObject, FormCollection nFormCollection)
             : base()
         {
-            mContainerObject = (GameObjects.Item)nContainerObject;
+            _containerEntity = (GameObjects.Item)nContainerObject;
 
             //Create a new form
-            string iFormName = "frmContainer:" + mContainerObject.Serial;
+            string iFormName = "frmContainer:" + _containerEntity.Serial;
             m_FormCollection.Add(new Form(iFormName, "", mWindowSize, new Vector2(800 - 256, 600 - 256), Form.BorderStyle.None));
             _MyForm = m_FormCollection[iFormName];
             _MyForm.BorderName = null;
@@ -47,7 +47,7 @@ namespace UltimaXNA.GUI
 
             Controls.Add(new PictureBox("picBG", mBGOffset, @"GUI\CONTAINERFRAME\UI-Bag-4x4.png", 256, 256, 0));
 
-            Controls.Add(new Label("lblContainer", new Vector2(16f, 7f), "ContainerFrame | " + GUIHelper.SerialHex(mContainerObject.Serial),
+            Controls.Add(new Label("lblContainer", new Vector2(16f, 7f), "ContainerFrame | " + _containerEntity.Serial,
                 Color.TransparentBlack, Color.White, 160, Label.Align.Left));
             _MyForm["lblContainer"].FontName = "ArialNarrow10";
 
@@ -88,10 +88,10 @@ namespace UltimaXNA.GUI
         private void btnInv_OnPress(object obj, EventArgs e)
         {
             int iIndex = Int32.Parse(((CustomButton)obj).Name.Substring(6)) + mScrollY * _SlotsWide;
-            GameObjects.Item iItem = mContainerObject.ContainerObject.GetContents(iIndex);
+            GameObjects.Item iItem = _containerEntity.ContainerObject.GetContents(iIndex);
             if (GUIHelper.MouseHoldingItem != null)
             {
-                GUIHelper.DropItemIntoSlot(mContainerObject, iIndex);
+                GUIHelper.DropItemIntoSlot(_containerEntity, iIndex);
             }
             if (iItem != null)
             {
@@ -105,14 +105,14 @@ namespace UltimaXNA.GUI
             if (GUIHelper.MouseHoldingItem != null)
             {
                 int iIndex = Int32.Parse(((CustomButton)obj).Name.Substring(6)) + mScrollY * _SlotsWide;
-                GUIHelper.DropItemIntoSlot(mContainerObject, iIndex);
+                GUIHelper.DropItemIntoSlot(_containerEntity, iIndex);
             }
         }
 
         private void btnInv_OnOver(object obj, EventArgs e)
         {
             int iIndex = Int32.Parse(((CustomButton)obj).Name.Substring(6)) + mScrollY * _SlotsWide;
-            GameObjects.Item iItem = mContainerObject.ContainerObject.GetContents(iIndex);
+            GameObjects.Item iItem = _containerEntity.ContainerObject.GetContents(iIndex);
 
             if (GUIHelper.MouseHoldingItem != null)
             {
@@ -133,7 +133,7 @@ namespace UltimaXNA.GUI
             }
 
             int iIndex = Int32.Parse(((CustomButton)obj).Name.Substring(6)) + mScrollY * _SlotsWide;
-            GameObjects.Item iItem = mContainerObject.ContainerObject.GetContents(iIndex);
+            GameObjects.Item iItem = _containerEntity.ContainerObject.GetContents(iIndex);
             if (GUIHelper.ToolTipItem == iItem)
             {
                 GUIHelper.ToolTipItem = null;
@@ -150,7 +150,7 @@ namespace UltimaXNA.GUI
             mScrollY--;
             if (mScrollY < 0)
                 mScrollY = 0;
-            mLastContainerUpdated = -1;
+            _lastContainerUpdated = -1;
         }
 
         private void btnScrollDown_OnRelease(object obj, EventArgs e)
@@ -158,7 +158,7 @@ namespace UltimaXNA.GUI
             mScrollY++;
             if (mScrollY > mMaxScrollY)
                 mScrollY = mMaxScrollY;
-            mLastContainerUpdated = -1;
+            _lastContainerUpdated = -1;
         }
 
         public override void Update()
@@ -168,21 +168,21 @@ namespace UltimaXNA.GUI
             if (this.IsClosed)
                 return;
 
-            if (mContainerObject.ContainerObject.UpdateTicker != mLastContainerUpdated)
+            if (_containerEntity.ContainerObject.UpdateTicker != _lastContainerUpdated)
             {
-                mMaxScrollY = (int)(mContainerObject.ContainerObject.LastSlotOccupied / _SlotsWide) + 1 - _SlotsHigh;
-                if (((mContainerObject.ContainerObject.LastSlotOccupied + 1) % _SlotsWide) == 0)
+                mMaxScrollY = (int)(_containerEntity.ContainerObject.LastSlotOccupied / _SlotsWide) + 1 - _SlotsHigh;
+                if (((_containerEntity.ContainerObject.LastSlotOccupied + 1) % _SlotsWide) == 0)
                     mMaxScrollY++;
 
                 for (int i = 0; i < _SlotsTotal; i++)
                 {
-                    GameObjects.Item iItem = mContainerObject.ContainerObject.GetContents(i + mScrollY * _SlotsWide);
+                    GameObjects.Item iItem = _containerEntity.ContainerObject.GetContents(i + mScrollY * _SlotsWide);
                     if (iItem == null)
                         _SlotsItemIDs[i] = 0;
                     else
                         _SlotsItemIDs[i] = iItem.ObjectTypeID;
                 }
-                mLastContainerUpdated = mContainerObject.ContainerObject.UpdateTicker;
+                _lastContainerUpdated = _containerEntity.ContainerObject.UpdateTicker;
 
                 for (int i = 0; i < _SlotsTotal; i++)
                 {
