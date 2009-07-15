@@ -364,11 +364,11 @@ namespace UltimaXNA.TileEngine
                             if (iObject.IsCorpse)
                             {
                                 Data.FrameXNA[] iFrames = Data.AnimationsXNA.GetAnimation(this.Game.GraphicsDevice,
-                                    iObject.CorpseBody, corpseAction(iObject.CorpseBody), iObject.Direction, iObject.Hue, false);
+                                    iObject.CorpseBody, Data.BodyConverter.DeathAnimationIndex(iObject.CorpseBody), iObject.Direction, iObject.Hue, false);
                                 // GetAnimation fails so it returns null, temporary fix - Smjert
                                 if (iFrames == null)
                                     continue;
-                                int iFrame = iFrames.Length - 1;
+                                int iFrame = iObject.CorpseFrame;
                                 // If the frame data is corrupt, then the texture will not load. Fix for broken cleaver data, maybe others. --Poplicola 6/15/2009
                                 if (iFrames[iFrame].Texture == null)
                                     continue;
@@ -433,21 +433,6 @@ namespace UltimaXNA.TileEngine
             if ((_pickType & PickTypes.PickGroundTiles) == PickTypes.PickGroundTiles)
                 if (_rayPicker.PickTest(_inputService.Mouse.Position, Matrix.Identity, _spriteBatch.WorldMatrix))
                     _mouseOverGroundTile = _rayPicker.pickedObject;
-        }
-
-        private int corpseAction(int bodyID)
-        {
-            switch (Data.Mobtypes.AnimationType(bodyID))
-            {
-                case 0:
-                    return 2;
-                case 1:
-                    return 8;
-                case 2:
-                    return 21;
-                default:
-                    return 2;
-            }
         }
 
         private bool isMouseOverObject(Vector3 iMin, Vector3 iMax)
