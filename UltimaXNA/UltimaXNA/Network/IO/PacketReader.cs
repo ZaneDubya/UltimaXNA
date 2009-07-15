@@ -245,7 +245,7 @@ namespace UltimaXNA.Network
 
         public bool IsSafeChar(int c)
         {
-            return (c >= 0x20 && c < 0xFFFE);
+            return ((c >= 0x20 && c < 0xFFFE) || (c == 0x09));
         }
 
         public string ReadUTF8StringSafe(int fixedLength)
@@ -425,26 +425,6 @@ namespace UltimaXNA.Network
             return sb.ToString();
         }
 
-        public string ReadUnicodeString(int fixedLength)
-        {
-            int bound = _index + (fixedLength << 1);
-            int end = bound;
-
-            if (bound > _length)
-                bound = _length;
-
-            StringBuilder sb = new StringBuilder();
-
-            int c;
-
-            while ((_index + 1) < bound && (c = ((_buffer[_index++] << 8) | _buffer[_index++])) != 0)
-                sb.Append((char)c);
-
-            _index = end;
-
-            return sb.ToString();
-        }
-
         public string ReadUnicodeStringReverse(int fixedLength)
         {
             int bound = _index + (fixedLength << 1);
@@ -458,6 +438,26 @@ namespace UltimaXNA.Network
             int c;
 
             while ((_index + 1) < bound && (c = ((_buffer[_index++]) | _buffer[_index++] << 8)) != 0)
+                sb.Append((char)c);
+
+            _index = end;
+
+            return sb.ToString();
+        }
+
+        public string ReadUnicodeString(int fixedLength)
+        {
+            int bound = _index + (fixedLength << 1);
+            int end = bound;
+
+            if (bound > _length)
+                bound = _length;
+
+            StringBuilder sb = new StringBuilder();
+
+            int c;
+
+            while ((_index + 1) < bound && (c = ((_buffer[_index++] << 8) | _buffer[_index++])) != 0)
                 sb.Append((char)c);
 
             _index = end;
