@@ -956,13 +956,6 @@ namespace UltimaXNA.Client
             return iConstruct;
         }
 
-        private void receive_EndVendorSell(Packet reader)
-        {
-            reader.ReadShort(); // packet length = 8
-            int iVendorSerial = reader.ReadInt();
-            reader.ReadByte(); // always = 0
-        }
-
         private GameObject addItem(Serial serial, int nItemID, int nHue, int nContainerSerial, int nAmount)
         {
             GameObject iObject = _GameObjects.GetObject<GameObject>(serial, true);
