@@ -14,10 +14,10 @@ namespace UltimaXNA.GUI
 {
     class Window_StatusFrame : Window
     {
-        GameObjects.Unit _myEntity;
-        GameObjects.Unit _targetEntity;
-        public GameObjects.Unit MyEntity { set { _myEntity = value; } }
-        public GameObjects.Unit TargetEntity { set { _targetEntity = value; } }
+        GameObjects.Mobile _myEntity;
+        GameObjects.Mobile _targetEntity;
+        public GameObjects.Mobile MyEntity { set { _myEntity = value; } }
+        public GameObjects.Mobile TargetEntity { set { _targetEntity = value; } }
 
         private int width = 400;
 
@@ -110,7 +110,7 @@ namespace UltimaXNA.GUI
             int iActualWidth;
             int iCurrent, iMax;
             int iPercent;
-            GameObjects.Unit entity;
+            GameObjects.Mobile entity;
             string iControlNameAppend;
             if (nBarIndex > 2)
             {

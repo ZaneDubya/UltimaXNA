@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace UltimaXNA.GameObjects
 {
-    public class GameObject : UltimaXNA.GameObjects.BaseObject
+    public class Item : Entity
     {
         // GameObjects can potentially have inventory (chests, for example).
         // The Serial for the container for this inventory is the same as the
@@ -26,30 +26,16 @@ namespace UltimaXNA.GameObjects
             }
         }
 
-        public GameObject(Serial serial)
+        public Item(Serial serial)
             : base(serial)
         {
-            ObjectType = ObjectType.GameObject;
-            corpseFrame = 0.999f;
+            
         }
 
-        protected override void Draw(UltimaXNA.TileEngine.MapCell nCell, Vector3 nLocation, Vector3 nOffset)
+        internal override void Draw(UltimaXNA.TileEngine.MapCell nCell, Vector3 nLocation, Vector3 nOffset)
         {
-            if (!Visible)
-                return;
-
-            if (IsCorpse)
-            {
-                Movement.ClearImmediate();
-                nCell.AddGameObjectTile(
-                    new TileEngine.GameObjectTile(
-                        mObjectTypeID, nLocation, Movement.DrawFacing, this.Serial, Hue, corpseBody, corpseFrame));
-            }
-            else
-            {
-                nCell.AddGameObjectTile(
-                    new TileEngine.GameObjectTile(mObjectTypeID, nLocation, Movement.DrawFacing, this.Serial, Hue));
-            }
+            nCell.AddGameObjectTile(
+                new TileEngine.GameObjectTile(mObjectTypeID, nLocation, Movement.DrawFacing, this.Serial, Hue));
         }
 
         public override void Dispose()
@@ -60,30 +46,10 @@ namespace UltimaXNA.GameObjects
             base.Dispose();
         }
 
-        public Unit Wearer;
+        public Mobile Wearer;
         public int Item_StackCount = 0;
         public Serial Item_ContainedWithinSerial = 0;
         public int AnimationDisplayID = 0;
-
-        private float corpseFrame = 0f;
-        private int corpseBody { get { return Item_StackCount; } }
-        public bool IsCorpse
-        {
-            get
-            {
-                return (mObjectTypeID == 0x2006);
-            }
-        }
-        
-        public void LoadCorpseClothing(List<Network.Packets.Server.CorpseClothingItemWithLayer> items)
-        {
-            
-        }
-
-        public void DeathAnimation()
-        {
-            corpseFrame = 0f;
-        }
 
         private int m_Hue;
         public int Hue // Fix for large hue values per issue12 (http://code.google.com/p/ultimaxna/issues/detail?id=12) --ZDW 6/15/2009
@@ -106,7 +72,7 @@ namespace UltimaXNA.GameObjects
             get { return mObjectTypeID; }
             set
             {
-                _HasBeenDrawn = false;
+                _hasBeenDrawn = false;
                 mObjectTypeID = value;
                 ItemData = UltimaXNA.Data.TileData.ItemData[mObjectTypeID];
                 AnimationDisplayID = ItemData.AnimID;
@@ -124,14 +90,6 @@ namespace UltimaXNA.GameObjects
             base.Update(gameTime);
             if (m_ContainerObject != null)
                 m_ContainerObject.Update(gameTime);
-            if (IsCorpse && corpseFrame != 0.999f)
-            {
-                _HasBeenDrawn = false;
-                corpseFrame += ((float)gameTime.ElapsedGameTime.Milliseconds / 500f);
-                if (corpseFrame >= 1f)
-                    corpseFrame = 0.999f;
-            }
-            
         }
 
         public override string ToString()

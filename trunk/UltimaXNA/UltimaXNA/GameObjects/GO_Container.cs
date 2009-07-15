@@ -15,7 +15,7 @@ namespace UltimaXNA.GameObjects
     class GameObject_ContainerContents
     {
         private const int _NumberOfSlots = 0x100;
-        private GameObject[] _SlotContents = new GameObject[_NumberOfSlots];
+        private Item[] _SlotContents = new Item[_NumberOfSlots];
 
         // LastSlotOccupied is set to the value of the last slot within the container which has an object
         // within it. This is useful for: 1. Knowing how far through the container array to iterate when
@@ -43,7 +43,7 @@ namespace UltimaXNA.GameObjects
             }
         }
 
-        public GameObject this[int nIndex]
+        public Item this[int nIndex]
         {
             get
             {
@@ -124,7 +124,7 @@ namespace UltimaXNA.GameObjects
     public class GameObject_Container
     {
         // The parent object. All Containers are part of GameObjects. We need a way to reference them.
-        private GameObject _ParentObject;
+        private Item _ParentObject;
         // All the contents of the container are kept in the mContents class,
         // unless they are being moved between slots or into or out of the container.
         private GameObject_ContainerContents _contents = new GameObject_ContainerContents();
@@ -133,12 +133,12 @@ namespace UltimaXNA.GameObjects
         // Get the last occupied slot, so the GUI knows how many slots to draw.
         public int LastSlotOccupied { get { return _contents.LastSlotOccupied; } }
 
-        public GameObject_Container(GameObject nParent)
+        public GameObject_Container(Item nParent)
         {
             _ParentObject = nParent;
         }
 
-        public void Event_MoveItemToSlot(GameObject nObject, int nSlot)
+        public void Event_MoveItemToSlot(Item nObject, int nSlot)
         {
             // Is the destination slot empty?
             if (_contents[nSlot] == null)
@@ -158,7 +158,7 @@ namespace UltimaXNA.GameObjects
             {
                 // we need to put the other object in temporary storage...
                 int iSourceSlot = nObject.Item_InvSlot;
-                GameObject iSwitchItem = _contents[nSlot];
+                Item iSwitchItem = _contents[nSlot];
 
                 // is the dest object the same type as the source object type?
                 if (nObject.ItemData.Name == _contents[nSlot].ItemData.Name)
@@ -184,7 +184,7 @@ namespace UltimaXNA.GameObjects
 
         }
 
-        public void AddItem(GameObject item)
+        public void AddItem(Item item)
         {
             // The server often sends as list of all the items in a container.
             // We want to filter out items we already have in our list.
@@ -199,7 +199,7 @@ namespace UltimaXNA.GameObjects
             }
         }
 
-        private void addItem(GameObject item)
+        private void addItem(Item item)
         {
             if (item.Item_InvY == 0x7FFF)
             {
@@ -226,7 +226,7 @@ namespace UltimaXNA.GameObjects
             _contents.RemoveItemBySerial(serial);
         }
 
-        public GameObject GetContents(int nIndex)
+        public Item GetContents(int nIndex)
         {
             return _contents[nIndex];
         }

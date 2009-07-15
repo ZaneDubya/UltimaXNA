@@ -29,11 +29,11 @@ namespace UltimaXNA
         {
             get
             {
-                return ((GameObjects.Unit)_GameObjects.GetPlayerObject()).WarMode;
+                return ((GameObjects.Mobile)_GameObjects.GetPlayerObject()).IsWarMode;
             }
             set
             {
-                ((GameObjects.Unit)_GameObjects.GetPlayerObject()).WarMode = value;
+                ((GameObjects.Mobile)_GameObjects.GetPlayerObject()).IsWarMode = value;
             }
         }
         Input.IInputService _Input;
@@ -109,9 +109,9 @@ namespace UltimaXNA
             if (InWorld)
             {
                 // Set the target frame stuff.
-                ((GUI.Window_StatusFrame)_GUI.Window("StatusFrame")).MyEntity = (GameObjects.Unit)_GameObjects.GetPlayerObject();
+                ((GUI.Window_StatusFrame)_GUI.Window("StatusFrame")).MyEntity = (GameObjects.Mobile)_GameObjects.GetPlayerObject();
                 if (LastTarget.IsValid)
-                    ((GUI.Window_StatusFrame)_GUI.Window("StatusFrame")).TargetEntity = _GameObjects.GetObject<GameObjects.Unit>(LastTarget, false);
+                    ((GUI.Window_StatusFrame)_GUI.Window("StatusFrame")).TargetEntity = _GameObjects.GetObject<GameObjects.Mobile>(LastTarget, false);
 
                 // Parse keyboard input.
                 parseKeyboard(_Input.Keyboard);
@@ -265,7 +265,7 @@ namespace UltimaXNA
                                     if ((GUI.GUIHelper.MouseHoldingItem).Item_ContainedWithinSerial != 0)
                                     {
                                         // We must manually remove the item from the container, as RunUO does not do this for us.
-                                        GameObjects.GameObject iContainer = _GameObjects.GetObject<GameObjects.GameObject>(
+                                        GameObjects.Item iContainer = _GameObjects.GetObject<GameObjects.Item>(
                                             (GUI.GUIHelper.MouseHoldingItem).Item_ContainedWithinSerial, false);
                                         iContainer.ContainerObject.RemoveItem(GUI.GUIHelper.MouseHoldingItem.Serial);
                                     }
@@ -315,7 +315,7 @@ namespace UltimaXNA
             // Same thing if the highest object under the mouse cursor is lower than the groundtile.
             if ((iGroundTile != null) && ((iTopObject == null) || (iTopObject.Z < iGroundTile.Z)))
             {
-                ((GameObjects.Unit)_GameObjects.GetPlayerObject()).Move(
+                ((GameObjects.Mobile)_GameObjects.GetPlayerObject()).Move(
                        (int)iGroundTile.Position.X,
                        (int)iGroundTile.Position.Y,
                        (int)iGroundTile.Z, -1);
@@ -329,9 +329,9 @@ namespace UltimaXNA
                     iItemData = Data.TileData.ItemData[iTopObject.ID - 0x4000];
                 else if (iTopObject.Type == UltimaXNA.TileEngine.MapObjectTypes.GameObjectTile)
                 {
-                    GameObjects.GameObject iObject =
+                    GameObjects.Item iObject =
                         ((iTopObject.Type == TileEngine.MapObjectTypes.GameObjectTile) ?
-                        _GameObjects.GetObject<GameObjects.GameObject>(iTopObject.OwnerSerial, false) : null);
+                        _GameObjects.GetObject<GameObjects.Item>(iTopObject.OwnerSerial, false) : null);
                     iItemData = iObject.ItemData;
                 }
                 else
@@ -340,7 +340,7 @@ namespace UltimaXNA
                 if (iItemData.Surface)
                 {
                     // This is a walkable static or gameobject. Walk on it!
-                    ((GameObjects.Unit)_GameObjects.GetPlayerObject()).Move(
+                    ((GameObjects.Mobile)_GameObjects.GetPlayerObject()).Move(
                            (int)iTopObject.Position.X,
                            (int)iTopObject.Position.Y,
                            (int)iTopObject.Z + iItemData.CalcHeight, -1);
@@ -377,7 +377,7 @@ namespace UltimaXNA
                 {
                     // This is a GameObject. Pick it up if possible, as long as this is a press event.
 
-                    GameObjects.GameObject item = _GameObjects.GetObject<GameObjects.GameObject>(iTopObject.OwnerSerial, false);
+                    GameObjects.Item item = _GameObjects.GetObject<GameObjects.Item>(iTopObject.OwnerSerial, false);
                     if (item.ItemData.Weight != 255)
                     {
                         // _GameClient.Send(new PickupItemPacket(iObject.Serial, (short)iObject.Item_StackCount));
@@ -395,44 +395,44 @@ namespace UltimaXNA
             TileEngine.IMapObject iMapObject = _TileEngine.MouseOverObject;
             if ((iMapObject != null) && (iMapObject.Type != UltimaXNA.TileEngine.MapObjectTypes.StaticTile))
             {
-                GameObjects.BaseObject iObject = _GameObjects.GetObject<GameObjects.BaseObject>(iMapObject.OwnerSerial, false);
+                GameObjects.Entity iObject = _GameObjects.GetObject<GameObjects.Entity>(iMapObject.OwnerSerial, false);
                 // default option is to simply 'use' this object, although this will doubtless be more complicated in the future.
                 // Perhaps the use option is based on the type of object? Anyways, for right now, we only interact with gameobjects,
                 // and we send a double-click to the server.
-                switch (iObject.ObjectType)
+                if (iObject is GameObjects.Item)
                 {
-                    case UltimaXNA.GameObjects.ObjectType.GameObject:
-                        _GameClient.Send(new DoubleClickPacket(iObject.Serial));
-                        break;
-                    case UltimaXNA.GameObjects.ObjectType.Unit:
-                        // We request a context sensitive menu. This automatically sends a double click if no context menu is handled. See parseContextMenu...
-                        LastTarget = iObject.Serial;
-                        if (WarMode)
+                    _GameClient.Send(new DoubleClickPacket(iObject.Serial));
+                }
+                else if (iObject is GameObjects.PlayerMobile)
+                {
+                    LastTarget = iObject.Serial;
+                    if (iObject.Serial == _GameObjects.MySerial)
+                    {
+                        // this is my player.
+                        // if mounted, dismount.
+                        if (((GameObjects.Mobile)iObject).IsMounted)
                         {
-                            _GameClient.Send(new AttackRequestPacket(iObject.Serial));
+                            _GameClient.Send(new DoubleClickPacket(iObject.Serial));
                         }
-                        else
-                        {
-                            _GameClient.Send(new RequestContextMenuPacket(iObject.Serial));
-                        }
-                        break;
-                    case UltimaXNA.GameObjects.ObjectType.Player:
-                        LastTarget = iObject.Serial;
-                        if (iObject.Serial == _GameObjects.MySerial)
-                        {
-                            // this is my player.
-                            // if mounted, dismount.
-                            if (((GameObjects.Unit)iObject).IsMounted)
-                            {
-                                _GameClient.Send(new DoubleClickPacket(iObject.Serial));
-                            }
-                        }
-                        // else other interaction?
-                        break;
-                    default:
-                        // do nothing?
-                        break;
-
+                    }
+                    // else other interaction?
+                }
+                else if (iObject is GameObjects.Mobile)
+                {
+                    // We request a context sensitive menu. This automatically sends a double click if no context menu is handled. See parseContextMenu...
+                    LastTarget = iObject.Serial;
+                    if (WarMode)
+                    {
+                        _GameClient.Send(new AttackRequestPacket(iObject.Serial));
+                    }
+                    else
+                    {
+                        _GameClient.Send(new RequestContextMenuPacket(iObject.Serial));
+                    }
+                }
+                else
+                {
+                    // do nothing?
                 }
             }
         }
@@ -457,8 +457,8 @@ namespace UltimaXNA
             // Toggle for backpack container window.
             if (keyboard.IsKeyPressed(Keys.B) && (keyboard.IsKeyDown(Keys.LeftControl)))
             {
-                Serial backpackSerial = ((GameObjects.Player)_GameObjects.GetPlayerObject())
-                    .Equipment[(int)GameObjects.EquipLayer.Backpack].Serial;
+                Serial backpackSerial = ((GameObjects.PlayerMobile)_GameObjects.GetPlayerObject())
+                    .equipment[(int)GameObjects.EquipLayer.Backpack].Serial;
                 if (_GUI.Window("Container:" + backpackSerial) == null)
                     _GameClient.Send(new DoubleClickPacket(backpackSerial));
                 else
@@ -468,7 +468,7 @@ namespace UltimaXNA
             // Toggle for paperdoll window.
             if (keyboard.IsKeyPressed(Keys.C) && (keyboard.IsKeyDown(Keys.LeftControl)))
             {
-                Serial serial = ((GameObjects.Player)_GameObjects.GetPlayerObject())
+                Serial serial = ((GameObjects.PlayerMobile)_GameObjects.GetPlayerObject())
                     .Serial;
                 if (_GUI.Window("PaperDoll:" + serial) == null)
                     _GUI.PaperDoll_Open(_GameObjects.GetPlayerObject());
@@ -526,7 +526,7 @@ namespace UltimaXNA
                     }
                     else if (_TileEngine.MouseOverObject.Type == TileEngine.MapObjectTypes.MobileTile)
                     {
-                        GameObjects.Unit iUnit = _GameObjects.GetObject<GameObjects.Unit>(_TileEngine.MouseOverObject.OwnerSerial, false);
+                        GameObjects.Mobile iUnit = _GameObjects.GetObject<GameObjects.Mobile>(_TileEngine.MouseOverObject.OwnerSerial, false);
                         if (iUnit != null)
                             debugMessage += "Name: " + iUnit.Name + Environment.NewLine;
                         debugMessage +=

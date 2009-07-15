@@ -16,9 +16,9 @@ namespace UltimaXNA.GUI
     public interface IGUI
     {
         bool IsMouseOverGUI(Vector2 nPosition);
-        void Container_Open(GameObjects.BaseObject nContainerObject, int nGump);
-        void Merchant_Open(GameObjects.BaseObject nContainerObject, int nGump);
-        void PaperDoll_Open(GameObjects.BaseObject nMobileObject);
+        void Container_Open(GameObjects.Entity nContainerObject, int nGump);
+        void Merchant_Open(GameObjects.Entity nContainerObject, int nGump);
+        void PaperDoll_Open(GameObjects.Entity nMobileObject);
         void ErrorPopup_Modal(string nText);
         Window Window(string nWindowName);
         Window AddWindow(string windowName, Window window);
@@ -69,7 +69,7 @@ namespace UltimaXNA.GUI
                         case _MouseCursorHolding:
                             // holding something.
                             FormCollection.Cursor.Center = new Vector2(0, 0);
-                            FormCollection.Cursor.Texture = GUIHelper.ItemIcon(((GameObjects.GameObject)GUIHelper.MouseHoldingItem).ObjectTypeID);
+                            FormCollection.Cursor.Texture = GUIHelper.ItemIcon(((GameObjects.Item)GUIHelper.MouseHoldingItem).ObjectTypeID);
                             FormCollection.Cursor.SourceRect = new Rectangle(0, 0, 64, 64);
                             break;
                         default:
@@ -259,7 +259,7 @@ namespace UltimaXNA.GUI
             }
         }
 
-        public void PaperDoll_Open(GameObjects.BaseObject nMobileObject)
+        public void PaperDoll_Open(GameObjects.Entity nMobileObject)
         {
             lock (_FormCollection)
             {
@@ -275,7 +275,7 @@ namespace UltimaXNA.GUI
             }
         }
 
-        public void Container_Open(GameObjects.BaseObject nContainerObject, int nGump)
+        public void Container_Open(GameObjects.Entity nContainerObject, int nGump)
         {
             lock (_FormCollection)
             {
@@ -291,7 +291,7 @@ namespace UltimaXNA.GUI
             }
         }
 
-        public void Merchant_Open(GameObjects.BaseObject nContainerObject, int nGump)
+        public void Merchant_Open(GameObjects.Entity nContainerObject, int nGump)
         {
             lock (_FormCollection)
             {

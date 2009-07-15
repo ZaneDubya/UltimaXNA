@@ -9,7 +9,7 @@ namespace UltimaXNA.GUI
     {
         private Vector2 mWindowSize = new Vector2(215, 233);
         private Vector2 mBGOffset = new Vector2(215 - 256 + 2, -1);
-        private GameObjects.GameObject mContainerObject;
+        private GameObjects.Item mContainerObject;
         private int mLastContainerUpdated = -1;
 
         private int mScrollY, mMaxScrollY = 0;
@@ -32,10 +32,10 @@ namespace UltimaXNA.GUI
 
         public Serial serial { get { return mContainerObject.Serial; } }
 
-        public Window_Container(GameObjects.BaseObject nContainerObject, FormCollection nFormCollection)
+        public Window_Container(GameObjects.Entity nContainerObject, FormCollection nFormCollection)
             : base()
         {
-            mContainerObject = (GameObjects.GameObject)nContainerObject;
+            mContainerObject = (GameObjects.Item)nContainerObject;
 
             //Create a new form
             string iFormName = "frmContainer:" + mContainerObject.Serial;
@@ -88,7 +88,7 @@ namespace UltimaXNA.GUI
         private void btnInv_OnPress(object obj, EventArgs e)
         {
             int iIndex = Int32.Parse(((CustomButton)obj).Name.Substring(6)) + mScrollY * _SlotsWide;
-            GameObjects.GameObject iItem = mContainerObject.ContainerObject.GetContents(iIndex);
+            GameObjects.Item iItem = mContainerObject.ContainerObject.GetContents(iIndex);
             if (GUIHelper.MouseHoldingItem != null)
             {
                 GUIHelper.DropItemIntoSlot(mContainerObject, iIndex);
@@ -112,7 +112,7 @@ namespace UltimaXNA.GUI
         private void btnInv_OnOver(object obj, EventArgs e)
         {
             int iIndex = Int32.Parse(((CustomButton)obj).Name.Substring(6)) + mScrollY * _SlotsWide;
-            GameObjects.GameObject iItem = mContainerObject.ContainerObject.GetContents(iIndex);
+            GameObjects.Item iItem = mContainerObject.ContainerObject.GetContents(iIndex);
 
             if (GUIHelper.MouseHoldingItem != null)
             {
@@ -133,7 +133,7 @@ namespace UltimaXNA.GUI
             }
 
             int iIndex = Int32.Parse(((CustomButton)obj).Name.Substring(6)) + mScrollY * _SlotsWide;
-            GameObjects.GameObject iItem = mContainerObject.ContainerObject.GetContents(iIndex);
+            GameObjects.Item iItem = mContainerObject.ContainerObject.GetContents(iIndex);
             if (GUIHelper.ToolTipItem == iItem)
             {
                 GUIHelper.ToolTipItem = null;
@@ -176,7 +176,7 @@ namespace UltimaXNA.GUI
 
                 for (int i = 0; i < _SlotsTotal; i++)
                 {
-                    GameObjects.GameObject iItem = mContainerObject.ContainerObject.GetContents(i + mScrollY * _SlotsWide);
+                    GameObjects.Item iItem = mContainerObject.ContainerObject.GetContents(i + mScrollY * _SlotsWide);
                     if (iItem == null)
                         _SlotsItemIDs[i] = 0;
                     else

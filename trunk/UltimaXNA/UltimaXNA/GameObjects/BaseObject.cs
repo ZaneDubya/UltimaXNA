@@ -10,79 +10,56 @@ using Microsoft.Xna.Framework;
 
 namespace UltimaXNA.GameObjects
 {
-    public class BaseObject
+    public class Entity
     {
+        public Serial Serial;
+        public Movement Movement;
+        public PropertyList PropertyList = new PropertyList();
+
+        internal bool _hasBeenDrawn = false; // if this is false this object will redraw itself in the tileengine.
+
         private bool _visible = true;
         public bool Visible
         {
             get { return _visible; }
-            set
-            {
-                if (value)
-                {
-                    _HasBeenDrawn = false;
-                }
-                _visible = value;
-            }
+            set { _visible = value; if (_visible) { _hasBeenDrawn = false; } }
         }
-        public Movement Movement;
-        public ObjectType ObjectType;
-        public Serial Serial;
-        internal bool _HasBeenDrawn = false;
+        
         internal bool _Disposed = false; // set this to true to have the object deleted.
         public bool IsDisposed { get { return _Disposed; } }
-        public PropertyList PropertyList = new PropertyList();
+        
+        public TileEngine.IWorld World { set { Movement.World = value; } }
 
-        public TileEngine.IWorld World
-        {
-            set
-            {
-                this.Movement.World = value;
-            }
-        }
-
-        public BaseObject(Serial serial)
+        public Entity(Serial serial)
         {
             Serial = serial;
-            ObjectType = ObjectType.Object;
             Movement = new Movement(Serial);
-            _HasBeenDrawn = false;
+            _hasBeenDrawn = false;
         }
 
         public virtual void Update(GameTime gameTime)
         {
-            if (Movement.RequiresUpdate)
+            if ((Movement.RequiresUpdate || _hasBeenDrawn == false) && _visible && Movement.DrawPosition != null)
             {
                 Movement.Update(gameTime);
 
                 TileEngine.MapCell iThisMapCell = Movement.World.Map.GetMapCell(Movement.DrawPosition.TileX, Movement.DrawPosition.TileY);
                 if (iThisMapCell != null)
-                    this.Draw(iThisMapCell, Movement.DrawPosition.PositionV3, Movement.DrawPosition.OffsetV3);
-            }
-            else
-            {
-                if (Movement.DrawPosition != null)
                 {
-                    TileEngine.MapCell iThisMapCell = Movement.World.Map.GetMapCell(Movement.DrawPosition.TileX, Movement.DrawPosition.TileY);
-                    if (iThisMapCell == null)
-                    {
-                        _HasBeenDrawn = false;
-                    }
-                    else
-                    {
-                        if (_HasBeenDrawn == false)
-                        {
-                            this.Draw(iThisMapCell, Movement.DrawPosition.PositionV3, Movement.DrawPosition.OffsetV3);
-                            _HasBeenDrawn = true;
-                        }
-                    }
+                    this.Draw(iThisMapCell, Movement.DrawPosition.PositionV3, Movement.DrawPosition.OffsetV3);
+                    _hasBeenDrawn = true;
+                }
+                else
+                {
+                    _hasBeenDrawn = false;
                 }
             }
         }
 
-        protected virtual void Draw(TileEngine.MapCell nCell, Vector3 nLocation, Vector3 nOffset)
+        internal virtual void Draw(TileEngine.MapCell nCell, Vector3 nLocation, Vector3 nOffset)
         {
             // do nothing. Base Objects do not draw.
+            // inheriting classes can override this though.
         }
 
         public virtual void Dispose()
@@ -93,7 +70,7 @@ namespace UltimaXNA.GameObjects
 
         public override string ToString()
         {
-            return ObjectType.ToString() + " | " + Serial.ToString();
+            return Serial.ToString();
         }
     }
 }

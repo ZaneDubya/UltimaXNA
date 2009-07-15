@@ -15,15 +15,15 @@ namespace UltimaXNA.GameObjects
     public interface IGameObjects
     {
         int MySerial { get; set; }
-        T GetObject<T>(Serial serial, bool create) where T : BaseObject;
-        BaseObject GetPlayerObject();
+        T GetObject<T>(Serial serial, bool create) where T : Entity;
+        Entity GetPlayerObject();
         void RemoveObject(Serial serial);
         void Reset();
     }
 
     class GameObjects : GameComponent, IGameObjects
     {
-        private Dictionary<int, BaseObject> m_Objects = new Dictionary<int, BaseObject>();
+        private Dictionary<int, Entity> m_Objects = new Dictionary<int, Entity>();
 
         public int MySerial { get; set; }
 
@@ -53,7 +53,7 @@ namespace UltimaXNA.GameObjects
             if (_gameStateService.InWorld)
             {
                 List<int> iRemoveObjects = new List<int>();
-                foreach (KeyValuePair<int, BaseObject> iObjectPair in m_Objects)
+                foreach (KeyValuePair<int, Entity> iObjectPair in m_Objects)
                 {
                     // First check if we need to remove any objects. Objects that are due to be disposed
                     // are not updated, but are added to a list to be removed after we enumerate m_Objects.
@@ -63,20 +63,7 @@ namespace UltimaXNA.GameObjects
                         continue;
                     }
 
-                    // Some object types need to be updated. Others do not.
-                    switch (iObjectPair.Value.ObjectType)
-                    {
-                        case ObjectType.GameObject:
-                            iObjectPair.Value.Update(gameTime);
-                            break;
-                        case ObjectType.Unit:
-                        case ObjectType.Player:
-                            iObjectPair.Value.Update(gameTime);
-                            break;
-                        default:
-                            // no need to update.
-                            break;
-                    }
+                    iObjectPair.Value.Update(gameTime);
                 }
 
                 // Run through the list of objects needing to be removed from the collection.
@@ -88,7 +75,7 @@ namespace UltimaXNA.GameObjects
             base.Update(gameTime);
         }
 
-        public T GetObject<T>(Serial serial, bool create) where T : BaseObject
+        public T GetObject<T>(Serial serial, bool create) where T : Entity
         {
             T iObject;
             // Check for existence in the collection.
@@ -125,7 +112,7 @@ namespace UltimaXNA.GameObjects
             }
         }
 
-        private T addObject<T>(Serial serial) where T : BaseObject
+        private T addObject<T>(Serial serial) where T : Entity
         {
             T o = (T)Activator.CreateInstance(typeof(T), new object[] { serial });
             o.World = _worldService; // Add the world service (for movement).
@@ -147,7 +134,7 @@ namespace UltimaXNA.GameObjects
             }
         }
 
-        public BaseObject GetPlayerObject()
+        public Entity GetPlayerObject()
         {
             // This could be cached to save time.
             return m_Objects[MySerial];

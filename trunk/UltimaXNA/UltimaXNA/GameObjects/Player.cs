@@ -9,13 +9,12 @@ using Microsoft.Xna.Framework;
 
 namespace UltimaXNA.GameObjects
 {
-    public class Player : UltimaXNA.GameObjects.Unit
+    public class PlayerMobile : Mobile
     {
-        public Player(Serial serial)
+        public PlayerMobile(Serial serial)
             : base(serial)
         {
-            this.ObjectType = ObjectType.Player;
-            m_Animation.HoldAnimationMS = 0;
+            animation.HoldAnimationMS = 0;
         }
 
         public override string ToString()
