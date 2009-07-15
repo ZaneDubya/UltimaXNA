@@ -126,10 +126,18 @@
     <Compile Include="Engine.cs" />
     <Compile Include="Data\FileManager.cs" />
     <Compile Include="Data\FileIndexClint.cs" />
-    <Compile Include="GameObjects\GO_Container.cs" />
-    <Compile Include="GameObjects\GameObjects.cs" />
-    <Compile Include="GameObjects\MobileAnimation.cs" />
-    <Compile Include="GameObjects\PropertyList.cs" />
+    <Compile Include="Entities\Corpse.cs" />
+    <Compile Include="Entities\DynamicObject.cs" />
+    <Compile Include="Entities\Entity.cs" />
+    <Compile Include="Entities\GameObjects.cs" />
+    <Compile Include="Entities\GO_Container.cs" />
+    <Compile Include="Entities\Item.cs" />
+    <Compile Include="Entities\Mobile.cs" />
+    <Compile Include="Entities\MobileAnimation.cs" />
+    <Compile Include="Entities\Movement.cs" />
+    <Compile Include="Entities\PlayerMobile.cs" />
+    <Compile Include="Entities\PropertyList.cs" />
+    <Compile Include="Entities\Shared.cs" />
     <Compile Include="GameState.cs" />
     <Compile Include="GUI\Events.cs" />
     <Compile Include="GUI\GUIHelper.cs" />
@@ -154,14 +162,6 @@
     <Compile Include="Data\TileData.cs" />
     <Compile Include="Data\TileMatrix.cs" />
     <Compile Include="Data\TileMatrixPatch.cs" />
-    <Compile Include="GameObjects\Corpse.cs" />
-    <Compile Include="GameObjects\DynamicObject.cs" />
-    <Compile Include="GameObjects\GameObject.cs" />
-    <Compile Include="GameObjects\Shared.cs" />
-    <Compile Include="GameObjects\BaseObject.cs" />
-    <Compile Include="GameObjects\Player.cs" />
-    <Compile Include="GameObjects\Movement.cs" />
-    <Compile Include="GameObjects\Unit.cs" />
     <Compile Include="Input\MouseHandler.cs" />
     <Compile Include="MiscUtil\LogFile.cs" />
     <Compile Include="MiscUtil\Conversion\BigEndianBitConverter.cs" />
@@ -392,6 +392,30 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Entities\.svn\entries" />
+    <None Include="Entities\.svn\text-base\BaseObject.cs.svn-base" />
+    <None Include="Entities\.svn\text-base\Corpse.cs.svn-base" />
+    <None Include="Entities\.svn\text-base\DynamicObject.cs.svn-base" />
+    <None Include="Entities\.svn\text-base\Entity.cs.svn-base" />
+    <None Include="Entities\.svn\text-base\GameObject.cs.svn-base" />
+    <None Include="Entities\.svn\text-base\GameObjects.cs.svn-base" />
+    <None Include="Entities\.svn\text-base\GO_Container.cs.svn-base" />
+    <None Include="Entities\.svn\text-base\Item.cs.svn-base" />
+    <None Include="Entities\.svn\text-base\Mobile.cs.svn-base" />
+    <None Include="Entities\.svn\text-base\MobileAnimation.cs.svn-base" />
+    <None Include="Entities\.svn\text-base\Movement.cs.svn-base" />
+    <None Include="Entities\.svn\text-base\Player.cs.svn-base" />
+    <None Include="Entities\.svn\text-base\PlayerMobile.cs.svn-base" />
+    <None Include="Entities\.svn\text-base\PropertyList.cs.svn-base" />
+    <None Include="Entities\.svn\text-base\Shared.cs.svn-base" />
+    <None Include="Entities\.svn\text-base\Unit.cs.svn-base" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Entities\.svn\prop-base\" />
+    <Folder Include="Entities\.svn\props\" />
+    <Folder Include="Entities\.svn\tmp\prop-base\" />
+    <Folder Include="Entities\.svn\tmp\props\" />
+    <Folder Include="Entities\.svn\tmp\text-base\" />
     <Folder Include="Network\Packets\Both\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
