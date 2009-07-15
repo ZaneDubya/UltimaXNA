@@ -58,9 +58,6 @@ namespace UltimaXNA.Network.Packets.Server
             get { return _equipment; }
         }
 
-        
-        
-
         /// <summary>
         /// 0x1: Innocent (Blue)
         /// 0x2: Friend (Green)
@@ -90,27 +87,34 @@ namespace UltimaXNA.Network.Packets.Server
             _notoriety = reader.ReadByte();
 
             // Read equipment - nine bytes ea.
-            int equipCount = (reader.Size - reader.Index) / 9 ;
-            _equipment = new EquipmentEntry[equipCount];
+            List<EquipmentEntry> items = new List<EquipmentEntry>();
 
-            for(int i = 0; i < equipCount; i++)
+            Serial serial = reader.ReadInt32();
+            if (!serial.IsValid)
             {
-                Serial serial = reader.ReadInt32();
-
-                ushort gumpId = reader.ReadUInt16();
-                byte layer = reader.ReadByte();
-                ushort hue = 0;
-
-                if ((gumpId & 0x8000) == 0x8000)
-                {
-                    gumpId = (ushort)((int)gumpId - 0x8000);
-                    hue = reader.ReadUInt16();
-                }
-
-                _equipment[i] = new EquipmentEntry(serial, gumpId, layer, hue);
+                reader.ReadByte(); //zero terminated
+                _equipment = new EquipmentEntry[0];
             }
+            else
+            {
+                while (serial.IsValid)
+                {
+                    ushort gumpId = reader.ReadUInt16();
+                    byte layer = reader.ReadByte();
+                    ushort hue = 0;
 
-            reader.ReadByte(); //zero terminated
+                    if ((gumpId & 0x8000) == 0x8000)
+                    {
+                        gumpId = (ushort)((int)gumpId - 0x8000);
+                        hue = reader.ReadUInt16();
+                    }
+
+                    items.Add(new EquipmentEntry(serial, gumpId, layer, hue));
+                    // read the next serial and begin the loop again. break at 0x00000000
+                    serial = reader.ReadInt32();
+                }
+                _equipment = items.ToArray();
+            }
         }
     }
 }

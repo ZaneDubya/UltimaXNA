@@ -10,12 +10,12 @@ namespace UltimaXNA.GUI
 {
     static class GUIHelper
     {
-        private static Client.IUltimaClient _GameClientService;
-        private static GameObjects.IGameObjects _GameObjectsService;
+        private static Client.IUltimaClient _networkService;
+        private static GameObjects.IGameObjects _entityService;
         private static GUI.IGUI _GUI;
-        private static TileEngine.ITileEngine _TileEngine;
+        private static TileEngine.ITileEngine _tileEngineService;
         private static FormCollection _formCollection;
-        private static GraphicsDevice _GraphicsDevice;
+        private static GraphicsDevice _graphicsDevice;
         public static FormCollection FormCollection { get { return _formCollection; } }
 
         private static bool _IsPrepared = false;
@@ -30,43 +30,43 @@ namespace UltimaXNA.GUI
         public static int TooltipX = 0;
         public static int TooltipY = 0;
 
-        private static List<string> _QueuedChatText = new List<string>();
+        private static List<string> _queuedChatText = new List<string>();
 
         public static GameObjects.GameObject MouseHoldingItem;
         private static GameObjects.GameObject _ToolTipItem;
 
-        public static void SetObjects(GraphicsDevice nDevice, FormCollection nFormCollection, GameServiceContainer nServices)
+        public static void SetObjects(GraphicsDevice graphicsDevice, FormCollection formCollection, GameServiceContainer services)
         {
-            _GraphicsDevice = nDevice;
-            _GUI = nServices.GetService<GUI.IGUI>();
-            _GameClientService = nServices.GetService<Client.IUltimaClient>();
-            _GameObjectsService = nServices.GetService<GameObjects.IGameObjects>();
-            _TileEngine = nServices.GetService<TileEngine.ITileEngine>();
-            _formCollection = nFormCollection;
+            _graphicsDevice = graphicsDevice;
+            _GUI = services.GetService<GUI.IGUI>();
+            _networkService = services.GetService<Client.IUltimaClient>();
+            _entityService = services.GetService<GameObjects.IGameObjects>();
+            _tileEngineService = services.GetService<TileEngine.ITileEngine>();
+            _formCollection = formCollection;
         }
 
         private static void _PrepareHelper()
         {
-            _TextureBorder = Texture2D.FromFile(_GraphicsDevice,
+            _TextureBorder = Texture2D.FromFile(_graphicsDevice,
                FormCollection.ContentManager.RootDirectory + @"GUI\COMMON\UI-Slot-Border.png");
-            _TextureBG = Texture2D.FromFile(_GraphicsDevice,
+            _TextureBG = Texture2D.FromFile(_graphicsDevice,
                 FormCollection.ContentManager.RootDirectory + @"GUI\COMMON\UI-Slot-BG.png");
-            _TextureEmpty = Texture2D.FromFile(_GraphicsDevice,
+            _TextureEmpty = Texture2D.FromFile(_graphicsDevice,
                 FormCollection.ContentManager.RootDirectory + @"GUI\COMMON\UI-Slot-Empty.png");
-            _RenderTarget = new RenderTarget2D(_GraphicsDevice, 64, 64, 0, SurfaceFormat.Color, RenderTargetUsage.PreserveContents);
+            _RenderTarget = new RenderTarget2D(_graphicsDevice, 64, 64, 0, SurfaceFormat.Color, RenderTargetUsage.PreserveContents);
             _IconCache = new Texture2D[0x4000];
             _IsPrepared = true;
         }
 
         public static Texture2D LoadTexture(string filepath)
         {
-            return Texture2D.FromFile(_GraphicsDevice, FormCollection.ContentManager.RootDirectory + filepath);
+            return Texture2D.FromFile(_graphicsDevice, FormCollection.ContentManager.RootDirectory + filepath);
         }
 
         public static void Network_SendChat(string nChatText)
         {
             if (nChatText != string.Empty)
-                _GameClientService.Send(new UnicodeSpeechPacket(0, 0, "ENU", nChatText));
+                _networkService.Send(new UnicodeSpeechPacket(0, 0, "ENU", nChatText));
         }
 
         public static void Chat_AddLine(string nChatText)
@@ -79,7 +79,7 @@ namespace UltimaXNA.GUI
             catch
             {
                 // The chat frame isn't loaded yet. Save this text for later.
-                _QueuedChatText.Add(nChatText);
+                _queuedChatText.Add(nChatText);
             }
         }
 
@@ -87,22 +87,22 @@ namespace UltimaXNA.GUI
         {
             get 
             {
-                return _TileEngine.MiniMap.Texture;
+                return _tileEngineService.MiniMap.Texture;
             }
         }
 
         public static void Update()
         {
-            if (_QueuedChatText.Count > 0)
+            if (_queuedChatText.Count > 0)
             {
                 Window_Chat w = _GUI.Window("ChatFrame") as Window_Chat;
                 if (w != null)
                 {
-                    foreach (string s in _QueuedChatText)
+                    foreach (string s in _queuedChatText)
                     {
                         w.AddText(s);
                     }
-                    _QueuedChatText.Clear();
+                    _queuedChatText.Clear();
                 }
             }
         }
@@ -120,11 +120,11 @@ namespace UltimaXNA.GUI
             if (iHeldObject.Wearer != null)
             {
                 // the object is being worn as equipment. We can only remove items that belong to us.
-                if (iHeldObject.Wearer.Serial == _GameObjectsService.MySerial)
+                if (iHeldObject.Wearer.Serial == _entityService.MySerial)
                 {
                     // we are wearing this item. Go ahead and drop it into the requested slot.
-                    _GameClientService.Send(new PickupItemPacket(iHeldObject.Serial, (short)iHeldObject.Item_StackCount));
-                    _GameClientService.Send(new DropItemPacket(iHeldObject.Serial, (short)nDestSlot, (short)0x7FFF,
+                    _networkService.Send(new PickupItemPacket(iHeldObject.Serial, (short)iHeldObject.Item_StackCount));
+                    _networkService.Send(new DropItemPacket(iHeldObject.Serial, (short)nDestSlot, (short)0x7FFF,
                         0, 0, iDestContainer.Serial));
                 }
                 else
@@ -147,20 +147,20 @@ namespace UltimaXNA.GUI
                         // dest slot is empty.
                         if (iHeldObject.Item_ContainedWithinSerial.IsValid)
                         {
-                            _GameObjectsService.GetObject<GameObjects.GameObject>(iHeldObject.Item_ContainedWithinSerial, false).ContainerObject.RemoveItem(iHeldObject.Serial);
+                            _entityService.GetObject<GameObjects.GameObject>(iHeldObject.Item_ContainedWithinSerial, false).ContainerObject.RemoveItem(iHeldObject.Serial);
                         }
-                        _GameClientService.Send(new PickupItemPacket(iHeldObject.Serial, (short)iHeldObject.Item_StackCount));
-                        _GameClientService.Send(new DropItemPacket(iHeldObject.Serial, (short)nDestSlot, (short)0x7FFF,
+                        _networkService.Send(new PickupItemPacket(iHeldObject.Serial, (short)iHeldObject.Item_StackCount));
+                        _networkService.Send(new DropItemPacket(iHeldObject.Serial, (short)nDestSlot, (short)0x7FFF,
                             0, 0, iDestContainer.Serial));
                     }
                     else
                     {
                         if (iHeldObject.Item_ContainedWithinSerial.IsValid)
                         {
-                            _GameObjectsService.GetObject<GameObjects.GameObject>(iHeldObject.Item_ContainedWithinSerial, false).ContainerObject.RemoveItem(iHeldObject.Serial);
+                            _entityService.GetObject<GameObjects.GameObject>(iHeldObject.Item_ContainedWithinSerial, false).ContainerObject.RemoveItem(iHeldObject.Serial);
                         }
-                        _GameClientService.Send(new PickupItemPacket(iHeldObject.Serial, (short)iHeldObject.Item_StackCount));
-                        _GameClientService.Send(new DropItemPacket(iHeldObject.Serial, (short)0, (short)0,
+                        _networkService.Send(new PickupItemPacket(iHeldObject.Serial, (short)iHeldObject.Item_StackCount));
+                        _networkService.Send(new DropItemPacket(iHeldObject.Serial, (short)0, (short)0,
                             0, 0, iDestContainer.Serial));
                     }
                 }
@@ -171,8 +171,8 @@ namespace UltimaXNA.GUI
         public static void DropItemOntoGround(int x, int y, int z)
         {
             GameObjects.GameObject iHeldObject = (GameObjects.GameObject)MouseHoldingItem;
-            _GameClientService.Send(new PickupItemPacket(iHeldObject.Serial, (short)iHeldObject.Item_StackCount));
-            _GameClientService.Send(new DropItemPacket(iHeldObject.Serial, (short)x, (short)y, (byte)z, 0, 0));
+            _networkService.Send(new PickupItemPacket(iHeldObject.Serial, (short)iHeldObject.Item_StackCount));
+            _networkService.Send(new DropItemPacket(iHeldObject.Serial, (short)x, (short)y, (byte)z, 0, 0));
             GUI.GUIHelper.MouseHoldingItem = null;
         }
 
@@ -183,12 +183,12 @@ namespace UltimaXNA.GUI
 
             if (iHeldObject.Item_ContainedWithinSerial != 0)
             {
-                GameObjects.GameObject iSourceContainer = _GameObjectsService.GetObject<GameObjects.GameObject>(iHeldObject.Item_ContainedWithinSerial, false);
+                GameObjects.GameObject iSourceContainer = _entityService.GetObject<GameObjects.GameObject>(iHeldObject.Item_ContainedWithinSerial, false);
                 iHeldObject.Item_ContainedWithinSerial = 0;
                 iSourceContainer.ContainerObject.RemoveItem(iHeldObject.Serial);
             }
-            _GameClientService.Send(new PickupItemPacket(iHeldObject.Serial, (short)0));
-            _GameClientService.Send(new DropToLayerPacket(iHeldObject.Serial, (byte)nDestSlot, iDestMobile.Serial));
+            _networkService.Send(new PickupItemPacket(iHeldObject.Serial, (short)0));
+            _networkService.Send(new DropToLayerPacket(iHeldObject.Serial, (byte)nDestSlot, iDestMobile.Serial));
 
             GUI.GUIHelper.MouseHoldingItem = null;
         }
@@ -203,8 +203,8 @@ namespace UltimaXNA.GUI
             Network.Pair<int, short>[] iBuyItem = new Network.Pair<int, short>[1];
             iBuyItem[0].ItemA = nItemSerial;
             iBuyItem[0].ItemB = (short)nAmount;
-            _GameClientService.Send(new BuyItemsPacket(nVendorSerial, iBuyItem));
-            _GameClientService.Send(new RequestContextMenuPacket(nVendorSerial));
+            _networkService.Send(new BuyItemsPacket(nVendorSerial, iBuyItem));
+            _networkService.Send(new RequestContextMenuPacket(nVendorSerial));
         }
 
         public static GameObjects.GameObject ToolTipItem
@@ -228,7 +228,10 @@ namespace UltimaXNA.GUI
                         iItemName += _ToolTipItem.Item_StackCount.ToString() + @" ";
                         int iMultiplePosition = iData.Name.IndexOf(@"%");
                         string iBaseString = iData.Name.Substring(0, iMultiplePosition);
-                        string iMultipleString = iData.Name.Substring(iMultiplePosition + 1, iData.Name.IndexOf(@"%", iMultiplePosition + 1) - iMultiplePosition - 1);
+                        int length = iData.Name.IndexOf(@"%", iMultiplePosition + 1) - iMultiplePosition - 1;
+                        string iMultipleString = string.Empty;
+                        if (length > 0)
+                            iMultipleString = iData.Name.Substring(iMultiplePosition + 1, length);
                         iItemName = _ToolTipItem.Item_StackCount.ToString() + @" " + iBaseString;
                         if (_ToolTipItem.Item_StackCount > 1)
                             iItemName += iMultipleString;
@@ -280,10 +283,10 @@ namespace UltimaXNA.GUI
                         iScaleUp = iDestSize / iTextureArt.Width;
                 }
 
-                _GraphicsDevice.SetRenderTarget(0, _RenderTarget);
-                _GraphicsDevice.Clear(Color.TransparentBlack);
+                _graphicsDevice.SetRenderTarget(0, _RenderTarget);
+                _graphicsDevice.Clear(Color.TransparentBlack);
 
-                using (SpriteBatch sprite = new SpriteBatch(_GraphicsDevice))
+                using (SpriteBatch sprite = new SpriteBatch(_graphicsDevice))
                 {
                     sprite.Begin(SpriteBlendMode.AlphaBlend);
 
@@ -313,8 +316,8 @@ namespace UltimaXNA.GUI
                     sprite.End();
                 }
 
-                _GraphicsDevice.SetRenderTarget(0, null);
-                Texture2D iTexture = new Texture2D(_GraphicsDevice, 64, 64);
+                _graphicsDevice.SetRenderTarget(0, null);
+                Texture2D iTexture = new Texture2D(_graphicsDevice, 64, 64);
                 int[] iData = new int[64 * 64];
                 _RenderTarget.GetTexture().GetData<int>(iData);
                 iTexture.SetData<int>(iData);

@@ -574,7 +574,7 @@ namespace UltimaXNA.Client
             // 0x1F - Black
             // Max normal val = 0x1F
             // !!! Unhandled
-            announce_UnhandledPacket(packet);
+            // announce_UnhandledPacket(packet);
         }
 
         private void receive_PersonalLightLevel(IRecvPacket packet)
@@ -586,7 +586,7 @@ namespace UltimaXNA.Client
             // 0x1F - Black
             // Max normal val = 0x1F
             // !!! Unhandled
-            announce_UnhandledPacket(packet);
+            // announce_UnhandledPacket(packet);
         }
 
         private void receive_PlayerLocaleAndBody(IRecvPacket packet)
@@ -617,13 +617,8 @@ namespace UltimaXNA.Client
 
         private void receive_PlaySoundEffect(IRecvPacket packet)
         {
-            // BYTE[1] mode (0x00=quiet, repeating, 0x01=single normally played sound effect)
-            // BYTE[2] SoundModel
-            // BYTE[2] unknown3 (speed/volume modifier? Line of sight stuff?)
-            // BYTE[2] xLoc
-            // BYTE[2] yLoc
-            // BYTE[2] zLoc
-            announce_UnhandledPacket(packet);
+            PlaySoundEffectPacket p = (PlaySoundEffectPacket)packet;
+            Data.Sounds.PlaySound(p.SoundModel);
         }
 
         private void receive_PopupMessage(IRecvPacket packet)
