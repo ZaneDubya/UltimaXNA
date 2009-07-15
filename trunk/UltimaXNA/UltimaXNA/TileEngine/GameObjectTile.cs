@@ -17,6 +17,7 @@ namespace UltimaXNA.TileEngine
         private int m_OwnerSerial;
         private int m_Direction;
         private int m_BodyID;
+        private int m_Frame;
 
         private Vector3 m_Position;
         public Vector2 Position { get { return new Vector2(m_Position.X, m_Position.Y); } }
@@ -31,7 +32,7 @@ namespace UltimaXNA.TileEngine
             m_Position = nPosition;
         }
 
-        public GameObjectTile(int nID, Vector3 nPosition, int nDirection, int nOwnerSerial, int nHue, int nBodyID)
+        public GameObjectTile(int nID, Vector3 nPosition, int nDirection, int nOwnerSerial, int nHue, int nBodyID, float nFrame)
         {
             m_ID = nID;
             m_Direction = nDirection;
@@ -40,6 +41,7 @@ namespace UltimaXNA.TileEngine
             m_Hue = nHue;
             m_Position = nPosition;
             m_BodyID = nBodyID;
+            m_Frame = (int)(nFrame * Data.BodyConverter.DeathAnimationFrameCount(nBodyID));
         }
 
         /// <summary>
@@ -73,6 +75,7 @@ namespace UltimaXNA.TileEngine
 
         public bool IsCorpse { get { return (m_ID == 0x2006); } }
         public int CorpseBody { get { return m_BodyID; } }
+        public int CorpseFrame { get { return m_Frame; } }
 
         public int SortZ
         {

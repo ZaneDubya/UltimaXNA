@@ -13,7 +13,6 @@ namespace UltimaXNA.GameObjects
 {
     public class Unit : UltimaXNA.GameObjects.BaseObject
     {
-		// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
         private bool _warMode;
         public bool WarMode
         {
@@ -35,7 +34,6 @@ namespace UltimaXNA.GameObjects
 					m_Animation.BodyID = m_DisplayBodyID;
 			}
 		}
-		// Issue 6 - End
 
         public WornEquipment Equipment;
 
@@ -119,6 +117,9 @@ namespace UltimaXNA.GameObjects
 
         protected override void Draw(UltimaXNA.TileEngine.MapCell nCell, Vector3 nLocation, Vector3 nOffset)
         {
+            if (!Visible)
+                return;
+
             if (Movement.IsMoving)
             {
                 SupportedActions iAnimationAction = (Movement.IsRunning) ? SupportedActions.Run : SupportedActions.Walk;
@@ -195,6 +196,7 @@ namespace UltimaXNA.GameObjects
             m_Animation.SetAnimation((SupportedActions)action, frameCount, repeatCount, reverse, repeat, delay);
         }
 
+
         public void Move(int nX, int nY, int nZ, int nFacing)
         {
             if (nFacing != -1)
@@ -207,11 +209,6 @@ namespace UltimaXNA.GameObjects
 
     public class UnitAnimation
     {
-        public bool IsAnimating
-        {
-            get { return true; }
-        }
-
         public bool WarMode;
 		// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
         public SupportedActions Action;
@@ -399,6 +396,8 @@ namespace UltimaXNA.GameObjects
                     return 0;
                 case SupportedActions.Stand:
                     return 1;
+                case SupportedActions.Death:
+                    return Data.BodyConverter.DeathAnimationIndex(_bodyID);
                 default:
                     return (int)Action;
             }
@@ -414,6 +413,8 @@ namespace UltimaXNA.GameObjects
                     return 1;
                 case SupportedActions.Stand:
                     return 2;
+                case SupportedActions.Death:
+                    return Data.BodyConverter.DeathAnimationIndex(_bodyID);
                 default:
                     return (int)Action;
             }
@@ -431,7 +432,6 @@ namespace UltimaXNA.GameObjects
                         return 24;
                     case SupportedActions.Stand:
                         return 25;
-
                     default: 
                         return (int)Action;
                 }
@@ -455,6 +455,8 @@ namespace UltimaXNA.GameObjects
                         return (int)HighestDetailActions.StandAttackStance;
                     else
                         return (int)HighestDetailActions.Stand;
+                case SupportedActions.Death:
+                    return Data.BodyConverter.DeathAnimationIndex(_bodyID);
                 default:
                     return (int)Action;
             }
@@ -466,7 +468,8 @@ namespace UltimaXNA.GameObjects
     {
         Walk,
         Run,
-        Stand
+        Stand,
+        Death
     }
 
 

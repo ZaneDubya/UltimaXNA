@@ -12,10 +12,23 @@ namespace UltimaXNA.GameObjects
 {
     public class BaseObject
     {
+        private bool _visible = true;
+        public bool Visible
+        {
+            get { return _visible; }
+            set
+            {
+                if (value)
+                {
+                    _HasBeenDrawn = false;
+                }
+                _visible = value;
+            }
+        }
         public Movement Movement;
         public ObjectType ObjectType;
         public Serial Serial;
-        internal bool _HasBeenDrawn;
+        internal bool _HasBeenDrawn = false;
         internal bool _Disposed = false; // set this to true to have the object deleted.
         public bool IsDisposed { get { return _Disposed; } }
         public PropertyList PropertyList = new PropertyList();

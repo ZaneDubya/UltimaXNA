@@ -30,14 +30,20 @@ namespace UltimaXNA.GameObjects
             : base(serial)
         {
             ObjectType = ObjectType.GameObject;
+            corpseFrame = 0.999f;
         }
 
         protected override void Draw(UltimaXNA.TileEngine.MapCell nCell, Vector3 nLocation, Vector3 nOffset)
         {
+            if (!Visible)
+                return;
+
             if (IsCorpse)
             {
+                Movement.ClearImmediate();
                 nCell.AddGameObjectTile(
-                    new TileEngine.GameObjectTile(mObjectTypeID, nLocation, Movement.DrawFacing, this.Serial, Hue, corpseBody));
+                    new TileEngine.GameObjectTile(
+                        mObjectTypeID, nLocation, Movement.DrawFacing, this.Serial, Hue, corpseBody, corpseFrame));
             }
             else
             {
@@ -59,6 +65,7 @@ namespace UltimaXNA.GameObjects
         public Serial Item_ContainedWithinSerial = 0;
         public int AnimationDisplayID = 0;
 
+        private float corpseFrame = 0f;
         private int corpseBody { get { return Item_StackCount; } }
         public bool IsCorpse
         {
@@ -73,6 +80,10 @@ namespace UltimaXNA.GameObjects
             
         }
 
+        public void DeathAnimation()
+        {
+            corpseFrame = 0f;
+        }
 
         private int m_Hue;
         public int Hue // Fix for large hue values per issue12 (http://code.google.com/p/ultimaxna/issues/detail?id=12) --ZDW 6/15/2009
@@ -113,6 +124,14 @@ namespace UltimaXNA.GameObjects
             base.Update(gameTime);
             if (m_ContainerObject != null)
                 m_ContainerObject.Update(gameTime);
+            if (IsCorpse && corpseFrame != 0.999f)
+            {
+                _HasBeenDrawn = false;
+                corpseFrame += ((float)gameTime.ElapsedGameTime.Milliseconds / 500f);
+                if (corpseFrame >= 1f)
+                    corpseFrame = 0.999f;
+            }
+            
         }
 
         public override string ToString()

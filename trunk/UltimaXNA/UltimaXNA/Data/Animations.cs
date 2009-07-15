@@ -70,6 +70,36 @@ namespace UltimaXNA.Data
 
         private BodyConverter() { }
 
+        public static int DeathAnimationIndex(int bodyID)
+        {
+            switch (Data.Mobtypes.AnimationType(bodyID))
+            {
+                case 0:
+                    return 2;
+                case 1:
+                    return 8;
+                case 2:
+                    return 21;
+                default:
+                    return 2;
+            }
+        }
+
+        public static int DeathAnimationFrameCount(int bodyID)
+        {
+            switch (Data.Mobtypes.AnimationType(bodyID))
+            {
+                case 0:
+                    return 4;
+                case 1:
+                    return 4;
+                case 2:
+                    return 6;
+                default:
+                    return 4;
+            }
+        }
+
         static BodyConverter()
         {
             string path = FileManager.GetFilePath("bodyconv.def");

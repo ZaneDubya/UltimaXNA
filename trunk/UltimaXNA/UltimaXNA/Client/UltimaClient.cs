@@ -281,8 +281,10 @@ namespace UltimaXNA.Client
         private void receive_DeathAnimation(IRecvPacket packet)
         {
             DeathAnimationPacket p = (DeathAnimationPacket)packet;
-
-            announce_UnhandledPacket(packet);
+            Unit u = _GameObjects.GetObject<Unit>(p.PlayerSerial, false);
+            GameObject o = _GameObjects.GetObject<GameObject>(p.CorpseSerial, false);
+            o.Movement.Facing = u.Movement.Facing;
+            o.DeathAnimation();
         }
 
         private void receive_DeleteObject(IRecvPacket packet)
