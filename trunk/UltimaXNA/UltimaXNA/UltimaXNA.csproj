@@ -154,7 +154,6 @@
     <Compile Include="GUI\Windows\Chat.cs" />
     <Compile Include="GUI\GUI.cs" />
     <Compile Include="GUI\Windows\Window_CompressedGump.cs" />
-    <Compile Include="MiscUtil\HuffmanDecomp.cs" />
     <Compile Include="Input\InputHandler.cs" />
     <Compile Include="Input\KeyboardHandler.cs" />
     <Compile Include="Data\StaticTileList.cs" />
@@ -163,15 +162,6 @@
     <Compile Include="Data\TileMatrix.cs" />
     <Compile Include="Data\TileMatrixPatch.cs" />
     <Compile Include="Input\MouseHandler.cs" />
-    <Compile Include="MiscUtil\LogFile.cs" />
-    <Compile Include="MiscUtil\Conversion\BigEndianBitConverter.cs" />
-    <Compile Include="MiscUtil\Conversion\DoubleConverter.cs" />
-    <Compile Include="MiscUtil\EndianBinaryReader.cs" />
-    <Compile Include="MiscUtil\Conversion\EndianBitConverter.cs" />
-    <Compile Include="MiscUtil\Conversion\Endianness.cs" />
-    <Compile Include="MiscUtil\Conversion\LittleEndianBitConverter.cs" />
-    <Compile Include="MiscUtil\EndianBinaryWriter.cs" />
-    <Compile Include="MiscUtil\HexEncoding.cs" />
     <Compile Include="Network\CharacterListEntry.cs" />
     <Compile Include="Network\MobileFlags.cs" />
     <Compile Include="Network\ClientNetwork.cs" />

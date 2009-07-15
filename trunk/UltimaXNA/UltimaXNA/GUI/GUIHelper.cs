@@ -242,7 +242,7 @@ namespace UltimaXNA.GUI
                         iItemName += iData.Name;
                     }
                     TooltipMsg = iItemName + Environment.NewLine +
-                        "Serial:" + SerialHex(_ToolTipItem.Serial);
+                        "Serial:" + _ToolTipItem.Serial;
                     if (_ToolTipItem.PropertyList.HasProperties)
                     {
                         TooltipMsg += Environment.NewLine +
@@ -254,13 +254,6 @@ namespace UltimaXNA.GUI
             {
                 return _ToolTipItem;
             }
-        }
-
-        public static string SerialHex(Serial serial)
-        {
-            return MiscUtil.HexEncoding.ToString(
-                MiscUtil.Conversion.EndianBitConverter.Big.GetBytes(serial)
-            );
         }
 
         public static Texture2D ItemIcon(int nItemID)
