@@ -546,7 +546,10 @@ namespace UltimaXNA.Client
         private void receive_OnSwing(IRecvPacket packet)
         {
             SwingPacket p = (SwingPacket)packet;
-            announce_UnhandledPacket(packet);
+            if (p.Attacker == _GameObjects.MySerial)
+            {
+                _GameState.LastTarget = p.Defender;
+            }
         }
 
         private void receive_OpenBuyWindow(IRecvPacket packet)
