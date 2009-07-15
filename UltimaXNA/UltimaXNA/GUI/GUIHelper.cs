@@ -170,9 +170,10 @@ namespace UltimaXNA.GUI
 
         public static void DropItemOntoGround(int x, int y, int z)
         {
+            int groundSerial = unchecked((int)0xffffffff);
             GameObjects.GameObject iHeldObject = (GameObjects.GameObject)MouseHoldingItem;
             _networkService.Send(new PickupItemPacket(iHeldObject.Serial, (short)iHeldObject.Item_StackCount));
-            _networkService.Send(new DropItemPacket(iHeldObject.Serial, (short)x, (short)y, (byte)z, 0, 0));
+            _networkService.Send(new DropItemPacket(iHeldObject.Serial, (short)x, (short)y, (byte)z, 0, groundSerial));
             GUI.GUIHelper.MouseHoldingItem = null;
         }
 
