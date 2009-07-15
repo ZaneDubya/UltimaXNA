@@ -8,7 +8,7 @@
 
 namespace UltimaXNA.GameObjects
 {
-    class DynamicObject : UltimaXNA.GameObjects.GameObject
+    class DynamicObject : Item
     {
         public int CasterSerial = 0;
         public int Bytes0 = 0;
@@ -17,7 +17,7 @@ namespace UltimaXNA.GameObjects
         public DynamicObject(Serial serial)
             : base(serial)
         {
-            ObjectType = ObjectType.DynamicObject;
+
         }
     }
 }

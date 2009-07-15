@@ -25,15 +25,15 @@ namespace UltimaXNA.GUI
             _GameStateService.EngineRunning = false;
         }
 
-        public static void PickupItem(GameObjects.BaseObject entity)
+        public static void PickupItem(GameObjects.Entity entity)
         {
-            GameObjects.GameObject iObject = ((GameObjects.GameObject)entity);
+            GameObjects.Item iObject = ((GameObjects.Item)entity);
             _GameClientService.Send(new PickupItemPacket(iObject.Serial, (short)iObject.Item_StackCount));
         }
 
-        public static void DropItem(GameObjects.BaseObject entity, int x, int y, int z, Serial destEntity)
+        public static void DropItem(GameObjects.Entity entity, int x, int y, int z, Serial destEntity)
         {
-            GameObjects.GameObject iObject = ((GameObjects.GameObject)entity);
+            GameObjects.Item iObject = ((GameObjects.Item)entity);
             _GameClientService.Send(new DropItemPacket(iObject.Serial, (short)x, (short)y, (byte)z, 0, destEntity));
         }           
     }

@@ -8,15 +8,6 @@
 
 namespace UltimaXNA.GameObjects
 {
-    public enum ObjectType
-    {
-        Object = 1,
-        Unit = ObjectType.Object | 2,
-        Player = ObjectType.Unit | 4,
-        GameObject = ObjectType.Object | 8,
-        DynamicObject = ObjectType.GameObject | 16,
-        Corpse = ObjectType.GameObject | 32,
-    }
 
     struct ItemEnchantment
     {

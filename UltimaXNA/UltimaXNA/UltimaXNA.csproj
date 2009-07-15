@@ -105,6 +105,7 @@
     <Compile Include="Data\Art.cs" />
     <Compile Include="Data\Gumps.cs" />
     <Compile Include="Data\Mobtypes.cs" />
+    <Compile Include="Data\Multis.cs" />
     <Compile Include="Data\Radarcol.cs" />
     <Compile Include="Data\SharedMethods.cs" />
     <Compile Include="Data\Sound.cs" />
@@ -127,6 +128,7 @@
     <Compile Include="Data\FileIndexClint.cs" />
     <Compile Include="GameObjects\GO_Container.cs" />
     <Compile Include="GameObjects\GameObjects.cs" />
+    <Compile Include="GameObjects\MobileAnimation.cs" />
     <Compile Include="GameObjects\PropertyList.cs" />
     <Compile Include="GameState.cs" />
     <Compile Include="GUI\Events.cs" />

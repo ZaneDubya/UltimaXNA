@@ -9,16 +9,16 @@ namespace UltimaXNA.GUI
     {
         private Vector2 mWindowSize = new Vector2(228, 400);
         private Vector2 mBGOffset = new Vector2(0, 0);
-        private GameObjects.Unit mMobileObject;
+        private GameObjects.Mobile mMobileObject;
         private int mLastContainerUpdated = -1;
         private const int m_MaxButtons = 0x18;
 
         public Serial serial { get { return mMobileObject.Serial; } }
 
-        public Window_PaperDoll(GameObjects.BaseObject nMobileObject, FormCollection nFormCollection)
+        public Window_PaperDoll(GameObjects.Entity nMobileObject, FormCollection nFormCollection)
             : base()
         {
-            mMobileObject = (GameObjects.Unit)nMobileObject;
+            mMobileObject = (GameObjects.Mobile)nMobileObject;
 
             //Create a new form
             string iFormName = "frmPaperDoll:" + mMobileObject.Serial;
@@ -97,7 +97,7 @@ namespace UltimaXNA.GUI
         private void btnEquip_OnPress(object obj, EventArgs e)
         {
             int iIndex = Int32.Parse(((CustomButton)obj).Name.Substring(8));
-            GameObjects.GameObject iItem = mMobileObject.Equipment[iIndex];
+            GameObjects.Item iItem = mMobileObject.equipment[iIndex];
             if (iItem != null)
             {
                 // pick the item up!
@@ -117,7 +117,7 @@ namespace UltimaXNA.GUI
         private void btnEquip_OnOver(object obj, EventArgs e)
         {
             int iIndex = Int32.Parse(((CustomButton)obj).Name.Substring(8));
-            GameObjects.GameObject iItem = mMobileObject.Equipment[iIndex];
+            GameObjects.Item iItem = mMobileObject.equipment[iIndex];
 
             if (GUIHelper.MouseHoldingItem != null)
             {
@@ -138,7 +138,7 @@ namespace UltimaXNA.GUI
             }
 
             int iIndex = Int32.Parse(((CustomButton)obj).Name.Substring(8));
-            GameObjects.GameObject iItem = mMobileObject.Equipment[iIndex];
+            GameObjects.Item iItem = mMobileObject.equipment[iIndex];
             if (GUIHelper.ToolTipItem == iItem)
             {
                 GUIHelper.ToolTipItem = null;
@@ -157,7 +157,7 @@ namespace UltimaXNA.GUI
             if (this.IsClosed)
                 return;
 
-            if (mMobileObject.Equipment.UpdateTicker != mLastContainerUpdated)
+            if (mMobileObject.equipment.UpdateTicker != mLastContainerUpdated)
             {
 
                 ((PictureBox)_MyForm["picEquip0"]).Texture = Data.Gumps.GetGumpXNA(0x000C);
@@ -172,7 +172,7 @@ namespace UltimaXNA.GUI
                         continue;
 
                     int iItemTypeID = 0;
-                    GameObjects.GameObject iItem = mMobileObject.Equipment[i];
+                    GameObjects.Item iItem = mMobileObject.equipment[i];
                     if (iItem != null)
                         iItemTypeID = iItem.ObjectTypeID;
                     ((CustomButton)_MyForm[iBtnName]).Texture = GUIHelper.ItemIcon(iItemTypeID);
@@ -187,7 +187,7 @@ namespace UltimaXNA.GUI
                         ((CustomButton)_MyForm[iBtnName]).Disabled = false;
                     }
                 }
-                mLastContainerUpdated = mMobileObject.Equipment.UpdateTicker;
+                mLastContainerUpdated = mMobileObject.equipment.UpdateTicker;
             }
         }
     }
