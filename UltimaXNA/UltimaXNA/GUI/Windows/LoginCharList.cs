@@ -49,11 +49,6 @@ namespace UltimaXNA.GUI
             Events.QuitImmediate();
         }
 
-        public void CharListPacket(Network.Packet nPacket)
-        {
-
-        }
-
         private void Button1_OnPress(object obj, EventArgs e)
         {
             //((Listbox)formCollection["form1"]["listbox1"]).Add(formCollection["form1"].Controls["textbox1"].Text);

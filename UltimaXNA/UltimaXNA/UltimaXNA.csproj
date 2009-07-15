@@ -310,12 +310,6 @@
     <Compile Include="Network\SocketState.cs" />
     <Compile Include="Network\StartingLocation.cs" />
     <Compile Include="Client\UltimaClient.cs" />
-    <Compile Include="Network\_ContextMenuResponse.cs" />
-    <Compile Include="Network\_GameClient.cs" />
-    <Compile Include="Network\_OpCodes.cs" />
-    <Compile Include="Network\_Packet.cs" />
-    <Compile Include="Network\_SocketClient.cs" />
-    <Compile Include="Network\_SocketListener.cs" />
     <Compile Include="SceneManagement\BaseScene.cs" />
     <Compile Include="SceneManagement\IScene.cs" />
     <Compile Include="SceneManagement\ISceneService.cs" />
