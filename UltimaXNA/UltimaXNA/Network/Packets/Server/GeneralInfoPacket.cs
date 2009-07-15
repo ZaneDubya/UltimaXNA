@@ -33,6 +33,9 @@ namespace UltimaXNA.Network.Packets.Server
 
             switch (this._subcommand)
             {
+                case 0x06:
+                    // part system, not implemented.
+                    break;
                 case 0x8: // Set cursor color / set map
                     _mapid = reader.ReadByte();
                     break;
