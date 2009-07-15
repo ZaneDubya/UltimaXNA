@@ -93,6 +93,10 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
       <Private>False</Private>
     </Reference>
+    <Reference Include="WavePlayer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\WavePlayer.dll</HintPath>
+    </Reference>
     <Reference Include="xWinFormsLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <HintPath>.\xWinFormsLib.dll</HintPath>
     </Reference>
@@ -103,6 +107,7 @@
     <Compile Include="Data\Mobtypes.cs" />
     <Compile Include="Data\Radarcol.cs" />
     <Compile Include="Data\SharedMethods.cs" />
+    <Compile Include="Data\Sound.cs" />
     <Compile Include="Data\StringList.cs" />
     <Compile Include="Diagnostics\ILoggingService.cs" />
     <Compile Include="Diagnostics\IStatusNotifier.cs">

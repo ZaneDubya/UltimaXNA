@@ -397,7 +397,7 @@ namespace UltimaXNA.Data
         private static FileIndex m_FileIndex5 = new FileIndex("Anim5.idx", "Anim5.mul", 0x20000, -1);
         public static FileIndex FileIndex5 { get { return m_FileIndex5; } }
 
-        private static FrameXNA[][][][][] m_Cache;
+        private static FrameXNA[][][][] m_Cache;
 
         private AnimationsXNA()
         {
@@ -405,8 +405,6 @@ namespace UltimaXNA.Data
 
         public static FrameXNA[] GetAnimation(GraphicsDevice nDevice, int body, int action, int direction, int hue, bool preserveHue)
         {
-            int iCacheHue = 0; //hue + 1; // since hue is -1 if we don't want to hue it.
-
             // I moved this line here since at line 497, previously, it uses m_Cache with real body as index and that index has no instance, AnimID has instance instead.
             // Example with Hiryu (AnimID 243, real body has 201 after convert):
             // Prev: m_Cache[AnimID] = new instance, convert AnimID to real body, if(m_Cache[realbody]..etc) <-Crash
@@ -414,18 +412,22 @@ namespace UltimaXNA.Data
             // - Smjert
             int fileType = BodyConverter.Convert(ref body);
 
-            // Make sure the cache is complete.
-            // max number of bodies is about 1000
-            if (m_Cache == null) m_Cache = new FrameXNA[1000][][][][];
-            if (m_Cache[body] == null) m_Cache[body] = new FrameXNA[35][][][];
-            if (m_Cache[body][action] == null) m_Cache[body][action] = new FrameXNA[8][][];
-            if (m_Cache[body][action][direction] == null) m_Cache[body][action][direction] = new FrameXNA[3000][];
-            if (m_Cache[body][action][direction][iCacheHue] != null) return m_Cache[body][action][direction][iCacheHue];
-
             if (preserveHue)
                 Translate(ref body);
             else
                 Translate(ref body, ref hue);
+
+            // Make sure the cache is complete.
+            // max number of bodies is about 1000
+            if (m_Cache == null) m_Cache = new FrameXNA[1000][][][];
+            if (m_Cache[body] == null)
+                m_Cache[body] = new FrameXNA[35][][];
+            if (m_Cache[body][action] == null)
+                m_Cache[body][action] = new FrameXNA[8][];
+            if (m_Cache[body][action][direction] == null)
+                m_Cache[body][action][direction] = new FrameXNA[1];
+            if (m_Cache[body][action][direction][0] != null)
+                return m_Cache[body][action][direction];
 
             FileIndex fileIndex;
 
@@ -561,7 +563,7 @@ namespace UltimaXNA.Data
                         frames[i] = new FrameXNA(nDevice, palette, bin, flip);
                     }
                 }
-                m_Cache[body][action][direction][0] = frames;
+                m_Cache[body][action][direction] = frames;
             }
 
             /*
@@ -590,7 +592,7 @@ namespace UltimaXNA.Data
             */
 
             //return m_Cache[body][action][direction][iCacheHue];
-            return m_Cache[body][action][direction][iCacheHue];
+            return m_Cache[body][action][direction];
         }
 
         private static int[] m_Table;
