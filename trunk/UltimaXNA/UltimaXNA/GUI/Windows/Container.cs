@@ -90,7 +90,7 @@ namespace UltimaXNA.GUI
             int iIndex = Int32.Parse(((CustomButton)obj).Name.Substring(6)) + mScrollY * _SlotsWide;
             GameObjects.Item item = _containerEntity.ContainerObject.GetContents(iIndex);
 
-            int buttonindex = 1;
+            int buttonindex = 0;
             if (buttonindex == 0)
             {
                 if (GUIHelper.MouseHoldingItem != null)
@@ -106,7 +106,7 @@ namespace UltimaXNA.GUI
             {
                 Events.UseItem(item);
             }
-            
+
 
         }
 

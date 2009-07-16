@@ -20,12 +20,12 @@ namespace UltimaXNA.GameObjects
 
         public bool IsMounted { get { return equipment[(int)EquipLayer.Mount] != null; } }
         public bool IsWarMode { get { return animation.WarMode; } set { animation.WarMode = value; } }
-        
-		public int DisplayBodyID
-		{
-			get { return animation.BodyID; }
+
+        public int DisplayBodyID
+        {
+            get { return animation.BodyID; }
             set { animation.BodyID = value; }
-		}
+        }
 
         private int _hue;
         public int Hue // Fix for large hue values per issue12 (http://code.google.com/p/ultimaxna/issues/detail?id=12) --ZDW 6/15/2009
@@ -40,8 +40,8 @@ namespace UltimaXNA.GameObjects
             }
         }
 
-		// Issue 14 - Wrong layer draw order - http://code.google.com/p/ultimaxna/issues/detail?id=14 - Smjert
-		private int[] m_DrawLayers = new int[20]
+        // Issue 14 - Wrong layer draw order - http://code.google.com/p/ultimaxna/issues/detail?id=14 - Smjert
+        private int[] m_DrawLayers = new int[20]
 		{
 			(int)EquipLayer.Mount,
 			(int)EquipLayer.OneHanded,
@@ -75,8 +75,17 @@ namespace UltimaXNA.GameObjects
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
-            base.Update(gameTime);
+            if (equipment[(int)EquipLayer.Mount] != null &&
+                equipment[(int)EquipLayer.Mount].ObjectTypeID != 0)
+            {
+                Movement.Mounted = animation.IsMounted = true;
+            }
+            else
+            {
+                Movement.Mounted = animation.IsMounted = false;
+            }
             animation.Update(gameTime);
+            base.Update(gameTime);
         }
 
         internal override void Draw(UltimaXNA.TileEngine.MapCell nCell, Vector3 nLocation, Vector3 nOffset)
@@ -94,43 +103,24 @@ namespace UltimaXNA.GameObjects
 
             int iDirection = Movement.DrawFacing;
 
-			// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
-            Item mount = equipment[(int)EquipLayer.Mount];
-			TileEngine.MobileTile mobtile = null;
-            if (mount != null && mount.ObjectTypeID != 0)
-            {
-                Movement.Mounted = animation.IsMounted = true;
-                mobtile = new TileEngine.MobileTile(
-                                mount.ObjectTypeID, nLocation, nOffset,
-                                iDirection, (int)animation.Action, animation.AnimationFrame,
-                                Serial, 0x1A, mount.Hue, false);
+            int action = animation.GetAction();
+            TileEngine.MobileTile mobtile = null;
+            mobtile = new TileEngine.MobileTile(DisplayBodyID, nLocation, nOffset, iDirection, action, animation.AnimationFrame, Serial, 1, Hue, animation.IsMounted);
+            mobtile.SubType = TileEngine.MobileTileTypes.Body;
+            nCell.AddMobileTile(mobtile);
+            // Issue 6 - End
 
-                mobtile.SubType = TileEngine.MobileTileTypes.Mount;
-                nCell.AddMobileTile(mobtile);
-            }
-            else
-            {
-                Movement.Mounted = animation.IsMounted = false;
-            }
 
-			int action = animation.GetAction();
-            
-			mobtile = new TileEngine.MobileTile(DisplayBodyID, nLocation, nOffset, iDirection, action, animation.AnimationFrame, Serial, 1, Hue, animation.IsMounted);
-			mobtile.SubType = TileEngine.MobileTileTypes.Body;
-			nCell.AddMobileTile(mobtile);
-			// Issue 6 - End
-
-            
             for (int i = 0; i < m_DrawLayers.Length; i++)
             {
                 // Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
-                if ( equipment[m_DrawLayers[i]] != null && equipment[m_DrawLayers[i]].AnimationDisplayID != 0 )
+                if (equipment[m_DrawLayers[i]] != null && equipment[m_DrawLayers[i]].AnimationDisplayID != 0)
                 {
                     mobtile = new TileEngine.MobileTile(
                             equipment[m_DrawLayers[i]].AnimationDisplayID, nLocation, nOffset,
                             iDirection, action, animation.AnimationFrame,
                             Serial, i + 1, equipment[m_DrawLayers[i]].Hue, animation.IsMounted);
-					
+
                     mobtile.SubType = TileEngine.MobileTileTypes.Equipment;
                     nCell.AddMobileTile(mobtile);
                 }

@@ -21,7 +21,7 @@ namespace UltimaXNA.Client
         public UltimaClientStatus Status { get; protected set; }
 
         private string _Account; private string _Password;
-        public void SetAccountPassword(string account, string password) { _Account = account; _Password = password; } 
+        public void SetAccountPassword(string account, string password) { _Account = account; _Password = password; }
         private void clearAccountPassword() { _Account = string.Empty; _Password = string.Empty; }
 
         private UltimaXNA.Network.ClientNetwork _ClientNetwork;
@@ -175,7 +175,7 @@ namespace UltimaXNA.Client
             foreach (ContentItem i in p.Items)
             {
                 // Add the item...
-                Item iObject = addItem(i.Serial, i.ItemID, i.Hue, i.ContainerSerial, i.Amount);
+                Item iObject = add_Item(i.Serial, i.ItemID, i.Hue, i.ContainerSerial, i.Amount);
                 iObject.Item_InvX = i.X;
                 iObject.Item_InvY = i.Y;
                 // ... and add it the container contents of the container.
@@ -189,7 +189,7 @@ namespace UltimaXNA.Client
             ContainerContentUpdatePacket p = (ContainerContentUpdatePacket)packet;
 
             // Add the item...
-            GameObjects.Item iObject = addItem(p.Serial, p.ItemId, p.Hue, p.ContainerSerial, p.Amount);
+            GameObjects.Item iObject = add_Item(p.Serial, p.ItemId, p.Hue, p.ContainerSerial, p.Amount);
             iObject.Item_InvX = p.X;
             iObject.Item_InvY = p.Y;
             // ... and add it the container contents of the container.
@@ -442,7 +442,7 @@ namespace UltimaXNA.Client
 
             for (int i = 0; i < p.Equipment.Length; i++)
             {
-                Item item = addItem(p.Equipment[i].Serial, p.Equipment[i].GumpId, p.Equipment[i].Hue, 0, 0);
+                Item item = add_Item(p.Equipment[i].Serial, p.Equipment[i].GumpId, p.Equipment[i].Hue, 0, 0);
                 iMobile.equipment[p.Equipment[i].Layer] = item;
                 if (item.PropertyList.Hash == 0)
                     this.Send(new QueryPropertiesPacket(item.Serial));
@@ -648,7 +648,7 @@ namespace UltimaXNA.Client
         private void receive_RequestNameResponse(IRecvPacket packet)
         {
             RequestNameResponsePacket p = (RequestNameResponsePacket)packet;
-            Mobile u = _GameObjects.GetObject <Mobile>(p.Serial, false);
+            Mobile u = _GameObjects.GetObject<Mobile>(p.Serial, false);
             u.Name = p.MobileName;
         }
 
@@ -844,20 +844,8 @@ namespace UltimaXNA.Client
             // If the iItemID >= 0x4000, then this is a multiobject.
             if (p.ItemID <= 0x4000)
             {
-                Item e;
-                if (p.ItemID == 0x2006)
-                {
-                    // special case for corpses.
-                    e = _GameObjects.GetObject<Corpse>((int)p.Serial, true);
-                }
-                else
-                {
-                    e = _GameObjects.GetObject<Item>((int)p.Serial, true);
-                }
-                e.ObjectTypeID = p.ItemID;
-                e.Item_StackCount = p.StackAmount;
-                e.Hue = p.Hue;
-                e.Movement.SetPositionInstant(p.X, p.Y, p.Z, p.Direction);
+                Item item = add_Item(p.Serial, p.ItemID, p.Hue, unchecked((int)0xFFFFFFFF), p.StackAmount);
+                item.Movement.SetPositionInstant(p.X, p.Y, p.Z, p.Direction);
             }
             else
             {
@@ -869,7 +857,7 @@ namespace UltimaXNA.Client
         private void receive_WornItem(IRecvPacket packet)
         {
             WornItemPacket p = (WornItemPacket)packet;
-            Item item = addItem(p.Serial, p.ItemId, p.Hue, 0, 0);
+            Item item = add_Item(p.Serial, p.ItemId, p.Hue, 0, 0);
             Mobile u = _GameObjects.GetObject<Mobile>(p.ParentSerial, false);
             u.equipment[p.Layer] = item;
             if (item.PropertyList.Hash == 0)
@@ -914,7 +902,7 @@ namespace UltimaXNA.Client
 
         private string[] interpretGumpPieces(string gumpData)
         {
-            List<string> i = new List<string>();;
+            List<string> i = new List<string>(); ;
             bool isData = true;
             int dataIndex = 0;
             while (isData)
@@ -960,21 +948,29 @@ namespace UltimaXNA.Client
                 {
                     iConstruct = nBase;
                 }
-                
+
             }
             return iConstruct;
         }
 
-        private Item addItem(Serial serial, int nItemID, int nHue, int nContainerSerial, int nAmount)
+        private Item add_Item(Serial serial, int itemID, int nHue, int containerSerial, int amount)
         {
-            Item iObject = _GameObjects.GetObject<Item>(serial, true);
-            
-            iObject.ObjectTypeID = nItemID;
-            iObject.Hue = nHue;
-            iObject.Item_StackCount = nAmount;
-            iObject.Item_ContainedWithinSerial = nContainerSerial;
-            
-            return iObject;
+            Item item;
+            if (itemID == 0x2006)
+            {
+                // special case for corpses.
+                item = _GameObjects.GetObject<Corpse>((int)serial, true);
+            }
+            else
+            {
+                item = _GameObjects.GetObject<Item>((int)serial, true);
+            }
+            item.ObjectTypeID = itemID;
+            item.Hue = nHue;
+            item.Item_StackCount = amount;
+            item.Item_ContainedWithinSerial = containerSerial;
+
+            return item;
         }
     }
 }
