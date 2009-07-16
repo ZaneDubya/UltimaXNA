@@ -25,6 +25,11 @@ namespace UltimaXNA.GUI
             _GameStateService.EngineRunning = false;
         }
 
+        public static void UseItem(GameObjects.Item item)
+        {
+            _GameClientService.Send(new DoubleClickPacket(item.Serial));
+        }
+
         public static void PickupItem(GameObjects.Entity entity)
         {
             GameObjects.Item iObject = ((GameObjects.Item)entity);
