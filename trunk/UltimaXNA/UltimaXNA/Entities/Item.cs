@@ -5,11 +5,12 @@
 // Created by Poplicola
 //-----------------------------------------------------------------------------
 using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 #endregion
 
 namespace UltimaXNA.GameObjects
 {
-    public class GameObject : UltimaXNA.GameObjects.BaseObject
+    public class Item : Entity
     {
         // GameObjects can potentially have inventory (chests, for example).
         // The Serial for the container for this inventory is the same as the
@@ -25,16 +26,16 @@ namespace UltimaXNA.GameObjects
             }
         }
 
-        public GameObject(Serial serial)
+        public Item(Serial serial)
             : base(serial)
         {
-            ObjectType = ObjectType.GameObject;
+            
         }
 
-        protected override void Draw(UltimaXNA.TileEngine.MapCell nCell, Vector3 nLocation, Vector3 nOffset)
+        internal override void Draw(UltimaXNA.TileEngine.MapCell nCell, Vector3 nLocation, Vector3 nOffset)
         {
             nCell.AddGameObjectTile(
-                new TileEngine.GameObjectTile(mObjectTypeID, nLocation, Movement.DrawFacing, this.Serial, 0));
+                new TileEngine.GameObjectTile(mObjectTypeID, nLocation, Movement.DrawFacing, this.Serial, Hue));
         }
 
         public override void Dispose()
@@ -45,9 +46,9 @@ namespace UltimaXNA.GameObjects
             base.Dispose();
         }
 
-        public Unit Wearer;
+        public Mobile Wearer;
         public int Item_StackCount = 0;
-        public int Item_ContainedWithinSerial = 0;
+        public Serial Item_ContainedWithinSerial = 0;
         public int AnimationDisplayID = 0;
 
         private int m_Hue;
@@ -71,7 +72,7 @@ namespace UltimaXNA.GameObjects
             get { return mObjectTypeID; }
             set
             {
-                _HasBeenDrawn = false;
+                _hasBeenDrawn = false;
                 mObjectTypeID = value;
                 ItemData = UltimaXNA.Data.TileData.ItemData[mObjectTypeID];
                 AnimationDisplayID = ItemData.AnimID;
