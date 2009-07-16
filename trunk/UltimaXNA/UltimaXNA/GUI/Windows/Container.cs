@@ -88,16 +88,26 @@ namespace UltimaXNA.GUI
         private void btnInv_OnPress(object obj, EventArgs e)
         {
             int iIndex = Int32.Parse(((CustomButton)obj).Name.Substring(6)) + mScrollY * _SlotsWide;
-            GameObjects.Item iItem = _containerEntity.ContainerObject.GetContents(iIndex);
-            if (GUIHelper.MouseHoldingItem != null)
+            GameObjects.Item item = _containerEntity.ContainerObject.GetContents(iIndex);
+
+            int buttonindex = 1;
+            if (buttonindex == 0)
             {
-                GUIHelper.DropItemIntoSlot(_containerEntity, iIndex);
+                if (GUIHelper.MouseHoldingItem != null)
+                {
+                    GUIHelper.DropItemIntoSlot(_containerEntity, iIndex);
+                }
+                if (item != null)
+                {
+                    GUIHelper.PickUpItem(item);
+                }
             }
-            if (iItem != null)
+            else if (buttonindex == 1)
             {
-                // pick the item up!
-                GUIHelper.PickUpItem(iItem);
+                Events.UseItem(item);
             }
+            
+
         }
 
         private void btnInv_OnRelease(object obj, EventArgs e)

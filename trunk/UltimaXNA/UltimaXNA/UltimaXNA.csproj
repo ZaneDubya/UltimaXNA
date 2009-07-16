@@ -382,30 +382,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Entities\.svn\entries" />
-    <None Include="Entities\.svn\text-base\BaseObject.cs.svn-base" />
-    <None Include="Entities\.svn\text-base\Corpse.cs.svn-base" />
-    <None Include="Entities\.svn\text-base\DynamicObject.cs.svn-base" />
-    <None Include="Entities\.svn\text-base\Entity.cs.svn-base" />
-    <None Include="Entities\.svn\text-base\GameObject.cs.svn-base" />
-    <None Include="Entities\.svn\text-base\GameObjects.cs.svn-base" />
-    <None Include="Entities\.svn\text-base\GO_Container.cs.svn-base" />
-    <None Include="Entities\.svn\text-base\Item.cs.svn-base" />
-    <None Include="Entities\.svn\text-base\Mobile.cs.svn-base" />
-    <None Include="Entities\.svn\text-base\MobileAnimation.cs.svn-base" />
-    <None Include="Entities\.svn\text-base\Movement.cs.svn-base" />
-    <None Include="Entities\.svn\text-base\Player.cs.svn-base" />
-    <None Include="Entities\.svn\text-base\PlayerMobile.cs.svn-base" />
-    <None Include="Entities\.svn\text-base\PropertyList.cs.svn-base" />
-    <None Include="Entities\.svn\text-base\Shared.cs.svn-base" />
-    <None Include="Entities\.svn\text-base\Unit.cs.svn-base" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Entities\.svn\prop-base\" />
-    <Folder Include="Entities\.svn\props\" />
-    <Folder Include="Entities\.svn\tmp\prop-base\" />
-    <Folder Include="Entities\.svn\tmp\props\" />
-    <Folder Include="Entities\.svn\tmp\text-base\" />
     <Folder Include="Network\Packets\Both\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
