@@ -28,7 +28,8 @@ namespace UltimaXNA.GameObjects
         }
 
         private int _hue;
-        public int Hue // Fix for large hue values per issue12 (http://code.google.com/p/ultimaxna/issues/detail?id=12) --ZDW 6/15/2009
+        public int Hue // Fix for large hue values per issue12 (http://code.google.com/p/ultimaxna/issues/detail?
+id=12) --ZDW 6/15/2009
         {
             get { return _hue; }
             set
@@ -105,7 +106,8 @@ namespace UltimaXNA.GameObjects
 
             int action = animation.GetAction();
             TileEngine.MobileTile mobtile = null;
-            mobtile = new TileEngine.MobileTile(DisplayBodyID, nLocation, nOffset, iDirection, action, animation.AnimationFrame, Serial, 1, Hue, animation.IsMounted);
+            mobtile = new TileEngine.MobileTile(DisplayBodyID, nLocation, nOffset, iDirection, action, 
+animation.AnimationFrame, Serial, 1, Hue, animation.IsMounted);
             mobtile.SubType = TileEngine.MobileTileTypes.Body;
             nCell.AddMobileTile(mobtile);
             // Issue 6 - End
@@ -113,7 +115,8 @@ namespace UltimaXNA.GameObjects
 
             for (int i = 0; i < m_DrawLayers.Length; i++)
             {
-                // Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
+                // Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - 
+Smjert
                 if (equipment[m_DrawLayers[i]] != null && equipment[m_DrawLayers[i]].AnimationDisplayID != 0)
                 {
                     mobtile = new TileEngine.MobileTile(

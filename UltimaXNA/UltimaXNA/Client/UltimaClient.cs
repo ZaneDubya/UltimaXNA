@@ -21,7 +21,8 @@ namespace UltimaXNA.Client
         public UltimaClientStatus Status { get; protected set; }
 
         private string _Account; private string _Password;
-        public void SetAccountPassword(string account, string password) { _Account = account; _Password = password; }
+        public void SetAccountPassword(string account, string password) { _Account = account; _Password = password; 
+} 
         private void clearAccountPassword() { _Account = string.Empty; _Password = string.Empty; }
 
         private UltimaXNA.Network.ClientNetwork _ClientNetwork;
@@ -198,12 +199,15 @@ namespace UltimaXNA.Client
                 iContainerObject.ContainerObject.AddItem(iObject);
             else
             {
-                // Special case for game boards... the server will sometimes send us game pieces for a game board before it sends 
-                // the game board! Right now, I am discarding these messages, it might be better to queue them up for when the game
+                // Special case for game boards... the server will sometimes send us game pieces for a game board 
+before it sends 
+                // the game board! Right now, I am discarding these messages, it might be better to queue them up 
+for when the game
                 // board actually exists.
                 // Let's throw an exception if anything other than a gameboard is ever sent to us.
                 // if (iObject.ItemData.Name != "game piece")
-                throw new Exception("Item {" + iObject.ToString() + "} received before containing object received.");
+                throw new Exception("Item {" + iObject.ToString() + "} received before containing object 
+received.");
             }
         }
 
@@ -238,7 +242,8 @@ namespace UltimaXNA.Client
         {
             CompressedGumpPacket p = (CompressedGumpPacket)packet;
             string[] gumpPieces = interpretGumpPieces(p.GumpData);
-            _GUI.AddWindow("Gump:" + p.GumpID, new GUI.Window_CompressedGump(p.GumpID, gumpPieces, p.TextLines, p.X, p.Y));
+            _GUI.AddWindow("Gump:" + p.GumpID, new GUI.Window_CompressedGump(p.GumpID, gumpPieces, p.TextLines, 
+p.X, p.Y));
         }
 
         private void receive_Container(IRecvPacket packet)
@@ -462,7 +467,8 @@ namespace UltimaXNA.Client
             Mobile iObject = _GameObjects.GetObject<GameObjects.Mobile>(p.Serial, true);
             iObject.DisplayBodyID = p.BodyID;
             iObject.IsWarMode = p.Flags.IsWarMode;
-            // Issue 16 - Pet not showing at login - http://code.google.com/p/ultimaxna/issues/detail?id=16 - Smjert
+            // Issue 16 - Pet not showing at login - http://code.google.com/p/ultimaxna/issues/detail?id=16 - 
+Smjert
             // Since no packet arrives to add your pet, when you move and your pet follows you the client crashes
             if (iObject.Movement.DrawPosition == null)
             {
@@ -648,7 +654,7 @@ namespace UltimaXNA.Client
         private void receive_RequestNameResponse(IRecvPacket packet)
         {
             RequestNameResponsePacket p = (RequestNameResponsePacket)packet;
-            Mobile u = _GameObjects.GetObject<Mobile>(p.Serial, false);
+            Mobile u = _GameObjects.GetObject <Mobile>(p.Serial, false);
             u.Name = p.MobileName;
         }
 
@@ -658,7 +664,8 @@ namespace UltimaXNA.Client
             // 0: Server sent
             // 1: Resurrect
             // 2: Ghost
-            // The only use on OSI for this packet is now sending "2C02" for the "You Are Dead" screen upon character death.
+            // The only use on OSI for this packet is now sending "2C02" for the "You Are Dead" screen upon 
+character death.
             announce_UnhandledPacket(packet);
         }
 
@@ -876,7 +883,8 @@ namespace UltimaXNA.Client
 
         private void announce_UnhandledPacket(IRecvPacket packet, string addendum)
         {
-            GUI.GUIHelper.Chat_AddLine("DEBUG: Unhandled " + packet.Name + ". <" + packet.Id + ">" + " " + addendum);
+            GUI.GUIHelper.Chat_AddLine("DEBUG: Unhandled " + packet.Name + ". <" + packet.Id + ">" + " " + 
+addendum);
         }
 
         private void announce_Packet(IRecvPacket packet)
@@ -890,7 +898,8 @@ namespace UltimaXNA.Client
             {
                 if (context.CanBuy)
                 {
-                    this.Send(new ContextMenuResponsePacket(context.Serial, (short)context.ContextEntry("Buy").ResponseCode));
+                    this.Send(new ContextMenuResponsePacket(context.Serial, (short)context.ContextEntry
+("Buy").ResponseCode));
                 }
             }
             else
@@ -902,7 +911,7 @@ namespace UltimaXNA.Client
 
         private string[] interpretGumpPieces(string gumpData)
         {
-            List<string> i = new List<string>(); ;
+            List<string> i = new List<string>();;
             bool isData = true;
             int dataIndex = 0;
             while (isData)
@@ -918,7 +927,8 @@ namespace UltimaXNA.Client
                     if ((begin != -1) && (end != -1))
                     {
                         string sub = gumpData.Substring(begin + 2, end - begin - 2);
-                        // iConstruct = iConstruct.Substring(0, iBeginReplace) + iArgs[i] + iConstruct.Substring(iEndReplace + 1, iConstruct.Length - iEndReplace - 1);
+                        // iConstruct = iConstruct.Substring(0, iBeginReplace) + iArgs[i] + iConstruct.Substring
+(iEndReplace + 1, iConstruct.Length - iEndReplace - 1);
                         i.Add(sub);
                         dataIndex += end - begin + 2;
                     }
@@ -942,13 +952,14 @@ namespace UltimaXNA.Client
                 int iEndReplace = iConstruct.IndexOf('~', iBeginReplace + 1);
                 if ((iBeginReplace != -1) && (iEndReplace != -1))
                 {
-                    iConstruct = iConstruct.Substring(0, iBeginReplace) + iArgs[i] + iConstruct.Substring(iEndReplace + 1, iConstruct.Length - iEndReplace - 1);
+                    iConstruct = iConstruct.Substring(0, iBeginReplace) + iArgs[i] + iConstruct.Substring
+(iEndReplace + 1, iConstruct.Length - iEndReplace - 1);
                 }
                 else
                 {
                     iConstruct = nBase;
                 }
-
+                
             }
             return iConstruct;
         }
