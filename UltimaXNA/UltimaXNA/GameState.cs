@@ -43,7 +43,7 @@ namespace UltimaXNA
         {
             get
             {
-                return ((Mobile)_Entities.GetPlayerObject()).IsWarMode;
+                return (_Entities.GetPlayerObject() != null) ? ((Mobile)_Entities.GetPlayerObject()).IsWarMode : false;
             }
             set
             {

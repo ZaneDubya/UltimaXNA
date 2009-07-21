@@ -72,47 +72,64 @@ namespace UltimaXNA.GUI
                             // movement. Angle the cursor appropriately.
                             Vector2 cursorCenter;
                             int cursorTextureID;
-                            switch (_GameState.CursorDirection)
+                            Texture2D cursorTexture;
+                            if (_GameState.InWorld)
                             {
-                                case Direction.North:
-                                    cursorCenter = new Vector2(29, 1);
-                                    cursorTextureID = 8299;
-                                    break;
-                                case Direction.Right:
-                                    cursorCenter = new Vector2(41, 9);
-                                    cursorTextureID = 8300;
-                                    break;
-                                case Direction.East:
-                                    cursorCenter = new Vector2(36, 24);
-                                    cursorTextureID = 8301;
-                                    break;
-                                case Direction.Down:
-                                    cursorCenter = new Vector2(14, 33);
-                                    cursorTextureID = 8302;
-                                    break;
-                                case Direction.South:
-                                    cursorCenter = new Vector2(4, 28);
-                                    cursorTextureID = 8303;
-                                    break;
-                                case Direction.Left:
-                                    cursorCenter = new Vector2(2, 10);
-                                    cursorTextureID = 8304;
-                                    break;
-                                case Direction.West:
-                                    cursorCenter = new Vector2(1, 1);
-                                    cursorTextureID = 8305;
-                                    break;
-                                case Direction.Up:
-                                    cursorCenter = new Vector2(2, 8);
-                                    cursorTextureID = 8298;
-                                    break;
-                                default:
-                                    cursorCenter = new Vector2(2, 10);
-                                    cursorTextureID = 8309;
-                                    break;
+                                switch (_GameState.CursorDirection)
+                                {
+                                    case Direction.North:
+                                        cursorCenter = new Vector2(29, 1);
+                                        cursorTextureID = 8299;
+                                        break;
+                                    case Direction.Right:
+                                        cursorCenter = new Vector2(41, 9);
+                                        cursorTextureID = 8300;
+                                        break;
+                                    case Direction.East:
+                                        cursorCenter = new Vector2(36, 24);
+                                        cursorTextureID = 8301;
+                                        break;
+                                    case Direction.Down:
+                                        cursorCenter = new Vector2(14, 33);
+                                        cursorTextureID = 8302;
+                                        break;
+                                    case Direction.South:
+                                        cursorCenter = new Vector2(4, 28);
+                                        cursorTextureID = 8303;
+                                        break;
+                                    case Direction.Left:
+                                        cursorCenter = new Vector2(2, 10);
+                                        cursorTextureID = 8304;
+                                        break;
+                                    case Direction.West:
+                                        cursorCenter = new Vector2(1, 1);
+                                        cursorTextureID = 8305;
+                                        break;
+                                    case Direction.Up:
+                                        cursorCenter = new Vector2(2, 8);
+                                        cursorTextureID = 8298;
+                                        break;
+                                    default:
+                                        cursorCenter = new Vector2(2, 10);
+                                        cursorTextureID = 8309;
+                                        break;
+                                }
+
+                                // Hue the cursor if in warmode.
+                                if (_GameState.WarMode)
+                                    cursorTexture = Data.Art.GetStaticTexture(cursorTextureID - 23, graphics.GraphicsDevice);
+                                else
+                                    cursorTexture = Data.Art.GetStaticTexture(cursorTextureID, graphics.GraphicsDevice);
+                            }
+                            else
+                            {
+                                // not in world. Display a default cursor.
+                                cursorCenter = new Vector2(1, 1);
+                                cursorTextureID = 8305;
+                                cursorTexture = Data.Art.GetStaticTexture(cursorTextureID, graphics.GraphicsDevice);
                             }
                             FormCollection.Cursor.Center = cursorCenter;
-                            FormCollection.Cursor.Texture = Data.Art.GetStaticTexture(cursorTextureID, graphics.GraphicsDevice);
+                            FormCollection.Cursor.Texture = cursorTexture;
                             FormCollection.Cursor.SourceRect = new Rectangle(1, 1, FormCollection.Cursor.Texture.Width - 2, FormCollection.Cursor.Texture.Height - 2);
                             break;
                         case _MouseCursorTargetting:
