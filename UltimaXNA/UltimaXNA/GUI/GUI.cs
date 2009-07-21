@@ -1,13 +1,26 @@
-﻿#region File Description & Usings
-//-----------------------------------------------------------------------------
-// GUI.cs
-//
-// Created by Poplicola
-//-----------------------------------------------------------------------------
+﻿/***************************************************************************
+ *   GUI.cs
+ *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
+ *   
+ *   begin                : May 31, 2009
+ *   email                : poplicola@ultimaxna.com
+ *
+ ***************************************************************************/
+
+/***************************************************************************
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region usings
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using UltimaXNA.Entities;
 using xWinFormsLib;
 #endregion
 
@@ -16,9 +29,9 @@ namespace UltimaXNA.GUI
     public interface IGUI
     {
         bool IsMouseOverGUI(Vector2 nPosition);
-        void Container_Open(GameObjects.Entity nContainerObject, int nGump);
-        void Merchant_Open(GameObjects.Entity nContainerObject, int nGump);
-        void PaperDoll_Open(GameObjects.Entity nMobileObject);
+        void Container_Open(Entity nContainerObject, int nGump);
+        void Merchant_Open(Entity nContainerObject, int nGump);
+        void PaperDoll_Open(Entity nMobileObject);
         void ErrorPopup_Modal(string nText);
         Window Window(string nWindowName);
         Window AddWindow(string windowName, Window window);
@@ -36,7 +49,7 @@ namespace UltimaXNA.GUI
         public string DebugMessage;
 
         private Dictionary<string, Window> _GUIWindows;
-        GameObjects.IGameObjects _GameObjectsService;
+        IEntitiesService _GameObjectsService;
         Client.IUltimaClient _GameClientService;
 
         private int _MouseCursorIndex = int.MinValue; // set so it is always properly initialized to zero in Initialize();
@@ -69,7 +82,7 @@ namespace UltimaXNA.GUI
                         case _MouseCursorHolding:
                             // holding something.
                             FormCollection.Cursor.Center = new Vector2(0, 0);
-                            FormCollection.Cursor.Texture = GUIHelper.ItemIcon(((GameObjects.Item)GUIHelper.MouseHoldingItem).ObjectTypeID);
+                            FormCollection.Cursor.Texture = GUIHelper.ItemIcon(((Item)GUIHelper.MouseHoldingItem).ItemID);
                             FormCollection.Cursor.SourceRect = new Rectangle(0, 0, 64, 64);
                             break;
                         default:
@@ -125,7 +138,7 @@ namespace UltimaXNA.GUI
             _FontArial14 = Game.Content.Load<SpriteFont>(@"fonts\ArialNarrow10");
             _FormCollection = new FormCollection(Game.Window, Game.Services, ref graphics, @"..\..\res\");
             _SpriteBatch = new SpriteBatch(Game.GraphicsDevice);
-            _GameObjectsService = (GameObjects.IGameObjects)Game.Services.GetService(typeof(GameObjects.IGameObjects));
+            _GameObjectsService = (IEntitiesService)Game.Services.GetService(typeof(IEntitiesService));
             _GameClientService = (Client.IUltimaClient)Game.Services.GetService(typeof(Client.IUltimaClient));
             Events.Initialize(Game.Services);
             GUIHelper.SetObjects(graphics.GraphicsDevice, _FormCollection, Game.Services);
@@ -193,6 +206,15 @@ namespace UltimaXNA.GUI
                 _SpriteBatch.DrawString(_FontArial14, DebugMessage,
                     new Vector2(5, 5), Color.White, 0f, Vector2.Zero, 1,
                     SpriteEffects.None, 1f);
+            // version message
+            Version v = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+            DateTime d = new DateTime(v.Build * TimeSpan.TicksPerDay).AddYears(1999).AddDays(-1);
+            string versionString = "UltimaXNA PreAlpha v" + v.Major + "." + v.Minor + Environment.NewLine +
+                "Compiled: " + String.Format("{0:MMMM d, yyyy}", d);
+            _SpriteBatch.DrawString(_FontArial14, versionString,
+                    new Vector2(670, 565), Color.White, 0f, Vector2.Zero, 1,
+                    SpriteEffects.None, 1f);
+            // tooltip message
             _SpriteBatch.DrawString(_FontArial14, GUIHelper.TooltipMsg,
                     new Vector2(GUIHelper.TooltipX, GUIHelper.TooltipY), Color.White, 0f, Vector2.Zero, 1,
                     SpriteEffects.None, 1f);
@@ -259,7 +281,7 @@ namespace UltimaXNA.GUI
             }
         }
 
-        public void PaperDoll_Open(GameObjects.Entity nMobileObject)
+        public void PaperDoll_Open(Entity nMobileObject)
         {
             lock (_FormCollection)
             {
@@ -275,7 +297,7 @@ namespace UltimaXNA.GUI
             }
         }
 
-        public void Container_Open(GameObjects.Entity nContainerObject, int nGump)
+        public void Container_Open(Entity nContainerObject, int nGump)
         {
             lock (_FormCollection)
             {
@@ -291,7 +313,7 @@ namespace UltimaXNA.GUI
             }
         }
 
-        public void Merchant_Open(GameObjects.Entity nContainerObject, int nGump)
+        public void Merchant_Open(Entity nContainerObject, int nGump)
         {
             lock (_FormCollection)
             {

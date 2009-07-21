@@ -1,9 +1,21 @@
-#region File Description & Usings
-//-----------------------------------------------------------------------------
-// Engine.cs
-//
-// Created by Poplicola
-//-----------------------------------------------------------------------------
+/***************************************************************************
+ *   Engine.cs
+ *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
+ *   
+ *   begin                : May 31, 2009
+ *   email                : poplicola@ultimaxna.com
+ *
+ ***************************************************************************/
+
+/***************************************************************************
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region usings
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -16,7 +28,7 @@ namespace UltimaXNA
         private Client.UltimaClient _Client;
         private Input.InputHandler _Input;
         private GameState _GameState;
-        private GameObjects.GameObjects _GameObjects;
+        private Entities.EntitiesCollection _GameObjects;
         private TileEngine.World _World;
         private TileEngine.TileEngine _TileEngine;
         private GUI.EngineGUI _GUI;
@@ -63,7 +75,7 @@ namespace UltimaXNA
             _GameState = new GameState(this);
             this.Components.Add(_GameState);
 
-            _GameObjects = new GameObjects.GameObjects(this);
+            _GameObjects = new Entities.EntitiesCollection(this);
             this.Components.Add(_GameObjects);
 
             _World = new TileEngine.World(this);

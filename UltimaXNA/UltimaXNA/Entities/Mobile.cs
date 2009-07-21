@@ -1,15 +1,28 @@
-﻿#region File Description & Usings
-//-----------------------------------------------------------------------------
-// Unit.cs
-//
-// Created by Poplicola
-//-----------------------------------------------------------------------------
+﻿/***************************************************************************
+ *   Mobile.cs
+ *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
+ *   
+ *   begin                : May 31, 2009
+ *   email                : poplicola@ultimaxna.com
+ *
+ ***************************************************************************/
+
+/***************************************************************************
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region usings
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using UltimaXNA.TileEngine;
 #endregion
 
-namespace UltimaXNA.GameObjects
+namespace UltimaXNA.Entities
 {
     public class Mobile : Entity
     {
@@ -21,15 +34,19 @@ namespace UltimaXNA.GameObjects
         public bool IsMounted { get { return equipment[(int)EquipLayer.Mount] != null; } }
         public bool IsWarMode { get { return animation.WarMode; } set { animation.WarMode = value; } }
 
-        public int DisplayBodyID
+        public int BodyID
         {
             get { return animation.BodyID; }
             set { animation.BodyID = value; }
         }
 
+        public bool Alive
+        {
+            get { return Health.Current != 0; }
+        }
+
         private int _hue;
-        public int Hue // Fix for large hue values per issue12 (http://code.google.com/p/ultimaxna/issues/detail?
-id=12) --ZDW 6/15/2009
+        public int Hue // Fix for large hue values per issue12 (http://code.google.com/p/ultimaxna/issues/detail?id=12) --ZDW 6/15/2009
         {
             get { return _hue; }
             set
@@ -77,13 +94,13 @@ id=12) --ZDW 6/15/2009
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
             if (equipment[(int)EquipLayer.Mount] != null &&
-                equipment[(int)EquipLayer.Mount].ObjectTypeID != 0)
+                equipment[(int)EquipLayer.Mount].ItemID != 0)
             {
-                Movement.Mounted = animation.IsMounted = true;
+                Movement.IsMounted = animation.IsMounted = true;
             }
             else
             {
-                Movement.Mounted = animation.IsMounted = false;
+                Movement.IsMounted = animation.IsMounted = false;
             }
             animation.Update(gameTime);
             base.Update(gameTime);
@@ -105,24 +122,22 @@ id=12) --ZDW 6/15/2009
             int iDirection = Movement.DrawFacing;
 
             int action = animation.GetAction();
-            TileEngine.MobileTile mobtile = null;
-            mobtile = new TileEngine.MobileTile(DisplayBodyID, nLocation, nOffset, iDirection, action, 
-animation.AnimationFrame, Serial, 1, Hue, animation.IsMounted);
-            mobtile.SubType = TileEngine.MobileTileTypes.Body;
+            MobileTile mobtile = null;
+            mobtile = new MobileTile(BodyID, nLocation, nOffset, iDirection, action, animation.AnimationFrame, this, 1, Hue, animation.IsMounted);
+            mobtile.SubType = MobileTileTypes.Body;
             nCell.AddMobileTile(mobtile);
             // Issue 6 - End
 
 
             for (int i = 0; i < m_DrawLayers.Length; i++)
             {
-                // Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - 
-Smjert
+                // Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
                 if (equipment[m_DrawLayers[i]] != null && equipment[m_DrawLayers[i]].AnimationDisplayID != 0)
                 {
                     mobtile = new TileEngine.MobileTile(
                             equipment[m_DrawLayers[i]].AnimationDisplayID, nLocation, nOffset,
                             iDirection, action, animation.AnimationFrame,
-                            Serial, i + 1, equipment[m_DrawLayers[i]].Hue, animation.IsMounted);
+                            this, i + 1, equipment[m_DrawLayers[i]].Hue, animation.IsMounted);
 
                     mobtile.SubType = TileEngine.MobileTileTypes.Equipment;
                     nCell.AddMobileTile(mobtile);

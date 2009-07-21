@@ -1,9 +1,22 @@
-﻿#region File Description & Usings
-//-----------------------------------------------------------------------------
-// FileManager.cs
-//
-// Based on UltimaSDK, modifications by ClintXNA
-//-----------------------------------------------------------------------------
+﻿/***************************************************************************
+ *   FileManager.cs
+ *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
+ *   Based on code from UltimaSDK: http://ultimasdk.codeplex.com/
+ *   
+ *   begin                : May 31, 2009
+ *   email                : poplicola@ultimaxna.com
+ *
+ ***************************************************************************/
+
+/***************************************************************************
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region usings
 using System;
 using System.IO;
 using Microsoft.Win32;

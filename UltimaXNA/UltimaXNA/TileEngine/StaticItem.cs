@@ -1,10 +1,24 @@
-﻿#region File Description & Usings
-//-----------------------------------------------------------------------------
-// StaticItem.cs
-//
-// Created by ClintXNA
-//-----------------------------------------------------------------------------
+﻿/***************************************************************************
+ *   StaticItem.cs
+ *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
+ *   Based on code from ClintXNA's renderer: http://www.runuo.com/forums/xna/92023-hi.html
+ *   
+ *   begin                : May 31, 2009
+ *   email                : poplicola@ultimaxna.com
+ *
+ ***************************************************************************/
+
+/***************************************************************************
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region usings
 using Microsoft.Xna.Framework;
+using UltimaXNA.Entities;
 #endregion
 
 namespace UltimaXNA.TileEngine
@@ -14,10 +28,10 @@ namespace UltimaXNA.TileEngine
         private int m_ID;
         private int m_SortInfluence;
         private int m_Z;
-
         private Vector2 m_Position;
         public Vector2 Position { get { return m_Position; } }
         public int OwnerSerial { get { return -1; } }
+        public Entity OwnerEntity { get { return null; } }
 
         public StaticItem(int id, int z, int sortInfluence, Vector2 nPosition)
         {

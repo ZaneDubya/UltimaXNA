@@ -1,14 +1,27 @@
-﻿#region File Description & Usings
-//-----------------------------------------------------------------------------
-// GameState.cs
-//
-// Created by Poplicola
-//-----------------------------------------------------------------------------
+﻿/***************************************************************************
+ *   GameState.cs
+ *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
+ *   
+ *   begin                : May 31, 2009
+ *   email                : poplicola@ultimaxna.com
+ *
+ ***************************************************************************/
+
+/***************************************************************************
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region usings
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using UltimaXNA.Data;
 using UltimaXNA.Client;
+using UltimaXNA.Entities;
 using UltimaXNA.Network.Packets.Client;
 #endregion
 
@@ -29,16 +42,16 @@ namespace UltimaXNA
         {
             get
             {
-                return ((GameObjects.Mobile)_GameObjects.GetPlayerObject()).IsWarMode;
+                return ((Mobile)_Entities.GetPlayerObject()).IsWarMode;
             }
             set
             {
-                ((GameObjects.Mobile)_GameObjects.GetPlayerObject()).IsWarMode = value;
+                ((Mobile)_Entities.GetPlayerObject()).IsWarMode = value;
             }
         }
         Input.IInputService _Input;
         TileEngine.ITileEngine _TileEngine;
-        GameObjects.IGameObjects _GameObjects;
+        IEntitiesService _Entities;
         TileEngine.IWorld _World;
         GUI.IGUI _GUI;
         Client.IUltimaClient _GameClient;
@@ -96,7 +109,7 @@ namespace UltimaXNA
             // Load the service objects.
             _Input = (Input.IInputService)Game.Services.GetService(typeof(Input.IInputService));
             _TileEngine = (TileEngine.ITileEngine)Game.Services.GetService(typeof(TileEngine.ITileEngine));
-            _GameObjects = (GameObjects.IGameObjects)Game.Services.GetService(typeof(GameObjects.IGameObjects));
+            _Entities = (IEntitiesService)Game.Services.GetService(typeof(IEntitiesService));
             _World = (TileEngine.IWorld)Game.Services.GetService(typeof(TileEngine.IWorld));
             _GUI = (GUI.IGUI)Game.Services.GetService(typeof(GUI.IGUI));
             _GameClient = Game.Services.GetService(typeof(Client.IUltimaClient)) as Client.IUltimaClient;
@@ -109,9 +122,9 @@ namespace UltimaXNA
             if (InWorld)
             {
                 // Set the target frame stuff.
-                ((GUI.Window_StatusFrame)_GUI.Window("StatusFrame")).MyEntity = (GameObjects.Mobile)_GameObjects.GetPlayerObject();
+                ((GUI.Window_StatusFrame)_GUI.Window("StatusFrame")).MyEntity = (Mobile)_Entities.GetPlayerObject();
                 if (LastTarget.IsValid)
-                    ((GUI.Window_StatusFrame)_GUI.Window("StatusFrame")).TargetEntity = _GameObjects.GetObject<GameObjects.Mobile>(LastTarget, false);
+                    ((GUI.Window_StatusFrame)_GUI.Window("StatusFrame")).TargetEntity = _Entities.GetObject<Mobile>(LastTarget, false);
 
                 // Parse keyboard input.
                 parseKeyboard(_Input.Keyboard);
@@ -265,7 +278,7 @@ namespace UltimaXNA
                                     if ((GUI.GUIHelper.MouseHoldingItem).Item_ContainedWithinSerial != 0)
                                     {
                                         // We must manually remove the item from the container, as RunUO does not do this for us.
-                                        GameObjects.Item iContainer = _GameObjects.GetObject<GameObjects.Item>(
+                                        Item iContainer = _Entities.GetObject<Item>(
                                             (GUI.GUIHelper.MouseHoldingItem).Item_ContainedWithinSerial, false);
                                         iContainer.ContainerObject.RemoveItem(GUI.GUIHelper.MouseHoldingItem.Serial);
                                     }
@@ -293,7 +306,7 @@ namespace UltimaXNA
                     try
                     {
                         int direction = 0, sequence = 0, key = 0;
-                        bool hasMoveEvent = _GameObjects.GetPlayerObject().Movement.GetMoveEvent(ref direction, ref sequence, ref key);
+                        bool hasMoveEvent = _Entities.GetPlayerObject().Movement.GetMoveEvent(ref direction, ref sequence, ref key);
                         if (hasMoveEvent)
                             _GameClient.Send(new MoveRequestPacket((byte)direction, (byte)sequence, key));
                     }
@@ -315,7 +328,7 @@ namespace UltimaXNA
             // Same thing if the highest object under the mouse cursor is lower than the groundtile.
             if ((iGroundTile != null) && ((iTopObject == null) || (iTopObject.Z < iGroundTile.Z)))
             {
-                ((GameObjects.Mobile)_GameObjects.GetPlayerObject()).Move(
+                ((Mobile)_Entities.GetPlayerObject()).Move(
                        (int)iGroundTile.Position.X,
                        (int)iGroundTile.Position.Y,
                        (int)iGroundTile.Z, -1);
@@ -329,9 +342,9 @@ namespace UltimaXNA
                     iItemData = Data.TileData.ItemData[iTopObject.ID - 0x4000];
                 else if (iTopObject.Type == UltimaXNA.TileEngine.MapObjectTypes.GameObjectTile)
                 {
-                    GameObjects.Item iObject =
+                    Item iObject =
                         ((iTopObject.Type == TileEngine.MapObjectTypes.GameObjectTile) ?
-                        _GameObjects.GetObject<GameObjects.Item>(iTopObject.OwnerSerial, false) : null);
+                        _Entities.GetObject<Item>(iTopObject.OwnerSerial, false) : null);
                     iItemData = iObject.ItemData;
                 }
                 else
@@ -340,7 +353,7 @@ namespace UltimaXNA
                 if (iItemData.Surface)
                 {
                     // This is a walkable static or gameobject. Walk on it!
-                    ((GameObjects.Mobile)_GameObjects.GetPlayerObject()).Move(
+                    ((Mobile)_Entities.GetPlayerObject()).Move(
                            (int)iTopObject.Position.X,
                            (int)iTopObject.Position.Y,
                            (int)iTopObject.Z + iItemData.CalcHeight, -1);
@@ -377,7 +390,7 @@ namespace UltimaXNA
                 {
                     // This is a GameObject. Pick it up if possible, as long as this is a press event.
 
-                    GameObjects.Item item = _GameObjects.GetObject<GameObjects.Item>(iTopObject.OwnerSerial, false);
+                    Item item = _Entities.GetObject<Item>(iTopObject.OwnerSerial, false);
                     if (item.ItemData.Weight != 255)
                     {
                         // _GameClient.Send(new PickupItemPacket(iObject.Serial, (short)iObject.Item_StackCount));
@@ -395,29 +408,29 @@ namespace UltimaXNA
             TileEngine.IMapObject iMapObject = _TileEngine.MouseOverObject;
             if ((iMapObject != null) && (iMapObject.Type != UltimaXNA.TileEngine.MapObjectTypes.StaticTile))
             {
-                GameObjects.Entity iObject = _GameObjects.GetObject<GameObjects.Entity>(iMapObject.OwnerSerial, false);
+                Entity iObject = _Entities.GetObject<Entity>(iMapObject.OwnerSerial, false);
                 // default option is to simply 'use' this object, although this will doubtless be more complicated in the future.
                 // Perhaps the use option is based on the type of object? Anyways, for right now, we only interact with gameobjects,
                 // and we send a double-click to the server.
-                if (iObject is GameObjects.Item)
+                if (iObject is Item)
                 {
                     _GameClient.Send(new DoubleClickPacket(iObject.Serial));
                 }
-                else if (iObject is GameObjects.PlayerMobile)
+                else if (iObject is PlayerMobile)
                 {
                     LastTarget = iObject.Serial;
-                    if (iObject.Serial == _GameObjects.MySerial)
+                    if (iObject.Serial == _Entities.MySerial)
                     {
                         // this is my player.
                         // if mounted, dismount.
-                        if (((GameObjects.Mobile)iObject).IsMounted)
+                        if (((Mobile)iObject).IsMounted)
                         {
                             _GameClient.Send(new DoubleClickPacket(iObject.Serial));
                         }
                     }
                     // else other interaction?
                 }
-                else if (iObject is GameObjects.Mobile)
+                else if (iObject is Mobile)
                 {
                     // We request a context sensitive menu. This automatically sends a double click if no context menu is handled. See parseContextMenu...
                     LastTarget = iObject.Serial;
@@ -457,8 +470,8 @@ namespace UltimaXNA
             // Toggle for backpack container window.
             if (keyboard.IsKeyPressed(Keys.B) && (keyboard.IsKeyDown(Keys.LeftControl)))
             {
-                Serial backpackSerial = ((GameObjects.PlayerMobile)_GameObjects.GetPlayerObject())
-                    .equipment[(int)GameObjects.EquipLayer.Backpack].Serial;
+                Serial backpackSerial = ((PlayerMobile)_Entities.GetPlayerObject())
+                    .equipment[(int)EquipLayer.Backpack].Serial;
                 if (_GUI.Window("Container:" + backpackSerial) == null)
                     _GameClient.Send(new DoubleClickPacket(backpackSerial));
                 else
@@ -468,10 +481,10 @@ namespace UltimaXNA
             // Toggle for paperdoll window.
             if (keyboard.IsKeyPressed(Keys.C) && (keyboard.IsKeyDown(Keys.LeftControl)))
             {
-                Serial serial = ((GameObjects.PlayerMobile)_GameObjects.GetPlayerObject())
+                Serial serial = ((PlayerMobile)_Entities.GetPlayerObject())
                     .Serial;
                 if (_GUI.Window("PaperDoll:" + serial) == null)
-                    _GUI.PaperDoll_Open(_GameObjects.GetPlayerObject());
+                    _GUI.PaperDoll_Open(_Entities.GetPlayerObject());
                 else
                     _GUI.CloseWindow("PaperDoll:" + serial);
             }
@@ -526,7 +539,7 @@ namespace UltimaXNA
                     }
                     else if (_TileEngine.MouseOverObject.Type == TileEngine.MapObjectTypes.MobileTile)
                     {
-                        GameObjects.Mobile iUnit = _GameObjects.GetObject<GameObjects.Mobile>(_TileEngine.MouseOverObject.OwnerSerial, false);
+                        Mobile iUnit = _Entities.GetObject<Mobile>(_TileEngine.MouseOverObject.OwnerSerial, false);
                         if (iUnit != null)
                             debugMessage += "Name: " + iUnit.Name + Environment.NewLine;
                         debugMessage +=

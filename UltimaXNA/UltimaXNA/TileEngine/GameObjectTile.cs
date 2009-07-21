@@ -1,10 +1,24 @@
-﻿#region File Description & Usings
-//-----------------------------------------------------------------------------
-// MobileTile.cs
-//
-// Created by Poplicola
-//-----------------------------------------------------------------------------
+﻿/***************************************************************************
+ *   GameObjectTile.cs
+ *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
+ *   Based on code from ClintXNA's renderer: http://www.runuo.com/forums/xna/92023-hi.html
+ *   
+ *   begin                : May 31, 2009
+ *   email                : poplicola@ultimaxna.com
+ *
+ ***************************************************************************/
+
+/***************************************************************************
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region usings
 using Microsoft.Xna.Framework;
+using UltimaXNA.Entities;
 #endregion
 
 namespace UltimaXNA.TileEngine
@@ -14,7 +28,7 @@ namespace UltimaXNA.TileEngine
         private int m_ID;
         private int m_Hue;
         private int m_Tiebreaker;
-        private int m_OwnerSerial;
+        private Entity m_OwnerEntity;
         private int m_Direction;
         private int m_BodyID;
         private int m_Frame;
@@ -22,21 +36,21 @@ namespace UltimaXNA.TileEngine
         private Vector3 m_Position;
         public Vector2 Position { get { return new Vector2(m_Position.X, m_Position.Y); } }
 
-        public GameObjectTile(int nID, Vector3 nPosition, int nDirection, int nOwnerSerial, int nHue)
+        public GameObjectTile(int nID, Vector3 nPosition, int nDirection, Entity ownerEntity, int nHue)
         {
             m_ID = nID;
             m_Direction = nDirection;
-            m_OwnerSerial = nOwnerSerial;
+            m_OwnerEntity = ownerEntity;
             m_Tiebreaker = 0;
             m_Hue = nHue;
             m_Position = nPosition;
         }
 
-        public GameObjectTile(int nID, Vector3 nPosition, int nDirection, int nOwnerSerial, int nHue, int nBodyID, float nFrame)
+        public GameObjectTile(int nID, Vector3 nPosition, int nDirection, Entity ownerEntity, int nHue, int nBodyID, float nFrame)
         {
             m_ID = nID;
             m_Direction = nDirection;
-            m_OwnerSerial = nOwnerSerial;
+            m_OwnerEntity = ownerEntity;
             m_Tiebreaker = 0;
             m_Hue = nHue;
             m_Position = nPosition;
@@ -49,8 +63,12 @@ namespace UltimaXNA.TileEngine
         /// </summary>
         public int OwnerSerial
         {
-            get { return m_OwnerSerial; }
-            set { m_OwnerSerial = value; }
+            get { return m_OwnerEntity.Serial; }
+        }
+
+        public Entity OwnerEntity
+        {
+            get { return m_OwnerEntity; }
         }
 
         public int Direction

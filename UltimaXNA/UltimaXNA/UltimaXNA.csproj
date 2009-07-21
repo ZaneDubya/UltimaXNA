@@ -16,6 +16,8 @@
     </ApplicationIcon>
     <Thumbnail>UltimaXNA Logo - Icon 64.png</Thumbnail>
     <IsWebBootstrapper>false</IsWebBootstrapper>
+    <StartupObject>
+    </StartupObject>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -30,8 +32,6 @@
     <ApplicationVersion>0.1.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <StartupObject>
-    </StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -135,6 +135,7 @@
     <Compile Include="Entities\Mobile.cs" />
     <Compile Include="Entities\MobileAnimation.cs" />
     <Compile Include="Entities\Movement.cs" />
+    <Compile Include="Entities\MovementCheck.cs" />
     <Compile Include="Entities\PlayerMobile.cs" />
     <Compile Include="Entities\PropertyList.cs" />
     <Compile Include="Entities\Shared.cs" />
@@ -311,7 +312,9 @@
     <Compile Include="SceneManagement\Scenes\LoginScene.cs" />
     <Compile Include="Serial.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="Shared.cs" />
     <Compile Include="TileEngine\GameObjectTile.cs" />
+    <Compile Include="TileEngine\Interfaces.cs" />
     <Compile Include="TileEngine\MiniMap.cs" />
     <Compile Include="TileEngine\RayPicker.cs" />
     <Compile Include="TileEngine\GroundTile.cs" />

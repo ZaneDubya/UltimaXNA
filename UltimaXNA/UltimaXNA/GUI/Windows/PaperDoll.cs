@@ -1,7 +1,27 @@
-﻿using System;
+﻿/***************************************************************************
+ *   PaperDoll.cs
+ *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
+ *   
+ *   begin                : May 31, 2009
+ *   email                : poplicola@ultimaxna.com
+ *
+ ***************************************************************************/
+
+/***************************************************************************
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region usings
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using UltimaXNA.Entities;
 using xWinFormsLib;
+#endregion
 
 namespace UltimaXNA.GUI
 {
@@ -9,16 +29,16 @@ namespace UltimaXNA.GUI
     {
         private Vector2 mWindowSize = new Vector2(228, 400);
         private Vector2 mBGOffset = new Vector2(0, 0);
-        private GameObjects.Mobile mMobileObject;
+        private Mobile mMobileObject;
         private int mLastContainerUpdated = -1;
         private const int m_MaxButtons = 0x18;
 
         public Serial serial { get { return mMobileObject.Serial; } }
 
-        public Window_PaperDoll(GameObjects.Entity nMobileObject, FormCollection nFormCollection)
+        public Window_PaperDoll(Entity nMobileObject, FormCollection nFormCollection)
             : base()
         {
-            mMobileObject = (GameObjects.Mobile)nMobileObject;
+            mMobileObject = (Mobile)nMobileObject;
 
             //Create a new form
             string iFormName = "frmPaperDoll:" + mMobileObject.Serial;
@@ -97,7 +117,7 @@ namespace UltimaXNA.GUI
         private void btnEquip_OnPress(object obj, EventArgs e)
         {
             int iIndex = Int32.Parse(((CustomButton)obj).Name.Substring(8));
-            GameObjects.Item iItem = mMobileObject.equipment[iIndex];
+            Item iItem = mMobileObject.equipment[iIndex];
             if (iItem != null)
             {
                 // pick the item up!
@@ -117,7 +137,7 @@ namespace UltimaXNA.GUI
         private void btnEquip_OnOver(object obj, EventArgs e)
         {
             int iIndex = Int32.Parse(((CustomButton)obj).Name.Substring(8));
-            GameObjects.Item iItem = mMobileObject.equipment[iIndex];
+            Item iItem = mMobileObject.equipment[iIndex];
 
             if (GUIHelper.MouseHoldingItem != null)
             {
@@ -138,7 +158,7 @@ namespace UltimaXNA.GUI
             }
 
             int iIndex = Int32.Parse(((CustomButton)obj).Name.Substring(8));
-            GameObjects.Item iItem = mMobileObject.equipment[iIndex];
+            Item iItem = mMobileObject.equipment[iIndex];
             if (GUIHelper.ToolTipItem == iItem)
             {
                 GUIHelper.ToolTipItem = null;
@@ -172,9 +192,9 @@ namespace UltimaXNA.GUI
                         continue;
 
                     int iItemTypeID = 0;
-                    GameObjects.Item iItem = mMobileObject.equipment[i];
+                    Item iItem = mMobileObject.equipment[i];
                     if (iItem != null)
-                        iItemTypeID = iItem.ObjectTypeID;
+                        iItemTypeID = iItem.ItemID;
                     ((CustomButton)_MyForm[iBtnName]).Texture = GUIHelper.ItemIcon(iItemTypeID);
                     if (iItemTypeID == 0)
                     {

@@ -1,9 +1,22 @@
-﻿#region File Description & Usings
-//-----------------------------------------------------------------------------
-// Renderer.cs
-//
-// Created by ClintXNA, modifications by Poplicola
-//-----------------------------------------------------------------------------
+﻿/***************************************************************************
+ *   TileEngine.cs
+ *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
+ *   Based on code from ClintXNA's renderer: http://www.runuo.com/forums/xna/92023-hi.html
+ *   
+ *   begin                : May 31, 2009
+ *   email                : poplicola@ultimaxna.com
+ *
+ ***************************************************************************/
+
+/***************************************************************************
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region usings
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
@@ -21,15 +34,7 @@ namespace UltimaXNA.TileEngine
         PickGroundTiles = 4
     }
 
-    public interface ITileEngine
-    {
-        void SetLightDirection(Vector3 nDirection);
-        IMapObject MouseOverObject { get; }
-        IMapObject MouseOverGroundTile { get; }
-        PickTypes PickType { set; }
-        int ObjectsRendered { get; }
-        MiniMap MiniMap { get; }
-    }
+    
 
     class TileEngine : DrawableGameComponent, ITileEngine
     {
@@ -49,7 +54,7 @@ namespace UltimaXNA.TileEngine
 
         // Reference for services
         private Input.IInputService _inputService;
-        private GameObjects.IGameObjects _objectsService;
+        private Entities.IEntitiesService _objectsService;
         private IWorld _worldService;
         private IGameState _gameStateService;
 
@@ -116,7 +121,7 @@ namespace UltimaXNA.TileEngine
             int MaxRoofAltitude = _worldService.MaxRoofAltitude;
 
             // Now determine where to draw. First retrieve the position of the center object.
-            GameObjects.DrawPosition iDrawPosition = _objectsService.GetPlayerObject().Movement.DrawPosition;
+            Entities.DrawPosition iDrawPosition = _objectsService.GetPlayerObject().Movement.DrawPosition;
             
             float xOffset = (this.Game.GraphicsDevice.PresentationParameters.BackBufferWidth / 2) - 22;
             float yOffset = (this.Game.GraphicsDevice.PresentationParameters.BackBufferHeight / 2) -
@@ -453,7 +458,7 @@ namespace UltimaXNA.TileEngine
             base.Initialize();
 
             _inputService = (Input.IInputService)Game.Services.GetService(typeof(Input.IInputService));
-            _objectsService = (GameObjects.IGameObjects)Game.Services.GetService(typeof(GameObjects.IGameObjects));
+            _objectsService = (Entities.IEntitiesService)Game.Services.GetService(typeof(Entities.IEntitiesService));
             _worldService = (IWorld)Game.Services.GetService(typeof(IWorld));
             _gameStateService = (IGameState)Game.Services.GetService(typeof(IGameState));
 

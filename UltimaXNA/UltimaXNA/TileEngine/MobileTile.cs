@@ -1,10 +1,24 @@
-﻿#region File Description & Usings
-//-----------------------------------------------------------------------------
-// MobileTile.cs
-//
-// Created by Poplicola
-//-----------------------------------------------------------------------------
+﻿/***************************************************************************
+ *   MobileTile.cs
+ *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
+ *   Based on code from ClintXNA's renderer: http://www.runuo.com/forums/xna/92023-hi.html
+ *   
+ *   begin                : May 31, 2009
+ *   email                : poplicola@ultimaxna.com
+ *
+ ***************************************************************************/
+
+/***************************************************************************
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region usings
 using Microsoft.Xna.Framework;
+using UltimaXNA.Entities;
 #endregion
 
 namespace UltimaXNA.TileEngine
@@ -21,7 +35,7 @@ namespace UltimaXNA.TileEngine
     {
         private int _ID;
         private int _Tiebreaker;
-        private int _OwnerSerial;
+        private Entity _ownerEntity;
         private int _Action, _Direction, _Hue;
         private float _Frame;
 		// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
@@ -37,14 +51,14 @@ namespace UltimaXNA.TileEngine
         public Vector3 Offset { get { return _Offset; } }
 
 		// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
-        public MobileTile(int nID, Vector3 nPosition, Vector3 nOffset, int nDirection, int nAction, float nActionProgression, int nOwnerSerial, int nLayer, int nHue, bool nMounted)
+        public MobileTile(int nID, Vector3 nPosition, Vector3 nOffset, int nDirection, int nAction, float nActionProgression, Entities.Entity nOwnerEntity, int nLayer, int nHue, bool nMounted)
 		// Issue 6 - End
         {
             _ID = nID;
             _Direction = nDirection;
             _Action = nAction;
             _Frame = nActionProgression;
-            _OwnerSerial = nOwnerSerial;
+            _ownerEntity = nOwnerEntity;
             _Tiebreaker = nLayer;
             _Hue = nHue;
             _Position = nPosition;
@@ -59,8 +73,11 @@ namespace UltimaXNA.TileEngine
         /// </summary>
         public int OwnerSerial
         {
-            get { return _OwnerSerial; }
-            set { _OwnerSerial = value; }
+            get { return _ownerEntity.Serial; }
+        }
+        public Entity OwnerEntity
+        {
+            get { return _ownerEntity; }
         }
 
         public int Action

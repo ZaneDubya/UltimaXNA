@@ -1,17 +1,37 @@
-﻿using System;
+﻿/***************************************************************************
+ *   GUIHelper.cs
+ *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
+ *   
+ *   begin                : May 31, 2009
+ *   email                : poplicola@ultimaxna.com
+ *
+ ***************************************************************************/
+
+/***************************************************************************
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region usings
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using xWinFormsLib;
 using System.IO;
+using UltimaXNA.Entities;
 using UltimaXNA.Network.Packets.Client;
+#endregion
 
 namespace UltimaXNA.GUI
 {
     static class GUIHelper
     {
         private static Client.IUltimaClient _networkService;
-        private static GameObjects.IGameObjects _entityService;
+        private static IEntitiesService _entityService;
         private static GUI.IGUI _GUI;
         private static TileEngine.ITileEngine _tileEngineService;
         private static FormCollection _formCollection;
@@ -32,15 +52,15 @@ namespace UltimaXNA.GUI
 
         private static List<string> _queuedChatText = new List<string>();
 
-        public static GameObjects.Item MouseHoldingItem;
-        private static GameObjects.Item _ToolTipItem;
+        public static Item MouseHoldingItem;
+        private static Item _ToolTipItem;
 
         public static void SetObjects(GraphicsDevice graphicsDevice, FormCollection formCollection, GameServiceContainer services)
         {
             _graphicsDevice = graphicsDevice;
             _GUI = services.GetService<GUI.IGUI>();
             _networkService = services.GetService<Client.IUltimaClient>();
-            _entityService = services.GetService<GameObjects.IGameObjects>();
+            _entityService = services.GetService<IEntitiesService>();
             _tileEngineService = services.GetService<TileEngine.ITileEngine>();
             _formCollection = formCollection;
         }
@@ -107,15 +127,15 @@ namespace UltimaXNA.GUI
             }
         }
 
-        public static void PickUpItem(GameObjects.Item nObject)
+        public static void PickUpItem(Item nObject)
         {
             MouseHoldingItem = nObject;
         }
 
-        public static void DropItemIntoSlot(GameObjects.Entity nDestContainer, int nDestSlot)
+        public static void DropItemIntoSlot(Entity nDestContainer, int nDestSlot)
         {
-            GameObjects.Item iHeldObject = (GameObjects.Item)MouseHoldingItem;
-            GameObjects.Item iDestContainer = (GameObjects.Item)nDestContainer;
+            Item iHeldObject = (Item)MouseHoldingItem;
+            Item iDestContainer = (Item)nDestContainer;
 
             if (iHeldObject.Wearer != null)
             {
@@ -147,7 +167,7 @@ namespace UltimaXNA.GUI
                         // dest slot is empty.
                         if (iHeldObject.Item_ContainedWithinSerial.IsValid)
                         {
-                            _entityService.GetObject<GameObjects.Item>(iHeldObject.Item_ContainedWithinSerial, false).ContainerObject.RemoveItem(iHeldObject.Serial);
+                            _entityService.GetObject<Item>(iHeldObject.Item_ContainedWithinSerial, false).ContainerObject.RemoveItem(iHeldObject.Serial);
                         }
                         _networkService.Send(new PickupItemPacket(iHeldObject.Serial, (short)iHeldObject.Item_StackCount));
                         _networkService.Send(new DropItemPacket(iHeldObject.Serial, (short)nDestSlot, (short)0x7FFF,
@@ -157,7 +177,7 @@ namespace UltimaXNA.GUI
                     {
                         if (iHeldObject.Item_ContainedWithinSerial.IsValid)
                         {
-                            _entityService.GetObject<GameObjects.Item>(iHeldObject.Item_ContainedWithinSerial, false).ContainerObject.RemoveItem(iHeldObject.Serial);
+                            _entityService.GetObject<Item>(iHeldObject.Item_ContainedWithinSerial, false).ContainerObject.RemoveItem(iHeldObject.Serial);
                         }
                         _networkService.Send(new PickupItemPacket(iHeldObject.Serial, (short)iHeldObject.Item_StackCount));
                         _networkService.Send(new DropItemPacket(iHeldObject.Serial, (short)0, (short)0,
@@ -171,20 +191,20 @@ namespace UltimaXNA.GUI
         public static void DropItemOntoGround(int x, int y, int z)
         {
             int groundSerial = unchecked((int)0xffffffff);
-            GameObjects.Item iHeldObject = (GameObjects.Item)MouseHoldingItem;
+            Item iHeldObject = (Item)MouseHoldingItem;
             _networkService.Send(new PickupItemPacket(iHeldObject.Serial, (short)iHeldObject.Item_StackCount));
             _networkService.Send(new DropItemPacket(iHeldObject.Serial, (short)x, (short)y, (byte)z, 0, groundSerial));
             GUI.GUIHelper.MouseHoldingItem = null;
         }
 
-        public static void WearItem(GameObjects.Entity nDestMobile, int nDestSlot)
+        public static void WearItem(Entity nDestMobile, int nDestSlot)
         {
-            GameObjects.Item iHeldObject = (GameObjects.Item)MouseHoldingItem;
-            GameObjects.Mobile iDestMobile = (GameObjects.Mobile)nDestMobile;
+            Item iHeldObject = (Item)MouseHoldingItem;
+            Mobile iDestMobile = (Mobile)nDestMobile;
 
             if (iHeldObject.Item_ContainedWithinSerial != 0)
             {
-                GameObjects.Item iSourceContainer = _entityService.GetObject<GameObjects.Item>(iHeldObject.Item_ContainedWithinSerial, false);
+                Item iSourceContainer = _entityService.GetObject<Item>(iHeldObject.Item_ContainedWithinSerial, false);
                 iHeldObject.Item_ContainedWithinSerial = 0;
                 iSourceContainer.ContainerObject.RemoveItem(iHeldObject.Serial);
             }
@@ -208,7 +228,7 @@ namespace UltimaXNA.GUI
             _networkService.Send(new RequestContextMenuPacket(nVendorSerial));
         }
 
-        public static GameObjects.Item ToolTipItem
+        public static Item ToolTipItem
         {
             set
             {
