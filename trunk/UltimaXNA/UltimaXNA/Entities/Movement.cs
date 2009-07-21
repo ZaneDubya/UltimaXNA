@@ -73,8 +73,8 @@ namespace UltimaXNA.Entities
         
         public float MoveSequence = 0f;
 
-        public int TileX { get { return (int)_LastTile.Location.X; } }
-        public int TileY { get { return (int)_LastTile.Location.Y; } }
+        public int TileX { get { return (int)_CurrentTile.Location.X; } }
+        public int TileY { get { return (int)_CurrentTile.Location.Y; } }
 
         public DrawPosition DrawPosition { get; protected set; }
         
@@ -130,12 +130,21 @@ namespace UltimaXNA.Entities
             _MoveEvent.ResetMoveSequence();
         }
 
+        public void Move(Direction facing)
+        {
+            if (!IsMoving)
+            {
+                Vector3 position = MovementCheck.OffsetTile(_CurrentTile.Location, facing);
+                SetGoalTile((int)position.X, (int)position.Y, (int)position.Z);
+            }
+        }
+
         public bool IsMoving
         {
             get
             {
-                if ((_CurrentTile.Location.X == _GoalTile.Location.X) && 
-                    (_CurrentTile.Location.Y == _GoalTile.Location.Y) &&
+                if (((int)_CurrentTile.Location.X == (int)_GoalTile.Location.X) &&
+                    ((int)_CurrentTile.Location.Y == (int)_GoalTile.Location.Y) &&
                     DrawPosition.OffsetV3 == new Vector3())
                     return false;
                 return true;
@@ -258,7 +267,7 @@ namespace UltimaXNA.Entities
             if (moveIsOkay)
             {
                 //if (IsRunning)
-                    facing |= Direction.Running;
+                //    facing |= Direction.Running;
                 return new TilePosition((int)nextTile.X, (int)nextTile.Y, nextAltitude);
             }
             else
