@@ -135,7 +135,7 @@ namespace UltimaXNA.GUI
         public static void DropItemIntoSlot(Entity nDestContainer, int nDestSlot)
         {
             Item iHeldObject = (Item)MouseHoldingItem;
-            Item iDestContainer = (Item)nDestContainer;
+            ContainerItem iDestContainer = (ContainerItem)nDestContainer;
 
             if (iHeldObject.Wearer != null)
             {
@@ -157,17 +157,17 @@ namespace UltimaXNA.GUI
                 if (iHeldObject.Item_ContainedWithinSerial == iDestContainer.Serial)
                 {
                     // moving between slots in a single container.
-                    iDestContainer.ContainerObject.Event_MoveItemToSlot(iHeldObject, nDestSlot);
+                    iDestContainer.Contents.Event_MoveItemToSlot(iHeldObject, nDestSlot);
                 }
                 else
                 {
                     // moving between two containers, or moving from ground to a container.
-                    if (iDestContainer.ContainerObject.GetContents(nDestSlot) == null)
+                    if (iDestContainer.Contents.GetContents(nDestSlot) == null)
                     {
                         // dest slot is empty.
                         if (iHeldObject.Item_ContainedWithinSerial.IsValid)
                         {
-                            _entityService.GetObject<Item>(iHeldObject.Item_ContainedWithinSerial, false).ContainerObject.RemoveItem(iHeldObject.Serial);
+                            _entityService.GetObject<ContainerItem>(iHeldObject.Item_ContainedWithinSerial, false).Contents.RemoveItem(iHeldObject.Serial);
                         }
                         _networkService.Send(new PickupItemPacket(iHeldObject.Serial, (short)iHeldObject.Item_StackCount));
                         _networkService.Send(new DropItemPacket(iHeldObject.Serial, (short)nDestSlot, (short)0x7FFF,
@@ -177,7 +177,7 @@ namespace UltimaXNA.GUI
                     {
                         if (iHeldObject.Item_ContainedWithinSerial.IsValid)
                         {
-                            _entityService.GetObject<Item>(iHeldObject.Item_ContainedWithinSerial, false).ContainerObject.RemoveItem(iHeldObject.Serial);
+                            _entityService.GetObject<ContainerItem>(iHeldObject.Item_ContainedWithinSerial, false).Contents.RemoveItem(iHeldObject.Serial);
                         }
                         _networkService.Send(new PickupItemPacket(iHeldObject.Serial, (short)iHeldObject.Item_StackCount));
                         _networkService.Send(new DropItemPacket(iHeldObject.Serial, (short)0, (short)0,
@@ -202,11 +202,11 @@ namespace UltimaXNA.GUI
             Item iHeldObject = (Item)MouseHoldingItem;
             Mobile iDestMobile = (Mobile)nDestMobile;
 
-            if (iHeldObject.Item_ContainedWithinSerial != unchecked((int)0xFFFFFFFF))
+            if (iHeldObject.Item_ContainedWithinSerial.IsValid)
             {
-                Item iSourceContainer = _entityService.GetObject<Item>(iHeldObject.Item_ContainedWithinSerial, false);
+                ContainerItem iSourceContainer = _entityService.GetObject<ContainerItem>(iHeldObject.Item_ContainedWithinSerial, false);
                 iHeldObject.Item_ContainedWithinSerial = 0;
-                iSourceContainer.ContainerObject.RemoveItem(iHeldObject.Serial);
+                iSourceContainer.Contents.RemoveItem(iHeldObject.Serial);
             }
             _networkService.Send(new PickupItemPacket(iHeldObject.Serial, (short)0));
             _networkService.Send(new DropToLayerPacket(iHeldObject.Serial, (byte)nDestSlot, iDestMobile.Serial));

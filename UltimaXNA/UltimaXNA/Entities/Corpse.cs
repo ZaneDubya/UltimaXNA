@@ -22,7 +22,7 @@ using Microsoft.Xna.Framework;
 
 namespace UltimaXNA.Entities
 {
-    class Corpse : Item
+    class Corpse : ContainerItem
     {
         public Serial MobileSerial = 0;
 

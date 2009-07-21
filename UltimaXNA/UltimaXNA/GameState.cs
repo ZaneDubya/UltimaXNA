@@ -283,9 +283,9 @@ namespace UltimaXNA
                                     if ((GUI.GUIHelper.MouseHoldingItem).Item_ContainedWithinSerial.IsValid)
                                     {
                                         // We must manually remove the item from the container, as RunUO does not do this for us.
-                                        Item iContainer = _Entities.GetObject<Item>(
+                                        ContainerItem iContainer = _Entities.GetObject<ContainerItem>(
                                             (GUI.GUIHelper.MouseHoldingItem).Item_ContainedWithinSerial, false);
-                                        iContainer.ContainerObject.RemoveItem(GUI.GUIHelper.MouseHoldingItem.Serial);
+                                        iContainer.Contents.RemoveItem(GUI.GUIHelper.MouseHoldingItem.Serial);
                                     }
                                     GUI.GUIHelper.DropItemOntoGround(x, y, z);
                                 }
@@ -298,7 +298,10 @@ namespace UltimaXNA
                     // or pick it up, depending on what kind of object we are looking at.
                     if (_Input.Mouse.Buttons[0].Press)
                     {
-                        checkLeftClick();
+                        if (!_GUI.IsMouseOverGUI(_Input.Mouse.Position))
+                        {
+                            checkLeftClick();
+                        }
                     }
 
                     if (_Input.Mouse.Buttons[1].Press)
@@ -438,8 +441,7 @@ namespace UltimaXNA
                     }
                 }
             }
-
-            checkMove();
+                checkMove();
         }
 
         private void checkRightClick()

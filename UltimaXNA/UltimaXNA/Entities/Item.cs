@@ -24,20 +24,6 @@ namespace UltimaXNA.Entities
 {
     public class Item : Entity
     {
-        // GameObjects can potentially have inventory (chests, for example).
-        // The Serial for the container for this inventory is the same as the
-        // GameObject's Serial.
-        private GameObject_Container m_ContainerObject = null;
-        public GameObject_Container ContainerObject
-        {
-            get
-            {
-                if (m_ContainerObject == null)
-                    m_ContainerObject = new GameObject_Container(this);
-                return m_ContainerObject;
-            }
-        }
-
         public Item(Serial serial)
             : base(serial)
         {
@@ -107,8 +93,6 @@ namespace UltimaXNA.Entities
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            if (m_ContainerObject != null)
-                m_ContainerObject.Update(gameTime);
         }
 
         public override string ToString()

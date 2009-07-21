@@ -24,7 +24,7 @@ using Microsoft.Xna.Framework;
 namespace UltimaXNA.Entities
 {
     // This is the class which contains the contents of a container's slots.
-    class GameObject_ContainerContents
+    class ContainerContents
     {
         private const int _NumberOfSlots = 0x100;
         private Item[] _SlotContents = new Item[_NumberOfSlots];
@@ -139,7 +139,7 @@ namespace UltimaXNA.Entities
         private Item _ParentObject;
         // All the contents of the container are kept in the mContents class,
         // unless they are being moved between slots or into or out of the container.
-        private GameObject_ContainerContents _contents = new GameObject_ContainerContents();
+        private ContainerContents _contents = new ContainerContents();
         // Update tickers are referenced by the GUI - when this value changes, the GUI knows to update.
         public int UpdateTicker { get { return _contents.UpdateTicker; } }
         // Get the last occupied slot, so the GUI knows how many slots to draw.

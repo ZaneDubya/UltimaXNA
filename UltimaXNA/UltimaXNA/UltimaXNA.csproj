@@ -126,11 +126,12 @@
     <Compile Include="Engine.cs" />
     <Compile Include="Data\FileManager.cs" />
     <Compile Include="Data\FileIndexClint.cs" />
+    <Compile Include="Entities\ContainerItem.cs" />
     <Compile Include="Entities\Corpse.cs" />
     <Compile Include="Entities\DynamicObject.cs" />
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Entities\GameObjects.cs" />
-    <Compile Include="Entities\GO_Container.cs" />
+    <Compile Include="Entities\ContainerContents.cs" />
     <Compile Include="Entities\Item.cs" />
     <Compile Include="Entities\Mobile.cs" />
     <Compile Include="Entities\MobileAnimation.cs" />

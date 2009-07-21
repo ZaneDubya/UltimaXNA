@@ -191,8 +191,8 @@ namespace UltimaXNA.Client
                 iObject.Item_InvX = i.X;
                 iObject.Item_InvY = i.Y;
                 // ... and add it the container contents of the container.
-                Item iContainerObject = _Entities.GetObject<Item>(i.ContainerSerial, true);
-                iContainerObject.ContainerObject.AddItem(iObject);
+                ContainerItem iContainerObject = _Entities.GetObject<ContainerItem>(i.ContainerSerial, true);
+                iContainerObject.Contents.AddItem(iObject);
             }
         }
 
@@ -205,9 +205,9 @@ namespace UltimaXNA.Client
             iObject.Item_InvX = p.X;
             iObject.Item_InvY = p.Y;
             // ... and add it the container contents of the container.
-            Item iContainerObject = _Entities.GetObject<Item>(p.ContainerSerial, true);
+            ContainerItem iContainerObject = _Entities.GetObject<ContainerItem>(p.ContainerSerial, true);
             if (iContainerObject != null)
-                iContainerObject.ContainerObject.AddItem(iObject);
+                iContainerObject.Contents.AddItem(iObject);
             else
             {
                 // Special case for game boards... the server will sometimes send us game pieces for a game board before it sends 
@@ -264,7 +264,7 @@ namespace UltimaXNA.Client
             // Only try to open a container of type Container. Note that GameObjects can
             // have container objects and will expose them when called through GetContainerObject(int)
             // instead of GetObject(int).
-            Item o = _Entities.GetObject<Item>(p.Serial, false);
+            ContainerItem o = _Entities.GetObject<ContainerItem>(p.Serial, false);
             if (o is Item)
             {
                 _GUI.Container_Open(o, p.GumpId);
@@ -975,7 +975,10 @@ namespace UltimaXNA.Client
             }
             else
             {
-                item = _Entities.GetObject<Item>((int)serial, true);
+                if (Data.TileData.ItemData[itemID].Container)
+                    item = _Entities.GetObject<ContainerItem>((int)serial, true);
+                else
+                    item = _Entities.GetObject<Item>((int)serial, true);
             }
             item.ItemID = itemID;
             item.Hue = nHue;
