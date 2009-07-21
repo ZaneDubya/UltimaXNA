@@ -162,6 +162,11 @@ namespace UltimaXNA.Entities
             animation.SetAnimation((MobileAction)action, frameCount, repeatCount, reverse, repeat, delay);
         }
 
+        public void Move(Direction facing)
+        {
+                Movement.Move(facing);
+        }
+
         public void Move(int nX, int nY, int nZ, int nFacing)
         {
             if (nFacing != -1)

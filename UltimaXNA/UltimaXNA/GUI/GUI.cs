@@ -51,6 +51,7 @@ namespace UltimaXNA.GUI
         private Dictionary<string, Window> _GUIWindows;
         IEntitiesService _GameObjectsService;
         Client.IUltimaClient _GameClientService;
+        IGameState _GameState;
 
         private int _MouseCursorIndex = int.MinValue; // set so it is always properly initialized to zero in Initialize();
         private const int _MouseCursorHolding = int.MaxValue;
@@ -61,17 +62,58 @@ namespace UltimaXNA.GUI
             set
             {
                 // Only change the mouse cursor when you need to.
-                if (_MouseCursorIndex != value)
+                if (_MouseCursorIndex != value || value == 0)
                 {
                     _MouseCursorIndex = value;
                     GraphicsDeviceManager graphics = Game.Services.GetService(typeof(IGraphicsDeviceService)) as GraphicsDeviceManager;
                     switch (_MouseCursorIndex)
                     {
                         case 0:
-                            // movement
-                            FormCollection.Cursor.Center = new Vector2(0, 0);
-                            FormCollection.Cursor.Texture = Data.Art.GetStaticTexture(8307, graphics.GraphicsDevice);
-                            FormCollection.Cursor.SourceRect = new Rectangle(1, 1, 31, 26);
+                            // movement. Angle the cursor appropriately.
+                            Vector2 cursorCenter;
+                            int cursorTextureID;
+                            switch (_GameState.CursorDirection)
+                            {
+                                case Direction.North:
+                                    cursorCenter = new Vector2(29, 1);
+                                    cursorTextureID = 8299;
+                                    break;
+                                case Direction.Right:
+                                    cursorCenter = new Vector2(41, 9);
+                                    cursorTextureID = 8300;
+                                    break;
+                                case Direction.East:
+                                    cursorCenter = new Vector2(36, 24);
+                                    cursorTextureID = 8301;
+                                    break;
+                                case Direction.Down:
+                                    cursorCenter = new Vector2(14, 33);
+                                    cursorTextureID = 8302;
+                                    break;
+                                case Direction.South:
+                                    cursorCenter = new Vector2(4, 28);
+                                    cursorTextureID = 8303;
+                                    break;
+                                case Direction.Left:
+                                    cursorCenter = new Vector2(2, 10);
+                                    cursorTextureID = 8304;
+                                    break;
+                                case Direction.West:
+                                    cursorCenter = new Vector2(1, 1);
+                                    cursorTextureID = 8305;
+                                    break;
+                                case Direction.Up:
+                                    cursorCenter = new Vector2(2, 8);
+                                    cursorTextureID = 8298;
+                                    break;
+                                default:
+                                    cursorCenter = new Vector2(2, 10);
+                                    cursorTextureID = 8309;
+                                    break;
+                            }
+                            FormCollection.Cursor.Center = cursorCenter;
+                            FormCollection.Cursor.Texture = Data.Art.GetStaticTexture(cursorTextureID, graphics.GraphicsDevice);
+                            FormCollection.Cursor.SourceRect = new Rectangle(1, 1, FormCollection.Cursor.Texture.Width - 2, FormCollection.Cursor.Texture.Height - 2);
                             break;
                         case _MouseCursorTargetting:
                             // target
@@ -140,12 +182,14 @@ namespace UltimaXNA.GUI
             _SpriteBatch = new SpriteBatch(Game.GraphicsDevice);
             _GameObjectsService = (IEntitiesService)Game.Services.GetService(typeof(IEntitiesService));
             _GameClientService = (Client.IUltimaClient)Game.Services.GetService(typeof(Client.IUltimaClient));
+            _GameState = (IGameState)Game.Services.GetService(typeof(IGameState));
             Events.Initialize(Game.Services);
             GUIHelper.SetObjects(graphics.GraphicsDevice, _FormCollection, Game.Services);
             _GUIWindows = new Dictionary<string, Window>();
             _DrawForms = true;
             MouseCursor = 0;
             base.Initialize();
+            FormCollection.Cursor.HasShadow = false;
         }
 
         protected override void UnloadContent()
@@ -170,6 +214,11 @@ namespace UltimaXNA.GUI
             else if (GUIHelper.MouseHoldingItem != null)
             {
                 MouseCursor = _MouseCursorHolding;
+            }
+            else
+            {
+                // refresh the mouse cursor.
+                MouseCursor = 0;
             }
 
             // First update our collection of windows.

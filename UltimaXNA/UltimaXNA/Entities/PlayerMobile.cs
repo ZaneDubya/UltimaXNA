@@ -26,12 +26,18 @@ namespace UltimaXNA.Entities
         public PlayerMobile(Serial serial)
             : base(serial)
         {
-            animation.HoldAnimationMS = 0;
+
         }
 
         public override string ToString()
         {
             return base.ToString() + " | " + Name;
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            animation.HoldAnimationMS = gameTime.ElapsedRealTime.Milliseconds * 2;
+            base.Update(gameTime);
         }
     }
 }

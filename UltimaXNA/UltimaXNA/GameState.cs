@@ -34,6 +34,7 @@ namespace UltimaXNA
         Serial LastTarget { get; set; }
         void MouseTargeting(int nCursorID, int nTargetingType);
         bool WarMode { get; set; }
+        Direction CursorDirection { get; }
     }
 
     public class GameState : GameComponent, IGameState
@@ -64,6 +65,7 @@ namespace UltimaXNA
                 _GameClient.Send(new GetPlayerStatusPacket(0x04, _lastTarget));
             }
         }
+        public Direction CursorDirection { get; protected set; }
 
         public string DebugMessage { get { return generateDebugMessage(); } }
 
@@ -171,6 +173,9 @@ namespace UltimaXNA
         {
             if (InWorld)
             {
+                // Set the cursor direction.
+                CursorDirection = mousePositionToDirection(_Input.Mouse.Position);
+
                 // Check to see if we are actively targetting something, or we have normal mouse interaction.
                 if (isTargeting)
                 {
@@ -319,6 +324,40 @@ namespace UltimaXNA
         }
 
         private void checkMove()
+        {
+            ((Mobile)_Entities.GetPlayerObject()).Move(CursorDirection);
+            if (_MovementFollowsMouse)
+                _ContinuousMoveCheck = true;
+        }
+
+        private Direction mousePositionToDirection(Vector2 mousePosition)
+        {
+            double Angle = Math.Atan2(mousePosition.Y - 300, mousePosition.X - 400);
+            if (Angle < 0)
+                Angle = Math.PI + (Math.PI + Angle);
+            double piPerSegment = (Math.PI * 2f) / 8f;
+            double segmentValue = (Math.PI * 2f) / 16f;
+            int direction = int.MaxValue;
+
+            for (int i = 0; i < 8; i++)
+            {
+                if (Angle >= segmentValue && Angle <= (segmentValue + piPerSegment))
+                {
+                    direction = i + 1;
+                    break;
+                }
+                segmentValue += piPerSegment;
+            }
+
+            if (direction == int.MaxValue)
+                direction = 0;
+
+            direction = (direction >= 7) ? (direction - 7) : (direction + 1);
+
+            return (Direction)direction;
+        }
+
+        private void checkMove_OLD()
         {
             TileEngine.IMapObject iGroundTile = _TileEngine.MouseOverGroundTile;
             TileEngine.IMapObject iTopObject = _TileEngine.MouseOverObject;
