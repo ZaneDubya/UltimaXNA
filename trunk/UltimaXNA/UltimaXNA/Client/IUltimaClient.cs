@@ -42,5 +42,6 @@ namespace UltimaXNA.Client
         void Disconnect();
         void Send(UltimaXNA.Network.ISendPacket packet);
         void SetAccountPassword(string nAccount, string nPassword);
+        bool IsConnected { get; }
     }
 }

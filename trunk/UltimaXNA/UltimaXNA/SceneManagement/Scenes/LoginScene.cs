@@ -40,6 +40,7 @@ namespace UltimaXNA.SceneManagement
         public override void Intitialize()
         {
             base.Intitialize();
+            GUI.Reset();
             GUI.AddWindow("LoginBG", new Window_LoginBG());
             Window_Login w = (Window_Login)GUI.AddWindow("LoginWindow", new Window_Login());
             w.OnLogin += this.OnLogin;

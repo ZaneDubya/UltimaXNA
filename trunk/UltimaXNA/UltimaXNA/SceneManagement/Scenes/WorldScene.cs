@@ -51,5 +51,16 @@ namespace UltimaXNA.SceneManagement
             GUI.CloseWindow("StatusFrame");
             ((IGameState)Game.Services.GetService(typeof(IGameState))).InWorld = false;
         }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+            if (!Network.IsConnected && SceneManager.CurrentScene.SceneState == SceneState.Active)
+            {
+                SceneManager.CurrentScene = new LoginScene(Game);
+                GUI.ErrorPopup_Modal("You have lost your connection with the server.");
+                return;
+            }
+        }
     }
 }

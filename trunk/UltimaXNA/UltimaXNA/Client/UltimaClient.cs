@@ -41,6 +41,14 @@ namespace UltimaXNA.Client
         private IEntitiesService _Entities;
         private UltimaXNA.IGameState _GameState;
 
+        public bool IsConnected
+        {
+            get
+            {
+                return _ClientNetwork.IsConnected;
+            }
+        }
+
         public UltimaClient(Game game)
             : base(game)
         {
