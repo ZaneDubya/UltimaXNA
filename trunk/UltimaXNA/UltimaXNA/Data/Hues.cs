@@ -160,6 +160,11 @@ namespace UltimaXNA.Data
             return System.Drawing.Color.FromArgb((c16 & 0x7C00) >> 7, (c16 & 0x3E0) >> 2, (c16 & 0x1F) << 3);
         }
 
+        public ushort GetColorUShort(int index)
+        {
+            return (ushort)m_Colors[index];
+        }
+
         public Hue(int index, BinaryReader bin)
         {
             m_Index = index;

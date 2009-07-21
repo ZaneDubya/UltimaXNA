@@ -22,6 +22,7 @@ using System.IO;
 using System.Drawing;
 using System.Drawing.Imaging;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework;
 #endregion
 
 namespace UltimaXNA.Data
@@ -182,7 +183,7 @@ namespace UltimaXNA.Data
             int height = extra & 0xFFFF;
 
             Bitmap bmp = new Bitmap(width, height, PixelFormat.Format16bppRgb555);
-            BitmapData bd = bmp.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format16bppRgb555);
+            BitmapData bd = bmp.LockBits(new System.Drawing.Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format16bppRgb555);
             BinaryReader bin = new BinaryReader(stream);
 
             int[] lookups = new int[height];
@@ -222,6 +223,88 @@ namespace UltimaXNA.Data
 
             bmp.UnlockBits(bd);
             return bmp;
+        }
+
+        public unsafe static Texture2D GetGumpXNA(int index, int hueIndex, bool onlyHueGreyPixels)
+        {
+            int length, extra;
+            bool patched;
+            Stream stream = m_FileIndex.Seek(index, out length, out extra, out patched);
+
+            if (stream == null)
+                return null;
+
+            int width = (extra >> 16) & 0xFFFF;
+            int height = extra & 0xFFFF;
+
+            ushort[] pixels = new ushort[width * height];
+            BinaryReader bin = new BinaryReader(stream);
+
+            int[] lookups = new int[height];
+            int start = (int)bin.BaseStream.Position;
+
+            for (int i = 0; i < height; ++i)
+                lookups[i] = start + (bin.ReadInt32() * 4);
+
+            Hue hueObject = null;
+            hueIndex = (hueIndex & 0x3FFF) - 1;
+            if (hueIndex >= 0 && hueIndex < Hues.List.Length)
+            {
+                hueObject = Hues.List[hueIndex];
+            }
+
+            fixed (ushort* line = &pixels[0])
+            {
+                for (int y = 0; y < height; ++y)
+                {
+                    bin.BaseStream.Seek(lookups[y], SeekOrigin.Begin);
+
+                    ushort* cur = line + (y * width);
+                    ushort* end = cur + (width);
+
+                    while (cur < end)
+                    {
+                        uint color = bin.ReadUInt16();
+                        ushort* next = cur + bin.ReadUInt16();
+
+                        if (color == 0)
+                        {
+                            cur = next;
+                        }
+                        else
+                        {
+                            if (hueIndex < 0)
+                            {
+                                color |= 0x8000;
+                            }
+                            else
+                            {
+                                if (onlyHueGreyPixels)
+                                {
+                                    if (((color & 0x1F) == ((color >> 5) & 0x1F)) && ((color & 0x1F) == (color >> 10)))
+                                    {
+                                        color = hueObject.GetColorUShort((int)(color >> 10));
+                                    }
+                                    else
+                                    {
+                                        color |= 0x8000;
+                                    }
+                                }
+                                else
+                                {
+                                    color = hueObject.GetColorUShort((int)(color >> 10));
+                                }
+                            }
+                            while (cur < next)
+                                *cur++ = (ushort)color;
+                        }
+                    }
+                }
+            }
+
+            Texture2D iTexture = new Texture2D(GraphicsDevice, width, height, 1, TextureUsage.None, SurfaceFormat.Bgra5551);
+            iTexture.SetData(pixels);
+            return iTexture;
         }
 
         public unsafe static Texture2D GetGumpXNA(int index)

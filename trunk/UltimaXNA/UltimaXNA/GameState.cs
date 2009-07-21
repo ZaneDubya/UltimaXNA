@@ -280,7 +280,7 @@ namespace UltimaXNA
                                     }
                                     // We dropped the icon in the world. This means we are trying to drop the item
                                     // into the world. Let's do it!
-                                    if ((GUI.GUIHelper.MouseHoldingItem).Item_ContainedWithinSerial != unchecked((int)0xFFFFFFFF))
+                                    if ((GUI.GUIHelper.MouseHoldingItem).Item_ContainedWithinSerial.IsValid)
                                     {
                                         // We must manually remove the item from the container, as RunUO does not do this for us.
                                         Item iContainer = _Entities.GetObject<Item>(

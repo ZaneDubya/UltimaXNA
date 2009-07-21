@@ -608,33 +608,6 @@ namespace UltimaXNA.Data
                 }
                 m_Cache[body][action][direction] = frames;
             }
-
-            /*
-            // Now load the hue animation.
-            if (hueObject != null)
-            {
-                FrameXNA[] frames = new FrameXNA[frameCount];
-                m_Cache[body][action][direction][0].CopyTo(frames, 0);
-                for (int i = 0; i < frameCount; ++i)
-                {
-                    hueObject.ApplyTo(frames[i].Bitmap, onlyHueGrayPixels);
-                }
-                m_Cache[body][action][direction][iCacheHue] = frames;
-            }
-             */
-
-            /*
-            for (int i = 0; i < frameCount; ++i)
-            {
-                bin.BaseStream.Seek(lookups[i], SeekOrigin.Begin);
-                frames[i] = new FrameXNA(nDevice, palette, bin, flip);
-
-                if (hueObject != null)
-                    hueObject.ApplyTo(frames[i].Bitmap, onlyHueGrayPixels);
-            }
-            */
-
-            //return m_Cache[body][action][direction][iCacheHue];
             return m_Cache[body][action][direction];
         }
 

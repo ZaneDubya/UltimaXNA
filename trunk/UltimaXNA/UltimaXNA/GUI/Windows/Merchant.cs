@@ -193,7 +193,7 @@ namespace UltimaXNA.GUI
                         iItemTypeID = iItem.ItemID;
                     string iBtnName = "btnInv" + i;
                     string iLblName = "lblItem" + i;
-                    ((CustomButton)_MyForm[iBtnName]).Texture = GUIHelper.ItemIcon(iItemTypeID);
+                    ((CustomButton)_MyForm[iBtnName]).Texture = GUIHelper.ItemIcon(iItem);
                     if (iItemTypeID == 0)
                     {
                         ((CustomButton)_MyForm[iBtnName]).Disabled = false;

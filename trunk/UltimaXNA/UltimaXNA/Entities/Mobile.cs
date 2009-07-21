@@ -39,6 +39,10 @@ namespace UltimaXNA.Entities
             get { return animation.BodyID; }
             set { animation.BodyID = value; }
         }
+        public int HairBodyID { get { return (equipment[(int)EquipLayer.Hair] == null) ? 0 : equipment[(int)EquipLayer.Hair].AnimationDisplayID; } }
+        public int HairHue { get { return (equipment[(int)EquipLayer.Hair] == null) ? 0 : equipment[(int)EquipLayer.Hair].Hue; } }
+        public int FacialHairBodyID { get { return (equipment[(int)EquipLayer.FacialHair] == null) ? 0 : equipment[(int)EquipLayer.FacialHair].AnimationDisplayID; } }
+        public int FacialHairHue { get { return (equipment[(int)EquipLayer.FacialHair] == null) ? 0 : equipment[(int)EquipLayer.FacialHair].Hue; } }
 
         public bool Alive
         {

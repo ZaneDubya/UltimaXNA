@@ -124,7 +124,7 @@ namespace UltimaXNA.GUI
                         case _MouseCursorHolding:
                             // holding something.
                             FormCollection.Cursor.Center = new Vector2(0, 0);
-                            FormCollection.Cursor.Texture = GUIHelper.ItemIcon(((Item)GUIHelper.MouseHoldingItem).ItemID);
+                            FormCollection.Cursor.Texture = GUIHelper.ItemIcon(((Item)GUIHelper.MouseHoldingItem));
                             FormCollection.Cursor.SourceRect = new Rectangle(0, 0, 64, 64);
                             break;
                         default:
