@@ -232,6 +232,10 @@ namespace UltimaXNA.GUI
             {
                 MouseCursor = _MouseCursorHolding;
             }
+            else if (TargettingCursor)
+            {
+                MouseCursor = _MouseCursorTargetting;
+            }
             else
             {
                 // refresh the mouse cursor.
