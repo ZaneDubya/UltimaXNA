@@ -1,18 +1,30 @@
-﻿#region File Description & Usings
-//-----------------------------------------------------------------------------
-// GameObjects.cs
-//
-// Created by Poplicola
-//-----------------------------------------------------------------------------
+﻿/***************************************************************************
+ *   GameObjects.cs
+ *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
+ *   
+ *   begin                : May 31, 2009
+ *   email                : poplicola@ultimaxna.com
+ *
+ ***************************************************************************/
+
+/***************************************************************************
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region usings
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using UltimaXNA.Network.Packets.Client;
 #endregion
 
-namespace UltimaXNA.GameObjects
+namespace UltimaXNA.Entities
 {
-    public interface IGameObjects
+    public interface IEntitiesService
     {
         int MySerial { get; set; }
         T GetObject<T>(Serial serial, bool create) where T : Entity;
@@ -21,7 +33,7 @@ namespace UltimaXNA.GameObjects
         void Reset();
     }
 
-    class GameObjects : GameComponent, IGameObjects
+    class EntitiesCollection : GameComponent, IEntitiesService
     {
         private Dictionary<int, Entity> m_Objects = new Dictionary<int, Entity>();
 
@@ -32,10 +44,10 @@ namespace UltimaXNA.GameObjects
         private Client.IUltimaClient _gameClientService;
         GUI.IGUI m_GUIService;
 
-        public GameObjects(Game game)
+        public EntitiesCollection(Game game)
             : base(game)
         {
-            game.Services.AddService(typeof(IGameObjects), this);
+            game.Services.AddService(typeof(IEntitiesService), this);
         }
 
         public override void Initialize()

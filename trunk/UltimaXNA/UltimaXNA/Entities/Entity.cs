@@ -1,14 +1,26 @@
-﻿#region File Description & Usings
-//-----------------------------------------------------------------------------
-// BaseObject.cs
-//
-// Created by Poplicola
-//-----------------------------------------------------------------------------
+﻿/***************************************************************************
+ *   Entity.cs
+ *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
+ *   
+ *   begin                : May 31, 2009
+ *   email                : poplicola@ultimaxna.com
+ *
+ ***************************************************************************/
+
+/***************************************************************************
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region usings
 using System;
 using Microsoft.Xna.Framework;
 #endregion
 
-namespace UltimaXNA.GameObjects
+namespace UltimaXNA.Entities
 {
     public class Entity
     {
@@ -28,12 +40,21 @@ namespace UltimaXNA.GameObjects
         internal bool _Disposed = false; // set this to true to have the object deleted.
         public bool IsDisposed { get { return _Disposed; } }
         
-        public TileEngine.IWorld World { set { Movement.World = value; } }
+        public TileEngine.IWorld World {
+            set
+            {
+                Movement.World = value;
+            }
+        }
+
+        public int X { get { return Movement.DrawPosition.TileX; } }
+        public int Y { get { return Movement.DrawPosition.TileY; } }
+        public int Z { get { return Movement.DrawPosition.TileZ; } }
 
         public Entity(Serial serial)
         {
             Serial = serial;
-            Movement = new Movement(Serial);
+            Movement = new Movement(this);
             _hasBeenDrawn = false;
         }
 

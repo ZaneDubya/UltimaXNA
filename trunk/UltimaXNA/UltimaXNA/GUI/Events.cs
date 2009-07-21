@@ -1,6 +1,26 @@
-﻿using System;
+﻿/***************************************************************************
+ *   Events.cs
+ *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
+ *   
+ *   begin                : May 31, 2009
+ *   email                : poplicola@ultimaxna.com
+ *
+ ***************************************************************************/
+
+/***************************************************************************
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region usings
+using System;
 using Microsoft.Xna.Framework;
 using UltimaXNA.Network.Packets.Client;
+using UltimaXNA.Entities;
+#endregion
 
 namespace UltimaXNA.GUI
 {
@@ -25,20 +45,20 @@ namespace UltimaXNA.GUI
             _GameStateService.EngineRunning = false;
         }
 
-        public static void UseItem(GameObjects.Item item)
+        public static void UseItem(Item item)
         {
             _GameClientService.Send(new DoubleClickPacket(item.Serial));
         }
 
-        public static void PickupItem(GameObjects.Entity entity)
+        public static void PickupItem(Entity entity)
         {
-            GameObjects.Item iObject = ((GameObjects.Item)entity);
+            Item iObject = ((Item)entity);
             _GameClientService.Send(new PickupItemPacket(iObject.Serial, (short)iObject.Item_StackCount));
         }
 
-        public static void DropItem(GameObjects.Entity entity, int x, int y, int z, Serial destEntity)
+        public static void DropItem(Entities.Entity entity, int x, int y, int z, Serial destEntity)
         {
-            GameObjects.Item iObject = ((GameObjects.Item)entity);
+            Item iObject = ((Item)entity);
             _GameClientService.Send(new DropItemPacket(iObject.Serial, (short)x, (short)y, (byte)z, 0, destEntity));
         }           
     }

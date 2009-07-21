@@ -1,14 +1,26 @@
-﻿#region File Description & Usings
-//-----------------------------------------------------------------------------
-// GameObject.cs
-//
-// Created by Poplicola
-//-----------------------------------------------------------------------------
+﻿/***************************************************************************
+ *   Item.cs
+ *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
+ *   
+ *   begin                : May 31, 2009
+ *   email                : poplicola@ultimaxna.com
+ *
+ ***************************************************************************/
+
+/***************************************************************************
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region usings
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 #endregion
 
-namespace UltimaXNA.GameObjects
+namespace UltimaXNA.Entities
 {
     public class Item : Entity
     {
@@ -29,13 +41,20 @@ namespace UltimaXNA.GameObjects
         public Item(Serial serial)
             : base(serial)
         {
-            
+        }
+
+        public bool AtWorldPoint(int x, int y)
+        {
+            if (Movement.DrawPosition.TileX == x && Movement.DrawPosition.TileY == y)
+                return true;
+            else
+                return false;
         }
 
         internal override void Draw(UltimaXNA.TileEngine.MapCell nCell, Vector3 nLocation, Vector3 nOffset)
         {
             nCell.AddGameObjectTile(
-                new TileEngine.GameObjectTile(mObjectTypeID, nLocation, Movement.DrawFacing, this.Serial, Hue));
+                new TileEngine.GameObjectTile(mObjectTypeID, nLocation, Movement.DrawFacing, this, Hue));
         }
 
         public override void Dispose()
@@ -67,7 +86,7 @@ namespace UltimaXNA.GameObjects
         private int mObjectTypeID = 0;
         public Data.ItemData ItemData;
 
-        public int ObjectTypeID
+        public int ItemID
         {
             get { return mObjectTypeID; }
             set

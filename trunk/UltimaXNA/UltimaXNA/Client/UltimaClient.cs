@@ -1,14 +1,26 @@
-﻿#region File Description & Usings
-//-----------------------------------------------------------------------------
-// UltimaClient.cs
-//
-// Part of UltimaXNA
-//-----------------------------------------------------------------------------
+﻿/***************************************************************************
+ *   UltimaClient.cs
+ *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
+ *   
+ *   begin                : May 31, 2009
+ *   email                : poplicola@ultimaxna.com
+ *
+ ***************************************************************************/
+
+/***************************************************************************
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region usings
 using System;
 using System.IO;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using UltimaXNA.GameObjects;
+using UltimaXNA.Entities;
 using UltimaXNA.Network;
 using UltimaXNA.Network.Packets.Client;
 using UltimaXNA.Network.Packets.Server;
@@ -21,13 +33,12 @@ namespace UltimaXNA.Client
         public UltimaClientStatus Status { get; protected set; }
 
         private string _Account; private string _Password;
-        public void SetAccountPassword(string account, string password) { _Account = account; _Password = password; 
-} 
+        public void SetAccountPassword(string account, string password) { _Account = account; _Password = password; }
         private void clearAccountPassword() { _Account = string.Empty; _Password = string.Empty; }
 
         private UltimaXNA.Network.ClientNetwork _ClientNetwork;
         private UltimaXNA.GUI.IGUI _GUI;
-        private IGameObjects _GameObjects;
+        private IEntitiesService _Entities;
         private UltimaXNA.IGameState _GameState;
 
         public UltimaClient(Game game)
@@ -40,7 +51,7 @@ namespace UltimaXNA.Client
         public override void Initialize()
         {
             _GUI = Game.Services.GetService(typeof(GUI.IGUI)) as GUI.IGUI;
-            _GameObjects = Game.Services.GetService(typeof(GameObjects.IGameObjects)) as GameObjects.IGameObjects;
+            _Entities = Game.Services.GetService(typeof(IEntitiesService)) as IEntitiesService;
             _GameState = Game.Services.GetService(typeof(IGameState)) as IGameState;
 
             _ClientNetwork = new ClientNetwork();
@@ -180,7 +191,7 @@ namespace UltimaXNA.Client
                 iObject.Item_InvX = i.X;
                 iObject.Item_InvY = i.Y;
                 // ... and add it the container contents of the container.
-                Item iContainerObject = _GameObjects.GetObject<GameObjects.Item>(i.ContainerSerial, true);
+                Item iContainerObject = _Entities.GetObject<Item>(i.ContainerSerial, true);
                 iContainerObject.ContainerObject.AddItem(iObject);
             }
         }
@@ -190,24 +201,21 @@ namespace UltimaXNA.Client
             ContainerContentUpdatePacket p = (ContainerContentUpdatePacket)packet;
 
             // Add the item...
-            GameObjects.Item iObject = add_Item(p.Serial, p.ItemId, p.Hue, p.ContainerSerial, p.Amount);
+            Item iObject = add_Item(p.Serial, p.ItemId, p.Hue, p.ContainerSerial, p.Amount);
             iObject.Item_InvX = p.X;
             iObject.Item_InvY = p.Y;
             // ... and add it the container contents of the container.
-            Item iContainerObject = _GameObjects.GetObject<GameObjects.Item>(p.ContainerSerial, true);
+            Item iContainerObject = _Entities.GetObject<Item>(p.ContainerSerial, true);
             if (iContainerObject != null)
                 iContainerObject.ContainerObject.AddItem(iObject);
             else
             {
-                // Special case for game boards... the server will sometimes send us game pieces for a game board 
-before it sends 
-                // the game board! Right now, I am discarding these messages, it might be better to queue them up 
-for when the game
+                // Special case for game boards... the server will sometimes send us game pieces for a game board before it sends 
+                // the game board! Right now, I am discarding these messages, it might be better to queue them up for when the game
                 // board actually exists.
                 // Let's throw an exception if anything other than a gameboard is ever sent to us.
                 // if (iObject.ItemData.Name != "game piece")
-                throw new Exception("Item {" + iObject.ToString() + "} received before containing object 
-received.");
+                throw new Exception("Item {" + iObject.ToString() + "} received before containing object received.");
             }
         }
 
@@ -242,8 +250,7 @@ received.");
         {
             CompressedGumpPacket p = (CompressedGumpPacket)packet;
             string[] gumpPieces = interpretGumpPieces(p.GumpData);
-            _GUI.AddWindow("Gump:" + p.GumpID, new GUI.Window_CompressedGump(p.GumpID, gumpPieces, p.TextLines, 
-p.X, p.Y));
+            _GUI.AddWindow("Gump:" + p.GumpID, new GUI.Window_CompressedGump(p.GumpID, gumpPieces, p.TextLines, p.X, p.Y));
         }
 
         private void receive_Container(IRecvPacket packet)
@@ -257,7 +264,7 @@ p.X, p.Y));
             // Only try to open a container of type Container. Note that GameObjects can
             // have container objects and will expose them when called through GetContainerObject(int)
             // instead of GetObject(int).
-            GameObjects.Item o = _GameObjects.GetObject<GameObjects.Item>(p.Serial, false);
+            Item o = _Entities.GetObject<Item>(p.Serial, false);
             if (o is Item)
             {
                 _GUI.Container_Open(o, p.GumpId);
@@ -271,22 +278,22 @@ p.X, p.Y));
         private void receive_CorpseClothing(IRecvPacket packet)
         {
             CorpseClothingPacket p = (CorpseClothingPacket)packet;
-            Corpse e = _GameObjects.GetObject<Corpse>(p.CorpseSerial, false);
+            Corpse e = _Entities.GetObject<Corpse>(p.CorpseSerial, false);
             e.LoadCorpseClothing(p.Items);
         }
 
         private void receive_Damage(IRecvPacket packet)
         {
             DamagePacket p = (DamagePacket)packet;
-            Mobile u = _GameObjects.GetObject<Mobile>(p.Serial, false);
+            Mobile u = _Entities.GetObject<Mobile>(p.Serial, false);
             GUI.GUIHelper.Chat_AddLine(u.Name + " takes " + p.Damage + " damage!");
         }
 
         private void receive_DeathAnimation(IRecvPacket packet)
         {
             DeathAnimationPacket p = (DeathAnimationPacket)packet;
-            Mobile u = _GameObjects.GetObject<Mobile>(p.PlayerSerial, false);
-            Corpse c = _GameObjects.GetObject<Corpse>(p.CorpseSerial, false);
+            Mobile u = _Entities.GetObject<Mobile>(p.PlayerSerial, false);
+            Corpse c = _Entities.GetObject<Corpse>(p.CorpseSerial, false);
             c.Movement.Facing = u.Movement.Facing;
             c.MobileSerial = p.PlayerSerial;
             c.DeathAnimation();
@@ -295,7 +302,7 @@ p.X, p.Y));
         private void receive_DeleteObject(IRecvPacket packet)
         {
             RemoveEntityPacket p = (RemoveEntityPacket)packet;
-            _GameObjects.RemoveObject(p.Serial);
+            _Entities.RemoveObject(p.Serial);
         }
 
         private void receive_DragItem(IRecvPacket packet)
@@ -403,7 +410,7 @@ p.X, p.Y));
             // We want to make sure we have the client object before we load the world.
             // If we don't, just set the status to login complete, which will then
             // load the world when we finally receive our client object.
-            if (_GameObjects.MySerial != 0)
+            if (_Entities.MySerial != 0)
                 Status = UltimaClientStatus.WorldServer_InWorld;
             else
                 Status = UltimaClientStatus.WorldServer_LoginComplete;
@@ -432,15 +439,15 @@ p.X, p.Y));
         {
             MobileAnimationPacket p = (MobileAnimationPacket)packet;
 
-            Mobile iObject = _GameObjects.GetObject<Mobile>(p.Serial, false);
+            Mobile iObject = _Entities.GetObject<Mobile>(p.Serial, false);
             iObject.Animation(p.Action, p.FrameCount, p.RepeatCount, p.Reverse, p.Repeat, p.Delay);
         }
 
         private void receive_MobileIncoming(IRecvPacket packet)
         {
             MobileIncomingPacket p = (MobileIncomingPacket)packet;
-            Mobile iMobile = _GameObjects.GetObject<Mobile>(p.Serial, true);
-            iMobile.DisplayBodyID = p.BodyID;
+            Mobile iMobile = _Entities.GetObject<Mobile>(p.Serial, true);
+            iMobile.BodyID = p.BodyID;
             iMobile.Hue = (int)p.Hue;
             iMobile.Movement.SetPositionInstant((int)p.X, (int)p.Y, (int)p.Z, p.Direction);
             iMobile.IsWarMode = p.Flags.IsWarMode;
@@ -464,11 +471,10 @@ p.X, p.Y));
         {
             MobileMovingPacket p = (MobileMovingPacket)packet;
 
-            Mobile iObject = _GameObjects.GetObject<GameObjects.Mobile>(p.Serial, true);
-            iObject.DisplayBodyID = p.BodyID;
+            Mobile iObject = _Entities.GetObject<Mobile>(p.Serial, true);
+            iObject.BodyID = p.BodyID;
             iObject.IsWarMode = p.Flags.IsWarMode;
-            // Issue 16 - Pet not showing at login - http://code.google.com/p/ultimaxna/issues/detail?id=16 - 
-Smjert
+            // Issue 16 - Pet not showing at login - http://code.google.com/p/ultimaxna/issues/detail?id=16 - Smjert
             // Since no packet arrives to add your pet, when you move and your pet follows you the client crashes
             if (iObject.Movement.DrawPosition == null)
             {
@@ -488,8 +494,8 @@ Smjert
         private void receive_MobileUpdate(IRecvPacket packet)
         {
             MobileUpdatePacket p = (MobileUpdatePacket)packet;
-            Mobile iObject = _GameObjects.GetObject<Mobile>(p.Serial, true);
-            iObject.DisplayBodyID = p.BodyID;
+            Mobile iObject = _Entities.GetObject<Mobile>(p.Serial, true);
+            iObject.BodyID = p.BodyID;
             iObject.Hue = (int)p.Hue;
             iObject.Movement.SetPositionInstant((int)p.X, (int)p.Y, (int)p.Z, p.Direction);
 
@@ -503,13 +509,13 @@ Smjert
         private void receive_MoveAck(IRecvPacket packet)
         {
             MoveAcknowledgePacket p = (MoveAcknowledgePacket)packet;
-            _GameObjects.GetPlayerObject().Movement.MoveEventAck(p.Sequence);
+            _Entities.GetPlayerObject().Movement.MoveEventAck(p.Sequence);
         }
 
         private void receive_MoveRej(IRecvPacket packet)
         {
             MovementRejectPacket p = (MovementRejectPacket)packet;
-            _GameObjects.GetPlayerObject().Movement.MoveEventRej(p.Sequence, p.X, p.Y, p.Z, p.Direction);
+            _Entities.GetPlayerObject().Movement.MoveEventRej(p.Sequence, p.X, p.Y, p.Z, p.Direction);
         }
 
         private void receive_NewSubserver(IRecvPacket packet)
@@ -527,7 +533,7 @@ Smjert
         {
             ObjectPropertyListPacket p = (ObjectPropertyListPacket)packet;
 
-            Entity iObject = _GameObjects.GetObject<Entity>(p.Serial, false);
+            Entity iObject = _Entities.GetObject<Entity>(p.Serial, false);
             iObject.PropertyList.Hash = p.Hash;
             iObject.PropertyList.Clear();
 
@@ -554,7 +560,7 @@ Smjert
         private void receive_OnSwing(IRecvPacket packet)
         {
             SwingPacket p = (SwingPacket)packet;
-            if (p.Attacker == _GameObjects.MySerial)
+            if (p.Attacker == _Entities.MySerial)
             {
                 _GameState.LastTarget = p.Defender;
             }
@@ -563,7 +569,7 @@ Smjert
         private void receive_OpenBuyWindow(IRecvPacket packet)
         {
             VendorBuyListPacket p = (VendorBuyListPacket)packet;
-            Item iObject = _GameObjects.GetObject<Item>(p.VendorPackSerial, false);
+            Item iObject = _Entities.GetObject<Item>(p.VendorPackSerial, false);
             if (iObject == null)
                 return;
             _GUI.Merchant_Open(iObject, 0);
@@ -607,8 +613,8 @@ Smjert
             LoginConfirmPacket p = (LoginConfirmPacket)packet;
 
             // When loading the player object, we must load the serial before the object.
-            _GameObjects.MySerial = p.Serial;
-            PlayerMobile iPlayer = _GameObjects.GetObject<PlayerMobile>(p.Serial, true);
+            _Entities.MySerial = p.Serial;
+            PlayerMobile iPlayer = _Entities.GetObject<PlayerMobile>(p.Serial, true);
             iPlayer.Movement.SetPositionInstant((int)p.X, (int)p.Y, (int)p.Z, p.Direction);
             // iPlayer.SetFacing(p.Direction);
 
@@ -654,7 +660,7 @@ Smjert
         private void receive_RequestNameResponse(IRecvPacket packet)
         {
             RequestNameResponsePacket p = (RequestNameResponsePacket)packet;
-            Mobile u = _GameObjects.GetObject <Mobile>(p.Serial, false);
+            Mobile u = _Entities.GetObject<Mobile>(p.Serial, false);
             u.Name = p.MobileName;
         }
 
@@ -664,8 +670,7 @@ Smjert
             // 0: Server sent
             // 1: Resurrect
             // 2: Ghost
-            // The only use on OSI for this packet is now sending "2C02" for the "You Are Dead" screen upon 
-character death.
+            // The only use on OSI for this packet is now sending "2C02" for the "You Are Dead" screen upon character death.
             announce_UnhandledPacket(packet);
         }
 
@@ -767,7 +772,7 @@ character death.
                 throw (new Exception("KR Status not handled."));
             }
 
-            Mobile u = _GameObjects.GetObject<Mobile>(p.Serial, false);
+            Mobile u = _Entities.GetObject<Mobile>(p.Serial, false);
             u.Name = p.PlayerName;
             u.Health.Update(p.CurrentHealth, p.MaxHealth);
             u.Stamina.Update(p.CurrentStamina, p.MaxStamina);
@@ -794,7 +799,7 @@ character death.
         private void receive_ToolTipRevision(IRecvPacket packet)
         {
             ObjectPropertyListUpdatePacket p = (ObjectPropertyListUpdatePacket)packet;
-            Entity iObject = _GameObjects.GetObject<Entity>(p.Serial, false);
+            Entity iObject = _Entities.GetObject<Entity>(p.Serial, false);
             if (iObject != null)
             {
                 if (iObject.PropertyList.Hash != p.RevisionHash)
@@ -813,21 +818,21 @@ character death.
         private void receive_UpdateHealth(IRecvPacket packet)
         {
             UpdateHealthPacket p = (UpdateHealthPacket)packet;
-            Mobile u = _GameObjects.GetObject<Mobile>(p.Serial, false);
+            Mobile u = _Entities.GetObject<Mobile>(p.Serial, false);
             u.Health.Update(p.Current, p.Max);
         }
 
         private void receive_UpdateMana(IRecvPacket packet)
         {
             UpdateManaPacket p = (UpdateManaPacket)packet;
-            Mobile u = _GameObjects.GetObject<Mobile>(p.Serial, false);
+            Mobile u = _Entities.GetObject<Mobile>(p.Serial, false);
             u.Mana.Update(p.Current, p.Max);
         }
 
         private void receive_UpdateStamina(IRecvPacket packet)
         {
             UpdateStaminaPacket p = (UpdateStaminaPacket)packet;
-            Mobile u = _GameObjects.GetObject<Mobile>(p.Serial, false);
+            Mobile u = _Entities.GetObject<Mobile>(p.Serial, false);
             u.Stamina.Update(p.Current, p.Max);
         }
 
@@ -865,7 +870,7 @@ character death.
         {
             WornItemPacket p = (WornItemPacket)packet;
             Item item = add_Item(p.Serial, p.ItemId, p.Hue, 0, 0);
-            Mobile u = _GameObjects.GetObject<Mobile>(p.ParentSerial, false);
+            Mobile u = _Entities.GetObject<Mobile>(p.ParentSerial, false);
             u.equipment[p.Layer] = item;
             if (item.PropertyList.Hash == 0)
                 this.Send(new QueryPropertiesPacket(item.Serial));
@@ -883,8 +888,7 @@ character death.
 
         private void announce_UnhandledPacket(IRecvPacket packet, string addendum)
         {
-            GUI.GUIHelper.Chat_AddLine("DEBUG: Unhandled " + packet.Name + ". <" + packet.Id + ">" + " " + 
-addendum);
+            GUI.GUIHelper.Chat_AddLine("DEBUG: Unhandled " + packet.Name + ". <" + packet.Id + ">" + " " + addendum);
         }
 
         private void announce_Packet(IRecvPacket packet)
@@ -898,8 +902,7 @@ addendum);
             {
                 if (context.CanBuy)
                 {
-                    this.Send(new ContextMenuResponsePacket(context.Serial, (short)context.ContextEntry
-("Buy").ResponseCode));
+                    this.Send(new ContextMenuResponsePacket(context.Serial, (short)context.ContextEntry("Buy").ResponseCode));
                 }
             }
             else
@@ -911,7 +914,7 @@ addendum);
 
         private string[] interpretGumpPieces(string gumpData)
         {
-            List<string> i = new List<string>();;
+            List<string> i = new List<string>(); ;
             bool isData = true;
             int dataIndex = 0;
             while (isData)
@@ -927,8 +930,7 @@ addendum);
                     if ((begin != -1) && (end != -1))
                     {
                         string sub = gumpData.Substring(begin + 2, end - begin - 2);
-                        // iConstruct = iConstruct.Substring(0, iBeginReplace) + iArgs[i] + iConstruct.Substring
-(iEndReplace + 1, iConstruct.Length - iEndReplace - 1);
+                        // iConstruct = iConstruct.Substring(0, iBeginReplace) + iArgs[i] + iConstruct.Substring(iEndReplace + 1, iConstruct.Length - iEndReplace - 1);
                         i.Add(sub);
                         dataIndex += end - begin + 2;
                     }
@@ -952,14 +954,13 @@ addendum);
                 int iEndReplace = iConstruct.IndexOf('~', iBeginReplace + 1);
                 if ((iBeginReplace != -1) && (iEndReplace != -1))
                 {
-                    iConstruct = iConstruct.Substring(0, iBeginReplace) + iArgs[i] + iConstruct.Substring
-(iEndReplace + 1, iConstruct.Length - iEndReplace - 1);
+                    iConstruct = iConstruct.Substring(0, iBeginReplace) + iArgs[i] + iConstruct.Substring(iEndReplace + 1, iConstruct.Length - iEndReplace - 1);
                 }
                 else
                 {
                     iConstruct = nBase;
                 }
-                
+
             }
             return iConstruct;
         }
@@ -970,13 +971,13 @@ addendum);
             if (itemID == 0x2006)
             {
                 // special case for corpses.
-                item = _GameObjects.GetObject<Corpse>((int)serial, true);
+                item = _Entities.GetObject<Corpse>((int)serial, true);
             }
             else
             {
-                item = _GameObjects.GetObject<Item>((int)serial, true);
+                item = _Entities.GetObject<Item>((int)serial, true);
             }
-            item.ObjectTypeID = itemID;
+            item.ItemID = itemID;
             item.Hue = nHue;
             item.Item_StackCount = amount;
             item.Item_ContainedWithinSerial = containerSerial;

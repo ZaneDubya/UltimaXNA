@@ -1,42 +1,58 @@
-﻿#region File Description & Usings
-//-----------------------------------------------------------------------------
-// Movement.cs
-//
-// Created by Poplicola
-//-----------------------------------------------------------------------------
+﻿/***************************************************************************
+ *   Movement.cs
+ *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
+ *   Based on code from RunUO: http://www.runuo.com
+ *   
+ *   begin                : May 31, 2009
+ *   email                : poplicola@ultimaxna.com
+ *
+ ***************************************************************************/
+
+/***************************************************************************
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 2 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region usings
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using UltimaXNA.TileEngine;
 #endregion
 
-namespace UltimaXNA.GameObjects
+namespace UltimaXNA.Entities
 {
-    public enum Direction : byte
-    {
-        North = 0x0,
-        Right = 0x1,
-        East = 0x2,
-        Down = 0x3,
-        South = 0x4,
-        Left = 0x5,
-        West = 0x6,
-        Up = 0x7,
-        FacingMask = 0x7,
-        Running = 0x80,
-        ValueMask = 0x87,
-        Nothing = 0xED
-    }
-
     public class Movement
     {
-        public TileEngine.IWorld World;
-        public bool RequiresUpdate = false;
+        #region MovementSpeed
+        public static float WalkFoot { get { return 400f / 1000f; } }
+        public static float RunFoot { get { return 200f / 1000f; } }
+        public static float WalkMount { get { return 200f / 1000f; } }
+        public static float RunMount { get { return 100f / 1000f; } }
+        private float TimeToCompleteMove
+        {
+            get
+            {
+                if (IsMounted)
+                    return (_facing & Direction.Running) == Direction.Running ? RunMount : WalkMount;
+                else
+                    return (_facing & Direction.Running) == Direction.Running ? RunFoot : WalkFoot;
+            }
+        }
+        #endregion
 
-        private TilePosition m_LastTile;
-        private TilePosition m_CurrentTile;
-        private TilePosition m_NextTile;
-        private TilePosition m_GoalTile;
+        public TileEngine.IWorld World;
+
+        public bool RequiresUpdate = false;
+        private bool _IsClientPlayer = false;
+        // booleans
+        public bool IsMounted;
+        public bool IsRunning { get { return ((_facing & Direction.Running) == Direction.Running); } }
+
+        private TilePosition _LastTile, _CurrentTile, _NextTile, _GoalTile;
         private Direction _facing = Direction.Up;
         private Direction _queuedFacing = Direction.Nothing;
         public Direction Facing
@@ -54,32 +70,17 @@ namespace UltimaXNA.GameObjects
                 }
             }
         }
-        public bool IsRunning { get { return ((_facing & Direction.Running) == Direction.Running); } }
-        public float MoveSequence;
-        public float TimeToCompleteMove;
-		// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
-		public bool Mounted;
-		// Issue 6 - End
+        
+        public float MoveSequence = 0f;
 
-        public int TileX { get { return (int)m_LastTile.Location.X; } }
-        public int TileY { get { return (int)m_LastTile.Location.Y; } }
+        public int TileX { get { return (int)_LastTile.Location.X; } }
+        public int TileY { get { return (int)_LastTile.Location.Y; } }
 
-        private DrawPosition m_DrawPosition;
-        public DrawPosition DrawPosition { get { return m_DrawPosition; } }
-        private bool m_IsClientPlayer = false;
-        private MoveEvent m_MoveEvent;
+        public DrawPosition DrawPosition { get; protected set; }
+        
+        private MoveEvent _MoveEvent;
 
-        private int m_Serial;
-
-        private static TimeSpan m_WalkFoot = TimeSpan.FromSeconds(0.4);
-        private static TimeSpan m_RunFoot = TimeSpan.FromSeconds(0.2);
-        private static TimeSpan m_WalkMount = TimeSpan.FromSeconds(0.2);
-        private static TimeSpan m_RunMount = TimeSpan.FromSeconds(0.1);
-
-        public static float WalkFoot { get { return (float)m_WalkFoot.Milliseconds / 1000f; } }
-        public static float RunFoot { get { return (float)m_RunFoot.Milliseconds / 1000f; } }
-        public static float WalkMount { get { return (float)m_WalkMount.Milliseconds / 1000f; } }
-        public static float RunMount { get { return (float)m_RunMount.Milliseconds / 1000f; } }
+        private Entity _ownerEntity;
 
         public int DrawFacing
         {
@@ -93,28 +94,28 @@ namespace UltimaXNA.GameObjects
             }
         }
 
-        public Movement(Serial serial)
+        public Movement(Entity entity)
         {
-            m_Serial = serial;
+            _ownerEntity = entity;
         }
 
         public void DesignateClientPlayer()
         {
-            m_IsClientPlayer = true;
-            m_MoveEvent = new MoveEvent();
+            _IsClientPlayer = true;
+            _MoveEvent = new MoveEvent();
         }
 
         public void NewFacingToServer(Direction nDirection)
         {
             _facing = nDirection;
-            m_MoveEvent.NewEvent(this._facing);
+            _MoveEvent.NewEvent(this._facing);
         }
 
         public bool GetMoveEvent(ref int direction, ref int sequence, ref int fastwalkkey)
         {
-            if (m_IsClientPlayer == false)
+            if (_IsClientPlayer == false)
                 return false;
-            return m_MoveEvent.GetMoveEvent(ref direction, ref sequence, ref fastwalkkey);
+            return _MoveEvent.GetMoveEvent(ref direction, ref sequence, ref fastwalkkey);
         }
 
         public void MoveEventAck(int nSequence)
@@ -126,15 +127,16 @@ namespace UltimaXNA.GameObjects
         {
             // immediately return to the designated tile.
             SetPositionInstant(nX, nY, nZ, nDirection);
-            m_MoveEvent.ResetMoveSequence();
+            _MoveEvent.ResetMoveSequence();
         }
 
         public bool IsMoving
         {
             get
             {
-                if ((m_CurrentTile.Location == m_GoalTile.Location) &&
-                    m_DrawPosition.OffsetV3 == new Vector3())
+                if ((_CurrentTile.Location.X == _GoalTile.Location.X) && 
+                    (_CurrentTile.Location.Y == _GoalTile.Location.Y) &&
+                    DrawPosition.OffsetV3 == new Vector3())
                     return false;
                 return true;
             }
@@ -142,15 +144,15 @@ namespace UltimaXNA.GameObjects
 
         public void SetGoalTile(float nX, float nY, float nZ)
         {
-            m_GoalTile = new TilePosition(nX, nY, nZ);
+            _GoalTile = new TilePosition(nX, nY, nZ);
         }
 
         public void SetPositionInstant(int nX, int nY, int nZ, int nFacing)
         {
             _facing = (Direction)nFacing;
             mFlushDrawObjects();
-            m_GoalTile = m_LastTile = m_NextTile = m_CurrentTile = new TilePosition(nX, nY, nZ);
-            m_DrawPosition = new DrawPosition(m_CurrentTile);
+            _GoalTile = _LastTile = _NextTile = _CurrentTile = new TilePosition(nX, nY, nZ);
+            DrawPosition = new DrawPosition(_CurrentTile);
         }
 
         public void Update(GameTime gameTime)
@@ -162,24 +164,24 @@ namespace UltimaXNA.GameObjects
             {
                 // UO movement is tile based. Have we reached the next tile yet?
                 // If we have, then get the next tile in the move sequence and move to that one.
-                if (m_CurrentTile.Location == m_NextTile.Location)
+                if (_CurrentTile.Location == _NextTile.Location)
                 {
                     Direction iFacing;
-                    m_NextTile = mGetNextTile(m_CurrentTile.Location, m_GoalTile.Location, out iFacing);
+                    _NextTile = getNextTile(_CurrentTile.Location, _GoalTile.Location, out iFacing);
                     // Is the next tile on-screen?
-                    if (m_NextTile != null)
+                    if (_NextTile != null)
                     {
                         // If we are the player, set our move event so that the game
                         // knows to send a move request to the server ...
-                        if (m_IsClientPlayer)
+                        if (_IsClientPlayer)
                         {
                             // Special exception for the player: if we are facing a new direction, we
                             // need to pause for a brief moment and let the server know that.
-                            m_MoveEvent.NewEvent(iFacing);
+                            _MoveEvent.NewEvent(iFacing);
                             if (_facing != iFacing)
                             {
                                 _facing = iFacing;
-                                m_NextTile.Location = m_CurrentTile.Location;
+                                _NextTile.Location = _CurrentTile.Location;
                                 return;
                             }
                         }
@@ -188,10 +190,7 @@ namespace UltimaXNA.GameObjects
                             // if we are not the player, then we can just change the facing.
                             _facing = iFacing;
                         }
-						// Issue 10 - Speed problems (Partial) - http://code.google.com/p/ultimaxna/issues/detail?id=10 - Smjert
-                        TimeToCompleteMove = ComputeMovementSpeed();
-						// Issue 10 - End
-                        m_LastTile = new TilePosition(m_CurrentTile);
+                        _LastTile = new TilePosition(_CurrentTile);
                     }
                     else
                     {
@@ -200,9 +199,9 @@ namespace UltimaXNA.GameObjects
                         // Right now, we just set their location to the current tile
                         // and refuse to move them further.
                         SetPositionInstant(
-                            (int)m_CurrentTile.Location.X,
-                            (int)m_CurrentTile.Location.Y,
-                            (int)m_CurrentTile.Location.Z,
+                            (int)_CurrentTile.Location.X,
+                            (int)_CurrentTile.Location.Y,
+                            (int)_CurrentTile.Location.Z,
                             (int)_facing);
                         return;
                     }
@@ -212,11 +211,11 @@ namespace UltimaXNA.GameObjects
                 if (MoveSequence >= 1f)
                 {
                     MoveSequence -= 1f;
-                    m_CurrentTile.Location = m_NextTile.Location;
+                    _CurrentTile.Location = _NextTile.Location;
                 }
                 else
                 {
-                    m_CurrentTile.Location = m_LastTile.Location + (m_NextTile.Location - m_LastTile.Location) * MoveSequence;
+                    _CurrentTile.Location = _LastTile.Location + (_NextTile.Location - _LastTile.Location) * MoveSequence;
                 }
             }
             else
@@ -230,7 +229,7 @@ namespace UltimaXNA.GameObjects
                 MoveSequence = 0f;
             }
 
-            m_DrawPosition = new DrawPosition(m_CurrentTile);
+            DrawPosition = new DrawPosition(_CurrentTile);
         }
 
         public void ClearImmediate()
@@ -245,130 +244,81 @@ namespace UltimaXNA.GameObjects
             TileEngine.MapCell iLastMapCell = World.Map.GetMapCell(DrawPosition.TileX, DrawPosition.TileY);
             if (iLastMapCell != null)
             {
-                iLastMapCell.FlushObjectsBySerial(m_Serial);
+                iLastMapCell.FlushObjectsBySerial(_ownerEntity.Serial);
             }
         } 
-		// Issue 10 - Speed problems (Partial) - http://code.google.com/p/ultimaxna/issues/detail?id=10 - Smjert
-		public virtual float ComputeMovementSpeed()
-		{
-			if ( Mounted )
-                return (_facing & Direction.Running) == Direction.Running ? RunMount : WalkMount;
-			else
-                return (_facing & Direction.Running) == Direction.Running ? RunFoot : WalkFoot;
-		}
-		// Issue 10 - End
-        private TilePosition mGetNextTile(Vector3 nCurrentLocation, Vector3 nGoalLocation, out Direction nFacing)
+
+        private TilePosition getNextTile(Vector3 currentLocation, Vector3 goalLocation, out Direction facing)
         {
-            Vector3 iDifference = m_CurrentTile.Location;
+            facing = getNextFacing(currentLocation, goalLocation);
+            Vector3 nextTile = MovementCheck.OffsetTile(currentLocation, facing);
 
-            if (nGoalLocation.X < nCurrentLocation.X)
+            int nextAltitude;
+            bool moveIsOkay = MovementCheck.CheckMovement((Mobile)_ownerEntity, World.Map, currentLocation, facing, out nextAltitude);
+            if (moveIsOkay)
             {
-                iDifference.X -= 1;
-                if (nGoalLocation.Y < nCurrentLocation.Y)
-                {
-                    iDifference.Y -= 1;
-                    nFacing = Direction.Up;
-                }
-                else if (nGoalLocation.Y > nCurrentLocation.Y)
-                {
-                    iDifference.Y += 1;
-                    nFacing = Direction.Left;
-                }
-                else
-                {
-                    nFacing = Direction.West;
-                }
-            }
-            else if (nGoalLocation.X > nCurrentLocation.X)
-            {
-                iDifference.X += 1;
-                if (nGoalLocation.Y < nCurrentLocation.Y)
-                {
-                    iDifference.Y -= 1;
-                    nFacing = Direction.Right;
-                }
-                else if (nGoalLocation.Y > nCurrentLocation.Y)
-                {
-                    iDifference.Y += 1;
-                    nFacing = Direction.Down;
-                }
-                else
-                {
-                    nFacing = Direction.East;
-                }
-            }
-            else
-            {
-                if (nGoalLocation.Y < nCurrentLocation.Y)
-                {
-                    iDifference.Y -= 1;
-                    nFacing = Direction.North;
-                }
-                else if (nGoalLocation.Y > nCurrentLocation.Y)
-                {
-                    iDifference.Y += 1;
-                    nFacing = Direction.South;
-                }
-                else
-                {
-                    // We should never reach this.
-                    nFacing = Direction.Running;
-                }
-            }
-
-            if (IsRunning)
-                nFacing |= Direction.Running;
-
-            TileEngine.MapCell iCell = World.Map.GetMapCell(
-                (int)iDifference.X, 
-                (int)iDifference.Y);
-
-            if (iCell != null)
-            {
-				// Issue 5 - Statics (bridge, stairs, etc) should be walkable - http://code.google.com/p/ultimaxna/issues/detail?id=5 - Smjert
-				int iNextTileAltitude = iCell.GroundTile.Z;
-				int ground = iNextTileAltitude;
-				List<StaticItem> sitems = iCell.GetStatics();
-				List<GameObjectTile> goitems = iCell.GetGOTiles();
-				if ( sitems != null )
-				{
-					int height = 0;
-					foreach ( StaticItem i in sitems )
-					{
-						UltimaXNA.Data.ItemData iDataInfo = UltimaXNA.Data.TileData.ItemData[i.ID - 0x4000];
-						if(!iDataInfo.Surface)
-							continue;
-
-						height = i.Z + iDataInfo.CalcHeight;
-
-						if ( height > iNextTileAltitude && height > ground && height <= (nCurrentLocation.Z + (iDataInfo.Stairs ? 5 : 2)))
-							iNextTileAltitude = height;
-					}
-				}
-
-				if ( goitems != null )
-				{
-					int height = 0;
-					foreach ( GameObjectTile i in goitems )
-					{
-						UltimaXNA.Data.ItemData iDataInfo = UltimaXNA.Data.TileData.ItemData[i.ID];
-						if(!iDataInfo.Surface)
-							continue;
-
-						height = i.Z + iDataInfo.CalcHeight;
-
-						if ( height > iNextTileAltitude && height > ground && height <= (nCurrentLocation.Z + (iDataInfo.Stairs ? 5 : 2)) )
-							iNextTileAltitude = height;
-					}
-				}
-				// Issue 5 - End
-
-                return new TilePosition((int)iDifference.X, (int)iDifference.Y, iNextTileAltitude);
+                //if (IsRunning)
+                    facing |= Direction.Running;
+                return new TilePosition((int)nextTile.X, (int)nextTile.Y, nextAltitude);
             }
             else
             {
                 return null;
             }
+        }
+
+        private Direction getNextFacing(Vector3 currentTile, Vector3 goalTile)
+        {
+            Direction facing;
+
+            if (goalTile.X < currentTile.X)
+            {
+                if (goalTile.Y < currentTile.Y)
+                {
+                    facing = Direction.Up;
+                }
+                else if (goalTile.Y > currentTile.Y)
+                {
+                    facing = Direction.Left;
+                }
+                else
+                {
+                    facing = Direction.West;
+                }
+            }
+            else if (goalTile.X > currentTile.X)
+            {
+                if (goalTile.Y < currentTile.Y)
+                {
+                    facing = Direction.Right;
+                }
+                else if (goalTile.Y > currentTile.Y)
+                {
+                    facing = Direction.Down;
+                }
+                else
+                {
+                    facing = Direction.East;
+                }
+            }
+            else
+            {
+                if (goalTile.Y < currentTile.Y)
+                {
+                    facing = Direction.North;
+                }
+                else if (goalTile.Y > currentTile.Y)
+                {
+                    facing = Direction.South;
+                }
+                else
+                {
+                    // We should never reach this.
+                    facing = (Direction)0xFF;
+                }
+            }
+
+            return facing;
         }
     }
 
@@ -445,51 +395,51 @@ namespace UltimaXNA.GameObjects
     // This event handles all the move sequences
     public class MoveEvent
     {
-        private bool m_Event;
-        private int m_Sequence;
-        private Direction m_Direction;
-        private int m_FastWalkKey;
+        private bool _Event;
+        private int _Sequence;
+        private Direction _Direction;
+        private int _FastWalkKey;
 
         public MoveEvent()
         {
-            m_Event = false;
-            m_Direction = Direction.Up;
-            m_FastWalkKey = new Random().Next(int.MinValue, int.MaxValue);
+            _Event = false;
+            _Direction = Direction.Up;
+            _FastWalkKey = new Random().Next(int.MinValue, int.MaxValue);
             this.ResetMoveSequence();
         }
 
         public void ResetMoveSequence()
         {
-            m_Sequence = -1;
+            _Sequence = -1;
         }
 
         public void NewEvent(Direction nDirection)
         {
-            m_Event = true;
-            m_Sequence++;
-            if (m_Sequence > byte.MaxValue)
-                m_Sequence = 1;
-            m_Direction = nDirection;
+            _Event = true;
+            _Sequence++;
+            if (_Sequence > byte.MaxValue)
+                _Sequence = 1;
+            _Direction = nDirection;
 
-            if (m_FastWalkKey == int.MaxValue)
-                m_FastWalkKey = new Random().Next(int.MinValue, int.MaxValue);
+            if (_FastWalkKey == int.MaxValue)
+                _FastWalkKey = new Random().Next(int.MinValue, int.MaxValue);
             else
-                m_FastWalkKey++;
+                _FastWalkKey++;
             
         }
 
         public bool GetMoveEvent(ref int direction, ref int sequence, ref int fastwalkkey)
         {
-            if (m_Event == false)
+            if (_Event == false)
             {
                 return false;
             }
             else
             {
-                m_Event = false;
-                sequence = m_Sequence;
-                fastwalkkey = m_FastWalkKey;
-                direction = (int)m_Direction;
+                _Event = false;
+                sequence = _Sequence;
+                fastwalkkey = _FastWalkKey;
+                direction = (int)_Direction;
                 return true;
             }
         }

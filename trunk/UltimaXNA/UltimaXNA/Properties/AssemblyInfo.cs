@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyTitle("UltimaXNA")]
 [assembly: AssemblyProduct("UltimaXNA")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Open source MMORPG client")]
 [assembly: AssemblyCompany("")]
 
 [assembly: AssemblyCopyright("Copyright ©  2009")]
@@ -30,4 +30,4 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyVersion("0.2.*")]

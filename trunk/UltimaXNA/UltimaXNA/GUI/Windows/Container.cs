@@ -1,7 +1,27 @@
-﻿using System;
+﻿/***************************************************************************
+ *   Container.cs
+ *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
+ *   
+ *   begin                : May 31, 2009
+ *   email                : poplicola@ultimaxna.com
+ *
+ ***************************************************************************/
+
+/***************************************************************************
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region usings
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using UltimaXNA.Entities;
 using xWinFormsLib;
+#endregion
 
 namespace UltimaXNA.GUI
 {
@@ -9,7 +29,7 @@ namespace UltimaXNA.GUI
     {
         private Vector2 mWindowSize = new Vector2(215, 233);
         private Vector2 mBGOffset = new Vector2(215 - 256 + 2, -1);
-        private GameObjects.Item _containerEntity;
+        private Item _containerEntity;
         private int _lastContainerUpdated = -1;
 
         private int mScrollY, mMaxScrollY = 0;
@@ -32,10 +52,10 @@ namespace UltimaXNA.GUI
 
         public Serial serial { get { return _containerEntity.Serial; } }
 
-        public Window_Container(GameObjects.Entity nContainerObject, FormCollection nFormCollection)
+        public Window_Container(Entity nContainerObject, FormCollection nFormCollection)
             : base()
         {
-            _containerEntity = (GameObjects.Item)nContainerObject;
+            _containerEntity = (Item)nContainerObject;
 
             //Create a new form
             string iFormName = "frmContainer:" + _containerEntity.Serial;
@@ -88,7 +108,7 @@ namespace UltimaXNA.GUI
         private void btnInv_OnPress(object obj, EventArgs e)
         {
             int iIndex = Int32.Parse(((CustomButton)obj).Name.Substring(6)) + mScrollY * _SlotsWide;
-            GameObjects.Item item = _containerEntity.ContainerObject.GetContents(iIndex);
+            Item item = _containerEntity.ContainerObject.GetContents(iIndex);
 
             int buttonindex = 0;
             if (buttonindex == 0)
@@ -122,7 +142,7 @@ namespace UltimaXNA.GUI
         private void btnInv_OnOver(object obj, EventArgs e)
         {
             int iIndex = Int32.Parse(((CustomButton)obj).Name.Substring(6)) + mScrollY * _SlotsWide;
-            GameObjects.Item iItem = _containerEntity.ContainerObject.GetContents(iIndex);
+            Item iItem = _containerEntity.ContainerObject.GetContents(iIndex);
 
             if (GUIHelper.MouseHoldingItem != null)
             {
@@ -143,7 +163,7 @@ namespace UltimaXNA.GUI
             }
 
             int iIndex = Int32.Parse(((CustomButton)obj).Name.Substring(6)) + mScrollY * _SlotsWide;
-            GameObjects.Item iItem = _containerEntity.ContainerObject.GetContents(iIndex);
+            Item iItem = _containerEntity.ContainerObject.GetContents(iIndex);
             if (GUIHelper.ToolTipItem == iItem)
             {
                 GUIHelper.ToolTipItem = null;
@@ -186,11 +206,11 @@ namespace UltimaXNA.GUI
 
                 for (int i = 0; i < _SlotsTotal; i++)
                 {
-                    GameObjects.Item iItem = _containerEntity.ContainerObject.GetContents(i + mScrollY * _SlotsWide);
+                    Item iItem = _containerEntity.ContainerObject.GetContents(i + mScrollY * _SlotsWide);
                     if (iItem == null)
                         _SlotsItemIDs[i] = 0;
                     else
-                        _SlotsItemIDs[i] = iItem.ObjectTypeID;
+                        _SlotsItemIDs[i] = iItem.ItemID;
                 }
                 _lastContainerUpdated = _containerEntity.ContainerObject.UpdateTicker;
 

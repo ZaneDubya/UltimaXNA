@@ -1,14 +1,26 @@
-﻿#region File Description & Usings
-//-----------------------------------------------------------------------------
-// Corpse.cs
-//
-// Created by Poplicola
-//-----------------------------------------------------------------------------
+﻿/***************************************************************************
+ *   Corpse.cs
+ *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
+ *   
+ *   begin                : May 31, 2009
+ *   email                : poplicola@ultimaxna.com
+ *
+ ***************************************************************************/
+
+/***************************************************************************
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region usings
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 #endregion
 
-namespace UltimaXNA.GameObjects
+namespace UltimaXNA.Entities
 {
     class Corpse : Item
     {
@@ -40,7 +52,7 @@ namespace UltimaXNA.GameObjects
             Movement.ClearImmediate();
                 nCell.AddGameObjectTile(
                     new TileEngine.GameObjectTile(
-                        ObjectTypeID, nLocation, Movement.DrawFacing, this.Serial, Hue, _corpseBody, _corpseFrame));
+                        ItemID, nLocation, Movement.DrawFacing, this, Hue, _corpseBody, _corpseFrame));
         }
 
         public void LoadCorpseClothing(List<Network.Packets.Server.CorpseClothingItemWithLayer> items)

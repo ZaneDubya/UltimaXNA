@@ -1,28 +1,31 @@
-﻿#region File Description & Usings
-//-----------------------------------------------------------------------------
-// Map.cs
-//
-// Created by ClintXNA, Modifications by Poplicola
-//-----------------------------------------------------------------------------
+﻿/***************************************************************************
+ *   Map.cs
+ *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
+ *   Based on code from ClintXNA's renderer: http://www.runuo.com/forums/xna/92023-hi.html
+ *   
+ *   begin                : May 31, 2009
+ *   email                : poplicola@ultimaxna.com
+ *
+ ***************************************************************************/
+
+/***************************************************************************
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region usings
 using System;
 using System.Collections.Generic;
-using UltimaXNA.GameObjects;
+using UltimaXNA.Entities;
 using Microsoft.Xna.Framework;
 #endregion
 
 namespace UltimaXNA.TileEngine
 {
-    public interface IMapObject
-    {
-        int ID { get; }
-        int SortZ { get; }
-        int Threshold { get; }
-        int Tiebreaker { get; }
-        MapObjectTypes Type { get; }
-        Vector2 Position { get; }
-        int Z { get; }
-        int OwnerSerial { get; }
-    }
+    
 
     public enum MapObjectTypes
     {
@@ -77,6 +80,54 @@ namespace UltimaXNA.TileEngine
             m_KeysToRemove = new List<int>();
             m_MapCells = new SortedDictionary<int, MapCell>();
             m_TileMatrix = new Data.TileMatrix(index, index);
+        }
+
+        public int Height
+        {
+            get { return m_TileMatrix.Height; }
+        }
+        public int Width
+        {
+            get { return m_TileMatrix.Width; }
+        }
+
+        public void GetAverageZ(int x, int y, ref int z, ref int avg, ref int top)
+        {
+            int zTop = GetMapCell(x, y).GroundTile.Z;
+            int zLeft = GetMapCell(x, y + 1).GroundTile.Z;
+            int zRight = GetMapCell(x + 1, y).GroundTile.Z;
+            int zBottom = GetMapCell(x + 1, y + 1).GroundTile.Z;
+
+            z = zTop;
+            if (zLeft < z)
+                z = zLeft;
+            if (zRight < z)
+                z = zRight;
+            if (zBottom < z)
+                z = zBottom;
+
+            top = zTop;
+            if (zLeft > top)
+                top = zLeft;
+            if (zRight > top)
+                top = zRight;
+            if (zBottom > top)
+                top = zBottom;
+
+            if (Math.Abs(zTop - zBottom) > Math.Abs(zLeft - zRight))
+                avg = FloorAverage(zLeft, zRight);
+            else
+                avg = FloorAverage(zTop, zBottom);
+        }
+
+        private static int FloorAverage(int a, int b)
+        {
+            int v = a + b;
+
+            if (v < 0)
+                --v;
+
+            return (v / 2);
         }
 
         public int GameSize
@@ -175,9 +226,7 @@ namespace UltimaXNA.TileEngine
             Data.Point2D worldLocation;
 
             if (m_MapCells.ContainsKey(GetKey(nX, nY)))
-            {
                 return;
-            }
 
             groundTile = new GroundTile(m_TileMatrix.GetLandTile(nX, nY), new Vector2(nX,nY));
             groundTile.Surroundings = new Surroundings(
@@ -381,12 +430,15 @@ namespace UltimaXNA.TileEngine
 
 		public List<StaticItem> GetStatics()
 		{
-			List<IMapObject> objs = m_Objects.FindAll(IsStaticItem);
+            List<StaticItem> sitems = new List<StaticItem>();
 
-			if ( objs == null || objs.Count == 0)
-				return null;
-
-			List<StaticItem> sitems = new List<StaticItem>();
+            List<IMapObject> objs = m_Objects.FindAll(IsStaticItem);
+            if (objs == null || objs.Count == 0)
+            {
+                // empty list.
+                return sitems;
+            }
+			
 			foreach (IMapObject obj in objs)
 			{
 				sitems.Add((StaticItem)obj);
@@ -483,6 +535,14 @@ namespace UltimaXNA.TileEngine
                 m_Sorted = m_Objects.ToArray();
             }
             return m_Sorted;
+        }
+
+        public List<IMapObject> Items
+        {
+            get
+            {
+                return new List<IMapObject>(this.GetSortedObjects());
+            }
         }
     }
 }

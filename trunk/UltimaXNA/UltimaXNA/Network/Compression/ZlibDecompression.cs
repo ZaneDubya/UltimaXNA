@@ -17,10 +17,11 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-
+#region usings
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
+#endregion
 
 namespace UltimaXNA.Network
 {

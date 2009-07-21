@@ -1,6 +1,7 @@
 ﻿/***************************************************************************
- *   IScene.cs
+ *   Interfaces.cs
  *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
+ *   Based on code from ClintXNA's renderer: http://www.runuo.com/forums/xna/92023-hi.html
  *   
  *   begin                : May 31, 2009
  *   email                : poplicola@ultimaxna.com
@@ -21,35 +22,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Client;
-using UltimaXNA.Diagnostics;
-using UltimaXNA.Input;
 #endregion
 
-namespace UltimaXNA.SceneManagement
+namespace UltimaXNA.TileEngine
 {
-    public delegate void TransitionCompleteHandler();
-
-    public interface IScene : IDisposable
+    public interface IWorld
     {
-        Game Game { get; }
-        ISceneService SceneManager { get; }
-        SceneState SceneState { get; set; }
-        TimeSpan TransitionOffLength { get; }
-        TimeSpan TransitionOnLength { get; }
-        bool IsInitialized { get; set; }
+        Map Map { get; set; }
+        int MaxRoofAltitude { get; }
+    }
 
-        IUltimaClient Network { get; }
-        ILoggingService Log { get; }
-        IInputService Input { get; }
+    public interface IMapObject
+    {
+        int ID { get; }
+        int SortZ { get; }
+        int Threshold { get; }
+        int Tiebreaker { get; }
+        MapObjectTypes Type { get; }
+        Vector2 Position { get; }
+        int Z { get; }
+        int OwnerSerial { get; }
+        Entities.Entity OwnerEntity { get; }
+    }
 
-        event TransitionCompleteHandler TransitionComplete;
-
-        void Intitialize();
-        void Update(GameTime gameTime);
-        void OnAfterDraw(GameTime gameTime);
-        void Draw(GameTime gameTime);
-        void OnBeforeDraw(GameTime gameTime);
+    public interface ITileEngine
+    {
+        void SetLightDirection(Vector3 nDirection);
+        IMapObject MouseOverObject { get; }
+        IMapObject MouseOverGroundTile { get; }
+        PickTypes PickType { set; }
+        int ObjectsRendered { get; }
+        MiniMap MiniMap { get; }
     }
 }

@@ -1,12 +1,25 @@
-﻿#region File Description & Usings
-//-----------------------------------------------------------------------------
-// GUIWindow_Chat.cs
-//
-// Created by Poplicola
-//-----------------------------------------------------------------------------
+﻿/***************************************************************************
+ *   StatusFrame.cs
+ *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
+ *   
+ *   begin                : May 31, 2009
+ *   email                : poplicola@ultimaxna.com
+ *
+ ***************************************************************************/
+
+/***************************************************************************
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region usings
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using UltimaXNA.Entities;
 using xWinFormsLib;
 #endregion
 
@@ -14,10 +27,10 @@ namespace UltimaXNA.GUI
 {
     class Window_StatusFrame : Window
     {
-        GameObjects.Mobile _myEntity;
-        GameObjects.Mobile _targetEntity;
-        public GameObjects.Mobile MyEntity { set { _myEntity = value; } }
-        public GameObjects.Mobile TargetEntity { set { _targetEntity = value; } }
+        Mobile _myEntity;
+        Mobile _targetEntity;
+        public Mobile MyEntity { set { _myEntity = value; } }
+        public Mobile TargetEntity { set { _targetEntity = value; } }
 
         private int width = 400;
 
@@ -110,7 +123,7 @@ namespace UltimaXNA.GUI
             int iActualWidth;
             int iCurrent, iMax;
             int iPercent;
-            GameObjects.Mobile entity;
+            Mobile entity;
             string iControlNameAppend;
             if (nBarIndex > 2)
             {
