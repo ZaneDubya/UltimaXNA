@@ -123,7 +123,7 @@ namespace UltimaXNA
             GraphicsDeviceManager graphicsDeviceManager = new GraphicsDeviceManager(this);
             graphicsDeviceManager.PreferredBackBufferWidth = 800;
             graphicsDeviceManager.PreferredBackBufferHeight = 600;
-            graphicsDeviceManager.SynchronizeWithVerticalRetrace = false;
+            graphicsDeviceManager.SynchronizeWithVerticalRetrace = true;
             graphicsDeviceManager.PreparingDeviceSettings += OnPreparingDeviceSettings;
             this.IsFixedTimeStep = false;
             graphicsDeviceManager.ApplyChanges();

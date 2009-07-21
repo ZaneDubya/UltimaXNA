@@ -202,7 +202,7 @@ namespace UltimaXNA.GUI
             Item iHeldObject = (Item)MouseHoldingItem;
             Mobile iDestMobile = (Mobile)nDestMobile;
 
-            if (iHeldObject.Item_ContainedWithinSerial != 0)
+            if (iHeldObject.Item_ContainedWithinSerial != unchecked((int)0xFFFFFFFF))
             {
                 Item iSourceContainer = _entityService.GetObject<Item>(iHeldObject.Item_ContainedWithinSerial, false);
                 iHeldObject.Item_ContainedWithinSerial = 0;
