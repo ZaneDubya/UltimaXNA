@@ -149,7 +149,11 @@ namespace UltimaXNA.Entities
         public Entity GetPlayerObject()
         {
             // This could be cached to save time.
-            return m_Objects[MySerial];
+            if (m_Objects.ContainsKey(MySerial))
+                return m_Objects[MySerial];
+            else
+
+                return null;
         }
 
         public void Reset()
