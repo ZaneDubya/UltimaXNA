@@ -46,17 +46,38 @@ namespace UltimaXNA.Data
         private static BinaryReader m_Index;
         private static Stream m_Stream;
         private static Dictionary<int, int> m_Translations;
+        private static bool _filesPrepared = false;
 
         public static void PlaySound(int soundID)
         {
-            UOSound s = GetSound(soundID);
-            WavePlayer.Player.PlayStream(s.WAVEStream);
+            // Sounds.mul is exclusively locked by the legacy client, so we need to make sure this file is available
+            // before attempting to play any sounds.
+            if (!_filesPrepared)
+                SetupFiles();
+            if (_filesPrepared)
+            {
+                UOSound s = GetSound(soundID);
+                WavePlayer.Player.PlayStream(s.WAVEStream);
+            }
         }
 
         static Sounds()
         {
-            m_Index = new BinaryReader(new FileStream(FileManager.GetFilePath("soundidx.mul"), FileMode.Open));
-            m_Stream = new FileStream(FileManager.GetFilePath("sound.mul"), FileMode.Open);
+            SetupFiles();
+        }
+
+        private static void SetupFiles()
+        {
+            try
+            {
+                m_Index = new BinaryReader(new FileStream(FileManager.GetFilePath("soundidx.mul"), FileMode.Open));
+                m_Stream = new FileStream(FileManager.GetFilePath("sound.mul"), FileMode.Open);
+                _filesPrepared = true;
+            }
+            catch
+            {
+                _filesPrepared = false;
+            }
             Regex reg = new Regex(@"(\d{1,3}) \x7B(\d{1,3})\x7D (\d{1,3})", RegexOptions.Compiled);
 
             m_Translations = new Dictionary<int, int>();

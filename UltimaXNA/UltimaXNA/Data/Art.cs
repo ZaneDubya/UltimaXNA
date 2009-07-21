@@ -25,37 +25,23 @@ namespace UltimaXNA.Data
 {
     class Art
     {
-        private static Texture2D[] m_Cache = new Texture2D[0x10000];
-        private static FileIndexClint m_IndexFile = new FileIndexClint("artidx.mul", "art.mul");
-        private static ushort[][] m_StaticDimensions = new ushort[0x4000][];
+        private static Texture2D[][] _cache = new Texture2D[0x10000][];
+        private static FileIndexClint _index = new FileIndexClint("artidx.mul", "art.mul");
+        private static ushort[][] _dimensions = new ushort[0x4000][];
 
         public static Texture2D GetLandTexture(int index, GraphicsDevice graphicsDevice)
         {
             index &= 0x3FFF;
 
-            Texture2D data = m_Cache[index];
+            if (_cache[index] == null) { _cache[index] = new Texture2D[0x1000]; }
+            Texture2D data = _cache[index][0];
 
             if (data == null)
             {
-                m_Cache[index] = data = ReadLandTexture(index, graphicsDevice);
+                _cache[index][0] = data = ReadLandTexture(index, graphicsDevice, 0);
             }
 
             return data;
-        }
-
-        public static void GetStaticDimensions(int index, out int width, out int height)
-        {
-            index &= 0x3FFF;
-
-            ushort[] dimensions = m_StaticDimensions[index];
-
-            if (dimensions == null)
-            {
-                m_StaticDimensions[index] = dimensions = ReadStaticDimensions(index + 0x4000);
-            }
-
-            width = dimensions[0];
-            height = dimensions[1];
         }
 
         public static Texture2D GetStaticTexture(int index, GraphicsDevice graphicsDevice)
@@ -63,19 +49,36 @@ namespace UltimaXNA.Data
             index &= 0x3FFF;
             index += 0x4000;
 
-            Texture2D data = m_Cache[index];
+            if (_cache[index] == null) { _cache[index] = new Texture2D[0x1000]; }
+            Texture2D data = _cache[index][0];
 
             if (data == null)
             {
-                m_Cache[index] = data = ReadStaticTexture(index, graphicsDevice);
+                _cache[index][0] = data = readStaticTexture(index, graphicsDevice, 0);
             }
 
             return data;
         }
 
-        private static unsafe Texture2D ReadLandTexture(int index, GraphicsDevice graphicsDevice)
+        public static Texture2D GetStaticTexture(int index, GraphicsDevice graphicsDevice, int hue)
         {
-            m_IndexFile.Seek(index);
+            index &= 0x3FFF;
+            index += 0x4000;
+
+            if (_cache[index] == null) { _cache[index] = new Texture2D[0x1000]; }
+            Texture2D data = _cache[index][hue];
+
+            if (data == null)
+            {
+                _cache[index][hue] = data = readStaticTexture(index, graphicsDevice, hue);
+            }
+
+            return data;
+        }
+
+        private static unsafe Texture2D ReadLandTexture(int index, GraphicsDevice graphicsDevice, int hue)
+        {
+            _index.Seek(index);
 
             ushort[] data = new ushort[44 * 44];
 
@@ -93,7 +96,7 @@ namespace UltimaXNA.Data
 
                     while (start < end)
                     {
-                        *start++ = (ushort)(m_IndexFile.BinaryReader.ReadUInt16() ^ 0x8000);
+                        *start++ = (ushort)(_index.BinaryReader.ReadUInt16() ^ 0x8000);
                     }
                 }
 
@@ -107,7 +110,7 @@ namespace UltimaXNA.Data
 
                     while (start < end)
                     {
-                        *start++ = (ushort)(m_IndexFile.BinaryReader.ReadUInt16() ^ 0x8000);
+                        *start++ = (ushort)(_index.BinaryReader.ReadUInt16() ^ 0x8000);
                     }
                 }
             }
@@ -119,39 +122,61 @@ namespace UltimaXNA.Data
             return texture;
         }
 
-        private static ushort[] ReadStaticDimensions(int index)
+        public static void GetStaticDimensions(int index, out int width, out int height)
         {
-            m_IndexFile.Seek(index);
-            m_IndexFile.BinaryReader.ReadInt32();
+            index &= 0x3FFF;
 
-            return new ushort[] { (ushort)m_IndexFile.BinaryReader.ReadInt16(), (ushort)m_IndexFile.BinaryReader.ReadInt16() };
+            ushort[] dimensions = _dimensions[index];
+
+            if (dimensions == null)
+            {
+                _dimensions[index] = dimensions = readStaticDimensions(index + 0x4000);
+            }
+
+            width = dimensions[0];
+            height = dimensions[1];
         }
 
-        private static unsafe Texture2D ReadStaticTexture(int index, GraphicsDevice graphicsDevice)
+        private static ushort[] readStaticDimensions(int index)
         {
-            m_IndexFile.Seek(index);
-            m_IndexFile.BinaryReader.ReadInt32();
+            _index.Seek(index);
+            _index.BinaryReader.ReadInt32();
 
-            int width = m_IndexFile.BinaryReader.ReadInt16();
-            int height = m_IndexFile.BinaryReader.ReadInt16();
+            return new ushort[] { (ushort)_index.BinaryReader.ReadInt16(), (ushort)_index.BinaryReader.ReadInt16() };
+        }
+
+        private static unsafe Texture2D readStaticTexture(int index, GraphicsDevice graphicsDevice, int hue)
+        {
+            _index.Seek(index);
+            _index.BinaryReader.ReadInt32();
+
+            int width = _index.BinaryReader.ReadInt16();
+            int height = _index.BinaryReader.ReadInt16();
 
             if (width <= 0 || height <= 0)
             {
                 return null;
             }
 
-            if (m_StaticDimensions[index - 0x4000] == null)
+            if (_dimensions[index - 0x4000] == null)
             {
-                m_StaticDimensions[index - 0x4000] = new ushort[] { (ushort)width, (ushort)height };
+                _dimensions[index - 0x4000] = new ushort[] { (ushort)width, (ushort)height };
             }
 
             int[] lookups = new int[height];
 
-            int dataStart = (int)m_IndexFile.BinaryReader.BaseStream.Position + (height * 2);
+            int dataStart = (int)_index.BinaryReader.BaseStream.Position + (height * 2);
 
             for (int i = 0; i < height; i++)
             {
-                lookups[i] = (int)(dataStart + (m_IndexFile.BinaryReader.ReadUInt16() * 2));
+                lookups[i] = (int)(dataStart + (_index.BinaryReader.ReadUInt16() * 2));
+            }
+
+            Hue hueObject = null;
+            hue = (hue & 0x3FFF) - 1;
+            if (hue >= 0 && hue < Hues.List.Length)
+            {
+                hueObject = Hues.List[hue];
             }
 
             ushort[] data = new ushort[width * height];
@@ -162,20 +187,27 @@ namespace UltimaXNA.Data
 
                 for (int y = 0; y < height; y++, dataRef += width)
                 {
-                    m_IndexFile.BinaryReader.BaseStream.Seek(lookups[y], SeekOrigin.Begin);
+                    _index.BinaryReader.BaseStream.Seek(lookups[y], SeekOrigin.Begin);
 
                     ushort* start = dataRef;
 
                     int count, offset;
 
-                    while (((offset = m_IndexFile.BinaryReader.ReadUInt16()) + (count = m_IndexFile.BinaryReader.ReadUInt16())) != 0)
+                    while (((offset = _index.BinaryReader.ReadUInt16()) + (count = _index.BinaryReader.ReadUInt16())) != 0)
                     {
                         start += offset;
                         ushort* end = start + count;
 
                         while (start < end)
                         {
-                            *start++ = (ushort)(m_IndexFile.BinaryReader.ReadUInt16() ^ 0x8000);
+                            if (hue < 0)
+                            {
+                                *start++ = (ushort)(_index.BinaryReader.ReadUInt16() ^ 0x8000);
+                            }
+                            else
+                            {
+                                *start++ = hueObject.GetColorUShort(_index.BinaryReader.ReadUInt16() >> 10);
+                            }
                         }
                     }
                 }

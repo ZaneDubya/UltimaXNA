@@ -43,7 +43,7 @@ namespace UltimaXNA.GUI
         private static Texture2D _TextureBG = null;
         private static Texture2D _TextureEmpty = null;
         private static RenderTarget2D _RenderTarget;
-        private static Texture2D[] _IconCache;
+        private static Dictionary<int, Texture2D> _IconCache;
         
 
         public static string TooltipMsg = string.Empty;
@@ -74,7 +74,7 @@ namespace UltimaXNA.GUI
             _TextureEmpty = Texture2D.FromFile(_graphicsDevice,
                 FormCollection.ContentManager.RootDirectory + @"GUI\COMMON\UI-Slot-Empty.png");
             _RenderTarget = new RenderTarget2D(_graphicsDevice, 64, 64, 0, SurfaceFormat.Color, RenderTargetUsage.PreserveContents);
-            _IconCache = new Texture2D[0x4000];
+            _IconCache = new Dictionary<int, Texture2D>();
             _IsPrepared = true;
         }
 
@@ -276,25 +276,23 @@ namespace UltimaXNA.GUI
             }
         }
 
-        public static Texture2D ItemIcon(int nItemID)
+        public static Texture2D ItemIcon(Item item)
         {
             if (!_IsPrepared)
                 _PrepareHelper();
 
-            if (_IconCache[nItemID] == null)
+            if (!_IconCache.ContainsKey(iconKey(item)))
             {
-                // Retrieve the TextureArt from DataLocal for this ItemID. ItemID = 0 is empty.
-                Texture2D iTextureArt = null;
-                if (nItemID != 0)
-                    iTextureArt = Data.Art.GetStaticTexture(nItemID, FormCollection.Graphics.GraphicsDevice);
+                int itemID = (item == null) ? 0 : item.ItemID;
+                Texture2D texture = (item == null) ? null : Data.Art.GetStaticTexture(itemID, FormCollection.Graphics.GraphicsDevice, item.Hue);
 
                 float iScaleUp = 1f, iDestSize = 39f;
-                if (iTextureArt != null)
+                if (texture != null)
                 {
-                    if (iTextureArt.Width > iTextureArt.Height)
-                        iScaleUp = iDestSize / iTextureArt.Height;
+                    if (texture.Width > texture.Height)
+                        iScaleUp = iDestSize / texture.Height;
                     else
-                        iScaleUp = iDestSize / iTextureArt.Width;
+                        iScaleUp = iDestSize / texture.Width;
                 }
 
                 _graphicsDevice.SetRenderTarget(0, _RenderTarget);
@@ -304,7 +302,7 @@ namespace UltimaXNA.GUI
                 {
                     sprite.Begin(SpriteBlendMode.AlphaBlend);
 
-                    if (nItemID == 0)
+                    if (itemID == 0)
                     {
                         sprite.Draw(_TextureEmpty, new Rectangle(0, 0, 39, 39), new Rectangle(12, 12, 39, 39), Color.White);
                     }
@@ -312,14 +310,14 @@ namespace UltimaXNA.GUI
                     {
                         sprite.Draw(_TextureBG, new Rectangle(0, 0, 39, 39), new Rectangle(12, 12, 39, 39), Color.White);
 
-                        if (iTextureArt != null)
+                        if (texture != null)
                         {
                             Rectangle iSrcRect = new Rectangle(
-                                    -(int)((iTextureArt.Width * iScaleUp) - iDestSize) / 2,
-                                    -(int)(((iTextureArt.Height) * iScaleUp) - iDestSize) / 2,
-                                    (int)(iTextureArt.Width * iScaleUp),
-                                    (int)(iTextureArt.Height * iScaleUp));
-                            sprite.Draw(iTextureArt,
+                                    -(int)((texture.Width * iScaleUp) - iDestSize) / 2,
+                                    -(int)(((texture.Height) * iScaleUp) - iDestSize) / 2,
+                                    (int)(texture.Width * iScaleUp),
+                                    (int)(texture.Height * iScaleUp));
+                            sprite.Draw(texture,
                                 new Rectangle(1, 1, 37, 37),
                                 iSrcRect,
                                 Color.White);
@@ -335,9 +333,19 @@ namespace UltimaXNA.GUI
                 int[] iData = new int[64 * 64];
                 _RenderTarget.GetTexture().GetData<int>(iData);
                 iTexture.SetData<int>(iData);
-                _IconCache[nItemID] = iTexture;
+                _IconCache[iconKey(item)] = iTexture;
             }
-            return _IconCache[nItemID];
+            return _IconCache[iconKey(item)];
+        }
+
+        private static int iconKey(Item item)
+        {
+            if (item == null)
+                return 0;
+            else
+            {
+                return item.ItemID + (item.Hue >> 16);
+            }
         }
     }
 }

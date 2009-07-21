@@ -58,9 +58,7 @@ namespace UltimaXNA.GUI
                 @"GUI\COMMON\UI-Panel-MinimizeButton-Disabled.png", @"GUI\COMMON\UI-Panel-MinimizeButton-Highlight.png"));
             Controls["btnClose"].OnRelease = btnClose_OnRelease;
 
-            for (int i = 0x00; i <= 0x18; i++)
-                m_CreateGumpTexture(i, 20, 85);
-
+            m_CreateEquipButton(0x00); // body
             m_CreateEquipButton(0x01, 52, 315); // Right hand (one handed)
             m_CreateEquipButton(0x02, 132, 315); // Left hand (also set to 'two handed')
             m_CreateEquipButton(0x03, 172, 275); // Footwear
@@ -71,12 +69,12 @@ namespace UltimaXNA.GUI
             m_CreateEquipButton(0x08, 12, 35); // Ring
             m_CreateEquipButton(0x09, 132, 35); // Talisman
             m_CreateEquipButton(0x0A, 12, 115); // neck
-            // skip 0x0B: Hair
+            m_CreateEquipButton(0x0B); // hair
             m_CreateEquipButton(0x0C, 172, 155); // belt
             m_CreateEquipButton(0x0D, 12, 235); // chest
             m_CreateEquipButton(0x0E, 172, 35); // bracelet
             // skip 0x0F: unused.
-            // skip 0x10: facial hair
+            m_CreateEquipButton(0x10); // facial hair
             m_CreateEquipButton(0x11, 92, 35); // sash
             m_CreateEquipButton(0x12, 52, 35); // earring
             m_CreateEquipButton(0x13, 172, 75); // sleeves
@@ -91,17 +89,9 @@ namespace UltimaXNA.GUI
             
         }
 
-        private void m_CreateGumpTexture(int nEquipIndex, int nX, int nY)
-        {
-            string iPicName = "picEquip" + nEquipIndex;
-            Vector2 iPosition = new Vector2();
-            iPosition.Y = nY;
-            iPosition.X = nX;
-            Controls.Add(new PictureBox(iPicName, iPosition, string.Empty, 0));
-        }
-
         private void m_CreateEquipButton(int nEquipIndex, int nX, int nY)
         {
+            m_CreateGumpTexture(nEquipIndex, 20, 85);
             string iBtnName = "btnEquip" + nEquipIndex;
             Vector2 iPosition = new Vector2();
             iPosition.Y = nY;
@@ -112,6 +102,20 @@ namespace UltimaXNA.GUI
             _MyForm[iBtnName].OnMouseOut += btnEquip_OnOut;
             _MyForm[iBtnName].OnPress += btnEquip_OnPress;
             _MyForm[iBtnName].OnRelease += btnEquip_OnRelease;
+        }
+
+        private void m_CreateEquipButton(int nEquipIndex)
+        {
+            m_CreateGumpTexture(nEquipIndex, 20, 85);
+        }
+
+        private void m_CreateGumpTexture(int nEquipIndex, int nX, int nY)
+        {
+            string iPicName = "picEquip" + nEquipIndex;
+            Vector2 iPosition = new Vector2();
+            iPosition.Y = nY;
+            iPosition.X = nX;
+            Controls.Add(new PictureBox(iPicName, iPosition, string.Empty, 0));
         }
 
         private void btnEquip_OnPress(object obj, EventArgs e)
@@ -180,7 +184,7 @@ namespace UltimaXNA.GUI
             if (mMobileObject.equipment.UpdateTicker != mLastContainerUpdated)
             {
 
-                ((PictureBox)_MyForm["picEquip0"]).Texture = Data.Gumps.GetGumpXNA(0x000C);
+                ((PictureBox)_MyForm["picEquip0"]).Texture = Data.Gumps.GetGumpXNA(0x000C, mMobileObject.Hue, true);
 
                 // Buttons index starting at 1.
                 for (int i = 1; i <= m_MaxButtons; i++)
@@ -188,23 +192,52 @@ namespace UltimaXNA.GUI
                     string iPicName = "picEquip" + i;
                     string iBtnName = "btnEquip" + i;
                     // Check to make sure this button exists. If not, skip it.
-                    if (_MyForm[iBtnName] == null)
-                        continue;
-
-                    int iItemTypeID = 0;
-                    Item iItem = mMobileObject.equipment[i];
-                    if (iItem != null)
-                        iItemTypeID = iItem.ItemID;
-                    ((CustomButton)_MyForm[iBtnName]).Texture = GUIHelper.ItemIcon(iItemTypeID);
-                    if (iItemTypeID == 0)
+                    if (_MyForm[iBtnName] != null)
                     {
-                        ((PictureBox)_MyForm[iPicName]).Texture = null;
-                        ((CustomButton)_MyForm[iBtnName]).Disabled = false;
+                        ((CustomButton)_MyForm[iBtnName]).Texture = GUIHelper.ItemIcon(mMobileObject.equipment[i]);
+                        if (mMobileObject.equipment[i] == null)
+                        {
+                            ((PictureBox)_MyForm[iPicName]).Texture = null;
+                            ((CustomButton)_MyForm[iBtnName]).Disabled = false;
+                        }
+                        else
+                        {
+                            ((PictureBox)_MyForm[iPicName]).Texture = Data.Gumps.GetGumpXNA(
+                                mMobileObject.equipment[i].AnimationDisplayID + 50000, 
+                                mMobileObject.equipment[i].Hue, true);
+                            ((CustomButton)_MyForm[iBtnName]).Disabled = false;
+                        }
                     }
-                    else
+                    else if (_MyForm[iPicName] != null)
                     {
-                        ((PictureBox)_MyForm[iPicName]).Texture = Data.Gumps.GetGumpXNA(iItem.AnimationDisplayID + 50000);
-                        ((CustomButton)_MyForm[iBtnName]).Disabled = false;
+                        int bodyID, hue;
+
+                        switch (i)
+                        {
+                            case 0x0B:
+                                if (mMobileObject.HairBodyID == 0)
+                                    continue;
+                                bodyID = mMobileObject.HairBodyID + 50000;
+                                hue = mMobileObject.HairHue;
+                                break;
+                            case 0x10:
+                                if (mMobileObject.FacialHairBodyID == 0)
+                                    continue;
+                                bodyID = mMobileObject.FacialHairBodyID + 50000;
+                                hue = mMobileObject.FacialHairHue;
+                                break;
+                            default:
+                                continue;
+                        }
+
+                        if (bodyID == 0)
+                        {
+                            ((PictureBox)_MyForm[iPicName]).Texture = null;
+                        }
+                        else
+                        {
+                            ((PictureBox)_MyForm[iPicName]).Texture = Data.Gumps.GetGumpXNA(bodyID, hue, true);
+                        }
                     }
                 }
                 mLastContainerUpdated = mMobileObject.equipment.UpdateTicker;

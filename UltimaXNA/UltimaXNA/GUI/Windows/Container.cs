@@ -34,21 +34,21 @@ namespace UltimaXNA.GUI
 
         private int mScrollY, mMaxScrollY = 0;
 
-        int _SlotsWide, _SlotsHigh;
+        int _SlotsWide = 0, _SlotsHigh = 0;
+        Item[] _SlotsItems;
         int _SlotsTotal
         {
             get
             {
                 int numberOfSlots = _SlotsWide * _SlotsHigh;
-                if ((_SlotsItemIDs == null) || (_SlotsItemIDs.Length != numberOfSlots))
+                if ((_SlotsItems == null) || (_SlotsItems.Length != numberOfSlots))
                 {
-                    _SlotsItemIDs = new int[numberOfSlots];
+                    _SlotsItems = new Item[numberOfSlots];
                     _lastContainerUpdated = -1;
                 }
                 return numberOfSlots;
             }
         }
-        int[] _SlotsItemIDs;
 
         public Serial serial { get { return _containerEntity.Serial; } }
 
@@ -206,19 +206,15 @@ namespace UltimaXNA.GUI
 
                 for (int i = 0; i < _SlotsTotal; i++)
                 {
-                    Item iItem = _containerEntity.ContainerObject.GetContents(i + mScrollY * _SlotsWide);
-                    if (iItem == null)
-                        _SlotsItemIDs[i] = 0;
-                    else
-                        _SlotsItemIDs[i] = iItem.ItemID;
+                    _SlotsItems[i] = _containerEntity.ContainerObject.GetContents(i + mScrollY * _SlotsWide);
                 }
                 _lastContainerUpdated = _containerEntity.ContainerObject.UpdateTicker;
 
                 for (int i = 0; i < _SlotsTotal; i++)
                 {
                     string iBtnName = "btnInv" + i;
-                    ((CustomButton)_MyForm[iBtnName]).Texture = GUIHelper.ItemIcon(_SlotsItemIDs[i]);
-                    if (_SlotsItemIDs[i] == 0)
+                    ((CustomButton)_MyForm[iBtnName]).Texture = GUIHelper.ItemIcon(_SlotsItems[i]);
+                    if (_SlotsItems[i] == null)
                         ((CustomButton)_MyForm[iBtnName]).Disabled = false;
                     else
                         ((CustomButton)_MyForm[iBtnName]).Disabled = false;
