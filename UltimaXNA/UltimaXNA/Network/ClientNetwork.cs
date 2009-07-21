@@ -496,6 +496,7 @@ namespace UltimaXNA.Network
             catch (Exception e)
             {
                 _log.Debug(e);
+                Disconnect();
             }
         }
 
