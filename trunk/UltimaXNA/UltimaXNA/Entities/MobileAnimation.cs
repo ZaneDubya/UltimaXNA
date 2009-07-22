@@ -49,8 +49,7 @@ namespace UltimaXNA.Entities
 
         private bool _doHaltAnimation;
         private int _timeHalted;
-        private int _holdAnimationMilliseconds = 200;
-        public int HoldAnimationMS { set { _holdAnimationMilliseconds = value; } }
+        public int HoldAnimationMS = 200;
         public bool HaltAnimation
         {
             get { return _doHaltAnimation; }
@@ -126,8 +125,9 @@ namespace UltimaXNA.Entities
                 if (Action != MobileAction.Stand)
                 {
                     // advance the animation one step, based on gametime passed.
-                    float iTimePassed = ((1f / 60f) / (float)(gameTime.ElapsedRealTime.TotalMilliseconds / 1000f));
-                    float iTimeStep = 1f / _animationStep / iTimePassed;
+                    float iTimeStep = ((float)gameTime.ElapsedRealTime.TotalMilliseconds / _animationStep) / _FrameCount;
+                    if (IsMovementAction(Action))
+                        iTimeStep *= (IsMounted) ? 2 : 1;
                     AnimationFrame += iTimeStep;
 
                     // We have a special case for movement actions that have not been
@@ -149,7 +149,7 @@ namespace UltimaXNA.Entities
                                 if (HaltAnimation)
                                 {
                                     // hold the animation for a quick moment, then set to stand.
-                                    if ((msGameTime(gameTime) - _timeHalted) >= _holdAnimationMilliseconds)
+                                    if ((msGameTime(gameTime) - _timeHalted) >= HoldAnimationMS)
                                     {
                                         SetAnimation(MobileAction.Stand);
                                         HaltAnimation = false;
