@@ -134,6 +134,13 @@ namespace UltimaXNA.Entities
         {
             if (!IsMoving)
             {
+                // we need to transfer over the running flag to our local copy.
+                // copy over running flag if it exists, zero it out if it doesn't
+                if ((facing & Direction.Running) != 0)
+                    this.Facing |= Direction.Running;
+                else
+                    this.Facing &= Direction.FacingMask;
+                // now get the goal tile.
                 Vector3 position = MovementCheck.OffsetTile(_CurrentTile.Location, facing);
                 SetGoalTile((int)position.X, (int)position.Y, (int)position.Z);
             }
@@ -186,12 +193,16 @@ namespace UltimaXNA.Entities
                         {
                             // Special exception for the player: if we are facing a new direction, we
                             // need to pause for a brief moment and let the server know that.
-                            _MoveEvent.NewEvent(iFacing);
-                            if (_facing != iFacing)
+                            if ((_facing & Direction.FacingMask) != (iFacing & Direction.FacingMask))
                             {
+                                _MoveEvent.NewEvent((iFacing & Direction.FacingMask));
                                 _facing = iFacing;
                                 _NextTile.Location = _CurrentTile.Location;
                                 return;
+                            }
+                            else
+                            {
+                                _MoveEvent.NewEvent(iFacing);
                             }
                         }
                         else
@@ -266,8 +277,8 @@ namespace UltimaXNA.Entities
             bool moveIsOkay = MovementCheck.CheckMovement((Mobile)_ownerEntity, World.Map, currentLocation, facing, out nextAltitude);
             if (moveIsOkay)
             {
-                //if (IsRunning)
-                //    facing |= Direction.Running;
+                if (IsRunning)
+                    facing |= Direction.Running;
                 return new TilePosition((int)nextTile.X, (int)nextTile.Y, nextAltitude);
             }
             else

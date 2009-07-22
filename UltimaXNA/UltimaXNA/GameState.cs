@@ -328,7 +328,14 @@ namespace UltimaXNA
 
         private void checkMove()
         {
-            ((Mobile)_Entities.GetPlayerObject()).Move(CursorDirection);
+            Direction moveDirection = CursorDirection;
+            float distanceFromCenterOfScreen = Vector2.Distance(new Vector2(_Input.Mouse.Position.X, _Input.Mouse.Position.Y), new Vector2(400, 300));
+            if (distanceFromCenterOfScreen >= 200f)
+                moveDirection |= Direction.Running;
+
+            ((Mobile)_Entities.GetPlayerObject()).Move(moveDirection);
+            
+            
             if (_MovementFollowsMouse)
                 _ContinuousMoveCheck = true;
         }
