@@ -93,10 +93,21 @@ namespace UltimaXNA.TileEngine
 
         public void GetAverageZ(int x, int y, ref int z, ref int avg, ref int top)
         {
-            int zTop = GetMapCell(x, y).GroundTile.Z;
-            int zLeft = GetMapCell(x, y + 1).GroundTile.Z;
-            int zRight = GetMapCell(x + 1, y).GroundTile.Z;
-            int zBottom = GetMapCell(x + 1, y + 1).GroundTile.Z;
+            int zTop, zLeft, zRight, zBottom;
+            try
+            {
+                zTop = GetMapCell(x, y).GroundTile.Z;
+                zLeft = GetMapCell(x, y + 1).GroundTile.Z;
+                zRight = GetMapCell(x + 1, y).GroundTile.Z;
+                zBottom = GetMapCell(x + 1, y + 1).GroundTile.Z;
+            }
+            catch
+            {
+                z = int.MinValue;
+                avg = int.MinValue;
+                top = int.MinValue;
+                return;
+            }
 
             z = zTop;
             if (zLeft < z)
