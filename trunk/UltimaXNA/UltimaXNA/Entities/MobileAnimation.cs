@@ -327,7 +327,7 @@ namespace UltimaXNA.Entities
         /// <summary>
         /// Invalid layer.
         /// </summary>
-        Invalid = 0x00,
+        Body = 0x00,
         /// <summary>
         /// First valid layer. Equivalent to <c>Layer.OneHanded</c>.
         /// </summary>

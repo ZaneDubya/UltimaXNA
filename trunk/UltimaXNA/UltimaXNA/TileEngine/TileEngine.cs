@@ -342,12 +342,13 @@ namespace UltimaXNA.TileEngine
                             _vertexBuffer[3].Position.Y += height - drawY;
                             _vertexBuffer[3].Position.Z = drawZ;
 
-                            //TODO: Check to see if its a partial hue, if true set Y = 1, if false then set y = 0
-                            // We subtract 1 since hue = 0 is valid, and the client uses hue = 0 to indicate no hue.
-                            Vector2 hueVector = new Vector2(iMobile.Hue, 0);
+                            // hueVector: x is the hue, y sets whether or not to use it.
+                            // y = 1, total hue.
+                            // y = 2, partial hue.
+                            Vector2 hueVector = new Vector2(iMobile.Hue - 1, 1);
                             if (_gameStateService.LastTarget != null)
                                 if (_gameStateService.LastTarget == iMobile.OwnerSerial)
-                                    hueVector.Y = 1;
+                                    hueVector.X = ((Entities.Mobile)iMobile.OwnerEntity).NotorietyHue - 1;
 
                             _vertexBuffer[0].Hue = hueVector;
                             _vertexBuffer[1].Hue = hueVector;
@@ -412,8 +413,10 @@ namespace UltimaXNA.TileEngine
                             _vertexBuffer[3].Position.Y += height - drawY;
                             _vertexBuffer[3].Position.Z = drawZ;
 
-                            //TODO: Check to see if its a partial hue, if true set Y = 1, if false then set y = 0
-                            Vector2 hueVector = new Vector2(iObject.Hue, 0);
+                            // hueVector: x is the hue, y sets whether or not to use it.
+                            // y = 1, total hue.
+                            // y = 2, partial hue.
+                            Vector2 hueVector = new Vector2(iObject.Hue - 1, 1);
 
                             _vertexBuffer[0].Hue = hueVector;
                             _vertexBuffer[1].Hue = hueVector;

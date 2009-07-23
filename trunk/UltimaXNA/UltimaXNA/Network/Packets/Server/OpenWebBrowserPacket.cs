@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   GlobalQueuePacket.cs
+ *   OpenWebBrowserPacket.cs
  *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   
  *   begin                : May 31, 2009
@@ -17,19 +17,23 @@
  ***************************************************************************/
 #region usings
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 #endregion
 
 namespace UltimaXNA.Network.Packets.Server
 {
-    public class GlobalQueuePacket : RecvPacket
+    public class OpenWebBrowserPacket : RecvPacket
     {
-        public GlobalQueuePacket(PacketReader reader)
-            : base(0xCB, "Global Queue")
+        readonly string _url;
+
+        public string WebsiteUrl
         {
-            // TODO: Write this packet.
+            get { return _url; }
+        }
+
+        public OpenWebBrowserPacket(PacketReader reader)
+            : base(0xA5, "Open Web Browser")
+        {
+            _url = reader.ReadString(reader.Size);
         }
     }
 }

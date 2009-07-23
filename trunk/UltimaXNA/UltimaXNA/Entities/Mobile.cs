@@ -32,7 +32,11 @@ namespace UltimaXNA.Entities
         internal MobileAnimation animation;
 
         public bool IsMounted { get { return equipment[(int)EquipLayer.Mount] != null; } }
+        public bool IsFemale;
+        public bool IsPoisoned;
+        public bool IsBlessed;
         public bool IsWarMode { get { return animation.WarMode; } set { animation.WarMode = value; } }
+        public bool IsHidden;
 
         public int BodyID
         {
@@ -52,7 +56,14 @@ namespace UltimaXNA.Entities
         private int _hue;
         public int Hue // Fix for large hue values per issue12 (http://code.google.com/p/ultimaxna/issues/detail?id=12) --ZDW 6/15/2009
         {
-            get { return _hue; }
+            get {
+                if (IsHidden)
+                    return 0x3E7;
+                else if (IsPoisoned)
+                    return 0x1CE;
+                else
+                    return _hue;
+            }
             set
             {
                 if (value > 2998)
@@ -62,10 +73,47 @@ namespace UltimaXNA.Entities
             }
         }
 
+        /// <summary>
+        /// 0x1: Innocent (Blue)
+        /// 0x2: Friend (Green)
+        /// 0x3: Grey (Grey - Non Criminal)
+        /// 0x4: Criminal (Grey)
+        /// 0x5: Enemy (Orange)
+        /// 0x6: Murderer (Red)
+        /// 0x7: Invulnerable (Yellow)
+        /// </summary>
+        public int Notoriety;
+        public int NotorietyHue
+        {
+            get
+            {
+                switch (Notoriety)
+                {
+                    case 0x01: // 0x1: Innocent (Blue)
+                        return 0x059;
+                    case 0x02: // 0x2: Friend (Green)
+                        return 0x03F;
+                    case 0x03: // Grey (Grey - Non Criminal)
+                        return 0x3B2;
+                    case 0x04: // Criminal (Grey)
+                        return 0x3B2;
+                    case 0x05: // Enemy (Orange)
+                        return 0x090;
+                    case 0x06: // Murderer (Red)
+                        return 0x022;
+                    case 0x07: // Invulnerable (Yellow)
+                        return 0x035;
+                    default:
+                        return 0;
+                }
+            }
+        }
+
         // Issue 14 - Wrong layer draw order - http://code.google.com/p/ultimaxna/issues/detail?id=14 - Smjert
-        private int[] m_DrawLayers = new int[20]
+        private int[] m_DrawLayers = new int[21]
 		{
 			(int)EquipLayer.Mount,
+            (int)EquipLayer.Body,
 			(int)EquipLayer.OneHanded,
             (int)EquipLayer.Shoes,
             (int)EquipLayer.Pants,
@@ -123,30 +171,29 @@ namespace UltimaXNA.Entities
                     animation.HaltAnimation = true;
             }
 
-            int iDirection = Movement.DrawFacing;
-
+            int direction = Movement.DrawFacing;
             int action = animation.GetAction();
             MobileTile mobtile = null;
-            mobtile = new MobileTile(BodyID, nLocation, nOffset, iDirection, action, animation.AnimationFrame, this, 1, Hue, animation.IsMounted);
-            mobtile.SubType = MobileTileTypes.Body;
-            nCell.AddMobileTile(mobtile);
-            // Issue 6 - End
-
-
             for (int i = 0; i < m_DrawLayers.Length; i++)
             {
-                // Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
-                if (equipment[m_DrawLayers[i]] != null && equipment[m_DrawLayers[i]].AnimationDisplayID != 0)
+                if (m_DrawLayers[i] == (int)EquipLayer.Body)
+                {
+                    mobtile = new MobileTile(
+                        BodyID, nLocation, nOffset, 
+                        direction, action, animation.AnimationFrame, 
+                        this, i, Hue, animation.IsMounted);
+                    // mobtile.SubType = MobileTileTypes.Body;
+                    nCell.AddMobileTile(mobtile);
+                }
+                else if (equipment[m_DrawLayers[i]] != null && equipment[m_DrawLayers[i]].AnimationDisplayID != 0)
                 {
                     mobtile = new TileEngine.MobileTile(
                             equipment[m_DrawLayers[i]].AnimationDisplayID, nLocation, nOffset,
-                            iDirection, action, animation.AnimationFrame,
-                            this, i + 1, equipment[m_DrawLayers[i]].Hue, animation.IsMounted);
-
-                    mobtile.SubType = TileEngine.MobileTileTypes.Equipment;
+                            direction, action, animation.AnimationFrame,
+                            this, i, equipment[m_DrawLayers[i]].Hue, animation.IsMounted);
+                    // mobtile.SubType = TileEngine.MobileTileTypes.Equipment;
                     nCell.AddMobileTile(mobtile);
                 }
-                // Issue 6 - End
             }
         }
 
