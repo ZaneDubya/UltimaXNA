@@ -462,15 +462,22 @@ namespace UltimaXNA.Data
 
             // Make sure the cache is complete.
             // max number of bodies is about 1000
-            if (m_Cache == null) m_Cache = new FrameXNA[1000][][][];
-            if (m_Cache[body] == null)
-                m_Cache[body] = new FrameXNA[35][][];
-            if (m_Cache[body][action] == null)
-                m_Cache[body][action] = new FrameXNA[8][];
-            if (m_Cache[body][action][direction] == null)
-                m_Cache[body][action][direction] = new FrameXNA[1];
-            if (m_Cache[body][action][direction][0] != null)
-                return m_Cache[body][action][direction];
+            try
+            {
+                if (m_Cache == null) m_Cache = new FrameXNA[1000][][][];
+                if (m_Cache[body] == null)
+                    m_Cache[body] = new FrameXNA[35][][];
+                if (m_Cache[body][action] == null)
+                    m_Cache[body][action] = new FrameXNA[8][];
+                if (m_Cache[body][action][direction] == null)
+                    m_Cache[body][action][direction] = new FrameXNA[1];
+                if (m_Cache[body][action][direction][0] != null)
+                    return m_Cache[body][action][direction];
+            }
+            catch
+            {
+                return null;
+            }
 
             FileIndex fileIndex;
 

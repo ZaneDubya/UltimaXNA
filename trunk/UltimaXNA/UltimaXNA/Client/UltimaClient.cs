@@ -1038,6 +1038,7 @@ namespace UltimaXNA.Client
             {
                 // special case for corpses.
                 item = _Entities.GetObject<Corpse>((int)serial, true);
+                Network.Packets.Server.ContainerContentPacket.NextContainerContentsIsPre6017 = true;
             }
             else
             {

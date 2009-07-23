@@ -449,8 +449,10 @@ namespace UltimaXNA.TileEngine
             int hueType = 1;
             if ((hue & 0x8000) != 0) // partial hue
                 hueType = 2;
+            else if ((hue & 0x4000) != 0) // transparant
+                hueType = 3;
 
-            return new Vector2(hue & 0x7FFF - 1, hueType);
+            return new Vector2(hue & 0x3FFF - 1, hueType);
         }
 
         private bool isMouseOverObject(Vector3 iMin, Vector3 iMax)
