@@ -42,7 +42,6 @@ namespace UltimaXNA.GUI
 
     public class EngineGUI : DrawableGameComponent, IGUI
     {
-        private SpriteFont _FontArial14;
         private SpriteBatch _SpriteBatch;
         private FormCollection _FormCollection;
         private bool _DrawForms = false;
@@ -194,7 +193,6 @@ namespace UltimaXNA.GUI
         public override void Initialize()
         {
             GraphicsDeviceManager graphics = Game.Services.GetService(typeof(IGraphicsDeviceService)) as GraphicsDeviceManager;
-            _FontArial14 = Game.Content.Load<SpriteFont>(@"fonts\ArialNarrow10");
             _FormCollection = new FormCollection(Game.Window, Game.Services, ref graphics, @"..\..\res\");
             _SpriteBatch = new SpriteBatch(Game.GraphicsDevice);
             _GameObjectsService = (IEntitiesService)Game.Services.GetService(typeof(IEntitiesService));
@@ -273,24 +271,26 @@ namespace UltimaXNA.GUI
             // Draw debug message
             _SpriteBatch.Begin();
             if (DebugMessage != null)
-                _SpriteBatch.DrawString(_FontArial14, DebugMessage,
-                    new Vector2(5, 5), Color.White, 0f, Vector2.Zero, 1,
-                    SpriteEffects.None, 1f);
+            {
+                drawText(_SpriteBatch, DebugMessage, 9, 0, 5, 5);
+            }
             // version message
             Version v = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
             DateTime d = new DateTime(v.Build * TimeSpan.TicksPerDay).AddYears(1999).AddDays(-1);
-            string versionString = "UltimaXNA PreAlpha v" + v.Major + "." + v.Minor + Environment.NewLine +
+            string versionString = string.Format("UltimaXNA PreAlpha v{0}.{1}", v.Major, v.Minor) + Environment.NewLine +
                 "Compiled: " + String.Format("{0:MMMM d, yyyy}", d);
-            _SpriteBatch.DrawString(_FontArial14, versionString,
-                    new Vector2(670, 565), Color.White, 0f, Vector2.Zero, 1,
-                    SpriteEffects.None, 1f);
+            drawText(_SpriteBatch, versionString, 9, 0, 615, 570);
             // tooltip message
-            _SpriteBatch.DrawString(_FontArial14, GUIHelper.TooltipMsg,
-                    new Vector2(GUIHelper.TooltipX, GUIHelper.TooltipY), Color.White, 0f, Vector2.Zero, 1,
-                    SpriteEffects.None, 1f);
+            drawText(_SpriteBatch, GUIHelper.TooltipMsg, 9, 0, GUIHelper.TooltipX, GUIHelper.TooltipY);
             _SpriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        private void drawText(SpriteBatch spriteBatch, string text, int font, int hue, int x, int y)
+        {
+            Texture2D texture = GUIHelper.TextTexture(text, font, hue);
+            spriteBatch.Draw(texture, new Rectangle(x, y, texture.Width, texture.Height), Color.White);
         }
 
         public bool IsMouseOverGUI(Vector2 nPosition)

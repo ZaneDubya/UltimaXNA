@@ -66,8 +66,8 @@ namespace UltimaXNA.Entities
             set
             {
                 _SlotContents[nIndex] = value;
-                UpdateTicker++;
                 updateLastSlot(nIndex);
+                UpdateTicker++;
             }
         }
 

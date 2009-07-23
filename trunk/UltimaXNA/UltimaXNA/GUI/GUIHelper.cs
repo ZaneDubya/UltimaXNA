@@ -44,6 +44,7 @@ namespace UltimaXNA.GUI
         private static Texture2D _TextureEmpty = null;
         private static RenderTarget2D _RenderTarget;
         private static Dictionary<int, Texture2D> _IconCache;
+        private static Dictionary<string, Texture2D> _TextTextureCache;
         
 
         public static string TooltipMsg = string.Empty;
@@ -75,6 +76,7 @@ namespace UltimaXNA.GUI
                 FormCollection.ContentManager.RootDirectory + @"GUI\COMMON\UI-Slot-Empty.png");
             _RenderTarget = new RenderTarget2D(_graphicsDevice, 64, 64, 0, SurfaceFormat.Color, RenderTargetUsage.PreserveContents);
             _IconCache = new Dictionary<int, Texture2D>();
+            _TextTextureCache = new Dictionary<string, Texture2D>();
             _IsPrepared = true;
         }
 
@@ -267,6 +269,20 @@ namespace UltimaXNA.GUI
             {
                 return _ToolTipItem;
             }
+        }
+
+        public static Texture2D TextTexture(string text, int font, int hue)
+        {
+            if (!_IsPrepared)
+                _PrepareHelper();
+            string hash = string.Format("<hue:{0}font:{1}>{2}", hue.ToString(), font.ToString(), text);
+
+            if (!_TextTextureCache.ContainsKey(hash))
+            {
+                Texture2D texture = Data.ASCIIText.GetTexture(font, text);
+                _TextTextureCache.Add(hash, texture);
+            }
+            return _TextTextureCache[hash];
         }
 
         public static Texture2D ItemIcon(Item item)
