@@ -56,16 +56,13 @@ namespace UltimaXNA.Entities
         public Serial Item_ContainedWithinSerial = 0;
         public int AnimationDisplayID = 0;
 
-        private int m_Hue;
-        public int Hue // Fix for large hue values per issue12 (http://code.google.com/p/ultimaxna/issues/detail?id=12) --ZDW 6/15/2009
+        private int _hue;
+        public int Hue
         {
-            get { return m_Hue; }
+            get { return _hue; }
             set
             {
-                if (value > 2998)
-                    m_Hue = (int)(value / 32);
-                else
-                    m_Hue = value;
+                _hue = value;
             }
         }
 

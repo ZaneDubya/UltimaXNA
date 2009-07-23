@@ -28,15 +28,8 @@ namespace UltimaXNA.Entities
         public Movement Movement;
         public PropertyList PropertyList = new PropertyList();
 
-        internal bool _hasBeenDrawn = false; // if this is false this object will redraw itself in the tileengine.
+        internal bool _hasBeenDrawn = false; // if this is false this object will redraw itself in the tileengine.}
 
-        private bool _visible = true;
-        public bool Visible
-        {
-            get { return _visible; }
-            set { _visible = value; if (_visible) { _hasBeenDrawn = false; } }
-        }
-        
         internal bool _Disposed = false; // set this to true to have the object deleted.
         public bool IsDisposed { get { return _Disposed; } }
         
@@ -60,7 +53,7 @@ namespace UltimaXNA.Entities
 
         public virtual void Update(GameTime gameTime)
         {
-            if ((Movement.RequiresUpdate || _hasBeenDrawn == false) && _visible && Movement.DrawPosition != null)
+            if ((Movement.RequiresUpdate || _hasBeenDrawn == false) && Movement.DrawPosition != null)
             {
                 Movement.Update(gameTime);
 
