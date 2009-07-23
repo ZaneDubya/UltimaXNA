@@ -310,13 +310,12 @@ namespace UltimaXNA.TileEngine
 
                             Data.FrameXNA[] iFrames = Data.AnimationsXNA.GetAnimation(this.Game.GraphicsDevice,
                                 iMobile.ID, iMobile.Action, iMobile.Direction, iMobile.Hue, false);
-                            // GetAnimation fails so it returns null, temporary fix - Smjert
                             if (iFrames == null)
                                 continue;
                             int iFrame = iMobile.Frame(iFrames.Length);
-                            // If the frame data is corrupt, then the texture will not load. Fix for broken cleaver data, maybe others. --Poplicola 6/15/2009
                             if (iFrames[iFrame].Texture == null)
                                 continue;
+
                             width = iFrames[iFrame].Texture.Width;
                             height = iFrames[iFrame].Texture.Height;
                             drawX = iFrames[iFrame].Center.X - 22 - (int)((iMobile.Offset.X - iMobile.Offset.Y) * 22);
@@ -345,10 +344,10 @@ namespace UltimaXNA.TileEngine
                             // hueVector: x is the hue, y sets whether or not to use it.
                             // y = 1, total hue.
                             // y = 2, partial hue.
-                            Vector2 hueVector = new Vector2(iMobile.Hue - 1, 1);
+                            Vector2 hueVector = getHueVector(iMobile.Hue);
                             if (_gameStateService.LastTarget != null)
                                 if (_gameStateService.LastTarget == iMobile.OwnerSerial)
-                                    hueVector.X = ((Entities.Mobile)iMobile.OwnerEntity).NotorietyHue - 1;
+                                    hueVector = new Vector2(((Entities.Mobile)iMobile.OwnerEntity).NotorietyHue - 1, 1);
 
                             _vertexBuffer[0].Hue = hueVector;
                             _vertexBuffer[1].Hue = hueVector;
@@ -416,8 +415,7 @@ namespace UltimaXNA.TileEngine
                             // hueVector: x is the hue, y sets whether or not to use it.
                             // y = 1, total hue.
                             // y = 2, partial hue.
-                            Vector2 hueVector = new Vector2(iObject.Hue - 1, 1);
-
+                            Vector2 hueVector = getHueVector(iObject.Hue);
                             _vertexBuffer[0].Hue = hueVector;
                             _vertexBuffer[1].Hue = hueVector;
                             _vertexBuffer[2].Hue = hueVector;
@@ -441,6 +439,18 @@ namespace UltimaXNA.TileEngine
             if ((_pickType & PickTypes.PickGroundTiles) == PickTypes.PickGroundTiles)
                 if (_rayPicker.PickTest(_inputService.Mouse.Position, Matrix.Identity, _spriteBatch.WorldMatrix))
                     _mouseOverGroundTile = _rayPicker.pickedObject;
+        }
+
+        private Vector2 getHueVector(int hue)
+        {
+            if (hue == 0)
+                return new Vector2(0);
+
+            int hueType = 1;
+            if ((hue & 0x8000) != 0) // partial hue
+                hueType = 2;
+
+            return new Vector2(hue & 0x7FFF - 1, hueType);
         }
 
         private bool isMouseOverObject(Vector3 iMin, Vector3 iMax)

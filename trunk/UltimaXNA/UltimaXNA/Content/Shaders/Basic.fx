@@ -76,9 +76,9 @@ float4 PixelShader(PS_INPUT IN) : COLOR0
 		float hueY = (((x - (x % 2)) / HuesPerRow) / (HuesPerColumn));
 		float4 gray = (color.r + color.g + color.b) / 3.0f / HuesPerRow + (x % 2) * 0.5f;
 		float4 hue = tex2D(hueTextureSampler, float2(gray.r, hueY));
-		if (IN.Hue.x < 0) //Is it a Partial Hue?
+		if (IN.Hue.y == 2) //Is it a Partial Hue?
 		{
-			if (color.r == color.g && color.r == color.b && color.a != 0)
+			if ((color.r == color.g) && (color.r == color.b) && (color.a != 0))
 				color = hue;
 		}
 		else //Else its a normal Hue

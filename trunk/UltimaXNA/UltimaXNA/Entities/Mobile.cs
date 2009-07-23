@@ -54,7 +54,7 @@ namespace UltimaXNA.Entities
         }
 
         private int _hue;
-        public int Hue // Fix for large hue values per issue12 (http://code.google.com/p/ultimaxna/issues/detail?id=12) --ZDW 6/15/2009
+        public int Hue
         {
             get {
                 if (IsHidden)
@@ -66,10 +66,7 @@ namespace UltimaXNA.Entities
             }
             set
             {
-                if (value > 2998)
-                    _hue = (int)(value / 32);
-                else
-                    _hue = value;
+                _hue = value;
             }
         }
 
