@@ -442,8 +442,7 @@ namespace UltimaXNA
                     Item item = _Entities.GetObject<Item>(iTopObject.OwnerSerial, false);
                     if (item.ItemData.Weight != 255)
                     {
-                        // _GameClient.Send(new PickupItemPacket(iObject.Serial, (short)iObject.Item_StackCount));
-                        GUI.GUIHelper.MouseHoldingItem = item;
+                        GUI.GUIHelper.PickUpItem(item);
                         return;
                     }
                 }

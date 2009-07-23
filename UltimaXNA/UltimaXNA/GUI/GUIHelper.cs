@@ -127,9 +127,10 @@ namespace UltimaXNA.GUI
             }
         }
 
-        public static void PickUpItem(Item nObject)
+        public static void PickUpItem(Item item)
         {
-            MouseHoldingItem = nObject;
+            Events.PickupItem(item);
+            MouseHoldingItem = item;
         }
 
         public static void DropItemIntoSlot(Entity nDestContainer, int nDestSlot)
@@ -143,9 +144,7 @@ namespace UltimaXNA.GUI
                 if (iHeldObject.Wearer.Serial == _entityService.MySerial)
                 {
                     // we are wearing this item. Go ahead and drop it into the requested slot.
-                    _networkService.Send(new PickupItemPacket(iHeldObject.Serial, (short)iHeldObject.Item_StackCount));
-                    _networkService.Send(new DropItemPacket(iHeldObject.Serial, (short)nDestSlot, (short)0x7FFF,
-                        0, 0, iDestContainer.Serial));
+                    GUI.Events.DropItem(iHeldObject, nDestSlot, 0x7FFF, 0, iDestContainer.Serial);
                 }
                 else
                 {
@@ -169,9 +168,7 @@ namespace UltimaXNA.GUI
                         {
                             _entityService.GetObject<ContainerItem>(iHeldObject.Item_ContainedWithinSerial, false).Contents.RemoveItem(iHeldObject.Serial);
                         }
-                        _networkService.Send(new PickupItemPacket(iHeldObject.Serial, (short)iHeldObject.Item_StackCount));
-                        _networkService.Send(new DropItemPacket(iHeldObject.Serial, (short)nDestSlot, (short)0x7FFF,
-                            0, 0, iDestContainer.Serial));
+                        GUI.Events.DropItem(iHeldObject, nDestSlot, 0x7FFF, 0, iDestContainer.Serial);
                     }
                     else
                     {
@@ -179,9 +176,7 @@ namespace UltimaXNA.GUI
                         {
                             _entityService.GetObject<ContainerItem>(iHeldObject.Item_ContainedWithinSerial, false).Contents.RemoveItem(iHeldObject.Serial);
                         }
-                        _networkService.Send(new PickupItemPacket(iHeldObject.Serial, (short)iHeldObject.Item_StackCount));
-                        _networkService.Send(new DropItemPacket(iHeldObject.Serial, (short)0, (short)0,
-                            0, 0, iDestContainer.Serial));
+                        GUI.Events.DropItem(iHeldObject, 0, 0, 0, iDestContainer.Serial);
                     }
                 }
             }
@@ -192,8 +187,7 @@ namespace UltimaXNA.GUI
         {
             int groundSerial = unchecked((int)0xffffffff);
             Item iHeldObject = (Item)MouseHoldingItem;
-            _networkService.Send(new PickupItemPacket(iHeldObject.Serial, (short)iHeldObject.Item_StackCount));
-            _networkService.Send(new DropItemPacket(iHeldObject.Serial, (short)x, (short)y, (byte)z, 0, groundSerial));
+            GUI.Events.DropItem(iHeldObject, x, y, z, groundSerial);
             GUI.GUIHelper.MouseHoldingItem = null;
         }
 
@@ -208,7 +202,6 @@ namespace UltimaXNA.GUI
                 iHeldObject.Item_ContainedWithinSerial = 0;
                 iSourceContainer.Contents.RemoveItem(iHeldObject.Serial);
             }
-            _networkService.Send(new PickupItemPacket(iHeldObject.Serial, (short)0));
             _networkService.Send(new DropToLayerPacket(iHeldObject.Serial, (byte)nDestSlot, iDestMobile.Serial));
 
             GUI.GUIHelper.MouseHoldingItem = null;
@@ -242,19 +235,19 @@ namespace UltimaXNA.GUI
                     _ToolTipItem = value;
                     Data.ItemData iData = _ToolTipItem.ItemData;
                     string iItemName = string.Empty;
-                    if (_ToolTipItem.Item_StackCount > 1)
-                        iItemName += _ToolTipItem.Item_StackCount.ToString() + @" ";
+                    if (_ToolTipItem.Amount > 1)
+                        iItemName += _ToolTipItem.Amount.ToString() + @" ";
                     if (iData.Name.Contains(@"%"))
                     {
-                        iItemName += _ToolTipItem.Item_StackCount.ToString() + @" ";
+                        iItemName += _ToolTipItem.Amount.ToString() + @" ";
                         int iMultiplePosition = iData.Name.IndexOf(@"%");
                         string iBaseString = iData.Name.Substring(0, iMultiplePosition);
                         int length = iData.Name.IndexOf(@"%", iMultiplePosition + 1) - iMultiplePosition - 1;
                         string iMultipleString = string.Empty;
                         if (length > 0)
                             iMultipleString = iData.Name.Substring(iMultiplePosition + 1, length);
-                        iItemName = _ToolTipItem.Item_StackCount.ToString() + @" " + iBaseString;
-                        if (_ToolTipItem.Item_StackCount > 1)
+                        iItemName = _ToolTipItem.Amount.ToString() + @" " + iBaseString;
+                        if (_ToolTipItem.Amount > 1)
                             iItemName += iMultipleString;
                     }
                     else

@@ -40,7 +40,7 @@ namespace UltimaXNA.Entities
         internal override void Draw(UltimaXNA.TileEngine.MapCell nCell, Vector3 nLocation, Vector3 nOffset)
         {
             nCell.AddGameObjectTile(
-                new TileEngine.GameObjectTile(mObjectTypeID, nLocation, Movement.DrawFacing, this, Hue));
+                new TileEngine.GameObjectTile(_ItemID, nLocation, Movement.DrawFacing, this, Hue));
         }
 
         public override void Dispose()
@@ -52,7 +52,7 @@ namespace UltimaXNA.Entities
         }
 
         public Mobile Wearer;
-        public int Item_StackCount = 0;
+        public int Amount = 0;
         public Serial Item_ContainedWithinSerial = 0;
         public int AnimationDisplayID = 0;
 
@@ -69,17 +69,30 @@ namespace UltimaXNA.Entities
             }
         }
 
-        private int mObjectTypeID = 0;
+        private int _ItemID = 0;
         public Data.ItemData ItemData;
 
         public int ItemID
         {
-            get { return mObjectTypeID; }
+            get { return _ItemID; }
             set
             {
+                if (value == 0xEED) // gold coin.
+                {
+                    if (Amount <= 1)
+                        _ItemID = 0xEED;
+                    else if (Amount <= 5)
+                        _ItemID = 0xEEE;
+                    else
+                        _ItemID = 0xEEF;
+                }
+                else
+                {
+                    _ItemID = value;
+                }
                 _hasBeenDrawn = false;
-                mObjectTypeID = value;
-                ItemData = UltimaXNA.Data.TileData.ItemData[mObjectTypeID];
+                
+                ItemData = UltimaXNA.Data.TileData.ItemData[_ItemID];
                 AnimationDisplayID = ItemData.AnimID;
             }
         }
@@ -88,7 +101,7 @@ namespace UltimaXNA.Entities
         // All items have both an X and a Y position within the container. We use X for the SlotIndex
         // which this item occupies, and the Y as a Checksum for the X value: if the Y checksum validates,
         // then we know this item belongs in slot X.
-        public int Item_InvX, Item_InvY, Item_InvSlot = 0;
+        public int Item_InvX = 0, Item_InvY = 0, Item_InvSlot = 0;
 
         public override void Update(GameTime gameTime)
         {
