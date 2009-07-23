@@ -53,7 +53,7 @@ namespace UltimaXNA.GUI
         public static void PickupItem(Entity entity)
         {
             Item iObject = ((Item)entity);
-            _GameClientService.Send(new PickupItemPacket(iObject.Serial, (short)iObject.Item_StackCount));
+            _GameClientService.Send(new PickupItemPacket(iObject.Serial, (short)iObject.Amount));
         }
 
         public static void DropItem(Entities.Entity entity, int x, int y, int z, Serial destEntity)

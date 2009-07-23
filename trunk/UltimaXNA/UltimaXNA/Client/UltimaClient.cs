@@ -1046,9 +1046,9 @@ namespace UltimaXNA.Client
                 else
                     item = _Entities.GetObject<Item>((int)serial, true);
             }
+            item.Amount = amount;
             item.ItemID = itemID;
             item.Hue = nHue;
-            item.Item_StackCount = amount;
             item.Item_ContainedWithinSerial = containerSerial;
 
             return item;

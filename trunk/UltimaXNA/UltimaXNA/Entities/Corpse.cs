@@ -27,7 +27,7 @@ namespace UltimaXNA.Entities
         public Serial MobileSerial = 0;
 
         private float _corpseFrame = 0.999f;
-        private int _corpseBody { get { return Item_StackCount; } }
+        private int _corpseBody { get { return Amount; } }
 
         public Corpse(Serial serial)
             : base(serial)

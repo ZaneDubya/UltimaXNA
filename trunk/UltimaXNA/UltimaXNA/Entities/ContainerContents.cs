@@ -153,18 +153,9 @@ namespace UltimaXNA.Entities
         public void Event_MoveItemToSlot(Item nObject, int nSlot)
         {
             // Is the destination slot empty?
-            if (_contents[nSlot] == null)
+            if (_contents[nSlot] == null || _contents[nSlot] == nObject)
             {
-                // if this container already contains this item, then temporarily remove it so that 
-                // we don't end up with two copies.
-                if (_contents.ContainsItem(nObject.Serial))
-                    _contents.RemoveItemBySerial(nObject.Serial);
-                nObject.Item_InvSlot = nSlot;
-                _contents[nObject.Item_InvSlot] = nObject;
-            }
-            else if (_contents[nSlot] == nObject)
-            {
-                // No need to do anything here - this object is already in this slot!
+                GUI.Events.DropItem(nObject, (short)nSlot, (short)0x7FFF, 0, _ParentObject.Serial);
             }
             else
             {
@@ -176,17 +167,13 @@ namespace UltimaXNA.Entities
                 if (nObject.ItemData.Name == _contents[nSlot].ItemData.Name)
                 {
                     // We are merging two objects.
-                    GUI.Events.PickupItem(nObject);
                     GUI.Events.DropItem(nObject, 0, 0, 0, iSwitchItem.Serial);
                     _contents.RemoveItemBySerial(nObject.Serial);
                 }
                 else
                 {
                     // We are switching these two objects.
-                    nObject.Item_InvSlot = nSlot;
-                    _contents[nSlot] = nObject;
-                    iSwitchItem.Item_InvSlot = iSourceSlot;
-                    _contents[iSourceSlot] = iSwitchItem;
+                    GUI.Events.DropItem(nObject, (short)nSlot, (short)0x7FFF, 0, _ParentObject.Serial);
                 }
             }
         }
@@ -203,6 +190,8 @@ namespace UltimaXNA.Entities
             if (_contents.ContainsItem(item.Serial))
             {
                 // We know the object is already in our container.
+                RemoveItem(item.Serial);
+                addItem(item);
             }
             else
             {
