@@ -13,7 +13,7 @@
     <XnaPlatform>Windows</XnaPlatform>
     <XnaCrossPlatformGroupID>50bfd68f-b3c7-4d72-866a-2cf8c22b84b0</XnaCrossPlatformGroupID>
     <ApplicationIcon>ultimaxna.ico</ApplicationIcon>
-    <Thumbnail>UltimaXNA Logo - Icon 64.png</Thumbnail>
+    <Thumbnail>Libraries\UltimaXNA Logo - Icon 64.png</Thumbnail>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <StartupObject>
     </StartupObject>
@@ -102,6 +102,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\Art.cs" />
+    <Compile Include="Data\ASCIIFont.cs" />
     <Compile Include="Data\Gumps.cs" />
     <Compile Include="Data\Mobtypes.cs" />
     <Compile Include="Data\Multis.cs" />
@@ -310,7 +311,7 @@
     <Compile Include="SceneManagement\SceneState.cs" />
     <Compile Include="SceneManagement\Scenes\WorldScene.cs" />
     <Compile Include="SceneManagement\Scenes\LoginScene.cs" />
-    <Compile Include="Serial.cs" />
+    <Compile Include="Entities\Serial.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Shared.cs" />
     <Compile Include="TileEngine\GameObjectTile.cs" />
@@ -376,14 +377,15 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="log4net.config">
+    <Content Include="Libraries\log4net.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="UltimaXNA Logo - Icon 64.png" />
+    <Content Include="Libraries\UltimaXNA Logo - Icon 64.png" />
+    <Content Include="Libraries\ultimaxna.ico" />
+    <Content Include="Libraries\zlib32.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="ultimaxna.ico" />
-    <Content Include="zlib32.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Network\Packets\Both\" />

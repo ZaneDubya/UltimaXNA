@@ -119,6 +119,7 @@ namespace UltimaXNA.Entities
             (int)EquipLayer.Neck,
 			(int)EquipLayer.Hair,
             (int)EquipLayer.Waist,
+            (int)EquipLayer.Arms,
             (int)EquipLayer.InnerTorso,
             (int)EquipLayer.FacialHair,
             (int)EquipLayer.MiddleTorso,
@@ -126,7 +127,7 @@ namespace UltimaXNA.Entities
             (int)EquipLayer.OuterLegs,
             (int)EquipLayer.InnerLegs,
             (int)EquipLayer.OuterTorso,
-            (int)EquipLayer.Arms,
+            
             (int)EquipLayer.Cloak,
 			(int)EquipLayer.Helm,
             (int)EquipLayer.TwoHanded,

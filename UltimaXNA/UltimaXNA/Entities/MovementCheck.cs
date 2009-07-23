@@ -453,7 +453,7 @@ namespace UltimaXNA.Entities
 
         private static void offsetXY(Direction d, ref int x, ref int y)
         {
-            switch (d & Direction.ValueMask)
+            switch (d & Direction.FacingMask)
             {
                 case Direction.North: --y; break;
                 case Direction.South: ++y; break;
