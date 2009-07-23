@@ -52,7 +52,7 @@ float HuesPerRow = 2;
 float4 PixelShader(PS_INPUT IN) : COLOR0
 {	
 	float4 color = tex2D(textureSampler, IN.TexCoord);
-
+	
 	if(DrawLighting)
 	{
 		float lightIntensity = clamp(dot(lightDirection, float3(0,1,0)), 0, 1);
@@ -70,23 +70,29 @@ float4 PixelShader(PS_INPUT IN) : COLOR0
 		color.rgb = (ambientColor * color.rgb) + (lightColor * NDotL * color.rgb);
 	}
 	
-	if (IN.Hue.x >= 0 && color.a > 0 && IN.Hue.y != 0) //Is it Hued?
+	if (IN.Hue.y != 0) //Is it Hued?
 	{
 		float x = abs(IN.Hue.x);
 		float hueY = (((x - (x % 2)) / HuesPerRow) / (HuesPerColumn));
 		float4 gray = (color.r + color.g + color.b) / 3.0f / HuesPerRow + (x % 2) * 0.5f;
 		float4 hue = tex2D(hueTextureSampler, float2(gray.r, hueY));
+		hue.a = color.a;
 		if (IN.Hue.y == 2) //Is it a Partial Hue?
 		{
-			if ((color.r == color.g) && (color.r == color.b) && (color.a != 0))
+			if ((color.r == color.g) && (color.r == color.b))
 				color = hue;
+		}
+		else if (IN.Hue.y == 3)
+		{
+			color = hue;
+			color.a *= 0.5f;
 		}
 		else //Else its a normal Hue
 		{
 			color = hue;
 		}
 	}
-
+	
 	return color;
 }
 
