@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   OpenWebBrowserPacket.cs
+ *   GlobalQueuePacket.cs
  *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   
  *   begin                : May 31, 2009
@@ -24,12 +24,26 @@ using System.Text;
 
 namespace UltimaXNA.Network.Packets.Server
 {
-    public class OpenWebBrowserPacket : RecvPacket
+    public class GlobalQueuePacket : RecvPacket
     {
-        public OpenWebBrowserPacket(PacketReader reader)
-            : base(0xA5, "Open Web Browser")
+        readonly byte _unk;
+        readonly short _count;
+
+        public byte Unknown
         {
-            // TODO: Write this packet.
+            get { return _unk; }
+        }
+
+        public short Count
+        {
+            get { return _count; }
+        }
+
+        public GlobalQueuePacket(PacketReader reader)
+            : base(0xCB, "Global Queue")
+        {
+            _unk = reader.ReadByte();
+            _count = reader.ReadInt16();
         }
     }
 }

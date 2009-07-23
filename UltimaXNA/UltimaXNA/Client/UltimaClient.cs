@@ -237,13 +237,52 @@ namespace UltimaXNA.Client
             MessageLocalizedPacket p = (MessageLocalizedPacket)packet;
 
             string iCliLoc = constructCliLoc(Data.StringList.Table[p.CliLocNumber].ToString(), p.Arguements);
-            GUI.GUIHelper.Chat_AddLine(iCliLoc);
+            switch (p.MessageType)
+            {
+                case MessageType.Regular:
+                    GUI.GUIHelper.Chat_AddLine(string.Format("{0} <{1}>", iCliLoc, p.Hue));
+                    break;
+                case MessageType.System:
+                    GUI.GUIHelper.Chat_AddLine(string.Format("<SYSTEM> {0} <{1}>", iCliLoc, p.Hue));
+                    break;
+                case MessageType.Emote:
+                    GUI.GUIHelper.Chat_AddLine(string.Format("<EMOTE> {0} <{1}>", iCliLoc, p.Hue));
+                    break;
+                case MessageType.Label:
+                    GUI.GUIHelper.Chat_AddLine(string.Format("<LABEL> {0} <{1}>", iCliLoc, p.Hue));
+                    break;
+                case MessageType.Focus: // on player?
+                    GUI.GUIHelper.Chat_AddLine(string.Format("<FOCUS> {0} <{1}>", iCliLoc, p.Hue));
+                    break;
+                case MessageType.Whisper:
+                    GUI.GUIHelper.Chat_AddLine(string.Format("<WHISPER> {0} <{1}>", iCliLoc, p.Hue));
+                    break;
+                case MessageType.Yell:
+                    GUI.GUIHelper.Chat_AddLine(string.Format("<YELL> {0} <{1}>", iCliLoc, p.Hue));
+                    break;
+                case MessageType.Spell:
+                    GUI.GUIHelper.Chat_AddLine(string.Format("<SPELL> {0} <{1}>", iCliLoc, p.Hue));
+                    break;
+                case MessageType.Guild:
+                    GUI.GUIHelper.Chat_AddLine(string.Format("<GUILD> {0} <{1}>", iCliLoc, p.Hue));
+                    break;
+                case MessageType.Alliance:
+                    GUI.GUIHelper.Chat_AddLine(string.Format("<ALLIANCE> {0} <{1}>", iCliLoc, p.Hue));
+                    break;
+                case MessageType.Command:
+                    GUI.GUIHelper.Chat_AddLine(string.Format("<COMMAND> {0} <{1}>", iCliLoc, p.Hue));
+                    break;
+                default:
+                    GUI.GUIHelper.Chat_AddLine(string.Format("{0} <{1}>", iCliLoc, p.Hue));
+                    break;
+            }
         }
 
         private void receive_ChangeCombatant(IRecvPacket packet)
         {
             ChangeCombatantPacket p = (ChangeCombatantPacket)packet;
-            _GameState.LastTarget = p.Serial;
+            if (p.Serial > 0x00000000)
+                _GameState.LastTarget = p.Serial;
         }
 
         private void receive_CharacterList(IRecvPacket packet)
@@ -294,7 +333,7 @@ namespace UltimaXNA.Client
         {
             DamagePacket p = (DamagePacket)packet;
             Mobile u = _Entities.GetObject<Mobile>(p.Serial, false);
-            GUI.GUIHelper.Chat_AddLine(u.Name + " takes " + p.Damage + " damage!");
+            GUI.GUIHelper.Chat_AddLine(string.Format("{0} takes {1} damage!", u.Name, p.Damage));
         }
 
         private void receive_DeathAnimation(IRecvPacket packet)
@@ -392,7 +431,8 @@ namespace UltimaXNA.Client
 
         private void receive_GlobalQueueCount(IRecvPacket packet)
         {
-            announce_UnhandledPacket(packet);
+            GlobalQueuePacket p = (GlobalQueuePacket)packet;
+            GUI.GUIHelper.Chat_AddLine("System: There are currently " + p.Count + " available calls in the global queue.");
         }
 
         private void receive_GraphicEffect(IRecvPacket packet)
@@ -454,23 +494,29 @@ namespace UltimaXNA.Client
         private void receive_MobileIncoming(IRecvPacket packet)
         {
             MobileIncomingPacket p = (MobileIncomingPacket)packet;
-            Mobile iMobile = _Entities.GetObject<Mobile>(p.Serial, true);
-            iMobile.BodyID = p.BodyID;
-            iMobile.Hue = (int)p.Hue;
-            iMobile.Movement.SetPositionInstant((int)p.X, (int)p.Y, (int)p.Z, p.Direction);
-            iMobile.IsWarMode = p.Flags.IsWarMode;
+            Mobile mobile = _Entities.GetObject<Mobile>(p.Serial, true);
+            mobile.BodyID = p.BodyID;
+            mobile.Hue = (int)p.Hue;
+            mobile.Movement.SetPositionInstant((int)p.X, (int)p.Y, (int)p.Z, p.Direction);
+            mobile.IsFemale = p.Flags.IsFemale;
+            mobile.IsPoisoned = p.Flags.IsPoisoned;
+            mobile.IsBlessed = p.Flags.IsBlessed;
+            mobile.IsWarMode = p.Flags.IsWarMode;
+            mobile.IsHidden = p.Flags.IsHidden;
+            mobile.Notoriety = p.Notoriety;
+            mobile.Notoriety = p.Notoriety;
 
             for (int i = 0; i < p.Equipment.Length; i++)
             {
                 Item item = add_Item(p.Equipment[i].Serial, p.Equipment[i].GumpId, p.Equipment[i].Hue, 0, 0);
-                iMobile.equipment[p.Equipment[i].Layer] = item;
+                mobile.equipment[p.Equipment[i].Layer] = item;
                 if (item.PropertyList.Hash == 0)
                     this.Send(new QueryPropertiesPacket(item.Serial));
             }
 
-            if (iMobile.Name == string.Empty)
+            if (mobile.Name == string.Empty)
             {
-                iMobile.Name = "Unknown";
+                mobile.Name = "Unknown";
                 this.Send(new RequestNamePacket(p.Serial));
             }
         }
@@ -479,37 +525,47 @@ namespace UltimaXNA.Client
         {
             MobileMovingPacket p = (MobileMovingPacket)packet;
 
-            Mobile iObject = _Entities.GetObject<Mobile>(p.Serial, true);
-            iObject.BodyID = p.BodyID;
-            iObject.IsWarMode = p.Flags.IsWarMode;
+            Mobile mobile = _Entities.GetObject<Mobile>(p.Serial, true);
+            mobile.BodyID = p.BodyID;
+            mobile.IsFemale = p.Flags.IsFemale;
+            mobile.IsPoisoned = p.Flags.IsPoisoned;
+            mobile.IsBlessed = p.Flags.IsBlessed;
+            mobile.IsWarMode = p.Flags.IsWarMode;
+            mobile.IsHidden = p.Flags.IsHidden;
+            mobile.Notoriety = p.Notoriety;
             // Issue 16 - Pet not showing at login - http://code.google.com/p/ultimaxna/issues/detail?id=16 - Smjert
             // Since no packet arrives to add your pet, when you move and your pet follows you the client crashes
-            if (iObject.Movement.DrawPosition == null)
+            if (mobile.Movement.DrawPosition == null)
             {
-                iObject.Movement.SetPositionInstant(p.X, p.Y, p.Z, p.Direction);
+                mobile.Movement.SetPositionInstant(p.X, p.Y, p.Z, p.Direction);
             }
-            else if (iObject.Movement.DrawPosition.PositionV3 == new Vector3(0, 0, 0))
+            else if (mobile.Movement.DrawPosition.PositionV3 == new Vector3(0, 0, 0))
             {
-                iObject.Movement.SetPositionInstant(p.X, p.Y, p.Z, p.Direction);
+                mobile.Movement.SetPositionInstant(p.X, p.Y, p.Z, p.Direction);
                 // Issue 16 - End
             }
             else
             {
-                iObject.Move(p.X, p.Y, p.Z, p.Direction);
+                mobile.Move(p.X, p.Y, p.Z, p.Direction);
             }
         }
 
         private void receive_MobileUpdate(IRecvPacket packet)
         {
             MobileUpdatePacket p = (MobileUpdatePacket)packet;
-            Mobile iObject = _Entities.GetObject<Mobile>(p.Serial, true);
-            iObject.BodyID = p.BodyID;
-            iObject.Hue = (int)p.Hue;
-            iObject.Movement.SetPositionInstant((int)p.X, (int)p.Y, (int)p.Z, p.Direction);
+            Mobile mobile = _Entities.GetObject<Mobile>(p.Serial, true);
+            mobile.BodyID = p.BodyID;
+            mobile.IsFemale = p.Flags.IsFemale;
+            mobile.IsPoisoned = p.Flags.IsPoisoned;
+            mobile.IsBlessed = p.Flags.IsBlessed;
+            mobile.IsWarMode = p.Flags.IsWarMode;
+            mobile.IsHidden = p.Flags.IsHidden;
+            mobile.Hue = (int)p.Hue;
+            mobile.Movement.SetPositionInstant((int)p.X, (int)p.Y, (int)p.Z, p.Direction);
 
-            if (iObject.Name == string.Empty)
+            if (mobile.Name == string.Empty)
             {
-                iObject.Name = "Unknown";
+                mobile.Name = "Unknown";
                 this.Send(new RequestNamePacket(p.Serial));
             }
         }
@@ -518,6 +574,7 @@ namespace UltimaXNA.Client
         {
             MoveAcknowledgePacket p = (MoveAcknowledgePacket)packet;
             _Entities.GetPlayerObject().Movement.MoveEventAck(p.Sequence);
+            ((Mobile)_Entities.GetPlayerObject()).Notoriety = p.Notoriety;
         }
 
         private void receive_MoveRej(IRecvPacket packet)
@@ -590,7 +647,8 @@ namespace UltimaXNA.Client
 
         private void receive_OpenWebBrowser(IRecvPacket packet)
         {
-            announce_UnhandledPacket(packet);
+            OpenWebBrowserPacket p = (OpenWebBrowserPacket)packet;
+            System.Diagnostics.Process.Start("iexplore.exe", p.WebsiteUrl);
         }
 
         private void receive_OverallLightLevel(IRecvPacket packet)
@@ -751,7 +809,7 @@ namespace UltimaXNA.Client
             switch (p.Type)
             {
                 case 0x00: // 0x00 - Normal 
-                    GUI.GUIHelper.Chat_AddLine(p.Name1 + ": " + p.Text);
+                    GUI.GUIHelper.Chat_AddLine(string.Format("{0}: {1} <{2}>", p.Name1, p.Text, p.Hue));
                     break;
                 default:
                     announce_UnhandledPacket(packet);
@@ -820,7 +878,7 @@ namespace UltimaXNA.Client
         private void receive_UnicodeMessage(IRecvPacket packet)
         {
             UnicodeMessagePacket p = (UnicodeMessagePacket)packet;
-            GUI.GUIHelper.Chat_AddLine(p.SpeakerName + ": " + p.SpokenText);
+            GUI.GUIHelper.Chat_AddLine(string.Format("{0}: {1} <{2}>", p.SpeakerName, p.SpokenText, p.Hue));
         }
 
         private void receive_UpdateHealth(IRecvPacket packet)

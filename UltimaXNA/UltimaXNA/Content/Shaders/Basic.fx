@@ -70,12 +70,7 @@ float4 PixelShader(PS_INPUT IN) : COLOR0
 		color.rgb = (ambientColor * color.rgb) + (lightColor * NDotL * color.rgb);
 	}
 	
-	if (IN.Hue.y != 0)
-	{
-		IN.Hue.x = 87;
-	}
-	
-	if (IN.Hue.x != 0 && color.a > 0) //Is it Hued?
+	if (IN.Hue.x >= 0 && color.a > 0 && IN.Hue.y != 0) //Is it Hued?
 	{
 		float x = abs(IN.Hue.x);
 		float hueY = (((x - (x % 2)) / HuesPerRow) / (HuesPerColumn));

@@ -26,7 +26,6 @@ namespace UltimaXNA.Network
 {
     public class MobileFlags
     {
-        readonly byte _flags;
         /// <summary>
         /// These are the only flags sent by RunUO
         /// 0x02 = female
@@ -35,7 +34,13 @@ namespace UltimaXNA.Network
         /// 0x40 = warmode
         /// 0x80 = hidden
         /// </summary>
-        public bool IsWarMode { get { return ((_flags & 0x40) == 0x40); } }
+        readonly byte _flags;
+
+        public bool IsFemale { get { return ((_flags & 0x02) != 0); } }
+        public bool IsPoisoned { get { return ((_flags & 0x04) != 0); } }
+        public bool IsBlessed { get { return ((_flags & 0x08) != 0); } }
+        public bool IsWarMode { get { return ((_flags & 0x40) != 0); } }
+        public bool IsHidden { get { return ((_flags & 0x80) != 0); } }
 
         public MobileFlags(byte flags)
         {

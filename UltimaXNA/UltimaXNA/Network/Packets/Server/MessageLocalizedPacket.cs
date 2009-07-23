@@ -29,7 +29,7 @@ namespace UltimaXNA.Network.Packets.Server
         public bool IsSystemMessage { get { return (Serial == 0xFFFF); } }
         public readonly Serial Serial;
         public readonly int Body;
-        public readonly int MessageType;
+        public readonly MessageType MessageType;
         public readonly int Hue;
         public readonly int Font;
         public readonly int CliLocNumber;
@@ -41,14 +41,30 @@ namespace UltimaXNA.Network.Packets.Server
         {
             Serial = reader.ReadInt32(); // 0xffff for system message
             Body = reader.ReadInt16(); // (0xff for system message
-            MessageType = reader.ReadByte(); // 6 - lower left, 7 on player
+            MessageType = (MessageType)reader.ReadByte(); // 6 - lower left, 7 on player
             Hue = reader.ReadUInt16();
             Font = reader.ReadInt16();
             CliLocNumber = reader.ReadInt32();
             SpeakerName = reader.ReadString(30);
             Arguements = reader.ReadUnicodeStringSafeReverse();
-            // what about the arguments?
-            // http://docs.polserver.com/packets/index.php?Packet=0xC1
         }
+    }
+
+    public enum MessageType
+    {
+        Regular = 0x00,
+        System = 0x01,
+        Emote = 0x02,
+        Label = 0x06,
+        Focus = 0x07,
+        Whisper = 0x08,
+        Yell = 0x09,
+        Spell = 0x0A,
+
+        Guild = 0x0D,
+        Alliance = 0x0E,
+        Command = 0x0F,
+
+        Encoded = 0xC0
     }
 }

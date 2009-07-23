@@ -12,8 +12,7 @@
     <XnaFrameworkVersion>v3.0</XnaFrameworkVersion>
     <XnaPlatform>Windows</XnaPlatform>
     <XnaCrossPlatformGroupID>50bfd68f-b3c7-4d72-866a-2cf8c22b84b0</XnaCrossPlatformGroupID>
-    <ApplicationIcon>
-    </ApplicationIcon>
+    <ApplicationIcon>ultimaxna.ico</ApplicationIcon>
     <Thumbnail>UltimaXNA Logo - Icon 64.png</Thumbnail>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <StartupObject>
@@ -222,13 +221,13 @@
     <Compile Include="Network\Packets\Client\UnicodeSpeechPacket.cs" />
     <Compile Include="Network\Packets\Client\UOGInfoRequestPacket.cs" />
     <Compile Include="Network\Packets\Server\CompressedGumpPacket.cs" />
-    <Compile Include="Network\Packets\Incomplete\CorpseClothingPacket.cs" />
+    <Compile Include="Network\Packets\Server\CorpseClothingPacket.cs" />
     <Compile Include="Network\Packets\Incomplete\GraphicEffectPacket.cs" />
-    <Compile Include="Network\Packets\Incomplete\MessageLocalizedPacket.cs" />
+    <Compile Include="Network\Packets\Server\MessageLocalizedPacket.cs" />
     <Compile Include="Network\Packets\Server\MobileAnimationPacket.cs" />
     <Compile Include="Network\Packets\Incomplete\OpenPaperdollPacket.cs" />
     <Compile Include="Network\Packets\Incomplete\PlayMusicPacket.cs" />
-    <Compile Include="Network\Packets\Incomplete\PlaySoundEffectPacket.cs" />
+    <Compile Include="Network\Packets\Server\PlaySoundEffectPacket.cs" />
     <Compile Include="Network\Packets\Incomplete\ResurrectionMenuPacket.cs" />
     <Compile Include="Network\Packets\Incomplete\SendSkillsPacket.cs" />
     <Compile Include="Network\Packets\Incomplete\TimePacket.cs" />
@@ -236,7 +235,7 @@
     <Compile Include="Network\Packets\SendPacket.cs" />
     <Compile Include="Network\Packets\SendRecvPacket.cs" />
     <Compile Include="Network\Packets\Server\AsciiMessagePacket.cs" />
-    <Compile Include="Network\Packets\Incomplete\ChangeCombatantPacket.cs" />
+    <Compile Include="Network\Packets\Server\ChangeCombatantPacket.cs" />
     <Compile Include="Network\Packets\Server\CharacterCityListPacket.cs" />
     <Compile Include="Network\Packets\Incomplete\CharacterListUpdatePacket.cs" />
     <Compile Include="Network\Packets\Server\ChatPacket.cs" />
@@ -251,7 +250,7 @@
     <Compile Include="Network\Packets\Server\EquipmentEntry.cs" />
     <Compile Include="Network\Packets\Incomplete\Extended0x78Packet.cs" />
     <Compile Include="Network\Packets\Server\GeneralInfoPacket.cs" />
-    <Compile Include="Network\Packets\Incomplete\GlobalQueueCountPacket.cs" />
+    <Compile Include="Network\Packets\Server\GlobalQueueCountPacket.cs" />
     <Compile Include="Network\Packets\Incomplete\HuedEffectPacket.cs" />
     <Compile Include="Network\Packets\Incomplete\InvalidMapEnablePacket.cs" />
     <Compile Include="Network\Packets\Server\LiftRejectionPacket.cs" />
@@ -269,7 +268,7 @@
     <Compile Include="Network\Packets\Server\ObjectInfoPacket.cs" />
     <Compile Include="Network\Packets\Server\ObjectPropertyListPacket.cs" />
     <Compile Include="Network\Packets\Server\ObjectPropertyListUpdatePacket.cs" />
-    <Compile Include="Network\Packets\Incomplete\OpenWebBrowserPacket.cs" />
+    <Compile Include="Network\Packets\Server\OpenWebBrowserPacket.cs" />
     <Compile Include="Network\Packets\Server\OverallLightLevelPacket.cs" />
     <Compile Include="Network\Packets\Incomplete\ParticleEffectPacket.cs" />
     <Compile Include="Network\Packets\Server\PersonalLightLevelPacket.cs" />
@@ -381,6 +380,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="UltimaXNA Logo - Icon 64.png" />
+    <Content Include="ultimaxna.ico" />
     <Content Include="zlib32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
