@@ -156,7 +156,7 @@ namespace UltimaXNA.Entities
             base.Update(gameTime);
         }
 
-        internal override void Draw(UltimaXNA.TileEngine.MapCell nCell, Vector3 nLocation, Vector3 nOffset)
+        internal override void Draw(UltimaXNA.TileEngine.MapCell cell, Vector3 position, Vector3 positionOffset)
         {
             if (Movement.IsMoving)
             {
@@ -177,20 +177,23 @@ namespace UltimaXNA.Entities
                 if (m_DrawLayers[i] == (int)EquipLayer.Body)
                 {
                     mobtile = new MapObjectMobile(
-                        BodyID, nLocation, nOffset, 
+                        BodyID, position, positionOffset, 
                         direction, action, animation.AnimationFrame, 
                         this, i, Hue);
-                    nCell.AddMobileTile(mobtile);
+                    cell.Add(mobtile);
                 }
                 else if (equipment[m_DrawLayers[i]] != null && equipment[m_DrawLayers[i]].AnimationDisplayID != 0)
                 {
                     mobtile = new TileEngine.MapObjectMobile(
-                            equipment[m_DrawLayers[i]].AnimationDisplayID, nLocation, nOffset,
+                            equipment[m_DrawLayers[i]].AnimationDisplayID, position, positionOffset,
                             direction, action, animation.AnimationFrame,
                             this, i, equipment[m_DrawLayers[i]].Hue);
-                    nCell.AddMobileTile(mobtile);
+                    cell.Add(mobtile);
                 }
             }
+
+            position.Z += (!IsMounted) ? 20 : 24;
+            cell.Add(new TileEngine.MapObjectText(position, positionOffset, this, Name, NotorietyHue)); 
         }
 
         public override void Dispose()

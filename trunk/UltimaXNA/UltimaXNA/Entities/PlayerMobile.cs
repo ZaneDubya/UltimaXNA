@@ -16,6 +16,7 @@
  *
  ***************************************************************************/
 #region usings
+using System;
 using Microsoft.Xna.Framework;
 #endregion
 
@@ -38,6 +39,11 @@ namespace UltimaXNA.Entities
         {
             animation.HoldAnimationMS = gameTime.ElapsedRealTime.Milliseconds * 2;
             base.Update(gameTime);
+        }
+
+        internal override void Draw(UltimaXNA.TileEngine.MapCell cell, Vector3 position, Vector3 positionOffset)
+        {
+            base.Draw(cell, position, positionOffset);
         }
     }
 }

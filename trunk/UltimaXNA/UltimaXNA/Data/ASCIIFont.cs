@@ -199,10 +199,11 @@ namespace UltimaXNA.Data
 
                             fixed (Color* cPtr = charData)
                             {
-                                for (int iy = 0; iy < font.Height; ++iy)
+                                int maxHeight = (charTexture.Height < font.Height) ? charTexture.Height : font.Height;
+                                for (int iy = 0; iy < maxHeight; ++iy)
                                 {
                                     Color* src = ((Color*)cPtr) + (charTexture.Width * iy);
-                                    Color* dest = (((Color*)rPtr) + (width * ((iy + dy) + (font.Height - font.Height))) + dx);
+                                    Color* dest = (((Color*)rPtr) + (width * (iy + dy)) + dx);
 
                                     for (int k = 0; k < charTexture.Width; ++k)
                                         *dest++ = *src++;

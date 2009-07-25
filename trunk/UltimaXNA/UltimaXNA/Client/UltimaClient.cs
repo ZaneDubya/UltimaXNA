@@ -290,7 +290,19 @@ namespace UltimaXNA.Client
             byte[] iIPAdress = new byte[4] { 127, 0, 0, 1 };
             int iAddress = BitConverter.ToInt32(iIPAdress, 0);
             CharacterCityListPacket p = (CharacterCityListPacket)packet;
-            this.Send(new LoginCharacterPacket(p.Characters[0].Name, 0, iAddress));
+
+            for (int i = 0; i < 6; i++)
+            {
+                if (p.Characters[i].Name != string.Empty)
+                {
+                    this.Send(new LoginCharacterPacket(p.Characters[i].Name, 0, iAddress));
+                    return;
+                }
+            }
+
+            Disconnect();
+            _GUI.Reset();
+            _GUI.ErrorPopup_Modal("No characters in this account. UltimaXNA does not support character creation yet.");
         }
 
         private void receive_CompressedGump(IRecvPacket packet)

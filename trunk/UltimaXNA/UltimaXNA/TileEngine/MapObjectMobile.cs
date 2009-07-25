@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   MobileTile.cs
+ *   MapObjectMobile.cs
  *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   Based on code from ClintXNA's renderer: http://www.runuo.com/forums/xna/92023-hi.html
  *   
@@ -25,15 +25,15 @@ namespace UltimaXNA.TileEngine
 {
     public class MapObjectMobile : MapObject
     {
-        public int BodyID { get; internal set; }
-        public int Action { get; internal set; }
-        public int Facing { get; internal set; }
-        public int Hue { get; internal set; }
+        public int BodyID { get; set; }
+        public int Action { get; set; }
+        public int Facing { get; set; }
+        public int Hue { get; set; }
         private float _frame;
-        public Vector3 Offset { get; internal set; }
+        public Vector3 Offset { get; set; }
 
         public MapObjectMobile(int bodyID, Vector3 position, Vector3 positionOffset, int facing, int action, float frame, Entities.Entity ownerEntity, int layer, int hue)
-            : base(new Vector2(position.X, position.Y))
+            : base(position)
         {
             BodyID = bodyID;
             Facing = facing;
@@ -42,18 +42,12 @@ namespace UltimaXNA.TileEngine
             Hue = hue;
             Tiebreaker = layer;
             Offset = positionOffset;
-            Z = (int)position.Z;
             OwnerEntity = ownerEntity;
         }
 
         public int Frame(int nMaxFrames)
         {
             return (int)(_frame * (float)nMaxFrames);
-        }
-
-        public new int SortZ
-        {
-            get { return (int)Z; }
         }
     }
 }

@@ -70,7 +70,7 @@ namespace UltimaXNA.Entities
             }
         }
 
-        internal virtual void Draw(TileEngine.MapCell nCell, Vector3 nLocation, Vector3 nOffset)
+        internal virtual void Draw(TileEngine.MapCell cell, Vector3 nLocation, Vector3 nOffset)
         {
             // do nothing. Base Objects do not draw.
             // inheriting classes can override this though.

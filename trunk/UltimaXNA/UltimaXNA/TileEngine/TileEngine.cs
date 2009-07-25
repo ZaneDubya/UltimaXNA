@@ -47,9 +47,9 @@ namespace UltimaXNA.TileEngine
         private bool _isFirstUpdate = true; // This variable is used to skip the first 'update' cycle.
 
         // Used for mousepicking.
-        private IMapObject _mouseOverObject;
-        private IMapObject _mouseOverGroundTile;
-        private PickTypes _pickType = PickTypes.PickNothing;
+        public MapObject MouseOverObject { get; internal set; }
+        public MapObject MouseOverGroundTile { get; internal set; }
+        public PickTypes PickType { get; set; }
         private RayPicker _rayPicker;
 
         // Reference for services
@@ -58,12 +58,7 @@ namespace UltimaXNA.TileEngine
         private IWorld _worldService;
         private IGameState _gameStateService;
 
-        public IMapObject MouseOverObject
-        { get { return _mouseOverObject; } }
-        public IMapObject MouseOverGroundTile
-        { get { return _mouseOverGroundTile; } }
-        public PickTypes PickType
-        { set { _pickType = value; } }
+        
 
         public TileEngine(Game game)
             : base(game)
@@ -79,7 +74,7 @@ namespace UltimaXNA.TileEngine
                 return;
 
             _spriteBatch.Flush();
-            if (_mouseOverGroundTile != null)
+            if (MouseOverGroundTile != null)
                 _rayPicker.DrawPickedTriangle(_spriteBatch.WorldMatrix);
         }
 
@@ -106,8 +101,8 @@ namespace UltimaXNA.TileEngine
             float drawZ = 0;
             int height;
             Map map = _worldService.Map;
-            IMapObject mapObject;
-            IMapObject[] mapObjects;
+            MapObject mapObject;
+            MapObject[] mapObjects;
             Texture2D texture;
             int width;
             // Count of objects rendered for statistics and debug - Poplicola
@@ -133,10 +128,10 @@ namespace UltimaXNA.TileEngine
 
             // If we are going to be checking for GroundTiles, Clear the RayPicker.
             // If we're not, then make sure we clear the last picked ground tile.
-            if ((_pickType & PickTypes.PickGroundTiles) == PickTypes.PickGroundTiles)
+            if ((PickType & PickTypes.PickGroundTiles) == PickTypes.PickGroundTiles)
                 _rayPicker.FlushObjects();
             else
-                _mouseOverGroundTile = null;
+                MouseOverGroundTile = null;
 
             // MapCell mapCell;
             /*for (int x = 0; x < map.GameSize; x++)
@@ -246,7 +241,7 @@ namespace UltimaXNA.TileEngine
 
                                 _spriteBatch.Draw(texture, _vertexBufferForStretchedTile);
 
-                                if ((_pickType & PickTypes.PickGroundTiles) == PickTypes.PickGroundTiles)
+                                if ((PickType & PickTypes.PickGroundTiles) == PickTypes.PickGroundTiles)
                                     _rayPicker.AddObject(mapObject, _vertexBufferForStretchedTile);
                             }
                         }
@@ -293,7 +288,7 @@ namespace UltimaXNA.TileEngine
 
                             _spriteBatch.Draw(texture, _vertexBuffer);
 
-                            if ((_pickType & PickTypes.PickStatics) == PickTypes.PickStatics)
+                            if ((PickType & PickTypes.PickStatics) == PickTypes.PickStatics)
                                 if (isMouseOverObject(_vertexBuffer[0].Position, _vertexBuffer[3].Position))
                                     iMouseOverList.AddItem(new MouseOverItem(texture, _vertexBuffer[0].Position, mapObject));
                         }
@@ -352,7 +347,7 @@ namespace UltimaXNA.TileEngine
 
                             _spriteBatch.Draw(iFrames[iFrame].Texture, _vertexBuffer);
 
-                            if ((_pickType & PickTypes.PickObjects) == PickTypes.PickObjects)
+                            if ((PickType & PickTypes.PickObjects) == PickTypes.PickObjects)
                                 if (isMouseOverObject(_vertexBuffer[0].Position, _vertexBuffer[3].Position))
                                     iMouseOverList.AddItem(new MouseOverItem(iFrames[iFrame].Texture, _vertexBuffer[0].Position, mapObject));
                         }
@@ -398,7 +393,7 @@ namespace UltimaXNA.TileEngine
 
                             _spriteBatch.Draw(texture, _vertexBuffer);
 
-                            if ((_pickType & PickTypes.PickStatics) == PickTypes.PickStatics)
+                            if ((PickType & PickTypes.PickStatics) == PickTypes.PickStatics)
                                 if (isMouseOverObject(_vertexBuffer[0].Position, _vertexBuffer[3].Position))
                                     iMouseOverList.AddItem(new MouseOverItem(texture, _vertexBuffer[0].Position, mapObject));
                         
@@ -455,10 +450,47 @@ namespace UltimaXNA.TileEngine
 
                             _spriteBatch.Draw(texture, _vertexBuffer);
 
-                            if ((_pickType & PickTypes.PickStatics) == PickTypes.PickStatics)
+                            if ((PickType & PickTypes.PickStatics) == PickTypes.PickStatics)
                                 if (isMouseOverObject(_vertexBuffer[0].Position, _vertexBuffer[3].Position))
                                     iMouseOverList.AddItem(new MouseOverItem(texture, _vertexBuffer[0].Position, mapObject));
+                        }
+                        else if (mapObject is MapObjectText)
+                        {
+                            MapObjectText textObject = (MapObjectText)mapObject;
+                            texture = textObject.Texture;
+                            width = texture.Width;
+                            height = texture.Height;
 
+                            drawX = (width >> 1) - 22 - (int)((textObject.Offset.X - textObject.Offset.Y) * 22);
+                            drawY = (textObject.Z << 2) + height - 44 - (int)((textObject.Offset.X + textObject.Offset.Y) * 22);
+
+                            _vertexBuffer[0].Position = drawPosition;
+                            _vertexBuffer[0].Position.X -= drawX;
+                            _vertexBuffer[0].Position.Y -= drawY;
+                            _vertexBuffer[0].Position.Z = drawZ;
+
+                            _vertexBuffer[1].Position = drawPosition;
+                            _vertexBuffer[1].Position.X += width - drawX;
+                            _vertexBuffer[1].Position.Y -= drawY;
+                            _vertexBuffer[1].Position.Z = drawZ;
+
+                            _vertexBuffer[2].Position = drawPosition;
+                            _vertexBuffer[2].Position.X -= drawX;
+                            _vertexBuffer[2].Position.Y += height - drawY;
+                            _vertexBuffer[2].Position.Z = drawZ;
+
+                            _vertexBuffer[3].Position = drawPosition;
+                            _vertexBuffer[3].Position.X += width - drawX;
+                            _vertexBuffer[3].Position.Y += height - drawY;
+                            _vertexBuffer[3].Position.Z = drawZ;
+
+                            Vector2 hueVector = getHueVector(textObject.Hue);
+                            _vertexBuffer[0].Hue = hueVector;
+                            _vertexBuffer[1].Hue = hueVector;
+                            _vertexBuffer[2].Hue = hueVector;
+                            _vertexBuffer[3].Hue = hueVector;
+
+                            _spriteBatch.Draw(texture, _vertexBuffer);
                         }
 
                         drawZ += 1000;
@@ -466,11 +498,11 @@ namespace UltimaXNA.TileEngine
                     }
                 }
             }
-            _mouseOverObject = iMouseOverList.GetForemostMouseOverItem(_inputService.Mouse.Position);
+            MouseOverObject = iMouseOverList.GetForemostMouseOverItem(_inputService.Mouse.Position);
 
-            if ((_pickType & PickTypes.PickGroundTiles) == PickTypes.PickGroundTiles)
+            if ((PickType & PickTypes.PickGroundTiles) == PickTypes.PickGroundTiles)
                 if (_rayPicker.PickTest(_inputService.Mouse.Position, Matrix.Identity, _spriteBatch.WorldMatrix))
-                    _mouseOverGroundTile = _rayPicker.pickedObject;
+                    MouseOverGroundTile = _rayPicker.pickedObject;
         }
 
         private Vector2 getHueVector(int hue)
@@ -545,7 +577,7 @@ namespace UltimaXNA.TileEngine
             m_List = new List<MouseOverItem>();
         }
 
-        public IMapObject GetForemostMouseOverItem(Vector2 nMousePosition)
+        public MapObject GetForemostMouseOverItem(Vector2 nMousePosition)
         {
             // Parse list backwards to find topmost mouse over object.
             foreach (MouseOverItem iItem in CreateReverseIterator(m_List))
@@ -579,9 +611,9 @@ namespace UltimaXNA.TileEngine
     {
         public Texture2D Texture;
         public Vector3 Position;
-        public IMapObject Object;
+        public MapObject Object;
 
-        public MouseOverItem(Texture2D nTexture, Vector3 nPosition, IMapObject nObject)
+        public MouseOverItem(Texture2D nTexture, Vector3 nPosition, MapObject nObject)
         {
             Texture = nTexture;
             Position = nPosition;

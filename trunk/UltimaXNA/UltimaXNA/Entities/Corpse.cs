@@ -47,12 +47,10 @@ namespace UltimaXNA.Entities
             }
         }
 
-        internal override void  Draw(UltimaXNA.TileEngine.MapCell nCell, Microsoft.Xna.Framework.Vector3 nLocation, Microsoft.Xna.Framework.Vector3 nOffset)
+        internal override void Draw(UltimaXNA.TileEngine.MapCell cell, Microsoft.Xna.Framework.Vector3 nLocation, Microsoft.Xna.Framework.Vector3 nOffset)
         {
             Movement.ClearImmediate();
-                nCell.AddGameObjectTile(
-                    new TileEngine.MapObjectCorpse(
-                        nLocation, Movement.DrawFacing, this, Hue, _corpseBody, _corpseFrame));
+            cell.Add(new TileEngine.MapObjectCorpse(nLocation, Movement.DrawFacing, this, Hue, _corpseBody, _corpseFrame));
         }
 
         public void LoadCorpseClothing(List<Network.Packets.Server.CorpseClothingItemWithLayer> items)

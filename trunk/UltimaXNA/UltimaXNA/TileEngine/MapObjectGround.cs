@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   GroundTile.cs
+ *   MapObjectGround.cs
  *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   Based on code from ClintXNA's renderer: http://www.runuo.com/forums/xna/92023-hi.html
  *   
@@ -29,11 +29,10 @@ namespace UltimaXNA.TileEngine
         private Surroundings _surroundingTiles;
         public Vector3[] Normals;
 
-        public MapObjectGround(Data.Tile landTile, Vector2 position)
+        public MapObjectGround(Data.Tile landTile, Vector3 position)
             : base(position)
         {
             ItemID = landTile.ID;
-            SortZ = Z = landTile.Z;
             Normals = new Vector3[4];
         }
 

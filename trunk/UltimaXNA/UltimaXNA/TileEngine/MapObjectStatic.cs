@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   StaticItem.cs
+ *   MapObjectStatic.cs
  *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   Based on code from ClintXNA's renderer: http://www.runuo.com/forums/xna/92023-hi.html
  *   
@@ -25,7 +25,7 @@ namespace UltimaXNA.TileEngine
 {
     public class MapObjectStatic : MapObject
     {
-        public MapObjectStatic(Data.StaticTile staticTile, int sortInfluence, Vector2 position)
+        public MapObjectStatic(Data.StaticTile staticTile, int sortInfluence, Vector3 position)
             : base(position)
         {
             ItemID = staticTile.ID;
@@ -37,12 +37,11 @@ namespace UltimaXNA.TileEngine
             get { return (ItemID <= 1); }
         }
 
-        public new int Threshold
+        public override int Threshold
         {
             get
             {
                 Data.ItemData itemData = Data.TileData.ItemData[ItemID & 0x3FFF];
-
                 int background = (itemData.Background) ? 0 : 1;
                 return (itemData.Height == 0) ? background : background + 1;
             }

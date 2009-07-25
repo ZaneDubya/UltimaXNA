@@ -52,9 +52,9 @@ namespace UltimaXNA
             }
         }
         Input.IInputService _Input;
-        TileEngine.ITileEngine _TileEngine;
+        ITileEngine _TileEngineService;
         IEntitiesService _Entities;
-        TileEngine.IWorld _World;
+        IWorld _World;
         GUI.IGUI _GUI;
         Client.IUltimaClient _GameClient;
         private Serial _lastTarget;
@@ -111,9 +111,9 @@ namespace UltimaXNA
             base.Initialize();
             // Load the service objects.
             _Input = (Input.IInputService)Game.Services.GetService(typeof(Input.IInputService));
-            _TileEngine = (TileEngine.ITileEngine)Game.Services.GetService(typeof(TileEngine.ITileEngine));
+            _TileEngineService = (ITileEngine)Game.Services.GetService(typeof(ITileEngine));
             _Entities = (IEntitiesService)Game.Services.GetService(typeof(IEntitiesService));
-            _World = (TileEngine.IWorld)Game.Services.GetService(typeof(TileEngine.IWorld));
+            _World = (IWorld)Game.Services.GetService(typeof(IWorld));
             _GUI = (GUI.IGUI)Game.Services.GetService(typeof(GUI.IGUI));
             _GameClient = Game.Services.GetService(typeof(Client.IUltimaClient)) as Client.IUltimaClient;
         }
@@ -135,7 +135,7 @@ namespace UltimaXNA
                 // Get a pick type for the cursor.
                 if (_GUI.IsMouseOverGUI(_Input.Mouse.Position))
                 {
-                    _TileEngine.PickType = UltimaXNA.TileEngine.PickTypes.PickNothing;
+                    _TileEngineService.PickType = PickTypes.PickNothing;
                 }
                 else
                 {
@@ -143,26 +143,26 @@ namespace UltimaXNA
                     if (isTargeting)
                     {
                         // We are targetting. Based on the targetting type, we will either select an object, or a location.
-                        _TileEngine.PickType = TileEngine.PickTypes.PickStatics | TileEngine.PickTypes.PickObjects | TileEngine.PickTypes.PickGroundTiles;
+                        _TileEngineService.PickType = PickTypes.PickStatics | PickTypes.PickObjects | PickTypes.PickGroundTiles;
                     }
                     else
                     {
                         // Changed to leverage movementFollowsMouse interface option -BERT
                         if (_MovementFollowsMouse ? _Input.Mouse.Buttons[0].IsDown : _Input.Mouse.Buttons[0].Press)
                         {
-                            _TileEngine.PickType = TileEngine.PickTypes.PickStatics | TileEngine.PickTypes.PickObjects | TileEngine.PickTypes.PickGroundTiles;
+                            _TileEngineService.PickType = PickTypes.PickStatics | PickTypes.PickObjects | PickTypes.PickGroundTiles;
                         }
                         else if (_Input.Mouse.Buttons[1].Press)
                         {
-                            _TileEngine.PickType = TileEngine.PickTypes.PickStatics | TileEngine.PickTypes.PickObjects;
+                            _TileEngineService.PickType = PickTypes.PickStatics | PickTypes.PickObjects;
                         }
                         else if (_Input.Mouse.Buttons[0].Release)
                         {
-                            _TileEngine.PickType = TileEngine.PickTypes.PickStatics | TileEngine.PickTypes.PickObjects | TileEngine.PickTypes.PickGroundTiles;
+                            _TileEngineService.PickType = PickTypes.PickStatics | PickTypes.PickObjects | PickTypes.PickGroundTiles;
                         }
                         else
                         {
-                            _TileEngine.PickType = TileEngine.PickTypes.PickNothing;
+                            _TileEngineService.PickType = PickTypes.PickNothing;
                         }
                     }
                 }
@@ -181,7 +181,7 @@ namespace UltimaXNA
                 if (isTargeting)
                 {
                     // We are targetting. 
-                    TileEngine.IMapObject iMapObject = null;
+                    MapObject iMapObject = null;
                     // If we press the left mouse button, we send the targetting event.
                     if (_Input.Mouse.Buttons[0].Press)
                     {
@@ -189,20 +189,20 @@ namespace UltimaXNA
                         {
                             case 0:
                                 // Select Object
-                                _TileEngine.PickType = TileEngine.PickTypes.PickStatics | TileEngine.PickTypes.PickObjects;
-                                iMapObject = _TileEngine.MouseOverObject;
+                                _TileEngineService.PickType = PickTypes.PickStatics | PickTypes.PickObjects;
+                                iMapObject = _TileEngineService.MouseOverObject;
                                 MouseTargetingEventObject(iMapObject);
                                 break;
                             case 1:
                                 // Select X, Y, Z
-                                iMapObject = _TileEngine.MouseOverObject;
+                                iMapObject = _TileEngineService.MouseOverObject;
                                 if (iMapObject != null)
                                 {
                                     MouseTargetingEventObject(iMapObject);
                                 }
                                 else
                                 {
-                                    iMapObject = _TileEngine.MouseOverGroundTile;
+                                    iMapObject = _TileEngineService.MouseOverGroundTile;
                                     if (iMapObject != null)
                                         mouseTargetingEventXYZ(iMapObject);
                                     else
@@ -242,8 +242,8 @@ namespace UltimaXNA
                                 if (!_GUI.IsMouseOverGUI(_Input.Mouse.Position))
                                 {
                                     int x, y, z;
-                                    IMapObject groundObject = _TileEngine.MouseOverGroundTile;
-                                    IMapObject mouseoverObject = _TileEngine.MouseOverObject;
+                                    MapObject groundObject = _TileEngineService.MouseOverGroundTile;
+                                    MapObject mouseoverObject = _TileEngineService.MouseOverObject;
                                     if (mouseoverObject != null)
                                     {
                                         if (mouseoverObject is MapObjectMobile)
@@ -368,61 +368,9 @@ namespace UltimaXNA
             return (Direction)direction;
         }
 
-        private void checkMove_OLD()
-        {
-            TileEngine.IMapObject iGroundTile = _TileEngine.MouseOverGroundTile;
-            TileEngine.IMapObject iTopObject = _TileEngine.MouseOverObject;
-
-            // We check the ground tile first.
-            // If there is no objects under the mouse cursor, but there is a groundtile, move to the ground tile.
-            // Same thing if the highest object under the mouse cursor is lower than the groundtile.
-            if ((iGroundTile != null) && ((iTopObject == null) || (iTopObject.Z < iGroundTile.Z)))
-            {
-                ((Mobile)_Entities.GetPlayerObject()).Move(
-                       (int)iGroundTile.Position.X,
-                       (int)iGroundTile.Position.Y,
-                       (int)iGroundTile.Z, -1);
-                if (_MovementFollowsMouse)
-                    _ContinuousMoveCheck = true;
-            }
-            else if (iTopObject != null)
-            {
-                Data.ItemData iItemData;
-
-                if (iTopObject is MapObjectStatic)
-                {
-                    iItemData = Data.TileData.ItemData[iTopObject.ItemID - 0x4000];
-                }
-                else if (iTopObject is MapObjectItem)
-                {
-                    Item item = _Entities.GetObject<Item>(iTopObject.OwnerSerial, false);
-                    iItemData = item.ItemData;
-                }
-                else
-                    return;
-
-                if (iItemData.Surface)
-                {
-                    // This is a walkable static or gameobject. Walk on it!
-                    ((Mobile)_Entities.GetPlayerObject()).Move(
-                           (int)iTopObject.Position.X,
-                           (int)iTopObject.Position.Y,
-                           (int)iTopObject.Z + iItemData.CalcHeight, -1);
-                    if (_MovementFollowsMouse)
-                        _ContinuousMoveCheck = true;
-                }
-                else
-                {
-                    // This is a static that is not a surface.
-                    // We can't interact with it, so do nothing.
-                    // (although what about chairs, aren't they interactable?)
-                }
-            }
-        }
-
         private void checkLeftClick()
         {
-            TileEngine.IMapObject iTopObject = _TileEngine.MouseOverObject;
+            MapObject iTopObject = _TileEngineService.MouseOverObject;
 
             if (iTopObject != null)
             {
@@ -449,7 +397,7 @@ namespace UltimaXNA
 
         private void checkRightClick()
         {
-            TileEngine.IMapObject iMapObject = _TileEngine.MouseOverObject;
+            MapObject iMapObject = _TileEngineService.MouseOverObject;
             if ((iMapObject != null) && !(iMapObject is MapObjectStatic))
             {
                 Entity iObject = _Entities.GetObject<Entity>(iMapObject.OwnerSerial, false);
@@ -509,7 +457,7 @@ namespace UltimaXNA
             _LightDirection.Z = -(float)Math.Cos(_LightRadians);
             _LightDirection.Y = (float)Math.Sin(_LightRadians);
 
-            _TileEngine.SetLightDirection(_LightDirection);
+            _TileEngineService.SetLightDirection(_LightDirection);
 
             // Toggle for backpack container window.
             if (keyboard.IsKeyPressed(Keys.B) && (keyboard.IsKeyDown(Keys.LeftControl)))
@@ -572,40 +520,40 @@ namespace UltimaXNA
             String debugMessage = "FPS: " + ((int)_FPS).ToString() + Environment.NewLine;
             if (InWorld)
             {
-                debugMessage += "Objects on screen: " + _TileEngine.ObjectsRendered.ToString() + Environment.NewLine;
+                debugMessage += "Objects on screen: " + _TileEngineService.ObjectsRendered.ToString() + Environment.NewLine;
                 debugMessage += "WarMode: " + WarMode.ToString() + Environment.NewLine;
-                if (_TileEngine.MouseOverObject != null)
+                if (_TileEngineService.MouseOverObject != null)
                 {
-                    debugMessage += "OBJECT: " + _TileEngine.MouseOverObject.ToString() + Environment.NewLine;
-                    if (_TileEngine.MouseOverObject is MapObjectStatic)
+                    debugMessage += "OBJECT: " + _TileEngineService.MouseOverObject.ToString() + Environment.NewLine;
+                    if (_TileEngineService.MouseOverObject is MapObjectStatic)
                     {
-                        debugMessage += "ArtID: " + ((TileEngine.MapObjectStatic)_TileEngine.MouseOverObject).ItemID;
+                        debugMessage += "ArtID: " + ((MapObjectStatic)_TileEngineService.MouseOverObject).ItemID;
                     }
-                    else if (_TileEngine.MouseOverObject is MapObjectMobile)
+                    else if (_TileEngineService.MouseOverObject is MapObjectMobile)
                     {
-                        Mobile iUnit = _Entities.GetObject<Mobile>(_TileEngine.MouseOverObject.OwnerSerial, false);
+                        Mobile iUnit = _Entities.GetObject<Mobile>(_TileEngineService.MouseOverObject.OwnerSerial, false);
                         if (iUnit != null)
                             debugMessage += "Name: " + iUnit.Name + Environment.NewLine;
                         debugMessage +=
-                            "AnimID: " + ((TileEngine.MapObjectMobile)_TileEngine.MouseOverObject).BodyID + Environment.NewLine +
-                            "Serial: " + _TileEngine.MouseOverObject.OwnerSerial + Environment.NewLine +
-                            "Hue: " + ((TileEngine.MapObjectMobile)_TileEngine.MouseOverObject).Hue;
+                            "AnimID: " + ((MapObjectMobile)_TileEngineService.MouseOverObject).BodyID + Environment.NewLine +
+                            "Serial: " + _TileEngineService.MouseOverObject.OwnerSerial + Environment.NewLine +
+                            "Hue: " + ((MapObjectMobile)_TileEngineService.MouseOverObject).Hue;
                     }
-                    else if (_TileEngine is MapObjectItem)
+                    else if (_TileEngineService is MapObjectItem)
                     {
                         debugMessage +=
-                            "ArtID: " + ((TileEngine.MapObjectItem)_TileEngine.MouseOverObject).ItemID + Environment.NewLine +
-                            "Serial: " + _TileEngine.MouseOverObject.OwnerSerial;
+                            "ArtID: " + ((MapObjectItem)_TileEngineService.MouseOverObject).ItemID + Environment.NewLine +
+                            "Serial: " + _TileEngineService.MouseOverObject.OwnerSerial;
                     }
-                    debugMessage += " Z: " + _TileEngine.MouseOverObject.Z;
+                    debugMessage += " Z: " + _TileEngineService.MouseOverObject.Z;
                 }
                 else
                 {
                     debugMessage += "OVER: " + "null";
                 }
-                if (_TileEngine.MouseOverGroundTile != null)
+                if (_TileEngineService.MouseOverGroundTile != null)
                 {
-                    debugMessage += Environment.NewLine + "GROUND: " + _TileEngine.MouseOverGroundTile.Position.ToString();
+                    debugMessage += Environment.NewLine + "GROUND: " + _TileEngineService.MouseOverGroundTile.Position.ToString();
                 }
                 else
                 {
@@ -634,7 +582,7 @@ namespace UltimaXNA
             _GUI.TargettingCursor = false;
         }
 
-        private void mouseTargetingEventXYZ(TileEngine.IMapObject selectedObject)
+        private void mouseTargetingEventXYZ(MapObject selectedObject)
         {
             // Send the targetting event back to the server!
             int modelNumber = 0;
@@ -654,7 +602,7 @@ namespace UltimaXNA
             _GUI.TargettingCursor = false;
         }
 
-        private void MouseTargetingEventObject(TileEngine.IMapObject selectedObject)
+        private void MouseTargetingEventObject(MapObject selectedObject)
         {
             // If we are passed a null object, keep targeting.
             if (selectedObject == null)
