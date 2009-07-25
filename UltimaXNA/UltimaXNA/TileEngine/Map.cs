@@ -25,11 +25,11 @@ using Microsoft.Xna.Framework;
 
 namespace UltimaXNA.TileEngine
 {
-    class TileComparer : IComparer<IMapObject>
+    class TileComparer : IComparer<MapObject>
     {
         public static readonly TileComparer Comparer = new TileComparer();
 
-        public int Compare(IMapObject x, IMapObject y)
+        public int Compare(MapObject x, MapObject y)
         {
             int result = (x.SortZ + x.Threshold) - (y.SortZ + y.Threshold);
             
@@ -45,7 +45,7 @@ namespace UltimaXNA.TileEngine
             return result;
         }
 
-        private int typeSortValue(IMapObject mapobject)
+        private int typeSortValue(MapObject mapobject)
         {
             Type type = mapobject.GetType();
             if (type == typeof(MapObject))
@@ -242,7 +242,8 @@ namespace UltimaXNA.TileEngine
             if (m_MapCells.ContainsKey(GetKey(nX, nY)))
                 return;
 
-            groundTile = new MapObjectGround(m_TileMatrix.GetLandTile(nX, nY), new Vector2(nX,nY));
+            Data.Tile landTile = m_TileMatrix.GetLandTile(nX, nY);
+            groundTile = new MapObjectGround(landTile, new Vector3(nX, nY, landTile.Z));
             groundTile.Surroundings = new Surroundings(
                 m_TileMatrix.GetLandTile(nX + 1, nY + 1).Z,
                 m_TileMatrix.GetLandTile(nX + 1, nY).Z,
@@ -274,7 +275,7 @@ namespace UltimaXNA.TileEngine
 
             for (int i = 0; i < staticTiles.Length; i++)
             {
-                mapCell.Add(new MapObjectStatic(staticTiles[i], i, new Vector2(nX, nY)));
+                mapCell.Add(new MapObjectStatic(staticTiles[i], i, new Vector3(nX, nY, staticTiles[i].Z)));
             }
 
             m_MapCells.Add(GetKey(mapCell), mapCell);
@@ -314,10 +315,10 @@ namespace UltimaXNA.TileEngine
 
     public class MapCell : Data.IPoint2D
     {
-        public List<IMapObject> Objects { get { return m_Objects; } }
+        public List<MapObject> Objects { get { return m_Objects; } }
         private bool m_NeedsSorting;
-        private List<IMapObject> m_Objects;
-        private IMapObject[] m_Sorted;
+        private List<MapObject> m_Objects;
+        private MapObject[] m_Sorted;
 
         #region X
         private int m_X;
@@ -345,7 +346,7 @@ namespace UltimaXNA.TileEngine
 
         public MapCell(int x, int y)
         {
-            m_Objects = new List<IMapObject>();
+            m_Objects = new List<MapObject>();
             m_X = x;
             m_Y = y;
             m_Identifier = m_X.ToString() + ":" + m_Y.ToString();
@@ -354,7 +355,7 @@ namespace UltimaXNA.TileEngine
         // Check if under a roof. --Poplicola 6/2/2009.
         public bool UnderRoof(int nAltitude)
         {
-            IMapObject[] iObjects = this.GetSortedObjects();
+            MapObject[] iObjects = this.GetSortedObjects();
             for (int i = iObjects.Length - 1; i >= 0; i-- )
             {
                 if (iObjects[i].Z <= nAltitude)
@@ -381,8 +382,8 @@ namespace UltimaXNA.TileEngine
         // Poplicola 5/14/2009.
         public void FlushObjectsBySerial(Serial serial)
         {
-            List<IMapObject> iObjects = new List<IMapObject>();
-            foreach (IMapObject iObject in m_Objects)
+            List<MapObject> iObjects = new List<MapObject>();
+            foreach (MapObject iObject in m_Objects)
             {
                 if (iObject.OwnerSerial == serial)
                 {
@@ -395,19 +396,6 @@ namespace UltimaXNA.TileEngine
                 m_Objects = iObjects;
                 m_NeedsSorting = true;
             }
-            m_NeedsSorting = true;
-        }
-
-        // Poplicola 5/10/2009. Updated 5/14/2009.
-        public void AddMobileTile(MapObjectMobile nMobile)
-        {
-            m_Objects.Add(nMobile);
-            m_NeedsSorting = true;
-        }
-
-        public void AddGameObjectTile(MapObjectItem nObject)
-        {
-            m_Objects.Add(nObject);
             m_NeedsSorting = true;
         }
 
@@ -446,14 +434,14 @@ namespace UltimaXNA.TileEngine
 		{
             List<MapObjectStatic> sitems = new List<MapObjectStatic>();
 
-            List<IMapObject> objs = m_Objects.FindAll(IsStaticItem);
+            List<MapObject> objs = m_Objects.FindAll(IsStaticItem);
             if (objs == null || objs.Count == 0)
             {
                 // empty list.
                 return sitems;
             }
-			
-			foreach (IMapObject obj in objs)
+
+            foreach (MapObject obj in objs)
 			{
 				sitems.Add((MapObjectStatic)obj);
 			}
@@ -463,13 +451,13 @@ namespace UltimaXNA.TileEngine
 
 		public List<MapObjectItem> GetGOTiles()
 		{
-			List<IMapObject> objs = m_Objects.FindAll(IsGOTile);
+            List<MapObject> objs = m_Objects.FindAll(IsGOTile);
 
 			if ( objs == null || objs.Count == 0 )
 				return null;
 
 			List<MapObjectItem> goitems = new List<MapObjectItem>();
-			foreach ( IMapObject obj in objs )
+            foreach (MapObject obj in objs)
 			{
 				goitems.Add((MapObjectItem)obj);
 			}
@@ -479,14 +467,14 @@ namespace UltimaXNA.TileEngine
 		// I leave this since could be useful, even if now isn't used.
 		public bool OnStairs()
 		{
-			List<IMapObject> staticobjs = m_Objects.FindAll(IsStaticItem);
+            List<MapObject> staticobjs = m_Objects.FindAll(IsStaticItem);
 			
 			bool result = false;
 
 			if ( staticobjs == null || staticobjs.Count == 0) 
 				return false;
 
-			foreach ( IMapObject obj in staticobjs )
+            foreach (MapObject obj in staticobjs)
 			{
 				Data.ItemData iData = Data.TileData.ItemData[obj.ItemID - 0x4000];
 				if(iData.Stairs)
@@ -498,10 +486,10 @@ namespace UltimaXNA.TileEngine
 
 			if(!result)
 			{
-				List<IMapObject> goobjs = m_Objects.FindAll(IsGOTile);
+                List<MapObject> goobjs = m_Objects.FindAll(IsGOTile);
 				if ( goobjs == null || goobjs.Count == 0 )
 					return false;
-				foreach ( IMapObject obj in goobjs )
+                foreach (MapObject obj in goobjs)
 				{
 					Data.ItemData iData = Data.TileData.ItemData[obj.ItemID];
 					if(iData.Stairs)
@@ -514,33 +502,24 @@ namespace UltimaXNA.TileEngine
 
 			return result;
 		}
-		// Issue 5 - End
-	
-        public void Add(MapObjectGround groundTile)
-        {
-            m_Objects.Add(groundTile);
 
+        public void Add(MapObject item)
+        {
+            m_Objects.Add(item);
             m_NeedsSorting = true;
         }
 
-        public void Add(MapObjectStatic[] staticItems)
+        public void Add(MapObject[] items)
         {
-            for (int i = 0; i < staticItems.Length; i++)
+            for (int i = 0; i < items.Length; i++)
             {
-                m_Objects.Add(staticItems[i]);
+                m_Objects.Add(items[i]);
             }
 
             m_NeedsSorting = true;
         }
 
-        public void Add(MapObjectStatic staticItem)
-        {
-            m_Objects.Add(staticItem);
-
-            m_NeedsSorting = true;
-        }
-
-        public IMapObject[] GetSortedObjects()
+        public MapObject[] GetSortedObjects()
         {
             if (m_NeedsSorting)
             {
@@ -551,11 +530,11 @@ namespace UltimaXNA.TileEngine
             return m_Sorted;
         }
 
-        public List<IMapObject> Items
+        public List<MapObject> Items
         {
             get
             {
-                return new List<IMapObject>(this.GetSortedObjects());
+                return new List<MapObject>(this.GetSortedObjects());
             }
         }
     }

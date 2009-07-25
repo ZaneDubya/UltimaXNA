@@ -32,23 +32,11 @@ namespace UltimaXNA.TileEngine
         int MaxRoofAltitude { get; }
     }
 
-    public interface IMapObject
-    {
-        int ItemID { get; }
-        int SortZ { get; }
-        int Threshold { get; }
-        int Tiebreaker { get; }
-        Vector2 Position { get; }
-        int Z { get; }
-        Serial OwnerSerial { get; }
-        Entities.Entity OwnerEntity { get; }
-    }
-
     public interface ITileEngine
     {
         void SetLightDirection(Vector3 nDirection);
-        IMapObject MouseOverObject { get; }
-        IMapObject MouseOverGroundTile { get; }
+        MapObject MouseOverObject { get; }
+        MapObject MouseOverGroundTile { get; }
         PickTypes PickType { set; }
         int ObjectsRendered { get; }
         MiniMap MiniMap { get; }

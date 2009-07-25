@@ -7,28 +7,27 @@ using UltimaXNA.Entities;
 
 namespace UltimaXNA.TileEngine
 {
-    public class MapObject : IMapObject
+    public class MapObject
     {
-        public int ItemID { get; internal set; }
-        public int Tiebreaker { get; internal set; }
-        public int SortZ { get; internal set; }
-        public int Z { get; internal set; }
-        public Vector2 Position { get; internal set; }
-        public Entity OwnerEntity { get; internal set; }
-        public int Threshold { get; internal set; }
+        public int ItemID { get; set; }
+        public int Tiebreaker { get; set; }
+        public Vector3 Position { get; set; }
+        public Entity OwnerEntity { get; set; }
+        public virtual int Threshold { get; set; }
+        public int SortZ { get; set; }
+        public int Z { get { return (int)Position.Z; } }
 
         public Serial OwnerSerial
         {
             get { return (OwnerEntity == null) ? (Serial)unchecked((int)0) : OwnerEntity.Serial; }
         }
 
-        public MapObject(Vector2 position)
+        public MapObject(Vector3 position)
         {
             ItemID = 0;
             Tiebreaker = 0;
-            SortZ = 0;
             Position = position;
-            Z = 0;
+            SortZ = (int)Position.Z;
             Threshold = 0;
         }
     }

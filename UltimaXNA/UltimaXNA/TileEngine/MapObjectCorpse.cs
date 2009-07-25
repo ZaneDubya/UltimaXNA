@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   MapObjectItem.cs
+ *   MapObjectCorpse.cs
  *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   Based on code from ClintXNA's renderer: http://www.runuo.com/forums/xna/92023-hi.html
  *   
@@ -25,8 +25,8 @@ namespace UltimaXNA.TileEngine
 {
     public class MapObjectCorpse : MapObjectItem
     {
-        public int BodyID { get; internal set; }
-        public int FrameIndex { get; internal set; }
+        public int BodyID { get; set; }
+        public int FrameIndex { get; set; }
 
         public MapObjectCorpse(Vector3 position, int direction, Entity ownerEntity, int nHue, int bodyID, float frame)
             : base(0x2006, position, direction, ownerEntity, nHue)

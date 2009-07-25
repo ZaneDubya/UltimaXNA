@@ -29,7 +29,7 @@ namespace UltimaXNA.TileEngine
     {
         // Store the name of the model underneath the cursor (or null if there is none).
         public string pickedModelName;
-        public IMapObject pickedObject;
+        public MapObject pickedObject;
         public List<string> insideBoundingSpheres = new List<string>();
 
         // Vertex array that stores exactly which triangle was picked.
@@ -99,7 +99,7 @@ namespace UltimaXNA.TileEngine
         {
             m_PickObjects.Clear();
         }
-        public void AddObject(IMapObject nObject, VertexPositionNormalTextureHue[] nVertices)
+        public void AddObject(MapObject nObject, VertexPositionNormalTextureHue[] nVertices)
         {
             Vector3[] iVertices = new Vector3[nVertices.Length];
             for (int i = 0; i < nVertices.Length; i++)
@@ -386,10 +386,10 @@ namespace UltimaXNA.TileEngine
 
     class PickingObject
     {
-        public IMapObject Object;
+        public MapObject Object;
         public Vector3[] Vertices;
 
-        public PickingObject(IMapObject nObject, Vector3[] nVertices)
+        public PickingObject(MapObject nObject, Vector3[] nVertices)
         {
             Object = nObject;
             Vertices = nVertices;

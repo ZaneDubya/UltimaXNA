@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   GameObjectTile.cs
+ *   MapObjectItem.cs
  *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   Based on code from ClintXNA's renderer: http://www.runuo.com/forums/xna/92023-hi.html
  *   
@@ -25,22 +25,16 @@ namespace UltimaXNA.TileEngine
 {
     public class MapObjectItem : MapObject
     {
-        public int Hue { get; internal set; }
-        public int Facing { get; internal set; }
+        public int Hue { get; set; }
+        public int Facing { get; set; }
 
         public MapObjectItem(int itemID, Vector3 position, int direction, Entity ownerEntity, int hue)
-            : base(new Vector2(position.X, position.Y))
+            : base(position)
         {
             ItemID = itemID;
             OwnerEntity = ownerEntity;
             Facing = direction;
             Hue = hue;
-            Z = (int)position.Z;
-        }
-
-        public new int SortZ
-        {
-            get { return Z; }
         }
     }
 }
