@@ -52,7 +52,7 @@ namespace UltimaXNA.Network.Packets.Server
             int compressedTextLength = reader.ReadInt32() - 4;
             int decompressedTextLength = reader.ReadInt32();
             byte[] decompressedText = new byte[decompressedTextLength];
-            if (numTextLines >= 0)
+            if (numTextLines > 0 && decompressedTextLength > 0)
             {
                 byte[] compressedTextData = reader.ReadBytes(compressedTextLength);
                 Compression.Unpack(decompressedText, ref decompressedTextLength, compressedTextData, compressedTextLength);
