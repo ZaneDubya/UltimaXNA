@@ -66,18 +66,18 @@ namespace UltimaXNA.TileEngine
                             int i;
                             for (i = m.Objects.Count - 1; i > 0; i--)
                             {
-                                if (m.Objects[i].Type == MapObjectTypes.StaticTile)
+                                if (m.Objects[i] is MapObjectStatic)
                                 {
-                                    *cur++ = (ushort)(Data.Radarcol.Colors[m.Objects[i].ID] | 0x8000);
-                                    *cur = (ushort)(Data.Radarcol.Colors[m.Objects[i].ID] | 0x8000);
+                                    *cur++ = (ushort)(Data.Radarcol.Colors[m.Objects[i].ItemID] | 0x8000);
+                                    *cur = (ushort)(Data.Radarcol.Colors[m.Objects[i].ItemID] | 0x8000);
                                     cur += size;
                                     break;
                                 }
                             }
                             if (i == 0)
                             {
-                                *cur++ = (ushort)(Data.Radarcol.Colors[m.GroundTile.ID] | 0x8000);
-                                *cur = (ushort)(Data.Radarcol.Colors[m.Objects[i].ID] | 0x8000);
+                                *cur++ = (ushort)(Data.Radarcol.Colors[m.GroundTile.ItemID] | 0x8000);
+                                *cur = (ushort)(Data.Radarcol.Colors[m.Objects[i].ItemID] | 0x8000);
                                 cur += size;
                             }
                         }

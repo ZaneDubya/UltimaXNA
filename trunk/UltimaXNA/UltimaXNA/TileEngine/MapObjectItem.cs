@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   Interfaces.cs
+ *   GameObjectTile.cs
  *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   Based on code from ClintXNA's renderer: http://www.runuo.com/forums/xna/92023-hi.html
  *   
@@ -17,40 +17,30 @@
  *
  ***************************************************************************/
 #region usings
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
+using UltimaXNA.Entities;
 #endregion
 
 namespace UltimaXNA.TileEngine
 {
-    public interface IWorld
+    public class MapObjectItem : MapObject
     {
-        Map Map { get; set; }
-        int MaxRoofAltitude { get; }
-    }
+        public int Hue { get; internal set; }
+        public int Facing { get; internal set; }
 
-    public interface IMapObject
-    {
-        int ItemID { get; }
-        int SortZ { get; }
-        int Threshold { get; }
-        int Tiebreaker { get; }
-        Vector2 Position { get; }
-        int Z { get; }
-        Serial OwnerSerial { get; }
-        Entities.Entity OwnerEntity { get; }
-    }
+        public MapObjectItem(int itemID, Vector3 position, int direction, Entity ownerEntity, int hue)
+            : base(new Vector2(position.X, position.Y))
+        {
+            ItemID = itemID;
+            OwnerEntity = ownerEntity;
+            Facing = direction;
+            Hue = hue;
+            Z = (int)position.Z;
+        }
 
-    public interface ITileEngine
-    {
-        void SetLightDirection(Vector3 nDirection);
-        IMapObject MouseOverObject { get; }
-        IMapObject MouseOverGroundTile { get; }
-        PickTypes PickType { set; }
-        int ObjectsRendered { get; }
-        MiniMap MiniMap { get; }
+        public new int SortZ
+        {
+            get { return Z; }
+        }
     }
 }

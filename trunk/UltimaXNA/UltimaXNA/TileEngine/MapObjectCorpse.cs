@@ -1,9 +1,9 @@
 ﻿/***************************************************************************
- *   Interfaces.cs
+ *   MapObjectItem.cs
  *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   Based on code from ClintXNA's renderer: http://www.runuo.com/forums/xna/92023-hi.html
  *   
- *   begin                : May 31, 2009
+ *   begin                : July 24, 2009
  *   email                : poplicola@ultimaxna.com
  *
  ***************************************************************************/
@@ -17,40 +17,33 @@
  *
  ***************************************************************************/
 #region usings
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
+using UltimaXNA.Entities;
 #endregion
 
 namespace UltimaXNA.TileEngine
 {
-    public interface IWorld
+    public class MapObjectCorpse : MapObjectItem
     {
-        Map Map { get; set; }
-        int MaxRoofAltitude { get; }
-    }
+        public int BodyID { get; internal set; }
+        public int FrameIndex { get; internal set; }
 
-    public interface IMapObject
-    {
-        int ItemID { get; }
-        int SortZ { get; }
-        int Threshold { get; }
-        int Tiebreaker { get; }
-        Vector2 Position { get; }
-        int Z { get; }
-        Serial OwnerSerial { get; }
-        Entities.Entity OwnerEntity { get; }
-    }
+        public MapObjectCorpse(Vector3 position, int direction, Entity ownerEntity, int nHue, int bodyID, float frame)
+            : base(0x2006, position, direction, ownerEntity, nHue)
+        {
+            BodyID = bodyID;
+            FrameIndex = (int)(frame * Data.BodyConverter.DeathAnimationFrameCount(bodyID));
+        }
 
-    public interface ITileEngine
-    {
-        void SetLightDirection(Vector3 nDirection);
-        IMapObject MouseOverObject { get; }
-        IMapObject MouseOverGroundTile { get; }
-        PickTypes PickType { set; }
-        int ObjectsRendered { get; }
-        MiniMap MiniMap { get; }
+        public new int SortZ
+        {
+            get { return Z; }
+        }
+
+        public int Layer
+        {
+            get { return Tiebreaker; }
+            set { Tiebreaker = value; }
+        }
     }
 }

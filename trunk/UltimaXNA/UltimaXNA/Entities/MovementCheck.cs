@@ -227,9 +227,9 @@ namespace UltimaXNA.Entities
         {
             newZ = 0;
 
-            StaticItem[] tiles = map.GetMapCell(x, y).GetStatics().ToArray();
-            GroundTile landTile = map.GetMapCell(x, y).GroundTile;
-            Data.LandData landData = Data.TileData.LandData[landTile.ID & 0x3FFF];
+            MapObjectStatic[] tiles = map.GetMapCell(x, y).GetStatics().ToArray();
+            MapObjectGround landTile = map.GetMapCell(x, y).GroundTile;
+            Data.LandData landData = Data.TileData.LandData[landTile.ItemID & 0x3FFF];
 
 
             bool landBlocks = (landData.Flags & TileFlag.Impassable) != 0;
@@ -255,8 +255,8 @@ namespace UltimaXNA.Entities
             #region Tiles
             for (int i = 0; i < tiles.Length; ++i)
             {
-                StaticItem tile = tiles[i];
-                Data.ItemData itemData = Data.TileData.ItemData[tile.ID & 0x3FFF];
+                MapObjectStatic tile = tiles[i];
+                Data.ItemData itemData = Data.TileData.ItemData[tile.ItemID & 0x3FFF];
                 TileFlag flags = itemData.Flags;
 
                 if ((flags & ImpassableSurface) == TileFlag.Surface) //  || (canSwim && (flags & TileFlag.Wet) != 0) Surface && !Impassable
@@ -392,12 +392,12 @@ namespace UltimaXNA.Entities
             return moveIsOk;
         }
 
-        private static bool IsOk(bool ignoreDoors, int ourZ, int ourTop, StaticItem[] tiles, List<Item> items)
+        private static bool IsOk(bool ignoreDoors, int ourZ, int ourTop, MapObjectStatic[] tiles, List<Item> items)
         {
             for (int i = 0; i < tiles.Length; ++i)
             {
-                StaticItem check = tiles[i];
-                Data.ItemData itemData = Data.TileData.ItemData[check.ID & 0x3FFF];
+                MapObjectStatic check = tiles[i];
+                Data.ItemData itemData = Data.TileData.ItemData[check.ItemID & 0x3FFF];
 
                 if ((itemData.Flags & ImpassableSurface) != 0) // Impassable || Surface
                 {
@@ -470,9 +470,9 @@ namespace UltimaXNA.Entities
         {
             int xCheck = (int)loc.X, yCheck = (int)loc.Y;
 
-            GroundTile landTile = map.GetMapCell(xCheck, yCheck).GroundTile; //map.Tiles.GetLandTile(xCheck, yCheck);
+            MapObjectGround landTile = map.GetMapCell(xCheck, yCheck).GroundTile; //map.Tiles.GetLandTile(xCheck, yCheck);
             int landZ = 0, landCenter = 0, landTop = 0;
-            bool landBlocks = (Data.TileData.LandData[landTile.ID & 0x3FFF].Flags & TileFlag.Impassable) != 0; //(TileData.LandTable[landTile.ID & 0x3FFF].Flags & TileFlag.Impassable) != 0;
+            bool landBlocks = (Data.TileData.LandData[landTile.ItemID & 0x3FFF].Flags & TileFlag.Impassable) != 0; //(TileData.LandTable[landTile.ID & 0x3FFF].Flags & TileFlag.Impassable) != 0;
 
             // if (landBlocks && m.CanSwim && (TileData.LandTable[landTile.ID & 0x3FFF].Flags & TileFlag.Wet) != 0)
             //     landBlocks = false;
@@ -497,12 +497,12 @@ namespace UltimaXNA.Entities
                 isSet = true;
             }
 
-            StaticItem[] staticTiles = map.GetMapCell(xCheck, yCheck).GetStatics().ToArray();
+            MapObjectStatic[] staticTiles = map.GetMapCell(xCheck, yCheck).GetStatics().ToArray();
 
             for (int i = 0; i < staticTiles.Length; ++i)
             {
-                StaticItem tile = staticTiles[i];
-                Data.ItemData id = Data.TileData.ItemData[tile.ID & 0x3FFF];
+                MapObjectStatic tile = staticTiles[i];
+                Data.ItemData id = Data.TileData.ItemData[tile.ItemID & 0x3FFF];
 
                 int calcTop = (tile.Z + id.CalcHeight);
 

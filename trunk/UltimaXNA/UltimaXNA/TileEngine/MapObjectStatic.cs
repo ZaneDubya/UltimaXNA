@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   Interfaces.cs
+ *   StaticItem.cs
  *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   Based on code from ClintXNA's renderer: http://www.runuo.com/forums/xna/92023-hi.html
  *   
@@ -17,40 +17,35 @@
  *
  ***************************************************************************/
 #region usings
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
+using UltimaXNA.Entities;
 #endregion
 
 namespace UltimaXNA.TileEngine
 {
-    public interface IWorld
+    public class MapObjectStatic : MapObject
     {
-        Map Map { get; set; }
-        int MaxRoofAltitude { get; }
-    }
+        public MapObjectStatic(Data.StaticTile staticTile, int sortInfluence, Vector2 position)
+            : base(position)
+        {
+            ItemID = staticTile.ID;
+            Tiebreaker = sortInfluence;
+        }
 
-    public interface IMapObject
-    {
-        int ItemID { get; }
-        int SortZ { get; }
-        int Threshold { get; }
-        int Tiebreaker { get; }
-        Vector2 Position { get; }
-        int Z { get; }
-        Serial OwnerSerial { get; }
-        Entities.Entity OwnerEntity { get; }
-    }
+        public bool Ignored
+        {
+            get { return (ItemID <= 1); }
+        }
 
-    public interface ITileEngine
-    {
-        void SetLightDirection(Vector3 nDirection);
-        IMapObject MouseOverObject { get; }
-        IMapObject MouseOverGroundTile { get; }
-        PickTypes PickType { set; }
-        int ObjectsRendered { get; }
-        MiniMap MiniMap { get; }
+        public new int Threshold
+        {
+            get
+            {
+                Data.ItemData itemData = Data.TileData.ItemData[ItemID & 0x3FFF];
+
+                int background = (itemData.Background) ? 0 : 1;
+                return (itemData.Height == 0) ? background : background + 1;
+            }
+        }
     }
 }

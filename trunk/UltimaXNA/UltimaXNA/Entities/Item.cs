@@ -40,7 +40,7 @@ namespace UltimaXNA.Entities
         internal override void Draw(UltimaXNA.TileEngine.MapCell nCell, Vector3 nLocation, Vector3 nOffset)
         {
             nCell.AddGameObjectTile(
-                new TileEngine.GameObjectTile(_ItemID, nLocation, Movement.DrawFacing, this, Hue));
+                new TileEngine.MapObjectItem(_ItemID, nLocation, Movement.DrawFacing, this, Hue));
         }
 
         public override void Dispose()

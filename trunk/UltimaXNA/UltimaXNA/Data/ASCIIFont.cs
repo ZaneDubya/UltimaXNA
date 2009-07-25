@@ -164,7 +164,7 @@ namespace UltimaXNA.Data
             }
         }
 
-        public unsafe static Texture2D GetTexture(int fontId, string text)
+        public unsafe static Texture2D GetTexture(string text, int fontId)
         {
             ASCIIFont font = ASCIIFont.GetFixed(fontId);
 
@@ -217,7 +217,6 @@ namespace UltimaXNA.Data
 
             Texture2D result = new Texture2D(_graphicsDevice, width, height, 1, TextureUsage.None, SurfaceFormat.Color);
             result.SetData<Color>(resultData);
-            result.Save("test.png", ImageFileFormat.Png);
             return result;
         }
     }

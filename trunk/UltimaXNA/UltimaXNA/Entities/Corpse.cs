@@ -51,8 +51,8 @@ namespace UltimaXNA.Entities
         {
             Movement.ClearImmediate();
                 nCell.AddGameObjectTile(
-                    new TileEngine.GameObjectTile(
-                        ItemID, nLocation, Movement.DrawFacing, this, Hue, _corpseBody, _corpseFrame));
+                    new TileEngine.MapObjectCorpse(
+                        nLocation, Movement.DrawFacing, this, Hue, _corpseBody, _corpseFrame));
         }
 
         public void LoadCorpseClothing(List<Network.Packets.Server.CorpseClothingItemWithLayer> items)
