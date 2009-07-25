@@ -271,15 +271,15 @@ namespace UltimaXNA.GUI
             }
         }
 
-        public static Texture2D TextTexture(string text, int font, int hue)
+        public static Texture2D TextTexture(string text, int fontId, int hueId)
         {
             if (!_IsPrepared)
                 _PrepareHelper();
-            string hash = string.Format("<hue:{0}font:{1}>{2}", hue.ToString(), font.ToString(), text);
+            string hash = string.Format("<hue:{0}font:{1}>{2}", hueId.ToString(), fontId.ToString(), text);
 
             if (!_TextTextureCache.ContainsKey(hash))
             {
-                Texture2D texture = Data.ASCIIText.GetTexture(font, text);
+                Texture2D texture = Data.ASCIIText.GetTexture(text, fontId);
                 _TextTextureCache.Add(hash, texture);
             }
             return _TextTextureCache[hash];

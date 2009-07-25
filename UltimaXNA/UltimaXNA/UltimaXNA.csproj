@@ -13,7 +13,7 @@
     <XnaPlatform>Windows</XnaPlatform>
     <XnaCrossPlatformGroupID>50bfd68f-b3c7-4d72-866a-2cf8c22b84b0</XnaCrossPlatformGroupID>
     <ApplicationIcon>ultimaxna.ico</ApplicationIcon>
-    <Thumbnail>Libraries\UltimaXNA Logo - Icon 64.png</Thumbnail>
+    <Thumbnail>UltimaXNA Logo - Icon 64.png</Thumbnail>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <StartupObject>
     </StartupObject>
@@ -314,16 +314,19 @@
     <Compile Include="Entities\Serial.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Shared.cs" />
-    <Compile Include="TileEngine\GameObjectTile.cs" />
+    <Compile Include="TileEngine\MapObjectCorpse.cs" />
+    <Compile Include="TileEngine\MapObjectItem.cs" />
     <Compile Include="TileEngine\Interfaces.cs" />
     <Compile Include="TileEngine\MiniMap.cs" />
     <Compile Include="TileEngine\RayPicker.cs" />
-    <Compile Include="TileEngine\GroundTile.cs" />
+    <Compile Include="TileEngine\MapObjectGround.cs" />
     <Compile Include="TileEngine\Map.cs" />
-    <Compile Include="TileEngine\MobileTile.cs" />
+    <Compile Include="TileEngine\MapObjectMobile.cs" />
     <Compile Include="TileEngine\SpriteBatch3D.cs" />
+    <Compile Include="TileEngine\MapObjectText.cs" />
+    <Compile Include="TileEngine\MapObject.cs" />
     <Compile Include="TileEngine\TileEngine.cs" />
-    <Compile Include="TileEngine\StaticItem.cs" />
+    <Compile Include="TileEngine\MapObjectStatic.cs" />
     <Compile Include="TileEngine\VertexPositionNormalTextureHue.cs" />
     <Compile Include="TileEngine\World.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -377,17 +380,17 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Libraries\log4net.config">
+    <Content Include="log4net.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Libraries\UltimaXNA Logo - Icon 64.png" />
-    <Content Include="Libraries\ultimaxna.ico" />
-    <Content Include="Libraries\zlib32.dll">
+    <Content Include="UltimaXNA Logo - Icon 64.png" />
+    <Content Include="zlib32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="ultimaxna.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Libraries\" />
     <Folder Include="Network\Packets\Both\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

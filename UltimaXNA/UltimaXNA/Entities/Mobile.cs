@@ -171,25 +171,23 @@ namespace UltimaXNA.Entities
 
             int direction = Movement.DrawFacing;
             int action = animation.GetAction();
-            MobileTile mobtile = null;
+            MapObjectMobile mobtile = null;
             for (int i = 0; i < m_DrawLayers.Length; i++)
             {
                 if (m_DrawLayers[i] == (int)EquipLayer.Body)
                 {
-                    mobtile = new MobileTile(
+                    mobtile = new MapObjectMobile(
                         BodyID, nLocation, nOffset, 
                         direction, action, animation.AnimationFrame, 
-                        this, i, Hue, animation.IsMounted);
-                    // mobtile.SubType = MobileTileTypes.Body;
+                        this, i, Hue);
                     nCell.AddMobileTile(mobtile);
                 }
                 else if (equipment[m_DrawLayers[i]] != null && equipment[m_DrawLayers[i]].AnimationDisplayID != 0)
                 {
-                    mobtile = new TileEngine.MobileTile(
+                    mobtile = new TileEngine.MapObjectMobile(
                             equipment[m_DrawLayers[i]].AnimationDisplayID, nLocation, nOffset,
                             direction, action, animation.AnimationFrame,
-                            this, i, equipment[m_DrawLayers[i]].Hue, animation.IsMounted);
-                    // mobtile.SubType = TileEngine.MobileTileTypes.Equipment;
+                            this, i, equipment[m_DrawLayers[i]].Hue);
                     nCell.AddMobileTile(mobtile);
                 }
             }

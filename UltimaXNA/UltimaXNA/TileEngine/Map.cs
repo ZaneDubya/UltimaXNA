@@ -25,16 +25,6 @@ using Microsoft.Xna.Framework;
 
 namespace UltimaXNA.TileEngine
 {
-    
-
-    public enum MapObjectTypes
-    {
-        GroundTile = 0,
-        StaticTile = 1,
-        MobileTile = 2,
-        GameObjectTile = 3,
-    }
-
     class TileComparer : IComparer<IMapObject>
     {
         public static readonly TileComparer Comparer = new TileComparer();
@@ -42,14 +32,9 @@ namespace UltimaXNA.TileEngine
         public int Compare(IMapObject x, IMapObject y)
         {
             int result = (x.SortZ + x.Threshold) - (y.SortZ + y.Threshold);
-
-			// Issue 14 - Wrong layer draw order - http://code.google.com/p/ultimaxna/issues/detail?id=14 - Smjert
-			if ( x.Type == MapObjectTypes.MobileTile && y.Type == MapObjectTypes.MobileTile )
-				result = (x as MobileTile).SubType - (y as MobileTile).SubType;
-			// Issue 14 - End
-
+            
             if (result == 0)
-                result = x.Type - y.Type;
+                result = typeSortValue(x) - typeSortValue(y);
 
             if (result == 0)
                 result = x.Threshold - y.Threshold;
@@ -58,6 +43,24 @@ namespace UltimaXNA.TileEngine
                 result = x.Tiebreaker - y.Tiebreaker;
 
             return result;
+        }
+
+        private int typeSortValue(IMapObject mapobject)
+        {
+            Type type = mapobject.GetType();
+            if (type == typeof(MapObject))
+                return -1;
+            else if (type == typeof(MapObjectGround))
+                return 0;
+            else if (type == typeof(MapObjectStatic))
+                return 1;
+            else if (type == typeof(MapObjectItem))
+                return 2;
+            else if (type == typeof(MapObjectMobile))
+                return 4;
+            else if (type == typeof(MapObjectText))
+                return 4;
+            return -100;
         }
     }
 
@@ -165,7 +168,7 @@ namespace UltimaXNA.TileEngine
 
         // Poplicola 5/9/2009
         // This references a tile that already exists in THIS dictionary.
-        public GroundTile GetGroundTile(int x, int y)
+        public MapObjectGround GetGroundTile(int x, int y)
         {
             return m_MapCells[GetKey(x, y)].GroundTile;
         }
@@ -231,7 +234,7 @@ namespace UltimaXNA.TileEngine
 
         private void mLoadCell(int nX, int nY)
         {
-            GroundTile groundTile;
+            MapObjectGround groundTile;
             MapCell mapCell;
             IEnumerator<MapCell> mapCellsEnumerator;
             Data.Point2D worldLocation;
@@ -239,7 +242,7 @@ namespace UltimaXNA.TileEngine
             if (m_MapCells.ContainsKey(GetKey(nX, nY)))
                 return;
 
-            groundTile = new GroundTile(m_TileMatrix.GetLandTile(nX, nY), new Vector2(nX,nY));
+            groundTile = new MapObjectGround(m_TileMatrix.GetLandTile(nX, nY), new Vector2(nX,nY));
             groundTile.Surroundings = new Surroundings(
                 m_TileMatrix.GetLandTile(nX + 1, nY + 1).Z,
                 m_TileMatrix.GetLandTile(nX + 1, nY).Z,
@@ -271,7 +274,7 @@ namespace UltimaXNA.TileEngine
 
             for (int i = 0; i < staticTiles.Length; i++)
             {
-                mapCell.Add(new StaticItem(staticTiles[i], i, new Vector2(nX, nY)));
+                mapCell.Add(new MapObjectStatic(staticTiles[i], i, new Vector2(nX, nY)));
             }
 
             m_MapCells.Add(GetKey(mapCell), mapCell);
@@ -356,9 +359,9 @@ namespace UltimaXNA.TileEngine
             {
                 if (iObjects[i].Z <= nAltitude)
                     return false;
-                if (iObjects[i].Type == MapObjectTypes.StaticTile)
+                if (iObjects[i] is MapObjectStatic)
                 {
-                    Data.ItemData iData = Data.TileData.ItemData[((StaticItem)iObjects[i]).ID - 0x4000];
+                    Data.ItemData iData = Data.TileData.ItemData[((MapObjectStatic)iObjects[i]).ItemID - 0x4000];
                     if (iData.Roof)
                         return true;
                     if (iData.Surface)
@@ -396,52 +399,52 @@ namespace UltimaXNA.TileEngine
         }
 
         // Poplicola 5/10/2009. Updated 5/14/2009.
-        public void AddMobileTile(MobileTile nMobile)
+        public void AddMobileTile(MapObjectMobile nMobile)
         {
             m_Objects.Add(nMobile);
             m_NeedsSorting = true;
         }
 
-        public void AddGameObjectTile(GameObjectTile nObject)
+        public void AddGameObjectTile(MapObjectItem nObject)
         {
             m_Objects.Add(nObject);
             m_NeedsSorting = true;
         }
 
         // Poplicola 5/9/2009
-        public GroundTile GroundTile
+        public MapObjectGround GroundTile
         {
-            get { return (GroundTile)m_Objects.Find(IsGroundTile); }
+            get { return (MapObjectGround)m_Objects.Find(IsGroundTile); }
 
         }
         // Poplicola 5/9/2009
         private static bool IsGroundTile(object i)
         {
-            Type t = typeof(GroundTile);
+            Type t = typeof(MapObjectGround);
             return t == i.GetType() || i.GetType().IsSubclassOf(t);
         }
         // Poplicola 5/10/2009
         private static bool IsMobile(object i)
         {
-            Type t = typeof(MobileTile);
+            Type t = typeof(MapObjectMobile);
             return t == i.GetType() || i.GetType().IsSubclassOf(t);
         }
 		// Issue 5 - Statics (bridge, stairs, etc) should be walkable - http://code.google.com/p/ultimaxna/issues/detail?id=5 - Smjert
 		private static bool IsStaticItem(object i)
 		{
-			Type t = typeof(StaticItem);
+			Type t = typeof(MapObjectStatic);
 			return t == i.GetType() || i.GetType().IsSubclassOf(t);
 		}
 
 		private static bool IsGOTile(object i)
 		{
-			Type t = typeof(GameObjectTile);
+			Type t = typeof(MapObjectItem);
 			return t == i.GetType() || i.GetType().IsSubclassOf(t);
 		}
 
-		public List<StaticItem> GetStatics()
+		public List<MapObjectStatic> GetStatics()
 		{
-            List<StaticItem> sitems = new List<StaticItem>();
+            List<MapObjectStatic> sitems = new List<MapObjectStatic>();
 
             List<IMapObject> objs = m_Objects.FindAll(IsStaticItem);
             if (objs == null || objs.Count == 0)
@@ -452,23 +455,23 @@ namespace UltimaXNA.TileEngine
 			
 			foreach (IMapObject obj in objs)
 			{
-				sitems.Add((StaticItem)obj);
+				sitems.Add((MapObjectStatic)obj);
 			}
 
 			return sitems;
 		}
 
-		public List<GameObjectTile> GetGOTiles()
+		public List<MapObjectItem> GetGOTiles()
 		{
 			List<IMapObject> objs = m_Objects.FindAll(IsGOTile);
 
 			if ( objs == null || objs.Count == 0 )
 				return null;
 
-			List<GameObjectTile> goitems = new List<GameObjectTile>();
+			List<MapObjectItem> goitems = new List<MapObjectItem>();
 			foreach ( IMapObject obj in objs )
 			{
-				goitems.Add((GameObjectTile)obj);
+				goitems.Add((MapObjectItem)obj);
 			}
 
 			return goitems;
@@ -485,7 +488,7 @@ namespace UltimaXNA.TileEngine
 
 			foreach ( IMapObject obj in staticobjs )
 			{
-				Data.ItemData iData = Data.TileData.ItemData[obj.ID - 0x4000];
+				Data.ItemData iData = Data.TileData.ItemData[obj.ItemID - 0x4000];
 				if(iData.Stairs)
 				{
 					result = true;
@@ -500,7 +503,7 @@ namespace UltimaXNA.TileEngine
 					return false;
 				foreach ( IMapObject obj in goobjs )
 				{
-					Data.ItemData iData = Data.TileData.ItemData[obj.ID];
+					Data.ItemData iData = Data.TileData.ItemData[obj.ItemID];
 					if(iData.Stairs)
 					{
 						result = true;
@@ -513,14 +516,14 @@ namespace UltimaXNA.TileEngine
 		}
 		// Issue 5 - End
 	
-        public void Add(GroundTile groundTile)
+        public void Add(MapObjectGround groundTile)
         {
             m_Objects.Add(groundTile);
 
             m_NeedsSorting = true;
         }
 
-        public void Add(StaticItem[] staticItems)
+        public void Add(MapObjectStatic[] staticItems)
         {
             for (int i = 0; i < staticItems.Length; i++)
             {
@@ -530,7 +533,7 @@ namespace UltimaXNA.TileEngine
             m_NeedsSorting = true;
         }
 
-        public void Add(StaticItem staticItem)
+        public void Add(MapObjectStatic staticItem)
         {
             m_Objects.Add(staticItem);
 

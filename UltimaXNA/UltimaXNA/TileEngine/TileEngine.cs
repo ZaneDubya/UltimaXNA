@@ -104,14 +104,10 @@ namespace UltimaXNA.TileEngine
             float drawX;
             float drawY;
             float drawZ = 0;
-            GroundTile groundTile;
             int height;
             Map map = _worldService.Map;
             IMapObject mapObject;
             IMapObject[] mapObjects;
-            StaticItem staticItem;
-            MobileTile iMobile;
-            GameObjectTile iObject;
             Texture2D texture;
             int width;
             // Count of objects rendered for statistics and debug - Poplicola
@@ -168,9 +164,9 @@ namespace UltimaXNA.TileEngine
                     {
                         mapObject = mapObjects[i];
 
-                        if (mapObject.Type == MapObjectTypes.GroundTile) // GroundTile
+                        if (mapObject is MapObjectGround) // GroundTile
                         {
-                            groundTile = (GroundTile)mapObject;
+                            MapObjectGround groundTile = (MapObjectGround)mapObject;
 
                             if (groundTile.Ignored)
                             {
@@ -179,11 +175,11 @@ namespace UltimaXNA.TileEngine
 
                             drawY = groundTile.Z << 2;
 
-                            Data.LandData landData = Data.TileData.LandData[groundTile.ID & 0x3FFF];
+                            Data.LandData landData = Data.TileData.LandData[groundTile.ItemID & 0x3FFF];
 
                             if (landData.TextureID <= 0 || landData.Wet) // Not Stretched
                             {
-                                texture = Data.Art.GetLandTexture(groundTile.ID, this.GraphicsDevice);
+                                texture = Data.Art.GetLandTexture(groundTile.ItemID, this.GraphicsDevice);
 
                                 _vertexBuffer[0].Position = drawPosition;
                                 _vertexBuffer[0].Position.Y -= drawY;
@@ -254,18 +250,18 @@ namespace UltimaXNA.TileEngine
                                     _rayPicker.AddObject(mapObject, _vertexBufferForStretchedTile);
                             }
                         }
-                        else if (mapObject.Type == MapObjectTypes.StaticTile) // StaticItem
+                        else if (mapObject is MapObjectStatic) // StaticItem
                         {
-                            staticItem = (StaticItem)mapObject;
+                            MapObjectStatic staticItem = (MapObjectStatic)mapObject;
 
                             if (staticItem.Ignored)
                                 continue;
                             if (staticItem.Z >= MaxRoofAltitude)
                                 continue;
 
-                            Data.Art.GetStaticDimensions(staticItem.ID, out width, out height);
+                            Data.Art.GetStaticDimensions(staticItem.ItemID, out width, out height);
 
-                            texture = Data.Art.GetStaticTexture(staticItem.ID, this.GraphicsDevice);
+                            texture = Data.Art.GetStaticTexture(staticItem.ItemID, this.GraphicsDevice);
 
                             drawX = (width >> 1) - 22;
                             drawY = (staticItem.Z << 2) + height - 44;
@@ -301,15 +297,15 @@ namespace UltimaXNA.TileEngine
                                 if (isMouseOverObject(_vertexBuffer[0].Position, _vertexBuffer[3].Position))
                                     iMouseOverList.AddItem(new MouseOverItem(texture, _vertexBuffer[0].Position, mapObject));
                         }
-                        else if (mapObject.Type == MapObjectTypes.MobileTile) // Mobile
+                        else if (mapObject is MapObjectMobile) // Mobile
                         {
-                            iMobile = (MobileTile)mapObject;
+                            MapObjectMobile iMobile = (MapObjectMobile)mapObject;
 
                             if (iMobile.Z >= MaxRoofAltitude)
                                 continue;
 
                             Data.FrameXNA[] iFrames = Data.AnimationsXNA.GetAnimation(this.Game.GraphicsDevice,
-                                iMobile.ID, iMobile.Action, iMobile.Direction, iMobile.Hue, false);
+                                iMobile.BodyID, iMobile.Action, iMobile.Facing, iMobile.Hue, false);
                             if (iFrames == null)
                                 continue;
                             int iFrame = iMobile.Frame(iFrames.Length);
@@ -360,38 +356,17 @@ namespace UltimaXNA.TileEngine
                                 if (isMouseOverObject(_vertexBuffer[0].Position, _vertexBuffer[3].Position))
                                     iMouseOverList.AddItem(new MouseOverItem(iFrames[iFrame].Texture, _vertexBuffer[0].Position, mapObject));
                         }
-                        else if (mapObject.Type == MapObjectTypes.GameObjectTile)
+                        else if (mapObject is MapObjectItem)
                         {
-                            iObject = (GameObjectTile)mapObject;
+                            MapObjectItem iObject = (MapObjectItem)mapObject;
                             if (iObject.Z >= MaxRoofAltitude)
                                 continue;
 
-                            if (iObject.IsCorpse)
-                            {
-                                Data.FrameXNA[] iFrames = Data.AnimationsXNA.GetAnimation(this.Game.GraphicsDevice,
-                                    iObject.CorpseBody, Data.BodyConverter.DeathAnimationIndex(iObject.CorpseBody), iObject.Direction, iObject.Hue, false);
-                                // GetAnimation fails so it returns null, temporary fix - Smjert
-                                if (iFrames == null)
-                                    continue;
-                                int iFrame = iObject.CorpseFrame;
-                                // If the frame data is corrupt, then the texture will not load. Fix for broken cleaver data, maybe others. --Poplicola 6/15/2009
-                                if (iFrames[iFrame].Texture == null)
-                                    continue;
-                                width = iFrames[iFrame].Texture.Width;
-                                height = iFrames[iFrame].Texture.Height;
-                                drawX = iFrames[iFrame].Center.X - 22;
-                                drawY = iFrames[iFrame].Center.Y + (iObject.Z << 2) + height - 22;
-                                texture = iFrames[iFrame].Texture;
-                            }
-                            else
-                            {
-                                Data.Art.GetStaticDimensions(iObject.ID, out width, out height);
+                            Data.Art.GetStaticDimensions(iObject.ItemID, out width, out height);
+                            texture = Data.Art.GetStaticTexture(iObject.ItemID, this.GraphicsDevice);
+                            drawX = (width >> 1) - 22;
+                            drawY = (iObject.Z << 2) + height - 44;
 
-                                texture = Data.Art.GetStaticTexture(iObject.ID, this.GraphicsDevice);
-
-                                drawX = (width >> 1) - 22;
-                                drawY = (iObject.Z << 2) + height - 44;
-                            }
                             _vertexBuffer[0].Position = drawPosition;
                             _vertexBuffer[0].Position.X -= drawX;
                             _vertexBuffer[0].Position.Y -= drawY;
@@ -427,6 +402,63 @@ namespace UltimaXNA.TileEngine
                                 if (isMouseOverObject(_vertexBuffer[0].Position, _vertexBuffer[3].Position))
                                     iMouseOverList.AddItem(new MouseOverItem(texture, _vertexBuffer[0].Position, mapObject));
                         
+                        }
+                        else if (mapObject is MapObjectCorpse)
+                        {
+                            MapObjectCorpse iObject = (MapObjectCorpse)mapObject;
+                            if (iObject.Z >= MaxRoofAltitude)
+                                continue;
+
+                            Data.FrameXNA[] iFrames = Data.AnimationsXNA.GetAnimation(this.Game.GraphicsDevice,
+                                iObject.BodyID, Data.BodyConverter.DeathAnimationIndex(iObject.BodyID), iObject.Facing, iObject.Hue, false);
+                            // GetAnimation fails so it returns null, temporary fix - Smjert
+                            if (iFrames == null)
+                                continue;
+                            int iFrame = iObject.FrameIndex;
+                            // If the frame data is corrupt, then the texture will not load. Fix for broken cleaver data, maybe others. --Poplicola 6/15/2009
+                            if (iFrames[iFrame].Texture == null)
+                                continue;
+                            width = iFrames[iFrame].Texture.Width;
+                            height = iFrames[iFrame].Texture.Height;
+                            drawX = iFrames[iFrame].Center.X - 22;
+                            drawY = iFrames[iFrame].Center.Y + (iObject.Z << 2) + height - 22;
+                            texture = iFrames[iFrame].Texture;
+
+                            _vertexBuffer[0].Position = drawPosition;
+                            _vertexBuffer[0].Position.X -= drawX;
+                            _vertexBuffer[0].Position.Y -= drawY;
+                            _vertexBuffer[0].Position.Z = drawZ;
+
+                            _vertexBuffer[1].Position = drawPosition;
+                            _vertexBuffer[1].Position.X += width - drawX;
+                            _vertexBuffer[1].Position.Y -= drawY;
+                            _vertexBuffer[1].Position.Z = drawZ;
+
+                            _vertexBuffer[2].Position = drawPosition;
+                            _vertexBuffer[2].Position.X -= drawX;
+                            _vertexBuffer[2].Position.Y += height - drawY;
+                            _vertexBuffer[2].Position.Z = drawZ;
+
+                            _vertexBuffer[3].Position = drawPosition;
+                            _vertexBuffer[3].Position.X += width - drawX;
+                            _vertexBuffer[3].Position.Y += height - drawY;
+                            _vertexBuffer[3].Position.Z = drawZ;
+
+                            // hueVector: x is the hue, y sets whether or not to use it.
+                            // y = 1, total hue.
+                            // y = 2, partial hue.
+                            Vector2 hueVector = getHueVector(iObject.Hue);
+                            _vertexBuffer[0].Hue = hueVector;
+                            _vertexBuffer[1].Hue = hueVector;
+                            _vertexBuffer[2].Hue = hueVector;
+                            _vertexBuffer[3].Hue = hueVector;
+
+                            _spriteBatch.Draw(texture, _vertexBuffer);
+
+                            if ((_pickType & PickTypes.PickStatics) == PickTypes.PickStatics)
+                                if (isMouseOverObject(_vertexBuffer[0].Position, _vertexBuffer[3].Position))
+                                    iMouseOverList.AddItem(new MouseOverItem(texture, _vertexBuffer[0].Position, mapObject));
+
                         }
 
                         drawZ += 1000;
