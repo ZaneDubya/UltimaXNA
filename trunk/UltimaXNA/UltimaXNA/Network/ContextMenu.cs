@@ -132,6 +132,7 @@ namespace UltimaXNA.Network
                         case "Release":
                         case "Ask Destination":
                         case "Abandon Escort":
+                        case "Open Bankbox":
                         // unhandled
                             break;
                         default:
