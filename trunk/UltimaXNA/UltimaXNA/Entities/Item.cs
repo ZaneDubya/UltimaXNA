@@ -37,9 +37,10 @@ namespace UltimaXNA.Entities
                 return false;
         }
 
-        internal override void Draw(UltimaXNA.TileEngine.MapCell cell, Vector3 nLocation, Vector3 nOffset)
+        internal override void Draw(UltimaXNA.TileEngine.MapCell cell, Vector3 position, Vector3 positionOffset)
         {
-            cell.Add(new TileEngine.MapObjectItem(_ItemID, nLocation, Movement.DrawFacing, this, Hue));
+            cell.Add(new TileEngine.MapObjectItem(_ItemID, position, Movement.DrawFacing, this, Hue));
+            drawOverheads(cell, position, positionOffset);
         }
 
         public override void Dispose()

@@ -250,51 +250,28 @@ namespace UltimaXNA.Data
         }
 
         /// <summary>
-
         /// Attempts to convert <paramref name="body" /> to a body index relative to a file subset, specified by the return value.
-
         /// </summary>
-
         /// <returns>A value indicating a file subset:
-
         /// <list type="table">
-
         /// <listheader>
-
         /// <term>Return Value</term>
-
         /// <description>File Subset</description>
-
         /// </listheader>
-
         /// <item>
-
         /// <term>1</term>
-
         /// <description>Anim.mul, Anim.idx (Standard)</description>
-
         /// </item>
-
         /// <item>
-
         /// <term>2</term>
-
         /// <description>Anim2.mul, Anim2.idx (LBR)</description>
-
         /// </item>
-
         /// <item>
-
         /// <term>3</term>
-
         /// <description>Anim3.mul, Anim3.idx (AOS)</description>
-
         /// </item>
-
         /// </list>
-
         /// </returns>
-
         public static int Convert(ref int body)
         {
 			// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
@@ -464,7 +441,7 @@ namespace UltimaXNA.Data
             // max number of bodies is about 1000
             try
             {
-                if (m_Cache == null) m_Cache = new FrameXNA[1000][][][];
+                if (m_Cache == null) m_Cache = new FrameXNA[0x1000][][][];
                 if (m_Cache[body] == null)
                     m_Cache[body] = new FrameXNA[35][][];
                 if (m_Cache[body][action] == null)

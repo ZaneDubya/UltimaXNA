@@ -204,9 +204,7 @@ namespace UltimaXNA.Entities
                     cell.Add(mobtile);
                 }
             }
-
-            position.Z += (!IsMounted) ? 20 : 24;
-            cell.Add(new TileEngine.MapObjectText(position, positionOffset, this, Name, NotorietyHue)); 
+            drawOverheads(cell, position, positionOffset);
         }
 
         public override void Dispose()

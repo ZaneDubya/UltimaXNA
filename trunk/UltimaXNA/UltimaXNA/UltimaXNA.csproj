@@ -131,13 +131,14 @@
     <Compile Include="Entities\Corpse.cs" />
     <Compile Include="Entities\DynamicObject.cs" />
     <Compile Include="Entities\Entity.cs" />
-    <Compile Include="Entities\GameObjects.cs" />
+    <Compile Include="Entities\EntitiesCollection.cs" />
     <Compile Include="Entities\ContainerContents.cs" />
     <Compile Include="Entities\Item.cs" />
     <Compile Include="Entities\Mobile.cs" />
     <Compile Include="Entities\MobileAnimation.cs" />
     <Compile Include="Entities\Movement.cs" />
     <Compile Include="Entities\MovementCheck.cs" />
+    <Compile Include="Entities\Overhead.cs" />
     <Compile Include="Entities\PlayerMobile.cs" />
     <Compile Include="Entities\PropertyList.cs" />
     <Compile Include="Entities\Shared.cs" />

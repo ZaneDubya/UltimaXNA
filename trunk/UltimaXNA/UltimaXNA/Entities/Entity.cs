@@ -17,6 +17,7 @@
  ***************************************************************************/
 #region usings
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 #endregion
 
@@ -28,8 +29,10 @@ namespace UltimaXNA.Entities
         public Movement Movement;
         public PropertyList PropertyList = new PropertyList();
 
-        internal bool _hasBeenDrawn = false; // if this is false this object will redraw itself in the tileengine.}
+        private Dictionary<int, Entity> _overheads = new Dictionary<int, Entity>();
+        private int _lastOverheadIndex = 0;
 
+        internal bool _hasBeenDrawn = false; // if this is false this object will redraw itself in the tileengine.}
         internal bool _Disposed = false; // set this to true to have the object deleted.
         public bool IsDisposed { get { return _Disposed; } }
         
@@ -68,18 +71,51 @@ namespace UltimaXNA.Entities
                     _hasBeenDrawn = false;
                 }
             }
+
+            // handle overheads.
+            List<int> removeObjectsList = removeObjectsList = new List<int>();
+            foreach (KeyValuePair<int, Entity> overhead in _overheads)
+            {
+                if (overhead.Value.IsDisposed)
+                {
+                    removeObjectsList.Add(overhead.Key);
+                    continue;
+                }
+                overhead.Value.Update(gameTime);
+            }
+            foreach (int i in removeObjectsList)
+            {
+                _overheads.Remove(i);
+            }
         }
 
-        internal virtual void Draw(TileEngine.MapCell cell, Vector3 nLocation, Vector3 nOffset)
+        internal virtual void Draw(TileEngine.MapCell cell, Vector3 position, Vector3 positionOffset)
         {
-            // do nothing. Base Objects do not draw.
-            // inheriting classes can override this though.
+            // base entities do not draw.
+        }
+
+        internal void drawOverheads(TileEngine.MapCell cell, Vector3 position, Vector3 positionOffset)
+        {
+            // base entities do not draw, but they can have overheads, so we draw those.
+            position.Z += 20;
+            foreach (KeyValuePair<int, Entity> overhead in _overheads)
+            {
+                if (!overhead.Value.IsDisposed)
+                    overhead.Value.Draw(cell, position, positionOffset);
+            }
         }
 
         public virtual void Dispose()
         {
             _Disposed = true;
             Movement.ClearImmediate();
+        }
+
+        public Overhead AddOverhead()
+        {
+            Overhead overhead = new Overhead(this);
+            _overheads.Add(_lastOverheadIndex++, overhead);
+            return overhead;
         }
 
         public override string ToString()

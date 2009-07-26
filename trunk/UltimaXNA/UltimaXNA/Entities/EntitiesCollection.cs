@@ -28,6 +28,7 @@ namespace UltimaXNA.Entities
     {
         int MySerial { get; set; }
         T GetObject<T>(Serial serial, bool create) where T : Entity;
+        Overhead AddOverhead(Serial serial);
         Entity GetPlayerObject();
         void RemoveObject(Serial serial);
         void Reset();
@@ -35,14 +36,12 @@ namespace UltimaXNA.Entities
 
     class EntitiesCollection : GameComponent, IEntitiesService
     {
-        private Dictionary<int, Entity> m_Objects = new Dictionary<int, Entity>();
-
+        private Dictionary<int, Entity> _entities = new Dictionary<int, Entity>();
         public int MySerial { get; set; }
-
         private TileEngine.IWorld _worldService;
         private IGameState _gameStateService;
         private Client.IUltimaClient _gameClientService;
-        GUI.IGUI m_GUIService;
+        private GUI.IGUI _GUIService;
 
         public EntitiesCollection(Game game)
             : base(game)
@@ -55,68 +54,73 @@ namespace UltimaXNA.Entities
             _worldService = (TileEngine.IWorld)Game.Services.GetService(typeof(TileEngine.IWorld));
             _gameStateService = (IGameState)Game.Services.GetService(typeof(IGameState));
             _gameClientService = (Client.IUltimaClient)Game.Services.GetService(typeof(Client.IUltimaClient));
-            m_GUIService = (GUI.IGUI)Game.Services.GetService(typeof(GUI.IGUI));
+            _GUIService = (GUI.IGUI)Game.Services.GetService(typeof(GUI.IGUI));
             base.Initialize();
         }
 
         public override void Update(GameTime gameTime)
         {
-            // We only need to update objects if we are in the world.
             if (_gameStateService.InWorld)
             {
-                List<int> iRemoveObjects = new List<int>();
-                foreach (KeyValuePair<int, Entity> iObjectPair in m_Objects)
+                List<int> removeObjectsList = removeObjectsList = new List<int>();
+                foreach (KeyValuePair<int, Entity> entity in _entities)
                 {
-                    // First check if we need to remove any objects. Objects that are due to be disposed
-                    // are not updated, but are added to a list to be removed after we enumerate m_Objects.
-                    if (iObjectPair.Value.IsDisposed)
+                    if (entity.Value.IsDisposed)
                     {
-                        iRemoveObjects.Add(iObjectPair.Key);
+                        removeObjectsList.Add(entity.Key);
                         continue;
                     }
-
-                    iObjectPair.Value.Update(gameTime);
+                    entity.Value.Update(gameTime);
                 }
-
-                // Run through the list of objects needing to be removed from the collection.
-                foreach (int i in iRemoveObjects)
+                foreach (int i in removeObjectsList)
                 {
-                    m_Objects.Remove(i);
+                    _entities.Remove(i);
                 }
             }
             base.Update(gameTime);
         }
 
+        public Overhead AddOverhead(Serial serial)
+        {
+            Entity ownerEntity = _entities[serial];
+            if (ownerEntity != null)
+            {
+                Overhead overhead = ownerEntity.AddOverhead();
+                return overhead;
+            }
+            return null;
+        }
+        
         public T GetObject<T>(Serial serial, bool create) where T : Entity
         {
-            T iObject;
+            T entity;
             // Check for existence in the collection.
-            if (m_Objects.ContainsKey(serial))
+            if (_entities.ContainsKey(serial))
             {
                 // This object is in the m_Objects collection. If it is being disposed, then we should complete disposal
                 // of the object and then return a new object. If it is not being disposed, return the object in the collection.
-                if (m_Objects[serial].IsDisposed)
+                if (_entities[serial].IsDisposed)
                 {
                     if (create)
                     {
-                        m_Objects.Remove(serial);
-                        iObject = addObject<T>(serial);
-                        return (T)iObject;
+                        _entities.Remove(serial);
+                        entity = addObject<T>(serial);
+                        return (T)entity;
                     }
                     else
                     {
                         return null;
                     }
                 }
-                return (T)m_Objects[serial];
+                return (T)_entities[serial];
             }
 
             // No object with this Serial is in the collection. So we create a new one and return that, and hope that the server
             // will fill us in on the details of this object soon.
             if (create)
             {
-                iObject = addObject<T>(serial);
-                return (T)iObject;
+                entity = addObject<T>(serial);
+                return (T)entity;
             }
             else
             {
@@ -131,7 +135,7 @@ namespace UltimaXNA.Entities
             // If this object is the client, designate it to return events.
             if (o.Serial == MySerial)
                 o.Movement.DesignateClientPlayer();
-            m_Objects.Add(o.Serial, o); // Add the object to the objects collection.
+            _entities.Add(o.Serial, o); // Add the object to the objects collection.
             return (T)o;
         }
 
@@ -140,17 +144,17 @@ namespace UltimaXNA.Entities
             // When Dispose() is called, the object will tidy up and then
             // set m_Dispose = true. Reference this with IsDisposed on the
             // next update cycle.
-            if (m_Objects.ContainsKey(serial))
+            if (_entities.ContainsKey(serial))
             {
-                m_Objects[serial].Dispose();
+                _entities[serial].Dispose();
             }
         }
 
         public Entity GetPlayerObject()
         {
             // This could be cached to save time.
-            if (m_Objects.ContainsKey(MySerial))
-                return m_Objects[MySerial];
+            if (_entities.ContainsKey(MySerial))
+                return _entities[MySerial];
             else
 
                 return null;
@@ -158,7 +162,7 @@ namespace UltimaXNA.Entities
 
         public void Reset()
         {
-            m_Objects.Clear();
+            _entities.Clear();
         }
     }
 }

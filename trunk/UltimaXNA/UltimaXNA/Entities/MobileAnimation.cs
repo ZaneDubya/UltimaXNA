@@ -35,7 +35,6 @@ namespace UltimaXNA.Entities
         private float _animationStep = 0f;
         public bool IsMounted = false;
         public int BodyID;
-
         private int _animationType
         {
             get { return Data.Mobtypes.AnimationType(BodyID); }
