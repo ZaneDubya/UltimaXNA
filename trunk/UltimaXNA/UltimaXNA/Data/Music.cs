@@ -33,6 +33,7 @@ namespace UltimaXNA.Data
 	class Music
 	{
 		private static ILoggingService _log;
+        private static int PlayingId = -1;
 
 		#region Internals
 
@@ -44,7 +45,9 @@ namespace UltimaXNA.Data
 		private static void InternalPlay(string path, bool repeat)
 		{
 			// open resource
-			if (mciSendString ( string.Format ( "open {0} type MPEGVideo alias {1}", path, _internalMusicName ), null, 0, IntPtr.Zero ) == 0) {
+            int error = mciSendString(string.Format("open {0} type MPEGVideo alias {1}", path, _internalMusicName), null, 0, IntPtr.Zero);
+            if (error == 0)
+            {
 				// start playing
 				string playCommand = string.Format ( "play {0} from 0", _internalMusicName );
 				if (repeat)
@@ -62,19 +65,22 @@ namespace UltimaXNA.Data
 
 		private static void InternalStop()
 		{
-			// Stop playing
-			if (mciSendString ( string.Format ( "stop {0}", _internalMusicName ), null, 0, IntPtr.Zero ) == 0)
-			{
-				// close resource
-				if (mciSendString ( string.Format ( "close {0}", _internalMusicName ), null, 0, IntPtr.Zero ) != 0)
-				{
-					_log.Error("Error closing current mp3 file");
-				}
-			}
-			else
-			{
-				_log.Error("Error stopping current mp3 file");
-			}
+            if (PlayingId != -1)
+            {
+                // Stop playing
+                if (mciSendString(string.Format("stop {0}", _internalMusicName), null, 0, IntPtr.Zero) == 0)
+                {
+                    // close resource
+                    if (mciSendString(string.Format("close {0}", _internalMusicName), null, 0, IntPtr.Zero) != 0)
+                    {
+                        _log.Error("Error closing current mp3 file");
+                    }
+                }
+                else
+                {
+                    _log.Error("Error stopping current mp3 file");
+                }
+            }
 		}
 
 		public static int InternalVolume
