@@ -45,9 +45,11 @@ namespace UltimaXNA.Data
 		private static void InternalPlay(string path, bool repeat)
 		{
 			// open resource
-            int error = mciSendString(string.Format("open {0} type MPEGVideo alias {1}", path, _internalMusicName), null, 0, IntPtr.Zero);
+            string mciCommand = string.Format("open \"{0}\" type MPEGVideo alias {1}", path, _internalMusicName);
+            int error = mciSendString(mciCommand, null, 0, IntPtr.Zero);
             if (error == 0)
             {
+                PlayingId = 1;
 				// start playing
 				string playCommand = string.Format ( "play {0} from 0", _internalMusicName );
 				if (repeat)
@@ -70,6 +72,7 @@ namespace UltimaXNA.Data
                 // Stop playing
                 if (mciSendString(string.Format("stop {0}", _internalMusicName), null, 0, IntPtr.Zero) == 0)
                 {
+                    PlayingId = -1;
                     // close resource
                     if (mciSendString(string.Format("close {0}", _internalMusicName), null, 0, IntPtr.Zero) != 0)
                     {
