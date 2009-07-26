@@ -58,7 +58,29 @@ namespace UltimaXNA.TileEngine
         private IWorld _worldService;
         private IGameState _gameStateService;
 
-        
+	// lightning variables
+	private int _personalLightning;
+	private int _overallLightning;
+
+	public int PersonalLightning
+	{
+		get { return _personalLightning; }
+		set
+		{
+			_personalLightning = value;
+			recalculateLightning ();
+		}
+	}
+
+	public int OverallLightning
+	{
+		get { return _overallLightning; }
+		set
+		{
+			_overallLightning = value;
+			recalculateLightning ();
+		}
+	}
 
         public TileEngine(Game game)
             : base(game)
@@ -82,6 +104,30 @@ namespace UltimaXNA.TileEngine
         {
             _spriteBatch.SetLightDirection(nDirection);
         }
+
+		private void recalculateLightning()
+		{
+			float light = Math.Min(30 - OverallLightning + PersonalLightning, 30f);
+			light = Math.Max ( light, 0 );
+			light /= 30; // bring it between 0-1
+
+			// -0.3 corresponds pretty well to the darkest possible light in the original client
+			// 0.5 is quite okay for the brightest light.
+			// so we'll just interpolate between those two values
+
+			light *= 0.8f;
+			light -= 0.3f;
+
+			// i'd use a fixed lightning direction for now - maybe enable this effect with a custom packet?
+			Vector3 lightDirection = new Vector3 ( 0f, (float)-Math.Cos ( 0.7 ), (float)Math.Sin ( 0.7 ) );
+
+			_spriteBatch.SetLightDirection ( lightDirection );
+
+			// again some guesstimated values, but to me it looks okay this way :) 
+			_spriteBatch.SetAmbientLightIntensity ( light * 0.8f );
+			_spriteBatch.SetDirectionalLightIntensity ( light );
+		}
+
 
         public override void Update(GameTime gameTime)
         {

@@ -186,6 +186,14 @@ namespace UltimaXNA.GUI
 
                 ((PictureBox)_MyForm["picEquip0"]).Texture = Data.Gumps.GetGumpXNA(0x000C, mMobileObject.Hue, true);
 
+				bool hasOuterTorso = mMobileObject.equipment[(int)EquipLayer.OuterTorso] != null && mMobileObject.equipment[(int)EquipLayer.OuterTorso].AnimationDisplayID != 0;
+				// if there is something we need to make sure there is no gump texture left for the items underneath
+				if (hasOuterTorso)
+				{
+					((PictureBox)_MyForm["picEquip13"]).Texture = null;
+					((PictureBox)_MyForm["picEquip17"]).Texture = null;
+				}
+
                 // Buttons index starting at 1.
                 for (int i = 1; i <= m_MaxButtons; i++)
                 {
@@ -195,18 +203,23 @@ namespace UltimaXNA.GUI
                     if (_MyForm[iBtnName] != null)
                     {
                         ((CustomButton)_MyForm[iBtnName]).Texture = GUIHelper.ItemIcon(mMobileObject.equipment[i]);
-                        if (mMobileObject.equipment[i] == null)
-                        {
-                            ((PictureBox)_MyForm[iPicName]).Texture = null;
-                            ((CustomButton)_MyForm[iBtnName]).Disabled = false;
-                        }
-                        else
-                        {
-                            ((PictureBox)_MyForm[iPicName]).Texture = Data.Gumps.GetGumpXNA(
-                                mMobileObject.equipment[i].AnimationDisplayID + 50000, 
-                                mMobileObject.equipment[i].Hue, true);
-                            ((CustomButton)_MyForm[iBtnName]).Disabled = false;
-                        }
+						if (mMobileObject.equipment[i] == null)
+						{
+							((PictureBox)_MyForm[iPicName]).Texture = null;
+							((CustomButton)_MyForm[iBtnName]).Disabled = false;
+						}
+						else
+						{
+							// if we have something on the outertorso (e.g. a robe) the two inner torso layers are not drawn
+							if (hasOuterTorso && (i == (int)EquipLayer.MiddleTorso || i == (int)EquipLayer.InnerTorso))
+							{
+								continue;
+							}
+							((PictureBox)_MyForm[iPicName]).Texture = Data.Gumps.GetGumpXNA (
+								mMobileObject.equipment[i].AnimationDisplayID + 50000,
+								mMobileObject.equipment[i].Hue, true );
+							((CustomButton)_MyForm[iBtnName]).Disabled = false;
+						}
                     }
                     else if (_MyForm[iPicName] != null)
                     {

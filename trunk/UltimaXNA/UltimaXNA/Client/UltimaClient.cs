@@ -38,6 +38,7 @@ namespace UltimaXNA.Client
 
         private UltimaXNA.Network.ClientNetwork _ClientNetwork;
         private UltimaXNA.GUI.IGUI _GUI;
+		private UltimaXNA.TileEngine.ITileEngine _TileEngine;
         private IEntitiesService _Entities;
         private UltimaXNA.IGameState _GameState;
 
@@ -61,6 +62,7 @@ namespace UltimaXNA.Client
             _GUI = Game.Services.GetService(typeof(GUI.IGUI)) as GUI.IGUI;
             _Entities = Game.Services.GetService(typeof(IEntitiesService)) as IEntitiesService;
             _GameState = Game.Services.GetService(typeof(IGameState)) as IGameState;
+			_TileEngine = (TileEngine.ITileEngine)Game.Services.GetService ( typeof ( TileEngine.ITileEngine ) );
 
             _ClientNetwork = new ClientNetwork();
             registerPackets();
@@ -670,8 +672,10 @@ namespace UltimaXNA.Client
             // 0x09 - OSI night
             // 0x1F - Black
             // Max normal val = 0x1F
-            // !!! Unhandled
-            announce_UnhandledPacket(packet);
+
+			OverallLightLevelPacket p = (OverallLightLevelPacket)packet;
+			// Console.WriteLine ( "OverallLight: {0}", p.LightLevel );
+			_TileEngine.OverallLightning = p.LightLevel;
         }
 
         private void receive_PersonalLightLevel(IRecvPacket packet)
@@ -682,8 +686,10 @@ namespace UltimaXNA.Client
             // 0x09 - OSI night
             // 0x1F - Black
             // Max normal val = 0x1F
-            // !!! Unhandled
-            announce_UnhandledPacket(packet);
+
+			PersonalLightLevelPacket p = (PersonalLightLevelPacket)packet;
+			// Console.WriteLine ( "PersonalLight: {0}", p.LightLevel );
+			_TileEngine.PersonalLightning = p.LightLevel;
         }
 
         private void receive_PlayerLocaleAndBody(IRecvPacket packet)
@@ -709,7 +715,9 @@ namespace UltimaXNA.Client
 
         private void receive_PlayMusic(IRecvPacket packet)
         {
-            announce_UnhandledPacket(packet);
+			PlayMusicPacket p = (PlayMusicPacket)packet;
+			// System.Console.WriteLine ( "Play music, id={0}", p.MusicID );
+			Data.Music.PlayMusic ( p.MusicID );
         }
 
         private void receive_PlaySoundEffect(IRecvPacket packet)

@@ -106,32 +106,36 @@ namespace UltimaXNA.Entities
             }
         }
 
-        // Issue 14 - Wrong layer draw order - http://code.google.com/p/ultimaxna/issues/detail?id=14 - Smjert
-        private int[] m_DrawLayers = new int[21]
+        private static int[] DrawLayersNorth = new int[] { (int)EquipLayer.Mount, (int)EquipLayer.Body, (int)EquipLayer.Shirt, (int)EquipLayer.Pants, (int)EquipLayer.Shoes, (int)EquipLayer.InnerLegs, (int)EquipLayer.InnerTorso, (int)EquipLayer.Ring, (int)EquipLayer.Talisman, (int)EquipLayer.Bracelet, (int)EquipLayer.Unused_xF, (int)EquipLayer.Arms, (int)EquipLayer.Gloves, (int)EquipLayer.OuterLegs, (int)EquipLayer.MiddleTorso, (int)EquipLayer.Neck, (int)EquipLayer.Hair, (int)EquipLayer.OuterTorso, (int)EquipLayer.Waist, (int)EquipLayer.FacialHair, (int)EquipLayer.Earrings, (int)EquipLayer.Helm, (int)EquipLayer.OneHanded, (int)EquipLayer.TwoHanded, (int)EquipLayer.Cloak };
+		private static int[] DrawLayersRight = new int[] { (int)EquipLayer.Mount, (int)EquipLayer.Body, (int)EquipLayer.Shirt, (int)EquipLayer.Pants, (int)EquipLayer.Shoes, (int)EquipLayer.InnerLegs, (int)EquipLayer.InnerTorso, (int)EquipLayer.Ring, (int)EquipLayer.Talisman, (int)EquipLayer.Bracelet, (int)EquipLayer.Unused_xF, (int)EquipLayer.Arms, (int)EquipLayer.Gloves, (int)EquipLayer.OuterLegs, (int)EquipLayer.MiddleTorso, (int)EquipLayer.Neck, (int)EquipLayer.Hair, (int)EquipLayer.OuterTorso, (int)EquipLayer.Waist, (int)EquipLayer.FacialHair, (int)EquipLayer.Earrings, (int)EquipLayer.Helm, (int)EquipLayer.OneHanded, (int)EquipLayer.Cloak, (int)EquipLayer.TwoHanded };
+		private static int[] DrawLayersEast = new int[] { (int)EquipLayer.Mount, (int)EquipLayer.Body, (int)EquipLayer.Shirt, (int)EquipLayer.Pants, (int)EquipLayer.Shoes, (int)EquipLayer.InnerLegs, (int)EquipLayer.InnerTorso, (int)EquipLayer.Ring, (int)EquipLayer.Talisman, (int)EquipLayer.Bracelet, (int)EquipLayer.Unused_xF, (int)EquipLayer.Arms, (int)EquipLayer.Gloves, (int)EquipLayer.OuterLegs, (int)EquipLayer.MiddleTorso, (int)EquipLayer.Neck, (int)EquipLayer.Hair, (int)EquipLayer.OuterTorso, (int)EquipLayer.Waist, (int)EquipLayer.FacialHair, (int)EquipLayer.Earrings, (int)EquipLayer.Helm, (int)EquipLayer.OneHanded, (int)EquipLayer.Cloak, (int)EquipLayer.TwoHanded };
+		private static int[] DrawLayersDown = new int[] { (int)EquipLayer.Mount, (int)EquipLayer.Body, (int)EquipLayer.Cloak, (int)EquipLayer.Shirt, (int)EquipLayer.Pants, (int)EquipLayer.Shoes, (int)EquipLayer.InnerLegs, (int)EquipLayer.InnerTorso, (int)EquipLayer.Ring, (int)EquipLayer.Talisman, (int)EquipLayer.Bracelet, (int)EquipLayer.Unused_xF, (int)EquipLayer.Arms, (int)EquipLayer.Gloves, (int)EquipLayer.OuterLegs, (int)EquipLayer.MiddleTorso, (int)EquipLayer.Neck, (int)EquipLayer.Hair, (int)EquipLayer.OuterTorso, (int)EquipLayer.Waist, (int)EquipLayer.FacialHair, (int)EquipLayer.Earrings, (int)EquipLayer.Helm, (int)EquipLayer.OneHanded, (int)EquipLayer.TwoHanded };
+		private static int[] DrawLayersSouth = new int[] { (int)EquipLayer.Mount, (int)EquipLayer.Body, (int)EquipLayer.Shirt, (int)EquipLayer.Pants, (int)EquipLayer.Shoes, (int)EquipLayer.InnerLegs, (int)EquipLayer.InnerTorso, (int)EquipLayer.Ring, (int)EquipLayer.Talisman, (int)EquipLayer.Bracelet, (int)EquipLayer.Unused_xF, (int)EquipLayer.Arms, (int)EquipLayer.Gloves, (int)EquipLayer.OuterLegs, (int)EquipLayer.MiddleTorso, (int)EquipLayer.Neck, (int)EquipLayer.Hair, (int)EquipLayer.OuterTorso, (int)EquipLayer.Waist, (int)EquipLayer.FacialHair, (int)EquipLayer.Earrings, (int)EquipLayer.Helm, (int)EquipLayer.OneHanded, (int)EquipLayer.Cloak, (int)EquipLayer.TwoHanded };
+		private static int[] DrawLayersLeft = new int[] { (int)EquipLayer.Mount, (int)EquipLayer.Body, (int)EquipLayer.Shirt, (int)EquipLayer.Pants, (int)EquipLayer.Shoes, (int)EquipLayer.InnerLegs, (int)EquipLayer.InnerTorso, (int)EquipLayer.Ring, (int)EquipLayer.Talisman, (int)EquipLayer.Bracelet, (int)EquipLayer.Unused_xF, (int)EquipLayer.Arms, (int)EquipLayer.Gloves, (int)EquipLayer.OuterLegs, (int)EquipLayer.MiddleTorso, (int)EquipLayer.Neck, (int)EquipLayer.Hair, (int)EquipLayer.OuterTorso, (int)EquipLayer.Waist, (int)EquipLayer.FacialHair, (int)EquipLayer.Earrings, (int)EquipLayer.Helm, (int)EquipLayer.OneHanded, (int)EquipLayer.Cloak, (int)EquipLayer.TwoHanded };
+		private static int[] DrawLayersWest = new int[] { (int)EquipLayer.Mount, (int)EquipLayer.Body, (int)EquipLayer.Shirt, (int)EquipLayer.Pants, (int)EquipLayer.Shoes, (int)EquipLayer.InnerLegs, (int)EquipLayer.InnerTorso, (int)EquipLayer.Ring, (int)EquipLayer.Talisman, (int)EquipLayer.Bracelet, (int)EquipLayer.Unused_xF, (int)EquipLayer.Arms, (int)EquipLayer.Gloves, (int)EquipLayer.OuterLegs, (int)EquipLayer.MiddleTorso, (int)EquipLayer.Neck, (int)EquipLayer.Hair, (int)EquipLayer.OuterTorso, (int)EquipLayer.Waist, (int)EquipLayer.FacialHair, (int)EquipLayer.Earrings, (int)EquipLayer.Helm, (int)EquipLayer.OneHanded, (int)EquipLayer.TwoHanded, (int)EquipLayer.Cloak };
+		private static int[] DrawLayersUp = new int[] { (int)EquipLayer.Mount, (int)EquipLayer.Body, (int)EquipLayer.Shirt, (int)EquipLayer.Pants, (int)EquipLayer.Shoes, (int)EquipLayer.InnerLegs, (int)EquipLayer.InnerTorso, (int)EquipLayer.Ring, (int)EquipLayer.Talisman, (int)EquipLayer.Bracelet, (int)EquipLayer.Unused_xF, (int)EquipLayer.Arms, (int)EquipLayer.Gloves, (int)EquipLayer.OuterLegs, (int)EquipLayer.MiddleTorso, (int)EquipLayer.Neck, (int)EquipLayer.Hair, (int)EquipLayer.OuterTorso, (int)EquipLayer.Waist, (int)EquipLayer.FacialHair, (int)EquipLayer.Earrings, (int)EquipLayer.Helm, (int)EquipLayer.OneHanded, (int)EquipLayer.TwoHanded, (int)EquipLayer.Cloak };
+
+		private int[] m_DrawLayers
 		{
-			(int)EquipLayer.Mount,
-            (int)EquipLayer.Body,
-			(int)EquipLayer.OneHanded,
-            (int)EquipLayer.Shoes,
-            (int)EquipLayer.Pants,
-            (int)EquipLayer.Shirt,
-            (int)EquipLayer.Gloves,
-            (int)EquipLayer.Neck,
-			(int)EquipLayer.Hair,
-            (int)EquipLayer.Waist,
-            (int)EquipLayer.Arms,
-            (int)EquipLayer.InnerTorso,
-            (int)EquipLayer.FacialHair,
-            (int)EquipLayer.MiddleTorso,
-            (int)EquipLayer.OuterLegs,
-            (int)EquipLayer.OuterLegs,
-            (int)EquipLayer.InnerLegs,
-            (int)EquipLayer.OuterTorso,
-            
-            (int)EquipLayer.Cloak,
-			(int)EquipLayer.Helm,
-            (int)EquipLayer.TwoHanded,
-		};
+			get
+			{
+				int direction = Movement.DrawFacing;
+				switch (direction)
+				{
+					case 0x00: return DrawLayersNorth;
+					case 0x01: return DrawLayersRight;
+					case 0x02: return DrawLayersEast;
+					case 0x03: return DrawLayersDown;
+					case 0x04: return DrawLayersSouth;
+					case 0x05: return DrawLayersLeft;
+					case 0x06: return DrawLayersWest;
+					case 0x07: return DrawLayersUp;
+					default:
+						// TODO: Log an Error
+						return DrawLayersNorth;
+				}
+			}
+		}
 
         public Mobile(Serial serial)
             : base(serial)
@@ -172,9 +176,18 @@ namespace UltimaXNA.Entities
             int direction = Movement.DrawFacing;
             int action = animation.GetAction();
             MapObjectMobile mobtile = null;
-            for (int i = 0; i < m_DrawLayers.Length; i++)
+            int[] drawLayers = m_DrawLayers;
+			bool hasOuterTorso = equipment[(int)EquipLayer.OuterTorso] != null && equipment[(int)EquipLayer.OuterTorso].AnimationDisplayID != 0;
+            for (int i = 0; i < drawLayers.Length; i++)
             {
-                if (m_DrawLayers[i] == (int)EquipLayer.Body)
+				// when wearing something on the outer torso the other torso stuff is not drawn
+				if (hasOuterTorso &&
+					(drawLayers[i] == (int)EquipLayer.InnerTorso || drawLayers[i] == (int)EquipLayer.MiddleTorso))
+				{
+					continue;
+				}
+
+                if (drawLayers[i] == (int)EquipLayer.Body)
                 {
                     mobtile = new MapObjectMobile(
                         BodyID, position, positionOffset, 
@@ -182,12 +195,12 @@ namespace UltimaXNA.Entities
                         this, i, Hue);
                     cell.Add(mobtile);
                 }
-                else if (equipment[m_DrawLayers[i]] != null && equipment[m_DrawLayers[i]].AnimationDisplayID != 0)
+                else if (equipment[drawLayers[i]] != null && equipment[drawLayers[i]].AnimationDisplayID != 0)
                 {
                     mobtile = new TileEngine.MapObjectMobile(
-                            equipment[m_DrawLayers[i]].AnimationDisplayID, position, positionOffset,
+                            equipment[drawLayers[i]].AnimationDisplayID, position, positionOffset,
                             direction, action, animation.AnimationFrame,
-                            this, i, equipment[m_DrawLayers[i]].Hue);
+                            this, i, equipment[drawLayers[i]].Hue);
                     cell.Add(mobtile);
                 }
             }

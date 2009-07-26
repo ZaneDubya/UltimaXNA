@@ -126,6 +126,16 @@ namespace UltimaXNA.TileEngine
             m_Effect.Parameters["lightDirection"].SetValue(nDirection);
         }
 
+		public void SetAmbientLightIntensity(float intensity)
+		{
+				m_Effect.Parameters["ambientLightIntensity"].SetValue ( intensity );
+		}
+
+		public void SetDirectionalLightIntensity(float intensity)
+		{
+				m_Effect.Parameters["lightIntensity"].SetValue ( intensity );
+		}
+
         public void Flush()
         {
             this.Game.GraphicsDevice.VertexDeclaration = new VertexDeclaration(this.Game.GraphicsDevice, VertexPositionNormalTextureHue.VertexElements);
