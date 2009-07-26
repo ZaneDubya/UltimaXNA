@@ -38,19 +38,20 @@ namespace UltimaXNA.Entities
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            if (_corpseFrame != 0.999f)
-            {
+            // if (_corpseFrame != 0.999f)
+            // {
                 _hasBeenDrawn = false;
                 _corpseFrame += ((float)gameTime.ElapsedGameTime.Milliseconds / 500f);
                 if (_corpseFrame >= 1f)
                     _corpseFrame = 0.999f;
-            }
+            // }
         }
 
-        internal override void Draw(UltimaXNA.TileEngine.MapCell cell, Microsoft.Xna.Framework.Vector3 nLocation, Microsoft.Xna.Framework.Vector3 nOffset)
+        internal override void Draw(UltimaXNA.TileEngine.MapCell cell, Vector3 position, Vector3 positionOffset)
         {
             Movement.ClearImmediate();
-            cell.Add(new TileEngine.MapObjectCorpse(nLocation, Movement.DrawFacing, this, Hue, _corpseBody, _corpseFrame));
+            cell.Add(new TileEngine.MapObjectCorpse(position, Movement.DrawFacing, this, Hue, _corpseBody, _corpseFrame));
+            drawOverheads(cell, position, positionOffset);
         }
 
         public void LoadCorpseClothing(List<Network.Packets.Server.CorpseClothingItemWithLayer> items)

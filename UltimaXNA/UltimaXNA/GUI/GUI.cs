@@ -105,7 +105,7 @@ namespace UltimaXNA.GUI
                                         cursorTextureID = 8305;
                                         break;
                                     case Direction.Up:
-                                        cursorCenter = new Vector2(2, 8);
+                                        cursorCenter = new Vector2(4, 2);
                                         cursorTextureID = 8298;
                                         break;
                                     default:
@@ -242,18 +242,14 @@ namespace UltimaXNA.GUI
 
             // First update our collection of windows.
             mUpdateWindows();
-
             if (_DrawForms)
             {
-                lock (_FormCollection)
-                {
-                    //Update the form collection
-                    _FormCollection.Update(gameTime);
-                    if (_FormCollection["msgbox"] != null)
-                        _FormCollection["msgbox"].Focus();
-                    //Render the form collection (required before drawing)
-                    _FormCollection.Render();
-                }
+                //Update the form collection
+                _FormCollection.Update(gameTime);
+                if (_FormCollection["msgbox"] != null)
+                    _FormCollection["msgbox"].Focus();
+                //Render the form collection (required before drawing)
+                _FormCollection.Render();
             }
         }
 
@@ -262,10 +258,7 @@ namespace UltimaXNA.GUI
             //Draw the form collection
             if (_DrawForms)
             {
-                lock (_FormCollection)
-                {
-                    _FormCollection.Draw();
-                }
+                _FormCollection.Draw();
             }
 
             // Draw debug message

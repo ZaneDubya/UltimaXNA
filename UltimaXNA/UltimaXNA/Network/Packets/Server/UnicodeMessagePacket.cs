@@ -28,7 +28,7 @@ namespace UltimaXNA.Network.Packets.Server
     {
         readonly Serial _serial;
         readonly short _model;
-        readonly byte _msgType;
+        readonly MessageType _msgType;
         readonly short _hue;
         readonly short _font;
         readonly int _language;
@@ -44,8 +44,8 @@ namespace UltimaXNA.Network.Packets.Server
         {
             get { return _model; } 
         }
-        
-        public byte MsgType 
+
+        public MessageType MsgType 
         {
             get { return _msgType; }
         }
@@ -80,7 +80,7 @@ namespace UltimaXNA.Network.Packets.Server
         {
             _serial = reader.ReadInt32();
             _model = reader.ReadInt16();
-            _msgType = reader.ReadByte();
+            _msgType = (MessageType)reader.ReadByte();
             _hue = reader.ReadInt16();
             _font = reader.ReadInt16();
             _language = reader.ReadInt32();

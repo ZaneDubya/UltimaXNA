@@ -397,53 +397,6 @@ namespace UltimaXNA.TileEngine
                                 if (isMouseOverObject(_vertexBuffer[0].Position, _vertexBuffer[3].Position))
                                     iMouseOverList.AddItem(new MouseOverItem(iFrames[iFrame].Texture, _vertexBuffer[0].Position, mapObject));
                         }
-                        else if (mapObject is MapObjectItem)
-                        {
-                            MapObjectItem iObject = (MapObjectItem)mapObject;
-                            if (iObject.Z >= MaxRoofAltitude)
-                                continue;
-
-                            Data.Art.GetStaticDimensions(iObject.ItemID, out width, out height);
-                            texture = Data.Art.GetStaticTexture(iObject.ItemID, this.GraphicsDevice);
-                            drawX = (width >> 1) - 22;
-                            drawY = (iObject.Z << 2) + height - 44;
-
-                            _vertexBuffer[0].Position = drawPosition;
-                            _vertexBuffer[0].Position.X -= drawX;
-                            _vertexBuffer[0].Position.Y -= drawY;
-                            _vertexBuffer[0].Position.Z = drawZ;
-
-                            _vertexBuffer[1].Position = drawPosition;
-                            _vertexBuffer[1].Position.X += width - drawX;
-                            _vertexBuffer[1].Position.Y -= drawY;
-                            _vertexBuffer[1].Position.Z = drawZ;
-
-                            _vertexBuffer[2].Position = drawPosition;
-                            _vertexBuffer[2].Position.X -= drawX;
-                            _vertexBuffer[2].Position.Y += height - drawY;
-                            _vertexBuffer[2].Position.Z = drawZ;
-
-                            _vertexBuffer[3].Position = drawPosition;
-                            _vertexBuffer[3].Position.X += width - drawX;
-                            _vertexBuffer[3].Position.Y += height - drawY;
-                            _vertexBuffer[3].Position.Z = drawZ;
-
-                            // hueVector: x is the hue, y sets whether or not to use it.
-                            // y = 1, total hue.
-                            // y = 2, partial hue.
-                            Vector2 hueVector = getHueVector(iObject.Hue);
-                            _vertexBuffer[0].Hue = hueVector;
-                            _vertexBuffer[1].Hue = hueVector;
-                            _vertexBuffer[2].Hue = hueVector;
-                            _vertexBuffer[3].Hue = hueVector;
-
-                            _spriteBatch.Draw(texture, _vertexBuffer);
-
-                            if ((PickType & PickTypes.PickStatics) == PickTypes.PickStatics)
-                                if (isMouseOverObject(_vertexBuffer[0].Position, _vertexBuffer[3].Position))
-                                    iMouseOverList.AddItem(new MouseOverItem(texture, _vertexBuffer[0].Position, mapObject));
-                        
-                        }
                         else if (mapObject is MapObjectCorpse)
                         {
                             MapObjectCorpse iObject = (MapObjectCorpse)mapObject;
@@ -499,6 +452,53 @@ namespace UltimaXNA.TileEngine
                             if ((PickType & PickTypes.PickStatics) == PickTypes.PickStatics)
                                 if (isMouseOverObject(_vertexBuffer[0].Position, _vertexBuffer[3].Position))
                                     iMouseOverList.AddItem(new MouseOverItem(texture, _vertexBuffer[0].Position, mapObject));
+                        }
+                        else if (mapObject is MapObjectItem)
+                        {
+                            MapObjectItem iObject = (MapObjectItem)mapObject;
+                            if (iObject.Z >= MaxRoofAltitude)
+                                continue;
+
+                            Data.Art.GetStaticDimensions(iObject.ItemID, out width, out height);
+                            texture = Data.Art.GetStaticTexture(iObject.ItemID, this.GraphicsDevice);
+                            drawX = (width >> 1) - 22;
+                            drawY = (iObject.Z << 2) + height - 44;
+
+                            _vertexBuffer[0].Position = drawPosition;
+                            _vertexBuffer[0].Position.X -= drawX;
+                            _vertexBuffer[0].Position.Y -= drawY;
+                            _vertexBuffer[0].Position.Z = drawZ;
+
+                            _vertexBuffer[1].Position = drawPosition;
+                            _vertexBuffer[1].Position.X += width - drawX;
+                            _vertexBuffer[1].Position.Y -= drawY;
+                            _vertexBuffer[1].Position.Z = drawZ;
+
+                            _vertexBuffer[2].Position = drawPosition;
+                            _vertexBuffer[2].Position.X -= drawX;
+                            _vertexBuffer[2].Position.Y += height - drawY;
+                            _vertexBuffer[2].Position.Z = drawZ;
+
+                            _vertexBuffer[3].Position = drawPosition;
+                            _vertexBuffer[3].Position.X += width - drawX;
+                            _vertexBuffer[3].Position.Y += height - drawY;
+                            _vertexBuffer[3].Position.Z = drawZ;
+
+                            // hueVector: x is the hue, y sets whether or not to use it.
+                            // y = 1, total hue.
+                            // y = 2, partial hue.
+                            Vector2 hueVector = getHueVector(iObject.Hue);
+                            _vertexBuffer[0].Hue = hueVector;
+                            _vertexBuffer[1].Hue = hueVector;
+                            _vertexBuffer[2].Hue = hueVector;
+                            _vertexBuffer[3].Hue = hueVector;
+
+                            _spriteBatch.Draw(texture, _vertexBuffer);
+
+                            if ((PickType & PickTypes.PickStatics) == PickTypes.PickStatics)
+                                if (isMouseOverObject(_vertexBuffer[0].Position, _vertexBuffer[3].Position))
+                                    iMouseOverList.AddItem(new MouseOverItem(texture, _vertexBuffer[0].Position, mapObject));
+                        
                         }
                         else if (mapObject is MapObjectText)
                         {

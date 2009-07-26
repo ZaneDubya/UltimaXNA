@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Microsoft.Xna.Framework;
+using UltimaXNA.Data;
 #endregion
 
 namespace UltimaXNA
@@ -240,6 +241,56 @@ namespace UltimaXNA
             }
         }
         #endregion
+
+        public static string WrapASCIIText(int fontNumber, string text, float maxLineWidth)
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                text = string.Empty;
+            }
+
+            string[] words = text.Split(' ');
+
+            StringBuilder sb = new StringBuilder();
+
+            float lineWidth = 0f;
+            float spaceWidth = ASCIIFont.GetFixed(fontNumber).GetWidth(" ");
+
+            foreach (string word in words)
+            {
+                Vector2 size = new Vector2(ASCIIFont.GetFixed(fontNumber).GetWidth(word), ASCIIFont.GetFixed(fontNumber).Height);
+
+                if (lineWidth + size.X < maxLineWidth)
+                {
+                    sb.Append(word + " ");
+                    lineWidth += size.X + spaceWidth;
+                }
+                else
+                {
+                    sb.Append("\n" + word + " ");
+                    lineWidth = size.X + spaceWidth;
+                }
+            }
+
+            return sb.ToString();
+        }
+
+        public static string ClipASCIIText(int fontNumber, string text, int width, int pixelBuffer)
+        {
+            int charIndex = text.Length;
+            string textToWrite = text.Substring(0, charIndex);
+
+            Vector2 fontDimensions = new Vector2(ASCIIFont.GetFixed(fontNumber).GetWidth(textToWrite), ASCIIFont.GetFixed(fontNumber).Height);
+
+            while (fontDimensions.X > width - (pixelBuffer * 2))
+            {
+                charIndex--;
+                textToWrite = text.Substring(0, charIndex);
+                fontDimensions = new Vector2(ASCIIFont.GetFixed(fontNumber).GetWidth(textToWrite), ASCIIFont.GetFixed(fontNumber).Height);
+            }
+
+            return textToWrite;
+        }
 
         public static bool InRange(Point from, Point to, int range)
         {

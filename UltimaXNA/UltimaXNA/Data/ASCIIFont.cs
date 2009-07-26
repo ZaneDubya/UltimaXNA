@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -50,15 +51,17 @@ namespace UltimaXNA.Data
             height = Height;
             int maxwidth = 0;
 
+            text = text.Replace(Environment.NewLine, "\n");
+
             for (int i = 0; i < text.Length; ++i)
             {
-                if ((i < text.Length - 1) && (text.Substring(i, 2) == Environment.NewLine))
+                char jjj = text[i];
+                if (text.Substring(i, 1) == "\n")
                 {
                     if (width > maxwidth)
                         maxwidth = width;
                     height += Height;
                     width = 0;
-                    i++;
                 }
                 else
                 {
@@ -83,6 +86,8 @@ namespace UltimaXNA.Data
 
     public static class ASCIIText
     {
+
+
         private static ASCIIFont[] _fonts = new ASCIIFont[10];
         private static bool _initialized;
         private static GraphicsDevice _graphicsDevice;
@@ -178,6 +183,7 @@ namespace UltimaXNA.Data
 
             int dx = 0;
             int dy = 0;
+            text = text.Replace(Environment.NewLine, "\n");
 
             unsafe
             {
@@ -185,11 +191,10 @@ namespace UltimaXNA.Data
                 {
                     for (int i = 0; i < text.Length; ++i)
                     {
-                        if ((i < text.Length - 1) && (text.Substring(i, 2) == Environment.NewLine))
+                        if (text.Substring(i, 1) == "\n")
                         {
                             dx = 0;
                             dy += font.Height;
-                            i++;
                         }
                         else
                         {
@@ -209,7 +214,6 @@ namespace UltimaXNA.Data
                                         *dest++ = *src++;
                                 }
                             }
-                            
                             dx += charTexture.Width;
                         }
                     }

@@ -239,45 +239,7 @@ namespace UltimaXNA.Client
             MessageLocalizedPacket p = (MessageLocalizedPacket)packet;
 
             string iCliLoc = constructCliLoc(Data.StringList.Table[p.CliLocNumber].ToString(), p.Arguements);
-            switch (p.MessageType)
-            {
-                case MessageType.Regular:
-                    GUI.GUIHelper.Chat_AddLine(string.Format("{0} <{1}>", iCliLoc, p.Hue));
-                    break;
-                case MessageType.System:
-                    GUI.GUIHelper.Chat_AddLine(string.Format("<SYSTEM> {0} <{1}>", iCliLoc, p.Hue));
-                    break;
-                case MessageType.Emote:
-                    GUI.GUIHelper.Chat_AddLine(string.Format("<EMOTE> {0} <{1}>", iCliLoc, p.Hue));
-                    break;
-                case MessageType.Label:
-                    GUI.GUIHelper.Chat_AddLine(string.Format("<LABEL> {0} <{1}>", iCliLoc, p.Hue));
-                    break;
-                case MessageType.Focus: // on player?
-                    GUI.GUIHelper.Chat_AddLine(string.Format("<FOCUS> {0} <{1}>", iCliLoc, p.Hue));
-                    break;
-                case MessageType.Whisper:
-                    GUI.GUIHelper.Chat_AddLine(string.Format("<WHISPER> {0} <{1}>", iCliLoc, p.Hue));
-                    break;
-                case MessageType.Yell:
-                    GUI.GUIHelper.Chat_AddLine(string.Format("<YELL> {0} <{1}>", iCliLoc, p.Hue));
-                    break;
-                case MessageType.Spell:
-                    GUI.GUIHelper.Chat_AddLine(string.Format("<SPELL> {0} <{1}>", iCliLoc, p.Hue));
-                    break;
-                case MessageType.Guild:
-                    GUI.GUIHelper.Chat_AddLine(string.Format("<GUILD> {0} <{1}>", iCliLoc, p.Hue));
-                    break;
-                case MessageType.Alliance:
-                    GUI.GUIHelper.Chat_AddLine(string.Format("<ALLIANCE> {0} <{1}>", iCliLoc, p.Hue));
-                    break;
-                case MessageType.Command:
-                    GUI.GUIHelper.Chat_AddLine(string.Format("<COMMAND> {0} <{1}>", iCliLoc, p.Hue));
-                    break;
-                default:
-                    GUI.GUIHelper.Chat_AddLine(string.Format("{0} <{1}>", iCliLoc, p.Hue));
-                    break;
-            }
+            receive_TextMessage(p.MessageType, iCliLoc, p.Hue, p.Font, p.Serial, p.SpeakerName);
         }
 
         private void receive_ChangeCombatant(IRecvPacket packet)
@@ -825,28 +787,7 @@ namespace UltimaXNA.Client
         private void receive_AsciiMessage(IRecvPacket packet)
         {
             AsciiMessagePacket p = (AsciiMessagePacket)packet;
-
-            switch (p.Type)
-            {
-                case 0x00: // 0x00 - Normal 
-                    GUI.GUIHelper.Chat_AddLine(string.Format("{0}: {1} <{2}>", p.Name1, p.Text, p.Hue));
-                    break;
-                default:
-                    announce_UnhandledPacket(packet);
-                    break;
-            }
-            // The various types of text is as follows:
-            // 0x00 - Normal 
-            // 0x01 - Broadcast/System
-            // 0x02 - Emote 
-            // 0x06 - System/Lower Corner
-            // 0x07 - Message/Corner With Name
-            // 0x08 - Whisper
-            // 0x09 - Yell
-            // 0x0A - Spell
-            // 0x0D - Guild Chat
-            // 0x0E - Alliance Chat
-            // 0x0F - Command Prompts
+            receive_TextMessage(p.MsgType, p.Text, p.Hue, p.Font, p.Serial, p.Name1);
         }
 
         private void receive_StatusInfo(IRecvPacket packet)
@@ -898,7 +839,7 @@ namespace UltimaXNA.Client
         private void receive_UnicodeMessage(IRecvPacket packet)
         {
             UnicodeMessagePacket p = (UnicodeMessagePacket)packet;
-            GUI.GUIHelper.Chat_AddLine(string.Format("{0}: {1} <{2}>", p.SpeakerName, p.SpokenText, p.Hue));
+            receive_TextMessage(p.MsgType, p.SpokenText, p.Hue, p.Font, p.Serial, p.SpeakerName);
         }
 
         private void receive_UpdateHealth(IRecvPacket packet)
@@ -980,6 +921,71 @@ namespace UltimaXNA.Client
         private void announce_Packet(IRecvPacket packet)
         {
             // GUI.GUIHelper.Chat_AddLine("DEBUG: Recv'd " + packet.Name + ". <" + packet.Id + ">");
+        }
+
+        private void receive_TextMessage(MessageType msgType, string text, int hue, int font, Serial serial, string speakerName)
+        {
+            switch (msgType)
+            {
+                case MessageType.Regular:
+                    if (serial.IsValid)
+                    {
+                        Overhead overhead = _Entities.AddOverhead(serial);
+                        overhead.Text = text;
+                        overhead.SpeakerName = speakerName;
+                        overhead.Hue = hue;
+                        overhead.Font = font;
+                    }
+                    else
+                    {
+                        GUI.GUIHelper.Chat_AddLine(string.Format("{0} <{1}>", text, hue));
+                    }
+                    break;
+                case MessageType.System:
+                    GUI.GUIHelper.Chat_AddLine(string.Format("<SYSTEM> {0} <{1}>", text, hue));
+                    break;
+                case MessageType.Emote:
+                    GUI.GUIHelper.Chat_AddLine(string.Format("<EMOTE> {0} <{1}>", text, hue));
+                    break;
+                case MessageType.Label:
+                    if (serial.IsValid)
+                    {
+                        Overhead overhead = _Entities.AddOverhead(serial);
+                        overhead.Text = text;
+                        overhead.SpeakerName = speakerName;
+                        overhead.Hue = hue;
+                        overhead.Font = font;
+                    }
+                    else
+                    {
+                        GUI.GUIHelper.Chat_AddLine(string.Format("<LABEL> {0} <{1}>", text, hue));
+                    }
+                    break;
+                case MessageType.Focus: // on player?
+                    GUI.GUIHelper.Chat_AddLine(string.Format("<FOCUS> {0} <{1}>", text, hue));
+                    break;
+                case MessageType.Whisper:
+                    GUI.GUIHelper.Chat_AddLine(string.Format("<WHISPER> {0} <{1}>", text, hue));
+                    break;
+                case MessageType.Yell:
+                    GUI.GUIHelper.Chat_AddLine(string.Format("<YELL> {0} <{1}>", text, hue));
+                    break;
+                case MessageType.Spell:
+                    GUI.GUIHelper.Chat_AddLine(string.Format("<SPELL> {0} <{1}>", text, hue));
+                    break;
+                case MessageType.Guild:
+                    GUI.GUIHelper.Chat_AddLine(string.Format("<GUILD> {0} <{1}>", text, hue));
+                    break;
+                case MessageType.Alliance:
+                    GUI.GUIHelper.Chat_AddLine(string.Format("<ALLIANCE> {0} <{1}>", text, hue));
+                    break;
+                case MessageType.Command:
+                    GUI.GUIHelper.Chat_AddLine(string.Format("<COMMAND> {0} <{1}>", text, hue));
+                    break;
+                default:
+                    GUI.GUIHelper.Chat_AddLine("ERROR UNKNOWN COMMAND:" + msgType.ToString());
+                    break;
+            }
         }
 
         private void parseContextMenu(ContextMenuNew context)
