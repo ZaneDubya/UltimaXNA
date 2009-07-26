@@ -1,5 +1,7 @@
 float4x4 world : WorldViewProjection;
 float3 lightDirection;
+float lightIntensity;
+float ambientLightIntensity;
 bool DrawLighting;
 
 sampler textureSampler;
@@ -55,8 +57,8 @@ float4 PixelShader(PS_INPUT IN) : COLOR0
 	
 	if(DrawLighting)
 	{
-		float lightIntensity = clamp(dot(lightDirection, float3(0,1,0)), 0, 1);
-		float ambientLightIntensity = 0.5f;
+		// float lightIntensity = clamp(dot(lightDirection, float3(0,1,0)), 0, 1);
+		// float ambientLightIntensity = 0.5f;
 		
 		float3 lightColor = float3(0.5f + lightIntensity / 2, 0.5f + lightIntensity / 2, 0.5f + lightIntensity / 2);
 		float3 ambientColor = float3(1 - lightIntensity / 10, 1 - lightIntensity / 10, 1 - lightIntensity / 10) * ambientLightIntensity;

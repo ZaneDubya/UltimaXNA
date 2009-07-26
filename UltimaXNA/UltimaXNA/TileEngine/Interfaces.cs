@@ -40,5 +40,7 @@ namespace UltimaXNA.TileEngine
         PickTypes PickType { set; }
         int ObjectsRendered { get; }
         MiniMap MiniMap { get; }
+		int OverallLightning { get; set; }
+		int PersonalLightning { get; set; }
     }
 }

@@ -106,6 +106,7 @@
     <Compile Include="Data\Gumps.cs" />
     <Compile Include="Data\Mobtypes.cs" />
     <Compile Include="Data\Multis.cs" />
+    <Compile Include="Data\Music.cs" />
     <Compile Include="Data\Radarcol.cs" />
     <Compile Include="Data\SharedMethods.cs" />
     <Compile Include="Data\Sound.cs" />
