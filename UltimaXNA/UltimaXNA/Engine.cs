@@ -108,7 +108,7 @@ namespace UltimaXNA
             {
                 _sceneManager.CurrentScene = new SceneManagement.LoginScene(this);
             }
-            _GameState.UpdateAfter();
+            _GameState.UpdateAfter(gameTime);
             _GUI.DebugMessage = _GameState.DebugMessage;
         }
 

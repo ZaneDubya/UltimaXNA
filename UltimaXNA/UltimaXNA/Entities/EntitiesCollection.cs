@@ -28,10 +28,12 @@ namespace UltimaXNA.Entities
     {
         int MySerial { get; set; }
         T GetObject<T>(Serial serial, bool create) where T : Entity;
-        Overhead AddOverhead(Serial serial);
+        Overhead AddOverhead(MessageType msgType, Serial serial, string text, int fontID, int hue);
         Entity GetPlayerObject();
+        List<T> GetObjectsByType<T>() where T : Entity;
         void RemoveObject(Serial serial);
         void Reset();
+        
     }
 
     class EntitiesCollection : GameComponent, IEntitiesService
@@ -80,17 +82,31 @@ namespace UltimaXNA.Entities
             base.Update(gameTime);
         }
 
-        public Overhead AddOverhead(Serial serial)
+        public Overhead AddOverhead(MessageType msgType, Serial serial, string text, int fontID, int hue)
         {
             Entity ownerEntity = _entities[serial];
             if (ownerEntity != null)
             {
-                Overhead overhead = ownerEntity.AddOverhead();
+                Overhead overhead = ownerEntity.AddOverhead(msgType, text, fontID, hue);
                 return overhead;
             }
             return null;
         }
-        
+
+        public List<T> GetObjectsByType<T>() where T : Entity
+        {
+            List<T> list = new List<T>();
+            foreach (Entity e in _entities.Values)
+            {
+                if (e is T)
+                {
+                    T typedEntity = (T)e;
+                    list.Add(typedEntity);
+                }
+            }
+            return list;
+        }
+
         public T GetObject<T>(Serial serial, bool create) where T : Entity
         {
             T entity;

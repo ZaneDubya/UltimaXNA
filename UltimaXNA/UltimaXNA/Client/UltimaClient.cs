@@ -636,7 +636,7 @@ namespace UltimaXNA.Client
             // Max normal val = 0x1F
 
 			OverallLightLevelPacket p = (OverallLightLevelPacket)packet;
-			// Console.WriteLine ( "OverallLight: {0}", p.LightLevel );
+			Console.WriteLine ( "OverallLight: {0}", p.LightLevel );
 			_TileEngine.OverallLightning = p.LightLevel;
         }
 
@@ -650,7 +650,7 @@ namespace UltimaXNA.Client
             // Max normal val = 0x1F
 
 			PersonalLightLevelPacket p = (PersonalLightLevelPacket)packet;
-			// Console.WriteLine ( "PersonalLight: {0}", p.LightLevel );
+			Console.WriteLine ( "PersonalLight: {0}", p.LightLevel );
 			_TileEngine.PersonalLightning = p.LightLevel;
         }
 
@@ -930,11 +930,8 @@ namespace UltimaXNA.Client
                 case MessageType.Regular:
                     if (serial.IsValid)
                     {
-                        Overhead overhead = _Entities.AddOverhead(serial);
-                        overhead.Text = text;
+                        Overhead overhead = _Entities.AddOverhead(msgType, serial, text, font, hue);
                         overhead.SpeakerName = speakerName;
-                        overhead.Hue = hue;
-                        overhead.Font = font;
                     }
                     else
                     {
@@ -950,11 +947,15 @@ namespace UltimaXNA.Client
                 case MessageType.Label:
                     if (serial.IsValid)
                     {
-                        Overhead overhead = _Entities.AddOverhead(serial);
-                        overhead.Text = text;
+                        Overhead overhead = _Entities.AddOverhead(msgType, serial, text, font, hue);
                         overhead.SpeakerName = speakerName;
-                        overhead.Hue = hue;
-                        overhead.Font = font;
+                        // Labels that are longer than the current name should be set as the name
+                        if (serial.IsMobile)
+                        {
+                            Mobile m = _Entities.GetObject<Mobile>(serial, false);
+                            if (m.Name.Length < text.Length)
+                                m.Name = text;
+                        }
                     }
                     else
                     {

@@ -37,7 +37,7 @@ namespace UltimaXNA.TileEngine
         void SetLightDirection(Vector3 nDirection);
         MapObject MouseOverObject { get; }
         MapObject MouseOverGroundTile { get; }
-        PickTypes PickType { set; }
+        PickTypes PickType { get; set; }
         int ObjectsRendered { get; }
         MiniMap MiniMap { get; }
 		int OverallLightning { get; set; }

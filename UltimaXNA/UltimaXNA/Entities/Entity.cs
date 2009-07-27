@@ -29,7 +29,7 @@ namespace UltimaXNA.Entities
         public Movement Movement;
         public PropertyList PropertyList = new PropertyList();
 
-        private Dictionary<int, Entity> _overheads = new Dictionary<int, Entity>();
+        private Dictionary<int, Overhead> _overheads = new Dictionary<int, Overhead>();
         private int _lastOverheadIndex = 0;
 
         internal bool _hasBeenDrawn = false; // if this is false this object will redraw itself in the tileengine.}
@@ -73,19 +73,10 @@ namespace UltimaXNA.Entities
             }
 
             // handle overheads.
-            List<int> removeObjectsList = removeObjectsList = new List<int>();
-            foreach (KeyValuePair<int, Entity> overhead in _overheads)
+            clearDisposedOverheads();
+            foreach (KeyValuePair<int, Overhead> overhead in _overheads)
             {
-                if (overhead.Value.IsDisposed)
-                {
-                    removeObjectsList.Add(overhead.Key);
-                    continue;
-                }
                 overhead.Value.Update(gameTime);
-            }
-            foreach (int i in removeObjectsList)
-            {
-                _overheads.Remove(i);
             }
         }
 
@@ -98,7 +89,7 @@ namespace UltimaXNA.Entities
         {
             // base entities do not draw, but they can have overheads, so we draw those.
             position.Z += 20;
-            foreach (KeyValuePair<int, Entity> overhead in _overheads)
+            foreach (KeyValuePair<int, Overhead> overhead in _overheads)
             {
                 if (!overhead.Value.IsDisposed)
                     overhead.Value.Draw(cell, position, positionOffset);
@@ -111,11 +102,55 @@ namespace UltimaXNA.Entities
             Movement.ClearImmediate();
         }
 
-        public Overhead AddOverhead()
+        public Overhead AddOverhead(MessageType msgType, string text, int fontID, int hue)
         {
-            Overhead overhead = new Overhead(this);
+            // Only one label allowed at a time.
+            if (msgType == MessageType.Label)
+            {
+                disposeLabels();
+                clearDisposedOverheads();
+            }
+
+            foreach (Overhead o in _overheads.Values)
+            {
+                if ((o.Text == text) && !(o.IsDisposed))
+                {
+                    o.RefreshTimer();
+                    return o;
+                }
+            }
+
+            Overhead overhead = new Overhead(msgType, this, text, fontID, hue);
             _overheads.Add(_lastOverheadIndex++, overhead);
             return overhead;
+        }
+
+        private void disposeLabels()
+        {
+            foreach (Overhead o in _overheads.Values)
+            {
+                if (o.MsgType == MessageType.Label)
+                {
+                    o.Dispose();
+                }
+            }
+        }
+
+        private void clearDisposedOverheads()
+        {
+            List<int> removeObjectsList = removeObjectsList = new List<int>();
+            foreach (KeyValuePair<int, Overhead> overhead in _overheads)
+            {
+                if (overhead.Value.IsDisposed)
+                {
+                    removeObjectsList.Add(overhead.Key);
+                    continue;
+                }
+            }
+            foreach (int i in removeObjectsList)
+            {
+                _overheads.Remove(i);
+            }
         }
 
         public override string ToString()

@@ -48,13 +48,20 @@ namespace UltimaXNA.Input
 
         public void Update(GameTime gameTime)
         {
+            m_MouseStateLast = m_MouseState;
             m_MouseState = Microsoft.Xna.Framework.Input.Mouse.GetState();
             Position = new Vector2(m_MouseState.X, m_MouseState.Y);
 
             Buttons[0].Update(m_MouseState.LeftButton, m_MouseStateLast.LeftButton);
             Buttons[1].Update(m_MouseState.RightButton, m_MouseStateLast.RightButton);
+        }
 
-            m_MouseStateLast = m_MouseState;
+        public bool MovedSinceLastUpdate
+        {
+            get
+            {
+                return ((m_MouseState.X == m_MouseStateLast.X) && (m_MouseState.Y == m_MouseStateLast.Y)) ? false : true;
+            }
         }
     }
 
