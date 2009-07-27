@@ -134,8 +134,7 @@ namespace UltimaXNA.TileEngine
                 Vector3[] vertex;
 
                 // Perform the ray to model intersection test.
-                float? intersection = RayIntersectsModel(cursorRay, iObject,
-                                                         Matrix.Identity,
+                float? intersection = RayIntersectsModel(ref cursorRay, iObject,
                                                          out insideBoundingSphere,
                                                          out vertex);
 
@@ -172,11 +171,14 @@ namespace UltimaXNA.TileEngine
                 return false;
         }
 
-        static float? RayIntersectsModel(Ray ray, PickingObject model, Matrix modelTransform,
+        static Matrix _modelTransform = Matrix.Identity;
+        static float? RayIntersectsModel(ref Ray ray, PickingObject model,
                                          out bool insideBoundingSphere,
                                          out Vector3[] vertex)
         {
             vertex = new Vector3[4];
+
+            
 
             // The input ray is in world space, but our model data is stored in object
             // space. We would normally have to transform all the model data by the
@@ -188,7 +190,7 @@ namespace UltimaXNA.TileEngine
             // is only one ray but typically many triangles, doing things this way
             // around can be much faster.
 
-            Matrix inverseTransform = Matrix.Invert(modelTransform);
+            Matrix inverseTransform = Matrix.Invert(_modelTransform);
 
             ray.Position = Vector3.Transform(ray.Position, inverseTransform);
             ray.Direction = Vector3.TransformNormal(ray.Direction, inverseTransform);
@@ -251,7 +253,7 @@ namespace UltimaXNA.TileEngine
                             for (int j = 0; j < 4; j++)
                             {
                                 Vector3.Transform(ref vertices[j],
-                                                  ref modelTransform, out vertex[j]);
+                                                  ref _modelTransform, out vertex[j]);
                             }
                             /*
                             Vector3.Transform(ref vertices[i + 1],

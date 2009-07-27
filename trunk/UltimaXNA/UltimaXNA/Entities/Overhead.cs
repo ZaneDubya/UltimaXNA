@@ -22,6 +22,16 @@ namespace UltimaXNA.Entities
             }
         }
 
+        private MessageType _msgType;
+        public MessageType MsgType
+        {
+            get { return _msgType; }
+            set
+            {
+                _msgType = value;
+            }
+        }
+
         private string _speakerName;
         public string SpeakerName
         {
@@ -57,10 +67,20 @@ namespace UltimaXNA.Entities
 
         private int _msTimePersist = 0;
         
-        public Overhead(Entity ownerEntity)
+        public Overhead(MessageType msgType, Entity ownerEntity, string text, int font, int hue)
             : base(ownerEntity.Serial)
         {
             _ownerEntity = ownerEntity;
+            _text = text;
+            _font = font;
+            _hue = hue;
+            _msgType = msgType;
+            _needsRender = true;
+        }
+
+        public void RefreshTimer()
+        {
+            _needsRender = true;
         }
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)

@@ -17,6 +17,7 @@
  ***************************************************************************/
 #region usings
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using UltimaXNA.Data;
@@ -57,6 +58,7 @@ namespace UltimaXNA
         IWorld _World;
         GUI.IGUI _GUI;
         Client.IUltimaClient _GameClient;
+
         private Serial _lastTarget;
         public Serial LastTarget {
             get { return _lastTarget; }
@@ -67,7 +69,6 @@ namespace UltimaXNA
             }
         }
         public Direction CursorDirection { get; protected set; }
-
         public string DebugMessage { get { return generateDebugMessage(); } }
 
         // added for future interface option, allowing both continuous mouse movement and discrete clicks -BERT
@@ -96,8 +97,8 @@ namespace UltimaXNA
         public bool EngineRunning { get; set; }
         // These variables move the light source around...
         private Vector3 _LightDirection = new Vector3(0f, 0f, 1f);
-        private double _LightRadians = -0.5d;
-
+        private double _LightRadians = -0.6d;
+        private int _cursorHoverTimeMS = 0; private int _hoverTimeForLabelMS = 1000;
         public GameState(Game game)
             : base(game)
         {
@@ -147,22 +148,11 @@ namespace UltimaXNA
                     }
                     else
                     {
-                        // Changed to leverage movementFollowsMouse interface option -BERT
-                        if (_MovementFollowsMouse ? _Input.Mouse.Buttons[0].IsDown : _Input.Mouse.Buttons[0].Press)
+                        _TileEngineService.PickType = PickTypes.PickStatics | PickTypes.PickObjects;
+                        if (_Input.Mouse.Buttons[0].Release)
                         {
-                            _TileEngineService.PickType = PickTypes.PickStatics | PickTypes.PickObjects | PickTypes.PickGroundTiles;
-                        }
-                        else if (_Input.Mouse.Buttons[1].Press)
-                        {
-                            _TileEngineService.PickType = PickTypes.PickStatics | PickTypes.PickObjects;
-                        }
-                        else if (_Input.Mouse.Buttons[0].Release)
-                        {
-                            _TileEngineService.PickType = PickTypes.PickStatics | PickTypes.PickObjects | PickTypes.PickGroundTiles;
-                        }
-                        else
-                        {
-                            _TileEngineService.PickType = PickTypes.PickNothing;
+                            // We need to pick ground tiles in case we are dropping something.
+                            _TileEngineService.PickType |= PickTypes.PickGroundTiles;
                         }
                     }
                 }
@@ -170,139 +160,44 @@ namespace UltimaXNA
             updateFPS(gameTime);
         }
 
-        public void UpdateAfter()
+        public void UpdateAfter(GameTime gameTime)
         {
             if (InWorld)
             {
                 // Set the cursor direction.
                 CursorDirection = mousePositionToDirection(_Input.Mouse.Position);
-
-                // Check to see if we are actively targetting something, or we have normal mouse interaction.
-                if (isTargeting)
+                // get the cursor hoverTime and top up a label if enough time has passed.
+                _cursorHoverTimeMS = (_Input.Mouse.MovedSinceLastUpdate) ? 0 : _cursorHoverTimeMS + gameTime.ElapsedRealTime.Milliseconds;
+                if ((_cursorHoverTimeMS >= _hoverTimeForLabelMS) && (_TileEngineService.MouseOverObject != null))
                 {
-                    // We are targetting. 
-                    MapObject iMapObject = null;
-                    // If we press the left mouse button, we send the targetting event.
-                    if (_Input.Mouse.Buttons[0].Press)
+                    createHoverLabel(_TileEngineService.MouseOverObject);
+                }
+
+                // If the left mouse button has been released, and movementFollowsMouse = true, reset mContinuousMovement.
+                if (_Input.Mouse.Buttons[0].Release)
+                {
+                    // We do not move when the mouse cursor is released.
+                    _ContinuousMoveCheck = false;
+                    // If we are holding anything, we just dropped it.
+                    if (GUI.GUIHelper.MouseHoldingItem != null)
                     {
-                        switch (_TargettingType)
-                        {
-                            case 0:
-                                // Select Object
-                                _TileEngineService.PickType = PickTypes.PickStatics | PickTypes.PickObjects;
-                                iMapObject = _TileEngineService.MouseOverObject;
-                                MouseTargetingEventObject(iMapObject);
-                                break;
-                            case 1:
-                                // Select X, Y, Z
-                                iMapObject = _TileEngineService.MouseOverObject;
-                                if (iMapObject != null)
-                                {
-                                    MouseTargetingEventObject(iMapObject);
-                                }
-                                else
-                                {
-                                    iMapObject = _TileEngineService.MouseOverGroundTile;
-                                    if (iMapObject != null)
-                                        mouseTargetingEventXYZ(iMapObject);
-                                    else
-                                        mouseTargetingCancel();
-                                }
-                                
-                                break;
-                            default:
-                                throw new Exception("Unknown targetting type!");
-                        }
+                        checkDropItem();
                     }
                 }
-                else
+
+                // Changed to leverage movementFollowsMouse interface option -BERT
+                if (_ContinuousMoveCheck)
                 {
-                    // If the left mouse button has been released, and movementFollowsMouse = true, reset mContinuousMovement.
-                    if (_Input.Mouse.Buttons[0].Release)
-                        _ContinuousMoveCheck = false;
+                    checkMove();
+                }
 
-                    // Changed to leverage movementFollowsMouse interface option -BERT
-                    if (_ContinuousMoveCheck)
-                    {
-                        if (_Input.Mouse.Buttons[0].IsDown)
-                        {
-                            checkMove();
-                        }
-                    }
-
-                    // If the left mouse button has been released, we check to see if we were holding an item in the cursor.
-                    // If we dropped the item into another slot, then the GUI will have already removed the MouseHoldingItem,
-                    // and we will never reach this routine. If the MouseHoldingItem is still here, we need to take care of it.
-                    #region DropItemFromMouse
-                    if (_Input.Mouse.Buttons[0].Release)
-                    {
-                        if (!(_Input.Keyboard.IsKeyDown(Keys.U)))
-                            if (GUI.GUIHelper.MouseHoldingItem != null)
-                            {
-                                if (!_GUI.IsMouseOverGUI(_Input.Mouse.Position))
-                                {
-                                    int x, y, z;
-                                    MapObject groundObject = _TileEngineService.MouseOverGroundTile;
-                                    MapObject mouseoverObject = _TileEngineService.MouseOverObject;
-                                    if (mouseoverObject != null)
-                                    {
-                                        if (mouseoverObject is MapObjectMobile)
-                                        {
-                                            // special case, attempt to give this item.
-                                            return;
-                                        }
-                                        else
-                                        {
-                                            x = (int)mouseoverObject.Position.X;
-                                            y = (int)mouseoverObject.Position.Y;
-                                            z = mouseoverObject.Z;
-                                            if (mouseoverObject is MapObjectStatic)
-                                            {
-                                                ItemData data = Data.TileData.ItemData[mouseoverObject.ItemID - 0x4000];
-                                                z += data.Height;
-                                            }
-                                            else if (mouseoverObject is MapObjectItem)
-                                            {
-                                                z += Data.TileData.ItemData[mouseoverObject.ItemID].Height;
-                                            }
-                                        }
-                                       
-                                    }
-                                    else if (groundObject != null)
-                                    {
-                                        x = (int)groundObject.Position.X;
-                                        y = (int)groundObject.Position.Y;
-                                        z = groundObject.Z;
-                                    }
-                                    else
-                                    {
-                                        GUI.GUIHelper.MouseHoldingItem = null;
-                                        return;
-                                    }
-                                    // We dropped the icon in the world. This means we are trying to drop the item
-                                    // into the world. Let's do it!
-                                    if ((GUI.GUIHelper.MouseHoldingItem).Item_ContainedWithinSerial.IsValid)
-                                    {
-                                        // We must manually remove the item from the container, as RunUO does not do this for us.
-                                        ContainerItem iContainer = _Entities.GetObject<ContainerItem>(
-                                            (GUI.GUIHelper.MouseHoldingItem).Item_ContainedWithinSerial, false);
-                                        iContainer.Contents.RemoveItem(GUI.GUIHelper.MouseHoldingItem.Serial);
-                                    }
-                                    GUI.GUIHelper.DropItemOntoGround(x, y, z);
-                                }
-
-                            }
-                    }
-                    #endregion
-
+                if (!_GUI.IsMouseOverGUI(_Input.Mouse.Position))
+                {
                     // Check if the left mouse button has been pressed. We will either walk to the object under the cursor
                     // or pick it up, depending on what kind of object we are looking at.
                     if (_Input.Mouse.Buttons[0].Press)
                     {
-                        if (!_GUI.IsMouseOverGUI(_Input.Mouse.Position))
-                        {
-                            checkLeftClick();
-                        }
+                        checkLeftClick();
                     }
 
                     if (_Input.Mouse.Buttons[1].Press)
@@ -310,20 +205,16 @@ namespace UltimaXNA
                         // Right button pressed ... activate this object.
                         checkRightClick();
                     }
-
-                    // Check for a move event from the player ...
-                    try
-                    {
-                        int direction = 0, sequence = 0, key = 0;
-                        bool hasMoveEvent = _Entities.GetPlayerObject().Movement.GetMoveEvent(ref direction, ref sequence, ref key);
-                        if (hasMoveEvent)
-                            _GameClient.Send(new MoveRequestPacket((byte)direction, (byte)sequence, key));
-                    }
-                    catch
-                    {
-                        // The player has not yet been loaded
-                    }
                 }
+
+                // Check for a move event from the player ...
+                int direction = 0, sequence = 0, key = 0;
+                bool hasMoveEvent = _Entities.GetPlayerObject().Movement.GetMoveEvent(ref direction, ref sequence, ref key);
+                if (hasMoveEvent)
+                    _GameClient.Send(new MoveRequestPacket((byte)direction, (byte)sequence, key));
+
+                // Show our target's name
+                createHoverLabel(LastTarget);
             }
         }
 
@@ -335,8 +226,7 @@ namespace UltimaXNA
                 moveDirection |= Direction.Running;
 
             ((Mobile)_Entities.GetPlayerObject()).Move(moveDirection);
-            
-            
+
             if (_MovementFollowsMouse)
                 _ContinuousMoveCheck = true;
         }
@@ -370,29 +260,68 @@ namespace UltimaXNA
 
         private void checkLeftClick()
         {
-            MapObject iTopObject = _TileEngineService.MouseOverObject;
+            MapObject mouseOverObject = _TileEngineService.MouseOverObject;
 
-            if (iTopObject != null)
+            // If isTargeting is true, then the target cursor is active and we are waiting for the player to target something.
+            // If not, then we are just clicking the mouse and we need to find out if something is under the mouse cursor.
+            if (isTargeting)
             {
-                if (iTopObject is MapObjectMobile)
+                // If we press the left mouse button, we send the targetting event.
+                if (_Input.Mouse.Buttons[0].Press)
                 {
-                    // Proper action: target this mobile.
-                    LastTarget = iTopObject.OwnerSerial;
-                    _GameClient.Send(new SingleClickPacket(LastTarget));
-                    return;
-                }
-                if (iTopObject is MapObjectItem)
-                {
-                    // Proper action: pick it up if possible, as long as this is a press event.
-                    Item item = _Entities.GetObject<Item>(iTopObject.OwnerSerial, false);
-                    if (item.ItemData.Weight != 255)
+                    switch (_TargettingType)
                     {
-                        GUI.GUIHelper.PickUpItem(item);
-                        return;
+                        case 0:
+                            // Select Object
+                            _TileEngineService.PickType = PickTypes.PickStatics | PickTypes.PickObjects;
+                            MouseTargetingEventObject(mouseOverObject);
+                            break;
+                        case 1:
+                            // Select X, Y, Z
+                            if (mouseOverObject != null)
+                            {
+                                MouseTargetingEventObject(mouseOverObject);
+                            }
+                            else
+                            {
+                                MapObject ground = _TileEngineService.MouseOverGroundTile;
+                                if (ground != null)
+                                    mouseTargetingEventXYZ(ground);
+                                else
+                                    mouseTargetingCancel();
+                            }
+
+                            break;
+                        default:
+                            throw new Exception("Unknown targetting type!");
                     }
                 }
             }
-                checkMove();
+            else
+            {
+                if (mouseOverObject != null)
+                {
+                    if (mouseOverObject is MapObjectMobile)
+                    {
+                        // Proper action: target this mobile.
+                        LastTarget = mouseOverObject.OwnerSerial;
+                        _GameClient.Send(new SingleClickPacket(LastTarget));
+                        return;
+                    }
+                    if (mouseOverObject is MapObjectItem)
+                    {
+                        // Proper action: pick it up if possible, as long as this is a press event.
+                        Item item = _Entities.GetObject<Item>(mouseOverObject.OwnerSerial, false);
+                        if (item.ItemData.Weight != 255)
+                        {
+                            GUI.GUIHelper.PickUpItem(item);
+                            return;
+                        }
+                    }
+                }
+            }
+
+            checkMove();
         }
 
         private void checkRightClick()
@@ -442,6 +371,99 @@ namespace UltimaXNA
             }
         }
 
+        private void checkDropItem()
+        {
+            // We do not handle dropping the item into the GUI in this routine.
+            // But we probably should, to consolidate game logic.
+            if (!_GUI.IsMouseOverGUI(_Input.Mouse.Position))
+            {
+                int x, y, z;
+                MapObject groundObject = _TileEngineService.MouseOverGroundTile;
+                MapObject mouseoverObject = _TileEngineService.MouseOverObject;
+                if (mouseoverObject != null)
+                {
+                    if (mouseoverObject is MapObjectMobile)
+                    {
+                        // special case, attempt to give this item.
+                        return;
+                    }
+                    else
+                    {
+                        x = (int)mouseoverObject.Position.X;
+                        y = (int)mouseoverObject.Position.Y;
+                        z = mouseoverObject.Z;
+                        if (mouseoverObject is MapObjectStatic)
+                        {
+                            ItemData data = Data.TileData.ItemData[mouseoverObject.ItemID - 0x4000];
+                            z += data.Height;
+                        }
+                        else if (mouseoverObject is MapObjectItem)
+                        {
+                            z += Data.TileData.ItemData[mouseoverObject.ItemID].Height;
+                        }
+                    }
+                   
+                }
+                else if (groundObject != null)
+                {
+                    x = (int)groundObject.Position.X;
+                    y = (int)groundObject.Position.Y;
+                    z = groundObject.Z;
+                }
+                else
+                {
+                    GUI.GUIHelper.MouseHoldingItem = null;
+                    return;
+                }
+                // We dropped the icon in the world. This means we are trying to drop the item
+                // into the world. Let's do it!
+                if ((GUI.GUIHelper.MouseHoldingItem).Item_ContainedWithinSerial.IsValid)
+                {
+                    // We must manually remove the item from the container, as RunUO does not do this for us.
+                    ContainerItem iContainer = _Entities.GetObject<ContainerItem>(
+                        (GUI.GUIHelper.MouseHoldingItem).Item_ContainedWithinSerial, false);
+                    iContainer.Contents.RemoveItem(GUI.GUIHelper.MouseHoldingItem.Serial);
+                }
+                GUI.GUIHelper.DropItemOntoGround(x, y, z);
+            }
+        }
+
+        private void createHoverLabel(MapObject mapObject)
+        {
+            if (mapObject.OwnerSerial.IsValid)
+            {
+                // this object is an entity of some kind.
+                createHoverLabel(mapObject.OwnerSerial);
+            }
+            else if (mapObject is MapObjectStatic)
+            {
+                // since statics have no entity object, we can't easily create a label for them at the moment.
+                // surely this will be fixed.
+            }
+        }
+
+        private void createHoverLabel(Serial serial)
+        {
+            if (!serial.IsValid)
+                return;
+
+            Entity e = _Entities.GetObject<Entity>(serial, false);
+
+            if (e is Mobile)
+            {
+                Mobile m = (Mobile)e;
+                m.AddOverhead(MessageType.Label, m.Name, 3, m.NotorietyHue);
+            }
+            else if (e is Corpse)
+            {
+                // Currently item entities do not Update() so they will not show their label.
+            }
+            else if (e is Item)
+            {
+                // Currently item entities do not Update() so they will not show their label.
+            }
+        }
+
         private void parseKeyboard(Input.KeyboardHandler keyboard)
         {
             // If we are targeting, cancel the target cursor if we hit escape.
@@ -449,10 +471,10 @@ namespace UltimaXNA
                 if (keyboard.IsKeyPressed(Keys.Escape))
                     mouseTargetingCancel();
 
-            if (keyboard.IsKeyDown(Keys.I))
-                _LightRadians += .01f;
-            if (keyboard.IsKeyDown(Keys.K))
-                _LightRadians -= .01f;
+            // if (keyboard.IsKeyDown(Keys.I))
+            //     _LightRadians += .01f;
+            // if (keyboard.IsKeyDown(Keys.K))
+            //    _LightRadians -= .01f;
 
             _LightDirection.Z = -(float)Math.Cos(_LightRadians);
             _LightDirection.Y = (float)Math.Sin(_LightRadians);
@@ -494,6 +516,19 @@ namespace UltimaXNA
                     _GameClient.Send(new RequestWarModePacket(false));
                 else
                     _GameClient.Send(new RequestWarModePacket(true));
+            }
+
+            // toggle for all names
+            if (keyboard.IsKeyDown(Keys.LeftShift) && keyboard.IsKeyDown(Keys.LeftControl))
+            {
+                List<Mobile> mobiles = _Entities.GetObjectsByType<Mobile>();
+                foreach (Mobile m in mobiles)
+                {
+                    if (m.Name != string.Empty)
+                    {
+                        m.AddOverhead(MessageType.Label, m.Name, 3, m.NotorietyHue);
+                    }
+                }
             }
         }
 
