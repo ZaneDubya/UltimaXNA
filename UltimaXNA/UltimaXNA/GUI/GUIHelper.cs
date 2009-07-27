@@ -235,34 +235,36 @@ namespace UltimaXNA.GUI
                 else
                 {
                     _ToolTipItem = value;
-                    Data.ItemData iData = _ToolTipItem.ItemData;
-                    string iItemName = string.Empty;
-                    if (_ToolTipItem.Amount > 1)
-                        iItemName += _ToolTipItem.Amount.ToString() + @" ";
-                    if (iData.Name.Contains(@"%"))
+                    if (_ToolTipItem.PropertyList.HasProperties)
                     {
-                        iItemName += _ToolTipItem.Amount.ToString() + @" ";
-                        int iMultiplePosition = iData.Name.IndexOf(@"%");
-                        string iBaseString = iData.Name.Substring(0, iMultiplePosition);
-                        int length = iData.Name.IndexOf(@"%", iMultiplePosition + 1) - iMultiplePosition - 1;
-                        string iMultipleString = string.Empty;
-                        if (length > 0)
-                            iMultipleString = iData.Name.Substring(iMultiplePosition + 1, length);
-                        iItemName = _ToolTipItem.Amount.ToString() + @" " + iBaseString;
-                        if (_ToolTipItem.Amount > 1)
-                            iItemName += iMultipleString;
+                        TooltipMsg =
+                            _ToolTipItem.PropertyList.Properties;
                     }
                     else
                     {
-                        iItemName += iData.Name;
+                        Data.ItemData iData = _ToolTipItem.ItemData;
+                        string iItemName = string.Empty;
+                        if (_ToolTipItem.Amount > 1)
+                            iItemName += _ToolTipItem.Amount.ToString() + @" ";
+                        if (iData.Name.Contains(@"%"))
+                        {
+                            iItemName += _ToolTipItem.Amount.ToString() + @" ";
+                            int iMultiplePosition = iData.Name.IndexOf(@"%");
+                            string iBaseString = iData.Name.Substring(0, iMultiplePosition);
+                            int length = iData.Name.IndexOf(@"%", iMultiplePosition + 1) - iMultiplePosition - 1;
+                            string iMultipleString = string.Empty;
+                            if (length > 0)
+                                iMultipleString = iData.Name.Substring(iMultiplePosition + 1, length);
+                            iItemName = _ToolTipItem.Amount.ToString() + @" " + iBaseString;
+                            if (_ToolTipItem.Amount > 1)
+                                iItemName += iMultipleString;
+                        }
+                        else
+                        {
+                            iItemName += iData.Name;
+                        }
                     }
-                    TooltipMsg = iItemName + Environment.NewLine +
-                        "Serial:" + _ToolTipItem.Serial;
-                    if (_ToolTipItem.PropertyList.HasProperties)
-                    {
-                        TooltipMsg += Environment.NewLine +
-                            _ToolTipItem.PropertyList.Properties;
-                    }
+                    TooltipMsg += Environment.NewLine + "Serial:" + _ToolTipItem.Serial;
                 }
             }
             get
