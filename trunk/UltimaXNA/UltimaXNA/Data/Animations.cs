@@ -513,17 +513,20 @@ namespace UltimaXNA.Data
 
                         break;
                     }
-                case 5:
-                    {
-                        fileIndex = m_FileIndex5;
+				// Issue 60 - Missing (or wrong) object animations - http://code.google.com/p/ultimaxna/issues/detail?id=60 - Smjert
+				case 5:
+					{
+						fileIndex = m_FileIndex5;
+						if ( (body < 200) && (body != 34) ) // looks strange, though it works.
+							index = body * 110;
+						else if ( body < 400 )
+							index = 22000 + ((body - 200) * 65);
+						else
+							index = 35000 + ((body - 400) * 175);
 
-                        if (body < 200 && body != 34) // looks strange, though it works.
-                            index = body * 110;
-                        else
-                            index = 35000 + ((body - 400) * 65);
-
-                        break;
-                    }
+						break;
+					}
+				// Issue 60 - End
             }
 
             if ((index + (action * 5)) > int.MaxValue)
