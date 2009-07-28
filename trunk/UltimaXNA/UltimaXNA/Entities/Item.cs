@@ -24,39 +24,29 @@ namespace UltimaXNA.Entities
 {
     public class Item : Entity
     {
-        public Item(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public bool AtWorldPoint(int x, int y)
-        {
-            if (Movement.DrawPosition.TileX == x && Movement.DrawPosition.TileY == y)
-                return true;
-            else
-                return false;
-        }
-
-        internal override void Draw(UltimaXNA.TileEngine.MapCell cell, Vector3 position, Vector3 positionOffset)
-        {
-			if (Ignored)
-			{
-				return;
-			}
-			cell.Add(new TileEngine.MapObjectItem(_ItemID, position, Movement.DrawFacing, this, Hue));
-            drawOverheads(cell, position, positionOffset);
-        }
-
-        public override void Dispose()
-        {
-            // if is worn, let the wearer know we are disposing.
-            if (Wearer != null)
-                Wearer.UnWearItem(Serial);
-            base.Dispose();
-        }
-
         public Mobile Wearer;
-        public int Amount = 0;
+
+		private int _Amount;
+		public int Amount
+		{
+			get { return _Amount; }
+			set
+			{
+				// if the amount changes from or to one, we need to redraw the item, because of doubled drawing for amount > 1
+				if ((_Amount == 1 && value != 1) || (_Amount != 1 && value == 1))
+				{
+					_hasBeenDrawn = false;
+				}
+
+				_Amount = value;
+
+				// if there is a special drawing id for this item we need to redraw it
+				if (_ItemID != DisplayItemID) 
+				{
+					_hasBeenDrawn = false;
+				}
+			}
+		}
         public Serial Item_ContainedWithinSerial = 0;
         public int AnimationDisplayID = 0;
 
@@ -70,27 +60,16 @@ namespace UltimaXNA.Entities
             }
         }
 
-        private int _ItemID = 0;
         public Data.ItemData ItemData;
 
+		private int _ItemID = 0;
         public int ItemID
         {
             get { return _ItemID; }
             set
             {
-                if (value == 0xEED) // gold coin.
-                {
-                    if (Amount <= 1)
-                        _ItemID = 0xEED;
-                    else if (Amount <= 5)
-                        _ItemID = 0xEEE;
-                    else
-                        _ItemID = 0xEEF;
-                }
-                else
-                {
-                    _ItemID = value;
-                }
+				_ItemID = value;
+				
                 _hasBeenDrawn = false;
                 
                 ItemData = UltimaXNA.Data.TileData.ItemData[_ItemID];
@@ -98,9 +77,33 @@ namespace UltimaXNA.Entities
             }
         }
 
+		public int DisplayItemID
+		{
+			get
+			{
+				if (IsCoin)
+				{
+					if (Amount > 5)
+					{
+						return _ItemID + 2;
+					}
+					else if (Amount > 1)
+					{
+						return _ItemID + 1;
+					}
+				}
+
+				return _ItemID;
+			}
+		}
+
 		public bool Ignored
 		{
 			get { return _ItemID <= 1; } // no draw
+		}
+
+		public bool IsCoin {
+			get { return _ItemID == 0xEEA || _ItemID == 0xEED || _ItemID == 0xEF0; }
 		}
 
         // Inventory position is handled differently in this client than in the legacy UO client.
@@ -108,6 +111,11 @@ namespace UltimaXNA.Entities
         // which this item occupies, and the Y as a Checksum for the X value: if the Y checksum validates,
         // then we know this item belongs in slot X.
         public int Item_InvX = 0, Item_InvY = 0, Item_InvSlot = 0;
+
+		public Item(Serial serial)
+			: base(serial)
+		{
+		}
 
         public override void Update(GameTime gameTime)
         {
@@ -118,5 +126,32 @@ namespace UltimaXNA.Entities
         {
             return base.ToString() + " | " + ItemData.Name;
         }
+
+		public bool AtWorldPoint(int x, int y)
+		{
+			if (Movement.DrawPosition.TileX == x && Movement.DrawPosition.TileY == y)
+				return true;
+			else
+				return false;
+		}
+
+		internal override void Draw(UltimaXNA.TileEngine.MapCell cell, Vector3 position, Vector3 positionOffset)
+		{
+			if (Ignored)
+			{
+				return;
+			}
+
+			cell.Add(new TileEngine.MapObjectItem(DisplayItemID, position, Movement.DrawFacing, this, Hue));
+			drawOverheads(cell, position, positionOffset);
+		}
+
+		public override void Dispose()
+		{
+			// if is worn, let the wearer know we are disposing.
+			if (Wearer != null)
+				Wearer.UnWearItem(Serial);
+			base.Dispose();
+		}
     }
 }
