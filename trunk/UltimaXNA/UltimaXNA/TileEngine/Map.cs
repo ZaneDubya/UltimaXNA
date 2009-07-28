@@ -183,13 +183,13 @@ namespace UltimaXNA.TileEngine
                 int iY = y - World.RenderBeginY;
                 if ((iY < m_GameSize) && (iY >= 0))
                 {
-                    try
+                    int key = GetKey(x, y);
+                    if (m_MapCells.ContainsKey(key))
                     {
-                        return m_MapCells[GetKey(x, y)];
+                        return m_MapCells[key];
                     }
-                    catch
+                    else
                     {
-                        // not in dictionary.
                         return null;
                     }
                 }
@@ -239,20 +239,7 @@ namespace UltimaXNA.TileEngine
 
             Data.Tile landTile = m_TileMatrix.GetLandTile(x, y);
             groundTile = new MapObjectGround(landTile, new Vector3(x, y, landTile.Z));
-            groundTile.Surroundings = new Surroundings(
-                m_TileMatrix.GetLandTile(x + 1, y + 1).Z,
-                m_TileMatrix.GetLandTile(x + 1, y).Z,
-                m_TileMatrix.GetLandTile(x, y + 1).Z);
-            groundTile.CalculateNormals(
-                m_TileMatrix.GetLandTile(x - 1, y).Z,
-                m_TileMatrix.GetLandTile(x - 1, y + 1).Z,
-                m_TileMatrix.GetLandTile(x, y - 1).Z,
-                m_TileMatrix.GetLandTile(x + 1, y - 1).Z,
-                m_TileMatrix.GetLandTile(x, y + 2).Z,
-                m_TileMatrix.GetLandTile(x + 1, y + 2).Z,
-                m_TileMatrix.GetLandTile(x + 2, y).Z,
-                m_TileMatrix.GetLandTile(x + 2, y + 1).Z
-                );
+            UpdateSurroundings(groundTile);
 
             if (Math.Abs(groundTile.Z - groundTile.Surroundings.Down) >= Math.Abs(groundTile.Surroundings.South - groundTile.Surroundings.East))
             {
@@ -295,6 +282,51 @@ namespace UltimaXNA.TileEngine
             }
 
             UpdateTicker++;
+        }
+
+        public void UpdateSurroundings(MapObjectGround g)
+        {
+            int x = (int)g.Position.X;
+            int y = (int)g.Position.Y;
+
+            int[] zValues = new int[16];
+            for (int iy = -1; iy < 3; iy++)
+            {
+                for (int ix = -1; ix < 3; ix++)
+                {
+                    MapCell c = GetMapCell(x + ix, y + iy);
+                    zValues[(ix + 1) + (iy + 1) * 4] =
+                        (c == null) ? m_TileMatrix.GetLandTile(x + ix, y + iy).Z : c.GroundTile.Z;
+                }
+            }
+
+            g.Surroundings = new Surroundings(
+                zValues[2 + 2 * 4],
+                zValues[2 + 1 * 4],
+                zValues[1 + 2 * 4]);
+            g.CalculateNormals(
+                zValues[0 + 1 * 4],
+                zValues[0 + 2 * 4],
+                zValues[1 + 0 * 4],
+                zValues[2 + 0 * 4],
+                zValues[1 + 3 * 4],
+                zValues[2 + 3 * 4],
+                zValues[3 + 1 * 4],
+                zValues[3 + 2 * 4]);
+            /*g.Surroundings = new Surroundings(
+                m_TileMatrix.GetLandTile(x + 1, y + 1).Z,
+                m_TileMatrix.GetLandTile(x + 1, y).Z,
+                m_TileMatrix.GetLandTile(x, y + 1).Z);
+            g.CalculateNormals(
+                m_TileMatrix.GetLandTile(x - 1, y).Z,
+                m_TileMatrix.GetLandTile(x - 1, y + 1).Z,
+                m_TileMatrix.GetLandTile(x, y - 1).Z,
+                m_TileMatrix.GetLandTile(x + 1, y - 1).Z,
+                m_TileMatrix.GetLandTile(x, y + 2).Z,
+                m_TileMatrix.GetLandTile(x + 1, y + 2).Z,
+                m_TileMatrix.GetLandTile(x + 2, y).Z,
+                m_TileMatrix.GetLandTile(x + 2, y + 1).Z
+                );*/
         }
     }
 

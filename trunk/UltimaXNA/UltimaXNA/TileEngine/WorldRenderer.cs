@@ -39,7 +39,8 @@ namespace UltimaXNA.TileEngine
         // Used for mousepicking.
         public static MapObject MouseOverObject { get; internal set; }
         public static MapObject MouseOverGroundTile { get; internal set; }
-        public static PickTypes PickType { get; set; }
+        public static PickTypes PickType = PickTypes.PickNothing;
+        public static bool DEBUG_DrawTileOver = false;
         private static RayPicker _rayPicker;
 
 	    // lightning variables
@@ -100,7 +101,7 @@ namespace UltimaXNA.TileEngine
                 return;
 
             _spriteBatch.Flush();
-            if (MouseOverGroundTile != null)
+            if (MouseOverGroundTile != null && DEBUG_DrawTileOver)
                 _rayPicker.DrawPickedTriangle(_spriteBatch.WorldMatrix);
         }
 

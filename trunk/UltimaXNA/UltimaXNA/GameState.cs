@@ -31,7 +31,7 @@ using UltimaXNA.TileEngine;
 
 namespace UltimaXNA
 {
-    public static class GameState
+    public static partial class GameState
     {
         public static bool WarMode
         {
@@ -74,27 +74,23 @@ namespace UltimaXNA
             }
         }
         // InWorld allows us to tell when our character object has been loaded in the world.
-        private static bool _InWorld;
-        public static bool InWorld
-        {
-            get { return _InWorld; }
-            set { _InWorld = value; }
-        }
+        public static bool InWorld { get; set; }
         // Set EngineRunning to false to cause the engine to immediately exit.
         public static bool EngineRunning { get; set; }
         // These variables move the light source around...
         private static Vector3 _LightDirection = new Vector3(0f, 0f, 1f);
         private static double _LightRadians = -0.6d;
         private static int _cursorHoverTimeMS = 0, _hoverTimeForLabelMS = 1000;
-        
-        static GameState()
-        {
-            EngineRunning = true;
-            InWorld = false;
-        }
+        private static PickTypes DefaultPickType = PickTypes.PickStatics | PickTypes.PickObjects;
+
+        public static MethodHook OnLeftClick;
+        public static MethodHook OnRightClick;
+        public static bool HandleMouseInput = true;
 
         public static void Initialize(Game game)
         {
+            EngineRunning = true;
+            InWorld = false;
             BackBufferWidth = game.GraphicsDevice.PresentationParameters.BackBufferWidth;
             BackBufferHeight = game.GraphicsDevice.PresentationParameters.BackBufferHeight;
         }
@@ -122,11 +118,11 @@ namespace UltimaXNA
                     if (isTargeting)
                     {
                         // We are targetting. Based on the targetting type, we will either select an object, or a location.
-                        WorldRenderer.PickType = PickTypes.PickStatics | PickTypes.PickObjects | PickTypes.PickGroundTiles;
+                        WorldRenderer.PickType = PickTypes.PickEverything;
                     }
                     else
                     {
-                        WorldRenderer.PickType = PickTypes.PickStatics | PickTypes.PickObjects;
+                        WorldRenderer.PickType = DefaultPickType;
                         if (InputHandler.Mouse.Buttons[0].Release)
                         {
                             // We need to pick ground tiles in case we are dropping something.
@@ -175,13 +171,17 @@ namespace UltimaXNA
                     // or pick it up, depending on what kind of object we are looking at.
                     if (InputHandler.Mouse.Buttons[0].Press)
                     {
-                        checkLeftClick();
+                        if (HandleMouseInput)
+                            checkLeftClick();
+                        if (OnLeftClick != null)
+                            OnLeftClick();
                     }
-
                     if (InputHandler.Mouse.Buttons[1].Press)
                     {
-                        // Right button pressed ... activate this object.
-                        checkRightClick();
+                        if (HandleMouseInput)
+                            checkRightClick();
+                        if (OnRightClick != null)
+                            OnRightClick();
                     }
                 }
 
@@ -244,35 +244,31 @@ namespace UltimaXNA
             // If not, then we are just clicking the mouse and we need to find out if something is under the mouse cursor.
             if (isTargeting)
             {
-                // If we press the left mouse button, we send the targetting event.
-                if (InputHandler.Mouse.Buttons[0].Press)
+                switch (_TargettingType)
                 {
-                    switch (_TargettingType)
-                    {
-                        case 0:
-                            // Select Object
-                            WorldRenderer.PickType = PickTypes.PickStatics | PickTypes.PickObjects;
+                    case 0:
+                        // Select Object
+                        WorldRenderer.PickType = PickTypes.PickStatics | PickTypes.PickObjects;
+                        mouseTargetingEventObject(mouseOverObject);
+                        break;
+                    case 1:
+                        // Select X, Y, Z
+                        if (mouseOverObject != null)
+                        {
                             mouseTargetingEventObject(mouseOverObject);
-                            break;
-                        case 1:
-                            // Select X, Y, Z
-                            if (mouseOverObject != null)
-                            {
-                                mouseTargetingEventObject(mouseOverObject);
-                            }
+                        }
+                        else
+                        {
+                            MapObject ground = WorldRenderer.MouseOverGroundTile;
+                            if (ground != null)
+                                mouseTargetingEventXYZ(ground);
                             else
-                            {
-                                MapObject ground = WorldRenderer.MouseOverGroundTile;
-                                if (ground != null)
-                                    mouseTargetingEventXYZ(ground);
-                                else
-                                    mouseTargetingCancel();
-                            }
+                                mouseTargetingCancel();
+                        }
 
-                            break;
-                        default:
-                            throw new Exception("Unknown targetting type!");
-                    }
+                        break;
+                    default:
+                        throw new Exception("Unknown targetting type!");
                 }
             }
             else
