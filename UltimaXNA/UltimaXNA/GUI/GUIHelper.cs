@@ -285,7 +285,7 @@ namespace UltimaXNA.GUI
 
             if (!_IconCache.ContainsKey(iconKey(item)))
             {
-                int itemID = (item == null) ? 0 : item.ItemID;
+                int itemID = (item == null) ? 0 : item.DisplayItemID;
                 Texture2D texture = (item == null) ? null : Data.Art.GetStaticTexture(itemID, item.Hue);
 
                 float iScaleUp = 1f, iDestSize = 39f;
@@ -346,7 +346,7 @@ namespace UltimaXNA.GUI
                 return 0;
             else
             {
-                return item.ItemID + (item.Hue >> 16);
+                return item.DisplayItemID + (item.Hue >> 16);
             }
         }
     }

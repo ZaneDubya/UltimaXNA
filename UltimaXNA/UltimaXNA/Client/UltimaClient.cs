@@ -612,7 +612,7 @@ namespace UltimaXNA.Client
             // Max normal val = 0x1F
 
             OverallLightLevelPacket p = (OverallLightLevelPacket)packet;
-            Console.WriteLine("OverallLight: {0}", p.LightLevel);
+            // Console.WriteLine("OverallLight: {0}", p.LightLevel);
             WorldRenderer.OverallLightning = p.LightLevel;
         }
 
@@ -626,7 +626,7 @@ namespace UltimaXNA.Client
             // Max normal val = 0x1F
 
             PersonalLightLevelPacket p = (PersonalLightLevelPacket)packet;
-            Console.WriteLine("PersonalLight: {0}", p.LightLevel);
+            // Console.WriteLine("PersonalLight: {0}", p.LightLevel);
             WorldRenderer.PersonalLightning = p.LightLevel;
         }
 
