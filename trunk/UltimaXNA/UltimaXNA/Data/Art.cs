@@ -28,8 +28,14 @@ namespace UltimaXNA.Data
         private static Texture2D[][] _cache = new Texture2D[0x10000][];
         private static FileIndexClint _index = new FileIndexClint("artidx.mul", "art.mul");
         private static ushort[][] _dimensions = new ushort[0x4000][];
+        private static GraphicsDevice _graphics;
 
-        public static Texture2D GetLandTexture(int index, GraphicsDevice graphicsDevice)
+        public static void Initialize(GraphicsDevice graphics)
+        {
+            _graphics = graphics;
+        }
+
+        public static Texture2D GetLandTexture(int index)
         {
             index &= 0x3FFF;
 
@@ -38,13 +44,13 @@ namespace UltimaXNA.Data
 
             if (data == null)
             {
-                _cache[index][0] = data = ReadLandTexture(index, graphicsDevice, 0);
+                _cache[index][0] = data = ReadLandTexture(index, 0);
             }
 
             return data;
         }
 
-        public static Texture2D GetStaticTexture(int index, GraphicsDevice graphicsDevice)
+        public static Texture2D GetStaticTexture(int index)
         {
             index &= 0x3FFF;
             index += 0x4000;
@@ -54,13 +60,13 @@ namespace UltimaXNA.Data
 
             if (data == null)
             {
-                _cache[index][0] = data = readStaticTexture(index, graphicsDevice, 0);
+                _cache[index][0] = data = readStaticTexture(index, 0);
             }
 
             return data;
         }
 
-        public static Texture2D GetStaticTexture(int index, GraphicsDevice graphicsDevice, int hue)
+        public static Texture2D GetStaticTexture(int index, int hue)
         {
             index &= 0x3FFF;
             index += 0x4000;
@@ -70,13 +76,13 @@ namespace UltimaXNA.Data
 
             if (data == null)
             {
-                _cache[index][hue] = data = readStaticTexture(index, graphicsDevice, hue);
+                _cache[index][hue] = data = readStaticTexture(index, hue);
             }
 
             return data;
         }
 
-        private static unsafe Texture2D ReadLandTexture(int index, GraphicsDevice graphicsDevice, int hue)
+        private static unsafe Texture2D ReadLandTexture(int index, int hue)
         {
             _index.Seek(index);
 
@@ -115,7 +121,7 @@ namespace UltimaXNA.Data
                 }
             }
 
-            Texture2D texture = new Texture2D(graphicsDevice, 44, 44, 1, TextureUsage.None, SurfaceFormat.Bgra5551);
+            Texture2D texture = new Texture2D(_graphics, 44, 44, 1, TextureUsage.None, SurfaceFormat.Bgra5551);
 
             texture.SetData<ushort>(data);
 
@@ -145,7 +151,7 @@ namespace UltimaXNA.Data
             return new ushort[] { (ushort)_index.BinaryReader.ReadInt16(), (ushort)_index.BinaryReader.ReadInt16() };
         }
 
-        private static unsafe Texture2D readStaticTexture(int index, GraphicsDevice graphicsDevice, int hue)
+        private static unsafe Texture2D readStaticTexture(int index, int hue)
         {
             _index.Seek(index);
             _index.BinaryReader.ReadInt32();
@@ -213,7 +219,7 @@ namespace UltimaXNA.Data
                 }
             }
 
-            Texture2D texture = new Texture2D(graphicsDevice, width, height, 1, TextureUsage.None, SurfaceFormat.Bgra5551);
+            Texture2D texture = new Texture2D(_graphics, width, height, 1, TextureUsage.None, SurfaceFormat.Bgra5551);
 
             texture.SetData<ushort>(data);
 

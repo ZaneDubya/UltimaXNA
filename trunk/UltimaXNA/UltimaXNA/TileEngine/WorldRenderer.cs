@@ -21,78 +21,82 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using UltimaXNA.Entities;
+using UltimaXNA.Input;
 #endregion
 
 namespace UltimaXNA.TileEngine
 {
-    [Flags]
-    public enum PickTypes : int
+    static class WorldRenderer
     {
-        PickNothing = 0,
-        PickObjects = 1,
-        PickStatics = 2,
-        PickGroundTiles = 4
-    }
-
-    
-
-    class TileEngine : DrawableGameComponent, ITileEngine
-    {
-        public static int startX, startY;
-        public MiniMap MiniMap { get; protected set; }
-        public int ObjectsRendered { get; protected set; }
-        private SpriteBatch3D _spriteBatch;
-        private VertexPositionNormalTextureHue[] _vertexBuffer;
-        private VertexPositionNormalTextureHue[] _vertexBufferForStretchedTile;
-        private bool _isFirstUpdate = true; // This variable is used to skip the first 'update' cycle.
+        public static MiniMap MiniMap { get; internal set; }
+        public static int ObjectsRendered { get; internal set; }
+        private static SpriteBatch3D _spriteBatch;
+        private static VertexPositionNormalTextureHue[] _vertexBuffer;
+        private static VertexPositionNormalTextureHue[] _vertexBufferForStretchedTile;
+        private static bool _isFirstUpdate = true; // This variable is used to skip the first 'update' cycle.
 
         // Used for mousepicking.
-        public MapObject MouseOverObject { get; internal set; }
-        public MapObject MouseOverGroundTile { get; internal set; }
-        public PickTypes PickType { get; set; }
-        private RayPicker _rayPicker;
+        public static MapObject MouseOverObject { get; internal set; }
+        public static MapObject MouseOverGroundTile { get; internal set; }
+        public static PickTypes PickType { get; set; }
+        private static RayPicker _rayPicker;
 
-        // Reference for services
-        private Input.IInputService _inputService;
-        private Entities.IEntitiesService _objectsService;
-        private IWorld _worldService;
-        private IGameState _gameStateService;
+	    // lightning variables
+        private static int _personalLightning;
+        private static int _overallLightning;
 
-	// lightning variables
-	private int _personalLightning;
-	private int _overallLightning;
+        public static int PersonalLightning
+	    {
+		    get { return _personalLightning; }
+		    set
+		    {
+			    _personalLightning = value;
+			    recalculateLightning();
+		    }
+	    }
 
-	public int PersonalLightning
-	{
-		get { return _personalLightning; }
-		set
-		{
-			_personalLightning = value;
-			recalculateLightning ();
-		}
-	}
+        public static int OverallLightning
+	    {
+		    get { return _overallLightning; }
+		    set
+		    {
+			    _overallLightning = value;
+			    recalculateLightning();
+		    }
+	    }
 
-	public int OverallLightning
-	{
-		get { return _overallLightning; }
-		set
-		{
-			_overallLightning = value;
-			recalculateLightning ();
-		}
-	}
-
-        public TileEngine(Game game)
-            : base(game)
+        static WorldRenderer()
         {
-            game.Services.AddService(typeof(ITileEngine), this);
+            const float iUVMin = .01f;
+            const float iUVMax = .99f;
+            _vertexBuffer = new VertexPositionNormalTextureHue[] {
+                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(0, 0, 1), new Vector2(0, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(0, 0, 1), new Vector2(1, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(0, 0, 1), new Vector2(0, 1)),
+                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(0, 0, 1), new Vector2(1, 1))
+            };
+            _vertexBufferForStretchedTile = new VertexPositionNormalTextureHue[] {
+                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(), new Vector2(iUVMin, iUVMin)),
+                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(), new Vector2(iUVMax, iUVMin)),
+                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(), new Vector2(iUVMin, iUVMax)),
+                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(), new Vector2(iUVMax, iUVMax))
+            };
+
+            
         }
 
-        public override void Draw(GameTime gameTime)
+        public static void Initialize(Game game)
         {
-            base.Draw(gameTime);
+            _spriteBatch = new SpriteBatch3D(game);
+            _rayPicker = new RayPicker(game);
+            if (MiniMap == null)
+                MiniMap = new MiniMap(game.GraphicsDevice, World.Map);
+        }
 
-            if (!_gameStateService.InWorld)
+        public static void Draw(GameTime gameTime)
+        {
+            if (!GameState.InWorld)
                 return;
 
             _spriteBatch.Flush();
@@ -100,12 +104,12 @@ namespace UltimaXNA.TileEngine
                 _rayPicker.DrawPickedTriangle(_spriteBatch.WorldMatrix);
         }
 
-        public void SetLightDirection(Vector3 nDirection)
+        public static void SetLightDirection(Vector3 nDirection)
         {
             _spriteBatch.SetLightDirection(nDirection);
         }
 
-		private void recalculateLightning()
+        private static void recalculateLightning()
 		{
 			float light = Math.Min(30 - OverallLightning + PersonalLightning, 30f);
 			light = Math.Max ( light, 0 );
@@ -129,22 +133,21 @@ namespace UltimaXNA.TileEngine
 		}
 
 
-        public override void Update(GameTime gameTime)
+        public static void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
             if (_isFirstUpdate)
             {
                 _isFirstUpdate = false;
                 return;
             }
 
-            if (!_gameStateService.InWorld)
+            if (!GameState.InWorld)
                 return;
 
             Vector3 drawPosition = new Vector3();
             float drawX, drawY, drawZ = 0;
             int width, height;
-            Map map = _worldService.Map;
+            Map map = World.Map;
             MapObject mapObject;
             MapObject[] mapObjects;
             Texture2D texture;
@@ -152,21 +155,16 @@ namespace UltimaXNA.TileEngine
             ObjectsRendered = 0; // Count of objects rendered for statistics and debug
             // List of items for mouse over
             MouseOverList iMouseOverList = new MouseOverList();
-            int MaxRoofAltitude = _worldService.MaxRoofAltitude;
+            int MaxRoofAltitude = World.MaxRoofAltitude;
 
             // Now determine where to draw. First retrieve the position of the center object.
-            Entities.DrawPosition iDrawPosition = _objectsService.GetPlayerObject().Movement.DrawPosition;
+            Entities.DrawPosition iDrawPosition = EntitiesCollection.GetPlayerObject().Movement.DrawPosition;
             
-            float xOffset = (this.Game.GraphicsDevice.PresentationParameters.BackBufferWidth / 2) - 22;
-            float yOffset = (this.Game.GraphicsDevice.PresentationParameters.BackBufferHeight / 2) - ((map.GameSize * 44) / 2);
+            float xOffset = (GameState.BackBufferWidth / 2) - 22;
+            float yOffset = (GameState.BackBufferHeight / 2) - ((map.GameSize * 44) / 2);
             yOffset += ((float)iDrawPosition.TileZ + iDrawPosition.OffsetZ) * 4;
             xOffset -= (int)((iDrawPosition.OffsetX - iDrawPosition.OffsetY) * 22);
             yOffset -= (int)((iDrawPosition.OffsetX + iDrawPosition.OffsetY) * 22);
-
-            startX = iDrawPosition.TileX - map.GameSize / 2;
-            startY = iDrawPosition.TileY - map.GameSize / 2;
-
-            Random iRand = new Random();
 
             // If we are going to be checking for GroundTiles, Clear the RayPicker.
             // If we're not, then make sure we clear the last picked ground tile.
@@ -177,8 +175,8 @@ namespace UltimaXNA.TileEngine
 
             foreach(MapCell mapCell in map.m_MapCells.Values)
             {
-                int x = mapCell.X - startX;
-                int y = mapCell.Y - startY;
+                int x = mapCell.X - World.RenderBeginX;
+                int y = mapCell.Y - World.RenderBeginY;
                 drawPosition.X = (x - y) * 22 + xOffset;
                 drawPosition.Y = (x + y) * 22 + yOffset;
                 mapObjects = mapCell.GetSortedObjects();
@@ -202,7 +200,7 @@ namespace UltimaXNA.TileEngine
 
                         if (landData.TextureID <= 0 || landData.Wet) // Not Stretched
                         {
-                            texture = Data.Art.GetLandTexture(groundTile.ItemID, this.GraphicsDevice);
+                            texture = Data.Art.GetLandTexture(groundTile.ItemID);
 
                             _vertexBuffer[0].Position = drawPosition;
                             _vertexBuffer[0].Position.Y -= drawY;
@@ -231,7 +229,7 @@ namespace UltimaXNA.TileEngine
                         }
                         else // Stretched
                         {
-                            texture = Data.Texmaps.GetTexmapTexture(landData.TextureID, this.GraphicsDevice);
+                            texture = Data.Texmaps.GetTexmapTexture(landData.TextureID);
 
                             _vertexBufferForStretchedTile[0].Position = drawPosition;
                             _vertexBufferForStretchedTile[0].Position.X += 22;
@@ -284,7 +282,7 @@ namespace UltimaXNA.TileEngine
 
                         Data.Art.GetStaticDimensions(staticItem.ItemID, out width, out height);
 
-                        texture = Data.Art.GetStaticTexture(staticItem.ItemID, this.GraphicsDevice);
+                        texture = Data.Art.GetStaticTexture(staticItem.ItemID);
 
                         drawX = (width >> 1) - 22;
                         drawY = (staticItem.Z << 2) + height - 44;
@@ -327,8 +325,7 @@ namespace UltimaXNA.TileEngine
                         if (iMobile.Z >= MaxRoofAltitude)
                             continue;
 
-                        Data.FrameXNA[] iFrames = Data.AnimationsXNA.GetAnimation(this.Game.GraphicsDevice,
-                            iMobile.BodyID, iMobile.Action, iMobile.Facing, iMobile.Hue, false);
+                        Data.FrameXNA[] iFrames = Data.AnimationsXNA.GetAnimation(iMobile.BodyID, iMobile.Action, iMobile.Facing, iMobile.Hue, false);
                         if (iFrames == null)
                             continue;
                         int iFrame = iMobile.Frame(iFrames.Length);
@@ -364,8 +361,8 @@ namespace UltimaXNA.TileEngine
                         // y = 1, total hue.
                         // y = 2, partial hue.
                         Vector2 hueVector = getHueVector(iMobile.Hue);
-                        if (_gameStateService.LastTarget != null)
-                            if (_gameStateService.LastTarget == iMobile.OwnerSerial)
+                        if (GameState.LastTarget != null)
+                            if (GameState.LastTarget == iMobile.OwnerSerial)
                                 hueVector = new Vector2(((Entities.Mobile)iMobile.OwnerEntity).NotorietyHue - 1, 1);
 
                         _vertexBuffer[0].Hue = hueVector;
@@ -385,8 +382,7 @@ namespace UltimaXNA.TileEngine
                         if (iObject.Z >= MaxRoofAltitude)
                             continue;
 
-                        Data.FrameXNA[] iFrames = Data.AnimationsXNA.GetAnimation(this.Game.GraphicsDevice,
-                            iObject.BodyID, Data.BodyConverter.DeathAnimationIndex(iObject.BodyID), iObject.Facing, iObject.Hue, false);
+                        Data.FrameXNA[] iFrames = Data.AnimationsXNA.GetAnimation(iObject.BodyID, Data.BodyConverter.DeathAnimationIndex(iObject.BodyID), iObject.Facing, iObject.Hue, false);
                         // GetAnimation fails so it returns null, temporary fix - Smjert
                         if (iFrames == null)
                             continue;
@@ -442,7 +438,7 @@ namespace UltimaXNA.TileEngine
                             continue;
 
                         Data.Art.GetStaticDimensions(iObject.ItemID, out width, out height);
-                        texture = Data.Art.GetStaticTexture(iObject.ItemID, this.GraphicsDevice);
+                        texture = Data.Art.GetStaticTexture(iObject.ItemID);
                         drawX = (width >> 1) - 22;
                         drawY = (iObject.Z << 2) + height - 44;
 
@@ -525,14 +521,14 @@ namespace UltimaXNA.TileEngine
                     ObjectsRendered++;
                 }
             }
-            MouseOverObject = iMouseOverList.GetForemostMouseOverItem(_inputService.Mouse.Position);
+            MouseOverObject = iMouseOverList.GetForemostMouseOverItem(InputHandler.Mouse.Position);
 
             if ((PickType & PickTypes.PickGroundTiles) == PickTypes.PickGroundTiles)
-                if (_rayPicker.PickTest(_inputService.Mouse.Position, Matrix.Identity, _spriteBatch.WorldMatrix))
+                if (_rayPicker.PickTest(InputHandler.Mouse.Position, Matrix.Identity, _spriteBatch.WorldMatrix))
                     MouseOverGroundTile = _rayPicker.pickedObject;
         }
 
-        private Vector2 getHueVector(int hue)
+        private static Vector2 getHueVector(int hue)
         {
             if (hue == 0)
                 return new Vector2(0);
@@ -546,105 +542,17 @@ namespace UltimaXNA.TileEngine
             return new Vector2(hue & 0x3FFF - 1, hueType);
         }
 
-        private bool isMouseOverObject(Vector3 iMin, Vector3 iMax)
+        private static bool isMouseOverObject(Vector3 iMin, Vector3 iMax)
         {
             // Added cursor picking -Poplicola 5/19/2009
             BoundingBox iBoundingBox = new BoundingBox(iMin, iMax);
             // Must correct for bounding box being one pixel larger than actual texture.
             iBoundingBox.Max.X--; iBoundingBox.Max.Y--;
 
-            Vector3 iMousePosition = new Vector3(_inputService.Mouse.Position.X, _inputService.Mouse.Position.Y, iMin.Z);
+            Vector3 iMousePosition = new Vector3(InputHandler.Mouse.Position.X, InputHandler.Mouse.Position.Y, iMin.Z);
             if (iBoundingBox.Contains(iMousePosition) == ContainmentType.Contains)
                 return true;
             return false;
-        }
-
-        public override void Initialize()
-        {
-            base.Initialize();
-
-            _inputService = (Input.IInputService)Game.Services.GetService(typeof(Input.IInputService));
-            _objectsService = (Entities.IEntitiesService)Game.Services.GetService(typeof(Entities.IEntitiesService));
-            _worldService = (IWorld)Game.Services.GetService(typeof(IWorld));
-            _gameStateService = (IGameState)Game.Services.GetService(typeof(IGameState));
-
-            _vertexBuffer = new VertexPositionNormalTextureHue[] {
-                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(0, 0, 1), new Vector2(0, 0)),
-                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(0, 0, 1), new Vector2(1, 0)),
-                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(0, 0, 1), new Vector2(0, 1)),
-                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(0, 0, 1), new Vector2(1, 1))
-            };
-            const float iUVMin = .01f;
-            const float iUVMax = .99f;
-            _vertexBufferForStretchedTile = new VertexPositionNormalTextureHue[] {
-                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(), new Vector2(iUVMin, iUVMin)),
-                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(), new Vector2(iUVMax, iUVMin)),
-                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(), new Vector2(iUVMin, iUVMax)),
-                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(), new Vector2(iUVMax, iUVMax))
-            };
-
-            if (MiniMap == null)
-                MiniMap = new MiniMap(Game.GraphicsDevice, _worldService.Map);
-        }
-
-        protected override void LoadContent()
-        {
-            base.LoadContent();
-            _spriteBatch = new SpriteBatch3D(this.Game);
-            _rayPicker = new RayPicker(this.Game);
-        }
-    }
-
-    class MouseOverList
-    {
-        List<MouseOverItem> m_List;
-
-        public MouseOverList()
-        {
-            m_List = new List<MouseOverItem>();
-        }
-
-        public MapObject GetForemostMouseOverItem(Vector2 nMousePosition)
-        {
-            // Parse list backwards to find topmost mouse over object.
-            foreach (MouseOverItem iItem in CreateReverseIterator(m_List))
-            {
-                UInt16[] iPixel = new UInt16[1];
-                iItem.Texture.GetData<UInt16>(0,
-                    new Rectangle((int)nMousePosition.X - (int)iItem.Position.X, (int)nMousePosition.Y - (int)iItem.Position.Y, 1, 1), 
-                    iPixel, 0, 1);
-                if (iPixel[0] != 0)
-                    return iItem.Object;
-            }
-            return null;
-        }
-
-        static IEnumerable<MouseOverItem> CreateReverseIterator<MouseOverItem>(IList<MouseOverItem> list)
-        {
-            int count = list.Count;
-            for (int i = count - 1; i >= 0; --i)
-            {
-                yield return list[i];
-            }
-        }
-
-        public void AddItem(MouseOverItem nItem)
-        {
-            m_List.Add(nItem);
-        }
-    }
-
-    class MouseOverItem
-    {
-        public Texture2D Texture;
-        public Vector3 Position;
-        public MapObject Object;
-
-        public MouseOverItem(Texture2D nTexture, Vector3 nPosition, MapObject nObject)
-        {
-            Texture = nTexture;
-            Position = nPosition;
-            Object = nObject;
         }
     }
 }

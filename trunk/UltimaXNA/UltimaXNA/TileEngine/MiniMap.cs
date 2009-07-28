@@ -62,7 +62,7 @@ namespace UltimaXNA.TileEngine
                         ushort* cur = pData + ((size /2 - 1) + (size - 1) * y);
                         for (int x = 0; x < _map.GameSize; x++)
                         {
-                            MapCell m = _map.GetMapCell(TileEngine.startX + x, TileEngine.startY + y);
+                            MapCell m = _map.GetMapCell(World.RenderBeginX + x, World.RenderBeginY + y);
                             int i;
                             for (i = m.Objects.Count - 1; i > 0; i--)
                             {

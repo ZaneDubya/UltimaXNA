@@ -35,13 +35,6 @@ namespace UltimaXNA.Entities
         internal bool _hasBeenDrawn = false; // if this is false this object will redraw itself in the tileengine.}
         internal bool _Disposed = false; // set this to true to have the object deleted.
         public bool IsDisposed { get { return _Disposed; } }
-        
-        public TileEngine.IWorld World {
-            set
-            {
-                Movement.World = value;
-            }
-        }
 
         public int X { get { return Movement.DrawPosition.TileX; } }
         public int Y { get { return Movement.DrawPosition.TileY; } }
@@ -60,7 +53,7 @@ namespace UltimaXNA.Entities
             {
                 Movement.Update(gameTime);
 
-                TileEngine.MapCell iThisMapCell = Movement.World.Map.GetMapCell(Movement.DrawPosition.TileX, Movement.DrawPosition.TileY);
+                TileEngine.MapCell iThisMapCell = TileEngine.World.Map.GetMapCell(Movement.DrawPosition.TileX, Movement.DrawPosition.TileY);
                 if (iThisMapCell != null)
                 {
                     this.Draw(iThisMapCell, Movement.DrawPosition.PositionV3, Movement.DrawPosition.OffsetV3);

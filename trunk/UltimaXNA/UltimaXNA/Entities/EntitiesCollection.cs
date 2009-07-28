@@ -24,45 +24,18 @@ using UltimaXNA.Network.Packets.Client;
 
 namespace UltimaXNA.Entities
 {
-    public interface IEntitiesService
+    static class EntitiesCollection
     {
-        int MySerial { get; set; }
-        T GetObject<T>(Serial serial, bool create) where T : Entity;
-        Overhead AddOverhead(MessageType msgType, Serial serial, string text, int fontID, int hue);
-        Entity GetPlayerObject();
-        List<T> GetObjectsByType<T>() where T : Entity;
-        void RemoveObject(Serial serial);
-        void Reset();
-        
-    }
+        private static Dictionary<int, Entity> _entities = new Dictionary<int, Entity>();
+        public static int MySerial { get; set; }
 
-    class EntitiesCollection : GameComponent, IEntitiesService
-    {
-        private Dictionary<int, Entity> _entities = new Dictionary<int, Entity>();
-        public int MySerial { get; set; }
-        private TileEngine.IWorld _worldService;
-        private IGameState _gameStateService;
-        private Client.IUltimaClient _gameClientService;
-        private GUI.IGUI _GUIService;
-
-        public EntitiesCollection(Game game)
-            : base(game)
+        static EntitiesCollection()
         {
-            game.Services.AddService(typeof(IEntitiesService), this);
         }
 
-        public override void Initialize()
+        public static void Update(GameTime gameTime)
         {
-            _worldService = (TileEngine.IWorld)Game.Services.GetService(typeof(TileEngine.IWorld));
-            _gameStateService = (IGameState)Game.Services.GetService(typeof(IGameState));
-            _gameClientService = (Client.IUltimaClient)Game.Services.GetService(typeof(Client.IUltimaClient));
-            _GUIService = (GUI.IGUI)Game.Services.GetService(typeof(GUI.IGUI));
-            base.Initialize();
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            if (_gameStateService.InWorld)
+            if (GameState.InWorld)
             {
                 List<int> removeObjectsList = removeObjectsList = new List<int>();
                 foreach (KeyValuePair<int, Entity> entity in _entities)
@@ -79,10 +52,9 @@ namespace UltimaXNA.Entities
                     _entities.Remove(i);
                 }
             }
-            base.Update(gameTime);
         }
 
-        public Overhead AddOverhead(MessageType msgType, Serial serial, string text, int fontID, int hue)
+        public static Overhead AddOverhead(MessageType msgType, Serial serial, string text, int fontID, int hue)
         {
             Entity ownerEntity = _entities[serial];
             if (ownerEntity != null)
@@ -93,7 +65,7 @@ namespace UltimaXNA.Entities
             return null;
         }
 
-        public List<T> GetObjectsByType<T>() where T : Entity
+        public static List<T> GetObjectsByType<T>() where T : Entity
         {
             List<T> list = new List<T>();
             foreach (Entity e in _entities.Values)
@@ -107,7 +79,7 @@ namespace UltimaXNA.Entities
             return list;
         }
 
-        public T GetObject<T>(Serial serial, bool create) where T : Entity
+        public static T GetObject<T>(Serial serial, bool create) where T : Entity
         {
             T entity;
             // Check for existence in the collection.
@@ -144,10 +116,10 @@ namespace UltimaXNA.Entities
             }
         }
 
-        private T addObject<T>(Serial serial) where T : Entity
+        private static T addObject<T>(Serial serial) where T : Entity
         {
             T o = (T)Activator.CreateInstance(typeof(T), new object[] { serial });
-            o.World = _worldService; // Add the world service (for movement).
+            // o.World = TileEngine.WorldStatic; // Add the world service (for movement).
             // If this object is the client, designate it to return events.
             if (o.Serial == MySerial)
                 o.Movement.DesignateClientPlayer();
@@ -155,7 +127,7 @@ namespace UltimaXNA.Entities
             return (T)o;
         }
 
-        public void RemoveObject(Serial serial)
+        public static void RemoveObject(Serial serial)
         {
             // When Dispose() is called, the object will tidy up and then
             // set m_Dispose = true. Reference this with IsDisposed on the
@@ -166,7 +138,7 @@ namespace UltimaXNA.Entities
             }
         }
 
-        public Entity GetPlayerObject()
+        public static Entity GetPlayerObject()
         {
             // This could be cached to save time.
             if (_entities.ContainsKey(MySerial))
@@ -176,7 +148,7 @@ namespace UltimaXNA.Entities
                 return null;
         }
 
-        public void Reset()
+        public static void Reset()
         {
             _entities.Clear();
         }

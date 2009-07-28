@@ -418,12 +418,14 @@ namespace UltimaXNA.Data
         public static FileIndex FileIndex5 { get { return m_FileIndex5; } }
 
         private static FrameXNA[][][][] m_Cache;
+        private static GraphicsDevice _graphics;
 
-        private AnimationsXNA()
+        public static void Initialize(GraphicsDevice graphics)
         {
+            _graphics = graphics;
         }
 
-        public static FrameXNA[] GetAnimation(GraphicsDevice nDevice, int body, int action, int direction, int hue, bool preserveHue)
+        public static FrameXNA[] GetAnimation(int body, int action, int direction, int hue, bool preserveHue)
         {
             // I moved this line here since at line 497, previously, it uses m_Cache with real body as index and that index has no instance, AnimID has instance instead.
             // Example with Hiryu (AnimID 243, real body has 201 after convert):
@@ -590,7 +592,7 @@ namespace UltimaXNA.Data
                     else
                     {
                         bin.BaseStream.Seek(lookups[i], SeekOrigin.Begin);
-                        frames[i] = new FrameXNA(nDevice, palette, bin, flip);
+                        frames[i] = new FrameXNA(_graphics, palette, bin, flip);
                     }
                 }
                 m_Cache[body][action][direction] = frames;
@@ -677,10 +679,9 @@ namespace UltimaXNA.Data
 
         private FrameXNA()
         {
-            // m_Texture = new Texture2D(nDevice, 1, 1);
         }
 
-        public unsafe FrameXNA(GraphicsDevice nDevice, ushort[] palette, BinaryReader bin, bool flip)
+        public unsafe FrameXNA(GraphicsDevice graphics, ushort[] palette, BinaryReader bin, bool flip)
         {
             int xCenter = bin.ReadInt16();
             int yCenter = bin.ReadInt16();
@@ -748,7 +749,7 @@ namespace UltimaXNA.Data
 
             m_Center = new Microsoft.Xna.Framework.Point(xCenter, yCenter);
 
-            m_Texture = new Texture2D(nDevice, width, height, 1, TextureUsage.None, SurfaceFormat.Bgra5551);
+            m_Texture = new Texture2D(graphics, width, height, 1, TextureUsage.None, SurfaceFormat.Bgra5551);
             m_Texture.SetData<ushort>(data);
         }
     }

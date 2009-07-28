@@ -13,7 +13,8 @@
     <XnaPlatform>Windows</XnaPlatform>
     <XnaCrossPlatformGroupID>50bfd68f-b3c7-4d72-866a-2cf8c22b84b0</XnaCrossPlatformGroupID>
     <ApplicationIcon>ultimaxna.ico</ApplicationIcon>
-    <Thumbnail>UltimaXNA Logo - Icon 64.png</Thumbnail>
+    <Thumbnail>
+    </Thumbnail>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <StartupObject>
     </StartupObject>
@@ -101,6 +102,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Client\UltimaClient.cs" />
     <Compile Include="Data\Art.cs" />
     <Compile Include="Data\ASCIIFont.cs" />
     <Compile Include="Data\Gumps.cs" />
@@ -142,6 +144,7 @@
     <Compile Include="Entities\PlayerMobile.cs" />
     <Compile Include="Entities\PropertyList.cs" />
     <Compile Include="Entities\Shared.cs" />
+    <Compile Include="FunStuff.cs" />
     <Compile Include="GameState.cs" />
     <Compile Include="GUI\Events.cs" />
     <Compile Include="GUI\GUIHelper.cs" />
@@ -305,7 +308,6 @@
     <Compile Include="Network\ServerListEntry.cs" />
     <Compile Include="Network\SocketState.cs" />
     <Compile Include="Network\StartingLocation.cs" />
-    <Compile Include="Client\UltimaClient.cs" />
     <Compile Include="SceneManagement\BaseScene.cs" />
     <Compile Include="SceneManagement\IScene.cs" />
     <Compile Include="SceneManagement\ISceneService.cs" />
@@ -324,10 +326,11 @@
     <Compile Include="TileEngine\MapObjectGround.cs" />
     <Compile Include="TileEngine\Map.cs" />
     <Compile Include="TileEngine\MapObjectMobile.cs" />
+    <Compile Include="TileEngine\Shared.cs" />
     <Compile Include="TileEngine\SpriteBatch3D.cs" />
     <Compile Include="TileEngine\MapObjectText.cs" />
     <Compile Include="TileEngine\MapObject.cs" />
-    <Compile Include="TileEngine\TileEngine.cs" />
+    <Compile Include="TileEngine\WorldRenderer.cs" />
     <Compile Include="TileEngine\MapObjectStatic.cs" />
     <Compile Include="TileEngine\VertexPositionNormalTextureHue.cs" />
     <Compile Include="TileEngine\World.cs" />
@@ -385,14 +388,12 @@
     <Content Include="log4net.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="UltimaXNA Logo - Icon 64.png" />
     <Content Include="zlib32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="ultimaxna.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Libraries\" />
     <Folder Include="Network\Packets\Both\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

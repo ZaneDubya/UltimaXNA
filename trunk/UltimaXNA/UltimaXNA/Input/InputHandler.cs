@@ -21,45 +21,31 @@ using Microsoft.Xna.Framework;
 
 namespace UltimaXNA.Input
 {
-    public interface IInputService
+    public static class InputHandler
     {
-        MouseHandler Mouse { get; }
-        KeyboardHandler Keyboard { get; }
-    }
+        private static KeyboardHandler _keyboard;
+        public static KeyboardHandler Keyboard { get { return _keyboard; } }
 
-    public class InputHandler : GameComponent, IInputService
-    {
-        private KeyboardHandler m_Keyboard;
-        public KeyboardHandler Keyboard { get { return m_Keyboard; } }
+        private static MouseHandler _mouse;
+        public static MouseHandler Mouse { get { return _mouse; } }
 
-        private MouseHandler m_Mouse;
-        public MouseHandler Mouse { get { return m_Mouse; } }
-
-        public InputHandler(Game game)
-            : base(game)
+        static InputHandler()
         {
-            game.Services.AddService(typeof(IInputService), this);
+            _keyboard = new KeyboardHandler();
+            _mouse = new MouseHandler();
         }
 
-        public override void Initialize()
+        public static void Update(GameTime gameTime)
         {
-            m_Keyboard = new KeyboardHandler();
-            m_Mouse = new MouseHandler();
-            base.Initialize();
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-            if (Game.IsActive)
+            if (GameState.EngineRunning)
             {
-                m_Keyboard.Update(gameTime);
-                m_Mouse.Update(gameTime);
+                _keyboard.Update(gameTime);
+                _mouse.Update(gameTime);
             }
             else
             {
-                m_Keyboard.NoInput();
-                m_Mouse.NoInput();
+                _keyboard.NoInput();
+                _mouse.NoInput();
             }
         }
     }

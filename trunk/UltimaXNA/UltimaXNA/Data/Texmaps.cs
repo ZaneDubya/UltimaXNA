@@ -26,20 +26,26 @@ namespace UltimaXNA.Data
     {
         private static Texture2D[] m_Cache = new Texture2D[0x4000];
         private static FileIndexClint m_Index = new FileIndexClint("texidx.mul", "texmaps.mul");
+        private static GraphicsDevice _graphics;
 
-        public static Texture2D GetTexmapTexture(int index, GraphicsDevice graphicsDevice)
+        public static void Initialize(GraphicsDevice graphics)
+        {
+            _graphics = graphics;
+        }
+
+        public static Texture2D GetTexmapTexture(int index)
         {
             Texture2D texture = m_Cache[index];
 
             if (texture == null)
             {
-                m_Cache[index] = texture = ReadTexmapTexture(index, graphicsDevice);
+                m_Cache[index] = texture = readTexmapTexture(index);
             }
 
             return texture;
         }
 
-        private static unsafe Texture2D ReadTexmapTexture(int index, GraphicsDevice graphicsDevice)
+        private static unsafe Texture2D readTexmapTexture(int index)
         {
             int extra;
 
@@ -65,7 +71,7 @@ namespace UltimaXNA.Data
                 }
             }
 
-            Texture2D texture = new Texture2D(graphicsDevice, extra, extra, 1, TextureUsage.None, SurfaceFormat.Bgra5551);
+            Texture2D texture = new Texture2D(_graphics, extra, extra, 1, TextureUsage.None, SurfaceFormat.Bgra5551);
 
             texture.SetData<ushort>(data);
 

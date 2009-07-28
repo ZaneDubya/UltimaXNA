@@ -28,37 +28,36 @@ namespace UltimaXNA.SceneManagement
 {
     public class WorldScene : BaseScene
     {
-        public WorldScene(Game game)
-            : base(game)
+        public WorldScene()
         {
         }
 
         public override void  Intitialize()
         {
              base.Intitialize();
-             GUI.AddWindow("ChatFrame", new Window_Chat());
-             GUI.AddWindow("ChatInput", new Window_ChatInput());
-             GUI.AddWindow("StatusFrame", new Window_StatusFrame());
-             ((IGameState)Game.Services.GetService(typeof(IGameState))).InWorld = true;
+             UserInterface.AddWindow("ChatFrame", new Window_Chat());
+             UserInterface.AddWindow("ChatInput", new Window_ChatInput());
+             UserInterface.AddWindow("StatusFrame", new Window_StatusFrame());
+             GameState.InWorld = true;
         }
 
         public override void Dispose()
         {
             base.Dispose();
-            Network.Disconnect();
-            GUI.CloseWindow("ChatFrame");
-            GUI.CloseWindow("ChatInput");
-            GUI.CloseWindow("StatusFrame");
-            ((IGameState)Game.Services.GetService(typeof(IGameState))).InWorld = false;
+            UltimaClient.Disconnect();
+            UserInterface.CloseWindow("ChatFrame");
+            UserInterface.CloseWindow("ChatInput");
+            UserInterface.CloseWindow("StatusFrame");
+            GameState.InWorld = false;
         }
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            if (!Network.IsConnected && SceneManager.CurrentScene.SceneState == SceneState.Active)
+            if (!UltimaClient.IsConnected && SceneManager.CurrentScene.SceneState == SceneState.Active)
             {
-                SceneManager.CurrentScene = new LoginScene(Game);
-                GUI.ErrorPopup_Modal("You have lost your connection with the server.");
+                SceneManager.CurrentScene = new LoginScene();
+                UserInterface.ErrorPopup_Modal("You have lost your connection with the server.");
                 return;
             }
         }

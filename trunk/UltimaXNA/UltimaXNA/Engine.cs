@@ -25,14 +25,6 @@ namespace UltimaXNA
 {
     public class Engine : Game
     {
-        private Client.UltimaClient _Client;
-        private Input.InputHandler _Input;
-        private GameState _GameState;
-        private Entities.EntitiesCollection _GameObjects;
-        private TileEngine.World _World;
-        private TileEngine.TileEngine _TileEngine;
-        private GUI.EngineGUI _GUI;
-        private SceneManagement.SceneManager _sceneManager;
         private Diagnostics.Logger _logService;
 
         public Engine()
@@ -53,40 +45,22 @@ namespace UltimaXNA
             // we don't have to continually pass it to them.
             Data.Gumps.GraphicsDevice = this.GraphicsDevice;
 
-            //load the hues texture
-            UltimaXNA.Data.HuesXNA.Initialize(GraphicsDevice);
-            UltimaXNA.Data.ASCIIText.Initialize(GraphicsDevice);
-            UltimaXNA.Data.StringList.LoadStringList("enu");
+            //Initialize the Data objects.
+            Data.AnimationsXNA.Initialize(GraphicsDevice);
+            Data.Art.Initialize(GraphicsDevice);
+            Data.ASCIIText.Initialize(GraphicsDevice);
+            Data.HuesXNA.Initialize(GraphicsDevice);
+            Data.StringList.LoadStringList("enu");
+            Data.Texmaps.Initialize(GraphicsDevice);
 
             this.Content.RootDirectory = "Content";
-
             _logService = new Diagnostics.Logger("UXNA");
             Services.AddService<Diagnostics.ILoggingService>(_logService);
 
-            _sceneManager = new SceneManagement.SceneManager(this);
-            Services.AddService<SceneManagement.ISceneService>(_sceneManager);
-            this.Components.Add(_sceneManager);
-
-            _Client = new Client.UltimaClient(this);
-            this.Components.Add(_Client);
-
-            _Input = new Input.InputHandler(this);
-            this.Components.Add(_Input);
-
-            _GameState = new GameState(this);
-            this.Components.Add(_GameState);
-
-            _GameObjects = new Entities.EntitiesCollection(this);
-            this.Components.Add(_GameObjects);
-
-            _World = new TileEngine.World(this);
-            this.Components.Add(_World);
-
-            _TileEngine = new TileEngine.TileEngine(this);
-            this.Components.Add(_TileEngine);
-
-            _GUI = new GUI.EngineGUI(this);
-            this.Components.Add(_GUI);
+            SceneManagement.SceneManager.Initialize(this);
+            GameState.Initialize(this);
+            TileEngine.WorldRenderer.Initialize(this);
+            GUI.UserInterface.Initialize(this);
 
             base.Initialize();
         }
@@ -103,18 +77,28 @@ namespace UltimaXNA
 
         protected override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
-            if (_sceneManager.CurrentScene == null)
-            {
-                _sceneManager.CurrentScene = new SceneManagement.LoginScene(this);
-            }
-            _GameState.UpdateAfter(gameTime);
-            _GUI.DebugMessage = _GameState.DebugMessage;
+            SceneManagement.SceneManager.Update(gameTime);
+            Client.UltimaClient.Update(gameTime);
+            Input.InputHandler.Update(gameTime);
+            GameState.Update(gameTime);
+            Entities.EntitiesCollection.Update(gameTime);
+            TileEngine.World.Update(gameTime);
+            TileEngine.WorldRenderer.Update(gameTime);
+            GUI.UserInterface.Update(gameTime);
+
+            if (SceneManagement.SceneManager.CurrentScene == null)
+                SceneManagement.SceneManager.CurrentScene = new SceneManagement.LoginScene();
+
+            GameState.UpdateAfter(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
+            SceneManagement.SceneManager.Draw(gameTime);
+            TileEngine.WorldRenderer.Draw(gameTime);
+            GUI.UserInterface.Draw(gameTime);
+
             base.Draw(gameTime);
         }
 

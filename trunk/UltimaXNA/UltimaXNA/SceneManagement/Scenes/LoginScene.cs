@@ -31,8 +31,7 @@ namespace UltimaXNA.SceneManagement
 {
     public class LoginScene : BaseScene
     {
-        public LoginScene(Game game)
-            : base(game)
+        public LoginScene()
         {
 
         }
@@ -40,9 +39,9 @@ namespace UltimaXNA.SceneManagement
         public override void Intitialize()
         {
             base.Intitialize();
-            GUI.Reset();
-            GUI.AddWindow("LoginBG", new Window_LoginBG());
-            Window_Login w = (Window_Login)GUI.AddWindow("LoginWindow", new Window_Login());
+            UserInterface.Reset();
+            UserInterface.AddWindow("LoginBG", new Window_LoginBG());
+            Window_Login w = (Window_Login)UserInterface.AddWindow("LoginWindow", new Window_Login());
             w.OnLogin += this.OnLogin;
         }
 
@@ -51,13 +50,13 @@ namespace UltimaXNA.SceneManagement
             base.Update(gameTime);
             if (SceneState == SceneState.Active)
             {
-                switch (Network.Status)
+                switch (UltimaClient.Status)
                 {
                     case UltimaClientStatus.Error_Undefined:
                         reset();
                         break;
                     case UltimaClientStatus.WorldServer_InWorld:
-                        SceneManager.CurrentScene = new WorldScene(Game);
+                        SceneManager.CurrentScene = new WorldScene();
                         break;
                     default:
                         break;
@@ -68,8 +67,8 @@ namespace UltimaXNA.SceneManagement
         public override void Dispose()
         {
             base.Dispose();
-            GUI.Window("LoginBG").Close();
-            GUI.Window("LoginWindow").Close();
+            UserInterface.Window("LoginBG").Close();
+            UserInterface.Window("LoginWindow").Close();
         }
 
         public void OnLogin(string server, int port, string account, string password)
@@ -84,21 +83,21 @@ namespace UltimaXNA.SceneManagement
 
         private void reset()
         {
-            Network.Disconnect();
-            GUI.Window("LoginBG").Close();
-            GUI.Window("LoginWindow").Close();
-            SceneManager.CurrentScene = new LoginScene(Game);
+            UltimaClient.Disconnect();
+            UserInterface.Window("LoginBG").Close();
+            UserInterface.Window("LoginWindow").Close();
+            SceneManager.CurrentScene = new LoginScene();
         }
 
         private bool connect(string host, int port)
         {
-            return Network.Connect(host, port);
+            return UltimaClient.Connect(host, port);
         }
 
         private void login(string username, string password)
         {
-            Network.SetAccountPassword(username, password);
-            Network.Send(new Network.Packets.Client.LoginPacket(username, password));
+            UltimaClient.SetAccountPassword(username, password);
+            UltimaClient.Send(new Network.Packets.Client.LoginPacket(username, password));
         }
     }
 }

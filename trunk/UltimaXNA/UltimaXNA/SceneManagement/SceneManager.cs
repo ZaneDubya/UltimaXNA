@@ -27,18 +27,21 @@ using UltimaXNA;
 
 namespace UltimaXNA.SceneManagement
 {
-    public class SceneManager : DrawableGameComponent, ISceneService
+    public static class SceneManager
     {
-        IScene _currentScene;
-        ILoggingService _loggingService;
-        bool _isTransitioning = false;
+        static IScene _currentScene;
+        static ILoggingService _loggingService;
+        static bool _isTransitioning = false;
 
-        public bool IsTransitioning
+        public static bool IsTransitioning
         {
             get { return _isTransitioning; }
         }
 
-        public IScene CurrentScene
+        private static Game _game;
+        public static Game Game { get { return _game; } }
+
+        public static IScene CurrentScene
         {
             get { return _currentScene; }
             set
@@ -86,21 +89,18 @@ namespace UltimaXNA.SceneManagement
             }
         }
 
-        public SceneManager(Game game)
-            : base(game)
+        static SceneManager()
         {
-            _loggingService = game.Services.GetService<ILoggingService>(true);
         }
 
-        public override void Initialize()
+        public static void Initialize(Game game)
         {
-            base.Initialize();
+            _game = game;
+            _loggingService = _game.Services.GetService<ILoggingService>(true);
         }
 
-        public override void Update(GameTime gameTime)
+        public static void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
-
             IScene current = _currentScene;
 
             if (_currentScene != null)
@@ -111,10 +111,8 @@ namespace UltimaXNA.SceneManagement
                 _currentScene.Update(gameTime);
         }
 
-        public override void Draw(GameTime gameTime)
+        public static void Draw(GameTime gameTime)
         {
-            base.Draw(gameTime);
-
             if (_currentScene != null)
             {
                 _currentScene.OnBeforeDraw(gameTime);
