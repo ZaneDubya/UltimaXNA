@@ -39,7 +39,11 @@ namespace UltimaXNA.Entities
 
         internal override void Draw(UltimaXNA.TileEngine.MapCell cell, Vector3 position, Vector3 positionOffset)
         {
-            cell.Add(new TileEngine.MapObjectItem(_ItemID, position, Movement.DrawFacing, this, Hue));
+			if (Ignored)
+			{
+				return;
+			}
+			cell.Add(new TileEngine.MapObjectItem(_ItemID, position, Movement.DrawFacing, this, Hue));
             drawOverheads(cell, position, positionOffset);
         }
 
@@ -93,6 +97,11 @@ namespace UltimaXNA.Entities
                 AnimationDisplayID = ItemData.AnimID;
             }
         }
+
+		public bool Ignored
+		{
+			get { return _ItemID <= 1; } // no draw
+		}
 
         // Inventory position is handled differently in this client than in the legacy UO client.
         // All items have both an X and a Y position within the container. We use X for the SlotIndex
