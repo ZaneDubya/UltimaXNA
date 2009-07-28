@@ -320,7 +320,6 @@
     <Compile Include="Shared.cs" />
     <Compile Include="TileEngine\MapObjectCorpse.cs" />
     <Compile Include="TileEngine\MapObjectItem.cs" />
-    <Compile Include="TileEngine\Interfaces.cs" />
     <Compile Include="TileEngine\MiniMap.cs" />
     <Compile Include="TileEngine\RayPicker.cs" />
     <Compile Include="TileEngine\MapObjectGround.cs" />

@@ -9,9 +9,9 @@ namespace UltimaXNA.TileEngine
 {
     public class MapObject
     {
+        public Vector3 Position;
         public int ItemID { get; set; }
         public int Tiebreaker { get; set; }
-        public Vector3 Position { get; set; }
         public Entity OwnerEntity { get; set; }
         public virtual int Threshold { get; set; }
         public int SortZ { get; set; }

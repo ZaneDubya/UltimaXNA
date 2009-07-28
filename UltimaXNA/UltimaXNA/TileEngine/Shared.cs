@@ -33,7 +33,8 @@ namespace UltimaXNA.TileEngine
         PickNothing = 0,
         PickObjects = 1,
         PickStatics = 2,
-        PickGroundTiles = 4
+        PickGroundTiles = 4,
+        PickEverything = PickObjects | PickStatics | PickGroundTiles
     }
 
     class MouseOverList
