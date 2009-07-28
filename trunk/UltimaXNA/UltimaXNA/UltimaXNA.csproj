@@ -144,7 +144,6 @@
     <Compile Include="Entities\PlayerMobile.cs" />
     <Compile Include="Entities\PropertyList.cs" />
     <Compile Include="Entities\Shared.cs" />
-    <Compile Include="FunStuff.cs" />
     <Compile Include="GameState.cs" />
     <Compile Include="GUI\Events.cs" />
     <Compile Include="GUI\GUIHelper.cs" />
