@@ -44,8 +44,6 @@ namespace UltimaXNA.Entities
         }
         #endregion
 
-        public TileEngine.IWorld World;
-
         public bool RequiresUpdate = false;
         private bool _IsClientPlayer = false;
         // booleans

@@ -33,16 +33,12 @@ namespace UltimaXNA.SceneManagement
 
     public interface IScene : IDisposable
     {
-        Game Game { get; }
-        ISceneService SceneManager { get; }
         SceneState SceneState { get; set; }
         TimeSpan TransitionOffLength { get; }
         TimeSpan TransitionOnLength { get; }
         bool IsInitialized { get; set; }
 
-        IUltimaClient Network { get; }
         ILoggingService Log { get; }
-        IInputService Input { get; }
 
         event TransitionCompleteHandler TransitionComplete;
 

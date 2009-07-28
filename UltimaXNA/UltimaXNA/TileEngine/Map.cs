@@ -71,8 +71,7 @@ namespace UltimaXNA.TileEngine
         private List<int> m_KeysToRemove;
         public SortedDictionary<int, MapCell> m_MapCells;
         private Data.TileMatrix m_TileMatrix;
-        private int m_X;
-        private int m_Y;
+        private int _x, _y;
 
         public Map(int index, int gameSize, int gameSizeUp, int gameSizeDown)
         {
@@ -178,10 +177,10 @@ namespace UltimaXNA.TileEngine
             // Poplicola - added a line to make sure we don't try t
             //reference an entry that doesn't exist - in a dictionary
             // of this size that might be slow.
-            int iX = x - m_StartX;
+            int iX = x - World.RenderBeginX;
             if ((iX < m_GameSize) && (iX >= 0))
             {
-                int iY = y - m_StartY;
+                int iY = y - World.RenderBeginY;
                 if ((iY < m_GameSize) && (iY >= 0))
                 {
                     try
@@ -211,52 +210,48 @@ namespace UltimaXNA.TileEngine
             }
         }
 
-        private int m_StartX, m_StartY;
         public void Update(int x, int y)
         {
-            if (m_X != World.X || m_Y != World.Y)
+            if (_x != World.CenterX || _y != World.CenterY)
             {
-                m_X = x;
-                m_Y = y;
-
-                m_StartX = m_X - m_GameSize / 2;
-                m_StartY = m_Y - m_GameSize / 2;
+                _x = x;
+                _y = y;
 
                 for (x = 0; x < m_GameSize; x++)
                 {
                     for (y = 0; y < m_GameSize; y++)
                     {
-                        mLoadCell(m_StartX + x, m_StartY + y);
+                        loadCell(World.RenderBeginX + x, World.RenderBeginY + y);
                     }
                 }
             }
         }
 
-        private void mLoadCell(int nX, int nY)
+        private void loadCell(int x, int y)
         {
             MapObjectGround groundTile;
             MapCell mapCell;
             IEnumerator<MapCell> mapCellsEnumerator;
             Data.Point2D worldLocation;
 
-            if (m_MapCells.ContainsKey(GetKey(nX, nY)))
+            if (m_MapCells.ContainsKey(GetKey(x, y)))
                 return;
 
-            Data.Tile landTile = m_TileMatrix.GetLandTile(nX, nY);
-            groundTile = new MapObjectGround(landTile, new Vector3(nX, nY, landTile.Z));
+            Data.Tile landTile = m_TileMatrix.GetLandTile(x, y);
+            groundTile = new MapObjectGround(landTile, new Vector3(x, y, landTile.Z));
             groundTile.Surroundings = new Surroundings(
-                m_TileMatrix.GetLandTile(nX + 1, nY + 1).Z,
-                m_TileMatrix.GetLandTile(nX + 1, nY).Z,
-                m_TileMatrix.GetLandTile(nX, nY + 1).Z);
+                m_TileMatrix.GetLandTile(x + 1, y + 1).Z,
+                m_TileMatrix.GetLandTile(x + 1, y).Z,
+                m_TileMatrix.GetLandTile(x, y + 1).Z);
             groundTile.CalculateNormals(
-                m_TileMatrix.GetLandTile(nX - 1, nY).Z,
-                m_TileMatrix.GetLandTile(nX - 1, nY + 1).Z,
-                m_TileMatrix.GetLandTile(nX, nY - 1).Z,
-                m_TileMatrix.GetLandTile(nX + 1, nY - 1).Z,
-                m_TileMatrix.GetLandTile(nX, nY + 2).Z,
-                m_TileMatrix.GetLandTile(nX + 1, nY + 2).Z,
-                m_TileMatrix.GetLandTile(nX + 2, nY).Z,
-                m_TileMatrix.GetLandTile(nX + 2, nY + 1).Z
+                m_TileMatrix.GetLandTile(x - 1, y).Z,
+                m_TileMatrix.GetLandTile(x - 1, y + 1).Z,
+                m_TileMatrix.GetLandTile(x, y - 1).Z,
+                m_TileMatrix.GetLandTile(x + 1, y - 1).Z,
+                m_TileMatrix.GetLandTile(x, y + 2).Z,
+                m_TileMatrix.GetLandTile(x + 1, y + 2).Z,
+                m_TileMatrix.GetLandTile(x + 2, y).Z,
+                m_TileMatrix.GetLandTile(x + 2, y + 1).Z
                 );
 
             if (Math.Abs(groundTile.Z - groundTile.Surroundings.Down) >= Math.Abs(groundTile.Surroundings.South - groundTile.Surroundings.East))
@@ -268,14 +263,14 @@ namespace UltimaXNA.TileEngine
                 groundTile.SortZ = (Math.Min(groundTile.Z, groundTile.Surroundings.Down) + Math.Abs(groundTile.Z - groundTile.Surroundings.Down) / 2);
             }
 
-            mapCell = new MapCell(nX, nY);
+            mapCell = new MapCell(x, y);
             mapCell.Add(groundTile);
 
-            Data.StaticTile[] staticTiles = m_TileMatrix.GetStaticTiles(nX, nY);
+            Data.StaticTile[] staticTiles = m_TileMatrix.GetStaticTiles(x, y);
 
             for (int i = 0; i < staticTiles.Length; i++)
             {
-                mapCell.Add(new MapObjectStatic(staticTiles[i], i, new Vector3(nX, nY, staticTiles[i].Z)));
+                mapCell.Add(new MapObjectStatic(staticTiles[i], i, new Vector3(x, y, staticTiles[i].Z)));
             }
 
             m_MapCells.Add(GetKey(mapCell), mapCell);
@@ -284,7 +279,7 @@ namespace UltimaXNA.TileEngine
 
             mapCellsEnumerator = m_MapCells.Values.GetEnumerator();
 
-            worldLocation = new Data.Point2D(World.X, World.Y);
+            worldLocation = new Data.Point2D(World.CenterX, World.CenterY);
 
             while (mapCellsEnumerator.MoveNext())
             {
@@ -301,16 +296,6 @@ namespace UltimaXNA.TileEngine
 
             UpdateTicker++;
         }
-
-		// Issue 10 - Speed problems (Partial) - http://code.google.com/p/ultimaxna/issues/detail?id=10 - Smjert
-		public static int GetDistanceToSqrt(int orgx, int orgy, int goalx, int goaly)
-		{
-			int xDelta = goalx - orgx;
-			int yDelta = goaly - orgy;
-
-			return (int)Math.Sqrt((xDelta * xDelta) + (yDelta * yDelta));
-		}
-		// Issue 10 - End
     }
 
     public class MapCell : Data.IPoint2D

@@ -30,10 +30,6 @@ namespace UltimaXNA.GUI
 {
     static class GUIHelper
     {
-        private static Client.IUltimaClient _networkService;
-        private static IEntitiesService _entityService;
-        private static GUI.IGUI _GUI;
-        private static TileEngine.ITileEngine _tileEngineService;
         private static FormCollection _formCollection;
         private static GraphicsDevice _graphicsDevice;
         public static FormCollection FormCollection { get { return _formCollection; } }
@@ -45,7 +41,6 @@ namespace UltimaXNA.GUI
         private static RenderTarget2D _RenderTarget;
         private static Dictionary<int, Texture2D> _IconCache;
         private static Dictionary<string, Texture2D> _TextTextureCache;
-        
 
         public static string TooltipMsg = string.Empty;
         public static int TooltipX = 0;
@@ -56,13 +51,9 @@ namespace UltimaXNA.GUI
         public static Item MouseHoldingItem;
         private static Item _ToolTipItem;
 
-        public static void SetObjects(GraphicsDevice graphicsDevice, FormCollection formCollection, GameServiceContainer services)
+        public static void SetObjects(GraphicsDevice graphicsDevice, FormCollection formCollection)
         {
             _graphicsDevice = graphicsDevice;
-            _GUI = services.GetService<GUI.IGUI>();
-            _networkService = services.GetService<Client.IUltimaClient>();
-            _entityService = services.GetService<IEntitiesService>();
-            _tileEngineService = services.GetService<TileEngine.ITileEngine>();
             _formCollection = formCollection;
         }
 
@@ -88,7 +79,7 @@ namespace UltimaXNA.GUI
         public static void Network_SendChat(string nChatText)
         {
             if (nChatText != string.Empty)
-                _networkService.Send(new UnicodeSpeechPacket(0, 0, "ENU", nChatText));
+                Client.UltimaClient.Send(new UnicodeSpeechPacket(0, 0, "ENU", nChatText));
         }
 
         public static void Chat_AddLine(string nChatText)
@@ -96,7 +87,7 @@ namespace UltimaXNA.GUI
             // add text to the chat window.
             try
             {
-                ((Window_Chat)_GUI.Window("ChatFrame")).AddText(nChatText);
+                ((Window_Chat)UserInterface.Window("ChatFrame")).AddText(nChatText);
             }
             catch
             {
@@ -109,7 +100,7 @@ namespace UltimaXNA.GUI
         {
             get 
             {
-                return _tileEngineService.MiniMap.Texture;
+                return TileEngine.WorldRenderer.MiniMap.Texture;
             }
         }
 
@@ -117,7 +108,7 @@ namespace UltimaXNA.GUI
         {
             if (_queuedChatText.Count > 0)
             {
-                Window_Chat w = _GUI.Window("ChatFrame") as Window_Chat;
+                Window_Chat w = UserInterface.Window("ChatFrame") as Window_Chat;
                 if (w != null)
                 {
                     foreach (string s in _queuedChatText)
@@ -143,7 +134,7 @@ namespace UltimaXNA.GUI
             if (iHeldObject.Wearer != null)
             {
                 // the object is being worn as equipment. We can only remove items that belong to us.
-                if (iHeldObject.Wearer.Serial == _entityService.MySerial)
+                if (iHeldObject.Wearer.Serial == Entities.EntitiesCollection.MySerial)
                 {
                     // we are wearing this item. Go ahead and drop it into the requested slot.
                     GUI.Events.DropItem(iHeldObject, nDestSlot, 0x7FFF, 0, iDestContainer.Serial);
@@ -168,7 +159,7 @@ namespace UltimaXNA.GUI
                         // dest slot is empty.
                         if (iHeldObject.Item_ContainedWithinSerial.IsValid)
                         {
-                            _entityService.GetObject<ContainerItem>(iHeldObject.Item_ContainedWithinSerial, false).Contents.RemoveItem(iHeldObject.Serial);
+                            Entities.EntitiesCollection.GetObject<ContainerItem>(iHeldObject.Item_ContainedWithinSerial, false).Contents.RemoveItem(iHeldObject.Serial);
                         }
                         GUI.Events.DropItem(iHeldObject, nDestSlot, 0x7FFF, 0, iDestContainer.Serial);
                     }
@@ -176,7 +167,7 @@ namespace UltimaXNA.GUI
                     {
                         if (iHeldObject.Item_ContainedWithinSerial.IsValid)
                         {
-                            _entityService.GetObject<ContainerItem>(iHeldObject.Item_ContainedWithinSerial, false).Contents.RemoveItem(iHeldObject.Serial);
+                            Entities.EntitiesCollection.GetObject<ContainerItem>(iHeldObject.Item_ContainedWithinSerial, false).Contents.RemoveItem(iHeldObject.Serial);
                         }
                         GUI.Events.DropItem(iHeldObject, 0, 0, 0, iDestContainer.Serial);
                     }
@@ -200,11 +191,11 @@ namespace UltimaXNA.GUI
 
             if (iHeldObject.Item_ContainedWithinSerial.IsValid)
             {
-                ContainerItem iSourceContainer = _entityService.GetObject<ContainerItem>(iHeldObject.Item_ContainedWithinSerial, false);
+                ContainerItem iSourceContainer = Entities.EntitiesCollection.GetObject<ContainerItem>(iHeldObject.Item_ContainedWithinSerial, false);
                 iHeldObject.Item_ContainedWithinSerial = 0;
                 iSourceContainer.Contents.RemoveItem(iHeldObject.Serial);
             }
-            _networkService.Send(new DropToLayerPacket(iHeldObject.Serial, (byte)nDestSlot, iDestMobile.Serial));
+            Client.UltimaClient.Send(new DropToLayerPacket(iHeldObject.Serial, (byte)nDestSlot, iDestMobile.Serial));
 
             GUI.GUIHelper.MouseHoldingItem = null;
         }
@@ -219,8 +210,8 @@ namespace UltimaXNA.GUI
             Network.Pair<int, short>[] iBuyItem = new Network.Pair<int, short>[1];
             iBuyItem[0].ItemA = nItemSerial;
             iBuyItem[0].ItemB = (short)nAmount;
-            _networkService.Send(new BuyItemsPacket(nVendorSerial, iBuyItem));
-            _networkService.Send(new RequestContextMenuPacket(nVendorSerial));
+            Client.UltimaClient.Send(new BuyItemsPacket(nVendorSerial, iBuyItem));
+            Client.UltimaClient.Send(new RequestContextMenuPacket(nVendorSerial));
         }
 
         public static Item ToolTipItem
@@ -295,7 +286,7 @@ namespace UltimaXNA.GUI
             if (!_IconCache.ContainsKey(iconKey(item)))
             {
                 int itemID = (item == null) ? 0 : item.ItemID;
-                Texture2D texture = (item == null) ? null : Data.Art.GetStaticTexture(itemID, FormCollection.Graphics.GraphicsDevice, item.Hue);
+                Texture2D texture = (item == null) ? null : Data.Art.GetStaticTexture(itemID, item.Hue);
 
                 float iScaleUp = 1f, iDestSize = 39f;
                 if (texture != null)

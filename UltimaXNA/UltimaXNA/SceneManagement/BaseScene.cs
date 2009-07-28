@@ -40,14 +40,8 @@ namespace UltimaXNA.SceneManagement
 
         protected SpriteBatch SpriteBatch;
 
-        Game _game;
-
         public bool IsInitialized { get; set; }
-        ISceneService _sceneService;
-        IUltimaClient _networkService;
         ILoggingService _loggingService;
-        IInputService _inputService;
-        IGUI _guiService;
 
         Texture2D _transitionTexture;
         ContentManager _content;
@@ -56,14 +50,9 @@ namespace UltimaXNA.SceneManagement
         float _transitionAlpha;
         float _elapsed;
 
-        public Game Game
-        {
-            get { return _game; }
-        }
-
         public GraphicsDevice GraphicsDevice
         {
-            get { return _game.GraphicsDevice; }
+            get { return SceneManager.Game.GraphicsDevice; }
         }
 
         public Color ClearColor
@@ -88,56 +77,28 @@ namespace UltimaXNA.SceneManagement
             }
         }
 
-        public ISceneService SceneManager
-        {
-            get { return _sceneService; }
-        }
-
-        public IUltimaClient Network
-        {
-            get { return _networkService; }
-        }
-
         public ILoggingService Log
         {
             get { return _loggingService; }
             set { _loggingService = value; }
         }
 
-        public IInputService Input
-        {
-            get { return _inputService; }
-            set { _inputService = value; }
-        }
-
-        public IGUI GUI
-        {
-            get { return _guiService; }
-        }
-
         public event TransitionCompleteHandler TransitionComplete;
 
-        public BaseScene(Game game)
+        public BaseScene()
         {
-            _game = game;
             _clearColor = Color.Black;
-            _content = new ContentManager(_game.Services);
+            _content = new ContentManager(SceneManager.Game.Services);
             _content.RootDirectory = "Content";
             _sceneState = SceneState.TransitioningOn;
-
-            _sceneService = game.Services.GetService<ISceneService>(true);
-            _networkService = game.Services.GetService<IUltimaClient>(true);
-            _loggingService = game.Services.GetService<ILoggingService>(true);
-            _inputService = game.Services.GetService<IInputService>(true);
-            _guiService = game.Services.GetService<IGUI>(true);
         }
 
         public virtual void Intitialize()
         {
-            SpriteBatch = new SpriteBatch(Game.GraphicsDevice);
+            SpriteBatch = new SpriteBatch(SceneManager.Game.GraphicsDevice);
 
             Color[] data = new Color[] { Color.Black };
-            _transitionTexture = new Texture2D(Game.GraphicsDevice, 1, 1);
+            _transitionTexture = new Texture2D(SceneManager.Game.GraphicsDevice, 1, 1);
             _transitionTexture.SetData<Color>(data);
         }
 
@@ -189,7 +150,7 @@ namespace UltimaXNA.SceneManagement
 
         public virtual void OnAfterDraw(GameTime gameTime)
         {
-            PresentationParameters pp = Game.GraphicsDevice.PresentationParameters;
+            PresentationParameters pp = SceneManager.Game.GraphicsDevice.PresentationParameters;
             Color color = new Color(new Vector4(1, 1, 1, _transitionAlpha));
 
             SpriteBatch.Begin();

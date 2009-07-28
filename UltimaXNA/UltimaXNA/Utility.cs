@@ -296,5 +296,13 @@ namespace UltimaXNA
         {
             return (from.X >= (to.X - range)) && (from.X <= (to.X + range)) && (from.Y >= (to.Y - range)) && (from.Y <= (to.Y + range));
         }
+
+        public static int GetDistanceToSqrt(int orgx, int orgy, int goalx, int goaly)
+        {
+            int xDelta = goalx - orgx;
+            int yDelta = goaly - orgy;
+
+            return (int)Math.Sqrt((xDelta * xDelta) + (yDelta * yDelta));
+        }
     }
 }
