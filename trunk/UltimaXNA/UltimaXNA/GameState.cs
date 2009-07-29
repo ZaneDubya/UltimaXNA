@@ -119,6 +119,7 @@ namespace UltimaXNA
                     {
                         // We are targetting. Based on the targetting type, we will either select an object, or a location.
                         WorldRenderer.PickType = PickTypes.PickEverything;
+                        TileEngine.WorldRenderer.DEBUG_DrawTileOver = true;
                     }
                     else
                     {
@@ -605,7 +606,7 @@ namespace UltimaXNA
                 modelNumber = 0;
             }
             // Send the target ...
-            UltimaClient.Send(new TargetXYZPacket((ushort)selectedObject.Position.X, (ushort)selectedObject.Position.Y, (sbyte)selectedObject.Z, (ushort)modelNumber));
+            UltimaClient.Send(new TargetXYZPacket((short)selectedObject.Position.X, (short)selectedObject.Position.Y, (short)selectedObject.Z, (ushort)modelNumber));
             // ... and then clear our target cursor.
             _TargettingType = -1;
             UserInterface.TargettingCursor = false;
@@ -618,7 +619,15 @@ namespace UltimaXNA
                 return;
             Serial serial = selectedObject.OwnerSerial;
             // Send the targetting event back to the server
-            UltimaClient.Send(new TargetObjectPacket(serial));
+            if (serial.IsValid)
+            {
+                UltimaClient.Send(new TargetObjectPacket(serial));
+            }
+            else
+            {
+                UltimaClient.Send(new TargetXYZPacket((short)selectedObject.Position.X, (short)selectedObject.Position.Y, (short)selectedObject.Z, (ushort)selectedObject.ItemID));
+            }
+            
             // Clear our target cursor.
             _TargettingType = -1;
             UserInterface.TargettingCursor = false;

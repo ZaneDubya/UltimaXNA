@@ -272,6 +272,7 @@ namespace UltimaXNA.GUI
 
             if (!_TextTextureCache.ContainsKey(hash))
             {
+                _TextTextureCache.Clear();
                 Texture2D texture = Data.ASCIIText.GetTexture(text, fontId);
                 _TextTextureCache.Add(hash, texture);
             }
