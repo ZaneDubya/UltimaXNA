@@ -56,13 +56,16 @@ namespace UltimaXNA.Entities
 
         public static Overhead AddOverhead(MessageType msgType, Serial serial, string text, int fontID, int hue)
         {
-            Entity ownerEntity = _entities[serial];
-            if (ownerEntity != null)
+            if (_entities.ContainsKey(serial))
             {
+                Entity ownerEntity = _entities[serial];
                 Overhead overhead = ownerEntity.AddOverhead(msgType, text, fontID, hue);
                 return overhead;
             }
-            return null;
+            else
+            {
+                return null;
+            }
         }
 
         public static List<T> GetObjectsByType<T>() where T : Entity

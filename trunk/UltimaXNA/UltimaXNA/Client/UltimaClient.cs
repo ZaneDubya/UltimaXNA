@@ -901,12 +901,13 @@ namespace UltimaXNA.Client
 
         private static void receive_TextMessage(MessageType msgType, string text, int hue, int font, Serial serial, string speakerName)
         {
+            Overhead overhead;
             switch (msgType)
             {
                 case MessageType.Regular:
-                    if (serial.IsValid)
+                    overhead = EntitiesCollection.AddOverhead(msgType, serial, text, font, hue);
+                    if (overhead != null)
                     {
-                        Overhead overhead = EntitiesCollection.AddOverhead(msgType, serial, text, font, hue);
                         overhead.SpeakerName = speakerName;
                     }
                     else
@@ -923,7 +924,7 @@ namespace UltimaXNA.Client
                 case MessageType.Label:
                     if (serial.IsValid)
                     {
-                        Overhead overhead = EntitiesCollection.AddOverhead(msgType, serial, text, font, hue);
+                        overhead = EntitiesCollection.AddOverhead(msgType, serial, text, font, hue);
                         overhead.SpeakerName = speakerName;
                         // Labels that are longer than the current name should be set as the name
                         if (serial.IsMobile)
