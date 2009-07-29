@@ -20,6 +20,7 @@
 using System;
 using System.Collections;
 using System.IO;
+using System.Text.RegularExpressions;
 using Microsoft.Xna.Framework.Graphics;
 #endregion
 
@@ -132,13 +133,15 @@ namespace UltimaXNA.Data
                     if ((line = line.Trim()).Length == 0 || line.StartsWith("#") || line.StartsWith("\"#"))
                         continue;
 
-                    string[] split = line.Split('\t');
-
+                    // string[] split = line.Split('\t');
+                    string[] split = Regex.Split(line, @"\t|\s+", RegexOptions.IgnoreCase);
                     int original = System.Convert.ToInt32(split[0]);
                     int anim2 = System.Convert.ToInt32(split[1]);
 					int anim3;
 					int anim4;
 					int anim5;
+                    // Int32.TryParse(split[0], out original);
+                    // Int32.TryParse(split[1], out anim2);
 
                     // The control here was wrong, previously it was always putting -1 without parsing the file - Smjert
                     if (split.Length < 3 || !int.TryParse(split[2], out anim3))

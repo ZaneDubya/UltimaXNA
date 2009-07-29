@@ -30,7 +30,7 @@ namespace UltimaXNA.Network.Packets.Server
         readonly short _x;
         readonly short _y;
         readonly byte _direction;
-        readonly byte _z;
+        readonly sbyte _z;
 
         public byte Sequence 
         {
@@ -52,7 +52,7 @@ namespace UltimaXNA.Network.Packets.Server
             get { return _direction; }
         }
         
-        public byte Z 
+        public sbyte Z 
         {
             get { return _z; } 
         }
@@ -64,7 +64,7 @@ namespace UltimaXNA.Network.Packets.Server
             _x = reader.ReadInt16();
             _y = reader.ReadInt16();
             _direction = reader.ReadByte();
-            _z = reader.ReadByte();
+            _z = reader.ReadSByte();
         }
     }
 }
