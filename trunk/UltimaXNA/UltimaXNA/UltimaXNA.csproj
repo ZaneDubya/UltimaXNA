@@ -65,14 +65,16 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Xna.Framework, Version=3.0.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=x86">
-      <Private>False</Private>
-      <SpecificVersion>True</SpecificVersion>
+    <Reference Include="lua51, Version=0.0.0.0, Culture=neutral, PublicKeyToken=1e1fb15b02227b8a, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\lua51.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Xna.Framework.Game, Version=3.0.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=MSIL">
-      <Private>False</Private>
-      <SpecificVersion>True</SpecificVersion>
+    <Reference Include="LuaInterface, Version=2.0.0.16708, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\LuaInterface.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Xna.Framework, Version=3.0.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=x86" />
+    <Reference Include="Microsoft.Xna.Framework.Game, Version=3.0.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=MSIL" />
     <Reference Include="mscorlib">
       <Private>False</Private>
     </Reference>
@@ -307,6 +309,19 @@
     <Compile Include="Network\ServerListEntry.cs" />
     <Compile Include="Network\SocketState.cs" />
     <Compile Include="Network\StartingLocation.cs" />
+    <Compile Include="ParticleEngine\Emitter.cs" />
+    <Compile Include="ParticleEngine\EmitterEmitter.cs" />
+    <Compile Include="ParticleEngine\EmitterParameters.cs" />
+    <Compile Include="ParticleEngine\LuaUtil.cs" />
+    <Compile Include="ParticleEngine\Particle.cs" />
+    <Compile Include="ParticleEngine\ParticleEffect.cs" />
+    <Compile Include="ParticleEngine\ParticleEmitter.cs" />
+    <Compile Include="ParticleEngine\ParticleEngine.cs" />
+    <Compile Include="ParticleEngine\PositionProvider.cs" />
+    <Compile Include="ParticleEngine\PositionProviders\Circle.cs" />
+    <Compile Include="ParticleEngine\PositionProviders\CircleOutline.cs" />
+    <Compile Include="ParticleEngine\PositionProviders\Point.cs" />
+    <Compile Include="ParticleEngine\RandomizedValue.cs" />
     <Compile Include="SceneManagement\BaseScene.cs" />
     <Compile Include="SceneManagement\IScene.cs" />
     <Compile Include="SceneManagement\ISceneService.cs" />

@@ -62,6 +62,8 @@ namespace UltimaXNA
             TileEngine.WorldRenderer.Initialize(this);
             GUI.UserInterface.Initialize(this);
 
+			ParticleEngine.ParticleEngine.Initialize(this, System.IO.Path.Combine(this.Content.RootDirectory, "pfx"));
+
             base.Initialize();
         }
 
@@ -86,6 +88,8 @@ namespace UltimaXNA
             TileEngine.WorldRenderer.Update(gameTime);
             GUI.UserInterface.Update(gameTime);
 
+			ParticleEngine.ParticleEngine.Update(gameTime);
+
             if (SceneManagement.SceneManager.CurrentScene == null)
                 SceneManagement.SceneManager.CurrentScene = new SceneManagement.LoginScene();
 
@@ -95,9 +99,12 @@ namespace UltimaXNA
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
-            SceneManagement.SceneManager.Draw(gameTime);
-            TileEngine.WorldRenderer.Draw(gameTime);
-            GUI.UserInterface.Draw(gameTime);
+
+			SceneManagement.SceneManager.Draw(gameTime);
+			TileEngine.WorldRenderer.Draw(gameTime);
+			GUI.UserInterface.Draw(gameTime);
+
+			ParticleEngine.ParticleEngine.Draw(gameTime);
 
             base.Draw(gameTime);
         }
