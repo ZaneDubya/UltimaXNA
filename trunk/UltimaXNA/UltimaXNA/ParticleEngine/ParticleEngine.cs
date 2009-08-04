@@ -84,8 +84,8 @@ namespace UltimaXNA.ParticleEngine
 
 		public static void Initialize(Game game, string dataDirectory)
 		{
-			DefaultWorldViewProjection = Matrix.CreateOrthographicOffCenter(0, game.GraphicsDevice.Viewport.Width, game.GraphicsDevice.Viewport.Height, 0, Int32.MinValue, Int32.MaxValue);
-			DefaultShaderName = "Shaders/ParticleEffect";
+			_defaultWorldViewProjection = Matrix.CreateOrthographicOffCenter(0, game.GraphicsDevice.Viewport.Width, game.GraphicsDevice.Viewport.Height, 0, Int32.MinValue, Int32.MaxValue);
+			_defaultShaderName = "Shaders/ParticleEffect";
 
 			_effectList = new List<ParticleEffect>();
 			_disposedBuffer = new List<ParticleEffect>();
@@ -245,7 +245,7 @@ namespace UltimaXNA.ParticleEngine
 			// Enable the depth buffer (so particles will not be visible through
 			// solid objects like the ground plane), but disable depth writes
 			// (so particles will not obscure other particles).
-			renderState.DepthBufferEnable = true;
+			renderState.DepthBufferEnable = false;
 			renderState.DepthBufferWriteEnable = false;
 		}
 
