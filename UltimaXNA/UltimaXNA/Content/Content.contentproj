@@ -49,6 +49,27 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Shaders\ParticleEffect.fx">
+      <Name>ParticleEffect</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="pfx\scripts\foobert.lua">
+      <Name>foobert</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="pfx\textures\rain.png">
+      <Name>rain</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="Fonts\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\v3.0\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

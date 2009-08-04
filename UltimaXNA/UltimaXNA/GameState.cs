@@ -505,6 +505,13 @@ namespace UltimaXNA
                     }
                 }
             }
+
+			if (keyboard.IsKeyDown(Keys.P) && keyboard.IsKeyDown(Keys.LeftControl))
+			{
+				ParticleEngine.ParticleEngine.LoadEffectFromString("print(\"hubert\")");
+				ParticleEngine.ParticleEngine.LoadEffectFromScript("foobert");
+				ParticleEngine.ParticleEngine.LoadEffectFromString("util:Log(\"foobert\")");
+			}
         }
 
         // Maintain an accurate count of frames per second.
