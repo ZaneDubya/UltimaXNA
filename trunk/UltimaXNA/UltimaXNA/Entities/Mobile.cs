@@ -137,8 +137,8 @@ namespace UltimaXNA.Entities
 			}
 		}
 
-        public Mobile(Serial serial)
-            : base(serial)
+        public Mobile(Serial serial, World world)
+            : base(serial, world)
         {
             animation = new MobileAnimation();
             equipment = new WornEquipment(this);

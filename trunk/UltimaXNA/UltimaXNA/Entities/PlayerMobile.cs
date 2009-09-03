@@ -18,14 +18,15 @@
 #region usings
 using System;
 using Microsoft.Xna.Framework;
+using UltimaXNA.TileEngine;
 #endregion
 
 namespace UltimaXNA.Entities
 {
     public class PlayerMobile : Mobile
     {
-        public PlayerMobile(Serial serial)
-            : base(serial)
+        public PlayerMobile(Serial serial, World world)
+            : base(serial, world)
         {
 
         }

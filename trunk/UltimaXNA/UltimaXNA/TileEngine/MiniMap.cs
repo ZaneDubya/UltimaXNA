@@ -28,41 +28,36 @@ namespace UltimaXNA.TileEngine
     public class MiniMap
     {
         private Texture2D _texture;
-        private Map _map;
         private GraphicsDevice _graphics;
         private int _lastUpdateTicker;
 
-        public Texture2D Texture
+        public Texture2D Texture(Map map, int renderBeginX, int renderBeginY)
         {
-            get
-            {
-                update();
-                return _texture;
-            }
+            update(map, renderBeginX, renderBeginY);
+            return _texture;
         }
 
-        public MiniMap(GraphicsDevice graphics, Map map)
+        public MiniMap(GraphicsDevice graphics)
         {
-            _map = map;
             _graphics = graphics;
         }
 
-        private unsafe void update()
+        private unsafe void update(Map map, int renderBeginX, int renderBeginY)
         {
-            if ((_map.UpdateTicker != _lastUpdateTicker) || (Texture == null))
+            if ((map.UpdateTicker != _lastUpdateTicker) || (_texture == null))
             {
-                int size = _map.GameSize * 2;
-                _lastUpdateTicker = _map.UpdateTicker;
+                int size = map.GameSize * 2;
+                _lastUpdateTicker = map.UpdateTicker;
                 _texture = new Texture2D(_graphics, size, size, 1, TextureUsage.None, SurfaceFormat.Bgra5551);
                 ushort[] data = new ushort[size * size];
                 fixed (ushort* pData = data)
                 {
-                    for (int y = 0; y < _map.GameSize; y++)
+                    for (int y = 0; y < map.GameSize; y++)
                     {
                         ushort* cur = pData + ((size /2 - 1) + (size - 1) * y);
-                        for (int x = 0; x < _map.GameSize; x++)
+                        for (int x = 0; x < map.GameSize; x++)
                         {
-                            MapCell m = _map.GetMapCell(World.RenderBeginX + x, World.RenderBeginY + y);
+                            MapCell m = map.GetMapCell(renderBeginX + x, renderBeginY + y);
                             int i;
                             for (i = m.Objects.Count - 1; i > 0; i--)
                             {

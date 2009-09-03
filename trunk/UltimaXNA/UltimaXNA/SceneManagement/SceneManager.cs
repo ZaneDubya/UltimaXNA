@@ -1,47 +1,21 @@
-﻿/***************************************************************************
- *   ScreenManager.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
- *   
- *   begin                : May 31, 2009
- *   email                : poplicola@ultimaxna.com
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 3 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-#region usings
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using UltimaXNA.Diagnostics;
-using UltimaXNA;
-#endregion
+using UltimaXNA.Extensions;
 
 namespace UltimaXNA.SceneManagement
 {
-    public static class SceneManager
+    public class SceneManager : DrawableGameComponent, ISceneService
     {
-        static IScene _currentScene;
-        static ILoggingService _loggingService;
-        static bool _isTransitioning = false;
+        IScene _currentScene;
+        ILoggingService _loggingService;
+        bool _isTransitioning = false;
 
-        public static bool IsTransitioning
+        public bool IsTransitioning
         {
             get { return _isTransitioning; }
         }
 
-        private static Game _game;
-        public static Game Game { get { return _game; } }
-
-        public static IScene CurrentScene
+        public IScene CurrentScene
         {
             get { return _currentScene; }
             set
@@ -56,7 +30,7 @@ namespace UltimaXNA.SceneManagement
                     _loggingService.Debug("Starting scene transition from {0} to {1}", _currentScene.GetType().Name, value.GetType().Name);
                     _currentScene.SceneState = SceneState.TransitioningOff;
 
-                    _currentScene.TransitionComplete += new TransitionCompleteHandler(delegate()
+                    _currentScene.TransitionCompleted += new TransitionCompleteHandler(delegate()
                     {
                         _loggingService.Debug("Scene transition complete.");
                         _loggingService.Debug("Disposing {0}.", _currentScene.GetType().Name);
@@ -89,18 +63,21 @@ namespace UltimaXNA.SceneManagement
             }
         }
 
-        static SceneManager()
+        public SceneManager(Game game)
+            : base(game)
         {
+            _loggingService = game.Services.GetService<ILoggingService>(true);
         }
 
-        public static void Initialize(Game game)
+        public override void Initialize()
         {
-            _game = game;
-            _loggingService = _game.Services.GetService<ILoggingService>(true);
+            base.Initialize();
         }
 
-        public static void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
+            base.Update(gameTime);
+
             IScene current = _currentScene;
 
             if (_currentScene != null)
@@ -111,13 +88,17 @@ namespace UltimaXNA.SceneManagement
                 _currentScene.Update(gameTime);
         }
 
-        public static void Draw(GameTime gameTime)
+        public override void Draw(GameTime gameTime)
         {
+            base.Draw(gameTime);
+            
             if (_currentScene != null)
             {
-                _currentScene.OnBeforeDraw(gameTime);
+                //_currentScene.OnBeforeDraw(gameTime);
                 _currentScene.Draw(gameTime);
-                _currentScene.OnAfterDraw(gameTime);
+                //_currentScene.DrawUI(gameTime);
+                //_currentScene.DrawCursor(gameTime);
+                //_currentScene.OnAfterDraw(gameTime);
             }
         }
     }

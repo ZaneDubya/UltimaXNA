@@ -16,6 +16,7 @@
  *
  ***************************************************************************/
 #region usings
+using UltimaXNA.TileEngine;
 #endregion
 
 namespace UltimaXNA.Entities
@@ -26,8 +27,8 @@ namespace UltimaXNA.Entities
         public int Bytes0 = 0;
         public int SpellID = 0;
 
-        public DynamicObject(Serial serial)
-            : base(serial)
+        public DynamicObject(Serial serial, World world)
+            : base(serial, world)
         {
 
         }

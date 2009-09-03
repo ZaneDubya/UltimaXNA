@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using UltimaXNA.TileEngine;
 
 namespace UltimaXNA.Entities
 {
@@ -66,9 +67,9 @@ namespace UltimaXNA.Entities
         }
 
         private int _msTimePersist = 0;
-        
-        public Overhead(MessageType msgType, Entity ownerEntity, string text, int font, int hue)
-            : base(ownerEntity.Serial)
+
+        public Overhead(Entity ownerEntity, IWorld world, MessageType msgType, string text, int font, int hue)
+            : base(ownerEntity.Serial, world)
         {
             _ownerEntity = ownerEntity;
             _text = text;

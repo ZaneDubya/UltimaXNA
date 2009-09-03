@@ -73,7 +73,7 @@ namespace UltimaXNA.TileEngine
             return indices;
         }
 
-        public void Draw(Texture2D texture, VertexPositionNormalTextureHue[] vertices)
+        public bool Draw(Texture2D texture, VertexPositionNormalTextureHue[] vertices)
         {
             bool draw = false;
 
@@ -89,7 +89,7 @@ namespace UltimaXNA.TileEngine
 
             if (!draw)
             {
-                return;
+                return false;
             }
 
             List<VertexPositionNormalTextureHue> vertexList;
@@ -119,6 +119,8 @@ namespace UltimaXNA.TileEngine
             {
                 vertexList.Add(vertices[i]);
             }
+
+            return true;
         }
 
         public void SetLightDirection(Vector3 nDirection)
@@ -136,7 +138,52 @@ namespace UltimaXNA.TileEngine
 				m_Effect.Parameters["lightIntensity"].SetValue ( intensity );
 		}
 
+        private List<VertexPositionNormalTextureHue> vertices = new List<VertexPositionNormalTextureHue>();
+        private VertexPositionNormalTextureHue[] verts;
+
         public void Flush()
+        {
+            this.Game.GraphicsDevice.VertexDeclaration = new VertexDeclaration(this.Game.GraphicsDevice, VertexPositionNormalTextureHue.VertexElements);
+
+            IEnumerator<KeyValuePair<Texture2D, List<VertexPositionNormalTextureHue>>> keyValuePairs = m_DrawQueue.GetEnumerator();
+            m_Effect.CurrentTechnique = m_Effect.Techniques["StandardEffect"];
+
+            Game.GraphicsDevice.RenderState.DepthBufferEnable = true;
+            Game.GraphicsDevice.RenderState.AlphaBlendEnable = true;
+            Game.GraphicsDevice.RenderState.AlphaTestEnable = true;
+            Game.GraphicsDevice.SamplerStates[0].MagFilter = TextureFilter.None;
+            Game.GraphicsDevice.SamplerStates[0].MinFilter = TextureFilter.None;
+            Game.GraphicsDevice.SamplerStates[0].MipFilter = TextureFilter.None;
+            m_Effect.Parameters["DrawLighting"].SetValue(true);
+
+            Game.GraphicsDevice.Textures[15] = UltimaXNA.Data.HuesXNA.HueTexture;
+
+            m_Effect.Begin();
+            m_Effect.CurrentTechnique.Passes[0].Begin();
+
+            keyValuePairs.MoveNext();
+            while (keyValuePairs.Current.Key != null)
+            {
+                for (int j = 0; (j < 4) && (keyValuePairs.Current.Key != null); j++)
+                {
+                    Game.GraphicsDevice.Textures[j] = keyValuePairs.Current.Key;
+                    vertices.AddRange(keyValuePairs.Current.Value);
+                    m_VertexListQueue.Enqueue(keyValuePairs.Current.Value);
+                    keyValuePairs.MoveNext();
+                }
+
+                verts = vertices.ToArray();
+                Game.GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionNormalTextureHue>(PrimitiveType.TriangleList, verts, 0, verts.Length, m_IndexBuffer, 0, verts.Length / 2);
+                vertices.Clear();
+            }
+
+            m_Effect.CurrentTechnique.Passes[0].End();
+            m_Effect.End();
+
+            m_DrawQueue.Clear();
+        }
+
+        public void FlushOld()
         {
             this.Game.GraphicsDevice.VertexDeclaration = new VertexDeclaration(this.Game.GraphicsDevice, VertexPositionNormalTextureHue.VertexElements);
 
@@ -145,7 +192,7 @@ namespace UltimaXNA.TileEngine
 
             IEnumerator<KeyValuePair<Texture2D, List<VertexPositionNormalTextureHue>>> keyValuePairs = m_DrawQueue.GetEnumerator();
             m_Effect.CurrentTechnique = m_Effect.Techniques["StandardEffect"];
-            
+
             Game.GraphicsDevice.RenderState.DepthBufferEnable = true;
             Game.GraphicsDevice.RenderState.AlphaBlendEnable = true;
             Game.GraphicsDevice.RenderState.AlphaTestEnable = true;

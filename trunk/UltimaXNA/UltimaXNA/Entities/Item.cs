@@ -18,6 +18,7 @@
 #region usings
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using UltimaXNA.TileEngine;
 #endregion
 
 namespace UltimaXNA.Entities
@@ -112,8 +113,8 @@ namespace UltimaXNA.Entities
         // then we know this item belongs in slot X.
         public int Item_InvX = 0, Item_InvY = 0, Item_InvSlot = 0;
 
-		public Item(Serial serial)
-			: base(serial)
+        public Item(Serial serial, IWorld world)
+			: base(serial, world)
 		{
 		}
 

@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using UltimaXNA.TileEngine;
 #endregion
 
 namespace UltimaXNA.Entities
@@ -39,8 +40,8 @@ namespace UltimaXNA.Entities
             }
         }
 
-        public ContainerItem(Serial serial)
-            : base(serial)
+        public ContainerItem(Serial serial, IWorld world)
+            : base(serial, world)
         {
             m_ContainerObject = new GameObject_Container(this);
         }

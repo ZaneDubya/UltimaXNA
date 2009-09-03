@@ -72,6 +72,7 @@ namespace UltimaXNA.TileEngine
         public SortedDictionary<int, MapCell> m_MapCells;
         private Data.TileMatrix m_TileMatrix;
         private int _x, _y;
+        private bool _firstUpdate = true;
 
         public Map(int index, int gameSize, int gameSizeUp, int gameSizeDown)
         {
@@ -177,10 +178,14 @@ namespace UltimaXNA.TileEngine
             // Poplicola - added a line to make sure we don't try t
             //reference an entry that doesn't exist - in a dictionary
             // of this size that might be slow.
-            int iX = x - World.RenderBeginX;
+
+            int renderBeginX = _x - m_GameSize / 2;
+            int renderBeginY = _y - m_GameSize / 2;
+
+            int iX = x - renderBeginX;
             if ((iX < m_GameSize) && (iX >= 0))
             {
-                int iY = y - World.RenderBeginY;
+                int iY = y - renderBeginY;
                 if ((iY < m_GameSize) && (iY >= 0))
                 {
                     int key = GetKey(x, y);
@@ -210,18 +215,22 @@ namespace UltimaXNA.TileEngine
             }
         }
 
-        public void Update(int x, int y)
+        public void Update(int centerX, int centerY)
         {
-            if (_x != World.CenterX || _y != World.CenterY)
+            if (_x != centerX || _y != centerY || _firstUpdate)
             {
-                _x = x;
-                _y = y;
+                _x = centerX;
+                _y = centerY;
+                _firstUpdate = false;
 
-                for (x = 0; x < m_GameSize; x++)
+                int renderBeginX = centerX - m_GameSize / 2;
+                int renderBeginY = centerY - m_GameSize / 2;
+
+                for (int x = 0; x < m_GameSize; x++)
                 {
-                    for (y = 0; y < m_GameSize; y++)
+                    for (int y = 0; y < m_GameSize; y++)
                     {
-                        loadCell(World.RenderBeginX + x, World.RenderBeginY + y);
+                        loadCell(renderBeginX + x, renderBeginY + y);
                     }
                 }
             }
@@ -266,7 +275,7 @@ namespace UltimaXNA.TileEngine
 
             mapCellsEnumerator = m_MapCells.Values.GetEnumerator();
 
-            worldLocation = new Data.Point2D(World.CenterX, World.CenterY);
+            worldLocation = new Data.Point2D(_x, _y);
 
             while (mapCellsEnumerator.MoveNext())
             {
@@ -335,7 +344,6 @@ namespace UltimaXNA.TileEngine
         public List<MapObject> Objects { get { return m_Objects; } }
         private bool m_NeedsSorting;
         private List<MapObject> m_Objects;
-        private MapObject[] m_Sorted;
 
         #region X
         private int m_X;
@@ -372,8 +380,8 @@ namespace UltimaXNA.TileEngine
         // Check if under a roof. --Poplicola 6/2/2009.
         public bool UnderRoof(int nAltitude)
         {
-            MapObject[] iObjects = this.GetSortedObjects();
-            for (int i = iObjects.Length - 1; i >= 0; i-- )
+            List<MapObject> iObjects = this.GetSortedObjects();
+            for (int i = iObjects.Count - 1; i >= 0; i-- )
             {
                 if (iObjects[i].Z <= nAltitude)
                     return false;
@@ -536,15 +544,14 @@ namespace UltimaXNA.TileEngine
             m_NeedsSorting = true;
         }
 
-        public MapObject[] GetSortedObjects()
+        public List<MapObject> GetSortedObjects()
         {
             if (m_NeedsSorting)
             {
                 m_Objects.Sort(TileComparer.Comparer);
                 m_NeedsSorting = false;
-                m_Sorted = m_Objects.ToArray();
             }
-            return m_Sorted;
+            return m_Objects;
         }
 
         public List<MapObject> Items

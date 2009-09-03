@@ -12,7 +12,7 @@
     <XnaFrameworkVersion>v3.0</XnaFrameworkVersion>
     <XnaPlatform>Windows</XnaPlatform>
     <XnaCrossPlatformGroupID>50bfd68f-b3c7-4d72-866a-2cf8c22b84b0</XnaCrossPlatformGroupID>
-    <ApplicationIcon>ultimaxna.ico</ApplicationIcon>
+    <ApplicationIcon>Depends\ultimaxna.ico</ApplicationIcon>
     <Thumbnail>
     </Thumbnail>
     <IsWebBootstrapper>false</IsWebBootstrapper>
@@ -146,30 +146,77 @@
     <Compile Include="Entities\PlayerMobile.cs" />
     <Compile Include="Entities\PropertyList.cs" />
     <Compile Include="Entities\Shared.cs" />
+    <Compile Include="EventSystem\EventEngine.cs" />
+    <Compile Include="EventSystem\Events.cs" />
+    <Compile Include="EventSystem\IEventReceiver.cs" />
+    <Compile Include="EventSystem\IEventService.cs" />
+    <Compile Include="Extensions\CallPriorityComparer.cs" />
     <Compile Include="GameState.cs" />
-    <Compile Include="GUI\Events.cs" />
-    <Compile Include="GUI\GUIHelper.cs" />
-    <Compile Include="GUI\Windows\ChatInput.cs" />
-    <Compile Include="GUI\Windows\LoginCharList.cs" />
-    <Compile Include="GUI\Windows\Container.cs" />
-    <Compile Include="GUI\Windows\ErrorModal.cs" />
-    <Compile Include="GUI\Windows\Login.cs" />
-    <Compile Include="GUI\Windows\LoginBackdrop.cs" />
-    <Compile Include="GUI\Windows\Merchant.cs" />
-    <Compile Include="GUI\Windows\PaperDoll.cs" />
-    <Compile Include="GUI\Windows\StatusFrame.cs" />
-    <Compile Include="GUI\Window.cs" />
-    <Compile Include="GUI\Windows\Chat.cs" />
-    <Compile Include="GUI\GUI.cs" />
-    <Compile Include="GUI\Windows\Window_CompressedGump.cs" />
-    <Compile Include="Input\InputHandler.cs" />
-    <Compile Include="Input\KeyboardHandler.cs" />
+    <Compile Include="Graphics\ControlRenderer.cs" />
+    <Compile Include="Graphics\ExtendedSpriteBatch.cs" />
+    <Compile Include="Graphics\IPoint2D.cs" />
+    <Compile Include="Graphics\Point2D.cs" />
+    <Compile Include="Graphics\RectangleF.cs" />
+    <Compile Include="LuaScripts.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LuaScripts.resx</DependentUpon>
+    </Compile>
+    <Compile Include="SceneManagement\Scenes\DebugScene.cs" />
+    <Compile Include="Scripting\Lua\CheckType.cs" />
+    <Compile Include="Scripting\Lua\GenerateEventAssembly.cs" />
+    <Compile Include="Scripting\Lua\Lua.cs" />
+    <Compile Include="Scripting\Lua\LuaBase.cs" />
+    <Compile Include="Scripting\Lua\LuaException.cs" />
+    <Compile Include="Scripting\Lua\LuaFunction.cs" />
+    <Compile Include="Scripting\Lua\LuaGlobals.cs" />
+    <Compile Include="Scripting\Lua\LuaTable.cs" />
+    <Compile Include="Scripting\Lua\LuaUIEngine.cs" />
+    <Compile Include="Scripting\Lua\LuaUserData.cs" />
+    <Compile Include="Scripting\Lua\Metatables.cs" />
+    <Compile Include="Scripting\Lua\MethodWrapper.cs" />
+    <Compile Include="Scripting\Lua\ObjectTranslator.cs" />
+    <Compile Include="Scripting\Lua\ProxyType.cs" />
+    <Compile Include="TestUI.cs" />
+    <Compile Include="TileEngine\Interfaces\IWorld.cs" />
+    <Compile Include="TileEngine\Interfaces\IWorldRenderer.cs" />
+    <Compile Include="Graphics\UISystem\Alignment.cs" />
+    <Compile Include="Graphics\UISystem\Components\Gump.cs" />
+    <Compile Include="Graphics\UISystem\Components\GumpBackground.cs" />
+    <Compile Include="Graphics\UISystem\Components\GumpButton.cs" />
+    <Compile Include="Graphics\UISystem\EventArgs.cs" />
+    <Compile Include="Graphics\UISystem\Interfaces\Interfaces.cs" />
+    <Compile Include="Graphics\UISystem\Interfaces\IUINode.cs" />
+    <Compile Include="Graphics\UISystem\Interfaces\IUIService.cs" />
+    <Compile Include="Graphics\UISystem\UIContainer.cs" />
+    <Compile Include="Graphics\UISystem\UIManager.cs" />
+    <Compile Include="Graphics\UISystem\UINode.cs" />
+    <Compile Include="Graphics\UISystem\UITableOfContents.cs" />
+    <Compile Include="UI\Events.cs" />
+    <Compile Include="UI\GUIHelper.cs" />
+    <Compile Include="UI\IUserInterface.cs" />
+    <Compile Include="UI\Windows\ChatInput.cs" />
+    <Compile Include="UI\Windows\Legacy_Menu.cs" />
+    <Compile Include="UI\Windows\LoginCharList.cs" />
+    <Compile Include="UI\Windows\Container.cs" />
+    <Compile Include="UI\Windows\ErrorModal.cs" />
+    <Compile Include="UI\Windows\Login.cs" />
+    <Compile Include="UI\Windows\LoginBackdrop.cs" />
+    <Compile Include="UI\Windows\Merchant.cs" />
+    <Compile Include="UI\Windows\PaperDoll.cs" />
+    <Compile Include="UI\Windows\StatusFrame.cs" />
+    <Compile Include="UI\Window.cs" />
+    <Compile Include="UI\Windows\Chat.cs" />
+    <Compile Include="UI\UserInterface.cs" />
+    <Compile Include="UI\Windows\Window_CompressedGump.cs" />
+    <Compile Include="InputSystem\EventArgs.cs" />
+    <Compile Include="InputSystem\IInputService.cs" />
+    <Compile Include="InputSystem\InputState.cs" />
     <Compile Include="Data\StaticTileList.cs" />
     <Compile Include="Data\Texmaps.cs" />
     <Compile Include="Data\TileData.cs" />
     <Compile Include="Data\TileMatrix.cs" />
     <Compile Include="Data\TileMatrixPatch.cs" />
-    <Compile Include="Input\MouseHandler.cs" />
     <Compile Include="Network\CharacterListEntry.cs" />
     <Compile Include="Network\MobileFlags.cs" />
     <Compile Include="Network\ClientNetwork.cs" />
@@ -323,6 +370,7 @@
     <Compile Include="ParticleEngine\PositionProviders\Point.cs" />
     <Compile Include="ParticleEngine\RandomizedValue.cs" />
     <Compile Include="SceneManagement\BaseScene.cs" />
+    <Compile Include="SceneManagement\EventArgs.cs" />
     <Compile Include="SceneManagement\IScene.cs" />
     <Compile Include="SceneManagement\ISceneService.cs" />
     <Compile Include="SceneManagement\SceneManager.cs" />
@@ -330,21 +378,20 @@
     <Compile Include="SceneManagement\Scenes\WorldScene.cs" />
     <Compile Include="SceneManagement\Scenes\LoginScene.cs" />
     <Compile Include="Entities\Serial.cs" />
-    <Compile Include="Extensions.cs" />
+    <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Shared.cs" />
-    <Compile Include="TileEngine\MapObjectCorpse.cs" />
-    <Compile Include="TileEngine\MapObjectItem.cs" />
+    <Compile Include="TileEngine\Objects\MapObjectCorpse.cs" />
+    <Compile Include="TileEngine\Objects\MapObjectItem.cs" />
     <Compile Include="TileEngine\MiniMap.cs" />
     <Compile Include="TileEngine\RayPicker.cs" />
-    <Compile Include="TileEngine\MapObjectGround.cs" />
+    <Compile Include="TileEngine\Objects\MapObjectGround.cs" />
     <Compile Include="TileEngine\Map.cs" />
-    <Compile Include="TileEngine\MapObjectMobile.cs" />
+    <Compile Include="TileEngine\Objects\MapObjectMobile.cs" />
     <Compile Include="TileEngine\Shared.cs" />
     <Compile Include="TileEngine\SpriteBatch3D.cs" />
-    <Compile Include="TileEngine\MapObjectText.cs" />
-    <Compile Include="TileEngine\MapObject.cs" />
-    <Compile Include="TileEngine\WorldRenderer.cs" />
-    <Compile Include="TileEngine\MapObjectStatic.cs" />
+    <Compile Include="TileEngine\Objects\MapObjectText.cs" />
+    <Compile Include="TileEngine\Objects\MapObject.cs" />
+    <Compile Include="TileEngine\Objects\MapObjectStatic.cs" />
     <Compile Include="TileEngine\VertexPositionNormalTextureHue.cs" />
     <Compile Include="TileEngine\World.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -398,13 +445,34 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="log4net.config">
+    <None Include="log4net.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="zlib32.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="ultimaxna.ico" />
+    </None>
+    <None Include="Depends\zlib32.dll">
+    </None>
+    <None Include="Depends\ultimaxna.ico">
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Depends\log4net.dll">
+    </None>
+    <None Include="Depends\lua51.dll">
+    </None>
+    <None Include="Depends\LuaInterface.dll">
+    </None>
+    <None Include="Depends\WavePlayer.dll">
+    </None>
+    <None Include="Depends\xWinFormsLib.dll">
+    </None>
+    <None Include="Scripts\gui_init.lua" />
+    <None Include="Scripts\lua_globals.lua" />
+    <None Include="Scripts\lua_overrides.lua" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="LuaScripts.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>LuaScripts.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Network\Packets\Both\" />

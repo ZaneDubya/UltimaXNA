@@ -140,9 +140,9 @@ namespace UltimaXNA.Entities
         // All the contents of the container are kept in the mContents class,
         // unless they are being moved between slots or into or out of the container.
         private ContainerContents _contents = new ContainerContents();
-        // Update tickers are referenced by the GUI - when this value changes, the GUI knows to update.
+        // Update tickers are referenced by the UI - when this value changes, the UI knows to update.
         public int UpdateTicker { get { return _contents.UpdateTicker; } }
-        // Get the last occupied slot, so the GUI knows how many slots to draw.
+        // Get the last occupied slot, so the UI knows how many slots to draw.
         public int LastSlotOccupied { get { return _contents.LastSlotOccupied; } }
 
         public GameObject_Container(Item nParent)
@@ -155,7 +155,7 @@ namespace UltimaXNA.Entities
             // Is the destination slot empty?
             if (_contents[nSlot] == null || _contents[nSlot] == nObject)
             {
-                GUI.Events.DropItem(nObject, (short)nSlot, (short)0x7FFF, 0, _ParentObject.Serial);
+                UI.Events.DropItem(nObject, (short)nSlot, (short)0x7FFF, 0, _ParentObject.Serial);
             }
             else
             {
@@ -167,13 +167,13 @@ namespace UltimaXNA.Entities
                 if (nObject.ItemData.Name == _contents[nSlot].ItemData.Name)
                 {
                     // We are merging two objects.
-                    GUI.Events.DropItem(nObject, 0, 0, 0, iSwitchItem.Serial);
+                    UI.Events.DropItem(nObject, 0, 0, 0, iSwitchItem.Serial);
                     _contents.RemoveItemBySerial(nObject.Serial);
                 }
                 else
                 {
                     // We are switching these two objects.
-                    GUI.Events.DropItem(nObject, (short)nSlot, (short)0x7FFF, 0, _ParentObject.Serial);
+                    UI.Events.DropItem(nObject, (short)nSlot, (short)0x7FFF, 0, _ParentObject.Serial);
                 }
             }
         }

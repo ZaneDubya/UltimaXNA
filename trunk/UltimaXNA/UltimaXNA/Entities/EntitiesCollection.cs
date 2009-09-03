@@ -18,8 +18,10 @@
 #region usings
 using System;
 using System.Collections.Generic;
+using UltimaXNA.Extensions;
 using Microsoft.Xna.Framework;
 using UltimaXNA.Network.Packets.Client;
+using UltimaXNA.TileEngine;
 #endregion
 
 namespace UltimaXNA.Entities
@@ -27,10 +29,16 @@ namespace UltimaXNA.Entities
     static class EntitiesCollection
     {
         private static Dictionary<int, Entity> _entities = new Dictionary<int, Entity>();
+        private static IWorld _world;
         public static int MySerial { get; set; }
 
         static EntitiesCollection()
         {
+        }
+
+        public static void Initialize(Game game)
+        {
+            _world = game.Services.GetService<IWorld>();
         }
 
         public static void Update(GameTime gameTime)
@@ -121,7 +129,7 @@ namespace UltimaXNA.Entities
 
         private static T addObject<T>(Serial serial) where T : Entity
         {
-            T o = (T)Activator.CreateInstance(typeof(T), new object[] { serial });
+            T o = (T)Activator.CreateInstance(typeof(T), new object[] { serial, _world });
             // o.World = TileEngine.WorldStatic; // Add the world service (for movement).
             // If this object is the client, designate it to return events.
             if (o.Serial == MySerial)

@@ -109,7 +109,7 @@ namespace UltimaXNA.Data
                 _graphicsDevice = graphicsDevice;
                 if (path != null)
                 {
-                    using (BinaryReader reader = new BinaryReader(new FileStream(path, FileMode.Open)))
+                    using (BinaryReader reader = new BinaryReader(new FileStream(path, FileMode.Open, FileAccess.Read)))
                     {
                         for (int i = 0; i < 10; ++i)
                         {
@@ -169,7 +169,23 @@ namespace UltimaXNA.Data
             }
         }
 
-        public unsafe static Texture2D GetTexture(string text, int fontId)
+        private static Dictionary<string, Texture2D> _TextTextureCache;
+        public static Texture2D GetTextTexture(string text, int fontId)
+        {
+            string hash = string.Format("<font:{0}>{1}", fontId.ToString(), text);
+
+            if (_TextTextureCache == null)
+                _TextTextureCache = new Dictionary<string, Texture2D>();
+
+            if (!_TextTextureCache.ContainsKey(hash))
+            {
+                Texture2D texture = getTexture(text, fontId);
+                _TextTextureCache.Add(hash, texture);
+            }
+            return _TextTextureCache[hash];
+        }
+
+        private unsafe static Texture2D getTexture(string text, int fontId)
         {
             ASCIIFont font = ASCIIFont.GetFixed(fontId);
 

@@ -20,7 +20,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
-using UltimaXNA.GUI;
+using Microsoft.Xna.Framework.Input;
+using UltimaXNA.UI;
 using UltimaXNA.Client;
 #endregion
 
@@ -28,7 +29,8 @@ namespace UltimaXNA.SceneManagement
 {
     public class WorldScene : BaseScene
     {
-        public WorldScene()
+        public WorldScene(Game game)
+            : base(game)
         {
         }
 
@@ -38,6 +40,8 @@ namespace UltimaXNA.SceneManagement
              UserInterface.AddWindow("ChatFrame", new Window_Chat());
              UserInterface.AddWindow("ChatInput", new Window_ChatInput());
              UserInterface.AddWindow("StatusFrame", new Window_StatusFrame());
+             UserInterface.AddWindow("LegacyMeu", new Window_Legacy_Menu());
+             World.LightDirection = -0.6f;
              GameState.InWorld = true;
         }
 
@@ -56,10 +60,25 @@ namespace UltimaXNA.SceneManagement
             base.Update(gameTime);
             if (!UltimaClient.IsConnected && SceneManager.CurrentScene.SceneState == SceneState.Active)
             {
-                SceneManager.CurrentScene = new LoginScene();
+                SceneManager.CurrentScene = new LoginScene(Game);
                 UserInterface.ErrorPopup_Modal("You have lost your connection with the server.");
                 return;
             }
+
+            World.CenterPosition = Entities.EntitiesCollection.GetPlayerObject().Movement.DrawPosition;
+            World.Update(gameTime);
+
+            // Toggle for logout
+            if (Input.IsKeyPress(Keys.Q) && (Input.IsKeyDown(Keys.LeftControl)))
+            {
+                SceneManager.CurrentScene = new LoginScene(Game);
+            }
+        }
+
+        public override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+            World.Draw(gameTime);
         }
     }
 }

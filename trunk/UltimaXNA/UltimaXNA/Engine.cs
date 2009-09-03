@@ -17,8 +17,12 @@
  ***************************************************************************/
 #region usings
 using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.Reflection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using UltimaXNA.Extensions;
 #endregion
 
 namespace UltimaXNA
@@ -26,6 +30,11 @@ namespace UltimaXNA
     public class Engine : Game
     {
         private Diagnostics.Logger _logService;
+        private Input.InputState _inputState;
+        private Graphics.UI.UIManager _uiService;
+        private EventSystem.EventEngine _eventService;
+        private SceneManagement.SceneManager _sceneService;
+        private TileEngine.World _worldService;
 
         public Engine()
         {
@@ -41,28 +50,31 @@ namespace UltimaXNA
 
         protected override void Initialize()
         {
-            // First initialize some of the local data classes with our graphicsdevice so 
-            // we don't have to continually pass it to them.
-            Data.Gumps.GraphicsDevice = this.GraphicsDevice;
-
-            //Initialize the Data objects.
-            Data.AnimationsXNA.Initialize(GraphicsDevice);
-            Data.Art.Initialize(GraphicsDevice);
-            Data.ASCIIText.Initialize(GraphicsDevice);
-            Data.HuesXNA.Initialize(GraphicsDevice);
-            Data.StringList.LoadStringList("enu");
-            Data.Texmaps.Initialize(GraphicsDevice);
-
             this.Content.RootDirectory = "Content";
+            InvokeInitializers();
+            
+            // Load all the services we need.
             _logService = new Diagnostics.Logger("UXNA");
             Services.AddService<Diagnostics.ILoggingService>(_logService);
 
-            SceneManagement.SceneManager.Initialize(this);
-            GameState.Initialize(this);
-            TileEngine.WorldRenderer.Initialize(this);
-            GUI.UserInterface.Initialize(this);
+            _inputState = new Input.InputState(this);
+            Services.AddService<Input.IInputService>(_inputState);
+
+            _worldService = new TileEngine.World(this);
+            Services.AddService<TileEngine.IWorld>(_worldService);
+
+            _eventService = new EventSystem.EventEngine(this);
+            Services.AddService<EventSystem.IEventService>(_eventService);
+
+            _uiService = new Graphics.UI.UIManager(this);
+            Services.AddService<Graphics.UI.IUIService>(_uiService);
 
 			ParticleEngine.ParticleEngine.Initialize(this, System.IO.Path.Combine(this.Content.RootDirectory, "pfx"));
+
+            _sceneService = new SceneManagement.SceneManager(this);
+            Services.AddService<SceneManagement.ISceneService>(_sceneService);
+
+            _sceneService.CurrentScene = new SceneManagement.LoginScene(this);
 
             base.Initialize();
         }
@@ -79,33 +91,26 @@ namespace UltimaXNA
 
         protected override void Update(GameTime gameTime)
         {
-            SceneManagement.SceneManager.Update(gameTime);
+            base.Update(gameTime);
+            _inputState.Update(gameTime);
+
             Client.UltimaClient.Update(gameTime);
-            Input.InputHandler.Update(gameTime);
             GameState.Update(gameTime);
             Entities.EntitiesCollection.Update(gameTime);
-            TileEngine.World.Update(gameTime);
-            TileEngine.WorldRenderer.Update(gameTime);
-            GUI.UserInterface.Update(gameTime);
-
+            
+            UI.UserInterface.Update(gameTime);
+            _sceneService.Update(gameTime);
 			ParticleEngine.ParticleEngine.Update(gameTime);
-
-            if (SceneManagement.SceneManager.CurrentScene == null)
-                SceneManagement.SceneManager.CurrentScene = new SceneManagement.LoginScene();
 
             GameState.UpdateAfter(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Black);
-
-			SceneManagement.SceneManager.Draw(gameTime);
-			TileEngine.WorldRenderer.Draw(gameTime);
-			GUI.UserInterface.Draw(gameTime);
-
-			ParticleEngine.ParticleEngine.Draw(gameTime);
-
+            _sceneService.Draw(gameTime);
+            // ParticleEngine.ParticleEngine.Draw(gameTime);
+			UI.UserInterface.Draw(gameTime);
+			
             base.Draw(gameTime);
         }
 
@@ -123,6 +128,62 @@ namespace UltimaXNA
         private static void OnPreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
         {
             e.GraphicsDeviceInformation.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
+        }
+
+        /// <summary>
+        /// Invokes "public static void Initialize(Game game)" for each type that contains this function
+        /// </summary>
+        private void InvokeInitializers()
+        {
+            // First initialize some of the local data classes.
+            Data.AnimationsXNA.Initialize(GraphicsDevice);
+            Data.Art.Initialize(GraphicsDevice);
+            Data.ASCIIText.Initialize(GraphicsDevice);
+            Data.Gumps.Initialize(GraphicsDevice);
+            Data.HuesXNA.Initialize(GraphicsDevice);
+            Data.Texmaps.Initialize(GraphicsDevice);
+            Data.StringList.LoadStringList("enu");
+
+            //Get all loaded assemblies
+            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+            List<MethodInfo> invoke = new List<MethodInfo>();
+
+            for (int a = 0; a < assemblies.Length; ++a)
+            {
+                //Get all types within that assembly
+                Type[] types = assemblies[a].GetTypes();
+
+                for (int i = 0; i < types.Length; ++i)
+                {
+                    //Find the method "public static void Intialize"
+                    MethodInfo m = types[i].GetMethod("Initialize", BindingFlags.Static | BindingFlags.Public);
+
+                    if (m != null)
+                    {
+                        //A valid methodinfo will contain 1 paramager of type Game.
+                        bool valid = ((from arg in m.GetParameters()
+                                       where arg.ParameterType == typeof(Game)
+                                       && m.GetParameters().Length == 1
+                                       select arg).Count() > 0);
+
+                        //If its valid, add it to the invokation list.
+                        if (valid)
+                        {
+                            invoke.Add(m);
+                        }
+                    }
+                }
+            }
+
+            //Sort the invocation list by call order
+            invoke.Sort(new CallPriorityComparer());
+
+            //Invoke each function
+            for (int i = 0; i < invoke.Count; i++)
+            {
+                invoke[i].Invoke(null, new object[] { this });
+            }
         }
 
         #region EntryPoint
