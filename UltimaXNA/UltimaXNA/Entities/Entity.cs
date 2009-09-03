@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using UltimaXNA.TileEngine;
 #endregion
 
 namespace UltimaXNA.Entities
@@ -31,6 +32,7 @@ namespace UltimaXNA.Entities
 
         private Dictionary<int, Overhead> _overheads = new Dictionary<int, Overhead>();
         private int _lastOverheadIndex = 0;
+        private IWorld _world;
 
         internal bool _hasBeenDrawn = false; // if this is false this object will redraw itself in the tileengine.}
         internal bool _Disposed = false; // set this to true to have the object deleted.
@@ -40,10 +42,11 @@ namespace UltimaXNA.Entities
         public int Y { get { return Movement.DrawPosition.TileY; } }
         public int Z { get { return Movement.DrawPosition.TileZ; } }
 
-        public Entity(Serial serial)
+        public Entity(Serial serial, IWorld world)
         {
             Serial = serial;
-            Movement = new Movement(this);
+            Movement = new Movement(this, world);
+            _world = world;
             _hasBeenDrawn = false;
         }
 
@@ -53,7 +56,7 @@ namespace UltimaXNA.Entities
             {
                 Movement.Update(gameTime);
 
-                TileEngine.MapCell iThisMapCell = TileEngine.World.Map.GetMapCell(Movement.DrawPosition.TileX, Movement.DrawPosition.TileY);
+                TileEngine.MapCell iThisMapCell = _world.Map.GetMapCell(Movement.DrawPosition.TileX, Movement.DrawPosition.TileY);
                 if (iThisMapCell != null)
                 {
                     this.Draw(iThisMapCell, Movement.DrawPosition.PositionV3, Movement.DrawPosition.OffsetV3);
@@ -113,7 +116,7 @@ namespace UltimaXNA.Entities
                 }
             }
 
-            Overhead overhead = new Overhead(msgType, this, text, fontID, hue);
+            Overhead overhead = new Overhead(this, _world, msgType, text, fontID, hue);
             _overheads.Add(_lastOverheadIndex++, overhead);
             return overhead;
         }

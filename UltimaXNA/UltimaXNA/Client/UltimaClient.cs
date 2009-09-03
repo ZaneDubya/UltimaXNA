@@ -21,11 +21,12 @@ using System.IO;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using UltimaXNA.Entities;
-using UltimaXNA.GUI;
+using UltimaXNA.UI;
 using UltimaXNA.Network;
 using UltimaXNA.Network.Packets.Client;
 using UltimaXNA.Network.Packets.Server;
 using UltimaXNA.TileEngine;
+using UltimaXNA.Extensions;
 #endregion
 
 namespace UltimaXNA.Client
@@ -41,11 +42,18 @@ namespace UltimaXNA.Client
         private static ClientNetwork _ClientNetwork;
         public static bool IsConnected { get { return _ClientNetwork.IsConnected; } }
 
+        private static TileEngine.IWorld _worldService;
+
         static UltimaClient()
         {
             Status = UltimaClientStatus.Unconnected;
             _ClientNetwork = new ClientNetwork();
             registerPackets();
+        }
+
+        public static void Initialize(Game game)
+        {
+            _worldService = game.Services.GetService<TileEngine.IWorld>();
         }
 
         public static void Update(GameTime gameTime)
@@ -55,77 +63,77 @@ namespace UltimaXNA.Client
 
         private static void registerPackets()
         {
-            PacketRegistry.OnDamage += receive_Damage;
-            PacketRegistry.OnMobileStatusCompact += receive_StatusInfo;
-            PacketRegistry.OnWorldItem += receive_WorldItem;
-            PacketRegistry.OnLoginConfirm += receive_PlayerLocaleAndBody;
-            PacketRegistry.OnAsciiMessage += receive_AsciiMessage;
-            PacketRegistry.OnRemoveEntity += receive_DeleteObject;
-            PacketRegistry.OnMobileUpdate += receive_MobileUpdate;
-            PacketRegistry.OnMovementRejected += receive_MoveRej;
-            PacketRegistry.OnMoveAcknowledged += receive_MoveAck;
-            PacketRegistry.OnDragEffect += receive_DragItem;
-            PacketRegistry.OnOpenContainer += receive_Container;
-            PacketRegistry.OnContainerContentUpdate += receive_AddSingleItemToContainer;
-            PacketRegistry.OnLiftRejection += receive_RejectMoveItemRequest;
-            PacketRegistry.OnResurrectMenu += receive_ResurrectionMenu;
-            PacketRegistry.OnMobileAttributes += receive_MobileAttributes;
-            PacketRegistry.OnWornItem += receive_WornItem;
-            PacketRegistry.OnSwing += receive_OnSwing;
-            PacketRegistry.OnSkillsList += receive_SkillsList;
-            PacketRegistry.OnContainerContent += receive_AddMultipleItemsToContainer;
-            PacketRegistry.OnPersonalLightLevel += receive_PersonalLightLevel;
-            PacketRegistry.OnOverallLightLevel += receive_OverallLightLevel;
-            PacketRegistry.OnPopupMessage += receive_PopupMessage;
-            PacketRegistry.OnPlaySoundEffect += receive_PlaySoundEffect;
-            PacketRegistry.OnLoginComplete += receive_LoginComplete;
-            PacketRegistry.OnTime += receive_Time;
-            PacketRegistry.OnWeather += receive_SetWeather;
-            PacketRegistry.OnTargetCursor += receive_TargetCursor;
-            PacketRegistry.OnPlayMusic += receive_PlayMusic;
-            PacketRegistry.OnMobileAnimation += receive_MobileAnimation;
-            PacketRegistry.OnGraphicalEffect1 += receive_GraphicEffect;
-            PacketRegistry.OnWarMode += receive_WarMode;
-            PacketRegistry.OnVendorBuyList += receive_OpenBuyWindow;
-            PacketRegistry.OnNewSubserver += receive_NewSubserver;
-            PacketRegistry.OnMobileMoving += receive_MobileMoving;
-            PacketRegistry.OnMobileIncoming += receive_MobileIncoming;
-            PacketRegistry.OnDisplayMenu += receive_DisplayMenu;
-            PacketRegistry.OnLoginRejection += receive_LoginRejection;
-            PacketRegistry.OnCharacterListUpdate += receive_CharacterListUpdate;
-            PacketRegistry.OnOpenPaperdoll += receive_OpenPaperdoll;
-            PacketRegistry.OnCorpseClothing += receive_CorpseClothing;
-            PacketRegistry.OnServerRelay += receive_ServerRelay;
-            PacketRegistry.OnPlayerMove += receive_PlayerMove;
-            PacketRegistry.OnRequestNameResponse += receive_RequestNameResponse;
-            PacketRegistry.OnVendorSellList += receive_SellList;
-            PacketRegistry.OnUpdateCurrentHealth += receive_UpdateHealth;
-            PacketRegistry.OnUpdateCurrentMana += receive_UpdateMana;
-            PacketRegistry.OnUpdateCurrentStamina += receive_UpdateStamina;
-            PacketRegistry.OnOpenWebBrowser += receive_OpenWebBrowser;
-            PacketRegistry.OnTipNoticeWindow += receive_TipNotice;
-            PacketRegistry.OnServerList += receive_ServerList;
-            PacketRegistry.OnCharactersStartingLocations += receive_CharacterList;
-            PacketRegistry.OnChangeCombatant += receive_ChangeCombatant;
-            PacketRegistry.OnUnicodeMessage += receive_UnicodeMessage;
-            PacketRegistry.OnDeathAnimation += receive_DeathAnimation;
-            PacketRegistry.OnDisplayGumpFast += receive_DisplayGumpFast;
-            PacketRegistry.OnObjectHelpResponse += receive_ObjectHelpResponse;
-            PacketRegistry.OnSupportedFeatures += receive_EnableFeatures;
-            PacketRegistry.OnQuestArrow += receive_QuestArrow;
-            PacketRegistry.OnSeasonChange += receive_SeasonalInformation;
-            PacketRegistry.OnVersionRequest += receive_VersionRequest;
-            PacketRegistry.OnGeneralInfo += receive_GeneralInfo;
-            PacketRegistry.OnHuedEffect += receive_HuedEffect;
-            PacketRegistry.OnMessageLocalized += receive_CLILOCMessage;
-            PacketRegistry.OnInvalidMapEnable += receive_InvalidMapEnable;
-            PacketRegistry.OnParticleEffect += receive_OnParticleEffect;
-            PacketRegistry.OnGlobalQueueCount += receive_GlobalQueueCount;
-            PacketRegistry.OnMessageLocalizedAffix += receive_MessageLocalizedAffix;
-            PacketRegistry.OnExtended0x78 += receive_Extended0x78;
-            PacketRegistry.OnMegaCliloc += receive_ObjectPropertyList;
-            PacketRegistry.OnToolTipRevision += receive_ToolTipRevision;
-            PacketRegistry.OnCompressedGump += receive_CompressedGump;
+            PacketRegistry.Damage += receive_Damage;
+            PacketRegistry.MobileStatusCompact += receive_StatusInfo;
+            PacketRegistry.WorldItem += receive_WorldItem;
+            PacketRegistry.LoginConfirm += receive_PlayerLocaleAndBody;
+            PacketRegistry.AsciiMessage += receive_AsciiMessage;
+            PacketRegistry.RemoveEntity += receive_DeleteObject;
+            PacketRegistry.MobileUpdate += receive_MobileUpdate;
+            PacketRegistry.MovementRejected += receive_MoveRej;
+            PacketRegistry.MoveAcknowledged += receive_MoveAck;
+            PacketRegistry.DragEffect += receive_DragItem;
+            PacketRegistry.OpenContainer += receive_Container;
+            PacketRegistry.ContainerContentUpdate += receive_AddSingleItemToContainer;
+            PacketRegistry.LiftRejection += receive_RejectMoveItemRequest;
+            PacketRegistry.ResurrectMenu += receive_ResurrectionMenu;
+            PacketRegistry.MobileAttributes += receive_MobileAttributes;
+            PacketRegistry.WornItem += receive_WornItem;
+            PacketRegistry.Swing += receive_OnSwing;
+            PacketRegistry.SkillsList += receive_SkillsList;
+            PacketRegistry.ContainerContent += receive_AddMultipleItemsToContainer;
+            PacketRegistry.PersonalLightLevel += receive_PersonalLightLevel;
+            PacketRegistry.OverallLightLevel += receive_OverallLightLevel;
+            PacketRegistry.PopupMessage += receive_PopupMessage;
+            PacketRegistry.PlaySoundEffect += receive_PlaySoundEffect;
+            PacketRegistry.LoginComplete += receive_LoginComplete;
+            PacketRegistry.Time += receive_Time;
+            PacketRegistry.Weather += receive_SetWeather;
+            PacketRegistry.TargetCursor += receive_TargetCursor;
+            PacketRegistry.PlayMusic += receive_PlayMusic;
+            PacketRegistry.MobileAnimation += receive_MobileAnimation;
+            PacketRegistry.GraphicalEffect1 += receive_GraphicEffect;
+            PacketRegistry.WarMode += receive_WarMode;
+            PacketRegistry.VendorBuyList += receive_OpenBuyWindow;
+            PacketRegistry.NewSubserver += receive_NewSubserver;
+            PacketRegistry.MobileMoving += receive_MobileMoving;
+            PacketRegistry.MobileIncoming += receive_MobileIncoming;
+            PacketRegistry.DisplayMenu += receive_DisplayMenu;
+            PacketRegistry.LoginRejection += receive_LoginRejection;
+            PacketRegistry.CharacterListUpdate += receive_CharacterListUpdate;
+            PacketRegistry.OpenPaperdoll += receive_OpenPaperdoll;
+            PacketRegistry.CorpseClothing += receive_CorpseClothing;
+            PacketRegistry.ServerRelay += receive_ServerRelay;
+            PacketRegistry.PlayerMove += receive_PlayerMove;
+            PacketRegistry.RequestNameResponse += receive_RequestNameResponse;
+            PacketRegistry.VendorSellList += receive_SellList;
+            PacketRegistry.UpdateCurrentHealth += receive_UpdateHealth;
+            PacketRegistry.UpdateCurrentMana += receive_UpdateMana;
+            PacketRegistry.UpdateCurrentStamina += receive_UpdateStamina;
+            PacketRegistry.OpenWebBrowser += receive_OpenWebBrowser;
+            PacketRegistry.TipNoticeWindow += receive_TipNotice;
+            PacketRegistry.ServerList += receive_ServerList;
+            PacketRegistry.CharactersStartingLocations += receive_CharacterList;
+            PacketRegistry.ChangeCombatant += receive_ChangeCombatant;
+            PacketRegistry.UnicodeMessage += receive_UnicodeMessage;
+            PacketRegistry.DeathAnimation += receive_DeathAnimation;
+            PacketRegistry.DisplayGumpFast += receive_DisplayGumpFast;
+            PacketRegistry.ObjectHelpResponse += receive_ObjectHelpResponse;
+            PacketRegistry.SupportedFeatures += receive_EnableFeatures;
+            PacketRegistry.QuestArrow += receive_QuestArrow;
+            PacketRegistry.SeasonChange += receive_SeasonalInformation;
+            PacketRegistry.VersionRequest += receive_VersionRequest;
+            PacketRegistry.GeneralInfo += receive_GeneralInfo;
+            PacketRegistry.HuedEffect += receive_HuedEffect;
+            PacketRegistry.MessageLocalized += receive_CLILOCMessage;
+            PacketRegistry.InvalidMapEnable += receive_InvalidMapEnable;
+            PacketRegistry.ParticleEffect += receive_OnParticleEffect;
+            PacketRegistry.GlobalQueueCount += receive_GlobalQueueCount;
+            PacketRegistry.MessageLocalizedAffix += receive_MessageLocalizedAffix;
+            PacketRegistry.Extended0x78 += receive_Extended0x78;
+            PacketRegistry.MegaCliloc += receive_ObjectPropertyList;
+            PacketRegistry.ToolTipRevision += receive_ToolTipRevision;
+            PacketRegistry.CompressedGump += receive_CompressedGump;
 
             PacketRegistry.RegisterNetwork(_ClientNetwork);
         }
@@ -250,7 +258,7 @@ namespace UltimaXNA.Client
         {
             CompressedGumpPacket p = (CompressedGumpPacket)packet;
             string[] gumpPieces = interpretGumpPieces(p.GumpData);
-            UserInterface.AddWindow("Gump:" + p.GumpID, new GUI.Window_CompressedGump(p.GumpID, gumpPieces, p.TextLines, p.X, p.Y));
+            UserInterface.AddWindow("Gump:" + p.GumpID, new UI.Window_CompressedGump(p.GumpID, gumpPieces, p.TextLines, p.X, p.Y));
         }
 
         private static void receive_Container(IRecvPacket packet)
@@ -286,7 +294,7 @@ namespace UltimaXNA.Client
         {
             DamagePacket p = (DamagePacket)packet;
             Mobile u = EntitiesCollection.GetObject<Mobile>(p.Serial, false);
-            GUI.GUIHelper.Chat_AddLine(string.Format("{0} takes {1} damage!", u.Name, p.Damage));
+            UI.UIHelper.Chat_AddLine(string.Format("{0} takes {1} damage!", u.Name, p.Damage));
         }
 
         private static void receive_DeathAnimation(IRecvPacket packet)
@@ -385,7 +393,7 @@ namespace UltimaXNA.Client
         private static void receive_GlobalQueueCount(IRecvPacket packet)
         {
             GlobalQueuePacket p = (GlobalQueuePacket)packet;
-            GUI.GUIHelper.Chat_AddLine("System: There are currently " + p.Count + " available calls in the global queue.");
+            UI.UIHelper.Chat_AddLine("System: There are currently " + p.Count + " available calls in the global queue.");
         }
 
         private static void receive_GraphicEffect(IRecvPacket packet)
@@ -613,7 +621,7 @@ namespace UltimaXNA.Client
 
             OverallLightLevelPacket p = (OverallLightLevelPacket)packet;
             // Console.WriteLine("OverallLight: {0}", p.LightLevel);
-            WorldRenderer.OverallLightning = p.LightLevel;
+            _worldService.OverallLightning = p.LightLevel;
         }
 
         private static void receive_PersonalLightLevel(IRecvPacket packet)
@@ -627,7 +635,7 @@ namespace UltimaXNA.Client
 
             PersonalLightLevelPacket p = (PersonalLightLevelPacket)packet;
             // Console.WriteLine("PersonalLight: {0}", p.LightLevel);
-            WorldRenderer.PersonalLightning = p.LightLevel;
+            _worldService.PersonalLightning = p.LightLevel;
         }
 
         private static void receive_PlayerLocaleAndBody(IRecvPacket packet)
@@ -678,7 +686,7 @@ namespace UltimaXNA.Client
         private static void receive_RejectMoveItemRequest(IRecvPacket packet)
         {
             LiftRejectionPacket p = (LiftRejectionPacket)packet;
-            GUI.GUIHelper.Chat_AddLine("Could not pick up item: " + p.ErrorMessage);
+            UI.UIHelper.Chat_AddLine("Could not pick up item: " + p.ErrorMessage);
         }
 
         private static void receive_RequestNameResponse(IRecvPacket packet)
@@ -886,17 +894,17 @@ namespace UltimaXNA.Client
 
         private static void announce_UnhandledPacket(IRecvPacket packet)
         {
-            GUI.GUIHelper.Chat_AddLine("DEBUG: Unhandled " + packet.Name + ". <" + packet.Id + ">");
+            UI.UIHelper.Chat_AddLine("DEBUG: Unhandled " + packet.Name + ". <" + packet.Id + ">");
         }
 
         private static void announce_UnhandledPacket(IRecvPacket packet, string addendum)
         {
-            GUI.GUIHelper.Chat_AddLine("DEBUG: Unhandled " + packet.Name + ". <" + packet.Id + ">" + " " + addendum);
+            UI.UIHelper.Chat_AddLine("DEBUG: Unhandled " + packet.Name + ". <" + packet.Id + ">" + " " + addendum);
         }
 
         private static void announce_Packet(IRecvPacket packet)
         {
-            // GUI.GUIHelper.Chat_AddLine("DEBUG: Recv'd " + packet.Name + ". <" + packet.Id + ">");
+            // UI.UIHelper.Chat_AddLine("DEBUG: Recv'd " + packet.Name + ". <" + packet.Id + ">");
         }
 
         private static void receive_TextMessage(MessageType msgType, string text, int hue, int font, Serial serial, string speakerName)
@@ -912,14 +920,14 @@ namespace UltimaXNA.Client
                     }
                     else
                     {
-                        GUI.GUIHelper.Chat_AddLine(string.Format("{0} <{1}>", text, hue));
+                        UI.UIHelper.Chat_AddLine(string.Format("{0} <{1}>", text, hue));
                     }
                     break;
                 case MessageType.System:
-                    GUI.GUIHelper.Chat_AddLine(string.Format("<SYSTEM> {0} <{1}>", text, hue));
+                    UI.UIHelper.Chat_AddLine(string.Format("<SYSTEM> {0} <{1}>", text, hue));
                     break;
                 case MessageType.Emote:
-                    GUI.GUIHelper.Chat_AddLine(string.Format("<EMOTE> {0} <{1}>", text, hue));
+                    UI.UIHelper.Chat_AddLine(string.Format("<EMOTE> {0} <{1}>", text, hue));
                     break;
                 case MessageType.Label:
                     if (serial.IsValid)
@@ -936,32 +944,32 @@ namespace UltimaXNA.Client
                     }
                     else
                     {
-                        GUI.GUIHelper.Chat_AddLine(string.Format("<LABEL> {0} <{1}>", text, hue));
+                        UI.UIHelper.Chat_AddLine(string.Format("<LABEL> {0} <{1}>", text, hue));
                     }
                     break;
                 case MessageType.Focus: // on player?
-                    GUI.GUIHelper.Chat_AddLine(string.Format("<FOCUS> {0} <{1}>", text, hue));
+                    UI.UIHelper.Chat_AddLine(string.Format("<FOCUS> {0} <{1}>", text, hue));
                     break;
                 case MessageType.Whisper:
-                    GUI.GUIHelper.Chat_AddLine(string.Format("<WHISPER> {0} <{1}>", text, hue));
+                    UI.UIHelper.Chat_AddLine(string.Format("<WHISPER> {0} <{1}>", text, hue));
                     break;
                 case MessageType.Yell:
-                    GUI.GUIHelper.Chat_AddLine(string.Format("<YELL> {0} <{1}>", text, hue));
+                    UI.UIHelper.Chat_AddLine(string.Format("<YELL> {0} <{1}>", text, hue));
                     break;
                 case MessageType.Spell:
-                    GUI.GUIHelper.Chat_AddLine(string.Format("<SPELL> {0} <{1}>", text, hue));
+                    UI.UIHelper.Chat_AddLine(string.Format("<SPELL> {0} <{1}>", text, hue));
                     break;
-                case MessageType.Guild:
-                    GUI.GUIHelper.Chat_AddLine(string.Format("<GUILD> {0} <{1}>", text, hue));
+                case MessageType.UIld:
+                    UI.UIHelper.Chat_AddLine(string.Format("<UILD> {0} <{1}>", text, hue));
                     break;
                 case MessageType.Alliance:
-                    GUI.GUIHelper.Chat_AddLine(string.Format("<ALLIANCE> {0} <{1}>", text, hue));
+                    UI.UIHelper.Chat_AddLine(string.Format("<ALLIANCE> {0} <{1}>", text, hue));
                     break;
                 case MessageType.Command:
-                    GUI.GUIHelper.Chat_AddLine(string.Format("<COMMAND> {0} <{1}>", text, hue));
+                    UI.UIHelper.Chat_AddLine(string.Format("<COMMAND> {0} <{1}>", text, hue));
                     break;
                 default:
-                    GUI.GUIHelper.Chat_AddLine("ERROR UNKNOWN COMMAND:" + msgType.ToString());
+                    UI.UIHelper.Chat_AddLine("ERROR UNKNOWN COMMAND:" + msgType.ToString());
                     break;
             }
         }

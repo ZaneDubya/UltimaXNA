@@ -18,10 +18,16 @@
 #region usings
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Linq;
+using System.Xml.Serialization;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Data;
+using System.Reflection;
 #endregion
 
 namespace UltimaXNA
@@ -242,6 +248,103 @@ namespace UltimaXNA
         }
         #endregion
 
+        #region Conversion
+        public static bool TryConvert<TConverFrom, UConvertTo>(TConverFrom convertFrom, out UConvertTo convertTo)
+        {
+            convertTo = default(UConvertTo);
+            bool converted = false;
+
+            TypeConverter converter = TypeDescriptor.GetConverter(convertFrom);
+
+            if (converter.CanConvertTo(typeof(UConvertTo)))
+            {
+                convertTo = (UConvertTo)converter.ConvertTo(convertFrom, typeof(UConvertTo));
+                converted = true;
+            }
+
+            return converted;
+        }
+
+        public static bool TryConvert(Type convertFrom, object from, Type convertTo, out object to)
+        {
+            to = null;
+            bool converted = false;
+
+            TypeConverter converter = TypeDescriptor.GetConverter(convertTo);
+
+            if (converter.CanConvertFrom(convertFrom))
+            {
+                to = converter.ConvertFrom(from);
+                converted = true;
+            }
+
+            return converted;
+        }
+
+        public static TConverFrom ConvertReferenceType<TConverFrom, UConvertTo>(UConvertTo value)
+        {
+            if (value == null)
+            {
+                return default(TConverFrom);
+            }
+            else if (typeof(TConverFrom).IsAssignableFrom(value.GetType()) == true)
+            {
+                return (TConverFrom)((object)value);
+            }
+
+            return default(TConverFrom);
+        }
+
+        public static TConverFrom ConvertValueType<TConverFrom, UConvertTo>(UConvertTo value)
+        {
+            IConvertible convertible = value as IConvertible;
+
+            if (convertible != null)
+            {
+                return (TConverFrom)System.Convert.ChangeType(convertible, typeof(TConverFrom));
+            }
+
+            TypeConverter converter = TypeDescriptor.GetConverter(value);
+
+            if (converter.CanConvertTo(typeof(TConverFrom)))
+            {
+                return (TConverFrom)converter.ConvertTo(value, typeof(TConverFrom));
+            }
+
+            if (value == null)
+            {
+                throw new InvalidCastException(string.Format(CultureInfo.InvariantCulture,
+                    "Unable to cast type '{0}'.", typeof(TConverFrom).Name));
+            }
+
+            return default(TConverFrom);
+        }
+
+        public static TConverFrom? ConvertNullableType<TConverFrom, UConvertTo>(UConvertTo value) where TConverFrom : struct
+        {
+            if (value == null)
+            {
+                return null;
+            }
+
+            IConvertible convertible = value as IConvertible;
+
+            if (convertible != null)
+            {
+                return (TConverFrom)System.Convert.ChangeType(convertible, typeof(TConverFrom));
+            }
+
+            TypeConverter converter = TypeDescriptor.GetConverter(value);
+
+            if (converter.CanConvertTo(typeof(TConverFrom)))
+            {
+                return (TConverFrom)converter.ConvertTo(value, typeof(TConverFrom));
+            }
+
+            return new TConverFrom?((TConverFrom)((object)value));
+        }
+        #endregion
+
         public static string WrapASCIIText(int fontNumber, string text, float maxLineWidth)
         {
             if (string.IsNullOrEmpty(text))
@@ -303,6 +406,21 @@ namespace UltimaXNA
             int yDelta = goaly - orgy;
 
             return (int)Math.Sqrt((xDelta * xDelta) + (yDelta * yDelta));
+        }
+
+        public static Type GetTypeFromAppDomain(string typeName)
+        {
+            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            Type type = null;
+
+            for (int i = 0; i < assemblies.Length && type == null; i++)
+            {
+                type = (from t in assemblies[i].GetTypes()
+                        where t.Name.Equals(typeName, StringComparison.CurrentCultureIgnoreCase)
+                        select t).FirstOrDefault();
+            }
+
+            return type;
         }
     }
 }

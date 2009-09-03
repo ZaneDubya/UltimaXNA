@@ -19,11 +19,13 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using UltimaXNA.Data;
 using UltimaXNA.Client;
 using UltimaXNA.Entities;
-using UltimaXNA.GUI;
+using UltimaXNA.Extensions;
+using UltimaXNA.UI;
 using UltimaXNA.Input;
 using UltimaXNA.Network.Packets.Client;
 using UltimaXNA.TileEngine;
@@ -31,18 +33,15 @@ using UltimaXNA.TileEngine;
 
 namespace UltimaXNA
 {
-    public static partial class GameState
+    public static class GameState
     {
+        private static IInputService _input;
+        private static IWorld _worldService;
+
         public static bool WarMode
         {
-            get
-            {
-                return (EntitiesCollection.GetPlayerObject() != null) ? ((Mobile)EntitiesCollection.GetPlayerObject()).IsWarMode : false;
-            }
-            set
-            {
-                ((Mobile)EntitiesCollection.GetPlayerObject()).IsWarMode = value;
-            }
+            get { return (EntitiesCollection.GetPlayerObject() != null) ? ((Mobile)EntitiesCollection.GetPlayerObject()).IsWarMode : false; }
+            set { ((Mobile)EntitiesCollection.GetPlayerObject()).IsWarMode = value; }
         }
 
         private static Serial _lastTarget;
@@ -58,9 +57,7 @@ namespace UltimaXNA
         public static Direction CursorDirection { get; internal set; }
         public static string DebugMessage { get { return generateDebugMessage(); } }
         public static float BackBufferWidth = 0, BackBufferHeight = 0;
-        // added for future interface option, allowing both continuous mouse movement and discrete clicks -BERT
-        private static bool _MovementFollowsMouse = true;
-        private static bool _ContinuousMoveCheck = false;
+        private static bool _MovementFollowsMouse = true,  _ContinuousMoveCheck = false;
         // Are we asking for a target?
         private static int _TargettingType = -1;
         private static bool isTargeting
@@ -77,22 +74,28 @@ namespace UltimaXNA
         public static bool InWorld { get; set; }
         // Set EngineRunning to false to cause the engine to immediately exit.
         public static bool EngineRunning { get; set; }
-        // These variables move the light source around...
-        private static Vector3 _LightDirection = new Vector3(0f, 0f, 1f);
-        private static double _LightRadians = -0.6d;
+        // These variables move the light source around.
+        
         private static int _cursorHoverTimeMS = 0, _hoverTimeForLabelMS = 1000;
-        private static PickTypes DefaultPickType = PickTypes.PickStatics | PickTypes.PickObjects;
-
-        public static MethodHook OnLeftClick;
-        public static MethodHook OnRightClick;
-        public static bool HandleMouseInput = true;
+        public static PickTypes DefaultPickType = PickTypes.PickStatics | PickTypes.PickObjects;
+        
+        // These are for hidden fun stuff
+        public static MethodHook OnLeftClick, OnLeftOver, OnRightClick, OnRightOver, OnUpdate;
+        public static GraphicsDevice Graphics;
 
         public static void Initialize(Game game)
         {
+            _input = game.Services.GetService<IInputService>();
+            _worldService = game.Services.GetService<IWorld>();
+
             EngineRunning = true;
             InWorld = false;
             BackBufferWidth = game.GraphicsDevice.PresentationParameters.BackBufferWidth;
             BackBufferHeight = game.GraphicsDevice.PresentationParameters.BackBufferHeight;
+            Graphics = game.GraphicsDevice;
+            OnLeftClick += doInteractButton;
+            OnRightClick += doMoveButton;
+            loadDebugAssembly(@"..\..\..\debug.dll");
         }
 
         public static void Update(GameTime gameTime)
@@ -100,17 +103,17 @@ namespace UltimaXNA
             if (InWorld)
             {
                 // Set the target frame stuff.
-                ((GUI.Window_StatusFrame)UserInterface.Window("StatusFrame")).MyEntity = (Mobile)EntitiesCollection.GetPlayerObject();
+                ((UI.Window_StatusFrame)UserInterface.Window("StatusFrame")).MyEntity = (Mobile)EntitiesCollection.GetPlayerObject();
                 if (LastTarget.IsValid)
-                    ((GUI.Window_StatusFrame)UserInterface.Window("StatusFrame")).TargetEntity = EntitiesCollection.GetObject<Mobile>(LastTarget, false);
+                    ((UI.Window_StatusFrame)UserInterface.Window("StatusFrame")).TargetEntity = EntitiesCollection.GetObject<Mobile>(LastTarget, false);
 
                 // Parse keyboard input.
-                parseKeyboard(InputHandler.Keyboard);
+                parseKeyboard();
 
                 // Get a pick type for the cursor.
-                if (UserInterface.IsMouseOverGUI(InputHandler.Mouse.Position))
+                if (UserInterface.IsMouseOverUI(_input.CurrentMousePosition))
                 {
-                    WorldRenderer.PickType = PickTypes.PickNothing;
+                    _worldService.PickType = PickTypes.PickNothing;
                 }
                 else
                 {
@@ -118,19 +121,23 @@ namespace UltimaXNA
                     if (isTargeting)
                     {
                         // We are targetting. Based on the targetting type, we will either select an object, or a location.
-                        WorldRenderer.PickType = PickTypes.PickEverything;
-                        TileEngine.WorldRenderer.DEBUG_DrawTileOver = true;
+                        _worldService.PickType = PickTypes.PickEverything;
+                        _worldService.DEBUG_DrawDebug = true;
                     }
                     else
                     {
-                        WorldRenderer.PickType = DefaultPickType;
-                        if (InputHandler.Mouse.Buttons[0].Release)
+                        _worldService.PickType = DefaultPickType;
+                        if (_input.IsMouseButtonRelease(MouseButtons.LeftButton))
                         {
                             // We need to pick ground tiles in case we are dropping something.
-                            WorldRenderer.PickType |= PickTypes.PickGroundTiles;
+                            _worldService.PickType |= PickTypes.PickGroundTiles;
                         }
                     }
                 }
+
+                // HFS:
+                // if (OnUpdate != null)
+                //     OnUpdate();
             }
             updateFPS(gameTime);
         }
@@ -140,21 +147,21 @@ namespace UltimaXNA
             if (InWorld)
             {
                 // Set the cursor direction.
-                CursorDirection = mousePositionToDirection(InputHandler.Mouse.Position);
+                CursorDirection = mousePositionToDirection(_input.CurrentMousePosition);
                 // get the cursor hoverTime and top up a label if enough time has passed.
-                _cursorHoverTimeMS = (InputHandler.Mouse.MovedSinceLastUpdate) ? 0 : _cursorHoverTimeMS + gameTime.ElapsedRealTime.Milliseconds;
-                if ((_cursorHoverTimeMS >= _hoverTimeForLabelMS) && (WorldRenderer.MouseOverObject != null))
+                _cursorHoverTimeMS = (_input.IsCursorMovedSinceLastUpdate()) ? 0 : _cursorHoverTimeMS + gameTime.ElapsedRealTime.Milliseconds;
+                if ((_cursorHoverTimeMS >= _hoverTimeForLabelMS) && (_worldService.MouseOverObject != null))
                 {
-                    createHoverLabel(WorldRenderer.MouseOverObject);
+                    createHoverLabel(_worldService.MouseOverObject);
                 }
 
-                // If the left mouse button has been released, and movementFollowsMouse = true, reset mContinuousMovement.
-                if (InputHandler.Mouse.Buttons[0].Release)
+                // If the movement mouse button has been released, and movementFollowsMouse = true, reset mContinuousMovement.
+                if (_input.IsMouseButtonRelease(MouseButtons.RightButton))
                 {
                     // We do not move when the mouse cursor is released.
                     _ContinuousMoveCheck = false;
                     // If we are holding anything, we just dropped it.
-                    if (GUI.GUIHelper.MouseHoldingItem != null)
+                    if (UI.UIHelper.MouseHoldingItem != null)
                     {
                         checkDropItem();
                     }
@@ -163,26 +170,34 @@ namespace UltimaXNA
                 // Changed to leverage movementFollowsMouse interface option -BERT
                 if (_ContinuousMoveCheck)
                 {
-                    checkMove();
+                    doMovement();
                 }
 
-                if (!UserInterface.IsMouseOverGUI(InputHandler.Mouse.Position))
+                if (!UserInterface.IsMouseOverUI(_input.CurrentMousePosition))
                 {
                     // Check if the left mouse button has been pressed. We will either walk to the object under the cursor
                     // or pick it up, depending on what kind of object we are looking at.
-                    if (InputHandler.Mouse.Buttons[0].Press)
+                    if (_input.IsMouseButtonPress(MouseButtons.LeftButton))
                     {
-                        if (HandleMouseInput)
-                            checkLeftClick();
                         if (OnLeftClick != null)
                             OnLeftClick();
                     }
-                    if (InputHandler.Mouse.Buttons[1].Press)
+                    if (_input.IsMouseButtonPress(MouseButtons.RightButton))
                     {
-                        if (HandleMouseInput)
-                            checkRightClick();
                         if (OnRightClick != null)
                             OnRightClick();
+                    }
+
+                    if (_input.IsMouseButtonDown(MouseButtons.LeftButton))
+                    {
+                        if (OnLeftOver != null)
+                            OnLeftOver();
+                    }
+
+                    if (_input.IsMouseButtonDown(MouseButtons.RightButton))
+                    {
+                        if (OnRightOver != null)
+                            OnRightOver();
                     }
                 }
 
@@ -197,11 +212,11 @@ namespace UltimaXNA
             }
         }
 
-        private static void checkMove()
+        private static void doMovement()
         {
             Direction moveDirection = CursorDirection;
-            float distanceFromCenterOfScreen = Vector2.Distance(new Vector2(InputHandler.Mouse.Position.X, InputHandler.Mouse.Position.Y), new Vector2(400, 300));
-            if (distanceFromCenterOfScreen >= 200f)
+            float distanceFromCenterOfScreen = Vector2.Distance(_input.CurrentMousePosition, new Vector2(400, 300));
+            if (distanceFromCenterOfScreen >= 150f)
                 moveDirection |= Direction.Running;
 
             ((Mobile)EntitiesCollection.GetPlayerObject()).Move(moveDirection);
@@ -237,9 +252,9 @@ namespace UltimaXNA
             return (Direction)direction;
         }
 
-        private static void checkLeftClick()
+        private static void doMoveButton()
         {
-            MapObject mouseOverObject = WorldRenderer.MouseOverObject;
+            MapObject mouseOverObject = _worldService.MouseOverObject;
 
             // If isTargeting is true, then the target cursor is active and we are waiting for the player to target something.
             // If not, then we are just clicking the mouse and we need to find out if something is under the mouse cursor.
@@ -249,7 +264,7 @@ namespace UltimaXNA
                 {
                     case 0:
                         // Select Object
-                        WorldRenderer.PickType = PickTypes.PickStatics | PickTypes.PickObjects;
+                        _worldService.PickType = PickTypes.PickStatics | PickTypes.PickObjects;
                         mouseTargetingEventObject(mouseOverObject);
                         break;
                     case 1:
@@ -260,7 +275,7 @@ namespace UltimaXNA
                         }
                         else
                         {
-                            MapObject ground = WorldRenderer.MouseOverGroundTile;
+                            MapObject ground = _worldService.MouseOverGroundTile;
                             if (ground != null)
                                 mouseTargetingEventXYZ(ground);
                             else
@@ -289,19 +304,18 @@ namespace UltimaXNA
                         Item item = EntitiesCollection.GetObject<Item>(mouseOverObject.OwnerSerial, false);
                         if (item.ItemData.Weight != 255)
                         {
-                            GUI.GUIHelper.PickUpItem(item);
+                            UI.UIHelper.PickUpItem(item);
                             return;
                         }
                     }
                 }
             }
-
-            checkMove();
+            doMovement();
         }
 
-        private static void checkRightClick()
+        private static void doInteractButton()
         {
-            MapObject iMapObject = WorldRenderer.MouseOverObject;
+            MapObject iMapObject = _worldService.MouseOverObject;
             if ((iMapObject != null) && !(iMapObject is MapObjectStatic))
             {
                 Entity iObject = EntitiesCollection.GetObject<Entity>(iMapObject.OwnerSerial, false);
@@ -348,13 +362,13 @@ namespace UltimaXNA
 
         private static void checkDropItem()
         {
-            // We do not handle dropping the item into the GUI in this routine.
+            // We do not handle dropping the item into the UI in this routine.
             // But we probably should, to consolidate game logic.
-            if (!UserInterface.IsMouseOverGUI(InputHandler.Mouse.Position))
+            if (!UserInterface.IsMouseOverUI(_input.CurrentMousePosition))
             {
                 int x, y, z;
-                MapObject groundObject = WorldRenderer.MouseOverGroundTile;
-                MapObject mouseoverObject = WorldRenderer.MouseOverObject;
+                MapObject groundObject = _worldService.MouseOverGroundTile;
+                MapObject mouseoverObject = _worldService.MouseOverObject;
                 if (mouseoverObject != null)
                 {
                     if (mouseoverObject is MapObjectMobile)
@@ -387,19 +401,19 @@ namespace UltimaXNA
                 }
                 else
                 {
-                    GUI.GUIHelper.MouseHoldingItem = null;
+                    UI.UIHelper.MouseHoldingItem = null;
                     return;
                 }
                 // We dropped the icon in the world. This means we are trying to drop the item
                 // into the world. Let's do it!
-                if ((GUI.GUIHelper.MouseHoldingItem).Item_ContainedWithinSerial.IsValid)
+                if ((UI.UIHelper.MouseHoldingItem).Item_ContainedWithinSerial.IsValid)
                 {
                     // We must manually remove the item from the container, as RunUO does not do this for us.
                     ContainerItem iContainer = EntitiesCollection.GetObject<ContainerItem>(
-                        (GUI.GUIHelper.MouseHoldingItem).Item_ContainedWithinSerial, false);
-                    iContainer.Contents.RemoveItem(GUI.GUIHelper.MouseHoldingItem.Serial);
+                        (UI.UIHelper.MouseHoldingItem).Item_ContainedWithinSerial, false);
+                    iContainer.Contents.RemoveItem(UI.UIHelper.MouseHoldingItem.Serial);
                 }
-                GUI.GUIHelper.DropItemOntoGround(x, y, z);
+                UI.UIHelper.DropItemOntoGround(x, y, z);
             }
         }
 
@@ -439,25 +453,20 @@ namespace UltimaXNA
             }
         }
 
-        private static void parseKeyboard(Input.KeyboardHandler keyboard)
+        private static void parseKeyboard()
         {
             // If we are targeting, cancel the target cursor if we hit escape.
             if (isTargeting)
-                if (keyboard.IsKeyPressed(Keys.Escape))
+                if (_input.IsKeyPress(Keys.Escape))
                     mouseTargetingCancel();
 
-            // if (keyboard.IsKeyDown(Keys.I))
-            //     _LightRadians += .01f;
-            // if (keyboard.IsKeyDown(Keys.K))
-            //    _LightRadians -= .01f;
-
-            _LightDirection.Z = -(float)Math.Cos(_LightRadians);
-            _LightDirection.Y = (float)Math.Sin(_LightRadians);
-
-            WorldRenderer.SetLightDirection(_LightDirection);
+            float _LightRadians = _worldService.LightDirection;
+            if (_input.IsKeyDown(Keys.I))
+                 _LightRadians += .001f;
+            _worldService.LightDirection = _LightRadians;
 
             // Toggle for backpack container window.
-            if (keyboard.IsKeyPressed(Keys.B) && (keyboard.IsKeyDown(Keys.LeftControl)))
+            if (_input.IsKeyPress(Keys.B) && (_input.IsKeyPress(Keys.LeftControl)))
             {
                 Serial backpackSerial = ((PlayerMobile)EntitiesCollection.GetPlayerObject())
                     .equipment[(int)EquipLayer.Backpack].Serial;
@@ -468,7 +477,7 @@ namespace UltimaXNA
             }
 
             // Toggle for paperdoll window.
-            if (keyboard.IsKeyPressed(Keys.C) && (keyboard.IsKeyDown(Keys.LeftControl)))
+            if (_input.IsKeyPress(Keys.C) && (_input.IsKeyDown(Keys.LeftControl)))
             {
                 Serial serial = ((PlayerMobile)EntitiesCollection.GetPlayerObject())
                     .Serial;
@@ -478,14 +487,8 @@ namespace UltimaXNA
                     UserInterface.CloseWindow("PaperDoll:" + serial);
             }
 
-            // Toggle for logout
-            if (keyboard.IsKeyPressed(Keys.Q) && (keyboard.IsKeyDown(Keys.LeftControl)))
-            {
-                SceneManagement.SceneManager.CurrentScene = new SceneManagement.LoginScene();
-            }
-
             // toggle for warmode
-            if (keyboard.IsKeyPressed(Keys.Tab))
+            if (_input.IsKeyPress(Keys.Tab))
             {
                 if (WarMode)
                     UltimaClient.Send(new RequestWarModePacket(false));
@@ -494,7 +497,7 @@ namespace UltimaXNA
             }
 
             // toggle for all names
-            if (keyboard.IsKeyDown(Keys.LeftShift) && keyboard.IsKeyDown(Keys.LeftControl))
+            if (_input.IsKeyDown(Keys.LeftShift) && _input.IsKeyDown(Keys.LeftControl))
             {
                 List<Mobile> mobiles = EntitiesCollection.GetObjectsByType<Mobile>();
                 foreach (Mobile m in mobiles)
@@ -506,7 +509,7 @@ namespace UltimaXNA
                 }
             }
 
-			if (keyboard.IsKeyDown(Keys.P) && keyboard.IsKeyDown(Keys.LeftControl))
+            if (_input.IsKeyDown(Keys.P) && _input.IsKeyDown(Keys.LeftControl))
 			{
 				ParticleEngine.ParticleEngine.LoadEffectFromString("print(\"hubert\")");
 				ParticleEngine.ParticleEngine.LoadEffectFromScript("foobert");
@@ -534,43 +537,44 @@ namespace UltimaXNA
         // Feel free to add or remove variables.
         private static string generateDebugMessage()
         {
-            String debugMessage = "FPS: " + ((int)_FPS).ToString() + Environment.NewLine;
+            String debugMessage = string.Format("FPS: {0}", (int)_FPS);
             if (InWorld)
             {
-                debugMessage += "Objects on screen: " + WorldRenderer.ObjectsRendered.ToString() + Environment.NewLine;
-                debugMessage += "WarMode: " + WarMode.ToString() + Environment.NewLine;
-                if (WorldRenderer.MouseOverObject != null)
+                debugMessage += "\n";
+                debugMessage += string.Format("#Objects: {0}\n", _worldService.ObjectsRendered);
+                debugMessage += string.Format("Warmode: {0}\n", WarMode);
+                if (_worldService.MouseOverObject != null)
                 {
-                    debugMessage += "OBJECT: " + WorldRenderer.MouseOverObject.ToString() + Environment.NewLine;
-                    if (WorldRenderer.MouseOverObject is MapObjectStatic)
+                    debugMessage += "OBJECT: " + _worldService.MouseOverObject.ToString() + Environment.NewLine;
+                    if (_worldService.MouseOverObject is MapObjectStatic)
                     {
-                        debugMessage += "ArtID: " + ((MapObjectStatic)WorldRenderer.MouseOverObject).ItemID;
+                        debugMessage += "ArtID: " + ((MapObjectStatic)_worldService.MouseOverObject).ItemID;
                     }
-                    else if (WorldRenderer.MouseOverObject is MapObjectMobile)
+                    else if (_worldService.MouseOverObject is MapObjectMobile)
                     {
-                        Mobile iUnit = EntitiesCollection.GetObject<Mobile>(WorldRenderer.MouseOverObject.OwnerSerial, false);
+                        Mobile iUnit = EntitiesCollection.GetObject<Mobile>(_worldService.MouseOverObject.OwnerSerial, false);
                         if (iUnit != null)
                             debugMessage += "Name: " + iUnit.Name + Environment.NewLine;
                         debugMessage +=
-                            "AnimID: " + ((MapObjectMobile)WorldRenderer.MouseOverObject).BodyID + Environment.NewLine +
-                            "Serial: " + WorldRenderer.MouseOverObject.OwnerSerial + Environment.NewLine +
-                            "Hue: " + ((MapObjectMobile)WorldRenderer.MouseOverObject).Hue;
+                            "AnimID: " + ((MapObjectMobile)_worldService.MouseOverObject).BodyID + Environment.NewLine +
+                            "Serial: " + _worldService.MouseOverObject.OwnerSerial + Environment.NewLine +
+                            "Hue: " + ((MapObjectMobile)_worldService.MouseOverObject).Hue;
                     }
-                    else if (WorldRenderer.MouseOverObject is MapObjectItem)
+                    else if (_worldService.MouseOverObject is MapObjectItem)
                     {
                         debugMessage +=
-                            "ArtID: " + ((MapObjectItem)WorldRenderer.MouseOverObject).ItemID + Environment.NewLine +
-                            "Serial: " + WorldRenderer.MouseOverObject.OwnerSerial;
+                            "ArtID: " + ((MapObjectItem)_worldService.MouseOverObject).ItemID + Environment.NewLine +
+                            "Serial: " + _worldService.MouseOverObject.OwnerSerial;
                     }
-                    debugMessage += " Z: " + WorldRenderer.MouseOverObject.Z;
+                    debugMessage += " Z: " + _worldService.MouseOverObject.Z;
                 }
                 else
                 {
                     debugMessage += "OVER: " + "null";
                 }
-                if (WorldRenderer.MouseOverGroundTile != null)
+                if (_worldService.MouseOverGroundTile != null)
                 {
-                    debugMessage += Environment.NewLine + "GROUND: " + WorldRenderer.MouseOverGroundTile.Position.ToString();
+                    debugMessage += Environment.NewLine + "GROUND: " + _worldService.MouseOverGroundTile.Position.ToString();
                 }
                 else
                 {
@@ -584,7 +588,7 @@ namespace UltimaXNA
         public static void MouseTargeting(int nCursorID, int nTargetingType)
         {
             _TargettingType = nTargetingType;
-            // Set the GUI's cursor to a targetting cursor.
+            // Set the UI's cursor to a targetting cursor.
             UserInterface.TargettingCursor = true;
             // Stop continuous movement.
             _ContinuousMoveCheck = false;
@@ -638,6 +642,15 @@ namespace UltimaXNA
             // Clear our target cursor.
             _TargettingType = -1;
             UserInterface.TargettingCursor = false;
+        }
+
+        private static void loadDebugAssembly(string filename)
+        {
+            if (System.IO.File.Exists(filename))
+            {
+                System.Reflection.Assembly debugAssembly = System.Reflection.Assembly.LoadFrom(filename);
+                Object o = debugAssembly.CreateInstance("UltimaXNA.UXNADebug", true);
+            }
         }
     }
 }

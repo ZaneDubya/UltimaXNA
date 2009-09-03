@@ -29,7 +29,7 @@ namespace UltimaXNA.Data
 {
     public class Gumps
     {
-        public static GraphicsDevice GraphicsDevice;
+        private static GraphicsDevice _graphicsDevice;
 
         private static FileIndex m_FileIndex = new FileIndex("Gumpidx.mul", "Gumpart.mul", 0x10000, 12);
         public static FileIndex FileIndex { get { return m_FileIndex; } }
@@ -37,6 +37,11 @@ namespace UltimaXNA.Data
         private static byte[] m_PixelBuffer;
         private static byte[] m_StreamBuffer;
         private static byte[] m_ColorTable;
+
+        public static void Initialize(GraphicsDevice graphics)
+        {
+            _graphicsDevice = graphics;
+        }
 
         public unsafe static Bitmap GetGump(int index, Hue hue, bool onlyHueGrayPixels)
         {
@@ -302,7 +307,7 @@ namespace UltimaXNA.Data
                 }
             }
 
-            Texture2D iTexture = new Texture2D(GraphicsDevice, width, height, 1, TextureUsage.None, SurfaceFormat.Bgra5551);
+            Texture2D iTexture = new Texture2D(_graphicsDevice, width, height, 1, TextureUsage.None, SurfaceFormat.Bgra5551);
             iTexture.SetData(pixels);
             return iTexture;
         }
@@ -360,7 +365,7 @@ namespace UltimaXNA.Data
                 }
             }
 
-            Texture2D iTexture = new Texture2D(GraphicsDevice, width, height);
+            Texture2D iTexture = new Texture2D(_graphicsDevice, width, height);
             iTexture.SetData(pixels);
             return iTexture;
         }

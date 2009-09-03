@@ -18,6 +18,7 @@
 #region usings
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using UltimaXNA.TileEngine;
 #endregion
 
 namespace UltimaXNA.Entities
@@ -29,8 +30,8 @@ namespace UltimaXNA.Entities
         private float _corpseFrame = 0.999f;
         private int _corpseBody { get { return Amount; } }
 
-        public Corpse(Serial serial)
-            : base(serial)
+        public Corpse(Serial serial, IWorld world)
+            : base(serial, world)
         {
 
         }

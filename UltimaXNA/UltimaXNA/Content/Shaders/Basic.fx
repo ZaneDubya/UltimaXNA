@@ -4,14 +4,14 @@ float lightIntensity;
 float ambientLightIntensity;
 bool DrawLighting;
 
-sampler textureSampler;
+sampler textureSampler[15];
 sampler hueTextureSampler;
 
 struct VS_INPUT
 {
 	float4 Position : POSITION0;
 	float3 Normal	: NORMAL0;
-	float2 TexCoord : TEXCOORD0;
+	float3 TexCoord : TEXCOORD0;
 	float2 Hue		: TEXCOORD1; //If X = 0, not hued. If X > 0 Hue, if X < 0 partial hue. If Y != 0, target
 
 };
@@ -19,7 +19,7 @@ struct VS_INPUT
 struct PS_INPUT
 {
 	float4 Position : POSITION0;
-	float2 TexCoord : TEXCOORD0;
+	float3 TexCoord : TEXCOORD0;
 	float3 Normal	: TEXCOORD1;
 	float2 Hue		: TEXCOORD2;
 };
@@ -35,66 +35,43 @@ PS_INPUT VertexShader(VS_INPUT IN)
 	
     return OUT;
 }
-/*
-float4 PixelShader(PS_INPUT IN) : COLOR0
-{		
-	float NDotL = saturate(dot(lightDirection, IN.Normal));
-	float4 color = tex2D(textureSampler, IN.TexCoord);
-	
-	if(DrawLighting)
-		color *= NDotL;
-	
-	return color;
-}
-*/
-// New pixelshader created by Jeff - simulates sunrise.
 
+// New pixelshader created by Jeff - simulates sunrise.
 float HuesPerColumn = 2024;
 float HuesPerRow = 2;
 float4 PixelShader(PS_INPUT IN) : COLOR0
 {	
-	float4 color = tex2D(textureSampler, IN.TexCoord);
-	
-	if(DrawLighting)
-	{
-		// float lightIntensity = clamp(dot(lightDirection, float3(0,1,0)), 0, 1);
-		// float ambientLightIntensity = 0.5f;
-		
-		float3 lightColor = float3(0.5f + lightIntensity / 2, 0.5f + lightIntensity / 2, 0.5f + lightIntensity / 2);
-		float3 ambientColor = float3(1 - lightIntensity / 10, 1 - lightIntensity / 10, 1 - lightIntensity / 10) * ambientLightIntensity;
-	
-		// float3 lightColor = float3(1, 0.5f + lightIntensity / 2, lightIntensity);
-		// float3 lightColor = float3(0.5f + lightIntensity / 2, 0.5f + lightIntensity / 2, 0.5f + lightIntensity / 2);
-		// float3 ambientColor = float3(1 - lightIntensity / 10, 1 - lightIntensity / 10, 1 - lightIntensity / 10) * ambientLightIntensity;
-		
-		float NDotL = saturate(dot(-lightDirection, IN.Normal));
-
-		color.rgb = (ambientColor * color.rgb) + (lightColor * NDotL * color.rgb);
-	}
+	// get the initial color
+	float4 color = tex2D(textureSampler[0], IN.TexCoord);
+	// do lighting
+	float3 lightColor = float3(0.5f + lightIntensity / 2, 0.5f + lightIntensity / 2, 0.5f + lightIntensity / 2);
+	float3 ambientColor = float3(1 - lightIntensity / 10, 1 - lightIntensity / 10, 1 - lightIntensity / 10) * ambientLightIntensity;
+	float NDotL = saturate(dot(-lightDirection, IN.Normal));
+	color.rgb = (ambientColor * color.rgb) + (lightColor * NDotL * color.rgb);
 	
 	if (IN.Hue.y != 0) //Is it Hued?
 	{
-		float x = abs(IN.Hue.x);
-		float hueY = (((x - (x % 2)) / HuesPerRow) / (HuesPerColumn));
-		float4 gray = (color.r + color.g + color.b) / 3.0f / HuesPerRow + (x % 2) * 0.5f;
-		float4 hue = tex2D(hueTextureSampler, float2(gray.r, hueY));
-		hue.a = color.a;
-		if (IN.Hue.y == 2) //Is it a Partial Hue?
+		float hueX = abs(IN.Hue.x);
+		float hueY = (((hueX - (hueX % 2)) / HuesPerRow) / (HuesPerColumn));
+		float gray = (color.r + color.g + color.b) / 3.0f / HuesPerRow + ((hueX % 2) * 0.5f);
+		
+		float4 huedColor = tex2D(hueTextureSampler, float2(gray, hueY));
+		huedColor.a = color.a;
+		if (IN.Hue.y == 1) //Else its a normal Hue
+		{
+			color = huedColor;
+		}
+		else if (IN.Hue.y == 2) //Is it a Partial Hue?
 		{
 			if ((color.r == color.g) && (color.r == color.b))
-				color = hue;
+				color = huedColor;
 		}
-		else if (IN.Hue.y == 3)
+		else if (IN.Hue.y == 3) // partially transparent?
 		{
-			color = hue;
+			color = huedColor;
 			color.a *= 0.5f;
 		}
-		else //Else its a normal Hue
-		{
-			color = hue;
-		}
 	}
-	
 	return color;
 }
 
@@ -106,35 +83,4 @@ technique StandardEffect
 		VertexShader = compile vs_2_0 VertexShader();
 		PixelShader = compile ps_2_0 PixelShader();
 	}
-}
-
-
-
-
-
-
-
-
-
-
-float4 PS_GreyScale(PS_INPUT Input) : COLOR0
-{	
-	float4 iPixel = tex2D(textureSampler, Input.TexCoord);
-	iPixel.rgb = dot(iPixel.rgb, float3(0.3, 0.59, 0.11)); //compose correct luminance value
-	return iPixel;
-}
-
-float4 PS_Sharpen(PS_INPUT Input) : COLOR0
-{	
-	float4 iPixel = tex2D(textureSampler, Input.TexCoord);
-	
-	iPixel -= tex2D(textureSampler, Input.TexCoord + 0.01f) * 10.0f; 
-    iPixel += tex2D(textureSampler, Input.TexCoord - 0.01f) * 10.0f;
-	return iPixel;
-}
-
-float4 PS_Negative(PS_INPUT Input) : COLOR0
-{	
-	float4 iPixel = 1 - tex2D(textureSampler, Input.TexCoord);
-	return iPixel;
 }

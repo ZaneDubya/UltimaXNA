@@ -78,7 +78,8 @@ namespace UltimaXNA.Entities
         
         private MoveEvent _MoveEvent;
 
-        private Entity _ownerEntity;
+        private Entity _entity;
+        private IWorld _world;
 
         public int DrawFacing
         {
@@ -92,9 +93,10 @@ namespace UltimaXNA.Entities
             }
         }
 
-        public Movement(Entity entity)
+        public Movement(Entity entity, IWorld world)
         {
-            _ownerEntity = entity;
+            _entity = entity;
+            _world = world;
         }
 
         public void DesignateClientPlayer()
@@ -259,10 +261,10 @@ namespace UltimaXNA.Entities
         {
             if (DrawPosition == null)
                 return;
-            TileEngine.MapCell iLastMapCell = World.Map.GetMapCell(DrawPosition.TileX, DrawPosition.TileY);
+            TileEngine.MapCell iLastMapCell = _world.Map.GetMapCell(DrawPosition.TileX, DrawPosition.TileY);
             if (iLastMapCell != null)
             {
-                iLastMapCell.FlushObjectsBySerial(_ownerEntity.Serial);
+                iLastMapCell.FlushObjectsBySerial(_entity.Serial);
             }
         } 
 
@@ -272,7 +274,7 @@ namespace UltimaXNA.Entities
             Vector3 nextTile = MovementCheck.OffsetTile(currentLocation, facing);
 
             int nextAltitude;
-            bool moveIsOkay = MovementCheck.CheckMovement((Mobile)_ownerEntity, World.Map, currentLocation, facing, out nextAltitude);
+            bool moveIsOkay = MovementCheck.CheckMovement((Mobile)_entity, _world.Map, currentLocation, facing, out nextAltitude);
             if (moveIsOkay)
             {
                 if (IsRunning)
@@ -351,6 +353,12 @@ namespace UltimaXNA.Entities
             {
                 return new Vector3(TileX, TileY, TileZ);
             }
+            set
+            {
+                TileX = (int)value.X;
+                TileY = (int)value.Y;
+                TileZ = (int)value.Z;
+            }
         }
 
         public Vector3 OffsetV3
@@ -359,16 +367,33 @@ namespace UltimaXNA.Entities
             {
                 return new Vector3(OffsetX, OffsetY, OffsetZ);
             }
+            set
+            {
+                OffsetX = value.X;
+                OffsetY = value.Y;
+                OffsetZ = value.Z;
+            }
         }
 
-        public DrawPosition(TilePosition nPosition)
+        public DrawPosition()
         {
-            TileX = (int)Math.Ceiling(nPosition.Location.X);
-            TileY = (int)Math.Ceiling(nPosition.Location.Y);
-            TileZ = (int)Math.Ceiling(nPosition.Location.Z);
-            OffsetX = ((nPosition.Location.X - (float)TileX));
-            OffsetY = ((nPosition.Location.Y - (float)TileY));
-            OffsetZ = ((nPosition.Location.Z - (float)TileZ));
+
+        }
+
+        public DrawPosition(TilePosition p)
+        {
+            TileX = (int)Math.Ceiling(p.Location.X);
+            TileY = (int)Math.Ceiling(p.Location.Y);
+            TileZ = (int)Math.Ceiling(p.Location.Z);
+            OffsetX = ((p.Location.X - (float)TileX));
+            OffsetY = ((p.Location.Y - (float)TileY));
+            OffsetZ = ((p.Location.Z - (float)TileZ));
+        }
+
+        public DrawPosition(DrawPosition p)
+        {
+            PositionV3 = p.PositionV3;
+            OffsetV3 = p.OffsetV3;
         }
 
         public override string ToString()
@@ -382,7 +407,22 @@ namespace UltimaXNA.Entities
             if (o.GetType() != typeof(DrawPosition)) return false;
             if (this.TileX != ((DrawPosition)o).TileX) return false;
             if (this.TileY != ((DrawPosition)o).TileY) return false;
+            if (this.TileZ != ((DrawPosition)o).TileZ) return false;
             return true;
+        }
+
+        // Equality operator. Returns dbNull if either operand is dbNull, 
+        // otherwise returns dbTrue or dbFalse:
+        public static bool operator ==(DrawPosition x, DrawPosition y)
+        {
+            return x.Equals(y);
+        }
+
+        // Inequality operator. Returns dbNull if either operand is
+        // dbNull, otherwise returns dbTrue or dbFalse:
+        public static bool operator !=(DrawPosition x, DrawPosition y)
+        {
+            return !x.Equals(y);
         }
 
         public override int GetHashCode()
