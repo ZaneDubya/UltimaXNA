@@ -257,8 +257,11 @@ namespace UltimaXNA.Client
         private static void receive_CompressedGump(IRecvPacket packet)
         {
             CompressedGumpPacket p = (CompressedGumpPacket)packet;
-            string[] gumpPieces = interpretGumpPieces(p.GumpData);
-            UserInterface.AddWindow("Gump:" + p.GumpID, new UI.Window_CompressedGump(p.GumpID, gumpPieces, p.TextLines, p.X, p.Y));
+            if (p.HasData)
+            {
+                string[] gumpPieces = interpretGumpPieces(p.GumpData);
+                UserInterface.AddWindow("Gump:" + p.GumpID, new UI.Window_CompressedGump(p.GumpID, gumpPieces, p.TextLines, p.X, p.Y));
+            }
         }
 
         private static void receive_Container(IRecvPacket packet)

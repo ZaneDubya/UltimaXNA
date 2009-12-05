@@ -46,9 +46,9 @@ namespace UltimaXNA.SceneManagement
             Window_Login w = (Window_Login)UserInterface.AddWindow("LoginWindow", new Window_Login());
             w.OnLogin += this.OnLogin;
 
-            GumpBackground g = UI.CreateInstance<GumpBackground>("GumpBackground");
-            g.Size = new Vector2(200);
-            g.GumpId = 0x13ec;
+            // GumpBackground g = UI.CreateInstance<GumpBackground>("GumpBackground");
+            // g.Size = new Vector2(200);
+            // g.GumpId = 0x13ec;
         }
 
         public override void Update(GameTime gameTime)

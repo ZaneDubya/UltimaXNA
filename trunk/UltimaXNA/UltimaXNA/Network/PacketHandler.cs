@@ -98,7 +98,7 @@ namespace UltimaXNA.Network
 
         public IRecvPacket CreatePacket(PacketReader reader)
         {
-            return (IRecvPacket)Activator.CreateInstance(type, new object[] { reader });
+                return (IRecvPacket)Activator.CreateInstance(type, new object[] { reader });
         }
     }
 }

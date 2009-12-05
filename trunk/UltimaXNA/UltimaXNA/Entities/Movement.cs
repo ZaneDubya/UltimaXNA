@@ -415,6 +415,8 @@ namespace UltimaXNA.Entities
         // otherwise returns dbTrue or dbFalse:
         public static bool operator ==(DrawPosition x, DrawPosition y)
         {
+            if ((object)x == null)
+                return ((object)y == null);
             return x.Equals(y);
         }
 
@@ -422,6 +424,8 @@ namespace UltimaXNA.Entities
         // dbNull, otherwise returns dbTrue or dbFalse:
         public static bool operator !=(DrawPosition x, DrawPosition y)
         {
+            if ((object)x == null)
+                return ((object)y != null);
             return !x.Equals(y);
         }
 

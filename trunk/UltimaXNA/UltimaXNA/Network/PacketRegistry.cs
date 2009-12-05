@@ -114,15 +114,12 @@ namespace UltimaXNA.Network
             network.Register<PaperdollClothingAddAckPacket>(0x29, "Paperdoll Clothing Add Ack", 1, OnPaperdollClothingAddAck);
             network.Register<BloodPacket>(0x2A, "Blood", 5, OnBlood);
             network.Register<RecvPacket>(0x33, "Pause Client", -1, OnPauseClient);
-            network.Register<RecvPacket>(0x70, "Graphical Effect 1", -1, OnGraphicalEffect1);
-            network.Register<RecvPacket>(0x89, "Corpse Clothing", -1, OnCorpseClothing);
             network.Register<RecvPacket>(0x90, "Map Message", -1, OnMapMessage);
             network.Register<RecvPacket>(0x9C, "Help Request", -1, OnHelpRequest);
             network.Register<RecvPacket>(0xAB, "Gump Text Entry Dialog", -1, OnGumpDialog);
             network.Register<RecvPacket>(0xB2, "Chat Message", -1, OnChatMessage);
             network.Register<RecvPacket>(0xC4, "Semivisible", -1, OnSemivisible);
             network.Register<RecvPacket>(0xD2, "Extended 0x20", -1, OnExtended0x20);
-            network.Register<RecvPacket>(0xD6, "Mega Cliloc", -1, OnMegaCliloc);
             network.Register<RecvPacket>(0xD8, "Send Custom House", -1, OnSendCustomHouse);
             network.Register<RecvPacket>(0xDB, "Character Transfer Log", -1, OnCharacterTransferLog);
             network.Register<RecvPacket>(0xDC, "SE Introduced Revision", -1, OnToolTipRevision);
