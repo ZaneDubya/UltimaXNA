@@ -33,6 +33,11 @@ namespace UltimaXNA.Network.Packets.Server
         public readonly string GumpData;
         public readonly string[] TextLines;
 
+        public bool HasData
+        {
+            get { return GumpData != null; }
+        }
+
         public CompressedGumpPacket(PacketReader reader)
             : base(0xDD, "Compressed Gump")
         {
@@ -44,38 +49,42 @@ namespace UltimaXNA.Network.Packets.Server
             int compressedLength = reader.ReadInt32() - 4;
             int decompressedLength = reader.ReadInt32();
             byte[] compressedData = reader.ReadBytes(compressedLength);
-            byte[] decompressedData = new byte[decompressedLength]; ;
-            Compression.Unpack(decompressedData, ref decompressedLength, compressedData, compressedLength);
-            GumpData = Encoding.ASCII.GetString(decompressedData);
+            byte[] decompressedData = new byte[decompressedLength];
 
-            int numTextLines = reader.ReadInt32();
-            int compressedTextLength = reader.ReadInt32() - 4;
-            int decompressedTextLength = reader.ReadInt32();
-            byte[] decompressedText = new byte[decompressedTextLength];
-            if (numTextLines > 0 && decompressedTextLength > 0)
+            if (Compression.Unpack(decompressedData, ref decompressedLength, compressedData, compressedLength) != ZLibError.Okay)
             {
-                byte[] compressedTextData = reader.ReadBytes(compressedTextLength);
-                Compression.Unpack(decompressedText, ref decompressedTextLength, compressedTextData, compressedTextLength);
-                int index = 0;
-                List<string> lines = new List<string>();
-                for (int i = 0; i < numTextLines; i++)
-                {
-                    int length = decompressedText[++index] + decompressedText[++index] * 256;
-                    byte[] b = new byte[length * 2];
-                    Array.Copy(decompressedText, index, b, 0, length * 2);
-                    index += length * 2;
-                    lines.Add(Encoding.BigEndianUnicode.GetString(b));
-                }
-                TextLines = lines.ToArray();
+                // Problem decompressing, go ahead and quit.
+                return;
             }
             else
             {
-                TextLines = new string[0];
+                GumpData = Encoding.ASCII.GetString(decompressedData);
+
+                int numTextLines = reader.ReadInt32();
+                int compressedTextLength = reader.ReadInt32() - 4;
+                int decompressedTextLength = reader.ReadInt32();
+                byte[] decompressedText = new byte[decompressedTextLength];
+                if (numTextLines > 0 && decompressedTextLength > 0)
+                {
+                    byte[] compressedTextData = reader.ReadBytes(compressedTextLength);
+                    Compression.Unpack(decompressedText, ref decompressedTextLength, compressedTextData, compressedTextLength);
+                    int index = 0;
+                    List<string> lines = new List<string>();
+                    for (int i = 0; i < numTextLines; i++)
+                    {
+                        int length = decompressedText[++index] + decompressedText[++index] * 256;
+                        byte[] b = new byte[length * 2];
+                        Array.Copy(decompressedText, index, b, 0, length * 2);
+                        index += length * 2;
+                        lines.Add(Encoding.BigEndianUnicode.GetString(b));
+                    }
+                    TextLines = lines.ToArray();
+                }
+                else
+                {
+                    TextLines = new string[0];
+                }
             }
-
-            
-
-            
         }
     }
 }

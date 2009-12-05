@@ -10,10 +10,9 @@ using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Diagnostics;
 using UltimaXNA.Extensions;
 using UltimaXNA.Input;
-using UltimaXNA.Scripting;
 using Microsoft.Xna.Framework.Input;
 using UltimaXNA.EventSystem;
-
+ 
 namespace UltimaXNA.Graphics.UI
 {
     public interface IMouseAttachable

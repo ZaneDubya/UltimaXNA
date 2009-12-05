@@ -223,7 +223,14 @@ namespace UltimaXNA.Network
 
         public static ZLibError Unpack(byte[] dest, ref int destLength, byte[] source, int sourceLength)
         {
-            return Compressor.Decompress(dest, ref destLength, source, sourceLength);
+            try
+            {
+                return Compressor.Decompress(dest, ref destLength, source, sourceLength);
+            }
+            catch
+            {
+                return ZLibError.FileError; // No zlib dll!
+            }
         }
     }
 

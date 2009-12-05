@@ -51,7 +51,6 @@ namespace UltimaXNA
         protected override void Initialize()
         {
             this.Content.RootDirectory = "Content";
-            InvokeInitializers();
             
             // Load all the services we need.
             _logService = new Diagnostics.Logger("UXNA");
@@ -69,18 +68,16 @@ namespace UltimaXNA
             _uiService = new Graphics.UI.UIManager(this);
             Services.AddService<Graphics.UI.IUIService>(_uiService);
 
-			ParticleEngine.ParticleEngine.Initialize(this, System.IO.Path.Combine(this.Content.RootDirectory, "pfx"));
-
             _sceneService = new SceneManagement.SceneManager(this);
             Services.AddService<SceneManagement.ISceneService>(_sceneService);
 
-            _sceneService.CurrentScene = new SceneManagement.LoginScene(this);
-
+            InvokeInitializers();
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
+            _sceneService.CurrentScene = new SceneManagement.LoginScene(this);
             base.LoadContent();
         }
 
@@ -100,7 +97,6 @@ namespace UltimaXNA
             
             UI.UserInterface.Update(gameTime);
             _sceneService.Update(gameTime);
-			ParticleEngine.ParticleEngine.Update(gameTime);
 
             GameState.UpdateAfter(gameTime);
         }
