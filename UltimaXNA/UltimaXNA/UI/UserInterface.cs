@@ -249,7 +249,7 @@ namespace UltimaXNA.UI
                 DateTime d = new DateTime(v.Build * TimeSpan.TicksPerDay).AddYears(1999).AddDays(-1);
                 string versionString = string.Format("UltimaXNA PreAlpha v{0}.{1}", v.Major, v.Minor) + Environment.NewLine +
                     "Compiled: " + String.Format("{0:MMMM d, yyyy}", d);
-                drawText(_spriteBatch, versionString, 9, 0, 615, 570);
+                drawText(_spriteBatch, versionString, 9, 0, 5, 570);
                 // tooltip message
                 drawText(_spriteBatch, UIHelper.TooltipMsg, 0, 0, UIHelper.TooltipX, UIHelper.TooltipY);
                 _spriteBatch.End();
