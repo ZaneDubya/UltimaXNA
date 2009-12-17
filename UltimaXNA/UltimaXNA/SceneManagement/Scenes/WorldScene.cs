@@ -39,8 +39,8 @@ namespace UltimaXNA.SceneManagement
              base.Intitialize();
              UserInterface.AddWindow("ChatFrame", new Window_Chat());
              UserInterface.AddWindow("ChatInput", new Window_ChatInput());
-             UserInterface.AddWindow("StatusFrame", new Window_StatusFrame());
-             UserInterface.AddWindow("LegacyMeu", new Window_Legacy_Menu());
+             // UserInterface.AddWindow("StatusFrame", new Window_StatusFrame());
+             // UserInterface.AddWindow("LegacyMeu", new Window_Legacy_Menu());
              World.LightDirection = -0.6f;
              GameState.InWorld = true;
         }
@@ -51,7 +51,7 @@ namespace UltimaXNA.SceneManagement
             UltimaClient.Disconnect();
             UserInterface.CloseWindow("ChatFrame");
             UserInterface.CloseWindow("ChatInput");
-            UserInterface.CloseWindow("StatusFrame");
+            // UserInterface.CloseWindow("StatusFrame");
             GameState.InWorld = false;
         }
 

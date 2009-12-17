@@ -26,6 +26,11 @@ namespace UltimaXNA
 {
     public struct Serial : IComparable, IComparable<Serial>
     {
+        public static Serial Null
+        {
+            get { return (Serial)0; }
+        }
+
         private int _serial;
 
         private Serial(int serial)

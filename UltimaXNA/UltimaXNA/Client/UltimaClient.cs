@@ -35,14 +35,15 @@ namespace UltimaXNA.Client
     {
         public static UltimaClientStatus Status { get; protected set; }
 
-        private static string _account, _password;
+        static string _account, _password;
         public static void SetAccountPassword(string account, string password) { _account = account; _password = password; }
-        private static void clearAccountPassword() { _account = string.Empty; _password = string.Empty; }
+        static void clearAccountPassword() { _account = string.Empty; _password = string.Empty; }
 
-        private static ClientNetwork _ClientNetwork;
+        static ClientNetwork _ClientNetwork;
         public static bool IsConnected { get { return _ClientNetwork.IsConnected; } }
 
-        private static TileEngine.IWorld _worldService;
+        static TileEngine.IWorld _worldService;
+        static UILegacy.IUIManager _LegacyUI = null;
 
         static UltimaClient()
         {
@@ -54,6 +55,7 @@ namespace UltimaXNA.Client
         public static void Initialize(Game game)
         {
             _worldService = game.Services.GetService<TileEngine.IWorld>();
+            _LegacyUI = game.Services.GetService<UILegacy.IUIManager>();
         }
 
         public static void Update(GameTime gameTime)
@@ -260,7 +262,8 @@ namespace UltimaXNA.Client
             if (p.HasData)
             {
                 string[] gumpPieces = interpretGumpPieces(p.GumpData);
-                UserInterface.AddWindow("Gump:" + p.GumpID, new UI.Window_CompressedGump(p.GumpID, gumpPieces, p.TextLines, p.X, p.Y));
+                _LegacyUI.AddGump(p.Serial, p.GumpID, gumpPieces, p.TextLines, p.X, p.Y);
+                // UserInterface.AddWindow("Gump:" + p.GumpID, new UI.Window_CompressedGump(p.GumpID, gumpPieces, p.TextLines, p.X, p.Y));
             }
         }
 
