@@ -259,7 +259,7 @@ namespace UltimaXNA.UI
 
         }
 
-        public static bool IsMouseOverUI(Vector2 nPosition)
+        /*public static bool IsMouseOverUI(Vector2 nPosition)
         {
             foreach (Form f in FormCollection.Forms)
             {
@@ -268,7 +268,7 @@ namespace UltimaXNA.UI
                         return true;
             }
             return false;
-        }
+        }*/
 
         public static Window Window(string nWindowName)
         {

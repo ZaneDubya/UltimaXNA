@@ -72,7 +72,8 @@ namespace UltimaXNA.Network.Packets.Server
                     List<string> lines = new List<string>();
                     for (int i = 0; i < numTextLines; i++)
                     {
-                        int length = decompressedText[++index] + decompressedText[++index] * 256;
+                        int length = decompressedText[index] * 256 + decompressedText[index + 1];
+                        index += 2;
                         byte[] b = new byte[length * 2];
                         Array.Copy(decompressedText, index, b, 0, length * 2);
                         index += length * 2;

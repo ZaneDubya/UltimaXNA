@@ -28,6 +28,12 @@ namespace UltimaXNA.UILegacy
             _gumpLines = textlines;
         }
 
+        public override void Dispose()
+        {
+            _manager.DebugMessage_Clear();
+            base.Dispose();
+        }
+
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
             if (_gumpPieces != null)
