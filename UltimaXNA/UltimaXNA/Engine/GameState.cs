@@ -29,6 +29,7 @@ using UltimaXNA.UI;
 using UltimaXNA.Input;
 using UltimaXNA.Network.Packets.Client;
 using UltimaXNA.TileEngine;
+using UltimaXNA.UILegacy;
 #endregion
 
 namespace UltimaXNA
@@ -37,6 +38,7 @@ namespace UltimaXNA
     {
         private static IInputService _input;
         private static IWorld _worldService;
+        static IUIManager _legacyUI;
 
         public static bool WarMode
         {
@@ -90,6 +92,7 @@ namespace UltimaXNA
         {
             _input = game.Services.GetService<IInputService>();
             _worldService = game.Services.GetService<IWorld>();
+            _legacyUI = game.Services.GetService<IUIManager>();
 
             EngineRunning = true;
             InWorld = false;
@@ -114,7 +117,7 @@ namespace UltimaXNA
                 parseKeyboard();
 
                 // Get a pick type for the cursor.
-                if (UserInterface.IsMouseOverUI(_input.CurrentMousePosition))
+                if (_legacyUI.IsMouseOverUI)
                 {
                     _worldService.PickType = PickTypes.PickNothing;
                 }
@@ -176,7 +179,7 @@ namespace UltimaXNA
                     doMovement();
                 }
 
-                if (!UserInterface.IsMouseOverUI(_input.CurrentMousePosition))
+                if (!_legacyUI.IsMouseOverUI)
                 {
                     // Check if the left mouse button has been pressed. We will either walk to the object under the cursor
                     // or pick it up, depending on what kind of object we are looking at.
@@ -367,7 +370,7 @@ namespace UltimaXNA
         {
             // We do not handle dropping the item into the UI in this routine.
             // But we probably should, to consolidate game logic.
-            if (!UserInterface.IsMouseOverUI(_input.CurrentMousePosition))
+            if (!_legacyUI.IsMouseOverUI)
             {
                 int x, y, z;
                 MapObject groundObject = _worldService.MouseOverGroundTile;
@@ -534,7 +537,7 @@ namespace UltimaXNA
         private static string generateDebugMessage()
         {
             String debugMessage = string.Format("FPS: {0}", (int)_FPS);
-            if (InWorld)
+            if (InWorld && !_legacyUI.IsMouseOverUI)
             {
                 debugMessage += "\n";
                 debugMessage += string.Format("#Objects: {0}\n", _worldService.ObjectsRendered);

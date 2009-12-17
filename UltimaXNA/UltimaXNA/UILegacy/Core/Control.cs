@@ -160,7 +160,7 @@ namespace UltimaXNA.UILegacy
         {
             if (!_isInitialized)
                 return;
-            
+            /*
 #if DEBUG
             if (_debugTexture == null)
             {
@@ -185,7 +185,7 @@ namespace UltimaXNA.UILegacy
             spriteBatch.Draw(_debugTexture, new Rectangle(_area.X, _area.Y, 1, _area.Height), color);
             spriteBatch.Draw(_debugTexture, new Rectangle(_area.X + _area.Width - 1, _area.Y, 1, _area.Height), color);
 #endif
-            
+            */
             if (_controls != null)
             {
                 foreach (Control c in _controls)

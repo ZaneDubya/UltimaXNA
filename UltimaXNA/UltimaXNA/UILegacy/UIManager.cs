@@ -31,6 +31,17 @@ namespace UltimaXNA.UILegacy
             }
         }
 
+        public bool IsMouseOverUI
+        {
+            get
+            {
+                if (MouseOverControl == null)
+                    return false;
+                else
+                    return true;
+            }
+        }
+
         public UIManager(Game game)
             : base(game)
         {

@@ -263,7 +263,6 @@ namespace UltimaXNA.Client
             {
                 string[] gumpPieces = interpretGumpPieces(p.GumpData);
                 _LegacyUI.AddGump(p.Serial, p.GumpID, gumpPieces, p.TextLines, p.X, p.Y);
-                // UserInterface.AddWindow("Gump:" + p.GumpID, new UI.Window_CompressedGump(p.GumpID, gumpPieces, p.TextLines, p.X, p.Y));
             }
         }
 
