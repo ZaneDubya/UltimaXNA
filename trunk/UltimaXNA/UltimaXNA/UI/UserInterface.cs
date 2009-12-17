@@ -165,6 +165,8 @@ namespace UltimaXNA.UI
             }
         }
 
+        static bool DEBUG_drawUI = true;
+
         static UserInterface()
         {
             
@@ -195,41 +197,45 @@ namespace UltimaXNA.UI
         {
             UIHelper.Update();
 
-            // Fix for issue 1. http://code.google.com/p/ultimaxna/issues/detail?id=1 --ZDW 6/17/09
-            if ((MouseCursor == _mouseCursorHolding) && (UIHelper.MouseHoldingItem == null))
-            {
-                MouseCursor = 0;
-            }
-            else if (UIHelper.MouseHoldingItem != null)
-            {
-                MouseCursor = _mouseCursorHolding;
-            }
-            else if (TargettingCursor)
-            {
-                MouseCursor = _mouseCursorTargetting;
-            }
-            else
-            {
-                // refresh the mouse cursor.
-                MouseCursor = 0;
-            }
+            DEBUG_drawUI = true;
 
-            // First update our collection of windows.
-            updateWindows();
-            if (_DrawForms)
+            if (DEBUG_drawUI)
             {
-                //Update the form collection
-                _formCollection.Update(gameTime);
-                if (_formCollection["msgbox"] != null)
-                    _formCollection["msgbox"].Focus();
-                //Render the form collection (required before drawing)
-                _formCollection.Render();
+                // Fix for issue 1. http://code.google.com/p/ultimaxna/issues/detail?id=1 --ZDW 6/17/09
+                if ((MouseCursor == _mouseCursorHolding) && (UIHelper.MouseHoldingItem == null))
+                {
+                    MouseCursor = 0;
+                }
+                else if (UIHelper.MouseHoldingItem != null)
+                {
+                    MouseCursor = _mouseCursorHolding;
+                }
+                else if (TargettingCursor)
+                {
+                    MouseCursor = _mouseCursorTargetting;
+                }
+                else
+                {
+                    // refresh the mouse cursor.
+                    MouseCursor = 0;
+                }
+
+                // First update our collection of windows.
+                updateWindows();
+                if (_DrawForms)
+                {
+                    //Update the form collection
+                    _formCollection.Update(gameTime);
+                    if (_formCollection["msgbox"] != null)
+                        _formCollection["msgbox"].Focus();
+                    //Render the form collection (required before drawing)
+                    _formCollection.Render();
+                }
             }
         }
 
         public static void Draw(GameTime gameTime)
         {
-            bool DEBUG_drawUI = true;
             if (DEBUG_drawUI)
             {
                 //Draw the form collection
@@ -237,23 +243,9 @@ namespace UltimaXNA.UI
                 {
                     _formCollection.Draw();
                 }
-
-                // Draw debug message
-                _spriteBatch.Begin();
-                if (GameState.DebugMessage != null)
-                {
-                    drawText(_spriteBatch, GameState.DebugMessage, 9, 0, 5, 5);
-                }
-                // version message
-                Version v = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-                DateTime d = new DateTime(v.Build * TimeSpan.TicksPerDay).AddYears(1999).AddDays(-1);
-                string versionString = string.Format("UltimaXNA PreAlpha v{0}.{1}", v.Major, v.Minor) + Environment.NewLine +
-                    "Compiled: " + String.Format("{0:MMMM d, yyyy}", d);
-                drawText(_spriteBatch, versionString, 9, 0, 5, 570);
-                // tooltip message
-                drawText(_spriteBatch, UIHelper.TooltipMsg, 0, 0, UIHelper.TooltipX, UIHelper.TooltipY);
-                _spriteBatch.End();
             }
+
+            
         }
 
         private static void drawText(SpriteBatch spriteBatch, string text, int font, int hue, int x, int y)

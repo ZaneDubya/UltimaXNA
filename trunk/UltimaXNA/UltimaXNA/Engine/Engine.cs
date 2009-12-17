@@ -36,16 +36,11 @@ namespace UltimaXNA
         private SceneManagement.SceneManager _sceneService;
         private TileEngine.World _worldService;
 
+        private UILegacy.UIManager _LegacyUI;
+
         public Engine()
         {
             m_SetupGraphicsDeviceManager();
-        }
-
-        protected override void OnExiting(object sender, EventArgs args)
-        {
-            // WavePlayer opens a thread for each sound.
-            WavePlayer.Player.EndEverything();
-            base.OnExiting(sender, args);
         }
 
         protected override void Initialize()
@@ -65,6 +60,9 @@ namespace UltimaXNA
             _eventService = new EventSystem.EventEngine(this);
             Services.AddService<EventSystem.IEventService>(_eventService);
 
+            _LegacyUI = new UltimaXNA.UILegacy.UIManager(this);
+            Services.AddService<UILegacy.IUIManager>(_LegacyUI);
+
             _uiService = new Graphics.UI.UIManager(this);
             Services.AddService<Graphics.UI.IUIService>(_uiService);
 
@@ -78,12 +76,20 @@ namespace UltimaXNA
         protected override void LoadContent()
         {
             _sceneService.CurrentScene = new SceneManagement.LoginScene(this);
+
             base.LoadContent();
         }
 
         protected override void UnloadContent()
         {
             base.UnloadContent();
+        }
+
+        protected override void OnExiting(object sender, EventArgs args)
+        {
+            // WavePlayer opens a thread for each sound.
+            WavePlayer.Player.EndEverything();
+            base.OnExiting(sender, args);
         }
 
         protected override void Update(GameTime gameTime)
@@ -94,7 +100,8 @@ namespace UltimaXNA
             Client.UltimaClient.Update(gameTime);
             GameState.Update(gameTime);
             Entities.EntitiesCollection.Update(gameTime);
-            
+
+            _LegacyUI.Update(gameTime);
             UI.UserInterface.Update(gameTime);
             _sceneService.Update(gameTime);
 
@@ -106,7 +113,8 @@ namespace UltimaXNA
             _sceneService.Draw(gameTime);
             // ParticleEngine.ParticleEngine.Draw(gameTime);
 			UI.UserInterface.Draw(gameTime);
-			
+            _LegacyUI.Draw(gameTime);
+
             base.Draw(gameTime);
         }
 
@@ -135,6 +143,7 @@ namespace UltimaXNA
             Data.AnimationsXNA.Initialize(GraphicsDevice);
             Data.Art.Initialize(GraphicsDevice);
             Data.ASCIIText.Initialize(GraphicsDevice);
+            Data.UniText.Initialize(GraphicsDevice);
             Data.Gumps.Initialize(GraphicsDevice);
             Data.HuesXNA.Initialize(GraphicsDevice);
             Data.Texmaps.Initialize(GraphicsDevice);

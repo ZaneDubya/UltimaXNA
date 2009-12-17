@@ -107,6 +107,7 @@
     <Compile Include="Data\SharedMethods.cs" />
     <Compile Include="Data\Sound.cs" />
     <Compile Include="Data\StringList.cs" />
+    <Compile Include="Data\UniFonts.cs" />
     <Compile Include="Diagnostics\ILoggingService.cs" />
     <Compile Include="Diagnostics\IStatusNotifier.cs">
       <SubType>Code</SubType>
@@ -164,6 +165,20 @@
     <Compile Include="Graphics\UISystem\UIManager.cs" />
     <Compile Include="Graphics\UISystem\UINode.cs" />
     <Compile Include="Graphics\UISystem\UITableOfContents.cs" />
+    <Compile Include="UILegacy\Core\Control.cs" />
+    <Compile Include="UILegacy\Core\iControl.cs" />
+    <Compile Include="UILegacy\Cursor.cs" />
+    <Compile Include="UILegacy\Gump.cs" />
+    <Compile Include="UILegacy\Gumplings\Button.cs" />
+    <Compile Include="UILegacy\Gumplings\CheckerTrans.cs" />
+    <Compile Include="UILegacy\Gumplings\CroppedText.cs" />
+    <Compile Include="UILegacy\Gumplings\GumpPic.cs" />
+    <Compile Include="UILegacy\Gumplings\GumpPicTiled.cs" />
+    <Compile Include="UILegacy\Gumplings\HtmlGump.cs" />
+    <Compile Include="UILegacy\Gumplings\ResizePic.cs" />
+    <Compile Include="UILegacy\IUIManager.cs" />
+    <Compile Include="UILegacy\Shared.cs" />
+    <Compile Include="UILegacy\UIManager.cs" />
     <Compile Include="UI\Events.cs" />
     <Compile Include="UI\GUIHelper.cs" />
     <Compile Include="UI\IUserInterface.cs" />

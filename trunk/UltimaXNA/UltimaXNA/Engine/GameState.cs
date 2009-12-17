@@ -55,7 +55,10 @@ namespace UltimaXNA
             }
         }
         public static Direction CursorDirection { get; internal set; }
-        public static string DebugMessage { get { return generateDebugMessage(); } }
+        public static string DebugMessage
+        {
+            get { return generateDebugMessage(); }
+        }
         public static float BackBufferWidth = 0, BackBufferHeight = 0;
         private static bool _MovementFollowsMouse = true,  _ContinuousMoveCheck = false;
         // Are we asking for a target?
@@ -103,9 +106,9 @@ namespace UltimaXNA
             if (InWorld)
             {
                 // Set the target frame stuff.
-                ((UI.Window_StatusFrame)UserInterface.Window("StatusFrame")).MyEntity = (Mobile)EntitiesCollection.GetPlayerObject();
-                if (LastTarget.IsValid)
-                    ((UI.Window_StatusFrame)UserInterface.Window("StatusFrame")).TargetEntity = EntitiesCollection.GetObject<Mobile>(LastTarget, false);
+                //((UI.Window_StatusFrame)UserInterface.Window("StatusFrame")).MyEntity = (Mobile)EntitiesCollection.GetPlayerObject();
+                //if (LastTarget.IsValid)
+                //    ((UI.Window_StatusFrame)UserInterface.Window("StatusFrame")).TargetEntity = EntitiesCollection.GetObject<Mobile>(LastTarget, false);
 
                 // Parse keyboard input.
                 parseKeyboard();
