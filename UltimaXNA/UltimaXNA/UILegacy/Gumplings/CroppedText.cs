@@ -9,14 +9,14 @@ namespace UltimaXNA.UILegacy.Gumplings
         public int Hue = 0;
         public string Text = string.Empty;
 
-        public CroppedText(Serial serial, Control owner)
-            : base(serial, owner)
+        public CroppedText(Control owner, int page)
+            : base(owner, page)
         {
 
         }
 
-        public CroppedText(Serial serial, Control owner, string[] arguements, string[] lines)
-            : this(serial, owner)
+        public CroppedText(Control owner, int page, string[] arguements, string[] lines)
+            : this(owner, page)
         {
             int x, y, width, height, hue, textIndex;
             x = Int32.Parse(arguements[1]);
@@ -28,8 +28,8 @@ namespace UltimaXNA.UILegacy.Gumplings
             buildGumpling(x, y, width, height, hue, textIndex, lines);
         }
 
-        public CroppedText(Serial serial, Control owner, int x, int y, int width, int height, int hue, int textIndex, string[] lines)
-            : this(serial, owner)
+        public CroppedText(Control owner, int page, int x, int y, int width, int height, int hue, int textIndex, string[] lines)
+            : this(owner, page)
         {
             buildGumpling(x, y, width, height, hue, textIndex, lines);
         }
@@ -44,8 +44,8 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         public override void Draw(UltimaXNA.Graphics.ExtendedSpriteBatch spriteBatch)
         {
-            Texture2D texture = Data.ASCIIText.GetTextTexture(Text, 1);
-            spriteBatch.Draw(texture, new Vector2(Area.X, Area.Y), Color.White);
+            Texture2D texture = Data.UniText.GetTextTexture(Text, 1, false);
+            spriteBatch.Draw(texture, new Vector2(Area.X, Area.Y), HueColor(Hue));
             base.Draw(spriteBatch);
         }
     }

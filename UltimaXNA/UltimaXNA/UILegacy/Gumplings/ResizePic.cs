@@ -8,15 +8,15 @@ namespace UltimaXNA.UILegacy.Gumplings
     {
         Texture2D[] _bgGumps = null;
 
-        public ResizePic(Serial serial, Control owner)
-            : base(serial, owner)
+        public ResizePic(Control owner, int page)
+            : base(owner, page)
         {
             _bgGumps = new Texture2D[9];
             HandlesInput = true;
         }
 
-        public ResizePic(Serial serial, Control owner, string[] arguements)
-            : this(serial, owner)
+        public ResizePic(Control owner, int page, string[] arguements)
+            : this(owner, page)
         {
             int x, y, gumpID, width, height;
             x = Int32.Parse(arguements[1]);
@@ -27,8 +27,8 @@ namespace UltimaXNA.UILegacy.Gumplings
             buildGumpling(x, y, gumpID, width, height);
         }
 
-        public ResizePic(Serial serial, Control owner, int x, int y, int gumpID, int width, int height)
-            : this(serial, owner)
+        public ResizePic(Control owner, int page, int x, int y, int gumpID, int width, int height)
+            : this(owner, page)
         {
             buildGumpling(x, y, gumpID, width, height);
         }
@@ -66,13 +66,55 @@ namespace UltimaXNA.UILegacy.Gumplings
             base.Draw(spriteBatch);
         }
 
+        bool isMoving = false; int moveOriginalX, moveOriginalY;
+
+        public override void _mouseDown(int x, int y, int button)
+        {
+            x += _owner.X;
+            y += _owner.Y;
+            if (button == 0)
+            {
+                // move!
+                isMoving = true;
+                moveOriginalX = x;
+                moveOriginalY = y;
+            }
+        }
+
+        public override void _mouseUp(int x, int y, int button)
+        {
+            x += _owner.X;
+            y += _owner.Y;
+            if (button == 0)
+            {
+                if (isMoving == true)
+                {
+                    isMoving = false;
+                    _owner.X += (x - moveOriginalX);
+                    _owner.Y += (y - moveOriginalY);
+                }
+            }
+        }
+
+        public override void _mouseOver(int x, int y)
+        {
+            x += _owner.X;
+            y += _owner.Y;
+            if (isMoving == true)
+            {
+                _owner.X += (x - moveOriginalX);
+                _owner.Y += (y - moveOriginalY);
+                moveOriginalX = x;
+                moveOriginalY = y;
+            }
+        }
+
         public override void _mouseClick(int x, int y, int button)
         {
             if (button == 2)
             {
                 _owner.Dispose();
             }
-                
         }
     }
 }

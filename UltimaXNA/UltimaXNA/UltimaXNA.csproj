@@ -176,12 +176,13 @@
     <Compile Include="UILegacy\Gumplings\GumpPicTiled.cs" />
     <Compile Include="UILegacy\Gumplings\HtmlGump.cs" />
     <Compile Include="UILegacy\Gumplings\ResizePic.cs" />
+    <Compile Include="UILegacy\Gumplings\TextLabel.cs" />
+    <Compile Include="UILegacy\Gumplings\TilePic.cs" />
     <Compile Include="UILegacy\IUIManager.cs" />
     <Compile Include="UILegacy\Shared.cs" />
     <Compile Include="UILegacy\UIManager.cs" />
     <Compile Include="UI\Events.cs" />
     <Compile Include="UI\GUIHelper.cs" />
-    <Compile Include="UI\IUserInterface.cs" />
     <Compile Include="UI\Windows\ChatInput.cs" />
     <Compile Include="UI\Windows\Legacy_Menu.cs" />
     <Compile Include="UI\Windows\LoginCharList.cs" />

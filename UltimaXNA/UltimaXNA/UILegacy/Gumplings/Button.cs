@@ -13,14 +13,14 @@ namespace UltimaXNA.UILegacy.Gumplings
         public int ButtonParameter = 0;
         public int ButtonID = 0;
 
-        public Button(Serial serial, Control owner)
-            : base(serial, owner)
+        public Button(Control owner, int page)
+            : base(owner, page)
         {
             HandlesInput = true;
         }
 
-        public Button(Serial serial, Control owner, string[] arguements)
-            : this(serial, owner)
+        public Button(Control owner, int page, string[] arguements)
+            : this(owner, page)
         {
             int x, y, gumpID1, gumpID2, buttonType, param, buttonID;
             x = Int32.Parse(arguements[1]);
@@ -33,8 +33,8 @@ namespace UltimaXNA.UILegacy.Gumplings
             buildGumpling(x, y, gumpID1, gumpID2, buttonType, param, buttonID);
         }
 
-        public Button(Serial serial, Control owner, int x, int y, int gumpID1, int gumpID2, int buttonType, int param, int buttonID)
-            : this(serial, owner)
+        public Button(Control owner, int page, int x, int y, int gumpID1, int gumpID2, int buttonType, int param, int buttonID)
+            : this(owner, page)
         {
             buildGumpling(x, y, gumpID1, gumpID2, buttonType, param, buttonID);
         }
@@ -46,8 +46,6 @@ namespace UltimaXNA.UILegacy.Gumplings
             _gumpDown = Data.Gumps.GetGumpXNA(gumpID2);
             Size = new Vector2(_gumpUp.Width, _gumpUp.Height);
             ButtonType = buttonType;
-            if (ButtonType == 0)
-                throw new Exception("What do we do with ButtonType == 0 buttons?");
             ButtonParameter = param;
             ButtonID = buttonID;
         }
@@ -81,7 +79,17 @@ namespace UltimaXNA.UILegacy.Gumplings
         {
             if (button == 0)
             {
-                _owner.Activate(this);
+                switch (ButtonType)
+                {
+                    case 0:
+                        // switch page
+                        _owner.ChangePage(this);
+                        break;
+                    case 1:
+                        // send response
+                        _owner.Activate(this);
+                        break;
+                }
             }
         }
     }

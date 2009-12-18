@@ -28,29 +28,27 @@ namespace UltimaXNA.TileEngine
 {
     class SpriteBatch3D : GameComponent
     {
-        private Dictionary<Texture2D, List<VertexPositionNormalTextureHue>> m_DrawQueue;
-        //private BasicEffect m_Effect2;
-        private Effect m_Effect;
-        private short[] m_IndexBuffer;
-        private Queue<List<VertexPositionNormalTextureHue>> m_VertexListQueue;
-        private Matrix m_WorldMatrix;
-        private BoundingBox m_BoundingBox;
+        private Dictionary<Texture2D, List<VertexPositionNormalTextureHue>> _drawQueue;
+        private Effect _effect;
+        private short[] _indexBuffer;
+        private Queue<List<VertexPositionNormalTextureHue>> _vertexListQueue;
+        private Matrix _worldMatrix;
+        private BoundingBox _boundingBox;
 
-        public Matrix WorldMatrix { get { return m_WorldMatrix; } }
+        public Matrix WorldMatrix { get { return _worldMatrix; } }
 
         public SpriteBatch3D(Game game)
             : base(game)
         {
-            m_BoundingBox = new BoundingBox(new Vector3(0, 0, Int32.MinValue), new Vector3(this.Game.GraphicsDevice.Viewport.Width, this.Game.GraphicsDevice.Viewport.Height, Int32.MaxValue));
-            m_DrawQueue = new Dictionary<Texture2D, List<VertexPositionNormalTextureHue>>(256);
-            m_IndexBuffer = CreateIndexBuffer(0x1000);
-            m_VertexListQueue = new Queue<List<VertexPositionNormalTextureHue>>(256);
+            _boundingBox = new BoundingBox(new Vector3(0, 0, Int32.MinValue), new Vector3(this.Game.GraphicsDevice.Viewport.Width, this.Game.GraphicsDevice.Viewport.Height, Int32.MaxValue));
+            _drawQueue = new Dictionary<Texture2D, List<VertexPositionNormalTextureHue>>(256);
+            _indexBuffer = CreateIndexBuffer(0x1000);
+            _vertexListQueue = new Queue<List<VertexPositionNormalTextureHue>>(256);
 
-            m_WorldMatrix = Matrix.CreateOrthographicOffCenter(0, this.Game.GraphicsDevice.Viewport.Width, this.Game.GraphicsDevice.Viewport.Height, 0, Int32.MinValue, Int32.MaxValue);
+            _worldMatrix = Matrix.CreateOrthographicOffCenter(0, this.Game.GraphicsDevice.Viewport.Width, this.Game.GraphicsDevice.Viewport.Height, 0, Int32.MinValue, Int32.MaxValue);
 
-            //m_Effect2 = new BasicEffect(game.GraphicsDevice, null);
-            m_Effect = this.Game.Content.Load<Effect>("Shaders/Basic");
-            m_Effect.Parameters["world"].SetValue(m_WorldMatrix);
+            _effect = this.Game.Content.Load<Effect>("Shaders/Basic");
+            _effect.Parameters["world"].SetValue(_worldMatrix);
 
             this.Game.GraphicsDevice.RenderState.AlphaTestEnable = true;
             this.Game.GraphicsDevice.RenderState.AlphaFunction = CompareFunction.Greater;
@@ -73,13 +71,29 @@ namespace UltimaXNA.TileEngine
             return indices;
         }
 
+        public bool DrawSimple(Texture2D texture, Vector3 position, Vector2 hue)
+        {
+            VertexPositionNormalTextureHue[] v = new VertexPositionNormalTextureHue[] {
+                new VertexPositionNormalTextureHue(new Vector3(position.X, position.Y, position.Z), new Vector3(0, 0, 1), new Vector3(0, 0, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(position.X + texture.Width, position.Y, position.Z), new Vector3(0, 0, 1), new Vector3(1, 0, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(position.X, position.Y + texture.Height, position.Z), new Vector3(0, 0, 1), new Vector3(0, 1, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(position.X + texture.Width, position.Y + texture.Height, position.Z), new Vector3(0, 0, 1), new Vector3(1, 1, 0))
+            };
+
+            v[0].Hue =
+                v[1].Hue =
+                v[2].Hue =
+                v[3].Hue = hue;
+            return Draw(texture, v);
+        }
+
         public bool Draw(Texture2D texture, VertexPositionNormalTextureHue[] vertices)
         {
             bool draw = false;
 
             for (int i = 0; i < vertices.Length; i++)
             {
-                if (m_BoundingBox.Contains(vertices[i].Position) == ContainmentType.Contains)
+                if (_boundingBox.Contains(vertices[i].Position) == ContainmentType.Contains)
                 {
                     draw = true;
 
@@ -94,15 +108,15 @@ namespace UltimaXNA.TileEngine
 
             List<VertexPositionNormalTextureHue> vertexList;
 
-            if (m_DrawQueue.ContainsKey(texture))
+            if (_drawQueue.ContainsKey(texture))
             {
-                vertexList = m_DrawQueue[texture];
+                vertexList = _drawQueue[texture];
             }
             else
             {
-                if (m_VertexListQueue.Count > 0)
+                if (_vertexListQueue.Count > 0)
                 {
-                    vertexList = m_VertexListQueue.Dequeue();
+                    vertexList = _vertexListQueue.Dequeue();
 
                     vertexList.Clear();
                 }
@@ -111,7 +125,7 @@ namespace UltimaXNA.TileEngine
                     vertexList = new List<VertexPositionNormalTextureHue>(1024);
                 }
 
-                m_DrawQueue.Add(texture, vertexList);
+                _drawQueue.Add(texture, vertexList);
             }
 
             //int position = vertexList.Count; Poplicola 5/9/2009 - commented out this variable, which is never used.
@@ -125,17 +139,17 @@ namespace UltimaXNA.TileEngine
 
         public void SetLightDirection(Vector3 nDirection)
         {
-            m_Effect.Parameters["lightDirection"].SetValue(nDirection);
+            _effect.Parameters["lightDirection"].SetValue(nDirection);
         }
 
 		public void SetAmbientLightIntensity(float intensity)
 		{
-				m_Effect.Parameters["ambientLightIntensity"].SetValue ( intensity );
+				_effect.Parameters["ambientLightIntensity"].SetValue ( intensity );
 		}
 
 		public void SetDirectionalLightIntensity(float intensity)
 		{
-				m_Effect.Parameters["lightIntensity"].SetValue ( intensity );
+				_effect.Parameters["lightIntensity"].SetValue ( intensity );
 		}
 
         private List<VertexPositionNormalTextureHue> vertices = new List<VertexPositionNormalTextureHue>();
@@ -145,8 +159,8 @@ namespace UltimaXNA.TileEngine
         {
             this.Game.GraphicsDevice.VertexDeclaration = new VertexDeclaration(this.Game.GraphicsDevice, VertexPositionNormalTextureHue.VertexElements);
 
-            IEnumerator<KeyValuePair<Texture2D, List<VertexPositionNormalTextureHue>>> keyValuePairs = m_DrawQueue.GetEnumerator();
-            m_Effect.CurrentTechnique = m_Effect.Techniques["StandardEffect"];
+            IEnumerator<KeyValuePair<Texture2D, List<VertexPositionNormalTextureHue>>> keyValuePairs = _drawQueue.GetEnumerator();
+            _effect.CurrentTechnique = _effect.Techniques["StandardEffect"];
 
             Game.GraphicsDevice.RenderState.DepthBufferEnable = true;
             Game.GraphicsDevice.RenderState.AlphaBlendEnable = true;
@@ -154,12 +168,12 @@ namespace UltimaXNA.TileEngine
             Game.GraphicsDevice.SamplerStates[0].MagFilter = TextureFilter.None;
             Game.GraphicsDevice.SamplerStates[0].MinFilter = TextureFilter.None;
             Game.GraphicsDevice.SamplerStates[0].MipFilter = TextureFilter.None;
-            m_Effect.Parameters["DrawLighting"].SetValue(true);
+            _effect.Parameters["DrawLighting"].SetValue(true);
 
             Game.GraphicsDevice.Textures[15] = UltimaXNA.Data.HuesXNA.HueTexture;
 
-            m_Effect.Begin();
-            m_Effect.CurrentTechnique.Passes[0].Begin();
+            _effect.Begin();
+            _effect.CurrentTechnique.Passes[0].Begin();
 
             keyValuePairs.MoveNext();
             while (keyValuePairs.Current.Key != null)
@@ -168,30 +182,31 @@ namespace UltimaXNA.TileEngine
                 {
                     Game.GraphicsDevice.Textures[j] = keyValuePairs.Current.Key;
                     vertices.AddRange(keyValuePairs.Current.Value);
-                    m_VertexListQueue.Enqueue(keyValuePairs.Current.Value);
+                    _vertexListQueue.Enqueue(keyValuePairs.Current.Value);
                     keyValuePairs.MoveNext();
                 }
 
                 verts = vertices.ToArray();
-                Game.GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionNormalTextureHue>(PrimitiveType.TriangleList, verts, 0, verts.Length, m_IndexBuffer, 0, verts.Length / 2);
+                Game.GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionNormalTextureHue>(PrimitiveType.TriangleList, verts, 0, verts.Length, _indexBuffer, 0, verts.Length / 2);
                 vertices.Clear();
             }
 
-            m_Effect.CurrentTechnique.Passes[0].End();
-            m_Effect.End();
+            _effect.CurrentTechnique.Passes[0].End();
+            _effect.End();
 
-            m_DrawQueue.Clear();
+            _drawQueue.Clear();
         }
 
-        public void FlushOld()
+        public void FlushOld(bool doLighting)
         {
             this.Game.GraphicsDevice.VertexDeclaration = new VertexDeclaration(this.Game.GraphicsDevice, VertexPositionNormalTextureHue.VertexElements);
 
             Texture2D iTexture;
             List<VertexPositionNormalTextureHue> iVertexList;
 
-            IEnumerator<KeyValuePair<Texture2D, List<VertexPositionNormalTextureHue>>> keyValuePairs = m_DrawQueue.GetEnumerator();
-            m_Effect.CurrentTechnique = m_Effect.Techniques["StandardEffect"];
+            IEnumerator<KeyValuePair<Texture2D, List<VertexPositionNormalTextureHue>>> keyValuePairs = _drawQueue.GetEnumerator();
+            _effect.CurrentTechnique = _effect.Techniques["StandardEffect"];
+            this.Game.GraphicsDevice.Textures[1] = UltimaXNA.Data.HuesXNA.HueTexture;
 
             Game.GraphicsDevice.RenderState.DepthBufferEnable = true;
             Game.GraphicsDevice.RenderState.AlphaBlendEnable = true;
@@ -199,25 +214,23 @@ namespace UltimaXNA.TileEngine
             Game.GraphicsDevice.SamplerStates[0].MagFilter = TextureFilter.None;
             Game.GraphicsDevice.SamplerStates[0].MinFilter = TextureFilter.None;
             Game.GraphicsDevice.SamplerStates[0].MipFilter = TextureFilter.None;
-            m_Effect.Parameters["DrawLighting"].SetValue(true);
-            m_Effect.Begin();
-            m_Effect.CurrentTechnique.Passes[0].Begin();
-
-            this.Game.GraphicsDevice.Textures[1] = UltimaXNA.Data.HuesXNA.HueTexture;
+            _effect.Parameters["DrawLighting"].SetValue(doLighting);
+            _effect.Begin();
+            _effect.CurrentTechnique.Passes[0].Begin();
 
             while (keyValuePairs.MoveNext())
             {
                 iTexture = keyValuePairs.Current.Key;
                 iVertexList = keyValuePairs.Current.Value;
                 this.Game.GraphicsDevice.Textures[0] = iTexture;
-                this.Game.GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionNormalTextureHue>(PrimitiveType.TriangleList, iVertexList.ToArray(), 0, iVertexList.Count, m_IndexBuffer, 0, iVertexList.Count / 2);
-                m_VertexListQueue.Enqueue(iVertexList);
+                this.Game.GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionNormalTextureHue>(PrimitiveType.TriangleList, iVertexList.ToArray(), 0, iVertexList.Count, _indexBuffer, 0, iVertexList.Count / 2);
+                _vertexListQueue.Enqueue(iVertexList);
             }
 
-            m_Effect.CurrentTechnique.Passes[0].End();
-            m_Effect.End();
+            _effect.CurrentTechnique.Passes[0].End();
+            _effect.End();
 
-            m_DrawQueue.Clear();
+            _drawQueue.Clear();
         }
     }
 }

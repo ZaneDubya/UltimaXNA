@@ -517,6 +517,7 @@ namespace UltimaXNA.Graphics.UI
 
         public override void Draw(GameTime gameTime)
         {
+            /*
             base.Draw(gameTime);
 
             _spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
@@ -527,6 +528,7 @@ namespace UltimaXNA.Graphics.UI
             }
 
             _spriteBatch.End();
+             */
         }
         
 #if LUA_UI

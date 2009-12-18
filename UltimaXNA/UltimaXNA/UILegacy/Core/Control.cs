@@ -9,17 +9,20 @@ namespace UltimaXNA.UILegacy
 {
     public class Control : iControl
     {
-        Serial _serial = Serial.Null;
         bool _enabled = false;
         bool _visible = false;
         bool _isInitialized = false;
         bool _isDisposed = false;
-        public Serial Serial { get { return _serial; } set { _serial = value; } }
         public bool Enabled { get { return _enabled; } set { _enabled = value; } }
         public bool Visible { get { return _visible; } set { _visible = value; } }
         public bool IsInitialized { get { return _isInitialized; } set { _isInitialized = value; } }
         public bool IsDisposed { get { return _isDisposed; } set { _isDisposed = value; } }
         public bool HandlesInput = false;
+
+        int _page = 0;
+        public int Page { get { return _page; } set { _page = value; } }
+        int _activePage = 1; // we always draw page 0
+        public int ActivePage { get { return _activePage; } set { _activePage = value; } }
 
         Rectangle _area = Rectangle.Empty;
         Vector2 _position = Vector2.Zero;
@@ -71,10 +74,10 @@ namespace UltimaXNA.UILegacy
         protected Texture2D _debugTexture;
 #endif
 
-        public Control(Serial serial, Control owner)
+        public Control(Control owner, int page)
         {
-            _serial = serial;
             _owner = owner;
+            _page = page;
         }
 
         virtual public void Initialize(UIManager manager)
@@ -118,12 +121,15 @@ namespace UltimaXNA.UILegacy
                 {
                     foreach (Control c in _controls)
                     {
-                        Control[] c1 = c.HitTest(position);
-                        if (c1 != null)
+                        if ((c.Page == 0) || (c.Page == ActivePage))
                         {
-                            for (int i = c1.Length - 1; i >= 0; i--)
+                            Control[] c1 = c.HitTest(position);
+                            if (c1 != null)
                             {
-                                focusedControls.Insert(0, c1[i]);
+                                for (int i = c1.Length - 1; i >= 0; i--)
+                                {
+                                    focusedControls.Insert(0, c1[i]);
+                                }
                             }
                         }
                     }
@@ -160,8 +166,25 @@ namespace UltimaXNA.UILegacy
         {
             if (!_isInitialized)
                 return;
-            /*
+            
 #if DEBUG
+            //DEBUG_DrawBounds(spriteBatch);
+#endif
+            
+            if (_controls != null)
+            {
+                foreach (Control c in _controls)
+                {
+                    if ((c.Page == 0) || (c.Page == ActivePage))
+                    {
+                        c.Draw(spriteBatch);
+                    }
+                }
+            }
+        }
+
+        void DEBUG_DrawBounds(ExtendedSpriteBatch spriteBatch)
+        {
             if (_debugTexture == null)
             {
                 Color[] data = new Color[] { Color.White };
@@ -184,21 +207,18 @@ namespace UltimaXNA.UILegacy
             spriteBatch.Draw(_debugTexture, new Rectangle(_area.X, _area.Y + _area.Height - 1, _area.Width, 1), color);
             spriteBatch.Draw(_debugTexture, new Rectangle(_area.X, _area.Y, 1, _area.Height), color);
             spriteBatch.Draw(_debugTexture, new Rectangle(_area.X + _area.Width - 1, _area.Y, 1, _area.Height), color);
-#endif
-            */
-            if (_controls != null)
-            {
-                foreach (Control c in _controls)
-                {
-                    c.Draw(spriteBatch);
-                }
-            }
         }
 
         public virtual void Activate(Control c)
         {
             if (_owner != null)
                 _owner.Activate(c);
+        }
+
+        public virtual void ChangePage(Control c)
+        {
+            if (_owner != null)
+                _owner.ChangePage(c);
         }
 
         public void MouseDown(Vector2 position, int button)
@@ -213,6 +233,13 @@ namespace UltimaXNA.UILegacy
             int x = (int)position.X - X - ((_owner != null) ? _owner.X : 0);
             int y = (int)position.Y - Y - ((_owner != null) ? _owner.Y : 0);
             _mouseUp(x, y, button);
+        }
+
+        public void MouseOver(Vector2 position)
+        {
+            int x = (int)position.X - X - ((_owner != null) ? _owner.X : 0);
+            int y = (int)position.Y - Y - ((_owner != null) ? _owner.Y : 0);
+            _mouseOver(x, y);
         }
 
         public void MouseClick(Vector2 position, int button)
@@ -232,9 +259,27 @@ namespace UltimaXNA.UILegacy
 
         }
 
+        public virtual void _mouseOver(int x, int y)
+        {
+
+        }
+
         public virtual void _mouseClick(int x, int y, int button)
         {
 
+        }
+
+        internal Color HueColor(int hue)
+        {
+            if (hue == 0)
+                return Color.White;
+            else
+            {
+                Color c = new Color(0, 0, 0, 255);
+                c.R = (byte)(hue & 0x000000FF);
+                c.G = (byte)((hue & 0x0000FF00) >> 8);
+                return c;
+            }
         }
     }
 }

@@ -44,10 +44,13 @@ float4 PixelShader(PS_INPUT IN) : COLOR0
 	// get the initial color
 	float4 color = tex2D(textureSampler[0], IN.TexCoord);
 	// do lighting
-	float3 lightColor = float3(0.5f + lightIntensity / 2, 0.5f + lightIntensity / 2, 0.5f + lightIntensity / 2);
-	float3 ambientColor = float3(1 - lightIntensity / 10, 1 - lightIntensity / 10, 1 - lightIntensity / 10) * ambientLightIntensity;
-	float NDotL = saturate(dot(-lightDirection, IN.Normal));
-	color.rgb = (ambientColor * color.rgb) + (lightColor * NDotL * color.rgb);
+	if (DrawLighting)
+	{
+		float3 lightColor = float3(0.5f + lightIntensity / 2, 0.5f + lightIntensity / 2, 0.5f + lightIntensity / 2);
+		float3 ambientColor = float3(1 - lightIntensity / 10, 1 - lightIntensity / 10, 1 - lightIntensity / 10) * ambientLightIntensity;
+		float NDotL = saturate(dot(-lightDirection, IN.Normal));
+		color.rgb = (ambientColor * color.rgb) + (lightColor * NDotL * color.rgb);
+	}
 	
 	if (IN.Hue.y != 0) //Is it Hued?
 	{

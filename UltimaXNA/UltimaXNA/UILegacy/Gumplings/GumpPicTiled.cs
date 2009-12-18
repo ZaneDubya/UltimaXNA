@@ -8,14 +8,14 @@ namespace UltimaXNA.UILegacy.Gumplings
     {
         Texture2D _bgGump = null;
 
-        public GumpPicTiled(Serial serial, Control owner)
-            : base(serial, owner)
+        public GumpPicTiled(Control owner, int page)
+            : base(owner, page)
         {
 
         }
 
-        public GumpPicTiled(Serial serial, Control owner, string[] arguements)
-            : this(serial, owner)
+        public GumpPicTiled(Control owner, int page, string[] arguements)
+            : this(owner, page)
         {
             int x, y, gumpID, width, height;
             x = Int32.Parse(arguements[1]);
@@ -26,8 +26,8 @@ namespace UltimaXNA.UILegacy.Gumplings
             buildGumpling(x, y, width, height, gumpID);
         }
 
-        public GumpPicTiled(Serial serial, Control owner, int x, int y, int width, int height, int gumpID)
-            : this(serial, owner)
+        public GumpPicTiled(Control owner, int page, int x, int y, int width, int height, int gumpID)
+            : this(owner, page)
         {
             buildGumpling(x, y, width, height, gumpID);
         }

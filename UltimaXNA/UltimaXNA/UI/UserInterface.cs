@@ -26,7 +26,7 @@ using xWinFormsLib;
 
 namespace UltimaXNA.UI
 {
-    public class UserInterface : IUserInterface
+    public class UserInterface
     {
         private static Dictionary<string, Window> _UIWindows;
         private static SpriteBatch _spriteBatch;
@@ -258,17 +258,6 @@ namespace UltimaXNA.UI
         {
 
         }
-
-        /*public static bool IsMouseOverUI(Vector2 nPosition)
-        {
-            foreach (Form f in FormCollection.Forms)
-            {
-                if (!f.IsDisposed)
-                    if (f.IsMouseOver())
-                        return true;
-            }
-            return false;
-        }*/
 
         public static Window Window(string nWindowName)
         {

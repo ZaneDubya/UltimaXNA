@@ -13,8 +13,15 @@ namespace UltimaXNA.UILegacy
 {
     class Cursor
     {
+        IUIManager _manager = null;
+
         bool _isHolding = false;
         bool _isTargetting = false;
+
+        public Cursor(IUIManager manager)
+        {
+            _manager = manager;
+        }
 
         public void Draw(ExtendedSpriteBatch spriteBatch, Vector2 position)
         {
@@ -38,7 +45,7 @@ namespace UltimaXNA.UILegacy
             }
             else
             {
-                if (GameState.InWorld)
+                if (GameState.InWorld && !_manager.IsMouseOverUI)
                 {
                     switch (GameState.CursorDirection)
                     {
@@ -82,7 +89,7 @@ namespace UltimaXNA.UILegacy
 
                     // Hue the cursor if in warmode.
                     if (GameState.WarMode)
-                        cursorTextureID -= 23; Data.Art.GetStaticTexture(cursorTextureID - 23);
+                        cursorTextureID -= 23;
                 }
                 else
                 {
