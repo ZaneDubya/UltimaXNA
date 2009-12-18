@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace UltimaXNA.Data
 {
-    sealed class UniCharacter
+    internal sealed class UniCharacter
     {
         bool hasTexture
         {
@@ -86,7 +86,7 @@ namespace UltimaXNA.Data
         }
     }
 
-    sealed class UniFont
+    internal sealed class UniFont
     {
         GraphicsDevice _graphics = null;
         BinaryReader _reader = null;
@@ -227,14 +227,14 @@ namespace UltimaXNA.Data
                     }
                 }
             }
-            DEBUG_SaveFonts();
+            // DEBUG_SaveFonts();
         }
 
         static void DEBUG_SaveFonts()
         {
             for (int iFont = 0; iFont < 7; iFont++)
             {
-                Texture2D texture = GetTextTexture("<big>ACCOUNT</big> <small>INFORMATION</small> <i>ADMINISTER</i>", iFont, true);
+                Texture2D texture = GetTextTexture("<big>Poplicola</big> <small>Poplicola</small> <i>Poplicola</i>", iFont, true);
                 texture.Save("Font/" + iFont.ToString() + ".png", ImageFileFormat.Png);
             }
         }
@@ -334,6 +334,15 @@ namespace UltimaXNA.Data
                 {
                     bool isClosing = false;
                     string tag = readHTMLTag(text, ref i, ref isClosing);
+                    switch (tag)
+                    {
+                        case "BR":
+                            outChars[iOut++] = '\n';
+                            break;
+                        default:
+                            // unknown tag
+                            break;
+                    }
                 }
                 else
                 {

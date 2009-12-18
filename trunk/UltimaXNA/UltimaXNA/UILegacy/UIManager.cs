@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Input;
 using UltimaXNA.Extensions;
 using UltimaXNA.Graphics;
 using UltimaXNA.Input;
+using UltimaXNA.TileEngine;
 
 namespace UltimaXNA.UILegacy
 {
@@ -17,6 +18,8 @@ namespace UltimaXNA.UILegacy
         List<Control> _controls = null;
         Cursor _cursor = null;
         IInputService _input = null;
+
+        SpriteBatch3D _spriteBatch3D;
 
         Control[] _mouseOverControls = null; // the controls that the mouse is over, 0 index is the frontmost control, last index is the backmost control (always the owner gump).
         Control[] _mouseDownControl = new Control[5]; // the control that the mouse was over when the button was clicked. 5 buttons
@@ -48,8 +51,10 @@ namespace UltimaXNA.UILegacy
             _spriteBatch = new ExtendedSpriteBatch(game.GraphicsDevice);
             _spriteBatch.Effect = game.Content.Load<Effect>("Shaders\\Gumps");
 
+            _spriteBatch3D = new SpriteBatch3D(game);
+
             _controls = new List<Control>();
-            _cursor = new Cursor();
+            _cursor = new Cursor(this);
 
             // Retrieve the needed services.
             _input = game.Services.GetService<IInputService>(true);
@@ -65,60 +70,15 @@ namespace UltimaXNA.UILegacy
 
         public override void Update(GameTime gameTime)
         {
-            Control[] focusedControls = null;
-
             foreach (Control c in _controls)
             {
                 if (!c.IsInitialized)
                     c.Initialize(this);
                 c.Update(gameTime);
-                Control[] mouseOverControls = c.HitTest(_input.CurrentMousePosition);
-                if (mouseOverControls != null)
-                {
-                    focusedControls = mouseOverControls;
-                }
+
             }
 
-            _mouseOverControls = focusedControls;
-
-            if (_mouseOverControls != null)
-            {
-                for (int iButton = 0; iButton < 5; iButton++)
-                {
-                    if (_input.IsMouseButtonPress((MouseButtons)iButton))
-                    {
-                        for (int iControl = 0; iControl < _mouseOverControls.Length; iControl++)
-                        {
-                            if (_mouseOverControls[iControl].HandlesInput)
-                            {
-                                _mouseOverControls[iControl].MouseDown(_input.CurrentMousePosition, iButton);
-                                _mouseDownControl[iButton] = _mouseOverControls[iControl];
-                                break;
-                            }
-                        }
-                    }
-
-                    if (_input.IsMouseButtonRelease((MouseButtons)iButton))
-                    {
-                        if (_mouseDownControl[iButton] != null)
-                        {
-                            _mouseDownControl[iButton].MouseUp(_input.CurrentMousePosition, iButton);
-                            if (_mouseOverControls[0] == _mouseDownControl[iButton])
-                            {
-                                _mouseDownControl[iButton].MouseClick(_input.CurrentMousePosition, iButton);
-                            }
-                        }
-                    }
-                }
-            }
-
-            for (int i = 0; i < 5; i++)
-            {
-                if (_input.IsMouseButtonUp((MouseButtons)i))
-                {
-                    _mouseDownControl[i] = null;
-                }
-            }
+            updateInput();
 
             List<Control> disposedControls = new List<Control>();
             foreach (Control c in _controls)
@@ -136,7 +96,11 @@ namespace UltimaXNA.UILegacy
 
         public override void Draw(GameTime gameTime)
         {
+            _spriteBatch.Effect.Parameters["HueTexture"].SetValue(UltimaXNA.Data.HuesXNA.HueTexture);
             _spriteBatch.Begin();
+
+            z = 10000000;
+
             foreach (Control c in _controls)
             {
                 c.Draw(_spriteBatch);
@@ -144,27 +108,33 @@ namespace UltimaXNA.UILegacy
 
             // Draw debug message
             if (GameState.DebugMessage != null)
-                drawText(new Vector2(5, 5), GameState.DebugMessage + Environment.NewLine + _DEBUG_TEXT);
+                DEBUG_DrawText(new Vector2(5, 5), GameState.DebugMessage + Environment.NewLine + _DEBUG_TEXT);
             // version message
             Version v = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
             DateTime d = new DateTime(v.Build * TimeSpan.TicksPerDay).AddYears(1999).AddDays(-1);
             string versionString = string.Format("UltimaXNA PreAlpha v{0}.{1}", v.Major, v.Minor) + Environment.NewLine +
                 "Compiled: " + String.Format("{0:MMMM d, yyyy}", d);
-            drawText(new Vector2(630, 5), versionString);
-
-            // tooltip message
-            // drawText(_spriteBatch, UIHelper.TooltipMsg, 0, 0, UIHelper.TooltipX, UIHelper.TooltipY);
+            DEBUG_DrawText(new Vector2(630, 5), versionString);
 
             _cursor.Draw(_spriteBatch, _input.CurrentMousePosition);
 
             _spriteBatch.End();
+
+            _spriteBatch3D.FlushOld(false);
+
             base.Draw(gameTime);
         }
 
-        private void drawText(Vector2 position, string text)
+        int z;
+        internal void DEBUG_DrawText(Vector2 position, string text)
         {
-            Texture2D texture = Data.UniText.GetTextTexture(text, 1, false);
-            _spriteBatch.Draw(texture, position, Color.White);
+            Texture2D t = Data.UniText.GetTextTexture(text, 1, false);
+            Draw(t, position, 1152);
+        }
+        internal void Draw(Texture2D texture, Vector2 position, int hue)
+        {
+            _spriteBatch3D.DrawSimple(texture, new Vector3(position.X, position.Y, z), new Vector2(hue, 0));
+            z += 1000;
         }
 
         string _DEBUG_TEXT = string.Empty;
@@ -175,6 +145,77 @@ namespace UltimaXNA.UILegacy
         public void DebugMessage_Clear()
         {
             _DEBUG_TEXT = string.Empty;
+        }
+
+        void updateInput()
+        {
+            Control[] focusedControls = null;
+
+            foreach (Control c in _controls)
+            {
+                Control[] mouseOverControls = c.HitTest(_input.CurrentMousePosition);
+                if (mouseOverControls != null)
+                {
+                    focusedControls = mouseOverControls;
+                }
+            }
+
+            _mouseOverControls = focusedControls;
+
+            for (int iButton = 0; iButton < 5; iButton++)
+            {
+                if (_mouseOverControls != null)
+                {
+                    // MouseDown event.
+                    if (_input.IsMouseButtonPress((MouseButtons)iButton))
+                    {
+                        for (int iControl = 0; iControl < _mouseOverControls.Length; iControl++)
+                        {
+                            if (_mouseOverControls[iControl].HandlesInput)
+                            {
+                                _mouseOverControls[iControl].MouseDown(_input.CurrentMousePosition, iButton);
+                                _mouseDownControl[iButton] = _mouseOverControls[iControl];
+                                break;
+                            }
+                        }
+                    }
+                }
+
+
+                // MouseUp and MouseClick events
+                if (_input.IsMouseButtonRelease((MouseButtons)iButton))
+                {
+                    if (_mouseDownControl[iButton] != null)
+                    {
+                        _mouseDownControl[iButton].MouseUp(_input.CurrentMousePosition, iButton);
+                        if (_mouseOverControls != null)
+                        {
+                            if (_mouseOverControls[0] == _mouseDownControl[iButton])
+                            {
+                                _mouseDownControl[iButton].MouseClick(_input.CurrentMousePosition, iButton);
+                            }
+                        }
+                    }
+                }
+
+                if (_input.IsMouseButtonUp((MouseButtons)iButton))
+                {
+                    _mouseDownControl[iButton] = null;
+                }
+            }
+
+            // MouseOver event.
+            if (_mouseOverControls != null)
+            {
+                for (int iControl = 0; iControl < _mouseOverControls.Length; iControl++)
+                {
+                    if (_mouseOverControls[iControl].HandlesInput)
+                    {
+                        _mouseOverControls[iControl].MouseOver(_input.CurrentMousePosition);
+                        break;
+                    }
+                }
+            }
         }
 
         string[] splitGumpPieces(string gumpData)

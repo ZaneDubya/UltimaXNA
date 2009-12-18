@@ -159,7 +159,7 @@ namespace UltimaXNA.TileEngine
 
         public void Draw(GameTime gameTime)
         {
-            _spriteBatch.FlushOld();
+            _spriteBatch.FlushOld(true);
             if (MouseOverGroundTile != null && DEBUG_DrawTileOver)
                 _rayPicker.DrawPickedTriangle(_spriteBatch.WorldMatrix);
         }

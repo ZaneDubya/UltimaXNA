@@ -11,14 +11,14 @@ namespace UltimaXNA.UILegacy.Gumplings
         bool _background = false;
         bool _scrollbar = false;
 
-        public HtmlGump(Serial serial, Control owner)
-            : base(serial, owner)
+        public HtmlGump(Control owner, int page)
+            : base(owner, page)
         {
 
         }
 
-        public HtmlGump(Serial serial, Control owner, string[] arguements, string[] lines)
-            : this(serial, owner)
+        public HtmlGump(Control owner, int page, string[] arguements, string[] lines)
+            : this(owner, page)
         {
             int x, y, width, height, textIndex, background, scrollbar;
             x = Int32.Parse(arguements[1]);
@@ -32,8 +32,8 @@ namespace UltimaXNA.UILegacy.Gumplings
             buildGumpling(x, y, width, height, textIndex, background, scrollbar, lines);
         }
 
-        public HtmlGump(Serial serial, Control owner, int x, int y, int width, int height, int textIndex, int background, int scrollbar, string[] lines)
-            : this(serial, owner)
+        public HtmlGump(Control owner, int page, int x, int y, int width, int height, int textIndex, int background, int scrollbar, string[] lines)
+            : this(owner, page)
         {
             buildGumpling(x, y, width, height, textIndex, background, scrollbar, lines);
         }

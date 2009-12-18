@@ -77,7 +77,7 @@ namespace UltimaXNA.Graphics
         /// </summary>
         public void Begin()
         {
-            Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Deferred, SaveStateMode.None, Matrix.Identity);
+            Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Matrix.Identity);
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace UltimaXNA.Graphics
         /// <param name="blendMode">Blending options to use when rendering.</param>
         public void Begin(SpriteBlendMode blendMode)
         {
-            Begin(blendMode, SpriteSortMode.Deferred, SaveStateMode.None, Matrix.Identity);
+            Begin(blendMode, SpriteSortMode.Immediate, SaveStateMode.None, Matrix.Identity);
         }
 
         /// <summary>

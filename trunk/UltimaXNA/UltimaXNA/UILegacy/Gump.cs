@@ -11,14 +11,16 @@ namespace UltimaXNA.UILegacy
 {
     public class Gump : Control
     {
+        Serial Serial;
         Serial GumpID;
         string[] _gumpPieces, _gumpLines;
 
         public Gump(Serial serial, Serial gumpID)
-            : base(serial, null)
+            : base(null, 0)
         {
-            _controls = new List<Control>();
+            Serial = serial;
             GumpID = gumpID;
+            _controls = new List<Control>();
         }
 
         public Gump(Serial serial, Serial gumpID, String[] pieces, String[] textlines)
@@ -88,36 +90,56 @@ namespace UltimaXNA.UILegacy
             this.Dispose();
         }
 
+        public override void ChangePage(Control c)
+        {
+            // For a gump, Page is the page that is drawing.
+            ActivePage = ((Button)c).ButtonParameter;
+        }
+
         private void buildGump(string[] gumpPieces, string[] gumpLines)
         {
             _manager.DebugMessage_Clear();
+            int currentGUMPPage = 0;
 
             for (int i = 0; i < gumpPieces.Length; i++)
             {
                 string[] arguements = gumpPieces[i].Split(' ');
                 switch (arguements[0])
                 {
+                    case "page":
+                        currentGUMPPage = interpret_page(arguements);
+                        break;
                     case "checkertrans":
-                        _controls.Add(new Gumplings.CheckerTrans(0, this, arguements));
+                        _controls.Add(new Gumplings.CheckerTrans(this, currentGUMPPage, arguements));
                         break;
                     case "resizepic":
-                        _controls.Add(new Gumplings.ResizePic(0, this, arguements));
+                        _controls.Add(new Gumplings.ResizePic(this, currentGUMPPage, arguements));
                         break;
                     case "button":
-                        _controls.Add(new Gumplings.Button(0, this, arguements));
+                        _controls.Add(new Gumplings.Button(this, currentGUMPPage, arguements));
                         break;
                     case "croppedtext":
-                        _controls.Add(new Gumplings.CroppedText(0, this, arguements, gumpLines));
+                        _controls.Add(new Gumplings.CroppedText(this, currentGUMPPage, arguements, gumpLines));
                         break;
                     case "htmlgump":
-                        _controls.Add(new Gumplings.HtmlGump(0, this, arguements, gumpLines));
+                        _controls.Add(new Gumplings.HtmlGump(this, currentGUMPPage, arguements, gumpLines));
                         break;
                     case "gumppictiled":
-                        _controls.Add(new Gumplings.GumpPicTiled(0, this, arguements));
+                        _controls.Add(new Gumplings.GumpPicTiled(this, currentGUMPPage, arguements));
                         break;
                     case "gumppic":
-                        _controls.Add(new Gumplings.GumpPic(0, this, arguements));
+                        _controls.Add(new Gumplings.GumpPic(this, currentGUMPPage, arguements));
                         break;
+                    case "text":
+                        _controls.Add(new Gumplings.TextLabel(this, currentGUMPPage, arguements, gumpLines));
+                        break;
+                    case "tilepic":
+                        _controls.Add(new Gumplings.TilePic(this, currentGUMPPage, arguements));
+                        break;
+                    case "tilepichue":
+                        _controls.Add(new Gumplings.TilePic(this, currentGUMPPage, arguements));
+                        break;
+                    
 
                     case "checkbox":
                         _manager.DebugMessage_AddLine("GUMP: Unhandled '" + arguements[0] + "'.");
@@ -140,15 +162,6 @@ namespace UltimaXNA.UILegacy
                     case "tooltip":
                         _manager.DebugMessage_AddLine("GUMP: Unhandled '" + arguements[0] + "'.");
                         break;
-                    case "tilepic":
-                        _manager.DebugMessage_AddLine("GUMP: Unhandled '" + arguements[0] + "'.");
-                        break;
-                    case "tilepichue":
-                        _manager.DebugMessage_AddLine("GUMP: Unhandled '" + arguements[0] + "'.");
-                        break;
-                    case "text":
-                        _manager.DebugMessage_AddLine("GUMP: Unhandled '" + arguements[0] + "'.");
-                        break;
                     case "radio":
                         _manager.DebugMessage_AddLine("GUMP: Unhandled '" + arguements[0] + "'.");
                         break;
@@ -158,9 +171,6 @@ namespace UltimaXNA.UILegacy
                     case "textentrylimited":
                         _manager.DebugMessage_AddLine("GUMP: Unhandled '" + arguements[0] + "'.");
                         break;
-                    case "page":
-                        interpret_page(arguements);
-                        break;
                     default:
                         _manager.DebugMessage_AddLine("GUMP: Unknown piece '" + arguements[0] + "'.");
                         break;
@@ -168,25 +178,10 @@ namespace UltimaXNA.UILegacy
             }
         }
 
-        private void interpret_croppedtext(string[] arguements)
+        private int interpret_page(string[] arguements)
         {
-            int m_X, m_Y, m_Width, m_Height, m_Hue, m_Parent;
-            m_X = Int32.Parse(arguements[1]);
-            m_Y = Int32.Parse(arguements[2]);
-            m_Width = Int32.Parse(arguements[3]);
-            m_Height = Int32.Parse(arguements[4]);
-            m_Hue = Int32.Parse(arguements[5]);
-            m_Parent = Int32.Parse(arguements[6]);
-            // Controls.Add(new Label("lbl" + (Controls.Count + 1), new Vector2(m_X, m_Y), string.Empty, Color.TransparentBlack, Color.Black, m_Width, Label.Align.Left));
-            // Controls["lbl" + Controls.Count].Text = _gumpText[m_Parent];
-            checkResize();
-        }
-
-        private void interpret_page(string[] arguements)
-        {
-            if (arguements[1] != "0")
-                throw new Exception("Unknown page #");
-            return;
+            int page = Int32.Parse(arguements[1]);
+            return page;
         }
 
         private bool checkResize()

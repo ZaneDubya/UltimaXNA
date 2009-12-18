@@ -8,14 +8,14 @@ namespace UltimaXNA.UILegacy.Gumplings
     {
         Texture2D _renderedTexture = null;
 
-        public CheckerTrans(Serial serial, Control owner)
-            : base(serial, owner)
+        public CheckerTrans(Control owner, int page)
+            : base(owner, page)
         {
 
         }
 
-        public CheckerTrans(Serial serial, Control owner, string[] arguements)
-            : this(serial, owner)
+        public CheckerTrans(Control owner, int page, string[] arguements)
+            : this(owner, page)
         {
             int x, y, width, height;
             x = Int32.Parse(arguements[1]);
@@ -26,8 +26,8 @@ namespace UltimaXNA.UILegacy.Gumplings
             buildGumpling(x, y, width, height);
         }
 
-        public CheckerTrans(Serial serial, Control owner, int x, int y, int width, int height)
-            : this(serial, owner)
+        public CheckerTrans(Control owner, int page, int x, int y, int width, int height)
+            : this(owner, page)
         {
             buildGumpling(x, y, width, height);
         }

@@ -1,5 +1,5 @@
 texture HueTexture : register(t1);
-float2 Hue;
+float hueout;
 
 const float HuesPerColumn = 2024;
 const float HuesPerRow = 2;
@@ -34,28 +34,35 @@ float4 PixelShaderFunction(VS_OUTPUT IN) : COLOR0
 {
     float4 color = tex2D(DiffuseSampler, IN.TexCoord);
     
-    //Is it Hued?
-	if (Hue.x > 0 && color.a > 0) 
-	{	    
-		float y = (((Hue.x - (Hue.x % 2)) / HuesPerRow) / (HuesPerColumn));
-		float x = ((color.r + color.g + color.b) / 3.0f / HuesPerRow + (Hue.x % 2) * 0.5f).r;
+    if (!all(IN.Color == 1))
+    {
+		// This is a hued color
+		float HueShade = lerp(0, 255, IN.Color.r) + lerp(0, 255, IN.Color.g) * 256;
+		hueout = HueShade;
+		// float OtherValue = IN.Color.b * 255; // we don't use this one yet
+		
+		
+		
+		float y = (((HueShade - (HueShade % 2)) / HuesPerRow) / (HuesPerColumn));
+		float x = ((color.r + color.g + color.b) / 3.0f / HuesPerRow + (HueShade % 2) * 0.5f).r;
 		
 		float4 hue = tex2D(HueSampler, float2(x, y));
 
 		//Is it a Partial Hue?
-		if (Hue.y > 0) 
-		{
-			if (color.r == color.g && color.r == color.b && color.a != 0)
-				color.rgb = hue.rgb;		
-		}
+		// if (OtherValue != 0) 
+		// {
+		// 	if (color.r == color.g && color.r == color.b && color.a != 0)
+		// 	color.rgb = hue.rgb;		
+		//}
 		//Else its a normal Hue
-		else 
-		{
+		// else 
+		// {
 			color.rgb = hue.rgb;
-		}
-	}
-	
-	return color * IN.Color;
+			// color = IN.Color;
+		// }
+    }
+
+	return color;
 }
 
 technique Gumps

@@ -4,48 +4,50 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace UltimaXNA.UILegacy.Gumplings
 {
-    class GumpPic : Control
+    class TilePic : Control
     {
-        Texture2D _textureGump = null;
+        Texture2D _texture = null;
+        int Hue;
 
-        public GumpPic(Control owner, int page)
+        public TilePic(Control owner, int page)
             : base(owner, page)
         {
 
         }
 
-        public GumpPic(Control owner, int page, string[] arguements)
+        public TilePic(Control owner, int page, string[] arguements)
             : this(owner, page)
         {
-            int x, y, gumpID, hue = 0;
+            int x, y, tileID, hue = 0;
             x = Int32.Parse(arguements[1]);
             y = Int32.Parse(arguements[2]);
-            gumpID = Int32.Parse(arguements[3]);
+            tileID = Int32.Parse(arguements[3]);
             if (arguements.Length > 4)
             {
                 // has a HUE="XXX" arguement!
                 hue = Int32.Parse(arguements[4]);
             }
-            buildGumpling(x, y, gumpID, hue);
+            buildGumpling(x, y, tileID, hue);
         }
 
-        public GumpPic(Control owner, int page, int x, int y, int gumpID, int hue)
+        public TilePic(Control owner, int page, int x, int y, int tileID, int hue)
             : this(owner, page)
         {
-            buildGumpling(x, y, gumpID, hue);
+            buildGumpling(x, y, tileID, hue);
         }
 
-        void buildGumpling(int x, int y, int gumpID, int hue)
+        void buildGumpling(int x, int y, int tileID, int hue)
         {
             Position = new Vector2(x, y);
-            _textureGump = Data.Gumps.GetGumpXNA(gumpID);
-            Size = new Vector2(_textureGump.Width, _textureGump.Height);
-            
+            _texture = Data.Art.GetStaticTexture(tileID);
+            Hue = hue;
+            Size = new Vector2(_texture.Width, _texture.Height);
+
         }
 
         public override void Draw(UltimaXNA.Graphics.ExtendedSpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_textureGump, Position, Color.White);
+            spriteBatch.Draw(_texture, Position, Color.White);
             base.Draw(spriteBatch);
         }
     }
