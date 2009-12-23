@@ -586,20 +586,30 @@ namespace UltimaXNA
 
         public static void MouseTargeting(int nCursorID, int nTargetingType)
         {
-            _TargettingType = nTargetingType;
+            setTargeting(nTargetingType);
+        }
+
+        private static void setTargeting(int targetingType)
+        {
+            _TargettingType = targetingType;
             // Set the UI's cursor to a targetting cursor.
-            UserInterface.TargettingCursor = true;
+            _legacyUI.Cursor.IsTargeting = true;
             // Stop continuous movement.
             _ContinuousMoveCheck = false;
+        }
+
+        private static void clearTargeting()
+        {
+            // Clear our target cursor.
+            _TargettingType = -1;
+            _legacyUI.Cursor.IsTargeting = false;
         }
 
         private static void mouseTargetingCancel()
         {
             // Send the cancel target message back to the server.
             UltimaClient.Send(new TargetCancelPacket());
-            // Clear our target cursor.
-            _TargettingType = -1;
-            UserInterface.TargettingCursor = false;
+            clearTargeting();
         }
 
         private static void mouseTargetingEventXYZ(MapObject selectedObject)
@@ -617,9 +627,8 @@ namespace UltimaXNA
             }
             // Send the target ...
             UltimaClient.Send(new TargetXYZPacket((short)selectedObject.Position.X, (short)selectedObject.Position.Y, (short)selectedObject.Z, (ushort)modelNumber));
-            // ... and then clear our target cursor.
-            _TargettingType = -1;
-            UserInterface.TargettingCursor = false;
+            // ... and clear our targeting cursor.
+            clearTargeting();
         }
 
         private static void mouseTargetingEventObject(MapObject selectedObject)
@@ -639,8 +648,7 @@ namespace UltimaXNA
             }
             
             // Clear our target cursor.
-            _TargettingType = -1;
-            UserInterface.TargettingCursor = false;
+            clearTargeting();
         }
 
         private static void loadDebugAssembly(string filename)

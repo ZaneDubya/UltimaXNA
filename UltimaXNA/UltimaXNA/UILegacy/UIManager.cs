@@ -44,6 +44,13 @@ namespace UltimaXNA.UILegacy
                     return true;
             }
         }
+        public Cursor Cursor
+        {
+            get
+            {
+                return _cursor;
+            }
+        }
 
         public UIManager(Game game)
             : base(game)
@@ -58,6 +65,8 @@ namespace UltimaXNA.UILegacy
 
             // Retrieve the needed services.
             _input = game.Services.GetService<IInputService>(true);
+
+            _controls.Add(new Clientside.DebugGump(0x1));
         }
 
         public Gump AddGump(Serial serial, Serial gumpID, string[] gumplings, string[] lines, int x, int y)

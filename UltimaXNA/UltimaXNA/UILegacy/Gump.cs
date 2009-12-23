@@ -14,6 +14,7 @@ namespace UltimaXNA.UILegacy
         Serial Serial;
         Serial GumpID;
         string[] _gumpPieces, _gumpLines;
+        bool _mustRebuild = false;
 
         public Gump(Serial serial, Serial gumpID)
             : base(null, 0)
@@ -38,11 +39,21 @@ namespace UltimaXNA.UILegacy
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
+            // Add any gump pieces that have been given to the gump...
             if (_gumpPieces != null)
             {
                 buildGump(_gumpPieces, _gumpLines);
                 _gumpPieces = null;
                 _gumpLines = null;
+                _mustRebuild = true;
+            }
+
+            // Update the gumplings...
+            base.Update(gameTime);
+
+            // Do we need to resize?
+            if (_mustRebuild)
+            {
                 if (checkResize())
                 {
                     if (_gumpTarget != null)
@@ -53,8 +64,6 @@ namespace UltimaXNA.UILegacy
                     }
                 }
             }
-
-            base.Update(gameTime);
         }
 
         RenderTarget2D _gumpTarget = null;
@@ -94,6 +103,14 @@ namespace UltimaXNA.UILegacy
         {
             // For a gump, Page is the page that is drawing.
             ActivePage = ((Button)c).ButtonParameter;
+            _mustRebuild = true;
+        }
+
+        public Control AddGumpling(Control c)
+        {
+            _controls.Add(c);
+            _mustRebuild = true;
+            return _controls[_controls.Count - 1];
         }
 
         private void buildGump(string[] gumpPieces, string[] gumpLines)
@@ -139,7 +156,12 @@ namespace UltimaXNA.UILegacy
                     case "tilepichue":
                         _controls.Add(new Gumplings.TilePic(this, currentGUMPPage, arguements));
                         break;
-                    
+                    case "textentry":
+                        _controls.Add(new Gumplings.TextEntry(this, currentGUMPPage, arguements, gumpLines));
+                        break;
+                    case "textentrylimited":
+                        _controls.Add(new Gumplings.TextEntry(this, currentGUMPPage, arguements, gumpLines));
+                        break;
 
                     case "checkbox":
                         _manager.DebugMessage_AddLine("GUMP: Unhandled '" + arguements[0] + "'.");
@@ -163,12 +185,6 @@ namespace UltimaXNA.UILegacy
                         _manager.DebugMessage_AddLine("GUMP: Unhandled '" + arguements[0] + "'.");
                         break;
                     case "radio":
-                        _manager.DebugMessage_AddLine("GUMP: Unhandled '" + arguements[0] + "'.");
-                        break;
-                    case "textentry":
-                        _manager.DebugMessage_AddLine("GUMP: Unhandled '" + arguements[0] + "'.");
-                        break;
-                    case "textentrylimited":
                         _manager.DebugMessage_AddLine("GUMP: Unhandled '" + arguements[0] + "'.");
                         break;
                     default:

@@ -7,6 +7,7 @@ namespace UltimaXNA.UILegacy.Gumplings
     class ResizePic : Control
     {
         Texture2D[] _bgGumps = null;
+        int GumpID = 0;
 
         public ResizePic(Control owner, int page)
             : base(owner, page)
@@ -37,11 +38,20 @@ namespace UltimaXNA.UILegacy.Gumplings
         {
             Position = new Vector2(x, y);
             Size = new Vector2(width, height);
+            GumpID = gumpID;
+        }
 
-            for (int i = 0; i < 9; i++)
+        public override void Update(GameTime gameTime)
+        {
+            if (_bgGumps[0] == null)
             {
-                _bgGumps[i] = Data.Gumps.GetGumpXNA(gumpID + i);
+                for (int i = 0; i < 9; i++)
+                {
+                    _bgGumps[i] = Data.Gumps.GetGumpXNA(GumpID + i);
+                }
             }
+
+            base.Update(gameTime);
         }
 
         public override void Draw(UltimaXNA.Graphics.ExtendedSpriteBatch spriteBatch)
@@ -52,15 +62,15 @@ namespace UltimaXNA.UILegacy.Gumplings
             int line3Y = Area.Y + Area.Height - _bgGumps[6].Height;
 
             spriteBatch.Draw(_bgGumps[0], new Vector2(Area.X, Area.Y), Color.White);
-            spriteBatch.Draw(_bgGumps[1], new Rectangle(Area.X + _bgGumps[0].Width, Area.Y, centerWidth, _bgGumps[0].Height), Color.White);
+            spriteBatch.DrawTiled(_bgGumps[1], new Rectangle(Area.X + _bgGumps[0].Width, Area.Y, centerWidth, _bgGumps[0].Height), Color.White);
             spriteBatch.Draw(_bgGumps[2], new Vector2(Area.X + Area.Width - _bgGumps[2].Width, Area.Y), Color.White);
 
-            spriteBatch.Draw(_bgGumps[3], new Rectangle(Area.X, line2Y, _bgGumps[0].Width, centerHeight), Color.White);
-            spriteBatch.Draw(_bgGumps[4], new Rectangle(Area.X + _bgGumps[0].Width, line2Y, centerWidth, centerHeight), Color.White);
-            spriteBatch.Draw(_bgGumps[5], new Rectangle(Area.X + Area.Width - _bgGumps[2].Width, line2Y, _bgGumps[2].Width, centerHeight), Color.White);
+            spriteBatch.DrawTiled(_bgGumps[3], new Rectangle(Area.X, line2Y, _bgGumps[0].Width, centerHeight), Color.White);
+            spriteBatch.DrawTiled(_bgGumps[4], new Rectangle(Area.X + _bgGumps[0].Width, line2Y, centerWidth, centerHeight), Color.White);
+            spriteBatch.DrawTiled(_bgGumps[5], new Rectangle(Area.X + Area.Width - _bgGumps[2].Width, line2Y, _bgGumps[2].Width, centerHeight), Color.White);
 
             spriteBatch.Draw(_bgGumps[6], new Vector2(Area.X, line3Y), Color.White);
-            spriteBatch.Draw(_bgGumps[7], new Rectangle(Area.X + _bgGumps[0].Width, line3Y, centerWidth, _bgGumps[6].Height), Color.White);
+            spriteBatch.DrawTiled(_bgGumps[7], new Rectangle(Area.X + _bgGumps[0].Width, line3Y, centerWidth, _bgGumps[6].Height), Color.White);
             spriteBatch.Draw(_bgGumps[8], new Vector2(Area.X + Area.Width - _bgGumps[2].Width, line3Y), Color.White);
 
             base.Draw(spriteBatch);

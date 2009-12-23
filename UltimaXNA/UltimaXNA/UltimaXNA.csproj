@@ -165,6 +165,7 @@
     <Compile Include="Graphics\UISystem\UIManager.cs" />
     <Compile Include="Graphics\UISystem\UINode.cs" />
     <Compile Include="Graphics\UISystem\UITableOfContents.cs" />
+    <Compile Include="UILegacy\Clientside\DebugGump.cs" />
     <Compile Include="UILegacy\Core\Control.cs" />
     <Compile Include="UILegacy\Core\iControl.cs" />
     <Compile Include="UILegacy\Cursor.cs" />
@@ -176,6 +177,7 @@
     <Compile Include="UILegacy\Gumplings\GumpPicTiled.cs" />
     <Compile Include="UILegacy\Gumplings\HtmlGump.cs" />
     <Compile Include="UILegacy\Gumplings\ResizePic.cs" />
+    <Compile Include="UILegacy\Gumplings\TextEntry.cs" />
     <Compile Include="UILegacy\Gumplings\TextLabel.cs" />
     <Compile Include="UILegacy\Gumplings\TilePic.cs" />
     <Compile Include="UILegacy\IUIManager.cs" />
