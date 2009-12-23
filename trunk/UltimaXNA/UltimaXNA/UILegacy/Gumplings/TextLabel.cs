@@ -24,22 +24,30 @@ namespace UltimaXNA.UILegacy.Gumplings
             y = Int32.Parse(arguements[2]);
             hue = Int32.Parse(arguements[3]);
             textIndex = Int32.Parse(arguements[4]);
-            buildGumpling(x, y, hue, textIndex, lines);
+            buildGumpling(x, y, hue, lines[textIndex]);
         }
 
-        public TextLabel(Control owner, int page, int x, int y, int hue, int textIndex, string[] lines)
+        public TextLabel(Control owner, int page, int x, int y, int hue, string text)
             : this(owner, page)
         {
-            buildGumpling(x, y, hue, textIndex, lines);
+            buildGumpling(x, y, hue, text);
         }
 
-        void buildGumpling(int x, int y, int hue, int textIndex, string[] lines)
+        void buildGumpling(int x, int y, int hue, string text)
         {
             Position = new Vector2(x, y);
             Hue = hue;
-            Text = lines[textIndex];
-            _texture = Data.UniText.GetTextTexture(Text, 1, false);
-            Size = new Vector2(_texture.Width, _texture.Height);
+            Text = text;
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            if (_texture == null)
+            {
+                _texture = Data.UniText.GetTextTexture(Text, 1, false);
+                Size = new Vector2(_texture.Width, _texture.Height);
+            }
+            base.Update(gameTime);
         }
 
         public override void Draw(UltimaXNA.Graphics.ExtendedSpriteBatch spriteBatch)

@@ -156,6 +156,43 @@ namespace UltimaXNA.Graphics
         /// and sort depth. Reference page contains links to related code samples.
         /// </summary>
         /// <param name="texture">The sprite texture.</param>
+        /// <param name="destinationRectangle"> A rectangle specifying, in screen coordinates, where the sprite will be drawn.
+        /// If this rectangle is not the same size as sourceRectangle, the sprite is tiled to fit.</param>
+        /// <param name="color">The color channel modulation to use. Use Color.White for full color with no tinting.</param>
+        public void DrawTiled(Texture2D texture, Rectangle destinationRectangle, Color color)
+        {
+            int y = destinationRectangle.Y;
+            int h = destinationRectangle.Height;
+            Rectangle sRect;
+
+            while (h > 0)
+            {
+                int x = destinationRectangle.X;
+                int w = destinationRectangle.Width;
+                if (h < texture.Height)
+                    sRect = new Rectangle(0, 0, texture.Width, h);
+                else
+                    sRect = new Rectangle(0, 0, texture.Width, texture.Height);
+                while (w > 0)
+                {
+                    if (w < texture.Width)
+                        sRect.Width = w;
+                    _spriteBatch.Draw(texture, new Vector2(x, y), sRect, color);
+                    w -= texture.Width;
+                    x += texture.Width;
+                }
+                h -= texture.Height;
+                y += texture.Height;
+            }
+            // _spriteBatch.Draw(texture, destinationRectangle, color);
+        }
+
+        /// <summary>
+        /// Adds a sprite to the batch of sprites to be rendered, specifying the texture,
+        /// screen position, source rectangle, color tint, rotation, origin, scale, effects,
+        /// and sort depth. Reference page contains links to related code samples.
+        /// </summary>
+        /// <param name="texture">The sprite texture.</param>
         /// <param name="position">The location, in screen coordinates, where the sprite will be drawn.</param>
         /// <param name="color">The color channel modulation to use. Use Color.White for full color with no tinting.</param>
         public void Draw(Texture2D texture, Vector2 position, Color color)

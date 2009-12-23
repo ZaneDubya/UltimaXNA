@@ -8,6 +8,7 @@ namespace UltimaXNA.UILegacy.Gumplings
     {
         Texture2D _texture = null;
         int Hue;
+        int _tileID;
 
         public TilePic(Control owner, int page)
             : base(owner, page)
@@ -39,10 +40,18 @@ namespace UltimaXNA.UILegacy.Gumplings
         void buildGumpling(int x, int y, int tileID, int hue)
         {
             Position = new Vector2(x, y);
-            _texture = Data.Art.GetStaticTexture(tileID);
             Hue = hue;
-            Size = new Vector2(_texture.Width, _texture.Height);
+            _tileID = tileID;
+        }
 
+        public override void Update(GameTime gameTime)
+        {
+            if (_texture == null)
+            {
+                _texture = Data.Art.GetStaticTexture(_tileID);
+                Size = new Vector2(_texture.Width, _texture.Height);
+            }
+            base.Update(gameTime);
         }
 
         public override void Draw(UltimaXNA.Graphics.ExtendedSpriteBatch spriteBatch)

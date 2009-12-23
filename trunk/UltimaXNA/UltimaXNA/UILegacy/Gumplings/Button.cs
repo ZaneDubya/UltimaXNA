@@ -8,6 +8,7 @@ namespace UltimaXNA.UILegacy.Gumplings
     {
         Texture2D _gumpUp = null;
         Texture2D _gumpDown = null;
+        int _gumpID1, _gumpID2;
 
         public int ButtonType = 0;
         public int ButtonParameter = 0;
@@ -42,16 +43,29 @@ namespace UltimaXNA.UILegacy.Gumplings
         void buildGumpling(int x, int y, int gumpID1, int gumpID2, int buttonType, int param, int buttonID)
         {
             Position = new Vector2(x, y);
-            _gumpUp = Data.Gumps.GetGumpXNA(gumpID1);
-            _gumpDown = Data.Gumps.GetGumpXNA(gumpID2);
-            Size = new Vector2(_gumpUp.Width, _gumpUp.Height);
+            _gumpID1 = gumpID1;
+            _gumpID2 = gumpID2;
             ButtonType = buttonType;
             ButtonParameter = param;
             ButtonID = buttonID;
         }
 
+        public override void Update(GameTime gameTime)
+        {
+            if (_gumpUp == null)
+            {
+                _gumpUp = Data.Gumps.GetGumpXNA(_gumpID1);
+                _gumpDown = Data.Gumps.GetGumpXNA(_gumpID2);
+                Size = new Vector2(_gumpUp.Width, _gumpUp.Height);
+            }
+
+            base.Update(gameTime);
+        }
+
         public override void Draw(UltimaXNA.Graphics.ExtendedSpriteBatch spriteBatch)
         {
+            
+
             if (_clicked && _manager.MouseOverControl == this)
             {
                 spriteBatch.Draw(_gumpDown, new Vector2(Area.X, Area.Y), Color.White);

@@ -38,6 +38,11 @@ namespace UltimaXNA.UILegacy.Gumplings
             Size = new Vector2(width, height);
         }
 
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+        }
+
         public override void Draw(UltimaXNA.Graphics.ExtendedSpriteBatch spriteBatch)
         {
             if (_renderedTexture == null)

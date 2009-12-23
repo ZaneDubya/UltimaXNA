@@ -11,12 +11,49 @@ using UltimaXNA.Input;
 
 namespace UltimaXNA.UILegacy
 {
-    class Cursor
+    public class Cursor
     {
         IUIManager _manager = null;
 
-        bool _isHolding = false;
-        bool _isTargetting = false;
+        private bool _isHolding = false;
+        public bool IsHolding
+        {
+            get
+            {
+                return _isHolding;
+            }
+            set
+            {
+                _isHolding = value;
+            }
+        }
+
+        private bool _isTargeting = false;
+        public bool IsTargeting
+        {
+            get
+            {
+                return _isTargeting;
+            }
+            set
+            {
+                // Only change it if we have to...
+                if (_isTargeting != value)
+                {
+                    _isTargeting = value;
+                    if (_isTargeting)
+                    {
+                        // If we're carrying something in the mouse cursor...
+                        if (IsHolding)
+                        {
+                            // drop it!
+                            // UIHelper.MouseHoldingItem = null;
+                            IsHolding = false;
+                        }
+                    }
+                }
+            }
+        }
 
         public Cursor(IUIManager manager)
         {
@@ -37,7 +74,7 @@ namespace UltimaXNA.UILegacy
                 sourceRect = new Rectangle(0, 0, 64, 64);
                 // this.Texture = UIHelper.ItemIcon(((Item)UIHelper.MouseHoldingItem));
             }
-            else if (_isTargetting)
+            else if (_isTargeting)
             {
                 cursorOffset = new Vector2(13, 13);
                 sourceRect = new Rectangle(1, 1, 46, 34);
