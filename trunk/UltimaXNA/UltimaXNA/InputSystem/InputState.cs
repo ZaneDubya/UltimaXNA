@@ -361,8 +361,11 @@ namespace UltimaXNA.Input
         /// for an input text. Only used to enter the player name in the game.
         /// </summary>
         /// <param name="inputText">Input text</param>
-        public void HandleKeyboardInput(ref string inputText)
+        public void GetKeyboardInput(out string outText, out List<Keys> outSpecials)
         {
+            outText = string.Empty;
+            outSpecials = new List<Keys>();
+
             bool isShiftPressed = _currentKeyState.IsKeyDown(Keys.LeftShift) ||
                                   _currentKeyState.IsKeyDown(Keys.RightShift);
 
@@ -370,17 +373,21 @@ namespace UltimaXNA.Input
             {
                 if (!_previousKeyState.GetPressedKeys().Contains(pressedKey))
                 {
-                    if (IsSpecialKey(pressedKey) == false && inputText.Length < 128)
+                    if (IsSpecialKey(pressedKey))
                     {
-                        inputText += KeyToChar(pressedKey, isShiftPressed);
+                        outSpecials.Add(pressedKey);
                     }
-                    else if (pressedKey == Keys.Back && inputText.Length > 0)
+                    else if (outText.Length < 128)
                     {
-                        inputText = inputText.Substring(0, inputText.Length - 1);
+                        outText += KeyToChar(pressedKey, isShiftPressed);
                     }
+                    // else if (pressedKey == Keys.Back && inputText.Length > 0)
+                    // {
+                    //     inputText = inputText.Substring(0, inputText.Length - 1);
+                    // }
                     else
                     {
-
+                        // Hmmm... what goes here?
                     }
                 }
             }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using UltimaXNA.Graphics;
 
 namespace UltimaXNA.UILegacy
@@ -17,12 +18,44 @@ namespace UltimaXNA.UILegacy
         public bool Visible { get { return _visible; } set { _visible = value; } }
         public bool IsInitialized { get { return _isInitialized; } set { _isInitialized = value; } }
         public bool IsDisposed { get { return _isDisposed; } set { _isDisposed = value; } }
-        public bool HandlesInput = false;
+
+        bool _handlesMouseInput = false;
+        public bool HandlesMouseInput { get { return _handlesMouseInput; } set { _handlesMouseInput = value; } }
+        bool _handlesKeyboardFocus = false;
+        public bool HandlesKeyboardFocus { get { return _handlesKeyboardFocus; } set { _handlesKeyboardFocus = value; } }
 
         int _page = 0;
         public int Page { get { return _page; } set { _page = value; } }
-        int _activePage = 1; // we always draw page 0
-        public int ActivePage { get { return _activePage; } set { _activePage = value; } }
+        int _activePage = 0; // we always draw _activePage and Page 0.
+        public int ActivePage
+        {
+            get { return _activePage; }
+            set
+            {
+                _activePage = value;
+                // Clear the current keyboardfocus if we own it and it's page != 0
+                // If the page = 0, then it will still exist so it should maintain focus.
+                if (_manager.KeyboardFocusControl != null)
+                {
+                    if (_controls.Contains(_manager.KeyboardFocusControl))
+                    {
+                        if (_manager.KeyboardFocusControl.Page == 0)
+                            _manager.AnnounceNewKeyboardHandler(_manager.KeyboardFocusControl);
+                        else
+                            _manager.AnnounceNewKeyboardHandler(null);
+                    }
+                }
+                // When you SET ActivePage to something, it announces to the inputmanager that there may be newly popped up
+                // text boxes that want keyboard input.
+                foreach (Control c in _controls)
+                {
+                    if (c.HandlesKeyboardFocus && (c.Page == 0 || c.Page == _activePage))
+                    {
+                        _manager.AnnounceNewKeyboardHandler(c);
+                    }
+                }
+            }
+        }
 
         Rectangle _area = Rectangle.Empty;
         Vector2 _position = Vector2.Zero;
@@ -114,8 +147,10 @@ namespace UltimaXNA.UILegacy
             bool inBounds = hitArea.Contains((int)position.X, (int)position.Y);
             if (inBounds)
             {
-                // !!! This will double include nested controls that can handle input... :(
-                if (this.HandlesInput)
+                // FIXME!!!
+                // This MAY double include nested controls that can handle input... :(
+                // Since this does not happen with regular gumplings, I haven't tested it yet.
+                if (this.HandlesMouseInput)
                     focusedControls.Insert(0, this);
                 if (_controls != null)
                 {
@@ -249,22 +284,32 @@ namespace UltimaXNA.UILegacy
             _mouseClick(x, y, button);
         }
 
-        public virtual void _mouseDown(int x, int y, int button)
+        public void KeyboardInput(string keys, List<Keys> specialKeys)
+        {
+            _keyboardInput(keys, specialKeys);
+        }
+
+        protected virtual void _mouseDown(int x, int y, int button)
         {
 
         }
 
-        public virtual void _mouseUp(int x, int y, int button)
+        protected virtual void _mouseUp(int x, int y, int button)
         {
 
         }
 
-        public virtual void _mouseOver(int x, int y)
+        protected virtual void _mouseOver(int x, int y)
         {
 
         }
 
-        public virtual void _mouseClick(int x, int y, int button)
+        protected virtual void _mouseClick(int x, int y, int button)
+        {
+
+        }
+
+        protected virtual void _keyboardInput(string keys, List<Keys> specialKeys)
         {
 
         }

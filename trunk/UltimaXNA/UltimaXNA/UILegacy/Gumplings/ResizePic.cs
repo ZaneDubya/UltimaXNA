@@ -13,7 +13,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             : base(owner, page)
         {
             _bgGumps = new Texture2D[9];
-            HandlesInput = true;
+            HandlesMouseInput = true;
         }
 
         public ResizePic(Control owner, int page, string[] arguements)
@@ -78,7 +78,7 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         bool isMoving = false; int moveOriginalX, moveOriginalY;
 
-        public override void _mouseDown(int x, int y, int button)
+        protected override void _mouseDown(int x, int y, int button)
         {
             x += _owner.X;
             y += _owner.Y;
@@ -91,7 +91,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             }
         }
 
-        public override void _mouseUp(int x, int y, int button)
+        protected override void _mouseUp(int x, int y, int button)
         {
             x += _owner.X;
             y += _owner.Y;
@@ -106,7 +106,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             }
         }
 
-        public override void _mouseOver(int x, int y)
+        protected override void _mouseOver(int x, int y)
         {
             x += _owner.X;
             y += _owner.Y;
@@ -119,7 +119,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             }
         }
 
-        public override void _mouseClick(int x, int y, int button)
+        protected override void _mouseClick(int x, int y, int button)
         {
             if (button == 2)
             {
