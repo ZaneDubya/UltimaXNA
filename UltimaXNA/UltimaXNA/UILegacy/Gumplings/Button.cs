@@ -17,7 +17,7 @@ namespace UltimaXNA.UILegacy.Gumplings
         public Button(Control owner, int page)
             : base(owner, page)
         {
-            HandlesInput = true;
+            HandlesMouseInput = true;
         }
 
         public Button(Control owner, int page, string[] arguements)
@@ -79,17 +79,17 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         bool _clicked = false;
 
-        public override void _mouseDown(int x, int y, int button)
+        protected override void _mouseDown(int x, int y, int button)
         {
             _clicked = true;
         }
 
-        public override void _mouseUp(int x, int y, int button)
+        protected override void _mouseUp(int x, int y, int button)
         {
             _clicked = false;
         }
 
-        public override void _mouseClick(int x, int y, int button)
+        protected override void _mouseClick(int x, int y, int button)
         {
             if (button == 0)
             {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
@@ -28,7 +29,7 @@ namespace UltimaXNA.Input
         float TimePressed(MouseButtons mb);
         float TimePressed(Keys key);
 
-        void HandleKeyboardInput(ref string inputText);
+        void GetKeyboardInput(out string inputText, out List<Keys> specialKeys);
         char KeyToChar(Keys key, bool shiftPressed);
     }
 }

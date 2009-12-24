@@ -34,6 +34,21 @@ namespace UltimaXNA.UILegacy
             }
         }
 
+        // Keyboard-handling control 'announce' themselves when they are created. But only the first one per update
+        // cycle is recognized.
+        bool _keyboardHandlingControlAnnouncedThisRound = false;
+        Control _keyboardFocusControl = null;
+        public Control KeyboardFocusControl
+        {
+            get
+            {
+                if (_keyboardFocusControl == null)
+                    return null;
+                else
+                    return _keyboardFocusControl;
+            }
+        }
+
         public bool IsMouseOverUI
         {
             get
@@ -156,8 +171,31 @@ namespace UltimaXNA.UILegacy
             _DEBUG_TEXT = string.Empty;
         }
 
+        public void AnnounceNewKeyboardHandler(Control c)
+        {
+            // Pass null to CLEAR the keyboardhandlingcontrol.
+            if (c == null)
+            {
+                _keyboardHandlingControlAnnouncedThisRound = false;
+                _keyboardFocusControl = null;
+            }
+            else
+            {
+                if (c.HandlesKeyboardFocus)
+                {
+                    if (_keyboardHandlingControlAnnouncedThisRound == false)
+                    {
+                        _keyboardHandlingControlAnnouncedThisRound = true;
+                        _keyboardFocusControl = c;
+                    }
+                }
+            }
+        }
+
         void updateInput()
         {
+            _keyboardHandlingControlAnnouncedThisRound = false;
+
             Control[] focusedControls = null;
 
             foreach (Control c in _controls)
@@ -180,7 +218,7 @@ namespace UltimaXNA.UILegacy
                     {
                         for (int iControl = 0; iControl < _mouseOverControls.Length; iControl++)
                         {
-                            if (_mouseOverControls[iControl].HandlesInput)
+                            if (_mouseOverControls[iControl].HandlesMouseInput)
                             {
                                 _mouseOverControls[iControl].MouseDown(_input.CurrentMousePosition, iButton);
                                 _mouseDownControl[iButton] = _mouseOverControls[iControl];
@@ -218,11 +256,38 @@ namespace UltimaXNA.UILegacy
             {
                 for (int iControl = 0; iControl < _mouseOverControls.Length; iControl++)
                 {
-                    if (_mouseOverControls[iControl].HandlesInput)
+                    if (_mouseOverControls[iControl].HandlesMouseInput)
                     {
                         _mouseOverControls[iControl].MouseOver(_input.CurrentMousePosition);
                         break;
                     }
+                }
+            }
+
+            // keyboard events: if we're over a keyboard-handling control and press lmb, then give focus to the control.
+            if (_mouseOverControls != null)
+            {
+                if (_mouseOverControls[0].HandlesKeyboardFocus)
+                {
+                    if (_input.IsMouseButtonPress(MouseButtons.LeftButton))
+                    {
+                        _keyboardFocusControl = _mouseOverControls[0];
+                    }
+                }
+            }
+            if (_keyboardFocusControl != null)
+            {
+                if (_keyboardFocusControl.IsDisposed)
+                {
+                    _keyboardFocusControl = null;
+                }
+                else
+                {
+                    string keys;
+                    List<Keys> specials;
+                    _input.GetKeyboardInput(out keys, out specials);
+                    if (keys != string.Empty || specials.Count > 0)
+                        _keyboardFocusControl.KeyboardInput(keys, specials);
                 }
             }
         }
