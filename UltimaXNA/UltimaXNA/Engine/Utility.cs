@@ -490,7 +490,7 @@ namespace UltimaXNA
         }
         #endregion
 
-        // Version string
+        // Version string. Only compiled once.
         static string _versionString;
         public static string VersionString
         {
@@ -506,5 +506,44 @@ namespace UltimaXNA
                 return _versionString;
             }
         }
+
+        #region To[Something]
+        // Copied from RunUO Utility class
+        public static bool ToBoolean(string value)
+        {
+            bool b;
+            bool.TryParse(value, out b);
+
+            return b;
+        }
+
+        public static double ToDouble(string value)
+        {
+            double d;
+            double.TryParse(value, out d);
+
+            return d;
+        }
+
+        public static TimeSpan ToTimeSpan(string value)
+        {
+            TimeSpan t;
+            TimeSpan.TryParse(value, out t);
+
+            return t;
+        }
+
+        public static int ToInt32(string value)
+        {
+            int i;
+
+            if (value.StartsWith("0x"))
+                int.TryParse(value.Substring(2), NumberStyles.HexNumber, null, out i);
+            else
+                int.TryParse(value, out i);
+
+            return i;
+        }
+        #endregion
     }
 }

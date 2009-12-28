@@ -99,6 +99,7 @@
     <Compile Include="Client\UltimaClient.cs" />
     <Compile Include="Data\Art.cs" />
     <Compile Include="Data\ASCIIFont.cs" />
+    <Compile Include="Data\ContainerData.cs" />
     <Compile Include="Data\Gumps.cs" />
     <Compile Include="Data\Mobtypes.cs" />
     <Compile Include="Data\Multis.cs" />
@@ -165,6 +166,7 @@
     <Compile Include="Graphics\UISystem\UIManager.cs" />
     <Compile Include="Graphics\UISystem\UINode.cs" />
     <Compile Include="Graphics\UISystem\UITableOfContents.cs" />
+    <Compile Include="UILegacy\Clientside\ContainerGump.cs" />
     <Compile Include="UILegacy\Clientside\DebugGump.cs" />
     <Compile Include="UILegacy\Clientside\LoginGump.cs" />
     <Compile Include="UILegacy\Core\Control.cs" />
@@ -175,6 +177,7 @@
     <Compile Include="UILegacy\Gumplings\CheckerTrans.cs" />
     <Compile Include="UILegacy\Gumplings\CroppedText.cs" />
     <Compile Include="UILegacy\Gumplings\GumpPic.cs" />
+    <Compile Include="UILegacy\Gumplings\GumpPicContainer.cs" />
     <Compile Include="UILegacy\Gumplings\GumpPicTiled.cs" />
     <Compile Include="UILegacy\Gumplings\HtmlGump.cs" />
     <Compile Include="UILegacy\Gumplings\ResizePic.cs" />
