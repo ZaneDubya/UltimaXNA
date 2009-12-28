@@ -47,6 +47,10 @@ namespace UltimaXNA.UILegacy
                 else
                     return _keyboardFocusControl;
             }
+            set
+            {
+                _keyboardFocusControl = value;
+            }
         }
 
         public bool IsMouseOverUI
@@ -81,7 +85,8 @@ namespace UltimaXNA.UILegacy
             // Retrieve the needed services.
             _input = game.Services.GetService<IInputService>(true);
 
-            _controls.Add(new Clientside.DebugGump(0x1));
+            _controls.Add(new Clientside.LoginGump(0x0));
+            // _controls.Add(new Clientside.DebugGump(0x0));
         }
 
         public Gump AddGump(Serial serial, Serial gumpID, string[] gumplings, string[] lines, int x, int y)
@@ -133,12 +138,6 @@ namespace UltimaXNA.UILegacy
             // Draw debug message
             if (GameState.DebugMessage != null)
                 DEBUG_DrawText(new Vector2(5, 5), GameState.DebugMessage + Environment.NewLine + _DEBUG_TEXT);
-            // version message
-            Version v = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-            DateTime d = new DateTime(v.Build * TimeSpan.TicksPerDay).AddYears(1999).AddDays(-1);
-            string versionString = string.Format("UltimaXNA PreAlpha v{0}.{1}", v.Major, v.Minor) + Environment.NewLine +
-                "Compiled: " + String.Format("{0:MMMM d, yyyy}", d);
-            DEBUG_DrawText(new Vector2(630, 5), versionString);
 
             _cursor.Draw(_spriteBatch, _input.CurrentMousePosition);
 

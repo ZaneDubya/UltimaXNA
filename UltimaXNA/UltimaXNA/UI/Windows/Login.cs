@@ -70,9 +70,9 @@ namespace UltimaXNA.UI
             // make sure we don't log in twice
             _MyForm["btnLogin"].Enabled = false;
             // send the login event
-            OnLogin(_MyForm["txtServer"].Text, System.Convert.ToInt32(_MyForm["txtPort"].Text), _MyForm["txtUsername"].Text, _MyForm["txtPassword"].Text);
+            // OnLogin(_MyForm["txtServer"].Text, System.Convert.ToInt32(_MyForm["txtPort"].Text), _MyForm["txtUsername"].Text, _MyForm["txtPassword"].Text);
         }
 
-        public LoginEvent OnLogin;
+        // public LoginEvent OnLogin;
     }
 }

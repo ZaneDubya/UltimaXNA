@@ -14,7 +14,6 @@ namespace UltimaXNA.UILegacy
         Serial Serial;
         Serial GumpID;
         string[] _gumpPieces, _gumpLines;
-        bool _mustRebuild = false;
 
         public Gump(Serial serial, Serial gumpID)
             : base(null, 0)
@@ -45,23 +44,19 @@ namespace UltimaXNA.UILegacy
                 buildGump(_gumpPieces, _gumpLines);
                 _gumpPieces = null;
                 _gumpLines = null;
-                _mustRebuild = true;
             }
 
             // Update the gumplings...
             base.Update(gameTime);
 
             // Do we need to resize?
-            if (_mustRebuild)
+            if (checkResize())
             {
-                if (checkResize())
+                if (_gumpTarget != null)
                 {
-                    if (_gumpTarget != null)
-                    {
-                        _gumpTarget.Dispose();
-                        _gumpTexture.Dispose();
-                        _gumpTarget = null;
-                    }
+                    _gumpTarget.Dispose();
+                    _gumpTexture.Dispose();
+                    _gumpTarget = null;
                 }
             }
 
@@ -76,6 +71,11 @@ namespace UltimaXNA.UILegacy
 
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
+            if (_renderFullScreen)
+            {
+                InputMultiplier = (float)spriteBatch.GraphicsDevice.Viewport.Width / (float)Width;
+            }
+
             if (_gumpTarget == null)
             {
                 _gumpTarget = new RenderTarget2D(spriteBatch.GraphicsDevice, Width, Height, 1, SurfaceFormat.Color);
@@ -92,7 +92,12 @@ namespace UltimaXNA.UILegacy
             spriteBatch.GraphicsDevice.SetRenderTarget(0, null);
             _gumpTexture = _gumpTarget.GetTexture();
             spriteBatch.Begin();
-            spriteBatch.Draw(_gumpTexture, Position, Color.White);
+            if (_renderFullScreen)
+            {
+                spriteBatch.Draw(_gumpTexture, new Rectangle(0, 0, (int)(Width * InputMultiplier), (int)(Height * InputMultiplier)), Color.White);
+            }
+            else
+                spriteBatch.Draw(_gumpTexture, Position, Color.White);
         }
 
         public override void Activate(Control c)
@@ -108,13 +113,11 @@ namespace UltimaXNA.UILegacy
         {
             // For a gump, Page is the page that is drawing.
             ActivePage = ((Button)c).ButtonParameter;
-            _mustRebuild = true;
         }
 
         public Control AddGumpling(Control c)
         {
             _controls.Add(c);
-            _mustRebuild = true;
             return _controls[_controls.Count - 1];
         }
 
@@ -208,20 +211,35 @@ namespace UltimaXNA.UILegacy
         private bool checkResize()
         {
             bool changedDimensions = false;
+            int w = 0, h = 0;
             foreach (Control c in _controls)
             {
-                if (Width < c.X + c.Width)
+                if (c.Page == 0 || c.Page == this.ActivePage)
                 {
-                    Width = c.X + c.Width;
-                    changedDimensions = true;
-                }
-                if (Height < c.Y + c.Height)
-                {
-                    Height = c.Y + c.Height;
-                    changedDimensions = true;
+                    if (w < c.X + c.Width)
+                    {
+                        w = c.X + c.Width;
+                    }
+                    if (h < c.Y + c.Height)
+                    {
+                        h = c.Y + c.Height;
+                    }
                 }
             }
+
+            if (w != Width || h != Height)
+            {
+                Width = w;
+                Height = h;
+                changedDimensions = true;
+            }
+
             return changedDimensions;
+        }
+
+        protected void Quit()
+        {
+            GameState.EngineRunning = false;
         }
     }
 }

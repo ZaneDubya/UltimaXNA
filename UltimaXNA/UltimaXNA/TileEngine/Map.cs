@@ -233,6 +233,33 @@ namespace UltimaXNA.TileEngine
                         loadCell(renderBeginX + x, renderBeginY + y);
                     }
                 }
+
+                clearOlderCells();
+            }
+        }
+
+        private void clearOlderCells()
+        {
+            IEnumerator<MapCell> mapCellsEnumerator;
+            Data.Point2D worldLocation;
+
+            m_KeysToRemove.Clear();
+
+            mapCellsEnumerator = m_MapCells.Values.GetEnumerator();
+
+            worldLocation = new Data.Point2D(_x, _y);
+
+            while (mapCellsEnumerator.MoveNext())
+            {
+                if (!Data.Helpers.InRange(worldLocation, mapCellsEnumerator.Current, m_GameSize / 2))
+                {
+                    m_KeysToRemove.Add(GetKey(mapCellsEnumerator.Current));
+                }
+            }
+
+            for (int i = 0; i < m_KeysToRemove.Count; i++)
+            {
+                m_MapCells.Remove(m_KeysToRemove[i]);
             }
         }
 
@@ -240,8 +267,6 @@ namespace UltimaXNA.TileEngine
         {
             MapObjectGround groundTile;
             MapCell mapCell;
-            IEnumerator<MapCell> mapCellsEnumerator;
-            Data.Point2D worldLocation;
 
             if (m_MapCells.ContainsKey(GetKey(x, y)))
                 return;
@@ -270,25 +295,6 @@ namespace UltimaXNA.TileEngine
             }
 
             m_MapCells.Add(GetKey(mapCell), mapCell);
-
-            m_KeysToRemove.Clear();
-
-            mapCellsEnumerator = m_MapCells.Values.GetEnumerator();
-
-            worldLocation = new Data.Point2D(_x, _y);
-
-            while (mapCellsEnumerator.MoveNext())
-            {
-                if (!Data.Helpers.InRange(worldLocation, mapCellsEnumerator.Current, m_GameSize / 2))
-                {
-                    m_KeysToRemove.Add(GetKey(mapCellsEnumerator.Current));
-                }
-            }
-
-            for (int i = 0; i < m_KeysToRemove.Count; i++)
-            {
-                m_MapCells.Remove(m_KeysToRemove[i]);
-            }
 
             UpdateTicker++;
         }

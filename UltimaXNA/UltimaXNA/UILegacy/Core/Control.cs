@@ -24,6 +24,22 @@ namespace UltimaXNA.UILegacy
         bool _handlesKeyboardFocus = false;
         public bool HandlesKeyboardFocus { get { return _handlesKeyboardFocus; } set { _handlesKeyboardFocus = value; } }
 
+        // this has to be handled individually for each control.
+        protected bool _renderFullScreen = false;
+
+        float _inputMultiplier = 1.0f;
+        public float InputMultiplier
+        {
+            set { _inputMultiplier = value; }
+            get
+            {
+                if (_renderFullScreen)
+                    return _inputMultiplier;
+                else
+                    return 1.0f;
+            }
+        }
+
         int _page = 0;
         public int Page { get { return _page; } set { _page = value; } }
         int _activePage = 0; // we always draw _activePage and Page 0.
@@ -103,6 +119,20 @@ namespace UltimaXNA.UILegacy
         protected UIManager _manager = null;
         protected List<Control> _controls = null;
 
+        protected string getTextEntry(int entryID)
+        {
+            foreach (Control c in _controls)
+            {
+                if (c.GetType() == typeof(Gumplings.TextEntry))
+                {
+                    Gumplings.TextEntry g = (Gumplings.TextEntry)c;
+                    if (g.EntryID == entryID)
+                        return g.Text;
+                }
+            }
+            return string.Empty;
+        }
+
 #if DEBUG
         protected Texture2D _debugTexture;
 #endif
@@ -113,14 +143,14 @@ namespace UltimaXNA.UILegacy
             _page = page;
         }
 
-        virtual public void Initialize(UIManager manager)
+        public void Initialize(UIManager manager)
         {
             _manager = manager;
             _isInitialized = true;
             _isDisposed = false;
         }
 
-        virtual public void Dispose()
+        public virtual void Dispose()
         {
             if (_controls != null)
             {
@@ -132,38 +162,43 @@ namespace UltimaXNA.UILegacy
             _isDisposed = true;
         }
 
-        virtual public Control[] HitTest(Vector2 position)
+        public Control[] HitTest(Vector2 position)
         {
             List<Control> focusedControls = new List<Control>();
 
-            Rectangle hitArea = Area;
+            // offset the mouse position if we are rendering full screen...
+            position /= InputMultiplier;
+
             // If we're owned by something, make sure we increment our hitArea to show this.
             if (_owner != null)
             {
-                hitArea.X += _owner.X;
-                hitArea.Y += _owner.Y;
+                position.X -= _owner.X;
+                position.Y -= _owner.Y;
             }
 
-            bool inBounds = hitArea.Contains((int)position.X, (int)position.Y);
+            bool inBounds = Area.Contains((int)position.X, (int)position.Y);
             if (inBounds)
             {
-                // FIXME!!!
-                // This MAY double include nested controls that can handle input... :(
-                // Since this does not happen with regular gumplings, I haven't tested it yet.
-                if (this.HandlesMouseInput)
-                    focusedControls.Insert(0, this);
-                if (_controls != null)
+                if (_hitTest((int)position.X - X, (int)position.Y - Y))
                 {
-                    foreach (Control c in _controls)
+                    // FIXME!!!
+                    // This MAY double include nested controls that can handle input... :(
+                    // Since this does not happen with regular gumplings, I haven't tested it yet.
+                    if (this.HandlesMouseInput)
+                        focusedControls.Insert(0, this);
+                    if (_controls != null)
                     {
-                        if ((c.Page == 0) || (c.Page == ActivePage))
+                        foreach (Control c in _controls)
                         {
-                            Control[] c1 = c.HitTest(position);
-                            if (c1 != null)
+                            if ((c.Page == 0) || (c.Page == ActivePage))
                             {
-                                for (int i = c1.Length - 1; i >= 0; i--)
+                                Control[] c1 = c.HitTest(position);
+                                if (c1 != null)
                                 {
-                                    focusedControls.Insert(0, c1[i]);
+                                    for (int i = c1.Length - 1; i >= 0; i--)
+                                    {
+                                        focusedControls.Insert(0, c1[i]);
+                                    }
                                 }
                             }
                         }
@@ -175,6 +210,11 @@ namespace UltimaXNA.UILegacy
                 return null;
             else
                 return focusedControls.ToArray();
+        }
+
+        protected virtual bool _hitTest(int x, int y)
+        {
+            return true;
         }
 
         virtual public void Update(GameTime gameTime)
@@ -201,11 +241,11 @@ namespace UltimaXNA.UILegacy
         {
             if (!_isInitialized)
                 return;
-            
+
 #if DEBUG
-            //DEBUG_DrawBounds(spriteBatch);
+            // DEBUG_DrawBounds(spriteBatch);
 #endif
-            
+        
             if (_controls != null)
             {
                 foreach (Control c in _controls)
@@ -218,6 +258,7 @@ namespace UltimaXNA.UILegacy
             }
         }
 
+#if DEBUG
         void DEBUG_DrawBounds(ExtendedSpriteBatch spriteBatch)
         {
             if (_debugTexture == null)
@@ -243,6 +284,7 @@ namespace UltimaXNA.UILegacy
             spriteBatch.Draw(_debugTexture, new Rectangle(_area.X, _area.Y, 1, _area.Height), color);
             spriteBatch.Draw(_debugTexture, new Rectangle(_area.X + _area.Width - 1, _area.Y, 1, _area.Height), color);
         }
+#endif
 
         public virtual void Activate(Control c)
         {
@@ -324,6 +366,30 @@ namespace UltimaXNA.UILegacy
                 c.R = (byte)(hue & 0x000000FF);
                 c.G = (byte)((hue & 0x0000FF00) >> 8);
                 return c;
+            }
+        }
+
+        internal void ReleaseKeyboardInput(Control c)
+        {
+            if (_controls != null)
+            {
+                int startIndex = _controls.IndexOf(c);
+                for (int i = startIndex + 1; i < _controls.Count; i++)
+                {
+                    if (_controls[i].HandlesKeyboardFocus)
+                    {
+                        _manager.KeyboardFocusControl = _controls[i];
+                        return;
+                    }
+                }
+                for (int i = 0; i < startIndex; i++)
+                {
+                    if (_controls[i].HandlesKeyboardFocus)
+                    {
+                        _manager.KeyboardFocusControl = _controls[i];
+                        return;
+                    }
+                }
             }
         }
     }

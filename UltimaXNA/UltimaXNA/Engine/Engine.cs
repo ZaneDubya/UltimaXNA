@@ -94,18 +94,25 @@ namespace UltimaXNA
 
         protected override void Update(GameTime gameTime)
         {
+            if (!GameState.EngineRunning)
+                Exit();
+
             base.Update(gameTime);
-            _inputState.Update(gameTime);
 
-            Client.UltimaClient.Update(gameTime);
-            GameState.Update(gameTime);
-            Entities.EntitiesCollection.Update(gameTime);
+            if (GameState.EngineRunning)
+            {
+                _inputState.Update(gameTime);
 
-            _LegacyUI.Update(gameTime);
-            UI.UserInterface.Update(gameTime);
-            _sceneService.Update(gameTime);
+                Client.UltimaClient.Update(gameTime);
+                GameState.Update(gameTime);
+                Entities.EntitiesCollection.Update(gameTime);
 
-            GameState.UpdateAfter(gameTime);
+                _LegacyUI.Update(gameTime);
+                UI.UserInterface.Update(gameTime);
+                _sceneService.Update(gameTime);
+
+                GameState.UpdateAfter(gameTime);
+            }
         }
 
         protected override void Draw(GameTime gameTime)

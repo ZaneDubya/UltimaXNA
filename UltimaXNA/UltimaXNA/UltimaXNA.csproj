@@ -166,6 +166,7 @@
     <Compile Include="Graphics\UISystem\UINode.cs" />
     <Compile Include="Graphics\UISystem\UITableOfContents.cs" />
     <Compile Include="UILegacy\Clientside\DebugGump.cs" />
+    <Compile Include="UILegacy\Clientside\LoginGump.cs" />
     <Compile Include="UILegacy\Core\Control.cs" />
     <Compile Include="UILegacy\Core\iControl.cs" />
     <Compile Include="UILegacy\Cursor.cs" />
