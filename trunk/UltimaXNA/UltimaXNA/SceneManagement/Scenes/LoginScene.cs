@@ -41,10 +41,10 @@ namespace UltimaXNA.SceneManagement
         public override void Intitialize()
         {
             base.Intitialize();
-            UserInterface.Reset();
-            UserInterface.AddWindow("LoginBG", new Window_LoginBG());
-            Window_Login w = (Window_Login)UserInterface.AddWindow("LoginWindow", new Window_Login());
-            w.OnLogin += this.OnLogin;
+            // UserInterface.Reset();
+            // UserInterface.AddWindow("LoginBG", new Window_LoginBG());
+            // Window_Login w = (Window_Login)UserInterface.AddWindow("LoginWindow", new Window_Login());
+            // w.OnLogin += this.OnLogin;
 
             // GumpBackground g = UI.CreateInstance<GumpBackground>("GumpBackground");
             // g.Size = new Vector2(200);
@@ -78,8 +78,8 @@ namespace UltimaXNA.SceneManagement
         public override void Dispose()
         {
             base.Dispose();
-            UserInterface.Window("LoginBG").Close();
-            UserInterface.Window("LoginWindow").Close();
+            // UserInterface.Window("LoginBG").Close();
+            // UserInterface.Window("LoginWindow").Close();
         }
 
         public void OnLogin(string server, int port, string account, string password)

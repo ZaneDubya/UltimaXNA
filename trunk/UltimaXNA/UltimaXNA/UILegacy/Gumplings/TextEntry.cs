@@ -25,6 +25,11 @@ namespace UltimaXNA.UILegacy.Gumplings
             }
         }
 
+        bool _isBlinking = false;
+        bool _isBlinkOn = false;
+        float _secondsSinceLastBlink = 0f;
+        const float _SecondsPerBlink = 0.5f;
+
         public TextEntry(Control owner, int page)
             : base(owner, page)
         {
@@ -68,9 +73,6 @@ namespace UltimaXNA.UILegacy.Gumplings
             _isBlinkOn = false;
         }
 
-        bool _isBlinkOn = false;
-        float _secondsSinceLastBlink = 0f;
-        const float _SecondsPerBlink = 0.5f;
         public override void Update(GameTime gameTime)
         {
             if (_textChanged)
@@ -81,6 +83,12 @@ namespace UltimaXNA.UILegacy.Gumplings
 
             if (_manager.KeyboardFocusControl == this)
             {
+                if (!_isBlinking)
+                {
+                    _isBlinking = true;
+                    _isBlinkOn = true;
+                    _secondsSinceLastBlink = 0f;
+                }
                 _secondsSinceLastBlink += ((float)gameTime.ElapsedRealTime.Milliseconds / 1000f);
                 if (_secondsSinceLastBlink >= _SecondsPerBlink)
                 {
@@ -90,6 +98,11 @@ namespace UltimaXNA.UILegacy.Gumplings
                     else
                         _isBlinkOn = true;
                 }
+            }
+            else
+            {
+                _isBlinking = false;
+                _isBlinkOn = false;
             }
 
             base.Update(gameTime);
@@ -123,6 +136,9 @@ namespace UltimaXNA.UILegacy.Gumplings
                         {
                             Text = Text.Substring(0, Text.Length - 1);
                         }
+                        break;
+                    case Keys.Tab:
+                        _owner.ReleaseKeyboardInput(this);
                         break;
                 }
             }

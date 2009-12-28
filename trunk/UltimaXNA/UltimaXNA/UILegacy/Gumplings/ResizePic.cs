@@ -34,6 +34,12 @@ namespace UltimaXNA.UILegacy.Gumplings
             buildGumpling(x, y, gumpID, width, height);
         }
 
+        public ResizePic(Control owner, TextEntry textEntry)
+            : this(owner, textEntry.Page)
+        {
+            buildGumpling(textEntry.X - 4, textEntry.Y - 4, 9350, textEntry.Width + 8, textEntry.Height + 8);
+        }
+
         void buildGumpling(int x, int y, int gumpID, int width, int height)
         {
             Position = new Vector2(x, y);

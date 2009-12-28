@@ -8,7 +8,10 @@ namespace UltimaXNA.UILegacy.Gumplings
     {
         Texture2D _gumpUp = null;
         Texture2D _gumpDown = null;
-        int _gumpID1, _gumpID2;
+        Texture2D _gumpOver = null;
+        Texture2D _texture = null;
+        int _gumpID1 = 0, _gumpID2 = 0, _gumpID3 = 0; // 1 == up, 2 == down, 3 == additional over state, not sent by the server but can be added for clientside gumps.
+        public int GumpOverID { set { _gumpID3 = value; } }
 
         public int ButtonType = 0;
         public int ButtonParameter = 0;
@@ -59,22 +62,36 @@ namespace UltimaXNA.UILegacy.Gumplings
                 Size = new Vector2(_gumpUp.Width, _gumpUp.Height);
             }
 
+            if (_gumpID3 != 0 && _gumpOver == null)
+            {
+                _gumpOver = Data.Gumps.GetGumpXNA(_gumpID3);
+            }
+
+            if (_clicked && _manager.MouseOverControl == this)
+                _texture = _gumpDown;
+            else if (_manager.MouseOverControl == this && _gumpOver != null)
+                _texture = _gumpOver;
+            else
+                _texture = _gumpUp;
+
             base.Update(gameTime);
         }
 
         public override void Draw(UltimaXNA.Graphics.ExtendedSpriteBatch spriteBatch)
         {
-            
-
-            if (_clicked && _manager.MouseOverControl == this)
-            {
-                spriteBatch.Draw(_gumpDown, new Vector2(Area.X, Area.Y), Color.White);
-            }
-            else
-            {
-                spriteBatch.Draw(_gumpUp, new Vector2(Area.X, Area.Y), Color.White);
-            }
+            spriteBatch.Draw(_texture, new Vector2(Area.X, Area.Y), Color.White);
             base.Draw(spriteBatch);
+        }
+
+        protected override bool _hitTest(int x, int y)
+        {
+            Color[] pixelData;
+            pixelData = new Color[1];
+            _texture.GetData<Color>(0, new Rectangle(x, y, 1, 1), pixelData, 0, 1);
+            if (pixelData[0].A > 0)
+                return true;
+            else
+                return false;
         }
 
         bool _clicked = false;

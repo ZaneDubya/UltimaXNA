@@ -65,7 +65,7 @@ namespace UltimaXNA.UI
         {
             UIHelper.Update();
 
-            DEBUG_drawUI = true;
+            DEBUG_drawUI = false;
 
             if (DEBUG_drawUI)
             {

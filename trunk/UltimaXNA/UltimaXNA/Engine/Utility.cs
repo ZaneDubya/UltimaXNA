@@ -422,5 +422,89 @@ namespace UltimaXNA
 
             return type;
         }
+
+        // Color utilities, made freely available on http://snowxna.wordpress.com/
+        #region ColorUtility
+        private static char[] _hexDigits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+
+        public static string ColorToHexString(Color color)
+        {
+            byte[] bytes = new byte[4];
+            bytes[0] = color.A;
+            bytes[1] = color.R;
+            bytes[2] = color.G;
+            bytes[3] = color.B;
+            char[] chars = new char[8];
+            for(int i = 0; i < 4; i++)
+            {
+                int b = bytes[i];
+                chars[i * 2] = _hexDigits[b >> 4];
+                chars[i * 2 + 1] = _hexDigits[b & 0xF];
+            }
+            return new string(chars);
+        }
+
+        static byte HexDigitToByte(char c)
+        {
+            switch(c)
+            {
+                case '0': return (byte)0;
+                case '1': return (byte)1;
+                case '2': return (byte)2;
+                case '3': return (byte)3;
+                case '4': return (byte)4;
+                case '5': return (byte)5;
+                case '6': return (byte)6;
+                case '7': return (byte)7;
+                case '8': return (byte)8;
+                case '9': return (byte)9;
+                case 'A': return (byte)10;
+                case 'B': return (byte)11;
+                case 'C': return (byte)12;
+                case 'D': return (byte)13;
+                case 'E': return (byte)14;
+                case 'F': return (byte)15;
+            }
+            return (byte)0;
+        }
+
+        public static Color ColorFromHexString(string hex)
+        {
+            if (hex.Length == 8)
+            {
+                int a = (HexDigitToByte(hex[0]) << 4) + HexDigitToByte(hex[1]);
+                int r = (HexDigitToByte(hex[2]) << 4) + HexDigitToByte(hex[3]);
+                int g = (HexDigitToByte(hex[4]) << 4) + HexDigitToByte(hex[5]);
+                int b = (HexDigitToByte(hex[6]) << 4) + HexDigitToByte(hex[7]);
+                return new Color((byte)r, (byte)g, (byte)b, (byte)a);
+            }
+            else if (hex.Length == 6)
+            {
+                int r = (HexDigitToByte(hex[0]) << 4) + HexDigitToByte(hex[1]);
+                int g = (HexDigitToByte(hex[2]) << 4) + HexDigitToByte(hex[3]);
+                int b = (HexDigitToByte(hex[4]) << 4) + HexDigitToByte(hex[5]);
+                return new Color((byte)r, (byte)g, (byte)b);
+            }
+            else
+                return Color.Black;
+        }
+        #endregion
+
+        // Version string
+        static string _versionString;
+        public static string VersionString
+        {
+            get
+            {
+                if (_versionString == null)
+                {
+                    Version v = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+                    DateTime d = new DateTime(v.Build * TimeSpan.TicksPerDay).AddYears(1999).AddDays(-1);
+                    _versionString = string.Format("<basefont color=#423931>UltimaXNA PreAlpha v{0}.{1}", v.Major, v.Minor) +
+                        " (Compiled: " + String.Format("{0:MMMM d, yyyy}", d) + ")";
+                }
+                return _versionString;
+            }
+        }
     }
 }

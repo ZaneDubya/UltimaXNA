@@ -29,20 +29,20 @@ namespace UltimaXNA.UILegacy.Gumplings
             background = Int32.Parse(arguements[6]);
             scrollbar = Int32.Parse(arguements[7]);
 
-            buildGumpling(x, y, width, height, textIndex, background, scrollbar, lines);
+            buildGumpling(x, y, width, height, background, scrollbar, lines[textIndex]);
         }
 
-        public HtmlGump(Control owner, int page, int x, int y, int width, int height, int textIndex, int background, int scrollbar, string[] lines)
+        public HtmlGump(Control owner, int page, int x, int y, int width, int height, int background, int scrollbar, string text)
             : this(owner, page)
         {
-            buildGumpling(x, y, width, height, textIndex, background, scrollbar, lines);
+            buildGumpling(x, y, width, height, background, scrollbar, text);
         }
 
-        void buildGumpling(int x, int y, int width, int height, int textIndex, int background, int scrollbar, string[] lines)
+        void buildGumpling(int x, int y, int width, int height, int background, int scrollbar, string text)
         {
             Position = new Vector2(x, y);
             Size = new Vector2(width, height);
-            Text = lines[textIndex];
+            Text = text;
             _background = (background == 1) ? true : false;
             _scrollbar = (scrollbar == 1) ? true : false;
         }
