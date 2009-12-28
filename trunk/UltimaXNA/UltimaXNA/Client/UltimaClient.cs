@@ -271,16 +271,15 @@ namespace UltimaXNA.Client
             OpenContainerPacket p = (OpenContainerPacket)packet;
 
             // We can safely ignore 0x30 - this is the buy window.
-            if (p.GumpId == 0x30)
-                return;
+            // if (p.GumpId == 0x30)
+            //    return;
 
-            // Only try to open a container of type Container. Note that GameObjects can
-            // have container objects and will expose them when called through GetContainerObject(int)
-            // instead of GetObject(int).
+            // Only try to open a container of type Container.
             ContainerItem o = EntitiesCollection.GetObject<ContainerItem>(p.Serial, false);
             if (o is Item)
             {
-                UserInterface.Container_Open(o, p.GumpId);
+                _LegacyUI.AddContainerGump(o, p.GumpId);
+                // UserInterface.Container_Open(o, p.GumpId);
             }
             else
             {

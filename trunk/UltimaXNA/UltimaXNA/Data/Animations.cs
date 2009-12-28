@@ -32,14 +32,14 @@ namespace UltimaXNA.Data
     /// </summary>
     public sealed class BodyConverter
     {
-        private static int[] m_Table1 = new int[0];
-        private static int[] m_Table2 = new int[0];
-        private static int[] m_Table3 = new int[0];
-        private static int[] m_Table4 = new int[0];
+        private static int[] _Table1 = new int[0];
+        private static int[] _Table2 = new int[0];
+        private static int[] _Table3 = new int[0];
+        private static int[] _Table4 = new int[0];
 
 		// Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
 		// MountItemID , BodyID
-		private static int[][] m_MountIDConv = new int[][]
+		private static int[][] _MountIDConv = new int[][]
 		{
 			new int[]{0x3E94, 0xF3}, // Hiryu
 			new int[]{0x3E97, 0xC3}, // Beetle
@@ -201,34 +201,34 @@ namespace UltimaXNA.Data
                 }
             }
 
-            m_Table1 = new int[max1 + 1];
-            m_Table2 = new int[max2 + 1];
-            m_Table3 = new int[max3 + 1];
-            m_Table4 = new int[max4 + 1];
+            _Table1 = new int[max1 + 1];
+            _Table2 = new int[max2 + 1];
+            _Table3 = new int[max3 + 1];
+            _Table4 = new int[max4 + 1];
 
-            for (int i = 0; i < m_Table1.Length; ++i)
-                m_Table1[i] = -1;
+            for (int i = 0; i < _Table1.Length; ++i)
+                _Table1[i] = -1;
 
             for (int i = 0; i < list1.Count; i += 2)
-                m_Table1[(int)list1[i]] = (int)list1[i + 1];
+                _Table1[(int)list1[i]] = (int)list1[i + 1];
 
-            for (int i = 0; i < m_Table2.Length; ++i)
-                m_Table2[i] = -1;
+            for (int i = 0; i < _Table2.Length; ++i)
+                _Table2[i] = -1;
 
             for (int i = 0; i < list2.Count; i += 2)
-                m_Table2[(int)list2[i]] = (int)list2[i + 1];
+                _Table2[(int)list2[i]] = (int)list2[i + 1];
 
-            for (int i = 0; i < m_Table3.Length; ++i)
-                m_Table3[i] = -1;
+            for (int i = 0; i < _Table3.Length; ++i)
+                _Table3[i] = -1;
 
             for (int i = 0; i < list3.Count; i += 2)
-                m_Table3[(int)list3[i]] = (int)list3[i + 1];
+                _Table3[(int)list3[i]] = (int)list3[i + 1];
 
-            for (int i = 0; i < m_Table4.Length; ++i)
-                m_Table4[i] = -1;
+            for (int i = 0; i < _Table4.Length; ++i)
+                _Table4[i] = -1;
 
             for (int i = 0; i < list4.Count; i += 2)
-                m_Table4[(int)list4[i]] = (int)list4[i + 1];
+                _Table4[(int)list4[i]] = (int)list4[i + 1];
         }
 
         /// <summary>
@@ -237,16 +237,16 @@ namespace UltimaXNA.Data
         /// <returns>True if it is, false if not.</returns>
         public static bool Contains(int body)
         {
-            if (m_Table1 != null && body >= 0 && body < m_Table1.Length && m_Table1[body] != -1)
+            if (_Table1 != null && body >= 0 && body < _Table1.Length && _Table1[body] != -1)
                 return true;
 
-            if (m_Table2 != null && body >= 0 && body < m_Table2.Length && m_Table2[body] != -1)
+            if (_Table2 != null && body >= 0 && body < _Table2.Length && _Table2[body] != -1)
                 return true;
 
-            if (m_Table3 != null && body >= 0 && body < m_Table3.Length && m_Table3[body] != -1)
+            if (_Table3 != null && body >= 0 && body < _Table3.Length && _Table3[body] != -1)
                 return true;
 
-            if (m_Table4 != null && body >= 0 && body < m_Table4.Length && m_Table4[body] != -1)
+            if (_Table4 != null && body >= 0 && body < _Table4.Length && _Table4[body] != -1)
                 return true;
 
             return false;
@@ -281,9 +281,9 @@ namespace UltimaXNA.Data
 			// Converts MountItemID to BodyID
 			if ( body > 0x3E93 )
 			{
-				for(int i = 0; i < m_MountIDConv.Length; ++i)
+				for(int i = 0; i < _MountIDConv.Length; ++i)
 				{
-					int[] conv = m_MountIDConv[i];
+					int[] conv = _MountIDConv[i];
 					if (conv[0] == body)
 					{
 						body = conv[1];
@@ -292,9 +292,9 @@ namespace UltimaXNA.Data
 				}
 			}
 			// Issue 6 - End
-            if (m_Table1 != null && body >= 0 && body < m_Table1.Length)
+            if (_Table1 != null && body >= 0 && body < _Table1.Length)
             {
-                int val = m_Table1[body];
+                int val = _Table1[body];
 
                 if (val != -1)
                 {
@@ -303,9 +303,9 @@ namespace UltimaXNA.Data
                 }
             }
 
-            if (m_Table2 != null && body >= 0 && body < m_Table2.Length)
+            if (_Table2 != null && body >= 0 && body < _Table2.Length)
             {
-                int val = m_Table2[body];
+                int val = _Table2[body];
 
                 if (val != -1)
                 {
@@ -314,9 +314,9 @@ namespace UltimaXNA.Data
                 }
             }
 
-            if (m_Table3 != null && body >= 0 && body < m_Table3.Length)
+            if (_Table3 != null && body >= 0 && body < _Table3.Length)
             {
-                int val = m_Table3[body];
+                int val = _Table3[body];
 
                 if (val != -1)
                 {
@@ -325,9 +325,9 @@ namespace UltimaXNA.Data
                 }
             }
 
-            if (m_Table4 != null && body >= 0 && body < m_Table4.Length)
+            if (_Table4 != null && body >= 0 && body < _Table4.Length)
             {
-                int val = m_Table4[body];
+                int val = _Table4[body];
 
                 if (val != -1)
                 {
@@ -342,25 +342,25 @@ namespace UltimaXNA.Data
 
     public sealed class BodyTableEntry
     {
-        public int m_OldID;
-        public int m_NewID;
-        public int m_NewHue;
+        public int _OldID;
+        public int _NewID;
+        public int _NewHue;
 
         public BodyTableEntry(int oldID, int newID, int newHue)
         {
-            m_OldID = oldID;
-            m_NewID = newID;
-            m_NewHue = newHue;
+            _OldID = oldID;
+            _NewID = newID;
+            _NewHue = newHue;
         }
     }
 
     public sealed class BodyTable
     {
-        public static Hashtable m_Entries;
+        public static Hashtable _Entries;
 
         static BodyTable()
         {
-            m_Entries = new Hashtable();
+            _Entries = new Hashtable();
 
             string filePath = FileManager.GetFilePath("body.def");
 
@@ -394,7 +394,7 @@ namespace UltimaXNA.Data
                     int iParam2 = Convert.ToInt32(param2);
                     int iParam3 = Convert.ToInt32(param3);
 
-                    m_Entries[iParam1] = new BodyTableEntry(iParam2, iParam1, iParam3);
+                    _Entries[iParam1] = new BodyTableEntry(iParam2, iParam1, iParam3);
                 }
                 catch
                 {
@@ -405,22 +405,22 @@ namespace UltimaXNA.Data
 
     public sealed class AnimationsXNA
     {
-        private static FileIndex m_FileIndex = new FileIndex("Anim.idx", "Anim.mul", 0x40000, 6);
-        public static FileIndex FileIndex { get { return m_FileIndex; } }
+        private static FileIndex _FileIndex = new FileIndex("Anim.idx", "Anim.mul", 0x40000, 6);
+        public static FileIndex FileIndex { get { return _FileIndex; } }
 
-        private static FileIndex m_FileIndex2 = new FileIndex("Anim2.idx", "Anim2.mul", 0x10000, -1);
-        public static FileIndex FileIndex2 { get { return m_FileIndex2; } }
+        private static FileIndex _FileIndex2 = new FileIndex("Anim2.idx", "Anim2.mul", 0x10000, -1);
+        public static FileIndex FileIndex2 { get { return _FileIndex2; } }
 
-        private static FileIndex m_FileIndex3 = new FileIndex("Anim3.idx", "Anim3.mul", 0x20000, -1);
-        public static FileIndex FileIndex3 { get { return m_FileIndex3; } }
+        private static FileIndex _FileIndex3 = new FileIndex("Anim3.idx", "Anim3.mul", 0x20000, -1);
+        public static FileIndex FileIndex3 { get { return _FileIndex3; } }
 
-        private static FileIndex m_FileIndex4 = new FileIndex("Anim4.idx", "Anim4.mul", 0x20000, -1);
-        public static FileIndex FileIndex4 { get { return m_FileIndex4; } }
+        private static FileIndex _FileIndex4 = new FileIndex("Anim4.idx", "Anim4.mul", 0x20000, -1);
+        public static FileIndex FileIndex4 { get { return _FileIndex4; } }
 
-        private static FileIndex m_FileIndex5 = new FileIndex("Anim5.idx", "Anim5.mul", 0x20000, -1);
-        public static FileIndex FileIndex5 { get { return m_FileIndex5; } }
+        private static FileIndex _FileIndex5 = new FileIndex("Anim5.idx", "Anim5.mul", 0x20000, -1);
+        public static FileIndex FileIndex5 { get { return _FileIndex5; } }
 
-        private static FrameXNA[][][][] m_Cache;
+        private static FrameXNA[][][][] _Cache;
         private static GraphicsDevice _graphics;
 
         public static void Initialize(GraphicsDevice graphics)
@@ -430,10 +430,10 @@ namespace UltimaXNA.Data
 
         public static FrameXNA[] GetAnimation(int body, int action, int direction, int hue, bool preserveHue)
         {
-            // I moved this line here since at line 497, previously, it uses m_Cache with real body as index and that index has no instance, AnimID has instance instead.
+            // I moved this line here since at line 497, previously, it uses _Cache with real body as index and that index has no instance, AnimID has instance instead.
             // Example with Hiryu (AnimID 243, real body has 201 after convert):
-            // Prev: m_Cache[AnimID] = new instance, convert AnimID to real body, if(m_Cache[realbody]..etc) <-Crash
-            // Now: convert AnimID to real body, m_Cache[realbody] = new instance, if(m_Cache[realbody]..etc) <- OK
+            // Prev: _Cache[AnimID] = new instance, convert AnimID to real body, if(_Cache[realbody]..etc) <-Crash
+            // Now: convert AnimID to real body, _Cache[realbody] = new instance, if(_Cache[realbody]..etc) <- OK
             // - Smjert
             int fileType = BodyConverter.Convert(ref body);
 
@@ -446,15 +446,15 @@ namespace UltimaXNA.Data
             // max number of bodies is about 1000
             try
             {
-                if (m_Cache == null) m_Cache = new FrameXNA[0x1000][][][];
-                if (m_Cache[body] == null)
-                    m_Cache[body] = new FrameXNA[35][][];
-                if (m_Cache[body][action] == null)
-                    m_Cache[body][action] = new FrameXNA[8][];
-                if (m_Cache[body][action][direction] == null)
-                    m_Cache[body][action][direction] = new FrameXNA[1];
-                if (m_Cache[body][action][direction][0] != null)
-                    return m_Cache[body][action][direction];
+                if (_Cache == null) _Cache = new FrameXNA[0x1000][][][];
+                if (_Cache[body] == null)
+                    _Cache[body] = new FrameXNA[35][][];
+                if (_Cache[body][action] == null)
+                    _Cache[body][action] = new FrameXNA[8][];
+                if (_Cache[body][action][direction] == null)
+                    _Cache[body][action][direction] = new FrameXNA[1];
+                if (_Cache[body][action][direction][0] != null)
+                    return _Cache[body][action][direction];
             }
             catch
             {
@@ -470,7 +470,7 @@ namespace UltimaXNA.Data
                 default:
                 case 1:
                     {
-                        fileIndex = m_FileIndex;
+                        fileIndex = _FileIndex;
 
                         if (body < 200)
                             index = body * 110;
@@ -483,7 +483,7 @@ namespace UltimaXNA.Data
                     }
                 case 2:
                     {
-                        fileIndex = m_FileIndex2;
+                        fileIndex = _FileIndex2;
 
                         if (body < 200)
                             index = body * 110;
@@ -494,7 +494,7 @@ namespace UltimaXNA.Data
                     }
                 case 3:
                     {
-                        fileIndex = m_FileIndex3;
+                        fileIndex = _FileIndex3;
 
                         if (body < 300)
                             index = body * 65;
@@ -507,7 +507,7 @@ namespace UltimaXNA.Data
                     }
                 case 4:
                     {
-                        fileIndex = m_FileIndex4;
+                        fileIndex = _FileIndex4;
 
                         if (body < 200)
                             index = body * 110;
@@ -521,7 +521,7 @@ namespace UltimaXNA.Data
 				// Issue 60 - Missing (or wrong) object animations - http://code.google.com/p/ultimaxna/issues/detail?id=60 - Smjert
 				case 5:
 					{
-						fileIndex = m_FileIndex5;
+						fileIndex = _FileIndex5;
 						if ( (body < 200) && (body != 34) ) // looks strange, though it works.
 							index = body * 110;
 						else if ( body < 400 )
@@ -582,7 +582,7 @@ namespace UltimaXNA.Data
                 hueObject = Hues.List[hue];
 
             // Load the base animation, unhued.
-            if (m_Cache[body][action][direction][0] == null)
+            if (_Cache[body][action][direction][0] == null)
             {
                 FrameXNA[] frames = new FrameXNA[frameCount];
                 for (int i = 0; i < frameCount; ++i)
@@ -598,39 +598,39 @@ namespace UltimaXNA.Data
                         frames[i] = new FrameXNA(_graphics, palette, bin, flip);
                     }
                 }
-                m_Cache[body][action][direction] = frames;
+                _Cache[body][action][direction] = frames;
             }
-            return m_Cache[body][action][direction];
+            return _Cache[body][action][direction];
         }
 
-        private static int[] m_Table;
+        private static int[] _Table;
 
         public static void Translate(ref int body)
         {
-            if (m_Table == null)
+            if (_Table == null)
                 LoadTable();
 
-            if (body <= 0 || body >= m_Table.Length)
+            if (body <= 0 || body >= _Table.Length)
             {
                 body = 0;
                 return;
             }
 
-            body = (m_Table[body] & 0x7FFF);
+            body = (_Table[body] & 0x7FFF);
         }
 
         public static void Translate(ref int body, ref int hue)
         {
-            if (m_Table == null)
+            if (_Table == null)
                 LoadTable();
 
-            if (body <= 0 || body >= m_Table.Length)
+            if (body <= 0 || body >= _Table.Length)
             {
                 body = 0;
                 return;
             }
 
-            int table = m_Table[body];
+            int table = _Table[body];
 
             if ((table & (1 << 31)) != 0)
             {
@@ -645,23 +645,23 @@ namespace UltimaXNA.Data
 
         private static void LoadTable()
         {
-            int count = 400 + ((m_FileIndex.Index.Length - 35000) / 175);
+            int count = 400 + ((_FileIndex.Index.Length - 35000) / 175);
 
-            m_Table = new int[count];
+            _Table = new int[count];
 
             for (int i = 0; i < count; ++i)
             {
-                object o = BodyTable.m_Entries[i];
+                object o = BodyTable._Entries[i];
 
                 if (o == null || BodyConverter.Contains(i))
                 {
-                    m_Table[i] = i;
+                    _Table[i] = i;
                 }
                 else
                 {
                     BodyTableEntry bte = (BodyTableEntry)o;
 
-                    m_Table[i] = bte.m_OldID | (1 << 31) | (((bte.m_NewHue ^ 0x8000) & 0xFFFF) << 15);
+                    _Table[i] = bte._OldID | (1 << 31) | (((bte._NewHue ^ 0x8000) & 0xFFFF) << 15);
                 }
             }
         }
@@ -669,11 +669,11 @@ namespace UltimaXNA.Data
 
     public sealed class FrameXNA
     {
-        private Microsoft.Xna.Framework.Point m_Center;
-        private Microsoft.Xna.Framework.Graphics.Texture2D m_Texture;
+        private Microsoft.Xna.Framework.Point _Center;
+        private Microsoft.Xna.Framework.Graphics.Texture2D _Texture;
 
-        public Microsoft.Xna.Framework.Point Center { get { return m_Center; } }
-        public Microsoft.Xna.Framework.Graphics.Texture2D Texture { get { return m_Texture; } }
+        public Microsoft.Xna.Framework.Point Center { get { return _Center; } }
+        public Microsoft.Xna.Framework.Graphics.Texture2D Texture { get { return _Texture; } }
 
         private const int DoubleXor = (0x200 << 22) | (0x200 << 12);
 
@@ -695,7 +695,7 @@ namespace UltimaXNA.Data
             // Fix for animations with no data.
             if ((width == 0) || (height == 0))
             {
-                m_Texture = null;
+                _Texture = null;
                 return;
             }
 
@@ -750,10 +750,10 @@ namespace UltimaXNA.Data
                 }
             }
 
-            m_Center = new Microsoft.Xna.Framework.Point(xCenter, yCenter);
+            _Center = new Microsoft.Xna.Framework.Point(xCenter, yCenter);
 
-            m_Texture = new Texture2D(graphics, width, height, 1, TextureUsage.None, SurfaceFormat.Bgra5551);
-            m_Texture.SetData<ushort>(data);
+            _Texture = new Texture2D(graphics, width, height, 1, TextureUsage.None, SurfaceFormat.Bgra5551);
+            _Texture.SetData<ushort>(data);
         }
     }
 } 

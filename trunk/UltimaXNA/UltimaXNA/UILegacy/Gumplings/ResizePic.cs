@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using UltimaXNA.Input;
 
 namespace UltimaXNA.UILegacy.Gumplings
 {
@@ -84,11 +85,11 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         bool isMoving = false; int moveOriginalX, moveOriginalY;
 
-        protected override void _mouseDown(int x, int y, int button)
+        protected override void _mouseDown(int x, int y, MouseButtons button)
         {
             x += _owner.X;
             y += _owner.Y;
-            if (button == 0)
+            if (button == MouseButtons.LeftButton)
             {
                 // move!
                 isMoving = true;
@@ -97,11 +98,11 @@ namespace UltimaXNA.UILegacy.Gumplings
             }
         }
 
-        protected override void _mouseUp(int x, int y, int button)
+        protected override void _mouseUp(int x, int y, MouseButtons button)
         {
             x += _owner.X;
             y += _owner.Y;
-            if (button == 0)
+            if (button == MouseButtons.LeftButton)
             {
                 if (isMoving == true)
                 {
@@ -125,9 +126,9 @@ namespace UltimaXNA.UILegacy.Gumplings
             }
         }
 
-        protected override void _mouseClick(int x, int y, int button)
+        protected override void _mouseClick(int x, int y, MouseButtons button)
         {
-            if (button == 2)
+            if (button == MouseButtons.RightButton)
             {
                 _owner.Dispose();
             }

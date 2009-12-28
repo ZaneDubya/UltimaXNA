@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using UltimaXNA.Graphics;
+using UltimaXNA.Input;
 
 namespace UltimaXNA.UILegacy
 {
@@ -298,14 +299,14 @@ namespace UltimaXNA.UILegacy
                 _owner.ChangePage(c);
         }
 
-        public void MouseDown(Vector2 position, int button)
+        public void MouseDown(Vector2 position, MouseButtons button)
         {
             int x = (int)position.X - X - ((_owner != null) ? _owner.X : 0);
             int y = (int)position.Y - Y - ((_owner != null) ? _owner.Y : 0);
             _mouseDown(x, y, button);
         }
 
-        public void MouseUp(Vector2 position, int button)
+        public void MouseUp(Vector2 position, MouseButtons button)
         {
             int x = (int)position.X - X - ((_owner != null) ? _owner.X : 0);
             int y = (int)position.Y - Y - ((_owner != null) ? _owner.Y : 0);
@@ -319,7 +320,7 @@ namespace UltimaXNA.UILegacy
             _mouseOver(x, y);
         }
 
-        public void MouseClick(Vector2 position, int button)
+        public void MouseClick(Vector2 position, MouseButtons button)
         {
             int x = (int)position.X - X - ((_owner != null) ? _owner.X : 0);
             int y = (int)position.Y - Y - ((_owner != null) ? _owner.Y : 0);
@@ -331,12 +332,12 @@ namespace UltimaXNA.UILegacy
             _keyboardInput(keys, specialKeys);
         }
 
-        protected virtual void _mouseDown(int x, int y, int button)
+        protected virtual void _mouseDown(int x, int y, MouseButtons button)
         {
 
         }
 
-        protected virtual void _mouseUp(int x, int y, int button)
+        protected virtual void _mouseUp(int x, int y, MouseButtons button)
         {
 
         }
@@ -346,7 +347,7 @@ namespace UltimaXNA.UILegacy
 
         }
 
-        protected virtual void _mouseClick(int x, int y, int button)
+        protected virtual void _mouseClick(int x, int y, MouseButtons button)
         {
 
         }

@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using UltimaXNA.Entities;
 using UltimaXNA.Extensions;
 using UltimaXNA.Graphics;
 using UltimaXNA.Input;
@@ -93,6 +94,14 @@ namespace UltimaXNA.UILegacy
         {
             Gump g = new Gump(serial, gumpID, gumplings, lines);
             g.Position = new Vector2(x, y);
+            _controls.Add(g);
+            return g;
+        }
+
+        public Gump AddContainerGump(Entity containerItem, int gumpID)
+        {
+            Gump g = new Clientside.ContainerGump(containerItem, gumpID);
+            g.Position = new Vector2(64, 64);
             _controls.Add(g);
             return g;
         }
@@ -219,7 +228,7 @@ namespace UltimaXNA.UILegacy
                         {
                             if (_mouseOverControls[iControl].HandlesMouseInput)
                             {
-                                _mouseOverControls[iControl].MouseDown(_input.CurrentMousePosition, iButton);
+                                _mouseOverControls[iControl].MouseDown(_input.CurrentMousePosition, (MouseButtons)iButton);
                                 _mouseDownControl[iButton] = _mouseOverControls[iControl];
                                 break;
                             }
@@ -233,12 +242,12 @@ namespace UltimaXNA.UILegacy
                 {
                     if (_mouseDownControl[iButton] != null)
                     {
-                        _mouseDownControl[iButton].MouseUp(_input.CurrentMousePosition, iButton);
+                        _mouseDownControl[iButton].MouseUp(_input.CurrentMousePosition, (MouseButtons)iButton);
                         if (_mouseOverControls != null)
                         {
                             if (_mouseOverControls[0] == _mouseDownControl[iButton])
                             {
-                                _mouseDownControl[iButton].MouseClick(_input.CurrentMousePosition, iButton);
+                                _mouseDownControl[iButton].MouseClick(_input.CurrentMousePosition, (MouseButtons)iButton);
                             }
                         }
                     }
