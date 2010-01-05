@@ -45,32 +45,83 @@ namespace UltimaXNA.Data
             return width;
         }
 
-        public void GetTextDimensions(string text, ref int width, ref int height)
+        void getTextDimensions(ref string text, ref int width, ref int height, int wrapwidth)
         {
             width = 0;
             height = Height;
-            int maxwidth = 0;
+            int biggestwidth = 0;
+            List<char> word = new List<char>();
 
-            text = text.Replace(Environment.NewLine, "\n");
-
-            for (int i = 0; i < text.Length; ++i)
+            for (int i = 0; i < text.Length; i++)
             {
-                char jjj = text[i];
-                if (text.Substring(i, 1) == "\n")
+                char c = text[i];
+
+                if (((int)c) > 32)
                 {
-                    if (width > maxwidth)
-                        maxwidth = width;
-                    height += Height;
-                    width = 0;
+                    word.Add(c);
                 }
-                else
+
+                if (c == ' ' || i == text.Length - 1 || c == '\n')
                 {
-                    width += GetTexture(text[i]).Width;
+                    // Size the word, character by character.
+                    int wordwidth = 0;
+
+                    if (word.Count > 0)
+                    {
+                        for (int j = 0; j < word.Count; j++)
+                        {
+                            int charwidth = GetWidth(word[j]);
+                            wordwidth += charwidth + 1;
+                        }
+                    }
+
+                    // Now make sure this line can fit the word.
+                    if (width + wordwidth <= wrapwidth)
+                    {
+                        width += wordwidth;
+                        word.Clear();
+                        // if this word is followed by a space, does it fit? If not, drop it entirely and insert \n after the word.
+                        if (c == ' ')
+                        {
+                            int charwidth = GetWidth(c);
+                            if (width + charwidth + 1 <= wrapwidth)
+                            {
+                                // we can fit an extra space here.
+                                width += charwidth + 1;
+                            }
+                            else
+                            {
+                                // can't fit an extra space on the end of the line. replace the space with a \n.
+                                text = text.Substring(0, i) + '\n' + text.Substring(i + 1, text.Length - i - 1);
+                                i--;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // this word is too big, so we insert a \n character before the word... and try again.
+                        text = text.Insert(i - word.Count, "\n");
+                        i = i - word.Count - 1;
+                        word.Clear();
+                    }
+
+                    if (c == '\n')
+                    {
+                        if (width > biggestwidth)
+                            biggestwidth = width;
+                        height += Height;
+                        width = 0;
+                    }
                 }
             }
 
-            if (maxwidth > width)
-                width = maxwidth;
+            if (biggestwidth > width)
+                width = biggestwidth;
+        }
+
+        public void GetTextDimensions(ref string text, ref int width, ref int height, int wrapwidth)
+        {
+            getTextDimensions(ref text, ref width, ref height, wrapwidth);
         }
 
         public static ASCIIFont GetFixed(int font)
@@ -86,14 +137,17 @@ namespace UltimaXNA.Data
 
     public static class ASCIIText
     {
-
-
         private static ASCIIFont[] _fonts = new ASCIIFont[10];
         private static bool _initialized;
         private static GraphicsDevice _graphicsDevice;
 
         //QUERY: Does this really need to be exposed?
         public static ASCIIFont[] Fonts { get { return ASCIIText._fonts; } set { ASCIIText._fonts = value; } }
+
+        public static int MaxWidth
+        {
+            get { return _graphicsDevice.Viewport.Width; }
+        }
 
         static ASCIIText()
         {
@@ -179,18 +233,36 @@ namespace UltimaXNA.Data
 
             if (!_TextTextureCache.ContainsKey(hash))
             {
-                Texture2D texture = getTexture(text, fontId);
+                Texture2D texture = getTexture(text, fontId, 0);
                 _TextTextureCache.Add(hash, texture);
             }
             return _TextTextureCache[hash];
         }
 
-        private unsafe static Texture2D getTexture(string text, int fontId)
+        public static Texture2D GetTextTexture(string text, int fontId, int wrapwidth)
+        {
+            string hash = string.Format("<font:{0}:w:{1}>{2}", fontId.ToString(), wrapwidth.ToString(), text);
+
+            if (_TextTextureCache == null)
+                _TextTextureCache = new Dictionary<string, Texture2D>();
+
+            if (!_TextTextureCache.ContainsKey(hash))
+            {
+                Texture2D texture = getTexture(text, fontId, wrapwidth);
+                _TextTextureCache.Add(hash, texture);
+            }
+            return _TextTextureCache[hash];
+        }
+
+        private unsafe static Texture2D getTexture(string text, int fontId, int wrapwidth)
         {
             ASCIIFont font = ASCIIFont.GetFixed(fontId);
 
             int width = 0, height = 0;
-            font.GetTextDimensions(text, ref width, ref height);
+            if (wrapwidth == 0)
+                font.GetTextDimensions(ref text, ref width, ref height, MaxWidth);
+            else
+                font.GetTextDimensions(ref text, ref width, ref height, wrapwidth);
 
             if (width == 0) // empty text string
                 return new Texture2D(_graphicsDevice, 1, 1);
@@ -220,11 +292,12 @@ namespace UltimaXNA.Data
 
                             fixed (Color* cPtr = charData)
                             {
+                                int starty = font.Height - charTexture.Height;
                                 int maxHeight = (charTexture.Height < font.Height) ? charTexture.Height : font.Height;
                                 for (int iy = 0; iy < maxHeight; ++iy)
                                 {
                                     Color* src = ((Color*)cPtr) + (charTexture.Width * iy);
-                                    Color* dest = (((Color*)rPtr) + (width * (iy + dy)) + dx);
+                                    Color* dest = (((Color*)rPtr) + (width * (iy + starty + dy)) + dx);
 
                                     for (int k = 0; k < charTexture.Width; ++k)
                                         *dest++ = *src++;

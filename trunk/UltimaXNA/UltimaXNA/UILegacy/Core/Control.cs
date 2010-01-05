@@ -357,7 +357,7 @@ namespace UltimaXNA.UILegacy
 
         }
 
-        internal Color HueColor(int hue)
+        internal Color HueColor(int hue, bool hueOnlyGreyPixels)
         {
             if (hue == 0)
                 return Color.White;
@@ -366,6 +366,8 @@ namespace UltimaXNA.UILegacy
                 Color c = new Color(0, 0, 0, 255);
                 c.R = (byte)(hue & 0x000000FF);
                 c.G = (byte)((hue & 0x0000FF00) >> 8);
+                if (hueOnlyGreyPixels)
+                    c.B |= 0x1;
                 return c;
             }
         }

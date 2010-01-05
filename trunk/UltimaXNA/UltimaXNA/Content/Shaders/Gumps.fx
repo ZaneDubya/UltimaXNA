@@ -39,27 +39,24 @@ float4 PixelShaderFunction(VS_OUTPUT IN) : COLOR0
 		// This is a hued color
 		float HueShade = lerp(0, 255, IN.Color.r) + lerp(0, 255, IN.Color.g) * 256;
 		hueout = HueShade;
-		// float OtherValue = IN.Color.b * 255; // we don't use this one yet
-		
-		
+		float OtherValue = lerp(0, 255, IN.Color.b);
 		
 		float y = (((HueShade - (HueShade % 2)) / HuesPerRow) / (HuesPerColumn));
 		float x = ((color.r + color.g + color.b) / 3.0f / HuesPerRow + (HueShade % 2) * 0.5f).r;
 		
 		float4 hue = tex2D(HueSampler, float2(x, y));
 
-		//Is it a Partial Hue?
-		// if (OtherValue != 0) 
-		// {
-		// 	if (color.r == color.g && color.r == color.b && color.a != 0)
-		// 	color.rgb = hue.rgb;		
-		//}
+		// Is it a Partial Hue?
+		if (OtherValue != 0) 
+		{
+			if (color.r == color.g && color.r == color.b && color.a != 0)
+			color.rgb = hue.rgb;		
+		}
 		//Else its a normal Hue
-		// else 
-		// {
+		else 
+		{
 			color.rgb = hue.rgb;
-			// color = IN.Color;
-		// }
+		}
     }
 
 	return color;

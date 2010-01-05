@@ -185,6 +185,8 @@
     <Compile Include="UILegacy\Gumplings\ResizePic.cs" />
     <Compile Include="UILegacy\Gumplings\TextEntry.cs" />
     <Compile Include="UILegacy\Gumplings\TextLabel.cs" />
+    <Compile Include="UILegacy\Gumplings\TextLabelAscii.cs" />
+    <Compile Include="UILegacy\Gumplings\TextLabelAsciiCropped.cs" />
     <Compile Include="UILegacy\Gumplings\TilePic.cs" />
     <Compile Include="UILegacy\IUIManager.cs" />
     <Compile Include="UILegacy\Shared.cs" />

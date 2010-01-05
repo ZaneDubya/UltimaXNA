@@ -28,6 +28,7 @@ namespace UltimaXNA.UILegacy.Clientside
         public LoginGump()
             : base(0, 0)
         {
+            int hue = 1115;
             _renderFullScreen = false;
             // backdrop
             this.AddGumpling(new GumpPic(this, 0, 0, 0, 9001,0));
@@ -35,14 +36,11 @@ namespace UltimaXNA.UILegacy.Clientside
             this.AddGumpling(new Button(this, 0, 554, 2, 5513, 5515, 1, 0, (int)LoginGumpButtons.QuitButton));
             ((Button)_controls[_controls.Count - 1]).GumpOverID = 5514;
             // Log in to Ultima Online
-            this.AddGumpling(new HtmlGump(this, 0, 253, 312, 256, 20, 0, 0, "<basefont color=#bdb5bd><big>Login to Ultima Online</big>"));
-            this.AddGumpling(new HtmlGump(this, 0, 254, 311, 256, 20, 0, 0, "<basefont color=#423931><big>Login to Ultima Online</big>"));
+            AddGumpling(new TextLabelAscii(this, 0, 254, 305, hue, 2, Data.StringList.Table[1077841].ToString()));
             // Account Name
-            this.AddGumpling(new HtmlGump(this, 0, 182, 352, 256, 20, 0, 0, "<basefont color=#bdb5bd><big>Account Name</big>"));
-            this.AddGumpling(new HtmlGump(this, 0, 183, 351, 256, 20, 0, 0, "<basefont color=#423931><big>Account Name</big>"));
+            AddGumpling(new TextLabelAscii(this, 0, 181, 346, hue, 2, Data.StringList.Table[1077842].ToString()));
             // Password
-            this.AddGumpling(new HtmlGump(this, 0, 182, 392, 256, 20, 0, 0, "<basefont color=#bdb5bd><big>Password</big>"));
-            this.AddGumpling(new HtmlGump(this, 0, 183, 391, 256, 20, 0, 0, "<basefont color=#423931><big>Password</big>"));
+            AddGumpling(new TextLabelAscii(this, 0, 181, 386, hue, 2, Data.StringList.Table[3000103].ToString()));
             // name field
             TextEntry g1 = new TextEntry(this, 0, 332, 346, 200, 20, 0, (int)LoginGumpTextFields.AccountName, 32, "Admin");
             this.AddGumpling(new ResizePic(this, g1));
@@ -55,7 +53,7 @@ namespace UltimaXNA.UILegacy.Clientside
             this.AddGumpling(new Button(this, 0, 610, 435, 5540, 5542, 1, 0, (int)LoginGumpButtons.LoginButton));
             ((Button)_controls[_controls.Count - 1]).GumpOverID = 5541;
             // Version information
-            this.AddGumpling(new HtmlGump(this, 0, 183, 421, 320, 20, 0, 0, Utility.VersionString));
+            AddGumpling(new TextLabelAscii(this, 0, 183, 421, hue, 9, Utility.VersionString));
         }
 
         public override void Activate(Control c)

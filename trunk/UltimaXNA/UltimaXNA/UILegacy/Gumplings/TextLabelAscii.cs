@@ -4,39 +4,30 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace UltimaXNA.UILegacy.Gumplings
 {
-    class TextLabel : Control
+    class TextLabelAscii : Control
     {
         public int Hue = 0;
+        public int FontID = 0;
         public string Text = string.Empty;
         Texture2D _texture = null;
 
-        public TextLabel(Control owner, int page)
+        public TextLabelAscii(Control owner, int page)
             : base(owner, page)
         {
 
         }
 
-        public TextLabel(Control owner, int page, string[] arguements, string[] lines)
+        public TextLabelAscii(Control owner, int page, int x, int y, int hue, int fontid, string text)
             : this(owner, page)
         {
-            int x, y, hue, textIndex;
-            x = Int32.Parse(arguements[1]);
-            y = Int32.Parse(arguements[2]);
-            hue = Int32.Parse(arguements[3]);
-            textIndex = Int32.Parse(arguements[4]);
-            buildGumpling(x, y, hue, lines[textIndex]);
+            buildGumpling(x, y, hue, fontid, text);
         }
 
-        public TextLabel(Control owner, int page, int x, int y, int hue, string text)
-            : this(owner, page)
-        {
-            buildGumpling(x, y, hue, text);
-        }
-
-        void buildGumpling(int x, int y, int hue, string text)
+        void buildGumpling(int x, int y, int hue, int fontid, string text)
         {
             Position = new Vector2(x, y);
             Hue = hue;
+            FontID = fontid;
             Text = text;
         }
 
@@ -44,7 +35,7 @@ namespace UltimaXNA.UILegacy.Gumplings
         {
             if (_texture == null)
             {
-                _texture = Data.UniText.GetTexture(Text);
+                _texture = Data.ASCIIText.GetTextTexture(Text, FontID);
                 Size = new Vector2(_texture.Width, _texture.Height);
             }
             base.Update(gameTime);
@@ -52,7 +43,7 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         public override void Draw(UltimaXNA.Graphics.ExtendedSpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_texture, new Vector2(Area.X, Area.Y), HueColor(Hue, false));
+            spriteBatch.Draw(_texture, new Vector2(Area.X, Area.Y), HueColor(Hue, true));
             base.Draw(spriteBatch);
         }
     }
