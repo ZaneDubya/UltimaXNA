@@ -71,7 +71,7 @@ namespace UltimaXNA.Data
                         for (int j = 0; j < word.Count; j++)
                         {
                             int charwidth = GetWidth(word[j]);
-                            wordwidth += charwidth + 1;
+                            wordwidth += charwidth;
                         }
                     }
 
@@ -84,10 +84,10 @@ namespace UltimaXNA.Data
                         if (c == ' ')
                         {
                             int charwidth = GetWidth(c);
-                            if (width + charwidth + 1 <= wrapwidth)
+                            if (width + charwidth <= wrapwidth)
                             {
                                 // we can fit an extra space here.
-                                width += charwidth + 1;
+                                width += charwidth;
                             }
                             else
                             {
@@ -99,19 +99,40 @@ namespace UltimaXNA.Data
                     }
                     else
                     {
-                        // this word is too big, so we insert a \n character before the word... and try again.
-                        text = text.Insert(i - word.Count, "\n");
-                        i = i - word.Count - 1;
-                        word.Clear();
+                        // The word is too big for the line. SOME words are longer than the entire line, so we have to break them up manually.
+                        if (wordwidth > wrapwidth)
+                        {
+                            int splitwidth = 0;
+                            for (int j = 0; j < word.Count; j++)
+                            {
+                                splitwidth += GetWidth(word[j]) + 1;
+                                if (splitwidth > wrapwidth)
+                                {
+                                    text = text.Insert(i - word.Count + j - 1, "\n");
+                                    word.Insert(j - 1, '\n');
+                                    j--;
+                                    splitwidth = 0;
+                                }
+                            }
+                            i = i - word.Count - 1;
+                            word.Clear();
+                        }
+                        else
+                        {
+                            // this word is too big, so we insert a \n character before the word... and try again.
+                            text = text.Insert(i - word.Count, "\n");
+                            i = i - word.Count - 1;
+                            word.Clear();
+                        }
                     }
+                }
 
-                    if (c == '\n')
-                    {
-                        if (width > biggestwidth)
-                            biggestwidth = width;
-                        height += Height;
-                        width = 0;
-                    }
+                if (c == '\n')
+                {
+                    if (width > biggestwidth)
+                        biggestwidth = width;
+                    height += Height;
+                    width = 0;
                 }
             }
 

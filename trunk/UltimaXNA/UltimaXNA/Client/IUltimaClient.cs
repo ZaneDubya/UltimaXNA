@@ -34,7 +34,13 @@ namespace UltimaXNA.Client
         WorldServer_LoginComplete,
         WorldServer_InWorld,
         Error_Undefined,
-        Error_CannotConnect
+        Error_CannotConnectToServer,
+        Error_InvalidUsernamePassword,
+        Error_InUse,
+        Error_Blocked,
+        Error_BadPassword,
+        Error_Idle,
+        Error_BadCommunication
     }
 
     public interface IUltimaClient

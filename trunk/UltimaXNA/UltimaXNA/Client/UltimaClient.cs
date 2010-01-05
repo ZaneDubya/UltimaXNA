@@ -156,7 +156,7 @@ namespace UltimaXNA.Client
             }
             else
             {
-                Status = UltimaClientStatus.Error_CannotConnect;
+                Status = UltimaClientStatus.Error_CannotConnectToServer;
             }
             return success;
         }
@@ -449,8 +449,27 @@ namespace UltimaXNA.Client
         {
             Disconnect();
             LoginRejectionPacket p = (LoginRejectionPacket)packet;
-            UserInterface.Reset();
-            UserInterface.ErrorPopup_Modal(p.Reason);
+            switch (p.Reason)
+            {
+                case LoginRejectionReasons.InvalidAccountPassword:
+                    Status = UltimaClientStatus.Error_InvalidUsernamePassword;
+                    break;
+                case LoginRejectionReasons.AccountInUse:
+                    Status = UltimaClientStatus.Error_InUse;
+                    break;
+                case LoginRejectionReasons.AccountBlocked:
+                    Status = UltimaClientStatus.Error_Blocked;
+                    break;
+                case LoginRejectionReasons.BadPassword:
+                    Status = UltimaClientStatus.Error_BadPassword;
+                    break;
+                case LoginRejectionReasons.IdleExceeded:
+                    Status = UltimaClientStatus.Error_Idle;
+                    break;
+                case LoginRejectionReasons.BadCommuncation:
+                    Status = UltimaClientStatus.Error_BadCommunication;
+                    break;
+            }
         }
 
         private static void receive_MessageLocalizedAffix(IRecvPacket packet)
