@@ -93,8 +93,6 @@ namespace UltimaXNA.UI
                     _formCollection.Draw();
                 }
             }
-
-            
         }
 
         private static void drawText(SpriteBatch spriteBatch, string text, int font, int hue, int x, int y)

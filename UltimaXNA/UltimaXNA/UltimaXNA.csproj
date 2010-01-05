@@ -152,6 +152,7 @@
     <Compile Include="Graphics\Point2D.cs" />
     <Compile Include="Graphics\RectangleF.cs" />
     <Compile Include="SceneManagement\Scenes\DebugScene.cs" />
+    <Compile Include="SceneManagement\Scenes\LoggingInScene.cs" />
     <Compile Include="TileEngine\Interfaces\IWorld.cs" />
     <Compile Include="TileEngine\Interfaces\IWorldRenderer.cs" />
     <Compile Include="Graphics\UISystem\Alignment.cs" />
@@ -168,6 +169,7 @@
     <Compile Include="Graphics\UISystem\UITableOfContents.cs" />
     <Compile Include="UILegacy\Clientside\ContainerGump.cs" />
     <Compile Include="UILegacy\Clientside\DebugGump.cs" />
+    <Compile Include="UILegacy\Clientside\LoggingInGump.cs" />
     <Compile Include="UILegacy\Clientside\LoginGump.cs" />
     <Compile Include="UILegacy\Core\Control.cs" />
     <Compile Include="UILegacy\Core\iControl.cs" />

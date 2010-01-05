@@ -106,9 +106,6 @@ namespace UltimaXNA
                 Client.UltimaClient.Update(gameTime);
                 GameState.Update(gameTime);
                 Entities.EntitiesCollection.Update(gameTime);
-
-                _LegacyUI.Update(gameTime);
-                UI.UserInterface.Update(gameTime);
                 _sceneService.Update(gameTime);
 
                 GameState.UpdateAfter(gameTime);
@@ -118,10 +115,6 @@ namespace UltimaXNA
         protected override void Draw(GameTime gameTime)
         {
             _sceneService.Draw(gameTime);
-            // ParticleEngine.ParticleEngine.Draw(gameTime);
-			UI.UserInterface.Draw(gameTime);
-            _LegacyUI.Draw(gameTime);
-
             base.Draw(gameTime);
         }
 

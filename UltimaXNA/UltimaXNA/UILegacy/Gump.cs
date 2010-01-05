@@ -11,7 +11,7 @@ namespace UltimaXNA.UILegacy
 {
     public class Gump : Control
     {
-        Serial Serial;
+        public Serial Serial;
         Serial GumpID;
         string[] _gumpPieces, _gumpLines;
 
@@ -32,7 +32,6 @@ namespace UltimaXNA.UILegacy
 
         public override void Dispose()
         {
-            _manager.DebugMessage_Clear();
             base.Dispose();
         }
 

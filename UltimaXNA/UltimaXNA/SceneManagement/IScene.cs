@@ -1,7 +1,8 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Diagnostics;
-using UltimaXNA.Graphics.UI;
+using UltimaXNA.UILegacy;
 using UltimaXNA.Input;
 
 namespace UltimaXNA.SceneManagement
@@ -19,9 +20,11 @@ namespace UltimaXNA.SceneManagement
         ISceneService SceneManager { get; }
         ILoggingService Log { get; }
         IInputService Input { get; }
-        IUIService UI { get; }
+        IUIManager UI { get; }
 
         event TransitionCompleteHandler TransitionCompleted;
+
+        Color ClearColor { get; set; }
 
         void Intitialize();
         void Update(GameTime gameTime);

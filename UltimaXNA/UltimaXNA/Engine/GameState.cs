@@ -522,7 +522,7 @@ namespace UltimaXNA
         {
             _Frames++;
             _ElapsedSeconds += (float)gameTime.ElapsedRealTime.TotalSeconds;
-            if (_ElapsedSeconds >= 1)
+            if (_ElapsedSeconds >= 2f)
             {
                 _FPS = _Frames / _ElapsedSeconds;
                 _ElapsedSeconds = 0;

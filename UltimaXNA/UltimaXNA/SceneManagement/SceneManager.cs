@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using UltimaXNA.Diagnostics;
 using UltimaXNA.Extensions;
+using UltimaXNA.UILegacy;
 
 namespace UltimaXNA.SceneManagement
 {
@@ -8,6 +9,7 @@ namespace UltimaXNA.SceneManagement
     {
         IScene _currentScene;
         ILoggingService _loggingService;
+        IUIManager _ui;
         bool _isTransitioning = false;
 
         public bool IsTransitioning
@@ -67,16 +69,14 @@ namespace UltimaXNA.SceneManagement
             : base(game)
         {
             _loggingService = game.Services.GetService<ILoggingService>(true);
-        }
-
-        public override void Initialize()
-        {
-            base.Initialize();
+            _ui = Game.Services.GetService<IUIManager>(true);
         }
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+
+            _ui.Update(gameTime);
 
             IScene current = _currentScene;
 
@@ -94,11 +94,9 @@ namespace UltimaXNA.SceneManagement
             
             if (_currentScene != null)
             {
-                //_currentScene.OnBeforeDraw(gameTime);
+                Game.GraphicsDevice.Clear(_currentScene.ClearColor);
                 _currentScene.Draw(gameTime);
-                //_currentScene.DrawUI(gameTime);
-                //_currentScene.DrawCursor(gameTime);
-                //_currentScene.OnAfterDraw(gameTime);
+                _ui.Draw(gameTime);
             }
         }
     }

@@ -22,6 +22,10 @@ namespace UltimaXNA.UILegacy
 
         SpriteBatch3D _spriteBatch3D;
 
+        List<string> _DEBUG_TEXT_LINES = new List<string>();
+        List<GameTime> _DEBUG_TEXT_TIMES = new List<GameTime>();
+        GameTime _lastGameTime;
+
         Control[] _mouseOverControls = null; // the controls that the mouse is over, 0 index is the frontmost control, last index is the backmost control (always the owner gump).
         Control[] _mouseDownControl = new Control[5]; // the control that the mouse was over when the button was clicked. 5 buttons
         public Control MouseOverControl
@@ -85,9 +89,6 @@ namespace UltimaXNA.UILegacy
 
             // Retrieve the needed services.
             _input = game.Services.GetService<IInputService>(true);
-
-            _controls.Add(new Clientside.LoginGump(0x0));
-            // _controls.Add(new Clientside.DebugGump(0x0));
         }
 
         public Gump AddGump(Serial serial, Serial gumpID, string[] gumplings, string[] lines, int x, int y)
@@ -96,6 +97,34 @@ namespace UltimaXNA.UILegacy
             g.Position = new Vector2(x, y);
             _controls.Add(g);
             return g;
+        }
+
+        public Gump AddGump(Gump gump, int x, int y)
+        {
+            gump.Position = new Vector2(x, y);
+            _controls.Add(gump);
+            return gump;
+        }
+
+        public Gump GetGump(Serial serial)
+        {
+            foreach (Gump g in _controls)
+            {
+                if (g.Serial == serial)
+                    return g;
+            }
+            return null;
+        }
+
+        public T GetGump<T>(Serial serial) where T : Gump
+        {
+            foreach (Gump g in _controls)
+            {
+                if (g.Serial == serial)
+                    if (g.GetType() == typeof(T))
+                        return (T)g;
+            }
+            return null;
         }
 
         public Gump AddContainerGump(Entity containerItem, int gumpID)
@@ -108,12 +137,13 @@ namespace UltimaXNA.UILegacy
 
         public override void Update(GameTime gameTime)
         {
+            _lastGameTime = gameTime;
+
             foreach (Control c in _controls)
             {
                 if (!c.IsInitialized)
                     c.Initialize(this);
                 c.Update(gameTime);
-
             }
 
             updateInput();
@@ -141,12 +171,13 @@ namespace UltimaXNA.UILegacy
 
             foreach (Control c in _controls)
             {
-                c.Draw(_spriteBatch);
+                if (c.IsInitialized)
+                    c.Draw(_spriteBatch);
             }
 
             // Draw debug message
             if (GameState.DebugMessage != null)
-                DEBUG_DrawText(new Vector2(5, 5), GameState.DebugMessage + Environment.NewLine + _DEBUG_TEXT);
+                DEBUG_DrawText(new Vector2(5, 5), GameState.DebugMessage + Environment.NewLine + _DEBUG_TEXT(gameTime));
 
             _cursor.Draw(_spriteBatch, _input.CurrentMousePosition);
 
@@ -157,10 +188,19 @@ namespace UltimaXNA.UILegacy
             base.Draw(gameTime);
         }
 
+        public void Reset()
+        {
+            foreach (Control c in _controls)
+            {
+                c.Dispose();
+            }
+            _controls.Clear();
+        }
+
         int z;
         internal void DEBUG_DrawText(Vector2 position, string text)
         {
-            Texture2D t = Data.UniText.GetTextTexture(text, 1, false);
+            Texture2D t = Data.UniText.GetTexture(text);
             Draw(t, position, 1152);
         }
         internal void Draw(Texture2D texture, Vector2 position, int hue)
@@ -169,14 +209,46 @@ namespace UltimaXNA.UILegacy
             z += 1000;
         }
 
-        string _DEBUG_TEXT = string.Empty;
+        internal string _DEBUG_TEXT(GameTime gameTime)
+        {
+            List<int> indexesToRemove = new List<int>();
+            string s = string.Empty;
+
+            for (int i = 0; i < _DEBUG_TEXT_LINES.Count; i++)
+            {
+                if (_DEBUG_TEXT_TIMES[i].TotalRealTime.Ticks == 0)
+                {
+                    _DEBUG_TEXT_TIMES[i] = new GameTime(gameTime.TotalRealTime, gameTime.ElapsedRealTime, gameTime.TotalGameTime, gameTime.ElapsedGameTime);
+                }
+
+                if (gameTime.TotalRealTime.TotalSeconds - _DEBUG_TEXT_TIMES[i].TotalRealTime.TotalSeconds >= 10.0f)
+                {
+                    indexesToRemove.Add(i);
+                }
+                else
+                {
+                    s += _DEBUG_TEXT_LINES[i] + Environment.NewLine;
+                }
+            }
+
+            for (int i = 0; i < indexesToRemove.Count; i++)
+            {
+                _DEBUG_TEXT_LINES.RemoveAt(indexesToRemove[i] - i);
+                _DEBUG_TEXT_TIMES.RemoveAt(indexesToRemove[i] - i);
+            }
+
+            return s;
+        }
+
         public void DebugMessage_AddLine(string line)
         {
-            _DEBUG_TEXT += line + Environment.NewLine;
+            _DEBUG_TEXT_LINES.Add(line);
+            _DEBUG_TEXT_TIMES.Add(new GameTime());
         }
         public void DebugMessage_Clear()
         {
-            _DEBUG_TEXT = string.Empty;
+            _DEBUG_TEXT_LINES.Clear();
+            _DEBUG_TEXT_TIMES.Clear();
         }
 
         public void AnnounceNewKeyboardHandler(Control c)

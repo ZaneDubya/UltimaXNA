@@ -24,6 +24,8 @@ namespace UltimaXNA.Client
     {
         Unconnected,
         LoginServer_Connecting,
+        LoginServer_WaitingForLogin,
+        LoginServer_LoggingIn,
         LoginServer_HasServerList,
         LoginServer_ServerSelected,
         GameServer_Connecting,
@@ -32,6 +34,7 @@ namespace UltimaXNA.Client
         WorldServer_LoginComplete,
         WorldServer_InWorld,
         Error_Undefined,
+        Error_CannotConnect
     }
 
     public interface IUltimaClient
