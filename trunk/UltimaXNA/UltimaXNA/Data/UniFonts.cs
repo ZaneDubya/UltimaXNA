@@ -239,27 +239,48 @@ namespace UltimaXNA.Data
 
         static Dictionary<string, Texture2D> _TextTextureCache;
 
-        public static Texture2D GetTextTexture(string text, int fontId, bool isHTML)
+        public static Texture2D GetTexture(string text)
         {
-            string hash = string.Format("<font:{0}>{1}", fontId.ToString(), text);
+            string hash = string.Format("text:{0}", text);
 
             if (_TextTextureCache == null)
                 _TextTextureCache = new Dictionary<string, Texture2D>();
 
             if (!_TextTextureCache.ContainsKey(hash))
             {
-                Texture2D texture = getTexture(text, fontId, isHTML);
+                Texture2D texture = getTexture(text, 0, 0);
                 _TextTextureCache.Add(hash, texture);
             }
             return _TextTextureCache[hash];
         }
 
-        unsafe static Texture2D getTexture(string textToRender, int fontId, bool isHTML)
+        public static Texture2D GetTexture(string text, int width, int height)
         {
-            
+            string hash = string.Format("text:{0}", text);
+
+            if (_TextTextureCache == null)
+                _TextTextureCache = new Dictionary<string, Texture2D>();
+
+            if (!_TextTextureCache.ContainsKey(hash))
+            {
+                Texture2D texture = getTexture(text, width, height);
+                _TextTextureCache.Add(hash, texture);
+            }
+            return _TextTextureCache[hash];
+        }
+
+        static Texture2D getTexture(string textToRender, int w, int h)
+        {
             HTMLReader reader = new HTMLReader(textToRender);
             int width = 0, height = 0;
-            getTextDimensions(reader, out width, out height);
+            if (w == 0)
+            {
+                getTextDimensions(reader, _graphicsDevice.Viewport.Width, _graphicsDevice.Viewport.Height, out width, out height);
+            }
+            else
+            {
+                getTextDimensions(reader, w, h, out width, out height);
+            }
 
             if (width == 0) // empty text string
                 return new Texture2D(_graphicsDevice, 1, 1);
@@ -300,46 +321,92 @@ namespace UltimaXNA.Data
             return result;
         }
 
-        static void getTextDimensions(HTMLReader reader, out int width, out int height)
+        static void getTextDimensions(HTMLReader reader, int maxwidth, int maxheight, out int width, out int height)
         {
             width = 0;
             height = _fonts[0].Height;
-            int maxwidth = 0; // the longest line yet
+            int biggestwidth = 0;
             int extrawidth = 0; // for italic characters, which need a little more room for their slant.
+            List<HTMLCharacter> word = new List<HTMLCharacter>();
 
             for (int i = 0; i < reader.Length; ++i)
             {
                 HTMLCharacter c = reader.Characters[i];
                 UniFont font = _fonts[(int)c.Font];
 
-                if (c.Character == '\n')
+                if (((int)c.Character) > 32)
                 {
-                    if (width + extrawidth > maxwidth)
-                        maxwidth = width + extrawidth;
-                    height += font.Baseline;
-                    width = 0;
-                }
-                else
-                {
-                    int charwidth = font.GetCharacter(c.Character).Width;
-                    width += charwidth + 1;
-                    if (c.IsBold)
-                        width++;
-                    if (c.IsItalic)
-                        extrawidth = font.Height / 2;
-                    else
-                    {
-                        extrawidth -= charwidth;
-                        if (extrawidth < 0)
-                            extrawidth = 0;
-                    }
+                    word.Add(c);
                 }
 
+                if (c.Character == ' ' || i == reader.Length - 1 || c.Character == '\n')
+                {
+                    // Size the word, character by character.
+                    int wordwidth = 0;
+
+                    if (word.Count > 0)
+                    {
+                        for (int j = 0; j < word.Count; j++)
+                        {
+                            int charwidth = _fonts[(int)word[j].Font].GetCharacter(word[j].Character).Width;
+                            if (c.IsBold)
+                                charwidth++;
+
+                            if (c.IsItalic)
+                                extrawidth = font.Height / 2;
+                            else
+                            {
+                                extrawidth -= charwidth;
+                                if (extrawidth < 0)
+                                    extrawidth = 0;
+                            }
+                            wordwidth += charwidth + 1;
+                        }
+                    }
+
+                    // Now make sure this line can fit the word.
+                    if (width + wordwidth + extrawidth <= maxwidth)
+                    {
+                        width += wordwidth + extrawidth;
+                        word.Clear();
+                        // if this word is followed by a space, does it fit? If not, drop it entirely and insert \n after the word.
+                        if (c.Character == ' ')
+                        {
+                            int charwidth = _fonts[(int)c.Font].GetCharacter(c.Character).Width;
+                            if (width + charwidth + 1 <= maxwidth)
+                            {
+                                // we can fit an extra space here.
+                                width += charwidth + 1;
+                            }
+                            else
+                            {
+                                // can't fit an extra space on the end of the line. replace the space with a \n.
+                                reader.Characters[i] = new HTMLCharacter('\n');
+                                i--;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // this word is too big, so we insert a \n character before the word... and try again.
+                        reader.Characters.Insert(i - word.Count, new HTMLCharacter('\n'));
+                        i = i - word.Count - 1;
+                        word.Clear();
+                    }
+
+                    if (c.Character == '\n')
+                    {
+                        if (width + extrawidth > biggestwidth)
+                            biggestwidth = width + extrawidth;
+                        height += font.Baseline;
+                        width = 0;
+                    }
+                }
             }
 
             width += extrawidth;
-            if (maxwidth > width)
-                width = maxwidth;
+            if (biggestwidth > width)
+                width = biggestwidth;
         }
 
         private unsafe static void DEBUG_fillWithBlack(Color* rPtr, int width, int height)

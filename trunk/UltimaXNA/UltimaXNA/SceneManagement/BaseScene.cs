@@ -7,7 +7,7 @@ using UltimaXNA.Diagnostics;
 using UltimaXNA.Extensions;
 using UltimaXNA.Input;
 using UltimaXNA.Network;
-using UltimaXNA.Graphics.UI;
+using UltimaXNA.UILegacy;
 using UltimaXNA.TileEngine;
 
 namespace UltimaXNA.SceneManagement
@@ -24,7 +24,7 @@ namespace UltimaXNA.SceneManagement
         ISceneService _sceneService;
         ILoggingService _loggingService;
         IInputService _inputService;
-        IUIService _uiService;
+        IUIManager _uiService;
         IWorld _worldService;
 
         ContentManager _content;
@@ -33,13 +33,6 @@ namespace UltimaXNA.SceneManagement
         float _transitionAlpha;
         float _elapsed;
         bool _isInitialized;
-
-        // Texture2D _mouseTexture;
-        // Rectangle _mouseSourceRectangle;
-        // Texture2D _transitionTexture;
-        // RenderTarget2D _sceneTarget;
-        // RenderTarget2D _uiTarget;
-        // RenderTarget2D _finalTarget;
 
         public bool IsInitialized
         {
@@ -78,19 +71,7 @@ namespace UltimaXNA.SceneManagement
                 _elapsed = 0;
             }
         }
-        /*
-        public Rectangle MouseSourceRectangle
-        {
-            get { return _mouseSourceRectangle; }
-            set { _mouseSourceRectangle = value; }
-        }
 
-        public Texture2D MouseTexture
-        {
-            get { return _mouseTexture; }
-            set { _mouseTexture = value; }
-        }
-        */
         public ISceneService SceneManager
         {
             get { return _sceneService; }
@@ -106,7 +87,7 @@ namespace UltimaXNA.SceneManagement
             get { return _inputService; }
         }
 
-        public IUIService UI
+        public IUIManager UI
         {
             get { return _uiService; }
         }
@@ -139,37 +120,12 @@ namespace UltimaXNA.SceneManagement
             _loggingService = game.Services.GetService<ILoggingService>(true);
             _inputService = game.Services.GetService<IInputService>(true);
             _worldService = game.Services.GetService<IWorld>(true);
-            
-            if (needsUIService)
-            {
-
-                IUIService uiService = game.Services.GetService<IUIService>();
-
-                if (uiService != null)
-                {
-                    _loggingService.Debug("Disposing previous UIService");
-                    game.Services.RemoveService(typeof(IUIService));
-                    uiService.Dispose();
-                }
-
-                _uiService = new UIManager(game);
-                game.Services.AddService<IUIService>(_uiService);
-            }
+            _uiService = game.Services.GetService<IUIManager>();
         }
 
         public virtual void Intitialize()
         {
             SpriteBatch = new SpriteBatch(Game.GraphicsDevice);
-
-            // _mouseTexture = Art.GetStaticTexture(8307);
-            // _mouseSourceRectangle = new Rectangle(1, 1, 31, 26);
-            // Color[] data = new Color[] { Color.Black };
-            // _transitionTexture = new Texture2D(Game.GraphicsDevice, 1, 1);
-            // _transitionTexture.SetData<Color>(data);
-            // PresentationParameters pp = GraphicsDevice.PresentationParameters;
-            // _sceneTarget = new RenderTarget2D(GraphicsDevice, pp.BackBufferWidth, pp.BackBufferHeight, 1, pp.BackBufferFormat);
-            // _uiTarget = new RenderTarget2D(GraphicsDevice, pp.BackBufferWidth, pp.BackBufferHeight, 1, pp.BackBufferFormat);
-            // _finalTarget = new RenderTarget2D(GraphicsDevice, pp.BackBufferWidth, pp.BackBufferHeight, 1, pp.BackBufferFormat);
         }
 
         public virtual void Update(GameTime gameTime)
@@ -206,84 +162,18 @@ namespace UltimaXNA.SceneManagement
                         break;
                     }
             }
-
-            if (UI != null)
-            {
-                UI.Update(gameTime);
-            }
         }
-        /*
-        public virtual void OnBeforeDraw(GameTime gameTime)
-        {
-
-        }
-         */
         
         public virtual void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(_clearColor);
-            UI.Draw(gameTime);
+            
         }
-        
-        /*
-        public virtual void DrawUI(GameTime gametTime)
-        {
-            GraphicsDevice.SetRenderTarget(0, null);
-            Texture2D sceneTexture = _sceneTarget.GetTexture();
 
-            sceneTexture = PostProcess(gametTime, sceneTexture);
-
-            GraphicsDevice.SetRenderTarget(0, _uiTarget);
-            GraphicsDevice.Clear(Color.TransparentBlack);
-
-            // if (UI != null)
-            // {
-            //     //UI.SceneTexture = sceneTexture;
-            //     // UI.Draw(gametTime);
-            // }
-
-            GraphicsDevice.SetRenderTarget(0, null);
-            Texture2D uiTexture = _uiTarget.GetTexture();
-
-            GraphicsDevice.SetRenderTarget(0, _finalTarget);
-            GraphicsDevice.Clear(Color.Black);
-
-            SpriteBatch.Begin();
-            SpriteBatch.Draw(sceneTexture, Vector2.Zero, Color.White);
-            SpriteBatch.Draw(uiTexture, Vector2.Zero, Color.White);
-            SpriteBatch.End();
-
-            GraphicsDevice.SetRenderTarget(0, null);
-            sceneTexture = _finalTarget.GetTexture();
-
-            SpriteBatch.Begin();
-            SpriteBatch.Draw(sceneTexture, Vector2.Zero, Color.White);
-            SpriteBatch.End();
-        }
-        */
         protected virtual Texture2D PostProcess(GameTime gametTime, Texture2D sceneTexture)
         {
             return sceneTexture;
         }
-        /*
-        public virtual void DrawCursor(GameTime gameTime)
-        {
-            SpriteBatch.Begin();
-            SpriteBatch.Draw(_mouseTexture, _inputService.CurrentMousePosition, _mouseSourceRectangle, Color.White);
-            SpriteBatch.End();
-        }
         
-        public virtual void OnAfterDraw(GameTime gameTime)
-        {
-            PresentationParameters pp = Game.GraphicsDevice.PresentationParameters;
-            Color color = new Color(new Vector4(1, 1, 1, _transitionAlpha));
-
-            SpriteBatch.Begin();
-            SpriteBatch.Draw(_transitionTexture,
-                new Rectangle(0, 0, pp.BackBufferWidth, pp.BackBufferHeight), color);
-            SpriteBatch.End();
-        }
-        */
         protected virtual void OnProgressUpdate(object sender, ProgressUpdateEventArgs e)
         {
             if (ProgressUpdated != null)

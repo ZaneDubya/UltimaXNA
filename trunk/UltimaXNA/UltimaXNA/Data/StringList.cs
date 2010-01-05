@@ -76,6 +76,20 @@ namespace UltimaXNA.Data
 
             m_Entries = (StringEntry[])list.ToArray(typeof(StringEntry));
         }
+
+        public static void Debug_WriteStringList()
+        {
+            // create a writer and open the file
+            TextWriter tw = new StreamWriter("cliloc.txt");
+            for (int i = 0; i < m_Entries.Length; i++)
+            {
+                // write a line of text to the file
+                tw.WriteLine(m_Entries[i].Number + ": " + m_Entries[i].Text);
+            }
+
+            // close the stream
+            tw.Close();
+        }
     }
 
     public class StringEntry

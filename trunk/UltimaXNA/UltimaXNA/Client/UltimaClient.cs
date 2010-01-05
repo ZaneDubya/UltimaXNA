@@ -35,9 +35,14 @@ namespace UltimaXNA.Client
     {
         public static UltimaClientStatus Status { get; protected set; }
 
-        static string _account, _password;
-        public static void SetAccountPassword(string account, string password) { _account = account; _password = password; }
-        static void clearAccountPassword() { _account = string.Empty; _password = string.Empty; }
+        protected static string _account, _password;
+        protected static string _host;
+        protected static int _port;
+        public static void SetLoginData(string host, int port, string account, string password)
+        {
+            _host = host; _port = port; _account = account; _password = password;
+        }
+        static void clearLoginData() { _account = string.Empty; _password = string.Empty; }
 
         static ClientNetwork _ClientNetwork;
         public static bool IsConnected { get { return _ClientNetwork.IsConnected; } }
@@ -140,15 +145,26 @@ namespace UltimaXNA.Client
             PacketRegistry.RegisterNetwork(_ClientNetwork);
         }
 
-        public static bool Connect(string ipAddressOrHostName, int port)
+        public static bool Connect()
         {
-            bool success = _ClientNetwork.Connect(ipAddressOrHostName, port);
+            Status = UltimaClientStatus.LoginServer_Connecting;
+            bool success = _ClientNetwork.Connect(_host, _port);
             if (success)
             {
-                Status = UltimaClientStatus.LoginServer_Connecting;
+                Status = UltimaClientStatus.LoginServer_WaitingForLogin;
                 _ClientNetwork.Send(new SeedPacket(1, 6, 0, 6, 2));
             }
+            else
+            {
+                Status = UltimaClientStatus.Error_CannotConnect;
+            }
             return success;
+        }
+
+        public static void Login()
+        {
+            Status = UltimaClientStatus.LoginServer_LoggingIn;
+            Send(new Network.Packets.Client.LoginPacket(_account, _password));
         }
 
         public static void Disconnect()
@@ -156,7 +172,7 @@ namespace UltimaXNA.Client
             if (_ClientNetwork.IsConnected)
                 _ClientNetwork.Disconnect();
             Status = UltimaClientStatus.Unconnected;
-            clearAccountPassword();
+            clearLoginData();
         }
 
         public static void Send(ISendPacket packet)
@@ -741,7 +757,7 @@ namespace UltimaXNA.Client
             // actually need to do this.
             _ClientNetwork.IsDecompressionEnabled = true;
             Send(new GameLoginPacket(p.AccountId, _account, _password));
-            clearAccountPassword();
+            clearLoginData();
         }
 
         private static void receive_SkillsList(IRecvPacket packet)

@@ -78,7 +78,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             if (_textChanged)
             {
                 _textChanged = false;
-                _texture = Data.UniText.GetTextTexture(Text, 1, false);
+                _texture = Data.UniText.GetTexture(Text, Area.Width, Area.Height);
             }
 
             if (_manager.KeyboardFocusControl == this)
@@ -89,7 +89,7 @@ namespace UltimaXNA.UILegacy.Gumplings
                     _isBlinkOn = true;
                     _secondsSinceLastBlink = 0f;
                 }
-                _secondsSinceLastBlink += ((float)gameTime.ElapsedRealTime.Milliseconds / 1000f);
+                _secondsSinceLastBlink += ((float)gameTime.ElapsedRealTime.TotalSeconds);
                 if (_secondsSinceLastBlink >= _SecondsPerBlink)
                 {
                     _secondsSinceLastBlink -= _SecondsPerBlink;
@@ -113,7 +113,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             if (_isBlinkOn)
             {
                 spriteBatch.Draw(_texture, new Vector2(Area.X, Area.Y), HueColor(Hue));
-                Texture2D caratTexture = Data.UniText.GetTextTexture("|", 1, false);
+                Texture2D caratTexture = Data.UniText.GetTexture("|");
                 spriteBatch.Draw(caratTexture, new Vector2(Area.X + _texture.Width, Area.Y), HueColor(Hue));
             }
             else

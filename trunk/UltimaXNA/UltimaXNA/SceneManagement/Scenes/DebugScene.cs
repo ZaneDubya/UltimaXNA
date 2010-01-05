@@ -62,7 +62,6 @@ namespace UltimaXNA.SceneManagement
 
         public override void Draw(GameTime gameTime)
         {
-            base.Draw(gameTime);
             World.Draw(gameTime);
         }
 
