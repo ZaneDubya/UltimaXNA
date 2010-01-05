@@ -33,16 +33,13 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         public override void Update(GameTime gameTime)
         {
-            if (_texture == null)
-            {
-                _texture = Data.ASCIIText.GetTextTexture(Text, FontID);
-                Size = new Vector2(_texture.Width, _texture.Height);
-            }
             base.Update(gameTime);
         }
 
         public override void Draw(UltimaXNA.Graphics.ExtendedSpriteBatch spriteBatch)
         {
+            if (_texture == null)
+                _texture = Data.ASCIIText.GetTextTexture(Text, FontID);
             spriteBatch.Draw(_texture, new Vector2(Area.X, Area.Y), HueColor(Hue, true));
             base.Draw(spriteBatch);
         }

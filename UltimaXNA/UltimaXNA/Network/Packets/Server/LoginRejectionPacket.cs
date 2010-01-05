@@ -24,6 +24,17 @@ using System.Text;
 
 namespace UltimaXNA.Network.Packets.Server
 {
+    // RunUO (Packets.cs:3402)
+    public enum LoginRejectionReasons : byte
+    {
+        InvalidAccountPassword = 0x00,
+        AccountInUse = 0x01,
+        AccountBlocked = 0x02,
+        BadPassword = 0x03,
+        IdleExceeded = 0xFE,
+        BadCommuncation = 0xFF
+    }
+
     public class LoginRejectionPacket : RecvPacket
     {
         private static Pair<int, string>[] _Reasons = new Pair<int, string>[] {
@@ -37,7 +48,7 @@ namespace UltimaXNA.Network.Packets.Server
 
         byte _id;
 
-        public string Reason
+        public string ReasonText
         {
             get
             {
@@ -50,6 +61,11 @@ namespace UltimaXNA.Network.Packets.Server
                 }
                 return (_Reasons[_Reasons.Length - 1].ItemB);
             }
+        }
+
+        public LoginRejectionReasons Reason
+        {
+            get { return (LoginRejectionReasons)_id; }
         }
 
         public LoginRejectionPacket(PacketReader reader)

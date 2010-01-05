@@ -53,13 +53,14 @@ namespace UltimaXNA.SceneManagement
                 switch (UltimaClient.Status)
                 {
                     case UltimaClientStatus.Unconnected:
-                        // connecting takes a minute and we want to make sure the gump draws itself before pausing that long.
                         UltimaClient.Connect();
                         break;
                     case UltimaClientStatus.LoginServer_Connecting:
                         // connecting ...
                         break;
                     case UltimaClientStatus.LoginServer_WaitingForLogin:
+                        // show 'verifying account...' gump
+                        UI.GetGump<UILegacy.Clientside.LoggingInGump>(0).ActivePage = 9;
                         UltimaClient.Login();
                         break;
                     case UltimaClientStatus.LoginServer_LoggingIn:
@@ -69,9 +70,27 @@ namespace UltimaXNA.SceneManagement
                         // we've connected!
                         SceneManager.CurrentScene = new WorldScene(Game);
                         break;
-                    case UltimaClientStatus.Error_CannotConnect:
+                    case UltimaClientStatus.Error_CannotConnectToServer:
                         UI.GetGump<UILegacy.Clientside.LoggingInGump>(0).ActivePage = 2;
                         // could not connect to server.
+                        break;
+                    case UltimaClientStatus.Error_InvalidUsernamePassword:
+                        UI.GetGump<UILegacy.Clientside.LoggingInGump>(0).ActivePage = 3;
+                        break;
+                    case UltimaClientStatus.Error_InUse:
+                        UI.GetGump<UILegacy.Clientside.LoggingInGump>(0).ActivePage = 4;
+                        break;
+                    case UltimaClientStatus.Error_Blocked:
+                        UI.GetGump<UILegacy.Clientside.LoggingInGump>(0).ActivePage = 5;
+                        break;
+                    case UltimaClientStatus.Error_BadPassword:
+                        UI.GetGump<UILegacy.Clientside.LoggingInGump>(0).ActivePage = 6;
+                        break;
+                    case UltimaClientStatus.Error_Idle:
+                        UI.GetGump<UILegacy.Clientside.LoggingInGump>(0).ActivePage = 7;
+                        break;
+                    case UltimaClientStatus.Error_BadCommunication:
+                        UI.GetGump<UILegacy.Clientside.LoggingInGump>(0).ActivePage = 8;
                         break;
                     default:
                         // what's going on here? Add additional error handlers.
