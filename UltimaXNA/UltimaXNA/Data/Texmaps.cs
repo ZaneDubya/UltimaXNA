@@ -51,6 +51,8 @@ namespace UltimaXNA.Data
 
             m_Index.Seek(index, out extra);
 
+            int streamStart = (int)m_Index.BinaryReader.BaseStream.Position;
+
             extra = extra == 0 ? 64 : 128;
 
             ushort[] data = new ushort[extra * extra];
@@ -74,6 +76,8 @@ namespace UltimaXNA.Data
             Texture2D texture = new Texture2D(_graphics, extra, extra, 1, TextureUsage.None, SurfaceFormat.Bgra5551);
 
             texture.SetData<ushort>(data);
+
+            Metrics.ReportDataRead((int)m_Index.BinaryReader.BaseStream.Position - streamStart);
 
             return texture;
         }

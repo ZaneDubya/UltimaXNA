@@ -168,6 +168,8 @@ namespace UltimaXNA.Data
                                 }
                             }
 
+                            Metrics.ReportDataRead(sizeof(UInt16) * height * width);
+
                             return new Bitmap(width, height, bytesPerStride, PixelFormat.Format16bppArgb1555, (IntPtr)pPixelDataStart);
                         }
                     }
@@ -225,6 +227,8 @@ namespace UltimaXNA.Data
                     }
                 }
             }
+
+            Metrics.ReportDataRead(sizeof(UInt16) * height * width);
 
             bmp.UnlockBits(bd);
             return bmp;
@@ -307,6 +311,8 @@ namespace UltimaXNA.Data
                 }
             }
 
+            Metrics.ReportDataRead(sizeof(UInt16) * height * width);
+
             Texture2D iTexture = new Texture2D(_graphicsDevice, width, height, 1, TextureUsage.None, SurfaceFormat.Bgra5551);
             iTexture.SetData(pixels);
             return iTexture;
@@ -364,6 +370,8 @@ namespace UltimaXNA.Data
                     }
                 }
             }
+
+            Metrics.ReportDataRead(sizeof(UInt16) * height * width);
 
             Texture2D iTexture = new Texture2D(_graphicsDevice, width, height);
             iTexture.SetData(pixels);

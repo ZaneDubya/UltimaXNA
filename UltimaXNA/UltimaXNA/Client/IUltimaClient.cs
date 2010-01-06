@@ -16,6 +16,7 @@
  *
  ***************************************************************************/
 #region usings
+using UltimaXNA.Network.Packets.Server;
 #endregion
 
 namespace UltimaXNA.Client
@@ -46,11 +47,13 @@ namespace UltimaXNA.Client
     public interface IUltimaClient
     {
         UltimaClientStatus Status { get; }
-        
+        bool IsConnected { get; }
+
         bool Connect(string ipAddressOrHostName, int port);
         void Disconnect();
         void Send(UltimaXNA.Network.ISendPacket packet);
         void SetAccountPassword(string nAccount, string nPassword);
-        bool IsConnected { get; }
+        
+        ServerListPacket ServerListPacket { get; }
     }
 }

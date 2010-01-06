@@ -130,6 +130,8 @@ namespace UltimaXNA.Data
 
                 while ((line = ip.ReadLine()) != null)
                 {
+                    Metrics.ReportDataRead(line.Length);
+
                     if ((line = line.Trim()).Length == 0 || line.StartsWith("#") || line.StartsWith("\"#"))
                         continue;
 
@@ -373,6 +375,8 @@ namespace UltimaXNA.Data
 
             while ((line = def.ReadLine()) != null)
             {
+                Metrics.ReportDataRead(line.Length);
+
                 if ((line = line.Trim()).Length == 0 || line.StartsWith("#"))
                     continue;
 
@@ -726,6 +730,8 @@ namespace UltimaXNA.Data
                         ushort* cur = dataRef + ((((header >> 12) & 0x3FF) * delta) + ((header >> 22) & 0x3FF));
                         ushort* end = cur + (header & 0xFFF);
 
+                        Metrics.ReportDataRead(header & 0xFFF);
+
                         while (cur < end)
                             *cur++ = palette[bin.ReadByte()];
                     }
@@ -741,6 +747,8 @@ namespace UltimaXNA.Data
 
                         ushort* cur = dataRef + ((((header >> 12) & 0x3FF) * delta) - ((header >> 22) & 0x3FF));
                         ushort* end = cur - (header & 0xFFF);
+
+                        Metrics.ReportDataRead(header & 0xFFF);
 
                         while (cur > end)
                             *cur-- = palette[bin.ReadByte()];

@@ -48,15 +48,17 @@ namespace UltimaXNA.Data
         private static void CreateTexture()
         {
             hueTexture = new Texture2D(graphicsDevice, m_HueTextureWidth, m_HueTextureHeight, 1, TextureUsage.None, SurfaceFormat.Bgra5551);
-            ushort[] iTextData = GetTextureData();
+            ushort[] iTextData = getTextureData();
             hueTexture.SetData(iTextData);
         }
 
-        private static ushort[] GetTextureData()
+        private static ushort[] getTextureData()
         {
             BinaryReader reader = new BinaryReader( FileManager.GetFile( "hues.mul" ) );
             int currentHue = 0;
             ushort[] textureData = new ushort[m_HueTextureWidth * m_HueTextureHeight];
+
+            Metrics.ReportDataRead((int)reader.BaseStream.Length);
 
             while (reader.BaseStream.Position < reader.BaseStream.Length)
             {

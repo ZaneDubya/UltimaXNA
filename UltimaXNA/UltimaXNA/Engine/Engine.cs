@@ -29,12 +29,11 @@ namespace UltimaXNA
 {
     public class Engine : Game
     {
-        private Diagnostics.Logger _logService;
-        private Input.InputState _inputState;
-        private Graphics.UI.UIManager _uiService;
-        private EventSystem.EventEngine _eventService;
-        private SceneManagement.SceneManager _sceneService;
-        private TileEngine.World _worldService;
+        Diagnostics.Logger _logService;
+        Input.InputState _inputState;
+        EventSystem.EventEngine _eventService;
+        SceneManagement.SceneManager _sceneService;
+        TileEngine.World _worldService;
 
         private UILegacy.UIManager _LegacyUI;
 
@@ -62,9 +61,6 @@ namespace UltimaXNA
 
             _LegacyUI = new UltimaXNA.UILegacy.UIManager(this);
             Services.AddService<UILegacy.IUIManager>(_LegacyUI);
-
-            _uiService = new Graphics.UI.UIManager(this);
-            Services.AddService<Graphics.UI.IUIService>(_uiService);
 
             _sceneService = new SceneManagement.SceneManager(this);
             Services.AddService<SceneManagement.ISceneService>(_sceneService);

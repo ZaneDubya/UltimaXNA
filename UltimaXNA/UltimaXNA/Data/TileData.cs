@@ -113,6 +113,8 @@ namespace UltimaXNA.Data
 
                     ItemData[i] = itemData;
                 }
+
+                Metrics.ReportDataRead((int)binaryReader.BaseStream.Position);
             }
         }
     }

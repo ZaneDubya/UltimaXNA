@@ -11,6 +11,8 @@ namespace UltimaXNA.UILegacy.Gumplings
         public int Hue = 0;
         public int EntryID = 0;
         public int LimitSize = 0;
+        public bool IsPasswordField = false;
+
         Texture2D _texture = null;
 
         bool _textChanged = false;
@@ -78,7 +80,10 @@ namespace UltimaXNA.UILegacy.Gumplings
             if (_textChanged)
             {
                 _textChanged = false;
-                _texture = Data.UniText.GetTexture(Text, Area.Width, Area.Height);
+                if (IsPasswordField)
+                    _texture = Data.UniText.GetTexture(new string('*', Text.Length), Area.Width, Area.Height);
+                else
+                    _texture = Data.UniText.GetTexture(Text, Area.Width, Area.Height);
             }
 
             if (_manager.KeyboardFocusControl == this)
@@ -108,7 +113,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             base.Update(gameTime);
         }
 
-        public override void Draw(UltimaXNA.Graphics.ExtendedSpriteBatch spriteBatch)
+        public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
             spriteBatch.Draw(_texture, new Vector2(Area.X, Area.Y), HueColor(Hue, false));
 

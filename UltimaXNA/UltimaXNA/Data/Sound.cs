@@ -106,6 +106,8 @@ namespace UltimaXNA.Data
 
             m_Index.BaseStream.Seek((long)(soundID * 12), SeekOrigin.Begin);
 
+            int streamStart = (int)m_Index.BaseStream.Position;
+
             int offset = m_Index.ReadInt32();
             int length = m_Index.ReadInt32();
             int extra = m_Index.ReadInt32();
@@ -140,6 +142,9 @@ namespace UltimaXNA.Data
             Buffer.BlockCopy(buffer, 0, resultBuffer, (waveHeader.Length << 2), buffer.Length);
 
             string str = System.Text.Encoding.ASCII.GetString(stringBuffer); // seems that the null terminator's not being properly recognized :/
+
+            Metrics.ReportDataRead((int)m_Index.BaseStream.Position - streamStart);
+
             return new UOSound(str.Substring(0, str.IndexOf('\0')), new MemoryStream(resultBuffer));
         }
 

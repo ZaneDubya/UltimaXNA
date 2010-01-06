@@ -33,7 +33,6 @@ namespace UltimaXNA.TileEngine
         void Update(GameTime gameTime);
         void Draw(GameTime gameTime);
 
-        bool DEBUG_DrawDebug { get; set; }
         MapObject MouseOverObject { get; }
         MapObject MouseOverGroundTile { get; }
         PickTypes PickType { get; set; }
@@ -41,5 +40,8 @@ namespace UltimaXNA.TileEngine
         int PersonalLightning { get; set; }
         int OverallLightning { get; set; }
         float LightDirection { get; set; }
+
+        bool DEBUG_DrawTileOver { get; set; }
+        bool DEBUG_DrawDebug { get; set; }
     }
 }

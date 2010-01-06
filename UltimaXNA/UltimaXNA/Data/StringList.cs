@@ -72,6 +72,7 @@ namespace UltimaXNA.Data
                     list.Add(new StringEntry(number, text));
                     m_Table[number] = text;
                 }
+                Metrics.ReportDataRead((int)bin.BaseStream.Position);
             }
 
             m_Entries = (StringEntry[])list.ToArray(typeof(StringEntry));

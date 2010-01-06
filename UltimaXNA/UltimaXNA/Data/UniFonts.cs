@@ -70,6 +70,8 @@ namespace UltimaXNA.Data
 
         public void LoadCharacter(BinaryReader reader, GraphicsDevice graphics)
         {
+            int readerStart = (int)reader.BaseStream.Position;
+
             this.XOffset = reader.ReadByte();
             this.YOffset = reader.ReadByte();
             this.Width = reader.ReadByte();
@@ -110,6 +112,8 @@ namespace UltimaXNA.Data
                     }
                 }
             }
+
+            Metrics.ReportDataRead((int)reader.BaseStream.Position - readerStart);
         }
     }
 

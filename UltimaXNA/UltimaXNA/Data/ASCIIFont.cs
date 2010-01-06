@@ -239,6 +239,7 @@ namespace UltimaXNA.Data
                                 }
                             }
                         }
+                        Metrics.ReportDataRead((int)reader.BaseStream.Position);
                     }
                 }
             }

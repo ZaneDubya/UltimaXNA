@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UltimaXNA.UILegacy.Gumplings;
-using UltimaXNA.Graphics;
 
 namespace UltimaXNA.UILegacy.Clientside
 {

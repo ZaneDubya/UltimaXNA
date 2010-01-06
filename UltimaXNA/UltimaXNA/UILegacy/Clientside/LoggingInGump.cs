@@ -11,6 +11,7 @@ namespace UltimaXNA.UILegacy.Clientside
 
     enum LoggingInGumpButtons
     {
+        QuitButton,
         CancelLoginButton,
         OKNoLoginButton
     }
@@ -27,6 +28,10 @@ namespace UltimaXNA.UILegacy.Clientside
             // backdrop
             this.AddGumpling(new GumpPicTiled(this, 0, 0, 0, 640, 480, 9274));
             this.AddGumpling(new GumpPic(this, 0, 0, 0, 9003, 0));
+            // quit button
+            this.AddGumpling(new Button(this, 0, 554, 2, 5513, 5515, 1, 0, (int)LoggingInGumpButtons.QuitButton));
+            ((Button)_controls[_controls.Count - 1]).GumpOverID = 5514;
+            // center message window backdrop
             this.AddGumpling(new ResizePic(this, 0, 116, 95, 2600, 408, 288));
 
             // Page 1 - Connecting... with cancel login button
@@ -79,6 +84,9 @@ namespace UltimaXNA.UILegacy.Clientside
         {
             switch ((LoggingInGumpButtons)(((Button)c).ButtonID))
             {
+                case LoggingInGumpButtons.QuitButton:
+                    Quit();
+                    break;
                 case LoggingInGumpButtons.CancelLoginButton:
                     OnCancelLogin();
                     break;

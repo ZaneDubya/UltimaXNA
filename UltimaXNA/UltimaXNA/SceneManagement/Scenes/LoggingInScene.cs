@@ -66,6 +66,9 @@ namespace UltimaXNA.SceneManagement
                     case UltimaClientStatus.LoginServer_LoggingIn:
                         // logging in ...
                         break;
+                    case UltimaClientStatus.LoginServer_HasServerList:
+                        SceneManager.CurrentScene = new SelectServerScene(Game);
+                        break;
                     case UltimaClientStatus.WorldServer_InWorld:
                         // we've connected!
                         SceneManager.CurrentScene = new WorldScene(Game);
@@ -94,7 +97,7 @@ namespace UltimaXNA.SceneManagement
                         break;
                     default:
                         // what's going on here? Add additional error handlers.
-                        break;
+                        throw (new Exception("Unknown UltimaClientStatus in LoggingInScene:Update"));
                 }
             }
         }
