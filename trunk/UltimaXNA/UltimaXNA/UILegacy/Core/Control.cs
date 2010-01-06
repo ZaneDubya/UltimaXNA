@@ -362,17 +362,37 @@ namespace UltimaXNA.UILegacy
 
         }
 
-        internal Color HueColor(int hue, bool hueOnlyGreyPixels)
+        internal Color GumpColorHue(int hue, bool hueOnlyGreyPixels)
         {
             if (hue == 0)
                 return Color.White;
             else
             {
+                // max hue is 0xFFF, 12 bits. Pack these 12 bits into RG. B is the flag byte.
                 Color c = new Color(0, 0, 0, 255);
-                c.R = (byte)(hue & 0x000000FF);
-                c.G = (byte)((hue & 0x0000FF00) >> 8);
+                c.R = (byte)((hue & 0x003F) << 2);
+                c.G = (byte)((hue & 0x0FC0) >> 4);
                 if (hueOnlyGreyPixels)
                     c.B |= 0x1;
+                return c;
+            }
+        }
+
+        internal Color GumpColorReal(Color color)
+        {
+            if (color == Color.White)
+                return Color.White;
+            else
+            {
+                // pack the color into RGB565
+                int packed = ((color.R & 0xE0) >> 3) + ((color.G & 0xF0) << 3) + ((color.B & 0xE0) << 8);
+
+                Color c = new Color(0, 0, 0, 255);
+                c.R = (byte)(packed & 0x000000FF);
+                c.G = (byte)((packed & 0x0000FF00) >> 8);
+                c.B |= 0x2; // flag for unpacking a color
+                // if (hueOnlyGreyPixels)
+                //     c.B |= 0x1;
                 return c;
             }
         }

@@ -30,32 +30,59 @@ struct VS_OUTPUT
     float4 Color	: COLOR0;
 };
 
+float3 DecodeR5G6B5(float2 packed)
+{
+	// from http://theinstructionlimit.com/?p=33
+	// scale up to 8-bit
+	packed *= 255.0f;
+ 
+	// round and split the packed bits
+	float2 split = round(packed);
+	split.x /= 32; // low g in int(3bits), r in frac(5bits).
+	split.y /= 8; // b in int(5bits), high g in frac(3bits).
+	
+	float3 rgb16 = 0.0f.rrr;
+	rgb16.r = frac(split.x);
+	rgb16.g = frac(split.y) + floor(split.x) / 64;
+	rgb16.b = floor(split.y) / 32;
+	return rgb16;
+}
+
 float4 PixelShaderFunction(VS_OUTPUT IN) : COLOR0
 {
     float4 color = tex2D(DiffuseSampler, IN.TexCoord);
     
     if (!all(IN.Color == 1))
     {
-		// This is a hued color
-		float HueShade = lerp(0, 255, IN.Color.r) + lerp(0, 255, IN.Color.g) * 256;
-		hueout = HueShade;
-		float OtherValue = lerp(0, 255, IN.Color.b);
+		float Flags = round(IN.Color.b * 255.0f);
 		
-		float y = (((HueShade - (HueShade % 2)) / HuesPerRow) / (HuesPerColumn));
-		float x = ((color.r + color.g + color.b) / 3.0f / HuesPerRow + (HueShade % 2) * 0.5f).r;
-		
-		float4 hue = tex2D(HueSampler, float2(x, y));
-
-		// Is it a Partial Hue?
-		if (OtherValue != 0) 
+		if (round(Flags) == 2) 
 		{
-			if (color.r == color.g && color.r == color.b && color.a != 0)
-			color.rgb = hue.rgb;		
+			// This is a real color packed in rgb565
+			color.rgb = DecodeR5G6B5(IN.Color.rg);
 		}
-		//Else its a normal Hue
-		else 
+		else if (round(Flags) == 1)
 		{
-			color.rgb = hue.rgb;
+			// This is a hued color
+			float2 hueBytes = round(IN.Color.rg * 63.0f);
+			float hueIndex = (hueBytes.x) + floor(hueBytes.y) * 64.0f;
+			
+			float y = (((hueIndex - (hueIndex % 2)) / HuesPerRow) / HuesPerColumn);
+			float x = 0.0f; //((color.r + color.g + color.b) / 3.0f / HuesPerRow + (hueIndex % 2) * 0.5f).r;
+			
+			float4 hue = tex2D(HueSampler, float2(x, y));
+
+			// Is it a Partial Hue?
+			if (Flags && 0x1 == 0x1) 
+			{
+				if (color.r == color.g && color.r == color.b && color.a != 0)
+				color.rgb = hue.rgb;		
+			}
+			//Else its a normal Hue
+			else 
+			{
+				color.rgb = hue.rgb;
+			}
 		}
     }
 

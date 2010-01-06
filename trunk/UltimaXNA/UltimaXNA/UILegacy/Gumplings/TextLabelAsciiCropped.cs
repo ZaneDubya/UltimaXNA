@@ -41,7 +41,7 @@ namespace UltimaXNA.UILegacy.Gumplings
         {
             if (_texture == null)
                 _texture = Data.ASCIIText.GetTextTexture(Text, FontID, Area.Width);
-            spriteBatch.Draw(_texture, new Vector2(Area.X, Area.Y), HueColor(Hue, true));
+            spriteBatch.Draw(_texture, new Vector2(Area.X, Area.Y), GumpColorHue(Hue, true));
             base.Draw(spriteBatch);
         }
     }

@@ -290,6 +290,19 @@ namespace UltimaXNA.UILegacy
 
             for (int iButton = 0; iButton < 5; iButton++)
             {
+                // MouseOver event.
+                if (_mouseOverControls != null)
+                {
+                    for (int iControl = 0; iControl < _mouseOverControls.Length; iControl++)
+                    {
+                        if (_mouseOverControls[iControl].HandlesMouseInput)
+                        {
+                            _mouseOverControls[iControl].MouseOver(_input.CurrentMousePosition);
+                            break;
+                        }
+                    }
+                }
+
                 if (_mouseOverControls != null)
                 {
                     // MouseDown event.
@@ -327,19 +340,6 @@ namespace UltimaXNA.UILegacy
                 if (_input.IsMouseButtonUp((MouseButtons)iButton))
                 {
                     _mouseDownControl[iButton] = null;
-                }
-            }
-
-            // MouseOver event.
-            if (_mouseOverControls != null)
-            {
-                for (int iControl = 0; iControl < _mouseOverControls.Length; iControl++)
-                {
-                    if (_mouseOverControls[iControl].HandlesMouseInput)
-                    {
-                        _mouseOverControls[iControl].MouseOver(_input.CurrentMousePosition);
-                        break;
-                    }
                 }
             }
 
