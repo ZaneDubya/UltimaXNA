@@ -87,6 +87,7 @@ namespace UltimaXNA
         public static GraphicsDevice Graphics;
 
         static bool DEBUG_BreakdownDataRead = false;
+        static bool DEBUG_DisplayFPS = false;
 
         public static void Initialize(Game game)
         {
@@ -106,6 +107,8 @@ namespace UltimaXNA
 
         public static void Update(GameTime gameTime)
         {
+            parseKeyboardAlways();
+
             if (InWorld)
             {
                 // Set the target frame stuff.
@@ -114,7 +117,7 @@ namespace UltimaXNA
                 //    ((UI.Window_StatusFrame)UserInterface.Window("StatusFrame")).TargetEntity = EntitiesCollection.GetObject<Mobile>(LastTarget, false);
 
                 // Parse keyboard input.
-                parseKeyboard();
+                parseKeyboardInWorld();
 
                 // Get a pick type for the cursor.
                 if (_legacyUI.IsMouseOverUI)
@@ -459,7 +462,18 @@ namespace UltimaXNA
             }
         }
 
-        private static void parseKeyboard()
+        static void parseKeyboardAlways()
+        {
+            if (_input.IsKeyDown(Keys.LeftAlt))
+            {
+                if (_input.IsKeyPress(Keys.D))
+                    DEBUG_BreakdownDataRead = Utility.ToggleBoolean(DEBUG_BreakdownDataRead);
+                if (_input.IsKeyPress(Keys.F))
+                    DEBUG_DisplayFPS = Utility.ToggleBoolean(DEBUG_DisplayFPS);
+            }
+        }
+
+        private static void parseKeyboardInWorld()
         {
             // If we are targeting, cancel the target cursor if we hit escape.
             if (isTargeting)
@@ -514,12 +528,6 @@ namespace UltimaXNA
                     }
                 }
             }
-
-            if (_input.IsKeyDown(Keys.LeftAlt))
-            {
-                if (_input.IsKeyPress(Keys.D))
-                    DEBUG_BreakdownDataRead = Utility.ToggleBoolean(DEBUG_BreakdownDataRead);
-            }
         }
 
         // Maintain an accurate count of frames per second.
@@ -542,16 +550,19 @@ namespace UltimaXNA
         // Feel free to add or remove variables.
         private static string generateDebugMessage()
         {
-            String debugMessage = string.Format("FPS: {0}", (int)_FPS);
+            String debugMessage = string.Empty;
+            
+            if (DEBUG_DisplayFPS)
+                debugMessage += string.Format("FPS: {0}\n", (int)_FPS);
+            
 
             if (DEBUG_BreakdownDataRead)
-                debugMessage += "\n" + Metrics.DataReadBreakdown;
+                debugMessage += Metrics.DataReadBreakdown;
             else
-                debugMessage += "\nData Read: " + Metrics.TotalDataRead.ToString();
+                debugMessage += "Data Read: " + Metrics.TotalDataRead.ToString() + '\n';
 
             if (InWorld && !_legacyUI.IsMouseOverUI)
             {
-                debugMessage += "\n";
                 debugMessage += string.Format("#Objects: {0}\n", _worldService.ObjectsRendered);
                 debugMessage += string.Format("Warmode: {0}\n", WarMode);
                 if (_worldService.MouseOverObject != null)

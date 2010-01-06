@@ -5,6 +5,13 @@ using UltimaXNA.Input;
 
 namespace UltimaXNA.UILegacy.Gumplings
 {
+    enum ButtonTypes
+    {
+        Default = 0,
+        SwitchPage = 0,
+        Activate = 1
+    }
+
     class Button : Control
     {
         Texture2D _gumpUp = null;
@@ -14,7 +21,7 @@ namespace UltimaXNA.UILegacy.Gumplings
         int _gumpID1 = 0, _gumpID2 = 0, _gumpID3 = 0; // 1 == up, 2 == down, 3 == additional over state, not sent by the server but can be added for clientside gumps.
         public int GumpOverID { set { _gumpID3 = value; } }
 
-        public int ButtonType = 0;
+        public ButtonTypes ButtonType = ButtonTypes.Default;
         public int ButtonParameter = 0;
         public int ButtonID = 0;
 
@@ -49,7 +56,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             Position = new Vector2(x, y);
             _gumpID1 = gumpID1;
             _gumpID2 = gumpID2;
-            ButtonType = buttonType;
+            ButtonType = (ButtonTypes)buttonType;
             ButtonParameter = param;
             ButtonID = buttonID;
         }
@@ -113,13 +120,13 @@ namespace UltimaXNA.UILegacy.Gumplings
             {
                 switch (this.ButtonType)
                 {
-                    case 0:
+                    case ButtonTypes.SwitchPage:
                         // switch page
-                        _owner.ChangePage(this);
+                        ChangePage(this.ButtonParameter);
                         break;
-                    case 1:
+                    case ButtonTypes.Activate:
                         // send response
-                        _owner.Activate(this);
+                        ActivateByButton(this.ButtonID);
                         break;
                 }
             }

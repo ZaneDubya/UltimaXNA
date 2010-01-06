@@ -313,7 +313,6 @@ namespace UltimaXNA.UILegacy
                 {
                     if (_mouseDownControl[iButton] != null)
                     {
-                        _mouseDownControl[iButton].MouseUp(_input.CurrentMousePosition, (MouseButtons)iButton);
                         if (_mouseOverControls != null)
                         {
                             if (_mouseOverControls[0] == _mouseDownControl[iButton])
@@ -321,6 +320,7 @@ namespace UltimaXNA.UILegacy
                                 _mouseDownControl[iButton].MouseClick(_input.CurrentMousePosition, (MouseButtons)iButton);
                             }
                         }
+                        _mouseDownControl[iButton].MouseUp(_input.CurrentMousePosition, (MouseButtons)iButton);
                     }
                 }
 

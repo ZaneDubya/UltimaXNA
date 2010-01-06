@@ -28,7 +28,15 @@ namespace UltimaXNA
         public char Character = ' ';
         public bool IsBold = false;
         public bool IsItalic = false;
-        public bool IsUnderlined = false;
+        bool _isUnderlined = false;
+        public bool IsUnderlined
+        {
+            get
+            {
+                return _isUnderlined || (HREF != string.Empty);
+            }
+            set { _isUnderlined = value; }
+        }
         public enumHTMLFonts Font = enumHTMLFonts.Default;
         public enumHTMLAlignments Alignment = enumHTMLAlignments.Default;
         public Color Color = Color.White;
@@ -256,12 +264,17 @@ namespace UltimaXNA
     {
         List<HREFRegion> _regions = new List<HREFRegion>();
 
+        public int Count
+        {
+            get { return _regions.Count; }
+        }
+
         public void AddRegion(Rectangle r, string href)
         {
             _regions.Add(new HREFRegion(r, href, _regions.Count));
         }
 
-        public HREFRegion HREFfromPoint(Point p)
+        public HREFRegion RegionfromPoint(Point p)
         {
             int index = -1;
             for (int i = 0; i < _regions.Count; i++)
@@ -273,6 +286,11 @@ namespace UltimaXNA
                 return null;
             else
                 return _regions[index];
+        }
+
+        public HREFRegion Region(int index)
+        {
+            return _regions[index];
         }
     }
 

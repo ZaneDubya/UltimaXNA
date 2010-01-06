@@ -56,9 +56,9 @@ namespace UltimaXNA.UILegacy.Clientside
             AddGumpling(new TextLabelAscii(this, 0, 183, 421, hue, 9, Utility.VersionString));
         }
 
-        public override void Activate(Control c)
+        public override void ActivateByButton(int buttonID)
         {
-            switch ((LoginGumpButtons)(((Button)c).ButtonID))
+            switch ((LoginGumpButtons)buttonID)
             {
                 case LoginGumpButtons.QuitButton:
                     Quit();
