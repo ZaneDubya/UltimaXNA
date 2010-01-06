@@ -245,21 +245,16 @@ namespace UltimaXNA.Data
 
         public static Texture2D GetTexture(string text)
         {
-            string hash = string.Format("text:{0}", text);
-
-            if (_TextTextureCache == null)
-                _TextTextureCache = new Dictionary<string, Texture2D>();
-
-            if (!_TextTextureCache.ContainsKey(hash))
-            {
-                Texture2D texture = getTexture(text, 0, 0);
-                _TextTextureCache.Add(hash, texture);
-            }
-            return _TextTextureCache[hash];
+            return GetTexture(text, 0, 0);
         }
 
         public static Texture2D GetTexture(string text, int width, int height)
         {
+            return GetTexture(text, width, height, null);
+        }
+
+        public static Texture2D GetTexture(string text, int width, int height, HREFRegions regions)
+        {
             string hash = string.Format("text:{0}", text);
 
             if (_TextTextureCache == null)
@@ -267,15 +262,16 @@ namespace UltimaXNA.Data
 
             if (!_TextTextureCache.ContainsKey(hash))
             {
-                Texture2D texture = getTexture(text, width, height);
+                Texture2D texture = getTexture(text, width, height, regions);
                 _TextTextureCache.Add(hash, texture);
             }
             return _TextTextureCache[hash];
         }
 
-        static Texture2D getTexture(string textToRender, int w, int h)
+        static Texture2D getTexture(string textToRender, int w, int h, HREFRegions regions)
         {
             HTMLReader reader = new HTMLReader(textToRender);
+
             int width = 0, height = 0;
             if (w == 0)
             {
@@ -289,10 +285,11 @@ namespace UltimaXNA.Data
             if (width == 0) // empty text string
                 return new Texture2D(_graphicsDevice, 1, 1);
 
-            Color[] resultData = new Color[width * height];
+            if (regions != null)
+                getHREFRegions(reader, regions);
 
-            int dx = 0;
-            int dy = 0;
+            Color[] resultData = new Color[width * height];
+            int dx = 0, dy = 0;
 
             unsafe
             {
@@ -312,9 +309,7 @@ namespace UltimaXNA.Data
                         {
                             UniCharacter character = font.GetCharacter(c.Character);
                             character.WriteToBuffer(rPtr, ref dx, ref dy, width, font.Height, font.Baseline, c.IsBold, c.IsItalic, c.IsUnderlined, c.Color);
-                            dx += character.Width + 1;
-                            if (c.IsBold)
-                                dx++;
+                            dx += (c.IsBold) ? character.Width + 2 : character.Width + 1;
                         }
                     }
                 }
@@ -323,6 +318,73 @@ namespace UltimaXNA.Data
             Texture2D result = new Texture2D(_graphicsDevice, width, height, 1, TextureUsage.None, SurfaceFormat.Color);
             result.SetData<Color>(resultData);
             return result;
+        }
+
+        static void getHREFRegions(HTMLReader reader, HREFRegions regions)
+        {
+            // variables for the href regions
+            bool hrefRegionOpen = false;
+            Rectangle hrefRegion = new Rectangle();
+            string hrefCurrent = string.Empty;
+            Point hrefOrigin = new Point();
+
+            int dx = 0, dy = 0;
+
+            for (int i = 0; i < reader.Length; ++i)
+            {
+                HTMLCharacter c = reader.Characters[i];
+                UniFont font = _fonts[(int)c.Font];
+
+                if (c.Character == '\n')
+                {
+                    // close the current href tag if one is open.
+                    if (hrefRegionOpen)
+                    {
+                        hrefRegion.Width = (dx - hrefOrigin.X);
+                        hrefRegion.Height = (dy - hrefOrigin.Y);
+                        regions.AddRegion(hrefRegion, hrefCurrent);
+                        hrefRegionOpen = false;
+                        hrefCurrent = string.Empty;
+                    }
+                    dx = 0;
+                    dy += font.Baseline;
+                }
+                else
+                {
+                    UniCharacter character = font.GetCharacter(c.Character);
+
+                    if (c.HREF != hrefCurrent)
+                    {
+                        // close the current href tag if one is open.
+                        if (hrefRegionOpen)
+                        {
+                            hrefRegion.Width = (dx - hrefOrigin.X);
+                            hrefRegion.Height = (dy - hrefOrigin.Y);
+                            regions.AddRegion(hrefRegion, hrefCurrent);
+                            hrefRegionOpen = false;
+                            hrefCurrent = string.Empty;
+                        }
+
+                        // did we open a href?
+                        if (c.HREF != string.Empty)
+                        {
+                            hrefRegionOpen = true;
+                            hrefCurrent = c.HREF;
+                            hrefOrigin = new Point(dx, dy);
+                            hrefRegion = new Rectangle(dx, dy, 0, 0);
+                        }
+                    }
+
+                    dx += (c.IsBold) ? character.Width + 2 : character.Width + 1;
+                }
+            }
+            // close the current href tag if one is open.
+            if (hrefRegionOpen)
+            {
+                hrefRegion.Width = (dx - hrefOrigin.X);
+                hrefRegion.Height = (dy - hrefOrigin.Y);
+                regions.AddRegion(hrefRegion, hrefCurrent);
+            }
         }
 
         static void getTextDimensions(HTMLReader reader, int maxwidth, int maxheight, out int width, out int height)
@@ -353,9 +415,11 @@ namespace UltimaXNA.Data
                         for (int j = 0; j < word.Count; j++)
                         {
                             int charwidth = _fonts[(int)word[j].Font].GetCharacter(word[j].Character).Width;
+                            // bold characters are one pixel wider than normal characters.
                             if (c.IsBold)
                                 charwidth++;
 
+                            // italic characters need a little extra width if they are at the end of the line.
                             if (c.IsItalic)
                                 extrawidth = font.Height / 2;
                             else
@@ -364,6 +428,7 @@ namespace UltimaXNA.Data
                                 if (extrawidth < 0)
                                     extrawidth = 0;
                             }
+
                             wordwidth += charwidth + 1;
                         }
                     }
@@ -371,6 +436,7 @@ namespace UltimaXNA.Data
                     // Now make sure this line can fit the word.
                     if (width + wordwidth + extrawidth <= maxwidth)
                     {
+                        // it can fit!
                         width += wordwidth + extrawidth;
                         word.Clear();
                         // if this word is followed by a space, does it fit? If not, drop it entirely and insert \n after the word.
@@ -424,217 +490,6 @@ namespace UltimaXNA.Data
                     *dest++ = Color.Black;
                 }
             }
-        }
-    }
-
-    internal enum enumHTMLAlignments
-    {
-        Default = 0,
-        Left = 0,
-        Center = 1,
-        Right = 2
-    }
-
-    internal enum enumHTMLFonts
-    {
-        Default = 1,
-        Big = 0,
-        Medium = 1,
-        Small = 2
-    }
-
-    internal class HTMLCharacter
-    {
-        public char Character = ' ';
-        public bool IsBold = false;
-        public bool IsItalic = false;
-        public bool IsUnderlined = false;
-        public enumHTMLFonts Font = enumHTMLFonts.Default;
-        public enumHTMLAlignments Alignment = enumHTMLAlignments.Default;
-        public Color Color = Color.White;
-
-        public HTMLCharacter(char character)
-        {
-            Character = character;
-        }
-    }
-
-    internal class HTMLReader
-    {
-        List<HTMLCharacter> _characters;
-        public List<HTMLCharacter> Characters
-        {
-            get
-            {
-                return _characters;
-            }
-        }
-
-        public string Text
-        {
-            get
-            {
-                string text = string.Empty;
-                for (int i = 0; i < _characters.Count; i++)
-                {
-                    text += _characters[i].Character;
-                }
-                return text;
-            }
-        }
-
-        public int Length
-        {
-            get
-            {
-                return _characters.Count;
-            }
-        }
-
-        public HTMLReader(string inText)
-        {
-            _characters = decodeHTML(inText);
-        }
-
-        List<HTMLCharacter> decodeHTML(string inText)
-        {
-            List<HTMLCharacter> outText = new List<HTMLCharacter>();
-            List<string> openTags = new List<string>();
-            Color currentColor = Color.White;
-
-            // search for tags
-            for (int i = 0; i < inText.Length; i++)
-            {
-                if (inText[i] == '<')
-                {
-                    bool isClosing = false;
-                    string tag = readHTMLTag(inText, ref i, ref isClosing);
-                    switch (tag)
-                    {
-                        case "BR":
-                            HTMLCharacter c = new HTMLCharacter('\n');
-                            outText.Add(c);
-                            break;
-                        case "B":
-                            editOpenTags(openTags, isClosing, "b");
-                            break;
-                        case "I":
-                            editOpenTags(openTags, isClosing, "i");
-                            break;
-                        case "U":
-                            editOpenTags(openTags, isClosing, "u");
-                            break;
-                        case "BIG":
-                            editOpenTags(openTags, isClosing, "big");
-                            break;
-                        case "SMALL":
-                            editOpenTags(openTags, isClosing, "small");
-                            break;
-                        default:
-                            // this might be a basefont tag...
-                            if (tag.Length > 8 && tag.StartsWith("BASEFONT"))
-                            {
-                                string[] subtags = tag.Split(' ');
-                                // go through each tag
-                                for (int j = 1; j < subtags.Length; j++)
-                                {
-                                    string subtag = subtags[j];
-                                    if (subtag.Length == 13 && subtag.StartsWith("COLOR=#"))
-                                    {
-                                        // get the color! we expect a six character color, which is why
-                                        // we specified .Length == 13 in the above if statement.
-                                        string color = subtag.Substring(7, subtag.Length - 7);
-                                        // convert the hex values to colors
-                                        currentColor = Utility.ColorFromHexString(color);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                // unknown tag
-                            }
-                            break;
-                    }
-                }
-                else
-                {
-                    // What's left: alignment (center, left, right), hyperlinks
-                    HTMLCharacter c = new HTMLCharacter(inText[i]);
-                    c.IsBold = hasTag(openTags, "b");
-                    c.IsItalic = hasTag(openTags, "i");
-                    c.IsUnderlined = hasTag(openTags, "u");
-                    string fontTag = lastTag(openTags, new string[] { "big", "small" });
-                    switch (fontTag)
-                    {
-                        case "big":
-                            c.Font = enumHTMLFonts.Big;
-                            break;
-                        case "small":
-                            c.Font = enumHTMLFonts.Small;
-                            break;
-                    }
-                    c.Color = currentColor;
-                    outText.Add(c);
-                }
-            }
-
-            return outText;
-        }
-
-        static bool hasTag(List<string> tags, string tag)
-        {
-            if (tags.IndexOf(tag) != -1)
-                return true;
-            else
-                return false;
-        }
-
-        static void editOpenTags(List<string> tags, bool isClosing, string tag)
-        {
-            if (!isClosing)
-            {
-                tags.Add(tag);
-            }
-            else
-            {
-                int i = tags.LastIndexOf(tag);
-                if (i != -1)
-                {
-                    tags.RemoveAt(i);
-                }
-            }
-        }
-
-        static string lastTag(List<string> tags, string[] checkTags)
-        {
-            int index = int.MaxValue;
-            string tag = string.Empty;
-
-            for (int i = 0; i < checkTags.Length; i++)
-            {
-                int j = tags.LastIndexOf(checkTags[i]);
-                if (j != -1 && j < index)
-                {
-                    index = tags.LastIndexOf(checkTags[i]);
-                    tag = checkTags[i];
-                }
-            }
-
-            return tag;
-        }
-
-        string readHTMLTag(string text, ref int i, ref bool isClosingTag)
-        {
-            if (text[i + 1] == '/')
-            {
-                i = i + 1;
-                isClosingTag = true;
-            }
-
-            int closingBracket = text.IndexOf('>', i);
-            string tag = text.Substring(i + 1, closingBracket - i - 1);
-            i = closingBracket;
-            return tag.ToUpper();
         }
     }
 }
