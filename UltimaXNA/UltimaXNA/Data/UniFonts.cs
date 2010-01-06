@@ -237,7 +237,11 @@ namespace UltimaXNA.Data
                 }
 
                 for (int iFont = 0; iFont < 7; iFont++)
+                {
+                    if (_fonts[iFont] == null)
+                        continue;
                     _fonts[iFont].Height = maxHeight;
+                }
             }
         }
 

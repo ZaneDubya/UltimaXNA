@@ -178,6 +178,9 @@ namespace UltimaXNA.TileEngine
 
         private void render()
         {
+            if (GameState.IsMinimized)
+                return;
+
             if (_isFirstUpdate)
             {
                 _isFirstUpdate = false;

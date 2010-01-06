@@ -34,12 +34,11 @@ namespace UltimaXNA
         EventSystem.EventEngine _eventService;
         SceneManagement.SceneManager _sceneService;
         TileEngine.World _worldService;
-
-        private UILegacy.UIManager _LegacyUI;
+        UILegacy.UIManager _LegacyUIService;
 
         public Engine()
         {
-            m_SetupGraphicsDeviceManager();
+            setupGraphicsDeviceManager();
         }
 
         protected override void Initialize()
@@ -59,8 +58,8 @@ namespace UltimaXNA
             _eventService = new EventSystem.EventEngine(this);
             Services.AddService<EventSystem.IEventService>(_eventService);
 
-            _LegacyUI = new UltimaXNA.UILegacy.UIManager(this);
-            Services.AddService<UILegacy.IUIManager>(_LegacyUI);
+            _LegacyUIService = new UltimaXNA.UILegacy.UIManager(this);
+            Services.AddService<UILegacy.IUIManager>(_LegacyUIService);
 
             _sceneService = new SceneManagement.SceneManager(this);
             Services.AddService<SceneManagement.ISceneService>(_sceneService);
@@ -92,6 +91,7 @@ namespace UltimaXNA
         {
             if (!GameState.EngineRunning)
                 Exit();
+            GameState.IsMinimized = isMinimized();
 
             base.Update(gameTime);
 
@@ -103,7 +103,6 @@ namespace UltimaXNA
                 GameState.Update(gameTime);
                 Entities.EntitiesCollection.Update(gameTime);
                 _sceneService.Update(gameTime);
-
                 GameState.UpdateAfter(gameTime);
             }
         }
@@ -114,8 +113,18 @@ namespace UltimaXNA
             base.Draw(gameTime);
         }
 
+        bool isMinimized()
+        {
+            //Get out top level form via the handle.
+            System.Windows.Forms.Control MainForm = System.Windows.Forms.Form.FromHandle(Window.Handle);
+            //If we are minimized don't waste time trying to draw, and avoid crash on resume.
+            if (((System.Windows.Forms.Form)MainForm).WindowState == System.Windows.Forms.FormWindowState.Minimized)
+                return true;
+            return false;
+        }
+
         // Some settings to designate a screen size and fps limit.
-        private void m_SetupGraphicsDeviceManager()
+        void setupGraphicsDeviceManager()
         {
             GraphicsDeviceManager graphicsDeviceManager = new GraphicsDeviceManager(this);
             graphicsDeviceManager.PreferredBackBufferWidth = 800;
@@ -125,7 +134,7 @@ namespace UltimaXNA
             this.IsFixedTimeStep = false;
             graphicsDeviceManager.ApplyChanges();
         }
-        private static void OnPreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
+        static void OnPreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
         {
             e.GraphicsDeviceInformation.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
         }
@@ -133,7 +142,7 @@ namespace UltimaXNA
         /// <summary>
         /// Invokes "public static void Initialize(Game game)" for each type that contains this function
         /// </summary>
-        private void InvokeInitializers()
+        void InvokeInitializers()
         {
             // First initialize some of the local data classes.
             Data.AnimationsXNA.Initialize(GraphicsDevice);
@@ -189,7 +198,7 @@ namespace UltimaXNA
 
         #region EntryPoint
         [STAThread]
-        private static void Main(string[] args)
+        static void Main(string[] args)
         {
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
             using (Engine engine = new Engine())

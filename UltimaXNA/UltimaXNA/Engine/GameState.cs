@@ -81,6 +81,7 @@ namespace UltimaXNA
         public static bool InWorld { get; set; }
         // Set EngineRunning to false to cause the engine to immediately exit.
         public static bool EngineRunning { get; set; }
+        public static bool IsMinimized { get; set; }
         
         // These are for hidden fun stuff
         public static MethodHook OnLeftClick, OnLeftOver, OnRightClick, OnRightOver, OnUpdate;
