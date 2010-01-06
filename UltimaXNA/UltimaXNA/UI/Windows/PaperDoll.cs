@@ -184,7 +184,7 @@ namespace UltimaXNA.UI
             if (mMobileObject.equipment.UpdateTicker != mLastContainerUpdated)
             {
 
-                ((PictureBox)_MyForm["picEquip0"]).Texture = Data.Gumps.GetGumpXNA(0x000C, mMobileObject.Hue, true);
+                // ((PictureBox)_MyForm["picEquip0"]).Texture = Data.Gumps.GetGumpXNA(0x000C, mMobileObject.Hue, true);
 
 				bool hasOuterTorso = mMobileObject.equipment[(int)EquipLayer.OuterTorso] != null && mMobileObject.equipment[(int)EquipLayer.OuterTorso].AnimationDisplayID != 0;
 				// if there is something we need to make sure there is no gump texture left for the items underneath
@@ -215,9 +215,9 @@ namespace UltimaXNA.UI
 							{
 								continue;
 							}
-							((PictureBox)_MyForm[iPicName]).Texture = Data.Gumps.GetGumpXNA (
-								mMobileObject.equipment[i].AnimationDisplayID + 50000,
-								mMobileObject.equipment[i].Hue, true );
+							// ((PictureBox)_MyForm[iPicName]).Texture = Data.Gumps.GetGumpXNA (
+							// 	mMobileObject.equipment[i].AnimationDisplayID + 50000,
+							// 	mMobileObject.equipment[i].Hue, true );
 							((CustomButton)_MyForm[iBtnName]).Disabled = false;
 						}
                     }
@@ -249,7 +249,7 @@ namespace UltimaXNA.UI
                         }
                         else
                         {
-                            ((PictureBox)_MyForm[iPicName]).Texture = Data.Gumps.GetGumpXNA(bodyID, hue, true);
+                            //((PictureBox)_MyForm[iPicName]).Texture = Data.Gumps.GetGumpXNA(bodyID, hue, true);
                         }
                     }
                 }

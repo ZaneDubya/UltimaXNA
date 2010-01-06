@@ -40,12 +40,6 @@ namespace UltimaXNA
         private static IWorld _worldService;
         static IUIManager _legacyUI;
 
-        public static bool WarMode
-        {
-            get { return (EntitiesCollection.GetPlayerObject() != null) ? ((Mobile)EntitiesCollection.GetPlayerObject()).IsWarMode : false; }
-            set { ((Mobile)EntitiesCollection.GetPlayerObject()).IsWarMode = value; }
-        }
-
         private static Serial _lastTarget;
         public static Serial LastTarget
         {
@@ -61,8 +55,16 @@ namespace UltimaXNA
         {
             get { return generateDebugMessage(); }
         }
+        public static bool WarMode
+        {
+            get { return (EntitiesCollection.GetPlayerObject() != null) ? ((Mobile)EntitiesCollection.GetPlayerObject()).IsWarMode : false; }
+            set { ((Mobile)EntitiesCollection.GetPlayerObject()).IsWarMode = value; }
+        }
+
         public static float BackBufferWidth = 0, BackBufferHeight = 0;
         private static bool _MovementFollowsMouse = true,  _ContinuousMoveCheck = false;
+        private static int _cursorHoverTimeMS = 0, _hoverTimeForLabelMS = 1000;
+        public static PickTypes DefaultPickType = PickTypes.PickStatics | PickTypes.PickObjects;
         // Are we asking for a target?
         private static int _TargettingType = -1;
         private static bool isTargeting
@@ -79,14 +81,12 @@ namespace UltimaXNA
         public static bool InWorld { get; set; }
         // Set EngineRunning to false to cause the engine to immediately exit.
         public static bool EngineRunning { get; set; }
-        // These variables move the light source around.
-        
-        private static int _cursorHoverTimeMS = 0, _hoverTimeForLabelMS = 1000;
-        public static PickTypes DefaultPickType = PickTypes.PickStatics | PickTypes.PickObjects;
         
         // These are for hidden fun stuff
         public static MethodHook OnLeftClick, OnLeftOver, OnRightClick, OnRightOver, OnUpdate;
         public static GraphicsDevice Graphics;
+
+        static bool DEBUG_BreakdownDataRead = false;
 
         public static void Initialize(Game game)
         {
@@ -514,6 +514,12 @@ namespace UltimaXNA
                     }
                 }
             }
+
+            if (_input.IsKeyDown(Keys.LeftAlt))
+            {
+                if (_input.IsKeyPress(Keys.D))
+                    DEBUG_BreakdownDataRead = Utility.ToggleBoolean(DEBUG_BreakdownDataRead);
+            }
         }
 
         // Maintain an accurate count of frames per second.
@@ -537,7 +543,12 @@ namespace UltimaXNA
         private static string generateDebugMessage()
         {
             String debugMessage = string.Format("FPS: {0}", (int)_FPS);
-            debugMessage += "\nData: " + Metrics.DataRead.ToString() + "b";
+
+            if (DEBUG_BreakdownDataRead)
+                debugMessage += "\n" + Metrics.DataReadBreakdown;
+            else
+                debugMessage += "\nData Read: " + Metrics.TotalDataRead.ToString();
+
             if (InWorld && !_legacyUI.IsMouseOverUI)
             {
                 debugMessage += "\n";

@@ -234,7 +234,7 @@ namespace UltimaXNA.Data
             return bmp;
         }
 
-        public unsafe static Texture2D GetGumpXNA(int index, int hueIndex, bool onlyHueGreyPixels)
+        public unsafe static Texture2D GetGumpXNA_Depreciated(int index, int hueIndex, bool onlyHueGreyPixels)
         {
             int length, extra;
             bool patched;
