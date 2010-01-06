@@ -30,9 +30,9 @@ namespace UltimaXNA
                 if (_dataReadBreakdown_MustUpdate)
                 {
                     _dataReadBreakdown_MustUpdate = false;
-                    _dataReadBreakdown = string.Empty;
+                    _dataReadBreakdown = "Data Read from HDD:";
                     foreach (NameValuePair p in _dataReadList)
-                        _dataReadBreakdown += p.Name + ": " + p.Value + '\n';
+                        _dataReadBreakdown += '\n' + p.Name + ": " + p.Value;
                 }
                 return _dataReadBreakdown;
             }
