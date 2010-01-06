@@ -544,5 +544,13 @@ namespace UltimaXNA
             return i;
         }
         #endregion
+
+        public static bool ToggleBoolean(bool b)
+        {
+            if (b)
+                return false;
+            else
+                return true;
+        }
     }
 }

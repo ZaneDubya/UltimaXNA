@@ -34,7 +34,9 @@ namespace UltimaXNA.Client
     class UltimaClient
     {
         public static UltimaClientStatus Status { get; protected set; }
+        public static bool IsConnected { get { return _ClientNetwork.IsConnected; } }
 
+        // Account name and Password data.
         protected static string _account, _password;
         protected static string _host;
         protected static int _port;
@@ -45,10 +47,11 @@ namespace UltimaXNA.Client
         static void clearLoginData() { _account = string.Empty; _password = string.Empty; }
 
         static ClientNetwork _ClientNetwork;
-        public static bool IsConnected { get { return _ClientNetwork.IsConnected; } }
-
         static TileEngine.IWorld _worldService;
         static UILegacy.IUIManager _LegacyUI = null;
+
+        static ServerListPacket _serverListPacket;
+        public static ServerListPacket ServerListPacket { get { return _serverListPacket; } }
 
         static UltimaClient()
         {
@@ -165,6 +168,11 @@ namespace UltimaXNA.Client
         {
             Status = UltimaClientStatus.LoginServer_LoggingIn;
             Send(new Network.Packets.Client.LoginPacket(_account, _password));
+        }
+
+        public static void SelectServer(int index)
+        {
+            Send(new SelectServerPacket(index));
         }
 
         public static void Disconnect()
@@ -759,8 +767,8 @@ namespace UltimaXNA.Client
 
         private static void receive_ServerList(IRecvPacket packet)
         {
-            ServerListPacket p = (ServerListPacket)packet;
-            Send(new SelectServerPacket(p.Servers[0].Index));
+            _serverListPacket = (ServerListPacket)packet;
+            Status = UltimaClientStatus.LoginServer_HasServerList;
         }
 
         private static void receive_SetWeather(IRecvPacket packet)

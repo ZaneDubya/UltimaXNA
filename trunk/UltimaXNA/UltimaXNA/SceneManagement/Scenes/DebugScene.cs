@@ -87,6 +87,14 @@ namespace UltimaXNA.SceneManagement
                 _position.TileX++;
                 _position.TileY--;
             }
+            // alt keys to change debug variables.
+            if (Input.IsKeyDown(Keys.LeftAlt))
+            {
+                if (Input.IsKeyPress(Keys.W))
+                {
+                    World.DEBUG_DrawTileOver = Utility.ToggleBoolean(World.DEBUG_DrawTileOver);
+                }
+            }
         }
     }
 }

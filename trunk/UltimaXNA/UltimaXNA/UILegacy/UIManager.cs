@@ -7,7 +7,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using UltimaXNA.Entities;
 using UltimaXNA.Extensions;
-using UltimaXNA.Graphics;
 using UltimaXNA.Input;
 using UltimaXNA.TileEngine;
 

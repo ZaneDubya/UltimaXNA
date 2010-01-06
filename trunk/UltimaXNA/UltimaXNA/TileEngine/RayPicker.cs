@@ -104,7 +104,8 @@ namespace UltimaXNA.TileEngine
             Vector3[] iVertices = new Vector3[nVertices.Length];
             for (int i = 0; i < nVertices.Length; i++)
                 iVertices[i] = nVertices[i].Position;
-            m_PickObjects.Add(new PickingObject(nObject, iVertices));
+            PickingObject o = new PickingObject(nObject, iVertices);
+            m_PickObjects.Add(o);
         }
 
 
@@ -124,8 +125,6 @@ namespace UltimaXNA.TileEngine
             // Keep track of the closest object we have seen so far, so we can
             // choose the closest one if there are several models under the cursor.
             float closestIntersection = float.MinValue;
-
-            MapCell[] mMapCells = new MapCell[80];
 
             // Loop over all our models.
             foreach (PickingObject iObject in m_PickObjects)
@@ -200,7 +199,7 @@ namespace UltimaXNA.TileEngine
 
             // Start off with a fast bounding sphere test.
 
-            bool iInRange = model.InRange(ray.Position);
+            bool iInRange = true; // model.InRange(ray.Position);
 
             //float? iReturn = boundingSphere.Intersects(ray);
 
@@ -391,6 +390,27 @@ namespace UltimaXNA.TileEngine
         public MapObject Object;
         public Vector3[] Vertices;
 
+        bool _hasCenter = false;
+        Point _center;
+        public Point CenterPoint
+        {
+            get
+            {
+                if (!_hasCenter)
+                {
+                    _hasCenter = true;
+                    float x = 0f, y = 0f;
+                    for (int i = 0; i < Vertices.Length; i++)
+                    {
+                        x += Vertices[i].X;
+                        y += Vertices[i].Y;
+                    }
+                    _center = new Point((int)(x / Vertices.Length), (int)(y / Vertices.Length));
+                }
+                return _center;
+            }
+        }
+
         public PickingObject(MapObject nObject, Vector3[] nVertices)
         {
             Object = nObject;
@@ -406,20 +426,10 @@ namespace UltimaXNA.TileEngine
 
         public bool InRange(Vector3 nPosition)
         {
-            if (Math.Abs(nPosition.X - Vertices[0].X) < m_InRange)
-            {
-                if (Math.Abs(nPosition.Y - Vertices[0].Y) < m_InRange)
-                {
-                    return true;
-                }
-            }
-            if (Math.Abs(nPosition.X - Vertices[3].X) < m_InRange)
-            {
-                if (Math.Abs(nPosition.Y - Vertices[3].Y) < m_InRange)
-                {
-                    return true;
-                }
-            }
+            if (Utility.InRange(new Point((int)Vertices[0].X, (int)Vertices[0].Y), new Point((int)nPosition.X, (int)nPosition.Y), (int)m_InRange))
+                return true;
+            if (Utility.InRange(new Point((int)Vertices[3].X, (int)Vertices[3].Y), new Point((int)nPosition.X, (int)nPosition.Y), (int)m_InRange))
+                return true;
             return false;
         }
     }

@@ -99,6 +99,8 @@ namespace UltimaXNA.Data
 
         public MultiComponentList(BinaryReader reader, int count)
         {
+            int streamStart = (int)reader.BaseStream.Position;
+
             m_Min = m_Max = Point.Empty;
 
             MultiTileEntry[] allTiles = new MultiTileEntry[count];
@@ -160,6 +162,8 @@ namespace UltimaXNA.Data
                         Array.Sort(m_Tiles[x][y]);
                 }
             }
+
+            Metrics.ReportDataRead((int)reader.BaseStream.Position - streamStart);
         }
 
         private MultiComponentList()

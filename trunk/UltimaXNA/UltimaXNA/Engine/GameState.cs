@@ -522,7 +522,7 @@ namespace UltimaXNA
         {
             _Frames++;
             _ElapsedSeconds += (float)gameTime.ElapsedRealTime.TotalSeconds;
-            if (_ElapsedSeconds >= 2f)
+            if (_ElapsedSeconds >= .5f)
             {
                 _FPS = _Frames / _ElapsedSeconds;
                 _ElapsedSeconds = 0;
@@ -537,6 +537,7 @@ namespace UltimaXNA
         private static string generateDebugMessage()
         {
             String debugMessage = string.Format("FPS: {0}", (int)_FPS);
+            debugMessage += "\nData: " + Metrics.DataRead.ToString() + "b";
             if (InWorld && !_legacyUI.IsMouseOverUI)
             {
                 debugMessage += "\n";

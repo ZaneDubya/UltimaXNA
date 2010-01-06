@@ -49,7 +49,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             base.Update(gameTime);
         }
 
-        public override void Draw(UltimaXNA.Graphics.ExtendedSpriteBatch spriteBatch)
+        public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
             spriteBatch.Draw(_bgGump, new Rectangle(Area.X, Area.Y, Area.Width, Area.Height), new Rectangle(0, 0, Area.Width, Area.Height), Color.White);
             base.Draw(spriteBatch);

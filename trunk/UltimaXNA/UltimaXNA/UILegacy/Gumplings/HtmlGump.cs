@@ -46,7 +46,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             _scrollbar = (scrollbar == 1) ? true : false;
         }
 
-        public override void Draw(UltimaXNA.Graphics.ExtendedSpriteBatch spriteBatch)
+        public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
             Texture2D texture = Data.UniText.GetTexture(Text, Area.Width, Area.Height);
             spriteBatch.Draw(texture, new Vector2(Area.X, Area.Y), Color.White);

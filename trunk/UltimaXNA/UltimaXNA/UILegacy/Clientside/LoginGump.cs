@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UltimaXNA.UILegacy.Gumplings;
-using UltimaXNA.Graphics;
 using UltimaXNA.Client;
 
 namespace UltimaXNA.UILegacy.Clientside
@@ -47,6 +46,7 @@ namespace UltimaXNA.UILegacy.Clientside
             this.AddGumpling(g1);
             // password field
             TextEntry g2 = new TextEntry(this, 0, 332, 386, 200, 20, 0, (int)LoginGumpTextFields.Password, 32, "Admin");
+            g2.IsPasswordField = true;
             this.AddGumpling(new ResizePic(this, g2));
             this.AddGumpling(g2);
             // login button

@@ -61,7 +61,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             base.Update(gameTime);
         }
 
-        public override void Draw(UltimaXNA.Graphics.ExtendedSpriteBatch spriteBatch)
+        public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
             int centerWidth = Area.Width - _bgGumps[0].Width - _bgGumps[2].Width;
             int centerHeight = Area.Height - _bgGumps[0].Height - _bgGumps[2].Height;

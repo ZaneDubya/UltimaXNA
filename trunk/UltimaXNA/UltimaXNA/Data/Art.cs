@@ -44,7 +44,7 @@ namespace UltimaXNA.Data
 
             if (data == null)
             {
-                _cache[index][0] = data = ReadLandTexture(index, 0);
+                _cache[index][0] = data = readLandTexture(index, 0);
             }
 
             return data;
@@ -82,7 +82,7 @@ namespace UltimaXNA.Data
             return data;
         }
 
-        private static unsafe Texture2D ReadLandTexture(int index, int hue)
+        private static unsafe Texture2D readLandTexture(int index, int hue)
         {
             _index.Seek(index);
 
@@ -100,6 +100,8 @@ namespace UltimaXNA.Data
                     ushort* start = dataRef + offset;
                     ushort* end = start + count;
 
+                    Metrics.ReportDataRead(count * 2);
+
                     while (start < end)
                     {
                         *start++ = (ushort)(_index.BinaryReader.ReadUInt16() ^ 0x8000);
@@ -113,6 +115,8 @@ namespace UltimaXNA.Data
                 {
                     ushort* start = dataRef + offset;
                     ushort* end = start + count;
+
+                    Metrics.ReportDataRead(count * 2);
 
                     while (start < end)
                     {
@@ -177,6 +181,7 @@ namespace UltimaXNA.Data
             {
                 lookups[i] = (int)(dataStart + (_index.BinaryReader.ReadUInt16() * 2));
             }
+            Metrics.ReportDataRead(height * 2);
 
             Hue hueObject = null;
             hue = (hue & 0x3FFF) - 1;
@@ -203,6 +208,8 @@ namespace UltimaXNA.Data
                     {
                         start += offset;
                         ushort* end = start + count;
+
+                        Metrics.ReportDataRead(count * 2);
 
                         while (start < end)
                         {

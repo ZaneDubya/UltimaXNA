@@ -320,12 +320,16 @@ namespace UltimaXNA.Data
             {
                 m_MapStream.Seek(((x * m_BlockHeight) + y) * 196 + 4, SeekOrigin.Begin);
 
+                int streamStart = (int)m_MapStream.Position;
+
                 Tile[] tiles = new Tile[64];
 
                 fixed (Tile* pTiles = tiles)
                 {
                     NativeMethods.Read(m_MapStream.SafeFileHandle.DangerousGetHandle(), pTiles, 192);
                 }
+
+                Metrics.ReportDataRead((int)m_MapStream.Position - streamStart);
 
                 return tiles;
             }
@@ -400,26 +404,6 @@ namespace UltimaXNA.Data
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /*using System;
 using System.Collections.Generic;

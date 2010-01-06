@@ -33,6 +33,7 @@ namespace UltimaXNA.Data
                 BinaryReader bin = new BinaryReader(index);
                 for (int i = 0; i < Colors.Length; i++)
                     Colors[i] = bin.ReadUInt16();
+                Metrics.ReportDataRead((int)bin.BaseStream.Position);
             }
         }
     }
