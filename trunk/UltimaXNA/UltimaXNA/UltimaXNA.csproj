@@ -357,7 +357,6 @@
     <Compile Include="TileEngine\Objects\MapObjectCorpse.cs" />
     <Compile Include="TileEngine\Objects\MapObjectItem.cs" />
     <Compile Include="TileEngine\MiniMap.cs" />
-    <Compile Include="TileEngine\RayPicker.cs" />
     <Compile Include="TileEngine\Objects\MapObjectGround.cs" />
     <Compile Include="TileEngine\Map.cs" />
     <Compile Include="TileEngine\Objects\MapObjectMobile.cs" />
