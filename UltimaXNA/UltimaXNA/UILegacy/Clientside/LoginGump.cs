@@ -27,7 +27,7 @@ namespace UltimaXNA.UILegacy.Clientside
         public LoginGump()
             : base(0, 0)
         {
-            int hue = 1115;
+            int hue = 1154;
             _renderFullScreen = false;
             // backdrop
             this.AddGumpling(new GumpPic(this, 0, 0, 0, 9001,0));

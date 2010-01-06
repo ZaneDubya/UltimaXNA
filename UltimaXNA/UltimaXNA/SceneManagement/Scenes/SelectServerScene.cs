@@ -45,7 +45,6 @@ namespace UltimaXNA.SceneManagement
             ((UILegacy.Clientside.SelectServerGump)g).OnBackToLoginScreen += this.OnBackToLoginScreen;
             ((UILegacy.Clientside.SelectServerGump)g).OnSelectLastServer += this.OnSelectLastServer;
             ((UILegacy.Clientside.SelectServerGump)g).OnSelectServer += this.OnSelectServer;
-            // UltimaClient.SelectServer(UltimaClient.ServerListPacket.Servers[0].Index);
         }
 
         public override void Update(GameTime gameTime)

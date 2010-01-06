@@ -79,18 +79,25 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
-            if (_clicked && (_hrefClicked == _hrefOver))
-            {
-                // we should edit the texture somehow to indicate that the texture is clicked.
-            }
-
             spriteBatch.Draw(_texture, new Vector2(Area.X, Area.Y), Color.White);
+
+            if (_hrefOver != -1)
+            {
+                HREFRegion r = _hrefRegions.Region(_hrefOver);
+                // we are hovering over a href section.
+                spriteBatch.Draw(_texture, new Vector2(Area.X + r.Area.X, Area.Y + r.Area.Y), r.Area, GumpColorReal(Color.Lime));
+                if (_clicked && (_hrefClicked == _hrefOver))
+                {
+                    // we should edit the texture somehow to indicate that the texture is clicked.
+                }
+            }
 
             base.Draw(spriteBatch);
         }
 
         protected override bool _hitTest(int x, int y)
         {
+            _hrefOver = -1; // this value is changed every frame if we mouse over a region.
             if (_hrefRegions.Count > 0 && _hrefRegions.RegionfromPoint(new Point(x, y)) != null)
                 return true;
             return false;
@@ -117,8 +124,6 @@ namespace UltimaXNA.UILegacy.Gumplings
             HREFRegion r = _hrefRegions.RegionfromPoint(new Point(x, y));
             if (r != null)
                 _hrefOver = r.Index;
-            else
-                _hrefOver = -1;
         }
 
         protected override void _mouseClick(int x, int y, MouseButtons button)

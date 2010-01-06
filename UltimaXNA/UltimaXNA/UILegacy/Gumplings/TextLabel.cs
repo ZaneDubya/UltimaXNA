@@ -52,7 +52,7 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_texture, new Vector2(Area.X, Area.Y), HueColor(Hue, false));
+            spriteBatch.Draw(_texture, new Vector2(Area.X, Area.Y), GumpColorHue(Hue, false));
             base.Draw(spriteBatch);
         }
     }
