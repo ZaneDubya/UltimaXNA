@@ -286,16 +286,22 @@ namespace UltimaXNA.UILegacy
         }
 #endif
 
-        public virtual void Activate(Control c)
+        public virtual void ActivateByButton(int buttonID)
         {
             if (_owner != null)
-                _owner.Activate(c);
+                _owner.ActivateByButton(buttonID);
         }
 
-        public virtual void ChangePage(Control c)
+        public virtual void ActivateByHREF(string href)
         {
             if (_owner != null)
-                _owner.ChangePage(c);
+                _owner.ActivateByHREF(href);
+        }
+
+        public virtual void ChangePage(int pageIndex)
+        {
+            if (_owner != null)
+                _owner.ChangePage(pageIndex);
         }
 
         public void MouseDown(Vector2 position, MouseButtons button)

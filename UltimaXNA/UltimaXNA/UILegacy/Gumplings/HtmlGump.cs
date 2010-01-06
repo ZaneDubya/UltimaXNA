@@ -1,14 +1,31 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using UltimaXNA.Input;
 
 namespace UltimaXNA.UILegacy.Gumplings
 {
     class HtmlGump : Control
     {
-        public string Text = string.Empty;
+        string _text = string.Empty;
+        bool _textChanged = false;
+        public string Text
+        {
+            get { return _text; }
+            set
+            {
+                if (value != _text)
+                {
+                    _textChanged = true;
+                    _text = value;
+                }
+            }
+        }
         bool _background = false;
         bool _scrollbar = false;
+
+        Texture2D _texture = null;
+        HREFRegions _hrefRegions = null;
 
         public HtmlGump(Control owner, int page)
             : base(owner, page)
@@ -46,12 +63,73 @@ namespace UltimaXNA.UILegacy.Gumplings
             _scrollbar = (scrollbar == 1) ? true : false;
         }
 
+        public override void Update(GameTime gameTime)
+        {
+            if (_textChanged || _texture == null)
+            {
+                _textChanged = false;
+                _texture = Data.UniText.GetTexture(Text, Area.Width, Area.Height, ref _hrefRegions);
+                if (_hrefRegions.Count > 0)
+                    HandlesMouseInput = true;
+                else
+                    HandlesMouseInput = false;
+            }
+            base.Update(gameTime);
+        }
+
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
-            Texture2D texture = Data.UniText.GetTexture(Text, Area.Width, Area.Height);
-            spriteBatch.Draw(texture, new Vector2(Area.X, Area.Y), Color.White);
+            if (_clicked && (_hrefClicked == _hrefOver))
+            {
+                // we should edit the texture somehow to indicate that the texture is clicked.
+            }
+
+            spriteBatch.Draw(_texture, new Vector2(Area.X, Area.Y), Color.White);
 
             base.Draw(spriteBatch);
+        }
+
+        protected override bool _hitTest(int x, int y)
+        {
+            if (_hrefRegions.Count > 0 && _hrefRegions.RegionfromPoint(new Point(x, y)) != null)
+                return true;
+            return false;
+        }
+
+        bool _clicked = false;
+        int _hrefClicked = -1;
+        int _hrefOver = -1;
+
+        protected override void _mouseDown(int x, int y, MouseButtons button)
+        {
+            _clicked = true;
+            _hrefClicked = _hrefOver;
+        }
+
+        protected override void _mouseUp(int x, int y, MouseButtons button)
+        {
+            _clicked = false;
+            _hrefClicked = -1;
+        }
+
+        protected override void _mouseOver(int x, int y)
+        {
+            HREFRegion r = _hrefRegions.RegionfromPoint(new Point(x, y));
+            if (r != null)
+                _hrefOver = r.Index;
+            else
+                _hrefOver = -1;
+        }
+
+        protected override void _mouseClick(int x, int y, MouseButtons button)
+        {
+            if (_hrefClicked == _hrefOver)
+            {
+                if (button == MouseButtons.LeftButton)
+                {
+                    ActivateByHREF(_hrefRegions.Region(_hrefOver).HREF);
+                }
+            }
         }
     }
 }

@@ -80,9 +80,9 @@ namespace UltimaXNA.UILegacy.Clientside
             ((Button)_controls[_controls.Count - 1]).GumpOverID = 1151;
         }
 
-        public override void Activate(Control c)
+        public override void ActivateByButton(int buttonID)
         {
-            switch ((LoggingInGumpButtons)(((Button)c).ButtonID))
+            switch ((LoggingInGumpButtons)buttonID)
             {
                 case LoggingInGumpButtons.QuitButton:
                     Quit();

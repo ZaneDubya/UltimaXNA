@@ -127,10 +127,11 @@ namespace UltimaXNA.Data
             using (StreamReader ip = new StreamReader(path))
             {
                 string line;
+                int totalDataRead = 0;
 
                 while ((line = ip.ReadLine()) != null)
                 {
-                    Metrics.ReportDataRead(line.Length);
+                    totalDataRead += line.Length;
 
                     if ((line = line.Trim()).Length == 0 || line.StartsWith("#") || line.StartsWith("\"#"))
                         continue;
@@ -201,6 +202,7 @@ namespace UltimaXNA.Data
                         list4.Add(anim5);
                     }
                 }
+                Metrics.ReportDataRead(totalDataRead);
             }
 
             _Table1 = new int[max1 + 1];
@@ -372,10 +374,11 @@ namespace UltimaXNA.Data
             StreamReader def = new StreamReader(filePath);
 
             string line;
+            int totalDataRead = 0;
 
             while ((line = def.ReadLine()) != null)
             {
-                Metrics.ReportDataRead(line.Length);
+                totalDataRead += line.Length;
 
                 if ((line = line.Trim()).Length == 0 || line.StartsWith("#"))
                     continue;
@@ -404,6 +407,7 @@ namespace UltimaXNA.Data
                 {
                 }
             }
+            Metrics.ReportDataRead(totalDataRead);
         }
     }
 
@@ -718,6 +722,8 @@ namespace UltimaXNA.Data
                 ushort* dataRef = pData;
                 int delta = width;
 
+                int dataRead = 0;
+
                 if (!flip)
                 {
                     dataRef += xBase;
@@ -730,7 +736,7 @@ namespace UltimaXNA.Data
                         ushort* cur = dataRef + ((((header >> 12) & 0x3FF) * delta) + ((header >> 22) & 0x3FF));
                         ushort* end = cur + (header & 0xFFF);
 
-                        Metrics.ReportDataRead(header & 0xFFF);
+                        dataRead += header & 0xFFF;
 
                         while (cur < end)
                             *cur++ = palette[bin.ReadByte()];
@@ -748,7 +754,7 @@ namespace UltimaXNA.Data
                         ushort* cur = dataRef + ((((header >> 12) & 0x3FF) * delta) - ((header >> 22) & 0x3FF));
                         ushort* end = cur - (header & 0xFFF);
 
-                        Metrics.ReportDataRead(header & 0xFFF);
+                        dataRead += header & 0xFFF;
 
                         while (cur > end)
                             *cur-- = palette[bin.ReadByte()];
@@ -756,6 +762,8 @@ namespace UltimaXNA.Data
 
                     xCenter = width - xCenter;
                 }
+
+                Metrics.ReportDataRead(dataRead);
             }
 
             _Center = new Microsoft.Xna.Framework.Point(xCenter, yCenter);

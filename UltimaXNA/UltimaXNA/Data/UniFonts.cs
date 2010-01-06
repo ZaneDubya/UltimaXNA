@@ -63,7 +63,7 @@ namespace UltimaXNA.Data
                 int w = isBold ? Width + 2 : Width + 1;
                 for (int k = 0; k < w; k++)
                 {
-                    *dest++ = Color.White;
+                    *dest++ = color;
                 }
             }
         }
@@ -241,34 +241,47 @@ namespace UltimaXNA.Data
             }
         }
 
-        static Dictionary<string, Texture2D> _TextTextureCache;
+        static Dictionary<string, Texture2D> _TextureCache;
+        static Dictionary<Texture2D, HREFRegions> _hrefRegionsCache;
 
         public static Texture2D GetTexture(string text)
         {
-            return GetTexture(text, 0, 0);
+            return getTexture(text, 0, 0);
         }
 
         public static Texture2D GetTexture(string text, int width, int height)
         {
-            return GetTexture(text, width, height, null);
+            return getTexture(text, width, height);
         }
 
-        public static Texture2D GetTexture(string text, int width, int height, HREFRegions regions)
+        public static Texture2D GetTexture(string text, int width, int height, ref HREFRegions regions)
+        {
+            Texture2D texture = getTexture(text, width, height);
+            regions = _hrefRegionsCache[texture];
+            return texture;
+        }
+
+        static Texture2D getTexture(string text, int width, int height)
         {
             string hash = string.Format("text:{0}", text);
 
-            if (_TextTextureCache == null)
-                _TextTextureCache = new Dictionary<string, Texture2D>();
-
-            if (!_TextTextureCache.ContainsKey(hash))
+            if (_TextureCache == null)
             {
-                Texture2D texture = getTexture(text, width, height, regions);
-                _TextTextureCache.Add(hash, texture);
+                _TextureCache = new Dictionary<string, Texture2D>();
+                _hrefRegionsCache = new Dictionary<Texture2D, HREFRegions>();
             }
-            return _TextTextureCache[hash];
+
+            if (!_TextureCache.ContainsKey(hash))
+            {
+                HREFRegions r = new HREFRegions();
+                Texture2D texture = getTexture_Underlying(text, width, height, r);
+                _TextureCache.Add(hash, texture);
+                _hrefRegionsCache.Add(texture, r);
+            }
+            return _TextureCache[hash];
         }
 
-        static Texture2D getTexture(string textToRender, int w, int h, HREFRegions regions)
+        static Texture2D getTexture_Underlying(string textToRender, int w, int h, HREFRegions regions)
         {
             HTMLReader reader = new HTMLReader(textToRender);
 
@@ -327,6 +340,7 @@ namespace UltimaXNA.Data
             Rectangle hrefRegion = new Rectangle();
             string hrefCurrent = string.Empty;
             Point hrefOrigin = new Point();
+            int hrefHeight = 0;
 
             int dx = 0, dy = 0;
 
@@ -341,7 +355,7 @@ namespace UltimaXNA.Data
                     if (hrefRegionOpen)
                     {
                         hrefRegion.Width = (dx - hrefOrigin.X);
-                        hrefRegion.Height = (dy - hrefOrigin.Y);
+                        hrefRegion.Height = (hrefHeight + hrefHeight - hrefOrigin.Y);
                         regions.AddRegion(hrefRegion, hrefCurrent);
                         hrefRegionOpen = false;
                         hrefCurrent = string.Empty;
@@ -359,7 +373,7 @@ namespace UltimaXNA.Data
                         if (hrefRegionOpen)
                         {
                             hrefRegion.Width = (dx - hrefOrigin.X);
-                            hrefRegion.Height = (dy - hrefOrigin.Y);
+                            hrefRegion.Height = (dy + hrefHeight - hrefOrigin.Y);
                             regions.AddRegion(hrefRegion, hrefCurrent);
                             hrefRegionOpen = false;
                             hrefCurrent = string.Empty;
@@ -372,17 +386,20 @@ namespace UltimaXNA.Data
                             hrefCurrent = c.HREF;
                             hrefOrigin = new Point(dx, dy);
                             hrefRegion = new Rectangle(dx, dy, 0, 0);
+                            hrefHeight = 0;
                         }
                     }
 
                     dx += (c.IsBold) ? character.Width + 2 : character.Width + 1;
+                    if (hrefRegionOpen && font.Height > hrefHeight)
+                        hrefHeight = font.Height;
                 }
             }
             // close the current href tag if one is open.
             if (hrefRegionOpen)
             {
                 hrefRegion.Width = (dx - hrefOrigin.X);
-                hrefRegion.Height = (dy - hrefOrigin.Y);
+                hrefRegion.Height = (dy + hrefHeight - hrefOrigin.Y);
                 regions.AddRegion(hrefRegion, hrefCurrent);
             }
         }

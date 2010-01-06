@@ -98,19 +98,19 @@ namespace UltimaXNA.UILegacy
                 spriteBatch.Draw(_gumpTexture, Position, Color.White);
         }
 
-        public override void Activate(Control c)
+        public override void ActivateByButton(int buttonID)
         {
             int[] switchIDs = new int[0];
             Network.Pair<short, string>[] textEntries = new UltimaXNA.Network.Pair<short,string>[0];
             Client.UltimaClient.Send(new Network.Packets.Client.GumpMenuSelectPacket(
-                this.Serial, this.GumpID, ((Button)c).ButtonID, switchIDs, textEntries));
+                this.Serial, this.GumpID, buttonID, switchIDs, textEntries));
             this.Dispose();
         }
 
-        public override void ChangePage(Control c)
+        public override void ChangePage(int pageIndex)
         {
             // For a gump, Page is the page that is drawing.
-            ActivePage = ((Button)c).ButtonParameter;
+            ActivePage = pageIndex;
         }
 
         public Control AddGumpling(Control c)

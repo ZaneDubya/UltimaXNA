@@ -42,9 +42,10 @@ namespace UltimaXNA.SceneManagement
         {
             base.Intitialize();
             Gump g = UI.AddGump(new UILegacy.Clientside.SelectServerGump(UltimaClient.ServerListPacket), 0, 0);
-            ((UILegacy.Clientside.SelectServerGump)g).OnCancelLogin += this.OnCancelLogin;
-
-            UltimaClient.SelectServer(UltimaClient.ServerListPacket.Servers[0].Index);
+            ((UILegacy.Clientside.SelectServerGump)g).OnBackToLoginScreen += this.OnBackToLoginScreen;
+            ((UILegacy.Clientside.SelectServerGump)g).OnSelectLastServer += this.OnSelectLastServer;
+            ((UILegacy.Clientside.SelectServerGump)g).OnSelectServer += this.OnSelectServer;
+            // UltimaClient.SelectServer(UltimaClient.ServerListPacket.Servers[0].Index);
         }
 
         public override void Update(GameTime gameTime)
@@ -74,10 +75,20 @@ namespace UltimaXNA.SceneManagement
             base.Dispose();
         }
 
-        public void OnCancelLogin()
+        public void OnBackToLoginScreen()
         {
             UltimaClient.Disconnect();
             SceneManager.CurrentScene = new LoginScene(Game);
+        }
+
+        public void OnSelectServer(int index)
+        {
+            UltimaClient.SelectServer(index);
+        }
+
+        public void OnSelectLastServer()
+        {
+            // select the last server.
         }
     }
 }
