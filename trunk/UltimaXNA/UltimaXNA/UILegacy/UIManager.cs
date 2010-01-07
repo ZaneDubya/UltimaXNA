@@ -79,9 +79,6 @@ namespace UltimaXNA.UILegacy
         public UIManager(Game game)
             : base(game)
         {
-            // _spriteBatch = new ExtendedSpriteBatchUI(game.GraphicsDevice);
-            // _spriteBatch.Effect = game.Content.Load<Effect>("Shaders\\Gumps");
-            //_spriteBatch3D = new SpriteBatch3D(game);
             _spriteBatch = new ExtendedSpriteBatch(game);
 
             _controls = new List<Control>();
@@ -91,15 +88,16 @@ namespace UltimaXNA.UILegacy
             _input = game.Services.GetService<IInputService>(true);
         }
 
-        public Gump AddGump(Serial serial, Serial gumpID, string[] gumplings, string[] lines, int x, int y)
+        public Gump AddGump_Server(Serial serial, Serial gumpID, string[] gumplings, string[] lines, int x, int y)
         {
             Gump g = new Gump(serial, gumpID, gumplings, lines);
             g.Position = new Vector2(x, y);
+            g.IsServerGump = true;
             _controls.Add(g);
             return g;
         }
 
-        public Gump AddGump(Gump gump, int x, int y)
+        public Gump AddGump_Local(Gump gump, int x, int y)
         {
             gump.Position = new Vector2(x, y);
             _controls.Add(gump);

@@ -148,6 +148,7 @@
     <Compile Include="EventSystem\IEventService.cs" />
     <Compile Include="Engine\Extensions\CallPriorityComparer.cs" />
     <Compile Include="Engine\GameState.cs" />
+    <Compile Include="SceneManagement\Scenes\CharacterListScene.cs" />
     <Compile Include="SceneManagement\Scenes\DebugScene.cs" />
     <Compile Include="SceneManagement\Scenes\LoggingInScene.cs" />
     <Compile Include="SceneManagement\Scenes\SelectServerScene.cs" />
@@ -155,6 +156,7 @@
     <Compile Include="TileEngine\Interfaces\IWorldRenderer.cs" />
     <Compile Include="TileEngine\MouseOverList.cs" />
     <Compile Include="TileEngine\WireframeRenderer.cs" />
+    <Compile Include="UILegacy\Clientside\CharacterListGump.cs" />
     <Compile Include="UILegacy\Clientside\ContainerGump.cs" />
     <Compile Include="UILegacy\Clientside\DebugGump.cs" />
     <Compile Include="UILegacy\Clientside\LoggingInGump.cs" />

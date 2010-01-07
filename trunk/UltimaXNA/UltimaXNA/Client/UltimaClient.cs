@@ -52,6 +52,8 @@ namespace UltimaXNA.Client
 
         static ServerListPacket _serverListPacket;
         public static ServerListPacket ServerListPacket { get { return _serverListPacket; } }
+        static CharacterCityListPacket _characterListPacket;
+        public static CharacterCityListPacket CharacterListPacket { get { return _characterListPacket; } }
 
         static UltimaClient()
         {
@@ -172,7 +174,19 @@ namespace UltimaXNA.Client
 
         public static void SelectServer(int index)
         {
+            Status = UltimaClientStatus.GameServer_Connecting;
             Send(new SelectServerPacket(index));
+        }
+
+        public static void SelectCharacter(int index)
+        {
+            byte[] iIPAdress = new byte[4] { 127, 0, 0, 1 };
+            int iAddress = BitConverter.ToInt32(iIPAdress, 0);
+
+            if (_characterListPacket.Characters[index].Name != string.Empty)
+            {
+                Send(new LoginCharacterPacket(_characterListPacket.Characters[index].Name, 0, iAddress));
+            }
         }
 
         public static void Disconnect()
@@ -262,22 +276,8 @@ namespace UltimaXNA.Client
 
         private static void receive_CharacterList(IRecvPacket packet)
         {
-            byte[] iIPAdress = new byte[4] { 127, 0, 0, 1 };
-            int iAddress = BitConverter.ToInt32(iIPAdress, 0);
-            CharacterCityListPacket p = (CharacterCityListPacket)packet;
-
-            for (int i = 0; i < 6; i++)
-            {
-                if (p.Characters[i].Name != string.Empty)
-                {
-                    Send(new LoginCharacterPacket(p.Characters[i].Name, 0, iAddress));
-                    return;
-                }
-            }
-
-            Disconnect();
-            UserInterface.Reset();
-            UserInterface.ErrorPopup_Modal("No characters in this account. UltimaXNA does not support character creation yet.");
+            _characterListPacket = (CharacterCityListPacket)packet;
+            Status = UltimaClientStatus.GameServer_AtCharList;
         }
 
         private static void receive_CompressedGump(IRecvPacket packet)
@@ -286,7 +286,7 @@ namespace UltimaXNA.Client
             if (p.HasData)
             {
                 string[] gumpPieces = interpretGumpPieces(p.GumpData);
-                _LegacyUI.AddGump(p.Serial, p.GumpID, gumpPieces, p.TextLines, p.X, p.Y);
+                _LegacyUI.AddGump_Server(p.Serial, p.GumpID, gumpPieces, p.TextLines, p.X, p.Y);
             }
         }
 

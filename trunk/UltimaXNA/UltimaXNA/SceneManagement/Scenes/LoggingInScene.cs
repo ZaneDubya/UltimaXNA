@@ -41,7 +41,7 @@ namespace UltimaXNA.SceneManagement
         public override void Intitialize()
         {
             base.Intitialize();
-            Gump g = UI.AddGump(new UILegacy.Clientside.LoggingInGump(), 0, 0);
+            Gump g = UI.AddGump_Local(new UILegacy.Clientside.LoggingInGump(), 0, 0);
             ((UILegacy.Clientside.LoggingInGump)g).OnCancelLogin += this.OnCancelLogin;
         }
 

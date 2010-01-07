@@ -26,13 +26,14 @@ using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Client;
 using UltimaXNA.Network;
 using UltimaXNA.UILegacy;
+using UltimaXNA.UILegacy.Clientside;
 #endregion
 
 namespace UltimaXNA.SceneManagement
 {
-    public class SelectServerScene : BaseScene
+    public class CharacterListScene : BaseScene
     {
-        public SelectServerScene(Game game)
+        public CharacterListScene(Game game)
             : base(game, true)
         {
 
@@ -41,10 +42,11 @@ namespace UltimaXNA.SceneManagement
         public override void Intitialize()
         {
             base.Intitialize();
-            Gump g = UI.AddGump_Local(new UILegacy.Clientside.SelectServerGump(UltimaClient.ServerListPacket), 0, 0);
-            ((UILegacy.Clientside.SelectServerGump)g).OnBackToLoginScreen += this.OnBackToLoginScreen;
-            ((UILegacy.Clientside.SelectServerGump)g).OnSelectLastServer += this.OnSelectLastServer;
-            ((UILegacy.Clientside.SelectServerGump)g).OnSelectServer += this.OnSelectServer;
+            Gump g = UI.AddGump_Local(new CharacterListGump(UltimaClient.ServerListPacket), 0, 0);
+            ((CharacterListGump)g).OnBackToSelectServer += this.OnBackToSelectServer;
+            ((CharacterListGump)g).OnLoginWithCharacter += this.OnLoginWithCharacter;
+            ((CharacterListGump)g).OnDeleteCharacter += this.OnDeleteCharacter;
+            ((CharacterListGump)g).OnNewCharacter += this.OnNewCharacter;
         }
 
         public override void Update(GameTime gameTime)
@@ -54,48 +56,49 @@ namespace UltimaXNA.SceneManagement
             {
                 switch (UltimaClient.Status)
                 {
-                    case UltimaClientStatus.LoginServer_HasServerList:
-                        // This is where we're supposed to be while waiting to select a server.
-                        break;
-                    case UltimaClientStatus.GameServer_Connecting:
-                        // we are logging in to the shard.
-                        break;
                     case UltimaClientStatus.GameServer_AtCharList:
-                        // we've got the char list
-                        SceneManager.CurrentScene = new CharacterListScene(Game);
+                        // This is where we're supposed to be while waiting to select a character.
+                        break;
+                    case UltimaClientStatus.WorldServer_LoginComplete:
+                        // Almost completed logging in, just waiting for our client object.
                         break;
                     case UltimaClientStatus.WorldServer_InWorld:
-                        // we've connected!
+                        // We're in! Load the world.
                         SceneManager.CurrentScene = new WorldScene(Game);
                         break;
                     default:
                         // what's going on here? Add additional error handlers.
-                        throw (new Exception("Unknown UltimaClientStatus in ServerSelectScene:Update"));
+                        throw (new Exception("Unknown UltimaClientStatus in CharacterListScene:Update"));
                 }
             }
         }
 
         public override void Dispose()
         {
-            UI.GetGump<UILegacy.Clientside.SelectServerGump>(0).Dispose();
+            UI.GetGump<CharacterListGump>(0).Dispose();
             base.Dispose();
         }
 
-        public void OnBackToLoginScreen()
+        public void OnBackToSelectServer()
         {
-            UltimaClient.Disconnect();
-            SceneManager.CurrentScene = new LoginScene(Game);
+            // UltimaClient.Disconnect();
+            // SceneManager.CurrentScene = new LoginScene(Game);
         }
 
-        public void OnSelectServer(int index)
+        public void OnLoginWithCharacter(int index)
         {
-            UI.GetGump<UILegacy.Clientside.SelectServerGump>(0).ActivePage = 2;
-            UltimaClient.SelectServer(index);
+            UI.GetGump<CharacterListGump>(0).ActivePage = 2;
+            UltimaClient.SelectCharacter(index);
         }
 
-        public void OnSelectLastServer()
+        public void OnDeleteCharacter(int index)
         {
-            // select the last server.
+
+        }
+
+        public void OnNewCharacter()
+        {
+
         }
     }
 }

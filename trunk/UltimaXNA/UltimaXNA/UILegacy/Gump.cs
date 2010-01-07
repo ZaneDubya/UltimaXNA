@@ -14,6 +14,8 @@ namespace UltimaXNA.UILegacy
         Serial GumpID;
         string[] _gumpPieces, _gumpLines;
 
+        public bool IsServerGump { get; set; }
+
         public Gump(Serial serial, Serial gumpID)
             : base(null, 0)
         {
@@ -36,6 +38,10 @@ namespace UltimaXNA.UILegacy
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
+            // don't process any server gumps until we're in the world.
+            if (IsServerGump && !GameState.InWorld)
+                return;
+
             // Add any gump pieces that have been given to the gump...
             if (_gumpPieces != null)
             {
@@ -69,18 +75,18 @@ namespace UltimaXNA.UILegacy
 
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
+            // don't process any server gumps until we're in the world.
+            if (IsServerGump && !GameState.InWorld)
+                return;
+            if (_controls.Count == 0)
+                return;
+
             spriteBatch.Flush();
 
             if (_renderFullScreen)
-            {
                 InputMultiplier = (float)spriteBatch.GraphicsDevice.Viewport.Width / (float)Width;
-            }
-
             if (_gumpTarget == null)
-            {
                 _gumpTarget = new RenderTarget2D(spriteBatch.GraphicsDevice, Width, Height, 1, SurfaceFormat.Color);
-            }
-
             
             spriteBatch.GraphicsDevice.SetRenderTarget(0, _gumpTarget);
             spriteBatch.GraphicsDevice.Clear(Color.TransparentBlack);
