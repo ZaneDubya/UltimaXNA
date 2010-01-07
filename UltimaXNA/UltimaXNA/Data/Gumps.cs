@@ -38,6 +38,8 @@ namespace UltimaXNA.Data
         private static byte[] m_StreamBuffer;
         private static byte[] m_ColorTable;
 
+        private static Texture2D[] _cache = new Texture2D[0x10000];
+
         public static void Initialize(GraphicsDevice graphics)
         {
             _graphicsDevice = graphics;
@@ -320,62 +322,66 @@ namespace UltimaXNA.Data
 
         public unsafe static Texture2D GetGumpXNA(int index)
         {
-            int length, extra;
-            bool patched;
-            Stream stream = m_FileIndex.Seek(index, out length, out extra, out patched);
-
-            if (stream == null)
-                return null;
-
-            int width = (extra >> 16) & 0xFFFF;
-            int height = extra & 0xFFFF;
-
-            uint[] pixels = new uint[width * height];
-            BinaryReader bin = new BinaryReader(stream);
-
-            int[] lookups = new int[height];
-            int start = (int)bin.BaseStream.Position;
-
-            for (int i = 0; i < height; ++i)
-                lookups[i] = start + (bin.ReadInt32() * 4);
-
-            fixed (uint* line = &pixels[0])
+            if (_cache[index] == null)
             {
-                for (int y = 0; y < height; ++y)
+                int length, extra;
+                bool patched;
+                Stream stream = m_FileIndex.Seek(index, out length, out extra, out patched);
+
+                if (stream == null)
+                    return null;
+
+                int width = (extra >> 16) & 0xFFFF;
+                int height = extra & 0xFFFF;
+
+                uint[] pixels = new uint[width * height];
+                BinaryReader bin = new BinaryReader(stream);
+
+                int[] lookups = new int[height];
+                int start = (int)bin.BaseStream.Position;
+
+                for (int i = 0; i < height; ++i)
+                    lookups[i] = start + (bin.ReadInt32() * 4);
+
+                fixed (uint* line = &pixels[0])
                 {
-                    bin.BaseStream.Seek(lookups[y], SeekOrigin.Begin);
-
-                    uint* cur = line + (y * width);
-                    uint* end = cur + (width);
-
-                    while (cur < end)
+                    for (int y = 0; y < height; ++y)
                     {
-                        uint color = bin.ReadUInt16();
-                        uint* next = cur + bin.ReadUInt16();
+                        bin.BaseStream.Seek(lookups[y], SeekOrigin.Begin);
 
-                        if (color == 0)
+                        uint* cur = line + (y * width);
+                        uint* end = cur + (width);
+
+                        while (cur < end)
                         {
-                            cur = next;
-                        }
-                        else
-                        {
-                            uint color32 = 0xff000000 + (
-                                ((((color >> 10) & 0x1F) * 0xFF / 0x1F) << 16) |
-                                ((((color >> 5) & 0x1F) * 0xFF / 0x1F) << 8) |
-                                (((color & 0x1F) * 0xFF / 0x1F))
-                                );
-                            while (cur < next)
-                                *cur++ = color32;
+                            uint color = bin.ReadUInt16();
+                            uint* next = cur + bin.ReadUInt16();
+
+                            if (color == 0)
+                            {
+                                cur = next;
+                            }
+                            else
+                            {
+                                uint color32 = 0xff000000 + (
+                                    ((((color >> 10) & 0x1F) * 0xFF / 0x1F) << 16) |
+                                    ((((color >> 5) & 0x1F) * 0xFF / 0x1F) << 8) |
+                                    (((color & 0x1F) * 0xFF / 0x1F))
+                                    );
+                                while (cur < next)
+                                    *cur++ = color32;
+                            }
                         }
                     }
                 }
+
+                Metrics.ReportDataRead(sizeof(UInt16) * height * width);
+
+                Texture2D texture = new Texture2D(_graphicsDevice, width, height);
+                texture.SetData(pixels);
+                _cache[index] = texture;
             }
-
-            Metrics.ReportDataRead(sizeof(UInt16) * height * width);
-
-            Texture2D iTexture = new Texture2D(_graphicsDevice, width, height);
-            iTexture.SetData(pixels);
-            return iTexture;
+            return _cache[index];
         }
     }
 }
