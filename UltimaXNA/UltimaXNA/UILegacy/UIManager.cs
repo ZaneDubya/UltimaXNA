@@ -357,7 +357,16 @@ namespace UltimaXNA.UILegacy
                     List<Keys> specials;
                     _input.GetKeyboardInput(out keys, out specials);
                     if (keys != string.Empty || specials.Count > 0)
-                        _keyboardFocusControl.KeyboardInput(keys, specials);
+                    {
+                        if (_input.IsKeyDown(Keys.LeftAlt) || _input.IsKeyDown(Keys.LeftControl))
+                        {
+                            // do not pass on these keypresse
+                        }
+                        else
+                        {
+                            _keyboardFocusControl.KeyboardInput(keys, specials);
+                        }
+                    }
                 }
             }
         }

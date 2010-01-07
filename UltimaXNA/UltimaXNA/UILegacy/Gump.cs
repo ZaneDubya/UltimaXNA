@@ -138,6 +138,7 @@ namespace UltimaXNA.UILegacy
                         break;
                     case "resizepic":
                         _controls.Add(new Gumplings.ResizePic(this, currentGUMPPage, arguements));
+                        ((Gumplings.ResizePic)_controls[_controls.Count - 1]).CloseOnRightClick = true;
                         break;
                     case "button":
                         _controls.Add(new Gumplings.Button(this, currentGUMPPage, arguements));

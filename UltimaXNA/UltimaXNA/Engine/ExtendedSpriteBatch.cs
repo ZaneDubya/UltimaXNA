@@ -24,7 +24,7 @@ namespace UltimaXNA.UILegacy
 
         public void ResetZ()
         {
-            z = 1000000;
+            z = 2000000;
         }
 
         public void Flush()

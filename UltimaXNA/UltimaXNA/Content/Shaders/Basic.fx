@@ -56,7 +56,7 @@ float4 PixelShader(PS_INPUT IN) : COLOR0
 	{
 		float hueX = abs(IN.Hue.x);
 		float hueY = (((hueX - (hueX % 2)) / HuesPerRow) / (HuesPerColumn));
-		float gray = (color.r + color.g + color.b) / 3.0f / HuesPerRow + ((hueX % 2) * 0.5f);
+		float gray = ((color.r + color.g + color.b) / 3.0f / HuesPerRow + ((hueX % 2) * 0.5f)) * 0.999f;
 		
 		float4 huedColor = tex2D(hueTextureSampler, float2(gray, hueY));
 		huedColor.a = color.a;

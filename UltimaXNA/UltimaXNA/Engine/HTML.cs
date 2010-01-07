@@ -41,6 +41,7 @@ namespace UltimaXNA
         public enumHTMLAlignments Alignment = enumHTMLAlignments.Default;
         public Color Color = Color.White;
         public string HREF = string.Empty;
+        public bool IsHREF { get { return HREF != string.Empty; } }
 
         public HTMLCharacter(char character)
         {
@@ -264,6 +265,14 @@ namespace UltimaXNA
     {
         List<HREFRegion> _regions = new List<HREFRegion>();
 
+        public List<HREFRegion> Regions
+        {
+            get
+            {
+                return _regions;
+            }
+        }
+
         public int Count
         {
             get { return _regions.Count; }
@@ -299,6 +308,10 @@ namespace UltimaXNA
         public Rectangle Area;
         public string HREF;
         public int Index;
+
+        public int UpHue = 1;
+        public int OverHue = 31;
+        public int DownHue = 11;
 
         public HREFRegion(Rectangle r, string h, int i)
         {
