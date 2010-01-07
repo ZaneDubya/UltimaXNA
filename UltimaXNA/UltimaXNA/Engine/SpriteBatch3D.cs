@@ -24,18 +24,20 @@ using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.TileEngine;
 #endregion
 
-namespace UltimaXNA.TileEngine
+namespace UltimaXNA
 {
-    class SpriteBatch3D : GameComponent
+    public class SpriteBatch3D : GameComponent
     {
         private Dictionary<Texture2D, List<VertexPositionNormalTextureHue>> _drawQueue;
         private Effect _effect;
         private short[] _indexBuffer;
         private Queue<List<VertexPositionNormalTextureHue>> _vertexListQueue;
-        private Matrix _worldMatrix;
         private BoundingBox _boundingBox;
 
-        public Matrix WorldMatrix { get { return _worldMatrix; } }
+        public Matrix WorldMatrix
+        {
+            get { return Matrix.CreateOrthographicOffCenter(0, this.Game.GraphicsDevice.Viewport.Width, this.Game.GraphicsDevice.Viewport.Height, 0, Int32.MinValue, Int32.MaxValue); }
+        }
 
         public SpriteBatch3D(Game game)
             : base(game)
@@ -44,11 +46,7 @@ namespace UltimaXNA.TileEngine
             _drawQueue = new Dictionary<Texture2D, List<VertexPositionNormalTextureHue>>(256);
             _indexBuffer = CreateIndexBuffer(0x1000);
             _vertexListQueue = new Queue<List<VertexPositionNormalTextureHue>>(256);
-
-            _worldMatrix = Matrix.CreateOrthographicOffCenter(0, this.Game.GraphicsDevice.Viewport.Width, this.Game.GraphicsDevice.Viewport.Height, 0, Int32.MinValue, Int32.MaxValue);
-
             _effect = this.Game.Content.Load<Effect>("Shaders/Basic");
-            _effect.Parameters["world"].SetValue(_worldMatrix);
 
             this.Game.GraphicsDevice.RenderState.AlphaTestEnable = true;
             this.Game.GraphicsDevice.RenderState.AlphaFunction = CompareFunction.Greater;
@@ -80,11 +78,83 @@ namespace UltimaXNA.TileEngine
                 new VertexPositionNormalTextureHue(new Vector3(position.X + texture.Width, position.Y + texture.Height, position.Z), new Vector3(0, 0, 1), new Vector3(1, 1, 0))
             };
 
-            v[0].Hue =
-                v[1].Hue =
-                v[2].Hue =
-                v[3].Hue = hue;
+            v[0].Hue = v[1].Hue = v[2].Hue = v[3].Hue = hue;
             return Draw(texture, v);
+        }
+
+        public bool DrawSimple(Texture2D texture, Vector3 position, Rectangle sourceRect, Vector2 hue)
+        {
+            float minX = (float)sourceRect.X / (float)texture.Width, maxX = (float)sourceRect.Width / (float)texture.Width;
+            float minY = (float)sourceRect.Y / (float)texture.Height, maxY = (float)sourceRect.Height / (float)texture.Height;
+
+            VertexPositionNormalTextureHue[] v = new VertexPositionNormalTextureHue[] {
+                new VertexPositionNormalTextureHue(new Vector3(position.X, position.Y, position.Z), new Vector3(0, 0, 1), new Vector3(minX, minY, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(position.X + sourceRect.Width, position.Y, position.Z), new Vector3(0, 0, 1), new Vector3(maxX, minY, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(position.X, position.Y + sourceRect.Height, position.Z), new Vector3(0, 0, 1), new Vector3(minX, maxY, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(position.X + sourceRect.Width, position.Y + sourceRect.Height, position.Z), new Vector3(0, 0, 1), new Vector3(maxX, maxY, 0))
+            };
+
+            v[0].Hue = v[1].Hue = v[2].Hue =  v[3].Hue = hue;
+            return Draw(texture, v);
+        }
+
+        public bool DrawSimple(Texture2D texture, Rectangle destRect, int z, Rectangle sourceRect, Vector2 hue)
+        {
+            float minX = (float)sourceRect.X / (float)texture.Width, maxX = (float)sourceRect.Width / (float)texture.Width;
+            float minY = (float)sourceRect.Y / (float)texture.Height, maxY = (float)sourceRect.Height / (float)texture.Height;
+
+            VertexPositionNormalTextureHue[] v = new VertexPositionNormalTextureHue[] {
+                new VertexPositionNormalTextureHue(new Vector3(destRect.X, destRect.Y, z), new Vector3(0, 0, 1), new Vector3(minX, minY, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(destRect.X + destRect.Width, destRect.Y, z), new Vector3(0, 0, 1), new Vector3(maxX, minY, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(destRect.X, destRect.Y + destRect.Height, z), new Vector3(0, 0, 1), new Vector3(minX, maxY, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(destRect.X + destRect.Width, destRect.Y + destRect.Height, z), new Vector3(0, 0, 1), new Vector3(maxX, maxY, 0))
+            };
+
+            v[0].Hue = v[1].Hue = v[2].Hue = v[3].Hue = hue;
+            return Draw(texture, v);
+        }
+
+        public bool DrawSimple(Texture2D texture, Rectangle destRect, int z, Vector2 hue)
+        {
+            VertexPositionNormalTextureHue[] v = new VertexPositionNormalTextureHue[] {
+                new VertexPositionNormalTextureHue(new Vector3(destRect.X, destRect.Y, z), new Vector3(0, 0, 1), new Vector3(0, 0, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(destRect.X + destRect.Width, destRect.Y, z), new Vector3(0, 0, 1), new Vector3(1, 0, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(destRect.X, destRect.Y + destRect.Height, z), new Vector3(0, 0, 1), new Vector3(0, 1, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(destRect.X + destRect.Width, destRect.Y + destRect.Height, z), new Vector3(0, 0, 1), new Vector3(1, 1, 0))
+            };
+
+            v[0].Hue = v[1].Hue = v[2].Hue =  v[3].Hue = hue;
+            return Draw(texture, v);
+        }
+
+        public bool DrawSimpleTiled(Texture2D texture, Rectangle destRect, int z, Vector2 hue)
+        {
+            int y = destRect.Y;
+            int h = destRect.Height;
+            Rectangle sRect;
+
+            while (h > 0)
+            {
+                int x = destRect.X;
+                int w = destRect.Width;
+                if (h < texture.Height)
+                    sRect = new Rectangle(0, 0, texture.Width, h);
+                else
+                    sRect = new Rectangle(0, 0, texture.Width, texture.Height);
+                while (w > 0)
+                {
+                    if (w < texture.Width)
+                        sRect.Width = w;
+                    DrawSimple(texture, new Vector3(x, y, z), sRect, hue);
+                    // _spriteBatch.Draw(texture, new Vector2(x, y), sRect, color);
+                    w -= texture.Width;
+                    x += texture.Width;
+                }
+                h -= texture.Height;
+                y += texture.Height;
+            }
+
+            return true;
         }
 
         public bool Draw(Texture2D texture, VertexPositionNormalTextureHue[] vertices)
@@ -215,6 +285,8 @@ namespace UltimaXNA.TileEngine
             Game.GraphicsDevice.SamplerStates[0].MinFilter = TextureFilter.None;
             Game.GraphicsDevice.SamplerStates[0].MipFilter = TextureFilter.None;
             _effect.Parameters["DrawLighting"].SetValue(doLighting);
+            _effect.Parameters["world"].SetValue(WorldMatrix);
+
             _effect.Begin();
             _effect.CurrentTechnique.Passes[0].Begin();
 

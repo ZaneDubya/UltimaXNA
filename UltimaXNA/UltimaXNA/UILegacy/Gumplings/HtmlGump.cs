@@ -79,13 +79,13 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_texture, new Vector2(Area.X, Area.Y), Color.White);
+            spriteBatch.Draw(_texture, new Vector2(Area.X, Area.Y), 0, false);
 
             if (_hrefOver != -1)
             {
                 HREFRegion r = _hrefRegions.Region(_hrefOver);
                 // we are hovering over a href section.
-                spriteBatch.Draw(_texture, new Vector2(Area.X + r.Area.X, Area.Y + r.Area.Y), r.Area, GumpColorReal(Color.Lime));
+                spriteBatch.Draw(_texture, new Vector2(Area.X + r.Area.X, Area.Y + r.Area.Y), r.Area, 1148, false);
                 if (_clicked && (_hrefClicked == _hrefOver))
                 {
                     // we should edit the texture somehow to indicate that the texture is clicked.

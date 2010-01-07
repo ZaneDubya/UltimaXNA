@@ -69,6 +69,8 @@ namespace UltimaXNA.UILegacy
 
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
+            spriteBatch.Flush();
+
             if (_renderFullScreen)
             {
                 InputMultiplier = (float)spriteBatch.GraphicsDevice.Viewport.Width / (float)Width;
@@ -79,23 +81,22 @@ namespace UltimaXNA.UILegacy
                 _gumpTarget = new RenderTarget2D(spriteBatch.GraphicsDevice, Width, Height, 1, SurfaceFormat.Color);
             }
 
-            spriteBatch.End();
+            
             spriteBatch.GraphicsDevice.SetRenderTarget(0, _gumpTarget);
             spriteBatch.GraphicsDevice.Clear(Color.TransparentBlack);
-            
-            spriteBatch.Begin();
+
             base.Draw(spriteBatch);
-            spriteBatch.End();
+            spriteBatch.Flush();
 
             spriteBatch.GraphicsDevice.SetRenderTarget(0, null);
             _gumpTexture = _gumpTarget.GetTexture();
-            spriteBatch.Begin();
+
             if (_renderFullScreen)
             {
-                spriteBatch.Draw(_gumpTexture, new Rectangle(0, 0, (int)(Width * InputMultiplier), (int)(Height * InputMultiplier)), Color.White);
+                spriteBatch.Draw(_gumpTexture, new Rectangle(0, 0, (int)(Width * InputMultiplier), (int)(Height * InputMultiplier)), 0, false);
             }
             else
-                spriteBatch.Draw(_gumpTexture, Position, Color.White);
+                spriteBatch.Draw(_gumpTexture, Position, 0, false);
         }
 
         public override void ActivateByButton(int buttonID)

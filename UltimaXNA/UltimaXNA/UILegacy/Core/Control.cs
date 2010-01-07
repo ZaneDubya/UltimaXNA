@@ -279,10 +279,10 @@ namespace UltimaXNA.UILegacy
                 _area.X -= X;
                 _area.Y -= Y;
             }
-            spriteBatch.Draw(_debugTexture, new Rectangle(_area.X, _area.Y, _area.Width, 1), color);
-            spriteBatch.Draw(_debugTexture, new Rectangle(_area.X, _area.Y + _area.Height - 1, _area.Width, 1), color);
-            spriteBatch.Draw(_debugTexture, new Rectangle(_area.X, _area.Y, 1, _area.Height), color);
-            spriteBatch.Draw(_debugTexture, new Rectangle(_area.X + _area.Width - 1, _area.Y, 1, _area.Height), color);
+            spriteBatch.Draw(_debugTexture, new Rectangle(_area.X, _area.Y, _area.Width, 1), 0, false);
+            spriteBatch.Draw(_debugTexture, new Rectangle(_area.X, _area.Y + _area.Height - 1, _area.Width, 1), 0, false);
+            spriteBatch.Draw(_debugTexture, new Rectangle(_area.X, _area.Y, 1, _area.Height), 0, false);
+            spriteBatch.Draw(_debugTexture, new Rectangle(_area.X + _area.Width - 1, _area.Y, 1, _area.Height), 0, false);
         }
 #endif
 

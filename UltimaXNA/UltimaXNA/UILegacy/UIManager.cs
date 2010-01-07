@@ -14,12 +14,13 @@ namespace UltimaXNA.UILegacy
 {
     public class UIManager : DrawableGameComponent, IUIManager
     {
-        ExtendedSpriteBatch _spriteBatch;
         List<Control> _controls = null;
         Cursor _cursor = null;
         IInputService _input = null;
 
-        SpriteBatch3D _spriteBatch3D;
+        // ExtendedSpriteBatchUI _spriteBatch;
+        // SpriteBatch3D _spriteBatch3D;
+        ExtendedSpriteBatch _spriteBatch;
 
         List<string> _DEBUG_TEXT_LINES = new List<string>();
         List<GameTime> _DEBUG_TEXT_TIMES = new List<GameTime>();
@@ -78,10 +79,10 @@ namespace UltimaXNA.UILegacy
         public UIManager(Game game)
             : base(game)
         {
-            _spriteBatch = new ExtendedSpriteBatch(game.GraphicsDevice);
-            _spriteBatch.Effect = game.Content.Load<Effect>("Shaders\\Gumps");
-
-            _spriteBatch3D = new SpriteBatch3D(game);
+            // _spriteBatch = new ExtendedSpriteBatchUI(game.GraphicsDevice);
+            // _spriteBatch.Effect = game.Content.Load<Effect>("Shaders\\Gumps");
+            //_spriteBatch3D = new SpriteBatch3D(game);
+            _spriteBatch = new ExtendedSpriteBatch(game);
 
             _controls = new List<Control>();
             _cursor = new Cursor(this);
@@ -163,10 +164,7 @@ namespace UltimaXNA.UILegacy
 
         public override void Draw(GameTime gameTime)
         {
-            _spriteBatch.Effect.Parameters["HueTexture"].SetValue(UltimaXNA.Data.HuesXNA.HueTexture);
-            _spriteBatch.Begin();
-
-            z = 10000000;
+            _spriteBatch.ResetZ();
 
             foreach (Control c in _controls)
             {
@@ -178,11 +176,10 @@ namespace UltimaXNA.UILegacy
             if (GameState.DebugMessage != null)
                 DEBUG_DrawText(new Vector2(5, 5), GameState.DebugMessage + Environment.NewLine + _DEBUG_TEXT(gameTime));
 
+            // Draw the cursor
             _cursor.Draw(_spriteBatch, _input.CurrentMousePosition);
 
-            _spriteBatch.End();
-
-            _spriteBatch3D.FlushOld(false);
+            _spriteBatch.Flush();
 
             base.Draw(gameTime);
         }
@@ -196,16 +193,10 @@ namespace UltimaXNA.UILegacy
             _controls.Clear();
         }
 
-        int z;
         internal void DEBUG_DrawText(Vector2 position, string text)
         {
             Texture2D t = Data.UniText.GetTexture(text);
-            Draw(t, position, 1152);
-        }
-        internal void Draw(Texture2D texture, Vector2 position, int hue)
-        {
-            _spriteBatch3D.DrawSimple(texture, new Vector3(position.X, position.Y, z), new Vector2(hue, 0));
-            z += 1000;
+            _spriteBatch.Draw(t, position, 0, false);
         }
 
         internal string _DEBUG_TEXT(GameTime gameTime)

@@ -145,7 +145,7 @@ namespace UltimaXNA
                     }
                 }
 
-                // HFS:
+                // Hidden Fun Stuff:
                 // if (OnUpdate != null)
                 //     OnUpdate();
             }
@@ -463,8 +463,6 @@ namespace UltimaXNA
             }
         }
 
-        public static int testhue = 1147;
-
         static void parseKeyboardAlways()
         {
             if (_input.IsKeyDown(Keys.LeftAlt))
@@ -473,10 +471,6 @@ namespace UltimaXNA
                     DEBUG_BreakdownDataRead = Utility.ToggleBoolean(DEBUG_BreakdownDataRead);
                 if (_input.IsKeyPress(Keys.F))
                     DEBUG_DisplayFPS = Utility.ToggleBoolean(DEBUG_DisplayFPS);
-                if (_input.IsKeyPress(Keys.Up))
-                    testhue++;
-                if (_input.IsKeyPress(Keys.Down))
-                    testhue--;
             }
         }
 
@@ -557,7 +551,7 @@ namespace UltimaXNA
         // Feel free to add or remove variables.
         private static string generateDebugMessage()
         {
-            String debugMessage = testhue.ToString();
+            String debugMessage = string.Empty;
             
             if (DEBUG_DisplayFPS)
                 debugMessage += string.Format("FPS: {0}\n", (int)_FPS);
