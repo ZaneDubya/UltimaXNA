@@ -84,7 +84,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             if (_hrefOver != -1)
             {
                 HREFRegion r = _hrefRegions.Region(_hrefOver);
-                // we are hovering over a href section.
+                // we are hovering over a href section. Highlight it.
                 spriteBatch.Draw(_texture, new Vector2(Area.X + r.Area.X, Area.Y + r.Area.Y), r.Area, 1148, false);
                 if (_clicked && (_hrefClicked == _hrefOver))
                 {

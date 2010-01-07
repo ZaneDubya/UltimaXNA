@@ -87,11 +87,16 @@ namespace UltimaXNA.Data
 
                     int count = (int)(index.Length / 12);
 
+                    byte[] data = bin.ReadBytes(count * 12);
+
                     for (int i = 0; i < count && i < length; ++i)
                     {
-                        m_Index[i].lookup = bin.ReadInt32();
-                        m_Index[i].length = bin.ReadInt32();
-                        m_Index[i].extra = bin.ReadInt32();
+                        m_Index[i].lookup = System.BitConverter.ToInt32(data, i * 12);
+                        m_Index[i].length = System.BitConverter.ToInt32(data, i * 12 + 4);
+                        m_Index[i].extra = System.BitConverter.ToInt32(data, i * 12 + 8);
+                        // m_Index[i].lookup = bin.ReadInt32();
+                        // m_Index[i].length = bin.ReadInt32();
+                        // m_Index[i].extra = bin.ReadInt32();
                     }
 
                     for (int i = count; i < length; ++i)
