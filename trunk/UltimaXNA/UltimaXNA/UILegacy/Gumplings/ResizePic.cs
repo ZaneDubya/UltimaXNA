@@ -7,6 +7,8 @@ namespace UltimaXNA.UILegacy.Gumplings
 {
     class ResizePic : Control
     {
+        public bool CloseOnRightClick = false;
+
         Texture2D[] _bgGumps = null;
         int GumpID = 0;
 
@@ -130,7 +132,8 @@ namespace UltimaXNA.UILegacy.Gumplings
         {
             if (button == MouseButtons.RightButton)
             {
-                _owner.Dispose();
+                if (CloseOnRightClick)
+                    _owner.Dispose();
             }
         }
     }

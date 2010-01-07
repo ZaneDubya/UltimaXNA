@@ -65,6 +65,7 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         public override void Update(GameTime gameTime)
         {
+            _hrefOver = -1; // this value is changed every frame if we mouse over a region.
             if (_textChanged || _texture == null)
             {
                 _textChanged = false;
@@ -80,24 +81,27 @@ namespace UltimaXNA.UILegacy.Gumplings
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
             spriteBatch.Draw(_texture, new Vector2(Area.X, Area.Y), 0, false);
-
-            if (_hrefOver != -1)
+            
+            foreach (HREFRegion r in _hrefRegions.Regions)
             {
-                HREFRegion r = _hrefRegions.Region(_hrefOver);
-                // we are hovering over a href section. Highlight it.
-                spriteBatch.Draw(_texture, new Vector2(Area.X + r.Area.X, Area.Y + r.Area.Y), r.Area, 1148, false);
-                if (_clicked && (_hrefClicked == _hrefOver))
+                if (r.Index == _hrefOver)
                 {
-                    // we should edit the texture somehow to indicate that the texture is clicked.
+                    if (_clicked)
+                        spriteBatch.Draw(_texture, new Vector2(Area.X + r.Area.X, Area.Y + r.Area.Y), r.Area, r.DownHue, false);
+                    else
+                        spriteBatch.Draw(_texture, new Vector2(Area.X + r.Area.X, Area.Y + r.Area.Y), r.Area, r.OverHue, false);
+                }
+                else
+                {
+                    spriteBatch.Draw(_texture, new Vector2(Area.X + r.Area.X, Area.Y + r.Area.Y), r.Area, r.UpHue, true);
                 }
             }
-
+            
             base.Draw(spriteBatch);
         }
 
         protected override bool _hitTest(int x, int y)
         {
-            _hrefOver = -1; // this value is changed every frame if we mouse over a region.
             if (_hrefRegions.Count > 0 && _hrefRegions.RegionfromPoint(new Point(x, y)) != null)
                 return true;
             return false;

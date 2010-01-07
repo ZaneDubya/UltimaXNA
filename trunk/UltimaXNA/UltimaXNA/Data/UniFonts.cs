@@ -325,7 +325,8 @@ namespace UltimaXNA.Data
                         else
                         {
                             UniCharacter character = font.GetCharacter(c.Character);
-                            character.WriteToBuffer(rPtr, ref dx, ref dy, width, font.Height, font.Baseline, c.IsBold, c.IsItalic, c.IsUnderlined, c.Color);
+                            Color color = c.IsHREF ? new Color(255, 255, 255) : c.Color; // HREF links should be colored white.
+                            character.WriteToBuffer(rPtr, ref dx, ref dy, width, font.Height, font.Baseline, c.IsBold, c.IsItalic, c.IsUnderlined, color);
                             dx += (c.IsBold) ? character.Width + 2 : character.Width + 1;
                         }
                     }

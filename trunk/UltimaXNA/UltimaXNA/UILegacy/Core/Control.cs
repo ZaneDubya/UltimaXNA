@@ -269,9 +269,9 @@ namespace UltimaXNA.UILegacy
                 _debugTexture.SetData<Color>(data);
             }
 
-            Color color = Color.Red;
+            int Hue = 31;
             if (_manager.MouseOverControl == this)
-                color = Color.Blue;
+                Hue = 11;
 
             Rectangle drawArea = _area;
             if (_owner == null)
@@ -279,10 +279,10 @@ namespace UltimaXNA.UILegacy
                 _area.X -= X;
                 _area.Y -= Y;
             }
-            spriteBatch.Draw(_debugTexture, new Rectangle(_area.X, _area.Y, _area.Width, 1), 0, false);
-            spriteBatch.Draw(_debugTexture, new Rectangle(_area.X, _area.Y + _area.Height - 1, _area.Width, 1), 0, false);
-            spriteBatch.Draw(_debugTexture, new Rectangle(_area.X, _area.Y, 1, _area.Height), 0, false);
-            spriteBatch.Draw(_debugTexture, new Rectangle(_area.X + _area.Width - 1, _area.Y, 1, _area.Height), 0, false);
+            spriteBatch.Draw(_debugTexture, new Rectangle(_area.X, _area.Y, _area.Width, 1), Hue, false);
+            spriteBatch.Draw(_debugTexture, new Rectangle(_area.X, _area.Y + _area.Height - 1, _area.Width, 1), Hue, false);
+            spriteBatch.Draw(_debugTexture, new Rectangle(_area.X, _area.Y, 1, _area.Height), Hue, false);
+            spriteBatch.Draw(_debugTexture, new Rectangle(_area.X + _area.Width - 1, _area.Y, 1, _area.Height), Hue, false);
         }
 #endif
 
