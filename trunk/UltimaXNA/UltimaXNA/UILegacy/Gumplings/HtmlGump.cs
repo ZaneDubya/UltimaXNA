@@ -103,7 +103,10 @@ namespace UltimaXNA.UILegacy.Gumplings
         protected override bool _hitTest(int x, int y)
         {
             if (_hrefRegions.Count > 0 && _hrefRegions.RegionfromPoint(new Point(x, y)) != null)
+            {
+                _hrefOver = _hrefRegions.RegionfromPoint(new Point(x, y)).Index;
                 return true;
+            }
             return false;
         }
 
@@ -125,14 +128,12 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         protected override void _mouseOver(int x, int y)
         {
-            HREFRegion r = _hrefRegions.RegionfromPoint(new Point(x, y));
-            if (r != null)
-                _hrefOver = r.Index;
+
         }
 
         protected override void _mouseClick(int x, int y, MouseButtons button)
         {
-            if (_hrefClicked == _hrefOver)
+            if (_hrefOver != -1 && _hrefClicked == _hrefOver)
             {
                 if (button == MouseButtons.LeftButton)
                 {

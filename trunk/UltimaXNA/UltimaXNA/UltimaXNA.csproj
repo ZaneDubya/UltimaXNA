@@ -162,6 +162,7 @@
     <Compile Include="UILegacy\Clientside\LoggingInGump.cs" />
     <Compile Include="UILegacy\Clientside\LoginGump.cs" />
     <Compile Include="UILegacy\Clientside\SelectServerGump.cs" />
+    <Compile Include="UILegacy\Clientside\TopMenu.cs" />
     <Compile Include="UILegacy\Core\Control.cs" />
     <Compile Include="UILegacy\Core\iControl.cs" />
     <Compile Include="UILegacy\Cursor.cs" />
