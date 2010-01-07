@@ -306,6 +306,7 @@ namespace UltimaXNA.UILegacy
 
         public void MouseDown(Vector2 position, MouseButtons button)
         {
+            
             int x = (int)position.X - X - ((_owner != null) ? _owner.X : 0);
             int y = (int)position.Y - Y - ((_owner != null) ? _owner.Y : 0);
             _mouseDown(x, y, button);

@@ -37,10 +37,10 @@ namespace UltimaXNA.UILegacy.Gumplings
             buildGumpling(x, y, gumpID, width, height);
         }
 
-        public ResizePic(Control owner, TextEntry textEntry)
-            : this(owner, textEntry.Page)
+        public ResizePic(Control owner, Control c)
+            : this(owner, c.Page)
         {
-            buildGumpling(textEntry.X - 4, textEntry.Y - 4, 9350, textEntry.Width + 8, textEntry.Height + 8);
+            buildGumpling(c.X - 4, c.Y - 4, 9350, c.Width + 8, c.Height + 8);
         }
 
         void buildGumpling(int x, int y, int gumpID, int width, int height)

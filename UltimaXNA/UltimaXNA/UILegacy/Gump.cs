@@ -50,6 +50,11 @@ namespace UltimaXNA.UILegacy
                 _gumpLines = null;
             }
 
+            // If page = 0, then we've just created this page. We initialize activepage to 1.
+            // This triggers the additional functionality in Control.ActivePage.Set().
+            if (ActivePage == 0)
+                ActivePage = 1;
+
             // Update the gumplings...
             base.Update(gameTime);
 
@@ -63,11 +68,6 @@ namespace UltimaXNA.UILegacy
                     _gumpTarget = null;
                 }
             }
-
-            // If page = 0, then we've just created this page. We initialize activepage to 1.
-            // This triggers the additional functionality in Control.ActivePage.Set().
-            if (ActivePage == 0)
-                ActivePage = 1;
         }
 
         RenderTarget2D _gumpTarget = null;

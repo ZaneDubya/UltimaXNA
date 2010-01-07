@@ -57,7 +57,9 @@ namespace UltimaXNA.UILegacy.Clientside
             {
                 if (e.Name != string.Empty)
                 {
-                    AddGumpling(new HtmlGump(this, 1, 230, 158, 200, 20, 0, 0, "<center><big><basefont color=#000000><a href=\"CHAR=" + entryIndex + "\">" + e.Name + "</a></big></center>"));
+                    Control c = new HtmlGump(this, 1, 228, 154, 272, 22, 0, 0, "<center><big><basefont color=#000000><a href=\"CHAR=" + entryIndex + "\">" + e.Name + "</a></big></center>");
+                    AddGumpling(new ResizePic(this, c));
+                    AddGumpling(c);
                 }
                 entryIndex++;
             }

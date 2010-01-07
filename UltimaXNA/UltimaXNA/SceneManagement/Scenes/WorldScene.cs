@@ -23,6 +23,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using UltimaXNA.UI;
 using UltimaXNA.Client;
+using UltimaXNA.UILegacy.Clientside;
 #endregion
 
 namespace UltimaXNA.SceneManagement
@@ -36,11 +37,12 @@ namespace UltimaXNA.SceneManagement
 
         public override void  Intitialize()
         {
-             base.Intitialize();
-             UserInterface.AddWindow("ChatFrame", new Window_Chat());
-             UserInterface.AddWindow("ChatInput", new Window_ChatInput());
-             World.LightDirection = -0.6f;
-             GameState.InWorld = true;
+            base.Intitialize();
+            UI.AddGump_Local(new TopMenu(0), 0, 0);
+            UserInterface.AddWindow("ChatFrame", new Window_Chat());
+            UserInterface.AddWindow("ChatInput", new Window_ChatInput());
+            World.LightDirection = -0.6f;
+            GameState.InWorld = true;
         }
 
         public override void Dispose()
