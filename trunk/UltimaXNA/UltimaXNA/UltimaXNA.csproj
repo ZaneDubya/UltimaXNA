@@ -100,7 +100,6 @@
     <Compile Include="Data\Art.cs" />
     <Compile Include="Data\ASCIIFont.cs" />
     <Compile Include="Data\ContainerData.cs" />
-    <Compile Include="Engine\ExtendedSpriteBatch.cs" />
     <Compile Include="Engine\HTML.cs" />
     <Compile Include="Engine\Metrics.cs" />
     <Compile Include="Data\Gumps.cs" />
@@ -164,6 +163,7 @@
     <Compile Include="UILegacy\Core\Control.cs" />
     <Compile Include="UILegacy\Core\iControl.cs" />
     <Compile Include="UILegacy\Cursor.cs" />
+    <Compile Include="Engine\ExtendedSpriteBatch.cs" />
     <Compile Include="UILegacy\Gump.cs" />
     <Compile Include="UILegacy\Gumplings\Button.cs" />
     <Compile Include="UILegacy\Gumplings\CheckerTrans.cs" />
@@ -362,7 +362,7 @@
     <Compile Include="TileEngine\Map.cs" />
     <Compile Include="TileEngine\Objects\MapObjectMobile.cs" />
     <Compile Include="TileEngine\Shared.cs" />
-    <Compile Include="TileEngine\SpriteBatch3D.cs" />
+    <Compile Include="Engine\SpriteBatch3D.cs" />
     <Compile Include="TileEngine\Objects\MapObjectText.cs" />
     <Compile Include="TileEngine\Objects\MapObject.cs" />
     <Compile Include="TileEngine\Objects\MapObjectStatic.cs" />

@@ -7,7 +7,7 @@ namespace UltimaXNA
     /// <summary>
     /// Simple extension of the SpriteBatch class to allow use of custom shaders.
     /// </summary>
-    public class ExtendedSpriteBatch
+    public class ExtendedSpriteBatch_Depreciated
     {
         private bool _beginCalled;
         private GraphicsDevice _graphicsDevice;
@@ -45,7 +45,7 @@ namespace UltimaXNA
         }
 
         /// <summary>
-        /// Gets the GraphicsDevice used by the ExtendedSpriteBatch
+        /// Gets the GraphicsDevice used by the ExtendedSpriteBatchUI
         /// </summary>
         public GraphicsDevice GraphicsDevice
         {
@@ -53,10 +53,10 @@ namespace UltimaXNA
         }
 
         /// <summary>
-        /// Creates an instance of ExtendedSpriteBatch
+        /// Creates an instance of ExtendedSpriteBatchUI
         /// </summary>
         /// <param name="graphicsDevice"></param>
-        public ExtendedSpriteBatch(GraphicsDevice graphicsDevice)
+        public ExtendedSpriteBatch_Depreciated(GraphicsDevice graphicsDevice)
         {
             _graphicsDevice = graphicsDevice;
             _spriteBatch = new SpriteBatch(graphicsDevice);

@@ -87,7 +87,7 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_texture, new Vector2(Area.X, Area.Y), Color.White);
+            spriteBatch.Draw(_texture, new Vector2(Area.X, Area.Y), 0, false);
             base.Draw(spriteBatch);
         }
 

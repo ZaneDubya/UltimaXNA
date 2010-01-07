@@ -59,7 +59,7 @@ namespace UltimaXNA.UILegacy
             _manager = manager;
         }
 
-        public void Draw(ExtendedSpriteBatch spriteBatch, Vector2 position)
+        public void Draw(ExtendedSpriteBatch sb, Vector2 position)
         {
             Vector2 cursorOffset = Vector2.Zero;
             Rectangle sourceRect = Rectangle.Empty;
@@ -136,7 +136,7 @@ namespace UltimaXNA.UILegacy
                 cursorTexture = Data.Art.GetStaticTexture(cursorTextureID);
                 sourceRect = new Rectangle(1, 1, cursorTexture.Width - 2, cursorTexture.Height - 2);
             }
-            spriteBatch.Draw(cursorTexture, position - cursorOffset, sourceRect, Color.White);
+            sb.Draw(cursorTexture, position - cursorOffset, sourceRect, 0, false);
         }
     }
 }
