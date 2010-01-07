@@ -12,8 +12,8 @@ namespace UltimaXNA.UILegacy
     {
         bool IsMouseOverUI { get; }
         Cursor Cursor { get; }
-        Gump AddGump(Serial serial, Serial gumpID, string[] gumplings, string[] lines, int x, int y);
-        Gump AddGump(Gump gump, int x, int y);
+        Gump AddGump_Server(Serial serial, Serial gumpID, string[] gumplings, string[] lines, int x, int y);
+        Gump AddGump_Local(Gump gump, int x, int y);
         Gump AddContainerGump(Entity containerItem, int gumpID);
         Gump GetGump(Serial serial);
         T GetGump<T>(Serial serial) where T : Gump;
