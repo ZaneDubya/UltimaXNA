@@ -81,8 +81,11 @@ namespace UltimaXNA.SceneManagement
 
         public void OnBackToSelectServer()
         {
-            // UltimaClient.Disconnect();
-            // SceneManager.CurrentScene = new LoginScene(Game);
+            // !!! This SHOULD take us back to the 'logging in' screen,
+            // which automatically logs in again. But we can't do that,
+            // since I have UltimaClient clear your account/password data
+            // once connected (is this really neccesary?) Have to fix this...
+            SceneManager.CurrentScene = new LoginScene(Game);
         }
 
         public void OnLoginWithCharacter(int index)
@@ -98,7 +101,7 @@ namespace UltimaXNA.SceneManagement
 
         public void OnNewCharacter()
         {
-
+            
         }
     }
 }

@@ -61,6 +61,18 @@ namespace UltimaXNA
             set { ((Mobile)EntitiesCollection.GetPlayerObject()).IsWarMode = value; }
         }
 
+        static GameTime _theTime;
+        public static GameTime TheTime
+        {
+            get
+            {
+                if (_theTime == null)
+                    return new GameTime();
+                else
+                    return _theTime;
+            }
+        }
+
         public static float BackBufferWidth = 0, BackBufferHeight = 0;
         private static bool _MovementFollowsMouse = true,  _ContinuousMoveCheck = false;
         private static int _cursorHoverTimeMS = 0, _hoverTimeForLabelMS = 1000;
@@ -149,6 +161,8 @@ namespace UltimaXNA
                 // if (OnUpdate != null)
                 //     OnUpdate();
             }
+
+            _theTime = gameTime;
             updateFPS(gameTime);
         }
 

@@ -70,16 +70,6 @@ namespace UltimaXNA.UILegacy.Clientside
             this.AddGumpling(new Button(this, 1, 442, 398, 5533, 5535, 1, 0, (int)CharacterListGumpButtons.NewCharacterButton));
             ((Button)_controls[_controls.Count - 1]).GumpOverID = 5534;
 
-
-            // AddGumpling(new HtmlGump(this, 1, 158, 72, 200, 20, 0, 0, Data.StringList.Table[1044579].ToString()));
-            // AddGumpling(new HtmlGump(this, 1, 402, 72, 50, 20, 0, 0, Data.StringList.Table[1044577].ToString()));
-            // AddGumpling(new HtmlGump(this, 1, 472, 72, 80, 20, 0, 0, Data.StringList.Table[1044578].ToString()));
-            // display the serverlist the server list.
-            // foreach (ServerListEntry e in UltimaClient.ServerListPacket.Servers)
-            // {
-            //    AddGumpling(new HtmlGump(this, 1, 224, 104, 200, 20, 0, 0, "<big><basefont color=#000000><a href=\"SHARD=" + e.Index + "\">" + e.Name + "</a></big>"));
-            //}
-
             // Page 2 - logging in to server
             // center message window backdrop
             AddGumpling(new ResizePic(this, 2, 116, 95, 2600, 408, 288));
@@ -100,6 +90,7 @@ namespace UltimaXNA.UILegacy.Clientside
                     OnLoginWithCharacter(0);
                     break;
                 case CharacterListGumpButtons.NewCharacterButton:
+                    OnNewCharacter();
                     break;
                 case CharacterListGumpButtons.DeleteCharacterButton:
                     break;
@@ -108,11 +99,11 @@ namespace UltimaXNA.UILegacy.Clientside
 
         public override void ActivateByHREF(string href)
         {
-            // if (href.Length > 6 && href.StartsWith("SHARD="))
-            // {
-            //     int serverIndex = int.Parse(href.Substring(6));
-            //     OnSelectServer(serverIndex);
-            // }
+            if (href.Length > 5 && href.StartsWith("CHAR="))
+            {
+                int charIndex = int.Parse(href.Substring(5));
+                OnLoginWithCharacter(charIndex);
+            }
         }
     }
 }

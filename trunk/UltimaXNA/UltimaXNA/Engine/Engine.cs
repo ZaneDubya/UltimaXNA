@@ -137,6 +137,8 @@ namespace UltimaXNA
         static void OnPreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
         {
             e.GraphicsDeviceInformation.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
+            if (_passedPtr != -1)
+                e.GraphicsDeviceInformation.PresentationParameters.DeviceWindowHandle = new IntPtr(_passedPtr);
         }
 
         /// <summary>
@@ -196,10 +198,15 @@ namespace UltimaXNA
             }
         }
 
+        static int _passedPtr = -1;
+
         #region EntryPoint
         [STAThread]
         static void Main(string[] args)
         {
+            // if (args.Length > 0)
+            //    _passedPtr = Int32.Parse(args[0]);
+
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
             using (Engine engine = new Engine())
             {

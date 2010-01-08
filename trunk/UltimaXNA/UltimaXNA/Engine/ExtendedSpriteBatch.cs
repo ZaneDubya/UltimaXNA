@@ -69,7 +69,7 @@ namespace UltimaXNA.UILegacy
             z += 1000;
         }
 
-        internal void DrawSimpleTiled(Texture2D texture, Rectangle destRect, int hue, bool hueOnlyGreyPixels)
+        internal void DrawTiled(Texture2D texture, Rectangle destRect, int hue, bool hueOnlyGreyPixels)
         {
             _sb.DrawSimpleTiled(texture, destRect, z, hueVector(hue, hueOnlyGreyPixels));
             z += 1000;

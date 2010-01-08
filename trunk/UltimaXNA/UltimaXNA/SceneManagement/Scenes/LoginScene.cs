@@ -34,7 +34,8 @@ namespace UltimaXNA.SceneManagement
         public LoginScene(Game game)
             : base(game, true)
         {
-
+            if (UltimaClient.IsConnected)
+                UltimaClient.Disconnect();
         }
 
         public override void Intitialize()
@@ -42,6 +43,7 @@ namespace UltimaXNA.SceneManagement
             base.Intitialize();
             Gump g = UI.AddGump_Local(new UILegacy.Clientside.LoginGump(), 0, 0);
             ((UILegacy.Clientside.LoginGump)g).OnLogin += this.OnLogin;
+            // UI.AddGump_Local(new UILegacy.Clientside.CreateCharacterGump(), 0, 0);
         }
 
         public override void Update(GameTime gameTime)
