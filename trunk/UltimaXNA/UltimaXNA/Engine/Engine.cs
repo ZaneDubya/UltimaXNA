@@ -155,6 +155,7 @@ namespace UltimaXNA
             Data.HuesXNA.Initialize(GraphicsDevice);
             Data.Texmaps.Initialize(GraphicsDevice);
             Data.StringList.LoadStringList("enu");
+            Data.Skills.Initialize();
 
             //Get all loaded assemblies
             Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();

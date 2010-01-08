@@ -8,6 +8,8 @@ using UltimaXNA.Input;
 
 namespace UltimaXNA.UILegacy
 {
+    internal delegate void MouseClickEvent(int x, int y, MouseButtons button);
+
     public class Control : iControl
     {
         bool _enabled = false;
@@ -25,8 +27,9 @@ namespace UltimaXNA.UILegacy
         bool _handlesKeyboardFocus = false;
         public bool HandlesKeyboardFocus { get { return _handlesKeyboardFocus; } set { _handlesKeyboardFocus = value; } }
 
-        // this has to be handled individually for each control.
         protected bool _renderFullScreen = false;
+
+        internal MouseClickEvent OnMouseClick;
 
         float _inputMultiplier = 1.0f;
         public float InputMultiplier
@@ -253,7 +256,8 @@ namespace UltimaXNA.UILegacy
                 {
                     if ((c.Page == 0) || (c.Page == ActivePage))
                     {
-                        c.Draw(spriteBatch);
+                        if (c.IsInitialized)
+                            c.Draw(spriteBatch);
                     }
                 }
             }
@@ -332,6 +336,8 @@ namespace UltimaXNA.UILegacy
             int x = (int)position.X - X - ((_owner != null) ? _owner.X : 0);
             int y = (int)position.Y - Y - ((_owner != null) ? _owner.Y : 0);
             _mouseClick(x, y, button);
+            if (OnMouseClick != null)
+                OnMouseClick(x, y, button);
         }
 
         public void KeyboardInput(string keys, List<Keys> specialKeys)
