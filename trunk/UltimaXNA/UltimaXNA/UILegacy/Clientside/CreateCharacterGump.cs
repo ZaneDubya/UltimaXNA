@@ -74,6 +74,8 @@ namespace UltimaXNA.UILegacy.Clientside
             AddGumpling(new TextLabelAscii(this, 1, 158, 170, 2430, 1, Data.StringList.Table[3000111].ToString()));
             AddGumpling(new TextLabelAscii(this, 1, 158, 250, 2430, 1, Data.StringList.Table[3000112].ToString()));
             AddGumpling(new TextLabelAscii(this, 1, 158, 330, 2430, 1, Data.StringList.Table[3000113].ToString()));
+
+            AddGumpling(new DropDownList(this, 1, 344, 172, 174, 0, new string[1]));
         }
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
