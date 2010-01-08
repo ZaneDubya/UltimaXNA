@@ -93,6 +93,7 @@ namespace UltimaXNA.UILegacy
             Gump g = new Gump(serial, gumpID, gumplings, lines);
             g.Position = new Vector2(x, y);
             g.IsServerGump = true;
+            g.IsMovable = true;
             _controls.Add(g);
             return g;
         }
@@ -280,17 +281,24 @@ namespace UltimaXNA.UILegacy
             for (int iButton = 0; iButton < 5; iButton++)
             {
                 // MouseOver event.
+                Control controlGivenMouseOver = null;
                 if (_mouseOverControls != null)
                 {
                     for (int iControl = 0; iControl < _mouseOverControls.Length; iControl++)
                     {
                         if (_mouseOverControls[iControl].HandlesMouseInput)
                         {
+                            // mouse over for the moused over control
                             _mouseOverControls[iControl].MouseOver(_input.CurrentMousePosition);
+                            controlGivenMouseOver = _mouseOverControls[iControl];
                             break;
                         }
                     }
                 }
+
+                // mouse over for any controls moused down on (have focus, in more common parlance)
+                if (_mouseDownControl[iButton] != null && _mouseDownControl[iButton] != controlGivenMouseOver)
+                    _mouseDownControl[iButton].MouseOver(_input.CurrentMousePosition);
 
                 if (_mouseOverControls != null)
                 {

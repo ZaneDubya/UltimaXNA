@@ -8,7 +8,6 @@ namespace UltimaXNA.UILegacy.Gumplings
     class ResizePic : Control
     {
         public bool CloseOnRightClick = false;
-
         Texture2D[] _bgGumps = null;
         int GumpID = 0;
 
@@ -71,15 +70,15 @@ namespace UltimaXNA.UILegacy.Gumplings
             int line3Y = Area.Y + Area.Height - _bgGumps[6].Height;
 
             spriteBatch.Draw(_bgGumps[0], new Vector2(Area.X, Area.Y), 0, false);
-            spriteBatch.DrawSimpleTiled(_bgGumps[1], new Rectangle(Area.X + _bgGumps[0].Width, Area.Y, centerWidth, _bgGumps[0].Height), 0, false);
+            spriteBatch.DrawTiled(_bgGumps[1], new Rectangle(Area.X + _bgGumps[0].Width, Area.Y, centerWidth, _bgGumps[0].Height), 0, false);
             spriteBatch.Draw(_bgGumps[2], new Vector2(Area.X + Area.Width - _bgGumps[2].Width, Area.Y), 0, false);
 
-            spriteBatch.DrawSimpleTiled(_bgGumps[3], new Rectangle(Area.X, line2Y, _bgGumps[0].Width, centerHeight), 0, false);
-            spriteBatch.DrawSimpleTiled(_bgGumps[4], new Rectangle(Area.X + _bgGumps[0].Width, line2Y, centerWidth, centerHeight), 0, false);
-            spriteBatch.DrawSimpleTiled(_bgGumps[5], new Rectangle(Area.X + Area.Width - _bgGumps[2].Width, line2Y, _bgGumps[2].Width, centerHeight), 0, false);
+            spriteBatch.DrawTiled(_bgGumps[3], new Rectangle(Area.X, line2Y, _bgGumps[0].Width, centerHeight), 0, false);
+            spriteBatch.DrawTiled(_bgGumps[4], new Rectangle(Area.X + _bgGumps[0].Width, line2Y, centerWidth, centerHeight), 0, false);
+            spriteBatch.DrawTiled(_bgGumps[5], new Rectangle(Area.X + Area.Width - _bgGumps[2].Width, line2Y, _bgGumps[2].Width, centerHeight), 0, false);
 
             spriteBatch.Draw(_bgGumps[6], new Vector2(Area.X, line3Y), 0, false);
-            spriteBatch.DrawSimpleTiled(_bgGumps[7], new Rectangle(Area.X + _bgGumps[0].Width, line3Y, centerWidth, _bgGumps[6].Height), 0, false);
+            spriteBatch.DrawTiled(_bgGumps[7], new Rectangle(Area.X + _bgGumps[0].Width, line3Y, centerWidth, _bgGumps[6].Height), 0, false);
             spriteBatch.Draw(_bgGumps[8], new Vector2(Area.X + Area.Width - _bgGumps[2].Width, line3Y), 0, false);
 
             base.Draw(spriteBatch);
@@ -91,7 +90,7 @@ namespace UltimaXNA.UILegacy.Gumplings
         {
             x += _owner.X;
             y += _owner.Y;
-            if (button == MouseButtons.LeftButton)
+            if (button == MouseButtons.LeftButton && _owner.IsMovable)
             {
                 // move!
                 isMoving = true;

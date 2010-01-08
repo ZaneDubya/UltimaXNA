@@ -149,6 +149,7 @@
     <Compile Include="Engine\Extensions\CallPriorityComparer.cs" />
     <Compile Include="Engine\GameState.cs" />
     <Compile Include="SceneManagement\Scenes\CharacterListScene.cs" />
+    <Compile Include="SceneManagement\Scenes\CreateCharacterScene.cs" />
     <Compile Include="SceneManagement\Scenes\DebugScene.cs" />
     <Compile Include="SceneManagement\Scenes\LoggingInScene.cs" />
     <Compile Include="SceneManagement\Scenes\SelectServerScene.cs" />
@@ -158,6 +159,7 @@
     <Compile Include="TileEngine\WireframeRenderer.cs" />
     <Compile Include="UILegacy\Clientside\CharacterListGump.cs" />
     <Compile Include="UILegacy\Clientside\ContainerGump.cs" />
+    <Compile Include="UILegacy\Clientside\CreateCharacterGump.cs" />
     <Compile Include="UILegacy\Clientside\DebugGump.cs" />
     <Compile Include="UILegacy\Clientside\LoggingInGump.cs" />
     <Compile Include="UILegacy\Clientside\LoginGump.cs" />
@@ -171,11 +173,13 @@
     <Compile Include="UILegacy\Gumplings\Button.cs" />
     <Compile Include="UILegacy\Gumplings\CheckerTrans.cs" />
     <Compile Include="UILegacy\Gumplings\CroppedText.cs" />
+    <Compile Include="UILegacy\Gumplings\DropDownList.cs" />
     <Compile Include="UILegacy\Gumplings\GumpPic.cs" />
     <Compile Include="UILegacy\Gumplings\GumpPicContainer.cs" />
     <Compile Include="UILegacy\Gumplings\GumpPicTiled.cs" />
     <Compile Include="UILegacy\Gumplings\HtmlGump.cs" />
     <Compile Include="UILegacy\Gumplings\ResizePic.cs" />
+    <Compile Include="UILegacy\Gumplings\Slider.cs" />
     <Compile Include="UILegacy\Gumplings\TextEntry.cs" />
     <Compile Include="UILegacy\Gumplings\TextLabel.cs" />
     <Compile Include="UILegacy\Gumplings\TextLabelAscii.cs" />

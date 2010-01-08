@@ -18,6 +18,7 @@ namespace UltimaXNA.UILegacy
         public bool Visible { get { return _visible; } set { _visible = value; } }
         public bool IsInitialized { get { return _isInitialized; } set { _isInitialized = value; } }
         public bool IsDisposed { get { return _isDisposed; } set { _isDisposed = value; } }
+        public bool IsMovable = false;
 
         bool _handlesMouseInput = false;
         public bool HandlesMouseInput { get { return _handlesMouseInput; } set { _handlesMouseInput = value; } }
@@ -183,7 +184,7 @@ namespace UltimaXNA.UILegacy
                 {
                     // FIXME!!!
                     // This MAY double include nested controls that can handle input... :(
-                    // Since this does not happen with regular gumplings, I haven't tested it yet.
+                    // Since I have not nested controls yet, I have no way of knowing, but it looks suspect.
                     if (this.HandlesMouseInput)
                         focusedControls.Insert(0, this);
                     if (_controls != null)

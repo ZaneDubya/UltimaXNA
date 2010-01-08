@@ -34,6 +34,8 @@ namespace UltimaXNA.SceneManagement
         public LoggingInScene(Game game, string server, int port, string account, string password)
             : base(game, true)
         {
+            if (UltimaClient.IsConnected)
+                UltimaClient.Disconnect();
             // Send the accountname and password to the ultimaclient so this gump does not have to save them.
             UltimaClient.SetLoginData(server, port, account, password);
         }
