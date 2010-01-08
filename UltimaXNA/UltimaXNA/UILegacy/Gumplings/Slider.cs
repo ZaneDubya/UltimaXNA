@@ -12,6 +12,7 @@ namespace UltimaXNA.UILegacy.Gumplings
         Texture2D[] _gumpBar = null;
         Texture2D _gumpSlider = null;
 
+        // we use _newValue to (a) get delta, (b) so Value only changes once per frame.
         int _newValue = 0, _value = 0;
         public int Value
         {
