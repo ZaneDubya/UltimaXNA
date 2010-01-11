@@ -263,7 +263,7 @@ namespace UltimaXNA.Client
         {
             MessageLocalizedPacket p = (MessageLocalizedPacket)packet;
 
-            string iCliLoc = constructCliLoc(Data.StringList.Table[p.CliLocNumber].ToString(), p.Arguements);
+            string iCliLoc = constructCliLoc(Data.StringList.Entry(p.CliLocNumber), p.Arguements);
             receive_TextMessage(p.MessageType, iCliLoc, p.Hue, p.Font, p.Serial, p.SpeakerName);
         }
 
@@ -612,7 +612,7 @@ namespace UltimaXNA.Client
 
             for (int i = 0; i < p.CliLocs.Count; i++)
             {
-                string iCliLoc = Data.StringList.Table[p.CliLocs[i]].ToString();
+                string iCliLoc = Data.StringList.Entry(p.CliLocs[i]);
                 if (p.Arguements[i] == string.Empty)
                 {
                     iObject.PropertyList.AddProperty(iCliLoc);
@@ -1077,7 +1077,7 @@ namespace UltimaXNA.Client
                 if ((iArgs[i].Length > 0) && (iArgs[i].Substring(0, 1) == "#"))
                 {
                     int clilocID = Convert.ToInt32(iArgs[i].Substring(1));
-                    iArgs[i] = Data.StringList.Table[clilocID].ToString();
+                    iArgs[i] = Data.StringList.Entry(clilocID);
                 }
             }
 

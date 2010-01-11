@@ -41,7 +41,7 @@ namespace UltimaXNA.Network
 
         public ContextMenuItemNew(int nResponseCode, int iStringID, int iFlags, int iHue)
         {
-            _caption = Data.StringList.Table[iStringID].ToString();
+            _caption = Data.StringList.Entry(iStringID);
             _responseCode = nResponseCode;
         }
     }

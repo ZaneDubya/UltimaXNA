@@ -17,8 +17,6 @@ namespace UltimaXNA.SceneManagement
         public virtual TimeSpan TransitionOnLength { get { return TimeSpan.FromSeconds(0.5); } }
         public virtual TimeSpan TransitionOffLength { get { return TimeSpan.FromSeconds(0.5); } }
 
-        protected SpriteBatch SpriteBatch;
-
         Game _game;
         
         ISceneService _sceneService;
@@ -125,7 +123,7 @@ namespace UltimaXNA.SceneManagement
 
         public virtual void Intitialize()
         {
-            SpriteBatch = new SpriteBatch(Game.GraphicsDevice);
+
         }
 
         public virtual void Update(GameTime gameTime)
@@ -201,7 +199,6 @@ namespace UltimaXNA.SceneManagement
         public virtual void Dispose()
         {
             _content.Dispose();
-            SpriteBatch.Dispose();
         }
     }
 }

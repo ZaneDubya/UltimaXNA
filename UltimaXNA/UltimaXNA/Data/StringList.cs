@@ -25,7 +25,7 @@ using System.Collections;
 
 namespace UltimaXNA.Data
 {
-    public static class StringList
+    public class StringList
     {
         private static Hashtable m_Table;
         private static StringEntry[] m_Entries;
@@ -36,6 +36,14 @@ namespace UltimaXNA.Data
         public static string Language { get { return m_Language; } }
 
         private static byte[] m_Buffer = new byte[1024];
+
+        public static string Entry(int index)
+        {
+            if (m_Table[index] == null)
+                return string.Empty;
+            else
+                return m_Table[index].ToString();
+        }
 
         public static void LoadStringList(string language)
         {

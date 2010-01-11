@@ -8,7 +8,8 @@ using UltimaXNA.Input;
 
 namespace UltimaXNA.UILegacy
 {
-    internal delegate void MouseClickEvent(int x, int y, MouseButtons button);
+    internal delegate void MouseButtonEvent(int x, int y, MouseButtons button);
+    internal delegate void MouseEvent(int x, int y);
 
     public class Control : iControl
     {
@@ -29,7 +30,9 @@ namespace UltimaXNA.UILegacy
 
         protected bool _renderFullScreen = false;
 
-        internal MouseClickEvent OnMouseClick;
+        internal MouseButtonEvent OnMouseClick;
+        internal MouseEvent OnMouseOver;
+        internal MouseEvent OnMouseOut;
 
         float _inputMultiplier = 1.0f;
         public float InputMultiplier
@@ -238,6 +241,17 @@ namespace UltimaXNA.UILegacy
                         c.Initialize(_manager);
                     c.Update(gameTime);
                 }
+
+                List<Control> disposedControls = new List<Control>();
+                foreach (Control c in _controls)
+                {
+                    if (c.IsDisposed)
+                        disposedControls.Add(c);
+                }
+                foreach (Control c in disposedControls)
+                {
+                    _controls.Remove(c);
+                }
             }
         }
 
@@ -329,6 +343,17 @@ namespace UltimaXNA.UILegacy
             int x = (int)position.X - X - ((_owner != null) ? _owner.X : 0);
             int y = (int)position.Y - Y - ((_owner != null) ? _owner.Y : 0);
             _mouseOver(x, y);
+            if (OnMouseOver != null)
+                OnMouseOver(x, y);
+        }
+
+        public void MouseOut(Vector2 position)
+        {
+            int x = (int)position.X - X - ((_owner != null) ? _owner.X : 0);
+            int y = (int)position.Y - Y - ((_owner != null) ? _owner.Y : 0);
+            _mouseOut(x, y);
+            if (OnMouseOut != null)
+                OnMouseOut(x, y);
         }
 
         public void MouseClick(Vector2 position, MouseButtons button)
@@ -356,6 +381,11 @@ namespace UltimaXNA.UILegacy
         }
 
         protected virtual void _mouseOver(int x, int y)
+        {
+
+        }
+
+        protected virtual void _mouseOut(int x, int y)
         {
 
         }

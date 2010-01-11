@@ -71,7 +71,6 @@ namespace UltimaXNA
         protected override void LoadContent()
         {
             _sceneService.CurrentScene = new SceneManagement.LoginScene(this);
-
             base.LoadContent();
         }
 

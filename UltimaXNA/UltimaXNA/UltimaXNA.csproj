@@ -100,6 +100,7 @@
     <Compile Include="Data\Art.cs" />
     <Compile Include="Data\ASCIIFont.cs" />
     <Compile Include="Data\ContainerData.cs" />
+    <Compile Include="Data\HairStyles.cs" />
     <Compile Include="Data\Skills.cs" />
     <Compile Include="Engine\HTML.cs" />
     <Compile Include="Engine\Metrics.cs" />
@@ -160,7 +161,8 @@
     <Compile Include="TileEngine\WireframeRenderer.cs" />
     <Compile Include="UILegacy\Clientside\CharacterListGump.cs" />
     <Compile Include="UILegacy\Clientside\ContainerGump.cs" />
-    <Compile Include="UILegacy\Clientside\CreateCharacterGump.cs" />
+    <Compile Include="UILegacy\Clientside\CreateCharSkillsGump.cs" />
+    <Compile Include="UILegacy\Clientside\CreateCharAppearanceGump.cs" />
     <Compile Include="UILegacy\Clientside\DebugGump.cs" />
     <Compile Include="UILegacy\Clientside\LoggingInGump.cs" />
     <Compile Include="UILegacy\Clientside\LoginGump.cs" />
@@ -173,8 +175,10 @@
     <Compile Include="UILegacy\Gump.cs" />
     <Compile Include="UILegacy\Gumplings\Button.cs" />
     <Compile Include="UILegacy\Gumplings\CheckerTrans.cs" />
+    <Compile Include="UILegacy\Gumplings\ColorPicker.cs" />
     <Compile Include="UILegacy\Gumplings\CroppedText.cs" />
     <Compile Include="UILegacy\Gumplings\DropDownList.cs" />
+    <Compile Include="UILegacy\Gumplings\Paperdoll.cs" />
     <Compile Include="UILegacy\Gumplings\ScrollBar.cs" />
     <Compile Include="UILegacy\Gumplings\GumpPic.cs" />
     <Compile Include="UILegacy\Gumplings\GumpPicContainer.cs" />

@@ -41,7 +41,6 @@ namespace UltimaXNA.SceneManagement
 
         public override void Intitialize()
         {
-            base.Intitialize();
             Gump g = UI.AddGump_Local(new CharacterListGump(UltimaClient.ServerListPacket), 0, 0);
             ((CharacterListGump)g).OnBackToSelectServer += this.OnBackToSelectServer;
             ((CharacterListGump)g).OnLoginWithCharacter += this.OnLoginWithCharacter;
@@ -101,7 +100,7 @@ namespace UltimaXNA.SceneManagement
 
         public void OnNewCharacter()
         {
-            
+            SceneManager.CurrentScene = new CreateCharacterScene(Game);
         }
     }
 }

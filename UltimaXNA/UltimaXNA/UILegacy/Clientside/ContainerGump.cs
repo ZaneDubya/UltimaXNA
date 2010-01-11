@@ -19,7 +19,7 @@ namespace UltimaXNA.UILegacy.Clientside
             _data = Data.ContainerData.GetData(gumpID);
             _item = (ContainerItem)containerItem;
 
-            this.AddGumpling(new Gumplings.GumpPicContainer(this, 0, 0, 0, _data.GumpID, 0));
+            AddGumpling(new Gumplings.GumpPicContainer(this, 0, 0, 0, _data.GumpID, 0));
         }
     }
 }

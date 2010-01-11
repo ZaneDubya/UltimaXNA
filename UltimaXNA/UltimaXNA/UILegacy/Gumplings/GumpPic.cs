@@ -8,6 +8,7 @@ namespace UltimaXNA.UILegacy.Gumplings
     {
         protected Texture2D _texture = null;
         int _gumpID;
+        int _hue;
 
         public GumpPic(Control owner, int page)
             : base(owner, page)
@@ -40,6 +41,7 @@ namespace UltimaXNA.UILegacy.Gumplings
         {
             Position = new Vector2(x, y);
             _gumpID = gumpID;
+            _hue = hue;
         }
 
         public override void Update(GameTime gameTime)
@@ -55,7 +57,7 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_texture, Position, 0, false);
+            spriteBatch.Draw(_texture, Position, _hue, false);
             base.Draw(spriteBatch);
         }
     }
