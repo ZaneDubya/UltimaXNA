@@ -42,10 +42,23 @@ namespace UltimaXNA.SceneManagement
     public class CreateCharacterScene : BaseScene
     {
         CreateCharacterSceneStates _status;
+
+        int[] _attributes = new int[3];
+        int[] _skillIndexes= new int[3];
+        int[] _skillValues = new int[3];
+
         public CreateCharacterScene(Game game)
             : base(game, true)
         {
-
+            _attributes[0] = 60;
+            _attributes[1] = 10;
+            _attributes[2] = 10;
+            _skillIndexes[0] = -1;
+            _skillIndexes[1] = -1;
+            _skillIndexes[2] = -1;
+            _skillValues[0] = 50;
+            _skillValues[1] = 50;
+            _skillValues[2] = 0;
         }
 
         public override void Intitialize()
@@ -56,10 +69,21 @@ namespace UltimaXNA.SceneManagement
 
         void openSkillsGump()
         {
-            Gump g1 = UI.AddGump_Local(new CreateCharSkillsGump(), 0, 0);
-            ((CreateCharSkillsGump)g1).OnForward += this.OnForward;
-            ((CreateCharSkillsGump)g1).OnBackward += this.OnBackward;
+            Gump g = UI.AddGump_Local(new CreateCharSkillsGump(), 0, 0);
+            CreateCharSkillsGump g1 = ((CreateCharSkillsGump)g);
+            g1.OnForward += this.OnForward;
+            g1.OnBackward += this.OnBackward;
             _status = CreateCharacterSceneStates.ChooseSkills;
+            // restore values
+            g1.Strength = _attributes[0];
+            g1.Dexterity = _attributes[1];
+            g1.Intelligence = _attributes[2];
+            g1.SkillIndex0 = _skillIndexes[0];
+            g1.SkillIndex1 = _skillIndexes[1];
+            g1.SkillIndex2 = _skillIndexes[2];
+            g1.SkillPoints0 = _skillValues[0];
+            g1.SkillPoints1 = _skillValues[1];
+            g1.SkillPoints2 = _skillValues[2];
         }
 
         void openAppearanceGump()
@@ -74,6 +98,35 @@ namespace UltimaXNA.SceneManagement
         {
             // we need to make sure that the stats add up to 80, skills add up to 100, and 3 unique skills are selected.
             // if not, pop up an appropriate error message.
+            CreateCharSkillsGump g = UI.GetGump<CreateCharSkillsGump>(0);
+            if (g.Strength + g.Dexterity + g.Intelligence != 80)
+            {
+                UI.MsgBox("Error: your stat values did not add up to 80. Please logout and try to make another character.");
+                return false;
+            }
+            if (g.SkillPoints0 + g.SkillPoints1 + g.SkillPoints2 != 100)
+            {
+                UI.MsgBox("Error: your skill values did not add up to 100. Please logout and try to make another character.");
+                return false;
+            }
+            if (g.SkillIndex0 == -1 || g.SkillIndex1 == -1 || g.SkillIndex2 == -1 ||
+                (g.SkillIndex0 == g.SkillIndex1) ||
+                (g.SkillIndex1 == g.SkillIndex2) ||
+                (g.SkillIndex0 == g.SkillIndex2))
+            {
+                UI.MsgBox("You must select three unique skills!");
+                return false;
+            }
+            // save the values;
+            _attributes[0] = g.Strength;
+            _attributes[1] = g.Dexterity;
+            _attributes[2] = g.Intelligence;
+            _skillIndexes[0] = g.SkillIndex0;
+            _skillIndexes[1] = g.SkillIndex1;
+            _skillIndexes[2] = g.SkillIndex2;
+            _skillValues[0] = g.SkillPoints0;
+            _skillValues[1] = g.SkillPoints1;
+            _skillValues[2] = g.SkillPoints2;
             return true;
         }
 

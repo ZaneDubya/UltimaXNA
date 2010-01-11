@@ -136,7 +136,7 @@ namespace UltimaXNA.Entities
 				return false;
 		}
 
-		internal override void Draw(UltimaXNA.TileEngine.MapCell cell, Vector3 position, Vector3 positionOffset)
+        internal override void Draw(UltimaXNA.TileEngine.MapTile cell, Vector3 position, Vector3 positionOffset)
 		{
 			if (Ignored)
 			{

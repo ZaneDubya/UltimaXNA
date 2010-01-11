@@ -100,7 +100,7 @@ namespace UltimaXNA.Entities
             }
         }
 
-        internal override void Draw(UltimaXNA.TileEngine.MapCell cell, Vector3 position, Vector3 positionOffset)
+        internal override void Draw(UltimaXNA.TileEngine.MapTile cell, Vector3 position, Vector3 positionOffset)
         {
             string text = Utility.WrapASCIIText(_font, _text, 200);
             cell.Add(new TileEngine.MapObjectText(position, positionOffset, _ownerEntity, text, _hue, _font));

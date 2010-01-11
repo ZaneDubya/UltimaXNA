@@ -133,6 +133,7 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         void modifyPairedValues(int delta)
         {
+            bool updateSinceLastCycle = true;
             int d = (delta > 0) ? -1 : 1;
             int points = Math.Abs(delta);
             int sliderIndex = Value % _pairedSliders.Count;
@@ -142,6 +143,7 @@ namespace UltimaXNA.UILegacy.Gumplings
                 {
                     if (_pairedSliders[sliderIndex].Value < _pairedSliders[sliderIndex].MaxValue)
                     {
+                        updateSinceLastCycle = true;
                         _pairedSliders[sliderIndex].Value += d;
                         points--;
                     }
@@ -150,13 +152,19 @@ namespace UltimaXNA.UILegacy.Gumplings
                 {
                     if (_pairedSliders[sliderIndex].Value > _pairedSliders[sliderIndex].MinValue)
                     {
+                        updateSinceLastCycle = true;
                         _pairedSliders[sliderIndex].Value += d;
                         points--;
                     }
                 }
                 sliderIndex++;
                 if (sliderIndex == _pairedSliders.Count)
+                {
+                    if (!updateSinceLastCycle)
+                        return;
+                    updateSinceLastCycle = false;
                     sliderIndex = 0;
+                }
             }
         }
     }

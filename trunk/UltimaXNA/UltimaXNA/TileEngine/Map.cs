@@ -69,7 +69,7 @@ namespace UltimaXNA.TileEngine
         public int UpdateTicker;
         private int m_GameSize, m_GameSizeUp, m_GameSizeDown;
         private List<int> m_KeysToRemove;
-        public SortedDictionary<int, MapCell> m_MapCells;
+        public SortedDictionary<int, MapTile> m_Tiles;
         private Data.TileMatrix m_TileMatrix;
         private int _x, _y;
         private bool _firstUpdate = true;
@@ -81,7 +81,7 @@ namespace UltimaXNA.TileEngine
             m_GameSizeDown = gameSizeDown;
 
             m_KeysToRemove = new List<int>();
-            m_MapCells = new SortedDictionary<int, MapCell>();
+            m_Tiles = new SortedDictionary<int, MapTile>();
             m_TileMatrix = new Data.TileMatrix(index, index);
         }
 
@@ -97,12 +97,13 @@ namespace UltimaXNA.TileEngine
         public void GetAverageZ(int x, int y, ref int z, ref int avg, ref int top)
         {
             int zTop, zLeft, zRight, zBottom;
+
             try
             {
-                zTop = GetMapCell(x, y).GroundTile.Z;
-                zLeft = GetMapCell(x, y + 1).GroundTile.Z;
-                zRight = GetMapCell(x + 1, y).GroundTile.Z;
-                zBottom = GetMapCell(x + 1, y + 1).GroundTile.Z;
+                zTop = GetMapTile(x, y).GroundTile.Z;
+                zLeft = GetMapTile(x, y + 1).GroundTile.Z;
+                zRight = GetMapTile(x + 1, y).GroundTile.Z;
+                zBottom = GetMapTile(x + 1, y + 1).GroundTile.Z;
             }
             catch
             {
@@ -150,9 +151,9 @@ namespace UltimaXNA.TileEngine
             set { m_GameSize = value; }
         }
 
-        private int GetKey(MapCell mapCell)
+        private int GetKey(MapTile tile)
         {
-            return GetKey(mapCell.X, mapCell.Y);
+            return GetKey(tile.X, tile.Y);
         }
 
         private int GetKey(int x, int y)
@@ -170,13 +171,13 @@ namespace UltimaXNA.TileEngine
         // This references a tile that already exists in THIS dictionary.
         public MapObjectGround GetGroundTile(int x, int y)
         {
-            return m_MapCells[GetKey(x, y)].GroundTile;
+            return m_Tiles[GetKey(x, y)].GroundTile;
         }
 
-        public MapCell GetMapCell(int x, int y)
+        public MapTile GetMapTile(int x, int y)
         {
-            // Poplicola - added a line to make sure we don't try t
-            //reference an entry that doesn't exist - in a dictionary
+            // Poplicola - added a line to make sure we don't try to
+            // reference an entry that doesn't exist - in a dictionary
             // of this size that might be slow.
 
             int renderBeginX = _x - m_GameSize / 2;
@@ -189,9 +190,9 @@ namespace UltimaXNA.TileEngine
                 if ((iY < m_GameSize) && (iY >= 0))
                 {
                     int key = GetKey(x, y);
-                    if (m_MapCells.ContainsKey(key))
+                    if (m_Tiles.ContainsKey(key))
                     {
-                        return m_MapCells[key];
+                        return m_Tiles[key];
                     }
                     else
                     {
@@ -202,11 +203,11 @@ namespace UltimaXNA.TileEngine
             return null;
         }
 
-        public MapCell GetMapCell(Vector2 iLocation)
+        public MapTile GetMapTile(Vector2 iLocation)
         {
             try
             {
-                return m_MapCells[GetKey((int)iLocation.X, (int)iLocation.Y)];
+                return m_Tiles[GetKey((int)iLocation.X, (int)iLocation.Y)];
             }
             catch
             {
@@ -230,45 +231,45 @@ namespace UltimaXNA.TileEngine
                 {
                     for (int y = 0; y < m_GameSize; y++)
                     {
-                        loadCell(renderBeginX + x, renderBeginY + y);
+                        loadTile(renderBeginX + x, renderBeginY + y);
                     }
                 }
 
-                clearOlderCells();
+                clearOlderTiles();
             }
         }
 
-        private void clearOlderCells()
+        private void clearOlderTiles()
         {
-            IEnumerator<MapCell> mapCellsEnumerator;
+            IEnumerator<MapTile> MapTilesEnumerator;
             Data.Point2D worldLocation;
 
             m_KeysToRemove.Clear();
 
-            mapCellsEnumerator = m_MapCells.Values.GetEnumerator();
+            MapTilesEnumerator = m_Tiles.Values.GetEnumerator();
 
             worldLocation = new Data.Point2D(_x, _y);
 
-            while (mapCellsEnumerator.MoveNext())
+            while (MapTilesEnumerator.MoveNext())
             {
-                if (!Data.Helpers.InRange(worldLocation, mapCellsEnumerator.Current, m_GameSize / 2))
+                if (!Data.Helpers.InRange(worldLocation, MapTilesEnumerator.Current, m_GameSize / 2))
                 {
-                    m_KeysToRemove.Add(GetKey(mapCellsEnumerator.Current));
+                    m_KeysToRemove.Add(GetKey(MapTilesEnumerator.Current));
                 }
             }
 
             for (int i = 0; i < m_KeysToRemove.Count; i++)
             {
-                m_MapCells.Remove(m_KeysToRemove[i]);
+                m_Tiles.Remove(m_KeysToRemove[i]);
             }
         }
 
-        private void loadCell(int x, int y)
+        private void loadTile(int x, int y)
         {
             MapObjectGround groundTile;
-            MapCell mapCell;
+            MapTile tile;
 
-            if (m_MapCells.ContainsKey(GetKey(x, y)))
+            if (m_Tiles.ContainsKey(GetKey(x, y)))
                 return;
 
             Data.Tile landTile = m_TileMatrix.GetLandTile(x, y);
@@ -284,21 +285,20 @@ namespace UltimaXNA.TileEngine
                 groundTile.SortZ = (Math.Min(groundTile.Z, groundTile.Surroundings.Down) + Math.Abs(groundTile.Z - groundTile.Surroundings.Down) / 2);
             }
 
-            mapCell = new MapCell(x, y);
-            mapCell.Add(groundTile);
+            tile = new MapTile(x, y);
+            tile.Add(groundTile);
 
             Data.StaticTile[] staticTiles = m_TileMatrix.GetStaticTiles(x, y);
 
             for (int i = 0; i < staticTiles.Length; i++)
             {
-                mapCell.Add(new MapObjectStatic(staticTiles[i], i, new Vector3(x, y, staticTiles[i].Z)));
+                tile.Add(new MapObjectStatic(staticTiles[i], i, new Vector3(x, y, staticTiles[i].Z)));
             }
 
-            m_MapCells.Add(GetKey(mapCell), mapCell);
+            m_Tiles.Add(GetKey(tile), tile);
 
             UpdateTicker++;
         }
-
         public void UpdateSurroundings(MapObjectGround g)
         {
             int x = (int)g.Position.X;
@@ -309,9 +309,9 @@ namespace UltimaXNA.TileEngine
             {
                 for (int ix = -1; ix < 3; ix++)
                 {
-                    MapCell c = GetMapCell(x + ix, y + iy);
+                    MapTile t = GetMapTile(x + ix, y + iy);
                     zValues[(ix + 1) + (iy + 1) * 4] =
-                        (c == null) ? m_TileMatrix.GetLandTile(x + ix, y + iy).Z : c.GroundTile.Z;
+                        (t == null) ? m_TileMatrix.GetLandTile(x + ix, y + iy).Z : t.GroundTile.Z;
                 }
             }
 
@@ -328,24 +328,15 @@ namespace UltimaXNA.TileEngine
                 zValues[2 + 3 * 4],
                 zValues[3 + 1 * 4],
                 zValues[3 + 2 * 4]);
-            /*g.Surroundings = new Surroundings(
-                m_TileMatrix.GetLandTile(x + 1, y + 1).Z,
-                m_TileMatrix.GetLandTile(x + 1, y).Z,
-                m_TileMatrix.GetLandTile(x, y + 1).Z);
-            g.CalculateNormals(
-                m_TileMatrix.GetLandTile(x - 1, y).Z,
-                m_TileMatrix.GetLandTile(x - 1, y + 1).Z,
-                m_TileMatrix.GetLandTile(x, y - 1).Z,
-                m_TileMatrix.GetLandTile(x + 1, y - 1).Z,
-                m_TileMatrix.GetLandTile(x, y + 2).Z,
-                m_TileMatrix.GetLandTile(x + 1, y + 2).Z,
-                m_TileMatrix.GetLandTile(x + 2, y).Z,
-                m_TileMatrix.GetLandTile(x + 2, y + 1).Z
-                );*/
         }
     }
 
-    public class MapCell : Data.IPoint2D
+    public class MapCell
+    {
+        public SortedDictionary<int, MapTile> m_Tiles;
+    }
+
+    public class MapTile : Data.IPoint2D
     {
         public List<MapObject> Objects { get { return m_Objects; } }
         private bool m_NeedsSorting;
@@ -375,7 +366,7 @@ namespace UltimaXNA.TileEngine
         }
         #endregion
 
-        public MapCell(int x, int y)
+        public MapTile(int x, int y)
         {
             m_Objects = new List<MapObject>();
             m_X = x;

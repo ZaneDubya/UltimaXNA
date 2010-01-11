@@ -88,6 +88,11 @@ namespace UltimaXNA.UILegacy
             _input = game.Services.GetService<IInputService>(true);
         }
 
+        public void MsgBox(string msg)
+        {
+            // pop up an error message, modal.
+        }
+
         public Gump AddGump_Server(Serial serial, Serial gumpID, string[] gumplings, string[] lines, int x, int y)
         {
             Gump g = new Gump(serial, gumpID, gumplings, lines);
