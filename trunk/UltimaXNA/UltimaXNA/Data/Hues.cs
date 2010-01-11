@@ -17,10 +17,9 @@
  *
  ***************************************************************************/
 #region usings
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Text;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 #endregion
 
@@ -45,14 +44,14 @@ namespace UltimaXNA.Data
             CreateTexture();
         }
 
-        private static void CreateTexture()
+        static void CreateTexture()
         {
             hueTexture = new Texture2D(graphicsDevice, m_HueTextureWidth, m_HueTextureHeight, 1, TextureUsage.None, SurfaceFormat.Bgra5551);
             ushort[] iTextData = getTextureData();
             hueTexture.SetData(iTextData);
         }
 
-        private static ushort[] getTextureData()
+        static ushort[] getTextureData()
         {
             BinaryReader reader = new BinaryReader( FileManager.GetFile( "hues.mul" ) );
             int currentHue = 0;
@@ -80,6 +79,19 @@ namespace UltimaXNA.Data
             return textureData;
         }
 
+        public static Texture2D HueSwatch(int width, int height, int[] hues)
+        {
+            Color[] data = new Color[width * height];
+            for (int i = 0; i < data.Length; i++)
+            {
+                System.Drawing.Color c = Hues.GetHue(hues[i]).GetColor(31);
+                data[i] = new Color(c.R, c.G, c.B, c.A);
+            }
+            Texture2D t = new Texture2D(graphicsDevice, width, height);
+            t.SetData<Color>(data);
+            return t;
+        }
+
         public static Texture2D HueTexture
         {
             get
@@ -94,6 +106,34 @@ namespace UltimaXNA.Data
         private static Hue[] m_List;
 
         public static Hue[] List { get { return m_List; } }
+
+        public static int[] SkinTones
+        {
+            get
+            {
+                int max = 7 * 8;
+                int[] hues = new int[max];
+                for (int i = 0; i < max; i++)
+                {
+                    hues[i] = (i < 37) ? i + 1001 : i + 1002;
+                }
+                return hues;
+            }
+        }
+
+        public static int[] HairTones
+        {
+            get
+            {
+                int max = 8 * 6;
+                int[] hues = new int[max];
+                for (int i = 0; i < max; i++)
+                {
+                    hues[i] = i + 1101;
+                }
+                return hues;
+            }
+        }
 
         static Hues()
         {
@@ -192,9 +232,12 @@ namespace UltimaXNA.Data
             m_Name = sb.ToString();
         }
 
-        public unsafe void ApplyTo(Bitmap bmp, bool onlyHueGrayPixels)
+        public unsafe void ApplyTo(System.Drawing.Bitmap bmp, bool onlyHueGrayPixels)
         {
-            BitmapData bd = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadWrite, PixelFormat.Format16bppArgb1555);
+            System.Drawing.Imaging.BitmapData bd = bmp.LockBits(
+                new System.Drawing.Rectangle(0, 0, bmp.Width, bmp.Height),
+                System.Drawing.Imaging.ImageLockMode.ReadWrite,
+                System.Drawing.Imaging.PixelFormat.Format16bppArgb1555);
 
             int stride = bd.Stride >> 1;
             int width = bd.Width;

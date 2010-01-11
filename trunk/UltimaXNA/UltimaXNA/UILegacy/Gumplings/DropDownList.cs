@@ -8,10 +8,12 @@ namespace UltimaXNA.UILegacy.Gumplings
 {
     class DropDownList : Control
     {
+        public int Index;
+
         int _width;
         List<string> _items;
-        int Index;
         int _visibleItems;
+        bool _canBeNull;
 
         ResizePic _resize;
         TextLabelAscii _label;
@@ -21,6 +23,9 @@ namespace UltimaXNA.UILegacy.Gumplings
         ScrollBar _openScrollBar;
         TextLabelAscii[] _openLabels;
 
+        const int hue_Text = 1107;
+        const int hue_TextSelected = 588;
+
         public DropDownList(Control owner, int page)
             : base(owner, page)
         {
@@ -28,25 +33,29 @@ namespace UltimaXNA.UILegacy.Gumplings
             _controls = new List<Control>();
         }
 
-        public DropDownList(Control owner, int page, int x, int y, int width, int index, int itemsVisible, string[] items)
+        public DropDownList(Control owner, int page, int x, int y, int width, int index, int itemsVisible, string[] items, bool canBeNull)
             : this(owner, page)
         {
-            buildGumpling(x, y, width, index, itemsVisible, items);
+            buildGumpling(x, y, width, index, itemsVisible, items, canBeNull);
         }
 
-        void buildGumpling(int x, int y, int width, int index, int itemsVisible, string[] items)
+        void buildGumpling(int x, int y, int width, int index, int itemsVisible, string[] items, bool canBeNull)
         {
             Position = new Vector2(x, y);
             _items = new List<string>(items);
             _width = width;
             Index = index;
             _visibleItems = itemsVisible;
+            _canBeNull = canBeNull;
 
             _resize = new ResizePic(_owner, Page, X, Y, 3000, _width, Data.ASCIIText.Fonts[1].Height + 8);
             _resize.OnMouseClick = onClickClosedList;
+            _resize.OnMouseOver = onMouseOverClosedList;
+            _resize.OnMouseOut = onMouseOutClosedList;
             ((Gump)_owner).AddGumpling(_resize);
-            _label = new TextLabelAscii(this, Page, X + 4, Y + 5, 1107, 1, string.Empty);
+            _label = new TextLabelAscii(_owner, Page, X + 4, Y + 5, hue_Text, 1, string.Empty);
             ((Gump)_owner).AddGumpling(_label);
+            ((Gump)_owner).AddGumpling(new GumpPic(_owner, Page, X + width - 22, Y + 5, 2086, 0));
         }
 
         public override void Update(GameTime gameTime)
@@ -89,10 +98,12 @@ namespace UltimaXNA.UILegacy.Gumplings
         void onClickClosedList(int x, int y, MouseButtons button)
         {
             _listOpen = true;
-            _openResizePic = new ResizePic(_owner, Page, X, Y, 3000, _width, Data.ASCIIText.Fonts[1].Height * 8 + 8);
+            _openResizePic = new ResizePic(_owner, Page, X, Y, 3000, _width, Data.ASCIIText.Fonts[1].Height * _visibleItems + 8);
             _openResizePic.OnMouseClick = onClickOpenList;
+            _openResizePic.OnMouseOver = onMouseOverOpenList;
+            _openResizePic.OnMouseOut = onMouseOutOpenList;
             ((Gump)_owner).AddGumpling(_openResizePic);
-            _openScrollBar = new ScrollBar(_owner, Page, X + _width - 20, Y + 4, Data.ASCIIText.Fonts[1].Height * 8, -1, _items.Count - _visibleItems, Index);
+            _openScrollBar = new ScrollBar(_owner, Page, X + _width - 20, Y + 4, Data.ASCIIText.Fonts[1].Height * _visibleItems, (_canBeNull ? -1 : 0), _items.Count - _visibleItems, Index);
             ((Gump)_owner).AddGumpling(_openScrollBar);
             _openLabels = new TextLabelAscii[_visibleItems];
             for (int i = 0; i < _visibleItems; i++)
@@ -102,9 +113,52 @@ namespace UltimaXNA.UILegacy.Gumplings
             }
         }
 
+        void onMouseOverClosedList(int x, int y)
+        {
+            _label.Hue = hue_TextSelected;
+        }
+
+        void onMouseOutClosedList(int x, int y)
+        {
+            _label.Hue = hue_Text;
+        }
+
         void onClickOpenList(int x, int y, MouseButtons button)
         {
+            int indexOver = getOpenListIndexFromPoint(x, y);
+            if (indexOver != -1)
+                Index = indexOver + _openScrollBar.Value;
             closeOpenList();
+        }
+
+        void onMouseOverOpenList(int x, int y)
+        {
+            int indexOver = getOpenListIndexFromPoint(x, y);
+            for (int i = 0; i < _openLabels.Length; i++)
+            {
+                if (i == indexOver)
+                    _openLabels[i].Hue = hue_TextSelected;
+                else
+                    _openLabels[i].Hue = hue_Text;
+            }
+        }
+
+        void onMouseOutOpenList(int x, int y)
+        {
+            for (int i = 0; i < _openLabels.Length; i++)
+                _openLabels[i].Hue = hue_Text;
+        }
+
+        int getOpenListIndexFromPoint(int x, int y)
+        {
+            Rectangle r = new Rectangle(4, 5, _width - 20, Data.ASCIIText.Fonts[1].Height);
+            for (int i = 0; i < _openLabels.Length; i++)
+            {
+                if (r.Contains(new Point(x, y)))
+                    return i;
+                r.Y += Data.ASCIIText.Fonts[1].Height;
+            }
+            return -1;
         }
     }
 }

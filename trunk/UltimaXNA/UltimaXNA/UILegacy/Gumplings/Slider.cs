@@ -133,33 +133,30 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         void modifyPairedValues(int delta)
         {
-            List<Slider> sliders = new List<Slider>();
-            int d;
-            if (delta > 0)
+            int d = (delta > 0) ? -1 : 1;
+            int points = Math.Abs(delta);
+            int sliderIndex = Value % _pairedSliders.Count;
+            while (points > 0)
             {
-                d = -1;
-                foreach (Slider s in _pairedSliders)
-                    if (s.Value > s.MinValue)
-                        sliders.Add(s);
-            }
-            else
-            {
-                d = 1;
-                foreach (Slider s in _pairedSliders)
-                    if (s.Value < s.MaxValue)
-                        sliders.Add(s);
-            }
-
-            if (sliders.Count == 0)
-                return;
-
-            int j = Value % sliders.Count;
-            for (int i = Math.Abs(delta); i > 0; i--)
-            {
-                sliders[j].Value += d;
-                j++;
-                if (j == sliders.Count)
-                    j = 0;
+                if (d > 0)
+                {
+                    if (_pairedSliders[sliderIndex].Value < _pairedSliders[sliderIndex].MaxValue)
+                    {
+                        _pairedSliders[sliderIndex].Value += d;
+                        points--;
+                    }
+                }
+                else
+                {
+                    if (_pairedSliders[sliderIndex].Value > _pairedSliders[sliderIndex].MinValue)
+                    {
+                        _pairedSliders[sliderIndex].Value += d;
+                        points--;
+                    }
+                }
+                sliderIndex++;
+                if (sliderIndex == _pairedSliders.Count)
+                    sliderIndex = 0;
             }
         }
     }
