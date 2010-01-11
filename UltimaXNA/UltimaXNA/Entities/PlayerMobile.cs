@@ -42,7 +42,7 @@ namespace UltimaXNA.Entities
             base.Update(gameTime);
         }
 
-        internal override void Draw(UltimaXNA.TileEngine.MapCell cell, Vector3 position, Vector3 positionOffset)
+        internal override void Draw(UltimaXNA.TileEngine.MapTile cell, Vector3 position, Vector3 positionOffset)
         {
             base.Draw(cell, position, positionOffset);
         }

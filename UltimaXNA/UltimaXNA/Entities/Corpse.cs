@@ -48,7 +48,7 @@ namespace UltimaXNA.Entities
             // }
         }
 
-        internal override void Draw(UltimaXNA.TileEngine.MapCell cell, Vector3 position, Vector3 positionOffset)
+        internal override void Draw(UltimaXNA.TileEngine.MapTile cell, Vector3 position, Vector3 positionOffset)
         {
             Movement.ClearImmediate();
             cell.Add(new TileEngine.MapObjectCorpse(position, Movement.DrawFacing, this, Hue, _corpseBody, _corpseFrame));

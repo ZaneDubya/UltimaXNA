@@ -261,10 +261,10 @@ namespace UltimaXNA.Entities
         {
             if (DrawPosition == null)
                 return;
-            TileEngine.MapCell iLastMapCell = _world.Map.GetMapCell(DrawPosition.TileX, DrawPosition.TileY);
-            if (iLastMapCell != null)
+            TileEngine.MapTile lastTile = _world.Map.GetMapTile(DrawPosition.TileX, DrawPosition.TileY);
+            if (lastTile != null)
             {
-                iLastMapCell.FlushObjectsBySerial(_entity.Serial);
+                lastTile.FlushObjectsBySerial(_entity.Serial);
             }
         } 
 

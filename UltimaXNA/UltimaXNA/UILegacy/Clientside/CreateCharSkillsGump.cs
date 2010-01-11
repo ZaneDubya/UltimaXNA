@@ -22,15 +22,15 @@ namespace UltimaXNA.UILegacy.Clientside
         Slider[] sliderAttributes; TextLabelAscii[] lblAttributes;
         Slider[] sliderSkills; TextLabelAscii[] lblSkills; DropDownList[] listSkills;
 
-        public int Strength { get { return sliderSkills[0].Value; } }
-        public int Dexterity { get { return sliderSkills[1].Value; } }
-        public int Intelligence { get { return sliderSkills[2].Value; } }
-        public int SkillIndex0 { get { return listSkills[0].Index; } }
-        public int SkillIndex1 { get { return listSkills[1].Index; } }
-        public int SkillIndex2 { get { return listSkills[2].Index; } }
-        public int SkillPoints0 { get { return sliderSkills[0].Value; } }
-        public int SkillPoints1 { get { return sliderSkills[1].Value; } }
-        public int SkillPoints2 { get { return sliderSkills[2].Value; } }
+        public int Strength { get { return sliderAttributes[0].Value; } set { sliderAttributes[0].Value = value; } }
+        public int Dexterity { get { return sliderAttributes[1].Value; } set { sliderAttributes[1].Value = value; } }
+        public int Intelligence { get { return sliderAttributes[2].Value; } set { sliderAttributes[2].Value = value; } }
+        public int SkillIndex0 { get { return listSkills[0].Index; } set { listSkills[0].Index = value; } }
+        public int SkillIndex1 { get { return listSkills[1].Index; } set { listSkills[1].Index = value; } }
+        public int SkillIndex2 { get { return listSkills[2].Index; } set { listSkills[2].Index = value; } }
+        public int SkillPoints0 { get { return sliderSkills[0].Value; } set { sliderSkills[0].Value = value; } }
+        public int SkillPoints1 { get { return sliderSkills[1].Value; } set { sliderSkills[1].Value = value; } }
+        public int SkillPoints2 { get { return sliderSkills[2].Value; } set { sliderSkills[2].Value = value; } }
 
         public CreateCharSkillsGump()
             : base(0, 0)

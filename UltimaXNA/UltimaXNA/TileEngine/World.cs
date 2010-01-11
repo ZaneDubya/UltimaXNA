@@ -148,7 +148,7 @@ namespace UltimaXNA.TileEngine
                 RenderBeginY = CenterPosition.TileY - Map.GameSize / 2;
                 Map.Update(CenterPosition.TileX, CenterPosition.TileY);
                 // Are we inside (under a roof)? Do not draw tiles above our head.
-                if (Map.GetMapCell(CenterPosition.TileX, CenterPosition.TileY).UnderRoof(CenterPosition.TileZ))
+                if (Map.GetMapTile(CenterPosition.TileX, CenterPosition.TileY).UnderRoof(CenterPosition.TileZ))
                 {
                     MaxRoofAltitude = CenterPosition.TileZ + 20;
                 }
@@ -203,13 +203,13 @@ namespace UltimaXNA.TileEngine
             xOffset -= (int)((CenterPosition.OffsetX - CenterPosition.OffsetY) * 22);
             yOffset -= (int)((CenterPosition.OffsetX + CenterPosition.OffsetY) * 22);
 
-            foreach (MapCell mapCell in Map.m_MapCells.Values)
+            foreach (MapTile tile in Map.m_Tiles.Values)
             {
-                int x = mapCell.X - RenderBeginX;
-                int y = mapCell.Y - RenderBeginY;
+                int x = tile.X - RenderBeginX;
+                int y = tile.Y - RenderBeginY;
                 drawPosition.X = (x - y) * 22 + xOffset;
                 drawPosition.Y = (x + y) * 22 + yOffset;
-                mapObjects = mapCell.GetSortedObjects();
+                mapObjects = tile.GetSortedObjects();
 
                 for (int i = 0; i < mapObjects.Count; i++)
                 {

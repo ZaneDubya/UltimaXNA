@@ -56,10 +56,10 @@ namespace UltimaXNA.Entities
             {
                 Movement.Update(gameTime);
 
-                TileEngine.MapCell iThisMapCell = _world.Map.GetMapCell(Movement.DrawPosition.TileX, Movement.DrawPosition.TileY);
-                if (iThisMapCell != null)
+                TileEngine.MapTile t = _world.Map.GetMapTile(Movement.DrawPosition.TileX, Movement.DrawPosition.TileY);
+                if (t != null)
                 {
-                    this.Draw(iThisMapCell, Movement.DrawPosition.PositionV3, Movement.DrawPosition.OffsetV3);
+                    this.Draw(t, Movement.DrawPosition.PositionV3, Movement.DrawPosition.OffsetV3);
                     _hasBeenDrawn = true;
                 }
                 else
@@ -76,19 +76,19 @@ namespace UltimaXNA.Entities
             }
         }
 
-        internal virtual void Draw(TileEngine.MapCell cell, Vector3 position, Vector3 positionOffset)
+        internal virtual void Draw(TileEngine.MapTile tile, Vector3 position, Vector3 positionOffset)
         {
             // base entities do not draw.
         }
 
-        internal void drawOverheads(TileEngine.MapCell cell, Vector3 position, Vector3 positionOffset)
+        internal void drawOverheads(TileEngine.MapTile tile, Vector3 position, Vector3 positionOffset)
         {
             // base entities do not draw, but they can have overheads, so we draw those.
             position.Z += 20;
             foreach (KeyValuePair<int, Overhead> overhead in _overheads)
             {
                 if (!overhead.Value.IsDisposed)
-                    overhead.Value.Draw(cell, position, positionOffset);
+                    overhead.Value.Draw(tile, position, positionOffset);
             }
         }
 

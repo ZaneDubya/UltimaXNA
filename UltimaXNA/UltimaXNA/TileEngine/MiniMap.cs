@@ -57,7 +57,7 @@ namespace UltimaXNA.TileEngine
                         ushort* cur = pData + ((size /2 - 1) + (size - 1) * y);
                         for (int x = 0; x < map.GameSize; x++)
                         {
-                            MapCell m = map.GetMapCell(renderBeginX + x, renderBeginY + y);
+                            MapTile m = map.GetMapTile(renderBeginX + x, renderBeginY + y);
                             int i;
                             for (i = m.Objects.Count - 1; i > 0; i--)
                             {
