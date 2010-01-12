@@ -203,8 +203,11 @@ namespace UltimaXNA.TileEngine
             xOffset -= (int)((CenterPosition.OffsetX - CenterPosition.OffsetY) * 22);
             yOffset -= (int)((CenterPosition.OffsetX + CenterPosition.OffsetY) * 22);
 
-            foreach (MapTile tile in Map.m_Tiles.Values)
+            for (int ix = 0; ix < Map.GameSize; ix++)
+            for (int iy = 0; iy < Map.GameSize; iy++)
+            //foreach (MapTile tile in Map.m_Cells.Values)
             {
+                MapTile tile = Map.GetMapTile(ix + RenderBeginX, iy + RenderBeginY);
                 int x = tile.X - RenderBeginX;
                 int y = tile.Y - RenderBeginY;
                 drawPosition.X = (x - y) * 22 + xOffset;
