@@ -25,6 +25,7 @@ using System.Threading;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Client;
 using UltimaXNA.Network;
+using UltimaXNA.Network.Packets.Client;
 using UltimaXNA.UILegacy;
 using UltimaXNA.UILegacy.Clientside;
 #endregion
@@ -43,22 +44,18 @@ namespace UltimaXNA.SceneManagement
     {
         CreateCharacterSceneStates _status;
 
+        bool _skillsSet = false;
         int[] _attributes = new int[3];
         int[] _skillIndexes= new int[3];
         int[] _skillValues = new int[3];
+        bool _appearanceSet = false;
+        string _name;
+        int _gender, _hairStyleID, _facialHairStyleID;
+        int _skinHue, _hairHue, _facialHairHue;
 
         public CreateCharacterScene(Game game)
             : base(game, true)
         {
-            _attributes[0] = 60;
-            _attributes[1] = 10;
-            _attributes[2] = 10;
-            _skillIndexes[0] = -1;
-            _skillIndexes[1] = -1;
-            _skillIndexes[2] = -1;
-            _skillValues[0] = 50;
-            _skillValues[1] = 50;
-            _skillValues[2] = 0;
         }
 
         public override void Intitialize()
@@ -75,23 +72,38 @@ namespace UltimaXNA.SceneManagement
             g1.OnBackward += this.OnBackward;
             _status = CreateCharacterSceneStates.ChooseSkills;
             // restore values
-            g1.Strength = _attributes[0];
-            g1.Dexterity = _attributes[1];
-            g1.Intelligence = _attributes[2];
-            g1.SkillIndex0 = _skillIndexes[0];
-            g1.SkillIndex1 = _skillIndexes[1];
-            g1.SkillIndex2 = _skillIndexes[2];
-            g1.SkillPoints0 = _skillValues[0];
-            g1.SkillPoints1 = _skillValues[1];
-            g1.SkillPoints2 = _skillValues[2];
+            if (_skillsSet)
+            {
+                g1.Strength = _attributes[0];
+                g1.Dexterity = _attributes[1];
+                g1.Intelligence = _attributes[2];
+                g1.SkillIndex0 = _skillIndexes[0];
+                g1.SkillIndex1 = _skillIndexes[1];
+                g1.SkillIndex2 = _skillIndexes[2];
+                g1.SkillPoints0 = _skillValues[0];
+                g1.SkillPoints1 = _skillValues[1];
+                g1.SkillPoints2 = _skillValues[2];
+            }
         }
 
         void openAppearanceGump()
         {
-            Gump g2 = UI.AddGump_Local(new CreateCharAppearanceGump(), 0, 0);
-            ((CreateCharAppearanceGump)g2).OnForward += this.OnForward;
-            ((CreateCharAppearanceGump)g2).OnBackward += this.OnBackward;
+            Gump g = UI.AddGump_Local(new CreateCharAppearanceGump(), 0, 0);
+            CreateCharAppearanceGump g1 = ((CreateCharAppearanceGump)g);
+            ((CreateCharAppearanceGump)g1).OnForward += this.OnForward;
+            ((CreateCharAppearanceGump)g1).OnBackward += this.OnBackward;
             _status = CreateCharacterSceneStates.ChooseAppearance;
+            // restore values
+            if (_appearanceSet)
+            {
+                g1.Name = _name;
+                g1.Gender = _gender;
+                g1.HairID = _hairStyleID;
+                g1.FacialHairID = _facialHairStyleID;
+                g1.SkinHue = _skinHue;
+                g1.HairHue = _hairHue;
+                g1.FacialHairHue = _facialHairHue;
+            }
         }
 
         bool validateSkills()
@@ -127,6 +139,7 @@ namespace UltimaXNA.SceneManagement
             _skillValues[0] = g.SkillPoints0;
             _skillValues[1] = g.SkillPoints1;
             _skillValues[2] = g.SkillPoints2;
+            _skillsSet = true;
             return true;
         }
 
@@ -134,6 +147,17 @@ namespace UltimaXNA.SceneManagement
         {
             // make sure name is long enough, etc.
             // if not, pop up an appropriate error message.
+            CreateCharAppearanceGump g = UI.GetGump<CreateCharAppearanceGump>(0);
+
+            // save the value;
+            _appearanceSet = true;
+            _name = g.Name;
+            _gender = g.Gender;
+            _hairStyleID = g.HairID;
+            _facialHairStyleID = g.FacialHairID;
+            _skinHue = g.SkinHue;
+            _hairHue = g.HairHue;
+            _facialHairHue = g.FacialHairHue;
             return true;
         }
 
@@ -154,7 +178,11 @@ namespace UltimaXNA.SceneManagement
                         SceneManager.CurrentScene = new CharacterListScene(Game);
                         break;
                     case CreateCharacterSceneStates.CreateCharacter:
-                        // validate input and then send create packet
+                        UltimaClient.Send(new Network.Packets.Client.CreateCharacterPacket(
+                            _name, (Sex)_gender, (Race)1, (byte)_attributes[0], (byte)_attributes[1], (byte)_attributes[2], 
+                            (byte)_skillIndexes[0], (byte)_skillValues[0], (byte)_skillIndexes[1], (byte)_skillValues[1], (byte)_skillIndexes[2], (byte)_skillValues[2],
+                            (short)_skinHue, (short)_hairStyleID, (short)_hairHue, (short)_facialHairStyleID, (short)_facialHairHue,
+                            0, (short)UltimaClient.CharacterListPacket.FirstEmptySlot, Utility.IPAddress, 0, 0));
                         break;
                 }
 
@@ -162,6 +190,13 @@ namespace UltimaXNA.SceneManagement
                 {
                     case UltimaClientStatus.GameServer_AtCharList:
                         // This is where we're supposed to be while creating a character.
+                        break;
+                    case UltimaClientStatus.WorldServer_LoginComplete:
+                        // Almost completed logging in, just waiting for our client object.
+                        break;
+                    case UltimaClientStatus.WorldServer_InWorld:
+                        // We're in! Load the world.
+                        SceneManager.CurrentScene = new WorldScene(Game);
                         break;
                     default:
                         // what's going on here? Add additional error handlers.

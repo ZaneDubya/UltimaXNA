@@ -39,6 +39,20 @@ namespace UltimaXNA.Network.Packets.Server
             get { return _characters; }
         }
 
+        
+        public int FirstEmptySlot
+        {
+            get
+            {
+                for (int i = 0; i < _characters.Length; i++)
+                {
+                    if (_characters[i].Name == string.Empty)
+                        return i; 
+                }
+                return -1;
+            }
+        }
+
         public CharacterCityListPacket(PacketReader reader)
             : base(0xA9, "Char/City List")
         {

@@ -23,6 +23,22 @@ namespace UltimaXNA.UILegacy.Gumplings
             set { _index = value; _getNewSelectedTexture = true; }
         }
 
+        public int HueValue
+        {
+            get { return _hues[Index]; }
+            set
+            {
+                for (int i = 0; i < _hues.Length; i++)
+                {
+                    if (value == _hues[i])
+                    {
+                        Index = i;
+                        break;
+                    }
+                }
+            }
+        }
+
         public ColorPicker(Control owner, int page)
             : base(owner, page)
         {

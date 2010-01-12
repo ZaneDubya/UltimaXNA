@@ -180,12 +180,9 @@ namespace UltimaXNA.Client
 
         public static void SelectCharacter(int index)
         {
-            byte[] iIPAdress = new byte[4] { 127, 0, 0, 1 };
-            int iAddress = BitConverter.ToInt32(iIPAdress, 0);
-
             if (_characterListPacket.Characters[index].Name != string.Empty)
             {
-                Send(new LoginCharacterPacket(_characterListPacket.Characters[index].Name, 0, iAddress));
+                Send(new LoginCharacterPacket(_characterListPacket.Characters[index].Name, 0, Utility.IPAddress));
             }
         }
 
