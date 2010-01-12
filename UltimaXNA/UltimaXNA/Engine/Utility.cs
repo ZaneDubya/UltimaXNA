@@ -552,5 +552,15 @@ namespace UltimaXNA
             else
                 return true;
         }
+
+        public static int IPAddress
+        {
+            get
+            {
+                byte[] iIPAdress = new byte[4] { 127, 0, 0, 1 };
+                int iAddress = BitConverter.ToInt32(iIPAdress, 0);
+                return iAddress;
+            }
+        }
     }
 }

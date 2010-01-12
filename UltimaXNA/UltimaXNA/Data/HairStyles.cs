@@ -26,6 +26,14 @@ namespace UltimaXNA.Data
                 return _male;
             }
         }
+        static readonly int[] _maleIDs = new int[10] { 0, 8251, 8252, 8253, 8260, 8261, 8266, 8263, 8264, 8265 };
+        public static int[] MaleIDs
+        {
+            get
+            {
+                return _maleIDs;
+            }
+        }
 
         static readonly int[] _facialStyles = new int[8] { 3000340, 3000351, 3000352, 3000353, 3000354, 1011060, 1011061, 3000357 };
         static string[] _facial;
@@ -44,6 +52,14 @@ namespace UltimaXNA.Data
                 return _facial;
             }
         }
+        static readonly int[] _facialIDs = new int[8] { 0, 8256, 8254, 8255, 8257, 8267, 8268, 8269 };
+        public static int[] FacialIDs
+        {
+            get
+            {
+                return _facialIDs;
+            }
+        }
 
         static readonly int[] _femaleStyles = new int[10] { 3000340, 3000341, 3000342, 3000343, 3000344, 3000345, 3000346, 3000347, 3000349, 3000350 };
         static string[] _female;
@@ -60,6 +76,14 @@ namespace UltimaXNA.Data
                     }
                 }
                 return _female;
+            }
+        }
+        static readonly int[] _femaleIDs = new int[10] { 0, 8251, 8252, 8253, 8260, 8261, 8266, 8263, 8265, 8262 };
+        public static int[] FemaleIDs
+        {
+            get
+            {
+                return _femaleIDs;
             }
         }
     }
