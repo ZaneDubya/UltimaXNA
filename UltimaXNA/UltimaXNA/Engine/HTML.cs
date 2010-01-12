@@ -121,6 +121,15 @@ namespace UltimaXNA
                         case "SMALL":
                             editOpenTags(openTags, isClosing, "small");
                             break;
+                        case "CENTER":
+                            editOpenTags(openTags, isClosing, "center");
+                            break;
+                        case "LEFT":
+                            editOpenTags(openTags, isClosing, "left");
+                            break;
+                        case "RIGHT":
+                            editOpenTags(openTags, isClosing, "right");
+                            break;
                         default:
                             // some tags have additional data, so we must parse them seperately.
                             if (tag.Length >= 1 && tag.StartsWith("A"))
@@ -192,6 +201,19 @@ namespace UltimaXNA
                             break;
                         case "small":
                             c.Font = enumHTMLFonts.Small;
+                            break;
+                    }
+                    string alignment = lastTag(openTags, new string[] { "center", "left", "right" });
+                    switch (alignment)
+                    {
+                        case "center":
+                            c.Alignment = enumHTMLAlignments.Center;
+                            break;
+                        case "left":
+                            c.Alignment = enumHTMLAlignments.Left;
+                            break;
+                        case "right":
+                            c.Alignment = enumHTMLAlignments.Right;
                             break;
                     }
                     c.Color = currentColor;

@@ -84,8 +84,8 @@ namespace UltimaXNA
 
         public bool DrawSimple(Texture2D texture, Vector3 position, Rectangle sourceRect, Vector2 hue)
         {
-            float minX = (float)sourceRect.X / (float)texture.Width, maxX = (float)sourceRect.Width / (float)texture.Width;
-            float minY = (float)sourceRect.Y / (float)texture.Height, maxY = (float)sourceRect.Height / (float)texture.Height;
+            float minX = (float)sourceRect.X / (float)texture.Width, maxX = (float)(sourceRect.X + sourceRect.Width) / (float)texture.Width;
+            float minY = (float)sourceRect.Y / (float)texture.Height, maxY = (float)(sourceRect.Y + sourceRect.Height) / (float)texture.Height;
 
             VertexPositionNormalTextureHue[] v = new VertexPositionNormalTextureHue[] {
                 new VertexPositionNormalTextureHue(new Vector3(position.X, position.Y, position.Z), new Vector3(0, 0, 1), new Vector3(minX, minY, 0)),
