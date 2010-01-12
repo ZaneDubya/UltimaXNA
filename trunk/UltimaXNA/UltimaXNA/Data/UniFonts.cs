@@ -23,7 +23,7 @@ namespace UltimaXNA.Data
 
         }
 
-        public unsafe void WriteToBuffer(Color* rPtr, ref int dx, ref int dy, int linewidth, int maxHeight, int baseLine, bool isBold, bool isItalic, bool isUnderlined, Color color)
+        public unsafe void WriteToBuffer(Color* rPtr, int dx, int dy, int linewidth, int maxHeight, int baseLine, bool isBold, bool isItalic, bool isUnderlined, Color color)
         {
             if (hasTexture)
             {
@@ -278,14 +278,14 @@ namespace UltimaXNA.Data
             if (!_TextureCache.ContainsKey(hash))
             {
                 HREFRegions r = new HREFRegions();
-                Texture2D texture = getTexture_Underlying(text, width, height, r);
+                Texture2D texture = writeTexture(text, width, height, r);
                 _TextureCache.Add(hash, texture);
                 _hrefRegionsCache.Add(texture, r);
             }
             return _TextureCache[hash];
         }
 
-        static Texture2D getTexture_Underlying(string textToRender, int w, int h, HREFRegions regions)
+        static Texture2D writeTexture(string textToRender, int w, int h, HREFRegions regions)
         {
             HTMLReader reader = new HTMLReader(textToRender);
 
@@ -302,32 +302,62 @@ namespace UltimaXNA.Data
             if (width == 0) // empty text string
                 return new Texture2D(_graphicsDevice, 1, 1);
 
-            if (regions != null)
-                getHREFRegions(reader, regions);
-
             Color[] resultData = new Color[width * height];
-            int dx = 0, dy = 0;
+            int dy = 0, lineheight = 0;
 
             unsafe
             {
                 fixed (Color* rPtr = resultData)
                 {
-                    for (int i = 0; i < reader.Length; ++i)
+                    int[] alignedTextX = new int[3];
+                    List<HTMLCharacter>[] alignedText = new List<HTMLCharacter>[3];
+                    for (int i = 0; i < 3; i++)
+                        alignedText[i] = new List<HTMLCharacter>();
+
+                    for (int i = 0; i < reader.Length; i++)
                     {
                         HTMLCharacter c = reader.Characters[i];
-                        UniFont font = _fonts[(int)c.Font];
+                        alignedText[(int)c.Alignment].Add(c);
 
-                        if (c.Character == '\n')
+                        if (c.Character == '\n' || (i == reader.Length - 1))
                         {
-                            dx = 0;
-                            dy += font.Baseline;
-                        }
-                        else
-                        {
-                            UniCharacter character = font.GetCharacter(c.Character);
-                            Color color = c.IsHREF ? new Color(255, 255, 255) : c.Color; // HREF links should be colored white.
-                            character.WriteToBuffer(rPtr, ref dx, ref dy, width, font.Height, font.Baseline, c.IsBold, c.IsItalic, c.IsUnderlined, color);
-                            dx += (c.IsBold) ? character.Width + 2 : character.Width + 1;
+                            // write left aligned text.
+                            int dx;
+                            if (alignedText[0].Count > 0)
+                            {
+                                alignedTextX[0] = dx = 0;
+                                writeTexture_Line(alignedText[0], rPtr, ref dx, dy, width, ref lineheight, true);
+                            }
+
+                            // centered text. We need to get the width first. Do this by drawing the line with var draw = false.
+                            if (alignedText[1].Count > 0)
+                            {
+                                dx = 0;
+                                writeTexture_Line(alignedText[1], rPtr, ref dx, dy, width, ref lineheight, false);
+                                alignedTextX[1] = dx = width / 2 - dx / 2;
+                                writeTexture_Line(alignedText[1], rPtr, ref dx, dy, width, ref lineheight, true);
+                            }
+
+                            // right aligned text.
+                            if (alignedText[2].Count > 0)
+                            {
+                                dx = 0;
+                                writeTexture_Line(alignedText[2], rPtr, ref dx, dy, width, ref lineheight, false);
+                                alignedTextX[2] = dx = width - dx;
+                                writeTexture_Line(alignedText[2], rPtr, ref dx, dy, width, ref lineheight, true);
+                            }
+
+                            // get HREF regions for html.
+                            if (regions != null)
+                                getHREFRegions(regions, alignedText, alignedTextX, dy);
+
+                            // clear the aligned text lists so we can fill them up in our next pass.
+                            for (int j = 0; j < 3; j++)
+                            {
+                                alignedText[j].Clear();
+                            }
+
+                            dy += lineheight;
                         }
                     }
                 }
@@ -338,38 +368,22 @@ namespace UltimaXNA.Data
             return result;
         }
 
-        static void getHREFRegions(HTMLReader reader, HREFRegions regions)
+        static void getHREFRegions(HREFRegions regions, List<HTMLCharacter>[] text, int[] x, int y)
         {
-            // variables for the href regions
-            bool hrefRegionOpen = false;
-            Rectangle hrefRegion = new Rectangle();
-            string hrefCurrent = string.Empty;
-            Point hrefOrigin = new Point();
-            int hrefHeight = 0;
-
-            int dx = 0, dy = 0;
-
-            for (int i = 0; i < reader.Length; ++i)
+            for (int alignment = 0; alignment < 3; alignment++)
             {
-                HTMLCharacter c = reader.Characters[i];
-                UniFont font = _fonts[(int)c.Font];
+                // variables for the open href region
+                bool hrefRegionOpen = false;
+                Rectangle hrefRegion = new Rectangle();
+                string hrefCurrent = string.Empty;
+                Point hrefOrigin = new Point();
+                int hrefHeight = 0;
 
-                if (c.Character == '\n')
+                int dx = x[alignment];
+                for (int i = 0; i < text[alignment].Count; i++)
                 {
-                    // close the current href tag if one is open.
-                    if (hrefRegionOpen)
-                    {
-                        hrefRegion.Width = (dx - hrefOrigin.X);
-                        hrefRegion.Height = (hrefHeight + hrefHeight - hrefOrigin.Y);
-                        regions.AddRegion(hrefRegion, hrefCurrent);
-                        hrefRegionOpen = false;
-                        hrefCurrent = string.Empty;
-                    }
-                    dx = 0;
-                    dy += font.Baseline;
-                }
-                else
-                {
+                    HTMLCharacter c = text[alignment][i];
+                    UniFont font = _fonts[(int)c.Font];
                     UniCharacter character = font.GetCharacter(c.Character);
 
                     if (c.HREF != hrefCurrent)
@@ -378,7 +392,7 @@ namespace UltimaXNA.Data
                         if (hrefRegionOpen)
                         {
                             hrefRegion.Width = (dx - hrefOrigin.X);
-                            hrefRegion.Height = (dy + hrefHeight - hrefOrigin.Y);
+                            hrefRegion.Height = (y + hrefHeight - hrefOrigin.Y);
                             regions.AddRegion(hrefRegion, hrefCurrent);
                             hrefRegionOpen = false;
                             hrefCurrent = string.Empty;
@@ -389,8 +403,8 @@ namespace UltimaXNA.Data
                         {
                             hrefRegionOpen = true;
                             hrefCurrent = c.HREF;
-                            hrefOrigin = new Point(dx, dy);
-                            hrefRegion = new Rectangle(dx, dy, 0, 0);
+                            hrefOrigin = new Point(dx, y);
+                            hrefRegion = new Rectangle(dx, y, 0, 0);
                             hrefHeight = 0;
                         }
                     }
@@ -399,13 +413,32 @@ namespace UltimaXNA.Data
                     if (hrefRegionOpen && font.Height > hrefHeight)
                         hrefHeight = font.Height;
                 }
+
+                // close the current href tag if one is open.
+                if (hrefRegionOpen)
+                {
+                    hrefRegion.Width = (dx - hrefOrigin.X);
+                    hrefRegion.Height = (y + hrefHeight - hrefOrigin.Y);
+                    regions.AddRegion(hrefRegion, hrefCurrent);
+                }
             }
-            // close the current href tag if one is open.
-            if (hrefRegionOpen)
+        }
+
+        // pass bool = false to get the width of the line to be drawn without actually drawing anything. Useful for aligning text.
+        static unsafe void writeTexture_Line(List<HTMLCharacter> text, Color* rPtr, ref int x, int y, int linewidth, ref int lineheight, bool draw)
+        {
+            for (int i = 0; i < text.Count; i++)
             {
-                hrefRegion.Width = (dx - hrefOrigin.X);
-                hrefRegion.Height = (dy + hrefHeight - hrefOrigin.Y);
-                regions.AddRegion(hrefRegion, hrefCurrent);
+                HTMLCharacter c = text[i];
+                UniFont font = _fonts[(int)c.Font];
+                UniCharacter character = font.GetCharacter(c.Character);
+                if (draw)
+                {
+                    Color color = c.IsHREF ? new Color(255, 255, 255) : c.Color; // HREF links should be colored white.
+                    character.WriteToBuffer(rPtr, x, y, linewidth, font.Height, font.Baseline, c.IsBold, c.IsItalic, c.IsUnderlined, color);
+                }
+                lineheight = font.Baseline;
+                x += (c.IsBold) ? character.Width + 2 : character.Width + 1;
             }
         }
 
@@ -413,8 +446,8 @@ namespace UltimaXNA.Data
         {
             width = 0;
             height = _fonts[0].Height;
-            int biggestwidth = 0;
-            int extrawidth = 0; // for italic characters, which need a little more room for their slant.
+            int widestline = 0;
+            int italicwidth = 0; // for italic characters, which need a little more room for their slant.
             List<HTMLCharacter> word = new List<HTMLCharacter>();
 
             for (int i = 0; i < reader.Length; ++i)
@@ -426,6 +459,9 @@ namespace UltimaXNA.Data
                 {
                     word.Add(c);
                 }
+
+                if (c.Alignment != enumHTMLAlignments.Left)
+                    widestline = maxwidth;
 
                 if (c.Character == ' ' || i == reader.Length - 1 || c.Character == '\n')
                 {
@@ -443,12 +479,12 @@ namespace UltimaXNA.Data
 
                             // italic characters need a little extra width if they are at the end of the line.
                             if (c.IsItalic)
-                                extrawidth = font.Height / 2;
+                                italicwidth = font.Height / 2;
                             else
                             {
-                                extrawidth -= charwidth;
-                                if (extrawidth < 0)
-                                    extrawidth = 0;
+                                italicwidth -= charwidth;
+                                if (italicwidth < 0)
+                                    italicwidth = 0;
                             }
 
                             wordwidth += charwidth + 1;
@@ -456,10 +492,10 @@ namespace UltimaXNA.Data
                     }
 
                     // Now make sure this line can fit the word.
-                    if (width + wordwidth + extrawidth <= maxwidth)
+                    if (width + wordwidth + italicwidth <= maxwidth)
                     {
                         // it can fit!
-                        width += wordwidth + extrawidth;
+                        width += wordwidth + italicwidth;
                         word.Clear();
                         // if this word is followed by a space, does it fit? If not, drop it entirely and insert \n after the word.
                         if (c.Character == ' ')
@@ -488,30 +524,17 @@ namespace UltimaXNA.Data
 
                     if (c.Character == '\n')
                     {
-                        if (width + extrawidth > biggestwidth)
-                            biggestwidth = width + extrawidth;
+                        if (width + italicwidth > widestline)
+                            widestline = width + italicwidth;
                         height += font.Baseline;
                         width = 0;
                     }
                 }
             }
 
-            width += extrawidth;
-            if (biggestwidth > width)
-                width = biggestwidth;
-        }
-
-        private unsafe static void DEBUG_fillWithBlack(Color* rPtr, int width, int height)
-        {
-            // Fills the background with black
-            for (int y = 0; y < height; y++)
-            {
-                Color* dest = (((Color*)rPtr) + (width * y));
-                for (int x = 0; x < width; x++)
-                {
-                    *dest++ = Color.Black;
-                }
-            }
+            width += italicwidth;
+            if (widestline > width)
+                width = widestline;
         }
     }
 }
