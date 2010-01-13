@@ -25,7 +25,7 @@ using Microsoft.Xna.Framework;
 
 namespace UltimaXNA.TileEngine
 {
-    class TileComparer : IComparer<MapObject>
+    sealed class TileComparer : IComparer<MapObject>
     {
         public static readonly TileComparer Comparer = new TileComparer();
 
@@ -64,7 +64,7 @@ namespace UltimaXNA.TileEngine
         }
     }
 
-    public class Map
+    public sealed class Map
     {
         public int UpdateTicker;
         private int m_GameSize, m_GameSizeUp, m_GameSizeDown;
@@ -224,7 +224,7 @@ namespace UltimaXNA.TileEngine
         }
     }
 
-    public class MapCell : Data.IPoint2D
+    public sealed class MapCell : Data.IPoint2D
     {
         public MapTile[] m_Tiles = new MapTile[64];
         Map _map;
@@ -312,7 +312,7 @@ namespace UltimaXNA.TileEngine
         }
     }
 
-    public class MapTile : Data.IPoint2D
+    public sealed class MapTile : Data.IPoint2D
     {
         public List<MapObject> Objects { get { return m_Objects; } }
         private bool m_NeedsSorting;

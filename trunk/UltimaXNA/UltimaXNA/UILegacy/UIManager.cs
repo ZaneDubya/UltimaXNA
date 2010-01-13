@@ -18,8 +18,6 @@ namespace UltimaXNA.UILegacy
         Cursor _cursor = null;
         IInputService _input = null;
 
-        // ExtendedSpriteBatchUI _spriteBatch;
-        // SpriteBatch3D _spriteBatch3D;
         ExtendedSpriteBatch _spriteBatch;
 
         List<string> _DEBUG_TEXT_LINES = new List<string>();

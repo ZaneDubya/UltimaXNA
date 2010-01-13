@@ -9,7 +9,7 @@ namespace UltimaXNA.Data
     {
         static readonly int[] _maleStyles = new int[10] { 3000340, 3000341, 3000342, 3000343, 3000344, 3000345, 3000346, 3000347, 3000348, 3000349 };
         static string[] _male;
-        public static string[] Male
+        public static string[] MaleHairNames
         {
             get
             {
@@ -34,6 +34,16 @@ namespace UltimaXNA.Data
                 return _maleIDs;
             }
         }
+        static readonly int[] _maleIDsForCreation = new int[10] { 0, 1875, 1876, 1879, 1877, 1871, 1874, 1873, 1880, 1870 };
+        public static int MaleGumpIDForCharacterCreationFromItemID(int id)
+        {
+            int gumpID = 0;
+            for (int i = 0; i < _maleIDsForCreation.Length; i++)
+                if (_maleIDs[i] == id)
+                    gumpID = _maleIDsForCreation[i];
+            return gumpID;
+        }
+
 
         static readonly int[] _facialStyles = new int[8] { 3000340, 3000351, 3000352, 3000353, 3000354, 1011060, 1011061, 3000357 };
         static string[] _facial;
@@ -53,17 +63,26 @@ namespace UltimaXNA.Data
             }
         }
         static readonly int[] _facialIDs = new int[8] { 0, 8256, 8254, 8255, 8257, 8267, 8268, 8269 };
-        public static int[] FacialIDs
+        public static int[] FacialHairIDs
         {
             get
             {
                 return _facialIDs;
             }
         }
+        static readonly int[] _facialGumpIDsForCreation = new int[8] { 0, 1881, 1883, 1885, 1884, 1886, 1882, 1887 };
+        public static int FacialHairGumpIDForCharacterCreationFromItemID(int id)
+        {
+            int gumpID = 0;
+            for (int i = 0; i < _facialGumpIDsForCreation.Length; i++)
+                if (_facialIDs[i] == id)
+                    gumpID = _facialGumpIDsForCreation[i];
+            return gumpID;
+        }
 
         static readonly int[] _femaleStyles = new int[10] { 3000340, 3000341, 3000342, 3000343, 3000344, 3000345, 3000346, 3000347, 3000349, 3000350 };
         static string[] _female;
-        public static string[] Female
+        public static string[] FemaleHairNames
         {
             get
             {
@@ -85,6 +104,15 @@ namespace UltimaXNA.Data
             {
                 return _femaleIDs;
             }
+        }
+        static readonly int[] _femaleIDsForCreation = new int[10] { 0, 1847, 1842, 1845, 1843, 1844, 1840, 1839, 1836, 1841 };
+        public static int FemaleGumpIDForCharacterCreationFromItemID(int id)
+        {
+            int gumpID = 0;
+            for (int i = 0; i < _femaleIDsForCreation.Length; i++)
+                if (_femaleIDs[i] == id)
+                    gumpID = _femaleIDsForCreation[i];
+            return gumpID;
         }
     }
 }

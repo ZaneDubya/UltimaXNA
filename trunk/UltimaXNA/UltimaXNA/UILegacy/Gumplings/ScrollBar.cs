@@ -14,7 +14,7 @@ namespace UltimaXNA.UILegacy.Gumplings
         Texture2D[] _gumpBackground = null;
 
         int _sliderY;
-        int _newValue = 0, _value = 0;
+        int _value = 0;
         public int Value
         {
             get
@@ -23,7 +23,11 @@ namespace UltimaXNA.UILegacy.Gumplings
             }
             set
             {
-                _value = _newValue = value;
+                _value = value;
+                if (_value < MinValue)
+                    _value = MinValue;
+                if (_value > MaxValue)
+                    _value = MaxValue;
                 if (IsInitialized)
                     _sliderY = calculateSliderY();
             }
@@ -58,10 +62,6 @@ namespace UltimaXNA.UILegacy.Gumplings
             MaxValue = maxValue;
             BarHeight = height;
             Value = value;
-            if (Value < MinValue)
-                Value = MinValue;
-            if (Value > MaxValue)
-                Value = MaxValue;
         }
 
         public override void Update(GameTime gameTime)
@@ -89,18 +89,12 @@ namespace UltimaXNA.UILegacy.Gumplings
                 {
                     _timeUntilNextClick = _timeBetweenClicks;
                     if (_btnUpClicked)
-                        _newValue = _value - 1;
+                        Value = _value - 1;
                     if (_btnDownClicked)
-                        _newValue = _value + 1;
+                        Value = _value + 1;
                 }
                 _timeUntilNextClick -= (float)gameTime.ElapsedRealTime.Milliseconds / 1000f;
             }
-
-            _value = _newValue;
-            if (_value < MinValue)
-                _value = MinValue;
-            if (_value > MaxValue)
-                _value = MaxValue;
             base.Update(gameTime);
         }
 
@@ -150,7 +144,8 @@ namespace UltimaXNA.UILegacy.Gumplings
             }
             else
             {
-                // clicked on the bar
+                // clicked on the bar. This should scroll up a full slider's height worth of entries.
+                // not coded yet, obviously.
             }
         }
 
@@ -165,18 +160,22 @@ namespace UltimaXNA.UILegacy.Gumplings
         {
             if (_btnSliderClicked)
             {
-                int scrollableArea = BarHeight - _gumpUpButton[0].Height - _gumpDownButton[0].Height - _gumpSlider.Height - 2;
-                _sliderY = _sliderY + (y - _clickPosition.Y);
-                if (_sliderY < 0)
-                    _sliderY = 0;
-                if (_sliderY > scrollableArea)
-                    _sliderY = scrollableArea;
-                _clickPosition = new Point(x, y);
-                if (_sliderY == 0 && _clickPosition.Y < _gumpUpButton[0].Height + _gumpSlider.Height / 2)
-                    _clickPosition.Y = _gumpUpButton[0].Height + _gumpSlider.Height / 2;
-                if (_sliderY == (scrollableArea) && _clickPosition.Y > BarHeight - _gumpDownButton[0].Height - _gumpSlider.Height / 2)
-                    _clickPosition.Y = BarHeight - _gumpDownButton[0].Height - _gumpSlider.Height / 2;
-                _newValue = (int)(((float)_sliderY / (float)scrollableArea) * (float)((MaxValue - MinValue))) + MinValue;
+                if (y != _clickPosition.Y)
+                {
+                    int scrollableArea = BarHeight - _gumpUpButton[0].Height - _gumpDownButton[0].Height - _gumpSlider.Height - 2;
+                    int sliderY = _sliderY + (y - _clickPosition.Y);
+                    if (sliderY < 0)
+                        sliderY = 0;
+                    if (sliderY > scrollableArea)
+                        sliderY = scrollableArea;
+                    _clickPosition = new Point(x, y);
+                    if (sliderY == 0 && _clickPosition.Y < _gumpUpButton[0].Height + _gumpSlider.Height / 2)
+                        _clickPosition.Y = _gumpUpButton[0].Height + _gumpSlider.Height / 2;
+                    if (sliderY == (scrollableArea) && _clickPosition.Y > BarHeight - _gumpDownButton[0].Height - _gumpSlider.Height / 2)
+                        _clickPosition.Y = BarHeight - _gumpDownButton[0].Height - _gumpSlider.Height / 2;
+                    Value = (int)(((float)sliderY / (float)scrollableArea) * (float)((MaxValue - MinValue))) + MinValue;
+                    _sliderY = sliderY;
+                }
             }
         }
     }

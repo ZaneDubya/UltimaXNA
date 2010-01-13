@@ -62,17 +62,22 @@ namespace UltimaXNA.UILegacy.Gumplings
         {
             if (_listOpen)
             {
-                // if we have moused off the open list, close it without ceremony.
-                if (_manager.MouseOverControl != _openResizePic && _manager.MouseOverControl != _openScrollBar && _manager.MouseOverControl != _resize)
+                // if we have moused off the open list, close it. We check to see if the mouse is over:
+                // the resizepic for the closed list (because it takes one update cycle to open the list)
+                // the resizepic for the open list, and the scroll bar if it is loaded.
+                if (_manager.MouseOverControl != _openResizePic &&
+                    _manager.MouseOverControl != _resize &&
+                    (_openScrollBar == null ? false : _manager.MouseOverControl != _openScrollBar))
                 {
                     closeOpenList();
                 }
                 else
                 {
                     // update the visible items
+                    int itemOffset = (_openScrollBar == null ? 0 : _openScrollBar.Value);
                     for (int i = 0; i < _visibleItems; i++)
                     {
-                        _openLabels[i].Text = (i + _openScrollBar.Value < 0) ? string.Empty : _items[i + _openScrollBar.Value];
+                        _openLabels[i].Text = (i + itemOffset < 0) ? string.Empty : _items[i + itemOffset];
                     }
                 }
             }
@@ -90,7 +95,8 @@ namespace UltimaXNA.UILegacy.Gumplings
         {
             _listOpen = false;
             _openResizePic.Dispose();
-            _openScrollBar.Dispose();
+            if (_openScrollBar != null)
+                _openScrollBar.Dispose();
             for (int i = 0; i < _visibleItems; i++)
                 _openLabels[i].Dispose();
         }
@@ -103,8 +109,12 @@ namespace UltimaXNA.UILegacy.Gumplings
             _openResizePic.OnMouseOver = onMouseOverOpenList;
             _openResizePic.OnMouseOut = onMouseOutOpenList;
             ((Gump)_owner).AddGumpling(_openResizePic);
-            _openScrollBar = new ScrollBar(_owner, Page, X + _width - 20, Y + 4, Data.ASCIIText.Fonts[1].Height * _visibleItems, (_canBeNull ? -1 : 0), _items.Count - _visibleItems, Index);
-            ((Gump)_owner).AddGumpling(_openScrollBar);
+            // only show the scrollbar if we need to scroll
+            if (_visibleItems < _items.Count)
+            {
+                _openScrollBar = new ScrollBar(_owner, Page, X + _width - 20, Y + 4, Data.ASCIIText.Fonts[1].Height * _visibleItems, (_canBeNull ? -1 : 0), _items.Count - _visibleItems, Index);
+                ((Gump)_owner).AddGumpling(_openScrollBar);
+            }
             _openLabels = new TextLabelAscii[_visibleItems];
             for (int i = 0; i < _visibleItems; i++)
             {
@@ -127,7 +137,7 @@ namespace UltimaXNA.UILegacy.Gumplings
         {
             int indexOver = getOpenListIndexFromPoint(x, y);
             if (indexOver != -1)
-                Index = indexOver + _openScrollBar.Value;
+                Index = indexOver + (_openScrollBar == null ? 0 : _openScrollBar.Value);
             closeOpenList();
         }
 

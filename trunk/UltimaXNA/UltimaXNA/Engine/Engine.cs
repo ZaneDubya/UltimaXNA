@@ -204,8 +204,8 @@ namespace UltimaXNA
         [STAThread]
         static void Main(string[] args)
         {
-            // if (args.Length > 0)
-            //    _passedPtr = Int32.Parse(args[0]);
+            if (args.Length > 0)
+               _passedPtr = Int32.Parse(args[0]);
 
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
             using (Engine engine = new Engine())
