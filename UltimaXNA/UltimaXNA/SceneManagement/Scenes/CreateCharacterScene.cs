@@ -126,7 +126,7 @@ namespace UltimaXNA.SceneManagement
                 (g.SkillIndex1 == g.SkillIndex2) ||
                 (g.SkillIndex0 == g.SkillIndex2))
             {
-                UI.MsgBox("You must select three unique skills!");
+                UI.MsgBox("You must have three unique skills chosen!");
                 return false;
             }
             // save the values;
@@ -145,11 +145,8 @@ namespace UltimaXNA.SceneManagement
 
         bool validateAppearance()
         {
-            // make sure name is long enough, etc.
-            // if not, pop up an appropriate error message.
             CreateCharAppearanceGump g = UI.GetGump<CreateCharAppearanceGump>(0);
-
-            // save the value;
+            // save the values
             _appearanceSet = true;
             _name = g.Name;
             _gender = g.Gender;
@@ -158,6 +155,18 @@ namespace UltimaXNA.SceneManagement
             _skinHue = g.SkinHue;
             _hairHue = g.HairHue;
             _facialHairHue = g.FacialHairHue;
+            // make sure name is long enough. 2+ Characters
+            // if not, pop up an appropriate error message.
+            if (_name.Length < 2)
+            {
+                UI.MsgBox(Data.StringList.Entry(1075458)); // 1075458: Your character name is too short.
+                return false;
+            }
+            if (_name[_name.Length - 1] == '.')
+            {
+                UI.MsgBox(Data.StringList.Entry(1075457)); // 1075457: Your character name cannot end with a period('.').
+                return false;
+            }
             return true;
         }
 
@@ -182,13 +191,13 @@ namespace UltimaXNA.SceneManagement
                             _name, (Sex)_gender, (Race)1, (byte)_attributes[0], (byte)_attributes[1], (byte)_attributes[2], 
                             (byte)_skillIndexes[0], (byte)_skillValues[0], (byte)_skillIndexes[1], (byte)_skillValues[1], (byte)_skillIndexes[2], (byte)_skillValues[2],
                             (short)_skinHue, (short)_hairStyleID, (short)_hairHue, (short)_facialHairStyleID, (short)_facialHairHue,
-                            0, (short)UltimaClient.CharacterListPacket.FirstEmptySlot, Utility.IPAddress, 0, 0));
+                            0, (short)ClientVars.CharacterList_FirstEmptySlot, Utility.IPAddress, 0, 0));
                         break;
                 }
 
                 switch (UltimaClient.Status)
                 {
-                    case UltimaClientStatus.GameServer_AtCharList:
+                    case UltimaClientStatus.GameServer_CharList:
                         // This is where we're supposed to be while creating a character.
                         break;
                     case UltimaClientStatus.WorldServer_LoginComplete:

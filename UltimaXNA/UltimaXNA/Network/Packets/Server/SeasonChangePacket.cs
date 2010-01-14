@@ -41,8 +41,8 @@ namespace UltimaXNA.Network.Packets.Server
         public SeasonChangePacket(PacketReader reader)
             : base(0xBC, "Seasonal Information")
         {
-            this._season = reader.ReadByte();
-            this._playSound = reader.ReadByte();
+            _season = reader.ReadByte();
+            _playSound = reader.ReadByte();
         }
     }
 }

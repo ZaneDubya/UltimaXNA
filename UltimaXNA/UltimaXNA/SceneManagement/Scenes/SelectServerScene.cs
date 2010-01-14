@@ -41,7 +41,7 @@ namespace UltimaXNA.SceneManagement
         public override void Intitialize()
         {
             base.Intitialize();
-            Gump g = UI.AddGump_Local(new UILegacy.Clientside.SelectServerGump(UltimaClient.ServerListPacket), 0, 0);
+            Gump g = UI.AddGump_Local(new UILegacy.Clientside.SelectServerGump(), 0, 0);
             ((UILegacy.Clientside.SelectServerGump)g).OnBackToLoginScreen += this.OnBackToLoginScreen;
             ((UILegacy.Clientside.SelectServerGump)g).OnSelectLastServer += this.OnSelectLastServer;
             ((UILegacy.Clientside.SelectServerGump)g).OnSelectServer += this.OnSelectServer;
@@ -60,7 +60,7 @@ namespace UltimaXNA.SceneManagement
                     case UltimaClientStatus.GameServer_Connecting:
                         // we are logging in to the shard.
                         break;
-                    case UltimaClientStatus.GameServer_AtCharList:
+                    case UltimaClientStatus.GameServer_CharList:
                         // we've got the char list
                         SceneManager.CurrentScene = new CharacterListScene(Game);
                         break;

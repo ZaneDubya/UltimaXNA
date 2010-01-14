@@ -102,6 +102,7 @@
     <Compile Include="Data\ContainerData.cs" />
     <Compile Include="Data\HairStyles.cs" />
     <Compile Include="Data\Skills.cs" />
+    <Compile Include="Engine\ClientVars.cs" />
     <Compile Include="Engine\HTML.cs" />
     <Compile Include="Engine\Metrics.cs" />
     <Compile Include="Data\Gumps.cs" />
@@ -150,6 +151,7 @@
     <Compile Include="EventSystem\IEventService.cs" />
     <Compile Include="Engine\Extensions\CallPriorityComparer.cs" />
     <Compile Include="Engine\GameState.cs" />
+    <Compile Include="Network\Packets\Server\DeleteResultPacket.cs" />
     <Compile Include="SceneManagement\Scenes\CharacterListScene.cs" />
     <Compile Include="SceneManagement\Scenes\CreateCharacterScene.cs" />
     <Compile Include="SceneManagement\Scenes\DebugScene.cs" />
@@ -166,6 +168,7 @@
     <Compile Include="UILegacy\Clientside\DebugGump.cs" />
     <Compile Include="UILegacy\Clientside\LoggingInGump.cs" />
     <Compile Include="UILegacy\Clientside\LoginGump.cs" />
+    <Compile Include="UILegacy\Clientside\MsgBox.cs" />
     <Compile Include="UILegacy\Clientside\SelectServerGump.cs" />
     <Compile Include="UILegacy\Clientside\TopMenu.cs" />
     <Compile Include="UILegacy\Core\Control.cs" />

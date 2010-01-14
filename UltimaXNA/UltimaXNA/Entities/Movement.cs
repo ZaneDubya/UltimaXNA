@@ -261,6 +261,8 @@ namespace UltimaXNA.Entities
         {
             if (DrawPosition == null)
                 return;
+            if (_world.Map == null)
+                return;
             TileEngine.MapTile lastTile = _world.Map.GetMapTile(DrawPosition.TileX, DrawPosition.TileY);
             if (lastTile != null)
             {
@@ -438,18 +440,15 @@ namespace UltimaXNA.Entities
 
     public class TilePosition
     {
-        // public int Map = 0;
         internal Vector3 Location;
 
         public TilePosition(float nTileX, float nTileY, float nTileZ)
         {
-            // Map = 0;
             Location = new Vector3(nTileX, nTileY, nTileZ);
         }
 
         public TilePosition(TilePosition nCopyPosition)
         {
-            // Map = nCopyPosition.Map;
             Location = new Vector3(nCopyPosition.Location.X, nCopyPosition.Location.Y, nCopyPosition.Location.Z);
         }
     }

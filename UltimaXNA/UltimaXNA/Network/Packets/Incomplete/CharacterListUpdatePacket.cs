@@ -26,10 +26,23 @@ namespace UltimaXNA.Network.Packets.Server
 {
     public class CharacterListUpdatePacket : RecvPacket
     {
+        CharacterListEntry[] _characters;
+        public CharacterListEntry[] Characters
+        {
+            get { return _characters; }
+        }
+
         public CharacterListUpdatePacket(PacketReader reader)
             : base(0x86, "Character List Update")
         {
-            // TODO: Write this packet.
+            // Documented at http://docs.polserver.com/packets/index.php?Packet=0xA8
+            int characterCount = reader.ReadByte();
+            _characters = new CharacterListEntry[characterCount];
+
+            for (int i = 0; i < characterCount; i++)
+            {
+                _characters[i] = new CharacterListEntry(reader);
+            }
         }
     }
 }

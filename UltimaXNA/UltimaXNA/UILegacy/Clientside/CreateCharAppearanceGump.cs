@@ -136,13 +136,13 @@ namespace UltimaXNA.UILegacy.Clientside
             AddGumpling(_FacialHairHue);
 
             // back button
-            AddGumpling(new Button(this, 1, 586, 435, 5537, 5539, 1, 0, (int)Buttons.BackButton));
+            AddGumpling(new Button(this, 1, 586, 435, 5537, 5539, ButtonTypes.Activate, 0, (int)Buttons.BackButton));
             ((Button)_controls[_controls.Count - 1]).GumpOverID = 5538;
             // forward button
-            AddGumpling(new Button(this, 1, 610, 435, 5540, 5542, 1, 0, (int)Buttons.ForwardButton));
+            AddGumpling(new Button(this, 1, 610, 435, 5540, 5542, ButtonTypes.Activate, 0, (int)Buttons.ForwardButton));
             ((Button)_controls[_controls.Count - 1]).GumpOverID = 5541;
             // quit button
-            AddGumpling(new Button(this, 0, 554, 2, 5513, 5515, 1, 0, (int)Buttons.QuitButton));
+            AddGumpling(new Button(this, 0, 554, 2, 5513, 5515, ButtonTypes.Activate, 0, (int)Buttons.QuitButton));
             ((Button)_controls[_controls.Count - 1]).GumpOverID = 5514;
         }
 

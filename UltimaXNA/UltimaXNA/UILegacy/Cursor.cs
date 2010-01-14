@@ -14,7 +14,7 @@ namespace UltimaXNA.UILegacy
     {
         IUIManager _manager = null;
 
-        private bool _isHolding = false;
+        bool _isHolding = false;
         public bool IsHolding
         {
             get
@@ -27,7 +27,7 @@ namespace UltimaXNA.UILegacy
             }
         }
 
-        private bool _isTargeting = false;
+        bool _isTargeting = false;
         public bool IsTargeting
         {
             get
@@ -54,6 +54,11 @@ namespace UltimaXNA.UILegacy
             }
         }
 
+        internal bool TrammelHue
+        {
+            get { return (ClientVars.Map == 1); }
+        }
+
         public Cursor(IUIManager manager)
         {
             _manager = manager;
@@ -64,6 +69,7 @@ namespace UltimaXNA.UILegacy
             Vector2 cursorOffset = Vector2.Zero;
             Rectangle sourceRect = Rectangle.Empty;
             int cursorTextureID = 0;
+            int cursorHue = 0;
             Texture2D cursorTexture = null;
 
             if (_isHolding)
@@ -126,6 +132,8 @@ namespace UltimaXNA.UILegacy
                     // Hue the cursor if in warmode.
                     if (GameState.WarMode)
                         cursorTextureID -= 23;
+                    else if (TrammelHue)
+                        cursorHue = 2412;
                 }
                 else
                 {
@@ -136,7 +144,7 @@ namespace UltimaXNA.UILegacy
                 cursorTexture = Data.Art.GetStaticTexture(cursorTextureID);
                 sourceRect = new Rectangle(1, 1, cursorTexture.Width - 2, cursorTexture.Height - 2);
             }
-            sb.Draw(cursorTexture, position - cursorOffset, sourceRect, 0, false);
+            sb.Draw(cursorTexture, position - cursorOffset, sourceRect, cursorHue, false);
         }
     }
 }

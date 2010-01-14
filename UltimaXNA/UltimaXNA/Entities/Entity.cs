@@ -56,6 +56,9 @@ namespace UltimaXNA.Entities
             {
                 Movement.Update(gameTime);
 
+                if (_world.Map == null)
+                    return;
+
                 TileEngine.MapTile t = _world.Map.GetMapTile(Movement.DrawPosition.TileX, Movement.DrawPosition.TileY);
                 if (t != null)
                 {

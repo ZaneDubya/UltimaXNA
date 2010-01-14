@@ -23,6 +23,7 @@ namespace UltimaXNA.UILegacy.Gumplings
         }
         bool _background = false;
         bool _scrollbar = false;
+        int _width, _height;
 
         Texture2D _texture = null;
         HREFRegions _hrefRegions = null;
@@ -57,6 +58,8 @@ namespace UltimaXNA.UILegacy.Gumplings
         void buildGumpling(int x, int y, int width, int height, int background, int scrollbar, string text)
         {
             Position = new Vector2(x, y);
+            _width = width;
+            _height = height;
             Size = new Vector2(width, height);
             Text = text;
             _background = (background == 1) ? true : false;
@@ -69,7 +72,8 @@ namespace UltimaXNA.UILegacy.Gumplings
             if (_textChanged || _texture == null)
             {
                 _textChanged = false;
-                _texture = Data.UniText.GetTexture(Text, Area.Width, Area.Height, ref _hrefRegions);
+                _texture = Data.UniText.GetTexture(Text, _width, _height, ref _hrefRegions);
+                Size = new Vector2(_texture.Width, _texture.Height);
                 if (_hrefRegions.Count > 0)
                     HandlesMouseInput = true;
                 else
@@ -87,13 +91,13 @@ namespace UltimaXNA.UILegacy.Gumplings
                 if (r.Index == _hrefOver)
                 {
                     if (_clicked)
-                        spriteBatch.Draw(_texture, new Vector2(Area.X + r.Area.X, Area.Y + r.Area.Y), r.Area, r.DownHue, false);
+                        spriteBatch.Draw(_texture, new Vector2(Area.X + r.Area.X, Area.Y + r.Area.Y), r.Area, r.Data.DownHue, false);
                     else
-                        spriteBatch.Draw(_texture, new Vector2(Area.X + r.Area.X, Area.Y + r.Area.Y), r.Area, r.OverHue, false);
+                        spriteBatch.Draw(_texture, new Vector2(Area.X + r.Area.X, Area.Y + r.Area.Y), r.Area, r.Data.OverHue, false);
                 }
                 else
                 {
-                    spriteBatch.Draw(_texture, new Vector2(Area.X + r.Area.X, Area.Y + r.Area.Y), r.Area, r.UpHue, true);
+                    spriteBatch.Draw(_texture, new Vector2(Area.X + r.Area.X, Area.Y + r.Area.Y), r.Area, r.Data.UpHue, true);
                 }
             }
             
@@ -137,7 +141,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             {
                 if (button == MouseButtons.LeftButton)
                 {
-                    ActivateByHREF(_hrefRegions.Region(_hrefOver).HREF);
+                    ActivateByHREF(_hrefRegions.Region(_hrefOver).Data.HREF);
                 }
             }
         }
