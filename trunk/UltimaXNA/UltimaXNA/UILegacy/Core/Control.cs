@@ -400,6 +400,13 @@ namespace UltimaXNA.UILegacy
 
         }
 
+        internal void Center()
+        {
+            Position = new Vector2(
+                (_manager.Width - Width) / 2,
+                (_manager.Height - Height) / 2);
+        }
+
         internal Color GumpColorHue(int hue, bool hueOnlyGreyPixels)
         {
             if (hue == 0)

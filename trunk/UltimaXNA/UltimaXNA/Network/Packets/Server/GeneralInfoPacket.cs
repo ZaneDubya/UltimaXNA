@@ -27,22 +27,27 @@ namespace UltimaXNA.Network.Packets.Server
     public class GeneralInfoPacket : RecvPacket
     {
         readonly short _subcommand;
-        ContextMenuNew _contextmenu;
-        readonly byte _mapid;
-
         public short Subcommand
         {
             get { return _subcommand; }
         }
 
+        ContextMenuNew _contextmenu;
         public ContextMenuNew ContextMenu
         {
             get { return _contextmenu; }
         }
 
+        byte _mapid;
         public byte MapID
         {
             get { return _mapid; }
+        }
+
+        int _mapCount;
+        public int MapCount
+        {
+            get { return _mapCount; }
         }
 
         public GeneralInfoPacket(PacketReader reader)
@@ -62,7 +67,7 @@ namespace UltimaXNA.Network.Packets.Server
                     receiveContextMenu(reader);
                     break;
                 case 0x18: // Number of maps
-                    // !!! Not implemented yet.
+                    receiveMapDiffManifest(reader);
                     break;
                 case 0x1D: // House revision
                     // !!! Not implemented yet.
@@ -76,7 +81,17 @@ namespace UltimaXNA.Network.Packets.Server
             }
         }
 
-        private void receiveContextMenu(PacketReader reader)
+        void receiveMapDiffManifest(PacketReader reader)
+        {
+            _mapCount = reader.ReadInt32();
+            for (int i = 0; i < _mapCount; i++)
+            {
+                int mapPatches = reader.ReadInt32();
+                int staticPatches = reader.ReadInt32();
+            }
+        }
+
+        void receiveContextMenu(PacketReader reader)
         {
             reader.ReadByte(); // unknown (0x00)
             int iSubCommand = reader.ReadByte(); // 0x01 for 2D, 0x02 for KR

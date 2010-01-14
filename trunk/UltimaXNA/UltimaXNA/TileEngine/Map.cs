@@ -67,33 +67,33 @@ namespace UltimaXNA.TileEngine
     public sealed class Map
     {
         public int UpdateTicker;
-        private int m_GameSize, m_GameSizeUp, m_GameSizeDown;
-        private List<int> m_KeysToRemove;
-        // public Dictionary<int, MapCell> m_Cells;
-        MapCell[] m_Cells;
-        private Data.TileMatrix m_TileMatrix;
-        private int _x, _y;
-        private bool _firstUpdate = true;
+        int _renderSize, _renderSizeUp, _renderSizeDown;
+        MapCell[] _cells;
+        Data.TileMatrix _tileMatrix;
+        int _x, _y;
+        bool _firstUpdate = true;
+
+        int _index = -1;
+        public int Index { get { return _index; } }
 
         public Map(int index, int gameSize, int gameSizeUp, int gameSizeDown)
         {
-            m_GameSize = gameSize;
-            m_GameSizeUp = gameSizeUp;
-            m_GameSizeDown = gameSizeDown;
+            _renderSize = gameSize;
+            _renderSizeUp = gameSizeUp;
+            _renderSizeDown = gameSizeDown;
 
-            m_KeysToRemove = new List<int>();
-            // m_Cells = new Dictionary<int, MapCell>();
-            m_TileMatrix = new Data.TileMatrix(index, index);
-            m_Cells = new MapCell[m_TileMatrix.BlockWidth * m_TileMatrix.BlockHeight];
+            _index = index;
+            _tileMatrix = new Data.TileMatrix(_index, _index);
+            _cells = new MapCell[_tileMatrix.BlockWidth * _tileMatrix.BlockHeight];
         }
 
         public int Height
         {
-            get { return m_TileMatrix.Height; }
+            get { return _tileMatrix.Height; }
         }
         public int Width
         {
-            get { return m_TileMatrix.Width; }
+            get { return _tileMatrix.Width; }
         }
 
         public void GetAverageZ(int x, int y, ref int z, ref int avg, ref int top)
@@ -149,8 +149,8 @@ namespace UltimaXNA.TileEngine
 
         public int GameSize
         {
-            get { return m_GameSize; }
-            set { m_GameSize = value; }
+            get { return _renderSize; }
+            set { _renderSize = value; }
         }
 
         private int GetKey(MapCell cell)
@@ -166,7 +166,7 @@ namespace UltimaXNA.TileEngine
         // This pulls a tile from the TileMatrix.
         public Data.Tile GetLandTile(int x, int y)
         {
-            return m_TileMatrix.GetLandTile(x, y);
+            return _tileMatrix.GetLandTile(x, y);
         }
 
         public MapTile GetMapTile(int x, int y)
@@ -180,7 +180,7 @@ namespace UltimaXNA.TileEngine
 
         MapCell getMapCell(int x, int y)
         {
-            return m_Cells[(x >> 3) + ((y >> 3) *  m_TileMatrix.BlockWidth)];
+            return _cells[(x >> 3) + ((y >> 3) *  _tileMatrix.BlockWidth)];
         }
 
         public void Update(int centerX, int centerY)
@@ -191,12 +191,12 @@ namespace UltimaXNA.TileEngine
                 _y = centerY;
                 _firstUpdate = false;
 
-                int renderBeginX = centerX - m_GameSize / 2;
-                int renderBeginY = centerY - m_GameSize / 2;
+                int renderBeginX = centerX - _renderSize / 2;
+                int renderBeginY = centerY - _renderSize / 2;
 
-                for (int x = 0; x < m_GameSize; x++)
+                for (int x = 0; x < _renderSize; x++)
                 {
-                    for (int y = 0; y < m_GameSize; y++)
+                    for (int y = 0; y < _renderSize; y++)
                     {
                         loadTile(renderBeginX + x, renderBeginY + y);
                     }
@@ -210,7 +210,7 @@ namespace UltimaXNA.TileEngine
         {
             MapCell c = getMapCell(x, y);
             if (c == null)
-                c = m_Cells[(x >> 3) + ((y >> 3) * m_TileMatrix.BlockWidth)] = new MapCell(this, m_TileMatrix, x - x % 8, y - y % 8);
+                c = _cells[(x >> 3) + ((y >> 3) * _tileMatrix.BlockWidth)] = new MapCell(this, _tileMatrix, x - x % 8, y - y % 8);
             if (c.Tile(x, y) == null)
                 c.LoadTile(x, y);
         }

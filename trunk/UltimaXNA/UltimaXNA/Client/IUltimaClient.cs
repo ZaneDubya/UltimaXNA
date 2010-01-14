@@ -29,7 +29,7 @@ namespace UltimaXNA.Client
         LoginServer_LoggingIn,
         LoginServer_HasServerList,
         GameServer_Connecting,
-        GameServer_AtCharList,
+        GameServer_CharList,
         GameServer_LoggingIn,
         WorldServer_LoginComplete,
         WorldServer_InWorld,

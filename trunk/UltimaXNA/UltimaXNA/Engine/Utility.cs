@@ -444,7 +444,7 @@ namespace UltimaXNA
             return new string(chars);
         }
 
-        static byte HexDigitToByte(char c)
+        static byte hexDigitToByte(char c)
         {
             switch(c)
             {
@@ -472,17 +472,17 @@ namespace UltimaXNA
         {
             if (hex.Length == 8)
             {
-                int a = (HexDigitToByte(hex[0]) << 4) + HexDigitToByte(hex[1]);
-                int r = (HexDigitToByte(hex[2]) << 4) + HexDigitToByte(hex[3]);
-                int g = (HexDigitToByte(hex[4]) << 4) + HexDigitToByte(hex[5]);
-                int b = (HexDigitToByte(hex[6]) << 4) + HexDigitToByte(hex[7]);
+                int a = (hexDigitToByte(hex[0]) << 4) + hexDigitToByte(hex[1]);
+                int r = (hexDigitToByte(hex[2]) << 4) + hexDigitToByte(hex[3]);
+                int g = (hexDigitToByte(hex[4]) << 4) + hexDigitToByte(hex[5]);
+                int b = (hexDigitToByte(hex[6]) << 4) + hexDigitToByte(hex[7]);
                 return new Color((byte)r, (byte)g, (byte)b, (byte)a);
             }
             else if (hex.Length == 6)
             {
-                int r = (HexDigitToByte(hex[0]) << 4) + HexDigitToByte(hex[1]);
-                int g = (HexDigitToByte(hex[2]) << 4) + HexDigitToByte(hex[3]);
-                int b = (HexDigitToByte(hex[4]) << 4) + HexDigitToByte(hex[5]);
+                int r = (hexDigitToByte(hex[0]) << 4) + hexDigitToByte(hex[1]);
+                int g = (hexDigitToByte(hex[2]) << 4) + hexDigitToByte(hex[3]);
+                int b = (hexDigitToByte(hex[4]) << 4) + hexDigitToByte(hex[5]);
                 return new Color((byte)r, (byte)g, (byte)b);
             }
             else

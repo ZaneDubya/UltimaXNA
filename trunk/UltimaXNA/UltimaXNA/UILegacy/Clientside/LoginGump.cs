@@ -27,12 +27,12 @@ namespace UltimaXNA.UILegacy.Clientside
         public LoginGump()
             : base(0, 0)
         {
-            int hue = 646;
+            int hue = 1132; // dark brown
             _renderFullScreen = false;
             // backdrop
             AddGumpling(new GumpPic(this, 0, 0, 0, 9001,0));
             // quit button
-            AddGumpling(new Button(this, 0, 554, 2, 5513, 5515, 1, 0, (int)LoginGumpButtons.QuitButton));
+            AddGumpling(new Button(this, 0, 554, 2, 5513, 5515, ButtonTypes.Activate, 0, (int)LoginGumpButtons.QuitButton));
             ((Button)_controls[_controls.Count - 1]).GumpOverID = 5514;
             // Log in to Ultima Online
             AddGumpling(new TextLabelAscii(this, 0, 254, 305, hue, 2, Data.StringList.Entry(1077841)));
@@ -50,7 +50,7 @@ namespace UltimaXNA.UILegacy.Clientside
             AddGumpling(new ResizePic(this, g2));
             AddGumpling(g2);
             // login button
-            AddGumpling(new Button(this, 0, 610, 435, 5540, 5542, 1, 0, (int)LoginGumpButtons.LoginButton));
+            AddGumpling(new Button(this, 0, 610, 435, 5540, 5542, ButtonTypes.Activate, 0, (int)LoginGumpButtons.LoginButton));
             ((Button)_controls[_controls.Count - 1]).GumpOverID = 5541;
             // Version information
             AddGumpling(new TextLabelAscii(this, 0, 183, 421, hue, 9, Utility.VersionString));

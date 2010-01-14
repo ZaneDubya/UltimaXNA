@@ -89,8 +89,6 @@ namespace UltimaXNA.TileEngine
 
         public World(Game game)
         {
-            Map = new Map(0, 40, 0, 0);
-
             _input = game.Services.GetService<IInputService>();
             _spriteBatch = new SpriteBatch3D(game);
             _wireframe = new WireframeRenderer(game);
@@ -114,8 +112,6 @@ namespace UltimaXNA.TileEngine
                 new VertexPositionNormalTextureHue(new Vector3(), new Vector3(), new Vector3(iUVMax, iUVMax, 0))
             };
         }
-
-        
 
         private void recalculateLightning()
         {
@@ -142,37 +138,46 @@ namespace UltimaXNA.TileEngine
 
         public void Update(GameTime gameTime)
         {
-            if (CenterPosition != _lastCenterPosition)
+            if (ClientVars.Map != -1)
             {
-                RenderBeginX = CenterPosition.TileX - Map.GameSize / 2;
-                RenderBeginY = CenterPosition.TileY - Map.GameSize / 2;
-                Map.Update(CenterPosition.TileX, CenterPosition.TileY);
-                // Are we inside (under a roof)? Do not draw tiles above our head.
-                if (Map.GetMapTile(CenterPosition.TileX, CenterPosition.TileY).UnderRoof(CenterPosition.TileZ))
-                {
-                    MaxRoofAltitude = CenterPosition.TileZ + 20;
-                }
-                else
-                {
-                    MaxRoofAltitude = 255;
-                }
-            }
+                if ((Map == null) || (Map.Index != ClientVars.Map))
+                    Map = new Map(ClientVars.Map, 40, 0, 0);
 
-            _lastCenterPosition = new DrawPosition(CenterPosition);
-            render();
+                if (CenterPosition != _lastCenterPosition)
+                {
+                    RenderBeginX = CenterPosition.TileX - Map.GameSize / 2;
+                    RenderBeginY = CenterPosition.TileY - Map.GameSize / 2;
+                    Map.Update(CenterPosition.TileX, CenterPosition.TileY);
+                    // Are we inside (under a roof)? Do not draw tiles above our head.
+                    if (Map.GetMapTile(CenterPosition.TileX, CenterPosition.TileY).UnderRoof(CenterPosition.TileZ))
+                    {
+                        MaxRoofAltitude = CenterPosition.TileZ + 20;
+                    }
+                    else
+                    {
+                        MaxRoofAltitude = 255;
+                    }
+                }
+
+                _lastCenterPosition = new DrawPosition(CenterPosition);
+                render();
+            }
         }
 
         public void Draw(GameTime gameTime)
         {
-            _spriteBatch.FlushOld(true);
-            if (DEBUG_DrawDebug)
+            if (ClientVars.Map != -1)
             {
-                if (_overObject != null)
-                    _wireframe.AddMouseOverItem(_overObject);
-                if (_overGround != null)
-                    _wireframe.AddMouseOverItem(_overGround);
-                _wireframe.ProjectionMatrix = _spriteBatch.WorldMatrix;
-                _wireframe.Draw(gameTime);
+                _spriteBatch.FlushOld(true);
+                if (DEBUG_DrawDebug)
+                {
+                    if (_overObject != null)
+                        _wireframe.AddMouseOverItem(_overObject);
+                    if (_overGround != null)
+                        _wireframe.AddMouseOverItem(_overGround);
+                    _wireframe.ProjectionMatrix = _spriteBatch.WorldMatrix;
+                    _wireframe.Draw(gameTime);
+                }
             }
         }
 

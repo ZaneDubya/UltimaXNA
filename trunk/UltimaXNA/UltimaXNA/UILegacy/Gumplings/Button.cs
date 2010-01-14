@@ -42,21 +42,21 @@ namespace UltimaXNA.UILegacy.Gumplings
             buttonType = Int32.Parse(arguements[5]);
             param = Int32.Parse(arguements[6]);
             buttonID = Int32.Parse(arguements[7]);
-            buildGumpling(x, y, gumpID1, gumpID2, buttonType, param, buttonID);
+            buildGumpling(x, y, gumpID1, gumpID2, (ButtonTypes)buttonType, param, buttonID);
         }
 
-        public Button(Control owner, int page, int x, int y, int gumpID1, int gumpID2, int buttonType, int param, int buttonID)
+        public Button(Control owner, int page, int x, int y, int gumpID1, int gumpID2, ButtonTypes buttonType, int param, int buttonID)
             : this(owner, page)
         {
             buildGumpling(x, y, gumpID1, gumpID2, buttonType, param, buttonID);
         }
 
-        void buildGumpling(int x, int y, int gumpID1, int gumpID2, int buttonType, int param, int buttonID)
+        void buildGumpling(int x, int y, int gumpID1, int gumpID2, ButtonTypes buttonType, int param, int buttonID)
         {
             Position = new Vector2(x, y);
             _gumpID1 = gumpID1;
             _gumpID2 = gumpID2;
-            ButtonType = (ButtonTypes)buttonType;
+            ButtonType = buttonType;
             ButtonParameter = param;
             ButtonID = buttonID;
         }

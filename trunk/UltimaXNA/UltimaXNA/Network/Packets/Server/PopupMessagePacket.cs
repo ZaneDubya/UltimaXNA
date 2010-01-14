@@ -27,11 +27,16 @@ namespace UltimaXNA.Network.Packets.Server
     public class PopupMessagePacket : RecvPacket
     {
         public static string[] Messages = new string[] {
-                "Character does not exist",
-		        "Character already exists",
-		        "A character is already logged in",
-		        "Loggin sync error",
-		        "You have been idle for to long"
+                "Incorrect password", 
+                "This character does not exist any more!",
+		        "This character already exists.",
+                "Could not attach to game server.",
+                "Could not attach to game server.",
+		        "A character is already logged in.",
+		        "Synchronization Error.",
+		        "You have been idle for to long.",
+                "Could not attach to game server.",
+                "Character transfer in progress."
             };
 
         readonly byte _id;
@@ -40,21 +45,7 @@ namespace UltimaXNA.Network.Packets.Server
         {
             get
             {
-                switch (_id)
-                {
-                    case 1:
-                        return Messages[0];
-                    case 2:
-                        return Messages[1];
-                    case 5:
-                        return Messages[2];
-                    case 6:
-                        return Messages[3];
-                    case 7:
-                        return Messages[4];
-                    default:
-                        return "Error: No message defined!";
-                }
+                return Messages[_id];
             }
         }
 

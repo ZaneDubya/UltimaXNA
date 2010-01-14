@@ -375,7 +375,7 @@ namespace UltimaXNA.Data
                 // variables for the open href region
                 bool hrefRegionOpen = false;
                 Rectangle hrefRegion = new Rectangle();
-                string hrefCurrent = string.Empty;
+                HREFDescription hrefCurrent = null;
                 Point hrefOrigin = new Point();
                 int hrefHeight = 0;
 
@@ -395,11 +395,11 @@ namespace UltimaXNA.Data
                             hrefRegion.Height = (y + hrefHeight - hrefOrigin.Y);
                             regions.AddRegion(hrefRegion, hrefCurrent);
                             hrefRegionOpen = false;
-                            hrefCurrent = string.Empty;
+                            hrefCurrent = null;
                         }
 
                         // did we open a href?
-                        if (c.HREF != string.Empty)
+                        if (c.HREF != null)
                         {
                             hrefRegionOpen = true;
                             hrefCurrent = c.HREF;

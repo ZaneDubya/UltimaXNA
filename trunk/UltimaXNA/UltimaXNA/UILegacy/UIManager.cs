@@ -19,6 +19,9 @@ namespace UltimaXNA.UILegacy
         IInputService _input = null;
 
         ExtendedSpriteBatch _spriteBatch;
+        public int Width { get { return _spriteBatch.GraphicsDevice.Viewport.Width; } }
+        public int Height { get { return _spriteBatch.GraphicsDevice.Viewport.Height; } }
+        public bool IsMsgBoxOpen { get { return (GetGump<Clientside.MsgBox>(0) != null); } }
 
         List<string> _DEBUG_TEXT_LINES = new List<string>();
         List<GameTime> _DEBUG_TEXT_TIMES = new List<GameTime>();
@@ -45,10 +48,11 @@ namespace UltimaXNA.UILegacy
         {
             get
             {
+                if (IsMsgBoxOpen)
+                    return null;
                 if (_keyboardFocusControl == null)
                     return null;
-                else
-                    return _keyboardFocusControl;
+                return _keyboardFocusControl;
             }
             set
             {
@@ -89,6 +93,7 @@ namespace UltimaXNA.UILegacy
         public void MsgBox(string msg)
         {
             // pop up an error message, modal.
+            _controls.Add(new Clientside.MsgBox(msg));
         }
 
         public Gump AddGump_Server(Serial serial, Serial gumpID, string[] gumplings, string[] lines, int x, int y)
@@ -269,8 +274,18 @@ namespace UltimaXNA.UILegacy
             _keyboardHandlingControlAnnouncedThisRound = false;
 
             Control[] focusedControls = null;
+            List<Control> workingControls;
+            if (IsMsgBoxOpen)
+            {
+                workingControls = new List<Control>();
+                foreach (Control c in _controls)
+                    if (c.GetType() == typeof(Clientside.MsgBox))
+                        workingControls.Add(c);
+            }
+            else
+                workingControls = _controls;
 
-            foreach (Control c in _controls)
+            foreach (Control c in workingControls)
             {
                 Control[] mouseOverControls = c.HitTest(_input.CurrentMousePosition);
                 if (mouseOverControls != null)
@@ -356,7 +371,7 @@ namespace UltimaXNA.UILegacy
                     }
                 }
             }
-            if (_keyboardFocusControl != null)
+            if (KeyboardFocusControl != null)
             {
                 if (_keyboardFocusControl.IsDisposed)
                 {

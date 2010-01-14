@@ -70,7 +70,8 @@ namespace UltimaXNA.Network
             network.Register<MobileIncomingPacket>(0x78, "Mobile Incoming", -1, new TypedPacketReceiveHandler(MobileIncoming));
             network.Register<DisplayMenuPacket>(0x7C, "Display Menu", -1, new TypedPacketReceiveHandler(DisplayMenu));
             network.Register<LoginRejectionPacket>(0x82, "Login Rejection", 2, new TypedPacketReceiveHandler(LoginRejection));
-            network.Register<CharacterListUpdatePacket>(0x86, "Character List Update", 304, new TypedPacketReceiveHandler(CharacterListUpdate));
+            network.Register<DeleteCharacterResponsePacket>(0x85, "Delete Character Response", 2, new TypedPacketReceiveHandler(DeleteCharacterResponse));
+            network.Register<CharacterListUpdatePacket>(0x86, "Character List Update", -1, new TypedPacketReceiveHandler(CharacterListUpdate));
             network.Register<OpenPaperdollPacket>(0x88, "Open Paperdoll", 66, new TypedPacketReceiveHandler(OpenPaperdoll));
             network.Register<CorpseClothingPacket>(0x89, "Corpse Clothing", -1, new TypedPacketReceiveHandler(CorpseClothing));
             network.Register<ServerRelayPacket>(0x8C, "ServerRelay", 11, new TypedPacketReceiveHandler(ServerRelay));
@@ -352,6 +353,12 @@ namespace UltimaXNA.Network
                 LoginRejection(p);
         }
 
+        private static void OnDeleteCharacter(IRecvPacket p)
+        {
+            if (DeleteCharacterResponse != null)
+                DeleteCharacterResponse(p);
+        }
+
         private static void OnCharacterListUpdate(IRecvPacket p)
         {
             if (CharacterListUpdate != null)
@@ -593,6 +600,7 @@ namespace UltimaXNA.Network
         public static event TypedPacketReceiveHandler MobileIncoming;
         public static event TypedPacketReceiveHandler DisplayMenu;
         public static event TypedPacketReceiveHandler LoginRejection;
+        public static event TypedPacketReceiveHandler DeleteCharacterResponse;
         public static event TypedPacketReceiveHandler CharacterListUpdate;
         public static event TypedPacketReceiveHandler OpenPaperdoll;
         public static event TypedPacketReceiveHandler CorpseClothing;

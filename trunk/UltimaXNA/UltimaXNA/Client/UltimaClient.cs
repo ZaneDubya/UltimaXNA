@@ -44,16 +44,10 @@ namespace UltimaXNA.Client
         {
             _host = host; _port = port; _account = account; _password = password;
         }
-        static void clearLoginData() { _account = string.Empty; _password = string.Empty; }
 
         static ClientNetwork _ClientNetwork;
         static TileEngine.IWorld _worldService;
         static UILegacy.IUIManager _LegacyUI = null;
-
-        static ServerListPacket _serverListPacket;
-        public static ServerListPacket ServerListPacket { get { return _serverListPacket; } }
-        static CharacterCityListPacket _characterListPacket;
-        public static CharacterCityListPacket CharacterListPacket { get { return _characterListPacket; } }
 
         static UltimaClient()
         {
@@ -112,6 +106,7 @@ namespace UltimaXNA.Client
             PacketRegistry.MobileIncoming += receive_MobileIncoming;
             PacketRegistry.DisplayMenu += receive_DisplayMenu;
             PacketRegistry.LoginRejection += receive_LoginRejection;
+            PacketRegistry.DeleteCharacterResponse += receive_DeleteCharacterResponse;
             PacketRegistry.CharacterListUpdate += receive_CharacterListUpdate;
             PacketRegistry.OpenPaperdoll += receive_OpenPaperdoll;
             PacketRegistry.CorpseClothing += receive_CorpseClothing;
@@ -174,15 +169,32 @@ namespace UltimaXNA.Client
 
         public static void SelectServer(int index)
         {
-            Status = UltimaClientStatus.GameServer_Connecting;
-            Send(new SelectServerPacket(index));
+            if (Status == UltimaClientStatus.LoginServer_HasServerList)
+            {
+                Status = UltimaClientStatus.GameServer_Connecting;
+                Send(new SelectServerPacket(index));
+            }
         }
 
         public static void SelectCharacter(int index)
         {
-            if (_characterListPacket.Characters[index].Name != string.Empty)
+            if (Status == UltimaClientStatus.GameServer_CharList)
             {
-                Send(new LoginCharacterPacket(_characterListPacket.Characters[index].Name, 0, Utility.IPAddress));
+                if (ClientVars.CharacterList[index].Name != string.Empty)
+                {
+                    Send(new LoginCharacterPacket(ClientVars.CharacterList[index].Name, index, Utility.IPAddress));
+                }
+            }
+        }
+
+        public static void DeleteCharacter(int index)
+        {
+            if (Status == UltimaClientStatus.GameServer_CharList)
+            {
+                if (ClientVars.CharacterList[index].Name != string.Empty)
+                {
+                    Send(new DeleteCharacterPacket(_password, index, Utility.IPAddress));
+                }
             }
         }
 
@@ -191,7 +203,6 @@ namespace UltimaXNA.Client
             if (_ClientNetwork.IsConnected)
                 _ClientNetwork.Disconnect();
             Status = UltimaClientStatus.Unconnected;
-            clearLoginData();
         }
 
         public static void Send(ISendPacket packet)
@@ -251,9 +262,16 @@ namespace UltimaXNA.Client
             }
         }
 
+        private static void receive_DeleteCharacterResponse(IRecvPacket packet)
+        {
+            DeleteCharacterResponsePacket p = (DeleteCharacterResponsePacket)packet;
+            _LegacyUI.MsgBox(p.Result);
+        }
+
         private static void receive_CharacterListUpdate(IRecvPacket packet)
         {
-            announce_UnhandledPacket(packet);
+            CharacterListUpdatePacket p = (CharacterListUpdatePacket)packet;
+            ClientVars.CharacterList = p.Characters;
         }
 
         private static void receive_CLILOCMessage(IRecvPacket packet)
@@ -273,8 +291,10 @@ namespace UltimaXNA.Client
 
         private static void receive_CharacterList(IRecvPacket packet)
         {
-            _characterListPacket = (CharacterCityListPacket)packet;
-            Status = UltimaClientStatus.GameServer_AtCharList;
+            CharacterCityListPacket p = (CharacterCityListPacket)packet;
+            ClientVars.CharacterList = p.Characters;
+            ClientVars.StartingLocations = p.Locations;
+            Status = UltimaClientStatus.GameServer_CharList;
         }
 
         private static void receive_CompressedGump(IRecvPacket packet)
@@ -371,7 +391,7 @@ namespace UltimaXNA.Client
         private static void receive_EnableFeatures(IRecvPacket packet)
         {
             SupportedFeaturesPacket p = (SupportedFeaturesPacket)packet;
-            announce_UnhandledPacket(packet);
+            ClientVars.FeatureFlags = p.Flags;
         }
 
         private static void receive_Extended0x78(IRecvPacket packet)
@@ -381,32 +401,30 @@ namespace UltimaXNA.Client
 
         private static void receive_GeneralInfo(IRecvPacket packet)
         {
+            // Documented here: http://docs.polserver.com/packets/index.php?Packet=0xBF
             GeneralInfoPacket p = (GeneralInfoPacket)packet;
             switch (p.Subcommand)
             {
+                case 0x04: // Close generic gump
+                    announce_UnhandledPacket(packet, "subcommand " + p.Subcommand);
+                    break;
                 case 0x06: // party system
                     announce_UnhandledPacket(packet, "subcommand " + p.Subcommand);
                     break;
                 case 0x08: // Set cursor color / set map
-                    // p.MapID_MapID;
-                    // 0 = Felucca, cursor not colored / BRITANNIA map
-                    // 1 = Trammel, cursor colored gold / BRITANNIA map
-                    // 2 = (switch to) ILSHENAR map
-                    announce_UnhandledPacket(packet, "subcommand " + p.Subcommand);
+                    ClientVars.Map = p.MapID;
                     break;
                 case 0x14: // return context menu
                     parseContextMenu(p.ContextMenu);
                     break;
-                case 0x18: // Number of maps
+                case 0x18: // Enable map-diff (files) / number of maps
+                    // as of 6.0.0.0, this only tells us the number of maps.
+                    ClientVars.MapCount = p.MapCount;
+                    break;
+                case 0x19: // Extended stats
                     announce_UnhandledPacket(packet, "subcommand " + p.Subcommand);
                     break;
                 case 0x1D: // House revision
-                    announce_UnhandledPacket(packet, "subcommand " + p.Subcommand);
-                    break;
-                case 0x04: // Close generic gump
-                    announce_UnhandledPacket(packet, "subcommand " + p.Subcommand);
-                    break;
-                case 0x19: // Extended stats: http://docs.polserver.com/packets/index.php?Packet=0xBF
                     announce_UnhandledPacket(packet, "subcommand " + p.Subcommand);
                     break;
                 default:
@@ -719,7 +737,7 @@ namespace UltimaXNA.Client
         private static void receive_PopupMessage(IRecvPacket packet)
         {
             PopupMessagePacket p = (PopupMessagePacket)packet;
-            announce_UnhandledPacket(packet);
+            _LegacyUI.MsgBox(p.Message);
         }
 
         private static void receive_QuestArrow(IRecvPacket packet)
@@ -752,9 +770,10 @@ namespace UltimaXNA.Client
 
         private static void receive_SeasonalInformation(IRecvPacket packet)
         {
-            // Unhandled!!! If iSeason2 = 1, then this is a season change.
+            // Only partially handled !!! If iSeason2 = 1, then this is a season change.
             // If season change, then iSeason1 = (0=spring, 1=summer, 2=fall, 3=winter, 4 = desolation)
-            announce_UnhandledPacket(packet);
+            SeasonChangePacket p = (SeasonChangePacket)packet;
+            ClientVars.Season = p.Season;
         }
 
         private static void receive_SellList(IRecvPacket packet)
@@ -764,7 +783,7 @@ namespace UltimaXNA.Client
 
         private static void receive_ServerList(IRecvPacket packet)
         {
-            _serverListPacket = (ServerListPacket)packet;
+            ClientVars.ServerListPacket = (ServerListPacket)packet;
             Status = UltimaClientStatus.LoginServer_HasServerList;
         }
 
@@ -781,7 +800,6 @@ namespace UltimaXNA.Client
             // actually need to do this.
             _ClientNetwork.IsDecompressionEnabled = true;
             Send(new GameLoginPacket(p.AccountId, _account, _password));
-            clearLoginData();
         }
 
         private static void receive_SkillsList(IRecvPacket packet)
@@ -843,7 +861,8 @@ namespace UltimaXNA.Client
 
         private static void receive_Time(IRecvPacket packet)
         {
-            announce_UnhandledPacket(packet);
+            TimePacket p = (TimePacket)packet;
+            _LegacyUI.DebugMessage_AddLine(string.Format("The current server time is {0}:{1}:{2}", p.Hour, p.Minute, p.Second));
         }
 
         private static void receive_TipNotice(IRecvPacket packet)
@@ -933,22 +952,14 @@ namespace UltimaXNA.Client
 
 
 
-
-
-
-        private static void announce_UnhandledPacket(IRecvPacket packet)
+        static void announce_UnhandledPacket(IRecvPacket packet)
         {
-            UI.UIHelper.Chat_AddLine("DEBUG: Unhandled " + packet.Name + ". <" + packet.Id + ">");
+            _LegacyUI.DebugMessage_AddLine(string.Format("Client: Unhandled {0} [ID:{1}]", packet.Name, packet.Id));
         }
 
-        private static void announce_UnhandledPacket(IRecvPacket packet, string addendum)
+        static void announce_UnhandledPacket(IRecvPacket packet, string addendum)
         {
-            UI.UIHelper.Chat_AddLine("DEBUG: Unhandled " + packet.Name + ". <" + packet.Id + ">" + " " + addendum);
-        }
-
-        private static void announce_Packet(IRecvPacket packet)
-        {
-            // UI.UIHelper.Chat_AddLine("DEBUG: Recv'd " + packet.Name + ". <" + packet.Id + ">");
+            _LegacyUI.DebugMessage_AddLine(string.Format("Client: Unhandled {0} [ID:{1}] {2}", packet.Name, packet.Id, addendum));
         }
 
         private static void receive_TextMessage(MessageType msgType, string text, int hue, int font, Serial serial, string speakerName)
