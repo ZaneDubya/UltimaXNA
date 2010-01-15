@@ -169,6 +169,7 @@
     <Compile Include="UILegacy\Clientside\DebugGump.cs" />
     <Compile Include="UILegacy\Clientside\LoggingInGump.cs" />
     <Compile Include="UILegacy\Clientside\LoginGump.cs" />
+    <Compile Include="UILegacy\Clientside\MiniMap.cs" />
     <Compile Include="UILegacy\Clientside\MsgBox.cs" />
     <Compile Include="UILegacy\Clientside\SelectServerGump.cs" />
     <Compile Include="UILegacy\Clientside\TopMenu.cs" />
@@ -182,6 +183,7 @@
     <Compile Include="UILegacy\Gumplings\ColorPicker.cs" />
     <Compile Include="UILegacy\Gumplings\CroppedText.cs" />
     <Compile Include="UILegacy\Gumplings\DropDownList.cs" />
+    <Compile Include="UILegacy\Gumplings\GumplingDragger.cs" />
     <Compile Include="UILegacy\Gumplings\Paperdoll.cs" />
     <Compile Include="UILegacy\Gumplings\ScrollBar.cs" />
     <Compile Include="UILegacy\Gumplings\GumpPic.cs" />

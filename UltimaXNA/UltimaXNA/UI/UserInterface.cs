@@ -28,13 +28,12 @@ namespace UltimaXNA.UI
 {
     public class UserInterface
     {
-        private static Dictionary<string, Window> _UIWindows;
-        private static SpriteBatch _spriteBatch;
-        private static FormCollection _formCollection;
-        private static bool _DrawForms = false;
-        private static GraphicsDeviceManager _graphics;
-
-        static bool DEBUG_drawUI = true;
+        // private static Dictionary<string, Window> _UIWindows;
+        // private static SpriteBatch _spriteBatch;
+        // private static FormCollection _formCollection;
+        // private static bool _DrawForms = false;
+        // private static GraphicsDeviceManager _graphics;
+        // static bool DEBUG_drawUI = true;
 
         static UserInterface()
         {
@@ -103,8 +102,8 @@ namespace UltimaXNA.UI
 
         private static void drawText(SpriteBatch spriteBatch, string text, int font, int hue, int x, int y)
         {
-            Texture2D texture = UIHelper.TextTexture(text, font, hue);
-            spriteBatch.Draw(texture, new Rectangle(x, y, texture.Width, texture.Height), Color.White);
+            // Texture2D texture = UIHelper.TextTexture(text, font, hue);
+            // spriteBatch.Draw(texture, new Rectangle(x, y, texture.Width, texture.Height), Color.White);
         }
 
         public void Dispose()
@@ -114,24 +113,25 @@ namespace UltimaXNA.UI
 
         public static Window Window(string nWindowName)
         {
-            try { return _UIWindows[nWindowName]; }
+            /*try { return _UIWindows[nWindowName]; }
             catch
             {
                 // This window is not open.
                 return null;
-            }
+            }*/
+            return null;
         }
 
         public static void CloseWindow(string nWindowName)
         {
-            Window w = _UIWindows[nWindowName];
+           /* Window w = _UIWindows[nWindowName];
             if (w != null)
-                w.Close();
+                w.Close();*/
         }
 
         public static Window AddWindow(string windowName, Window window)
         {
-            if (_UIWindows.ContainsKey(windowName))
+            /*if (_UIWindows.ContainsKey(windowName))
             {
                 if (_UIWindows[windowName].IsClosed)
                 {
@@ -144,24 +144,25 @@ namespace UltimaXNA.UI
                 }
             }
             _UIWindows.Add(windowName, window);
-            return _UIWindows[windowName];
+            return _UIWindows[windowName];*/
+            return null;
         }
 
         public static void Reset()
         {
-            lock (_formCollection)
+            /*lock (_formCollection)
             {
                 foreach (KeyValuePair<string, Window> kvp in _UIWindows)
                 {
                     if (!kvp.Key.Contains("Error"))
                         CloseWindow(kvp.Key);
                 }
-            }
+            }*/
         }
 
         public static void PaperDoll_Open(Entity nMobileObject)
         {
-            lock (_formCollection)
+            /*lock (_formCollection)
             {
                 string iContainerKey = "PaperDoll:" + nMobileObject.Serial;
                 if (_UIWindows.ContainsKey(iContainerKey))
@@ -172,12 +173,12 @@ namespace UltimaXNA.UI
                 {
                     _UIWindows.Add(iContainerKey, new Window_PaperDoll(nMobileObject, _formCollection));
                 }
-            }
+            }*/
         }
 
         public static void Container_Open(Entity nContainerObject, int nGump)
         {
-            lock (_formCollection)
+            /*lock (_formCollection)
             {
                 string iContainerKey = "Container:" + nContainerObject.Serial;
                 if (_UIWindows.ContainsKey(iContainerKey))
@@ -188,12 +189,12 @@ namespace UltimaXNA.UI
                 {
                     _UIWindows.Add(iContainerKey, new Window_Container(nContainerObject, _formCollection));
                 }
-            }
+            }*/
         }
 
         public static void Merchant_Open(Entity nContainerObject, int nGump)
         {
-            lock (_formCollection)
+            /*lock (_formCollection)
             {
                 string iContainerKey = "Merchant:" + nContainerObject.Serial;
                 if (_UIWindows.ContainsKey(iContainerKey))
@@ -204,23 +205,23 @@ namespace UltimaXNA.UI
                 {
                     _UIWindows.Add(iContainerKey, new Window_Merchant(nContainerObject, _formCollection));
                 }
-            }
+            }*/
         }
 
         public static void ErrorPopup_Modal(string nText)
         {
-            lock (_formCollection)
+            /*lock (_formCollection)
             {
                 if (_UIWindows.ContainsKey("ErrorModal"))
                     _UIWindows.Remove("ErrorModal");
                 _UIWindows.Add("ErrorModal", new ErrorModal(_formCollection, nText));
-            }
-            }
+            }*/
+        }
 
 
         private static void updateWindows()
         {
-            lock (_formCollection)
+            /*lock (_formCollection)
             {
                 bool iMustUpdateWindowList = false;
 
@@ -244,7 +245,7 @@ namespace UltimaXNA.UI
                     }
                     _UIWindows = iUIWindows;
                 }
-            }
+            }*/
         }
     }
 }

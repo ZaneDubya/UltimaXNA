@@ -59,5 +59,8 @@ namespace UltimaXNA
 
         static int _season = 0;
         public static int Season { get { return _season; } set { _season = value; } }
+
+        static bool _minimapLarge = false;
+        public static bool MiniMap_LargeFormat { get { return _minimapLarge; } set { _minimapLarge = value; } }
     }
 }

@@ -54,8 +54,10 @@ namespace UltimaXNA.UILegacy.Clientside
             switch ((Buttons)buttonID)
             {
                 case Buttons.Map:
+                    _manager.ToggleGump_Local(new MiniMap(), 566, 25);
                     break;
                 case Buttons.Paperdoll:
+                    _manager.ToggleGump_Local(new DebugGump(), 50, 50);
                     break;
                 case Buttons.Inventory:
                     break;

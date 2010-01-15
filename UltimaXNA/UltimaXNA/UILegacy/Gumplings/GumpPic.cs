@@ -60,5 +60,16 @@ namespace UltimaXNA.UILegacy.Gumplings
             spriteBatch.Draw(_texture, Position, _hue, false);
             base.Draw(spriteBatch);
         }
+
+        protected override bool _hitTest(int x, int y)
+        {
+            Color[] pixelData;
+            pixelData = new Color[1];
+            _texture.GetData<Color>(0, new Rectangle(x, y, 1, 1), pixelData, 0, 1);
+            if (pixelData[0].A > 0)
+                return true;
+            else
+                return false;
+        }
     }
 }
