@@ -43,6 +43,7 @@ namespace UltimaXNA.UI
 
         public static void Initialize(Game game) 
         {
+            /*
             _graphics = game.Services.GetService(typeof(IGraphicsDeviceService)) as GraphicsDeviceManager;
             _formCollection = new FormCollection(game.Window, game.Services, ref _graphics, @"..\..\res\");
             _spriteBatch = new SpriteBatch(_graphics.GraphicsDevice);
@@ -50,19 +51,23 @@ namespace UltimaXNA.UI
             _UIWindows = new Dictionary<string, Window>();
             _DrawForms = true;
             FormCollection.Cursor.HasShadow = false;
+             */
         }
 
         protected static void UnloadContent()
         {
+            /*
             if (_DrawForms)
             {
                 //Dispose of the form collection
                 _formCollection.Dispose();
             }
+             */
         }
 
         public static void Update(GameTime gameTime)
         {
+            /*
             UIHelper.Update();
 
             DEBUG_drawUI = false;
@@ -80,11 +85,12 @@ namespace UltimaXNA.UI
                     //Render the form collection (required before drawing)
                     _formCollection.Render();
                 }
-            }
+            }*/
         }
 
         public static void Draw(GameTime gameTime)
         {
+            /*
             if (DEBUG_drawUI)
             {
                 //Draw the form collection
@@ -92,7 +98,7 @@ namespace UltimaXNA.UI
                 {
                     _formCollection.Draw();
                 }
-            }
+            }*/
         }
 
         private static void drawText(SpriteBatch spriteBatch, string text, int font, int hue, int x, int y)
