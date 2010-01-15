@@ -85,7 +85,7 @@ namespace UltimaXNA.UI
             // add text to the chat window.
             try
             {
-                ((Window_Chat)UserInterface.Window("ChatFrame")).AddText(nChatText);
+                // ((Window_Chat)UserInterface.Window("ChatFrame")).AddText(nChatText);
             }
             catch
             {
@@ -106,6 +106,7 @@ namespace UltimaXNA.UI
         {
             if (_queuedChatText.Count > 0)
             {
+                /*
                 Window_Chat w = UserInterface.Window("ChatFrame") as Window_Chat;
                 if (w != null)
                 {
@@ -114,7 +115,7 @@ namespace UltimaXNA.UI
                         w.AddText(s);
                     }
                     _queuedChatText.Clear();
-                }
+                }*/
             }
         }
 

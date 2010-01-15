@@ -24,6 +24,9 @@ namespace UltimaXNA.UILegacy.Gumplings
         public ButtonTypes ButtonType = ButtonTypes.Default;
         public int ButtonParameter = 0;
         public int ButtonID = 0;
+        public string Caption = string.Empty;
+
+        internal bool MouseDownOnThis { get { return (_clicked && _manager.MouseOverControl == this); } }
 
         public Button(Control owner, int page)
             : base(owner, page)
@@ -75,7 +78,7 @@ namespace UltimaXNA.UILegacy.Gumplings
                 _gumpOver = Data.Gumps.GetGumpXNA(_gumpID3);
             }
 
-            if (_clicked && _manager.MouseOverControl == this)
+            if (MouseDownOnThis)
                 _texture = _gumpDown;
             else if (_manager.MouseOverControl == this && _gumpOver != null)
                 _texture = _gumpOver;
@@ -87,7 +90,13 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_texture, new Vector2(Area.X, Area.Y), 0, false);
+            spriteBatch.Draw(_texture, Position, 0, false);
+            if (Caption != string.Empty)
+            {
+                Texture2D t = Data.UniText.GetTexture(Caption);
+                int yoffset = MouseDownOnThis ? 1 : 0;
+                spriteBatch.Draw(t, new Vector2(X + (Width - t.Width) / 2, Area.Y + yoffset + (_texture.Height - t.Height) / 2), 0, false);
+            }
             base.Draw(spriteBatch);
         }
 
