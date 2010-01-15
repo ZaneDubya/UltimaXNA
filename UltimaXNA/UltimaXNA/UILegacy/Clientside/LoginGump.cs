@@ -42,11 +42,13 @@ namespace UltimaXNA.UILegacy.Clientside
             AddGumpling(new TextLabelAscii(this, 0, 181, 386, hue, 2, Data.StringList.Entry(3000103)));
             // name field
             TextEntry g1 = new TextEntry(this, 0, 332, 346, 200, 20, 0, (int)LoginGumpTextFields.AccountName, 32, "Admin");
+            g1.HtmlTag = "<basefont color=#000000><big>";
             AddGumpling(new ResizePic(this, g1));
             AddGumpling(g1);
             // password field
             TextEntry g2 = new TextEntry(this, 0, 332, 386, 200, 20, 0, (int)LoginGumpTextFields.Password, 32, "Admin");
             g2.IsPasswordField = true;
+            g2.HtmlTag = "<basefont color=#000000><big>";
             AddGumpling(new ResizePic(this, g2));
             AddGumpling(g2);
             // login button

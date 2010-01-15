@@ -27,8 +27,13 @@ namespace UltimaXNA.UILegacy.Gumplings
             }
         }
 
-        bool _isBlinking = false;
-        bool _isBlinkOn = false;
+        public string HtmlTag = string.Empty;
+
+        bool _legacyCarat = false;
+        public bool LegacyCarat { get { return _legacyCarat; } set { _legacyCarat = value; } }
+
+        bool _isFocused = false;
+        bool _caratBlinkOn = false;
         float _secondsSinceLastBlink = 0f;
         const float _SecondsPerBlink = 0.5f;
 
@@ -72,7 +77,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             Text = text;
             LimitSize = limitSize;
             Size = new Vector2(width, height);
-            _isBlinkOn = false;
+            _caratBlinkOn = false;
         }
 
         public override void Update(GameTime gameTime)
@@ -81,33 +86,40 @@ namespace UltimaXNA.UILegacy.Gumplings
             {
                 _textChanged = false;
                 if (IsPasswordField)
-                    _texture = Data.UniText.GetTexture(new string('*', Text.Length), Area.Width, Area.Height);
+                    _texture = Data.UniText.GetTexture(HtmlTag + new string('*', Text.Length), Area.Width, Area.Height);
                 else
-                    _texture = Data.UniText.GetTexture(Text, Area.Width, Area.Height);
+                    _texture = Data.UniText.GetTexture(HtmlTag + Text, Area.Width, Area.Height);
             }
 
             if (_manager.KeyboardFocusControl == this)
             {
-                if (!_isBlinking)
+                // if we're not already focused, turn the carat on immediately.
+                // if we're using the legacy carat, keep it visible. Else blink it every x seconds.
+                if (!_isFocused)
                 {
-                    _isBlinking = true;
-                    _isBlinkOn = true;
+                    _isFocused = true;
+                    _caratBlinkOn = true;
                     _secondsSinceLastBlink = 0f;
                 }
-                _secondsSinceLastBlink += ((float)gameTime.ElapsedRealTime.TotalSeconds);
-                if (_secondsSinceLastBlink >= _SecondsPerBlink)
+                if (_legacyCarat)
+                    _caratBlinkOn = true;
+                else
                 {
-                    _secondsSinceLastBlink -= _SecondsPerBlink;
-                    if (_isBlinkOn == true)
-                        _isBlinkOn = false;
-                    else
-                        _isBlinkOn = true;
+                    _secondsSinceLastBlink += ((float)gameTime.ElapsedRealTime.TotalSeconds);
+                    if (_secondsSinceLastBlink >= _SecondsPerBlink)
+                    {
+                        _secondsSinceLastBlink -= _SecondsPerBlink;
+                        if (_caratBlinkOn == true)
+                            _caratBlinkOn = false;
+                        else
+                            _caratBlinkOn = true;
+                    }
                 }
             }
             else
             {
-                _isBlinking = false;
-                _isBlinkOn = false;
+                _isFocused = false;
+                _caratBlinkOn = false;
             }
 
             base.Update(gameTime);
@@ -117,9 +129,9 @@ namespace UltimaXNA.UILegacy.Gumplings
         {
             spriteBatch.Draw(_texture, new Vector2(Area.X, Area.Y), Hue, false);
 
-            if (_isBlinkOn)
+            if (_caratBlinkOn)
             {
-                Texture2D caratTexture = Data.UniText.GetTexture("|");
+                Texture2D caratTexture = Data.UniText.GetTexture(_legacyCarat ? "_" : "|");
                 spriteBatch.Draw(caratTexture, new Vector2(Area.X + _texture.Width, Area.Y), Hue, false);
             }
             

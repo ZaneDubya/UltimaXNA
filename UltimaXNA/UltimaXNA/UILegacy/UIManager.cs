@@ -239,8 +239,16 @@ namespace UltimaXNA.UILegacy
 
         public void DebugMessage_AddLine(string line)
         {
-            _DEBUG_TEXT_LINES.Add(line);
-            _DEBUG_TEXT_TIMES.Add(new GameTime());
+            Gump g = this.GetGump<Clientside.ChatWindow>(0);
+            if (g == null)
+            {
+                _DEBUG_TEXT_LINES.Add(line);
+                _DEBUG_TEXT_TIMES.Add(new GameTime());
+            }
+            else
+            {
+                ((Clientside.ChatWindow)g).AddLine(line);
+            }
         }
         public void DebugMessage_Clear()
         {

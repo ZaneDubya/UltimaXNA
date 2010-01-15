@@ -39,8 +39,9 @@ namespace UltimaXNA.SceneManagement
         {
             base.Intitialize();
             UI.AddGump_Local(new TopMenu(0), 0, 0);
-            UserInterface.AddWindow("ChatFrame", new Window_Chat());
-            UserInterface.AddWindow("ChatInput", new Window_ChatInput());
+            UI.AddGump_Local(new ChatWindow(), 0, 0);
+            // UserInterface.AddWindow("ChatFrame", new Window_Chat());
+            // UserInterface.AddWindow("ChatInput", new Window_ChatInput());
             World.LightDirection = -0.6f;
             GameState.InWorld = true;
         }

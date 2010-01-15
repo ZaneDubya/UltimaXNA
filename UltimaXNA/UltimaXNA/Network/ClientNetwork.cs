@@ -365,6 +365,11 @@ namespace UltimaXNA.Network
             try
             {
                 Socket socket = state.Socket;
+                if (socket.Connected == false)
+                {
+                    Disconnect();
+                    return;
+                }
                 int length = socket.EndReceive(result);
 
                 if (length > 0)

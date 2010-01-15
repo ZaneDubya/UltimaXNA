@@ -162,6 +162,7 @@
     <Compile Include="TileEngine\MouseOverList.cs" />
     <Compile Include="TileEngine\WireframeRenderer.cs" />
     <Compile Include="UILegacy\Clientside\CharacterListGump.cs" />
+    <Compile Include="UILegacy\Clientside\ChatWindow.cs" />
     <Compile Include="UILegacy\Clientside\ContainerGump.cs" />
     <Compile Include="UILegacy\Clientside\CreateCharSkillsGump.cs" />
     <Compile Include="UILegacy\Clientside\CreateCharAppearanceGump.cs" />
@@ -212,7 +213,6 @@
     <Compile Include="UI\Window.cs" />
     <Compile Include="UI\Windows\Chat.cs" />
     <Compile Include="UI\UserInterface.cs" />
-    <Compile Include="UI\Windows\Window_CompressedGump.cs" />
     <Compile Include="InputSystem\EventArgs.cs" />
     <Compile Include="InputSystem\IInputService.cs" />
     <Compile Include="InputSystem\InputState.cs" />

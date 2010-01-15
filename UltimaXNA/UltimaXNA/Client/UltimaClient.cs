@@ -311,20 +311,25 @@ namespace UltimaXNA.Client
         {
             OpenContainerPacket p = (OpenContainerPacket)packet;
 
-            // We can safely ignore 0x30 - this is the buy window.
-            // if (p.GumpId == 0x30)
-            //    return;
-
-            // Only try to open a container of type Container.
-            ContainerItem o = EntitiesCollection.GetObject<ContainerItem>(p.Serial, false);
-            if (o is Item)
+            ContainerItem o;
+            // Special case for 0x30, which tells us to open a buy from vendor window.
+            if (p.GumpId == 0x30)
             {
-                _LegacyUI.AddContainerGump(o, p.GumpId);
-                // UserInterface.Container_Open(o, p.GumpId);
+                Mobile m = EntitiesCollection.GetObject<Mobile>(p.Serial, false);
+                o = (ContainerItem)m.equipment[(int)EquipLayer.ShopBuy];
             }
             else
             {
-                throw (new Exception("This Object has no support for a container object!"));
+                o = EntitiesCollection.GetObject<ContainerItem>(p.Serial, false);
+                if (o is ContainerItem)
+                {
+                    _LegacyUI.AddContainerGump(o, p.GumpId);
+                    // UserInterface.Container_Open(o, p.GumpId);
+                }
+                else
+                {
+                    _LegacyUI.DebugMessage_AddLine(string.Format("Client: Object {0} has no support for a container object!", o.Serial));
+                }
             }
         }
 
@@ -916,13 +921,13 @@ namespace UltimaXNA.Client
             Send(new ClientVersionPacket("6.0.6.2"));
         }
 
-        private static void receive_WarMode(IRecvPacket packet)
+        static void receive_WarMode(IRecvPacket packet)
         {
             WarModePacket p = (WarModePacket)packet;
             GameState.WarMode = p.WarMode;
         }
 
-        private static void receive_WorldItem(IRecvPacket packet)
+        static void receive_WorldItem(IRecvPacket packet)
         {
             WorldItemPacket p = (WorldItemPacket)packet;
             // Now create the GameObject.
@@ -940,7 +945,7 @@ namespace UltimaXNA.Client
             }
         }
 
-        private static void receive_WornItem(IRecvPacket packet)
+        static void receive_WornItem(IRecvPacket packet)
         {
             WornItemPacket p = (WornItemPacket)packet;
             Item item = add_Item(p.Serial, p.ItemId, p.Hue, 0, 0);
@@ -1033,9 +1038,9 @@ namespace UltimaXNA.Client
         {
             if (context.HasContextMenu)
             {
-                if (context.CanBuy)
+                if (context.CanSell)
                 {
-                    Send(new ContextMenuResponsePacket(context.Serial, (short)context.ContextEntry("Buy").ResponseCode));
+                    Send(new ContextMenuResponsePacket(context.Serial, (short)context.ContextEntry("Sell").ResponseCode));
                 }
             }
             else

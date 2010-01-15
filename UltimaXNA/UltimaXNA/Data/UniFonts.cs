@@ -157,9 +157,9 @@ namespace UltimaXNA.Data
             if (_characters[index] == null)
             {
                 _characters[index] = loadCharacter(index);
-                if (index < 128 && (_characters[index].Height + _characters[index].YOffset + 2) > Height)
+                if (index < 128 && (_characters[index].Height + _characters[index].YOffset) > Height)
                 {
-                    Height = _characters[index].Height + _characters[index].YOffset + 2;
+                    Height = _characters[index].Height + _characters[index].YOffset;
                 }
             }
             return _characters[index];
@@ -208,7 +208,7 @@ namespace UltimaXNA.Data
 
     public static class UniText
     {
-        private static UniFont[] _fonts = new UniFont[7];
+        private static UniFont[] _fonts;
         private static bool _initialized;
         private static GraphicsDevice _graphicsDevice;
 
@@ -217,31 +217,48 @@ namespace UltimaXNA.Data
 
         }
 
+        public static int FontHeight(int index)
+        {
+            return _fonts[index].Height;
+        }
+
         public static void Initialize(GraphicsDevice graphicsDevice)
         {
             if (!_initialized)
             {
                 _initialized = true;
                 _graphicsDevice = graphicsDevice;
-                int maxHeight = 0;
-                for (int iFont = 0; iFont < 7; iFont++)
-                {
-                    string path = FileManager.GetFilePath("unifont" + (iFont == 0 ? "" : iFont.ToString()) + ".mul");
-                    if (path != null)
-                    {
-                        _fonts[iFont] = new UniFont();
-                        _fonts[iFont].Initialize(_graphicsDevice, new BinaryReader(new FileStream(path, FileMode.Open, FileAccess.Read)));
-                        if (_fonts[iFont].Height > maxHeight)
-                            maxHeight = _fonts[iFont].Height;
-                    }
-                }
+                graphicsDevice.DeviceReset += graphicsDevice_DeviceReset;
+                loadFonts();
+            }
+        }
 
-                for (int iFont = 0; iFont < 7; iFont++)
+        static void graphicsDevice_DeviceReset(object sender, System.EventArgs e)
+        {
+            loadFonts();
+        }
+
+        static void loadFonts()
+        {
+            int maxHeight = 0;
+            _fonts = new UniFont[7];
+            for (int iFont = 0; iFont < 7; iFont++)
+            {
+                string path = FileManager.GetFilePath("unifont" + (iFont == 0 ? "" : iFont.ToString()) + ".mul");
+                if (path != null)
                 {
-                    if (_fonts[iFont] == null)
-                        continue;
-                    _fonts[iFont].Height = maxHeight;
+                    _fonts[iFont] = new UniFont();
+                    _fonts[iFont].Initialize(_graphicsDevice, new BinaryReader(new FileStream(path, FileMode.Open, FileAccess.Read)));
+                    if (_fonts[iFont].Height > maxHeight)
+                        maxHeight = _fonts[iFont].Height;
                 }
+            }
+
+            for (int iFont = 0; iFont < 7; iFont++)
+            {
+                if (_fonts[iFont] == null)
+                    continue;
+                _fonts[iFont].Height = maxHeight;
             }
         }
 
@@ -444,17 +461,19 @@ namespace UltimaXNA.Data
 
         static void getTextDimensions(HTMLReader reader, int maxwidth, int maxheight, out int width, out int height)
         {
-            width = 0;
-            height = _fonts[0].Height;
+            width = 0; height = 0;
+            int lineheight = 0;
             int widestline = 0;
             int italicwidth = 0; // for italic characters, which need a little more room for their slant.
+            int descenderheight = 0;
             List<HTMLCharacter> word = new List<HTMLCharacter>();
 
             for (int i = 0; i < reader.Length; ++i)
             {
                 HTMLCharacter c = reader.Characters[i];
                 UniFont font = _fonts[(int)c.Font];
-
+                if (lineheight < font.Baseline)
+                    lineheight = font.Baseline;
                 if (((int)c.Character) > 32)
                 {
                     word.Add(c);
@@ -472,7 +491,9 @@ namespace UltimaXNA.Data
                     {
                         for (int j = 0; j < word.Count; j++)
                         {
-                            int charwidth = _fonts[(int)word[j].Font].GetCharacter(word[j].Character).Width;
+                            UniCharacter ch = _fonts[(int)word[j].Font].GetCharacter(word[j].Character);
+                            int charwidth = ch.Width;
+
                             // bold characters are one pixel wider than normal characters.
                             if (c.IsBold)
                                 charwidth++;
@@ -486,6 +507,9 @@ namespace UltimaXNA.Data
                                 if (italicwidth < 0)
                                     italicwidth = 0;
                             }
+
+                            if (ch.YOffset + ch.Height - font.Baseline > descenderheight)
+                                descenderheight = ch.YOffset + ch.Height - font.Baseline;
 
                             wordwidth += charwidth + 1;
                         }
@@ -526,13 +550,16 @@ namespace UltimaXNA.Data
                     {
                         if (width + italicwidth > widestline)
                             widestline = width + italicwidth;
-                        height += font.Baseline;
+                        height += lineheight;
+                        descenderheight = 0;
+                        lineheight = 0;
                         width = 0;
                     }
                 }
             }
 
             width += italicwidth;
+            height += lineheight + descenderheight + 4;
             if (widestline > width)
                 width = widestline;
         }
