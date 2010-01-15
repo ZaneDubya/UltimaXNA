@@ -161,20 +161,17 @@ namespace UltimaXNA
         {
             bool draw = false;
 
-            for (int i = 0; i < vertices.Length; i++)
+            for (int i = 0; i < 4; i++) // only draws a 2 triangle tristrip.
             {
                 if (_boundingBox.Contains(vertices[i].Position) == ContainmentType.Contains)
                 {
                     draw = true;
-
                     break;
                 }
             }
 
             if (!draw)
-            {
                 return false;
-            }
 
             List<VertexPositionNormalTextureHue> vertexList;
 
