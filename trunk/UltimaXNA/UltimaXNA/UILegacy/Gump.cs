@@ -84,25 +84,37 @@ namespace UltimaXNA.UILegacy
             spriteBatch.Flush();
 
             if (_renderFullScreen)
-                InputMultiplier = (float)spriteBatch.GraphicsDevice.Viewport.Width / (float)Width;
-            if (_gumpTarget == null)
-                _gumpTarget = new RenderTarget2D(spriteBatch.GraphicsDevice, Width, Height, 1, SurfaceFormat.Color);
-            
-            spriteBatch.GraphicsDevice.SetRenderTarget(0, _gumpTarget);
-            spriteBatch.GraphicsDevice.Clear(Color.TransparentBlack);
-
-            base.Draw(spriteBatch);
-            spriteBatch.Flush();
-
-            spriteBatch.GraphicsDevice.SetRenderTarget(0, null);
-            _gumpTexture = _gumpTarget.GetTexture();
-
-            if (_renderFullScreen)
             {
-                spriteBatch.Draw(_gumpTexture, new Rectangle(0, 0, (int)(Width * InputMultiplier), (int)(Height * InputMultiplier)), 0, false);
+                InputMultiplier = (float)spriteBatch.GraphicsDevice.Viewport.Width / (float)Width;
+
+                if (_gumpTarget == null)
+                {
+                    // the render target CANNOT be larger than the viewport.
+                    int w = Width < _manager.Width ? Width : _manager.Width;
+                    int h = Height < _manager.Height ? Height : _manager.Height;
+                    _gumpTarget = new RenderTarget2D(spriteBatch.GraphicsDevice, w, h, 1, SurfaceFormat.Color);
+                }
+
+                spriteBatch.GraphicsDevice.SetRenderTarget(0, _gumpTarget);
+                spriteBatch.GraphicsDevice.Clear(Color.TransparentBlack);
+
+                base.Draw(spriteBatch);
+                spriteBatch.Flush();
+
+                spriteBatch.GraphicsDevice.SetRenderTarget(0, null);
+                _gumpTexture = _gumpTarget.GetTexture();
+
+                if (_renderFullScreen)
+                {
+                    spriteBatch.Draw(_gumpTexture, new Rectangle(0, 0, (int)(Width * InputMultiplier), (int)(Height * InputMultiplier)), 0, false);
+                }
+                else
+                    spriteBatch.Draw(_gumpTexture, Position, 0, false);
             }
             else
-                spriteBatch.Draw(_gumpTexture, Position, 0, false);
+            {
+                base.Draw(spriteBatch);
+            }
         }
 
         public override void ActivateByButton(int buttonID)

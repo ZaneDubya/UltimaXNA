@@ -339,10 +339,10 @@ namespace UltimaXNA
 
         private static void doInteractButton()
         {
-            MapObject iMapObject = _worldService.MouseOverObject;
-            if ((iMapObject != null) && !(iMapObject is MapObjectStatic))
+            MapObject o = _worldService.MouseOverObject;
+            if ((o != null) && !(o is MapObjectStatic))
             {
-                Entity iObject = EntitiesCollection.GetObject<Entity>(iMapObject.OwnerSerial, false);
+                Entity iObject = EntitiesCollection.GetObject<Entity>(o.OwnerSerial, false);
                 // default option is to simply 'use' this object, although this will doubtless be more complicated in the future.
                 // Perhaps the use option is based on the type of object? Anyways, for right now, we only interact with gameobjects,
                 // and we send a double-click to the server.
