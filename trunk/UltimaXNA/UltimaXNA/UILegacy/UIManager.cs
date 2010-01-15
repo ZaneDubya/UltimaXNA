@@ -70,13 +70,7 @@ namespace UltimaXNA.UILegacy
                     return true;
             }
         }
-        public Cursor Cursor
-        {
-            get
-            {
-                return _cursor;
-            }
-        }
+        public Cursor Cursor { get { return _cursor; } }
 
         public UIManager(Game game)
             : base(game)
@@ -94,6 +88,28 @@ namespace UltimaXNA.UILegacy
         {
             // pop up an error message, modal.
             _controls.Add(new Clientside.MsgBox(msg));
+        }
+
+        public Gump ToggleGump_Local(Gump gump, int x, int y)
+        {
+            Control removeControl = null;
+            foreach (Control c in _controls)
+            {
+                if (c.GetType() == gump.GetType())
+                {
+                    removeControl = c;
+                    break; 
+                }
+            }
+
+            if (removeControl != null)
+                _controls.Remove(removeControl);
+            else
+            {
+                _controls.Add(gump);
+                gump.Position = new Vector2(x, y);
+            }
+            return gump;
         }
 
         public Gump AddGump_Server(Serial serial, Serial gumpID, string[] gumplings, string[] lines, int x, int y)

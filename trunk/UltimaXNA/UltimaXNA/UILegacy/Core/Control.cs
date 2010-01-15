@@ -31,6 +31,8 @@ namespace UltimaXNA.UILegacy
         protected bool _renderFullScreen = false;
 
         internal MouseButtonEvent OnMouseClick;
+        internal MouseButtonEvent OnMouseDown;
+        internal MouseButtonEvent OnMouseUp;
         internal MouseEvent OnMouseOver;
         internal MouseEvent OnMouseOut;
 
@@ -102,7 +104,10 @@ namespace UltimaXNA.UILegacy
         }
         public Vector2 Position
         {
-            get { return _position; }
+            get
+            {
+                return _position;
+            }
             set
             {
                 _position = value;
@@ -271,7 +276,11 @@ namespace UltimaXNA.UILegacy
                     if ((c.Page == 0) || (c.Page == ActivePage))
                     {
                         if (c.IsInitialized)
+                        {
+                            c.Position += Position;
                             c.Draw(spriteBatch);
+                            c.Position -= Position;
+                        }
                     }
                 }
             }
@@ -329,6 +338,8 @@ namespace UltimaXNA.UILegacy
             int x = (int)position.X - X - ((_owner != null) ? _owner.X : 0);
             int y = (int)position.Y - Y - ((_owner != null) ? _owner.Y : 0);
             _mouseDown(x, y, button);
+            if (OnMouseDown != null)
+                OnMouseDown(x, y, button);
         }
 
         public void MouseUp(Vector2 position, MouseButtons button)
@@ -336,6 +347,8 @@ namespace UltimaXNA.UILegacy
             int x = (int)position.X - X - ((_owner != null) ? _owner.X : 0);
             int y = (int)position.Y - Y - ((_owner != null) ? _owner.Y : 0);
             _mouseUp(x, y, button);
+            if (OnMouseUp != null)
+                OnMouseUp(x, y, button);
         }
 
         public void MouseOver(Vector2 position)
