@@ -131,7 +131,7 @@ namespace UltimaXNA.UILegacy.Gumplings
 
             if (_caratBlinkOn)
             {
-                Texture2D caratTexture = Data.UniText.GetTexture(_legacyCarat ? "_" : "|");
+                Texture2D caratTexture = Data.UniText.GetTexture(HtmlTag + (_legacyCarat ? "_" : "|"));
                 spriteBatch.Draw(caratTexture, new Vector2(Area.X + _texture.Width, Area.Y), Hue, false);
             }
             

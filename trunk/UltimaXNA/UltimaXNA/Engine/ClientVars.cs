@@ -2,8 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using UltimaXNA.Network;
 using UltimaXNA.Network.Packets.Server;
+using UltimaXNA.Data;
+using UltimaXNA.Client;
+using UltimaXNA.Entities;
+using UltimaXNA.Extensions;
+using UltimaXNA.UI;
+using UltimaXNA.Input;
+using UltimaXNA.Network.Packets.Client;
+using UltimaXNA.TileEngine;
+using UltimaXNA.UILegacy;
 
 namespace UltimaXNA
 {
@@ -62,5 +74,41 @@ namespace UltimaXNA
 
         static bool _minimapLarge = false;
         public static bool MiniMap_LargeFormat { get { return _minimapLarge; } set { _minimapLarge = value; } }
+
+        private static Serial _lastTarget;
+        public static Serial LastTarget
+        {
+            get { return _lastTarget; }
+            set
+            {
+                _lastTarget = value;
+                UltimaClient.Send(new GetPlayerStatusPacket(0x04, _lastTarget));
+            }
+        }
+        public static bool WarMode
+        {
+            get { return (EntitiesCollection.GetPlayerObject() != null) ? ((Mobile)EntitiesCollection.GetPlayerObject()).IsWarMode : false; }
+            set { ((Mobile)EntitiesCollection.GetPlayerObject()).IsWarMode = value; }
+        }
+        static GameTime _theTime;
+        public static GameTime TheTime
+        {
+            set { _theTime = value; }
+            get
+            {
+                if (_theTime == null)
+                    return new GameTime();
+                else
+                    return _theTime;
+            }
+        }
+
+        public static Direction CursorDirection { get; internal set; }
+        
+        // InWorld allows us to tell when our character object has been loaded in the world.
+        public static bool InWorld { get; set; }
+        // Set EngineRunning to false to cause the engine to immediately exit.
+        public static bool EngineRunning { get; set; }
+        public static bool IsMinimized { get; set; }
     }
 }

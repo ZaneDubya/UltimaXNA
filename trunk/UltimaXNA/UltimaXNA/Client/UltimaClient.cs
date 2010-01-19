@@ -286,7 +286,7 @@ namespace UltimaXNA.Client
         {
             ChangeCombatantPacket p = (ChangeCombatantPacket)packet;
             if (p.Serial > 0x00000000)
-                GameState.LastTarget = p.Serial;
+                ClientVars.LastTarget = p.Serial;
         }
 
         private static void receive_CharacterList(IRecvPacket packet)
@@ -323,8 +323,7 @@ namespace UltimaXNA.Client
                 o = EntitiesCollection.GetObject<ContainerItem>(p.Serial, false);
                 if (o is ContainerItem)
                 {
-                    _LegacyUI.AddContainerGump(o, p.GumpId);
-                    // UserInterface.Container_Open(o, p.GumpId);
+                    _LegacyUI.AddContainerGump(o, o.ItemID);
                 }
                 else
                 {
@@ -654,7 +653,7 @@ namespace UltimaXNA.Client
             SwingPacket p = (SwingPacket)packet;
             if (p.Attacker == EntitiesCollection.MySerial)
             {
-                GameState.LastTarget = p.Defender;
+                ClientVars.LastTarget = p.Defender;
             }
         }
 
@@ -924,7 +923,7 @@ namespace UltimaXNA.Client
         static void receive_WarMode(IRecvPacket packet)
         {
             WarModePacket p = (WarModePacket)packet;
-            GameState.WarMode = p.WarMode;
+            ClientVars.WarMode = p.WarMode;
         }
 
         static void receive_WorldItem(IRecvPacket packet)

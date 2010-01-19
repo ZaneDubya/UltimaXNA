@@ -34,6 +34,13 @@ namespace UltimaXNA
         private Queue<List<VertexPositionNormalTextureHue>> _vertexListQueue;
         private BoundingBox _boundingBox;
 
+        static int z = 0;
+        public static int Z
+        {
+            get { return z; }
+            set { z = value; }
+        }
+
         public Matrix WorldMatrix
         {
             get { return Matrix.CreateOrthographicOffCenter(0, this.Game.GraphicsDevice.Viewport.Width, this.Game.GraphicsDevice.Viewport.Height, 0, Int32.MinValue, Int32.MaxValue); }

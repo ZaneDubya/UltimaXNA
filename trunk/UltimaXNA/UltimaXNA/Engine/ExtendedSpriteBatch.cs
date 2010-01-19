@@ -10,7 +10,6 @@ namespace UltimaXNA.UILegacy
     public class ExtendedSpriteBatch
     {
         SpriteBatch3D _sb;
-        static int z;
 
         public GraphicsDevice GraphicsDevice
         {
@@ -20,11 +19,6 @@ namespace UltimaXNA.UILegacy
         public ExtendedSpriteBatch(Game game)
         {
             _sb = new SpriteBatch3D(game);
-        }
-
-        public void ResetZ()
-        {
-            z = 2000000;
         }
 
         public void Flush()
@@ -47,32 +41,32 @@ namespace UltimaXNA.UILegacy
 
         public void Draw(Texture2D texture, Vector2 position, int hue, bool hueOnlyGreyPixels)
         {
-            _sb.DrawSimple(texture, new Vector3(position.X, position.Y, z), hueVector(hue, hueOnlyGreyPixels));
-            z += 1000;
+            _sb.DrawSimple(texture, new Vector3(position.X, position.Y, SpriteBatch3D.Z), hueVector(hue, hueOnlyGreyPixels));
+            SpriteBatch3D.Z += 1000;
         }
 
         public void Draw(Texture2D texture, Vector2 position, Rectangle sourceRect, int hue, bool hueOnlyGreyPixels)
         {
-            _sb.DrawSimple(texture, new Vector3(position.X, position.Y, z), sourceRect, hueVector(hue, hueOnlyGreyPixels));
-            z += 1000;
+            _sb.DrawSimple(texture, new Vector3(position.X, position.Y, SpriteBatch3D.Z), sourceRect, hueVector(hue, hueOnlyGreyPixels));
+            SpriteBatch3D.Z += 1000;
         }
 
         public void Draw(Texture2D texture, Rectangle destRect, Rectangle sourceRect, int hue, bool hueOnlyGreyPixels)
         {
-            _sb.DrawSimple(texture, destRect, z, sourceRect, hueVector(hue, hueOnlyGreyPixels));
-            z += 1000;
+            _sb.DrawSimple(texture, destRect, SpriteBatch3D.Z, sourceRect, hueVector(hue, hueOnlyGreyPixels));
+            SpriteBatch3D.Z += 1000;
         }
 
         public void Draw(Texture2D texture, Rectangle destRect, int hue, bool hueOnlyGreyPixels)
         {
-            _sb.DrawSimple(texture, destRect, z, hueVector(hue, hueOnlyGreyPixels));
-            z += 1000;
+            _sb.DrawSimple(texture, destRect, SpriteBatch3D.Z, hueVector(hue, hueOnlyGreyPixels));
+            SpriteBatch3D.Z += 1000;
         }
 
         internal void DrawTiled(Texture2D texture, Rectangle destRect, int hue, bool hueOnlyGreyPixels)
         {
-            _sb.DrawSimpleTiled(texture, destRect, z, hueVector(hue, hueOnlyGreyPixels));
-            z += 1000;
+            _sb.DrawSimpleTiled(texture, destRect, SpriteBatch3D.Z, hueVector(hue, hueOnlyGreyPixels));
+            SpriteBatch3D.Z += 1000;
         }
     }
 }

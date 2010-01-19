@@ -88,13 +88,14 @@ namespace UltimaXNA
 
         protected override void Update(GameTime gameTime)
         {
-            if (!GameState.EngineRunning)
+            SpriteBatch3D.Z = 0;
+            if (!ClientVars.EngineRunning)
                 Exit();
-            GameState.IsMinimized = isMinimized();
+            ClientVars.IsMinimized = isMinimized();
 
             base.Update(gameTime);
 
-            if (GameState.EngineRunning)
+            if (ClientVars.EngineRunning)
             {
                 _inputState.Update(gameTime);
 

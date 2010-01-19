@@ -45,6 +45,7 @@ namespace UltimaXNA.SceneManagement
             World.LightDirection = -0.6f;
             _position.TileX = 1453;
             _position.TileY = 1561;
+            ClientVars.Map = 0;
         }
 
         public override void Dispose()

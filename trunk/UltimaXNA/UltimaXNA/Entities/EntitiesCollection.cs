@@ -43,7 +43,7 @@ namespace UltimaXNA.Entities
 
         public static void Update(GameTime gameTime)
         {
-            if (GameState.InWorld)
+            if (ClientVars.InWorld)
             {
                 List<int> removeObjectsList = removeObjectsList = new List<int>();
                 foreach (KeyValuePair<int, Entity> entity in _entities)

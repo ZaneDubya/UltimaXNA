@@ -43,7 +43,7 @@ namespace UltimaXNA.SceneManagement
             // UserInterface.AddWindow("ChatFrame", new Window_Chat());
             // UserInterface.AddWindow("ChatInput", new Window_ChatInput());
             World.LightDirection = -0.6f;
-            GameState.InWorld = true;
+            ClientVars.InWorld = true;
         }
 
         public override void Dispose()
@@ -52,7 +52,7 @@ namespace UltimaXNA.SceneManagement
             UltimaClient.Disconnect();
             UserInterface.CloseWindow("ChatFrame");
             UserInterface.CloseWindow("ChatInput");
-            GameState.InWorld = false;
+            ClientVars.InWorld = false;
         }
 
         public override void Update(GameTime gameTime)

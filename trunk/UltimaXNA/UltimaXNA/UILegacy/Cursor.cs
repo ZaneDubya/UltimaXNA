@@ -87,9 +87,9 @@ namespace UltimaXNA.UILegacy
             }
             else
             {
-                if (GameState.InWorld && !_manager.IsMouseOverUI)
+                if (ClientVars.InWorld && !_manager.IsMouseOverUI)
                 {
-                    switch (GameState.CursorDirection)
+                    switch (ClientVars.CursorDirection)
                     {
                         case Direction.North:
                             cursorOffset = new Vector2(29, 1);
@@ -130,7 +130,7 @@ namespace UltimaXNA.UILegacy
                     }
 
                     // Hue the cursor if in warmode.
-                    if (GameState.WarMode)
+                    if (ClientVars.WarMode)
                         cursorTextureID -= 23;
                     else if (TrammelHue)
                         cursorHue = 2412;

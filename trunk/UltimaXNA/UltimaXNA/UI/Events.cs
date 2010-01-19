@@ -34,7 +34,7 @@ namespace UltimaXNA.UI
     {
         public static void QuitImmediate()
         {
-            GameState.EngineRunning = false;
+            ClientVars.EngineRunning = false;
         }
 
         public static void UseItem(Item item)
