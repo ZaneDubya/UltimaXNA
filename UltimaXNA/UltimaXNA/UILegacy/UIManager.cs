@@ -187,8 +187,6 @@ namespace UltimaXNA.UILegacy
 
         public override void Draw(GameTime gameTime)
         {
-            _spriteBatch.ResetZ();
-
             foreach (Control c in _controls)
             {
                 if (c.IsInitialized)

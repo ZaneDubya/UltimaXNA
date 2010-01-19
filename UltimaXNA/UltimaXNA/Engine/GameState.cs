@@ -39,39 +39,7 @@ namespace UltimaXNA
         private static IInputService _input;
         private static IWorld _worldService;
         static IUIManager _legacyUI;
-
-        private static Serial _lastTarget;
-        public static Serial LastTarget
-        {
-            get { return _lastTarget; }
-            set
-            {
-                _lastTarget = value;
-                UltimaClient.Send(new GetPlayerStatusPacket(0x04, _lastTarget));
-            }
-        }
-        public static Direction CursorDirection { get; internal set; }
-        public static string DebugMessage
-        {
-            get { return generateDebugMessage(); }
-        }
-        public static bool WarMode
-        {
-            get { return (EntitiesCollection.GetPlayerObject() != null) ? ((Mobile)EntitiesCollection.GetPlayerObject()).IsWarMode : false; }
-            set { ((Mobile)EntitiesCollection.GetPlayerObject()).IsWarMode = value; }
-        }
-
-        static GameTime _theTime;
-        public static GameTime TheTime
-        {
-            get
-            {
-                if (_theTime == null)
-                    return new GameTime();
-                else
-                    return _theTime;
-            }
-        }
+        
 
         public static float BackBufferWidth = 0, BackBufferHeight = 0;
         private static bool _MovementFollowsMouse = true,  _ContinuousMoveCheck = false;
@@ -89,11 +57,7 @@ namespace UltimaXNA
                     return true;
             }
         }
-        // InWorld allows us to tell when our character object has been loaded in the world.
-        public static bool InWorld { get; set; }
-        // Set EngineRunning to false to cause the engine to immediately exit.
-        public static bool EngineRunning { get; set; }
-        public static bool IsMinimized { get; set; }
+        
         
         // These are for hidden fun stuff
         public static MethodHook OnLeftClick, OnLeftOver, OnRightClick, OnRightOver, OnUpdate;
@@ -108,8 +72,8 @@ namespace UltimaXNA
             _worldService = game.Services.GetService<IWorld>();
             _legacyUI = game.Services.GetService<IUIManager>();
 
-            EngineRunning = true;
-            InWorld = false;
+            ClientVars.EngineRunning = true;
+            ClientVars.InWorld = false;
             BackBufferWidth = game.GraphicsDevice.PresentationParameters.BackBufferWidth;
             BackBufferHeight = game.GraphicsDevice.PresentationParameters.BackBufferHeight;
             Graphics = game.GraphicsDevice;
@@ -122,7 +86,7 @@ namespace UltimaXNA
         {
             parseKeyboardAlways();
 
-            if (InWorld)
+            if (ClientVars.InWorld)
             {
                 // Set the target frame stuff.
                 //((UI.Window_StatusFrame)UserInterface.Window("StatusFrame")).MyEntity = (Mobile)EntitiesCollection.GetPlayerObject();
@@ -162,16 +126,16 @@ namespace UltimaXNA
                 //     OnUpdate();
             }
 
-            _theTime = gameTime;
+            ClientVars.TheTime = gameTime;
             updateFPS(gameTime);
         }
 
         public static void UpdateAfter(GameTime gameTime)
         {
-            if (InWorld)
+            if (ClientVars.InWorld)
             {
                 // Set the cursor direction.
-                CursorDirection = mousePositionToDirection(_input.CurrentMousePosition);
+                ClientVars.CursorDirection = mousePositionToDirection(_input.CurrentMousePosition);
                 // get the cursor hoverTime and top up a label if enough time has passed.
                 _cursorHoverTimeMS = (_input.IsCursorMovedSinceLastUpdate()) ? 0 : _cursorHoverTimeMS + gameTime.ElapsedRealTime.Milliseconds;
                 if ((_cursorHoverTimeMS >= _hoverTimeForLabelMS) && (_worldService.MouseOverObject != null))
@@ -232,13 +196,13 @@ namespace UltimaXNA
                     UltimaClient.Send(new MoveRequestPacket((byte)direction, (byte)sequence, key));
 
                 // Show our target's name
-                createHoverLabel(LastTarget);
+                createHoverLabel(ClientVars.LastTarget);
             }
         }
 
         private static void doMovement()
         {
-            Direction moveDirection = CursorDirection;
+            Direction moveDirection = ClientVars.CursorDirection;
             float distanceFromCenterOfScreen = Vector2.Distance(_input.CurrentMousePosition, new Vector2(400, 300));
             if (distanceFromCenterOfScreen >= 150f)
                 moveDirection |= Direction.Running;
@@ -318,8 +282,8 @@ namespace UltimaXNA
                     if (mouseOverObject is MapObjectMobile)
                     {
                         // Proper action: target this mobile.
-                        LastTarget = mouseOverObject.OwnerSerial;
-                        UltimaClient.Send(new SingleClickPacket(LastTarget));
+                        ClientVars.LastTarget = mouseOverObject.OwnerSerial;
+                        UltimaClient.Send(new SingleClickPacket(ClientVars.LastTarget));
                         return;
                     }
                     if (mouseOverObject is MapObjectItem)
@@ -352,7 +316,7 @@ namespace UltimaXNA
                 }
                 else if (iObject is PlayerMobile)
                 {
-                    LastTarget = iObject.Serial;
+                    ClientVars.LastTarget = iObject.Serial;
                     if (iObject.Serial == EntitiesCollection.MySerial)
                     {
                         // this is my player.
@@ -367,8 +331,8 @@ namespace UltimaXNA
                 else if (iObject is Mobile)
                 {
                     // We request a context sensitive menu. This automatically sends a double click if no context menu is handled. See parseContextMenu...
-                    LastTarget = iObject.Serial;
-                    if (WarMode)
+                    ClientVars.LastTarget = iObject.Serial;
+                    if (ClientVars.WarMode)
                     {
                         UltimaClient.Send(new AttackRequestPacket(iObject.Serial));
                     }
@@ -525,7 +489,7 @@ namespace UltimaXNA
             // toggle for warmode
             if (_input.IsKeyPress(Keys.Tab))
             {
-                if (WarMode)
+                if (ClientVars.WarMode)
                     UltimaClient.Send(new RequestWarModePacket(false));
                 else
                     UltimaClient.Send(new RequestWarModePacket(true));
@@ -563,7 +527,8 @@ namespace UltimaXNA
 
         // Debug message - I put a lot of crap in here to test values.
         // Feel free to add or remove variables.
-        private static string generateDebugMessage()
+        public static string DebugMessage { get { return generateDebugMessage(); } }
+        static string generateDebugMessage()
         {
             String debugMessage = string.Empty;
             
@@ -576,10 +541,10 @@ namespace UltimaXNA
             else
                 debugMessage += "Data Read: " + Metrics.TotalDataRead.ToString() + '\n';
 
-            if (InWorld && !_legacyUI.IsMouseOverUI)
+            if (ClientVars.InWorld && !_legacyUI.IsMouseOverUI)
             {
                 debugMessage += string.Format("#Objects: {0}\n", _worldService.ObjectsRendered);
-                debugMessage += string.Format("Warmode: {0}\n", WarMode);
+                debugMessage += string.Format("Warmode: {0}\n", ClientVars.WarMode);
                 if (_worldService.MouseOverObject != null)
                 {
                     debugMessage += "OBJECT: " + _worldService.MouseOverObject.ToString() + Environment.NewLine;

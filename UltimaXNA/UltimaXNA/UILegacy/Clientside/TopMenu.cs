@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UltimaXNA.Entities;
 using UltimaXNA.UILegacy.Gumplings;
 
 namespace UltimaXNA.UILegacy.Clientside
@@ -60,6 +61,9 @@ namespace UltimaXNA.UILegacy.Clientside
                     _manager.ToggleGump_Local(new DebugGump(), 50, 50);
                     break;
                 case Buttons.Inventory:
+                    PlayerMobile m = (PlayerMobile)EntitiesCollection.GetPlayerObject();
+                    ContainerItem i = (ContainerItem)m.equipment[(int)EquipLayer.Backpack];
+                    _manager.AddContainerGump(i, 0);
                     break;
                 case Buttons.Journal:
                     break;
