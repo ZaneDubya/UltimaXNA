@@ -128,7 +128,7 @@ namespace UltimaXNA.UI
         public static void DropItemIntoSlot(Entity nDestContainer, int nDestSlot)
         {
             Item iHeldObject = (Item)MouseHoldingItem;
-            ContainerItem iDestContainer = (ContainerItem)nDestContainer;
+            Container iDestContainer = (Container)nDestContainer;
 
             if (iHeldObject.Wearer != null)
             {
@@ -148,17 +148,18 @@ namespace UltimaXNA.UI
                 if (iHeldObject.Item_ContainedWithinSerial == iDestContainer.Serial)
                 {
                     // moving between slots in a single container.
-                    iDestContainer.Contents.Event_MoveItemToSlot(iHeldObject, nDestSlot);
+                    iDestContainer.AddItem(iHeldObject);
                 }
                 else
                 {
                     // moving between two containers, or moving from ground to a container.
+                    /*
                     if (iDestContainer.Contents.GetContents(nDestSlot) == null)
                     {
                         // dest slot is empty.
                         if (iHeldObject.Item_ContainedWithinSerial.IsValid)
                         {
-                            Entities.EntitiesCollection.GetObject<ContainerItem>(iHeldObject.Item_ContainedWithinSerial, false).Contents.RemoveItem(iHeldObject.Serial);
+                            Entities.EntitiesCollection.GetObject<Container>(iHeldObject.Item_ContainedWithinSerial, false).Contents.RemoveItem(iHeldObject.Serial);
                         }
                         UI.Events.DropItem(iHeldObject, nDestSlot, 0x7FFF, 0, iDestContainer.Serial);
                     }
@@ -169,7 +170,7 @@ namespace UltimaXNA.UI
                             Entities.EntitiesCollection.GetObject<ContainerItem>(iHeldObject.Item_ContainedWithinSerial, false).Contents.RemoveItem(iHeldObject.Serial);
                         }
                         UI.Events.DropItem(iHeldObject, 0, 0, 0, iDestContainer.Serial);
-                    }
+                    }*/
                 }
             }
             UI.UIHelper.MouseHoldingItem = null;
@@ -190,9 +191,9 @@ namespace UltimaXNA.UI
 
             if (iHeldObject.Item_ContainedWithinSerial.IsValid)
             {
-                ContainerItem iSourceContainer = Entities.EntitiesCollection.GetObject<ContainerItem>(iHeldObject.Item_ContainedWithinSerial, false);
+                Container iSourceContainer = Entities.EntitiesCollection.GetObject<Container>(iHeldObject.Item_ContainedWithinSerial, false);
                 iHeldObject.Item_ContainedWithinSerial = 0;
-                iSourceContainer.Contents.RemoveItem(iHeldObject.Serial);
+                iSourceContainer.RemoveItem(iHeldObject);
             }
             Client.UltimaClient.Send(new DropToLayerPacket(iHeldObject.Serial, (byte)nDestSlot, iDestMobile.Serial));
 
@@ -278,7 +279,7 @@ namespace UltimaXNA.UI
             if (!_IconCache.ContainsKey(iconKey(item)))
             {
                 int itemID = (item == null) ? 0 : item.DisplayItemID;
-                Texture2D texture = (item == null) ? null : Data.Art.GetStaticTexture(itemID, item.Hue);
+                Texture2D texture = (item == null) ? null : Data.Art.GetStaticTexture(itemID);
 
                 float iScaleUp = 1f, iDestSize = 39f;
                 if (texture != null)
@@ -333,7 +334,7 @@ namespace UltimaXNA.UI
         }
 
         private static int iconKey(Item item)
-        {
+        { 
             if (item == null)
                 return 0;
             else

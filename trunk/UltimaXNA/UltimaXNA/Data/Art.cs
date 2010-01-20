@@ -44,7 +44,7 @@ namespace UltimaXNA.Data
 
             if (data == null)
             {
-                _cache[index][0] = data = readLandTexture(index, 0);
+                _cache[index][0] = data = readLandTexture(index);
             }
 
             return data;
@@ -60,51 +60,40 @@ namespace UltimaXNA.Data
 
             if (data == null)
             {
-                _cache[index][0] = data = readStaticTexture(index, 0);
+                _cache[index][0] = data = readStaticTexture(index);
             }
 
             return data;
         }
 
-        public static Texture2D GetStaticTexture(int index, int hue)
-        {
-            index &= 0x3FFF;
-            index += 0x4000;
-
-            if (_cache[index] == null) { _cache[index] = new Texture2D[0x1000]; }
-            Texture2D data = _cache[index][hue];
-
-            if (data == null)
-            {
-                _cache[index][hue] = data = readStaticTexture(index, hue);
-            }
-
-            return data;
-        }
-
-        private static unsafe Texture2D readLandTexture(int index, int hue)
+        private static unsafe Texture2D readLandTexture(int index)
         {
             _index.Seek(index);
 
-            ushort[] data = new ushort[44 * 44];
+            uint[] data = new uint[44 * 44];
 
             int count = 2;
             int offset = 21;
 
-            fixed (ushort* pData = data)
+            fixed (uint* pData = data)
             {
-                ushort* dataRef = pData;
+                uint* dataRef = pData;
 
                 for (int y = 0; y < 22; y++, count += 2, offset--, dataRef += 44)
                 {
-                    ushort* start = dataRef + offset;
-                    ushort* end = start + count;
+                    uint* start = dataRef + offset;
+                    uint* end = start + count;
 
                     Metrics.ReportDataRead(count * 2);
 
                     while (start < end)
                     {
-                        *start++ = (ushort)(_index.BinaryReader.ReadUInt16() ^ 0x8000);
+                        uint color = _index.BinaryReader.ReadUInt16();
+                        *start++ = 0xff000000 + (
+                                    ((((color >> 10) & 0x1F) * 0xFF / 0x1F) << 16) |
+                                    ((((color >> 5) & 0x1F) * 0xFF / 0x1F) << 8) |
+                                    (((color & 0x1F) * 0xFF / 0x1F))
+                                    );
                     }
                 }
 
@@ -113,8 +102,8 @@ namespace UltimaXNA.Data
 
                 for (int y = 0; y < 22; y++, count -= 2, offset++, dataRef += 44)
                 {
-                    ushort* start = dataRef + offset;
-                    ushort* end = start + count;
+                    uint* start = dataRef + offset;
+                    uint* end = start + count;
 
                     Metrics.ReportDataRead(count * 2);
 
@@ -125,9 +114,9 @@ namespace UltimaXNA.Data
                 }
             }
 
-            Texture2D texture = new Texture2D(_graphics, 44, 44, 1, TextureUsage.None, SurfaceFormat.Bgra5551);
+            Texture2D texture = new Texture2D(_graphics, 44, 44);
 
-            texture.SetData<ushort>(data);
+            texture.SetData<uint>(data);
 
             return texture;
         }
@@ -155,7 +144,7 @@ namespace UltimaXNA.Data
             return new ushort[] { (ushort)_index.BinaryReader.ReadInt16(), (ushort)_index.BinaryReader.ReadInt16() };
         }
 
-        private static unsafe Texture2D readStaticTexture(int index, int hue)
+        private static unsafe Texture2D readStaticTexture(int index)
         {
             _index.Seek(index);
             _index.BinaryReader.ReadInt32();
@@ -182,53 +171,53 @@ namespace UltimaXNA.Data
                 lookups[i] = (int)(dataStart + (_index.BinaryReader.ReadUInt16() * 2));
             }
             Metrics.ReportDataRead(height * 2);
-
+            /*
             Hue hueObject = null;
             hue = (hue & 0x3FFF) - 1;
             if (hue >= 0 && hue < Hues.List.Length)
             {
                 hueObject = Hues.List[hue];
-            }
+            }*/
 
-            ushort[] data = new ushort[width * height];
+            uint[] data = new uint[width * height];
 
-            fixed (ushort* pData = data)
+            fixed (uint* pData = data)
             {
-                ushort* dataRef = pData;
+                uint* dataRef = pData;
 
                 for (int y = 0; y < height; y++, dataRef += width)
                 {
                     _index.BinaryReader.BaseStream.Seek(lookups[y], SeekOrigin.Begin);
 
-                    ushort* start = dataRef;
+                    uint* start = dataRef;
 
                     int count, offset;
 
                     while (((offset = _index.BinaryReader.ReadUInt16()) + (count = _index.BinaryReader.ReadUInt16())) != 0)
                     {
                         start += offset;
-                        ushort* end = start + count;
+                        uint* end = start + count;
 
                         Metrics.ReportDataRead(count * 2);
 
                         while (start < end)
                         {
-                            if (hue < 0)
-                            {
-                                *start++ = (ushort)(_index.BinaryReader.ReadUInt16() ^ 0x8000);
-                            }
-                            else
-                            {
-                                *start++ = hueObject.GetColorUShort(_index.BinaryReader.ReadUInt16() >> 10);
-                            }
+                            uint color = _index.BinaryReader.ReadUInt16();
+                            *start++ = 0xff000000 + (
+                                    ((((color >> 10) & 0x1F) * 0xFF / 0x1F) << 16) |
+                                    ((((color >> 5) & 0x1F) * 0xFF / 0x1F) << 8) |
+                                    (((color & 0x1F) * 0xFF / 0x1F))
+                                    );
                         }
                     }
                 }
             }
 
-            Texture2D texture = new Texture2D(_graphics, width, height, 1, TextureUsage.None, SurfaceFormat.Bgra5551);
+            Metrics.ReportDataRead(sizeof(ushort) * height * width);
 
-            texture.SetData<ushort>(data);
+            Texture2D texture = new Texture2D(_graphics, width, height);
+
+            texture.SetData<uint>(data);
 
             return texture;
         }

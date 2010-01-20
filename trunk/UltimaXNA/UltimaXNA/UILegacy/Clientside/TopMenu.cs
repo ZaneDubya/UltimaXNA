@@ -62,8 +62,9 @@ namespace UltimaXNA.UILegacy.Clientside
                     break;
                 case Buttons.Inventory:
                     PlayerMobile m = (PlayerMobile)EntitiesCollection.GetPlayerObject();
-                    ContainerItem i = (ContainerItem)m.equipment[(int)EquipLayer.Backpack];
-                    _manager.AddContainerGump(i, 0);
+                    Container i = (Container)m.equipment[(int)EquipLayer.Backpack];
+                    Client.UltimaClient.Send(new Network.Packets.Client.DoubleClickPacket(i.Serial));
+                    // _manager.AddContainerGump(i, 0);
                     break;
                 case Buttons.Journal:
                     break;

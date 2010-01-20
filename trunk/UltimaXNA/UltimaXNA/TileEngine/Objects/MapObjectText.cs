@@ -25,19 +25,19 @@ namespace UltimaXNA.TileEngine
 {
     public class MapObjectText : MapObject
     {
-        public Texture2D Texture { get; set; }
-        public Vector3 Offset { get; set; }
+        public Texture2D Texture { get; internal set; }
         public int Hue;
         public int FontID;
+        public Vector3 Offset { get; internal set; }
 
-        public MapObjectText(Vector3 position, Vector3 positionOffset, Entities.Entity ownerEntity, string text, int hue, int fontID)
+        public MapObjectText(Vector3 position, Vector3 offset, Entities.Entity ownerEntity, string text, int hue, int fontID)
             : base(position)
         {
             Texture = Data.ASCIIText.GetTextTexture(text, 1);
-            Offset = positionOffset;
             OwnerEntity = ownerEntity;
             Hue = hue;
             FontID = fontID;
+            Offset = offset;
         }
     }
 }

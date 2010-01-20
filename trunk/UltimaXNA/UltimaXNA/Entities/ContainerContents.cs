@@ -160,7 +160,7 @@ namespace UltimaXNA.Entities
             else
             {
                 // we need to put the other object in temporary storage...
-                int iSourceSlot = nObject.Item_InvSlot;
+                // int iSourceSlot = 0; // nObject.Item_InvSlot;
                 Item iSwitchItem = _contents[nSlot];
 
                 // is the dest object the same type as the source object type?
@@ -202,23 +202,23 @@ namespace UltimaXNA.Entities
 
         private void addItem(Item item)
         {
-            if (item.Item_InvY == 0x7FFF)
+            if (item.Y == 0x7FFF)
             {
-                if (_contents[item.Item_InvX] == null)
+                if (_contents[item.X] == null)
                 {
-                    item.Item_InvSlot = item.Item_InvX;
-                    _contents[item.Item_InvSlot] = item;
+                    item.SlotIndex = item.X;
+                    _contents[item.SlotIndex] = item;
                 }
                 else
                 {
-                    item.Item_InvSlot = _contents.NextAvailableSlot;
-                    _contents[item.Item_InvSlot] = item;
+                    item.SlotIndex = _contents.NextAvailableSlot;
+                    _contents[item.SlotIndex] = item;
                 }
             }
             else
             {
-                item.Item_InvSlot = _contents.NextAvailableSlot;
-                _contents[item.Item_InvSlot] = item;
+                item.SlotIndex = _contents.NextAvailableSlot;
+                _contents[item.SlotIndex] = item;
             }
         }
 

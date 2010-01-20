@@ -191,7 +191,7 @@ namespace UltimaXNA
 
                 // Check for a move event from the player ...
                 int direction = 0, sequence = 0, key = 0;
-                bool hasMoveEvent = EntitiesCollection.GetPlayerObject().Movement.GetMoveEvent(ref direction, ref sequence, ref key);
+                bool hasMoveEvent = EntitiesCollection.GetPlayerObject().GetMoveEvent(ref direction, ref sequence, ref key);
                 if (hasMoveEvent)
                     UltimaClient.Send(new MoveRequestPacket((byte)direction, (byte)sequence, key));
 
@@ -397,9 +397,9 @@ namespace UltimaXNA
                 if ((UI.UIHelper.MouseHoldingItem).Item_ContainedWithinSerial.IsValid)
                 {
                     // We must manually remove the item from the container, as RunUO does not do this for us.
-                    ContainerItem iContainer = EntitiesCollection.GetObject<ContainerItem>(
+                    Container iContainer = EntitiesCollection.GetObject<Container>(
                         (UI.UIHelper.MouseHoldingItem).Item_ContainedWithinSerial, false);
-                    iContainer.Contents.RemoveItem(UI.UIHelper.MouseHoldingItem.Serial);
+                    iContainer.RemoveItem(UI.UIHelper.MouseHoldingItem);
                 }
                 UI.UIHelper.DropItemOntoGround(x, y, z);
             }

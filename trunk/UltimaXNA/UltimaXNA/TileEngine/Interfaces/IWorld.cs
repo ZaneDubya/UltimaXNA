@@ -26,7 +26,7 @@ namespace UltimaXNA.TileEngine
     public interface IWorld
     {
         Map Map { get; }
-        DrawPosition CenterPosition { get; set; }
+        Position3D CenterPosition { get; set; }
         int RenderBeginX { get; set; }
         int RenderBeginY { get; set; }
         int MaxRoofAltitude { get; }

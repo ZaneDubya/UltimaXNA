@@ -78,8 +78,8 @@ namespace UltimaXNA.TileEngine
 
         public Map Map {get; set; }
         public int ObjectsRendered { get; internal set; }
-        public DrawPosition CenterPosition { get; set; }
-        private DrawPosition _lastCenterPosition = null;
+        public Position3D CenterPosition { get; set; }
+        private Position3D _lastCenterPosition = null;
         public int RenderBeginX { get; set; }
         public int RenderBeginY { get; set; }
         public int MaxRoofAltitude { get; internal set; }
@@ -145,13 +145,13 @@ namespace UltimaXNA.TileEngine
 
                 if (CenterPosition != _lastCenterPosition)
                 {
-                    RenderBeginX = CenterPosition.TileX - Map.GameSize / 2;
-                    RenderBeginY = CenterPosition.TileY - Map.GameSize / 2;
-                    Map.Update(CenterPosition.TileX, CenterPosition.TileY);
+                    RenderBeginX = CenterPosition.X - Map.GameSize / 2;
+                    RenderBeginY = CenterPosition.Y - Map.GameSize / 2;
+                    Map.Update(CenterPosition.X, CenterPosition.Y);
                     // Are we inside (under a roof)? Do not draw tiles above our head.
-                    if (Map.GetMapTile(CenterPosition.TileX, CenterPosition.TileY).UnderRoof(CenterPosition.TileZ))
+                    if (Map.GetMapTile(CenterPosition.X, CenterPosition.Y).UnderRoof(CenterPosition.Z))
                     {
-                        MaxRoofAltitude = CenterPosition.TileZ + 20;
+                        MaxRoofAltitude = CenterPosition.Z + 20;
                     }
                     else
                     {
@@ -159,7 +159,7 @@ namespace UltimaXNA.TileEngine
                     }
                 }
 
-                _lastCenterPosition = new DrawPosition(CenterPosition);
+                _lastCenterPosition = new Position3D(CenterPosition.Point);
                 render();
             }
         }
@@ -204,9 +204,9 @@ namespace UltimaXNA.TileEngine
 
             float xOffset = (GameState.BackBufferWidth / 2) - 22;
             float yOffset = (GameState.BackBufferHeight / 2) - ((Map.GameSize * 44) / 2);
-            yOffset += ((float)CenterPosition.TileZ + CenterPosition.OffsetZ) * 4;
-            xOffset -= (int)((CenterPosition.OffsetX - CenterPosition.OffsetY) * 22);
-            yOffset -= (int)((CenterPosition.OffsetX + CenterPosition.OffsetY) * 22);
+            yOffset += CenterPosition.Z * 4;
+            xOffset -= (int)((CenterPosition.Xoffset - CenterPosition.Yoffset) * 22);
+            yOffset -= (int)((CenterPosition.Xoffset + CenterPosition.Yoffset) * 22);
 
             for (int ix = 0; ix < Map.GameSize; ix++)
             for (int iy = 0; iy < Map.GameSize; iy++)
@@ -542,7 +542,7 @@ namespace UltimaXNA.TileEngine
                         height = texture.Height;
 
                         drawX = (width >> 1) - 22 - (int)((textObject.Offset.X - textObject.Offset.Y) * 22);
-                        drawY = (textObject.Z << 2) + height - 44 - (int)((textObject.Offset.X + textObject.Offset.Y) * 22);
+                        drawY = ((int)(textObject.Offset.Z) << 2) + height - 44 - (int)((textObject.Offset.X + textObject.Offset.Y) * 22);
 
                         _vertexBuffer[0].Position = drawPosition;
                         _vertexBuffer[0].Position.X -= drawX;

@@ -29,7 +29,7 @@ namespace UltimaXNA.UI
     {
         private Vector2 mWindowSize = new Vector2(215, 233);
         private Vector2 mBGOffset = new Vector2(215 - 256 + 2, -1);
-        private ContainerItem _containerEntity;
+        private Container _containerEntity;
         private int _lastContainerUpdated = -1;
 
         private int mScrollY, mMaxScrollY = 0;
@@ -55,7 +55,7 @@ namespace UltimaXNA.UI
         public Window_Container(Entity nContainerObject, FormCollection nFormCollection)
             : base()
         {
-            _containerEntity = (ContainerItem)nContainerObject;
+            _containerEntity = (Container)nContainerObject;
 
             //Create a new form
             string iFormName = "frmContainer:" + _containerEntity.Serial;
@@ -108,7 +108,7 @@ namespace UltimaXNA.UI
         private void btnInv_OnPress(object obj, EventArgs e)
         {
             int iIndex = Int32.Parse(((CustomButton)obj).Name.Substring(6)) + mScrollY * _SlotsWide;
-            Item item = _containerEntity.Contents.GetContents(iIndex);
+            Item item = _containerEntity.Contents[iIndex];
 
             int buttonindex = 0;
             if (buttonindex == 0)
@@ -142,7 +142,7 @@ namespace UltimaXNA.UI
         private void btnInv_OnOver(object obj, EventArgs e)
         {
             int iIndex = Int32.Parse(((CustomButton)obj).Name.Substring(6)) + mScrollY * _SlotsWide;
-            Item iItem = _containerEntity.Contents.GetContents(iIndex);
+            Item iItem = _containerEntity.Contents[iIndex];
 
             if (UIHelper.MouseHoldingItem != null)
             {
@@ -163,7 +163,7 @@ namespace UltimaXNA.UI
             }
 
             int iIndex = Int32.Parse(((CustomButton)obj).Name.Substring(6)) + mScrollY * _SlotsWide;
-            Item iItem = _containerEntity.Contents.GetContents(iIndex);
+            Item iItem = _containerEntity.Contents[iIndex];
             if (UIHelper.ToolTipItem == iItem)
             {
                 UIHelper.ToolTipItem = null;
@@ -198,17 +198,17 @@ namespace UltimaXNA.UI
             if (this.IsClosed)
                 return;
 
-            if (_containerEntity.Contents.UpdateTicker != _lastContainerUpdated)
+            if (_containerEntity.UpdateTicker != _lastContainerUpdated)
             {
-                mMaxScrollY = (int)(_containerEntity.Contents.LastSlotOccupied / _SlotsWide) + 1 - _SlotsHigh;
-                if (((_containerEntity.Contents.LastSlotOccupied + 1) % _SlotsWide) == 0)
-                    mMaxScrollY++;
+                mMaxScrollY = 100; // (int)(_containerEntity.Contents.LastSlotOccupied / _SlotsWide) + 1 - _SlotsHigh;
+                // if (((_containerEntity.Contents.LastSlotOccupied + 1) % _SlotsWide) == 0)
+                //    mMaxScrollY++;
 
                 for (int i = 0; i < _SlotsTotal; i++)
                 {
-                    _SlotsItems[i] = _containerEntity.Contents.GetContents(i + mScrollY * _SlotsWide);
+                    _SlotsItems[i] = _containerEntity.Contents[i + mScrollY * _SlotsWide];
                 }
-                _lastContainerUpdated = _containerEntity.Contents.UpdateTicker;
+                _lastContainerUpdated = _containerEntity.UpdateTicker;
 
                 for (int i = 0; i < _SlotsTotal; i++)
                 {

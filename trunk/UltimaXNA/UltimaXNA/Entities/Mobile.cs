@@ -119,7 +119,7 @@ namespace UltimaXNA.Entities
 		{
 			get
 			{
-				int direction = Movement.DrawFacing;
+                int direction = DrawFacing;
 				switch (direction)
 				{
 					case 0x00: return DrawLayersNorth;
@@ -142,7 +142,7 @@ namespace UltimaXNA.Entities
         {
             animation = new MobileAnimation();
             equipment = new WornEquipment(this);
-            Movement.RequiresUpdate = true;
+            _movement.RequiresUpdate = true;
         }
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
@@ -150,21 +150,21 @@ namespace UltimaXNA.Entities
             if (equipment[(int)EquipLayer.Mount] != null &&
                 equipment[(int)EquipLayer.Mount].ItemID != 0)
             {
-                Movement.IsMounted = animation.IsMounted = true;
+                _movement.IsMounted = animation.IsMounted = true;
             }
             else
             {
-                Movement.IsMounted = animation.IsMounted = false;
+                _movement.IsMounted = animation.IsMounted = false;
             }
             animation.Update(gameTime);
             base.Update(gameTime);
         }
 
-        internal override void Draw(UltimaXNA.TileEngine.MapTile tile, Vector3 position, Vector3 positionOffset)
+        internal override void Draw(MapTile tile, Vector3 offset)
         {
-            if (Movement.IsMoving)
+            if (_movement.IsMoving)
             {
-                MobileAction iAnimationAction = (Movement.IsRunning) ? MobileAction.Run : MobileAction.Walk;
+                MobileAction iAnimationAction = (_movement.IsRunning) ? MobileAction.Run : MobileAction.Walk;
                 animation.SetAnimation(iAnimationAction, 10, 0, false, false, 0);
             }
             else
@@ -173,11 +173,11 @@ namespace UltimaXNA.Entities
                     animation.HaltAnimation = true;
             }
 
-            int direction = Movement.DrawFacing;
             int action = animation.GetAction();
             MapObjectMobile mobtile = null;
             int[] drawLayers = m_DrawLayers;
 			bool hasOuterTorso = equipment[(int)EquipLayer.OuterTorso] != null && equipment[(int)EquipLayer.OuterTorso].AnimationDisplayID != 0;
+
             for (int i = 0; i < drawLayers.Length; i++)
             {
 				// when wearing something on the outer torso the other torso stuff is not drawn
@@ -190,21 +190,21 @@ namespace UltimaXNA.Entities
                 if (drawLayers[i] == (int)EquipLayer.Body)
                 {
                     mobtile = new MapObjectMobile(
-                        BodyID, position, positionOffset, 
-                        direction, action, animation.AnimationFrame, 
+                        BodyID, _movement.Position.Point, offset,
+                        DrawFacing, action, animation.AnimationFrame, 
                         this, i, Hue);
                     tile.Add(mobtile);
                 }
                 else if (equipment[drawLayers[i]] != null && equipment[drawLayers[i]].AnimationDisplayID != 0)
                 {
                     mobtile = new TileEngine.MapObjectMobile(
-                            equipment[drawLayers[i]].AnimationDisplayID, position, positionOffset,
-                            direction, action, animation.AnimationFrame,
+                            equipment[drawLayers[i]].AnimationDisplayID, _movement.Position.Point, offset,
+                            DrawFacing, action, animation.AnimationFrame,
                             this, i, equipment[drawLayers[i]].Hue);
                     tile.Add(mobtile);
                 }
             }
-            drawOverheads(tile, position, positionOffset);
+            drawOverheads(tile, offset);
         }
 
         public override void Dispose()
@@ -225,14 +225,17 @@ namespace UltimaXNA.Entities
 
         public void Move(Direction facing)
         {
-                Movement.Move(facing);
+            _movement.Move(facing);
         }
 
-        public void Move(int nX, int nY, int nZ, int nFacing)
+        public void MoveTo(int x, int y, int z, int facing)
         {
-            if (nFacing != -1)
-                Movement.Facing = (Direction)nFacing;
-            Movement.SetGoalTile((float)nX, (float)nY, (float)nZ);
+            _movement.MoveTo(x, y, z, facing);
+        }
+
+        public void MoveToInstant(int x, int y, int z, int facing)
+        {
+            _movement.MoveToInstant(x, y, z, facing);
         }
     }
 }

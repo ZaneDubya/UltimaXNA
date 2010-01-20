@@ -65,7 +65,7 @@ namespace UltimaXNA.SceneManagement
                 return;
             }
 
-            World.CenterPosition = Entities.EntitiesCollection.GetPlayerObject().Movement.DrawPosition;
+            World.CenterPosition = Entities.EntitiesCollection.GetPlayerObject().Position;
             World.Update(gameTime);
 
             // Toggle for logout

@@ -30,7 +30,7 @@ namespace UltimaXNA.SceneManagement
 {
     public class DebugScene : BaseScene
     {
-        DrawPosition _position = new DrawPosition();
+        Position3D _position = new Position3D(1453, 1561, 0);
 
         public DebugScene(Game game)
             : base(game)
@@ -43,8 +43,6 @@ namespace UltimaXNA.SceneManagement
             World.OverallLightning = 0x09;
             World.PersonalLightning = 0x09;
             World.LightDirection = -0.6f;
-            _position.TileX = 1453;
-            _position.TileY = 1561;
             ClientVars.Map = 0;
         }
 
@@ -70,23 +68,23 @@ namespace UltimaXNA.SceneManagement
         {
             if (Input.IsKeyDown(Keys.Up))
             {
-                _position.TileX--;
-                _position.TileY--;
+                _position.X--;
+                _position.Y--;
             }
             if (Input.IsKeyDown(Keys.Left))
             {
-                _position.TileX--;
-                _position.TileY++;
+                _position.X--;
+                _position.Y++;
             }
             if (Input.IsKeyDown(Keys.Down))
             {
-                _position.TileX++;
-                _position.TileY++;
+                _position.X++;
+                _position.Y++;
             }
             if (Input.IsKeyDown(Keys.Right))
             {
-                _position.TileX++;
-                _position.TileY--;
+                _position.X++;
+                _position.Y--;
             }
             // alt keys to change debug variables.
             if (Input.IsKeyDown(Keys.LeftAlt))

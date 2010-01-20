@@ -421,7 +421,7 @@ namespace UltimaXNA.Entities
                     if (ignoreDoors && ((flags & TileFlag.Door) != 0 || itemID == 0x692 || itemID == 0x846 || itemID == 0x873 || (itemID >= 0x6F5 && itemID <= 0x6F6)))
                         continue;
 
-                    int checkZ = item.Movement.DrawPosition.TileZ;
+                    int checkZ = item.Z;
                     int checkTop = checkZ + itemData.CalcHeight;
 
                     if (checkTop > ourZ && ourTop > checkZ)
@@ -438,14 +438,14 @@ namespace UltimaXNA.Entities
 
             switch (facing & Direction.FacingMask)
             {
-                case Direction.North: --nextTile.Y; break;
-                case Direction.South: ++nextTile.Y; break;
-                case Direction.West: --nextTile.X; break;
-                case Direction.East: ++nextTile.X; break;
-                case Direction.Right: ++nextTile.X; --nextTile.Y; break;
-                case Direction.Left: --nextTile.X; ++nextTile.Y; break;
-                case Direction.Down: ++nextTile.X; ++nextTile.Y; break;
-                case Direction.Up: --nextTile.X; --nextTile.Y; break;
+                case Direction.North: nextTile.Y--; break;
+                case Direction.South: nextTile.Y++; break;
+                case Direction.West: nextTile.X--; break;
+                case Direction.East: nextTile.X++; break;
+                case Direction.Right: nextTile.X++; nextTile.Y--; break;
+                case Direction.Left: nextTile.X--; nextTile.Y++; break;
+                case Direction.Down: nextTile.X++; nextTile.Y++; break;
+                case Direction.Up: nextTile.X--; nextTile.Y--; break;
             }
 
             return nextTile;

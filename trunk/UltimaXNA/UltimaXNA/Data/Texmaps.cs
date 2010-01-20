@@ -17,7 +17,12 @@
  *
  ***************************************************************************/
 #region usings
+using System;
+using System.IO;
+using System.Drawing;
+using System.Drawing.Imaging;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework;
 #endregion
 
 namespace UltimaXNA.Data
@@ -55,27 +60,32 @@ namespace UltimaXNA.Data
 
             extra = extra == 0 ? 64 : 128;
 
-            ushort[] data = new ushort[extra * extra];
+            uint[] data = new uint[extra * extra];
 
-            fixed (ushort* pData = data)
+            fixed (uint* pData = data)
             {
-                ushort* pDataRef = pData;
+                uint* pDataRef = pData;
 
                 for (int y = 0; y < extra; ++y, pDataRef += extra)
                 {
-                    ushort* start = pDataRef;
-                    ushort* end = start + extra;
+                    uint* start = pDataRef;
+                    uint* end = start + extra;
 
                     while (start < end)
                     {
-                        *start++ = (ushort)(m_Index.BinaryReader.ReadUInt16() ^ 0x8000);
+                        uint color = m_Index.BinaryReader.ReadUInt16();
+                        *start++ = 0xff000000 + (
+                                    ((((color >> 10) & 0x1F) * 0xFF / 0x1F) << 16) |
+                                    ((((color >> 5) & 0x1F) * 0xFF / 0x1F) << 8) |
+                                    (((color & 0x1F) * 0xFF / 0x1F))
+                                    );
                     }
                 }
             }
 
-            Texture2D texture = new Texture2D(_graphics, extra, extra, 1, TextureUsage.None, SurfaceFormat.Bgra5551);
+            Texture2D texture = new Texture2D(_graphics, extra, extra);
 
-            texture.SetData<ushort>(data);
+            texture.SetData<uint>(data);
 
             Metrics.ReportDataRead((int)m_Index.BinaryReader.BaseStream.Position - streamStart);
 

@@ -45,14 +45,13 @@ namespace UltimaXNA.Entities
         #endregion
 
         public bool RequiresUpdate = false;
-        private bool _IsClientPlayer = false;
         // booleans
         public bool IsMounted;
         public bool IsRunning { get { return ((_facing & Direction.Running) == Direction.Running); } }
 
-        private TilePosition _LastTile, _CurrentTile, _NextTile, _GoalTile;
-        private Direction _facing = Direction.Up;
-        private Direction _queuedFacing = Direction.Nothing;
+        Position3D _lastTile, _currentTile, _nextTile, _goalPosition;
+        Direction _facing = Direction.Up;
+        Direction _queuedFacing = Direction.Nothing;
         public Direction Facing
         {
             get { return _facing; }
@@ -68,54 +67,43 @@ namespace UltimaXNA.Entities
                 }
             }
         }
+
+        float MoveSequence = 0f;
+
+        internal Position3D Position { get { return _currentTile; } }
         
-        public float MoveSequence = 0f;
-
-        public int TileX { get { return (int)_CurrentTile.Location.X; } }
-        public int TileY { get { return (int)_CurrentTile.Location.Y; } }
-
-        public DrawPosition DrawPosition { get; protected set; }
-        
-        private MoveEvent _MoveEvent;
-
-        private Entity _entity;
-        private IWorld _world;
-
-        public int DrawFacing
+        MoveEvent _moveEvent;
+        MoveEvent moveEvent
         {
             get
             {
-                int iFacing = (int)(_facing & Direction.FacingMask);
-                if (iFacing >= 3)
-                    return iFacing - 3;
-                else
-                    return iFacing + 5;
+                if (_moveEvent == null)
+                    _moveEvent = new MoveEvent();
+                return _moveEvent;
             }
         }
+
+        private Entity _entity;
+        private IWorld _world;
 
         public Movement(Entity entity, IWorld world)
         {
             _entity = entity;
             _world = world;
-        }
-
-        public void DesignateClientPlayer()
-        {
-            _IsClientPlayer = true;
-            _MoveEvent = new MoveEvent();
+            _currentTile = new Position3D();
         }
 
         public void NewFacingToServer(Direction nDirection)
         {
             _facing = nDirection;
-            _MoveEvent.NewEvent(this._facing);
+            moveEvent.NewEvent(this._facing);
         }
 
         public bool GetMoveEvent(ref int direction, ref int sequence, ref int fastwalkkey)
         {
-            if (_IsClientPlayer == false)
+            if (!_entity.IsClientEntity)
                 return false;
-            return _MoveEvent.GetMoveEvent(ref direction, ref sequence, ref fastwalkkey);
+            return moveEvent.GetMoveEvent(ref direction, ref sequence, ref fastwalkkey);
         }
 
         public void MoveEventAck(int nSequence)
@@ -123,11 +111,11 @@ namespace UltimaXNA.Entities
             // do nothing
         }
 
-        public void MoveEventRej(int nSequence, int nX, int nY, int nZ, int nDirection)
+        public void MoveEventRej(int sequenceID, int x, int y, int z, int direction)
         {
             // immediately return to the designated tile.
-            SetPositionInstant(nX, nY, nZ, nDirection);
-            _MoveEvent.ResetMoveSequence();
+            MoveToInstant(x, y, z, direction);
+            moveEvent.ResetMoveSequence();
         }
 
         public void Move(Direction facing)
@@ -141,8 +129,8 @@ namespace UltimaXNA.Entities
                 else
                     this.Facing &= Direction.FacingMask;
                 // now get the goal tile.
-                Vector3 position = MovementCheck.OffsetTile(_CurrentTile.Location, facing);
-                SetGoalTile((int)position.X, (int)position.Y, (int)position.Z);
+                Vector3 position = MovementCheck.OffsetTile(_currentTile.Point, facing);
+                MoveTo(MovementCheck.OffsetTile(_currentTile.Point, facing));
             }
         }
 
@@ -150,25 +138,39 @@ namespace UltimaXNA.Entities
         {
             get
             {
-                if (((int)_CurrentTile.Location.X == (int)_GoalTile.Location.X) &&
-                    ((int)_CurrentTile.Location.Y == (int)_GoalTile.Location.Y) &&
-                    DrawPosition.OffsetV3 == new Vector3())
+                if (_goalPosition == null)
+                    return false;
+                if ((_currentTile.X == _goalPosition.X) &&
+                    (_currentTile.Y == _goalPosition.Y) &&
+                    !_currentTile.IsOffset)
                     return false;
                 return true;
             }
         }
 
-        public void SetGoalTile(float nX, float nY, float nZ)
+        public void MoveTo(int x, int y, int z, int facing)
         {
-            _GoalTile = new TilePosition(nX, nY, nZ);
+            if (facing != -1)
+            {
+                mFlushDrawObjects();
+                _facing = (Direction)facing;
+            }
+            _goalPosition = new Position3D(x, y, z);
         }
 
-        public void SetPositionInstant(int nX, int nY, int nZ, int nFacing)
+        public void MoveTo(Vector3 v)
         {
-            _facing = (Direction)nFacing;
-            mFlushDrawObjects();
-            _GoalTile = _LastTile = _NextTile = _CurrentTile = new TilePosition(nX, nY, nZ);
-            DrawPosition = new DrawPosition(_CurrentTile);
+            _goalPosition = new Position3D(v);
+        }
+
+        public void MoveToInstant(int x, int y, int z, int facing)
+        {
+            if (facing != -1)
+            {
+                mFlushDrawObjects();
+                _facing = (Direction)facing;
+            }
+            _goalPosition = _lastTile = _nextTile = _currentTile = new Position3D(x, y, z);
         }
 
         public void Update(GameTime gameTime)
@@ -180,29 +182,29 @@ namespace UltimaXNA.Entities
             {
                 // UO movement is tile based. Have we reached the next tile yet?
                 // If we have, then get the next tile in the move sequence and move to that one.
-                if (_CurrentTile.Location == _NextTile.Location)
+                if (_currentTile.Point == _nextTile.Point)
                 {
                     Direction iFacing;
-                    _NextTile = getNextTile(_CurrentTile.Location, _GoalTile.Location, out iFacing);
+                    _nextTile = getNextTile(_currentTile, _goalPosition, out iFacing);
                     // Is the next tile on-screen?
-                    if (_NextTile != null)
+                    if (_nextTile != null)
                     {
                         // If we are the player, set our move event so that the game
                         // knows to send a move request to the server ...
-                        if (_IsClientPlayer)
+                        if (_entity.IsClientEntity)
                         {
                             // Special exception for the player: if we are facing a new direction, we
                             // need to pause for a brief moment and let the server know that.
                             if ((_facing & Direction.FacingMask) != (iFacing & Direction.FacingMask))
                             {
-                                _MoveEvent.NewEvent((iFacing & Direction.FacingMask));
+                                moveEvent.NewEvent((iFacing & Direction.FacingMask));
                                 _facing = iFacing;
-                                _NextTile.Location = _CurrentTile.Location;
+                                _nextTile.Point = _currentTile.Point;
                                 return;
                             }
                             else
                             {
-                                _MoveEvent.NewEvent(iFacing);
+                                moveEvent.NewEvent(iFacing);
                             }
                         }
                         else
@@ -210,7 +212,7 @@ namespace UltimaXNA.Entities
                             // if we are not the player, then we can just change the facing.
                             _facing = iFacing;
                         }
-                        _LastTile = new TilePosition(_CurrentTile);
+                        _lastTile = new Position3D(_currentTile.X, _currentTile.Y, _currentTile.Z);
                     }
                     else
                     {
@@ -218,11 +220,7 @@ namespace UltimaXNA.Entities
                         // Ideally, we should remove them from the map entirely.
                         // Right now, we just set their location to the current tile
                         // and refuse to move them further.
-                        SetPositionInstant(
-                            (int)_CurrentTile.Location.X,
-                            (int)_CurrentTile.Location.Y,
-                            (int)_CurrentTile.Location.Z,
-                            (int)_facing);
+                        MoveToInstant(_currentTile.X, _currentTile.Y, _currentTile.Z, (int)_facing);
                         return;
                     }
                 }
@@ -231,11 +229,11 @@ namespace UltimaXNA.Entities
                 if (MoveSequence >= 1f)
                 {
                     MoveSequence -= 1f;
-                    _CurrentTile.Location = _NextTile.Location;
+                    _currentTile.Point = _nextTile.Point;
                 }
                 else
                 {
-                    _CurrentTile.Location = _LastTile.Location + (_NextTile.Location - _LastTile.Location) * MoveSequence;
+                    _currentTile.Point = _lastTile.Point + (_nextTile.Point - _lastTile.Point) * MoveSequence;
                 }
             }
             else
@@ -248,8 +246,6 @@ namespace UltimaXNA.Entities
                 }
                 MoveSequence = 0f;
             }
-
-            DrawPosition = new DrawPosition(_CurrentTile);
         }
 
         public void ClearImmediate()
@@ -259,29 +255,30 @@ namespace UltimaXNA.Entities
 
         private void mFlushDrawObjects()
         {
-            if (DrawPosition == null)
+            if (Position.IsNullPosition)
                 return;
             if (_world.Map == null)
                 return;
-            TileEngine.MapTile lastTile = _world.Map.GetMapTile(DrawPosition.TileX, DrawPosition.TileY);
+            TileEngine.MapTile lastTile = _world.Map.GetMapTile(Position.TileX, Position.TileY);
             if (lastTile != null)
             {
                 lastTile.FlushObjectsBySerial(_entity.Serial);
             }
-        } 
+        }
 
-        private TilePosition getNextTile(Vector3 currentLocation, Vector3 goalLocation, out Direction facing)
+        private Position3D getNextTile(Position3D current, Position3D goal, out Direction facing)
         {
-            facing = getNextFacing(currentLocation, goalLocation);
-            Vector3 nextTile = MovementCheck.OffsetTile(currentLocation, facing);
+            facing = getNextFacing(current, goal);
+            Vector3 nextTile = MovementCheck.OffsetTile(current.Point, facing);
 
             int nextAltitude;
-            bool moveIsOkay = MovementCheck.CheckMovement((Mobile)_entity, _world.Map, currentLocation, facing, out nextAltitude);
+            bool moveIsOkay = MovementCheck.CheckMovement((Mobile)_entity, _world.Map, current.Point, facing, out nextAltitude);
+            nextTile.Z = nextAltitude;
             if (moveIsOkay)
             {
                 if (IsRunning)
                     facing |= Direction.Running;
-                return new TilePosition((int)nextTile.X, (int)nextTile.Y, nextAltitude);
+                return new Position3D(nextTile);
             }
             else
             {
@@ -289,50 +286,34 @@ namespace UltimaXNA.Entities
             }
         }
 
-        private Direction getNextFacing(Vector3 currentTile, Vector3 goalTile)
+        private Direction getNextFacing(Position3D current, Position3D goal)
         {
             Direction facing;
 
-            if (goalTile.X < currentTile.X)
+            if (goal.X < current.X)
             {
-                if (goalTile.Y < currentTile.Y)
-                {
+                if (goal.Y < current.Y)
                     facing = Direction.Up;
-                }
-                else if (goalTile.Y > currentTile.Y)
-                {
+                else if (goal.Y > current.Y)
                     facing = Direction.Left;
-                }
                 else
-                {
                     facing = Direction.West;
-                }
             }
-            else if (goalTile.X > currentTile.X)
+            else if (goal.X > current.X)
             {
-                if (goalTile.Y < currentTile.Y)
-                {
+                if (goal.Y < current.Y)
                     facing = Direction.Right;
-                }
-                else if (goalTile.Y > currentTile.Y)
-                {
+                else if (goal.Y > current.Y)
                     facing = Direction.Down;
-                }
                 else
-                {
                     facing = Direction.East;
-                }
             }
             else
             {
-                if (goalTile.Y < currentTile.Y)
-                {
+                if (goal.Y < current.Y)
                     facing = Direction.North;
-                }
-                else if (goalTile.Y > currentTile.Y)
-                {
+                else if (goal.Y > current.Y)
                     facing = Direction.South;
-                }
                 else
                 {
                     // We should never reach this.
@@ -344,78 +325,54 @@ namespace UltimaXNA.Entities
         }
     }
 
-    public class DrawPosition
+    public class Position3D
     {
-        public int TileX, TileY, TileZ;
-        public float OffsetX, OffsetY, OffsetZ;
+        public static Vector3 NullPosition = new Vector3(-1);
 
-        public Vector3 PositionV3
+        Vector3 _position;
+        public Vector3 Point { get { return _position; } set { _position = value; } }
+        public int X { get { return (int)_position.X; } set { _position.X = value; } }
+        public int Y { get { return (int)_position.Y; } set { _position.Y = value; } }
+        public int Z { get { return (int)_position.Z; } set { _position.Z = value; } }
+
+        public int TileX { get { return (Xoffset != 0) ? X + 1 : X; } }
+        public int TileY { get { return (Yoffset != 0) ? Y + 1 : Y; } }
+        public float Xoffset { get { return _position.X % 1.0f; } }
+        public float Yoffset { get { return _position.Y % 1.0f; } }
+        public float Zoffset { get { return _position.Z % 1.0f; } }
+
+        public bool IsOffset { get { return (Xoffset != 0) || (Yoffset != 0) || (Zoffset != 0); } }
+        public bool IsNullPosition { get { return _position == NullPosition; } }
+
+
+        public Position3D()
         {
-            get
-            {
-                return new Vector3(TileX, TileY, TileZ);
-            }
-            set
-            {
-                TileX = (int)value.X;
-                TileY = (int)value.Y;
-                TileZ = (int)value.Z;
-            }
+            _position = NullPosition;
         }
 
-        public Vector3 OffsetV3
+        public Position3D(int x, int y, int z)
         {
-            get
-            {
-                return new Vector3(OffsetX, OffsetY, OffsetZ);
-            }
-            set
-            {
-                OffsetX = value.X;
-                OffsetY = value.Y;
-                OffsetZ = value.Z;
-            }
+            _position = new Vector3(x, y, z);
         }
 
-        public DrawPosition()
+        public Position3D(Vector3 v)
         {
-
-        }
-
-        public DrawPosition(TilePosition p)
-        {
-            TileX = (int)Math.Ceiling(p.Location.X);
-            TileY = (int)Math.Ceiling(p.Location.Y);
-            TileZ = (int)Math.Ceiling(p.Location.Z);
-            OffsetX = ((p.Location.X - (float)TileX));
-            OffsetY = ((p.Location.Y - (float)TileY));
-            OffsetZ = ((p.Location.Z - (float)TileZ));
-        }
-
-        public DrawPosition(DrawPosition p)
-        {
-            PositionV3 = p.PositionV3;
-            OffsetV3 = p.OffsetV3;
-        }
-
-        public override string ToString()
-        {
-            return "X:" + TileX.ToString() + " Y:" + TileY.ToString();
+            _position = v;
         }
 
         public override bool Equals(object o)
         {
             if (o == null) return false;
-            if (o.GetType() != typeof(DrawPosition)) return false;
-            if (this.TileX != ((DrawPosition)o).TileX) return false;
-            if (this.TileY != ((DrawPosition)o).TileY) return false;
-            if (this.TileZ != ((DrawPosition)o).TileZ) return false;
+            if (o.GetType() != typeof(Position3D)) return false;
+            if (this.X != ((Position3D)o).X) return false;
+            if (this.Y != ((Position3D)o).Y) return false;
+            if (this.Z != ((Position3D)o).Z) return false;
             return true;
         }
 
         // Equality operator. Returns dbNull if either operand is dbNull, 
         // otherwise returns dbTrue or dbFalse:
-        public static bool operator ==(DrawPosition x, DrawPosition y)
+        public static bool operator ==(Position3D x, Position3D y)
         {
             if ((object)x == null)
                 return ((object)y == null);
@@ -424,7 +381,7 @@ namespace UltimaXNA.Entities
 
         // Inequality operator. Returns dbNull if either operand is
         // dbNull, otherwise returns dbTrue or dbFalse:
-        public static bool operator !=(DrawPosition x, DrawPosition y)
+        public static bool operator !=(Position3D x, Position3D y)
         {
             if ((object)x == null)
                 return ((object)y != null);
@@ -433,23 +390,7 @@ namespace UltimaXNA.Entities
 
         public override int GetHashCode()
         {
-           return 0;
-        }
-
-    }
-
-    public class TilePosition
-    {
-        internal Vector3 Location;
-
-        public TilePosition(float nTileX, float nTileY, float nTileZ)
-        {
-            Location = new Vector3(nTileX, nTileY, nTileZ);
-        }
-
-        public TilePosition(TilePosition nCopyPosition)
-        {
-            Location = new Vector3(nCopyPosition.Location.X, nCopyPosition.Location.Y, nCopyPosition.Location.Z);
+            return X ^ Y ^ Z;
         }
     }
 

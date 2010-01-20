@@ -31,7 +31,7 @@ namespace UltimaXNA.Entities
         // ContainerItems have inventory (chests, for example).
         // The Serial for the container for this inventory is the same as the
         // GameObject's Serial.
-        private GameObject_Container m_ContainerObject = null;
+        GameObject_Container m_ContainerObject = null;
         public GameObject_Container Contents
         {
             get

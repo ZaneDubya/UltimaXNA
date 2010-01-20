@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   PlayerMobile.cs
+ *   Container.cs
  *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   
  *   begin                : May 31, 2009
@@ -17,29 +17,54 @@
  ***************************************************************************/
 #region usings
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using Microsoft.Xna.Framework;
 using UltimaXNA.TileEngine;
 #endregion
 
 namespace UltimaXNA.Entities
 {
-    public class PlayerMobile : Mobile
+    class Container : Item
     {
-        public PlayerMobile(Serial serial, World world)
-            : base(serial, world)
-        {
+        static List<Item> NullItems = new List<Item>();
 
+        public int UpdateTicker { get; internal set; }
+
+        List<Item> _contents;
+
+        public List<Item> Contents
+        {
+            get
+            {
+                if (_contents == null)
+                    _contents = NullItems;
+                return _contents;
+            }
         }
 
-        public override string ToString()
+        public Container(Serial serial, IWorld world)
+            : base(serial, world)
         {
-            return base.ToString() + " | " + Name;
+            UpdateTicker = 0;
         }
 
         public override void Update(GameTime gameTime)
         {
-            animation.HoldAnimationMS = gameTime.ElapsedRealTime.Milliseconds * 2;
             base.Update(gameTime);
+        }
+
+        public void AddItem(Item item)
+        {
+            Contents.Add(item);
+            UpdateTicker++;
+        }
+
+        public void RemoveItem(Item item)
+        {
+            Contents.Remove(item);
+            UpdateTicker++;
         }
     }
 }
