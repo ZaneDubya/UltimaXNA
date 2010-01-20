@@ -35,7 +35,7 @@ namespace UltimaXNA
     /// <summary>
     /// Utility class used to host common functions that do not fit inside a specific object.
     /// </summary>
-    public static class Utility
+    public class Utility
     {
         #region Buffer Formatting
         /// <summary>

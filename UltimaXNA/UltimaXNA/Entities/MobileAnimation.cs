@@ -489,15 +489,13 @@ namespace UltimaXNA.Entities
                 {
                     if (m_Equipment[nIndex] != null)
                     {
-                        m_Equipment[nIndex].Wearer = null;
                         m_Equipment[nIndex].Dispose();
-                        m_Equipment[nIndex] = null;
                     }
                 }
                 else
                 {
                     m_Equipment[nIndex] = value;
-                    value.Wearer = m_Owner;
+                    value.Parent = m_Owner;
                 }
                 m_UpdateTicker++;
             }
@@ -507,6 +505,7 @@ namespace UltimaXNA.Entities
         {
             for (int i = 0; i <= (int)EquipLayer.LastValid; i++)
             {
+                this[i].Parent = null;
                 this[i] = null;
             }
             m_UpdateTicker++;
@@ -519,6 +518,7 @@ namespace UltimaXNA.Entities
                 if (this[i] != null)
                     if (this[i].Serial == serial)
                     {
+                        this[i].Parent = null;
                         this[i] = null;
                     }
             }

@@ -10,6 +10,17 @@ namespace UltimaXNA.UILegacy.Gumplings
 {
     class GumpPicContainer : GumpPic
     {
+        public Serial ContainerSerial
+        {
+            get
+            {
+                if (_owner is Clientside.ContainerGump)
+                    return ((Clientside.ContainerGump)_owner).ContainerSerial;
+                else
+                    return 0;
+            }
+        }
+
         public GumpPicContainer(Control owner, int page, int x, int y, int gumpID, int hue)
             : base(owner, page, x, y, gumpID, hue)
         {

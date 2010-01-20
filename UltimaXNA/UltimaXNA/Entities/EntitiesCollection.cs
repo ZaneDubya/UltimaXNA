@@ -127,15 +127,43 @@ namespace UltimaXNA.Entities
             }
         }
 
-        private static T addObject<T>(Serial serial) where T : Entity
+        static T addObject<T>(Serial serial) where T : Entity
         {
+            /*
             T o = (T)Activator.CreateInstance(typeof(T), new object[] { serial, _world });
-            // o.World = TileEngine.WorldStatic; // Add the world service (for movement).
             // If this object is the client, designate it to return events.
             if (o.Serial == MySerial)
                 o.IsClientEntity = true;
             _entities.Add(o.Serial, o); // Add the object to the objects collection.
             return (T)o;
+            */
+            Entity e;
+            Type t = typeof(T);
+            switch (t.Name)
+            {
+                case "Item":
+                    e = new Item(serial, _world);
+                    break;
+                case "Container":
+                    e = new Container(serial, _world);
+                    break;
+                case "Mobile":
+                    e = new Mobile(serial, _world);
+                    break;
+                case "PlayerMobile":
+                    e = new PlayerMobile(serial, _world);
+                    break;
+                case "Corpse":
+                    e = new Corpse(serial, _world);
+                    break;
+                default:
+                    throw new Exception("Unknown addObject type!");
+            }
+
+            if (e.Serial == MySerial)
+                e.IsClientEntity = true;
+            _entities.Add(e.Serial, e); // Add the object to the objects collection.
+            return (T)e;
         }
 
         public static void RemoveObject(Serial serial)

@@ -506,7 +506,7 @@ namespace UltimaXNA.EventSystem
 
         public void SendEvent(object sender, short eventId, params object[] args)
         {
-            _log.Debug("ProcessEvent Event Id: {0} Sender: {1}", eventId, sender);
+            // _log.Debug("ProcessEvent Event Id: {0} Sender: {1}", eventId, sender);
 
             List<IEventReceiver> receivers = new List<IEventReceiver>(_registeredAllEvents);
 

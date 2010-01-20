@@ -137,7 +137,7 @@ namespace UltimaXNA.Entities
 			}
 		}
 
-        public Mobile(Serial serial, World world)
+        public Mobile(Serial serial, IWorld world)
             : base(serial, world)
         {
             animation = new MobileAnimation();
@@ -213,7 +213,7 @@ namespace UltimaXNA.Entities
             base.Dispose();
         }
 
-        public void UnWearItem(Serial serial)
+        public void RemoveItem(Serial serial)
         {
             equipment.RemoveBySerial(serial);
         }

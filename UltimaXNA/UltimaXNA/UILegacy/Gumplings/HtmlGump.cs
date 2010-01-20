@@ -84,7 +84,7 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_texture, new Vector2(Area.X, Area.Y), 0, false);
+            spriteBatch.Draw(_texture, Position, 0, false);
             
             foreach (HREFRegion r in _hrefRegions.Regions)
             {

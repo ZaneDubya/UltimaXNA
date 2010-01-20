@@ -26,7 +26,7 @@ namespace UltimaXNA.Network.Packets.Client
 {
     public class PickupItemPacket : SendPacket
     {
-        public PickupItemPacket(Serial serial, short count)
+        public PickupItemPacket(Serial serial, int count)
             : base(0x07, "Pickup Item", 7)
         {
             Stream.Write(serial);

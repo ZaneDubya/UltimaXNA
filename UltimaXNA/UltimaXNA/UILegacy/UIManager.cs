@@ -264,13 +264,8 @@ namespace UltimaXNA.UILegacy
                 ((Clientside.ChatWindow)g).AddLine(line);
             }
         }
-        public void DebugMessage_Clear()
-        {
-            _DEBUG_TEXT_LINES.Clear();
-            _DEBUG_TEXT_TIMES.Clear();
-        }
 
-        public void AnnounceNewKeyboardHandler(Control c)
+        internal void AnnounceNewKeyboardHandler(Control c)
         {
             // Pass null to CLEAR the keyboardhandlingcontrol.
             if (c == null)
@@ -305,7 +300,9 @@ namespace UltimaXNA.UILegacy
                         workingControls.Add(c);
             }
             else
+            {
                 workingControls = _controls;
+            }
 
             foreach (Control c in workingControls)
             {
@@ -361,6 +358,12 @@ namespace UltimaXNA.UILegacy
                 // MouseUp and MouseClick events
                 if (_input.IsMouseButtonRelease((MouseButtons)iButton))
                 {
+                    if (Cursor.IsHolding)
+                    {
+                        if (iButton == (int)MouseButtons.LeftButton)
+                            Interaction.DropItem(Cursor.HoldingItem, Cursor.HoldingOffset);
+                    }
+
                     if (_mouseDownControl[iButton] != null)
                     {
                         if (focusedControls != null)
@@ -417,38 +420,6 @@ namespace UltimaXNA.UILegacy
                     }
                 }
             }
-        }
-
-        string[] splitGumpPieces(string gumpData)
-        {
-            List<string> i = new List<string>(); ;
-            bool isData = true;
-            int dataIndex = 0;
-            while (isData)
-            {
-                if (gumpData.Substring(dataIndex) == "\0")
-                {
-                    isData = false;
-                }
-                else
-                {
-                    int begin = gumpData.IndexOf("{ ", dataIndex);
-                    int end = gumpData.IndexOf(" }", dataIndex + 1);
-                    if ((begin != -1) && (end != -1))
-                    {
-                        string sub = gumpData.Substring(begin + 2, end - begin - 2);
-                        // iConstruct = iConstruct.Substring(0, iBeginReplace) + iArgs[i] + iConstruct.Substring(iEndReplace + 1, iConstruct.Length - iEndReplace - 1);
-                        i.Add(sub);
-                        dataIndex += (end - begin) + 2;
-                    }
-                    else
-                    {
-                        isData = false;
-                    }
-                }
-            }
-
-            return i.ToArray();
         }
     }
 }

@@ -32,7 +32,7 @@ namespace UltimaXNA.Network.Packets.Server
         readonly int _x;
         readonly int _y;
         readonly int _gridLocation;
-        readonly int _containerSerial;
+        readonly Serial _parentSerial;
         readonly int _hue;
 
         public int ItemId
@@ -60,9 +60,9 @@ namespace UltimaXNA.Network.Packets.Server
             get { return _gridLocation; }
         }
 
-        public int ContainerSerial
+        public Serial ContainerSerial
         {
-            get { return _containerSerial; }
+            get { return _parentSerial; }
         }
 
         public int Hue
@@ -85,7 +85,7 @@ namespace UltimaXNA.Network.Packets.Server
             _x = reader.ReadInt16();
             _y = reader.ReadInt16();
             _gridLocation = reader.ReadByte(); // always 0 in RunUO.
-            _containerSerial = reader.ReadInt32();
+            _parentSerial = (Serial)reader.ReadInt32();
             _hue = reader.ReadUInt16();
         }
     }

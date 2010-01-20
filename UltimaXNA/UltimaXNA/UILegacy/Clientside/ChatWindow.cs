@@ -62,6 +62,12 @@ namespace UltimaXNA.UILegacy.Clientside
             base.Draw(spriteBatch);
         }
 
+        public override void ActivateByKeyboardReturn(int textID, string text)
+        {
+            _input.Text = string.Empty;
+            Interaction.SendChat(text);
+        }
+
         public void AddLine(string text)
         {
             _textEntries.Add(new ChatLineTimed(text));
