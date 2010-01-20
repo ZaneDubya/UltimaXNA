@@ -23,7 +23,7 @@ using UltimaXNA.TileEngine;
 
 namespace UltimaXNA.Entities
 {
-    class Corpse : ContainerItem
+    class Corpse : Container
     {
         public Serial MobileSerial = 0;
 
@@ -48,11 +48,11 @@ namespace UltimaXNA.Entities
             // }
         }
 
-        internal override void Draw(UltimaXNA.TileEngine.MapTile cell, Vector3 position, Vector3 positionOffset)
+        internal override void Draw(MapTile tile, Vector3 offset)
         {
-            Movement.ClearImmediate();
-            cell.Add(new TileEngine.MapObjectCorpse(position, Movement.DrawFacing, this, Hue, _corpseBody, _corpseFrame));
-            drawOverheads(cell, position, positionOffset);
+            _movement.ClearImmediate();
+            tile.Add(new TileEngine.MapObjectCorpse(offset, DrawFacing, this, Hue, _corpseBody, _corpseFrame));
+            drawOverheads(tile, _movement.Position.Point);
         }
 
         public void LoadCorpseClothing(List<Network.Packets.Server.CorpseClothingItemWithLayer> items)

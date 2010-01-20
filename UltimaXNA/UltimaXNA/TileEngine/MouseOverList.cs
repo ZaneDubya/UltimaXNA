@@ -170,8 +170,8 @@ namespace UltimaXNA.TileEngine
             }
             else
             {
-                UInt16[] iPixel = new UInt16[1];
-                Texture.GetData<UInt16>(0,
+                uint[] iPixel = new uint[1];
+                Texture.GetData<uint>(0,
                     new Rectangle((int)mousePosition.X - (int)Position.X, (int)mousePosition.Y - (int)Position.Y, 1, 1), iPixel, 0, 1);
                 if (iPixel[0] != 0)
                     return true;

@@ -29,8 +29,8 @@ namespace UltimaXNA.Data
     {
         private static GraphicsDevice graphicsDevice;
         private static Texture2D hueTexture;
-        private const int m_HueTextureWidth = 64; // Each hue is 32 pixels wide, so divided by 32 = 2 hues wide.
-        private const int m_HueTextureHeight = 2024;
+        private const int _HueTextureWidth = 64; // Each hue is 32 pixels wide, so divided by 32 = 2 hues wide.
+        private const int _HueTextureHeight = 2024;
 
         public static void Initialize(GraphicsDevice graphicsDevice)
         {
@@ -46,16 +46,16 @@ namespace UltimaXNA.Data
 
         static void CreateTexture()
         {
-            hueTexture = new Texture2D(graphicsDevice, m_HueTextureWidth, m_HueTextureHeight, 1, TextureUsage.None, SurfaceFormat.Bgra5551);
-            ushort[] iTextData = getTextureData();
+            hueTexture = new Texture2D(graphicsDevice, _HueTextureWidth, _HueTextureHeight);
+            uint[] iTextData = getTextureData();
             hueTexture.SetData(iTextData);
         }
 
-        static ushort[] getTextureData()
+        static uint[] getTextureData()
         {
             BinaryReader reader = new BinaryReader( FileManager.GetFile( "hues.mul" ) );
             int currentHue = 0;
-            ushort[] textureData = new ushort[m_HueTextureWidth * m_HueTextureHeight];
+            uint[] data = new uint[_HueTextureWidth * _HueTextureHeight];
 
             Metrics.ReportDataRead((int)reader.BaseStream.Length);
 
@@ -67,7 +67,12 @@ namespace UltimaXNA.Data
                 {
                     for (int i = 0; i < 32; i++)
                     {
-                        textureData[currentHue * 32 + i] = (ushort)(reader.ReadUInt16() | 0x8000);
+                        uint color = reader.ReadUInt16();
+                        data[currentHue * 32 + i] = 0xff000000 + (
+                            ((((color >> 10) & 0x1F) * 0xFF / 0x1F) << 16) |
+                            ((((color >> 5) & 0x1F) * 0xFF / 0x1F) << 8) |
+                            (((color & 0x1F) * 0xFF / 0x1F))
+                            );
                     }
                     currentHue++;
                     reader.ReadInt16(); //table start
@@ -76,7 +81,7 @@ namespace UltimaXNA.Data
                 }
             }
             reader.Close();
-            return textureData;
+            return data;
         }
 
         public static Texture2D HueSwatch(int width, int height, int[] hues)

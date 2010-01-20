@@ -567,10 +567,17 @@ namespace UltimaXNA.Data
 
             BinaryReader bin = new BinaryReader(stream);
 
-            ushort[] palette = new ushort[0x100];
+            uint[] palette = new uint[0x100];
 
             for (int i = 0; i < 0x100; ++i)
-                palette[i] = (ushort)(bin.ReadUInt16() ^ 0x8000);
+            {
+                uint color = bin.ReadUInt16();
+                palette[i] = 0xff000000 + (
+                    ((((color >> 10) & 0x1F) * 0xFF / 0x1F) << 16) |
+                    ((((color >> 5) & 0x1F) * 0xFF / 0x1F) << 8) |
+                    (((color & 0x1F) * 0xFF / 0x1F))
+                    );
+            }
 
             int start = (int)bin.BaseStream.Position;
             int frameCount = bin.ReadInt32();
@@ -692,7 +699,7 @@ namespace UltimaXNA.Data
         {
         }
 
-        public unsafe FrameXNA(GraphicsDevice graphics, ushort[] palette, BinaryReader bin, bool flip)
+        public unsafe FrameXNA(GraphicsDevice graphics, uint[] palette, BinaryReader bin, bool flip)
         {
             int xCenter = bin.ReadInt16();
             int yCenter = bin.ReadInt16();
@@ -707,7 +714,7 @@ namespace UltimaXNA.Data
                 return;
             }
 
-            ushort[] data = new ushort[width * height];
+            uint[] data = new uint[width * height];
 
             // ushort* line = (ushort*)bd.Scan0;
             // int delta = bd.Stride >> 1;
@@ -717,9 +724,9 @@ namespace UltimaXNA.Data
             int xBase = xCenter - 0x200;
             int yBase = (yCenter + height) - 0x200;
 
-            fixed (ushort* pData = data)
+            fixed (uint* pData = data)
             {
-                ushort* dataRef = pData;
+                uint* dataRef = pData;
                 int delta = width;
 
                 int dataRead = 0;
@@ -733,8 +740,8 @@ namespace UltimaXNA.Data
                     {
                         header ^= DoubleXor;
 
-                        ushort* cur = dataRef + ((((header >> 12) & 0x3FF) * delta) + ((header >> 22) & 0x3FF));
-                        ushort* end = cur + (header & 0xFFF);
+                        uint* cur = dataRef + ((((header >> 12) & 0x3FF) * delta) + ((header >> 22) & 0x3FF));
+                        uint* end = cur + (header & 0xFFF);
 
                         dataRead += header & 0xFFF;
 
@@ -751,8 +758,8 @@ namespace UltimaXNA.Data
                     {
                         header ^= DoubleXor;
 
-                        ushort* cur = dataRef + ((((header >> 12) & 0x3FF) * delta) - ((header >> 22) & 0x3FF));
-                        ushort* end = cur - (header & 0xFFF);
+                        uint* cur = dataRef + ((((header >> 12) & 0x3FF) * delta) - ((header >> 22) & 0x3FF));
+                        uint* end = cur - (header & 0xFFF);
 
                         dataRead += header & 0xFFF;
 
@@ -768,8 +775,8 @@ namespace UltimaXNA.Data
 
             _Center = new Microsoft.Xna.Framework.Point(xCenter, yCenter);
 
-            _Texture = new Texture2D(graphics, width, height, 1, TextureUsage.None, SurfaceFormat.Bgra5551);
-            _Texture.SetData<ushort>(data);
+            _Texture = new Texture2D(graphics, width, height);
+            _Texture.SetData<uint>(data);
         }
     }
 } 

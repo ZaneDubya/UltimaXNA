@@ -231,11 +231,11 @@ namespace UltimaXNA.Client
             {
                 // Add the item...
                 Item iObject = add_Item(i.Serial, i.ItemID, i.Hue, i.ContainerSerial, i.Amount);
-                iObject.Item_InvX = i.X;
-                iObject.Item_InvY = i.Y;
+                iObject.X = i.X;
+                iObject.Y = i.Y;
                 // ... and add it the container contents of the container.
-                ContainerItem iContainerObject = EntitiesCollection.GetObject<ContainerItem>(i.ContainerSerial, true);
-                iContainerObject.Contents.AddItem(iObject);
+                Container c = EntitiesCollection.GetObject<Container>(i.ContainerSerial, true);
+                c.AddItem(iObject);
             }
         }
 
@@ -245,12 +245,12 @@ namespace UltimaXNA.Client
 
             // Add the item...
             Item iObject = add_Item(p.Serial, p.ItemId, p.Hue, p.ContainerSerial, p.Amount);
-            iObject.Item_InvX = p.X;
-            iObject.Item_InvY = p.Y;
+            iObject.X = p.X;
+            iObject.Y = p.Y;
             // ... and add it the container contents of the container.
-            ContainerItem iContainerObject = EntitiesCollection.GetObject<ContainerItem>(p.ContainerSerial, true);
+            Container iContainerObject = EntitiesCollection.GetObject<Container>(p.ContainerSerial, true);
             if (iContainerObject != null)
-                iContainerObject.Contents.AddItem(iObject);
+                iContainerObject.AddItem(iObject);
             else
             {
                 // Special case for game boards... the server will sometimes send us game pieces for a game board before it sends 
@@ -311,17 +311,17 @@ namespace UltimaXNA.Client
         {
             OpenContainerPacket p = (OpenContainerPacket)packet;
 
-            ContainerItem o;
+            Container o;
             // Special case for 0x30, which tells us to open a buy from vendor window.
             if (p.GumpId == 0x30)
             {
                 Mobile m = EntitiesCollection.GetObject<Mobile>(p.Serial, false);
-                o = (ContainerItem)m.equipment[(int)EquipLayer.ShopBuy];
+                o = (Container)m.equipment[(int)EquipLayer.ShopBuy];
             }
             else
             {
-                o = EntitiesCollection.GetObject<ContainerItem>(p.Serial, false);
-                if (o is ContainerItem)
+                o = EntitiesCollection.GetObject<Container>(p.Serial, false);
+                if (o is Container)
                 {
                     _LegacyUI.AddContainerGump(o, o.ItemID);
                 }
@@ -351,7 +351,7 @@ namespace UltimaXNA.Client
             DeathAnimationPacket p = (DeathAnimationPacket)packet;
             Mobile u = EntitiesCollection.GetObject<Mobile>(p.PlayerSerial, false);
             Corpse c = EntitiesCollection.GetObject<Corpse>(p.CorpseSerial, false);
-            c.Movement.Facing = u.Movement.Facing;
+            c.Facing = u.Facing;
             c.MobileSerial = p.PlayerSerial;
             c.DeathAnimation();
         }
@@ -524,7 +524,7 @@ namespace UltimaXNA.Client
             Mobile mobile = EntitiesCollection.GetObject<Mobile>(p.Serial, true);
             mobile.BodyID = p.BodyID;
             mobile.Hue = (int)p.Hue;
-            mobile.Movement.SetPositionInstant((int)p.X, (int)p.Y, (int)p.Z, p.Direction);
+            mobile.MoveToInstant(p.X, p.Y, p.Z, p.Direction);
             mobile.IsFemale = p.Flags.IsFemale;
             mobile.IsPoisoned = p.Flags.IsPoisoned;
             mobile.IsBlessed = p.Flags.IsBlessed;
@@ -562,18 +562,14 @@ namespace UltimaXNA.Client
             mobile.Notoriety = p.Notoriety;
             // Issue 16 - Pet not showing at login - http://code.google.com/p/ultimaxna/issues/detail?id=16 - Smjert
             // Since no packet arrives to add your pet, when you move and your pet follows you the client crashes
-            if (mobile.Movement.DrawPosition == null)
+            if (mobile.Position.IsNullPosition)
             {
-                mobile.Movement.SetPositionInstant(p.X, p.Y, p.Z, p.Direction);
-            }
-            else if (mobile.Movement.DrawPosition.PositionV3 == new Vector3(0, 0, 0))
-            {
-                mobile.Movement.SetPositionInstant(p.X, p.Y, p.Z, p.Direction);
+                mobile.MoveToInstant(p.X, p.Y, p.Z, p.Direction);
                 // Issue 16 - End
             }
             else
             {
-                mobile.Move(p.X, p.Y, p.Z, p.Direction);
+                mobile.MoveTo(p.X, p.Y, p.Z, p.Direction);
             }
         }
 
@@ -588,7 +584,7 @@ namespace UltimaXNA.Client
             mobile.IsWarMode = p.Flags.IsWarMode;
             mobile.IsHidden = p.Flags.IsHidden;
             mobile.Hue = (int)p.Hue;
-            mobile.Movement.SetPositionInstant((int)p.X, (int)p.Y, (int)p.Z, p.Direction);
+            mobile.MoveToInstant(p.X, p.Y, p.Z, p.Direction);
 
             if (mobile.Name == string.Empty)
             {
@@ -600,14 +596,14 @@ namespace UltimaXNA.Client
         private static void receive_MoveAck(IRecvPacket packet)
         {
             MoveAcknowledgePacket p = (MoveAcknowledgePacket)packet;
-            EntitiesCollection.GetPlayerObject().Movement.MoveEventAck(p.Sequence);
+            EntitiesCollection.GetPlayerObject().MoveEventAck(p.Sequence);
             ((Mobile)EntitiesCollection.GetPlayerObject()).Notoriety = p.Notoriety;
         }
 
         private static void receive_MoveRej(IRecvPacket packet)
         {
             MovementRejectPacket p = (MovementRejectPacket)packet;
-            EntitiesCollection.GetPlayerObject().Movement.MoveEventRej(p.Sequence, p.X, p.Y, p.Z, p.Direction);
+            EntitiesCollection.GetPlayerObject().MoveEventRej(p.Sequence, p.X, p.Y, p.Z, p.Direction);
         }
 
         private static void receive_NewSubserver(IRecvPacket packet)
@@ -711,7 +707,7 @@ namespace UltimaXNA.Client
             // When loading the player object, we must load the serial before the object.
             EntitiesCollection.MySerial = p.Serial;
             PlayerMobile iPlayer = EntitiesCollection.GetObject<PlayerMobile>(p.Serial, true);
-            iPlayer.Movement.SetPositionInstant((int)p.X, (int)p.Y, (int)p.Z, p.Direction);
+            iPlayer.MoveToInstant(p.X, p.Y, p.Z, p.Direction);
             // iPlayer.SetFacing(p.Direction);
 
             // We want to make sure we have the client object before we load the world...
@@ -935,7 +931,10 @@ namespace UltimaXNA.Client
             if (p.ItemID <= 0x4000)
             {
                 Item item = add_Item(p.Serial, p.ItemID, p.Hue, unchecked((int)0xFFFFFFFF), p.StackAmount);
-                item.Movement.SetPositionInstant(p.X, p.Y, p.Z, p.Direction);
+                item.X = p.X;
+                item.Y = p.Y;
+                item.Z = p.Z;
+                item.Facing = (Direction)p.Direction;
             }
             else
             {
@@ -1123,7 +1122,7 @@ namespace UltimaXNA.Client
             else
             {
                 if (Data.TileData.ItemData[itemID].Container)
-                    item = EntitiesCollection.GetObject<ContainerItem>((int)serial, true);
+                    item = EntitiesCollection.GetObject<Container>((int)serial, true);
                 else
                     item = EntitiesCollection.GetObject<Item>((int)serial, true);
             }

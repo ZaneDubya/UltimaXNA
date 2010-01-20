@@ -133,7 +133,7 @@ namespace UltimaXNA.Entities
             // o.World = TileEngine.WorldStatic; // Add the world service (for movement).
             // If this object is the client, designate it to return events.
             if (o.Serial == MySerial)
-                o.Movement.DesignateClientPlayer();
+                o.IsClientEntity = true;
             _entities.Add(o.Serial, o); // Add the object to the objects collection.
             return (T)o;
         }

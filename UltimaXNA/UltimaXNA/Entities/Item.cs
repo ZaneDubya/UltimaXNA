@@ -27,19 +27,19 @@ namespace UltimaXNA.Entities
     {
         public Mobile Wearer;
 
-		private int _Amount;
+		private int _amount;
 		public int Amount
 		{
-			get { return _Amount; }
+			get { return _amount; }
 			set
 			{
 				// if the amount changes from or to one, we need to redraw the item, because of doubled drawing for amount > 1
-				if ((_Amount == 1 && value != 1) || (_Amount != 1 && value == 1))
+				if ((_amount == 1 && value != 1) || (_amount != 1 && value == 1))
 				{
 					_hasBeenDrawn = false;
 				}
 
-				_Amount = value;
+				_amount = value;
 
 				// if there is a special drawing id for this item we need to redraw it
 				if (_ItemID != DisplayItemID) 
@@ -51,14 +51,9 @@ namespace UltimaXNA.Entities
         public Serial Item_ContainedWithinSerial = 0;
         public int AnimationDisplayID = 0;
 
-        private int _hue;
         public int Hue
         {
-            get { return _hue; }
-            set
-            {
-                _hue = value;
-            }
+            get; internal set;
         }
 
         public Data.ItemData ItemData;
@@ -107,11 +102,7 @@ namespace UltimaXNA.Entities
 			get { return _ItemID == 0xEEA || _ItemID == 0xEED || _ItemID == 0xEF0; }
 		}
 
-        // Inventory position is handled differently in this client than in the legacy UO client.
-        // All items have both an X and a Y position within the container. We use X for the SlotIndex
-        // which this item occupies, and the Y as a Checksum for the X value: if the Y checksum validates,
-        // then we know this item belongs in slot X.
-        public int Item_InvX = 0, Item_InvY = 0, Item_InvSlot = 0;
+        public int SlotIndex = 0;
 
         public Item(Serial serial, IWorld world)
 			: base(serial, world)
@@ -130,21 +121,19 @@ namespace UltimaXNA.Entities
 
 		public bool AtWorldPoint(int x, int y)
 		{
-			if (Movement.DrawPosition.TileX == x && Movement.DrawPosition.TileY == y)
+            if (_movement.Position.X == x && _movement.Position.Y == y)
 				return true;
 			else
 				return false;
 		}
 
-        internal override void Draw(UltimaXNA.TileEngine.MapTile cell, Vector3 position, Vector3 positionOffset)
+        internal override void Draw(MapTile tile, Vector3 offset)
 		{
 			if (Ignored)
-			{
 				return;
-			}
 
-			cell.Add(new TileEngine.MapObjectItem(DisplayItemID, position, Movement.DrawFacing, this, Hue));
-			drawOverheads(cell, position, positionOffset);
+            tile.Add(new TileEngine.MapObjectItem(DisplayItemID, offset, DrawFacing, this, Hue));
+            drawOverheads(tile, offset);
 		}
 
 		public override void Dispose()

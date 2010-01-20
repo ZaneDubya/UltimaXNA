@@ -130,6 +130,7 @@
     <Compile Include="Engine\Engine.cs" />
     <Compile Include="Data\FileManager.cs" />
     <Compile Include="Data\FileIndexClint.cs" />
+    <Compile Include="Entities\Container.cs" />
     <Compile Include="Entities\ContainerItem.cs" />
     <Compile Include="Entities\Corpse.cs" />
     <Compile Include="Entities\DynamicObject.cs" />
@@ -184,6 +185,7 @@
     <Compile Include="UILegacy\Gumplings\CroppedText.cs" />
     <Compile Include="UILegacy\Gumplings\DropDownList.cs" />
     <Compile Include="UILegacy\Gumplings\GumplingDragger.cs" />
+    <Compile Include="UILegacy\Gumplings\ItemGumpling.cs" />
     <Compile Include="UILegacy\Gumplings\Paperdoll.cs" />
     <Compile Include="UILegacy\Gumplings\ScrollBar.cs" />
     <Compile Include="UILegacy\Gumplings\GumpPic.cs" />
