@@ -25,7 +25,7 @@ namespace UltimaXNA.Entities
 {
     public class Item : Entity
     {
-        public Mobile Wearer;
+        public Entity Parent = null;
 
 		private int _amount;
 		public int Amount
@@ -48,7 +48,6 @@ namespace UltimaXNA.Entities
 				}
 			}
 		}
-        public Serial Item_ContainedWithinSerial = 0;
         public int AnimationDisplayID = 0;
 
         public int Hue
@@ -127,6 +126,11 @@ namespace UltimaXNA.Entities
 				return false;
 		}
 
+        public virtual bool PickUp()
+        {
+            return true;
+        }
+
         internal override void Draw(MapTile tile, Vector3 offset)
 		{
 			if (Ignored)
@@ -139,8 +143,10 @@ namespace UltimaXNA.Entities
 		public override void Dispose()
 		{
 			// if is worn, let the wearer know we are disposing.
-			if (Wearer != null)
-				Wearer.UnWearItem(Serial);
+            if (Parent is Mobile)
+                ((Mobile)Parent).RemoveItem(Serial);
+            else if (Parent is Container)
+                ((Container)Parent).RemoveItem(Serial);
 			base.Dispose();
 		}
     }

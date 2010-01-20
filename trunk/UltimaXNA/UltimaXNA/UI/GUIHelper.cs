@@ -127,6 +127,7 @@ namespace UltimaXNA.UI
 
         public static void DropItemIntoSlot(Entity nDestContainer, int nDestSlot)
         {
+            /*
             Item iHeldObject = (Item)MouseHoldingItem;
             Container iDestContainer = (Container)nDestContainer;
 
@@ -145,7 +146,8 @@ namespace UltimaXNA.UI
             }
             else
             {
-                if (iHeldObject.Item_ContainedWithinSerial == iDestContainer.Serial)
+                
+                /*if (iHeldObject.Item_ContainedWithinSerial == iDestContainer.Serial)
                 {
                     // moving between slots in a single container.
                     iDestContainer.AddItem(iHeldObject);
@@ -171,9 +173,9 @@ namespace UltimaXNA.UI
                         }
                         UI.Events.DropItem(iHeldObject, 0, 0, 0, iDestContainer.Serial);
                     }*/
-                }
-            }
-            UI.UIHelper.MouseHoldingItem = null;
+                // }
+            // }
+            // UI.UIHelper.MouseHoldingItem = null;
         }
 
         public static void DropItemOntoGround(int x, int y, int z)
@@ -186,6 +188,7 @@ namespace UltimaXNA.UI
 
         public static void WearItem(Entity nDestMobile, int nDestSlot)
         {
+            /*
             Item iHeldObject = (Item)MouseHoldingItem;
             Mobile iDestMobile = (Mobile)nDestMobile;
 
@@ -197,7 +200,7 @@ namespace UltimaXNA.UI
             }
             Client.UltimaClient.Send(new DropToLayerPacket(iHeldObject.Serial, (byte)nDestSlot, iDestMobile.Serial));
 
-            UI.UIHelper.MouseHoldingItem = null;
+            UI.UIHelper.MouseHoldingItem = null;*/
         }
 
         public static void BuyItemFromVendor(int nVendorSerial, int nItemSerial, int nAmount)

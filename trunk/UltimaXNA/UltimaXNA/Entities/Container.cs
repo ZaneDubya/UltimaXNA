@@ -28,10 +28,7 @@ namespace UltimaXNA.Entities
 {
     class Container : Item
     {
-        static List<Item> NullItems = new List<Item>();
-
         public int UpdateTicker { get; internal set; }
-
         List<Item> _contents;
 
         public List<Item> Contents
@@ -39,7 +36,7 @@ namespace UltimaXNA.Entities
             get
             {
                 if (_contents == null)
-                    _contents = NullItems;
+                    _contents = new List<Item>();
                 return _contents;
             }
         }
@@ -55,15 +52,33 @@ namespace UltimaXNA.Entities
             base.Update(gameTime);
         }
 
+        public override void Dispose()
+        {
+            foreach (Item i in Contents)
+                i.Dispose();
+            base.Dispose();
+        }
+
         public void AddItem(Item item)
         {
-            Contents.Add(item);
+            if (!Contents.Contains(item))
+            {
+                Contents.Add(item);
+                item.Parent = this;
+            }
             UpdateTicker++;
         }
 
-        public void RemoveItem(Item item)
+        public void RemoveItem(Serial serial)
         {
-            Contents.Remove(item);
+            foreach (Item item in Contents)
+            {
+                if (item.Serial == serial)
+                {
+                    Contents.Remove(item);
+                    break;
+                }
+            }
             UpdateTicker++;
         }
     }

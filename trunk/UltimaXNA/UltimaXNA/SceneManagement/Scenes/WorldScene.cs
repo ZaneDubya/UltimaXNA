@@ -50,9 +50,8 @@ namespace UltimaXNA.SceneManagement
         {
             base.Dispose();
             UltimaClient.Disconnect();
-            UserInterface.CloseWindow("ChatFrame");
-            UserInterface.CloseWindow("ChatInput");
             ClientVars.InWorld = false;
+            UI.Reset();
         }
 
         public override void Update(GameTime gameTime)

@@ -128,6 +128,7 @@ namespace UltimaXNA.UILegacy
         }
 
         protected Control _owner = null;
+        public Control Owner { get { return _owner; } }
         protected UIManager _manager = null;
         protected List<Control> _controls = null;
 
@@ -324,6 +325,12 @@ namespace UltimaXNA.UILegacy
         {
             if (_owner != null)
                 _owner.ActivateByHREF(href);
+        }
+
+        public virtual void ActivateByKeyboardReturn(int textID, string text)
+        {
+            if (_owner != null)
+                _owner.ActivateByKeyboardReturn(textID, text);
         }
 
         public virtual void ChangePage(int pageIndex)

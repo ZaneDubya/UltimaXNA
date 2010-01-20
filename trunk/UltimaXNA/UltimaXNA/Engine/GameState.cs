@@ -36,10 +36,9 @@ namespace UltimaXNA
 {
     public static class GameState
     {
-        private static IInputService _input;
-        private static IWorld _worldService;
+        static IInputService _input;
+        static IWorld _worldService;
         static IUIManager _legacyUI;
-        
 
         public static float BackBufferWidth = 0, BackBufferHeight = 0;
         private static bool _MovementFollowsMouse = true,  _ContinuousMoveCheck = false;
@@ -394,13 +393,14 @@ namespace UltimaXNA
                 }
                 // We dropped the icon in the world. This means we are trying to drop the item
                 // into the world. Let's do it!
+                /*
                 if ((UI.UIHelper.MouseHoldingItem).Item_ContainedWithinSerial.IsValid)
                 {
                     // We must manually remove the item from the container, as RunUO does not do this for us.
                     Container iContainer = EntitiesCollection.GetObject<Container>(
                         (UI.UIHelper.MouseHoldingItem).Item_ContainedWithinSerial, false);
                     iContainer.RemoveItem(UI.UIHelper.MouseHoldingItem);
-                }
+                }*/
                 UI.UIHelper.DropItemOntoGround(x, y, z);
             }
         }

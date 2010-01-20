@@ -108,7 +108,7 @@ namespace UltimaXNA.UI
             if (iItem != null)
             {
                 // pick the item up!
-                UIHelper.BuyItemFromVendor(mContainerObject.Wearer.Serial, iItem.Serial, 1);
+                // UIHelper.BuyItemFromVendor(mContainerObject.Wearer.Serial, iItem.Serial, 1);
             }
         }
 

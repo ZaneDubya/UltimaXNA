@@ -31,7 +31,6 @@ namespace UltimaXNA
     {
         Diagnostics.Logger _logService;
         Input.InputState _inputState;
-        EventSystem.EventEngine _eventService;
         SceneManagement.SceneManager _sceneService;
         TileEngine.World _worldService;
         UILegacy.UIManager _LegacyUIService;
@@ -54,9 +53,6 @@ namespace UltimaXNA
 
             _worldService = new TileEngine.World(this);
             Services.AddService<TileEngine.IWorld>(_worldService);
-
-            _eventService = new EventSystem.EventEngine(this);
-            Services.AddService<EventSystem.IEventService>(_eventService);
 
             _LegacyUIService = new UltimaXNA.UILegacy.UIManager(this);
             Services.AddService<UILegacy.IUIManager>(_LegacyUIService);

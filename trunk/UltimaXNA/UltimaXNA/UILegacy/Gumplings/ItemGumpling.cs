@@ -9,11 +9,14 @@ namespace UltimaXNA.UILegacy.Gumplings
     {
         protected Texture2D _texture = null;
         Item _item;
+        public Item Item { get { return _item; } }
+        public Serial ContainerSerial { get { return _item.Parent.Serial; } }
 
         public ItemGumpling(Control owner, Item item)
             : base(owner, 0)
         {
             buildGumpling(item);
+            HandlesMouseInput = true;
         }
 
         void buildGumpling(Item item)
@@ -24,6 +27,12 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         public override void Update(GameTime gameTime)
         {
+            if (_item.IsDisposed)
+            {
+                Dispose();
+                return;
+            }
+
             if (_texture == null)
             {
                 _texture = Data.Art.GetStaticTexture(_item.DisplayItemID);
@@ -47,6 +56,11 @@ namespace UltimaXNA.UILegacy.Gumplings
                 return true;
             else
                 return false;
+        }
+
+        protected override void _mouseDown(int x, int y, UltimaXNA.Input.MouseButtons button)
+        {
+            Interaction.PickUpItem(_item, x, y);
         }
     }
 }

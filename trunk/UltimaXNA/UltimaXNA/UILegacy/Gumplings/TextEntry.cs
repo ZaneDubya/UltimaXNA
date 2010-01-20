@@ -154,6 +154,9 @@ namespace UltimaXNA.UILegacy.Gumplings
                     case Keys.Tab:
                         _owner.ReleaseKeyboardInput(this);
                         break;
+                    case Keys.Enter:
+                        _owner.ActivateByKeyboardReturn(EntryID, Text);
+                        break;
                 }
             }
         }

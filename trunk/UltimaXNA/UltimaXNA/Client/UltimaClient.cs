@@ -535,7 +535,7 @@ namespace UltimaXNA.Client
 
             for (int i = 0; i < p.Equipment.Length; i++)
             {
-                Item item = add_Item(p.Equipment[i].Serial, p.Equipment[i].GumpId, p.Equipment[i].Hue, 0, 0);
+                Item item = add_Item(p.Equipment[i].Serial, p.Equipment[i].GumpId, p.Equipment[i].Hue, p.Serial, 0);
                 mobile.equipment[p.Equipment[i].Layer] = item;
                 if (item.PropertyList.Hash == 0)
                     Send(new QueryPropertiesPacket(item.Serial));
@@ -930,7 +930,7 @@ namespace UltimaXNA.Client
             // If the iItemID >= 0x4000, then this is a multiobject.
             if (p.ItemID <= 0x4000)
             {
-                Item item = add_Item(p.Serial, p.ItemID, p.Hue, unchecked((int)0xFFFFFFFF), p.StackAmount);
+                Item item = add_Item(p.Serial, p.ItemID, p.Hue, 0, p.StackAmount);
                 item.X = p.X;
                 item.Y = p.Y;
                 item.Z = p.Z;
@@ -946,7 +946,7 @@ namespace UltimaXNA.Client
         static void receive_WornItem(IRecvPacket packet)
         {
             WornItemPacket p = (WornItemPacket)packet;
-            Item item = add_Item(p.Serial, p.ItemId, p.Hue, 0, 0);
+            Item item = add_Item(p.Serial, p.ItemId, p.Hue, p.ParentSerial, 0);
             Mobile u = EntitiesCollection.GetObject<Mobile>(p.ParentSerial, false);
             u.equipment[p.Layer] = item;
             if (item.PropertyList.Hash == 0)
@@ -1110,7 +1110,7 @@ namespace UltimaXNA.Client
             return iConstruct;
         }
 
-        private static Item add_Item(Serial serial, int itemID, int nHue, int containerSerial, int amount)
+        private static Item add_Item(Serial serial, int itemID, int nHue, Serial parentSerial, int amount)
         {
             Item item;
             if (itemID == 0x2006)
@@ -1129,8 +1129,6 @@ namespace UltimaXNA.Client
             item.Amount = amount;
             item.ItemID = itemID;
             item.Hue = nHue;
-            item.Item_ContainedWithinSerial = containerSerial;
-
             return item;
         }
     }

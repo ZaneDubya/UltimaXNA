@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using UltimaXNA.Extensions;
 using UltimaXNA.Input;
+using UltimaXNA.Entities;
 
 namespace UltimaXNA.UILegacy
 {
@@ -14,6 +15,8 @@ namespace UltimaXNA.UILegacy
     {
         IUIManager _manager = null;
 
+        Item holdingItem;
+        Point holdingOffset;
         bool _isHolding = false;
         public bool IsHolding
         {
@@ -26,7 +29,9 @@ namespace UltimaXNA.UILegacy
                 _isHolding = value;
             }
         }
-
+        public Item HoldingItem { get { return holdingItem; } }
+        public Point HoldingOffset { get { return holdingOffset; } }
+        public Texture2D HoldingTexture { get { return Data.Art.GetStaticTexture(holdingItem.DisplayItemID); } }
         bool _isTargeting = false;
         public bool IsTargeting
         {
@@ -64,6 +69,18 @@ namespace UltimaXNA.UILegacy
             _manager = manager;
         }
 
+        public void PickUpItem(Item item, int x, int y)
+        {
+            IsHolding = true;
+            holdingItem = item;
+            holdingOffset = new Point(x, y);
+        }
+
+        public void DropHolding()
+        {
+            IsHolding = false;
+        }
+
         public void Draw(ExtendedSpriteBatch sb, Vector2 position)
         {
             Vector2 cursorOffset = Vector2.Zero;
@@ -72,14 +89,21 @@ namespace UltimaXNA.UILegacy
             int cursorHue = 0;
             Texture2D cursorTexture = null;
 
-            if (_isHolding)
+            if (IsHolding)
             {
-                // holding something.
-                cursorOffset = new Vector2(0, 0);
-                sourceRect = new Rectangle(0, 0, 64, 64);
-                // this.Texture = UIHelper.ItemIcon(((Item)UIHelper.MouseHoldingItem));
+                // Draw the item you're holding first.
+                cursorOffset = new Vector2(holdingOffset.X, holdingOffset.Y);
+                cursorTexture = HoldingTexture;
+                cursorHue = holdingItem.Hue;
+                sourceRect = new Rectangle(0, 0, cursorTexture.Width, cursorTexture.Height);
+                sb.Draw(cursorTexture, position - cursorOffset, sourceRect, cursorHue, false);
+                // then set the data for the hang which holds it.
+                cursorOffset = new Vector2(1, 1);
+                cursorTextureID = 8305;
+                cursorTexture = Data.Art.GetStaticTexture(cursorTextureID);
+                sourceRect = new Rectangle(1, 1, cursorTexture.Width - 2, cursorTexture.Height - 2);
             }
-            else if (_isTargeting)
+            else if (IsTargeting)
             {
                 cursorOffset = new Vector2(13, 13);
                 sourceRect = new Rectangle(1, 1, 46, 34);

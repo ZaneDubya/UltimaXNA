@@ -140,7 +140,6 @@ namespace UltimaXNA.UILegacy
 
         private void buildGump(string[] gumpPieces, string[] gumpLines)
         {
-            _manager.DebugMessage_Clear();
             int currentGUMPPage = 0;
 
             for (int i = 0; i < gumpPieces.Length; i++)
