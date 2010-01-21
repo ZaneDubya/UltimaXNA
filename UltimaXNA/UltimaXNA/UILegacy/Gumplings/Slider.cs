@@ -78,7 +78,7 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_gumpBar[0], new Vector2(Area.X, Area.Y), 0, false);
+            spriteBatch.Draw(_gumpBar[0], Position, 0, false);
             spriteBatch.DrawTiled(_gumpBar[1], new Rectangle(Area.X + _gumpBar[0].Width, Area.Y, BarWidth - _gumpBar[2].Width - _gumpBar[0].Width, _gumpBar[1].Height), 0, false);
             spriteBatch.Draw(_gumpBar[2], new Vector2(Area.X + BarWidth - _gumpBar[2].Width, Area.Y), 0, false);
             spriteBatch.Draw(_gumpSlider, new Vector2(Area.X + _sliderX, Area.Y), 0, false);

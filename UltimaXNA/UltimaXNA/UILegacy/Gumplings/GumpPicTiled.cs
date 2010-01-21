@@ -51,7 +51,7 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_bgGump, new Rectangle(Area.X, Area.Y, Area.Width, Area.Height), new Rectangle(0, 0, Area.Width, Area.Height), 0, false);
+            spriteBatch.Draw(_bgGump, new Rectangle(X, Y, Area.Width, Area.Height), new Rectangle(0, 0, Area.Width, Area.Height), 0, false);
             base.Draw(spriteBatch);
         }
     }

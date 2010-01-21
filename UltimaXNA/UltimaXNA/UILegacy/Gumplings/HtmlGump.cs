@@ -91,13 +91,13 @@ namespace UltimaXNA.UILegacy.Gumplings
                 if (r.Index == _hrefOver)
                 {
                     if (_clicked)
-                        spriteBatch.Draw(_texture, new Vector2(Area.X + r.Area.X, Area.Y + r.Area.Y), r.Area, r.Data.DownHue, false);
+                        spriteBatch.Draw(_texture, new Vector2(X + r.Area.X, Y + r.Area.Y), r.Area, r.Data.DownHue, false);
                     else
-                        spriteBatch.Draw(_texture, new Vector2(Area.X + r.Area.X, Area.Y + r.Area.Y), r.Area, r.Data.OverHue, false);
+                        spriteBatch.Draw(_texture, new Vector2(X + r.Area.X, Y + r.Area.Y), r.Area, r.Data.OverHue, false);
                 }
                 else
                 {
-                    spriteBatch.Draw(_texture, new Vector2(Area.X + r.Area.X, Area.Y + r.Area.Y), r.Area, r.Data.UpHue, true);
+                    spriteBatch.Draw(_texture, new Vector2(X + r.Area.X, Y + r.Area.Y), r.Area, r.Data.UpHue, true);
                 }
             }
             

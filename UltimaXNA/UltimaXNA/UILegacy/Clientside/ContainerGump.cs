@@ -23,7 +23,7 @@ namespace UltimaXNA.UILegacy.Clientside
             _item = (Container)containerItem;
 
             AddGumpling(new Gumplings.GumpPicContainer(this, 0, 0, 0, _data.GumpID, 0));
-            _tickerText = (HtmlGump)AddGumpling(new HtmlGump(this, 0, 50, 50, 50, 50, 0, 0, string.Empty));
+            _tickerText = (HtmlGump)AddGumpling(new HtmlGump(this, 0, 50, 50, 0, 0, 0, 0, string.Empty));
         }
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
@@ -32,7 +32,7 @@ namespace UltimaXNA.UILegacy.Clientside
             if (_updateTicker != _item.UpdateTicker)
             {
                 _updateTicker = _item.UpdateTicker;
-                _tickerText.Text = _updateTicker.ToString();
+                _tickerText.Text = string.Format("Update#{0}", _updateTicker);
                 // delete any items in our pack that are no longer in the container.
                 List<Control> gumplingsToRemove = new List<Control>();
                 foreach (Control c in _controls)
