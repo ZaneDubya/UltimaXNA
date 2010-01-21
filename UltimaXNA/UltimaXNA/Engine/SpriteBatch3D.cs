@@ -285,6 +285,7 @@ namespace UltimaXNA
             Game.GraphicsDevice.RenderState.DepthBufferEnable = true;
             Game.GraphicsDevice.RenderState.AlphaBlendEnable = true;
             Game.GraphicsDevice.RenderState.AlphaTestEnable = true;
+            // Game.GraphicsDevice.RenderState.FillMode = FillMode.WireFrame;
             Game.GraphicsDevice.SamplerStates[0].MagFilter = TextureFilter.None;
             Game.GraphicsDevice.SamplerStates[0].MinFilter = TextureFilter.None;
             Game.GraphicsDevice.SamplerStates[0].MipFilter = TextureFilter.None;

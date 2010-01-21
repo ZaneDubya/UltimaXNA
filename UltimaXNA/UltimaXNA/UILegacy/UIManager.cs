@@ -194,8 +194,8 @@ namespace UltimaXNA.UILegacy
             }
 
             // Draw debug message
-            if (GameState.DebugMessage != null)
-                DEBUG_DrawText(new Vector2(5, 5), GameState.DebugMessage + Environment.NewLine + _DEBUG_TEXT(gameTime));
+            if (ClientVars.DebugMessage != null)
+                DEBUG_DrawText(new Vector2(5, 5), ClientVars.DebugMessage + Environment.NewLine + _DEBUG_TEXT(gameTime));
 
             // Draw the cursor
             _cursor.Draw(_spriteBatch, _input.CurrentMousePosition);

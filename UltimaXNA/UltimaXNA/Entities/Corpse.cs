@@ -39,13 +39,10 @@ namespace UltimaXNA.Entities
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            // if (_corpseFrame != 0.999f)
-            // {
-                _hasBeenDrawn = false;
-                _corpseFrame += ((float)gameTime.ElapsedGameTime.Milliseconds / 500f);
-                if (_corpseFrame >= 1f)
-                    _corpseFrame = 0.999f;
-            // }
+            HasBeenDrawn = false;
+            _corpseFrame += ((float)gameTime.ElapsedGameTime.Milliseconds / 500f);
+            if (_corpseFrame >= 1f)
+                _corpseFrame = 0.999f;
         }
 
         internal override void Draw(MapTile tile, Vector3 offset)

@@ -562,5 +562,32 @@ namespace UltimaXNA
                 return iAddress;
             }
         }
+
+        public static Direction DirectionFromVectors(Vector2 fromPosition, Vector2 toPosition)
+        {
+            double Angle = Math.Atan2(toPosition.Y - fromPosition.Y, toPosition.X - fromPosition.X);
+            if (Angle < 0)
+                Angle = Math.PI + (Math.PI + Angle);
+            double piPerSegment = (Math.PI * 2f) / 8f;
+            double segmentValue = (Math.PI * 2f) / 16f;
+            int direction = int.MaxValue;
+
+            for (int i = 0; i < 8; i++)
+            {
+                if (Angle >= segmentValue && Angle <= (segmentValue + piPerSegment))
+                {
+                    direction = i + 1;
+                    break;
+                }
+                segmentValue += piPerSegment;
+            }
+
+            if (direction == int.MaxValue)
+                direction = 0;
+
+            direction = (direction >= 7) ? (direction - 7) : (direction + 1);
+
+            return (Direction)direction;
+        }
     }
 }

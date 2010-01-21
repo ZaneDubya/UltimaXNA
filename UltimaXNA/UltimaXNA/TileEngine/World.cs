@@ -202,8 +202,8 @@ namespace UltimaXNA.TileEngine
             ObjectsRendered = 0; // Count of objects rendered for statistics and debug
             MouseOverList overList = new MouseOverList(); // List of items for mouse over
 
-            float xOffset = (GameState.BackBufferWidth / 2) - 22;
-            float yOffset = (GameState.BackBufferHeight / 2) - ((Map.GameSize * 44) / 2);
+            float xOffset = (ClientVars.BackBufferWidth / 2) - 22;
+            float yOffset = (ClientVars.BackBufferHeight / 2) - ((Map.GameSize * 44) / 2);
             yOffset += CenterPosition.Z * 4;
             xOffset -= (int)((CenterPosition.Xoffset - CenterPosition.Yoffset) * 22);
             yOffset -= (int)((CenterPosition.Xoffset + CenterPosition.Yoffset) * 22);
@@ -589,9 +589,9 @@ namespace UltimaXNA.TileEngine
                 return false;
             if (right < 0)
                 return false;
-            if (top > GameState.BackBufferHeight)
+            if (top > ClientVars.BackBufferHeight)
                 return false;
-            if (left > GameState.BackBufferWidth)
+            if (left > ClientVars.BackBufferWidth)
                 return false;
             return true;
         }

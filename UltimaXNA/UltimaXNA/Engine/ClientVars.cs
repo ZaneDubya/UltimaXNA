@@ -19,8 +19,59 @@ using UltimaXNA.UILegacy;
 
 namespace UltimaXNA
 {
-    class ClientVars
+    class ClientVars : GameComponent
     {
+        static IInputService Input;
+        static IUIManager UserInterface;
+        static IWorld World;
+        public ClientVars(Game game)
+            : base(game)
+        {
+            Input = Game.Services.GetService<IInputService>();
+            UserInterface = Game.Services.GetService<IUIManager>();
+            World = game.Services.GetService<IWorld>();
+            EngineRunning = true;
+            InWorld = false;
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            BackBufferWidth = Game.GraphicsDevice.PresentationParameters.BackBufferWidth;
+            BackBufferHeight = Game.GraphicsDevice.PresentationParameters.BackBufferHeight;
+            _theTime = gameTime;
+
+            // input for debug variables.
+            if (Input.IsKeyDown(Keys.LeftAlt))
+            {
+                if (Input.IsKeyPress(Keys.D))
+                {
+                    if (!DEBUG_ShowDataRead)
+                        DEBUG_ShowDataRead = true;
+                    else
+                    {
+                        if (!DEBUG_BreakdownDataRead)
+                            DEBUG_BreakdownDataRead = true;
+                        else
+                        {
+                            DEBUG_ShowDataRead = false;
+                            DEBUG_BreakdownDataRead = false;
+                        }
+                    }
+                }
+
+                if (Input.IsKeyPress(Keys.F))
+                    DEBUG_DisplayFPS = Utility.ToggleBoolean(DEBUG_DisplayFPS);
+            }
+
+            updateFPS();
+            base.Update(gameTime);
+        }
+
+        public static float BackBufferWidth = 0, BackBufferHeight = 0;
+
+        public static MouseButtons MouseButton_Interact = MouseButtons.LeftButton;
+        public static MouseButtons MouseButton_Move = MouseButtons.RightButton;
+
         static ServerListPacket _serverListPacket;
         public static ServerListPacket ServerListPacket { get { return _serverListPacket; } set { _serverListPacket = value; } }
 
@@ -91,10 +142,6 @@ namespace UltimaXNA
             set { ((Mobile)EntitiesCollection.GetPlayerObject()).IsWarMode = value; }
         }
         static GameTime _theTime;
-        public static GameTime GameTime
-        {
-            set { _theTime = value; }
-        }
         public static float TheTime
         {
             get { return (float)_theTime.TotalRealTime.TotalSeconds; }
@@ -104,11 +151,91 @@ namespace UltimaXNA
         
         // InWorld allows us to tell when our character object has been loaded in the world.
         public static bool InWorld { get; set; }
-        // Set EngineRunning to false to cause the engine to immediately exit.
-        public static bool EngineRunning { get; set; }
+
+        public static bool EngineRunning { get; set; } // false = engine immediately quits.
         public static bool IsMinimized { get; set; }
 
         public const float SecondsBetweenClickAndPickUp = 0.8f; // this is close to what the legacy client uses.
         public const float SecondsForDoubleClick = 0.5f;
+
+        // Maintain an accurate count of frames per second.
+        static float _FPS = 0, _Frames = 0, _ElapsedSeconds = 0;
+        static bool updateFPS()
+        {
+            _Frames++;
+            _ElapsedSeconds += (float)_theTime.ElapsedRealTime.TotalSeconds;
+            if (_ElapsedSeconds >= .5f)
+            {
+                _FPS = _Frames / _ElapsedSeconds;
+                _ElapsedSeconds = 0;
+                _Frames = 0;
+                return true;
+            }
+            return false;
+        }
+
+        // Debug message - I put a lot of crap in here to test values.
+        // Feel free to add or remove variables.
+        public static bool DEBUG_ShowDataRead = false;
+        public static bool DEBUG_BreakdownDataRead = false;
+        public static bool DEBUG_DisplayFPS = false;
+        public static string DebugMessage { get { return generateDebugMessage(); } }
+        static string generateDebugMessage()
+        {
+            String debugMessage = string.Empty;
+
+            if (DEBUG_DisplayFPS)
+                debugMessage += string.Format("FPS: {0}\n", (int)_FPS);
+
+            if (DEBUG_ShowDataRead)
+            {
+                if (DEBUG_BreakdownDataRead)
+                    debugMessage += Metrics.DataReadBreakdown;
+                else
+                    debugMessage += string.Format("Data Read: {0}\n", Metrics.TotalDataRead.ToString());
+            }
+
+            if (ClientVars.InWorld && !UserInterface.IsMouseOverUI)
+            {
+                debugMessage += string.Format("#Objects: {0}\n", World.ObjectsRendered);
+                debugMessage += string.Format("Warmode: {0}\n", ClientVars.WarMode);
+                if (World.MouseOverObject != null)
+                {
+                    debugMessage += string.Format("OBJECT: {0}\n", World.MouseOverObject.ToString());
+                    if (World.MouseOverObject is MapObjectStatic)
+                    {
+                        debugMessage += string.Format("ArtID: {0}\n", ((MapObjectStatic)World.MouseOverObject).ItemID);
+                    }
+                    else if (World.MouseOverObject is MapObjectMobile)
+                    {
+                        Mobile iUnit = EntitiesCollection.GetObject<Mobile>(World.MouseOverObject.OwnerSerial, false);
+                        if (iUnit != null)
+                            debugMessage += string.Format("Name: {0}\n", iUnit.Name);
+                        debugMessage += string.Format("AnimID: {0}\nSerial: {1}\nHue: {2}",
+                            ((MapObjectMobile)World.MouseOverObject).BodyID, World.MouseOverObject.OwnerSerial, ((MapObjectMobile)World.MouseOverObject).Hue);
+                    }
+                    else if (World.MouseOverObject is MapObjectItem)
+                    {
+                        debugMessage +=
+                            "ArtID: " + ((MapObjectItem)World.MouseOverObject).ItemID + Environment.NewLine +
+                            "Serial: " + World.MouseOverObject.OwnerSerial;
+                    }
+                    debugMessage += " Z: " + World.MouseOverObject.Z;
+                }
+                else
+                {
+                    debugMessage += "OVER: " + "null";
+                }
+                if (World.MouseOverGroundTile != null)
+                {
+                    debugMessage += Environment.NewLine + "GROUND: " + World.MouseOverGroundTile.Position.ToString();
+                }
+                else
+                {
+                    debugMessage += Environment.NewLine + "GROUND: null";
+                }
+            }
+            return debugMessage;
+        }
     }
 }

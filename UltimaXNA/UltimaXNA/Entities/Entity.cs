@@ -32,18 +32,32 @@ namespace UltimaXNA.Entities
         private Dictionary<int, Overhead> _overheads = new Dictionary<int, Overhead>();
         int _lastOverheadIndex = 0;
 
-        protected bool _hasBeenDrawn = false; // if this is false this object will redraw itself in the tileengine.}
+        protected bool _drawn = false; // if this is false this object will redraw itself in the tileengine.}
+        protected bool HasBeenDrawn
+        {
+            get { return _drawn; }
+            set
+            {
+                if ((value == false) && (_drawn == true))
+                {
+                    flushDrawObjects();
+                }
+                _drawn = value;
+            }
+        }
+
+
         bool _Disposed = false; // set this to true to have the object deleted.
         public bool IsDisposed { get { return _Disposed; } protected set { _Disposed = value; } }
 
         IWorld _world;
         protected Movement _movement;
-        public int X { get { return _movement.Position.X; } set { _movement.Position.X = value; } }
-        public int Y { get { return _movement.Position.Y; } set { _movement.Position.Y = value; } }
-        public int Z { get { return _movement.Position.Z; } set { _movement.Position.Z = value; } }
+        public int X { get { return _movement.Position.X; } set { _movement.Position.X = value; HasBeenDrawn = false; } }
+        public int Y { get { return _movement.Position.Y; } set { _movement.Position.Y = value; HasBeenDrawn = false; } }
+        public int Z { get { return _movement.Position.Z; } set { _movement.Position.Z = value; HasBeenDrawn = false; } }
         public Position3D Position { get { return _movement.Position; } }
         public bool GetMoveEvent(ref int direction, ref int sequence, ref int fastwalkkey) { return _movement.GetMoveEvent(ref direction, ref sequence, ref fastwalkkey); }
-        public Direction Facing { get { return _movement.Facing; } set { _movement.Facing = value; } }
+        public Direction Facing { get { return _movement.Facing; } set { _movement.Facing = value; HasBeenDrawn = false; } }
         public void MoveEventAck(int sequence) { _movement.MoveEventAck(sequence); }
         public void MoveEventRej(int sequenceID, int x, int y, int z, int direction) { _movement.MoveEventRej(sequenceID, x, y, z, direction); }
 
@@ -66,12 +80,11 @@ namespace UltimaXNA.Entities
             Serial = serial;
             _movement = new Movement(this, world);
             _world = world;
-            _hasBeenDrawn = false;
         }
 
         public virtual void Update(GameTime gameTime)
         {
-            if ((_movement.RequiresUpdate || _hasBeenDrawn == false) && !_movement.Position.IsNullPosition)
+            if ((_movement.RequiresUpdate || !HasBeenDrawn) && !_movement.Position.IsNullPosition)
             {
                 _movement.Update(gameTime);
 
@@ -84,10 +97,10 @@ namespace UltimaXNA.Entities
                     if (t != null)
                     {
                         this.Draw(t, new Vector3(0, 0, _movement.Position.Z));
-                        _hasBeenDrawn = true;
+                        HasBeenDrawn = true;
                     }
                     else
-                        _hasBeenDrawn = false;
+                        HasBeenDrawn = false;
                 }
                 else
                 {
@@ -99,10 +112,10 @@ namespace UltimaXNA.Entities
                         offset.Y -= _movement.Position.TileY;
                         offset.Z = _movement.Position.Z;
                         this.Draw(t, offset);
-                        _hasBeenDrawn = true;
+                        HasBeenDrawn = true;
                     }
                     else
-                        _hasBeenDrawn = false;
+                        HasBeenDrawn = false;
                 }
             }
 
@@ -128,6 +141,13 @@ namespace UltimaXNA.Entities
                 if (!overhead.Value.IsDisposed)
                     overhead.Value.Draw(tile, position);
             }
+        }
+
+        void flushDrawObjects()
+        {
+            TileEngine.MapTile lastTile = _world.Map.GetMapTile(Position.TileX, Position.TileY);
+            if (lastTile != null)
+                lastTile.FlushObjectsBySerial(Serial);
         }
 
         public virtual void Dispose()
