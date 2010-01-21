@@ -109,7 +109,12 @@ namespace UltimaXNA.Data
 
                     while (start < end)
                     {
-                        *start++ = (ushort)(_index.BinaryReader.ReadUInt16() ^ 0x8000);
+                        uint color = _index.BinaryReader.ReadUInt16();
+                        *start++ = 0xff000000 + (
+                                    ((((color >> 10) & 0x1F) * 0xFF / 0x1F) << 16) |
+                                    ((((color >> 5) & 0x1F) * 0xFF / 0x1F) << 8) |
+                                    (((color & 0x1F) * 0xFF / 0x1F))
+                                    );
                     }
                 }
             }

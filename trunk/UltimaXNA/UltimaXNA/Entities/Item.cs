@@ -35,17 +35,13 @@ namespace UltimaXNA.Entities
 			{
 				// if the amount changes from or to one, we need to redraw the item, because of doubled drawing for amount > 1
 				if ((_amount == 1 && value != 1) || (_amount != 1 && value == 1))
-				{
-					_hasBeenDrawn = false;
-				}
+					HasBeenDrawn = false;
 
 				_amount = value;
 
 				// if there is a special drawing id for this item we need to redraw it
 				if (_ItemID != DisplayItemID) 
-				{
-					_hasBeenDrawn = false;
-				}
+                    HasBeenDrawn = false;
 			}
 		}
         public int AnimationDisplayID = 0;
@@ -64,9 +60,7 @@ namespace UltimaXNA.Entities
             set
             {
 				_ItemID = value;
-				
-                _hasBeenDrawn = false;
-                
+                HasBeenDrawn = false;
                 ItemData = UltimaXNA.Data.TileData.ItemData[_ItemID];
                 AnimationDisplayID = ItemData.AnimID;
             }

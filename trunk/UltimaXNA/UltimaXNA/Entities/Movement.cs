@@ -261,9 +261,7 @@ namespace UltimaXNA.Entities
                 return;
             TileEngine.MapTile lastTile = _world.Map.GetMapTile(Position.TileX, Position.TileY);
             if (lastTile != null)
-            {
                 lastTile.FlushObjectsBySerial(_entity.Serial);
-            }
         }
 
         private Position3D getNextTile(Position3D current, Position3D goal, out Direction facing)

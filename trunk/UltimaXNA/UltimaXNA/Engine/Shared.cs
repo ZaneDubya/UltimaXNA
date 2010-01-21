@@ -21,8 +21,6 @@ using System;
 
 namespace UltimaXNA
 {
-    public delegate void MethodHook();
-
     [Flags]
     public enum TileFlag
     {

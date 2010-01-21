@@ -505,8 +505,11 @@ namespace UltimaXNA.Entities
         {
             for (int i = 0; i <= (int)EquipLayer.LastValid; i++)
             {
-                this[i].Parent = null;
-                this[i] = null;
+                if (this[i] != null)
+                {
+                    this[i].Parent = null;
+                    this[i] = null;
+                }
             }
             m_UpdateTicker++;
         }

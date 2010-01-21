@@ -34,6 +34,7 @@ namespace UltimaXNA
         SceneManagement.SceneManager _sceneService;
         TileEngine.World _worldService;
         UILegacy.UIManager _LegacyUIService;
+        ClientVars _clientVars;
 
         public Engine()
         {
@@ -59,6 +60,9 @@ namespace UltimaXNA
 
             _sceneService = new SceneManagement.SceneManager(this);
             Services.AddService<SceneManagement.ISceneService>(_sceneService);
+
+            _clientVars = new ClientVars(this);
+            Services.AddService<ClientVars>(_clientVars);
 
             InvokeInitializers();
             base.Initialize();
@@ -94,12 +98,11 @@ namespace UltimaXNA
             if (ClientVars.EngineRunning)
             {
                 _inputState.Update(gameTime);
-
                 Client.UltimaClient.Update(gameTime);
-                GameState.Update(gameTime);
                 Entities.EntitiesCollection.Update(gameTime);
                 _sceneService.Update(gameTime);
-                GameState.UpdateAfter(gameTime);
+                _clientVars.Update(gameTime);
+                GameState.Update(gameTime);
             }
         }
 
