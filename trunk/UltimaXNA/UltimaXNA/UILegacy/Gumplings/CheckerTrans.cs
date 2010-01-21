@@ -68,9 +68,9 @@ namespace UltimaXNA.UILegacy.Gumplings
                 _renderedTexture.SetData<Color>(data);
             }
 
-            spriteBatch.Flush();
+            // spriteBatch.Flush();
             // spriteBatch.Begin(SpriteBlendMode.None); !!!
-            spriteBatch.Draw(_renderedTexture, new Rectangle(Area.X, Area.Y, Area.Width, Area.Height), new Rectangle(0, 0, Area.Width, Area.Height), 0, false);
+            spriteBatch.Draw(_renderedTexture, new Rectangle(X, Y, Width, Area.Height), new Rectangle(0, 0, Area.Width, Area.Height), 0, false);
             // spriteBatch.Flush();
 
             base.Draw(spriteBatch);

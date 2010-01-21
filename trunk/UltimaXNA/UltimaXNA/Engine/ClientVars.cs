@@ -91,16 +91,13 @@ namespace UltimaXNA
             set { ((Mobile)EntitiesCollection.GetPlayerObject()).IsWarMode = value; }
         }
         static GameTime _theTime;
-        public static GameTime TheTime
+        public static GameTime GameTime
         {
             set { _theTime = value; }
-            get
-            {
-                if (_theTime == null)
-                    return new GameTime();
-                else
-                    return _theTime;
-            }
+        }
+        public static float TheTime
+        {
+            get { return (float)_theTime.TotalRealTime.TotalSeconds; }
         }
 
         public static Direction CursorDirection { get; internal set; }
@@ -110,5 +107,8 @@ namespace UltimaXNA
         // Set EngineRunning to false to cause the engine to immediately exit.
         public static bool EngineRunning { get; set; }
         public static bool IsMinimized { get; set; }
+
+        public const float SecondsBetweenClickAndPickUp = 0.8f; // this is close to what the legacy client uses.
+        public const float SecondsForDoubleClick = 0.5f;
     }
 }

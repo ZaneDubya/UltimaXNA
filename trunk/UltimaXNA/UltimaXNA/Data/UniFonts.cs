@@ -541,6 +541,7 @@ namespace UltimaXNA.Data
                     else
                     {
                         // this word is too big, so we insert a \n character before the word... and try again.
+                        // !!! What if a single word won't fit on a line. KEEEE-RASH!
                         reader.Characters.Insert(i - word.Count, new HTMLCharacter('\n'));
                         i = i - word.Count - 1;
                         word.Clear();

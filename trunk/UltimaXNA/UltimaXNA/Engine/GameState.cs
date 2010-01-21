@@ -125,7 +125,7 @@ namespace UltimaXNA
                 //     OnUpdate();
             }
 
-            ClientVars.TheTime = gameTime;
+            ClientVars.GameTime = gameTime;
             updateFPS(gameTime);
         }
 

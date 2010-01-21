@@ -31,6 +31,7 @@ namespace UltimaXNA.UILegacy
         protected bool _renderFullScreen = false;
 
         internal MouseButtonEvent OnMouseClick;
+        internal MouseButtonEvent OnMouseDoubleClick;
         internal MouseButtonEvent OnMouseDown;
         internal MouseButtonEvent OnMouseUp;
         internal MouseEvent OnMouseOver;
@@ -341,7 +342,7 @@ namespace UltimaXNA.UILegacy
 
         public void MouseDown(Vector2 position, MouseButtons button)
         {
-            
+            lastClickPosition = position;
             int x = (int)position.X - X - ((_owner != null) ? _owner.X : 0);
             int y = (int)position.Y - Y - ((_owner != null) ? _owner.Y : 0);
             _mouseDown(x, y, button);
@@ -360,6 +361,10 @@ namespace UltimaXNA.UILegacy
 
         public void MouseOver(Vector2 position)
         {
+            // Does not double-click if you move your mouse more than x pixels from where you first clicked.
+            if (Math.Abs(lastClickPosition.X - position.X) + Math.Abs(lastClickPosition.Y - position.Y) > 3)
+                maxTimeForDoubleClick = 0.0f;
+
             int x = (int)position.X - X - ((_owner != null) ? _owner.X : 0);
             int y = (int)position.Y - Y - ((_owner != null) ? _owner.Y : 0);
             _mouseOver(x, y);
@@ -376,13 +381,32 @@ namespace UltimaXNA.UILegacy
                 OnMouseOut(x, y);
         }
 
+        float maxTimeForDoubleClick = 0f;
+        Vector2 lastClickPosition;
+
         public void MouseClick(Vector2 position, MouseButtons button)
         {
             int x = (int)position.X - X - ((_owner != null) ? _owner.X : 0);
             int y = (int)position.Y - Y - ((_owner != null) ? _owner.Y : 0);
+
+            bool doubleClick = false;
+            if (maxTimeForDoubleClick != 0f)
+            {
+                if (ClientVars.TheTime <= maxTimeForDoubleClick)
+                    doubleClick = true;
+            }
+            maxTimeForDoubleClick = ClientVars.TheTime + ClientVars.SecondsForDoubleClick;
+
             _mouseClick(x, y, button);
             if (OnMouseClick != null)
                 OnMouseClick(x, y, button);
+
+            if (doubleClick)
+            {
+                _mouseDoubleClick(x, y, button);
+                if (OnMouseDoubleClick != null)
+                    OnMouseDoubleClick(x, y, button);
+            }
         }
 
         public void KeyboardInput(string keys, List<Keys> specialKeys)
@@ -411,6 +435,11 @@ namespace UltimaXNA.UILegacy
         }
 
         protected virtual void _mouseClick(int x, int y, MouseButtons button)
+        {
+
+        }
+
+        protected virtual void _mouseDoubleClick(int x, int y, MouseButtons button)
         {
 
         }

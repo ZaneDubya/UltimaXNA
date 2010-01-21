@@ -93,7 +93,7 @@ namespace UltimaXNA.UILegacy.Gumplings
                     if (_btnDownClicked)
                         Value = _value + 1;
                 }
-                _timeUntilNextClick -= (float)gameTime.ElapsedRealTime.Milliseconds / 1000f;
+                _timeUntilNextClick -= (float)gameTime.ElapsedRealTime.TotalSeconds / 1000f;
             }
             base.Update(gameTime);
         }

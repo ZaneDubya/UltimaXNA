@@ -27,9 +27,12 @@ namespace UltimaXNA.UILegacy.Clientside
             if (_gump == null || _useLargeMap != ClientVars.MiniMap_LargeFormat)
             {
                 _useLargeMap = ClientVars.MiniMap_LargeFormat;
+                if (_gump != null)
+                    _gump.Dispose();
                 _gump = new GumpPic(this, 0, 0, 0, (_useLargeMap ? 5011 : 5010), 0);
                 _gump.HandlesMouseInput = true;
                 _gump.OnMouseClick = onClickMap;
+                _gump.OnMouseDoubleClick = onDoubleClickMap;
                 _dragger = new GumplingDragger(_gump, this);
                 AddGumpling(_gump);
             }
@@ -47,6 +50,14 @@ namespace UltimaXNA.UILegacy.Clientside
             if (button == MouseButtons.RightButton)
             {
                 Dispose();
+            }
+        }
+
+        void onDoubleClickMap(int x, int y, MouseButtons button)
+        {
+            if (button == MouseButtons.LeftButton)
+            {
+                ClientVars.MiniMap_LargeFormat = Utility.ToggleBoolean(ClientVars.MiniMap_LargeFormat);
             }
         }
     }

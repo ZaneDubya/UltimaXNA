@@ -33,6 +33,16 @@ namespace UltimaXNA
             UltimaClient.Send(new AsciiSpeechPacket(AsciiSpeechPacketTypes.Normal, 0, 0, "ENU", text));
         }
 
+        public static void SingleClick(Item item)
+        {
+            UltimaClient.Send(new SingleClickPacket(item.Serial));
+        }
+
+        public static void DoubleClick(Item item)
+        {
+            UltimaClient.Send(new DoubleClickPacket(item.Serial));
+        }
+
         public static void PickUpItem(Item item, int x, int y)
         {
             if (item.PickUp())
