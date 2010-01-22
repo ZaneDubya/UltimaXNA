@@ -54,8 +54,10 @@ namespace UltimaXNA.Entities
 
         public override void Dispose()
         {
-            foreach (Item i in Contents)
-                i.Dispose();
+            for (int i = 0; i < Contents.Count; i++)
+            {
+                Contents[i].Dispose();
+            }
             base.Dispose();
         }
 

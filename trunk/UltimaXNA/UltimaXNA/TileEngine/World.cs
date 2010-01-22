@@ -45,6 +45,7 @@ namespace UltimaXNA.TileEngine
         MouseOverItem _overGround;
         public MapObject MouseOverObject { get { return (_overObject == null) ? null : _overObject.Object; } }
         public MapObject MouseOverGroundTile { get { return (_overGround == null) ? null : _overGround.Object; } }
+        public const PickTypes DefaultPickType = PickTypes.PickStatics | PickTypes.PickObjects;
         public PickTypes PickType { get; set; }
         #endregion
 
