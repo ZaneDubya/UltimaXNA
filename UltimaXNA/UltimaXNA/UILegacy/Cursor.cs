@@ -161,7 +161,7 @@ namespace UltimaXNA.UILegacy
                 }
                 else
                 {
-                    // not in world. Display a default cursor.
+                    // Over the interface or not in world. Display a default cursor.
                     cursorOffset = new Vector2(1, 1);
                     cursorTextureID = 8305;
                 }

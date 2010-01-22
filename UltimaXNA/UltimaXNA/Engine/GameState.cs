@@ -42,12 +42,12 @@ namespace UltimaXNA
         static IWorld _worldService;
         static IUIManager _legacyUI;
 
-        public static MethodHook OnLeftClick, OnLeftOver, OnRightClick, OnRightOver, OnUpdate;
+        public static MethodHook OnLeftClick, OnRightClick, OnUpdate;
 
-        static bool _MovementFollowsMouse = true,  _ContinuousMoveCheck = false;
+        static bool _ContinuousMoveCheck = false;
         static float _TimeToShowTip = float.MaxValue;
         const float _TimeHoveringBeforeTip = 1.0f;
-        public static PickTypes DefaultPickType = PickTypes.PickStatics | PickTypes.PickObjects;
+
         // Are we asking for a target?
         static int _TargettingType = -1;
         static bool isTargeting
@@ -89,32 +89,13 @@ namespace UltimaXNA
                 // Parse keyboard input.
                 parseKeyboard();
 
-                // Get a pick type for the cursor.
+                // PickType is the kind of objects that will show up as the 'MouseOverObject'
                 if (_legacyUI.IsMouseOverUI)
-                {
                     _worldService.PickType = PickTypes.PickNothing;
-                }
                 else
-                {
-                    // Check to see if we are actively targetting something, or we have normal mouse interaction.
-                    if (isTargeting)
-                    {
-                        // We are targetting. Based on the targetting type, we will either select an object, or a location.
-                        _worldService.PickType = PickTypes.PickEverything;
-                        _worldService.DEBUG_DrawDebug = true;
-                    }
-                    else
-                    {
-                        _worldService.PickType = DefaultPickType;
-                        if (_input.IsMouseButtonRelease(MouseButtons.LeftButton))
-                        {
-                            // We need to pick ground tiles in case we are dropping something.
-                            _worldService.PickType |= PickTypes.PickGroundTiles;
-                        }
-                    }
-                }
+                    _worldService.PickType = PickTypes.PickEverything;
 
-                // Set the cursor direction.
+                // Set the cursor direction
                 ClientVars.CursorDirection = Utility.DirectionFromVectors(new Vector2(400, 300), _input.CurrentMousePosition);
 
                 // Show a popup tip if we have hovered over this item for X seconds.
@@ -124,54 +105,38 @@ namespace UltimaXNA
                     if (_TimeToShowTip >= ClientVars.TheTime && _worldService.MouseOverObject != null)
                         createHoverLabel(_worldService.MouseOverObject);
 
-                // If the movement mouse button has been released, and movementFollowsMouse = true, reset mContinuousMovement.
-                if (_input.IsMouseButtonRelease(ClientVars.MouseButton_Move))
-                    _ContinuousMoveCheck = false;
+                // check for mouse input which relates to the world.
+                if (!_legacyUI.IsMouseOverUI)
+                {
+                    // interaction button.
+                    if (_input.IsMouseButtonPress(ClientVars.MouseButton_Interact))
+                    {
+                        if (isTargeting)
+                            onTargetingButtonDown();
+                        else
+                            onInteractButtonDown();
+                    }
+                    if (_input.IsMouseButtonRelease(ClientVars.MouseButton_Interact))
+                        onInteractButtonUp();
 
-                // If the interaction button has been release, and we are holding anything, we just dropped it.
-                if (_input.IsMouseButtonRelease(ClientVars.MouseButton_Interact))
-                    if (UI.UIHelper.MouseHoldingItem != null)
-                        checkDropItem();
+                    // movement button.
+                    if (_input.IsMouseButtonPress(ClientVars.MouseButton_Move))
+                        onMoveButtonDown();
+                    if (_input.IsMouseButtonRelease(ClientVars.MouseButton_Move))
+                        onMoveButtonUp();
+
+                    // hooks for hidden fun stuff.
+                    if (_input.IsMouseButtonPress(MouseButtons.LeftButton))
+                        if (OnLeftClick != null)
+                            OnLeftClick();
+                    if (_input.IsMouseButtonPress(MouseButtons.RightButton))
+                        if (OnRightClick != null)
+                            OnRightClick();
+                }
 
                 // Changed to leverage movementFollowsMouse interface option -BERT
                 if (_ContinuousMoveCheck)
                     doMovement();
-
-                if (!_legacyUI.IsMouseOverUI)
-                {
-                    // Check if the left mouse button has been pressed. We will either walk to the object under the cursor
-                    // or pick it up, depending on what kind of object we are looking at.
-                    if (_input.IsMouseButtonPress(MouseButtons.LeftButton))
-                    {
-                        doInteractButton();
-                        if (OnLeftClick != null)
-                            OnLeftClick();
-                    }
-                    if (_input.IsMouseButtonPress(MouseButtons.RightButton))
-                    {
-                        doMoveButton();
-                        if (OnRightClick != null)
-                            OnRightClick();
-                    }
-
-                    if (_input.IsMouseButtonDown(MouseButtons.LeftButton))
-                    {
-                        if (OnLeftOver != null)
-                            OnLeftOver();
-                    }
-
-                    if (_input.IsMouseButtonDown(MouseButtons.RightButton))
-                    {
-                        if (OnRightOver != null)
-                            OnRightOver();
-                    }
-                }
-
-                // Check for a move event from the player ...
-                int direction = 0, sequence = 0, key = 0;
-                bool hasMoveEvent = EntitiesCollection.GetPlayerObject().GetMoveEvent(ref direction, ref sequence, ref key);
-                if (hasMoveEvent)
-                    UltimaClient.Send(new MoveRequestPacket((byte)direction, (byte)sequence, key));
 
                 // Show our target's name
                 createHoverLabel(ClientVars.LastTarget);
@@ -180,123 +145,132 @@ namespace UltimaXNA
 
         static void doMovement()
         {
+            // Get the move direction and add the Running offset if the Cursor is far enough away.
             Direction moveDirection = ClientVars.CursorDirection;
             float distanceFromCenterOfScreen = Vector2.Distance(_input.CurrentMousePosition, new Vector2(400, 300));
-            if (distanceFromCenterOfScreen >= 150f)
+            if (distanceFromCenterOfScreen >= 150.0f)
                 moveDirection |= Direction.Running;
 
-            ((Mobile)EntitiesCollection.GetPlayerObject()).Move(moveDirection);
-
-            if (_MovementFollowsMouse)
-                _ContinuousMoveCheck = true;
+            // Tell the player to Move. If the player has a new move event, send a MoveRequestPacket to the server.
+            int direction = 0, sequence = 0, key = 0;
+            Mobile m = (Mobile)EntitiesCollection.GetPlayerObject();
+            m.Move(moveDirection);
+            if (EntitiesCollection.GetPlayerObject().GetMoveEvent(ref direction, ref sequence, ref key))
+                UltimaClient.Send(new MoveRequestPacket((byte)direction, (byte)sequence, key));
         }
 
-        static void doMoveButton()
+        static void onMoveButtonDown()
+        {
+            // keep moving as long as the move button is down.
+            _ContinuousMoveCheck = true;
+        }
+
+        static void onMoveButtonUp()
+        {
+            // If the movement mouse button has been released, stop moving.
+            _ContinuousMoveCheck = false;
+        }
+
+        static void onTargetingButtonDown()
         {
             MapObject mouseOverObject = _worldService.MouseOverObject;
+            if (mouseOverObject == null)
+                return;
 
             // If isTargeting is true, then the target cursor is active and we are waiting for the player to target something.
             // If not, then we are just clicking the mouse and we need to find out if something is under the mouse cursor.
-            if (isTargeting)
+            switch (_TargettingType)
             {
-                switch (_TargettingType)
-                {
-                    case 0:
-                        // Select Object
-                        _worldService.PickType = PickTypes.PickStatics | PickTypes.PickObjects;
-                        mouseTargetingEventObject(mouseOverObject);
-                        break;
-                    case 1:
-                        // Select X, Y, Z
-                        if (mouseOverObject != null)
-                        {
-                            mouseTargetingEventObject(mouseOverObject);
-                        }
-                        else
-                        {
-                            MapObject ground = _worldService.MouseOverGroundTile;
-                            if (ground != null)
-                                mouseTargetingEventXYZ(ground);
-                            else
-                                mouseTargetingCancel();
-                        }
-
-                        break;
-                    default:
-                        throw new Exception("Unknown targetting type!");
-                }
+                case 0:
+                    // Select Object
+                    _worldService.PickType = PickTypes.PickStatics | PickTypes.PickObjects;
+                    mouseTargetingEventObject(mouseOverObject);
+                    break;
+                case 1:
+                    // Select X, Y, Z
+                    mouseTargetingEventXYZ(mouseOverObject);
+                    break;
+                default:
+                    throw new Exception("Unknown targetting type!");
             }
-            else
-            {
-                if (mouseOverObject != null)
-                {
-                    if (mouseOverObject is MapObjectMobile)
-                    {
-                        // Proper action: target this mobile.
-                        ClientVars.LastTarget = mouseOverObject.OwnerSerial;
-                        UltimaClient.Send(new SingleClickPacket(ClientVars.LastTarget));
-                        return;
-                    }
-                    if (mouseOverObject is MapObjectItem)
-                    {
-                        // Proper action: pick it up if possible, as long as this is a press event.
-                        Item item = EntitiesCollection.GetObject<Item>(mouseOverObject.OwnerSerial, false);
-                        if (item.ItemData.Weight != 255)
-                        {
-                            UI.UIHelper.PickUpItem(item);
-                            return;
-                        }
-                    }
-                }
-            }
-            doMovement();
         }
 
-        static void doInteractButton()
+        static void onInteractButtonDown()
         {
-            MapObject o = _worldService.MouseOverObject;
-            if ((o != null) && !(o is MapObjectStatic))
+            // get the object under our mouse cursor. If it is null, exit.
+            MapObject mouseOverObject = _worldService.MouseOverObject;
+            if (mouseOverObject == null)
+                return;
+
+            if (mouseOverObject is MapObjectGround)
             {
-                Entity iObject = EntitiesCollection.GetObject<Entity>(o.OwnerSerial, false);
-                // default option is to simply 'use' this object, although this will doubtless be more complicated in the future.
-                // Perhaps the use option is based on the type of object? Anyways, for right now, we only interact with gameobjects,
-                // and we send a double-click to the server.
-                if (iObject is Item)
+                // we can't interact ground tiles.
+            }
+            else if (mouseOverObject is MapObjectStatic)
+            {
+                // clicking a static should pop up the name of the static.
+            }
+            else if (mouseOverObject is MapObjectItem)
+            {
+                Item entity = (Item)mouseOverObject.OwnerEntity;
+                // click and drag = pick up
+                if (entity.ItemData.Weight != 255)
+                    UI.UIHelper.PickUpItem(entity);
+                // single click = tool tip
+                // double click = use / open
+                // UltimaClient.Send(new DoubleClickPacket(entity.Serial));
+            }
+            else if (mouseOverObject is MapObjectMobile)
+            {
+                // click and drag = pull off status bar
+                // single click = tool tip
+                // single click npc = request context sensitive menu
+                // double click = set last target, open paper doll.
+                // double click self = open paper doll
+                
+                // double click ridable = ride.
+                // single click self while mounted = dismount.
+                Mobile entity = (Mobile)mouseOverObject.OwnerEntity;
+                // ClientVars.LastTarget = entity.Serial;
+                if (entity.Serial == EntitiesCollection.MySerial)
                 {
-                    UltimaClient.Send(new DoubleClickPacket(iObject.Serial));
-                }
-                else if (iObject is PlayerMobile)
-                {
-                    ClientVars.LastTarget = iObject.Serial;
-                    if (iObject.Serial == EntitiesCollection.MySerial)
-                    {
-                        // this is my player.
-                        // if mounted, dismount.
-                        if (((Mobile)iObject).IsMounted)
-                        {
-                            UltimaClient.Send(new DoubleClickPacket(iObject.Serial));
-                        }
-                    }
-                    // else other interaction?
-                }
-                else if (iObject is Mobile)
-                {
-                    // We request a context sensitive menu. This automatically sends a double click if no context menu is handled. See parseContextMenu...
-                    ClientVars.LastTarget = iObject.Serial;
-                    if (ClientVars.WarMode)
-                    {
-                        UltimaClient.Send(new AttackRequestPacket(iObject.Serial));
-                    }
-                    else
-                    {
-                        UltimaClient.Send(new RequestContextMenuPacket(iObject.Serial));
-                    }
+                    // this is my player.
+                    // if mounted, dismount.
+                    if (entity.IsMounted)
+                        UltimaClient.Send(new DoubleClickPacket(entity.Serial));
                 }
                 else
                 {
-                    // do nothing?
+                    // UltimaClient.Send(new SingleClickPacket(ClientVars.LastTarget));
+                    if (ClientVars.WarMode)
+                        UltimaClient.Send(new AttackRequestPacket(entity.Serial));
+                    else
+                        UltimaClient.Send(new RequestContextMenuPacket(entity.Serial));
                 }
+
             }
+            else if (mouseOverObject is MapObjectCorpse)
+            {
+                // click and drag = nothing
+                // single click = tool tip
+                // double click = open loot window.
+                Corpse entity = (Corpse)mouseOverObject.OwnerEntity;
+            }
+            else if (mouseOverObject is MapObjectText)
+            {
+                // clicking on text should somehow indicate the person speaking.
+            }
+            else
+            {
+                throw new Exception("Unknown object type in onInteractButtonDown()");
+            }
+        }
+
+        static void onInteractButtonUp()
+        {
+            // If the interaction button has been released, and we are holding anything, we just dropped it.
+            if (UI.UIHelper.MouseHoldingItem != null)
+                checkDropItem();
         }
 
         static void checkDropItem()
