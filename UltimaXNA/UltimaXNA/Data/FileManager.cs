@@ -43,7 +43,7 @@ namespace UltimaXNA.Data
                 @"Origin Worlds Online\Ultima Online Samurai Empire BETA\3d\1.0", 
                 @"Origin Worlds Online\Ultima Online Samurai Empire\2d\1.0", 
                 @"Origin Worlds Online\Ultima Online Samurai Empire\3d\1.0",
-                @"Electronic Arts\EA Games\Ultima Online Stygain Abyss Classic\",
+                @"Electronic Arts\EA Games\Ultima Online Stygian Abyss Classic",
                 @"Electronic Arts\EA Games\"
             };
 
@@ -110,11 +110,11 @@ namespace UltimaXNA.Data
                 {
                     path = key.GetValue("Install Dir") as string;
 
-                    if (string.IsNullOrEmpty(path) || !File.Exists(path))
+                    if (string.IsNullOrEmpty(path) || !Directory.Exists(path))
                     {
                         path = key.GetValue("InstallDir") as string;
 
-                        if (string.IsNullOrEmpty(path) || !File.Exists(path))
+                        if (string.IsNullOrEmpty(path) || !Directory.Exists(path))
                         {
                             return null;
                         }
