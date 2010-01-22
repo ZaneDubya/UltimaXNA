@@ -122,7 +122,10 @@ namespace UltimaXNA.Entities
 
         public virtual bool PickUp()
         {
-            return true;
+            if (ItemData.Weight == 255)
+                return false;
+            else
+                return true;
         }
 
         internal override void Draw(MapTile tile, Vector3 offset)

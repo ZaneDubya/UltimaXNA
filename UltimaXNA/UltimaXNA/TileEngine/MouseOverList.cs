@@ -152,6 +152,7 @@ namespace UltimaXNA.TileEngine
         public Vector3[] Vertices;
         public Texture2D Texture;
         public Vector3 Position;
+        public Point InTexturePosition;
         public MapObject Object;
 
         internal MouseOverItem(Texture2D nTexture, Vector3 nPosition, MapObject nObject)
@@ -171,10 +172,13 @@ namespace UltimaXNA.TileEngine
             else
             {
                 uint[] iPixel = new uint[1];
-                Texture.GetData<uint>(0,
-                    new Rectangle((int)mousePosition.X - (int)Position.X, (int)mousePosition.Y - (int)Position.Y, 1, 1), iPixel, 0, 1);
+                Rectangle pRect = new Rectangle((int)mousePosition.X - (int)Position.X, (int)mousePosition.Y - (int)Position.Y, 1, 1);
+                Texture.GetData<uint>(0, pRect, iPixel, 0, 1);
                 if (iPixel[0] != 0)
+                {
+                    InTexturePosition = new Point(pRect.X, pRect.Y);
                     return true;
+                }
             }
             return false;
         }

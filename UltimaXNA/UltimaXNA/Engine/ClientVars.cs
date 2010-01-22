@@ -226,9 +226,9 @@ namespace UltimaXNA
                 {
                     debugMessage += "OVER: " + "null";
                 }
-                if (World.MouseOverGroundTile != null)
+                if (World.MouseOverGround != null)
                 {
-                    debugMessage += Environment.NewLine + "GROUND: " + World.MouseOverGroundTile.Position.ToString();
+                    debugMessage += Environment.NewLine + "GROUND: " + World.MouseOverGround.Position.ToString();
                 }
                 else
                 {

@@ -150,6 +150,7 @@
     <Compile Include="Entities\Shared.cs" />
     <Compile Include="Engine\Extensions\CallPriorityComparer.cs" />
     <Compile Include="Engine\GameState.cs" />
+    <Compile Include="InputSystem\ClickState.cs" />
     <Compile Include="Network\Packets\Server\DeleteResultPacket.cs" />
     <Compile Include="SceneManagement\Scenes\CharacterListScene.cs" />
     <Compile Include="SceneManagement\Scenes\CreateCharacterScene.cs" />

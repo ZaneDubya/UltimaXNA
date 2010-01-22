@@ -76,7 +76,7 @@ namespace UltimaXNA.UILegacy
             holdingOffset = new Point(x, y);
         }
 
-        public void DropHolding()
+        public void ClearHolding()
         {
             IsHolding = false;
         }
