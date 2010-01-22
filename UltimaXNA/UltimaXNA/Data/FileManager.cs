@@ -106,15 +106,15 @@ namespace UltimaXNA.Data
 
                 string path = key.GetValue("ExePath") as string;
 
-                if (((path == null) || (path.Length <= 0)) || (!Directory.Exists(path) && !File.Exists(path)))
+                if (string.IsNullOrEmpty(path) || !File.Exists(path))
                 {
                     path = key.GetValue("Install Dir") as string;
 
-                    if (((path == null) || (path.Length <= 0)) || (!Directory.Exists(path) && !File.Exists(path)))
+                    if (string.IsNullOrEmpty(path) || !File.Exists(path))
                     {
                         path = key.GetValue("InstallDir") as string;
 
-                        if (((path == null) || (path.Length <= 0)) || (!Directory.Exists(path) && !File.Exists(path)))
+                        if (string.IsNullOrEmpty(path) || !File.Exists(path))
                         {
                             return null;
                         }
