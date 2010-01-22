@@ -51,7 +51,7 @@ namespace UltimaXNA.UI
         public static void DropItem(Entities.Entity entity, int x, int y, int z, Serial destEntity)
         {
             Item iObject = ((Item)entity);
-            UltimaClient.Send(new DropItemPacket(iObject.Serial, (short)x, (short)y, (byte)z, 0, destEntity));
+            UltimaClient.Send(new DropItemPacket(iObject.Serial, (ushort)x, (ushort)y, (byte)z, 0, destEntity));
         }           
     }
 }

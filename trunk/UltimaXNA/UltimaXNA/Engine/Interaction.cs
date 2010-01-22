@@ -12,6 +12,7 @@ using UltimaXNA.Input;
 using UltimaXNA.Network.Packets.Client;
 using UltimaXNA.TileEngine;
 using UltimaXNA.UILegacy;
+using UltimaXNA.UILegacy.Gumplings;
 
 namespace UltimaXNA
 {
@@ -59,13 +60,22 @@ namespace UltimaXNA
             {
                 Serial containerSerial;
                 int x, y;
-                if (_legacyUI.MouseOverControl is UILegacy.Gumplings.ItemGumpling)
+                if (_legacyUI.MouseOverControl is ItemGumpling)
                 {
-                    containerSerial = ((UILegacy.Gumplings.ItemGumpling)_legacyUI.MouseOverControl).ContainerSerial;
+                    // If we drop onto a container object, drop *inside* the container object.
+                    ItemGumpling g = (ItemGumpling)_legacyUI.MouseOverControl;
+                    if (g.Item.ItemData.Container)
+                    {
+                        containerSerial = g.Item.Serial;
+                        X = Y = 0xFFFF;
+                        Z = 0;
+                    }
+                    else
+                        containerSerial = g.ContainerSerial;
                 }
-                else if (_legacyUI.MouseOverControl is UILegacy.Gumplings.GumpPicContainer)
+                else if (_legacyUI.MouseOverControl is GumpPicContainer)
                 {
-                    containerSerial = ((UILegacy.Gumplings.GumpPicContainer)_legacyUI.MouseOverControl).ContainerSerial;
+                    containerSerial = ((GumpPicContainer)_legacyUI.MouseOverControl).ContainerSerial;
                 }
                 else
                 {
@@ -80,13 +90,22 @@ namespace UltimaXNA
                 if (x > containerBounds.Right - itemTexture.Width) x = containerBounds.Right - itemTexture.Width;
                 if (y < containerBounds.Top) y = containerBounds.Top;
                 if (y > containerBounds.Bottom - itemTexture.Height) y = containerBounds.Bottom - itemTexture.Height;
-                Client.UltimaClient.Send(new DropItemPacket(item.Serial, (short)x, (short)y, 0, 0, containerSerial));
+                Client.UltimaClient.Send(new DropItemPacket(item.Serial, (ushort)x, (ushort)y, 0, 0, containerSerial));
                 _legacyUI.Cursor.ClearHolding();
                 return;
             }
             else
             {
-                Client.UltimaClient.Send(new DropItemPacket(item.Serial, (short)X, (short)Y, (byte)Z, 0, unchecked(Serial.World)));
+                Serial serial;
+                if (_world.MouseOverObject is MapObjectItem && ((Item)_world.MouseOverObject.OwnerEntity).ItemData.Container)
+                {
+                    serial = _world.MouseOverObject.OwnerEntity.Serial;
+                    X = Y = 0xFFFF;
+                    Z = 0;
+                }
+                else
+                    serial = Serial.World;
+                Client.UltimaClient.Send(new DropItemPacket(item.Serial, (ushort)X, (ushort)Y, (byte)Z, 0, serial));
                 _legacyUI.Cursor.ClearHolding();
             }
         }
