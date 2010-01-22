@@ -12,10 +12,10 @@ namespace UltimaXNA.UILegacy.Gumplings
         public Item Item { get { return _item; } }
         public Serial ContainerSerial { get { return _item.Parent.Serial; } }
 
-        bool clickedWaitingForPickUp = false;
+        bool clickedCanDrag = false;
         float pickUpTime; Point clickPoint;
         bool sendClickIfNoDoubleClick = false;
-        float doubleClickTime;
+        float singleClickTime;
 
         public ItemGumpling(Control owner, Item item)
             : base(owner, 0)
@@ -43,13 +43,13 @@ namespace UltimaXNA.UILegacy.Gumplings
                 Size = new Vector2(_texture.Width, _texture.Height);
             }
 
-            if (clickedWaitingForPickUp && ClientVars.TheTime >= pickUpTime)
+            if (clickedCanDrag && ClientVars.TheTime >= pickUpTime)
             {
-                clickedWaitingForPickUp = false;
+                clickedCanDrag = false;
                 Interaction.PickUpItem(_item, clickPoint.X, clickPoint.Y);
             }
 
-            if (sendClickIfNoDoubleClick && ClientVars.TheTime >= doubleClickTime)
+            if (sendClickIfNoDoubleClick && ClientVars.TheTime >= singleClickTime)
             {
                 sendClickIfNoDoubleClick = false;
                 Interaction.SingleClick(_item);
@@ -77,7 +77,7 @@ namespace UltimaXNA.UILegacy.Gumplings
         protected override void _mouseDown(int x, int y, UltimaXNA.Input.MouseButtons button)
         {
             // if click, we wait for a moment before picking it up. This allows a single click.
-            clickedWaitingForPickUp = true;
+            clickedCanDrag = true;
             pickUpTime = ClientVars.TheTime + ClientVars.SecondsBetweenClickAndPickUp;
             clickPoint = new Point(x, y);
         }
@@ -85,20 +85,20 @@ namespace UltimaXNA.UILegacy.Gumplings
         protected override void _mouseOver(int x, int y)
         {
             // if we have not yet picked up the item, AND we've moved more than X pixels total away from the original item, pick it up!
-            if (clickedWaitingForPickUp && (Math.Abs(clickPoint.X - x) + Math.Abs(clickPoint.Y - y) > 3))
+            if (clickedCanDrag && (Math.Abs(clickPoint.X - x) + Math.Abs(clickPoint.Y - y) > 3))
             {
-                clickedWaitingForPickUp = false;
+                clickedCanDrag = false;
                 Interaction.PickUpItem(_item, clickPoint.X, clickPoint.Y);
             }
         }
 
         protected override void _mouseClick(int x, int y, UltimaXNA.Input.MouseButtons button)
         {
-            if (clickedWaitingForPickUp)
+            if (clickedCanDrag)
             {
-                clickedWaitingForPickUp = false;
+                clickedCanDrag = false;
                 sendClickIfNoDoubleClick = true;
-                doubleClickTime = ClientVars.TheTime + ClientVars.SecondsForDoubleClick;
+                singleClickTime = ClientVars.TheTime + ClientVars.SecondsForDoubleClick;
             }
         }
 

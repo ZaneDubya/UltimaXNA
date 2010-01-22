@@ -360,8 +360,8 @@ namespace UltimaXNA.UILegacy
                 {
                     if (Cursor.IsHolding)
                     {
-                        if (iButton == (int)MouseButtons.LeftButton)
-                            Interaction.DropItem(Cursor.HoldingItem, Cursor.HoldingOffset);
+                        if (IsMouseOverUI && iButton == (int)MouseButtons.LeftButton)
+                            Interaction.DropItem(Cursor.HoldingItem, Cursor.HoldingOffset.X, Cursor.HoldingOffset.Y, 0);
                     }
 
                     if (_mouseDownControl[iButton] != null)

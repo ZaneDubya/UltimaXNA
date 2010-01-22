@@ -33,12 +33,12 @@ namespace UltimaXNA
             UltimaClient.Send(new AsciiSpeechPacket(AsciiSpeechPacketTypes.Normal, 0, 0, "ENU", text));
         }
 
-        public static void SingleClick(Item item)
+        public static void SingleClick(Entity item)
         {
             UltimaClient.Send(new SingleClickPacket(item.Serial));
         }
 
-        public static void DoubleClick(Item item)
+        public static void DoubleClick(Entity item)
         {
             UltimaClient.Send(new DoubleClickPacket(item.Serial));
         }
@@ -52,7 +52,7 @@ namespace UltimaXNA
             }
         }
 
-        public static void DropItem(Item item, Point offset)
+        public static void DropItem(Item item, int X, int Y, int Z)
         {
             // drop into container?
             if (_legacyUI.IsMouseOverUI)
@@ -74,21 +74,21 @@ namespace UltimaXNA
                 Container container = EntitiesCollection.GetObject<Container>(containerSerial, false);
                 Rectangle containerBounds = Data.ContainerData.GetData(container.ItemID).Bounds;
                 Texture2D itemTexture = Data.Art.GetStaticTexture(item.DisplayItemID);
-                x = (int)_input.CurrentMousePosition.X - (_legacyUI.MouseOverControl.X + _legacyUI.MouseOverControl.Owner.X) - offset.X;
-                y = (int)_input.CurrentMousePosition.Y - (_legacyUI.MouseOverControl.Y + _legacyUI.MouseOverControl.Owner.Y) - offset.Y;
+                x = (int)_input.CurrentMousePosition.X - (_legacyUI.MouseOverControl.X + _legacyUI.MouseOverControl.Owner.X) - X;
+                y = (int)_input.CurrentMousePosition.Y - (_legacyUI.MouseOverControl.Y + _legacyUI.MouseOverControl.Owner.Y) - Y;
                 if (x < containerBounds.Left) x = containerBounds.Left;
                 if (x > containerBounds.Right - itemTexture.Width) x = containerBounds.Right - itemTexture.Width;
                 if (y < containerBounds.Top) y = containerBounds.Top;
                 if (y > containerBounds.Bottom - itemTexture.Height) y = containerBounds.Bottom - itemTexture.Height;
                 Client.UltimaClient.Send(new DropItemPacket(item.Serial, (short)x, (short)y, 0, 0, containerSerial));
-                _legacyUI.Cursor.DropHolding();
+                _legacyUI.Cursor.ClearHolding();
                 return;
             }
-            /*
-            // _world.MouseOverObject
-            MapObject o = _world.MouseOverObject;
-            Client.UltimaClient.Send(new Network.Packets.Client.DropItemPacket(serial, 
-            _legacyUI.Cursor.DropHolding();*/
+            else
+            {
+                Client.UltimaClient.Send(new DropItemPacket(item.Serial, (short)X, (short)Y, (byte)Z, 0, unchecked(Serial.World)));
+                _legacyUI.Cursor.ClearHolding();
+            }
         }
     }
 }

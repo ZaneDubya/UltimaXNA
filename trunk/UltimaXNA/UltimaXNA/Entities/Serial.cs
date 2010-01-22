@@ -31,6 +31,11 @@ namespace UltimaXNA
             get { return (Serial)0; }
         }
 
+        public static Serial World
+        {
+            get { return (Serial)unchecked((int)0xFFFFFFFF); }
+        }
+
         private int _serial;
 
         private Serial(int serial)

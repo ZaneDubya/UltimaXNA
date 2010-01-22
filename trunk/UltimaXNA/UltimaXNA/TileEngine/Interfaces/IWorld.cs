@@ -34,7 +34,8 @@ namespace UltimaXNA.TileEngine
         void Draw(GameTime gameTime);
 
         MapObject MouseOverObject { get; }
-        MapObject MouseOverGroundTile { get; }
+        MapObject MouseOverGround { get; }
+        Point MouseOverObjectPoint { get; }
         PickTypes PickType { get; set; }
         int ObjectsRendered { get; }
         int PersonalLightning { get; set; }
