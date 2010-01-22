@@ -26,21 +26,108 @@ namespace UltimaXNA.Data
 {
     class FileManager
     {
+        static readonly string[] _knownRegkeys = new string[] { 
+                @"Origin Worlds Online\Ultima Online\KR Legacy Beta", 
+                @"EA Games\Ultima Online: Mondain's Legacy\1.00.0000", 
+                @"Origin Worlds Online\Ultima Online\1.0", 
+                @"Origin Worlds Online\Ultima Online Third Dawn\1.0",
+                @"EA GAMES\Ultima Online Samurai Empire", 
+                @"EA Games\Ultima Online: Mondain's Legacy", 
+                @"EA GAMES\Ultima Online Samurai Empire\1.0", 
+                @"EA GAMES\Ultima Online Samurai Empire\1.00.0000", 
+                @"EA GAMES\Ultima Online: Samurai Empire\1.0", 
+                @"EA GAMES\Ultima Online: Samurai Empire\1.00.0000", 
+                @"EA Games\Ultima Online: Mondain's Legacy\1.0", 
+                @"EA Games\Ultima Online: Mondain's Legacy\1.00.0000", 
+                @"Origin Worlds Online\Ultima Online Samurai Empire BETA\2d\1.0", 
+                @"Origin Worlds Online\Ultima Online Samurai Empire BETA\3d\1.0", 
+                @"Origin Worlds Online\Ultima Online Samurai Empire\2d\1.0", 
+                @"Origin Worlds Online\Ultima Online Samurai Empire\3d\1.0",
+                @"Electronic Arts\EA Games\Ultima Online Stygain Abyss Classic\"
+            };
+
         private static string m_FileDirectory;
+
+        public static bool Is64Bit
+        {
+            get { return IntPtr.Size == 8; } 
+        }
 
         static FileManager()
         {
+            for (int i = 0; i < _knownRegkeys.Length; i++)
+            {
+                string exePath;
+
+                if (Is64Bit)
+                {
+                    exePath = GetExePath(@"Wow6432Node\" + _knownRegkeys[i]);
+                }
+                else
+                {
+                    exePath = GetExePath(_knownRegkeys[i]);
+                }
+
+                if (File.Exists(exePath))
+                {
+                    m_FileDirectory = Path.GetDirectoryName(exePath);
+                }
+            }
+
             // Fix to address different base client install paths -BERT
-            string basePath = @"SOFTWARE\Origin Worlds Online\Ultima Online\";
+            //string basePath = @"SOFTWARE\Origin Worlds Online\Ultima Online\";
 
-            RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(basePath);
+            //RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(basePath);
 
-            registryKey = Registry.LocalMachine.OpenSubKey(basePath + registryKey.GetSubKeyNames()[0]); // assumes only one subkey for the basePath
+            //registryKey = Registry.LocalMachine.OpenSubKey(basePath + registryKey.GetSubKeyNames()[0]); // assumes only one subkey for the basePath
 
-            string exePath = registryKey.GetValue("ExePath") as string;
+            //string exePath = registryKey.GetValue("ExePath") as string;
 
-            if (exePath != null)
-                m_FileDirectory = Path.GetDirectoryName(exePath);
+            //if (exePath != null)
+            //    m_FileDirectory = Path.GetDirectoryName(exePath);
+        }
+
+        private static string GetExePath(string subName)
+        {
+            try
+            {
+                RegistryKey key = Registry.LocalMachine.OpenSubKey(string.Format(@"SOFTWARE\{0}", subName));
+
+                if (key == null)
+                {
+                    key = Registry.CurrentUser.OpenSubKey(string.Format(@"SOFTWARE\{0}", subName));
+
+                    if (key == null)
+                    {
+                        return null;
+                    }
+                }
+
+                string path = key.GetValue("ExePath") as string;
+
+                if (((path == null) || (path.Length <= 0)) || (!Directory.Exists(path) && !File.Exists(path)))
+                {
+                    path = key.GetValue("Install Dir") as string;
+
+                    if (((path == null) || (path.Length <= 0)) || (!Directory.Exists(path) && !File.Exists(path)))
+                    {
+                        return null;
+                    }
+                }
+
+                path = Path.GetDirectoryName(path);
+
+                if ((path == null) || !Directory.Exists(path))
+                {
+                    return null;
+                }
+
+                return path;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         public static string GetFilePath(string name)
