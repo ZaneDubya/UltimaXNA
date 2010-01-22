@@ -50,6 +50,16 @@ namespace UltimaXNA.Data
 
         public unsafe FileIndexClint(string indexFile, string mulFile)
         {
+            if (!FileManager.Exists(indexFile))
+            {
+                throw new FileNotFoundException(indexFile);
+            }
+
+            if (!FileManager.Exists(mulFile))
+            {
+                throw new FileNotFoundException(mulFile);
+            }
+
             using (FileStream stream = FileManager.GetFile(indexFile))
             {
                 this.BinaryReader = new BinaryReader(FileManager.GetFile(mulFile));
