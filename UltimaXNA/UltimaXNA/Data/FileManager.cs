@@ -20,12 +20,15 @@
 using System;
 using System.IO;
 using Microsoft.Win32;
+using UltimaXNA.Diagnostics;
 #endregion
 
 namespace UltimaXNA.Data
 {
     class FileManager
     {
+        static Logger _log = new Logger("FileManager");
+
         static readonly string[] _knownRegkeys = new string[] { 
                 @"Origin Worlds Online\Ultima Online\KR Legacy Beta", 
                 @"EA Games\Ultima Online: Mondain's Legacy\1.00.0000", 
@@ -56,9 +59,13 @@ namespace UltimaXNA.Data
 
         static FileManager()
         {
+            _log.Debug("Looking for UO Installation. Is64Bit = {0}", Is64Bit);
+
             for (int i = 0; i < _knownRegkeys.Length; i++)
             {
                 string exePath;
+
+                _log.Debug("Looking for registry key [{0}].", _knownRegkeys[i]);
 
                 if (Is64Bit)
                 {
@@ -71,21 +78,11 @@ namespace UltimaXNA.Data
 
                 if (Directory.Exists(exePath))
                 {
+                    _log.Debug("Found UO Installation at [{0}].", exePath);
+
                     m_FileDirectory = exePath;
                 }
             }
-
-            // Fix to address different base client install paths -BERT
-            //string basePath = @"SOFTWARE\Origin Worlds Online\Ultima Online\";
-
-            //RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(basePath);
-
-            //registryKey = Registry.LocalMachine.OpenSubKey(basePath + registryKey.GetSubKeyNames()[0]); // assumes only one subkey for the basePath
-
-            //string exePath = registryKey.GetValue("ExePath") as string;
-
-            //if (exePath != null)
-            //    m_FileDirectory = Path.GetDirectoryName(exePath);
         }
 
         private static string GetExePath(string subName)
