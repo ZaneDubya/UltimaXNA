@@ -43,7 +43,8 @@ namespace UltimaXNA.Data
                 @"Origin Worlds Online\Ultima Online Samurai Empire BETA\3d\1.0", 
                 @"Origin Worlds Online\Ultima Online Samurai Empire\2d\1.0", 
                 @"Origin Worlds Online\Ultima Online Samurai Empire\3d\1.0",
-                @"Electronic Arts\EA Games\Ultima Online Stygain Abyss Classic\"
+                @"Electronic Arts\EA Games\Ultima Online Stygain Abyss Classic\",
+                @"Electronic Arts\EA Games\"
             };
 
         private static string m_FileDirectory;
@@ -68,9 +69,9 @@ namespace UltimaXNA.Data
                     exePath = GetExePath(_knownRegkeys[i]);
                 }
 
-                if (File.Exists(exePath))
+                if (Directory.Exists(exePath))
                 {
-                    m_FileDirectory = Path.GetDirectoryName(exePath);
+                    m_FileDirectory = exePath;
                 }
             }
 
