@@ -112,7 +112,12 @@ namespace UltimaXNA.Data
 
                     if (((path == null) || (path.Length <= 0)) || (!Directory.Exists(path) && !File.Exists(path)))
                     {
-                        return null;
+                        path = key.GetValue("InstallDir") as string;
+
+                        if (((path == null) || (path.Length <= 0)) || (!Directory.Exists(path) && !File.Exists(path)))
+                        {
+                            return null;
+                        }
                     }
                 }
 
