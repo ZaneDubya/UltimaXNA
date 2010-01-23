@@ -118,9 +118,12 @@ namespace UltimaXNA.Data
                     }
                 }
 
-                path = Path.GetDirectoryName(path);
+                if (File.Exists(path))
+                {
+                    path = Path.GetDirectoryName(path);
+                }
 
-                if ((path == null) || !Directory.Exists(path))
+                if (string.IsNullOrEmpty(path) || !Directory.Exists(path))
                 {
                     return null;
                 }
@@ -148,6 +151,7 @@ namespace UltimaXNA.Data
             try
             {
                 name = Path.Combine(m_FileDirectory, name);
+                _log.Debug("Checking if file exists [{0}]", name);
 
                 if (File.Exists(name))
                 {
