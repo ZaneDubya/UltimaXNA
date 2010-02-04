@@ -74,6 +74,7 @@ namespace UltimaXNA.UI
             return Texture2D.FromFile(_graphicsDevice, FormCollection.ContentManager.RootDirectory + filepath);
         }
 
+        /*
         public static void Network_SendChat(string nChatText)
         {
             if (nChatText != string.Empty)
@@ -93,6 +94,7 @@ namespace UltimaXNA.UI
                 _queuedChatText.Add(nChatText);
             }
         }
+        */
 
         public static Texture2D MiniMapTexture
         {

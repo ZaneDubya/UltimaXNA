@@ -48,14 +48,8 @@ namespace UltimaXNA.TileEngine
         }
 
         public void CalculateNormals(
-            int NorthWest0,
-            int NorthWest2,
-            int NorthEast0,
-            int NorthEast1,
-            int SouthWest2,
-            int SouthWest3,
-            int SouthEast1,
-            int SouthEast3)
+            int NorthWest0, int NorthWest2, int NorthEast0, int NorthEast1,
+            int SouthWest2, int SouthWest3, int SouthEast1, int SouthEast3)
         {
             Normals[0] = m_CalculateNormal(
                 NorthWest0, this.Surroundings.East,

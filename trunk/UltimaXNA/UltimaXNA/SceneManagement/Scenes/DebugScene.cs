@@ -16,13 +16,9 @@
  *
  ***************************************************************************/
 #region usings
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using UltimaXNA.UI;
-using UltimaXNA.Client;
 using UltimaXNA.Entities;
 #endregion
 
@@ -66,6 +62,19 @@ namespace UltimaXNA.SceneManagement
 
         private void parseKeyboard()
         {
+            if (World.DEBUG_DrawTileOver && Input.IsMouseButtonPress(UltimaXNA.Input.MouseButtons.LeftButton))
+            {
+                int x = (int)World.MouseOverObject.Position.X;
+                int y = (int)World.MouseOverObject.Position.Y;
+                TileEngine.MapTile t = World.Map.GetMapTile(x, y);
+                t.GroundTile.Z++;
+                for (int iy = -1; iy < 2; iy++)
+                    for (int ix = -1; ix < 2; ix++)
+                    {
+                        World.Map.UpdateSurroundings(World.Map.GetMapTile(x + ix, y + iy).GroundTile);
+                    }
+            }
+
             if (Input.IsKeyDown(Keys.Up))
             {
                 _position.X--;
@@ -86,6 +95,12 @@ namespace UltimaXNA.SceneManagement
                 _position.X++;
                 _position.Y--;
             }
+            int z = 0, top = 0, avg = 0;
+            if (World.Map != null)
+            {
+                World.Map.GetAverageZ(_position.X, _position.Y, ref z, ref avg, ref top);
+                _position.Z = z;
+            }
             // alt keys to change debug variables.
             if (Input.IsKeyDown(Keys.LeftAlt))
             {
@@ -93,6 +108,15 @@ namespace UltimaXNA.SceneManagement
                 {
                     World.DEBUG_DrawTileOver = Utility.ToggleBoolean(World.DEBUG_DrawTileOver);
                 }
+            }
+        }
+
+        static void loadDebugAssembly(string filename)
+        {
+            if (System.IO.File.Exists(filename))
+            {
+                System.Reflection.Assembly debugAssembly = System.Reflection.Assembly.LoadFrom(filename);
+                Object o = debugAssembly.CreateInstance("UltimaXNA.UXNADebug", true);
             }
         }
     }

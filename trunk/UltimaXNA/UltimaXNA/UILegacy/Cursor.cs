@@ -55,9 +55,15 @@ namespace UltimaXNA.UILegacy
                             IsHolding = false;
                         }
                     }
+                    else
+                    {
+                        _targetingMulti = -1;
+                    }
                 }
             }
         }
+        int _targetingMulti = -1;
+        public int TargetingMulti { set { _targetingMulti = value; } }
 
         internal bool TrammelHue
         {
@@ -108,6 +114,10 @@ namespace UltimaXNA.UILegacy
                 cursorOffset = new Vector2(13, 13);
                 sourceRect = new Rectangle(1, 1, 46, 34);
                 cursorTexture = Data.Art.GetStaticTexture(8310);
+                if (_targetingMulti != -1)
+                {
+                    // !!! Draw a multi
+                }
             }
             else
             {

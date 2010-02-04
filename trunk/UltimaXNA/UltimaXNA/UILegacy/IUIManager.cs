@@ -13,7 +13,9 @@ namespace UltimaXNA.UILegacy
         bool IsMouseOverUI { get; }
         Cursor Cursor { get; }
         Control MouseOverControl { get; }
-        void DebugMessage_AddLine(string line);
+        void AddMessage_Debug(string line);
+        void AddMessage_Chat(string line);
+        void AddMessage_Chat(string text, int hue, int font);
         Gump AddGump_Server(Serial serial, Serial gumpID, string[] gumplings, string[] lines, int x, int y);
         Gump AddGump_Local(Gump gump, int x, int y);
         Gump AddContainerGump(Entity containerItem, int gumpID);

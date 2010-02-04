@@ -211,7 +211,6 @@ namespace UltimaXNA.TileEngine
 
             for (int ix = 0; ix < Map.GameSize; ix++)
             for (int iy = 0; iy < Map.GameSize; iy++)
-            //foreach (MapTile tile in Map.m_Cells.Values)
             {
                 MapTile tile = Map.GetMapTile(ix + RenderBeginX, iy + RenderBeginY);
                 int x = tile.X - RenderBeginX;
@@ -323,7 +322,7 @@ namespace UltimaXNA.TileEngine
                     {
                         MapObjectStatic staticItem = (MapObjectStatic)mapObject;
 
-                        if (staticItem.Ignored)
+                        if (staticItem.NoDraw)
                             continue;
 
                         Data.Art.GetStaticDimensions(staticItem.ItemID, out width, out height);

@@ -64,13 +64,16 @@ namespace UltimaXNA.SceneManagement
                 return;
             }
 
-            World.CenterPosition = Entities.EntitiesCollection.GetPlayerObject().Position;
-            World.Update(gameTime);
-
-            // Toggle for logout
-            if (Input.IsKeyPress(Keys.Q) && (Input.IsKeyDown(Keys.LeftControl)))
+            if (UltimaClient.IsConnected)
             {
-                SceneManager.CurrentScene = new LoginScene(Game);
+                World.CenterPosition = Entities.EntitiesCollection.GetPlayerObject().Position;
+                World.Update(gameTime);
+
+                // Toggle for logout
+                if (Input.IsKeyPress(Keys.Q) && (Input.IsKeyDown(Keys.LeftControl)))
+                {
+                    SceneManager.CurrentScene = new LoginScene(Game);
+                }
             }
         }
 
