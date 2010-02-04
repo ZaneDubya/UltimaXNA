@@ -113,6 +113,7 @@ namespace UltimaXNA.Client
             PacketRegistry.ServerRelay += receive_ServerRelay;
             PacketRegistry.PlayerMove += receive_PlayerMove;
             PacketRegistry.RequestNameResponse += receive_RequestNameResponse;
+            PacketRegistry.TargetCursorMulti += receive_TargetCursorMulti;
             PacketRegistry.VendorSellList += receive_SellList;
             PacketRegistry.UpdateCurrentHealth += receive_UpdateHealth;
             PacketRegistry.UpdateCurrentMana += receive_UpdateMana;
@@ -327,7 +328,7 @@ namespace UltimaXNA.Client
                 }
                 else
                 {
-                    _LegacyUI.DebugMessage_AddLine(string.Format("Client: Object {0} has no support for a container object!", o.Serial));
+                    _LegacyUI.AddMessage_Debug(string.Format("Client: Object {0} has no support for a container object!", o.Serial));
                 }
             }
         }
@@ -343,7 +344,8 @@ namespace UltimaXNA.Client
         {
             DamagePacket p = (DamagePacket)packet;
             Mobile u = EntitiesCollection.GetObject<Mobile>(p.Serial, false);
-            UI.UIHelper.Chat_AddLine(string.Format("{0} takes {1} damage!", u.Name, p.Damage));
+
+            _LegacyUI.AddMessage_Chat(string.Format("{0} takes {1} damage!", u.Name, p.Damage));
         }
 
         private static void receive_DeathAnimation(IRecvPacket packet)
@@ -440,7 +442,7 @@ namespace UltimaXNA.Client
         private static void receive_GlobalQueueCount(IRecvPacket packet)
         {
             GlobalQueuePacket p = (GlobalQueuePacket)packet;
-            UI.UIHelper.Chat_AddLine("System: There are currently " + p.Count + " available calls in the global queue.");
+            _LegacyUI.AddMessage_Chat("System: There are currently " + p.Count + " available calls in the global queue.");
         }
 
         private static void receive_GraphicEffect(IRecvPacket packet)
@@ -748,7 +750,7 @@ namespace UltimaXNA.Client
         private static void receive_RejectMoveItemRequest(IRecvPacket packet)
         {
             LiftRejectionPacket p = (LiftRejectionPacket)packet;
-            UI.UIHelper.Chat_AddLine("Could not pick up item: " + p.ErrorMessage);
+            _LegacyUI.AddMessage_Chat("Could not pick up item: " + p.ErrorMessage);
         }
 
         private static void receive_RequestNameResponse(IRecvPacket packet)
@@ -856,13 +858,20 @@ namespace UltimaXNA.Client
         private static void receive_TargetCursor(IRecvPacket packet)
         {
             TargetCursorPacket p = (TargetCursorPacket)packet;
-            GameState.MouseTargeting(p.CursorID, p.CommandType);
+            GameState.MouseTargeting((TargetTypes)p.CommandType, p.CursorID);
+        }
+
+        private static void receive_TargetCursorMulti(IRecvPacket packet)
+        {
+            TargetCursorMultiPacket p = (TargetCursorMultiPacket)packet;
+            GameState.MouseTargeting(TargetTypes.MultiPlacement, 0);
+            _LegacyUI.Cursor.TargetingMulti = p.MultiModel;
         }
 
         private static void receive_Time(IRecvPacket packet)
         {
             TimePacket p = (TimePacket)packet;
-            _LegacyUI.DebugMessage_AddLine(string.Format("The current server time is {0}:{1}:{2}", p.Hour, p.Minute, p.Second));
+            _LegacyUI.AddMessage_Chat(string.Format("The current server time is {0}:{1}:{2}", p.Hour, p.Minute, p.Second));
         }
 
         private static void receive_TipNotice(IRecvPacket packet)
@@ -957,12 +966,12 @@ namespace UltimaXNA.Client
 
         static void announce_UnhandledPacket(IRecvPacket packet)
         {
-            _LegacyUI.DebugMessage_AddLine(string.Format("Client: Unhandled {0} [ID:{1}]", packet.Name, packet.Id));
+            _LegacyUI.AddMessage_Debug(string.Format("Client: Unhandled {0} [ID:{1}]", packet.Name, packet.Id));
         }
 
         static void announce_UnhandledPacket(IRecvPacket packet, string addendum)
         {
-            _LegacyUI.DebugMessage_AddLine(string.Format("Client: Unhandled {0} [ID:{1}] {2}", packet.Name, packet.Id, addendum));
+            _LegacyUI.AddMessage_Debug(string.Format("Client: Unhandled {0} [ID:{1}] {2}", packet.Name, packet.Id, addendum));
         }
 
         private static void receive_TextMessage(MessageType msgType, string text, int hue, int font, Serial serial, string speakerName)
@@ -978,14 +987,14 @@ namespace UltimaXNA.Client
                     }
                     else
                     {
-                        UI.UIHelper.Chat_AddLine(string.Format("{0} <{1}>", text, hue));
+                        _LegacyUI.AddMessage_Chat(text, font, hue);
                     }
                     break;
                 case MessageType.System:
-                    UI.UIHelper.Chat_AddLine(string.Format("<SYSTEM> {0} <{1}>", text, hue));
+                    _LegacyUI.AddMessage_Chat("<SYSTEM> " + text, font, hue);
                     break;
                 case MessageType.Emote:
-                    UI.UIHelper.Chat_AddLine(string.Format("<EMOTE> {0} <{1}>", text, hue));
+                    _LegacyUI.AddMessage_Chat("<EMOTE> " + text, font, hue);
                     break;
                 case MessageType.Label:
                     if (serial.IsValid)
@@ -1002,32 +1011,32 @@ namespace UltimaXNA.Client
                     }
                     else
                     {
-                        UI.UIHelper.Chat_AddLine(string.Format("<LABEL> {0} <{1}>", text, hue));
+                        _LegacyUI.AddMessage_Chat("<LABEL> " + text, font, hue);
                     }
                     break;
                 case MessageType.Focus: // on player?
-                    UI.UIHelper.Chat_AddLine(string.Format("<FOCUS> {0} <{1}>", text, hue));
+                    _LegacyUI.AddMessage_Chat("<FOCUS> " + text, font, hue);
                     break;
                 case MessageType.Whisper:
-                    UI.UIHelper.Chat_AddLine(string.Format("<WHISPER> {0} <{1}>", text, hue));
+                    _LegacyUI.AddMessage_Chat("<WHISPER> " + text, font, hue);
                     break;
                 case MessageType.Yell:
-                    UI.UIHelper.Chat_AddLine(string.Format("<YELL> {0} <{1}>", text, hue));
+                    _LegacyUI.AddMessage_Chat("<YELL> " + text, font, hue);
                     break;
                 case MessageType.Spell:
-                    UI.UIHelper.Chat_AddLine(string.Format("<SPELL> {0} <{1}>", text, hue));
+                    _LegacyUI.AddMessage_Chat("<SPELL> " + text, font, hue);
                     break;
                 case MessageType.UIld:
-                    UI.UIHelper.Chat_AddLine(string.Format("<UILD> {0} <{1}>", text, hue));
+                    _LegacyUI.AddMessage_Chat("<UILD> " + text, font, hue);
                     break;
                 case MessageType.Alliance:
-                    UI.UIHelper.Chat_AddLine(string.Format("<ALLIANCE> {0} <{1}>", text, hue));
+                    _LegacyUI.AddMessage_Chat("<ALLIANCE> " + text, font, hue);
                     break;
                 case MessageType.Command:
-                    UI.UIHelper.Chat_AddLine(string.Format("<COMMAND> {0} <{1}>", text, hue));
+                    _LegacyUI.AddMessage_Chat("<COMMAND> " + text, font, hue);
                     break;
                 default:
-                    UI.UIHelper.Chat_AddLine("ERROR UNKNOWN COMMAND:" + msgType.ToString());
+                    _LegacyUI.AddMessage_Chat("ERROR UNKNOWN COMMAND:" + msgType.ToString());
                     break;
             }
         }

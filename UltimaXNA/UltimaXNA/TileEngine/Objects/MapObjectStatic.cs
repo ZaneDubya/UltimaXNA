@@ -34,12 +34,15 @@ namespace UltimaXNA.TileEngine
             Data.ItemData itemData = Data.TileData.ItemData[ItemID & 0x3FFF];
             int background = (itemData.Background) ? 0 : 1;
             Threshold = (itemData.Height == 0) ? background : background + 1;
-
+            
+            if (itemData.Name == "nodraw" || ItemID <= 0)
+                _noDraw = true;
         }
 
-        public bool Ignored
+        bool _noDraw = false;
+        public bool NoDraw
         {
-            get { return (ItemID <= 1); }
+            get { return (_noDraw); }
         }
     }
 }

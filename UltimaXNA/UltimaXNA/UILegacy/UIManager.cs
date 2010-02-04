@@ -23,9 +23,8 @@ namespace UltimaXNA.UILegacy
         public int Height { get { return _spriteBatch.GraphicsDevice.Viewport.Height; } }
         public bool IsMsgBoxOpen { get { return (GetGump<Clientside.MsgBox>(0) != null); } }
 
-        List<string> _DEBUG_TEXT_LINES = new List<string>();
-        List<GameTime> _DEBUG_TEXT_TIMES = new List<GameTime>();
-        GameTime _lastGameTime;
+        ChatHandler _debugMessages = new ChatHandler();
+        ChatHandler _chatMessages = new ChatHandler();
 
         Control[] _mouseOverControls = null; // the controls that the mouse is over, 0 index is the frontmost control, last index is the backmost control (always the owner gump).
         Control[] _mouseDownControl = new Control[5]; // the control that the mouse was over when the button was clicked. 5 buttons
@@ -160,14 +159,14 @@ namespace UltimaXNA.UILegacy
 
         public override void Update(GameTime gameTime)
         {
-            _lastGameTime = gameTime;
-
             foreach (Control c in _controls)
             {
                 if (!c.IsInitialized)
                     c.Initialize(this);
                 c.Update(gameTime);
             }
+
+            update_Chat(gameTime);
 
             updateInput();
 
@@ -183,6 +182,19 @@ namespace UltimaXNA.UILegacy
             }
 
             base.Update(gameTime);
+        }
+
+        void update_Chat(GameTime gameTime)
+        {
+            Gump g = this.GetGump<Clientside.ChatWindow>(0);
+            if (g != null)
+            {
+                foreach (ChatLine c in _chatMessages.GetMessages())
+                {
+                    ((Clientside.ChatWindow)g).AddLine(c.Text);
+                }
+                _chatMessages.Clear();
+            }
         }
 
         public override void Draw(GameTime gameTime)
@@ -222,47 +234,32 @@ namespace UltimaXNA.UILegacy
 
         internal string _DEBUG_TEXT(GameTime gameTime)
         {
-            List<int> indexesToRemove = new List<int>();
+            _debugMessages.Update(gameTime, true);
+            List<ChatLine> list = _debugMessages.GetMessages();
+
             string s = string.Empty;
-
-            for (int i = 0; i < _DEBUG_TEXT_LINES.Count; i++)
+            
+            foreach (ChatLine c in list)
             {
-                if (_DEBUG_TEXT_TIMES[i].TotalRealTime.Ticks == 0)
-                {
-                    _DEBUG_TEXT_TIMES[i] = new GameTime(gameTime.TotalRealTime, gameTime.ElapsedRealTime, gameTime.TotalGameTime, gameTime.ElapsedGameTime);
-                }
-
-                if (gameTime.TotalRealTime.TotalSeconds - _DEBUG_TEXT_TIMES[i].TotalRealTime.TotalSeconds >= 10.0f)
-                {
-                    indexesToRemove.Add(i);
-                }
-                else
-                {
-                    s += _DEBUG_TEXT_LINES[i] + Environment.NewLine;
-                }
-            }
-
-            for (int i = 0; i < indexesToRemove.Count; i++)
-            {
-                _DEBUG_TEXT_LINES.RemoveAt(indexesToRemove[i] - i);
-                _DEBUG_TEXT_TIMES.RemoveAt(indexesToRemove[i] - i);
+                s += c.Text + Environment.NewLine;
             }
 
             return s;
         }
 
-        public void DebugMessage_AddLine(string line)
+        public void AddMessage_Debug(string line)
         {
-            Gump g = this.GetGump<Clientside.ChatWindow>(0);
-            if (g == null)
-            {
-                _DEBUG_TEXT_LINES.Add(line);
-                _DEBUG_TEXT_TIMES.Add(new GameTime());
-            }
-            else
-            {
-                ((Clientside.ChatWindow)g).AddLine(line);
-            }
+            _debugMessages.AddMessage(line);
+        }
+
+        public void AddMessage_Chat(string text)
+        {
+            _chatMessages.AddMessage(text);
+        }
+
+        public void AddMessage_Chat(string text, int hue, int font)
+        {
+            _chatMessages.AddMessage(text, hue, font);
         }
 
         internal void AnnounceNewKeyboardHandler(Control c)

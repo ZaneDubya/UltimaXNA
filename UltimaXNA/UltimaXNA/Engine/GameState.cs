@@ -25,7 +25,6 @@ using UltimaXNA.Data;
 using UltimaXNA.Client;
 using UltimaXNA.Entities;
 using UltimaXNA.Extensions;
-using UltimaXNA.UI;
 using UltimaXNA.Input;
 using UltimaXNA.Network.Packets.Client;
 using UltimaXNA.TileEngine;
@@ -35,6 +34,14 @@ using UltimaXNA.UILegacy;
 namespace UltimaXNA
 {
     public delegate void MethodHook();
+
+    public enum TargetTypes
+    {
+        Nothing = -1,
+        Object = 0,
+        Position = 1,
+        MultiPlacement = 2
+    }
 
     static class GameState
     {
@@ -49,16 +56,13 @@ namespace UltimaXNA
         static float _TimeToShowTip = float.MaxValue;
         const float _TimeHoveringBeforeTip = 1.0f;
 
-        // For hidden fun stuff.
-        public static MethodHook OnLeftClick = null, OnRightClick = null, OnUpdate = null;
-
         // Are we asking for a target?
-        static int _TargettingType = -1;
+        static TargetTypes _TargettingType = TargetTypes.Nothing;
         static bool isTargeting
         {
             get
             {
-                if (_TargettingType == -1)
+                if (_TargettingType == TargetTypes.Nothing)
                     return false;
                 else
                     return true;
@@ -75,8 +79,6 @@ namespace UltimaXNA
         public static void Update(GameTime gameTime)
         {
             doUpdate();
-            if (OnUpdate != null)
-                OnUpdate();
         }
 
         static void doUpdate()
@@ -121,14 +123,6 @@ namespace UltimaXNA
                     if (_input.IsMouseButtonRelease(ClientVars.MouseButton_Interact))
                         if (_ui.Cursor.IsHolding)
                             checkDropItem();
-
-                    // hooks for hidden fun stuff.
-                    if (_input.IsMouseButtonPress(MouseButtons.LeftButton))
-                        if (OnLeftClick != null)
-                            OnLeftClick();
-                    if (_input.IsMouseButtonPress(MouseButtons.RightButton))
-                        if (OnRightClick != null)
-                            OnRightClick();
                 }
 
                 // Changed to leverage movementFollowsMouse interface option -BERT
@@ -178,13 +172,17 @@ namespace UltimaXNA
             // If not, then we are just clicking the mouse and we need to find out if something is under the mouse cursor.
             switch (_TargettingType)
             {
-                case 0:
+                case TargetTypes.Object:
                     // Select Object
                     _world.PickType = PickTypes.PickStatics | PickTypes.PickObjects;
                     mouseTargetingEventObject(mouseOverObject);
                     break;
-                case 1:
+                case TargetTypes.Position:
                     // Select X, Y, Z
+                    mouseTargetingEventXYZ(mouseOverObject);
+                    break;
+                case TargetTypes.MultiPlacement:
+                    // select X, Y, Z
                     mouseTargetingEventXYZ(mouseOverObject);
                     break;
                 default:
@@ -394,6 +392,7 @@ namespace UltimaXNA
             _world.LightDirection = _LightRadians;
 
             // Toggle for backpack container window.
+            /*
             if (_input.IsKeyPress(Keys.B) && (_input.IsKeyPress(Keys.LeftControl)))
             {
                 Serial backpackSerial = ((PlayerMobile)EntitiesCollection.GetPlayerObject())
@@ -414,7 +413,7 @@ namespace UltimaXNA
                 else
                     UserInterface.CloseWindow("PaperDoll:" + serial);
             }
-
+            */
             // toggle for warmode
             if (_input.IsKeyPress(Keys.Tab))
             {
@@ -438,15 +437,15 @@ namespace UltimaXNA
             }
         }
 
-        public static void MouseTargeting(int nCursorID, int nTargetingType)
+        public static void MouseTargeting(TargetTypes targetingType, int cursorID)
         {
-            setTargeting(nTargetingType);
+            setTargeting(targetingType);
         }
 
-        static void setTargeting(int targetingType)
+        static void setTargeting(TargetTypes targetingType)
         {
             _TargettingType = targetingType;
-            // Set the UI's cursor to a targetting cursor.
+            // Set the UI's cursor to a targetting cursor. If multi, tell the cursor which multi.
             _ui.Cursor.IsTargeting = true;
             // Stop continuous movement.
             _ContinuousMoveCheck = false;
@@ -455,7 +454,7 @@ namespace UltimaXNA
         static void clearTargeting()
         {
             // Clear our target cursor.
-            _TargettingType = -1;
+            _TargettingType = TargetTypes.Nothing;
             _ui.Cursor.IsTargeting = false;
         }
 
@@ -503,15 +502,6 @@ namespace UltimaXNA
             
             // Clear our target cursor.
             clearTargeting();
-        }
-
-        static void loadDebugAssembly(string filename)
-        {
-            if (System.IO.File.Exists(filename))
-            {
-                System.Reflection.Assembly debugAssembly = System.Reflection.Assembly.LoadFrom(filename);
-                Object o = debugAssembly.CreateInstance("UltimaXNA.UXNADebug", true);
-            }
         }
     }
 }

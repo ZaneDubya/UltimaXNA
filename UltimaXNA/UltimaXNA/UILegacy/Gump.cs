@@ -189,31 +189,31 @@ namespace UltimaXNA.UILegacy
                         break;
 
                     case "checkbox":
-                        _manager.DebugMessage_AddLine("GUMP: Unhandled '" + arguements[0] + "'.");
+                        _manager.AddMessage_Debug("GUMP: Unhandled '" + arguements[0] + "'.");
                         break;
                     case "group":
-                        _manager.DebugMessage_AddLine("GUMP: Unhandled '" + arguements[0] + "'.");
+                        _manager.AddMessage_Debug("GUMP: Unhandled '" + arguements[0] + "'.");
                         break;
                     case "xmfhtmlgump":
-                        _manager.DebugMessage_AddLine("GUMP: Unhandled '" + arguements[0] + "'.");
+                        _manager.AddMessage_Debug("GUMP: Unhandled '" + arguements[0] + "'.");
                         break;
                     case "xmfhtmlgumpcolor":
-                        _manager.DebugMessage_AddLine("GUMP: Unhandled '" + arguements[0] + "'.");
+                        _manager.AddMessage_Debug("GUMP: Unhandled '" + arguements[0] + "'.");
                         break;
                     case "xmfhtmltok":
-                        _manager.DebugMessage_AddLine("GUMP: Unhandled '" + arguements[0] + "'.");
+                        _manager.AddMessage_Debug("GUMP: Unhandled '" + arguements[0] + "'.");
                         break;
                     case "buttontileart":
-                        _manager.DebugMessage_AddLine("GUMP: Unhandled '" + arguements[0] + "'.");
+                        _manager.AddMessage_Debug("GUMP: Unhandled '" + arguements[0] + "'.");
                         break;
                     case "tooltip":
-                        _manager.DebugMessage_AddLine("GUMP: Unhandled '" + arguements[0] + "'.");
+                        _manager.AddMessage_Debug("GUMP: Unhandled '" + arguements[0] + "'.");
                         break;
                     case "radio":
-                        _manager.DebugMessage_AddLine("GUMP: Unhandled '" + arguements[0] + "'.");
+                        _manager.AddMessage_Debug("GUMP: Unhandled '" + arguements[0] + "'.");
                         break;
                     default:
-                        _manager.DebugMessage_AddLine("GUMP: Unknown piece '" + arguements[0] + "'.");
+                        _manager.AddMessage_Debug("GUMP: Unknown piece '" + arguements[0] + "'.");
                         break;
                 }
             }
