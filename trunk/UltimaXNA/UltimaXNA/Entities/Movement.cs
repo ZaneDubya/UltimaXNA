@@ -259,7 +259,7 @@ namespace UltimaXNA.Entities
                 return;
             if (_world.Map == null)
                 return;
-            TileEngine.MapTile lastTile = _world.Map.GetMapTile(Position.TileX, Position.TileY);
+            TileEngine.MapTile lastTile = _world.Map.GetMapTile(Position.TileX, Position.TileY, false);
             if (lastTile != null)
                 lastTile.FlushObjectsBySerial(_entity.Serial);
         }
@@ -331,13 +331,25 @@ namespace UltimaXNA.Entities
         public Vector3 Point { get { return _position; } set { _position = value; } }
         public int X { get { return (int)_position.X; } set { _position.X = value; } }
         public int Y { get { return (int)_position.Y; } set { _position.Y = value; } }
-        public int Z { get { return (int)_position.Z; } set { _position.Z = value; } }
+        public int Z {
+            get
+            {
+                return (int)_position.Z;
+            } 
+            set
+            {
+                _position.Z = value;
+            }
+        }
 
         public int TileX { get { return (Xoffset != 0) ? X + 1 : X; } }
         public int TileY { get { return (Yoffset != 0) ? Y + 1 : Y; } }
         public float Xoffset { get { return _position.X % 1.0f; } }
         public float Yoffset { get { return _position.Y % 1.0f; } }
         public float Zoffset { get { return _position.Z % 1.0f; } }
+        public float Xoffset_Draw { get { return (Xoffset == 0) ? 0 : Xoffset - 1f; } }
+        public float Yoffset_Draw { get { return (Yoffset == 0) ? 0 : Yoffset - 1f; } }
+        public float Zoffset_Draw { get { return Zoffset; } }
 
         public bool IsOffset { get { return (Xoffset != 0) || (Yoffset != 0) || (Zoffset != 0); } }
         public bool IsNullPosition { get { return _position == NullPosition; } }

@@ -25,7 +25,7 @@ namespace UltimaXNA.TileEngine
 {
     public class MapObjectStatic : MapObject
     {
-        public MapObjectStatic(Data.StaticTile staticTile, int sortInfluence, Vector3 position)
+        public MapObjectStatic(Data.StaticTile staticTile, int sortInfluence, Position3D position)
             : base(position)
         {
             ItemID = staticTile.ID;

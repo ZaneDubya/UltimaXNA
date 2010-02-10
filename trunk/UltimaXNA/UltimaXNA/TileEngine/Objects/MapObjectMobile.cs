@@ -30,9 +30,8 @@ namespace UltimaXNA.TileEngine
         public int Facing { get; set; }
         public int Hue { get; set; }
         private float _frame;
-        public Vector3 Offset { get; internal set; }
 
-        public MapObjectMobile(int bodyID, Vector3 position, Vector3 offset, int facing, int action, float frame, Entities.Entity ownerEntity, int layer, int hue)
+        public MapObjectMobile(int bodyID, Position3D position, int facing, int action, float frame, Entities.Entity ownerEntity, int layer, int hue)
             : base(position)
         {
             BodyID = bodyID;
@@ -44,7 +43,6 @@ namespace UltimaXNA.TileEngine
             Hue = hue;
             Tiebreaker = layer;
             OwnerEntity = ownerEntity;
-            Offset = offset;
         }
 
         public int Frame(int nMaxFrames)

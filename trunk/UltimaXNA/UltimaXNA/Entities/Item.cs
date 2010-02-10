@@ -128,13 +128,13 @@ namespace UltimaXNA.Entities
                 return true;
         }
 
-        internal override void Draw(MapTile tile, Vector3 offset)
+        internal override void Draw(MapTile tile, Position3D position)
 		{
 			if (Ignored)
 				return;
 
-            tile.Add(new TileEngine.MapObjectItem(DisplayItemID, offset, DrawFacing, this, Hue));
-            drawOverheads(tile, offset);
+            tile.Add(new TileEngine.MapObjectItem(DisplayItemID, position, DrawFacing, this, Hue));
+            drawOverheads(tile, new Position3D(position.Point));
 		}
 
 		public override void Dispose()

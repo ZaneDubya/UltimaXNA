@@ -45,11 +45,11 @@ namespace UltimaXNA.Entities
                 _corpseFrame = 0.999f;
         }
 
-        internal override void Draw(MapTile tile, Vector3 offset)
+        internal override void Draw(MapTile tile, Position3D position)
         {
             _movement.ClearImmediate();
-            tile.Add(new TileEngine.MapObjectCorpse(offset, DrawFacing, this, Hue, _corpseBody, _corpseFrame));
-            drawOverheads(tile, _movement.Position.Point);
+            tile.Add(new TileEngine.MapObjectCorpse(position, DrawFacing, this, Hue, _corpseBody, _corpseFrame));
+            drawOverheads(tile, new Position3D(_movement.Position.Point));
         }
 
         public void LoadCorpseClothing(List<Network.Packets.Server.CorpseClothingItemWithLayer> items)

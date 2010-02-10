@@ -28,7 +28,7 @@ namespace UltimaXNA.TileEngine
         public int BodyID { get; set; }
         public int FrameIndex { get; set; }
 
-        public MapObjectCorpse(Vector3 position, int direction, Entity ownerEntity, int nHue, int bodyID, float frame)
+        public MapObjectCorpse(Position3D position, int direction, Entity ownerEntity, int nHue, int bodyID, float frame)
             : base(0x2006, position, direction, ownerEntity, nHue)
         {
             BodyID = bodyID;

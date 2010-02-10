@@ -23,7 +23,7 @@ namespace UltimaXNA.UILegacy
 
         public void Flush()
         {
-            _sb.FlushOld(false);
+            _sb.Flush(false);
         }
 
         Vector2 hueVector(int hue, bool hueOnlyGreyPixels)

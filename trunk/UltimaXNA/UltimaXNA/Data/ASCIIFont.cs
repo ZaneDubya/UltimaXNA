@@ -184,62 +184,66 @@ namespace UltimaXNA.Data
                 _graphicsDevice = graphicsDevice;
                 if (path != null)
                 {
+                    byte[] buffer;
+                    int pos = 0;
                     using (BinaryReader reader = new BinaryReader(new FileStream(path, FileMode.Open, FileAccess.Read)))
                     {
-                        for (int i = 0; i < 10; ++i)
+                        buffer = reader.ReadBytes((int)reader.BaseStream.Length);
+                    }
+                    Metrics.ReportDataRead(buffer.Length);
+
+                    for (int i = 0; i < 10; ++i)
+                    {
+                        _fonts[i] = new ASCIIFont();
+
+                        byte header = buffer[pos++];
+
+                        for (int k = 0; k < 224; ++k)
                         {
-                            _fonts[i] = new ASCIIFont();
+                            int width = buffer[pos++];
+                            int height = buffer[pos++];
+                            pos++; // byte delimeter?
 
-                            byte header = reader.ReadByte();
-
-                            for (int k = 0; k < 224; ++k)
+                            if (width > 0 && height > 0)
                             {
-                                byte width = reader.ReadByte();
-                                byte height = reader.ReadByte();
-                                reader.ReadByte(); // delimeter?
-
-                                if (width > 0 && height > 0)
+                                if (height > _fonts[i].Height && k < 96)
                                 {
-                                    if (height > _fonts[i].Height && k < 96)
-                                    {
-                                        _fonts[i].Height = height;
-                                    }
+                                    _fonts[i].Height = height;
+                                }
 
-                                    Texture2D texture = new Texture2D(_graphicsDevice, width, height, 1, TextureUsage.None, SurfaceFormat.Color);
-                                    Color[] pixels = new Color[width * height];
+                                Texture2D texture = new Texture2D(_graphicsDevice, width, height, 1, TextureUsage.None, SurfaceFormat.Color);
+                                Color[] pixels = new Color[width * height];
 
-                                    unsafe
+                                unsafe
+                                {
+                                    fixed (Color* p = pixels)
                                     {
-                                        fixed (Color* p = pixels)
+                                        for (int y = 0; y < height; ++y)
                                         {
-                                            for (int y = 0; y < height; ++y)
+                                            for (int x = 0; x < width; ++x)
                                             {
-                                                for (int x = 0; x < width; ++x)
+                                                short pixel = (short)(buffer[pos++] | (buffer[pos++] << 8));
+                                                Color color = Color.TransparentBlack;
+
+                                                if (pixel != 0)
                                                 {
-                                                    short pixel = (short)(reader.ReadByte() | (reader.ReadByte() << 8));
-                                                    Color color = Color.TransparentBlack;
-
-                                                    if (pixel != 0)
-                                                    {
-                                                        color = new Color();
-                                                        color.A = 255;
-                                                        color.R = (byte)((pixel & 0x7C00) >> 7);
-                                                        color.G = (byte)((pixel & 0x3E0) >> 2);
-                                                        color.B = (byte)((pixel & 0x1F) << 3);
-                                                    }
-
-                                                    p[x + y * width] = color;
+                                                    color = new Color();
+                                                    color.A = 255;
+                                                    color.R = (byte)((pixel & 0x7C00) >> 7);
+                                                    color.G = (byte)((pixel & 0x3E0) >> 2);
+                                                    color.B = (byte)((pixel & 0x1F) << 3);
                                                 }
+
+                                                p[x + y * width] = color;
                                             }
                                         }
                                     }
-
-                                    texture.SetData<Color>(pixels);
-                                    _fonts[i].Characters[k] = texture;
                                 }
+
+                                texture.SetData<Color>(pixels);
+                                _fonts[i].Characters[k] = texture;
                             }
                         }
-                        Metrics.ReportDataRead((int)reader.BaseStream.Position);
                     }
                 }
             }

@@ -27,6 +27,51 @@ namespace UltimaXNA.TileEngine
 {
     public class MiniMap
     {
+
+    }
+
+    class WorldTexture
+    {
+        Texture2D _texture;
+        bool _loaded = false;
+        Map _map;
+        int _x, _y;
+
+        public WorldTexture(GraphicsDevice graphics, Map map, int x, int y)
+        {
+            _texture = new Texture2D(graphics, 64, 64);
+            _map = map;
+            _x = x;
+            _y = y;
+        }
+
+        public Texture2D Texture()
+        {
+            if (!_loaded)
+            {
+                _loaded = true;
+                uint[] buffer = new uint[64 * 64];
+
+                _map.LoadEverything_Override = true;
+
+                for (int i = 0; i < 64; i++)
+                {
+                    int ix = _x + i % 8;
+                    int iy = _y + i / 8;
+                    MapCell c = _map.GetMapCell(ix << 3, iy << 3, true);
+                    c.WriteRadarColors(buffer, i % 8 << 3, i / 8 << 3);
+                }
+
+                _map.LoadEverything_Override = false;
+
+                _texture.SetData<uint>(buffer);
+            }
+            return _texture;
+        }
+    }
+
+    public class MiniMap_DEPRECIATED
+    {
         private Texture2D _texture;
         private GraphicsDevice _graphics;
         private int _lastUpdateTicker;
@@ -37,7 +82,7 @@ namespace UltimaXNA.TileEngine
             return _texture;
         }
 
-        public MiniMap(GraphicsDevice graphics)
+        public MiniMap_DEPRECIATED(GraphicsDevice graphics)
         {
             _graphics = graphics;
         }
@@ -57,7 +102,7 @@ namespace UltimaXNA.TileEngine
                         ushort* cur = pData + ((size /2 - 1) + (size - 1) * y);
                         for (int x = 0; x < map.GameSize; x++)
                         {
-                            MapTile m = map.GetMapTile(renderBeginX + x, renderBeginY + y);
+                            MapTile m = map.GetMapTile(renderBeginX + x, renderBeginY + y, true);
                             int i;
                             for (i = m.Objects.Count - 1; i > 0; i--)
                             {

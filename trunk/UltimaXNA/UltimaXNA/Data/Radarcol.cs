@@ -24,7 +24,9 @@ namespace UltimaXNA.Data
 {
     class Radarcol
     {
-        public static ushort[] Colors = new ushort[0x10000];
+        public static uint[] Colors = new uint[0x10000];
+
+        const int multiplier = 0xFF / 0x1F;
 
         static Radarcol()
         {
@@ -32,7 +34,14 @@ namespace UltimaXNA.Data
             {
                 BinaryReader bin = new BinaryReader(index);
                 for (int i = 0; i < Colors.Length; i++)
-                    Colors[i] = bin.ReadUInt16();
+                {
+                    uint c = bin.ReadUInt16();
+                    Colors[i] = 0xff000000 | (
+                            ((((c >> 10) & 0x1F) * multiplier) << 16) |
+                            ((((c >> 5) & 0x1F) * multiplier) << 8) |
+                            (((c & 0x1F) * multiplier))
+                            );
+                }
                 Metrics.ReportDataRead((int)bin.BaseStream.Position);
             }
         }

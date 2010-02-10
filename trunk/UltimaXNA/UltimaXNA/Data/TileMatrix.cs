@@ -18,6 +18,7 @@
  *
  ***************************************************************************/
 #region usings
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -359,7 +360,7 @@ namespace UltimaXNA.Data
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct StaticTile
+    public struct StaticTile : IComparable<StaticTile>
     {
         public short ID;
         public byte X;
@@ -378,6 +379,11 @@ namespace UltimaXNA.Data
             stringBuilder.AppendLine("Hue: " + Hue.ToString());
 
             return stringBuilder.ToString();
+        }
+
+        public int CompareTo(StaticTile t)
+        {
+            return (Z - t.Z);
         }
     }
 

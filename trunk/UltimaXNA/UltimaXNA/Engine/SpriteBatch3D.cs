@@ -54,9 +54,6 @@ namespace UltimaXNA
             _indexBuffer = CreateIndexBuffer(0x1000);
             _vertexListQueue = new Queue<List<VertexPositionNormalTextureHue>>(256);
             _effect = this.Game.Content.Load<Effect>("Shaders/Basic");
-
-            this.Game.GraphicsDevice.RenderState.AlphaTestEnable = true;
-            this.Game.GraphicsDevice.RenderState.AlphaFunction = CompareFunction.Greater;
         }
 
         private short[] CreateIndexBuffer(int primitiveCount)
@@ -153,7 +150,6 @@ namespace UltimaXNA
                     if (w < texture.Width)
                         sRect.Width = w;
                     DrawSimple(texture, new Vector3(x, y, z), sRect, hue);
-                    // _spriteBatch.Draw(texture, new Vector2(x, y), sRect, color);
                     w -= texture.Width;
                     x += texture.Width;
                 }
@@ -202,7 +198,6 @@ namespace UltimaXNA
                 _drawQueue.Add(texture, vertexList);
             }
 
-            //int position = vertexList.Count; Poplicola 5/9/2009 - commented out this variable, which is never used.
             for (int i = 0; i < vertices.Length; i++)
             {
                 vertexList.Add(vertices[i]);
@@ -229,7 +224,7 @@ namespace UltimaXNA
         private List<VertexPositionNormalTextureHue> vertices = new List<VertexPositionNormalTextureHue>();
         private VertexPositionNormalTextureHue[] verts;
 
-        public void Flush()
+        public void FlushExperimental()
         {
             this.Game.GraphicsDevice.VertexDeclaration = new VertexDeclaration(this.Game.GraphicsDevice, VertexPositionNormalTextureHue.VertexElements);
 
@@ -271,7 +266,9 @@ namespace UltimaXNA
             _drawQueue.Clear();
         }
 
-        public void FlushOld(bool doLighting)
+        public bool DrawWireframe = false;
+
+        public void Flush(bool doLighting)
         {
             this.Game.GraphicsDevice.VertexDeclaration = new VertexDeclaration(this.Game.GraphicsDevice, VertexPositionNormalTextureHue.VertexElements);
 
@@ -285,10 +282,15 @@ namespace UltimaXNA
             Game.GraphicsDevice.RenderState.DepthBufferEnable = true;
             Game.GraphicsDevice.RenderState.AlphaBlendEnable = true;
             Game.GraphicsDevice.RenderState.AlphaTestEnable = true;
-            // Game.GraphicsDevice.RenderState.FillMode = FillMode.WireFrame;
+            Game.GraphicsDevice.RenderState.AlphaFunction = CompareFunction.Greater;
+
             Game.GraphicsDevice.SamplerStates[0].MagFilter = TextureFilter.None;
             Game.GraphicsDevice.SamplerStates[0].MinFilter = TextureFilter.None;
             Game.GraphicsDevice.SamplerStates[0].MipFilter = TextureFilter.None;
+            
+            Game.GraphicsDevice.SamplerStates[0].AddressU = TextureAddressMode.Clamp;
+            Game.GraphicsDevice.SamplerStates[0].AddressV = TextureAddressMode.Clamp;
+
             _effect.Parameters["DrawLighting"].SetValue(doLighting);
             _effect.Parameters["world"].SetValue(WorldMatrix);
 
@@ -298,6 +300,11 @@ namespace UltimaXNA
             while (keyValuePairs.MoveNext())
             {
                 iTexture = keyValuePairs.Current.Key;
+                if (DrawWireframe && isLandscapeTexture(iTexture))
+                    Game.GraphicsDevice.RenderState.FillMode = FillMode.WireFrame;
+                else
+                    Game.GraphicsDevice.RenderState.FillMode = FillMode.Solid;
+
                 iVertexList = keyValuePairs.Current.Value;
                 this.Game.GraphicsDevice.Textures[0] = iTexture;
                 this.Game.GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionNormalTextureHue>(PrimitiveType.TriangleList, iVertexList.ToArray(), 0, iVertexList.Count, _indexBuffer, 0, iVertexList.Count / 2);
@@ -308,6 +315,15 @@ namespace UltimaXNA
             _effect.End();
 
             _drawQueue.Clear();
+        }
+
+        bool isLandscapeTexture(Texture2D t)
+        {
+            if (t.Width == 64 && t.Height == 64)
+                return true;
+            if (t.Width == 128 && t.Height == 128)
+                return true;
+            return false;
         }
     }
 }

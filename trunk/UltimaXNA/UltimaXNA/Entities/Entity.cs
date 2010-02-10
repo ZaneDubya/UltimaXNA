@@ -46,11 +46,11 @@ namespace UltimaXNA.Entities
             }
         }
 
-
         bool _Disposed = false; // set this to true to have the object deleted.
         public bool IsDisposed { get { return _Disposed; } protected set { _Disposed = value; } }
 
         IWorld _world;
+        protected IWorld World { get { return _world; } }
         protected Movement _movement;
         public int X { get { return _movement.Position.X; } set { _movement.Position.X = value; HasBeenDrawn = false; } }
         public int Y { get { return _movement.Position.Y; } set { _movement.Position.Y = value; HasBeenDrawn = false; } }
@@ -91,32 +91,14 @@ namespace UltimaXNA.Entities
                 if (_world.Map == null)
                     return;
 
-                if (!_movement.Position.IsNullPosition && !_movement.Position.IsOffset)
+                TileEngine.MapTile t = _world.Map.GetMapTile(_movement.Position.TileX, _movement.Position.TileY, true);
+                if (t != null)
                 {
-                    TileEngine.MapTile t = _world.Map.GetMapTile(_movement.Position.X, _movement.Position.Y);
-                    if (t != null)
-                    {
-                        this.Draw(t, new Vector3(0, 0, _movement.Position.Z));
-                        HasBeenDrawn = true;
-                    }
-                    else
-                        HasBeenDrawn = false;
+                    this.Draw(t, _movement.Position);
+                    HasBeenDrawn = true;
                 }
                 else
-                {
-                    TileEngine.MapTile t = _world.Map.GetMapTile(_movement.Position.TileX, _movement.Position.TileY);
-                    if (t != null)
-                    {
-                        Vector3 offset = _movement.Position.Point;
-                        offset.X -= _movement.Position.TileX;
-                        offset.Y -= _movement.Position.TileY;
-                        offset.Z = _movement.Position.Z;
-                        this.Draw(t, offset);
-                        HasBeenDrawn = true;
-                    }
-                    else
-                        HasBeenDrawn = false;
-                }
+                    HasBeenDrawn = false;
             }
 
             // handle overheads.
@@ -127,12 +109,12 @@ namespace UltimaXNA.Entities
             }
         }
 
-        internal virtual void Draw(MapTile tile, Vector3 offset)
+        internal virtual void Draw(MapTile tile, Position3D position)
         {
 
         }
 
-        internal void drawOverheads(TileEngine.MapTile tile, Vector3 position)
+        internal void drawOverheads(TileEngine.MapTile tile, Position3D position)
         {
             // base entities do not draw, but they can have overheads, so we draw those.
             position.Z += 20;
@@ -145,7 +127,7 @@ namespace UltimaXNA.Entities
 
         void flushDrawObjects()
         {
-            TileEngine.MapTile lastTile = _world.Map.GetMapTile(Position.TileX, Position.TileY);
+            TileEngine.MapTile lastTile = _world.Map.GetMapTile(Position.TileX, Position.TileY, false);
             if (lastTile != null)
                 lastTile.FlushObjectsBySerial(Serial);
         }

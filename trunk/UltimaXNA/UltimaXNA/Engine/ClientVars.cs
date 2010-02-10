@@ -67,7 +67,7 @@ namespace UltimaXNA
             base.Update(gameTime);
         }
 
-        public static float BackBufferWidth = 0, BackBufferHeight = 0;
+        public static int BackBufferWidth = 0, BackBufferHeight = 0;
 
         public static MouseButtons MouseButton_Interact = MouseButtons.LeftButton;
         public static MouseButtons MouseButton_Move = MouseButtons.RightButton;
@@ -195,7 +195,7 @@ namespace UltimaXNA
                     debugMessage += string.Format("Data Read: {0}\n", Metrics.TotalDataRead.ToString());
             }
 
-            if (ClientVars.InWorld && !UserInterface.IsMouseOverUI)
+            if (ClientVars.Map != -1 && !UserInterface.IsMouseOverUI)
             {
                 debugMessage += string.Format("#Objects: {0}\n", World.ObjectsRendered);
                 debugMessage += string.Format("Warmode: {0}\n", ClientVars.WarMode);

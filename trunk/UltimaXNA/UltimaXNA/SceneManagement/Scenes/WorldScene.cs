@@ -66,7 +66,7 @@ namespace UltimaXNA.SceneManagement
 
             if (UltimaClient.IsConnected)
             {
-                World.CenterPosition = Entities.EntitiesCollection.GetPlayerObject().Position;
+                World.CenterPosition = new Entities.Position3D(Entities.EntitiesCollection.GetPlayerObject().Position.Point);
                 World.Update(gameTime);
 
                 // Toggle for logout

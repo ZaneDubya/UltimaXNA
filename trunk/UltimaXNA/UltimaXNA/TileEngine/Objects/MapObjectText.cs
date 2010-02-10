@@ -28,16 +28,14 @@ namespace UltimaXNA.TileEngine
         public Texture2D Texture { get; internal set; }
         public int Hue;
         public int FontID;
-        public Vector3 Offset { get; internal set; }
 
-        public MapObjectText(Vector3 position, Vector3 offset, Entities.Entity ownerEntity, string text, int hue, int fontID)
+        public MapObjectText(Position3D position, Entities.Entity ownerEntity, string text, int hue, int fontID)
             : base(position)
         {
             Texture = Data.ASCIIText.GetTextTexture(text, 1);
             OwnerEntity = ownerEntity;
             Hue = hue;
             FontID = fontID;
-            Offset = offset;
         }
     }
 }

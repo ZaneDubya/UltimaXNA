@@ -28,7 +28,7 @@ namespace UltimaXNA.TileEngine
         public int Hue { get; set; }
         public int Facing { get; set; }
 
-        public MapObjectItem(int itemID, Vector3 position, int direction, Entity ownerEntity, int hue)
+        public MapObjectItem(int itemID, Position3D position, int direction, Entity ownerEntity, int hue)
             : base(position)
         {
             ItemID = itemID;

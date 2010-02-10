@@ -77,10 +77,10 @@ namespace UltimaXNA.Entities
 
             if (checkDiagonals)
             {
-                MapTile sectorStart = map.GetMapTile(xStart, yStart);
-                MapTile sectorForward = map.GetMapTile(xForward, yForward);
-                MapTile sectorLeft = map.GetMapTile(xLeft, yLeft);
-                MapTile sectorRight = map.GetMapTile(xRight, yRight);
+                MapTile sectorStart = map.GetMapTile(xStart, yStart, false);
+                MapTile sectorForward = map.GetMapTile(xForward, yForward, false);
+                MapTile sectorLeft = map.GetMapTile(xLeft, yLeft, false);
+                MapTile sectorRight = map.GetMapTile(xRight, yRight, false);
                 if ((sectorForward == null) || (sectorStart == null) || (sectorLeft == null) || (sectorRight == null))
                 {
                     newZ = (int)loc.Z;
@@ -126,8 +126,8 @@ namespace UltimaXNA.Entities
             }
             else
             {
-                MapTile sectorStart = map.GetMapTile(xStart, yStart);
-                MapTile sectorForward = map.GetMapTile(xForward, yForward);
+                MapTile sectorStart = map.GetMapTile(xStart, yStart, false);
+                MapTile sectorForward = map.GetMapTile(xForward, yForward, false);
                 if ((sectorForward == null) || (sectorStart == null))
                 {
                     newZ = (int)loc.Z;
@@ -227,8 +227,12 @@ namespace UltimaXNA.Entities
         {
             newZ = 0;
 
-            MapObjectStatic[] tiles = map.GetMapTile(x, y).GetStatics().ToArray();
-            MapObjectGround landTile = map.GetMapTile(x, y).GroundTile;
+            MapTile mapTile = map.GetMapTile(x, y, false);
+            if (mapTile == null)
+                return false;
+
+            MapObjectStatic[] tiles = mapTile.GetStatics().ToArray();
+            MapObjectGround landTile = mapTile.GroundTile;
             Data.LandData landData = Data.TileData.LandData[landTile.ItemID & 0x3FFF];
 
 
@@ -470,7 +474,14 @@ namespace UltimaXNA.Entities
         {
             int xCheck = (int)loc.X, yCheck = (int)loc.Y;
 
-            MapObjectGround landTile = map.GetMapTile(xCheck, yCheck).GroundTile; //map.Tiles.GetLandTile(xCheck, yCheck);
+            MapTile mapTile = map.GetMapTile(xCheck, yCheck, false);
+            if (mapTile == null)
+            {
+                zLow = int.MinValue;
+                zTop = int.MinValue;
+            }
+
+            MapObjectGround landTile = mapTile.GroundTile; //map.Tiles.GetLandTile(xCheck, yCheck);
             int landZ = 0, landCenter = 0, landTop = 0;
             bool landBlocks = (Data.TileData.LandData[landTile.ItemID & 0x3FFF].Flags & TileFlag.Impassable) != 0; //(TileData.LandTable[landTile.ID & 0x3FFF].Flags & TileFlag.Impassable) != 0;
 
@@ -497,7 +508,7 @@ namespace UltimaXNA.Entities
                 isSet = true;
             }
 
-            MapObjectStatic[] staticTiles = map.GetMapTile(xCheck, yCheck).GetStatics().ToArray();
+            MapObjectStatic[] staticTiles = mapTile.GetStatics().ToArray();
 
             for (int i = 0; i < staticTiles.Length; ++i)
             {
