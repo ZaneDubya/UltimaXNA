@@ -36,6 +36,8 @@ namespace UltimaXNA.Data
 
         private static Texture2D[] _cache = new Texture2D[0x10000];
 
+        private const int multiplier = 0xFF / 0x1F;
+
         public static void Initialize(GraphicsDevice graphics)
         {
             _graphicsDevice = graphics;
@@ -55,48 +57,50 @@ namespace UltimaXNA.Data
                 int width = (extra >> 16) & 0xFFFF;
                 int height = extra & 0xFFFF;
 
-                uint[] pixels = new uint[width * height];
                 BinaryReader bin = new BinaryReader(stream);
-
-                int[] lookups = new int[height];
                 int start = (int)bin.BaseStream.Position;
 
-                for (int i = 0; i < height; ++i)
-                    lookups[i] = start + (bin.ReadInt32() * 4);
+                int[] lookups = FileIndexClint.ReadInt32Array(bin, height);
+                ushort[] fileData = FileIndexClint.ReadUInt16Array(bin, length - (height * 2));
+
+                uint[] pixels = new uint[width * height];
 
                 fixed (uint* line = &pixels[0])
                 {
-                    for (int y = 0; y < height; ++y)
+                    fixed (ushort* data = &fileData[0])
                     {
-                        bin.BaseStream.Seek(lookups[y], SeekOrigin.Begin);
-
-                        uint* cur = line + (y * width);
-                        uint* end = cur + (width);
-
-                        while (cur < end)
+                        for (int y = 0; y < height; ++y)
                         {
-                            uint color = bin.ReadUInt16();
-                            uint* next = cur + bin.ReadUInt16();
+                            ushort* dataRef = data + (lookups[y] - height) * 2;
 
-                            if (color == 0)
+                            uint* cur = line + (y * width);
+                            uint* end = cur + width;
+
+                            while (cur < end)
                             {
-                                cur = next;
-                            }
-                            else
-                            {
-                                uint color32 = 0xff000000 + (
-                                    ((((color >> 10) & 0x1F) * 0xFF / 0x1F) << 16) |
-                                    ((((color >> 5) & 0x1F) * 0xFF / 0x1F) << 8) |
-                                    (((color & 0x1F) * 0xFF / 0x1F))
-                                    );
-                                while (cur < next)
-                                    *cur++ = color32;
+                                uint color = *dataRef++;
+                                uint* next = cur + *dataRef++;
+
+                                if (color == 0)
+                                {
+                                    cur = next;
+                                }
+                                else
+                                {
+                                    uint color32 = 0xff000000 + (
+                                        ((((color >> 10) & 0x1F) * multiplier) << 16) |
+                                        ((((color >> 5) & 0x1F) * multiplier) << 8) |
+                                        (((color & 0x1F) * multiplier))
+                                        );
+                                    while (cur < next)
+                                        *cur++ = color32;
+                                }
                             }
                         }
                     }
                 }
 
-                Metrics.ReportDataRead(sizeof(UInt16) * height * width);
+                Metrics.ReportDataRead(length);
 
                 Texture2D texture = new Texture2D(_graphicsDevice, width, height);
                 texture.SetData(pixels);

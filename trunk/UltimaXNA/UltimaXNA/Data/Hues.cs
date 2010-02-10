@@ -32,6 +32,8 @@ namespace UltimaXNA.Data
         private const int _HueTextureWidth = 64; // Each hue is 32 pixels wide, so divided by 32 = 2 hues wide.
         private const int _HueTextureHeight = 2024;
 
+        private const int multiplier = 0xFF / 0x1F;
+
         public static void Initialize(GraphicsDevice graphicsDevice)
         {
             HuesXNA.graphicsDevice = graphicsDevice;
@@ -69,9 +71,9 @@ namespace UltimaXNA.Data
                     {
                         uint color = reader.ReadUInt16();
                         data[currentHue * 32 + i] = 0xff000000 + (
-                            ((((color >> 10) & 0x1F) * 0xFF / 0x1F) << 16) |
-                            ((((color >> 5) & 0x1F) * 0xFF / 0x1F) << 8) |
-                            (((color & 0x1F) * 0xFF / 0x1F))
+                            ((((color >> 10) & 0x1F) * multiplier) << 16) |
+                            ((((color >> 5) & 0x1F) * multiplier) << 8) |
+                            (((color & 0x1F) * multiplier))
                             );
                     }
                     currentHue++;
