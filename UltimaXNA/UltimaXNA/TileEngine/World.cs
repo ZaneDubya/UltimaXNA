@@ -222,14 +222,20 @@ namespace UltimaXNA.TileEngine
             Vector2 hue; // x is the hue. y = 0, no hue. y = 1, total hue.  y = 2, partial hue.
             PickTypes pick;
 
-            for (int ix = 0; ix < Map.GameSize; ix++)
-                for (int iy = 0; iy < Map.GameSize; iy++)
+            int RenderEndX = RenderBeginX + Map.GameSize;
+            int RenderEndY = RenderBeginY + Map.GameSize;
+
+            for (int ix = RenderBeginX; ix < RenderEndX; ix++)
+            {
+                drawPosition.X = (ix - RenderBeginY) * 22 + renderOffsetX;
+                drawPosition.Y = (ix + RenderBeginY) * 22 + renderOffsetY;
+
+                for (int iy = RenderBeginY; iy < RenderEndY; iy++)
                 {
-                    MapTile tile = Map.GetMapTile(ix + RenderBeginX, iy + RenderBeginY, true);
+                    MapTile tile = Map.GetMapTile(ix, iy, true);
                     if (tile == null)
                         continue;
-                    drawPosition.X = (tile.X - tile.Y) * 22 + renderOffsetX;
-                    drawPosition.Y = (tile.X + tile.Y) * 22 + renderOffsetY;
+
                     mapObjects = tile.GetSortedObjects();
 
                     for (int i = 0; i < mapObjects.Count; i++)
@@ -240,7 +246,7 @@ namespace UltimaXNA.TileEngine
                         if (mapObject is MapObjectGround)
                         {
                             if (mapObject.Z >= MaxTerrainAltitude)
-                                continue;
+                                break;
 
                             MapObjectGround groundTile = (MapObjectGround)mapObject;
 
@@ -439,8 +445,11 @@ namespace UltimaXNA.TileEngine
                         SpriteBatch3D.Z += 1000;
                         ObjectsRendered++;
                     }
-                }
 
+                    drawPosition.X -= 22f;
+                    drawPosition.Y += 22f;
+                }
+            }
             // Update the Mouse Over Objects
             _overObject = overList.GetForemostMouseOverItem(_input.CurrentMousePosition);
             _overGround = overList.GetForemostMouseOverItem<MapObjectGround>(_input.CurrentMousePosition);

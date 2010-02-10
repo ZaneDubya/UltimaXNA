@@ -183,9 +183,10 @@ namespace UltimaXNA.Data
                 _dimensions[index - 0x4000] = new ushort[] { (ushort)width, (ushort)height };
             }
 
-            int dataStart = (int)_index.BinaryReader.BaseStream.Position + (height * 2);
+            
             ushort[] lookups = _index.ReadUInt16Array(height);
 
+            int dataStart = (int)_index.BinaryReader.BaseStream.Position + (height * 2);
             int readLength = (getMaxLookup(lookups) + width * 2); // we don't know the length of the last line, so we read width * 2, anticipating worst case compression.
             if (dataStart + readLength * 2 > _index.BinaryReader.BaseStream.Length)
                 readLength = ((int)_index.BinaryReader.BaseStream.Length - dataStart) >> 1;

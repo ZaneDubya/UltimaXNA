@@ -80,5 +80,21 @@ namespace UltimaXNA.Data
             System.Buffer.BlockCopy(tempData, 0, data, 0, count * 2);
             return data;
         }
+
+        public static ushort[] ReadUInt16Array(BinaryReader bin, int count)
+        {
+            byte[] tempData = bin.ReadBytes(count * 2);
+            ushort[] data = new ushort[count];
+            System.Buffer.BlockCopy(tempData, 0, data, 0, count * 2);
+            return data;
+        }
+
+        public static int[] ReadInt32Array(BinaryReader bin, int count)
+        {
+            byte[] tempData = bin.ReadBytes(count * 4);
+            int[] data = new int[count];
+            System.Buffer.BlockCopy(tempData, 0, data, 0, count * 4);
+            return data;
+        }
     }
 }
