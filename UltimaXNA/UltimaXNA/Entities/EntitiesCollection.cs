@@ -156,6 +156,9 @@ namespace UltimaXNA.Entities
                 case "Corpse":
                     e = new Corpse(serial, _world);
                     break;
+                case "Multi":
+                    e = new Multi(serial, _world);
+                    break;
                 default:
                     throw new Exception("Unknown addObject type!");
             }

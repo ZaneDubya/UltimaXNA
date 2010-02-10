@@ -83,10 +83,12 @@ namespace UltimaXNA.TileEngine
         private Position3D _lastCenterPosition = null;
         public int RenderBeginX { get; set; }
         public int RenderBeginY { get; set; }
-        public int MaxRoofAltitude { get; internal set; }
+        public int MaxItemAltitude { get; internal set; }
+        public int MaxTerrainAltitude { get; internal set; }
 
         public bool DEBUG_DrawTileOver { get; set; }
         public bool DEBUG_DrawDebug { get; set; }
+        public bool DEBUG_DrawWireframe { get; set; }
 
         public World(Game game)
         {
@@ -98,8 +100,6 @@ namespace UltimaXNA.TileEngine
             PickType = PickTypes.PickNothing;
             DEBUG_DrawTileOver = false;
             DEBUG_DrawDebug = true;
-            const float iUVMin = .01f;
-            const float iUVMax = .99f;
             _vertexBuffer = new VertexPositionNormalTextureHue[] {
                 new VertexPositionNormalTextureHue(new Vector3(), new Vector3(0, 0, 1), new Vector3(0, 0, 0)),
                 new VertexPositionNormalTextureHue(new Vector3(), new Vector3(0, 0, 1), new Vector3(1, 0, 0)),
@@ -107,10 +107,10 @@ namespace UltimaXNA.TileEngine
                 new VertexPositionNormalTextureHue(new Vector3(), new Vector3(0, 0, 1), new Vector3(1, 1, 0))
             };
             _vertexBufferStretched = new VertexPositionNormalTextureHue[] {
-                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(), new Vector3(iUVMin, iUVMin, 0)),
-                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(), new Vector3(iUVMax, iUVMin, 0)),
-                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(), new Vector3(iUVMin, iUVMax, 0)),
-                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(), new Vector3(iUVMax, iUVMax, 0))
+                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(0, 0, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(1, 0, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(0, 1, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(1, 1, 0))
             };
         }
 
@@ -143,24 +143,30 @@ namespace UltimaXNA.TileEngine
             {
                 if ((Map == null) || (Map.Index != ClientVars.Map))
                     Map = new Map(ClientVars.Map, 40, 0, 0);
+                // Update the Map's position so it loads the tiles we're going to be drawing
+                RenderBeginX = CenterPosition.X - Map.GameSize / 2;
+                RenderBeginY = CenterPosition.Y - Map.GameSize / 2;
+                Map.Update(CenterPosition.X, CenterPosition.Y);
 
-                if (CenterPosition != _lastCenterPosition)
+                // Are we inside (under a roof)? Do not draw tiles above our head.
+                MapTile t = Map.GetMapTile(CenterPosition.X, CenterPosition.Y, true);
+
+                MaxItemAltitude = 255;
+                MaxTerrainAltitude = 255;
+
+                if (t != null)
                 {
-                    RenderBeginX = CenterPosition.X - Map.GameSize / 2;
-                    RenderBeginY = CenterPosition.Y - Map.GameSize / 2;
-                    Map.Update(CenterPosition.X, CenterPosition.Y);
-                    // Are we inside (under a roof)? Do not draw tiles above our head.
-                    if (Map.GetMapTile(CenterPosition.X, CenterPosition.Y).UnderRoof(CenterPosition.Z))
-                    {
-                        MaxRoofAltitude = CenterPosition.Z + 20;
-                    }
-                    else
-                    {
-                        MaxRoofAltitude = 255;
-                    }
+                    bool isUnderRoof, isUnderTerrain;
+                    t.IsUnder(CenterPosition.Z, out isUnderRoof, out isUnderTerrain);
+                    if (isUnderRoof)
+                        MaxItemAltitude = CenterPosition.Z + 20;
+                    if (isUnderTerrain)
+                        MaxTerrainAltitude = -255;
                 }
 
                 _lastCenterPosition = new Position3D(CenterPosition.Point);
+
+                // render_map();
                 render();
             }
         }
@@ -169,7 +175,7 @@ namespace UltimaXNA.TileEngine
         {
             if (ClientVars.Map != -1)
             {
-                _spriteBatch.FlushOld(true);
+                _spriteBatch.Flush(true);
                 if (DEBUG_DrawDebug)
                 {
                     if (_overObject != null)
@@ -193,394 +199,297 @@ namespace UltimaXNA.TileEngine
                 return;
             }
 
-            Vector3 drawPosition = new Vector3();
-            float drawX, drawY;
-            int width, height;
-            MapObject mapObject;
-            List<MapObject> mapObjects;
-            Texture2D texture;
+            _spriteBatch.DrawWireframe = DEBUG_DrawWireframe;
+
+            int renderOffsetX = (ClientVars.BackBufferWidth >> 1) - 22;
+            renderOffsetX -= (int)((CenterPosition.Xoffset - CenterPosition.Yoffset) * 22);
+            renderOffsetX -= (RenderBeginX - RenderBeginY) * 22;
+
+            int renderOffsetY = ((ClientVars.BackBufferHeight - (Map.GameSize * 44)) >> 1) + (CenterPosition.Z << 2);
+            renderOffsetY -= (int)((CenterPosition.Xoffset + CenterPosition.Yoffset) * 22);
+            renderOffsetY -= (RenderBeginX + RenderBeginY) * 22;
 
             ObjectsRendered = 0; // Count of objects rendered for statistics and debug
             MouseOverList overList = new MouseOverList(); // List of items for mouse over
 
-            float xOffset = (ClientVars.BackBufferWidth / 2) - 22;
-            float yOffset = (ClientVars.BackBufferHeight / 2) - ((Map.GameSize * 44) / 2);
-            yOffset += CenterPosition.Z * 4;
-            xOffset -= (int)((CenterPosition.Xoffset - CenterPosition.Yoffset) * 22);
-            yOffset -= (int)((CenterPosition.Xoffset + CenterPosition.Yoffset) * 22);
+            MapObject mapObject;
+            List<MapObject> mapObjects;
+            Texture2D texture;
+
+            Vector3 drawPosition = new Vector3();
+            int width, height;
+            int drawX, drawY;
+            Vector2 hue; // x is the hue. y = 0, no hue. y = 1, total hue.  y = 2, partial hue.
+            PickTypes pick;
 
             for (int ix = 0; ix < Map.GameSize; ix++)
-            for (int iy = 0; iy < Map.GameSize; iy++)
-            {
-                MapTile tile = Map.GetMapTile(ix + RenderBeginX, iy + RenderBeginY);
-                int x = tile.X - RenderBeginX;
-                int y = tile.Y - RenderBeginY;
-                drawPosition.X = (x - y) * 22 + xOffset;
-                drawPosition.Y = (x + y) * 22 + yOffset;
-                mapObjects = tile.GetSortedObjects();
-
-                for (int i = 0; i < mapObjects.Count; i++)
+                for (int iy = 0; iy < Map.GameSize; iy++)
                 {
-                    mapObject = mapObjects[i];
-                    if (mapObject.Z >= MaxRoofAltitude)
+                    MapTile tile = Map.GetMapTile(ix + RenderBeginX, iy + RenderBeginY, true);
+                    if (tile == null)
                         continue;
+                    drawPosition.X = (tile.X - tile.Y) * 22 + renderOffsetX;
+                    drawPosition.Y = (tile.X + tile.Y) * 22 + renderOffsetY;
+                    mapObjects = tile.GetSortedObjects();
 
-                    if (mapObject is MapObjectGround) // GroundTile
+                    for (int i = 0; i < mapObjects.Count; i++)
                     {
-                        MapObjectGround groundTile = (MapObjectGround)mapObject;
+                        drawPosition.Z = SpriteBatch3D.Z;
 
-                        if (groundTile.Ignored)
+                        mapObject = mapObjects[i];
+                        if (mapObject is MapObjectGround)
                         {
-                            continue;
-                        }
-
-                        drawY = groundTile.Z << 2;
-
-                        Data.LandData landData = Data.TileData.LandData[groundTile.ItemID & 0x3FFF];
-
-                        if (landData.TextureID <= 0 || landData.Wet) // Not Stretched
-                        {
-                            texture = Data.Art.GetLandTexture(groundTile.ItemID);
-
-                            _vertexBuffer[0].Position = drawPosition;
-                            _vertexBuffer[0].Position.Y -= drawY;
-                            _vertexBuffer[0].Position.Z = SpriteBatch3D.Z;
-
-                            _vertexBuffer[1].Position = drawPosition;
-                            _vertexBuffer[1].Position.X += 44;
-                            _vertexBuffer[1].Position.Y -= drawY;
-                            _vertexBuffer[1].Position.Z = SpriteBatch3D.Z;
-
-                            _vertexBuffer[2].Position = drawPosition;
-                            _vertexBuffer[2].Position.Y += 44 - drawY;
-                            _vertexBuffer[2].Position.Z = SpriteBatch3D.Z;
-
-                            _vertexBuffer[3].Position = drawPosition;
-                            _vertexBuffer[3].Position.X += 44;
-                            _vertexBuffer[3].Position.Y += 44 - drawY;
-                            _vertexBuffer[3].Position.Z = SpriteBatch3D.Z;
-
-                            _vertexBuffer[0].Hue = Vector2.Zero;
-                            _vertexBuffer[1].Hue = Vector2.Zero;
-                            _vertexBuffer[2].Hue = Vector2.Zero;
-                            _vertexBuffer[3].Hue = Vector2.Zero;
-
-                            if (!_spriteBatch.Draw(texture, _vertexBuffer))
-                                continue;
-                        }
-                        else // Stretched
-                        {
-                            texture = Data.Texmaps.GetTexmapTexture(landData.TextureID);
-
-                            _vertexBufferStretched[0].Position = drawPosition;
-                            _vertexBufferStretched[0].Position.X += 22;
-
-                            _vertexBufferStretched[1].Position = drawPosition;
-                            _vertexBufferStretched[1].Position.X += 44;
-                            _vertexBufferStretched[1].Position.Y += 22;
-
-                            _vertexBufferStretched[2].Position = drawPosition;
-                            _vertexBufferStretched[2].Position.Y += 22;
-
-                            _vertexBufferStretched[3].Position = drawPosition;
-                            _vertexBufferStretched[3].Position.X += 22;
-                            _vertexBufferStretched[3].Position.Y += 44;
-
-                            _vertexBufferStretched[0].Normal = groundTile.Normals[0];
-                            _vertexBufferStretched[1].Normal = groundTile.Normals[1];
-                            _vertexBufferStretched[2].Normal = groundTile.Normals[2];
-                            _vertexBufferStretched[3].Normal = groundTile.Normals[3];
-
-                            _vertexBufferStretched[0].Position.Y -= drawY;
-                            _vertexBufferStretched[1].Position.Y -= (groundTile.Surroundings.East << 2);
-                            _vertexBufferStretched[2].Position.Y -= (groundTile.Surroundings.South << 2);
-                            _vertexBufferStretched[3].Position.Y -= (groundTile.Surroundings.Down << 2);
-
-                            _vertexBufferStretched[0].Position.Z = SpriteBatch3D.Z;
-                            _vertexBufferStretched[1].Position.Z = SpriteBatch3D.Z;
-                            _vertexBufferStretched[2].Position.Z = SpriteBatch3D.Z;
-                            _vertexBufferStretched[3].Position.Z = SpriteBatch3D.Z;
-
-                            _vertexBufferStretched[0].Hue =
-                                _vertexBufferStretched[1].Hue =
-                                _vertexBufferStretched[2].Hue =
-                                _vertexBufferStretched[3].Hue = Vector2.Zero;
-
-                            if (!_spriteBatch.Draw(texture, _vertexBufferStretched))
+                            if (mapObject.Z >= MaxTerrainAltitude)
                                 continue;
 
-                            if (((PickType & PickTypes.PickGroundTiles) == PickTypes.PickGroundTiles) || DEBUG_DrawTileOver)
-                                if (MouseOverList.IsPointInObject(_vertexBufferStretched, _input.CurrentMousePosition))
+                            MapObjectGround groundTile = (MapObjectGround)mapObject;
+
+                            if (groundTile.NoDraw)
+                                continue;
+
+                            if (groundTile.MustUpdateSurroundings)
+                                Map.UpdateSurroundings(groundTile);
+
+                            Data.LandData landData = Data.TileData.LandData[groundTile.ItemID & 0x3FFF];
+                            if (landData.TextureID <= 0)
+                            {
+                                texture = Data.Art.GetLandTexture(groundTile.ItemID);
+                                width = height = 44;
+                                drawX = 0;
+                                drawY = (groundTile.Z << 2);
+                                hue = Vector2.Zero;
+                                pick = PickTypes.PickGroundTiles;
+                            }
+                            else
+                            {
+                                // this is an isometric stretched tile and needs a specialized draw routine.
+                                texture = Data.Texmaps.GetTexmapTexture(landData.TextureID);
+
+                                _vertexBufferStretched[0].Position = drawPosition;
+                                _vertexBufferStretched[0].Position.X += 22;
+                                _vertexBufferStretched[0].Position.Y -= (groundTile.Z << 2);
+
+                                _vertexBufferStretched[1].Position = drawPosition;
+                                _vertexBufferStretched[1].Position.X += 44;
+                                _vertexBufferStretched[1].Position.Y += 22 - (groundTile.Surroundings.East << 2);
+
+                                _vertexBufferStretched[2].Position = drawPosition;
+                                _vertexBufferStretched[2].Position.Y += 22 - (groundTile.Surroundings.South << 2);
+
+                                _vertexBufferStretched[3].Position = drawPosition;
+                                _vertexBufferStretched[3].Position.X += 22;
+                                _vertexBufferStretched[3].Position.Y += 44 - (groundTile.Surroundings.Down << 2);
+
+                                _vertexBufferStretched[0].Normal = groundTile.Normals[0];
+                                _vertexBufferStretched[1].Normal = groundTile.Normals[1];
+                                _vertexBufferStretched[2].Normal = groundTile.Normals[2];
+                                _vertexBufferStretched[3].Normal = groundTile.Normals[3];
+
+                                hue = Vector2.Zero;
+                                if (_vertexBufferStretched[0].Hue != hue)
                                 {
-                                    MouseOverItem item = new MouseOverItem(texture, _vertexBuffer[0].Position, mapObject);
-                                    item.Vertices = new Vector3[4] { _vertexBufferStretched[0].Position, _vertexBufferStretched[1].Position, _vertexBufferStretched[2].Position, _vertexBufferStretched[3].Position };
-                                    overList.Add2DItem(item);
+                                    _vertexBufferStretched[0].Hue =
+                                    _vertexBufferStretched[1].Hue =
+                                    _vertexBufferStretched[2].Hue =
+                                    _vertexBufferStretched[3].Hue = hue;
                                 }
+
+                                if (!_spriteBatch.Draw(texture, _vertexBufferStretched))
+                                    continue;
+
+                                if (((PickType & PickTypes.PickGroundTiles) == PickTypes.PickGroundTiles) || DEBUG_DrawTileOver)
+                                    if (MouseOverList.IsPointInObject(_vertexBufferStretched, _input.CurrentMousePosition))
+                                    {
+                                        MouseOverItem item = new MouseOverItem(texture, _vertexBuffer[0].Position, mapObject);
+                                        item.Vertices = new Vector3[4] { _vertexBufferStretched[0].Position, _vertexBufferStretched[1].Position, _vertexBufferStretched[2].Position, _vertexBufferStretched[3].Position };
+                                        overList.Add2DItem(item);
+                                    }
+
+                                SpriteBatch3D.Z += 1000;
+                                ObjectsRendered++;
+
+                                continue;
+                            }
                         }
-                    }
-                    else if (mapObject is MapObjectStatic) // StaticItem
-                    {
-                        MapObjectStatic staticItem = (MapObjectStatic)mapObject;
+                        else if (mapObject is MapObjectStatic) // StaticItem
+                        {
+                            if (mapObject.Z >= MaxItemAltitude)
+                                continue;
 
-                        if (staticItem.NoDraw)
-                            continue;
+                            MapObjectStatic item = (MapObjectStatic)mapObject;
+                            if (item.NoDraw)
+                                continue;
+                            texture = Data.Art.GetStaticTexture(item.ItemID);
+                            width = texture.Width;
+                            height = texture.Height;
+                            drawX = (width >> 1) - 22;
+                            drawY = (item.Z << 2) + height - 44;
+                            hue = Vector2.Zero;
+                            pick = PickTypes.PickStatics;
+                        }
+                        else if (mapObject is MapObjectMobile)
+                        {
+                            if (mapObject.Z >= MaxItemAltitude)
+                                continue;
 
-                        Data.Art.GetStaticDimensions(staticItem.ItemID, out width, out height);
+                            MapObjectMobile item = (MapObjectMobile)mapObject;
+                            Data.FrameXNA[] iFrames = Data.AnimationsXNA.GetAnimation(item.BodyID, item.Action, item.Facing, item.Hue, false);
+                            if (iFrames == null)
+                                continue;
+                            int iFrame = item.Frame(iFrames.Length);
+                            if (iFrames[iFrame].Texture == null)
+                                continue;
+                            texture = iFrames[iFrame].Texture;
+                            width = texture.Width;
+                            height = texture.Height;
+                            drawX = iFrames[iFrame].Center.X - 22 - (int)((item.Position.Xoffset_Draw - item.Position.Yoffset_Draw) * 22);
+                            drawY = iFrames[iFrame].Center.Y + (item.Z << 2) + height - 22 - (int)((item.Position.Xoffset_Draw + item.Position.Yoffset_Draw) * 22);
+                            hue = getHueVector(item.Hue);
+                            if (ClientVars.LastTarget != null && ClientVars.LastTarget == item.OwnerSerial)
+                                hue = new Vector2(((Entities.Mobile)item.OwnerEntity).NotorietyHue - 1, 1);
+                            pick = PickTypes.PickObjects;
+                        }
+                        else if (mapObject is MapObjectCorpse)
+                        {
+                            if (mapObject.Z >= MaxItemAltitude)
+                                continue;
 
-                        texture = Data.Art.GetStaticTexture(staticItem.ItemID);
+                            MapObjectCorpse item = (MapObjectCorpse)mapObject;
+                            Data.FrameXNA[] iFrames = Data.AnimationsXNA.GetAnimation(item.BodyID, Data.BodyConverter.DeathAnimationIndex(item.BodyID), item.Facing, item.Hue, false);
+                            if (iFrames == null)
+                                continue;
+                            int iFrame = item.FrameIndex;
+                            if (iFrames[iFrame].Texture == null)
+                                continue;
+                            texture = iFrames[iFrame].Texture;
+                            width = texture.Width;
+                            height = texture.Height;
+                            drawX = iFrames[iFrame].Center.X - 22;
+                            drawY = iFrames[iFrame].Center.Y + (item.Z << 2) + height - 22;
+                            hue = getHueVector(item.Hue);
+                            pick = PickTypes.PickObjects;
+                        }
+                        else if (mapObject is MapObjectItem)
+                        {
+                            if (mapObject.Z >= MaxItemAltitude)
+                                continue;
 
-                        drawX = (width >> 1) - 22;
-                        drawY = (staticItem.Z << 2) + height - 44;
+                            MapObjectItem item = (MapObjectItem)mapObject;
+                            texture = Data.Art.GetStaticTexture(item.ItemID);
+                            width = texture.Width;
+                            height = texture.Height;
+                            drawX = (width >> 1) - 22;
+                            drawY = (item.Z << 2) + height - 44;
+                            hue = getHueVector(item.Hue);
+                            pick = PickTypes.PickObjects;
+                        }
+                        else if (mapObject is MapObjectText)
+                        {
+                            if (mapObject.Z >= MaxItemAltitude)
+                                continue;
 
-                        float drawLeft = drawPosition.X - drawX;
-                        float drawTop = drawPosition.Y - drawY;
-                        float drawRight = drawLeft + width;
-                        float drawBottom = drawTop + height;
+                            MapObjectText item = (MapObjectText)mapObject;
+                            texture = item.Texture;
+                            width = texture.Width;
+                            height = texture.Height;
+                            drawX = (width >> 1) - 22 - (int)((item.Position.Xoffset_Draw - item.Position.Yoffset_Draw) * 22);
+                            drawY = ((int)item.Position.Zoffset_Draw << 2) + height - 44 - (int)((item.Position.Xoffset_Draw + item.Position.Yoffset_Draw) * 22);
+                            hue = getHueVector(item.Hue);
+                            pick = PickTypes.PickObjects;
+                        }
+                        else
+                        {
+                            continue; // unknown object type, skip it.
+                        }
 
-                        _vertexBuffer[0].Position.X = drawLeft;
-                        _vertexBuffer[0].Position.Y = drawTop;
-                        _vertexBuffer[0].Position.Z = SpriteBatch3D.Z;
+                        _vertexBuffer[0].Position = drawPosition;
+                        _vertexBuffer[0].Position.X -= drawX;
+                        _vertexBuffer[0].Position.Y -= drawY;
 
-                        _vertexBuffer[1].Position.X = drawRight;
-                        _vertexBuffer[1].Position.Y = drawTop;
-                        _vertexBuffer[1].Position.Z = SpriteBatch3D.Z;
+                        _vertexBuffer[1].Position = _vertexBuffer[0].Position;
+                        _vertexBuffer[1].Position.X += width;
 
-                        _vertexBuffer[2].Position.X = drawLeft;
-                        _vertexBuffer[2].Position.Y = drawBottom;
-                        _vertexBuffer[2].Position.Z = SpriteBatch3D.Z;
+                        _vertexBuffer[2].Position = _vertexBuffer[0].Position;
+                        _vertexBuffer[2].Position.Y += height;
 
-                        _vertexBuffer[3].Position.X = drawRight;
-                        _vertexBuffer[3].Position.Y = drawBottom;
-                        _vertexBuffer[3].Position.Z = SpriteBatch3D.Z;
+                        _vertexBuffer[3].Position = _vertexBuffer[1].Position;
+                        _vertexBuffer[3].Position.Y += height;
 
-                        _vertexBuffer[0].Hue =
+                        if (_vertexBuffer[0].Hue != hue)
+                        {
+                            _vertexBuffer[0].Hue =
                             _vertexBuffer[1].Hue =
                             _vertexBuffer[2].Hue =
-                            _vertexBuffer[3].Hue = Vector2.Zero;
+                            _vertexBuffer[3].Hue = hue;
+                        }
 
                         if (!_spriteBatch.Draw(texture, _vertexBuffer))
                             continue;
 
-                        if ((PickType & PickTypes.PickStatics) == PickTypes.PickStatics)
+                        if ((PickType & pick) == pick)
+                        {
                             if (MouseOverList.IsPointInObject(_vertexBuffer[0].Position, _vertexBuffer[3].Position, _input.CurrentMousePosition))
                             {
                                 MouseOverItem item = new MouseOverItem(texture, _vertexBuffer[0].Position, mapObject);
                                 item.Vertices = new Vector3[4] { _vertexBuffer[0].Position, _vertexBuffer[1].Position, _vertexBuffer[2].Position, _vertexBuffer[3].Position };
                                 overList.Add2DItem(item);
                             }
+                        }
+
+                        SpriteBatch3D.Z += 1000;
+                        ObjectsRendered++;
                     }
-                    else if (mapObject is MapObjectMobile) // Mobile
-                    {
-                        MapObjectMobile iMobile = (MapObjectMobile)mapObject;
-
-                        Data.FrameXNA[] iFrames = Data.AnimationsXNA.GetAnimation(iMobile.BodyID, iMobile.Action, iMobile.Facing, iMobile.Hue, false);
-                        if (iFrames == null)
-                            continue;
-                        int iFrame = iMobile.Frame(iFrames.Length);
-                        if (iFrames[iFrame].Texture == null)
-                            continue;
-
-                        width = iFrames[iFrame].Texture.Width;
-                        height = iFrames[iFrame].Texture.Height;
-                        drawX = iFrames[iFrame].Center.X - 22 - (int)((iMobile.Offset.X - iMobile.Offset.Y) * 22);
-                        drawY = iFrames[iFrame].Center.Y + (iMobile.Z << 2) + height - 22 - (int)((iMobile.Offset.X + iMobile.Offset.Y) * 22);
-
-                        _vertexBuffer[0].Position = drawPosition;
-                        _vertexBuffer[0].Position.X -= drawX;
-                        _vertexBuffer[0].Position.Y -= drawY;
-                        _vertexBuffer[0].Position.Z = SpriteBatch3D.Z;
-
-                        _vertexBuffer[1].Position = drawPosition;
-                        _vertexBuffer[1].Position.X += width - drawX;
-                        _vertexBuffer[1].Position.Y -= drawY;
-                        _vertexBuffer[1].Position.Z = SpriteBatch3D.Z;
-
-                        _vertexBuffer[2].Position = drawPosition;
-                        _vertexBuffer[2].Position.X -= drawX;
-                        _vertexBuffer[2].Position.Y += height - drawY;
-                        _vertexBuffer[2].Position.Z = SpriteBatch3D.Z;
-
-                        _vertexBuffer[3].Position = drawPosition;
-                        _vertexBuffer[3].Position.X += width - drawX;
-                        _vertexBuffer[3].Position.Y += height - drawY;
-                        _vertexBuffer[3].Position.Z = SpriteBatch3D.Z;
-
-                        // hueVector: x is the hue, y sets whether or not to use it.
-                        // y = 1, total hue.
-                        // y = 2, partial hue.
-                        Vector2 hueVector = getHueVector(iMobile.Hue);
-                        if (ClientVars.LastTarget != null && ClientVars.LastTarget == iMobile.OwnerSerial)
-                            hueVector = new Vector2(((Entities.Mobile)iMobile.OwnerEntity).NotorietyHue - 1, 1);
-
-                        _vertexBuffer[0].Hue =
-                            _vertexBuffer[1].Hue =
-                            _vertexBuffer[2].Hue =
-                            _vertexBuffer[3].Hue = hueVector;
-
-                        if (!_spriteBatch.Draw(iFrames[iFrame].Texture, _vertexBuffer))
-                            continue;
-
-                        if ((PickType & PickTypes.PickObjects) == PickTypes.PickObjects)
-                            if (MouseOverList.IsPointInObject(_vertexBuffer[0].Position, _vertexBuffer[3].Position, _input.CurrentMousePosition))
-                            {
-                                MouseOverItem item = new MouseOverItem(iFrames[iFrame].Texture, _vertexBuffer[0].Position, mapObject);
-                                item.Vertices = new Vector3[4] { _vertexBuffer[0].Position, _vertexBuffer[1].Position, _vertexBuffer[2].Position, _vertexBuffer[3].Position };
-                                overList.Add2DItem(item);
-                            }
-                    }
-                    else if (mapObject is MapObjectCorpse)
-                    {
-                        MapObjectCorpse iObject = (MapObjectCorpse)mapObject;
-
-                        Data.FrameXNA[] iFrames = Data.AnimationsXNA.GetAnimation(iObject.BodyID, Data.BodyConverter.DeathAnimationIndex(iObject.BodyID), iObject.Facing, iObject.Hue, false);
-                        // GetAnimation fails so it returns null, temporary fix - Smjert
-                        if (iFrames == null)
-                            continue;
-                        int iFrame = iObject.FrameIndex;
-                        // If the frame data is corrupt, then the texture will not load. Fix for broken cleaver data, maybe others. --Poplicola 6/15/2009
-                        if (iFrames[iFrame].Texture == null)
-                            continue;
-                        width = iFrames[iFrame].Texture.Width;
-                        height = iFrames[iFrame].Texture.Height;
-                        drawX = iFrames[iFrame].Center.X - 22;
-                        drawY = iFrames[iFrame].Center.Y + (iObject.Z << 2) + height - 22;
-                        texture = iFrames[iFrame].Texture;
-
-                        _vertexBuffer[0].Position = drawPosition;
-                        _vertexBuffer[0].Position.X -= drawX;
-                        _vertexBuffer[0].Position.Y -= drawY;
-                        _vertexBuffer[0].Position.Z = SpriteBatch3D.Z;
-
-                        _vertexBuffer[1].Position = drawPosition;
-                        _vertexBuffer[1].Position.X += width - drawX;
-                        _vertexBuffer[1].Position.Y -= drawY;
-                        _vertexBuffer[1].Position.Z = SpriteBatch3D.Z;
-
-                        _vertexBuffer[2].Position = drawPosition;
-                        _vertexBuffer[2].Position.X -= drawX;
-                        _vertexBuffer[2].Position.Y += height - drawY;
-                        _vertexBuffer[2].Position.Z = SpriteBatch3D.Z;
-
-                        _vertexBuffer[3].Position = drawPosition;
-                        _vertexBuffer[3].Position.X += width - drawX;
-                        _vertexBuffer[3].Position.Y += height - drawY;
-                        _vertexBuffer[3].Position.Z = SpriteBatch3D.Z;
-
-                        // hueVector: x is the hue, y sets whether or not to use it.
-                        // y = 1, total hue.
-                        // y = 2, partial hue.
-                        _vertexBuffer[0].Hue =
-                            _vertexBuffer[1].Hue =
-                            _vertexBuffer[2].Hue =
-                            _vertexBuffer[3].Hue = getHueVector(iObject.Hue);
-
-                        if (!_spriteBatch.Draw(texture, _vertexBuffer))
-                            continue;
-
-                        if ((PickType & PickTypes.PickStatics) == PickTypes.PickStatics)
-                            if (MouseOverList.IsPointInObject(_vertexBuffer[0].Position, _vertexBuffer[3].Position, _input.CurrentMousePosition))
-                            {
-                                MouseOverItem item = new MouseOverItem(texture, _vertexBuffer[0].Position, mapObject);
-                                item.Vertices = new Vector3[4] { _vertexBuffer[0].Position, _vertexBuffer[1].Position, _vertexBuffer[2].Position, _vertexBuffer[3].Position };
-                                overList.Add2DItem(item);
-                            }
-                    }
-                    else if (mapObject is MapObjectItem)
-                    {
-                        MapObjectItem iObject = (MapObjectItem)mapObject;
-
-                        Data.Art.GetStaticDimensions(iObject.ItemID, out width, out height);
-                        texture = Data.Art.GetStaticTexture(iObject.ItemID);
-                        drawX = (width >> 1) - 22;
-                        drawY = (iObject.Z << 2) + height - 44;
-
-                        _vertexBuffer[0].Position = drawPosition;
-                        _vertexBuffer[0].Position.X -= drawX;
-                        _vertexBuffer[0].Position.Y -= drawY;
-                        _vertexBuffer[0].Position.Z = SpriteBatch3D.Z;
-
-                        _vertexBuffer[1].Position = drawPosition;
-                        _vertexBuffer[1].Position.X += width - drawX;
-                        _vertexBuffer[1].Position.Y -= drawY;
-                        _vertexBuffer[1].Position.Z = SpriteBatch3D.Z;
-
-                        _vertexBuffer[2].Position = drawPosition;
-                        _vertexBuffer[2].Position.X -= drawX;
-                        _vertexBuffer[2].Position.Y += height - drawY;
-                        _vertexBuffer[2].Position.Z = SpriteBatch3D.Z;
-
-                        _vertexBuffer[3].Position = drawPosition;
-                        _vertexBuffer[3].Position.X += width - drawX;
-                        _vertexBuffer[3].Position.Y += height - drawY;
-                        _vertexBuffer[3].Position.Z = SpriteBatch3D.Z;
-
-                        // hueVector: x is the hue, y sets whether or not to use it.
-                        // y = 1, total hue.
-                        // y = 2, partial hue.
-                        _vertexBuffer[0].Hue =
-                            _vertexBuffer[1].Hue =
-                            _vertexBuffer[2].Hue =
-                            _vertexBuffer[3].Hue = getHueVector(iObject.Hue);
-
-                        if (!_spriteBatch.Draw(texture, _vertexBuffer))
-                            continue;
-
-                        if ((PickType & PickTypes.PickStatics) == PickTypes.PickStatics)
-                            if (MouseOverList.IsPointInObject(_vertexBuffer[0].Position, _vertexBuffer[3].Position, _input.CurrentMousePosition))
-                            {
-                                MouseOverItem item = new MouseOverItem(texture, _vertexBuffer[0].Position, mapObject);
-                                item.Vertices = new Vector3[4] { _vertexBuffer[0].Position, _vertexBuffer[1].Position, _vertexBuffer[2].Position, _vertexBuffer[3].Position };
-                                overList.Add2DItem(item);
-                            }
-
-                    }
-                    else if (mapObject is MapObjectText)
-                    {
-                        MapObjectText textObject = (MapObjectText)mapObject;
-                        texture = textObject.Texture;
-                        width = texture.Width;
-                        height = texture.Height;
-
-                        drawX = (width >> 1) - 22 - (int)((textObject.Offset.X - textObject.Offset.Y) * 22);
-                        drawY = ((int)(textObject.Offset.Z) << 2) + height - 44 - (int)((textObject.Offset.X + textObject.Offset.Y) * 22);
-
-                        _vertexBuffer[0].Position = drawPosition;
-                        _vertexBuffer[0].Position.X -= drawX;
-                        _vertexBuffer[0].Position.Y -= drawY;
-                        _vertexBuffer[0].Position.Z = SpriteBatch3D.Z;
-
-                        _vertexBuffer[1].Position = drawPosition;
-                        _vertexBuffer[1].Position.X += width - drawX;
-                        _vertexBuffer[1].Position.Y -= drawY;
-                        _vertexBuffer[1].Position.Z = SpriteBatch3D.Z;
-
-                        _vertexBuffer[2].Position = drawPosition;
-                        _vertexBuffer[2].Position.X -= drawX;
-                        _vertexBuffer[2].Position.Y += height - drawY;
-                        _vertexBuffer[2].Position.Z = SpriteBatch3D.Z;
-
-                        _vertexBuffer[3].Position = drawPosition;
-                        _vertexBuffer[3].Position.X += width - drawX;
-                        _vertexBuffer[3].Position.Y += height - drawY;
-                        _vertexBuffer[3].Position.Z = SpriteBatch3D.Z;
-
-                        _vertexBuffer[0].Hue =
-                            _vertexBuffer[1].Hue =
-                            _vertexBuffer[2].Hue =
-                            _vertexBuffer[3].Hue = getHueVector(textObject.Hue);
-
-                        if (!_spriteBatch.Draw(texture, _vertexBuffer))
-                            continue;
-                    }
-
-                    SpriteBatch3D.Z += 1000;
-                    ObjectsRendered++;
                 }
-            }
 
             // Update the Mouse Over Objects
             _overObject = overList.GetForemostMouseOverItem(_input.CurrentMousePosition);
             _overGround = overList.GetForemostMouseOverItem<MapObjectGround>(_input.CurrentMousePosition);
+        }
+
+        WorldTexture[] worldTextures;
+
+        private void render_map()
+        {
+            if (worldTextures == null)
+            {
+                worldTextures = new WorldTexture[(int)Math.Ceiling((float)Map.Width / 64f) * (int)Math.Ceiling((float)Map.Height / 64f)];
+            }
+
+            bool loadedCell = false;
+
+            for (int iy = 0; iy < 10; iy++)
+            {
+                for (int ix = 0; ix < 13; ix++)
+                {
+                    int x = ix * 8 + (CenterPosition.X >> 6) * 8;
+                    int y = iy * 8 + (CenterPosition.Y >> 6) * 8;
+                    int index = (y >> 3) * (int)Math.Ceiling((float)Map.Width / 64f) + (x >> 3);
+                    WorldTexture t = worldTextures[index];
+                    if (t == null)
+                    {
+                        if (loadedCell)
+                            continue;
+                        else
+                        {
+                            t = worldTextures[index] = new WorldTexture(_spriteBatch.Game.GraphicsDevice, Map, x, y);
+                            loadedCell = true;
+                        }
+                    }
+
+                    _vertexBuffer[0].Position = new Vector3(ix * 64, iy * 64, SpriteBatch3D.Z);
+
+                    _vertexBuffer[1].Position = _vertexBuffer[0].Position;
+                    _vertexBuffer[1].Position.X += 64;
+
+                    _vertexBuffer[2].Position = _vertexBuffer[0].Position;
+                    _vertexBuffer[2].Position.Y += 64;
+
+                    _vertexBuffer[3].Position = _vertexBuffer[1].Position;
+                    _vertexBuffer[3].Position.Y += 64;
+
+                    _spriteBatch.Draw(t.Texture(), _vertexBuffer);
+                }
+            }
         }
 
         private bool onScreen(ref float left, ref float top, ref float right, ref float bottom)

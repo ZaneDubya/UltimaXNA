@@ -50,42 +50,43 @@ namespace UltimaXNA.Data
             return texture;
         }
 
+        const int multiplier = 0xFF / 0x1F;
+
         private static unsafe Texture2D readTexmapTexture(int index)
         {
-            int extra;
+            int textureSize;
 
-            m_Index.Seek(index, out extra);
+            m_Index.Seek(index, out textureSize);
 
             int streamStart = (int)m_Index.BinaryReader.BaseStream.Position;
 
-            extra = extra == 0 ? 64 : 128;
+            textureSize = (textureSize == 0) ? 64 : 128;
 
-            uint[] data = new uint[extra * extra];
+            uint[] pixelData = new uint[textureSize * textureSize];
+            ushort[] fileData = m_Index.ReadUInt16Array(textureSize * textureSize);
 
-            fixed (uint* pData = data)
+            fixed (uint* pData = pixelData)
             {
                 uint* pDataRef = pData;
 
-                for (int y = 0; y < extra; ++y, pDataRef += extra)
-                {
-                    uint* start = pDataRef;
-                    uint* end = start + extra;
+                int count = 0;
+                int max = textureSize * textureSize;
 
-                    while (start < end)
-                    {
-                        uint color = m_Index.BinaryReader.ReadUInt16();
-                        *start++ = 0xff000000 + (
-                                    ((((color >> 10) & 0x1F) * 0xFF / 0x1F) << 16) |
-                                    ((((color >> 5) & 0x1F) * 0xFF / 0x1F) << 8) |
-                                    (((color & 0x1F) * 0xFF / 0x1F))
+                while (count < max)
+                {
+                    uint color = fileData[count];
+                    *pDataRef++ = 0xff000000 + (
+                                    ((((color >> 10) & 0x1F) * multiplier) << 16) |
+                                    ((((color >> 5) & 0x1F) * multiplier) << 8) |
+                                    (((color & 0x1F) * multiplier))
                                     );
-                    }
+                    count++;
                 }
             }
 
-            Texture2D texture = new Texture2D(_graphics, extra, extra);
+            Texture2D texture = new Texture2D(_graphics, textureSize, textureSize);
 
-            texture.SetData<uint>(data);
+            texture.SetData<uint>(pixelData);
 
             Metrics.ReportDataRead((int)m_Index.BinaryReader.BaseStream.Position - streamStart);
 

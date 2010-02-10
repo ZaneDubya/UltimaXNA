@@ -60,27 +60,24 @@ namespace UltimaXNA.Data
 
             ArrayList list = new ArrayList();
 
+            byte[] buffer;
+
             using (BinaryReader bin = new BinaryReader(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read)))
             {
-                bin.ReadInt32();
-                bin.ReadInt16();
-
-                while (bin.BaseStream.Length != bin.BaseStream.Position)
-                {
-                    int number = bin.ReadInt32();
-                    bin.ReadByte();
-                    int length = bin.ReadInt16();
-
-                    if (length > m_Buffer.Length)
-                        m_Buffer = new byte[(length + 1023) & ~1023];
-
-                    bin.Read(m_Buffer, 0, length);
-                    string text = Encoding.UTF8.GetString(m_Buffer, 0, length);
-
-                    list.Add(new StringEntry(number, text));
-                    m_Table[number] = text;
-                }
+                buffer = bin.ReadBytes((int)bin.BaseStream.Length);
                 Metrics.ReportDataRead((int)bin.BaseStream.Position);
+            }
+
+            int pos = 6;
+            int count = buffer.Length;
+            while (pos < count)
+            {
+                int number = BitConverter.ToInt32(buffer, pos);
+                int length = BitConverter.ToInt16(buffer, pos + 5);
+                string text = Encoding.UTF8.GetString(buffer, pos + 7, length);
+                pos += length + 7;
+                list.Add(new StringEntry(number, text));
+                m_Table[number] = text;
             }
 
             m_Entries = (StringEntry[])list.ToArray(typeof(StringEntry));

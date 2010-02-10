@@ -17,9 +17,12 @@
  ***************************************************************************/
 #region usings
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using UltimaXNA.Entities;
+using UltimaXNA.Input;
+using UltimaXNA.TileEngine;
 #endregion
 
 namespace UltimaXNA.SceneManagement
@@ -40,6 +43,7 @@ namespace UltimaXNA.SceneManagement
             World.PersonalLightning = 0x09;
             World.LightDirection = -0.6f;
             ClientVars.Map = 0;
+            UI.AddGump_Local(new UILegacy.Clientside.DebugGump(), 40, 40);
         }
 
         public override void Dispose()
@@ -60,20 +64,111 @@ namespace UltimaXNA.SceneManagement
             World.Draw(gameTime);
         }
 
-        private void parseKeyboard()
+
+
+
+        bool edit_IsEditing = false;
+        int editing_Value = 0;
+        int editing_Size = 0;
+        List<Position3D> edit_Tiles = new List<Position3D>();
+
+        private void edit_Begin(int editValue)
         {
-            if (World.DEBUG_DrawTileOver && Input.IsMouseButtonPress(UltimaXNA.Input.MouseButtons.LeftButton))
+            edit_Tiles.Clear();
+            edit_IsEditing = true;
+            editing_Value = editValue;
+        }
+
+        private void edit_End()
+        {
+            edit_IsEditing = false;
+        }
+
+        private void edit_AddPoint(int x, int y)
+        {
+            bool isTileEdited = false;
+            foreach (Position3D p in edit_Tiles)
+            {
+                if ((p.X == x) && (p.Y == y))
+                {
+                    isTileEdited = true;
+                    break;
+                }
+            }
+
+            if (!isTileEdited)
+            {
+                edit_Tiles.Add(new Position3D(x, y, World.Map.GetMapTile(x, y, true).GroundTile.Z));
+                foreach (MapObject o in World.Map.GetMapTile(x, y, true).GetSortedObjects())
+                {
+                    o.Z += editing_Value;
+                }
+                for (int iy = -2; iy <= 2; iy++)
+                    for (int ix = -2; ix <= 2; ix++)
+                    {
+                        World.Map.GetMapTile(ix + x, iy + y, true).GroundTile.MustUpdateSurroundings = true;
+                    }
+            }
+        }
+
+        int edit_Value = 1;
+
+        private void edit_parseKeyboard()
+        {
+            if (Input.IsKeyDown(Keys.LeftAlt))
+            {
+                for (int k = (int)Keys.D0; k <= (int)Keys.D9; k++)
+                {
+                    if (Input.IsKeyPress((Keys)k))
+                    {
+                        editing_Size = k - (int)Keys.D0;
+                    }
+                }
+            }
+            else
+            {
+                for (int k = (int)Keys.D0; k <= (int)Keys.D9; k++)
+                {
+                    if (Input.IsKeyPress((Keys)k))
+                    {
+                        edit_Value = k - (int)Keys.D0;
+                    }
+                }
+            }
+
+            if (World.DEBUG_DrawTileOver)
+            {
+                if (Input.IsMouseButtonPress(MouseButtons.LeftButton))
+                    edit_Begin(edit_Value);
+                else if (Input.IsMouseButtonPress(MouseButtons.RightButton))
+                    edit_Begin(-edit_Value);
+            }
+
+            if (edit_IsEditing)
+            {
+                if (Input.IsMouseButtonRelease(MouseButtons.LeftButton))
+                    edit_End();
+                if (Input.IsMouseButtonRelease(MouseButtons.RightButton))
+                    edit_End();
+            }
+
+            if (edit_IsEditing && World.MouseOverObject != null)
             {
                 int x = (int)World.MouseOverObject.Position.X;
                 int y = (int)World.MouseOverObject.Position.Y;
-                TileEngine.MapTile t = World.Map.GetMapTile(x, y);
-                t.GroundTile.Z++;
-                for (int iy = -1; iy < 2; iy++)
-                    for (int ix = -1; ix < 2; ix++)
+                for (int iy = -editing_Size; iy <= editing_Size; iy++)
+                    for (int ix = -editing_Size; ix <= editing_Size; ix++)
                     {
-                        World.Map.UpdateSurroundings(World.Map.GetMapTile(x + ix, y + iy).GroundTile);
+                        edit_AddPoint(x + ix, y + iy);
                     }
             }
+                
+        }
+
+        private void parseKeyboard()
+        {
+
+            edit_parseKeyboard();
 
             if (Input.IsKeyDown(Keys.Up))
             {
@@ -107,6 +202,10 @@ namespace UltimaXNA.SceneManagement
                 if (Input.IsKeyPress(Keys.W))
                 {
                     World.DEBUG_DrawTileOver = Utility.ToggleBoolean(World.DEBUG_DrawTileOver);
+                }
+                if (Input.IsKeyPress(Keys.E))
+                {
+                    World.DEBUG_DrawWireframe = Utility.ToggleBoolean(World.DEBUG_DrawWireframe);
                 }
             }
         }

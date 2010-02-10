@@ -28,8 +28,10 @@ namespace UltimaXNA.TileEngine
     {
         private Surroundings _surroundingTiles;
         public Vector3[] Normals;
+        public bool IsFlat = false;
+        public bool MustUpdateSurroundings = true;
 
-        public MapObjectGround(Data.Tile landTile, Vector3 position)
+        public MapObjectGround(Data.Tile landTile, Position3D position)
             : base(position)
         {
             ItemID = landTile.ID;
@@ -41,10 +43,19 @@ namespace UltimaXNA.TileEngine
             get { return (ItemID == 2 || ItemID == 0x1DB || (ItemID >= 0x1AE && ItemID <= 0x1B5)); }
         }
 
+        public bool NoDraw
+        {
+            get { return (ItemID < 3 || (ItemID >= 0x1AF && ItemID <= 0x1B5)); }
+        }
+
         public Surroundings Surroundings
         {
             get { return _surroundingTiles; }
-            set { _surroundingTiles = value; }
+            set
+            {
+                _surroundingTiles = value;
+                IsFlat = Surroundings.IsFlat && Surroundings.East == Z;
+            }
         }
 
         public void CalculateNormals(
@@ -87,6 +98,14 @@ namespace UltimaXNA.TileEngine
             Down = nDown;
             East = nEast;
             South = nSouth;
+        }
+
+        public bool IsFlat
+        {
+            get
+            {
+                return (Down == East && East == South);
+            }
         }
     }
 }

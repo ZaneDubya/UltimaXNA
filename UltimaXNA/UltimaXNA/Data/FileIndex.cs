@@ -18,6 +18,7 @@
  ***************************************************************************/
 #region usings
 using System.IO;
+using System.Runtime.InteropServices;
 #endregion
 
 namespace UltimaXNA.Data
@@ -86,24 +87,30 @@ namespace UltimaXNA.Data
                     m_Stream = new FileStream(mulPath, FileMode.Open, FileAccess.Read, FileShare.Read);
 
                     int count = (int)(index.Length / 12);
+                    int max = (count < length) ? count : length;
 
-                    byte[] data = bin.ReadBytes(count * 12);
-
-                    for (int i = 0; i < count && i < length; ++i)
+                    unsafe
                     {
-                        m_Index[i].lookup = System.BitConverter.ToInt32(data, i * 12);
-                        m_Index[i].length = System.BitConverter.ToInt32(data, i * 12 + 4);
-                        m_Index[i].extra = System.BitConverter.ToInt32(data, i * 12 + 8);
-                        // m_Index[i].lookup = bin.ReadInt32();
-                        // m_Index[i].length = bin.ReadInt32();
-                        // m_Index[i].extra = bin.ReadInt32();
-                    }
+                        byte[] data = bin.ReadBytes(max * 12);
+                        fixed (byte* pBuff = data)
+                        {
+                            byte* pBuffRef = pBuff;
+                            for (int i = 0; i < max; i++)
+                            {
+                                m_Index[i] = *((Entry3D*)pBuffRef);
+                                pBuffRef += 12;
+                            }
+                        }
 
-                    for (int i = count; i < length; ++i)
-                    {
-                        m_Index[i].lookup = -1;
-                        m_Index[i].length = -1;
-                        m_Index[i].extra = -1;
+                        int[] empty = new int[3] { -1, -1, -1 };
+                        fixed (byte* pBuff = data)
+                        {
+                            byte* pBuffRef = pBuff;
+                            for (int i = max; i < length; i++)
+                            {
+                                m_Index[i] = *((Entry3D*)pBuffRef);
+                            }
+                        }
                     }
                 }
             }
@@ -124,6 +131,7 @@ namespace UltimaXNA.Data
         }
     }
 
+    [StructLayout(LayoutKind.Sequential, Pack = 0x1)]
     public struct Entry3D
     {
         public int lookup;

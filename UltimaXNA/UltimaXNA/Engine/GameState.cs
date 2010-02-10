@@ -299,7 +299,7 @@ namespace UltimaXNA
                     z = mouseoverObject.Z;
                     if (mouseoverObject is MapObjectStatic)
                     {
-                        ItemData data = Data.TileData.ItemData[mouseoverObject.ItemID - 0x4000];
+                        ItemData data = Data.TileData.ItemData[mouseoverObject.ItemID & 0x3FFF];
                         z += data.Height;
                     }
                     else if (mouseoverObject is MapObjectItem)

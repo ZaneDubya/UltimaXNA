@@ -144,6 +144,7 @@
     <Compile Include="Entities\MobileAnimation.cs" />
     <Compile Include="Entities\Movement.cs" />
     <Compile Include="Entities\MovementCheck.cs" />
+    <Compile Include="Entities\Multi.cs" />
     <Compile Include="Entities\Overhead.cs" />
     <Compile Include="Entities\PlayerMobile.cs" />
     <Compile Include="Entities\PropertyList.cs" />
@@ -160,6 +161,9 @@
     <Compile Include="SceneManagement\Scenes\SelectServerScene.cs" />
     <Compile Include="TileEngine\Interfaces\IWorld.cs" />
     <Compile Include="TileEngine\Interfaces\IWorldRenderer.cs" />
+    <Compile Include="TileEngine\Map\MapCell.cs" />
+    <Compile Include="TileEngine\Map\MapTile.cs" />
+    <Compile Include="TileEngine\Map\TileComparer.cs" />
     <Compile Include="TileEngine\MouseOverList.cs" />
     <Compile Include="TileEngine\WireframeRenderer.cs" />
     <Compile Include="UILegacy\ChatHandler.cs" />
@@ -374,7 +378,7 @@
     <Compile Include="TileEngine\Objects\MapObjectItem.cs" />
     <Compile Include="TileEngine\MiniMap.cs" />
     <Compile Include="TileEngine\Objects\MapObjectGround.cs" />
-    <Compile Include="TileEngine\Map.cs" />
+    <Compile Include="TileEngine\Map\Map.cs" />
     <Compile Include="TileEngine\Objects\MapObjectMobile.cs" />
     <Compile Include="TileEngine\Shared.cs" />
     <Compile Include="Engine\SpriteBatch3D.cs" />

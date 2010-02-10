@@ -72,6 +72,9 @@ namespace UltimaXNA.Data
 
             uint[] data = new uint[44 * 44];
 
+            ushort[] fileData = _index.ReadUInt16Array(((44 + 2) / 2) * 44);
+            int i = 0;
+
             int count = 2;
             int offset = 21;
 
@@ -88,11 +91,11 @@ namespace UltimaXNA.Data
 
                     while (start < end)
                     {
-                        uint color = _index.BinaryReader.ReadUInt16();
+                        uint color = fileData[i++];
                         *start++ = 0xff000000 + (
-                                    ((((color >> 10) & 0x1F) * 0xFF / 0x1F) << 16) |
-                                    ((((color >> 5) & 0x1F) * 0xFF / 0x1F) << 8) |
-                                    (((color & 0x1F) * 0xFF / 0x1F))
+                                    ((((color >> 10) & 0x1F) * multiplier) << 16) |
+                                    ((((color >> 5) & 0x1F) * multiplier) << 8) |
+                                    (((color & 0x1F) * multiplier))
                                     );
                     }
                 }
@@ -109,11 +112,11 @@ namespace UltimaXNA.Data
 
                     while (start < end)
                     {
-                        uint color = _index.BinaryReader.ReadUInt16();
+                        uint color = fileData[i++];
                         *start++ = 0xff000000 + (
-                                    ((((color >> 10) & 0x1F) * 0xFF / 0x1F) << 16) |
-                                    ((((color >> 5) & 0x1F) * 0xFF / 0x1F) << 8) |
-                                    (((color & 0x1F) * 0xFF / 0x1F))
+                                    ((((color >> 10) & 0x1F) * multiplier) << 16) |
+                                    ((((color >> 5) & 0x1F) * multiplier) << 8) |
+                                    (((color & 0x1F) * multiplier))
                                     );
                     }
                 }
@@ -149,6 +152,19 @@ namespace UltimaXNA.Data
             return new ushort[] { (ushort)_index.BinaryReader.ReadInt16(), (ushort)_index.BinaryReader.ReadInt16() };
         }
 
+        const int multiplier = 0xFF / 0x1F;
+
+        static int getMaxLookup(ushort[] lookups)
+        {
+            int max = 0;
+            for (int i = 0; i < lookups.Length; i++)
+            {
+                if (lookups[i] > max)
+                    max = lookups[i];
+            }
+            return max;
+        }
+
         private static unsafe Texture2D readStaticTexture(int index)
         {
             _index.Seek(index);
@@ -167,62 +183,51 @@ namespace UltimaXNA.Data
                 _dimensions[index - 0x4000] = new ushort[] { (ushort)width, (ushort)height };
             }
 
-            int[] lookups = new int[height];
-
             int dataStart = (int)_index.BinaryReader.BaseStream.Position + (height * 2);
+            ushort[] lookups = _index.ReadUInt16Array(height);
 
-            for (int i = 0; i < height; i++)
-            {
-                lookups[i] = (int)(dataStart + (_index.BinaryReader.ReadUInt16() * 2));
-            }
-            Metrics.ReportDataRead(height * 2);
-            /*
-            Hue hueObject = null;
-            hue = (hue & 0x3FFF) - 1;
-            if (hue >= 0 && hue < Hues.List.Length)
-            {
-                hueObject = Hues.List[hue];
-            }*/
+            int readLength = (getMaxLookup(lookups) + width * 2); // we don't know the length of the last line, so we read width * 2, anticipating worst case compression.
+            if (dataStart + readLength * 2 > _index.BinaryReader.BaseStream.Length)
+                readLength = ((int)_index.BinaryReader.BaseStream.Length - dataStart) >> 1;
+            ushort[] fileData = _index.ReadUInt16Array(readLength);
+            uint[] pixelData = new uint[width * height];
 
-            uint[] data = new uint[width * height];
-
-            fixed (uint* pData = data)
+            fixed (uint* pData = pixelData)
             {
                 uint* dataRef = pData;
+                int i;
 
                 for (int y = 0; y < height; y++, dataRef += width)
                 {
-                    _index.BinaryReader.BaseStream.Seek(lookups[y], SeekOrigin.Begin);
+                    i = lookups[y];
 
                     uint* start = dataRef;
 
                     int count, offset;
 
-                    while (((offset = _index.BinaryReader.ReadUInt16()) + (count = _index.BinaryReader.ReadUInt16())) != 0)
+                    while (((offset = fileData[i++]) + (count = fileData[i++])) != 0)
                     {
                         start += offset;
                         uint* end = start + count;
 
-                        Metrics.ReportDataRead(count * 2);
-
                         while (start < end)
                         {
-                            uint color = _index.BinaryReader.ReadUInt16();
+                            uint color = fileData[i++];
                             *start++ = 0xff000000 + (
-                                    ((((color >> 10) & 0x1F) * 0xFF / 0x1F) << 16) |
-                                    ((((color >> 5) & 0x1F) * 0xFF / 0x1F) << 8) |
-                                    (((color & 0x1F) * 0xFF / 0x1F))
+                                    ((((color >> 10) & 0x1F) * multiplier) << 16) |
+                                    ((((color >> 5) & 0x1F) * multiplier) << 8) |
+                                    (((color & 0x1F) * multiplier))
                                     );
                         }
                     }
                 }
             }
 
-            Metrics.ReportDataRead(sizeof(ushort) * height * width);
+            Metrics.ReportDataRead(sizeof(ushort) * (fileData.Length + lookups.Length + 2));
 
             Texture2D texture = new Texture2D(_graphics, width, height);
 
-            texture.SetData<uint>(data);
+            texture.SetData<uint>(pixelData);
 
             return texture;
         }

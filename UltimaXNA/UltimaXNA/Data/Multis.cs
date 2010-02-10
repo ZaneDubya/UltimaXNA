@@ -157,9 +157,13 @@ namespace UltimaXNA.Data
                 for (int y = 0; y < m_Height; ++y)
                 {
                     m_Tiles[x][y] = tiles[x][y].ToArray();
-
-                    if (m_Tiles[x][y].Length > 1)
-                        Array.Sort(m_Tiles[x][y]);
+                    // 
+                    // This is unnecessary, since TileEngine has to sort/resort anyways.
+                    // 
+                    // if (m_Tiles[x][y].Length > 1)
+                    // {
+                    //     Array.Sort(m_Tiles[x][y]);
+                    // }
                 }
             }
 

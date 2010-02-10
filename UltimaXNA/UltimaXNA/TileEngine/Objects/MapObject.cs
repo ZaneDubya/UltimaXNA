@@ -9,15 +9,14 @@ namespace UltimaXNA.TileEngine
 {
     public class MapObject
     {
-        private Vector3 _position;
-        public Vector3 Position
+        private Position3D _position;
+        public Position3D Position
         {
             get { return _position; }
             set
             {
                 _position = value;
-                Z = (int)_position.Z;
-                SortZ = (int)Position.Z;
+                Z = SortZ = (int)_position.Point.Z;
             }
         }
         public int ItemID = 0;
@@ -32,7 +31,7 @@ namespace UltimaXNA.TileEngine
             get { return (OwnerEntity == null) ? (Serial)unchecked((int)0) : OwnerEntity.Serial; }
         }
 
-        public MapObject(Vector3 position)
+        public MapObject(Position3D position)
         {
             Position = position;
         }

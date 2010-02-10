@@ -948,7 +948,12 @@ namespace UltimaXNA.Client
             else
             {
                 // create a multi object. Unhandled !!!
-                announce_UnhandledPacket(packet);
+                int multiID = p.ItemID - 0x4000;
+                Multi multi = EntitiesCollection.GetObject<Multi>(p.Serial, true);
+                multi.ItemID = p.ItemID;
+                multi.X = p.X;
+                multi.Y = p.Y;
+                multi.Z = p.Z;
             }
         }
 

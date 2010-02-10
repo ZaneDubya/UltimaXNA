@@ -29,7 +29,9 @@ namespace UltimaXNA.TileEngine
         Position3D CenterPosition { get; set; }
         int RenderBeginX { get; set; }
         int RenderBeginY { get; set; }
-        int MaxRoofAltitude { get; }
+        int MaxItemAltitude { get; }
+        int MaxTerrainAltitude { get; }
+
         void Update(GameTime gameTime);
         void Draw(GameTime gameTime);
 
@@ -44,5 +46,6 @@ namespace UltimaXNA.TileEngine
 
         bool DEBUG_DrawTileOver { get; set; }
         bool DEBUG_DrawDebug { get; set; }
+        bool DEBUG_DrawWireframe { get; set; }
     }
 }
