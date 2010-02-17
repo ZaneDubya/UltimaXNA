@@ -402,6 +402,11 @@ namespace UltimaXNA.Entities
         {
             return X ^ Y ^ Z;
         }
+
+        public override string ToString()
+        {
+            return string.Format("X:{0} Y:{1} Z:{2}", X, Y, Z);
+        }
     }
 
     // This event handles all the move sequences
