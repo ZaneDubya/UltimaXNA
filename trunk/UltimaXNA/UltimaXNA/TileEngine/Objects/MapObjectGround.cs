@@ -17,6 +17,7 @@
  *
  ***************************************************************************/
 #region usings
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Entities;
@@ -48,6 +49,12 @@ namespace UltimaXNA.TileEngine
             get { return (ItemID < 3 || (ItemID >= 0x1AF && ItemID <= 0x1B5)); }
         }
 
+        public override string ToString()
+        {
+            return "Z: " + Z + Environment.NewLine +
+                "Sort: " + SortZ;
+        }
+
         public Surroundings Surroundings
         {
             get { return _surroundingTiles; }
@@ -55,6 +62,7 @@ namespace UltimaXNA.TileEngine
             {
                 _surroundingTiles = value;
                 IsFlat = Surroundings.IsFlat && Surroundings.East == Z;
+                // SortZ = (Z + Surroundings.Down + Surroundings.South + Surroundings.East) / 4;
             }
         }
 

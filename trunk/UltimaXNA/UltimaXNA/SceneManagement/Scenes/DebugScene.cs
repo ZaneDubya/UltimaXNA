@@ -29,7 +29,7 @@ namespace UltimaXNA.SceneManagement
 {
     public class DebugScene : BaseScene
     {
-        Position3D _position = new Position3D(1453, 1561, 0);
+        Position3D _position = new Position3D(4312, 966, 0); // new Position3D(1453, 1561, 0);
 
         public DebugScene(Game game)
             : base(game)
@@ -44,6 +44,7 @@ namespace UltimaXNA.SceneManagement
             World.LightDirection = -0.6f;
             ClientVars.Map = 0;
             UI.AddGump_Local(new UILegacy.Clientside.DebugGump(), 40, 40);
+            World.PickType = PickTypes.PickEverything;
         }
 
         public override void Dispose()
@@ -136,7 +137,7 @@ namespace UltimaXNA.SceneManagement
                 }
             }
 
-            if (World.DEBUG_DrawTileOver)
+            if (ClientVars.DEBUG_HighlightMouseOverObjects)
             {
                 if (Input.IsMouseButtonPress(MouseButtons.LeftButton))
                     edit_Begin(edit_Value);
@@ -201,11 +202,11 @@ namespace UltimaXNA.SceneManagement
             {
                 if (Input.IsKeyPress(Keys.W))
                 {
-                    World.DEBUG_DrawTileOver = Utility.ToggleBoolean(World.DEBUG_DrawTileOver);
+                    ClientVars.DEBUG_HighlightMouseOverObjects = Utility.ToggleBoolean(ClientVars.DEBUG_HighlightMouseOverObjects);
                 }
                 if (Input.IsKeyPress(Keys.E))
                 {
-                    World.DEBUG_DrawWireframe = Utility.ToggleBoolean(World.DEBUG_DrawWireframe);
+                    ClientVars.DEBUG_DrawWireframe = Utility.ToggleBoolean(ClientVars.DEBUG_DrawWireframe);
                 }
             }
         }

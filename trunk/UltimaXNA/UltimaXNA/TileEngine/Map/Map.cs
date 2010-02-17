@@ -63,20 +63,10 @@ namespace UltimaXNA.TileEngine
         {
             int zTop, zLeft, zRight, zBottom;
 
-            try
-            {
-                zTop = GetMapTile(x, y, false).GroundTile.Z;
-                zLeft = GetMapTile(x, y + 1, false).GroundTile.Z;
-                zRight = GetMapTile(x + 1, y, false).GroundTile.Z;
-                zBottom = GetMapTile(x + 1, y + 1, false).GroundTile.Z;
-            }
-            catch
-            {
-                z = int.MinValue;
-                avg = int.MinValue;
-                top = int.MinValue;
-                return;
-            }
+            zTop = GetTileZ(x, y);  // GetMapTile(x, y, false).GroundTile.Z;
+            zLeft = GetTileZ(x, y + 1); // GetMapTile(x, y + 1, false).GroundTile.Z;
+            zRight = GetTileZ(x + 1, y); // GetMapTile(x + 1, y, false).GroundTile.Z;
+            zBottom = GetTileZ(x + 1, y + 1); // GetMapTile(x + 1, y + 1, false).GroundTile.Z;
 
             z = zTop;
             if (zLeft < z)
@@ -201,6 +191,15 @@ namespace UltimaXNA.TileEngine
                 m_LoadedCellThisFrame = 0;
         }
 
+        private int GetTileZ(int x, int y)
+        {
+            MapTile t = GetMapTile(x, y, false);
+            return
+                (t == null) ?
+                _tileMatrix.GetLandTile(x, y).Z :
+                t.GroundTile.Z;
+        }
+
         public void UpdateSurroundings(MapObjectGround g)
         {
             int x = (int)g.Position.X;
@@ -213,10 +212,7 @@ namespace UltimaXNA.TileEngine
                 for (int ix = -1; ix < 3; ix++)
                 {
                     MapTile t = GetMapTile(x + ix, y + iy, false);
-                    zValues[(ix + 1) + (iy + 1) * 4] = 
-                        (t == null) ? 
-                        _tileMatrix.GetLandTile(x + ix, y + iy).Z :
-                        t.GroundTile.Z;
+                    zValues[(ix + 1) + (iy + 1) * 4] = GetTileZ(x + ix, y + iy);
                 }
             }
 
@@ -233,7 +229,7 @@ namespace UltimaXNA.TileEngine
                 zValues[2 + 3 * 4],
                 zValues[3 + 1 * 4],
                 zValues[3 + 2 * 4]);
-
+            /*
             if (Math.Abs(g.Z - g.Surroundings.Down) >= Math.Abs(g.Surroundings.South - g.Surroundings.East))
             {
                 g.SortZ = (Math.Min(g.Z, g.Surroundings.Down) + Math.Abs(g.Surroundings.South - g.Surroundings.East) / 2);
@@ -241,7 +237,9 @@ namespace UltimaXNA.TileEngine
             else
             {
                 g.SortZ = (Math.Min(g.Z, g.Surroundings.Down) + Math.Abs(g.Z - g.Surroundings.Down) / 2);
-            }
+            }*/
+
+
 
             g.MustUpdateSurroundings = false;
         }

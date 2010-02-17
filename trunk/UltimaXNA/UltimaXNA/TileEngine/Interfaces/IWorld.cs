@@ -43,9 +43,5 @@ namespace UltimaXNA.TileEngine
         int PersonalLightning { get; set; }
         int OverallLightning { get; set; }
         float LightDirection { get; set; }
-
-        bool DEBUG_DrawTileOver { get; set; }
-        bool DEBUG_DrawDebug { get; set; }
-        bool DEBUG_DrawWireframe { get; set; }
     }
 }

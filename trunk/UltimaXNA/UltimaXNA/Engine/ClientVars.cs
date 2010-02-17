@@ -174,11 +174,13 @@ namespace UltimaXNA
             return false;
         }
 
-        // Debug message - I put a lot of crap in here to test values.
-        // Feel free to add or remove variables.
         public static bool DEBUG_ShowDataRead = false;
         public static bool DEBUG_BreakdownDataRead = false;
-        public static bool DEBUG_DisplayFPS = false;
+        public static bool DEBUG_DisplayFPS = true;
+        public static bool DEBUG_HighlightMouseOverObjects = false;
+        public static bool DEBUG_DrawWireframe = false;
+
+        // Debug message - I put a lot of crap in here to test values. Feel free to add or remove variables.
         public static string DebugMessage { get { return generateDebugMessage(); } }
         static string generateDebugMessage()
         {

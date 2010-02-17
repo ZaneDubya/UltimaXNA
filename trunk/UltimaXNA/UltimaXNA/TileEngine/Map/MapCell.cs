@@ -99,7 +99,10 @@ namespace UltimaXNA.TileEngine
             {
                 int ix = _x + i % 8;
                 int iy = _y + (i >> 3);
+                int iz = 0, itop = 255, iavg = 0;
+                _map.GetAverageZ(ix, iy, ref iz, ref iavg, ref itop);
                 MapObjectGround ground = new MapObjectGround(_tiles[i], new Position3D(ix, iy, _tiles[i].Z));
+                ground.SortZ = iavg;
                 MapTile tile = new MapTile(ix, iy);
                 tile.Add(ground);
                 m_Tiles[tile.X % 8 + (tile.Y % 8) * 8] = tile;

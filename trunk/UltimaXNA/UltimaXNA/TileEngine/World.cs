@@ -37,7 +37,6 @@ namespace UltimaXNA.TileEngine
         SpriteBatch3D _spriteBatch;
         VertexPositionNormalTextureHue[] _vertexBuffer;
         VertexPositionNormalTextureHue[] _vertexBufferStretched;
-        bool _isFirstUpdate = true; // This variable is used to skip the first 'update' cycle.
         #endregion
 
         #region MousePickingVariables
@@ -86,10 +85,6 @@ namespace UltimaXNA.TileEngine
         public int MaxItemAltitude { get; internal set; }
         public int MaxTerrainAltitude { get; internal set; }
 
-        public bool DEBUG_DrawTileOver { get; set; }
-        public bool DEBUG_DrawDebug { get; set; }
-        public bool DEBUG_DrawWireframe { get; set; }
-
         public World(Game game)
         {
             _input = game.Services.GetService<IInputService>();
@@ -98,8 +93,6 @@ namespace UltimaXNA.TileEngine
             _wireframe.Initialize();
 
             PickType = PickTypes.PickNothing;
-            DEBUG_DrawTileOver = false;
-            DEBUG_DrawDebug = true;
             _vertexBuffer = new VertexPositionNormalTextureHue[] {
                 new VertexPositionNormalTextureHue(new Vector3(), new Vector3(0, 0, 1), new Vector3(0, 0, 0)),
                 new VertexPositionNormalTextureHue(new Vector3(), new Vector3(0, 0, 1), new Vector3(1, 0, 0)),
@@ -176,7 +169,7 @@ namespace UltimaXNA.TileEngine
             if (ClientVars.Map != -1)
             {
                 _spriteBatch.Flush(true);
-                if (DEBUG_DrawDebug)
+                if (ClientVars.DEBUG_HighlightMouseOverObjects)
                 {
                     if (_overObject != null)
                         _wireframe.AddMouseOverItem(_overObject);
@@ -193,13 +186,7 @@ namespace UltimaXNA.TileEngine
             if (ClientVars.IsMinimized)
                 return;
 
-            if (_isFirstUpdate)
-            {
-                _isFirstUpdate = false;
-                return;
-            }
-
-            _spriteBatch.DrawWireframe = DEBUG_DrawWireframe;
+            _spriteBatch.DrawWireframe = ClientVars.DEBUG_DrawWireframe;
 
             int renderOffsetX = (ClientVars.BackBufferWidth >> 1) - 22;
             renderOffsetX -= (int)((CenterPosition.Xoffset - CenterPosition.Yoffset) * 22);
@@ -303,7 +290,7 @@ namespace UltimaXNA.TileEngine
                                 if (!_spriteBatch.Draw(texture, _vertexBufferStretched))
                                     continue;
 
-                                if (((PickType & PickTypes.PickGroundTiles) == PickTypes.PickGroundTiles) || DEBUG_DrawTileOver)
+                                if (((PickType & PickTypes.PickGroundTiles) == PickTypes.PickGroundTiles) || ClientVars.DEBUG_HighlightMouseOverObjects)
                                     if (MouseOverList.IsPointInObject(_vertexBufferStretched, _input.CurrentMousePosition))
                                     {
                                         MouseOverItem item = new MouseOverItem(texture, _vertexBuffer[0].Position, mapObject);
