@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using UltimaXNA.Entities;
+using UltimaXNA.Data;
 using Microsoft.Xna.Framework;
 #endregion
 
@@ -30,12 +31,13 @@ namespace UltimaXNA.TileEngine
         public int UpdateTicker;
         int _renderSize, _renderSizeUp, _renderSizeDown;
         MapCell[] _cells;
-        Data.TileMatrix _tileMatrix;
+        TileMatrix _tileMatrix;
         int _x, _y;
         bool _loadAllNearbyCells = false; // set when a map is first loaded.
         public bool LoadEverything_Override = false;
 
         int _index = -1;
+        const int _mapSizeInMemory = 8;
         public int Index { get { return _index; } }
 
         public Map(int index, int gameSize, int gameSizeUp, int gameSizeDown)
@@ -46,8 +48,8 @@ namespace UltimaXNA.TileEngine
 
             _index = index;
             _loadAllNearbyCells = true;
-            _tileMatrix = new Data.TileMatrix(_index, _index);
-            _cells = new MapCell[_tileMatrix.BlockWidth * _tileMatrix.BlockHeight];
+            _tileMatrix = new TileMatrix(_index, _index);
+            _cells = new MapCell[_mapSizeInMemory * _mapSizeInMemory];
         }
 
         public int Height
@@ -117,7 +119,7 @@ namespace UltimaXNA.TileEngine
         }
 
         // This pulls a tile from the TileMatrix.
-        public Data.Tile GetLandTile(int x, int y)
+        public Tile GetLandTile(int x, int y)
         {
             return _tileMatrix.GetLandTile(x, y);
         }
@@ -127,13 +129,21 @@ namespace UltimaXNA.TileEngine
 
         public MapCell GetMapCell(int x, int y, bool load)
         {
-            MapCell c = _cells[(x >> 3) + ((y >> 3) * _tileMatrix.BlockWidth)];
-            if (c == null)
+            if (x < 0) x += _tileMatrix.Width;
+            if (x >= _tileMatrix.Width) x -= _tileMatrix.Width;
+            if (y < 0) y += _tileMatrix.Height;
+            if (y >= _tileMatrix.Height) y -= _tileMatrix.Height;
+
+            int index = ((x >> 3) % 8) + (((y >> 3) % 8) * _mapSizeInMemory);
+            MapCell c = _cells[index];
+            if (c == null || 
+                (((x - c.X) & 0xFFF8) != 0) ||
+                (((y - c.Y) & 0xFFF8) != 0))
             {
                 if (load && (m_LoadedCellThisFrame < m_MaxCellsLoadedPerFrame || LoadEverything_Override))
                 {
                     m_LoadedCellThisFrame++;
-                    c = _cells[(x >> 3) + ((y >> 3) * _tileMatrix.BlockWidth)] = new MapCell(this, _tileMatrix, x - x % 8, y - y % 8);
+                    c = _cells[index] = new MapCell(this, _tileMatrix, x - x % 8, y - y % 8);
                     c.Load();
                 }
                 else
@@ -146,26 +156,9 @@ namespace UltimaXNA.TileEngine
 
         public MapTile GetMapTile(int x, int y, bool load)
         {
-            if (x < 0) x += _tileMatrix.Width;
-            if (x >= _tileMatrix.Width) x -= _tileMatrix.Width;
-            if (y < 0) y += _tileMatrix.Height;
-            if (y >= _tileMatrix.Height) y -= _tileMatrix.Height;
-
-            MapCell c = _cells[(x >> 3) + ((y >> 3) * _tileMatrix.BlockWidth)];
+            MapCell c = GetMapCell(x, y, load);
             if (c == null)
-            {
-                if (load && (m_LoadedCellThisFrame < m_MaxCellsLoadedPerFrame || LoadEverything_Override))
-                {
-                    m_LoadedCellThisFrame++;
-                    c = _cells[(x >> 3) + ((y >> 3) * _tileMatrix.BlockWidth)] = new MapCell(this, _tileMatrix, x - x % 8, y - y % 8);
-                    c.Load();
-                }
-                else
-                {
-                    return null;
-                }
-            }
-
+                return null;
             return c.m_Tiles[x % 8 + ((y % 8) << 3)];
         }
 
@@ -178,8 +171,6 @@ namespace UltimaXNA.TileEngine
 
                 int renderBeginX = centerX - _renderSize / 2;
                 int renderBeginY = centerY - _renderSize / 2;
-
-                clearOlderCells();
             }
 
             if (_loadAllNearbyCells)
@@ -242,14 +233,6 @@ namespace UltimaXNA.TileEngine
 
 
             g.MustUpdateSurroundings = false;
-        }
-
-        private void clearOlderCells()
-        {
-            // !!! This no longer works. Need to fix it
-            // IEnumerator<MapCell> MapTilesEnumerator;
-            // Data.Point2D worldLocation;
-            // m_KeysToRemove.Clear();
         }
     }
 }
