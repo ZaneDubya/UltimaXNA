@@ -37,7 +37,6 @@ namespace UltimaXNA.TileEngine
         public bool LoadEverything_Override = false;
 
         int _index = -1;
-        const int _mapSizeInMemory = 8;
         public int Index { get { return _index; } }
 
         public Map(int index, int gameSize, int gameSizeUp, int gameSizeDown)
@@ -49,7 +48,7 @@ namespace UltimaXNA.TileEngine
             _index = index;
             _loadAllNearbyCells = true;
             _tileMatrix = new TileMatrix(_index, _index);
-            _cells = new MapCell[_mapSizeInMemory * _mapSizeInMemory];
+            _cells = new MapCell[ClientVars.MapSizeInMemory * ClientVars.MapSizeInMemory];
         }
 
         public int Height
@@ -134,7 +133,7 @@ namespace UltimaXNA.TileEngine
             if (y < 0) y += _tileMatrix.Height;
             if (y >= _tileMatrix.Height) y -= _tileMatrix.Height;
 
-            int index = ((x >> 3) % 8) + (((y >> 3) % 8) * _mapSizeInMemory);
+            int index = ((x >> 3) % ClientVars.MapSizeInMemory) + (((y >> 3) % ClientVars.MapSizeInMemory) * ClientVars.MapSizeInMemory);
             MapCell c = _cells[index];
             if (c == null || 
                 (((x - c.X) & 0xFFF8) != 0) ||

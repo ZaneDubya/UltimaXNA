@@ -100,6 +100,7 @@
     <Compile Include="Data\Art.cs" />
     <Compile Include="Data\ASCIIFont.cs" />
     <Compile Include="Data\ContainerData.cs" />
+    <Compile Include="Data\CustomHousing.cs" />
     <Compile Include="Data\HairStyles.cs" />
     <Compile Include="Data\Skills.cs" />
     <Compile Include="Data\Speech.cs" />
@@ -152,6 +153,9 @@
     <Compile Include="Engine\Extensions\CallPriorityComparer.cs" />
     <Compile Include="Engine\GameState.cs" />
     <Compile Include="InputSystem\ClickState.cs" />
+    <Compile Include="Network\HouseRevisionState.cs" />
+    <Compile Include="Network\Packets\Client\RequestCustomHousePacket.cs" />
+    <Compile Include="Network\Packets\Server\CustomHousePacket.cs" />
     <Compile Include="Network\Packets\Server\DeleteResultPacket.cs" />
     <Compile Include="Network\Packets\Server\TargetCursorMulti.cs" />
     <Compile Include="SceneManagement\Scenes\CharacterListScene.cs" />
@@ -209,7 +213,6 @@
     <Compile Include="UILegacy\UIManager.cs" />
     <Compile Include="UI\Events.cs" />
     <Compile Include="UI\GUIHelper.cs" />
-    <Compile Include="UI\Windows\Container.cs" />
     <Compile Include="UI\Windows\ErrorModal.cs" />
     <Compile Include="UI\Windows\Merchant.cs" />
     <Compile Include="UI\Windows\PaperDoll.cs" />

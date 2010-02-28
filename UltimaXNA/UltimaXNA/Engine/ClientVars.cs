@@ -174,6 +174,9 @@ namespace UltimaXNA
             return false;
         }
 
+        static int _mapSizeInMemory = 8;
+        public static int MapSizeInMemory { get { return _mapSizeInMemory; } }
+
         public static bool DEBUG_ShowDataRead = false;
         public static bool DEBUG_BreakdownDataRead = false;
         public static bool DEBUG_DisplayFPS = true;

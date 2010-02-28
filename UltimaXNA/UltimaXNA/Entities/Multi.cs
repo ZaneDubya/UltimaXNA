@@ -29,22 +29,43 @@ namespace UltimaXNA.Entities
         MultiComponentList _components;
         List<Point2D> _unloadedTiles = new List<Point2D>();
 
+        int _customHouseRevision = 0x7FFFFFFF;
+        StaticTile[] _customHouseTiles;
+        public int CustomHouseRevision { get { return _customHouseRevision; } }
+
+        bool _hasCustomTiles = false;
+        CustomHouse _customHouse;
+        public void AddCustomHousingTiles(CustomHouse house)
+        {
+            _hasCustomTiles = true;
+            _customHouse = house;
+            _customHouseTiles = house.GetStatics(_components.Width, _components.Height);
+            redrawAllTiles();
+        }
+
         int _ItemID;
         public int ItemID
         {
             get { return _ItemID; }
             set
             {
-                _ItemID = value;
-                HasBeenDrawn = false;
-                _components = Multis.GetComponents(_ItemID);
-                _unloadedTiles.Clear();
-                for (int y = 0; y < _components.Height; y++)
+                if (_ItemID != value)
                 {
-                    for (int x = 0; x < _components.Width; x++)
-                    {
-                        _unloadedTiles.Add(new Point2D(x, y));
-                    }
+                    _ItemID = value;
+                    redrawAllTiles();
+                }
+            }
+        }
+
+        void redrawAllTiles()
+        {
+            _components = Multis.GetComponents(_ItemID);
+            _unloadedTiles.Clear();
+            for (int y = 0; y < _components.Height + 1; y++)
+            {
+                for (int x = 0; x < _components.Width; x++)
+                {
+                    _unloadedTiles.Add(new Point2D(x, y));
                 }
             }
         }
@@ -79,9 +100,22 @@ namespace UltimaXNA.Entities
                 {
                     drawnTiles.Add(p);
 
-                    foreach (StaticTile s in _components.Tiles[p.X][p.Y])
+                    if (!_hasCustomTiles)
                     {
-                        t.Add(new MapObjectStatic(s, 0, new Position3D(x, y, s.Z)));
+                        foreach (StaticTile s in _components.Tiles[p.X][p.Y])
+                        {
+                            t.Add(new MapObjectStatic(s.ID, 0, new Position3D(x, y, s.Z)));
+                        }
+                    }
+                    else
+                    {
+                        foreach (StaticTile s in _customHouseTiles)
+                        {
+                            if ((s.X == p.X) && (s.Y == p.Y))
+                            {
+                                t.Add(new MapObjectStatic(s.ID, 0, new Position3D(s.X, s.Y, s.Z)));
+                            }
+                        }
                     }
                 }
             }

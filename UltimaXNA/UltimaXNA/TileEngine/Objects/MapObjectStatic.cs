@@ -25,10 +25,10 @@ namespace UltimaXNA.TileEngine
 {
     public class MapObjectStatic : MapObject
     {
-        public MapObjectStatic(Data.StaticTile staticTile, int sortInfluence, Position3D position)
+        public MapObjectStatic(int staticTileID, int sortInfluence, Position3D position)
             : base(position)
         {
-            ItemID = staticTile.ID;
+            ItemID = staticTileID;
             Tiebreaker = sortInfluence;
             // Set threshold.
             Data.ItemData itemData = Data.TileData.ItemData[ItemID & 0x3FFF];
