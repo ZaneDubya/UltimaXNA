@@ -140,6 +140,7 @@ namespace UltimaXNA.Client
             PacketRegistry.MessageLocalizedAffix += receive_MessageLocalizedAffix;
             PacketRegistry.Extended0x78 += receive_Extended0x78;
             PacketRegistry.MegaCliloc += receive_ObjectPropertyList;
+            PacketRegistry.SendCustomHouse += receive_SendCustomHouse;
             PacketRegistry.ToolTipRevision += receive_ToolTipRevision;
             PacketRegistry.CompressedGump += receive_CompressedGump;
 
@@ -430,8 +431,20 @@ namespace UltimaXNA.Client
                 case 0x19: // Extended stats
                     announce_UnhandledPacket(packet, "subcommand " + p.Subcommand);
                     break;
-                case 0x1D: // House revision
-                    announce_UnhandledPacket(packet, "subcommand " + p.Subcommand);
+                case 0x1D: // House revision state
+                    if (Data.CustomHousing.IsHashCurrent(p.HouseRevisionState.Serial, p.HouseRevisionState.Hash))
+                    {
+                        Multi e = EntitiesCollection.GetObject<Multi>(p.HouseRevisionState.Serial, false);
+                        if (e.CustomHouseRevision != p.HouseRevisionState.Hash)
+                        {
+                            Data.CustomHouse house = Data.CustomHousing.GetCustomHouseData(p.HouseRevisionState.Serial);
+                            e.AddCustomHousingTiles(house);
+                        }
+                    }
+                    else
+                    {
+                        Send(new RequestCustomHousePacket(p.HouseRevisionState.Serial));
+                    }
                     break;
                 default:
                     announce_UnhandledPacket(packet, "subcommand " + p.Subcommand);
@@ -638,6 +651,19 @@ namespace UltimaXNA.Client
                 {
                     iObject.PropertyList.AddProperty(constructCliLoc(iCliLoc, p.Arguements[i]));
                 }
+            }
+        }
+
+        private static void receive_SendCustomHouse(IRecvPacket packet)
+        {
+            CustomHousePacket p = (CustomHousePacket)packet;
+            Data.CustomHousing.UpdateCustomHouseData(p.HouseSerial, p.RevisionHash, p.PlaneCount, p.Planes);
+
+            Multi e = EntitiesCollection.GetObject<Multi>(p.HouseSerial, false);
+            if (e.CustomHouseRevision != p.RevisionHash)
+            {
+                Data.CustomHouse house = Data.CustomHousing.GetCustomHouseData(p.HouseSerial);
+                e.AddCustomHousingTiles(house);
             }
         }
 
@@ -1046,7 +1072,7 @@ namespace UltimaXNA.Client
             }
         }
 
-        private static void parseContextMenu(ContextMenuNew context)
+        private static void parseContextMenu(ContextMenu context)
         {
             if (context.HasContextMenu)
             {

@@ -104,6 +104,7 @@ namespace UltimaXNA.Network
             network.Register<MessageLocalizedPacket>(0xCC, "Message Localized Affix ", -1, new TypedPacketReceiveHandler(MessageLocalizedAffix));
             network.Register<Extended0x78Packet>(0xD3, "Extended 0x78", -1, new TypedPacketReceiveHandler(Extended0x78));
             network.Register<ObjectPropertyListPacket>(0xD6, "Mega Cliloc", -1, new TypedPacketReceiveHandler(MegaCliloc));
+            network.Register<CustomHousePacket>(0xD8, "Send Custom House", -1, new TypedPacketReceiveHandler(SendCustomHouse));
             network.Register<ObjectPropertyListUpdatePacket>(0xDC, "SE Introduced Revision", 9, new TypedPacketReceiveHandler(ToolTipRevision));
             network.Register<CompressedGumpPacket>(0xDD, "Compressed Gump", -1, new TypedPacketReceiveHandler(CompressedGump));
 
@@ -122,7 +123,6 @@ namespace UltimaXNA.Network
             network.Register<RecvPacket>(0xB2, "Chat Message", -1, OnChatMessage);
             network.Register<RecvPacket>(0xC4, "Semivisible", -1, OnSemivisible);
             network.Register<RecvPacket>(0xD2, "Extended 0x20", -1, OnExtended0x20);
-            network.Register<RecvPacket>(0xD8, "Send Custom House", -1, OnSendCustomHouse);
             network.Register<RecvPacket>(0xDB, "Character Transfer Log", -1, OnCharacterTransferLog);
             network.Register<RecvPacket>(0xDC, "SE Introduced Revision", -1, OnToolTipRevision);
             network.Register<RecvPacket>(0xDE, "Update Mobile Status", -1, OnUpdateMobileStatus);
@@ -205,6 +205,7 @@ namespace UltimaXNA.Network
         public static event TypedPacketReceiveHandler MegaCliloc;
         public static event TypedPacketReceiveHandler ToolTipRevision;
         public static event TypedPacketReceiveHandler CompressedGump;
+        public static event TypedPacketReceiveHandler SendCustomHouse;
 
         /* Deprecated (not used by RunUO) and/or not implmented
          * Left them here incase we need to implement in the future
@@ -224,7 +225,7 @@ namespace UltimaXNA.Network
         public static event TypedPacketReceiveHandler Semivisible;
         public static event TypedPacketReceiveHandler Extended0x20;
         public static event TypedPacketReceiveHandler MegaCliloc;
-        public static event TypedPacketReceiveHandler SendCustomHouse;
+        
         public static event TypedPacketReceiveHandler CharacterTransferLog;
         public static event TypedPacketReceiveHandler ToolTipRevision;
         public static event TypedPacketReceiveHandler UpdateMobileStatus;

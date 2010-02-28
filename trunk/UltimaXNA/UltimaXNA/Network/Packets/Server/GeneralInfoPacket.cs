@@ -32,8 +32,14 @@ namespace UltimaXNA.Network.Packets.Server
             get { return _subcommand; }
         }
 
-        ContextMenuNew _contextmenu;
-        public ContextMenuNew ContextMenu
+        HouseRevisionState _revisionState;
+        public HouseRevisionState HouseRevisionState
+        {
+            get { return _revisionState; }
+        }
+
+        ContextMenu _contextmenu;
+        public ContextMenu ContextMenu
         {
             get { return _contextmenu; }
         }
@@ -70,7 +76,7 @@ namespace UltimaXNA.Network.Packets.Server
                     receiveMapDiffManifest(reader);
                     break;
                 case 0x1D: // House revision
-                    // !!! Not implemented yet.
+                    receiveHouseRevisionState(reader);
                     break;
                 case 0x04: // Close generic gump
                     // !!! Not implemented yet.
@@ -79,6 +85,13 @@ namespace UltimaXNA.Network.Packets.Server
                     // do nothing. This unhandled subcommand will raise an error in UltimaClient.cs.
                     break;
             }
+        }
+
+        void receiveHouseRevisionState(PacketReader reader)
+        {
+            Serial s = reader.ReadInt32();
+            int hash = reader.ReadInt32();
+            _revisionState = new HouseRevisionState(s, hash);
         }
 
         void receiveMapDiffManifest(PacketReader reader)
@@ -95,7 +108,7 @@ namespace UltimaXNA.Network.Packets.Server
         {
             reader.ReadByte(); // unknown (0x00)
             int iSubCommand = reader.ReadByte(); // 0x01 for 2D, 0x02 for KR
-            _contextmenu = new ContextMenuNew(reader.ReadInt32());
+            _contextmenu = new ContextMenu(reader.ReadInt32());
             int iNumEntriesInContext = reader.ReadByte();
 
             for (int i = 0; i < iNumEntriesInContext; i++)

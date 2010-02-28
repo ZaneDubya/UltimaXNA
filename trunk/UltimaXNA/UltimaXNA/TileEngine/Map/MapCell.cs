@@ -120,7 +120,7 @@ namespace UltimaXNA.TileEngine
                 MapTile tile = m_Tiles[ix % 8 + (iy % 8) * 8];
                 foreach (Data.StaticTile s in _statics[ix % 8][iy % 8])
                 {
-                    tile.Add(new MapObjectStatic(s, i, new Position3D(ix, iy, s.Z)));
+                    tile.Add(new MapObjectStatic(s.ID, i, new Position3D(ix, iy, s.Z)));
                 }
             }
         }

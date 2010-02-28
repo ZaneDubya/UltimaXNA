@@ -24,7 +24,7 @@ using System.Text;
 
 namespace UltimaXNA.Network
 {
-    public class ContextMenuItemNew
+    public class ContextMenuItem
     {
         private int _responseCode;
         private string _caption;
@@ -39,19 +39,19 @@ namespace UltimaXNA.Network
             get { return _caption; } 
         }
 
-        public ContextMenuItemNew(int nResponseCode, int iStringID, int iFlags, int iHue)
+        public ContextMenuItem(int nResponseCode, int iStringID, int iFlags, int iHue)
         {
             _caption = Data.StringList.Entry(iStringID);
             _responseCode = nResponseCode;
         }
     }
 
-    public class ContextMenuNew
+    public class ContextMenu
     {
-        private List<ContextMenuItemNew> _entries = new List<ContextMenuItemNew>();
-        public ContextMenuItemNew ContextEntry(string iCaption)
+        private List<ContextMenuItem> _entries = new List<ContextMenuItem>();
+        public ContextMenuItem ContextEntry(string iCaption)
         {
-            foreach (ContextMenuItemNew i in _entries)
+            foreach (ContextMenuItem i in _entries)
             {
                 if (i.Caption == iCaption)
                 {
@@ -82,7 +82,7 @@ namespace UltimaXNA.Network
         // public bool HasContext_PaperDoll = false;
         // public bool HasContext_Inventory = false;
 
-        public ContextMenuNew(Serial serial)
+        public ContextMenu(Serial serial)
         {
             _serial = serial;
         }
@@ -90,13 +90,13 @@ namespace UltimaXNA.Network
         // Add a new context menu entry.
         internal void AddItem(int nResponseCode, int nStringID, int nFlags, int nHue)
         {
-            _entries.Add(new ContextMenuItemNew(nResponseCode, nStringID, nFlags, nHue));
+            _entries.Add(new ContextMenuItem(nResponseCode, nStringID, nFlags, nHue));
         }
 
         // Sets up which options are available to the new client.
         internal void FinalizeMenu()
         {
-            foreach (ContextMenuItemNew i in _entries)
+            foreach (ContextMenuItem i in _entries)
             {
                 if ((i.Caption.Length >= 5) && (i.Caption.Substring(0, 5) == "Train"))
                 {
