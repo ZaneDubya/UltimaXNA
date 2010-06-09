@@ -7,7 +7,6 @@ namespace UltimaXNA.UILegacy.Gumplings
 {
     class ResizePic : Control
     {
-        GumplingDragger _dragger;
         public bool CloseOnRightClick = false;
         Texture2D[] _bgGumps = null;
         int GumpID = 0;
@@ -45,7 +44,7 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         void buildGumpling(int x, int y, int gumpID, int width, int height)
         {
-            _dragger = new GumplingDragger(this, _owner);
+            MakeADragger(_owner);
             Position = new Vector2(x, y);
             Size = new Vector2(width, height);
             GumpID = gumpID;

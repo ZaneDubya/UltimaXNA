@@ -13,7 +13,6 @@ namespace UltimaXNA.UILegacy.Clientside
     {
         GumpPic _gump;
         bool _useLargeMap = false;
-        GumplingDragger _dragger;
 
         public MiniMap()
             : base(0, 0)
@@ -33,7 +32,7 @@ namespace UltimaXNA.UILegacy.Clientside
                 _gump.HandlesMouseInput = true;
                 _gump.OnMouseClick = onClickMap;
                 _gump.OnMouseDoubleClick = onDoubleClickMap;
-                _dragger = new GumplingDragger(_gump, this);
+                _gump.MakeADragger(this);
                 AddGumpling(_gump);
             }
 
