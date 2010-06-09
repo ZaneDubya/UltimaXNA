@@ -176,6 +176,13 @@ namespace UltimaXNA.UILegacy
             _isDisposed = true;
         }
 
+        Gumplings.GumplingDragger _dragger;
+        public void MakeADragger(Control toMove)
+        {
+            this.HandlesMouseInput = true;
+            _dragger = new Gumplings.GumplingDragger(this, _owner);
+        }
+
         public Control[] HitTest(Vector2 position)
         {
             List<Control> focusedControls = new List<Control>();

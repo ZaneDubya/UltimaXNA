@@ -35,15 +35,15 @@ namespace UltimaXNA.UILegacy.Clientside
             AddGumpling(new GumpPic(this, 0, 0, 0, 5500, 0));
             // quit button
             AddGumpling(new Button(this, 0, 554, 2, 5513, 5515, ButtonTypes.Activate, 0, (int)SelectServerGumpButtons.QuitButton));
-            ((Button)_controls[_controls.Count - 1]).GumpOverID = 5514;
+            ((Button)this.LastGumpling).GumpOverID = 5514;
 
             // Page 1 - select a server
             // back button
             AddGumpling(new Button(this, 1, 586, 435, 5537, 5539, ButtonTypes.Activate, 0, (int)SelectServerGumpButtons.BackButton));
-            ((Button)_controls[_controls.Count - 1]).GumpOverID = 5538;
+            ((Button)this.LastGumpling).GumpOverID = 5538;
             // forward button
             AddGumpling(new Button(this, 1, 610, 435, 5540, 5542, ButtonTypes.Activate, 0, (int)SelectServerGumpButtons.ForwardButton));
-            ((Button)_controls[_controls.Count - 1]).GumpOverID = 5541;
+            ((Button)this.LastGumpling).GumpOverID = 5541;
 
             // center message window backdrop
             AddGumpling(new ResizePic(this, 1, 152, 90, 3500, 382, 274));
@@ -61,7 +61,7 @@ namespace UltimaXNA.UILegacy.Clientside
             AddGumpling(new ResizePic(this, 2, 116, 95, 2600, 408, 288));
             AddGumpling(new TextLabelAscii(this, 2, 166, 143, 2017, 2, Data.StringList.Entry(3000053) + "..."));
             AddGumpling(new Button(this, 2, 305, 342, 1150, 1152, ButtonTypes.Activate, 0, (int)SelectServerGumpButtons.BackButton));
-            ((Button)_controls[_controls.Count - 1]).GumpOverID = 1151;
+            ((Button)this.LastGumpling).GumpOverID = 1151;
         }
 
         public override void ActivateByButton(int buttonID)

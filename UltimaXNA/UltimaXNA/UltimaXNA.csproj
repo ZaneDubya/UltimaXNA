@@ -181,6 +181,7 @@
     <Compile Include="UILegacy\Clientside\LoginGump.cs" />
     <Compile Include="UILegacy\Clientside\MiniMap.cs" />
     <Compile Include="UILegacy\Clientside\MsgBox.cs" />
+    <Compile Include="UILegacy\Clientside\PaperDollGump.cs" />
     <Compile Include="UILegacy\Clientside\SelectServerGump.cs" />
     <Compile Include="UILegacy\Clientside\TopMenu.cs" />
     <Compile Include="UILegacy\Core\Control.cs" />
