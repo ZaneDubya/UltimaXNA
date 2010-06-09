@@ -46,12 +46,12 @@ namespace UltimaXNA.Network.Packets.Client
             short locationIndex, short slotNumber, int clientIp, short shirtColor, short pantsColor)
             : base(0x00, "Create Character", 104)
         {
-            str = (byte)MathHelper.Clamp(str, 10, 45);
-            dex = (byte)MathHelper.Clamp(dex, 10, 45);
-            intel = (byte)MathHelper.Clamp(intel, 10, 45);
+            str = (byte)MathHelper.Clamp(str, 10, 60);
+            dex = (byte)MathHelper.Clamp(dex, 10, 60);
+            intel = (byte)MathHelper.Clamp(intel, 10, 60);
 
-            if (str + dex + intel > 65)
-                throw new Exception("Unable to create character with a combined stat total greater than 65");
+            if (str + dex + intel != 80)
+                throw new Exception("Unable to create character with a combined stat total not equal to 80.");
 
             Stream.Write(0xedededed);
             Stream.Write(0xffffffff);

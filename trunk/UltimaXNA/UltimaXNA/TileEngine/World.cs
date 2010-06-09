@@ -78,7 +78,7 @@ namespace UltimaXNA.TileEngine
         public Map Map {get; set; }
         public int ObjectsRendered { get; internal set; }
         public Position3D CenterPosition { get; set; }
-        private Position3D _lastCenterPosition = null;
+        // private Position3D _lastCenterPosition = null;
         public int MaxItemAltitude { get; internal set; }
         public int MaxTerrainAltitude { get; internal set; }
 
@@ -146,11 +146,9 @@ namespace UltimaXNA.TileEngine
                         MaxTerrainAltitude = -255;
                 }
 
-                _lastCenterPosition = new Position3D(CenterPosition.Point_V3);
+                // _lastCenterPosition = new Position3D(CenterPosition.Point_V3);
 
                 render();
-                // render_map();
-                
             }
         }
 
@@ -333,8 +331,22 @@ namespace UltimaXNA.TileEngine
                             height = texture.Height;
 
                             flip = (item.Facing > 4) ? true : false;
-                            drawX = iFrames[iFrame].Center.X - 22 - (int)((item.Position.Draw_Xoffset - item.Position.Draw_Yoffset) * 22);
-                            drawY = iFrames[iFrame].Center.Y + (item.Z << 2) + height - 22 - (int)((item.Position.Draw_Xoffset + item.Position.Draw_Yoffset) * 22);
+                            if (flip)
+                            {
+                                drawX = iFrames[iFrame].Center.X - 22 + (int)((item.Position.Draw_Xoffset - item.Position.Draw_Yoffset) * 22);
+                                drawY = iFrames[iFrame].Center.Y + (item.Z << 2) + height - 22 - (int)((item.Position.Draw_Xoffset + item.Position.Draw_Yoffset) * 22);
+                            }
+                            else
+                            {
+                                drawX = iFrames[iFrame].Center.X - 22 - (int)((item.Position.Draw_Xoffset - item.Position.Draw_Yoffset) * 22);
+                                drawY = iFrames[iFrame].Center.Y + (item.Z << 2) + height - 22 - (int)((item.Position.Draw_Xoffset + item.Position.Draw_Yoffset) * 22);
+                            }
+
+                            // if (flip)
+                            // 
+                            //     drawX = -44 + (44 + drawX);
+                            // }
+
                             hue = getHueVector(item.Hue);
                             if (ClientVars.LastTarget != null && ClientVars.LastTarget == item.OwnerSerial)
                                 hue = new Vector2(((Entities.Mobile)item.OwnerEntity).NotorietyHue - 1, 1);
@@ -400,7 +412,7 @@ namespace UltimaXNA.TileEngine
                         {
                             vectorBuffer = VertexPositionNormalTextureHue.PolyBufferFlipped;
                             vectorBuffer[0].Position = drawPosition;
-                            vectorBuffer[0].Position.X -= drawX + width;
+                            vectorBuffer[0].Position.X += drawX + 44;
                             vectorBuffer[0].Position.Y -= drawY;
 
                             vectorBuffer[1].Position = vectorBuffer[0].Position;
