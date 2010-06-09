@@ -222,7 +222,6 @@ namespace UltimaXNA
 		}
 
         private List<VertexPositionNormalTextureHue> vertices = new List<VertexPositionNormalTextureHue>();
-        private VertexPositionNormalTextureHue[] verts;
 
         public bool DrawWireframe = false;
 

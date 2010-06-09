@@ -78,7 +78,6 @@ namespace UltimaXNA.TileEngine
         public Map Map {get; set; }
         public int ObjectsRendered { get; internal set; }
         public Position3D CenterPosition { get; set; }
-        // private Position3D _lastCenterPosition = null;
         public int MaxItemAltitude { get; internal set; }
         public int MaxTerrainAltitude { get; internal set; }
 
@@ -145,10 +144,6 @@ namespace UltimaXNA.TileEngine
                     if (isUnderTerrain)
                         MaxTerrainAltitude = -255;
                 }
-
-                // _lastCenterPosition = new Position3D(CenterPosition.Point_V3);
-
-                render();
             }
         }
 
@@ -156,6 +151,7 @@ namespace UltimaXNA.TileEngine
         {
             if (ClientVars.Map != -1)
             {
+                render();
                 _spriteBatch.Flush(true);
                 if (ClientVars.DEBUG_HighlightMouseOverObjects)
                 {
