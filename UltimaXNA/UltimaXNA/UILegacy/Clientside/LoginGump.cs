@@ -35,9 +35,9 @@ namespace UltimaXNA.UILegacy.Clientside
             AddGumpling(new Button(this, 0, 554, 2, 5513, 5515, ButtonTypes.Activate, 0, (int)LoginGumpButtons.QuitButton));
             ((Button)_controls[_controls.Count - 1]).GumpOverID = 5514;
             // Log in to Ultima Online
-            AddGumpling(new TextLabelAscii(this, 0, 254, 305, hue, 2, Data.StringList.Entry(1077841)));
+            AddGumpling(new TextLabelAscii(this, 0, 254, 305, hue, 2, Data.StringList.Entry(3000038)));
             // Account Name
-            AddGumpling(new TextLabelAscii(this, 0, 181, 346, hue, 2, Data.StringList.Entry(1077842)));
+            AddGumpling(new TextLabelAscii(this, 0, 181, 346, hue, 2, Data.StringList.Entry(3000099)));
             // Password
             AddGumpling(new TextLabelAscii(this, 0, 181, 386, hue, 2, Data.StringList.Entry(3000103)));
             // name field
@@ -71,6 +71,14 @@ namespace UltimaXNA.UILegacy.Clientside
                     OnLogin("localhost", 2593, accountName, password);
                     break;
             }
+        }
+
+        public override void Draw(ExtendedSpriteBatch spriteBatch)
+        {
+            base.Draw(spriteBatch);
+            // DEBUG !!! Draws a dragon
+            // Data.FrameXNA[] f = Data.AnimationsXNA.GetAnimation(59, 0, 0, 0, false);
+            // spriteBatch.Draw(f[0].Texture, new Microsoft.Xna.Framework.Vector2(10, 10), 0, false);
         }
     }
 }

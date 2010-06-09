@@ -35,7 +35,6 @@ namespace UltimaXNA.TileEngine
         #region RenderingVariables
         WireframeRenderer _wireframe;
         SpriteBatch3D _spriteBatch;
-        VertexPositionNormalTextureHue[] _vertexBuffer;
         VertexPositionNormalTextureHue[] _vertexBufferStretched;
         #endregion
 
@@ -80,8 +79,6 @@ namespace UltimaXNA.TileEngine
         public int ObjectsRendered { get; internal set; }
         public Position3D CenterPosition { get; set; }
         private Position3D _lastCenterPosition = null;
-        public int RenderBeginX { get; set; }
-        public int RenderBeginY { get; set; }
         public int MaxItemAltitude { get; internal set; }
         public int MaxTerrainAltitude { get; internal set; }
 
@@ -93,12 +90,6 @@ namespace UltimaXNA.TileEngine
             _wireframe.Initialize();
 
             PickType = PickTypes.PickNothing;
-            _vertexBuffer = new VertexPositionNormalTextureHue[] {
-                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(0, 0, 1), new Vector3(0, 0, 0)),
-                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(0, 0, 1), new Vector3(1, 0, 0)),
-                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(0, 0, 1), new Vector3(0, 1, 0)),
-                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(0, 0, 1), new Vector3(1, 1, 0))
-            };
             _vertexBufferStretched = new VertexPositionNormalTextureHue[] {
                 new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(0, 0, 0)),
                 new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(1, 0, 0)),
@@ -135,14 +126,12 @@ namespace UltimaXNA.TileEngine
             if (ClientVars.Map != -1)
             {
                 if ((Map == null) || (Map.Index != ClientVars.Map))
-                    Map = new Map(ClientVars.Map, 40, 0, 0);
+                    Map = new Map(ClientVars.Map);
                 // Update the Map's position so it loads the tiles we're going to be drawing
-                RenderBeginX = CenterPosition.X - Map.GameSize / 2;
-                RenderBeginY = CenterPosition.Y - Map.GameSize / 2;
-                Map.Update(CenterPosition.X, CenterPosition.Y);
+                Map.Update(CenterPosition.Draw_TileX, CenterPosition.Draw_TileY);
 
                 // Are we inside (under a roof)? Do not draw tiles above our head.
-                MapTile t = Map.GetMapTile(CenterPosition.X, CenterPosition.Y, true);
+                MapTile t = Map.GetMapTile(CenterPosition.Draw_TileX, CenterPosition.Draw_TileY, true);
 
                 MaxItemAltitude = 255;
                 MaxTerrainAltitude = 255;
@@ -157,10 +146,11 @@ namespace UltimaXNA.TileEngine
                         MaxTerrainAltitude = -255;
                 }
 
-                _lastCenterPosition = new Position3D(CenterPosition.Point);
+                _lastCenterPosition = new Position3D(CenterPosition.Point_V3);
 
-                // render_map();
                 render();
+                // render_map();
+                
             }
         }
 
@@ -188,12 +178,17 @@ namespace UltimaXNA.TileEngine
 
             _spriteBatch.DrawWireframe = ClientVars.DEBUG_DrawWireframe;
 
+            int RenderBeginX = CenterPosition.Draw_TileX - (ClientVars.RenderSize / 2);
+            int RenderBeginY = CenterPosition.Draw_TileY - (ClientVars.RenderSize / 2);
+            int RenderEndX = RenderBeginX + ClientVars.RenderSize;
+            int RenderEndY = RenderBeginY + ClientVars.RenderSize;
+
             int renderOffsetX = (ClientVars.BackBufferWidth >> 1) - 22;
-            renderOffsetX -= (int)((CenterPosition.Xoffset - CenterPosition.Yoffset) * 22);
+            renderOffsetX -= (int)((CenterPosition.Draw_Xoffset - CenterPosition.Draw_Yoffset) * 22);
             renderOffsetX -= (RenderBeginX - RenderBeginY) * 22;
 
-            int renderOffsetY = ((ClientVars.BackBufferHeight - (Map.GameSize * 44)) >> 1) + (CenterPosition.Z << 2);
-            renderOffsetY -= (int)((CenterPosition.Xoffset + CenterPosition.Yoffset) * 22);
+            int renderOffsetY = ((ClientVars.BackBufferHeight - (ClientVars.RenderSize * 44)) >> 1) + (CenterPosition.Z << 2);
+            renderOffsetY -= (int)((CenterPosition.Draw_Xoffset + CenterPosition.Draw_Yoffset) * 22);
             renderOffsetY -= (RenderBeginX + RenderBeginY) * 22;
 
             ObjectsRendered = 0; // Count of objects rendered for statistics and debug
@@ -203,14 +198,13 @@ namespace UltimaXNA.TileEngine
             List<MapObject> mapObjects;
             Texture2D texture;
 
+            VertexPositionNormalTextureHue[] vectorBuffer;
             Vector3 drawPosition = new Vector3();
             int width, height;
             int drawX, drawY;
             Vector2 hue; // x is the hue. y = 0, no hue. y = 1, total hue.  y = 2, partial hue.
             PickTypes pick;
-
-            int RenderEndX = RenderBeginX + Map.GameSize;
-            int RenderEndY = RenderBeginY + Map.GameSize;
+            bool flip = false;
 
             for (int ix = RenderBeginX; ix < RenderEndX; ix++)
             {
@@ -252,6 +246,7 @@ namespace UltimaXNA.TileEngine
                                 drawY = (groundTile.Z << 2);
                                 hue = Vector2.Zero;
                                 pick = PickTypes.PickGroundTiles;
+                                flip = false;
                             }
                             else
                             {
@@ -293,7 +288,7 @@ namespace UltimaXNA.TileEngine
                                 if (((PickType & PickTypes.PickGroundTiles) == PickTypes.PickGroundTiles) || ClientVars.DEBUG_HighlightMouseOverObjects)
                                     if (MouseOverList.IsPointInObject(_vertexBufferStretched, _input.CurrentMousePosition))
                                     {
-                                        MouseOverItem item = new MouseOverItem(texture, _vertexBuffer[0].Position, mapObject);
+                                        MouseOverItem item = new MouseOverItem(texture, _vertexBufferStretched[0].Position, mapObject);
                                         item.Vertices = new Vector3[4] { _vertexBufferStretched[0].Position, _vertexBufferStretched[1].Position, _vertexBufferStretched[2].Position, _vertexBufferStretched[3].Position };
                                         overList.Add2DItem(item);
                                     }
@@ -319,6 +314,7 @@ namespace UltimaXNA.TileEngine
                             drawY = (item.Z << 2) + height - 44;
                             hue = Vector2.Zero;
                             pick = PickTypes.PickStatics;
+                            flip = false;
                         }
                         else if (mapObject is MapObjectMobile)
                         {
@@ -335,8 +331,10 @@ namespace UltimaXNA.TileEngine
                             texture = iFrames[iFrame].Texture;
                             width = texture.Width;
                             height = texture.Height;
-                            drawX = iFrames[iFrame].Center.X - 22 - (int)((item.Position.Xoffset_Draw - item.Position.Yoffset_Draw) * 22);
-                            drawY = iFrames[iFrame].Center.Y + (item.Z << 2) + height - 22 - (int)((item.Position.Xoffset_Draw + item.Position.Yoffset_Draw) * 22);
+
+                            flip = (item.Facing > 4) ? true : false;
+                            drawX = iFrames[iFrame].Center.X - 22 - (int)((item.Position.Draw_Xoffset - item.Position.Draw_Yoffset) * 22);
+                            drawY = iFrames[iFrame].Center.Y + (item.Z << 2) + height - 22 - (int)((item.Position.Draw_Xoffset + item.Position.Draw_Yoffset) * 22);
                             hue = getHueVector(item.Hue);
                             if (ClientVars.LastTarget != null && ClientVars.LastTarget == item.OwnerSerial)
                                 hue = new Vector2(((Entities.Mobile)item.OwnerEntity).NotorietyHue - 1, 1);
@@ -361,6 +359,7 @@ namespace UltimaXNA.TileEngine
                             drawY = iFrames[iFrame].Center.Y + (item.Z << 2) + height - 22;
                             hue = getHueVector(item.Hue);
                             pick = PickTypes.PickObjects;
+                            flip = false;
                         }
                         else if (mapObject is MapObjectItem)
                         {
@@ -375,6 +374,7 @@ namespace UltimaXNA.TileEngine
                             drawY = (item.Z << 2) + height - 44;
                             hue = getHueVector(item.Hue);
                             pick = PickTypes.PickObjects;
+                            flip = false;
                         }
                         else if (mapObject is MapObjectText)
                         {
@@ -385,46 +385,67 @@ namespace UltimaXNA.TileEngine
                             texture = item.Texture;
                             width = texture.Width;
                             height = texture.Height;
-                            drawX = (width >> 1) - 22 - (int)((item.Position.Xoffset_Draw - item.Position.Yoffset_Draw) * 22);
-                            drawY = ((int)item.Position.Zoffset_Draw << 2) + height - 44 - (int)((item.Position.Xoffset_Draw + item.Position.Yoffset_Draw) * 22);
+                            drawX = (width >> 1) - 22 - (int)((item.Position.Draw_Xoffset - item.Position.Draw_Yoffset) * 22);
+                            drawY = ((int)item.Position.Draw_Zoffset << 2) + height - 44 - (int)((item.Position.Draw_Xoffset + item.Position.Draw_Yoffset) * 22);
                             hue = getHueVector(item.Hue);
                             pick = PickTypes.PickObjects;
+                            flip = false;
                         }
                         else
                         {
                             continue; // unknown object type, skip it.
                         }
 
-                        _vertexBuffer[0].Position = drawPosition;
-                        _vertexBuffer[0].Position.X -= drawX;
-                        _vertexBuffer[0].Position.Y -= drawY;
-
-                        _vertexBuffer[1].Position = _vertexBuffer[0].Position;
-                        _vertexBuffer[1].Position.X += width;
-
-                        _vertexBuffer[2].Position = _vertexBuffer[0].Position;
-                        _vertexBuffer[2].Position.Y += height;
-
-                        _vertexBuffer[3].Position = _vertexBuffer[1].Position;
-                        _vertexBuffer[3].Position.Y += height;
-
-                        if (_vertexBuffer[0].Hue != hue)
+                        if (flip)
                         {
-                            _vertexBuffer[0].Hue =
-                            _vertexBuffer[1].Hue =
-                            _vertexBuffer[2].Hue =
-                            _vertexBuffer[3].Hue = hue;
+                            vectorBuffer = VertexPositionNormalTextureHue.PolyBufferFlipped;
+                            vectorBuffer[0].Position = drawPosition;
+                            vectorBuffer[0].Position.X -= drawX + width;
+                            vectorBuffer[0].Position.Y -= drawY;
+
+                            vectorBuffer[1].Position = vectorBuffer[0].Position;
+                            vectorBuffer[1].Position.Y += height;
+
+                            vectorBuffer[2].Position = vectorBuffer[0].Position;
+                            vectorBuffer[2].Position.X -= width;
+
+                            vectorBuffer[3].Position = vectorBuffer[1].Position;
+                            vectorBuffer[3].Position.X -= width;
+                        }
+                        else
+                        {
+                            vectorBuffer = VertexPositionNormalTextureHue.PolyBuffer;
+                            vectorBuffer[0].Position = drawPosition;
+                            vectorBuffer[0].Position.X -= drawX;
+                            vectorBuffer[0].Position.Y -= drawY;
+
+                            vectorBuffer[1].Position = vectorBuffer[0].Position;
+                            vectorBuffer[1].Position.X += width;
+
+                            vectorBuffer[2].Position = vectorBuffer[0].Position;
+                            vectorBuffer[2].Position.Y += height;
+
+                            vectorBuffer[3].Position = vectorBuffer[1].Position;
+                            vectorBuffer[3].Position.Y += height;
                         }
 
-                        if (!_spriteBatch.Draw(texture, _vertexBuffer))
+                        if (vectorBuffer[0].Hue != hue)
+                        {
+                            vectorBuffer[0].Hue =
+                            vectorBuffer[1].Hue =
+                            vectorBuffer[2].Hue =
+                            vectorBuffer[3].Hue = hue;
+                        }
+
+                        if (!_spriteBatch.Draw(texture, vectorBuffer))
                             continue;
 
                         if ((PickType & pick) == pick)
                         {
-                            if (MouseOverList.IsPointInObject(_vertexBuffer[0].Position, _vertexBuffer[3].Position, _input.CurrentMousePosition))
+                            if (MouseOverList.IsPointInObject(vectorBuffer[0].Position, vectorBuffer[3].Position, _input.CurrentMousePosition))
                             {
-                                MouseOverItem item = new MouseOverItem(texture, _vertexBuffer[0].Position, mapObject);
-                                item.Vertices = new Vector3[4] { _vertexBuffer[0].Position, _vertexBuffer[1].Position, _vertexBuffer[2].Position, _vertexBuffer[3].Position };
+                                MouseOverItem item = new MouseOverItem(texture, vectorBuffer[0].Position, mapObject);
+                                item.Vertices = new Vector3[4] { vectorBuffer[0].Position, vectorBuffer[1].Position, vectorBuffer[2].Position, vectorBuffer[3].Position };
                                 overList.Add2DItem(item);
                             }
                         }
@@ -452,16 +473,17 @@ namespace UltimaXNA.TileEngine
             }
 
             bool loadedCell = false;
+            int rendersize = 128;
 
-            for (int iy = 0; iy < 10; iy++)
+            for (int iy = 0; iy < 1; iy++)
             {
-                for (int ix = 0; ix < 13; ix++)
+                for (int ix = 0; ix < 1; ix++)
                 {
-                    int x = ix * 8 + (CenterPosition.X >> 6) * 8;
-                    int y = iy * 8 + (CenterPosition.Y >> 6) * 8;
+                    int x = ix * 8 + (CenterPosition.Draw_TileX >> 6) * 8;
+                    int y = iy * 8 + (CenterPosition.Draw_TileY >> 6) * 8;
                     int index = (y >> 3) * (int)Math.Ceiling((float)Map.Width / 64f) + (x >> 3);
                     WorldTexture t = worldTextures[index];
-                    if (t == null)
+                    if (t == null || true)
                     {
                         if (loadedCell)
                             continue;
@@ -472,18 +494,20 @@ namespace UltimaXNA.TileEngine
                         }
                     }
 
-                    _vertexBuffer[0].Position = new Vector3(ix * 64, iy * 64, SpriteBatch3D.Z);
+                    VertexPositionNormalTextureHue[] v = VertexPositionNormalTextureHue.PolyBuffer;
 
-                    _vertexBuffer[1].Position = _vertexBuffer[0].Position;
-                    _vertexBuffer[1].Position.X += 64;
+                    v[0].Position = new Vector3((ix + 1) * rendersize, iy * rendersize, SpriteBatch3D.Z);
 
-                    _vertexBuffer[2].Position = _vertexBuffer[0].Position;
-                    _vertexBuffer[2].Position.Y += 64;
+                    v[1].Position = v[0].Position;
+                    v[1].Position.X += rendersize;
 
-                    _vertexBuffer[3].Position = _vertexBuffer[1].Position;
-                    _vertexBuffer[3].Position.Y += 64;
+                    v[2].Position = v[0].Position;
+                    v[2].Position.Y += rendersize;
 
-                    _spriteBatch.Draw(t.Texture(), _vertexBuffer);
+                    v[3].Position = v[1].Position;
+                    v[3].Position.Y += rendersize;
+
+                    _spriteBatch.Draw(t.Texture(), v);
                 }
             }
         }

@@ -16,7 +16,7 @@ namespace UltimaXNA.TileEngine
             set
             {
                 _position = value;
-                Z = SortZ = (int)_position.Point.Z;
+                Z = SortZ = (int)_position.Point_V3.Z;
             }
         }
         public int ItemID = 0;

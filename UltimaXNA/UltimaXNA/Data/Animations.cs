@@ -430,49 +430,135 @@ namespace UltimaXNA.Data
 
         private static FrameXNA[][][][] _Cache;
         private static GraphicsDevice _graphics;
+        private static int[] _Table;
 
         public static void Initialize(GraphicsDevice graphics)
         {
             _graphics = graphics;
         }
 
+        public static GraphicsDevice DEBUG_GFX { get { return _graphics; } }
+
         public static FrameXNA[] GetAnimation(int body, int action, int direction, int hue, bool preserveHue)
         {
-            // I moved this line here since at line 497, previously, it uses _Cache with real body as index and that index has no instance, AnimID has instance instead.
-            // Example with Hiryu (AnimID 243, real body has 201 after convert):
-            // Prev: _Cache[AnimID] = new instance, convert AnimID to real body, if(_Cache[realbody]..etc) <-Crash
-            // Now: convert AnimID to real body, _Cache[realbody] = new instance, if(_Cache[realbody]..etc) <- OK
-            // - Smjert
-            int fileType = BodyConverter.Convert(ref body);
+            int animIndex;
+            FileIndex fileIndex;
+            int length, extra;
+            bool patched;
+            Stream stream;
+            BinaryReader bin;
 
+            if (body >= 0x1000)
+                return null;
+
+            getIndexes(ref body, ref hue, action, direction, preserveHue, out animIndex, out fileIndex);
+
+            FrameXNA[] f = checkCache(body, action, direction);
+            if (f != null)
+                return f;
+
+            stream = fileIndex.Seek(animIndex, out length, out extra, out patched);
+
+            if (stream == null)
+            {
+                return null;
+            }
+            else
+            {
+                bin = new BinaryReader(stream);
+                FrameXNA[] frames = GetAnimation(bin);
+                return _Cache[body][action][direction] = frames;
+            }
+        }
+
+        public static FrameXNA[] GetAnimation(BinaryReader bin)
+        {
+            uint[] palette = getPalette(bin); // 0x100 * 2 = 0x0200 bytes
+            int lookupStart = (int)bin.BaseStream.Position;
+            int frameCount = bin.ReadInt32(); // 0x04 bytes
+
+            int[] lookups = new int[frameCount]; // frameCount * 0x04 bytes
+            for (int i = 0; i < frameCount; ++i) { lookups[i] = bin.ReadInt32(); }
+
+            FrameXNA[] frames = new FrameXNA[frameCount];
+            for (int i = 0; i < frameCount; ++i)
+            {
+                if (lookups[i] < lookups[0])
+                {
+                    frames[i] = FrameXNA.Empty; // Fix for broken animations, per issue13
+                }
+                else
+                {
+                    bin.BaseStream.Seek(lookupStart + lookups[i], SeekOrigin.Begin);
+                    frames[i] = new FrameXNA(_graphics, palette, bin);
+                }
+            }
+            return frames;
+        }
+
+        public static byte[] GetData(int body, int action, int direction, int hue, bool preserveHue)
+        {
+            int animIndex;
+            FileIndex fileIndex;
+            int length, extra;
+            bool patched;
+            Stream stream;
+            BinaryReader bin;
+
+            if (body >= 0x1000)
+                return null;
+
+            getIndexes(ref body, ref hue, action, direction, preserveHue, out animIndex, out fileIndex);
+            stream = fileIndex.Seek(animIndex, out length, out extra, out patched);
+
+            if (stream == null)
+                return null;
+            else
+                bin = new BinaryReader(stream);
+
+            return bin.ReadBytes(length);
+        }
+
+        private static uint[] getPalette(BinaryReader bin)
+        {
+            uint[] pal = new uint[0x100];
+            for (int i = 0; i < 0x100; ++i)
+            {
+                uint color = bin.ReadUInt16();
+                pal[i] = 0xff000000 + (
+                    ((((color >> 10) & 0x1F) * 0xFF / 0x1F) << 16) |
+                    ((((color >> 5) & 0x1F) * 0xFF / 0x1F) << 8) |
+                    (((color & 0x1F) * 0xFF / 0x1F))
+                    );
+            }
+            return pal;
+        }
+
+        private static FrameXNA[] checkCache(int body, int action, int direction)
+        {
+            // Make sure the cache is complete.
+            // max number of bodies is about 0x1000
+            if (_Cache == null) _Cache = new FrameXNA[0x1000][][][];
+            if (_Cache[body] == null)
+                _Cache[body] = new FrameXNA[35][][];
+            if (_Cache[body][action] == null)
+                _Cache[body][action] = new FrameXNA[8][];
+            if (_Cache[body][action][direction] == null)
+                _Cache[body][action][direction] = new FrameXNA[1];
+            if (_Cache[body][action][direction][0] != null)
+                return _Cache[body][action][direction];
+            else
+                return null;
+        }
+
+        private static void getIndexes(ref int body, ref int hue, int action, int direction, bool preserveHue, out int index, out FileIndex fileIndex)
+        {
             if (preserveHue)
                 Translate(ref body);
             else
                 Translate(ref body, ref hue);
 
-            // Make sure the cache is complete.
-            // max number of bodies is about 1000
-            try
-            {
-                if (_Cache == null) _Cache = new FrameXNA[0x1000][][][];
-                if (_Cache[body] == null)
-                    _Cache[body] = new FrameXNA[35][][];
-                if (_Cache[body][action] == null)
-                    _Cache[body][action] = new FrameXNA[8][];
-                if (_Cache[body][action][direction] == null)
-                    _Cache[body][action][direction] = new FrameXNA[1];
-                if (_Cache[body][action][direction][0] != null)
-                    return _Cache[body][action][direction];
-            }
-            catch
-            {
-                return null;
-            }
-
-            FileIndex fileIndex;
-
-            int index;
-
+            int fileType = BodyConverter.Convert(ref body);
             switch (fileType)
             {
                 default:
@@ -526,99 +612,33 @@ namespace UltimaXNA.Data
 
                         break;
                     }
-				// Issue 60 - Missing (or wrong) object animations - http://code.google.com/p/ultimaxna/issues/detail?id=60 - Smjert
-				case 5:
-					{
-						fileIndex = _FileIndex5;
-						if ( (body < 200) && (body != 34) ) // looks strange, though it works.
-							index = body * 110;
-						else if ( body < 400 )
-							index = 22000 + ((body - 200) * 65);
-						else
-							index = 35000 + ((body - 400) * 175);
+                // Issue 60 - Missing (or wrong) object animations - http://code.google.com/p/ultimaxna/issues/detail?id=60 - Smjert
+                case 5:
+                    {
+                        fileIndex = _FileIndex5;
+                        if ((body < 200) && (body != 34)) // looks strange, though it works.
+                            index = body * 110;
+                        else if (body < 400)
+                            index = 22000 + ((body - 200) * 65);
+                        else
+                            index = 35000 + ((body - 400) * 175);
 
-						break;
-					}
-				// Issue 60 - End
-            }
-
-            if ((index + (action * 5)) > int.MaxValue)
-            {
-                throw new ArithmeticException();
+                        break;
+                    }
+                // Issue 60 - End
             }
 
             index += action * 5;
 
             if (direction <= 4)
+            {
                 index += direction;
+            }
             else
+            {
                 index += direction - (direction - 4) * 2;
-
-            int length, extra;
-            bool patched;
-            Stream stream = fileIndex.Seek(index, out length, out extra, out patched);
-
-            if (stream == null)
-            {
-                return null;
             }
-
-            bool flip = (direction > 4);
-
-            BinaryReader bin = new BinaryReader(stream);
-
-            uint[] palette = new uint[0x100];
-
-            for (int i = 0; i < 0x100; ++i)
-            {
-                uint color = bin.ReadUInt16();
-                palette[i] = 0xff000000 + (
-                    ((((color >> 10) & 0x1F) * 0xFF / 0x1F) << 16) |
-                    ((((color >> 5) & 0x1F) * 0xFF / 0x1F) << 8) |
-                    (((color & 0x1F) * 0xFF / 0x1F))
-                    );
-            }
-
-            int start = (int)bin.BaseStream.Position;
-            int frameCount = bin.ReadInt32();
-
-            int[] lookups = new int[frameCount];
-
-            for (int i = 0; i < frameCount; ++i)
-                lookups[i] = start + bin.ReadInt32();
-
-            bool onlyHueGrayPixels = ((hue & 0x8000) == 0);
-
-            hue = (hue & 0x3FFF) - 1;
-
-            Hue hueObject = null;
-
-            if (hue >= 0 && hue < Hues.List.Length)
-                hueObject = Hues.List[hue];
-
-            // Load the base animation, unhued.
-            if (_Cache[body][action][direction][0] == null)
-            {
-                FrameXNA[] frames = new FrameXNA[frameCount];
-                for (int i = 0; i < frameCount; ++i)
-                {
-                    // Fix for broken cleaver animation, perhaps others, per issue13 (http://code.google.com/p/ultimaxna/issues/detail?id=13) --ZDW 6/15/2009
-                    if (lookups[i] < lookups[0])
-                    {
-                        frames[i] = FrameXNA.Empty;
-                    }
-                    else
-                    {
-                        bin.BaseStream.Seek(lookups[i], SeekOrigin.Begin);
-                        frames[i] = new FrameXNA(_graphics, palette, bin, flip);
-                    }
-                }
-                _Cache[body][action][direction] = frames;
-            }
-            return _Cache[body][action][direction];
         }
-
-        private static int[] _Table;
 
         public static void Translate(ref int body)
         {
@@ -699,7 +719,28 @@ namespace UltimaXNA.Data
         {
         }
 
-        public unsafe FrameXNA(GraphicsDevice graphics, uint[] palette, BinaryReader bin, bool flip)
+        public unsafe FrameXNA(GraphicsDevice graphics, uint[] palette, byte[] frame, int width, int height, int xCenter, int yCenter)
+        {
+            palette[0] = 0xFFFFFFFF;
+            uint[] data = new uint[width * height];
+            fixed (uint* pData = data)
+            {
+                uint* dataRef = pData;
+                int frameIndex = 0;
+
+                while (frameIndex < frame.Length)
+                {
+                    *dataRef++ = palette[frame[frameIndex++]];
+                }
+            }
+
+            _Center = new Microsoft.Xna.Framework.Point(xCenter, yCenter);
+            _Texture = new Texture2D(graphics, width, height);
+            _Texture.SetData<uint>(data);
+            palette[0] = 0;
+        }
+
+        public unsafe FrameXNA(GraphicsDevice graphics, uint[] palette, BinaryReader bin)
         {
             int xCenter = bin.ReadInt16();
             int yCenter = bin.ReadInt16();
@@ -712,6 +753,64 @@ namespace UltimaXNA.Data
             {
                 _Texture = null;
                 return;
+            }
+
+            uint[] data = new uint[width * height];
+
+            int header;
+
+            int xBase = xCenter - 0x200;
+            int yBase = (yCenter + height) - 0x200;
+
+            fixed (uint* pData = data)
+            {
+                uint* dataRef = pData;
+                int delta = width;
+
+                int dataRead = 0;
+
+                dataRef += xBase;
+                dataRef += (yBase * delta);
+
+                while ((header = bin.ReadInt32()) != 0x7FFF7FFF)
+                {
+                    header ^= DoubleXor;
+
+                    uint* cur = dataRef + ((((header >> 12) & 0x3FF) * delta) + ((header >> 22) & 0x3FF));
+                    uint* end = cur + (header & 0xFFF);
+
+                    int filecounter = 0;
+                    byte[] filedata = bin.ReadBytes(header & 0xFFF);
+
+                    while (cur < end)
+                        *cur++ = palette[filedata[filecounter++]];
+
+                    dataRead += header & 0xFFF;
+                }
+
+                Metrics.ReportDataRead(dataRead);
+            }
+
+            _Center = new Microsoft.Xna.Framework.Point(xCenter, yCenter);
+
+            _Texture = new Texture2D(graphics, width, height);
+            _Texture.SetData<uint>(data);
+        }
+
+        public static unsafe byte[] Frame_ReadData(uint[] palette, BinaryReader bin, bool flip)
+        {
+            int dataStart = (int)bin.BaseStream.Position;
+
+            int xCenter = bin.ReadInt16();
+            int yCenter = bin.ReadInt16();
+
+            int width = bin.ReadUInt16();
+            int height = bin.ReadUInt16();
+
+            // Fix for animations with no data.
+            if ((width == 0) || (height == 0))
+            {
+                return getData(bin, dataStart);
             }
 
             uint[] data = new uint[width * height];
@@ -729,8 +828,6 @@ namespace UltimaXNA.Data
                 uint* dataRef = pData;
                 int delta = width;
 
-                int dataRead = 0;
-
                 if (!flip)
                 {
                     dataRef += xBase;
@@ -743,10 +840,11 @@ namespace UltimaXNA.Data
                         uint* cur = dataRef + ((((header >> 12) & 0x3FF) * delta) + ((header >> 22) & 0x3FF));
                         uint* end = cur + (header & 0xFFF);
 
-                        dataRead += header & 0xFFF;
+                        int filecounter = 0;
+                        byte[] filedata = bin.ReadBytes(header & 0xFFF);
 
                         while (cur < end)
-                            *cur++ = palette[bin.ReadByte()];
+                            *cur++ = palette[filedata[filecounter++]];
                     }
                 }
                 else
@@ -761,22 +859,26 @@ namespace UltimaXNA.Data
                         uint* cur = dataRef + ((((header >> 12) & 0x3FF) * delta) - ((header >> 22) & 0x3FF));
                         uint* end = cur - (header & 0xFFF);
 
-                        dataRead += header & 0xFFF;
+                        int filecounter = 0;
+                        byte[] filedata = bin.ReadBytes(header & 0xFFF);
 
                         while (cur > end)
-                            *cur-- = palette[bin.ReadByte()];
+                            *cur-- = palette[filedata[filecounter++]];
                     }
 
                     xCenter = width - xCenter;
                 }
-
-                Metrics.ReportDataRead(dataRead);
             }
 
-            _Center = new Microsoft.Xna.Framework.Point(xCenter, yCenter);
+            return getData(bin, dataStart);
+        }
 
-            _Texture = new Texture2D(graphics, width, height);
-            _Texture.SetData<uint>(data);
+        private static byte[] getData(BinaryReader bin, int start)
+        {
+            int length = (int)bin.BaseStream.Position - start;
+            bin.BaseStream.Position = start;
+            byte[] b = bin.ReadBytes(length);
+            return b;
         }
     }
 } 

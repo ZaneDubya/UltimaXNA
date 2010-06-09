@@ -150,34 +150,6 @@ namespace UltimaXNA.Entities
             _ParentObject = nParent;
         }
 
-        public void Event_MoveItemToSlot(Item nObject, int nSlot)
-        {
-            // Is the destination slot empty?
-            if (_contents[nSlot] == null || _contents[nSlot] == nObject)
-            {
-                UI.Events.DropItem(nObject, (short)nSlot, (short)0x7FFF, 0, _ParentObject.Serial);
-            }
-            else
-            {
-                // we need to put the other object in temporary storage...
-                // int iSourceSlot = 0; // nObject.Item_InvSlot;
-                Item iSwitchItem = _contents[nSlot];
-
-                // is the dest object the same type as the source object type?
-                if (nObject.ItemData.Name == _contents[nSlot].ItemData.Name)
-                {
-                    // We are merging two objects.
-                    UI.Events.DropItem(nObject, 0, 0, 0, iSwitchItem.Serial);
-                    _contents.RemoveItemBySerial(nObject.Serial);
-                }
-                else
-                {
-                    // We are switching these two objects.
-                    UI.Events.DropItem(nObject, (short)nSlot, (short)0x7FFF, 0, _ParentObject.Serial);
-                }
-            }
-        }
-
         public void Update(GameTime gameTime)
         {
 

@@ -110,6 +110,14 @@ namespace UltimaXNA
         {
             _sceneService.Draw(gameTime);
             base.Draw(gameTime);
+
+            if (ClientVars.InWorld)
+            {
+                // ScreenshotComponent s = new ScreenshotComponent();
+                // s.Screenshot(this, true);
+            }
+
+            ClientVars.UpdateFPS(gameTime);
         }
 
         bool isMinimized()
@@ -130,7 +138,8 @@ namespace UltimaXNA
             graphicsDeviceManager.PreferredBackBufferHeight = 600;
             graphicsDeviceManager.SynchronizeWithVerticalRetrace = false;
             graphicsDeviceManager.PreparingDeviceSettings += OnPreparingDeviceSettings;
-            this.IsFixedTimeStep = false;
+            this.IsFixedTimeStep = true;
+            // this.TargetElapsedTime = new TimeSpan(1000000);
             graphicsDeviceManager.ApplyChanges();
         }
         static void OnPreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)

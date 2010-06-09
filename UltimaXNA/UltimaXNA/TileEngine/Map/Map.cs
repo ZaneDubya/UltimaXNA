@@ -29,7 +29,6 @@ namespace UltimaXNA.TileEngine
     public sealed class Map
     {
         public int UpdateTicker;
-        int _renderSize, _renderSizeUp, _renderSizeDown;
         MapCell[] _cells;
         TileMatrix _tileMatrix;
         int _x, _y;
@@ -39,12 +38,8 @@ namespace UltimaXNA.TileEngine
         int _index = -1;
         public int Index { get { return _index; } }
 
-        public Map(int index, int gameSize, int gameSizeUp, int gameSizeDown)
+        public Map(int index)
         {
-            _renderSize = gameSize;
-            _renderSizeUp = gameSizeUp;
-            _renderSizeDown = gameSizeDown;
-
             _index = index;
             _loadAllNearbyCells = true;
             _tileMatrix = new TileMatrix(_index, _index);
@@ -101,12 +96,6 @@ namespace UltimaXNA.TileEngine
             return (v / 2);
         }
 
-        public int GameSize
-        {
-            get { return _renderSize; }
-            set { _renderSize = value; }
-        }
-
         private int GetKey(MapCell cell)
         {
             return GetKey(cell.X, cell.Y);
@@ -128,10 +117,10 @@ namespace UltimaXNA.TileEngine
 
         public MapCell GetMapCell(int x, int y, bool load)
         {
-            if (x < 0) x += _tileMatrix.Width;
-            if (x >= _tileMatrix.Width) x -= _tileMatrix.Width;
-            if (y < 0) y += _tileMatrix.Height;
-            if (y >= _tileMatrix.Height) y -= _tileMatrix.Height;
+            if (x < 0) x += this.Width;
+            if (x >= this.Width) x -= this.Width;
+            if (y < 0) y += this.Height;
+            if (y >= this.Height) y -= this.Height;
 
             int index = ((x >> 3) % ClientVars.MapSizeInMemory) + (((y >> 3) % ClientVars.MapSizeInMemory) * ClientVars.MapSizeInMemory);
             MapCell c = _cells[index];
@@ -167,14 +156,11 @@ namespace UltimaXNA.TileEngine
             {
                 _x = centerX;
                 _y = centerY;
-
-                int renderBeginX = centerX - _renderSize / 2;
-                int renderBeginY = centerY - _renderSize / 2;
             }
 
             if (_loadAllNearbyCells)
             {
-                _loadAllNearbyCells = false;
+                _loadAllNearbyCells = true;
                 m_LoadedCellThisFrame = int.MinValue;
             }
             else
@@ -199,10 +185,10 @@ namespace UltimaXNA.TileEngine
 
             for (int iy = -1; iy < 3; iy++)
             {
-                for (int ix = -1; ix < 3; ix++)
+                for (int ix = 0; ix < 4; ix++)
                 {
                     MapTile t = GetMapTile(x + ix, y + iy, false);
-                    zValues[(ix + 1) + (iy + 1) * 4] = GetTileZ(x + ix, y + iy);
+                    zValues[ix + iy * 4] = GetTileZ(x + ix - 1, y + iy - 1);
                 }
             }
 
@@ -219,17 +205,6 @@ namespace UltimaXNA.TileEngine
                 zValues[2 + 3 * 4],
                 zValues[3 + 1 * 4],
                 zValues[3 + 2 * 4]);
-            /*
-            if (Math.Abs(g.Z - g.Surroundings.Down) >= Math.Abs(g.Surroundings.South - g.Surroundings.East))
-            {
-                g.SortZ = (Math.Min(g.Z, g.Surroundings.Down) + Math.Abs(g.Surroundings.South - g.Surroundings.East) / 2);
-            }
-            else
-            {
-                g.SortZ = (Math.Min(g.Z, g.Surroundings.Down) + Math.Abs(g.Z - g.Surroundings.Down) / 2);
-            }*/
-
-
 
             g.MustUpdateSurroundings = false;
         }

@@ -91,7 +91,7 @@ namespace UltimaXNA.Entities
                 if (_world.Map == null)
                     return;
 
-                TileEngine.MapTile t = _world.Map.GetMapTile(_movement.Position.TileX, _movement.Position.TileY, true);
+                TileEngine.MapTile t = _world.Map.GetMapTile(_movement.Position.Draw_TileX, _movement.Position.Draw_TileY, true);
                 if (t != null)
                 {
                     this.Draw(t, _movement.Position);
@@ -127,7 +127,7 @@ namespace UltimaXNA.Entities
 
         void flushDrawObjects()
         {
-            TileEngine.MapTile lastTile = _world.Map.GetMapTile(Position.TileX, Position.TileY, false);
+            TileEngine.MapTile lastTile = _world.Map.GetMapTile(Position.Draw_TileX, Position.Draw_TileY, false);
             if (lastTile != null)
                 lastTile.FlushObjectsBySerial(Serial);
         }

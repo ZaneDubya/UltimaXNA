@@ -43,6 +43,7 @@ namespace UltimaXNA.SceneManagement
             base.Intitialize();
             Gump g = UI.AddGump_Local(new UILegacy.Clientside.LoginGump(), 0, 0);
             ((UILegacy.Clientside.LoginGump)g).OnLogin += this.OnLogin;
+            UI.AddGump_Local(new UILegacy.Clientside.DebugGump(), 40, 40);
             Entities.EntitiesCollection.Reset();
             ClientVars.Map = -1;
         }

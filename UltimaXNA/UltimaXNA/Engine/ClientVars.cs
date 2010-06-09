@@ -11,7 +11,6 @@ using UltimaXNA.Data;
 using UltimaXNA.Client;
 using UltimaXNA.Entities;
 using UltimaXNA.Extensions;
-using UltimaXNA.UI;
 using UltimaXNA.Input;
 using UltimaXNA.Network.Packets.Client;
 using UltimaXNA.TileEngine;
@@ -62,8 +61,6 @@ namespace UltimaXNA
                 if (Input.IsKeyPress(Keys.F))
                     DEBUG_DisplayFPS = Utility.ToggleBoolean(DEBUG_DisplayFPS);
             }
-
-            updateFPS();
             base.Update(gameTime);
         }
 
@@ -160,10 +157,10 @@ namespace UltimaXNA
 
         // Maintain an accurate count of frames per second.
         static float _FPS = 0, _Frames = 0, _ElapsedSeconds = 0;
-        static bool updateFPS()
+        public static bool UpdateFPS(GameTime gameTime)
         {
             _Frames++;
-            _ElapsedSeconds += (float)_theTime.ElapsedRealTime.TotalSeconds;
+            _ElapsedSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
             if (_ElapsedSeconds >= .5f)
             {
                 _FPS = _Frames / _ElapsedSeconds;
@@ -174,8 +171,22 @@ namespace UltimaXNA
             return false;
         }
 
-        static int _mapSizeInMemory = 8;
+        static int _desiredFPS = 60;
+        public static int DesiredFPS
+        {
+            get { return _desiredFPS; }
+            set { _desiredFPS = value; }
+        }
+
+        static int _mapSizeInMemory = 16;
         public static int MapSizeInMemory { get { return _mapSizeInMemory; } }
+
+        static int _renderSize = 40;
+        public static int RenderSize
+        {
+            get { return _renderSize; }
+            set { _renderSize = value; }
+        }
 
         public static bool DEBUG_ShowDataRead = false;
         public static bool DEBUG_BreakdownDataRead = false;
@@ -203,6 +214,9 @@ namespace UltimaXNA
             if (ClientVars.Map != -1 && !UserInterface.IsMouseOverUI)
             {
                 debugMessage += string.Format("#Objects: {0}\n", World.ObjectsRendered);
+                Entity e = EntitiesCollection.GetPlayerObject();
+                debugMessage += e.Position.ToStringComplex();
+                /*
                 debugMessage += string.Format("Warmode: {0}\n", ClientVars.WarMode);
                 if (World.MouseOverObject != null)
                 {
@@ -238,7 +252,7 @@ namespace UltimaXNA
                 else
                 {
                     debugMessage += Environment.NewLine + "GROUND: null";
-                }
+                }*/
             }
             return debugMessage;
         }

@@ -124,7 +124,7 @@ namespace UltimaXNA.Entities
                 if (Action != MobileAction.Stand)
                 {
                     // advance the animation one step, based on gametime passed.
-                    float iTimeStep = ((float)gameTime.ElapsedRealTime.TotalMilliseconds / _animationStep) / _FrameCount;
+                    float iTimeStep = ((float)gameTime.ElapsedGameTime.TotalMilliseconds / _animationStep) / _FrameCount;
                     if (IsMovementAction(Action))
                         iTimeStep *= (IsMounted) ? 2 : 1;
                     AnimationFrame += iTimeStep;

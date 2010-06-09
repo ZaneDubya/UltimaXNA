@@ -21,7 +21,6 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using UltimaXNA.UI;
 using UltimaXNA.Client;
 using UltimaXNA.UILegacy.Clientside;
 #endregion
@@ -60,13 +59,13 @@ namespace UltimaXNA.SceneManagement
             if (!UltimaClient.IsConnected && SceneManager.CurrentScene.SceneState == SceneState.Active)
             {
                 SceneManager.CurrentScene = new LoginScene(Game);
-                UserInterface.ErrorPopup_Modal("You have lost your connection with the server.");
+                UI.MsgBox("You have lost your connection with the server.");
                 return;
             }
 
             if (UltimaClient.IsConnected)
             {
-                World.CenterPosition = new Entities.Position3D(Entities.EntitiesCollection.GetPlayerObject().Position.Point);
+                World.CenterPosition = Entities.EntitiesCollection.GetPlayerObject().Position;
                 World.Update(gameTime);
 
                 // Toggle for logout

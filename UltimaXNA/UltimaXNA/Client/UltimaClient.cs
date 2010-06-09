@@ -21,7 +21,6 @@ using System.IO;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using UltimaXNA.Entities;
-using UltimaXNA.UI;
 using UltimaXNA.Network;
 using UltimaXNA.Network.Packets.Client;
 using UltimaXNA.Network.Packets.Server;
@@ -687,7 +686,8 @@ namespace UltimaXNA.Client
             Item iObject = EntitiesCollection.GetObject<Item>(p.VendorPackSerial, false);
             if (iObject == null)
                 return;
-            UserInterface.Merchant_Open(iObject, 0);
+            // UserInterface.Merchant_Open(iObject, 0);
+            // !!!
         }
 
         private static void receive_OpenPaperdoll(IRecvPacket packet)

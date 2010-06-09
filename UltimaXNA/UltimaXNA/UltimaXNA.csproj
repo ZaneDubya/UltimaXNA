@@ -91,14 +91,13 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\WavePlayer.dll</HintPath>
     </Reference>
-    <Reference Include="xWinFormsLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <HintPath>.\xWinFormsLib.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Client\UltimaClient.cs" />
+    <Compile Include="Data\AnimEncode.cs" />
     <Compile Include="Data\Art.cs" />
     <Compile Include="Data\ASCIIFont.cs" />
+    <Compile Include="Data\BitStream.cs" />
     <Compile Include="Data\ContainerData.cs" />
     <Compile Include="Data\CustomHousing.cs" />
     <Compile Include="Data\HairStyles.cs" />
@@ -133,6 +132,7 @@
     <Compile Include="Engine\Engine.cs" />
     <Compile Include="Data\FileManager.cs" />
     <Compile Include="Data\FileIndexClint.cs" />
+    <Compile Include="Engine\ScreenshotComponent.cs" />
     <Compile Include="Entities\Container.cs" />
     <Compile Include="Entities\ContainerItem.cs" />
     <Compile Include="Entities\Corpse.cs" />
@@ -211,14 +211,6 @@
     <Compile Include="UILegacy\IUIManager.cs" />
     <Compile Include="UILegacy\Shared.cs" />
     <Compile Include="UILegacy\UIManager.cs" />
-    <Compile Include="UI\Events.cs" />
-    <Compile Include="UI\GUIHelper.cs" />
-    <Compile Include="UI\Windows\ErrorModal.cs" />
-    <Compile Include="UI\Windows\Merchant.cs" />
-    <Compile Include="UI\Windows\PaperDoll.cs" />
-    <Compile Include="UI\Windows\StatusFrame.cs" />
-    <Compile Include="UI\Window.cs" />
-    <Compile Include="UI\UserInterface.cs" />
     <Compile Include="InputSystem\EventArgs.cs" />
     <Compile Include="InputSystem\IInputService.cs" />
     <Compile Include="InputSystem\InputState.cs" />
