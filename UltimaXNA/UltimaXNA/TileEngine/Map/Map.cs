@@ -183,7 +183,7 @@ namespace UltimaXNA.TileEngine
 
             int[] zValues = new int[16]; // _matrix.GetElevations(x - 1, y - 1, 4, 4);
 
-            for (int iy = -1; iy < 3; iy++)
+            for (int iy = 0; iy < 4; iy++)
             {
                 for (int ix = 0; ix < 4; ix++)
                 {

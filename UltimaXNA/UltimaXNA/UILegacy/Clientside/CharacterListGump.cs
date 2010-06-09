@@ -81,8 +81,8 @@ namespace UltimaXNA.UILegacy.Clientside
                 }
                 entryIndex++;
             }
-            if (_charSelected == -1)
-                ActivateByHREF("CHAR=0");
+            // if (_charSelected == -1)
+            //     ActivateByHREF("CHAR=0");
             ClientVars.CharacterList_Reloaded = false;
         }
 

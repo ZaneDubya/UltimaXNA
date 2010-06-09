@@ -224,48 +224,6 @@ namespace UltimaXNA
         private List<VertexPositionNormalTextureHue> vertices = new List<VertexPositionNormalTextureHue>();
         private VertexPositionNormalTextureHue[] verts;
 
-        public void FlushExperimental()
-        {
-            this.Game.GraphicsDevice.VertexDeclaration = new VertexDeclaration(this.Game.GraphicsDevice, VertexPositionNormalTextureHue.VertexElements);
-
-            IEnumerator<KeyValuePair<Texture2D, List<VertexPositionNormalTextureHue>>> keyValuePairs = _drawQueue.GetEnumerator();
-            _effect.CurrentTechnique = _effect.Techniques["StandardEffect"];
-
-            Game.GraphicsDevice.RenderState.DepthBufferEnable = true;
-            Game.GraphicsDevice.RenderState.AlphaBlendEnable = true;
-            Game.GraphicsDevice.RenderState.AlphaTestEnable = true;
-            Game.GraphicsDevice.SamplerStates[0].MagFilter = TextureFilter.None;
-            Game.GraphicsDevice.SamplerStates[0].MinFilter = TextureFilter.None;
-            Game.GraphicsDevice.SamplerStates[0].MipFilter = TextureFilter.None;
-            _effect.Parameters["DrawLighting"].SetValue(true);
-
-            Game.GraphicsDevice.Textures[15] = UltimaXNA.Data.HuesXNA.HueTexture;
-
-            _effect.Begin();
-            _effect.CurrentTechnique.Passes[0].Begin();
-
-            keyValuePairs.MoveNext();
-            while (keyValuePairs.Current.Key != null)
-            {
-                for (int j = 0; (j < 4) && (keyValuePairs.Current.Key != null); j++)
-                {
-                    Game.GraphicsDevice.Textures[j] = keyValuePairs.Current.Key;
-                    vertices.AddRange(keyValuePairs.Current.Value);
-                    _vertexListQueue.Enqueue(keyValuePairs.Current.Value);
-                    keyValuePairs.MoveNext();
-                }
-
-                verts = vertices.ToArray();
-                Game.GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionNormalTextureHue>(PrimitiveType.TriangleList, verts, 0, verts.Length, _indexBuffer, 0, verts.Length / 2);
-                vertices.Clear();
-            }
-
-            _effect.CurrentTechnique.Passes[0].End();
-            _effect.End();
-
-            _drawQueue.Clear();
-        }
-
         public bool DrawWireframe = false;
 
         public void Flush(bool doLighting)
@@ -307,7 +265,15 @@ namespace UltimaXNA
 
                 iVertexList = keyValuePairs.Current.Value;
                 this.Game.GraphicsDevice.Textures[0] = iTexture;
-                this.Game.GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionNormalTextureHue>(PrimitiveType.TriangleList, iVertexList.ToArray(), 0, iVertexList.Count, _indexBuffer, 0, iVertexList.Count / 2);
+                // try
+                // {
+                    this.Game.GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionNormalTextureHue>(PrimitiveType.TriangleList, iVertexList.ToArray(), 0, iVertexList.Count, _indexBuffer, 0, iVertexList.Count / 2);
+                // }
+                // catch
+                // {
+
+                // }
+                iVertexList.Clear();
                 _vertexListQueue.Enqueue(iVertexList);
             }
 
