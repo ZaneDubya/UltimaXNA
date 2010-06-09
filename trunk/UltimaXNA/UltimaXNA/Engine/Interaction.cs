@@ -7,7 +7,6 @@ using UltimaXNA.Data;
 using UltimaXNA.Client;
 using UltimaXNA.Entities;
 using UltimaXNA.Extensions;
-using UltimaXNA.UI;
 using UltimaXNA.Input;
 using UltimaXNA.Network.Packets.Client;
 using UltimaXNA.TileEngine;

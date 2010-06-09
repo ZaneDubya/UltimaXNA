@@ -204,7 +204,7 @@ namespace UltimaXNA.Entities
                     tile.Add(mobtile);
                 }
             }
-            drawOverheads(tile, new Position3D(_movement.Position.Point));
+            drawOverheads(tile, new Position3D(_movement.Position.Tile_V3));
         }
 
         public override void Dispose()

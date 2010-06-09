@@ -76,12 +76,16 @@ namespace UltimaXNA.Data
                     exePath = GetExePath(_knownRegkeys[i]);
                 }
 
-                if (Directory.Exists(exePath))
+                if (exePath != null && Directory.Exists(exePath))
                 {
                     _log.Debug("Found UO Installation at [{0}].", exePath);
 
                     m_FileDirectory = exePath;
                 }
+            }
+            if (m_FileDirectory == null)
+            {
+                _log.Error("Did not find UO Installation.");
             }
         }
 
@@ -138,10 +142,13 @@ namespace UltimaXNA.Data
 
         public static string GetFilePath(string name)
         {
-            name = Path.Combine(m_FileDirectory, name);
-            // Fix for opening files which don't exist -Smjert
-            if (File.Exists(name))
-                return name;
+            if (m_FileDirectory != null)
+            {
+                name = Path.Combine(m_FileDirectory, name);
+                // Fix for opening files which don't exist -Smjert
+                if (File.Exists(name))
+                    return name;
+            }
 
             return null;
         }

@@ -94,7 +94,7 @@ namespace UltimaXNA.Entities
             }
             else
             {
-                _msTimePersist -= gameTime.ElapsedRealTime.Milliseconds;
+                _msTimePersist -= gameTime.ElapsedGameTime.Milliseconds;
                 if (_msTimePersist <= 0)
                     this.Dispose();
             }

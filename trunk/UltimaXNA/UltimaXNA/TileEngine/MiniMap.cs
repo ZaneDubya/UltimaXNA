@@ -91,16 +91,16 @@ namespace UltimaXNA.TileEngine
         {
             if ((map.UpdateTicker != _lastUpdateTicker) || (_texture == null))
             {
-                int size = map.GameSize * 2;
+                int size = ClientVars.RenderSize * 2;
                 _lastUpdateTicker = map.UpdateTicker;
                 _texture = new Texture2D(_graphics, size, size, 1, TextureUsage.None, SurfaceFormat.Bgra5551);
                 ushort[] data = new ushort[size * size];
                 fixed (ushort* pData = data)
                 {
-                    for (int y = 0; y < map.GameSize; y++)
+                    for (int y = 0; y < ClientVars.RenderSize; y++)
                     {
                         ushort* cur = pData + ((size /2 - 1) + (size - 1) * y);
-                        for (int x = 0; x < map.GameSize; x++)
+                        for (int x = 0; x < ClientVars.RenderSize; x++)
                         {
                             MapTile m = map.GetMapTile(renderBeginX + x, renderBeginY + y, true);
                             int i;

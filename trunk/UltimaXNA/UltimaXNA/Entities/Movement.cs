@@ -49,7 +49,8 @@ namespace UltimaXNA.Entities
         public bool IsMounted;
         public bool IsRunning { get { return ((_facing & Direction.Running) == Direction.Running); } }
 
-        Position3D _lastTile, _currentTile, _nextTile, _goalPosition;
+        Position3D _currentPosition, _goalPosition;
+        
         Direction _facing = Direction.Up;
         Direction _queuedFacing = Direction.Nothing;
         public Direction Facing
@@ -70,16 +71,16 @@ namespace UltimaXNA.Entities
 
         float MoveSequence = 0f;
 
-        internal Position3D Position { get { return _currentTile; } }
+        internal Position3D Position { get { return _currentPosition; } }
         
-        MoveEvent _moveEvent;
-        MoveEvent moveEvent
+        MoveEvents _moveEvents;
+        MoveEvents moveEvents
         {
             get
             {
-                if (_moveEvent == null)
-                    _moveEvent = new MoveEvent();
-                return _moveEvent;
+                if (_moveEvents == null)
+                    _moveEvents = new MoveEvents();
+                return _moveEvents;
             }
         }
 
@@ -90,20 +91,20 @@ namespace UltimaXNA.Entities
         {
             _entity = entity;
             _world = world;
-            _currentTile = new Position3D();
+            _currentPosition = new Position3D();
         }
 
         public void NewFacingToServer(Direction nDirection)
         {
             _facing = nDirection;
-            moveEvent.NewEvent(this._facing);
+            moveEvents.NewEvent(this._facing);
         }
 
         public bool GetMoveEvent(ref int direction, ref int sequence, ref int fastwalkkey)
         {
             if (!_entity.IsClientEntity)
                 return false;
-            return moveEvent.GetMoveEvent(ref direction, ref sequence, ref fastwalkkey);
+            return moveEvents.GetMoveEvent(ref direction, ref sequence, ref fastwalkkey);
         }
 
         public void MoveEventAck(int nSequence)
@@ -115,7 +116,7 @@ namespace UltimaXNA.Entities
         {
             // immediately return to the designated tile.
             MoveToInstant(x, y, z, direction);
-            moveEvent.ResetMoveSequence();
+            moveEvents.ResetMoveSequence();
         }
 
         public void Move(Direction facing)
@@ -129,8 +130,8 @@ namespace UltimaXNA.Entities
                 else
                     this.Facing &= Direction.FacingMask;
                 // now get the goal tile.
-                Vector3 position = MovementCheck.OffsetTile(_currentTile.Point, facing);
-                MoveTo(MovementCheck.OffsetTile(_currentTile.Point, facing));
+                Vector3 next = MovementCheck.OffsetTile(_currentPosition.Tile_V3, facing);
+                MoveTo(next, (int)facing);
             }
         }
 
@@ -140,37 +141,44 @@ namespace UltimaXNA.Entities
             {
                 if (_goalPosition == null)
                     return false;
-                if ((_currentTile.X == _goalPosition.X) &&
-                    (_currentTile.Y == _goalPosition.Y) &&
-                    !_currentTile.IsOffset)
+                if ((_currentPosition.Tile_V3 == _goalPosition.Tile_V3) &&
+                    !_currentPosition.IsOffset)
                     return false;
                 return true;
             }
         }
 
-        public void MoveTo(int x, int y, int z, int facing)
+        public void MoveTo(Vector3 v, int facing)
         {
-            if (facing != -1)
-            {
-                mFlushDrawObjects();
-                _facing = (Direction)facing;
-            }
-            _goalPosition = new Position3D(x, y, z);
+            MoveTo((int)v.X, (int)v.Y, (int)v.Z, facing);
         }
 
-        public void MoveTo(Vector3 v)
+        public void MoveTo(int x, int y, int z, int facing)
         {
-            _goalPosition = new Position3D(v);
+            Direction iFacing;
+            _goalPosition = getNextTile(_currentPosition, new Position3D(x, y, z), out iFacing);
+
+            // If we are the player, set our move event so that the game
+            // knows to send a move request to the server ...
+            if (_entity.IsClientEntity)
+            {
+                // Special exception for the player: if we are facing a new direction, we
+                // need to pause for a brief moment and let the server know that.
+                if ((_facing & Direction.FacingMask) != ((Direction)facing & Direction.FacingMask))
+                {
+                    moveEvents.NewEvent(((Direction)facing & Direction.FacingMask));
+                }
+                moveEvents.NewEvent((Direction)facing);
+            }
+
+            _facing = (Direction)facing;
         }
 
         public void MoveToInstant(int x, int y, int z, int facing)
         {
-            if (facing != -1)
-            {
-                mFlushDrawObjects();
-                _facing = (Direction)facing;
-            }
-            _goalPosition = _lastTile = _nextTile = _currentTile = new Position3D(x, y, z);
+            mFlushDrawObjects();
+            _facing = ((Direction)facing & Direction.FacingMask);
+            _goalPosition = _currentPosition = new Position3D(x, y, z);
         }
 
         public void Update(GameTime gameTime)
@@ -180,71 +188,23 @@ namespace UltimaXNA.Entities
             // Are we moving? (if our current location != our destination, then we are moving)
             if (IsMoving)
             {
-                // UO movement is tile based. Have we reached the next tile yet?
-                // If we have, then get the next tile in the move sequence and move to that one.
-                if (_currentTile.Point == _nextTile.Point)
-                {
-                    Direction iFacing;
-                    _nextTile = getNextTile(_currentTile, _goalPosition, out iFacing);
-                    // Is the next tile on-screen?
-                    if (_nextTile != null)
-                    {
-                        // If we are the player, set our move event so that the game
-                        // knows to send a move request to the server ...
-                        if (_entity.IsClientEntity)
-                        {
-                            // Special exception for the player: if we are facing a new direction, we
-                            // need to pause for a brief moment and let the server know that.
-                            if ((_facing & Direction.FacingMask) != (iFacing & Direction.FacingMask))
-                            {
-                                moveEvent.NewEvent((iFacing & Direction.FacingMask));
-                                _facing = iFacing;
-                                _nextTile.Point = _currentTile.Point;
-                                return;
-                            }
-                            else
-                            {
-                                moveEvent.NewEvent(iFacing);
-                            }
-                        }
-                        else
-                        {
-                            // if we are not the player, then we can just change the facing.
-                            _facing = iFacing;
-                        }
-                        _lastTile = new Position3D(_currentTile.X, _currentTile.Y, _currentTile.Z);
-                    }
-                    else
-                    {
-                        // This next tile is no longer in our map in memory.
-                        // Ideally, we should remove them from the map entirely.
-                        // Right now, we just set their location to the current tile
-                        // and refuse to move them further.
-                        MoveToInstant(_currentTile.X, _currentTile.Y, _currentTile.Z, (int)_facing);
-                        return;
-                    }
-                }
+                MoveSequence += ((float)(gameTime.ElapsedGameTime.TotalMilliseconds / 1000) / TimeToCompleteMove);
 
-                MoveSequence += ((float)(gameTime.ElapsedRealTime.TotalMilliseconds / 1000) / TimeToCompleteMove);
-                if (MoveSequence >= 1f)
+                if (MoveSequence < 1f)
                 {
-                    MoveSequence -= 1f;
-                    _currentTile.Point = _nextTile.Point;
+                    _currentPosition.Offset_V3 = (_goalPosition.Tile_V3 - _currentPosition.Tile_V3) * MoveSequence; // _currentTile.Point = _lastTile.Point + (_nextTile.Point - _lastTile.Point) * MoveSequence;
                 }
                 else
                 {
-                    _currentTile.Point = _lastTile.Point + (_nextTile.Point - _lastTile.Point) * MoveSequence;
+                    _currentPosition = _goalPosition;
+                    // we have reached our destination :)
+                    if (_queuedFacing != Direction.Nothing)
+                    {
+                        _facing = _queuedFacing; // Occasionally we will have a queued facing for monsters.
+                        _queuedFacing = Direction.Nothing;
+                    }
+                    MoveSequence = 0f;
                 }
-            }
-            else
-            {
-                // we have reached our destination :)
-                if (_queuedFacing != Direction.Nothing)
-                {
-                    _facing = _queuedFacing; // Occasionally we will have a queued facing for monsters.
-                    _queuedFacing = Direction.Nothing;
-                }
-                MoveSequence = 0f;
             }
         }
 
@@ -259,7 +219,7 @@ namespace UltimaXNA.Entities
                 return;
             if (_world.Map == null)
                 return;
-            TileEngine.MapTile lastTile = _world.Map.GetMapTile(Position.TileX, Position.TileY, false);
+            TileEngine.MapTile lastTile = _world.Map.GetMapTile(Position.Draw_TileX, Position.Draw_TileY, false);
             if (lastTile != null)
                 lastTile.FlushObjectsBySerial(_entity.Serial);
         }
@@ -267,10 +227,10 @@ namespace UltimaXNA.Entities
         private Position3D getNextTile(Position3D current, Position3D goal, out Direction facing)
         {
             facing = getNextFacing(current, goal);
-            Vector3 nextTile = MovementCheck.OffsetTile(current.Point, facing);
+            Vector3 nextTile = MovementCheck.OffsetTile(current.Tile_V3, facing);
 
             int nextAltitude;
-            bool moveIsOkay = MovementCheck.CheckMovement((Mobile)_entity, _world.Map, current.Point, facing, out nextAltitude);
+            bool moveIsOkay = MovementCheck.CheckMovement((Mobile)_entity, _world.Map, current.Tile_V3, facing, out nextAltitude);
             nextTile.Z = nextAltitude;
             if (moveIsOkay)
             {
@@ -315,7 +275,7 @@ namespace UltimaXNA.Entities
                 else
                 {
                     // We should never reach this.
-                    facing = (Direction)0xFF;
+                    facing = _facing & Direction.FacingMask;
                 }
             }
 
@@ -327,47 +287,56 @@ namespace UltimaXNA.Entities
     {
         public static Vector3 NullPosition = new Vector3(-1);
 
-        Vector3 _position;
-        public Vector3 Point { get { return _position; } set { _position = value; } }
-        public int X { get { return (int)_position.X; } set { _position.X = value; } }
-        public int Y { get { return (int)_position.Y; } set { _position.Y = value; } }
-        public int Z {
-            get
-            {
-                return (int)_position.Z;
-            } 
-            set
-            {
-                _position.Z = value;
-            }
+        Vector3 _tile;
+        Vector3 _offset;
+
+        public Vector3 Tile_V3 { get { return _tile; } set { _tile = value; } }
+        public Vector3 Offset_V3 { get { return _offset; } set { _offset = value; } }
+        public Vector3 Point_V3 { get { return _tile + _offset; } }
+
+        public bool IsOffset { get { return (X_offset != 0) || (Y_offset != 0) || (Z_offset != 0); } }
+        public bool IsNullPosition { get { return _tile == NullPosition; } }
+
+        public int X { get { return (int)_tile.X; } set { _tile.X = value; } }
+        public int Y { get { return (int)_tile.Y; } set { _tile.Y = value; } }
+        public int Z { get { return (int)_tile.Z; } set { _tile.Z = value; } }
+        float X_offset { get { return _offset.X % 1.0f; } }
+        float Y_offset { get { return _offset.Y % 1.0f; } }
+        float Z_offset { get { return _offset.Z % 1.0f; } }
+
+        public int Draw_TileX { get { return drawOffsetTile(X, X_offset); } }
+        public int Draw_TileY { get { return drawOffsetTile(Y, Y_offset); } }
+        public float Draw_Xoffset { get { return drawOffsetOffset(X_offset); } }
+        public float Draw_Yoffset { get { return drawOffsetOffset(Y_offset); } }
+        public float Draw_Zoffset { get { return Z_offset; } }
+
+        int drawOffsetTile(int tile, float offset)
+        {
+            return (offset > 0) ? tile + 1 : tile;
         }
 
-        public int TileX { get { return (Xoffset != 0) ? X + 1 : X; } }
-        public int TileY { get { return (Yoffset != 0) ? Y + 1 : Y; } }
-        public float Xoffset { get { return _position.X % 1.0f; } }
-        public float Yoffset { get { return _position.Y % 1.0f; } }
-        public float Zoffset { get { return _position.Z % 1.0f; } }
-        public float Xoffset_Draw { get { return (Xoffset == 0) ? 0 : Xoffset - 1f; } }
-        public float Yoffset_Draw { get { return (Yoffset == 0) ? 0 : Yoffset - 1f; } }
-        public float Zoffset_Draw { get { return Zoffset; } }
-
-        public bool IsOffset { get { return (Xoffset != 0) || (Yoffset != 0) || (Zoffset != 0); } }
-        public bool IsNullPosition { get { return _position == NullPosition; } }
-
+        float drawOffsetOffset(float offset)
+        {
+            if (offset > 0)
+                return offset - 1f;
+            else
+                return offset;
+            // return (offset == 0) ? 0 : offset - 1f; 
+        }
 
         public Position3D()
         {
-            _position = NullPosition;
+            _tile = NullPosition;
         }
 
         public Position3D(int x, int y, int z)
         {
-            _position = new Vector3(x, y, z);
+            _tile = new Vector3(x, y, z);
         }
 
         public Position3D(Vector3 v)
         {
-            _position = v;
+            _tile = v;
         }
 
         public override bool Equals(object o)
@@ -407,58 +376,75 @@ namespace UltimaXNA.Entities
         {
             return string.Format("X:{0} Y:{1} Z:{2}", X, Y, Z);
         }
+
+        public string ToStringComplex()
+        {
+            return
+                "PT=" + ToString() + Environment.NewLine +
+                "PO=" + string.Format("X:{0} Y:{1} Z:{2}", X_offset, Y_offset, Z_offset) + Environment.NewLine +
+                "DT=" + string.Format("X:{0} Y:{1} Z:{2}", Draw_TileX, Draw_TileY, Z) + Environment.NewLine + 
+                "D=" + string.Format("X:{0} Y:{1} Z:{2}", Draw_Xoffset, Draw_Yoffset, Draw_Zoffset);
+        }
     }
 
     // This event handles all the move sequences
-    public class MoveEvent
+    public class MoveEvents
     {
-        private bool _Event;
-        private int _Sequence;
-        private Direction _Direction;
+        private int _NextSequence;
         private int _FastWalkKey;
+        List<MoveEventSingle> _events;
 
-        public MoveEvent()
+        public MoveEvents()
         {
-            _Event = false;
-            _Direction = Direction.Up;
+            _events = new List<MoveEventSingle>();
             _FastWalkKey = new Random().Next(int.MinValue, int.MaxValue);
-            this.ResetMoveSequence();
+            ResetMoveSequence();
         }
 
         public void ResetMoveSequence()
         {
-            _Sequence = -1;
+            _NextSequence = 0;
         }
 
         public void NewEvent(Direction nDirection)
         {
-            _Event = true;
-            _Sequence++;
-            if (_Sequence > byte.MaxValue)
-                _Sequence = 1;
-            _Direction = nDirection;
+            int sequence = _NextSequence++;
+            if (_NextSequence > byte.MaxValue)
+                ResetMoveSequence();
+            int direction = (int)nDirection;
+            int fastWalk = (_FastWalkKey == int.MaxValue) ? new Random().Next(int.MinValue, int.MaxValue) : _FastWalkKey++;
 
-            if (_FastWalkKey == int.MaxValue)
-                _FastWalkKey = new Random().Next(int.MinValue, int.MaxValue);
-            else
-                _FastWalkKey++;
-            
+            _events.Add(new MoveEventSingle(sequence, direction, fastWalk));
         }
 
         public bool GetMoveEvent(ref int direction, ref int sequence, ref int fastwalkkey)
         {
-            if (_Event == false)
+            if (_events.Count == 0)
             {
                 return false;
             }
             else
             {
-                _Event = false;
-                sequence = _Sequence;
-                fastwalkkey = _FastWalkKey;
-                direction = (int)_Direction;
+                direction = _events[0].Direction;
+                sequence = _events[0].Sequence;
+                fastwalkkey = _events[0].Fastwalk;
+                _events.RemoveAt(0);
                 return true;
             }
+        }
+    }
+
+    class MoveEventSingle
+    {
+        public readonly int Sequence;
+        public readonly int Direction;
+        public readonly int Fastwalk;
+
+        public MoveEventSingle(int sequence, int direction, int fastwalk)
+        {
+            Sequence = sequence;
+            Direction = direction;
+            Fastwalk = fastwalk;
         }
     }
 }

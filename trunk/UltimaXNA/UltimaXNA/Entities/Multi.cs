@@ -102,9 +102,12 @@ namespace UltimaXNA.Entities
 
                     if (!_hasCustomTiles)
                     {
-                        foreach (StaticTile s in _components.Tiles[p.X][p.Y])
+                        if (p.X < _components.Width && p.Y < _components.Height)
                         {
-                            t.Add(new MapObjectStatic(s.ID, 0, new Position3D(x, y, s.Z)));
+                            foreach (StaticTile s in _components.Tiles[p.X][p.Y])
+                            {
+                                t.Add(new MapObjectStatic(s.ID, 0, new Position3D(x, y, s.Z)));
+                            }
                         }
                     }
                     else

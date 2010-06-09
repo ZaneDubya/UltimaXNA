@@ -105,7 +105,7 @@ namespace UltimaXNA.UILegacy.Gumplings
                     _caratBlinkOn = true;
                 else
                 {
-                    _secondsSinceLastBlink += ((float)gameTime.ElapsedRealTime.TotalSeconds);
+                    _secondsSinceLastBlink += ((float)gameTime.ElapsedGameTime.TotalSeconds);
                     if (_secondsSinceLastBlink >= _SecondsPerBlink)
                     {
                         _secondsSinceLastBlink -= _SecondsPerBlink;

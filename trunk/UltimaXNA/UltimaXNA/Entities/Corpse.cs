@@ -49,7 +49,7 @@ namespace UltimaXNA.Entities
         {
             _movement.ClearImmediate();
             tile.Add(new TileEngine.MapObjectCorpse(position, DrawFacing, this, Hue, _corpseBody, _corpseFrame));
-            drawOverheads(tile, new Position3D(_movement.Position.Point));
+            drawOverheads(tile, new Position3D(_movement.Position.Point_V3));
         }
 
         public void LoadCorpseClothing(List<Network.Packets.Server.CorpseClothingItemWithLayer> items)

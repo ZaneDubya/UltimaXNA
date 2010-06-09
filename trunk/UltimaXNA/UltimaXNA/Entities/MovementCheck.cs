@@ -39,11 +39,11 @@ namespace UltimaXNA.Entities
 
         public static bool CheckMovement(Mobile m, Map map, Vector3 loc, Direction d, out int newZ)
         {
-            //if (map == null || map == Map.Internal)
-            //{
-            //    newZ = 0;
-            //    return false;
-            //}
+            if (map == null)
+            {
+                newZ = 0;
+                return true;
+            }
 
             int xStart = (int)loc.X;
             int yStart = (int)loc.Y;
