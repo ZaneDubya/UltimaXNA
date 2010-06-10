@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using UltimaXNA.Entities;
 
 namespace UltimaXNA.UILegacy.Gumplings
 {
@@ -32,7 +33,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             Earring = 18,
             Sleeves = 19,
             Back = 20,
-            // skip 21, backpac
+            // skip 21, backpack
             Robe = 21,
             Skirt = 22,
             // skip 23, inner legs (!!! do we really skip this?)
@@ -138,8 +139,9 @@ namespace UltimaXNA.UILegacy.Gumplings
                 for (EquipSlots i = EquipSlots.First; i < EquipSlots.Max; i++)
                 {
                     int bodyID = 0;
-                    bool hueGreyPixelsOnly = true;
-
+                    int hue = hueSlot(i);
+                    bool hueGreyPixelsOnly = ((hue & 0x8000) == 0x8000 ? true : false);
+                    hue &= 0x7FFF;
                     switch (i)
                     {
                         case EquipSlots.Body:
@@ -151,16 +153,19 @@ namespace UltimaXNA.UILegacy.Gumplings
                             {
                                 Data.ItemData data = Data.TileData.ItemData[equipmentSlot(i)];
                                 bodyID = data.AnimID + (_isFemale ? 60000 : 50000);
-                                hueGreyPixelsOnly = false;
                             }
                             break;
                         default:
-                            bodyID = equipmentSlot(i);
+                            if (equipmentSlot(i) != 0)
+                            {
+                                Data.ItemData data = Data.TileData.ItemData[equipmentSlot(i)];
+                                bodyID = data.AnimID + (_isFemale ? 60000 : 50000);
+                            }
                             break;
                     }
 
                     if (bodyID != 0)
-                        spriteBatch.Draw(Data.Gumps.GetGumpXNA(bodyID), Position, hueSlot(i), hueGreyPixelsOnly);
+                        spriteBatch.Draw(Data.Gumps.GetGumpXNA(bodyID), Position, hue, hueGreyPixelsOnly);
                 }
             }
         }
@@ -173,6 +178,49 @@ namespace UltimaXNA.UILegacy.Gumplings
         int hueSlot(EquipSlots slotID)
         {
             return _hueSlots[(int)slotID];
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            if (hasSourceEntity)
+            {
+                if (_sourceEntityUpdateHash != ((Mobile)_sourceEntity).UpdateTicker)
+                {
+                    for (EquipSlots i = EquipSlots.First; i < EquipSlots.Max; i++)
+                    {
+                        int itemID, hue;
+                        ((Mobile)_sourceEntity).GetItemInfo((int)i, out itemID, out hue);
+                        _equipmentSlots[(int)i] = itemID;
+                        _hueSlots[(int)i] = hue;
+                    }
+                }
+            }
+ 	        base.Update(gameTime);
+        }
+
+        int _sourceEntityUpdateHash = 0x7FFFFFFF;
+        Entity _sourceEntity = null;
+        public Entity SourceEntity
+        {
+            set
+            {
+                if ((value is Entities.Mobile) || value is Entities.PlayerMobile)
+                {
+                    _sourceEntity = value;
+                    _sourceEntityUpdateHash = 0x7FFFFFFF;
+                }
+            }
+            get
+            {
+                return _sourceEntity;
+            }
+        }
+        bool hasSourceEntity
+        {
+            get
+            {
+                return (_sourceEntity == null) ? false : true;
+            }
         }
     }
 }

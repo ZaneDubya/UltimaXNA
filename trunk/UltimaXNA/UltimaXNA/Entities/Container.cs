@@ -26,7 +26,7 @@ using UltimaXNA.TileEngine;
 
 namespace UltimaXNA.Entities
 {
-    class Container : Item
+    public class Container : Item
     {
         public int UpdateTicker { get; internal set; }
         List<Item> _contents;

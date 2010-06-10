@@ -40,15 +40,15 @@ namespace UltimaXNA.UILegacy.Clientside
             AddGumpling(new GumpPic(this, 0, 0, 0, 5500, 0));
             // quit button
             AddGumpling(new Button(this, 0, 554, 2, 5513, 5515, ButtonTypes.Activate, 0, (int)Buttons.QuitButton));
-            ((Button)this.LastGumpling).GumpOverID = 5514;
+            ((Button)LastGumpling).GumpOverID = 5514;
 
             // Page 1 - select a character
             // back button
             AddGumpling(new Button(this, 1, 586, 435, 5537, 5539, ButtonTypes.Activate, 0, (int)Buttons.BackButton));
-            ((Button)this.LastGumpling).GumpOverID = 5538;
+            ((Button)LastGumpling).GumpOverID = 5538;
             // forward button
             AddGumpling(new Button(this, 1, 610, 435, 5540, 5542, ButtonTypes.Activate, 0, (int)Buttons.ForwardButton));
-            ((Button)this.LastGumpling).GumpOverID = 5541;
+            ((Button)LastGumpling).GumpOverID = 5541;
             // center message window backdrop
             AddGumpling(new ResizePic(this, 1, 160, 70, 2600, 408, 390));
             AddGumpling(new TextLabelAscii(this, 1, 266, 112, 2017, 2, Data.StringList.Entry(3000050)));
@@ -56,10 +56,10 @@ namespace UltimaXNA.UILegacy.Clientside
             ReloadCharList();
             // delete button
             AddGumpling(new Button(this, 1, 224, 398, 5530, 5532, ButtonTypes.Activate, 0, (int)Buttons.DeleteCharacterButton));
-            ((Button)this.LastGumpling).GumpOverID = 5531;
+            ((Button)LastGumpling).GumpOverID = 5531;
             // new button
             AddGumpling(new Button(this, 1, 442, 398, 5533, 5535, ButtonTypes.Activate, 0, (int)Buttons.NewCharacterButton));
-            ((Button)this.LastGumpling).GumpOverID = 5534;
+            ((Button)LastGumpling).GumpOverID = 5534;
 
             // Page 2 - logging in to server
             // center message window backdrop

@@ -179,7 +179,8 @@ namespace UltimaXNA
                     break;
                 case TargetTypes.Position:
                     // Select X, Y, Z
-                    mouseTargetingEventXYZ(mouseOverObject);
+                    _world.PickType = PickTypes.PickStatics | PickTypes.PickObjects;
+                    mouseTargetingEventObject(mouseOverObject); // mouseTargetingEventXYZ(mouseOverObject);
                     break;
                 case TargetTypes.MultiPlacement:
                     // select X, Y, Z
@@ -497,7 +498,17 @@ namespace UltimaXNA
             }
             else
             {
-                UltimaClient.Send(new TargetXYZPacket((short)selectedObject.Position.X, (short)selectedObject.Position.Y, (short)selectedObject.Z, (ushort)selectedObject.ItemID));
+                int modelNumber = 0;
+                Type type = selectedObject.GetType();
+                if (type == typeof(MapObjectStatic))
+                {
+                    modelNumber = selectedObject.ItemID;
+                }
+                else
+                {
+                    modelNumber = 0;
+                }
+                UltimaClient.Send(new TargetXYZPacket((short)selectedObject.Position.X, (short)selectedObject.Position.Y, (short)selectedObject.Z, (ushort)modelNumber));
             }
             
             // Clear our target cursor.
