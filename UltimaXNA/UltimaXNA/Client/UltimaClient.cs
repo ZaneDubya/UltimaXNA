@@ -312,23 +312,23 @@ namespace UltimaXNA.Client
         {
             OpenContainerPacket p = (OpenContainerPacket)packet;
 
-            Container o;
+            Container item;
             // Special case for 0x30, which tells us to open a buy from vendor window.
             if (p.GumpId == 0x30)
             {
                 Mobile m = EntitiesCollection.GetObject<Mobile>(p.Serial, false);
-                o = (Container)m.equipment[(int)EquipLayer.ShopBuy];
+                item = m.VendorShopContents;
             }
             else
             {
-                o = EntitiesCollection.GetObject<Container>(p.Serial, false);
-                if (o is Container)
+                item = EntitiesCollection.GetObject<Container>(p.Serial, false);
+                if (item is Container)
                 {
-                    _LegacyUI.AddContainerGump(o, o.ItemID);
+                    _LegacyUI.AddContainerGump(item, item.ItemID);
                 }
                 else
                 {
-                    _LegacyUI.AddMessage_Debug(string.Format("Client: Object {0} has no support for a container object!", o.Serial));
+                    _LegacyUI.AddMessage_Debug(string.Format("Client: Object {0} has no support for a container object!", item.Serial));
                 }
             }
         }
@@ -550,7 +550,7 @@ namespace UltimaXNA.Client
             for (int i = 0; i < p.Equipment.Length; i++)
             {
                 Item item = add_Item(p.Equipment[i].Serial, p.Equipment[i].GumpId, p.Equipment[i].Hue, p.Serial, 0);
-                mobile.equipment[p.Equipment[i].Layer] = item;
+                mobile.WearItem(item, p.Equipment[i].Layer);
                 if (item.PropertyList.Hash == 0)
                     Send(new QueryPropertiesPacket(item.Serial));
             }
@@ -987,8 +987,8 @@ namespace UltimaXNA.Client
         {
             WornItemPacket p = (WornItemPacket)packet;
             Item item = add_Item(p.Serial, p.ItemId, p.Hue, p.ParentSerial, 0);
-            Mobile u = EntitiesCollection.GetObject<Mobile>(p.ParentSerial, false);
-            u.equipment[p.Layer] = item;
+            Mobile m = EntitiesCollection.GetObject<Mobile>(p.ParentSerial, false);
+            m.WearItem(item, p.Layer);
             if (item.PropertyList.Hash == 0)
                 Send(new QueryPropertiesPacket(item.Serial));
         }

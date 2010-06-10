@@ -106,13 +106,13 @@ namespace UltimaXNA.UILegacy.Clientside
 
             // back button
             AddGumpling(new Button(this, 1, 586, 435, 5537, 5539, ButtonTypes.Activate, 0, (int)Buttons.BackButton));
-            ((Button)this.LastGumpling).GumpOverID = 5538;
+            ((Button)LastGumpling).GumpOverID = 5538;
             // forward button
             AddGumpling(new Button(this, 1, 610, 435, 5540, 5542, ButtonTypes.Activate, 0, (int)Buttons.ForwardButton));
-            ((Button)this.LastGumpling).GumpOverID = 5541;
+            ((Button)LastGumpling).GumpOverID = 5541;
             // quit button
             AddGumpling(new Button(this, 0, 554, 2, 5513, 5515, ButtonTypes.Activate, 0, (int)Buttons.QuitButton));
-            ((Button)this.LastGumpling).GumpOverID = 5514;
+            ((Button)LastGumpling).GumpOverID = 5514;
         }
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)

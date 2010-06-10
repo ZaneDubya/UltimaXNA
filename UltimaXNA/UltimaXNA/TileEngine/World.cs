@@ -450,10 +450,20 @@ namespace UltimaXNA.TileEngine
 
                         if ((PickType & pick) == pick)
                         {
-                            if (MouseOverList.IsPointInObject(vectorBuffer[0].Position, vectorBuffer[3].Position, _input.CurrentMousePosition))
+                            if (((!flip) && MouseOverList.IsPointInObject(vectorBuffer[0].Position, vectorBuffer[3].Position, _input.CurrentMousePosition)) ||
+                                ((flip) && MouseOverList.IsPointInObject(vectorBuffer[2].Position, vectorBuffer[1].Position, _input.CurrentMousePosition)))
                             {
-                                MouseOverItem item = new MouseOverItem(texture, vectorBuffer[0].Position, mapObject);
-                                item.Vertices = new Vector3[4] { vectorBuffer[0].Position, vectorBuffer[1].Position, vectorBuffer[2].Position, vectorBuffer[3].Position };
+                                MouseOverItem item; 
+                                if (!flip)
+                                {
+                                    item = new MouseOverItem(texture, vectorBuffer[0].Position, mapObject);
+                                    item.Vertices = new Vector3[4] { vectorBuffer[0].Position, vectorBuffer[1].Position, vectorBuffer[2].Position, vectorBuffer[3].Position };
+                                }
+                                else
+                                {
+                                    item = new MouseOverItem(texture, vectorBuffer[2].Position, mapObject);
+                                    item.Vertices = new Vector3[4] { vectorBuffer[2].Position, vectorBuffer[0].Position, vectorBuffer[3].Position, vectorBuffer[1].Position };
+                                }
                                 overList.Add2DItem(item);
                             }
                         }

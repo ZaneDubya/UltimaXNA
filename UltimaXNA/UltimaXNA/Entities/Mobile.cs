@@ -28,25 +28,39 @@ namespace UltimaXNA.Entities
     {
         public string Name = string.Empty;
         public CurrentMaxValue Health, Stamina, Mana;
-        internal WornEquipment equipment;
-        internal MobileAnimation animation;
+        private WornEquipment equipment;
+        protected MobileAnimation _animation;
 
         public bool IsMounted { get { return equipment[(int)EquipLayer.Mount] != null; } }
         public bool IsFemale;
         public bool IsPoisoned;
         public bool IsBlessed;
-        public bool IsWarMode { get { return animation.WarMode; } set { animation.WarMode = value; } }
+        public bool IsWarMode { get { return _animation.WarMode; } set { _animation.WarMode = value; } }
         public bool IsHidden;
 
         public int BodyID
         {
-            get { return animation.BodyID; }
-            set { animation.BodyID = value; }
+            get { return _animation.BodyID; }
+            set
+            {
+                _animation.BodyID = value;
+                tickUpdateTicker();
+            }
         }
         public int HairBodyID { get { return (equipment[(int)EquipLayer.Hair] == null) ? 0 : equipment[(int)EquipLayer.Hair].AnimationDisplayID; } }
         public int HairHue { get { return (equipment[(int)EquipLayer.Hair] == null) ? 0 : equipment[(int)EquipLayer.Hair].Hue; } }
         public int FacialHairBodyID { get { return (equipment[(int)EquipLayer.FacialHair] == null) ? 0 : equipment[(int)EquipLayer.FacialHair].AnimationDisplayID; } }
         public int FacialHairHue { get { return (equipment[(int)EquipLayer.FacialHair] == null) ? 0 : equipment[(int)EquipLayer.FacialHair].Hue; } }
+
+        int _updateTicker = 0;
+        void tickUpdateTicker()
+        {
+            _updateTicker++;
+        }
+        public int UpdateTicker
+        {
+            get { return _updateTicker; }
+        }
 
         public bool Alive
         {
@@ -67,6 +81,7 @@ namespace UltimaXNA.Entities
             set
             {
                 _hue = value;
+                tickUpdateTicker();
             }
         }
 
@@ -140,7 +155,7 @@ namespace UltimaXNA.Entities
         public Mobile(Serial serial, IWorld world)
             : base(serial, world)
         {
-            animation = new MobileAnimation();
+            _animation = new MobileAnimation();
             equipment = new WornEquipment(this);
             _movement.RequiresUpdate = true;
         }
@@ -150,13 +165,13 @@ namespace UltimaXNA.Entities
             if (equipment[(int)EquipLayer.Mount] != null &&
                 equipment[(int)EquipLayer.Mount].ItemID != 0)
             {
-                _movement.IsMounted = animation.IsMounted = true;
+                _movement.IsMounted = _animation.IsMounted = true;
             }
             else
             {
-                _movement.IsMounted = animation.IsMounted = false;
+                _movement.IsMounted = _animation.IsMounted = false;
             }
-            animation.Update(gameTime);
+            _animation.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -165,15 +180,15 @@ namespace UltimaXNA.Entities
             if (_movement.IsMoving)
             {
                 MobileAction iAnimationAction = (_movement.IsRunning) ? MobileAction.Run : MobileAction.Walk;
-                animation.SetAnimation(iAnimationAction, 10, 0, false, false, 0);
+                _animation.SetAnimation(iAnimationAction, 10, 0, false, false, 0);
             }
             else
             {
-                if (animation.IsMovementAction(animation.Action))
-                    animation.HaltAnimation = true;
+                if (_animation.IsMovementAction(_animation.Action))
+                    _animation.HaltAnimation = true;
             }
 
-            int action = animation.GetAction();
+            int action = _animation.GetAction();
             MapObjectMobile mobtile = null;
             int[] drawLayers = m_DrawLayers;
 			bool hasOuterTorso = equipment[(int)EquipLayer.OuterTorso] != null && equipment[(int)EquipLayer.OuterTorso].AnimationDisplayID != 0;
@@ -191,7 +206,7 @@ namespace UltimaXNA.Entities
                 {
                     mobtile = new MapObjectMobile(
                         BodyID, position,
-                        DrawFacing, action, animation.AnimationFrame, 
+                        DrawFacing, action, _animation.AnimationFrame, 
                         this, i, Hue);
                     tile.Add(mobtile);
                 }
@@ -199,7 +214,7 @@ namespace UltimaXNA.Entities
                 {
                     mobtile = new TileEngine.MapObjectMobile(
                             equipment[drawLayers[i]].AnimationDisplayID, _movement.Position,
-                            DrawFacing, action, animation.AnimationFrame,
+                            DrawFacing, action, _animation.AnimationFrame,
                             this, i, equipment[drawLayers[i]].Hue);
                     tile.Add(mobtile);
                 }
@@ -210,17 +225,63 @@ namespace UltimaXNA.Entities
         public override void Dispose()
         {
             equipment.ClearEquipment();
+            tickUpdateTicker();
             base.Dispose();
+        }
+
+        public void WearItem(Item i, int slot)
+        {
+            equipment[slot] = i;
+            tickUpdateTicker();
         }
 
         public void RemoveItem(Serial serial)
         {
             equipment.RemoveBySerial(serial);
+            tickUpdateTicker();
+        }
+
+        public void GetItemInfo(int slot, out int displayID, out int hue)
+        {
+            if (slot == 0)
+            {
+                displayID = BodyID;
+                hue = Hue;
+            }
+            else
+            {
+                if (equipment[slot] == null)
+                {
+                    displayID = 0;
+                    hue = 0;
+                }
+                else
+                {
+                    displayID = equipment[slot].DisplayItemID;
+                    hue = equipment[slot].Hue;
+                }
+            }
+        }
+
+        public Container Backpack
+        {
+            get
+            {
+                return (Container)equipment[(int)EquipLayer.Backpack];
+            }
+        }
+
+        public Container VendorShopContents
+        {
+            get
+            {
+                return (Container)equipment[(int)EquipLayer.ShopBuy];
+            }
         }
 
         public void Animation(int action, int frameCount, int repeatCount, bool reverse, bool repeat, int delay)
         {
-            animation.SetAnimation((MobileAction)action, frameCount, repeatCount, reverse, repeat, delay);
+            _animation.SetAnimation((MobileAction)action, frameCount, repeatCount, reverse, repeat, delay);
         }
 
         public void Move(Direction facing)

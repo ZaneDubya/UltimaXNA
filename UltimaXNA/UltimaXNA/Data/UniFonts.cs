@@ -540,11 +540,47 @@ namespace UltimaXNA.Data
                     }
                     else
                     {
-                        // this word is too big, so we insert a \n character before the word... and try again.
-                        // !!! What if a single word won't fit on a line. KEEEE-RASH!
-                        reader.Characters.Insert(i - word.Count, new HTMLCharacter('\n'));
-                        i = i - word.Count - 1;
-                        word.Clear();
+                        // if this is the last word in a line
+                        if ((width > 0) && (i - word.Count >= 0))
+                        {
+                            reader.Characters.Insert(i - word.Count, new HTMLCharacter('\n'));
+                            i = i - word.Count - 1;
+                            word.Clear();
+                        }
+                        else
+                        {
+                            reader.Characters[i - 1].Character = '-';
+                            int j = i;
+                            while (j < reader.Length && reader.Characters[j].Character != ' ' && reader.Characters[j].Character != '\n')
+                            {
+                                reader.Characters.RemoveAt(j);
+                            }
+                            i = 0;
+                            word.Clear();
+                            width = 0;
+                            wordwidth = 0;
+                        }
+
+
+
+                        // this word is too big, so we insert a \n character after the word. !!!
+                        // this will cause the word to be cut off... this requires a better fix in the future...
+                        
+                        // This won't work if the first word in the line is too long, so a special case is necessary:
+                        // if (i < word.Count)
+                        // {
+                        
+                            // reader.Characters.Insert(i, new HTMLCharacter('\n'));
+                            // word.Clear();
+                            // wordwidth = 0;
+                           //  width = 0;
+                        // }
+                        // else
+                        // {
+                        //     reader.Characters.Insert(i - word.Count, new HTMLCharacter('\n'));
+                        //     i = i - word.Count - 1;
+                        //     word.Clear();
+                        // }
                     }
 
                     if (c.Character == '\n')

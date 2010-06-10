@@ -135,7 +135,7 @@ namespace UltimaXNA.UILegacy
         public Control AddGumpling(Control c)
         {
             _controls.Add(c);
-            return this.LastGumpling;
+            return LastGumpling;
         }
 
         public Control LastGumpling
@@ -160,7 +160,7 @@ namespace UltimaXNA.UILegacy
                         break;
                     case "resizepic":
                         _controls.Add(new Gumplings.ResizePic(this, currentGUMPPage, arguements));
-                        ((Gumplings.ResizePic)this.LastGumpling).CloseOnRightClick = true;
+                        ((Gumplings.ResizePic)LastGumpling).CloseOnRightClick = true;
                         break;
                     case "button":
                         _controls.Add(new Gumplings.Button(this, currentGUMPPage, arguements));
