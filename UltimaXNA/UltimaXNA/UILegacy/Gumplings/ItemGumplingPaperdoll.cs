@@ -59,7 +59,7 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         protected override void itemDrop(UltimaXNA.Entities.Item item, int x, int y)
         {
-            // Interaction.WearItem(item);
+
         }
     }
 }
