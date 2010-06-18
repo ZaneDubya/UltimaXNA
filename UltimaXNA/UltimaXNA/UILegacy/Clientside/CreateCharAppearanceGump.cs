@@ -78,7 +78,7 @@ namespace UltimaXNA.UILegacy.Clientside
         ColorPicker _SkinHue;
         ColorPicker _HairHue;
         ColorPicker _FacialHairHue;
-        Paperdoll _paperdoll;
+        PaperdollLargeUninteractable _paperdoll;
 
         public CreateCharAppearanceGump()
             : base(0, 0)
@@ -95,7 +95,7 @@ namespace UltimaXNA.UILegacy.Clientside
             // character window
             AddGumpling(new GumpPic(this, 0, 238, 98, 1800, 0));
             // paperdoll
-            _paperdoll = new Paperdoll(this, 0, 237, 97, 1.25f);
+            _paperdoll = new PaperdollLargeUninteractable(this, 0, 237, 97);
             _paperdoll.IsCharacterCreation = true;
             AddGumpling(_paperdoll);
 
@@ -164,11 +164,11 @@ namespace UltimaXNA.UILegacy.Clientside
             }
             // update the paperdoll
             _paperdoll.Gender = _Gender.Index;
-            _paperdoll.SetSlotHue(Paperdoll.EquipSlots.Body, SkinHue);
-            _paperdoll.SetSlotEquipment(Paperdoll.EquipSlots.Hair, HairID);
-            _paperdoll.SetSlotHue(Paperdoll.EquipSlots.Hair, HairHue);
-            _paperdoll.SetSlotEquipment(Paperdoll.EquipSlots.FacialHair, FacialHairID);
-            _paperdoll.SetSlotHue(Paperdoll.EquipSlots.FacialHair, FacialHairHue);
+            _paperdoll.SetSlotHue(PaperdollLargeUninteractable.EquipSlots.Body, SkinHue);
+            _paperdoll.SetSlotEquipment(PaperdollLargeUninteractable.EquipSlots.Hair, HairID);
+            _paperdoll.SetSlotHue(PaperdollLargeUninteractable.EquipSlots.Hair, HairHue);
+            _paperdoll.SetSlotEquipment(PaperdollLargeUninteractable.EquipSlots.FacialHair, FacialHairID);
+            _paperdoll.SetSlotHue(PaperdollLargeUninteractable.EquipSlots.FacialHair, FacialHairHue);
         }
 
         public override void ActivateByButton(int buttonID)

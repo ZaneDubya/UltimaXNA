@@ -146,7 +146,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             }
         }
 
-        protected override void _mouseClick(int x, int y, UltimaXNA.Input.MouseButtons button)
+        protected override void mouseClick(int x, int y, UltimaXNA.Input.MouseButtons button)
         {
             if (!_isAnOpenSwatch)
             {
@@ -154,7 +154,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             }
         }
 
-        protected override void _mouseOver(int x, int y)
+        protected override void mouseOver(int x, int y)
         {
             if (_isAnOpenSwatch)
             {

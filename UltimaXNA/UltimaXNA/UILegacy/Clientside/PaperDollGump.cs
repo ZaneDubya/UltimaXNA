@@ -31,33 +31,33 @@ namespace UltimaXNA.UILegacy.Clientside
             LastGumpling.MakeADragger(this);
 
             // HELP
-            AddGumpling(new Button(this, 0, 186, 45 + 27 * 0, 0x07ef, 0x07f0, ButtonTypes.Activate, 0, (int)Buttons.Help));
+            AddGumpling(new Button(this, 0, 185, 44 + 27 * 0, 0x07ef, 0x07f0, ButtonTypes.Activate, 0, (int)Buttons.Help));
             ((Button)LastGumpling).GumpOverID = 0x07f1;
             // OPTIONS
-            AddGumpling(new Button(this, 0, 186, 45 + 27 * 1, 0x07d6, 0x07d7, ButtonTypes.Activate, 0, (int)Buttons.Options));
+            AddGumpling(new Button(this, 0, 185, 44 + 27 * 1, 0x07d6, 0x07d7, ButtonTypes.Activate, 0, (int)Buttons.Options));
             ((Button)LastGumpling).GumpOverID = 0x07d8;
             // LOG OUT
-            AddGumpling(new Button(this, 0, 186, 45 + 27 * 2, 0x07d9, 0x07da, ButtonTypes.Activate, 0, (int)Buttons.LogOut));
+            AddGumpling(new Button(this, 0, 185, 44 + 27 * 2, 0x07d9, 0x07da, ButtonTypes.Activate, 0, (int)Buttons.LogOut));
             ((Button)LastGumpling).GumpOverID = 0x07db;
             // QUESTS
-            AddGumpling(new Button(this, 0, 186, 45 + 27 * 3, 0x57b5, 0x57b7, ButtonTypes.Activate, 0, (int)Buttons.Quests));
+            AddGumpling(new Button(this, 0, 185, 44 + 27 * 3, 0x57b5, 0x57b7, ButtonTypes.Activate, 0, (int)Buttons.Quests));
             ((Button)LastGumpling).GumpOverID = 0x57b6;
             // SKILLS
-            AddGumpling(new Button(this, 0, 186, 45 + 27 * 4, 0x07df, 0x07e0, ButtonTypes.Activate, 0, (int)Buttons.Skills));
+            AddGumpling(new Button(this, 0, 185, 44 + 27 * 4, 0x07df, 0x07e0, ButtonTypes.Activate, 0, (int)Buttons.Skills));
             ((Button)LastGumpling).GumpOverID = 0x07e1;
             // GUILD
-            AddGumpling(new Button(this, 0, 186, 45 + 27 * 5, 0x57b2, 0x57b4, ButtonTypes.Activate, 0, (int)Buttons.Guild));
+            AddGumpling(new Button(this, 0, 185, 44 + 27 * 5, 0x57b2, 0x57b4, ButtonTypes.Activate, 0, (int)Buttons.Guild));
             ((Button)LastGumpling).GumpOverID = 0x57b3;
             // PEACE / WAR
-            AddGumpling(new Button(this, 0, 186, 45 + 27 * 6, 0x07e5, 0x07e6, ButtonTypes.Activate, 0, (int)Buttons.PeaceWarToggle));
+            AddGumpling(new Button(this, 0, 185, 44 + 27 * 6, 0x07e5, 0x07e6, ButtonTypes.Activate, 0, (int)Buttons.PeaceWarToggle));
             ((Button)LastGumpling).GumpOverID = 0x07e7;
             // STATUS
-            AddGumpling(new Button(this, 0, 186, 45 + 27 * 7, 0x07eb, 0x07ec, ButtonTypes.Activate, 0, (int)Buttons.Status));
+            AddGumpling(new Button(this, 0, 185, 44 + 27 * 7, 0x07eb, 0x07ec, ButtonTypes.Activate, 0, (int)Buttons.Status));
             ((Button)LastGumpling).GumpOverID = 0x07ed;
 
             // Paperdoll
-            AddGumpling(new Paperdoll(this, 0, 15, 20, 1.0f));
-            ((Paperdoll)LastGumpling).SourceEntity = Entities.EntitiesCollection.GetPlayerObject();
+            AddGumpling(new PaperDollInteractable(this, 0, 8, 21));
+            ((PaperDollInteractable)LastGumpling).SourceEntity = Entities.EntitiesCollection.GetPlayerObject();
         }
 
         public override void Update(GameTime gameTime)

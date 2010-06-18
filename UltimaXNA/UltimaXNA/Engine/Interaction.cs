@@ -41,7 +41,7 @@ namespace UltimaXNA
         public static void DoubleClick(Entity item)
         {
             UltimaClient.Send(new DoubleClickPacket(item.Serial));
-        }
+        } 
 
         public static void PickUpItem(Item item, int x, int y)
         {
@@ -52,48 +52,9 @@ namespace UltimaXNA
             }
         }
 
-        public static void DropItem(Item item, int X, int Y, int Z)
+        public static void DropItemToWorld(Item item, int X, int Y, int Z)
         {
-            // drop into container?
-            if (_legacyUI.IsMouseOverUI)
-            {
-                Serial containerSerial;
-                int x, y;
-                if (_legacyUI.MouseOverControl is ItemGumpling)
-                {
-                    // If we drop onto a container object, drop *inside* the container object.
-                    ItemGumpling g = (ItemGumpling)_legacyUI.MouseOverControl;
-                    if (g.Item.ItemData.Container)
-                    {
-                        containerSerial = g.Item.Serial;
-                        X = Y = 0xFFFF;
-                        Z = 0;
-                    }
-                    else
-                        containerSerial = g.ContainerSerial;
-                }
-                else if (_legacyUI.MouseOverControl is GumpPicContainer)
-                {
-                    containerSerial = ((GumpPicContainer)_legacyUI.MouseOverControl).ContainerSerial;
-                }
-                else
-                {
-                    return;
-                }
-                Container container = EntitiesCollection.GetObject<Container>(containerSerial, false);
-                Rectangle containerBounds = Data.ContainerData.GetData(container.ItemID).Bounds;
-                Texture2D itemTexture = Data.Art.GetStaticTexture(item.DisplayItemID);
-                x = (int)_input.CurrentMousePosition.X - (_legacyUI.MouseOverControl.X + _legacyUI.MouseOverControl.Owner.X) - X;
-                y = (int)_input.CurrentMousePosition.Y - (_legacyUI.MouseOverControl.Y + _legacyUI.MouseOverControl.Owner.Y) - Y;
-                if (x < containerBounds.Left) x = containerBounds.Left;
-                if (x > containerBounds.Right - itemTexture.Width) x = containerBounds.Right - itemTexture.Width;
-                if (y < containerBounds.Top) y = containerBounds.Top;
-                if (y > containerBounds.Bottom - itemTexture.Height) y = containerBounds.Bottom - itemTexture.Height;
-                Client.UltimaClient.Send(new DropItemPacket(item.Serial, (ushort)x, (ushort)y, 0, 0, containerSerial));
-                _legacyUI.Cursor.ClearHolding();
-                return;
-            }
-            else
+            if (!_legacyUI.IsMouseOverUI)
             {
                 Serial serial;
                 if (_world.MouseOverObject is MapObjectItem && ((Item)_world.MouseOverObject.OwnerEntity).ItemData.Container)
@@ -104,9 +65,36 @@ namespace UltimaXNA
                 }
                 else
                     serial = Serial.World;
-                Client.UltimaClient.Send(new DropItemPacket(item.Serial, (ushort)X, (ushort)Y, (byte)Z, 0, serial));
+                UltimaClient.Send(new DropItemPacket(item.Serial, (ushort)X, (ushort)Y, (byte)Z, 0, serial));
                 _legacyUI.Cursor.ClearHolding();
             }
+        }
+
+        public static void DropItemToContainer(Item item, Container container)
+        {
+            // get random coords and drop the item there.
+            Rectangle bounds = Data.ContainerData.GetData(container.ItemID).Bounds;
+            int x = Utility.RandomValue(bounds.Left, bounds.Right);
+            int y = Utility.RandomValue(bounds.Top, bounds.Bottom);
+            DropItemToContainer(item, container, x, y);
+        }
+
+        public static void DropItemToContainer(Item item, Container container, int x, int y)
+        {
+            Rectangle containerBounds = Data.ContainerData.GetData(container.ItemID).Bounds;
+            Texture2D itemTexture = Data.Art.GetStaticTexture(item.DisplayItemID);
+            if (x < containerBounds.Left) x = containerBounds.Left;
+            if (x > containerBounds.Right - itemTexture.Width) x = containerBounds.Right - itemTexture.Width;
+            if (y < containerBounds.Top) y = containerBounds.Top;
+            if (y > containerBounds.Bottom - itemTexture.Height) y = containerBounds.Bottom - itemTexture.Height;
+            UltimaClient.Send(new DropItemPacket(item.Serial, (ushort)x, (ushort)y, 0, 0, container.Serial));
+            _legacyUI.Cursor.ClearHolding();
+        }
+
+        public static void WearItem(Item item)
+        {
+            UltimaClient.Send(new DropToLayerPacket(item.Serial, 0x00, EntitiesCollection.MySerial));
+            _legacyUI.Cursor.ClearHolding();
         }
     }
 }

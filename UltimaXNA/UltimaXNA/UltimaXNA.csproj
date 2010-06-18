@@ -185,6 +185,7 @@
     <Compile Include="UILegacy\Clientside\SelectServerGump.cs" />
     <Compile Include="UILegacy\Clientside\TopMenu.cs" />
     <Compile Include="UILegacy\Core\Control.cs" />
+    <Compile Include="UILegacy\Core\DropWidget.cs" />
     <Compile Include="UILegacy\Core\iControl.cs" />
     <Compile Include="UILegacy\Cursor.cs" />
     <Compile Include="Engine\ExtendedSpriteBatch.cs" />
@@ -194,9 +195,11 @@
     <Compile Include="UILegacy\Gumplings\ColorPicker.cs" />
     <Compile Include="UILegacy\Gumplings\CroppedText.cs" />
     <Compile Include="UILegacy\Gumplings\DropDownList.cs" />
-    <Compile Include="UILegacy\Gumplings\GumplingDragger.cs" />
+    <Compile Include="UILegacy\Core\DragWidget.cs" />
+    <Compile Include="UILegacy\Gumplings\ItemGumplingPaperdoll.cs" />
     <Compile Include="UILegacy\Gumplings\ItemGumpling.cs" />
-    <Compile Include="UILegacy\Gumplings\Paperdoll.cs" />
+    <Compile Include="UILegacy\Gumplings\PaperdollLargeUninteractable.cs" />
+    <Compile Include="UILegacy\Gumplings\PaperDollInteractable.cs" />
     <Compile Include="UILegacy\Gumplings\ScrollBar.cs" />
     <Compile Include="UILegacy\Gumplings\GumpPic.cs" />
     <Compile Include="UILegacy\Gumplings\GumpPicContainer.cs" />

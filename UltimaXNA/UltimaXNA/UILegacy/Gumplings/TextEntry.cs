@@ -138,7 +138,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             base.Draw(spriteBatch);
         }
 
-        protected override void _keyboardInput(string keys, List<Keys> specials)
+        protected override void keyboardInput(string keys, List<Keys> specials)
         {
             Text += keys;
             foreach (Keys key in specials)

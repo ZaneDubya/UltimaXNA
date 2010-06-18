@@ -113,17 +113,17 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         bool _clicked = false;
 
-        protected override void _mouseDown(int x, int y, MouseButtons button)
+        protected override void mouseDown(int x, int y, MouseButtons button)
         {
             _clicked = true;
         }
 
-        protected override void _mouseUp(int x, int y, MouseButtons button)
+        protected override void mouseUp(int x, int y, MouseButtons button)
         {
             _clicked = false;
         }
 
-        protected override void _mouseClick(int x, int y, MouseButtons button)
+        protected override void mouseClick(int x, int y, MouseButtons button)
         {
             if (button == MouseButtons.LeftButton)
             {
