@@ -139,12 +139,13 @@ namespace UltimaXNA.Entities
 
 		public override void Dispose()
 		{
+            base.Dispose();
 			// if is worn, let the wearer know we are disposing.
             if (Parent is Mobile)
                 ((Mobile)Parent).RemoveItem(Serial);
             else if (Parent is Container)
                 ((Container)Parent).RemoveItem(Serial);
-			base.Dispose();
+			
 		}
     }
 }

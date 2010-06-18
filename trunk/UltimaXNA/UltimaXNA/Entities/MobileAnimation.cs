@@ -460,19 +460,19 @@ namespace UltimaXNA.Entities
     #region WornEquipmentClass
     public class WornEquipment
     {
-        private Item[] m_Equipment;
-        private Mobile m_Owner;
-        private int m_UpdateTicker = 0;
+        private Item[] _Equipment;
+        private Mobile _Owner;
+        private int _UpdateTicker = 0;
 
         public int UpdateTicker
         {
-            get { return m_UpdateTicker; }
+            get { return _UpdateTicker; }
         }
 
         public WornEquipment(Mobile nOwner)
         {
-            m_Equipment = new Item[(int)EquipLayer.LastValid + 1];
-            m_Owner = nOwner;
+            _Equipment = new Item[(int)EquipLayer.LastValid + 1];
+            _Owner = nOwner;
         }
 
         public Item this[int nIndex]
@@ -481,23 +481,24 @@ namespace UltimaXNA.Entities
             {
                 if (nIndex > (int)EquipLayer.LastValid)
                     return null;
-                return m_Equipment[nIndex];
+                return _Equipment[nIndex];
             }
             set
             {
                 if (value == null)
                 {
-                    if (m_Equipment[nIndex] != null)
+                    if (_Equipment[nIndex] != null)
                     {
-                        m_Equipment[nIndex].Dispose();
+                        _Equipment[nIndex].Dispose();
+                        _Equipment[nIndex] = null;
                     }
                 }
                 else
                 {
-                    m_Equipment[nIndex] = value;
-                    value.Parent = m_Owner;
+                    _Equipment[nIndex] = value;
+                    value.Parent = _Owner;
                 }
-                m_UpdateTicker++;
+                _UpdateTicker++;
             }
         }
 
@@ -511,7 +512,7 @@ namespace UltimaXNA.Entities
                     this[i] = null;
                 }
             }
-            m_UpdateTicker++;
+            _UpdateTicker++;
         }
 
         public void RemoveBySerial(Serial serial)
@@ -525,7 +526,7 @@ namespace UltimaXNA.Entities
                         this[i] = null;
                     }
             }
-            m_UpdateTicker++;
+            _UpdateTicker++;
         }
     }
     #endregion
