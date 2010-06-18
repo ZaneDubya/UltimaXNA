@@ -85,7 +85,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             base.Draw(spriteBatch);
         }
 
-        protected override void _mouseClick(int x, int y, MouseButtons button)
+        protected override void mouseClick(int x, int y, MouseButtons button)
         {
             if (button == MouseButtons.RightButton)
             {

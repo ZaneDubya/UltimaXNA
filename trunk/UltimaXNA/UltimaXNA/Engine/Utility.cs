@@ -589,5 +589,13 @@ namespace UltimaXNA
 
             return (Direction)direction;
         }
+
+        static Random _random;
+        public static int RandomValue(int low, int high)
+        {
+            if (_random == null)
+                _random = new Random();
+            return _random.Next(low, high); 
+        }
     }
 }

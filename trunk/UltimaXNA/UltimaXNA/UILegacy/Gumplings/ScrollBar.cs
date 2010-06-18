@@ -130,7 +130,7 @@ namespace UltimaXNA.UILegacy.Gumplings
         float _timeUntilNextClick;
         const float _timeBetweenClicks = 0.5f;
 
-        protected override void _mouseDown(int x, int y, MouseButtons button)
+        protected override void mouseDown(int x, int y, MouseButtons button)
         {
             _timeUntilNextClick = 0f;
             if (new Rectangle(0, 0, _gumpUpButton[0].Width, _gumpUpButton[0].Height).Contains(new Point(x, y)))
@@ -149,14 +149,14 @@ namespace UltimaXNA.UILegacy.Gumplings
             }
         }
 
-        protected override void _mouseUp(int x, int y, MouseButtons button)
+        protected override void mouseUp(int x, int y, MouseButtons button)
         {
             _btnUpClicked = false;
             _btnDownClicked = false;
             _btnSliderClicked = false;
         }
 
-        protected override void _mouseOver(int x, int y)
+        protected override void mouseOver(int x, int y)
         {
             if (_btnSliderClicked)
             {

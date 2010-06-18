@@ -11,6 +11,7 @@ namespace UltimaXNA.UILegacy.Gumplings
         Item _item;
         public Item Item { get { return _item; } }
         public Serial ContainerSerial { get { return _item.Parent.Serial; } }
+        public bool CanPickUp = true;
 
         bool clickedCanDrag = false;
         float pickUpTime; Point clickPoint;
@@ -37,11 +38,7 @@ namespace UltimaXNA.UILegacy.Gumplings
                 Dispose();
                 return;
             }
-            if (_texture == null)
-            {
-                _texture = Data.Art.GetStaticTexture(_item.DisplayItemID);
-                Size = new Vector2(_texture.Width, _texture.Height);
-            }
+           
 
             if (clickedCanDrag && ClientVars.TheTime >= pickUpTime)
             {
@@ -59,6 +56,11 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
+            if (_texture == null)
+            {
+                _texture = Data.Art.GetStaticTexture(_item.DisplayItemID);
+                Size = new Vector2(_texture.Width, _texture.Height);
+            }
             spriteBatch.Draw(_texture, Position, _item.Hue, false);
             base.Draw(spriteBatch);
         }
@@ -74,7 +76,7 @@ namespace UltimaXNA.UILegacy.Gumplings
                 return false;
         }
 
-        protected override void _mouseDown(int x, int y, UltimaXNA.Input.MouseButtons button)
+        protected override void mouseDown(int x, int y, UltimaXNA.Input.MouseButtons button)
         {
             // if click, we wait for a moment before picking it up. This allows a single click.
             clickedCanDrag = true;
@@ -82,17 +84,21 @@ namespace UltimaXNA.UILegacy.Gumplings
             clickPoint = new Point(x, y);
         }
 
-        protected override void _mouseOver(int x, int y)
+        protected override void mouseOver(int x, int y)
         {
             // if we have not yet picked up the item, AND we've moved more than X pixels total away from the original item, pick it up!
             if (clickedCanDrag && (Math.Abs(clickPoint.X - x) + Math.Abs(clickPoint.Y - y) > 3))
             {
                 clickedCanDrag = false;
-                Interaction.PickUpItem(_item, clickPoint.X, clickPoint.Y);
+                if (CanPickUp)
+                {
+                    Interaction.PickUpItem(_item, clickPoint.X, clickPoint.Y);
+                    _onPickUp();
+                }
             }
         }
 
-        protected override void _mouseClick(int x, int y, UltimaXNA.Input.MouseButtons button)
+        protected override void mouseClick(int x, int y, UltimaXNA.Input.MouseButtons button)
         {
             if (clickedCanDrag)
             {
@@ -102,10 +108,24 @@ namespace UltimaXNA.UILegacy.Gumplings
             }
         }
 
-        protected override void _mouseDoubleClick(int x, int y, UltimaXNA.Input.MouseButtons button)
+        protected override void mouseDoubleClick(int x, int y, UltimaXNA.Input.MouseButtons button)
         {
             Interaction.DoubleClick(_item);
             sendClickIfNoDoubleClick = false;
+        }
+
+        protected override void itemDrop(Item item, int x, int y)
+        {
+            // If we drop onto a container object, drop *inside* the container object.
+            if (_item.ItemData.Container)
+            {
+                Interaction.DropItemToContainer(item, (Container)_item);
+            }
+        }
+
+        protected virtual void _onPickUp()
+        {
+
         }
     }
 }

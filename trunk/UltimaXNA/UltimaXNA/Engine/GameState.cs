@@ -319,7 +319,7 @@ namespace UltimaXNA
                     // over text?
                     return;
                 }
-                Interaction.DropItem(_ui.Cursor.HoldingItem, x, y, z);
+                Interaction.DropItemToWorld(_ui.Cursor.HoldingItem, x, y, z);
             }
         }
 
@@ -361,6 +361,7 @@ namespace UltimaXNA
 
         static void parseMouse()
         {
+            // must create the object that maintains the clicks.
             if (_mouseButtonClicks == null)
             {
                 _mouseButtonClicks = new ClickState[(int)MouseButtons.XButton2];
@@ -372,10 +373,25 @@ namespace UltimaXNA
             int y = (int)_input.CurrentMousePosition.Y;
             for (MouseButtons i = MouseButtons.LeftButton; i < MouseButtons.XButton2; i++)
             {
+                // Check for mouse button presses ...
                 if (_input.IsMouseButtonPress(i))
-                    _mouseButtonClicks[(int)i].Press(x, y, _world.MouseOverObject, _world.MouseOverObjectPoint);
+                {
+                    if (_ui.Cursor.IsHolding)
+                    {
+                        // Special case: if we are holding an item but the mouse button is unpressed
+                        // (i.e. failed to drop the item we are holding) then ignore button presses.
+                    }
+                    else
+                    {
+                        _mouseButtonClicks[(int)i].Press(x, y, _world.MouseOverObject, _world.MouseOverObjectPoint);
+                    }
+                }
+                
+                // ... and releases 
                 if (_input.IsMouseButtonRelease(i))
+                {
                     _mouseButtonClicks[(int)i].Release(x, y);
+                }
                 _mouseButtonClicks[(int)i].Update(x, y);
             }
         }

@@ -143,6 +143,12 @@ namespace UltimaXNA.UILegacy
             get { return _controls[_controls.Count - 1]; }
         }
 
+        public void ClearGumplings()
+        {
+            foreach (Control c in _controls)
+                c.Dispose();
+        }
+
         private void buildGump(string[] gumpPieces, string[] gumpLines)
         {
             int currentGUMPPage = 0;

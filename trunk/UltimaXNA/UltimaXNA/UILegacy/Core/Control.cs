@@ -8,8 +8,9 @@ using UltimaXNA.Input;
 
 namespace UltimaXNA.UILegacy
 {
-    internal delegate void MouseButtonEvent(int x, int y, MouseButtons button);
-    internal delegate void MouseEvent(int x, int y);
+    internal delegate void ControlMouseButtonEvent(int x, int y, MouseButtons button);
+    internal delegate void ControlMouseEvent(int x, int y);
+    internal delegate void ControlEvent();
 
     public class Control : iControl
     {
@@ -30,12 +31,12 @@ namespace UltimaXNA.UILegacy
 
         protected bool _renderFullScreen = false;
 
-        internal MouseButtonEvent OnMouseClick;
-        internal MouseButtonEvent OnMouseDoubleClick;
-        internal MouseButtonEvent OnMouseDown;
-        internal MouseButtonEvent OnMouseUp;
-        internal MouseEvent OnMouseOver;
-        internal MouseEvent OnMouseOut;
+        internal ControlMouseButtonEvent OnMouseClick;
+        internal ControlMouseButtonEvent OnMouseDoubleClick;
+        internal ControlMouseButtonEvent OnMouseDown;
+        internal ControlMouseButtonEvent OnMouseUp;
+        internal ControlMouseEvent OnMouseOver;
+        internal ControlMouseEvent OnMouseOut;
 
         float _inputMultiplier = 1.0f;
         public float InputMultiplier
@@ -157,7 +158,7 @@ namespace UltimaXNA.UILegacy
             _page = page;
         }
 
-        public void Initialize(UIManager manager)
+        public virtual void Initialize(UIManager manager)
         {
             _manager = manager;
             _isInitialized = true;
@@ -176,11 +177,11 @@ namespace UltimaXNA.UILegacy
             _isDisposed = true;
         }
 
-        Gumplings.GumplingDragger _dragger;
+        DragWidget _dragger;
         public void MakeADragger(Control toMove)
         {
             this.HandlesMouseInput = true;
-            _dragger = new Gumplings.GumplingDragger(this, _owner);
+            _dragger = new DragWidget(this, _owner);
         }
 
         public Control[] HitTest(Vector2 position)
@@ -202,9 +203,6 @@ namespace UltimaXNA.UILegacy
             {
                 if (_hitTest((int)position.X - X, (int)position.Y - Y))
                 {
-                    // FIXME!!!
-                    // This MAY double include nested controls that can handle input... :(
-                    // Since I have not nested controls yet, I have no way of knowing, but it looks suspect.
                     if (this.HandlesMouseInput)
                         focusedControls.Insert(0, this);
                     if (_controls != null)
@@ -352,7 +350,7 @@ namespace UltimaXNA.UILegacy
             lastClickPosition = position;
             int x = (int)position.X - X - ((_owner != null) ? _owner.X : 0);
             int y = (int)position.Y - Y - ((_owner != null) ? _owner.Y : 0);
-            _mouseDown(x, y, button);
+            mouseDown(x, y, button);
             if (OnMouseDown != null)
                 OnMouseDown(x, y, button);
         }
@@ -361,7 +359,7 @@ namespace UltimaXNA.UILegacy
         {
             int x = (int)position.X - X - ((_owner != null) ? _owner.X : 0);
             int y = (int)position.Y - Y - ((_owner != null) ? _owner.Y : 0);
-            _mouseUp(x, y, button);
+            mouseUp(x, y, button);
             if (OnMouseUp != null)
                 OnMouseUp(x, y, button);
         }
@@ -374,7 +372,7 @@ namespace UltimaXNA.UILegacy
 
             int x = (int)position.X - X - ((_owner != null) ? _owner.X : 0);
             int y = (int)position.Y - Y - ((_owner != null) ? _owner.Y : 0);
-            _mouseOver(x, y);
+            mouseOver(x, y);
             if (OnMouseOver != null)
                 OnMouseOver(x, y);
         }
@@ -383,7 +381,7 @@ namespace UltimaXNA.UILegacy
         {
             int x = (int)position.X - X - ((_owner != null) ? _owner.X : 0);
             int y = (int)position.Y - Y - ((_owner != null) ? _owner.Y : 0);
-            _mouseOut(x, y);
+            mouseOut(x, y);
             if (OnMouseOut != null)
                 OnMouseOut(x, y);
         }
@@ -400,17 +398,23 @@ namespace UltimaXNA.UILegacy
             if (maxTimeForDoubleClick != 0f)
             {
                 if (ClientVars.TheTime <= maxTimeForDoubleClick)
+                {
+                    maxTimeForDoubleClick = 0f;
                     doubleClick = true;
+                }
             }
-            maxTimeForDoubleClick = ClientVars.TheTime + ClientVars.SecondsForDoubleClick;
+            else
+            {
+                maxTimeForDoubleClick = ClientVars.TheTime + ClientVars.SecondsForDoubleClick;
+            }
 
-            _mouseClick(x, y, button);
+            mouseClick(x, y, button);
             if (OnMouseClick != null)
                 OnMouseClick(x, y, button);
 
             if (doubleClick)
             {
-                _mouseDoubleClick(x, y, button);
+                mouseDoubleClick(x, y, button);
                 if (OnMouseDoubleClick != null)
                     OnMouseDoubleClick(x, y, button);
             }
@@ -418,40 +422,50 @@ namespace UltimaXNA.UILegacy
 
         public void KeyboardInput(string keys, List<Keys> specialKeys)
         {
-            _keyboardInput(keys, specialKeys);
+            keyboardInput(keys, specialKeys);
         }
 
-        protected virtual void _mouseDown(int x, int y, MouseButtons button)
+        public void ItemDrop(Entities.Item item, int x, int y)
+        {
+            itemDrop(item, x, y);
+        }
+
+        protected virtual void mouseDown(int x, int y, MouseButtons button)
         {
 
         }
 
-        protected virtual void _mouseUp(int x, int y, MouseButtons button)
+        protected virtual void mouseUp(int x, int y, MouseButtons button)
         {
 
         }
 
-        protected virtual void _mouseOver(int x, int y)
+        protected virtual void mouseOver(int x, int y)
         {
 
         }
 
-        protected virtual void _mouseOut(int x, int y)
+        protected virtual void mouseOut(int x, int y)
         {
 
         }
 
-        protected virtual void _mouseClick(int x, int y, MouseButtons button)
+        protected virtual void mouseClick(int x, int y, MouseButtons button)
         {
 
         }
 
-        protected virtual void _mouseDoubleClick(int x, int y, MouseButtons button)
+        protected virtual void mouseDoubleClick(int x, int y, MouseButtons button)
         {
 
         }
 
-        protected virtual void _keyboardInput(string keys, List<Keys> specialKeys)
+        protected virtual void keyboardInput(string keys, List<Keys> specialKeys)
+        {
+
+        }
+
+        protected virtual void itemDrop(Entities.Item item, int x, int y)
         {
 
         }

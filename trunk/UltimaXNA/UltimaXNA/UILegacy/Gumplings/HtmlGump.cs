@@ -118,24 +118,24 @@ namespace UltimaXNA.UILegacy.Gumplings
         int _hrefClicked = -1;
         int _hrefOver = -1;
 
-        protected override void _mouseDown(int x, int y, MouseButtons button)
+        protected override void mouseDown(int x, int y, MouseButtons button)
         {
             _clicked = true;
             _hrefClicked = _hrefOver;
         }
 
-        protected override void _mouseUp(int x, int y, MouseButtons button)
+        protected override void mouseUp(int x, int y, MouseButtons button)
         {
             _clicked = false;
             _hrefClicked = -1;
         }
 
-        protected override void _mouseOver(int x, int y)
+        protected override void mouseOver(int x, int y)
         {
 
         }
 
-        protected override void _mouseClick(int x, int y, MouseButtons button)
+        protected override void mouseClick(int x, int y, MouseButtons button)
         {
             if (_hrefOver != -1 && _hrefClicked == _hrefOver)
             {

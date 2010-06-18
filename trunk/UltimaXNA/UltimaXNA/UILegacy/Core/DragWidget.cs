@@ -4,20 +4,20 @@ using System.Linq;
 using System.Text;
 using UltimaXNA.Input;
 
-namespace UltimaXNA.UILegacy.Gumplings
+namespace UltimaXNA.UILegacy
 {
-    class GumplingDragger
+    class DragWidget
     {
         Control _toMove;
         bool isMoving = false; int moveOriginalX, moveOriginalY;
 
-        public GumplingDragger(Control inputFrom, Control toMove)
+        public DragWidget(Control inputFrom, Control toMove)
         {
             _toMove = toMove;
 
-            inputFrom.OnMouseDown = mouseDown;
-            inputFrom.OnMouseUp = mouseUp;
-            inputFrom.OnMouseOver = mouseOver;
+            inputFrom.OnMouseDown += mouseDown;
+            inputFrom.OnMouseUp += mouseUp;
+            inputFrom.OnMouseOver += mouseOver;
         }
 
         void mouseDown(int x, int y, MouseButtons button)

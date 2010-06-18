@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UltimaXNA.Data;
 using UltimaXNA.Entities;
+using UltimaXNA.Input;
 using UltimaXNA.UILegacy.Gumplings;
 
 namespace UltimaXNA.UILegacy.Clientside
@@ -21,9 +22,22 @@ namespace UltimaXNA.UILegacy.Clientside
         {
             _data = Data.ContainerData.GetData(gumpID);
             _item = (Container)containerItem;
+            IsMovable = true;
 
-            AddGumpling(new Gumplings.GumpPicContainer(this, 0, 0, 0, _data.GumpID, 0));
+            AddGumpling(new GumpPicContainer(this, 0, 0, 0, _data.GumpID, 0, _item));
+            LastGumpling.HandlesMouseInput = true;
+            LastGumpling.MakeADragger(this);
+            LastGumpling.OnMouseClick += onGumpClick;
+
             _tickerText = (HtmlGump)AddGumpling(new HtmlGump(this, 0, 50, 50, 0, 0, 0, 0, string.Empty));
+        }
+
+        void onGumpClick(int x, int y, MouseButtons button)
+        {
+            if (button == MouseButtons.RightButton)
+            {
+                Dispose();
+            }
         }
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)

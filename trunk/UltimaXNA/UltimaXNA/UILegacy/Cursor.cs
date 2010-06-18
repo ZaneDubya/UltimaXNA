@@ -30,7 +30,7 @@ namespace UltimaXNA.UILegacy
             }
         }
         public Item HoldingItem { get { return holdingItem; } }
-        public Point HoldingOffset { get { return holdingOffset; } }
+        public Point HoldingOffset { get { return holdingOffset; } set { holdingOffset = value; } }
         public Texture2D HoldingTexture { get { return Data.Art.GetStaticTexture(holdingItem.DisplayItemID); } }
         bool _isTargeting = false;
         public bool IsTargeting
@@ -100,9 +100,8 @@ namespace UltimaXNA.UILegacy
                 // Draw the item you're holding first.
                 cursorOffset = new Vector2(holdingOffset.X, holdingOffset.Y);
                 cursorTexture = HoldingTexture;
-                cursorHue = holdingItem.Hue;
                 sourceRect = new Rectangle(0, 0, cursorTexture.Width, cursorTexture.Height);
-                sb.Draw(cursorTexture, position - cursorOffset, sourceRect, cursorHue, false);
+                sb.Draw(cursorTexture, position - cursorOffset, sourceRect, holdingItem.Hue, false);
                 // then set the data for the hang which holds it.
                 cursorOffset = new Vector2(1, 1);
                 cursorTextureID = 8305;

@@ -355,22 +355,26 @@ namespace UltimaXNA.UILegacy
                 // MouseUp and MouseClick events
                 if (_input.IsMouseButtonRelease((MouseButtons)iButton))
                 {
-                    if (Cursor.IsHolding)
+                    if (Cursor.IsHolding && focusedControls != null)
                     {
-                        if (IsMouseOverUI && iButton == (int)MouseButtons.LeftButton)
-                            Interaction.DropItem(Cursor.HoldingItem, Cursor.HoldingOffset.X, Cursor.HoldingOffset.Y, 0);
+                        if (iButton == (int)MouseButtons.LeftButton)
+                        {
+                            int x = (int)_input.CurrentMousePosition.X - Cursor.HoldingOffset.X - (focusedControls[0].X + focusedControls[0].Owner.X);
+                            int y = (int)_input.CurrentMousePosition.Y - Cursor.HoldingOffset.Y - (focusedControls[0].Y + focusedControls[0].Owner.Y);
+                            focusedControls[0].ItemDrop(Cursor.HoldingItem, x, y);
+                        }
                     }
 
-                    if (_mouseDownControl[iButton] != null)
+                    if (focusedControls != null)
                     {
-                        if (focusedControls != null)
+                        if (_mouseDownControl[iButton] != null)
                         {
                             if (focusedControls[0] == _mouseDownControl[iButton])
                             {
                                 _mouseDownControl[iButton].MouseClick(_input.CurrentMousePosition, (MouseButtons)iButton);
                             }
                         }
-                        _mouseDownControl[iButton].MouseUp(_input.CurrentMousePosition, (MouseButtons)iButton);
+                        focusedControls[0].MouseUp(_input.CurrentMousePosition, (MouseButtons)iButton);
                     }
                 }
 

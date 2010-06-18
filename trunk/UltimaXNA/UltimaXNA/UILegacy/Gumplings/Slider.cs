@@ -96,18 +96,18 @@ namespace UltimaXNA.UILegacy.Gumplings
         bool _clicked = false;
         Point _clickPosition;
 
-        protected override void _mouseDown(int x, int y, MouseButtons button)
+        protected override void mouseDown(int x, int y, MouseButtons button)
         {
             _clicked = true;
             _clickPosition = new Point(x, y);
         }
 
-        protected override void _mouseUp(int x, int y, MouseButtons button)
+        protected override void mouseUp(int x, int y, MouseButtons button)
         {
             _clicked = false;
         }
 
-        protected override void _mouseOver(int x, int y)
+        protected override void mouseOver(int x, int y)
         {
             if (_clicked)
             {

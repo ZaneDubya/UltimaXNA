@@ -241,25 +241,15 @@ namespace UltimaXNA.Entities
             tickUpdateTicker();
         }
 
-        public void GetItemInfo(int slot, out int displayID, out int hue)
+        public Item GetItem(int slot)
         {
             if (slot == 0)
             {
-                displayID = BodyID;
-                hue = Hue;
+                return null;
             }
             else
             {
-                if (equipment[slot] == null)
-                {
-                    displayID = 0;
-                    hue = 0;
-                }
-                else
-                {
-                    displayID = equipment[slot].DisplayItemID;
-                    hue = equipment[slot].Hue;
-                }
+                return equipment[slot];
             }
         }
 
