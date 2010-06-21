@@ -12,6 +12,8 @@ namespace UltimaXNA.UILegacy
     internal delegate void ControlMouseEvent(int x, int y);
     internal delegate void ControlEvent();
 
+    public delegate void PublicControlEvent();
+
     public class Control : iControl
     {
         bool _enabled = false;
