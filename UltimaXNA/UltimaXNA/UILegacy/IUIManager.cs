@@ -19,7 +19,7 @@ namespace UltimaXNA.UILegacy
         Gump AddGump_Server(Serial serial, Serial gumpID, string[] gumplings, string[] lines, int x, int y);
         Gump AddGump_Local(Gump gump, int x, int y);
         Gump AddContainerGump(Entity containerItem, int gumpID);
-        void MsgBox(string msg);
+        MsgBox MsgBox(string msg);
         Gump GetGump(Serial serial);
         T GetGump<T>(Serial serial) where T : Gump;
         void Reset();

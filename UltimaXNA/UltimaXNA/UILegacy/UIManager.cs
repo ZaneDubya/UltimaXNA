@@ -21,7 +21,7 @@ namespace UltimaXNA.UILegacy
         ExtendedSpriteBatch _spriteBatch;
         public int Width { get { return _spriteBatch.GraphicsDevice.Viewport.Width; } }
         public int Height { get { return _spriteBatch.GraphicsDevice.Viewport.Height; } }
-        public bool IsMsgBoxOpen { get { return (GetGump<Clientside.MsgBox>(0) != null); } }
+        public bool IsMsgBoxOpen { get { return (GetGump<MsgBox>(0) != null); } }
 
         ChatHandler _debugMessages = new ChatHandler();
         ChatHandler _chatMessages = new ChatHandler();
@@ -83,10 +83,12 @@ namespace UltimaXNA.UILegacy
             _input = game.Services.GetService<IInputService>(true);
         }
 
-        public void MsgBox(string msg)
+        public MsgBox MsgBox(string msg)
         {
             // pop up an error message, modal.
-            _controls.Add(new Clientside.MsgBox(msg));
+            MsgBox g = new MsgBox(msg);
+            _controls.Add(g);
+            return g;
         }
 
         public Gump ToggleGump_Local(Gump gump, int x, int y)
@@ -293,7 +295,7 @@ namespace UltimaXNA.UILegacy
             {
                 workingControls = new List<Control>();
                 foreach (Control c in _controls)
-                    if (c.GetType() == typeof(Clientside.MsgBox))
+                    if (c.GetType() == typeof(MsgBox))
                         workingControls.Add(c);
             }
             else

@@ -5,13 +5,16 @@ using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.UILegacy.Gumplings;
 
-namespace UltimaXNA.UILegacy.Clientside
+namespace UltimaXNA.UILegacy
 {
-    class MsgBox : Gump
+    public class MsgBox : Gump
     {
         string _msg;
         HtmlGump _text;
         Button _okay;
+
+        public PublicControlEvent OnClose;
+
         public MsgBox(string msg)
             : base(0, 0)
         {
@@ -40,6 +43,8 @@ namespace UltimaXNA.UILegacy.Clientside
 
         public override void ActivateByButton(int buttonID)
         {
+            if (OnClose != null)
+                OnClose();
             this.Dispose();
         }
     }
