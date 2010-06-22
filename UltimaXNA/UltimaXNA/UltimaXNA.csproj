@@ -180,6 +180,7 @@
     <Compile Include="UILegacy\Clientside\LoggingInGump.cs" />
     <Compile Include="UILegacy\Clientside\LoginGump.cs" />
     <Compile Include="UILegacy\Clientside\MiniMap.cs" />
+    <Compile Include="UILegacy\Clientside\SkillsGump.cs" />
     <Compile Include="UILegacy\MsgBox.cs" />
     <Compile Include="UILegacy\Clientside\PaperDollGump.cs" />
     <Compile Include="UILegacy\Clientside\SelectServerGump.cs" />

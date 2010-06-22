@@ -14,8 +14,8 @@ namespace UltimaXNA.SceneManagement
 {
     public abstract class BaseScene : IScene, IDisposable
     {
-        public virtual TimeSpan TransitionOnLength { get { return TimeSpan.FromSeconds(0.5); } }
-        public virtual TimeSpan TransitionOffLength { get { return TimeSpan.FromSeconds(0.5); } }
+        public virtual TimeSpan TransitionOnLength { get { return TimeSpan.FromSeconds(0.05); } }
+        public virtual TimeSpan TransitionOffLength { get { return TimeSpan.FromSeconds(0.05); } }
 
         Game _game;
         
