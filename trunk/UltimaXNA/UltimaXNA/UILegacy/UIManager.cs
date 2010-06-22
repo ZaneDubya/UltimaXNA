@@ -21,7 +21,7 @@ namespace UltimaXNA.UILegacy
         ExtendedSpriteBatch _spriteBatch;
         public int Width { get { return _spriteBatch.GraphicsDevice.Viewport.Width; } }
         public int Height { get { return _spriteBatch.GraphicsDevice.Viewport.Height; } }
-        public bool IsMsgBoxOpen { get { return (GetGump<MsgBox>(0) != null); } }
+        public bool IsModalMsgBoxOpen { get { return (GetGump<MsgBox>(0) != null); } }
 
         ChatHandler _debugMessages = new ChatHandler();
         ChatHandler _chatMessages = new ChatHandler();
@@ -47,7 +47,7 @@ namespace UltimaXNA.UILegacy
         {
             get
             {
-                if (IsMsgBoxOpen)
+                if (IsModalMsgBoxOpen)
                     return null;
                 if (_keyboardFocusControl == null)
                     return null;
@@ -71,6 +71,13 @@ namespace UltimaXNA.UILegacy
         }
         public Cursor Cursor { get { return _cursor; } }
 
+        EventLogout OnRequestLogout;
+        public void AddRequestLogoutNotifier(EventLogout methodGroup)
+        {
+            OnRequestLogout += methodGroup;
+        }
+        
+
         public UIManager(Game game)
             : base(game)
         {
@@ -83,10 +90,16 @@ namespace UltimaXNA.UILegacy
             _input = game.Services.GetService<IInputService>(true);
         }
 
-        public MsgBox MsgBox(string msg)
+        internal void RequestLogout()
+        {
+            if (OnRequestLogout != null)
+                OnRequestLogout();
+        }
+
+        public MsgBox MsgBox(string msg, MsgBoxTypes type)
         {
             // pop up an error message, modal.
-            MsgBox g = new MsgBox(msg);
+            MsgBox g = new MsgBox(msg, type);
             _controls.Add(g);
             return g;
         }
@@ -291,7 +304,7 @@ namespace UltimaXNA.UILegacy
 
             Control[] focusedControls = null;
             List<Control> workingControls;
-            if (IsMsgBoxOpen)
+            if (IsModalMsgBoxOpen)
             {
                 workingControls = new List<Control>();
                 foreach (Control c in _controls)

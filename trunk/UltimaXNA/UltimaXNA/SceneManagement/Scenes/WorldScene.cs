@@ -55,31 +55,36 @@ namespace UltimaXNA.SceneManagement
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            if (!UltimaClient.IsConnected)
+            if (SceneState == SceneState.Active)
             {
-                if (ClientVars.InWorld == true)
+                if (!UltimaClient.IsConnected)
                 {
-                    MsgBox g = UI.MsgBox("You have lost your connection with the server.");
-                    g.OnClose = onCloseLostConnectionMsgBox;
-                    ClientVars.InWorld = false;
+                    if (UI.IsModalMsgBoxOpen == false)
+                    {
+                        MsgBox g = UI.MsgBox("You have lost your connection with the server.", MsgBoxTypes.OkOnly);
+                        g.OnClose = onCloseLostConnectionMsgBox;
+                    }
                 }
-            }
-            else
-            {
-                World.CenterPosition = Entities.EntitiesCollection.GetPlayerObject().Position;
-                World.Update(gameTime);
-
-                // Toggle for logout
-                if (Input.IsKeyPress(Keys.Q) && (Input.IsKeyDown(Keys.LeftControl)))
+                else
                 {
-                    SceneManager.CurrentScene = new LoginScene(Game);
+                    World.CenterPosition = Entities.EntitiesCollection.GetPlayerObject().Position;
+                    World.Update(gameTime);
+
+                    // Toggle for logout
+                    if (Input.IsKeyPress(Keys.Q) && (Input.IsKeyDown(Keys.LeftControl)))
+                    {
+                        SceneManager.CurrentScene = new LoginScene(Game);
+                    }
                 }
             }
         }
 
         public override void Draw(GameTime gameTime)
         {
-            World.Draw(gameTime);
+            if (SceneState == SceneState.Active)
+            {
+                World.Draw(gameTime);
+            }
         }
 
         void onCloseLostConnectionMsgBox()

@@ -120,7 +120,7 @@ namespace UltimaXNA.UILegacy
             }
             else
             {
-                if (ClientVars.InWorld && !_manager.IsMouseOverUI)
+                if (ClientVars.InWorld && (!_manager.IsMouseOverUI && !_manager.IsModalMsgBoxOpen))
                 {
                     switch (ClientVars.CursorDirection)
                     {

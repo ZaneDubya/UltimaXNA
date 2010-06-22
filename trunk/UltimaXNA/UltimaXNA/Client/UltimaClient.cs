@@ -26,6 +26,7 @@ using UltimaXNA.Network.Packets.Client;
 using UltimaXNA.Network.Packets.Server;
 using UltimaXNA.TileEngine;
 using UltimaXNA.Extensions;
+using UltimaXNA.UILegacy;
 #endregion
 
 namespace UltimaXNA.Client
@@ -46,7 +47,7 @@ namespace UltimaXNA.Client
 
         static ClientNetwork _ClientNetwork;
         static TileEngine.IWorld _worldService;
-        static UILegacy.IUIManager _LegacyUI = null;
+        static IUIManager _LegacyUI = null;
 
         static UltimaClient()
         {
@@ -58,7 +59,7 @@ namespace UltimaXNA.Client
         public static void Initialize(Game game)
         {
             _worldService = game.Services.GetService<TileEngine.IWorld>();
-            _LegacyUI = game.Services.GetService<UILegacy.IUIManager>();
+            _LegacyUI = game.Services.GetService<IUIManager>();
         }
 
         public static void Update(GameTime gameTime)
@@ -266,7 +267,7 @@ namespace UltimaXNA.Client
         private static void receive_DeleteCharacterResponse(IRecvPacket packet)
         {
             DeleteCharacterResponsePacket p = (DeleteCharacterResponsePacket)packet;
-            _LegacyUI.MsgBox(p.Result);
+            _LegacyUI.MsgBox(p.Result, MsgBoxTypes.OkOnly);
         }
 
         private static void receive_CharacterListUpdate(IRecvPacket packet)
@@ -765,7 +766,7 @@ namespace UltimaXNA.Client
         private static void receive_PopupMessage(IRecvPacket packet)
         {
             PopupMessagePacket p = (PopupMessagePacket)packet;
-            _LegacyUI.MsgBox(p.Message);
+            _LegacyUI.MsgBox(p.Message, MsgBoxTypes.OkOnly);
         }
 
         private static void receive_QuestArrow(IRecvPacket packet)
