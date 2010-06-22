@@ -79,6 +79,8 @@ namespace UltimaXNA.UILegacy.Clientside
                 case Buttons.Options:
                     break;
                 case Buttons.LogOut:
+                    MsgBox g = _manager.MsgBox("Quit Ultima Online?", MsgBoxTypes.OkCancel);
+                    g.OnClose = logout_OnClose;
                     break;
                 case Buttons.Quests:
                     break;
@@ -91,6 +93,11 @@ namespace UltimaXNA.UILegacy.Clientside
                 case Buttons.Status:
                     break;
             }
+        }
+
+        void logout_OnClose()
+        {
+            _manager.RequestLogout();
         }
     }
 }

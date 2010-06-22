@@ -70,6 +70,7 @@ namespace UltimaXNA.SceneManagement
         {
             _loggingService = game.Services.GetService<ILoggingService>(true);
             _ui = Game.Services.GetService<IUIManager>(true);
+            _ui.AddRequestLogoutNotifier(uiRequestsLogout);
         }
 
         public override void Update(GameTime gameTime)
@@ -97,6 +98,15 @@ namespace UltimaXNA.SceneManagement
                 Game.GraphicsDevice.Clear(_currentScene.ClearColor);
                 _currentScene.Draw(gameTime);
                 _ui.Draw(gameTime);
+            }
+        }
+
+        void uiRequestsLogout()
+        {
+            if (!(_currentScene is LoginScene))
+            {
+                CurrentScene = new LoginScene(Game);
+                _ui.Reset();
             }
         }
     }
