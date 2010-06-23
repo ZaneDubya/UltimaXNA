@@ -85,6 +85,7 @@ namespace UltimaXNA.UILegacy.Clientside
                 case Buttons.Quests:
                     break;
                 case Buttons.Skills:
+                    _manager.ToggleGump_Local(new SkillsGump(), 80, 80);
                     break;
                 case Buttons.Guild:
                     break;

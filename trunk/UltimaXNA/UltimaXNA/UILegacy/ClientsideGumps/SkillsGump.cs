@@ -10,7 +10,7 @@ namespace UltimaXNA.UILegacy.Clientside
         public SkillsGump()
             : base(0, 0)
         {
-
+            AddGumpling(new Gumplings.ExpandableScroll(this, 0, 0, 0, 200));
         }
     }
 }
