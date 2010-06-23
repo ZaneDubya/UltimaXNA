@@ -75,6 +75,8 @@ namespace UltimaXNA.UILegacy
 
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
+            if (!Visible)
+                return;
             // don't draw any server gumps until we're in the world.
             if (IsServerGump && !ClientVars.InWorld)
                 return;

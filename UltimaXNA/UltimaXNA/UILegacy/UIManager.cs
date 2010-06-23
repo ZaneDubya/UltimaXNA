@@ -390,7 +390,19 @@ namespace UltimaXNA.UILegacy
                             }
                         }
                         focusedControls[0].MouseUp(_input.CurrentMousePosition, (MouseButtons)iButton);
+                        if (_mouseDownControl[iButton] != null && focusedControls[0] != _mouseDownControl[iButton])
+                        {
+                            _mouseDownControl[iButton].MouseUp(_input.CurrentMousePosition, (MouseButtons)iButton);
+                        }
                     }
+                    else
+                    {
+                        if (_mouseDownControl[iButton] != null)
+                        {
+                            _mouseDownControl[iButton].MouseUp(_input.CurrentMousePosition, (MouseButtons)iButton);
+                        }
+                    }
+
                 }
 
                 if (_input.IsMouseButtonUp((MouseButtons)iButton))

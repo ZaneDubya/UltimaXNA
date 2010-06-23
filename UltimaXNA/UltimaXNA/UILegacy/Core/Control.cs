@@ -88,6 +88,26 @@ namespace UltimaXNA.UILegacy
 
         Rectangle _area = Rectangle.Empty;
         Vector2 _position = Vector2.Zero;
+        protected int OwnerX
+        {
+            get
+            {
+                if (_owner != null)
+                    return _owner.X + _owner.OwnerX;
+                else
+                    return 0;
+            }
+        }
+        protected int OwnerY
+        {
+            get
+            {
+                if (_owner != null)
+                    return _owner.Y + _owner.OwnerY;
+                else
+                    return 0;
+            }
+        }
         public int X { get { return (int)(_position.X); } set { _position.X = (int)value; } }
         public int Y { get { return (int)(_position.Y); } set { _position.Y = (int)value; } }
         public int Width
@@ -165,6 +185,7 @@ namespace UltimaXNA.UILegacy
             _manager = manager;
             _isInitialized = true;
             _isDisposed = false;
+            Visible = true;
         }
 
         public virtual void Dispose()
@@ -194,16 +215,13 @@ namespace UltimaXNA.UILegacy
             position /= InputMultiplier;
 
             // If we're owned by something, make sure we increment our hitArea to show this.
-            if (_owner != null)
-            {
-                position.X -= _owner.X;
-                position.Y -= _owner.Y;
-            }
+            // position.X -= OwnerX;
+            // position.Y -= OwnerY;
 
-            bool inBounds = Area.Contains((int)position.X, (int)position.Y);
+            bool inBounds = Area.Contains((int)position.X - OwnerX, (int)position.Y - OwnerY);
             if (inBounds)
             {
-                if (_hitTest((int)position.X - X, (int)position.Y - Y))
+                if (_hitTest((int)position.X - X - OwnerX, (int)position.Y - Y - OwnerY))
                 {
                     if (this.HandlesMouseInput)
                         focusedControls.Insert(0, this);
@@ -272,6 +290,8 @@ namespace UltimaXNA.UILegacy
         virtual public void Draw(ExtendedSpriteBatch spriteBatch)
         {
             if (!_isInitialized)
+                return;
+            if (!Visible)
                 return;
 
 #if DEBUG
@@ -350,8 +370,8 @@ namespace UltimaXNA.UILegacy
         public void MouseDown(Vector2 position, MouseButtons button)
         {
             lastClickPosition = position;
-            int x = (int)position.X - X - ((_owner != null) ? _owner.X : 0);
-            int y = (int)position.Y - Y - ((_owner != null) ? _owner.Y : 0);
+            int x = (int)position.X - X - OwnerX;
+            int y = (int)position.Y - Y - OwnerY;
             mouseDown(x, y, button);
             if (OnMouseDown != null)
                 OnMouseDown(x, y, button);
@@ -359,8 +379,8 @@ namespace UltimaXNA.UILegacy
 
         public void MouseUp(Vector2 position, MouseButtons button)
         {
-            int x = (int)position.X - X - ((_owner != null) ? _owner.X : 0);
-            int y = (int)position.Y - Y - ((_owner != null) ? _owner.Y : 0);
+            int x = (int)position.X - X - OwnerX;
+            int y = (int)position.Y - Y - OwnerY;
             mouseUp(x, y, button);
             if (OnMouseUp != null)
                 OnMouseUp(x, y, button);
@@ -372,8 +392,8 @@ namespace UltimaXNA.UILegacy
             if (Math.Abs(lastClickPosition.X - position.X) + Math.Abs(lastClickPosition.Y - position.Y) > 3)
                 maxTimeForDoubleClick = 0.0f;
 
-            int x = (int)position.X - X - ((_owner != null) ? _owner.X : 0);
-            int y = (int)position.Y - Y - ((_owner != null) ? _owner.Y : 0);
+            int x = (int)position.X - X - OwnerX;
+            int y = (int)position.Y - Y - OwnerY;
             mouseOver(x, y);
             if (OnMouseOver != null)
                 OnMouseOver(x, y);
@@ -381,8 +401,8 @@ namespace UltimaXNA.UILegacy
 
         public void MouseOut(Vector2 position)
         {
-            int x = (int)position.X - X - ((_owner != null) ? _owner.X : 0);
-            int y = (int)position.Y - Y - ((_owner != null) ? _owner.Y : 0);
+            int x = (int)position.X - X - OwnerX;
+            int y = (int)position.Y - Y - OwnerY;
             mouseOut(x, y);
             if (OnMouseOut != null)
                 OnMouseOut(x, y);
@@ -393,8 +413,8 @@ namespace UltimaXNA.UILegacy
 
         public void MouseClick(Vector2 position, MouseButtons button)
         {
-            int x = (int)position.X - X - ((_owner != null) ? _owner.X : 0);
-            int y = (int)position.Y - Y - ((_owner != null) ? _owner.Y : 0);
+            int x = (int)position.X - X - OwnerX;
+            int y = (int)position.Y - Y - OwnerY;
 
             bool doubleClick = false;
             if (maxTimeForDoubleClick != 0f)
