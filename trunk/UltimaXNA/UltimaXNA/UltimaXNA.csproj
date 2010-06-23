@@ -94,10 +94,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Client\UltimaClient.cs" />
-    <Compile Include="Data\AnimEncode.cs" />
     <Compile Include="Data\Art.cs" />
     <Compile Include="Data\ASCIIFont.cs" />
-    <Compile Include="Data\BitStream.cs" />
     <Compile Include="Data\ContainerData.cs" />
     <Compile Include="Data\CustomHousing.cs" />
     <Compile Include="Data\HairStyles.cs" />
