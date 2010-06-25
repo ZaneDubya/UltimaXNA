@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UltimaXNA.UILegacy.Gumplings;
 
-namespace UltimaXNA.UILegacy.Clientside
+namespace UltimaXNA.UILegacy.ClientsideGumps
 {
     public class DebugGump : Gump 
     {
@@ -25,8 +25,8 @@ namespace UltimaXNA.UILegacy.Clientside
 
         public override void ActivateByButton(int buttonID)
         {
-            Data.AnimEncode.SaveData(59, "animdata");
-            Data.AnimEncode.TransformData(59, "animdata");
+            // Data.AnimEncode.SaveData(59, "animdata");
+            // Data.AnimEncode.TransformData(59, "animdata");
         }
     }
 }

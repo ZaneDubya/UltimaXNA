@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Input;
 using UltimaXNA.UILegacy.Gumplings;
 
-namespace UltimaXNA.UILegacy.Clientside
+namespace UltimaXNA.UILegacy.ClientsideGumps
 {
     class MiniMap : Gump
     {

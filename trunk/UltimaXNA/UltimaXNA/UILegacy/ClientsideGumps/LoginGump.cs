@@ -5,7 +5,7 @@ using System.Text;
 using UltimaXNA.UILegacy.Gumplings;
 using UltimaXNA.Client;
 
-namespace UltimaXNA.UILegacy.Clientside
+namespace UltimaXNA.UILegacy.ClientsideGumps
 {
     public delegate void LoginEvent(string server, int port, string account, string password);
 

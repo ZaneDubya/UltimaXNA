@@ -60,6 +60,14 @@ namespace UltimaXNA.UILegacy.Gumplings
             if (_expandableScrollHeight > _expandableScrollHeight_Max)
                 _expandableScrollHeight = _expandableScrollHeight_Max;
 
+            if (_gumplingTitleGumpIDDelta)
+            {
+                _gumplingTitleGumpIDDelta = false;
+                if (_gumplingTitle != null)
+                    _gumplingTitle.Dispose();
+                _gumplingTitle = (GumpPic)AddGumpling(new GumpPic(this, 0, 0, 0, _gumplingTitleGumpID, 0));
+            }
+
             if (!_gumplingTop.IsInitialized)
             {
                 Visible = false;
@@ -80,6 +88,12 @@ namespace UltimaXNA.UILegacy.Gumplings
 
                 _gumplingExpander.X = gumplingExpanderX;
                 _gumplingExpander.Y = gumplingExpanderY;
+
+                if (_gumplingTitle != null && _gumplingTitle.IsInitialized)
+                {
+                    _gumplingTitle.X = (_gumplingTop.Width - _gumplingTitle.Width) / 2;
+                    _gumplingTitle.Y = (_gumplingTop.Height - _gumplingTitle.Height) / 2;
+                }
             }
 
             base.Update(gameTime);
@@ -125,5 +139,10 @@ namespace UltimaXNA.UILegacy.Gumplings
                 _expandableScrollHeight = _isExpanding_InitialHeight + (y - _isExpanding_InitialY);
             }
         }
+
+        bool _gumplingTitleGumpIDDelta = false;
+        int _gumplingTitleGumpID;
+        GumpPic _gumplingTitle;
+        public int TitleGumpID { set { _gumplingTitleGumpID = value; _gumplingTitleGumpIDDelta = true; } }
     }
 }

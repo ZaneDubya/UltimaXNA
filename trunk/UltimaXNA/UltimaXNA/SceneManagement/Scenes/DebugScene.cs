@@ -43,7 +43,7 @@ namespace UltimaXNA.SceneManagement
             World.PersonalLightning = 0x09;
             World.LightDirection = -0.6f;
             ClientVars.Map = 0;
-            UI.AddGump_Local(new UILegacy.Clientside.DebugGump(), 40, 40);
+            UI.AddGump_Local(new UILegacy.ClientsideGumps.DebugGump(), 40, 40);
             World.PickType = PickTypes.PickEverything;
         }
 

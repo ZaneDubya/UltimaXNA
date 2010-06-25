@@ -7,7 +7,7 @@ using UltimaXNA.Network;
 using UltimaXNA.Network.Packets.Server;
 using UltimaXNA.UILegacy.Gumplings;
 
-namespace UltimaXNA.UILegacy.Clientside
+namespace UltimaXNA.UILegacy.ClientsideGumps
 {
     class CharacterListGump : Gump
     {

@@ -7,7 +7,7 @@ using UltimaXNA.Entities;
 using UltimaXNA.Input;
 using UltimaXNA.UILegacy.Gumplings;
 
-namespace UltimaXNA.UILegacy.Clientside
+namespace UltimaXNA.UILegacy.ClientsideGumps
 {
     class ContainerGump : Gump
     {

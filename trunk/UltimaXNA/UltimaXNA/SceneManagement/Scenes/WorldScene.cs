@@ -23,7 +23,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using UltimaXNA.Client;
 using UltimaXNA.UILegacy;
-using UltimaXNA.UILegacy.Clientside;
+using UltimaXNA.UILegacy.ClientsideGumps;
 #endregion
 
 namespace UltimaXNA.SceneManagement

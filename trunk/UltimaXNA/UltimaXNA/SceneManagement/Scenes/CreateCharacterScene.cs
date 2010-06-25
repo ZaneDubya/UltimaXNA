@@ -27,7 +27,7 @@ using UltimaXNA.Client;
 using UltimaXNA.Network;
 using UltimaXNA.Network.Packets.Client;
 using UltimaXNA.UILegacy;
-using UltimaXNA.UILegacy.Clientside;
+using UltimaXNA.UILegacy.ClientsideGumps;
 #endregion
 
 namespace UltimaXNA.SceneManagement

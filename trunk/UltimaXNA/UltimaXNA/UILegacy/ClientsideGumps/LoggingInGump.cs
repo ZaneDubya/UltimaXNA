@@ -5,7 +5,7 @@ using System.Text;
 using UltimaXNA.Client;
 using UltimaXNA.UILegacy.Gumplings;
 
-namespace UltimaXNA.UILegacy.Clientside
+namespace UltimaXNA.UILegacy.ClientsideGumps
 {
     public delegate void CancelLoginEvent();
 
