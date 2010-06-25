@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UltimaXNA.UILegacy.Gumplings;
 
-namespace UltimaXNA.UILegacy.Clientside
+namespace UltimaXNA.UILegacy.ClientsideGumps
 {
     class CreateCharSkillsGump : Gump
     {

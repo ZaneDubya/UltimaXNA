@@ -5,7 +5,7 @@ using System.Text;
 using UltimaXNA.Entities;
 using UltimaXNA.UILegacy.Gumplings;
 
-namespace UltimaXNA.UILegacy.Clientside
+namespace UltimaXNA.UILegacy.ClientsideGumps
 {
     class TopMenu : Gump
     {

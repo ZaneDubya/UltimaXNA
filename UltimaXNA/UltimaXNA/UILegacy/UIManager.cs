@@ -166,7 +166,7 @@ namespace UltimaXNA.UILegacy
 
         public Gump AddContainerGump(Entity containerItem, int gumpID)
         {
-            Gump g = new Clientside.ContainerGump(containerItem, gumpID);
+            Gump g = new ClientsideGumps.ContainerGump(containerItem, gumpID);
             g.Position = new Vector2(64, 64);
             _controls.Add(g);
             return g;
@@ -201,12 +201,12 @@ namespace UltimaXNA.UILegacy
 
         void update_Chat(GameTime gameTime)
         {
-            Gump g = this.GetGump<Clientside.ChatWindow>(0);
+            Gump g = this.GetGump<ClientsideGumps.ChatWindow>(0);
             if (g != null)
             {
                 foreach (ChatLine c in _chatMessages.GetMessages())
                 {
-                    ((Clientside.ChatWindow)g).AddLine(c.Text);
+                    ((ClientsideGumps.ChatWindow)g).AddLine(c.Text);
                 }
                 _chatMessages.Clear();
             }

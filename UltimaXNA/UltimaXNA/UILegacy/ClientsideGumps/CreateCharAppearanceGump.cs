@@ -5,7 +5,7 @@ using System.Text;
 using UltimaXNA.UILegacy.Gumplings;
 using Microsoft.Xna.Framework;
 
-namespace UltimaXNA.UILegacy.Clientside
+namespace UltimaXNA.UILegacy.ClientsideGumps
 {
     class CreateCharAppearanceGump : Gump
     {
