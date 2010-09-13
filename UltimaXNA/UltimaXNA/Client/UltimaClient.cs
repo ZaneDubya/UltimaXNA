@@ -876,9 +876,24 @@ namespace UltimaXNA.Client
 
             Mobile u = EntitiesCollection.GetObject<Mobile>(p.Serial, false);
             u.Name = p.PlayerName;
+            u.Strength = p.Strength;
+            u.Dexterity = p.Dexterity;
+            u.Intelligence = p.Intelligence;
             u.Health.Update(p.CurrentHealth, p.MaxHealth);
             u.Stamina.Update(p.CurrentStamina, p.MaxStamina);
             u.Mana.Update(p.CurrentMana, p.MaxMana);
+            u.Followers.Update(p.FollowersCurrent, p.FollowersMax);
+            u.Weight.Update(p.Weight, p.WeightMax);
+            u.StatCap = p.StatCap;
+            u.Luck = p.Luck;
+            u.Gold = p.GoldInInventory;
+            u.ArmorRating = p.ArmorRating;
+            u.ResistFire = p.ResistFire;
+            u.ResistCold = p.ResistCold;
+            u.ResistPoison = p.ResistPoison;
+            u.ResistEnergy = p.ResistEnergy;
+            u.DamageMin = p.DamageMin;
+            u.DamageMax = p.DamageMax;
             //  other stuff unhandled !!!
         }
 
