@@ -92,6 +92,7 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
                 case Buttons.PeaceWarToggle:
                     break;
                 case Buttons.Status:
+                    _manager.ToggleGump_Local(new StatusGump(), 200, 400);
                     break;
             }
         }

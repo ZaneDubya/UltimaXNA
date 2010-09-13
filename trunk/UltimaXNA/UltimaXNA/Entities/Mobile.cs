@@ -27,7 +27,13 @@ namespace UltimaXNA.Entities
     public class Mobile : Entity
     {
         public string Name = string.Empty;
+        public int Strength, Dexterity, Intelligence, StatCap, Luck, Gold;
         public CurrentMaxValue Health, Stamina, Mana;
+        public CurrentMaxValue Followers;
+        public CurrentMaxValue Weight;
+        public int ArmorRating, ResistFire, ResistCold, ResistPoison, ResistEnergy;
+        public int DamageMin, DamageMax;
+
         private WornEquipment _equipment;
         protected MobileAnimation _animation;
 

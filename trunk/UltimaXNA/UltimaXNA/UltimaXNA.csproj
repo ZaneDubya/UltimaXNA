@@ -183,6 +183,7 @@
     <Compile Include="UILegacy\ClientsideGumps\LoginGump.cs" />
     <Compile Include="UILegacy\ClientsideGumps\MiniMap.cs" />
     <Compile Include="UILegacy\ClientsideGumps\SkillsGump.cs" />
+    <Compile Include="UILegacy\ClientsideGumps\StatusGump.cs" />
     <Compile Include="UILegacy\Gumplings\ExpandableScroll.cs" />
     <Compile Include="UILegacy\MsgBox.cs" />
     <Compile Include="UILegacy\ClientsideGumps\PaperDollGump.cs" />

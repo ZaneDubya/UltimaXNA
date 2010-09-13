@@ -142,8 +142,8 @@ namespace UltimaXNA.Network.Packets.Server
         {
             get { return _weight; } 
         }
-        
-        public short MaxWeight
+
+        public short WeightMax
         {
             get { return _maxWeight; } 
         }
@@ -158,12 +158,12 @@ namespace UltimaXNA.Network.Packets.Server
             get { return _statCap; } 
         }
 
-        public byte Followes 
+        public byte FollowersCurrent 
         {
             get { return _followers; } 
         }
 
-        public byte MaxFollowers 
+        public byte FollowersMax
         {
             get { return _maxFollowers; } 
         } 
