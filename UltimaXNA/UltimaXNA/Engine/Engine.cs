@@ -139,7 +139,6 @@ namespace UltimaXNA
             graphicsDeviceManager.SynchronizeWithVerticalRetrace = true;
             graphicsDeviceManager.PreparingDeviceSettings += OnPreparingDeviceSettings;
             this.IsFixedTimeStep = true;
-            // this.TargetElapsedTime = new TimeSpan(1000000);
             graphicsDeviceManager.ApplyChanges();
         }
         static void OnPreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)

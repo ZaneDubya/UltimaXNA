@@ -179,7 +179,7 @@ namespace UltimaXNA
         }
 
         static int _mapSizeInMemory = 16;
-        public static int MapSizeInMemory { get { return _mapSizeInMemory; } }
+        public static int   MapSizeInMemory { get { return _mapSizeInMemory; } }
 
         static int _renderSize = 40;
         public static int RenderSize
@@ -215,8 +215,9 @@ namespace UltimaXNA
             {
                 debugMessage += string.Format("#Objects: {0}\n", World.ObjectsRendered);
                 Entity e = EntitiesCollection.GetPlayerObject();
-                debugMessage += e.Position.ToStringComplex();
-                /*
+                if (e != null)
+                    debugMessage += e.Position.ToStringComplex();
+                
                 debugMessage += string.Format("Warmode: {0}\n", ClientVars.WarMode);
                 if (World.MouseOverObject != null)
                 {
@@ -252,7 +253,7 @@ namespace UltimaXNA
                 else
                 {
                     debugMessage += Environment.NewLine + "GROUND: null";
-                }*/
+                }
             }
             return debugMessage;
         }

@@ -101,6 +101,10 @@
     <Compile Include="Data\HairStyles.cs" />
     <Compile Include="Data\Skills.cs" />
     <Compile Include="Data\Speech.cs" />
+    <Compile Include="Data\TileMatrix.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Data\TileMatrixRaw.cs" />
     <Compile Include="Engine\ClientVars.cs" />
     <Compile Include="Engine\HTML.cs" />
     <Compile Include="Engine\Interaction.cs" />
@@ -221,7 +225,6 @@
     <Compile Include="Data\StaticTileList.cs" />
     <Compile Include="Data\Texmaps.cs" />
     <Compile Include="Data\TileData.cs" />
-    <Compile Include="Data\TileMatrix.cs" />
     <Compile Include="Data\TileMatrixPatch.cs" />
     <Compile Include="Network\CharacterListEntry.cs" />
     <Compile Include="Network\MobileFlags.cs" />

@@ -30,7 +30,7 @@ namespace UltimaXNA.TileEngine
     {
         public int UpdateTicker;
         MapCell[] _cells;
-        TileMatrix _tileMatrix;
+        TileMatrixRaw _tileMatrix;
         int _x, _y;
         bool _loadAllNearbyCells = false; // set when a map is first loaded.
         public bool LoadEverything_Override = false;
@@ -42,7 +42,7 @@ namespace UltimaXNA.TileEngine
         {
             _index = index;
             _loadAllNearbyCells = true;
-            _tileMatrix = new TileMatrix(_index, _index);
+            _tileMatrix = new TileMatrixRaw(_index, _index);
             _cells = new MapCell[ClientVars.MapSizeInMemory * ClientVars.MapSizeInMemory];
         }
 
@@ -55,35 +55,38 @@ namespace UltimaXNA.TileEngine
             get { return _tileMatrix.Width; }
         }
 
-        public void GetAverageZ(int x, int y, ref int z, ref int avg, ref int top)
+        public int GetAverageZ(int top, int left, int right, int bottom, ref int low, ref int high)
         {
-            int zTop, zLeft, zRight, zBottom;
+            low = high;
+            if (left < low)
+                low = left;
+            if (right < low)
+                low = right;
+            if (bottom < low)
+                low = bottom;
 
-            zTop = GetTileZ(x, y);  // GetMapTile(x, y, false).GroundTile.Z;
-            zLeft = GetTileZ(x, y + 1); // GetMapTile(x, y + 1, false).GroundTile.Z;
-            zRight = GetTileZ(x + 1, y); // GetMapTile(x + 1, y, false).GroundTile.Z;
-            zBottom = GetTileZ(x + 1, y + 1); // GetMapTile(x + 1, y + 1, false).GroundTile.Z;
+            high = top;
+            if (left > high)
+                high = left;
+            if (right > high)
+                high = right;
+            if (bottom > high)
+                high = bottom;
 
-            z = zTop;
-            if (zLeft < z)
-                z = zLeft;
-            if (zRight < z)
-                z = zRight;
-            if (zBottom < z)
-                z = zBottom;
-
-            top = zTop;
-            if (zLeft > top)
-                top = zLeft;
-            if (zRight > top)
-                top = zRight;
-            if (zBottom > top)
-                top = zBottom;
-
-            if (Math.Abs(zTop - zBottom) > Math.Abs(zLeft - zRight))
-                avg = FloorAverage(zLeft, zRight);
+            if (Math.Abs(top - bottom) > Math.Abs(left - right))
+                return FloorAverage(left, right);
             else
-                avg = FloorAverage(zTop, zBottom);
+                return FloorAverage(top, bottom);
+        }
+
+        public int GetAverageZ(int x, int y, ref int low, ref int top)
+        {
+            return GetAverageZ(
+                GetTileZ(x, y),
+                GetTileZ(x, y + 1),
+                GetTileZ(x + 1, y),
+                GetTileZ(x + 1, y + 1),
+                ref low, ref top);
         }
 
         private static int FloorAverage(int a, int b)
@@ -104,12 +107,6 @@ namespace UltimaXNA.TileEngine
         private int GetKey(int x, int y)
         {
             return (x << 18) + y;
-        }
-
-        // This pulls a tile from the TileMatrix.
-        public Tile GetLandTile(int x, int y)
-        {
-            return _tileMatrix.GetLandTile(x, y);
         }
 
         int m_LoadedCellThisFrame = 0;
@@ -147,7 +144,7 @@ namespace UltimaXNA.TileEngine
             MapCell c = GetMapCell(x, y, load);
             if (c == null)
                 return null;
-            return c.m_Tiles[x % 8 + ((y % 8) << 3)];
+            return c._Tiles[x % 8 + ((y % 8) << 3)];
         }
 
         public void Update(int centerX, int centerY)
@@ -172,7 +169,7 @@ namespace UltimaXNA.TileEngine
             MapTile t = GetMapTile(x, y, false);
             return
                 (t == null) ?
-                _tileMatrix.GetLandTile(x, y).Z :
+                (sbyte)_tileMatrix.GetLandTile(x, y)[2] :
                 t.GroundTile.Z;
         }
 
@@ -181,13 +178,12 @@ namespace UltimaXNA.TileEngine
             int x = (int)g.Position.X;
             int y = (int)g.Position.Y;
 
-            int[] zValues = new int[16]; // _matrix.GetElevations(x - 1, y - 1, 4, 4);
+            int[] zValues = new int[16];
 
             for (int iy = 0; iy < 4; iy++)
             {
                 for (int ix = 0; ix < 4; ix++)
                 {
-                    MapTile t = GetMapTile(x + ix, y + iy, false);
                     zValues[ix + iy * 4] = GetTileZ(x + ix - 1, y + iy - 1);
                 }
             }
@@ -196,6 +192,18 @@ namespace UltimaXNA.TileEngine
                 zValues[2 + 2 * 4],
                 zValues[2 + 1 * 4],
                 zValues[1 + 2 * 4]);
+            
+            if (!g.IsFlat)
+            {
+                int low = 0, high = 0, sort = 0;
+                sort = GetAverageZ(g.Z, g.Surroundings.South, g.Surroundings.East, g.Surroundings.Down, ref low, ref high);
+                if (sort != g.SortZ)
+                {
+                    g.SortZ = sort;
+                    GetMapTile(x, y, false).Resort();
+                }
+            }
+            
             g.CalculateNormals(
                 zValues[0 + 1 * 4],
                 zValues[0 + 2 * 4],

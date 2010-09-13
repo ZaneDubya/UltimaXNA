@@ -27,12 +27,12 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace UltimaXNA.TileEngine
 {
-    public sealed class MapCell : Data.IPoint2D
+    public sealed class MapCell : IPoint2D
     {
-        public MapTile[] m_Tiles = new MapTile[64];
-        Map _map;
-        Data.TileMatrix _matrix;
-        bool _isLoaded = false;
+        public MapTile[] _Tiles = new MapTile[64];
+        private Map _map;
+        private TileMatrixRaw _matrix;
+        private bool _isLoaded = false;
 
         #region XY
         int _x, _y;
@@ -40,39 +40,7 @@ namespace UltimaXNA.TileEngine
         public int Y { get { return _y; } }
         #endregion
 
-        public void WriteRadarColors(uint[] buffer, int x, int y)
-        {
-            unsafe
-            {
-                fixed (uint* pData = buffer)
-                {
-                    int radar = 0;
-                    int tileindex = 0;
-
-                    for (int iy = 0; iy < 8; iy++)
-                    {
-                        uint* pDataRef = pData + x + ((y + iy) * 64);
-                        for (int ix = 0; ix < 8; ix++)
-                        {
-                            List<MapObject> o = m_Tiles[tileindex].GetSortedObjects();
-                            for (int j = o.Count - 1; j >= 0; j--)
-                            {
-                                if (o[j] is MapObjectStatic || o[j] is MapObjectGround)
-                                {
-                                    radar = m_Tiles[tileindex].Objects[j].ItemID;
-                                    break;
-                                }
-                            }
-                            *pDataRef++ = Data.Radarcol.Colors[radar];
-                            tileindex++;
-                        }
-                    }
-                }
-            }
-            // texture.SetData<uint>(0, new Rectangle(x, y, 8, 8), data, 0, 64, SetDataOptions.None);
-        }
-
-        public MapCell(Map map, Data.TileMatrix matrix, int x, int y)
+        public MapCell(Map map, TileMatrixRaw matrix, int x, int y)
         {
             _map = map;
             _matrix = matrix;
@@ -92,42 +60,83 @@ namespace UltimaXNA.TileEngine
 
         void loadGround()
         {
-            Data.Tile[] _tiles;
-            _tiles = _matrix.GetLandBlock(_x >> 3, _y >> 3);
-
+            byte[] tiledata = _matrix.GetLandBlock(_x >> 3, _y >> 3);
+            int index = 0;
             for (int i = 0; i < 64; i++)
             {
                 int ix = _x + i % 8;
                 int iy = _y + (i >> 3);
-                int iz = 0, itop = 255, iavg = 0;
-                _map.GetAverageZ(ix, iy, ref iz, ref iavg, ref itop);
-                MapObjectGround ground = new MapObjectGround(_tiles[i], new Position3D(ix, iy, _tiles[i].Z));
-                ground.SortZ = iavg;
+                // int iz = 0, itop = 255, iavg = 0;
+
+                int iTileID = tiledata[index++] + (tiledata[index++] << 8);
+                int iTileZ = (sbyte)tiledata[index++];
+
+                MapObjectGround ground = 
+                    new MapObjectGround(iTileID, 
+                        new Position3D(ix, iy, iTileZ));
+                ground.SortZ = iTileZ;
                 MapTile tile = new MapTile(ix, iy);
                 tile.Add(ground);
-                m_Tiles[tile.X % 8 + (tile.Y % 8) * 8] = tile;
+                _Tiles[tile.X % 8 + (tile.Y % 8) * 8] = tile;
             }
         }
 
         void loadStatics()
         {
-            Data.StaticTile[][][] _statics;
-            _statics = _matrix.GetStaticBlock(_x >> 3, _y >> 3);
-            for (int i = 0; i < 64; i++)
+            byte[] tiledata = _matrix.GetStaticBlock(_x >> 3, _y >> 3);
+            if (tiledata == null)
+                return;
+            int count = tiledata.Length / 7;
+            int index = 0;
+            for (int i = 0; i < count; i++)
             {
-                int ix = _x + i % 8;
-                int iy = _y + (i >> 3);
-                MapTile tile = m_Tiles[ix % 8 + (iy % 8) * 8];
-                foreach (Data.StaticTile s in _statics[ix % 8][iy % 8])
-                {
-                    tile.Add(new MapObjectStatic(s.ID, i, new Position3D(ix, iy, s.Z)));
-                }
+                int iTileID = tiledata[index++] + (tiledata[index++] << 8);
+                int iTileX = tiledata[index++];
+                int iTileY = tiledata[index++];
+                int iTileZ = (sbyte)tiledata[index++];
+                index += 2; // unknown 2 byte data, not used.
+                MapTile tile = _Tiles[iTileX + (iTileY << 3)];
+                tile.Add(
+                    new MapObjectStatic(iTileID, i, 
+                        new Position3D(iTileX + _x, iTileY + _y, iTileZ)));
             }
         }
 
         public MapTile Tile(int x, int y)
         {
-            return m_Tiles[x % 8 + (y % 8) * 8];
+            return _Tiles[x % 8 + (y % 8) * 8];
+        }
+
+        public void WriteRadarColors(uint[] buffer, int x, int y)
+        {
+            unsafe
+            {
+                fixed (uint* pData = buffer)
+                {
+                    int radar = 0;
+                    int tileindex = 0;
+
+                    for (int iy = 0; iy < 8; iy++)
+                    {
+                        uint* pDataRef = pData + x + ((y + iy) * 64);
+                        for (int ix = 0; ix < 8; ix++)
+                        {
+                            List<MapObject> o = _Tiles[tileindex].GetSortedObjects();
+                            for (int j = o.Count - 1; j >= 0; j--)
+                            {
+                                if (o[j] is MapObjectStatic || o[j] is MapObjectGround)
+                                {
+                                    radar = _Tiles[tileindex].Objects[j].ItemID;
+                                    break;
+                                }
+                            }
+                            *pDataRef++ = Data.Radarcol.Colors[radar];
+                            tileindex++;
+                        }
+                    }
+                }
+            }
+            // texture.SetData<uint>(0, new Rectangle(x, y, 8, 8), data, 0, 64, SetDataOptions.None);
         }
     }
 }

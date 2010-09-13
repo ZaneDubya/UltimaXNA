@@ -103,8 +103,6 @@ namespace UltimaXNA.Data
             get { return m_Width; }
         }
 
-        private List<TileMatrix> m_FileShare = new List<TileMatrix>();
-
         public TileMatrix(int index, int id)
         {
             m_MapStream = FileManager.GetFile("map{0}.mul", index);
