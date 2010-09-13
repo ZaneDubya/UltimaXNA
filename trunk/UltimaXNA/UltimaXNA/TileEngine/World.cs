@@ -224,7 +224,6 @@ namespace UltimaXNA.TileEngine
                                 break;
 
                             MapObjectGround groundTile = (MapObjectGround)mapObject;
-
                             if (groundTile.NoDraw)
                                 continue;
 

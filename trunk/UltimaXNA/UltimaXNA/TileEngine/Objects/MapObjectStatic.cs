@@ -44,5 +44,10 @@ namespace UltimaXNA.TileEngine
         {
             get { return (_noDraw); }
         }
+
+        public override string ToString()
+        {
+            return string.Format("Z:{0}   SortZ:{1}", Z, SortZ);
+        }
     }
 }

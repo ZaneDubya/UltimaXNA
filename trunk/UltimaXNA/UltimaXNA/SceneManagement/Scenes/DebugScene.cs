@@ -105,10 +105,12 @@ namespace UltimaXNA.SceneManagement
                     o.Z += editing_Value;
                 }
                 for (int iy = -2; iy <= 2; iy++)
+                {
                     for (int ix = -2; ix <= 2; ix++)
                     {
                         World.Map.GetMapTile(ix + x, iy + y, true).GroundTile.MustUpdateSurroundings = true;
                     }
+                }
             }
         }
 
@@ -191,11 +193,10 @@ namespace UltimaXNA.SceneManagement
                 _position.X++;
                 _position.Y--;
             }
-            int z = 0, top = 0, avg = 0;
             if (World.Map != null)
             {
-                World.Map.GetAverageZ(_position.X, _position.Y, ref z, ref avg, ref top);
-                _position.Z = z;
+                int low = 0, high = 0;
+                _position.Z = World.Map.GetAverageZ(_position.X, _position.Y, ref low, ref high);
             }
             // alt keys to change debug variables.
             if (Input.IsKeyDown(Keys.LeftAlt))

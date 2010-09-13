@@ -32,11 +32,12 @@ namespace UltimaXNA.TileEngine
         public bool IsFlat = false;
         public bool MustUpdateSurroundings = true;
 
-        public MapObjectGround(Data.Tile landTile, Position3D position)
+        public MapObjectGround(int tileID, Position3D position)
             : base(position)
         {
-            ItemID = landTile.ID;
+            ItemID = tileID;
             Normals = new Vector3[4];
+            Tiebreaker = -1;
         }
 
         public bool Ignored
@@ -51,8 +52,7 @@ namespace UltimaXNA.TileEngine
 
         public override string ToString()
         {
-            return "Z: " + Z + Environment.NewLine +
-                "Sort: " + SortZ;
+            return string.Format("Z:{0}, SortZ:{1}, <{2},{3},{4}>", Z, SortZ, Surroundings.South, Surroundings.Down, Surroundings.East);
         }
 
         public Surroundings Surroundings
@@ -62,7 +62,6 @@ namespace UltimaXNA.TileEngine
             {
                 _surroundingTiles = value;
                 IsFlat = Surroundings.IsFlat && Surroundings.East == Z;
-                // SortZ = (Z + Surroundings.Down + Surroundings.South + Surroundings.East) / 4;
             }
         }
 

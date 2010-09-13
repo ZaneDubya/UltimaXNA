@@ -245,9 +245,8 @@ namespace UltimaXNA.Entities
             // if (cantWalk && (TileData.LandTable[landTile.ID & 0x3FFF].Flags & TileFlag.Wet) == 0)	//Can't walk and it's not water
             //     landBlocks = true;
 
-            int landZ = 0, landCenter = 0, landTop = 0;
-
-            map.GetAverageZ(x, y, ref landZ, ref landCenter, ref landTop);
+            int landLow = 0, landCenter = 0, landTop = 0;
+            landCenter = map.GetAverageZ(x, y, ref landLow, ref landTop);
 
             bool moveIsOk = false;
 
@@ -297,7 +296,7 @@ namespace UltimaXNA.Entities
                         else
                             landCheck += itemData.Height;
 
-                        if (considerLand && landCheck < landCenter && landCenter > ourZ && testTop > landZ)
+                        if (considerLand && landCheck < landCenter && landCenter > ourZ && testTop > landLow)
                             continue;
 
                         if (IsOk(ignoreDoors, ourZ, testTop, tiles, items))
@@ -353,7 +352,7 @@ namespace UltimaXNA.Entities
                         else
                             landCheck += itemData.Height;
 
-                        if (considerLand && landCheck < landCenter && landCenter > ourZ && testTop > landZ)
+                        if (considerLand && landCheck < landCenter && landCenter > ourZ && testTop > landLow)
                             continue;
 
                         if (IsOk(ignoreDoors, ourZ, testTop, tiles, items))
@@ -367,7 +366,7 @@ namespace UltimaXNA.Entities
 
             #endregion
 
-            if (considerLand && !landBlocks && (stepTop) >= landZ)
+            if (considerLand && !landBlocks && (stepTop) >= landLow)
             {
                 int ourZ = landCenter;
                 int ourTop = ourZ + PersonHeight;
@@ -482,7 +481,7 @@ namespace UltimaXNA.Entities
             }
 
             MapObjectGround landTile = mapTile.GroundTile; //map.Tiles.GetLandTile(xCheck, yCheck);
-            int landZ = 0, landCenter = 0, landTop = 0;
+            
             bool landBlocks = (Data.TileData.LandData[landTile.ItemID & 0x3FFF].Flags & TileFlag.Impassable) != 0; //(TileData.LandTable[landTile.ID & 0x3FFF].Flags & TileFlag.Impassable) != 0;
 
             // if (landBlocks && m.CanSwim && (TileData.LandTable[landTile.ID & 0x3FFF].Flags & TileFlag.Wet) != 0)
@@ -490,7 +489,8 @@ namespace UltimaXNA.Entities
             // else if (m.CantWalk && (TileData.LandTable[landTile.ID & 0x3FFF].Flags & TileFlag.Wet) == 0)
             //     landBlocks = true;
 
-            map.GetAverageZ(xCheck, yCheck, ref landZ, ref landCenter, ref landTop);
+            int landLow = 0, landCenter = 0, landTop = 0;
+            landCenter = map.GetAverageZ(xCheck, yCheck, ref landLow, ref landTop);
 
             bool considerLand = !landTile.Ignored;
 
@@ -499,7 +499,7 @@ namespace UltimaXNA.Entities
 
             if (considerLand && !landBlocks && loc.Z >= landCenter)
             {
-                zLow = landZ;
+                zLow = landLow;
                 zCenter = landCenter;
 
                 if (!isSet || landTop > zTop)

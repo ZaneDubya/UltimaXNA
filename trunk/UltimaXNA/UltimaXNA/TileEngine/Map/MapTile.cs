@@ -33,8 +33,6 @@ namespace UltimaXNA.TileEngine
         private bool m_NeedsSorting;
         private static int[] m_itemsToRemove = new int[0x100];
 
-
-
         #region X
         private int m_X;
         public int X
@@ -262,6 +260,11 @@ namespace UltimaXNA.TileEngine
             {
                 return new List<MapObject>(this.GetSortedObjects());
             }
+        }
+
+        public void Resort()
+        {
+            m_NeedsSorting = true;
         }
     }
 }
