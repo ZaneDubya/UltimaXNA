@@ -47,7 +47,7 @@ namespace UltimaXNA.Entities
 
         Position3D _currentPosition, _goalPosition;
 
-        // public static Diagnostics.Logger _log = new Diagnostics.Logger("Movement");
+        public static Diagnostics.Logger _log = new Diagnostics.Logger("Movement");
 
         Direction _facing = Direction.Up;
         Direction _queuedFacing = Direction.Nothing;
@@ -111,7 +111,7 @@ namespace UltimaXNA.Entities
         {
             if (!IsMoving && (DateTime.Now > _nextMove))
             {
-                // _log.Debug("Move: " + DateTime.Now.Millisecond.ToString());
+                _log.Debug("Move: " + DateTime.Now.Millisecond.ToString());
                 if (_moveEvents.SlowSync)
                 {
 
@@ -329,7 +329,7 @@ namespace UltimaXNA.Entities
         {
             if (_history[_sequenceNextSend] != null)
             {
-                // Movement._log.Debug("M->S: " + DateTime.Now.Millisecond.ToString());
+                Movement._log.Debug("M->S: " + DateTime.Now.Millisecond.ToString());
                 direction = _history[_sequenceNextSend].Facing;
                 sequence = _sequenceNextSend;
                 fastwalkkey = _history[_sequenceNextSend].Fastwalk;
@@ -346,14 +346,14 @@ namespace UltimaXNA.Entities
 
         public void MoveRequestAcknowledge(int sequence)
         {
-            // Movement._log.Debug("@Ack: " + DateTime.Now.Millisecond.ToString());
+            Movement._log.Debug("@Ack: " + DateTime.Now.Millisecond.ToString());
             _history[sequence] = null;
             _lastSequenceAck = sequence;
         }
 
         public void MoveRequestReject(int sequence, out int x, out int y, out int z, out int facing)
         {
-            // Movement._log.Debug("@Rej: " + DateTime.Now.Millisecond.ToString());
+            Movement._log.Debug("@Rej: " + DateTime.Now.Millisecond.ToString());
             if (_history[sequence] != null)
             {
                 moveEventsHistory_Entry e = _history[sequence];
