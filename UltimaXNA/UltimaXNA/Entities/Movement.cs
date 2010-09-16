@@ -28,29 +28,27 @@ namespace UltimaXNA.Entities
     public class Movement
     {
         #region MovementSpeed
-        public static float WalkFoot { get { return 400f / 1000f; } }
-        public static float RunFoot { get { return 200f / 1000f; } }
-        public static float WalkMount { get { return 200f / 1000f; } }
-        public static float RunMount { get { return 100f / 1000f; } }
-        private float TimeToCompleteMove
+        private static TimeSpan m_WalkFoot = TimeSpan.FromSeconds(0.4);
+        private static TimeSpan m_RunFoot = TimeSpan.FromSeconds(0.2);
+        private static TimeSpan m_WalkMount = TimeSpan.FromSeconds(0.2);
+        private static TimeSpan m_RunMount = TimeSpan.FromSeconds(0.1);
+        private TimeSpan TimeToCompleteMove(Direction facing)
         {
-            get
-            {
-                if (IsMounted)
-                    return (_facing & Direction.Running) == Direction.Running ? RunMount : WalkMount;
-                else
-                    return (_facing & Direction.Running) == Direction.Running ? RunFoot : WalkFoot;
-            }
+            if (IsMounted)
+                return (facing & Direction.Running) == Direction.Running ? m_RunMount : m_WalkMount;
+            else
+                return (facing & Direction.Running) == Direction.Running ? m_RunFoot : m_WalkFoot;
         }
         #endregion
 
         public bool RequiresUpdate = false;
-        // booleans
         public bool IsMounted;
         public bool IsRunning { get { return ((_facing & Direction.Running) == Direction.Running); } }
 
         Position3D _currentPosition, _goalPosition;
-        
+
+        // public static Diagnostics.Logger _log = new Diagnostics.Logger("Movement");
+
         Direction _facing = Direction.Up;
         Direction _queuedFacing = Direction.Nothing;
         public Direction Facing
@@ -72,57 +70,53 @@ namespace UltimaXNA.Entities
         float MoveSequence = 0f;
 
         internal Position3D Position { get { return _currentPosition; } }
-        
-        MoveEvents _moveEvents;
-        MoveEvents moveEvents
-        {
-            get
-            {
-                if (_moveEvents == null)
-                    _moveEvents = new MoveEvents();
-                return _moveEvents;
-            }
-        }
 
-        private Entity _entity;
-        private IWorld _world;
+        moveEventsQueue _moveEvents;
+        DateTime _nextMove;
+        Entity _entity;
+        IWorld _world;
 
         public Movement(Entity entity, IWorld world)
         {
             _entity = entity;
             _world = world;
             _currentPosition = new Position3D();
-        }
-
-        public void NewFacingToServer(Direction nDirection)
-        {
-            _facing = nDirection;
-            moveEvents.NewEvent(this._facing);
+            _moveEvents = new moveEventsQueue();
         }
 
         public bool GetMoveEvent(ref int direction, ref int sequence, ref int fastwalkkey)
         {
             if (!_entity.IsClientEntity)
                 return false;
-            return moveEvents.GetMoveEvent(ref direction, ref sequence, ref fastwalkkey);
+            bool isMoveEvent = _moveEvents.GetMoveEvent(ref direction, ref sequence, ref fastwalkkey);
+            return isMoveEvent;
         }
 
         public void MoveEventAck(int nSequence)
         {
-            // do nothing
+            _moveEvents.MoveRequestAcknowledge(nSequence);
         }
 
         public void MoveEventRej(int sequenceID, int x, int y, int z, int direction)
         {
             // immediately return to the designated tile.
+            // _currentPosition = _currentPosition;
+            int ax, ay, az, af;
+            _moveEvents.MoveRequestReject(sequenceID, out ax, out ay, out az, out af);
             MoveToInstant(x, y, z, direction);
-            moveEvents.ResetMoveSequence();
+            _moveEvents.ResetMoveSequence();
         }
 
         public void Move(Direction facing)
         {
-            if (!IsMoving)
+            if (!IsMoving && (DateTime.Now > _nextMove))
             {
+                // _log.Debug("Move: " + DateTime.Now.Millisecond.ToString());
+                if (_moveEvents.SlowSync)
+                {
+
+                }
+                _nextMove = DateTime.Now + TimeToCompleteMove(facing);
                 // we need to transfer over the running flag to our local copy.
                 // copy over running flag if it exists, zero it out if it doesn't
                 if ((facing & Direction.Running) != 0)
@@ -131,7 +125,7 @@ namespace UltimaXNA.Entities
                     this.Facing &= Direction.FacingMask;
                 // now get the goal tile.
                 Vector3 next = MovementCheck.OffsetTile(_currentPosition.Tile_V3, facing);
-                MoveTo(next, (int)facing);
+                MoveToGoalTile(next, (int)facing);
             }
         }
 
@@ -148,27 +142,27 @@ namespace UltimaXNA.Entities
             }
         }
 
-        public void MoveTo(Vector3 v, int facing)
+        public void MoveToGoalTile(Vector3 v, int facing)
         {
-            MoveTo((int)v.X, (int)v.Y, (int)v.Z, facing);
+            MoveToGoalTile((int)v.X, (int)v.Y, (int)v.Z, facing);
         }
 
-        public void MoveTo(int x, int y, int z, int facing)
+        public void MoveToGoalTile(int x, int y, int z, int facing)
         {
             Direction iFacing;
             _goalPosition = getNextTile(_currentPosition, new Position3D(x, y, z), out iFacing);
 
-            // If we are the player, set our move event so that the game
-            // knows to send a move request to the server ...
-            if (_entity.IsClientEntity)
+            // If we are the player, set our move event - the game will send a move msg to the server.
+            // If _goalPosition is null, then the requested move is blocked and we will not send a move msg.
+            if (_entity.IsClientEntity && (_goalPosition != null))
             {
                 // Special exception for the player: if we are facing a new direction, we
                 // need to pause for a brief moment and let the server know that.
                 if ((_facing & Direction.FacingMask) != ((Direction)facing & Direction.FacingMask))
                 {
-                    moveEvents.NewEvent(((Direction)facing & Direction.FacingMask));
+                    _moveEvents.AddMoveEvent(_currentPosition.X, _currentPosition.Y, _currentPosition.Z, (int)((Direction)facing & Direction.FacingMask));
                 }
-                moveEvents.NewEvent((Direction)facing);
+                _moveEvents.AddMoveEvent(_currentPosition.X, _currentPosition.Y, _currentPosition.Z, (int)((Direction)facing));
             }
 
             _facing = (Direction)facing;
@@ -176,19 +170,19 @@ namespace UltimaXNA.Entities
 
         public void MoveToInstant(int x, int y, int z, int facing)
         {
-            mFlushDrawObjects();
+            _moveEvents.ResetMoveSequence();
+            flushDrawObjects();
             _facing = ((Direction)facing & Direction.FacingMask);
             _goalPosition = _currentPosition = new Position3D(x, y, z);
         }
 
         public void Update(GameTime gameTime)
         {
-            mFlushDrawObjects();
-            
+            flushDrawObjects();
             // Are we moving? (if our current location != our destination, then we are moving)
             if (IsMoving)
             {
-                MoveSequence += ((float)(gameTime.ElapsedGameTime.TotalMilliseconds / 1000) / TimeToCompleteMove);
+                MoveSequence += ((float)(gameTime.ElapsedGameTime.TotalMilliseconds) / TimeToCompleteMove(_facing).Milliseconds);
 
                 if (MoveSequence < 1f)
                 {
@@ -210,10 +204,10 @@ namespace UltimaXNA.Entities
 
         public void ClearImmediate()
         {
-            mFlushDrawObjects();
+            flushDrawObjects();
         }
 
-        private void mFlushDrawObjects()
+        private void flushDrawObjects()
         {
             if (Position.IsNullPosition)
                 return;
@@ -283,168 +277,109 @@ namespace UltimaXNA.Entities
         }
     }
 
-    public class Position3D
+    
+
+    // This class queues moves and maintains the fastwalk key and current sequence value.
+    class moveEventsQueue
     {
-        public static Vector3 NullPosition = new Vector3(-1);
-
-        Vector3 _tile;
-        Vector3 _offset;
-
-        public Vector3 Tile_V3 { get { return _tile; } set { _tile = value; } }
-        public Vector3 Offset_V3 { get { return _offset; } set { _offset = value; } }
-        public Vector3 Point_V3 { get { return _tile + _offset; } }
-
-        public bool IsOffset { get { return (X_offset != 0) || (Y_offset != 0) || (Z_offset != 0); } }
-        public bool IsNullPosition { get { return _tile == NullPosition; } }
-
-        public int X { get { return (int)_tile.X; } set { _tile.X = value; } }
-        public int Y { get { return (int)_tile.Y; } set { _tile.Y = value; } }
-        public int Z { get { return (int)_tile.Z; } set { _tile.Z = value; } }
-        float X_offset { get { return _offset.X % 1.0f; } }
-        float Y_offset { get { return _offset.Y % 1.0f; } }
-        float Z_offset { get { return _offset.Z % 1.0f; } }
-
-        public int Draw_TileX { get { return drawOffsetTile(X, X_offset); } }
-        public int Draw_TileY { get { return drawOffsetTile(Y, Y_offset); } }
-        public float Draw_Xoffset { get { return drawOffsetOffset(X_offset); } }
-        public float Draw_Yoffset { get { return drawOffsetOffset(Y_offset); } }
-        public float Draw_Zoffset { get { return Z_offset; } }
-
-        int drawOffsetTile(int tile, float offset)
-        {
-            return (offset > 0) ? tile + 1 : tile;
-        }
-
-        float drawOffsetOffset(float offset)
-        {
-            if (offset > 0)
-                return offset - 1f;
-            else
-                return offset;
-            // return (offset == 0) ? 0 : offset - 1f; 
-        }
-
-        public Position3D()
-        {
-            _tile = NullPosition;
-        }
-
-        public Position3D(int x, int y, int z)
-        {
-            _tile = new Vector3(x, y, z);
-        }
-
-        public Position3D(Vector3 v)
-        {
-            _tile = v;
-        }
-
-        public override bool Equals(object o)
-        {
-            if (o == null) return false;
-            if (o.GetType() != typeof(Position3D)) return false;
-            if (this.X != ((Position3D)o).X) return false;
-            if (this.Y != ((Position3D)o).Y) return false;
-            if (this.Z != ((Position3D)o).Z) return false;
-            return true;
-        }
-
-        // Equality operator. Returns dbNull if either operand is dbNull, 
-        // otherwise returns dbTrue or dbFalse:
-        public static bool operator ==(Position3D x, Position3D y)
-        {
-            if ((object)x == null)
-                return ((object)y == null);
-            return x.Equals(y);
-        }
-
-        // Inequality operator. Returns dbNull if either operand is
-        // dbNull, otherwise returns dbTrue or dbFalse:
-        public static bool operator !=(Position3D x, Position3D y)
-        {
-            if ((object)x == null)
-                return ((object)y != null);
-            return !x.Equals(y);
-        }
-
-        public override int GetHashCode()
-        {
-            return X ^ Y ^ Z;
-        }
-
-        public override string ToString()
-        {
-            return string.Format("X:{0} Y:{1} Z:{2}", X, Y, Z);
-        }
-
-        public string ToStringComplex()
-        {
-            return
-                "PT=" + ToString() + Environment.NewLine +
-                "PO=" + string.Format("X:{0} Y:{1} Z:{2}", X_offset, Y_offset, Z_offset) + Environment.NewLine +
-                "DT=" + string.Format("X:{0} Y:{1} Z:{2}", Draw_TileX, Draw_TileY, Z) + Environment.NewLine + 
-                "D=" + string.Format("X:{0} Y:{1} Z:{2}", Draw_Xoffset, Draw_Yoffset, Draw_Zoffset);
-        }
-    }
-
-    // This event handles all the move sequences
-    public class MoveEvents
-    {
-        private int _NextSequence;
+        private int _lastSequenceAck;
+        private int _sequenceQueued;
+        private int _sequenceNextSend;
         private int _FastWalkKey;
-        List<MoveEventSingle> _events;
+        moveEventsHistory_Entry[] _history;
 
-        public MoveEvents()
+        public bool SlowSync
         {
-            _events = new List<MoveEventSingle>();
-            _FastWalkKey = new Random().Next(int.MinValue, int.MaxValue);
+            get
+            {
+                if (_sequenceNextSend > _lastSequenceAck + 4)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+        public moveEventsQueue()
+        {
             ResetMoveSequence();
         }
 
         public void ResetMoveSequence()
         {
-            _NextSequence = 0;
+            _sequenceQueued = 0;
+            _lastSequenceAck = -1;
+            _sequenceNextSend = 0;
+            _FastWalkKey = new Random().Next(int.MinValue, int.MaxValue);
+            _history = new moveEventsHistory_Entry[256];
         }
 
-        public void NewEvent(Direction nDirection)
+        public void AddMoveEvent(int x, int y, int z, int direction)
         {
-            int sequence = _NextSequence++;
-            if (_NextSequence > byte.MaxValue)
-                ResetMoveSequence();
-            int direction = (int)nDirection;
-            int fastWalk = (_FastWalkKey == int.MaxValue) ? new Random().Next(int.MinValue, int.MaxValue) : _FastWalkKey++;
-
-            _events.Add(new MoveEventSingle(sequence, direction, fastWalk));
+            _history[_sequenceQueued] = new moveEventsHistory_Entry(x, y, z, direction, _FastWalkKey);
+            _sequenceQueued += 1;
+            if (_sequenceQueued > byte.MaxValue)
+                _sequenceQueued = 1;
         }
 
         public bool GetMoveEvent(ref int direction, ref int sequence, ref int fastwalkkey)
         {
-            if (_events.Count == 0)
+            if (_history[_sequenceNextSend] != null)
             {
-                return false;
+                // Movement._log.Debug("M->S: " + DateTime.Now.Millisecond.ToString());
+                direction = _history[_sequenceNextSend].Facing;
+                sequence = _sequenceNextSend;
+                fastwalkkey = _history[_sequenceNextSend].Fastwalk;
+                _sequenceNextSend++;
+                if (_sequenceNextSend > byte.MaxValue)
+                    _sequenceNextSend = 1;
+                return true;
             }
             else
             {
-                direction = _events[0].Direction;
-                sequence = _events[0].Sequence;
-                fastwalkkey = _events[0].Fastwalk;
-                _events.RemoveAt(0);
-                return true;
+                return false;
             }
         }
-    }
 
-    class MoveEventSingle
-    {
-        public readonly int Sequence;
-        public readonly int Direction;
-        public readonly int Fastwalk;
-
-        public MoveEventSingle(int sequence, int direction, int fastwalk)
+        public void MoveRequestAcknowledge(int sequence)
         {
-            Sequence = sequence;
-            Direction = direction;
-            Fastwalk = fastwalk;
+            // Movement._log.Debug("@Ack: " + DateTime.Now.Millisecond.ToString());
+            _history[sequence] = null;
+            _lastSequenceAck = sequence;
+        }
+
+        public void MoveRequestReject(int sequence, out int x, out int y, out int z, out int facing)
+        {
+            // Movement._log.Debug("@Rej: " + DateTime.Now.Millisecond.ToString());
+            if (_history[sequence] != null)
+            {
+                moveEventsHistory_Entry e = _history[sequence];
+                x = e.X;
+                y = e.Y;
+                z = e.Z;
+                facing = e.Facing;
+            }
+            else
+            {
+                x = y = z = facing = -1;
+            }
+            ResetMoveSequence();
+        }
+
+        class moveEventsHistory_Entry
+        {
+            public readonly int X, Y, Z, Facing, Fastwalk;
+            public moveEventsHistory_Entry(int x, int y, int z, int facing, int fastwalk)
+            {
+                X = x;
+                Y = y;
+                Z = z;
+                Facing = facing;
+                Fastwalk = fastwalk;
+            }
         }
     }
 }

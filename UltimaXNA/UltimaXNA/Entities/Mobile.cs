@@ -286,7 +286,7 @@ namespace UltimaXNA.Entities
 
         public void MoveTo(int x, int y, int z, int facing)
         {
-            _movement.MoveTo(x, y, z, facing);
+            _movement.MoveToGoalTile(x, y, z, facing);
         }
 
         public void MoveToInstant(int x, int y, int z, int facing)

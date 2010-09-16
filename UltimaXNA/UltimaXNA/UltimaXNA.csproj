@@ -142,6 +142,7 @@
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Entities\EntitiesCollection.cs" />
     <Compile Include="Entities\ContainerContents.cs" />
+    <Compile Include="Entities\EntityPosition3d.cs" />
     <Compile Include="Entities\Item.cs" />
     <Compile Include="Entities\Mobile.cs" />
     <Compile Include="Entities\MobileAnimation.cs" />

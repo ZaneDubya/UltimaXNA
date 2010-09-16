@@ -611,8 +611,9 @@ namespace UltimaXNA.Client
         private static void receive_MoveAck(IRecvPacket packet)
         {
             MoveAcknowledgePacket p = (MoveAcknowledgePacket)packet;
-            EntitiesCollection.GetPlayerObject().MoveEventAck(p.Sequence);
-            ((Mobile)EntitiesCollection.GetPlayerObject()).Notoriety = p.Notoriety;
+            Mobile player = (Mobile)EntitiesCollection.GetPlayerObject();
+            player.MoveEventAck(p.Sequence);
+            player.Notoriety = p.Notoriety;
         }
 
         private static void receive_MoveRej(IRecvPacket packet)

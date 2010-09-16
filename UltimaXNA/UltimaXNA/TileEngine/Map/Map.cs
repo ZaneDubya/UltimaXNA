@@ -197,9 +197,9 @@ namespace UltimaXNA.TileEngine
             {
                 int low = 0, high = 0, sort = 0;
                 sort = GetAverageZ(g.Z, g.Surroundings.South, g.Surroundings.East, g.Surroundings.Down, ref low, ref high);
-                if (sort != g.SortZ)
+                if (low != g.SortZ)
                 {
-                    g.SortZ = sort;
+                    g.SortZ = low;
                     GetMapTile(x, y, false).Resort();
                 }
             }
