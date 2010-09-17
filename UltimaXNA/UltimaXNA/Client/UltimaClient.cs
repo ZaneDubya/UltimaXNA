@@ -612,14 +612,15 @@ namespace UltimaXNA.Client
         {
             MoveAcknowledgePacket p = (MoveAcknowledgePacket)packet;
             Mobile player = (Mobile)EntitiesCollection.GetPlayerObject();
-            player.MoveEventAck(p.Sequence);
+            player.PlayerMobile_MoveEventAck(p.Sequence);
             player.Notoriety = p.Notoriety;
         }
 
         private static void receive_MoveRej(IRecvPacket packet)
         {
             MovementRejectPacket p = (MovementRejectPacket)packet;
-            EntitiesCollection.GetPlayerObject().MoveEventRej(p.Sequence, p.X, p.Y, p.Z, p.Direction);
+            Mobile player = (Mobile)EntitiesCollection.GetPlayerObject();
+            player.PlayerMobile_MoveEventRej(p.Sequence, p.X, p.Y, p.Z, p.Direction);
         }
 
         private static void receive_NewSubserver(IRecvPacket packet)

@@ -145,9 +145,11 @@ namespace UltimaXNA
             // Tell the player to Move. If the player has a new move event, send a MoveRequestPacket to the server.
             int direction = 0, sequence = 0, key = 0;
             Mobile m = (Mobile)EntitiesCollection.GetPlayerObject();
-            m.Move(moveDirection);
-            if (EntitiesCollection.GetPlayerObject().GetMoveEvent(ref direction, ref sequence, ref key))
+            m.PlayerMobile_Move(moveDirection);
+            if (m.PlayerMobile_GetMoveEvent(ref direction, ref sequence, ref key))
+            {
                 UltimaClient.Send(new MoveRequestPacket((byte)direction, (byte)sequence, key));
+            }
         }
 
         static void onMoveButtonDown()

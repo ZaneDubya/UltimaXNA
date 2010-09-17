@@ -284,14 +284,14 @@ namespace UltimaXNA.Data
 
         static Texture2D getTexture(string text, int width, int height)
         {
-            string hash = string.Format("text:{0}", text);
-
             if (_TextureCache == null)
             {
                 _TextureCache = new Dictionary<string, Texture2D>();
                 _hrefRegionsCache = new Dictionary<Texture2D, HREFRegions>();
             }
 
+            // Have we already rendered this line of text?
+            string hash = string.Format("text:{0}", text);
             if (!_TextureCache.ContainsKey(hash))
             {
                 HREFRegions r = new HREFRegions();
