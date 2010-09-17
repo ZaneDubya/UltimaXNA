@@ -279,19 +279,33 @@ namespace UltimaXNA.Entities
             _animation.SetAnimation((MobileAction)action, frameCount, repeatCount, reverse, repeat, delay);
         }
 
-        public void Move(Direction facing)
-        {
-            _movement.Move(facing);
-        }
-
         public void MoveTo(int x, int y, int z, int facing)
         {
-            _movement.MoveToGoalTile(x, y, z, facing);
+            _movement.MoveToGoalTile(x, y, z);
         }
 
         public void MoveToInstant(int x, int y, int z, int facing)
         {
-            _movement.MoveToInstant(x, y, z, facing);
+            _movement.Move_Instant(x, y, z, facing);
+        }
+
+        public bool PlayerMobile_GetMoveEvent(ref int direction, ref int sequence, ref int fastwalkkey)
+        {
+            return _movement.PlayerMobile_GetMoveEvent(ref direction, ref sequence, ref fastwalkkey);
+        }
+
+        public void PlayerMobile_Move(Direction facing)
+        {
+            _movement.PlayerMobile_Move(facing);
+        }
+
+        public void PlayerMobile_MoveEventAck(int sequence)
+        {
+            _movement.PlayerMobile_MoveEventAck(sequence);
+        }
+        public void PlayerMobile_MoveEventRej(int sequenceID, int x, int y, int z, int direction)
+        {
+            _movement.PlayerMobile_MoveEventRej(sequenceID, x, y, z, direction);
         }
     }
 }

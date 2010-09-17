@@ -56,10 +56,7 @@ namespace UltimaXNA.Entities
         public int Y { get { return _movement.Position.Y; } set { _movement.Position.Y = value; HasBeenDrawn = false; } }
         public int Z { get { return _movement.Position.Z; } set { _movement.Position.Z = value; HasBeenDrawn = false; } }
         public Position3D Position { get { return _movement.Position; } }
-        public bool GetMoveEvent(ref int direction, ref int sequence, ref int fastwalkkey) { return _movement.GetMoveEvent(ref direction, ref sequence, ref fastwalkkey); }
         public Direction Facing { get { return _movement.Facing; } set { _movement.Facing = value; HasBeenDrawn = false; } }
-        public void MoveEventAck(int sequence) { _movement.MoveEventAck(sequence); }
-        public void MoveEventRej(int sequenceID, int x, int y, int z, int direction) { _movement.MoveEventRej(sequenceID, x, y, z, direction); }
 
         public bool IsClientEntity = false;
 
