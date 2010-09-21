@@ -63,14 +63,6 @@ namespace UltimaXNA.TileEngine
 
         public int GetAverageZ(int top, int left, int right, int bottom, ref int low, ref int high)
         {
-            low = high;
-            if (left < low)
-                low = left;
-            if (right < low)
-                low = right;
-            if (bottom < low)
-                low = bottom;
-
             high = top;
             if (left > high)
                 high = left;
@@ -78,6 +70,14 @@ namespace UltimaXNA.TileEngine
                 high = right;
             if (bottom > high)
                 high = bottom;
+
+            low = high;
+            if (left < low)
+                low = left;
+            if (right < low)
+                low = right;
+            if (bottom < low)
+                low = bottom;
 
             if (Math.Abs(top - bottom) > Math.Abs(left - right))
                 return FloorAverage(left, right);
@@ -213,9 +213,9 @@ namespace UltimaXNA.TileEngine
             {
                 int low = 0, high = 0, sort = 0;
                 sort = GetAverageZ(g.Z, g.Surroundings.South, g.Surroundings.East, g.Surroundings.Down, ref low, ref high);
-                if (low != g.SortZ)
+                if (sort != g.SortZ)
                 {
-                    g.SortZ = low;
+                    g.SortZ = sort;
                     GetMapTile(x, y, false).Resort();
                 }
             }

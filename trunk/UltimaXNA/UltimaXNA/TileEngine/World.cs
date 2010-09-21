@@ -211,6 +211,11 @@ namespace UltimaXNA.TileEngine
                     if (tile == null)
                         continue;
 
+                    if ((tile.X == 1919) && (tile.Y == 373))
+                    {
+                        int i = 0;
+                    }
+
                     mapObjects = tile.GetSortedObjects();
 
                     for (int i = 0; i < mapObjects.Count; i++)
@@ -336,11 +341,6 @@ namespace UltimaXNA.TileEngine
                                 drawX = iFrames[iFrame].Center.X - 22 - (int)((item.Position.Draw_Xoffset - item.Position.Draw_Yoffset) * 22);
                                 drawY = iFrames[iFrame].Center.Y + (item.Z << 2) + height - 22 - (int)((item.Position.Draw_Xoffset + item.Position.Draw_Yoffset) * 22);
                             }
-
-                            // if (flip)
-                            // 
-                            //     drawX = -44 + (44 + drawX);
-                            // }
 
                             hue = getHueVector(item.Hue);
                             if (ClientVars.LastTarget != null && ClientVars.LastTarget == item.OwnerSerial)
