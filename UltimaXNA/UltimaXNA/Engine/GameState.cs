@@ -83,7 +83,7 @@ namespace UltimaXNA
 
         static void doUpdate()
         {
-            if (ClientVars.InWorld && !_ui.IsModalMsgBoxOpen)
+            if (ClientVars.InWorld && !_ui.IsModalMsgBoxOpen && UltimaClient.IsConnected)
             {
                 parseKeyboard();
                 parseMouse();
