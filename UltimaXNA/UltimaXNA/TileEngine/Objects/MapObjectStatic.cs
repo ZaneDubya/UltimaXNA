@@ -33,8 +33,12 @@ namespace UltimaXNA.TileEngine
             // Set threshold.
             Data.ItemData itemData = Data.TileData.ItemData[ItemID & 0x3FFF];
             int background = (itemData.Background) ? 0 : 1;
-            Threshold = (itemData.Height == 0) ? background : background + 1;
-            
+            if (!itemData.Background)
+                Threshold++;
+            if (!(itemData.Height == 0))
+                Threshold++;
+            if (itemData.Surface)
+                Threshold--;
             if (itemData.Name == "nodraw" || ItemID <= 0)
                 _noDraw = true;
         }

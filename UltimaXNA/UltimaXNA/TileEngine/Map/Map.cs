@@ -33,6 +33,7 @@ namespace UltimaXNA.TileEngine
         TileMatrixRaw _tileMatrix;
         int _x, _y;
         bool _loadAllNearbyCells = false; // set when a map is first loaded.
+        bool _mustResetMap = false;
         public bool LoadEverything_Override = false;
 
         int _index = -1;
@@ -41,6 +42,11 @@ namespace UltimaXNA.TileEngine
         public Map(int index)
         {
             _index = index;
+            _mustResetMap = true;
+        }
+
+        private void resetMap()
+        {
             _loadAllNearbyCells = true;
             _tileMatrix = new TileMatrixRaw(_index, _index);
             _cells = new MapCell[ClientVars.MapSizeInMemory * ClientVars.MapSizeInMemory];
@@ -151,8 +157,18 @@ namespace UltimaXNA.TileEngine
         {
             if (_x != centerX || _y != centerY)
             {
+                if ((Math.Abs(_x - centerX) > 2) || (Math.Abs(_y - centerY) > 2))
+                {
+                    _mustResetMap = true;
+                }
                 _x = centerX;
                 _y = centerY;
+            }
+
+            if (_mustResetMap)
+            {
+                resetMap();
+                _mustResetMap = false;
             }
 
             if (_loadAllNearbyCells)
