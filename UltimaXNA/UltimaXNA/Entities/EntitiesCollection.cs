@@ -41,21 +41,50 @@ namespace UltimaXNA.Entities
             _world = game.Services.GetService<IWorld>();
         }
 
+        public static void Reset()
+        {
+            _entities.Clear();
+        }
+
+        public static Entity GetPlayerObject()
+        {
+            // This could be cached to save time.
+            if (_entities.ContainsKey(MySerial))
+                return _entities[MySerial];
+            else
+
+                return null;
+        }
+
+
+        static List<int> _removeObjectsList = new List<int>();
         public static void Update(GameTime gameTime)
         {
             if (ClientVars.InWorld)
             {
-                List<int> removeObjectsList = removeObjectsList = new List<int>();
+                // Clear the list of objects to be removed.
+                _removeObjectsList.Clear();
+
+                // Update the player entity first because we cull entities out of range of this main object.
+                Entity player = GetPlayerObject();
+                player.Update(gameTime);
+                if (player.IsDisposed)
+                    _removeObjectsList.Add(player.Serial);
+
+                // Now update all other entities.
                 foreach (KeyValuePair<int, Entity> entity in _entities)
                 {
-                    if (entity.Value.IsDisposed)
-                    {
-                        removeObjectsList.Add(entity.Key);
+                    // Don't update the player entity twice!
+                    if (entity.Key == MySerial)
                         continue;
-                    }
                     entity.Value.Update(gameTime);
+                    // Dispose the entity if it is out of range.
+                    if (!(entity.Value.Position.IsNullPosition) && !Utility.InRange(entity.Value.Position, player.Position, ClientVars.UpdateRange))
+                        entity.Value.Dispose();
+                    if (entity.Value.IsDisposed)
+                        _removeObjectsList.Add(entity.Key);
                 }
-                foreach (int i in removeObjectsList)
+                foreach (int i in _removeObjectsList)
                 {
                     _entities.Remove(i);
                 }
@@ -180,19 +209,6 @@ namespace UltimaXNA.Entities
             }
         }
 
-        public static Entity GetPlayerObject()
-        {
-            // This could be cached to save time.
-            if (_entities.ContainsKey(MySerial))
-                return _entities[MySerial];
-            else
-
-                return null;
-        }
-
-        public static void Reset()
-        {
-            _entities.Clear();
-        }
+        
     }
 }

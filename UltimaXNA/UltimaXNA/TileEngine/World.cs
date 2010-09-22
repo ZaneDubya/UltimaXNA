@@ -181,7 +181,8 @@ namespace UltimaXNA.TileEngine
             renderOffsetX -= (int)((CenterPosition.Draw_Xoffset - CenterPosition.Draw_Yoffset) * 22);
             renderOffsetX -= (RenderBeginX - RenderBeginY) * 22;
 
-            int renderOffsetY = ((ClientVars.BackBufferHeight - (ClientVars.RenderSize * 44)) >> 1) + (CenterPosition.Z << 2);
+            int renderOffsetY = ((ClientVars.BackBufferHeight - (ClientVars.RenderSize * 44)) >> 1);
+            renderOffsetY += (CenterPosition.Z << 2) + (int)(CenterPosition.Draw_Zoffset * 4);
             renderOffsetY -= (int)((CenterPosition.Draw_Xoffset + CenterPosition.Draw_Yoffset) * 22);
             renderOffsetY -= (RenderBeginX + RenderBeginY) * 22;
 
@@ -210,11 +211,6 @@ namespace UltimaXNA.TileEngine
                     MapTile tile = Map.GetMapTile(ix, iy, true);
                     if (tile == null)
                         continue;
-
-                    if ((tile.X == 1919) && (tile.Y == 373))
-                    {
-                        int i = 0;
-                    }
 
                     mapObjects = tile.GetSortedObjects();
 

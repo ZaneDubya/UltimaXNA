@@ -25,7 +25,7 @@ using UltimaXNA.TileEngine;
 
 namespace UltimaXNA.Entities
 {
-    public class Position3D
+    public class Position3D : IPoint2D
     {
         public static Vector3 NullPosition = new Vector3(-1);
 

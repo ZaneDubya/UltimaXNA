@@ -395,7 +395,7 @@ namespace UltimaXNA
             return textToWrite;
         }
 
-        public static bool InRange(Point from, Point to, int range)
+        public static bool InRange(IPoint2D from, IPoint2D to, int range)
         {
             return (from.X >= (to.X - range)) && (from.X <= (to.X + range)) && (from.Y >= (to.Y - range)) && (from.Y <= (to.Y + range));
         }
