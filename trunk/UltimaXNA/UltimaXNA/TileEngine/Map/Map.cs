@@ -49,7 +49,7 @@ namespace UltimaXNA.TileEngine
         {
             _loadAllNearbyCells = true;
             _tileMatrix = new TileMatrixRaw(_index, _index);
-            _cells = new MapCell[ClientVars.MapSizeInMemory * ClientVars.MapSizeInMemory];
+            _cells = new MapCell[ClientVars.MapCellsInMemory * ClientVars.MapCellsInMemory];
         }
 
         public int Height
@@ -125,13 +125,13 @@ namespace UltimaXNA.TileEngine
             if (y < 0) y += this.Height;
             if (y >= this.Height) y -= this.Height;
 
-            if ((Math.Abs(x - _x) > ((ClientVars.MapSizeInMemory / 2) * 8)) ||
-                (Math.Abs(y - _y) > ((ClientVars.MapSizeInMemory / 2) * 8)))
+            if ((Math.Abs(x - _x) > ((ClientVars.MapCellsInMemory / 2) * 8)) ||
+                (Math.Abs(y - _y) > ((ClientVars.MapCellsInMemory / 2) * 8)))
             {
                 return null;
             }
 
-            int index = ((x >> 3) % ClientVars.MapSizeInMemory) + (((y >> 3) % ClientVars.MapSizeInMemory) * ClientVars.MapSizeInMemory);
+            int index = ((x >> 3) % ClientVars.MapCellsInMemory) + (((y >> 3) % ClientVars.MapCellsInMemory) * ClientVars.MapCellsInMemory);
             MapCell c = _cells[index];
             if (c == null || 
                 (((x - c.X) & 0xFFF8) != 0) ||

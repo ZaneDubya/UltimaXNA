@@ -178,8 +178,10 @@ namespace UltimaXNA
             set { _desiredFPS = value; }
         }
 
-        static int _mapSizeInMemory = 16;
-        public static int   MapSizeInMemory { get { return _mapSizeInMemory; } }
+        static int _mapSizeInMemory = 16; // We maintain 16 cells (128 tiles) in memory.
+        public static int MapCellsInMemory { get { return _mapSizeInMemory; } }
+        static int _updateRangeInTiles = 32; // Any mobile / item beyond this range is removed from the client. RunUO's range is 24.
+        public static int UpdateRange { get { return _updateRangeInTiles; } }
 
         static int _renderSize = 40;
         public static int RenderSize

@@ -40,11 +40,12 @@ namespace UltimaXNA.Data
 
         public static Texture2D GetTexmapTexture(int index)
         {
-            Texture2D texture = m_Cache[index];
+            int i = index & 0x3FFF;
+            Texture2D texture = m_Cache[i];
 
             if (texture == null)
             {
-                m_Cache[index] = texture = readTexmapTexture(index);
+                m_Cache[i] = texture = readTexmapTexture(i);
             }
 
             return texture;
