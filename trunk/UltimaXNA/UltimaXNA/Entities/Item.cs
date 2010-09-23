@@ -26,7 +26,16 @@ namespace UltimaXNA.Entities
     public class Item : Entity
     {
         public Entity Parent = null;
-
+        public override Position3D WorldPosition
+        {
+            get
+            {
+                if (Parent != null)
+                    return Parent.WorldPosition;
+                else
+                    return Position;
+            }
+        }
 		private int _amount;
 		public int Amount
 		{

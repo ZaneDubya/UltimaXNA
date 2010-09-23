@@ -56,6 +56,7 @@ namespace UltimaXNA.Entities
         public int Y { get { return _movement.Position.Y; } set { _movement.Position.Y = value; HasBeenDrawn = false; } }
         public int Z { get { return _movement.Position.Z; } set { _movement.Position.Z = value; HasBeenDrawn = false; } }
         public Position3D Position { get { return _movement.Position; } }
+        public virtual Position3D WorldPosition { get { return _movement.Position; } }
         public Direction Facing { get { return _movement.Facing; } set { _movement.Facing = value; HasBeenDrawn = false; } }
 
         public bool IsClientEntity = false;

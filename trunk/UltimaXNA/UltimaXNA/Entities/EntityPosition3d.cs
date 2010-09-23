@@ -44,7 +44,7 @@ namespace UltimaXNA.Entities
         public int Z { get { return (int)_tile.Z; } set { _tile.Z = value; } }
         float X_offset { get { return _offset.X % 1.0f; } }
         float Y_offset { get { return _offset.Y % 1.0f; } }
-        float Z_offset { get { return _offset.Z % 1.0f; } }
+        float Z_offset { get { return _offset.Z; } }
 
         public int Draw_TileX { get { return drawOffsetTile(X, X_offset); } }
         public int Draw_TileY { get { return drawOffsetTile(Y, Y_offset); } }
@@ -123,9 +123,9 @@ namespace UltimaXNA.Entities
         {
             return
                 "PT=" + ToString() + Environment.NewLine +
-                "PO=" + string.Format("X:{0} Y:{1} Z:{2}", X_offset, Y_offset, Z_offset) + Environment.NewLine +
-                "DT=" + string.Format("X:{0} Y:{1} Z:{2}", Draw_TileX, Draw_TileY, Z) + Environment.NewLine +
-                "D=" + string.Format("X:{0} Y:{1} Z:{2}", Draw_Xoffset, Draw_Yoffset, Draw_Zoffset);
+                "PO=" + string.Format("X:{0:0.00} Y:{1:0.00} Z:{2:0.00}", X_offset, Y_offset, Z_offset) + Environment.NewLine +
+                "DT=" + string.Format("X:{0:0.00} Y:{1:0.00} Z:{2:0.00}", Draw_TileX, Draw_TileY, Z) + Environment.NewLine +
+                "D=" + string.Format("X:{0:0.00} Y:{1:0.00} Z:{2:0.00}", Draw_Xoffset, Draw_Yoffset, Draw_Zoffset);
         }
     }
 }
