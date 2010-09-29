@@ -72,7 +72,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             if (_textChanged || _texture == null)
             {
                 _textChanged = false;
-                _texture = Data.UniText.GetTexture(Text, _width, _height, ref _hrefRegions);
+                _texture = Data.UniText.GetTextureHTML(Text, _width, _height, ref _hrefRegions);
                 Size = new Vector2(_texture.Width, _texture.Height);
                 if (_hrefRegions.Count > 0)
                     HandlesMouseInput = true;

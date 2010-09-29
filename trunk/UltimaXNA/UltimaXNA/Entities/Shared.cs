@@ -47,20 +47,22 @@ namespace UltimaXNA.Entities
     {
         public int Current;
         public int Max;
-        public bool Updated;
 
-        CurrentMaxValue(int nCurrent, int nMax)
+        CurrentMaxValue(int current, int max)
         {
-            Current = nCurrent;
-            Max = nMax;
-            Updated = true;
+            Current = current;
+            Max = max;
         }
 
-        public void Update(int nCurrent, int nMax)
+        public void Update(int current, int max)
         {
-            Current = nCurrent;
-            Max = nMax;
-            Updated = true;
+            Current = current;
+            Max = max;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0} / {1}", Current, Max);
         }
     }
 

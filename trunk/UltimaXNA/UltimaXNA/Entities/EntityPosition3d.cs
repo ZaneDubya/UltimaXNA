@@ -122,10 +122,10 @@ namespace UltimaXNA.Entities
         public string ToStringComplex()
         {
             return
-                "PT=" + ToString() + Environment.NewLine +
-                "PO=" + string.Format("X:{0:0.00} Y:{1:0.00} Z:{2:0.00}", X_offset, Y_offset, Z_offset) + Environment.NewLine +
-                "DT=" + string.Format("X:{0:0.00} Y:{1:0.00} Z:{2:0.00}", Draw_TileX, Draw_TileY, Z) + Environment.NewLine +
-                "D=" + string.Format("X:{0:0.00} Y:{1:0.00} Z:{2:0.00}", Draw_Xoffset, Draw_Yoffset, Draw_Zoffset);
+                "P(Tile)=" + ToString() + Environment.NewLine +
+                "P(Ofst)=" + string.Format("X:{0:0.00} Y:{1:0.00} Z:{2:0.00}", X_offset, Y_offset, Z_offset) + Environment.NewLine +
+                "D(Tile)=" + string.Format("X:{0:0.00} Y:{1:0.00} Z:{2:0.00}", Draw_TileX, Draw_TileY, Z) + Environment.NewLine +
+                "D(Ofst)=" + string.Format("X:{0:0.00} Y:{1:0.00} Z:{2:0.00}", Draw_Xoffset, Draw_Yoffset, Draw_Zoffset);
         }
     }
 }

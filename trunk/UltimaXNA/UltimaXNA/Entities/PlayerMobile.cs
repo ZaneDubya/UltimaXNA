@@ -38,7 +38,6 @@ namespace UltimaXNA.Entities
 
         public override void Update(GameTime gameTime)
         {
-            _animation.HoldAnimationMS = gameTime.ElapsedGameTime.Milliseconds * 2;
             base.Update(gameTime);
         }
     }

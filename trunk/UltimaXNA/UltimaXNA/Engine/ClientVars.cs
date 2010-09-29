@@ -218,7 +218,7 @@ namespace UltimaXNA
                 debugMessage += string.Format("#Objects: {0}\n", World.ObjectsRendered);
                 Entity e = EntitiesCollection.GetPlayerObject();
                 if (e != null)
-                    debugMessage += e.Position.ToStringComplex();
+                    debugMessage += e.Position.ToString() + "\n";
                 
                 debugMessage += string.Format("Warmode: {0}\n", ClientVars.WarMode);
                 if (World.MouseOverObject != null)

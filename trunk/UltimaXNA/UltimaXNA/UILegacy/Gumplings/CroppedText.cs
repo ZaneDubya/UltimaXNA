@@ -44,7 +44,7 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
-            Texture2D texture = Data.UniText.GetTexture(Text, Area.Width, Area.Height);
+            Texture2D texture = Data.UniText.GetTextureHTML(Text, Area.Width, Area.Height);
             spriteBatch.Draw(texture, Position, 0, false);
             base.Draw(spriteBatch);
         }

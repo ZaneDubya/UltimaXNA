@@ -51,7 +51,7 @@ namespace UltimaXNA.Data
             }
         }
 
-        public static int AnimationType(int bodyID)
+        public static MobType AnimationTypeXXX(int bodyID)
         {
             return _entries[bodyID].AnimationType;
         }
@@ -60,7 +60,7 @@ namespace UltimaXNA.Data
     public struct MobtypeEntry
     {
         public string Flags;
-        public int AnimationType;
+        public MobType AnimationType;
 
         public MobtypeEntry(string type, string flags)
         {
@@ -68,24 +68,32 @@ namespace UltimaXNA.Data
             switch (type)
             {
                 case "MONSTER":
-                    AnimationType = 0;
+                    AnimationType = MobType.Monster;
                     break;
                 case "ANIMAL":
-                    AnimationType = 1;
+                    AnimationType = MobType.Animal;
                     break;
                 case "SEA_MONSTER":
-                    AnimationType = 0;
+                    AnimationType = MobType.Monster;
                     break;
                 case "HUMAN":
-                    AnimationType = 2;
+                    AnimationType = MobType.Humanoid;
                     break;
                 case "EQUIPMENT":
-                    AnimationType = 2;
+                    AnimationType = MobType.Humanoid;
                     break;
                 default:
-                    AnimationType = -1;
+                    AnimationType = MobType.Null;
                     break;
             }
         }
+    }
+
+    public enum MobType
+    {
+        Null = -1,
+        Monster = 0,
+        Animal = 1,
+        Humanoid = 2
     }
 }
