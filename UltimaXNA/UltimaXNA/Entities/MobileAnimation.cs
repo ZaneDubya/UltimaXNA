@@ -21,513 +21,573 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using UltimaXNA.Data;
 #endregion
 
 namespace UltimaXNA.Entities
 {
     public class MobileAnimation
     {
-        public bool WarMode;
-        // Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
-        public MobileAction Action;
-        // Issue 6 - End
-        public float AnimationFrame = 0f;
-        private float _animationStep = 0f;
-        public bool IsMounted = false;
-        public int BodyID;
-        private int _animationType
+        private Mobile Parent = null;
+        private MobileAction _action;
+        private bool _actionCanBeInteruptedByStand = false;
+        
+        private int _actionIndex;
+        public int ActionIndex
         {
-            get { return Data.Mobtypes.AnimationType(BodyID); }
+            get { return _actionIndex; }
         }
 
-        public MobileAnimation()
+        public bool IsAnimating
         {
-            _animationStep = 0f;
-            Action = MobileAction.Stand;
-        }
-
-        private bool _doHaltAnimation;
-        private int _timeHalted;
-        public int HoldAnimationMS = 200;
-        public bool HaltAnimation
-        {
-            get { return _doHaltAnimation; }
-            set
+            get
             {
-                if (value)
-                {
-                    if ((!_doHaltAnimation) && (Action != MobileAction.Stand))
-                    {
-                        _doHaltAnimation = true;
-                        _timeHalted = Int32.MaxValue;
-                    }
-                }
+                if ((!_actionCanBeInteruptedByStand) &&
+                    (_action == MobileAction.Stand || 
+                    _action == MobileAction.Walk || 
+                    _action == MobileAction.Run))
+                    return false;
+                return true;
+            }
+        }
+
+        private float _animationFrame = 0f;
+        public float AnimationFrame
+        {
+            get
+            {
+                if (_animationFrame >= 1f)
+                    return 0.999f;
                 else
-                {
-                    _doHaltAnimation = false;
-                    _timeHalted = Int32.MaxValue;
-                }
+                    return _animationFrame;
             }
         }
-
-        public void SetAnimation(MobileAction nAction)
+        
+        private BodyTypes _bodyType
         {
-            HaltAnimation = false;
-            if (Action != nAction)
-            {
-                Action = nAction;
-                AnimationFrame = 0f;
-                _FrameCount = 0;
-                _FrameDelay = 0;
-            }
+            get { return AnimationsXNA.BodyType(Parent.BodyID); }
         }
 
-        private int _FrameCount, _FrameDelay, _repeatCount;
-        public void SetAnimation(MobileAction action, int frameCount, int repeatCount, bool reverse, bool repeat, int delay)
+        // We use these variables to 'hold' the last frame of an animation before 
+        // switching to Stand Action.
+        private bool _holdAnimation = false;
+        private int _holdAnimationTime = 0;
+        private int HoldAnimationMS
         {
-            HaltAnimation = false;
-            if (Action != action)
+            get
             {
-                Action = action;
-                AnimationFrame = 0f;
-                _FrameCount = frameCount;
-                _FrameDelay = delay;
-                if (repeat == false)
-                {
-                    _repeatCount = 0;
-                }
+                if (Parent is PlayerMobile)
+                    return 50;
                 else
-                {
-                    _repeatCount = repeatCount;
-                }
+                    return 250;
             }
         }
 
-
-
-        private int msGameTime(GameTime gameTime)
+        public MobileAnimation(Mobile parent)
         {
-            return (int)(gameTime.TotalRealTime.Ticks / TimeSpan.TicksPerMillisecond);
+            Parent = parent;
         }
 
         public void Update(GameTime gameTime)
         {
-            _animationStep = (float)((_FrameCount * (_FrameDelay + 1)) * 10);
-            if (_animationStep != 0)
+            // create a local copy of ms since last update.
+            int msSinceLastUpdate = gameTime.ElapsedGameTime.Milliseconds;
+
+            // If we are holding the current animation, then we should wait until our hold time is over
+            // before switching to the queued Stand animation.
+            if (_holdAnimation)
             {
-                if (HaltAnimation)
+                _holdAnimationTime -= msSinceLastUpdate;
+                if (_holdAnimationTime >= 0)
                 {
-                    if (_timeHalted == Int32.MaxValue)
-                        _timeHalted = msGameTime(gameTime);
-                }
-
-                if (Action != MobileAction.Stand)
-                {
-                    // advance the animation one step, based on gametime passed.
-                    float iTimeStep = ((float)gameTime.ElapsedGameTime.TotalMilliseconds / _animationStep) / _FrameCount;
-                    if (IsMovementAction(Action))
-                        iTimeStep *= (IsMounted) ? 2 : 1;
-                    AnimationFrame += iTimeStep;
-
-                    // We have a special case for movement actions that have not been
-                    // explicity halted. All other actions end when they reach their
-                    // final frame.
-                    if (IsMovementAction(Action) && !HaltAnimation)
-                    {
-                        if (AnimationFrame >= 1f)
-                            AnimationFrame %= 1f;
-                    }
-                    else
-                    {
-                        if (AnimationFrame >= 1f || HaltAnimation)
-                        {
-                            if (_repeatCount == 0)
-                            {
-                                // we have to return to the previous frame.
-                                AnimationFrame -= iTimeStep;
-                                if (HaltAnimation)
-                                {
-                                    // hold the animation for a quick moment, then set to stand.
-                                    if ((msGameTime(gameTime) - _timeHalted) >= HoldAnimationMS)
-                                    {
-                                        SetAnimation(MobileAction.Stand);
-                                        HaltAnimation = false;
-                                    }
-                                }
-                                else
-                                {
-                                    HaltAnimation = true;
-                                }
-                            }
-                            else
-                            {
-                                AnimationFrame %= 1f;
-                                _repeatCount--;
-                            }
-                        }
-                    }
-                }
-            }
-            else
-            {
-                AnimationFrame = 0;
-            }
-        }
-
-
-        public bool IsMovementAction(MobileAction a)
-        {
-            if (a == MobileAction.Walk || a == MobileAction.Run)
-                return true;
-            else
-                return false;
-        }
-
-        public int GetAction()
-        {
-            switch (_animationType)
-            {
-                case 0: // high detail
-                    return getAction_HighDetail();
-                case 1: // low detail
-                    return getAction_LowDetail();
-                case 2: // people & accessories
-                    return (int)getAction_HighestDetail();
-                default:
-                    return -1;
-            }
-        }
-
-        private int getAction_HighDetail()
-        {
-            switch (Action)
-            {
-                case MobileAction.Walk:
-                    return 0;
-                case MobileAction.Stand:
-                    return 1;
-                case MobileAction.Death:
-                    return Data.BodyConverter.DeathAnimationIndex(BodyID);
-                default:
-                    return (int)Action;
-            }
-        }
-
-        private int getAction_LowDetail()
-        {
-            switch (Action)
-            {
-                case MobileAction.Walk:
-                    return 0;
-                case MobileAction.Run:
-                    return 1;
-                case MobileAction.Stand:
-                    return 2;
-                case MobileAction.Death:
-                    return Data.BodyConverter.DeathAnimationIndex(BodyID);
-                default:
-                    return (int)Action;
-            }
-        }
-
-        private int getAction_HighestDetail()
-        {
-            if (IsMounted)
-            {
-                switch (Action)
-                {
-                    case MobileAction.Walk:
-                        return 23;
-                    case MobileAction.Run:
-                        return 24;
-                    case MobileAction.Stand:
-                        return 25;
-                    default:
-                        return (int)Action;
-                }
-            }
-
-            switch (Action)
-            {
-                case MobileAction.Walk:
-                    if (WarMode)
-                        return (int)HighestDetailActions.WalkInAttackStance;
-                    else
-                        return (int)HighestDetailActions.Walk;
-                case MobileAction.Run:
-                    return (int)HighestDetailActions.Run;
-                case MobileAction.Stand:
-                    if (WarMode)
-                        return (int)HighestDetailActions.StandAttackStance;
-                    else
-                        return (int)HighestDetailActions.Stand;
-                case MobileAction.Death:
-                    return Data.BodyConverter.DeathAnimationIndex(BodyID);
-                default:
-                    return (int)Action;
-            }
-        }
-    }
-
-    #region UnitEnums
-    public enum MobileAction
-    {
-        Walk,
-        Run,
-        Stand,
-        Death
-    }
-
-
-    public enum HighestDetailActions
-    {
-        Walk = 0x00,
-        WalkArmed = 0x01,
-        Run = 0x02,
-        RunArmed = 0x03,
-        Stand = 0x04,
-        StandAttackStance = 0x07,
-        WalkInAttackStance = 0x0f,
-        /* shiftshoulders = 0x05,
-        handsonhips = 0x06,
-        attackstanceshort = 0x07,
-        attackstancelonger = 0x08,
-        swingattackwithknofe = 0x09,
-        stabunderhanded = 0x0a,
-        swingattackoverhandwithsword = 0x0b,
-        swingattackwithswordoverandside = 0x0c,
-        swingattackwithswordside = 0x0d,
-        stabwithpointofsword = 0x0e,
-        readystance = 0x0f,
-        magicbutterchurn = 0x10,
-        handsoverheadbalerina = 0x11,
-        bowshot = 0x12,
-        crossbow = 0x13,
-        gethit = 0x14,
-        falldownanddiebackwards = 0x15,
-        falldownanddieforwards = 0x16,
-        ridehorselong = 0x17,
-        ridehorsemedium = 0x18,
-        ridehorseshort = 0x19,
-        swingswordfromhorse = 0x1a,
-        normalbowshotonhorse = 0x1b,
-        crossbowshot = 0x1c,
-        block2onhorsewithshield = 0x1d,
-        blockongroundwithshield = 0x1e,
-        swinginterrupt = 0x1f,
-        bowdeep = 0x20,
-        salute = 0x21,
-        scratchhead = 0x22,
-        onefootforwardfor2secs = 0x23,
-        same = 0x24*/
-    }
-    public enum EquipLayer : int
-    {
-        /// <summary>
-        /// Invalid layer.
-        /// </summary>
-        Body = 0x00,
-        /// <summary>
-        /// First valid layer. Equivalent to <c>Layer.OneHanded</c>.
-        /// </summary>
-        FirstValid = 0x01,
-        /// <summary>
-        /// One handed weapon.
-        /// </summary>
-        OneHanded = 0x01,
-        /// <summary>
-        /// Two handed weapon or shield.
-        /// </summary>
-        TwoHanded = 0x02,
-        /// <summary>
-        /// Shoes.
-        /// </summary>
-        Shoes = 0x03,
-        /// <summary>
-        /// Pants.
-        /// </summary>
-        Pants = 0x04,
-        /// <summary>
-        /// Shirts.
-        /// </summary>
-        Shirt = 0x05,
-        /// <summary>
-        /// Helmets, hats, and masks.
-        /// </summary>
-        Helm = 0x06,
-        /// <summary>
-        /// Gloves.
-        /// </summary>
-        Gloves = 0x07,
-        /// <summary>
-        /// Rings.
-        /// </summary>
-        Ring = 0x08,
-        /// <summary>
-        /// Talismans.
-        /// </summary>
-        Talisman = 0x09,
-        /// <summary>
-        /// Gorgets and necklaces.
-        /// </summary>
-        Neck = 0x0A,
-        /// <summary>
-        /// Hair.
-        /// </summary>
-        Hair = 0x0B,
-        /// <summary>
-        /// Half aprons.
-        /// </summary>
-        Waist = 0x0C,
-        /// <summary>
-        /// Torso, inner layer.
-        /// </summary>
-        InnerTorso = 0x0D,
-        /// <summary>
-        /// Bracelets.
-        /// </summary>
-        Bracelet = 0x0E,
-        /// <summary>
-        /// Unused.
-        /// </summary>
-        Unused_xF = 0x0F,
-        /// <summary>
-        /// Beards and mustaches.
-        /// </summary>
-        FacialHair = 0x10,
-        /// <summary>
-        /// Torso, outer layer.
-        /// </summary>
-        MiddleTorso = 0x11,
-        /// <summary>
-        /// Earings.
-        /// </summary>
-        Earrings = 0x12,
-        /// <summary>
-        /// Arms and sleeves.
-        /// </summary>
-        Arms = 0x13,
-        /// <summary>
-        /// Cloaks.
-        /// </summary>
-        Cloak = 0x14,
-        /// <summary>
-        /// Backpacks.
-        /// </summary>
-        Backpack = 0x15,
-        /// <summary>
-        /// Torso, outer layer.
-        /// </summary>
-        OuterTorso = 0x16,
-        /// <summary>
-        /// Leggings, outer layer.
-        /// </summary>
-        OuterLegs = 0x17,
-        /// <summary>
-        /// Leggings, inner layer.
-        /// </summary>
-        InnerLegs = 0x18,
-        /// <summary>
-        /// Last valid non-internal layer. Equivalent to <c>Layer.InnerLegs</c>.
-        /// </summary>
-        LastUserValid = 0x18,
-        /// <summary>
-        /// Mount item layer.
-        /// </summary>
-        Mount = 0x19,
-        /// <summary>
-        /// Vendor 'buy pack' layer.
-        /// </summary>
-        ShopBuy = 0x1A,
-        /// <summary>
-        /// Vendor 'resale pack' layer.
-        /// </summary>
-        ShopResale = 0x1B,
-        /// <summary>
-        /// Vendor 'sell pack' layer.
-        /// </summary>
-        ShopSell = 0x1C,
-        /// <summary>
-        /// Bank box layer.
-        /// </summary>
-        Bank = 0x1D,
-        /// <summary>
-        /// Last valid layer. Equivalent to <c>Layer.Bank</c>.
-        /// </summary>
-        LastValid = 0x1D
-    }
-    #endregion
-    #region WornEquipmentClass
-    public class WornEquipment
-    {
-        private Item[] _Equipment;
-        private Mobile _Owner;
-        private int _UpdateTicker = 0;
-
-        public int UpdateTicker
-        {
-            get { return _UpdateTicker; }
-        }
-
-        public WornEquipment(Mobile nOwner)
-        {
-            _Equipment = new Item[(int)EquipLayer.LastValid + 1];
-            _Owner = nOwner;
-        }
-
-        public Item this[int nIndex]
-        {
-            get
-            {
-                if (nIndex > (int)EquipLayer.LastValid)
-                    return null;
-                return _Equipment[nIndex];
-            }
-            set
-            {
-                if (value == null)
-                {
-                    if (_Equipment[nIndex] != null)
-                    {
-                        _Equipment[nIndex].Dispose();
-                        _Equipment[nIndex] = null;
-                    }
+                    // we are still holding. Do not update the current Animation frame.
+                    return;
                 }
                 else
                 {
-                    _Equipment[nIndex] = value;
-                    value.Parent = _Owner;
+                    // hold time is over, continue to Stand animation.
+                    unholdAnimation();
+                    _action = MobileAction.Stand;
+                    _actionIndex = getActionIndex(MobileAction.Stand);
+                    _animationFrame = 0f;
+                    _FrameCount = 1;
+                    _FrameDelay = 0;
                 }
-                _UpdateTicker++;
             }
-        }
 
-        public void ClearEquipment()
-        {
-            for (int i = 0; i <= (int)EquipLayer.LastValid; i++)
+            if (_action != MobileAction.None)
             {
-                if (this[i] != null)
+                // advance the animation one step, based on gametime passed.
+                float animationStep = (float)((_FrameCount * (_FrameDelay + 1)) * 10);
+                float timeStep = ((float)gameTime.ElapsedGameTime.TotalMilliseconds / animationStep) / _FrameCount;
+                
+                float msPerFrame = (float)((1000 * (_FrameDelay + 1)) / (float)_FrameCount);
+                float frameAdvance = (float)(gameTime.ElapsedGameTime.TotalMilliseconds / msPerFrame) / _FrameCount;
+                if (msPerFrame < 0)
+                    return;
+
+
+                // Mounted movement is 2x normal frame rate
+                if (Parent.IsMounted && 
+                    ((_action == MobileAction.Walk) || 
+                    (_action == MobileAction.Run)))
+                    msPerFrame /= 2;
+
+                _animationFrame += frameAdvance;
+                // if (AnimationFrame < 0)
+                //     return;
+                // When animations reach their last frame, if we are queueing to stand, then
+                // hold the animation on the last frame.
+                if (_animationFrame >= 1f)
                 {
-                    this[i].Parent = null;
-                    this[i] = null;
+                    if (_repeatCount > 0)
+                    {
+                        _animationFrame %= 1f;
+                        _repeatCount--;
+                    }
+                    else
+                    {
+                        // any requested actions are ended.
+                        _actionCanBeInteruptedByStand = false;
+                        // Hold the last frame of the current action if animation is not Stand.
+                        if (_action == MobileAction.Stand)
+                        {
+                            _animationFrame = 0;
+                        }
+                        else
+                        {
+                            // for most animations, hold the last frame. For Move animations, cycle through.
+                            if (_action == MobileAction.Run || _action == MobileAction.Walk)
+                                _animationFrame %= 1f;
+                            else
+                                _animationFrame -= frameAdvance;
+                            holdAnimation();
+                        }
+                            
+                    }
                 }
             }
-            _UpdateTicker++;
         }
 
-        public void RemoveBySerial(Serial serial)
+        public void UpdateAnimation()
         {
-            for (int i = 0; i <= (int)EquipLayer.LastValid; i++)
+            animate(_action, _actionIndex, 0, false, false, 0, false);
+        }
+
+        public void Animate(MobileAction action)
+        {
+            int actionIndex = getActionIndex(action);
+            animate(action, actionIndex, 0, false, false, 0, false);
+        }
+
+        public void Animate(int requestedIndex, int frameCount, int repeatCount, bool reverse, bool repeat, int delay)
+        {
+            // note that frameCount is NOT used. Not sure if this counts as a bug.
+            MobileAction action = getActionFromIndex(requestedIndex);
+            int actionIndex = getActionIndex(action, requestedIndex);
+            animate(action, actionIndex, repeatCount, reverse, repeat, delay, true);
+        }
+
+        private int _FrameCount, _FrameDelay, _repeatCount;
+        private void animate(MobileAction action, int actionIndex, int repeatCount, bool reverse, bool repeat, int delay, bool isRequestedAction)
+        {
+            if (_action == action)
             {
-                if (this[i] != null)
-                    if (this[i].Serial == serial)
-                    {
-                        this[i].Parent = null;
-                        this[i] = null;
-                    }
+                if (_holdAnimation)
+                {
+                    unholdAnimation();
+                }
             }
-            _UpdateTicker++;
+
+            if (isRequestedAction)
+                _actionCanBeInteruptedByStand = true;
+
+            if ((_action != action) || (_actionIndex != actionIndex))
+            {
+                // If we are switching from any action to a stand action, then hold the last frame of the 
+                // current animation for a moment. Only Stand actions are held; thus when any hold ends,
+                // then we know we were holding for a Stand action.
+                if (action == MobileAction.Stand && _action != MobileAction.Stand)
+                {
+                    if (_action != MobileAction.None)
+                        holdAnimation();
+                }
+                else
+                {
+                    _action = action;
+                    unholdAnimation();
+                    _actionIndex = actionIndex;
+                    _animationFrame = 0f;
+                    _FrameCount = Data.AnimationsXNA.GetAnimationFrameCount(
+                        Parent.BodyID, actionIndex, (int)Parent.Facing, Parent.Hue);
+                    _FrameDelay = delay;
+                    if (repeat == false)
+                        _repeatCount = 0;
+                    else
+                        _repeatCount = repeatCount;
+                }
+            }
+        }
+
+        private void holdAnimation()
+        {
+            if (!_holdAnimation)
+            {
+                _holdAnimation = true;
+                _holdAnimationTime = HoldAnimationMS;
+            }
+        }
+
+        private void unholdAnimation()
+        {
+            _holdAnimation = false;
+        }
+
+        private int getActionIndex(MobileAction action)
+        {
+            return getActionIndex(action, -1);
+        }
+
+        private int getActionIndex(MobileAction action, int index)
+        {
+            if (_bodyType == BodyTypes.Humanoid)
+            {
+                switch (action)
+                {
+                    case MobileAction.None:
+                        return getActionIndex(MobileAction.Stand, index);
+                    case MobileAction.Walk:
+                        if (Parent.IsMounted)
+                            return (int)ActionIndexHumanoid.Mounted_RideSlow;
+                        else
+                            if (Parent.IsWarMode)
+                                return (int)ActionIndexHumanoid.Walk_Warmode;
+                            else
+                            {
+                                // Also check if is_armed.
+                                return (int)ActionIndexHumanoid.Walk;
+                            }
+                    case MobileAction.Run:
+                        if (Parent.IsMounted)
+                            return (int)ActionIndexHumanoid.Mounted_RideFast;
+                        else
+                            return (int)ActionIndexHumanoid.Run;
+                    case MobileAction.Stand:
+                        if (Parent.IsMounted)
+                            return (int)ActionIndexHumanoid.Mounted_Stand;
+                        else
+                            if (Parent.IsWarMode)
+                            {
+                                // Also check if weapon type is 2h. Can be 1H or 2H
+                                return (int)ActionIndexHumanoid.Stand_Warmode1H;
+                            }
+                            else
+                                return (int)ActionIndexHumanoid.Stand;
+                    case MobileAction.Death:
+                        // randomly select die forwards or backwards.
+                        if (Utility.RandomValue(0, 1) == 0)
+                            return (int)ActionIndexHumanoid.Die_Backwards;
+                        else
+                            return (int)ActionIndexHumanoid.Die_Forwards;
+                    case MobileAction.Attack:
+                        if (Parent.IsMounted)
+                        {
+                            // check weapon type. Can be 1H, Bow, or XBow
+                            return (int)ActionIndexHumanoid.Mounted_Attack_1H;
+                        }
+                        else
+                        {
+                            // check weapon type. Can be 1H, 2H across, 2H down, 2H jab, bow, xbow, or unarmed.
+                            return (int)ActionIndexHumanoid.Attack_1H;
+                        }
+                    case MobileAction.Cast_Directed:
+                        if (Parent.IsMounted)
+                            return getActionIndex(MobileAction.Stand, index);
+                        else
+                            return (int)ActionIndexHumanoid.Cast_Directed;
+                    case MobileAction.Cast_Area:
+                        if (Parent.IsMounted)
+                            return getActionIndex(MobileAction.Stand, index);
+                        else
+                            return (int)ActionIndexHumanoid.Cast_Area;
+                    case MobileAction.GetHit:
+                        if (Parent.IsMounted)
+                            return getActionIndex(MobileAction.Stand, index);
+                        else
+                            return (int)ActionIndexHumanoid.Hit;
+                    case MobileAction.Block:
+                        if (Parent.IsMounted)
+                            return getActionIndex(MobileAction.Stand, index);
+                        else
+                            return (int)ActionIndexHumanoid.Block_WithShield;
+                    case MobileAction.Emote_Fidget_1:
+                        if (Parent.IsMounted)
+                            return getActionIndex(MobileAction.Stand, index);
+                        else
+                            return (int)ActionIndexHumanoid.Fidget_1;
+                    case MobileAction.Emote_Fidget_2:
+                        if (Parent.IsMounted)
+                            return getActionIndex(MobileAction.Stand, index);
+                        else
+                            return (int)ActionIndexHumanoid.Fidget_2;
+                    case MobileAction.Emote_Bow:
+                        if (Parent.IsMounted)
+                            return getActionIndex(MobileAction.Stand, index);
+                        else
+                            return (int)ActionIndexHumanoid.Emote_Bow;
+                    case MobileAction.Emote_Salute:
+                        if (Parent.IsMounted)
+                            return getActionIndex(MobileAction.Stand, index);
+                        else
+                            return (int)ActionIndexHumanoid.Emote_Salute;
+                    case MobileAction.Emote_Eat:
+                        if (Parent.IsMounted)
+                            return getActionIndex(MobileAction.Stand, index);
+                        else
+                            return (int)ActionIndexHumanoid.Emote_Eat;
+                    default:
+                        return (int)-1;
+                }
+            }
+            else if (_bodyType == BodyTypes.LowDetail)
+            {
+                switch (action)
+                {
+                    case MobileAction.None:
+                        return getActionIndex(MobileAction.Stand, index);
+                    case MobileAction.Walk:
+                        return (int)ActionIndexAnimal.Walk;
+                    case MobileAction.Run:
+                        return (int)ActionIndexAnimal.Run;
+                    case MobileAction.Stand:
+                        return (int)ActionIndexAnimal.Stand;
+                    case MobileAction.Death:
+                        // randomly select die forwards or backwards.
+                        if (Utility.RandomValue(0, 1) == 0)
+                            return (int)ActionIndexAnimal.Die_Backwards;
+                        else
+                            return (int)ActionIndexAnimal.Die_Forwards;
+                    case MobileAction.MonsterAction:
+                        return index;
+                    default:
+                        return (int)-1;
+                }
+            }
+            else if (_bodyType == BodyTypes.HighDetail)
+            {
+                switch (action)
+                {
+                    case MobileAction.None:
+                        return getActionIndex(MobileAction.Stand, index);
+                    case MobileAction.Walk:
+                        return (int)ActionIndexMonster.Walk;
+                    case MobileAction.Run:
+                        return (int)ActionIndexMonster.Run;
+                    case MobileAction.Stand:
+                        return (int)ActionIndexMonster.Stand;
+                    case MobileAction.Death:
+                        // randomly select die forwards or backwards.
+                        if (Utility.RandomValue(0, 1) == 0)
+                            return (int)ActionIndexMonster.Die_Backwards;
+                        else
+                            return (int)ActionIndexMonster.Die_Forwards;
+                    case MobileAction.MonsterAction:
+                        return index;
+                    default:
+                        return (int)-1;
+                }
+            }
+
+            return -1;
+        }
+
+        private MobileAction getActionFromIndex(int index)
+        {
+            if (_bodyType == BodyTypes.Humanoid)
+            {
+                switch ((ActionIndexHumanoid)index)
+                {
+                    case ActionIndexHumanoid.Walk:
+                    case ActionIndexHumanoid.Walk_Armed:
+                    case ActionIndexHumanoid.Walk_Warmode:
+                    case ActionIndexHumanoid.Mounted_RideSlow:
+                        return MobileAction.Walk;
+
+                    case ActionIndexHumanoid.Mounted_RideFast:
+                    case ActionIndexHumanoid.Run:
+                    case ActionIndexHumanoid.Run_Armed:
+                        return MobileAction.Run;
+
+                    case ActionIndexHumanoid.Stand:
+                    case ActionIndexHumanoid.Stand_Warmode1H:
+                    case ActionIndexHumanoid.Stand_Warmode2H:
+                    case ActionIndexHumanoid.Mounted_Stand:
+                        return MobileAction.Stand;
+
+                    case ActionIndexHumanoid.Fidget_1:
+                        return MobileAction.Emote_Fidget_1;
+
+                    case ActionIndexHumanoid.Fidget_2:
+                        return MobileAction.Emote_Fidget_2;
+
+                    case ActionIndexHumanoid.Attack_1H:
+                    case ActionIndexHumanoid.Attack_Unarmed1:
+                    case ActionIndexHumanoid.Attack_Unarmed2:
+                    case ActionIndexHumanoid.Attack_2H_Down:
+                    case ActionIndexHumanoid.Attack_2H_Across:
+                    case ActionIndexHumanoid.Attack_2H_Jab:
+                    case ActionIndexHumanoid.Attack_Bow:
+                    case ActionIndexHumanoid.Attack_BowX:
+                    case ActionIndexHumanoid.Mounted_Attack_1H:
+                    case ActionIndexHumanoid.Mounted_Attack_Bow:
+                    case ActionIndexHumanoid.Mounted_Attack_BowX:
+                    case ActionIndexHumanoid.Attack_Unarmed3:
+                        return MobileAction.Attack;
+
+                    case ActionIndexHumanoid.Cast_Directed:
+                        return MobileAction.Cast_Directed;
+
+                    case ActionIndexHumanoid.Cast_Area:
+                        return MobileAction.Cast_Area;
+
+                    case ActionIndexHumanoid.Hit:
+                        return MobileAction.GetHit;
+
+                    case ActionIndexHumanoid.Die_Backwards:
+                    case ActionIndexHumanoid.Die_Forwards:
+                        return MobileAction.Death;
+
+                    case ActionIndexHumanoid.Mounted_SlapHorse: // not coded or used?
+                        return MobileAction.Stand;
+
+                    case ActionIndexHumanoid.Block_WithShield:
+                        return MobileAction.Block;
+
+                    case ActionIndexHumanoid.Emote_Bow:
+                        return MobileAction.Emote_Bow;
+
+                    case ActionIndexHumanoid.Emote_Salute:
+                        return MobileAction.Emote_Salute;
+
+                    case ActionIndexHumanoid.Emote_Eat:
+                        return MobileAction.Emote_Eat;
+                }
+                return MobileAction.None;
+            }
+            else if (_bodyType == BodyTypes.LowDetail)
+            {
+                switch ((ActionIndexAnimal)index)
+                {
+                    case ActionIndexAnimal.Stand:
+                        return MobileAction.Stand;
+                    case ActionIndexAnimal.Walk:
+                        return MobileAction.Walk;
+                    case ActionIndexAnimal.Run:
+                        return MobileAction.Run;
+                    default:
+                        return MobileAction.MonsterAction;
+                }
+            }
+            else if (_bodyType == BodyTypes.HighDetail)
+            {
+                switch ((ActionIndexMonster)index)
+                {
+                    case ActionIndexMonster.Stand:
+                        return MobileAction.Stand;
+                    case ActionIndexMonster.Walk:
+                        return MobileAction.Walk;
+                    case ActionIndexMonster.Run:
+                        return MobileAction.Run;
+                    default:
+                        return MobileAction.MonsterAction;
+                }
+            }
+            return MobileAction.None;
         }
     }
-    #endregion
+
+    public enum MobileAction
+    {
+        None,
+        Walk,
+        Run,
+        Stand,
+        Death,
+        Attack,
+        Cast_Directed,
+        Cast_Area,
+        GetHit,
+        Block,
+        Emote_Fidget_1,
+        Emote_Fidget_2,
+        Emote_Bow,
+        Emote_Salute,
+        Emote_Eat,
+        MonsterAction
+    }
+
+    enum ActionIndexMonster
+    {
+        Walk = 0x00,
+        Stand = 0x01,
+        Die_Backwards = 0x02,
+        Die_Forwards = 0x03,
+        Run = 0x13, 
+    }
+
+    enum ActionIndexAnimal
+    {
+        Walk = 0x00,
+        Run = 0x01,
+        Stand = 0x02,
+        Graze = 0x03,
+        Unknown1 = 0x04,
+        Attack1 = 0x05,
+        Attack2 = 0x06,
+        Attack3 = 0x07,
+        Die_Backwards = 0x08,
+        Fidget1 = 0x09,
+        Fidget2 = 0x0A,
+        LieDown = 0x0B,
+        Die_Forwards = 0x0C,
+    }
+
+    enum ActionIndexHumanoid
+    {
+        Walk = 0x00,
+        Walk_Armed = 0x01,
+        Run = 0x02,
+        Run_Armed = 0x03,
+        Stand = 0x04,
+        Fidget_1 = 0x05,
+        Fidget_2 = 0x06,
+        Stand_Warmode1H = 0x07,
+        Stand_Warmode2H = 0x08,
+        Attack_1H = 0x09,
+        Attack_Unarmed1 = 0x0A,
+        Attack_Unarmed2 = 0x0B,
+        Attack_2H_Down = 0x0C,
+        Attack_2H_Across = 0x0D,
+        Attack_2H_Jab = 0x0E,
+        Walk_Warmode = 0x0F,
+        Cast_Directed = 0x10,
+        Cast_Area = 0x11,
+        Attack_Bow = 0x12,
+        Attack_BowX = 0x13,
+        Hit = 0x14,
+        Die_Backwards = 0x15,
+        Die_Forwards = 0x16,
+        Mounted_RideSlow = 0x17,
+        Mounted_RideFast = 0x18,
+        Mounted_Stand = 0x19,
+        Mounted_Attack_1H = 0x1A,
+        Mounted_Attack_Bow = 0x1B,
+        Mounted_Attack_BowX = 0x1C,
+        Mounted_SlapHorse = 0x1D,
+        Block_WithShield = 0x1E,
+        Attack_Unarmed3 = 0x1F,
+        Emote_Bow = 0x20,
+        Emote_Salute = 0x21,
+        Emote_Eat = 0x22
+    }
 }

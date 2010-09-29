@@ -267,22 +267,32 @@ namespace UltimaXNA.Data
 
         public static Texture2D GetTexture(string text)
         {
-            return getTexture(text, 0, 0);
+            return getTexture(text, 0, 0, false);
         }
 
         public static Texture2D GetTexture(string text, int width, int height)
         {
-            return getTexture(text, width, height);
+            return getTexture(text, width, height, false);
         }
 
-        public static Texture2D GetTexture(string text, int width, int height, ref HREFRegions regions)
+        public static Texture2D GetTextureHTML(string text)
         {
-            Texture2D texture = getTexture(text, width, height);
+            return getTexture(text, 0, 0, true);
+        }
+
+        public static Texture2D GetTextureHTML(string text, int width, int height)
+        {
+            return getTexture(text, width, height, true);
+        }
+
+        public static Texture2D GetTextureHTML(string text, int width, int height, ref HREFRegions regions)
+        {
+            Texture2D texture = getTexture(text, width, height, true);
             regions = _hrefRegionsCache[texture];
             return texture;
         }
 
-        static Texture2D getTexture(string text, int width, int height)
+        static Texture2D getTexture(string text, int width, int height, bool parseHTML)
         {
             if (_TextureCache == null)
             {
@@ -295,16 +305,16 @@ namespace UltimaXNA.Data
             if (!_TextureCache.ContainsKey(hash))
             {
                 HREFRegions r = new HREFRegions();
-                Texture2D texture = writeTexture(text, width, height, r);
+                Texture2D texture = writeTexture(text, width, height, r, parseHTML);
                 _TextureCache.Add(hash, texture);
                 _hrefRegionsCache.Add(texture, r);
             }
             return _TextureCache[hash];
         }
 
-        static Texture2D writeTexture(string textToRender, int w, int h, HREFRegions regions)
+        static Texture2D writeTexture(string textToRender, int w, int h, HREFRegions regions, bool parseHTML)
         {
-            HTMLReader reader = new HTMLReader(textToRender);
+            HTMLReader reader = new HTMLReader(textToRender, parseHTML);
 
             int width = 0, height = 0;
             if (w == 0)

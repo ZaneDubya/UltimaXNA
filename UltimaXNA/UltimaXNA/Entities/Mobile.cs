@@ -34,22 +34,34 @@ namespace UltimaXNA.Entities
         public int ArmorRating, ResistFire, ResistCold, ResistPoison, ResistEnergy;
         public int DamageMin, DamageMax;
 
-        private WornEquipment _equipment;
+        protected MobileEquipment _equipment;
         protected MobileAnimation _animation;
 
+        public bool IsMoving { get { return _movement.IsMoving; } }
+        
+        public bool IsRunning { get { return _movement.IsRunning; } }
+        
         public bool IsMounted { get { return _equipment[(int)EquipLayer.Mount] != null; } }
+        
+        public bool IsWarMode 
+        { 
+            get { return _isWarMode; }
+            set { _isWarMode = value; _animation.UpdateAnimation(); }
+        }
+
         public bool IsFemale;
         public bool IsPoisoned;
         public bool IsBlessed;
-        public bool IsWarMode { get { return _animation.WarMode; } set { _animation.WarMode = value; } }
+        bool _isWarMode;
         public bool IsHidden;
 
+        int _bodyID = 0;
         public int BodyID
         {
-            get { return _animation.BodyID; }
+            get { return _bodyID; }
             set
             {
-                _animation.BodyID = value;
+                _bodyID = value;
                 tickUpdateTicker();
             }
         }
@@ -161,8 +173,8 @@ namespace UltimaXNA.Entities
         public Mobile(Serial serial, IWorld world)
             : base(serial, world)
         {
-            _animation = new MobileAnimation();
-            _equipment = new WornEquipment(this);
+            _equipment = new MobileEquipment(this);
+            _animation = new MobileAnimation(this);
             _movement.RequiresUpdate = true;
         }
 
@@ -171,11 +183,11 @@ namespace UltimaXNA.Entities
             if (_equipment[(int)EquipLayer.Mount] != null &&
                 _equipment[(int)EquipLayer.Mount].ItemID != 0)
             {
-                _movement.IsMounted = _animation.IsMounted = true;
+                _movement.IsMounted = true;
             }
             else
             {
-                _movement.IsMounted = _animation.IsMounted = false;
+                _movement.IsMounted = false;
             }
             _animation.Update(gameTime);
             base.Update(gameTime);
@@ -183,18 +195,19 @@ namespace UltimaXNA.Entities
 
         internal override void Draw(MapTile tile, Position3D position)
         {
-            if (_movement.IsMoving)
+            if (IsMoving)
             {
-                MobileAction iAnimationAction = (_movement.IsRunning) ? MobileAction.Run : MobileAction.Walk;
-                _animation.SetAnimation(iAnimationAction, 10, 0, false, false, 0);
+                if (IsRunning)
+                    _animation.Animate(MobileAction.Run);
+                else
+                    _animation.Animate(MobileAction.Walk);
             }
             else
             {
-                if (_animation.IsMovementAction(_animation.Action))
-                    _animation.HaltAnimation = true;
+                if (!_animation.IsAnimating)
+                    _animation.Animate(MobileAction.Stand);
             }
 
-            int action = _animation.GetAction();
             MapObjectMobile mobtile = null;
             int[] drawLayers = _DrawLayerOrder;
 			bool hasOuterTorso = _equipment[(int)EquipLayer.OuterTorso] != null && _equipment[(int)EquipLayer.OuterTorso].AnimationDisplayID != 0;
@@ -211,7 +224,7 @@ namespace UltimaXNA.Entities
                 {
                     mobtile = new MapObjectMobile(
                         BodyID, position,
-                        DrawFacing, action, _animation.AnimationFrame, 
+                        DrawFacing, _animation.ActionIndex, _animation.AnimationFrame, 
                         this, i, Hue);
                     tile.Add(mobtile);
                 }
@@ -219,7 +232,7 @@ namespace UltimaXNA.Entities
                 {
                     mobtile = new TileEngine.MapObjectMobile(
                             _equipment[drawLayers[i]].AnimationDisplayID, _movement.Position,
-                            DrawFacing, action, _animation.AnimationFrame,
+                            DrawFacing, _animation.ActionIndex, _animation.AnimationFrame,
                             this, i, _equipment[drawLayers[i]].Hue);
                     tile.Add(mobtile);
                 }
@@ -274,9 +287,9 @@ namespace UltimaXNA.Entities
             }
         }
 
-        public void Animation(int action, int frameCount, int repeatCount, bool reverse, bool repeat, int delay)
+        public void Animate(int action, int frameCount, int repeatCount, bool reverse, bool repeat, int delay)
         {
-            _animation.SetAnimation((MobileAction)action, frameCount, repeatCount, reverse, repeat, delay);
+            _animation.Animate(action, frameCount, repeatCount, reverse, repeat, delay);
         }
 
         public void MoveTo(int x, int y, int z, int facing)

@@ -58,7 +58,7 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
                     _manager.ToggleGump_Local(new MiniMap(), 566, 25);
                     break;
                 case Buttons.Paperdoll:
-                    _manager.ToggleGump_Local(new PaperDollGump(), 400, 100);
+                    _manager.ToggleGump_Local(new PaperDollGump((Mobile)Entities.EntitiesCollection.GetPlayerObject()), 400, 100);
                     break;
                 case Buttons.Inventory:
                     PlayerMobile m = (PlayerMobile)EntitiesCollection.GetPlayerObject();

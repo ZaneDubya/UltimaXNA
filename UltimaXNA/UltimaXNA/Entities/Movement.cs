@@ -46,9 +46,6 @@ namespace UltimaXNA.Entities
         public bool IsRunning { get { return ((_facing & Direction.Running) == Direction.Running); } }
 
         Position3D _currentPosition, _goalPosition;
-
-        public static Diagnostics.Logger _log = new Diagnostics.Logger("Movement");
-
         
         Direction _playerMobile_NextMove = Direction.Nothing;
         Direction _facing = Direction.Up;
@@ -117,11 +114,6 @@ namespace UltimaXNA.Entities
 
             if ((DateTime.Now > _nextMove) && (_playerMobile_NextMove != Direction.Nothing))
             {
-                // log some debug information ...
-                _log.Debug("Move: " + DateTime.Now.Millisecond.ToString());
-                if (_moveEvents.SlowSync)
-                    _log.Debug("Move:Slow!");
-
                 // _nextMove = the time we will next accept a move request from GameState
                 _nextMove = DateTime.Now + TimeToCompleteMove(_playerMobile_NextMove);
                 
@@ -142,6 +134,13 @@ namespace UltimaXNA.Entities
 
         public void MoveToGoalTile(int x, int y, int z)
         {
+            if ((_currentPosition.X == x) && 
+                (_currentPosition.Y == y) && 
+                (_currentPosition.Z == z))
+            {
+                return;
+            }
+
             Direction facing;
             _goalPosition = getNextTile(_currentPosition, new Position3D(x, y, z), out facing);
 
@@ -316,7 +315,6 @@ namespace UltimaXNA.Entities
         {
             if (_history[_sequenceNextSend] != null)
             {
-                Movement._log.Debug("M->S: " + DateTime.Now.Millisecond.ToString());
                 direction = _history[_sequenceNextSend].Facing;
                 sequence = _sequenceNextSend;
                 fastwalkkey = _history[_sequenceNextSend].Fastwalk;
@@ -333,14 +331,12 @@ namespace UltimaXNA.Entities
 
         public void MoveRequestAcknowledge(int sequence)
         {
-            Movement._log.Debug("@Ack: " + DateTime.Now.Millisecond.ToString());
             _history[sequence] = null;
             _lastSequenceAck = sequence;
         }
 
         public void MoveRequestReject(int sequence, out int x, out int y, out int z, out int facing)
         {
-            Movement._log.Debug("@Rej: " + DateTime.Now.Millisecond.ToString());
             if (_history[sequence] != null)
             {
                 moveEventsHistory_Entry e = _history[sequence];

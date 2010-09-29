@@ -44,7 +44,7 @@ namespace UltimaXNA.UILegacy.Gumplings
         {
             if (_texture == null)
             {
-                _texture = Data.UniText.GetTexture(Text);
+                _texture = Data.UniText.GetTextureHTML(Text);
                 Size = new Vector2(_texture.Width, _texture.Height);
             }
             base.Update(gameTime);

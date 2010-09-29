@@ -146,6 +146,7 @@
     <Compile Include="Entities\Item.cs" />
     <Compile Include="Entities\Mobile.cs" />
     <Compile Include="Entities\MobileAnimation.cs" />
+    <Compile Include="Entities\MobileEquipment.cs" />
     <Compile Include="Entities\Movement.cs" />
     <Compile Include="Entities\MovementCheck.cs" />
     <Compile Include="Entities\Multi.cs" />

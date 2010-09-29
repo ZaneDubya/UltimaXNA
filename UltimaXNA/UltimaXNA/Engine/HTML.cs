@@ -88,22 +88,22 @@ namespace UltimaXNA
             }
         }
 
-        public HTMLReader(string inText)
+        public HTMLReader(string inText, bool parseHTML)
         {
-            _characters = decodeHTML(inText);
+            _characters = decodeText(inText, parseHTML);
         }
 
-        List<HTMLCharacter> decodeHTML(string inText)
+        private List<HTMLCharacter> decodeText(string inText, bool parseHTML)
         {
             List<HTMLCharacter> outText = new List<HTMLCharacter>();
             List<string> openTags = new List<string>();
             Color currentColor = Color.White;
             List<HREFDescription> openHREFs = new List<HREFDescription>();
 
-            // search for tags
+            // if this is not HTML, do not parse tags. Otherwise search out and interpret tags.
             for (int i = 0; i < inText.Length; i++)
             {
-                if (inText[i] == '<')
+                if ((inText[i] == '<') && parseHTML)
                 {
                     bool isClosing = false;
                     string tag = readHTMLTag(inText, ref i, ref isClosing);

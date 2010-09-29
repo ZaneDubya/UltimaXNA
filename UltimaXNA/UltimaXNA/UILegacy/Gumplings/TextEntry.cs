@@ -86,9 +86,9 @@ namespace UltimaXNA.UILegacy.Gumplings
             {
                 _textChanged = false;
                 if (IsPasswordField)
-                    _texture = Data.UniText.GetTexture(HtmlTag + new string('*', Text.Length), Area.Width, Area.Height);
+                    _texture = Data.UniText.GetTextureHTML(HtmlTag + new string('*', Text.Length), Area.Width, Area.Height);
                 else
-                    _texture = Data.UniText.GetTexture(HtmlTag + Text, Area.Width, Area.Height);
+                    _texture = Data.UniText.GetTextureHTML(HtmlTag + Text, Area.Width, Area.Height);
             }
 
             if (_manager.KeyboardFocusControl == this)
@@ -131,7 +131,7 @@ namespace UltimaXNA.UILegacy.Gumplings
 
             if (_caratBlinkOn)
             {
-                Texture2D caratTexture = Data.UniText.GetTexture(HtmlTag + (_legacyCarat ? "_" : "|"));
+                Texture2D caratTexture = Data.UniText.GetTextureHTML(HtmlTag + (_legacyCarat ? "_" : "|"));
                 spriteBatch.Draw(caratTexture, new Vector2(X + _texture.Width, Y), Hue, false);
             }
             

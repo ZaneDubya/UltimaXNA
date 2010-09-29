@@ -140,7 +140,7 @@ namespace UltimaXNA.TileEngine
                     bool isUnderRoof, isUnderTerrain;
                     t.IsUnder(CenterPosition.Z, out isUnderRoof, out isUnderTerrain);
                     if (isUnderRoof)
-                        MaxItemAltitude = CenterPosition.Z + 20;
+                        MaxItemAltitude = CenterPosition.Z - (CenterPosition.Z % 20) + 20;
                     if (isUnderTerrain)
                         MaxTerrainAltitude = -255;
                 }
@@ -316,7 +316,7 @@ namespace UltimaXNA.TileEngine
                                 continue;
 
                             MapObjectMobile item = (MapObjectMobile)mapObject;
-                            Data.FrameXNA[] iFrames = Data.AnimationsXNA.GetAnimation(item.BodyID, item.Action, item.Facing, item.Hue, false);
+                            Data.FrameXNA[] iFrames = Data.AnimationsXNA.GetAnimation(item.BodyID, item.Action, item.Facing, item.Hue);
                             if (iFrames == null)
                                 continue;
                             int iFrame = item.Frame(iFrames.Length);
@@ -349,7 +349,7 @@ namespace UltimaXNA.TileEngine
                                 continue;
 
                             MapObjectCorpse item = (MapObjectCorpse)mapObject;
-                            Data.FrameXNA[] iFrames = Data.AnimationsXNA.GetAnimation(item.BodyID, Data.BodyConverter.DeathAnimationIndex(item.BodyID), item.Facing, item.Hue, false);
+                            Data.FrameXNA[] iFrames = Data.AnimationsXNA.GetAnimation(item.BodyID, Data.BodyConverter.DeathAnimationIndex(item.BodyID), item.Facing, item.Hue);
                             if (iFrames == null)
                                 continue;
                             int iFrame = item.FrameIndex;

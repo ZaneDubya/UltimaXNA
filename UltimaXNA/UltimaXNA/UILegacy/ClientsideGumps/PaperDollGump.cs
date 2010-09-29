@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Input;
+using UltimaXNA.Entities;
 using UltimaXNA.UILegacy.Gumplings;
 
 namespace UltimaXNA.UILegacy.ClientsideGumps
@@ -23,9 +24,13 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
             Status
         }
 
-        public PaperDollGump()
+        Mobile _Parent;
+
+        public PaperDollGump(Mobile parent)
             : base(0, 0)
         {
+            _Parent = parent;
+
             IsMovable = true;
             AddGumpling(new GumpPic(this, 0, 0, 0, 0x07d0, 0));
             LastGumpling.MakeADragger(this);
@@ -57,7 +62,7 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
 
             // Paperdoll
             AddGumpling(new PaperDollInteractable(this, 0, 8, 21));
-            ((PaperDollInteractable)LastGumpling).SourceEntity = Entities.EntitiesCollection.GetPlayerObject();
+            ((PaperDollInteractable)LastGumpling).SourceEntity = _Parent;
         }
 
         public override void Update(GameTime gameTime)
@@ -90,6 +95,7 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
                 case Buttons.Guild:
                     break;
                 case Buttons.PeaceWarToggle:
+                    Client.UltimaClient.Send(new Network.Packets.Client.RequestWarModePacket(!_Parent.IsWarMode));
                     break;
                 case Buttons.Status:
                     _manager.ToggleGump_Local(new StatusGump(), 200, 400);

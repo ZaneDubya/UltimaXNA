@@ -529,8 +529,8 @@ namespace UltimaXNA.Client
         {
             MobileAnimationPacket p = (MobileAnimationPacket)packet;
 
-            Mobile iObject = EntitiesCollection.GetObject<Mobile>(p.Serial, false);
-            iObject.Animation(p.Action, p.FrameCount, p.RepeatCount, p.Reverse, p.Repeat, p.Delay);
+            Mobile m = EntitiesCollection.GetObject<Mobile>(p.Serial, false);
+            m.Animate(p.Action, p.FrameCount, p.RepeatCount, p.Reverse, p.Repeat, p.Delay);
         }
 
         private static void receive_MobileIncoming(IRecvPacket packet)

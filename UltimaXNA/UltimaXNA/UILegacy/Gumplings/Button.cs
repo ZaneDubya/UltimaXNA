@@ -93,7 +93,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             spriteBatch.Draw(_texture, Position, 0, false);
             if (Caption != string.Empty)
             {
-                Texture2D t = Data.UniText.GetTexture(Caption);
+                Texture2D t = Data.UniText.GetTextureHTML(Caption);
                 int yoffset = MouseDownOnThis ? 1 : 0;
                 spriteBatch.Draw(t, new Vector2(X + (Width - t.Width) / 2, Area.Y + yoffset + (_texture.Height - t.Height) / 2), 0, false);
             }
