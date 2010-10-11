@@ -457,8 +457,6 @@
     </None>
     <None Include="Depends\WavePlayer.dll">
     </None>
-    <None Include="Depends\xWinFormsLib.dll">
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Network\Packets\Both\" />
