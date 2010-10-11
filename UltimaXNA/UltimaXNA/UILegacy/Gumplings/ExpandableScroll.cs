@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Input;
+using UltimaXNA.InputOld;
 
 namespace UltimaXNA.UILegacy.Gumplings
 {
@@ -109,10 +109,10 @@ namespace UltimaXNA.UILegacy.Gumplings
             // this is necessary to override the default behavior for buttons, which is to send a msg to the server.
         }
 
-        void expander_OnMouseDown(int x, int y, MouseButtons button)
+        void expander_OnMouseDown(int x, int y, MouseButton button)
         {
             y += _gumplingExpander.Y + OwnerY;
-            if (button == MouseButtons.LeftButton)
+            if (button == MouseButton.LeftButton)
             {
                 _isExpanding = true;
                 _isExpanding_InitialHeight = _expandableScrollHeight;
@@ -121,7 +121,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             }
         }
 
-        void expander_OnMouseUp(int x, int y, MouseButtons button)
+        void expander_OnMouseUp(int x, int y, MouseButton button)
         {
             y += _gumplingExpander.Y + OwnerY;
             if (_isExpanding)

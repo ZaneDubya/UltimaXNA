@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using UltimaXNA.Input;
+using UltimaXNA.InputOld;
 
 namespace UltimaXNA.UILegacy
 {
@@ -20,11 +20,11 @@ namespace UltimaXNA.UILegacy
             inputFrom.OnMouseOver += mouseOver;
         }
 
-        void mouseDown(int x, int y, MouseButtons button)
+        void mouseDown(int x, int y, MouseButton button)
         {
             x += _toMove.X;
             y += _toMove.Y;
-            if (button == MouseButtons.LeftButton && _toMove.IsMovable)
+            if (button == MouseButton.LeftButton && _toMove.IsMovable)
             {
                 // move!
                 isMoving = true;
@@ -33,11 +33,11 @@ namespace UltimaXNA.UILegacy
             }
         }
 
-        void mouseUp(int x, int y, MouseButtons button)
+        void mouseUp(int x, int y, MouseButton button)
         {
             x += _toMove.X;
             y += _toMove.Y;
-            if (button == MouseButtons.LeftButton)
+            if (button == MouseButton.LeftButton)
             {
                 if (isMoving == true)
                 {

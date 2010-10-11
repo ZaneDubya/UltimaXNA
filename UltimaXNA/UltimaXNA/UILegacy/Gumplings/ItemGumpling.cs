@@ -76,7 +76,7 @@ namespace UltimaXNA.UILegacy.Gumplings
                 return false;
         }
 
-        protected override void mouseDown(int x, int y, UltimaXNA.Input.MouseButtons button)
+        protected override void mouseDown(int x, int y, UltimaXNA.InputOld.MouseButton button)
         {
             // if click, we wait for a moment before picking it up. This allows a single click.
             clickedCanDrag = true;
@@ -98,7 +98,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             }
         }
 
-        protected override void mouseClick(int x, int y, UltimaXNA.Input.MouseButtons button)
+        protected override void mouseClick(int x, int y, UltimaXNA.InputOld.MouseButton button)
         {
             if (clickedCanDrag)
             {
@@ -108,7 +108,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             }
         }
 
-        protected override void mouseDoubleClick(int x, int y, UltimaXNA.Input.MouseButtons button)
+        protected override void mouseDoubleClick(int x, int y, UltimaXNA.InputOld.MouseButton button)
         {
             Interaction.DoubleClick(_item);
             sendClickIfNoDoubleClick = false;

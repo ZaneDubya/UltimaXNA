@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Entities;
-using UltimaXNA.Input;
+using UltimaXNA.InputOld;
 
 namespace UltimaXNA.UILegacy.Gumplings
 {
@@ -125,7 +125,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             base.Update(gameTime);
         }
 
-        void dblclick_Backpack(int x, int y, MouseButtons button)
+        void dblclick_Backpack(int x, int y, MouseButton button)
         {
             Container i = ((Mobile)_sourceEntity).Backpack;
             Client.UltimaClient.Send(new Network.Packets.Client.DoubleClickPacket(i.Serial));

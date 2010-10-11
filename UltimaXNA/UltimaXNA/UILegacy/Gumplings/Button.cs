@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Input;
+using UltimaXNA.InputOld;
 
 namespace UltimaXNA.UILegacy.Gumplings
 {
@@ -113,19 +113,19 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         bool _clicked = false;
 
-        protected override void mouseDown(int x, int y, MouseButtons button)
+        protected override void mouseDown(int x, int y, MouseButton button)
         {
             _clicked = true;
         }
 
-        protected override void mouseUp(int x, int y, MouseButtons button)
+        protected override void mouseUp(int x, int y, MouseButton button)
         {
             _clicked = false;
         }
 
-        protected override void mouseClick(int x, int y, MouseButtons button)
+        protected override void mouseClick(int x, int y, MouseButton button)
         {
-            if (button == MouseButtons.LeftButton)
+            if (button == MouseButton.LeftButton)
             {
                 switch (this.ButtonType)
                 {

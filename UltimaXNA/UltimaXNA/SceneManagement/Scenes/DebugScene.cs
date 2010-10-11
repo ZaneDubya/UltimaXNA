@@ -21,7 +21,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using UltimaXNA.Entities;
-using UltimaXNA.Input;
+using UltimaXNA.InputOld;
 using UltimaXNA.TileEngine;
 #endregion
 
@@ -141,17 +141,17 @@ namespace UltimaXNA.SceneManagement
 
             if (ClientVars.DEBUG_HighlightMouseOverObjects)
             {
-                if (Input.IsMouseButtonPress(MouseButtons.LeftButton))
+                if (Input.IsMouseButtonPress(MouseButton.LeftButton))
                     edit_Begin(edit_Value);
-                else if (Input.IsMouseButtonPress(MouseButtons.RightButton))
+                else if (Input.IsMouseButtonPress(MouseButton.RightButton))
                     edit_Begin(-edit_Value);
             }
 
             if (edit_IsEditing)
             {
-                if (Input.IsMouseButtonRelease(MouseButtons.LeftButton))
+                if (Input.IsMouseButtonRelease(MouseButton.LeftButton))
                     edit_End();
-                if (Input.IsMouseButtonRelease(MouseButtons.RightButton))
+                if (Input.IsMouseButtonRelease(MouseButton.RightButton))
                     edit_End();
             }
 

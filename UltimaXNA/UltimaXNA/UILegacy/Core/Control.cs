@@ -4,11 +4,11 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using UltimaXNA.Input;
+using UltimaXNA.InputOld;
 
 namespace UltimaXNA.UILegacy
 {
-    internal delegate void ControlMouseButtonEvent(int x, int y, MouseButtons button);
+    internal delegate void ControlMouseButtonEvent(int x, int y, MouseButton button);
     internal delegate void ControlMouseEvent(int x, int y);
     internal delegate void ControlEvent();
 
@@ -367,7 +367,7 @@ namespace UltimaXNA.UILegacy
                 _owner.ChangePage(pageIndex);
         }
 
-        public void MouseDown(Vector2 position, MouseButtons button)
+        public void MouseDown(Vector2 position, MouseButton button)
         {
             lastClickPosition = position;
             int x = (int)position.X - X - OwnerX;
@@ -377,7 +377,7 @@ namespace UltimaXNA.UILegacy
                 OnMouseDown(x, y, button);
         }
 
-        public void MouseUp(Vector2 position, MouseButtons button)
+        public void MouseUp(Vector2 position, MouseButton button)
         {
             int x = (int)position.X - X - OwnerX;
             int y = (int)position.Y - Y - OwnerY;
@@ -411,7 +411,7 @@ namespace UltimaXNA.UILegacy
         float maxTimeForDoubleClick = 0f;
         Vector2 lastClickPosition;
 
-        public void MouseClick(Vector2 position, MouseButtons button)
+        public void MouseClick(Vector2 position, MouseButton button)
         {
             int x = (int)position.X - X - OwnerX;
             int y = (int)position.Y - Y - OwnerY;
@@ -452,12 +452,12 @@ namespace UltimaXNA.UILegacy
             itemDrop(item, x, y);
         }
 
-        protected virtual void mouseDown(int x, int y, MouseButtons button)
+        protected virtual void mouseDown(int x, int y, MouseButton button)
         {
 
         }
 
-        protected virtual void mouseUp(int x, int y, MouseButtons button)
+        protected virtual void mouseUp(int x, int y, MouseButton button)
         {
 
         }
@@ -472,12 +472,12 @@ namespace UltimaXNA.UILegacy
 
         }
 
-        protected virtual void mouseClick(int x, int y, MouseButtons button)
+        protected virtual void mouseClick(int x, int y, MouseButton button)
         {
 
         }
 
-        protected virtual void mouseDoubleClick(int x, int y, MouseButtons button)
+        protected virtual void mouseDoubleClick(int x, int y, MouseButton button)
         {
 
         }

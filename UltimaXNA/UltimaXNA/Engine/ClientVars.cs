@@ -11,7 +11,7 @@ using UltimaXNA.Data;
 using UltimaXNA.Client;
 using UltimaXNA.Entities;
 using UltimaXNA.Extensions;
-using UltimaXNA.Input;
+using UltimaXNA.InputOld;
 using UltimaXNA.Network.Packets.Client;
 using UltimaXNA.TileEngine;
 using UltimaXNA.UILegacy;
@@ -66,8 +66,8 @@ namespace UltimaXNA
 
         public static int BackBufferWidth = 0, BackBufferHeight = 0;
 
-        public static MouseButtons MouseButton_Interact = MouseButtons.LeftButton;
-        public static MouseButtons MouseButton_Move = MouseButtons.RightButton;
+        public static MouseButton MouseButton_Interact = MouseButton.LeftButton;
+        public static MouseButton MouseButton_Move = MouseButton.RightButton;
 
         static ServerListPacket _serverListPacket;
         public static ServerListPacket ServerListPacket { get { return _serverListPacket; } set { _serverListPacket = value; } }

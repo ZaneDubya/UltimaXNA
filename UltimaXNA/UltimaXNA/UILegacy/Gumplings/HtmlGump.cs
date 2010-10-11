@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Input;
+using UltimaXNA.InputOld;
 
 namespace UltimaXNA.UILegacy.Gumplings
 {
@@ -118,13 +118,13 @@ namespace UltimaXNA.UILegacy.Gumplings
         int _hrefClicked = -1;
         int _hrefOver = -1;
 
-        protected override void mouseDown(int x, int y, MouseButtons button)
+        protected override void mouseDown(int x, int y, MouseButton button)
         {
             _clicked = true;
             _hrefClicked = _hrefOver;
         }
 
-        protected override void mouseUp(int x, int y, MouseButtons button)
+        protected override void mouseUp(int x, int y, MouseButton button)
         {
             _clicked = false;
             _hrefClicked = -1;
@@ -135,11 +135,11 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         }
 
-        protected override void mouseClick(int x, int y, MouseButtons button)
+        protected override void mouseClick(int x, int y, MouseButton button)
         {
             if (_hrefOver != -1 && _hrefClicked == _hrefOver)
             {
-                if (button == MouseButtons.LeftButton)
+                if (button == MouseButton.LeftButton)
                 {
                     ActivateByHREF(_hrefRegions.Region(_hrefOver).Data.HREF);
                 }

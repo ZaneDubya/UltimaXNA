@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Data;
 using UltimaXNA.Diagnostics;
 using UltimaXNA.Extensions;
-using UltimaXNA.Input;
+using UltimaXNA.InputOld;
 using UltimaXNA.Network;
 using UltimaXNA.UILegacy;
 using UltimaXNA.TileEngine;

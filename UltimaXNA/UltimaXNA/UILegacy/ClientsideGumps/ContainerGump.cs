@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UltimaXNA.Data;
 using UltimaXNA.Entities;
-using UltimaXNA.Input;
+using UltimaXNA.InputOld;
 using UltimaXNA.UILegacy.Gumplings;
 
 namespace UltimaXNA.UILegacy.ClientsideGumps
@@ -32,9 +32,9 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
             _tickerText = (HtmlGump)AddGumpling(new HtmlGump(this, 0, 50, 50, 0, 0, 0, 0, string.Empty));
         }
 
-        void onGumpClick(int x, int y, MouseButtons button)
+        void onGumpClick(int x, int y, MouseButton button)
         {
-            if (button == MouseButtons.RightButton)
+            if (button == MouseButton.RightButton)
             {
                 Dispose();
             }
