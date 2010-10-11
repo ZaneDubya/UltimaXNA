@@ -23,7 +23,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Entities;
 using UltimaXNA.Extensions;
-using UltimaXNA.Input;
+using UltimaXNA.InputOld;
 #endregion
 
 namespace UltimaXNA.TileEngine
@@ -280,7 +280,7 @@ namespace UltimaXNA.TileEngine
                                     continue;
 
                                 if (((PickType & PickTypes.PickGroundTiles) == PickTypes.PickGroundTiles) || ClientVars.DEBUG_HighlightMouseOverObjects)
-                                    if (MouseOverList.IsPointInObject(_vertexBufferStretched, _input.CurrentMousePosition))
+                                    if (MouseOverList.IsPointInObject(_vertexBufferStretched, _input.MousePosition))
                                     {
                                         MouseOverItem item = new MouseOverItem(texture, _vertexBufferStretched[0].Position, mapObject);
                                         item.Vertices = new Vector3[4] { _vertexBufferStretched[0].Position, _vertexBufferStretched[1].Position, _vertexBufferStretched[2].Position, _vertexBufferStretched[3].Position };
@@ -445,8 +445,8 @@ namespace UltimaXNA.TileEngine
 
                         if ((PickType & pick) == pick)
                         {
-                            if (((!flip) && MouseOverList.IsPointInObject(vectorBuffer[0].Position, vectorBuffer[3].Position, _input.CurrentMousePosition)) ||
-                                ((flip) && MouseOverList.IsPointInObject(vectorBuffer[2].Position, vectorBuffer[1].Position, _input.CurrentMousePosition)))
+                            if (((!flip) && MouseOverList.IsPointInObject(vectorBuffer[0].Position, vectorBuffer[3].Position, _input.MousePosition)) ||
+                                ((flip) && MouseOverList.IsPointInObject(vectorBuffer[2].Position, vectorBuffer[1].Position, _input.MousePosition)))
                             {
                                 MouseOverItem item; 
                                 if (!flip)
@@ -472,8 +472,8 @@ namespace UltimaXNA.TileEngine
                 }
             }
             // Update the Mouse Over Objects
-            _overObject = overList.GetForemostMouseOverItem(_input.CurrentMousePosition);
-            _overGround = overList.GetForemostMouseOverItem<MapObjectGround>(_input.CurrentMousePosition);
+            _overObject = overList.GetForemostMouseOverItem(_input.MousePosition);
+            _overGround = overList.GetForemostMouseOverItem<MapObjectGround>(_input.MousePosition);
         }
 
         WorldTexture[] worldTextures;

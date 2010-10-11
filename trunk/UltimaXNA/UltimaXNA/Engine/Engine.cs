@@ -30,7 +30,7 @@ namespace UltimaXNA
     public class Engine : Game
     {
         Diagnostics.Logger _logService;
-        Input.InputState _inputState;
+        InputOld.InputState _inputState;
         SceneManagement.SceneManager _sceneService;
         TileEngine.World _worldService;
         UILegacy.UIManager _LegacyUIService;
@@ -49,8 +49,8 @@ namespace UltimaXNA
             _logService = new Diagnostics.Logger("UXNA");
             Services.AddService<Diagnostics.ILoggingService>(_logService);
 
-            _inputState = new Input.InputState(this);
-            Services.AddService<Input.IInputService>(_inputState);
+            _inputState = new InputOld.InputState(this);
+            Services.AddService<InputOld.IInputService>(_inputState);
 
             _worldService = new TileEngine.World(this);
             Services.AddService<TileEngine.IWorld>(_worldService);

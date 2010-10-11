@@ -146,7 +146,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             }
         }
 
-        protected override void mouseClick(int x, int y, UltimaXNA.Input.MouseButtons button)
+        protected override void mouseClick(int x, int y, UltimaXNA.InputOld.MouseButton button)
         {
             if (!_isAnOpenSwatch)
             {
@@ -164,7 +164,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             }
         }
 
-        void onOpenSwatchClick(int x, int y, UltimaXNA.Input.MouseButtons button)
+        void onOpenSwatchClick(int x, int y, UltimaXNA.InputOld.MouseButton button)
         {
             Index = _openColorPicker.Index;
             closeSwatch();

@@ -25,7 +25,7 @@ using UltimaXNA.Data;
 using UltimaXNA.Client;
 using UltimaXNA.Entities;
 using UltimaXNA.Extensions;
-using UltimaXNA.Input;
+using UltimaXNA.InputOld;
 using UltimaXNA.Network.Packets.Client;
 using UltimaXNA.TileEngine;
 using UltimaXNA.UILegacy;
@@ -95,7 +95,7 @@ namespace UltimaXNA
                     _world.PickType = PickTypes.PickEverything;
 
                 // Set the cursor direction
-                ClientVars.CursorDirection = Utility.DirectionFromVectors(new Vector2(400, 300), _input.CurrentMousePosition);
+                ClientVars.CursorDirection = Utility.DirectionFromVectors(new Vector2(400, 300), _input.MousePosition);
 
                 // Show a popup tip if we have hovered over this item for X seconds.
                 if (_input.IsCursorMovedSinceLastUpdate())
@@ -138,7 +138,7 @@ namespace UltimaXNA
         {
             // Get the move direction and add the Running offset if the Cursor is far enough away.
             Direction moveDirection = ClientVars.CursorDirection;
-            float distanceFromCenterOfScreen = Vector2.Distance(_input.CurrentMousePosition, new Vector2(400, 300));
+            float distanceFromCenterOfScreen = Vector2.Distance(_input.MousePosition, new Vector2(400, 300));
             if (distanceFromCenterOfScreen >= 150.0f)
                 moveDirection |= Direction.Running;
 
@@ -366,14 +366,14 @@ namespace UltimaXNA
             // must create the object that maintains the clicks.
             if (_mouseButtonClicks == null)
             {
-                _mouseButtonClicks = new ClickState[(int)MouseButtons.XButton2];
+                _mouseButtonClicks = new ClickState[(int)MouseButton.Count];
                 for (int i = 0; i < _mouseButtonClicks.Length; i++)
                     _mouseButtonClicks[i] = new ClickState();
             }
 
-            int x = (int)_input.CurrentMousePosition.X;
-            int y = (int)_input.CurrentMousePosition.Y;
-            for (MouseButtons i = MouseButtons.LeftButton; i < MouseButtons.XButton2; i++)
+            int x = (int)_input.MousePosition.X;
+            int y = (int)_input.MousePosition.Y;
+            for (MouseButton i = MouseButton.LeftButton; i < MouseButton.Count; i++)
             {
                 // Check for mouse button presses ...
                 if (_input.IsMouseButtonPress(i))

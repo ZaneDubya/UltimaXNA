@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Input;
+using UltimaXNA.InputOld;
 
 namespace UltimaXNA.UILegacy.Gumplings
 {
@@ -85,9 +85,9 @@ namespace UltimaXNA.UILegacy.Gumplings
             base.Draw(spriteBatch);
         }
 
-        protected override void mouseClick(int x, int y, MouseButtons button)
+        protected override void mouseClick(int x, int y, MouseButton button)
         {
-            if (button == MouseButtons.RightButton)
+            if (button == MouseButton.RightButton)
             {
                 if (CloseOnRightClick)
                     _owner.Dispose();

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using UltimaXNA.Input;
+using UltimaXNA.InputOld;
 using UltimaXNA.Entities;
 
 namespace UltimaXNA.UILegacy
@@ -32,7 +32,7 @@ namespace UltimaXNA.UILegacy
             // Targets will remove the widget's references during disposal.
         }
 
-        void mouseUp(int x, int y, MouseButtons button)
+        void mouseUp(int x, int y, MouseButton button)
         {
             if (_manager.Cursor.IsHolding)
             {

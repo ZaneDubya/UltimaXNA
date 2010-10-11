@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Input;
+using UltimaXNA.InputOld;
 
 namespace UltimaXNA.UILegacy.Gumplings
 {
@@ -101,7 +101,7 @@ namespace UltimaXNA.UILegacy.Gumplings
                 _openLabels[i].Dispose();
         }
 
-        void onClickClosedList(int x, int y, MouseButtons button)
+        void onClickClosedList(int x, int y, MouseButton button)
         {
             _listOpen = true;
             _openResizePic = new ResizePic(_owner, Page, X, Y, 3000, _width, Data.ASCIIText.Fonts[1].Height * _visibleItems + 8);
@@ -133,7 +133,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             _label.Hue = hue_Text;
         }
 
-        void onClickOpenList(int x, int y, MouseButtons button)
+        void onClickOpenList(int x, int y, MouseButton button)
         {
             int indexOver = getOpenListIndexFromPoint(x, y);
             if (indexOver != -1)

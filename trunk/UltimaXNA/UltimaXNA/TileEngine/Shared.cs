@@ -22,7 +22,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Entities;
-using UltimaXNA.Input;
+using UltimaXNA.InputOld;
 #endregion
 
 namespace UltimaXNA.TileEngine

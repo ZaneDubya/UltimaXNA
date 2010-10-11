@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Input;
+using UltimaXNA.InputOld;
 
 namespace UltimaXNA.UILegacy.Gumplings
 {
@@ -130,7 +130,7 @@ namespace UltimaXNA.UILegacy.Gumplings
         float _timeUntilNextClick;
         const float _timeBetweenClicks = 0.5f;
 
-        protected override void mouseDown(int x, int y, MouseButtons button)
+        protected override void mouseDown(int x, int y, MouseButton button)
         {
             _timeUntilNextClick = 0f;
             if (new Rectangle(0, 0, _gumpUpButton[0].Width, _gumpUpButton[0].Height).Contains(new Point(x, y)))
@@ -149,7 +149,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             }
         }
 
-        protected override void mouseUp(int x, int y, MouseButtons button)
+        protected override void mouseUp(int x, int y, MouseButton button)
         {
             _btnUpClicked = false;
             _btnDownClicked = false;
