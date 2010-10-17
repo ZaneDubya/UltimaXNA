@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 
-namespace UltimaXNA.Input
+namespace UltimaXNA.Input.Events
 {
     /// <summary>
     /// 

@@ -1,4 +1,13 @@
-﻿using System;
+﻿/********************************************************
+ * 
+ *  MessageHook.cs
+ *  
+ *  (C) Copyright 2009 Jeff Boulanger. All rights reserved. 
+ *  Used in UltimaXNA with permission.
+ *  
+ ********************************************************/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
