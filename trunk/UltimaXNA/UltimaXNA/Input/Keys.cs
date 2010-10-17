@@ -1,6 +1,6 @@
 ﻿namespace UltimaXNA.Input
 {
-    public enum Keys
+    public enum WinKeys
     {
         A = 0x41,
         Add = 0x6b,
@@ -22,7 +22,7 @@
         CapsLock = 20,
         Clear = 12,
         Control = 0x20000,
-        ControlKey = 0x11,
+        ControlKey =  0x11,
         Crsel = 0xf7,
         D = 0x44,
         D0 = 0x30,

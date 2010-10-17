@@ -1,17 +1,9 @@
 ﻿/********************************************************
  * 
- *  $Id: NativeMethods.cs 63 2009-11-02 22:14:43Z jeff $
+ *  NativeMethods.cs
  *  
- *  $Author: jeff $
- *  $Date: 2009-11-02 14:14:43 -0800 (Mon, 02 Nov 2009) $
- *  $Revision: 63 $
- *  
- *  $LastChangedBy: jeff $
- *  $LastChangedDate: 2009-11-02 14:14:43 -0800 (Mon, 02 Nov 2009) $
- *  $LastChangedRevision: 63 $
- *  
- *  (C) Copyright 2009 Jeff Boulanger
- *  All rights reserved. 
+ *  (C) Copyright 2009 Jeff Boulanger. All rights reserved. 
+ *  Used in UltimaXNA with permission.
  *  
  ********************************************************/
 

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UltimaXNA.Input
+namespace UltimaXNA.Input.Events
 {
     /// <summary>
     /// 
@@ -8,7 +8,7 @@ namespace UltimaXNA.Input
     public class KeyEventArgs : EventArgs
     {
         private bool _handled;
-        private readonly Keys _keyData;
+        private readonly WinKeys _keyData;
         private bool _suppressKeyPress;
 
         /// <summary>
@@ -16,7 +16,7 @@ namespace UltimaXNA.Input
         /// </summary>
         public virtual bool Alt
         {
-            get { return ((_keyData & Keys.Alt) == Keys.Alt); }
+            get { return ((_keyData & WinKeys.Alt) == WinKeys.Alt); }
         }
 
         /// <summary>
@@ -24,7 +24,7 @@ namespace UltimaXNA.Input
         /// </summary>
         public bool Control
         {
-            get { return ((_keyData & Keys.Control) == Keys.Control); }
+            get { return ((_keyData & WinKeys.Control) == WinKeys.Control); }
         }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace UltimaXNA.Input
         /// </summary>
         public virtual bool Shift
         {
-            get { return ((_keyData & Keys.Shift) == Keys.Shift); }
+            get { return ((_keyData & WinKeys.Shift) == WinKeys.Shift); }
         }
 
         /// <summary>
@@ -47,15 +47,15 @@ namespace UltimaXNA.Input
         /// <summary>
         /// 
         /// </summary>
-        public Keys KeyCode
+        public WinKeys KeyCode
         {
             get
             {
-                Keys keys = _keyData & Keys.KeyCode;
+                WinKeys keys = _keyData & WinKeys.KeyCode;
 
-                if (!Enum.IsDefined(typeof(Keys), (int)keys))
+                if (!Enum.IsDefined(typeof(WinKeys), (int)keys))
                 {
-                    return Keys.None;
+                    return WinKeys.None;
                 }
 
                 return keys;
@@ -65,7 +65,7 @@ namespace UltimaXNA.Input
         /// <summary>
         /// 
         /// </summary>
-        public Keys KeyData
+        public WinKeys KeyData
         {
             get { return _keyData; }
         }
@@ -81,9 +81,9 @@ namespace UltimaXNA.Input
         /// <summary>
         /// 
         /// </summary>
-        public Keys Modifiers
+        public WinKeys Modifiers
         {
-            get { return (_keyData & ~Keys.KeyCode); }
+            get { return (_keyData & ~WinKeys.KeyCode); }
         }
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace UltimaXNA.Input
         /// 
         /// </summary>
         /// <param name="keyData"></param>
-        public KeyEventArgs(Keys keyData)
+        public KeyEventArgs(WinKeys keyData)
         {
             _keyData = keyData;
         }

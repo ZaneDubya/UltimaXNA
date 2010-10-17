@@ -15,15 +15,15 @@ namespace UltimaXNA.Input.Unused
         private bool _control;
         private bool _isExecuting;
 
-        public Keys ModifierKeys
+        public WinKeys ModifierKeys
         {
             get
             {
-                Keys modifiers = Keys.None;
+                WinKeys modifiers = WinKeys.None;
 
-                modifiers |= _shift ? Keys.Shift : modifiers;
-                modifiers |= _alt ? Keys.Alt : modifiers;
-                modifiers |= _control ? Keys.Control : modifiers;
+                modifiers |= _shift ? WinKeys.Shift : modifiers;
+                modifiers |= _alt ? WinKeys.Alt : modifiers;
+                modifiers |= _control ? WinKeys.Control : modifiers;
 
                 return modifiers;
             }

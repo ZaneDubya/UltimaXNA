@@ -7,31 +7,31 @@ namespace UltimaXNA.Input.Unused
 {
     class Bindings
     {
-        private Dictionary<Keys, InputBinding> _keyBindings;
+        private Dictionary<WinKeys, InputBinding> _keyBindings;
         private Dictionary<MouseButton, InputBinding> _mouseBindings;
 
         /// <summary>
         /// Gets the currently pressed Modifier keys, Control, Alt, Shift
         /// </summary>
-        public static Keys ModifierKeys
+        public static WinKeys ModifierKeys
         {
             get
             {
-                Keys none = Keys.None;
+                WinKeys none = WinKeys.None;
 
                 if (NativeMethods.GetKeyState(0x10) < 0)
                 {
-                    none |= Keys.Shift;
+                    none |= WinKeys.Shift;
                 }
 
                 if (NativeMethods.GetKeyState(0x11) < 0)
                 {
-                    none |= Keys.Control;
+                    none |= WinKeys.Control;
                 }
 
                 if (NativeMethods.GetKeyState(0x12) < 0)
                 {
-                    none |= Keys.Alt;
+                    none |= WinKeys.Alt;
                 }
 
                 return none;
@@ -78,7 +78,7 @@ namespace UltimaXNA.Input.Unused
 
         public Bindings()
         {
-            _keyBindings = new Dictionary<Keys, InputBinding>();
+            _keyBindings = new Dictionary<WinKeys, InputBinding>();
             _mouseBindings = new Dictionary<MouseButton, InputBinding>();
         }
 
@@ -92,7 +92,7 @@ namespace UltimaXNA.Input.Unused
         /// <param name="key">The Key to bind to.</param>
         /// <param name="beginHandler">The handler to execute when the binding's key combination is pressed down</param>
         /// <returns>The InputBinding object.</returns>
-        public InputBinding AddBinding(string name, bool shift, bool control, bool alt, Keys key, EventHandler handler)
+        public InputBinding AddBinding(string name, bool shift, bool control, bool alt, WinKeys key, EventHandler handler)
         {
             return AddBinding(name, shift, control, alt, key, handler, null);
         }
@@ -108,16 +108,16 @@ namespace UltimaXNA.Input.Unused
         /// <param name="beginHandler">The handler to execute when the binding's key combination is pressed down</param>
         /// <param name="endHandler">The handler to execute when the binding's key combination button is pressed release</param>
         /// <returns>The InputBinding object.</returns>
-        public InputBinding AddBinding(string name, bool shift, bool control, bool alt, Keys key, EventHandler beginHandler, EventHandler endHandler)
+        public InputBinding AddBinding(string name, bool shift, bool control, bool alt, WinKeys key, EventHandler beginHandler, EventHandler endHandler)
         {
             InputBinding binding = new InputBinding(name, shift, control, alt);
 
             binding.BeginExecution = beginHandler;
             binding.EndExecution = endHandler;
 
-            key |= shift ? Keys.Shift : Keys.None;
-            key |= control ? Keys.Control : Keys.None;
-            key |= alt ? Keys.Alt : Keys.None;
+            key |= shift ? WinKeys.Shift : WinKeys.None;
+            key |= control ? WinKeys.Control : WinKeys.None;
+            key |= alt ? WinKeys.Alt : WinKeys.None;
 
             _keyBindings.Add(key, binding);
 
@@ -161,18 +161,18 @@ namespace UltimaXNA.Input.Unused
         /// </summary>
         private void HandleKeyBindings()
         {
-            foreach (Keys keys in _keyBindings.Keys)
+            foreach (WinKeys keys in _keyBindings.Keys)
             {
-                Keys key = keys;
+                WinKeys key = keys;
                 InputBinding binding = _keyBindings[keys];
 
-                Keys modifiers = binding.ModifierKeys;
+                WinKeys modifiers = binding.ModifierKeys;
 
                 //Remove any modifiers so we can 
                 //get the exact key...
-                key = keys & ~Keys.Shift;
-                key = keys & ~Keys.Alt;
-                key = keys & ~Keys.Control;
+                key = keys & ~WinKeys.Shift;
+                key = keys & ~WinKeys.Alt;
+                key = keys & ~WinKeys.Control;
 
                 binding.IsExecuting = ((NativeMethods.GetKeyState((int)key) < 0) &&
                                        ((ModifierKeys & modifiers) == modifiers));
