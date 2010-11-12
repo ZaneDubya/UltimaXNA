@@ -9,31 +9,29 @@ namespace UltimaXNA.Input.Events
     public class InputEventMouse : InputEvent
     {
         private readonly MouseEvent _eventType;
-        private readonly MouseButton _button;
-        private readonly int _x;
-        private readonly int _y;
-
         public MouseEvent EventType
         {
             get { return _eventType; }
         }
 
+        protected new EventArgsMouse _args
+        {
+            get { return (EventArgsMouse)base._args; }
+        }
+
         public MouseButton Button
         {
-            get { return _button; }
+            get { return _args.Button; }
         }
 
         public Vector2 Position
         {
-            get { return new Vector2(_x, _y); }
+            get { return new Vector2(_args.X, _args.Y); }
         }
 
-        public InputEventMouse(WinKeys keyData, int x, int y, MouseButton button, MouseEvent eventType)
-            : base(keyData)
+        public InputEventMouse(MouseEvent eventType, EventArgsMouse args) // WinKeys keyData, int x, int y, MouseButton button, 
+            : base(args)
         {
-            _x = x;
-            _y = y;
-            _button = button;
             _eventType = eventType;
         }
     }

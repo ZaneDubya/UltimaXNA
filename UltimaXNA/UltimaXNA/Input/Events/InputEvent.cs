@@ -8,21 +8,21 @@ namespace UltimaXNA.Input.Events
     public class InputEvent
     {
         protected bool _handled;
-        protected readonly WinKeys _keyData;
+        protected EventArgs _args;
 
-        public virtual bool Alt
+        public bool Alt
         {
-            get { return ((_keyData & WinKeys.Alt) == WinKeys.Alt); }
+            get { return _args.Alt; }
         }
 
         public bool Control
         {
-            get { return ((_keyData & WinKeys.Control) == WinKeys.Control); }
+            get { return _args.Control; }
         }
 
-        public virtual bool Shift
+        public bool Shift
         {
-            get { return ((_keyData & WinKeys.Shift) == WinKeys.Shift); }
+            get { return _args.Shift; }
         }
 
         public bool Handled
@@ -31,14 +31,9 @@ namespace UltimaXNA.Input.Events
             set { _handled = value; }
         }
 
-        public WinKeys Modifiers
+        public InputEvent(EventArgs args)
         {
-            get { return (_keyData & ~WinKeys.KeyCode); }
-        }
-
-        public InputEvent(WinKeys keyData)
-        {
-            _keyData = keyData;
+            _args = args;
         }
 
         public void SuppressEvent()
