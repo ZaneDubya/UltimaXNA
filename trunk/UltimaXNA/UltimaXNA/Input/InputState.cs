@@ -18,6 +18,9 @@ namespace UltimaXNA.Input
         MouseState _mouseStateLastFrame;
         KeyboardState _keyboardStateLastFrame;
 
+        //DEBUG
+        public static Diagnostics.Logger _log = new Diagnostics.Logger("InputState");
+        
         List<InputEvent> _eventsThisFrame = new List<InputEvent>();
         List<InputEvent> _eventsAccumulating = new List<InputEvent>();
         List<InputEvent> _eventsAccumulatingAlternate = new List<InputEvent>();
@@ -169,6 +172,11 @@ namespace UltimaXNA.Input
             
         }
 
+        protected override void OnKeyPress(EventArgsKeyboard e)
+        {
+            addEvent(new InputEventKeyboard(KeyboardEvent.Press, e));
+        }
+
         protected override void OnKeyDown(EventArgsKeyboard e)
         {
             // handle the initial key down
@@ -179,13 +187,20 @@ namespace UltimaXNA.Input
             // handle the key presses. Possibly multiple per keydown message.
             for (int i = 0; i < e.Data_RepeatCount; i++)
             {
-                addEvent(new InputEventKeyboard(KeyboardEvent.Press, e));
+                OnKeyPress(e);
             }
         }
 
         protected override void OnKeyUp(EventArgsKeyboard e)
         {
             addEvent(new InputEventKeyboard(KeyboardEvent.Up, e));
+        }
+
+        protected override void OnChar(EventArgsKeyboard e)
+        {
+          
+            _log.Debug("Char: " + (char)e.KeyCode);
+            addEvent(new InputEventKeyboard(KeyboardEvent.Char, e));
         }
     }
 }
