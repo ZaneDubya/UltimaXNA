@@ -7,7 +7,7 @@ using UltimaXNA.Data;
 using UltimaXNA.Client;
 using UltimaXNA.Entities;
 using UltimaXNA.Extensions;
-using UltimaXNA.InputOld;
+using UltimaXNA.Input;
 using UltimaXNA.Network.Packets.Client;
 using UltimaXNA.TileEngine;
 using UltimaXNA.UILegacy;
@@ -17,13 +17,14 @@ namespace UltimaXNA
 {
     class Interaction
     {
-        static IInputService _input;
+        static IInputState _input;
+        // static IInputService _input;
         static IWorld _world;
         static IUIManager _legacyUI;
 
         public static void Initialize(Game game)
         {
-            _input = game.Services.GetService<IInputService>();
+            _input = game.Services.GetService<IInputState>();
             _world = game.Services.GetService<IWorld>();
             _legacyUI = game.Services.GetService<IUIManager>();
         }

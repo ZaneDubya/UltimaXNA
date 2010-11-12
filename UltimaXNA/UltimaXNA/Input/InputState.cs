@@ -169,19 +169,23 @@ namespace UltimaXNA.Input
             
         }
 
-        protected override void OnKeyPress(KeyPressEventArgs e)
+        protected override void OnKeyPress(KeyEventArgs e)
         {
-            
+            addEvent(new InputEventKeyboard(e.KeyCode, KeyboardEvent.Press));
         }
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
-            
+            OnKeyPress(e);
+            if (!IsKeyDown(e.KeyCode))
+            {
+                addEvent(new InputEventKeyboard(e.KeyCode, KeyboardEvent.Down));
+            }
         }
 
         protected override void OnKeyUp(KeyEventArgs e)
         {
-            
+            addEvent(new InputEventKeyboard(e.KeyCode, KeyboardEvent.Up));
         }
     }
 }

@@ -117,6 +117,10 @@ namespace UltimaXNA.Input
                 {
                     case NativeConstants.WM_KEYDOWN:
                     case NativeConstants.WM_KEYUP:
+                    case NativeConstants.WM_CHAR:
+                    case NativeConstants.WM_SYSKEYDOWN:
+                    case NativeConstants.WM_SYSKEYUP:
+                    case NativeConstants.WM_SYSCHAR:
                         {
                             WmKeyEvent(ref message);
                             break;
@@ -262,44 +266,46 @@ namespace UltimaXNA.Input
         /// </summary>
         /// <param name="message">The Message to parse</param>
         /// <returns>A Boolean value indicating wether the Key events were handled or not</returns>
-        private bool WmKeyEvent(ref Message message)
+        private void WmKeyEvent(ref Message message)
         {
             // HandleKeyBindings();
-
+            // KeyPressEventArgs keyPressEventArgs = null;
             KeyEventArgs keyEventArgs = null;
-            KeyPressEventArgs keyPressEventArgs = null;
+            
 
             IntPtr zero = IntPtr.Zero;
 
-            if ((message.Id == 0x102) || (message.Id == 0x106))
+            if ((message.Id == NativeConstants.WM_CHAR) || (message.Id == NativeConstants.WM_SYSCHAR))
             {
-                keyPressEventArgs = new KeyPressEventArgs((char)((ushort)((long)message.WParam)));
-                zero = (IntPtr)keyPressEventArgs.KeyChar;
-                OnKeyPress(keyPressEventArgs);
+                // Is this extra information necessary?
+                // wm_(sys)char: http://msdn.microsoft.com/en-us/library/ms646276(VS.85).aspx
+                /*
+                keyEventArgs = new KeyEventArgs(
+                    (WinKeys)(((int)(long)message.WParam) | ((int)getModifierKeys()))
+                    ); 
+                zero = (IntPtr)(char)((ushort)((long)message.WParam));
+                OnKeyPress(keyEventArgs);
+                message.WParam = zero;*/
             }
             else
             {
+                // wm_(sys)keydown: http://msdn.microsoft.com/en-us/library/ms912654.aspx
+                // wm_(sys)keyup: http://msdn.microsoft.com/en-us/library/ms646281(VS.85).aspx
                 keyEventArgs = new KeyEventArgs(
-                    (WinKeys)(((int)(long)message.WParam) | ((int)getModifierKeys()))
+                    (WinKeys)(int)(long)message.WParam,
+                    (int)(long)message.LParam,
+                    (getModifierKeys())
                     );
 
-                if ((message.Id == 0x100) || (message.Id == 0x104))
+                if ((message.Id == NativeConstants.WM_KEYDOWN) || (message.Id == NativeConstants.WM_SYSKEYDOWN))
                 {
                     OnKeyDown(keyEventArgs);
                 }
-                else
+                else if ((message.Id == NativeConstants.WM_KEYUP) || (message.Id == NativeConstants.WM_SYSKEYUP))
                 {
                     OnKeyUp(keyEventArgs);
                 }
             }
-
-            if (keyPressEventArgs != null)
-            {
-                message.WParam = zero;
-                return keyPressEventArgs.Handled;
-            }
-
-            return keyEventArgs.Handled;
         }
 
         /// <summary>
@@ -360,7 +366,7 @@ namespace UltimaXNA.Input
         /// Raises the KeyPress event. Override this method to add code to handle when a key is pressed
         /// </summary>
         /// <param name="e">KeyboardPressEventArgs for the KeyPress event</param>
-        protected virtual void OnKeyPress(KeyPressEventArgs e)
+        protected virtual void OnKeyPress(KeyEventArgs e)
         {
 
         }

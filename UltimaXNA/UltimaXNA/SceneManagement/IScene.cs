@@ -19,7 +19,7 @@ namespace UltimaXNA.SceneManagement
 
         ISceneService SceneManager { get; }
         ILoggingService Log { get; }
-        IInputService Input { get; }
+        // IInputService Input { get; }
         IUIManager UI { get; }
 
         event TransitionCompleteHandler TransitionCompleted;

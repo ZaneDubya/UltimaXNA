@@ -2,110 +2,108 @@
 
 namespace UltimaXNA.Input.Events
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public class KeyEventArgs : EventArgs
     {
-        private bool _handled;
-        private readonly WinKeys _keyData;
-        private bool _suppressKeyPress;
+        private readonly WinKeys _keyCode;
+        private readonly int _keyDataExtra;
+        private readonly WinKeys _modifiers;
 
-        /// <summary>
-        /// 
-        /// </summary>
         public virtual bool Alt
         {
-            get { return ((_keyData & WinKeys.Alt) == WinKeys.Alt); }
+            get { return ((_modifiers & WinKeys.Alt) == WinKeys.Alt); }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
         public bool Control
         {
-            get { return ((_keyData & WinKeys.Control) == WinKeys.Control); }
+            get { return ((_modifiers & WinKeys.Control) == WinKeys.Control); }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
         public virtual bool Shift
         {
-            get { return ((_keyData & WinKeys.Shift) == WinKeys.Shift); }
+            get { return ((_modifiers & WinKeys.Shift) == WinKeys.Shift); }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool Handled
-        {
-            get { return _handled; }
-            set { _handled = value; }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public WinKeys KeyCode
+        public WinKeys KeyVirtual
         {
             get
             {
-                WinKeys keys = _keyData & WinKeys.KeyCode;
-
-                if (!Enum.IsDefined(typeof(WinKeys), (int)keys))
+                if (!Enum.IsDefined(typeof(WinKeys), (int)_keyCode))
                 {
                     return WinKeys.None;
                 }
 
-                return keys;
+                return _keyCode;
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public WinKeys KeyData
+        public WinKeys KeyCode
         {
-            get { return _keyData; }
+            get { return _keyCode; }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public int KeyValue
-        {
-            get { return (((int)_keyData) & 0xffff); }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
         public WinKeys Modifiers
         {
-            get { return (_keyData & ~WinKeys.KeyCode); }
+            get { return (_modifiers & ~WinKeys.KeyCode); }
         }
 
         /// <summary>
-        /// 
+        /// The repeat count for the current message. The value is the number of times
+        /// the keystroke is autorepeated as a result of the user holding down the key.
+        /// If the keystroke is held long enough, multiple messages are sent. However,
+        /// the repeat count is not cumulative.
+        /// The repeat count is always 1 for a WM_KEYUP message.
         /// </summary>
-        public bool SuppressKeyPress
+        public int Data_RepeatCount
         {
-            get { return _suppressKeyPress; }
-            set
-            {
-                _suppressKeyPress = value;
-                _handled = value;
-            }
+            get { return (_keyDataExtra & 0x0000FFFF); }
         }
 
         /// <summary>
-        /// 
+        /// Indicates whether the key is an extended key, such as the right-hand
+        /// ALT and CTRL keys that appear on an enhanced 101- or 102-key keyboard.
+        /// The value is 1 if it is an extended key; otherwise, it is 0.
         /// </summary>
-        /// <param name="keyData"></param>
-        public KeyEventArgs(WinKeys keyData)
+        public int Data_IsExtendedKey
         {
-            _keyData = keyData;
+            get { return ((_keyDataExtra >> 24) & 0x00000001); }
+        }
+
+        /// <summary>
+        /// The context code.
+        /// The value is always 0 for a WM_KEYDOWN or a WM_KEYUP message.
+        /// The value is 1 if the ALT key is down while the key is pressed;
+        /// it is 0 if the WM_SYSKEYDOWN or WM_SYSKEYUP message is posted to
+        /// the active window because no window has the keyboard focus.
+        /// </summary>
+        public int Data_ContextCode
+        {
+            get { return ((_keyDataExtra >> 29) & 0x00000001); }
+        }
+
+        /// <summary>
+        /// The previous key state. The value is 1 if the key is down before the
+        /// message is sent, or it is zero if the key is up.
+        /// The value is always 1 for a WM_(SYS)KEYUP message.
+        /// </summary>
+        public int Data_PreviousState
+        {
+            get { return ((_keyDataExtra >> 30) & 0x00000001); }
+        }
+
+        /// <summary>
+        /// The transition state. The value is always 0 for a WM_(SYS)KEYDOWN message.
+        /// The value is always 1 for a WM_(SYS)KEYUP message.
+        /// </summary>
+        public int Data_TransitionState
+        {
+            get { return ((_keyDataExtra >> 31) & 0x00000001); }
+        }
+
+        public KeyEventArgs(WinKeys wParam_VirtKeyCode, int lParam_KeyData, WinKeys modifiers)
+        {
+            _keyCode = wParam_VirtKeyCode;
+            _keyDataExtra = lParam_KeyData;
+            _modifiers = modifiers;
         }
     }
 }

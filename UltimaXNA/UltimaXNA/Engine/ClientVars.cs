@@ -11,7 +11,8 @@ using UltimaXNA.Data;
 using UltimaXNA.Client;
 using UltimaXNA.Entities;
 using UltimaXNA.Extensions;
-using UltimaXNA.InputOld;
+using UltimaXNA.Input;
+using UltimaXNA.Input.Events;
 using UltimaXNA.Network.Packets.Client;
 using UltimaXNA.TileEngine;
 using UltimaXNA.UILegacy;
@@ -20,15 +21,15 @@ namespace UltimaXNA
 {
     class ClientVars : GameComponent
     {
-        static IInputService Input;
-        static IUIManager UserInterface;
-        static IWorld World;
+        static IInputState _Input;
+        static IUIManager _UserInterface;
+        static IWorld _World;
         public ClientVars(Game game)
             : base(game)
         {
-            Input = Game.Services.GetService<IInputService>();
-            UserInterface = Game.Services.GetService<IUIManager>();
-            World = game.Services.GetService<IWorld>();
+            _Input = Game.Services.GetService<IInputState>();
+            _UserInterface = Game.Services.GetService<IUIManager>();
+            _World = game.Services.GetService<IWorld>();
             EngineRunning = true;
             InWorld = false;
         }
@@ -40,9 +41,20 @@ namespace UltimaXNA
             _theTime = gameTime;
 
             // input for debug variables.
-            if (Input.IsKeyDown(Keys.LeftAlt))
+            List<InputEventKeyboard> keyEvents = _Input.GetKeyboardEvents();
+            foreach (InputEventKeyboard e in keyEvents)
             {
-                if (Input.IsKeyPress(Keys.D))
+                char c = e.KeyChar;
+                if ((e.EventType == KeyboardEvent.Press) && c == 'd' && e.Alt)
+                {
+                    if (DEBUG_ShowDataRead)
+                        DEBUG_ShowDataRead = false;
+                    else
+                        DEBUG_ShowDataRead = true;
+                    e.Handled = true;
+                }
+
+                if ((e.EventType == KeyboardEvent.Press) && (e.KeyChar == 'd') && e.Alt)
                 {
                     if (!DEBUG_ShowDataRead)
                         DEBUG_ShowDataRead = true;
@@ -56,18 +68,22 @@ namespace UltimaXNA
                             DEBUG_BreakdownDataRead = false;
                         }
                     }
+                    e.Handled = true;
                 }
 
-                if (Input.IsKeyPress(Keys.F))
+                if ((e.EventType == KeyboardEvent.Press) && (e.KeyChar == 'f') && e.Alt)
+                {
                     DEBUG_DisplayFPS = Utility.ToggleBoolean(DEBUG_DisplayFPS);
+                    e.Handled = true;
+                }
             }
             base.Update(gameTime);
         }
 
         public static int BackBufferWidth = 0, BackBufferHeight = 0;
 
-        public static MouseButton MouseButton_Interact = MouseButton.LeftButton;
-        public static MouseButton MouseButton_Move = MouseButton.RightButton;
+        public static InputOld.MouseButton MouseButton_Interact = InputOld.MouseButton.LeftButton;
+        public static InputOld.MouseButton MouseButton_Move = InputOld.MouseButton.RightButton;
 
         static ServerListPacket _serverListPacket;
         public static ServerListPacket ServerListPacket { get { return _serverListPacket; } set { _serverListPacket = value; } }
@@ -213,44 +229,44 @@ namespace UltimaXNA
                     debugMessage += string.Format("Data Read: {0}\n", Metrics.TotalDataRead.ToString());
             }
 
-            if (ClientVars.Map != -1 && !UserInterface.IsMouseOverUI)
+            if (ClientVars.Map != -1 && !_UserInterface.IsMouseOverUI)
             {
-                debugMessage += string.Format("#Objects: {0}\n", World.ObjectsRendered);
+                debugMessage += string.Format("#Objects: {0}\n", _World.ObjectsRendered);
                 Entity e = EntitiesCollection.GetPlayerObject();
                 if (e != null)
                     debugMessage += e.Position.ToString() + "\n";
                 
                 debugMessage += string.Format("Warmode: {0}\n", ClientVars.WarMode);
-                if (World.MouseOverObject != null)
+                if (_World.MouseOverObject != null)
                 {
-                    debugMessage += string.Format("OBJECT: {0}\n", World.MouseOverObject.ToString());
-                    if (World.MouseOverObject is MapObjectStatic)
+                    debugMessage += string.Format("OBJECT: {0}\n", _World.MouseOverObject.ToString());
+                    if (_World.MouseOverObject is MapObjectStatic)
                     {
-                        debugMessage += string.Format("ArtID: {0}\n", ((MapObjectStatic)World.MouseOverObject).ItemID);
+                        debugMessage += string.Format("ArtID: {0}\n", ((MapObjectStatic)_World.MouseOverObject).ItemID);
                     }
-                    else if (World.MouseOverObject is MapObjectMobile)
+                    else if (_World.MouseOverObject is MapObjectMobile)
                     {
-                        Mobile iUnit = EntitiesCollection.GetObject<Mobile>(World.MouseOverObject.OwnerSerial, false);
+                        Mobile iUnit = EntitiesCollection.GetObject<Mobile>(_World.MouseOverObject.OwnerSerial, false);
                         if (iUnit != null)
                             debugMessage += string.Format("Name: {0}\n", iUnit.Name);
                         debugMessage += string.Format("AnimID: {0}\nSerial: {1}\nHue: {2}",
-                            ((MapObjectMobile)World.MouseOverObject).BodyID, World.MouseOverObject.OwnerSerial, ((MapObjectMobile)World.MouseOverObject).Hue);
+                            ((MapObjectMobile)_World.MouseOverObject).BodyID, _World.MouseOverObject.OwnerSerial, ((MapObjectMobile)_World.MouseOverObject).Hue);
                     }
-                    else if (World.MouseOverObject is MapObjectItem)
+                    else if (_World.MouseOverObject is MapObjectItem)
                     {
                         debugMessage +=
-                            "ArtID: " + ((MapObjectItem)World.MouseOverObject).ItemID + Environment.NewLine +
-                            "Serial: " + World.MouseOverObject.OwnerSerial;
+                            "ArtID: " + ((MapObjectItem)_World.MouseOverObject).ItemID + Environment.NewLine +
+                            "Serial: " + _World.MouseOverObject.OwnerSerial;
                     }
-                    debugMessage += " Z: " + World.MouseOverObject.Z;
+                    debugMessage += " Z: " + _World.MouseOverObject.Z;
                 }
                 else
                 {
                     debugMessage += "OVER: " + "null";
                 }
-                if (World.MouseOverGround != null)
+                if (_World.MouseOverGround != null)
                 {
-                    debugMessage += Environment.NewLine + "GROUND: " + World.MouseOverGround.Position.ToString();
+                    debugMessage += Environment.NewLine + "GROUND: " + _World.MouseOverGround.Position.ToString();
                 }
                 else
                 {
