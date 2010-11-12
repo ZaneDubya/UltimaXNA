@@ -4,22 +4,8 @@ namespace UltimaXNA.Input.Events
 {
     public class EventArgsKeyboard : EventArgs
     {
-        private readonly WinKeys _keyCode;
-        private readonly int _keyDataExtra;
-        
-
-        public WinKeys KeyVirtual
-        {
-            get
-            {
-                if (!Enum.IsDefined(typeof(WinKeys), (int)_keyCode))
-                {
-                    return WinKeys.None;
-                }
-
-                return _keyCode;
-            }
-        }
+        private WinKeys _keyCode;
+        private int _keyDataExtra;
 
         public WinKeys KeyCode
         {

@@ -13,84 +13,48 @@ namespace UltimaXNA.Input.Events
     {
         private readonly MouseButton _button;
         private readonly int _clicks;
-        private readonly int _delta;
+        private readonly int _mouseData;
         private readonly int _x;
         private readonly int _y;
-        private bool _handled;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool Handled
-        {
-            get { return _handled; }
-            set { _handled = value; }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
         public MouseButton Button
         {
             get { return _button; }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
         public int Clicks
         {
             get { return _clicks; }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public int Delta
+        public int MouseData
         {
-            get { return _delta; }
+            get { return _mouseData; }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
         public int X
         {
             get { return _x; }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
         public int Y
         {
             get { return _y; }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
         public Vector2 Position
         {
             get { return new Vector2(_x, _y); }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="button"></param>
-        /// <param name="clicks"></param>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="delta"></param>
-        public EventArgsMouse(MouseButton button, int clicks, int x, int y, int delta, WinKeys modifiers)
+        public EventArgsMouse(MouseButton button, int clicks, int x, int y, int mouseData, WinKeys modifiers)
             : base(modifiers)
         {
             _button = button;
             _clicks = clicks;
             _x = x;
             _y = y;
-            _delta = delta;
+            _mouseData = mouseData;
         }
     }
 }

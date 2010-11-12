@@ -41,10 +41,10 @@ namespace UltimaXNA.Input
         public List<InputEventKeyboard> GetKeyboardEvents()
         {
             List<InputEventKeyboard> list = new List<InputEventKeyboard>();
-            foreach (InputEventKeyboard e in _eventsThisFrame)
+            foreach (InputEvent e in _eventsThisFrame  )
             {
                 if (e is InputEventKeyboard)
-                    list.Add(e);
+                    list.Add((InputEventKeyboard)e);
             }
             return list;
         }
@@ -52,10 +52,10 @@ namespace UltimaXNA.Input
         public List<InputEventMouse> GetMouseEvents()
         {
             List<InputEventMouse> list = new List<InputEventMouse>();
-            foreach (InputEventMouse e in _eventsThisFrame)
+            foreach (InputEvent e in _eventsThisFrame)
             {
                 if (e is InputEventMouse)
-                    list.Add(e);
+                    list.Add((InputEventMouse)e);
             }
             return list;
         }
@@ -90,10 +90,22 @@ namespace UltimaXNA.Input
 
         protected void addEvent(InputEvent e)
         {
-            if (_eventsAccumulatingUseAlternate)
-                _eventsAccumulatingAlternate.Add(e);
-            else
-                _eventsAccumulating.Add(e);
+            List<InputEvent> list = (_eventsAccumulatingUseAlternate) ? _eventsAccumulatingAlternate : _eventsAccumulating;
+            list.Add(e);
+        }
+
+        protected InputEventKeyboard getLastKeyPressEvent()
+        {
+            List<InputEvent> list = (_eventsAccumulatingUseAlternate) ? _eventsAccumulatingAlternate : _eventsAccumulating;
+            for (int i = list.Count; i > 0; i--)
+            {
+                InputEvent e = list[i - 1];
+                if ((e is InputEventKeyboard) && (((InputEventKeyboard)e).EventType == KeyboardEvent.Press))
+                {
+                    return (InputEventKeyboard)e;
+                }
+            }
+            return null;
         }
 
         public Point2D MousePosition
@@ -101,8 +113,8 @@ namespace UltimaXNA.Input
             get
             {
                 Point2D p = new Point2D();
-                p.x = _mouseStateThisFrame.X;
-                p.y = _mouseStateThisFrame.Y;
+                p.X = _mouseStateThisFrame.X;
+                p.Y = _mouseStateThisFrame.Y;
                 return p;
             }
         }
@@ -154,27 +166,22 @@ namespace UltimaXNA.Input
 
         protected override void OnMouseWheel(EventArgsMouse e)
         {
-            
+            addEvent(new InputEventMouse(MouseEvent.WheelScroll, e));
         }
 
         protected override void OnMouseDown(EventArgsMouse e)
         {
-            
+            addEvent(new InputEventMouse(MouseEvent.Down, e));
         }
 
         protected override void OnMouseUp(EventArgsMouse e)
         {
-            
+            addEvent(new InputEventMouse(MouseEvent.Up, e));
         }
 
         protected override void OnMouseMove(EventArgsMouse e)
         {
-            
-        }
-
-        protected override void OnKeyPress(EventArgsKeyboard e)
-        {
-            addEvent(new InputEventKeyboard(KeyboardEvent.Press, e));
+            addEvent(new InputEventMouse(MouseEvent.Move, e));
         }
 
         protected override void OnKeyDown(EventArgsKeyboard e)
@@ -187,7 +194,7 @@ namespace UltimaXNA.Input
             // handle the key presses. Possibly multiple per keydown message.
             for (int i = 0; i < e.Data_RepeatCount; i++)
             {
-                OnKeyPress(e);
+                addEvent(new InputEventKeyboard(KeyboardEvent.Press, e));
             }
         }
 
@@ -198,9 +205,14 @@ namespace UltimaXNA.Input
 
         protected override void OnChar(EventArgsKeyboard e)
         {
-          
-            _log.Debug("Char: " + (char)e.KeyCode);
-            addEvent(new InputEventKeyboard(KeyboardEvent.Char, e));
+            InputEventKeyboard pressEvent = getLastKeyPressEvent();
+            if (pressEvent == null)
+                throw new Exception("No corresponding KeyPress event for this WM_CHAR message. Please report this error to poplicola@ultimaxna.com");
+            else
+            {
+                pressEvent.KeyCode = e.KeyCode;
+                _log.Debug("Char: " + pressEvent.KeyChar);
+            }
         }
     }
 }

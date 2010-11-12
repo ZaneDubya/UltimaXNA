@@ -406,29 +406,6 @@ namespace UltimaXNA
                  _LightRadians += .001f;
             _world.LightDirection = _LightRadians;
 
-            // Toggle for backpack container window.
-            /*
-            if (_input.IsKeyPress(Keys.B) && (_input.IsKeyPress(Keys.LeftControl)))
-            {
-                Serial backpackSerial = ((PlayerMobile)EntitiesCollection.GetPlayerObject())
-                    .equipment[(int)EquipLayer.Backpack].Serial;
-                if (UserInterface.Window("Container:" + backpackSerial) == null)
-                    UltimaClient.Send(new DoubleClickPacket(backpackSerial));
-                else
-                    UserInterface.CloseWindow("Container:" + backpackSerial);
-            }
-
-            // Toggle for paperdoll window.
-            if (_input.IsKeyPress(Keys.C) && (_input.IsKeyDown(Keys.LeftControl)))
-            {
-                Serial serial = ((PlayerMobile)EntitiesCollection.GetPlayerObject())
-                    .Serial;
-                if (UserInterface.Window("PaperDoll:" + serial) == null)
-                    UserInterface.PaperDoll_Open(EntitiesCollection.GetPlayerObject());
-                else
-                    UserInterface.CloseWindow("PaperDoll:" + serial);
-            }
-            */
             // toggle for warmode
             if (_input.IsKeyPress(Keys.Tab))
             {

@@ -29,6 +29,12 @@ namespace UltimaXNA.Input.Events
             get { return new Vector2(_args.X, _args.Y); }
         }
 
+        private const int WHEEL_DELTA = 120;
+        public int WheelValue
+        {
+            get { return (_args.Clicks / WHEEL_DELTA); }
+        }
+
         public InputEventMouse(MouseEvent eventType, EventArgsMouse args) // WinKeys keyData, int x, int y, MouseButton button, 
             : base(args)
         {
@@ -38,11 +44,11 @@ namespace UltimaXNA.Input.Events
 
     public enum MouseEvent
     {
+        Move,
         Down,
         Up,
         Click,
         DoubleClick,
-        WheelScrollUp,
-        WheelScrollDown
+        WheelScroll
     }
 }

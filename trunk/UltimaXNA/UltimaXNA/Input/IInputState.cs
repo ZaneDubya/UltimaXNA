@@ -18,10 +18,5 @@ namespace UltimaXNA.Input
         bool IsMouseButtonDown(MouseButton mb);
         bool IsMouseButtonUp(MouseButton mb);
         bool IsMouseStationarySinceLastUpdate();
-
-        // bool IsKeyPress(WinKeys key);
-        // bool IsKeyReleased(WinKeys key);
-        // bool IsMouseButtonPress(MouseButton mb);
-        // bool IsMouseButtonReleased(MouseButton mb);
     }
 }
