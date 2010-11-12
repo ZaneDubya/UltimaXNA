@@ -44,8 +44,6 @@ namespace UltimaXNA
             List<InputEventKeyboard> keyEvents = _Input.GetKeyboardEvents();
             foreach (InputEventKeyboard e in keyEvents)
             {
-                char c = e.KeyChar;
-
                 if ((e.EventType == KeyboardEvent.Down) && (e.KeyChar == 'd') && e.Alt)
                 {
                     if (!DEBUG_ShowDataRead)

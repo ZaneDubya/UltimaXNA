@@ -306,13 +306,6 @@ namespace UltimaXNA.Input
             {
                 // Is this extra information necessary?
                 // wm_(sys)char: http://msdn.microsoft.com/en-us/library/ms646276(VS.85).aspx
-                /*
-                EventArgsKeyboard = new EventArgsKeyboard(
-                    (WinKeys)(((int)(long)message.WParam) | ((int)getModifierKeys()))
-                    ); 
-                zero = (IntPtr)(char)((ushort)((long)message.WParam));
-                OnKeyPress(EventArgsKeyboard);
-                message.WParam = zero;*/
             }
             else
             {
@@ -385,15 +378,6 @@ namespace UltimaXNA.Input
         /// </summary>
         /// <param name="e">EventArgsKeyboard for the KeyDown event</param>
         protected virtual void OnKeyDown(EventArgsKeyboard e)
-        {
-
-        }
-
-        /// <summary>
-        /// Raises the KeyPress event. Override this method to add code to handle when a key is pressed
-        /// </summary>
-        /// <param name="e">KeyboardPressEventArgs for the KeyPress event</param>
-        protected virtual void OnKeyPress(EventArgsKeyboard e)
         {
 
         }
