@@ -306,6 +306,16 @@ namespace UltimaXNA.Input
             {
                 // Is this extra information necessary?
                 // wm_(sys)char: http://msdn.microsoft.com/en-us/library/ms646276(VS.85).aspx
+
+                EventArgsKeyboard = new EventArgsKeyboard(
+                    (WinKeys)(int)(long)message.WParam,
+                    (int)(long)message.LParam,
+                    getModifierKeys()
+                    ); 
+                zero = (IntPtr)(char)((ushort)((long)message.WParam));
+                OnChar(EventArgsKeyboard);
+                message.WParam = zero;
+
             }
             else
             {
@@ -381,5 +391,24 @@ namespace UltimaXNA.Input
         {
 
         }
+        
+        /// <summary>
+        /// Raises the OnChar event. Override this method to add code to handle when a WM_CHAR message is received
+        /// </summary>
+        /// <param name="e">EventArgsKeyboard for the OnChar event</param>
+        protected virtual void OnChar(EventArgsKeyboard e)
+        {
+
+        }
+
+        /// <summary>
+        /// Raises the KeyPress event. Override this method to add code to handle when a key is pressed
+        /// </summary>
+        /// <param name="e">KeyboardPressEventArgs for the KeyPress event</param>
+        protected virtual void OnKeyPress(EventArgsKeyboard e)
+        {
+
+        }
+
     }
 }
