@@ -23,14 +23,14 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Entities;
 using UltimaXNA.Extensions;
-using UltimaXNA.InputOld;
+using UltimaXNA.Input;
 #endregion
 
 namespace UltimaXNA.TileEngine
 {
     public class World : IWorld
     {
-        private IInputService _input;
+        private IInputState _input;
 
         #region RenderingVariables
         WireframeRenderer _wireframe;
@@ -83,7 +83,7 @@ namespace UltimaXNA.TileEngine
 
         public World(Game game)
         {
-            _input = game.Services.GetService<IInputService>();
+            _input = game.Services.GetService<IInputState>();
             _spriteBatch = new SpriteBatch3D(game);
             _wireframe = new WireframeRenderer(game);
             _wireframe.Initialize();

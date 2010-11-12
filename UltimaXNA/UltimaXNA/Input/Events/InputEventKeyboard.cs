@@ -18,24 +18,23 @@ namespace UltimaXNA.Input.Events
             get { return (EventArgsKeyboard)base._args; }
         }
 
-        WinKeys _keyCode = WinKeys.None;
         public WinKeys KeyCode
+        {
+            get { return _args.KeyCode; }
+        }
+
+        WinKeys _keyChar = WinKeys.None;
+        public char KeyChar
         {
             get
             {
-                if (_keyCode != WinKeys.None)
-                    return _keyCode;
+                if (_keyChar != WinKeys.None)
+                    return (char)_keyChar;
                 else
-                    return _args.KeyCode;
+                    return (char)_args.KeyCode;
             }
-
-            set { _keyCode = value; }
         }
-
-        public char KeyChar
-        {
-            get { return (char)KeyCode; }
-        }
+        public void OverrideKeyChar(WinKeys newChar) { _keyChar = newChar; }
 
         public InputEventKeyboard(KeyboardEvent eventType, EventArgsKeyboard args)
             : base(args)

@@ -16,7 +16,7 @@ namespace UltimaXNA.TileEngine
             _overList = new List<MouseOverItem>();
         }
 
-        internal MouseOverItem GetForemostMouseOverItem(Vector2 mousePosition)
+        internal MouseOverItem GetForemostMouseOverItem(Point2D mousePosition)
         {
             // Parse list backwards to find topmost mouse over object.
             foreach (MouseOverItem item in CreateReverseIterator(_overList))
@@ -29,7 +29,7 @@ namespace UltimaXNA.TileEngine
             return null;
         }
 
-        internal MouseOverItem GetForemostMouseOverItem<T>(Vector2 mousePosition) where T : MapObject
+        internal MouseOverItem GetForemostMouseOverItem<T>(Point2D mousePosition) where T : MapObject
         {
             // Parse list backwards to find topmost mouse over object.
             foreach (MouseOverItem item in CreateReverseIterator(_overList))
@@ -59,19 +59,19 @@ namespace UltimaXNA.TileEngine
             _overList.Add(item);
         }
 
-        public static bool IsPointInObject(Vector3 min, Vector3 max, Vector2 point)
+        public static bool IsPointInObject(Vector3 min, Vector3 max, Point2D point)
         {
             BoundingBox iBoundingBox = new BoundingBox(min, max);
             // Must correct for bounding box being one pixel larger than actual texture.
             iBoundingBox.Max.X--; iBoundingBox.Max.Y--;
 
-            Vector3 iMousePosition = new Vector3(point, min.Z);
+            Vector3 iMousePosition = new Vector3(point.X, point.Y, min.Z);
             if (iBoundingBox.Contains(iMousePosition) == ContainmentType.Contains)
                 return true;
             return false;
         }
 
-        public static bool IsPointInObject(VertexPositionNormalTextureHue[] v, Vector2 point)
+        public static bool IsPointInObject(VertexPositionNormalTextureHue[] v, Point2D point)
         {
             if (v.Length != 4)
                 return false;
@@ -93,7 +93,7 @@ namespace UltimaXNA.TileEngine
 
             // Added cursor picking -Poplicola 5/19/2009
             BoundingBox iBoundingBox = new BoundingBox(new Vector3(minX, minY, 0), new Vector3(maxX, maxY, 10));
-            Vector3 iMousePosition = new Vector3(point, 1);
+            Vector3 iMousePosition = new Vector3(point.X, point.Y, 1);
             if (iBoundingBox.Contains(iMousePosition) == ContainmentType.Contains)
             {
                 Point[] p = new Point[4];
@@ -162,7 +162,7 @@ namespace UltimaXNA.TileEngine
             Object = nObject;
         }
 
-        internal bool Contains(Vector2 mousePosition)
+        internal bool Contains(Point2D mousePosition)
         {
             if (Object.GetType() == typeof(MapObjectGround))
             {

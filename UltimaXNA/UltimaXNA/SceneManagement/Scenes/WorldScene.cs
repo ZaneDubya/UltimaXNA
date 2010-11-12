@@ -20,10 +20,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using UltimaXNA.Client;
 using UltimaXNA.UILegacy;
 using UltimaXNA.UILegacy.ClientsideGumps;
+using UltimaXNA.Input;
 #endregion
 
 namespace UltimaXNA.SceneManagement
@@ -71,7 +71,7 @@ namespace UltimaXNA.SceneManagement
                     World.Update(gameTime);
 
                     // Toggle for logout
-                    if (Input.IsKeyPress(Keys.Q) && (Input.IsKeyDown(Keys.LeftControl)))
+                    if (Input.HandleKeyPress(WinKeys.Q, false, false, true))
                     {
                         SceneManager.CurrentScene = new LoginScene(Game);
                     }

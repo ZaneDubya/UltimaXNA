@@ -142,7 +142,7 @@ namespace UltimaXNA.Input
             else
                 return true;
         }
-
+        
         public bool IsKeyDown(WinKeys key)
         {
             Keys[] pressed = _keyboardStateThisFrame.GetPressedKeys();
@@ -163,6 +163,54 @@ namespace UltimaXNA.Input
             else
                 return true;
         }
+        
+
+        public bool HandleKeyPress(WinKeys key, bool shift, bool alt, bool ctrl)
+        {
+            List<InputEventKeyboard> events = GetKeyboardEvents();
+            foreach (InputEventKeyboard e in events)
+            {
+                if (e.EventType == KeyboardEvent.Press && 
+                    e.KeyCode == key &&
+                    e.Shift == shift &&
+                    e.Alt == alt &&
+                    e.Control == ctrl)
+                {
+                    e.Handled = true;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool HandleMouseDown(MouseButton mb)
+        {
+            List<InputEventMouse> events = GetMouseEvents();
+            foreach (InputEventMouse e in events)
+            {
+                if (e.EventType == MouseEvent.Down)
+                {
+                    e.Handled = true;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool HandleMouseUp(MouseButton mb)
+        {
+            List<InputEventMouse> events = GetMouseEvents();
+            foreach (InputEventMouse e in events)
+            {
+                if (e.EventType == MouseEvent.Up)
+                {
+                    e.Handled = true;
+                    return true;
+                }
+            }
+            return false;
+        }
+
 
         protected override void OnMouseWheel(EventArgsMouse e)
         {
@@ -210,7 +258,7 @@ namespace UltimaXNA.Input
                 throw new Exception("No corresponding KeyPress event for this WM_CHAR message. Please report this error to poplicola@ultimaxna.com");
             else
             {
-                pressEvent.KeyCode = e.KeyCode;
+                pressEvent.OverrideKeyChar(e.KeyCode);
                 _log.Debug("Char: " + pressEvent.KeyChar);
             }
         }
