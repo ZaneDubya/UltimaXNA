@@ -19,9 +19,8 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using UltimaXNA.Entities;
-using UltimaXNA.InputOld;
+using UltimaXNA.Input;
 using UltimaXNA.TileEngine;
 #endregion
 
@@ -118,40 +117,27 @@ namespace UltimaXNA.SceneManagement
 
         private void edit_parseKeyboard()
         {
-            if (Input.IsKeyDown(Keys.LeftAlt))
+            for (int k = (int)WinKeys.D0; k <= (int)WinKeys.D9; k++)
             {
-                for (int k = (int)Keys.D0; k <= (int)Keys.D9; k++)
-                {
-                    if (Input.IsKeyPress((Keys)k))
-                    {
-                        editing_Size = k - (int)Keys.D0;
-                    }
-                }
-            }
-            else
-            {
-                for (int k = (int)Keys.D0; k <= (int)Keys.D9; k++)
-                {
-                    if (Input.IsKeyPress((Keys)k))
-                    {
-                        edit_Value = k - (int)Keys.D0;
-                    }
-                }
+                if (Input.HandleKeyPress((WinKeys)k, false, true, false))
+                    editing_Size = k - (int)WinKeys.D0;
+                else if (Input.HandleKeyPress((WinKeys)k, false, true, false))
+                    edit_Value = k - (int)WinKeys.D0;
             }
 
             if (ClientVars.DEBUG_HighlightMouseOverObjects)
             {
-                if (Input.IsMouseButtonPress(MouseButton.LeftButton))
+                if (Input.HandleMouseDown(MouseButton.Left))
                     edit_Begin(edit_Value);
-                else if (Input.IsMouseButtonPress(MouseButton.RightButton))
+                else if (Input.HandleMouseDown(MouseButton.Right))
                     edit_Begin(-edit_Value);
             }
 
             if (edit_IsEditing)
             {
-                if (Input.IsMouseButtonRelease(MouseButton.LeftButton))
+                if (Input.HandleMouseUp(MouseButton.Left))
                     edit_End();
-                if (Input.IsMouseButtonRelease(MouseButton.RightButton))
+                if (Input.HandleMouseUp(MouseButton.Right))
                     edit_End();
             }
 
@@ -173,22 +159,22 @@ namespace UltimaXNA.SceneManagement
 
             edit_parseKeyboard();
 
-            if (Input.IsKeyDown(Keys.Up))
+            if (Input.IsKeyDown(WinKeys.Up))
             {
                 _position.X--;
                 _position.Y--;
             }
-            if (Input.IsKeyDown(Keys.Left))
+            if (Input.IsKeyDown(WinKeys.Left))
             {
                 _position.X--;
                 _position.Y++;
             }
-            if (Input.IsKeyDown(Keys.Down))
+            if (Input.IsKeyDown(WinKeys.Down))
             {
                 _position.X++;
                 _position.Y++;
             }
-            if (Input.IsKeyDown(Keys.Right))
+            if (Input.IsKeyDown(WinKeys.Right))
             {
                 _position.X++;
                 _position.Y--;
@@ -198,17 +184,14 @@ namespace UltimaXNA.SceneManagement
                 int low = 0, high = 0;
                 _position.Z = World.Map.GetAverageZ(_position.X, _position.Y, ref low, ref high);
             }
-            // alt keys to change debug variables.
-            if (Input.IsKeyDown(Keys.LeftAlt))
+
+            if (Input.HandleKeyPress(WinKeys.W, false, true, false))
             {
-                if (Input.IsKeyPress(Keys.W))
-                {
-                    ClientVars.DEBUG_HighlightMouseOverObjects = Utility.ToggleBoolean(ClientVars.DEBUG_HighlightMouseOverObjects);
-                }
-                if (Input.IsKeyPress(Keys.E))
-                {
-                    ClientVars.DEBUG_DrawWireframe = Utility.ToggleBoolean(ClientVars.DEBUG_DrawWireframe);
-                }
+                ClientVars.DEBUG_HighlightMouseOverObjects = Utility.ToggleBoolean(ClientVars.DEBUG_HighlightMouseOverObjects);
+            }
+            if (Input.HandleKeyPress(WinKeys.E, false, true, false))
+            {
+                ClientVars.DEBUG_DrawWireframe = Utility.ToggleBoolean(ClientVars.DEBUG_DrawWireframe);
             }
         }
 

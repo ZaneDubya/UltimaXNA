@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Data;
 using UltimaXNA.Diagnostics;
 using UltimaXNA.Extensions;
-using UltimaXNA.InputOld;
+using UltimaXNA.Input;
 using UltimaXNA.Network;
 using UltimaXNA.UILegacy;
 using UltimaXNA.TileEngine;
@@ -21,7 +21,7 @@ namespace UltimaXNA.SceneManagement
         
         ISceneService _sceneService;
         ILoggingService _loggingService;
-        IInputService _inputService;
+        IInputState _inputService;
         IUIManager _uiService;
         IWorld _worldService;
 
@@ -80,7 +80,7 @@ namespace UltimaXNA.SceneManagement
             get { return _loggingService; }
         }
 
-        public IInputService Input
+        public IInputState Input
         {
             get { return _inputService; }
         }
@@ -116,7 +116,7 @@ namespace UltimaXNA.SceneManagement
 
             _sceneService = game.Services.GetService<ISceneService>(true);
             _loggingService = game.Services.GetService<ILoggingService>(true);
-            _inputService = game.Services.GetService<IInputService>(true);
+            _inputService = game.Services.GetService<IInputState>(true);
             _worldService = game.Services.GetService<IWorld>(true);
             _uiService = game.Services.GetService<IUIManager>();
         }

@@ -47,7 +47,6 @@ namespace UltimaXNA.Input.Events
         Move,
         Down,
         Up,
-        Click,
         DoubleClick,
         WheelScroll
     }
