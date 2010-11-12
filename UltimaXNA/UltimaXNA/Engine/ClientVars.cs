@@ -45,16 +45,8 @@ namespace UltimaXNA
             foreach (InputEventKeyboard e in keyEvents)
             {
                 char c = e.KeyChar;
-                if ((e.EventType == KeyboardEvent.Press) && c == 'd' && e.Alt)
-                {
-                    if (DEBUG_ShowDataRead)
-                        DEBUG_ShowDataRead = false;
-                    else
-                        DEBUG_ShowDataRead = true;
-                    e.Handled = true;
-                }
 
-                if ((e.EventType == KeyboardEvent.Press) && (e.KeyChar == 'd') && e.Alt)
+                if ((e.EventType == KeyboardEvent.Down) && (e.KeyChar == 'd') && e.Alt)
                 {
                     if (!DEBUG_ShowDataRead)
                         DEBUG_ShowDataRead = true;

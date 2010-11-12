@@ -11,9 +11,9 @@ namespace UltimaXNA.InputOld
 
         event EventHandler<KeyboardEventArgs> KeyDown;
         event EventHandler<KeyboardEventArgs> KeyUp;
-        event EventHandler<MouseEventArgs> MouseDown;
-        event EventHandler<MouseEventArgs> MouseUp;
-        event EventHandler<MouseEventArgs> MouseMove;
+        event EventHandler<EventArgsMouse> MouseDown;
+        event EventHandler<EventArgsMouse> MouseUp;
+        event EventHandler<EventArgsMouse> MouseMove;
 
         bool IsKeyDown(Keys key);
         bool IsKeyPress(Keys key);

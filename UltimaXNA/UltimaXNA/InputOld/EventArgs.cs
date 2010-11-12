@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace UltimaXNA.InputOld
 {
-    public class MouseEventArgs : EventArgs
+    public class EventArgsMouse : EventArgs
     {
         bool _handled = false;
 
@@ -90,9 +90,9 @@ namespace UltimaXNA.InputOld
         } 
 
         /// <summary>
-        /// Creates a new instance of MouseEventArgs
+        /// Creates a new instance of EventArgsMouse
         /// </summary>
-        public MouseEventArgs(MouseButton[] buttonsDown, 
+        public EventArgsMouse(MouseButton[] buttonsDown, 
             MouseButton[] buttonsUp, MouseButton[] buttonsPressed, MouseButton[] buttonsReleased, Vector2 position, Vector2 movementDelta)
         {
             _position = position;
