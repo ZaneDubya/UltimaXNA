@@ -134,6 +134,7 @@
     <Compile Include="Engine\Engine.cs" />
     <Compile Include="Data\FileManager.cs" />
     <Compile Include="Data\FileIndexClint.cs" />
+    <Compile Include="Engine\Point.cs" />
     <Compile Include="Engine\ScreenshotComponent.cs" />
     <Compile Include="Entities\Container.cs" />
     <Compile Include="Entities\ContainerItem.cs" />
@@ -171,7 +172,6 @@
     <Compile Include="Input\MouseButtons.cs" />
     <Compile Include="Input\Events\InputEventMouse.cs" />
     <Compile Include="Input\NativeMethods.cs" />
-    <Compile Include="Input\Point2D.cs" />
     <Compile Include="Input\WndProc.cs" />
     <Compile Include="Network\HouseRevisionState.cs" />
     <Compile Include="Network\Packets\Client\RequestCustomHousePacket.cs" />

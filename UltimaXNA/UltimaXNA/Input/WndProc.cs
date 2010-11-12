@@ -229,8 +229,8 @@ namespace UltimaXNA.Input
                 getMouseButtons(getMouseState()), 
                 Message.SignedHighWord(message.WParam), 
                 Message.SignedLowWord(message.LParam), 
-                Message.SignedHighWord(message.LParam), 
-                0,
+                Message.SignedHighWord(message.LParam),
+                (int)(long)message.WParam,
                 getModifierKeys()
                 ));
         }
@@ -246,7 +246,7 @@ namespace UltimaXNA.Input
                 0, 
                 Message.SignedLowWord(message.LParam), 
                 Message.SignedHighWord(message.LParam),
-                0,
+                (int)(long)message.WParam,
                 getModifierKeys()
                 ));
         }
@@ -265,7 +265,7 @@ namespace UltimaXNA.Input
                 clicks, 
                 Message.SignedLowWord(message.LParam), 
                 Message.SignedHighWord(message.LParam),
-                0,
+                (int)(long)message.WParam,
                 getModifierKeys()
                 ));
         }
@@ -283,7 +283,7 @@ namespace UltimaXNA.Input
                 clicks, 
                 Message.SignedLowWord(message.LParam), 
                 Message.SignedHighWord(message.LParam),
-                0,
+                (int)(long)message.WParam,
                 getModifierKeys()
                 ));
         }
@@ -400,15 +400,5 @@ namespace UltimaXNA.Input
         {
 
         }
-
-        /// <summary>
-        /// Raises the KeyPress event. Override this method to add code to handle when a key is pressed
-        /// </summary>
-        /// <param name="e">KeyboardPressEventArgs for the KeyPress event</param>
-        protected virtual void OnKeyPress(EventArgsKeyboard e)
-        {
-
-        }
-
     }
 }

@@ -65,7 +65,10 @@ namespace UltimaXNA.Entities
             {
                 for (int x = 0; x < _components.Width; x++)
                 {
-                    _unloadedTiles.Add(new Point2D(x, y));
+                    Point2D p = new Point2D();
+                    p.X = x;
+                    p.Y = y;
+                    _unloadedTiles.Add(p);
                 }
             }
         }
