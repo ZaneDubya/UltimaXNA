@@ -34,8 +34,8 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         void buildGumpling(int x, int y, int width, int height)
         {
-            Position = new Vector2(x, y);
-            Size = new Vector2(width, height);
+            Position = new Point2D(x, y);
+            Size = new Point2D(width, height);
         }
 
         public override void Update(GameTime gameTime)
@@ -70,7 +70,7 @@ namespace UltimaXNA.UILegacy.Gumplings
 
             // spriteBatch.Flush();
             // spriteBatch.Begin(SpriteBlendMode.None); !!!
-            spriteBatch.Draw(_renderedTexture, new Rectangle(X, Y, Width, Area.Height), new Rectangle(0, 0, Area.Width, Area.Height), 0, false);
+            spriteBatch.Draw2D(_renderedTexture, new Rectangle(X, Y, Width, Area.Height), new Rectangle(0, 0, Area.Width, Area.Height), 0, false);
             // spriteBatch.Flush();
 
             base.Draw(spriteBatch);

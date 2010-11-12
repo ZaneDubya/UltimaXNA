@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Input;
+using UltimaXNA.Input;
+using UltimaXNA.Input.Events;
 
 namespace UltimaXNA.UILegacy.Gumplings
 {
@@ -70,13 +72,12 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         void buildGumpling(int x, int y, int width, int height, int hue, int entryID, int limitSize, string text)
         {
-            Position = new Vector2(x, y);
-            Size = new Vector2(width, height);
+            Position = new Point2D(x, y);
+            Size = new Point2D(width, height);
             Hue = hue;
             EntryID = entryID;
             Text = text;
             LimitSize = limitSize;
-            Size = new Vector2(width, height);
             _caratBlinkOn = false;
         }
 
@@ -127,37 +128,36 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_texture, Position, Hue, false);
+            spriteBatch.Draw2D(_texture, Position, Hue, false);
 
             if (_caratBlinkOn)
             {
                 Texture2D caratTexture = Data.UniText.GetTextureHTML(HtmlTag + (_legacyCarat ? "_" : "|"));
-                spriteBatch.Draw(caratTexture, new Vector2(X + _texture.Width, Y), Hue, false);
+                spriteBatch.Draw2D(caratTexture, new Point2D(X + _texture.Width, Y), Hue, false);
             }
             
             base.Draw(spriteBatch);
         }
 
-        protected override void keyboardInput(string keys, List<Keys> specials)
+        protected override void keyboardInput(InputEventKeyboard e)
         {
-            Text += keys;
-            foreach (Keys key in specials)
+            switch (e.KeyCode)
             {
-                switch (key)
-                {
-                    case Keys.Back:
-                        if (Text.Length > 0)
-                        {
-                            Text = Text.Substring(0, Text.Length - 1);
-                        }
-                        break;
-                    case Keys.Tab:
-                        _owner.ReleaseKeyboardInput(this);
-                        break;
-                    case Keys.Enter:
-                        _owner.ActivateByKeyboardReturn(EntryID, Text);
-                        break;
-                }
+                case WinKeys.Back:
+                    if (Text.Length > 0)
+                    {
+                        Text = Text.Substring(0, Text.Length - 1);
+                    }
+                    break;
+                case WinKeys.Tab:
+                    _owner.ReleaseKeyboardInput(this);
+                    break;
+                case WinKeys.Enter:
+                    _owner.ActivateByKeyboardReturn(EntryID, Text);
+                    break;
+                default:
+                    Text += e.KeyChar;
+                    break;
             }
         }
     }

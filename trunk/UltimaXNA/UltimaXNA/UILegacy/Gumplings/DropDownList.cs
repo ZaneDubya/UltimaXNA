@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.InputOld;
+using UltimaXNA.Input;
 
 namespace UltimaXNA.UILegacy.Gumplings
 {
@@ -41,7 +41,7 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         void buildGumpling(int x, int y, int width, int index, int itemsVisible, string[] items, bool canBeNull)
         {
-            Position = new Vector2(x, y);
+            Position = new Point2D(x, y);
             _items = new List<string>(items);
             _width = width;
             Index = index;

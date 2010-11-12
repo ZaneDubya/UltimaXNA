@@ -74,7 +74,7 @@ namespace UltimaXNA.UILegacy.Gumplings
         public PaperdollLargeUninteractable(Control owner, int page, int x, int y)
             : this(owner, page)
         {
-            Position = new Vector2(x, y);
+            Position = new Point2D(x, y);
         }
 
         public override void Draw(ExtendedSpriteBatch spriteBatch)
@@ -140,7 +140,7 @@ namespace UltimaXNA.UILegacy.Gumplings
                 }
 
                 if (bodyID != 0)
-                    spriteBatch.Draw(Data.Gumps.GetGumpXNA(bodyID), Position, hue, hueGreyPixelsOnly);
+                    spriteBatch.Draw2D(Data.Gumps.GetGumpXNA(bodyID), Position, hue, hueGreyPixelsOnly);
             }
         }
     }

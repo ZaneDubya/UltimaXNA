@@ -25,8 +25,8 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         void buildGumpling(int x, int y, int width, int height, int hue, int fontid, string text)
         {
-            Position = new Vector2(x, y);
-            Size = new Vector2(width, height);
+            Position = new Point2D(x, y);
+            Size = new Point2D(width, height);
             Hue = hue;
             FontID = fontid;
             Text = text;
@@ -41,7 +41,7 @@ namespace UltimaXNA.UILegacy.Gumplings
         {
             if (_texture == null)
                 _texture = Data.ASCIIText.GetTextTexture(Text, FontID, Area.Width);
-            spriteBatch.Draw(_texture, Position, Hue, true);
+            spriteBatch.Draw2D(_texture, Position, Hue, true);
             base.Draw(spriteBatch);
         }
     }

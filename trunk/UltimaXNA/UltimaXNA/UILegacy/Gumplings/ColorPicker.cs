@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using UltimaXNA.Input;
 
 namespace UltimaXNA.UILegacy.Gumplings
 {
@@ -63,8 +64,8 @@ namespace UltimaXNA.UILegacy.Gumplings
         void buildGumpling(Rectangle area, int swatchWidth, int swatchHeight, int[] hues)
         {
             _hueSize = new Point(swatchWidth, swatchHeight);
-            Position = new Vector2(area.X, area.Y);
-            Size = new Vector2(area.Width, area.Height);
+            Position = new Point2D(area.X, area.Y);
+            Size = new Point2D(area.Width, area.Height);
             _hues = hues;
             Index = 0;
             closeSwatch();
@@ -106,16 +107,16 @@ namespace UltimaXNA.UILegacy.Gumplings
         {
             if (_isAnOpenSwatch)
             {
-                spriteBatch.Draw(_huesTexture, Area, 0, false);
-                spriteBatch.Draw(_selectedIndicator, new Vector2(
-                    X + (float)(Width / _hueSize.X) * ((Index % _hueSize.X) + 0.5f) - _selectedIndicator.Width / 2,
-                    Y + (float)(Height / _hueSize.Y) * ((Index / _hueSize.X) + 0.5f) - _selectedIndicator.Height / 2
+                spriteBatch.Draw2D(_huesTexture, Area, 0, false);
+                spriteBatch.Draw2D(_selectedIndicator, new Point2D(
+                    (int)(X + (float)(Width / _hueSize.X) * ((Index % _hueSize.X) + 0.5f) - _selectedIndicator.Width / 2),
+                    (int)(Y + (float)(Height / _hueSize.Y) * ((Index / _hueSize.X) + 0.5f) - _selectedIndicator.Height / 2)
                     ), 0, false);
             }
             else
             {
                 if (!_isSwatchOpen)
-                    spriteBatch.Draw(_huesTexture, Area, 0, false);
+                    spriteBatch.Draw2D(_huesTexture, Area, 0, false);
             }
             base.Draw(spriteBatch);
         }
@@ -146,7 +147,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             }
         }
 
-        protected override void mouseClick(int x, int y, UltimaXNA.InputOld.MouseButton button)
+        protected override void mouseClick(int x, int y, MouseButton button)
         {
             if (!_isAnOpenSwatch)
             {
@@ -164,7 +165,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             }
         }
 
-        void onOpenSwatchClick(int x, int y, UltimaXNA.InputOld.MouseButton button)
+        void onOpenSwatchClick(int x, int y, MouseButton button)
         {
             Index = _openColorPicker.Index;
             closeSwatch();

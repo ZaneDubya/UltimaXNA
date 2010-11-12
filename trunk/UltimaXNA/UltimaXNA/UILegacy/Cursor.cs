@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using UltimaXNA.Extensions;
-using UltimaXNA.InputOld;
+using UltimaXNA.Input;
 using UltimaXNA.Entities;
 
 namespace UltimaXNA.UILegacy
@@ -87,9 +87,9 @@ namespace UltimaXNA.UILegacy
             IsHolding = false;
         }
 
-        public void Draw(ExtendedSpriteBatch sb, Vector2 position)
+        public void Draw(ExtendedSpriteBatch sb, Point2D position)
         {
-            Vector2 cursorOffset = Vector2.Zero;
+            Point2D cursorOffset;
             Rectangle sourceRect = Rectangle.Empty;
             int cursorTextureID = 0;
             int cursorHue = 0;
@@ -98,19 +98,19 @@ namespace UltimaXNA.UILegacy
             if (IsHolding)
             {
                 // Draw the item you're holding first.
-                cursorOffset = new Vector2(holdingOffset.X, holdingOffset.Y);
+                cursorOffset = new Point2D(holdingOffset.X, holdingOffset.Y);
                 cursorTexture = HoldingTexture;
                 sourceRect = new Rectangle(0, 0, cursorTexture.Width, cursorTexture.Height);
-                sb.Draw(cursorTexture, position - cursorOffset, sourceRect, holdingItem.Hue, false);
+                sb.Draw2D(cursorTexture, position - cursorOffset, sourceRect, holdingItem.Hue, false);
                 // then set the data for the hang which holds it.
-                cursorOffset = new Vector2(1, 1);
+                cursorOffset = new Point2D(1, 1);
                 cursorTextureID = 8305;
                 cursorTexture = Data.Art.GetStaticTexture(cursorTextureID);
                 sourceRect = new Rectangle(1, 1, cursorTexture.Width - 2, cursorTexture.Height - 2);
             }
             else if (IsTargeting)
             {
-                cursorOffset = new Vector2(13, 13);
+                cursorOffset = new Point2D(13, 13);
                 sourceRect = new Rectangle(1, 1, 46, 34);
                 cursorTexture = Data.Art.GetStaticTexture(8310);
                 if (_targetingMulti != -1)
@@ -125,39 +125,39 @@ namespace UltimaXNA.UILegacy
                     switch (ClientVars.CursorDirection)
                     {
                         case Direction.North:
-                            cursorOffset = new Vector2(29, 1);
+                            cursorOffset = new Point2D(29, 1);
                             cursorTextureID = 8299;
                             break;
                         case Direction.Right:
-                            cursorOffset = new Vector2(41, 9);
+                            cursorOffset = new Point2D(41, 9);
                             cursorTextureID = 8300;
                             break;
                         case Direction.East:
-                            cursorOffset = new Vector2(36, 24);
+                            cursorOffset = new Point2D(36, 24);
                             cursorTextureID = 8301;
                             break;
                         case Direction.Down:
-                            cursorOffset = new Vector2(14, 33);
+                            cursorOffset = new Point2D(14, 33);
                             cursorTextureID = 8302;
                             break;
                         case Direction.South:
-                            cursorOffset = new Vector2(4, 28);
+                            cursorOffset = new Point2D(4, 28);
                             cursorTextureID = 8303;
                             break;
                         case Direction.Left:
-                            cursorOffset = new Vector2(2, 10);
+                            cursorOffset = new Point2D(2, 10);
                             cursorTextureID = 8304;
                             break;
                         case Direction.West:
-                            cursorOffset = new Vector2(1, 1);
+                            cursorOffset = new Point2D(1, 1);
                             cursorTextureID = 8305;
                             break;
                         case Direction.Up:
-                            cursorOffset = new Vector2(4, 2);
+                            cursorOffset = new Point2D(4, 2);
                             cursorTextureID = 8298;
                             break;
                         default:
-                            cursorOffset = new Vector2(2, 10);
+                            cursorOffset = new Point2D(2, 10);
                             cursorTextureID = 8309;
                             break;
                     }
@@ -171,13 +171,13 @@ namespace UltimaXNA.UILegacy
                 else
                 {
                     // Over the interface or not in world. Display a default cursor.
-                    cursorOffset = new Vector2(1, 1);
+                    cursorOffset = new Point2D(1, 1);
                     cursorTextureID = 8305;
                 }
                 cursorTexture = Data.Art.GetStaticTexture(cursorTextureID);
                 sourceRect = new Rectangle(1, 1, cursorTexture.Width - 2, cursorTexture.Height - 2);
             }
-            sb.Draw(cursorTexture, position - cursorOffset, sourceRect, cursorHue, false);
+            sb.Draw2D(cursorTexture, position - cursorOffset, sourceRect, cursorHue, false);
         }
     }
 }

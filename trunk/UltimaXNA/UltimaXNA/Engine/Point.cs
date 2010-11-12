@@ -20,8 +20,25 @@ namespace UltimaXNA
     [StructLayout(LayoutKind.Sequential)]
     public struct Point2D : IPoint2D
     {
-        public Int32 X { get; set; }
-        public Int32 Y { get; set; }
+        internal int _x;
+        internal int _y;
+
+        public Int32 X
+        {
+            get { return _x; }
+            set { _x = value; }
+        }
+        public Int32 Y
+        {
+            get { return _y; }
+            set { _y = value; }
+        }
+
+        public Point2D(int x, int y)
+        {
+            _x = x;
+            _y = y;
+        }
 
         public override bool Equals(object obj)
         {
@@ -48,6 +65,16 @@ namespace UltimaXNA
         public static bool operator !=(Point2D p1, Point2D p2)
         {
             return !p1.Equals(p2);
+        }
+
+        public static Point2D operator +(Point2D p1, Point2D p2)
+        {
+            return new Point2D(p1.X + p2.X, p1.Y + p2.Y);
+        }
+
+        public static Point2D operator -(Point2D p1, Point2D p2)
+        {
+            return new Point2D(p1.X - p2.X, p1.Y - p2.Y);
         }
     }
 

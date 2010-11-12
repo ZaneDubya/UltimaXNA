@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.InputOld;
+using UltimaXNA.Input;
 using UltimaXNA.UILegacy.Gumplings;
 
 namespace UltimaXNA.UILegacy.ClientsideGumps
@@ -46,7 +46,7 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
 
         void onClickMap(int x, int y, MouseButton button)
         {
-            if (button == MouseButton.RightButton)
+            if (button == MouseButton.Right)
             {
                 Dispose();
             }
@@ -54,7 +54,7 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
 
         void onDoubleClickMap(int x, int y, MouseButton button)
         {
-            if (button == MouseButton.LeftButton)
+            if (button == MouseButton.Left)
             {
                 ClientVars.MiniMap_LargeFormat = Utility.ToggleBoolean(ClientVars.MiniMap_LargeFormat);
             }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using UltimaXNA.InputOld;
+using UltimaXNA.Input;
 
 namespace UltimaXNA.UILegacy
 {
@@ -24,7 +24,7 @@ namespace UltimaXNA.UILegacy
         {
             x += _toMove.X;
             y += _toMove.Y;
-            if (button == MouseButton.LeftButton && _toMove.IsMovable)
+            if (button == MouseButton.Left && _toMove.IsMovable)
             {
                 // move!
                 isMoving = true;
@@ -37,7 +37,7 @@ namespace UltimaXNA.UILegacy
         {
             x += _toMove.X;
             y += _toMove.Y;
-            if (button == MouseButton.LeftButton)
+            if (button == MouseButton.Left)
             {
                 if (isMoving == true)
                 {

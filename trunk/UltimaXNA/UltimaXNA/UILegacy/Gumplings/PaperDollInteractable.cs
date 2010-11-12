@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Entities;
-using UltimaXNA.InputOld;
+using UltimaXNA.Input;
 
 namespace UltimaXNA.UILegacy.Gumplings
 {
@@ -51,7 +51,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             : base(0, 0)
         {
             _owner = owner;
-            Position = new Vector2(x, y);
+            Position = new Point2D(x, y);
         }
 
         public override void Initialize(UIManager manager)

@@ -15,8 +15,8 @@ namespace UltimaXNA.Input
         bool IsKeyUp(WinKeys key);
 
         Point2D MousePosition { get; }
-        bool IsMouseButtonDown(MouseButton mb);
-        bool IsMouseButtonUp(MouseButton mb);
+        bool IsMouseButtonDown(MouseButtonInternal mb);
+        bool IsMouseButtonUp(MouseButtonInternal mb);
         bool IsMouseStationarySinceLastUpdate();
     }
 }

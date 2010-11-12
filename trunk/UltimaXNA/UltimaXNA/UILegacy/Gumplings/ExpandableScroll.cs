@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.InputOld;
+using UltimaXNA.Input;
 
 namespace UltimaXNA.UILegacy.Gumplings
 {
@@ -32,7 +32,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             : base(0, 0)
         {
             _owner = owner;
-            Position = new Vector2(x, y);
+            Position = new Point2D(x, y);
             _expandableScrollHeight = height;
         }
 
@@ -112,7 +112,7 @@ namespace UltimaXNA.UILegacy.Gumplings
         void expander_OnMouseDown(int x, int y, MouseButton button)
         {
             y += _gumplingExpander.Y + OwnerY;
-            if (button == MouseButton.LeftButton)
+            if (button == MouseButton.Left)
             {
                 _isExpanding = true;
                 _isExpanding_InitialHeight = _expandableScrollHeight;

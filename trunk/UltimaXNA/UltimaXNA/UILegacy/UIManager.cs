@@ -7,7 +7,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using UltimaXNA.Entities;
 using UltimaXNA.Extensions;
-using UltimaXNA.InputOld;
+using UltimaXNA.Input;
+using UltimaXNA.Input.Events;
 using UltimaXNA.TileEngine;
 
 namespace UltimaXNA.UILegacy
@@ -16,7 +17,7 @@ namespace UltimaXNA.UILegacy
     {
         List<Control> _controls = null;
         Cursor _cursor = null;
-        IInputService _input = null;
+        IInputState _input = null;
 
         ExtendedSpriteBatch _spriteBatch;
         public int Width { get { return _spriteBatch.GraphicsDevice.Viewport.Width; } }
@@ -87,7 +88,7 @@ namespace UltimaXNA.UILegacy
             _cursor = new Cursor(this);
 
             // Retrieve the needed services.
-            _input = game.Services.GetService<IInputService>(true);
+            _input = game.Services.GetService<IInputState>(true);
         }
 
         internal void RequestLogout()
@@ -121,7 +122,7 @@ namespace UltimaXNA.UILegacy
             else
             {
                 _controls.Add(gump);
-                gump.Position = new Vector2(x, y);
+                gump.Position = new Point2D(x, y);
             }
             return gump;
         }
@@ -129,7 +130,7 @@ namespace UltimaXNA.UILegacy
         public Gump AddGump_Server(Serial serial, Serial gumpID, string[] gumplings, string[] lines, int x, int y)
         {
             Gump g = new Gump(serial, gumpID, gumplings, lines);
-            g.Position = new Vector2(x, y);
+            g.Position = new Point2D(x, y);
             g.IsServerGump = true;
             g.IsMovable = true;
             _controls.Add(g);
@@ -138,7 +139,7 @@ namespace UltimaXNA.UILegacy
 
         public Gump AddGump_Local(Gump gump, int x, int y)
         {
-            gump.Position = new Vector2(x, y);
+            gump.Position = new Point2D(x, y);
             _controls.Add(gump);
             return gump;
         }
@@ -167,7 +168,7 @@ namespace UltimaXNA.UILegacy
         public Gump AddContainerGump(Entity containerItem, int gumpID)
         {
             Gump g = new ClientsideGumps.ContainerGump(containerItem, gumpID);
-            g.Position = new Vector2(64, 64);
+            g.Position = new Point2D(64, 64);
             _controls.Add(g);
             return g;
         }
@@ -222,7 +223,7 @@ namespace UltimaXNA.UILegacy
 
             // Draw debug message
             if (ClientVars.DebugMessage != null)
-                DEBUG_DrawText(new Vector2(5, 5), ClientVars.DebugMessage + Environment.NewLine + _DEBUG_TEXT(gameTime));
+                DEBUG_DrawText(new Point2D(5, 5), ClientVars.DebugMessage + Environment.NewLine + _DEBUG_TEXT(gameTime));
 
             // Draw the cursor
             _cursor.Draw(_spriteBatch, _input.MousePosition);
@@ -241,10 +242,10 @@ namespace UltimaXNA.UILegacy
             _controls.Clear();
         }
 
-        internal void DEBUG_DrawText(Vector2 position, string text)
+        internal void DEBUG_DrawText(Point2D position, string text)
         {
             Texture2D t = Data.UniText.GetTexture(text);
-            _spriteBatch.Draw(t, position, 0, false);
+            _spriteBatch.Draw2D(t, position, 0, false);
         }
 
         internal string _DEBUG_TEXT(GameTime gameTime)
@@ -316,6 +317,7 @@ namespace UltimaXNA.UILegacy
                 workingControls = _controls;
             }
 
+            // Get the list of controls under the mouse cursor
             foreach (Control c in workingControls)
             {
                 Control[] mouseOverControls = c.HitTest(_input.MousePosition);
@@ -325,54 +327,61 @@ namespace UltimaXNA.UILegacy
                 }
             }
 
-            for (int iButton = 0; iButton < 5; iButton++)
+            // MouseOver event.
+            Control controlGivenMouseOver = null;
+            if (focusedControls != null)
             {
-                // MouseOver event.
-                Control controlGivenMouseOver = null;
-                if (focusedControls != null)
+                for (int iControl = 0; iControl < focusedControls.Length; iControl++)
                 {
-                    for (int iControl = 0; iControl < focusedControls.Length; iControl++)
+                    if (focusedControls[iControl].HandlesMouseInput)
                     {
-                        if (focusedControls[iControl].HandlesMouseInput)
-                        {
-                            // mouse over for the moused over control
-                            focusedControls[iControl].MouseOver(_input.MousePosition);
-                            controlGivenMouseOver = focusedControls[iControl];
-                            if (MouseOverControl != null && controlGivenMouseOver != MouseOverControl)
-                                MouseOverControl.MouseOut(_input.MousePosition);
-                            break;
-                        }
+                        // mouse over for the moused over control
+                        focusedControls[iControl].MouseOver(_input.MousePosition);
+                        controlGivenMouseOver = focusedControls[iControl];
+                        if (MouseOverControl != null && controlGivenMouseOver != MouseOverControl)
+                            MouseOverControl.MouseOut(_input.MousePosition);
+                        break;
                     }
                 }
+            }
 
-                // mouse over for any controls moused down on (have focus, in more common parlance)
+            // mouse over for any controls moused down on (have focus, in more common parlance)
+            for (int iButton = 0; iButton < 5; iButton++)
+            {
                 if (_mouseDownControl[iButton] != null && _mouseDownControl[iButton] != controlGivenMouseOver)
                     _mouseDownControl[iButton].MouseOver(_input.MousePosition);
+            }
 
-                if (focusedControls != null)
+
+            List<InputEventMouse> events = _input.GetMouseEvents();
+            foreach (InputEventMouse e in events)
+            {
+                // MouseDown event.
+                if (e.EventType == MouseEvent.Down)
                 {
-                    // MouseDown event.
-                    if (_input.IsMouseButtonPress((MouseButton)iButton))
+                    if (focusedControls != null)
                     {
                         for (int iControl = 0; iControl < focusedControls.Length; iControl++)
                         {
                             if (focusedControls[iControl].HandlesMouseInput)
                             {
-                                focusedControls[iControl].MouseDown(_input.MousePosition, (MouseButton)iButton);
-                                _mouseDownControl[iButton] = focusedControls[iControl];
+                                focusedControls[iControl].MouseDown(_input.MousePosition, e.Button);
+                                // if we're over a keyboard-handling control and press lmb, then give focus to the control.
+                                if (focusedControls[iControl].HandlesKeyboardFocus)
+                                    _keyboardFocusControl = focusedControls[iControl];
+                                _mouseDownControl[(int)e.Button] = focusedControls[iControl];
                                 break;
                             }
                         }
                     }
                 }
 
-
                 // MouseUp and MouseClick events
-                if (_input.IsMouseButtonRelease((MouseButton)iButton))
+                if (e.EventType == MouseEvent.Up)
                 {
                     if (Cursor.IsHolding && focusedControls != null)
                     {
-                        if (iButton == (int)MouseButton.LeftButton)
+                        if (e.Button == MouseButton.Left)
                         {
                             int x = (int)_input.MousePosition.X - Cursor.HoldingOffset.X - (focusedControls[0].X + focusedControls[0].Owner.X);
                             int y = (int)_input.MousePosition.Y - Cursor.HoldingOffset.Y - (focusedControls[0].Y + focusedControls[0].Owner.Y);
@@ -382,48 +391,30 @@ namespace UltimaXNA.UILegacy
 
                     if (focusedControls != null)
                     {
-                        if (_mouseDownControl[iButton] != null)
+                        if (_mouseDownControl[(int)e.Button] != null && focusedControls[0] == _mouseDownControl[(int)e.Button])
                         {
-                            if (focusedControls[0] == _mouseDownControl[iButton])
-                            {
-                                _mouseDownControl[iButton].MouseClick(_input.MousePosition, (MouseButton)iButton);
-                            }
+                            focusedControls[0].MouseClick(_input.MousePosition, e.Button);
                         }
-                        focusedControls[0].MouseUp(_input.MousePosition, (MouseButton)iButton);
-                        if (_mouseDownControl[iButton] != null && focusedControls[0] != _mouseDownControl[iButton])
+                        focusedControls[0].MouseUp(_input.MousePosition, e.Button);
+                        if (_mouseDownControl[(int)e.Button] != null && focusedControls[0] != _mouseDownControl[(int)e.Button])
                         {
-                            _mouseDownControl[iButton].MouseUp(_input.MousePosition, (MouseButton)iButton);
+                            _mouseDownControl[(int)e.Button].MouseUp(_input.MousePosition, e.Button);
                         }
                     }
                     else
                     {
-                        if (_mouseDownControl[iButton] != null)
+                        if (_mouseDownControl[(int)e.Button] != null)
                         {
-                            _mouseDownControl[iButton].MouseUp(_input.MousePosition, (MouseButton)iButton);
+                            _mouseDownControl[(int)e.Button].MouseUp(_input.MousePosition, e.Button);
                         }
                     }
 
-                }
-
-                if (_input.IsMouseButtonUp((MouseButton)iButton))
-                {
-                    _mouseDownControl[iButton] = null;
+                    _mouseDownControl[(int)e.Button] = null;
                 }
             }
 
             _mouseOverControls = focusedControls;
 
-            // keyboard events: if we're over a keyboard-handling control and press lmb, then give focus to the control.
-            if (_mouseOverControls != null)
-            {
-                if (_mouseOverControls[0].HandlesKeyboardFocus)
-                {
-                    if (_input.IsMouseButtonPress(MouseButton.LeftButton))
-                    {
-                        _keyboardFocusControl = _mouseOverControls[0];
-                    }
-                }
-            }
             if (KeyboardFocusControl != null)
             {
                 if (_keyboardFocusControl.IsDisposed)
@@ -432,19 +423,11 @@ namespace UltimaXNA.UILegacy
                 }
                 else
                 {
-                    string keys;
-                    List<Keys> specials;
-                    _input.GetKeyboardInput(out keys, out specials);
-                    if (keys != string.Empty || specials.Count > 0)
+                    List<InputEventKeyboard> k_events = _input.GetKeyboardEvents();
+                    foreach (InputEventKeyboard e in k_events)
                     {
-                        if (_input.IsKeyDown(Keys.LeftAlt) || _input.IsKeyDown(Keys.LeftControl))
-                        {
-                            // do not pass on these keypresse
-                        }
-                        else
-                        {
-                            _keyboardFocusControl.KeyboardInput(keys, specials);
-                        }
+                        if (e.EventType == KeyboardEvent.Press)
+                            _keyboardFocusControl.KeyboardInput(e);
                     }
                 }
             }

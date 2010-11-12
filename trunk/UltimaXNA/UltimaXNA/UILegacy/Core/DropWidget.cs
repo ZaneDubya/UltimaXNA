@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using UltimaXNA.InputOld;
+using UltimaXNA.Input;
 using UltimaXNA.Entities;
 
 namespace UltimaXNA.UILegacy

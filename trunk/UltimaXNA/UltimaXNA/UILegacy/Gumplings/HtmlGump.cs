@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.InputOld;
+using UltimaXNA.Input;
 
 namespace UltimaXNA.UILegacy.Gumplings
 {
@@ -57,10 +57,10 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         void buildGumpling(int x, int y, int width, int height, int background, int scrollbar, string text)
         {
-            Position = new Vector2(x, y);
+            Position = new Point2D(x, y);
             _width = width;
             _height = height;
-            Size = new Vector2(width, height);
+            Size = new Point2D(width, height);
             Text = text;
             _background = (background == 1) ? true : false;
             _scrollbar = (scrollbar == 1) ? true : false;
@@ -73,7 +73,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             {
                 _textChanged = false;
                 _texture = Data.UniText.GetTextureHTML(Text, _width, _height, ref _hrefRegions);
-                Size = new Vector2(_texture.Width, _texture.Height);
+                Size = new Point2D(_texture.Width, _texture.Height);
                 if (_hrefRegions.Count > 0)
                     HandlesMouseInput = true;
                 else
@@ -84,20 +84,20 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_texture, Position, 0, false);
+            spriteBatch.Draw2D(_texture, Position, 0, false);
             
             foreach (HREFRegion r in _hrefRegions.Regions)
             {
                 if (r.Index == _hrefOver)
                 {
                     if (_clicked)
-                        spriteBatch.Draw(_texture, new Vector2(X + r.Area.X, Y + r.Area.Y), r.Area, r.Data.DownHue, false);
+                        spriteBatch.Draw2D(_texture, new Point2D(X + r.Area.X, Y + r.Area.Y), r.Area, r.Data.DownHue, false);
                     else
-                        spriteBatch.Draw(_texture, new Vector2(X + r.Area.X, Y + r.Area.Y), r.Area, r.Data.OverHue, false);
+                        spriteBatch.Draw2D(_texture, new Point2D(X + r.Area.X, Y + r.Area.Y), r.Area, r.Data.OverHue, false);
                 }
                 else
                 {
-                    spriteBatch.Draw(_texture, new Vector2(X + r.Area.X, Y + r.Area.Y), r.Area, r.Data.UpHue, true);
+                    spriteBatch.Draw2D(_texture, new Point2D(X + r.Area.X, Y + r.Area.Y), r.Area, r.Data.UpHue, true);
                 }
             }
             
@@ -139,7 +139,7 @@ namespace UltimaXNA.UILegacy.Gumplings
         {
             if (_hrefOver != -1 && _hrefClicked == _hrefOver)
             {
-                if (button == MouseButton.LeftButton)
+                if (button == MouseButton.Left)
                 {
                     ActivateByHREF(_hrefRegions.Region(_hrefOver).Data.HREF);
                 }

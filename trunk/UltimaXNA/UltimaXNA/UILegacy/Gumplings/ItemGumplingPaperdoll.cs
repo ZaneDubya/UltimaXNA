@@ -38,7 +38,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             base.Update(gameTime);
             if (!_isBuilt)
             {
-                Position = new Vector2(_x, _y);
+                Position = new Point2D(_x, _y);
             }
         }
 
@@ -51,9 +51,9 @@ namespace UltimaXNA.UILegacy.Gumplings
                     _texture = Data.Gumps.GetGumpXNA(Item.ItemData.AnimID + 60000);
                 if (_texture == null)
                     _texture = Data.Gumps.GetGumpXNA(Item.ItemData.AnimID + 50000);
-                Size = new Vector2(_texture.Width, _texture.Height);
+                Size = new Point2D(_texture.Width, _texture.Height);
             }
-            spriteBatch.Draw(_texture, Position, Item.Hue & 0x7FFF, (Item.Hue & 0x8000) == 0x8000 ? true: false);
+            spriteBatch.Draw2D(_texture, Position, Item.Hue & 0x7FFF, (Item.Hue & 0x8000) == 0x8000 ? true: false);
             base.Draw(spriteBatch);
         }
 

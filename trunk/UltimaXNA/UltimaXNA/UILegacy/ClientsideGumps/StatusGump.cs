@@ -23,7 +23,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.InputOld;
+using UltimaXNA.Input;
 using UltimaXNA.UILegacy.Gumplings;
 using UltimaXNA.Entities;
 
@@ -102,7 +102,7 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
 
         void onGumpClick(int x, int y, MouseButton button)
         {
-            if (button == MouseButton.RightButton)
+            if (button == MouseButton.Right)
             {
                 Dispose();
             }
