@@ -52,9 +52,9 @@ namespace UltimaXNA.InputOld
                 return true;
         }
 
-        public event EventHandler<MouseEventArgs> MouseUp;
-        public event EventHandler<MouseEventArgs> MouseDown;
-        public event EventHandler<MouseEventArgs> MouseMove;
+        public event EventHandler<EventArgsMouse> MouseUp;
+        public event EventHandler<EventArgsMouse> MouseDown;
+        public event EventHandler<EventArgsMouse> MouseMove;
 
         public event EventHandler<KeyboardEventArgs> KeyDown;
         public event EventHandler<KeyboardEventArgs> KeyUp;
@@ -404,22 +404,22 @@ namespace UltimaXNA.InputOld
                                               select m).ToArray();
 
 
-            MouseEventArgs mouseEventArgs = new MouseEventArgs(buttonsDown, buttonsUp, buttonsPressed, 
+            EventArgsMouse EventArgsMouse = new EventArgsMouse(buttonsDown, buttonsUp, buttonsPressed, 
                 buttonsReleased, _currentMousePosition, _currentMousePosition - _previousMousePosition);
 
             if (buttonsReleased.Length > 0 && IsMouseCursorVisible())
             {
-                OnMouseUp(this, mouseEventArgs);
+                OnMouseUp(this, EventArgsMouse);
             }
 
             if (buttonsPressed.Length > 0 && IsMouseCursorVisible())
             {
-                OnMouseDown(this, mouseEventArgs);
+                OnMouseDown(this, EventArgsMouse);
             }
 
             if (_currentMousePosition != _previousMousePosition)
             {
-                OnMouseMove(this, mouseEventArgs);
+                OnMouseMove(this, EventArgsMouse);
             }
             #endregion
 
@@ -450,7 +450,7 @@ namespace UltimaXNA.InputOld
             }
         }
 
-        private void OnMouseDown(object sender, MouseEventArgs e)
+        private void OnMouseDown(object sender, EventArgsMouse e)
         {
             if (MouseDown != null)
             {
@@ -458,7 +458,7 @@ namespace UltimaXNA.InputOld
             }
         }
 
-        private void OnMouseUp(object sender, MouseEventArgs e)
+        private void OnMouseUp(object sender, EventArgsMouse e)
         {
             if (MouseUp != null)
             {
@@ -466,7 +466,7 @@ namespace UltimaXNA.InputOld
             }
         }
 
-        private void OnMouseMove(object sender, MouseEventArgs e)
+        private void OnMouseMove(object sender, EventArgsMouse e)
         {
             if (MouseMove != null)
             {
