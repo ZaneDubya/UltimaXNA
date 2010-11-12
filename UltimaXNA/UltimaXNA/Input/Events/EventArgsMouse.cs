@@ -11,15 +11,33 @@ namespace UltimaXNA.Input.Events
     /// </summary>
     public class EventArgsMouse : EventArgs
     {
-        private readonly MouseButton _button;
+        private readonly MouseButtonInternal _button;
         private readonly int _clicks;
         private readonly int _mouseData;
         private readonly int _x;
         private readonly int _y;
 
-        public MouseButton Button
+        public MouseButtonInternal ButtonInternal
         {
             get { return _button; }
+        }
+
+        public MouseButton Button
+        {
+            get
+            {
+                if ((_button & MouseButtonInternal.Left) == MouseButtonInternal.Left)
+                    return MouseButton.Left;
+                if ((_button & MouseButtonInternal.Right) == MouseButtonInternal.Right)
+                    return MouseButton.Right;
+                if ((_button & MouseButtonInternal.Middle) == MouseButtonInternal.Middle)
+                    return MouseButton.Middle;
+                if ((_button & MouseButtonInternal.XButton1) == MouseButtonInternal.XButton1)
+                    return MouseButton.XButton1;
+                if ((_button & MouseButtonInternal.XButton2) == MouseButtonInternal.XButton2)
+                    return MouseButton.XButton2;
+                return MouseButton.None;
+            }
         }
 
         public int Clicks
@@ -47,7 +65,7 @@ namespace UltimaXNA.Input.Events
             get { return new Vector2(_x, _y); }
         }
 
-        public EventArgsMouse(MouseButton button, int clicks, int x, int y, int mouseData, WinKeys modifiers)
+        public EventArgsMouse(MouseButtonInternal button, int clicks, int x, int y, int mouseData, WinKeys modifiers)
             : base(modifiers)
         {
             _button = button;

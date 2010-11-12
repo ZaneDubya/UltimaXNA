@@ -35,8 +35,8 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         void buildGumpling(int x, int y, int width, int height, int gumpID)
         {
-            Position = new Vector2(x, y);
-            Size = new Vector2(width, height);
+            Position = new Point2D(x, y);
+            Size = new Point2D(width, height);
             _gumpID = gumpID;
         }
 
@@ -51,7 +51,7 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
-            spriteBatch.DrawTiled(_bgGump, new Rectangle(X, Y, Area.Width, Area.Height), 0, false);
+            spriteBatch.Draw2DTiled(_bgGump, new Rectangle(X, Y, Area.Width, Area.Height), 0, false);
             base.Draw(spriteBatch);
         }
     }

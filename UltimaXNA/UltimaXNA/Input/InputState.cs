@@ -127,7 +127,7 @@ namespace UltimaXNA.Input
             return false;
         }
 
-        public bool IsMouseButtonDown(MouseButton button)
+        public bool IsMouseButtonDown(MouseButtonInternal button)
         {
             if ((getMouseButtons(_mouseStateThisFrame) & button) == button)
                 return true;
@@ -135,7 +135,7 @@ namespace UltimaXNA.Input
                 return false;
         }
 
-        public bool IsMouseButtonUp(MouseButton button)
+        public bool IsMouseButtonUp(MouseButtonInternal button)
         {
             if (IsMouseButtonUp(button))
                 return false;

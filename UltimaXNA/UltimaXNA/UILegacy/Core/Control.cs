@@ -4,7 +4,8 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using UltimaXNA.InputOld;
+using UltimaXNA.Input;
+using UltimaXNA.Input.Events;
 
 namespace UltimaXNA.UILegacy
 {
@@ -87,7 +88,7 @@ namespace UltimaXNA.UILegacy
         }
 
         Rectangle _area = Rectangle.Empty;
-        Vector2 _position = Vector2.Zero;
+        Point2D _position;
         protected int OwnerX
         {
             get
@@ -108,14 +109,14 @@ namespace UltimaXNA.UILegacy
                     return 0;
             }
         }
-        public int X { get { return (int)(_position.X); } set { _position.X = (int)value; } }
-        public int Y { get { return (int)(_position.Y); } set { _position.Y = (int)value; } }
+        public int X { get { return _position.X; } set { _position.X = value; } }
+        public int Y { get { return _position.Y; } set { _position.Y = value; } }
         public int Width
         {
             get { return _area.Width; }
             set
             {
-                _area.Width = (int)value;
+                _area.Width = value;
             }
         }
         public int Height
@@ -123,10 +124,10 @@ namespace UltimaXNA.UILegacy
             get { return _area.Height; }
             set
             {
-                _area.Height = (int)value;
+                _area.Height = value;
             }
         }
-        public Vector2 Position
+        public Point2D Position
         {
             get
             {
@@ -137,13 +138,13 @@ namespace UltimaXNA.UILegacy
                 _position = value;
             }
         }
-        public Vector2 Size
+        public Point2D Size
         {
-            get { return new Vector2(_area.Width, _area.Height); }
+            get { return new Point2D(_area.Width, _area.Height); }
             set
             {
-                _area.Width = (int)value.X;
-                _area.Height = (int)value.Y;
+                _area.Width = value.X;
+                _area.Height = value.Y;
             }
         }
         public Rectangle Area
@@ -207,12 +208,13 @@ namespace UltimaXNA.UILegacy
             _dragger = new DragWidget(this, _owner);
         }
 
-        public Control[] HitTest(Vector2 position)
+        public Control[] HitTest(Point2D position)
         {
             List<Control> focusedControls = new List<Control>();
 
             // offset the mouse position if we are rendering full screen...
-            position /= InputMultiplier;
+            position.X = (int)((float)(position.X) / InputMultiplier);
+            position.Y = (int)((float)(position.Y) / InputMultiplier);
 
             // If we're owned by something, make sure we increment our hitArea to show this.
             // position.X -= OwnerX;
@@ -336,10 +338,10 @@ namespace UltimaXNA.UILegacy
                 _area.X -= X;
                 _area.Y -= Y;
             }
-            spriteBatch.Draw(_debugTexture, new Rectangle(_area.X, _area.Y, _area.Width, 1), Hue, false);
-            spriteBatch.Draw(_debugTexture, new Rectangle(_area.X, _area.Y + _area.Height - 1, _area.Width, 1), Hue, false);
-            spriteBatch.Draw(_debugTexture, new Rectangle(_area.X, _area.Y, 1, _area.Height), Hue, false);
-            spriteBatch.Draw(_debugTexture, new Rectangle(_area.X + _area.Width - 1, _area.Y, 1, _area.Height), Hue, false);
+            spriteBatch.Draw2D(_debugTexture, new Rectangle(_area.X, _area.Y, _area.Width, 1), Hue, false);
+            spriteBatch.Draw2D(_debugTexture, new Rectangle(_area.X, _area.Y + _area.Height - 1, _area.Width, 1), Hue, false);
+            spriteBatch.Draw2D(_debugTexture, new Rectangle(_area.X, _area.Y, 1, _area.Height), Hue, false);
+            spriteBatch.Draw2D(_debugTexture, new Rectangle(_area.X + _area.Width - 1, _area.Y, 1, _area.Height), Hue, false);
         }
 #endif
 
@@ -367,7 +369,7 @@ namespace UltimaXNA.UILegacy
                 _owner.ChangePage(pageIndex);
         }
 
-        public void MouseDown(Vector2 position, MouseButton button)
+        public void MouseDown(Point2D position, MouseButton button)
         {
             lastClickPosition = position;
             int x = (int)position.X - X - OwnerX;
@@ -377,7 +379,7 @@ namespace UltimaXNA.UILegacy
                 OnMouseDown(x, y, button);
         }
 
-        public void MouseUp(Vector2 position, MouseButton button)
+        public void MouseUp(Point2D position, MouseButton button)
         {
             int x = (int)position.X - X - OwnerX;
             int y = (int)position.Y - Y - OwnerY;
@@ -386,7 +388,7 @@ namespace UltimaXNA.UILegacy
                 OnMouseUp(x, y, button);
         }
 
-        public void MouseOver(Vector2 position)
+        public void MouseOver(Point2D position)
         {
             // Does not double-click if you move your mouse more than x pixels from where you first clicked.
             if (Math.Abs(lastClickPosition.X - position.X) + Math.Abs(lastClickPosition.Y - position.Y) > 3)
@@ -399,7 +401,7 @@ namespace UltimaXNA.UILegacy
                 OnMouseOver(x, y);
         }
 
-        public void MouseOut(Vector2 position)
+        public void MouseOut(Point2D position)
         {
             int x = (int)position.X - X - OwnerX;
             int y = (int)position.Y - Y - OwnerY;
@@ -409,9 +411,9 @@ namespace UltimaXNA.UILegacy
         }
 
         float maxTimeForDoubleClick = 0f;
-        Vector2 lastClickPosition;
+        Point2D lastClickPosition;
 
-        public void MouseClick(Vector2 position, MouseButton button)
+        public void MouseClick(Point2D position, MouseButton button)
         {
             int x = (int)position.X - X - OwnerX;
             int y = (int)position.Y - Y - OwnerY;
@@ -442,9 +444,9 @@ namespace UltimaXNA.UILegacy
             }
         }
 
-        public void KeyboardInput(string keys, List<Keys> specialKeys)
+        public void KeyboardInput(InputEventKeyboard e)
         {
-            keyboardInput(keys, specialKeys);
+            keyboardInput(e);
         }
 
         public void ItemDrop(Entities.Item item, int x, int y)
@@ -482,7 +484,7 @@ namespace UltimaXNA.UILegacy
 
         }
 
-        protected virtual void keyboardInput(string keys, List<Keys> specialKeys)
+        protected virtual void keyboardInput(Input.Events.InputEventKeyboard e)
         {
 
         }
@@ -494,7 +496,7 @@ namespace UltimaXNA.UILegacy
 
         internal void Center()
         {
-            Position = new Vector2(
+            Position = new Point2D(
                 (_manager.Width - Width) / 2,
                 (_manager.Height - Height) / 2);
         }

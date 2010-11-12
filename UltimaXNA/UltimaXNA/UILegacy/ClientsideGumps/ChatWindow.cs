@@ -56,7 +56,7 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
             int y = _input.Y - 48;
             for (int i = _textTextures.Count - 1; i >= 0; i--)
             {
-                spriteBatch.Draw(_textTextures[i], new Vector2(1, y), 0, true);
+                spriteBatch.Draw2D(_textTextures[i], new Point2D(1, y), 0, true);
                 y -= _textTextures[i].Height;
             }
             base.Draw(spriteBatch);

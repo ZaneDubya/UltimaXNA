@@ -39,7 +39,7 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         void buildGumpling(int x, int y, int gumpID, int hue)
         {
-            Position = new Vector2(x, y);
+            Position = new Point2D(x, y);
             _gumpID = gumpID;
             _hue = hue;
         }
@@ -49,7 +49,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             if (_texture == null)
             {
                 _texture = Data.Gumps.GetGumpXNA(_gumpID);
-                Size = new Vector2(_texture.Width, _texture.Height);
+                Size = new Point2D(_texture.Width, _texture.Height);
             }
 
             base.Update(gameTime);
@@ -58,7 +58,7 @@ namespace UltimaXNA.UILegacy.Gumplings
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
             bool hueOnlyGreyPixels = (_hue & 0x8000) == 0x8000;
-            spriteBatch.Draw(_texture, Position, _hue & 0x7FFF, hueOnlyGreyPixels);
+            spriteBatch.Draw2D(_texture, Position, _hue & 0x7FFF, hueOnlyGreyPixels);
             base.Draw(spriteBatch);
         }
 

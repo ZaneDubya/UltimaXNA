@@ -201,15 +201,12 @@ namespace UltimaXNA
         public static bool DEBUG_DisplayFPS = true;
         public static bool DEBUG_HighlightMouseOverObjects = false;
         public static bool DEBUG_DrawWireframe = false;
-        public static string DEBUG_StringTest = string.Empty;
 
         // Debug message - I put a lot of crap in here to test values. Feel free to add or remove variables.
         public static string DebugMessage { get { return generateDebugMessage(); } }
         static string generateDebugMessage()
         {
             String debugMessage = string.Empty;
-
-            debugMessage += DEBUG_StringTest;
 
             if (DEBUG_DisplayFPS)
                 debugMessage += string.Format("FPS: {0}\n", (int)_FPS);

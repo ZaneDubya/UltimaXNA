@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.InputOld;
+using UltimaXNA.Input;
 
 namespace UltimaXNA.UILegacy.Gumplings
 {
@@ -56,7 +56,7 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         void buildGumpling(int x, int y, int gumpID1, int gumpID2, ButtonTypes buttonType, int param, int buttonID)
         {
-            Position = new Vector2(x, y);
+            Position = new Point2D(x, y);
             _gumpID1 = gumpID1;
             _gumpID2 = gumpID2;
             ButtonType = buttonType;
@@ -70,7 +70,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             {
                 _gumpUp = Data.Gumps.GetGumpXNA(_gumpID1);
                 _gumpDown = Data.Gumps.GetGumpXNA(_gumpID2);
-                Size = new Vector2(_gumpUp.Width, _gumpUp.Height);
+                Size = new Point2D(_gumpUp.Width, _gumpUp.Height);
             }
 
             if (_gumpID3 != 0 && _gumpOver == null)
@@ -90,12 +90,12 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_texture, Position, 0, false);
+            spriteBatch.Draw2D(_texture, Position, 0, false);
             if (Caption != string.Empty)
             {
                 Texture2D t = Data.UniText.GetTextureHTML(Caption);
                 int yoffset = MouseDownOnThis ? 1 : 0;
-                spriteBatch.Draw(t, new Vector2(X + (Width - t.Width) / 2, Area.Y + yoffset + (_texture.Height - t.Height) / 2), 0, false);
+                spriteBatch.Draw2D(t, new Point2D(X + (Width - t.Width) / 2, Area.Y + yoffset + (_texture.Height - t.Height) / 2), 0, false);
             }
             base.Draw(spriteBatch);
         }
@@ -125,7 +125,7 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         protected override void mouseClick(int x, int y, MouseButton button)
         {
-            if (button == MouseButton.LeftButton)
+            if (button == MouseButton.Left)
             {
                 switch (this.ButtonType)
                 {

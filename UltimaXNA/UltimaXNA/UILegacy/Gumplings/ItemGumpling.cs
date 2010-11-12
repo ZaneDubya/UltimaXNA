@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Entities;
+using UltimaXNA.Input;
 
 namespace UltimaXNA.UILegacy.Gumplings
 {
@@ -27,7 +28,7 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         void buildGumpling(Item item)
         {
-            Position = new Vector2(item.X, item.Y);
+            Position = new Point2D(item.X, item.Y);
             _item = item;
         }
 
@@ -59,9 +60,9 @@ namespace UltimaXNA.UILegacy.Gumplings
             if (_texture == null)
             {
                 _texture = Data.Art.GetStaticTexture(_item.DisplayItemID);
-                Size = new Vector2(_texture.Width, _texture.Height);
+                Size = new Point2D(_texture.Width, _texture.Height);
             }
-            spriteBatch.Draw(_texture, Position, _item.Hue, false);
+            spriteBatch.Draw2D(_texture, Position, _item.Hue, false);
             base.Draw(spriteBatch);
         }
 
@@ -76,7 +77,7 @@ namespace UltimaXNA.UILegacy.Gumplings
                 return false;
         }
 
-        protected override void mouseDown(int x, int y, UltimaXNA.InputOld.MouseButton button)
+        protected override void mouseDown(int x, int y, MouseButton button)
         {
             // if click, we wait for a moment before picking it up. This allows a single click.
             clickedCanDrag = true;
@@ -98,7 +99,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             }
         }
 
-        protected override void mouseClick(int x, int y, UltimaXNA.InputOld.MouseButton button)
+        protected override void mouseClick(int x, int y, MouseButton button)
         {
             if (clickedCanDrag)
             {
@@ -108,7 +109,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             }
         }
 
-        protected override void mouseDoubleClick(int x, int y, UltimaXNA.InputOld.MouseButton button)
+        protected override void mouseDoubleClick(int x, int y, MouseButton button)
         {
             Interaction.DoubleClick(_item);
             sendClickIfNoDoubleClick = false;
