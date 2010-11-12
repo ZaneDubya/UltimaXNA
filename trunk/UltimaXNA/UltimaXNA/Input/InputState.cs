@@ -149,43 +149,48 @@ namespace UltimaXNA.Input
                 return true;
         }
 
-        protected override void OnMouseWheel(MouseEventArgs e)
+        protected override void OnMouseWheel(EventArgsMouse e)
         {
             
         }
 
-        protected override void OnMouseDown(MouseEventArgs e)
+        protected override void OnMouseDown(EventArgsMouse e)
         {
             
         }
 
-        protected override void OnMouseUp(MouseEventArgs e)
+        protected override void OnMouseUp(EventArgsMouse e)
         {
             
         }
 
-        protected override void OnMouseMove(MouseEventArgs e)
+        protected override void OnMouseMove(EventArgsMouse e)
         {
             
         }
 
-        protected override void OnKeyPress(KeyEventArgs e)
+        protected override void OnKeyPress(EventArgsKeyboard e)
         {
-            addEvent(new InputEventKeyboard(e.KeyCode, KeyboardEvent.Press));
+            addEvent(new InputEventKeyboard(KeyboardEvent.Press, e));
         }
 
-        protected override void OnKeyDown(KeyEventArgs e)
+        protected override void OnKeyDown(EventArgsKeyboard e)
         {
-            OnKeyPress(e);
-            if (!IsKeyDown(e.KeyCode))
+            // handle the initial key down
+            if (e.Data_PreviousState == 0)
             {
-                addEvent(new InputEventKeyboard(e.KeyCode, KeyboardEvent.Down));
+                addEvent(new InputEventKeyboard(KeyboardEvent.Down, e));
+            }
+            // handle the key presses. Possibly multiple per keydown message.
+            for (int i = 0; i < e.Data_RepeatCount; i++)
+            {
+                OnKeyPress(e);
             }
         }
 
-        protected override void OnKeyUp(KeyEventArgs e)
+        protected override void OnKeyUp(EventArgsKeyboard e)
         {
-            addEvent(new InputEventKeyboard(e.KeyCode, KeyboardEvent.Up));
+            addEvent(new InputEventKeyboard(KeyboardEvent.Up, e));
         }
     }
 }

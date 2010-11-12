@@ -225,7 +225,14 @@ namespace UltimaXNA.Input
         /// <param name="message">The Message to parse</param>
         private void WmMouseWheel(ref Message message)
         {
-            OnMouseWheel(new MouseEventArgs(getMouseButtons(getMouseState()), Message.SignedHighWord(message.WParam), Message.SignedLowWord(message.LParam), Message.SignedHighWord(message.LParam), 0));
+            OnMouseWheel(new EventArgsMouse(
+                getMouseButtons(getMouseState()), 
+                Message.SignedHighWord(message.WParam), 
+                Message.SignedLowWord(message.LParam), 
+                Message.SignedHighWord(message.LParam), 
+                0,
+                getModifierKeys()
+                ));
         }
 
         /// <summary>
@@ -234,7 +241,14 @@ namespace UltimaXNA.Input
         /// <param name="message">The Message to parse</param>
         private void WmMouseMove(ref Message message)
         {
-            OnMouseMove(new MouseEventArgs(getMouseButtons(getMouseState()), 0, Message.SignedLowWord(message.LParam), Message.SignedHighWord(message.LParam), 0));
+            OnMouseMove(new EventArgsMouse(
+                getMouseButtons(getMouseState()), 
+                0, 
+                Message.SignedLowWord(message.LParam), 
+                Message.SignedHighWord(message.LParam),
+                0,
+                getModifierKeys()
+                ));
         }
 
         /// <summary>
@@ -246,7 +260,14 @@ namespace UltimaXNA.Input
         private void WmMouseDown(ref Message message, MouseButton button, int clicks)
         {
             // HandleMouseBindings();
-            OnMouseDown(new MouseEventArgs(button, clicks, Message.SignedLowWord(message.LParam), Message.SignedHighWord(message.LParam), 0));
+            OnMouseDown(new EventArgsMouse(
+                button, 
+                clicks, 
+                Message.SignedLowWord(message.LParam), 
+                Message.SignedHighWord(message.LParam),
+                0,
+                getModifierKeys()
+                ));
         }
 
         /// <summary>
@@ -258,7 +279,13 @@ namespace UltimaXNA.Input
         private void WmMouseUp(ref Message message, MouseButton button, int clicks)
         {
             // HandleMouseBindings();
-            OnMouseUp(new MouseEventArgs(button, clicks, Message.SignedLowWord(message.LParam), Message.SignedHighWord(message.LParam), 0));
+            OnMouseUp(new EventArgsMouse(button, 
+                clicks, 
+                Message.SignedLowWord(message.LParam), 
+                Message.SignedHighWord(message.LParam),
+                0,
+                getModifierKeys()
+                ));
         }
 
         /// <summary>
@@ -270,7 +297,7 @@ namespace UltimaXNA.Input
         {
             // HandleKeyBindings();
             // KeyPressEventArgs keyPressEventArgs = null;
-            KeyEventArgs keyEventArgs = null;
+            EventArgsKeyboard EventArgsKeyboard = null;
             
 
             IntPtr zero = IntPtr.Zero;
@@ -280,30 +307,30 @@ namespace UltimaXNA.Input
                 // Is this extra information necessary?
                 // wm_(sys)char: http://msdn.microsoft.com/en-us/library/ms646276(VS.85).aspx
                 /*
-                keyEventArgs = new KeyEventArgs(
+                EventArgsKeyboard = new EventArgsKeyboard(
                     (WinKeys)(((int)(long)message.WParam) | ((int)getModifierKeys()))
                     ); 
                 zero = (IntPtr)(char)((ushort)((long)message.WParam));
-                OnKeyPress(keyEventArgs);
+                OnKeyPress(EventArgsKeyboard);
                 message.WParam = zero;*/
             }
             else
             {
                 // wm_(sys)keydown: http://msdn.microsoft.com/en-us/library/ms912654.aspx
                 // wm_(sys)keyup: http://msdn.microsoft.com/en-us/library/ms646281(VS.85).aspx
-                keyEventArgs = new KeyEventArgs(
+                EventArgsKeyboard = new EventArgsKeyboard(
                     (WinKeys)(int)(long)message.WParam,
                     (int)(long)message.LParam,
-                    (getModifierKeys())
+                    getModifierKeys()
                     );
 
                 if ((message.Id == NativeConstants.WM_KEYDOWN) || (message.Id == NativeConstants.WM_SYSKEYDOWN))
                 {
-                    OnKeyDown(keyEventArgs);
+                    OnKeyDown(EventArgsKeyboard);
                 }
                 else if ((message.Id == NativeConstants.WM_KEYUP) || (message.Id == NativeConstants.WM_SYSKEYUP))
                 {
-                    OnKeyUp(keyEventArgs);
+                    OnKeyUp(EventArgsKeyboard);
                 }
             }
         }
@@ -311,8 +338,8 @@ namespace UltimaXNA.Input
         /// <summary>
         /// Raises the MouseWheel event. Override this method to add code to handle when a mouse wheel is turned
         /// </summary>
-        /// <param name="e">MouseEventArgs for the MouseWheel event</param>
-        protected virtual void OnMouseWheel(MouseEventArgs e)
+        /// <param name="e">EventArgsMouse for the MouseWheel event</param>
+        protected virtual void OnMouseWheel(EventArgsMouse e)
         {
 
         }
@@ -320,8 +347,8 @@ namespace UltimaXNA.Input
         /// <summary>
         /// Raises the MouseMove event. Override this method to add code to handle when the mouse is moved
         /// </summary>
-        /// <param name="e">MouseEventArgs for the MouseMove event</param>
-        protected virtual void OnMouseMove(MouseEventArgs e)
+        /// <param name="e">EventArgsMouse for the MouseMove event</param>
+        protected virtual void OnMouseMove(EventArgsMouse e)
         {
 
         }
@@ -329,8 +356,8 @@ namespace UltimaXNA.Input
         /// <summary>
         /// Raises the MouseDown event. Override this method to add code to handle when a mouse button is pressed
         /// </summary>
-        /// <param name="e">MouseEventArgs for the MouseDown event</param>
-        protected virtual void OnMouseDown(MouseEventArgs e)
+        /// <param name="e">EventArgsMouse for the MouseDown event</param>
+        protected virtual void OnMouseDown(EventArgsMouse e)
         {
 
         }
@@ -338,8 +365,8 @@ namespace UltimaXNA.Input
         /// <summary>
         /// Raises the MouseUp event. Override this method to add code to handle when a mouse button is released
         /// </summary>
-        /// <param name="e">MouseEventArgs for the MouseUp event</param>
-        protected virtual void OnMouseUp(MouseEventArgs e)
+        /// <param name="e">EventArgsMouse for the MouseUp event</param>
+        protected virtual void OnMouseUp(EventArgsMouse e)
         {
 
         }
@@ -348,7 +375,7 @@ namespace UltimaXNA.Input
         /// Raises the KeyUp event. Override this method to add code to handle when a key is released
         /// </summary>
         /// <param name="e">KeyboardPressEventArgs for the KeyUp event</param>
-        protected virtual void OnKeyUp(KeyEventArgs e)
+        protected virtual void OnKeyUp(EventArgsKeyboard e)
         {
 
         }
@@ -356,8 +383,8 @@ namespace UltimaXNA.Input
         /// <summary>
         /// Raises the KeyDown event. Override this method to add code to handle when a key is pressed
         /// </summary>
-        /// <param name="e">KeyEventArgs for the KeyDown event</param>
-        protected virtual void OnKeyDown(KeyEventArgs e)
+        /// <param name="e">EventArgsKeyboard for the KeyDown event</param>
+        protected virtual void OnKeyDown(EventArgsKeyboard e)
         {
 
         }
@@ -366,7 +393,7 @@ namespace UltimaXNA.Input
         /// Raises the KeyPress event. Override this method to add code to handle when a key is pressed
         /// </summary>
         /// <param name="e">KeyboardPressEventArgs for the KeyPress event</param>
-        protected virtual void OnKeyPress(KeyEventArgs e)
+        protected virtual void OnKeyPress(EventArgsKeyboard e)
         {
 
         }
