@@ -8,30 +8,19 @@ namespace UltimaXNA.Input.Events
     public class InputEventKeyboard : InputEvent
     {
         protected readonly KeyboardEvent _eventType;
-
         public KeyboardEvent EventType
         {
             get { return _eventType; }
         }
 
-        public WinKeys KeyCode
+        protected new EventArgsKeyboard _args
         {
-            get
-            {
-                WinKeys keys = (WinKeys)((int)_keyData & (int)WinKeys.KeyCode);
-
-                if (!Enum.IsDefined(typeof(WinKeys), (int)keys))
-                {
-                    return WinKeys.None;
-                }
-
-                return keys;
-            }
+            get { return (EventArgsKeyboard)base._args; }
         }
 
-        public int KeyValue
+        public WinKeys KeyVirtual
         {
-            get { return (((int)_keyData) & 0xffff); }
+            get { return _args.KeyVirtual; }
         }
 
         /// <summary>
@@ -47,7 +36,7 @@ namespace UltimaXNA.Input.Events
             {
                 bool shiftPressed = this.Shift;
                 char ret = ' ';
-                WinKeys key = KeyCode;
+                WinKeys key = _args.KeyVirtual;
                 int keyNum = (int)key;
                 if (keyNum >= (int)WinKeys.A && keyNum <= (int)WinKeys.Z)
                 {
@@ -113,8 +102,8 @@ namespace UltimaXNA.Input.Events
             }
         }
 
-        public InputEventKeyboard(WinKeys keyData, KeyboardEvent eventType)
-            : base(keyData)
+        public InputEventKeyboard(KeyboardEvent eventType, EventArgsKeyboard args)
+            : base(args)
         {
             _eventType = eventType;
         }
