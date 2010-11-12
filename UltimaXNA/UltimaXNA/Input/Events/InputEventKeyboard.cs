@@ -114,5 +114,6 @@ namespace UltimaXNA.Input.Events
         Down,
         Up,
         Press,
+        Char
     }
 }
