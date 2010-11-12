@@ -169,11 +169,6 @@ namespace UltimaXNA.Input
             
         }
 
-        protected override void OnKeyPress(EventArgsKeyboard e)
-        {
-            addEvent(new InputEventKeyboard(KeyboardEvent.Press, e));
-        }
-
         protected override void OnKeyDown(EventArgsKeyboard e)
         {
             // handle the initial key down
@@ -184,7 +179,7 @@ namespace UltimaXNA.Input
             // handle the key presses. Possibly multiple per keydown message.
             for (int i = 0; i < e.Data_RepeatCount; i++)
             {
-                OnKeyPress(e);
+                addEvent(new InputEventKeyboard(KeyboardEvent.Press, e));
             }
         }
 
