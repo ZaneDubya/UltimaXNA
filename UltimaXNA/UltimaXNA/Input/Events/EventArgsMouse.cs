@@ -57,9 +57,9 @@ namespace UltimaXNA.Input.Events
             get { return _y; }
         }
 
-        public Vector2 Position
+        public Point2D Position
         {
-            get { return new Vector2(_x, _y); }
+            get { return new Point2D(_x, _y); }
         }
 
         public EventArgsMouse(MouseButtonInternal button, int clicks, int x, int y, int mouseData, WinKeys modifiers)

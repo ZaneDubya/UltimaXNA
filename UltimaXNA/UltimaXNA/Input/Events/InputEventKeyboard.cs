@@ -32,9 +32,15 @@ namespace UltimaXNA.Input
                 if (_keyChar != WinKeys.None)
                     return (char)_keyChar;
                 else
-                    return (char)_args.KeyCode;
+                    return '\0';
             }
         }
+
+        public bool IsChar
+        {
+            get { return KeyChar != '\0'; }
+        }
+
         public void OverrideKeyChar(WinKeys newChar) { _keyChar = newChar; }
 
         public InputEventKeyboard(KeyboardEvent eventType, EventArgsKeyboard args)

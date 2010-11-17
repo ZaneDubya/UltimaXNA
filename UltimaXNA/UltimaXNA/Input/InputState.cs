@@ -27,6 +27,7 @@ namespace UltimaXNA.Input
         // two variables used for mouse dragging support
         bool _mouseIsDragging = false;
         InputEventMouse _lastMouseDown = null;
+        const int MouseDragBeginDistance = 2;
 
         // Debug logging
         public static Diagnostics.Logger _log = new Diagnostics.Logger("InputState");
@@ -221,10 +222,6 @@ namespace UltimaXNA.Input
                 addEvent(new InputEventMouse(MouseEvent.DragEnd, e));
                 _mouseIsDragging = false;
             }
-            else
-            {
-                addEvent(new InputEventMouse(MouseEvent.Click, e));
-            }
         }
 
         protected override void OnMouseMove(EventArgsMouse e)
@@ -232,7 +229,11 @@ namespace UltimaXNA.Input
             addEvent(new InputEventMouse(MouseEvent.Move, e));
             if (!_mouseIsDragging)
             {
-
+                if (Utility.IsPointThisDistanceAway(_lastMouseDown.Position, e.Position, MouseDragBeginDistance))
+                {
+                    addEvent(new InputEventMouse(MouseEvent.DragBegin, e));
+                    _mouseIsDragging = true;
+                }
             }
         }
 
@@ -257,6 +258,10 @@ namespace UltimaXNA.Input
 
         protected override void OnChar(EventArgsKeyboard e)
         {
+            // Control key sends a strange wm_char message ...
+            if (e.Control && !e.Alt)
+                return;
+
             InputEventKeyboard pressEvent = getLastKeyPressEvent();
             if (pressEvent == null)
                 throw new Exception("No corresponding KeyPress event for this WM_CHAR message. Please report this error to poplicola@ultimaxna.com");
