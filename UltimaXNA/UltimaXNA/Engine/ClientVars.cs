@@ -41,10 +41,11 @@ namespace UltimaXNA
             _theTime = gameTime;
 
             // input for debug variables.
+            //_Input.HandleKeyboardEvent(
             List<InputEventKeyboard> keyEvents = _Input.GetKeyboardEvents();
             foreach (InputEventKeyboard e in keyEvents)
             {
-                if ((e.EventType == KeyboardEvent.Down) && (e.KeyChar == 'd') && e.Alt)
+                if ((e.EventType == KeyboardEvent.Press) && (e.KeyCode == WinKeys.D) && e.Alt)
                 {
                     if (!DEBUG_ShowDataRead)
                         DEBUG_ShowDataRead = true;
@@ -61,7 +62,7 @@ namespace UltimaXNA
                     e.Handled = true;
                 }
 
-                if ((e.EventType == KeyboardEvent.Press) && (e.KeyChar == 'f') && e.Alt)
+                if ((e.EventType == KeyboardEvent.Press) && (e.KeyCode == WinKeys.F) && e.Alt)
                 {
                     DEBUG_DisplayFPS = Utility.ToggleBoolean(DEBUG_DisplayFPS);
                     e.Handled = true;

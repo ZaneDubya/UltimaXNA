@@ -6,9 +6,6 @@ using Microsoft.Xna.Framework;
 
 namespace UltimaXNA.Input.Events
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public class EventArgsMouse : EventArgs
     {
         private readonly MouseButtonInternal _button;
@@ -74,5 +71,15 @@ namespace UltimaXNA.Input.Events
             _y = y;
             _mouseData = mouseData;
         }
+    }
+
+    public enum MouseButtonInternal
+    {
+        Left = 0x100000,
+        Middle = 0x400000,
+        None = 0,
+        Right = 0x200000,
+        XButton1 = 0x800000,
+        XButton2 = 0x1000000
     }
 }

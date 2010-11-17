@@ -484,7 +484,7 @@ namespace UltimaXNA.UILegacy
 
         }
 
-        protected virtual void keyboardInput(Input.Events.InputEventKeyboard e)
+        protected virtual void keyboardInput(InputEventKeyboard e)
         {
 
         }

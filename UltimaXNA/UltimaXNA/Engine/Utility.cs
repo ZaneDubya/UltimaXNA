@@ -597,5 +597,13 @@ namespace UltimaXNA
                 _random = new Random();
             return _random.Next(low, high); 
         }
+
+        public static bool IsPointThisDistanceAway(Point2D initial, Point2D final, int distance)
+        {
+            if (Math.Abs(final.X - initial.X) + Math.Abs(final.Y - initial.Y) > distance)
+                return true;
+            else
+                return false;
+        }
     }
 }

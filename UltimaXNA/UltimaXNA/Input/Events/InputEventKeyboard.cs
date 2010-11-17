@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UltimaXNA.Input.Events;
 
-namespace UltimaXNA.Input.Events
+namespace UltimaXNA.Input
 {
     public class InputEventKeyboard : InputEvent
     {
