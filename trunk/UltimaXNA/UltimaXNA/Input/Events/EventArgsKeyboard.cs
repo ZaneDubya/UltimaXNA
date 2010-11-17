@@ -12,6 +12,11 @@ namespace UltimaXNA.Input.Events
             get { return _keyCode; }
         }
 
+        public int KeyCodeInt
+        {
+            get { return (int)_keyCode; }
+        }
+
         /// <summary>
         /// The repeat count for the current message. The value is the number of times
         /// the keystroke is autorepeated as a result of the user holding down the key.

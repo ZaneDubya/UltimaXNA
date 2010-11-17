@@ -25,9 +25,9 @@ namespace UltimaXNA.Input
             get { return _args.Button; }
         }
 
-        public Vector2 Position
+        public Point2D Position
         {
-            get { return new Vector2(_args.X, _args.Y); }
+            get { return _args.Position; }
         }
 
         private const int WHEEL_DELTA = 120;
@@ -48,8 +48,6 @@ namespace UltimaXNA.Input
         Move,
         Down,
         Up,
-        Click,
-        DoubleClick,
         WheelScroll,
         DragBegin,
         DragEnd

@@ -45,7 +45,7 @@ namespace UltimaXNA
             List<InputEventKeyboard> keyEvents = _Input.GetKeyboardEvents();
             foreach (InputEventKeyboard e in keyEvents)
             {
-                if ((e.EventType == KeyboardEvent.Press) && (e.KeyCode == WinKeys.D) && e.Alt)
+                if ((e.EventType == KeyboardEvent.Press) && (e.KeyCode == WinKeys.D) && e.Control)
                 {
                     if (!DEBUG_ShowDataRead)
                         DEBUG_ShowDataRead = true;
