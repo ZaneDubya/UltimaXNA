@@ -29,7 +29,7 @@ namespace UltimaXNA.InputOld
         bool _singleClick;
         float _singleClickTime;
         bool _doubleClick;
-        Point _clickPoint;
+        Point2D _clickPoint;
         ClickTypes _click = ClickTypes.None;
         public MapObject Object;
         public Point ObjectClickPoint;
@@ -61,13 +61,14 @@ namespace UltimaXNA.InputOld
             ObjectClickPoint = clickOffset;
             _canDrag = true;
             _pickUpTime = ClientVars.TheTime + ClientVars.SecondsBetweenClickAndPickUp;
-            _clickPoint = new Point(x, y);
+            _clickPoint = new Point2D(x, y);
         }
 
         public void Release(int x, int y)
         {
             _canDrag = false;
-            if (_singleClick == true && ClientVars.TheTime < _singleClickTime && !hasMovedFromClickPoint(x, y, 2))
+            if (_singleClick == true && ClientVars.TheTime < _singleClickTime &&
+                !Utility.IsPointThisDistanceAway(_clickPoint, new Point2D(x, y), 2))
             {
                 _singleClick = false;
                 _doubleClick = true;
@@ -81,7 +82,8 @@ namespace UltimaXNA.InputOld
 
         public void Update(int x, int y)
         {
-            if (_canDrag && hasMovedFromClickPoint(x, y, 2))
+            if (_canDrag && 
+                Utility.IsPointThisDistanceAway(_clickPoint, new Point2D(x, y), 2))
             {
                 Click = ClickTypes.Drag;
             }
@@ -102,12 +104,6 @@ namespace UltimaXNA.InputOld
             }
         }
 
-        bool hasMovedFromClickPoint(int x, int y, int distance)
-        {
-            if (Math.Abs(_clickPoint.X - x) + Math.Abs(_clickPoint.Y - y) > distance)
-                return true;
-            else
-                return false;
-        }
+        
     }
 }

@@ -155,6 +155,8 @@ namespace UltimaXNA.UILegacy.Gumplings
                 case WinKeys.Enter:
                     _owner.ActivateByKeyboardReturn(EntryID, Text);
                     break;
+                case WinKeys.Menu:
+                    break;
                 default:
                     Text += e.KeyChar;
                     break;

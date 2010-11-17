@@ -169,7 +169,6 @@
     <Compile Include="Input\Keys.cs" />
     <Compile Include="Input\Message.cs" />
     <Compile Include="Input\MessageHook.cs" />
-    <Compile Include="Input\MouseButtons.cs" />
     <Compile Include="Input\Events\InputEventMouse.cs" />
     <Compile Include="Input\NativeMethods.cs" />
     <Compile Include="Input\WndProc.cs" />

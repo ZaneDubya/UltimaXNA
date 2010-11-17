@@ -71,7 +71,7 @@ namespace UltimaXNA.SceneManagement
                     World.Update(gameTime);
 
                     // Toggle for logout
-                    if (Input.HandleKeyPress(WinKeys.Q, false, false, true))
+                    if (Input.HandleKeyboardEvent(KeyboardEvent.Down, WinKeys.Q, false, false, true))
                     {
                         SceneManager.CurrentScene = new LoginScene(Game);
                     }

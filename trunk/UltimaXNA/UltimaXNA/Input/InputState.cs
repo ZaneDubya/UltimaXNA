@@ -12,19 +12,24 @@ namespace UltimaXNA.Input
 
     public class InputState : WndProc, IInputState, IGameComponent
     {
+        // Input states
         MouseState _mouseStateThisFrame;
         KeyboardState _keyboardStateThisFrame;
-
         MouseState _mouseStateLastFrame;
         KeyboardState _keyboardStateLastFrame;
 
-        //DEBUG
-        public static Diagnostics.Logger _log = new Diagnostics.Logger("InputState");
-        
+        // Event lists.
         List<InputEvent> _eventsThisFrame = new List<InputEvent>();
         List<InputEvent> _eventsAccumulating = new List<InputEvent>();
         List<InputEvent> _eventsAccumulatingAlternate = new List<InputEvent>();
         bool _eventsAccumulatingUseAlternate = false;
+
+        // two variables used for mouse dragging support
+        bool _mouseIsDragging = false;
+        InputEventMouse _lastMouseDown = null;
+
+        // Debug logging
+        public static Diagnostics.Logger _log = new Diagnostics.Logger("InputState");
 
         public InputState(Game game)
             : base(game.Window.Handle)
@@ -43,7 +48,7 @@ namespace UltimaXNA.Input
             List<InputEventKeyboard> list = new List<InputEventKeyboard>();
             foreach (InputEvent e in _eventsThisFrame  )
             {
-                if (e is InputEventKeyboard)
+                if (!e.Handled && e is InputEventKeyboard)
                     list.Add((InputEventKeyboard)e);
             }
             return list;
@@ -54,7 +59,7 @@ namespace UltimaXNA.Input
             List<InputEventMouse> list = new List<InputEventMouse>();
             foreach (InputEvent e in _eventsThisFrame)
             {
-                if (e is InputEventMouse)
+                if (!e.Handled && e is InputEventMouse)
                     list.Add((InputEventMouse)e);
             }
             return list;
@@ -163,14 +168,14 @@ namespace UltimaXNA.Input
             else
                 return true;
         }
-        
 
-        public bool HandleKeyPress(WinKeys key, bool shift, bool alt, bool ctrl)
+
+        public bool HandleKeyboardEvent(KeyboardEvent type, WinKeys key, bool shift, bool alt, bool ctrl)
         {
             List<InputEventKeyboard> events = GetKeyboardEvents();
             foreach (InputEventKeyboard e in events)
             {
-                if (e.EventType == KeyboardEvent.Press && 
+                if (e.EventType == type && 
                     e.KeyCode == key &&
                     e.Shift == shift &&
                     e.Alt == alt &&
@@ -183,12 +188,12 @@ namespace UltimaXNA.Input
             return false;
         }
 
-        public bool HandleMouseDown(MouseButton mb)
+        public bool HandleMouseEvent(MouseEvent type, MouseButton mb)
         {
             List<InputEventMouse> events = GetMouseEvents();
             foreach (InputEventMouse e in events)
             {
-                if (e.EventType == MouseEvent.Down)
+                if (e.EventType == type)
                 {
                     e.Handled = true;
                     return true;
@@ -196,21 +201,6 @@ namespace UltimaXNA.Input
             }
             return false;
         }
-
-        public bool HandleMouseUp(MouseButton mb)
-        {
-            List<InputEventMouse> events = GetMouseEvents();
-            foreach (InputEventMouse e in events)
-            {
-                if (e.EventType == MouseEvent.Up)
-                {
-                    e.Handled = true;
-                    return true;
-                }
-            }
-            return false;
-        }
-
 
         protected override void OnMouseWheel(EventArgsMouse e)
         {
@@ -219,17 +209,31 @@ namespace UltimaXNA.Input
 
         protected override void OnMouseDown(EventArgsMouse e)
         {
-            addEvent(new InputEventMouse(MouseEvent.Down, e));
+            _lastMouseDown = new InputEventMouse(MouseEvent.Down, e);
+            addEvent(_lastMouseDown);
         }
 
         protected override void OnMouseUp(EventArgsMouse e)
         {
             addEvent(new InputEventMouse(MouseEvent.Up, e));
+            if (_mouseIsDragging)
+            {
+                addEvent(new InputEventMouse(MouseEvent.DragEnd, e));
+                _mouseIsDragging = false;
+            }
+            else
+            {
+                addEvent(new InputEventMouse(MouseEvent.Click, e));
+            }
         }
 
         protected override void OnMouseMove(EventArgsMouse e)
         {
             addEvent(new InputEventMouse(MouseEvent.Move, e));
+            if (!_mouseIsDragging)
+            {
+
+            }
         }
 
         protected override void OnKeyDown(EventArgsKeyboard e)

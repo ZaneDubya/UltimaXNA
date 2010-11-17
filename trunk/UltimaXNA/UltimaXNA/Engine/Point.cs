@@ -20,8 +20,8 @@ namespace UltimaXNA
     [StructLayout(LayoutKind.Sequential)]
     public struct Point2D : IPoint2D
     {
-        internal int _x;
-        internal int _y;
+        private int _x;
+        private int _y;
 
         public Int32 X
         {

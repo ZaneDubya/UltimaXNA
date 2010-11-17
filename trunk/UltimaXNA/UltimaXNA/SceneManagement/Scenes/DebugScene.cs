@@ -119,25 +119,25 @@ namespace UltimaXNA.SceneManagement
         {
             for (int k = (int)WinKeys.D0; k <= (int)WinKeys.D9; k++)
             {
-                if (Input.HandleKeyPress((WinKeys)k, false, true, false))
+                if (Input.HandleKeyboardEvent(KeyboardEvent.Down, (WinKeys)k, false, true, false))
                     editing_Size = k - (int)WinKeys.D0;
-                else if (Input.HandleKeyPress((WinKeys)k, false, true, false))
+                else if (Input.HandleKeyboardEvent(KeyboardEvent.Down, (WinKeys)k, false, true, false))
                     edit_Value = k - (int)WinKeys.D0;
             }
 
             if (ClientVars.DEBUG_HighlightMouseOverObjects)
             {
-                if (Input.HandleMouseDown(MouseButton.Left))
+                if (Input.HandleMouseEvent(MouseEvent.Down, MouseButton.Left))
                     edit_Begin(edit_Value);
-                else if (Input.HandleMouseDown(MouseButton.Right))
+                else if (Input.HandleMouseEvent(MouseEvent.Down, MouseButton.Right))
                     edit_Begin(-edit_Value);
             }
 
             if (edit_IsEditing)
             {
-                if (Input.HandleMouseUp(MouseButton.Left))
+                if (Input.HandleMouseEvent(MouseEvent.Up, MouseButton.Left))
                     edit_End();
-                if (Input.HandleMouseUp(MouseButton.Right))
+                if (Input.HandleMouseEvent(MouseEvent.Up, MouseButton.Right))
                     edit_End();
             }
 
@@ -185,11 +185,11 @@ namespace UltimaXNA.SceneManagement
                 _position.Z = World.Map.GetAverageZ(_position.X, _position.Y, ref low, ref high);
             }
 
-            if (Input.HandleKeyPress(WinKeys.W, false, true, false))
+            if (Input.HandleKeyboardEvent(KeyboardEvent.Down, WinKeys.W, false, true, false))
             {
                 ClientVars.DEBUG_HighlightMouseOverObjects = Utility.ToggleBoolean(ClientVars.DEBUG_HighlightMouseOverObjects);
             }
-            if (Input.HandleKeyPress(WinKeys.E, false, true, false))
+            if (Input.HandleKeyboardEvent(KeyboardEvent.Down, WinKeys.E, false, true, false))
             {
                 ClientVars.DEBUG_DrawWireframe = Utility.ToggleBoolean(ClientVars.DEBUG_DrawWireframe);
             }
