@@ -11,12 +11,18 @@ namespace UltimaXNA.Input
     [StructLayout(LayoutKind.Sequential)]
     public struct Message
     {
-        public IntPtr WindowHandle;
         public UInt32 Id;
         public IntPtr WParam;
         public IntPtr LParam;
-        public Int32 Time;
         public Point2D Point;
+
+        public Message(uint id, IntPtr wParam, IntPtr lParam)
+        {
+            this.Id = id;
+            this.WParam = wParam;
+            this.LParam = lParam;
+            this.Point = new Point2D(LowWord(lParam), HighWord(lParam));
+        }
 
         public override bool Equals(object obj)
         {
@@ -27,7 +33,7 @@ namespace UltimaXNA.Input
 
             Message msg = (Message)obj;
 
-            return msg.Id == Id && msg.LParam == LParam && msg.Point == Point && msg.Time == Time && msg.WindowHandle == WindowHandle && msg.WParam == WParam;
+            return msg.Id == Id && msg.LParam == LParam && msg.Point == Point && msg.WParam == WParam;
         }
 
         public override int GetHashCode()

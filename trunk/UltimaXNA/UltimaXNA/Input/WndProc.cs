@@ -23,9 +23,15 @@ namespace UltimaXNA.Input
     /// </summary>
     public class WndProc : MessageHook
     {
+        // Debug logging
+        protected static Diagnostics.Logger _log = new Diagnostics.Logger("InputState");
+
+        const bool WP_PASSTHROUGH = true;
+        const bool WP_NOPASSTHROUGH = false;
+
         public override int HookType
         {
-            get { return NativeConstants.WH_GETMESSAGE; }
+            get { return NativeConstants.WH_CALLWNDPROC; }
         }
 
         protected WndProc(IntPtr hWnd)
@@ -89,40 +95,44 @@ namespace UltimaXNA.Input
 
             return none;
         }
-        
-        protected override int WndProcHook(int nCode, IntPtr wParam, IntPtr lParam)
+
+        protected override IntPtr WndProcHook(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
         {
-            if (nCode < 0)
-            {
-                return base.WndProcHook(nCode, wParam, lParam);
-            }
-
-            if ((int)wParam != 0)
-            {
-                Message message = (Message)Marshal.PtrToStructure(lParam, typeof(Message));
-                NativeMethods.TranslateMessage(ref message);
-                WndPrc(ref message);
-            }
-
-            return 0;
+            Message message = new Message(msg, wParam, lParam);
+            if (WndPrc(ref message) == WP_NOPASSTHROUGH)
+                return IntPtr.Zero;
+            return base.WndProcHook(hWnd, msg, wParam, lParam);
         }
 
-        private void WndPrc(ref Message message)
+        private bool WndPrc(ref Message message)
         {
             try
             {
-                Debug.WriteLine(string.Format("Message Id: {0}", message.Id));
-
                 switch (message.Id)
                 {
+                    case NativeConstants.WM_DEADCHAR:
+                        {
+                            break;
+                        }
                     case NativeConstants.WM_KEYDOWN:
                     case NativeConstants.WM_KEYUP:
                     case NativeConstants.WM_CHAR:
+                        {
+                            
+                            WmKeyEvent(ref message);
+                            
+                            break;
+                        }
                     case NativeConstants.WM_SYSKEYDOWN:
                     case NativeConstants.WM_SYSKEYUP:
                     case NativeConstants.WM_SYSCHAR:
                         {
+                            NativeMethods.TranslateMessage(ref message);
                             WmKeyEvent(ref message);
+                            return WP_NOPASSTHROUGH;
+                        }
+                    case NativeConstants.WM_SYSCOMMAND:
+                        {
                             break;
                         }
                     case NativeConstants.WM_MOUSEMOVE:
@@ -148,52 +158,52 @@ namespace UltimaXNA.Input
                     case NativeConstants.WM_LBUTTONUP:
                         {
                             WmMouseUp(ref message, MouseButtonInternal.Left, 1);
-                            break;
+                            return WP_PASSTHROUGH;
                         }
                     case NativeConstants.WM_RBUTTONUP:
                         {
                             WmMouseUp(ref message, MouseButtonInternal.Right, 1);
-                            break;
+                            return WP_PASSTHROUGH;
                         }
                     case NativeConstants.WM_MBUTTONUP:
                         {
                             WmMouseUp(ref message, MouseButtonInternal.Middle, 1);
-                            break;
+                            return WP_PASSTHROUGH;
                         }
                     case NativeConstants.WM_LBUTTONDBLCLK:
                         {
                             WmMouseDown(ref message, MouseButtonInternal.Left, 2);
-                            break;
+                            return WP_PASSTHROUGH;
                         }
                     case NativeConstants.WM_RBUTTONDBLCLK:
                         {
                             WmMouseDown(ref message, MouseButtonInternal.Right, 2);
-                            break;
+                            return WP_PASSTHROUGH;
                         }
                     case NativeConstants.WM_MBUTTONDBLCLK:
                         {
                             WmMouseDown(ref message, MouseButtonInternal.Middle, 2);
-                            break;
+                            return WP_PASSTHROUGH;
                         }
                     case NativeConstants.WM_MOUSEWHEEL:
                         {
                             WmMouseWheel(ref message);
-                            break;
+                            return WP_PASSTHROUGH;
                         }
                     case NativeConstants.WM_XBUTTONDOWN:
                         {
                             WmMouseDown(ref message, GetXButton(Message.HighWord(message.WParam)), 1);
-                            break;
+                            return WP_PASSTHROUGH;
                         }
                     case NativeConstants.WM_XBUTTONUP:
                         {
                             WmMouseUp(ref message, GetXButton(Message.HighWord(message.WParam)), 1);
-                            break;
+                            return WP_PASSTHROUGH;
                         }
                     case NativeConstants.WM_XBUTTONDBLCLK:
                         {
                             WmMouseDown(ref message, GetXButton(Message.HighWord(message.WParam)), 2);
-                            break;
+                            return WP_PASSTHROUGH;
                         }
                 }
             }
@@ -201,6 +211,8 @@ namespace UltimaXNA.Input
             {
                 //TODO: log...crash...what?
             }
+
+            return WP_PASSTHROUGH;
         }
 
         private MouseButtonInternal translateWParamIntoMouseButtons(int wParam)
@@ -315,9 +327,6 @@ namespace UltimaXNA.Input
             // HandleKeyBindings();
             // KeyPressEventArgs keyPressEventArgs = null;
             EventArgsKeyboard EventArgsKeyboard = null;
-            
-
-            IntPtr zero = IntPtr.Zero;
 
             if ((message.Id == NativeConstants.WM_CHAR) || (message.Id == NativeConstants.WM_SYSCHAR))
             {
@@ -328,11 +337,9 @@ namespace UltimaXNA.Input
                     (WinKeys)(int)(long)message.WParam,
                     (int)(long)message.LParam,
                     getModifierKeys()
-                    ); 
-                zero = (IntPtr)(char)((ushort)((long)message.WParam));
+                    );
+                IntPtr zero = (IntPtr)0;// (char)((ushort)((long)message.WParam));
                 OnChar(EventArgsKeyboard);
-                message.WParam = zero;
-
             }
             else
             {
