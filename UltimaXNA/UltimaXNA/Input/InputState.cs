@@ -29,9 +29,6 @@ namespace UltimaXNA.Input
         InputEventMouse _lastMouseDown = null;
         const int MouseDragBeginDistance = 2;
 
-        // Debug logging
-        public static Diagnostics.Logger _log = new Diagnostics.Logger("InputState");
-
         public InputState(Game game)
             : base(game.Window.Handle)
         {
@@ -222,12 +219,13 @@ namespace UltimaXNA.Input
                 addEvent(new InputEventMouse(MouseEvent.DragEnd, e));
                 _mouseIsDragging = false;
             }
+            _lastMouseDown = null;
         }
 
         protected override void OnMouseMove(EventArgsMouse e)
         {
             addEvent(new InputEventMouse(MouseEvent.Move, e));
-            if (!_mouseIsDragging)
+            if (!_mouseIsDragging && _lastMouseDown != null)
             {
                 if (Utility.IsPointThisDistanceAway(_lastMouseDown.Position, e.Position, MouseDragBeginDistance))
                 {

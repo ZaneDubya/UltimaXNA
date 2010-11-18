@@ -24,7 +24,8 @@ namespace UltimaXNA.Input
     /// <param name="wParam"></param>
     /// <param name="lParam"></param>
     /// <returns></returns>
-    public delegate int WndProcHandler(int nCode, IntPtr wParam, IntPtr lParam);
+    // public delegate IntPtr WndProcHandler(int nCode, IntPtr wParam, IntPtr lParam);
+    public delegate IntPtr WndProcHandler(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
     /// <summary>
     /// 
@@ -36,24 +37,17 @@ namespace UltimaXNA.Input
         /// </summary>
         public abstract int HookType { get; }
 
-        private IntPtr hHook;
-        private IntPtr hWnd;
-        private WndProcHandler cachedHook;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public IntPtr HHook
-        {
-            get { return hHook; }
-        }
+        private IntPtr _hWnd;
+        private WndProcHandler _Hook;
+        private IntPtr _prevWndProc;
+        private IntPtr _hIMC;
 
         /// <summary>
         /// 
         /// </summary>
         public IntPtr HWnd
         {
-            get { return hWnd; }
+            get { return _hWnd; }
         }
 
         /// <summary>
@@ -62,64 +56,102 @@ namespace UltimaXNA.Input
         /// <param name="hWnd"></param>
         public MessageHook(IntPtr hWnd)
         {
-            this.hWnd = hWnd;
-
-            cachedHook = WndProcHook;
-            CreateHook();
+            _hWnd = hWnd;
+            _Hook = WndProcHook;
+            _prevWndProc = (IntPtr)NativeMethods.SetWindowLong(
+                hWnd,
+                NativeConstants.GWL_WNDPROC,
+                (int)Marshal.GetFunctionPointerForDelegate(_Hook));
+            _hIMC = NativeMethods.ImmGetContext(_hWnd);
+            new InputMessageFilter(_Hook);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
         ~MessageHook()
         {
             Dispose(false);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        private void CreateHook()
+        protected virtual IntPtr WndProcHook(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
         {
-            uint threadId = NativeMethods.GetWindowThreadProcessId(hWnd, IntPtr.Zero);
-            hHook = NativeMethods.SetWindowsHookEx(HookType, cachedHook, IntPtr.Zero, threadId);
+            switch (msg)
+            {
+                case NativeConstants.WM_GETDLGCODE:
+                    return (IntPtr)(NativeConstants.DLGC_WANTALLKEYS);
+               case NativeConstants.WM_IME_SETCONTEXT:
+                    if ((int)wParam == 1)
+                        NativeMethods.ImmAssociateContext(hWnd, _hIMC);
+                    break;
+                case NativeConstants.WM_INPUTLANGCHANGE:
+                    int rrr = (int)NativeMethods.CallWindowProc(_prevWndProc, hWnd, msg, wParam, lParam);
+                    NativeMethods.ImmAssociateContext(hWnd, _hIMC);
+                    
+                    return (IntPtr)1;
+            }
+
+            return NativeMethods.CallWindowProc(_prevWndProc, hWnd, msg, wParam, lParam);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="nCode"></param>
-        /// <param name="wParam"></param>
-        /// <param name="lParam"></param>
-        /// <returns></returns>
-        protected virtual int WndProcHook(int nCode, IntPtr wParam, IntPtr lParam)
-        {
-            return NativeMethods.CallNextHookEx(hHook, nCode, wParam, lParam);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
         public void Dispose()
         {
             Dispose(true);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing)
-            {
 
-            }
+        }
+    }
 
-            if (hHook != IntPtr.Zero)
+    // This is the class that brings back the alt messages
+    // http://www.gamedev.net/community/forums/topic.asp?topic_id=554322
+    class InputMessageFilter : System.Windows.Forms.IMessageFilter
+    {
+        private WndProcHandler _Hook;
+
+        public InputMessageFilter(WndProcHandler hook)
+        {
+            _Hook = hook;
+            System.Windows.Forms.Application.AddMessageFilter(this);
+        }
+        [DllImport("user32.dll", EntryPoint = "TranslateMessage")]
+        protected extern static bool _TranslateMessage(ref System.Windows.Forms.Message m);
+
+        bool System.Windows.Forms.IMessageFilter.PreFilterMessage(ref System.Windows.Forms.Message m)
+        {
+            switch (m.Msg)
             {
-                NativeMethods.UnhookWindowsHookEx(hHook);
+                case NativeConstants.WM_SYSKEYDOWN:
+                case NativeConstants.WM_SYSKEYUP:
+                    {
+                        bool b = _TranslateMessage(ref m);
+                        _Hook(m.HWnd, (uint)m.Msg, m.WParam, m.LParam);
+                        return true;
+                    }
+
+                case NativeConstants.WM_SYSCHAR:
+                    {
+                        _Hook(m.HWnd, (uint)m.Msg, m.WParam, m.LParam);
+                        return true;
+                    }
+                case NativeConstants.WM_KEYDOWN:
+                case NativeConstants.WM_KEYUP:
+                    {
+                        bool b = _TranslateMessage(ref m);
+                        _Hook(m.HWnd, (uint)m.Msg, m.WParam, m.LParam);
+                        return true;
+                    }
+                case NativeConstants.WM_CHAR:
+                    {
+                        _Hook(m.HWnd, (uint)m.Msg, m.WParam, m.LParam);
+                        return true;
+                    }
+                case NativeConstants.WM_DEADCHAR:
+                    {
+                        _Hook(m.HWnd, (uint)m.Msg, m.WParam, m.LParam);
+                        return true;
+                    }
             }
+            return false;
         }
     }
 }

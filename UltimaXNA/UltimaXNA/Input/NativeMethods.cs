@@ -258,6 +258,12 @@ namespace UltimaXNA.Input
         public const int WH_CALLWNDPROCRET = 12;
         public const int WH_KEYBOARD_LL = 13;
         public const int WH_MOUSE_LL = 14;
+
+        public const int GWL_WNDPROC = -4;
+        public const int DLGC_WANTALLKEYS = 0x0004;
+        public const int DLGC_WANTCHARS = 0x0080;
+        public const int DLGC_WANTTAB = 0x0002;
+        public const int DLGC_HASSETSEL = 0x0008;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -281,7 +287,20 @@ namespace UltimaXNA.Input
 
     public static class NativeMethods
     {
+        // new methods ...
+        [DllImport("Imm32.dll")]
+        public static extern IntPtr ImmGetContext(IntPtr hWnd);
 
+        [DllImport("Imm32.dll")]
+        public static extern IntPtr ImmAssociateContext(IntPtr hWnd, IntPtr hIMC);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll")]
+        public static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+
+        // old methods ...
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true, ExactSpelling = true)]
         public static extern int MultiByteToWideChar(int CodePage, int dwFlags, byte[] lpMultiByteStr, int cchMultiByte, char[] lpWideCharStr, int cchWideChar);
        
@@ -296,7 +315,7 @@ namespace UltimaXNA.Input
         public static extern IntPtr SetWindowsHookEx(int hookType, WndProcHandler callback, IntPtr hMod, uint dwThreadId);
 
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        public static extern int CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
+        public static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
 
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         public static extern bool UnhookWindowsHookEx(IntPtr hhk);
@@ -306,7 +325,7 @@ namespace UltimaXNA.Input
         public static extern bool GetMessage(out Message lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
 
         [DllImport("user32.dll")]
-        public static extern int SendMessage(IntPtr hWnd, int wMsg, int wParam, int lParam);
+        public static extern IntPtr SendMessage(IntPtr hWnd, int wMsg, int wParam, int lParam);
 
         [DllImport("user32.dll", EntryPoint = "TranslateMessage")]
         public extern static bool TranslateMessage(ref Message m);
