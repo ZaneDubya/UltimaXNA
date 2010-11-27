@@ -1,4 +1,5 @@
-﻿using UltimaXNA.Input.Core;
+﻿using Microsoft.Xna.Framework;
+using UltimaXNA.Input.Core;
 
 namespace UltimaXNA.Input
 {

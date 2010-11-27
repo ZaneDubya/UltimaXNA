@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
+using Microsoft.Xna.Framework;
 
 namespace UltimaXNA
 {
@@ -75,6 +76,11 @@ namespace UltimaXNA
         public static Point2D operator -(Point2D p1, Point2D p2)
         {
             return new Point2D(p1.X - p2.X, p1.Y - p2.Y);
+        }
+
+        public Vector2 ToVector2()
+        {
+            return new Vector2(X, Y);
         }
     }
 

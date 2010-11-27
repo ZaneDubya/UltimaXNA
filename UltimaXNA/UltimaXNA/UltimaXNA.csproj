@@ -157,8 +157,6 @@
     <Compile Include="Entities\Shared.cs" />
     <Compile Include="Engine\Extensions\CallPriorityComparer.cs" />
     <Compile Include="Engine\GameState.cs" />
-    <Compile Include="InputOld\ClickState.cs" />
-    <Compile Include="InputOld\Macros.cs" />
     <Compile Include="Input\Core\EventArgs.cs" />
     <Compile Include="Input\Core\EventArgsKeyboard.cs" />
     <Compile Include="Input\Core\EventArgsMouse.cs" />
@@ -237,9 +235,6 @@
     <Compile Include="UILegacy\IUIManager.cs" />
     <Compile Include="UILegacy\Shared.cs" />
     <Compile Include="UILegacy\UIManager.cs" />
-    <Compile Include="InputOld\EventArgs.cs" />
-    <Compile Include="InputOld\IInputService.cs" />
-    <Compile Include="InputOld\InputState.cs" />
     <Compile Include="Data\StaticTileList.cs" />
     <Compile Include="Data\Texmaps.cs" />
     <Compile Include="Data\TileData.cs" />

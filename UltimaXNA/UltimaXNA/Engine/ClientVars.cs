@@ -40,7 +40,6 @@ namespace UltimaXNA
             _theTime = gameTime;
 
             // input for debug variables.
-            //_Input.HandleKeyboardEvent(
             List<InputEventKB> keyEvents = _Input.GetKeyboardEvents();
             foreach (InputEventKB e in keyEvents)
             {
@@ -72,8 +71,8 @@ namespace UltimaXNA
 
         public static int BackBufferWidth = 0, BackBufferHeight = 0;
 
-        public static InputOld.MouseButton MouseButton_Interact = InputOld.MouseButton.LeftButton;
-        public static InputOld.MouseButton MouseButton_Move = InputOld.MouseButton.RightButton;
+        public static Input.MouseButton MouseButton_Interact = Input.MouseButton.Left;
+        public static Input.MouseButton MouseButton_Move = Input.MouseButton.Right;
 
         static ServerListPacket _serverListPacket;
         public static ServerListPacket ServerListPacket { get { return _serverListPacket; } set { _serverListPacket = value; } }
@@ -160,6 +159,7 @@ namespace UltimaXNA
 
         public const float SecondsBetweenClickAndPickUp = 0.8f; // this is close to what the legacy client uses.
         public const float SecondsForDoubleClick = 0.5f;
+        
 
         // Maintain an accurate count of frames per second.
         static float _FPS = 0, _Frames = 0, _ElapsedSeconds = 0;

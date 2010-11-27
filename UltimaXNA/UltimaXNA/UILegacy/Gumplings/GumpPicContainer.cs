@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.InputOld;
 using UltimaXNA.Entities;
 
 namespace UltimaXNA.UILegacy.Gumplings

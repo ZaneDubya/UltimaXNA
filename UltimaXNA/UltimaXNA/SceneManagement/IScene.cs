@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Diagnostics;
 using UltimaXNA.UILegacy;
-using UltimaXNA.InputOld;
 
 namespace UltimaXNA.SceneManagement
 {
