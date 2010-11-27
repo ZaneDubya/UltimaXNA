@@ -1,18 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using UltimaXNA.Network;
-using UltimaXNA.Client.Packets.Server;
-using UltimaXNA.Data;
 using UltimaXNA.Client;
+using UltimaXNA.Client.Packets;
 using UltimaXNA.Entities;
 using UltimaXNA.Extensions;
 using UltimaXNA.Input;
-using UltimaXNA.Client.Packets.Client;
 using UltimaXNA.TileEngine;
 using UltimaXNA.UILegacy;
 
@@ -74,13 +67,14 @@ namespace UltimaXNA
         public static Input.MouseButton MouseButton_Interact = Input.MouseButton.Left;
         public static Input.MouseButton MouseButton_Move = Input.MouseButton.Right;
 
-        static ServerListPacket _serverListPacket;
-        public static ServerListPacket ServerListPacket { get { return _serverListPacket; } set { _serverListPacket = value; } }
+        static ServerListEntry[] _serverListPacket;
+        public static ServerListEntry[] ServerListPacket { get { return _serverListPacket; } set { _serverListPacket = value; } }
 
         static bool _charListReloaded = false;
         static CharacterListEntry[] _characters;
         public static bool CharacterList_Reloaded { get { return _charListReloaded; } set { _charListReloaded = value; } }
         public static CharacterListEntry[] CharacterList { get { return _characters; } set { _characters = value; _charListReloaded = true; } }
+
         static StartingLocation[] _locations;
         public static StartingLocation[] StartingLocations { get { return _locations; } set { _locations = value; } }
         public static int CharacterList_FirstEmptySlot
@@ -135,7 +129,7 @@ namespace UltimaXNA
             set
             {
                 _lastTarget = value;
-                UltimaClient.Send(new GetPlayerStatusPacket(0x04, _lastTarget));
+                UltimaClient.Send(new Client.Packets.Client.GetPlayerStatusPacket(0x04, _lastTarget));
             }
         }
         public static bool WarMode

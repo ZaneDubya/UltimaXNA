@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using UltimaXNA.Client;
 using UltimaXNA.Entities;
 using UltimaXNA.UILegacy.Gumplings;
 
@@ -94,7 +95,7 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
                 case Buttons.Guild:
                     break;
                 case Buttons.PeaceWarToggle:
-                    Client.UltimaClient.Send(new Network.Packets.Client.RequestWarModePacket(!_Parent.IsWarMode));
+                    UltimaClient.Send(new Client.Packets.Client.RequestWarModePacket(!_Parent.IsWarMode));
                     break;
                 case Buttons.Status:
                     _manager.ToggleGump_Local(new StatusGump(), 200, 400);

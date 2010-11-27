@@ -166,7 +166,7 @@ namespace UltimaXNA.Client
         public static void Login()
         {
             Status = UltimaClientStatus.LoginServer_LoggingIn;
-            Send(new Network.Packets.Client.LoginPacket(_account, _password));
+            Send(new Packets.Client.LoginPacket(_account, _password));
         }
 
         public static void SelectServer(int index)
@@ -814,7 +814,7 @@ namespace UltimaXNA.Client
 
         private static void receive_ServerList(IRecvPacket packet)
         {
-            ClientVars.ServerListPacket = (ServerListPacket)packet;
+            ClientVars.ServerListPacket = ((ServerListPacket)packet).Servers;
             Status = UltimaClientStatus.LoginServer_HasServerList;
         }
 
@@ -1090,7 +1090,7 @@ namespace UltimaXNA.Client
             }
         }
 
-        private static void parseContextMenu(ContextMenu context)
+        private static void parseContextMenu(Client.Packets.ContextMenu context)
         {
             if (context.HasContextMenu)
             {
@@ -1175,7 +1175,7 @@ namespace UltimaXNA.Client
             {
                 // special case for corpses.
                 item = EntitiesCollection.GetObject<Corpse>((int)serial, true);
-                Network.Packets.Server.ContainerContentPacket.NextContainerContentsIsPre6017 = true;
+                Packets.Server.ContainerContentPacket.NextContainerContentsIsPre6017 = true;
             }
             else
             {

@@ -25,18 +25,6 @@ using Microsoft.Xna.Framework;
 
 namespace UltimaXNA.Client.Packets.Client
 {
-    public enum Sex
-    {
-        Male = 0,
-        Female = 1
-    }
-
-    public enum Race
-    {
-        Human = 1,
-        Elf = 2
-    }
-
     public class CreateCharacterPacket : SendPacket
     {
         public CreateCharacterPacket(string name, Sex sex, Race race,

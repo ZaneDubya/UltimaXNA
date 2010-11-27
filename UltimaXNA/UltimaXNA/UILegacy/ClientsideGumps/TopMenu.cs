@@ -63,7 +63,7 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
                 case Buttons.Inventory:
                     PlayerMobile m = (PlayerMobile)EntitiesCollection.GetPlayerObject();
                     Container i = m.Backpack;
-                    Client.UltimaClient.Send(new Network.Packets.Client.DoubleClickPacket(i.Serial));
+                    Client.UltimaClient.Send(new Client.Packets.Client.DoubleClickPacket(i.Serial));
                     // _manager.AddContainerGump(i, 0);
                     break;
                 case Buttons.Journal:

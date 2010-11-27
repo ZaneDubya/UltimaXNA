@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   ItemInContainer.cs
+ *   Pair.cs
  *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   
  *   begin                : May 31, 2009
@@ -22,29 +22,17 @@ using System.Linq;
 using System.Text;
 #endregion
 
-namespace UltimaXNA.Network
+namespace UltimaXNA
 {
-    public class ContentItem
+    public struct Pair<T, U>
     {
-        public readonly Serial Serial;
-        public readonly int ItemID;
-        public readonly int Amount;
-        public readonly int X;
-        public readonly int Y;
-        public readonly int GridLocation;
-        public readonly Serial ContainerSerial;
-        public readonly int Hue;
+        public T ItemA;
+        public U ItemB;
 
-        public ContentItem(Serial serial, int itemId, int amount, int x, int y, int gridLocation, int containerSerial, int hue)
+        public Pair(T a, U b)
         {
-            this.Serial = serial;
-            this.ItemID = itemId;
-            this.Amount = amount;
-            this.X = x;
-            this.Y = y;
-            this.GridLocation = gridLocation;
-            this.ContainerSerial = containerSerial;
-            this.Hue = hue;
+            ItemA = a;
+            ItemB = b;
         }
     }
 }

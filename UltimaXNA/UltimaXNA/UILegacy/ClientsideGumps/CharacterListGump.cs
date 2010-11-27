@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UltimaXNA.Client;
 using UltimaXNA.Network;
-using UltimaXNA.Client.Packets.Server;
+using UltimaXNA.Client.Packets;
 using UltimaXNA.UILegacy.Gumplings;
 
 namespace UltimaXNA.UILegacy.ClientsideGumps

@@ -16,10 +16,8 @@
  *
  ***************************************************************************/
 #region usings
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using UltimaXNA.Network;
 #endregion
 
 namespace UltimaXNA.Client.Packets.Server
@@ -46,18 +44,6 @@ namespace UltimaXNA.Client.Packets.Server
                     Items.Add(new CorpseClothingItemWithLayer(layer, itemSerial));
                 }
             }
-        }
-    }
-
-    public struct CorpseClothingItemWithLayer
-    {
-        public int Layer;
-        public Serial Serial;
-
-        public CorpseClothingItemWithLayer(int layer, Serial serial)
-        {
-            Layer = layer;
-            Serial = serial;
         }
     }
 }
