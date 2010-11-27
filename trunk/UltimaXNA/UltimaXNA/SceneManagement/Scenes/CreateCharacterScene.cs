@@ -25,7 +25,7 @@ using System.Threading;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Client;
 using UltimaXNA.Network;
-using UltimaXNA.Client.Packets.Client;
+using UltimaXNA.Client.Packets;
 using UltimaXNA.UILegacy;
 using UltimaXNA.UILegacy.ClientsideGumps;
 #endregion
@@ -187,7 +187,7 @@ namespace UltimaXNA.SceneManagement
                         SceneManager.CurrentScene = new CharacterListScene(Game);
                         break;
                     case CreateCharacterSceneStates.CreateCharacter:
-                        UltimaClient.Send(new Network.Packets.Client.CreateCharacterPacket(
+                        UltimaClient.Send(new Client.Packets.Client.CreateCharacterPacket(
                             _name, (Sex)_gender, (Race)1, (byte)_attributes[0], (byte)_attributes[1], (byte)_attributes[2], 
                             (byte)_skillIndexes[0], (byte)_skillValues[0], (byte)_skillIndexes[1], (byte)_skillValues[1], (byte)_skillIndexes[2], (byte)_skillValues[2],
                             (short)_skinHue, (short)_hairStyleID, (short)_hairHue, (short)_facialHairStyleID, (short)_facialHairHue,

@@ -22,7 +22,7 @@ using System.Linq;
 using System.Text;
 #endregion
 
-namespace UltimaXNA.Network
+namespace UltimaXNA.Client.Packets
 {
     public class ContextMenuItem
     {

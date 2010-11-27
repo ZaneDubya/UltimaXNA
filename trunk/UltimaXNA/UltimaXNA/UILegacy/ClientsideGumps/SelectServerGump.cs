@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UltimaXNA.Client;
-using UltimaXNA.Client.Packets.Server;
+﻿using UltimaXNA.Client;
 using UltimaXNA.UILegacy.Gumplings;
 
 namespace UltimaXNA.UILegacy.ClientsideGumps
@@ -50,7 +45,7 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
             AddGumpling(new HtmlGump(this, 1, 402, 72, 50, 20, 0, 0, Data.StringList.Entry(1044577)));
             AddGumpling(new HtmlGump(this, 1, 472, 72, 80, 20, 0, 0, Data.StringList.Entry(1044578)));
             // display the serverlist the server list.
-            foreach (ServerListEntry e in ClientVars.ServerListPacket.Servers)
+            foreach (ServerListEntry e in ClientVars.ServerListPacket)
             {
                 AddGumpling(new HtmlGump(this, 1, 224, 104, 200, 20, 0, 0, "<big><a href=\"SHARD=" + e.Index + "\" style=\"colorhue: #1278; hoverhue: #836; activatehue: #796; text-decoration: none\">" + e.Name + "</a></big>"));
             }

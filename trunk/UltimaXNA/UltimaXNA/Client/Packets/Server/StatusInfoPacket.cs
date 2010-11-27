@@ -16,11 +16,7 @@
  *
  ***************************************************************************/
 #region usings
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UltimaXNA.Client.Packets.Client;
+using UltimaXNA.Network;
 #endregion
 
 namespace UltimaXNA.Client.Packets.Server

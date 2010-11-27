@@ -52,7 +52,7 @@ namespace UltimaXNA.Entities
             drawOverheads(tile, new Position3D(_movement.Position.Point_V3));
         }
 
-        public void LoadCorpseClothing(List<Network.Packets.Server.CorpseClothingItemWithLayer> items)
+        public void LoadCorpseClothing(List<Client.CorpseClothingItemWithLayer> items)
         {
 
         }

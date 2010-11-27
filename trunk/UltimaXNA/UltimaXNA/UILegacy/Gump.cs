@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using UltimaXNA.Client;
 using UltimaXNA.UILegacy.Gumplings;
 
 namespace UltimaXNA.UILegacy
@@ -122,8 +123,8 @@ namespace UltimaXNA.UILegacy
         public override void ActivateByButton(int buttonID)
         {
             int[] switchIDs = new int[0];
-            Network.Pair<short, string>[] textEntries = new UltimaXNA.Network.Pair<short,string>[0];
-            Client.UltimaClient.Send(new Network.Packets.Client.GumpMenuSelectPacket(
+            Pair<short, string>[] textEntries = new Pair<short,string>[0];
+            UltimaClient.Send(new Client.Packets.Client.GumpMenuSelectPacket(
                 this.Serial, this.GumpID, buttonID, switchIDs, textEntries));
             this.Dispose();
         }
