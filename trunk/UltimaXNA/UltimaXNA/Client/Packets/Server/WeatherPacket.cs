@@ -22,7 +22,7 @@ using System.Linq;
 using System.Text;
 #endregion
 
-namespace UltimaXNA.Network.Packets.Server
+namespace UltimaXNA.Client.Packets.Server
 {
     public class WeatherPacket : RecvPacket
     {

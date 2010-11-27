@@ -23,7 +23,7 @@ using System.Text;
 using System.IO;
 #endregion
 
-namespace UltimaXNA.Network.Packets.Client
+namespace UltimaXNA.Client.Packets.Client
 {
     public class SeedPacket : SendPacket
     {

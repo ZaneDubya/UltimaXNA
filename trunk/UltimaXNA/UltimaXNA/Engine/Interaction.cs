@@ -8,7 +8,7 @@ using UltimaXNA.Client;
 using UltimaXNA.Entities;
 using UltimaXNA.Extensions;
 using UltimaXNA.Input;
-using UltimaXNA.Network.Packets.Client;
+using UltimaXNA.Client.Packets.Client;
 using UltimaXNA.TileEngine;
 using UltimaXNA.UILegacy;
 using UltimaXNA.UILegacy.Gumplings;

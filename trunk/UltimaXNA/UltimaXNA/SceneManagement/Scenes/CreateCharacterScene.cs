@@ -25,7 +25,7 @@ using System.Threading;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Client;
 using UltimaXNA.Network;
-using UltimaXNA.Network.Packets.Client;
+using UltimaXNA.Client.Packets.Client;
 using UltimaXNA.UILegacy;
 using UltimaXNA.UILegacy.ClientsideGumps;
 #endregion

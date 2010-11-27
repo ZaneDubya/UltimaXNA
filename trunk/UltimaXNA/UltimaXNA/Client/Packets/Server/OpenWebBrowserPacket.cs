@@ -19,7 +19,7 @@
 using System;
 #endregion
 
-namespace UltimaXNA.Network.Packets.Server
+namespace UltimaXNA.Client.Packets.Server
 {
     public class OpenWebBrowserPacket : RecvPacket
     {

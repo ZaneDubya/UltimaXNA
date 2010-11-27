@@ -23,7 +23,7 @@ using System.Text;
 using UltimaXNA.Data;
 #endregion
 
-namespace UltimaXNA.Network.Packets.Server
+namespace UltimaXNA.Client.Packets.Server
 {
     public class CustomHousePacket : RecvPacket
     {

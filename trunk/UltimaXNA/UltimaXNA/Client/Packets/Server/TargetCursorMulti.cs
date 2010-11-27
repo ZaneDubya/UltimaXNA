@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿#region usings
+using UltimaXNA.Network;
+#endregion
 
-namespace UltimaXNA.Network.Packets.Server
+namespace UltimaXNA.Client.Packets.Server
 {
     class TargetCursorMultiPacket : SendRecvPacket
     {
