@@ -14,9 +14,8 @@ using UltimaXNA.Input;
 using Microsoft.Xna.Framework;
 using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework.Input;
-using UltimaXNA.Input.Events;
 
-namespace UltimaXNA.Input
+namespace UltimaXNA.Input.Core
 {
     /// <summary>
     /// Provides an asyncronous Input Event system that can be used to monitor Keyboard and Mouse events.

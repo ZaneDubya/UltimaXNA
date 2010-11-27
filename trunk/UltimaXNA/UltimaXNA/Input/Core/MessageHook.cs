@@ -15,26 +15,12 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Reflection;
 
-namespace UltimaXNA.Input
+namespace UltimaXNA.Input.Core
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="nCode"></param>
-    /// <param name="wParam"></param>
-    /// <param name="lParam"></param>
-    /// <returns></returns>
-    // public delegate IntPtr WndProcHandler(int nCode, IntPtr wParam, IntPtr lParam);
     public delegate IntPtr WndProcHandler(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
-    /// <summary>
-    /// 
-    /// </summary>
     public abstract class MessageHook : IDisposable
     {
-        /// <summary>
-        /// 
-        /// </summary>
         public abstract int HookType { get; }
 
         private IntPtr _hWnd;
@@ -42,26 +28,18 @@ namespace UltimaXNA.Input
         private IntPtr _prevWndProc;
         private IntPtr _hIMC;
 
-        /// <summary>
-        /// 
-        /// </summary>
         public IntPtr HWnd
         {
             get { return _hWnd; }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="hWnd"></param>
         public MessageHook(IntPtr hWnd)
         {
             _hWnd = hWnd;
             _Hook = WndProcHook;
             _prevWndProc = (IntPtr)NativeMethods.SetWindowLong(
                 hWnd,
-                NativeConstants.GWL_WNDPROC,
-                (int)Marshal.GetFunctionPointerForDelegate(_Hook));
+                NativeConstants.GWL_WNDPROC, (int)Marshal.GetFunctionPointerForDelegate(_Hook));
             _hIMC = NativeMethods.ImmGetContext(_hWnd);
             new InputMessageFilter(_Hook);
         }

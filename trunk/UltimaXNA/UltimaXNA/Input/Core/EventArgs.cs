@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace UltimaXNA.Input.Events
+namespace UltimaXNA.Input
 {
     public class EventArgs
     {

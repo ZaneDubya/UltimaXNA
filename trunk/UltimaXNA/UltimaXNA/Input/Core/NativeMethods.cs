@@ -12,7 +12,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using Microsoft.Win32.SafeHandles;
 
-namespace UltimaXNA.Input
+namespace UltimaXNA.Input.Core
 {
     public static class NativeConstants
     {

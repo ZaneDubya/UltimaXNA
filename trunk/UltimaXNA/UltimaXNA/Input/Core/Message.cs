@@ -6,7 +6,7 @@ using System.Security;
 using System.Security.Permissions;
 using System.Runtime.InteropServices;
 
-namespace UltimaXNA.Input
+namespace UltimaXNA.Input.Core
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct Message

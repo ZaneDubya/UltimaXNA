@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using UltimaXNA.Input.Events;
 
 namespace UltimaXNA.Input
 {
     public interface IInputState
     {
-        List<InputEventKeyboard> GetKeyboardEvents();
-        List<InputEventMouse> GetMouseEvents();
+        List<InputEventKB> GetKeyboardEvents();
+        List<InputEventM> GetMouseEvents();
 
         bool IsKeyDown(WinKeys key);
         bool IsKeyUp(WinKeys key);
@@ -19,6 +18,7 @@ namespace UltimaXNA.Input
         Point2D MousePosition { get; }
         // bool IsMouseButtonDown(MouseButtonInternal mb);
         // bool IsMouseButtonUp(MouseButtonInternal mb);
-        bool IsMouseStationarySinceLastUpdate();
+        // bool IsMouseStationarySinceLastUpdate();
+        int MouseStationaryMS { get; }
     }
 }
