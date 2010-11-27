@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UltimaXNA.Input.Events;
+﻿using UltimaXNA.Input.Core;
 
 namespace UltimaXNA.Input
 {
-    public class InputEventKeyboard : InputEvent
+    public class InputEventKB : InputEvent
     {
         protected readonly KeyboardEvent _eventType;
         public KeyboardEvent EventType
@@ -43,7 +39,7 @@ namespace UltimaXNA.Input
 
         public void OverrideKeyChar(WinKeys newChar) { _keyChar = newChar; }
 
-        public InputEventKeyboard(KeyboardEvent eventType, EventArgsKeyboard args)
+        public InputEventKB(KeyboardEvent eventType, EventArgsKeyboard args)
             : base(args)
         {
             _eventType = eventType;

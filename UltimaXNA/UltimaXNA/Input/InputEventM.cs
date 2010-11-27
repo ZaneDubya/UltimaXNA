@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
-using UltimaXNA.Input.Events;
+﻿using UltimaXNA.Input.Core;
 
 namespace UltimaXNA.Input
 {
-    public class InputEventMouse : InputEvent
+    public class InputEventM : InputEvent
     {
         private readonly MouseEvent _eventType;
         public MouseEvent EventType
@@ -36,7 +31,7 @@ namespace UltimaXNA.Input
             get { return (_args.Clicks / WHEEL_DELTA); }
         }
 
-        public InputEventMouse(MouseEvent eventType, EventArgsMouse args) // WinKeys keyData, int x, int y, MouseButton button, 
+        public InputEventM(MouseEvent eventType, EventArgsMouse args) // WinKeys keyData, int x, int y, MouseButton button, 
             : base(args)
         {
             _eventType = eventType;
