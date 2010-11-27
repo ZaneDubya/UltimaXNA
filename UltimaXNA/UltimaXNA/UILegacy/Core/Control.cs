@@ -5,7 +5,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using UltimaXNA.Input;
-using UltimaXNA.Input.Events;
 
 namespace UltimaXNA.UILegacy
 {
@@ -444,7 +443,7 @@ namespace UltimaXNA.UILegacy
             }
         }
 
-        public void KeyboardInput(InputEventKeyboard e)
+        public void KeyboardInput(InputEventKB e)
         {
             keyboardInput(e);
         }
@@ -484,7 +483,7 @@ namespace UltimaXNA.UILegacy
 
         }
 
-        protected virtual void keyboardInput(InputEventKeyboard e)
+        protected virtual void keyboardInput(InputEventKB e)
         {
 
         }

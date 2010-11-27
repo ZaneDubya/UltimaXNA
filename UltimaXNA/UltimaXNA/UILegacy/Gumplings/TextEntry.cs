@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Input;
 using UltimaXNA.Input;
-using UltimaXNA.Input.Events;
 
 namespace UltimaXNA.UILegacy.Gumplings
 {
@@ -139,7 +138,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             base.Draw(spriteBatch);
         }
 
-        protected override void keyboardInput(InputEventKeyboard e)
+        protected override void keyboardInput(InputEventKB e)
         {
             switch (e.KeyCode)
             {

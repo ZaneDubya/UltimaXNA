@@ -12,7 +12,6 @@ using UltimaXNA.Client;
 using UltimaXNA.Entities;
 using UltimaXNA.Extensions;
 using UltimaXNA.Input;
-using UltimaXNA.Input.Events;
 using UltimaXNA.Network.Packets.Client;
 using UltimaXNA.TileEngine;
 using UltimaXNA.UILegacy;
@@ -42,8 +41,8 @@ namespace UltimaXNA
 
             // input for debug variables.
             //_Input.HandleKeyboardEvent(
-            List<InputEventKeyboard> keyEvents = _Input.GetKeyboardEvents();
-            foreach (InputEventKeyboard e in keyEvents)
+            List<InputEventKB> keyEvents = _Input.GetKeyboardEvents();
+            foreach (InputEventKB e in keyEvents)
             {
                 if ((e.EventType == KeyboardEvent.Press) && (e.KeyCode == WinKeys.D) && e.Control)
                 {

@@ -8,7 +8,6 @@ using Microsoft.Xna.Framework.Input;
 using UltimaXNA.Entities;
 using UltimaXNA.Extensions;
 using UltimaXNA.Input;
-using UltimaXNA.Input.Events;
 using UltimaXNA.TileEngine;
 
 namespace UltimaXNA.UILegacy
@@ -353,8 +352,8 @@ namespace UltimaXNA.UILegacy
             }
 
 
-            List<InputEventMouse> events = _input.GetMouseEvents();
-            foreach (InputEventMouse e in events)
+            List<InputEventM> events = _input.GetMouseEvents();
+            foreach (InputEventM e in events)
             {
                 // MouseDown event.
                 if (e.EventType == MouseEvent.Down)
@@ -423,8 +422,8 @@ namespace UltimaXNA.UILegacy
                 }
                 else
                 {
-                    List<InputEventKeyboard> k_events = _input.GetKeyboardEvents();
-                    foreach (InputEventKeyboard e in k_events)
+                    List<InputEventKB> k_events = _input.GetKeyboardEvents();
+                    foreach (InputEventKB e in k_events)
                     {
                         if (e.EventType == KeyboardEvent.Press)
                             _keyboardFocusControl.KeyboardInput(e);
