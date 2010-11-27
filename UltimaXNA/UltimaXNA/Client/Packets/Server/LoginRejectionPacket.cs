@@ -22,7 +22,7 @@ using System.Linq;
 using System.Text;
 #endregion
 
-namespace UltimaXNA.Network.Packets.Server
+namespace UltimaXNA.Client.Packets.Server
 {
     // RunUO (Packets.cs:3402)
     public enum LoginRejectionReasons : byte

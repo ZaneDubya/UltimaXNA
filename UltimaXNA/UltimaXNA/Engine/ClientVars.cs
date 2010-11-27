@@ -6,13 +6,13 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using UltimaXNA.Network;
-using UltimaXNA.Network.Packets.Server;
+using UltimaXNA.Client.Packets.Server;
 using UltimaXNA.Data;
 using UltimaXNA.Client;
 using UltimaXNA.Entities;
 using UltimaXNA.Extensions;
 using UltimaXNA.Input;
-using UltimaXNA.Network.Packets.Client;
+using UltimaXNA.Client.Packets.Client;
 using UltimaXNA.TileEngine;
 using UltimaXNA.UILegacy;
 

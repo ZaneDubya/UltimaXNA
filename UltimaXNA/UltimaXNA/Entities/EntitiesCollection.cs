@@ -20,7 +20,7 @@ using System;
 using System.Collections.Generic;
 using UltimaXNA.Extensions;
 using Microsoft.Xna.Framework;
-using UltimaXNA.Network.Packets.Client;
+using UltimaXNA.Client.Packets.Client;
 using UltimaXNA.TileEngine;
 #endregion
 

@@ -16,7 +16,7 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Network.Packets.Server;
+using UltimaXNA.Client.Packets.Server;
 #endregion
 
 namespace UltimaXNA.Client

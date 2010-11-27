@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace UltimaXNA.Network.Packets.Client
+namespace UltimaXNA.Client.Packets.Client
 {
     public class RequestCustomHousePacket : SendPacket
     {

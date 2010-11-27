@@ -20,7 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using UltimaXNA.Network.Packets.Server;
+using UltimaXNA.Client.Packets.Server;
 #endregion
 
 namespace UltimaXNA.Network

@@ -23,7 +23,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 #endregion
 
-namespace UltimaXNA.Network.Packets.Client
+namespace UltimaXNA.Client.Packets.Client
 {
     public enum Sex
     {

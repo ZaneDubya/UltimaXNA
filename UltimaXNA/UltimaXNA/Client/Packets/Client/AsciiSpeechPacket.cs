@@ -22,7 +22,7 @@ using System.Linq;
 using System.Text;
 #endregion
 
-namespace UltimaXNA.Network.Packets.Client
+namespace UltimaXNA.Client.Packets.Client
 {
     // from http://docs.polserver.com/packets/index.php?Packet=0xAD
     public enum AsciiSpeechPacketTypes

@@ -16,13 +16,10 @@
  *
  ***************************************************************************/
 #region usings
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using UltimaXNA.Network;
 #endregion
 
-namespace UltimaXNA.Network.Packets.Client
+namespace UltimaXNA.Client.Packets.Client
 {
     public class BuyItemsPacket : SendPacket
     {
