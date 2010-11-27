@@ -24,7 +24,10 @@ namespace UltimaXNA.Input
         // Mouse dragging support
         bool _mouseIsDragging = false;
         InputEventM _lastMouseDown = null;
+        float _lastMouseDownTime = 0f;
+        float _lastMouseClickTime = 0f;
         const int MouseDragBeginDistance = 2;
+        const int MouseClickMaxDelta = 2;
 
         public InputState(Game game)
             : base(game.Window.Handle)
@@ -186,6 +189,7 @@ namespace UltimaXNA.Input
         protected override void OnMouseDown(EventArgsMouse e)
         {
             _lastMouseDown = new InputEventM(MouseEvent.Down, e);
+            _lastMouseDownTime = ClientVars.TheTime;
             addEvent(_lastMouseDown);
         }
 
@@ -196,6 +200,22 @@ namespace UltimaXNA.Input
             {
                 addEvent(new InputEventM(MouseEvent.DragEnd, e));
                 _mouseIsDragging = false;
+            }
+            else
+            {
+                if (!Utility.IsPointThisDistanceAway(_lastMouseDown.Position, e.Position, MouseClickMaxDelta))
+                {
+                    if ((ClientVars.TheTime - _lastMouseClickTime <= ClientVars.SecondsForDoubleClick))
+                    {
+                        _lastMouseClickTime = 0f;
+                        addEvent(new InputEventM(MouseEvent.DoubleClick, e));
+                    }
+                    else
+                    {
+                        _lastMouseClickTime = ClientVars.TheTime;
+                        addEvent(new InputEventM(MouseEvent.Click, e));
+                    }
+                }
             }
             _lastMouseDown = null;
         }

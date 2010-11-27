@@ -2,8 +2,8 @@
 {
     public class InputEvent
     {
-        protected bool _handled;
         protected EventArgs _args;
+        protected bool _handled;
 
         public bool Alt
         {

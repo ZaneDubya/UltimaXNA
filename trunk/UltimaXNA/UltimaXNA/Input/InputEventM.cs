@@ -1,4 +1,5 @@
-﻿using UltimaXNA.Input.Core;
+﻿using Microsoft.Xna.Framework;
+using UltimaXNA.Input.Core;
 
 namespace UltimaXNA.Input
 {
@@ -31,7 +32,7 @@ namespace UltimaXNA.Input
             get { return (_args.Clicks / WHEEL_DELTA); }
         }
 
-        public InputEventM(MouseEvent eventType, EventArgsMouse args) // WinKeys keyData, int x, int y, MouseButton button, 
+        public InputEventM(MouseEvent eventType, EventArgsMouse args)
             : base(args)
         {
             _eventType = eventType;
@@ -45,7 +46,9 @@ namespace UltimaXNA.Input
         Up,
         WheelScroll,
         DragBegin,
-        DragEnd
+        DragEnd,
+        Click,
+        DoubleClick,
     }
 
     public enum MouseButton

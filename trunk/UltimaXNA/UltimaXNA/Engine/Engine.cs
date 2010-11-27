@@ -31,7 +31,6 @@ namespace UltimaXNA
     {
         Diagnostics.Logger _logService;
         Input.InputState _inputState;
-        InputOld.InputState _inputOld;
         SceneManagement.SceneManager _sceneService;
         TileEngine.World _worldService;
         UILegacy.UIManager _LegacyUIService;
@@ -49,9 +48,6 @@ namespace UltimaXNA
             // Load all the services we need.
             _logService = new Diagnostics.Logger("UXNA");
             Services.AddService<Diagnostics.ILoggingService>(_logService);
-
-            _inputOld = new InputOld.InputState(this);
-            Services.AddService<InputOld.IInputService>(_inputOld);
 
             _inputState = new Input.InputState(this);
             Services.AddService<Input.IInputState>(_inputState);
@@ -102,7 +98,6 @@ namespace UltimaXNA
             if (ClientVars.EngineRunning)
             {
                 _inputState.Update(gameTime);
-                _inputOld.Update(gameTime);
                 Client.UltimaClient.Update(gameTime);
                 Entities.EntitiesCollection.Update(gameTime);
                 _sceneService.Update(gameTime);
