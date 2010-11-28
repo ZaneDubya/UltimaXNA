@@ -188,6 +188,7 @@ namespace UltimaXNA.TileEngine
 
             ObjectsRendered = 0; // Count of objects rendered for statistics and debug
             MouseOverList overList = new MouseOverList(); // List of items for mouse over
+            MouseOverList.MousePosition = _input.MousePosition;
 
             MapObject mapObject;
             List<MapObject> mapObjects;
@@ -280,7 +281,7 @@ namespace UltimaXNA.TileEngine
                                     continue;
 
                                 if (((PickType & PickTypes.PickGroundTiles) == PickTypes.PickGroundTiles) || ClientVars.DEBUG_HighlightMouseOverObjects)
-                                    if (MouseOverList.IsPointInObject(_vertexBufferStretched, _input.MousePosition))
+                                    if (MouseOverList.IsMouseInObjectIsometric(_vertexBufferStretched))
                                     {
                                         MouseOverItem item = new MouseOverItem(texture, _vertexBufferStretched[0].Position, mapObject);
                                         item.Vertices = new Vector3[4] { _vertexBufferStretched[0].Position, _vertexBufferStretched[1].Position, _vertexBufferStretched[2].Position, _vertexBufferStretched[3].Position };
@@ -445,8 +446,8 @@ namespace UltimaXNA.TileEngine
 
                         if ((PickType & pick) == pick)
                         {
-                            if (((!flip) && MouseOverList.IsPointInObject(vectorBuffer[0].Position, vectorBuffer[3].Position, _input.MousePosition)) ||
-                                ((flip) && MouseOverList.IsPointInObject(vectorBuffer[2].Position, vectorBuffer[1].Position, _input.MousePosition)))
+                            if (((!flip) && MouseOverList.IsMouseInObject(vectorBuffer[0].Position, vectorBuffer[3].Position)) ||
+                                ((flip) && MouseOverList.IsMouseInObject(vectorBuffer[2].Position, vectorBuffer[1].Position)))
                             {
                                 MouseOverItem item; 
                                 if (!flip)

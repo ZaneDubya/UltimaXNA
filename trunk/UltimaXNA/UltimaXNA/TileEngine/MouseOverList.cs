@@ -10,6 +10,15 @@ namespace UltimaXNA.TileEngine
     {
         List<MouseOverItem> _overList;
 
+        static Vector3 _mousePosition;
+        static public Point2D MousePosition
+        {
+            set
+            {
+                _mousePosition = new Vector3(value.X, value.Y, 1);
+            }
+        }
+
         public MouseOverList()
         {
             _overList = new List<MouseOverItem>();
@@ -58,21 +67,30 @@ namespace UltimaXNA.TileEngine
             _overList.Add(item);
         }
 
-        public static bool IsPointInObject(Vector3 min, Vector3 max, Point2D point)
+        public static bool IsMouseInObject(Vector3 min, Vector3 max)
         {
             BoundingBox iBoundingBox = new BoundingBox(min, max);
             // Must correct for bounding box being one pixel larger than actual texture.
             iBoundingBox.Max.X--; iBoundingBox.Max.Y--;
 
-            Vector3 iMousePosition = new Vector3(point.X, point.Y, min.Z);
+            Vector3 iMousePosition = new Vector3(_mousePosition.X, _mousePosition.Y, min.Z);
             if (iBoundingBox.Contains(iMousePosition) == ContainmentType.Contains)
                 return true;
             return false;
         }
 
-        public static bool IsPointInObject(VertexPositionNormalTextureHue[] v, Point2D point)
+        public static bool IsMouseInObjectIsometric(VertexPositionNormalTextureHue[] v)
         {
             if (v.Length != 4)
+                return false;
+
+            if (v[0].Position.Y > _mousePosition.Y)
+                return false;
+            if (v[3].Position.Y < _mousePosition.Y)
+                return false;
+            if (v[1].Position.X < _mousePosition.X)
+                return false;
+            if (v[2].Position.X > _mousePosition.X)
                 return false;
 
             float minX = v[0].Position.X, maxX = v[0].Position.X;
@@ -92,15 +110,14 @@ namespace UltimaXNA.TileEngine
 
             // Added cursor picking -Poplicola 5/19/2009
             BoundingBox iBoundingBox = new BoundingBox(new Vector3(minX, minY, 0), new Vector3(maxX, maxY, 10));
-            Vector3 iMousePosition = new Vector3(point.X, point.Y, 1);
-            if (iBoundingBox.Contains(iMousePosition) == ContainmentType.Contains)
+            if (iBoundingBox.Contains(_mousePosition) == ContainmentType.Contains)
             {
                 Point[] p = new Point[4];
                 p[0] = new Point((int)v[0].Position.X, (int)v[0].Position.Y);
                 p[1] = new Point((int)v[1].Position.X, (int)v[1].Position.Y);
                 p[2] = new Point((int)v[3].Position.X, (int)v[3].Position.Y);
                 p[3] = new Point((int)v[2].Position.X, (int)v[2].Position.Y);
-                if (pointInPolygon(new Point((int)point.X, (int)point.Y), p))
+                if (pointInPolygon(new Point((int)_mousePosition.X, (int)_mousePosition.Y), p))
                 {
                     return true;
                 }
