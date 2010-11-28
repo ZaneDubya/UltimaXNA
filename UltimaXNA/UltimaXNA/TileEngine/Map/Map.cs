@@ -49,17 +49,14 @@ namespace UltimaXNA.TileEngine
         {
             _loadAllNearbyCells = true;
             _tileMatrix = new TileMatrixRaw(_index, _index);
+            Height = _tileMatrix.Height;
+            Width = _tileMatrix.Width;
+            m_MapCellsDrawRadius = ((ClientVars.MapCellsInMemory / 2) * 8);
             _cells = new MapCell[ClientVars.MapCellsInMemory * ClientVars.MapCellsInMemory];
         }
 
-        public int Height
-        {
-            get { return _tileMatrix.Height; }
-        }
-        public int Width
-        {
-            get { return _tileMatrix.Width; }
-        }
+        public int Height;
+        public int Width;
 
         public int GetAverageZ(int top, int left, int right, int bottom, ref int low, ref int high)
         {
@@ -117,6 +114,7 @@ namespace UltimaXNA.TileEngine
 
         int m_LoadedCellThisFrame = 0;
         const int m_MaxCellsLoadedPerFrame = 2;
+        int m_MapCellsDrawRadius = 0;
 
         public MapCell GetMapCell(int x, int y, bool load)
         {
@@ -125,8 +123,8 @@ namespace UltimaXNA.TileEngine
             if (y < 0) y += this.Height;
             if (y >= this.Height) y -= this.Height;
 
-            if ((Math.Abs(x - _x) > ((ClientVars.MapCellsInMemory / 2) * 8)) ||
-                (Math.Abs(y - _y) > ((ClientVars.MapCellsInMemory / 2) * 8)))
+            if (Math.Abs(x - _x) > m_MapCellsDrawRadius ||
+                Math.Abs(y - _y) > m_MapCellsDrawRadius)
             {
                 return null;
             }

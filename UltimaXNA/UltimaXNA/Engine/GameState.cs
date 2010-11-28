@@ -15,14 +15,12 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using UltimaXNA.Data;
 using UltimaXNA.Client;
+using UltimaXNA.Client.Packets.Client;
+using UltimaXNA.Data;
 using UltimaXNA.Entities;
 using UltimaXNA.Extensions;
 using UltimaXNA.Input;
-using UltimaXNA.Client.Packets.Client;
 using UltimaXNA.TileEngine;
 using UltimaXNA.UILegacy;
 #endregion
@@ -69,7 +67,6 @@ namespace UltimaXNA
 
         public static void Initialize(Game game)
         {
-            // _input = game.Services.GetService<IInputService>();
             _inputNew = game.Services.GetService<IInputState>();
             _world = game.Services.GetService<IWorld>();
             _ui = game.Services.GetService<IUIManager>();
