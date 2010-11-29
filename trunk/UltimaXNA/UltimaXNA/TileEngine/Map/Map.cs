@@ -36,6 +36,11 @@ namespace UltimaXNA.TileEngine
         bool _mustResetMap = false;
         public bool LoadEverything_Override = false;
 
+        int m_LoadedCellThisFrame = 0;
+        const int m_MaxCellsLoadedPerFrame = 2;
+        int m_MapCellsDrawRadius = 0;
+        int m_MapCellsInMemory = 0;
+
         int _index = -1;
         public int Index { get { return _index; } }
 
@@ -51,8 +56,9 @@ namespace UltimaXNA.TileEngine
             _tileMatrix = new TileMatrixRaw(_index, _index);
             Height = _tileMatrix.Height;
             Width = _tileMatrix.Width;
-            m_MapCellsDrawRadius = ((ClientVars.MapCellsInMemory / 2) * 8);
-            _cells = new MapCell[ClientVars.MapCellsInMemory * ClientVars.MapCellsInMemory];
+            m_MapCellsInMemory = ClientVars.MapCellsInMemory;
+            m_MapCellsDrawRadius = ((m_MapCellsInMemory / 2) * 8);
+            _cells = new MapCell[m_MapCellsInMemory * m_MapCellsInMemory];
         }
 
         public int Height;
@@ -112,10 +118,6 @@ namespace UltimaXNA.TileEngine
             return (x << 18) + y;
         }
 
-        int m_LoadedCellThisFrame = 0;
-        const int m_MaxCellsLoadedPerFrame = 2;
-        int m_MapCellsDrawRadius = 0;
-
         public MapCell GetMapCell(int x, int y, bool load)
         {
             if (x < 0) x += this.Width;
@@ -123,13 +125,16 @@ namespace UltimaXNA.TileEngine
             if (y < 0) y += this.Height;
             if (y >= this.Height) y -= this.Height;
 
-            if (Math.Abs(x - _x) > m_MapCellsDrawRadius ||
-                Math.Abs(y - _y) > m_MapCellsDrawRadius)
+            if (!load)
             {
-                return null;
+                if (Math.Abs(x - _x) > m_MapCellsDrawRadius ||
+                    Math.Abs(y - _y) > m_MapCellsDrawRadius)
+                {
+                    return null;
+                }
             }
 
-            int index = ((x >> 3) % ClientVars.MapCellsInMemory) + (((y >> 3) % ClientVars.MapCellsInMemory) * ClientVars.MapCellsInMemory);
+            int index = ((x >> 3) % m_MapCellsInMemory) + (((y >> 3) % m_MapCellsInMemory) * m_MapCellsInMemory);
             MapCell c = _cells[index];
             if (c == null || 
                 (((x - c.X) & 0xFFF8) != 0) ||
