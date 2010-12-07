@@ -75,9 +75,9 @@ namespace UltimaXNA.Entities
         moveEventsQueue _moveEvents;
         DateTime _nextMove;
         Entity _entity;
-        IWorld _world;
+        IIsometricRenderer _world;
 
-        public Movement(Entity entity, IWorld world)
+        public Movement(Entity entity, IIsometricRenderer world)
         {
             _entity = entity;
             _world = world;

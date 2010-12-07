@@ -49,8 +49,8 @@ namespace UltimaXNA.Entities
         bool _Disposed = false; // set this to true to have the object deleted.
         public bool IsDisposed { get { return _Disposed; } protected set { _Disposed = value; } }
 
-        IWorld _world;
-        protected IWorld World { get { return _world; } }
+        IIsometricRenderer _world;
+        protected IIsometricRenderer World { get { return _world; } }
         protected Movement _movement;
         public int X { get { return _movement.Position.X; } set { _movement.Position.X = value; HasBeenDrawn = false; } }
         public int Y { get { return _movement.Position.Y; } set { _movement.Position.Y = value; HasBeenDrawn = false; } }
@@ -73,7 +73,7 @@ namespace UltimaXNA.Entities
             }
         }
 
-        public Entity(Serial serial, IWorld world)
+        public Entity(Serial serial, IIsometricRenderer world)
         {
             Serial = serial;
             _movement = new Movement(this, world);

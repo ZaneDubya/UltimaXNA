@@ -298,8 +298,8 @@
     <Compile Include="SceneManagement\Scenes\DebugScene.cs" />
     <Compile Include="SceneManagement\Scenes\LoggingInScene.cs" />
     <Compile Include="SceneManagement\Scenes\SelectServerScene.cs" />
-    <Compile Include="TileEngine\Interfaces\IWorld.cs" />
-    <Compile Include="TileEngine\Interfaces\IWorldRenderer.cs" />
+    <Compile Include="TileEngine\Interfaces\IIsometricRenderer.cs" />
+    <Compile Include="TileEngine\IsometricRenderer.cs" />
     <Compile Include="TileEngine\Map\MapCell.cs" />
     <Compile Include="TileEngine\Map\MapTile.cs" />
     <Compile Include="TileEngine\Map\TileComparer.cs" />
@@ -396,7 +396,6 @@
     <Compile Include="TileEngine\Objects\MapObject.cs" />
     <Compile Include="TileEngine\Objects\MapObjectStatic.cs" />
     <Compile Include="TileEngine\VertexPositionNormalTextureHue.cs" />
-    <Compile Include="TileEngine\World.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Data\Animations.cs" />
     <Compile Include="Data\FileIndex.cs" />

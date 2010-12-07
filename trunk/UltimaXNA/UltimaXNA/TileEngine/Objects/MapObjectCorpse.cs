@@ -28,13 +28,6 @@ namespace UltimaXNA.TileEngine
         public int BodyID { get; set; }
         public int FrameIndex { get; set; }
 
-        public MapObjectCorpse(Position3D position, int direction, Entity ownerEntity, int nHue, int bodyID, float frame)
-            : base(0x2006, position, direction, ownerEntity, nHue)
-        {
-            BodyID = bodyID;
-            FrameIndex = (int)(frame * Data.BodyConverter.DeathAnimationFrameCount(bodyID));
-        }
-
         public new int SortZ
         {
             get { return Z; }
@@ -44,6 +37,47 @@ namespace UltimaXNA.TileEngine
         {
             get { return Tiebreaker; }
             set { Tiebreaker = value; }
+        }
+
+        private bool _noDraw = false;
+
+        public MapObjectCorpse(Position3D position, int direction, Entity ownerEntity, int nHue, int bodyID, float frame)
+            : base(0x2006, position, direction, ownerEntity, nHue)
+        {
+            BodyID = bodyID;
+            FrameIndex = (int)(frame * Data.BodyConverter.DeathAnimationFrameCount(bodyID));
+
+            Data.FrameXNA iFrame = getFrame();
+            if (iFrame == null)
+            {
+                _noDraw = true;
+                return;
+            }
+            _draw_texture = iFrame.Texture;
+            _draw_width = _draw_texture.Width;
+            _draw_height = _draw_texture.Height;
+            _draw_X = iFrame.Center.X - 22;
+            _draw_Y = iFrame.Center.Y + (Z << 2) + _draw_height - 22;
+            _draw_hue = IsometricRenderer.GetHueVector(Hue);
+            _pickType = PickTypes.PickObjects;
+            _draw_flip = false;
+        }
+
+        internal override bool Draw(SpriteBatch3D sb, Vector3 drawPosition, MouseOverList molist, PickTypes pickType, int maxAlt)
+        {
+            if (_noDraw)
+                return false;
+            return base.Draw(sb, drawPosition, molist, pickType, maxAlt);
+        }
+
+        private Data.FrameXNA getFrame()
+        {
+            Data.FrameXNA[] iFrames = Data.AnimationsXNA.GetAnimation(BodyID, Data.BodyConverter.DeathAnimationIndex(BodyID), Facing, Hue);
+            if (iFrames == null)
+                return null;
+            if (iFrames[FrameIndex].Texture == null)
+                return null;
+            return iFrames[FrameIndex];
         }
     }
 }

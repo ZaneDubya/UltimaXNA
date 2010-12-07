@@ -27,7 +27,7 @@ namespace UltimaXNA.Entities
         public int Bytes0 = 0;
         public int SpellID = 0;
 
-        public DynamicObject(Serial serial, World world)
+        public DynamicObject(Serial serial, IsometricRenderer world)
             : base(serial, world)
         {
 

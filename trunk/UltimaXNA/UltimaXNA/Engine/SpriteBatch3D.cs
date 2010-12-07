@@ -34,12 +34,7 @@ namespace UltimaXNA
         private Queue<List<VertexPositionNormalTextureHue>> _vertexListQueue;
         private BoundingBox _boundingBox;
 
-        static int z = 0;
-        public static int Z
-        {
-            get { return z; }
-            set { z = value; }
-        }
+        static float _z = 0;
 
         public Matrix WorldMatrix
         {
@@ -76,10 +71,10 @@ namespace UltimaXNA
         public bool DrawSimple(Texture2D texture, Vector3 position, Vector2 hue)
         {
             VertexPositionNormalTextureHue[] v = new VertexPositionNormalTextureHue[] {
-                new VertexPositionNormalTextureHue(new Vector3(position.X, position.Y, position.Z), new Vector3(0, 0, 1), new Vector3(0, 0, 0)),
-                new VertexPositionNormalTextureHue(new Vector3(position.X + texture.Width, position.Y, position.Z), new Vector3(0, 0, 1), new Vector3(1, 0, 0)),
-                new VertexPositionNormalTextureHue(new Vector3(position.X, position.Y + texture.Height, position.Z), new Vector3(0, 0, 1), new Vector3(0, 1, 0)),
-                new VertexPositionNormalTextureHue(new Vector3(position.X + texture.Width, position.Y + texture.Height, position.Z), new Vector3(0, 0, 1), new Vector3(1, 1, 0))
+                new VertexPositionNormalTextureHue(new Vector3(position.X, position.Y, 0), new Vector3(0, 0, 1), new Vector3(0, 0, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(position.X + texture.Width, position.Y, 0), new Vector3(0, 0, 1), new Vector3(1, 0, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(position.X, position.Y + texture.Height, 0), new Vector3(0, 0, 1), new Vector3(0, 1, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(position.X + texture.Width, position.Y + texture.Height, 0), new Vector3(0, 0, 1), new Vector3(1, 1, 0))
             };
 
             v[0].Hue = v[1].Hue = v[2].Hue = v[3].Hue = hue;
@@ -92,46 +87,46 @@ namespace UltimaXNA
             float minY = (float)sourceRect.Y / (float)texture.Height, maxY = (float)(sourceRect.Y + sourceRect.Height) / (float)texture.Height;
 
             VertexPositionNormalTextureHue[] v = new VertexPositionNormalTextureHue[] {
-                new VertexPositionNormalTextureHue(new Vector3(position.X, position.Y, position.Z), new Vector3(0, 0, 1), new Vector3(minX, minY, 0)),
-                new VertexPositionNormalTextureHue(new Vector3(position.X + sourceRect.Width, position.Y, position.Z), new Vector3(0, 0, 1), new Vector3(maxX, minY, 0)),
-                new VertexPositionNormalTextureHue(new Vector3(position.X, position.Y + sourceRect.Height, position.Z), new Vector3(0, 0, 1), new Vector3(minX, maxY, 0)),
-                new VertexPositionNormalTextureHue(new Vector3(position.X + sourceRect.Width, position.Y + sourceRect.Height, position.Z), new Vector3(0, 0, 1), new Vector3(maxX, maxY, 0))
+                new VertexPositionNormalTextureHue(new Vector3(position.X, position.Y, 0), new Vector3(0, 0, 1), new Vector3(minX, minY, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(position.X + sourceRect.Width, position.Y, 0), new Vector3(0, 0, 1), new Vector3(maxX, minY, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(position.X, position.Y + sourceRect.Height, 0), new Vector3(0, 0, 1), new Vector3(minX, maxY, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(position.X + sourceRect.Width, position.Y + sourceRect.Height, 0), new Vector3(0, 0, 1), new Vector3(maxX, maxY, 0))
             };
 
             v[0].Hue = v[1].Hue = v[2].Hue =  v[3].Hue = hue;
             return Draw(texture, v);
         }
 
-        public bool DrawSimple(Texture2D texture, Rectangle destRect, int z, Rectangle sourceRect, Vector2 hue)
+        public bool DrawSimple(Texture2D texture, Rectangle destRect, Rectangle sourceRect, Vector2 hue)
         {
             float minX = (float)sourceRect.X / (float)texture.Width, maxX = (float)sourceRect.Width / (float)texture.Width;
             float minY = (float)sourceRect.Y / (float)texture.Height, maxY = (float)sourceRect.Height / (float)texture.Height;
 
             VertexPositionNormalTextureHue[] v = new VertexPositionNormalTextureHue[] {
-                new VertexPositionNormalTextureHue(new Vector3(destRect.X, destRect.Y, z), new Vector3(0, 0, 1), new Vector3(minX, minY, 0)),
-                new VertexPositionNormalTextureHue(new Vector3(destRect.X + destRect.Width, destRect.Y, z), new Vector3(0, 0, 1), new Vector3(maxX, minY, 0)),
-                new VertexPositionNormalTextureHue(new Vector3(destRect.X, destRect.Y + destRect.Height, z), new Vector3(0, 0, 1), new Vector3(minX, maxY, 0)),
-                new VertexPositionNormalTextureHue(new Vector3(destRect.X + destRect.Width, destRect.Y + destRect.Height, z), new Vector3(0, 0, 1), new Vector3(maxX, maxY, 0))
+                new VertexPositionNormalTextureHue(new Vector3(destRect.X, destRect.Y, 0), new Vector3(0, 0, 1), new Vector3(minX, minY, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(destRect.X + destRect.Width, destRect.Y, 0), new Vector3(0, 0, 1), new Vector3(maxX, minY, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(destRect.X, destRect.Y + destRect.Height, 0), new Vector3(0, 0, 1), new Vector3(minX, maxY, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(destRect.X + destRect.Width, destRect.Y + destRect.Height, 0), new Vector3(0, 0, 1), new Vector3(maxX, maxY, 0))
             };
 
             v[0].Hue = v[1].Hue = v[2].Hue = v[3].Hue = hue;
             return Draw(texture, v);
         }
 
-        public bool DrawSimple(Texture2D texture, Rectangle destRect, int z, Vector2 hue)
+        public bool DrawSimple(Texture2D texture, Rectangle destRect, Vector2 hue)
         {
             VertexPositionNormalTextureHue[] v = new VertexPositionNormalTextureHue[] {
-                new VertexPositionNormalTextureHue(new Vector3(destRect.X, destRect.Y, z), new Vector3(0, 0, 1), new Vector3(0, 0, 0)),
-                new VertexPositionNormalTextureHue(new Vector3(destRect.X + destRect.Width, destRect.Y, z), new Vector3(0, 0, 1), new Vector3(1, 0, 0)),
-                new VertexPositionNormalTextureHue(new Vector3(destRect.X, destRect.Y + destRect.Height, z), new Vector3(0, 0, 1), new Vector3(0, 1, 0)),
-                new VertexPositionNormalTextureHue(new Vector3(destRect.X + destRect.Width, destRect.Y + destRect.Height, z), new Vector3(0, 0, 1), new Vector3(1, 1, 0))
+                new VertexPositionNormalTextureHue(new Vector3(destRect.X, destRect.Y, 0), new Vector3(0, 0, 1), new Vector3(0, 0, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(destRect.X + destRect.Width, destRect.Y, 0), new Vector3(0, 0, 1), new Vector3(1, 0, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(destRect.X, destRect.Y + destRect.Height, 0), new Vector3(0, 0, 1), new Vector3(0, 1, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(destRect.X + destRect.Width, destRect.Y + destRect.Height, 0), new Vector3(0, 0, 1), new Vector3(1, 1, 0))
             };
 
             v[0].Hue = v[1].Hue = v[2].Hue =  v[3].Hue = hue;
             return Draw(texture, v);
         }
 
-        public bool DrawSimpleTiled(Texture2D texture, Rectangle destRect, int z, Vector2 hue)
+        public bool DrawSimpleTiled(Texture2D texture, Rectangle destRect, Vector2 hue)
         {
             int y = destRect.Y;
             int h = destRect.Height;
@@ -149,7 +144,7 @@ namespace UltimaXNA
                 {
                     if (w < texture.Width)
                         sRect.Width = w;
-                    DrawSimple(texture, new Vector3(x, y, z), sRect, hue);
+                    DrawSimple(texture, new Vector3(x, y, 0), sRect, hue);
                     w -= texture.Width;
                     x += texture.Width;
                 }
@@ -175,6 +170,12 @@ namespace UltimaXNA
 
             if (!draw)
                 return false;
+
+            vertices[0].Position.Z = _z;
+            vertices[1].Position.Z = _z;
+            vertices[2].Position.Z = _z;
+            vertices[3].Position.Z = _z;
+            _z += 1000;
 
             List<VertexPositionNormalTextureHue> vertexList;
 
@@ -224,6 +225,11 @@ namespace UltimaXNA
         private List<VertexPositionNormalTextureHue> vertices = new List<VertexPositionNormalTextureHue>();
 
         public bool DrawWireframe = false;
+
+        public static void ResetZ()
+        {
+            _z = 0;
+        }
 
         public void Flush(bool doLighting)
         {

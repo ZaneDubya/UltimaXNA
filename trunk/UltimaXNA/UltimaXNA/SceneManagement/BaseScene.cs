@@ -23,7 +23,7 @@ namespace UltimaXNA.SceneManagement
         ILoggingService _loggingService;
         IInputState _inputService;
         IUIManager _uiService;
-        IWorld _worldService;
+        IIsometricRenderer _worldService;
 
         ContentManager _content;
         SceneState _sceneState;
@@ -90,7 +90,7 @@ namespace UltimaXNA.SceneManagement
             get { return _uiService; }
         }
 
-        public IWorld World
+        public IIsometricRenderer World
         {
             get { return _worldService; }
         }
@@ -117,7 +117,7 @@ namespace UltimaXNA.SceneManagement
             _sceneService = game.Services.GetService<ISceneService>(true);
             _loggingService = game.Services.GetService<ILoggingService>(true);
             _inputService = game.Services.GetService<IInputState>(true);
-            _worldService = game.Services.GetService<IWorld>(true);
+            _worldService = game.Services.GetService<IIsometricRenderer>(true);
             _uiService = game.Services.GetService<IUIManager>();
         }
 

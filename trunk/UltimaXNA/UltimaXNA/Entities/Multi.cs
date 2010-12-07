@@ -73,7 +73,7 @@ namespace UltimaXNA.Entities
             }
         }
 
-        public Multi(Serial serial, IWorld world)
+        public Multi(Serial serial, IIsometricRenderer world)
 			: base(serial, world)
 		{
 		}

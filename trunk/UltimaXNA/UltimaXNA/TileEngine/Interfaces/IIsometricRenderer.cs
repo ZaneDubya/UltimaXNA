@@ -23,7 +23,7 @@ using UltimaXNA.Entities;
 
 namespace UltimaXNA.TileEngine
 {
-    public interface IWorld
+    public interface IIsometricRenderer
     {
         Map Map { get; }
         Position3D CenterPosition { get; set; }

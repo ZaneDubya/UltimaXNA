@@ -46,7 +46,7 @@ namespace UltimaXNA.Client
         }
 
         static ClientNetwork _ClientNetwork;
-        static TileEngine.IWorld _worldService;
+        static TileEngine.IIsometricRenderer _worldService;
         static IUIManager _LegacyUI = null;
 
         static UltimaClient()
@@ -58,7 +58,7 @@ namespace UltimaXNA.Client
 
         public static void Initialize(Game game)
         {
-            _worldService = game.Services.GetService<TileEngine.IWorld>();
+            _worldService = game.Services.GetService<TileEngine.IIsometricRenderer>();
             _LegacyUI = game.Services.GetService<IUIManager>();
         }
 

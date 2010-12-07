@@ -10,8 +10,8 @@ namespace UltimaXNA.TileEngine
     {
         List<MouseOverItem> _overList;
 
-        static Vector3 _mousePosition;
-        static public Point2D MousePosition
+        Vector3 _mousePosition;
+        public Point2D MousePosition
         {
             set
             {
@@ -67,7 +67,7 @@ namespace UltimaXNA.TileEngine
             _overList.Add(item);
         }
 
-        public static bool IsMouseInObject(Vector3 min, Vector3 max)
+        public bool IsMouseInObject(Vector3 min, Vector3 max)
         {
             BoundingBox iBoundingBox = new BoundingBox(min, max);
             // Must correct for bounding box being one pixel larger than actual texture.
@@ -79,7 +79,7 @@ namespace UltimaXNA.TileEngine
             return false;
         }
 
-        public static bool IsMouseInObjectIsometric(VertexPositionNormalTextureHue[] v)
+        public bool IsMouseInObjectIsometric(VertexPositionNormalTextureHue[] v)
         {
             if (v.Length != 4)
                 return false;
@@ -125,7 +125,7 @@ namespace UltimaXNA.TileEngine
             return false;
         }
 
-        static bool pointInPolygon(Point p, Point[] poly)
+        private bool pointInPolygon(Point p, Point[] poly)
         {
             // Taken from http://social.msdn.microsoft.com/forums/en-US/winforms/thread/95055cdc-60f8-4c22-8270-ab5f9870270a/
             Point p1, p2;

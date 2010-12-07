@@ -29,7 +29,7 @@ namespace UltimaXNA.Entities
     static class EntitiesCollection
     {
         private static Dictionary<int, Entity> _entities = new Dictionary<int, Entity>();
-        private static IWorld _world;
+        private static IIsometricRenderer _world;
         public static int MySerial { get; set; }
 
         static EntitiesCollection()
@@ -38,7 +38,7 @@ namespace UltimaXNA.Entities
 
         public static void Initialize(Game game)
         {
-            _world = game.Services.GetService<IWorld>();
+            _world = game.Services.GetService<IIsometricRenderer>();
         }
 
         public static void Reset()

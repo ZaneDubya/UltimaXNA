@@ -15,13 +15,13 @@ namespace UltimaXNA
     {
         static IInputState _Input;
         static IUIManager _UserInterface;
-        static IWorld _World;
+        static IIsometricRenderer _World;
         public ClientVars(Game game)
             : base(game)
         {
             _Input = Game.Services.GetService<IInputState>();
             _UserInterface = Game.Services.GetService<IUIManager>();
-            _World = game.Services.GetService<IWorld>();
+            _World = game.Services.GetService<IIsometricRenderer>();
             EngineRunning = true;
             InWorld = false;
         }

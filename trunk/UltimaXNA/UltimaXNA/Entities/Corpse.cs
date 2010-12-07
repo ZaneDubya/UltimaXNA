@@ -30,7 +30,7 @@ namespace UltimaXNA.Entities
         private float _corpseFrame = 0.999f;
         private int _corpseBody { get { return Amount; } }
 
-        public Corpse(Serial serial, IWorld world)
+        public Corpse(Serial serial, IIsometricRenderer world)
             : base(serial, world)
         {
 

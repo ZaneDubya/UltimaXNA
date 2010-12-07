@@ -25,7 +25,7 @@ namespace UltimaXNA.Entities
 {
     public class PlayerMobile : Mobile
     {
-        public PlayerMobile(Serial serial, IWorld world)
+        public PlayerMobile(Serial serial, IIsometricRenderer world)
             : base(serial, world)
         {
 

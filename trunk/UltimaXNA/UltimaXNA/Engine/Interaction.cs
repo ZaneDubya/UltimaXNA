@@ -19,13 +19,13 @@ namespace UltimaXNA
     {
         static IInputState _input;
         // static IInputService _input;
-        static IWorld _world;
+        static IIsometricRenderer _world;
         static IUIManager _legacyUI;
 
         public static void Initialize(Game game)
         {
             _input = game.Services.GetService<IInputState>();
-            _world = game.Services.GetService<IWorld>();
+            _world = game.Services.GetService<IIsometricRenderer>();
             _legacyUI = game.Services.GetService<IUIManager>();
         }
 
