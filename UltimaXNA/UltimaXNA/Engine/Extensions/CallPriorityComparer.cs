@@ -42,17 +42,17 @@ namespace UltimaXNA.Extensions
     [AttributeUsage(AttributeTargets.Method)]
     public class CallPriorityAttribute : Attribute
     {
-        private int m_Priority;
+        private int _Priority;
 
         public int Priority
         {
-            get { return m_Priority; }
-            set { m_Priority = value; }
+            get { return _Priority; }
+            set { _Priority = value; }
         }
 
         public CallPriorityAttribute(int priority)
         {
-            m_Priority = priority;
+            _Priority = priority;
         }
     }
 

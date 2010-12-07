@@ -71,8 +71,8 @@ namespace UltimaXNA.TileEngine
                 int iTileID = tiledata[index++] + (tiledata[index++] << 8);
                 int iTileZ = (sbyte)tiledata[index++];
 
-                MapObjectGround ground = 
-                    new MapObjectGround(iTileID, 
+                MapObjectGround ground =
+                    new MapObjectGround(iTileID,
                         new Position3D(ix, iy, iTileZ));
                 ground.SortZ = iTileZ;
                 MapTile tile = new MapTile(ix, iy);
@@ -97,7 +97,7 @@ namespace UltimaXNA.TileEngine
                 index += 2; // unknown 2 byte data, not used.
                 MapTile tile = _Tiles[iTileX + (iTileY << 3)];
                 tile.Add(
-                    new MapObjectStatic(iTileID, i, 
+                    new MapObjectStatic(iTileID, i,
                         new Position3D(iTileX + _x, iTileY + _y, iTileZ)));
             }
         }
@@ -105,38 +105,6 @@ namespace UltimaXNA.TileEngine
         public MapTile Tile(int x, int y)
         {
             return _Tiles[x % 8 + (y % 8) * 8];
-        }
-
-        public void WriteRadarColors(uint[] buffer, int x, int y)
-        {
-            unsafe
-            {
-                fixed (uint* pData = buffer)
-                {
-                    int radar = 0;
-                    int tileindex = 0;
-
-                    for (int iy = 0; iy < 8; iy++)
-                    {
-                        uint* pDataRef = pData + x + ((y + iy) * 64);
-                        for (int ix = 0; ix < 8; ix++)
-                        {
-                            List<MapObject> o = _Tiles[tileindex].GetSortedObjects();
-                            for (int j = o.Count - 1; j >= 0; j--)
-                            {
-                                if (o[j] is MapObjectStatic || o[j] is MapObjectGround)
-                                {
-                                    radar = _Tiles[tileindex].Objects[j].ItemID;
-                                    break;
-                                }
-                            }
-                            *pDataRef++ = Data.Radarcol.Colors[radar];
-                            tileindex++;
-                        }
-                    }
-                }
-            }
-            // texture.SetData<uint>(0, new Rectangle(x, y, 8, 8), data, 0, 64, SetDataOptions.None);
         }
     }
 }

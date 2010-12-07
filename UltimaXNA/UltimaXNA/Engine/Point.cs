@@ -87,17 +87,17 @@ namespace UltimaXNA
     [StructLayout(LayoutKind.Sequential)]
     public struct Point3D : IPoint3D, IComparable, IComparable<Point3D>
     {
-        internal int m_X;
-        internal int m_Y;
-        internal int m_Z;
+        internal int _X;
+        internal int _Y;
+        internal int _Z;
 
         public static readonly Point3D Zero = new Point3D(0, 0, 0);
 
         public Point3D(int x, int y, int z)
         {
-            m_X = x;
-            m_Y = y;
-            m_Z = z;
+            _X = x;
+            _Y = y;
+            _Z = z;
         }
 
         public Point3D(IPoint3D p)
@@ -114,11 +114,11 @@ namespace UltimaXNA
         {
             get
             {
-                return m_X;
+                return _X;
             }
             set
             {
-                m_X = value;
+                _X = value;
             }
         }
 
@@ -126,11 +126,11 @@ namespace UltimaXNA
         {
             get
             {
-                return m_Y;
+                return _Y;
             }
             set
             {
-                m_Y = value;
+                _Y = value;
             }
         }
 
@@ -138,17 +138,17 @@ namespace UltimaXNA
         {
             get
             {
-                return m_Z;
+                return _Z;
             }
             set
             {
-                m_Z = value;
+                _Z = value;
             }
         }
 
         public override string ToString()
         {
-            return String.Format("({0}, {1}, {2})", m_X, m_Y, m_Z);
+            return String.Format("({0}, {1}, {2})", _X, _Y, _Z);
         }
 
         public override bool Equals(object o)
@@ -158,12 +158,12 @@ namespace UltimaXNA
 
             IPoint3D p = (IPoint3D)o;
 
-            return m_X == p.X && m_Y == p.Y && m_Z == p.Z;
+            return _X == p.X && _Y == p.Y && _Z == p.Z;
         }
 
         public override int GetHashCode()
         {
-            return m_X ^ m_Y ^ m_Z;
+            return _X ^ _Y ^ _Z;
         }
 
         public static Point3D Parse(string value)
@@ -188,12 +188,12 @@ namespace UltimaXNA
 
         public static bool operator ==(Point3D l, Point3D r)
         {
-            return l.m_X == r.m_X && l.m_Y == r.m_Y && l.m_Z == r.m_Z;
+            return l._X == r._X && l._Y == r._Y && l._Z == r._Z;
         }
 
         public static bool operator !=(Point3D l, Point3D r)
         {
-            return l.m_X != r.m_X || l.m_Y != r.m_Y || l.m_Z != r.m_Z;
+            return l._X != r._X || l._Y != r._Y || l._Z != r._Z;
         }
 
         public static bool operator ==(Point3D l, IPoint3D r)
@@ -201,7 +201,7 @@ namespace UltimaXNA
             if (Object.ReferenceEquals(r, null))
                 return false;
 
-            return l.m_X == r.X && l.m_Y == r.Y && l.m_Z == r.Z;
+            return l._X == r.X && l._Y == r.Y && l._Z == r.Z;
         }
 
         public static bool operator !=(Point3D l, IPoint3D r)
@@ -209,19 +209,19 @@ namespace UltimaXNA
             if (Object.ReferenceEquals(r, null))
                 return false;
 
-            return l.m_X != r.X || l.m_Y != r.Y || l.m_Z != r.Z;
+            return l._X != r.X || l._Y != r.Y || l._Z != r.Z;
         }
 
         public int CompareTo(Point3D other)
         {
-            int v = (m_X.CompareTo(other.m_X));
+            int v = (_X.CompareTo(other._X));
 
             if (v == 0)
             {
-                v = (m_Y.CompareTo(other.m_Y));
+                v = (_Y.CompareTo(other._Y));
 
                 if (v == 0)
-                    v = (m_Z.CompareTo(other.m_Z));
+                    v = (_Z.CompareTo(other._Z));
             }
 
             return v;

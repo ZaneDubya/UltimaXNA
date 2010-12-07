@@ -31,25 +31,25 @@ namespace UltimaXNA.Entities
         // ContainerItems have inventory (chests, for example).
         // The Serial for the container for this inventory is the same as the
         // GameObject's Serial.
-        GameObject_Container m_ContainerObject = null;
+        GameObject_Container _ContainerObject = null;
         public GameObject_Container Contents
         {
             get
             {
-                return m_ContainerObject;
+                return _ContainerObject;
             }
         }
 
         public ContainerItem(Serial serial, IIsometricRenderer world)
             : base(serial, world)
         {
-            m_ContainerObject = new GameObject_Container(this);
+            _ContainerObject = new GameObject_Container(this);
         }
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            m_ContainerObject.Update(gameTime);
+            _ContainerObject.Update(gameTime);
         }
     }
 }

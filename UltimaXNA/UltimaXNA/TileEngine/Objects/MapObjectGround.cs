@@ -78,12 +78,12 @@ namespace UltimaXNA.TileEngine
         private bool _draw_alternate;
         internal override bool Draw(SpriteBatch3D sb, Vector3 drawPosition, MouseOverList molist, PickTypes pickType, int maxAlt)
         {
-            if (_noDraw)
+            if (_noDraw || _mustUpdateSurroundings || !IsometricRenderer.DrawTerrain)
                 return false;
             if (!_draw_alternate)
-                return base.Draw(sb, drawPosition, molist, pickType, maxAlt);
+                return base.Draw(sb, drawPosition, molist, pickType, 255);
             else
-                return DrawAlternate(sb, drawPosition, molist, pickType, maxAlt);
+                return DrawAlternate(sb, drawPosition, molist, pickType, 255);
         }
 
         VertexPositionNormalTextureHue[] _vertexBufferAlternate = new VertexPositionNormalTextureHue[] {
@@ -93,25 +93,15 @@ namespace UltimaXNA.TileEngine
                     new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(1, 1, 0))
                 };
 
-        private float _vertex0_yOffset, _vertex1_yOffset, _vertex2_yOffset, _vertex3_yOffset;
+        private Vector3 _vertex0_yOffset, _vertex1_yOffset, _vertex2_yOffset, _vertex3_yOffset;
 
         private bool DrawAlternate(SpriteBatch3D sb, Vector3 drawPosition, MouseOverList molist, PickTypes pickType, int maxAlt)
         {
             // this is an isometric stretched tile and needs a specialized draw routine.
-            _vertexBufferAlternate[0].Position = drawPosition;
-            _vertexBufferAlternate[0].Position.X += 22;
-            _vertexBufferAlternate[0].Position.Y -= _vertex0_yOffset;
-
-            _vertexBufferAlternate[1].Position = drawPosition;
-            _vertexBufferAlternate[1].Position.X += 44;
-            _vertexBufferAlternate[1].Position.Y += _vertex1_yOffset;
-
-            _vertexBufferAlternate[2].Position = drawPosition;
-            _vertexBufferAlternate[2].Position.Y += _vertex2_yOffset;
-
-            _vertexBufferAlternate[3].Position = drawPosition;
-            _vertexBufferAlternate[3].Position.X += 22;
-            _vertexBufferAlternate[3].Position.Y += _vertex3_yOffset;
+            _vertexBufferAlternate[0].Position = drawPosition + _vertex0_yOffset;
+            _vertexBufferAlternate[1].Position = drawPosition + _vertex1_yOffset;
+            _vertexBufferAlternate[2].Position = drawPosition + _vertex2_yOffset;
+            _vertexBufferAlternate[3].Position = drawPosition + _vertex3_yOffset;
 
             if (!sb.Draw(_draw_texture, _vertexBufferAlternate))
                 return false;
@@ -179,10 +169,10 @@ namespace UltimaXNA.TileEngine
 
         private void updateVertexBuffer()
         {
-            _vertex0_yOffset = (Z << 2);
-            _vertex1_yOffset = 22 - (_surroundingTiles.East << 2);
-            _vertex2_yOffset = 22 - (_surroundingTiles.South << 2);
-            _vertex3_yOffset = 44 - (_surroundingTiles.Down << 2);
+            _vertex0_yOffset = new Vector3(22, -(Z << 2), 0);
+            _vertex1_yOffset = new Vector3(44, 22 - (_surroundingTiles.East << 2), 0);
+            _vertex2_yOffset = new Vector3(0, 22 - (_surroundingTiles.South << 2), 0);
+            _vertex3_yOffset = new Vector3(22, 44 - (_surroundingTiles.Down << 2), 0);
 
             _vertexBufferAlternate[0].Normal = _normals[0];
             _vertexBufferAlternate[1].Normal = _normals[1];
