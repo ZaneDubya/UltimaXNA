@@ -78,8 +78,8 @@ namespace UltimaXNA.TileEngine
         public Map Map {get; set; }
         public int ObjectsRendered { get; internal set; }
         public Position3D CenterPosition { get; set; }
-        public int MaxItemAltitude { get; internal set; }
-        public int MaxTerrainAltitude { get; internal set; }
+        private int _maxItemAltitude;
+        public static bool DrawTerrain = true;
 
         public IsometricRenderer(Game game)
         {
@@ -130,19 +130,21 @@ namespace UltimaXNA.TileEngine
                 Map.Update(CenterPosition.Draw_TileX, CenterPosition.Draw_TileY);
 
                 // Are we inside (under a roof)? Do not draw tiles above our head.
+                _maxItemAltitude = 255;
+
                 MapTile t = Map.GetMapTile(CenterPosition.Draw_TileX, CenterPosition.Draw_TileY, true);
-
-                MaxItemAltitude = 255;
-                MaxTerrainAltitude = 255;
-
                 if (t != null)
                 {
                     bool isUnderRoof, isUnderTerrain;
                     t.IsUnder(CenterPosition.Z, out isUnderRoof, out isUnderTerrain);
                     if (isUnderRoof)
-                        MaxItemAltitude = CenterPosition.Z - (CenterPosition.Z % 20) + 20;
+                        _maxItemAltitude = CenterPosition.Z - (CenterPosition.Z % 20) + 20;
+
                     if (isUnderTerrain)
-                        MaxTerrainAltitude = -255;
+                        DrawTerrain = false;
+                    else
+                        DrawTerrain  = true;
+
                 }
             }
         }
@@ -189,8 +191,6 @@ namespace UltimaXNA.TileEngine
             ObjectsRendered = 0; // Count of objects rendered for statistics and debug
             MouseOverList overList = new MouseOverList(); // List of items for mouse over
             overList.MousePosition = _input.MousePosition;
-
-            MapObject mapObject;
             List<MapObject> mapObjects;
             Vector3 drawPosition = new Vector3();
 
@@ -206,22 +206,10 @@ namespace UltimaXNA.TileEngine
                         continue;
 
                     mapObjects = tile.GetSortedObjects();
-
                     for (int i = 0; i < mapObjects.Count; i++)
                     {
-                        mapObject = mapObjects[i];
-                        if (mapObject is MapObjectGround)
-                        {
-                            if (((MapObjectGround)mapObject)._mustUpdateSurroundings)
-                            ((MapObjectGround)mapObject).UpdateSurroundingsIfNecessary(Map);
-                            if (mapObject.Draw(_spriteBatch, drawPosition, overList, PickType, MaxTerrainAltitude))
-                                ObjectsRendered++;
-                        }
-                        else
-                        {
-                            if (mapObject.Draw(_spriteBatch, drawPosition, overList, PickType, MaxItemAltitude))
-                                ObjectsRendered++;
-                        }
+                        if (mapObjects[i].Draw(_spriteBatch, drawPosition, overList, PickType, _maxItemAltitude))
+                            ObjectsRendered++;
                     }
 
                     drawPosition.X -= 22f;

@@ -58,8 +58,8 @@ namespace UltimaXNA.TileEngine
                 {
                     int ix = _x + i % 8;
                     int iy = _y + i / 8;
-                    MapCell c = _map.GetMapCell(ix << 3, iy << 3, true);
-                    c.WriteRadarColors(buffer, i % 8 << 3, i / 8 << 3);
+                    // MapCell c = _map.GetMapCell(ix << 3, iy << 3, true);
+                    // c.WriteRadarColors(buffer, i % 8 << 3, i / 8 << 3);
                 }
 
                 _map.LoadEverything_Override = false;

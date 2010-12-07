@@ -125,7 +125,7 @@ namespace UltimaXNA.Entities
             // Check for existence in the collection.
             if (_entities.ContainsKey(serial))
             {
-                // This object is in the m_Objects collection. If it is being disposed, then we should complete disposal
+                // This object is in the _entities collection. If it is being disposed, then we should complete disposal
                 // of the object and then return a new object. If it is not being disposed, return the object in the collection.
                 if (_entities[serial].IsDisposed)
                 {
@@ -200,9 +200,6 @@ namespace UltimaXNA.Entities
 
         public static void RemoveObject(Serial serial)
         {
-            // When Dispose() is called, the object will tidy up and then
-            // set m_Dispose = true. Reference this with IsDisposed on the
-            // next update cycle.
             if (_entities.ContainsKey(serial))
             {
                 _entities[serial].Dispose();

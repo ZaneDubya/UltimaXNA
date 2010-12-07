@@ -27,8 +27,6 @@ namespace UltimaXNA.TileEngine
     {
         Map Map { get; }
         Position3D CenterPosition { get; set; }
-        int MaxItemAltitude { get; }
-        int MaxTerrainAltitude { get; }
 
         void Update(GameTime gameTime);
         void Draw(GameTime gameTime);

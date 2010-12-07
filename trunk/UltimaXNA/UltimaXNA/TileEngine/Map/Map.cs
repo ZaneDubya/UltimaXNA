@@ -29,17 +29,17 @@ namespace UltimaXNA.TileEngine
     public sealed class Map
     {
         public int UpdateTicker;
-        MapCell[] _cells;
+        MapTile[] _tiles;
         TileMatrixRaw _tileMatrix;
         int _x, _y;
         bool _loadAllNearbyCells = false; // set when a map is first loaded.
         bool _mustResetMap = false;
         public bool LoadEverything_Override = false;
 
-        int m_LoadedCellThisFrame = 0;
-        const int m_MaxCellsLoadedPerFrame = 2;
-        int m_MapCellsDrawRadius = 0;
-        int m_MapCellsInMemory = 0;
+        int _numCellsLoadedThisFrame = 0;
+        const int MaxCellsLoadedPerFrame = 2;
+        int _MapTilesDrawRadius = 0;
+        int _MapTilesInMemory = 0;
 
         int _index = -1;
         public int Index { get { return _index; } }
@@ -56,9 +56,10 @@ namespace UltimaXNA.TileEngine
             _tileMatrix = new TileMatrixRaw(_index, _index);
             Height = _tileMatrix.Height;
             Width = _tileMatrix.Width;
-            m_MapCellsInMemory = ClientVars.MapCellsInMemory;
-            m_MapCellsDrawRadius = ((m_MapCellsInMemory / 2) * 8);
-            _cells = new MapCell[m_MapCellsInMemory * m_MapCellsInMemory];
+            _MapTilesInMemory = ClientVars.MapCellsInMemory * 8;
+            _MapTilesDrawRadius = ((_MapTilesInMemory / 2));
+
+            _tiles = new MapTile[_MapTilesInMemory * _MapTilesInMemory];
         }
 
         public int Height;
@@ -108,17 +109,7 @@ namespace UltimaXNA.TileEngine
             return (v / 2);
         }
 
-        private int GetKey(MapCell cell)
-        {
-            return GetKey(cell.X, cell.Y);
-        }
-
-        private int GetKey(int x, int y)
-        {
-            return (x << 18) + y;
-        }
-
-        public MapCell GetMapCell(int x, int y, bool load)
+        public MapTile GetMapTile(int x, int y, bool load)
         {
             if (x < 0) x += this.Width;
             if (x >= this.Width) x -= this.Width;
@@ -127,40 +118,55 @@ namespace UltimaXNA.TileEngine
 
             if (!load)
             {
-                if (Math.Abs(x - _x) > m_MapCellsDrawRadius ||
-                    Math.Abs(y - _y) > m_MapCellsDrawRadius)
+                if (Math.Abs(x - _x) > _MapTilesDrawRadius ||
+                    Math.Abs(y - _y) > _MapTilesDrawRadius)
                 {
                     return null;
                 }
             }
 
-            int index = ((x >> 3) % m_MapCellsInMemory) + (((y >> 3) % m_MapCellsInMemory) * m_MapCellsInMemory);
-            MapCell c = _cells[index];
-            if (c == null || 
-                (((x - c.X) & 0xFFF8) != 0) ||
-                (((y - c.Y) & 0xFFF8) != 0))
+            int idx = (x % _MapTilesInMemory) + (y % _MapTilesInMemory) * _MapTilesInMemory;
+            MapTile t = _tiles[idx];
+            if (t == null || (x != t.X) || (y != t.Y))
             {
-                if (load && (m_LoadedCellThisFrame < m_MaxCellsLoadedPerFrame || LoadEverything_Override))
+                if (load && (_numCellsLoadedThisFrame < MaxCellsLoadedPerFrame || LoadEverything_Override))
                 {
-                    m_LoadedCellThisFrame++;
-                    c = _cells[index] = new MapCell(this, _tileMatrix, x - x % 8, y - y % 8);
-                    c.Load();
+                    _numCellsLoadedThisFrame++;
+                    loadMapCellIntotiles(x - x % 8, y - y % 8);
                 }
                 else
                 {
-                    _cells[index] = null;
-                    return null;
+                    _tiles[idx] = null;
                 }
             }
-            return c;
+            if (_tiles[idx] == null)
+                return null;
+            return _tiles[idx];
         }
 
-        public MapTile GetMapTile(int x, int y, bool load)
+        private void loadMapCellIntotiles(int x, int y)
         {
-            MapCell c = GetMapCell(x, y, load);
-            if (c == null)
-                return null;
-            return c._Tiles[x % 8 + ((y % 8) << 3)];
+            MapCell c = new MapCell(this, _tileMatrix, x, y);
+            c.Load();
+            // load the cell's tiles into the map's tile matrix ...
+            for (int iy = 0; iy < 8; iy++)
+            {
+                int destidx = (c.X % _MapTilesInMemory) + ((iy + c.Y) % _MapTilesInMemory) * _MapTilesInMemory;
+                for (int ix = 0; ix < 8; ix++)
+                {
+                    _tiles[destidx++] = c._Tiles[iy * 8 + ix];
+                }
+            }
+            // now update this batch of tiles - sets their normals and surroundings as necessary.
+            for (int iy = 0; iy < 8; iy++)
+            {
+                int destidx = (c.X % _MapTilesInMemory) + ((iy + c.Y) % _MapTilesInMemory) * _MapTilesInMemory;
+                for (int ix = 0; ix < 8; ix++)
+                {
+                    _tiles[destidx++].GroundTile.UpdateSurroundingsIfNecessary(this);
+                }
+            }
+
         }
 
         public void Update(int centerX, int centerY)
@@ -184,10 +190,10 @@ namespace UltimaXNA.TileEngine
             if (_loadAllNearbyCells)
             {
                 _loadAllNearbyCells = true;
-                m_LoadedCellThisFrame = int.MinValue;
+                _numCellsLoadedThisFrame = int.MinValue;
             }
             else
-                m_LoadedCellThisFrame = 0;
+                _numCellsLoadedThisFrame = 0;
         }
 
         public int GetTileZ(int x, int y)

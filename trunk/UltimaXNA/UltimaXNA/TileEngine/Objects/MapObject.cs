@@ -46,70 +46,70 @@ namespace UltimaXNA.TileEngine
 
         internal virtual bool Draw(SpriteBatch3D sb, Vector3 drawPosition, MouseOverList molist, PickTypes pickType, int maxAlt)
         {
-            VertexPositionNormalTextureHue[] vectorBuffer;
+            VertexPositionNormalTextureHue[] vertexBuffer;
 
             if (Z >= maxAlt)
                 return false;
 
             if (_draw_flip)
             {
-                vectorBuffer = VertexPositionNormalTextureHue.PolyBufferFlipped;
-                vectorBuffer[0].Position = drawPosition;
-                vectorBuffer[0].Position.X += _draw_X + 44;
-                vectorBuffer[0].Position.Y -= _draw_Y;
+                vertexBuffer = VertexPositionNormalTextureHue.PolyBufferFlipped;
+                vertexBuffer[0].Position = drawPosition;
+                vertexBuffer[0].Position.X += _draw_X + 44;
+                vertexBuffer[0].Position.Y -= _draw_Y;
 
-                vectorBuffer[1].Position = vectorBuffer[0].Position;
-                vectorBuffer[1].Position.Y += _draw_height;
+                vertexBuffer[1].Position = vertexBuffer[0].Position;
+                vertexBuffer[1].Position.Y += _draw_height;
 
-                vectorBuffer[2].Position = vectorBuffer[0].Position;
-                vectorBuffer[2].Position.X -= _draw_width;
+                vertexBuffer[2].Position = vertexBuffer[0].Position;
+                vertexBuffer[2].Position.X -= _draw_width;
 
-                vectorBuffer[3].Position = vectorBuffer[1].Position;
-                vectorBuffer[3].Position.X -= _draw_width;
+                vertexBuffer[3].Position = vertexBuffer[1].Position;
+                vertexBuffer[3].Position.X -= _draw_width;
             }
             else
             {
-                vectorBuffer = VertexPositionNormalTextureHue.PolyBuffer;
-                vectorBuffer[0].Position = drawPosition;
-                vectorBuffer[0].Position.X -= _draw_X;
-                vectorBuffer[0].Position.Y -= _draw_Y;
+                vertexBuffer = VertexPositionNormalTextureHue.PolyBuffer;
+                vertexBuffer[0].Position = drawPosition;
+                vertexBuffer[0].Position.X -= _draw_X;
+                vertexBuffer[0].Position.Y -= _draw_Y;
 
-                vectorBuffer[1].Position = vectorBuffer[0].Position;
-                vectorBuffer[1].Position.X += _draw_width;
+                vertexBuffer[1].Position = vertexBuffer[0].Position;
+                vertexBuffer[1].Position.X += _draw_width;
 
-                vectorBuffer[2].Position = vectorBuffer[0].Position;
-                vectorBuffer[2].Position.Y += _draw_height;
+                vertexBuffer[2].Position = vertexBuffer[0].Position;
+                vertexBuffer[2].Position.Y += _draw_height;
 
-                vectorBuffer[3].Position = vectorBuffer[1].Position;
-                vectorBuffer[3].Position.Y += _draw_height;
+                vertexBuffer[3].Position = vertexBuffer[1].Position;
+                vertexBuffer[3].Position.Y += _draw_height;
             }
 
-            if (vectorBuffer[0].Hue != _draw_hue)
+            if (vertexBuffer[0].Hue != _draw_hue)
             {
-                vectorBuffer[0].Hue =
-                vectorBuffer[1].Hue =
-                vectorBuffer[2].Hue =
-                vectorBuffer[3].Hue = _draw_hue;
+                vertexBuffer[0].Hue =
+                vertexBuffer[1].Hue =
+                vertexBuffer[2].Hue =
+                vertexBuffer[3].Hue = _draw_hue;
             }
 
-            if (!sb.Draw(_draw_texture, vectorBuffer))
+            if (!sb.Draw(_draw_texture, vertexBuffer))
                 return false;
 
             if ((pickType & _pickType) == _pickType)
             {
-                if (((!_draw_flip) && molist.IsMouseInObject(vectorBuffer[0].Position, vectorBuffer[3].Position)) ||
-                    ((_draw_flip) && molist.IsMouseInObject(vectorBuffer[2].Position, vectorBuffer[1].Position)))
+                if (((!_draw_flip) && molist.IsMouseInObject(vertexBuffer[0].Position, vertexBuffer[3].Position)) ||
+                    ((_draw_flip) && molist.IsMouseInObject(vertexBuffer[2].Position, vertexBuffer[1].Position)))
                 {
                     MouseOverItem item;
                     if (!_draw_flip)
                     {
-                        item = new MouseOverItem(_draw_texture, vectorBuffer[0].Position, this);
-                        item.Vertices = new Vector3[4] { vectorBuffer[0].Position, vectorBuffer[1].Position, vectorBuffer[2].Position, vectorBuffer[3].Position };
+                        item = new MouseOverItem(_draw_texture, vertexBuffer[0].Position, this);
+                        item.Vertices = new Vector3[4] { vertexBuffer[0].Position, vertexBuffer[1].Position, vertexBuffer[2].Position, vertexBuffer[3].Position };
                     }
                     else
                     {
-                        item = new MouseOverItem(_draw_texture, vectorBuffer[2].Position, this);
-                        item.Vertices = new Vector3[4] { vectorBuffer[2].Position, vectorBuffer[0].Position, vectorBuffer[3].Position, vectorBuffer[1].Position };
+                        item = new MouseOverItem(_draw_texture, vertexBuffer[2].Position, this);
+                        item.Vertices = new Vector3[4] { vertexBuffer[2].Position, vertexBuffer[0].Position, vertexBuffer[3].Position, vertexBuffer[1].Position };
                     }
                     molist.Add2DItem(item);
                 }

@@ -28,16 +28,16 @@ namespace UltimaXNA.Entities
     public class Movement
     {
         #region MovementSpeed
-        private static TimeSpan m_WalkFoot = TimeSpan.FromSeconds(0.4);
-        private static TimeSpan m_RunFoot = TimeSpan.FromSeconds(0.2);
-        private static TimeSpan m_WalkMount = TimeSpan.FromSeconds(0.2);
-        private static TimeSpan m_RunMount = TimeSpan.FromSeconds(0.1);
+        private static TimeSpan _TimeWalkFoot = TimeSpan.FromSeconds(0.4);
+        private static TimeSpan _TimeRunFoot = TimeSpan.FromSeconds(0.2);
+        private static TimeSpan _TimeWalkMount = TimeSpan.FromSeconds(0.2);
+        private static TimeSpan _TimeRunMount = TimeSpan.FromSeconds(0.1);
         private TimeSpan TimeToCompleteMove(Direction facing)
         {
             if (IsMounted)
-                return (facing & Direction.Running) == Direction.Running ? m_RunMount : m_WalkMount;
+                return (facing & Direction.Running) == Direction.Running ? _TimeRunMount : _TimeWalkMount;
             else
-                return (facing & Direction.Running) == Direction.Running ? m_RunFoot : m_WalkFoot;
+                return (facing & Direction.Running) == Direction.Running ? _TimeRunFoot : _TimeWalkFoot;
         }
         #endregion
 
