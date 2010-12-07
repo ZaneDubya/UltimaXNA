@@ -106,7 +106,7 @@ namespace UltimaXNA.Entities
 
         public int SlotIndex = 0;
 
-        public Item(Serial serial, IWorld world)
+        public Item(Serial serial, IIsometricRenderer world)
 			: base(serial, world)
 		{
 		}

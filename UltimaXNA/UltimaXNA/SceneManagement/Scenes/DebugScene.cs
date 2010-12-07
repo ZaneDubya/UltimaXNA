@@ -107,7 +107,7 @@ namespace UltimaXNA.SceneManagement
                 {
                     for (int ix = -2; ix <= 2; ix++)
                     {
-                        World.Map.GetMapTile(ix + x, iy + y, true).GroundTile.MustUpdateSurroundings = true;
+                        World.Map.GetMapTile(ix + x, iy + y, true).GroundTile.FlushSurroundings();
                     }
                 }
             }

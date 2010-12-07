@@ -68,7 +68,7 @@ namespace UltimaXNA.Entities
 
         private int _msTimePersist = 0;
 
-        public Overhead(Entity ownerEntity, IWorld world, MessageType msgType, string text, int font, int hue)
+        public Overhead(Entity ownerEntity, IIsometricRenderer world, MessageType msgType, string text, int font, int hue)
             : base(ownerEntity.Serial, world)
         {
             _ownerEntity = ownerEntity;

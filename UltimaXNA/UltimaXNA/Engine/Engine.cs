@@ -32,7 +32,7 @@ namespace UltimaXNA
         Diagnostics.Logger _logService;
         Input.InputState _inputState;
         SceneManagement.SceneManager _sceneService;
-        TileEngine.World _worldService;
+        TileEngine.IsometricRenderer _worldService;
         UILegacy.UIManager _LegacyUIService;
         ClientVars _clientVars;
 
@@ -52,8 +52,8 @@ namespace UltimaXNA
             _inputState = new Input.InputState(this);
             Services.AddService<Input.IInputState>(_inputState);
 
-            _worldService = new TileEngine.World(this);
-            Services.AddService<TileEngine.IWorld>(_worldService);
+            _worldService = new TileEngine.IsometricRenderer(this);
+            Services.AddService<TileEngine.IIsometricRenderer>(_worldService);
 
             _LegacyUIService = new UltimaXNA.UILegacy.UIManager(this);
             Services.AddService<UILegacy.IUIManager>(_LegacyUIService);
@@ -88,7 +88,7 @@ namespace UltimaXNA
 
         protected override void Update(GameTime gameTime)
         {
-            SpriteBatch3D.Z = 0;
+            SpriteBatch3D.ResetZ();
             if (!ClientVars.EngineRunning)
                 Exit();
             ClientVars.IsMinimized = isMinimized();

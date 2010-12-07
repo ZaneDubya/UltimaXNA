@@ -35,6 +35,21 @@ namespace UltimaXNA.TileEngine
             OwnerEntity = ownerEntity;
             Facing = direction;
             Hue = hue;
+
+            // set up draw data
+            _draw_texture = Data.Art.GetStaticTexture(ItemID);
+            _draw_width = _draw_texture.Width;
+            _draw_height = _draw_texture.Height;
+            _draw_X = (_draw_width >> 1) - 22;
+            _draw_Y = (Z << 2) + _draw_height - 44;
+            _draw_hue = IsometricRenderer.GetHueVector(Hue);
+            _pickType = PickTypes.PickObjects;
+            _draw_flip = false;
+        }
+
+        internal override bool Draw(SpriteBatch3D sb, Vector3 drawPosition, MouseOverList molist, PickTypes pickType, int maxAlt)
+        {
+            return base.Draw(sb, drawPosition, molist, pickType, maxAlt);
         }
     }
 }

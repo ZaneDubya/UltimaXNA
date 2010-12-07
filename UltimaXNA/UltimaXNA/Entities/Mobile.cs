@@ -170,7 +170,7 @@ namespace UltimaXNA.Entities
 			}
 		}
 
-        public Mobile(Serial serial, IWorld world)
+        public Mobile(Serial serial, IIsometricRenderer world)
             : base(serial, world)
         {
             _equipment = new MobileEquipment(this);

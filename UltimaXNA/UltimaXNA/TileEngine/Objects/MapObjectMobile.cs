@@ -18,6 +18,7 @@
  ***************************************************************************/
 #region usings
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Entities;
 #endregion
 
@@ -29,7 +30,14 @@ namespace UltimaXNA.TileEngine
         public int Action { get; set; }
         public int Facing { get; set; }
         public int Hue { get; set; }
+
         private float _frame;
+        public int Frame(int nMaxFrames)
+        {
+            return (int)(_frame * (float)nMaxFrames);
+        }
+
+        private bool _noDraw = false;
 
         public MapObjectMobile(int bodyID, Position3D position, int facing, int action, float frame, Entities.Entity ownerEntity, int layer, int hue)
             : base(position)
@@ -43,11 +51,53 @@ namespace UltimaXNA.TileEngine
             Hue = hue;
             Tiebreaker = layer;
             OwnerEntity = ownerEntity;
+
+            // set pick type
+            _pickType = PickTypes.PickObjects;
+
+            // set up draw data
+            Data.FrameXNA frameXNA = getFrame();
+            if (frameXNA == null)
+            {
+                _noDraw = true;
+                return;
+            }
+            _draw_texture = frameXNA.Texture;
+            _draw_width = _draw_texture.Width;
+            _draw_height = _draw_texture.Height;
+            _draw_flip = (Facing > 4) ? true : false;
+            if (_draw_flip)
+            {
+                _draw_X = frameXNA.Center.X - 22 + (int)((Position.Draw_Xoffset - Position.Draw_Yoffset) * 22);
+                _draw_Y = frameXNA.Center.Y + (Z << 2) + _draw_height - 22 - (int)((Position.Draw_Xoffset + Position.Draw_Yoffset) * 22);
+            }
+            else
+            {
+                _draw_X = frameXNA.Center.X - 22 - (int)((Position.Draw_Xoffset - Position.Draw_Yoffset) * 22);
+                _draw_Y = frameXNA.Center.Y + (Z << 2) + _draw_height - 22 - (int)((Position.Draw_Xoffset + Position.Draw_Yoffset) * 22);
+            }
+
+            _draw_hue = IsometricRenderer.GetHueVector(Hue);
+            if (ClientVars.LastTarget != null && ClientVars.LastTarget == OwnerSerial)
+                _draw_hue = new Vector2(((Entities.Mobile)OwnerEntity).NotorietyHue - 1, 1);
         }
 
-        public int Frame(int nMaxFrames)
+        internal override bool Draw(SpriteBatch3D sb, Vector3 drawPosition, MouseOverList molist, PickTypes pickType, int maxAlt)
         {
-            return (int)(_frame * (float)nMaxFrames);
+            if (_noDraw)
+                return false;
+            return base.Draw(sb, drawPosition, molist, pickType, maxAlt);
+        }
+
+        private Data.FrameXNA getFrame()
+        {
+            Data.FrameXNA[] iFrames = Data.AnimationsXNA.GetAnimation(BodyID, Action, Facing, Hue);
+            if (iFrames == null)
+                return null;
+            int iFrame = Frame(iFrames.Length);
+            if (iFrames[iFrame].Texture == null)
+                return null;
+            return iFrames[iFrame];
         }
     }
 }

@@ -40,7 +40,7 @@ namespace UltimaXNA.Entities
             }
         }
 
-        public ContainerItem(Serial serial, IWorld world)
+        public ContainerItem(Serial serial, IIsometricRenderer world)
             : base(serial, world)
         {
             m_ContainerObject = new GameObject_Container(this);

@@ -190,57 +190,13 @@ namespace UltimaXNA.TileEngine
                 m_LoadedCellThisFrame = 0;
         }
 
-        private int GetTileZ(int x, int y)
+        public int GetTileZ(int x, int y)
         {
             MapTile t = GetMapTile(x, y, false);
             return
                 (t == null) ?
                 (sbyte)_tileMatrix.GetLandTile(x, y)[2] :
                 t.GroundTile.Z;
-        }
-
-        public void UpdateSurroundings(MapObjectGround g)
-        {
-            int x = (int)g.Position.X;
-            int y = (int)g.Position.Y;
-
-            int[] zValues = new int[16];
-
-            for (int iy = 0; iy < 4; iy++)
-            {
-                for (int ix = 0; ix < 4; ix++)
-                {
-                    zValues[ix + iy * 4] = GetTileZ(x + ix - 1, y + iy - 1);
-                }
-            }
-
-            g.Surroundings = new Surroundings(
-                zValues[2 + 2 * 4],
-                zValues[2 + 1 * 4],
-                zValues[1 + 2 * 4]);
-            
-            if (!g.IsFlat)
-            {
-                int low = 0, high = 0, sort = 0;
-                sort = GetAverageZ(g.Z, g.Surroundings.South, g.Surroundings.East, g.Surroundings.Down, ref low, ref high);
-                if (sort != g.SortZ)
-                {
-                    g.SortZ = sort;
-                    GetMapTile(x, y, false).Resort();
-                }
-            }
-            
-            g.CalculateNormals(
-                zValues[0 + 1 * 4],
-                zValues[0 + 2 * 4],
-                zValues[1 + 0 * 4],
-                zValues[2 + 0 * 4],
-                zValues[1 + 3 * 4],
-                zValues[2 + 3 * 4],
-                zValues[3 + 1 * 4],
-                zValues[3 + 2 * 4]);
-
-            g.MustUpdateSurroundings = false;
         }
     }
 }

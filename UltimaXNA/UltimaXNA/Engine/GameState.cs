@@ -41,7 +41,7 @@ namespace UltimaXNA
     {
         // required services
         static IInputState _inputNew;
-        static IWorld _world;
+        static IIsometricRenderer _world;
         static IUIManager _ui;
 
         // mouse input variables
@@ -68,7 +68,7 @@ namespace UltimaXNA
         public static void Initialize(Game game)
         {
             _inputNew = game.Services.GetService<IInputState>();
-            _world = game.Services.GetService<IWorld>();
+            _world = game.Services.GetService<IIsometricRenderer>();
             _ui = game.Services.GetService<IUIManager>();
         }
 

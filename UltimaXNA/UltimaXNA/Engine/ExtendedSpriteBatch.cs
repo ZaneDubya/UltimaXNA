@@ -41,32 +41,27 @@ namespace UltimaXNA.UILegacy
 
         public void Draw2D(Texture2D texture, Point2D position, int hue, bool hueOnlyGreyPixels)
         {
-            _sb.DrawSimple(texture, new Vector3(position.X, position.Y, SpriteBatch3D.Z), hueVector(hue, hueOnlyGreyPixels));
-            SpriteBatch3D.Z += 1000;
+            _sb.DrawSimple(texture, new Vector3(position.X, position.Y, 0), hueVector(hue, hueOnlyGreyPixels));
         }
 
         public void Draw2D(Texture2D texture, Point2D position, Rectangle sourceRect, int hue, bool hueOnlyGreyPixels)
         {
-            _sb.DrawSimple(texture, new Vector3(position.X, position.Y, SpriteBatch3D.Z), sourceRect, hueVector(hue, hueOnlyGreyPixels));
-            SpriteBatch3D.Z += 1000;
+            _sb.DrawSimple(texture, new Vector3(position.X, position.Y, 0), sourceRect, hueVector(hue, hueOnlyGreyPixels));
         }
 
         public void Draw2D(Texture2D texture, Rectangle destRect, Rectangle sourceRect, int hue, bool hueOnlyGreyPixels)
         {
-            _sb.DrawSimple(texture, destRect, SpriteBatch3D.Z, sourceRect, hueVector(hue, hueOnlyGreyPixels));
-            SpriteBatch3D.Z += 1000;
+            _sb.DrawSimple(texture, destRect, sourceRect, hueVector(hue, hueOnlyGreyPixels));
         }
 
         public void Draw2D(Texture2D texture, Rectangle destRect, int hue, bool hueOnlyGreyPixels)
         {
-            _sb.DrawSimple(texture, destRect, SpriteBatch3D.Z, hueVector(hue, hueOnlyGreyPixels));
-            SpriteBatch3D.Z += 1000;
+            _sb.DrawSimple(texture, destRect, hueVector(hue, hueOnlyGreyPixels));
         }
 
         internal void Draw2DTiled(Texture2D texture, Rectangle destRect, int hue, bool hueOnlyGreyPixels)
         {
-            _sb.DrawSimpleTiled(texture, destRect, SpriteBatch3D.Z, hueVector(hue, hueOnlyGreyPixels));
-            SpriteBatch3D.Z += 1000;
+            _sb.DrawSimpleTiled(texture, destRect, hueVector(hue, hueOnlyGreyPixels));
         }
     }
 }

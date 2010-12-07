@@ -41,7 +41,7 @@ namespace UltimaXNA.Entities
             }
         }
 
-        public Container(Serial serial, IWorld world)
+        public Container(Serial serial, IIsometricRenderer world)
             : base(serial, world)
         {
             UpdateTicker = 0;
