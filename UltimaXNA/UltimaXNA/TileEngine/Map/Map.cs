@@ -37,7 +37,7 @@ namespace UltimaXNA.TileEngine
         public bool LoadEverything_Override = false;
 
         int _numCellsLoadedThisFrame = 0;
-        const int MaxCellsLoadedPerFrame = 2;
+        const int MaxCellsLoadedPerFrame = 200;
         int _MapTilesDrawRadius = 0;
         int _MapTilesInMemory = 0;
 
@@ -111,11 +111,6 @@ namespace UltimaXNA.TileEngine
 
         public MapTile GetMapTile(int x, int y, bool load)
         {
-            if (x < 0) x += this.Width;
-            if (x >= this.Width) x -= this.Width;
-            if (y < 0) y += this.Height;
-            if (y >= this.Height) y -= this.Height;
-
             if (!load)
             {
                 if (Math.Abs(x - _x) > _MapTilesDrawRadius ||
@@ -194,15 +189,26 @@ namespace UltimaXNA.TileEngine
             }
             else
                 _numCellsLoadedThisFrame = 0;
+
+            // DEBUG REMOVE THIS !!!!
+            /*for (int i = 0; i < _tiles.Length; i++)
+            {
+                if (_tiles[i] != null)
+                _tiles[i].X = 60000000;
+            }*/
         }
 
         public int GetTileZ(int x, int y)
         {
             MapTile t = GetMapTile(x, y, false);
-            return
-                (t == null) ?
-                (sbyte)_tileMatrix.GetLandTile(x, y)[2] :
-                t.GroundTile.Z;
+            if (t != null)
+                return t.GroundTile.Z;
+            else
+            {
+                int tileID, alt;
+                _tileMatrix.GetLandTile(x, y, out tileID, out alt);
+                return alt;
+            }
         }
     }
 }

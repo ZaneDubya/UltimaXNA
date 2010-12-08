@@ -36,8 +36,9 @@ namespace UltimaXNA.Data
         private byte[] m_EmptyStaticsBlock;
         private byte[] m_InvalidLandBlock;
 
-        private Dictionary<int, byte[]> _bufferedLandBlocks;
-        private int _bufferedLandBlocksMaxCount = 256;
+        private const int _bufferedLandBlocksMaxCount = 256; 
+        private byte[][] _bufferedLandBlocks;
+        private int[] _bufferedLandBlocks_Keys;
 
         private int m_BlockHeight;
         public int BlockHeight
@@ -112,7 +113,30 @@ namespace UltimaXNA.Data
 
             m_EmptyStaticsBlock = new byte[0];
             m_InvalidLandBlock = new byte[_size_LandBlockData];
-            _bufferedLandBlocks = new Dictionary<int, byte[]>();
+            _bufferedLandBlocks_Keys = new int[_bufferedLandBlocksMaxCount];
+            _bufferedLandBlocks = new byte[_bufferedLandBlocksMaxCount][];
+            for (int i = 0; i < _bufferedLandBlocksMaxCount; i++)
+                _bufferedLandBlocks[i] = new byte[_size_LandBlockData];
+        }
+
+        public byte[] GetLandBlock(int x, int y)
+        {
+            if (m_MapStream == null)
+            {
+                return m_InvalidLandBlock;
+            }
+            else
+            {
+                return readLandBlock_Bytes(x, y);
+            }
+        }
+
+        public void GetLandTile(int x, int y, out int TileID, out int alt)
+        {
+            int index = (((x % 8) + (y % 8) * 8) * 3);
+            byte[] data = readLandBlock_Bytes(x >> 3, y >> 3);
+            TileID = BitConverter.ToInt16(data, index);
+            alt = (sbyte)data[index + 2];
         }
 
         public byte[] GetStaticBlock(int x, int y)
@@ -125,26 +149,6 @@ namespace UltimaXNA.Data
             {
                 return readStaticBlock_Bytes(x, y);
             }
-        }
-
-        public byte[] GetLandBlock(int x, int y)
-        {
-            if (x < 0 || y < 0 || x >= m_BlockWidth || y >= m_BlockHeight || m_MapStream == null)
-            {
-                return m_InvalidLandBlock;
-            }
-            else
-            {
-                return readLandBlock_Bytes(x, y);
-            }
-        }
-
-        public byte[] GetLandTile(int x, int y)
-        {
-            byte[] data = readLandBlock_Bytes(x >> 3, y >> 3);
-            byte[] returndata = new byte[3];
-            Array.Copy(data, ((x % 8) + (y % 8) * 8) * 3, returndata, 0, 3);
-            return returndata;
         }
 
         private unsafe byte[] readStaticBlock_Bytes(int x, int y)
@@ -184,33 +188,27 @@ namespace UltimaXNA.Data
 
         private unsafe byte[] readLandBlock_Bytes(int x, int y)
         {
+            if (x < 0) x += this.Width;
+            if (x >= this.Width) x -= this.Width;
+            if (y < 0) y += this.Height;
+            if (y >= this.Height) y -= this.Height;
+
             int key = (x << 16) + y;
-            if (_bufferedLandBlocks.ContainsKey(key))
-                return _bufferedLandBlocks[key];
+            int index = x % 16 + (y % 16) * 16;
+            if (_bufferedLandBlocks_Keys[index] == key)
+                return _bufferedLandBlocks[index];
 
-            try
+            _bufferedLandBlocks_Keys[index] = key;
+
+            m_MapStream.Seek(((x * m_BlockHeight) + y) * _size_LandBlock + 4, SeekOrigin.Begin);
+            int streamStart = (int)m_MapStream.Position;
+            fixed (byte* pData = _bufferedLandBlocks[index])
             {
-                m_MapStream.Seek(((x * m_BlockHeight) + y) * _size_LandBlock + 4, SeekOrigin.Begin);
-
-                int streamStart = (int)m_MapStream.Position;
-
-                byte[] data = new byte[_size_LandBlockData];
-
-                fixed (byte* pData = data)
-                {
-                    NativeMethods.Read(m_MapStream.SafeFileHandle.DangerousGetHandle(), pData, _size_LandBlockData);
-                }
-                Metrics.ReportDataRead((int)m_MapStream.Position - streamStart);
-
-                if (_bufferedLandBlocks.Count >= _bufferedLandBlocksMaxCount)
-                    _bufferedLandBlocks.Clear();
-                _bufferedLandBlocks[key] = data;
-                return data;
+                NativeMethods.Read(m_MapStream.SafeFileHandle.DangerousGetHandle(), pData, _size_LandBlockData);
             }
-            catch
-            {
-                return m_InvalidLandBlock;
-            }
+            Metrics.ReportDataRead((int)m_MapStream.Position - streamStart);
+
+            return _bufferedLandBlocks[index];
         }
 
         public void Dispose()
