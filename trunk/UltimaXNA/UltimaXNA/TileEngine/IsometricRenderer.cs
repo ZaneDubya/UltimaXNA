@@ -173,7 +173,6 @@ namespace UltimaXNA.TileEngine
                 return;
 
             _spriteBatch.DrawWireframe = ClientVars.DEBUG_DrawWireframe;
-
             int RenderBeginX = CenterPosition.Draw_TileX - (ClientVars.RenderSize / 2);
             int RenderBeginY = CenterPosition.Draw_TileY - (ClientVars.RenderSize / 2);
             int RenderEndX = RenderBeginX + ClientVars.RenderSize;
