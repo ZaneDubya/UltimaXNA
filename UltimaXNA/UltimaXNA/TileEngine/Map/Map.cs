@@ -141,27 +141,49 @@ namespace UltimaXNA.TileEngine
 
         private void loadMapCellIntotiles(int x, int y)
         {
-            MapCell c = new MapCell(this, _tileMatrix, x, y);
-            c.Load();
-            // load the cell's tiles into the map's tile matrix ...
-            for (int iy = 0; iy < 8; iy++)
+            // get data from the tile Matrix
+            byte[] groundData = _tileMatrix.GetLandBlock(x >> 3, y >> 3);
+            byte[] staticsData = _tileMatrix.GetStaticBlock(x >> 3, y >> 3);
+
+            // load the ground data into the tiles.
+            int index = 0;
+            for (int i = 0; i < 64; i++)
             {
-                int destidx = (c.X % _MapTilesInMemory) + ((iy + c.Y) % _MapTilesInMemory) * _MapTilesInMemory;
-                for (int ix = 0; ix < 8; ix++)
-                {
-                    _tiles[destidx++] = c._Tiles[iy * 8 + ix];
-                }
+                int iTileID = groundData[index++] + (groundData[index++] << 8);
+                int iTileZ = (sbyte)groundData[index++];
+
+                MapObjectGround ground =
+                    new MapObjectGround(iTileID, new Position3D(x + i % 8, y + (i >> 3), iTileZ));
+                ground.SortZ = ground.Z;
+                MapTile tile = new MapTile(ground.Position.X, ground.Position.Y);
+                tile.Add(ground);
+                _tiles[(tile.X % _MapTilesInMemory) + (tile.Y % _MapTilesInMemory) * _MapTilesInMemory] = tile;
             }
+
+            // load the statics data into the tiles
+            int countStatics = staticsData.Length / 7;
+            index = 0;
+            for (int i = 0; i < countStatics; i++)
+            {
+                int iTileID = staticsData[index++] + (staticsData[index++] << 8);
+                int iTileX = staticsData[index++] + x;
+                int iTileY = staticsData[index++] + y;
+                int iTileZ = (sbyte)staticsData[index++];
+                index += 2; // unknown 2 byte data, not used.
+                _tiles[(iTileX % _MapTilesInMemory) + (iTileY % _MapTilesInMemory) * _MapTilesInMemory].Add(
+                    new MapObjectStatic(iTileID, i,
+                        new Position3D(iTileX, iTileY, iTileZ)));
+            }
+
             // now update this batch of tiles - sets their normals and surroundings as necessary.
             for (int iy = 0; iy < 8; iy++)
             {
-                int destidx = (c.X % _MapTilesInMemory) + ((iy + c.Y) % _MapTilesInMemory) * _MapTilesInMemory;
+                int destidx = (x % _MapTilesInMemory) + ((iy + y) % _MapTilesInMemory) * _MapTilesInMemory;
                 for (int ix = 0; ix < 8; ix++)
                 {
                     _tiles[destidx++].GroundTile.UpdateSurroundingsIfNecessary(this);
                 }
             }
-
         }
 
         public void Update(int centerX, int centerY)

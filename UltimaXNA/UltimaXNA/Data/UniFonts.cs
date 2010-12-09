@@ -314,6 +314,12 @@ namespace UltimaXNA.Data
 
         static Texture2D writeTexture(string textToRender, int w, int h, HREFRegions regions, bool parseHTML)
         {
+            HTML.HTMLparser parser = new UltimaXNA.HTML.HTMLparser(textToRender);
+            HTML.HTMLchunk chunk;
+            while ((chunk = parser.ParseNext()) != null)
+            {
+                
+            }
             HTMLReader reader = new HTMLReader(textToRender, parseHTML);
 
             int width = 0, height = 0;
@@ -477,7 +483,7 @@ namespace UltimaXNA.Data
             int italicwidth = 0; // for italic characters, which need a little more room for their slant.
             int descenderheight = 0;
             List<HTMLCharacter> word = new List<HTMLCharacter>();
-
+            
             for (int i = 0; i < reader.Length; ++i)
             {
                 HTMLCharacter c = reader.Characters[i];

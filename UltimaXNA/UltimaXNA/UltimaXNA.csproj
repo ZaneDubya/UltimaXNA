@@ -298,9 +298,15 @@
     <Compile Include="SceneManagement\Scenes\DebugScene.cs" />
     <Compile Include="SceneManagement\Scenes\LoggingInScene.cs" />
     <Compile Include="SceneManagement\Scenes\SelectServerScene.cs" />
+    <Compile Include="HTML\DynaString.cs" />
+    <Compile Include="HTML\FastHash.cs" />
+    <Compile Include="HTML\HTMLchunk.cs" />
+    <Compile Include="HTML\HTMLentities.cs" />
+    <Compile Include="HTML\HTMLheuristics.cs" />
+    <Compile Include="HTML\HTMLParser.cs" />
+    <Compile Include="HTML\TagParser.cs" />
     <Compile Include="TileEngine\Interfaces\IIsometricRenderer.cs" />
     <Compile Include="TileEngine\IsometricRenderer.cs" />
-    <Compile Include="TileEngine\Map\MapCell.cs" />
     <Compile Include="TileEngine\Map\MapTile.cs" />
     <Compile Include="TileEngine\Map\TileComparer.cs" />
     <Compile Include="TileEngine\MouseOverList.cs" />
