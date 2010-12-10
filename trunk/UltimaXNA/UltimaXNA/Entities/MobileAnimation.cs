@@ -123,20 +123,16 @@ namespace UltimaXNA.Entities
                 float timeStep = ((float)gameTime.ElapsedGameTime.TotalMilliseconds / animationStep) / _FrameCount;
                 
                 float msPerFrame = (float)((1000 * (_FrameDelay + 1)) / (float)_FrameCount);
+                // Mounted movement is 2x normal frame rate
+                if (Parent.IsMounted && ((_action == MobileAction.Walk) || (_action == MobileAction.Run)))
+                    msPerFrame /= 2;
+
                 float frameAdvance = (float)(gameTime.ElapsedGameTime.TotalMilliseconds / msPerFrame) / _FrameCount;
                 if (msPerFrame < 0)
                     return;
 
-
-                // Mounted movement is 2x normal frame rate
-                if (Parent.IsMounted && 
-                    ((_action == MobileAction.Walk) || 
-                    (_action == MobileAction.Run)))
-                    msPerFrame /= 2;
-
                 _animationFrame += frameAdvance;
-                // if (AnimationFrame < 0)
-                //     return;
+
                 // When animations reach their last frame, if we are queueing to stand, then
                 // hold the animation on the last frame.
                 if (_animationFrame >= 1f)
