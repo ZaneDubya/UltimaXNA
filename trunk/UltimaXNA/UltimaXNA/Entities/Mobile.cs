@@ -41,7 +41,10 @@ namespace UltimaXNA.Entities
         
         public bool IsRunning { get { return _movement.IsRunning; } }
         
-        public bool IsMounted { get { return _equipment[(int)EquipLayer.Mount] != null; } }
+        public bool IsMounted 
+        { 
+            get { return (_equipment[(int)EquipLayer.Mount] != null && _equipment[(int)EquipLayer.Mount].ItemID != 0); } 
+        }
         
         public bool IsWarMode 
         { 
@@ -180,15 +183,6 @@ namespace UltimaXNA.Entities
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
-            if (_equipment[(int)EquipLayer.Mount] != null &&
-                _equipment[(int)EquipLayer.Mount].ItemID != 0)
-            {
-                _movement.IsMounted = true;
-            }
-            else
-            {
-                _movement.IsMounted = false;
-            }
             _animation.Update(gameTime);
             base.Update(gameTime);
         }
@@ -251,6 +245,10 @@ namespace UltimaXNA.Entities
         {
             _equipment[slot] = i;
             tickUpdateTicker();
+            if (slot == (int)EquipLayer.Mount)
+            {
+
+            }
         }
 
         public void RemoveItem(Serial serial)
