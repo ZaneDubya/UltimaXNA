@@ -111,20 +111,15 @@ namespace UltimaXNA.TileEngine
 
         public MapTile GetMapTile(int x, int y, bool load)
         {
-            if (!load)
-            {
-                if (Math.Abs(x - _x) > _MapTilesDrawRadius ||
-                    Math.Abs(y - _y) > _MapTilesDrawRadius)
-                {
-                    return null;
-                }
-            }
-
             int idx = (x % _MapTilesInMemory) + (y % _MapTilesInMemory) * _MapTilesInMemory;
             MapTile t = _tiles[idx];
             if (t == null || (x != t.X) || (y != t.Y))
             {
-                if (load && (_numCellsLoadedThisFrame < MaxCellsLoadedPerFrame || LoadEverything_Override))
+                if (!load && (Math.Abs(x - _x) > _MapTilesDrawRadius || Math.Abs(y - _y) > _MapTilesDrawRadius))
+                {
+                    return null;
+                }
+                else if (load && (_numCellsLoadedThisFrame < MaxCellsLoadedPerFrame || LoadEverything_Override))
                 {
                     _numCellsLoadedThisFrame++;
                     loadMapCellIntotiles(x - x % 8, y - y % 8);
@@ -134,8 +129,7 @@ namespace UltimaXNA.TileEngine
                     _tiles[idx] = null;
                 }
             }
-            if (_tiles[idx] == null)
-                return null;
+
             return _tiles[idx];
         }
 
@@ -144,6 +138,14 @@ namespace UltimaXNA.TileEngine
             // get data from the tile Matrix
             byte[] groundData = _tileMatrix.GetLandBlock(x >> 3, y >> 3);
             byte[] staticsData = _tileMatrix.GetStaticBlock(x >> 3, y >> 3);
+            int[] indexes = new int[64];
+            int thisindex = x % _MapTilesInMemory + (y % _MapTilesInMemory) * _MapTilesInMemory;
+            for (int i = 0; i < 64; )
+            {
+                indexes[i++] = thisindex++;
+                if ((i % 8) == 0)
+                    thisindex += (_MapTilesInMemory - 8);
+            }
 
             // load the ground data into the tiles.
             int index = 0;
@@ -157,7 +159,7 @@ namespace UltimaXNA.TileEngine
                 ground.SortZ = ground.Z;
                 MapTile tile = new MapTile(ground.Position.X, ground.Position.Y);
                 tile.Add(ground);
-                _tiles[(tile.X % _MapTilesInMemory) + (tile.Y % _MapTilesInMemory) * _MapTilesInMemory] = tile;
+                _tiles[indexes[i]] = tile;
             }
 
             // load the statics data into the tiles
@@ -166,23 +168,17 @@ namespace UltimaXNA.TileEngine
             for (int i = 0; i < countStatics; i++)
             {
                 int iTileID = staticsData[index++] + (staticsData[index++] << 8);
-                int iTileX = staticsData[index++] + x;
-                int iTileY = staticsData[index++] + y;
+                int iTileIndex = staticsData[index++] + (staticsData[index++] * 8);
                 int iTileZ = (sbyte)staticsData[index++];
                 index += 2; // unknown 2 byte data, not used.
-                _tiles[(iTileX % _MapTilesInMemory) + (iTileY % _MapTilesInMemory) * _MapTilesInMemory].Add(
-                    new MapObjectStatic(iTileID, i,
-                        new Position3D(iTileX, iTileY, iTileZ)));
+                MapTile tile = _tiles[indexes[iTileIndex]];
+                tile.Add(new MapObjectStatic(iTileID, i, new Position3D(tile.X, tile.Y, iTileZ)));
             }
 
             // now update this batch of tiles - sets their normals and surroundings as necessary.
-            for (int iy = 0; iy < 8; iy++)
+            for (int i = 0; i < 64; i++)
             {
-                int destidx = (x % _MapTilesInMemory) + ((iy + y) % _MapTilesInMemory) * _MapTilesInMemory;
-                for (int ix = 0; ix < 8; ix++)
-                {
-                    _tiles[destidx++].GroundTile.UpdateSurroundingsIfNecessary(this);
-                }
+                _tiles[indexes[i]].GroundTile.UpdateSurroundingsIfNecessary(this);
             }
         }
 

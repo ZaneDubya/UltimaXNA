@@ -43,7 +43,8 @@ namespace UltimaXNA.Entities
             get
             {
                 if ((!_actionCanBeInteruptedByStand) &&
-                    (_action == MobileAction.Stand || 
+                    (_action == MobileAction.None ||
+                    _action == MobileAction.Stand || 
                     _action == MobileAction.Walk || 
                     _action == MobileAction.Run))
                     return false;
@@ -207,7 +208,7 @@ namespace UltimaXNA.Entities
                 // If we are switching from any action to a stand action, then hold the last frame of the 
                 // current animation for a moment. Only Stand actions are held; thus when any hold ends,
                 // then we know we were holding for a Stand action.
-                if (action == MobileAction.Stand && _action != MobileAction.Stand)
+                if (!(_action == MobileAction.None) && (action == MobileAction.Stand && _action != MobileAction.Stand))
                 {
                     if (_action != MobileAction.None)
                         holdAnimation();

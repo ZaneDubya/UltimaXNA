@@ -34,7 +34,7 @@ namespace UltimaXNA.Entities
         private static TimeSpan _TimeRunMount = TimeSpan.FromSeconds(0.1);
         private TimeSpan TimeToCompleteMove(Direction facing)
         {
-            if (IsMounted)
+            if (_entity is Mobile && ((Mobile)_entity).IsMounted)
                 return (facing & Direction.Running) == Direction.Running ? _TimeRunMount : _TimeWalkMount;
             else
                 return (facing & Direction.Running) == Direction.Running ? _TimeRunFoot : _TimeWalkFoot;
@@ -42,7 +42,6 @@ namespace UltimaXNA.Entities
         #endregion
 
         public bool RequiresUpdate = false;
-        public bool IsMounted;
         public bool IsRunning { get { return ((_facing & Direction.Running) == Direction.Running); } }
 
         Position3D _currentPosition, _goalPosition;
