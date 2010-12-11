@@ -38,6 +38,8 @@ namespace UltimaXNA.Entities
 
         public override void Update(GameTime gameTime)
         {
+            _movement.PlayerMobile_CheckForMoveEvent();
+
             base.Update(gameTime);
         }
     }

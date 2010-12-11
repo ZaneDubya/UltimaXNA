@@ -115,14 +115,9 @@ namespace UltimaXNA
             if (distanceFromCenterOfScreen >= 150.0f)
                 moveDirection |= Direction.Running;
 
-            // Tell the player to Move. If the player has a new move event, send a MoveRequestPacket to the server.
-            int direction = 0, sequence = 0, key = 0;
+            // Tell the player to Move.
             Mobile m = (Mobile)EntitiesCollection.GetPlayerObject();
             m.PlayerMobile_Move(moveDirection);
-            if (m.PlayerMobile_GetMoveEvent(ref direction, ref sequence, ref key))
-            {
-                UltimaClient.Send(new MoveRequestPacket((byte)direction, (byte)sequence, key));
-            }
         }
 
         static void onMoveButton(InputEventM e)

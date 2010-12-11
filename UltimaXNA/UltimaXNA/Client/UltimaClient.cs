@@ -539,7 +539,7 @@ namespace UltimaXNA.Client
             Mobile mobile = EntitiesCollection.GetObject<Mobile>(p.Serial, true);
             mobile.BodyID = p.BodyID;
             mobile.Hue = (int)p.Hue;
-            mobile.MoveToInstant(p.X, p.Y, p.Z, p.Direction);
+            mobile.Move_Instant(p.X, p.Y, p.Z, p.Direction);
             mobile.IsFemale = p.Flags.IsFemale;
             mobile.IsPoisoned = p.Flags.IsPoisoned;
             mobile.IsBlessed = p.Flags.IsBlessed;
@@ -579,12 +579,12 @@ namespace UltimaXNA.Client
             // Since no packet arrives to add your pet, when you move and your pet follows you the client crashes
             if (mobile.Position.IsNullPosition)
             {
-                mobile.MoveToInstant(p.X, p.Y, p.Z, p.Direction);
+                mobile.Move_Instant(p.X, p.Y, p.Z, p.Direction);
                 // Issue 16 - End
             }
             else
             {
-                mobile.MoveTo(p.X, p.Y, p.Z, p.Direction);
+                mobile.Mobile_AddMoveEvent(p.X, p.Y, p.Z, p.Direction);
             }
         }
 
@@ -599,7 +599,7 @@ namespace UltimaXNA.Client
             mobile.IsWarMode = p.Flags.IsWarMode;
             mobile.IsHidden = p.Flags.IsHidden;
             mobile.Hue = (int)p.Hue;
-            mobile.MoveToInstant(p.X, p.Y, p.Z, p.Direction);
+            mobile.Move_Instant(p.X, p.Y, p.Z, p.Direction);
 
             if (mobile.Name == string.Empty)
             {
@@ -738,7 +738,7 @@ namespace UltimaXNA.Client
             // When loading the player object, we must load the serial before the object.
             EntitiesCollection.MySerial = p.Serial;
             PlayerMobile iPlayer = EntitiesCollection.GetObject<PlayerMobile>(p.Serial, true);
-            iPlayer.MoveToInstant(p.X, p.Y, p.Z, p.Direction);
+            iPlayer.Move_Instant(p.X, p.Y, p.Z, p.Direction);
             // iPlayer.SetFacing(p.Direction);
 
             // We want to make sure we have the client object before we load the world...
