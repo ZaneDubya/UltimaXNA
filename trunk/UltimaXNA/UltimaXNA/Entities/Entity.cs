@@ -82,7 +82,7 @@ namespace UltimaXNA.Entities
 
         public virtual void Update(GameTime gameTime)
         {
-            if ((_movement.RequiresUpdate || !HasBeenDrawn) && !_movement.Position.IsNullPosition)
+            if (!_movement.Position.IsNullPosition)
             {
                 _movement.Update(gameTime);
 
