@@ -78,7 +78,7 @@ namespace UltimaXNA.Data
 
                         fixed (Tile* pTiles = tiles)
                         {
-                            NativeMethods.Read(fsData.SafeFileHandle.DangerousGetHandle(), pTiles, 192);
+                            NativeMethods.Read(fsData.SafeFileHandle, pTiles, 192);
                         }
 
                         tileMatrix.SetLandBlock(x, y, tiles);
@@ -148,7 +148,7 @@ namespace UltimaXNA.Data
 
                             fixed (StaticTile* pStaticTiles = staticTiles)
                             {
-                                NativeMethods.Read(fsData.SafeFileHandle.DangerousGetHandle(), pStaticTiles, length);
+                                NativeMethods.Read(fsData.SafeFileHandle, pStaticTiles, length);
 
                                 StaticTile* pCur = pStaticTiles, pEnd = pStaticTiles + tileCount;
 

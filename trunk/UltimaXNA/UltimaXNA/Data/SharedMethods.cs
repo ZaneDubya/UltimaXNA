@@ -18,6 +18,7 @@
  ***************************************************************************/
 #region usings
 using System;
+using Microsoft.Win32.SafeHandles;
 using System.Runtime.InteropServices;
 #endregion
 
@@ -26,9 +27,9 @@ namespace UltimaXNA.Data
     class NativeMethods
     {
         [DllImport("Kernel32")]
-        private unsafe static extern int _lread(IntPtr hFile, void* lpBuffer, int wBytes);
+        private unsafe static extern int _lread(SafeFileHandle hFile, void* lpBuffer, int wBytes);
 
-        public static unsafe void Read(IntPtr ptr, void* buffer, int length)
+        public static unsafe void Read(SafeFileHandle ptr, void* buffer, int length)
         {
             _lread(ptr, buffer, length);
         }

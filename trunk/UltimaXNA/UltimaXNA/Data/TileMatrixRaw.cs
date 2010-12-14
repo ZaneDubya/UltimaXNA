@@ -166,15 +166,13 @@ namespace UltimaXNA.Data
                 }
                 else
                 {
-                    // int count = length / 7;
-
                     m_Statics.Seek(lookup, SeekOrigin.Begin);
 
                     byte[] staticTiles = new byte[length];
 
                     fixed (byte* pStaticTiles = staticTiles)
                     {
-                        NativeMethods.Read(m_Statics.SafeFileHandle.DangerousGetHandle(), pStaticTiles, length);
+                        NativeMethods.Read(m_Statics.SafeFileHandle, pStaticTiles, length);
                     }
                     return staticTiles;
                 }
@@ -204,7 +202,7 @@ namespace UltimaXNA.Data
             int streamStart = (int)m_MapStream.Position;
             fixed (byte* pData = _bufferedLandBlocks[index])
             {
-                NativeMethods.Read(m_MapStream.SafeFileHandle.DangerousGetHandle(), pData, _size_LandBlockData);
+                NativeMethods.Read(m_MapStream.SafeFileHandle, pData, _size_LandBlockData);
             }
             Metrics.ReportDataRead((int)m_MapStream.Position - streamStart);
 
