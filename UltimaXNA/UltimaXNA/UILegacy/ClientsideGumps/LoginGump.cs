@@ -72,6 +72,10 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
                     break;
             }
         }
+        public override void ActivateByKeyboardReturn(int textID, string text)
+        {
+            ActivateByButton((int)LoginGumpButtons.LoginButton);
+        }
 
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {

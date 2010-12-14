@@ -41,14 +41,13 @@ namespace UltimaXNA.Data
         public static Texture2D GetTexmapTexture(int index)
         {
             int i = index & 0x3FFF;
-            Texture2D texture = m_Cache[i];
 
-            if (texture == null)
+            if (m_Cache[i] == null)
             {
-                m_Cache[i] = texture = readTexmapTexture(i);
+                m_Cache[i] = readTexmapTexture(i);
             }
 
-            return texture;
+            return m_Cache[i];
         }
 
         const int multiplier = 0xFF / 0x1F;
