@@ -125,9 +125,12 @@ namespace UltimaXNA.Entities
 
         void flushDrawObjects()
         {
-            TileEngine.MapTile lastTile = _world.Map.GetMapTile(Position.Draw_TileX, Position.Draw_TileY, false);
-            if (lastTile != null)
-                lastTile.FlushObjectsBySerial(Serial);
+            if (!Position.IsNullPosition)
+            {
+                TileEngine.MapTile lastTile = _world.Map.GetMapTile(Position.Draw_TileX, Position.Draw_TileY, false);
+                if (lastTile != null)
+                    lastTile.FlushObjectsBySerial(Serial);
+            }
         }
 
         public virtual void Dispose()

@@ -206,8 +206,31 @@ namespace UltimaXNA.Data
         }
     }
 
+    class UniTextCache
+    {
+        public string Text;
+        public Texture2D Texture;
+        public HREFRegions Href;
+
+        public UniTextCache(string text, Texture2D texture, HREFRegions href)
+        {
+            Text = text;
+            Texture = texture;
+            Href = href;
+        }
+
+        public void Dispose()
+        {
+            Text = null;
+            Texture.Dispose();
+            Texture = null;
+            Href = null;
+        }
+    }
+
     public static class UniText
     {
+        private static UniTextCache[] _cache;
         private static UniFont[] _fonts;
         private static bool _initialized;
         private static GraphicsDevice _graphicsDevice;
@@ -262,9 +285,6 @@ namespace UltimaXNA.Data
             }
         }
 
-        static Dictionary<string, Texture2D> _TextureCache;
-        static Dictionary<Texture2D, HREFRegions> _hrefRegionsCache;
-
         public static Texture2D GetTexture(string text)
         {
             return getTexture(text, 0, 0, false);
@@ -288,28 +308,30 @@ namespace UltimaXNA.Data
         public static Texture2D GetTextureHTML(string text, int width, int height, ref HREFRegions regions)
         {
             Texture2D texture = getTexture(text, width, height, true);
-            regions = _hrefRegionsCache[texture];
+            int hash = text.GetHashCode() % 0x100;
+            regions = _cache[hash].Href;
             return texture;
         }
 
         static Texture2D getTexture(string text, int width, int height, bool parseHTML)
         {
-            if (_TextureCache == null)
+            if (_cache == null)
             {
-                _TextureCache = new Dictionary<string, Texture2D>();
-                _hrefRegionsCache = new Dictionary<Texture2D, HREFRegions>();
+                _cache = new UniTextCache[0x100];
             }
 
             // Have we already rendered this line of text?
-            string hash = string.Format("text:{0}", text);
-            if (!_TextureCache.ContainsKey(hash))
+            uint hash = ((uint)text.GetHashCode()) % 0x100;
+            if (_cache[hash] == null || _cache[hash].Text != text)
             {
+                if (_cache[hash] != null)
+                    _cache[hash].Dispose();
+
                 HREFRegions r = new HREFRegions();
                 Texture2D texture = writeTexture(text, width, height, r, parseHTML);
-                _TextureCache.Add(hash, texture);
-                _hrefRegionsCache.Add(texture, r);
+                _cache[hash] = new UniTextCache(text, texture, r);
             }
-            return _TextureCache[hash];
+            return _cache[hash].Texture;
         }
 
         static Texture2D writeTexture(string textToRender, int w, int h, HREFRegions regions, bool parseHTML)

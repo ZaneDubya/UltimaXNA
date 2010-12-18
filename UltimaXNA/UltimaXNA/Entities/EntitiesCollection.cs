@@ -77,7 +77,8 @@ namespace UltimaXNA.Entities
                     // Don't update the player entity twice!
                     if (entity.Key == MySerial)
                         continue;
-                    entity.Value.Update(gameTime);
+                    if (!entity.Value.IsDisposed)
+                        entity.Value.Update(gameTime);
                     // Dispose the entity if it is out of range.
                     if (!Utility.InRange(entity.Value.WorldPosition, player.Position, ClientVars.UpdateRange))
                         entity.Value.Dispose();
