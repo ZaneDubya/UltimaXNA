@@ -27,11 +27,9 @@ namespace UltimaXNA.TileEngine
 {
     public sealed class MapTile : IPoint2D
     {
-        public List<MapObject> Objects { get { return m_Objects; } }
         private List<MapObject> m_Objects;
 
-        private bool m_NeedsSorting;
-        private static int[] m_itemsToRemove = new int[0x100];
+        private bool m_NeedsSorting = false;
 
         #region X
         private int m_X;
@@ -192,14 +190,14 @@ namespace UltimaXNA.TileEngine
 
         private void removeDuplicateObjects()
         {
-            
+            int[] itemsToRemove = new int[0x100];
             int removeIndex = 0;
 
             for (int i = 0; i < m_Objects.Count; i++)
             {
                 for (int j = 0; j < removeIndex; j++)
                 {
-                    if (m_itemsToRemove[j] == i)
+                    if (itemsToRemove[j] == i)
                         continue;
                 }
 
@@ -212,12 +210,12 @@ namespace UltimaXNA.TileEngine
                         {
                             if (m_Objects[j] is MapObjectStatic && m_Objects[i].ItemID == m_Objects[j].ItemID)
                             {
-                                m_itemsToRemove[removeIndex++] = i;
+                                itemsToRemove[removeIndex++] = i;
                                 break;
                             }
                             if (m_Objects[j] is MapObjectItem && matchNames(m_Objects[i], m_Objects[j]))
                             {
-                                m_itemsToRemove[removeIndex++] = i;
+                                itemsToRemove[removeIndex++] = i;
                                 break;
                             }
                         }
@@ -235,12 +233,12 @@ namespace UltimaXNA.TileEngine
                         {
                             if (m_Objects[j] is MapObjectStatic && matchNames(m_Objects[i], m_Objects[j]))
                             {
-                                m_itemsToRemove[removeIndex++] = j;
+                                itemsToRemove[removeIndex++] = j;
                                 continue;
                             }
                             if (m_Objects[j] is MapObjectItem && m_Objects[i].OwnerEntity == m_Objects[j].OwnerEntity)
                             {
-                                m_itemsToRemove[removeIndex++] = i;
+                                itemsToRemove[removeIndex++] = i;
                                 break;
                             }
                         }
@@ -250,7 +248,7 @@ namespace UltimaXNA.TileEngine
 
             for (int i = 0; i < removeIndex; i++)
             {
-                m_Objects.RemoveAt(m_itemsToRemove[i] - i);
+                m_Objects.RemoveAt(itemsToRemove[i] - i);
             }
         }
 

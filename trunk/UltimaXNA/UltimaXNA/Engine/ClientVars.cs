@@ -192,7 +192,7 @@ namespace UltimaXNA
 
         public static bool DEBUG_ShowDataRead = false;
         public static bool DEBUG_BreakdownDataRead = false;
-        public static bool DEBUG_DisplayFPS = true;
+        public static bool DEBUG_DisplayFPS = false;
         public static bool DEBUG_HighlightMouseOverObjects = false;
         public static bool DEBUG_DrawWireframe = false;
 

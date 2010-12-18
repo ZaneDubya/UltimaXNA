@@ -39,7 +39,7 @@ namespace UltimaXNA.Entities
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            HasBeenDrawn = false;
+            // HasBeenDrawn = false;
             _corpseFrame += ((float)gameTime.ElapsedGameTime.Milliseconds / 500f);
             if (_corpseFrame >= 1f)
                 _corpseFrame = 0.999f;

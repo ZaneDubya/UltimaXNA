@@ -102,8 +102,8 @@ namespace UltimaXNA.Entities
 
         internal override void Draw(MapTile tile, Position3D position)
         {
-            string text = Utility.WrapASCIIText(_font, _text, 200);
-            tile.Add(new TileEngine.MapObjectText(position, _ownerEntity, text, _hue, _font));
+            // string text = Utility.WrapASCIIText(_font, _text, 200);
+            // tile.Add(new TileEngine.MapObjectText(position, _ownerEntity, text, _hue, _font));
         }
     }
 }

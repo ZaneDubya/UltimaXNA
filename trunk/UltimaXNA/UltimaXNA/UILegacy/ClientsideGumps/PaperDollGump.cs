@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Client;
 using UltimaXNA.Entities;
+using UltimaXNA.Input;
 using UltimaXNA.UILegacy.Gumplings;
 
 namespace UltimaXNA.UILegacy.ClientsideGumps
@@ -34,6 +35,8 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
             IsMovable = true;
             AddGumpling(new GumpPic(this, 0, 0, 0, 0x07d0, 0));
             LastGumpling.MakeADragger(this);
+            LastGumpling.HandlesMouseInput = true;
+            LastGumpling.OnMouseClick += onGumpClick;
 
             // HELP
             AddGumpling(new Button(this, 0, 185, 44 + 27 * 0, 0x07ef, 0x07f0, ButtonTypes.Activate, 0, (int)Buttons.Help));
@@ -100,6 +103,14 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
                 case Buttons.Status:
                     _manager.ToggleGump_Local(new StatusGump(), 200, 400);
                     break;
+            }
+        }
+
+        void onGumpClick(int x, int y, MouseButton button)
+        {
+            if (button == MouseButton.Right)
+            {
+                Dispose();
             }
         }
 

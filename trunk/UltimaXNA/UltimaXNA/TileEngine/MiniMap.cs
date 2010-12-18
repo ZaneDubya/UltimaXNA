@@ -103,13 +103,14 @@ namespace UltimaXNA.TileEngine
                         for (int x = 0; x < ClientVars.RenderSize; x++)
                         {
                             MapTile m = map.GetMapTile(renderBeginX + x, renderBeginY + y, true);
+                            List<MapObject> o = m.GetSortedObjects();
                             int i;
-                            for (i = m.Objects.Count - 1; i > 0; i--)
+                            for (i = o.Count - 1; i > 0; i--)
                             {
-                                if (m.Objects[i] is MapObjectStatic)
+                                if (o[i] is MapObjectStatic)
                                 {
-                                    *cur++ = (ushort)(Data.Radarcol.Colors[m.Objects[i].ItemID] | 0x8000);
-                                    *cur = (ushort)(Data.Radarcol.Colors[m.Objects[i].ItemID] | 0x8000);
+                                    *cur++ = (ushort)(Data.Radarcol.Colors[o[i].ItemID] | 0x8000);
+                                    *cur = (ushort)(Data.Radarcol.Colors[o[i].ItemID] | 0x8000);
                                     cur += size;
                                     break;
                                 }
@@ -117,7 +118,7 @@ namespace UltimaXNA.TileEngine
                             if (i == 0)
                             {
                                 *cur++ = (ushort)(Data.Radarcol.Colors[m.GroundTile.ItemID] | 0x8000);
-                                *cur = (ushort)(Data.Radarcol.Colors[m.Objects[i].ItemID] | 0x8000);
+                                *cur = (ushort)(Data.Radarcol.Colors[o[i].ItemID] | 0x8000);
                                 cur += size;
                             }
                         }
