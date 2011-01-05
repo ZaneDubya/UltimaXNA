@@ -51,15 +51,15 @@ namespace UltimaXNA.SceneManagement
             base.Dispose();
         }
 
-        bool timesSet = false;
-        float timesStart;
+        // bool timesSet = false;
+        // float timesStart;
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
             parseKeyboard();
 
-            if (timesSet == false)
+            /*if (timesSet == false)
             {
                 timesStart = ClientVars.TheTime;
                 timesSet = true;
@@ -79,7 +79,7 @@ namespace UltimaXNA.SceneManagement
                     _position.X++;
                     _position.Y--;
                 }
-            }
+            }*/
 
             World.CenterPosition = _position;
             World.Update(gameTime);
