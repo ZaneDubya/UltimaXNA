@@ -20,7 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using l4 = log4net;
+// using log4net;
 using System.Globalization;
 using System.Reflection;
 using System.IO;
@@ -36,7 +36,7 @@ namespace UltimaXNA.Diagnostics
     {
         static bool Initialized = false;
 
-        log4net.ILog _log;
+        // log4net.ILog _log;
 
         protected string LoggerType;
 
@@ -53,13 +53,13 @@ namespace UltimaXNA.Diagnostics
 
             if (!Initialized) 
             {
-                string path = "log4net.config";
+                // string path = "log4net.config";
 
-                log4net.Config.XmlConfigurator.ConfigureAndWatch(new System.IO.FileInfo(path));
+                // log4net.Config.XmlConfigurator.ConfigureAndWatch(new System.IO.FileInfo(path));
                 Initialized = true;
             }
 
-            _log = log4net.LogManager.GetLogger(LoggerType);
+            // _log = log4net.LogManager.GetLogger(LoggerType);
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace UltimaXNA.Diagnostics
         public virtual void Debug(object obj)
         {
             OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Debug, obj.ToString()));
-            _log.Debug(obj.ToString());
+            // _log.Debug(obj.ToString());
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace UltimaXNA.Diagnostics
         public virtual void Debug(string message)
         {
             OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Debug, message));
-            _log.Debug(message);
+            // _log.Debug(message);
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace UltimaXNA.Diagnostics
         public virtual void Debug(string message, params object[] objects)
         {
             OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Debug, message, objects));
-            _log.DebugFormat(message, objects);
+            // _log.DebugFormat(message, objects);
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace UltimaXNA.Diagnostics
         {
             Utility.PushColor(ConsoleColor.White);
             OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Info, obj.ToString()));
-            _log.Info(obj.ToString());
+            // _log.Info(obj.ToString());
             Utility.PopColor();
         }
 
@@ -111,7 +111,7 @@ namespace UltimaXNA.Diagnostics
         {
             Utility.PushColor(ConsoleColor.White);
             OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Info, message));
-            _log.Info(message);
+            // _log.Info(message);
             Utility.PopColor();
         }
 
@@ -124,7 +124,7 @@ namespace UltimaXNA.Diagnostics
         {
             Utility.PushColor(ConsoleColor.White);
             OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Info, message, objects));
-            _log.InfoFormat(message, objects);
+            // _log.InfoFormat(message, objects);
             Utility.PopColor();
         }
 
@@ -135,7 +135,7 @@ namespace UltimaXNA.Diagnostics
         {
             Utility.PushColor(ConsoleColor.Yellow);
             OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Warn, obj.ToString()));
-            _log.Warn(obj.ToString());
+            // _log.Warn(obj.ToString());
             Utility.PopColor();
         }
 
@@ -147,7 +147,7 @@ namespace UltimaXNA.Diagnostics
         {
             Utility.PushColor(ConsoleColor.Yellow);
             OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Warn, message));
-            _log.Warn(message);
+            // _log.Warn(message);
             Utility.PopColor();
         }
 
@@ -160,7 +160,7 @@ namespace UltimaXNA.Diagnostics
         {
             Utility.PushColor(ConsoleColor.Yellow);
             OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Warn, message, objects));
-            _log.WarnFormat(message, objects);
+            // _log.WarnFormat(message, objects);
             Utility.PopColor();
         }
 
@@ -171,7 +171,7 @@ namespace UltimaXNA.Diagnostics
         {
             Utility.PushColor(ConsoleColor.Red);
             OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Error, obj.ToString()));
-            _log.Error(obj.ToString());
+            // _log.Error(obj.ToString());
             Utility.PopColor();
         }
 
@@ -183,7 +183,7 @@ namespace UltimaXNA.Diagnostics
         {
             Utility.PushColor(ConsoleColor.Red);
             OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Error, message));
-            _log.Error(message);
+            // _log.Error(message);
             Utility.PopColor();
         }
 
@@ -196,7 +196,7 @@ namespace UltimaXNA.Diagnostics
         {
             Utility.PushColor(ConsoleColor.Red);
             OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Error, message, objects));
-            _log.ErrorFormat(message, objects);
+            // _log.ErrorFormat(message, objects);
             Utility.PopColor();
         }
 
@@ -207,7 +207,7 @@ namespace UltimaXNA.Diagnostics
         {
             Utility.PushColor(ConsoleColor.Red);
             OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Error, obj.ToString()));
-            _log.Fatal(obj.ToString());
+            // _log.Fatal(obj.ToString());
             Utility.PopColor();
         }
 
@@ -219,7 +219,7 @@ namespace UltimaXNA.Diagnostics
         {
             Utility.PushColor(ConsoleColor.Red);
             OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Error, message));
-            _log.Fatal(message);
+            // _log.Fatal(message);
             Utility.PopColor();
         }
 
@@ -232,7 +232,7 @@ namespace UltimaXNA.Diagnostics
         {
             Utility.PushColor(ConsoleColor.Red);
             OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Error, message, objects));
-            _log.FatalFormat(message, objects);
+            // _log.FatalFormat(message, objects);
             Utility.PopColor();
         }
 

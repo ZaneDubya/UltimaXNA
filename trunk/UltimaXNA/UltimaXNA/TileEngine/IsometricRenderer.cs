@@ -161,7 +161,7 @@ namespace UltimaXNA.TileEngine
                         _wireframe.AddMouseOverItem(_overObject);
                     if (_overGround != null)
                         _wireframe.AddMouseOverItem(_overGround);
-                    _wireframe.ProjectionMatrix = _spriteBatch.WorldMatrix;
+                    _wireframe.ProjectionMatrix = _spriteBatch.ProjectionMatrixScreen;
                     _wireframe.Draw(gameTime);
                 }
             }

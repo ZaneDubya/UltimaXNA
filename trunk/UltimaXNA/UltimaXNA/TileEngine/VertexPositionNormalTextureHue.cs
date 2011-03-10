@@ -22,12 +22,22 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace UltimaXNA.TileEngine
 {
-    public struct VertexPositionNormalTextureHue
+    public struct VertexPositionNormalTextureHue : IVertexType
     {
         public Vector3 Position;
         public Vector3 Normal;
         public Vector3 TextureCoordinate;
         public Vector2 Hue;
+
+        public readonly static VertexDeclaration VertexDeclaration = new VertexDeclaration
+        (
+            new VertexElement(0, VertexElementFormat.Vector3, VertexElementUsage.Position, 0),
+            new VertexElement(sizeof(float) * 3, VertexElementFormat.Vector3, VertexElementUsage.Normal, 0),
+            new VertexElement(sizeof(float) * 6, VertexElementFormat.Vector3, VertexElementUsage.TextureCoordinate, 0),
+            new VertexElement(sizeof(float) * 9, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 1)
+        );
+
+        VertexDeclaration IVertexType.VertexDeclaration { get { return VertexDeclaration; } }
 
         public VertexPositionNormalTextureHue(Vector3 Position, Vector3 Normal, Vector3 TextureCoordinate)
         {
@@ -36,14 +46,6 @@ namespace UltimaXNA.TileEngine
             this.TextureCoordinate = TextureCoordinate;
             this.Hue = Vector2.Zero;
         }
-
-        public static readonly VertexElement[] VertexElements = new VertexElement[]
-        {
-            new VertexElement(0, 0, VertexElementFormat.Vector3, VertexElementMethod.Default, VertexElementUsage.Position, 0),
-            new VertexElement(0, sizeof(float) * 3, VertexElementFormat.Vector3, VertexElementMethod.Default, VertexElementUsage.Normal, 0),
-            new VertexElement(0, sizeof(float) * 6, VertexElementFormat.Vector3, VertexElementMethod.Default, VertexElementUsage.TextureCoordinate, 0),
-            new VertexElement(0, sizeof(float) * 9, VertexElementFormat.Vector2, VertexElementMethod.Default, VertexElementUsage.TextureCoordinate, 1),
-        };
 
         public static readonly VertexPositionNormalTextureHue[] PolyBuffer = {
                 new VertexPositionNormalTextureHue(new Vector3(), new Vector3(0, 0, 1), new Vector3(0, 0, 0)),

@@ -140,7 +140,7 @@ namespace UltimaXNA
         static GameTime _theTime;
         public static float TheTime
         {
-            get { return (float)_theTime.TotalRealTime.TotalSeconds; }
+            get { return (float)_theTime.TotalGameTime.TotalSeconds; }
         }
 
         public static Direction CursorDirection { get; internal set; }

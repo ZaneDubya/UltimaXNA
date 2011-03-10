@@ -211,7 +211,7 @@ namespace UltimaXNA.Data
                                     _fonts[i].Height = height;
                                 }
 
-                                Texture2D texture = new Texture2D(_graphicsDevice, width, height, 1, TextureUsage.None, SurfaceFormat.Color);
+                                Texture2D texture = new Texture2D(_graphicsDevice, width, height, false, SurfaceFormat.Color);
                                 Color[] pixels = new Color[width * height];
 
                                 unsafe
@@ -223,7 +223,7 @@ namespace UltimaXNA.Data
                                             for (int x = 0; x < width; ++x)
                                             {
                                                 short pixel = (short)(buffer[pos++] | (buffer[pos++] << 8));
-                                                Color color = Color.TransparentBlack;
+                                                Color color = Color.Transparent;
 
                                                 if (pixel != 0)
                                                 {
@@ -335,7 +335,7 @@ namespace UltimaXNA.Data
                 }
             }
 
-            Texture2D result = new Texture2D(_graphicsDevice, width, height, 1, TextureUsage.None, SurfaceFormat.Color);
+            Texture2D result = new Texture2D(_graphicsDevice, width, height, false, SurfaceFormat.Color);
             result.SetData<Color>(resultData);
             return result;
         }

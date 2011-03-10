@@ -28,7 +28,6 @@ namespace UltimaXNA.TileEngine
     {
         // Effect and vertex declaration for drawing
         BasicEffect lineEffect;
-        VertexDeclaration lineVertexDeclaration;
         public Matrix ProjectionMatrix;
 
         List<VertexPositionColor[]> _polygonsToDraw;
@@ -36,10 +35,8 @@ namespace UltimaXNA.TileEngine
         public WireframeRenderer(Game game)
             : base(game)
         {
-            lineEffect = new BasicEffect(game.GraphicsDevice, null);
+            lineEffect = new BasicEffect(game.GraphicsDevice);
             lineEffect.VertexColorEnabled = true;
-            lineVertexDeclaration = new VertexDeclaration(game.GraphicsDevice,
-                VertexPositionColorTexture.VertexElements);
 
             _polygonsToDraw = new List<VertexPositionColor[]>();
         }
@@ -51,38 +48,28 @@ namespace UltimaXNA.TileEngine
 
         public override void Draw(GameTime gameTime)
         {
-            RenderState renderState = this.Game.GraphicsDevice.RenderState;
-
             // Set line drawing renderstates. We disable backface culling
             // and turn off the depth buffer because we want to be able to
             // see the picked triangle outline regardless of which way it is
             // facing, and even if there is other geometry in front of it.
-            renderState.FillMode = FillMode.WireFrame;
-            renderState.CullMode = CullMode.None;
-            renderState.DepthBufferEnable = false;
-
+            Game.GraphicsDevice.RasterizerState.FillMode = FillMode.WireFrame;
+            Game.GraphicsDevice.DepthStencilState = DepthStencilState.None;
+                
             // Activate the line drawing BasicEffect.
             lineEffect.Projection = ProjectionMatrix;
             // lineEffect.View = camera.View;
 
-            lineEffect.Begin();
-            lineEffect.CurrentTechnique.Passes[0].Begin();
+            lineEffect.CurrentTechnique.Passes[0].Apply();
 
             // Draw the triangles.
-            GraphicsDevice.VertexDeclaration = lineVertexDeclaration;
-
             foreach (VertexPositionColor[] v in _polygonsToDraw)
             {
                 GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleStrip, v, 0, 2);
             }
 
-            lineEffect.CurrentTechnique.Passes[0].End();
-            lineEffect.End();
-
             // Reset renderstates to their default values.
-            renderState.FillMode = FillMode.Solid;
-            renderState.CullMode = CullMode.CullCounterClockwiseFace;
-            renderState.DepthBufferEnable = true;
+            Game.GraphicsDevice.RasterizerState.FillMode = FillMode.Solid;
+            Game.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
             _polygonsToDraw.Clear();
         }

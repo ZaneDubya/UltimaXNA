@@ -110,9 +110,9 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
 
         public override void Update(GameTime gameTime)
         {
-            if (_refreshTime.TotalRealTime.TotalSeconds + 0.5 < gameTime.TotalRealTime.TotalSeconds) //need to update
+            if (_refreshTime.TotalGameTime.TotalSeconds + 0.5 < gameTime.TotalGameTime.TotalSeconds) //need to update
             {
-                _refreshTime = new GameTime(gameTime.TotalRealTime, gameTime.ElapsedRealTime, gameTime.TotalGameTime, gameTime.ElapsedGameTime);
+                _refreshTime = new GameTime(gameTime.TotalGameTime, gameTime.ElapsedGameTime);
 
                 foreach (Control c in gumplingsToUpdate)
                     _controls.Remove(c);

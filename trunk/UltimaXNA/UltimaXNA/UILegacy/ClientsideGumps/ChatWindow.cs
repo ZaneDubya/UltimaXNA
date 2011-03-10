@@ -97,8 +97,8 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
         public void Update(GameTime gameTime)
         {
             if (_createdTime == float.MinValue)
-                _createdTime = (float)gameTime.TotalRealTime.TotalSeconds;
-            float time = (float)gameTime.TotalRealTime.TotalSeconds - _createdTime;
+                _createdTime = (float)gameTime.TotalGameTime.TotalSeconds;
+            float time = (float)gameTime.TotalGameTime.TotalSeconds - _createdTime;
             if (time > Time_Display + Time_Fadeout)
                 _isExpired = true;
             else if (time > Time_Display)
