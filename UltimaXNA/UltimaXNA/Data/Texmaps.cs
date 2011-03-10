@@ -76,9 +76,9 @@ namespace UltimaXNA.Data
                 {
                     uint color = fileData[count];
                     *pDataRef++ = 0xff000000 + (
-                                    ((((color >> 10) & 0x1F) * multiplier) << 16) |
+                                    ((((color >> 10) & 0x1F) * multiplier)) |
                                     ((((color >> 5) & 0x1F) * multiplier) << 8) |
-                                    (((color & 0x1F) * multiplier))
+                                    (((color & 0x1F) * multiplier) << 16)
                                     );
                     count++;
                 }

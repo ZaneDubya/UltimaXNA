@@ -538,9 +538,9 @@ namespace UltimaXNA.Data
             {
                 uint color = bin.ReadUInt16();
                 pal[i] = 0xff000000 + (
-                    ((((color >> 10) & 0x1F) * 0xFF / 0x1F) << 16) |
+                    ((((color >> 10) & 0x1F) * 0xFF / 0x1F)) |
                     ((((color >> 5) & 0x1F) * 0xFF / 0x1F) << 8) |
-                    (((color & 0x1F) * 0xFF / 0x1F))
+                    (((color & 0x1F) * 0xFF / 0x1F) << 16)
                     );
             }
             return pal;

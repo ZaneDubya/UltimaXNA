@@ -1,4 +1,7 @@
-float4x4 world : WorldViewProjection;
+float4x4 ProjectionMatrix;
+float4x4 WorldMatrix;
+float2 Viewport;
+
 float3 lightDirection;
 float lightIntensity;
 float ambientLightIntensity;
@@ -24,11 +27,16 @@ struct PS_INPUT
 	float2 Hue		: TEXCOORD2;
 };
 
-PS_INPUT VertexShader(VS_INPUT IN)
+PS_INPUT VertexShaderFunction(VS_INPUT IN)
 {
 	PS_INPUT OUT;
 	
-    OUT.Position = mul(IN.Position, world);
+	OUT.Position = mul(mul(IN.Position, WorldMatrix), ProjectionMatrix);
+	
+	// Half pixel offset for correct texel centering.
+	OUT.Position.x -= 0.5 / Viewport.x;
+	OUT.Position.y += 0.5 / Viewport.y;
+
 	OUT.TexCoord = IN.TexCoord; 
 	OUT.Normal = IN.Normal;
 	OUT.Hue = IN.Hue;
@@ -39,10 +47,14 @@ PS_INPUT VertexShader(VS_INPUT IN)
 // New pixelshader created by Jeff - simulates sunrise.
 float HuesPerColumn = 2024;
 float HuesPerRow = 2;
-float4 PixelShader(PS_INPUT IN) : COLOR0
+float4 PixelShaderFunction(PS_INPUT IN) : COLOR0
 {	
 	// get the initial color
 	float4 color = tex2D(textureSampler[0], IN.TexCoord);
+
+	if (color.a == 0)
+		discard;
+
 	// do lighting
 	if (DrawLighting)
 	{
@@ -75,6 +87,7 @@ float4 PixelShader(PS_INPUT IN) : COLOR0
 			color.a *= 0.5f;
 		}
 	}
+
 	return color;
 }
 
@@ -83,7 +96,7 @@ technique StandardEffect
 {
 	pass p0
 	{
-		VertexShader = compile vs_2_0 VertexShader();
-		PixelShader = compile ps_2_0 PixelShader();
+		VertexShader = compile vs_2_0 VertexShaderFunction();
+		PixelShader = compile ps_2_0 PixelShaderFunction();
 	}
 }

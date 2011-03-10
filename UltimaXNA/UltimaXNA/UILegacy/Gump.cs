@@ -62,17 +62,14 @@ namespace UltimaXNA.UILegacy
             // Do we need to resize?
             if (checkResize())
             {
-                if (_gumpTarget != null)
+                if (_gumpTexture != null)
                 {
-                    _gumpTarget.Dispose();
                     _gumpTexture.Dispose();
-                    _gumpTarget = null;
                 }
             }
         }
 
-        RenderTarget2D _gumpTarget = null;
-        Texture2D _gumpTexture = null;
+        RenderTarget2D _gumpTexture = null;
 
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
@@ -90,22 +87,21 @@ namespace UltimaXNA.UILegacy
             {
                 InputMultiplier = (float)spriteBatch.GraphicsDevice.Viewport.Width / (float)Width;
 
-                if (_gumpTarget == null)
+                if (_gumpTexture == null)
                 {
                     // the render target CANNOT be larger than the viewport.
                     int w = Width < _manager.Width ? Width : _manager.Width;
                     int h = Height < _manager.Height ? Height : _manager.Height;
-                    _gumpTarget = new RenderTarget2D(spriteBatch.GraphicsDevice, w, h, 1, SurfaceFormat.Color);
+                    _gumpTexture = new RenderTarget2D(spriteBatch.GraphicsDevice, w, h, false, SurfaceFormat.Color, DepthFormat.Depth16);
                 }
 
-                spriteBatch.GraphicsDevice.SetRenderTarget(0, _gumpTarget);
-                spriteBatch.GraphicsDevice.Clear(Color.TransparentBlack);
+                spriteBatch.GraphicsDevice.SetRenderTarget(_gumpTexture);
+                spriteBatch.GraphicsDevice.Clear(Color.Transparent);
 
                 base.Draw(spriteBatch);
                 spriteBatch.Flush();
 
-                spriteBatch.GraphicsDevice.SetRenderTarget(0, null);
-                _gumpTexture = _gumpTarget.GetTexture();
+                spriteBatch.GraphicsDevice.SetRenderTarget(null);
 
                 if (_renderFullScreen)
                 {

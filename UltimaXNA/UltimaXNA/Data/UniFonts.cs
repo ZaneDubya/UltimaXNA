@@ -40,7 +40,7 @@ namespace UltimaXNA.Data
 
                         for (int k = 0; k < Width; k++)
                         {
-                            if (*src != Color.TransparentBlack)
+                            if (*src != Color.Transparent)
                             {
                                 *dest = color;
                                 if (isBold)
@@ -94,7 +94,7 @@ namespace UltimaXNA.Data
                             int byteX = 0;
                             for (int x = 0; x < Width; ++x)
                             {
-                                Color color = Color.TransparentBlack;
+                                Color color = Color.Transparent;
                                 if ((scanline[byteX] & (byte)Math.Pow(2, bitX)) != 0)
                                 {
                                     color = Color.White;
@@ -487,7 +487,7 @@ namespace UltimaXNA.Data
                 }
             }
 
-            Texture2D result = new Texture2D(_graphicsDevice, width, height, 1, TextureUsage.None, SurfaceFormat.Color);
+            Texture2D result = new Texture2D(_graphicsDevice, width, height, false, SurfaceFormat.Color);
             result.SetData<Color>(resultData);
             return result;
         }

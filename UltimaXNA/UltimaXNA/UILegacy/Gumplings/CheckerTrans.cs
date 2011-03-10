@@ -60,7 +60,7 @@ namespace UltimaXNA.UILegacy.Gumplings
                         }
                         else
                         {
-                            data[h * Width + w] = Color.TransparentBlack;
+                            data[h * Width + w] = Color.Transparent;
                         }
                     }
                 }

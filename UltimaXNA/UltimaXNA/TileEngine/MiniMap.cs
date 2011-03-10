@@ -93,7 +93,7 @@ namespace UltimaXNA.TileEngine
             {
                 int size = ClientVars.RenderSize * 2;
                 _lastUpdateTicker = map.UpdateTicker;
-                _texture = new Texture2D(_graphics, size, size, 1, TextureUsage.None, SurfaceFormat.Bgra5551);
+                _texture = new Texture2D(_graphics, size, size, false, SurfaceFormat.Bgra5551);
                 ushort[] data = new ushort[size * size];
                 fixed (ushort* pData = data)
                 {

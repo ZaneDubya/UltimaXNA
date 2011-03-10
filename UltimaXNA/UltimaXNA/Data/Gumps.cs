@@ -88,9 +88,9 @@ namespace UltimaXNA.Data
                                 else
                                 {
                                     uint color32 = 0xff000000 + (
-                                        ((((color >> 10) & 0x1F) * multiplier) << 16) |
+                                        ((((color >> 10) & 0x1F) * multiplier)) |
                                         ((((color >> 5) & 0x1F) * multiplier) << 8) |
-                                        (((color & 0x1F) * multiplier))
+                                        (((color & 0x1F) * multiplier) << 16)
                                         );
                                     while (cur < next)
                                         *cur++ = color32;
@@ -102,7 +102,7 @@ namespace UltimaXNA.Data
 
                 Metrics.ReportDataRead(length);
 
-                Texture2D texture = new Texture2D(_graphicsDevice, width, height);
+                Texture2D texture = new Texture2D(_graphicsDevice, width, height, false, SurfaceFormat.Color);
                 texture.SetData(pixels);
                 _cache[index] = texture;
             }

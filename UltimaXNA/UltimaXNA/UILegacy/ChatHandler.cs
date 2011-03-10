@@ -23,12 +23,12 @@ namespace UltimaXNA.UILegacy
 
             for (int i = 0; i < _textLines.Count; i++)
             {
-                if (_textTimes[i].TotalRealTime.Ticks == 0)
+                if (_textTimes[i].TotalGameTime.Ticks == 0)
                 {
-                    _textTimes[i] = new GameTime(gameTime.TotalRealTime, gameTime.ElapsedRealTime, gameTime.TotalGameTime, gameTime.ElapsedGameTime);
+                    _textTimes[i] = new GameTime(gameTime.TotalGameTime, gameTime.ElapsedGameTime);
                 }
 
-                if (eraseOldEntries && gameTime.TotalRealTime.TotalSeconds - _textTimes[i].TotalRealTime.TotalSeconds >= 10.0f)
+                if (eraseOldEntries && gameTime.TotalGameTime.TotalSeconds - _textTimes[i].TotalGameTime.TotalSeconds >= 10.0f)
                 {
                     indexesToRemove.Add(i);
                 }

@@ -37,9 +37,9 @@ namespace UltimaXNA.Data
                 {
                     uint c = bin.ReadUInt16();
                     Colors[i] = 0xff000000 | (
-                            ((((c >> 10) & 0x1F) * multiplier) << 16) |
+                            ((((c >> 10) & 0x1F) * multiplier)) |
                             ((((c >> 5) & 0x1F) * multiplier) << 8) |
-                            (((c & 0x1F) * multiplier))
+                            (((c & 0x1F) * multiplier) << 16)
                             );
                 }
                 Metrics.ReportDataRead((int)bin.BaseStream.Position);

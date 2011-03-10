@@ -36,9 +36,9 @@ namespace UltimaXNA
 
         static float _z = 0;
 
-        public Matrix WorldMatrix
+        public Matrix ProjectionMatrixScreen
         {
-            get { return Matrix.CreateOrthographicOffCenter(0, this.Game.GraphicsDevice.Viewport.Width, this.Game.GraphicsDevice.Viewport.Height, 0, Int32.MinValue, Int32.MaxValue); }
+            get { return Matrix.CreateOrthographicOffCenter(0, Game.GraphicsDevice.Viewport.Width, Game.GraphicsDevice.Viewport.Height, 0f, Int16.MinValue, Int16.MaxValue); }
         }
 
         public SpriteBatch3D(Game game)
@@ -175,7 +175,7 @@ namespace UltimaXNA
             vertices[1].Position.Z = _z;
             vertices[2].Position.Z = _z;
             vertices[3].Position.Z = _z;
-            _z += 1000;
+            _z += 1;
 
             List<VertexPositionNormalTextureHue> vertexList;
 
@@ -233,8 +233,6 @@ namespace UltimaXNA
 
         public void Flush(bool doLighting)
         {
-            this.Game.GraphicsDevice.VertexDeclaration = new VertexDeclaration(this.Game.GraphicsDevice, VertexPositionNormalTextureHue.VertexElements);
-
             Texture2D iTexture;
             List<VertexPositionNormalTextureHue> iVertexList;
 
@@ -242,48 +240,34 @@ namespace UltimaXNA
             _effect.CurrentTechnique = _effect.Techniques["StandardEffect"];
             this.Game.GraphicsDevice.Textures[1] = UltimaXNA.Data.HuesXNA.HueTexture;
 
-            Game.GraphicsDevice.RenderState.DepthBufferEnable = true;
-            Game.GraphicsDevice.RenderState.AlphaBlendEnable = true;
-            Game.GraphicsDevice.RenderState.AlphaTestEnable = true;
-            Game.GraphicsDevice.RenderState.AlphaFunction = CompareFunction.Greater;
+            DepthStencilState depth = new DepthStencilState();
+            depth.DepthBufferEnable = true;
 
-            Game.GraphicsDevice.SamplerStates[0].MagFilter = TextureFilter.None;
-            Game.GraphicsDevice.SamplerStates[0].MinFilter = TextureFilter.None;
-            Game.GraphicsDevice.SamplerStates[0].MipFilter = TextureFilter.None;
+            Game.GraphicsDevice.DepthStencilState = depth;
             
-            Game.GraphicsDevice.SamplerStates[0].AddressU = TextureAddressMode.Clamp;
-            Game.GraphicsDevice.SamplerStates[0].AddressV = TextureAddressMode.Clamp;
+            Game.GraphicsDevice.BlendState = BlendState.AlphaBlend;
+            Game.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
+            Game.GraphicsDevice.SamplerStates[0] = SamplerState.PointClamp;
+            Game.GraphicsDevice.SamplerStates[1] = SamplerState.PointClamp;
 
             _effect.Parameters["DrawLighting"].SetValue(doLighting);
-            _effect.Parameters["world"].SetValue(WorldMatrix);
 
-            _effect.Begin();
-            _effect.CurrentTechnique.Passes[0].Begin();
+            _effect.Parameters["ProjectionMatrix"].SetValue(ProjectionMatrixScreen);
+            _effect.Parameters["WorldMatrix"].SetValue(Matrix.Identity);
+            _effect.Parameters["Viewport"].SetValue(new Vector2(Game.GraphicsDevice.Viewport.Width, Game.GraphicsDevice.Viewport.Height));
+
+            
 
             while (keyValuePairs.MoveNext())
             {
+                _effect.CurrentTechnique.Passes[0].Apply();
                 iTexture = keyValuePairs.Current.Key;
-                if (DrawWireframe && isLandscapeTexture(iTexture))
-                    Game.GraphicsDevice.RenderState.FillMode = FillMode.WireFrame;
-                else
-                    Game.GraphicsDevice.RenderState.FillMode = FillMode.Solid;
-
                 iVertexList = keyValuePairs.Current.Value;
-                this.Game.GraphicsDevice.Textures[0] = iTexture;
-                // try
-                // {
-                    this.Game.GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionNormalTextureHue>(PrimitiveType.TriangleList, iVertexList.ToArray(), 0, iVertexList.Count, _indexBuffer, 0, iVertexList.Count / 2);
-                // }
-                // catch
-                // {
-
-                // }
+                Game.GraphicsDevice.Textures[0] = iTexture;
+                Game.GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionNormalTextureHue>(PrimitiveType.TriangleList, iVertexList.ToArray(), 0, iVertexList.Count, _indexBuffer, 0, iVertexList.Count / 2);
                 iVertexList.Clear();
                 _vertexListQueue.Enqueue(iVertexList);
             }
-
-            _effect.CurrentTechnique.Passes[0].End();
-            _effect.End();
 
             _drawQueue.Clear();
         }
