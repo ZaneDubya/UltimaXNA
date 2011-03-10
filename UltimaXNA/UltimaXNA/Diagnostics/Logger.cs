@@ -67,8 +67,8 @@ namespace UltimaXNA.Diagnostics
         /// </summary>
         public virtual void Debug(object obj)
         {
-            OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Debug, obj.ToString()));
-            // _log.Debug(obj.ToString());
+            // OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Debug, obj.ToString()));
+            Console.WriteLine(obj.ToString()); // _log.Debug(obj.ToString());
         }
 
         /// <summary>
@@ -77,8 +77,8 @@ namespace UltimaXNA.Diagnostics
         /// <param name="message">message string</param>
         public virtual void Debug(string message)
         {
-            OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Debug, message));
-            // _log.Debug(message);
+            // OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Debug, message));
+            Console.WriteLine(message); // _log.Debug(message);
         }
 
         /// <summary>
@@ -88,8 +88,8 @@ namespace UltimaXNA.Diagnostics
         /// <param name="objects">An System.Object array containing zero or more objects to format</param>
         public virtual void Debug(string message, params object[] objects)
         {
-            OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Debug, message, objects));
-            // _log.DebugFormat(message, objects);
+            // OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Debug, message, objects));
+            Console.WriteLine(string.Format(message, objects)); // _log.DebugFormat(message, objects);
         }
 
         /// <summary>
@@ -97,10 +97,10 @@ namespace UltimaXNA.Diagnostics
         /// </summary>
         public virtual void Info(object obj)
         {
-            Utility.PushColor(ConsoleColor.White);
-            OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Info, obj.ToString()));
-            // _log.Info(obj.ToString());
-            Utility.PopColor();
+            // Utility.PushColor(ConsoleColor.White);
+            // OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Info, obj.ToString()));
+            Console.WriteLine(obj.ToString()); // _log.Info(obj.ToString());
+            // Utility.PopColor();
         }
 
         /// <summary>
@@ -109,10 +109,10 @@ namespace UltimaXNA.Diagnostics
         /// <param name="message">message string</param>
         public virtual void Info(string message)
         {
-            Utility.PushColor(ConsoleColor.White);
-            OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Info, message));
-            // _log.Info(message);
-            Utility.PopColor();
+            // Utility.PushColor(ConsoleColor.White);
+            // OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Info, message));
+            Console.WriteLine(message); // _log.Info(message);
+            // Utility.PopColor();
         }
 
         /// <summary>
@@ -122,10 +122,10 @@ namespace UltimaXNA.Diagnostics
         /// <param name="objects">An System.Object array containing zero or more objects to format</param>
         public virtual void Info(string message, params object[] objects)
         {
-            Utility.PushColor(ConsoleColor.White);
-            OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Info, message, objects));
-            // _log.InfoFormat(message, objects);
-            Utility.PopColor();
+            // Utility.PushColor(ConsoleColor.White);
+            // OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Info, message, objects));
+            Console.WriteLine(string.Format(message, objects)); // _log.InfoFormat(message, objects);
+            // Utility.PopColor();
         }
 
         /// <summary>
@@ -133,10 +133,13 @@ namespace UltimaXNA.Diagnostics
         /// </summary>
         public virtual void Warn(object obj)
         {
-            Utility.PushColor(ConsoleColor.Yellow);
-            OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Warn, obj.ToString()));
-            // _log.Warn(obj.ToString());
-            Utility.PopColor();
+            // Utility.PushColor(ConsoleColor.Yellow);
+            // OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Warn, obj.ToString()));
+            // Console.WriteLine(obj.ToString()); // _log.Warn(obj.ToString());
+            // Utility.PopColor();
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine(obj.ToString());
+            Console.ResetColor();
         }
 
         /// <summary>
@@ -145,10 +148,13 @@ namespace UltimaXNA.Diagnostics
         /// <param name="message">message string</param>
         public virtual void Warn(string message)
         {
-            Utility.PushColor(ConsoleColor.Yellow);
-            OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Warn, message));
+            // Utility.PushColor(ConsoleColor.Yellow);
+            // OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Warn, message));
             // _log.Warn(message);
-            Utility.PopColor();
+            // Utility.PopColor();
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine(message);
+            Console.ResetColor();
         }
 
         /// <summary>
@@ -158,10 +164,13 @@ namespace UltimaXNA.Diagnostics
         /// <param name="objects">An System.Object array containing zero or more objects to format</param>
         public virtual void Warn(string message, params object[] objects)
         {
-            Utility.PushColor(ConsoleColor.Yellow);
-            OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Warn, message, objects));
+            // Utility.PushColor(ConsoleColor.Yellow);
+            // OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Warn, message, objects));
             // _log.WarnFormat(message, objects);
-            Utility.PopColor();
+            // Utility.PopColor();
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine(string.Format(message, objects));
+            Console.ResetColor();
         }
 
         /// <summary>
@@ -169,10 +178,13 @@ namespace UltimaXNA.Diagnostics
         /// </summary>
         public virtual void Error(object obj)
         {
-            Utility.PushColor(ConsoleColor.Red);
-            OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Error, obj.ToString()));
+            // Utility.PushColor(ConsoleColor.Red);
+            // OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Error, obj.ToString()));
             // _log.Error(obj.ToString());
-            Utility.PopColor();
+            // Utility.PopColor();
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(obj.ToString());
+            Console.ResetColor();
         }
 
         /// <summary>
@@ -181,10 +193,13 @@ namespace UltimaXNA.Diagnostics
         /// <param name="message">message string</param>
         public virtual void Error(string message)
         {
-            Utility.PushColor(ConsoleColor.Red);
-            OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Error, message));
+            // Utility.PushColor(ConsoleColor.Red);
+            // OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Error, message));
             // _log.Error(message);
-            Utility.PopColor();
+            // Utility.PopColor();
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(message); // _log.Fatal(message);
+            Console.ResetColor();
         }
 
         /// <summary>
@@ -194,10 +209,13 @@ namespace UltimaXNA.Diagnostics
         /// <param name="objects">An System.Object array containing zero or more objects to format</param>
         public virtual void Error(string message, params object[] objects)
         {
-            Utility.PushColor(ConsoleColor.Red);
-            OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Error, message, objects));
+            // Utility.PushColor(ConsoleColor.Red);
+            // OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Error, message, objects));
             // _log.ErrorFormat(message, objects);
-            Utility.PopColor();
+            // Utility.PopColor();
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(string.Format(message, objects)); // _log.Fatal(message);
+            Console.ResetColor();
         }
 
         /// <summary>
@@ -205,10 +223,12 @@ namespace UltimaXNA.Diagnostics
         /// </summary>
         public virtual void Fatal(object obj)
         {
-            Utility.PushColor(ConsoleColor.Red);
-            OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Error, obj.ToString()));
-            // _log.Fatal(obj.ToString());
-            Utility.PopColor();
+            // Utility.PushColor(ConsoleColor.Red);
+            // OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Error, obj.ToString()));
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(obj.ToString()); // _log.Fatal(message);
+            Console.ResetColor();
+            // Utility.PopColor();
         }
 
         /// <summary>
@@ -217,10 +237,12 @@ namespace UltimaXNA.Diagnostics
         /// <param name="message">message string</param>
         public virtual void Fatal(string message)
         {
-            Utility.PushColor(ConsoleColor.Red);
-            OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Error, message));
-            // _log.Fatal(message);
-            Utility.PopColor();
+            // Utility.PushColor(ConsoleColor.Red);
+            // OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Error, message));
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(message); // _log.Fatal(message);
+            Console.ResetColor();
+            // Utility.PopColor();
         }
 
         /// <summary>
@@ -230,10 +252,12 @@ namespace UltimaXNA.Diagnostics
         /// <param name="objects">An System.Object array containing zero or more objects to format</param>
         public virtual void Fatal(string message, params object[] objects)
         {
-            Utility.PushColor(ConsoleColor.Red);
-            OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Error, message, objects));
-            // _log.FatalFormat(message, objects);
-            Utility.PopColor();
+            // Utility.PushColor(ConsoleColor.Red);
+            // OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Error, message, objects));
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(string.Format(message, objects)); // _log.FatalFormat(message, objects);
+            Console.ResetColor();
+            // Utility.PopColor();
         }
 
         /// <summary>
