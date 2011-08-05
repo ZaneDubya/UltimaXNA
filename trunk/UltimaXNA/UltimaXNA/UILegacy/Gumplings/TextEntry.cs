@@ -14,8 +14,6 @@ namespace UltimaXNA.UILegacy.Gumplings
         public int LimitSize = 0;
         public bool IsPasswordField = false;
 
-        Texture2D _texture = null;
-
         bool _textChanged = false;
         string _text = string.Empty;
         public string Text
@@ -37,6 +35,9 @@ namespace UltimaXNA.UILegacy.Gumplings
         bool _caratBlinkOn = false;
         float _secondsSinceLastBlink = 0f;
         const float _SecondsPerBlink = 0.5f;
+
+        TextRenderer _textRenderer = new TextRenderer();
+        TextRenderer _caratRenderer = new TextRenderer();
 
         public TextEntry(Control owner, int page)
             : base(owner, page)
@@ -86,9 +87,9 @@ namespace UltimaXNA.UILegacy.Gumplings
             {
                 _textChanged = false;
                 if (IsPasswordField)
-                    _texture = Data.UniText.GetTextureHTML(HtmlTag + new string('*', Text.Length), Area.Width, Area.Height);
+                    _textRenderer.RenderText(HtmlTag + new string('*', Text.Length), true, Area.Width, Area.Height);
                 else
-                    _texture = Data.UniText.GetTextureHTML(HtmlTag + Text, Area.Width, Area.Height);
+                    _textRenderer.RenderText(HtmlTag + Text, true, Area.Width, Area.Height);
             }
 
             if (_manager.KeyboardFocusControl == this)
@@ -127,12 +128,12 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
-            spriteBatch.Draw2D(_texture, Position, Hue, false);
+            spriteBatch.Draw2D(_textRenderer.Texture, Position, Hue, false);
 
             if (_caratBlinkOn)
             {
-                Texture2D caratTexture = Data.UniText.GetTextureHTML(HtmlTag + (_legacyCarat ? "_" : "|"));
-                spriteBatch.Draw2D(caratTexture, new Point2D(X + _texture.Width, Y), Hue, false);
+                _caratRenderer.RenderText(HtmlTag + (_legacyCarat ? "_" : "|"), true);
+                spriteBatch.Draw2D(_caratRenderer.Texture, new Point2D(X + _textRenderer.Texture.Width, Y), Hue, false);
             }
             
             base.Draw(spriteBatch);

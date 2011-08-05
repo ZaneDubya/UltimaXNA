@@ -249,16 +249,16 @@ namespace UltimaXNA.Network
 
     public sealed class Compressor32 : ICompressor
     {
-        [DllImport("zlib32")]
+        [DllImport("zlib32", CallingConvention=CallingConvention.Cdecl)]
         private static extern string zlibVersion();
 
-        [DllImport("zlib32")]
+        [DllImport("zlib32", CallingConvention = CallingConvention.Cdecl)]
         private static extern ZLibError compress(byte[] dest, ref int destLength, byte[] source, int sourceLength);
 
-        [DllImport("zlib32")]
+        [DllImport("zlib32", CallingConvention = CallingConvention.Cdecl)]
         private static extern ZLibError compress2(byte[] dest, ref int destLength, byte[] source, int sourceLength, ZLibQuality quality);
 
-        [DllImport("zlib32")]
+        [DllImport("zlib32", CallingConvention = CallingConvention.Cdecl)]
         private static extern ZLibError uncompress(byte[] dest, ref int destLen, byte[] source, int sourceLen);
 
         public Compressor32()

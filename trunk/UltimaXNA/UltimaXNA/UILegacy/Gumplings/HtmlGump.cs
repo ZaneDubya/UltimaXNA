@@ -25,13 +25,12 @@ namespace UltimaXNA.UILegacy.Gumplings
         bool _scrollbar = false;
         int _width, _height;
 
-        Texture2D _texture = null;
-        HREFRegions _hrefRegions = null;
+        TextRenderer _html = new TextRenderer();
 
         public HtmlGump(Control owner, int page)
             : base(owner, page)
         {
-
+            _textChanged = true;
         }
 
         public HtmlGump(Control owner, int page, string[] arguements, string[] lines)
@@ -69,35 +68,34 @@ namespace UltimaXNA.UILegacy.Gumplings
         public override void Update(GameTime gameTime)
         {
             _hrefOver = -1; // this value is changed every frame if we mouse over a region.
-            if (_textChanged || _texture == null)
+
+            if (_textChanged)
             {
                 _textChanged = false;
-                _texture = Data.UniText.GetTextureHTML(Text, _width, _height, ref _hrefRegions);
-                Size = new Point2D(_texture.Width, _texture.Height);
-                if (_hrefRegions.Count > 0)
-                    HandlesMouseInput = true;
-                else
-                    HandlesMouseInput = false;
+                _html.RenderText(Text, true, _width, _height);
+                Size = new Point2D(_html.Texture.Width, _html.Texture.Height);
+                HandlesMouseInput = (_html.HREFRegions.Count > 0);
             }
+
             base.Update(gameTime);
         }
 
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
-            spriteBatch.Draw2D(_texture, Position, 0, false);
-            
-            foreach (HREFRegion r in _hrefRegions.Regions)
+            spriteBatch.Draw2D(_html.Texture, Position, 0, false);
+
+            foreach (HREFRegion r in _html.HREFRegions.Regions)
             {
                 if (r.Index == _hrefOver)
                 {
                     if (_clicked)
-                        spriteBatch.Draw2D(_texture, new Point2D(X + r.Area.X, Y + r.Area.Y), r.Area, r.Data.DownHue, false);
+                        spriteBatch.Draw2D(_html.Texture, new Point2D(X + r.Area.X, Y + r.Area.Y), r.Area, r.Data.DownHue, false);
                     else
-                        spriteBatch.Draw2D(_texture, new Point2D(X + r.Area.X, Y + r.Area.Y), r.Area, r.Data.OverHue, false);
+                        spriteBatch.Draw2D(_html.Texture, new Point2D(X + r.Area.X, Y + r.Area.Y), r.Area, r.Data.OverHue, false);
                 }
                 else
                 {
-                    spriteBatch.Draw2D(_texture, new Point2D(X + r.Area.X, Y + r.Area.Y), r.Area, r.Data.UpHue, true);
+                    spriteBatch.Draw2D(_html.Texture, new Point2D(X + r.Area.X, Y + r.Area.Y), r.Area, r.Data.UpHue, true);
                 }
             }
             
@@ -106,9 +104,9 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         protected override bool _hitTest(int x, int y)
         {
-            if (_hrefRegions.Count > 0 && _hrefRegions.RegionfromPoint(new Point(x, y)) != null)
+            if (_html.HREFRegions.Count > 0 && _html.HREFRegions.RegionfromPoint(new Point(x, y)) != null)
             {
-                _hrefOver = _hrefRegions.RegionfromPoint(new Point(x, y)).Index;
+                _hrefOver = _html.HREFRegions.RegionfromPoint(new Point(x, y)).Index;
                 return true;
             }
             return false;
@@ -141,7 +139,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             {
                 if (button == MouseButton.Left)
                 {
-                    ActivateByHREF(_hrefRegions.Region(_hrefOver).Data.HREF);
+                    ActivateByHREF(_html.HREFRegions.Region(_hrefOver).Data.HREF);
                 }
             }
         }

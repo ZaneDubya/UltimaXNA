@@ -46,37 +46,33 @@ namespace UltimaXNA
             this.Content.RootDirectory = "Content";
             
             // Load all the services we need.
-            _logService = new Diagnostics.Logger("UXNA");
-            Services.AddService<Diagnostics.ILoggingService>(_logService);
+            Services.AddService<Diagnostics.ILoggingService>(
+                _logService = new Diagnostics.Logger("UXNA"));
 
-            _inputState = new Input.InputState(this);
-            Services.AddService<Input.IInputState>(_inputState);
+            Services.AddService<Input.IInputState>(
+                _inputState = new Input.InputState(this));
 
-            _worldService = new TileEngine.IsometricRenderer(this);
-            Services.AddService<TileEngine.IIsometricRenderer>(_worldService);
+            Services.AddService<TileEngine.IIsometricRenderer>(
+                _worldService = new TileEngine.IsometricRenderer(this));
 
-            _LegacyUIService = new UltimaXNA.UILegacy.UIManager(this);
-            Services.AddService<UILegacy.IUIManager>(_LegacyUIService);
+            Services.AddService<UILegacy.IUIManager>(
+                _LegacyUIService = new UltimaXNA.UILegacy.UIManager(this));
 
-            _sceneService = new SceneManagement.SceneManager(this);
-            Services.AddService<SceneManagement.ISceneService>(_sceneService);
+            Services.AddService<SceneManagement.ISceneService>(
+                _sceneService = new SceneManagement.SceneManager(this));
 
-            _clientVars = new ClientVars(this);
-            Services.AddService<ClientVars>(_clientVars);
+            Services.AddService<ClientVars>(
+                _clientVars = new ClientVars(this));
 
-            InvokeInitializers();
-            base.Initialize();
-        }
+            // Make sure we have a UO installation before loading data.
+            if (Data.FileManager.IsUODataPresent)
+            {
+                InvokeInitializers();
+            }
 
-        protected override void LoadContent()
-        {
             _sceneService.CurrentScene = new SceneManagement.LoginScene(this);
-            base.LoadContent();
-        }
-
-        protected override void UnloadContent()
-        {
-            base.UnloadContent();
+            
+            base.Initialize();
         }
 
         protected override void OnExiting(object sender, EventArgs args)
@@ -88,15 +84,16 @@ namespace UltimaXNA
 
         protected override void Update(GameTime gameTime)
         {
-            SpriteBatch3D.ResetZ();
+            base.Update(gameTime);
+            
             if (!ClientVars.EngineRunning)
                 Exit();
-            ClientVars.IsMinimized = isMinimized();
 
-            base.Update(gameTime);
+            ClientVars.IsMinimized = isMinimized();
 
             if (ClientVars.EngineRunning)
             {
+                SpriteBatch3D.ResetZ();
                 _inputState.Update(gameTime);
                 Client.UltimaClient.Update(gameTime);
                 Entities.EntitiesCollection.Update(gameTime);
@@ -153,7 +150,7 @@ namespace UltimaXNA
         /// </summary>
         void InvokeInitializers()
         {
-            // First initialize some of the local data classes.
+            // Initialize local data classes.
             Data.AnimationsXNA.Initialize(GraphicsDevice);
             Data.Art.Initialize(GraphicsDevice);
             Data.ASCIIText.Initialize(GraphicsDevice);

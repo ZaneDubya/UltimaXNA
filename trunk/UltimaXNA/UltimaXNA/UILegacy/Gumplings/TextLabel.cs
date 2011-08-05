@@ -8,7 +8,7 @@ namespace UltimaXNA.UILegacy.Gumplings
     {
         public int Hue = 0;
         public string Text = string.Empty;
-        Texture2D _texture = null;
+        TextRenderer _textRenderer = new TextRenderer();
 
         public TextLabel(Control owner, int page)
             : base(owner, page)
@@ -42,17 +42,18 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         public override void Update(GameTime gameTime)
         {
-            if (_texture == null)
+            _textRenderer.RenderText(Text, true);
+            if (_textRenderer.Texture == null)
             {
-                _texture = Data.UniText.GetTextureHTML(Text);
-                Size = new Point2D(_texture.Width, _texture.Height);
+                _textRenderer.RenderText(Text, true);
+                Size = new Point2D(_textRenderer.Texture.Width, _textRenderer.Texture.Height);
             }
             base.Update(gameTime);
         }
 
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
-            spriteBatch.Draw2D(_texture, Position, Hue, false);
+            spriteBatch.Draw2D(_textRenderer.Texture, Position, Hue, false);
             base.Draw(spriteBatch);
         }
     }

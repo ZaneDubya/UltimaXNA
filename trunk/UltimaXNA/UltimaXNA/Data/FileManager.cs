@@ -29,6 +29,12 @@ namespace UltimaXNA.Data
     {
         static Logger _log = new Logger("FileManager");
 
+        static private bool _isDataPresent = false;
+        static public bool IsUODataPresent
+        {
+            get { return _isDataPresent; }
+        }
+
         static readonly string[] _knownRegkeys = new string[] { 
                 @"Origin Worlds Online\Ultima Online\KR Legacy Beta", 
                 @"EA Games\Ultima Online: Mondain's Legacy\1.00.0000", 
@@ -81,11 +87,13 @@ namespace UltimaXNA.Data
                     _log.Debug("Found UO Installation at [{0}].", exePath);
 
                     m_FileDirectory = exePath;
+                    _isDataPresent = true;
                 }
             }
             if (m_FileDirectory == null)
             {
-                _log.Error("Did not find UO Installation.");
+                _log.Fatal("Did not find UO Installation.");
+                _isDataPresent = false;
             }
         }
 

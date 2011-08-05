@@ -103,8 +103,21 @@ namespace UltimaXNA.Data
         {
             m_MapStream = FileManager.GetFile("map{0}.mul", index);
             m_IndexStream = FileManager.GetFile("staidx{0}.mul", index);
-            m_IndexReader = new BinaryReader(m_IndexStream);
             m_Statics = FileManager.GetFile("statics{0}.mul", index);
+
+            if (m_MapStream == null)
+            {
+                // the map we tried to load does not exist.
+                if (index == 1)
+                {
+                    index = 0;
+                    m_MapStream = FileManager.GetFile("map{0}.mul", index);
+                    m_IndexStream = FileManager.GetFile("staidx{0}.mul", index);
+                    m_Statics = FileManager.GetFile("statics{0}.mul", index);
+                }
+            }
+
+            m_IndexReader = new BinaryReader(m_IndexStream);
 
             m_Height = m_MapBlockHeightList[index] << 3;
             m_BlockHeight = m_MapBlockHeightList[index];
