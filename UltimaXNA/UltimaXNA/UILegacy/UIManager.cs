@@ -25,6 +25,7 @@ namespace UltimaXNA.UILegacy
 
         ChatHandler _debugMessages = new ChatHandler();
         ChatHandler _chatMessages = new ChatHandler();
+        TextRenderer _debugTextRenderer = new TextRenderer();
 
         Control[] _mouseOverControls = null; // the controls that the mouse is over, 0 index is the frontmost control, last index is the backmost control (always the owner gump).
         Control[] _mouseDownControl = new Control[5]; // the control that the mouse was over when the button was clicked. 5 buttons
@@ -243,8 +244,8 @@ namespace UltimaXNA.UILegacy
 
         internal void DEBUG_DrawText(Point2D position, string text)
         {
-            Texture2D t = Data.UniText.GetTexture(text);
-            _spriteBatch.Draw2D(t, position, 0, false);
+            _debugTextRenderer.RenderText(text);
+            _spriteBatch.Draw2D(_debugTextRenderer.Texture, position, 0, false);
         }
 
         internal string _DEBUG_TEXT(GameTime gameTime)

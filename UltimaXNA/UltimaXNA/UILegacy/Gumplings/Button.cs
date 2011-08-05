@@ -28,6 +28,8 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         internal bool MouseDownOnThis { get { return (_clicked && _manager.MouseOverControl == this); } }
 
+        TextRenderer _textRenderer = new TextRenderer();
+
         public Button(Control owner, int page)
             : base(owner, page)
         {
@@ -93,9 +95,11 @@ namespace UltimaXNA.UILegacy.Gumplings
             spriteBatch.Draw2D(_texture, Position, 0, false);
             if (Caption != string.Empty)
             {
-                Texture2D t = Data.UniText.GetTextureHTML(Caption);
+                _textRenderer.RenderText(Caption, true);
                 int yoffset = MouseDownOnThis ? 1 : 0;
-                spriteBatch.Draw2D(t, new Point2D(X + (Width - t.Width) / 2, Area.Y + yoffset + (_texture.Height - t.Height) / 2), 0, false);
+                spriteBatch.Draw2D(_textRenderer.Texture, 
+                    new Point2D(X + (Width - _textRenderer.Texture.Width) / 2,
+                        Area.Y + yoffset + (_texture.Height - _textRenderer.Texture.Height) / 2), 0, false);
             }
             base.Draw(spriteBatch);
         }

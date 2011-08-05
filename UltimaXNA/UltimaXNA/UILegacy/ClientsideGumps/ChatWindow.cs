@@ -12,13 +12,13 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
     {
         TextEntry _input;
         List<ChatLineTimed> _textEntries;
-        List<Texture2D> _textTextures;
+        List<TextRenderer> _textTextures;
 
         public ChatWindow()
             : base(0, 0)
         {
             _textEntries = new List<ChatLineTimed>();
-            _textTextures = new List<Texture2D>();
+            _textTextures = new List<TextRenderer>();
         }
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
@@ -43,8 +43,9 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
                 }
                 else
                 {
-                    _textTextures.Add(Data.UniText.GetTexture(_textEntries[i].Text, Width, 0));
-                    y -= _textTextures[_textTextures.Count - 1].Height;
+                    _textTextures.Add(new TextRenderer());
+                    _textTextures[_textTextures.Count - 1].RenderText(_textEntries[i].Text, Width, 0);
+                    y -= _textTextures[_textTextures.Count - 1].Texture.Height;
                 }
             }
 
@@ -56,8 +57,8 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
             int y = _input.Y - 48;
             for (int i = _textTextures.Count - 1; i >= 0; i--)
             {
-                spriteBatch.Draw2D(_textTextures[i], new Point2D(1, y), 0, true);
-                y -= _textTextures[i].Height;
+                spriteBatch.Draw2D(_textTextures[i].Texture, new Point2D(1, y), 0, true);
+                y -= _textTextures[i].Texture.Height;
             }
             base.Draw(spriteBatch);
         }

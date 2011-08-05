@@ -25,10 +25,17 @@ namespace UltimaXNA.Data
 {
     class Art
     {
-        private static Texture2D[][] _cache = new Texture2D[0x10000][];
-        private static FileIndexClint _index = new FileIndexClint("artidx.mul", "art.mul");
-        private static ushort[][] _dimensions = new ushort[0x4000][];
+        private static Texture2D[][] _cache;
+        private static FileIndexClint _index;
+        private static ushort[][] _dimensions;
         private static GraphicsDevice _graphics;
+
+        static Art()
+        {
+            _cache = new Texture2D[0x10000][];
+            _index = new FileIndexClint("artidx.mul", "art.mul");
+            _dimensions = new ushort[0x4000][];
+        }
 
         public static void Initialize(GraphicsDevice graphics)
         {

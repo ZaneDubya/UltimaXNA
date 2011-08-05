@@ -223,12 +223,7 @@ namespace UltimaXNA.Diagnostics
         /// </summary>
         public virtual void Fatal(object obj)
         {
-            // Utility.PushColor(ConsoleColor.Red);
-            // OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Error, obj.ToString()));
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(obj.ToString()); // _log.Fatal(message);
-            Console.ResetColor();
-            // Utility.PopColor();
+            Fatal(obj.ToString());
         }
 
         /// <summary>
@@ -237,12 +232,12 @@ namespace UltimaXNA.Diagnostics
         /// <param name="message">message string</param>
         public virtual void Fatal(string message)
         {
-            // Utility.PushColor(ConsoleColor.Red);
-            // OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Error, message));
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(message); // _log.Fatal(message);
+            Console.WriteLine(message);
+            Console.WriteLine("Press any key to quit.");
+            Console.ReadKey(true);
+            ClientVars.EngineRunning = false;
             Console.ResetColor();
-            // Utility.PopColor();
         }
 
         /// <summary>
@@ -252,12 +247,7 @@ namespace UltimaXNA.Diagnostics
         /// <param name="objects">An System.Object array containing zero or more objects to format</param>
         public virtual void Fatal(string message, params object[] objects)
         {
-            // Utility.PushColor(ConsoleColor.Red);
-            // OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Error, message, objects));
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(string.Format(message, objects)); // _log.FatalFormat(message, objects);
-            Console.ResetColor();
-            // Utility.PopColor();
+            Fatal(string.Format(message, objects));
         }
 
         /// <summary>

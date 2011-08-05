@@ -8,6 +8,7 @@ namespace UltimaXNA.UILegacy.Gumplings
     {
         public int Hue = 0;
         public string Text = string.Empty;
+        TextRenderer _textRenderer = new TextRenderer();
 
         public CroppedText(Control owner, int page)
             : base(owner, page)
@@ -44,8 +45,8 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
-            Texture2D texture = Data.UniText.GetTextureHTML(Text, Area.Width, Area.Height);
-            spriteBatch.Draw2D(texture, Position, 0, false);
+            _textRenderer.RenderText(Text, true, Area.Width, Area.Height);
+            spriteBatch.Draw2D(_textRenderer.Texture, Position, 0, false);
             base.Draw(spriteBatch);
         }
     }
