@@ -780,6 +780,7 @@ namespace UltimaXNA.Client
         {
             LiftRejectionPacket p = (LiftRejectionPacket)packet;
             _LegacyUI.AddMessage_Chat("Could not pick up item: " + p.ErrorMessage);
+            _LegacyUI.Cursor.ClearHolding();
         }
 
         private static void receive_RequestNameResponse(IRecvPacket packet)

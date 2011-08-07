@@ -32,6 +32,7 @@ namespace UltimaXNA.UILegacy
         public Item HoldingItem { get { return holdingItem; } }
         public Point HoldingOffset { get { return holdingOffset; } set { holdingOffset = value; } }
         public Texture2D HoldingTexture { get { return Data.Art.GetStaticTexture(holdingItem.DisplayItemID); } }
+        
         bool _isTargeting = false;
         public bool IsTargeting
         {
@@ -77,6 +78,11 @@ namespace UltimaXNA.UILegacy
 
         public void PickUpItem(Item item, int x, int y)
         {
+            if (item.Parent != null)
+            {
+                if (item.Parent is Container)
+                    ((Container)item.Parent).RemoveItem(item.Serial);
+            }
             IsHolding = true;
             holdingItem = item;
             holdingOffset = new Point(x, y);

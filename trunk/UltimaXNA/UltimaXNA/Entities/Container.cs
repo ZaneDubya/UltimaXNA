@@ -77,7 +77,7 @@ namespace UltimaXNA.Entities
             {
                 if (item.Serial == serial)
                 {
-                    item.Parent = null;
+                    item.SaveLastParent();
                     Contents.Remove(item);
                     break;
                 }
