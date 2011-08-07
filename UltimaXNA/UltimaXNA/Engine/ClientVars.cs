@@ -195,6 +195,7 @@ namespace UltimaXNA
         public static bool DEBUG_DisplayFPS = false;
         public static bool DEBUG_HighlightMouseOverObjects = false;
         public static bool DEBUG_DrawWireframe = false;
+        public static bool DEBUG_LogKeyboardChars = false;
 
         // Debug message - I put a lot of crap in here to test values. Feel free to add or remove variables.
         public static string DebugMessage { get { return generateDebugMessage(); } }

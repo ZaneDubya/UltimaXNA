@@ -264,6 +264,7 @@ namespace UltimaXNA.Input
             else
             {
                 pressEvent.OverrideKeyChar(e.KeyCode);
+                if (ClientVars.DEBUG_LogKeyboardChars)
                 _log.Debug("Char: " + pressEvent.KeyChar);
             }
         }

@@ -78,7 +78,7 @@ namespace UltimaXNA.Entities
             get
             {
                 if (Parent is PlayerMobile)
-                    return 50;
+                    return 100;
                 else
                     return 250;
             }

@@ -119,10 +119,6 @@
     <Reference Include="System.Xml.Linq">
       <Private>False</Private>
     </Reference>
-    <Reference Include="WavePlayer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\WavePlayer.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Client\Packets\Client\AsciiSpeechPacket.cs" />
@@ -502,8 +498,6 @@
   <ItemGroup>
     <None Include="Depends\log4net.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Depends\WavePlayer.dll">
     </None>
   </ItemGroup>
   <ItemGroup>

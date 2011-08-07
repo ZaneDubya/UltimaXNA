@@ -49,6 +49,11 @@ namespace UltimaXNA.UILegacy
                 return;
             }
 
+            _lastText_String = text;
+            _lastText_AsHTML = asHTML;
+            _lastText_Width = width;
+            _lastText_Height = height;
+
             if (_texture != null)
             {
                 _texture.Dispose();

@@ -77,8 +77,6 @@ namespace UltimaXNA
 
         protected override void OnExiting(object sender, EventArgs args)
         {
-            // WavePlayer opens a thread for each sound.
-            WavePlayer.Player.EndEverything();
             base.OnExiting(sender, args);
         }
 

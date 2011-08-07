@@ -18,7 +18,6 @@ namespace UltimaXNA
     class Interaction
     {
         static IInputState _input;
-        // static IInputService _input;
         static IIsometricRenderer _world;
         static IUIManager _legacyUI;
 
