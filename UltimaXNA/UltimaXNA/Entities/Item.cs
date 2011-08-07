@@ -36,6 +36,13 @@ namespace UltimaXNA.Entities
                     return Position;
             }
         }
+        private Entity _lastParent;
+        private int _lastParent_X, _lastParent_Y;
+        public bool HasLastParent
+        {
+            get { return (_lastParent != null); }
+        }
+
 		private int _amount;
 		public int Amount
 		{
@@ -135,6 +142,27 @@ namespace UltimaXNA.Entities
                 return false;
             else
                 return true;
+        }
+
+        public void SaveLastParent()
+        {
+            if (Parent != null)
+            {
+                _lastParent = Parent;
+                _lastParent_X = X;
+                _lastParent_Y = Y;
+            }
+            else
+            {
+                _lastParent = null;
+            }
+        }
+
+        public void RestoreLastParent()
+        {
+            this.X = _lastParent_X;
+            this.Y = _lastParent_Y;
+            ((Container)_lastParent).AddItem(this);
         }
 
         internal override void Draw(MapTile tile, Position3D position)

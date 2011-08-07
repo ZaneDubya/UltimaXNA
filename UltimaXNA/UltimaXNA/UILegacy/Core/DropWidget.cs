@@ -34,7 +34,9 @@ namespace UltimaXNA.UILegacy
 
         void mouseUp(int x, int y, MouseButton button)
         {
-            if (_manager.Cursor.IsHolding)
+            Control that = ((Control)_onItemDrop.Target);
+            if (_manager.Cursor.IsHolding && 
+                (that.Area.Contains(x, y)))
             {
                 _onItemDrop();
             }
