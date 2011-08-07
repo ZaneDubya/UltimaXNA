@@ -12,13 +12,11 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
     {
         TextEntry _input;
         List<ChatLineTimed> _textEntries;
-        List<TextRenderer> _textTextures;
 
         public ChatWindow()
             : base(0, 0)
         {
             _textEntries = new List<ChatLineTimed>();
-            _textTextures = new List<TextRenderer>();
         }
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
@@ -30,22 +28,15 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
                 AddGumpling(_input);
             }
 
-            _textTextures.Clear();
-
             int y = _input.Y - 48;
             for (int i = 0; i < _textEntries.Count; i++)
             {
                 _textEntries[i].Update(gameTime);
                 if (_textEntries[i].IsExpired)
                 {
+                    _textEntries[i].Dispose();
                     _textEntries.RemoveAt(i);
                     i--;
-                }
-                else
-                {
-                    _textTextures.Add(new TextRenderer());
-                    _textTextures[_textTextures.Count - 1].RenderText(_textEntries[i].Text, Width, 0);
-                    y -= _textTextures[_textTextures.Count - 1].Texture.Height;
                 }
             }
 
@@ -55,10 +46,10 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
             int y = _input.Y - 48;
-            for (int i = _textTextures.Count - 1; i >= 0; i--)
+            for (int i = _textEntries.Count - 1; i >= 0; i--)
             {
-                spriteBatch.Draw2D(_textTextures[i].Texture, new Point2D(1, y), 0, true);
-                y -= _textTextures[i].Texture.Height;
+                spriteBatch.Draw2D(_textEntries[i].Texture, new Point2D(1, y), 0, true);
+                y -= _textEntries[i].Texture.Height;
             }
             base.Draw(spriteBatch);
         }
@@ -71,7 +62,7 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
 
         public void AddLine(string text)
         {
-            _textEntries.Add(new ChatLineTimed(text));
+            _textEntries.Add(new ChatLineTimed(text, Width));
         }
     }
 
@@ -88,11 +79,17 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
         const float Time_Display = 10.0f;
         const float Time_Fadeout = 5.0f;
 
-        public ChatLineTimed(string text)
+        private TextRenderer _renderer;
+        public Texture2D Texture { get { return _renderer.Texture; } }
+
+        public ChatLineTimed(string text, int width)
         {
             _text = text;
             _isExpired = false;
             _alpha = 1.0f;
+
+            _renderer = new TextRenderer();
+            _renderer.RenderText(_text, false, width, 0);
         }
 
         public void Update(GameTime gameTime)
@@ -106,6 +103,11 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
             {
                 _alpha = (time - Time_Display) / Time_Fadeout;
             }
+        }
+
+        public void Dispose()
+        {
+            _renderer = null;
         }
     }
 }

@@ -174,9 +174,17 @@ namespace UltimaXNA.UILegacy
                     cursorOffset = new Point2D(1, 1);
                     cursorTextureID = 8305;
                 }
+
                 cursorTexture = Data.Art.GetStaticTexture(cursorTextureID);
                 sourceRect = new Rectangle(1, 1, cursorTexture.Width - 2, cursorTexture.Height - 2);
             }
+
+            // Hue the cursor if in warmode.
+            if (ClientVars.WarMode)
+                cursorTextureID -= 23;
+            else if (TrammelHue)
+                cursorHue = 2412;
+
             sb.Draw2D(cursorTexture, position - cursorOffset, sourceRect, cursorHue, false);
         }
     }

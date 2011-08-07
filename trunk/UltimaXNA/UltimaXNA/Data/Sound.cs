@@ -19,11 +19,9 @@
 #region usings
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Media;
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Runtime.InteropServices;
+using Microsoft.Xna.Framework.Audio;
 #endregion
 
 
@@ -31,21 +29,50 @@ namespace UltimaXNA.Data
 {
     public class UOSound
     {
-        public string Name;
-        public MemoryStream WAVEStream;
+        public readonly string Name;
+        private byte[] _waveBuffer;
+        private List<Pair<DynamicSoundEffectInstance, float>> _instances;
 
-        public UOSound(string name, MemoryStream stream)
+        public UOSound(string name, byte[] buffer)
         {
             Name = name;
-            WAVEStream = stream;
+            _waveBuffer = buffer;
+            _instances = new List<Pair<DynamicSoundEffectInstance, float>>();
+        }
+
+        public void Play()
+        {
+            float now = ClientVars.TheTime;
+
+            // Check to see if any existing instances of this sound effect have stopped playing. If
+            // they have, remove the reference to them so the garbage collector can collect them.
+            for (int i = 0; i < _instances.Count; i++)
+                if (_instances[i].ItemB < now)
+                {
+                    _instances.RemoveAt(i);
+                    i--;
+                }
+
+            DynamicSoundEffectInstance instance = new DynamicSoundEffectInstance(22050, AudioChannels.Mono);
+            instance.BufferNeeded += new EventHandler<EventArgs>(instance_BufferNeeded);
+            instance.SubmitBuffer(_waveBuffer);
+            instance.Play();
+            _instances.Add(new Pair<DynamicSoundEffectInstance, float>(instance, 
+                now + (instance.GetSampleDuration(_waveBuffer.Length).Milliseconds / 1000f)));
+        }
+
+        void instance_BufferNeeded(object sender, EventArgs e)
+        {
+            // do nothing.
         }
     };
 
     public static class Sounds
     {
-        private static BinaryReader m_Index;
-        private static Stream m_Stream;
-        private static Dictionary<int, int> m_Translations;
+        private static BinaryReader _Index;
+        private static Stream _Stream;
+        private static Dictionary<int, int> _Translations;
+        private static Dictionary<int, UOSound> _Sounds;
         private static bool _filesPrepared = false;
 
         public static void PlaySound(int soundID)
@@ -53,34 +80,73 @@ namespace UltimaXNA.Data
             // Sounds.mul is exclusively locked by the legacy client, so we need to make sure this file is available
             // before attempting to play any sounds.
             if (!_filesPrepared)
-                SetupFiles();
+                setupFiles();
             if (_filesPrepared)
             {
-                UOSound s = GetSound(soundID);
-                WavePlayer.Player.PlayStream(s.WAVEStream);
+                if (!_Sounds.ContainsKey(soundID))
+                {
+                    _Sounds.Add(soundID, getSound(soundID));
+                }
+                _Sounds[soundID].Play();
             }
         }
 
-        static Sounds()
+        private static UOSound getSound(int soundID)
         {
-            SetupFiles();
+            if (soundID < 0) { return null; }
+
+            _Index.BaseStream.Seek((long)(soundID * 12), SeekOrigin.Begin);
+
+            int streamStart = (int)_Index.BaseStream.Position;
+
+            int offset = _Index.ReadInt32();
+            int length = _Index.ReadInt32();
+            int extra = _Index.ReadInt32();
+
+            if ((offset < 0) || (length <= 0))
+            {
+                if (!_Translations.TryGetValue(soundID, out soundID)) { return null; }
+
+                _Index.BaseStream.Seek((long)(soundID * 12), SeekOrigin.Begin);
+
+                offset = _Index.ReadInt32();
+                length = _Index.ReadInt32();
+                extra = _Index.ReadInt32();
+            }
+
+            if ((offset < 0) || (length <= 0)) { return null; }
+
+            byte[] stringBuffer = new byte[40];
+            byte[] buffer = new byte[length - 40];
+
+            _Stream.Seek((long)(offset), SeekOrigin.Begin);
+            _Stream.Read(stringBuffer, 0, 40);
+            _Stream.Read(buffer, 0, length - 40);
+
+            string str = System.Text.Encoding.ASCII.GetString(stringBuffer); // seems that the null terminator's not being properly recognized :/
+
+            Metrics.ReportDataRead((int)_Index.BaseStream.Position - streamStart);
+
+            return new UOSound(str.Substring(0, str.IndexOf('\0')), buffer);
         }
 
-        private static void SetupFiles()
+        private static void setupFiles()
         {
             try
             {
-                m_Index = new BinaryReader(new FileStream(FileManager.GetFilePath("soundidx.mul"), FileMode.Open));
-                m_Stream = new FileStream(FileManager.GetFilePath("sound.mul"), FileMode.Open);
+                _Index = new BinaryReader(new FileStream(FileManager.GetFilePath("soundidx.mul"), FileMode.Open));
+                _Stream = new FileStream(FileManager.GetFilePath("sound.mul"), FileMode.Open);
                 _filesPrepared = true;
             }
             catch
             {
                 _filesPrepared = false;
+                return;
             }
+
             Regex reg = new Regex(@"(\d{1,3}) \x7B(\d{1,3})\x7D (\d{1,3})", RegexOptions.Compiled);
 
-            m_Translations = new Dictionary<int, int>();
+            _Translations = new Dictionary<int, int>();
 
             string line;
             using (StreamReader reader = new StreamReader(FileManager.GetFilePath("Sound.def")))
@@ -93,83 +159,13 @@ namespace UltimaXNA.Data
 
                         if (match.Success)
                         {
-                            m_Translations.Add(int.Parse(match.Groups[1].Value), int.Parse(match.Groups[2].Value));
+                            _Translations.Add(int.Parse(match.Groups[1].Value), int.Parse(match.Groups[2].Value));
                         }
                     }
                 }
             }
-        }
 
-        public static UOSound GetSound(int soundID)
-        {
-            if (soundID < 0) { return null; }
-
-            m_Index.BaseStream.Seek((long)(soundID * 12), SeekOrigin.Begin);
-
-            int streamStart = (int)m_Index.BaseStream.Position;
-
-            int offset = m_Index.ReadInt32();
-            int length = m_Index.ReadInt32();
-            int extra = m_Index.ReadInt32();
-
-            if ((offset < 0) || (length <= 0))
-            {
-                if (!m_Translations.TryGetValue(soundID, out soundID)) { return null; }
-
-                m_Index.BaseStream.Seek((long)(soundID * 12), SeekOrigin.Begin);
-
-                offset = m_Index.ReadInt32();
-                length = m_Index.ReadInt32();
-                extra = m_Index.ReadInt32();
-            }
-
-            if ((offset < 0) || (length <= 0)) { return null; }
-
-            int[] waveHeader = WaveHeader(length);
-
-            length -= 40;
-
-            byte[] stringBuffer = new byte[40];
-            byte[] buffer = new byte[length];
-
-            m_Stream.Seek((long)(offset), SeekOrigin.Begin);
-            m_Stream.Read(stringBuffer, 0, 40);
-            m_Stream.Read(buffer, 0, length);
-
-            byte[] resultBuffer = new byte[buffer.Length + (waveHeader.Length << 2)];
-
-            Buffer.BlockCopy(waveHeader, 0, resultBuffer, 0, (waveHeader.Length << 2));
-            Buffer.BlockCopy(buffer, 0, resultBuffer, (waveHeader.Length << 2), buffer.Length);
-
-            string str = System.Text.Encoding.ASCII.GetString(stringBuffer); // seems that the null terminator's not being properly recognized :/
-
-            Metrics.ReportDataRead((int)m_Index.BaseStream.Position - streamStart);
-
-            return new UOSound(str.Substring(0, str.IndexOf('\0')), new MemoryStream(resultBuffer));
-        }
-
-        private static int[] WaveHeader(int length)
-        {
-            /* ====================
-             * = WAVE File layout =
-             * ====================
-             * char[4] = 'RIFF' \
-             * int - chunk size |- Riff Header
-             * char[4] = 'WAVE' /
-             * char[4] = 'fmt ' \
-             * int - chunk size |
-             * short - format	|
-             * short - channels	|
-             * int - samples p/s|- Format header
-             * int - avg bytes	|
-             * short - align	|
-             * short - bits p/s /
-             * char[4] - data	\
-             * int - chunk size | - Data header
-             * short[..] - data /
-             * ====================
-             * */
-            return new int[] { 0x46464952, (length + 12), 0x45564157, 0x20746D66, 0x10, 0x010001, 0x5622, 0xAC44, 0x100002, 0x61746164, (length - 24) };
+            _Sounds = new Dictionary<int, UOSound>();
         }
     }
 }
