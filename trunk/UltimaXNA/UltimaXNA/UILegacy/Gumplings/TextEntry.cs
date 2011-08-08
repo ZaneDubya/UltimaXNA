@@ -128,12 +128,12 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
-            spriteBatch.Draw2D(_textRenderer.Texture, Position, Hue, false);
+            spriteBatch.Draw2D(_textRenderer.Texture, Position, Hue, false, false);
 
             if (_caratBlinkOn)
             {
                 _caratRenderer.RenderText(HtmlTag + (_legacyCarat ? "_" : "|"), true);
-                spriteBatch.Draw2D(_caratRenderer.Texture, new Point2D(X + _textRenderer.Texture.Width, Y), Hue, false);
+                spriteBatch.Draw2D(_caratRenderer.Texture, new Point2D(X + _textRenderer.Texture.Width, Y), Hue, false, false);
             }
             
             base.Draw(spriteBatch);

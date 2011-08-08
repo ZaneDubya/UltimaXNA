@@ -105,10 +105,10 @@ namespace UltimaXNA.UILegacy
 
                 if (_renderFullScreen)
                 {
-                    spriteBatch.Draw2D(_gumpTexture, new Rectangle(0, 0, (int)(Width * InputMultiplier), (int)(Height * InputMultiplier)), 0, false);
+                    spriteBatch.Draw2D(_gumpTexture, new Rectangle(0, 0, (int)(Width * InputMultiplier), (int)(Height * InputMultiplier)), 0, false, false);
                 }
                 else
-                    spriteBatch.Draw2D(_gumpTexture, Position, 0, false);
+                    spriteBatch.Draw2D(_gumpTexture, Position, 0, false, false);
             }
             else
             {

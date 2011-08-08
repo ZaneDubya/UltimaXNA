@@ -58,7 +58,7 @@ namespace UltimaXNA.UILegacy.Gumplings
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
             bool hueOnlyGreyPixels = (_hue & 0x8000) == 0x8000;
-            spriteBatch.Draw2D(_texture, Position, _hue & 0x7FFF, hueOnlyGreyPixels);
+            spriteBatch.Draw2D(_texture, Position, _hue & 0x7FFF, hueOnlyGreyPixels, false);
             base.Draw(spriteBatch);
         }
 

@@ -62,7 +62,7 @@ namespace UltimaXNA.UILegacy.Gumplings
                 _texture = Data.Art.GetStaticTexture(_item.DisplayItemID);
                 Size = new Point2D(_texture.Width, _texture.Height);
             }
-            spriteBatch.Draw2D(_texture, Position, _item.Hue, false);
+            spriteBatch.Draw2D(_texture, Position, _item.Hue, false, false);
             base.Draw(spriteBatch);
         }
 

@@ -53,7 +53,7 @@ namespace UltimaXNA.UILegacy.Gumplings
                     _texture = Data.Gumps.GetGumpXNA(Item.ItemData.AnimID + 50000);
                 Size = new Point2D(_texture.Width, _texture.Height);
             }
-            spriteBatch.Draw2D(_texture, Position, Item.Hue & 0x7FFF, (Item.Hue & 0x8000) == 0x8000 ? true: false);
+            spriteBatch.Draw2D(_texture, Position, Item.Hue & 0x7FFF, (Item.Hue & 0x8000) == 0x8000 ? true : false, false);
             base.Draw(spriteBatch);
         }
 

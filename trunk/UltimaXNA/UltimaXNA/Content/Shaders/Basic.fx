@@ -64,7 +64,12 @@ float4 PixelShaderFunction(PS_INPUT IN) : COLOR0
 		color.rgb = (ambientColor * color.rgb) + (lightColor * NDotL * color.rgb);
 	}
 	
-	if (IN.Hue.y != 0) //Is it Hued?
+	// is the texture hued or partially transparent?
+	// Hue effects are a bit flag:
+	// 1 = hued 
+	// 2 = partially hued
+	// 4 = partially transparent.
+	if (IN.Hue.y != 0)
 	{
 		float hueX = abs(IN.Hue.x);
 		float hueY = (((hueX - (hueX % 2)) / HuesPerRow) / (HuesPerColumn));
@@ -72,19 +77,29 @@ float4 PixelShaderFunction(PS_INPUT IN) : COLOR0
 		
 		float4 huedColor = tex2D(hueTextureSampler, float2(gray, hueY));
 		huedColor.a = color.a;
-		if (IN.Hue.y == 1) //Else its a normal Hue
+		if (IN.Hue.y == 1) // normal hue - map the hue to the grayscale.
 		{
 			color = huedColor;
 		}
-		else if (IN.Hue.y == 2) //Is it a Partial Hue?
+		else if (IN.Hue.y == 2) // partial hue - map any grayscale pixels to the hue. Colored pixels remain colored.
 		{
 			if ((color.r == color.g) && (color.r == color.b))
 				color = huedColor;
 		}
-		else if (IN.Hue.y == 3) // partially transparent?
+		else if (IN.Hue.y == 4) // 50% transparent
+		{
+			color *= 0.5f;
+		}
+		else if (IN.Hue.y == 5) // 50% transparent + hued
 		{
 			color = huedColor;
-			color.a *= 0.5f;
+			color *= 0.5f;
+		}
+		else if (IN.Hue.y == 6) // 50% transparent + partially hued
+		{
+			if ((color.r == color.g) && (color.r == color.b))
+				color = huedColor;
+			color *= 0.5f;
 		}
 	}
 

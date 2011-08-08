@@ -26,42 +26,49 @@ namespace UltimaXNA.UILegacy
             _sb.Flush(false);
         }
 
-        Vector2 hueVector(int hue, bool hueOnlyGreyPixels)
+        Vector2 hueVector(int hue, bool partial, bool transparent)
         {
             int hueFlag = 0;
             if (hue != 0)
             {
-                if (hueOnlyGreyPixels)
+                if (partial)
+                {
                     hueFlag = 2;
+                    hue -= 1;
+                }
                 else
                     hueFlag = 1;
             }
+            if (transparent)
+                hueFlag |= 4;
             return new Vector2(hue, hueFlag);
         }
 
-        public void Draw2D(Texture2D texture, Point2D position, int hue, bool hueOnlyGreyPixels)
+        public void Draw2D(Texture2D texture, Point2D position, int hue, bool partial, bool transparent)
         {
-            _sb.DrawSimple(texture, new Vector3(position.X, position.Y, 0), hueVector(hue, hueOnlyGreyPixels));
+            _sb.DrawSimple(texture, new Vector3(position.X, position.Y, 0), hueVector(hue, partial, transparent));
         }
 
-        public void Draw2D(Texture2D texture, Point2D position, Rectangle sourceRect, int hue, bool hueOnlyGreyPixels)
+        public void Draw2D(Texture2D texture, Point2D position, Rectangle sourceRect, int hue, bool partial, bool transparent)
         {
-            _sb.DrawSimple(texture, new Vector3(position.X, position.Y, 0), sourceRect, hueVector(hue, hueOnlyGreyPixels));
+            _sb.DrawSimple(texture, new Vector3(position.X, position.Y, 0), sourceRect, hueVector(hue, partial, transparent));
         }
 
-        public void Draw2D(Texture2D texture, Rectangle destRect, Rectangle sourceRect, int hue, bool hueOnlyGreyPixels)
+        public void Draw2D(Texture2D texture, Rectangle destRect, Rectangle sourceRect, int hue, bool partial, bool transparent)
         {
-            _sb.DrawSimple(texture, destRect, sourceRect, hueVector(hue, hueOnlyGreyPixels));
+            _sb.DrawSimple(texture, destRect, sourceRect, hueVector(hue, partial, transparent));
         }
 
-        public void Draw2D(Texture2D texture, Rectangle destRect, int hue, bool hueOnlyGreyPixels)
+        public void Draw2D(Texture2D texture, Rectangle destRect, int hue, bool partial, bool transparent)
         {
-            _sb.DrawSimple(texture, destRect, hueVector(hue, hueOnlyGreyPixels));
+            _sb.DrawSimple(texture, destRect, hueVector(hue, partial, transparent));
         }
 
-        internal void Draw2DTiled(Texture2D texture, Rectangle destRect, int hue, bool hueOnlyGreyPixels)
+
+
+        internal void Draw2DTiled(Texture2D texture, Rectangle destRect, int hue, bool partial, bool transparent)
         {
-            _sb.DrawSimpleTiled(texture, destRect, hueVector(hue, hueOnlyGreyPixels));
+            _sb.DrawSimpleTiled(texture, destRect, hueVector(hue, partial, transparent));
         }
     }
 }

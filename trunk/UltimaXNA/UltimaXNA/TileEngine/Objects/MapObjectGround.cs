@@ -39,7 +39,7 @@ namespace UltimaXNA.TileEngine
 
         public override string ToString()
         {
-            return string.Format("Z:{0}, SortZ:{1}, <{2},{3},{4}>", Z, SortZ, _surroundingTiles.South, _surroundingTiles.Down, _surroundingTiles.East);
+            return string.Format("Ground Z:{0}, SortZ:{1}, <{2},{3},{4}>", Z, SortZ, _surroundingTiles.South, _surroundingTiles.Down, _surroundingTiles.East);
         }
 
         public MapObjectGround(int tileID, Position3D position)
@@ -47,6 +47,7 @@ namespace UltimaXNA.TileEngine
         {
             ItemID = tileID;
             _normals = new Vector3[4];
+            Threshold = -1;
             Tiebreaker = -1;
 
             // set no draw flag

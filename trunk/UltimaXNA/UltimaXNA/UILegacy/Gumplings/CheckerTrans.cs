@@ -70,7 +70,7 @@ namespace UltimaXNA.UILegacy.Gumplings
 
             // spriteBatch.Flush();
             // spriteBatch.Begin(SpriteBlendMode.None); !!!
-            spriteBatch.Draw2D(_renderedTexture, new Rectangle(X, Y, Width, Area.Height), new Rectangle(0, 0, Area.Width, Area.Height), 0, false);
+            spriteBatch.Draw2D(_renderedTexture, new Rectangle(X, Y, Width, Area.Height), new Rectangle(0, 0, Area.Width, Area.Height), 0, false, false);
             // spriteBatch.Flush();
 
             base.Draw(spriteBatch);

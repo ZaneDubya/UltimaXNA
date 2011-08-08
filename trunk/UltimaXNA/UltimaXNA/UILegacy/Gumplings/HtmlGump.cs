@@ -82,20 +82,20 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
-            spriteBatch.Draw2D(_html.Texture, Position, 0, false);
+            spriteBatch.Draw2D(_html.Texture, Position, 0, false, false);
 
             foreach (HREFRegion r in _html.HREFRegions.Regions)
             {
                 if (r.Index == _hrefOver)
                 {
                     if (_clicked)
-                        spriteBatch.Draw2D(_html.Texture, new Point2D(X + r.Area.X, Y + r.Area.Y), r.Area, r.Data.DownHue, false);
+                        spriteBatch.Draw2D(_html.Texture, new Point2D(X + r.Area.X, Y + r.Area.Y), r.Area, r.Data.DownHue, false, false);
                     else
-                        spriteBatch.Draw2D(_html.Texture, new Point2D(X + r.Area.X, Y + r.Area.Y), r.Area, r.Data.OverHue, false);
+                        spriteBatch.Draw2D(_html.Texture, new Point2D(X + r.Area.X, Y + r.Area.Y), r.Area, r.Data.OverHue, false, false);
                 }
                 else
                 {
-                    spriteBatch.Draw2D(_html.Texture, new Point2D(X + r.Area.X, Y + r.Area.Y), r.Area, r.Data.UpHue, true);
+                    spriteBatch.Draw2D(_html.Texture, new Point2D(X + r.Area.X, Y + r.Area.Y), r.Area, r.Data.UpHue, true, false);
                 }
             }
             

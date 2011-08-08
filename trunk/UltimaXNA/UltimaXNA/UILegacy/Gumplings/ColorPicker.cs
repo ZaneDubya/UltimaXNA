@@ -107,16 +107,16 @@ namespace UltimaXNA.UILegacy.Gumplings
         {
             if (_isAnOpenSwatch)
             {
-                spriteBatch.Draw2D(_huesTexture, Area, 0, false);
+                spriteBatch.Draw2D(_huesTexture, Area, 0, false, false);
                 spriteBatch.Draw2D(_selectedIndicator, new Point2D(
                     (int)(X + (float)(Width / _hueSize.X) * ((Index % _hueSize.X) + 0.5f) - _selectedIndicator.Width / 2),
                     (int)(Y + (float)(Height / _hueSize.Y) * ((Index / _hueSize.X) + 0.5f) - _selectedIndicator.Height / 2)
-                    ), 0, false);
+                    ), 0, false, false);
             }
             else
             {
                 if (!_isSwatchOpen)
-                    spriteBatch.Draw2D(_huesTexture, Area, 0, false);
+                    spriteBatch.Draw2D(_huesTexture, Area, 0, false, false);
             }
             base.Draw(spriteBatch);
         }
