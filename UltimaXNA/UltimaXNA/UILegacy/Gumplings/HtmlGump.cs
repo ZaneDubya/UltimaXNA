@@ -95,7 +95,7 @@ namespace UltimaXNA.UILegacy.Gumplings
                 }
                 else
                 {
-                    spriteBatch.Draw2D(_html.Texture, new Point2D(X + r.Area.X, Y + r.Area.Y), r.Area, r.Data.UpHue, true, false);
+                    spriteBatch.Draw2D(_html.Texture, new Point2D(X + r.Area.X, Y + r.Area.Y), r.Area, r.Data.UpHue, false, false);
                 }
             }
             
