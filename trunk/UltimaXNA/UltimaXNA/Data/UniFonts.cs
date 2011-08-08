@@ -16,33 +16,39 @@ namespace UltimaXNA.Data
             }
         }
         public int XOffset = 0, YOffset = 0, Width = 0, Height = 0;
+        public int OutlinedYOffset = 0, OutlinedWidth = 0, OutlinedHeight = 0;
         public Color[] _textureData;
+        public Color[] _textureDataOutlined;
 
         public UniCharacter()
         {
 
         }
 
-        public unsafe void WriteToBuffer(Color* rPtr, int dx, int dy, int linewidth, int maxHeight, int baseLine, bool isBold, bool isItalic, bool isUnderlined, Color color)
+        public unsafe void WriteToBuffer(Color* rPtr, int dx, int dy, int linewidth, int maxHeight, int baseLine, bool isBold, bool isItalic, bool isUnderlined, bool isOutlined, Color color)
         {
+            int iWidth = (isOutlined) ? OutlinedWidth : Width;
+            int iHeight = (isOutlined) ? OutlinedHeight : Height;
+            int iYOffset = (isOutlined) ? OutlinedYOffset : YOffset;
+            Color[] iTexture = (isOutlined) ? _textureDataOutlined : _textureData;
             if (hasTexture)
             {
-                fixed (Color* cPtr = _textureData)
+                fixed (Color* cPtr = iTexture)
                 {
-                    for (int iy = 0; (iy < Height) && (iy < maxHeight); iy++)
+                    for (int iy = 0; (iy < iHeight) && (iy < maxHeight); iy++)
                     {
-                        Color* src = ((Color*)cPtr) + (Width * iy);
-                        Color* dest = (((Color*)rPtr) + (linewidth * (iy + dy + YOffset)) + dx);
+                        Color* src = ((Color*)cPtr) + (iWidth * iy);
+                        Color* dest = (((Color*)rPtr) + (linewidth * (iy + dy + iYOffset)) + dx);
                         if (isItalic)
                         {
-                            dest += (baseLine - YOffset - iy - 1) / 2;
+                            dest += (baseLine - iYOffset - iy - 1) / 2;
                         }
 
-                        for (int k = 0; k < Width; k++)
+                        for (int k = 0; k < iWidth; k++)
                         {
                             if (*src != Color.Transparent)
                             {
-                                *dest = color;
+                                *dest = *src;
                                 if (isBold)
                                 {
                                     *(dest + 1) = color;
@@ -60,7 +66,7 @@ namespace UltimaXNA.Data
                 if (baseLine >= maxHeight)
                     return;
                 Color* dest = (((Color*)rPtr) + (linewidth * (baseLine)) + dx);
-                int w = isBold ? Width + 2 : Width + 1;
+                int w = isBold ? iWidth + 2 : iWidth + 1;
                 for (int k = 0; k < w; k++)
                 {
                     *dest++ = color;
@@ -76,44 +82,65 @@ namespace UltimaXNA.Data
             this.YOffset = reader.ReadByte();
             this.Width = reader.ReadByte();
             this.Height = reader.ReadByte();
+            this.OutlinedYOffset = this.YOffset;
+            this.OutlinedWidth = this.Width + 2;
+            this.OutlinedHeight = this.Height + 2;
 
             // only read data if there is data...
             if ((this.Width > 0) && (this.Height > 0))
             {
                 // At this point, we know we have data, so go ahead and start reading!
                 _textureData = new Color[Width * Height];
+                _textureDataOutlined = new Color[OutlinedWidth * OutlinedHeight];
 
                 unsafe
                 {
                     fixed (Color* p = _textureData)
                     {
-                        for (int y = 0; y < Height; ++y)
+                        fixed (Color* p2 = _textureDataOutlined)
                         {
-                            byte[] scanline = reader.ReadBytes(((Width - 1) / 8) + 1);
-                            int bitX = 7;
-                            int byteX = 0;
-                            for (int x = 0; x < Width; ++x)
+                            for (int y = 0; y < Height; ++y)
                             {
-                                Color color = Color.Transparent;
-                                if ((scanline[byteX] & (byte)Math.Pow(2, bitX)) != 0)
+                                byte[] scanline = reader.ReadBytes(((Width - 1) / 8) + 1);
+                                int bitX = 7;
+                                int byteX = 0;
+                                for (int x = 0; x < Width; ++x)
                                 {
-                                    color = Color.White;
-                                }
+                                    Color color = Color.Transparent;
+                                    if ((scanline[byteX] & (byte)Math.Pow(2, bitX)) != 0)
+                                        color = Color.White;
 
-                                p[x + y * Width] = color;
-                                bitX--;
-                                if (bitX < 0)
-                                {
-                                    bitX = 7;
-                                    byteX++;
+                                    // the not outlined font is easy:
+                                    p[x + y * Width] = color;
+
+                                    // the outlined font requires a little more work:
+                                    if (color == Color.White)
+                                    {
+                                        p2[(x + 1) + (y + 1) * OutlinedWidth] = color;
+                                    
+                                        for (int ix = -1; ix < 2; ix++)
+                                            for (int iy = -1; iy < 2; iy++)
+                                            {
+                                                int index = (x + 1 + ix) + (y + 1 + iy) * (OutlinedWidth);
+                                                if (p2[index] != Color.White)
+                                                    p2[index] = Color.Black;
+                                            }
+                                    }
+
+                                    bitX--;
+                                    if (bitX < 0)
+                                    {
+                                        bitX = 7;
+                                        byteX++;
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
 
-            Metrics.ReportDataRead((int)reader.BaseStream.Position - readerStart);
+                Metrics.ReportDataRead((int)reader.BaseStream.Position - readerStart);
+            }
         }
     }
 
@@ -443,10 +470,12 @@ namespace UltimaXNA.Data
                 if (draw)
                 {
                     Color color = c.IsHREF ? new Color(255, 255, 255) : c.Color; // HREF links should be colored white.
-                    character.WriteToBuffer(rPtr, x, y, linewidth, font.Height, font.Baseline, c.IsBold, c.IsItalic, c.IsUnderlined, color);
+                    character.WriteToBuffer(rPtr, x, y, linewidth, font.Height, font.Baseline, c.IsBold, c.IsItalic, c.IsUnderlined, c.IsOutlined, color);
                 }
                 lineheight = font.Baseline;
-                x += (c.IsBold) ? character.Width + 2 : character.Width + 1;
+                x += character.Width + 1;
+                if (c.IsBold)
+                    x += 1;
             }
         }
 
@@ -455,7 +484,7 @@ namespace UltimaXNA.Data
             width = 0; height = 0;
             int lineheight = 0;
             int widestline = 0;
-            int italicwidth = 0; // for italic characters, which need a little more room for their slant.
+            int additionalwidth = 0; // for italic + outlined characters, which need a little more room for their slant/outline.
             int descenderheight = 0;
             List<HTMLCharacter> word = new List<HTMLCharacter>();
             
@@ -491,13 +520,16 @@ namespace UltimaXNA.Data
 
                             // italic characters need a little extra width if they are at the end of the line.
                             if (c.IsItalic)
-                                italicwidth = font.Height / 2;
+                                additionalwidth = font.Height / 2;
                             else
                             {
-                                italicwidth -= charwidth;
-                                if (italicwidth < 0)
-                                    italicwidth = 0;
+                                additionalwidth -= charwidth;
+                                if (additionalwidth < 0)
+                                    additionalwidth = 0;
                             }
+
+                            if (c.IsOutlined)
+                                additionalwidth += 1;
 
                             if (ch.YOffset + ch.Height - font.Baseline > descenderheight)
                                 descenderheight = ch.YOffset + ch.Height - font.Baseline;
@@ -507,10 +539,10 @@ namespace UltimaXNA.Data
                     }
 
                     // Now make sure this line can fit the word.
-                    if (width + wordwidth + italicwidth <= maxwidth)
+                    if (width + wordwidth + additionalwidth <= maxwidth)
                     {
                         // it can fit!
-                        width += wordwidth + italicwidth;
+                        width += wordwidth + additionalwidth;
                         word.Clear();
                         // if this word is followed by a space, does it fit? If not, drop it entirely and insert \n after the word.
                         if (c.Character == ' ')
@@ -568,8 +600,8 @@ namespace UltimaXNA.Data
 
                     if (c.Character == '\n')
                     {
-                        if (width + italicwidth > widestline)
-                            widestline = width + italicwidth;
+                        if (width + additionalwidth > widestline)
+                            widestline = width + additionalwidth;
                         height += lineheight;
                         descenderheight = 0;
                         lineheight = 0;
@@ -578,7 +610,7 @@ namespace UltimaXNA.Data
                 }
             }
 
-            width += italicwidth;
+            width += additionalwidth;
             height += lineheight + descenderheight + 4;
             if (widestline > width)
                 width = widestline;

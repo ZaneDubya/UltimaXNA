@@ -62,7 +62,7 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
 
         public void AddLine(string text)
         {
-            _textEntries.Add(new ChatLineTimed(text, Width));
+            _textEntries.Add(new ChatLineTimed(string.Format("<{1}>{0}</{1}>", text, "big"), Width));
         }
     }
 
@@ -89,7 +89,7 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
             _alpha = 1.0f;
 
             _renderer = new TextRenderer();
-            _renderer.RenderText(_text, false, width, 0);
+            _renderer.RenderText(_text, true, width, 0);
         }
 
         public void Update(GameTime gameTime)

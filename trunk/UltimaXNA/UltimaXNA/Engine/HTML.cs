@@ -28,6 +28,7 @@ namespace UltimaXNA
         public char Character = ' ';
         public bool IsBold = false;
         public bool IsItalic = false;
+        public bool IsOutlined = true;
         bool _isUnderlined = false;
         public bool IsUnderlined
         {
@@ -379,6 +380,15 @@ namespace UltimaXNA
 
         string readHTMLTag(string text, ref int i, ref bool isClosingTag)
         {
+            string tag;
+
+            if (text.Length == i + 1)
+            {
+                tag = text.Substring(i, 1);
+                i = i + 1;
+                return tag;
+            }
+
             if (text[i + 1] == '/')
             {
                 i = i + 1;
@@ -386,7 +396,14 @@ namespace UltimaXNA
             }
 
             int closingBracket = text.IndexOf('>', i);
-            string tag = text.Substring(i + 1, closingBracket - i - 1);
+            if (closingBracket == -1)
+            {
+                tag = text.Substring(i, 1);
+                i = i + 1;
+                return tag;
+            }
+
+            tag = text.Substring(i + 1, closingBracket - i - 1);
             i = closingBracket;
             return tag;
         }
