@@ -165,10 +165,16 @@ namespace UltimaXNA.UILegacy
 
         public Gump AddContainerGump(Entity containerItem, int gumpID)
         {
-            Gump g = new ClientsideGumps.ContainerGump(containerItem, gumpID);
-            g.Position = new Point2D(64, 64);
-            _controls.Add(g);
-            return g;
+            foreach (Gump g in _controls)
+            {
+                if (g is ClientsideGumps.ContainerGump)
+                    if (((ClientsideGumps.ContainerGump)g).ContainerSerial == containerItem.Serial)
+                        g.Dispose();
+            }
+            Gump gump = new ClientsideGumps.ContainerGump(containerItem, gumpID);
+            gump.Position = new Point2D(64, 64);
+            _controls.Add(gump);
+            return gump;
         }
 
         public override void Update(GameTime gameTime)
