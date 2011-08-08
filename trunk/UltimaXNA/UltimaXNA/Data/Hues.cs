@@ -19,6 +19,7 @@
 #region usings
 using System.IO;
 using System.Text;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 #endregion
@@ -28,10 +29,9 @@ namespace UltimaXNA.Data
     public class HuesXNA
     {
         private static GraphicsDevice graphicsDevice;
-        private static Texture2D hueTexture;
+        private static Texture2D _hueTexture;
         private const int _HueTextureWidth = 64; // Each hue is 32 pixels wide, so divided by 32 = 2 hues wide.
         private const int _HueTextureHeight = 2024;
-
         private const int multiplier = 0xFF / 0x1F;
 
         public static void Initialize(GraphicsDevice graphicsDevice)
@@ -39,6 +39,7 @@ namespace UltimaXNA.Data
             HuesXNA.graphicsDevice = graphicsDevice;
             graphicsDevice.DeviceReset += graphicsDevice_DeviceReset;
             CreateTexture();
+            // Hues.GetWebSafeColors();
         }
 
         static void graphicsDevice_DeviceReset(object sender, System.EventArgs e)
@@ -48,9 +49,9 @@ namespace UltimaXNA.Data
 
         static void CreateTexture()
         {
-            hueTexture = new Texture2D(graphicsDevice, _HueTextureWidth, _HueTextureHeight);
+            _hueTexture = new Texture2D(graphicsDevice, _HueTextureWidth, _HueTextureHeight);
             uint[] iTextData = getTextureData();
-            hueTexture.SetData(iTextData);
+            _hueTexture.SetData(iTextData);
         }
 
         static uint[] getTextureData()
@@ -103,9 +104,66 @@ namespace UltimaXNA.Data
         {
             get
             {
-                return hueTexture;
+                return _hueTexture;
             }
         }
+
+
+        public static int GetWebSafeHue(string inColor)
+        {
+            if (inColor.Length == 3)
+                return GetWebSafeHue(
+                    inColor.Substring(0, 1) + inColor.Substring(0, 1) +
+                    inColor.Substring(1, 1) + inColor.Substring(1, 1) +
+                    inColor.Substring(2, 1) + inColor.Substring(2, 1));
+            else if (inColor.Length == 6)
+            {
+                return GetWebSafeHue(
+                    Utility.ColorFromHexString("00" + inColor));
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        public static int GetWebSafeHue(Color inColor)
+        {
+            return GetWebSafeHue(inColor.R, inColor.G, inColor.B);
+        }
+        public static int GetWebSafeHue(int inColor)
+        {
+            
+            int r = inColor & 0x000000FF;
+            int g = (inColor & 0x0000FF00) >> 8;
+            int b = (inColor & 0x00FF0000) >> 16;
+            return GetWebSafeHue(r, g, b);
+        }
+        public static int GetWebSafeHue(int r, int g, int b)
+        {
+            int index = 0;
+            for (int i = 0; i < 6; i++)
+                if (r <= _kCutOffValuesForWebSafeColors[i])
+                {
+                    index = i;
+                    break;
+                }
+            for (int i = 0; i < 6; i++)
+                if (b <= _kCutOffValuesForWebSafeColors[i])
+                {
+                    index += i * 6;
+                    break;
+                }
+            for (int i = 0; i < 6; i++)
+                if (g <= _kCutOffValuesForWebSafeColors[i])
+                {
+                    index += i * 36;
+                    break;
+                }
+            return _kWebSafeHues[index];
+        }
+        static int[] _kCutOffValuesForWebSafeColors = new int[6] { 0x19, 0x4C, 0x7F, 0xB2, 0xE5, 0xFF };
+        static int[] _kWebSafeHues = new int[216] { 1278, 1148, 1156, 1089, 0036, 1287, 1064, 2052, 1272, 0231, 0132, 0032, 1092, 1272, 1272, 0226, 0127, 0027, 1261, 0206, 0211, 0216, 0021, 0022, 1175, 0006, 0011, 0016, 1274, 1288, 0002, 0007, 0007, 0012, 0017, 1288, 2054, 1148, 1132, 1517, 0137, 0037, 1588, 2050, 1146, 1608, 2117, 2116, 1155, 0601, 0621, 0426, 0327, 0033, 0296, 0401, 0411, 0517, 0322, 0028, 1262, 0302, 0407, 0113, 0118, 0023, 1182, 0003, 0008, 0013, 0018, 0018, 1266, 1192, 1453, 1129, 1255, 0042, 1068, 1154, 1443, 2317, 1550, 2116, 1096, 0681, 1897, 1013, 1213, 1639, 0291, 0491, 1315, 1241, 0428, 0029, 0091, 0497, 0503, 0413, 0319, 0024, 1281, 0098, 1363, 0009, 0019, 0019, 1267, 0266, 0256, 0251, 1125, 2113, 0271, 0466, 2005, 1449, 1711, 1719, 0276, 0476, 1432, 1439, 2315, 0044, 1159, 0587, 2222, 2030, 1002, 1627, 1283, 0193, 0493, 1311, 1237, 0025, 1264, 0093, 0099, 0005, 0015, 0020, 0066, 0167, 1269, 0157, 1158, 1280, 1455, 0367, 0362, 0357, 2214, 2212, 0076, 1060, 0468, 1091, 2000, 0049, 0081, 0382, 0478, 0669, 1190, 2006, 0187, 0188, 0389, 2220, 2036, 2306, 1282, 0088, 0089, 2119, 1194, 1071, 0067, 1098, 1569, 0057, 0052, 1195, 0072, 0068, 0063, 0058, 2125, 1259, 1298, 0073, 0069, 0064, 0059, 0054, 1178, 0078, 0079, 0070, 0060, 0055, 1684, 1065, 0084, 0080, 2946, 1673, 1576, 1576, 0089, 0090, 1153, 0000, };
+        
     }
 
     public class Hues
@@ -183,6 +241,88 @@ namespace UltimaXNA.Data
 
             return m_List[0];
         }
+
+        public static void GetWebSafeColors()
+        {
+            System.Drawing.Color[] colors = new System.Drawing.Color[2998];
+            colors[0] = System.Drawing.Color.FromArgb(255, 255, 255, 255);
+            for (int i = 1; i < 2998; i++)
+            {
+                colors[i] = Hues.GetHue(i + 0).GetColor(31);
+            }
+
+            List<Pair<System.Drawing.Color, int>> noDupes =
+                new List<Pair<System.Drawing.Color, int>>();
+            for (int i = 0; i < 2998; i++)
+            {
+                bool isDupe = false;
+                foreach (Pair<System.Drawing.Color, int> p in noDupes)
+                {
+                    if (p.ItemA == colors[i])
+                    {
+                        isDupe = true;
+                        break;
+                    }
+                }
+                if (!isDupe)
+                    noDupes.Add(new Pair<System.Drawing.Color, int>(colors[i], i));
+            }
+
+            System.Drawing.Color[] desireds = new System.Drawing.Color[216];
+            int desiredindex = 0;
+            int[] vals = new int[6] {0x00, 0x33, 0x66, 0x99, 0xCC, 0xFF};
+            
+            for (int g = 0; g < 6; g++)
+                for (int b = 0; b < 6; b++)
+                    for (int r = 0; r < 6; r++)
+                    {
+                        desireds[desiredindex++] = System.Drawing.Color.FromArgb(255, vals[r], vals[g], vals[b]);
+                    }
+
+            int[] safeIndexes = new int[216];
+            for (int i = 0; i < 216; i++)
+            {
+                double delta = 250000f;
+                for (int j = 0; j < noDupes.Count; j++)
+                {
+                    // compute the Euclidean distance between the two colors
+                    // note, that the alpha-component is not used in this example
+                    double dbl_test_red = System.Math.Pow(
+                        (noDupes[j].ItemA.R - desireds[i].R), 2.0);
+                    double dbl_test_green = System.Math.Pow(
+                        (noDupes[j].ItemA.G - desireds[i].G), 2.0);
+                    double dbl_test_blue = System.Math.Pow(
+                        (noDupes[j].ItemA.B - desireds[i].B), 2.0);
+                    // it is not necessary to compute the square root
+                    // it should be sufficient to use:
+                    // temp = dbl_test_blue + dbl_test_green + dbl_test_red;
+                    // if you plan to do so, the distance should be initialized by 250000.0
+                    double temp = System.Math.Sqrt(dbl_test_blue + dbl_test_green + dbl_test_red);
+                    // explore the result and store the nearest color
+                    if (temp == 0.0)
+                    {
+                        // the lowest possible distance is - of course - zero
+                        // so I can break the loop (thanks to Willie Deutschmann)
+                        // here I could return the input_color itself
+                        // but in this example I am using a list with named colors
+                        // and I want to return the Name-property too
+                        safeIndexes[i] = noDupes[j].ItemB;
+                        break;
+                    }
+                    else if (temp < delta)
+                    {
+                        delta = temp;
+                        safeIndexes[i] = noDupes[j].ItemB;
+                    }
+                }
+            }
+            string outSafe = "int[] WebSafeHues = new int[216] { ";
+            for (int i = 0; i < 216; i++)
+            {
+                outSafe += safeIndexes[i].ToString("D4") + ", ";
+            }
+            outSafe += " };";
+        }
     }
 
     public class Hue
@@ -237,83 +377,6 @@ namespace UltimaXNA.Data
             }
 
             m_Name = sb.ToString();
-        }
-
-        public unsafe void ApplyTo(System.Drawing.Bitmap bmp, bool onlyHueGrayPixels)
-        {
-            System.Drawing.Imaging.BitmapData bd = bmp.LockBits(
-                new System.Drawing.Rectangle(0, 0, bmp.Width, bmp.Height),
-                System.Drawing.Imaging.ImageLockMode.ReadWrite,
-                System.Drawing.Imaging.PixelFormat.Format16bppArgb1555);
-
-            int stride = bd.Stride >> 1;
-            int width = bd.Width;
-            int height = bd.Height;
-            int delta = stride - width;
-
-            ushort* pBuffer = (ushort*)bd.Scan0;
-            ushort* pLineEnd = pBuffer + width;
-            ushort* pImageEnd = pBuffer + (stride * height);
-
-            ushort* pColors = stackalloc ushort[0x40];
-
-            fixed (short* pOriginal = m_Colors)
-            {
-                ushort* pSource = (ushort*)pOriginal;
-                ushort* pDest = pColors;
-                ushort* pEnd = pDest + 32;
-
-                while (pDest < pEnd)
-                    *pDest++ = 0;
-
-                pEnd += 32;
-
-                while (pDest < pEnd)
-                    *pDest++ = *pSource++;
-            }
-
-            if (onlyHueGrayPixels)
-            {
-                int c;
-                int r;
-                int g;
-                int b;
-
-                while (pBuffer < pImageEnd)
-                {
-                    while (pBuffer < pLineEnd)
-                    {
-                        c = *pBuffer;
-                        r = (c >> 10) & 0x1F;
-                        g = (c >> 5) & 0x1F;
-                        b = c & 0x1F;
-
-                        if (r == g && r == b)
-                            *pBuffer++ = pColors[c >> 10];
-                        else
-                            ++pBuffer;
-                    }
-
-                    pBuffer += delta;
-                    pLineEnd += stride;
-                }
-            }
-            else
-            {
-                while (pBuffer < pImageEnd)
-                {
-                    while (pBuffer < pLineEnd)
-                    {
-                        *pBuffer = pColors[(*pBuffer) >> 10];
-                        ++pBuffer;
-                    }
-
-                    pBuffer += delta;
-                    pLineEnd += stride;
-                }
-            }
-
-            bmp.UnlockBits(bd);
         }
     }
 }

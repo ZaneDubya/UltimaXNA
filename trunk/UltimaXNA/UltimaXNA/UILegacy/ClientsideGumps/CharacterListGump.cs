@@ -135,9 +135,12 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
             }
         }
 
+        static int _kHoverHue = Data.HuesXNA.GetWebSafeHue("609");
+        static int _kActivateHue = Data.HuesXNA.GetWebSafeHue("F00");
         string formatHTMLCharName(int index, string name, int hue)
         {
-            return string.Format("<center><big><a href=\"CHAR={0}\" style=\"colorhue: #{2}; hoverhue: #1156; activatehue: #796; text-decoration: none\">{1}</a></big></center>", index, name, hue);
+            return string.Format("<center><big><a href=\"CHAR={0}\" style=\"colorhue: #{2}; hoverhue: #{3}; activatehue: #{4}; text-decoration: none\">{1}</a></big></center>", 
+                index, name, hue, _kHoverHue, _kActivateHue);
         }
     }
 }
