@@ -214,7 +214,7 @@ namespace UltimaXNA
                     debugMessage += string.Format("Data Read: {0}\n", Metrics.TotalDataRead.ToString());
             }
 
-            if (ClientVars.Map != -1 && !_UserInterface.IsMouseOverUI)
+            if (true)
             {
                 debugMessage += string.Format("#Objects: {0}\n", _World.ObjectsRendered);
                 Entity e = EntitiesCollection.GetPlayerObject();

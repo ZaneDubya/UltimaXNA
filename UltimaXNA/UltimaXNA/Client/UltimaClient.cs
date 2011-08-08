@@ -329,7 +329,7 @@ namespace UltimaXNA.Client
                 }
                 else
                 {
-                    _LegacyUI.AddMessage_Debug(string.Format("Client: Object {0} has no support for a container object!", item.Serial));
+                    _LegacyUI.AddMessage_Chat(string.Format("Client: Object {0} has no support for a container object!", item.Serial));
                 }
             }
         }
@@ -1016,12 +1016,12 @@ namespace UltimaXNA.Client
 
         static void announce_UnhandledPacket(IRecvPacket packet)
         {
-            _LegacyUI.AddMessage_Debug(string.Format("Client: Unhandled {0} [ID:{1}]", packet.Name, packet.Id));
+            _LegacyUI.AddMessage_Chat(string.Format("Client: Unhandled {0} [ID:{1}]", packet.Name, packet.Id));
         }
 
         static void announce_UnhandledPacket(IRecvPacket packet, string addendum)
         {
-            _LegacyUI.AddMessage_Debug(string.Format("Client: Unhandled {0} [ID:{1}] {2}", packet.Name, packet.Id, addendum));
+            _LegacyUI.AddMessage_Chat(string.Format("Client: Unhandled {0} [ID:{1}] {2}", packet.Name, packet.Id, addendum));
         }
 
         private static void receive_TextMessage(MessageType msgType, string text, int hue, int font, Serial serial, string speakerName)
@@ -1033,6 +1033,7 @@ namespace UltimaXNA.Client
                     overhead = EntitiesCollection.AddOverhead(msgType, serial, text, font, hue);
                     if (overhead != null)
                     {
+                        _LegacyUI.AddMessage_Chat(speakerName + ": " + text, font, hue);
                         overhead.SpeakerName = speakerName;
                     }
                     else

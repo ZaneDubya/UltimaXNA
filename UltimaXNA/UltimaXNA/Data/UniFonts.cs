@@ -531,6 +531,7 @@ namespace UltimaXNA.Data
                     }
                     else
                     {
+                        // this word cannot fit in the current line.
                         // if this is the last word in a line
                         if ((width > 0) && (i - word.Count >= 0))
                         {
@@ -540,38 +541,29 @@ namespace UltimaXNA.Data
                         }
                         else
                         {
-                            reader.Characters[i - 1].Character = '-';
-                            int j = i;
-                            while (j < reader.Length && reader.Characters[j].Character != ' ' && reader.Characters[j].Character != '\n')
+                            // this is the only word on the line and we will need to split it.
+                            // first back up until we've reached the reduced the size of the word
+                            // so that it fits on one line, and split it there.
+                            int iWordWidth = wordwidth;
+                            for (int j = word.Count - 1; j >= 1; j--)
                             {
-                                reader.Characters.RemoveAt(j);
+                                int iDashWidth = _fonts[(int)word[j].Font].GetCharacter('-').Width + 1;
+                                if (iWordWidth + iDashWidth <= maxwidth)
+                                {
+                                    reader.Characters.Insert(i - (word.Count - j) + 1, new HTMLCharacter('\n'));
+                                    reader.Characters.Insert(i - (word.Count - j) + 1, new HTMLCharacter('-'));
+                                    break;
+                                }
+                                int iCharWidth = _fonts[(int)word[j].Font].GetCharacter(word[j].Character).Width;
+                                iWordWidth -= iCharWidth + 1;
                             }
-                            i = 0;
+                            i -= word.Count + 2;
+                            if (i < 0)
+                                i = -1;
                             word.Clear();
                             width = 0;
                             wordwidth = 0;
                         }
-
-
-
-                        // this word is too big, so we insert a \n character after the word. !!!
-                        // this will cause the word to be cut off... this requires a better fix in the future...
-                        
-                        // This won't work if the first word in the line is too long, so a special case is necessary:
-                        // if (i < word.Count)
-                        // {
-                        
-                            // reader.Characters.Insert(i, new HTMLCharacter('\n'));
-                            // word.Clear();
-                            // wordwidth = 0;
-                           //  width = 0;
-                        // }
-                        // else
-                        // {
-                        //     reader.Characters.Insert(i - word.Count, new HTMLCharacter('\n'));
-                        //     i = i - word.Count - 1;
-                        //     word.Clear();
-                        // }
                     }
 
                     if (c.Character == '\n')
