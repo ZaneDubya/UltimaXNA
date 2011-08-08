@@ -41,7 +41,7 @@ namespace UltimaXNA.UILegacy.Gumplings
         {
             if (_texture == null)
                 _texture = Data.ASCIIText.GetTextTexture(Text, FontID, Area.Width);
-            spriteBatch.Draw2D(_texture, Position, Hue, true);
+            spriteBatch.Draw2D(_texture, Position, Hue, true, false);
             base.Draw(spriteBatch);
         }
     }

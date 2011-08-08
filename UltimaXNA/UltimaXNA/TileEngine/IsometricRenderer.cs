@@ -225,13 +225,23 @@ namespace UltimaXNA.TileEngine
             if (hue == 0)
                 return new Vector2(0);
 
-            int hueType = 1;
-            if ((hue & 0x8000) != 0) // partial hue
-                hueType = 2;
-            else if ((hue & 0x4000) != 0) // transparant
-                hueType = 3;
+            int hueType = 0;
 
-            return new Vector2(hue & 0x3FFF - 1, hueType);
+            if ((hue & 0x4000) != 0) // transparant
+                hueType = 4;
+
+            hue -= 1;
+
+            if ((hue & 0x8000) != 0) // partial hue
+            {
+                hueType = 2;
+            }
+            else
+            {
+                hueType = 1;
+            }
+
+            return new Vector2(hue & 0x3FFF, hueType);
         }
     }
 }

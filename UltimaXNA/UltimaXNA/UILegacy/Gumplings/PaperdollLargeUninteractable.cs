@@ -140,7 +140,7 @@ namespace UltimaXNA.UILegacy.Gumplings
                 }
 
                 if (bodyID != 0)
-                    spriteBatch.Draw2D(Data.Gumps.GetGumpXNA(bodyID), Position, hue, hueGreyPixelsOnly);
+                    spriteBatch.Draw2D(Data.Gumps.GetGumpXNA(bodyID), Position, hue, hueGreyPixelsOnly, false);
             }
         }
     }

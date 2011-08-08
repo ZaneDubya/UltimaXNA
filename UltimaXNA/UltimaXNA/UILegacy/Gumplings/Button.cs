@@ -92,14 +92,14 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
-            spriteBatch.Draw2D(_texture, Position, 0, false);
+            spriteBatch.Draw2D(_texture, Position, 0, false, false);
             if (Caption != string.Empty)
             {
                 _textRenderer.RenderText(Caption, true);
                 int yoffset = MouseDownOnThis ? 1 : 0;
                 spriteBatch.Draw2D(_textRenderer.Texture, 
                     new Point2D(X + (Width - _textRenderer.Texture.Width) / 2,
-                        Area.Y + yoffset + (_texture.Height - _textRenderer.Texture.Height) / 2), 0, false);
+                        Area.Y + yoffset + (_texture.Height - _textRenderer.Texture.Height) / 2), 0, false, false);
             }
             base.Draw(spriteBatch);
         }

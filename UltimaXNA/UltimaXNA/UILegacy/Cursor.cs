@@ -107,7 +107,7 @@ namespace UltimaXNA.UILegacy
                 cursorOffset = new Point2D(holdingOffset.X, holdingOffset.Y);
                 cursorTexture = HoldingTexture;
                 sourceRect = new Rectangle(0, 0, cursorTexture.Width, cursorTexture.Height);
-                sb.Draw2D(cursorTexture, position - cursorOffset, sourceRect, holdingItem.Hue, false);
+                sb.Draw2D(cursorTexture, position - cursorOffset, sourceRect, holdingItem.Hue, false, false);
                 // then set the data for the hang which holds it.
                 cursorOffset = new Point2D(1, 1);
                 cursorTextureID = 8305;
@@ -191,7 +191,7 @@ namespace UltimaXNA.UILegacy
             else if (TrammelHue)
                 cursorHue = 2412;
 
-            sb.Draw2D(cursorTexture, position - cursorOffset, sourceRect, cursorHue, false);
+            sb.Draw2D(cursorTexture, position - cursorOffset, sourceRect, cursorHue, false, false);
         }
     }
 }

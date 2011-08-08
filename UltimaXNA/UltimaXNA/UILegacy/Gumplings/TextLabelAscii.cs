@@ -39,7 +39,7 @@ namespace UltimaXNA.UILegacy.Gumplings
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
             _texture = Data.ASCIIText.GetTextTexture(Text, FontID);
-            spriteBatch.Draw2D(_texture, Position, Hue, true);
+            spriteBatch.Draw2D(_texture, Position, Hue, true, false);
             base.Draw(spriteBatch);
         }
     }
