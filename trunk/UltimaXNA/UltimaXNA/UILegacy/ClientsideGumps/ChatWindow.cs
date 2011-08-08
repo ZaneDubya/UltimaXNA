@@ -45,11 +45,11 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
 
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
-            int y = _input.Y - 48;
+            int y = _input.Y - 20;
             for (int i = _textEntries.Count - 1; i >= 0; i--)
             {
-                spriteBatch.Draw2D(_textEntries[i].Texture, new Point2D(1, y), 0, true);
                 y -= _textEntries[i].Texture.Height;
+                spriteBatch.Draw2D(_textEntries[i].Texture, new Point2D(1, y), 0, true);
             }
             base.Draw(spriteBatch);
         }
@@ -76,7 +76,7 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
         float _alpha;
         public float Alpha { get { return _alpha; } }
 
-        const float Time_Display = 10.0f;
+        const float Time_Display = 20.0f;
         const float Time_Fadeout = 5.0f;
 
         private TextRenderer _renderer;
@@ -97,17 +97,22 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
             if (_createdTime == float.MinValue)
                 _createdTime = (float)gameTime.TotalGameTime.TotalSeconds;
             float time = (float)gameTime.TotalGameTime.TotalSeconds - _createdTime;
-            if (time > Time_Display + Time_Fadeout)
+            if (time > _createdTime + Time_Display)
                 _isExpired = true;
-            else if (time > Time_Display)
+            else if (time > _createdTime + (Time_Display - Time_Fadeout))
             {
-                _alpha = (time - Time_Display) / Time_Fadeout;
+                _alpha = ((time - _createdTime) - (Time_Display - Time_Fadeout)) / Time_Fadeout;
             }
         }
 
         public void Dispose()
         {
             _renderer = null;
+        }
+
+        public override string ToString()
+        {
+            return _text;
         }
     }
 }

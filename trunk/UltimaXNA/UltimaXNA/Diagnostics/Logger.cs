@@ -234,9 +234,9 @@ namespace UltimaXNA.Diagnostics
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(message);
-            Console.WriteLine("Press any key to quit.");
+            /*Console.WriteLine("Press any key to quit.");
             Console.ReadKey(true);
-            ClientVars.EngineRunning = false;
+            ClientVars.EngineRunning = false;*/
             Console.ResetColor();
         }
 

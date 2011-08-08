@@ -15,12 +15,12 @@ namespace UltimaXNA.UILegacy.Gumplings
         public enum EquipSlots : int
         {
             Body = 0,
-            RightHand = 1, First = RightHand,
+            RightHand = 1,
             LeftHand = 2,
             Footwear = 3,
             Legging = 4,
             Shirt = 5,
-            Head = 5,
+            Head = 6,
             Gloves = 7,
             Ring = 8,
             Talisman = 9,
@@ -29,7 +29,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             Belt = 12,
             Chest = 13,
             Bracelet = 14,
-            // skip 15, unused
+            Unused = 15,
             FacialHair = 16,
             Sash = 17,
             Earring = 18,
@@ -38,9 +38,31 @@ namespace UltimaXNA.UILegacy.Gumplings
             Backpack = 21,
             Robe = 22,
             Skirt = 23,
-            Max = 23,
             // skip 24, inner legs (!!! do we really skip this?)
         }
+
+        private EquipSlots[] drawOrder = new EquipSlots[20] {
+            EquipSlots.Footwear,
+            EquipSlots.Legging,
+            EquipSlots.Shirt,
+            EquipSlots.Gloves,
+            EquipSlots.Ring,
+            EquipSlots.Talisman,
+            EquipSlots.Neck,
+            EquipSlots.Belt,
+            EquipSlots.Chest,
+            EquipSlots.Bracelet,
+            EquipSlots.Hair,
+            EquipSlots.FacialHair,
+            EquipSlots.Head,
+            EquipSlots.Sash,
+            EquipSlots.Earring,
+            EquipSlots.Back,
+            EquipSlots.Skirt,
+            EquipSlots.Robe,
+            EquipSlots.LeftHand,
+            EquipSlots.RightHand
+        };
 
         bool _isFemale;
         bool _isElf;
@@ -88,17 +110,15 @@ namespace UltimaXNA.UILegacy.Gumplings
                     }
 
                     // Loop through the items on the mobile and create the gump pics.
-                    for (EquipSlots i = EquipSlots.First; i <= EquipSlots.Max; i++)
+                    for (int i = 0; i < drawOrder.Length; i++)
                     {
-                        Item item = ((Mobile)_sourceEntity).GetItem((int)i);
+                        Item item = ((Mobile)_sourceEntity).GetItem((int)drawOrder[i]);
                         if (item == null)
                             continue;
 
                         bool canPickUp = true;
-                        switch (i)
+                        switch (drawOrder[i])
                         {
-                            case EquipSlots.Backpack:
-                                continue; // skip this one so we can add it last ...
                             case EquipSlots.FacialHair:
                             case EquipSlots.Hair:
                                 canPickUp = false;

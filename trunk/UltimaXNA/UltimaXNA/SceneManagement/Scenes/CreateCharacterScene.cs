@@ -188,7 +188,7 @@ namespace UltimaXNA.SceneManagement
                         break;
                     case CreateCharacterSceneStates.CreateCharacter:
                         UltimaClient.Send(new Client.Packets.Client.CreateCharacterPacket(
-                            _name, (Sex)_gender, (Race)1, (byte)_attributes[0], (byte)_attributes[1], (byte)_attributes[2], 
+                            _name, (Sex)_gender, (Race)0, (byte)_attributes[0], (byte)_attributes[1], (byte)_attributes[2], 
                             (byte)_skillIndexes[0], (byte)_skillValues[0], (byte)_skillIndexes[1], (byte)_skillValues[1], (byte)_skillIndexes[2], (byte)_skillValues[2],
                             (short)_skinHue, (short)_hairStyleID, (short)_hairHue, (short)_facialHairStyleID, (short)_facialHairHue,
                             0, (short)ClientVars.CharacterList_FirstEmptySlot, Utility.IPAddress, 0, 0));

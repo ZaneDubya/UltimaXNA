@@ -16,7 +16,6 @@ namespace UltimaXNA.UILegacy
         bool IsModalMsgBoxOpen { get; }
         Cursor Cursor { get; }
         Control MouseOverControl { get; }
-        void AddMessage_Debug(string line);
         void AddMessage_Chat(string line);
         void AddMessage_Chat(string text, int hue, int font);
         Gump AddGump_Server(Serial serial, Serial gumpID, string[] gumplings, string[] lines, int x, int y);

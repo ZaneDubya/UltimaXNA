@@ -23,9 +23,7 @@ namespace UltimaXNA.UILegacy
         public int Height { get { return _spriteBatch.GraphicsDevice.Viewport.Height; } }
         public bool IsModalMsgBoxOpen { get { return (GetGump<MsgBox>(0) != null); } }
 
-        ChatHandler _debugMessages = new ChatHandler();
         ChatHandler _chatMessages = new ChatHandler();
-        TextRenderer _debugTextRenderer = new TextRenderer();
 
         Control[] _mouseOverControls = null; // the controls that the mouse is over, 0 index is the frontmost control, last index is the backmost control (always the owner gump).
         Control[] _mouseDownControl = new Control[5]; // the control that the mouse was over when the button was clicked. 5 buttons
@@ -221,10 +219,6 @@ namespace UltimaXNA.UILegacy
                     c.Draw(_spriteBatch);
             }
 
-            // Draw debug message
-            if (ClientVars.DebugMessage != null)
-                DEBUG_DrawText(new Point2D(5, 5), ClientVars.DebugMessage + Environment.NewLine + _DEBUG_TEXT(gameTime));
-
             // Draw the cursor
             _cursor.Draw(_spriteBatch, _input.MousePosition);
 
@@ -240,32 +234,6 @@ namespace UltimaXNA.UILegacy
                 c.Dispose();
             }
             _controls.Clear();
-        }
-
-        internal void DEBUG_DrawText(Point2D position, string text)
-        {
-            _debugTextRenderer.RenderText(text);
-            _spriteBatch.Draw2D(_debugTextRenderer.Texture, position, 0, false);
-        }
-
-        internal string _DEBUG_TEXT(GameTime gameTime)
-        {
-            _debugMessages.Update(gameTime, true);
-            List<ChatLine> list = _debugMessages.GetMessages();
-
-            string s = string.Empty;
-            
-            foreach (ChatLine c in list)
-            {
-                s += c.Text + Environment.NewLine;
-            }
-
-            return s;
-        }
-
-        public void AddMessage_Debug(string line)
-        {
-            _debugMessages.AddMessage(line);
         }
 
         public void AddMessage_Chat(string text)
