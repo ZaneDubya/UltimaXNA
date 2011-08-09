@@ -100,5 +100,10 @@ namespace UltimaXNA.TileEngine
                 return null;
             return iFrames[iFrame];
         }
+
+        public override string ToString()
+        {
+            return string.Format("moMobile of {0}", Data.TileData.ItemData_ByAnimID(BodyID).Name);
+        }
     }
 }

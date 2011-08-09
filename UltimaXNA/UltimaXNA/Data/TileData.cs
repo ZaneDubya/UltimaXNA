@@ -28,9 +28,19 @@ namespace UltimaXNA.Data
         public static LandData[] LandData = new LandData[0x4000];
         public static ItemData[] ItemData = new ItemData[0x4000];
 
-		// Issue 5 - Statics (bridge, stairs, etc) should be walkable - http://code.google.com/p/ultimaxna/issues/detail?id=5 - Smjert
-		// Stairs IDs, taken from RunUO Data folder (stairs.txt)
-		private static int[] m_StairsID = new int[]
+        public static ItemData ItemData_ByAnimID(int animID)
+        {
+            for (int i = 0; i < ItemData.Length; i++)
+            {
+                if (ItemData[i].AnimID == animID)
+                    return ItemData[i];
+            }
+            return new ItemData();
+        }
+
+        // Issue 5 - Statics (bridge, stairs, etc) should be walkable - http://code.google.com/p/ultimaxna/issues/detail?id=5 - Smjert
+        // Stairs IDs, taken from RunUO Data folder (stairs.txt)
+        private static int[] m_StairsID = new int[]
 		{
 			1006, 1007, 1008, 1009, 1010, 1012, 1014, 1016, 1017,
 			1801, 1802, 1803, 1804, 1805, 1807, 1809, 1811, 1812, 

@@ -156,7 +156,6 @@ namespace UltimaXNA.TileEngine
 
                 MapObjectGround ground =
                     new MapObjectGround(iTileID, new Position3D(x + i % 8, y + (i >> 3), iTileZ));
-                ground.SortZ = ground.Z;
                 MapTile tile = new MapTile(ground.Position.X, ground.Position.Y);
                 tile.AddMapObject(ground);
                 _tiles[indexes[i]] = tile;

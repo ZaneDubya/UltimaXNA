@@ -51,56 +51,48 @@ float4 PixelShaderFunction(PS_INPUT IN) : COLOR0
 {	
 	// get the initial color
 	float4 color = tex2D(textureSampler[0], IN.TexCoord);
-
+	
+	if (IN.TexCoord.x < 0.0f || IN.TexCoord.y < 0.0f ||
+		IN.TexCoord.x > 1.0f || IN.TexCoord.y > 1.0f)
+		color.a = 0;
+	
 	if (color.a == 0)
 		discard;
 
 	// do lighting
 	if (DrawLighting)
 	{
-		float3 lightColor = float3(0.5f + lightIntensity / 2, 0.5f + lightIntensity / 2, 0.5f + lightIntensity / 2);
-		float3 ambientColor = float3(1 - lightIntensity / 10, 1 - lightIntensity / 10, 1 - lightIntensity / 10) * ambientLightIntensity;
+		float light_DirectedIntensity = 0.5f + lightIntensity / 2;
+		float light_AmbientIntensity = (1.0f - lightIntensity / 10) * ambientLightIntensity;
 		float NDotL = saturate(dot(-lightDirection, IN.Normal));
-		color.rgb = (ambientColor * color.rgb) + (lightColor * NDotL * color.rgb);
+		color.rgb = (light_AmbientIntensity * color.rgb) + (light_DirectedIntensity * NDotL * color.rgb);
 	}
 	
 	// is the texture hued or partially transparent?
-	// Hue effects are a bit flag:
+	// Hue effects are bit flags:
 	// 1 = hued 
 	// 2 = partially hued
 	// 4 = partially transparent.
-	if (IN.Hue.y != 0)
+	// 1 & 2 are mutually exclusive. default to 1 if both exist.
+	float hueY = (((IN.Hue.x - (IN.Hue.x % 2)) / HuesPerRow) / (HuesPerColumn));
+	float gray = ((color.r + color.g + color.b) / 3.0f / HuesPerRow + ((IN.Hue.x % 2) * 0.5f)) * 0.999f;
+	float4 huedColor = tex2D(hueTextureSampler, float2(gray, hueY));
+	huedColor.a = color.a;
+
+	if (IN.Hue.y >= 4) // 50% transparent
 	{
-		float hueX = abs(IN.Hue.x);
-		float hueY = (((hueX - (hueX % 2)) / HuesPerRow) / (HuesPerColumn));
-		float gray = ((color.r + color.g + color.b) / 3.0f / HuesPerRow + ((hueX % 2) * 0.5f)) * 0.999f;
-		
-		float4 huedColor = tex2D(hueTextureSampler, float2(gray, hueY));
-		huedColor.a = color.a;
-		if (IN.Hue.y == 1) // normal hue - map the hue to the grayscale.
-		{
+		IN.Hue.y -= 4;
+		color *= 0.5f;
+	}
+
+	if (IN.Hue.y == 2) // partial hue - map any grayscale pixels to the hue. Colored pixels remain colored.
+	{
+		if ((color.r == color.g) && (color.r == color.b))
 			color = huedColor;
-		}
-		else if (IN.Hue.y == 2) // partial hue - map any grayscale pixels to the hue. Colored pixels remain colored.
-		{
-			if ((color.r == color.g) && (color.r == color.b))
-				color = huedColor;
-		}
-		else if (IN.Hue.y == 4) // 50% transparent
-		{
-			color *= 0.5f;
-		}
-		else if (IN.Hue.y == 5) // 50% transparent + hued
-		{
-			color = huedColor;
-			color *= 0.5f;
-		}
-		else if (IN.Hue.y == 6) // 50% transparent + partially hued
-		{
-			if ((color.r == color.g) && (color.r == color.b))
-				color = huedColor;
-			color *= 0.5f;
-		}
+	}
+	else if (IN.Hue.y >= 1) // normal hue - map the hue to the grayscale.
+	{
+		color = huedColor;
 	}
 
 	return color;

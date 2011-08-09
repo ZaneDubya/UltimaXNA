@@ -39,7 +39,7 @@ namespace UltimaXNA.TileEngine
 
         public override string ToString()
         {
-            return string.Format("Ground Z:{0}, <{1},{2},{3}>", Z, _surroundingTiles.South, _surroundingTiles.Down, _surroundingTiles.East);
+            return string.Format("Ground Z:{0}, SortZ:{4}, <{1},{2},{3}>", Z, _surroundingTiles.South, _surroundingTiles.Down, _surroundingTiles.East, SortZ);
         }
 
         public MapObjectGround(int tileID, Position3D position)
