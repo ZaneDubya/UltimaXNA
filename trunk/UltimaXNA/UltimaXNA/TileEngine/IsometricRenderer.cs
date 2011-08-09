@@ -81,6 +81,10 @@ namespace UltimaXNA.TileEngine
             get { return _map; }
             set { _map = value; }
         }
+        internal static Map InternalMap
+        {
+            get { return _map; }
+        }
         public int ObjectsRendered { get; internal set; }
         public Position3D CenterPosition { get; set; }
         public static bool DrawTerrain = true;
@@ -156,6 +160,8 @@ namespace UltimaXNA.TileEngine
             if (ClientVars.IsMinimized)
                 return;
 
+            // ClientVars.RenderSize = 3;
+
             int RenderBeginX = CenterPosition.X - (ClientVars.RenderSize / 2);
             int RenderBeginY = CenterPosition.Y - (ClientVars.RenderSize / 2);
             int RenderEndX = RenderBeginX + ClientVars.RenderSize;
@@ -181,7 +187,7 @@ namespace UltimaXNA.TileEngine
                 drawPosition.X = (ix - RenderBeginY) * 22 + renderOffsetX;
                 drawPosition.Y = (ix + RenderBeginY) * 22 + renderOffsetY;
 
-                deferredMapObjects_Place(ix);
+                // deferredMapObjects_Place(ix);
 
                 DrawTerrain = true;
 
@@ -207,7 +213,7 @@ namespace UltimaXNA.TileEngine
             _overObject = overList.GetForemostMouseOverItem(_input.MousePosition);
             _overGround = overList.GetForemostMouseOverItem<MapObjectGround>(_input.MousePosition);
 
-            deferredMapObjects_Clear();
+            // deferredMapObjects_Clear();
         }
 
         private void recalculateLightning()
@@ -233,7 +239,7 @@ namespace UltimaXNA.TileEngine
             _spriteBatch.SetDirectionalLightIntensity(light);
         }
 
-        public static void AnnounceDeferredMapObject(MapObjectDeferred deferred, bool immediate)
+        /*public static void AnnounceDeferredMapObject(MapObjectDeferred deferred, bool immediate)
         {
             if (immediate)
             {
@@ -264,6 +270,6 @@ namespace UltimaXNA.TileEngine
         private void deferredMapObjects_Clear()
         {
             _deferredMapObjects.Clear();
-        }
+        }*/
     }
 }
