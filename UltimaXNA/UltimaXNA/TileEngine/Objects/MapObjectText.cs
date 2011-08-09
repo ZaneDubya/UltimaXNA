@@ -41,9 +41,9 @@ namespace UltimaXNA.TileEngine
             _draw_texture = Texture = Data.ASCIIText.GetTextTexture(text, 1);
             _draw_width = _draw_texture.Width;
             _draw_height = _draw_texture.Height;
-            _draw_X = (_draw_width >> 1) - 22 - (int)((Position.Draw_Xoffset - Position.Draw_Yoffset) * 22);
-            _draw_Y = ((int)Position.Draw_Zoffset << 2) + _draw_height - 44 - (int)((Position.Draw_Xoffset + Position.Draw_Yoffset) * 22);
-            _draw_hue = IsometricRenderer.GetHueVector(Hue);
+            _draw_X = (_draw_width >> 1) - 22 - (int)((Position.X_offset - Position.Y_offset) * 22);
+            _draw_Y = ((int)Position.Z_offset << 2) + _draw_height - 44 - (int)((Position.X_offset + Position.Y_offset) * 22);
+            _draw_hue = Utility.GetHueVector(Hue);
             _pickType = PickTypes.PickObjects;
             _draw_flip = false;
         }

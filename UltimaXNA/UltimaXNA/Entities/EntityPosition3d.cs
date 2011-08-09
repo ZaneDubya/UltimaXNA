@@ -42,29 +42,9 @@ namespace UltimaXNA.Entities
         public int X { get { return (int)_tile.X; } set { _tile.X = value; } }
         public int Y { get { return (int)_tile.Y; } set { _tile.Y = value; } }
         public int Z { get { return (int)_tile.Z; } set { _tile.Z = value; } }
-        float X_offset { get { return _offset.X % 1.0f; } }
-        float Y_offset { get { return _offset.Y % 1.0f; } }
-        float Z_offset { get { return _offset.Z; } }
-
-        public int Draw_TileX { get { return drawOffsetTile(X, X_offset); } }
-        public int Draw_TileY { get { return drawOffsetTile(Y, Y_offset); } }
-        public float Draw_Xoffset { get { return drawOffsetOffset(X_offset); } }
-        public float Draw_Yoffset { get { return drawOffsetOffset(Y_offset); } }
-        public float Draw_Zoffset { get { return Z_offset; } }
-
-        int drawOffsetTile(int tile, float offset)
-        {
-            return (offset > 0) ? tile + 1 : tile;
-        }
-
-        float drawOffsetOffset(float offset)
-        {
-            if (offset > 0)
-                return offset - 1f;
-            else
-                return offset;
-            // return (offset == 0) ? 0 : offset - 1f; 
-        }
+        public float X_offset { get { return _offset.X % 1.0f; } }
+        public float Y_offset { get { return _offset.Y % 1.0f; } }
+        public float Z_offset { get { return _offset.Z; } }
 
         public Position3D()
         {
@@ -124,8 +104,8 @@ namespace UltimaXNA.Entities
             return
                 "P(Tile)=" + ToString() + Environment.NewLine +
                 "P(Ofst)=" + string.Format("X:{0:0.00} Y:{1:0.00} Z:{2:0.00}", X_offset, Y_offset, Z_offset) + Environment.NewLine +
-                "D(Tile)=" + string.Format("X:{0:0.00} Y:{1:0.00} Z:{2:0.00}", Draw_TileX, Draw_TileY, Z) + Environment.NewLine +
-                "D(Ofst)=" + string.Format("X:{0:0.00} Y:{1:0.00} Z:{2:0.00}", Draw_Xoffset, Draw_Yoffset, Draw_Zoffset);
+                "D(Tile)=" + string.Format("X:{0:0.00} Y:{1:0.00} Z:{2:0.00}", X, Y, Z) + Environment.NewLine +
+                "D(Ofst)=" + string.Format("X:{0:0.00} Y:{1:0.00} Z:{2:0.00}", X_offset, Y_offset, Z_offset);
         }
     }
 }

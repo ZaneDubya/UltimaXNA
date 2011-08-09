@@ -605,5 +605,29 @@ namespace UltimaXNA
             else
                 return false;
         }
+
+        public static Vector2 GetHueVector(int hue)
+        {
+            if (hue == 0)
+                return new Vector2(0);
+
+            int hueType = 0;
+
+            if ((hue & 0x4000) != 0) // transparant
+                hueType = 4;
+
+            hue -= 1;
+
+            if ((hue & 0x8000) != 0) // partial hue
+            {
+                hueType = 2;
+            }
+            else
+            {
+                hueType = 1;
+            }
+
+            return new Vector2(hue & 0x3FFF, hueType);
+        }
     }
 }

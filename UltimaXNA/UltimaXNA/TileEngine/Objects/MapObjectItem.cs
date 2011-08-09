@@ -42,7 +42,7 @@ namespace UltimaXNA.TileEngine
             _draw_height = _draw_texture.Height;
             _draw_X = (_draw_width >> 1) - 22;
             _draw_Y = (Z << 2) + _draw_height - 44;
-            _draw_hue = IsometricRenderer.GetHueVector(Hue);
+            _draw_hue = Utility.GetHueVector(Hue);
             _pickType = PickTypes.PickObjects;
             _draw_flip = false;
         }

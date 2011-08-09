@@ -49,7 +49,7 @@ namespace UltimaXNA.TileEngine
                 return;
             _frame = frame;
             Hue = hue;
-            Tiebreaker = layer;
+            SortTiebreaker = layer;
             OwnerEntity = ownerEntity;
 
             // set pick type
@@ -66,18 +66,19 @@ namespace UltimaXNA.TileEngine
             _draw_width = _draw_texture.Width;
             _draw_height = _draw_texture.Height;
             _draw_flip = (Facing > 4) ? true : false;
+            _draw_IsometricOverlap = true;
             if (_draw_flip)
             {
-                _draw_X = frameXNA.Center.X - 22 + (int)((Position.Draw_Xoffset - Position.Draw_Yoffset) * 22);
-                _draw_Y = frameXNA.Center.Y + (Z << 2) + _draw_height - 22 - (int)((Position.Draw_Xoffset + Position.Draw_Yoffset) * 22);
+                _draw_X = frameXNA.Center.X - 22 + (int)((Position.X_offset - Position.Y_offset) * 22);
+                _draw_Y = frameXNA.Center.Y + (Z << 2) + _draw_height - 22 - (int)((Position.X_offset + Position.Y_offset) * 22);
             }
             else
             {
-                _draw_X = frameXNA.Center.X - 22 - (int)((Position.Draw_Xoffset - Position.Draw_Yoffset) * 22);
-                _draw_Y = frameXNA.Center.Y + (Z << 2) + _draw_height - 22 - (int)((Position.Draw_Xoffset + Position.Draw_Yoffset) * 22);
+                _draw_X = frameXNA.Center.X - 22 - (int)((Position.X_offset - Position.Y_offset) * 22);
+                _draw_Y = frameXNA.Center.Y + (Z << 2) + _draw_height - 22 - (int)((Position.X_offset + Position.Y_offset) * 22);
             }
 
-            _draw_hue = IsometricRenderer.GetHueVector(Hue);
+            _draw_hue = Utility.GetHueVector(Hue);
             if (ClientVars.LastTarget != null && ClientVars.LastTarget == OwnerSerial)
                 _draw_hue = new Vector2(((Entities.Mobile)OwnerEntity).NotorietyHue - 1, 1);
         }

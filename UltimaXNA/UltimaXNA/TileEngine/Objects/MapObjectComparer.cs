@@ -25,22 +25,22 @@ using Microsoft.Xna.Framework;
 
 namespace UltimaXNA.TileEngine
 {
-    sealed class TileComparer : IComparer<MapObject>
+    sealed class MapObjectComparer : IComparer<MapObject>
     {
-        public static readonly TileComparer Comparer = new TileComparer();
+        public static readonly MapObjectComparer Comparer = new MapObjectComparer();
 
         public int Compare(MapObject x, MapObject y)
         {
-            int result = (x.SortZ + x.Threshold) - (y.SortZ + y.Threshold);
+            int result = (x.SortZ + x.SortThreshold) - (y.SortZ + y.SortThreshold);
+
+            if (result == 0)
+                result = x.SortThreshold - y.SortThreshold;
+
+            if (result == 0)
+                result = x.SortTiebreaker - y.SortTiebreaker;
 
             if (result == 0)
                 result = typeSortValue(x) - typeSortValue(y);
-
-            if (result == 0)
-                result = x.Threshold - y.Threshold;
-
-            if (result == 0)
-                result = x.Tiebreaker - y.Tiebreaker;
 
             return result;
         }

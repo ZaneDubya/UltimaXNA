@@ -158,7 +158,7 @@ namespace UltimaXNA.TileEngine
                     new MapObjectGround(iTileID, new Position3D(x + i % 8, y + (i >> 3), iTileZ));
                 ground.SortZ = ground.Z;
                 MapTile tile = new MapTile(ground.Position.X, ground.Position.Y);
-                tile.Add(ground);
+                tile.AddMapObject(ground);
                 _tiles[indexes[i]] = tile;
             }
 
@@ -172,7 +172,7 @@ namespace UltimaXNA.TileEngine
                 int iTileZ = (sbyte)staticsData[index++];
                 index += 2; // unknown 2 byte data, not used.
                 MapTile tile = _tiles[indexes[iTileIndex]];
-                tile.Add(new MapObjectStatic(iTileID, i, new Position3D(tile.X, tile.Y, iTileZ)));
+                tile.AddMapObject(new MapObjectStatic(iTileID, i, new Position3D(tile.X, tile.Y, iTileZ)));
             }
 
             // now update this batch of tiles - sets their normals and surroundings as necessary.
@@ -207,13 +207,6 @@ namespace UltimaXNA.TileEngine
             }
             else
                 _numCellsLoadedThisFrame = 0;
-
-            // DEBUG REMOVE THIS !!!!
-            /*for (int i = 0; i < _tiles.Length; i++)
-            {
-                if (_tiles[i] != null)
-                _tiles[i].X = 60000000;
-            }*/
         }
 
         public int GetTileZ(int x, int y)

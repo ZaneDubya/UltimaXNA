@@ -63,5 +63,9 @@ namespace UltimaXNA.TileEngine
 
         public static int SizeInBytes { get { return sizeof( float ) * 11; } }
 
+        public override string ToString()
+        {
+            return string.Format("VPNTH: <{0}> <{1}>", this.Position.ToString(), this.TextureCoordinate.ToString());
+        }
     }
 }

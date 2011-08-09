@@ -325,6 +325,7 @@
     <Compile Include="SceneManagement\Scenes\DebugScene.cs" />
     <Compile Include="SceneManagement\Scenes\LoggingInScene.cs" />
     <Compile Include="SceneManagement\Scenes\SelectServerScene.cs" />
+    <Compile Include="TileEngine\Objects\MapObjectDeferred.cs" />
     <Compile Include="UILegacy\HTML\DynaString.cs" />
     <Compile Include="UILegacy\HTML\FastHash.cs" />
     <Compile Include="UILegacy\HTML\HTMLchunk.cs" />
@@ -335,7 +336,7 @@
     <Compile Include="TileEngine\Interfaces\IIsometricRenderer.cs" />
     <Compile Include="TileEngine\IsometricRenderer.cs" />
     <Compile Include="TileEngine\Map\MapTile.cs" />
-    <Compile Include="TileEngine\Map\TileComparer.cs" />
+    <Compile Include="TileEngine\Objects\MapObjectComparer.cs" />
     <Compile Include="TileEngine\MouseOverList.cs" />
     <Compile Include="TileEngine\WireframeRenderer.cs" />
     <Compile Include="UILegacy\ChatHandler.cs" />

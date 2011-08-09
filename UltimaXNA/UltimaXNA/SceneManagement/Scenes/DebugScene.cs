@@ -125,7 +125,7 @@ namespace UltimaXNA.SceneManagement
             if (!isTileEdited)
             {
                 edit_Tiles.Add(new Position3D(x, y, World.Map.GetMapTile(x, y, true).GroundTile.Z));
-                foreach (MapObject o in World.Map.GetMapTile(x, y, true).GetSortedObjects())
+                foreach (MapObject o in World.Map.GetMapTile(x, y, true).Items)
                 {
                     o.Z += editing_Value;
                 }

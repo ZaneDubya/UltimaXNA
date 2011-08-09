@@ -220,7 +220,7 @@ namespace UltimaXNA.Entities
                         BodyID, position,
                         DrawFacing, _animation.ActionIndex, _animation.AnimationFrame, 
                         this, i, Hue);
-                    tile.Add(mobtile);
+                    tile.AddMapObject(mobtile);
                 }
                 else if (_equipment[drawLayers[i]] != null && _equipment[drawLayers[i]].AnimationDisplayID != 0)
                 {
@@ -228,7 +228,7 @@ namespace UltimaXNA.Entities
                             _equipment[drawLayers[i]].AnimationDisplayID, _movement.Position,
                             DrawFacing, _animation.ActionIndex, _animation.AnimationFrame,
                             this, i, _equipment[drawLayers[i]].Hue);
-                    tile.Add(mobtile);
+                    tile.AddMapObject(mobtile);
                 }
             }
             drawOverheads(tile, new Position3D(_movement.Position.Tile_V3));

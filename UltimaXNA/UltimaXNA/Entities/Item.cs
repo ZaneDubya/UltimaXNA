@@ -170,7 +170,7 @@ namespace UltimaXNA.Entities
 			if (Ignored)
 				return;
 
-            tile.Add(new TileEngine.MapObjectItem(DisplayItemID, position, DrawFacing, this, Hue));
+            tile.AddMapObject(new TileEngine.MapObjectItem(DisplayItemID, position, DrawFacing, this, Hue));
             drawOverheads(tile, new Position3D(position.Point_V3));
 		}
 
