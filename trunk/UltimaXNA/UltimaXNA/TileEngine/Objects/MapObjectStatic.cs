@@ -35,17 +35,17 @@ namespace UltimaXNA.TileEngine
             : base(position)
         {
             ItemID = staticTileID;
-            Tiebreaker = sortInfluence;
+            SortTiebreaker = sortInfluence;
             
             // Set threshold.
             Data.ItemData itemData = Data.TileData.ItemData[ItemID & 0x3FFF];
             int background = (itemData.Background) ? 0 : 1;
             if (!itemData.Background)
-                Threshold++;
+                SortThreshold++;
             if (!(itemData.Height == 0))
-                Threshold++;
+                SortThreshold++;
             if (itemData.Surface)
-                Threshold--;
+                SortThreshold--;
 
             // get no draw flag
             if (itemData.Name == "nodraw" || ItemID <= 0)
@@ -71,7 +71,7 @@ namespace UltimaXNA.TileEngine
 
         public override string ToString()
         {
-            return string.Format("Static Z:{0}, SortZ:{1}", Z, SortZ);
+            return string.Format("Static Z:{0}, ItemID:{1}", Z, ItemID);
         }
     }
 }

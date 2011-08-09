@@ -221,7 +221,7 @@ namespace UltimaXNA.Entities
                 return;
             if (_world.Map == null)
                 return;
-            TileEngine.MapTile lastTile = _world.Map.GetMapTile(Position.Draw_TileX, Position.Draw_TileY, false);
+            TileEngine.MapTile lastTile = _world.Map.GetMapTile(Position.X, Position.Y, false);
             if (lastTile != null)
                 lastTile.FlushObjectsBySerial(_entity.Serial);
         }

@@ -103,7 +103,7 @@ namespace UltimaXNA.TileEngine
                         for (int x = 0; x < ClientVars.RenderSize; x++)
                         {
                             MapTile m = map.GetMapTile(renderBeginX + x, renderBeginY + y, true);
-                            List<MapObject> o = m.GetSortedObjects();
+                            List<MapObject> o = m.Items;
                             int i;
                             for (i = o.Count - 1; i > 0; i--)
                             {

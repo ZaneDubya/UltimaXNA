@@ -189,11 +189,14 @@ namespace UltimaXNA.TileEngine
             {
                 uint[] iPixel = new uint[1];
                 Rectangle pRect = new Rectangle((int)mousePosition.X - (int)Position.X, (int)mousePosition.Y - (int)Position.Y, 1, 1);
-                Texture.GetData<uint>(0, pRect, iPixel, 0, 1);
-                if (iPixel[0] != 0)
+                if (Texture.Bounds.Contains(new Point(pRect.X, pRect.Y)))
                 {
-                    InTexturePosition = new Point(pRect.X, pRect.Y);
-                    return true;
+                    Texture.GetData<uint>(0, pRect, iPixel, 0, 1);
+                    if (iPixel[0] != 0)
+                    {
+                        InTexturePosition = new Point(pRect.X, pRect.Y);
+                        return true;
+                    }
                 }
             }
             return false;

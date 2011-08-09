@@ -39,7 +39,7 @@ namespace UltimaXNA.TileEngine
 
         public override string ToString()
         {
-            return string.Format("Ground Z:{0}, SortZ:{1}, <{2},{3},{4}>", Z, SortZ, _surroundingTiles.South, _surroundingTiles.Down, _surroundingTiles.East);
+            return string.Format("Ground Z:{0}, <{1},{2},{3}>", Z, _surroundingTiles.South, _surroundingTiles.Down, _surroundingTiles.East);
         }
 
         public MapObjectGround(int tileID, Position3D position)
@@ -47,8 +47,8 @@ namespace UltimaXNA.TileEngine
         {
             ItemID = tileID;
             _normals = new Vector3[4];
-            Threshold = -1;
-            Tiebreaker = -1;
+            SortThreshold = -1;
+            SortTiebreaker = -1;
 
             // set no draw flag
             _noDraw = (ItemID < 3 || (ItemID >= 0x1AF && ItemID <= 0x1B5));
@@ -57,7 +57,7 @@ namespace UltimaXNA.TileEngine
             Data.LandData landData = Data.TileData.LandData[ItemID & 0x3FFF];
             if (landData.TextureID <= 0)
             {
-                _draw_alternate = false;
+                _draw_3DStretched = false;
                 _draw_texture = Data.Art.GetLandTexture(ItemID);
                 _draw_width = _draw_height = 44;
                 _draw_X = 0;
@@ -68,7 +68,7 @@ namespace UltimaXNA.TileEngine
             }
             else
             {
-                _draw_alternate = true;
+                _draw_3DStretched = true;
                 _draw_texture = Data.Texmaps.GetTexmapTexture(landData.TextureID);
             }
 
@@ -76,15 +76,15 @@ namespace UltimaXNA.TileEngine
             _pickType = PickTypes.PickGroundTiles;
         }
 
-        private bool _draw_alternate;
+        private bool _draw_3DStretched;
         internal override bool Draw(SpriteBatch3D sb, Vector3 drawPosition, MouseOverList molist, PickTypes pickType, int maxAlt)
         {
             if (_noDraw || _mustUpdateSurroundings || !IsometricRenderer.DrawTerrain)
                 return false;
-            if (!_draw_alternate)
+            if (!_draw_3DStretched)
                 return base.Draw(sb, drawPosition, molist, pickType, 255);
             else
-                return DrawAlternate(sb, drawPosition, molist, pickType, 255);
+                return Draw3DStretched(sb, drawPosition, molist, pickType, 255);
         }
 
         VertexPositionNormalTextureHue[] _vertexBufferAlternate = new VertexPositionNormalTextureHue[] {
@@ -96,7 +96,7 @@ namespace UltimaXNA.TileEngine
 
         private Vector3 _vertex0_yOffset, _vertex1_yOffset, _vertex2_yOffset, _vertex3_yOffset;
 
-        private bool DrawAlternate(SpriteBatch3D sb, Vector3 drawPosition, MouseOverList molist, PickTypes pickType, int maxAlt)
+        private bool Draw3DStretched(SpriteBatch3D sb, Vector3 drawPosition, MouseOverList molist, PickTypes pickType, int maxAlt)
         {
             // this is an isometric stretched tile and needs a specialized draw routine.
             _vertexBufferAlternate[0].Position = drawPosition + _vertex0_yOffset;

@@ -35,8 +35,8 @@ namespace UltimaXNA.TileEngine
 
         public int Layer
         {
-            get { return Tiebreaker; }
-            set { Tiebreaker = value; }
+            get { return SortTiebreaker; }
+            set { SortTiebreaker = value; }
         }
 
         private bool _noDraw = false;
@@ -58,7 +58,7 @@ namespace UltimaXNA.TileEngine
             _draw_height = _draw_texture.Height;
             _draw_X = iFrame.Center.X - 22;
             _draw_Y = iFrame.Center.Y + (Z << 2) + _draw_height - 22;
-            _draw_hue = IsometricRenderer.GetHueVector(Hue);
+            _draw_hue = Utility.GetHueVector(Hue);
             _pickType = PickTypes.PickObjects;
             _draw_flip = false;
         }

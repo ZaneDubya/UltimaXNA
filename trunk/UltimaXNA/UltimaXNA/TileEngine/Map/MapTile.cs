@@ -29,39 +29,35 @@ namespace UltimaXNA.TileEngine
     {
         private List<MapObject> m_Objects;
 
-        private bool m_NeedsSorting = false;
+        private bool _NeedsSorting = false;
+        private bool _HasDeferredObjects = false;
 
-        #region X
-        private int m_X;
+        private int _X, _Y;
         public int X
         {
-            get { return m_X; }
-            set { m_X = value; }
+            get { return _X; }
+            set { _X = value; }
         }
-        #endregion
-        #region Y
-        private int m_Y;
         public int Y
         {
-            get { return m_Y; }
-            set { m_Y = value; }
+            get { return _Y; }
+            set { _Y = value; }
         }
-        #endregion
 
         public MapTile(int x, int y)
         {
             m_Objects = new List<MapObject>();
-            m_X = x;
-            m_Y = y;
+            _X = x;
+            _Y = y;
         }
 
-        // Check if under a roof. --Poplicola 6/2/2009.
+        // Check if under a roof.
         public void IsUnder(int nAltitude, out bool isUnderItem, out bool isUnderTerrain)
         {
             isUnderItem = false;
             isUnderTerrain = false;
 
-            List<MapObject> iObjects = this.GetSortedObjects();
+            List<MapObject> iObjects = this.Items;
             for (int i = iObjects.Count - 1; i >= 0; i--)
             {
                 if (iObjects[i].Z <= nAltitude)
@@ -80,7 +76,6 @@ namespace UltimaXNA.TileEngine
             }
         }
 
-        // Poplicola 5/14/2009.
         public void FlushObjectsBySerial(Serial serial)
         {
             List<MapObject> iObjects = new List<MapObject>();
@@ -95,12 +90,11 @@ namespace UltimaXNA.TileEngine
                     iObjects.Add(iObject);
                 }
                 m_Objects = iObjects;
-                m_NeedsSorting = true;
+                _NeedsSorting = true;
             }
-            m_NeedsSorting = true;
+            _NeedsSorting = true;
         }
 
-        // Poplicola 5/9/2009
         public MapObjectGround GroundTile
         {
             get
@@ -109,19 +103,19 @@ namespace UltimaXNA.TileEngine
             }
 
         }
-        // Poplicola 5/9/2009
+
         private static bool IsGroundTile(object i)
         {
             Type t = typeof(MapObjectGround);
             return t == i.GetType() || i.GetType().IsSubclassOf(t);
         }
-        // Poplicola 5/10/2009
+
         private static bool IsMobile(object i)
         {
             Type t = typeof(MapObjectMobile);
             return t == i.GetType() || i.GetType().IsSubclassOf(t);
         }
-        // Issue 5 - Statics (bridge, stairs, etc) should be walkable - http://code.google.com/p/ultimaxna/issues/detail?id=5 - Smjert
+
         private static bool IsStaticItem(object i)
         {
             Type t = typeof(MapObjectStatic);
@@ -163,29 +157,20 @@ namespace UltimaXNA.TileEngine
             return false;
         }
 
-        public void Add(MapObject item)
+        public void AddMapObject(MapObject item)
         {
             m_Objects.Add(item);
-            m_NeedsSorting = true;
+            _NeedsSorting = true;
+            if (item is MapObjectDeferred)
+                _HasDeferredObjects = true;
         }
 
-        public void Add(MapObject[] items)
+        public void AddMapObject(MapObject[] items)
         {
             for (int i = 0; i < items.Length; i++)
             {
-                Add(items[i]);
+                AddMapObject(items[i]);
             }
-        }
-
-        public List<MapObject> GetSortedObjects()
-        {
-            if (m_NeedsSorting)
-            {
-                removeDuplicateObjects();
-                m_Objects.Sort(TileComparer.Comparer);
-                m_NeedsSorting = false;
-            }
-            return m_Objects;
         }
 
         private void removeDuplicateObjects()
@@ -256,13 +241,35 @@ namespace UltimaXNA.TileEngine
         {
             get
             {
-                return new List<MapObject>(this.GetSortedObjects());
+                if (_NeedsSorting)
+                {
+                    removeDuplicateObjects();
+                    m_Objects.Sort(MapObjectComparer.Comparer);
+                    _NeedsSorting = false;
+                }
+                return m_Objects;
             }
         }
 
         public void Resort()
         {
-            m_NeedsSorting = true;
+            _NeedsSorting = true;
+        }
+
+        public void ClearTemporaryObjects()
+        {
+            if (_HasDeferredObjects)
+            {
+                for (int i = 0; i < m_Objects.Count; i++)
+                    if (m_Objects[i] is MapObjectDeferred)
+                    {
+                        ((MapObjectDeferred)m_Objects[i]).Dispose();
+                        m_Objects.RemoveAt(i);
+                        i--;
+                    }
+                _HasDeferredObjects = false;
+                Resort();
+            }
         }
     }
 }

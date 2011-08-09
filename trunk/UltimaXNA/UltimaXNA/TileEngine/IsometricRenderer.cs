@@ -75,11 +75,18 @@ namespace UltimaXNA.TileEngine
         }
         #endregion
 
-        public Map Map {get; set; }
+        private static Map _map;
+        public Map Map
+        {
+            get { return _map; }
+            set { _map = value; }
+        }
         public int ObjectsRendered { get; internal set; }
         public Position3D CenterPosition { get; set; }
-        private int _maxItemAltitude;
         public static bool DrawTerrain = true;
+        
+        private static List<MapObjectDeferred> _deferredMapObjects = new List<MapObjectDeferred>();
+        private int _maxItemAltitude;
 
         public IsometricRenderer(Game game)
         {
@@ -97,29 +104,6 @@ namespace UltimaXNA.TileEngine
             };
         }
 
-        private void recalculateLightning()
-        {
-            float light = Math.Min(30 - OverallLightning + PersonalLightning, 30f);
-            light = Math.Max(light, 0);
-            light /= 30; // bring it between 0-1
-
-            // -0.3 corresponds pretty well to the darkest possible light in the original client
-            // 0.5 is quite okay for the brightest light.
-            // so we'll just interpolate between those two values
-
-            light *= 0.8f;
-            light -= 0.3f;
-
-            // i'd use a fixed lightning direction for now - maybe enable this effect with a custom packet?
-            Vector3 lightDirection = new Vector3(0f, (float)-Math.Cos(_lightingDirection), (float)Math.Sin(_lightingDirection));
-
-            _spriteBatch.SetLightDirection(lightDirection);
-
-            // again some guesstimated values, but to me it looks okay this way :) 
-            _spriteBatch.SetAmbientLightIntensity(light * 0.8f);
-            _spriteBatch.SetDirectionalLightIntensity(light);
-        }
-
         public void Update(GameTime gameTime)
         {
             if (ClientVars.Map != -1)
@@ -127,12 +111,12 @@ namespace UltimaXNA.TileEngine
                 if ((Map == null) || (Map.Index != ClientVars.Map))
                     Map = new Map(ClientVars.Map);
                 // Update the Map's position so it loads the tiles we're going to be drawing
-                Map.Update(CenterPosition.Draw_TileX, CenterPosition.Draw_TileY);
+                Map.Update(CenterPosition.X, CenterPosition.Y);
 
                 // Are we inside (under a roof)? Do not draw tiles above our head.
                 _maxItemAltitude = 255;
 
-                MapTile t = Map.GetMapTile(CenterPosition.Draw_TileX, CenterPosition.Draw_TileY, true);
+                MapTile t = Map.GetMapTile(CenterPosition.X, CenterPosition.Y, true);
                 if (t != null)
                 {
                     bool isUnderRoof, isUnderTerrain;
@@ -172,19 +156,18 @@ namespace UltimaXNA.TileEngine
             if (ClientVars.IsMinimized)
                 return;
 
-            _spriteBatch.DrawWireframe = ClientVars.DEBUG_DrawWireframe;
-            int RenderBeginX = CenterPosition.Draw_TileX - (ClientVars.RenderSize / 2);
-            int RenderBeginY = CenterPosition.Draw_TileY - (ClientVars.RenderSize / 2);
+            int RenderBeginX = CenterPosition.X - (ClientVars.RenderSize / 2);
+            int RenderBeginY = CenterPosition.Y - (ClientVars.RenderSize / 2);
             int RenderEndX = RenderBeginX + ClientVars.RenderSize;
             int RenderEndY = RenderBeginY + ClientVars.RenderSize;
 
             int renderOffsetX = (ClientVars.BackBufferWidth >> 1) - 22;
-            renderOffsetX -= (int)((CenterPosition.Draw_Xoffset - CenterPosition.Draw_Yoffset) * 22);
+            renderOffsetX -= (int)((CenterPosition.X_offset - CenterPosition.Y_offset) * 22);
             renderOffsetX -= (RenderBeginX - RenderBeginY) * 22;
 
             int renderOffsetY = ((ClientVars.BackBufferHeight - (ClientVars.RenderSize * 44)) >> 1);
-            renderOffsetY += (CenterPosition.Z << 2) + (int)(CenterPosition.Draw_Zoffset * 4);
-            renderOffsetY -= (int)((CenterPosition.Draw_Xoffset + CenterPosition.Draw_Yoffset) * 22);
+            renderOffsetY += (CenterPosition.Z << 2) + (int)(CenterPosition.Z_offset * 4);
+            renderOffsetY -= (int)((CenterPosition.X_offset + CenterPosition.Y_offset) * 22);
             renderOffsetY -= (RenderBeginX + RenderBeginY) * 22;
 
             ObjectsRendered = 0; // Count of objects rendered for statistics and debug
@@ -198,18 +181,23 @@ namespace UltimaXNA.TileEngine
                 drawPosition.X = (ix - RenderBeginY) * 22 + renderOffsetX;
                 drawPosition.Y = (ix + RenderBeginY) * 22 + renderOffsetY;
 
+                deferredMapObjects_Place(ix);
+
+                DrawTerrain = true;
+
                 for (int iy = RenderBeginY; iy < RenderEndY; iy++)
                 {
                     MapTile tile = Map.GetMapTile(ix, iy, true);
                     if (tile == null)
                         continue;
 
-                    mapObjects = tile.GetSortedObjects();
+                    mapObjects = tile.Items;
                     for (int i = 0; i < mapObjects.Count; i++)
                     {
                         if (mapObjects[i].Draw(_spriteBatch, drawPosition, overList, PickType, _maxItemAltitude))
                             ObjectsRendered++;
                     }
+                    tile.ClearTemporaryObjects();
 
                     drawPosition.X -= 22f;
                     drawPosition.Y += 22f;
@@ -218,30 +206,64 @@ namespace UltimaXNA.TileEngine
             // Update the Mouse Over Objects
             _overObject = overList.GetForemostMouseOverItem(_input.MousePosition);
             _overGround = overList.GetForemostMouseOverItem<MapObjectGround>(_input.MousePosition);
+
+            deferredMapObjects_Clear();
         }
 
-        public static Vector2 GetHueVector(int hue)
+        private void recalculateLightning()
         {
-            if (hue == 0)
-                return new Vector2(0);
+            float light = Math.Min(30 - OverallLightning + PersonalLightning, 30f);
+            light = Math.Max(light, 0);
+            light /= 30; // bring it between 0-1
 
-            int hueType = 0;
+            // -0.3 corresponds pretty well to the darkest possible light in the original client
+            // 0.5 is quite okay for the brightest light.
+            // so we'll just interpolate between those two values
 
-            if ((hue & 0x4000) != 0) // transparant
-                hueType = 4;
+            light *= 0.8f;
+            light -= 0.3f;
 
-            hue -= 1;
+            // i'd use a fixed lightning direction for now - maybe enable this effect with a custom packet?
+            Vector3 lightDirection = new Vector3(0f, (float)-Math.Cos(_lightingDirection), (float)Math.Sin(_lightingDirection));
 
-            if ((hue & 0x8000) != 0) // partial hue
+            _spriteBatch.SetLightDirection(lightDirection);
+
+            // again some guesstimated values, but to me it looks okay this way :) 
+            _spriteBatch.SetAmbientLightIntensity(light * 0.8f);
+            _spriteBatch.SetDirectionalLightIntensity(light);
+        }
+
+        public static void AnnounceDeferredMapObject(MapObjectDeferred deferred, bool immediate)
+        {
+            if (immediate)
             {
-                hueType = 2;
+                MapTile tile = _map.GetMapTile(deferred.Position.X, deferred.Position.Y, false);
+                if (tile != null)
+                    tile.AddMapObject(deferred);
             }
             else
-            {
-                hueType = 1;
-            }
+                _deferredMapObjects.Add(deferred);
+        }
 
-            return new Vector2(hue & 0x3FFF, hueType);
+        private void deferredMapObjects_Place(int iTileX)
+        {
+            // were any map objects deferred to draw in this x row?
+            for (int i = 0; i < _deferredMapObjects.Count; i++)
+            {
+                if (_deferredMapObjects[i].Position.X == iTileX)
+                {
+                    MapTile tile = Map.GetMapTile(_deferredMapObjects[i].Position.X, _deferredMapObjects[i].Position.Y, false);
+                    if (tile != null)
+                        tile.AddMapObject(_deferredMapObjects[i]);
+                    _deferredMapObjects.RemoveAt(i);
+                    i--;
+                }
+            }
+        }
+
+        private void deferredMapObjects_Clear()
+        {
+            _deferredMapObjects.Clear();
         }
     }
 }
