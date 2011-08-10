@@ -49,6 +49,7 @@ namespace UltimaXNA.TileEngine
                 return;
             _frame = frame;
             Hue = hue;
+            SortThreshold = 1;
             SortTiebreaker = layer;
             OwnerEntity = ownerEntity;
 
