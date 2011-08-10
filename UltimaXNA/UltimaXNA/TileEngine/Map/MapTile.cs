@@ -21,7 +21,6 @@ using System;
 using System.Collections.Generic;
 using UltimaXNA.Entities;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 #endregion
 
 namespace UltimaXNA.TileEngine
@@ -96,74 +95,13 @@ namespace UltimaXNA.TileEngine
             _NeedsSorting = true;
         }
 
-        internal int Draw(SpriteBatch3D sb, Vector3 drawPosition, MouseOverList molist, PickTypes pickType, int maxAlt)
-        {
-            int renderCount = 0;
-            if (_HasDeferredObjects)
-            {
-                SetupDeferredObjects(drawPosition);
-                for (int i = 0; i < Items.Count; i++)
-                {
-                    if (Items[i].Draw(sb, drawPosition, molist, pickType, maxAlt))
-                        renderCount++;
-                }
-                ClearTemporaryObjects();
-            }
-            else
-            {
-                for (int i = 0; i < Items.Count; i++)
-                    if (Items[i].Draw(sb, drawPosition, molist, pickType, maxAlt))
-                        renderCount++;
-            }
-                
-            
-            return renderCount;
-        }
-
         public MapObjectGround GroundTile
         {
             get
             {
                 return (MapObjectGround)m_Objects.Find(IsGroundTile);
             }
-        }
 
-        public bool HasWallAtZ(int z)
-        {
-            foreach (MapObject i in m_Objects)
-            {
-                if (IsStaticItem(i))
-                {
-                    Data.ItemData data = ((MapObjectStatic)i).ItemData;
-                    if (data.Wall && i.Z + data.Height > z)
-                        return true;
-                }
-            }
-            return false;
-        }
-
-        private static bool IsGroundTile(object i)
-        {
-            Type t = typeof(MapObjectGround);
-            return t == i.GetType() || i.GetType().IsSubclassOf(t);
-        }
-
-        private static bool IsMobile(object i)
-        {
-            Type t = typeof(MapObjectMobile);
-            return t == i.GetType() || i.GetType().IsSubclassOf(t);
-        }
-
-        private static bool IsStaticItem(object i)
-        {
-            Type t = typeof(MapObjectStatic);
-            return t == i.GetType() || i.GetType().IsSubclassOf(t);
-        }
-
-        private static bool IsGOTile(object i)
-        {
-            Type t = typeof(MapObjectItem);
-            return t == i.GetType() || i.GetType().IsSubclassOf(t);
         }
 
         public List<MapObjectStatic> GetStatics()
@@ -199,6 +137,8 @@ namespace UltimaXNA.TileEngine
         {
             m_Objects.Add(item);
             _NeedsSorting = true;
+            if (item is MapObjectDeferred)
+                _HasDeferredObjects = true;
         }
 
         public void AddMapObject(MapObject[] items)
@@ -292,33 +232,44 @@ namespace UltimaXNA.TileEngine
             _NeedsSorting = true;
         }
 
-        public void AddMapObject_Deferred(MapObjectDeferred deferred)
+        public void ClearTemporaryObjects()
         {
-            AddMapObject(deferred);
-            _HasDeferredObjects = true;
-            MapObjectGround ground = GroundTile;
-        }
-
-        private void SetupDeferredObjects(Vector3 drawPosition)
-        {
-            foreach (MapObject deferred in Items)
+            if (_HasDeferredObjects)
             {
-                if (deferred is MapObjectDeferred)
-                {
-                    ((MapObjectDeferred)deferred).Setup_New(drawPosition);
-                }
+                for (int i = 0; i < m_Objects.Count; i++)
+                    if (m_Objects[i] is MapObjectDeferred)
+                    {
+                        ((MapObjectDeferred)m_Objects[i]).Dispose();
+                        m_Objects.RemoveAt(i);
+                        i--;
+                    }
+                _HasDeferredObjects = false;
+                Resort();
             }
         }
 
-        public void ClearTemporaryObjects()
+        private static bool IsGroundTile(object i)
         {
-            for (int i = 0; i < Items.Count; i++)
-                if (Items[i] is MapObjectDeferred)
-                {
-                    Items.RemoveAt(i);
-                    i--;
-                }
-            _HasDeferredObjects = false;
+            Type t = typeof(MapObjectGround);
+            return t == i.GetType() || i.GetType().IsSubclassOf(t);
+        }
+
+        private static bool IsMobile(object i)
+        {
+            Type t = typeof(MapObjectMobile);
+            return t == i.GetType() || i.GetType().IsSubclassOf(t);
+        }
+
+        private static bool IsStaticItem(object i)
+        {
+            Type t = typeof(MapObjectStatic);
+            return t == i.GetType() || i.GetType().IsSubclassOf(t);
+        }
+
+        private static bool IsGOTile(object i)
+        {
+            Type t = typeof(MapObjectItem);
+            return t == i.GetType() || i.GetType().IsSubclassOf(t);
         }
     }
 }

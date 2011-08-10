@@ -1,4 +1,19 @@
-﻿using System;
+﻿/***************************************************************************
+ *   TileComparer.cs
+ *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
+ *   Based on code from ClintXNA's renderer: http://www.runuo.com/forums/xna/92023-hi.html
+ *  
+ ***************************************************************************/
+
+/***************************************************************************
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,103 +25,27 @@ namespace UltimaXNA.TileEngine
 {
     public class MapObjectDeferred : MapObject
     {
-        private VertexPositionNormalTextureHue[] _verticesParent;
-        private VertexPositionNormalTextureHue[] _verticesMine;
-        private MapObject _parent;
-        public MapObjectDeferred(MapObject parent, VertexPositionNormalTextureHue[] verts)
-            : base(parent.Position)
+        private Texture2D _texture;
+        public VertexPositionNormalTextureHue[] Vertices;
+        public MapObjectDeferred(Texture2D texture, MapObject parent)
+            : base(new Position3D(parent.Position.X, parent.Position.Y, parent.Position.Z))
         {
-            _parent = parent;
-            _verticesParent = getVerticesFromBuffer();
-            _verticesMine = getVerticesFromBuffer();
-            for (int i = 0; i < 4; i++)
-                _verticesParent[i] = verts[i];
+            _texture = texture;
+            Vertices = getVerticesFromBuffer();
+            SortZ = parent.SortZ;
+            SortThreshold = parent.SortThreshold;
+            SortTiebreaker = parent.SortTiebreaker;
         }
 
         internal override bool Draw(SpriteBatch3D sb, Vector3 drawPosition, MouseOverList molist, PickTypes pickType, int maxAlt)
         {
-            // We need to map these ... to this.
-            //  0---1     2   0            0
-            //     /      |\  |           / \
-            //   /        |  \|          2---1
-            //  2---3     3   1           \ /
-            // (normal) (flipped)          3
-
-            if (_parent._draw_flip)
-                for (int i = 0; i < 4; i++)
-                    _verticesMine[i].TextureCoordinate.X = 1f - _verticesMine[i].TextureCoordinate.X;
-            _verticesMine[0].Normal = _verticesMine[1].Normal = _verticesMine[2].Normal = _verticesMine[3].Normal = _verticesParent[0].Normal;
-            _verticesMine[0].Hue = _verticesMine[1].Hue = _verticesMine[2].Hue = _verticesMine[3].Hue = _verticesParent[0].Hue;
-            sb.Draw(_parent._draw_texture, _verticesMine);
+            sb.Draw(_texture, Vertices);
             return false;
-        }
-
-        public void Setup_New(Vector3 drawPosition)
-        {
-            // Parent vertices ...
-            //  0---1     2   0     
-            //     /      |\  |    
-            //   /        |  \|     
-            //  2---3     3   1   
-            // (normal) (flipped) 
-            
-            _verticesMine[0].Normal = _verticesMine[1].Normal = _verticesMine[2].Normal = _verticesMine[3].Normal = _verticesParent[0].Normal;
-            _verticesMine[0].Hue = _verticesMine[1].Hue = _verticesMine[2].Hue = _verticesMine[3].Hue = _verticesParent[0].Hue;
-
-            _verticesMine[0].Position = new Vector3(drawPosition.X, _verticesParent[0].Position.Y, 0f);
-            _verticesMine[1].Position = new Vector3(drawPosition.X + 44, _verticesParent[0].Position.Y, 0f);
-            _verticesMine[2].Position = new Vector3(drawPosition.X, _verticesParent[3].Position.Y, 0f);
-            _verticesMine[3].Position = new Vector3(drawPosition.X + 44, _verticesParent[3].Position.Y, 0f);
-
-            float uLeft, uRight;
-            if (_parent._draw_flip)
-            {
-                uLeft = (_verticesMine[0].Position.X - _verticesParent[2].Position.X) / _parent._draw_width;
-                uRight = (_verticesMine[1].Position.X - _verticesParent[2].Position.X) / _parent._draw_width;
-            }
-            else
-            {
-                uLeft = (_verticesMine[0].Position.X - _verticesParent[2].Position.X) / _parent._draw_width;
-                uRight = (_verticesMine[1].Position.X - _verticesParent[2].Position.X) / _parent._draw_width;
-            }
-
-            _verticesMine[0].TextureCoordinate = new Vector3(uLeft, 0f, 0f);
-            _verticesMine[1].TextureCoordinate = new Vector3(uRight, 0f, 0f);
-            _verticesMine[2].TextureCoordinate = new Vector3(uLeft, 1f, 0f);
-            _verticesMine[3].TextureCoordinate = new Vector3(uRight, 1f, 0f);
-
-            /*for (int i = 0; i < 4; i++)
-                _verticesMine[i].TextureCoordinate = new Vector3(.5f, .5f, 0f);*/
-        }
-
-        public void Setup(VertexPositionNormalTextureHue[] verts)
-        {
-            SortZ = _parent.SortZ;
-            SortThreshold = _parent.SortThreshold;
-            SortTiebreaker = _parent.SortTiebreaker;
-
-            for (int i = 0; i < 4; i++)
-                _verticesMine[i] = verts[i];
-
-            Vector3 tlOrigin = (_parent._draw_flip) ? _verticesParent[2].Position : _verticesParent[0].Position;
-            _verticesMine[0].TextureCoordinate = new Vector3(
-                (verts[0].Position.X - tlOrigin.X) / _parent._draw_texture.Width,
-                (verts[0].Position.Y - tlOrigin.Y) / _parent._draw_texture.Height, 0);
-            _verticesMine[1].TextureCoordinate = new Vector3(
-                (verts[1].Position.X - tlOrigin.X) / _parent._draw_texture.Width,
-                (verts[1].Position.Y - tlOrigin.Y) / _parent._draw_texture.Height, 0);
-            _verticesMine[2].TextureCoordinate = new Vector3(
-                (verts[2].Position.X - tlOrigin.X) / _parent._draw_texture.Width,
-                (verts[2].Position.Y - tlOrigin.Y) / _parent._draw_texture.Height, 0);
-            _verticesMine[3].TextureCoordinate = new Vector3(
-                (verts[3].Position.X - tlOrigin.X) / _parent._draw_texture.Width,
-                (verts[3].Position.Y - tlOrigin.Y) / _parent._draw_texture.Height, 0);
         }
 
         public void Dispose()
         {
-            releaseVerticesToBuffer(_verticesParent);
-            releaseVerticesToBuffer(_verticesMine);
+            releaseVerticesToBuffer(Vertices);
         }
 
         public override string ToString()

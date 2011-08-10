@@ -3,9 +3,7 @@
  *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   Based on code from ClintXNA's renderer: http://www.runuo.com/forums/xna/92023-hi.html
  *   
- *   begin                : May 31, 2009
- *   email                : poplicola@ultimaxna.com
- *
+ * 
  ***************************************************************************/
 
 /***************************************************************************
@@ -49,7 +47,6 @@ namespace UltimaXNA.TileEngine
                 return;
             _frame = frame;
             Hue = hue;
-            SortThreshold = 1;
             SortTiebreaker = layer;
             OwnerEntity = ownerEntity;
 
