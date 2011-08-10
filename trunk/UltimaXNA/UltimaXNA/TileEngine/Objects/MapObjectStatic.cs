@@ -3,9 +3,6 @@
  *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   Based on code from ClintXNA's renderer: http://www.runuo.com/forums/xna/92023-hi.html
  *   
- *   begin                : May 31, 2009
- *   email                : poplicola@ultimaxna.com
- *
  ***************************************************************************/
 
 /***************************************************************************
@@ -27,28 +24,29 @@ namespace UltimaXNA.TileEngine
     {
         bool _noDraw = false;
         public bool NoDraw
-        {  get { return (_noDraw); } }
-        public Data.ItemData ItemData;
+        {
+            get { return (_noDraw); }
+        }
 
         public MapObjectStatic(int staticTileID, int sortInfluence, Position3D position)
             : base(position)
         {
             ItemID = staticTileID;
-            ItemData = Data.TileData.ItemData[ItemID & 0x3FFF];
+            SortTiebreaker = sortInfluence;
+            
+            // Set threshold.
+            Data.ItemData itemData = Data.TileData.ItemData[ItemID & 0x3FFF];
+            int background = (itemData.Background) ? 0 : 1;
+            if (!itemData.Background)
+                SortThreshold++;
+            if (!(itemData.Height == 0))
+                SortThreshold++;
+            if (itemData.Surface)
+                SortThreshold--;
 
             // get no draw flag
-            if (ItemData.Name == "nodraw" || ItemID <= 0)
+            if (itemData.Name == "nodraw" || ItemID <= 0)
                 _noDraw = true;
-
-            // Set sorting threshholds.
-            int background = (ItemData.Background) ? 0 : 1;
-            if (!ItemData.Background)
-                SortThreshold++;
-            if (!(ItemData.Height == 0))
-                SortThreshold++;
-            if (ItemData.Surface)
-                SortThreshold--;
-            SortTiebreaker = sortInfluence;
 
             // set up draw variables
             _draw_texture = Data.Art.GetStaticTexture(ItemID);
@@ -70,7 +68,7 @@ namespace UltimaXNA.TileEngine
 
         public override string ToString()
         {
-            return string.Format("Static@:{0},{1},{2}, ItemID:{3}", Z, Position.X, Position.Y, ItemID);
+            return string.Format("Static Z:{0}, ItemID:{1}", Z, ItemID);
         }
     }
 }

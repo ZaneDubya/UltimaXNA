@@ -160,6 +160,8 @@ namespace UltimaXNA.TileEngine
             if (ClientVars.IsMinimized)
                 return;
 
+            // ClientVars.RenderSize = 3;
+
             int RenderBeginX = CenterPosition.X - (ClientVars.RenderSize / 2);
             int RenderBeginY = CenterPosition.Y - (ClientVars.RenderSize / 2);
             int RenderEndX = RenderBeginX + ClientVars.RenderSize;
@@ -177,6 +179,7 @@ namespace UltimaXNA.TileEngine
             ObjectsRendered = 0; // Count of objects rendered for statistics and debug
             MouseOverList overList = new MouseOverList(); // List of items for mouse over
             overList.MousePosition = _input.MousePosition;
+            List<MapObject> mapObjects;
             Vector3 drawPosition = new Vector3();
 
             for (int ix = RenderBeginX; ix < RenderEndX; ix++)
@@ -184,17 +187,21 @@ namespace UltimaXNA.TileEngine
                 drawPosition.X = (ix - RenderBeginY) * 22 + renderOffsetX;
                 drawPosition.Y = (ix + RenderBeginY) * 22 + renderOffsetY;
 
-                // deferredMapObjects_Place(ix);
-
                 DrawTerrain = true;
 
                 for (int iy = RenderBeginY; iy < RenderEndY; iy++)
                 {
                     MapTile tile = Map.GetMapTile(ix, iy, true);
-                    if (tile != null)
+                    if (tile == null)
+                        continue;
+
+                    mapObjects = tile.Items;
+                    for (int i = 0; i < mapObjects.Count; i++)
                     {
-                        tile.Draw(_spriteBatch, drawPosition, overList, PickType, _maxItemAltitude);
+                        if (mapObjects[i].Draw(_spriteBatch, drawPosition, overList, PickType, _maxItemAltitude))
+                            ObjectsRendered++;
                     }
+                    tile.ClearTemporaryObjects();
 
                     drawPosition.X -= 22f;
                     drawPosition.Y += 22f;
@@ -203,8 +210,6 @@ namespace UltimaXNA.TileEngine
             // Update the Mouse Over Objects
             _overObject = overList.GetForemostMouseOverItem(_input.MousePosition);
             _overGround = overList.GetForemostMouseOverItem<MapObjectGround>(_input.MousePosition);
-
-            // deferredMapObjects_Clear();
         }
 
         private void recalculateLightning()
@@ -229,38 +234,5 @@ namespace UltimaXNA.TileEngine
             _spriteBatch.SetAmbientLightIntensity(light * 0.8f);
             _spriteBatch.SetDirectionalLightIntensity(light);
         }
-
-        /*public static void AnnounceDeferredMapObject(MapObjectDeferred deferred, bool immediate)
-        {
-            if (immediate)
-            {
-                MapTile tile = _map.GetMapTile(deferred.Position.X, deferred.Position.Y, false);
-                if (tile != null)
-                    tile.AddMapObject(deferred);
-            }
-            else
-                _deferredMapObjects.Add(deferred);
-        }
-
-        private void deferredMapObjects_Place(int iTileX)
-        {
-            // were any map objects deferred to draw in this x row?
-            for (int i = 0; i < _deferredMapObjects.Count; i++)
-            {
-                if (_deferredMapObjects[i].Position.X == iTileX)
-                {
-                    MapTile tile = Map.GetMapTile(_deferredMapObjects[i].Position.X, _deferredMapObjects[i].Position.Y, false);
-                    if (tile != null)
-                        tile.AddMapObject(_deferredMapObjects[i]);
-                    _deferredMapObjects.RemoveAt(i);
-                    i--;
-                }
-            }
-        }
-
-        private void deferredMapObjects_Clear()
-        {
-            _deferredMapObjects.Clear();
-        }*/
     }
 }

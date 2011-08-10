@@ -57,7 +57,9 @@ float4 PixelShaderFunction(PS_INPUT IN) : COLOR0
 		color.a = 0;
 	
 	if (color.a == 0)
-	 	discard;
+	{
+		discard;
+	}
 
 	// do lighting
 	if (DrawLighting)

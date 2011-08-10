@@ -2,10 +2,7 @@
  *   TileComparer.cs
  *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   Based on code from ClintXNA's renderer: http://www.runuo.com/forums/xna/92023-hi.html
- *   
- *   begin                : May 31, 2009
- *   email                : poplicola@ultimaxna.com
- *
+ *  
  ***************************************************************************/
 
 /***************************************************************************
