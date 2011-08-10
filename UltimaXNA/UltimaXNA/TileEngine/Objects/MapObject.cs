@@ -45,6 +45,7 @@ namespace UltimaXNA.TileEngine
         internal Texture2D _draw_texture;
         internal PickTypes _pickType;
         internal bool _draw_IsometricOverlap = false; // if this is true, we will draw any corners that are overlapped by tiles drawn after this object.
+        public int DrawHeight { get { return _draw_height; } }
 
         internal virtual bool Draw(SpriteBatch3D sb, Vector3 drawPosition, MouseOverList molist, PickTypes pickType, int maxAlt)
         {
@@ -97,6 +98,7 @@ namespace UltimaXNA.TileEngine
             if (vertexBuffer[0].Hue != _draw_hue)
                 vertexBuffer[0].Hue = vertexBuffer[1].Hue = vertexBuffer[2].Hue = vertexBuffer[3].Hue = _draw_hue;
             
+            // if (!(this is MapObjectMobile))
             if (!sb.Draw(_draw_texture, vertexBuffer))
             {
                 return false;
@@ -104,7 +106,7 @@ namespace UltimaXNA.TileEngine
             
             if (_draw_IsometricOverlap)
             {
-                drawIsometricOverlap(sb, vertexBuffer, new Vector2(drawPosition.X, drawPosition.Y - (Z << 2)));
+                drawIsometricOverlap(vertexBuffer, new Vector2(drawPosition.X, drawPosition.Y - (Z << 2)), _draw_texture, _draw_flip);
             }
             
             if ((pickType & _pickType) == _pickType)
@@ -130,185 +132,56 @@ namespace UltimaXNA.TileEngine
             return true;
         }
 
-        /// <summary>
-        /// drawIsometricOverlap will create deferred objects that will be drawn in places where a MapObject
-        /// might be overlapped by subsequently drawn objects in the world. NOTE that the vertices of the
-        /// deferred objects created by this routine are NOT perfect - they may have UV coords that are greater
-        /// than 1.0f or less than 0.0f. This would create graphical artifacts, but we rely on our HLSL shader
-        /// to ignore these.
-        /// </summary>
-        /// <param name="sb">The SpriteBatch3D instance passed to the calling Draw() routine.</param>
-        /// <param name="vertices">The Vertices that were drawn by the calling MapObject.</param>
-        /// <param name="drawPosition">The upper-left hand corner of the tile where the calling MapObject was drawn.</param>
-        private void drawIsometricOverlap(SpriteBatch3D sb, VertexPositionNormalTextureHue[] vertices, Vector2 screenPosition)
+        private void drawIsometricOverlap(VertexPositionNormalTextureHue[] vertices, Vector2 screenPosition, Texture2D texture, bool flip)
         {
-            Vector2 overlapCurrent = new Vector2(screenPosition.X + 22, screenPosition.Y + 44);
-            Vector2 overlapToHere = _draw_flip ? 
-                new Vector2(vertices[1].Position.X, vertices[1].Position.Y) : 
-                new Vector2(vertices[3].Position.X, vertices[3].Position.Y);
-
-            int tileX, tileY;
-            MapTile tile;
-            MapObjectDeferred deferred;
-            VertexPositionNormalTextureHue[] verts;
-            
-            if (overlapToHere.Y > (overlapCurrent.Y - 22))
+            int startX, endX, endXalternative;
+            if (flip)
             {
-                tileX = _position.X;
-                tileY = _position.Y + (int)Math.Ceiling((overlapToHere.Y - (overlapCurrent.Y - 22)) / 22f);
-
-                // Get the tile associated with this (x, y) position. If the tile is not loaded, don't add a deferred object
-                // (it'll be offscreen so it doesn't matter).
-                tile = IsometricRenderer.InternalMap.GetMapTile(tileX, tileY, false);
-                if (tile != null)
-                {
-                    deferred = new MapObjectDeferred(_draw_texture, this);
-                    deferred.Position.X = tileX;
-                    deferred.Position.Y = tileY;
-                    verts = deferred.Vertices;
-
-                    if (_draw_flip)
-                    {
-                        //     0
-                        //    / \
-                        //   /   1
-                        //  /   /
-                        // 2---3
-                        verts[0].Position = new Vector3(overlapCurrent, 0) + new Vector3(-22, -22, 0);
-                        verts[0].TextureCoordinate = new Vector3((overlapToHere.X - verts[0].Position.X) / _draw_texture.Width, 1f - (overlapToHere.Y - verts[0].Position.Y) / _draw_texture.Height, 0);
-                        verts[1].Position = new Vector3(overlapCurrent, 0);
-                        verts[1].TextureCoordinate = new Vector3((overlapToHere.X - verts[1].Position.X) / _draw_texture.Width, 1f - (overlapToHere.Y - verts[1].Position.Y) / _draw_texture.Height, 0);
-                        verts[2].Position = new Vector3(verts[0].Position.X - (overlapToHere.Y - verts[0].Position.Y), overlapToHere.Y, 0);
-                        verts[2].TextureCoordinate = new Vector3((overlapToHere.X - verts[2].Position.X) / _draw_texture.Width, 1f - (overlapToHere.Y - verts[2].Position.Y) / _draw_texture.Height, 0);
-                        verts[3].Position = new Vector3(verts[1].Position.X - (overlapToHere.Y - verts[1].Position.Y), overlapToHere.Y, 0);
-                        verts[3].TextureCoordinate = new Vector3((overlapToHere.X - verts[3].Position.X) / _draw_texture.Width, 1f - (overlapToHere.Y - verts[3].Position.Y) / _draw_texture.Height, 0);
-                    }
-                    else
-                    {
-                        //     1
-                        //    / \
-                        //   /   3
-                        //  /   /
-                        // 0---2
-                        verts[1].Position = new Vector3(overlapCurrent, 0) + new Vector3(-22, -22, 0);
-                        verts[1].TextureCoordinate = new Vector3(1f - (overlapToHere.X - verts[1].Position.X) / _draw_texture.Width, 1f - (overlapToHere.Y - verts[1].Position.Y) / _draw_texture.Height, 0);
-                        verts[3].Position = new Vector3(overlapCurrent, 0);
-                        verts[3].TextureCoordinate = new Vector3(1f - (overlapToHere.X - verts[3].Position.X) / _draw_texture.Width, 1f - (overlapToHere.Y - verts[3].Position.Y) / _draw_texture.Height, 0);
-                        verts[0].Position = new Vector3(verts[1].Position.X - (overlapToHere.Y - verts[1].Position.Y), overlapToHere.Y, 0);
-                        verts[0].TextureCoordinate = new Vector3(1f - (overlapToHere.X - verts[0].Position.X) / _draw_texture.Width, 1f - (overlapToHere.Y - verts[0].Position.Y) / _draw_texture.Height, 0);
-                        verts[2].Position = new Vector3(verts[3].Position.X - (overlapToHere.Y - verts[3].Position.Y), overlapToHere.Y, 0);
-                        verts[2].TextureCoordinate = new Vector3(1f - (overlapToHere.X - verts[2].Position.X) / _draw_texture.Width, 1f - (overlapToHere.Y - verts[2].Position.Y) / _draw_texture.Height, 0);
-                    }
-
-                    verts[0].Normal = verts[1].Normal = verts[2].Normal = verts[3].Normal = vertices[0].Normal;
-                    verts[0].Hue = verts[1].Hue = verts[2].Hue = verts[3].Hue = vertices[0].Hue;
-
-                    tile.AddMapObject(deferred);
-                }
+                startX = (int)Math.Ceiling((screenPosition.X - vertices[2].Position.X) / 22);
+                endX = (int)Math.Ceiling((_draw_X - 22) / 22f);
+                endXalternative = 0;
+            }
+            else
+            {
+                startX = (int)Math.Ceiling((screenPosition.X - vertices[0].Position.X) / 22);
+                endX = (int)Math.Ceiling((vertices[1].Position.X - vertices[0].Position.X - 44 - _draw_X) / 22f);
+                endXalternative = (int)Math.Ceiling((_draw_height - (_draw_Y - 44)) / 22f);
             }
 
-            // reset the tile position for the upcoming loop.
-            tileX = _position.X;
-            tileY = _position.Y;
+            if (endXalternative > endX)
+                endX = endXalternative;
 
-            while (true)
+            int x = 0;
+            for (int y = 1; y <= (startX + x + 1); y++)
             {
-                // We are drawing each subsequent deferred object at (x+1, y+1) relative to the last one.
-                tileX += 1;
-                tileY += 1;
-
-                // Get the tile associated with this (x, y) position. If the tile is not loaded, don't add a deferred object
-                // (it'll be offscreen so it doesn't matter).
-                tile = IsometricRenderer.InternalMap.GetMapTile(tileX, tileY, false);
-                if (tile == null)
-                    break;
-
-                // find the vertical and            |
-                // horizontal edges that            | <- V
-                // we are drawing to.    H -> ------+
-                Vector3 verticalEdgeOverlapPt = new Vector3(overlapToHere.X, overlapCurrent.Y - (overlapToHere.X - overlapCurrent.X), 0);
-                Vector3 horizEdgeOverlapPt = new Vector3(overlapCurrent.X - (overlapToHere.Y - overlapCurrent.Y), overlapToHere.Y, 0);
-                if (horizEdgeOverlapPt.X > overlapToHere.X && verticalEdgeOverlapPt.Y > overlapToHere.Y)
-                    break;
-
-                float extendX = overlapToHere.X - horizEdgeOverlapPt.X;
-                if (extendX > 44)
-                    extendX = 44;
-                float extendY = overlapToHere.Y - verticalEdgeOverlapPt.Y;
-                if (extendY > 44)
-                    extendY = 44;
-
-                deferred = new MapObjectDeferred(_draw_texture, this);
-                deferred.Position.X = tileX;
-                deferred.Position.Y = tileY;
-                verts = deferred.Vertices;
-
-                if (_draw_flip)
+                MapTile tile = IsometricRenderer.InternalMap.GetMapTile(_position.X + x, _position.Y + y, false);
+                if (tile != null)
                 {
-                    //       0
-                    //      /|
-                    //    /  1
-                    //  /   /
-                    // 2---3
-                    verts[0].Position = verticalEdgeOverlapPt;
-                    verts[0].TextureCoordinate = new Vector3(0f, (verts[0].Position.Y - vertices[0].Position.Y) / _draw_texture.Height, 0);
-                    verts[1].Position = verticalEdgeOverlapPt + new Vector3(0, extendY, 0);
-                    verts[1].TextureCoordinate = new Vector3(0f, (verts[1].Position.Y - vertices[0].Position.Y) / _draw_texture.Height, 0);
-                    verts[2].Position = horizEdgeOverlapPt;
-                    verts[2].TextureCoordinate = new Vector3(1f - (verts[2].Position.X - vertices[2].Position.X) / _draw_texture.Width, 1f, 0);
-                    verts[3].Position = horizEdgeOverlapPt + new Vector3(extendX, 0, 0);
-                    verts[3].TextureCoordinate = new Vector3(1f - (verts[3].Position.X - vertices[2].Position.X) / _draw_texture.Width, 1f, 0);
+                    if (tile.HasWallAtZ(Z))
+                        break;
+                    else
+                    {
+                        MapObjectDeferred deferred = new MapObjectDeferred(this, vertices);
+                        tile.AddMapObject_Deferred(deferred);
+                    }
                 }
-                else
+            }
+            
+            for (x = 1; x <= endX; x++)
+            {
+                int yBounds = (endX + 1 - x);
+                for (int y = -yBounds; y <= yBounds; y++)
                 {
-                    //       1
-                    //      /|
-                    //    /  3
-                    //  /   /
-                    // 0---2
-                    verts[0].Position = horizEdgeOverlapPt;
-                    verts[0].TextureCoordinate = new Vector3((verts[0].Position.X - vertices[0].Position.X) / _draw_texture.Width, 1, 0);
-                    verts[1].Position = verticalEdgeOverlapPt;
-                    verts[1].TextureCoordinate = new Vector3(1, (verts[1].Position.Y - vertices[1].Position.Y) / _draw_texture.Height, 0);
-                    verts[2].Position = horizEdgeOverlapPt + new Vector3(extendX, 0, 0);
-                    verts[2].TextureCoordinate = new Vector3((verts[2].Position.X - vertices[0].Position.X) / _draw_texture.Width, 1, 0);
-                    verts[3].Position = verticalEdgeOverlapPt + new Vector3(0, extendY, 0);
-                    verts[3].TextureCoordinate = new Vector3(1, (verts[3].Position.Y - vertices[1].Position.Y) / _draw_texture.Height, 0);
+                    MapTile tile = IsometricRenderer.InternalMap.GetMapTile(_position.X + x, _position.Y + y, false);
+                    if (tile.HasWallAtZ(Z))
+                        break;
+                    if (tile != null)
+                    {
+                        MapObjectDeferred deferred = new MapObjectDeferred(this, vertices);
+                        tile.AddMapObject_Deferred(deferred);
+                    }
                 }
-
-                verts[0].Normal = verts[1].Normal = verts[2].Normal = verts[3].Normal = vertices[0].Normal;
-                verts[0].Hue = verts[1].Hue = verts[2].Hue = verts[3].Hue = vertices[0].Hue;
-
-                overlapCurrent.X += 22;
-                overlapCurrent.Y += 22;
-
-                tile.AddMapObject(deferred);
             }
         }
     }
 }
-
-/*if (overlapX)
-{
-    if (overlapY)
-    {
-        overlapCurrent.X += 22;
-        overlapCurrent.Y += 22;
-        tileX += 1;
-    }
-    else
-    {
-        overlapCurrent.X += 44;
-        tileX += 1;
-        // tileY -= 1;
-    }
-}
-else
-{
-    if (overlapY)
-    {
-        overlapCurrent.Y += 44;
-        tileX += 1;
-        tileY += 1;
-    }
-}*/

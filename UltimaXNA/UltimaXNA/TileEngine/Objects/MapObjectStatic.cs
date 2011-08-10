@@ -27,29 +27,28 @@ namespace UltimaXNA.TileEngine
     {
         bool _noDraw = false;
         public bool NoDraw
-        {
-            get { return (_noDraw); }
-        }
+        {  get { return (_noDraw); } }
+        public Data.ItemData ItemData;
 
         public MapObjectStatic(int staticTileID, int sortInfluence, Position3D position)
             : base(position)
         {
             ItemID = staticTileID;
-            SortTiebreaker = sortInfluence;
-            
-            // Set threshold.
-            Data.ItemData itemData = Data.TileData.ItemData[ItemID & 0x3FFF];
-            int background = (itemData.Background) ? 0 : 1;
-            if (!itemData.Background)
-                SortThreshold++;
-            if (!(itemData.Height == 0))
-                SortThreshold++;
-            if (itemData.Surface)
-                SortThreshold--;
+            ItemData = Data.TileData.ItemData[ItemID & 0x3FFF];
 
             // get no draw flag
-            if (itemData.Name == "nodraw" || ItemID <= 0)
+            if (ItemData.Name == "nodraw" || ItemID <= 0)
                 _noDraw = true;
+
+            // Set sorting threshholds.
+            int background = (ItemData.Background) ? 0 : 1;
+            if (!ItemData.Background)
+                SortThreshold++;
+            if (!(ItemData.Height == 0))
+                SortThreshold++;
+            if (ItemData.Surface)
+                SortThreshold--;
+            SortTiebreaker = sortInfluence;
 
             // set up draw variables
             _draw_texture = Data.Art.GetStaticTexture(ItemID);
@@ -71,7 +70,7 @@ namespace UltimaXNA.TileEngine
 
         public override string ToString()
         {
-            return string.Format("Static Z:{0}, ItemID:{1}", Z, ItemID);
+            return string.Format("Static@:{0},{1},{2}, ItemID:{3}", Z, Position.X, Position.Y, ItemID);
         }
     }
 }
