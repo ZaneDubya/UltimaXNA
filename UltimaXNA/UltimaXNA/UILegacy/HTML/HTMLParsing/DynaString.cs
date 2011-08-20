@@ -43,7 +43,7 @@ using System;
 using System.Text;
 using System.Collections;
 
-namespace UltimaXNA.HTML
+namespace UltimaXNA.UILegacy.HTML.Parsing
 {
 	/// <summary>
 	/// Class for fast dynamic string building - it is faster than StringBuilder
