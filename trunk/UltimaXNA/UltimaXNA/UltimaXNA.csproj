@@ -259,7 +259,7 @@
     <Compile Include="Engine\ClientVars.cs" />
     <Compile Include="Support\GumpExporter.cs" />
     <Compile Include="UILegacy\HTML\HTMLRegions.cs" />
-    <Compile Include="UILegacy\HTML\HTMLParserAtom.cs" />
+    <Compile Include="UILegacy\HTML\HTMLParserAtoms.cs" />
     <Compile Include="UILegacy\HTML\HTMLEnums.cs" />
     <Compile Include="UILegacy\HTML\HTMLImages.cs" />
     <Compile Include="UILegacy\HTML\HTMLParser.cs" />
