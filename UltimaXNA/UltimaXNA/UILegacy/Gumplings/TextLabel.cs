@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using UltimaXNA.Graphics;
 
 namespace UltimaXNA.UILegacy.Gumplings
 {
@@ -8,7 +9,7 @@ namespace UltimaXNA.UILegacy.Gumplings
     {
         public int Hue = 0;
         public string Text = string.Empty;
-        TextRenderer _textRenderer = new TextRenderer();
+        TextRenderer _textRenderer;
 
         public TextLabel(Control owner, int page)
             : base(owner, page)
@@ -38,22 +39,18 @@ namespace UltimaXNA.UILegacy.Gumplings
             Position = new Point2D(x, y);
             Hue = hue;
             Text = text;
+            _textRenderer = new TextRenderer(Text, 0, true);
+            _textRenderer.Hue = Hue;
         }
 
         public override void Update(GameTime gameTime)
         {
-            _textRenderer.RenderText(Text, true);
-            if (_textRenderer.Texture == null)
-            {
-                _textRenderer.RenderText(Text, true);
-                Size = new Point2D(_textRenderer.Texture.Width, _textRenderer.Texture.Height);
-            }
             base.Update(gameTime);
         }
 
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
-            spriteBatch.Draw2D(_textRenderer.Texture, Position, Hue, false, false);
+            _textRenderer.Draw(spriteBatch, Position);
             base.Draw(spriteBatch);
         }
     }

@@ -24,7 +24,7 @@ using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.TileEngine;
 #endregion
 
-namespace UltimaXNA
+namespace UltimaXNA.Graphics
 {
     public class SpriteBatch3D : GameComponent
     {
@@ -49,7 +49,7 @@ namespace UltimaXNA
             _drawQueue = new Dictionary<Texture2D, List<VertexPositionNormalTextureHue>>(256);
             _indexBuffer = CreateIndexBuffer(0x1000);
             _vertexListQueue = new Queue<List<VertexPositionNormalTextureHue>>(256);
-            _effect = this.Game.Content.Load<Effect>("Shaders/Basic");
+            _effect = this.Game.Content.Load<Effect>("Shaders/IsometricWorld");
         }
 
         public bool DrawSimple(Texture2D texture, Vector3 position, Vector2 hue)
@@ -83,8 +83,8 @@ namespace UltimaXNA
 
         public bool DrawSimple(Texture2D texture, Rectangle destRect, Rectangle sourceRect, Vector2 hue)
         {
-            float minX = (float)sourceRect.X / (float)texture.Width, maxX = (float)sourceRect.Width / (float)texture.Width;
-            float minY = (float)sourceRect.Y / (float)texture.Height, maxY = (float)sourceRect.Height / (float)texture.Height;
+            float minX = (float)sourceRect.X / (float)texture.Width, maxX = (float)(sourceRect.X + sourceRect.Width) / (float)texture.Width;
+            float minY = (float)sourceRect.Y / (float)texture.Height, maxY = (float)(sourceRect.Y + sourceRect.Height) / (float)texture.Height;
 
             VertexPositionNormalTextureHue[] v = new VertexPositionNormalTextureHue[] {
                 new VertexPositionNormalTextureHue(new Vector3(destRect.X, destRect.Y, 0), new Vector3(0, 0, 1), new Vector3(minX, minY, 0)),
@@ -212,8 +212,8 @@ namespace UltimaXNA
 
             _effect.Parameters["DrawLighting"].SetValue(doLighting);
 
-            _effect.Parameters["ProjectionMatrix"].SetValue(ProjectionMatrixScreen);
-            _effect.Parameters["WorldMatrix"].SetValue(Matrix.Identity);
+            _effect.Parameters["ProjectionMatrix"].SetValue(Utility.ProjectionMatrixScreen);
+            _effect.Parameters["WorldMatrix"].SetValue(Utility.ProjectionMatrixWorld);
             _effect.Parameters["Viewport"].SetValue(new Vector2(Game.GraphicsDevice.Viewport.Width, Game.GraphicsDevice.Viewport.Height));
 
             while (keyValuePairs.MoveNext())
@@ -244,11 +244,6 @@ namespace UltimaXNA
 		{
 				_effect.Parameters["lightIntensity"].SetValue ( intensity );
 		}
-
-        public Matrix ProjectionMatrixScreen
-        {
-            get { return Matrix.CreateOrthographicOffCenter(0, Game.GraphicsDevice.Viewport.Width, Game.GraphicsDevice.Viewport.Height, 0f, Int16.MinValue, Int16.MaxValue); }
-        }
 
         private short[] CreateIndexBuffer(int primitiveCount)
         {

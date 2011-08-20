@@ -28,7 +28,6 @@ namespace UltimaXNA.Network
 {
     public class ClientNetwork : IClientNetwork
     {
-        ILoggingService _log;
         IDecompression _decompression;
 
         Socket _serverSocket;
@@ -45,7 +44,7 @@ namespace UltimaXNA.Network
 
         bool _isDecompressionEnabled;
         bool _isConnected;
-        bool _logPackets;
+        bool _loggingPackets;
         bool _appendNextMessage = false;
 
         byte[] _receiveBuffer;
@@ -93,13 +92,12 @@ namespace UltimaXNA.Network
 
         public bool LogPackets
         {
-            get { return _logPackets; }
-            set { _logPackets = value; }
+            get { return _loggingPackets; }
+            set { _loggingPackets = value; }
         }
 
         public ClientNetwork()
         {
-            this._log = new Logger(typeof(ClientNetwork));
             this._decompression = new HuffmanDecompression();
             this._isDecompressionEnabled = false;
 
@@ -127,7 +125,7 @@ namespace UltimaXNA.Network
                 throw new NetworkException(string.Format("Unable to register packet id {0:X2} because it is greater than byte.MaxValue", id));
             }
 
-            // _log.Debug("Register id: 0x{0:X2} Name: {1} Length: {2}", id, name, length);
+            // Logger.Debug("Register id: 0x{0:X2} Name: {1} Length: {2}", id, name, length);
 
             packetLengths[id] = length;
             PacketHandler handler = new PacketHandler(id, name, length, onReceive);
@@ -157,7 +155,7 @@ namespace UltimaXNA.Network
                 throw new NetworkException(string.Format("Unable to register packet id {0:X2} because it is greater than byte.MaxValue", id));
             }
 
-            // _log.Debug("Register id: 0x{0:X2} Name: {1} Length: {2}", id, name, length);
+            // Logger.Debug("Register id: 0x{0:X2} Name: {1} Length: {2}", id, name, length);
 
             TypedPacketHandler handler = new TypedPacketHandler(id, name, type, length, onReceive);
             _typedHandlers[id].Add(handler);
@@ -180,7 +178,7 @@ namespace UltimaXNA.Network
                 }
             }
 
-            _log.Debug("Registering Extended Command: id: 0x{0:X2} subCommand: 0x{1:X2} Name: {2} Length: {3}", extendedId, subId, name, length);
+            Logger.Debug("Registering Extended Command: id: 0x{0:X2} subCommand: 0x{1:X2} Name: {2} Length: {3}", extendedId, subId, name, length);
 
             PacketHandler handler = new PacketHandler(subId, name, length, onReceive);
             _extendedHandlers[extendedId][subId].Add(handler);
@@ -224,7 +222,7 @@ namespace UltimaXNA.Network
                 }
             }
 
-            _log.Debug("Registering Extended Command: id: 0x{0:X2} subCommand: 0x{1:X2} Name: {2} Length: {3}", extendedId, subId, name, length);
+            Logger.Debug("Registering Extended Command: id: 0x{0:X2} subCommand: 0x{1:X2} Name: {2} Length: {3}", extendedId, subId, name, length);
 
             TypedPacketHandler handler = new TypedPacketHandler(subId, name, type, length, onReceive);
             _extendedTypedHandlers[extendedId][subId].Add(handler);
@@ -266,14 +264,14 @@ namespace UltimaXNA.Network
 
                 _serverEndPoint = new IPEndPoint(_serverAddress, port);
 
-                _log.Debug("Connecting...");
+                Logger.Debug("Connecting...");
 
                 _serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 _serverSocket.Connect(_serverEndPoint);
 
                 if (_serverSocket.Connected)
                 {
-                    _log.Debug("Connected.");
+                    Logger.Debug("Connected.");
 
                     SocketState state = new SocketState(_serverSocket, ushort.MaxValue);
                     _serverSocket.BeginReceive(state.Buffer, 0, state.Buffer.Length, SocketFlags.None, OnReceive, state);
@@ -298,7 +296,7 @@ namespace UltimaXNA.Network
                 _serverSocket = null;
                 _serverEndPoint = null;
                 _isDecompressionEnabled = false;
-                _log.Debug("Disconnected.");
+                Logger.Debug("Disconnected.");
                 _isConnected = false;
             }
         }
@@ -319,13 +317,10 @@ namespace UltimaXNA.Network
                 throw new NetworkException("Unable to send, buffer was null or empty");
             }
 
-            if (_logPackets)
+            if (_loggingPackets)
             {
-                lock (_log)
-                {
-                    _log.Debug("Client - > Server");
-                    _log.Debug("{1}{0}", Utility.FormatBuffer(buffer, length), Environment.NewLine);
-                }
+                Logger.Debug("Client - > Server");
+                Logger.Debug("{1}{0}", Utility.FormatBuffer(buffer, length), Environment.NewLine);
             }
 
             try
@@ -337,7 +332,7 @@ namespace UltimaXNA.Network
             }
             catch (Exception e)
             {
-                _log.Debug(e);
+                Logger.Debug(e);
                 success = false;
             }
 
@@ -350,12 +345,7 @@ namespace UltimaXNA.Network
 
             if (state == null)
             {
-
-                lock (_log)
-                {
-                    _log.Warn("Socket state was null.");
-                }
-
+                Logger.Warn("Socket state was null.");
                 return;
             }
 
@@ -497,7 +487,7 @@ namespace UltimaXNA.Network
             }
             catch (Exception e)
             {
-                _log.Debug(e);
+                Logger.Debug(e);
                 Disconnect();
             }
         }
@@ -547,14 +537,11 @@ namespace UltimaXNA.Network
         
         private void LogPacket(byte[] buffer, string name, int length)
         {
-            if (_logPackets)
+            if (_loggingPackets)
             {
-                lock (_log)
-                {
-                    _log.Debug("Server - > Client");
-                    _log.Debug("Id: 0x{0:X2} Name: {1} Length: {2}", buffer[0], name, length);
-                    _log.Debug("{1}{0}", Utility.FormatBuffer(buffer, length), Environment.NewLine);
-                }
+                Logger.Debug("Server - > Client");
+                Logger.Debug("Id: 0x{0:X2} Name: {1} Length: {2}", buffer[0], name, length);
+                Logger.Debug("{1}{0}", Utility.FormatBuffer(buffer, length), Environment.NewLine);
             }
         }
 

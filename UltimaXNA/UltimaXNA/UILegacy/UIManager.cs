@@ -9,6 +9,7 @@ using UltimaXNA.Entities;
 using UltimaXNA.Extensions;
 using UltimaXNA.Input;
 using UltimaXNA.TileEngine;
+using UltimaXNA.Graphics;
 
 namespace UltimaXNA.UILegacy
 {

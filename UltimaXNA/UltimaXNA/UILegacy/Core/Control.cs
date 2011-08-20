@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using UltimaXNA.Input;
+using UltimaXNA.Graphics;
 
 namespace UltimaXNA.UILegacy
 {
@@ -110,7 +111,7 @@ namespace UltimaXNA.UILegacy
         }
         public int X { get { return _position.X; } set { _position.X = value; } }
         public int Y { get { return _position.Y; } set { _position.Y = value; } }
-        public int Width
+        public virtual int Width
         {
             get { return _area.Width; }
             set
@@ -118,7 +119,7 @@ namespace UltimaXNA.UILegacy
                 _area.Width = value;
             }
         }
-        public int Height
+        public virtual int Height
         {
             get { return _area.Height; }
             set
@@ -321,10 +322,8 @@ namespace UltimaXNA.UILegacy
         {
             if (_debugTexture == null)
             {
-                Color[] data = new Color[] { Color.White };
-
                 _debugTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
-                _debugTexture.SetData<Color>(data);
+                _debugTexture.SetData<Color>(new Color[] { Color.White });
             }
 
             int Hue = 31;

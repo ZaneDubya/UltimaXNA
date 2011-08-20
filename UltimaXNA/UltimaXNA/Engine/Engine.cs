@@ -29,7 +29,6 @@ namespace UltimaXNA
 {
     public class Engine : Game
     {
-        Diagnostics.Logger _logService;
         Input.InputState _inputState;
         SceneManagement.SceneManager _sceneService;
         TileEngine.IsometricRenderer _worldService;
@@ -46,9 +45,6 @@ namespace UltimaXNA
             this.Content.RootDirectory = "Content";
             
             // Load all the services we need.
-            Services.AddService<Diagnostics.ILoggingService>(
-                _logService = new Diagnostics.Logger("UXNA"));
-
             Services.AddService<Input.IInputState>(
                 _inputState = new Input.InputState(this));
 
@@ -71,7 +67,7 @@ namespace UltimaXNA
             }
 
             _sceneService.CurrentScene = new SceneManagement.LoginScene(this);
-            
+
             base.Initialize();
         }
 
@@ -91,7 +87,7 @@ namespace UltimaXNA
 
             if (ClientVars.EngineRunning)
             {
-                SpriteBatch3D.ResetZ();
+                Graphics.SpriteBatch3D.ResetZ();
                 _inputState.Update(gameTime);
                 Client.UltimaClient.Update(gameTime);
                 Entities.EntitiesCollection.Update(gameTime);
@@ -113,6 +109,7 @@ namespace UltimaXNA
             }
 
             ClientVars.UpdateFPS(gameTime);
+            this.Window.Title = string.Format("UltimaXNA FPS:{0}", ClientVars.FPS);
         }
 
         bool isMinimized()
@@ -218,8 +215,7 @@ namespace UltimaXNA
         }
         static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            Diagnostics.Logger log = new Diagnostics.Logger(typeof(Engine));
-            log.Fatal(e.ExceptionObject);
+            Diagnostics.Logger.Fatal(e.ExceptionObject);
         }
 
         #endregion

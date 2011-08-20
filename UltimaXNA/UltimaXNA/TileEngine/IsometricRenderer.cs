@@ -20,9 +20,9 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Entities;
 using UltimaXNA.Extensions;
+using UltimaXNA.Graphics;
 using UltimaXNA.Input;
 #endregion
 
@@ -33,7 +33,7 @@ namespace UltimaXNA.TileEngine
         private IInputState _input;
 
         #region RenderingVariables
-        WireframeRenderer _wireframe;
+        VectorRenderer _vectors;
         SpriteBatch3D _spriteBatch;
         VertexPositionNormalTextureHue[] _vertexBufferStretched;
         #endregion
@@ -75,6 +75,19 @@ namespace UltimaXNA.TileEngine
         }
         #endregion
 
+        #region HighlightVariables
+        private int _groundHighlightRadius = 0;
+        public int GroundHighlightRadius
+        {
+            get { return _groundHighlightRadius; }
+            set { _groundHighlightRadius = value; }
+        }
+        public bool IsHighlightingGround
+        {
+            get { return (_groundHighlightRadius > 0); }
+        }
+        #endregion
+
         private static Map _map;
         public Map Map
         {
@@ -96,8 +109,7 @@ namespace UltimaXNA.TileEngine
         {
             _input = game.Services.GetService<IInputState>();
             _spriteBatch = new SpriteBatch3D(game);
-            _wireframe = new WireframeRenderer(game);
-            _wireframe.Initialize();
+            _vectors = new VectorRenderer(game.GraphicsDevice, game.Content);
 
             PickType = PickTypes.PickNothing;
             _vertexBufferStretched = new VertexPositionNormalTextureHue[] {
@@ -139,23 +151,71 @@ namespace UltimaXNA.TileEngine
 
         public void Draw(GameTime gameTime)
         {
+            Vector2 renderOffset = new Vector2();
             if (ClientVars.Map != -1)
             {
-                render();
+                render(ref renderOffset);
                 _spriteBatch.Flush(true);
+
                 if (ClientVars.DEBUG_HighlightMouseOverObjects)
                 {
                     if (_overObject != null)
-                        _wireframe.AddMouseOverItem(_overObject);
+                    {
+                        _vectors.DrawLine(_overObject.Vertices[0], _overObject.Vertices[1], Color.LightBlue);
+                        _vectors.DrawLine(_overObject.Vertices[1], _overObject.Vertices[3], Color.LightBlue);
+                        _vectors.DrawLine(_overObject.Vertices[3], _overObject.Vertices[2], Color.LightBlue);
+                        _vectors.DrawLine(_overObject.Vertices[2], _overObject.Vertices[0], Color.LightBlue);
+                    }
                     if (_overGround != null)
-                        _wireframe.AddMouseOverItem(_overGround);
-                    _wireframe.ProjectionMatrix = _spriteBatch.ProjectionMatrixScreen;
-                    _wireframe.Draw(gameTime);
+                    {
+                        _vectors.DrawLine(_overGround.Vertices[0], _overGround.Vertices[1], Color.LimeGreen);
+                        _vectors.DrawLine(_overGround.Vertices[1], _overGround.Vertices[3], Color.LimeGreen);
+                        _vectors.DrawLine(_overGround.Vertices[3], _overGround.Vertices[2], Color.LimeGreen);
+                        _vectors.DrawLine(_overGround.Vertices[2], _overGround.Vertices[0], Color.LimeGreen);
+                    }
+                }
+
+                if (IsHighlightingGround && _overGround != null)
+                {
+                    Vector3 originVector = new Vector3(_overGround.Object.Position.X, _overGround.Object.Position.Y, 0f);
+                    BoundingSphere bounds = new BoundingSphere(originVector, GroundHighlightRadius + 0.01f);
+                    ContainmentType contains;
+                    Vector3 thisVector;
+                    List<Vector3> tiles = new List<Vector3>(), highlighted = new List<Vector3>();
+                    List<Vector3> surrounds = new List<Vector3>() { new Vector3(-1, 0, 0), new Vector3(1, 0, 0), new Vector3(0, -1, 0), new Vector3(0, 1, 0) };
+                    for (int y = -GroundHighlightRadius; y <= GroundHighlightRadius; y++)
+                        for (int x = -GroundHighlightRadius; x <= GroundHighlightRadius; x++)
+                        {
+                            thisVector = originVector + new Vector3(x, y, 0);
+                            bounds.Contains(ref thisVector, out contains);
+                            if (contains == ContainmentType.Contains)
+                                tiles.Add(thisVector);
+                        }
+
+                    for (int i = 0; i < tiles.Count; i++)
+                    {
+                        MapObjectGround thisTile = Map.GetMapTile((int)tiles[i].X, (int)tiles[i].Y, false).GroundTile;
+                        highlighted.Add(tiles[i]);
+                        for (int j = 0; j < surrounds.Count; j++)
+                        {
+                            thisVector = tiles[i] + surrounds[j];
+                            if (tiles.Contains(thisVector) && !highlighted.Contains(thisVector))
+                            {
+                                MapObjectGround thatTile = Map.GetMapTile((int)thisVector.X, (int)thisVector.Y, false).GroundTile;
+                                Vector3 start = new Vector3(renderOffset +
+                                    new Vector2((tiles[i].X - tiles[i].Y) * 22 + 22, (tiles[i].X + tiles[i].Y) * 22 - thisTile.Z * 4), 0);
+                                Vector3 end = new Vector3(renderOffset +
+                                    new Vector2((thisVector.X - thisVector.Y) * 22 + 22, (thisVector.X + thisVector.Y) * 22 - thatTile.Z * 4), 0);
+                                _vectors.DrawLine(start, end, Color.White);
+                            }
+                        }
+                    }
+                    _vectors.Render_ViewportSpace();
                 }
             }
         }
 
-        private void render()
+        private void render(ref Vector2 renderOffset)
         {
             if (ClientVars.IsMinimized)
                 return;
@@ -167,14 +227,14 @@ namespace UltimaXNA.TileEngine
             int RenderEndX = RenderBeginX + ClientVars.RenderSize;
             int RenderEndY = RenderBeginY + ClientVars.RenderSize;
 
-            int renderOffsetX = (ClientVars.BackBufferWidth >> 1) - 22;
-            renderOffsetX -= (int)((CenterPosition.X_offset - CenterPosition.Y_offset) * 22);
-            renderOffsetX -= (RenderBeginX - RenderBeginY) * 22;
+            renderOffset.X = (ClientVars.BackBufferWidth >> 1) - 22;
+            renderOffset.X -= (int)((CenterPosition.X_offset - CenterPosition.Y_offset) * 22);
+            renderOffset.X -= (RenderBeginX - RenderBeginY) * 22;
 
-            int renderOffsetY = ((ClientVars.BackBufferHeight - (ClientVars.RenderSize * 44)) >> 1);
-            renderOffsetY += (CenterPosition.Z << 2) + (int)(CenterPosition.Z_offset * 4);
-            renderOffsetY -= (int)((CenterPosition.X_offset + CenterPosition.Y_offset) * 22);
-            renderOffsetY -= (RenderBeginX + RenderBeginY) * 22;
+            renderOffset.Y = ((ClientVars.BackBufferHeight - (ClientVars.RenderSize * 44)) >> 1);
+            renderOffset.Y += (CenterPosition.Z << 2) + (int)(CenterPosition.Z_offset * 4);
+            renderOffset.Y -= (int)((CenterPosition.X_offset + CenterPosition.Y_offset) * 22);
+            renderOffset.Y -= (RenderBeginX + RenderBeginY) * 22;
 
             ObjectsRendered = 0; // Count of objects rendered for statistics and debug
             MouseOverList overList = new MouseOverList(); // List of items for mouse over
@@ -184,8 +244,8 @@ namespace UltimaXNA.TileEngine
 
             for (int ix = RenderBeginX; ix < RenderEndX; ix++)
             {
-                drawPosition.X = (ix - RenderBeginY) * 22 + renderOffsetX;
-                drawPosition.Y = (ix + RenderBeginY) * 22 + renderOffsetY;
+                drawPosition.X = (ix - RenderBeginY) * 22 + renderOffset.X;
+                drawPosition.Y = (ix + RenderBeginY) * 22 + renderOffset.Y;
 
                 DrawTerrain = true;
 

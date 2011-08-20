@@ -8,6 +8,7 @@ using UltimaXNA.Client;
 using UltimaXNA.Entities;
 using UltimaXNA.Input;
 using UltimaXNA.UILegacy.Gumplings;
+using UltimaXNA.Graphics;
 
 namespace UltimaXNA.UILegacy.ClientsideGumps
 {

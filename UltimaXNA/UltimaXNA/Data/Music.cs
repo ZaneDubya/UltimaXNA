@@ -32,7 +32,6 @@ namespace UltimaXNA.Data
 
 	class Music
 	{
-		private static ILoggingService _log;
         private static int PlayingId = -1;
 
 		#region Internals
@@ -58,10 +57,10 @@ namespace UltimaXNA.Data
 				}
 				if (mciSendString ( playCommand, null, 0, IntPtr.Zero ) != 0)
 				{
-					_log.Error("Error playing mp3 file {0}", path);
+                    Logger.Error("Error playing mp3 file {0}", path);
 				}
 			} else {
-				_log.Error("Error opening mp3 file {0}", path);
+                Logger.Error("Error opening mp3 file {0}", path);
 			}
 		}
 
@@ -76,12 +75,12 @@ namespace UltimaXNA.Data
                     // close resource
                     if (mciSendString(string.Format("close {0}", _internalMusicName), null, 0, IntPtr.Zero) != 0)
                     {
-                        _log.Error("Error closing current mp3 file");
+                        Logger.Error("Error closing current mp3 file");
                     }
                 }
                 else
                 {
-                    _log.Error("Error stopping current mp3 file");
+                    Logger.Error("Error stopping current mp3 file");
                 }
             }
 		}
@@ -95,7 +94,7 @@ namespace UltimaXNA.Data
 				   buffer, buffer.Capacity, IntPtr.Zero );
 				if (result != 0)
 				{
-					_log.Error("Error reading volume");
+                    Logger.Error("Error reading volume");
 					return 0;
 				}
 				return int.Parse ( buffer.ToString() );
@@ -106,7 +105,7 @@ namespace UltimaXNA.Data
 				int result = mciSendString ( string.Format("setaudio {0} volume to {1}", _internalMusicName, value), null, 0, IntPtr.Zero );
 				if (result != 0)
 				{
-					_log.Error("Error setting volume");
+                    Logger.Error("Error setting volume");
 				}
 			}
 		}
@@ -123,8 +122,6 @@ namespace UltimaXNA.Data
 
 		static Music()
 		{
-			_log = new Logger(typeof(Music));
-
 			_songList = new Hashtable ();
 			StreamReader reader = new StreamReader(FileManager.GetFile ( "Music\\Digital\\Config.txt" ));
 			String line;
@@ -178,7 +175,7 @@ namespace UltimaXNA.Data
 			UOMusic music = GetMusicById ( id );
 			if (music == null)
 			{
-				_log.Error("Received unknown music id {0}", id);
+                Logger.Error("Received unknown music id {0}", id);
 				return;
 			}
 

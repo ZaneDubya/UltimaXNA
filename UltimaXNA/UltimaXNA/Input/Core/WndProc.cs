@@ -22,9 +22,6 @@ namespace UltimaXNA.Input.Core
     /// </summary>
     public class WndProc : MessageHook
     {
-        // Debug logging
-        protected static Diagnostics.Logger _log = new Diagnostics.Logger("InputState");
-
         const bool WP_PASSTHROUGH = true;
         const bool WP_NOPASSTHROUGH = false;
 

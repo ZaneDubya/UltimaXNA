@@ -19,6 +19,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Entities;
+using UltimaXNA.Graphics;
 #endregion
 
 namespace UltimaXNA.TileEngine

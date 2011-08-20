@@ -48,7 +48,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;WINDOWS</DefineConstants>
+    <DefineConstants>DEBUG;WINDOWS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoStdLib>true</NoStdLib>
@@ -59,9 +59,9 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;WINDOWS</DefineConstants>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;WINDOWS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoStdLib>true</NoStdLib>
@@ -257,7 +257,12 @@
     </Compile>
     <Compile Include="Data\TileMatrixRaw.cs" />
     <Compile Include="Engine\ClientVars.cs" />
-    <Compile Include="Engine\HTML.cs" />
+    <Compile Include="Support\GumpExporter.cs" />
+    <Compile Include="UILegacy\HTML\HTMLRegions.cs" />
+    <Compile Include="UILegacy\HTML\HTMLParserAtom.cs" />
+    <Compile Include="UILegacy\HTML\HTMLEnums.cs" />
+    <Compile Include="UILegacy\HTML\HTMLImages.cs" />
+    <Compile Include="UILegacy\HTML\HTMLParser.cs" />
     <Compile Include="Engine\Interaction.cs" />
     <Compile Include="Engine\Metrics.cs" />
     <Compile Include="Data\Gumps.cs" />
@@ -269,10 +274,6 @@
     <Compile Include="Data\Sound.cs" />
     <Compile Include="Data\StringList.cs" />
     <Compile Include="Data\UniFonts.cs" />
-    <Compile Include="Diagnostics\ILoggingService.cs" />
-    <Compile Include="Diagnostics\IStatusNotifier.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Diagnostics\Logger.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -325,20 +326,23 @@
     <Compile Include="SceneManagement\Scenes\DebugScene.cs" />
     <Compile Include="SceneManagement\Scenes\LoggingInScene.cs" />
     <Compile Include="SceneManagement\Scenes\SelectServerScene.cs" />
+    <Compile Include="Support\WebSafeHues.cs" />
     <Compile Include="TileEngine\Objects\MapObjectDeferred.cs" />
-    <Compile Include="UILegacy\HTML\DynaString.cs" />
-    <Compile Include="UILegacy\HTML\FastHash.cs" />
-    <Compile Include="UILegacy\HTML\HTMLchunk.cs" />
-    <Compile Include="UILegacy\HTML\HTMLentities.cs" />
-    <Compile Include="UILegacy\HTML\HTMLheuristics.cs" />
-    <Compile Include="UILegacy\HTML\HTMLParser.cs" />
-    <Compile Include="UILegacy\HTML\TagParser.cs" />
+    <Compile Include="Graphics\VectorPolygon.cs" />
+    <Compile Include="Graphics\VectorRenderer.cs" />
+    <Compile Include="UILegacy\Gumplings\ListGumpling.cs" />
+    <Compile Include="UILegacy\HTML\HTMLParsing\DynaString.cs" />
+    <Compile Include="UILegacy\HTML\HTMLParsing\FastHash.cs" />
+    <Compile Include="UILegacy\HTML\HTMLParsing\HTMLchunk.cs" />
+    <Compile Include="UILegacy\HTML\HTMLParsing\HTMLentities.cs" />
+    <Compile Include="UILegacy\HTML\HTMLParsing\HTMLheuristics.cs" />
+    <Compile Include="UILegacy\HTML\HTMLParsing\HTMLParser.cs" />
+    <Compile Include="UILegacy\HTML\HTMLParsing\TagParser.cs" />
     <Compile Include="TileEngine\Interfaces\IIsometricRenderer.cs" />
     <Compile Include="TileEngine\IsometricRenderer.cs" />
     <Compile Include="TileEngine\Map\MapTile.cs" />
     <Compile Include="TileEngine\Objects\MapObjectComparer.cs" />
     <Compile Include="TileEngine\MouseOverList.cs" />
-    <Compile Include="TileEngine\WireframeRenderer.cs" />
     <Compile Include="UILegacy\ChatHandler.cs" />
     <Compile Include="UILegacy\ClientsideGumps\CharacterListGump.cs" />
     <Compile Include="UILegacy\ClientsideGumps\ChatWindow.cs" />
@@ -352,7 +356,7 @@
     <Compile Include="UILegacy\ClientsideGumps\SkillsGump.cs" />
     <Compile Include="UILegacy\ClientsideGumps\StatusGump.cs" />
     <Compile Include="UILegacy\Gumplings\ExpandableScroll.cs" />
-    <Compile Include="UILegacy\MsgBox.cs" />
+    <Compile Include="UILegacy\Core\MsgBox.cs" />
     <Compile Include="UILegacy\ClientsideGumps\PaperDollGump.cs" />
     <Compile Include="UILegacy\ClientsideGumps\SelectServerGump.cs" />
     <Compile Include="UILegacy\ClientsideGumps\TopMenu.cs" />
@@ -360,8 +364,8 @@
     <Compile Include="UILegacy\Core\DropWidget.cs" />
     <Compile Include="UILegacy\Core\iControl.cs" />
     <Compile Include="UILegacy\Cursor.cs" />
-    <Compile Include="Engine\ExtendedSpriteBatch.cs" />
-    <Compile Include="UILegacy\Gump.cs" />
+    <Compile Include="Graphics\ExtendedSpriteBatch.cs" />
+    <Compile Include="UILegacy\Core\Gump.cs" />
     <Compile Include="UILegacy\Gumplings\Button.cs" />
     <Compile Include="UILegacy\Gumplings\CheckerTrans.cs" />
     <Compile Include="UILegacy\Gumplings\ColorPicker.cs" />
@@ -385,8 +389,8 @@
     <Compile Include="UILegacy\Gumplings\TextLabelAsciiCropped.cs" />
     <Compile Include="UILegacy\Gumplings\TilePic.cs" />
     <Compile Include="UILegacy\IUIManager.cs" />
-    <Compile Include="UILegacy\Shared.cs" />
-    <Compile Include="UILegacy\TextRenderer.cs" />
+    <Compile Include="UILegacy\Core\GumplingEventArgs.cs" />
+    <Compile Include="UILegacy\Core\TextRenderer.cs" />
     <Compile Include="UILegacy\UIManager.cs" />
     <Compile Include="Data\StaticTileList.cs" />
     <Compile Include="Data\Texmaps.cs" />
@@ -426,11 +430,11 @@
     <Compile Include="TileEngine\Map\Map.cs" />
     <Compile Include="TileEngine\Objects\MapObjectMobile.cs" />
     <Compile Include="TileEngine\Shared.cs" />
-    <Compile Include="Engine\SpriteBatch3D.cs" />
+    <Compile Include="Graphics\SpriteBatch3D.cs" />
     <Compile Include="TileEngine\Objects\MapObjectText.cs" />
     <Compile Include="TileEngine\Objects\MapObject.cs" />
     <Compile Include="TileEngine\Objects\MapObjectStatic.cs" />
-    <Compile Include="TileEngine\VertexPositionNormalTextureHue.cs" />
+    <Compile Include="Graphics\VertexPositionNormalTextureHue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Data\Animations.cs" />
     <Compile Include="Data\FileIndex.cs" />
@@ -487,9 +491,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="log4net.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="zlib32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -27,8 +27,6 @@ namespace UltimaXNA.Data
 {
     class FileManager
     {
-        static Logger _log = new Logger("FileManager");
-
         static private bool _isDataPresent = false;
         static public bool IsUODataPresent
         {
@@ -65,13 +63,13 @@ namespace UltimaXNA.Data
 
         static FileManager()
         {
-            _log.Debug("Looking for UO Installation. Is64Bit = {0}", Is64Bit);
+            Logger.Debug("Looking for UO Installation. Is64Bit = {0}", Is64Bit);
 
             for (int i = 0; i < _knownRegkeys.Length; i++)
             {
                 string exePath;
 
-                _log.Debug("Looking for registry key [{0}].", _knownRegkeys[i]);
+                Logger.Debug("Looking for registry key [{0}].", _knownRegkeys[i]);
 
                 if (Is64Bit)
                 {
@@ -84,7 +82,7 @@ namespace UltimaXNA.Data
 
                 if (exePath != null && Directory.Exists(exePath))
                 {
-                    _log.Debug("Found UO Installation at [{0}].", exePath);
+                    Logger.Debug("Found UO Installation at [{0}].", exePath);
 
                     m_FileDirectory = exePath;
                     _isDataPresent = true;
@@ -92,7 +90,7 @@ namespace UltimaXNA.Data
             }
             if (m_FileDirectory == null)
             {
-                _log.Fatal("Did not find UO Installation.");
+                Logger.Fatal("Did not find UO Installation.");
                 _isDataPresent = false;
             }
         }
@@ -166,7 +164,7 @@ namespace UltimaXNA.Data
             try
             {
                 name = Path.Combine(m_FileDirectory, name);
-                _log.Debug("Checking if file exists [{0}]", name);
+                Logger.Debug("Checking if file exists [{0}]", name);
 
                 if (File.Exists(name))
                 {

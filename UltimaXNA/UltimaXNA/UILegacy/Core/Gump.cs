@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Client;
 using UltimaXNA.UILegacy.Gumplings;
+using UltimaXNA.Graphics;
 
 namespace UltimaXNA.UILegacy
 {

@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace UltimaXNA.Data
 {
-    internal sealed class UniCharacter
+    public sealed class UniCharacter
     {
         bool hasTexture
         {
@@ -31,11 +31,12 @@ namespace UltimaXNA.Data
             int iHeight = (isOutlined) ? OutlinedHeight : Height;
             int iYOffset = (isOutlined) ? OutlinedYOffset : YOffset;
             Color[] iTexture = (isOutlined) ? _textureDataOutlined : _textureData;
+            Color iColor = Color.Transparent;
             if (hasTexture)
             {
                 fixed (Color* cPtr = iTexture)
                 {
-                    for (int iy = 0; (iy < iHeight) && (iy < maxHeight); iy++)
+                    for (int iy = 0; (iy < iHeight) && (iy + dy < maxHeight); iy++)
                     {
                         Color* src = ((Color*)cPtr) + (iWidth * iy);
                         Color* dest = (((Color*)rPtr) + (linewidth * (iy + dy + iYOffset)) + dx);
@@ -48,11 +49,14 @@ namespace UltimaXNA.Data
                         {
                             if (*src != Color.Transparent)
                             {
-                                *dest = *src;
+                                if (*src == Color.White)
+                                    iColor = color;
+                                else if (*src == Color.Black)
+                                    iColor = Color.Black;
+
+                                *dest = iColor;
                                 if (isBold)
-                                {
-                                    *(dest + 1) = color;
-                                }
+                                    *(dest + 1) = iColor;
                             }
                             dest++;
                             src++;
@@ -63,9 +67,10 @@ namespace UltimaXNA.Data
 
             if (isUnderlined)
             {
-                if (baseLine >= maxHeight)
+                int underlineAtY = dy + baseLine + 2;
+                if (underlineAtY >= maxHeight)
                     return;
-                Color* dest = (((Color*)rPtr) + (linewidth * (baseLine)) + dx);
+                Color* dest = (((Color*)rPtr) + (linewidth * (underlineAtY)) + dx);
                 int w = isBold ? iWidth + 2 : iWidth + 1;
                 for (int k = 0; k < w; k++)
                 {
@@ -144,7 +149,7 @@ namespace UltimaXNA.Data
         }
     }
 
-    internal sealed class UniFont
+    public sealed class UniFont
     {
         GraphicsDevice _graphics = null;
         BinaryReader _reader = null;
@@ -154,7 +159,7 @@ namespace UltimaXNA.Data
         public int Height { get { return _height; } set { _height = value; } }
         private int _baseline = 0;
         public int Baseline { get { return _baseline; } set { _baseline = value; } }
-
+        public int Lineheight { get { return _baseline + 4; } }
         public UniFont()
         {
             _characters = new UniCharacter[0x10000];
@@ -184,9 +189,10 @@ namespace UltimaXNA.Data
             if (_characters[index] == null)
             {
                 _characters[index] = loadCharacter(index);
-                if (index < 128 && (_characters[index].Height + _characters[index].YOffset) > Height)
+                int height = _characters[index].Height + _characters[index].YOffset;
+                if (index < 128 && height > Height)
                 {
-                    Height = _characters[index].Height + _characters[index].YOffset;
+                    Height = height;
                 }
             }
             return _characters[index];
@@ -238,6 +244,10 @@ namespace UltimaXNA.Data
         private static UniFont[] _fonts;
         private static bool _initialized;
         private static GraphicsDevice _graphicsDevice;
+        public static UniFont[] Fonts
+        {
+            get { return _fonts; }
+        }
 
         static UniText()
         {
@@ -287,333 +297,6 @@ namespace UltimaXNA.Data
                     continue;
                 _fonts[iFont].Height = maxHeight;
             }
-        }
-
-        public static Texture2D GetTexture(string text, int width, int height)
-        {
-            return getTexture(text, width, height, false);
-        }
-
-        public static Texture2D GetTextureHTML(string text, int width, int height, ref HREFRegions regions)
-        {
-            Texture2D texture = getTexture(text, width, height, true, ref regions);
-            return texture;
-        }
-
-        static Texture2D getTexture(string text, int width, int height, bool parseHTML)
-        {
-            HREFRegions r = new HREFRegions();
-            Texture2D t = writeTexture(text, width, height, r, parseHTML);
-            return t;
-        }
-
-        static Texture2D getTexture(string text, int width, int height, bool parseHTML, ref HREFRegions regions)
-        {
-            regions = new HREFRegions();
-            Texture2D t = writeTexture(text, width, height, regions, parseHTML);
-            return t;
-        }
-
-        static Texture2D writeTexture(string textToRender, int w, int h, HREFRegions regions, bool parseHTML)
-        {
-            HTML.HTMLparser parser = new UltimaXNA.HTML.HTMLparser(textToRender);
-            HTML.HTMLchunk chunk;
-            while ((chunk = parser.ParseNext()) != null)
-            {
-                
-            }
-            HTMLReader reader = new HTMLReader(textToRender, parseHTML);
-
-            int width = 0, height = 0;
-            if (w == 0)
-            {
-                getTextDimensions(reader, _graphicsDevice.Viewport.Width, _graphicsDevice.Viewport.Height, out width, out height);
-            }
-            else
-            {
-                getTextDimensions(reader, w, h, out width, out height);
-            }
-
-            if (width == 0) // empty text string
-                return new Texture2D(_graphicsDevice, 1, 1);
-
-            Color[] resultData = new Color[width * height];
-            int dy = 0, lineheight = 0;
-
-            unsafe
-            {
-                fixed (Color* rPtr = resultData)
-                {
-                    int[] alignedTextX = new int[3];
-                    List<HTMLCharacter>[] alignedText = new List<HTMLCharacter>[3];
-                    for (int i = 0; i < 3; i++)
-                        alignedText[i] = new List<HTMLCharacter>();
-
-                    for (int i = 0; i < reader.Length; i++)
-                    {
-                        HTMLCharacter c = reader.Characters[i];
-                        alignedText[(int)c.Alignment].Add(c);
-
-                        if (c.Character == '\n' || (i == reader.Length - 1))
-                        {
-                            // write left aligned text.
-                            int dx;
-                            if (alignedText[0].Count > 0)
-                            {
-                                alignedTextX[0] = dx = 0;
-                                writeTexture_Line(alignedText[0], rPtr, ref dx, dy, width, ref lineheight, true);
-                            }
-
-                            // centered text. We need to get the width first. Do this by drawing the line with var draw = false.
-                            if (alignedText[1].Count > 0)
-                            {
-                                dx = 0;
-                                writeTexture_Line(alignedText[1], rPtr, ref dx, dy, width, ref lineheight, false);
-                                alignedTextX[1] = dx = width / 2 - dx / 2;
-                                writeTexture_Line(alignedText[1], rPtr, ref dx, dy, width, ref lineheight, true);
-                            }
-
-                            // right aligned text.
-                            if (alignedText[2].Count > 0)
-                            {
-                                dx = 0;
-                                writeTexture_Line(alignedText[2], rPtr, ref dx, dy, width, ref lineheight, false);
-                                alignedTextX[2] = dx = width - dx;
-                                writeTexture_Line(alignedText[2], rPtr, ref dx, dy, width, ref lineheight, true);
-                            }
-
-                            // get HREF regions for html.
-                            if (regions != null)
-                                getHREFRegions(regions, alignedText, alignedTextX, dy);
-
-                            // clear the aligned text lists so we can fill them up in our next pass.
-                            for (int j = 0; j < 3; j++)
-                            {
-                                alignedText[j].Clear();
-                            }
-
-                            dy += lineheight;
-                        }
-                    }
-                }
-            }
-
-            Texture2D result = new Texture2D(_graphicsDevice, width, height, false, SurfaceFormat.Color);
-            result.SetData<Color>(resultData);
-            return result;
-        }
-
-        static void getHREFRegions(HREFRegions regions, List<HTMLCharacter>[] text, int[] x, int y)
-        {
-            for (int alignment = 0; alignment < 3; alignment++)
-            {
-                // variables for the open href region
-                bool hrefRegionOpen = false;
-                Rectangle hrefRegion = new Rectangle();
-                HREFDescription hrefCurrent = null;
-                Point hrefOrigin = new Point();
-                int hrefHeight = 0;
-
-                int dx = x[alignment];
-                for (int i = 0; i < text[alignment].Count; i++)
-                {
-                    HTMLCharacter c = text[alignment][i];
-                    UniFont font = _fonts[(int)c.Font];
-                    UniCharacter character = font.GetCharacter(c.Character);
-
-                    if (c.HREF != hrefCurrent)
-                    {
-                        // close the current href tag if one is open.
-                        if (hrefRegionOpen)
-                        {
-                            hrefRegion.Width = (dx - hrefOrigin.X);
-                            hrefRegion.Height = (y + hrefHeight - hrefOrigin.Y);
-                            regions.AddRegion(hrefRegion, hrefCurrent);
-                            hrefRegionOpen = false;
-                            hrefCurrent = null;
-                        }
-
-                        // did we open a href?
-                        if (c.HREF != null)
-                        {
-                            hrefRegionOpen = true;
-                            hrefCurrent = c.HREF;
-                            hrefOrigin = new Point(dx, y);
-                            hrefRegion = new Rectangle(dx, y, 0, 0);
-                            hrefHeight = 0;
-                        }
-                    }
-
-                    dx += (c.IsBold) ? character.Width + 2 : character.Width + 1;
-                    if (hrefRegionOpen && font.Height > hrefHeight)
-                        hrefHeight = font.Height;
-                }
-
-                // close the current href tag if one is open.
-                if (hrefRegionOpen)
-                {
-                    hrefRegion.Width = (dx - hrefOrigin.X);
-                    hrefRegion.Height = (y + hrefHeight - hrefOrigin.Y);
-                    regions.AddRegion(hrefRegion, hrefCurrent);
-                }
-            }
-        }
-
-        // pass bool = false to get the width of the line to be drawn without actually drawing anything. Useful for aligning text.
-        static unsafe void writeTexture_Line(List<HTMLCharacter> text, Color* rPtr, ref int x, int y, int linewidth, ref int lineheight, bool draw)
-        {
-            for (int i = 0; i < text.Count; i++)
-            {
-                HTMLCharacter c = text[i];
-                UniFont font = _fonts[(int)c.Font];
-                UniCharacter character = font.GetCharacter(c.Character);
-                if (draw)
-                {
-                    Color color = c.IsHREF ? new Color(255, 255, 255) : c.Color; // HREF links should be colored white.
-                    character.WriteToBuffer(rPtr, x, y, linewidth, font.Height, font.Baseline, c.IsBold, c.IsItalic, c.IsUnderlined, c.IsOutlined, color);
-                }
-                lineheight = font.Baseline;
-                x += character.Width + 1;
-                if (c.IsBold)
-                    x += 1;
-            }
-        }
-
-        static void getTextDimensions(HTMLReader reader, int maxwidth, int maxheight, out int width, out int height)
-        {
-            width = 0; height = 0;
-            int lineheight = 0;
-            int widestline = 0;
-            int additionalwidth = 0; // for italic + outlined characters, which need a little more room for their slant/outline.
-            int descenderheight = 0;
-            List<HTMLCharacter> word = new List<HTMLCharacter>();
-            
-            for (int i = 0; i < reader.Length; ++i)
-            {
-                HTMLCharacter c = reader.Characters[i];
-                UniFont font = _fonts[(int)c.Font];
-                if (lineheight < font.Baseline)
-                    lineheight = font.Baseline;
-                if (((int)c.Character) > 32)
-                {
-                    word.Add(c);
-                }
-
-                if (c.Alignment != enumHTMLAlignments.Left)
-                    widestline = maxwidth;
-
-                if (c.Character == ' ' || i == reader.Length - 1 || c.Character == '\n')
-                {
-                    // Size the word, character by character.
-                    int wordwidth = 0;
-
-                    if (word.Count > 0)
-                    {
-                        for (int j = 0; j < word.Count; j++)
-                        {
-                            UniCharacter ch = _fonts[(int)word[j].Font].GetCharacter(word[j].Character);
-                            int charwidth = ch.Width;
-
-                            // bold characters are one pixel wider than normal characters.
-                            if (c.IsBold)
-                                charwidth++;
-
-                            // italic characters need a little extra width if they are at the end of the line.
-                            if (c.IsItalic)
-                                additionalwidth = font.Height / 2;
-                            else
-                            {
-                                additionalwidth -= charwidth;
-                                if (additionalwidth < 0)
-                                    additionalwidth = 0;
-                            }
-
-                            if (c.IsOutlined)
-                                additionalwidth += 1;
-
-                            if (ch.YOffset + ch.Height - font.Baseline > descenderheight)
-                                descenderheight = ch.YOffset + ch.Height - font.Baseline;
-
-                            wordwidth += charwidth + 1;
-                        }
-                    }
-
-                    // Now make sure this line can fit the word.
-                    if (width + wordwidth + additionalwidth <= maxwidth)
-                    {
-                        // it can fit!
-                        width += wordwidth + additionalwidth;
-                        word.Clear();
-                        // if this word is followed by a space, does it fit? If not, drop it entirely and insert \n after the word.
-                        if (c.Character == ' ')
-                        {
-                            int charwidth = _fonts[(int)c.Font].GetCharacter(c.Character).Width;
-                            if (width + charwidth + 1 <= maxwidth)
-                            {
-                                // we can fit an extra space here.
-                                width += charwidth + 1;
-                            }
-                            else
-                            {
-                                // can't fit an extra space on the end of the line. replace the space with a \n.
-                                reader.Characters[i] = new HTMLCharacter('\n');
-                                i--;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // this word cannot fit in the current line.
-                        // if this is the last word in a line
-                        if ((width > 0) && (i - word.Count >= 0))
-                        {
-                            reader.Characters.Insert(i - word.Count, new HTMLCharacter('\n'));
-                            i = i - word.Count - 1;
-                            word.Clear();
-                        }
-                        else
-                        {
-                            // this is the only word on the line and we will need to split it.
-                            // first back up until we've reached the reduced the size of the word
-                            // so that it fits on one line, and split it there.
-                            int iWordWidth = wordwidth;
-                            for (int j = word.Count - 1; j >= 1; j--)
-                            {
-                                int iDashWidth = _fonts[(int)word[j].Font].GetCharacter('-').Width + 1;
-                                if (iWordWidth + iDashWidth <= maxwidth)
-                                {
-                                    reader.Characters.Insert(i - (word.Count - j) + 1, new HTMLCharacter('\n'));
-                                    reader.Characters.Insert(i - (word.Count - j) + 1, new HTMLCharacter('-'));
-                                    break;
-                                }
-                                int iCharWidth = _fonts[(int)word[j].Font].GetCharacter(word[j].Character).Width;
-                                iWordWidth -= iCharWidth + 1;
-                            }
-                            i -= word.Count + 2;
-                            if (i < 0)
-                                i = -1;
-                            word.Clear();
-                            width = 0;
-                            wordwidth = 0;
-                        }
-                    }
-
-                    if (c.Character == '\n')
-                    {
-                        if (width + additionalwidth > widestline)
-                            widestline = width + additionalwidth;
-                        height += lineheight;
-                        descenderheight = 0;
-                        lineheight = 0;
-                        width = 0;
-                    }
-                }
-            }
-
-            width += additionalwidth;
-            height += lineheight + descenderheight + 4;
-            if (widestline > width)
-                width = widestline;
         }
     }
 }
