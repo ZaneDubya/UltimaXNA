@@ -330,7 +330,6 @@
     <Compile Include="TileEngine\Objects\MapObjectDeferred.cs" />
     <Compile Include="Graphics\VectorPolygon.cs" />
     <Compile Include="Graphics\VectorRenderer.cs" />
-    <Compile Include="UILegacy\Gumplings\ListGumpling.cs" />
     <Compile Include="UILegacy\HTML\HTMLParsing\DynaString.cs" />
     <Compile Include="UILegacy\HTML\HTMLParsing\FastHash.cs" />
     <Compile Include="UILegacy\HTML\HTMLParsing\HTMLchunk.cs" />

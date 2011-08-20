@@ -45,7 +45,7 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         void buildGumpling(int x, int y, int gumpID, int width, int height)
         {
-            MakeADragger(_owner);
+            MakeDragger(_owner);
             Position = new Point2D(x, y);
             Size = new Point2D(width, height);
             GumpID = gumpID;

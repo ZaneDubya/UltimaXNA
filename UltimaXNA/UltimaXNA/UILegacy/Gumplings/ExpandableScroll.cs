@@ -14,6 +14,7 @@ namespace UltimaXNA.UILegacy.Gumplings
         GumpPic _gumplingTop, _gumplingBottom;
         GumpPicTiled _gumplingMiddle;
         Button _gumplingExpander;
+        
         int _expandableScrollHeight;
         const int _expandableScrollHeight_Min = 274; // this is the min from the client.
         const int _expandableScrollHeight_Max = 1000; // arbitrary large number.
@@ -44,14 +45,24 @@ namespace UltimaXNA.UILegacy.Gumplings
             _gumplingMiddle = (GumpPicTiled)AddGumpling(new GumpPicTiled(this, 0, 0, 0, 0, 0, 0x0822));
             _gumplingBottom = (GumpPic)AddGumpling(new GumpPic(this, 0, 0, 0, 0x0823, 0));
             _gumplingExpander = (Button)AddGumpling(new Button(this, 0, 0, 0, 0x082E, 0x82F, ButtonTypes.Activate, 0, gumplingExpander_ButtonID));
-
-            _gumplingTop.HandlesMouseInput = true;
-            _gumplingMiddle.HandlesMouseInput = true;
-            _gumplingBottom.HandlesMouseInput = true;
             
             _gumplingExpander.OnMouseDown = expander_OnMouseDown;
             _gumplingExpander.OnMouseUp = expander_OnMouseUp;
             _gumplingExpander.OnMouseOver = expander_OnMouseOver;
+        }
+
+        protected override bool _hitTest(int x, int y)
+        {
+            Point2D position = new Point2D(x + OwnerX + X, y + OwnerY + Y);
+            if (_gumplingTop.HitTest(position, true) != null)
+                return true;
+            if (_gumplingMiddle.HitTest(position, true) != null)
+                return true;
+            if (_gumplingBottom.HitTest(position, true) != null)
+                return true;
+            if (_gumplingExpander.HitTest(position, true) != null)
+                return true;
+            return false;
         }
 
         public override void Update(GameTime gameTime)

@@ -30,10 +30,10 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
                 if (_gump != null)
                     _gump.Dispose();
                 _gump = new GumpPic(this, 0, 0, 0, (_useLargeMap ? 5011 : 5010), 0);
-                _gump.HandlesMouseInput = true;
                 _gump.OnMouseClick = onClickMap;
                 _gump.OnMouseDoubleClick = onDoubleClickMap;
-                _gump.MakeADragger(this);
+                _gump.MakeDragger(this);
+                _gump.MakeCloseTarget(this);
                 AddGumpling(_gump);
             }
 
@@ -47,10 +47,7 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
 
         void onClickMap(int x, int y, MouseButton button)
         {
-            if (button == MouseButton.Right)
-            {
-                Dispose();
-            }
+
         }
 
         void onDoubleClickMap(int x, int y, MouseButton button)

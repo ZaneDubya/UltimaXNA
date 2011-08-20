@@ -41,8 +41,8 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
         {
             IsMovable = true;
             AddGumpling(new GumpPic(this, 0, 0, 0, 0x2A6C, 0));
-            LastGumpling.MakeADragger(this);
-            LastGumpling.OnMouseClick += onGumpClick;
+            LastGumpling.MakeDragger(this);
+            LastGumpling.MakeCloseTarget(this);
 
 
             AddGumpling(new TextLabelAscii(this, 0, 54, 44, 1, 6, "" + m.Name.ToString()));
@@ -99,14 +99,6 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
             AddGumpling(new TextLabelAscii(this, 0, 277, 70, 1, 6, "" + m.DamageMin + "/" + m.DamageMax));
             gumplingsToUpdate.Add(LastGumpling);
 
-        }
-
-        void onGumpClick(int x, int y, MouseButton button)
-        {
-            if (button == MouseButton.Right)
-            {
-                Dispose();
-            }
         }
 
         public override void Update(GameTime gameTime)

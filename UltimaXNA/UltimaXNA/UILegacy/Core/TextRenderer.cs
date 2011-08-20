@@ -13,8 +13,8 @@ namespace UltimaXNA.UILegacy
     class TextRenderer
     {
         private Texture2D _texture;
-        public int TextureWidth { get { return _texture.Width; } }
-        public int TextureHeight { get { return _texture.Height; } }
+        public int TextureWidth { get { return (_texture != null) ? _texture.Width : 0; } }
+        public int TextureHeight { get { return (_texture != null) ? _texture.Height : 0; } }
 
         private HTMLRegions _href;
         public HTMLRegions HREFRegions { get { return _href; } }
@@ -200,7 +200,15 @@ namespace UltimaXNA.UILegacy
                     // are we mouse over this image?
                     sourceRect.X = 0;
                     sourceRect.Y = 0;
-                    Texture2D texture = (image.ImageOver != null && image.RegionIndex == _activeHREF) ? image.ImageOver : null;
+                    Texture2D texture = null;
+
+                    if (image.RegionIndex == _activeHREF)
+                    {
+                        if (_activeHREF_usedownhue)
+                            texture = image.ImageDown;
+                        if (texture == null)
+                            texture = image.ImageOver;
+                    }
 
                     if (texture == null)
                         texture = image.Image;

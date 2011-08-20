@@ -25,19 +25,10 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
             IsMovable = true;
 
             AddGumpling(new GumpPicContainer(this, 0, 0, 0, _data.GumpID, 0, _item));
-            LastGumpling.HandlesMouseInput = true;
-            LastGumpling.MakeADragger(this);
-            LastGumpling.OnMouseClick += onGumpClick;
+            LastGumpling.MakeDragger(this);
+            LastGumpling.MakeCloseTarget(this);
 
             _tickerText = (HtmlGump)AddGumpling(new HtmlGump(this, 0, 50, 50, 0, 0, 0, 0, string.Empty));
-        }
-
-        void onGumpClick(int x, int y, MouseButton button)
-        {
-            if (button == MouseButton.Right)
-            {
-                Dispose();
-            }
         }
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)

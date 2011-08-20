@@ -295,7 +295,7 @@ namespace UltimaXNA.UILegacy
             // Get the list of controls under the mouse cursor
             foreach (Control c in workingControls)
             {
-                Control[] mouseOverControls = c.HitTest(_input.MousePosition);
+                Control[] mouseOverControls = c.HitTest(_input.MousePosition, false);
                 if (mouseOverControls != null)
                 {
                     focusedControls = mouseOverControls;
