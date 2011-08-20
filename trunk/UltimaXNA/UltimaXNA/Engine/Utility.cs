@@ -37,6 +37,18 @@ namespace UltimaXNA
     /// </summary>
     public class Utility
     {
+        public const float Pi = (float)Math.PI;
+
+        public static Matrix ProjectionMatrixScreen
+        {
+            get { return Matrix.CreateOrthographicOffCenter(0, 800f, 600f, 0f, Int16.MinValue, Int16.MaxValue); }
+        }
+
+        public static Matrix ProjectionMatrixWorld
+        {
+            get { return Matrix.Identity; }
+        }
+
         #region Buffer Formatting
         /// <summary>
         /// Formats the buffer to an output to a hex editor view of the data

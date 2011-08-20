@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Input;
+using UltimaXNA.Graphics;
 
 namespace UltimaXNA.UILegacy.Gumplings
 {
@@ -26,9 +27,9 @@ namespace UltimaXNA.UILegacy.Gumplings
         public int ButtonID = 0;
         public string Caption = string.Empty;
 
-        internal bool MouseDownOnThis { get { return (_clicked && _manager.MouseOverControl == this); } }
+        internal bool MouseDownOnThis { get { return (_clicked); } }
 
-        TextRenderer _textRenderer = new TextRenderer();
+        TextRenderer _textRenderer;
 
         public Button(Control owner, int page)
             : base(owner, page)
@@ -64,6 +65,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             ButtonType = buttonType;
             ButtonParameter = param;
             ButtonID = buttonID;
+            _textRenderer = new TextRenderer("", 0, true);
         }
 
         public override void Update(GameTime gameTime)
@@ -87,6 +89,9 @@ namespace UltimaXNA.UILegacy.Gumplings
             else
                 _texture = _gumpUp;
 
+            if (Caption != "")
+                _textRenderer.Text = Caption;
+
             base.Update(gameTime);
         }
 
@@ -95,11 +100,10 @@ namespace UltimaXNA.UILegacy.Gumplings
             spriteBatch.Draw2D(_texture, Position, 0, false, false);
             if (Caption != string.Empty)
             {
-                _textRenderer.RenderText(Caption, true);
                 int yoffset = MouseDownOnThis ? 1 : 0;
-                spriteBatch.Draw2D(_textRenderer.Texture, 
-                    new Point2D(X + (Width - _textRenderer.Texture.Width) / 2,
-                        Area.Y + yoffset + (_texture.Height - _textRenderer.Texture.Height) / 2), 0, false, false);
+                _textRenderer.Draw(spriteBatch, 
+                    new Point2D(X + (Width - _textRenderer.TextureWidth) / 2,
+                        Area.Y + yoffset + (_texture.Height - _textRenderer.TextureHeight) / 2));
             }
             base.Draw(spriteBatch);
         }

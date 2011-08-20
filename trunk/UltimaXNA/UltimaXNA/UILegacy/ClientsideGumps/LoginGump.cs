@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UltimaXNA.UILegacy.Gumplings;
 using UltimaXNA.Client;
+using UltimaXNA.Graphics;
 
 namespace UltimaXNA.UILegacy.ClientsideGumps
 {

@@ -59,28 +59,6 @@ namespace UltimaXNA.SceneManagement
             base.Update(gameTime);
             parseKeyboard();
 
-            /*if (timesSet == false)
-            {
-                timesStart = ClientVars.TheTime;
-                timesSet = true;
-            }
-
-            if (ClientVars.TheTime - timesStart < 20f)
-            {
-                float time = ClientVars.TheTime - timesStart;
-                time %= 4f;
-                if (time < 2f)
-                {
-                    _position.X--;
-                    _position.Y++;
-                }
-                else
-                {
-                    _position.X++;
-                    _position.Y--;
-                }
-            }*/
-
             World.CenterPosition = _position;
             World.Update(gameTime);
         }
@@ -90,12 +68,19 @@ namespace UltimaXNA.SceneManagement
             World.Draw(gameTime);
         }
 
-
-
-
         bool edit_IsEditing = false;
         int editing_Value = 0;
-        int editing_Size = 0;
+
+        private int _editing_Radius = 0;
+        public int EditingRadius
+        {
+            get { return _editing_Radius; }
+            set
+            {
+                World.GroundHighlightRadius = _editing_Radius = value;
+            }
+        }
+
         List<Position3D> edit_Tiles = new List<Position3D>();
 
         private void edit_Begin(int editValue)
@@ -134,6 +119,7 @@ namespace UltimaXNA.SceneManagement
                     for (int ix = -2; ix <= 2; ix++)
                     {
                         World.Map.GetMapTile(ix + x, iy + y, true).GroundTile.FlushSurroundings();
+                        World.Map.GetMapTile(ix + x, iy + y, true).GroundTile.UpdateSurroundingsIfNecessary(World.Map);
                     }
                 }
             }
@@ -143,15 +129,23 @@ namespace UltimaXNA.SceneManagement
 
         private void edit_parseKeyboard()
         {
+            List<InputEventKB> events = Input.GetKeyboardEvents();
+            foreach (InputEventKB e in events)
+            {
+                if (e.KeyCode >= WinKeys.D0 && e.KeyCode <= WinKeys.D9)
+                {
+                    EditingRadius = e.KeyCode - WinKeys.D0;
+                }
+            }
             for (int k = (int)WinKeys.D0; k <= (int)WinKeys.D9; k++)
             {
                 if (Input.HandleKeyboardEvent(KeyboardEvent.Down, (WinKeys)k, false, true, false))
-                    editing_Size = k - (int)WinKeys.D0;
+                    EditingRadius = k - (int)WinKeys.D0;
                 else if (Input.HandleKeyboardEvent(KeyboardEvent.Down, (WinKeys)k, false, true, false))
                     edit_Value = k - (int)WinKeys.D0;
             }
 
-            if (ClientVars.DEBUG_HighlightMouseOverObjects)
+            if (EditingRadius > 0)
             {
                 if (Input.HandleMouseEvent(MouseEvent.Down, MouseButton.Left))
                     edit_Begin(edit_Value);
@@ -169,10 +163,11 @@ namespace UltimaXNA.SceneManagement
 
             if (edit_IsEditing && World.MouseOverObject != null)
             {
+                int radius = EditingRadius - 1;
                 int x = (int)World.MouseOverObject.Position.X;
                 int y = (int)World.MouseOverObject.Position.Y;
-                for (int iy = -editing_Size; iy <= editing_Size; iy++)
-                    for (int ix = -editing_Size; ix <= editing_Size; ix++)
+                for (int iy = -radius; iy <= radius; iy++)
+                    for (int ix = -radius; ix <= radius; ix++)
                     {
                         edit_AddPoint(x + ix, y + iy);
                     }

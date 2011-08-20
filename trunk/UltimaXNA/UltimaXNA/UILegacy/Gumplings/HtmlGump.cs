@@ -2,11 +2,15 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Input;
+using UltimaXNA.Graphics;
+using UltimaXNA.UILegacy.HTML;
 
 namespace UltimaXNA.UILegacy.Gumplings
 {
     class HtmlGump : Control
     {
+        public int ScrollX = 0, ScrollY = 0;
+
         string _text = string.Empty;
         bool _textChanged = false;
         public string Text
@@ -21,11 +25,43 @@ namespace UltimaXNA.UILegacy.Gumplings
                 }
             }
         }
-        bool _background = false;
-        bool _scrollbar = false;
-        int _width, _height;
 
-        TextRenderer _html = new TextRenderer();
+        Texture2D _backgroundTexture;
+        bool _background = false;
+        public bool Background
+        {
+            get { return _background; }
+            set { _background = value; }
+        }
+
+        bool _scrollbar = false;
+        public bool Scrollbar
+        {
+            get { return _scrollbar; }
+            set { _scrollbar = value; }
+        }
+
+        public override int Width
+        {
+            get
+            {
+                return base.Width;
+            }
+            set
+            {
+                if (value != base.Width)
+                {
+                    base.Width = value;
+                    if (_textRenderer != null)
+                    {
+                        _textRenderer.MaxWidth = value;
+                        _textChanged = true;
+                    }
+                }
+            }
+        }
+
+        TextRenderer _textRenderer;
 
         public HtmlGump(Control owner, int page)
             : base(owner, page)
@@ -57,12 +93,13 @@ namespace UltimaXNA.UILegacy.Gumplings
         void buildGumpling(int x, int y, int width, int height, int background, int scrollbar, string text)
         {
             Position = new Point2D(x, y);
-            _width = width;
-            _height = height;
+            Width = width;
+            Height = height;
             Size = new Point2D(width, height);
             Text = text;
             _background = (background == 1) ? true : false;
             _scrollbar = (scrollbar == 1) ? true : false;
+            _textRenderer = new TextRenderer(text, width, true);
         }
 
         public override void Update(GameTime gameTime)
@@ -72,42 +109,42 @@ namespace UltimaXNA.UILegacy.Gumplings
             if (_textChanged)
             {
                 _textChanged = false;
-                _html.RenderText(Text, true, _width, _height);
-                Size = new Point2D(_html.Texture.Width, _html.Texture.Height);
-                HandlesMouseInput = (_html.HREFRegions.Count > 0);
+                _textRenderer.Text = Text;
             }
+            HandlesMouseInput = (_textRenderer.HREFRegions.Count > 0);
 
             base.Update(gameTime);
         }
 
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
-            spriteBatch.Draw2D(_html.Texture, Position, 0, false, false);
-
-            foreach (HREFRegion r in _html.HREFRegions.Regions)
+            if (_background && false)
             {
-                if (r.Index == _hrefOver)
+                if (_backgroundTexture == null)
                 {
-                    if (_clicked)
-                        spriteBatch.Draw2D(_html.Texture, new Point2D(X + r.Area.X, Y + r.Area.Y), r.Area, r.Data.DownHue, false, false);
-                    else
-                        spriteBatch.Draw2D(_html.Texture, new Point2D(X + r.Area.X, Y + r.Area.Y), r.Area, r.Data.OverHue, false, false);
+                    _backgroundTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
+                    _backgroundTexture.SetData<Color>(new Color[] { Color.White });
                 }
-                else
-                {
-                    spriteBatch.Draw2D(_html.Texture, new Point2D(X + r.Area.X, Y + r.Area.Y), r.Area, r.Data.UpHue, false, false);
-                }
+                spriteBatch.Draw2D(_backgroundTexture, new Rectangle(OwnerX + Area.X, OwnerY + Area.Y, Width, Height), 0, false, false);
             }
+
+            _textRenderer.ActiveHREF = _hrefOver;
+            _textRenderer.ActiveHREF_UseDownHue = _clicked;
+            _textRenderer.Draw(spriteBatch, new Rectangle(X, Y, Size.X, Size.Y), ScrollX, ScrollY);
             
             base.Draw(spriteBatch);
         }
 
         protected override bool _hitTest(int x, int y)
         {
-            if (_html.HREFRegions.Count > 0 && _html.HREFRegions.RegionfromPoint(new Point(x, y)) != null)
+            if (_textRenderer.HREFRegions.Count > 0)
             {
-                _hrefOver = _html.HREFRegions.RegionfromPoint(new Point(x, y)).Index;
-                return true;
+                HTMLRegion region = _textRenderer.HREFRegions.RegionfromPoint(new Point(x + ScrollX, y + ScrollY));
+                if (region != null)
+                {
+                    _hrefOver = region.Index;
+                    return true;
+                }
             }
             return false;
         }
@@ -128,20 +165,20 @@ namespace UltimaXNA.UILegacy.Gumplings
             _hrefClicked = -1;
         }
 
-        protected override void mouseOver(int x, int y)
-        {
-
-        }
-
         protected override void mouseClick(int x, int y, MouseButton button)
         {
             if (_hrefOver != -1 && _hrefClicked == _hrefOver)
             {
                 if (button == MouseButton.Left)
                 {
-                    ActivateByHREF(_html.HREFRegions.Region(_hrefOver).Data.HREF);
+                    ActivateByHREF(_textRenderer.HREFRegions.Region(_hrefOver).HREFAttributes.HREF);
                 }
             }
+        }
+
+        protected override void mouseOver(int x, int y)
+        {
+
         }
     }
 }

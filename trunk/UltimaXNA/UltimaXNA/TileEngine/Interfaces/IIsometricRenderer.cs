@@ -39,5 +39,6 @@ namespace UltimaXNA.TileEngine
         int PersonalLightning { get; set; }
         int OverallLightning { get; set; }
         float LightDirection { get; set; }
+        int GroundHighlightRadius { get; set; }
     }
 }

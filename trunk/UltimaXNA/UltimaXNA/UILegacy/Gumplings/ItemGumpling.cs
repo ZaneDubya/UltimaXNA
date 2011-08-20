@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Entities;
 using UltimaXNA.Input;
+using UltimaXNA.Graphics;
 
 namespace UltimaXNA.UILegacy.Gumplings
 {

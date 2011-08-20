@@ -157,6 +157,7 @@ namespace UltimaXNA
 
         // Maintain an accurate count of frames per second.
         static float _FPS = 0, _Frames = 0, _ElapsedSeconds = 0;
+        public static int FPS { get { return (int)_FPS; } }
         public static bool UpdateFPS(GameTime gameTime)
         {
             _Frames++;

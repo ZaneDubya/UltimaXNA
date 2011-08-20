@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Input;
 using UltimaXNA.Extensions;
 using UltimaXNA.Input;
 using UltimaXNA.Entities;
+using UltimaXNA.Graphics;
 
 namespace UltimaXNA.UILegacy
 {

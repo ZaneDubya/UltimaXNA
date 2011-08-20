@@ -20,7 +20,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 #endregion
 
-namespace UltimaXNA.TileEngine
+namespace UltimaXNA.Graphics
 {
     public struct VertexPositionNormalTextureHue : IVertexType
     {

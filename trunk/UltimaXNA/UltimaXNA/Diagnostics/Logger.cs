@@ -32,40 +32,14 @@ namespace UltimaXNA.Diagnostics
     /// <summary>
     /// The Logger class is a simple wrapper for log4net.
     /// </summary>
-    public class Logger : ILoggingService
+    public class Logger
     {
-        static bool Initialized = false;
-
-        // log4net.ILog _log;
-
-        protected string LoggerType;
-
-        public event EventHandler<StatusUpdateEventArgs> StatusUpdate;
-
-        public Logger(Type type)
-            : this(type.ToString())
-        {
-        }
-
-        public Logger(string loggerType)
-        {
-            LoggerType = loggerType;
-
-            if (!Initialized) 
-            {
-                // string path = "log4net.config";
-
-                // log4net.Config.XmlConfigurator.ConfigureAndWatch(new System.IO.FileInfo(path));
-                Initialized = true;
-            }
-
-            // _log = log4net.LogManager.GetLogger(LoggerType);
-        }
+        public static event EventHandler<StatusUpdateEventArgs> StatusUpdate;
 
         /// <summary>
         /// Logs debug information to the objects Logger.  This will also raise the StatusUpdate event
         /// </summary>
-        public virtual void Debug(object obj)
+        public static void Debug(object obj)
         {
             // OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Debug, obj.ToString()));
             Console.WriteLine(obj.ToString()); // _log.Debug(obj.ToString());
@@ -75,7 +49,7 @@ namespace UltimaXNA.Diagnostics
         /// Logs debug information to the objects Logger.  This will also raise the StatusUpdate event
         /// </summary>
         /// <param name="message">message string</param>
-        public virtual void Debug(string message)
+        public static void Debug(string message)
         {
             // OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Debug, message));
             Console.WriteLine(message); // _log.Debug(message);
@@ -86,7 +60,7 @@ namespace UltimaXNA.Diagnostics
         /// </summary>
         /// <param name="message">A composite format string</param>
         /// <param name="objects">An System.Object array containing zero or more objects to format</param>
-        public virtual void Debug(string message, params object[] objects)
+        public static void Debug(string message, params object[] objects)
         {
             // OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Debug, message, objects));
             Console.WriteLine(string.Format(message, objects)); // _log.DebugFormat(message, objects);
@@ -95,7 +69,7 @@ namespace UltimaXNA.Diagnostics
         /// <summary>
         /// Logs information to the objects Logger.  This will also raise the StatusUpdate event
         /// </summary>
-        public virtual void Info(object obj)
+        public static void Info(object obj)
         {
             // Utility.PushColor(ConsoleColor.White);
             // OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Info, obj.ToString()));
@@ -107,7 +81,7 @@ namespace UltimaXNA.Diagnostics
         /// Logs information to the objects Logger.  This will also raise the StatusUpdate event
         /// </summary>
         /// <param name="message">message string</param>
-        public virtual void Info(string message)
+        public static void Info(string message)
         {
             // Utility.PushColor(ConsoleColor.White);
             // OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Info, message));
@@ -120,7 +94,7 @@ namespace UltimaXNA.Diagnostics
         /// </summary>
         /// <param name="message">A composite format string</param>
         /// <param name="objects">An System.Object array containing zero or more objects to format</param>
-        public virtual void Info(string message, params object[] objects)
+        public static void Info(string message, params object[] objects)
         {
             // Utility.PushColor(ConsoleColor.White);
             // OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Info, message, objects));
@@ -131,7 +105,7 @@ namespace UltimaXNA.Diagnostics
         /// <summary>
         /// Logs warning information to the objects Logger.  This will also raise the StatusUpdate event
         /// </summary>
-        public virtual void Warn(object obj)
+        public static void Warn(object obj)
         {
             // Utility.PushColor(ConsoleColor.Yellow);
             // OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Warn, obj.ToString()));
@@ -146,7 +120,7 @@ namespace UltimaXNA.Diagnostics
         /// Logs warning information to the objects Logger.  This will also raise the StatusUpdate event
         /// </summary>
         /// <param name="message">message string</param>
-        public virtual void Warn(string message)
+        public static void Warn(string message)
         {
             // Utility.PushColor(ConsoleColor.Yellow);
             // OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Warn, message));
@@ -162,7 +136,7 @@ namespace UltimaXNA.Diagnostics
         /// </summary>
         /// <param name="message">A composite format string</param>
         /// <param name="objects">An System.Object array containing zero or more objects to format</param>
-        public virtual void Warn(string message, params object[] objects)
+        public static void Warn(string message, params object[] objects)
         {
             // Utility.PushColor(ConsoleColor.Yellow);
             // OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Warn, message, objects));
@@ -176,7 +150,7 @@ namespace UltimaXNA.Diagnostics
         /// <summary>
         /// Logs error information to the objects Logger.  This will also raise the StatusUpdate event
         /// </summary>
-        public virtual void Error(object obj)
+        public static void Error(object obj)
         {
             // Utility.PushColor(ConsoleColor.Red);
             // OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Error, obj.ToString()));
@@ -191,7 +165,7 @@ namespace UltimaXNA.Diagnostics
         /// Logs error information to the objects Logger.  This will also raise the StatusUpdate event
         /// </summary>
         /// <param name="message">message string</param>
-        public virtual void Error(string message)
+        public static void Error(string message)
         {
             // Utility.PushColor(ConsoleColor.Red);
             // OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Error, message));
@@ -207,7 +181,7 @@ namespace UltimaXNA.Diagnostics
         /// </summary>
         /// <param name="message">A composite format string</param>
         /// <param name="objects">An System.Object array containing zero or more objects to format</param>
-        public virtual void Error(string message, params object[] objects)
+        public static void Error(string message, params object[] objects)
         {
             // Utility.PushColor(ConsoleColor.Red);
             // OnStatusUpdate(this, new StatusUpdateEventArgs(StatusLevel.Error, message, objects));
@@ -221,7 +195,7 @@ namespace UltimaXNA.Diagnostics
         /// <summary>
         /// Logs fatal error information to the objects Logger.  This will also raise the StatusUpdate event
         /// </summary>
-        public virtual void Fatal(object obj)
+        public static void Fatal(object obj)
         {
             Fatal(obj.ToString());
         }
@@ -230,7 +204,7 @@ namespace UltimaXNA.Diagnostics
         /// Logs fatal error information to the objects Logger.  This will also raise the StatusUpdate event
         /// </summary>
         /// <param name="message">message string</param>
-        public virtual void Fatal(string message)
+        public static void Fatal(string message)
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(message);
@@ -245,7 +219,7 @@ namespace UltimaXNA.Diagnostics
         /// </summary>
         /// <param name="message">A composite format string</param>
         /// <param name="objects">An System.Object array containing zero or more objects to format</param>
-        public virtual void Fatal(string message, params object[] objects)
+        public static void Fatal(string message, params object[] objects)
         {
             Fatal(string.Format(message, objects));
         }
@@ -255,7 +229,7 @@ namespace UltimaXNA.Diagnostics
         /// </summary>
         /// <param name="sender">The object making the call</param>
         /// <param name="e">A StatusUpdateEventArgs that contains the event data.</param>
-        protected virtual void OnStatusUpdate(object sender, StatusUpdateEventArgs e)
+        protected static void OnStatusUpdate(object sender, StatusUpdateEventArgs e)
         {
             if (StatusUpdate != null)
                 StatusUpdate(sender, e);

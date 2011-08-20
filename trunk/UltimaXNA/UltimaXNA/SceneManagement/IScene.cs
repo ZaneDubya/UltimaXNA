@@ -8,7 +8,7 @@ namespace UltimaXNA.SceneManagement
 {
     public delegate void TransitionCompleteHandler();
 
-    public interface IScene : IProgressNotifier, IStatusNotifier, IDisposable
+    public interface IScene : IProgressNotifier, IDisposable
     {
         Game Game { get; }
         SceneState SceneState { get; set; }
@@ -17,8 +17,6 @@ namespace UltimaXNA.SceneManagement
         bool IsInitialized { get; set; }
 
         ISceneService SceneManager { get; }
-        ILoggingService Log { get; }
-        // IInputService Input { get; }
         IUIManager UI { get; }
 
         event TransitionCompleteHandler TransitionCompleted;

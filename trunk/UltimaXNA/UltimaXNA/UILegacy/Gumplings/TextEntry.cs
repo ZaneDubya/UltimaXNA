@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Input;
 using UltimaXNA.Input;
+using UltimaXNA.Graphics;
 
 namespace UltimaXNA.UILegacy.Gumplings
 {
@@ -14,14 +15,12 @@ namespace UltimaXNA.UILegacy.Gumplings
         public int LimitSize = 0;
         public bool IsPasswordField = false;
 
-        bool _textChanged = false;
         string _text = string.Empty;
         public string Text
         {
             get { return _text; }
             set
             {
-                _textChanged = true;
                 _text = value;
             }
         }
@@ -36,8 +35,8 @@ namespace UltimaXNA.UILegacy.Gumplings
         float _secondsSinceLastBlink = 0f;
         const float _SecondsPerBlink = 0.5f;
 
-        TextRenderer _textRenderer = new TextRenderer();
-        TextRenderer _caratRenderer = new TextRenderer();
+        TextRenderer _textRenderer;
+        TextRenderer _caratRenderer;
 
         public TextEntry(Control owner, int page)
             : base(owner, page)
@@ -79,19 +78,12 @@ namespace UltimaXNA.UILegacy.Gumplings
             Text = text;
             LimitSize = limitSize;
             _caratBlinkOn = false;
+            _textRenderer = new TextRenderer("", width, true);
+            _caratRenderer = new TextRenderer("", width, true);
         }
 
         public override void Update(GameTime gameTime)
         {
-            if (_textChanged)
-            {
-                _textChanged = false;
-                if (IsPasswordField)
-                    _textRenderer.RenderText(HtmlTag + new string('*', Text.Length), true, Area.Width, Area.Height);
-                else
-                    _textRenderer.RenderText(HtmlTag + Text, true, Area.Width, Area.Height);
-            }
-
             if (_manager.KeyboardFocusControl == this)
             {
                 // if we're not already focused, turn the carat on immediately.
@@ -123,18 +115,17 @@ namespace UltimaXNA.UILegacy.Gumplings
                 _caratBlinkOn = false;
             }
 
+            _textRenderer.Text = HtmlTag + (IsPasswordField ? new string('*', Text.Length) : Text);
+            _caratRenderer.Text = HtmlTag + (_legacyCarat ? "_" : "|");
+
             base.Update(gameTime);
         }
 
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
-            spriteBatch.Draw2D(_textRenderer.Texture, Position, Hue, false, false);
-
+            _textRenderer.Draw(spriteBatch, Position);
             if (_caratBlinkOn)
-            {
-                _caratRenderer.RenderText(HtmlTag + (_legacyCarat ? "_" : "|"), true);
-                spriteBatch.Draw2D(_caratRenderer.Texture, new Point2D(X + _textRenderer.Texture.Width, Y), Hue, false, false);
-            }
+                _caratRenderer.Draw(spriteBatch, new Point2D(X + _textRenderer.TextureWidth, Y));
             
             base.Draw(spriteBatch);
         }

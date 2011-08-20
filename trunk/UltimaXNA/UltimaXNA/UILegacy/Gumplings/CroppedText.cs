@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using UltimaXNA.Graphics;
 
 namespace UltimaXNA.UILegacy.Gumplings
 {
@@ -8,7 +9,7 @@ namespace UltimaXNA.UILegacy.Gumplings
     {
         public int Hue = 0;
         public string Text = string.Empty;
-        TextRenderer _textRenderer = new TextRenderer();
+        TextRenderer _textRenderer;
 
         public CroppedText(Control owner, int page)
             : base(owner, page)
@@ -41,12 +42,12 @@ namespace UltimaXNA.UILegacy.Gumplings
             Size = new Point2D(width, height);
             Hue = hue;
             Text = lines[textIndex];
+            _textRenderer = new TextRenderer(Text, width, true);
         }
 
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
-            _textRenderer.RenderText(Text, true, Area.Width, Area.Height);
-            spriteBatch.Draw2D(_textRenderer.Texture, Position, 0, false, false);
+            _textRenderer.Draw(spriteBatch, new Rectangle(X, Y, Size.X, Size.Y), 0, 0);
             base.Draw(spriteBatch);
         }
     }

@@ -8,7 +8,6 @@ namespace UltimaXNA.SceneManagement
     public class SceneManager : DrawableGameComponent, ISceneService
     {
         IScene _currentScene;
-        ILoggingService _loggingService;
         IUIManager _ui;
         bool _isTransitioning = false;
 
@@ -29,20 +28,20 @@ namespace UltimaXNA.SceneManagement
 
                 if (_currentScene != null)
                 {
-                    _loggingService.Debug("Starting scene transition from {0} to {1}", _currentScene.GetType().Name, value.GetType().Name);
+                    Logger.Debug("Starting scene transition from {0} to {1}", _currentScene.GetType().Name, value.GetType().Name);
                     _currentScene.SceneState = SceneState.TransitioningOff;
 
                     _currentScene.TransitionCompleted += new TransitionCompleteHandler(delegate()
                     {
-                        _loggingService.Debug("Scene transition complete.");
-                        _loggingService.Debug("Disposing {0}.", _currentScene.GetType().Name);
+                        Logger.Debug("Scene transition complete.");
+                        Logger.Debug("Disposing {0}.", _currentScene.GetType().Name);
 
                         _currentScene.Dispose();
                         _currentScene = value;
 
                         if (!_currentScene.IsInitialized)
                         {
-                            _loggingService.Debug("Initializing {0}.", _currentScene.GetType().Name);
+                            Logger.Debug("Initializing {0}.", _currentScene.GetType().Name);
                             _currentScene.Intitialize();
                         }
 
@@ -51,12 +50,12 @@ namespace UltimaXNA.SceneManagement
                 }
                 else
                 {
-                    _loggingService.Debug("Starting scene {0}", value.GetType().Name);
+                    Logger.Debug("Starting scene {0}", value.GetType().Name);
                     _currentScene = value;
 
                     if (!_currentScene.IsInitialized)
                     {
-                        _loggingService.Debug("Initializing {0}.", _currentScene.GetType().Name);
+                        Logger.Debug("Initializing {0}.", _currentScene.GetType().Name);
                         _currentScene.Intitialize();
                     }
 
@@ -68,7 +67,6 @@ namespace UltimaXNA.SceneManagement
         public SceneManager(Game game)
             : base(game)
         {
-            _loggingService = game.Services.GetService<ILoggingService>(true);
             _ui = Game.Services.GetService<IUIManager>(true);
             _ui.AddRequestLogoutNotifier(uiRequestsLogout);
         }

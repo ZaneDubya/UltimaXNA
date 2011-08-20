@@ -26,6 +26,7 @@ using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Input;
 using UltimaXNA.UILegacy.Gumplings;
 using UltimaXNA.Entities;
+using UltimaXNA.Graphics;
 
 namespace UltimaXNA.UILegacy.ClientsideGumps
 {

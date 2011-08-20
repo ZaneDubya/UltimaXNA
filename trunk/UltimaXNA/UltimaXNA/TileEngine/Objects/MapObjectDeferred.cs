@@ -20,6 +20,7 @@ using System.Text;
 using UltimaXNA.Entities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using UltimaXNA.Graphics;
 
 namespace UltimaXNA.TileEngine
 {

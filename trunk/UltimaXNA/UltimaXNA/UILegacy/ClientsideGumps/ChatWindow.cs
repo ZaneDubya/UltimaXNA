@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.UILegacy.Gumplings;
+using UltimaXNA.Graphics;
 
 namespace UltimaXNA.UILegacy.ClientsideGumps
 {
@@ -48,8 +49,8 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
             int y = _input.Y - 20;
             for (int i = _textEntries.Count - 1; i >= 0; i--)
             {
-                y -= _textEntries[i].Texture.Height;
-                spriteBatch.Draw2D(_textEntries[i].Texture, new Point2D(1, y), 0, true, _textEntries[i].Alpha < 1.0f);
+                y -= _textEntries[i].TextHeight;
+                _textEntries[i].Draw(spriteBatch, new Point2D(1, y));
             }
             base.Draw(spriteBatch);
         }
@@ -75,21 +76,22 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
         public bool IsExpired { get { return _isExpired; } }
         float _alpha;
         public float Alpha { get { return _alpha; } }
+        private int _width = 0;
 
         const float Time_Display = 10.0f;
         const float Time_Fadeout = 4.0f;
 
         private TextRenderer _renderer;
-        public Texture2D Texture { get { return _renderer.Texture; } }
+        public int TextHeight { get { return _renderer.TextureHeight; } }
 
         public ChatLineTimed(string text, int width)
         {
             _text = text;
             _isExpired = false;
             _alpha = 1.0f;
+            _width = width;
 
-            _renderer = new TextRenderer();
-            _renderer.RenderText(_text, true, width, 0);
+            _renderer = new TextRenderer(_text, _width, true);
         }
 
         public void Update(GameTime gameTime)
@@ -103,6 +105,12 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
             {
                 _alpha = 1.0f - ((time) - (Time_Display - Time_Fadeout)) / Time_Fadeout;
             }
+            _renderer.Transparent = (_alpha < 1.0f);
+        }
+
+        public void Draw(ExtendedSpriteBatch sb, Point2D position)
+        {
+            _renderer.Draw(sb, position);
         }
 
         public void Dispose()
