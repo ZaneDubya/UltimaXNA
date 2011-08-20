@@ -7,9 +7,11 @@ using UltimaXNA.UILegacy.HTML;
 
 namespace UltimaXNA.UILegacy.Gumplings
 {
-    class HtmlGump : Control
+    class HtmlGump : Gump
     {
         public int ScrollX = 0, ScrollY = 0;
+        ScrollBar _scrollbar;
+
 
         string _text = string.Empty;
         bool _textChanged = false;
@@ -34,11 +36,11 @@ namespace UltimaXNA.UILegacy.Gumplings
             set { _background = value; }
         }
 
-        bool _scrollbar = false;
-        public bool Scrollbar
+        bool _hasScrollbar = false;
+        public bool HasScrollbar
         {
-            get { return _scrollbar; }
-            set { _scrollbar = value; }
+            get { return _hasScrollbar; }
+            set { _hasScrollbar = value; }
         }
 
         public override int Width
@@ -61,11 +63,24 @@ namespace UltimaXNA.UILegacy.Gumplings
             }
         }
 
+        public int ClientWidth
+        {
+            get
+            {
+                if (HasScrollbar)
+                    return Width - 15;
+                else
+                    return Width;
+            }
+        }
+
         TextRenderer _textRenderer;
 
         public HtmlGump(Control owner, int page)
-            : base(owner, page)
+            : base(0, 0)
         {
+            _owner = owner;
+            Page = page;
             _textChanged = true;
         }
 
@@ -98,8 +113,8 @@ namespace UltimaXNA.UILegacy.Gumplings
             Size = new Point2D(width, height);
             Text = text;
             _background = (background == 1) ? true : false;
-            _scrollbar = (scrollbar == 1) ? true : false;
-            _textRenderer = new TextRenderer(text, width, true);
+            _hasScrollbar = (scrollbar == 1) ? true : false;
+            _textRenderer = new TextRenderer(text, ClientWidth, true);
         }
 
         public override void Update(GameTime gameTime)
@@ -111,7 +126,21 @@ namespace UltimaXNA.UILegacy.Gumplings
                 _textChanged = false;
                 _textRenderer.Text = Text;
             }
+
             HandlesMouseInput = (_textRenderer.HREFRegions.Count > 0);
+
+            if (HasScrollbar)
+            {
+                if (_scrollbar == null)
+                    AddGumpling(_scrollbar = new ScrollBar(this, 0));
+                _scrollbar.X = Width - 15;
+                _scrollbar.Y = 0;
+                _scrollbar.Width = 15;
+                _scrollbar.Height = Height;
+                _scrollbar.MinValue = 0;
+                _scrollbar.MaxValue = _textRenderer.TextureHeight - Height;
+                ScrollY = _scrollbar.Value;
+            }
 
             base.Update(gameTime);
         }
@@ -137,6 +166,13 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         protected override bool _hitTest(int x, int y)
         {
+            Point2D position = new Point2D(x + OwnerX + X, y + OwnerY + Y);
+            if (HasScrollbar)
+            {
+                if (_scrollbar.HitTest(position, true) != null)
+                    return true;
+            }
+
             if (_textRenderer.HREFRegions.Count > 0)
             {
                 HTMLRegion region = _textRenderer.HREFRegions.RegionfromPoint(new Point(x + ScrollX, y + ScrollY));

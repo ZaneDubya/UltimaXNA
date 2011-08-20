@@ -96,5 +96,10 @@ namespace UltimaXNA
             UltimaClient.Send(new DropToLayerPacket(item.Serial, 0x00, EntitiesCollection.MySerial));
             _legacyUI.Cursor.ClearHolding();
         }
+
+        public static void UseSkill(int index)
+        {
+            UltimaClient.Send(new RequestSkillUsePacket(index));
+        }
     }
 }

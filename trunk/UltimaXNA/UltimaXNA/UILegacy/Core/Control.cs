@@ -202,13 +202,28 @@ namespace UltimaXNA.UILegacy
         }
 
         DragWidget _dragger;
-        public void MakeADragger(Control toMove)
+        public void MakeDragger(Control toMove)
         {
             this.HandlesMouseInput = true;
             _dragger = new DragWidget(this, _owner);
         }
 
-        public Control[] HitTest(Point2D position)
+        Control _closeTarget;
+        public void MakeCloseTarget(Control toClose)
+        {
+            _closeTarget = toClose;
+            this.HandlesMouseInput = true;
+            this.OnMouseClick += onCloseTargetClick;
+        }
+        void onCloseTargetClick(int x, int y, MouseButton button)
+        {
+            if (button == MouseButton.Right)
+            {
+                _closeTarget.Dispose();
+            }
+        }
+
+        public Control[] HitTest(Point2D position, bool alwaysHandleMouseInput)
         {
             List<Control> focusedControls = new List<Control>();
 
@@ -225,7 +240,7 @@ namespace UltimaXNA.UILegacy
             {
                 if (_hitTest((int)position.X - X - OwnerX, (int)position.Y - Y - OwnerY))
                 {
-                    if (this.HandlesMouseInput)
+                    if (alwaysHandleMouseInput || this.HandlesMouseInput)
                         focusedControls.Insert(0, this);
                     if (_controls != null)
                     {
@@ -233,7 +248,7 @@ namespace UltimaXNA.UILegacy
                         {
                             if ((c.Page == 0) || (c.Page == ActivePage))
                             {
-                                Control[] c1 = c.HitTest(position);
+                                Control[] c1 = c.HitTest(position, false);
                                 if (c1 != null)
                                 {
                                     for (int i = c1.Length - 1; i >= 0; i--)
