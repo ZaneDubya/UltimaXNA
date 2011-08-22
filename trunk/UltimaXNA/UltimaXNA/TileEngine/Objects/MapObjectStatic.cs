@@ -29,24 +29,31 @@ namespace UltimaXNA.TileEngine
             get { return (_noDraw); }
         }
 
+        Data.ItemData _itemData;
+        public Data.ItemData ItemData
+        {
+            get { return _itemData; }
+        }
+
         public MapObjectStatic(int staticTileID, int sortInfluence, Position3D position)
             : base(position)
         {
             ItemID = staticTileID;
             SortTiebreaker = sortInfluence;
-            
+
+            _itemData = Data.TileData.ItemData[ItemID & 0x3FFF];
+
             // Set threshold.
-            Data.ItemData itemData = Data.TileData.ItemData[ItemID & 0x3FFF];
-            int background = (itemData.Background) ? 0 : 1;
-            if (!itemData.Background)
+            int background = (_itemData.Background) ? 0 : 1;
+            if (!_itemData.Background)
                 SortThreshold++;
-            if (!(itemData.Height == 0))
+            if (!(_itemData.Height == 0))
                 SortThreshold++;
-            if (itemData.Surface)
+            if (_itemData.Surface)
                 SortThreshold--;
 
             // get no draw flag
-            if (itemData.Name == "nodraw" || ItemID <= 0)
+            if (_itemData.Name == "nodraw" || ItemID <= 0)
                 _noDraw = true;
 
             // set up draw variables

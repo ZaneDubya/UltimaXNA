@@ -52,26 +52,29 @@ namespace UltimaXNA.TileEngine
         }
 
         // Check if under a roof.
-        public void IsUnder(int nAltitude, out bool isUnderItem, out bool isUnderTerrain)
+        public void IsUnder(int originZ, out MapObject underItem, out MapObject underTerrain)
         {
-            isUnderItem = false;
-            isUnderTerrain = false;
+            underItem = null;
+            underTerrain = null;
 
             List<MapObject> iObjects = this.Items;
             for (int i = iObjects.Count - 1; i >= 0; i--)
             {
-                if (iObjects[i].Z <= nAltitude)
+                if (iObjects[i].Z <= originZ)
                     continue;
 
                 if (iObjects[i] is MapObjectStatic)
                 {
                     Data.ItemData iData = Data.TileData.ItemData[((MapObjectStatic)iObjects[i]).ItemID & 0x3FFF];
-                    if (iData.Roof || iData.Surface)
-                        isUnderItem = true;
+                    if (iData.Roof || iData.Surface || iData.Wall)
+                    {
+                        if (underItem == null || iObjects[i].Z < underItem.Z)
+                            underItem = iObjects[i];
+                    }
                 }
-                else if (iObjects[i] is MapObjectGround && iObjects[i].Z >= nAltitude + 20)
+                else if (iObjects[i] is MapObjectGround && iObjects[i].Z >= originZ + 20)
                 {
-                    isUnderTerrain = true;
+                    underTerrain = iObjects[i];
                 }
             }
         }
