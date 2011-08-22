@@ -102,6 +102,7 @@ namespace UltimaXNA.UILegacy
             {
                 if (_text != value)
                 {
+                    _mustResize = true;
                     _mustRender = true;
                     _text = value;
                 }
