@@ -219,11 +219,24 @@ namespace UltimaXNA.UILegacy.HTML
                                 case "width":
                                     switch (chunk.sTag)
                                     {
+                                        case "gumpimg":
                                         case "span":
                                             outAtoms[outAtoms.Count - 1].Width = int.Parse(value);
                                             break;
                                         default:
                                             Logger.Warn("width param encountered within " + chunk.sTag + " which does not use this param.");
+                                            break;
+                                    }
+                                    break;
+                                case "height":
+                                    switch (chunk.sTag)
+                                    {
+                                        case "gumpimg":
+                                        case "span":
+                                            outAtoms[outAtoms.Count - 1].Width = int.Parse(value);
+                                            break;
+                                        default:
+                                            Logger.Warn("height param encountered within " + chunk.sTag + " which does not use this param.");
                                             break;
                                     }
                                     break;
@@ -287,6 +300,7 @@ namespace UltimaXNA.UILegacy.HTML
         void addSpan(List<HTMLParser_Atom> outHTML, List<string> openTags, List<HREF_Attributes> openHREFs)
         {
             HTMLParser_AtomSpan atom = new HTMLParser_AtomSpan();
+            atom.Alignment = getAlignmentFromOpenTags(openTags);
 
             if (openHREFs.Count > 0)
                 atom.HREFAttributes = openHREFs[openHREFs.Count - 1];
@@ -297,6 +311,7 @@ namespace UltimaXNA.UILegacy.HTML
         void addGumpImage(List<HTMLParser_Atom> outHTML, List<string> openTags, List<HREF_Attributes> openHREFs)
         {
             HTMLParser_AtomImageGump atom = new HTMLParser_AtomImageGump(-1);
+            atom.Alignment = getAlignmentFromOpenTags(openTags);
 
             if (openHREFs.Count > 0)
                 atom.HREFAttributes = openHREFs[openHREFs.Count - 1];
@@ -323,23 +338,28 @@ namespace UltimaXNA.UILegacy.HTML
                     c.Font = enumHTMLFonts.Small;
                     break;
             }
-            string alignment = lastTag(openTags, new string[] { "center", "left", "right" });
-            switch (alignment)
-            {
-                case "center":
-                    c.Alignment = enumHTMLAlignments.Center;
-                    break;
-                case "left":
-                    c.Alignment = enumHTMLAlignments.Left;
-                    break;
-                case "right":
-                    c.Alignment = enumHTMLAlignments.Right;
-                    break;
-            }
+
+            c.Alignment = getAlignmentFromOpenTags(openTags);
             c.Color = currentColor;
             if (openHREFs.Count > 0)
                 c.HREFAttributes = openHREFs[openHREFs.Count - 1];
             outHTML.Add(c);
+        }
+
+        static string[] alignmentTags = new string[] { "center", "left", "right" };
+        static enumHTMLAlignments getAlignmentFromOpenTags(List<string> openTags)
+        {
+            string alignment = lastTag(openTags, alignmentTags);
+            switch (alignment)
+            {
+                case "center":
+                    return enumHTMLAlignments.Center;
+                case "left":
+                    return enumHTMLAlignments.Left;
+                case "right":
+                    return enumHTMLAlignments.Right;
+            }
+            return enumHTMLAlignments.Default;
         }
 
         static bool hasTag(List<string> tags, string tag)

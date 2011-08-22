@@ -26,7 +26,7 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
             {
                 _input = new TextEntry(this, 0, 1, _manager.Height - Data.UniText.FontHeight(0) + 4, 400, Data.UniText.FontHeight(0), 0, 0, 64, string.Empty);
                 _input.LegacyCarat = true;
-                AddGumpling(_input);
+                AddControl(_input);
             }
 
             int y = _input.Y - 48;
@@ -82,7 +82,7 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
         const float Time_Fadeout = 4.0f;
 
         private TextRenderer _renderer;
-        public int TextHeight { get { return _renderer.TextureHeight; } }
+        public int TextHeight { get { return _renderer.Height; } }
 
         public ChatLineTimed(string text, int width)
         {

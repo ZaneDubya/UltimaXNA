@@ -65,7 +65,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             ButtonType = buttonType;
             ButtonParameter = param;
             ButtonID = buttonID;
-            _textRenderer = new TextRenderer("", 0, true);
+            _textRenderer = new TextRenderer("", 100, true);
         }
 
         public override void Update(GameTime gameTime)
@@ -102,8 +102,8 @@ namespace UltimaXNA.UILegacy.Gumplings
             {
                 int yoffset = MouseDownOnThis ? 1 : 0;
                 _textRenderer.Draw(spriteBatch, 
-                    new Point2D(X + (Width - _textRenderer.TextureWidth) / 2,
-                        Area.Y + yoffset + (_texture.Height - _textRenderer.TextureHeight) / 2));
+                    new Point2D(X + (Width - _textRenderer.Width) / 2,
+                        Area.Y + yoffset + (_texture.Height - _textRenderer.Height) / 2));
             }
             base.Draw(spriteBatch);
         }

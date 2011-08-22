@@ -14,13 +14,13 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
         public SkillsGump()
             : base(0, 0)
         {
-            AddGumpling(_scroll = new ExpandableScroll(this, 0, 0, 0, 200));
+            AddControl(_scroll = new ExpandableScroll(this, 0, 0, 0, 200));
             _scroll.TitleGumpID = 0x834;
             _scroll.MakeDragger(this);
             _scroll.MakeCloseTarget(this);
             IsMovable = true;
 
-            AddGumpling(_list = new HtmlGump(this, 0, 10, 20, 180, 100, 0, 1, ""));
+            AddControl(_list = new HtmlGump(this, 0, 10, 20, 180, 100, 0, 1, ""));
             _list.Text = buildSkillsString();
         }
 
@@ -42,6 +42,7 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
                         return;
                 Interaction.UseSkill(skillIndex);
             }
+            _list.Text = buildSkillsString();
             base.ActivateByHREF(href);
         }
 
@@ -52,18 +53,19 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
             Skill[] skills = Data.Skills.List;
             foreach (Skill skill in skills)
             {
-                if (skill.UseButton)
-                {
-                    str.Append("<a href='skill=" + skill.Index +
-                        "' color='5b4f29' hovercolor='857951' activecolor='402708' text-decoration=none>" +
-                        "<gumpimg src='2103' hoversrc='2104' activesrc='2103'/><span width='2'/>" + skill.Name + "</a><br/>");
-                }
-                else
-                {
-                    str.Append("<span width='14'/><medium color=50422D>" + skill.Name + "</medium><br/>");
-                }
+                str.Append(string.Format(skill.UseButton ? kSkillName_UseButton : kSkillName_NoUseButton, skill.Index, skill.Name));
+                str.Append(string.Format(kSkillValue_Locked, "0.0"));
             }
             return str.ToString();
         }
+
+        // 0 = skill index, 1 = skill name
+        const string kSkillName_UseButton = "<left><a href='skill={0}' color='5b4f29' hovercolor='857951' activecolor='402708' text-decoration=none>" +
+                        "<gumpimg src='2103' hoversrc='2104' activesrc='2103'/><span width='2'/>{1}</a></left>";
+        const string kSkillName_NoUseButton = "<left><span width='14'/><medium color=50422D>{1}</medium></left>";
+        // 0 = skill value
+        const string kSkillValue_Locked = "<right>{0}<gumpimg src='2092' width='12' height='15'/></right><br/>";
+        const string kSkillValue_Up = "<right>{0}<gumpimg src='2436' width='12' height='15'/></right><br/>";
+        const string kSkillValue_Down = "<right>{0}<gumpimg src='2438' width='12' height='15'/></right><br/>";
     }
 }

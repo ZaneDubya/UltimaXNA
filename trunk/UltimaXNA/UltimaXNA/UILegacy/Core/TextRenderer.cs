@@ -13,11 +13,41 @@ namespace UltimaXNA.UILegacy
     class TextRenderer
     {
         private Texture2D _texture;
-        public int TextureWidth { get { return (_texture != null) ? _texture.Width : 0; } }
-        public int TextureHeight { get { return (_texture != null) ? _texture.Height : 0; } }
+        private HTMLParser _reader;
+        private int _width = 0, _height = 0;
+        public int Width
+        {
+            get
+            {
+                if (_texture != null)
+                    return _texture.Width;
+                else
+                {
+                    checkResize();
+                    return _width;
+                }
+            }
+        }
+        public int Height
+        {
+            get
+            {
+                if (_texture != null)
+                    return _texture.Height;
+                else
+                {
+                    checkResize();
+                    return _height;
+                }
+            }
+        }
 
         private HTMLRegions _href;
         public HTMLRegions HREFRegions { get { return _href; } }
+
+        private HTMLImages _images;
+        public HTMLImages Images { get { return _images; } }
+
         private int _activeHREF = -1;
         public int ActiveHREF
         {
@@ -31,9 +61,7 @@ namespace UltimaXNA.UILegacy
             set { _activeHREF_usedownhue = value; }
         }
 
-        private HTMLImages _images;
-        public HTMLImages Images { get { return _images; } }
-
+        private bool _mustResize = true;
         private bool _mustRender = true;
 
         private bool _asHTML = false;
@@ -44,6 +72,7 @@ namespace UltimaXNA.UILegacy
             {
                 if (_asHTML != value)
                 {
+                    _mustResize = true;
                     _mustRender = true;
                     _asHTML = value;
                 }
@@ -58,6 +87,7 @@ namespace UltimaXNA.UILegacy
             {
                 if (_maxWidth != value)
                 {
+                    _mustResize = true;
                     _mustRender = true;
                     _maxWidth = value;
                 }
@@ -144,7 +174,7 @@ namespace UltimaXNA.UILegacy
 
             if (yScroll > _texture.Height)
                 return;
-            else if (yScroll < -TextureHeight)
+            else if (yScroll < - Height)
                 return;
             else
                 sourceRectangle.Y = yScroll;
@@ -177,17 +207,23 @@ namespace UltimaXNA.UILegacy
                 Rectangle sourceRect;
                 if (clipRectangle(new Point2D(xScroll, yScroll), r.Area, destRectangle, out position, out sourceRect))
                 {
-                    int hue = 0;
-                    if (r.Index == _activeHREF)
-                        if (_activeHREF_usedownhue)
-                            hue = r.HREFAttributes.DownHue;
+                    // only draw the font in a different color if this is a HREF region.
+                    // otherwise it is a dummy region used to notify images that they are
+                    // being mouse overed.
+                    if (r.HREFAttributes != null)
+                    {
+                        int hue = 0;
+                        if (r.Index == _activeHREF)
+                            if (_activeHREF_usedownhue)
+                                hue = r.HREFAttributes.DownHue;
+                            else
+                                hue = r.HREFAttributes.OverHue;
                         else
-                            hue = r.HREFAttributes.OverHue;
-                    else
-                        hue = r.HREFAttributes.UpHue;
+                            hue = r.HREFAttributes.UpHue;
 
-                    sb.Draw2D(_texture, position,
-                        sourceRect, hue, false, false);
+                        sb.Draw2D(_texture, position,
+                            sourceRect, hue, false, false);
+                    }
                 }
             }
 
@@ -219,46 +255,60 @@ namespace UltimaXNA.UILegacy
             }
         }
 
+        private void checkResize()
+        {
+            if (_mustResize)
+            {
+                _mustResize = false;
+                resizeAndParse(Text, MaxWidth, AsHTML);
+            }
+        }
+
         private void checkRender(GraphicsDevice graphics)
         {
             if (_mustRender)
             {
                 _mustRender = false;
-
-                if (_texture != null)
-                {
-                    _texture.Dispose();
-                    _texture = null;
-                }
-                _href.Clear();
-                _images.Clear();
-
-                _texture = writeTexture(graphics, _text, _maxWidth, _asHTML);
+                checkResize();
+                _texture = writeTexture(graphics, _reader, _width, _height);
             }
         }
 
-        Texture2D writeTexture(GraphicsDevice graphics, string textToRender, int w, bool parseHTML)
+        private void resizeAndParse(string textToRender, int maxWidth, bool parseHTML)
         {
-            HTMLParser reader = new HTMLParser(textToRender, parseHTML);
+            if (_reader != null)
+                _reader = null;
+            _reader = new HTMLParser(textToRender, parseHTML);
 
-            int width = 0, height = 0;
-            if (w < 0)
+            _href.Clear();
+            _images.Clear();
+
+            if (maxWidth < 0)
             {
-                width = 0;
+                _width = 0;
             }
             else
             {
-                if (w == 0)
+                if (maxWidth == 0)
                 {
-                    getTextDimensions(reader, graphics.Viewport.Width, 0, out width, out height);
+                    getTextDimensions(_reader, Data.ASCIIText.MaxWidth, 0, out _width, out _height);
                 }
                 else
                 {
-                    getTextDimensions(reader, w, 0, out width, out height);
+                    getTextDimensions(_reader, maxWidth, 0, out _width, out _height);
                 }
             }
 
-            if (width == 0) // empty text string
+            if (_texture != null)
+            {
+                _texture.Dispose();
+                _texture = null;
+            }
+        }
+
+        Texture2D writeTexture(GraphicsDevice graphics, HTMLParser reader, int width, int height)
+        {
+            if (_width == 0) // empty text string
                 return new Texture2D(graphics, 1, 1);
 
             Color[] resultData = new Color[width * height];
@@ -488,10 +538,6 @@ namespace UltimaXNA.UILegacy
                     // Now make sure this line can fit the word.
                     if (width + word_width + additionalwidth <= maxwidth)
                     {
-                        // if (((HTMLAtomCharacter)word[0]).Character == 'b')
-                        {
-
-                        }
                         // it can fit!
                         width += word_width + additionalwidth;
                         word_width = 0;

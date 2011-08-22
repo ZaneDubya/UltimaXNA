@@ -12,20 +12,34 @@ namespace UltimaXNA.UILegacy.HTML
     public class HTMLParser_AtomImageGump : HTMLParser_Atom
     {
         public HTMLImage AssociatedImage;
-        
+
+        private int _overrideWidth = -1;
         public override int Width
         {
+            set
+            {
+                _overrideWidth = value;
+            }
             get
             {
+                if (_overrideWidth != -1)
+                    return _overrideWidth + 1;
                 Texture2D gump = Data.Gumps.GetGumpXNA(Value);
                 return gump.Width + 1;
             }
         }
 
+        private int _overrideHeight = -1;
         public override int Height
         {
+            set
+            {
+                _overrideHeight = value;
+            }
             get
             {
+                if (_overrideHeight != -1)
+                    return _overrideHeight;
                 Texture2D gump = Data.Gumps.GetGumpXNA(Value);
                 return gump.Height;
             }

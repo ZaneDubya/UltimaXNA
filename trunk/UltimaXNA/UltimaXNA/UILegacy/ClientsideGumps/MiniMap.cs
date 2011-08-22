@@ -34,7 +34,7 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
                 _gump.OnMouseDoubleClick = onDoubleClickMap;
                 _gump.MakeDragger(this);
                 _gump.MakeCloseTarget(this);
-                AddGumpling(_gump);
+                AddControl(_gump);
             }
 
             base.Update(gameTime);

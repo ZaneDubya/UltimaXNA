@@ -607,7 +607,8 @@ namespace UltimaXNA
         {
             if (_random == null)
                 _random = new Random();
-            return _random.Next(low, high); 
+            int rnd = _random.Next(low, high + 1);
+            return rnd; 
         }
 
         public static bool IsPointThisDistanceAway(Point2D initial, Point2D final, int distance)

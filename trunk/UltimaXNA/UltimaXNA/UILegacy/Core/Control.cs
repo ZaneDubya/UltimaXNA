@@ -55,7 +55,13 @@ namespace UltimaXNA.UILegacy
         }
 
         int _page = 0;
-        public int Page { get { return _page; } set { _page = value; } }
+        public int Page
+        {
+            get
+            {
+                return _page;
+            }
+        }
         int _activePage = 0; // we always draw _activePage and Page 0.
         public int ActivePage
         {
@@ -67,7 +73,7 @@ namespace UltimaXNA.UILegacy
                 // If the page = 0, then it will still exist so it should maintain focus.
                 if (_manager.KeyboardFocusControl != null)
                 {
-                    if (_controls.Contains(_manager.KeyboardFocusControl))
+                    if (Controls.Contains(_manager.KeyboardFocusControl))
                     {
                         if (_manager.KeyboardFocusControl.Page == 0)
                             _manager.AnnounceNewKeyboardHandler(_manager.KeyboardFocusControl);
@@ -77,7 +83,7 @@ namespace UltimaXNA.UILegacy
                 }
                 // When you SET ActivePage to something, it announces to the inputmanager that there may be newly popped up
                 // text boxes that want keyboard input.
-                foreach (Control c in _controls)
+                foreach (Control c in Controls)
                 {
                     if (c.HandlesKeyboardFocus && (c.Page == 0 || c.Page == _activePage))
                     {
@@ -155,11 +161,20 @@ namespace UltimaXNA.UILegacy
         protected Control _owner = null;
         public Control Owner { get { return _owner; } }
         protected UIManager _manager = null;
-        protected List<Control> _controls = null;
+        protected List<Control> __controls = null;
+        protected List<Control> Controls
+        {
+            get
+            {
+                if (__controls == null)
+                    __controls = new List<Control>();
+                return __controls;
+            }
+        }
 
         protected string getTextEntry(int entryID)
         {
-            foreach (Control c in _controls)
+            foreach (Control c in Controls)
             {
                 if (c.GetType() == typeof(Gumplings.TextEntry))
                 {
@@ -189,11 +204,28 @@ namespace UltimaXNA.UILegacy
             Visible = true;
         }
 
+        public Control AddControl(Control c)
+        {
+            Controls.Add(c);
+            return LastControl;
+        }
+
+        public Control LastControl
+        {
+            get { return Controls[Controls.Count - 1]; }
+        }
+
+        public void ClearControls()
+        {
+            foreach (Control c in Controls)
+                c.Dispose();
+        }
+
         public virtual void Dispose()
         {
-            if (_controls != null)
+            if (Controls != null)
             {
-                foreach (Control c in _controls)
+                foreach (Control c in Controls)
                 {
                     c.Dispose();
                 }
@@ -242,19 +274,16 @@ namespace UltimaXNA.UILegacy
                 {
                     if (alwaysHandleMouseInput || this.HandlesMouseInput)
                         focusedControls.Insert(0, this);
-                    if (_controls != null)
+                    foreach (Control c in Controls)
                     {
-                        foreach (Control c in _controls)
+                        if ((c.Page == 0) || (c.Page == ActivePage))
                         {
-                            if ((c.Page == 0) || (c.Page == ActivePage))
+                            Control[] c1 = c.HitTest(position, false);
+                            if (c1 != null)
                             {
-                                Control[] c1 = c.HitTest(position, false);
-                                if (c1 != null)
+                                for (int i = c1.Length - 1; i >= 0; i--)
                                 {
-                                    for (int i = c1.Length - 1; i >= 0; i--)
-                                    {
-                                        focusedControls.Insert(0, c1[i]);
-                                    }
+                                    focusedControls.Insert(0, c1[i]);
                                 }
                             }
                         }
@@ -282,25 +311,22 @@ namespace UltimaXNA.UILegacy
             _area.X = X;
             _area.Y = Y;
 
-            if (_controls != null)
+            foreach (Control c in Controls)
             {
-                foreach (Control c in _controls)
-                {
-                    if (!c.IsInitialized)
-                        c.Initialize(_manager);
-                    c.Update(gameTime);
-                }
+                if (!c.IsInitialized)
+                    c.Initialize(_manager);
+                c.Update(gameTime);
+            }
 
-                List<Control> disposedControls = new List<Control>();
-                foreach (Control c in _controls)
-                {
-                    if (c.IsDisposed)
-                        disposedControls.Add(c);
-                }
-                foreach (Control c in disposedControls)
-                {
-                    _controls.Remove(c);
-                }
+            List<Control> disposedControls = new List<Control>();
+            foreach (Control c in Controls)
+            {
+                if (c.IsDisposed)
+                    disposedControls.Add(c);
+            }
+            foreach (Control c in disposedControls)
+            {
+                Controls.Remove(c);
             }
         }
 
@@ -315,18 +341,15 @@ namespace UltimaXNA.UILegacy
             // DEBUG_DrawBounds(spriteBatch);
 #endif
         
-            if (_controls != null)
+            foreach (Control c in Controls)
             {
-                foreach (Control c in _controls)
+                if ((c.Page == 0) || (c.Page == ActivePage))
                 {
-                    if ((c.Page == 0) || (c.Page == ActivePage))
+                    if (c.IsInitialized)
                     {
-                        if (c.IsInitialized)
-                        {
-                            c.Position += Position;
-                            c.Draw(spriteBatch);
-                            c.Position -= Position;
-                        }
+                        c.Position += Position;
+                        c.Draw(spriteBatch);
+                        c.Position -= Position;
                     }
                 }
             }
@@ -551,24 +574,21 @@ namespace UltimaXNA.UILegacy
 
         internal void ReleaseKeyboardInput(Control c)
         {
-            if (_controls != null)
+            int startIndex = Controls.IndexOf(c);
+            for (int i = startIndex + 1; i < Controls.Count; i++)
             {
-                int startIndex = _controls.IndexOf(c);
-                for (int i = startIndex + 1; i < _controls.Count; i++)
+                if (Controls[i].HandlesKeyboardFocus)
                 {
-                    if (_controls[i].HandlesKeyboardFocus)
-                    {
-                        _manager.KeyboardFocusControl = _controls[i];
-                        return;
-                    }
+                    _manager.KeyboardFocusControl = Controls[i];
+                    return;
                 }
-                for (int i = 0; i < startIndex; i++)
+            }
+            for (int i = 0; i < startIndex; i++)
+            {
+                if (Controls[i].HandlesKeyboardFocus)
                 {
-                    if (_controls[i].HandlesKeyboardFocus)
-                    {
-                        _manager.KeyboardFocusControl = _controls[i];
-                        return;
-                    }
+                    _manager.KeyboardFocusControl = Controls[i];
+                    return;
                 }
             }
         }

@@ -85,65 +85,65 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
         {
             _renderFullScreen = false;
             // backdrop
-            AddGumpling(new GumpPicTiled(this, 0, 0, 0, 640, 480, 9274));
-            AddGumpling(new GumpPic(this, 0, 0, 0, 5500, 0));
+            AddControl(new GumpPicTiled(this, 0, 0, 0, 640, 480, 9274));
+            AddControl(new GumpPic(this, 0, 0, 0, 5500, 0));
             // character name 
-            AddGumpling(new GumpPic(this, 0, 280, 53, 1801, 0));
+            AddControl(new GumpPic(this, 0, 280, 53, 1801, 0));
             _Name = new TextEntry(this, 0, 238, 70, 234, 20, 0, 0, 29, string.Empty);
-            AddGumpling(new ResizePic(this, _Name));
-            AddGumpling(_Name);
+            AddControl(new ResizePic(this, _Name));
+            AddControl(_Name);
             // character window
-            AddGumpling(new GumpPic(this, 0, 238, 98, 1800, 0));
+            AddControl(new GumpPic(this, 0, 238, 98, 1800, 0));
             // paperdoll
             _paperdoll = new PaperdollLargeUninteractable(this, 0, 237, 97);
             _paperdoll.IsCharacterCreation = true;
-            AddGumpling(_paperdoll);
+            AddControl(_paperdoll);
 
             // left option window
-            AddGumpling(new ResizePic(this, 0, 82, 125, 3600, 151, 310));
+            AddControl(new ResizePic(this, 0, 82, 125, 3600, 151, 310));
             // this is the place where you would put the race selector.
             // if you do add it, move everything else in this left window down by 45 pixels
             // gender
-            AddGumpling(new TextLabelAscii(this, 1, 100, 141, 2037, 9, Data.StringList.Entry(3000120)));
+            AddControl(new TextLabelAscii(this, 1, 100, 141, 2037, 9, Data.StringList.Entry(3000120)));
             _Gender = new DropDownList(this, 0, 97, 154, 122, 0, 2, new string[] { Data.StringList.Entry(3000118), Data.StringList.Entry(3000119) }, false);
-            AddGumpling(_Gender);
+            AddControl(_Gender);
             // hair (male)
-            AddGumpling(new TextLabelAscii(this, 1, 100, 186, 2037, 9, Data.StringList.Entry(3000121)));
+            AddControl(new TextLabelAscii(this, 1, 100, 186, 2037, 9, Data.StringList.Entry(3000121)));
             _HairMale = new DropDownList(this, 1, 97, 199, 122, 0, 6, Data.HairStyles.MaleHairNames, false);
-            AddGumpling(_HairMale);
+            AddControl(_HairMale);
             // facial hair (male)
-            AddGumpling(new TextLabelAscii(this, 1, 100, 231, 2037, 9, Data.StringList.Entry(3000122)));
+            AddControl(new TextLabelAscii(this, 1, 100, 231, 2037, 9, Data.StringList.Entry(3000122)));
             _FacialHairMale = new DropDownList(this, 1, 97, 244, 122, 0, 6, Data.HairStyles.FacialHair, false);
-            AddGumpling(_FacialHairMale);
+            AddControl(_FacialHairMale);
             // hair (female)
-            AddGumpling(new TextLabelAscii(this, 2, 100, 186, 2037, 9, Data.StringList.Entry(3000121)));
+            AddControl(new TextLabelAscii(this, 2, 100, 186, 2037, 9, Data.StringList.Entry(3000121)));
             _HairFemale = new DropDownList(this, 2, 97, 199, 122, 0, 6, Data.HairStyles.FemaleHairNames, false);
-            AddGumpling(_HairFemale);
+            AddControl(_HairFemale);
 
             // right option window
-            AddGumpling(new ResizePic(this, 0, 475, 125, 3600, 151, 310));
+            AddControl(new ResizePic(this, 0, 475, 125, 3600, 151, 310));
             // skin tone
-            AddGumpling(new TextLabelAscii(this, 0, 489, 141, 2037, 9, Data.StringList.Entry(3000183)));
+            AddControl(new TextLabelAscii(this, 0, 489, 141, 2037, 9, Data.StringList.Entry(3000183)));
             _SkinHue = new ColorPicker(this, 0, new Rectangle(490, 154, 120, 24), new Rectangle(490, 140, 120, 280), 7, 8, Data.Hues.SkinTones);
-            AddGumpling(_SkinHue);
+            AddControl(_SkinHue);
             // hair color
-            AddGumpling(new TextLabelAscii(this, 0, 489, 186, 2037, 9, Data.StringList.Entry(3000184)));
+            AddControl(new TextLabelAscii(this, 0, 489, 186, 2037, 9, Data.StringList.Entry(3000184)));
             _HairHue = new ColorPicker(this, 0, new Rectangle(490, 199, 120, 24), new Rectangle(490, 140, 120, 280), 8, 6, Data.Hues.HairTones);
-            AddGumpling(_HairHue);
+            AddControl(_HairHue);
             // facial hair color (male)
-            AddGumpling(new TextLabelAscii(this, 1, 489, 231, 2037, 9, Data.StringList.Entry(3000185)));
+            AddControl(new TextLabelAscii(this, 1, 489, 231, 2037, 9, Data.StringList.Entry(3000185)));
             _FacialHairHue = new ColorPicker(this, 1, new Rectangle(490, 244, 120, 24), new Rectangle(490, 140, 120, 280), 8, 6, Data.Hues.HairTones);
-            AddGumpling(_FacialHairHue);
+            AddControl(_FacialHairHue);
 
             // back button
-            AddGumpling(new Button(this, 1, 586, 435, 5537, 5539, ButtonTypes.Activate, 0, (int)Buttons.BackButton));
-            ((Button)LastGumpling).GumpOverID = 5538;
+            AddControl(new Button(this, 1, 586, 435, 5537, 5539, ButtonTypes.Activate, 0, (int)Buttons.BackButton));
+            ((Button)LastControl).GumpOverID = 5538;
             // forward button
-            AddGumpling(new Button(this, 1, 610, 435, 5540, 5542, ButtonTypes.Activate, 0, (int)Buttons.ForwardButton));
-            ((Button)LastGumpling).GumpOverID = 5541;
+            AddControl(new Button(this, 1, 610, 435, 5540, 5542, ButtonTypes.Activate, 0, (int)Buttons.ForwardButton));
+            ((Button)LastControl).GumpOverID = 5541;
             // quit button
-            AddGumpling(new Button(this, 0, 554, 2, 5513, 5515, ButtonTypes.Activate, 0, (int)Buttons.QuitButton));
-            ((Button)LastGumpling).GumpOverID = 5514;
+            AddControl(new Button(this, 0, 554, 2, 5513, 5515, ButtonTypes.Activate, 0, (int)Buttons.QuitButton));
+            ((Button)LastControl).GumpOverID = 5514;
         }
 
         public override void Update(GameTime gameTime)

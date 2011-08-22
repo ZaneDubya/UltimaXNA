@@ -96,7 +96,7 @@ namespace UltimaXNA.UILegacy.Gumplings
                     _sourceEntityUpdateHash = ((Mobile)_sourceEntity).UpdateTicker;
 
                     // clear the existing gumplings
-                    ClearGumplings();
+                    ClearControls();
                     _dropWidgetPaperdoll.ClearDropTargets();
                     _dropWidgetBackpack.ClearDropTargets();
 
@@ -104,9 +104,9 @@ namespace UltimaXNA.UILegacy.Gumplings
                     if (true)
                     {
                         int bodyID = 12 + (_isElf ? 2 : 0) + (_isFemale ? 1 : 0); // ((Mobile)_sourceEntity).BodyID;
-                        AddGumpling(new GumpPic(this, 0, 0, 0, bodyID, ((Mobile)_sourceEntity).Hue));
-                        LastGumpling.HandlesMouseInput = true;
-                        _dropWidgetPaperdoll.AddDropTarget(LastGumpling);
+                        AddControl(new GumpPic(this, 0, 0, 0, bodyID, ((Mobile)_sourceEntity).Hue));
+                        LastControl.HandlesMouseInput = true;
+                        _dropWidgetPaperdoll.AddDropTarget(LastControl);
                     }
 
                     // Loop through the items on the mobile and create the gump pics.
@@ -127,19 +127,19 @@ namespace UltimaXNA.UILegacy.Gumplings
                                 break;
                         }
 
-                        AddGumpling(new ItemGumplingPaperdoll(this, 0, 0, item));
-                        ((ItemGumplingPaperdoll)LastGumpling).SlotIndex = (int)i;
-                        ((ItemGumplingPaperdoll)LastGumpling).IsFemale = _isFemale;
-                        ((ItemGumplingPaperdoll)LastGumpling).CanPickUp = canPickUp;
-                        _dropWidgetPaperdoll.AddDropTarget(LastGumpling);
+                        AddControl(new ItemGumplingPaperdoll(this, 0, 0, item));
+                        ((ItemGumplingPaperdoll)LastControl).SlotIndex = (int)i;
+                        ((ItemGumplingPaperdoll)LastControl).IsFemale = _isFemale;
+                        ((ItemGumplingPaperdoll)LastControl).CanPickUp = canPickUp;
+                        _dropWidgetPaperdoll.AddDropTarget(LastControl);
                     }
                     // If this object has a backpack, draw it last.
                     if (((Mobile)_sourceEntity).GetItem((int)EquipSlots.Backpack) != null)
                     {
-                        AddGumpling(new GumpPic(this, 0, -5, 0, 0xC4F6, 0));
-                        LastGumpling.HandlesMouseInput = true;
-                        LastGumpling.OnMouseDoubleClick += dblclick_Backpack;
-                        _dropWidgetBackpack.AddDropTarget(LastGumpling);
+                        AddControl(new GumpPic(this, 0, -5, 0, 0xC4F6, 0));
+                        LastControl.HandlesMouseInput = true;
+                        LastControl.OnMouseDoubleClick += dblclick_Backpack;
+                        _dropWidgetBackpack.AddDropTarget(LastControl);
                     }
                 }
             }

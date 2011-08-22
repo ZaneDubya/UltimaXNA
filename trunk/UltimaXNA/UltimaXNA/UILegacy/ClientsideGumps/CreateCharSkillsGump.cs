@@ -38,20 +38,20 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
         {
             _renderFullScreen = false;
             // backdrop
-            AddGumpling(new GumpPicTiled(this, 0, 0, 0, 640, 480, 9274));
-            AddGumpling(new GumpPic(this, 0, 0, 0, 5500, 0));
+            AddControl(new GumpPicTiled(this, 0, 0, 0, 640, 480, 9274));
+            AddControl(new GumpPic(this, 0, 0, 0, 5500, 0));
             // center menu with fancy top
-            AddGumpling(new ResizePic(this, 1, 100, 80, 2600, 470, 372));
-            AddGumpling(new GumpPic(this, 1, 291, 42, 1417, 0));
-            AddGumpling(new GumpPic(this, 1, 214, 58, 1419, 0));
-            AddGumpling(new GumpPic(this, 1, 300, 51, 5545, 0));
+            AddControl(new ResizePic(this, 1, 100, 80, 2600, 470, 372));
+            AddControl(new GumpPic(this, 1, 291, 42, 1417, 0));
+            AddControl(new GumpPic(this, 1, 214, 58, 1419, 0));
+            AddControl(new GumpPic(this, 1, 300, 51, 5545, 0));
             // title text
-            AddGumpling(new TextLabelAscii(this, 1, 148, 132, 841, 2, Data.StringList.Entry(3000326)));
+            AddControl(new TextLabelAscii(this, 1, 148, 132, 841, 2, Data.StringList.Entry(3000326)));
 
             // strength, dexterity, intelligence
-            AddGumpling(new TextLabelAscii(this, 1, 158, 170, 2430, 1, Data.StringList.Entry(3000111)));
-            AddGumpling(new TextLabelAscii(this, 1, 158, 250, 2430, 1, Data.StringList.Entry(3000112)));
-            AddGumpling(new TextLabelAscii(this, 1, 158, 330, 2430, 1, Data.StringList.Entry(3000113)));
+            AddControl(new TextLabelAscii(this, 1, 158, 170, 2430, 1, Data.StringList.Entry(3000111)));
+            AddControl(new TextLabelAscii(this, 1, 158, 250, 2430, 1, Data.StringList.Entry(3000112)));
+            AddControl(new TextLabelAscii(this, 1, 158, 330, 2430, 1, Data.StringList.Entry(3000113)));
             // sliders for attributes
             sliderAttributes = new Slider[3];
             sliderAttributes[0] = new Slider(this, 1, 164, 196, 93, 10, 60, 60);
@@ -69,8 +69,8 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
                     if (i != j)
                         sliderAttributes[i].PairSlider(sliderAttributes[j]);
                 }
-                AddGumpling(sliderAttributes[i]);
-                AddGumpling(lblAttributes[i]);
+                AddControl(sliderAttributes[i]);
+                AddControl(lblAttributes[i]);
             }
 
             // sliders for skills
@@ -96,23 +96,23 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
                     if (i != j)
                         sliderSkills[i].PairSlider(sliderSkills[j]);
                 }
-                AddGumpling(sliderSkills[i]);
-                AddGumpling(lblSkills[i]);
-                AddGumpling(listSkills[i]);
+                AddControl(sliderSkills[i]);
+                AddControl(lblSkills[i]);
+                AddControl(listSkills[i]);
             }
-            AddGumpling(new TextLabelAscii(this, 1, 158, 170, 2430, 1, Data.StringList.Entry(3000111)));
-            AddGumpling(new TextLabelAscii(this, 1, 158, 250, 2430, 1, Data.StringList.Entry(3000112)));
-            AddGumpling(new TextLabelAscii(this, 1, 158, 330, 2430, 1, Data.StringList.Entry(3000113)));
+            AddControl(new TextLabelAscii(this, 1, 158, 170, 2430, 1, Data.StringList.Entry(3000111)));
+            AddControl(new TextLabelAscii(this, 1, 158, 250, 2430, 1, Data.StringList.Entry(3000112)));
+            AddControl(new TextLabelAscii(this, 1, 158, 330, 2430, 1, Data.StringList.Entry(3000113)));
 
             // back button
-            AddGumpling(new Button(this, 1, 586, 435, 5537, 5539, ButtonTypes.Activate, 0, (int)Buttons.BackButton));
-            ((Button)LastGumpling).GumpOverID = 5538;
+            AddControl(new Button(this, 1, 586, 435, 5537, 5539, ButtonTypes.Activate, 0, (int)Buttons.BackButton));
+            ((Button)LastControl).GumpOverID = 5538;
             // forward button
-            AddGumpling(new Button(this, 1, 610, 435, 5540, 5542, ButtonTypes.Activate, 0, (int)Buttons.ForwardButton));
-            ((Button)LastGumpling).GumpOverID = 5541;
+            AddControl(new Button(this, 1, 610, 435, 5540, 5542, ButtonTypes.Activate, 0, (int)Buttons.ForwardButton));
+            ((Button)LastControl).GumpOverID = 5541;
             // quit button
-            AddGumpling(new Button(this, 0, 554, 2, 5513, 5515, ButtonTypes.Activate, 0, (int)Buttons.QuitButton));
-            ((Button)LastGumpling).GumpOverID = 5514;
+            AddControl(new Button(this, 0, 554, 2, 5513, 5515, ButtonTypes.Activate, 0, (int)Buttons.QuitButton));
+            ((Button)LastControl).GumpOverID = 5514;
         }
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)

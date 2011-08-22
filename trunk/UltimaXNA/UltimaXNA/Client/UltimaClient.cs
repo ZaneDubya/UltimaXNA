@@ -209,10 +209,13 @@ namespace UltimaXNA.Client
 
         public static void Send(ISendPacket packet)
         {
-            bool success = _ClientNetwork.Send(packet);
-            if (!success)
+            if (_ClientNetwork.IsConnected)
             {
-                Disconnect();
+                bool success = _ClientNetwork.Send(packet);
+                if (!success)
+                {
+                    Disconnect();
+                }
             }
         }
 

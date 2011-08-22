@@ -7,7 +7,7 @@ using UltimaXNA.UILegacy.HTML;
 
 namespace UltimaXNA.UILegacy.Gumplings
 {
-    class HtmlGump : Gump
+    class HtmlGump : Control
     {
         public int ScrollX = 0, ScrollY = 0;
         ScrollBar _scrollbar;
@@ -56,7 +56,7 @@ namespace UltimaXNA.UILegacy.Gumplings
                     base.Width = value;
                     if (_textRenderer != null)
                     {
-                        _textRenderer.MaxWidth = value;
+                        _textRenderer.MaxWidth = ClientWidth;
                         _textChanged = true;
                     }
                 }
@@ -68,7 +68,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             get
             {
                 if (HasScrollbar)
-                    return Width - 15;
+                    return Width - 20;
                 else
                     return Width;
             }
@@ -77,10 +77,8 @@ namespace UltimaXNA.UILegacy.Gumplings
         TextRenderer _textRenderer;
 
         public HtmlGump(Control owner, int page)
-            : base(0, 0)
+            : base(owner, page)
         {
-            _owner = owner;
-            Page = page;
             _textChanged = true;
         }
 
@@ -132,13 +130,13 @@ namespace UltimaXNA.UILegacy.Gumplings
             if (HasScrollbar)
             {
                 if (_scrollbar == null)
-                    AddGumpling(_scrollbar = new ScrollBar(this, 0));
+                    AddControl(_scrollbar = new ScrollBar(this, 0));
                 _scrollbar.X = Width - 15;
                 _scrollbar.Y = 0;
                 _scrollbar.Width = 15;
                 _scrollbar.Height = Height;
                 _scrollbar.MinValue = 0;
-                _scrollbar.MaxValue = _textRenderer.TextureHeight - Height;
+                _scrollbar.MaxValue = _textRenderer.Height - Height;
                 ScrollY = _scrollbar.Value;
             }
 
@@ -147,7 +145,7 @@ namespace UltimaXNA.UILegacy.Gumplings
 
         public override void Draw(ExtendedSpriteBatch spriteBatch)
         {
-            if (_background && false)
+            if (_background)
             {
                 if (_backgroundTexture == null)
                 {
@@ -207,7 +205,8 @@ namespace UltimaXNA.UILegacy.Gumplings
             {
                 if (button == MouseButton.Left)
                 {
-                    ActivateByHREF(_textRenderer.HREFRegions.Region(_hrefOver).HREFAttributes.HREF);
+                    if (_textRenderer.HREFRegions.Region(_hrefOver).HREFAttributes != null)
+                        ActivateByHREF(_textRenderer.HREFRegions.Region(_hrefOver).HREFAttributes.HREF);
                 }
             }
         }
