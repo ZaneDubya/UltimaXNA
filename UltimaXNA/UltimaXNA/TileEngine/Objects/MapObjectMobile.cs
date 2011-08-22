@@ -69,12 +69,12 @@ namespace UltimaXNA.TileEngine
             if (_draw_flip)
             {
                 _draw_X = frameXNA.Center.X - 22 + (int)((Position.X_offset - Position.Y_offset) * 22);
-                _draw_Y = frameXNA.Center.Y + (Z << 2) + _draw_height - 22 - (int)((Position.X_offset + Position.Y_offset) * 22);
+                _draw_Y = frameXNA.Center.Y + (Z << 2) + (int)(Position.Z_offset * 4) + _draw_height - 22 - (int)((Position.X_offset + Position.Y_offset) * 22);
             }
             else
             {
                 _draw_X = frameXNA.Center.X - 22 - (int)((Position.X_offset - Position.Y_offset) * 22);
-                _draw_Y = frameXNA.Center.Y + (Z << 2) + _draw_height - 22 - (int)((Position.X_offset + Position.Y_offset) * 22);
+                _draw_Y = frameXNA.Center.Y + (Z << 2) + (int)(Position.Z_offset * 4) + _draw_height - 22 - (int)((Position.X_offset + Position.Y_offset) * 22);
             }
 
             _draw_hue = Utility.GetHueVector(Hue);
