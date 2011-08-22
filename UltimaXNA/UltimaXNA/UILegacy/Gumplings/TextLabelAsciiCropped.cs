@@ -38,7 +38,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             base.Update(gameTime);
         }
 
-        public override void Draw(ExtendedSpriteBatch spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch)
         {
             if (_texture == null)
                 _texture = Data.ASCIIText.GetTextTexture(Text, FontID, Area.Width);

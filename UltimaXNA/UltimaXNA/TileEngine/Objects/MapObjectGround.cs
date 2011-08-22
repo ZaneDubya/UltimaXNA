@@ -33,11 +33,6 @@ namespace UltimaXNA.TileEngine
             get { return (ItemID == 2 || ItemID == 0x1DB || (ItemID >= 0x1AE && ItemID <= 0x1B5)); }
         }
 
-        public override string ToString()
-        {
-            return string.Format("Ground Z:{0}, SortZ:{4}, <{1},{2},{3}>", Z, _surroundingTiles.South, _surroundingTiles.Down, _surroundingTiles.East, SortZ);
-        }
-
         public MapObjectGround(int tileID, Position3D position)
             : base(position)
         {
@@ -211,6 +206,11 @@ namespace UltimaXNA.TileEngine
                 (C - D) / 2f);
             iVector.Normalize();
             return iVector;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("MapObjectGround\n   Z:{1} ({2},{3},{4})\n{0}", base.ToString(), Z, _surroundingTiles.South, _surroundingTiles.Down, _surroundingTiles.East);
         }
     }
 

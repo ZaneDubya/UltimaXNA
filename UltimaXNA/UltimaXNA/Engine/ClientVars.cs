@@ -204,61 +204,34 @@ namespace UltimaXNA
         {
             String debugMessage = string.Empty;
 
+            debugMessage += string.Format("#Objects: {0}", _World.ObjectsRendered);
+
             if (DEBUG_DisplayFPS)
-                debugMessage += string.Format("FPS: {0}\n", (int)_FPS);
+                debugMessage += string.Format("\nFPS: {0}", (int)_FPS);
 
             if (DEBUG_ShowDataRead)
             {
                 if (DEBUG_BreakdownDataRead)
                     debugMessage += Metrics.DataReadBreakdown;
                 else
-                    debugMessage += string.Format("Data Read: {0}\n", Metrics.TotalDataRead.ToString());
+                    debugMessage += string.Format("\nData Read: {0}", Metrics.TotalDataRead.ToString());
             }
-
-            if (true)
-            {
-                debugMessage += string.Format("#Objects: {0}\n", _World.ObjectsRendered);
-                Entity e = EntitiesCollection.GetPlayerObject();
-                if (e != null)
-                    debugMessage += e.Position.ToString() + "\n";
+            
+            Entity e = EntitiesCollection.GetPlayerObject();
+            if (e != null)
+                debugMessage += "\nMyPos:" + e.Position;
                 
-                debugMessage += string.Format("Warmode: {0}\n", ClientVars.WarMode);
-                if (_World.MouseOverObject != null)
-                {
-                    debugMessage += string.Format("OBJECT: {0}\n", _World.MouseOverObject.ToString());
-                    if (_World.MouseOverObject is MapObjectStatic)
-                    {
-                        debugMessage += string.Format("ArtID: {0}\n", ((MapObjectStatic)_World.MouseOverObject).ItemID);
-                    }
-                    else if (_World.MouseOverObject is MapObjectMobile)
-                    {
-                        Mobile iUnit = EntitiesCollection.GetObject<Mobile>(_World.MouseOverObject.OwnerSerial, false);
-                        if (iUnit != null)
-                            debugMessage += string.Format("Name: {0}\n", iUnit.Name);
-                        debugMessage += string.Format("AnimID: {0}\nSerial: {1}\nHue: {2}",
-                            ((MapObjectMobile)_World.MouseOverObject).BodyID, _World.MouseOverObject.OwnerSerial, ((MapObjectMobile)_World.MouseOverObject).Hue);
-                    }
-                    else if (_World.MouseOverObject is MapObjectItem)
-                    {
-                        debugMessage +=
-                            "ArtID: " + ((MapObjectItem)_World.MouseOverObject).ItemID + Environment.NewLine +
-                            "Serial: " + _World.MouseOverObject.OwnerSerial;
-                    }
-                    debugMessage += " Z: " + _World.MouseOverObject.Z;
-                }
-                else
-                {
-                    debugMessage += "OVER: " + "null";
-                }
-                if (_World.MouseOverGround != null)
-                {
-                    debugMessage += Environment.NewLine + "GROUND: " + _World.MouseOverGround.Position.ToString();
-                }
-                else
-                {
-                    debugMessage += Environment.NewLine + "GROUND: null";
-                }
-            }
+            
+            if (_World.MouseOverObject != null)
+                debugMessage += "\nOVER:" + _World.MouseOverObject.ToString();
+            else
+                debugMessage += "\nOVER: " + "null";
+
+            if (_World.MouseOverGround != null)
+                debugMessage += "\nGROUND: " + _World.MouseOverGround.Position.ToString();
+            else
+                debugMessage += "\nGROUND: null";
+
             return debugMessage;
         }
     }

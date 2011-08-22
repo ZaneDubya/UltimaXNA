@@ -76,7 +76,7 @@ namespace UltimaXNA.TileEngine
 
         public override string ToString()
         {
-            return string.Format("Static Z:{0}, ItemID:{1}", Z, ItemID);
+            return string.Format("MapObjectStatic\n   ItemID:{1}\n{0}", base.ToString(), ItemID);
         }
     }
 }

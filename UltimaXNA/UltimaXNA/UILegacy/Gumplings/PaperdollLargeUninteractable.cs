@@ -78,7 +78,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             Position = new Point2D(x, y);
         }
 
-        public override void Draw(ExtendedSpriteBatch spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch)
         {
             drawLargePaperdoll_Noninteractable(spriteBatch);
         }
@@ -93,7 +93,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             return _hueSlots[(int)slotID];
         }
 
-        void drawLargePaperdoll_Noninteractable(ExtendedSpriteBatch spriteBatch)
+        void drawLargePaperdoll_Noninteractable(SpriteBatchUI spriteBatch)
         {
             EquipSlots[] slotsToDraw = new EquipSlots[6] { EquipSlots.Body, EquipSlots.Footwear, EquipSlots.Legging, EquipSlots.Shirt, EquipSlots.Hair, EquipSlots.FacialHair };
             for (int i = 0; i < slotsToDraw.Length; i++)

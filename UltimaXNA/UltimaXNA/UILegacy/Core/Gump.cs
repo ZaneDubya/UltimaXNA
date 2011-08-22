@@ -71,15 +71,13 @@ namespace UltimaXNA.UILegacy
 
         RenderTarget2D _gumpTexture = null;
 
-        public override void Draw(ExtendedSpriteBatch spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch)
         {
             if (!Visible)
                 return;
             // don't draw any server gumps until we're in the world.
             if (IsServerGump && !ClientVars.InWorld)
                 return;
-
-            spriteBatch.Flush();
 
             if (_renderFullScreen)
             {
@@ -110,6 +108,7 @@ namespace UltimaXNA.UILegacy
             }
             else
             {
+                spriteBatch.Flush();
                 base.Draw(spriteBatch);
             }
         }

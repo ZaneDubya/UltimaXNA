@@ -50,7 +50,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             base.Update(gameTime);
         }
 
-        public override void Draw(ExtendedSpriteBatch spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch)
         {
             spriteBatch.Draw2DTiled(_bgGump, new Rectangle(X, Y, Area.Width, Area.Height), 0, false, false);
             base.Draw(spriteBatch);

@@ -46,11 +46,6 @@ namespace UltimaXNA.TileEngine
             get { return (OwnerEntity == null) ? (Serial)unchecked((int)0) : OwnerEntity.Serial; }
         }
 
-        public MapObject(Position3D position)
-        {
-            Position = position;
-        }
-
         internal bool _draw_flip;
         internal int _draw_X, _draw_Y;
         internal int _draw_width, _draw_height;
@@ -58,6 +53,11 @@ namespace UltimaXNA.TileEngine
         internal Texture2D _draw_texture;
         internal PickTypes _pickType;
         internal bool _draw_IsometricOverlap = false; // if this is true, we will draw any corners that are overlapped by tiles drawn after this object.
+
+        public MapObject(Position3D position)
+        {
+            Position = position;
+        }
 
         internal virtual bool Draw(SpriteBatch3D sb, Vector3 drawPosition, MouseOverList molist, PickTypes pickType, int maxAlt)
         {
@@ -297,6 +297,11 @@ namespace UltimaXNA.TileEngine
 
                 tile.AddMapObject(deferred);
             }
+        }
+
+        public override string ToString()
+        {
+            return string.Format("   {0}", Position);
         }
     }
 }

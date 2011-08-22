@@ -52,5 +52,10 @@ namespace UltimaXNA.TileEngine
         {
             return base.Draw(sb, drawPosition, molist, pickType, maxAlt);
         }
+
+        public override string ToString()
+        {
+            return string.Format("MapObjectItem\n   ItemID:{3} Serial{4}\n   Hue:{1} Facing:{2}\n{0}", base.ToString(), Hue, Facing, ItemID, OwnerSerial);
+        }
     }
 }

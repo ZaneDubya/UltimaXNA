@@ -330,7 +330,7 @@ namespace UltimaXNA.UILegacy
             }
         }
 
-        virtual public void Draw(ExtendedSpriteBatch spriteBatch)
+        virtual public void Draw(SpriteBatchUI spriteBatch)
         {
             if (!_isInitialized)
                 return;
@@ -356,7 +356,7 @@ namespace UltimaXNA.UILegacy
         }
 
 #if DEBUG
-        void DEBUG_DrawBounds(ExtendedSpriteBatch spriteBatch)
+        void DEBUG_DrawBounds(SpriteBatchUI spriteBatch)
         {
             if (_debugTexture == null)
             {

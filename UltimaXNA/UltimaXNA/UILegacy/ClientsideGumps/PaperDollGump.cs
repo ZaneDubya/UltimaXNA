@@ -73,7 +73,7 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
             base.Update(gameTime);
         }
 
-        public override void Draw(ExtendedSpriteBatch spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch)
         {
             base.Draw(spriteBatch);
         }

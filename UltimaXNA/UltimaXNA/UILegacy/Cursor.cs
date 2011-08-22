@@ -94,7 +94,7 @@ namespace UltimaXNA.UILegacy
             IsHolding = false;
         }
 
-        public void Draw(ExtendedSpriteBatch sb, Point2D position)
+        public void Draw(SpriteBatchUI sb, Point2D position)
         {
             Point2D cursorOffset;
             Rectangle sourceRect = Rectangle.Empty;

@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace UltimaXNA.Graphics
 {
-    public class ExtendedSpriteBatch
+    public class SpriteBatchUI
     {
         SpriteBatch3D _sb;
 
@@ -16,14 +16,19 @@ namespace UltimaXNA.Graphics
             get { return _sb.Game.GraphicsDevice; }
         }
 
-        public ExtendedSpriteBatch(Game game)
+        public SpriteBatchUI(Game game)
         {
             _sb = new SpriteBatch3D(game);
         }
 
+        public void Prepare()
+        {
+            _sb.Prepare(false, false);
+        }
+
         public void Flush()
         {
-            _sb.Flush(false);
+            _sb.Flush();
         }
 
         Vector2 hueVector(int hue, bool partial, bool transparent)

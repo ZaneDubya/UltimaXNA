@@ -44,7 +44,7 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
             base.Update(gameTime);
         }
 
-        public override void Draw(ExtendedSpriteBatch spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch)
         {
             int y = _input.Y - 20;
             for (int i = _textEntries.Count - 1; i >= 0; i--)
@@ -108,7 +108,7 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
             _renderer.Transparent = (_alpha < 1.0f);
         }
 
-        public void Draw(ExtendedSpriteBatch sb, Point2D position)
+        public void Draw(SpriteBatchUI sb, Point2D position)
         {
             _renderer.Draw(sb, position);
         }

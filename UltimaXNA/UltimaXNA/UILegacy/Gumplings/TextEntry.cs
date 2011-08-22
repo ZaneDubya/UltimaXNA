@@ -121,7 +121,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             base.Update(gameTime);
         }
 
-        public override void Draw(ExtendedSpriteBatch spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch)
         {
             _textRenderer.Draw(spriteBatch, Position);
             if (_caratBlinkOn)
