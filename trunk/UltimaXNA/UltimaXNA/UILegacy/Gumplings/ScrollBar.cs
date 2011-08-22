@@ -133,7 +133,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             base.Update(gameTime);
         }
 
-        public override void Draw(ExtendedSpriteBatch spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch)
         {
             // up button
             spriteBatch.Draw2D(_btnUpClicked ? _gumpUpButton[1] : _gumpUpButton[0], new Point2D(X, Y), 0, false, false);

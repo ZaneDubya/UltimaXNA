@@ -43,7 +43,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             }
         }
 
-        public override void Draw(ExtendedSpriteBatch spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch)
         {
             
             if (_texture == null)

@@ -19,7 +19,7 @@ namespace UltimaXNA.UILegacy
         Cursor _cursor = null;
         IInputState _input = null;
 
-        ExtendedSpriteBatch _spriteBatch;
+        SpriteBatchUI _spriteBatch;
         public int Width { get { return _spriteBatch.GraphicsDevice.Viewport.Width; } }
         public int Height { get { return _spriteBatch.GraphicsDevice.Viewport.Height; } }
         public bool IsModalMsgBoxOpen { get { return (GetGump<MsgBox>(0) != null); } }
@@ -81,7 +81,7 @@ namespace UltimaXNA.UILegacy
         public UIManager(Game game)
             : base(game)
         {
-            _spriteBatch = new ExtendedSpriteBatch(game);
+            _spriteBatch = new SpriteBatchUI(game);
 
             _controls = new List<Control>();
             _cursor = new Cursor(this);
@@ -220,6 +220,8 @@ namespace UltimaXNA.UILegacy
 
         public override void Draw(GameTime gameTime)
         {
+            _spriteBatch.Prepare();
+
             foreach (Control c in _controls)
             {
                 if (c.IsInitialized)

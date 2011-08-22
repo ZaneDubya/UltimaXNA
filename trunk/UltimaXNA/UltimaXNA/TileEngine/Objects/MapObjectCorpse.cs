@@ -80,5 +80,10 @@ namespace UltimaXNA.TileEngine
                 return null;
             return iFrames[FrameIndex];
         }
+
+        public override string ToString()
+        {
+            return string.Format("MapObjectCorpse\n   BodyID:{1} Layer:{2}\n{0}", base.ToString(), BodyID, Layer);
+        }
     }
 }

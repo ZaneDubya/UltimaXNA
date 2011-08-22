@@ -77,7 +77,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             base.Update(gameTime);
         }
 
-        public override void Draw(ExtendedSpriteBatch spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch)
         {
             spriteBatch.Draw2D(_gumpBar[0], Position, 0, false, false);
             spriteBatch.Draw2DTiled(_gumpBar[1], new Rectangle(Area.X + _gumpBar[0].Width, Area.Y, BarWidth - _gumpBar[2].Width - _gumpBar[0].Width, _gumpBar[1].Height), 0, false, false);

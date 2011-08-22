@@ -136,7 +136,7 @@ namespace UltimaXNA.UILegacy
             _images = new HTMLImages();
         }
 
-        public void Draw(ExtendedSpriteBatch sb, Point2D position)
+        public void Draw(SpriteBatchUI sb, Point2D position)
         {
             checkRender(sb.GraphicsDevice);
             sb.Draw2D(_texture, position, hueButNotIfHTML, false, _hueTransparent);
@@ -160,7 +160,7 @@ namespace UltimaXNA.UILegacy
             }
         }
 
-        public void Draw(ExtendedSpriteBatch sb, Rectangle destRectangle, int xScroll, int yScroll)
+        public void Draw(SpriteBatchUI sb, Rectangle destRectangle, int xScroll, int yScroll)
         {
             checkRender(sb.GraphicsDevice);
             
@@ -269,8 +269,8 @@ namespace UltimaXNA.UILegacy
         {
             if (_mustRender)
             {
-                _mustRender = false;
                 checkResize();
+                _mustRender = false;
                 _texture = writeTexture(graphics, _reader, _width, _height);
             }
         }
@@ -514,108 +514,111 @@ namespace UltimaXNA.UILegacy
                 if (lineheight < reader.Atoms[i].Height)
                     lineheight = reader.Atoms[i].Height;
 
-                word.Add(reader.Atoms[i]);
-
-                // we may need to add additional width for special style characters.
-                if (reader.Atoms[i] is HTMLParser_AtomCharacter)
+                if (reader.Atoms[i].IsThisAtomALineBreak)
                 {
-                    HTMLParser_AtomCharacter atom = (HTMLParser_AtomCharacter)reader.Atoms[i];
-                    UniFont font = UniText.Fonts[(int)atom.Font];
-                    UniCharacter ch = UniText.Fonts[(int)atom.Font].GetCharacter(atom.Character);
-
-                    // italic characters need a little extra width if they are at the end of the line.
-                    if (atom.Style_IsItalic)
-                        additionalwidth = font.Height / 2;
-                    if (atom.Style_IsOutlined)
-                        additionalwidth += 1;
-                    if (ch.YOffset + ch.Height - lineheight > descenderheight)
-                        descenderheight = ch.YOffset + ch.Height - lineheight;
+                    if (width + additionalwidth > widestline)
+                        widestline = width + additionalwidth;
+                    height += lineheight;
+                    descenderheight = 0;
+                    lineheight = 0;
+                    width = 0;
                 }
-                if (reader.Atoms[i].Alignment != enumHTMLAlignments.Left)
-                    widestline = maxwidth;
-
-                if (i == reader.Length - 1 || reader.Atoms[i + 1].CanBreakAtThisAtom)
+                else
                 {
-                    // Now make sure this line can fit the word.
-                    if (width + word_width + additionalwidth <= maxwidth)
+
+                    word.Add(reader.Atoms[i]);
+
+                    // we may need to add additional width for special style characters.
+                    if (reader.Atoms[i] is HTMLParser_AtomCharacter)
                     {
-                        // it can fit!
-                        width += word_width + additionalwidth;
-                        word_width = 0;
-                        word.Clear();
-                        // if this word is followed by a space, does it fit? If not, drop it entirely and insert \n after the word.
-                        if (!(i == reader.Length - 1) && reader.Atoms[i + 1].IsThisAtomABreakingSpace)
-                        {
-                            int charwidth = reader.Atoms[i + 1].Width;
-                            if (width + charwidth <= maxwidth)
-                            {
-                                // we can fit an extra space here.
-                                width += charwidth;
-                                i++;
-                            }
-                            else
-                            {
-                                // can't fit an extra space on the end of the line. replace the space with a \n.
-                                ((HTMLParser_AtomCharacter)reader.Atoms[i + 1]).Character = '\n';
-                            }
-                        }
+                        HTMLParser_AtomCharacter atom = (HTMLParser_AtomCharacter)reader.Atoms[i];
+                        UniFont font = UniText.Fonts[(int)atom.Font];
+                        UniCharacter ch = UniText.Fonts[(int)atom.Font].GetCharacter(atom.Character);
+
+                        // italic characters need a little extra width if they are at the end of the line.
+                        if (atom.Style_IsItalic)
+                            additionalwidth = font.Height / 2;
+                        if (atom.Style_IsOutlined)
+                            additionalwidth += 1;
+                        if (ch.YOffset + ch.Height - lineheight > descenderheight)
+                            descenderheight = ch.YOffset + ch.Height - lineheight;
                     }
-                    else
+                    if (reader.Atoms[i].Alignment != enumHTMLAlignments.Left)
+                        widestline = maxwidth;
+
+                    if (i == reader.Length - 1 || reader.Atoms[i + 1].CanBreakAtThisAtom)
                     {
-                        // this word cannot fit in the current line.
-                        if ((width > 0) && (i - word.Count >= 0))
+                        // Now make sure this line can fit the word.
+                        if (width + word_width + additionalwidth <= maxwidth)
                         {
-                            // if this is the last word in a line. Replace the last space character with a line break
-                            // and back up to the beginning of this word.
-                            if (reader.Atoms[i - word.Count].IsThisAtomABreakingSpace)
-                            {
-                                ((HTMLParser_AtomCharacter)reader.Atoms[i - word.Count]).Character = '\n';
-                                i = i - word.Count;
-                            }
-                            else
-                            {
-                                reader.Atoms.Insert(i - word.Count, new HTMLParser_AtomCharacter('\n'));
-                                i = i - word.Count;
-                            }
-                            word.Clear();
+                            // it can fit!
+                            width += word_width + additionalwidth;
                             word_width = 0;
+                            word.Clear();
+                            // if this word is followed by a space, does it fit? If not, drop it entirely and insert \n after the word.
+                            if (!(i == reader.Length - 1) && reader.Atoms[i + 1].IsThisAtomABreakingSpace)
+                            {
+                                int charwidth = reader.Atoms[i + 1].Width;
+                                if (width + charwidth <= maxwidth)
+                                {
+                                    // we can fit an extra space here.
+                                    width += charwidth;
+                                    i++;
+                                }
+                                else
+                                {
+                                    // can't fit an extra space on the end of the line. replace the space with a \n.
+                                    ((HTMLParser_AtomCharacter)reader.Atoms[i + 1]).Character = '\n';
+                                }
+                            }
                         }
                         else
                         {
-                            // this is the only word on the line and we will need to split it.
-                            // first back up until we've reached the reduced the size of the word
-                            // so that it fits on one line, and split it there.
-                            int iWordWidth = word_width;
-                            for (int j = word.Count - 1; j >= 1; j--)
+                            // this word cannot fit in the current line.
+                            if ((width > 0) && (i - word.Count >= 0))
                             {
-                                int iDashWidth = UniText.Fonts[(int)word[j].Font].GetCharacter('-').Width;
-                                if (iWordWidth + iDashWidth <= maxwidth)
+                                // if this is the last word in a line. Replace the last space character with a line break
+                                // and back up to the beginning of this word.
+                                if (reader.Atoms[i - word.Count].IsThisAtomABreakingSpace)
                                 {
-                                    reader.Atoms.Insert(i - (word.Count - j) + 1, new HTMLParser_AtomCharacter('\n'));
-                                    reader.Atoms.Insert(i - (word.Count - j) + 1, new HTMLParser_AtomCharacter('-'));
-                                    break;
+                                    ((HTMLParser_AtomCharacter)reader.Atoms[i - word.Count]).Character = '\n';
+                                    i = i - word.Count;
                                 }
-                                iWordWidth -= word[j].Width;
+                                else
+                                {
+                                    reader.Atoms.Insert(i - word.Count, new HTMLParser_AtomCharacter('\n'));
+                                    i = i - word.Count;
+                                }
+                                word.Clear();
+                                word_width = 0;
                             }
-                            i -= word.Count + 2;
-                            if (i < 0)
-                                i = -1;
-                            word.Clear();
-                            width = 0;
-                            word_width = 0;
+                            else
+                            {
+                                // this is the only word on the line and we will need to split it.
+                                // first back up until we've reached the reduced the size of the word
+                                // so that it fits on one line, and split it there.
+                                int iWordWidth = word_width;
+                                for (int j = word.Count - 1; j >= 1; j--)
+                                {
+                                    int iDashWidth = UniText.Fonts[(int)word[j].Font].GetCharacter('-').Width;
+                                    if (iWordWidth + iDashWidth <= maxwidth)
+                                    {
+                                        reader.Atoms.Insert(i - (word.Count - j) + 1, new HTMLParser_AtomCharacter('\n'));
+                                        reader.Atoms.Insert(i - (word.Count - j) + 1, new HTMLParser_AtomCharacter('-'));
+                                        break;
+                                    }
+                                    iWordWidth -= word[j].Width;
+                                }
+                                i -= word.Count + 2;
+                                if (i < 0)
+                                    i = -1;
+                                word.Clear();
+                                width = 0;
+                                word_width = 0;
+                            }
                         }
                     }
                 }
-
-                if (reader.Atoms[i].IsThisAtomALineBreak)
-                    {
-                        if (width + additionalwidth > widestline)
-                            widestline = width + additionalwidth;
-                        height += lineheight;
-                        descenderheight = 0;
-                        lineheight = 0;
-                        width = 0;
-                    }
             }
 
             width += additionalwidth;

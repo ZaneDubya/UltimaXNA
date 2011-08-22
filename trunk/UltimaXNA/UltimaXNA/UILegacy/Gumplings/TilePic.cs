@@ -55,7 +55,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             base.Update(gameTime);
         }
 
-        public override void Draw(ExtendedSpriteBatch spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch)
         {
             spriteBatch.Draw2D(_texture, Position, 0, false, false);
             base.Draw(spriteBatch);

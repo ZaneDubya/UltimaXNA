@@ -179,6 +179,10 @@ namespace UltimaXNA.TileEngine
 
         private void render(out Vector2 renderOffset)
         {
+            // Prerender objects
+            _spriteBatch.Prepare(false, false);
+            MapObjectPrerendered.RenderObjects(_spriteBatch);
+
             // ClientVars.RenderSize = 3;
 
             int RenderBeginX = CenterPosition.X - (ClientVars.RenderSize / 2);
@@ -232,7 +236,8 @@ namespace UltimaXNA.TileEngine
             _overGround = overList.GetForemostMouseOverItem<MapObjectGround>(_input.MousePosition);
 
             // Draw the objects we just send to the spritebatch.
-            _spriteBatch.Flush(true);
+            _spriteBatch.Prepare(true, true);
+            _spriteBatch.Flush();
         }
 
         private void renderVectors(ref Vector2 renderOffset)

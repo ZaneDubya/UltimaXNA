@@ -78,7 +78,7 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
             ActivateByButton((int)LoginGumpButtons.LoginButton);
         }
 
-        public override void Draw(ExtendedSpriteBatch spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch)
         {
             base.Draw(spriteBatch);
             // DEBUG !!! Draws a dragon

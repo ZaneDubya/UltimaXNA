@@ -202,7 +202,9 @@ namespace UltimaXNA.Entities
                     _animation.Animate(MobileAction.Stand);
             }
 
-            MapObjectMobile mobtile = null;
+            MapObjectMobile mobtile = new MapObjectMobile(position, DrawFacing, _animation.ActionIndex, _animation.AnimationFrame, this);
+            tile.AddMapObject(mobtile);
+
             int[] drawLayers = _DrawLayerOrder;
 			bool hasOuterTorso = _equipment[(int)EquipLayer.OuterTorso] != null && _equipment[(int)EquipLayer.OuterTorso].AnimationDisplayID != 0;
 
@@ -216,19 +218,11 @@ namespace UltimaXNA.Entities
 
                 if (drawLayers[i] == (int)EquipLayer.Body)
                 {
-                    mobtile = new MapObjectMobile(
-                        BodyID, position,
-                        DrawFacing, _animation.ActionIndex, _animation.AnimationFrame, 
-                        this, i, Hue);
-                    tile.AddMapObject(mobtile);
+                    mobtile.AddLayer(BodyID, Hue);
                 }
                 else if (_equipment[drawLayers[i]] != null && _equipment[drawLayers[i]].AnimationDisplayID != 0)
                 {
-                    mobtile = new TileEngine.MapObjectMobile(
-                            _equipment[drawLayers[i]].AnimationDisplayID, _movement.Position,
-                            DrawFacing, _animation.ActionIndex, _animation.AnimationFrame,
-                            this, i, _equipment[drawLayers[i]].Hue);
-                    tile.AddMapObject(mobtile);
+                    mobtile.AddLayer(_equipment[drawLayers[i]].AnimationDisplayID, _equipment[drawLayers[i]].Hue);
                 }
             }
             drawOverheads(tile, new Position3D(_movement.Position.Tile_V3));

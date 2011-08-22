@@ -49,7 +49,9 @@ namespace UltimaXNA.Graphics
             _drawQueue = new Dictionary<Texture2D, List<VertexPositionNormalTextureHue>>(256);
             _indexBuffer = CreateIndexBuffer(0x1000);
             _vertexListQueue = new Queue<List<VertexPositionNormalTextureHue>>(256);
+
             _effect = this.Game.Content.Load<Effect>("Shaders/IsometricWorld");
+            _effect.CurrentTechnique = _effect.Techniques["StandardEffect"];
         }
 
         public bool DrawSimple(Texture2D texture, Vector3 position, Vector2 hue)
@@ -191,18 +193,10 @@ namespace UltimaXNA.Graphics
             return true;
         }
 
-        public void Flush(bool doLighting)
+        public void Prepare(bool doLighting, bool doDepth)
         {
-            Texture2D iTexture;
-            List<VertexPositionNormalTextureHue> iVertexList;
-
-            IEnumerator<KeyValuePair<Texture2D, List<VertexPositionNormalTextureHue>>> keyValuePairs = _drawQueue.GetEnumerator();
-            _effect.CurrentTechnique = _effect.Techniques["StandardEffect"];
-            this.Game.GraphicsDevice.Textures[1] = UltimaXNA.Data.HuesXNA.HueTexture;
-
             DepthStencilState depth = new DepthStencilState();
-            depth.DepthBufferEnable = true;
-
+            depth.DepthBufferEnable = doDepth;
             Game.GraphicsDevice.DepthStencilState = depth;
 
             Game.GraphicsDevice.BlendState = BlendState.AlphaBlend;
@@ -211,10 +205,21 @@ namespace UltimaXNA.Graphics
             Game.GraphicsDevice.SamplerStates[1] = SamplerState.PointClamp;
 
             _effect.Parameters["DrawLighting"].SetValue(doLighting);
+            Game.GraphicsDevice.Textures[1] = UltimaXNA.Data.HuesXNA.HueTexture;
+        }
 
-            _effect.Parameters["ProjectionMatrix"].SetValue(Utility.ProjectionMatrixScreen);
+        public void Flush()
+        {
+            float width = Game.GraphicsDevice.Viewport.Width;
+            float height = Game.GraphicsDevice.Viewport.Height;
+            _effect.Parameters["ProjectionMatrix"].SetValue(Matrix.CreateOrthographicOffCenter(0, width, height, 0f, Int16.MinValue, Int16.MaxValue));
             _effect.Parameters["WorldMatrix"].SetValue(Utility.ProjectionMatrixWorld);
-            _effect.Parameters["Viewport"].SetValue(new Vector2(Game.GraphicsDevice.Viewport.Width, Game.GraphicsDevice.Viewport.Height));
+            _effect.Parameters["Viewport"].SetValue(new Vector2(width, height));
+
+            Texture2D iTexture;
+            List<VertexPositionNormalTextureHue> iVertexList;
+
+            IEnumerator<KeyValuePair<Texture2D, List<VertexPositionNormalTextureHue>>> keyValuePairs = _drawQueue.GetEnumerator();
 
             while (keyValuePairs.MoveNext())
             {

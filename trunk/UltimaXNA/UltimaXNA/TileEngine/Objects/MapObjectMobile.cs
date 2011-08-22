@@ -23,86 +23,155 @@ using UltimaXNA.Graphics;
 
 namespace UltimaXNA.TileEngine
 {
-    public class MapObjectMobile : MapObject
+    public class MapObjectMobile : MapObjectPrerendered
     {
-        public int BodyID { get; set; }
         public int Action { get; set; }
         public int Facing { get; set; }
-        public int Hue { get; set; }
 
         private float _frame;
-        public int Frame(int nMaxFrames)
-        {
-            return (int)(_frame * (float)nMaxFrames);
-        }
+        private int _layerCount = 0;
+        private MapObjectMobileLayer[] _layers;
 
-        private bool _noDraw = false;
-
-        public MapObjectMobile(int bodyID, Position3D position, int facing, int action, float frame, Entities.Entity ownerEntity, int layer, int hue)
+        public MapObjectMobile(Position3D position, int facing, int action, float frame, Entities.Entity ownerEntity)
             : base(position)
         {
-            BodyID = bodyID;
+            _layers = new MapObjectMobileLayer[(int)EquipLayer.LastUserValid];
+
             Facing = facing;
             Action = action;
             if (_frame >= 1.0f)
                 return;
             _frame = frame;
-            Hue = hue;
-            SortTiebreaker = layer;
             OwnerEntity = ownerEntity;
 
             // set pick type
             _pickType = PickTypes.PickObjects;
 
             // set up draw data
-            Data.FrameXNA frameXNA = getFrame();
-            if (frameXNA == null)
-            {
-                _noDraw = true;
-                return;
-            }
-            _draw_texture = frameXNA.Texture;
-            _draw_width = _draw_texture.Width;
-            _draw_height = _draw_texture.Height;
             _draw_flip = (Facing > 4) ? true : false;
             _draw_IsometricOverlap = true;
-            if (_draw_flip)
+        }
+
+        public void AddLayer(int bodyID, int hue)
+        {
+            _layers[_layerCount++] = new MapObjectMobileLayer(hue, getFrame(bodyID, hue, Facing, Action, _frame));
+        }
+
+
+        private int _mobile_drawCenterX, _mobile_drawCenterY;
+        protected override void Prerender(SpriteBatch3D sb)
+        {
+            if (_layerCount == 1)
             {
-                _draw_X = frameXNA.Center.X - 22 + (int)((Position.X_offset - Position.Y_offset) * 22);
-                _draw_Y = frameXNA.Center.Y + (Z << 2) + (int)(Position.Z_offset * 4) + _draw_height - 22 - (int)((Position.X_offset + Position.Y_offset) * 22);
+                _draw_hue = Utility.GetHueVector(_layers[0].Hue);
+                _draw_texture = _layers[0].Frame.Texture;
+                _mobile_drawCenterX = _layers[0].Frame.Center.X;
+                _mobile_drawCenterY = _layers[0].Frame.Center.Y;
             }
             else
             {
-                _draw_X = frameXNA.Center.X - 22 - (int)((Position.X_offset - Position.Y_offset) * 22);
-                _draw_Y = frameXNA.Center.Y + (Z << 2) + (int)(Position.Z_offset * 4) + _draw_height - 22 - (int)((Position.X_offset + Position.Y_offset) * 22);
-            }
+                _draw_hue = Utility.GetHueVector(0);
 
-            _draw_hue = Utility.GetHueVector(Hue);
-            if (ClientVars.LastTarget != null && ClientVars.LastTarget == OwnerSerial)
-                _draw_hue = new Vector2(((Entities.Mobile)OwnerEntity).NotorietyHue - 1, 1);
+                int minX = 0, minY = 0;
+                int maxX = 0, maxY = 0;
+                for (int i = 0; i < _layerCount; i++)
+                {
+                    if (_layers[i].Frame != null)
+                    {
+                        int x, y, w, h;
+                        x = _layers[i].Frame.Center.X;
+                        y = _layers[i].Frame.Center.Y;
+                        w = _layers[i].Frame.Texture.Width;
+                        h = _layers[i].Frame.Texture.Height;
+
+                        if (minX < x)
+                            minX = x;
+                        if (maxX < w - x)
+                            maxX = w - x;
+
+                        if (minY < h + y)
+                            minY = h + y;
+                        if (maxY > y)
+                            maxY = y;
+                    }
+                }
+
+                _mobile_drawCenterX = minX;
+                _mobile_drawCenterY = maxY;
+
+                RenderTarget2D renderTarget = new RenderTarget2D(sb.Game.GraphicsDevice,
+                        minX + maxX, minY - maxY, false, SurfaceFormat.Color, DepthFormat.None);
+
+                sb.Game.GraphicsDevice.SetRenderTarget(renderTarget);
+                sb.Game.GraphicsDevice.Clear(Color.Transparent);
+
+                for (int i = 0; i < _layerCount; i++)
+                    if (_layers[i].Frame != null)
+                        sb.DrawSimple(_layers[i].Frame.Texture,
+                            new Vector3(
+                                minX - _layers[i].Frame.Center.X,
+                                renderTarget.Height - _layers[i].Frame.Texture.Height + maxY - _layers[i].Frame.Center.Y,
+                                0),
+                                Utility.GetHueVector(_layers[i].Hue));
+
+                sb.Flush();
+                _draw_texture = renderTarget;
+                sb.Game.GraphicsDevice.SetRenderTarget(null);
+            }
         }
 
         internal override bool Draw(SpriteBatch3D sb, Vector3 drawPosition, MouseOverList molist, PickTypes pickType, int maxAlt)
         {
-            if (_noDraw)
-                return false;
+            _draw_width = _draw_texture.Width;
+            _draw_height = _draw_texture.Height;
+            if (_draw_flip)
+            {
+                _draw_X = _mobile_drawCenterX - 22 + (int)((Position.X_offset - Position.Y_offset) * 22);
+                _draw_Y = _mobile_drawCenterY + (int)(Position.Z_offset * 4) + (Z << 2) + _draw_height - 22 - (int)((Position.X_offset + Position.Y_offset) * 22);
+            }
+            else
+            {
+                _draw_X = _mobile_drawCenterX - 22 - (int)((Position.X_offset - Position.Y_offset) * 22);
+                _draw_Y = _mobile_drawCenterY + (int)(Position.Z_offset * 4) + (Z << 2) + _draw_height - 22 - (int)((Position.X_offset + Position.Y_offset) * 22);
+            }
+
+            if (ClientVars.LastTarget != null && ClientVars.LastTarget == OwnerSerial)
+                _draw_hue = new Vector2(((Entities.Mobile)OwnerEntity).NotorietyHue - 1, 1);
+
             return base.Draw(sb, drawPosition, molist, pickType, maxAlt);
         }
 
-        private Data.FrameXNA getFrame()
+        private Data.FrameXNA getFrame(int bodyID, int hue, int facing, int action, float frame)
         {
-            Data.FrameXNA[] iFrames = Data.AnimationsXNA.GetAnimation(BodyID, Action, Facing, Hue);
+            Data.FrameXNA[] iFrames = Data.AnimationsXNA.GetAnimation(bodyID, action, facing, hue);
             if (iFrames == null)
                 return null;
-            int iFrame = Frame(iFrames.Length);
+            int iFrame = frameFromSequence(frame, iFrames.Length);
             if (iFrames[iFrame].Texture == null)
                 return null;
             return iFrames[iFrame];
         }
 
+        private int frameFromSequence(float frame, int maxFrames)
+        {
+            return (int)(frame * (float)maxFrames);
+        }
+
         public override string ToString()
         {
-            return string.Format("moMobile of {0}", Data.TileData.ItemData_ByAnimID(BodyID).Name);
+            return string.Format("MapObjectMobile\n   Facing:{1}\n{0}", base.ToString(), Facing);
+        }
+    }
+
+    struct MapObjectMobileLayer
+    {
+        public int Hue;
+        public Data.FrameXNA Frame;
+
+        public MapObjectMobileLayer(int hue,Data.FrameXNA frame)
+        {
+            Hue = hue;
+            Frame = frame;
         }
     }
 }
