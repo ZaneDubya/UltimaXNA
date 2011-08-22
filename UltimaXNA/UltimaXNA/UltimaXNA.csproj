@@ -60,7 +60,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>DEBUG;WINDOWS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -121,6 +121,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClientData\Skills.cs" />
     <Compile Include="Client\Packets\Client\AsciiSpeechPacket.cs" />
     <Compile Include="Client\Packets\Client\AttackRequestPacket.cs" />
     <Compile Include="Client\Packets\Client\BuyItemsPacket.cs" />

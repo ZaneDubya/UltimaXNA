@@ -135,7 +135,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             }
             _openColorPicker = new ColorPicker(_owner, Page, _openArea, _hueSize.X, _hueSize.Y, _hues);
             _openColorPicker.OnMouseClick = onOpenSwatchClick;
-            ((Gump)_owner).AddGumpling(_openColorPicker);
+            ((Gump)_owner).AddControl(_openColorPicker);
         }
 
         void closeSwatch()

@@ -125,7 +125,7 @@ namespace UltimaXNA.UILegacy.Gumplings
         {
             _textRenderer.Draw(spriteBatch, Position);
             if (_caratBlinkOn)
-                _caratRenderer.Draw(spriteBatch, new Point2D(X + _textRenderer.TextureWidth, Y));
+                _caratRenderer.Draw(spriteBatch, new Point2D(X + _textRenderer.Width, Y));
             
             base.Draw(spriteBatch);
         }

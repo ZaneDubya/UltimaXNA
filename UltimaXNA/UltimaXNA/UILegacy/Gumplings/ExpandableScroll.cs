@@ -41,10 +41,10 @@ namespace UltimaXNA.UILegacy.Gumplings
         public override void Initialize(UIManager manager)
         {
             base.Initialize(manager);
-            _gumplingTop = (GumpPic)AddGumpling(new GumpPic(this, 0, 0, 0, 0x0820, 0));
-            _gumplingMiddle = (GumpPicTiled)AddGumpling(new GumpPicTiled(this, 0, 0, 0, 0, 0, 0x0822));
-            _gumplingBottom = (GumpPic)AddGumpling(new GumpPic(this, 0, 0, 0, 0x0823, 0));
-            _gumplingExpander = (Button)AddGumpling(new Button(this, 0, 0, 0, 0x082E, 0x82F, ButtonTypes.Activate, 0, gumplingExpander_ButtonID));
+            _gumplingTop = (GumpPic)AddControl(new GumpPic(this, 0, 0, 0, 0x0820, 0));
+            _gumplingMiddle = (GumpPicTiled)AddControl(new GumpPicTiled(this, 0, 0, 0, 0, 0, 0x0822));
+            _gumplingBottom = (GumpPic)AddControl(new GumpPic(this, 0, 0, 0, 0x0823, 0));
+            _gumplingExpander = (Button)AddControl(new Button(this, 0, 0, 0, 0x082E, 0x82F, ButtonTypes.Activate, 0, gumplingExpander_ButtonID));
             
             _gumplingExpander.OnMouseDown = expander_OnMouseDown;
             _gumplingExpander.OnMouseUp = expander_OnMouseUp;
@@ -77,7 +77,7 @@ namespace UltimaXNA.UILegacy.Gumplings
                 _gumplingTitleGumpIDDelta = false;
                 if (_gumplingTitle != null)
                     _gumplingTitle.Dispose();
-                _gumplingTitle = (GumpPic)AddGumpling(new GumpPic(this, 0, 0, 0, _gumplingTitleGumpID, 0));
+                _gumplingTitle = (GumpPic)AddControl(new GumpPic(this, 0, 0, 0, _gumplingTitleGumpID, 0));
             }
 
             if (!_gumplingTop.IsInitialized)

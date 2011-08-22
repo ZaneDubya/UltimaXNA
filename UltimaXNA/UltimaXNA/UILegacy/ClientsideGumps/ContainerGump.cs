@@ -24,11 +24,11 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
             _item = (Container)containerItem;
             IsMovable = true;
 
-            AddGumpling(new GumpPicContainer(this, 0, 0, 0, _data.GumpID, 0, _item));
-            LastGumpling.MakeDragger(this);
-            LastGumpling.MakeCloseTarget(this);
+            AddControl(new GumpPicContainer(this, 0, 0, 0, _data.GumpID, 0, _item));
+            LastControl.MakeDragger(this);
+            LastControl.MakeCloseTarget(this);
 
-            _tickerText = (HtmlGump)AddGumpling(new HtmlGump(this, 0, 50, 50, 0, 0, 0, 0, string.Empty));
+            _tickerText = (HtmlGump)AddControl(new HtmlGump(this, 0, 50, 50, 0, 0, 0, 0, string.Empty));
         }
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
@@ -40,7 +40,7 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
                 _tickerText.Text = string.Format("Update#{0}", _updateTicker);
                 // delete any items in our pack that are no longer in the container.
                 List<Control> gumplingsToRemove = new List<Control>();
-                foreach (Control c in _controls)
+                foreach (Control c in Controls)
                 {
                     if (c is ItemGumpling && !_item.Contents.Contains(((ItemGumpling)c).Item))
                     {
@@ -48,12 +48,12 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
                     }
                 }
                 foreach (Control c in gumplingsToRemove)
-                    _controls.Remove(c);
+                    Controls.Remove(c);
                 // add any items in the container that are not in our pack.
                 foreach (Item item in _item.Contents)
                 {
                     bool controlForThisItem = false;
-                    foreach (Control c in _controls)
+                    foreach (Control c in Controls)
                     {
                         if (c is ItemGumpling && ((ItemGumpling)c).Item == item)
                         {
@@ -63,7 +63,7 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
                     }
                     if (!controlForThisItem)
                     {
-                        AddGumpling(new ItemGumpling(this, item));
+                        AddControl(new ItemGumpling(this, item));
                     }
                 }
             }

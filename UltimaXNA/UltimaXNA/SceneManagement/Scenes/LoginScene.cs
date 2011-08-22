@@ -45,6 +45,7 @@ namespace UltimaXNA.SceneManagement
             ((UILegacy.ClientsideGumps.LoginGump)g).OnLogin += this.OnLogin;
             Entities.EntitiesCollection.Reset();
             ClientVars.Map = -1;
+            // UI.AddGump_Local(new UILegacy.ClientsideGumps.SkillsGump(), 50, 50);
         }
 
         public override void Update(GameTime gameTime)

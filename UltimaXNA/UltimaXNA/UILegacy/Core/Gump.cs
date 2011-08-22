@@ -23,7 +23,6 @@ namespace UltimaXNA.UILegacy
         {
             Serial = serial;
             GumpID = gumpID;
-            _controls = new List<Control>();
         }
 
         public Gump(Serial serial, Serial gumpID, String[] pieces, String[] textlines)
@@ -79,8 +78,6 @@ namespace UltimaXNA.UILegacy
             // don't draw any server gumps until we're in the world.
             if (IsServerGump && !ClientVars.InWorld)
                 return;
-            if (_controls.Count == 0)
-                return;
 
             spriteBatch.Flush();
 
@@ -132,23 +129,6 @@ namespace UltimaXNA.UILegacy
             ActivePage = pageIndex;
         }
 
-        public Control AddGumpling(Control c)
-        {
-            _controls.Add(c);
-            return LastGumpling;
-        }
-
-        public Control LastGumpling
-        {
-            get { return _controls[_controls.Count - 1]; }
-        }
-
-        public void ClearGumplings()
-        {
-            foreach (Control c in _controls)
-                c.Dispose();
-        }
-
         private void buildGump(string[] gumpPieces, string[] gumpLines)
         {
             int currentGUMPPage = 0;
@@ -162,41 +142,41 @@ namespace UltimaXNA.UILegacy
                         currentGUMPPage = interpret_page(arguements);
                         break;
                     case "checkertrans":
-                        _controls.Add(new Gumplings.CheckerTrans(this, currentGUMPPage, arguements));
+                        AddControl(new Gumplings.CheckerTrans(this, currentGUMPPage, arguements));
                         break;
                     case "resizepic":
-                        _controls.Add(new Gumplings.ResizePic(this, currentGUMPPage, arguements));
-                        ((Gumplings.ResizePic)LastGumpling).CloseOnRightClick = true;
+                        AddControl(new Gumplings.ResizePic(this, currentGUMPPage, arguements));
+                        ((Gumplings.ResizePic)LastControl).CloseOnRightClick = true;
                         break;
                     case "button":
-                        _controls.Add(new Gumplings.Button(this, currentGUMPPage, arguements));
+                        AddControl(new Gumplings.Button(this, currentGUMPPage, arguements));
                         break;
                     case "croppedtext":
-                        _controls.Add(new Gumplings.CroppedText(this, currentGUMPPage, arguements, gumpLines));
+                        AddControl(new Gumplings.CroppedText(this, currentGUMPPage, arguements, gumpLines));
                         break;
                     case "htmlgump":
-                        _controls.Add(new Gumplings.HtmlGump(this, currentGUMPPage, arguements, gumpLines));
+                        AddControl(new Gumplings.HtmlGump(this, currentGUMPPage, arguements, gumpLines));
                         break;
                     case "gumppictiled":
-                        _controls.Add(new Gumplings.GumpPicTiled(this, currentGUMPPage, arguements));
+                        AddControl(new Gumplings.GumpPicTiled(this, currentGUMPPage, arguements));
                         break;
                     case "gumppic":
-                        _controls.Add(new Gumplings.GumpPic(this, currentGUMPPage, arguements));
+                        AddControl(new Gumplings.GumpPic(this, currentGUMPPage, arguements));
                         break;
                     case "text":
-                        _controls.Add(new Gumplings.TextLabel(this, currentGUMPPage, arguements, gumpLines));
+                        AddControl(new Gumplings.TextLabel(this, currentGUMPPage, arguements, gumpLines));
                         break;
                     case "tilepic":
-                        _controls.Add(new Gumplings.TilePic(this, currentGUMPPage, arguements));
+                        AddControl(new Gumplings.TilePic(this, currentGUMPPage, arguements));
                         break;
                     case "tilepichue":
-                        _controls.Add(new Gumplings.TilePic(this, currentGUMPPage, arguements));
+                        AddControl(new Gumplings.TilePic(this, currentGUMPPage, arguements));
                         break;
                     case "textentry":
-                        _controls.Add(new Gumplings.TextEntry(this, currentGUMPPage, arguements, gumpLines));
+                        AddControl(new Gumplings.TextEntry(this, currentGUMPPage, arguements, gumpLines));
                         break;
                     case "textentrylimited":
-                        _controls.Add(new Gumplings.TextEntry(this, currentGUMPPage, arguements, gumpLines));
+                        AddControl(new Gumplings.TextEntry(this, currentGUMPPage, arguements, gumpLines));
                         break;
 
                     case "checkbox":
@@ -239,29 +219,31 @@ namespace UltimaXNA.UILegacy
         private bool checkResize()
         {
             bool changedDimensions = false;
-            int w = 0, h = 0;
-            foreach (Control c in _controls)
+            if (Controls.Count > 0)
             {
-                if (c.Page == 0 || c.Page == this.ActivePage)
+                int w = 0, h = 0;
+                foreach (Control c in Controls)
                 {
-                    if (w < c.X + c.Width)
+                    if (c.Page == 0 || c.Page == this.ActivePage)
                     {
-                        w = c.X + c.Width;
-                    }
-                    if (h < c.Y + c.Height)
-                    {
-                        h = c.Y + c.Height;
+                        if (w < c.X + c.Width)
+                        {
+                            w = c.X + c.Width;
+                        }
+                        if (h < c.Y + c.Height)
+                        {
+                            h = c.Y + c.Height;
+                        }
                     }
                 }
-            }
 
-            if (w != Width || h != Height)
-            {
-                Width = w;
-                Height = h;
-                changedDimensions = true;
+                if (w != Width || h != Height)
+                {
+                    Width = w;
+                    Height = h;
+                    changedDimensions = true;
+                }
             }
-
             return changedDimensions;
         }
 

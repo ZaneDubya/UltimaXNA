@@ -30,7 +30,6 @@ namespace UltimaXNA.UILegacy.Gumplings
             : base(owner, page)
         {
             HandlesMouseInput = true;
-            _controls = new List<Control>();
         }
 
         public DropDownList(Control owner, int page, int x, int y, int width, int index, int itemsVisible, string[] items, bool canBeNull)
@@ -52,10 +51,10 @@ namespace UltimaXNA.UILegacy.Gumplings
             _resize.OnMouseClick = onClickClosedList;
             _resize.OnMouseOver = onMouseOverClosedList;
             _resize.OnMouseOut = onMouseOutClosedList;
-            ((Gump)_owner).AddGumpling(_resize);
+            ((Gump)_owner).AddControl(_resize);
             _label = new TextLabelAscii(_owner, Page, X + 4, Y + 5, hue_Text, 1, string.Empty);
-            ((Gump)_owner).AddGumpling(_label);
-            ((Gump)_owner).AddGumpling(new GumpPic(_owner, Page, X + width - 22, Y + 5, 2086, 0));
+            ((Gump)_owner).AddControl(_label);
+            ((Gump)_owner).AddControl(new GumpPic(_owner, Page, X + width - 22, Y + 5, 2086, 0));
         }
 
         public override void Update(GameTime gameTime)
@@ -108,18 +107,18 @@ namespace UltimaXNA.UILegacy.Gumplings
             _openResizePic.OnMouseClick = onClickOpenList;
             _openResizePic.OnMouseOver = onMouseOverOpenList;
             _openResizePic.OnMouseOut = onMouseOutOpenList;
-            ((Gump)_owner).AddGumpling(_openResizePic);
+            ((Gump)_owner).AddControl(_openResizePic);
             // only show the scrollbar if we need to scroll
             if (_visibleItems < _items.Count)
             {
                 _openScrollBar = new ScrollBar(_owner, Page, X + _width - 20, Y + 4, Data.ASCIIText.Fonts[1].Height * _visibleItems, (_canBeNull ? -1 : 0), _items.Count - _visibleItems, Index);
-                ((Gump)_owner).AddGumpling(_openScrollBar);
+                ((Gump)_owner).AddControl(_openScrollBar);
             }
             _openLabels = new TextLabelAscii[_visibleItems];
             for (int i = 0; i < _visibleItems; i++)
             {
                 _openLabels[i] = new TextLabelAscii(_owner, Page, X + 4, Y + 5 + Data.ASCIIText.Fonts[1].Height * i, 1107, 1, string.Empty);
-                ((Gump)_owner).AddGumpling(_openLabels[i]);
+                ((Gump)_owner).AddControl(_openLabels[i]);
             }
         }
 

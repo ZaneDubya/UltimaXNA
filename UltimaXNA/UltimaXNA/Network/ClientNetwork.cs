@@ -291,8 +291,15 @@ namespace UltimaXNA.Network
         {
             if (_serverSocket != null)
             {
-                _serverSocket.Shutdown(SocketShutdown.Both);
-                _serverSocket.Close();
+                try
+                {
+                    _serverSocket.Shutdown(SocketShutdown.Both);
+                    _serverSocket.Close();
+                }
+                catch
+                {
+
+                }
                 _serverSocket = null;
                 _serverEndPoint = null;
                 _isDecompressionEnabled = false;
