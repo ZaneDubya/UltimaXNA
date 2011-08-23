@@ -26,7 +26,31 @@ namespace UltimaXNA.Client.Packets.Server
         public HuedEffectPacket(PacketReader reader)
             : base(0xC0, "Hued Effect")
         {
-            // TODO: Write this packet.
+            EffectType type = (EffectType)reader.ReadByte();
+            Serial source = reader.ReadInt32();
+            Serial target = reader.ReadInt32();
+            int itemID = reader.ReadUInt16();
+            int xSource = reader.ReadUInt16();
+            int ySource = reader.ReadUInt16();
+            int zSource = reader.ReadByte();
+            int xTarget = reader.ReadUInt16();
+            int yTarget = reader.ReadUInt16();
+            int zTarget = reader.ReadByte();
+            int speed = reader.ReadByte();
+            int duration = reader.ReadByte();
+            int unknown0 = reader.ReadUInt16();
+            int fixedDirection = reader.ReadByte();
+            int explodes = reader.ReadByte();
+            int hue = reader.ReadInt32();
+            int renderMode = reader.ReadInt32();
         }
+    }
+
+    public enum EffectType
+    {
+        Moving = 0x00,
+        Lightning = 0x01,
+        FixedXYZ = 0x02,
+        FixedFrom = 0x03
     }
 }

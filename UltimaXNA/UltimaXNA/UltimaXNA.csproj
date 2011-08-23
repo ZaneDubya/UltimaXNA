@@ -127,7 +127,6 @@
     <Compile Include="Client\Packets\Client\AttackRequestPacket.cs" />
     <Compile Include="Client\Packets\Client\BuyItemsPacket.cs" />
     <Compile Include="Client\Packets\Client\ClientVersionPacket.cs" />
-    <Compile Include="Client\Packets\Client\ContextMenuResponse.cs" />
     <Compile Include="Client\Packets\Client\CreateCharacterPacket.cs" />
     <Compile Include="Client\Packets\Client\DeleteCharacterPacket.cs" />
     <Compile Include="Client\Packets\Client\DisconnectNotificationPacket.cs" />
@@ -146,8 +145,6 @@
     <Compile Include="Client\Packets\Client\PickupItemPacket.cs" />
     <Compile Include="Client\Packets\Client\QueryPropertiesPacket.cs" />
     <Compile Include="Client\Packets\Client\RenameCharacterPacket.cs" />
-    <Compile Include="Client\Packets\Client\RequestContextMenuPacket.cs" />
-    <Compile Include="Client\Packets\Client\RequestCustomHousePacket.cs" />
     <Compile Include="Client\Packets\Client\RequestHelpPacket.cs" />
     <Compile Include="Client\Packets\Client\RequestNamePacket.cs" />
     <Compile Include="Client\Packets\Client\RequestNoticePacket.cs" />
