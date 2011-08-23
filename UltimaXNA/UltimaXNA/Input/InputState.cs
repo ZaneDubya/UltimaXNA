@@ -189,7 +189,7 @@ namespace UltimaXNA.Input
         protected override void OnMouseDown(EventArgsMouse e)
         {
             _lastMouseDown = new InputEventM(MouseEvent.Down, e);
-            _lastMouseDownTime = ClientVars.TheTime;
+            _lastMouseDownTime = ClientVars.EngineVars.TheTime;
             addEvent(_lastMouseDown);
         }
 
@@ -205,14 +205,14 @@ namespace UltimaXNA.Input
             {
                 if (!Utility.IsPointThisDistanceAway(_lastMouseDown.Position, e.Position, MouseClickMaxDelta))
                 {
-                    if ((ClientVars.TheTime - _lastMouseClickTime <= ClientVars.SecondsForDoubleClick))
+                    if ((ClientVars.EngineVars.TheTime - _lastMouseClickTime <= ClientVars.EngineVars.SecondsForDoubleClick))
                     {
                         _lastMouseClickTime = 0f;
                         addEvent(new InputEventM(MouseEvent.DoubleClick, e));
                     }
                     else
                     {
-                        _lastMouseClickTime = ClientVars.TheTime;
+                        _lastMouseClickTime = ClientVars.EngineVars.TheTime;
                         addEvent(new InputEventM(MouseEvent.Click, e));
                     }
                 }
@@ -264,7 +264,7 @@ namespace UltimaXNA.Input
             else
             {
                 pressEvent.OverrideKeyChar(e.KeyCode);
-                if (ClientVars.DEBUG_LogKeyboardChars)
+                if (ClientVars.DebugVars.Flag_LogKeyboardChars)
                 {
                     Diagnostics.Logger.Debug("Char: " + pressEvent.KeyChar);
                 }

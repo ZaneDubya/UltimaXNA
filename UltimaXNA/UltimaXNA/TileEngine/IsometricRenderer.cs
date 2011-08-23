@@ -122,10 +122,10 @@ namespace UltimaXNA.TileEngine
 
         public void Update(GameTime gameTime)
         {
-            if (ClientVars.Map != -1)
+            if (ClientVars.EngineVars.Map != -1)
             {
-                if ((Map == null) || (Map.Index != ClientVars.Map))
-                    Map = new Map(ClientVars.Map);
+                if ((Map == null) || (Map.Index != ClientVars.EngineVars.Map))
+                    Map = new Map(ClientVars.EngineVars.Map);
                 // Update the Map's position so it loads the tiles we're going to be drawing
                 Map.Update(CenterPosition.X, CenterPosition.Y);
 
@@ -166,10 +166,10 @@ namespace UltimaXNA.TileEngine
 
         public void Draw(GameTime gameTime)
         {
-            if (ClientVars.IsMinimized)
+            if (ClientVars.EngineVars.IsMinimized)
                 return;
 
-            if (ClientVars.Map < 0)
+            if (ClientVars.EngineVars.Map < 0)
                 return;
 
             Vector2 renderOffset;
@@ -185,16 +185,16 @@ namespace UltimaXNA.TileEngine
 
             // ClientVars.RenderSize = 3;
 
-            int RenderBeginX = CenterPosition.X - (ClientVars.RenderSize / 2);
-            int RenderBeginY = CenterPosition.Y - (ClientVars.RenderSize / 2);
-            int RenderEndX = RenderBeginX + ClientVars.RenderSize;
-            int RenderEndY = RenderBeginY + ClientVars.RenderSize;
+            int RenderBeginX = CenterPosition.X - (ClientVars.EngineVars.RenderSize / 2);
+            int RenderBeginY = CenterPosition.Y - (ClientVars.EngineVars.RenderSize / 2);
+            int RenderEndX = RenderBeginX + ClientVars.EngineVars.RenderSize;
+            int RenderEndY = RenderBeginY + ClientVars.EngineVars.RenderSize;
 
-            renderOffset.X = (ClientVars.BackBufferWidth >> 1) - 22;
+            renderOffset.X = (ClientVars.EngineVars.BackBufferWidth >> 1) - 22;
             renderOffset.X -= (int)((CenterPosition.X_offset - CenterPosition.Y_offset) * 22);
             renderOffset.X -= (RenderBeginX - RenderBeginY) * 22;
 
-            renderOffset.Y = ((ClientVars.BackBufferHeight - (ClientVars.RenderSize * 44)) >> 1);
+            renderOffset.Y = ((ClientVars.EngineVars.BackBufferHeight - (ClientVars.EngineVars.RenderSize * 44)) >> 1);
             renderOffset.Y += (CenterPosition.Z << 2) + (int)(CenterPosition.Z_offset * 4);
             renderOffset.Y -= (int)((CenterPosition.X_offset + CenterPosition.Y_offset) * 22);
             renderOffset.Y -= (RenderBeginX + RenderBeginY) * 22;
@@ -242,7 +242,7 @@ namespace UltimaXNA.TileEngine
 
         private void renderVectors(ref Vector2 renderOffset)
         {
-            if (ClientVars.DEBUG_HighlightMouseOverObjects)
+            if (ClientVars.DebugVars.Flag_HighlightMouseOverObjects)
             {
                 if (_overObject != null)
                 {

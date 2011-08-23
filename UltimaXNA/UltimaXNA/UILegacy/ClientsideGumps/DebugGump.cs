@@ -33,7 +33,7 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
-            _html.Text = ClientVars.DebugMessage;
+            _html.Text = ClientVars.DebugVars.DebugMessage;
             base.Update(gameTime);
         }
     }

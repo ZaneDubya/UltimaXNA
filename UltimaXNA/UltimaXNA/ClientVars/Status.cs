@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   Pair.cs
+ *   Status.cs
  *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -8,21 +8,14 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-#region usings
 using System;
-#endregion
 
-namespace UltimaXNA
+namespace UltimaXNA.ClientVars
 {
-    public struct Pair<T, U>
+    public static class Status
     {
-        public T ItemA;
-        public U ItemB;
-
-        public Pair(T a, U b)
-        {
-            ItemA = a;
-            ItemB = b;
-        }
+        public static int StrengthLock = 0;
+        public static int DexterityLock = 0;
+        public static int IntelligenceLock = 0;
     }
 }

@@ -42,7 +42,7 @@ namespace UltimaXNA.Data
 
         public void Play()
         {
-            float now = ClientVars.TheTime;
+            float now = ClientVars.EngineVars.TheTime;
 
             // Check to see if any existing instances of this sound effect have stopped playing. If
             // they have, remove the reference to them so the garbage collector can collect them.
@@ -125,7 +125,7 @@ namespace UltimaXNA.Data
 
             string str = System.Text.Encoding.ASCII.GetString(stringBuffer); // seems that the null terminator's not being properly recognized :/
 
-            Metrics.ReportDataRead((int)_Index.BaseStream.Position - streamStart);
+            ClientVars.Metrics.ReportDataRead((int)_Index.BaseStream.Position - streamStart);
 
             return new UOSound(str.Substring(0, str.IndexOf('\0')), buffer);
         }

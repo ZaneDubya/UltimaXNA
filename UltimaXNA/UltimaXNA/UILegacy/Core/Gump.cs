@@ -40,7 +40,7 @@ namespace UltimaXNA.UILegacy
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
             // don't process any server gumps until we're in the world.
-            if (IsServerGump && !ClientVars.InWorld)
+            if (IsServerGump && !ClientVars.EngineVars.InWorld)
                 return;
 
             // Add any gump pieces that have been given to the gump...
@@ -76,7 +76,7 @@ namespace UltimaXNA.UILegacy
             if (!Visible)
                 return;
             // don't draw any server gumps until we're in the world.
-            if (IsServerGump && !ClientVars.InWorld)
+            if (IsServerGump && !ClientVars.EngineVars.InWorld)
                 return;
 
             if (_renderFullScreen)
@@ -248,7 +248,7 @@ namespace UltimaXNA.UILegacy
 
         protected void Quit()
         {
-            ClientVars.EngineRunning = false;
+            ClientVars.EngineVars.EngineRunning = false;
         }
     }
 }

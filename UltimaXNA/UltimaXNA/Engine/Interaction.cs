@@ -1,17 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿/***************************************************************************
+ *   Interaction.cs
+ *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using UltimaXNA.Data;
 using UltimaXNA.Client;
+using UltimaXNA.Client.Packets.Client;
 using UltimaXNA.Entities;
 using UltimaXNA.Extensions;
 using UltimaXNA.Input;
-using UltimaXNA.Client.Packets.Client;
 using UltimaXNA.TileEngine;
 using UltimaXNA.UILegacy;
-using UltimaXNA.UILegacy.Gumplings;
 
 namespace UltimaXNA
 {

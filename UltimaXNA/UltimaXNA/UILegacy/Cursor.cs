@@ -69,7 +69,7 @@ namespace UltimaXNA.UILegacy
 
         internal bool TrammelHue
         {
-            get { return (ClientVars.Map == 1); }
+            get { return (ClientVars.EngineVars.Map == 1); }
         }
 
         public Cursor(IUIManager manager)
@@ -127,9 +127,9 @@ namespace UltimaXNA.UILegacy
             }
             else
             {
-                if (ClientVars.InWorld && (!_manager.IsMouseOverUI && !_manager.IsModalMsgBoxOpen))
+                if (ClientVars.EngineVars.InWorld && (!_manager.IsMouseOverUI && !_manager.IsModalMsgBoxOpen))
                 {
-                    switch (ClientVars.CursorDirection)
+                    switch (ClientVars.EngineVars.CursorDirection)
                     {
                         case Direction.North:
                             cursorOffset = new Point2D(29, 1);
@@ -178,7 +178,7 @@ namespace UltimaXNA.UILegacy
             }
 
             // Hue the cursor if in warmode.
-            if (ClientVars.WarMode)
+            if (ClientVars.EngineVars.WarMode)
                 cursorTextureID -= 23;
             else if (TrammelHue)
                 cursorHue = 2412;

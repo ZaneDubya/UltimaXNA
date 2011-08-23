@@ -1,9 +1,6 @@
 ﻿/***************************************************************************
  *   GameState.cs
  *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
- *   
- *   begin                : May 31, 2009
- *   email                : poplicola@ultimaxna.com
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -79,7 +76,7 @@ namespace UltimaXNA
 
         static void doUpdate()
         {
-            if (ClientVars.InWorld && !_ui.IsModalMsgBoxOpen && UltimaClient.IsConnected)
+            if (ClientVars.EngineVars.InWorld && !_ui.IsModalMsgBoxOpen && UltimaClient.IsConnected)
             {
                 parseKeyboard();
                 parseMouse();
@@ -91,7 +88,7 @@ namespace UltimaXNA
                     _world.PickType = PickTypes.PickEverything;
 
                 // Set the cursor direction
-                ClientVars.CursorDirection = Utility.DirectionFromVectors(new Vector2(400, 300), _inputNew.MousePosition.ToVector2());
+                ClientVars.EngineVars.CursorDirection = Utility.DirectionFromVectors(new Vector2(400, 300), _inputNew.MousePosition.ToVector2());
 
                 // Show a popup tip if we have hovered over this item for X seconds.
                 if (_inputNew.MouseStationaryMS >= _TimeHoveringBeforeTipMS)
@@ -103,14 +100,14 @@ namespace UltimaXNA
                     doMovement();
 
                 // Show our target's name
-                createHoverLabel(ClientVars.LastTarget);
+                createHoverLabel(ClientVars.EngineVars.LastTarget);
             }
         }
 
         static void doMovement()
         {
             // Get the move direction and add the Running offset if the Cursor is far enough away.
-            Direction moveDirection = ClientVars.CursorDirection;
+            Direction moveDirection = ClientVars.EngineVars.CursorDirection;
             float distanceFromCenterOfScreen = Vector2.Distance(_inputNew.MousePosition.ToVector2(), new Vector2(400, 300));
             if (distanceFromCenterOfScreen >= 150.0f)
                 moveDirection |= Direction.Running;
@@ -234,14 +231,14 @@ namespace UltimaXNA
                         case MouseEvent.Click:
                             // tool tip
                             Interaction.SingleClick(entity);
-                            if (ClientVars.WarMode)
+                            if (ClientVars.EngineVars.WarMode)
                                 UltimaClient.Send(new AttackRequestPacket(entity.Serial));
                             else
                                 UltimaClient.Send(new RequestContextMenuPacket(entity.Serial));
                             break;
                         case MouseEvent.DoubleClick:
                             Interaction.DoubleClick(entity);
-                            ClientVars.LastTarget = entity.Serial;
+                            ClientVars.EngineVars.LastTarget = entity.Serial;
                             break;
                         case MouseEvent.DragBegin:
                             // pull off status bar
@@ -355,11 +352,11 @@ namespace UltimaXNA
                 List<InputEventM> events = _inputNew.GetMouseEvents();
                 foreach (InputEventM e in events)
                 {
-                    if (e.Button == ClientVars.MouseButton_Move)
+                    if (e.Button == ClientVars.EngineVars.MouseButton_Move)
                     {
                         onMoveButton(e);
                     }
-                    else if (e.Button == ClientVars.MouseButton_Interact)
+                    else if (e.Button == ClientVars.EngineVars.MouseButton_Interact)
                     {
                         onInteractButton(e);
                     }
@@ -392,7 +389,7 @@ namespace UltimaXNA
                 // Toggle for war mode:
                 if (e.EventType == KeyboardEvent.Down && e.KeyCode == WinKeys.Tab)
                 {
-                    if (ClientVars.WarMode)
+                    if (ClientVars.EngineVars.WarMode)
                         UltimaClient.Send(new RequestWarModePacket(false));
                     else
                         UltimaClient.Send(new RequestWarModePacket(true));

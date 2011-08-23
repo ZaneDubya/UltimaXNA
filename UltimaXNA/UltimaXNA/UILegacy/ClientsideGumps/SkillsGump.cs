@@ -30,7 +30,7 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
             _list.Y = 33;
             _list.Width = this.Width - 56;
             _list.Height = this.Height - 95;
-            if (_lastUpdateCount != ClientData.Skills.UpdateCount)
+            if (_lastUpdateCount != ClientVars.Skills.UpdateCount)
                 _list.Text = buildSkillsString();
             base.Update(gameTime);
         }
@@ -50,10 +50,10 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
 
         private string buildSkillsString()
         {
-            _lastUpdateCount = ClientData.Skills.UpdateCount;
+            _lastUpdateCount = ClientVars.Skills.UpdateCount;
             StringBuilder str = new StringBuilder();
 
-            foreach (ClientData.SkillEntry skill in ClientData.Skills.List.Values)
+            foreach (ClientVars.SkillEntry skill in ClientVars.Skills.List.Values)
             {
                 str.Append(string.Format(skill.HasUseButton ? kSkillName_UseButton : kSkillName_NoUseButton, skill.Index, skill.Name));
                 str.Append(string.Format(kSkillValues[skill.LockType], skill.Value));

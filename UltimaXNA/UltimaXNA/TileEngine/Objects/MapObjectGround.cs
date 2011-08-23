@@ -98,7 +98,7 @@ namespace UltimaXNA.TileEngine
             if (!sb.Draw(_draw_texture, _vertexBufferAlternate))
                 return false;
 
-            if (((pickType & _pickType) == _pickType) || ClientVars.DEBUG_HighlightMouseOverObjects)
+            if (((pickType & _pickType) == _pickType) || ClientVars.DebugVars.Flag_HighlightMouseOverObjects)
                 if (molist.IsMouseInObjectIsometric(_vertexBufferAlternate))
                 {
                     MouseOverItem item = new MouseOverItem(_draw_texture, _vertexBufferAlternate[0].Position, this);

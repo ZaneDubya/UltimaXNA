@@ -42,7 +42,7 @@ namespace UltimaXNA.Data
                             (((c & 0x1F) * multiplier) << 16)
                             );
                 }
-                Metrics.ReportDataRead((int)bin.BaseStream.Position);
+                ClientVars.Metrics.ReportDataRead((int)bin.BaseStream.Position);
             }
         }
     }

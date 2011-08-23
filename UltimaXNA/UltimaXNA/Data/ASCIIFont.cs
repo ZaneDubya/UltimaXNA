@@ -190,7 +190,7 @@ namespace UltimaXNA.Data
                     {
                         buffer = reader.ReadBytes((int)reader.BaseStream.Length);
                     }
-                    Metrics.ReportDataRead(buffer.Length);
+                    ClientVars.Metrics.ReportDataRead(buffer.Length);
 
                     for (int i = 0; i < 10; ++i)
                     {

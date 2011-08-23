@@ -56,7 +56,7 @@ namespace UltimaXNA.TileEngine
             _tileMatrix = new TileMatrixRaw(_index, _index);
             Height = _tileMatrix.Height;
             Width = _tileMatrix.Width;
-            _MapTilesInMemory = ClientVars.MapCellsInMemory * 8;
+            _MapTilesInMemory = ClientVars.EngineVars.MapCellsInMemory * 8;
             _MapTilesDrawRadius = ((_MapTilesInMemory / 2));
 
             _tiles = new MapTile[_MapTilesInMemory * _MapTilesInMemory];

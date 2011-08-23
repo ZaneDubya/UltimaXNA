@@ -88,7 +88,7 @@ namespace UltimaXNA.Data
 
             texture.SetData<uint>(pixelData);
 
-            Metrics.ReportDataRead((int)m_Index.BinaryReader.BaseStream.Position - streamStart);
+            ClientVars.Metrics.ReportDataRead((int)m_Index.BinaryReader.BaseStream.Position - streamStart);
 
             return texture;
         }

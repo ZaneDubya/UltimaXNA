@@ -167,7 +167,7 @@ namespace UltimaXNA.Data
                 }
             }
 
-            Metrics.ReportDataRead((int)reader.BaseStream.Position - streamStart);
+            ClientVars.Metrics.ReportDataRead((int)reader.BaseStream.Position - streamStart);
         }
 
         private MultiComponentList()
