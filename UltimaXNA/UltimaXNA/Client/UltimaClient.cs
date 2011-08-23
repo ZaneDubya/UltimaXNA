@@ -432,7 +432,14 @@ namespace UltimaXNA.Client
                     ClientVars.MapCount = p.MapCount;
                     break;
                 case 0x19: // Extended stats
-                    announce_UnhandledPacket(packet, "subcommand " + p.Subcommand);
+                    if (p.Serial != EntitiesCollection.MySerial)
+                        Diagnostics.Logger.Warn("Extended Stats packet (0xBF subcommand 0x19) received for a mobile not our own.");
+                    else
+                    {
+                        ClientData.Status.StrengthLock = p.StatisticLocks.Strength;
+                        ClientData.Status.DexterityLock = p.StatisticLocks.Dexterity;
+                        ClientData.Status.IntelligenceLock = p.StatisticLocks.Intelligence;
+                    }
                     break;
                 case 0x1D: // House revision state
                     if (Data.CustomHousing.IsHashCurrent(p.HouseRevisionState.Serial, p.HouseRevisionState.Hash))
@@ -448,6 +455,10 @@ namespace UltimaXNA.Client
                     {
                         Send(new RequestCustomHousePacket(p.HouseRevisionState.Serial));
                     }
+                    break;
+                case 0x21: // (AOS) Ability icon confirm.
+                    // no data, just (bf 00 05 21)
+                    // ???
                     break;
                 default:
                     announce_UnhandledPacket(packet, "subcommand " + p.Subcommand);
@@ -839,29 +850,13 @@ namespace UltimaXNA.Client
 
         private static void receive_SkillsList(IRecvPacket packet)
         {
-            int iPacketType = 0; // reader.ReadByte();
-            // 0x00: Full List of skills
-            // 0xFF: Single skill update
-            // 0x02: Full List of skills with skill cap for each skill
-            // 0xDF: Single skill update with skill cap for skill
-
-            switch (iPacketType)
+            foreach (SendSkillsPacket_SkillEntry skill in ((SendSkillsPacket)packet).Skills)
             {
-                case 0x00: //Full List of skills
-                    announce_UnhandledPacket(packet, "0x00");
-                    break;
-                case 0xFF: // single skill update
-                    announce_UnhandledPacket(packet, "0xFF");
-                    break;
-                case 0x02: // full List of skills with skill cap for each skill
-                    announce_UnhandledPacket(packet, "0x02");
-                    break;
-                case 0xDF: // Single skill update with skill cap for skill
-                    announce_UnhandledPacket(packet, "0xDF");
-                    break;
-                default:
-                    announce_UnhandledPacket(packet, "Unknown subcommand " + iPacketType);
-                    break;
+                ClientData.SkillEntry entry = ClientData.Skills.SkillEntry(skill.SkillID);
+                entry.Value = skill.SkillValue;
+                entry.ValueUnmodified = skill.SkillValueUnmodified;
+                entry.LockType = skill.SkillLock;
+                entry.Cap = skill.SkillCap;
             }
         }
 
@@ -970,7 +965,7 @@ namespace UltimaXNA.Client
         private static void receive_VersionRequest(IRecvPacket packet)
         {
             // Automatically respond.
-            Send(new ClientVersionPacket("6.0.6.2"));
+            Interaction.SendClientVersion();
         }
 
         static void receive_WarMode(IRecvPacket packet)
@@ -1019,12 +1014,12 @@ namespace UltimaXNA.Client
 
         static void announce_UnhandledPacket(IRecvPacket packet)
         {
-            _LegacyUI.AddMessage_Chat(string.Format("Client: Unhandled {0} [ID:{1}]", packet.Name, packet.Id));
+            Diagnostics.Logger.Warn(string.Format("Client: Unhandled {0} [ID:{1}]", packet.Name, packet.Id));
         }
 
         static void announce_UnhandledPacket(IRecvPacket packet, string addendum)
         {
-            _LegacyUI.AddMessage_Chat(string.Format("Client: Unhandled {0} [ID:{1}] {2}", packet.Name, packet.Id, addendum));
+            Diagnostics.Logger.Warn(string.Format("Client: Unhandled {0} [ID:{1}] {2}]", packet.Name, packet.Id, addendum));
         }
 
         private static void receive_TextMessage(MessageType msgType, string text, int hue, int font, Serial serial, string speakerName)

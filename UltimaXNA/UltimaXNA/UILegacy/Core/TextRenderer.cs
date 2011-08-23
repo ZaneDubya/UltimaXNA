@@ -525,7 +525,6 @@ namespace UltimaXNA.UILegacy
                 }
                 else
                 {
-
                     word.Add(reader.Atoms[i]);
 
                     // we may need to add additional width for special style characters.
@@ -582,7 +581,7 @@ namespace UltimaXNA.UILegacy
                                 if (reader.Atoms[i - word.Count].IsThisAtomABreakingSpace)
                                 {
                                     ((HTMLParser_AtomCharacter)reader.Atoms[i - word.Count]).Character = '\n';
-                                    i = i - word.Count;
+                                    i = i - word.Count - 1;
                                 }
                                 else
                                 {
