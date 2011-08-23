@@ -144,7 +144,7 @@ namespace UltimaXNA.Data
                     }
                 }
 
-                Metrics.ReportDataRead((int)reader.BaseStream.Position - readerStart);
+                ClientVars.Metrics.ReportDataRead((int)reader.BaseStream.Position - readerStart);
             }
         }
     }

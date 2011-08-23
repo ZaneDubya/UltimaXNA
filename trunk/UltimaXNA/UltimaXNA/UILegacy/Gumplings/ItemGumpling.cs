@@ -42,13 +42,13 @@ namespace UltimaXNA.UILegacy.Gumplings
             }
            
 
-            if (clickedCanDrag && ClientVars.TheTime >= pickUpTime)
+            if (clickedCanDrag && ClientVars.EngineVars.TheTime >= pickUpTime)
             {
                 clickedCanDrag = false;
                 Interaction.PickUpItem(_item, clickPoint.X, clickPoint.Y);
             }
 
-            if (sendClickIfNoDoubleClick && ClientVars.TheTime >= singleClickTime)
+            if (sendClickIfNoDoubleClick && ClientVars.EngineVars.TheTime >= singleClickTime)
             {
                 sendClickIfNoDoubleClick = false;
                 Interaction.SingleClick(_item);
@@ -82,7 +82,7 @@ namespace UltimaXNA.UILegacy.Gumplings
         {
             // if click, we wait for a moment before picking it up. This allows a single click.
             clickedCanDrag = true;
-            pickUpTime = ClientVars.TheTime + ClientVars.SecondsBetweenClickAndPickUp;
+            pickUpTime = ClientVars.EngineVars.TheTime + ClientVars.EngineVars.SecondsBetweenClickAndPickUp;
             clickPoint = new Point(x, y);
         }
 
@@ -106,7 +106,7 @@ namespace UltimaXNA.UILegacy.Gumplings
             {
                 clickedCanDrag = false;
                 sendClickIfNoDoubleClick = true;
-                singleClickTime = ClientVars.TheTime + ClientVars.SecondsForDoubleClick;
+                singleClickTime = ClientVars.EngineVars.TheTime + ClientVars.EngineVars.SecondsForDoubleClick;
             }
         }
 

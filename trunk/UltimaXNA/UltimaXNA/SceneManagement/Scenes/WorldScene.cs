@@ -56,14 +56,14 @@ namespace UltimaXNA.SceneManagement
             //         00 01 04 40 00 01 05 40 00 01 06 40 00 01 07 40
             //         00 01 24 40 00 01 26 
             World.LightDirection = -0.6f;
-            ClientVars.InWorld = true;
+            ClientVars.EngineVars.InWorld = true;
         }
 
         public override void Dispose()
         {
             base.Dispose();
             UltimaClient.Disconnect();
-            ClientVars.InWorld = false;
+            ClientVars.EngineVars.InWorld = false;
             UI.Reset();
         }
 

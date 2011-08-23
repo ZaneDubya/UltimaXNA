@@ -60,7 +60,7 @@ namespace UltimaXNA.Entities
         static List<int> _removeObjectsList = new List<int>();
         public static void Update(GameTime gameTime)
         {
-            if (ClientVars.InWorld)
+            if (ClientVars.EngineVars.InWorld)
             {
                 // Clear the list of objects to be removed.
                 _removeObjectsList.Clear();
@@ -80,7 +80,7 @@ namespace UltimaXNA.Entities
                     if (!entity.Value.IsDisposed)
                         entity.Value.Update(gameTime);
                     // Dispose the entity if it is out of range.
-                    if (!Utility.InRange(entity.Value.WorldPosition, player.Position, ClientVars.UpdateRange))
+                    if (!Utility.InRange(entity.Value.WorldPosition, player.Position, ClientVars.EngineVars.UpdateRange))
                         entity.Value.Dispose();
                     if (entity.Value.IsDisposed)
                         _removeObjectsList.Add(entity.Key);

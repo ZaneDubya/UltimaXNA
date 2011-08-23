@@ -163,7 +163,7 @@ namespace UltimaXNA.TileEngine
                 _draw_Y = _mobile_drawCenterY + (int)(Position.Z_offset * 4) + (Z << 2) + _draw_height - 22 - (int)((Position.X_offset + Position.Y_offset) * 22);
             }
 
-            if (ClientVars.LastTarget != null && ClientVars.LastTarget == OwnerSerial)
+            if (ClientVars.EngineVars.LastTarget != null && ClientVars.EngineVars.LastTarget == OwnerSerial)
                 _draw_hue = new Vector2(((Entities.Mobile)OwnerEntity).NotorietyHue - 1, 1);
 
             return base.Draw(sb, drawPosition, molist, pickType, maxAlt);

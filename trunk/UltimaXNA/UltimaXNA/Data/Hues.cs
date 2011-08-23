@@ -60,7 +60,7 @@ namespace UltimaXNA.Data
             int currentHue = 0;
             uint[] data = new uint[_HueTextureWidth * _HueTextureHeight];
 
-            Metrics.ReportDataRead((int)reader.BaseStream.Length);
+            ClientVars.Metrics.ReportDataRead((int)reader.BaseStream.Length);
 
             while (reader.BaseStream.Position < reader.BaseStream.Length)
             {

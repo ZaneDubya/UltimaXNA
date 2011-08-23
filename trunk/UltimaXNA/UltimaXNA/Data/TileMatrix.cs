@@ -328,7 +328,7 @@ namespace UltimaXNA.Data
                     NativeMethods.Read(m_MapStream.SafeFileHandle, pTiles, 192);
                 }
 
-                Metrics.ReportDataRead((int)m_MapStream.Position - streamStart);
+                ClientVars.Metrics.ReportDataRead((int)m_MapStream.Position - streamStart);
 
                 return tiles;
             }

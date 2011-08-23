@@ -1,13 +1,6 @@
 /***************************************************************************
  *   Engine.cs
  *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
- *   
- *   begin                : May 31, 2009
- *   email                : poplicola@ultimaxna.com
- *
- ***************************************************************************/
-
-/***************************************************************************
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,8 +10,8 @@
  ***************************************************************************/
 #region usings
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -33,7 +26,7 @@ namespace UltimaXNA
         SceneManagement.SceneManager _sceneService;
         TileEngine.IsometricRenderer _worldService;
         UILegacy.UIManager _LegacyUIService;
-        ClientVars _clientVars;
+        ClientVars._Support _clientVars;
 
         public Engine()
         {
@@ -57,8 +50,8 @@ namespace UltimaXNA
             Services.AddService<SceneManagement.ISceneService>(
                 _sceneService = new SceneManagement.SceneManager(this));
 
-            Services.AddService<ClientVars>(
-                _clientVars = new ClientVars(this));
+            Services.AddService<ClientVars._Support>(
+                _clientVars = new ClientVars._Support(this));
 
             // Make sure we have a UO installation before loading data.
             if (Data.FileManager.IsUODataPresent)
@@ -80,21 +73,18 @@ namespace UltimaXNA
         {
             base.Update(gameTime);
             
-            if (!ClientVars.EngineRunning)
+            if (!ClientVars.EngineVars.EngineRunning)
                 Exit();
 
-            ClientVars.IsMinimized = isMinimized();
+            ClientVars.EngineVars.IsMinimized = isMinimized();
 
-            if (ClientVars.EngineRunning)
-            {
-                Graphics.SpriteBatch3D.ResetZ();
-                _inputState.Update(gameTime);
-                Client.UltimaClient.Update(gameTime);
-                Entities.EntitiesCollection.Update(gameTime);
-                _sceneService.Update(gameTime);
-                _clientVars.Update(gameTime);
-                GameState.Update(gameTime);
-            }
+            Graphics.SpriteBatch3D.ResetZ();
+            _inputState.Update(gameTime);
+            Client.UltimaClient.Update(gameTime);
+            Entities.EntitiesCollection.Update(gameTime);
+            _sceneService.Update(gameTime);
+            _clientVars.Update(gameTime);
+            GameState.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -102,14 +92,13 @@ namespace UltimaXNA
             _sceneService.Draw(gameTime);
             base.Draw(gameTime);
 
-            if (ClientVars.InWorld)
+            if (ClientVars.EngineVars.InWorld)
             {
                 // ScreenshotComponent s = new ScreenshotComponent();
                 // s.Screenshot(this, true);
             }
 
-            ClientVars.UpdateFPS(gameTime);
-            this.Window.Title = string.Format("UltimaXNA FPS:{0}", ClientVars.FPS);
+            this.Window.Title = string.Format("UltimaXNA FPS:{0}", ClientVars.EngineVars.FPS);
         }
 
         bool isMinimized()

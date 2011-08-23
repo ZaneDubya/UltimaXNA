@@ -29,6 +29,7 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
         }
 
         int _charSelected = -1;
+        int _charListUpdate = -1;
         HtmlGump[] _characterNames;
 
         public CharacterListGump()
@@ -69,28 +70,26 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
 
         public void ReloadCharList()
         {
-            int entryIndex = 0;
-            _characterNames = new HtmlGump[ClientVars.CharacterList.Length];
-            foreach (CharacterListEntry e in ClientVars.CharacterList)
-            {
-                if (e.Name != string.Empty)
-                {
-                    _characterNames[entryIndex] = new HtmlGump(this, 1, 228, 154 + 40 * entryIndex, 272, 22, 0, 0, formatHTMLCharName(entryIndex, e.Name, (_charSelected == entryIndex ? 431 : 1278)));
-                    AddControl(new ResizePic(this, _characterNames[entryIndex]));
-                    AddControl(_characterNames[entryIndex]);
-                }
-                entryIndex++;
-            }
-            // if (_charSelected == -1)
-            //     ActivateByHREF("CHAR=0");
-            ClientVars.CharacterList_Reloaded = false;
+            
         }
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
-            if (ClientVars.CharacterList_Reloaded)
+            if (ClientVars.Characters.UpdateValue != _charListUpdate)
             {
-                ReloadCharList();
+                int entryIndex = 0;
+                _characterNames = new HtmlGump[ClientVars.Characters.Length];
+                foreach (CharacterListEntry e in ClientVars.Characters.List)
+                {
+                    if (e.Name != string.Empty)
+                    {
+                        _characterNames[entryIndex] = new HtmlGump(this, 1, 228, 154 + 40 * entryIndex, 272, 22, 0, 0, formatHTMLCharName(entryIndex, e.Name, (_charSelected == entryIndex ? 431 : 1278)));
+                        AddControl(new ResizePic(this, _characterNames[entryIndex]));
+                        AddControl(_characterNames[entryIndex]);
+                    }
+                    entryIndex++;
+                }
+                _charListUpdate = ClientVars.Characters.UpdateValue;
             }
             base.Update(gameTime);
         }
@@ -126,11 +125,11 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
                     OnLoginWithCharacter(charIndex);
                 else
                 {
-                    if ((_charSelected >= 0) && (_charSelected < ClientVars.CharacterList.Length))
-                        _characterNames[_charSelected].Text = formatHTMLCharName(_charSelected, ClientVars.CharacterList[_charSelected].Name, 1278);
+                    if ((_charSelected >= 0) && (_charSelected < ClientVars.Characters.Length))
+                        _characterNames[_charSelected].Text = formatHTMLCharName(_charSelected, ClientVars.Characters.List[_charSelected].Name, 1278);
                     _charSelected = charIndex;
-                    if ((_charSelected >= 0) && (_charSelected < ClientVars.CharacterList.Length))
-                        _characterNames[_charSelected].Text = formatHTMLCharName(_charSelected, ClientVars.CharacterList[_charSelected].Name, 431);
+                    if ((_charSelected >= 0) && (_charSelected < ClientVars.Characters.Length))
+                        _characterNames[_charSelected].Text = formatHTMLCharName(_charSelected, ClientVars.Characters.List[_charSelected].Name, 431);
                 }
             }
         }

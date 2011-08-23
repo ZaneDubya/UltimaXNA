@@ -18,15 +18,15 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
         public MiniMap()
             : base(0, 0)
         {
-            _useLargeMap = ClientVars.MiniMap_LargeFormat;
+            _useLargeMap = ClientVars.EngineVars.MiniMap_LargeFormat;
             IsMovable = true;
         }
 
         public override void Update(GameTime gameTime)
         {
-            if (_gump == null || _useLargeMap != ClientVars.MiniMap_LargeFormat)
+            if (_gump == null || _useLargeMap != ClientVars.EngineVars.MiniMap_LargeFormat)
             {
-                _useLargeMap = ClientVars.MiniMap_LargeFormat;
+                _useLargeMap = ClientVars.EngineVars.MiniMap_LargeFormat;
                 if (_gump != null)
                     _gump.Dispose();
                 _gump = new GumpPic(this, 0, 0, 0, (_useLargeMap ? 5011 : 5010), 0);
@@ -54,7 +54,7 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
         {
             if (button == MouseButton.Left)
             {
-                ClientVars.MiniMap_LargeFormat = Utility.ToggleBoolean(ClientVars.MiniMap_LargeFormat);
+                ClientVars.EngineVars.MiniMap_LargeFormat = Utility.ToggleBoolean(ClientVars.EngineVars.MiniMap_LargeFormat);
             }
         }
     }

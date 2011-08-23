@@ -457,7 +457,7 @@ namespace UltimaXNA.UILegacy
             bool doubleClick = false;
             if (maxTimeForDoubleClick != 0f)
             {
-                if (ClientVars.TheTime <= maxTimeForDoubleClick)
+                if (ClientVars.EngineVars.TheTime <= maxTimeForDoubleClick)
                 {
                     maxTimeForDoubleClick = 0f;
                     doubleClick = true;
@@ -465,7 +465,7 @@ namespace UltimaXNA.UILegacy
             }
             else
             {
-                maxTimeForDoubleClick = ClientVars.TheTime + ClientVars.SecondsForDoubleClick;
+                maxTimeForDoubleClick = ClientVars.EngineVars.TheTime + ClientVars.EngineVars.SecondsForDoubleClick;
             }
 
             mouseClick(x, y, button);

@@ -121,8 +121,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClientData\Skills.cs" />
-    <Compile Include="ClientData\Status.cs" />
+    <Compile Include="ClientVars\Characters.cs" />
+    <Compile Include="ClientVars\Servers.cs" />
+    <Compile Include="ClientVars\_Support.cs" />
+    <Compile Include="ClientVars\EngineVars.cs" />
+    <Compile Include="ClientVars\DebugVars.cs" />
+    <Compile Include="ClientVars\Features.cs" />
+    <Compile Include="ClientVars\Skills.cs" />
+    <Compile Include="ClientVars\Status.cs" />
     <Compile Include="Client\Packets\Client\AsciiSpeechPacket.cs" />
     <Compile Include="Client\Packets\Client\AttackRequestPacket.cs" />
     <Compile Include="Client\Packets\Client\BuyItemsPacket.cs" />
@@ -256,7 +262,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Data\TileMatrixRaw.cs" />
-    <Compile Include="Engine\ClientVars.cs" />
     <Compile Include="Support\GumpExporter.cs" />
     <Compile Include="TileEngine\Objects\MapObjectPrerendered.cs" />
     <Compile Include="UILegacy\HTML\HTMLRegions.cs" />
@@ -265,7 +270,7 @@
     <Compile Include="UILegacy\HTML\HTMLImages.cs" />
     <Compile Include="UILegacy\HTML\HTMLParser.cs" />
     <Compile Include="Engine\Interaction.cs" />
-    <Compile Include="Engine\Metrics.cs" />
+    <Compile Include="ClientVars\Metrics.cs" />
     <Compile Include="Data\Gumps.cs" />
     <Compile Include="Data\Mobtypes.cs" />
     <Compile Include="Data\Multis.cs" />
@@ -495,11 +500,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Depends\ultimaxna.ico">
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Depends\log4net.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>

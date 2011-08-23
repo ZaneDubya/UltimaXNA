@@ -182,9 +182,9 @@ namespace UltimaXNA.Client
         {
             if (Status == UltimaClientStatus.GameServer_CharList)
             {
-                if (ClientVars.CharacterList[index].Name != string.Empty)
+                if (ClientVars.Characters.List[index].Name != string.Empty)
                 {
-                    Send(new LoginCharacterPacket(ClientVars.CharacterList[index].Name, index, Utility.IPAddress));
+                    Send(new LoginCharacterPacket(ClientVars.Characters.List[index].Name, index, Utility.IPAddress));
                 }
             }
         }
@@ -193,7 +193,7 @@ namespace UltimaXNA.Client
         {
             if (Status == UltimaClientStatus.GameServer_CharList)
             {
-                if (ClientVars.CharacterList[index].Name != string.Empty)
+                if (ClientVars.Characters.List[index].Name != string.Empty)
                 {
                     Send(new DeleteCharacterPacket(_password, index, Utility.IPAddress));
                 }
@@ -276,7 +276,7 @@ namespace UltimaXNA.Client
         private static void receive_CharacterListUpdate(IRecvPacket packet)
         {
             CharacterListUpdatePacket p = (CharacterListUpdatePacket)packet;
-            ClientVars.CharacterList = p.Characters;
+            ClientVars.Characters.SetCharacterList(p.Characters);
         }
 
         private static void receive_CLILOCMessage(IRecvPacket packet)
@@ -291,14 +291,14 @@ namespace UltimaXNA.Client
         {
             ChangeCombatantPacket p = (ChangeCombatantPacket)packet;
             if (p.Serial > 0x00000000)
-                ClientVars.LastTarget = p.Serial;
+                ClientVars.EngineVars.LastTarget = p.Serial;
         }
 
         private static void receive_CharacterList(IRecvPacket packet)
         {
             CharacterCityListPacket p = (CharacterCityListPacket)packet;
-            ClientVars.CharacterList = p.Characters;
-            ClientVars.StartingLocations = p.Locations;
+            ClientVars.Characters.SetCharacterList(p.Characters);
+            ClientVars.Characters.SetStartingLocations(p.Locations);
             Status = UltimaClientStatus.GameServer_CharList;
         }
 
@@ -401,7 +401,7 @@ namespace UltimaXNA.Client
         private static void receive_EnableFeatures(IRecvPacket packet)
         {
             SupportedFeaturesPacket p = (SupportedFeaturesPacket)packet;
-            ClientVars.FeatureFlags = p.Flags;
+            ClientVars.Features.SetFlags(p.Flags);
         }
 
         private static void receive_Extended0x78(IRecvPacket packet)
@@ -422,23 +422,23 @@ namespace UltimaXNA.Client
                     announce_UnhandledPacket(packet, "subcommand " + p.Subcommand);
                     break;
                 case 0x08: // Set cursor color / set map
-                    ClientVars.Map = p.MapID;
+                    ClientVars.EngineVars.Map = p.MapID;
                     break;
                 case 0x14: // return context menu
                     parseContextMenu(p.ContextMenu);
                     break;
                 case 0x18: // Enable map-diff (files) / number of maps
                     // as of 6.0.0.0, this only tells us the number of maps.
-                    ClientVars.MapCount = p.MapCount;
+                    ClientVars.EngineVars.MapCount = p.MapCount;
                     break;
                 case 0x19: // Extended stats
                     if (p.Serial != EntitiesCollection.MySerial)
                         Diagnostics.Logger.Warn("Extended Stats packet (0xBF subcommand 0x19) received for a mobile not our own.");
                     else
                     {
-                        ClientData.Status.StrengthLock = p.StatisticLocks.Strength;
-                        ClientData.Status.DexterityLock = p.StatisticLocks.Dexterity;
-                        ClientData.Status.IntelligenceLock = p.StatisticLocks.Intelligence;
+                        ClientVars.Status.StrengthLock = p.StatisticLocks.Strength;
+                        ClientVars.Status.DexterityLock = p.StatisticLocks.Dexterity;
+                        ClientVars.Status.IntelligenceLock = p.StatisticLocks.Intelligence;
                     }
                     break;
                 case 0x1D: // House revision state
@@ -693,7 +693,7 @@ namespace UltimaXNA.Client
             SwingPacket p = (SwingPacket)packet;
             if (p.Attacker == EntitiesCollection.MySerial)
             {
-                ClientVars.LastTarget = p.Defender;
+                ClientVars.EngineVars.LastTarget = p.Defender;
             }
         }
 
@@ -819,7 +819,7 @@ namespace UltimaXNA.Client
             // Only partially handled !!! If iSeason2 = 1, then this is a season change.
             // If season change, then iSeason1 = (0=spring, 1=summer, 2=fall, 3=winter, 4 = desolation)
             SeasonChangePacket p = (SeasonChangePacket)packet;
-            ClientVars.Season = p.Season;
+            ClientVars.EngineVars.Season = p.Season;
         }
 
         private static void receive_SellList(IRecvPacket packet)
@@ -829,7 +829,7 @@ namespace UltimaXNA.Client
 
         private static void receive_ServerList(IRecvPacket packet)
         {
-            ClientVars.ServerListPacket = ((ServerListPacket)packet).Servers;
+            ClientVars.Servers.List = ((ServerListPacket)packet).Servers;
             Status = UltimaClientStatus.LoginServer_HasServerList;
         }
 
@@ -852,7 +852,7 @@ namespace UltimaXNA.Client
         {
             foreach (SendSkillsPacket_SkillEntry skill in ((SendSkillsPacket)packet).Skills)
             {
-                ClientData.SkillEntry entry = ClientData.Skills.SkillEntry(skill.SkillID);
+                ClientVars.SkillEntry entry = ClientVars.Skills.SkillEntry(skill.SkillID);
                 entry.Value = skill.SkillValue;
                 entry.ValueUnmodified = skill.SkillValueUnmodified;
                 entry.LockType = skill.SkillLock;
@@ -971,7 +971,7 @@ namespace UltimaXNA.Client
         static void receive_WarMode(IRecvPacket packet)
         {
             WarModePacket p = (WarModePacket)packet;
-            ClientVars.WarMode = p.WarMode;
+            ClientVars.EngineVars.WarMode = p.WarMode;
         }
 
         static void receive_WorldItem(IRecvPacket packet)

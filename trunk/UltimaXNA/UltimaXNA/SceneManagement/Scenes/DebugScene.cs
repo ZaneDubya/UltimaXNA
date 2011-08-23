@@ -41,7 +41,7 @@ namespace UltimaXNA.SceneManagement
             World.OverallLightning = 0x09;
             World.PersonalLightning = 0x09;
             World.LightDirection = -0.6f;
-            ClientVars.Map = 0;
+            ClientVars.EngineVars.Map = 0;
             UI.AddGump_Local(new UILegacy.ClientsideGumps.DebugGump(), 40, 40);
             World.PickType = PickTypes.PickEverything;
         }
@@ -208,11 +208,11 @@ namespace UltimaXNA.SceneManagement
 
             if (Input.HandleKeyboardEvent(KeyboardEvent.Down, WinKeys.W, false, true, false))
             {
-                ClientVars.DEBUG_HighlightMouseOverObjects = Utility.ToggleBoolean(ClientVars.DEBUG_HighlightMouseOverObjects);
+                ClientVars.DebugVars.Flag_HighlightMouseOverObjects = Utility.ToggleBoolean(ClientVars.DebugVars.Flag_HighlightMouseOverObjects);
             }
             if (Input.HandleKeyboardEvent(KeyboardEvent.Down, WinKeys.E, false, true, false))
             {
-                ClientVars.DEBUG_DrawWireframe = Utility.ToggleBoolean(ClientVars.DEBUG_DrawWireframe);
+                ClientVars.DebugVars.Flag_DrawWireframe = Utility.ToggleBoolean(ClientVars.DebugVars.Flag_DrawWireframe);
             }
         }
 

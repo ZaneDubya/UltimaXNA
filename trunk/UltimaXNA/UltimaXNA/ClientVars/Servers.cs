@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   Pair.cs
+ *   Servers.cs
  *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -8,21 +8,22 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-#region usings
 using System;
-#endregion
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using UltimaXNA.Client;
+using UltimaXNA.Client.Packets;
+using UltimaXNA.Entities;
+using UltimaXNA.Extensions;
+using UltimaXNA.Input;
+using UltimaXNA.TileEngine;
+using UltimaXNA.UILegacy;
 
-namespace UltimaXNA
+namespace UltimaXNA.ClientVars
 {
-    public struct Pair<T, U>
+    class Servers
     {
-        public T ItemA;
-        public U ItemB;
-
-        public Pair(T a, U b)
-        {
-            ItemA = a;
-            ItemB = b;
-        }
+        static ServerListEntry[] _serverListPacket;
+        public static ServerListEntry[] List { get { return _serverListPacket; } set { _serverListPacket = value; } }
     }
 }

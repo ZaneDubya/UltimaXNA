@@ -202,7 +202,7 @@ namespace UltimaXNA.Data
                         list4.Add(anim5);
                     }
                 }
-                Metrics.ReportDataRead(totalDataRead);
+                ClientVars.Metrics.ReportDataRead(totalDataRead);
             }
 
             _Table1 = new int[max1 + 1];
@@ -407,7 +407,7 @@ namespace UltimaXNA.Data
                 {
                 }
             }
-            Metrics.ReportDataRead(totalDataRead);
+            ClientVars.Metrics.ReportDataRead(totalDataRead);
         }
     }
 
@@ -874,7 +874,7 @@ namespace UltimaXNA.Data
                     dataRead += header & 0xFFF;
                 }
 
-                Metrics.ReportDataRead(dataRead);
+                ClientVars.Metrics.ReportDataRead(dataRead);
             }
 
             _Center = new Microsoft.Xna.Framework.Point(xCenter, yCenter);
