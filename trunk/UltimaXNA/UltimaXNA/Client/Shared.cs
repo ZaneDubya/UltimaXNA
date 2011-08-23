@@ -179,4 +179,18 @@ namespace UltimaXNA.Client
             this.Hue = hue;
         }
     }
+
+    public class StatLocks
+    {
+        public int Strength;
+        public int Dexterity;
+        public int Intelligence;
+
+        public StatLocks(int s, int d, int i)
+        {
+            Strength = s;
+            Dexterity = d;
+            Intelligence = i;
+        }
+    }
 }

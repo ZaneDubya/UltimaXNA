@@ -9,6 +9,7 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
 {
     class SkillsGump : Gump
     {
+        private int _lastUpdateCount = Int32.MinValue;
         ExpandableScroll _scroll;
         HtmlGump _list;
         public SkillsGump()
@@ -21,7 +22,6 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
             IsMovable = true;
 
             AddControl(_list = new HtmlGump(this, 0, 10, 20, 180, 100, 0, 1, ""));
-            _list.Text = buildSkillsString();
         }
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
@@ -30,6 +30,8 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
             _list.Y = 33;
             _list.Width = this.Width - 56;
             _list.Height = this.Height - 95;
+            if (_lastUpdateCount != ClientData.Skills.UpdateCount)
+                _list.Text = buildSkillsString();
             base.Update(gameTime);
         }
 
@@ -48,13 +50,13 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
 
         private string buildSkillsString()
         {
+            _lastUpdateCount = ClientData.Skills.UpdateCount;
             StringBuilder str = new StringBuilder();
 
-            Skill[] skills = Data.Skills.List;
-            foreach (Skill skill in skills)
+            foreach (ClientData.SkillEntry skill in ClientData.Skills.List.Values)
             {
-                str.Append(string.Format(skill.UseButton ? kSkillName_UseButton : kSkillName_NoUseButton, skill.Index, skill.Name));
-                str.Append(string.Format(kSkillValue_Locked, "0.0"));
+                str.Append(string.Format(skill.HasUseButton ? kSkillName_UseButton : kSkillName_NoUseButton, skill.Index, skill.Name));
+                str.Append(string.Format(kSkillValues[skill.LockType], skill.Value));
             }
             return str.ToString();
         }
@@ -64,8 +66,9 @@ namespace UltimaXNA.UILegacy.ClientsideGumps
                         "<gumpimg src='2103' hoversrc='2104' activesrc='2103'/><span width='2'/>{1}</a></left>";
         const string kSkillName_NoUseButton = "<left><span width='14'/><medium color=50422D>{1}</medium></left>";
         // 0 = skill value
-        const string kSkillValue_Locked = "<right>{0}<gumpimg src='2092' width='12' height='15'/></right><br/>";
-        const string kSkillValue_Up = "<right>{0}<gumpimg src='2436' width='12' height='15'/></right><br/>";
-        const string kSkillValue_Down = "<right>{0}<gumpimg src='2438' width='12' height='15'/></right><br/>";
+        static string[] kSkillValues = new string[3] {
+            "<right>{0:0.0}<gumpimg src='2436' width='12' height='15'/></right><br/>",
+            "<right>{0:0.0}<gumpimg src='2438' width='12' height='15'/></right><br/>",
+            "<right>{0:0.0}<gumpimg src='2092' width='12' height='15'/></right><br/>" };
     }
 }

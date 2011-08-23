@@ -122,6 +122,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientData\Skills.cs" />
+    <Compile Include="ClientData\Status.cs" />
     <Compile Include="Client\Packets\Client\AsciiSpeechPacket.cs" />
     <Compile Include="Client\Packets\Client\AttackRequestPacket.cs" />
     <Compile Include="Client\Packets\Client\BuyItemsPacket.cs" />
@@ -134,6 +135,7 @@
     <Compile Include="Client\Packets\Client\DropItemPacket.cs" />
     <Compile Include="Client\Packets\Client\DropToLayerPacket.cs" />
     <Compile Include="Client\Packets\Client\GameLoginPacket.cs" />
+    <Compile Include="Client\Packets\Client\GeneralInformationPackets.cs" />
     <Compile Include="Client\Packets\Client\GetPlayerStatusPacket.cs" />
     <Compile Include="Client\Packets\Client\GumpMenuSelectPacket.cs" />
     <Compile Include="Client\Packets\Client\GumpTextEntryDialogReplyPacket.cs" />

@@ -33,6 +33,31 @@ namespace UltimaXNA
             UltimaClient.Send(new AsciiSpeechPacket(AsciiSpeechPacketTypes.Normal, 0, 0, "ENU", text));
         }
 
+        public static void SendClientVersion()
+        {
+            UltimaClient.Send(new ClientVersionPacket("6.0.1.10"));
+        }
+
+        public static void SendClientScreenSize()
+        {
+            UltimaClient.Send(new ReportClientScreenSizePacket(800, 600));
+        }
+
+        public static void SendClientLocalization()
+        {
+            UltimaClient.Send(new ReportClientLocalizationPacket("ENU"));
+        }
+
+        public static void GetMySkills()
+        {
+            UltimaClient.Send(new GetPlayerStatusPacket(0x05, EntitiesCollection.MySerial));
+        }
+
+        public static void GetMyBasicStatus()
+        {
+            UltimaClient.Send(new GetPlayerStatusPacket(0x04, EntitiesCollection.MySerial));
+        }
+
         public static void SingleClick(Entity item)
         {
             UltimaClient.Send(new SingleClickPacket(item.Serial));

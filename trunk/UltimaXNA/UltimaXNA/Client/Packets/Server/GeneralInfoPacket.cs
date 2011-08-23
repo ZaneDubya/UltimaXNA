@@ -35,6 +35,13 @@ namespace UltimaXNA.Client.Packets.Server
             get { return _revisionState; }
         }
 
+        public Serial Serial;
+        StatLocks _locks;
+        public StatLocks StatisticLocks
+        {
+            get { return _locks; }
+        }
+
         ContextMenu _contextmenu;
         public ContextMenu ContextMenu
         {
@@ -61,7 +68,7 @@ namespace UltimaXNA.Client.Packets.Server
             switch (this._subcommand)
             {
                 case 0x06:
-                    // part system, not implemented.
+                    // party system, not implemented.
                     break;
                 case 0x8: // Set cursor color / set map
                     _mapid = reader.ReadByte();
@@ -78,9 +85,51 @@ namespace UltimaXNA.Client.Packets.Server
                 case 0x04: // Close generic gump
                     // !!! Not implemented yet.
                     break;
+                case 0x19: // Extended stats
+                    receiveExtendedStats(reader);
+                    break;
+                case 0x21: // (AOS) Ability icon confirm.
+                    // no data, just (bf 00 05 00 21)
+                    break;
                 default:
                     // do nothing. This unhandled subcommand will raise an error in UltimaClient.cs.
                     break;
+            }
+        }
+
+
+        void receiveExtendedStats(PacketReader reader)
+        {
+            int clientFlag = reader.ReadByte(); // (0x2 for 2D client, 0x5 for KR client) 
+            Serial = (Serial)reader.ReadInt32();
+            byte unknown0 = reader.ReadByte(); // (always 0) 
+            byte lockFlags = reader.ReadByte();
+            // Lock flags = 00SSDDII ( in binary )
+            //     00 = up
+            //     01 = down
+            //     10 = locked
+            // FF = update mobile status animation ( KR only )
+            if (lockFlags != 0xFF)
+            {
+                int strengthLock = (lockFlags >> 4) & 0x03;
+                int dexterityLock = (lockFlags >> 2) & 0x03;
+                int inteligenceLock = (lockFlags) & 0x03;
+                _locks = new StatLocks(strengthLock, dexterityLock, inteligenceLock);
+            }
+
+            if (clientFlag == 5)
+            {
+                Diagnostics.Logger.Warn("ClientFlags == 5 in GeneralInfoPacket ExtendedStats 0x19. This is not a KR client.");
+                // If(Lock flags = 0xFF) //Update mobile status animation
+                //  BYTE[1] Status // Unveryfied if lock flags == FF the locks will be handled here
+                //  BYTE[1] unknown (0x00) 
+                //  BYTE[1] Animation 
+                //  BYTE[1] unknown (0x00) 
+                //  BYTE[1] Frame 
+                // else
+                //  BYTE[1] unknown (0x00) 
+                //  BYTE[4] unknown (0x00000000)
+                // endif
             }
         }
 

@@ -40,6 +40,21 @@ namespace UltimaXNA.SceneManagement
             base.Intitialize();
             UI.AddGump_Local(new TopMenu(0), 0, 0);
             UI.AddGump_Local(new ChatWindow(), 0, 0);
+
+            // this is the login sequence for 0.6.1.10
+            Interaction.GetMySkills();
+            Interaction.SendClientVersion();
+            Interaction.SendClientScreenSize();
+            Interaction.SendClientLocalization();
+            // Packet: BF 00 0A 00 0F 0A 00 00 00 1F
+            // Packet: 09 00 00 00 02  
+            // Packet: 06 80 00 00 17
+            Interaction.GetMyBasicStatus();
+            // Packet: D6 00 0B 00 00 00 02 00 00 00 17
+            // Packet: D6 00 37 40 00 00 FB 40 00 00 FD 40 00 00 FE 40
+            //         00 00 FF 40 00 01 00 40 00 01 02 40 00 01 03 40
+            //         00 01 04 40 00 01 05 40 00 01 06 40 00 01 07 40
+            //         00 01 24 40 00 01 26 
             World.LightDirection = -0.6f;
             ClientVars.InWorld = true;
         }
