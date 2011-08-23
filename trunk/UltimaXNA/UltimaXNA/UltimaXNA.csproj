@@ -13,7 +13,8 @@
     <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
     <XnaPlatform>Windows</XnaPlatform>
     <XnaCrossPlatformGroupID>50bfd68f-b3c7-4d72-866a-2cf8c22b84b0</XnaCrossPlatformGroupID>
-    <ApplicationIcon>Depends\ultimaxna.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
     <Thumbnail>
     </Thumbnail>
     <IsWebBootstrapper>false</IsWebBootstrapper>
@@ -498,8 +499,6 @@
   <ItemGroup>
     <None Include="zlib32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Depends\ultimaxna.ico">
     </None>
   </ItemGroup>
   <ItemGroup>
