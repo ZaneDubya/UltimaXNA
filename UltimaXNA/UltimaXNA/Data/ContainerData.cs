@@ -1,8 +1,17 @@
-﻿using System;
+﻿/***************************************************************************
+ *   ContainerData.cs
+ *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
+ *   Based on code from RunUO: http://www.runuo.com
+ *   
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
 
 namespace UltimaXNA.Data
@@ -13,7 +22,7 @@ namespace UltimaXNA.Data
         {
             m_Table = new Dictionary<int, ContainerData>();
 
-            string path = "..\\..\\res\\containers.cfg"; // Path.Combine(Core.BaseDirectory, "Data/containers.cfg");
+            string path = "..\\..\\res\\containers.cfg";
 
             if (!File.Exists(path))
             {

@@ -23,8 +23,6 @@ namespace UltimaXNA.Entities
 {
     class DynamicObject : Item
     {
-        public int CasterSerial = 0;
-        public int Bytes0 = 0;
         public int SpellID = 0;
 
         public DynamicObject(Serial serial, IsometricRenderer world)
