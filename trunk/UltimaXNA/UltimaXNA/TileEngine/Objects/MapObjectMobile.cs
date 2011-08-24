@@ -166,7 +166,30 @@ namespace UltimaXNA.TileEngine
             if (ClientVars.EngineVars.LastTarget != null && ClientVars.EngineVars.LastTarget == OwnerSerial)
                 _draw_hue = new Vector2(((Entities.Mobile)OwnerEntity).NotorietyHue - 1, 1);
 
-            return base.Draw(sb, drawPosition, molist, pickType, maxAlt);
+            // !!! Test highlight code.
+            bool isHighlight = false;
+            if (isHighlight)
+            {
+                Vector2 savedHue = _draw_hue;
+                int savedX = _draw_X, savedY = _draw_Y;
+                _draw_hue = Utility.GetHueVector(1288);
+                int offset = 1;
+                _draw_X = savedX - offset;
+                base.Draw(sb, drawPosition, molist, pickType, maxAlt);
+                _draw_X = savedX + offset;
+                base.Draw(sb, drawPosition, molist, pickType, maxAlt);
+                _draw_X = savedX;
+                _draw_Y = savedY - offset;
+                base.Draw(sb, drawPosition, molist, pickType, maxAlt);
+                _draw_Y = savedY + offset;
+                base.Draw(sb, drawPosition, molist, pickType, maxAlt);
+                _draw_hue = savedHue;
+                _draw_X = savedX;
+                _draw_Y = savedY;
+            }
+
+            bool isDrawn = base.Draw(sb, drawPosition, molist, pickType, maxAlt);
+            return isDrawn;
         }
 
         private Data.FrameXNA getFrame(int bodyID, int hue, int facing, int action, float frame)

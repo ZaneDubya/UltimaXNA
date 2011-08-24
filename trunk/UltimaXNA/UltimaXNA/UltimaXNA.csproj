@@ -257,6 +257,7 @@
     <Compile Include="Data\ContainerData.cs" />
     <Compile Include="Data\CustomHousing.cs" />
     <Compile Include="Data\HairStyles.cs" />
+    <Compile Include="Data\ParticleData.cs" />
     <Compile Include="Data\Skills.cs" />
     <Compile Include="Data\Speech.cs" />
     <Compile Include="Data\TileMatrix.cs">
