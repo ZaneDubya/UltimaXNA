@@ -29,7 +29,7 @@ namespace UltimaXNA.Data
                 new ParticleData(0x36F4, 0, 0),   // 14068 fire snake
                 new ParticleData(0x36FE, 0, 0),   // 14078explosion ball
                 new ParticleData(0x3709, 0, 0),   // 14089 fire column
-                                                  // 14106 - display only the ending of fire column
+                                                  // 14106 - display only the ending of fire column - is this actually used?
                 new ParticleData(0x3728, 0, 0),   // 14120 smoke
                 new ParticleData(0x3735, 0, 0),   // 14133 fizzle
                 new ParticleData(0x373A, 0, 0),   // 14138 sparkle blue

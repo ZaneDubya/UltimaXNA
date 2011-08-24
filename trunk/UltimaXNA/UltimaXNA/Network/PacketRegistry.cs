@@ -96,7 +96,7 @@ namespace UltimaXNA.Network
             network.Register<SeasonChangePacket>(0xBC, "Seasonal Change", 3, new TypedPacketReceiveHandler(SeasonChange));
             network.Register<VersionRequestPacket>(0xBD, "Version Request", -1, new TypedPacketReceiveHandler(VersionRequest));
             network.Register<GeneralInfoPacket>(0xBF, "General Information", -1, new TypedPacketReceiveHandler(GeneralInfo));
-            network.Register<HuedEffectPacket>(0xC0, "Hued Effect", 36, new TypedPacketReceiveHandler(HuedEffect));
+            network.Register<GraphicEffectHuedPacket>(0xC0, "Hued Effect", 36, new TypedPacketReceiveHandler(HuedEffect));
             network.Register<MessageLocalizedPacket>(0xC1, "Message Localized", -1, new TypedPacketReceiveHandler(MessageLocalized));
             network.Register<InvalidMapEnablePacket>(0xC6, "Invalid Map Enable", 1, new TypedPacketReceiveHandler(InvalidMapEnable));
             network.Register<ParticleEffectPacket>(0xC7, "Particle Effect", 49, new TypedPacketReceiveHandler(ParticleEffect));
