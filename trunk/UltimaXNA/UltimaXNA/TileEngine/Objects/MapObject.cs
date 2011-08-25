@@ -21,7 +21,7 @@ using UltimaXNA.Graphics;
 
 namespace UltimaXNA.TileEngine
 {
-    public class MapObject
+    public abstract class MapObject
     {
         private Position3D _position;
         public Position3D Position

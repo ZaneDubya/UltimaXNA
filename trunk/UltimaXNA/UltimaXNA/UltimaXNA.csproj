@@ -264,6 +264,7 @@
     </Compile>
     <Compile Include="Data\TileMatrixRaw.cs" />
     <Compile Include="Support\GumpExporter.cs" />
+    <Compile Include="TileEngine\Objects\MapObjectDynamic.cs" />
     <Compile Include="TileEngine\Objects\MapObjectPrerendered.cs" />
     <Compile Include="UILegacy\HTML\HTMLRegions.cs" />
     <Compile Include="UILegacy\HTML\HTMLParserAtoms.cs" />

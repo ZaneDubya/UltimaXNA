@@ -82,6 +82,9 @@ namespace UltimaXNA.Entities
 
         public virtual void Update(GameTime gameTime)
         {
+            if (IsDisposed)
+                return;
+
             if (!_movement.Position.IsNullPosition)
             {
                 _movement.Update(gameTime);
@@ -89,7 +92,7 @@ namespace UltimaXNA.Entities
                 if (_world.Map == null)
                     return;
 
-                TileEngine.MapTile t = _world.Map.GetMapTile(_movement.Position.X, _movement.Position.Y, true);
+                TileEngine.MapTile t = _world.Map.GetMapTile(_movement.Position.X, _movement.Position.Y, false);
                 if (t != null)
                 {
                     this.Draw(t, _movement.Position);

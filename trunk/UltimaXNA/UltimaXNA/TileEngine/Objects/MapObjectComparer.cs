@@ -45,18 +45,18 @@ namespace UltimaXNA.TileEngine
         private int typeSortValue(MapObject mapobject)
         {
             Type type = mapobject.GetType();
-            if (type == typeof(MapObject))
-                return -1;
-            else if (type == typeof(MapObjectGround))
+            if (type == typeof(MapObjectGround))
                 return 0;
             else if (type == typeof(MapObjectStatic))
                 return 1;
             else if (type == typeof(MapObjectItem))
                 return 2;
             else if (type == typeof(MapObjectMobile))
-                return 4;
+                return 3;
             else if (type == typeof(MapObjectText))
                 return 4;
+            else if (type == typeof(MapObjectDynamic))
+                return 5;
             return -100;
         }
     }

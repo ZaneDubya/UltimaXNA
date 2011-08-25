@@ -84,7 +84,8 @@ namespace UltimaXNA.Client.Packets.Server
         Lightning = 0x01,
         FixedXYZ = 0x02,
         FixedFrom = 0x03,
-        ScreenFade = 0x04
+        ScreenFade = 0x04,
+        Nothing = 0xFF,
     }
 
     public enum GraphicEffectBlendMode

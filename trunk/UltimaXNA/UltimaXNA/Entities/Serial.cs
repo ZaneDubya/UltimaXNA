@@ -75,6 +75,20 @@ namespace UltimaXNA
             }
         }
 
+        public bool IsDynamic
+        {
+            get
+            {
+                return (_serial < 0);
+            }
+        }
+
+        private static int _nextDynamicSerial = -1;
+        public static int NewDynamicSerial
+        {
+            get { return _nextDynamicSerial--; }
+        }
+
         public override int GetHashCode()
         {
             return _serial;

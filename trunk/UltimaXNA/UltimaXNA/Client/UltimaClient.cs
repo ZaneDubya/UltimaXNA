@@ -470,12 +470,14 @@ namespace UltimaXNA.Client
 
         private static void receive_GraphicEffect(IRecvPacket packet)
         {
-            announce_UnhandledPacket(packet);
+            DynamicObject dynamic = EntitiesCollection.AddDynamicObject();
+            dynamic.LoadFromPacket((GraphicEffectPacket)packet);
         }
 
         private static void receive_HuedEffect(IRecvPacket packet)
         {
-            announce_UnhandledPacket(packet);
+            DynamicObject dynamic = EntitiesCollection.AddDynamicObject();
+            dynamic.LoadFromPacket((GraphicEffectHuedPacket)packet);
         }
 
         private static void receive_InvalidMapEnable(IRecvPacket packet)
@@ -486,8 +488,6 @@ namespace UltimaXNA.Client
         private static void receive_LoginComplete(IRecvPacket packet)
         {
             // This packet is just one byte, the opcode.
-            // Congrats, login complete!
-
             // We want to make sure we have the client object before we load the world.
             // If we don't, just set the status to login complete, which will then
             // load the world when we finally receive our client object.
