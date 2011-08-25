@@ -144,7 +144,17 @@ namespace UltimaXNA.TileEngine
                     if (!(underObject == null))
                     {
                         // Roofing and new floors ALWAYS begin at intervals of 20.
-                        _maxItemAltitude = underObject.Z - (underObject.Z % 20);
+                        // if we are under a ROOF, then get rid of everything above me.Z + 20
+                        // (this accounts for A-frame roofs). Otherwise, get rid of everything
+                        // at the object above us.Z.
+                        if (((MapObjectStatic)underObject).ItemData.Roof)
+                        {
+                            _maxItemAltitude = CenterPosition.Z - (CenterPosition.Z % 20) + 20;
+                        }
+                        else
+                        {
+                            _maxItemAltitude = underObject.Z - (underObject.Z % 20);
+                        }
 
                         // If we are under a roof tile, do not make roofs transparent if we are on an edge.
                         if (underObject is MapObjectStatic && ((MapObjectStatic)underObject).ItemData.Roof)

@@ -92,9 +92,8 @@ namespace UltimaXNA.TileEngine
                 {
                     iObjects.Add(iObject);
                 }
-                m_Objects = iObjects;
-                _NeedsSorting = true;
             }
+            m_Objects = iObjects;
             _NeedsSorting = true;
         }
 

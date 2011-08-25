@@ -29,6 +29,8 @@ namespace UltimaXNA.Entities
     static class EntitiesCollection
     {
         private static Dictionary<int, Entity> _entities = new Dictionary<int, Entity>();
+        private static Dictionary<int, Entity> _dynamics = new Dictionary<int, Entity>();
+
         private static IIsometricRenderer _world;
         public static int MySerial { get; set; }
 
@@ -44,6 +46,7 @@ namespace UltimaXNA.Entities
         public static void Reset()
         {
             _entities.Clear();
+            _dynamics.Clear();
         }
 
         public static Entity GetPlayerObject()
@@ -57,39 +60,72 @@ namespace UltimaXNA.Entities
         }
 
 
-        static List<int> _removeObjectsList = new List<int>();
         public static void Update(GameTime gameTime)
         {
             if (ClientVars.EngineVars.InWorld)
             {
-                // Clear the list of objects to be removed.
-                _removeObjectsList.Clear();
-
-                // Update the player entity first because we cull entities out of range of this main object.
-                Entity player = GetPlayerObject();
-                player.Update(gameTime);
-                if (player.IsDisposed)
-                    _removeObjectsList.Add(player.Serial);
-
-                // Now update all other entities.
-                foreach (KeyValuePair<int, Entity> entity in _entities)
-                {
-                    // Don't update the player entity twice!
-                    if (entity.Key == MySerial)
-                        continue;
-                    if (!entity.Value.IsDisposed)
-                        entity.Value.Update(gameTime);
-                    // Dispose the entity if it is out of range.
-                    if (!Utility.InRange(entity.Value.WorldPosition, player.Position, ClientVars.EngineVars.UpdateRange))
-                        entity.Value.Dispose();
-                    if (entity.Value.IsDisposed)
-                        _removeObjectsList.Add(entity.Key);
-                }
-                foreach (int i in _removeObjectsList)
-                {
-                    _entities.Remove(i);
-                }
+                updateEntities(gameTime);
+                updateDynamics(gameTime);
             }
+        }
+
+        static List<int> _entitiesToRemove = new List<int>();
+        private static void updateEntities(GameTime gameTime)
+        {
+            // Get the player object
+            Entity player = GetPlayerObject();
+
+            // Update the player entity first because we cull entities out of range of this main object.
+            player.Update(gameTime);
+            if (player.IsDisposed)
+                _entitiesToRemove.Add(player.Serial);
+
+            // Update all other entities.
+            foreach (KeyValuePair<int, Entity> entity in _entities)
+            {
+                // Don't update the player entity twice!
+                if (entity.Key == MySerial)
+                    continue;
+                if (!entity.Value.IsDisposed)
+                    entity.Value.Update(gameTime);
+                // Dispose the entity if it is out of range.
+                if (!Utility.InRange(entity.Value.WorldPosition, player.Position, ClientVars.EngineVars.UpdateRange))
+                    entity.Value.Dispose();
+                if (entity.Value.IsDisposed)
+                    _entitiesToRemove.Add(entity.Key);
+            }
+
+            // Remove disposed entities
+            foreach (int i in _entitiesToRemove)
+            {
+                _entities.Remove(i);
+            }
+            _entitiesToRemove.Clear();
+        }
+
+        private static void updateDynamics(GameTime gameTime)
+        {
+            // Get the player object
+            Entity player = GetPlayerObject();
+
+            // Update the dynamic objects
+            foreach (KeyValuePair<int, Entity> dynamic in _dynamics)
+            {
+                if (!dynamic.Value.IsDisposed)
+                    dynamic.Value.Update(gameTime);
+                // Dispose the dynamic if it is out of range.
+                if (!Utility.InRange(dynamic.Value.WorldPosition, player.Position, ClientVars.EngineVars.UpdateRange))
+                    dynamic.Value.Dispose();
+                if (dynamic.Value.IsDisposed)
+                    _entitiesToRemove.Add(dynamic.Key);
+            }
+
+            // Remove disposed dynamics
+            foreach (int i in _entitiesToRemove)
+            {
+                _dynamics.Remove(i);
+            }
+            _entitiesToRemove.Clear();
         }
 
         public static Overhead AddOverhead(MessageType msgType, Serial serial, string text, int fontID, int hue)
@@ -104,6 +140,13 @@ namespace UltimaXNA.Entities
             {
                 return null;
             }
+        }
+
+        public static DynamicObject AddDynamicObject()
+        {
+            DynamicObject dynamic = new DynamicObject(_world);
+            _dynamics.Add(dynamic.Serial, dynamic);
+            return dynamic;
         }
 
         public static List<T> GetObjectsByType<T>() where T : Entity
@@ -159,14 +202,6 @@ namespace UltimaXNA.Entities
 
         static T addObject<T>(Serial serial) where T : Entity
         {
-            /*
-            T o = (T)Activator.CreateInstance(typeof(T), new object[] { serial, _world });
-            // If this object is the client, designate it to return events.
-            if (o.Serial == MySerial)
-                o.IsClientEntity = true;
-            _entities.Add(o.Serial, o); // Add the object to the objects collection.
-            return (T)o;
-            */
             Entity e;
             Type t = typeof(T);
             switch (t.Name)

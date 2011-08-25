@@ -61,7 +61,12 @@ namespace UltimaXNA.Entities
         int _bodyID = 0;
         public int BodyID
         {
-            get { return _bodyID; }
+            get
+            {
+                if (_bodyID >= 402 && _bodyID <= 403)
+                    return _bodyID - 2;
+                return _bodyID;
+            }
             set
             {
                 _bodyID = value;
