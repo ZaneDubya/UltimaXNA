@@ -80,6 +80,24 @@ namespace UltimaXNA.Data
             set { _defaultData = value; }
         }
 
+        public static ParticleData RandomExplosion
+        {
+            get
+            {
+                switch (Utility.RandomValue(0, 2))
+                {
+                    case 0:
+                        return ParticleData.GetData(0x36B0);
+                    case 1:
+                        return ParticleData.GetData(0x36BD);
+                    case 2:
+                        return ParticleData.GetData(0x36CB);
+                    default:
+                        return ParticleData.GetData(0x36B0);
+                }
+            }
+        }
+
         public static ParticleData GetData(int itemID)
         {
             if (itemID < _Data[0].ItemID)

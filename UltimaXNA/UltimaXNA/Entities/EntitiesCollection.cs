@@ -29,7 +29,8 @@ namespace UltimaXNA.Entities
     static class EntitiesCollection
     {
         private static Dictionary<int, Entity> _entities = new Dictionary<int, Entity>();
-        private static Dictionary<int, Entity> _dynamics = new Dictionary<int, Entity>();
+        private static List<Entity> _entities_Queued = new List<Entity>();
+        private static bool _entitiesCollectionIsLocked = false;
 
         private static IIsometricRenderer _world;
         public static int MySerial { get; set; }
@@ -46,7 +47,6 @@ namespace UltimaXNA.Entities
         public static void Reset()
         {
             _entities.Clear();
-            _dynamics.Clear();
         }
 
         public static Entity GetPlayerObject()
@@ -65,13 +65,15 @@ namespace UltimaXNA.Entities
             if (ClientVars.EngineVars.InWorld)
             {
                 updateEntities(gameTime);
-                updateDynamics(gameTime);
             }
         }
 
         static List<int> _entitiesToRemove = new List<int>();
         private static void updateEntities(GameTime gameTime)
         {
+            // redirect any new entities to a queue while we are enumerating the collection.
+            _entitiesCollectionIsLocked = true;
+
             // Get the player object
             Entity player = GetPlayerObject();
 
@@ -101,31 +103,12 @@ namespace UltimaXNA.Entities
                 _entities.Remove(i);
             }
             _entitiesToRemove.Clear();
-        }
 
-        private static void updateDynamics(GameTime gameTime)
-        {
-            // Get the player object
-            Entity player = GetPlayerObject();
-
-            // Update the dynamic objects
-            foreach (KeyValuePair<int, Entity> dynamic in _dynamics)
-            {
-                if (!dynamic.Value.IsDisposed)
-                    dynamic.Value.Update(gameTime);
-                // Dispose the dynamic if it is out of range.
-                if (!Utility.InRange(dynamic.Value.WorldPosition, player.Position, ClientVars.EngineVars.UpdateRange))
-                    dynamic.Value.Dispose();
-                if (dynamic.Value.IsDisposed)
-                    _entitiesToRemove.Add(dynamic.Key);
-            }
-
-            // Remove disposed dynamics
-            foreach (int i in _entitiesToRemove)
-            {
-                _dynamics.Remove(i);
-            }
-            _entitiesToRemove.Clear();
+            // stop redirecting new entities to the queue and add any queued entities to the main entity collection.
+            _entitiesCollectionIsLocked = false;
+            foreach (Entity e in _entities_Queued)
+                _entities.Add(e.Serial, e);
+            _entities_Queued.Clear();
         }
 
         public static Overhead AddOverhead(MessageType msgType, Serial serial, string text, int fontID, int hue)
@@ -144,8 +127,7 @@ namespace UltimaXNA.Entities
 
         public static DynamicObject AddDynamicObject()
         {
-            DynamicObject dynamic = new DynamicObject(_world);
-            _dynamics.Add(dynamic.Serial, dynamic);
+            DynamicObject dynamic = addObject<DynamicObject>(Serial.NewDynamicSerial);
             return dynamic;
         }
 
@@ -224,13 +206,23 @@ namespace UltimaXNA.Entities
                 case "Multi":
                     e = new Multi(serial, _world);
                     break;
+                case "DynamicObject":
+                    e = new DynamicObject(serial, _world);
+                    break;
                 default:
                     throw new Exception("Unknown addObject type!");
             }
 
             if (e.Serial == MySerial)
                 e.IsClientEntity = true;
-            _entities.Add(e.Serial, e); // Add the object to the objects collection.
+
+            // If the entities collection is locked, add the new entity to the queue. Otherwise 
+            // add it directly to the main entity collection.
+            if (_entitiesCollectionIsLocked)
+                _entities_Queued.Add(e);
+            else
+                _entities.Add(e.Serial, e);
+
             return (T)e;
         }
 
