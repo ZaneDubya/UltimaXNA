@@ -471,13 +471,13 @@ namespace UltimaXNA.Client
         private static void receive_GraphicEffect(IRecvPacket packet)
         {
             DynamicObject dynamic = EntitiesCollection.AddDynamicObject();
-            dynamic.LoadFromPacket((GraphicEffectPacket)packet);
+            dynamic.Load_FromPacket((GraphicEffectPacket)packet);
         }
 
         private static void receive_HuedEffect(IRecvPacket packet)
         {
             DynamicObject dynamic = EntitiesCollection.AddDynamicObject();
-            dynamic.LoadFromPacket((GraphicEffectHuedPacket)packet);
+            dynamic.Load_FromPacket((GraphicEffectHuedPacket)packet);
         }
 
         private static void receive_InvalidMapEnable(IRecvPacket packet)

@@ -470,14 +470,10 @@ namespace UltimaXNA.Entities
                         return MobileAction.Emote_Eat;
                 }
 
-                // special case animations.
-                if (index == 0xD4)
-                    return MobileAction.Cast_Directed;
-                if (index == 0xD7)
-                    return MobileAction.Cast_Directed;
-                if (index == 0xE0)
-                    return MobileAction.Cast_Directed;
-                if (index == 0xEC)
+                // special case animations. When casting a spell, the server will send animation indexes over 200,
+                // which all seem to correspond to Cast_Directed. Example indexes are:
+                // 200, 201, 203, 206, 209, 212, 215, 218, 221, 227, 230, 239, 245, 260, 266 and doubtless others.
+                if (index >= 200)
                     return MobileAction.Cast_Directed;
 
                 Diagnostics.Logger.Warn("Unknown action index {0}", index);
@@ -541,6 +537,15 @@ namespace UltimaXNA.Entities
         Stand = 0x01,
         Die_Backwards = 0x02,
         Die_Forwards = 0x03,
+        Attack1 = 0x04,
+        Attack2 = 0x05,
+        Attack3 = 0x06,
+        Stumble = 0x07,
+        MonsterMisc = 0x08,
+        GetHit2 = 0x09,
+        GetHit3 = 0x0A,
+        Emote_Fidget_1 = 0x0B,
+        Emote_Fidget_2 = 0x0C,
         Run = 0x13, 
     }
 
