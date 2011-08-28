@@ -99,9 +99,9 @@ namespace UltimaXNA.Network
             network.Register<GraphicEffectHuedPacket>(0xC0, "Hued Effect", 36, new TypedPacketReceiveHandler(HuedEffect));
             network.Register<MessageLocalizedPacket>(0xC1, "Message Localized", -1, new TypedPacketReceiveHandler(MessageLocalized));
             network.Register<InvalidMapEnablePacket>(0xC6, "Invalid Map Enable", 1, new TypedPacketReceiveHandler(InvalidMapEnable));
-            network.Register<ParticleEffectPacket>(0xC7, "Particle Effect", 49, new TypedPacketReceiveHandler(ParticleEffect));
+            network.Register<GraphicEffectExtendedPacket>(0xC7, "Particle Effect", 49, new TypedPacketReceiveHandler(ParticleEffect));
             network.Register<GlobalQueuePacket>(0xCB, "Global Queue Count", 7, new TypedPacketReceiveHandler(GlobalQueueCount));
-            network.Register<MessageLocalizedPacket>(0xCC, "Message Localized Affix ", -1, new TypedPacketReceiveHandler(MessageLocalizedAffix));
+            network.Register<MessageLocalizedAffixPacket>(0xCC, "Message Localized Affix ", -1, new TypedPacketReceiveHandler(MessageLocalizedAffix));
             network.Register<Extended0x78Packet>(0xD3, "Extended 0x78", -1, new TypedPacketReceiveHandler(Extended0x78));
             network.Register<ObjectPropertyListPacket>(0xD6, "Mega Cliloc", -1, new TypedPacketReceiveHandler(MegaCliloc));
             network.Register<CustomHousePacket>(0xD8, "Send Custom House", -1, new TypedPacketReceiveHandler(SendCustomHouse));

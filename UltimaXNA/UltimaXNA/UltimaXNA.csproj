@@ -176,10 +176,9 @@
     <Compile Include="Client\Packets\Incomplete\Extended0x78Packet.cs" />
     <Compile Include="Client\Packets\Server\GraphicEffectPacket.cs" />
     <Compile Include="Client\Packets\Incomplete\InvalidMapEnablePacket.cs" />
-    <Compile Include="Client\Packets\Incomplete\MessageLocalizedAffixPacket.cs" />
+    <Compile Include="Client\Packets\Server\MessageLocalizedAffixPacket.cs" />
     <Compile Include="Client\Packets\Incomplete\ObjectHelpResponsePacket.cs" />
     <Compile Include="Client\Packets\Incomplete\OpenPaperdollPacket.cs" />
-    <Compile Include="Client\Packets\Incomplete\ParticleEffectPacket.cs" />
     <Compile Include="Client\Packets\Server\PlayMusicPacket.cs" />
     <Compile Include="Client\Packets\Incomplete\QuestArrowPacket.cs" />
     <Compile Include="Client\Packets\Incomplete\ResurrectionMenuPacket.cs" />

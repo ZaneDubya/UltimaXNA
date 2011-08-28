@@ -469,6 +469,18 @@ namespace UltimaXNA.Entities
                     case ActionIndexHumanoid.Emote_Eat:
                         return MobileAction.Emote_Eat;
                 }
+
+                // special case animations.
+                if (index == 0xD4)
+                    return MobileAction.Cast_Directed;
+                if (index == 0xD7)
+                    return MobileAction.Cast_Directed;
+                if (index == 0xE0)
+                    return MobileAction.Cast_Directed;
+                if (index == 0xEC)
+                    return MobileAction.Cast_Directed;
+
+                Diagnostics.Logger.Warn("Unknown action index {0}", index);
                 return MobileAction.None;
             }
             else if (_bodyType == BodyTypes.LowDetail)
