@@ -1040,10 +1040,10 @@ namespace UltimaXNA.Client
                     }
                     break;
                 case MessageType.System:
-                    _LegacyUI.AddMessage_Chat("<SYSTEM> " + text, font, hue);
+                    _LegacyUI.AddMessage_Chat("[SYSTEM] " + text, font, hue);
                     break;
                 case MessageType.Emote:
-                    _LegacyUI.AddMessage_Chat("<EMOTE> " + text, font, hue);
+                    _LegacyUI.AddMessage_Chat("[EMOTE] " + text, font, hue);
                     break;
                 case MessageType.Label:
                     if (serial.IsValid)
@@ -1060,32 +1060,32 @@ namespace UltimaXNA.Client
                     }
                     else
                     {
-                        _LegacyUI.AddMessage_Chat("<LABEL> " + text, font, hue);
+                        _LegacyUI.AddMessage_Chat("[LABEL] " + text, font, hue);
                     }
                     break;
                 case MessageType.Focus: // on player?
-                    _LegacyUI.AddMessage_Chat("<FOCUS> " + text, font, hue);
+                    _LegacyUI.AddMessage_Chat("[FOCUS] " + text, font, hue);
                     break;
                 case MessageType.Whisper:
-                    _LegacyUI.AddMessage_Chat("<WHISPER> " + text, font, hue);
+                    _LegacyUI.AddMessage_Chat("[WHISPER] " + text, font, hue);
                     break;
                 case MessageType.Yell:
-                    _LegacyUI.AddMessage_Chat("<YELL> " + text, font, hue);
+                    _LegacyUI.AddMessage_Chat("[YELL] " + text, font, hue);
                     break;
                 case MessageType.Spell:
-                    _LegacyUI.AddMessage_Chat("<SPELL> " + text, font, hue);
+                    _LegacyUI.AddMessage_Chat("[SPELL] " + text, font, hue);
                     break;
                 case MessageType.UIld:
-                    _LegacyUI.AddMessage_Chat("<UILD> " + text, font, hue);
+                    _LegacyUI.AddMessage_Chat("[UILD] " + text, font, hue);
                     break;
                 case MessageType.Alliance:
-                    _LegacyUI.AddMessage_Chat("<ALLIANCE> " + text, font, hue);
+                    _LegacyUI.AddMessage_Chat("[ALLIANCE] " + text, font, hue);
                     break;
                 case MessageType.Command:
-                    _LegacyUI.AddMessage_Chat("<COMMAND> " + text, font, hue);
+                    _LegacyUI.AddMessage_Chat("[COMMAND] " + text, font, hue);
                     break;
                 default:
-                    _LegacyUI.AddMessage_Chat("ERROR UNKNOWN COMMAND:" + msgType.ToString());
+                    _LegacyUI.AddMessage_Chat("[[ERROR UNKNOWN COMMAND]] " + msgType.ToString());
                     break;
             }
         }

@@ -132,7 +132,10 @@ namespace UltimaXNA.UILegacy.HTML
                                 }
                                 break;
                             default:
-                                Logger.Warn(string.Format("Unknown html tag:{0}", chunk.sTag));
+                                for (int i = 0; i < chunk.iChunkLength; i++)
+                                {
+                                    addCharacter(char.Parse(inText.Substring(i + chunk.iChunkOffset, 1)), outAtoms, openTags, currentColor, openHREFs);
+                                }
                                 break;
                         }
 
