@@ -1,6 +1,15 @@
-﻿using System;
+﻿/***************************************************************************
+ *   VectorPolygon.cs
+ *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
+ *   
+ *   Based on LineBatch.cs, made available as part of the 
+ *   Microsoft XNA Community Game Platform
+ *   
+ *   Copyright (C) Microsoft Corporation. All rights reserved.
+ *   
+ ***************************************************************************/
+using System;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace UltimaXNA.Graphics
 {

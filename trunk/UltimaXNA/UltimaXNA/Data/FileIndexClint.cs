@@ -1,6 +1,7 @@
 ﻿/***************************************************************************
  *   FileIndexClint.cs
  *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
+ *   Based on code by Clint.XNA: http://www.runuo.com/community/threads/91272/
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by

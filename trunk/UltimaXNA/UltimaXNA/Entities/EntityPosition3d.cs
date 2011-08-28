@@ -3,13 +3,6 @@
  *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   Based on code from RunUO: http://www.runuo.com
  *   
- *   begin                : May 31, 2009
- *   email                : poplicola@ultimaxna.com
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2 of the License, or
