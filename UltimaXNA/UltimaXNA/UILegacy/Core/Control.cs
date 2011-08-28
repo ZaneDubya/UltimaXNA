@@ -1,11 +1,19 @@
-﻿using System;
+﻿/***************************************************************************
+ *   Control.cs
+ *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
+ *   
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+using System;
 using System.Collections.Generic;
-using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using UltimaXNA.Input;
 using UltimaXNA.Graphics;
+using UltimaXNA.Input;
 
 namespace UltimaXNA.UILegacy
 {
@@ -15,7 +23,7 @@ namespace UltimaXNA.UILegacy
 
     public delegate void PublicControlEvent();
 
-    public class Control : iControl
+    public class Control : IControl
     {
         bool _enabled = false;
         bool _visible = false;

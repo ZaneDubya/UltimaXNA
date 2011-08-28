@@ -2,9 +2,6 @@
  *   UltimaClient.cs
  *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   
- *   begin                : May 31, 2009
- *   email                : poplicola@ultimaxna.com
- *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 3 of the License, or
@@ -13,15 +10,13 @@
  ***************************************************************************/
 #region usings
 using System;
-using System.IO;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using UltimaXNA.Entities;
-using UltimaXNA.Network;
 using UltimaXNA.Client.Packets.Client;
 using UltimaXNA.Client.Packets.Server;
-using UltimaXNA.TileEngine;
+using UltimaXNA.Entities;
 using UltimaXNA.Extensions;
+using UltimaXNA.Network;
 using UltimaXNA.UILegacy;
 #endregion
 
