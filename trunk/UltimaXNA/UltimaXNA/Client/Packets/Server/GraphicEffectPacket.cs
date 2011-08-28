@@ -21,16 +21,43 @@ using UltimaXNA.Network;
 
 namespace UltimaXNA.Client.Packets.Server
 {
+    public class GraphicEffectExtendedPacket : GraphicEffectHuedPacket
+    {
+        public GraphicEffectExtendedPacket(int id, PacketReader reader)
+            : base(id, reader)
+        {
+            // BYTE[2] effect # (tile ID)
+            // BYTE[2] explode effect # (0 if no explosion)
+            // BYTE[2] additional effect # that's only used for moving effects, 0 otherwise
+            // BYTE[4] if target is item (type 2) that's itemId, 0 otherwise
+            // BYTE[1] layer (of the character, e.g left hand, right hand, ... 0-4, 0xff: moving effect or target is no char)
+            // BYTE[2] yet another (unknown) additional effect that's only set for moving effect, 0 otherwise
+        	Diagnostics.Logger.Warn("Packet 0xC7 received; support for this packet is not yet implemented.");
+		}
+
+        public GraphicEffectExtendedPacket(PacketReader reader)
+            : this(0xC7, reader)
+        {
+
+        }
+    }
+
     public class GraphicEffectHuedPacket : GraphicEffectPacket
     {
         public readonly int Hue;
         public readonly GraphicEffectBlendMode BlendMode;
 
-        public GraphicEffectHuedPacket(PacketReader reader)
-            : base(0xC0, reader)
+        public GraphicEffectHuedPacket(int id, PacketReader reader)
+            : base(id, reader)
         {
             Hue = reader.ReadInt32();
             BlendMode = (GraphicEffectBlendMode)reader.ReadInt32();
+        }
+
+        public GraphicEffectHuedPacket(PacketReader reader)
+            : this(0xC0, reader)
+        {
+
         }
     }
 

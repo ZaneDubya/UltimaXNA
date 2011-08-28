@@ -575,6 +575,10 @@ namespace UltimaXNA.Network
                     {
                         handler.TypeHandler(recvPacket);
                     }
+                    else
+                    {
+                        Diagnostics.Logger.Warn("ClientNetwork: Unknown packet received!");
+                    }
                 }
                 else
                 {

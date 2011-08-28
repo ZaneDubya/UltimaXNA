@@ -526,7 +526,11 @@ namespace UltimaXNA.Client
 
         private static void receive_MessageLocalizedAffix(IRecvPacket packet)
         {
-            announce_UnhandledPacket(packet);
+            MessageLocalizedAffixPacket p = (MessageLocalizedAffixPacket)packet;
+
+            string localizedString = string.Format(p.Flag_IsPrefix ? "{1}{0}" : "{0}{1}",
+                constructCliLoc(Data.StringList.Entry(p.CliLocNumber), p.Arguements), p.Affix);
+            receive_TextMessage(p.MessageType, localizedString, p.Hue, p.Font, p.Serial, p.SpeakerName);
         }
 
         private static void receive_MobileAttributes(IRecvPacket packet)

@@ -21,10 +21,23 @@ namespace UltimaXNA.Entities
     {
         private bool _isHued = false;
         private bool _isInitialized = false;
-        private GraphicEffectPacket _data;
-        private ParticleData _particle;
-        private GameTime _beginTime;
-        private int _frameCount;
+
+        private int _baseItemID;
+        private float _frameSequence;
+        private int _frameLength;
+        private bool _useGumpArtInsteadOfTileArt = false;
+
+        private float _timeBeginTotalSeconds;
+        private float _timeEndTotalSeconds;
+        private float _timeRepeatAnimationSeconds;
+
+        private GraphicEffectPacket _packet;
+        private GraphicEffectType effectType
+        {
+            get { return _packet.EffectType; }
+        }
+
+
 
         public DynamicObject(IIsometricRenderer world)
             : base(Serial.NewDynamicSerial, world)
@@ -36,23 +49,77 @@ namespace UltimaXNA.Entities
         {
             if (!_isInitialized)
             {
-                _particle = ParticleData.GetData(_data.BaseItemID);
-                _beginTime = new GameTime(gameTime.TotalGameTime, gameTime.ElapsedGameTime);
-                this.X = _data.SourceX;
-                this.Y = _data.SourceY;
-                this.Z = _data.SourceZ;
-                _frameCount = 0;
+                _timeEndTotalSeconds = _timeBeginTotalSeconds = (float)gameTime.TotalGameTime.TotalSeconds;
+                _frameSequence = 0;
                 _isInitialized = true;
+
+                ParticleData data;
+                switch (effectType)
+                {
+                    case GraphicEffectType.Nothing:
+                        this.Dispose();
+                        break;
+                    case GraphicEffectType.Moving:
+                        this.Dispose();
+                        break;
+                    case GraphicEffectType.Lightning:
+                        X = _packet.SourceX;
+                        Y = _packet.SourceY;
+                        Z = _packet.SourceZ;
+                        _useGumpArtInsteadOfTileArt = true;
+                        _baseItemID = 20000;
+                        _frameLength = 10;
+
+                        _frameSequence = 0;
+                        _timeRepeatAnimationSeconds = 1.0f;
+                        _timeEndTotalSeconds += _timeRepeatAnimationSeconds;
+                        break;
+                    case GraphicEffectType.FixedXYZ:
+                        data = ParticleData.GetData(_packet.BaseItemID);
+                        if (data != null)
+                        {
+                            X = _packet.SourceX;
+                            Y = _packet.SourceY;
+                            Z = _packet.SourceZ;
+                            _baseItemID = data.ItemID;
+                            _frameLength = data.FrameLength;
+
+                            _frameSequence = 0;
+                            _timeRepeatAnimationSeconds = _packet.Duration / (float)(10 + _packet.Speed);
+                            _timeEndTotalSeconds += _timeRepeatAnimationSeconds;
+                        }
+                        else
+                            this.Dispose();
+                        break;
+                    case GraphicEffectType.FixedFrom:
+                        data = ParticleData.GetData(_packet.BaseItemID);
+                        if (data != null)
+                        {
+                            X = _packet.SourceX;
+                            Y = _packet.SourceY;
+                            Z = _packet.SourceZ;
+                            _baseItemID = data.ItemID;
+                            _frameLength = data.FrameLength;
+
+                            _frameSequence = 0;
+                            _timeRepeatAnimationSeconds = _packet.Duration / (float)(10 + _packet.Speed);
+                            _timeEndTotalSeconds += _timeRepeatAnimationSeconds;
+                        }
+                        else
+                            this.Dispose();
+                        break;
+                    case GraphicEffectType.ScreenFade:
+                        this.Dispose();
+                        break;
+                }
             }
             else
             {
-                _frameCount++;
+                _frameSequence = (float)(gameTime.TotalGameTime.TotalSeconds - _timeBeginTotalSeconds) / _timeRepeatAnimationSeconds;
             }
 
-            if (_frameCount >= _data.Duration)
-            {
+            if (gameTime.TotalGameTime.TotalSeconds >= _timeEndTotalSeconds)
                 this.Dispose();
-            }
 
             base.Update(gameTime);
         }
@@ -60,20 +127,20 @@ namespace UltimaXNA.Entities
         internal override void Draw(MapTile tile, Position3D position)
         {
             tile.FlushObjectsBySerial(Serial);
-            int hue = (_isHued) ? ((GraphicEffectHuedPacket)_data).Hue : 0;
-            tile.AddMapObject(new TileEngine.MapObjectDynamic(this, position, _particle.ItemID, (_frameCount % _particle.FrameLength), hue));
+            int hue = (_isHued) ? ((GraphicEffectHuedPacket)_packet).Hue : 0;
+            tile.AddMapObject(new TileEngine.MapObjectDynamic(this, position, _baseItemID, (int)(_frameSequence * _frameLength), hue, _useGumpArtInsteadOfTileArt));
         }
 
         public void LoadFromPacket(GraphicEffectPacket packet)
         {
             _isHued = false;
-            _data = packet;
+            _packet = packet;
         }
 
         public void LoadFromPacket(GraphicEffectHuedPacket packet)
         {
             _isHued = true;
-            _data = packet;
+            _packet = packet;
         }
     }
 }
