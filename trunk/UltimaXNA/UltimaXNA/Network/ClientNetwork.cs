@@ -118,8 +118,6 @@ namespace UltimaXNA.Network
                 throw new NetworkException(string.Format("Unable to register packet id {0:X2} because it is greater than byte.MaxValue", id));
             }
 
-            // Logger.Debug("Register id: 0x{0:X2} Name: {1} Length: {2}", id, name, length);
-
             packetLengths[id] = length;
             PacketHandler handler = new PacketHandler(id, name, length, onReceive);
             _handlers[id].Add(handler);
@@ -147,8 +145,6 @@ namespace UltimaXNA.Network
             {
                 throw new NetworkException(string.Format("Unable to register packet id {0:X2} because it is greater than byte.MaxValue", id));
             }
-
-            // Logger.Debug("Register id: 0x{0:X2} Name: {1} Length: {2}", id, name, length);
 
             TypedPacketHandler handler = new TypedPacketHandler(id, name, type, length, onReceive);
             _typedHandlers[id].Add(handler);

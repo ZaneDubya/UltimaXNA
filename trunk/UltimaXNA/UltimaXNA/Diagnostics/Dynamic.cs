@@ -109,7 +109,10 @@ namespace UltimaXNA.Diagnostics
         {
             DynaClassInfo ci = GetClassReference(AssemblyName, ClassName);
             if (ci == null)
-                return null;
+            {
+                Type type = Type.GetType(AssemblyName + "." + ClassName);
+                ci = new DynaClassInfo(type, Activator.CreateInstance(type));
+            }
             return (InvokeMethod(ci, MethodName, args));
         }
     }
