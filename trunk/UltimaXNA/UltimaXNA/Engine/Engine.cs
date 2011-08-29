@@ -82,8 +82,8 @@ namespace UltimaXNA
             _inputState.Update(gameTime);
             Client.UltimaClient.Update(gameTime);
             Entities.EntitiesCollection.Update(gameTime);
-            _sceneService.Update(gameTime);
             _clientVars.Update(gameTime);
+            _sceneService.Update(gameTime);
             GameState.Update(gameTime);
         }
 
@@ -98,7 +98,7 @@ namespace UltimaXNA
                 // s.Screenshot(this, true);
             }
 
-            this.Window.Title = string.Format("UltimaXNA FPS:{0}", ClientVars.EngineVars.FPS);
+            this.Window.Title = ClientVars.DebugVars.Flag_DisplayFPS ? string.Format("UltimaXNA FPS:{0}", ClientVars.EngineVars.FPS) : "UltimaXNA";
         }
 
         bool isMinimized()

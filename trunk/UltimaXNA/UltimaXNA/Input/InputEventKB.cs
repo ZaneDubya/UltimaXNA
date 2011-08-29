@@ -45,6 +45,11 @@ namespace UltimaXNA.Input
         {
             _eventType = eventType;
         }
+
+        public override string ToString()
+        {
+            return EventType.ToString() + " " + KeyChar;
+        }
     }
 
     public enum KeyboardEvent
