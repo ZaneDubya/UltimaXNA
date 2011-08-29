@@ -207,7 +207,7 @@ namespace UltimaXNA.TileEngine
         {
             MapTile t = GetMapTile(x, y, false);
             if (t != null)
-                return t.GroundTile.Z;
+                return (int)t.GroundTile.Z;
             else
             {
                 int tileID, alt;

@@ -48,7 +48,7 @@ namespace UltimaXNA.TileEngine
                 _draw_texture = Data.Art.GetLandTexture(ItemID);
                 _draw_width = _draw_height = 44;
                 _draw_X = 0;
-                _draw_Y = (Z << 2);
+                _draw_Y = (int)(Z * 4);
                 _draw_hue = Vector2.Zero;
                 _pickType = PickTypes.PickGroundTiles;
                 _draw_flip = false;
@@ -133,7 +133,7 @@ namespace UltimaXNA.TileEngine
             if (!isFlat)
             {
                 int low = 0, high = 0, sort = 0;
-                sort = m.GetAverageZ(Z, _surroundingTiles.South, _surroundingTiles.East, _surroundingTiles.Down, ref low, ref high);
+                sort = m.GetAverageZ((int)Z, _surroundingTiles.South, _surroundingTiles.East, _surroundingTiles.Down, ref low, ref high);
                 if (sort != SortZ)
                 {
                     SortZ = sort;
@@ -157,7 +157,7 @@ namespace UltimaXNA.TileEngine
 
         private void updateVertexBuffer()
         {
-            _vertex0_yOffset = new Vector3(22, -(Z << 2), 0);
+            _vertex0_yOffset = new Vector3(22, -(Z * 4), 0);
             _vertex1_yOffset = new Vector3(44, 22 - (_surroundingTiles.East << 2), 0);
             _vertex2_yOffset = new Vector3(0, 22 - (_surroundingTiles.South << 2), 0);
             _vertex3_yOffset = new Vector3(22, 44 - (_surroundingTiles.Down << 2), 0);

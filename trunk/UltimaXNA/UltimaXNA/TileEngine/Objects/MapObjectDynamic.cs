@@ -35,7 +35,7 @@ namespace UltimaXNA.TileEngine
                 _draw_width = _draw_texture.Width;
                 _draw_height = _draw_texture.Height;
                 _draw_X = (_draw_width >> 1);
-                _draw_Y = (Z << 2) + _draw_height - 22;
+                _draw_Y = (int)(Z * 4) + _draw_height - 22;
             }
             else
             {
@@ -43,7 +43,7 @@ namespace UltimaXNA.TileEngine
                 _draw_width = _draw_texture.Width;
                 _draw_height = _draw_texture.Height;
                 _draw_X = (_draw_width >> 1) - 22;
-                _draw_Y = (Z << 2) + _draw_height - 44;
+                _draw_Y = (int)(Z * 4) + _draw_height - 44;
             }
             _draw_hue = Utility.GetHueVector(hue);
             _pickType = PickTypes.PickNothing;

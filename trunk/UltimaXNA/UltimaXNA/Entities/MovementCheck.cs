@@ -260,7 +260,7 @@ namespace UltimaXNA.Entities
                     // if (cantWalk && (flags & TileFlag.Wet) == 0)
                     //     continue;
 
-                    int itemZ = tile.Z;
+                    int itemZ = (int)tile.Z;
                     int itemTop = itemZ;
                     int ourZ = itemZ + itemData.CalcHeight;
                     int ourTop = ourZ + PersonHeight;
@@ -397,7 +397,7 @@ namespace UltimaXNA.Entities
 
                 if ((itemData.Flags & ImpassableSurface) != 0) // Impassable || Surface
                 {
-                    int checkZ = check.Z;
+                    int checkZ = (int)check.Z;
                     int checkTop = checkZ + itemData.CalcHeight;
 
                     if (checkTop > ourZ && ourTop > checkZ)
@@ -508,7 +508,7 @@ namespace UltimaXNA.Entities
                 MapObjectStatic tile = staticTiles[i];
                 Data.ItemData id = Data.TileData.ItemData[tile.ItemID & 0x3FFF];
 
-                int calcTop = (tile.Z + id.CalcHeight);
+                int calcTop = ((int)tile.Z + id.CalcHeight);
 
                 if ((!isSet || calcTop >= zCenter) && ((id.Flags & TileFlag.Surface) != 0) && loc.Z >= calcTop)
                 {
@@ -516,10 +516,10 @@ namespace UltimaXNA.Entities
                     // if (m.CantWalk && (id.Flags & TileFlag.Wet) == 0)
                     //     continue;
 
-                    zLow = tile.Z;
+                    zLow = (int)tile.Z;
                     zCenter = calcTop;
 
-                    int top = tile.Z + id.Height;
+                    int top = (int)tile.Z + id.Height;
 
                     if (!isSet || top > zTop)
                         zTop = top;

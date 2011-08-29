@@ -24,7 +24,7 @@ namespace UltimaXNA.TileEngine
 
         public new int SortZ
         {
-            get { return Z; }
+            get { return (int)Z; }
         }
 
         public int Layer
@@ -51,7 +51,7 @@ namespace UltimaXNA.TileEngine
             _draw_width = _draw_texture.Width;
             _draw_height = _draw_texture.Height;
             _draw_X = iFrame.Center.X - 22;
-            _draw_Y = iFrame.Center.Y + (Z << 2) + _draw_height - 22;
+            _draw_Y = iFrame.Center.Y + (int)(Z * 4) + _draw_height - 22;
             _draw_hue = Utility.GetHueVector(Hue);
             _pickType = PickTypes.PickObjects;
             _draw_flip = false;
