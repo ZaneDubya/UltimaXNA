@@ -16,7 +16,7 @@ using UltimaXNA.Input;
 
 namespace UltimaXNA.UILegacy.Gumplings
 {
-    class ResizePic : Control
+    public class ResizePic : Control
     {
         public bool CloseOnRightClick = false;
         Texture2D[] _bgGumps = null;

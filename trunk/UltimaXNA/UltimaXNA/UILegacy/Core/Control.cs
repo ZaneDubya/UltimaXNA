@@ -169,7 +169,7 @@ namespace UltimaXNA.UILegacy
         protected Control _owner = null;
         public Control Owner { get { return _owner; } }
         protected UIManager _manager = null;
-        protected List<Control> __controls = null;
+        private List<Control> __controls = null;
         protected List<Control> Controls
         {
             get
@@ -194,9 +194,19 @@ namespace UltimaXNA.UILegacy
             return string.Empty;
         }
 
-#if DEBUG
-        protected Texture2D _debugTexture;
-#endif
+        static Texture2D _boundsTexture;
+        protected static Texture2D BoundsTexture
+        {
+            get
+            {
+                if (_boundsTexture == null)
+                {
+                    _boundsTexture = new Texture2D(ClientVars._Support.Graphics, 1, 1);
+                    _boundsTexture.SetData<Color>(new Color[] { Color.White });
+                }
+                return _boundsTexture;
+            }
+        }
 
         public Control(Control owner, int page)
         {
@@ -225,19 +235,14 @@ namespace UltimaXNA.UILegacy
 
         public void ClearControls()
         {
-            foreach (Control c in Controls)
-                c.Dispose();
+            if (Controls != null)
+                foreach (Control c in Controls)
+                    c.Dispose();
         }
 
         public virtual void Dispose()
         {
-            if (Controls != null)
-            {
-                foreach (Control c in Controls)
-                {
-                    c.Dispose();
-                }
-            }
+            ClearControls();
             _isDisposed = true;
         }
 
@@ -346,7 +351,7 @@ namespace UltimaXNA.UILegacy
                 return;
 
 #if DEBUG
-            // DEBUG_DrawBounds(spriteBatch);
+            // DrawBounds(spriteBatch);
 #endif
         
             foreach (Control c in Controls)
@@ -364,17 +369,9 @@ namespace UltimaXNA.UILegacy
         }
 
 #if DEBUG
-        void DEBUG_DrawBounds(SpriteBatchUI spriteBatch)
+        protected void DrawBounds(SpriteBatchUI spriteBatch, Color color)
         {
-            if (_debugTexture == null)
-            {
-                _debugTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
-                _debugTexture.SetData<Color>(new Color[] { Color.White });
-            }
-
-            int Hue = 31;
-            if (_manager.MouseOverControl == this)
-                Hue = 11;
+            int hue = Data.HuesXNA.GetWebSafeHue(color);
 
             Rectangle drawArea = _area;
             if (_owner == null)
@@ -382,10 +379,11 @@ namespace UltimaXNA.UILegacy
                 _area.X -= X;
                 _area.Y -= Y;
             }
-            spriteBatch.Draw2D(_debugTexture, new Rectangle(_area.X, _area.Y, _area.Width, 1), Hue, false, false);
-            spriteBatch.Draw2D(_debugTexture, new Rectangle(_area.X, _area.Y + _area.Height - 1, _area.Width, 1), Hue, false, false);
-            spriteBatch.Draw2D(_debugTexture, new Rectangle(_area.X, _area.Y, 1, _area.Height), Hue, false, false);
-            spriteBatch.Draw2D(_debugTexture, new Rectangle(_area.X + _area.Width - 1, _area.Y, 1, _area.Height), Hue, false, false);
+
+            spriteBatch.Draw2D(BoundsTexture, new Rectangle(X, Y, Width, 1), hue, false, false);
+            spriteBatch.Draw2D(BoundsTexture, new Rectangle(X, Y + Height - 1, Width, 1), hue, false, false);
+            spriteBatch.Draw2D(BoundsTexture, new Rectangle(X, Y, 1, Height), hue, false, false);
+            spriteBatch.Draw2D(BoundsTexture, new Rectangle(X + Width - 1, Y, 1, Height), hue, false, false);
         }
 #endif
 

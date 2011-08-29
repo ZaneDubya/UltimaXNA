@@ -138,6 +138,9 @@ namespace UltimaXNA.Graphics
         {
             bool draw = false;
 
+            if (texture == null)
+                return false;
+
             for (int i = 0; i < 4; i++) // only draws a 2 triangle tristrip.
             {
                 if (_boundingBox.Contains(vertices[i].Position) == ContainmentType.Contains)

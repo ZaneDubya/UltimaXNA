@@ -29,7 +29,7 @@ namespace UltimaXNA.Graphics
 
         public void Prepare()
         {
-            _sb.Prepare(false, false);
+            _sb.Prepare(false, true);
         }
 
         public void Flush()

@@ -191,6 +191,7 @@ namespace UltimaXNA.SceneManagement
 
         public virtual void Dispose()
         {
+            _uiService.Reset();
             _content.Dispose();
         }
     }

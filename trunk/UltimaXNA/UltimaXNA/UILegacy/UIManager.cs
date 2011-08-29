@@ -182,6 +182,7 @@ namespace UltimaXNA.UILegacy
             return gump;
         }
 
+        List<Control> _disposedControls = new List<Control>();
         public override void Update(GameTime gameTime)
         {
             foreach (Control c in _controls)
@@ -191,20 +192,17 @@ namespace UltimaXNA.UILegacy
                 c.Update(gameTime);
             }
 
+            foreach (Control c in _controls)
+                if (c.IsDisposed)
+                    _disposedControls.Add(c);
+
+            foreach (Control c in _disposedControls)
+                _controls.Remove(c);
+            _disposedControls.Clear();
+
             update_Chat(gameTime);
 
             updateInput();
-
-            List<Control> disposedControls = new List<Control>();
-            foreach (Control c in _controls)
-            {
-                if (c.IsDisposed)
-                    disposedControls.Add(c);
-            }
-            foreach (Control c in disposedControls)
-            {
-                _controls.Remove(c);
-            }
 
             base.Update(gameTime);
         }
@@ -243,10 +241,7 @@ namespace UltimaXNA.UILegacy
         public void Reset()
         {
             foreach (Control c in _controls)
-            {
                 c.Dispose();
-            }
-            _controls.Clear();
         }
 
         public void AddMessage_Chat(string text)
@@ -337,6 +332,9 @@ namespace UltimaXNA.UILegacy
             List<InputEventM> events = _input.GetMouseEvents();
             foreach (InputEventM e in events)
             {
+                if (focusedControls != null)
+                    e.Handled = true;
+
                 // MouseDown event.
                 if (e.EventType == MouseEvent.Down)
                 {
