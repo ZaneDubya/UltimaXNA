@@ -14,7 +14,7 @@ using UltimaXNA.Entities;
 
 namespace UltimaXNA.ClientVars
 {
-    class EngineVars
+    public class EngineVars
     {
         public static float TheTime
         {

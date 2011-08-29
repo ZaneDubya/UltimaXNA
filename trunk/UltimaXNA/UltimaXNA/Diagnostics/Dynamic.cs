@@ -111,9 +111,16 @@ namespace UltimaXNA.Diagnostics
             if (ci == null)
             {
                 Type type = Type.GetType(AssemblyName + "." + ClassName);
-                ci = new DynaClassInfo(type, Activator.CreateInstance(type));
+                if (type != null)
+                    ci = new DynaClassInfo(type, Activator.CreateInstance(type));
             }
             return (InvokeMethod(ci, MethodName, args));
+        }
+
+        public static void InvokeDebug(Object arg)
+        {
+            System.Object[] args = { arg };
+            InvokeMethod("../../../UltimaEdit/bin/Debug/UltimaEdit.dll", "Main", "Toggle", args);
         }
     }
 }
