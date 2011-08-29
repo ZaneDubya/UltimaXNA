@@ -65,17 +65,20 @@ namespace UltimaXNA.Input
 
         public void Update(GameTime gameTime)
         {
-            _mouseStateLastFrame = _mouseStateThisFrame;
-            _mouseStateThisFrame = getMouseState();
+            if (ClientVars.EngineVars.MouseEnabled)
+            {
+                _mouseStateLastFrame = _mouseStateThisFrame;
+                _mouseStateThisFrame = getMouseState();
+
+                // update mouse stationary business
+                if (isMouseStationarySinceLastUpdate)
+                    _mouseStationaryMS += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                else
+                    _mouseStationaryMS = 0;
+            }
 
             _keyboardStateLastFrame = _keyboardStateThisFrame;
             _keyboardStateThisFrame = getKeyState();
-
-            // update mouse stationary business
-            if (isMouseStationarySinceLastUpdate)
-                _mouseStationaryMS += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-            else
-                _mouseStationaryMS = 0;
             
             copyEvents();
         }

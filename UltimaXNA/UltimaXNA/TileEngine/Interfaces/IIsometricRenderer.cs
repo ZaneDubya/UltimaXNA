@@ -26,12 +26,12 @@ namespace UltimaXNA.TileEngine
 
         MapObject MouseOverObject { get; }
         MapObject MouseOverGround { get; }
-        Point MouseOverObjectPoint { get; }
+        Vector2 MouseOverObjectPoint { get; }
         PickTypes PickType { get; set; }
         int ObjectsRendered { get; }
         int PersonalLightning { get; set; }
         int OverallLightning { get; set; }
         float LightDirection { get; set; }
-        int GroundHighlightRadius { get; set; }
+        Vector2 RenderOffset { get; }
     }
 }

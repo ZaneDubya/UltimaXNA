@@ -20,8 +20,6 @@ namespace UltimaXNA.Network
 {
     public class PacketReader : IDisposable
     {
-        //static ILoggable log = new Logger("Static PacketReader");
-
         private static Stack<PacketReader> _pool = new Stack<PacketReader>();
 
         public static PacketReader CreateInstance(byte[] buffer, int length, bool fixedSize)

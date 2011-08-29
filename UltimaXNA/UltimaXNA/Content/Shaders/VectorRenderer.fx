@@ -41,6 +41,7 @@ VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
 float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 {
 	float4 color = input.Hue;
+	color.rgb *= color.a;
     return color;
 }
 

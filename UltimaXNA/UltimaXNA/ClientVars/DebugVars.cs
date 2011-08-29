@@ -17,9 +17,7 @@ namespace UltimaXNA.ClientVars
     {
         public static bool Flag_ShowDataRead = false;
         public static bool Flag_BreakdownDataRead = false;
-        public static bool Flag_DisplayFPS = false;
-        public static bool Flag_HighlightMouseOverObjects = false;
-        public static bool Flag_DrawWireframe = false;
+        public static bool Flag_DisplayFPS = true;
         public static bool Flag_LogKeyboardChars = false;
 
         // Debug message - I put a lot of crap in here to test values. Feel free to add or remove variables.

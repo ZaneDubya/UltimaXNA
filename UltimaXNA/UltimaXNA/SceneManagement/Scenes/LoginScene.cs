@@ -45,7 +45,6 @@ namespace UltimaXNA.SceneManagement
             ((UILegacy.ClientsideGumps.LoginGump)g).OnLogin += this.OnLogin;
             Entities.EntitiesCollection.Reset();
             ClientVars.EngineVars.Map = -1;
-            // UI.AddGump_Local(new UILegacy.ClientsideGumps.SkillsGump(), 50, 50);
         }
 
         public override void Update(GameTime gameTime)
@@ -61,14 +60,7 @@ namespace UltimaXNA.SceneManagement
 
         public void OnLogin(string server, int port, string account, string password)
         {
-            if (account == string.Empty)
-            {
-                SceneManager.CurrentScene = new DebugScene(Game);
-            }
-            else
-            {
-                SceneManager.CurrentScene = new LoggingInScene(Game, server, port, account, password);
-            }
+            SceneManager.CurrentScene = new LoggingInScene(Game, server, port, account, password);
         }
     }
 }

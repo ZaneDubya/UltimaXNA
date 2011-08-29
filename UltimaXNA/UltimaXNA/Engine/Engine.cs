@@ -77,6 +77,7 @@ namespace UltimaXNA
                 Exit();
 
             ClientVars.EngineVars.IsMinimized = isMinimized();
+            this.IsFixedTimeStep = ClientVars.EngineVars.LimitFPS;
 
             Graphics.SpriteBatch3D.ResetZ();
             _inputState.Update(gameTime);
@@ -85,6 +86,7 @@ namespace UltimaXNA
             _clientVars.Update(gameTime);
             _sceneService.Update(gameTime);
             GameState.Update(gameTime);
+
         }
 
         protected override void Draw(GameTime gameTime)
@@ -98,7 +100,7 @@ namespace UltimaXNA
                 // s.Screenshot(this, true);
             }
 
-            this.Window.Title = ClientVars.DebugVars.Flag_DisplayFPS ? string.Format("UltimaXNA FPS:{0}", ClientVars.EngineVars.FPS) : "UltimaXNA";
+            this.Window.Title = (ClientVars.DebugVars.Flag_DisplayFPS ? string.Format("UltimaXNA FPS:{0}", ClientVars.EngineVars.FPS) : "UltimaXNA") + (ClientVars.EngineVars.MouseEnabled ? "" : "<Alt-M to enable mouse>");
         }
 
         bool isMinimized()

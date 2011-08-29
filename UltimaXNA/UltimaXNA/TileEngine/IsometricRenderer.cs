@@ -35,7 +35,7 @@ namespace UltimaXNA.TileEngine
         MouseOverItem _overObject, _overGround;
         public MapObject MouseOverObject { get { return (_overObject == null) ? null : _overObject.Object; } }
         public MapObject MouseOverGround { get { return (_overGround == null) ? null : _overGround.Object; } }
-        public Point MouseOverObjectPoint { get { return (_overObject == null) ? new Point(0, 0) : _overObject.InTexturePosition; } }
+        public Vector2 MouseOverObjectPoint { get { return (_overObject == null) ? new Vector2(0, 0) : _overObject.InTexturePosition; } }
         public const PickTypes DefaultPickType = PickTypes.PickStatics | PickTypes.PickObjects;
         public PickTypes PickType { get; set; }
         #endregion
@@ -68,18 +68,12 @@ namespace UltimaXNA.TileEngine
         }
         #endregion
 
-        #region HighlightVariables
-        private int _groundHighlightRadius = 0;
-        public int GroundHighlightRadius
+        private static bool _flag_HighlightMouseOver = false;
+        public static bool Flag_HighlightMouseOver
         {
-            get { return _groundHighlightRadius; }
-            set { _groundHighlightRadius = value; }
+            get { return _flag_HighlightMouseOver; }
+            set { _flag_HighlightMouseOver = value; }
         }
-        public bool IsHighlightingGround
-        {
-            get { return (_groundHighlightRadius > 0); }
-        }
-        #endregion
 
         private static Map _map;
         public Map Map
@@ -94,9 +88,13 @@ namespace UltimaXNA.TileEngine
         public int ObjectsRendered { get; internal set; }
         public Position3D CenterPosition { get; set; }
         public static bool DrawTerrain = true;
-        
-        private static List<MapObjectDeferred> _deferredMapObjects = new List<MapObjectDeferred>();
         private int _maxItemAltitude;
+
+        Vector2 _renderOffset;
+        public Vector2 RenderOffset
+        {
+            get { return _renderOffset; }
+        }
 
         public IsometricRenderer(Game game)
         {
@@ -175,9 +173,9 @@ namespace UltimaXNA.TileEngine
             if (ClientVars.EngineVars.Map < 0)
                 return;
 
-            Vector2 renderOffset;
-            render(out renderOffset);
-            renderVectors(ref renderOffset);
+            
+            render(out _renderOffset);
+            renderVectors(_renderOffset);
         }
 
         private void render(out Vector2 renderOffset)
@@ -186,7 +184,7 @@ namespace UltimaXNA.TileEngine
             _spriteBatch.Prepare(false, false);
             MapObjectPrerendered.RenderObjects(_spriteBatch);
 
-            // ClientVars.RenderSize = 3;
+            // ClientVars.EngineVars.RenderSize = 20;
 
             int RenderBeginX = CenterPosition.X - (ClientVars.EngineVars.RenderSize / 2);
             int RenderBeginY = CenterPosition.Y - (ClientVars.EngineVars.RenderSize / 2);
@@ -243,9 +241,9 @@ namespace UltimaXNA.TileEngine
             _spriteBatch.Flush();
         }
 
-        private void renderVectors(ref Vector2 renderOffset)
+        private void renderVectors(Vector2 renderOffset)
         {
-            if (ClientVars.DebugVars.Flag_HighlightMouseOverObjects)
+            if (Flag_HighlightMouseOver)
             {
                 if (_overObject != null)
                 {
@@ -256,50 +254,14 @@ namespace UltimaXNA.TileEngine
                 }
                 if (_overGround != null)
                 {
-                    _vectors.DrawLine(_overGround.Vertices[0], _overGround.Vertices[1], Color.LimeGreen);
-                    _vectors.DrawLine(_overGround.Vertices[1], _overGround.Vertices[3], Color.LimeGreen);
-                    _vectors.DrawLine(_overGround.Vertices[3], _overGround.Vertices[2], Color.LimeGreen);
-                    _vectors.DrawLine(_overGround.Vertices[2], _overGround.Vertices[0], Color.LimeGreen);
+                    _vectors.DrawLine(_overGround.Vertices[0], _overGround.Vertices[1], Color.Teal);
+                    _vectors.DrawLine(_overGround.Vertices[1], _overGround.Vertices[3], Color.Teal);
+                    _vectors.DrawLine(_overGround.Vertices[3], _overGround.Vertices[2], Color.Teal);
+                    _vectors.DrawLine(_overGround.Vertices[2], _overGround.Vertices[0], Color.Teal);
                 }
             }
 
-            if (IsHighlightingGround && _overGround != null)
-            {
-                Vector3 originVector = new Vector3(_overGround.Object.Position.X, _overGround.Object.Position.Y, 0f);
-                BoundingSphere bounds = new BoundingSphere(originVector, GroundHighlightRadius + 0.01f);
-                ContainmentType contains;
-                Vector3 thisVector;
-                List<Vector3> tiles = new List<Vector3>(), highlighted = new List<Vector3>();
-                List<Vector3> surrounds = new List<Vector3>() { new Vector3(-1, 0, 0), new Vector3(1, 0, 0), new Vector3(0, -1, 0), new Vector3(0, 1, 0) };
-                for (int y = -GroundHighlightRadius; y <= GroundHighlightRadius; y++)
-                    for (int x = -GroundHighlightRadius; x <= GroundHighlightRadius; x++)
-                    {
-                        thisVector = originVector + new Vector3(x, y, 0);
-                        bounds.Contains(ref thisVector, out contains);
-                        if (contains == ContainmentType.Contains)
-                            tiles.Add(thisVector);
-                    }
-
-                for (int i = 0; i < tiles.Count; i++)
-                {
-                    MapObjectGround thisTile = Map.GetMapTile((int)tiles[i].X, (int)tiles[i].Y, false).GroundTile;
-                    highlighted.Add(tiles[i]);
-                    for (int j = 0; j < surrounds.Count; j++)
-                    {
-                        thisVector = tiles[i] + surrounds[j];
-                        if (tiles.Contains(thisVector) && !highlighted.Contains(thisVector))
-                        {
-                            MapObjectGround thatTile = Map.GetMapTile((int)thisVector.X, (int)thisVector.Y, false).GroundTile;
-                            Vector3 start = new Vector3(renderOffset +
-                                new Vector2((tiles[i].X - tiles[i].Y) * 22 + 22, (tiles[i].X + tiles[i].Y) * 22 - thisTile.Z * 4), 0);
-                            Vector3 end = new Vector3(renderOffset +
-                                new Vector2((thisVector.X - thisVector.Y) * 22 + 22, (thisVector.X + thisVector.Y) * 22 - thatTile.Z * 4), 0);
-                            _vectors.DrawLine(start, end, Color.White);
-                        }
-                    }
-                }
-                _vectors.Render_ViewportSpace();
-            }
+            _vectors.Render_ViewportSpace();
         }
 
         private void recalculateLightning()
