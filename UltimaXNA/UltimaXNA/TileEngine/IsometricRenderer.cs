@@ -144,7 +144,7 @@ namespace UltimaXNA.TileEngine
                         }
                         else
                         {
-                            _maxItemAltitude = underObject.Z - (underObject.Z % 20);
+                            _maxItemAltitude = (int)(underObject.Z - (underObject.Z % 20));
                         }
 
                         // If we are under a roof tile, do not make roofs transparent if we are on an edge.
@@ -196,7 +196,7 @@ namespace UltimaXNA.TileEngine
             renderOffset.X -= (RenderBeginX - RenderBeginY) * 22;
 
             renderOffset.Y = ((ClientVars.EngineVars.BackBufferHeight - (ClientVars.EngineVars.RenderSize * 44)) >> 1);
-            renderOffset.Y += (CenterPosition.Z << 2) + (int)(CenterPosition.Z_offset * 4);
+            renderOffset.Y += (CenterPosition.Z * 4) + (int)(CenterPosition.Z_offset * 4);
             renderOffset.Y -= (int)((CenterPosition.X_offset + CenterPosition.Y_offset) * 22);
             renderOffset.Y -= (RenderBeginX + RenderBeginY) * 22;
 

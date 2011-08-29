@@ -282,7 +282,7 @@ namespace UltimaXNA
                 {
                     x = (int)mouseoverObject.Position.X;
                     y = (int)mouseoverObject.Position.Y;
-                    z = mouseoverObject.Z;
+                    z = (int)mouseoverObject.Z;
                     if (mouseoverObject is MapObjectStatic)
                     {
                         ItemData data = Data.TileData.ItemData[mouseoverObject.ItemID & 0x3FFF];
@@ -297,7 +297,7 @@ namespace UltimaXNA
                 {
                     x = (int)mouseoverObject.Position.X;
                     y = (int)mouseoverObject.Position.Y;
-                    z = mouseoverObject.Z;
+                    z = (int)mouseoverObject.Z;
                 }
                 else
                 {

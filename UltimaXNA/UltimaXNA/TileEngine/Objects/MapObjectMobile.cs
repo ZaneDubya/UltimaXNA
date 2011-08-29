@@ -150,12 +150,12 @@ namespace UltimaXNA.TileEngine
             if (_draw_flip)
             {
                 _draw_X = _mobile_drawCenterX - 22 + (int)((Position.X_offset - Position.Y_offset) * 22);
-                _draw_Y = _mobile_drawCenterY + (int)(Position.Z_offset * 4) + (Z << 2) + _draw_height - 22 - (int)((Position.X_offset + Position.Y_offset) * 22);
+                _draw_Y = _mobile_drawCenterY + (int)((Position.Z_offset + Z) * 4) + _draw_height - 22 - (int)((Position.X_offset + Position.Y_offset) * 22);
             }
             else
             {
                 _draw_X = _mobile_drawCenterX - 22 - (int)((Position.X_offset - Position.Y_offset) * 22);
-                _draw_Y = _mobile_drawCenterY + (int)(Position.Z_offset * 4) + (Z << 2) + _draw_height - 22 - (int)((Position.X_offset + Position.Y_offset) * 22);
+                _draw_Y = _mobile_drawCenterY + (int)((Position.Z_offset + Z) * 4) + _draw_height - 22 - (int)((Position.X_offset + Position.Y_offset) * 22);
             }
 
             if (ClientVars.EngineVars.LastTarget != null && ClientVars.EngineVars.LastTarget == OwnerSerial)

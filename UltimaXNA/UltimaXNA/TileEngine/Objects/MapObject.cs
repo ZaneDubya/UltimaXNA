@@ -30,7 +30,7 @@ namespace UltimaXNA.TileEngine
             }
         }
         public Entity OwnerEntity = null;
-        public int Z = 0;
+        public float Z = 0;
         public int ItemID = 0;
 
         public int SortZ = 0;           // This is the default sort value of the object.
@@ -113,7 +113,7 @@ namespace UltimaXNA.TileEngine
             
             if (_draw_IsometricOverlap)
             {
-                drawIsometricOverlap(sb, vertexBuffer, new Vector2(drawPosition.X, drawPosition.Y - (Z << 2)));
+                drawIsometricOverlap(sb, vertexBuffer, new Vector2(drawPosition.X, drawPosition.Y - (Z * 4)));
             }
             
             if ((pickType & _pickType) == _pickType)
