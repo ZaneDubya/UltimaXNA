@@ -78,7 +78,10 @@ namespace UltimaXNA.ClientVars
                             }
                         }
                     }
-                    else { System.Object[] args = { Game }; Diagnostics.Dynamic.InvokeMethod("_Debug", "_Main", "Toggle", args); }
+                    else
+                    {
+                        Diagnostics.Dynamic.InvokeDebug(Game);
+                    }
                     e.Handled = true;
                 }
 

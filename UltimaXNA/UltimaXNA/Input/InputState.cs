@@ -175,7 +175,7 @@ namespace UltimaXNA.Input
             List<InputEventM> events = GetMouseEvents();
             foreach (InputEventM e in events)
             {
-                if (e.EventType == type)
+                if (e.EventType == type && e.Button == mb)
                 {
                     e.Handled = true;
                     return true;
