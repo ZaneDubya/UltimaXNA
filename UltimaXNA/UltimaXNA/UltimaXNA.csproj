@@ -448,6 +448,7 @@
     <Compile Include="Data\Hues.cs" />
     <Compile Include="Data\Verdata.cs" />
     <Compile Include="Engine\Utility.cs" />
+    <Compile Include="_Debug\_Main.cs" />
   </ItemGroup>
   <ItemGroup>
     <NestedContentProject Include="Content\Content.contentproj">

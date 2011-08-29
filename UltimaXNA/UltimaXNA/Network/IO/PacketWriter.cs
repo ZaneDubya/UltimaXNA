@@ -20,8 +20,6 @@ namespace UltimaXNA.Network
 {
     public class PacketWriter : IDisposable
     {
-        //static ILoggable log = new Logger("Static PacketWriter");
-
         private static Stack<PacketWriter> _pool = new Stack<PacketWriter>();
 
         public static PacketWriter CreateInstance()
