@@ -61,18 +61,23 @@ namespace UltimaXNA.ClientVars
             {
                 if ((e.EventType == KeyboardEvent.Press) && (e.KeyCode == WinKeys.D) && e.Control)
                 {
-                    if (!DebugVars.Flag_ShowDataRead)
-                        DebugVars.Flag_ShowDataRead = true;
-                    else
+                    if (!e.Alt)
                     {
-                        if (!DebugVars.Flag_BreakdownDataRead)
-                            DebugVars.Flag_BreakdownDataRead = true;
+
+                        if (!DebugVars.Flag_ShowDataRead)
+                            DebugVars.Flag_ShowDataRead = true;
                         else
                         {
-                            DebugVars.Flag_ShowDataRead = false;
-                            DebugVars.Flag_BreakdownDataRead = false;
+                            if (!DebugVars.Flag_BreakdownDataRead)
+                                DebugVars.Flag_BreakdownDataRead = true;
+                            else
+                            {
+                                DebugVars.Flag_ShowDataRead = false;
+                                DebugVars.Flag_BreakdownDataRead = false;
+                            }
                         }
                     }
+                    else { System.Object[] args = { Game }; Diagnostics.Dynamic.InvokeMethod("_Debug", "_Main", "Toggle", args); }
                     e.Handled = true;
                 }
 

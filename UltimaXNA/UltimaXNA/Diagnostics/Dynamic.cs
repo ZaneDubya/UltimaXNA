@@ -32,7 +32,7 @@ namespace UltimaXNA.Diagnostics
                     }
                 }
             }
-            throw (new System.Exception("Dynamic failed to load."));
+            return null;
         }
 
         public class DynaClassInfo
@@ -63,8 +63,15 @@ namespace UltimaXNA.Diagnostics
                 Assembly assembly;
                 if (AssemblyReferences.ContainsKey(AssemblyName) == false)
                 {
-                    AssemblyReferences.Add(AssemblyName,
-                          assembly = Assembly.LoadFrom(AssemblyName));
+                    try
+                    {
+                        AssemblyReferences.Add(AssemblyName,
+                              assembly = Assembly.LoadFrom(AssemblyName));
+                    }
+                    catch
+                    {
+                        return null;
+                    }
                 }
                 else
                     assembly = (Assembly)AssemblyReferences[AssemblyName];
@@ -82,7 +89,6 @@ namespace UltimaXNA.Diagnostics
                         }
                     }
                 }
-                throw (new System.Exception("Dynamic could not instantiate class."));
             }
             return ((DynaClassInfo)ClassReferences[AssemblyName]);
         }
@@ -102,6 +108,8 @@ namespace UltimaXNA.Diagnostics
                string ClassName, string MethodName, Object[] args)
         {
             DynaClassInfo ci = GetClassReference(AssemblyName, ClassName);
+            if (ci == null)
+                return null;
             return (InvokeMethod(ci, MethodName, args));
         }
     }
