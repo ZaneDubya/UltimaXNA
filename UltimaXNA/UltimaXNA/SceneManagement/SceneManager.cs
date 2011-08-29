@@ -102,10 +102,7 @@ namespace UltimaXNA.SceneManagement
         void uiRequestsLogout()
         {
             if (!(_currentScene is LoginScene))
-            {
                 CurrentScene = new LoginScene(Game);
-                _ui.Reset();
-            }
         }
     }
 }

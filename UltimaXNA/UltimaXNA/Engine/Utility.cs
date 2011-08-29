@@ -558,6 +558,11 @@ namespace UltimaXNA
                 return true;
         }
 
+        public static void ToogleBoolean(ref bool b)
+        {
+            b = !b;
+        }
+
         public static int IPAddress
         {
             get

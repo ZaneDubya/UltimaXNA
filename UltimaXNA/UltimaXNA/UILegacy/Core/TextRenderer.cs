@@ -145,26 +145,7 @@ namespace UltimaXNA.UILegacy
 
         public void Draw(SpriteBatchUI sb, Point2D position)
         {
-            checkRender(sb.GraphicsDevice);
-            sb.Draw2D(_texture, position, hueButNotIfHTML, false, _hueTransparent);
-
-            foreach (HTMLRegion r in _href.Regions)
-            {
-                if (r.Index == _activeHREF)
-                {
-                    if (_activeHREF_usedownhue)
-                        sb.Draw2D(_texture, new Point2D(position.X + r.Area.X, position.Y + r.Area.Y),
-                            r.Area, r.HREFAttributes.DownHue, false, false);
-                    else
-                        sb.Draw2D(_texture, new Point2D(position.X + r.Area.X, position.Y + r.Area.Y),
-                            r.Area, r.HREFAttributes.OverHue, false, false);
-                }
-                else
-                {
-                    sb.Draw2D(_texture, new Point2D(position.X + r.Area.X, position.Y + r.Area.Y),
-                        r.Area, r.HREFAttributes.UpHue, false, false);
-                }
-            }
+            Draw(sb, new Rectangle(position.X, position.Y, Width, Height), 0, 0);
         }
 
         public void Draw(SpriteBatchUI sb, Rectangle destRectangle, int xScroll, int yScroll)

@@ -64,7 +64,6 @@ namespace UltimaXNA.SceneManagement
             base.Dispose();
             UltimaClient.Disconnect();
             ClientVars.EngineVars.InWorld = false;
-            UI.Reset();
         }
 
         public override void Update(GameTime gameTime)

@@ -17,7 +17,7 @@ using UltimaXNA.UILegacy.HTML;
 
 namespace UltimaXNA.UILegacy.Gumplings
 {
-    class HtmlGump : Control
+    public class HtmlGump : Control
     {
         public int ScrollX = 0, ScrollY = 0;
         ScrollBar _scrollbar;

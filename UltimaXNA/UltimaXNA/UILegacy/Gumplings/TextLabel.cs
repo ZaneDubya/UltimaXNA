@@ -15,7 +15,7 @@ using UltimaXNA.Graphics;
 
 namespace UltimaXNA.UILegacy.Gumplings
 {
-    class TextLabel : Control
+    public class TextLabel : Control
     {
         public int Hue = 0;
         public string Text = string.Empty;

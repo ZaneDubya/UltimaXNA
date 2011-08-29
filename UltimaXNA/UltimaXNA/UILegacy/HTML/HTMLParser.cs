@@ -86,9 +86,12 @@ namespace UltimaXNA.UILegacy.HTML
                     else
                     {
                         // this is a tag. interpret the tag and edit the openTags list.
+                        bool readParams = true;
                         bool isClosing = chunk.bClosure;
                         switch (chunk.sTag)
                         {
+                            case "font":
+                                break;
                             case "br":
                                 addCharacter('\n', outAtoms, openTags, currentColor, openHREFs);
                                 break;
@@ -142,6 +145,7 @@ namespace UltimaXNA.UILegacy.HTML
                                 }
                                 break;
                             default:
+                                readParams = false;
                                 for (int i = 0; i < chunk.iChunkLength; i++)
                                 {
                                     addCharacter(char.Parse(inText.Substring(i + chunk.iChunkOffset, 1)), outAtoms, openTags, currentColor, openHREFs);
@@ -149,115 +153,119 @@ namespace UltimaXNA.UILegacy.HTML
                                 break;
                         }
 
-                        foreach (DictionaryEntry param in chunk.oParams)
+                        if (readParams)
                         {
-                            string key = param.Key.ToString();
-                            string value = param.Value.ToString();
-                            if (value.EndsWith("/"))
-                                value = value.Substring(0, value.Length - 1);
-
-                            switch (key)
+                            foreach (DictionaryEntry param in chunk.oParams)
                             {
-                                case "href":
-                                    if (chunk.sTag == "a")
-                                    {
-                                        openHREFs[openHREFs.Count - 1].HREF = value;
-                                    }
-                                    else
-                                    {
-                                        Logger.Warn("href paramater used outside of an 'a' tag link. href is ignored in this case.");
-                                    }
-                                    break;
-                                case "color":
-                                case "hovercolor":
-                                case "activecolor":
-                                    // get the color!
-                                    string color = value;
-                                    if (color[0] == '#')
-                                        color = color.Substring(1);
-                                    if (color.Length == 3 || color.Length == 6)
-                                    {
-                                        Color c = Utility.ColorFromHexString(color);
-                                        if (key == "color")
-                                            currentColor = c;
+                                string key = param.Key.ToString();
+                                string value = param.Value.ToString();
+                                if (value.EndsWith("/"))
+                                    value = value.Substring(0, value.Length - 1);
+
+                                switch (key)
+                                {
+                                    case "href":
                                         if (chunk.sTag == "a")
                                         {
-                                            switch (key)
+                                            openHREFs[openHREFs.Count - 1].HREF = value;
+                                        }
+                                        else
+                                        {
+                                            Logger.Warn("href paramater used outside of an 'a' tag link. href is ignored in this case.");
+                                        }
+                                        break;
+                                    case "color":
+                                    case "hovercolor":
+                                    case "activecolor":
+                                        // get the color!
+                                        string color = value;
+                                        if (color[0] == '#')
+                                            color = color.Substring(1);
+                                        if (color.Length == 3 || color.Length == 6)
+                                        {
+                                            Color c = Utility.ColorFromHexString(color);
+                                            if (key == "color")
+                                                currentColor = c;
+                                            if (chunk.sTag == "a")
                                             {
-                                                case "color":
-                                                    openHREFs[openHREFs.Count - 1].UpHue = Data.HuesXNA.GetWebSafeHue(c);
-                                                    break;
-                                                case "hovercolor":
-                                                    openHREFs[openHREFs.Count - 1].OverHue = Data.HuesXNA.GetWebSafeHue(c);
-                                                    break;
-                                                case "activecolor":
-                                                    openHREFs[openHREFs.Count - 1].DownHue = Data.HuesXNA.GetWebSafeHue(c);
-                                                    break;
+                                                switch (key)
+                                                {
+                                                    case "color":
+                                                        openHREFs[openHREFs.Count - 1].UpHue = Data.HuesXNA.GetWebSafeHue(c);
+                                                        break;
+                                                    case "hovercolor":
+                                                        openHREFs[openHREFs.Count - 1].OverHue = Data.HuesXNA.GetWebSafeHue(c);
+                                                        break;
+                                                    case "activecolor":
+                                                        openHREFs[openHREFs.Count - 1].DownHue = Data.HuesXNA.GetWebSafeHue(c);
+                                                        break;
+                                                }
                                             }
                                         }
-                                    }
-                                    else
-                                        Logger.Warn("Improperly formatted color:" + color);
-                                    break;
-                                case "text-decoration":
-                                    switch (value)
-                                    {
-                                        case "none":
-                                            if (chunk.sTag == "a")
-                                                openHREFs[openHREFs.Count - 1].Underline = false;
-                                            break;
-                                        default:
-                                            Logger.Warn(string.Format("Unknown text-decoration:{0}", value));
-                                            break;
-                                    }
-                                    break;
-                                case "src":
-                                case "hoversrc":
-                                case "activesrc":
-                                    switch (chunk.sTag)
-                                    {
-                                        case "gumpimg":
-                                            if (key == "src")
-                                                ((HTMLParser_AtomImageGump)outAtoms[outAtoms.Count - 1]).Value = int.Parse(value);
-                                            else if (key == "hoversrc")
-                                                ((HTMLParser_AtomImageGump)outAtoms[outAtoms.Count - 1]).ValueOver = int.Parse(value);
-                                            else if (key == "activesrc")
-                                                ((HTMLParser_AtomImageGump)outAtoms[outAtoms.Count - 1]).ValueDown = int.Parse(value);
-                                            break;
-                                        default:
-                                            Logger.Warn("src param encountered within " + chunk.sTag + " which does not use this param.");
-                                            break;
-                                    }
-                                    break;
-                                case "width":
-                                    switch (chunk.sTag)
-                                    {
-                                        case "gumpimg":
-                                        case "span":
-                                            outAtoms[outAtoms.Count - 1].Width = int.Parse(value);
-                                            break;
-                                        default:
-                                            Logger.Warn("width param encountered within " + chunk.sTag + " which does not use this param.");
-                                            break;
-                                    }
-                                    break;
-                                case "height":
-                                    switch (chunk.sTag)
-                                    {
-                                        case "gumpimg":
-                                        case "span":
-                                            outAtoms[outAtoms.Count - 1].Width = int.Parse(value);
-                                            break;
-                                        default:
-                                            Logger.Warn("height param encountered within " + chunk.sTag + " which does not use this param.");
-                                            break;
-                                    }
-                                    break;
-                                default:
-                                    Logger.Warn(string.Format("Unknown parameter:{0}", key));
-                                    break;
+                                        else
+                                            Logger.Warn("Improperly formatted color:" + color);
+                                        break;
+                                    case "text-decoration":
+                                        switch (value)
+                                        {
+                                            case "none":
+                                                if (chunk.sTag == "a")
+                                                    openHREFs[openHREFs.Count - 1].Underline = false;
+                                                break;
+                                            default:
+                                                Logger.Warn(string.Format("Unknown text-decoration:{0}", value));
+                                                break;
+                                        }
+                                        break;
+                                    case "src":
+                                    case "hoversrc":
+                                    case "activesrc":
+                                        switch (chunk.sTag)
+                                        {
+                                            case "gumpimg":
+                                                if (key == "src")
+                                                    ((HTMLParser_AtomImageGump)outAtoms[outAtoms.Count - 1]).Value = int.Parse(value);
+                                                else if (key == "hoversrc")
+                                                    ((HTMLParser_AtomImageGump)outAtoms[outAtoms.Count - 1]).ValueOver = int.Parse(value);
+                                                else if (key == "activesrc")
+                                                    ((HTMLParser_AtomImageGump)outAtoms[outAtoms.Count - 1]).ValueDown = int.Parse(value);
+                                                break;
+                                            default:
+                                                Logger.Warn("src param encountered within " + chunk.sTag + " which does not use this param.");
+                                                break;
+                                        }
+                                        break;
+                                    case "width":
+                                        switch (chunk.sTag)
+                                        {
+                                            case "gumpimg":
+                                            case "span":
+                                                outAtoms[outAtoms.Count - 1].Width = int.Parse(value);
+                                                break;
+                                            default:
+                                                Logger.Warn("width param encountered within " + chunk.sTag + " which does not use this param.");
+                                                break;
+                                        }
+                                        break;
+                                    case "height":
+                                        switch (chunk.sTag)
+                                        {
+                                            case "gumpimg":
+                                            case "span":
+                                                outAtoms[outAtoms.Count - 1].Width = int.Parse(value);
+                                                break;
+                                            default:
+                                                Logger.Warn("height param encountered within " + chunk.sTag + " which does not use this param.");
+                                                break;
+                                        }
+                                        break;
+                                    default:
+                                        Logger.Warn(string.Format("Unknown parameter:{0}", key));
+                                        break;
+                                }
                             }
                         }
+
                     }
                 }
             }
