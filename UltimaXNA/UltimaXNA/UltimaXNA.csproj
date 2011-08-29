@@ -331,7 +331,6 @@
     <Compile Include="Input\Core\WndProc.cs" />
     <Compile Include="SceneManagement\Scenes\CharacterListScene.cs" />
     <Compile Include="SceneManagement\Scenes\CreateCharacterScene.cs" />
-    <Compile Include="SceneManagement\Scenes\DebugScene.cs" />
     <Compile Include="SceneManagement\Scenes\LoggingInScene.cs" />
     <Compile Include="SceneManagement\Scenes\SelectServerScene.cs" />
     <Compile Include="Support\WebSafeHues.cs" />
@@ -448,7 +447,6 @@
     <Compile Include="Data\Hues.cs" />
     <Compile Include="Data\Verdata.cs" />
     <Compile Include="Engine\Utility.cs" />
-    <Compile Include="_Debug\_Main.cs" />
   </ItemGroup>
   <ItemGroup>
     <NestedContentProject Include="Content\Content.contentproj">
