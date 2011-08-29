@@ -262,6 +262,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Data\TileMatrixRaw.cs" />
+    <Compile Include="Diagnostics\Dynamic.cs" />
     <Compile Include="Support\GumpExporter.cs" />
     <Compile Include="TileEngine\Objects\MapObjectDynamic.cs" />
     <Compile Include="TileEngine\Objects\MapObjectPrerendered.cs" />
