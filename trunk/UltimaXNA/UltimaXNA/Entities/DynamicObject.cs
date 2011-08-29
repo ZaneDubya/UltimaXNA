@@ -110,7 +110,8 @@ namespace UltimaXNA.Entities
         internal override void Draw(MapTile tile, Position3D position)
         {
             tile.FlushObjectsBySerial(Serial);
-            tile.AddMapObject(new TileEngine.MapObjectDynamic(this, position, _baseItemID, (int)(_frameSequence * _frameLength), _hue, _useGumpArtInsteadOfTileArt));
+            int hue = _isHued ? _hue : 0;
+            tile.AddMapObject(new TileEngine.MapObjectDynamic(this, position, _baseItemID, (int)(_frameSequence * _frameLength), hue, _useGumpArtInsteadOfTileArt));
         }
 
         public void Load_FromPacket(GraphicEffectPacket packet)

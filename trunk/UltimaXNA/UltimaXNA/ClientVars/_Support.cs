@@ -59,6 +59,7 @@ namespace UltimaXNA.ClientVars
             List<InputEventKB> keyEvents = _Input.GetKeyboardEvents();
             foreach (InputEventKB e in keyEvents)
             {
+                // debug flags
                 if ((e.EventType == KeyboardEvent.Press) && (e.KeyCode == WinKeys.D) && e.Control)
                 {
                     if (!e.Alt)
@@ -81,9 +82,20 @@ namespace UltimaXNA.ClientVars
                     e.Handled = true;
                 }
 
+                // fps limiting
                 if ((e.EventType == KeyboardEvent.Press) && (e.KeyCode == WinKeys.F) && e.Alt)
                 {
-                    DebugVars.Flag_DisplayFPS = Utility.ToggleBoolean(DebugVars.Flag_DisplayFPS);
+                    if (!e.Control)
+                        DebugVars.Flag_DisplayFPS = Utility.ToggleBoolean(DebugVars.Flag_DisplayFPS);
+                    else
+                        EngineVars.LimitFPS = Utility.ToggleBoolean(EngineVars.LimitFPS);
+                    e.Handled = true;
+                }
+
+                // mouse enabling
+                if ((e.EventType == KeyboardEvent.Press) && (e.KeyCode == WinKeys.M) && e.Alt)
+                {
+                    EngineVars.MouseEnabled = Utility.ToggleBoolean(EngineVars.MouseEnabled);
                     e.Handled = true;
                 }
             }

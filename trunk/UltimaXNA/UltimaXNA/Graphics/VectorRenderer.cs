@@ -158,12 +158,11 @@ namespace UltimaXNA.Graphics
             }
         }
 
-        public void DrawCircle(Vector2 origin, float radius, float z, Color color)
+        public void DrawCircle(Vector2 origin, float radius, float z, Color color, int numVectors)
         {
-            int numPoints = 20;
-            float radiansPerPoint = (Utility.Pi * 2) / numPoints;
-            Vector3[] points = new Vector3[numPoints];
-            for (int i = 0; i < numPoints; i++)
+            float radiansPerPoint = (Utility.Pi * 2) / numVectors;
+            Vector3[] points = new Vector3[numVectors];
+            for (int i = 0; i < numVectors; i++)
             {
                 points[i] = new Vector3(
                     origin.X + (float)Math.Cos(radiansPerPoint * i) * radius,
@@ -171,6 +170,11 @@ namespace UltimaXNA.Graphics
                     z);
             }
             DrawPolygon(new VectorPolygon(points, true), color);
+        }
+
+        public void DrawCircle(Vector2 origin, float radius, float z, Color color)
+        {
+            DrawCircle(origin, radius, z, color, 20);
         }
 
         public void Render_WorldSpace(Vector2 rotation, float zoom)

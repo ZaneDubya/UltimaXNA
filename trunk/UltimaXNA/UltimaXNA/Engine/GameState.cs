@@ -46,7 +46,7 @@ namespace UltimaXNA
         const int _TimeHoveringBeforeTipMS = 1000;
 
         // make sure we drag the correct object variables
-        static Point _dragOffset;
+        static Vector2 _dragOffset;
         static MapObject _dragObject;
 
         // Are we asking for a target?
@@ -164,7 +164,7 @@ namespace UltimaXNA
         static void onInteractButton(InputEventM e)
         {
             MapObject overObject = (e.EventType == MouseEvent.DragBegin) ? _dragObject : _world.MouseOverObject;
-            Point overObjectOffset = (e.EventType == MouseEvent.DragBegin) ? _dragOffset : _world.MouseOverObjectPoint;
+            Vector2 overObjectOffset = (e.EventType == MouseEvent.DragBegin) ? _dragOffset : _world.MouseOverObjectPoint;
 
             if (e.EventType == MouseEvent.Down)
             {
@@ -216,7 +216,7 @@ namespace UltimaXNA
                             Interaction.DoubleClick(entity);
                             break;
                         case MouseEvent.DragBegin:
-                            Interaction.PickUpItem(entity, overObjectOffset.X, overObjectOffset.Y);
+                            Interaction.PickUpItem(entity, (int)overObjectOffset.X, (int)overObjectOffset.Y);
                             break;
                     }
                 }

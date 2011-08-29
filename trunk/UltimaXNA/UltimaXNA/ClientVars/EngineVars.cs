@@ -74,9 +74,11 @@ namespace UltimaXNA.ClientVars
             get { return _desiredFPS; }
             set { _desiredFPS = value; }
         }
+        public static bool LimitFPS = true;
 
         public static Input.MouseButton MouseButton_Interact = Input.MouseButton.Left;
         public static Input.MouseButton MouseButton_Move = Input.MouseButton.Right;
+        public static bool MouseEnabled = true;
 
         static int _map = -1;
         public static int Map { get { return _map; } set { _map = value; } }

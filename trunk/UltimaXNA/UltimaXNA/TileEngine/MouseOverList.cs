@@ -94,9 +94,18 @@ namespace UltimaXNA.TileEngine
             if (v.Length != 4)
                 return false;
 
-            if (v[0].Position.Y > _mousePosition.Y)
+            float high = -50000, low = 50000;
+            for (int i = 0; i < 4; i++)
+            {
+                if (v[i].Position.Y > high)
+                    high = v[i].Position.Y;
+                if (v[i].Position.Y < low)
+                    low = v[i].Position.Y;
+            }
+
+            if (high < _mousePosition.Y)
                 return false;
-            if (v[3].Position.Y < _mousePosition.Y)
+            if (low > _mousePosition.Y)
                 return false;
             if (v[1].Position.X < _mousePosition.X)
                 return false;
@@ -178,7 +187,7 @@ namespace UltimaXNA.TileEngine
         public Vector3[] Vertices;
         public Texture2D Texture;
         public Vector3 Position;
-        public Point InTexturePosition;
+        public Vector2 InTexturePosition;
         public MapObject Object;
 
         internal MouseOverItem(Texture2D nTexture, Vector3 nPosition, MapObject nObject)
@@ -193,6 +202,7 @@ namespace UltimaXNA.TileEngine
             if (Object.GetType() == typeof(MapObjectGround))
             {
                 // we already know we are within this polygon
+                InTexturePosition = new Vector2(mousePosition.X - Position.X, mousePosition.Y - Position.Y);
                 return true;
             }
             else
@@ -204,7 +214,7 @@ namespace UltimaXNA.TileEngine
                     Texture.GetData<uint>(0, pRect, iPixel, 0, 1);
                     if (iPixel[0] != 0)
                     {
-                        InTexturePosition = new Point(pRect.X, pRect.Y);
+                        InTexturePosition = new Vector2(pRect.X, pRect.Y);
                         return true;
                     }
                 }

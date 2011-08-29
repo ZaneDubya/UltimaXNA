@@ -105,6 +105,8 @@ namespace UltimaXNA.TileEngine
         public MapTile GetMapTile(int x, int y, bool load)
         {
             int idx = (x % _MapTilesInMemory) + (y % _MapTilesInMemory) * _MapTilesInMemory;
+            if (idx < 0)
+                return null;
             MapTile t = _tiles[idx];
             if (t == null || (x != t.X) || (y != t.Y))
             {
