@@ -65,6 +65,7 @@ namespace UltimaXNA.TileEngine
 
         internal override bool Draw(SpriteBatch3D sb, Vector3 drawPosition, MouseOverList molist, PickTypes pickType, int maxAlt)
         {
+            _draw_Y = (int)(Z * 4) + _draw_height - 44;
             if (_noDraw)
                 return false;
             return base.Draw(sb, drawPosition, molist, pickType, maxAlt);
