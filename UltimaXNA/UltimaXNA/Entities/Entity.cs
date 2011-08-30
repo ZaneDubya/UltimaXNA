@@ -111,7 +111,6 @@ namespace UltimaXNA.Entities
         internal void drawOverheads(TileEngine.MapTile tile, Position3D position)
         {
             // base entities do not draw, but they can have overheads, so we draw those.
-            Z += 20;
             foreach (KeyValuePair<int, Overhead> overhead in _overheads)
             {
                 if (!overhead.Value.IsDisposed)
