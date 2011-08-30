@@ -19,24 +19,33 @@ namespace UltimaXNA.TileEngine
 {
     public abstract class MapObject
     {
-        private Position3D _position;
+        private Position3D __position;
         public Position3D Position
         {
-            get { return _position; }
+            get { return __position; }
             set
             {
-                _position = value;
-                Z = SortZ = (int)_position.Tile_V3.Z;
+                __position = value;
+                Z = SortZ = (int)__position.Tile_V3.Z;
             }
         }
-        public Entity OwnerEntity = null;
-        public float Z = 0;
-        public int ItemID = 0;
 
+        private float _z = 0;
+        public float Z
+        {
+            get { return _z; }
+            set
+            {
+                _z = value;
+                SortZ = (int)_z;
+            }
+        }
         public int SortZ = 0;           // This is the default sort value of the object.
         public int SortThreshold = 0;   // This is a sort value which should be set based on the type of object.
         public int SortTiebreaker = 0;  // This is a sort value which is used to sort layers of a single object.
 
+        public int ItemID = 0;
+        public Entity OwnerEntity = null;
         public Serial OwnerSerial
         {
             get { return (OwnerEntity == null) ? (Serial)unchecked((int)0) : OwnerEntity.Serial; }
@@ -163,8 +172,8 @@ namespace UltimaXNA.TileEngine
             
             if (overlapToHere.Y > (overlapCurrent.Y - 22))
             {
-                tileX = _position.X;
-                tileY = _position.Y + (int)Math.Ceiling((overlapToHere.Y - (overlapCurrent.Y - 22)) / 22f);
+                tileX = Position.X;
+                tileY = Position.Y + (int)Math.Ceiling((overlapToHere.Y - (overlapCurrent.Y - 22)) / 22f);
 
                 // Get the tile associated with this (x, y) position. If the tile is not loaded, don't add a deferred object
                 // (it'll be offscreen so it doesn't matter).
@@ -217,8 +226,8 @@ namespace UltimaXNA.TileEngine
             }
 
             // reset the tile position for the upcoming loop.
-            tileX = _position.X;
-            tileY = _position.Y;
+            tileX = Position.X;
+            tileY = Position.Y;
 
             while (true)
             {
@@ -297,7 +306,7 @@ namespace UltimaXNA.TileEngine
 
         public override string ToString()
         {
-            return string.Format("   {0}", Position);
+            return string.Format("   Z:{1} <{0}>", Position, Z);
         }
     }
 }

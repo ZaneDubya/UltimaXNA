@@ -85,10 +85,10 @@ namespace UltimaXNA.TileEngine
         public int GetAverageZ(int x, int y, ref int low, ref int top)
         {
             return GetAverageZ(
-                GetTileZ(x, y),
-                GetTileZ(x, y + 1),
-                GetTileZ(x + 1, y),
-                GetTileZ(x + 1, y + 1),
+                (int)GetTileZ(x, y),
+                (int)GetTileZ(x, y + 1),
+                (int)GetTileZ(x + 1, y),
+                (int)GetTileZ(x + 1, y + 1),
                 ref low, ref top);
         }
 
@@ -203,11 +203,11 @@ namespace UltimaXNA.TileEngine
                 _numCellsLoadedThisFrame = 0;
         }
 
-        public int GetTileZ(int x, int y)
+        public float GetTileZ(int x, int y)
         {
             MapTile t = GetMapTile(x, y, false);
             if (t != null)
-                return (int)t.GroundTile.Z;
+                return t.GroundTile.Z;
             else
             {
                 int tileID, alt;

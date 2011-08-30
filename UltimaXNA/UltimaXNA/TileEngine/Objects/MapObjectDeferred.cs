@@ -25,7 +25,7 @@ namespace UltimaXNA.TileEngine
         private Texture2D _texture;
         public VertexPositionNormalTextureHue[] Vertices;
         public MapObjectDeferred(Texture2D texture, MapObject parent)
-            : base(new Position3D(parent.Position.X, parent.Position.Y, parent.Position.Z))
+            : base(new Position3D(parent.Position.X, parent.Position.Y, (int)parent.Z))
         {
             _texture = texture;
             Vertices = getVerticesFromBuffer();

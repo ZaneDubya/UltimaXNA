@@ -378,14 +378,6 @@ namespace UltimaXNA
                     if ((e.EventType == KeyboardEvent.Press) && e.KeyCode == WinKeys.Escape)
                         mouseTargetingCancel();
 
-                // DEBUG: change direction of world light:
-                if (e.EventType == KeyboardEvent.Press && e.KeyCode == WinKeys.I)
-                {
-                    float _LightRadians = _world.LightDirection;
-                    _LightRadians += .01f;
-                    _world.LightDirection = _LightRadians;
-                }
-
                 // Toggle for war mode:
                 if (e.EventType == KeyboardEvent.Down && e.KeyCode == WinKeys.Tab)
                 {

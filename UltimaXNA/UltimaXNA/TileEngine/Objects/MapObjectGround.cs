@@ -118,7 +118,7 @@ namespace UltimaXNA.TileEngine
             int x = (int)Position.X;
             int y = (int)Position.Y;
 
-            int[] zValues = new int[16];
+            float[] zValues = new float[16];
 
             for (int iy = 0; iy < 4; iy++)
                 for (int ix = 0; ix < 4; ix++)
@@ -133,7 +133,7 @@ namespace UltimaXNA.TileEngine
             if (!isFlat)
             {
                 int low = 0, high = 0, sort = 0;
-                sort = m.GetAverageZ((int)Z, _surroundingTiles.South, _surroundingTiles.East, _surroundingTiles.Down, ref low, ref high);
+                sort = m.GetAverageZ((int)Z, (int)_surroundingTiles.South, (int)_surroundingTiles.East, (int)_surroundingTiles.Down, ref low, ref high);
                 if (sort != SortZ)
                 {
                     SortZ = sort;
@@ -158,9 +158,9 @@ namespace UltimaXNA.TileEngine
         private void updateVertexBuffer()
         {
             _vertex0_yOffset = new Vector3(22, -(Z * 4), 0);
-            _vertex1_yOffset = new Vector3(44, 22 - (_surroundingTiles.East << 2), 0);
-            _vertex2_yOffset = new Vector3(0, 22 - (_surroundingTiles.South << 2), 0);
-            _vertex3_yOffset = new Vector3(22, 44 - (_surroundingTiles.Down << 2), 0);
+            _vertex1_yOffset = new Vector3(44, 22 - (_surroundingTiles.East * 4), 0);
+            _vertex2_yOffset = new Vector3(0, 22 - (_surroundingTiles.South * 4), 0);
+            _vertex3_yOffset = new Vector3(22, 44 - (_surroundingTiles.Down * 4), 0);
 
             _vertexBufferAlternate[0].Normal = _normals[0];
             _vertexBufferAlternate[1].Normal = _normals[1];
@@ -177,8 +177,8 @@ namespace UltimaXNA.TileEngine
         }
 
         private void calculateNormals(
-            int NorthWest0, int NorthWest2, int NorthEast0, int NorthEast1,
-            int SouthWest2, int SouthWest3, int SouthEast1, int SouthEast3)
+            float NorthWest0, float NorthWest2, float NorthEast0, float NorthEast1,
+            float SouthWest2, float SouthWest3, float SouthEast1, float SouthEast3)
         {
             _normals[0] = calculateNormal(
                 NorthWest0, _surroundingTiles.East,
@@ -212,15 +212,15 @@ namespace UltimaXNA.TileEngine
 
     public class Surroundings
     {
-        public int Down;
-        public int East;
-        public int South;
+        public float Down;
+        public float East;
+        public float South;
 
-        public Surroundings(int nDown, int nEast, int nSouth)
+        public Surroundings(float down, float east, float south)
         {
-            Down = nDown;
-            East = nEast;
-            South = nSouth;
+            Down = down;
+            East = east;
+            South = south;
         }
 
         public bool IsFlat
