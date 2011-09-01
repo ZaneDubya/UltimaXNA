@@ -110,49 +110,58 @@ namespace UltimaXNA.TileEngine
             _mustUpdateSurroundings = true;
         }
 
-        public void UpdateSurroundingsIfNecessary(Map m)
+        public void UpdateSurroundingsIfNecessary(Map map)
         {
             if (!_mustUpdateSurroundings)
                 return;
 
-            int x = (int)Position.X;
-            int y = (int)Position.Y;
+            updateSurroundingsAndNormals(map);
+            _mustUpdateSurroundings = false;
+        }
 
-            float[] zValues = new float[16];
+        static Point[] kSurroundingsIndexes = new Point[11] { 
+            new Point(0, -1), new Point(1, -1), 
+            new Point(-1, 0), new Point(1, 0), new Point(2, 0), 
+            new Point(-1, 1), new Point(0, 1), new Point(1, 1), new Point(2, 1), 
+            new Point(0, 2), new Point(1, 2) };
 
-            for (int iy = 0; iy < 4; iy++)
-                for (int ix = 0; ix < 4; ix++)
-                    zValues[ix + iy * 4] = m.GetTileZ(x + ix - 1, y + iy - 1);
+        private void updateSurroundingsAndNormals(Map map)
+        {
+            Point origin = new Point(Position.X, Position.Y);
+
+            float[] surroundingTilesZ = new float[kSurroundingsIndexes.Length];
+            for (int i = 0; i < kSurroundingsIndexes.Length; i++)
+                surroundingTilesZ[i] = map.GetTileZ(origin.X + kSurroundingsIndexes[i].X, origin.Y + kSurroundingsIndexes[i].Y);
 
             _surroundingTiles = new Surroundings(
-                zValues[2 + 2 * 4],
-                zValues[2 + 1 * 4],
-                zValues[1 + 2 * 4]);
+                surroundingTilesZ[7], surroundingTilesZ[3], surroundingTilesZ[6]);
 
             bool isFlat = _surroundingTiles.IsFlat && _surroundingTiles.East == Z;
             if (!isFlat)
             {
                 int low = 0, high = 0, sort = 0;
-                sort = m.GetAverageZ((int)Z, (int)_surroundingTiles.South, (int)_surroundingTiles.East, (int)_surroundingTiles.Down, ref low, ref high);
+                sort = map.GetAverageZ((int)Z, (int)_surroundingTiles.South, (int)_surroundingTiles.East, (int)_surroundingTiles.Down, ref low, ref high);
                 if (sort != SortZ)
                 {
                     SortZ = sort;
-                    m.GetMapTile(x, y, false).Resort();
+                    map.GetMapTile(Position.X, Position.Y, false).Resort();
                 }
             }
 
-            calculateNormals(
-                zValues[0 + 1 * 4],
-                zValues[0 + 2 * 4],
-                zValues[1 + 0 * 4],
-                zValues[2 + 0 * 4],
-                zValues[1 + 3 * 4],
-                zValues[2 + 3 * 4],
-                zValues[3 + 1 * 4],
-                zValues[3 + 2 * 4]);
+            _normals[0] = calculateNormal_Old(
+                surroundingTilesZ[2], surroundingTilesZ[3],
+                surroundingTilesZ[0], surroundingTilesZ[6]);
+            _normals[1] = calculateNormal_Old(
+                Z, surroundingTilesZ[4],
+                surroundingTilesZ[1], surroundingTilesZ[7]);
+            _normals[2] = calculateNormal_Old(
+                surroundingTilesZ[5], surroundingTilesZ[7],
+                Z, surroundingTilesZ[9]);
+            _normals[3] = calculateNormal_Old(
+                surroundingTilesZ[6], surroundingTilesZ[8],
+                surroundingTilesZ[3], surroundingTilesZ[10]);
 
             updateVertexBuffer();
-            _mustUpdateSurroundings = false;
         }
 
         private void updateVertexBuffer()
@@ -176,29 +185,25 @@ namespace UltimaXNA.TileEngine
             }
         }
 
-        private void calculateNormals(
-            float NorthWest0, float NorthWest2, float NorthEast0, float NorthEast1,
-            float SouthWest2, float SouthWest3, float SouthEast1, float SouthEast3)
+        private Vector3 calculateNormal(Vector3 origin, Vector3 p2, Vector3 p3)
         {
-            _normals[0] = calculateNormal(
-                NorthWest0, _surroundingTiles.East,
-                NorthEast0, _surroundingTiles.South);
-            _normals[1] = calculateNormal(
-                this.Z, SouthEast1,
-                NorthEast1, _surroundingTiles.Down);
-            _normals[2] = calculateNormal(
-                NorthWest2, _surroundingTiles.Down,
-                this.Z, SouthWest2);
-            _normals[3] = calculateNormal(
-                _surroundingTiles.South, SouthEast3,
-                _surroundingTiles.East, SouthWest3);
+            Vector3 U = (p2 - origin);
+            Vector3 V = (p3 - origin);
+            Vector3 N = new Vector3(
+                U.Y * V.Z - U.Z * V.Y,
+                U.Z * V.X - U.X * V.Z,
+                U.X * V.Y - U.Y * V.X);
+            N.Normalize();
+
+            return N;
         }
 
-        private Vector3 calculateNormal(float A, float B, float C, float D)
+        public static float Y_Normal = 1f;
+        private Vector3 calculateNormal_Old(float A, float B, float C, float D)
         {
             Vector3 iVector = new Vector3(
                 (A - B) / 2f,
-                1f,
+                Y_Normal,
                 (C - D) / 2f);
             iVector.Normalize();
             return iVector;
