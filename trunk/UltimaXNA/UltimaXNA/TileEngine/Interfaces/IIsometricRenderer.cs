@@ -32,6 +32,7 @@ namespace UltimaXNA.TileEngine
         int PersonalLightning { get; set; }
         int OverallLightning { get; set; }
         float LightDirection { get; set; }
+        float LightHeight { get; set; }
         Vector2 RenderOffset { get; }
     }
 }

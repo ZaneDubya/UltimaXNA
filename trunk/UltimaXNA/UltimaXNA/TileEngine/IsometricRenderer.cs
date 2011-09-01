@@ -41,30 +41,27 @@ namespace UltimaXNA.TileEngine
         #endregion
 
         #region LightingVariables
-        private int _personalLightning = 0, _overallLightning = 0;
-        private float _lightingDirection = 0f;
+        private int _lightLevelPersonal = 9, _lightLevelOverall = 9;
+        private float _lightDirection = 4.12f, _lightHeight = -0.75f;
         public int PersonalLightning
         {
-            get { return _personalLightning; }
-            set
-            {
-                _personalLightning = value;
-                recalculateLightning();
-            }
+            set { _lightLevelPersonal = value; recalculateLightning(); }
+            get { return _lightLevelPersonal; }
         }
         public int OverallLightning
         {
-            get { return _overallLightning; }
-            set
-            {
-                _overallLightning = value;
-                recalculateLightning();
-            }
+            set { _lightLevelOverall = value; recalculateLightning(); }
+            get { return _lightLevelOverall; }
         }
         public float LightDirection
         {
-            set { _lightingDirection = value; recalculateLightning(); }
-            get { return _lightingDirection; }
+            set { _lightDirection = value; recalculateLightning(); }
+            get { return _lightDirection; }
+        }
+        public float LightHeight
+        {
+            set { _lightHeight = value; recalculateLightning(); }
+            get { return _lightHeight; }
         }
         #endregion
 
@@ -278,7 +275,7 @@ namespace UltimaXNA.TileEngine
             light -= 0.3f;
 
             // i'd use a fixed lightning direction for now - maybe enable this effect with a custom packet?
-            Vector3 lightDirection = new Vector3(0f, (float)-Math.Cos(_lightingDirection), (float)Math.Sin(_lightingDirection));
+            Vector3 lightDirection = new Vector3((float)Math.Cos(_lightDirection), _lightHeight, (float)Math.Sin(_lightDirection));
 
             _spriteBatch.SetLightDirection(lightDirection);
 
