@@ -40,7 +40,7 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>0.1.0.%2a</ApplicationVersion>
+    <ApplicationVersion>0.1.0.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -122,6 +122,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\GUI\Sprite.cs" />
+    <Compile Include="UltimaGUIState.cs" />
     <Compile Include="UltimaVars\Characters.cs" />
     <Compile Include="UltimaVars\Servers.cs" />
     <Compile Include="UltimaVars\EngineVars.cs" />
@@ -266,7 +268,7 @@
     <Compile Include="Core\Diagnostics\Dynamic.cs" />
     <Compile Include="TileEngine\Objects\MapObjectDynamic.cs" />
     <Compile Include="TileEngine\Objects\MapObjectPrerendered.cs" />
-    <Compile Include="UltimaGUI\Gumplings\TextureGumpling.cs" />
+    <Compile Include="UltimaGUI\Controls\TextureGumpling.cs" />
     <Compile Include="Core\GUI\HTML\HTMLRegions.cs" />
     <Compile Include="Core\GUI\HTML\HTMLParserAtoms.cs" />
     <Compile Include="Core\GUI\HTML\HTMLEnums.cs" />
@@ -357,7 +359,7 @@
     <Compile Include="UltimaGUI\ClientsideGumps\MiniMap.cs" />
     <Compile Include="UltimaGUI\ClientsideGumps\SkillsGump.cs" />
     <Compile Include="UltimaGUI\ClientsideGumps\StatusGump.cs" />
-    <Compile Include="UltimaGUI\Gumplings\ExpandableScroll.cs" />
+    <Compile Include="UltimaGUI\Controls\ExpandableScroll.cs" />
     <Compile Include="UltimaGUI\MsgBox.cs" />
     <Compile Include="UltimaGUI\ClientsideGumps\PaperDollGump.cs" />
     <Compile Include="UltimaGUI\ClientsideGumps\SelectServerGump.cs" />
@@ -367,28 +369,28 @@
     <Compile Include="UltimaGUI\UltimaCursor.cs" />
     <Compile Include="Core\Graphics\SpriteBatchUI.cs" />
     <Compile Include="UltimaGUI\Gump.cs" />
-    <Compile Include="UltimaGUI\Gumplings\Button.cs" />
-    <Compile Include="UltimaGUI\Gumplings\CheckerTrans.cs" />
-    <Compile Include="UltimaGUI\Gumplings\ColorPicker.cs" />
-    <Compile Include="UltimaGUI\Gumplings\CroppedText.cs" />
-    <Compile Include="UltimaGUI\Gumplings\DropDownList.cs" />
+    <Compile Include="UltimaGUI\Controls\Button.cs" />
+    <Compile Include="UltimaGUI\Controls\CheckerTrans.cs" />
+    <Compile Include="UltimaGUI\Controls\ColorPicker.cs" />
+    <Compile Include="UltimaGUI\Controls\CroppedText.cs" />
+    <Compile Include="UltimaGUI\Controls\DropDownList.cs" />
     <Compile Include="Core\GUI\DragWidget.cs" />
-    <Compile Include="UltimaGUI\Gumplings\ItemGumplingPaperdoll.cs" />
-    <Compile Include="UltimaGUI\Gumplings\ItemGumpling.cs" />
-    <Compile Include="UltimaGUI\Gumplings\PaperdollLargeUninteractable.cs" />
-    <Compile Include="UltimaGUI\Gumplings\PaperDollInteractable.cs" />
-    <Compile Include="UltimaGUI\Gumplings\ScrollBar.cs" />
-    <Compile Include="UltimaGUI\Gumplings\GumpPic.cs" />
-    <Compile Include="UltimaGUI\Gumplings\GumpPicContainer.cs" />
-    <Compile Include="UltimaGUI\Gumplings\GumpPicTiled.cs" />
-    <Compile Include="UltimaGUI\Gumplings\HtmlGump.cs" />
-    <Compile Include="UltimaGUI\Gumplings\ResizePic.cs" />
-    <Compile Include="UltimaGUI\Gumplings\Slider.cs" />
-    <Compile Include="UltimaGUI\Gumplings\TextEntry.cs" />
-    <Compile Include="UltimaGUI\Gumplings\TextLabel.cs" />
-    <Compile Include="UltimaGUI\Gumplings\TextLabelAscii.cs" />
-    <Compile Include="UltimaGUI\Gumplings\TextLabelAsciiCropped.cs" />
-    <Compile Include="UltimaGUI\Gumplings\TilePic.cs" />
+    <Compile Include="UltimaGUI\Controls\ItemGumplingPaperdoll.cs" />
+    <Compile Include="UltimaGUI\Controls\ItemGumpling.cs" />
+    <Compile Include="UltimaGUI\Controls\PaperdollLargeUninteractable.cs" />
+    <Compile Include="UltimaGUI\Controls\PaperDollInteractable.cs" />
+    <Compile Include="UltimaGUI\Controls\ScrollBar.cs" />
+    <Compile Include="UltimaGUI\Controls\GumpPic.cs" />
+    <Compile Include="UltimaGUI\Controls\GumpPicContainer.cs" />
+    <Compile Include="UltimaGUI\Controls\GumpPicTiled.cs" />
+    <Compile Include="UltimaGUI\Controls\HtmlGump.cs" />
+    <Compile Include="UltimaGUI\Controls\ResizePic.cs" />
+    <Compile Include="UltimaGUI\Controls\Slider.cs" />
+    <Compile Include="UltimaGUI\Controls\TextEntry.cs" />
+    <Compile Include="UltimaGUI\Controls\TextLabel.cs" />
+    <Compile Include="UltimaGUI\Controls\TextLabelAscii.cs" />
+    <Compile Include="UltimaGUI\Controls\TextLabelAsciiCropped.cs" />
+    <Compile Include="UltimaGUI\Controls\TilePic.cs" />
     <Compile Include="Core\GUI\TextRenderer.cs" />
     <Compile Include="Core\GUIState.cs" />
     <Compile Include="UltimaData\StaticTileList.cs" />

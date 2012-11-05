@@ -12,10 +12,10 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Interface.Graphics;
-using UltimaXNA.Interface.Input;
+using UltimaXNA.Graphics;
+using UltimaXNA.Input;
 
-namespace UltimaXNA.Interface.GUI
+namespace UltimaXNA.GUI
 {
     internal delegate void ControlMouseButtonEvent(int x, int y, MouseButton button);
     internal delegate void ControlMouseEvent(int x, int y);
@@ -25,7 +25,10 @@ namespace UltimaXNA.Interface.GUI
 
     public class Control
     {
-        internal static Interface.GUIState UserInterface = null;
+        internal static GUIState UserInterface = null;
+
+        public int Serial = 0;
+        public bool IsModal = false;
 
         bool _enabled = false;
         bool _visible = false;
@@ -576,25 +579,6 @@ namespace UltimaXNA.Interface.GUI
                     return;
                 }
             }
-        }
-
-
-
-
-
-
-
-
-
-
-        public void ItemDrop(Entity.Item item, int x, int y)
-        {
-            itemDrop(item, x, y);
-        }
-
-        protected virtual void itemDrop(Entity.Item item, int x, int y)
-        {
-
         }
     }
 }

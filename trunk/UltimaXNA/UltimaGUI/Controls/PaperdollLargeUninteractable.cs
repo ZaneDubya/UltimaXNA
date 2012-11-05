@@ -8,10 +8,10 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using UltimaXNA.Interface.Graphics;
-using UltimaXNA.Interface.GUI;
+using UltimaXNA.Graphics;
+using UltimaXNA.GUI;
 
-namespace UltimaXNA.UltimaGUI.Gumplings
+namespace UltimaXNA.UltimaGUI.Controls
 {
     class PaperdollLargeUninteractable : Control
     {

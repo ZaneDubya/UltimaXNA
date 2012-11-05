@@ -21,8 +21,8 @@ namespace UltimaXNA
 {
     public class BaseEngine : Game
     {
-        public static Interface.InputState Input = new Interface.InputState();
-        public static Interface.GUIState UserInterface = new Interface.GUIState();
+        public static InputState Input = new InputState();
+        public static GUIState UserInterface = new GUIState();
 
         public BaseEngine(int width, int height)
         {
@@ -40,7 +40,7 @@ namespace UltimaXNA
 
         protected override void Update(GameTime gameTime)
         {
-            Interface.Graphics.SpriteBatch3D.ResetZ();
+            Graphics.SpriteBatch3D.ResetZ();
             Input.Update(gameTime);
             UserInterface.Update(gameTime);
             OnUpdate(gameTime);

@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   GumpPic.cs
+ *   TilePic.cs
  *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   
  *   This program is free software; you can redistribute it and/or modify
@@ -11,78 +11,65 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Interface.Graphics;
-using UltimaXNA.Interface.GUI;
+using UltimaXNA.Graphics;
+using UltimaXNA.GUI;
 
-namespace UltimaXNA.UltimaGUI.Gumplings
+namespace UltimaXNA.UltimaGUI.Controls
 {
-    class GumpPic : Control
+    class TilePic : Control
     {
-        protected Texture2D _texture = null;
-        int _gumpID;
-        int _hue;
+        Texture2D _texture = null;
+        int Hue;
+        int _tileID;
 
-        public GumpPic(Control owner, int page)
+        public TilePic(Control owner, int page)
             : base(owner, page)
         {
 
         }
 
-        public GumpPic(Control owner, int page, string[] arguements)
+        public TilePic(Control owner, int page, string[] arguements)
             : this(owner, page)
         {
-            int x, y, gumpID, hue = 0;
+            int x, y, tileID, hue = 0;
             x = Int32.Parse(arguements[1]);
             y = Int32.Parse(arguements[2]);
-            gumpID = Int32.Parse(arguements[3]);
+            tileID = Int32.Parse(arguements[3]);
             if (arguements.Length > 4)
             {
                 // has a HUE="XXX" arguement!
                 hue = Int32.Parse(arguements[4]);
             }
-            buildGumpling(x, y, gumpID, hue);
+            buildGumpling(x, y, tileID, hue);
         }
 
-        public GumpPic(Control owner, int page, int x, int y, int gumpID, int hue)
+        public TilePic(Control owner, int page, int x, int y, int tileID, int hue)
             : this(owner, page)
         {
-            buildGumpling(x, y, gumpID, hue);
+            buildGumpling(x, y, tileID, hue);
         }
 
-        void buildGumpling(int x, int y, int gumpID, int hue)
+        void buildGumpling(int x, int y, int tileID, int hue)
         {
             Position = new Point2D(x, y);
-            _gumpID = gumpID;
-            _hue = hue;
+            Hue = hue;
+            _tileID = tileID;
         }
 
         public override void Update(GameTime gameTime)
         {
             if (_texture == null)
             {
-                _texture = UltimaData.Gumps.GetGumpXNA(_gumpID);
+                _texture = UltimaData.Art.GetStaticTexture(_tileID);
                 Size = new Point2D(_texture.Width, _texture.Height);
             }
-
             base.Update(gameTime);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)
         {
-            bool hueOnlyGreyPixels = (_hue & 0x8000) == 0x8000;
-            spriteBatch.Draw2D(_texture, Position, _hue & 0x7FFF, hueOnlyGreyPixels, false);
+            spriteBatch.Draw2D(_texture, Position, 0, false, false);
             base.Draw(spriteBatch);
-        }
-
-        protected override bool _hitTest(int x, int y)
-        {
-            Color[] pixelData;
-            pixelData = new Color[1];
-            _texture.GetData<Color>(0, new Rectangle(x, y, 1, 1), pixelData, 0, 1);
-            if (pixelData[0].A > 0)
-                return true;
-            else
-                return false;
         }
     }
 }

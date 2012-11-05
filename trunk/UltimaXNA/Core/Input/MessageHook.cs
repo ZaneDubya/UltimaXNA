@@ -8,14 +8,9 @@
  ********************************************************/
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Reflection;
 
-namespace UltimaXNA.Interface.Input
+namespace UltimaXNA.Input
 {
     public delegate IntPtr WndProcHandler(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 

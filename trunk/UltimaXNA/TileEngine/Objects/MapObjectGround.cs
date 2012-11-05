@@ -12,7 +12,7 @@
 #region usings
 using Microsoft.Xna.Framework;
 using UltimaXNA.Entity;
-using UltimaXNA.Interface.Graphics;
+using UltimaXNA.Graphics;
 #endregion
 
 namespace UltimaXNA.TileEngine

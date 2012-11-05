@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   TilePic.cs
+ *   TextLabel.cs
  *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   
  *   This program is free software; you can redistribute it and/or modify
@@ -11,64 +11,57 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Interface.Graphics;
-using UltimaXNA.Interface.GUI;
+using UltimaXNA.Graphics;
+using UltimaXNA.GUI;
 
-namespace UltimaXNA.UltimaGUI.Gumplings
+namespace UltimaXNA.UltimaGUI.Controls
 {
-    class TilePic : Control
+    public class TextLabel : Control
     {
-        Texture2D _texture = null;
-        int Hue;
-        int _tileID;
+        public int Hue = 0;
+        public string Text = string.Empty;
+        GUI.TextRenderer _textRenderer;
 
-        public TilePic(Control owner, int page)
+        public TextLabel(Control owner, int page)
             : base(owner, page)
         {
 
         }
 
-        public TilePic(Control owner, int page, string[] arguements)
+        public TextLabel(Control owner, int page, string[] arguements, string[] lines)
             : this(owner, page)
         {
-            int x, y, tileID, hue = 0;
+            int x, y, hue, textIndex;
             x = Int32.Parse(arguements[1]);
             y = Int32.Parse(arguements[2]);
-            tileID = Int32.Parse(arguements[3]);
-            if (arguements.Length > 4)
-            {
-                // has a HUE="XXX" arguement!
-                hue = Int32.Parse(arguements[4]);
-            }
-            buildGumpling(x, y, tileID, hue);
+            hue = Int32.Parse(arguements[3]);
+            textIndex = Int32.Parse(arguements[4]);
+            buildGumpling(x, y, hue, lines[textIndex]);
         }
 
-        public TilePic(Control owner, int page, int x, int y, int tileID, int hue)
+        public TextLabel(Control owner, int page, int x, int y, int hue, string text)
             : this(owner, page)
         {
-            buildGumpling(x, y, tileID, hue);
+            buildGumpling(x, y, hue, text);
         }
 
-        void buildGumpling(int x, int y, int tileID, int hue)
+        void buildGumpling(int x, int y, int hue, string text)
         {
             Position = new Point2D(x, y);
             Hue = hue;
-            _tileID = tileID;
+            Text = text;
+            _textRenderer = new GUI.TextRenderer(Text, 0, true);
+            _textRenderer.Hue = Hue;
         }
 
         public override void Update(GameTime gameTime)
         {
-            if (_texture == null)
-            {
-                _texture = UltimaData.Art.GetStaticTexture(_tileID);
-                Size = new Point2D(_texture.Width, _texture.Height);
-            }
             base.Update(gameTime);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)
         {
-            spriteBatch.Draw2D(_texture, Position, 0, false, false);
+            _textRenderer.Draw(spriteBatch, Position);
             base.Draw(spriteBatch);
         }
     }

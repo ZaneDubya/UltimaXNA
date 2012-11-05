@@ -1,6 +1,5 @@
-﻿using System;
-
-namespace UltimaXNA.Interface.Input
+﻿
+namespace UltimaXNA.Input
 {
     public class EventArgsKeyboard : EventArgs
     {

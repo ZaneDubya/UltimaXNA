@@ -12,11 +12,11 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Entity;
-using UltimaXNA.Interface.Graphics;
-using UltimaXNA.Interface.Input;
-using UltimaXNA.Interface.GUI;
+using UltimaXNA.Graphics;
+using UltimaXNA.Input;
+using UltimaXNA.GUI;
 
-namespace UltimaXNA.UltimaGUI.Gumplings
+namespace UltimaXNA.UltimaGUI.Controls
 {
     class ItemGumpling : Control
     {
@@ -127,17 +127,8 @@ namespace UltimaXNA.UltimaGUI.Gumplings
             sendClickIfNoDoubleClick = false;
         }
 
-        protected override void itemDrop(Item item, int x, int y)
-        {
-            // If we drop onto a container object, drop *inside* the container object.
-            if (_item.ItemData.Container)
-            {
-                UltimaInteraction.DropItemToContainer(item, (Container)_item);
-            }
-        }
-
         protected virtual void _onPickUp()
-        {
+        { 
 
         }
     }

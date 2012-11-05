@@ -14,8 +14,8 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using UltimaXNA.Entity;
-using UltimaXNA.Interface.Graphics;
-using UltimaXNA.Interface.Input;
+using UltimaXNA.Graphics;
+using UltimaXNA.Input;
 using UltimaXNA.TileEngine;
 #endregion
 

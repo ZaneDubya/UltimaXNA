@@ -11,7 +11,7 @@
  ***************************************************************************/
 using Microsoft.Xna.Framework;
 using UltimaXNA.Entity;
-using UltimaXNA.Interface.Input;
+using UltimaXNA.Input;
 
 namespace UltimaXNA.UltimaVars
 {

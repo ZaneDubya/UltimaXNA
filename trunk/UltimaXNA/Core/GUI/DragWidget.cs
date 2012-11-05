@@ -8,9 +8,9 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using UltimaXNA.Interface.Input;
+using UltimaXNA.Input;
 
-namespace UltimaXNA.Interface.GUI
+namespace UltimaXNA.GUI
 {
     class DragWidget
     {

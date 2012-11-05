@@ -11,11 +11,11 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using UltimaXNA.Graphics;
+using UltimaXNA.GUI.HTML;
 using UltimaXNA.UltimaData;
-using UltimaXNA.Interface.Graphics;
-using UltimaXNA.Interface.GUI.HTML;
 
-namespace UltimaXNA.Interface.GUI
+namespace UltimaXNA.GUI
 {
     class TextRenderer
     {
@@ -280,7 +280,7 @@ namespace UltimaXNA.Interface.GUI
             {
                 if (maxWidth == 0)
                 {
-                    getTextDimensions(_reader, UltimaData.ASCIIText.MaxWidth, 0, out _width, out _height);
+                    getTextDimensions(_reader, ASCIIText.MaxWidth, 0, out _width, out _height);
                 }
                 else
                 {
@@ -394,7 +394,7 @@ namespace UltimaXNA.Interface.GUI
                         if (lineheight < atom.Height)
                             lineheight = atom.Height;
                             _images.AddImage(new Rectangle(x, y + (lineheight - atom.Height) / 2, atom.Width, atom.Height),
-                                atom.Texture, UltimaData.Gumps.GetGumpXNA(atom.ValueOver), UltimaData.Gumps.GetGumpXNA(atom.ValueDown));
+                                atom.Texture, Gumps.GetGumpXNA(atom.ValueOver), Gumps.GetGumpXNA(atom.ValueDown));
                             atom.AssociatedImage = _images.Images[_images.Count - 1];
                     }
                 }

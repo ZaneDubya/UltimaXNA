@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   TextLabel.cs
+ *   TextLabelAsciiCropped.cs
  *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   
  *   This program is free software; you can redistribute it and/or modify
@@ -11,47 +11,37 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Interface.Graphics;
-using UltimaXNA.Interface.GUI;
+using UltimaXNA.Graphics;
+using UltimaXNA.GUI;
 
-namespace UltimaXNA.UltimaGUI.Gumplings
+namespace UltimaXNA.UltimaGUI.Controls
 {
-    public class TextLabel : Control
+    class TextLabelAsciiCropped : Control
     {
         public int Hue = 0;
+        public int FontID = 0;
         public string Text = string.Empty;
-        Interface.GUI.TextRenderer _textRenderer;
+        Texture2D _texture = null;
 
-        public TextLabel(Control owner, int page)
+        public TextLabelAsciiCropped(Control owner, int page)
             : base(owner, page)
         {
 
         }
 
-        public TextLabel(Control owner, int page, string[] arguements, string[] lines)
+        public TextLabelAsciiCropped(Control owner, int page, int x, int y, int width, int height, int hue, int fontid, string text)
             : this(owner, page)
         {
-            int x, y, hue, textIndex;
-            x = Int32.Parse(arguements[1]);
-            y = Int32.Parse(arguements[2]);
-            hue = Int32.Parse(arguements[3]);
-            textIndex = Int32.Parse(arguements[4]);
-            buildGumpling(x, y, hue, lines[textIndex]);
+            buildGumpling(x, y, width, height, hue, fontid, text);
         }
 
-        public TextLabel(Control owner, int page, int x, int y, int hue, string text)
-            : this(owner, page)
-        {
-            buildGumpling(x, y, hue, text);
-        }
-
-        void buildGumpling(int x, int y, int hue, string text)
+        void buildGumpling(int x, int y, int width, int height, int hue, int fontid, string text)
         {
             Position = new Point2D(x, y);
+            Size = new Point2D(width, height);
             Hue = hue;
+            FontID = fontid;
             Text = text;
-            _textRenderer = new Interface.GUI.TextRenderer(Text, 0, true);
-            _textRenderer.Hue = Hue;
         }
 
         public override void Update(GameTime gameTime)
@@ -61,7 +51,9 @@ namespace UltimaXNA.UltimaGUI.Gumplings
 
         public override void Draw(SpriteBatchUI spriteBatch)
         {
-            _textRenderer.Draw(spriteBatch, Position);
+            if (_texture == null)
+                _texture = UltimaData.ASCIIText.GetTextTexture(Text, FontID, Area.Width);
+            spriteBatch.Draw2D(_texture, Position, Hue, true, false);
             base.Draw(spriteBatch);
         }
     }

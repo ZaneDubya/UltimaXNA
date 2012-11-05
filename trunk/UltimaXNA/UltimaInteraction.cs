@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Network;
 using UltimaXNA.Network.Packets.Client;
 using UltimaXNA.Entity;
-using UltimaXNA.Interface.Input;
+using UltimaXNA.Input;
 using UltimaXNA.TileEngine;
 using UltimaXNA.UltimaGUI;
 using UltimaXNA.Scene;
@@ -68,7 +68,7 @@ namespace UltimaXNA
             if (item.PickUp())
             {
                 UltimaClient.Send(new PickupItemPacket(item.Serial, item.Amount));
-                UltimaEngine.UserInterface.Cursor.PickUpItem(item, x, y);
+                UltimaEngine.UltimaUI.Cursor.PickUpItem(item, x, y);
             }
         }
 
@@ -86,7 +86,7 @@ namespace UltimaXNA
                 else
                     serial = Serial.World;
                 UltimaClient.Send(new DropItemPacket(item.Serial, (ushort)X, (ushort)Y, (byte)Z, 0, serial));
-                UltimaEngine.UserInterface.Cursor.ClearHolding();
+                UltimaEngine.UltimaUI.Cursor.ClearHolding();
             }
         }
 
@@ -108,13 +108,13 @@ namespace UltimaXNA
             if (y < containerBounds.Top) y = containerBounds.Top;
             if (y > containerBounds.Bottom - itemTexture.Height) y = containerBounds.Bottom - itemTexture.Height;
             UltimaClient.Send(new DropItemPacket(item.Serial, (ushort)x, (ushort)y, 0, 0, container.Serial));
-            UltimaEngine.UserInterface.Cursor.ClearHolding();
+            UltimaEngine.UltimaUI.Cursor.ClearHolding();
         }
 
         public static void WearItem(Item item)
         {
             UltimaClient.Send(new DropToLayerPacket(item.Serial, 0x00, Entities.MySerial));
-            UltimaEngine.UserInterface.Cursor.ClearHolding();
+            UltimaEngine.UltimaUI.Cursor.ClearHolding();
         }
 
         public static void UseSkill(int index)
@@ -125,14 +125,14 @@ namespace UltimaXNA
         public static Gump OpenContainerGump(BaseEntity entity)
         {
             Gump gump;
-            
-            if ((gump = UltimaEngine.UserInterface.GetGump(entity.Serial)) != null)
+
+            if ((gump = (Gump)UltimaEngine.UserInterface.GetControl(entity.Serial)) != null)
             {
                 gump.Dispose();
             }
 
             gump = new UltimaGUI.ClientsideGumps.ContainerGump(entity, ((Container)entity).ItemID);
-            UltimaEngine.UserInterface.AddGump_Local(gump, 64, 64);
+            UltimaEngine.UserInterface.AddControl(gump, 64, 64);
             return gump;
         }
 
@@ -154,7 +154,7 @@ namespace UltimaXNA
         {
             m_ChatQueue.Add(new QueuedMessage(text, hue, font));
 
-            Gump g = UltimaEngine.UserInterface.GetGump<UltimaGUI.ClientsideGumps.ChatWindow>(0);
+            Gump g = UltimaEngine.UserInterface.GetControl<UltimaGUI.ClientsideGumps.ChatWindow>(0);
             if (g != null)
             {
                 foreach (QueuedMessage msg in m_ChatQueue)

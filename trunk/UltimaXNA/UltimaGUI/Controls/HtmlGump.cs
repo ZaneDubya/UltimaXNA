@@ -11,12 +11,12 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Interface.Graphics;
-using UltimaXNA.Interface.Input;
-using UltimaXNA.Interface.GUI.HTML;
-using UltimaXNA.Interface.GUI;
+using UltimaXNA.Graphics;
+using UltimaXNA.Input;
+using UltimaXNA.GUI.HTML;
+using UltimaXNA.GUI;
 
-namespace UltimaXNA.UltimaGUI.Gumplings
+namespace UltimaXNA.UltimaGUI.Controls
 {
     public class HtmlGump : Control
     {
@@ -84,7 +84,7 @@ namespace UltimaXNA.UltimaGUI.Gumplings
             }
         }
 
-        Interface.GUI.TextRenderer _textRenderer;
+        GUI.TextRenderer _textRenderer;
 
         public HtmlGump(Control owner, int page)
             : base(owner, page)
@@ -122,7 +122,7 @@ namespace UltimaXNA.UltimaGUI.Gumplings
             Text = text;
             _background = (background == 1) ? true : false;
             _hasScrollbar = (scrollbar == 1) ? true : false;
-            _textRenderer = new Interface.GUI.TextRenderer(text, ClientWidth, true);
+            _textRenderer = new GUI.TextRenderer(text, ClientWidth, true);
         }
 
         public override void Update(GameTime gameTime)

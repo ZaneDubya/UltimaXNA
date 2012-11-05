@@ -40,7 +40,7 @@ namespace UltimaXNA.Scene
 
         public override void Intitialize()
         {
-            Gump g = UltimaEngine.UserInterface.AddGump_Local(new CharacterListGump(), 0, 0);
+            Gump g = (Gump)UltimaEngine.UserInterface.AddControl(new CharacterListGump(), 0, 0);
             ((CharacterListGump)g).OnBackToSelectServer += this.OnBackToSelectServer;
             ((CharacterListGump)g).OnLoginWithCharacter += this.OnLoginWithCharacter;
             ((CharacterListGump)g).OnDeleteCharacter += this.OnDeleteCharacter;
@@ -73,7 +73,7 @@ namespace UltimaXNA.Scene
 
         public override void Dispose()
         {
-            UltimaEngine.UserInterface.GetGump<CharacterListGump>(0).Dispose();
+            UltimaEngine.UserInterface.GetControl<CharacterListGump>(0).Dispose();
             base.Dispose();
         }
 
@@ -88,7 +88,7 @@ namespace UltimaXNA.Scene
 
         public void OnLoginWithCharacter(int index)
         {
-            UltimaEngine.UserInterface.GetGump<CharacterListGump>(0).ActivePage = 2;
+            UltimaEngine.UserInterface.GetControl<CharacterListGump>(0).ActivePage = 2;
             UltimaClient.SelectCharacter(index);
         }
 

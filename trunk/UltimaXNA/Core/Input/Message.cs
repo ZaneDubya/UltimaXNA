@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Security;
-using System.Security.Permissions;
 using System.Runtime.InteropServices;
 
-namespace UltimaXNA.Interface.Input
+namespace UltimaXNA.Input
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct Message

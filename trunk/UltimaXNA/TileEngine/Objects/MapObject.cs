@@ -13,7 +13,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Entity;
-using UltimaXNA.Interface.Graphics;
+using UltimaXNA.Graphics;
 
 namespace UltimaXNA.TileEngine
 {

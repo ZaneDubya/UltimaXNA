@@ -11,7 +11,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace UltimaXNA.Interface.Graphics
+namespace UltimaXNA.Graphics
 {
     public class SpriteBatchUI
     {

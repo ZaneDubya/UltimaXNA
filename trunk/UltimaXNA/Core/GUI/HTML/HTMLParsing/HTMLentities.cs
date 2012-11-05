@@ -42,7 +42,7 @@
 using System;
 using System.Text;
 
-namespace UltimaXNA.Interface.GUI.HTML.Parsing
+namespace UltimaXNA.GUI.HTML.Parsing
 {
 	/// <summary>
 	/// Implements parsing of entities

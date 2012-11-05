@@ -16,7 +16,7 @@ using UltimaXNA.Network;
 using UltimaXNA.Network.Packets.Client;
 using UltimaXNA.UltimaData;
 using UltimaXNA.Entity;
-using UltimaXNA.Interface.Input;
+using UltimaXNA.Input;
 using UltimaXNA.TileEngine;
 using UltimaXNA.UltimaGUI;
 #endregion
@@ -111,7 +111,7 @@ namespace UltimaXNA
 
         static void doUpdate()
         {
-            if (UltimaVars.EngineVars.InWorld && !UltimaEngine.UserInterface.IsModalMsgBoxOpen && UltimaClient.IsConnected)
+            if (UltimaVars.EngineVars.InWorld && !UltimaEngine.UserInterface.IsModalControlOpen && UltimaClient.IsConnected)
             {
                 parseKeyboard();
                 parseMouse();
@@ -215,7 +215,7 @@ namespace UltimaXNA
                 // Special case: targeting
                 onTargetingButton(overObject);
             }
-            else if (UltimaEngine.UserInterface.Cursor.IsHolding && e.EventType == MouseEvent.Up)
+            else if (UltimaEngine.UltimaUI.Cursor.IsHolding && e.EventType == MouseEvent.Up)
             {
                 // Special case: if we're holding anything, drop it.
                 checkDropItem();
@@ -339,7 +339,7 @@ namespace UltimaXNA
                     // over text?
                     return;
                 }
-                UltimaInteraction.DropItemToWorld(UltimaEngine.UserInterface.Cursor.HoldingItem, x, y, z);
+                UltimaInteraction.DropItemToWorld(UltimaEngine.UltimaUI.Cursor.HoldingItem, x, y, z);
             }
         }
 
@@ -446,7 +446,7 @@ namespace UltimaXNA
         {
             _TargettingType = targetingType;
             // Set the UserInterface's cursor to a targetting cursor. If multi, tell the cursor which multi.
-            UltimaEngine.UserInterface.Cursor.IsTargeting = true;
+            UltimaEngine.UltimaUI.Cursor.IsTargeting = true;
             // Stop continuous movement.
             _ContinuousMoveCheck = false;
         }
@@ -455,7 +455,7 @@ namespace UltimaXNA
         {
             // Clear our target cursor.
             _TargettingType = TargetTypes.Nothing;
-            UltimaEngine.UserInterface.Cursor.IsTargeting = false;
+            UltimaEngine.UltimaUI.Cursor.IsTargeting = false;
         }
 
         static void mouseTargetingCancel()

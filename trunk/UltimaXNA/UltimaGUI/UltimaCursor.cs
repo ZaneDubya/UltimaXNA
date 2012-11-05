@@ -11,14 +11,12 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Entity;
-using UltimaXNA.Interface.Graphics;
+using UltimaXNA.Graphics;
 
 namespace UltimaXNA.UltimaGUI
 {
-    public class Cursor
+    public class UltimaCursor
     {
-        internal Interface.GUIState UserInterface = null;
-
         Item holdingItem;
         Point holdingOffset;
         bool _isHolding = false;
@@ -75,9 +73,9 @@ namespace UltimaXNA.UltimaGUI
             get { return (UltimaVars.EngineVars.Map == 1); }
         }
 
-        public Cursor(Interface.GUIState ui)
+        public UltimaCursor()
         {
-            UserInterface = ui;
+
         }
 
         public void PickUpItem(Item item, int x, int y)
@@ -115,8 +113,6 @@ namespace UltimaXNA.UltimaGUI
                 // then set the data for the hang which holds it.
                 cursorOffset = new Point2D(1, 1);
                 cursorTextureID = 8305;
-                cursorTexture = UltimaData.Art.GetStaticTexture(cursorTextureID);
-                sourceRect = new Rectangle(1, 1, cursorTexture.Width - 2, cursorTexture.Height - 2);
             }
             else if (IsTargeting)
             {
@@ -130,7 +126,7 @@ namespace UltimaXNA.UltimaGUI
             }
             else
             {
-                if (UltimaVars.EngineVars.InWorld && (!UserInterface.IsMouseOverUI && !UserInterface.IsModalMsgBoxOpen))
+                if (UltimaVars.EngineVars.InWorld && (!UltimaEngine.UserInterface.IsMouseOverUI && !UltimaEngine.UserInterface.IsModalControlOpen))
                 {
                     switch (UltimaVars.EngineVars.CursorDirection)
                     {
@@ -189,7 +185,8 @@ namespace UltimaXNA.UltimaGUI
             cursorTexture = UltimaData.Art.GetStaticTexture(cursorTextureID);
             sourceRect = new Rectangle(1, 1, cursorTexture.Width - 2, cursorTexture.Height - 2);
 
-            sb.Draw2D(cursorTexture, position - cursorOffset, sourceRect, cursorHue, false, false);
+            UltimaEngine.UserInterface.CursorSprite = new GUI.Sprite(cursorTexture, cursorOffset, sourceRect, cursorHue);
+            // sb.Draw2D(cursorTexture, position - cursorOffset, sourceRect, cursorHue, false, false);
         }
     }
 }

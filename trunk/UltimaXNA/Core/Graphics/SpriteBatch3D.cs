@@ -9,14 +9,12 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-#region usings
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-#endregion
 
-namespace UltimaXNA.Interface.Graphics
+namespace UltimaXNA.Graphics
 {
     public class SpriteBatch3D
     {

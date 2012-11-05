@@ -1,7 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using UltimaXNA.Interface.Input;
-
-namespace UltimaXNA.Interface.Input
+﻿
+namespace UltimaXNA.Input
 {
     public class InputEventKB : InputEvent
     {

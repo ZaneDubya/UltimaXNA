@@ -10,10 +10,10 @@
  ***************************************************************************/
 using Microsoft.Xna.Framework;
 using UltimaXNA.Entity;
-using UltimaXNA.Interface.Graphics;
-using UltimaXNA.Interface.GUI;
+using UltimaXNA.Graphics;
+using UltimaXNA.GUI;
 
-namespace UltimaXNA.UltimaGUI.Gumplings
+namespace UltimaXNA.UltimaGUI.Controls
 {
     class ItemGumplingPaperdoll : ItemGumpling
     {
@@ -32,12 +32,12 @@ namespace UltimaXNA.UltimaGUI.Gumplings
 
         protected override void _onPickUp()
         {
-            if (UserInterface.Cursor.HoldingItem != null)
+            if (UltimaEngine.UltimaUI.Cursor.HoldingItem != null)
             {
                 // fix this to be more centered on the object.
-                UserInterface.Cursor.HoldingOffset = new Point(
-                    UserInterface.Cursor.HoldingTexture.Width / 4,
-                    UserInterface.Cursor.HoldingTexture.Height / 4);
+                UltimaEngine.UltimaUI.Cursor.HoldingOffset = new Point(
+                    UltimaEngine.UltimaUI.Cursor.HoldingTexture.Width / 4,
+                    UltimaEngine.UltimaUI.Cursor.HoldingTexture.Height / 4);
             }
         }
 
@@ -63,11 +63,6 @@ namespace UltimaXNA.UltimaGUI.Gumplings
             }
             spriteBatch.Draw2D(_texture, Position, Item.Hue & 0x7FFF, (Item.Hue & 0x8000) == 0x8000 ? true : false, false);
             base.Draw(spriteBatch);
-        }
-
-        protected override void itemDrop(Item item, int x, int y)
-        {
-
         }
     }
 }

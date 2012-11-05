@@ -8,8 +8,8 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using UltimaXNA.Interface.Graphics;
-using UltimaXNA.UltimaGUI.Gumplings;
+using UltimaXNA.Graphics;
+using UltimaXNA.UltimaGUI.Controls;
 
 namespace UltimaXNA.UltimaGUI.ClientsideGumps
 {

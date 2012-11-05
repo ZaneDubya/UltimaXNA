@@ -52,7 +52,7 @@ namespace UltimaXNA.Scene
         public override void Intitialize()
         {
             base.Intitialize();
-            Gump g = UltimaEngine.UserInterface.AddGump_Local(new UltimaGUI.ClientsideGumps.LoggingInGump(), 0, 0);
+            Gump g = (Gump)UltimaEngine.UserInterface.AddControl(new UltimaGUI.ClientsideGumps.LoggingInGump(), 0, 0);
             ((UltimaGUI.ClientsideGumps.LoggingInGump)g).OnCancelLogin += this.OnCancelLogin;
         }
 
@@ -71,7 +71,7 @@ namespace UltimaXNA.Scene
                         break;
                     case UltimaClientStatus.LoginServer_WaitingForLogin:
                         // show 'verifying account...' gump
-                        UltimaEngine.UserInterface.GetGump<UltimaGUI.ClientsideGumps.LoggingInGump>(0).ActivePage = 9;
+                        UltimaEngine.UserInterface.GetControl<UltimaGUI.ClientsideGumps.LoggingInGump>(0).ActivePage = 9;
                         UltimaClient.SendAccountLogin(m_AccountName, m_Password);
                         break;
                     case UltimaClientStatus.LoginServer_LoggingIn:
@@ -81,26 +81,26 @@ namespace UltimaXNA.Scene
                         SceneManager.CurrentScene = new SelectServerScene(Game, m_AccountName, m_Password);
                         break;
                     case UltimaClientStatus.Error_CannotConnectToServer:
-                        UltimaEngine.UserInterface.GetGump<UltimaGUI.ClientsideGumps.LoggingInGump>(0).ActivePage = 2;
+                        UltimaEngine.UserInterface.GetControl<UltimaGUI.ClientsideGumps.LoggingInGump>(0).ActivePage = 2;
                         // could not connect to server.
                         break;
                     case UltimaClientStatus.Error_InvalidUsernamePassword:
-                        UltimaEngine.UserInterface.GetGump<UltimaGUI.ClientsideGumps.LoggingInGump>(0).ActivePage = 3;
+                        UltimaEngine.UserInterface.GetControl<UltimaGUI.ClientsideGumps.LoggingInGump>(0).ActivePage = 3;
                         break;
                     case UltimaClientStatus.Error_InUse:
-                        UltimaEngine.UserInterface.GetGump<UltimaGUI.ClientsideGumps.LoggingInGump>(0).ActivePage = 4;
+                        UltimaEngine.UserInterface.GetControl<UltimaGUI.ClientsideGumps.LoggingInGump>(0).ActivePage = 4;
                         break;
                     case UltimaClientStatus.Error_Blocked:
-                        UltimaEngine.UserInterface.GetGump<UltimaGUI.ClientsideGumps.LoggingInGump>(0).ActivePage = 5;
+                        UltimaEngine.UserInterface.GetControl<UltimaGUI.ClientsideGumps.LoggingInGump>(0).ActivePage = 5;
                         break;
                     case UltimaClientStatus.Error_BadPassword:
-                        UltimaEngine.UserInterface.GetGump<UltimaGUI.ClientsideGumps.LoggingInGump>(0).ActivePage = 6;
+                        UltimaEngine.UserInterface.GetControl<UltimaGUI.ClientsideGumps.LoggingInGump>(0).ActivePage = 6;
                         break;
                     case UltimaClientStatus.Error_Idle:
-                        UltimaEngine.UserInterface.GetGump<UltimaGUI.ClientsideGumps.LoggingInGump>(0).ActivePage = 7;
+                        UltimaEngine.UserInterface.GetControl<UltimaGUI.ClientsideGumps.LoggingInGump>(0).ActivePage = 7;
                         break;
                     case UltimaClientStatus.Error_BadCommunication:
-                        UltimaEngine.UserInterface.GetGump<UltimaGUI.ClientsideGumps.LoggingInGump>(0).ActivePage = 8;
+                        UltimaEngine.UserInterface.GetControl<UltimaGUI.ClientsideGumps.LoggingInGump>(0).ActivePage = 8;
                         break;
                     default:
                         // what's going on here? Add additional error handlers.
@@ -111,7 +111,7 @@ namespace UltimaXNA.Scene
 
         public override void Dispose()
         {
-            UltimaEngine.UserInterface.GetGump<UltimaGUI.ClientsideGumps.LoggingInGump>(0).Dispose();
+            UltimaEngine.UserInterface.GetControl<UltimaGUI.ClientsideGumps.LoggingInGump>(0).Dispose();
             base.Dispose();
         }
 

@@ -8,14 +8,9 @@
  ********************************************************/
 
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using UltimaXNA.Interface.Input;
-using Microsoft.Xna.Framework;
-using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework.Input;
 
-namespace UltimaXNA.Interface.Input
+namespace UltimaXNA.Input
 {
     public delegate void MouseEventHandler(EventArgsMouse e);
     public delegate void KeyboardEventHandler(EventArgsKeyboard e);

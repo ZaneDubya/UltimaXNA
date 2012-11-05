@@ -14,7 +14,7 @@ using Microsoft.Xna.Framework;
 using UltimaXNA.Network;
 using UltimaXNA.Network.Packets;
 using UltimaXNA.Entity;
-using UltimaXNA.Interface.Input;
+using UltimaXNA.Input;
 using UltimaXNA.TileEngine;
 using UltimaXNA.UltimaGUI;
 

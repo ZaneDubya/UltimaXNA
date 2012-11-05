@@ -9,23 +9,19 @@
  *
  ***************************************************************************/
 using UltimaXNA.Entity;
-using UltimaXNA.Interface.GUI;
+using UltimaXNA.GUI;
 
-namespace UltimaXNA.UltimaGUI.Gumplings
+namespace UltimaXNA.UltimaGUI.Controls
 {
     class GumpPicContainer : GumpPic
     {
         Container _containerItem;
+        public Container Item { get { return _containerItem; } }
 
         public GumpPicContainer(Control owner, int page, int x, int y, int gumpID, int hue, Container containerItem)
             : base(owner, page, x, y, gumpID, hue)
         {
             _containerItem = containerItem;
-        }
-
-        protected override void itemDrop(Item item, int x, int y)
-        {
-            UltimaInteraction.DropItemToContainer(item, _containerItem, x, y);
         }
     }
 }

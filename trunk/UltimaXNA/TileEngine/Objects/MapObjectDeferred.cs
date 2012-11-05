@@ -16,7 +16,7 @@ using System.Text;
 using UltimaXNA.Entity;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Interface.Graphics;
+using UltimaXNA.Graphics;
 
 namespace UltimaXNA.TileEngine
 {

@@ -23,7 +23,7 @@ using Microsoft.Xna.Framework;
 using UltimaXNA.Network;
 using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaGUI.ClientsideGumps;
-using UltimaXNA.Interface.Input;
+using UltimaXNA.Input;
 #endregion
 
 namespace UltimaXNA.Scene
@@ -38,8 +38,8 @@ namespace UltimaXNA.Scene
         public override void  Intitialize()
         {
             base.Intitialize();
-            UltimaEngine.UserInterface.AddGump_Local(new TopMenu(0), 0, 0);
-            UltimaEngine.UserInterface.AddGump_Local(new ChatWindow(), 0, 0);
+            UltimaEngine.UserInterface.AddControl(new TopMenu(0), 0, 0);
+            UltimaEngine.UserInterface.AddControl(new ChatWindow(), 0, 0);
 
             // this is the login sequence for 0.6.1.10
             UltimaInteraction.GetMySkills();
@@ -73,9 +73,9 @@ namespace UltimaXNA.Scene
             {
                 if (!UltimaClient.IsConnected)
                 {
-                    if (UltimaEngine.UserInterface.IsModalMsgBoxOpen == false)
+                    if (UltimaEngine.UserInterface.IsModalControlOpen == false)
                     {
-                        MsgBox g = UltimaEngine.UserInterface.MsgBox("You have lost your connection with the server.", MsgBoxTypes.OkOnly);
+                        MsgBox g = UltimaEngine.UltimaUI.MsgBox("You have lost your connection with the server.", MsgBoxTypes.OkOnly);
                         g.OnClose = onCloseLostConnectionMsgBox;
                     }
                 }

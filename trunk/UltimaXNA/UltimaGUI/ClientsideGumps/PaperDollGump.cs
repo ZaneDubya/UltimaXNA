@@ -10,8 +10,8 @@
  ***************************************************************************/
 using Microsoft.Xna.Framework;
 using UltimaXNA.Entity;
-using UltimaXNA.Interface.Graphics;
-using UltimaXNA.UltimaGUI.Gumplings;
+using UltimaXNA.Graphics;
+using UltimaXNA.UltimaGUI.Controls;
 
 namespace UltimaXNA.UltimaGUI.ClientsideGumps
 {
@@ -90,7 +90,7 @@ namespace UltimaXNA.UltimaGUI.ClientsideGumps
                 case Buttons.Options:
                     break;
                 case Buttons.LogOut:
-                    MsgBox g = UserInterface.MsgBox("Quit Ultima Online?", MsgBoxTypes.OkCancel);
+                    MsgBox g = UltimaEngine.UltimaUI.MsgBox("Quit Ultima Online?", MsgBoxTypes.OkCancel);
                     g.OnClose = logout_OnClose;
                     break;
                 case Buttons.Quests:
