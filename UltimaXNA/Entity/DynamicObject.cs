@@ -9,10 +9,10 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Interface.TileEngine;
+using UltimaXNA.TileEngine;
 using UltimaXNA.Network.Packets.Server;
 using Microsoft.Xna.Framework;
-using UltimaXNA.Data;
+using UltimaXNA.UltimaData;
 #endregion
 
 namespace UltimaXNA.Entity
@@ -53,7 +53,7 @@ namespace UltimaXNA.Entity
                 _frameSequence = 0;
                 _isInitialized = true;
 
-                ParticleData data;
+                ParticleData itemData;
                 switch (_effectType)
                 {
                     case GraphicEffectType.Nothing:
@@ -71,12 +71,12 @@ namespace UltimaXNA.Entity
                         break;
                     case GraphicEffectType.FixedXYZ:
                     case GraphicEffectType.FixedFrom:
-                        data = ParticleData.GetData(_baseItemID);
-                        if (data != null)
+                        itemData = ParticleData.GetData(_baseItemID);
+                        if (itemData != null)
                         {
                             // we may need to remap baseItemID from the original value:
-                            _baseItemID = data.ItemID;
-                            _frameLength = data.FrameLength;
+                            _baseItemID = itemData.ItemID;
+                            _frameLength = itemData.FrameLength;
                             _timeRepeatAnimationSeconds = _duration / (float)(10 + _speed);
                             _timeEndTotalSeconds += _timeRepeatAnimationSeconds;
                         }
@@ -147,9 +147,9 @@ namespace UltimaXNA.Entity
             X = x;
             Y = y;
             Z = z;
-            ParticleData data = ParticleData.RandomExplosion;
-            _baseItemID = data.ItemID;
-            _duration = data.FrameLength;
+            ParticleData itemData = ParticleData.RandomExplosion;
+            _baseItemID = itemData.ItemID;
+            _duration = itemData.FrameLength;
             _speed = 0;
             _doesExplode = false;
         }

@@ -11,8 +11,8 @@
 #region usings
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using UltimaXNA.Data;
-using UltimaXNA.Interface.TileEngine;
+using UltimaXNA.UltimaData;
+using UltimaXNA.TileEngine;
 #endregion
 
 namespace UltimaXNA.Entity

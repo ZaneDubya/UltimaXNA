@@ -14,7 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
-using UltimaXNA.Data;
+using UltimaXNA.UltimaData;
 #endregion
 
 namespace UltimaXNA.Entity
@@ -208,7 +208,7 @@ namespace UltimaXNA.Entity
                     unholdAnimation();
                     _actionIndex = actionIndex;
                     _animationFrame = 0f;
-                    _FrameCount = Data.AnimationsXNA.GetAnimationFrameCount(
+                    _FrameCount = UltimaData.AnimationsXNA.GetAnimationFrameCount(
                         Parent.BodyID, actionIndex, (int)Parent.Facing, Parent.Hue);
                     _FrameDelay = delay;
                     if (repeat == false)

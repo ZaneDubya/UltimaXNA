@@ -14,10 +14,9 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using UltimaXNA.Entity;
-using UltimaXNA.Core.Extensions;
 using UltimaXNA.Interface.Graphics;
 using UltimaXNA.Interface.Input;
-using UltimaXNA.Interface.TileEngine;
+using UltimaXNA.TileEngine;
 #endregion
 
 namespace UltimaXNA
@@ -104,10 +103,10 @@ namespace UltimaXNA
 
         public static void Update(GameTime gameTime)
         {
-            if (ClientVars.EngineVars.Map != -1)
+            if (UltimaVars.EngineVars.Map != -1)
             {
-                if ((_map == null) || (_map.Index != ClientVars.EngineVars.Map))
-                    _map = new Map(ClientVars.EngineVars.Map);
+                if ((_map == null) || (_map.Index != UltimaVars.EngineVars.Map))
+                    _map = new Map(UltimaVars.EngineVars.Map);
                 // Update the Map's position so it loads the tiles we're going to be drawing
                 _map.Update(CenterPosition.X, CenterPosition.Y);
 
@@ -158,12 +157,8 @@ namespace UltimaXNA
 
         public static void Draw(GameTime gameTime)
         {
-            if (ClientVars.EngineVars.IsMinimized)
+            if (UltimaVars.EngineVars.Map < 0)
                 return;
-
-            if (ClientVars.EngineVars.Map < 0)
-                return;
-
             
             render(out _renderOffset);
             renderVectors(_renderOffset);
@@ -171,29 +166,35 @@ namespace UltimaXNA
 
         private static void render(out Vector2 renderOffset)
         {
+            if (CenterPosition == null)
+            {
+                renderOffset = new Vector2();
+                return;
+            }
+
             // Prerender objects
             _spriteBatch.Prepare(false, false);
             MapObjectPrerendered.RenderObjects(_spriteBatch);
 
-            // ClientVars.EngineVars.RenderSize = 20;
+            // UltimaVars.EngineVars.RenderSize = 20;
 
-            int RenderBeginX = CenterPosition.X - (ClientVars.EngineVars.RenderSize / 2);
-            int RenderBeginY = CenterPosition.Y - (ClientVars.EngineVars.RenderSize / 2);
-            int RenderEndX = RenderBeginX + ClientVars.EngineVars.RenderSize;
-            int RenderEndY = RenderBeginY + ClientVars.EngineVars.RenderSize;
+            int RenderBeginX = CenterPosition.X - (UltimaVars.EngineVars.RenderSize / 2);
+            int RenderBeginY = CenterPosition.Y - (UltimaVars.EngineVars.RenderSize / 2);
+            int RenderEndX = RenderBeginX + UltimaVars.EngineVars.RenderSize;
+            int RenderEndY = RenderBeginY + UltimaVars.EngineVars.RenderSize;
 
-            renderOffset.X = (ClientVars.EngineVars.ScreenSize.X >> 1) - 22;
+            renderOffset.X = (UltimaVars.EngineVars.ScreenSize.X >> 1) - 22;
             renderOffset.X -= (int)((CenterPosition.X_offset - CenterPosition.Y_offset) * 22);
             renderOffset.X -= (RenderBeginX - RenderBeginY) * 22;
 
-            renderOffset.Y = ((ClientVars.EngineVars.ScreenSize.Y - (ClientVars.EngineVars.RenderSize * 44)) >> 1);
+            renderOffset.Y = ((UltimaVars.EngineVars.ScreenSize.Y - (UltimaVars.EngineVars.RenderSize * 44)) >> 1);
             renderOffset.Y += (CenterPosition.Z * 4) + (int)(CenterPosition.Z_offset * 4);
             renderOffset.Y -= (int)((CenterPosition.X_offset + CenterPosition.Y_offset) * 22);
             renderOffset.Y -= (RenderBeginX + RenderBeginY) * 22;
 
             ObjectsRendered = 0; // Count of objects rendered for statistics and debug
             MouseOverList overList = new MouseOverList(); // List of items for mouse over
-            overList.MousePosition = InputState.MousePosition;
+            overList.MousePosition = UltimaEngine.Input.MousePosition;
             List<MapObject> mapObjects;
             Vector3 drawPosition = new Vector3();
 
@@ -224,8 +225,8 @@ namespace UltimaXNA
             }
 
             // Update the MouseOver objects
-            _overObject = overList.GetForemostMouseOverItem(InputState.MousePosition);
-            _overGround = overList.GetForemostMouseOverItem<MapObjectGround>(InputState.MousePosition);
+            _overObject = overList.GetForemostMouseOverItem(UltimaEngine.Input.MousePosition);
+            _overGround = overList.GetForemostMouseOverItem<MapObjectGround>(UltimaEngine.Input.MousePosition);
 
             // Draw the objects we just send to the spritebatch.
             _spriteBatch.Prepare(true, true);

@@ -2,13 +2,12 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Data;
+using UltimaXNA.UltimaData;
 using UltimaXNA.Diagnostics;
-using UltimaXNA.Core.Extensions;
 using UltimaXNA.Interface.Input;
 using UltimaXNA.Network;
-using UltimaXNA.UILegacy;
-using UltimaXNA.Interface.TileEngine;
+using UltimaXNA.UltimaGUI;
+using UltimaXNA.TileEngine;
 
 namespace UltimaXNA.Scene
 {
@@ -161,7 +160,7 @@ namespace UltimaXNA.Scene
 
         public virtual void Dispose()
         {
-            UserInterface.Reset();
+            UltimaEngine.UserInterface.Reset();
             _content.Dispose();
         }
     }

@@ -14,45 +14,32 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using UltimaXNA.Network.Packets.Client;
 using UltimaXNA.Network.Packets.Server;
-using UltimaXNA.Core.Extensions;
 using UltimaXNA.Entity;
 using UltimaXNA.Network;
-using UltimaXNA.UILegacy;
+using UltimaXNA.UltimaGUI;
 #endregion
 
 namespace UltimaXNA
 {
     class UltimaClient
     {
+        // ClientNetwork is the interface to the server.
+        static ClientNetwork m_ClientNetwork;
+
         public static UltimaClientStatus Status { get; protected set; }
-        public static bool IsConnected { get { return _ClientNetwork.IsConnected; } }
-
-        // Account name and Password data.
-        protected static string _account, _password;
-        protected static string _host;
-        protected static int _port;
-        public static void SetLoginData(string host, int port, string account, string password)
-        {
-            _host = host; _port = port; _account = account; _password = password;
-        }
-
-        static ClientNetwork _ClientNetwork;
+        public static bool IsConnected { get { return m_ClientNetwork.IsConnected; } }
+        private static int m_ServerRelayKey = 0;
 
         static UltimaClient()
         {
             Status = UltimaClientStatus.Unconnected;
-            _ClientNetwork = new ClientNetwork();
+            m_ClientNetwork = new ClientNetwork();
             registerPackets();
-        }
-
-        public static void Initialize(Game game)
-        {
-
         }
 
         public static void Update(GameTime gameTime)
         {
-            _ClientNetwork.Update();
+            m_ClientNetwork.Update();
         }
 
         private static void registerPackets()
@@ -132,17 +119,17 @@ namespace UltimaXNA
             PacketRegistry.ToolTipRevision += receive_ToolTipRevision;
             PacketRegistry.CompressedGump += receive_CompressedGump;
 
-            PacketRegistry.RegisterNetwork(_ClientNetwork);
+            PacketRegistry.RegisterNetwork(m_ClientNetwork);
         }
 
-        public static bool Connect()
+        public static bool Connect(string host, int port)
         {
             Status = UltimaClientStatus.LoginServer_Connecting;
-            bool success = _ClientNetwork.Connect(_host, _port);
+            bool success = m_ClientNetwork.Connect(host, port);
             if (success)
             {
                 Status = UltimaClientStatus.LoginServer_WaitingForLogin;
-                _ClientNetwork.Send(new SeedPacket(1, 6, 0, 6, 2));
+                m_ClientNetwork.Send(new SeedPacket(1, 6, 0, 6, 2));
             }
             else
             {
@@ -151,10 +138,16 @@ namespace UltimaXNA
             return success;
         }
 
-        public static void Login()
+        public static void SendAccountLogin(string account, string password)
         {
             Status = UltimaClientStatus.LoginServer_LoggingIn;
-            Send(new Network.Packets.Client.LoginPacket(_account, _password));
+            Send(new Network.Packets.Client.LoginPacket(account, password));
+        }
+
+        public static void SendServerRelay(string account, string password)
+        {
+            Status = UltimaClientStatus.LoginServer_Relaying;
+            Send(new Network.Packets.Client.GameLoginPacket(m_ServerRelayKey, account, password));
         }
 
         public static void SelectServer(int index)
@@ -170,9 +163,9 @@ namespace UltimaXNA
         {
             if (Status == UltimaClientStatus.GameServer_CharList)
             {
-                if (ClientVars.Characters.List[index].Name != string.Empty)
+                if (UltimaVars.Characters.List[index].Name != string.Empty)
                 {
-                    Send(new LoginCharacterPacket(ClientVars.Characters.List[index].Name, index, Utility.IPAddress));
+                    Send(new LoginCharacterPacket(UltimaVars.Characters.List[index].Name, index, Utility.IPAddress));
                 }
             }
         }
@@ -181,25 +174,25 @@ namespace UltimaXNA
         {
             if (Status == UltimaClientStatus.GameServer_CharList)
             {
-                if (ClientVars.Characters.List[index].Name != string.Empty)
+                if (UltimaVars.Characters.List[index].Name != string.Empty)
                 {
-                    Send(new DeleteCharacterPacket(_password, index, Utility.IPAddress));
+                    Send(new DeleteCharacterPacket(index, Utility.IPAddress));
                 }
             }
         }
 
         public static void Disconnect()
         {
-            if (_ClientNetwork.IsConnected)
-                _ClientNetwork.Disconnect();
+            if (m_ClientNetwork.IsConnected)
+                m_ClientNetwork.Disconnect();
             Status = UltimaClientStatus.Unconnected;
         }
 
         public static void Send(ISendPacket packet)
         {
-            if (_ClientNetwork.IsConnected)
+            if (m_ClientNetwork.IsConnected)
             {
-                bool success = _ClientNetwork.Send(packet);
+                bool success = m_ClientNetwork.Send(packet);
                 if (!success)
                 {
                     Disconnect();
@@ -258,20 +251,20 @@ namespace UltimaXNA
         private static void receive_DeleteCharacterResponse(IRecvPacket packet)
         {
             DeleteCharacterResponsePacket p = (DeleteCharacterResponsePacket)packet;
-            UserInterface.MsgBox(p.Result, MsgBoxTypes.OkOnly);
+            UltimaEngine.UserInterface.MsgBox(p.Result, MsgBoxTypes.OkOnly);
         }
 
         private static void receive_CharacterListUpdate(IRecvPacket packet)
         {
             CharacterListUpdatePacket p = (CharacterListUpdatePacket)packet;
-            ClientVars.Characters.SetCharacterList(p.Characters);
+            UltimaVars.Characters.SetCharacterList(p.Characters);
         }
 
         private static void receive_CLILOCMessage(IRecvPacket packet)
         {
             MessageLocalizedPacket p = (MessageLocalizedPacket)packet;
 
-            string iCliLoc = constructCliLoc(Data.StringList.Entry(p.CliLocNumber), p.Arguements);
+            string iCliLoc = constructCliLoc(UltimaData.StringList.Entry(p.CliLocNumber), p.Arguements);
             receive_TextMessage(p.MessageType, iCliLoc, p.Hue, p.Font, p.Serial, p.SpeakerName);
         }
 
@@ -279,14 +272,14 @@ namespace UltimaXNA
         {
             ChangeCombatantPacket p = (ChangeCombatantPacket)packet;
             if (p.Serial > 0x00000000)
-                ClientVars.EngineVars.LastTarget = p.Serial;
+                UltimaVars.EngineVars.LastTarget = p.Serial;
         }
 
         private static void receive_CharacterList(IRecvPacket packet)
         {
             CharacterCityListPacket p = (CharacterCityListPacket)packet;
-            ClientVars.Characters.SetCharacterList(p.Characters);
-            ClientVars.Characters.SetStartingLocations(p.Locations);
+            UltimaVars.Characters.SetCharacterList(p.Characters);
+            UltimaVars.Characters.SetStartingLocations(p.Locations);
             Status = UltimaClientStatus.GameServer_CharList;
         }
 
@@ -296,7 +289,7 @@ namespace UltimaXNA
             if (p.HasData)
             {
                 string[] gumpPieces = interpretGumpPieces(p.GumpData);
-                UserInterface.AddGump_Server(p.Serial, p.GumpID, gumpPieces, p.TextLines, p.X, p.Y);
+                UltimaEngine.UserInterface.AddGump_Server(p.Serial, p.GumpID, gumpPieces, p.TextLines, p.X, p.Y);
             }
         }
 
@@ -316,11 +309,11 @@ namespace UltimaXNA
                 item = Entities.GetObject<Container>(p.Serial, false);
                 if (item is Container)
                 {
-                    UserInterface.AddContainerGump(item, item.ItemID);
+                    UltimaInteraction.OpenContainerGump(item);
                 }
                 else
                 {
-                    UserInterface.AddMessage_Chat(string.Format("Client: Object {0} has no support for a container object!", item.Serial));
+                    UltimaInteraction.ChatMessage(string.Format("Client: Object {0} has no support for a container object!", item.Serial));
                 }
             }
         }
@@ -337,7 +330,7 @@ namespace UltimaXNA
             DamagePacket p = (DamagePacket)packet;
             Mobile u = Entities.GetObject<Mobile>(p.Serial, false);
 
-            UserInterface.AddMessage_Chat(string.Format("{0} takes {1} damage!", u.Name, p.Damage));
+            UltimaInteraction.ChatMessage(string.Format("{0} takes {1} damage!", u.Name, p.Damage));
         }
 
         private static void receive_DeathAnimation(IRecvPacket packet)
@@ -389,7 +382,7 @@ namespace UltimaXNA
         private static void receive_EnableFeatures(IRecvPacket packet)
         {
             SupportedFeaturesPacket p = (SupportedFeaturesPacket)packet;
-            ClientVars.Features.SetFlags(p.Flags);
+            UltimaVars.Features.SetFlags(p.Flags);
         }
 
         private static void receive_Extended0x78(IRecvPacket packet)
@@ -410,32 +403,32 @@ namespace UltimaXNA
                     announce_UnhandledPacket(packet, "subcommand " + p.Subcommand);
                     break;
                 case 0x08: // Set cursor color / set map
-                    ClientVars.EngineVars.Map = p.MapID;
+                    UltimaVars.EngineVars.Map = p.MapID;
                     break;
                 case 0x14: // return context menu
                     parseContextMenu(p.ContextMenu);
                     break;
                 case 0x18: // Enable map-diff (files) / number of maps
                     // as of 6.0.0.0, this only tells us the number of maps.
-                    ClientVars.EngineVars.MapCount = p.MapCount;
+                    UltimaVars.EngineVars.MapCount = p.MapCount;
                     break;
                 case 0x19: // Extended stats
                     if (p.Serial != Entities.MySerial)
                         Diagnostics.Logger.Warn("Extended Stats packet (0xBF subcommand 0x19) received for a mobile not our own.");
                     else
                     {
-                        ClientVars.Status.StrengthLock = p.StatisticLocks.Strength;
-                        ClientVars.Status.DexterityLock = p.StatisticLocks.Dexterity;
-                        ClientVars.Status.IntelligenceLock = p.StatisticLocks.Intelligence;
+                        UltimaVars.Status.StrengthLock = p.StatisticLocks.Strength;
+                        UltimaVars.Status.DexterityLock = p.StatisticLocks.Dexterity;
+                        UltimaVars.Status.IntelligenceLock = p.StatisticLocks.Intelligence;
                     }
                     break;
                 case 0x1D: // House revision state
-                    if (Data.CustomHousing.IsHashCurrent(p.HouseRevisionState.Serial, p.HouseRevisionState.Hash))
+                    if (UltimaData.CustomHousing.IsHashCurrent(p.HouseRevisionState.Serial, p.HouseRevisionState.Hash))
                     {
                         Multi e = Entities.GetObject<Multi>(p.HouseRevisionState.Serial, false);
                         if (e.CustomHouseRevision != p.HouseRevisionState.Hash)
                         {
-                            Data.CustomHouse house = Data.CustomHousing.GetCustomHouseData(p.HouseRevisionState.Serial);
+                            UltimaData.CustomHouse house = UltimaData.CustomHousing.GetCustomHouseData(p.HouseRevisionState.Serial);
                             e.AddCustomHousingTiles(house);
                         }
                     }
@@ -457,7 +450,7 @@ namespace UltimaXNA
         private static void receive_GlobalQueueCount(IRecvPacket packet)
         {
             GlobalQueuePacket p = (GlobalQueuePacket)packet;
-            UserInterface.AddMessage_Chat("System: There are currently " + p.Count + " available calls in the global queue.");
+            UltimaInteraction.ChatMessage("System: There are currently " + p.Count + " available calls in the global queue.");
         }
 
         private static void receive_GraphicEffect(IRecvPacket packet)
@@ -521,7 +514,7 @@ namespace UltimaXNA
             MessageLocalizedAffixPacket p = (MessageLocalizedAffixPacket)packet;
 
             string localizedString = string.Format(p.Flag_IsPrefix ? "{1}{0}" : "{0}{1}",
-                constructCliLoc(Data.StringList.Entry(p.CliLocNumber), p.Arguements), p.Affix);
+                constructCliLoc(UltimaData.StringList.Entry(p.CliLocNumber), p.Arguements), p.Affix);
             receive_TextMessage(p.MessageType, localizedString, p.Hue, p.Font, p.Serial, p.SpeakerName);
         }
 
@@ -650,7 +643,7 @@ namespace UltimaXNA
 
             for (int i = 0; i < p.CliLocs.Count; i++)
             {
-                string iCliLoc = Data.StringList.Entry(p.CliLocs[i]);
+                string iCliLoc = UltimaData.StringList.Entry(p.CliLocs[i]);
                 if (p.Arguements[i] == string.Empty)
                 {
                     iObject.PropertyList.AddProperty(iCliLoc);
@@ -665,12 +658,12 @@ namespace UltimaXNA
         private static void receive_SendCustomHouse(IRecvPacket packet)
         {
             CustomHousePacket p = (CustomHousePacket)packet;
-            Data.CustomHousing.UpdateCustomHouseData(p.HouseSerial, p.RevisionHash, p.PlaneCount, p.Planes);
+            UltimaData.CustomHousing.UpdateCustomHouseData(p.HouseSerial, p.RevisionHash, p.PlaneCount, p.Planes);
 
             Multi e = Entities.GetObject<Multi>(p.HouseSerial, false);
             if (e.CustomHouseRevision != p.RevisionHash)
             {
-                Data.CustomHouse house = Data.CustomHousing.GetCustomHouseData(p.HouseSerial);
+                UltimaData.CustomHouse house = UltimaData.CustomHousing.GetCustomHouseData(p.HouseSerial);
                 e.AddCustomHousingTiles(house);
             }
         }
@@ -685,7 +678,7 @@ namespace UltimaXNA
             SwingPacket p = (SwingPacket)packet;
             if (p.Attacker == Entities.MySerial)
             {
-                ClientVars.EngineVars.LastTarget = p.Defender;
+                UltimaVars.EngineVars.LastTarget = p.Defender;
             }
         }
 
@@ -762,19 +755,19 @@ namespace UltimaXNA
         {
             PlayMusicPacket p = (PlayMusicPacket)packet;
             // System.Console.WriteLine ( "Play music, id={0}", p.MusicID );
-            Data.Music.PlayMusic(p.MusicID);
+            UltimaData.Music.PlayMusic(p.MusicID);
         }
 
         private static void receive_PlaySoundEffect(IRecvPacket packet)
         {
             PlaySoundEffectPacket p = (PlaySoundEffectPacket)packet;
-            Data.Sounds.PlaySound(p.SoundModel);
+            UltimaData.Sounds.PlaySound(p.SoundModel);
         }
 
         private static void receive_PopupMessage(IRecvPacket packet)
         {
             PopupMessagePacket p = (PopupMessagePacket)packet;
-            UserInterface.MsgBox(p.Message, MsgBoxTypes.OkOnly);
+            UltimaEngine.UserInterface.MsgBox(p.Message, MsgBoxTypes.OkOnly);
         }
 
         private static void receive_QuestArrow(IRecvPacket packet)
@@ -785,8 +778,8 @@ namespace UltimaXNA
         private static void receive_RejectMoveItemRequest(IRecvPacket packet)
         {
             LiftRejectionPacket p = (LiftRejectionPacket)packet;
-            UserInterface.AddMessage_Chat("Could not pick up item: " + p.ErrorMessage);
-            UserInterface.Cursor.ClearHolding();
+            UltimaInteraction.ChatMessage("Could not pick up item: " + p.ErrorMessage);
+            UltimaEngine.UserInterface.Cursor.ClearHolding();
         }
 
         private static void receive_RequestNameResponse(IRecvPacket packet)
@@ -811,7 +804,7 @@ namespace UltimaXNA
             // Only partially handled !!! If iSeason2 = 1, then this is a season change.
             // If season change, then iSeason1 = (0=spring, 1=summer, 2=fall, 3=winter, 4 = desolation)
             SeasonChangePacket p = (SeasonChangePacket)packet;
-            ClientVars.EngineVars.Season = p.Season;
+            UltimaVars.EngineVars.Season = p.Season;
         }
 
         private static void receive_SellList(IRecvPacket packet)
@@ -821,7 +814,7 @@ namespace UltimaXNA
 
         private static void receive_ServerList(IRecvPacket packet)
         {
-            ClientVars.Servers.List = ((ServerListPacket)packet).Servers;
+            UltimaVars.Servers.List = ((ServerListPacket)packet).Servers;
             Status = UltimaClientStatus.LoginServer_HasServerList;
         }
 
@@ -833,18 +826,19 @@ namespace UltimaXNA
         private static void receive_ServerRelay(IRecvPacket packet)
         {
             ServerRelayPacket p = (ServerRelayPacket)packet;
+            m_ServerRelayKey = p.AccountId;
             // Normally, upon receiving this packet you would disconnect and
             // log in to the specified server. Since we are using RunUO, we don't
             // actually need to do this.
-            _ClientNetwork.IsDecompressionEnabled = true;
-            Send(new GameLoginPacket(p.AccountId, _account, _password));
+            m_ClientNetwork.IsDecompressionEnabled = true;
+            Status = UltimaClientStatus.LoginServer_WaitingForRelay;
         }
 
         private static void receive_SkillsList(IRecvPacket packet)
         {
             foreach (SendSkillsPacket_SkillEntry skill in ((SendSkillsPacket)packet).Skills)
             {
-                ClientVars.SkillEntry entry = ClientVars.Skills.SkillEntry(skill.SkillID);
+                UltimaVars.SkillEntry entry = UltimaVars.Skills.SkillEntry(skill.SkillID);
                 if (entry != null)
                 {
                     entry.Value = skill.SkillValue;
@@ -903,13 +897,13 @@ namespace UltimaXNA
         {
             TargetCursorMultiPacket p = (TargetCursorMultiPacket)packet;
             GameState.MouseTargeting(TargetTypes.MultiPlacement, 0);
-            UserInterface.Cursor.TargetingMulti = p.MultiModel;
+            UltimaEngine.UserInterface.Cursor.TargetingMulti = p.MultiModel;
         }
 
         private static void receive_Time(IRecvPacket packet)
         {
             TimePacket p = (TimePacket)packet;
-            UserInterface.AddMessage_Chat(string.Format("The current server time is {0}:{1}:{2}", p.Hour, p.Minute, p.Second));
+            UltimaInteraction.ChatMessage(string.Format("The current server time is {0}:{1}:{2}", p.Hour, p.Minute, p.Second));
         }
 
         private static void receive_TipNotice(IRecvPacket packet)
@@ -960,13 +954,13 @@ namespace UltimaXNA
         private static void receive_VersionRequest(IRecvPacket packet)
         {
             // Automatically respond.
-            Interaction.SendClientVersion();
+            UltimaInteraction.SendClientVersion();
         }
 
         static void receive_WarMode(IRecvPacket packet)
         {
             WarModePacket p = (WarModePacket)packet;
-            ClientVars.EngineVars.WarMode = p.WarMode;
+            UltimaVars.EngineVars.WarMode = p.WarMode;
         }
 
         static void receive_WorldItem(IRecvPacket packet)
@@ -1026,19 +1020,19 @@ namespace UltimaXNA
                     overhead = Entities.AddOverhead(msgType, serial, text, font, hue);
                     if (overhead != null)
                     {
-                        UserInterface.AddMessage_Chat(speakerName + ": " + text, font, hue);
+                        UltimaInteraction.ChatMessage(speakerName + ": " + text, font, hue);
                         overhead.SpeakerName = speakerName;
                     }
                     else
                     {
-                        UserInterface.AddMessage_Chat(text, font, hue);
+                        UltimaInteraction.ChatMessage(text, font, hue);
                     }
                     break;
                 case MessageType.System:
-                    UserInterface.AddMessage_Chat("[SYSTEM] " + text, font, hue);
+                    UltimaInteraction.ChatMessage("[SYSTEM] " + text, font, hue);
                     break;
                 case MessageType.Emote:
-                    UserInterface.AddMessage_Chat("[EMOTE] " + text, font, hue);
+                    UltimaInteraction.ChatMessage("[EMOTE] " + text, font, hue);
                     break;
                 case MessageType.Label:
                     if (serial.IsValid)
@@ -1055,32 +1049,32 @@ namespace UltimaXNA
                     }
                     else
                     {
-                        UserInterface.AddMessage_Chat("[LABEL] " + text, font, hue);
+                        UltimaInteraction.ChatMessage("[LABEL] " + text, font, hue);
                     }
                     break;
                 case MessageType.Focus: // on player?
-                    UserInterface.AddMessage_Chat("[FOCUS] " + text, font, hue);
+                    UltimaInteraction.ChatMessage("[FOCUS] " + text, font, hue);
                     break;
                 case MessageType.Whisper:
-                    UserInterface.AddMessage_Chat("[WHISPER] " + text, font, hue);
+                    UltimaInteraction.ChatMessage("[WHISPER] " + text, font, hue);
                     break;
                 case MessageType.Yell:
-                    UserInterface.AddMessage_Chat("[YELL] " + text, font, hue);
+                    UltimaInteraction.ChatMessage("[YELL] " + text, font, hue);
                     break;
                 case MessageType.Spell:
-                    UserInterface.AddMessage_Chat("[SPELL] " + text, font, hue);
+                    UltimaInteraction.ChatMessage("[SPELL] " + text, font, hue);
                     break;
                 case MessageType.UIld:
-                    UserInterface.AddMessage_Chat("[UILD] " + text, font, hue);
+                    UltimaInteraction.ChatMessage("[UILD] " + text, font, hue);
                     break;
                 case MessageType.Alliance:
-                    UserInterface.AddMessage_Chat("[ALLIANCE] " + text, font, hue);
+                    UltimaInteraction.ChatMessage("[ALLIANCE] " + text, font, hue);
                     break;
                 case MessageType.Command:
-                    UserInterface.AddMessage_Chat("[COMMAND] " + text, font, hue);
+                    UltimaInteraction.ChatMessage("[COMMAND] " + text, font, hue);
                     break;
                 default:
-                    UserInterface.AddMessage_Chat("[[ERROR UNKNOWN COMMAND]] " + msgType.ToString());
+                    UltimaInteraction.ChatMessage("[[ERROR UNKNOWN COMMAND]] " + msgType.ToString());
                     break;
             }
         }
@@ -1141,7 +1135,7 @@ namespace UltimaXNA
                 if ((iArgs[i].Length > 0) && (iArgs[i].Substring(0, 1) == "#"))
                 {
                     int clilocID = Convert.ToInt32(iArgs[i].Substring(1));
-                    iArgs[i] = Data.StringList.Entry(clilocID);
+                    iArgs[i] = UltimaData.StringList.Entry(clilocID);
                 }
             }
 
@@ -1174,7 +1168,7 @@ namespace UltimaXNA
             }
             else
             {
-                if (Data.TileData.ItemData[itemID].Container)
+                if (UltimaData.TileData.ItemData[itemID].Container)
                     item = Entities.GetObject<Container>((int)serial, true);
                 else
                     item = Entities.GetObject<Item>((int)serial, true);
@@ -1192,6 +1186,8 @@ namespace UltimaXNA
         LoginServer_Connecting,
         LoginServer_WaitingForLogin,
         LoginServer_LoggingIn,
+        LoginServer_WaitingForRelay,
+        LoginServer_Relaying,
         LoginServer_HasServerList,
         GameServer_Connecting,
         GameServer_CharList,

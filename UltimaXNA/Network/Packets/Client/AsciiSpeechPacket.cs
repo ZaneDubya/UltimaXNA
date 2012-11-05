@@ -49,7 +49,7 @@ namespace UltimaXNA.Network.Packets.Client
         {
             // get triggers
             int triggerCount; int[] triggers;
-            Data.Speech.GetSpeechTriggers(text, lang, out triggerCount, out triggers);
+            UltimaData.Speech.GetSpeechTriggers(text, lang, out triggerCount, out triggers);
             if (triggerCount > 0)
                 type = (AsciiSpeechPacketTypes)((byte)type | HasTriggers);
 

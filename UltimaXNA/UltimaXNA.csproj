@@ -122,13 +122,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClientVars\Characters.cs" />
-    <Compile Include="ClientVars\Servers.cs" />
-    <Compile Include="ClientVars\EngineVars.cs" />
-    <Compile Include="ClientVars\DebugVars.cs" />
-    <Compile Include="ClientVars\Features.cs" />
-    <Compile Include="ClientVars\Skills.cs" />
-    <Compile Include="ClientVars\Status.cs" />
+    <Compile Include="UltimaVars\Characters.cs" />
+    <Compile Include="UltimaVars\Servers.cs" />
+    <Compile Include="UltimaVars\EngineVars.cs" />
+    <Compile Include="UltimaVars\DebugVars.cs" />
+    <Compile Include="UltimaVars\Features.cs" />
+    <Compile Include="UltimaVars\Skills.cs" />
+    <Compile Include="UltimaVars\Status.cs" />
+    <Compile Include="Core\BaseEngine.cs" />
     <Compile Include="Network\Packets\Client\AsciiSpeechPacket.cs" />
     <Compile Include="Network\Packets\Client\AttackRequestPacket.cs" />
     <Compile Include="Network\Packets\Client\BuyItemsPacket.cs" />
@@ -248,52 +249,52 @@
     <Compile Include="Network\Packets\Server\WeatherPacket.cs" />
     <Compile Include="Network\Packets\Server\WornItemPacket.cs" />
     <Compile Include="Network\Shared.cs" />
+    <Compile Include="Core\Program.cs" />
     <Compile Include="UltimaClient.cs" />
-    <Compile Include="Data\Art.cs" />
-    <Compile Include="Data\ASCIIFont.cs" />
-    <Compile Include="Data\ContainerData.cs" />
-    <Compile Include="Data\CustomHousing.cs" />
-    <Compile Include="Data\HairStyles.cs" />
-    <Compile Include="Data\ParticleData.cs" />
-    <Compile Include="Data\Skills.cs" />
-    <Compile Include="Data\Speech.cs" />
-    <Compile Include="Data\TileMatrix.cs">
+    <Compile Include="UltimaData\Art.cs" />
+    <Compile Include="UltimaData\ASCIIFont.cs" />
+    <Compile Include="UltimaData\ContainerData.cs" />
+    <Compile Include="UltimaData\CustomHousing.cs" />
+    <Compile Include="UltimaData\HairStyles.cs" />
+    <Compile Include="UltimaData\ParticleData.cs" />
+    <Compile Include="UltimaData\Skills.cs" />
+    <Compile Include="UltimaData\Speech.cs" />
+    <Compile Include="UltimaData\TileMatrix.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Data\TileMatrixRaw.cs" />
-    <Compile Include="Diagnostics\Dynamic.cs" />
-    <Compile Include="Core\Support\GumpExporter.cs" />
-    <Compile Include="Interface\TileEngine\Objects\MapObjectDynamic.cs" />
-    <Compile Include="Interface\TileEngine\Objects\MapObjectPrerendered.cs" />
-    <Compile Include="UILegacy\Gumplings\TextureGumpling.cs" />
-    <Compile Include="UILegacy\HTML\HTMLRegions.cs" />
-    <Compile Include="UILegacy\HTML\HTMLParserAtoms.cs" />
-    <Compile Include="UILegacy\HTML\HTMLEnums.cs" />
-    <Compile Include="UILegacy\HTML\HTMLImages.cs" />
-    <Compile Include="UILegacy\HTML\HTMLParser.cs" />
-    <Compile Include="Interaction.cs" />
-    <Compile Include="ClientVars\Metrics.cs" />
-    <Compile Include="Data\Gumps.cs" />
-    <Compile Include="Data\Mobtypes.cs" />
-    <Compile Include="Data\Multis.cs" />
-    <Compile Include="Data\Music.cs" />
-    <Compile Include="Data\Radarcol.cs" />
-    <Compile Include="Data\SharedMethods.cs" />
-    <Compile Include="Data\Sound.cs" />
-    <Compile Include="Data\StringList.cs" />
-    <Compile Include="Data\UniFonts.cs" />
-    <Compile Include="Diagnostics\Logger.cs">
+    <Compile Include="UltimaData\TileMatrixRaw.cs" />
+    <Compile Include="Core\Diagnostics\Dynamic.cs" />
+    <Compile Include="TileEngine\Objects\MapObjectDynamic.cs" />
+    <Compile Include="TileEngine\Objects\MapObjectPrerendered.cs" />
+    <Compile Include="UltimaGUI\Gumplings\TextureGumpling.cs" />
+    <Compile Include="Core\GUI\HTML\HTMLRegions.cs" />
+    <Compile Include="Core\GUI\HTML\HTMLParserAtoms.cs" />
+    <Compile Include="Core\GUI\HTML\HTMLEnums.cs" />
+    <Compile Include="Core\GUI\HTML\HTMLImages.cs" />
+    <Compile Include="Core\GUI\HTML\HTMLParser.cs" />
+    <Compile Include="UltimaInteraction.cs" />
+    <Compile Include="UltimaVars\Metrics.cs" />
+    <Compile Include="UltimaData\Gumps.cs" />
+    <Compile Include="UltimaData\Mobtypes.cs" />
+    <Compile Include="UltimaData\Multis.cs" />
+    <Compile Include="UltimaData\Music.cs" />
+    <Compile Include="UltimaData\Radarcol.cs" />
+    <Compile Include="UltimaData\SharedMethods.cs" />
+    <Compile Include="UltimaData\Sound.cs" />
+    <Compile Include="UltimaData\StringList.cs" />
+    <Compile Include="UltimaData\UniFonts.cs" />
+    <Compile Include="Core\Diagnostics\Logger.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Diagnostics\StatusLevel.cs">
+    <Compile Include="Core\Diagnostics\StatusLevel.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Diagnostics\StatusUpdateEventArgs.cs">
+    <Compile Include="Core\Diagnostics\StatusUpdateEventArgs.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Engine.cs" />
-    <Compile Include="Data\FileManager.cs" />
-    <Compile Include="Data\FileIndexClint.cs" />
+    <Compile Include="UltimaEngine.cs" />
+    <Compile Include="UltimaData\FileManager.cs" />
+    <Compile Include="UltimaData\FileIndexClint.cs" />
     <Compile Include="Core\Point.cs" />
     <Compile Include="Entity\Container.cs" />
     <Compile Include="Entity\ContainerItem.cs" />
@@ -314,95 +315,89 @@
     <Compile Include="Entity\PlayerMobile.cs" />
     <Compile Include="Entity\PropertyList.cs" />
     <Compile Include="Entity\Shared.cs" />
-    <Compile Include="Core\Extensions\CallPriorityComparer.cs" />
     <Compile Include="GameState.cs" />
-    <Compile Include="Interface\Input\EventArgs.cs" />
-    <Compile Include="Interface\Input\EventArgsKeyboard.cs" />
-    <Compile Include="Interface\Input\EventArgsMouse.cs" />
-    <Compile Include="Interface\Input\InputEvent.cs" />
-    <Compile Include="InputState.cs" />
-    <Compile Include="Interface\Input\InputEventKB.cs" />
-    <Compile Include="Interface\Input\Enums.cs" />
-    <Compile Include="Interface\Input\Message.cs" />
-    <Compile Include="Interface\Input\MessageHook.cs" />
-    <Compile Include="Interface\Input\InputEventM.cs" />
-    <Compile Include="Interface\Input\NativeMethods.cs" />
-    <Compile Include="Interface\Input\WndProc.cs" />
+    <Compile Include="Core\Input\EventArgs.cs" />
+    <Compile Include="Core\Input\EventArgsKeyboard.cs" />
+    <Compile Include="Core\Input\EventArgsMouse.cs" />
+    <Compile Include="Core\Input\InputEvent.cs" />
+    <Compile Include="Core\InputState.cs" />
+    <Compile Include="Core\Input\InputEventKB.cs" />
+    <Compile Include="Core\Input\Enums.cs" />
+    <Compile Include="Core\Input\Message.cs" />
+    <Compile Include="Core\Input\MessageHook.cs" />
+    <Compile Include="Core\Input\InputEventM.cs" />
+    <Compile Include="Core\Input\NativeMethods.cs" />
+    <Compile Include="Core\Input\WndProc.cs" />
     <Compile Include="Scene\CharacterListScene.cs" />
     <Compile Include="Scene\CreateCharacterScene.cs" />
     <Compile Include="Scene\LoggingInScene.cs" />
     <Compile Include="Scene\SelectServerScene.cs" />
-    <Compile Include="Core\Support\WebSafeHues.cs" />
-    <Compile Include="Interface\TileEngine\Objects\MapObjectDeferred.cs" />
-    <Compile Include="Interface\Graphics\VectorPolygon.cs" />
-    <Compile Include="Interface\Graphics\VectorRenderer.cs" />
-    <Compile Include="UILegacy\HTML\HTMLParsing\DynaString.cs" />
-    <Compile Include="UILegacy\HTML\HTMLParsing\FastHash.cs" />
-    <Compile Include="UILegacy\HTML\HTMLParsing\HTMLchunk.cs" />
-    <Compile Include="UILegacy\HTML\HTMLParsing\HTMLentities.cs" />
-    <Compile Include="UILegacy\HTML\HTMLParsing\HTMLheuristics.cs" />
-    <Compile Include="UILegacy\HTML\HTMLParsing\HTMLParser.cs" />
-    <Compile Include="UILegacy\HTML\HTMLParsing\TagParser.cs" />
+    <Compile Include="TileEngine\Objects\MapObjectDeferred.cs" />
+    <Compile Include="Core\Graphics\VectorPolygon.cs" />
+    <Compile Include="Core\Graphics\VectorRenderer.cs" />
+    <Compile Include="Core\GUI\HTML\HTMLParsing\DynaString.cs" />
+    <Compile Include="Core\GUI\HTML\HTMLParsing\FastHash.cs" />
+    <Compile Include="Core\GUI\HTML\HTMLParsing\HTMLchunk.cs" />
+    <Compile Include="Core\GUI\HTML\HTMLParsing\HTMLentities.cs" />
+    <Compile Include="Core\GUI\HTML\HTMLParsing\HTMLheuristics.cs" />
+    <Compile Include="Core\GUI\HTML\HTMLParsing\HTMLParser.cs" />
+    <Compile Include="Core\GUI\HTML\HTMLParsing\TagParser.cs" />
     <Compile Include="IsometricRenderer.cs" />
-    <Compile Include="Interface\TileEngine\Map\MapTile.cs" />
-    <Compile Include="Interface\TileEngine\Objects\MapObjectComparer.cs" />
-    <Compile Include="Interface\TileEngine\MouseOverList.cs" />
-    <Compile Include="UILegacy\ChatHandler.cs" />
-    <Compile Include="UILegacy\ClientsideGumps\CharacterListGump.cs" />
-    <Compile Include="UILegacy\ClientsideGumps\ChatWindow.cs" />
-    <Compile Include="UILegacy\ClientsideGumps\ContainerGump.cs" />
-    <Compile Include="UILegacy\ClientsideGumps\CreateCharSkillsGump.cs" />
-    <Compile Include="UILegacy\ClientsideGumps\CreateCharAppearanceGump.cs" />
-    <Compile Include="UILegacy\ClientsideGumps\DebugGump.cs" />
-    <Compile Include="UILegacy\ClientsideGumps\LoggingInGump.cs" />
-    <Compile Include="UILegacy\ClientsideGumps\LoginGump.cs" />
-    <Compile Include="UILegacy\ClientsideGumps\MiniMap.cs" />
-    <Compile Include="UILegacy\ClientsideGumps\SkillsGump.cs" />
-    <Compile Include="UILegacy\ClientsideGumps\StatusGump.cs" />
-    <Compile Include="UILegacy\Gumplings\ExpandableScroll.cs" />
-    <Compile Include="UILegacy\Core\MsgBox.cs" />
-    <Compile Include="UILegacy\ClientsideGumps\PaperDollGump.cs" />
-    <Compile Include="UILegacy\ClientsideGumps\SelectServerGump.cs" />
-    <Compile Include="UILegacy\ClientsideGumps\TopMenu.cs" />
-    <Compile Include="UILegacy\Core\Control.cs" />
-    <Compile Include="UILegacy\Core\DropWidget.cs" />
-    <Compile Include="UILegacy\Core\iControl.cs" />
-    <Compile Include="UILegacy\Cursor.cs" />
-    <Compile Include="Interface\Graphics\SpriteBatchUI.cs" />
-    <Compile Include="UILegacy\Core\Gump.cs" />
-    <Compile Include="UILegacy\Gumplings\Button.cs" />
-    <Compile Include="UILegacy\Gumplings\CheckerTrans.cs" />
-    <Compile Include="UILegacy\Gumplings\ColorPicker.cs" />
-    <Compile Include="UILegacy\Gumplings\CroppedText.cs" />
-    <Compile Include="UILegacy\Gumplings\DropDownList.cs" />
-    <Compile Include="UILegacy\Core\DragWidget.cs" />
-    <Compile Include="UILegacy\Gumplings\ItemGumplingPaperdoll.cs" />
-    <Compile Include="UILegacy\Gumplings\ItemGumpling.cs" />
-    <Compile Include="UILegacy\Gumplings\PaperdollLargeUninteractable.cs" />
-    <Compile Include="UILegacy\Gumplings\PaperDollInteractable.cs" />
-    <Compile Include="UILegacy\Gumplings\ScrollBar.cs" />
-    <Compile Include="UILegacy\Gumplings\GumpPic.cs" />
-    <Compile Include="UILegacy\Gumplings\GumpPicContainer.cs" />
-    <Compile Include="UILegacy\Gumplings\GumpPicTiled.cs" />
-    <Compile Include="UILegacy\Gumplings\HtmlGump.cs" />
-    <Compile Include="UILegacy\Gumplings\ResizePic.cs" />
-    <Compile Include="UILegacy\Gumplings\Slider.cs" />
-    <Compile Include="UILegacy\Gumplings\TextEntry.cs" />
-    <Compile Include="UILegacy\Gumplings\TextLabel.cs" />
-    <Compile Include="UILegacy\Gumplings\TextLabelAscii.cs" />
-    <Compile Include="UILegacy\Gumplings\TextLabelAsciiCropped.cs" />
-    <Compile Include="UILegacy\Gumplings\TilePic.cs" />
-    <Compile Include="UILegacy\Core\GumplingEventArgs.cs" />
-    <Compile Include="UILegacy\Core\TextRenderer.cs" />
-    <Compile Include="UserInterface.cs" />
-    <Compile Include="Data\StaticTileList.cs" />
-    <Compile Include="Data\Texmaps.cs" />
-    <Compile Include="Data\TileData.cs" />
-    <Compile Include="Data\TileMatrixPatch.cs" />
+    <Compile Include="TileEngine\Map\MapTile.cs" />
+    <Compile Include="TileEngine\Objects\MapObjectComparer.cs" />
+    <Compile Include="TileEngine\MouseOverList.cs" />
+    <Compile Include="UltimaGUI\ClientsideGumps\CharacterListGump.cs" />
+    <Compile Include="UltimaGUI\ClientsideGumps\ChatWindow.cs" />
+    <Compile Include="UltimaGUI\ClientsideGumps\ContainerGump.cs" />
+    <Compile Include="UltimaGUI\ClientsideGumps\CreateCharSkillsGump.cs" />
+    <Compile Include="UltimaGUI\ClientsideGumps\CreateCharAppearanceGump.cs" />
+    <Compile Include="UltimaGUI\ClientsideGumps\DebugGump.cs" />
+    <Compile Include="UltimaGUI\ClientsideGumps\LoggingInGump.cs" />
+    <Compile Include="UltimaGUI\ClientsideGumps\LoginGump.cs" />
+    <Compile Include="UltimaGUI\ClientsideGumps\MiniMap.cs" />
+    <Compile Include="UltimaGUI\ClientsideGumps\SkillsGump.cs" />
+    <Compile Include="UltimaGUI\ClientsideGumps\StatusGump.cs" />
+    <Compile Include="UltimaGUI\Gumplings\ExpandableScroll.cs" />
+    <Compile Include="UltimaGUI\MsgBox.cs" />
+    <Compile Include="UltimaGUI\ClientsideGumps\PaperDollGump.cs" />
+    <Compile Include="UltimaGUI\ClientsideGumps\SelectServerGump.cs" />
+    <Compile Include="UltimaGUI\ClientsideGumps\TopMenu.cs" />
+    <Compile Include="Core\GUI\Control.cs" />
+    <Compile Include="UltimaGUI\DropWidget.cs" />
+    <Compile Include="UltimaGUI\UltimaCursor.cs" />
+    <Compile Include="Core\Graphics\SpriteBatchUI.cs" />
+    <Compile Include="UltimaGUI\Gump.cs" />
+    <Compile Include="UltimaGUI\Gumplings\Button.cs" />
+    <Compile Include="UltimaGUI\Gumplings\CheckerTrans.cs" />
+    <Compile Include="UltimaGUI\Gumplings\ColorPicker.cs" />
+    <Compile Include="UltimaGUI\Gumplings\CroppedText.cs" />
+    <Compile Include="UltimaGUI\Gumplings\DropDownList.cs" />
+    <Compile Include="Core\GUI\DragWidget.cs" />
+    <Compile Include="UltimaGUI\Gumplings\ItemGumplingPaperdoll.cs" />
+    <Compile Include="UltimaGUI\Gumplings\ItemGumpling.cs" />
+    <Compile Include="UltimaGUI\Gumplings\PaperdollLargeUninteractable.cs" />
+    <Compile Include="UltimaGUI\Gumplings\PaperDollInteractable.cs" />
+    <Compile Include="UltimaGUI\Gumplings\ScrollBar.cs" />
+    <Compile Include="UltimaGUI\Gumplings\GumpPic.cs" />
+    <Compile Include="UltimaGUI\Gumplings\GumpPicContainer.cs" />
+    <Compile Include="UltimaGUI\Gumplings\GumpPicTiled.cs" />
+    <Compile Include="UltimaGUI\Gumplings\HtmlGump.cs" />
+    <Compile Include="UltimaGUI\Gumplings\ResizePic.cs" />
+    <Compile Include="UltimaGUI\Gumplings\Slider.cs" />
+    <Compile Include="UltimaGUI\Gumplings\TextEntry.cs" />
+    <Compile Include="UltimaGUI\Gumplings\TextLabel.cs" />
+    <Compile Include="UltimaGUI\Gumplings\TextLabelAscii.cs" />
+    <Compile Include="UltimaGUI\Gumplings\TextLabelAsciiCropped.cs" />
+    <Compile Include="UltimaGUI\Gumplings\TilePic.cs" />
+    <Compile Include="Core\GUI\TextRenderer.cs" />
+    <Compile Include="Core\GUIState.cs" />
+    <Compile Include="UltimaData\StaticTileList.cs" />
+    <Compile Include="UltimaData\Texmaps.cs" />
+    <Compile Include="UltimaData\TileData.cs" />
+    <Compile Include="UltimaData\TileMatrixPatch.cs" />
     <Compile Include="Network\ClientNetwork.cs" />
     <Compile Include="Network\Compression\HuffmanDecompression.cs" />
     <Compile Include="Network\Compression\ZlibDecompression.cs" />
-    <Compile Include="Network\Interfaces\IClientNetwork.cs" />
     <Compile Include="Network\Interfaces\IDecompression.cs" />
     <Compile Include="Network\Interfaces\IRecvPacket.cs" />
     <Compile Include="Network\Interfaces\ISendPacket.cs" />
@@ -419,26 +414,25 @@
     <Compile Include="Scene\WorldScene.cs" />
     <Compile Include="Scene\LoginScene.cs" />
     <Compile Include="Entity\Serial.cs" />
-    <Compile Include="Core\Extensions\Extensions.cs" />
-    <Compile Include="Core\Shared.cs" />
-    <Compile Include="Interface\TileEngine\Objects\MapObjectCorpse.cs" />
-    <Compile Include="Interface\TileEngine\Objects\MapObjectItem.cs" />
-    <Compile Include="Interface\TileEngine\MiniMap.cs" />
-    <Compile Include="Interface\TileEngine\Objects\MapObjectGround.cs" />
-    <Compile Include="Interface\TileEngine\Map\Map.cs" />
-    <Compile Include="Interface\TileEngine\Objects\MapObjectMobile.cs" />
-    <Compile Include="Interface\TileEngine\Shared.cs" />
-    <Compile Include="Interface\Graphics\SpriteBatch3D.cs" />
-    <Compile Include="Interface\TileEngine\Objects\MapObjectText.cs" />
-    <Compile Include="Interface\TileEngine\Objects\MapObject.cs" />
-    <Compile Include="Interface\TileEngine\Objects\MapObjectStatic.cs" />
-    <Compile Include="Interface\Graphics\VertexPositionNormalTextureHue.cs" />
+    <Compile Include="UltimaData\Enums.cs" />
+    <Compile Include="TileEngine\Objects\MapObjectCorpse.cs" />
+    <Compile Include="TileEngine\Objects\MapObjectItem.cs" />
+    <Compile Include="TileEngine\MiniMap.cs" />
+    <Compile Include="TileEngine\Objects\MapObjectGround.cs" />
+    <Compile Include="TileEngine\Map\Map.cs" />
+    <Compile Include="TileEngine\Objects\MapObjectMobile.cs" />
+    <Compile Include="TileEngine\Shared.cs" />
+    <Compile Include="Core\Graphics\SpriteBatch3D.cs" />
+    <Compile Include="TileEngine\Objects\MapObjectText.cs" />
+    <Compile Include="TileEngine\Objects\MapObject.cs" />
+    <Compile Include="TileEngine\Objects\MapObjectStatic.cs" />
+    <Compile Include="Core\Graphics\VertexPositionNormalTextureHue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Data\Animations.cs" />
-    <Compile Include="Data\FileIndex.cs" />
-    <Compile Include="Data\Hues.cs" />
-    <Compile Include="Data\Verdata.cs" />
-    <Compile Include="Core\Utility.cs" />
+    <Compile Include="UltimaData\Animations.cs" />
+    <Compile Include="UltimaData\FileIndex.cs" />
+    <Compile Include="UltimaData\Hues.cs" />
+    <Compile Include="UltimaData\Verdata.cs" />
+    <Compile Include="Utility.cs" />
   </ItemGroup>
   <ItemGroup>
     <NestedContentProject Include="Content\Content.contentproj">
@@ -489,11 +483,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="zlib32.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="Network\Packets\Both\" />
   </ItemGroup>
   <ItemGroup>
@@ -502,6 +491,11 @@
       <Name>UltimaXNAContent %28Content%29</Name>
       <XnaReferenceType>Content</XnaReferenceType>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="zlib32.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />

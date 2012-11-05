@@ -13,7 +13,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using UltimaXNA.Interface.TileEngine;
+using UltimaXNA.TileEngine;
 using UltimaXNA.Network;
 using UltimaXNA.Network.Packets.Client;
 #endregion

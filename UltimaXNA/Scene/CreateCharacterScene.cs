@@ -25,8 +25,8 @@ using System.Threading;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Network;
 using UltimaXNA.Network.Packets;
-using UltimaXNA.UILegacy;
-using UltimaXNA.UILegacy.ClientsideGumps;
+using UltimaXNA.UltimaGUI;
+using UltimaXNA.UltimaGUI.ClientsideGumps;
 #endregion
 
 namespace UltimaXNA.Scene
@@ -65,7 +65,7 @@ namespace UltimaXNA.Scene
 
         void openSkillsGump()
         {
-            Gump g = UserInterface.AddGump_Local(new CreateCharSkillsGump(), 0, 0);
+            Gump g = UltimaEngine.UserInterface.AddGump_Local(new CreateCharSkillsGump(), 0, 0);
             CreateCharSkillsGump g1 = ((CreateCharSkillsGump)g);
             g1.OnForward += this.OnForward;
             g1.OnBackward += this.OnBackward;
@@ -87,7 +87,7 @@ namespace UltimaXNA.Scene
 
         void openAppearanceGump()
         {
-            Gump g = UserInterface.AddGump_Local(new CreateCharAppearanceGump(), 0, 0);
+            Gump g = UltimaEngine.UserInterface.AddGump_Local(new CreateCharAppearanceGump(), 0, 0);
             CreateCharAppearanceGump g1 = ((CreateCharAppearanceGump)g);
             ((CreateCharAppearanceGump)g1).OnForward += this.OnForward;
             ((CreateCharAppearanceGump)g1).OnBackward += this.OnBackward;
@@ -109,15 +109,15 @@ namespace UltimaXNA.Scene
         {
             // we need to make sure that the stats add up to 80, skills add up to 100, and 3 unique skills are selected.
             // if not, pop up an appropriate error message.
-            CreateCharSkillsGump g = UserInterface.GetGump<CreateCharSkillsGump>(0);
+            CreateCharSkillsGump g = UltimaEngine.UserInterface.GetGump<CreateCharSkillsGump>(0);
             if (g.Strength + g.Dexterity + g.Intelligence != 80)
             {
-                UserInterface.MsgBox("Error: your stat values did not add up to 80. Please logout and try to make another character.", MsgBoxTypes.OkOnly);
+                UltimaEngine.UserInterface.MsgBox("Error: your stat values did not add up to 80. Please logout and try to make another character.", MsgBoxTypes.OkOnly);
                 return false;
             }
             if (g.SkillPoints0 + g.SkillPoints1 + g.SkillPoints2 != 100)
             {
-                UserInterface.MsgBox("Error: your skill values did not add up to 100. Please logout and try to make another character.", MsgBoxTypes.OkOnly);
+                UltimaEngine.UserInterface.MsgBox("Error: your skill values did not add up to 100. Please logout and try to make another character.", MsgBoxTypes.OkOnly);
                 return false;
             }
             if (g.SkillIndex0 == -1 || g.SkillIndex1 == -1 || g.SkillIndex2 == -1 ||
@@ -125,7 +125,7 @@ namespace UltimaXNA.Scene
                 (g.SkillIndex1 == g.SkillIndex2) ||
                 (g.SkillIndex0 == g.SkillIndex2))
             {
-                UserInterface.MsgBox("You must have three unique skills chosen!", MsgBoxTypes.OkOnly);
+                UltimaEngine.UserInterface.MsgBox("You must have three unique skills chosen!", MsgBoxTypes.OkOnly);
                 return false;
             }
             // save the values;
@@ -144,7 +144,7 @@ namespace UltimaXNA.Scene
 
         bool validateAppearance()
         {
-            CreateCharAppearanceGump g = UserInterface.GetGump<CreateCharAppearanceGump>(0);
+            CreateCharAppearanceGump g = UltimaEngine.UserInterface.GetGump<CreateCharAppearanceGump>(0);
             // save the values
             _appearanceSet = true;
             _name = g.Name;
@@ -158,12 +158,12 @@ namespace UltimaXNA.Scene
             // if not, pop up an appropriate error message.
             if (_name.Length < 2)
             {
-                UserInterface.MsgBox(Data.StringList.Entry(1075458), MsgBoxTypes.OkOnly); // 1075458: Your character name is too short.
+                UltimaEngine.UserInterface.MsgBox(UltimaData.StringList.Entry(1075458), MsgBoxTypes.OkOnly); // 1075458: Your character name is too short.
                 return false;
             }
             if (_name[_name.Length - 1] == '.')
             {
-                UserInterface.MsgBox(Data.StringList.Entry(1075457), MsgBoxTypes.OkOnly); // 1075457: Your character name cannot end with a period('.').
+                UltimaEngine.UserInterface.MsgBox(UltimaData.StringList.Entry(1075457), MsgBoxTypes.OkOnly); // 1075457: Your character name cannot end with a period('.').
                 return false;
             }
             return true;
@@ -190,7 +190,7 @@ namespace UltimaXNA.Scene
                             _name, (Sex)_gender, (Race)0, (byte)_attributes[0], (byte)_attributes[1], (byte)_attributes[2], 
                             (byte)_skillIndexes[0], (byte)_skillValues[0], (byte)_skillIndexes[1], (byte)_skillValues[1], (byte)_skillIndexes[2], (byte)_skillValues[2],
                             (short)_skinHue, (short)_hairStyleID, (short)_hairHue, (short)_facialHairStyleID, (short)_facialHairHue,
-                            0, (short)ClientVars.Characters.FirstEmptySlot, Utility.IPAddress, 0, 0));
+                            0, (short)UltimaVars.Characters.FirstEmptySlot, Utility.IPAddress, 0, 0));
                         break;
                 }
 
@@ -215,10 +215,10 @@ namespace UltimaXNA.Scene
 
         public override void Dispose()
         {
-            if (UserInterface.GetGump<CreateCharAppearanceGump>(0) != null)
-                UserInterface.GetGump<CreateCharAppearanceGump>(0).Dispose();
-            if (UserInterface.GetGump<CreateCharSkillsGump>(0) != null)
-                UserInterface.GetGump<CreateCharSkillsGump>(0).Dispose();
+            if (UltimaEngine.UserInterface.GetGump<CreateCharAppearanceGump>(0) != null)
+                UltimaEngine.UserInterface.GetGump<CreateCharAppearanceGump>(0).Dispose();
+            if (UltimaEngine.UserInterface.GetGump<CreateCharSkillsGump>(0) != null)
+                UltimaEngine.UserInterface.GetGump<CreateCharSkillsGump>(0).Dispose();
             base.Dispose();
         }
 
@@ -230,7 +230,7 @@ namespace UltimaXNA.Scene
                     _status = CreateCharacterSceneStates.Cancel;
                     break;
                 case CreateCharacterSceneStates.ChooseAppearance:
-                    UserInterface.GetGump<CreateCharAppearanceGump>(0).Dispose();
+                    UltimaEngine.UserInterface.GetGump<CreateCharAppearanceGump>(0).Dispose();
                     openSkillsGump();
                     break;
             }
@@ -243,7 +243,7 @@ namespace UltimaXNA.Scene
                 case CreateCharacterSceneStates.ChooseSkills:
                     if (validateSkills())
                     {
-                        UserInterface.GetGump<CreateCharSkillsGump>(0).Dispose();
+                        UltimaEngine.UserInterface.GetGump<CreateCharSkillsGump>(0).Dispose();
                         openAppearanceGump();
                     }
                     break;

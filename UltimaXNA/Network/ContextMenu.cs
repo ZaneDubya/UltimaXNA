@@ -34,7 +34,7 @@ namespace UltimaXNA.Network.Packets
 
         public ContextMenuItem(int nResponseCode, int iStringID, int iFlags, int iHue)
         {
-            _caption = Data.StringList.Entry(iStringID);
+            _caption = UltimaData.StringList.Entry(iStringID);
             _responseCode = nResponseCode;
         }
     }
