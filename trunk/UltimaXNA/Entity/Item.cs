@@ -11,7 +11,7 @@
 #region usings
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using UltimaXNA.Interface.TileEngine;
+using UltimaXNA.TileEngine;
 #endregion
 
 namespace UltimaXNA.Entity
@@ -60,7 +60,7 @@ namespace UltimaXNA.Entity
             get; internal set;
         }
 
-        public Data.ItemData ItemData;
+        public UltimaData.ItemData ItemData;
 
 		private int _ItemID = 0;
         public int ItemID
@@ -70,7 +70,7 @@ namespace UltimaXNA.Entity
             {
 				_ItemID = value;
                 HasBeenDrawn = false;
-                ItemData = UltimaXNA.Data.TileData.ItemData[_ItemID];
+                ItemData = UltimaXNA.UltimaData.TileData.ItemData[_ItemID];
                 AnimationDisplayID = ItemData.AnimID;
             }
         }

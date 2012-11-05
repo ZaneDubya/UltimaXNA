@@ -19,7 +19,7 @@ using UltimaXNA.Diagnostics;
 
 namespace UltimaXNA.Network
 {
-    public class ClientNetwork : IClientNetwork
+    public class ClientNetwork
     {
         IDecompression _decompression;
 

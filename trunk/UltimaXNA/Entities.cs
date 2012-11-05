@@ -11,10 +11,9 @@
 #region usings
 using System;
 using System.Collections.Generic;
-using UltimaXNA.Core.Extensions;
 using Microsoft.Xna.Framework;
 using UltimaXNA.Network.Packets.Client;
-using UltimaXNA.Interface.TileEngine;
+using UltimaXNA.TileEngine;
 using UltimaXNA.Entity;
 #endregion
 
@@ -22,22 +21,23 @@ namespace UltimaXNA
 {
     static class Entities
     {
-        private static Dictionary<int, BaseEntity> _entities = new Dictionary<int, BaseEntity>();
-        private static List<BaseEntity> _entities_Queued = new List<BaseEntity>();
-        private static bool _entitiesCollectionIsLocked = false;
+        private static Dictionary<int, BaseEntity> m_Entities = new Dictionary<int, BaseEntity>();
+        private static List<BaseEntity> m_Entities_Queued = new List<BaseEntity>();
+        private static bool m_EntitiesCollectionIsLocked = false;
+        static List<int> m_SerialsToRemove = new List<int>();
 
         public static int MySerial { get; set; }
 
         public static void Reset()
         {
-            _entities.Clear();
+            m_Entities.Clear();
         }
 
         public static BaseEntity GetPlayerObject()
         {
             // This could be cached to save time.
-            if (_entities.ContainsKey(MySerial))
-                return _entities[MySerial];
+            if (m_Entities.ContainsKey(MySerial))
+                return m_Entities[MySerial];
             else
 
                 return null;
@@ -46,17 +46,16 @@ namespace UltimaXNA
 
         public static void Update(GameTime gameTime)
         {
-            if (ClientVars.EngineVars.InWorld)
+            if (UltimaVars.EngineVars.InWorld)
             {
                 updateEntities(gameTime);
             }
         }
 
-        static List<int> _entitiesToRemove = new List<int>();
         private static void updateEntities(GameTime gameTime)
         {
             // redirect any new entities to a queue while we are enumerating the collection.
-            _entitiesCollectionIsLocked = true;
+            m_EntitiesCollectionIsLocked = true;
 
             // Get the player object
             BaseEntity player = GetPlayerObject();
@@ -64,10 +63,10 @@ namespace UltimaXNA
             // Update the player entity first because we cull entities out of range of this main object.
             player.Update(gameTime);
             if (player.IsDisposed)
-                _entitiesToRemove.Add(player.Serial);
+                m_SerialsToRemove.Add(player.Serial);
 
             // Update all other entities.
-            foreach (KeyValuePair<int, BaseEntity> entity in _entities)
+            foreach (KeyValuePair<int, BaseEntity> entity in m_Entities)
             {
                 // Don't update the player entity twice!
                 if (entity.Key == MySerial)
@@ -75,31 +74,31 @@ namespace UltimaXNA
                 if (!entity.Value.IsDisposed)
                     entity.Value.Update(gameTime);
                 // Dispose the entity if it is out of range.
-                if (!Utility.InRange(entity.Value.WorldPosition, player.Position, ClientVars.EngineVars.UpdateRange))
+                if (!Utility.InRange(entity.Value.WorldPosition, player.Position, UltimaVars.EngineVars.UpdateRange))
                     entity.Value.Dispose();
                 if (entity.Value.IsDisposed)
-                    _entitiesToRemove.Add(entity.Key);
+                    m_SerialsToRemove.Add(entity.Key);
             }
 
             // Remove disposed entities
-            foreach (int i in _entitiesToRemove)
+            foreach (int i in m_SerialsToRemove)
             {
-                _entities.Remove(i);
+                m_Entities.Remove(i);
             }
-            _entitiesToRemove.Clear();
+            m_SerialsToRemove.Clear();
 
             // stop redirecting new entities to the queue and add any queued entities to the main entity collection.
-            _entitiesCollectionIsLocked = false;
-            foreach (BaseEntity e in _entities_Queued)
-                _entities.Add(e.Serial, e);
-            _entities_Queued.Clear();
+            m_EntitiesCollectionIsLocked = false;
+            foreach (BaseEntity e in m_Entities_Queued)
+                m_Entities.Add(e.Serial, e);
+            m_Entities_Queued.Clear();
         }
 
         public static Overhead AddOverhead(MessageType msgType, Serial serial, string text, int fontID, int hue)
         {
-            if (_entities.ContainsKey(serial))
+            if (m_Entities.ContainsKey(serial))
             {
-                BaseEntity ownerEntity = _entities[serial];
+                BaseEntity ownerEntity = m_Entities[serial];
                 Overhead overhead = ownerEntity.AddOverhead(msgType, text, fontID, hue);
                 return overhead;
             }
@@ -118,7 +117,7 @@ namespace UltimaXNA
         public static List<T> GetObjectsByType<T>() where T : BaseEntity
         {
             List<T> list = new List<T>();
-            foreach (BaseEntity e in _entities.Values)
+            foreach (BaseEntity e in m_Entities.Values)
             {
                 if (e is T)
                 {
@@ -133,15 +132,15 @@ namespace UltimaXNA
         {
             T entity;
             // Check for existence in the collection.
-            if (_entities.ContainsKey(serial))
+            if (m_Entities.ContainsKey(serial))
             {
                 // This object is in the _entities collection. If it is being disposed, then we should complete disposal
                 // of the object and then return a new object. If it is not being disposed, return the object in the collection.
-                if (_entities[serial].IsDisposed)
+                if (m_Entities[serial].IsDisposed)
                 {
                     if (create)
                     {
-                        _entities.Remove(serial);
+                        m_Entities.Remove(serial);
                         entity = addObject<T>(serial);
                         return (T)entity;
                     }
@@ -150,7 +149,7 @@ namespace UltimaXNA
                         return null;
                     }
                 }
-                return (T)_entities[serial];
+                return (T)m_Entities[serial];
             }
 
             // No object with this Serial is in the collection. So we create a new one and return that, and hope that the server
@@ -202,19 +201,19 @@ namespace UltimaXNA
 
             // If the entities collection is locked, add the new entity to the queue. Otherwise 
             // add it directly to the main entity collection.
-            if (_entitiesCollectionIsLocked)
-                _entities_Queued.Add(e);
+            if (m_EntitiesCollectionIsLocked)
+                m_Entities_Queued.Add(e);
             else
-                _entities.Add(e.Serial, e);
+                m_Entities.Add(e.Serial, e);
 
             return (T)e;
         }
 
         public static void RemoveObject(Serial serial)
         {
-            if (_entities.ContainsKey(serial))
+            if (m_Entities.ContainsKey(serial))
             {
-                _entities[serial].Dispose();
+                m_Entities[serial].Dispose();
             }
         }
 

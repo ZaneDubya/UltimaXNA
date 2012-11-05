@@ -14,18 +14,15 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using UltimaXNA.Network;
 using UltimaXNA.Network.Packets.Client;
-using UltimaXNA.Data;
+using UltimaXNA.UltimaData;
 using UltimaXNA.Entity;
-using UltimaXNA.Core.Extensions;
 using UltimaXNA.Interface.Input;
-using UltimaXNA.Interface.TileEngine;
-using UltimaXNA.UILegacy;
+using UltimaXNA.TileEngine;
+using UltimaXNA.UltimaGUI;
 #endregion
 
 namespace UltimaXNA
 {
-    public delegate void MethodHook();
-
     public enum TargetTypes
     {
         Nothing = -1,
@@ -59,27 +56,77 @@ namespace UltimaXNA
 
         public static void Update(GameTime gameTime)
         {
+            UltimaVars.EngineVars.GameTime = gameTime;
+
+            // input for debug variables.
+            List<InputEventKB> keyEvents = UltimaEngine.Input.GetKeyboardEvents();
+            foreach (InputEventKB e in keyEvents)
+            {
+                // debug flags
+                if ((e.EventType == KeyboardEvent.Press) && (e.KeyCode == WinKeys.D) && e.Control)
+                {
+                    if (!e.Alt)
+                    {
+
+                        if (!UltimaVars.DebugVars.Flag_ShowDataRead)
+                            UltimaVars.DebugVars.Flag_ShowDataRead = true;
+                        else
+                        {
+                            if (!UltimaVars.DebugVars.Flag_BreakdownDataRead)
+                                UltimaVars.DebugVars.Flag_BreakdownDataRead = true;
+                            else
+                            {
+                                UltimaVars.DebugVars.Flag_ShowDataRead = false;
+                                UltimaVars.DebugVars.Flag_BreakdownDataRead = false;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Diagnostics.Dynamic.InvokeDebug();
+                    }
+                    e.Handled = true;
+                }
+
+                // fps limiting
+                if ((e.EventType == KeyboardEvent.Press) && (e.KeyCode == WinKeys.F) && e.Alt)
+                {
+                    if (!e.Control)
+                        UltimaVars.DebugVars.Flag_DisplayFPS = Utility.ToggleBoolean(UltimaVars.DebugVars.Flag_DisplayFPS);
+                    else
+                        UltimaVars.EngineVars.LimitFPS = Utility.ToggleBoolean(UltimaVars.EngineVars.LimitFPS);
+                    e.Handled = true;
+                }
+
+                // mouse enabling
+                if ((e.EventType == KeyboardEvent.Press) && (e.KeyCode == WinKeys.M) && e.Alt)
+                {
+                    UltimaVars.EngineVars.MouseEnabled = Utility.ToggleBoolean(UltimaVars.EngineVars.MouseEnabled);
+                    e.Handled = true;
+                }
+            }
+
             doUpdate();
         }
 
         static void doUpdate()
         {
-            if (ClientVars.EngineVars.InWorld && !UserInterface.IsModalMsgBoxOpen && UltimaClient.IsConnected)
+            if (UltimaVars.EngineVars.InWorld && !UltimaEngine.UserInterface.IsModalMsgBoxOpen && UltimaClient.IsConnected)
             {
                 parseKeyboard();
                 parseMouse();
 
                 // PickType is the kind of objects that will show up as the 'MouseOverObject'
-                if (UserInterface.IsMouseOverUI)
+                if (UltimaEngine.UserInterface.IsMouseOverUI)
                     IsometricRenderer.PickType = PickTypes.PickNothing;
                 else
                     IsometricRenderer.PickType = PickTypes.PickEverything;
 
                 // Set the cursor direction
-                ClientVars.EngineVars.CursorDirection = Utility.DirectionFromVectors(new Vector2(400, 300), InputState.MousePosition.ToVector2());
+                UltimaVars.EngineVars.CursorDirection = Utility.DirectionFromVectors(new Vector2(400, 300), UltimaEngine.Input.MousePosition.ToVector2());
 
                 // Show a popup tip if we have hovered over this item for X seconds.
-                if (InputState.MouseStationaryTimeMS >= _TimeHoveringBeforeTipMS)
+                if (UltimaEngine.Input.MouseStationaryTimeMS >= _TimeHoveringBeforeTipMS)
                     if (IsometricRenderer.MouseOverObject != null)
                         createHoverLabel(IsometricRenderer.MouseOverObject);
 
@@ -88,15 +135,15 @@ namespace UltimaXNA
                     doMovement();
 
                 // Show our target's name
-                createHoverLabel(ClientVars.EngineVars.LastTarget);
+                createHoverLabel(UltimaVars.EngineVars.LastTarget);
             }
         }
 
         static void doMovement()
         {
             // Get the move direction and add the Running offset if the Cursor is far enough away.
-            Direction moveDirection = ClientVars.EngineVars.CursorDirection;
-            float distanceFromCenterOfScreen = Vector2.Distance(InputState.MousePosition.ToVector2(), new Vector2(400, 300));
+            Direction moveDirection = UltimaVars.EngineVars.CursorDirection;
+            float distanceFromCenterOfScreen = Vector2.Distance(UltimaEngine.Input.MousePosition.ToVector2(), new Vector2(400, 300));
             if (distanceFromCenterOfScreen >= 150.0f)
                 moveDirection |= Direction.Running;
 
@@ -168,7 +215,7 @@ namespace UltimaXNA
                 // Special case: targeting
                 onTargetingButton(overObject);
             }
-            else if (UserInterface.Cursor.IsHolding && e.EventType == MouseEvent.Up)
+            else if (UltimaEngine.UserInterface.Cursor.IsHolding && e.EventType == MouseEvent.Up)
             {
                 // Special case: if we're holding anything, drop it.
                 checkDropItem();
@@ -198,13 +245,13 @@ namespace UltimaXNA
                     {
                         case MouseEvent.Click:
                             // tool tip
-                            Interaction.SingleClick(entity);
+                            UltimaInteraction.SingleClick(entity);
                             break;
                         case MouseEvent.DoubleClick:
-                            Interaction.DoubleClick(entity);
+                            UltimaInteraction.DoubleClick(entity);
                             break;
                         case MouseEvent.DragBegin:
-                            Interaction.PickUpItem(entity, (int)overObjectOffset.X, (int)overObjectOffset.Y);
+                            UltimaInteraction.PickUpItem(entity, (int)overObjectOffset.X, (int)overObjectOffset.Y);
                             break;
                     }
                 }
@@ -218,15 +265,15 @@ namespace UltimaXNA
                     {
                         case MouseEvent.Click:
                             // tool tip
-                            Interaction.SingleClick(entity);
-                            if (ClientVars.EngineVars.WarMode)
+                            UltimaInteraction.SingleClick(entity);
+                            if (UltimaVars.EngineVars.WarMode)
                                 UltimaClient.Send(new AttackRequestPacket(entity.Serial));
                             else
                                 UltimaClient.Send(new RequestContextMenuPacket(entity.Serial));
                             break;
                         case MouseEvent.DoubleClick:
-                            Interaction.DoubleClick(entity);
-                            ClientVars.EngineVars.LastTarget = entity.Serial;
+                            UltimaInteraction.DoubleClick(entity);
+                            UltimaVars.EngineVars.LastTarget = entity.Serial;
                             break;
                         case MouseEvent.DragBegin:
                             // pull off status bar
@@ -273,12 +320,12 @@ namespace UltimaXNA
                     z = (int)mouseoverObject.Z;
                     if (mouseoverObject is MapObjectStatic)
                     {
-                        ItemData data = Data.TileData.ItemData[mouseoverObject.ItemID & 0x3FFF];
-                        z += data.Height;
+                        ItemData itemData = UltimaData.TileData.ItemData[mouseoverObject.ItemID & 0x3FFF];
+                        z += itemData.Height;
                     }
                     else if (mouseoverObject is MapObjectItem)
                     {
-                        z += Data.TileData.ItemData[mouseoverObject.ItemID].Height;
+                        z += UltimaData.TileData.ItemData[mouseoverObject.ItemID].Height;
                     }
                 }
                 else if (mouseoverObject is MapObjectGround)
@@ -292,7 +339,7 @@ namespace UltimaXNA
                     // over text?
                     return;
                 }
-                Interaction.DropItemToWorld(UserInterface.Cursor.HoldingItem, x, y, z);
+                UltimaInteraction.DropItemToWorld(UltimaEngine.UserInterface.Cursor.HoldingItem, x, y, z);
             }
         }
 
@@ -335,16 +382,16 @@ namespace UltimaXNA
         static void  parseMouse()
         {
             // If the mouse is over the world, then interpret mouse input:
-            if (!UserInterface.IsMouseOverUI)
+            if (!UltimaEngine.UserInterface.IsMouseOverUI)
             {
-                List<InputEventM> events = InputState.GetMouseEvents();
+                List<InputEventM> events = UltimaEngine.Input.GetMouseEvents();
                 foreach (InputEventM e in events)
                 {
-                    if (e.Button == ClientVars.EngineVars.MouseButton_Move)
+                    if (e.Button == UltimaVars.EngineVars.MouseButton_Move)
                     {
                         onMoveButton(e);
                     }
-                    else if (e.Button == ClientVars.EngineVars.MouseButton_Interact)
+                    else if (e.Button == UltimaVars.EngineVars.MouseButton_Interact)
                     {
                         onInteractButton(e);
                     }
@@ -358,7 +405,7 @@ namespace UltimaXNA
 
         static void parseKeyboard()
         {
-            List<InputEventKB> events = InputState.GetKeyboardEvents();
+            List<InputEventKB> events = UltimaEngine.Input.GetKeyboardEvents();
             foreach (InputEventKB e in events)
             {
                 // If we are targeting, cancel the target cursor if we hit escape.
@@ -369,7 +416,7 @@ namespace UltimaXNA
                 // Toggle for war mode:
                 if (e.EventType == KeyboardEvent.Down && e.KeyCode == WinKeys.Tab)
                 {
-                    if (ClientVars.EngineVars.WarMode)
+                    if (UltimaVars.EngineVars.WarMode)
                         UltimaClient.Send(new RequestWarModePacket(false));
                     else
                         UltimaClient.Send(new RequestWarModePacket(true));
@@ -399,7 +446,7 @@ namespace UltimaXNA
         {
             _TargettingType = targetingType;
             // Set the UserInterface's cursor to a targetting cursor. If multi, tell the cursor which multi.
-            UserInterface.Cursor.IsTargeting = true;
+            UltimaEngine.UserInterface.Cursor.IsTargeting = true;
             // Stop continuous movement.
             _ContinuousMoveCheck = false;
         }
@@ -408,7 +455,7 @@ namespace UltimaXNA
         {
             // Clear our target cursor.
             _TargettingType = TargetTypes.Nothing;
-            UserInterface.Cursor.IsTargeting = false;
+            UltimaEngine.UserInterface.Cursor.IsTargeting = false;
         }
 
         static void mouseTargetingCancel()

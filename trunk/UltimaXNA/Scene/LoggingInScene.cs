@@ -24,27 +24,36 @@ using Microsoft.Xna.Framework;
 using System.Threading;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Network;
-using UltimaXNA.UILegacy;
+using UltimaXNA.UltimaGUI;
 #endregion
 
 namespace UltimaXNA.Scene
 {
     public class LoggingInScene : BaseScene
     {
+        private string m_ServerHost;
+        private int m_ServerPort;
+        private string m_AccountName;
+        private string m_Password;
+
         public LoggingInScene(Game game, string server, int port, string account, string password)
             : base(game, true)
         {
             if (UltimaClient.IsConnected)
                 UltimaClient.Disconnect();
             // Send the accountname and password to the ultimaclient so this gump does not have to save them.
-            UltimaClient.SetLoginData(server, port, account, password);
+
+            m_ServerHost = server;
+            m_ServerPort = port;
+            m_AccountName = account;
+            m_Password = password;
         }
 
         public override void Intitialize()
         {
             base.Intitialize();
-            Gump g = UserInterface.AddGump_Local(new UILegacy.ClientsideGumps.LoggingInGump(), 0, 0);
-            ((UILegacy.ClientsideGumps.LoggingInGump)g).OnCancelLogin += this.OnCancelLogin;
+            Gump g = UltimaEngine.UserInterface.AddGump_Local(new UltimaGUI.ClientsideGumps.LoggingInGump(), 0, 0);
+            ((UltimaGUI.ClientsideGumps.LoggingInGump)g).OnCancelLogin += this.OnCancelLogin;
         }
 
         public override void Update(GameTime gameTime)
@@ -55,47 +64,43 @@ namespace UltimaXNA.Scene
                 switch (UltimaClient.Status)
                 {
                     case UltimaClientStatus.Unconnected:
-                        UltimaClient.Connect();
+                        UltimaClient.Connect(m_ServerHost, m_ServerPort);
                         break;
                     case UltimaClientStatus.LoginServer_Connecting:
                         // connecting ...
                         break;
                     case UltimaClientStatus.LoginServer_WaitingForLogin:
                         // show 'verifying account...' gump
-                        UserInterface.GetGump<UILegacy.ClientsideGumps.LoggingInGump>(0).ActivePage = 9;
-                        UltimaClient.Login();
+                        UltimaEngine.UserInterface.GetGump<UltimaGUI.ClientsideGumps.LoggingInGump>(0).ActivePage = 9;
+                        UltimaClient.SendAccountLogin(m_AccountName, m_Password);
                         break;
                     case UltimaClientStatus.LoginServer_LoggingIn:
                         // logging in ...
                         break;
                     case UltimaClientStatus.LoginServer_HasServerList:
-                        SceneManager.CurrentScene = new SelectServerScene(Game);
-                        break;
-                    case UltimaClientStatus.WorldServer_InWorld:
-                        // we've connected!
-                        SceneManager.CurrentScene = new WorldScene(Game);
+                        SceneManager.CurrentScene = new SelectServerScene(Game, m_AccountName, m_Password);
                         break;
                     case UltimaClientStatus.Error_CannotConnectToServer:
-                        UserInterface.GetGump<UILegacy.ClientsideGumps.LoggingInGump>(0).ActivePage = 2;
+                        UltimaEngine.UserInterface.GetGump<UltimaGUI.ClientsideGumps.LoggingInGump>(0).ActivePage = 2;
                         // could not connect to server.
                         break;
                     case UltimaClientStatus.Error_InvalidUsernamePassword:
-                        UserInterface.GetGump<UILegacy.ClientsideGumps.LoggingInGump>(0).ActivePage = 3;
+                        UltimaEngine.UserInterface.GetGump<UltimaGUI.ClientsideGumps.LoggingInGump>(0).ActivePage = 3;
                         break;
                     case UltimaClientStatus.Error_InUse:
-                        UserInterface.GetGump<UILegacy.ClientsideGumps.LoggingInGump>(0).ActivePage = 4;
+                        UltimaEngine.UserInterface.GetGump<UltimaGUI.ClientsideGumps.LoggingInGump>(0).ActivePage = 4;
                         break;
                     case UltimaClientStatus.Error_Blocked:
-                        UserInterface.GetGump<UILegacy.ClientsideGumps.LoggingInGump>(0).ActivePage = 5;
+                        UltimaEngine.UserInterface.GetGump<UltimaGUI.ClientsideGumps.LoggingInGump>(0).ActivePage = 5;
                         break;
                     case UltimaClientStatus.Error_BadPassword:
-                        UserInterface.GetGump<UILegacy.ClientsideGumps.LoggingInGump>(0).ActivePage = 6;
+                        UltimaEngine.UserInterface.GetGump<UltimaGUI.ClientsideGumps.LoggingInGump>(0).ActivePage = 6;
                         break;
                     case UltimaClientStatus.Error_Idle:
-                        UserInterface.GetGump<UILegacy.ClientsideGumps.LoggingInGump>(0).ActivePage = 7;
+                        UltimaEngine.UserInterface.GetGump<UltimaGUI.ClientsideGumps.LoggingInGump>(0).ActivePage = 7;
                         break;
                     case UltimaClientStatus.Error_BadCommunication:
-                        UserInterface.GetGump<UILegacy.ClientsideGumps.LoggingInGump>(0).ActivePage = 8;
+                        UltimaEngine.UserInterface.GetGump<UltimaGUI.ClientsideGumps.LoggingInGump>(0).ActivePage = 8;
                         break;
                     default:
                         // what's going on here? Add additional error handlers.
@@ -106,13 +111,13 @@ namespace UltimaXNA.Scene
 
         public override void Dispose()
         {
-            UserInterface.GetGump<UILegacy.ClientsideGumps.LoggingInGump>(0).Dispose();
+            UltimaEngine.UserInterface.GetGump<UltimaGUI.ClientsideGumps.LoggingInGump>(0).Dispose();
             base.Dispose();
         }
 
         public void OnCancelLogin()
         {
-            Interaction.DisconnectToLoginScreen();
+            UltimaInteraction.DisconnectToLoginScreen();
         }
     }
 }

@@ -24,7 +24,7 @@ using Microsoft.Xna.Framework;
 using System.Threading;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Network;
-using UltimaXNA.UILegacy;
+using UltimaXNA.UltimaGUI;
 #endregion
 
 namespace UltimaXNA.Scene
@@ -40,10 +40,10 @@ namespace UltimaXNA.Scene
         public override void Intitialize()
         {
             base.Intitialize();
-            Gump g = UserInterface.AddGump_Local(new UILegacy.ClientsideGumps.LoginGump(), 0, 0);
-            ((UILegacy.ClientsideGumps.LoginGump)g).OnLogin += this.OnLogin;
+            Gump g = UltimaEngine.UserInterface.AddGump_Local(new UltimaGUI.ClientsideGumps.LoginGump(), 0, 0);
+            ((UltimaGUI.ClientsideGumps.LoginGump)g).OnLogin += this.OnLogin;
             Entities.Reset();
-            ClientVars.EngineVars.Map = -1;
+            UltimaVars.EngineVars.Map = -1;
         }
 
         public override void Update(GameTime gameTime)
@@ -53,7 +53,7 @@ namespace UltimaXNA.Scene
 
         public override void Dispose()
         {
-            UserInterface.GetGump<UILegacy.ClientsideGumps.LoginGump>(0).Dispose();
+            UltimaEngine.UserInterface.GetGump<UltimaGUI.ClientsideGumps.LoginGump>(0).Dispose();
             base.Dispose();
         }
 

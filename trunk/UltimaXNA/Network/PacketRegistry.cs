@@ -24,7 +24,7 @@ namespace UltimaXNA.Network
         /// Make sure you've hooked all handlers before calling this function.
         /// </summary>
         /// <param name="network"></param>
-        public static void RegisterNetwork(IClientNetwork network)
+        public static void RegisterNetwork(ClientNetwork network)
         {
             network.Register<DamagePacket>(0x0B, "Damage", 0x07, new TypedPacketReceiveHandler(Damage));
             network.Register<MobileStatusCompactPacket>(0x11, "Mobile Status Compact", -1, new TypedPacketReceiveHandler(MobileStatusCompact));

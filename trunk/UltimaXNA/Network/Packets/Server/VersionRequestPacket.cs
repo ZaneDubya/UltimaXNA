@@ -26,7 +26,7 @@ namespace UltimaXNA.Network.Packets.Server
         public VersionRequestPacket(PacketReader reader)
             : base(0xBD, "Client Version Request")
         {
-            // no data.
+            // no UltimaData.
         }
     }
 }

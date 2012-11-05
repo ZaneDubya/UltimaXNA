@@ -24,26 +24,30 @@ using Microsoft.Xna.Framework;
 using System.Threading;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Network;
-using UltimaXNA.UILegacy;
+using UltimaXNA.UltimaGUI;
 #endregion
 
 namespace UltimaXNA.Scene
 {
     public class SelectServerScene : BaseScene
     {
-        public SelectServerScene(Game game)
+        private string m_AccountName;
+        private string m_Password;
+
+        public SelectServerScene(Game game, string account, string password)
             : base(game, true)
         {
-
+            m_AccountName = account;
+            m_Password = password;
         }
 
         public override void Intitialize()
         {
             base.Intitialize();
-            Gump g = UserInterface.AddGump_Local(new UILegacy.ClientsideGumps.SelectServerGump(), 0, 0);
-            ((UILegacy.ClientsideGumps.SelectServerGump)g).OnBackToLoginScreen += this.OnBackToLoginScreen;
-            ((UILegacy.ClientsideGumps.SelectServerGump)g).OnSelectLastServer += this.OnSelectLastServer;
-            ((UILegacy.ClientsideGumps.SelectServerGump)g).OnSelectServer += this.OnSelectServer;
+            Gump g = UltimaEngine.UserInterface.AddGump_Local(new UltimaGUI.ClientsideGumps.SelectServerGump(), 0, 0);
+            ((UltimaGUI.ClientsideGumps.SelectServerGump)g).OnBackToLoginScreen += this.OnBackToLoginScreen;
+            ((UltimaGUI.ClientsideGumps.SelectServerGump)g).OnSelectLastServer += this.OnSelectLastServer;
+            ((UltimaGUI.ClientsideGumps.SelectServerGump)g).OnSelectServer += this.OnSelectServer;
         }
 
         public override void Update(GameTime gameTime)
@@ -55,6 +59,13 @@ namespace UltimaXNA.Scene
                 {
                     case UltimaClientStatus.LoginServer_HasServerList:
                         // This is where we're supposed to be while waiting to select a server.
+                        break;
+                    case UltimaClientStatus.LoginServer_WaitingForRelay:
+                        // we must now send the relay packet.
+                        UltimaClient.SendServerRelay(m_AccountName, m_Password);
+                        break;
+                    case UltimaClientStatus.LoginServer_Relaying:
+                        // relaying to the server we will log in to ...
                         break;
                     case UltimaClientStatus.GameServer_Connecting:
                         // we are logging in to the shard.
@@ -76,18 +87,18 @@ namespace UltimaXNA.Scene
 
         public override void Dispose()
         {
-            UserInterface.GetGump<UILegacy.ClientsideGumps.SelectServerGump>(0).Dispose();
+            UltimaEngine.UserInterface.GetGump<UltimaGUI.ClientsideGumps.SelectServerGump>(0).Dispose();
             base.Dispose();
         }
 
         public void OnBackToLoginScreen()
         {
-            Interaction.DisconnectToLoginScreen();
+            UltimaInteraction.DisconnectToLoginScreen();
         }
 
         public void OnSelectServer(int index)
         {
-            UserInterface.GetGump<UILegacy.ClientsideGumps.SelectServerGump>(0).ActivePage = 2;
+            UltimaEngine.UserInterface.GetGump<UltimaGUI.ClientsideGumps.SelectServerGump>(0).ActivePage = 2;
             UltimaClient.SelectServer(index);
         }
 
