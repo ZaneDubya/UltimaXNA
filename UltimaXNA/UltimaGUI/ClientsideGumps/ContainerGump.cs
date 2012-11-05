@@ -10,9 +10,9 @@
  ***************************************************************************/
 using System.Collections.Generic;
 using UltimaXNA.Entity;
-using UltimaXNA.Interface.GUI;
+using UltimaXNA.GUI;
 using UltimaXNA.UltimaData;
-using UltimaXNA.UltimaGUI.Gumplings;
+using UltimaXNA.UltimaGUI.Controls;
 
 namespace UltimaXNA.UltimaGUI.ClientsideGumps
 {
@@ -46,15 +46,15 @@ namespace UltimaXNA.UltimaGUI.ClientsideGumps
                 _updateTicker = _item.UpdateTicker;
                 _tickerText.Text = string.Format("Update#{0}", _updateTicker);
                 // delete any items in our pack that are no longer in the container.
-                List<Control> gumplingsToRemove = new List<Control>();
+                List<Control> ControlsToRemove = new List<Control>();
                 foreach (Control c in Controls)
                 {
                     if (c is ItemGumpling && !_item.Contents.Contains(((ItemGumpling)c).Item))
                     {
-                        gumplingsToRemove.Add(c);
+                        ControlsToRemove.Add(c);
                     }
                 }
-                foreach (Control c in gumplingsToRemove)
+                foreach (Control c in ControlsToRemove)
                     Controls.Remove(c);
                 // add any items in the container that are not in our pack.
                 foreach (Item item in _item.Contents)

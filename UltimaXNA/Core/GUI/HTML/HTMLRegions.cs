@@ -11,7 +11,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
-namespace UltimaXNA.Interface.GUI.HTML
+namespace UltimaXNA.GUI.HTML
 {
     public class HTMLRegions
     {

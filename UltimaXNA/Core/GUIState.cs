@@ -10,22 +10,29 @@
  ***************************************************************************/
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using UltimaXNA.Interface.Graphics;
-using UltimaXNA.Interface.Input;
-using UltimaXNA.UltimaGUI;
-using UltimaXNA.Interface.GUI;
+using UltimaXNA.Graphics;
+using UltimaXNA.Input;
+using UltimaXNA.GUI;
 
-namespace UltimaXNA.Interface
+namespace UltimaXNA
 {
     public class GUIState
     {
         SpriteBatchUI m_SpriteBatch;
+        public SpriteBatchUI SpriteBatch { get { return m_SpriteBatch; } }
+
+        private Sprite m_CursorSprite;
+        public Sprite CursorSprite
+        {
+            get { return m_CursorSprite; }
+            set
+            {
+                m_CursorSprite = value;
+            }
+        }
 
         public int Width { get { return m_SpriteBatch.GraphicsDevice.Viewport.Width; } }
         public int Height { get { return m_SpriteBatch.GraphicsDevice.Viewport.Height; } }
-
-        Cursor m_Cusor = null;
-        public Cursor Cursor { get { return m_Cusor; } }
 
         // All open controls:
         List<Control> m_Controls = null;
@@ -61,15 +68,12 @@ namespace UltimaXNA.Interface
             }
         }
 
-        // Keyboard-handling control 'announce' themselves when they are created. But only the first one per update
-        // cycle is recognized.
-        // bool _keyboardHandlingControlAnnouncedThisRound = false;
         Control m_keyboardFocusControl;
         public Control KeyboardFocusControl
         {
             get
             {
-                if (IsModalMsgBoxOpen)
+                if (IsModalControlOpen)
                     return null;
                 if (m_keyboardFocusControl == null)
                 {
@@ -92,7 +96,7 @@ namespace UltimaXNA.Interface
             }
         }
 
-        public bool IsModalMsgBoxOpen { get { return (GetGump<MsgBox>(0) != null); } }
+        
 
         public void Initialize(Game game)
         {
@@ -100,18 +104,23 @@ namespace UltimaXNA.Interface
             m_SpriteBatch = new SpriteBatchUI(game);
             m_Controls = new List<Control>();
             m_DisposedControls = new List<Control>();
-            m_Cusor = new Cursor(this);
+            
         }
 
-        public MsgBox MsgBox(string msg, MsgBoxTypes type)
+        public bool IsModalControlOpen
         {
-            // pop up an error message, modal.
-            MsgBox g = new MsgBox(msg, type);
-            m_Controls.Add(g);
-            return g;
+            get
+            {
+                foreach (Control c in m_Controls)
+                    if (c.IsModal)
+                        return true;
+                return false;
+            }
         }
 
-        public Gump ToggleLocalGump(Gump gump, int x, int y)
+        
+
+        public Control ToggleLocalGump(Control gump, int x, int y)
         {
             Control removeControl = null;
             foreach (Control c in m_Controls)
@@ -133,40 +142,30 @@ namespace UltimaXNA.Interface
             return gump;
         }
 
-        public Gump AddGump_Server(Serial serial, Serial gumpID, string[] gumplings, string[] lines, int x, int y)
-        {
-            Gump g = new Gump(serial, gumpID, gumplings, lines);
-            g.Position = new Point2D(x, y);
-            g.IsServerGump = true;
-            g.IsMovable = true;
-            m_Controls.Add(g);
-            return g;
-        }
-
-        public Gump AddGump_Local(Gump gump, int x, int y)
+        public Control AddControl(Control gump, int x, int y)
         {
             gump.Position = new Point2D(x, y);
             m_Controls.Add(gump);
             return gump;
         }
 
-        public Gump GetGump(Serial serial)
+        public Control GetControl(int serial)
         {
-            foreach (Gump g in m_Controls)
+            foreach (Control c in m_Controls)
             {
-                if (g.Serial == serial)
-                    return g;
+                if (c.Serial == serial)
+                    return c;
             }
             return null;
         }
 
-        public T GetGump<T>(Serial serial) where T : Gump
+        public T GetControl<T>(int serial) where T : Control
         {
-            foreach (Gump g in m_Controls)
+            foreach (Control c in m_Controls)
             {
-                if (g.Serial == serial)
-                    if (g.GetType() == typeof(T))
-                        return (T)g;
+                if (c.Serial == serial)
+                    if (c.GetType() == typeof(T))
+                        return (T)c;
             }
             return null;
         }
@@ -201,8 +200,10 @@ namespace UltimaXNA.Interface
                     c.Draw(m_SpriteBatch);
             }
 
-            // Draw the cursor
-            m_Cusor.Draw(m_SpriteBatch, UltimaEngine.Input.MousePosition);
+            if (m_CursorSprite != null)
+            {
+                m_CursorSprite.Draw(m_SpriteBatch, UltimaEngine.Input.MousePosition);
+            }
 
             m_SpriteBatch.Flush();
         }
@@ -217,11 +218,11 @@ namespace UltimaXNA.Interface
         {
             Control[] focusedControls = null;
             List<Control> workingControls;
-            if (IsModalMsgBoxOpen)
+            if (IsModalControlOpen)
             {
                 workingControls = new List<Control>();
                 foreach (Control c in m_Controls)
-                    if (c.GetType() == typeof(MsgBox))
+                    if (c.IsModal)
                         workingControls.Add(c);
             }
             else
@@ -268,6 +269,9 @@ namespace UltimaXNA.Interface
             List<InputEventM> events = UltimaEngine.Input.GetMouseEvents();
             foreach (InputEventM e in events)
             {
+                if (e.Handled)
+                    continue;
+
                 if (focusedControls != null)
                     e.Handled = true;
 
@@ -294,16 +298,6 @@ namespace UltimaXNA.Interface
                 // MouseUp and MouseClick events
                 if (e.EventType == MouseEvent.Up)
                 {
-                    if (Cursor.IsHolding && focusedControls != null)
-                    {
-                        if (e.Button == MouseButton.Left)
-                        {
-                            int x = (int)UltimaEngine.Input.MousePosition.X - Cursor.HoldingOffset.X - (focusedControls[0].X + focusedControls[0].Owner.X);
-                            int y = (int)UltimaEngine.Input.MousePosition.Y - Cursor.HoldingOffset.Y - (focusedControls[0].Y + focusedControls[0].Owner.Y);
-                            focusedControls[0].ItemDrop(Cursor.HoldingItem, x, y);
-                        }
-                    }
-
                     if (focusedControls != null)
                     {
                         if (m_MouseDownControl[(int)e.Button] != null && focusedControls[0] == m_MouseDownControl[(int)e.Button])

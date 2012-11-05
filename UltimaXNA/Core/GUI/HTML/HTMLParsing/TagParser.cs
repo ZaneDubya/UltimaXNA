@@ -41,7 +41,7 @@
 
 using System;
 
-namespace UltimaXNA.Interface.GUI.HTML.Parsing
+namespace UltimaXNA.GUI.HTML.Parsing
 {
 	/// <summary>
 	/// Internal class used to parse tag itself from the point it was found in HTML

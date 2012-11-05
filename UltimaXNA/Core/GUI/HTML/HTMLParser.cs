@@ -17,7 +17,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using UltimaXNA.Diagnostics;
 
-namespace UltimaXNA.Interface.GUI.HTML
+namespace UltimaXNA.GUI.HTML
 {
     public class HTMLParser
     {

@@ -10,16 +10,16 @@
  ***************************************************************************/
 using System;
 using Microsoft.Xna.Framework;
-using UltimaXNA.Interface.Graphics;
-using UltimaXNA.Interface.GUI;
+using UltimaXNA.Graphics;
+using UltimaXNA.GUI;
 
-namespace UltimaXNA.UltimaGUI.Gumplings
+namespace UltimaXNA.UltimaGUI.Controls
 {
     class CroppedText : Control
     {
         public int Hue = 0;
         public string Text = string.Empty;
-        Interface.GUI.TextRenderer _textRenderer;
+        GUI.TextRenderer _textRenderer;
 
         public CroppedText(Control owner, int page)
             : base(owner, page)
@@ -52,7 +52,7 @@ namespace UltimaXNA.UltimaGUI.Gumplings
             Size = new Point2D(width, height);
             Hue = hue;
             Text = lines[textIndex];
-            _textRenderer = new Interface.GUI.TextRenderer(Text, width, true);
+            _textRenderer = new GUI.TextRenderer(Text, width, true);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)

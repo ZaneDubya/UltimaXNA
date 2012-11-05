@@ -43,7 +43,7 @@ using System;
 using System.Text;
 using System.Collections;
 
-namespace UltimaXNA.Interface.GUI.HTML.Parsing
+namespace UltimaXNA.GUI.HTML.Parsing
 {
 
 	/// <summary>

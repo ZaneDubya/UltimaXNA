@@ -8,12 +8,10 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-#region usings
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-#endregion
 
-namespace UltimaXNA.Interface.Graphics
+namespace UltimaXNA.Graphics
 {
     public struct VertexPositionNormalTextureHue : IVertexType
     {

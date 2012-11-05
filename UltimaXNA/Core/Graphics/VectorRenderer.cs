@@ -8,23 +8,12 @@
  *   Copyright (C) Microsoft Corporation. All rights reserved.
  *   
  ***************************************************************************/
-#region File Description
-//-----------------------------------------------------------------------------
-// LineBatch.cs
-//
-// Microsoft XNA Community Game Platform
-// Copyright (C) Microsoft Corporation. All rights reserved.
-//-----------------------------------------------------------------------------
-#endregion
-
-#region Using Statements
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-#endregion
 
-namespace UltimaXNA.Interface.Graphics
+namespace UltimaXNA.Graphics
 {
     /// <summary>
     /// Batches line "draw" calls from the game, and renders them at one time.

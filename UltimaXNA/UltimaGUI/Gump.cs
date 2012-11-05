@@ -11,18 +11,16 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Interface.Graphics;
-using UltimaXNA.Interface.GUI;
+using UltimaXNA.Graphics;
+using UltimaXNA.GUI;
 
 namespace UltimaXNA.UltimaGUI
 {
     public class Gump : Control
     {
-        public Serial Serial;
+        
         Serial GumpID;
         string[] _gumpPieces, _gumpLines;
-
-        public bool IsServerGump { get; set; }
 
         public Gump(Serial serial, Serial gumpID)
             : base(null, 0)
@@ -45,10 +43,6 @@ namespace UltimaXNA.UltimaGUI
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
-            // don't process any server gumps until we're in the world.
-            if (IsServerGump && !UltimaVars.EngineVars.InWorld)
-                return;
-
             // Add any gump pieces that have been given to the gump...
             if (_gumpPieces != null)
             {
@@ -62,7 +56,7 @@ namespace UltimaXNA.UltimaGUI
             if (ActivePage == 0)
                 ActivePage = 1;
 
-            // Update the gumplings...
+            // Update the Controls...
             base.Update(gameTime);
 
             // Do we need to resize?
@@ -80,9 +74,6 @@ namespace UltimaXNA.UltimaGUI
         public override void Draw(SpriteBatchUI spriteBatch)
         {
             if (!Visible)
-                return;
-            // don't draw any server gumps until we're in the world.
-            if (IsServerGump && !UltimaVars.EngineVars.InWorld)
                 return;
 
             if (_renderFullScreen)
@@ -147,41 +138,41 @@ namespace UltimaXNA.UltimaGUI
                         currentGUMPPage = interpret_page(arguements);
                         break;
                     case "checkertrans":
-                        AddControl(new Gumplings.CheckerTrans(this, currentGUMPPage, arguements));
+                        AddControl(new Controls.CheckerTrans(this, currentGUMPPage, arguements));
                         break;
                     case "resizepic":
-                        AddControl(new Gumplings.ResizePic(this, currentGUMPPage, arguements));
-                        ((Gumplings.ResizePic)LastControl).CloseOnRightClick = true;
+                        AddControl(new Controls.ResizePic(this, currentGUMPPage, arguements));
+                        ((Controls.ResizePic)LastControl).CloseOnRightClick = true;
                         break;
                     case "button":
-                        AddControl(new Gumplings.Button(this, currentGUMPPage, arguements));
+                        AddControl(new Controls.Button(this, currentGUMPPage, arguements));
                         break;
                     case "croppedtext":
-                        AddControl(new Gumplings.CroppedText(this, currentGUMPPage, arguements, gumpLines));
+                        AddControl(new Controls.CroppedText(this, currentGUMPPage, arguements, gumpLines));
                         break;
                     case "htmlgump":
-                        AddControl(new Gumplings.HtmlGump(this, currentGUMPPage, arguements, gumpLines));
+                        AddControl(new Controls.HtmlGump(this, currentGUMPPage, arguements, gumpLines));
                         break;
                     case "gumppictiled":
-                        AddControl(new Gumplings.GumpPicTiled(this, currentGUMPPage, arguements));
+                        AddControl(new Controls.GumpPicTiled(this, currentGUMPPage, arguements));
                         break;
                     case "gumppic":
-                        AddControl(new Gumplings.GumpPic(this, currentGUMPPage, arguements));
+                        AddControl(new Controls.GumpPic(this, currentGUMPPage, arguements));
                         break;
                     case "text":
-                        AddControl(new Gumplings.TextLabel(this, currentGUMPPage, arguements, gumpLines));
+                        AddControl(new Controls.TextLabel(this, currentGUMPPage, arguements, gumpLines));
                         break;
                     case "tilepic":
-                        AddControl(new Gumplings.TilePic(this, currentGUMPPage, arguements));
+                        AddControl(new Controls.TilePic(this, currentGUMPPage, arguements));
                         break;
                     case "tilepichue":
-                        AddControl(new Gumplings.TilePic(this, currentGUMPPage, arguements));
+                        AddControl(new Controls.TilePic(this, currentGUMPPage, arguements));
                         break;
                     case "textentry":
-                        AddControl(new Gumplings.TextEntry(this, currentGUMPPage, arguements, gumpLines));
+                        AddControl(new Controls.TextEntry(this, currentGUMPPage, arguements, gumpLines));
                         break;
                     case "textentrylimited":
-                        AddControl(new Gumplings.TextEntry(this, currentGUMPPage, arguements, gumpLines));
+                        AddControl(new Controls.TextEntry(this, currentGUMPPage, arguements, gumpLines));
                         break;
 
                     case "checkbox":
@@ -261,9 +252,9 @@ namespace UltimaXNA.UltimaGUI
         {
             foreach (Control c in Controls)
             {
-                if (c.GetType() == typeof(UltimaGUI.Gumplings.TextEntry))
+                if (c.GetType() == typeof(UltimaGUI.Controls.TextEntry))
                 {
-                    UltimaGUI.Gumplings.TextEntry g = (UltimaGUI.Gumplings.TextEntry)c;
+                    UltimaGUI.Controls.TextEntry g = (UltimaGUI.Controls.TextEntry)c;
                     if (g.EntryID == entryID)
                         return g.Text;
                 }

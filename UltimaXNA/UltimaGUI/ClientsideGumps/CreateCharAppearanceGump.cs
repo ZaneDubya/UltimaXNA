@@ -9,7 +9,7 @@
  *
  ***************************************************************************/
 using Microsoft.Xna.Framework;
-using UltimaXNA.UltimaGUI.Gumplings;
+using UltimaXNA.UltimaGUI.Controls;
 
 namespace UltimaXNA.UltimaGUI.ClientsideGumps
 {

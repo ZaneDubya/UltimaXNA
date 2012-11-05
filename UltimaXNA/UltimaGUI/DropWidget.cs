@@ -1,4 +1,4 @@
-﻿using UltimaXNA.Interface.GUI;
+﻿using UltimaXNA.GUI;
 /***************************************************************************
  *   DropWidget.cs
  *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
@@ -9,7 +9,7 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using UltimaXNA.Interface.Input;
+using UltimaXNA.Input;
 
 namespace UltimaXNA.UltimaGUI
 {
@@ -39,7 +39,7 @@ namespace UltimaXNA.UltimaGUI
         void mouseUp(int x, int y, MouseButton button)
         {
             Control that = ((Control)_onItemDrop.Target);
-            if (UltimaEngine.UserInterface.Cursor.IsHolding && 
+            if (UltimaEngine.UltimaUI.Cursor.IsHolding && 
                 (that.Area.Contains(x, y)))
             {
                 _onItemDrop();
@@ -48,7 +48,7 @@ namespace UltimaXNA.UltimaGUI
 
         void mouseOver(int x, int y)
         {
-            if (UltimaEngine.UserInterface.Cursor.IsHolding)
+            if (UltimaEngine.UltimaUI.Cursor.IsHolding)
             {
                 _onItemOver();
             }

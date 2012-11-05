@@ -1,4 +1,4 @@
-﻿using UltimaXNA.Interface.GUI;
+﻿using UltimaXNA.GUI;
 /***************************************************************************
  *   MsgBox.cs
  *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
@@ -9,7 +9,7 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using UltimaXNA.UltimaGUI.Gumplings;
+using UltimaXNA.UltimaGUI.Controls;
 
 namespace UltimaXNA.UltimaGUI
 {

@@ -11,10 +11,10 @@
 using Microsoft.Xna.Framework;
 using UltimaXNA.Network;
 using UltimaXNA.Entity;
-using UltimaXNA.Interface.Input;
-using UltimaXNA.Interface.GUI;
+using UltimaXNA.Input;
+using UltimaXNA.GUI;
 
-namespace UltimaXNA.UltimaGUI.Gumplings
+namespace UltimaXNA.UltimaGUI.Controls
 {
     class PaperDollInteractable : Gump
     {
@@ -100,7 +100,7 @@ namespace UltimaXNA.UltimaGUI.Gumplings
                     // update our hash
                     _sourceEntityUpdateHash = ((Mobile)_sourceEntity).UpdateTicker;
 
-                    // clear the existing gumplings
+                    // clear the existing Controls
                     ClearControls();
                     _dropWidgetPaperdoll.ClearDropTargets();
                     _dropWidgetBackpack.ClearDropTargets();
@@ -159,7 +159,7 @@ namespace UltimaXNA.UltimaGUI.Gumplings
 
         void onItemDropPaperdoll()
         {
-            UltimaInteraction.WearItem(UserInterface.Cursor.HoldingItem);
+            UltimaInteraction.WearItem(UltimaEngine.UltimaUI.Cursor.HoldingItem);
         }
 
         void onItemOverPaperdoll()
@@ -169,7 +169,7 @@ namespace UltimaXNA.UltimaGUI.Gumplings
 
         void onItemDropBackpack()
         {
-            UltimaInteraction.DropItemToContainer(UserInterface.Cursor.HoldingItem, (Container)((Mobile)_sourceEntity).GetItem((int)EquipSlots.Backpack));
+            UltimaInteraction.DropItemToContainer(UltimaEngine.UltimaUI.Cursor.HoldingItem, (Container)((Mobile)_sourceEntity).GetItem((int)EquipSlots.Backpack));
         }
 
         void onItemOverBackpack()

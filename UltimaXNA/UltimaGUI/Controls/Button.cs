@@ -11,11 +11,11 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Interface.Graphics;
-using UltimaXNA.Interface.Input;
-using UltimaXNA.Interface.GUI;
+using UltimaXNA.Graphics;
+using UltimaXNA.Input;
+using UltimaXNA.GUI;
 
-namespace UltimaXNA.UltimaGUI.Gumplings
+namespace UltimaXNA.UltimaGUI.Controls
 {
     public enum ButtonTypes
     {
@@ -65,7 +65,7 @@ namespace UltimaXNA.UltimaGUI.Gumplings
 
         internal bool MouseDownOnThis { get { return (_clicked); } }
 
-        Interface.GUI.TextRenderer _textRenderer;
+        GUI.TextRenderer _textRenderer;
 
         public Button(Control owner, int page)
             : base(owner, page)
@@ -100,7 +100,7 @@ namespace UltimaXNA.UltimaGUI.Gumplings
             ButtonType = buttonType;
             ButtonParameter = param;
             ButtonID = buttonID;
-            _textRenderer = new Interface.GUI.TextRenderer("", 100, true);
+            _textRenderer = new GUI.TextRenderer("", 100, true);
         }
 
         public override void Update(GameTime gameTime)

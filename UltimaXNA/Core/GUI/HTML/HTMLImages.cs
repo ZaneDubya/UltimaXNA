@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace UltimaXNA.Interface.GUI.HTML
+namespace UltimaXNA.GUI.HTML
 {
     class HTMLImages
     {

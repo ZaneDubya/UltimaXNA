@@ -21,6 +21,8 @@ namespace UltimaXNA
 {
     public class UltimaEngine : BaseEngine
     {
+        public static UltimaGUIState UltimaUI = new UltimaGUIState();
+
         public UltimaEngine(int width, int height)
             :base(width, height)
         {
@@ -59,6 +61,7 @@ namespace UltimaXNA
             if (!UltimaVars.EngineVars.EngineRunning)
                 Exit();
 
+            UltimaUI.Update();
             UltimaClient.Update(gameTime);
             Entities.Update(gameTime);
             GameState.Update(gameTime);
@@ -68,6 +71,7 @@ namespace UltimaXNA
         protected override void OnDraw(GameTime gameTime)
         {
             SceneManager.Draw(gameTime);
+            UltimaUI.Draw();
         }
     }
 }

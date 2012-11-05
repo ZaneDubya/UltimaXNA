@@ -10,11 +10,11 @@
  ***************************************************************************/
 using System;
 using Microsoft.Xna.Framework;
-using UltimaXNA.Interface.Graphics;
-using UltimaXNA.Interface.Input;
-using UltimaXNA.Interface.GUI;
+using UltimaXNA.Graphics;
+using UltimaXNA.Input;
+using UltimaXNA.GUI;
 
-namespace UltimaXNA.UltimaGUI.Gumplings
+namespace UltimaXNA.UltimaGUI.Controls
 {
     class TextEntry : Control
     {
@@ -43,8 +43,8 @@ namespace UltimaXNA.UltimaGUI.Gumplings
         float _secondsSinceLastBlink = 0f;
         const float _SecondsPerBlink = 0.5f;
 
-        Interface.GUI.TextRenderer _textRenderer;
-        Interface.GUI.TextRenderer _caratRenderer;
+        GUI.TextRenderer _textRenderer;
+        GUI.TextRenderer _caratRenderer;
 
         public TextEntry(Control owner, int page)
             : base(owner, page)
@@ -86,8 +86,8 @@ namespace UltimaXNA.UltimaGUI.Gumplings
             Text = text;
             LimitSize = limitSize;
             _caratBlinkOn = false;
-            _textRenderer = new Interface.GUI.TextRenderer("", width, true);
-            _caratRenderer = new Interface.GUI.TextRenderer("", width, true);
+            _textRenderer = new GUI.TextRenderer("", width, true);
+            _caratRenderer = new GUI.TextRenderer("", width, true);
         }
 
         public override void Update(GameTime gameTime)

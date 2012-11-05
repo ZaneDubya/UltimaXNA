@@ -251,7 +251,7 @@ namespace UltimaXNA
         private static void receive_DeleteCharacterResponse(IRecvPacket packet)
         {
             DeleteCharacterResponsePacket p = (DeleteCharacterResponsePacket)packet;
-            UltimaEngine.UserInterface.MsgBox(p.Result, MsgBoxTypes.OkOnly);
+            UltimaEngine.UltimaUI.MsgBox(p.Result, MsgBoxTypes.OkOnly);
         }
 
         private static void receive_CharacterListUpdate(IRecvPacket packet)
@@ -289,7 +289,8 @@ namespace UltimaXNA
             if (p.HasData)
             {
                 string[] gumpPieces = interpretGumpPieces(p.GumpData);
-                UltimaEngine.UserInterface.AddGump_Server(p.Serial, p.GumpID, gumpPieces, p.TextLines, p.X, p.Y);
+                Gump g = (Gump)UltimaEngine.UserInterface.AddControl(new Gump(p.Serial, p.GumpID, gumpPieces, p.TextLines), p.X, p.Y);
+                g.IsMovable = true;
             }
         }
 
@@ -767,7 +768,7 @@ namespace UltimaXNA
         private static void receive_PopupMessage(IRecvPacket packet)
         {
             PopupMessagePacket p = (PopupMessagePacket)packet;
-            UltimaEngine.UserInterface.MsgBox(p.Message, MsgBoxTypes.OkOnly);
+            UltimaEngine.UltimaUI.MsgBox(p.Message, MsgBoxTypes.OkOnly);
         }
 
         private static void receive_QuestArrow(IRecvPacket packet)
@@ -779,7 +780,7 @@ namespace UltimaXNA
         {
             LiftRejectionPacket p = (LiftRejectionPacket)packet;
             UltimaInteraction.ChatMessage("Could not pick up item: " + p.ErrorMessage);
-            UltimaEngine.UserInterface.Cursor.ClearHolding();
+            UltimaEngine.UltimaUI.Cursor.ClearHolding();
         }
 
         private static void receive_RequestNameResponse(IRecvPacket packet)
@@ -897,7 +898,7 @@ namespace UltimaXNA
         {
             TargetCursorMultiPacket p = (TargetCursorMultiPacket)packet;
             GameState.MouseTargeting(TargetTypes.MultiPlacement, 0);
-            UltimaEngine.UserInterface.Cursor.TargetingMulti = p.MultiModel;
+            UltimaEngine.UltimaUI.Cursor.TargetingMulti = p.MultiModel;
         }
 
         private static void receive_Time(IRecvPacket packet)

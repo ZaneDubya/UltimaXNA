@@ -1,4 +1,4 @@
-﻿namespace UltimaXNA.Interface.Input
+﻿namespace UltimaXNA.Input
 {
     public class InputEvent
     {

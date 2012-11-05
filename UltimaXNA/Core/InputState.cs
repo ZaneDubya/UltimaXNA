@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using UltimaXNA.Interface.Input;
+using UltimaXNA.Input;
 
-namespace UltimaXNA.Interface
+namespace UltimaXNA
 {
     public class InputState
     {

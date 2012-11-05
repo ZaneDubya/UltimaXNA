@@ -42,7 +42,7 @@
 using System;
 using System.Collections;
 
-namespace UltimaXNA.Interface.GUI.HTML.Parsing
+namespace UltimaXNA.GUI.HTML.Parsing
 {
 	/// <summary>
 	/// FastHash: class provides fast look ups at the expense of memory (at least 128k per object).
