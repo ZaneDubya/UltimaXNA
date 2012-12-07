@@ -9,12 +9,10 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-#region usings
 using System;
 using System.IO;
 using Microsoft.Win32;
 using UltimaXNA.Diagnostics;
-#endregion
 
 namespace UltimaXNA.UltimaData
 {
@@ -44,8 +42,7 @@ namespace UltimaXNA.UltimaData
                 @"Origin Worlds Online\Ultima Online Samurai Empire\2d\1.0", 
                 @"Origin Worlds Online\Ultima Online Samurai Empire\3d\1.0",
                 @"Electronic Arts\EA Games\Ultima Online Stygian Abyss Classic",
-                @"Electronic Arts\EA Games\",
-                @"Electronic Arts\EA Games\Ultima Online Classic\",
+                @"Electronic Arts\EA Games\"
             };
 
         private static string m_FileDirectory;

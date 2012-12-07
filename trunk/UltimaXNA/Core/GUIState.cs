@@ -25,11 +25,15 @@ namespace UltimaXNA
         public Sprite CursorSprite
         {
             get { return m_CursorSprite; }
-            set
-            {
-                m_CursorSprite = value;
-            }
+            set { m_CursorSprite = value; }
         }
+        private Sprite m_BeneathCursorSprite;
+        public Sprite BeneathCursorSprite
+        {
+            get { return m_BeneathCursorSprite; }
+            set { m_BeneathCursorSprite = value; }
+        }
+
 
         public int Width { get { return m_SpriteBatch.GraphicsDevice.Viewport.Width; } }
         public int Height { get { return m_SpriteBatch.GraphicsDevice.Viewport.Height; } }
@@ -200,10 +204,10 @@ namespace UltimaXNA
                     c.Draw(m_SpriteBatch);
             }
 
+            if (m_BeneathCursorSprite != null)
+                m_BeneathCursorSprite.Draw(m_SpriteBatch, UltimaEngine.Input.MousePosition);
             if (m_CursorSprite != null)
-            {
                 m_CursorSprite.Draw(m_SpriteBatch, UltimaEngine.Input.MousePosition);
-            }
 
             m_SpriteBatch.Flush();
         }

@@ -449,8 +449,8 @@ namespace UltimaXNA.UltimaData
             Stream stream;
             BinaryReader bin;
 
-            if (body >= 0x1000)
-                return null;
+            //if (body >= 0x2000)
+            //    return null;
 
             // The UO Server can request actions with an index greater
             // than the total number of actions. Check for this.

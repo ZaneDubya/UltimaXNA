@@ -31,7 +31,7 @@ namespace UltimaXNA.TileEngine
         public MapObjectMobile(Position3D position, int facing, int action, float frame, BaseEntity ownerEntity)
             : base(position)
         {
-            if (_frame >= 1.0f)
+            if (frame >= 1.0f)
                 return;
 
             _layers = new MapObjectMobileLayer[(int)EquipLayer.LastUserValid];
@@ -55,7 +55,7 @@ namespace UltimaXNA.TileEngine
             _frameCount = UltimaData.AnimationsXNA.GetAnimationFrameCount(bodyID, Action, Facing, hue);
         }
 
-        private int createHashFromLayers()
+        private long createHashFromLayers()
         {
             int[] hashArray = new int[_layerCount * 2 + 3];
             hashArray[0] = (int)Action;
@@ -67,7 +67,7 @@ namespace UltimaXNA.TileEngine
                 hashArray[4 + i * 2] = _layers[i].Hue;
             }
 
-            int hash = 0;
+            long hash = 0;
             for (int i = 0; i < hashArray.Length; i++)
             {
                 hash = unchecked(hash * 31 + hashArray[i]);
@@ -89,7 +89,7 @@ namespace UltimaXNA.TileEngine
             else
             {
                 _draw_hue = Utility.GetHueVector(0);
-                int hash = createHashFromLayers();
+                long hash = createHashFromLayers();
                 _draw_texture = MapObjectPrerendered.RestorePrerenderedTexture(hash, out _mobile_drawCenterX, out _mobile_drawCenterY);
                 if (_draw_texture == null)
                 {
