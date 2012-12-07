@@ -38,11 +38,11 @@ namespace UltimaXNA.TileEngine
         protected abstract void Prerender(SpriteBatch3D sb);
 
         private const int _kCapacity = 0x1000;
-        private static int[] _textureHashes = new int[_kCapacity];
-        private static Dictionary<int, TextureAndOffsets> _textureLibrary = new Dictionary<int, TextureAndOffsets>(_kCapacity);
+        private static long[] _textureHashes = new long[_kCapacity];
+        private static Dictionary<long, TextureAndOffsets> _textureLibrary = new Dictionary<long, TextureAndOffsets>(_kCapacity);
         private static int _textureHashes_LastHashRemoved = 0;
 
-        protected static void SavePrerenderedTexture(Texture2D texture, int hash, int xOffset, int yOffset)
+        protected static void SavePrerenderedTexture(Texture2D texture, long hash, int xOffset, int yOffset)
         {
             if (_textureHashes[_textureHashes_LastHashRemoved] != 0)
                 _textureLibrary.Remove(_textureHashes[_textureHashes_LastHashRemoved]);
@@ -53,7 +53,7 @@ namespace UltimaXNA.TileEngine
                 _textureHashes_LastHashRemoved = 0;
         }
 
-        protected static Texture2D RestorePrerenderedTexture(int hash, out int xOffset, out int yOffset)
+        protected static Texture2D RestorePrerenderedTexture(long hash, out int xOffset, out int yOffset)
         {
             if (_textureLibrary.ContainsKey(hash))
             {

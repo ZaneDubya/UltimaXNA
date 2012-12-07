@@ -20,7 +20,7 @@ namespace UltimaXNA
         public void Draw()
         {
             // Draw the cursor
-            m_Cusor.Draw(UltimaEngine.UserInterface.SpriteBatch, UltimaEngine.Input.MousePosition);
+            m_Cusor.Draw(UltimaEngine.Input.MousePosition);
         }
 
         public void Update()

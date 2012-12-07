@@ -95,13 +95,14 @@ namespace UltimaXNA.UltimaGUI
             IsHolding = false;
         }
 
-        public void Draw(SpriteBatchUI sb, Point2D position)
+        public void Draw(Point2D position)
         {
             Point2D cursorOffset;
             Rectangle sourceRect = Rectangle.Empty;
             int cursorTextureID = 0;
             int cursorHue = 0;
             Texture2D cursorTexture = null;
+            UltimaEngine.UserInterface.BeneathCursorSprite = null;
 
             if (IsHolding)
             {
@@ -109,7 +110,8 @@ namespace UltimaXNA.UltimaGUI
                 cursorOffset = new Point2D(holdingOffset.X, holdingOffset.Y);
                 cursorTexture = HoldingTexture;
                 sourceRect = new Rectangle(0, 0, cursorTexture.Width, cursorTexture.Height);
-                sb.Draw2D(cursorTexture, position - cursorOffset, sourceRect, holdingItem.Hue, false, false);
+                UltimaEngine.UserInterface.BeneathCursorSprite = new GUI.Sprite(cursorTexture, cursorOffset, sourceRect, holdingItem.Hue);
+                // sb.Draw2D(cursorTexture, position - cursorOffset, sourceRect, holdingItem.Hue, false, false);
                 // then set the data for the hang which holds it.
                 cursorOffset = new Point2D(1, 1);
                 cursorTextureID = 8305;

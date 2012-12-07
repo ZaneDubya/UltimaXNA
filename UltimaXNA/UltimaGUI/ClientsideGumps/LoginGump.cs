@@ -62,9 +62,6 @@ namespace UltimaXNA.UltimaGUI.ClientsideGumps
             ((Button)LastControl).GumpOverID = 5541;
             // Version information
             AddControl(new TextLabelAscii(this, 0, 183, 421, hue, 9, Utility.VersionString));
-            AddControl(new TextureGumpling(this, 0, 16, 16, 64, 64));
-            for (int i = 0; i < 64; i++)
-                ((TextureGumpling)LastControl).SetPixel(new Microsoft.Xna.Framework.Color(255, 0, 0, 255), i, i);
         }
 
         public override void ActivateByButton(int buttonID)
