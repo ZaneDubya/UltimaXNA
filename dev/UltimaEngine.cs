@@ -48,11 +48,10 @@ namespace UltimaXNA
                 UltimaData.StringList.LoadStringList("enu");
                 UltimaData.Skills.Initialize();
                 GraphicsDevice.Textures[1] = UltimaXNA.UltimaData.HuesXNA.HueTexture;
+                SceneManager.Reset();
+                UltimaVars.EngineVars.EngineRunning = true;
+                UltimaVars.EngineVars.InWorld = false;
             }
-
-            SceneManager.Reset();
-            UltimaVars.EngineVars.EngineRunning = true;
-            UltimaVars.EngineVars.InWorld = false;
         }
 
         protected override void OnUpdate(GameTime gameTime)
