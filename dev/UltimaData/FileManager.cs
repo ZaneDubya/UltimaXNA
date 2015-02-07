@@ -79,7 +79,7 @@ namespace UltimaXNA.UltimaData
             }
             if (m_FileDirectory == null)
             {
-                Logger.Fatal("Did not find UO Installation.");
+                Logger.Fatal("Did not find a compatible UO Installation.\nUltimaXNA is compatible with any version of UO through Mondian's Legacy.");
                 _isDataPresent = false;
             }
         }
