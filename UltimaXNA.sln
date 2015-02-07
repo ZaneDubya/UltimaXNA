@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual C# Express 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UltimaXNA", "UltimaXNA\UltimaXNA.csproj", "{205E21C9-4A74-4B0F-BDA0-270A38A0C4EA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UltimaXNA", "dev\UltimaXNA.csproj", "{205E21C9-4A74-4B0F-BDA0-270A38A0C4EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UltimaXNAContent", "UltimaXNA\Content\UltimaXNAContent.contentproj", "{C4D0357F-85DD-4418-ABA4-7C7875BB3129}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UltimaXNAContent", "dev\Content\UltimaXNAContent.contentproj", "{C4D0357F-85DD-4418-ABA4-7C7875BB3129}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
