@@ -11,7 +11,7 @@
 using Microsoft.Xna.Framework;
 using UltimaXNA.Network;
 using UltimaXNA.Entity;
-using UltimaXNA.Input;
+using InterXLib.Input.Windows;
 using UltimaXNA.GUI;
 
 namespace UltimaXNA.UltimaGUI.Controls

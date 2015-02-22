@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using UltimaXNA.Input;
+using InterXLib.Input.Windows;
 using UltimaXNA.UltimaGUI;
 using UltimaXNA.GUI;
 using UltimaXNA.Graphics;
@@ -28,8 +28,8 @@ namespace UltimaXNA
             if (UltimaEngine.UserInterface.MouseOverControl != null && Cursor.IsHolding)
             {
                 Control target = UltimaEngine.UserInterface.MouseOverControl;
-                List<InputEventM> events = UltimaEngine.Input.GetMouseEvents();
-                foreach (InputEventM e in events)
+                List<InputEventMouse> events = UltimaEngine.Input.GetMouseEvents();
+                foreach (InputEventMouse e in events)
                 {
                     if (e.EventType == MouseEvent.Up && e.Button == MouseButton.Left)
                     {

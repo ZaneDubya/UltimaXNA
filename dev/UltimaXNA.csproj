@@ -318,18 +318,7 @@
     <Compile Include="Entity\PropertyList.cs" />
     <Compile Include="Entity\Shared.cs" />
     <Compile Include="GameState.cs" />
-    <Compile Include="Core\Input\EventArgs.cs" />
-    <Compile Include="Core\Input\EventArgsKeyboard.cs" />
-    <Compile Include="Core\Input\EventArgsMouse.cs" />
-    <Compile Include="Core\Input\InputEvent.cs" />
     <Compile Include="Core\InputState.cs" />
-    <Compile Include="Core\Input\InputEventKB.cs" />
-    <Compile Include="Core\Input\Enums.cs" />
-    <Compile Include="Core\Input\Message.cs" />
-    <Compile Include="Core\Input\MessageHook.cs" />
-    <Compile Include="Core\Input\InputEventM.cs" />
-    <Compile Include="Core\Input\NativeMethods.cs" />
-    <Compile Include="Core\Input\WndProc.cs" />
     <Compile Include="Scene\CharacterListScene.cs" />
     <Compile Include="Scene\CreateCharacterScene.cs" />
     <Compile Include="Scene\LoggingInScene.cs" />
@@ -488,6 +477,10 @@
     <Folder Include="Network\Packets\Both\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ixl\InterXLib.csproj">
+      <Project>{5de77709-9a9f-4059-9f8a-791f5042667a}</Project>
+      <Name>InterXLib</Name>
+    </ProjectReference>
     <ProjectReference Include="Content\UltimaXNAContent.contentproj">
       <Project>{C4D0357F-85DD-4418-ABA4-7C7875BB3129}</Project>
       <Name>UltimaXNAContent %28Content%29</Name>

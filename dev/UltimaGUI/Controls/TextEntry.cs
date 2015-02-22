@@ -11,7 +11,7 @@
 using System;
 using Microsoft.Xna.Framework;
 using UltimaXNA.Graphics;
-using UltimaXNA.Input;
+using InterXLib.Input.Windows;
 using UltimaXNA.GUI;
 
 namespace UltimaXNA.UltimaGUI.Controls
@@ -138,7 +138,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             base.Draw(spriteBatch);
         }
 
-        protected override void keyboardInput(InputEventKB e)
+        protected override void keyboardInput(InputEventKeyboard e)
         {
             switch (e.KeyCode)
             {

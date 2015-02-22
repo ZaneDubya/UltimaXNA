@@ -23,7 +23,7 @@ using Microsoft.Xna.Framework;
 using UltimaXNA.Network;
 using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaGUI.ClientsideGumps;
-using UltimaXNA.Input;
+using InterXLib.Input.Windows;
 #endregion
 
 namespace UltimaXNA.Scene
@@ -85,7 +85,7 @@ namespace UltimaXNA.Scene
                     IsometricRenderer.Update(gameTime);
 
                     // Toggle for logout
-                    if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEvent.Down, WinKeys.Q, false, false, true))
+                    if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.Q, false, false, true))
                         UltimaInteraction.DisconnectToLoginScreen();
                 }
             }

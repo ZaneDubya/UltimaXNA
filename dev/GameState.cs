@@ -16,7 +16,7 @@ using UltimaXNA.Network;
 using UltimaXNA.Network.Packets.Client;
 using UltimaXNA.UltimaData;
 using UltimaXNA.Entity;
-using UltimaXNA.Input;
+using InterXLib.Input.Windows;
 using UltimaXNA.TileEngine;
 using UltimaXNA.UltimaGUI;
 #endregion
@@ -59,11 +59,11 @@ namespace UltimaXNA
             UltimaVars.EngineVars.GameTime = gameTime;
 
             // input for debug variables.
-            List<InputEventKB> keyEvents = UltimaEngine.Input.GetKeyboardEvents();
-            foreach (InputEventKB e in keyEvents)
+            List<InputEventKeyboard> keyEvents = UltimaEngine.Input.GetKeyboardEvents();
+            foreach (InputEventKeyboard e in keyEvents)
             {
                 // debug flags
-                if ((e.EventType == KeyboardEvent.Press) && (e.KeyCode == WinKeys.D) && e.Control)
+                if ((e.EventType == KeyboardEventType.Press) && (e.KeyCode == WinKeys.D) && e.Control)
                 {
                     if (!e.Alt)
                     {
@@ -89,7 +89,7 @@ namespace UltimaXNA
                 }
 
                 // fps limiting
-                if ((e.EventType == KeyboardEvent.Press) && (e.KeyCode == WinKeys.F) && e.Alt)
+                if ((e.EventType == KeyboardEventType.Press) && (e.KeyCode == WinKeys.F) && e.Alt)
                 {
                     if (!e.Control)
                         UltimaVars.DebugVars.Flag_DisplayFPS = Utility.ToggleBoolean(UltimaVars.DebugVars.Flag_DisplayFPS);
@@ -99,7 +99,7 @@ namespace UltimaXNA
                 }
 
                 // mouse enabling
-                if ((e.EventType == KeyboardEvent.Press) && (e.KeyCode == WinKeys.M) && e.Alt)
+                if ((e.EventType == KeyboardEventType.Press) && (e.KeyCode == WinKeys.M) && e.Alt)
                 {
                     UltimaVars.EngineVars.MouseEnabled = Utility.ToggleBoolean(UltimaVars.EngineVars.MouseEnabled);
                     e.Handled = true;
@@ -152,7 +152,7 @@ namespace UltimaXNA
             m.PlayerMobile_Move(moveDirection);
         }
 
-        static void onMoveButton(InputEventM e)
+        static void onMoveButton(InputEventMouse e)
         {
             if (e.EventType == MouseEvent.Down)
             {
@@ -196,7 +196,7 @@ namespace UltimaXNA
             }
         }
 
-        static void onInteractButton(InputEventM e)
+        static void onInteractButton(InputEventMouse e)
         {
             MapObject overObject = (e.EventType == MouseEvent.DragBegin) ? _dragObject : IsometricRenderer.MouseOverObject;
             Vector2 overObjectOffset = (e.EventType == MouseEvent.DragBegin) ? _dragOffset : IsometricRenderer.MouseOverObjectPoint;
@@ -384,8 +384,8 @@ namespace UltimaXNA
             // If the mouse is over the world, then interpret mouse input:
             if (!UltimaEngine.UserInterface.IsMouseOverUI)
             {
-                List<InputEventM> events = UltimaEngine.Input.GetMouseEvents();
-                foreach (InputEventM e in events)
+                List<InputEventMouse> events = UltimaEngine.Input.GetMouseEvents();
+                foreach (InputEventMouse e in events)
                 {
                     if (e.Button == UltimaVars.EngineVars.MouseButton_Move)
                     {
@@ -405,16 +405,16 @@ namespace UltimaXNA
 
         static void parseKeyboard()
         {
-            List<InputEventKB> events = UltimaEngine.Input.GetKeyboardEvents();
-            foreach (InputEventKB e in events)
+            List<InputEventKeyboard> events = UltimaEngine.Input.GetKeyboardEvents();
+            foreach (InputEventKeyboard e in events)
             {
                 // If we are targeting, cancel the target cursor if we hit escape.
                 if (isTargeting)
-                    if ((e.EventType == KeyboardEvent.Press) && e.KeyCode == WinKeys.Escape)
+                    if ((e.EventType == KeyboardEventType.Press) && e.KeyCode == WinKeys.Escape)
                         mouseTargetingCancel();
 
                 // Toggle for war mode:
-                if (e.EventType == KeyboardEvent.Down && e.KeyCode == WinKeys.Tab)
+                if (e.EventType == KeyboardEventType.Down && e.KeyCode == WinKeys.Tab)
                 {
                     if (UltimaVars.EngineVars.WarMode)
                         UltimaClient.Send(new RequestWarModePacket(false));

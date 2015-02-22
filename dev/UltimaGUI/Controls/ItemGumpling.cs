@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Entity;
 using UltimaXNA.Graphics;
-using UltimaXNA.Input;
+using InterXLib.Input.Windows;
 using UltimaXNA.GUI;
 
 namespace UltimaXNA.UltimaGUI.Controls

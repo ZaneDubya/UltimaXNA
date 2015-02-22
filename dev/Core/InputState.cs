@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using UltimaXNA.Input;
+using InterXLib.Input.Windows;
 
 namespace UltimaXNA
 {
@@ -26,7 +26,7 @@ namespace UltimaXNA
 
         // Mouse dragging support
         bool m_MouseIsDragging = false;
-        InputEventM m_LastMouseDown = null;
+        InputEventMouse m_LastMouseDown = null;
         float m_LastMouseDownTime = 0f;
         float m_LastMouseClickTime = 0f;
         private const int MouseDragBeginDistance = 2;
@@ -44,24 +44,24 @@ namespace UltimaXNA
             m_WndProc.KeyChar += onKeyChar;
         }
 
-        public List<InputEventKB> GetKeyboardEvents()
+        public List<InputEventKeyboard> GetKeyboardEvents()
         {
-            List<InputEventKB> list = new List<InputEventKB>();
+            List<InputEventKeyboard> list = new List<InputEventKeyboard>();
             foreach (InputEvent e in m_EventsThisFrame  )
             {
-                if (!e.Handled && e is InputEventKB)
-                    list.Add((InputEventKB)e);
+                if (!e.Handled && e is InputEventKeyboard)
+                    list.Add((InputEventKeyboard)e);
             }
             return list;
         }
 
-        public List<InputEventM> GetMouseEvents()
+        public List<InputEventMouse> GetMouseEvents()
         {
-            List<InputEventM> list = new List<InputEventM>();
+            List<InputEventMouse> list = new List<InputEventMouse>();
             foreach (InputEvent e in m_EventsThisFrame)
             {
-                if (!e.Handled && e is InputEventM)
-                    list.Add((InputEventM)e);
+                if (!e.Handled && e is InputEventMouse)
+                    list.Add((InputEventMouse)e);
             }
             return list;
         }
@@ -161,10 +161,10 @@ namespace UltimaXNA
         }
 
 
-        public bool HandleKeyboardEvent(KeyboardEvent type, WinKeys key, bool shift, bool alt, bool ctrl)
+        public bool HandleKeyboardEvent(KeyboardEventType type, WinKeys key, bool shift, bool alt, bool ctrl)
         {
-            List<InputEventKB> events = GetKeyboardEvents();
-            foreach (InputEventKB e in events)
+            List<InputEventKeyboard> events = GetKeyboardEvents();
+            foreach (InputEventKeyboard e in events)
             {
                 if (e.EventType == type && 
                     e.KeyCode == key &&
@@ -181,8 +181,8 @@ namespace UltimaXNA
 
         public bool HandleMouseEvent(MouseEvent type, MouseButton mb)
         {
-            List<InputEventM> events = GetMouseEvents();
-            foreach (InputEventM e in events)
+            List<InputEventMouse> events = GetMouseEvents();
+            foreach (InputEventMouse e in events)
             {
                 if (e.EventType == type && e.Button == mb)
                 {
@@ -193,24 +193,24 @@ namespace UltimaXNA
             return false;
         }
 
-        private void onMouseWheel(EventArgsMouse e)
+        private void onMouseWheel(InputEventMouse e)
         {
-            addEvent(new InputEventM(MouseEvent.WheelScroll, e));
+            addEvent(new InputEventMouse(MouseEvent.WheelScroll, e));
         }
 
-        private void onMouseDown(EventArgsMouse e)
+        private void onMouseDown(InputEventMouse e)
         {
-            m_LastMouseDown = new InputEventM(MouseEvent.Down, e);
+            m_LastMouseDown = new InputEventMouse(MouseEvent.Down, e);
             m_LastMouseDownTime = UltimaVars.EngineVars.TheTime;
             addEvent(m_LastMouseDown);
         }
 
-        private void onMouseUp(EventArgsMouse e)
+        private void onMouseUp(InputEventMouse e)
         {
-            addEvent(new InputEventM(MouseEvent.Up, e));
+            addEvent(new InputEventMouse(MouseEvent.Up, e));
             if (m_MouseIsDragging)
             {
-                addEvent(new InputEventM(MouseEvent.DragEnd, e));
+                addEvent(new InputEventMouse(MouseEvent.DragEnd, e));
                 m_MouseIsDragging = false;
             }
             else
@@ -220,57 +220,57 @@ namespace UltimaXNA
                     if ((UltimaVars.EngineVars.TheTime - m_LastMouseClickTime <= UltimaVars.EngineVars.SecondsForDoubleClick))
                     {
                         m_LastMouseClickTime = 0f;
-                        addEvent(new InputEventM(MouseEvent.DoubleClick, e));
+                        addEvent(new InputEventMouse(MouseEvent.DoubleClick, e));
                     }
                     else
                     {
                         m_LastMouseClickTime = UltimaVars.EngineVars.TheTime;
-                        addEvent(new InputEventM(MouseEvent.Click, e));
+                        addEvent(new InputEventMouse(MouseEvent.Click, e));
                     }
                 }
             }
             m_LastMouseDown = null;
         }
 
-        private void onMouseMove(EventArgsMouse e)
+        private void onMouseMove(InputEventMouse e)
         {
-            addEvent(new InputEventM(MouseEvent.Move, e));
+            addEvent(new InputEventMouse(MouseEvent.Move, e));
             if (!m_MouseIsDragging && m_LastMouseDown != null)
             {
                 if (Utility.IsPointThisDistanceAway(m_LastMouseDown.Position, e.Position, MouseDragBeginDistance))
                 {
-                    addEvent(new InputEventM(MouseEvent.DragBegin, e));
+                    addEvent(new InputEventMouse(MouseEvent.DragBegin, e));
                     m_MouseIsDragging = true;
                 }
             }
         }
 
-        private void onKeyDown(EventArgsKeyboard e)
+        private void onKeyDown(InputEventKeyboard e)
         {
             // handle the initial key down
             if (e.Data_PreviousState == 0)
             {
-                addEvent(new InputEventKB(KeyboardEvent.Down, e));
+                addEvent(e);
             }
             // handle the key presses. Possibly multiple per keydown message.
             for (int i = 0; i < e.Data_RepeatCount; i++)
             {
-                addEvent(new InputEventKB(KeyboardEvent.Press, e));
+                addEvent(e);
             }
         }
 
-        private void onKeyUp(EventArgsKeyboard e)
+        private void onKeyUp(InputEventKeyboard e)
         {
-            addEvent(new InputEventKB(KeyboardEvent.Up, e));
+            addEvent(e);
         }
 
-        private void onKeyChar(EventArgsKeyboard e)
+        private void onKeyChar(InputEventKeyboard e)
         {
             // Control key sends a strange wm_char message ...
             if (e.Control && !e.Alt)
                 return;
 
-            InputEventKB pressEvent = LastKeyPressEvent;
+            InputEventKeyboard pressEvent = LastKeyPressEvent;
             if (pressEvent == null)
                 throw new Exception("No corresponding KeyPress event for this WM_CHAR message. Please report this error to poplicola@ultimaxna.com");
             else
@@ -309,7 +309,7 @@ namespace UltimaXNA
             list.Add(e);
         }
 
-        private InputEventKB LastKeyPressEvent
+        private InputEventKeyboard LastKeyPressEvent
         {
             get
             {
@@ -317,9 +317,9 @@ namespace UltimaXNA
                 for (int i = list.Count; i > 0; i--)
                 {
                     InputEvent e = list[i - 1];
-                    if ((e is InputEventKB) && (((InputEventKB)e).EventType == KeyboardEvent.Press))
+                    if ((e is InputEventKeyboard) && (((InputEventKeyboard)e).EventType == KeyboardEventType.Press))
                     {
-                        return (InputEventKB)e;
+                        return (InputEventKeyboard)e;
                     }
                 }
                 return null;

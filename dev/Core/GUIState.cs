@@ -11,7 +11,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using UltimaXNA.Graphics;
-using UltimaXNA.Input;
+using InterXLib.Input.Windows;
 using UltimaXNA.GUI;
 
 namespace UltimaXNA
@@ -270,8 +270,8 @@ namespace UltimaXNA
             }
 
 
-            List<InputEventM> events = UltimaEngine.Input.GetMouseEvents();
-            foreach (InputEventM e in events)
+            List<InputEventMouse> events = UltimaEngine.Input.GetMouseEvents();
+            foreach (InputEventMouse e in events)
             {
                 if (e.Handled)
                     continue;
@@ -336,10 +336,10 @@ namespace UltimaXNA
                 }
                 else
                 {
-                    List<InputEventKB> k_events = UltimaEngine.Input.GetKeyboardEvents();
-                    foreach (InputEventKB e in k_events)
+                    List<InputEventKeyboard> k_events = UltimaEngine.Input.GetKeyboardEvents();
+                    foreach (InputEventKeyboard e in k_events)
                     {
-                        if (e.EventType == KeyboardEvent.Press)
+                        if (e.EventType == KeyboardEventType.Press)
                             m_keyboardFocusControl.KeyboardInput(e);
                     }
                 }

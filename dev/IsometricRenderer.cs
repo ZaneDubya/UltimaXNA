@@ -15,7 +15,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using UltimaXNA.Entity;
 using UltimaXNA.Graphics;
-using UltimaXNA.Input;
+using InterXLib.Input.Windows;
 using UltimaXNA.TileEngine;
 #endregion
 

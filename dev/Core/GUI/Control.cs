@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Graphics;
-using UltimaXNA.Input;
+using InterXLib.Input.Windows;
 
 namespace UltimaXNA.GUI
 {
@@ -509,7 +509,7 @@ namespace UltimaXNA.GUI
             }
         }
 
-        public void KeyboardInput(InputEventKB e)
+        public void KeyboardInput(InputEventKeyboard e)
         {
             keyboardInput(e);
         }
@@ -544,7 +544,7 @@ namespace UltimaXNA.GUI
 
         }
 
-        protected virtual void keyboardInput(InputEventKB e)
+        protected virtual void keyboardInput(InputEventKeyboard e)
         {
 
         }

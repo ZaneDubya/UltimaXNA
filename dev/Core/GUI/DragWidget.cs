@@ -8,7 +8,7 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using UltimaXNA.Input;
+using InterXLib.Input.Windows;
 
 namespace UltimaXNA.GUI
 {

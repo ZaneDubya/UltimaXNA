@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Network;
 using UltimaXNA.Network.Packets.Client;
 using UltimaXNA.Entity;
-using UltimaXNA.Input;
+using InterXLib.Input.Windows;
 using UltimaXNA.TileEngine;
 using UltimaXNA.UltimaGUI;
 using UltimaXNA.Scene;
