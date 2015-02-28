@@ -10,9 +10,9 @@
  ***************************************************************************/
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Graphics;
+using UltimaXNA.Rendering;
 using InterXLib.Input.Windows;
-using UltimaXNA.GUI;
+using UltimaXNA.UltimaGUI;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {
@@ -89,7 +89,7 @@ namespace UltimaXNA.UltimaGUI.Controls
                 if (_huesTexture == null)
                 {
                 _huesTexture = UltimaData.HuesXNA.HueSwatch(_hueSize.X, _hueSize.Y, _hues);
-                _selectedIndicator = UltimaData.Gumps.GetGumpXNA(6000);
+                _selectedIndicator = UltimaData.GumpData.GetGumpXNA(6000);
                 }
             }
             else

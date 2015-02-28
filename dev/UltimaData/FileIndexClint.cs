@@ -61,7 +61,7 @@ namespace UltimaXNA.UltimaData
 
                 fixed (IndexEntry* pIndexEntries = this.IndexEntries)
                 {
-                    NativeMethods.Read(stream.SafeFileHandle, pIndexEntries, (int)stream.Length);
+                    SharedMethods.Read(stream.SafeFileHandle, pIndexEntries, (int)stream.Length);
                 }
             }
         }

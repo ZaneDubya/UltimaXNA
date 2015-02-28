@@ -13,9 +13,10 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using UltimaXNA.TileEngine;
-using UltimaXNA.Network;
-using UltimaXNA.Network.Packets.Client;
+using UltimaXNA.UltimaWorld;
+using UltimaXNA.Core.Network;
+using UltimaXNA.UltimaNetwork.Packets.Client;
+using UltimaXNA.UltimaNetwork;
 #endregion
 
 namespace UltimaXNA.Entity

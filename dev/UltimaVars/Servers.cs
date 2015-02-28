@@ -8,7 +8,7 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using UltimaXNA.Network;
+using UltimaXNA.UltimaNetwork;
 
 namespace UltimaXNA.UltimaVars
 {

@@ -28,7 +28,7 @@ namespace UltimaXNA.UltimaData
                     _male = new string[_maleStyles.Length];
                     for (int i = 0; i < _maleStyles.Length; i++)
                     {
-                        _male[i] = UltimaData.StringList.Entry(_maleStyles[i]);
+                        _male[i] = UltimaData.StringData.Entry(_maleStyles[i]);
                         if (_male[i] == "Pigtails")
                             _male[i] = "2 Tails";
                     }
@@ -66,7 +66,7 @@ namespace UltimaXNA.UltimaData
                     _facial = new string[_facialStyles.Length];
                     for (int i = 0; i < _facialStyles.Length; i++)
                     {
-                        _facial[i] = UltimaData.StringList.Entry(_facialStyles[i]);
+                        _facial[i] = UltimaData.StringData.Entry(_facialStyles[i]);
                     }
                 }
                 return _facial;
@@ -101,7 +101,7 @@ namespace UltimaXNA.UltimaData
                     _female = new string[_femaleStyles.Length];
                     for (int i = 0; i < _femaleStyles.Length; i++)
                     {
-                        _female[i] = UltimaData.StringList.Entry(_femaleStyles[i]);
+                        _female[i] = UltimaData.StringData.Entry(_femaleStyles[i]);
                     }
                 }
                 return _female;

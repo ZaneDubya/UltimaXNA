@@ -10,8 +10,8 @@
  ***************************************************************************/
 using Microsoft.Xna.Framework;
 using UltimaXNA.Entity;
-using UltimaXNA.Graphics;
-using UltimaXNA.GUI;
+using UltimaXNA.Rendering;
+using UltimaXNA.UltimaGUI;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {
@@ -56,9 +56,9 @@ namespace UltimaXNA.UltimaGUI.Controls
             if (_texture == null)
             {
                 if (IsFemale)
-                    _texture = UltimaData.Gumps.GetGumpXNA(Item.ItemData.AnimID + 60000);
+                    _texture = UltimaData.GumpData.GetGumpXNA(Item.ItemData.AnimID + 60000);
                 if (_texture == null)
-                    _texture = UltimaData.Gumps.GetGumpXNA(Item.ItemData.AnimID + 50000);
+                    _texture = UltimaData.GumpData.GetGumpXNA(Item.ItemData.AnimID + 50000);
                 Size = new Point2D(_texture.Width, _texture.Height);
             }
             spriteBatch.Draw2D(_texture, Position, Item.Hue & 0x7FFF, (Item.Hue & 0x8000) == 0x8000 ? true : false, false);

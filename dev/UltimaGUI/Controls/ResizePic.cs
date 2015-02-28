@@ -11,9 +11,9 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Graphics;
+using UltimaXNA.Rendering;
 using InterXLib.Input.Windows;
-using UltimaXNA.GUI;
+using UltimaXNA.UltimaGUI;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {
@@ -68,7 +68,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             {
                 for (int i = 0; i < 9; i++)
                 {
-                    _bgGumps[i] = UltimaData.Gumps.GetGumpXNA(GumpID + i);
+                    _bgGumps[i] = UltimaData.GumpData.GetGumpXNA(GumpID + i);
                 }
             }
 

@@ -11,7 +11,8 @@
 #region usings
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using UltimaXNA.TileEngine;
+using UltimaXNA.UltimaWorld;
+using UltimaXNA.UltimaNetwork;
 #endregion
 
 namespace UltimaXNA.Entity
@@ -45,7 +46,7 @@ namespace UltimaXNA.Entity
             drawOverheads(tile, new Position3D(_movement.Position.Point_V3));
         }
 
-        public void LoadCorpseClothing(List<Network.CorpseClothingItemWithLayer> items)
+        public void LoadCorpseClothing(List<CorpseClothingItemWithLayer> items)
         {
 
         }

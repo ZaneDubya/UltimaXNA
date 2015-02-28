@@ -9,10 +9,13 @@
  *
  ***************************************************************************/
 using Microsoft.Xna.Framework;
-using UltimaXNA.Network;
+using UltimaXNA.Core.Network;
 using UltimaXNA.Entity;
 using InterXLib.Input.Windows;
-using UltimaXNA.GUI;
+using UltimaXNA.UltimaGUI;
+using UltimaXNA.UltimaNetwork;
+using UltimaXNA.UltimaNetwork.Packets.Client;
+using UltimaXNA.UltimaNetwork.Packets.Server;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {
@@ -154,7 +157,7 @@ namespace UltimaXNA.UltimaGUI.Controls
         void dblclick_Backpack(int x, int y, MouseButton button)
         {
             Container i = ((Mobile)_sourceEntity).Backpack;
-            UltimaClient.Send(new Network.Packets.Client.DoubleClickPacket(i.Serial));
+            UltimaClient.Send(new DoubleClickPacket(i.Serial));
         }
 
         void onItemDropPaperdoll()

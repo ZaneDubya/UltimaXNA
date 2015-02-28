@@ -20,6 +20,7 @@ using System.Xml.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.UltimaData;
+using UltimaXNA.UltimaData.Fonts;
 using System.Reflection;
 #endregion
 

@@ -11,8 +11,8 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Graphics;
-using UltimaXNA.GUI;
+using UltimaXNA.Rendering;
+using UltimaXNA.UltimaGUI;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {
@@ -20,7 +20,7 @@ namespace UltimaXNA.UltimaGUI.Controls
     {
         public int Hue = 0;
         public string Text = string.Empty;
-        GUI.TextRenderer _textRenderer;
+        UltimaGUI.TextRenderer _textRenderer;
 
         public TextLabel(Control owner, int page)
             : base(owner, page)
@@ -50,7 +50,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             Position = new Point2D(x, y);
             Hue = hue;
             Text = text;
-            _textRenderer = new GUI.TextRenderer(Text, 0, true);
+            _textRenderer = new UltimaGUI.TextRenderer(Text, 0, true);
             _textRenderer.Hue = Hue;
         }
 

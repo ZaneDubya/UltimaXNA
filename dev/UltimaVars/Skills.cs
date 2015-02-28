@@ -25,7 +25,7 @@ namespace UltimaXNA.UltimaVars
                 if (!_skillsLoaded)
                 {
                     _skillsLoaded = true;
-                    foreach (UltimaData.Skill skill in UltimaData.Skills.List)
+                    foreach (UltimaData.Skill skill in UltimaData.SkillsData.List)
                         _skills.Add(skill.ID, new SkillEntry(skill.ID, skill.Index, skill.UseButton, skill.Name, 0.0f, 0.0f, 0, 0.0f));
                 }
                 return _skills;

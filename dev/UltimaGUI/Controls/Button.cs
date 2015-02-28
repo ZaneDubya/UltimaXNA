@@ -11,9 +11,9 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Graphics;
+using UltimaXNA.Rendering;
 using InterXLib.Input.Windows;
-using UltimaXNA.GUI;
+using UltimaXNA.UltimaGUI;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {
@@ -65,7 +65,7 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         internal bool MouseDownOnThis { get { return (_clicked); } }
 
-        GUI.TextRenderer _textRenderer;
+        UltimaGUI.TextRenderer _textRenderer;
 
         public Button(Control owner, int page)
             : base(owner, page)
@@ -100,7 +100,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             ButtonType = buttonType;
             ButtonParameter = param;
             ButtonID = buttonID;
-            _textRenderer = new GUI.TextRenderer("", 100, true);
+            _textRenderer = new UltimaGUI.TextRenderer("", 100, true);
         }
 
         public override void Update(GameTime gameTime)
@@ -109,7 +109,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             {
                 if (_gumpID[i] != 0 && _gumpTextures[i] == null)
                 {
-                    _gumpTextures[i] = UltimaData.Gumps.GetGumpXNA(_gumpID[i]);
+                    _gumpTextures[i] = UltimaData.GumpData.GetGumpXNA(_gumpID[i]);
                 }
             }
 

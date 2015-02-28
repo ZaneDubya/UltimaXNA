@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using InterXLib.Input.Windows;
 using UltimaXNA.UltimaGUI;
-using UltimaXNA.GUI;
-using UltimaXNA.Graphics;
+using UltimaXNA.Rendering;
 using UltimaXNA.UltimaGUI.Controls;
 
 namespace UltimaXNA

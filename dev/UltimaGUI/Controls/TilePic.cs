@@ -11,8 +11,8 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Graphics;
-using UltimaXNA.GUI;
+using UltimaXNA.Rendering;
+using UltimaXNA.UltimaGUI;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {
@@ -60,7 +60,7 @@ namespace UltimaXNA.UltimaGUI.Controls
         {
             if (_texture == null)
             {
-                _texture = UltimaData.Art.GetStaticTexture(_tileID);
+                _texture = UltimaData.ArtData.GetStaticTexture(_tileID);
                 Size = new Point2D(_texture.Width, _texture.Height);
             }
             base.Update(gameTime);

@@ -40,7 +40,7 @@ namespace UltimaXNA
 
         protected override void Update(GameTime gameTime)
         {
-            Graphics.SpriteBatch3D.ResetZ();
+            Rendering.SpriteBatch3D.ResetZ();
             Input.Update(gameTime);
             UserInterface.Update(gameTime);
             OnUpdate(gameTime);

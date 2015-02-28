@@ -49,8 +49,8 @@ namespace UltimaXNA.UltimaData
             {
                 patched = true;
 
-                Verdata.Stream.Seek(e.lookup, SeekOrigin.Begin);
-                return Verdata.Stream;
+                Versioning.Stream.Seek(e.lookup, SeekOrigin.Begin);
+                return Versioning.Stream;
             }
             else if (m_Stream == null)
             {
@@ -108,7 +108,7 @@ namespace UltimaXNA.UltimaData
                 }
             }
 
-            Entry5D[] patches = Verdata.Patches;
+            Entry5D[] patches = Versioning.Patches;
 
             for (int i = 0; i < patches.Length; ++i)
             {

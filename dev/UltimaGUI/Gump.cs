@@ -1,4 +1,6 @@
-﻿/***************************************************************************
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+/***************************************************************************
  *   Gump.cs
  *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   
@@ -9,10 +11,9 @@
  *
  ***************************************************************************/
 using System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Graphics;
-using UltimaXNA.GUI;
+using UltimaXNA.Rendering;
+using UltimaXNA.UltimaNetwork;
+using UltimaXNA.UltimaNetwork.Packets.Client;
 
 namespace UltimaXNA.UltimaGUI
 {
@@ -114,7 +115,7 @@ namespace UltimaXNA.UltimaGUI
         {
             int[] switchIDs = new int[0];
             Pair<short, string>[] textEntries = new Pair<short,string>[0];
-            UltimaClient.Send(new Network.Packets.Client.GumpMenuSelectPacket(
+            UltimaClient.Send(new GumpMenuSelectPacket(
                 this.Serial, this.GumpID, buttonID, switchIDs, textEntries));
             this.Dispose();
         }
