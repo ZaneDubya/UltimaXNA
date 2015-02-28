@@ -19,7 +19,7 @@ using UltimaXNA.Entity;
 
 namespace UltimaXNA.UltimaWorld
 {
-    static class Entities
+    class EntityManager
     {
         private static Dictionary<int, BaseEntity> m_Entities = new Dictionary<int, BaseEntity>();
         private static List<BaseEntity> m_Entities_Queued = new List<BaseEntity>();

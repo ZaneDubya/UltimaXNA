@@ -32,6 +32,9 @@ namespace UltimaXNA
 
     static class UltimaGameState
     {
+        // World object. Putting it here until it gets moved to a more reasonable location.
+        public UltimaWorld.WorldModel World;
+
         // mouse input variables
         static bool _ContinuousMoveCheck = false;
         const int _TimeHoveringBeforeTipMS = 1000;
@@ -147,7 +150,7 @@ namespace UltimaXNA
                 moveDirection |= Direction.Running;
 
             // Tell the player to Move.
-            Mobile m = (Mobile)Entities.GetPlayerObject();
+            Mobile m = (Mobile)EntityManager.GetPlayerObject();
             m.PlayerMobile_Move(moveDirection);
         }
 
@@ -361,7 +364,7 @@ namespace UltimaXNA
             if (!serial.IsValid)
                 return;
 
-            BaseEntity e = Entities.GetObject<BaseEntity>(serial, false);
+            BaseEntity e = EntityManager.GetObject<BaseEntity>(serial, false);
 
             if (e is Mobile)
             {

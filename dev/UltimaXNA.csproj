@@ -271,8 +271,8 @@
     </Compile>
     <Compile Include="UltimaData\TileMatrixRaw.cs" />
     <Compile Include="Core\Diagnostics\Dynamic.cs" />
-    <Compile Include="UltimaWorld\Objects\MapObjectDynamic.cs" />
-    <Compile Include="UltimaWorld\Objects\MapObjectPrerendered.cs" />
+    <Compile Include="UltimaWorld\View\ViewObjects\MapObjectDynamic.cs" />
+    <Compile Include="UltimaWorld\View\ViewObjects\MapObjectPrerendered.cs" />
     <Compile Include="UltimaGUI\Controls\TextureGumpling.cs" />
     <Compile Include="UltimaGUI\HTML\HTMLRegions.cs" />
     <Compile Include="UltimaGUI\HTML\HTMLAtoms.cs" />
@@ -308,7 +308,7 @@
     <Compile Include="Entity\Corpse.cs" />
     <Compile Include="Entity\DynamicObject.cs" />
     <Compile Include="Entity\BaseEntity.cs" />
-    <Compile Include="UltimaWorld\Entities.cs" />
+    <Compile Include="UltimaWorld\Model\EntityManager.cs" />
     <Compile Include="Entity\ContainerContents.cs" />
     <Compile Include="Entity\EntityPosition3d.cs" />
     <Compile Include="Entity\Item.cs" />
@@ -328,7 +328,7 @@
     <Compile Include="Scenes\CreateCharacterScene.cs" />
     <Compile Include="Scenes\LoggingInScene.cs" />
     <Compile Include="Scenes\SelectServerScene.cs" />
-    <Compile Include="UltimaWorld\Objects\MapObjectDeferred.cs" />
+    <Compile Include="UltimaWorld\View\ViewObjects\MapObjectDeferred.cs" />
     <Compile Include="Core\Rendering\VectorPolygon.cs" />
     <Compile Include="Core\Rendering\VectorRenderer.cs" />
     <Compile Include="UltimaGUI\HTML\Parsing\DynaString.cs" />
@@ -338,10 +338,10 @@
     <Compile Include="UltimaGUI\HTML\Parsing\HTMLheuristics.cs" />
     <Compile Include="UltimaGUI\HTML\Parsing\HTMLParser.cs" />
     <Compile Include="UltimaGUI\HTML\Parsing\TagParser.cs" />
-    <Compile Include="UltimaWorld\IsometricRenderer.cs" />
-    <Compile Include="UltimaWorld\Map\MapTile.cs" />
-    <Compile Include="UltimaWorld\Objects\MapObjectComparer.cs" />
-    <Compile Include="UltimaWorld\MouseOverList.cs" />
+    <Compile Include="UltimaWorld\View\IsometricWorldView.cs" />
+    <Compile Include="UltimaWorld\Model\MapTile.cs" />
+    <Compile Include="UltimaWorld\View\ViewObjects\MapObjectComparer.cs" />
+    <Compile Include="UltimaWorld\Controller\MouseOverList.cs" />
     <Compile Include="UltimaGUI\Gumps\CharacterListGump.cs" />
     <Compile Include="UltimaGUI\Gumps\ChatWindow.cs" />
     <Compile Include="UltimaGUI\Gumps\ContainerGump.cs" />
@@ -410,17 +410,17 @@
     <Compile Include="Scenes\LoginScene.cs" />
     <Compile Include="Entity\Serial.cs" />
     <Compile Include="UltimaData\_Enums.cs" />
-    <Compile Include="UltimaWorld\Objects\MapObjectCorpse.cs" />
-    <Compile Include="UltimaWorld\Objects\MapObjectItem.cs" />
-    <Compile Include="UltimaWorld\MiniMap.cs" />
-    <Compile Include="UltimaWorld\Objects\MapObjectGround.cs" />
-    <Compile Include="UltimaWorld\Map\Map.cs" />
-    <Compile Include="UltimaWorld\Objects\MapObjectMobile.cs" />
-    <Compile Include="UltimaWorld\PickTypes.cs" />
+    <Compile Include="UltimaWorld\View\ViewObjects\MapObjectCorpse.cs" />
+    <Compile Include="UltimaWorld\View\ViewObjects\MapObjectItem.cs" />
+    <Compile Include="UltimaWorld\View\MiniMapWorldView.cs" />
+    <Compile Include="UltimaWorld\View\ViewObjects\MapObjectGround.cs" />
+    <Compile Include="UltimaWorld\Model\Map.cs" />
+    <Compile Include="UltimaWorld\View\ViewObjects\MapObjectMobile.cs" />
+    <Compile Include="UltimaWorld\Controller\PickTypes.cs" />
     <Compile Include="Core\Rendering\SpriteBatch3D.cs" />
-    <Compile Include="UltimaWorld\Objects\MapObjectText.cs" />
-    <Compile Include="UltimaWorld\Objects\MapObject.cs" />
-    <Compile Include="UltimaWorld\Objects\MapObjectStatic.cs" />
+    <Compile Include="UltimaWorld\View\ViewObjects\MapObjectText.cs" />
+    <Compile Include="UltimaWorld\View\ViewObjects\MapObject.cs" />
+    <Compile Include="UltimaWorld\View\ViewObjects\MapObjectStatic.cs" />
     <Compile Include="Core\Rendering\VertexPositionNormalTextureHue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UltimaData\AnimationData.cs" />
@@ -428,9 +428,7 @@
     <Compile Include="UltimaData\HueData.cs" />
     <Compile Include="UltimaData\Versioning.cs" />
     <Compile Include="Utility.cs" />
-    <Compile Include="UltimaWorld\WorldController.cs" />
     <Compile Include="UltimaWorld\WorldModel.cs" />
-    <Compile Include="UltimaWorld\WorldView.cs" />
   </ItemGroup>
   <ItemGroup>
     <NestedContentProject Include="Content\Content.contentproj">

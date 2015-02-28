@@ -44,12 +44,12 @@ namespace UltimaXNA
 
         public static void GetMySkills()
         {
-            UltimaClient.Send(new GetPlayerStatusPacket(0x05, Entities.MySerial));
+            UltimaClient.Send(new GetPlayerStatusPacket(0x05, EntityManager.MySerial));
         }
 
         public static void GetMyBasicStatus()
         {
-            UltimaClient.Send(new GetPlayerStatusPacket(0x04, Entities.MySerial));
+            UltimaClient.Send(new GetPlayerStatusPacket(0x04, EntityManager.MySerial));
         }
 
         public static void SingleClick(BaseEntity item)
@@ -112,7 +112,7 @@ namespace UltimaXNA
 
         public static void WearItem(Item item)
         {
-            UltimaClient.Send(new DropToLayerPacket(item.Serial, 0x00, Entities.MySerial));
+            UltimaClient.Send(new DropToLayerPacket(item.Serial, 0x00, EntityManager.MySerial));
             UltimaEngine.UltimaUI.Cursor.ClearHolding();
         }
 

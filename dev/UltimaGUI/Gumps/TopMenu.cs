@@ -67,10 +67,10 @@ namespace UltimaXNA.UltimaGUI.Gumps
                     UserInterface.ToggleLocalGump(new MiniMap(), 566, 25);
                     break;
                 case Buttons.Paperdoll:
-                    UserInterface.ToggleLocalGump(new PaperDollGump((Mobile)Entities.GetPlayerObject()), 400, 100);
+                    UserInterface.ToggleLocalGump(new PaperDollGump((Mobile)EntityManager.GetPlayerObject()), 400, 100);
                     break;
                 case Buttons.Inventory:
-                    PlayerMobile m = (PlayerMobile)Entities.GetPlayerObject();
+                    PlayerMobile m = (PlayerMobile)EntityManager.GetPlayerObject();
                     Container i = m.Backpack;
                     UltimaClient.Send(new DoubleClickPacket(i.Serial));
                     // UserInterface.AddContainerGump(i, 0);

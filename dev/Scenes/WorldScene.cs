@@ -79,7 +79,7 @@ namespace UltimaXNA.Scenes
                 }
                 else
                 {
-                    IsometricRenderer.CenterPosition = Entities.GetPlayerObject().Position;
+                    IsometricRenderer.CenterPosition = EntityManager.GetPlayerObject().Position;
                     IsometricRenderer.Update(gameTime);
 
                     // Toggle for logout

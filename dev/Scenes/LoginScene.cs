@@ -36,7 +36,7 @@ namespace UltimaXNA.Scenes
             base.Intitialize();
             Gump g = (Gump)UltimaEngine.UserInterface.AddControl(new UltimaGUI.Gumps.LoginGump(), 0, 0);
             ((UltimaGUI.Gumps.LoginGump)g).OnLogin += this.OnLogin;
-            Entities.Reset();
+            EntityManager.Reset();
             UltimaVars.EngineVars.Map = -1;
         }
 

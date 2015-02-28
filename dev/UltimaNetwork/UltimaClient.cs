@@ -221,7 +221,7 @@ namespace UltimaXNA.UltimaNetwork
                 iObject.X = i.X;
                 iObject.Y = i.Y;
                 // ... and add it the container contents of the container.
-                Container c = Entities.GetObject<Container>(i.ContainerSerial, true);
+                Container c = EntityManager.GetObject<Container>(i.ContainerSerial, true);
                 c.AddItem(iObject);
             }
         }
@@ -235,7 +235,7 @@ namespace UltimaXNA.UltimaNetwork
             iObject.X = p.X;
             iObject.Y = p.Y;
             // ... and add it the container contents of the container.
-            Container iContainerObject = Entities.GetObject<Container>(p.ContainerSerial, true);
+            Container iContainerObject = EntityManager.GetObject<Container>(p.ContainerSerial, true);
             if (iContainerObject != null)
                 iContainerObject.AddItem(iObject);
             else
@@ -303,12 +303,12 @@ namespace UltimaXNA.UltimaNetwork
             // Special case for 0x30, which tells us to open a buy from vendor window.
             if (p.GumpId == 0x30)
             {
-                Mobile m = Entities.GetObject<Mobile>(p.Serial, false);
+                Mobile m = EntityManager.GetObject<Mobile>(p.Serial, false);
                 item = m.VendorShopContents;
             }
             else
             {
-                item = Entities.GetObject<Container>(p.Serial, false);
+                item = EntityManager.GetObject<Container>(p.Serial, false);
                 if (item is Container)
                 {
                     UltimaInteraction.OpenContainerGump(item);
@@ -323,14 +323,14 @@ namespace UltimaXNA.UltimaNetwork
         private static void receive_CorpseClothing(IRecvPacket packet)
         {
             CorpseClothingPacket p = (CorpseClothingPacket)packet;
-            Corpse e = Entities.GetObject<Corpse>(p.CorpseSerial, false);
+            Corpse e = EntityManager.GetObject<Corpse>(p.CorpseSerial, false);
             e.LoadCorpseClothing(p.Items);
         }
 
         private static void receive_Damage(IRecvPacket packet)
         {
             DamagePacket p = (DamagePacket)packet;
-            Mobile u = Entities.GetObject<Mobile>(p.Serial, false);
+            Mobile u = EntityManager.GetObject<Mobile>(p.Serial, false);
 
             UltimaInteraction.ChatMessage(string.Format("{0} takes {1} damage!", u.Name, p.Damage));
         }
@@ -338,8 +338,8 @@ namespace UltimaXNA.UltimaNetwork
         private static void receive_DeathAnimation(IRecvPacket packet)
         {
             DeathAnimationPacket p = (DeathAnimationPacket)packet;
-            Mobile u = Entities.GetObject<Mobile>(p.PlayerSerial, false);
-            Corpse c = Entities.GetObject<Corpse>(p.CorpseSerial, false);
+            Mobile u = EntityManager.GetObject<Mobile>(p.PlayerSerial, false);
+            Corpse c = EntityManager.GetObject<Corpse>(p.CorpseSerial, false);
             c.Facing = u.Facing;
             c.MobileSerial = p.PlayerSerial;
             c.DeathAnimation();
@@ -348,7 +348,7 @@ namespace UltimaXNA.UltimaNetwork
         private static void receive_DeleteObject(IRecvPacket packet)
         {
             RemoveEntityPacket p = (RemoveEntityPacket)packet;
-            Entities.RemoveObject(p.Serial);
+            EntityManager.RemoveObject(p.Serial);
         }
 
         private static void receive_DragItem(IRecvPacket packet)
@@ -415,7 +415,7 @@ namespace UltimaXNA.UltimaNetwork
                     UltimaVars.EngineVars.MapCount = p.MapCount;
                     break;
                 case 0x19: // Extended stats
-                    if (p.Serial != Entities.MySerial)
+                    if (p.Serial != EntityManager.MySerial)
                         Diagnostics.Logger.Warn("Extended Stats packet (0xBF subcommand 0x19) received for a mobile not our own.");
                     else
                     {
@@ -427,7 +427,7 @@ namespace UltimaXNA.UltimaNetwork
                 case 0x1D: // House revision state
                     if (UltimaData.CustomHousingData.IsHashCurrent(p.HouseRevisionState.Serial, p.HouseRevisionState.Hash))
                     {
-                        Multi e = Entities.GetObject<Multi>(p.HouseRevisionState.Serial, false);
+                        Multi e = EntityManager.GetObject<Multi>(p.HouseRevisionState.Serial, false);
                         if (e.CustomHouseRevision != p.HouseRevisionState.Hash)
                         {
                             UltimaData.CustomHouse house = UltimaData.CustomHousingData.GetCustomHouseData(p.HouseRevisionState.Serial);
@@ -457,13 +457,13 @@ namespace UltimaXNA.UltimaNetwork
 
         private static void receive_GraphicEffect(IRecvPacket packet)
         {
-            DynamicObject dynamic = Entities.AddDynamicObject();
+            DynamicObject dynamic = EntityManager.AddDynamicObject();
             dynamic.Load_FromPacket((GraphicEffectPacket)packet);
         }
 
         private static void receive_HuedEffect(IRecvPacket packet)
         {
-            DynamicObject dynamic = Entities.AddDynamicObject();
+            DynamicObject dynamic = EntityManager.AddDynamicObject();
             dynamic.Load_FromPacket((GraphicEffectHuedPacket)packet);
         }
 
@@ -478,7 +478,7 @@ namespace UltimaXNA.UltimaNetwork
             // We want to make sure we have the client object before we load the world.
             // If we don't, just set the status to login complete, which will then
             // load the world when we finally receive our client object.
-            if (Entities.MySerial != 0)
+            if (EntityManager.MySerial != 0)
                 Status = UltimaClientStatus.WorldServer_InWorld;
             else
                 Status = UltimaClientStatus.WorldServer_LoginComplete;
@@ -530,14 +530,14 @@ namespace UltimaXNA.UltimaNetwork
         {
             MobileAnimationPacket p = (MobileAnimationPacket)packet;
 
-            Mobile m = Entities.GetObject<Mobile>(p.Serial, false);
+            Mobile m = EntityManager.GetObject<Mobile>(p.Serial, false);
             m.Animate(p.Action, p.FrameCount, p.RepeatCount, p.Reverse, p.Repeat, p.Delay);
         }
 
         private static void receive_MobileIncoming(IRecvPacket packet)
         {
             MobileIncomingPacket p = (MobileIncomingPacket)packet;
-            Mobile mobile = Entities.GetObject<Mobile>(p.Serial, true);
+            Mobile mobile = EntityManager.GetObject<Mobile>(p.Serial, true);
             mobile.BodyID = p.BodyID;
             mobile.Hue = (int)p.Hue;
             mobile.Move_Instant(p.X, p.Y, p.Z, p.Direction);
@@ -568,7 +568,7 @@ namespace UltimaXNA.UltimaNetwork
         {
             MobileMovingPacket p = (MobileMovingPacket)packet;
 
-            Mobile mobile = Entities.GetObject<Mobile>(p.Serial, true);
+            Mobile mobile = EntityManager.GetObject<Mobile>(p.Serial, true);
             mobile.BodyID = p.BodyID;
             mobile.IsFemale = p.Flags.IsFemale;
             mobile.IsPoisoned = p.Flags.IsPoisoned;
@@ -592,7 +592,7 @@ namespace UltimaXNA.UltimaNetwork
         private static void receive_MobileUpdate(IRecvPacket packet)
         {
             MobileUpdatePacket p = (MobileUpdatePacket)packet;
-            Mobile mobile = Entities.GetObject<Mobile>(p.Serial, true);
+            Mobile mobile = EntityManager.GetObject<Mobile>(p.Serial, true);
             mobile.BodyID = p.BodyID;
             mobile.IsFemale = p.Flags.IsFemale;
             mobile.IsPoisoned = p.Flags.IsPoisoned;
@@ -612,7 +612,7 @@ namespace UltimaXNA.UltimaNetwork
         private static void receive_MoveAck(IRecvPacket packet)
         {
             MoveAcknowledgePacket p = (MoveAcknowledgePacket)packet;
-            Mobile player = (Mobile)Entities.GetPlayerObject();
+            Mobile player = (Mobile)EntityManager.GetPlayerObject();
             player.PlayerMobile_MoveEventAck(p.Sequence);
             player.Notoriety = p.Notoriety;
         }
@@ -620,7 +620,7 @@ namespace UltimaXNA.UltimaNetwork
         private static void receive_MoveRej(IRecvPacket packet)
         {
             MovementRejectPacket p = (MovementRejectPacket)packet;
-            Mobile player = (Mobile)Entities.GetPlayerObject();
+            Mobile player = (Mobile)EntityManager.GetPlayerObject();
             player.PlayerMobile_MoveEventRej(p.Sequence, p.X, p.Y, p.Z, p.Direction);
         }
 
@@ -639,7 +639,7 @@ namespace UltimaXNA.UltimaNetwork
         {
             ObjectPropertyListPacket p = (ObjectPropertyListPacket)packet;
 
-            BaseEntity iObject = Entities.GetObject<BaseEntity>(p.Serial, false);
+            BaseEntity iObject = EntityManager.GetObject<BaseEntity>(p.Serial, false);
             iObject.PropertyList.Hash = p.Hash;
             iObject.PropertyList.Clear();
 
@@ -662,7 +662,7 @@ namespace UltimaXNA.UltimaNetwork
             CustomHousePacket p = (CustomHousePacket)packet;
             UltimaData.CustomHousingData.UpdateCustomHouseData(p.HouseSerial, p.RevisionHash, p.PlaneCount, p.Planes);
 
-            Multi e = Entities.GetObject<Multi>(p.HouseSerial, false);
+            Multi e = EntityManager.GetObject<Multi>(p.HouseSerial, false);
             if (e.CustomHouseRevision != p.RevisionHash)
             {
                 UltimaData.CustomHouse house = UltimaData.CustomHousingData.GetCustomHouseData(p.HouseSerial);
@@ -678,7 +678,7 @@ namespace UltimaXNA.UltimaNetwork
         private static void receive_OnSwing(IRecvPacket packet)
         {
             SwingPacket p = (SwingPacket)packet;
-            if (p.Attacker == Entities.MySerial)
+            if (p.Attacker == EntityManager.MySerial)
             {
                 UltimaVars.EngineVars.LastTarget = p.Defender;
             }
@@ -687,7 +687,7 @@ namespace UltimaXNA.UltimaNetwork
         private static void receive_OpenBuyWindow(IRecvPacket packet)
         {
             VendorBuyListPacket p = (VendorBuyListPacket)packet;
-            Item iObject = Entities.GetObject<Item>(p.VendorPackSerial, false);
+            Item iObject = EntityManager.GetObject<Item>(p.VendorPackSerial, false);
             if (iObject == null)
                 return;
             // UserInterface.Merchant_Open(iObject, 0);
@@ -737,8 +737,8 @@ namespace UltimaXNA.UltimaNetwork
             LoginConfirmPacket p = (LoginConfirmPacket)packet;
 
             // When loading the player object, we must load the serial before the object.
-            Entities.MySerial = p.Serial;
-            PlayerMobile iPlayer = Entities.GetObject<PlayerMobile>(p.Serial, true);
+            EntityManager.MySerial = p.Serial;
+            PlayerMobile iPlayer = EntityManager.GetObject<PlayerMobile>(p.Serial, true);
             iPlayer.Move_Instant(p.X, p.Y, p.Z, p.Direction);
             // iPlayer.SetFacing(p.Direction);
 
@@ -787,7 +787,7 @@ namespace UltimaXNA.UltimaNetwork
         private static void receive_RequestNameResponse(IRecvPacket packet)
         {
             RequestNameResponsePacket p = (RequestNameResponsePacket)packet;
-            Mobile u = Entities.GetObject<Mobile>(p.Serial, false);
+            Mobile u = EntityManager.GetObject<Mobile>(p.Serial, false);
             u.Name = p.MobileName;
         }
 
@@ -866,7 +866,7 @@ namespace UltimaXNA.UltimaNetwork
                 throw (new Exception("KR Status not handled."));
             }
 
-            Mobile u = Entities.GetObject<Mobile>(p.Serial, false);
+            Mobile u = EntityManager.GetObject<Mobile>(p.Serial, false);
             u.Name = p.PlayerName;
             u.Strength = p.Strength;
             u.Dexterity = p.Dexterity;
@@ -916,7 +916,7 @@ namespace UltimaXNA.UltimaNetwork
         private static void receive_ToolTipRevision(IRecvPacket packet)
         {
             ObjectPropertyListUpdatePacket p = (ObjectPropertyListUpdatePacket)packet;
-            BaseEntity iObject = Entities.GetObject<BaseEntity>(p.Serial, false);
+            BaseEntity iObject = EntityManager.GetObject<BaseEntity>(p.Serial, false);
             if (iObject != null)
             {
                 if (iObject.PropertyList.Hash != p.RevisionHash)
@@ -935,21 +935,21 @@ namespace UltimaXNA.UltimaNetwork
         private static void receive_UpdateHealth(IRecvPacket packet)
         {
             UpdateHealthPacket p = (UpdateHealthPacket)packet;
-            Mobile u = Entities.GetObject<Mobile>(p.Serial, false);
+            Mobile u = EntityManager.GetObject<Mobile>(p.Serial, false);
             u.Health.Update(p.Current, p.Max);
         }
 
         private static void receive_UpdateMana(IRecvPacket packet)
         {
             UpdateManaPacket p = (UpdateManaPacket)packet;
-            Mobile u = Entities.GetObject<Mobile>(p.Serial, false);
+            Mobile u = EntityManager.GetObject<Mobile>(p.Serial, false);
             u.Mana.Update(p.Current, p.Max);
         }
 
         private static void receive_UpdateStamina(IRecvPacket packet)
         {
             UpdateStaminaPacket p = (UpdateStaminaPacket)packet;
-            Mobile u = Entities.GetObject<Mobile>(p.Serial, false);
+            Mobile u = EntityManager.GetObject<Mobile>(p.Serial, false);
             u.Stamina.Update(p.Current, p.Max);
         }
 
@@ -983,7 +983,7 @@ namespace UltimaXNA.UltimaNetwork
             {
                 // create a multi object. Unhandled !!!
                 int multiID = p.ItemID - 0x4000;
-                Multi multi = Entities.GetObject<Multi>(p.Serial, true);
+                Multi multi = EntityManager.GetObject<Multi>(p.Serial, true);
                 multi.ItemID = p.ItemID;
                 multi.X = p.X;
                 multi.Y = p.Y;
@@ -995,7 +995,7 @@ namespace UltimaXNA.UltimaNetwork
         {
             WornItemPacket p = (WornItemPacket)packet;
             Item item = add_Item(p.Serial, p.ItemId, p.Hue, p.ParentSerial, 0);
-            Mobile m = Entities.GetObject<Mobile>(p.ParentSerial, false);
+            Mobile m = EntityManager.GetObject<Mobile>(p.ParentSerial, false);
             m.WearItem(item, p.Layer);
             if (item.PropertyList.Hash == 0)
                 Send(new QueryPropertiesPacket(item.Serial));
@@ -1019,7 +1019,7 @@ namespace UltimaXNA.UltimaNetwork
             switch (msgType)
             {
                 case MessageType.Regular:
-                    overhead = Entities.AddOverhead(msgType, serial, text, font, hue);
+                    overhead = EntityManager.AddOverhead(msgType, serial, text, font, hue);
                     if (overhead != null)
                     {
                         UltimaInteraction.ChatMessage(speakerName + ": " + text, font, hue);
@@ -1039,12 +1039,12 @@ namespace UltimaXNA.UltimaNetwork
                 case MessageType.Label:
                     if (serial.IsValid)
                     {
-                        overhead = Entities.AddOverhead(msgType, serial, text, font, hue);
+                        overhead = EntityManager.AddOverhead(msgType, serial, text, font, hue);
                         overhead.SpeakerName = speakerName;
                         // Labels that are longer than the current name should be set as the name
                         if (serial.IsMobile)
                         {
-                            Mobile m = Entities.GetObject<Mobile>(serial, false);
+                            Mobile m = EntityManager.GetObject<Mobile>(serial, false);
                             if (m.Name.Length < text.Length)
                                 m.Name = text;
                         }
@@ -1165,15 +1165,15 @@ namespace UltimaXNA.UltimaNetwork
             if (itemID == 0x2006)
             {
                 // special case for corpses.
-                item = Entities.GetObject<Corpse>((int)serial, true);
+                item = EntityManager.GetObject<Corpse>((int)serial, true);
                 ContainerContentPacket.NextContainerContentsIsPre6017 = true;
             }
             else
             {
                 if (UltimaData.TileData.ItemData[itemID].Container)
-                    item = Entities.GetObject<Container>((int)serial, true);
+                    item = EntityManager.GetObject<Container>((int)serial, true);
                 else
-                    item = Entities.GetObject<Item>((int)serial, true);
+                    item = EntityManager.GetObject<Item>((int)serial, true);
             }
             item.Amount = amount;
             item.ItemID = itemID;

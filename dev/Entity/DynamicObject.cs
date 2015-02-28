@@ -98,7 +98,7 @@ namespace UltimaXNA.Entity
             {
                 if (_doesExplode)
                 {
-                    DynamicObject dynamic = Entities.AddDynamicObject();
+                    DynamicObject dynamic = EntityManager.AddDynamicObject();
                     dynamic.Load_AsExplosion(_targetX, _targetY, _targetZ);
                 }
                 this.Dispose();
