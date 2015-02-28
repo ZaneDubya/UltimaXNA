@@ -12,7 +12,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using UltimaXNA.TileEngine;
+using UltimaXNA.UltimaWorld;
 #endregion
 
 namespace UltimaXNA.Entity

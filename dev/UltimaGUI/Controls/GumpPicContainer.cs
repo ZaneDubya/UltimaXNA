@@ -9,7 +9,7 @@
  *
  ***************************************************************************/
 using UltimaXNA.Entity;
-using UltimaXNA.GUI;
+using UltimaXNA.UltimaGUI;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {

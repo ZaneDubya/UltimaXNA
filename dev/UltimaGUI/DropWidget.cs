@@ -1,4 +1,4 @@
-﻿using UltimaXNA.GUI;
+﻿using UltimaXNA.UltimaGUI;
 /***************************************************************************
  *   DropWidget.cs
  *   Part of UltimaXNA: http://code.google.com/p/ultimaxna

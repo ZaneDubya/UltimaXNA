@@ -258,7 +258,7 @@ namespace UltimaXNA.UltimaData
 
                     fixed (StaticTile* pStaticTiles = staticTiles)
                     {
-                        NativeMethods.Read(m_Statics.SafeFileHandle, pStaticTiles, length);
+                        SharedMethods.Read(m_Statics.SafeFileHandle, pStaticTiles, length);
 
                         if (m_StaticTileLists == null)
                         {
@@ -321,7 +321,7 @@ namespace UltimaXNA.UltimaData
 
                 fixed (Tile* pTiles = tiles)
                 {
-                    NativeMethods.Read(m_MapStream.SafeFileHandle, pTiles, 192);
+                    SharedMethods.Read(m_MapStream.SafeFileHandle, pTiles, 192);
                 }
 
                 UltimaVars.Metrics.ReportDataRead((int)m_MapStream.Position - streamStart);

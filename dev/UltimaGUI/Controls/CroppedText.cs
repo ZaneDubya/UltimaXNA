@@ -10,8 +10,8 @@
  ***************************************************************************/
 using System;
 using Microsoft.Xna.Framework;
-using UltimaXNA.Graphics;
-using UltimaXNA.GUI;
+using UltimaXNA.Rendering;
+using UltimaXNA.UltimaGUI;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {
@@ -19,7 +19,7 @@ namespace UltimaXNA.UltimaGUI.Controls
     {
         public int Hue = 0;
         public string Text = string.Empty;
-        GUI.TextRenderer _textRenderer;
+        UltimaGUI.TextRenderer _textRenderer;
 
         public CroppedText(Control owner, int page)
             : base(owner, page)
@@ -52,7 +52,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             Size = new Point2D(width, height);
             Hue = hue;
             Text = lines[textIndex];
-            _textRenderer = new GUI.TextRenderer(Text, width, true);
+            _textRenderer = new UltimaGUI.TextRenderer(Text, width, true);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)

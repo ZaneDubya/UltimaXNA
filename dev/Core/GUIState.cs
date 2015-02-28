@@ -10,9 +10,9 @@
  ***************************************************************************/
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using UltimaXNA.Graphics;
+using UltimaXNA.Rendering;
 using InterXLib.Input.Windows;
-using UltimaXNA.GUI;
+using UltimaXNA.UltimaGUI;
 
 namespace UltimaXNA
 {

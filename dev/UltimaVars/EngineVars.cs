@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using InterXLib.Input.Windows;
 /***************************************************************************
  *   EngineVars.cs
  *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
@@ -11,7 +11,9 @@
  ***************************************************************************/
 using Microsoft.Xna.Framework;
 using UltimaXNA.Entity;
-using InterXLib.Input.Windows;
+using UltimaXNA.UltimaNetwork;
+using UltimaXNA.UltimaNetwork.Packets.Client;
+using UltimaXNA.UltimaWorld;
 
 namespace UltimaXNA.UltimaVars
 {
@@ -39,7 +41,7 @@ namespace UltimaXNA.UltimaVars
             set
             {
                 _lastTarget = value;
-                UltimaClient.Send(new Network.Packets.Client.GetPlayerStatusPacket(0x04, _lastTarget));
+                UltimaClient.Send(new GetPlayerStatusPacket(0x04, _lastTarget));
             }
         }
         public static bool WarMode

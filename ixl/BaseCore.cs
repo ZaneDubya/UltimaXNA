@@ -12,7 +12,7 @@ namespace InterXLib
         System.Drawing.Graphics m_SystemGraphics;
         GraphicsDeviceManager m_Graphics;
         YSpriteBatch m_SpriteBatch;
-        GUIManager m_GUI;
+        GUIManager m_XGUI;
 
         protected bool m_DefaultCoreInitialization = false;
 
@@ -43,9 +43,9 @@ namespace InterXLib
             get { return Library.Projections.Camera; }
         }
 
-        protected GUIManager GUIManager
+        protected GUIManager XGUIManager
         {
-            get { return m_GUI; }
+            get { return m_XGUI; }
         }
 
         protected abstract void CoreInitialize();
@@ -72,7 +72,7 @@ namespace InterXLib
             m_SpriteBatch = new InterXLib.Display.YSpriteBatch(this);
             this.Components.Add(m_SpriteBatch);
 
-            m_GUI = new GUIManager();
+            m_XGUI = new GUIManager();
             this.IsMouseVisible = true;
         }
 
@@ -96,12 +96,12 @@ namespace InterXLib
 
             if (initialize_gui)
             {
-                GUIManager.DefaultSkinName = "XGUI";
-                GUIManager.DefaultFontName = font_name;
-                GUIManager.AddFont("CenturyGothic", YSpriteFont.LoadFontDF(GraphicsDevice,
+                XGUIManager.DefaultSkinName = "XGUI";
+                XGUIManager.DefaultFontName = font_name;
+                XGUIManager.AddFont("CenturyGothic", YSpriteFont.LoadFontDF(GraphicsDevice,
                     base_path + @"CenturyGothic.xnb",
                     base_path + @"CenturyGothicXML.xml", 50f));
-                GUIManager.AddSkin("XGUI", new InterXLib.XGUI.Rendering.Skin(
+                XGUIManager.AddSkin("XGUI", new InterXLib.XGUI.Rendering.Skin(
                     Content.Load<Texture2D>(base_path + @"GUITexture"),
                     new System.IO.StreamReader(base_path + @"GUIRenderers.txt"),
                     font_name));
@@ -145,15 +145,15 @@ namespace InterXLib
                 handleUpdates();
 
             // GUIManager blocks input for other systems.
-            GUIManager.ReceiveKeyboardInput(Input.GetKeyboardEvents());
-            GUIManager.ReceiveMouseInput(Input.MousePosition, Input.GetMouseEvents());
+            XGUIManager.ReceiveKeyboardInput(Input.GetKeyboardEvents());
+            XGUIManager.ReceiveMouseInput(Input.MousePosition, Input.GetMouseEvents());
 
             base.Update(gameTime);
 
             CoreUpdate(m_TotalTime, m_ElapsedTime);
 
             // Update GUI last as it may be updated by other systems.
-            GUIManager.Update(m_TotalTime, m_ElapsedTime);
+            XGUIManager.Update(m_TotalTime, m_ElapsedTime);
 
             Profiler.ExitContext("Update");
             Profiler.EnterContext("OutOfContext");
@@ -174,7 +174,7 @@ namespace InterXLib
             double frameTime = gameTime.ElapsedGameTime.TotalMilliseconds / 1000D;
             CoreBeforeDraw();
             CoreDraw(frameTime);
-            m_GUI.Draw(SpriteBatch, frameTime);
+            m_XGUI.Draw(SpriteBatch, frameTime);
             CoreAfterDraw();
             base.Draw(gameTime);
 

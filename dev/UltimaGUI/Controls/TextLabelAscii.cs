@@ -11,8 +11,9 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Graphics;
-using UltimaXNA.GUI;
+using UltimaXNA.Rendering;
+using UltimaXNA.UltimaGUI;
+using UltimaXNA.UltimaData.Fonts;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {
@@ -50,7 +51,7 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         public override void Draw(SpriteBatchUI spriteBatch)
         {
-            _texture = UltimaData.ASCIIText.GetTextTexture(Text, FontID);
+            _texture = ASCIIText.GetTextTexture(Text, FontID);
             spriteBatch.Draw2D(_texture, Position, Hue, true, false);
             base.Draw(spriteBatch);
         }

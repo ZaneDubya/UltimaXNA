@@ -11,7 +11,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Entity;
-using UltimaXNA.Graphics;
+using UltimaXNA.Rendering;
 
 namespace UltimaXNA.UltimaGUI
 {
@@ -33,7 +33,7 @@ namespace UltimaXNA.UltimaGUI
         }
         public Item HoldingItem { get { return holdingItem; } }
         public Point HoldingOffset { get { return holdingOffset; } set { holdingOffset = value; } }
-        public Texture2D HoldingTexture { get { return UltimaData.Art.GetStaticTexture(holdingItem.DisplayItemID); } }
+        public Texture2D HoldingTexture { get { return UltimaData.ArtData.GetStaticTexture(holdingItem.DisplayItemID); } }
         
         bool _isTargeting = false;
         public bool IsTargeting
@@ -110,7 +110,7 @@ namespace UltimaXNA.UltimaGUI
                 cursorOffset = new Point2D(holdingOffset.X, holdingOffset.Y);
                 cursorTexture = HoldingTexture;
                 sourceRect = new Rectangle(0, 0, cursorTexture.Width, cursorTexture.Height);
-                UltimaEngine.UserInterface.BeneathCursorSprite = new GUI.Sprite(cursorTexture, cursorOffset, sourceRect, holdingItem.Hue);
+                UltimaEngine.UserInterface.BeneathCursorSprite = new UltimaGUI.Sprite(cursorTexture, cursorOffset, sourceRect, holdingItem.Hue);
                 // sb.Draw2D(cursorTexture, position - cursorOffset, sourceRect, holdingItem.Hue, false, false);
                 // then set the data for the hang which holds it.
                 cursorOffset = new Point2D(1, 1);
@@ -184,10 +184,10 @@ namespace UltimaXNA.UltimaGUI
             else if (TrammelHue)
                 cursorHue = 2412;
 
-            cursorTexture = UltimaData.Art.GetStaticTexture(cursorTextureID);
+            cursorTexture = UltimaData.ArtData.GetStaticTexture(cursorTextureID);
             sourceRect = new Rectangle(1, 1, cursorTexture.Width - 2, cursorTexture.Height - 2);
 
-            UltimaEngine.UserInterface.CursorSprite = new GUI.Sprite(cursorTexture, cursorOffset, sourceRect, cursorHue);
+            UltimaEngine.UserInterface.CursorSprite = new UltimaGUI.Sprite(cursorTexture, cursorOffset, sourceRect, cursorHue);
             // sb.Draw2D(cursorTexture, position - cursorOffset, sourceRect, cursorHue, false, false);
         }
     }

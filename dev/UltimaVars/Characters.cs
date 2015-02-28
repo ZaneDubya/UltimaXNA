@@ -8,15 +8,7 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using UltimaXNA.Network;
-using UltimaXNA.Network.Packets;
-using UltimaXNA.Entity;
-using InterXLib.Input.Windows;
-using UltimaXNA.TileEngine;
-using UltimaXNA.UltimaGUI;
+using UltimaXNA.UltimaNetwork;
 
 namespace UltimaXNA.UltimaVars
 {

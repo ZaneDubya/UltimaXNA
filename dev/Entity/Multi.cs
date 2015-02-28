@@ -12,7 +12,7 @@
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using UltimaXNA.UltimaData;
-using UltimaXNA.TileEngine;
+using UltimaXNA.UltimaWorld;
 #endregion
 
 namespace UltimaXNA.Entity
@@ -52,7 +52,7 @@ namespace UltimaXNA.Entity
 
         void redrawAllTiles()
         {
-            _components = Multis.GetComponents(_ItemID);
+            _components = MultiData.GetComponents(_ItemID);
             _unloadedTiles.Clear();
             for (int y = 0; y < _components.Height + 1; y++)
             {

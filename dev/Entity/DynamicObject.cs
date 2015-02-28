@@ -9,8 +9,8 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.TileEngine;
-using UltimaXNA.Network.Packets.Server;
+using UltimaXNA.UltimaWorld;
+using UltimaXNA.UltimaNetwork.Packets.Server;
 using Microsoft.Xna.Framework;
 using UltimaXNA.UltimaData;
 #endregion

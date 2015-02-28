@@ -10,14 +10,13 @@
  ***************************************************************************/
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Network;
-using UltimaXNA.Network.Packets.Client;
-using UltimaXNA.Entity;
-using InterXLib.Input.Windows;
-using UltimaXNA.TileEngine;
-using UltimaXNA.UltimaGUI;
-using UltimaXNA.Scene;
 using System.Collections.Generic;
+using UltimaXNA.Entity;
+using UltimaXNA.Scenes;
+using UltimaXNA.UltimaGUI;
+using UltimaXNA.UltimaNetwork;
+using UltimaXNA.UltimaNetwork.Packets.Client;
+using UltimaXNA.UltimaWorld;
 
 namespace UltimaXNA
 {
@@ -102,7 +101,7 @@ namespace UltimaXNA
         public static void DropItemToContainer(Item item, Container container, int x, int y)
         {
             Rectangle containerBounds = UltimaData.ContainerData.GetData(container.ItemID).Bounds;
-            Texture2D itemTexture = UltimaData.Art.GetStaticTexture(item.DisplayItemID);
+            Texture2D itemTexture = UltimaData.ArtData.GetStaticTexture(item.DisplayItemID);
             if (x < containerBounds.Left) x = containerBounds.Left;
             if (x > containerBounds.Right - itemTexture.Width) x = containerBounds.Right - itemTexture.Width;
             if (y < containerBounds.Top) y = containerBounds.Top;
@@ -131,7 +130,7 @@ namespace UltimaXNA
                 gump.Dispose();
             }
 
-            gump = new UltimaGUI.ClientsideGumps.ContainerGump(entity, ((Container)entity).ItemID);
+            gump = new UltimaGUI.Gumps.ContainerGump(entity, ((Container)entity).ItemID);
             UltimaEngine.UserInterface.AddControl(gump, 64, 64);
             return gump;
         }
@@ -154,12 +153,12 @@ namespace UltimaXNA
         {
             m_ChatQueue.Add(new QueuedMessage(text, hue, font));
 
-            Gump g = UltimaEngine.UserInterface.GetControl<UltimaGUI.ClientsideGumps.ChatWindow>(0);
+            Gump g = UltimaEngine.UserInterface.GetControl<UltimaGUI.Gumps.ChatWindow>(0);
             if (g != null)
             {
                 foreach (QueuedMessage msg in m_ChatQueue)
                 {
-                    ((UltimaGUI.ClientsideGumps.ChatWindow)g).AddLine(msg.Text);
+                    ((UltimaGUI.Gumps.ChatWindow)g).AddLine(msg.Text);
                 }
                 m_ChatQueue.Clear();
             }

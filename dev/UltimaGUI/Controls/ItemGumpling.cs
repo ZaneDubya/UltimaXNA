@@ -12,9 +12,9 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Entity;
-using UltimaXNA.Graphics;
+using UltimaXNA.Rendering;
 using InterXLib.Input.Windows;
-using UltimaXNA.GUI;
+using UltimaXNA.UltimaGUI;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {
@@ -71,7 +71,7 @@ namespace UltimaXNA.UltimaGUI.Controls
         {
             if (_texture == null)
             {
-                _texture = UltimaData.Art.GetStaticTexture(_item.DisplayItemID);
+                _texture = UltimaData.ArtData.GetStaticTexture(_item.DisplayItemID);
                 Size = new Point2D(_texture.Width, _texture.Height);
             }
             spriteBatch.Draw2D(_texture, Position, _item.Hue, false, false);

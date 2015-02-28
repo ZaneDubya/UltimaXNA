@@ -8,8 +8,8 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using UltimaXNA.Graphics;
-using UltimaXNA.GUI;
+using UltimaXNA.Rendering;
+using UltimaXNA.UltimaGUI;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {
@@ -145,7 +145,7 @@ namespace UltimaXNA.UltimaGUI.Controls
                 }
 
                 if (bodyID != 0)
-                    spriteBatch.Draw2D(UltimaData.Gumps.GetGumpXNA(bodyID), Position, hue, hueGreyPixelsOnly, false);
+                    spriteBatch.Draw2D(UltimaData.GumpData.GetGumpXNA(bodyID), Position, hue, hueGreyPixelsOnly, false);
             }
         }
     }

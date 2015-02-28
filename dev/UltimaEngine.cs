@@ -9,12 +9,11 @@
  *
  ***************************************************************************/
 #region usings
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using UltimaXNA.Scenes;
+using UltimaXNA.UltimaNetwork;
+using UltimaXNA.UltimaWorld;
 #endregion
 
 namespace UltimaXNA
@@ -38,15 +37,15 @@ namespace UltimaXNA
             if (UltimaData.FileManager.IsUODataPresent)
             {
                 // Initialize and load data
-                UltimaData.AnimationsXNA.Initialize(GraphicsDevice);
-                UltimaData.Art.Initialize(GraphicsDevice);
-                UltimaData.ASCIIText.Initialize(GraphicsDevice);
-                UltimaData.UniText.Initialize(GraphicsDevice);
-                UltimaData.Gumps.Initialize(GraphicsDevice);
+                UltimaData.AnimationData.Initialize(GraphicsDevice);
+                UltimaData.ArtData.Initialize(GraphicsDevice);
+                UltimaData.Fonts.ASCIIText.Initialize(GraphicsDevice);
+                UltimaData.Fonts.UniText.Initialize(GraphicsDevice);
+                UltimaData.GumpData.Initialize(GraphicsDevice);
                 UltimaData.HuesXNA.Initialize(GraphicsDevice);
-                UltimaData.Texmaps.Initialize(GraphicsDevice);
-                UltimaData.StringList.LoadStringList("enu");
-                UltimaData.Skills.Initialize();
+                UltimaData.TexmapData.Initialize(GraphicsDevice);
+                UltimaData.StringData.LoadStringList("enu");
+                UltimaData.SkillsData.Initialize();
                 GraphicsDevice.Textures[1] = UltimaXNA.UltimaData.HuesXNA.HueTexture;
                 SceneManager.Reset();
                 UltimaVars.EngineVars.EngineRunning = true;
@@ -63,7 +62,7 @@ namespace UltimaXNA
             UltimaUI.Update();
             UltimaClient.Update(gameTime);
             Entities.Update(gameTime);
-            GameState.Update(gameTime);
+            UltimaGameState.Update(gameTime);
             SceneManager.Update(gameTime);
         }
 

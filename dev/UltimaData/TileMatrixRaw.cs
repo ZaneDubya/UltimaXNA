@@ -181,7 +181,7 @@ namespace UltimaXNA.UltimaData
 
                     fixed (byte* pStaticTiles = staticTiles)
                     {
-                        NativeMethods.Read(m_Statics.SafeFileHandle, pStaticTiles, length);
+                        SharedMethods.Read(m_Statics.SafeFileHandle, pStaticTiles, length);
                     }
                     return staticTiles;
                 }
@@ -211,7 +211,7 @@ namespace UltimaXNA.UltimaData
             int streamStart = (int)m_MapStream.Position;
             fixed (byte* pData = _bufferedLandBlocks[index])
             {
-                NativeMethods.Read(m_MapStream.SafeFileHandle, pData, _size_LandBlockData);
+                SharedMethods.Read(m_MapStream.SafeFileHandle, pData, _size_LandBlockData);
             }
             UltimaVars.Metrics.ReportDataRead((int)m_MapStream.Position - streamStart);
 

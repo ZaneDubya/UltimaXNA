@@ -10,6 +10,7 @@
  ***************************************************************************/
 using System;
 using UltimaXNA.Entity;
+using UltimaXNA.UltimaWorld;
 
 namespace UltimaXNA.UltimaVars
 {
