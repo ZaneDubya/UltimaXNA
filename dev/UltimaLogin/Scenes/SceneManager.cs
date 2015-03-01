@@ -92,6 +92,7 @@ namespace UltimaXNA.Scenes
 
         public void Reset()
         {
+            UltimaEngine.UserInterface.Reset();
             if (!(m_CurrentScene is LoginScene))
                 CurrentScene = new LoginScene();
         }

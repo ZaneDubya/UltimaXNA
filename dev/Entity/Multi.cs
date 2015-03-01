@@ -71,12 +71,12 @@ namespace UltimaXNA.Entity
 		{
 		}
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double frameMS)
         {
             if (_unloadedTiles.Count > 0)
                 HasBeenDrawn = false;
 
-            base.Update(gameTime);
+            base.Update(frameMS);
         }
 
         internal override void Draw(MapTile tile, Position3D position)

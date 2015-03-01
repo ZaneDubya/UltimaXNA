@@ -29,11 +29,11 @@ namespace UltimaXNA.Entity
             return base.ToString() + " | " + Name;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double frameMS)
         {
             _movement.PlayerMobile_CheckForMoveEvent();
 
-            base.Update(gameTime);
+            base.Update(frameMS);
         }
     }
 }

@@ -70,14 +70,14 @@ namespace UltimaXNA.Entity
             _movement = new Movement(this);
         }
 
-        public virtual void Update(GameTime gameTime)
+        public virtual void Update(double frameMS)
         {
             if (IsDisposed)
                 return;
 
             if (!_movement.Position.IsNullPosition)
             {
-                _movement.Update(gameTime);
+                _movement.Update(frameMS);
 
                 if (IsometricRenderer.Map == null)
                     return;
@@ -96,7 +96,7 @@ namespace UltimaXNA.Entity
             clearDisposedOverheads();
             foreach (KeyValuePair<int, Overhead> overhead in _overheads)
             {
-                overhead.Value.Update(gameTime);
+                overhead.Value.Update(frameMS);
             }
         }
 

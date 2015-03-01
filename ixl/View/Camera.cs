@@ -231,12 +231,12 @@ namespace InterXLib.View
         /// <param name="gameTime">The elapsed game time.</param>
         public void Update(GameTime gameTime)
         {
-            float elapsedTimeSec = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            float frameMSSec = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             if (enableSpringSystem)
             {
-                UpdateOrientation(elapsedTimeSec);
-                UpdateViewMatrix(elapsedTimeSec);
+                UpdateOrientation(frameMSSec);
+                UpdateViewMatrix(frameMSSec);
             }
             else
             {
@@ -255,10 +255,10 @@ namespace InterXLib.View
 
         #region Private Methods
 
-        private void UpdateOrientation(float elapsedTimeSec)
+        private void UpdateOrientation(float frameMSSec)
         {
-            headingDegrees *= elapsedTimeSec;
-            pitchDegrees *= elapsedTimeSec;
+            headingDegrees *= frameMSSec;
+            pitchDegrees *= frameMSSec;
 
             if (pitchDegrees + m_PitchLimiter > 90.0f)
                 pitchDegrees = 90f - m_PitchLimiter;
@@ -313,7 +313,7 @@ namespace InterXLib.View
             Vector3.Negate(ref zAxis, out viewDir);
         }
 
-        private void UpdateViewMatrix(float elapsedTimeSec)
+        private void UpdateViewMatrix(float frameMSSec)
         {
             Matrix.CreateFromQuaternion(ref orientation, out viewMatrix);
 
@@ -345,8 +345,8 @@ namespace InterXLib.View
             Vector3 springAcceleration = (-springConstant * displacement) -
                                          (dampingConstant * velocity);
 
-            velocity += springAcceleration * elapsedTimeSec;
-            eye += velocity * elapsedTimeSec;
+            velocity += springAcceleration * frameMSSec;
+            eye += velocity * frameMSSec;
 
             // The view matrix is always relative to the camera's current position.
             // Since a spring system is being used here 'eye' will be relative to

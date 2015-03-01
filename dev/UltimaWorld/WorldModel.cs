@@ -43,13 +43,7 @@ namespace UltimaXNA.UltimaWorld
             UltimaVars.EngineVars.InWorld = true;
         }
 
-        public void Disconnect()
-        {
-            UltimaClient.Disconnect();
-            UltimaVars.EngineVars.InWorld = false;
-        }
-
-        public override void Update(double totalTime, double frameTime)
+        public override void Update(double totalMS, double frameMS)
         {
             if (!UltimaClient.IsConnected)
             {
@@ -61,8 +55,9 @@ namespace UltimaXNA.UltimaWorld
             }
             else
             {
+                EntityManager.Update(frameMS);
                 IsometricRenderer.CenterPosition = EntityManager.GetPlayerObject().Position;
-                IsometricRenderer.Update(totalTime, frameTime);
+                IsometricRenderer.Update(totalMS, frameMS);
 
                 // Toggle for logout
                 if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.Q, false, false, true))
@@ -82,6 +77,7 @@ namespace UltimaXNA.UltimaWorld
 
         void onCloseLostConnectionMsgBox()
         {
+            UltimaClient.Disconnect();
             UltimaInteraction.DisconnectToLoginScreen();
         }
     }

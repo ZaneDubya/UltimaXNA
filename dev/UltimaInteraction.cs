@@ -137,6 +137,7 @@ namespace UltimaXNA
         {
             if (UltimaClient.Status != UltimaClientStatus.Unconnected)
                 UltimaClient.Disconnect();
+            UltimaVars.EngineVars.InWorld = false;
             UltimaEngine.ActiveModel = new UltimaXNA.UltimaLogin.LoginModel();
         }
 

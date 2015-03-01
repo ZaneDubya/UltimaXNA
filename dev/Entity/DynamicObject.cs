@@ -27,7 +27,7 @@ namespace UltimaXNA.Entity
         private int _frameLength;
         private bool _useGumpArtInsteadOfTileArt = false;
 
-        private float _timeBeginTotalSeconds;
+        private float _timeCurrentSeconds;
         private float _timeEndTotalSeconds;
         private float _timeRepeatAnimationSeconds;
 
@@ -45,11 +45,11 @@ namespace UltimaXNA.Entity
 
         }
 
-        public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
+        public override void Update(double frameMS)
         {
             if (!_isInitialized)
             {
-                _timeEndTotalSeconds = _timeBeginTotalSeconds = (float)gameTime.TotalGameTime.TotalSeconds;
+                _timeEndTotalSeconds = _timeCurrentSeconds = 0;
                 _frameSequence = 0;
                 _isInitialized = true;
 
@@ -91,10 +91,11 @@ namespace UltimaXNA.Entity
             }
             else
             {
-                _frameSequence = (float)((gameTime.TotalGameTime.TotalSeconds - _timeBeginTotalSeconds) / _timeRepeatAnimationSeconds) % 1.0f;
+                _timeCurrentSeconds += (float)frameMS;
+                _frameSequence = (float)(_timeCurrentSeconds / _timeRepeatAnimationSeconds) % 1.0f;
             }
 
-            if (gameTime.TotalGameTime.TotalSeconds >= _timeEndTotalSeconds)
+            if (_timeCurrentSeconds >= _timeEndTotalSeconds)
             {
                 if (_doesExplode)
                 {
@@ -104,7 +105,7 @@ namespace UltimaXNA.Entity
                 this.Dispose();
             }
 
-            base.Update(gameTime);
+            base.Update(frameMS);
         }
 
         internal override void Draw(MapTile tile, Position3D position)

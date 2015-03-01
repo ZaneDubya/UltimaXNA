@@ -31,11 +31,11 @@ namespace UltimaXNA.Entity
 
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double frameMS)
         {
-            base.Update(gameTime);
+            base.Update(frameMS);
             // HasBeenDrawn = false;
-            _corpseFrame += ((float)gameTime.ElapsedGameTime.Milliseconds / 500f);
+            _corpseFrame += ((float)frameMS / 500f);
             if (_corpseFrame >= 1f)
                 _corpseFrame = 0.999f;
         }

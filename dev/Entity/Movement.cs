@@ -163,13 +163,13 @@ namespace UltimaXNA.Entity
             _goalPosition = _currentPosition = new Position3D(x, y, z);
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(double frameMS)
         {
             flushDrawObjects();
             // Are we moving? (if our current location != our destination, then we are moving)
             if (IsMoving)
             {
-                MoveSequence += ((float)(gameTime.ElapsedGameTime.TotalMilliseconds) / TimeToCompleteMove(Facing).Milliseconds);
+                MoveSequence += ((float)(frameMS) / TimeToCompleteMove(Facing).Milliseconds);
 
                 if (MoveSequence < 1f)
                 {

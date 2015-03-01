@@ -76,7 +76,6 @@ namespace UltimaXNA
             {
                 UltimaUI.Update();
                 UltimaClient.Update(gameTime);
-                EntityManager.Update(gameTime);
                 UltimaGameState.Update(gameTime);
                 ActiveModel.Update(gameTime.TotalGameTime.TotalMilliseconds, gameTime.ElapsedGameTime.TotalMilliseconds);
             }

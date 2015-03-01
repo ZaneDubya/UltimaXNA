@@ -143,7 +143,7 @@ namespace UltimaXNA.Entity
             _ParentObject = nParent;
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(double frameMS)
         {
 
         }

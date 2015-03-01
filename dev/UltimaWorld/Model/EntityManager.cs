@@ -43,15 +43,15 @@ namespace UltimaXNA.UltimaWorld
                 return null;
         }
 
-        public static void Update(GameTime gameTime)
+        public static void Update(double frameMS)
         {
             if (UltimaVars.EngineVars.InWorld)
             {
-                updateEntities(gameTime);
+                updateEntities(frameMS);
             }
         }
 
-        private static void updateEntities(GameTime gameTime)
+        private static void updateEntities(double frameMS)
         {
             // redirect any new entities to a queue while we are enumerating the collection.
             m_EntitiesCollectionIsLocked = true;
@@ -60,7 +60,7 @@ namespace UltimaXNA.UltimaWorld
             BaseEntity player = GetPlayerObject();
 
             // Update the player entity first because we cull entities out of range of this main object.
-            player.Update(gameTime);
+            player.Update(frameMS);
             if (player.IsDisposed)
                 m_SerialsToRemove.Add(player.Serial);
 
@@ -71,7 +71,7 @@ namespace UltimaXNA.UltimaWorld
                 if (entity.Key == MySerial)
                     continue;
                 if (!entity.Value.IsDisposed)
-                    entity.Value.Update(gameTime);
+                    entity.Value.Update(frameMS);
                 // Dispose the entity if it is out of range.
                 if (!Utility.InRange(entity.Value.WorldPosition, player.Position, UltimaVars.EngineVars.UpdateRange))
                     entity.Value.Dispose();

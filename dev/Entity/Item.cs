@@ -111,9 +111,9 @@ namespace UltimaXNA.Entity
 		{
 		}
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double frameMS)
         {
-            base.Update(gameTime);
+            base.Update(frameMS);
         }
 
         public override string ToString()

@@ -94,9 +94,9 @@ namespace UltimaXNA.Entity
             _needsRender = true;
         }
 
-        public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
+        public override void Update(double frameMS)
         {
-            base.Update(gameTime);
+            base.Update(frameMS);
             if (_needsRender)
             {
                 _msTimePersist = 5000;
@@ -104,7 +104,7 @@ namespace UltimaXNA.Entity
             }
             else
             {
-                _msTimePersist -= gameTime.ElapsedGameTime.Milliseconds;
+                _msTimePersist -= (int)frameMS;
                 if (_msTimePersist <= 0)
                     this.Dispose();
             }

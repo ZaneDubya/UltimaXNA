@@ -39,10 +39,10 @@ namespace UltimaXNA.Entity
             _ContainerObject = new GameObject_Container(this);
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double frameMS)
         {
-            base.Update(gameTime);
-            _ContainerObject.Update(gameTime);
+            base.Update(frameMS);
+            _ContainerObject.Update(frameMS);
         }
     }
 }

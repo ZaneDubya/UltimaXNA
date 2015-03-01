@@ -82,10 +82,10 @@ namespace UltimaXNA.Entity
             Parent = parent;
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(double frameMS)
         {
             // create a local copy of ms since last update.
-            int msSinceLastUpdate = gameTime.ElapsedGameTime.Milliseconds;
+            int msSinceLastUpdate = (int)frameMS;
 
             // If we are holding the current animation, then we should wait until our hold time is over
             // before switching to the queued Stand animation.
@@ -113,14 +113,14 @@ namespace UltimaXNA.Entity
             {
                 // advance the animation one step, based on gametime passed.
                 float animationStep = (float)((_FrameCount * (_FrameDelay + 1)) * 10);
-                float timeStep = ((float)gameTime.ElapsedGameTime.TotalMilliseconds / animationStep) / _FrameCount;
+                float timeStep = ((float)frameMS / animationStep) / _FrameCount;
                 
                 float msPerFrame = (float)((1000 * (_FrameDelay + 1)) / (float)_FrameCount);
                 // Mounted movement is 2x normal frame rate
                 if (Parent.IsMounted && ((_action == MobileAction.Walk) || (_action == MobileAction.Run)))
                     msPerFrame /= 2;
 
-                float frameAdvance = (float)(gameTime.ElapsedGameTime.TotalMilliseconds / msPerFrame) / _FrameCount;
+                float frameAdvance = (float)(frameMS / msPerFrame) / _FrameCount;
                 if (msPerFrame < 0)
                     return;
 

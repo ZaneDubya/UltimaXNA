@@ -179,10 +179,10 @@ namespace UltimaXNA.Entity
             _movement.RequiresUpdate = true;
         }
 
-        public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
+        public override void Update(double frameMS)
         {
-            _animation.Update(gameTime);
-            base.Update(gameTime);
+            _animation.Update(frameMS);
+            base.Update(frameMS);
         }
 
         internal override void Draw(MapTile tile, Position3D position)

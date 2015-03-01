@@ -130,7 +130,7 @@ namespace InterXLib
 
             updateTime(gameTime);
 
-            m_Input.Update(m_TotalTime, m_ElapsedTime);
+            m_Input.Update(m_TotalTime, m_frameMS);
 
             // DEBUG: Ctrl-ESC => Exit.
             if (m_Input.HandleKeyboardEvent(
@@ -138,7 +138,7 @@ namespace InterXLib
                 InterXLib.Input.Windows.WinKeys.Escape, false, false, true))
                 this.Exit();
 
-            m_Actions.Update((float)m_ElapsedTime);
+            m_Actions.Update((float)m_frameMS);
             m_Actions.ReceiveKeyboardInput(m_Input.GetKeyboardEvents());
 
             if (m_Settings.HasUpdates)
@@ -150,10 +150,10 @@ namespace InterXLib
 
             base.Update(gameTime);
 
-            CoreUpdate(m_TotalTime, m_ElapsedTime);
+            CoreUpdate(m_TotalTime, m_frameMS);
 
             // Update GUI last as it may be updated by other systems.
-            XGUIManager.Update(m_TotalTime, m_ElapsedTime);
+            XGUIManager.Update(m_TotalTime, m_frameMS);
 
             Profiler.ExitContext("Update");
             Profiler.EnterContext("OutOfContext");
@@ -196,11 +196,11 @@ namespace InterXLib
                 gameTime.IsRunningSlowly ? "IsRunningSlowly" : string.Empty);
         }
 
-        private double m_TotalTime, m_ElapsedTime;
+        private double m_TotalTime, m_frameMS;
         private void updateTime(GameTime gameTime)
         {
             m_TotalTime = gameTime.TotalGameTime.TotalMilliseconds / 1000D;
-            m_ElapsedTime = gameTime.ElapsedGameTime.TotalMilliseconds / 1000D;
+            m_frameMS = gameTime.ElapsedGameTime.TotalMilliseconds / 1000D;
         }
 
         private void handleUpdates()
