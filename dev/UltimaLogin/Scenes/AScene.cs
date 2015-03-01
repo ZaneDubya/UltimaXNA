@@ -13,14 +13,12 @@ namespace UltimaXNA.Scenes
 {
     public abstract class AScene : IDisposable
     {
+        internal SceneManager Manager;
+
         public virtual TimeSpan TransitionOnLength { get { return TimeSpan.FromSeconds(0.05); } }
         public virtual TimeSpan TransitionOffLength { get { return TimeSpan.FromSeconds(0.05); } }
 
-        Game _game;
-
-        ContentManager _content;
         SceneState _sceneState;
-        Color _clearColor;
         float _transitionAlpha;
         float _elapsed;
         bool _isInitialized;
@@ -29,28 +27,6 @@ namespace UltimaXNA.Scenes
         {
             get { return _isInitialized; }
             set { _isInitialized = value; }
-        }
-
-        public Game Game
-        {
-            get { return _game; }
-        }
-
-        public GraphicsDevice GraphicsDevice
-        {
-            get { return _game.GraphicsDevice; }
-        }
-
-        public Color ClearColor
-        {
-            get { return _clearColor; }
-            set { _clearColor = value; }
-        }
-
-        public ContentManager Content
-        {
-            get { return _content; }
-            set { _content = value; }
         }
 
         public SceneState SceneState
@@ -68,18 +44,8 @@ namespace UltimaXNA.Scenes
         public event EventHandler<ProgressCompletedEventArgs> ProgressCompleted;
         public event EventHandler<StatusUpdateEventArgs> StatusUpdate;
 
-        public AScene(Game game)
-            : this(game, true)
+        public AScene()
         {
-
-        }
-
-        public AScene(Game game, bool needsUIService)
-        {
-            _game = game;
-            _clearColor = Color.Black;
-            _content = new ContentManager(_game.Services);
-            _content.RootDirectory = "Content";
             _sceneState = SceneState.TransitioningOn;
         }
 
@@ -88,9 +54,9 @@ namespace UltimaXNA.Scenes
 
         }
 
-        public virtual void Update(GameTime gameTime)
+        public virtual void Update(double totalTime, double frameTime)
         {
-            _elapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            _elapsed += (float)frameTime;
 
             switch (_sceneState)
             {
@@ -122,11 +88,6 @@ namespace UltimaXNA.Scenes
                         break;
                     }
             }
-        }
-        
-        public virtual void Draw(GameTime gameTime)
-        {
-            
         }
 
         protected virtual Texture2D PostProcess(GameTime gametTime, Texture2D sceneTexture)
@@ -161,7 +122,6 @@ namespace UltimaXNA.Scenes
         public virtual void Dispose()
         {
             UltimaEngine.UserInterface.Reset();
-            _content.Dispose();
         }
     }
 

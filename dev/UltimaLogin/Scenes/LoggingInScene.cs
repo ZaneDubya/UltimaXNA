@@ -37,8 +37,7 @@ namespace UltimaXNA.Scenes
         private string m_AccountName;
         private string m_Password;
 
-        public LoggingInScene(Game game, string server, int port, string account, string password)
-            : base(game, true)
+        public LoggingInScene(string server, int port, string account, string password)
         {
             if (UltimaClient.IsConnected)
                 UltimaClient.Disconnect();
@@ -57,9 +56,10 @@ namespace UltimaXNA.Scenes
             ((UltimaGUI.Gumps.LoggingInGump)g).OnCancelLogin += this.OnCancelLogin;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double totalTime, double frameTime)
         {
-            base.Update(gameTime);
+            base.Update(totalTime, frameTime);
+
             if (SceneState == SceneState.Active)
             {
                 switch (UltimaClient.Status)
@@ -79,7 +79,7 @@ namespace UltimaXNA.Scenes
                         // logging in ...
                         break;
                     case UltimaClientStatus.LoginServer_HasServerList:
-                        SceneManager.CurrentScene = new SelectServerScene(Game, m_AccountName, m_Password);
+                        Manager.CurrentScene = new SelectServerScene(m_AccountName, m_Password);
                         break;
                     case UltimaClientStatus.Error_CannotConnectToServer:
                         UltimaEngine.UserInterface.GetControl<UltimaGUI.Gumps.LoggingInGump>(0).ActivePage = 2;

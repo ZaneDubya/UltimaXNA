@@ -10,6 +10,7 @@
  ***************************************************************************/
 using UltimaXNA.UltimaGUI.Controls;
 using UltimaXNA.UltimaNetwork;
+using UltimaXNA.UltimaVars;
 
 namespace UltimaXNA.UltimaGUI.Gumps
 {
@@ -55,7 +56,7 @@ namespace UltimaXNA.UltimaGUI.Gumps
             AddControl(new HtmlGump(this, 1, 402, 72, 50, 20, 0, 0, UltimaData.StringData.Entry(1044577)));
             AddControl(new HtmlGump(this, 1, 472, 72, 80, 20, 0, 0, UltimaData.StringData.Entry(1044578)));
             // display the serverlist the server list.
-            foreach (ServerListEntry e in UltimaVars.Servers.List)
+            foreach (ServerListEntry e in Servers.List)
             {
                 AddControl(new HtmlGump(this, 1, 224, 104, 200, 20, 0, 0, "<big><a href=\"SHARD=" + e.Index + "\" style=\"colorhue: #1278; hoverhue: #836; activatehue: #796; text-decoration: none\">" + e.Name + "</a></big>"));
             }

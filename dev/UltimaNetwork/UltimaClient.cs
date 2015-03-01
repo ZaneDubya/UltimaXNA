@@ -25,112 +25,133 @@ namespace UltimaXNA.UltimaNetwork
     class UltimaClient
     {
         // ClientNetwork is the interface to the server.
-        static Client m_ClientNetwork;
+        static Client m_Client;
 
         public static UltimaClientStatus Status { get; protected set; }
-        public static bool IsConnected { get { return m_ClientNetwork.IsConnected; } }
+        public static bool IsConnected { get { return m_Client.IsConnected; } }
         private static int m_ServerRelayKey = 0;
 
         static UltimaClient()
         {
             Status = UltimaClientStatus.Unconnected;
-            m_ClientNetwork = new Client();
+            m_Client = new Client();
             registerPackets();
         }
 
         public static void Update(GameTime gameTime)
         {
-            m_ClientNetwork.Update();
+            m_Client.Update();
         }
 
         private static void registerPackets()
         {
-            PacketRegistry.Damage += receive_Damage;
-            PacketRegistry.MobileStatusCompact += receive_StatusInfo;
-            PacketRegistry.WorldItem += receive_WorldItem;
-            PacketRegistry.LoginConfirm += receive_PlayerLocaleAndBody;
-            PacketRegistry.AsciiMessage += receive_AsciiMessage;
-            PacketRegistry.RemoveEntity += receive_DeleteObject;
-            PacketRegistry.MobileUpdate += receive_MobileUpdate;
-            PacketRegistry.MovementRejected += receive_MoveRej;
-            PacketRegistry.MoveAcknowledged += receive_MoveAck;
-            PacketRegistry.DragEffect += receive_DragItem;
-            PacketRegistry.OpenContainer += receive_Container;
-            PacketRegistry.ContainerContentUpdate += receive_AddSingleItemToContainer;
-            PacketRegistry.LiftRejection += receive_RejectMoveItemRequest;
-            PacketRegistry.ResurrectMenu += receive_ResurrectionMenu;
-            PacketRegistry.MobileAttributes += receive_MobileAttributes;
-            PacketRegistry.WornItem += receive_WornItem;
-            PacketRegistry.Swing += receive_OnSwing;
-            PacketRegistry.SkillsList += receive_SkillsList;
-            PacketRegistry.ContainerContent += receive_AddMultipleItemsToContainer;
-            PacketRegistry.PersonalLightLevel += receive_PersonalLightLevel;
-            PacketRegistry.OverallLightLevel += receive_OverallLightLevel;
-            PacketRegistry.PopupMessage += receive_PopupMessage;
-            PacketRegistry.PlaySoundEffect += receive_PlaySoundEffect;
-            PacketRegistry.LoginComplete += receive_LoginComplete;
-            PacketRegistry.Time += receive_Time;
-            PacketRegistry.Weather += receive_SetWeather;
-            PacketRegistry.TargetCursor += receive_TargetCursor;
-            PacketRegistry.PlayMusic += receive_PlayMusic;
-            PacketRegistry.MobileAnimation += receive_MobileAnimation;
-            PacketRegistry.GraphicalEffect1 += receive_GraphicEffect;
-            PacketRegistry.WarMode += receive_WarMode;
-            PacketRegistry.VendorBuyList += receive_OpenBuyWindow;
-            PacketRegistry.NewSubserver += receive_NewSubserver;
-            PacketRegistry.MobileMoving += receive_MobileMoving;
-            PacketRegistry.MobileIncoming += receive_MobileIncoming;
-            PacketRegistry.DisplayMenu += receive_DisplayMenu;
-            PacketRegistry.LoginRejection += receive_LoginRejection;
-            PacketRegistry.DeleteCharacterResponse += receive_DeleteCharacterResponse;
-            PacketRegistry.CharacterListUpdate += receive_CharacterListUpdate;
-            PacketRegistry.OpenPaperdoll += receive_OpenPaperdoll;
-            PacketRegistry.CorpseClothing += receive_CorpseClothing;
-            PacketRegistry.ServerRelay += receive_ServerRelay;
-            PacketRegistry.PlayerMove += receive_PlayerMove;
-            PacketRegistry.RequestNameResponse += receive_RequestNameResponse;
-            PacketRegistry.TargetCursorMulti += receive_TargetCursorMulti;
-            PacketRegistry.VendorSellList += receive_SellList;
-            PacketRegistry.UpdateCurrentHealth += receive_UpdateHealth;
-            PacketRegistry.UpdateCurrentMana += receive_UpdateMana;
-            PacketRegistry.UpdateCurrentStamina += receive_UpdateStamina;
-            PacketRegistry.OpenWebBrowser += receive_OpenWebBrowser;
-            PacketRegistry.TipNoticeWindow += receive_TipNotice;
-            PacketRegistry.ServerList += receive_ServerList;
-            PacketRegistry.CharactersStartingLocations += receive_CharacterList;
-            PacketRegistry.ChangeCombatant += receive_ChangeCombatant;
-            PacketRegistry.UnicodeMessage += receive_UnicodeMessage;
-            PacketRegistry.DeathAnimation += receive_DeathAnimation;
-            PacketRegistry.DisplayGumpFast += receive_DisplayGumpFast;
-            PacketRegistry.ObjectHelpResponse += receive_ObjectHelpResponse;
-            PacketRegistry.SupportedFeatures += receive_EnableFeatures;
-            PacketRegistry.QuestArrow += receive_QuestArrow;
-            PacketRegistry.SeasonChange += receive_SeasonalInformation;
-            PacketRegistry.VersionRequest += receive_VersionRequest;
-            PacketRegistry.GeneralInfo += receive_GeneralInfo;
-            PacketRegistry.HuedEffect += receive_HuedEffect;
-            PacketRegistry.MessageLocalized += receive_CLILOCMessage;
-            PacketRegistry.InvalidMapEnable += receive_InvalidMapEnable;
-            PacketRegistry.ParticleEffect += receive_OnParticleEffect;
-            PacketRegistry.GlobalQueueCount += receive_GlobalQueueCount;
-            PacketRegistry.MessageLocalizedAffix += receive_MessageLocalizedAffix;
-            PacketRegistry.Extended0x78 += receive_Extended0x78;
-            PacketRegistry.MegaCliloc += receive_ObjectPropertyList;
-            PacketRegistry.SendCustomHouse += receive_SendCustomHouse;
-            PacketRegistry.ToolTipRevision += receive_ToolTipRevision;
-            PacketRegistry.CompressedGump += receive_CompressedGump;
+            m_Client.Register<DamagePacket>(0x0B, "Damage", 0x07, new TypedPacketReceiveHandler(receive_Damage));
+            m_Client.Register<MobileStatusCompactPacket>(0x11, "Mobile Status Compact", -1, new TypedPacketReceiveHandler(receive_StatusInfo));
+            m_Client.Register<WorldItemPacket>(0x1A, "World Item", -1, new TypedPacketReceiveHandler(receive_WorldItem));
+            m_Client.Register<LoginConfirmPacket>(0x1B, "Login Confirm", 37, new TypedPacketReceiveHandler(receive_PlayerLocaleAndBody));
+            m_Client.Register<AsciiMessagePacket>(0x1C, "Ascii Meessage", -1, new TypedPacketReceiveHandler(receive_AsciiMessage));
+            m_Client.Register<RemoveEntityPacket>(0x1D, "Remove Entity", 5, new TypedPacketReceiveHandler(receive_DeleteObject));
+            m_Client.Register<MobileUpdatePacket>(0x20, "Mobile Update", 19, new TypedPacketReceiveHandler(receive_MobileUpdate));
+            m_Client.Register<MovementRejectPacket>(0x21, "Movement Rejection", 8, new TypedPacketReceiveHandler(receive_MoveRej));
+            m_Client.Register<MoveAcknowledgePacket>(0x22, "Move Acknowledged", 3, new TypedPacketReceiveHandler(receive_MoveAck));
+            m_Client.Register<DragEffectPacket>(0x23, "Drag Effect", 26, new TypedPacketReceiveHandler(receive_DragItem));
+            m_Client.Register<OpenContainerPacket>(0x24, "Open Container", 7, new TypedPacketReceiveHandler(receive_Container));
+            m_Client.Register<ContainerContentUpdatePacket>(0x25, "Container Content Update", 21, new TypedPacketReceiveHandler(receive_AddSingleItemToContainer));
+            m_Client.Register<LiftRejectionPacket>(0x27, "Lift Rejection", 2, new TypedPacketReceiveHandler(receive_RejectMoveItemRequest));
+            m_Client.Register<ResurrectionMenuPacket>(0x2C, "Resurect menu", 2, new TypedPacketReceiveHandler(receive_ResurrectionMenu));
+            m_Client.Register<MobileAttributesPacket>(0x2D, "Mob Attributes", 17, new TypedPacketReceiveHandler(receive_MobileAttributes));
+            m_Client.Register<WornItemPacket>(0x2E, "Worn Item", 15, new TypedPacketReceiveHandler(receive_WornItem));
+            m_Client.Register<SwingPacket>(0x2F, "Swing", 10, new TypedPacketReceiveHandler(receive_OnSwing));
+            m_Client.Register<SendSkillsPacket>(0x3A, "Skills list", -1, new TypedPacketReceiveHandler(receive_SkillsList));
+            m_Client.Register<ContainerContentPacket>(0x3C, "Container Content", -1, new TypedPacketReceiveHandler(receive_AddMultipleItemsToContainer));
+            m_Client.Register<PersonalLightLevelPacket>(0x4E, "Personal Light Level", 6, new TypedPacketReceiveHandler(receive_PersonalLightLevel));
+            m_Client.Register<OverallLightLevelPacket>(0x4F, "Overall Light Level", 2, new TypedPacketReceiveHandler(receive_OverallLightLevel));
+            m_Client.Register<PopupMessagePacket>(0x53, "Popup Message", 2, new TypedPacketReceiveHandler(receive_PopupMessage));
+            m_Client.Register<PlaySoundEffectPacket>(0x54, "Play Sound Effect", 12, new TypedPacketReceiveHandler(receive_PlaySoundEffect));
+            m_Client.Register<LoginCompletePacket>(0x55, "Login Complete", 1, new TypedPacketReceiveHandler(receive_LoginComplete));
+            m_Client.Register<TimePacket>(0x5B, "Time", 4, new TypedPacketReceiveHandler(receive_Time));
+            m_Client.Register<WeatherPacket>(0x65, "Set Weather", 4, new TypedPacketReceiveHandler(receive_SetWeather));
+            m_Client.Register<TargetCursorPacket>(0x6C, "TargetCursor", 19, new TypedPacketReceiveHandler(receive_TargetCursor));
+            m_Client.Register<PlayMusicPacket>(0x6D, "Play Music", 3, new TypedPacketReceiveHandler(receive_PlayMusic));
+            m_Client.Register<MobileAnimationPacket>(0x6E, "Character Animation", 14, new TypedPacketReceiveHandler(receive_MobileAnimation));
+            m_Client.Register<GraphicEffectPacket>(0x70, "Graphical Effect 1", 28, new TypedPacketReceiveHandler(receive_GraphicEffect));
+            m_Client.Register<WarModePacket>(0x72, "War Mode", 5, new TypedPacketReceiveHandler(receive_WarMode));
+            m_Client.Register<VendorBuyListPacket>(0x74, "Vendor Buy List", -1, new TypedPacketReceiveHandler(receive_OpenBuyWindow));
+            m_Client.Register<SubServerPacket>(0x76, "New Subserver", 16, new TypedPacketReceiveHandler(receive_NewSubserver));
+            m_Client.Register<MobileMovingPacket>(0x77, "Mobile Moving", 17, new TypedPacketReceiveHandler(receive_MobileMoving));
+            m_Client.Register<MobileIncomingPacket>(0x78, "Mobile Incoming", -1, new TypedPacketReceiveHandler(receive_MobileIncoming));
+            m_Client.Register<DisplayMenuPacket>(0x7C, "Display Menu", -1, new TypedPacketReceiveHandler(receive_DisplayMenu));
+            m_Client.Register<LoginRejectionPacket>(0x82, "Login Rejection", 2, new TypedPacketReceiveHandler(receive_LoginRejection));
+            m_Client.Register<DeleteCharacterResponsePacket>(0x85, "Delete Character Response", 2, new TypedPacketReceiveHandler(receive_DeleteCharacterResponse));
+            m_Client.Register<CharacterListUpdatePacket>(0x86, "Character List Update", -1, new TypedPacketReceiveHandler(receive_CharacterListUpdate));
+            m_Client.Register<OpenPaperdollPacket>(0x88, "Open Paperdoll", 66, new TypedPacketReceiveHandler(receive_OpenPaperdoll));
+            m_Client.Register<CorpseClothingPacket>(0x89, "Corpse Clothing", -1, new TypedPacketReceiveHandler(receive_CorpseClothing));
+            m_Client.Register<ServerRelayPacket>(0x8C, "ServerRelay", 11, new TypedPacketReceiveHandler(receive_ServerRelay));
+            m_Client.Register<PlayerMovePacket>(0x97, "Player Move", 2, new TypedPacketReceiveHandler(receive_PlayerMove));
+            m_Client.Register<RequestNameResponsePacket>(0x98, "Request Name Response", -1, new TypedPacketReceiveHandler(receive_RequestNameResponse));
+            m_Client.Register<TargetCursorMultiPacket>(0x99, "Target Cursor Multi Object", 26, new TypedPacketReceiveHandler(receive_TargetCursorMulti));
+            m_Client.Register<VendorSellListPacket>(0x9E, "Vendor Sell List", -1, new TypedPacketReceiveHandler(receive_SellList));
+            m_Client.Register<UpdateHealthPacket>(0xA1, "Update Current Health", 9, new TypedPacketReceiveHandler(receive_UpdateHealth));
+            m_Client.Register<UpdateManaPacket>(0xA2, "Update Current Mana", 9, new TypedPacketReceiveHandler(receive_UpdateMana));
+            m_Client.Register<UpdateStaminaPacket>(0xA3, "Update Current Stamina", 9, new TypedPacketReceiveHandler(receive_UpdateStamina));
+            m_Client.Register<OpenWebBrowserPacket>(0xA5, "Open Web Browser", -1, new TypedPacketReceiveHandler(receive_OpenWebBrowser));
+            m_Client.Register<TipNoticePacket>(0xA6, "Tip/Notice Window", -1, new TypedPacketReceiveHandler(receive_TipNotice));
+            m_Client.Register<ServerListPacket>(0xA8, "Game Server List", -1, new TypedPacketReceiveHandler(receive_ServerList));
+            m_Client.Register<CharacterCityListPacket>(0xA9, "Characters / Starting Locations", -1, new TypedPacketReceiveHandler(receive_CharacterList));
+            m_Client.Register<ChangeCombatantPacket>(0xAA, "Change Combatant", 5, new TypedPacketReceiveHandler(receive_ChangeCombatant));
+            m_Client.Register<UnicodeMessagePacket>(0xAE, "Unicode Message", -1, new TypedPacketReceiveHandler(receive_UnicodeMessage));
+            m_Client.Register<DeathAnimationPacket>(0xAF, "Death Animation", 13, new TypedPacketReceiveHandler(receive_DeathAnimation));
+            m_Client.Register<DisplayGumpFastPacket>(0xB0, "Display Gump Fast", -1, new TypedPacketReceiveHandler(receive_DisplayGumpFast));
+            m_Client.Register<ObjectHelpResponsePacket>(0xB7, "Object Help Response ", -1, new TypedPacketReceiveHandler(receive_ObjectHelpResponse));
+            m_Client.Register<SupportedFeaturesPacket>(0xB9, "Supported Features", 3, new TypedPacketReceiveHandler(receive_EnableFeatures));
+            m_Client.Register<QuestArrowPacket>(0xBA, "Quest Arrow", 6, new TypedPacketReceiveHandler(receive_QuestArrow));
+            m_Client.Register<SeasonChangePacket>(0xBC, "Seasonal Change", 3, new TypedPacketReceiveHandler(receive_SeasonalInformation));
+            m_Client.Register<VersionRequestPacket>(0xBD, "Version Request", -1, new TypedPacketReceiveHandler(receive_VersionRequest));
+            m_Client.Register<GeneralInfoPacket>(0xBF, "General Information", -1, new TypedPacketReceiveHandler(receive_GeneralInfo));
+            m_Client.Register<GraphicEffectHuedPacket>(0xC0, "Hued Effect", 36, new TypedPacketReceiveHandler(receive_HuedEffect));
+            m_Client.Register<MessageLocalizedPacket>(0xC1, "Message Localized", -1, new TypedPacketReceiveHandler(receive_CLILOCMessage));
+            m_Client.Register<InvalidMapEnablePacket>(0xC6, "Invalid Map Enable", 1, new TypedPacketReceiveHandler(receive_InvalidMapEnable));
+            m_Client.Register<GraphicEffectExtendedPacket>(0xC7, "Particle Effect", 49, new TypedPacketReceiveHandler(receive_OnParticleEffect));
+            m_Client.Register<GlobalQueuePacket>(0xCB, "Global Queue Count", 7, new TypedPacketReceiveHandler(receive_GlobalQueueCount));
+            m_Client.Register<MessageLocalizedAffixPacket>(0xCC, "Message Localized Affix ", -1, new TypedPacketReceiveHandler(receive_MessageLocalizedAffix));
+            m_Client.Register<Extended0x78Packet>(0xD3, "Extended 0x78", -1, new TypedPacketReceiveHandler(receive_Extended0x78));
+            m_Client.Register<ObjectPropertyListPacket>(0xD6, "Mega Cliloc", -1, new TypedPacketReceiveHandler(receive_ObjectPropertyList));
+            m_Client.Register<CustomHousePacket>(0xD8, "Send Custom House", -1, new TypedPacketReceiveHandler(receive_SendCustomHouse));
+            m_Client.Register<ObjectPropertyListUpdatePacket>(0xDC, "SE Introduced Revision", 9, new TypedPacketReceiveHandler(receive_ToolTipRevision));
+            m_Client.Register<CompressedGumpPacket>(0xDD, "Compressed Gump", -1, new TypedPacketReceiveHandler(receive_CompressedGump));
 
-            PacketRegistry.RegisterNetwork(m_ClientNetwork);
+            /* Deprecated (not used by RunUO) and/or not implmented
+             * Left them here incase we need to implement in the future
+            network.Register<RecvPacket>(0x30, "Attack Ok", 5, OnAttackOk);
+            network.Register<HealthBarStatusPacket>(0x17, "Health Bar Status Update", 12, OnHealthBarStatusUpdate);
+            network.Register<KickPlayerPacket>(0x26, "Kick Player", 5, OnKickPlayer);
+            network.Register<DropItemFailedPacket>(0x28, "Drop Item Failed", 5, OnDropItemFailed);
+            network.Register<PaperdollClothingAddAckPacket>(0x29, "Paperdoll Clothing Add Ack", 1, OnPaperdollClothingAddAck);
+            network.Register<BloodPacket>(0x2A, "Blood", 5, OnBlood);
+            network.Register<RecvPacket>(0x33, "Pause Client", -1, OnPauseClient);
+            network.Register<RecvPacket>(0x90, "Map Message", -1, OnMapMessage);
+            network.Register<RecvPacket>(0x9C, "Help Request", -1, OnHelpRequest);
+            network.Register<RecvPacket>(0xAB, "Gump Text Entry Dialog", -1, OnGumpDialog);
+            network.Register<RecvPacket>(0xB2, "Chat Message", -1, OnChatMessage);
+            network.Register<RecvPacket>(0xC4, "Semivisible", -1, OnSemivisible);
+            network.Register<RecvPacket>(0xD2, "Extended 0x20", -1, OnExtended0x20);
+            network.Register<RecvPacket>(0xDB, "Character Transfer Log", -1, OnCharacterTransferLog);
+            network.Register<RecvPacket>(0xDC, "SE Introduced Revision", -1, OnToolTipRevision);
+            network.Register<RecvPacket>(0xDE, "Update Mobile Status", -1, OnUpdateMobileStatus);
+            network.Register<RecvPacket>(0xDF, "Buff/Debuff System", -1, OnBuffDebuff);
+            network.Register<RecvPacket>(0xE2, "Mobile status/Animation update", -1, OnMobileStatusAnimationUpdate);
+            network.Register<RecvPacket>(0xF0, "Krrios client special", -1, OnKrriosClientSpecial);
+            */
         }
 
         public static bool Connect(string host, int port)
         {
             Status = UltimaClientStatus.LoginServer_Connecting;
-            bool success = m_ClientNetwork.Connect(host, port);
+            bool success = m_Client.Connect(host, port);
             if (success)
             {
                 Status = UltimaClientStatus.LoginServer_WaitingForLogin;
-                m_ClientNetwork.Send(new SeedPacket(1, 6, 0, 6, 2));
+                m_Client.Send(new SeedPacket(1, 6, 0, 6, 2));
             }
             else
             {
@@ -184,16 +205,16 @@ namespace UltimaXNA.UltimaNetwork
 
         public static void Disconnect()
         {
-            if (m_ClientNetwork.IsConnected)
-                m_ClientNetwork.Disconnect();
+            if (m_Client.IsConnected)
+                m_Client.Disconnect();
             Status = UltimaClientStatus.Unconnected;
         }
 
         public static void Send(ISendPacket packet)
         {
-            if (m_ClientNetwork.IsConnected)
+            if (m_Client.IsConnected)
             {
-                bool success = m_ClientNetwork.Send(packet);
+                bool success = m_Client.Send(packet);
                 if (!success)
                 {
                     Disconnect();
@@ -832,7 +853,7 @@ namespace UltimaXNA.UltimaNetwork
             // Normally, upon receiving this packet you would disconnect and
             // log in to the specified server. Since we are using RunUO, we don't
             // actually need to do this.
-            m_ClientNetwork.IsDecompressionEnabled = true;
+            m_Client.IsDecompressionEnabled = true;
             Status = UltimaClientStatus.LoginServer_WaitingForRelay;
         }
 

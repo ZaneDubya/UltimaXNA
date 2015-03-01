@@ -266,20 +266,15 @@ namespace UltimaXNA
 
         private void onKeyChar(InputEventKeyboard e)
         {
-            // Control key sends a strange wm_char message ...
+            // Control key sends a wm_char message that we should not handle.
             if (e.Control && !e.Alt)
                 return;
 
-            InputEventKeyboard pressEvent = LastKeyPressEvent;
-            if (pressEvent == null)
-                throw new Exception("No corresponding KeyPress event for this WM_CHAR message. Please report this error to poplicola@ultimaxna.com");
-            else
+            e.OverrideKeyChar(e.KeyCode);
+            addEvent(e);
+            if (UltimaVars.DebugVars.Flag_LogKeyboardChars)
             {
-                pressEvent.OverrideKeyChar(e.KeyCode);
-                if (UltimaVars.DebugVars.Flag_LogKeyboardChars)
-                {
-                    Diagnostics.Logger.Debug("Char: " + pressEvent.KeyChar);
-                }
+                Diagnostics.Logger.Debug("Char: " + e.KeyChar);
             }
         }
 
@@ -307,23 +302,6 @@ namespace UltimaXNA
         {
             List<InputEvent> list = (m_EventsAccumulatingUseAlternate) ? m_EventsAccumulatingAlternate : m_EventsAccumulating;
             list.Add(e);
-        }
-
-        private InputEventKeyboard LastKeyPressEvent
-        {
-            get
-            {
-                List<InputEvent> list = (m_EventsAccumulatingUseAlternate) ? m_EventsAccumulatingAlternate : m_EventsAccumulating;
-                for (int i = list.Count; i > 0; i--)
-                {
-                    InputEvent e = list[i - 1];
-                    if ((e is InputEventKeyboard) && (((InputEventKeyboard)e).EventType == KeyboardEventType.Press))
-                    {
-                        return (InputEventKeyboard)e;
-                    }
-                }
-                return null;
-            }
         }
     }
 }

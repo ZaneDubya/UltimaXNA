@@ -25,8 +25,7 @@ namespace UltimaXNA.Scenes
 {
     public class LoginScene : AScene
     {
-        public LoginScene(Game game)
-            : base(game, true)
+        public LoginScene()
         {
 
         }
@@ -40,9 +39,9 @@ namespace UltimaXNA.Scenes
             UltimaVars.EngineVars.Map = -1;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double totalTime, double frameTime)
         {
-            base.Update(gameTime);
+            base.Update(totalTime, frameTime);
         }
 
         public override void Dispose()
@@ -53,7 +52,7 @@ namespace UltimaXNA.Scenes
 
         public void OnLogin(string server, int port, string account, string password)
         {
-            SceneManager.CurrentScene = new LoggingInScene(Game, server, port, account, password);
+            Manager.CurrentScene = new LoggingInScene(server, port, account, password);
         }
     }
 }

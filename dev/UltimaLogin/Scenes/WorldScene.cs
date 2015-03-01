@@ -28,9 +28,9 @@ namespace UltimaXNA.Scenes
 {
     public class WorldScene : AScene
     {
-        public WorldScene(Game game)
-            : base(game)
+        public WorldScene()
         {
+
         }
 
         public override void  Intitialize()
@@ -64,9 +64,10 @@ namespace UltimaXNA.Scenes
             UltimaVars.EngineVars.InWorld = false;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double totalTime, double frameTime)
         {
-            base.Update(gameTime);
+            base.Update(totalTime, frameTime);
+
             if (SceneState == SceneState.Active)
             {
                 if (!UltimaClient.IsConnected)
@@ -80,7 +81,7 @@ namespace UltimaXNA.Scenes
                 else
                 {
                     IsometricRenderer.CenterPosition = EntityManager.GetPlayerObject().Position;
-                    IsometricRenderer.Update(gameTime);
+                    IsometricRenderer.Update(totalTime, frameTime);
 
                     // Toggle for logout
                     if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.Q, false, false, true))
@@ -89,7 +90,7 @@ namespace UltimaXNA.Scenes
             }
         }
 
-        public override void Draw(GameTime gameTime)
+        public void Draw(GameTime gameTime)
         {
             if (SceneState == SceneState.Active)
             {

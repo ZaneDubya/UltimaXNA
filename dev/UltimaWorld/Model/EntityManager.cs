@@ -43,7 +43,6 @@ namespace UltimaXNA.UltimaWorld
                 return null;
         }
 
-
         public static void Update(GameTime gameTime)
         {
             if (UltimaVars.EngineVars.InWorld)
@@ -216,7 +215,5 @@ namespace UltimaXNA.UltimaWorld
                 m_Entities[serial].Dispose();
             }
         }
-
-        
     }
 }

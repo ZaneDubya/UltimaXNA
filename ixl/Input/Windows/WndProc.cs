@@ -329,38 +329,43 @@ namespace InterXLib.Input.Windows
         {
             // HandleKeyBindings();
             // KeyPressEventArgs keyPressEventArgs = null;
-            InputEventKeyboard InputEventCKB = null;
 
             if ((message.Id == NativeConstants.WM_CHAR) || (message.Id == NativeConstants.WM_SYSCHAR))
             {
                 // Is this extra information necessary?
                 // wm_(sys)char: http://msdn.microsoft.com/en-us/library/ms646276(VS.85).aspx
 
-                InputEventCKB = new InputEventKeyboard(KeyboardEventType.Press,
+                InputEventKeyboard e = new InputEventKeyboard(KeyboardEventType.Press,
                     (WinKeys)(int)(long)message.WParam,
                     (int)(long)message.LParam,
                     ModifierKeys
                     );
                 IntPtr zero = (IntPtr)0;// (char)((ushort)((long)message.WParam));
-                invokeChar(InputEventCKB);
+                invokeChar(e);
             }
             else
             {
                 // wm_(sys)keydown: http://msdn.microsoft.com/en-us/library/ms912654.aspx
                 // wm_(sys)keyup: http://msdn.microsoft.com/en-us/library/ms646281(VS.85).aspx
-                InputEventCKB = new InputEventKeyboard(KeyboardEventType.Up,
-                    (WinKeys)(int)(long)message.WParam,
-                    (int)(long)message.LParam,
-                    ModifierKeys
-                    );
+
 
                 if ((message.Id == NativeConstants.WM_KEYDOWN) || (message.Id == NativeConstants.WM_SYSKEYDOWN))
                 {
-                    invokeKeyDown(InputEventCKB);
+                    InputEventKeyboard e = new InputEventKeyboard(KeyboardEventType.Down,
+                        (WinKeys)(int)(long)message.WParam,
+                        (int)(long)message.LParam,
+                        ModifierKeys
+                        );
+                    invokeKeyDown(e);
                 }
                 else if ((message.Id == NativeConstants.WM_KEYUP) || (message.Id == NativeConstants.WM_SYSKEYUP))
                 {
-                    invokeKeyUp(InputEventCKB);
+                    InputEventKeyboard e = new InputEventKeyboard(KeyboardEventType.Up,
+                        (WinKeys)(int)(long)message.WParam,
+                        (int)(long)message.LParam,
+                        ModifierKeys
+                        );
+                    invokeKeyUp(e);
                 }
             }
         }

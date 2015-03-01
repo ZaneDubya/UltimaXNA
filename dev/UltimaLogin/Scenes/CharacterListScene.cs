@@ -33,8 +33,7 @@ namespace UltimaXNA.Scenes
 {
     public class CharacterListScene : AScene
     {
-        public CharacterListScene(Game game)
-            : base(game, true)
+        public CharacterListScene()
         {
 
         }
@@ -48,9 +47,10 @@ namespace UltimaXNA.Scenes
             ((CharacterListGump)g).OnNewCharacter += this.OnNewCharacter;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double totalTime, double frameTime)
         {
-            base.Update(gameTime);
+            base.Update(totalTime, frameTime);
+
             if (SceneState == SceneState.Active)
             {
                 switch (UltimaClient.Status)
@@ -63,7 +63,9 @@ namespace UltimaXNA.Scenes
                         break;
                     case UltimaClientStatus.WorldServer_InWorld:
                         // We're in! Load the world.
-                        SceneManager.CurrentScene = new WorldScene(Game);
+                        Manager.CurrentScene = null;
+                        UltimaEngine.ActiveModel = new UltimaXNA.UltimaWorld.WorldModel();
+                        // Manager.CurrentScene = new WorldScene();
                         break;
                     default:
                         // what's going on here? Add additional error handlers.
@@ -84,7 +86,7 @@ namespace UltimaXNA.Scenes
             // which automatically logs in again. But we can't do that,
             // since I have UltimaClient clear your account/password data
             // once connected (is this really neccesary?) Have to fix this...
-            SceneManager.CurrentScene = new LoginScene(Game);
+            Manager.CurrentScene = new LoginScene();
         }
 
         public void OnLoginWithCharacter(int index)
@@ -100,7 +102,7 @@ namespace UltimaXNA.Scenes
 
         public void OnNewCharacter()
         {
-            SceneManager.CurrentScene = new CreateCharacterScene(Game);
+            Manager.CurrentScene = new CreateCharacterScene();
         }
     }
 }

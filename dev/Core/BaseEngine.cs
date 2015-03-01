@@ -50,6 +50,7 @@ namespace UltimaXNA
         {
             if (!IsMinimized)
             {
+                this.GraphicsDevice.Clear(Color.Black);
                 OnDraw(gameTime);
                 UserInterface.Draw(gameTime);
                 this.Window.Title = 

@@ -32,9 +32,6 @@ namespace UltimaXNA
 
     static class UltimaGameState
     {
-        // World object. Putting it here until it gets moved to a more reasonable location.
-        public UltimaWorld.WorldModel World;
-
         // mouse input variables
         static bool _ContinuousMoveCheck = false;
         const int _TimeHoveringBeforeTipMS = 1000;

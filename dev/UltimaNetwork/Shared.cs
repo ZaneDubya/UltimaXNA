@@ -24,28 +24,6 @@ namespace UltimaXNA.UltimaNetwork
         Elf = 2
     }
 
-    public class CharacterListEntry
-    {
-        string name;
-        string password;
-
-        public string Name
-        {
-            get { return name; }
-        }
-
-        public string Password
-        {
-            get { return password; }
-        }
-
-        public CharacterListEntry(PacketReader reader)
-        {
-            this.name = reader.ReadString(30);
-            this.password = reader.ReadString(30);
-        }
-    }
-
     public struct CorpseClothingItemWithLayer
     {
         public int Layer;
@@ -84,49 +62,6 @@ namespace UltimaXNA.UltimaNetwork
             this.index = reader.ReadByte();
             this.cityName = reader.ReadString(31);
             this.areaOfCityOrTown = reader.ReadString(31);
-        }
-    }
-
-    public class ServerListEntry
-    {
-        readonly ushort index;
-        readonly string name;
-        readonly byte percentFull;
-        readonly byte timezone;
-        readonly uint address;
-
-        public ushort Index
-        {
-            get { return index; }
-        }
-
-        public string Name
-        {
-            get { return name; }
-        }
-
-        public byte PercentFull
-        {
-            get { return percentFull; }
-        }
-
-        public byte Timezone
-        {
-            get { return timezone; }
-        }
-
-        public uint Address
-        {
-            get { return address; }
-        }
-
-        public ServerListEntry(PacketReader reader)
-        {
-            this.index = (ushort)reader.ReadInt16();
-            this.name = reader.ReadString(30);
-            this.percentFull = reader.ReadByte();
-            this.timezone = reader.ReadByte();
-            this.address = (uint)reader.ReadInt32();
         }
     }
 

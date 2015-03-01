@@ -35,8 +35,7 @@ namespace UltimaXNA.Scenes
         private string m_AccountName;
         private string m_Password;
 
-        public SelectServerScene(Game game, string account, string password)
-            : base(game, true)
+        public SelectServerScene(string account, string password)
         {
             m_AccountName = account;
             m_Password = password;
@@ -51,9 +50,10 @@ namespace UltimaXNA.Scenes
             ((UltimaGUI.Gumps.SelectServerGump)g).OnSelectServer += this.OnSelectServer;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double totalTime, double frameTime)
         {
-            base.Update(gameTime);
+            base.Update(totalTime, frameTime);
+
             if (SceneState == SceneState.Active)
             {
                 switch (UltimaClient.Status)
@@ -73,11 +73,11 @@ namespace UltimaXNA.Scenes
                         break;
                     case UltimaClientStatus.GameServer_CharList:
                         // we've got the char list
-                        SceneManager.CurrentScene = new CharacterListScene(Game);
+                        Manager.CurrentScene = new CharacterListScene();
                         break;
                     case UltimaClientStatus.WorldServer_InWorld:
                         // we've connected!
-                        SceneManager.CurrentScene = new WorldScene(Game);
+                        Manager.CurrentScene = new WorldScene();
                         break;
                     default:
                         // what's going on here? Add additional error handlers.

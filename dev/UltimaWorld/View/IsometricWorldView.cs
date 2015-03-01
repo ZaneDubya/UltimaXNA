@@ -101,7 +101,7 @@ namespace UltimaXNA.UltimaWorld
             };
         }
 
-        public static void Update(GameTime gameTime)
+        public static void Update(double totalTime, double frameTime)
         {
             if (UltimaVars.EngineVars.Map != -1)
             {

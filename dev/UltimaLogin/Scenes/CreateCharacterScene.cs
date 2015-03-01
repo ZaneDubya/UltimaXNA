@@ -48,9 +48,9 @@ namespace UltimaXNA.Scenes
         int _gender, _hairStyleID, _facialHairStyleID;
         int _skinHue, _hairHue, _facialHairHue;
 
-        public CreateCharacterScene(Game game)
-            : base(game, true)
+        public CreateCharacterScene()
         {
+
         }
 
         public override void Intitialize()
@@ -165,9 +165,10 @@ namespace UltimaXNA.Scenes
             return true;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double totalTime, double frameTime)
         {
-            base.Update(gameTime);
+            base.Update(totalTime, frameTime);
+
             if (SceneState == SceneState.Active)
             {
                 switch (_status)
@@ -179,7 +180,7 @@ namespace UltimaXNA.Scenes
                         // do nothing
                         break;
                     case CreateCharacterSceneStates.Cancel:
-                        SceneManager.CurrentScene = new CharacterListScene(Game);
+                        Manager.CurrentScene = new CharacterListScene();
                         break;
                     case CreateCharacterSceneStates.CreateCharacter:
                         UltimaClient.Send(new CreateCharacterPacket(
@@ -200,7 +201,7 @@ namespace UltimaXNA.Scenes
                         break;
                     case UltimaClientStatus.WorldServer_InWorld:
                         // We're in! Load the world.
-                        SceneManager.CurrentScene = new WorldScene(Game);
+                        Manager.CurrentScene = new WorldScene();
                         break;
                     default:
                         // what's going on here? Add additional error handlers.

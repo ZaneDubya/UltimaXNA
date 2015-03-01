@@ -139,7 +139,7 @@ namespace UltimaXNA
         {
             if (UltimaClient.Status != UltimaClientStatus.Unconnected)
                 UltimaClient.Disconnect();
-            SceneManager.Reset();
+            UltimaEngine.ActiveModel = new UltimaXNA.UltimaLogin.LoginModel();
         }
 
 
