@@ -66,7 +66,7 @@ namespace UltimaXNA.UltimaPackets.Server
         {
             _serial = reader.ReadInt32();
 
-            reader.ReadInt32();//unknown..
+            reader.ReadInt32(); //unknown. Always 0.
 
             _body = reader.ReadInt16();
             _x = reader.ReadInt16();
