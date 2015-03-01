@@ -21,7 +21,7 @@ namespace UltimaXNA.UltimaGUI.Gumps
     class StatusGump : Gump
     {
         List<Control> ControlsToUpdate = new List<Control>();
-        PlayerMobile m = (PlayerMobile)Entities.GetPlayerObject();
+        PlayerMobile m = (PlayerMobile)EntityManager.GetPlayerObject();
         GameTime _refreshTime = new GameTime();
 
         public StatusGump()

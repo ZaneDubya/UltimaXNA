@@ -12,8 +12,8 @@ using Microsoft.Xna.Framework.Graphics;
  ***************************************************************************/
 using System;
 using UltimaXNA.Rendering;
-using UltimaXNA.UltimaNetwork;
-using UltimaXNA.UltimaNetwork.Packets.Client;
+using UltimaXNA.UltimaPackets;
+using UltimaXNA.UltimaPackets.Client;
 
 namespace UltimaXNA.UltimaGUI
 {

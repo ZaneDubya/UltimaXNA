@@ -11,8 +11,8 @@
  ***************************************************************************/
 using Microsoft.Xna.Framework;
 using UltimaXNA.Entity;
-using UltimaXNA.UltimaNetwork;
-using UltimaXNA.UltimaNetwork.Packets.Client;
+using UltimaXNA.UltimaPackets;
+using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.UltimaWorld;
 
 namespace UltimaXNA.UltimaVars
@@ -46,8 +46,8 @@ namespace UltimaXNA.UltimaVars
         }
         public static bool WarMode
         {
-            get { return (Entities.GetPlayerObject() != null) ? ((Mobile)Entities.GetPlayerObject()).IsWarMode : false; }
-            set { ((Mobile)Entities.GetPlayerObject()).IsWarMode = value; }
+            get { return (EntityManager.GetPlayerObject() != null) ? ((Mobile)EntityManager.GetPlayerObject()).IsWarMode : false; }
+            set { ((Mobile)EntityManager.GetPlayerObject()).IsWarMode = value; }
         }
 
         // Maintain an accurate count of frames per second.

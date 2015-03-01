@@ -15,8 +15,7 @@ using System;
 using System.Collections.Generic;
 using UltimaXNA.Entity;
 using UltimaXNA.UltimaData;
-using UltimaXNA.UltimaNetwork;
-using UltimaXNA.UltimaNetwork.Packets.Client;
+using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.UltimaWorld;
 #endregion
 
@@ -147,7 +146,7 @@ namespace UltimaXNA
                 moveDirection |= Direction.Running;
 
             // Tell the player to Move.
-            Mobile m = (Mobile)Entities.GetPlayerObject();
+            Mobile m = (Mobile)EntityManager.GetPlayerObject();
             m.PlayerMobile_Move(moveDirection);
         }
 
@@ -361,7 +360,7 @@ namespace UltimaXNA
             if (!serial.IsValid)
                 return;
 
-            BaseEntity e = Entities.GetObject<BaseEntity>(serial, false);
+            BaseEntity e = EntityManager.GetObject<BaseEntity>(serial, false);
 
             if (e is Mobile)
             {

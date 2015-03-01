@@ -9,10 +9,10 @@
  *
  ***************************************************************************/
 #region usings
+using InterXLib.Patterns.MVC;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Scenes;
-using UltimaXNA.UltimaNetwork;
+using UltimaXNA.UltimaLogin;
 using UltimaXNA.UltimaWorld;
 #endregion
 
@@ -20,7 +20,18 @@ namespace UltimaXNA
 {
     public class UltimaEngine : BaseEngine
     {
-        public static UltimaGUIState UltimaUI = new UltimaGUIState();
+        internal static UltimaGUIState UltimaUI = new UltimaGUIState();
+
+        private static AModel m_Model;
+        internal static AModel ActiveModel
+        {
+            get { return m_Model; }
+            set
+            {
+                m_Model = null;
+                m_Model = value;
+            }
+        }
 
         public UltimaEngine(int width, int height)
             :base(width, height)
@@ -30,7 +41,6 @@ namespace UltimaXNA
 
         protected override void OnInitialize()
         {
-            SceneManager.Initialize(this);
             IsometricRenderer.Initialize(this);
 
             // Make sure we have a UO installation before loading UltimaData.
@@ -47,9 +57,11 @@ namespace UltimaXNA
                 UltimaData.StringData.LoadStringList("enu");
                 UltimaData.SkillsData.Initialize();
                 GraphicsDevice.Textures[1] = UltimaXNA.UltimaData.HuesXNA.HueTexture;
-                SceneManager.Reset();
+
                 UltimaVars.EngineVars.EngineRunning = true;
                 UltimaVars.EngineVars.InWorld = false;
+
+                ActiveModel = new LoginModel();
             }
         }
 
@@ -57,18 +69,23 @@ namespace UltimaXNA
         {
             this.IsFixedTimeStep = UltimaVars.EngineVars.LimitFPS;
             if (!UltimaVars.EngineVars.EngineRunning)
+            {
                 Exit();
-
-            UltimaUI.Update();
-            UltimaClient.Update(gameTime);
-            Entities.Update(gameTime);
-            UltimaGameState.Update(gameTime);
-            SceneManager.Update(gameTime);
+            }
+            else
+            {
+                UltimaUI.Update();
+                UltimaClient.Update(gameTime);
+                EntityManager.Update(gameTime);
+                UltimaGameState.Update(gameTime);
+                ActiveModel.Update(gameTime.TotalGameTime.TotalMilliseconds, gameTime.ElapsedGameTime.TotalMilliseconds);
+            }
         }
 
         protected override void OnDraw(GameTime gameTime)
         {
-            SceneManager.Draw(gameTime);
+            if (UltimaVars.EngineVars.InWorld)
+                IsometricRenderer.Draw(gameTime);
             UltimaUI.Draw();
         }
     }
