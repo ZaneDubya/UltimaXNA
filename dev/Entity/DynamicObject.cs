@@ -10,7 +10,7 @@
  ***************************************************************************/
 #region usings
 using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaNetwork.Packets.Server;
+using UltimaXNA.UltimaPackets.Server;
 using Microsoft.Xna.Framework;
 using UltimaXNA.UltimaData;
 #endregion

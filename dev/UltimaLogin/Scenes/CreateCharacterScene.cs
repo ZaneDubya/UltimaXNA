@@ -20,8 +20,8 @@ using Microsoft.Xna.Framework;
 using System;
 using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaGUI.Gumps;
-using UltimaXNA.UltimaNetwork;
-using UltimaXNA.UltimaNetwork.Packets.Client;
+using UltimaXNA.UltimaPackets;
+using UltimaXNA.UltimaPackets.Client;
 
 #endregion
 

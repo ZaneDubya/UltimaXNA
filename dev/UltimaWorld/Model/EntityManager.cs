@@ -12,7 +12,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using UltimaXNA.UltimaNetwork.Packets.Client;
+using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.UltimaWorld;
 using UltimaXNA.Entity;
 #endregion

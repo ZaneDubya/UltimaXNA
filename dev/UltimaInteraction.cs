@@ -12,10 +12,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using UltimaXNA.Entity;
-using UltimaXNA.Scenes;
 using UltimaXNA.UltimaGUI;
-using UltimaXNA.UltimaNetwork;
-using UltimaXNA.UltimaNetwork.Packets.Client;
+using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.UltimaWorld;
 
 namespace UltimaXNA

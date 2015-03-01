@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using InterXLib.Patterns.MVC;
-using UltimaXNA.UltimaNetwork;
+using UltimaXNA.UltimaPackets;
 using UltimaXNA.UltimaGUI.Gumps;
 using UltimaXNA.UltimaGUI;
 using InterXLib.Input.Windows;

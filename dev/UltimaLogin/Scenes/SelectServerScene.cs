@@ -25,7 +25,7 @@ using System.Threading;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Network;
 using UltimaXNA.UltimaGUI;
-using UltimaXNA.UltimaNetwork;
+using UltimaXNA.UltimaPackets;
 #endregion
 
 namespace UltimaXNA.Scenes

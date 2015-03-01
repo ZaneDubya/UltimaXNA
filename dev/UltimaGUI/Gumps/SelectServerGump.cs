@@ -9,7 +9,7 @@
  *
  ***************************************************************************/
 using UltimaXNA.UltimaGUI.Controls;
-using UltimaXNA.UltimaNetwork;
+using UltimaXNA.UltimaPackets;
 using UltimaXNA.UltimaVars;
 
 namespace UltimaXNA.UltimaGUI.Gumps

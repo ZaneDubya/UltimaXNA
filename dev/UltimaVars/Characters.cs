@@ -8,7 +8,8 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using UltimaXNA.UltimaNetwork;
+using UltimaXNA.UltimaPackets;
+using UltimaXNA.UltimaPackets.Server;
 
 namespace UltimaXNA.UltimaVars
 {
@@ -18,8 +19,8 @@ namespace UltimaXNA.UltimaVars
         public static CharacterListEntry[] List { get { return _characters; } }
         public static int Length { get { return _characters.Length; } }
 
-        static StartingLocation[] _locations;
-        public static StartingLocation[] StartingLocations { get { return _locations; } }
+        static CharacterCityListPacket.StartingLocation[] _locations;
+        public static CharacterCityListPacket.StartingLocation[] StartingLocations { get { return _locations; } }
 
         static int _updateValue = 0;
         public static int UpdateValue { get { return _updateValue; } }
@@ -43,7 +44,7 @@ namespace UltimaXNA.UltimaVars
             _updateValue++;
         }
 
-        public static void SetStartingLocations(StartingLocation[] list)
+        public static void SetStartingLocations(CharacterCityListPacket.StartingLocation[] list)
         {
             _locations = list;
             _updateValue++;

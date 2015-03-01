@@ -13,9 +13,9 @@ using UltimaXNA.Core.Network;
 using UltimaXNA.Entity;
 using InterXLib.Input.Windows;
 using UltimaXNA.UltimaGUI;
-using UltimaXNA.UltimaNetwork;
-using UltimaXNA.UltimaNetwork.Packets.Client;
-using UltimaXNA.UltimaNetwork.Packets.Server;
+using UltimaXNA.UltimaPackets;
+using UltimaXNA.UltimaPackets.Client;
+using UltimaXNA.UltimaPackets.Server;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {

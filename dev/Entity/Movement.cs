@@ -15,8 +15,8 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using UltimaXNA.UltimaWorld;
 using UltimaXNA.Core.Network;
-using UltimaXNA.UltimaNetwork.Packets.Client;
-using UltimaXNA.UltimaNetwork;
+using UltimaXNA.UltimaPackets.Client;
+using UltimaXNA.UltimaPackets;
 #endregion
 
 namespace UltimaXNA.Entity

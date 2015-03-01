@@ -11,8 +11,8 @@
  ***************************************************************************/
 using Microsoft.Xna.Framework;
 using UltimaXNA.Entity;
-using UltimaXNA.UltimaNetwork;
-using UltimaXNA.UltimaNetwork.Packets.Client;
+using UltimaXNA.UltimaPackets;
+using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.UltimaWorld;
 
 namespace UltimaXNA.UltimaVars

@@ -9,19 +9,16 @@
  *
  ***************************************************************************/
 #region usings
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
-using System.Text;
 using System.Linq;
-using System.Xml.Serialization;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.UltimaData;
-using UltimaXNA.UltimaData.Fonts;
 using System.Reflection;
+using System.Text;
+using UltimaXNA.UltimaData.Fonts;
 #endregion
 
 namespace UltimaXNA

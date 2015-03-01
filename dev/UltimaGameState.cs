@@ -15,8 +15,7 @@ using System;
 using System.Collections.Generic;
 using UltimaXNA.Entity;
 using UltimaXNA.UltimaData;
-using UltimaXNA.UltimaNetwork;
-using UltimaXNA.UltimaNetwork.Packets.Client;
+using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.UltimaWorld;
 #endregion
 

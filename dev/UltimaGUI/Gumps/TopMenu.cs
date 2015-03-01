@@ -10,8 +10,8 @@
  ***************************************************************************/
 using UltimaXNA.Entity;
 using UltimaXNA.UltimaGUI.Controls;
-using UltimaXNA.UltimaNetwork;
-using UltimaXNA.UltimaNetwork.Packets.Client;
+using UltimaXNA.UltimaPackets;
+using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.UltimaWorld;
 
 namespace UltimaXNA.UltimaGUI.Gumps

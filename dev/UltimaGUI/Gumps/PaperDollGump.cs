@@ -12,9 +12,9 @@ using Microsoft.Xna.Framework;
 using UltimaXNA.Entity;
 using UltimaXNA.Rendering;
 using UltimaXNA.UltimaGUI.Controls;
-using UltimaXNA.UltimaNetwork;
-using UltimaXNA.UltimaNetwork.Packets.Client;
-using UltimaXNA.UltimaNetwork.Packets.Server;
+using UltimaXNA.UltimaPackets;
+using UltimaXNA.UltimaPackets.Client;
+using UltimaXNA.UltimaPackets.Server;
 
 namespace UltimaXNA.UltimaGUI.Gumps
 {

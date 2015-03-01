@@ -20,7 +20,7 @@ using InterXLib.Input.Windows;
 using Microsoft.Xna.Framework;
 using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaGUI.Gumps;
-using UltimaXNA.UltimaNetwork;
+using UltimaXNA.UltimaPackets;
 using UltimaXNA.UltimaWorld;
 #endregion
 
