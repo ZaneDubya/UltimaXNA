@@ -41,7 +41,7 @@ namespace UltimaXNA.UltimaVars
             set
             {
                 _lastTarget = value;
-                UltimaClient.Send(new GetPlayerStatusPacket(0x04, _lastTarget));
+                UltimaEngine.Client.Send(new GetPlayerStatusPacket(0x04, _lastTarget));
             }
         }
         public static bool WarMode

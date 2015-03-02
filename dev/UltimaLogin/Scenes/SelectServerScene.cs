@@ -41,9 +41,9 @@ namespace UltimaXNA.Scenes
             m_Password = password;
         }
 
-        public override void Intitialize()
+        public override void Intitialize(UltimaClient client)
         {
-            base.Intitialize();
+            base.Intitialize(client);
             Gump g = (Gump)UltimaEngine.UserInterface.AddControl(new UltimaGUI.Gumps.SelectServerGump(), 0, 0);
             ((UltimaGUI.Gumps.SelectServerGump)g).OnBackToLoginScreen += this.OnBackToLoginScreen;
             ((UltimaGUI.Gumps.SelectServerGump)g).OnSelectLastServer += this.OnSelectLastServer;
@@ -56,14 +56,14 @@ namespace UltimaXNA.Scenes
 
             if (SceneState == SceneState.Active)
             {
-                switch (UltimaClient.Status)
+                switch (Client.Status)
                 {
                     case UltimaClientStatus.LoginServer_HasServerList:
                         // This is where we're supposed to be while waiting to select a server.
                         break;
                     case UltimaClientStatus.LoginServer_WaitingForRelay:
                         // we must now send the relay packet.
-                        UltimaClient.SendServerRelay(m_AccountName, m_Password);
+                        Client.SendServerRelay(m_AccountName, m_Password);
                         break;
                     case UltimaClientStatus.LoginServer_Relaying:
                         // relaying to the server we will log in to ...
@@ -77,7 +77,8 @@ namespace UltimaXNA.Scenes
                         break;
                     case UltimaClientStatus.WorldServer_InWorld:
                         // we've connected!
-                        Manager.CurrentScene = new WorldScene();
+                        UltimaEngine.ActiveModel = new UltimaXNA.UltimaWorld.WorldModel();
+                        // Manager.CurrentScene = new WorldScene();
                         break;
                     default:
                         // what's going on here? Add additional error handlers.
@@ -100,7 +101,7 @@ namespace UltimaXNA.Scenes
         public void OnSelectServer(int index)
         {
             UltimaEngine.UserInterface.GetControl<UltimaGUI.Gumps.SelectServerGump>(0).ActivePage = 2;
-            UltimaClient.SelectServer(index);
+            Client.SelectServer(index);
         }
 
         public void OnSelectLastServer()

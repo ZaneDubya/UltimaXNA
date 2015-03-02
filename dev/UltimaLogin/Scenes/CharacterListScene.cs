@@ -38,8 +38,9 @@ namespace UltimaXNA.Scenes
 
         }
 
-        public override void Intitialize()
+        public override void Intitialize(UltimaClient client)
         {
+            base.Intitialize(client);
             Gump g = (Gump)UltimaEngine.UserInterface.AddControl(new CharacterListGump(), 0, 0);
             ((CharacterListGump)g).OnBackToSelectServer += this.OnBackToSelectServer;
             ((CharacterListGump)g).OnLoginWithCharacter += this.OnLoginWithCharacter;
@@ -53,7 +54,7 @@ namespace UltimaXNA.Scenes
 
             if (SceneState == SceneState.Active)
             {
-                switch (UltimaClient.Status)
+                switch (Client.Status)
                 {
                     case UltimaClientStatus.GameServer_CharList:
                         // This is where we're supposed to be while waiting to select a character.
@@ -92,12 +93,12 @@ namespace UltimaXNA.Scenes
         public void OnLoginWithCharacter(int index)
         {
             UltimaEngine.UserInterface.GetControl<CharacterListGump>(0).ActivePage = 2;
-            UltimaClient.SelectCharacter(index);
+            Client.SelectCharacter(index);
         }
 
         public void OnDeleteCharacter(int index)
         {
-            UltimaClient.DeleteCharacter(index);
+            Client.DeleteCharacter(index);
         }
 
         public void OnNewCharacter()

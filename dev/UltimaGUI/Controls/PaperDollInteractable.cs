@@ -157,7 +157,7 @@ namespace UltimaXNA.UltimaGUI.Controls
         void dblclick_Backpack(int x, int y, MouseButton button)
         {
             Container i = ((Mobile)_sourceEntity).Backpack;
-            UltimaClient.Send(new DoubleClickPacket(i.Serial));
+            UltimaEngine.Client.Send(new DoubleClickPacket(i.Serial));
         }
 
         void onItemDropPaperdoll()

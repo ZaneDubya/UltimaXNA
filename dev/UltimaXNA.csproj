@@ -122,6 +122,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AUltimaModel.cs" />
     <Compile Include="UltimaData\BodyData.cs" />
     <Compile Include="UltimaData\Fonts\ASCIIText.cs" />
     <Compile Include="UltimaData\Fonts\UniCharacter.cs" />
@@ -407,7 +408,6 @@
     <Compile Include="Core\Network\SocketState.cs" />
     <Compile Include="UltimaLogin\Scenes\AScene.cs" />
     <Compile Include="UltimaLogin\Scenes\SceneManager.cs" />
-    <Compile Include="UltimaLogin\Scenes\WorldScene.cs" />
     <Compile Include="UltimaLogin\Scenes\LoginScene.cs" />
     <Compile Include="Entity\Serial.cs" />
     <Compile Include="UltimaData\_Enums.cs" />

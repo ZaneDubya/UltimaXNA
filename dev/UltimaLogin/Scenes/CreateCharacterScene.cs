@@ -53,8 +53,9 @@ namespace UltimaXNA.Scenes
 
         }
 
-        public override void Intitialize()
+        public override void Intitialize(UltimaClient client)
         {
+            base.Intitialize(client);
             _status = CreateCharacterSceneStates.Default;
             openSkillsGump();
         }
@@ -183,7 +184,7 @@ namespace UltimaXNA.Scenes
                         Manager.CurrentScene = new CharacterListScene();
                         break;
                     case CreateCharacterSceneStates.CreateCharacter:
-                        UltimaClient.Send(new CreateCharacterPacket(
+                        Client.Send(new CreateCharacterPacket(
                             _name, (Sex)_gender, (Race)0, (byte)_attributes[0], (byte)_attributes[1], (byte)_attributes[2], 
                             (byte)_skillIndexes[0], (byte)_skillValues[0], (byte)_skillIndexes[1], (byte)_skillValues[1], (byte)_skillIndexes[2], (byte)_skillValues[2],
                             (short)_skinHue, (short)_hairStyleID, (short)_hairHue, (short)_facialHairStyleID, (short)_facialHairHue,
@@ -191,7 +192,7 @@ namespace UltimaXNA.Scenes
                         break;
                 }
 
-                switch (UltimaClient.Status)
+                switch (Client.Status)
                 {
                     case UltimaClientStatus.GameServer_CharList:
                         // This is where we're supposed to be while creating a character.
@@ -201,7 +202,8 @@ namespace UltimaXNA.Scenes
                         break;
                     case UltimaClientStatus.WorldServer_InWorld:
                         // We're in! Load the world.
-                        Manager.CurrentScene = new WorldScene();
+                        UltimaEngine.ActiveModel = new UltimaXNA.UltimaWorld.WorldModel();
+                        // Manager.CurrentScene = new WorldScene();
                         break;
                     default:
                         // what's going on here? Add additional error handlers.

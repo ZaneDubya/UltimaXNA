@@ -23,6 +23,8 @@ namespace UltimaXNA.Entity
 {
     public class Movement
     {
+        public static Action<MoveRequestPacket> SendMoveRequestPacket;
+
         #region MovementSpeed
         private static TimeSpan _TimeWalkFoot = TimeSpan.FromSeconds(0.4);
         private static TimeSpan _TimeRunFoot = TimeSpan.FromSeconds(0.2);
@@ -188,7 +190,7 @@ namespace UltimaXNA.Entity
                 while ((moveEvent = _moveEvents.GetMoveEvent(out sequence)) != null)
                 {
                     if (_entity.IsClientEntity)
-                        UltimaClient.Send(new MoveRequestPacket((byte)moveEvent.Facing, (byte)sequence, moveEvent.Fastwalk));
+                        SendMoveRequestPacket(new MoveRequestPacket((byte)moveEvent.Facing, (byte)sequence, moveEvent.Fastwalk));
                     Facing = (Direction)moveEvent.Facing;
                     Position3D p = new Position3D(
                         moveEvent.X, moveEvent.Y, moveEvent.Z);

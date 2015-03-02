@@ -39,21 +39,20 @@ namespace UltimaXNA.Scenes
 
         public LoggingInScene(string server, int port, string account, string password)
         {
-            if (UltimaClient.IsConnected)
-                UltimaClient.Disconnect();
-            // Send the accountname and password to the ultimaclient so this gump does not have to save them.
-
+            // Todo: Send the accountname and password to the ultimaclient so this gump does not have to save them.
             m_ServerHost = server;
             m_ServerPort = port;
             m_AccountName = account;
             m_Password = password;
         }
 
-        public override void Intitialize()
+        public override void Intitialize(UltimaClient client)
         {
-            base.Intitialize();
+            base.Intitialize(client);
             Gump g = (Gump)UltimaEngine.UserInterface.AddControl(new UltimaGUI.Gumps.LoggingInGump(), 0, 0);
             ((UltimaGUI.Gumps.LoggingInGump)g).OnCancelLogin += this.OnCancelLogin;
+            if (Client.IsConnected)
+                Client.Disconnect();
         }
 
         public override void Update(double totalTime, double frameTime)
@@ -62,10 +61,10 @@ namespace UltimaXNA.Scenes
 
             if (SceneState == SceneState.Active)
             {
-                switch (UltimaClient.Status)
+                switch (Client.Status)
                 {
                     case UltimaClientStatus.Unconnected:
-                        UltimaClient.Connect(m_ServerHost, m_ServerPort);
+                        Client.Connect(m_ServerHost, m_ServerPort);
                         break;
                     case UltimaClientStatus.LoginServer_Connecting:
                         // connecting ...
@@ -73,7 +72,7 @@ namespace UltimaXNA.Scenes
                     case UltimaClientStatus.LoginServer_WaitingForLogin:
                         // show 'verifying account...' gump
                         UltimaEngine.UserInterface.GetControl<UltimaGUI.Gumps.LoggingInGump>(0).ActivePage = 9;
-                        UltimaClient.SendAccountLogin(m_AccountName, m_Password);
+                        Client.SendAccountLogin(m_AccountName, m_Password);
                         break;
                     case UltimaClientStatus.LoginServer_LoggingIn:
                         // logging in ...

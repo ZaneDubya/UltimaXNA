@@ -22,49 +22,24 @@ namespace UltimaXNA
     {
         public static void SendChat(string text)
         {
-            UltimaClient.Send(new AsciiSpeechPacket(AsciiSpeechPacketTypes.Normal, 0, 0, "ENU", text));
-        }
-
-        public static void SendClientVersion()
-        {
-            UltimaClient.Send(new ClientVersionPacket("6.0.1.10"));
-        }
-
-        public static void SendClientScreenSize()
-        {
-            UltimaClient.Send(new ReportClientScreenSizePacket(800, 600));
-        }
-
-        public static void SendClientLocalization()
-        {
-            UltimaClient.Send(new ReportClientLocalizationPacket("ENU"));
-        }
-
-        public static void GetMySkills()
-        {
-            UltimaClient.Send(new GetPlayerStatusPacket(0x05, EntityManager.MySerial));
-        }
-
-        public static void GetMyBasicStatus()
-        {
-            UltimaClient.Send(new GetPlayerStatusPacket(0x04, EntityManager.MySerial));
+            UltimaEngine.Client.Send(new AsciiSpeechPacket(AsciiSpeechPacketTypes.Normal, 0, 0, "ENU", text));
         }
 
         public static void SingleClick(BaseEntity item)
         {
-            UltimaClient.Send(new SingleClickPacket(item.Serial));
+            UltimaEngine.Client.Send(new SingleClickPacket(item.Serial));
         }
 
         public static void DoubleClick(BaseEntity item)
         {
-            UltimaClient.Send(new DoubleClickPacket(item.Serial));
+            UltimaEngine.Client.Send(new DoubleClickPacket(item.Serial));
         } 
 
         public static void PickUpItem(Item item, int x, int y)
         {
             if (item.PickUp())
             {
-                UltimaClient.Send(new PickupItemPacket(item.Serial, item.Amount));
+                UltimaEngine.Client.Send(new PickupItemPacket(item.Serial, item.Amount));
                 UltimaEngine.UltimaUI.Cursor.PickUpItem(item, x, y);
             }
         }
@@ -82,7 +57,7 @@ namespace UltimaXNA
                 }
                 else
                     serial = Serial.World;
-                UltimaClient.Send(new DropItemPacket(item.Serial, (ushort)X, (ushort)Y, (byte)Z, 0, serial));
+                UltimaEngine.Client.Send(new DropItemPacket(item.Serial, (ushort)X, (ushort)Y, (byte)Z, 0, serial));
                 UltimaEngine.UltimaUI.Cursor.ClearHolding();
             }
         }
@@ -104,19 +79,19 @@ namespace UltimaXNA
             if (x > containerBounds.Right - itemTexture.Width) x = containerBounds.Right - itemTexture.Width;
             if (y < containerBounds.Top) y = containerBounds.Top;
             if (y > containerBounds.Bottom - itemTexture.Height) y = containerBounds.Bottom - itemTexture.Height;
-            UltimaClient.Send(new DropItemPacket(item.Serial, (ushort)x, (ushort)y, 0, 0, container.Serial));
+            UltimaEngine.Client.Send(new DropItemPacket(item.Serial, (ushort)x, (ushort)y, 0, 0, container.Serial));
             UltimaEngine.UltimaUI.Cursor.ClearHolding();
         }
 
         public static void WearItem(Item item)
         {
-            UltimaClient.Send(new DropToLayerPacket(item.Serial, 0x00, EntityManager.MySerial));
+            UltimaEngine.Client.Send(new DropToLayerPacket(item.Serial, 0x00, EntityManager.MySerial));
             UltimaEngine.UltimaUI.Cursor.ClearHolding();
         }
 
         public static void UseSkill(int index)
         {
-            UltimaClient.Send(new RequestSkillUsePacket(index));
+            UltimaEngine.Client.Send(new RequestSkillUsePacket(index));
         }
 
         public static Gump OpenContainerGump(BaseEntity entity)
@@ -135,8 +110,8 @@ namespace UltimaXNA
 
         public static void DisconnectToLoginScreen()
         {
-            if (UltimaClient.Status != UltimaClientStatus.Unconnected)
-                UltimaClient.Disconnect();
+            if (UltimaEngine.Client.Status != UltimaClientStatus.Unconnected)
+                UltimaEngine.Client.Disconnect();
             UltimaVars.EngineVars.InWorld = false;
             UltimaEngine.ActiveModel = new UltimaXNA.UltimaLogin.LoginModel();
         }

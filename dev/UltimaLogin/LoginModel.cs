@@ -3,24 +3,26 @@ using System;
 
 namespace UltimaXNA.UltimaLogin
 {
-    class LoginModel : AModel
+    class LoginModel : AUltimaModel
     {
         private Scenes.SceneManager m_SceneManager;
 
         public LoginModel()
         {
-            m_SceneManager = new Scenes.SceneManager();
+
+        }
+
+        protected override void OnInitialize()
+        {
+            m_SceneManager = new Scenes.SceneManager(Client);
             m_SceneManager.Reset();
         }
 
-        protected override AController CreateController()
+        protected override void OnDispose()
         {
- 	        throw new NotImplementedException();
-        }
-
-        protected override AView CreateView()
-        {
- 	        throw new NotImplementedException();
+            UltimaEngine.UserInterface.Reset();
+            m_SceneManager.CurrentScene = null;
+            m_SceneManager = null;
         }
 
         public override void Update(double totalTime, double frameTime)

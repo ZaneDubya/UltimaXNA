@@ -17,7 +17,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 #endregion
 
-namespace UltimaXNA
+namespace UltimaXNA.Core
 {
     public class BaseEngine : Game
     {
