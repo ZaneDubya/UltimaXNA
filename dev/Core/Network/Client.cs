@@ -151,6 +151,16 @@ namespace UltimaXNA.Core.Network
             _typedHandlers[id].Add(handler);
         }
 
+        public virtual void Unregister(int id, Action<IRecvPacket> onRecieve)
+        {
+            for (int i = 0; i < _typedHandlers[id].Count; i++)
+                if (_typedHandlers[id][i].Handler.Target == onRecieve)
+                {
+                    _typedHandlers[id].RemoveAt(i);
+                    break;
+                }
+        }
+
         public virtual void RegisterExtended(int extendedId, int subId, string name, int length, PacketReceiveHandler onReceive)
         {
             if (subId > byte.MaxValue)
@@ -309,6 +319,7 @@ namespace UltimaXNA.Core.Network
                 {
                     Disconnect();
                 }
+                return success;
             }
 
             return false;

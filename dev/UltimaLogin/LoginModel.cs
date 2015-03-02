@@ -18,6 +18,13 @@ namespace UltimaXNA.UltimaLogin
             m_SceneManager.Reset();
         }
 
+        protected override void OnDispose()
+        {
+            UltimaEngine.UserInterface.Reset();
+            m_SceneManager.CurrentScene = null;
+            m_SceneManager = null;
+        }
+
         public override void Update(double totalTime, double frameTime)
         {
             m_SceneManager.Update(totalTime, frameTime);

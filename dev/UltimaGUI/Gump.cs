@@ -115,7 +115,7 @@ namespace UltimaXNA.UltimaGUI
         {
             int[] switchIDs = new int[0];
             Tuple<short, string>[] textEntries = new Tuple<short,string>[0];
-            UltimaClient.UltimaSend(new GumpMenuSelectPacket(
+            UltimaEngine.Client.Send(new GumpMenuSelectPacket(
                 this.Serial, this.GumpID, buttonID, switchIDs, textEntries));
             this.Dispose();
         }

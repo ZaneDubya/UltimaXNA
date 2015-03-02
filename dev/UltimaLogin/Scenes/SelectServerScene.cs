@@ -56,14 +56,14 @@ namespace UltimaXNA.Scenes
 
             if (SceneState == SceneState.Active)
             {
-                switch (UltimaClient.Status)
+                switch (Client.Status)
                 {
                     case UltimaClientStatus.LoginServer_HasServerList:
                         // This is where we're supposed to be while waiting to select a server.
                         break;
                     case UltimaClientStatus.LoginServer_WaitingForRelay:
                         // we must now send the relay packet.
-                        UltimaClient.SendServerRelay(m_AccountName, m_Password);
+                        Client.SendServerRelay(m_AccountName, m_Password);
                         break;
                     case UltimaClientStatus.LoginServer_Relaying:
                         // relaying to the server we will log in to ...
@@ -101,7 +101,7 @@ namespace UltimaXNA.Scenes
         public void OnSelectServer(int index)
         {
             UltimaEngine.UserInterface.GetControl<UltimaGUI.Gumps.SelectServerGump>(0).ActivePage = 2;
-            UltimaClient.SelectServer(index);
+            Client.SelectServer(index);
         }
 
         public void OnSelectLastServer()

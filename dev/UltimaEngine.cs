@@ -22,14 +22,22 @@ namespace UltimaXNA
     {
         internal static UltimaGUIState UltimaUI = new UltimaGUIState();
 
-        private static AModel m_Model;
-        internal static AModel ActiveModel
+        private static UltimaClient s_Client = new UltimaClient();
+        public static UltimaClient Client { get { return s_Client; } }
+
+        private static AUltimaModel m_Model;
+        internal static AUltimaModel ActiveModel
         {
             get { return m_Model; }
             set
             {
-                m_Model = null;
+                if (m_Model != null)
+                {
+                    m_Model.Dispose();
+                    m_Model = null;
+                }
                 m_Model = value;
+                m_Model.Initialize(s_Client);
             }
         }
 
@@ -75,7 +83,7 @@ namespace UltimaXNA
             else
             {
                 UltimaUI.Update();
-                UltimaClient.Update(gameTime);
+                s_Client.Update();
                 UltimaGameState.Update(gameTime);
                 ActiveModel.Update(gameTime.TotalGameTime.TotalMilliseconds, gameTime.ElapsedGameTime.TotalMilliseconds);
             }

@@ -16,7 +16,13 @@ namespace UltimaXNA
             OnInitialize();
         }
 
+        public void Dispose()
+        {
+            OnDispose();
+        }
+
         protected abstract void OnInitialize();
+        protected abstract void OnDispose();
 
         protected override AController CreateController()
         {

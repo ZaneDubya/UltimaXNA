@@ -24,6 +24,12 @@ namespace UltimaXNA.UltimaWorld
         public WorldModel()
         {
             m_Entities = new EntityManager();
+        }
+
+        protected override void OnInitialize()
+        {
+            Client.Register<VersionRequestPacket>(0xBD, "Version Request", -1, new TypedPacketReceiveHandler(receive_VersionRequest));
+            Entity.Movement.SendMoveRequestPacket += InternalOnEntity_SendMoveRequestPacket;
 
             UltimaEngine.UserInterface.AddControl(new TopMenu(0), 0, 0);
             UltimaEngine.UserInterface.AddControl(new ChatWindow(), 0, 0);
@@ -46,15 +52,15 @@ namespace UltimaXNA.UltimaWorld
             UltimaVars.EngineVars.InWorld = true;
         }
 
-        protected override void OnInitialize()
+        protected override void OnDispose()
         {
-            Client.Register<VersionRequestPacket>(0xBD, "Version Request", -1, new TypedPacketReceiveHandler(receive_VersionRequest));
-            Entity.Movement.SendMoveRequestPacket += InternalOnEntity_SendMoveRequestPacket;
+            Client.Unregister(0xBD, receive_VersionRequest);
+            Entity.Movement.SendMoveRequestPacket -= InternalOnEntity_SendMoveRequestPacket;
         }
 
         public override void Update(double totalMS, double frameMS)
         {
-            if (!UltimaClient.IsUltimaConnected)
+            if (!Client.IsConnected)
             {
                 if (UltimaEngine.UserInterface.IsModalControlOpen == false)
                 {
@@ -76,33 +82,33 @@ namespace UltimaXNA.UltimaWorld
 
         void onCloseLostConnectionMsgBox()
         {
-            UltimaClient.UltimaDisconnect();
+            Client.Disconnect();
             UltimaInteraction.DisconnectToLoginScreen();
         }
 
         public void GetMySkills()
         {
-            UltimaClient.UltimaSend(new GetPlayerStatusPacket(0x05, EntityManager.MySerial));
+            Client.Send(new GetPlayerStatusPacket(0x05, EntityManager.MySerial));
         }
 
         public void SendClientVersion(string version_string)
         {
-            UltimaClient.UltimaSend(new ClientVersionPacket(version_string));
+            Client.Send(new ClientVersionPacket(version_string));
         }
 
         public void SendClientScreenSize()
         {
-            UltimaClient.UltimaSend(new ReportClientScreenSizePacket(800, 600));
+            Client.Send(new ReportClientScreenSizePacket(800, 600));
         }
 
         public void SendClientLocalization()
         {
-            UltimaClient.UltimaSend(new ReportClientLocalizationPacket("ENU"));
+            Client.Send(new ReportClientLocalizationPacket("ENU"));
         }
 
         public void GetMyBasicStatus()
         {
-            UltimaClient.UltimaSend(new GetPlayerStatusPacket(0x04, EntityManager.MySerial));
+            Client.Send(new GetPlayerStatusPacket(0x04, EntityManager.MySerial));
         }
 
         private void receive_VersionRequest(IRecvPacket packet)
@@ -113,7 +119,7 @@ namespace UltimaXNA.UltimaWorld
 
         private void InternalOnEntity_SendMoveRequestPacket(MoveRequestPacket packet)
         {
-            UltimaClient.UltimaSend(packet);
+            Client.Send(packet);
         }
     }
 }

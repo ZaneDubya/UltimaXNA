@@ -22,24 +22,24 @@ namespace UltimaXNA
     {
         public static void SendChat(string text)
         {
-            UltimaClient.UltimaSend(new AsciiSpeechPacket(AsciiSpeechPacketTypes.Normal, 0, 0, "ENU", text));
+            UltimaEngine.Client.Send(new AsciiSpeechPacket(AsciiSpeechPacketTypes.Normal, 0, 0, "ENU", text));
         }
 
         public static void SingleClick(BaseEntity item)
         {
-            UltimaClient.UltimaSend(new SingleClickPacket(item.Serial));
+            UltimaEngine.Client.Send(new SingleClickPacket(item.Serial));
         }
 
         public static void DoubleClick(BaseEntity item)
         {
-            UltimaClient.UltimaSend(new DoubleClickPacket(item.Serial));
+            UltimaEngine.Client.Send(new DoubleClickPacket(item.Serial));
         } 
 
         public static void PickUpItem(Item item, int x, int y)
         {
             if (item.PickUp())
             {
-                UltimaClient.UltimaSend(new PickupItemPacket(item.Serial, item.Amount));
+                UltimaEngine.Client.Send(new PickupItemPacket(item.Serial, item.Amount));
                 UltimaEngine.UltimaUI.Cursor.PickUpItem(item, x, y);
             }
         }
@@ -57,7 +57,7 @@ namespace UltimaXNA
                 }
                 else
                     serial = Serial.World;
-                UltimaClient.UltimaSend(new DropItemPacket(item.Serial, (ushort)X, (ushort)Y, (byte)Z, 0, serial));
+                UltimaEngine.Client.Send(new DropItemPacket(item.Serial, (ushort)X, (ushort)Y, (byte)Z, 0, serial));
                 UltimaEngine.UltimaUI.Cursor.ClearHolding();
             }
         }
@@ -79,19 +79,19 @@ namespace UltimaXNA
             if (x > containerBounds.Right - itemTexture.Width) x = containerBounds.Right - itemTexture.Width;
             if (y < containerBounds.Top) y = containerBounds.Top;
             if (y > containerBounds.Bottom - itemTexture.Height) y = containerBounds.Bottom - itemTexture.Height;
-            UltimaClient.UltimaSend(new DropItemPacket(item.Serial, (ushort)x, (ushort)y, 0, 0, container.Serial));
+            UltimaEngine.Client.Send(new DropItemPacket(item.Serial, (ushort)x, (ushort)y, 0, 0, container.Serial));
             UltimaEngine.UltimaUI.Cursor.ClearHolding();
         }
 
         public static void WearItem(Item item)
         {
-            UltimaClient.UltimaSend(new DropToLayerPacket(item.Serial, 0x00, EntityManager.MySerial));
+            UltimaEngine.Client.Send(new DropToLayerPacket(item.Serial, 0x00, EntityManager.MySerial));
             UltimaEngine.UltimaUI.Cursor.ClearHolding();
         }
 
         public static void UseSkill(int index)
         {
-            UltimaClient.UltimaSend(new RequestSkillUsePacket(index));
+            UltimaEngine.Client.Send(new RequestSkillUsePacket(index));
         }
 
         public static Gump OpenContainerGump(BaseEntity entity)
@@ -110,8 +110,8 @@ namespace UltimaXNA
 
         public static void DisconnectToLoginScreen()
         {
-            if (UltimaClient.Status != UltimaClientStatus.Unconnected)
-                UltimaClient.UltimaDisconnect();
+            if (UltimaEngine.Client.Status != UltimaClientStatus.Unconnected)
+                UltimaEngine.Client.Disconnect();
             UltimaVars.EngineVars.InWorld = false;
             UltimaEngine.ActiveModel = new UltimaXNA.UltimaLogin.LoginModel();
         }

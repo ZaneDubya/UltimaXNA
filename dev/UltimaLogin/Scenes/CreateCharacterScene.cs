@@ -184,7 +184,7 @@ namespace UltimaXNA.Scenes
                         Manager.CurrentScene = new CharacterListScene();
                         break;
                     case CreateCharacterSceneStates.CreateCharacter:
-                        UltimaClient.UltimaSend(new CreateCharacterPacket(
+                        Client.Send(new CreateCharacterPacket(
                             _name, (Sex)_gender, (Race)0, (byte)_attributes[0], (byte)_attributes[1], (byte)_attributes[2], 
                             (byte)_skillIndexes[0], (byte)_skillValues[0], (byte)_skillIndexes[1], (byte)_skillValues[1], (byte)_skillIndexes[2], (byte)_skillValues[2],
                             (short)_skinHue, (short)_hairStyleID, (short)_hairHue, (short)_facialHairStyleID, (short)_facialHairHue,
@@ -192,7 +192,7 @@ namespace UltimaXNA.Scenes
                         break;
                 }
 
-                switch (UltimaClient.Status)
+                switch (Client.Status)
                 {
                     case UltimaClientStatus.GameServer_CharList:
                         // This is where we're supposed to be while creating a character.

@@ -104,7 +104,7 @@ namespace UltimaXNA.UltimaGUI.Gumps
                 case Buttons.Guild:
                     break;
                 case Buttons.PeaceWarToggle:
-                    UltimaClient.UltimaSend(new RequestWarModePacket(!_Parent.IsWarMode));
+                    UltimaEngine.Client.Send(new RequestWarModePacket(!_Parent.IsWarMode));
                     break;
                 case Buttons.Status:
                     UserInterface.ToggleLocalGump(new StatusGump(), 200, 400);
