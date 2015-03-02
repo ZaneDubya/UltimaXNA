@@ -197,7 +197,7 @@ namespace UltimaXNA.UltimaWorld.Controller
                 // Special case: targeting
                 onTargetingButton(overObject);
             }
-            else if (UltimaEngine.UltimaUI.Cursor.IsHolding && e.EventType == MouseEvent.Up)
+            else if (UltimaInteraction.Cursor.IsHolding && e.EventType == MouseEvent.Up)
             {
                 // Special case: if we're holding anything, drop it.
                 checkDropItem();
@@ -321,7 +321,7 @@ namespace UltimaXNA.UltimaWorld.Controller
                     // over text?
                     return;
                 }
-                UltimaInteraction.DropItemToWorld(UltimaEngine.UltimaUI.Cursor.HoldingItem, x, y, z);
+                UltimaInteraction.DropItemToWorld(UltimaInteraction.Cursor.HoldingItem, x, y, z);
             }
         }
 
@@ -428,7 +428,7 @@ namespace UltimaXNA.UltimaWorld.Controller
         {
             _TargettingType = targetingType;
             // Set the UserInterface's cursor to a targetting cursor. If multi, tell the cursor which multi.
-            UltimaEngine.UltimaUI.Cursor.IsTargeting = true;
+            UltimaInteraction.Cursor.IsTargeting = true;
             // Stop continuous movement.
             _ContinuousMoveCheck = false;
         }
@@ -437,7 +437,7 @@ namespace UltimaXNA.UltimaWorld.Controller
         {
             // Clear our target cursor.
             _TargettingType = TargetTypes.Nothing;
-            UltimaEngine.UltimaUI.Cursor.IsTargeting = false;
+            UltimaInteraction.Cursor.IsTargeting = false;
         }
 
         void mouseTargetingCancel()

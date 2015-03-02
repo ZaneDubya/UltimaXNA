@@ -20,12 +20,10 @@ namespace UltimaXNA
 {
     public class UltimaEngine : Core.BaseEngine
     {
-        internal static UltimaGUIState UltimaUI = new UltimaGUIState();
-
         private static UltimaClient s_Client = new UltimaClient();
 
-        private static AUltimaModel m_Model;
-        internal static AUltimaModel ActiveModel
+        private static Core.AUltimaModel m_Model;
+        internal static Core.AUltimaModel ActiveModel
         {
             get { return m_Model; }
             set
@@ -82,7 +80,7 @@ namespace UltimaXNA
             }
             else
             {
-                UltimaUI.Update();
+                UltimaInteraction.Update();
                 s_Client.Update();
                 UltimaVars.EngineVars.GameTime = gameTime;
                 ActiveModel.Update(gameTime.TotalGameTime.TotalMilliseconds, gameTime.ElapsedGameTime.TotalMilliseconds);
@@ -93,7 +91,7 @@ namespace UltimaXNA
         {
             if (UltimaVars.EngineVars.InWorld)
                 IsometricRenderer.Draw(gameTime);
-            UltimaUI.Draw();
+            UltimaInteraction.Draw();
         }
     }
 }

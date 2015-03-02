@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using InterXLib.Patterns.MVC;
 
-namespace UltimaXNA
+namespace UltimaXNA.Core
 {
     abstract internal class AUltimaModel : AModel
     {

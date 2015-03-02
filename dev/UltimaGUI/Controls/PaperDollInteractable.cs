@@ -162,7 +162,7 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         void onItemDropPaperdoll()
         {
-            UltimaInteraction.WearItem(UltimaEngine.UltimaUI.Cursor.HoldingItem);
+            UltimaInteraction.WearItem(UltimaInteraction.Cursor.HoldingItem);
         }
 
         void onItemOverPaperdoll()
@@ -172,7 +172,7 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         void onItemDropBackpack()
         {
-            UltimaInteraction.DropItemToContainer(UltimaEngine.UltimaUI.Cursor.HoldingItem, (Container)((Mobile)_sourceEntity).GetItem((int)EquipSlots.Backpack));
+            UltimaInteraction.DropItemToContainer(UltimaInteraction.Cursor.HoldingItem, (Container)((Mobile)_sourceEntity).GetItem((int)EquipSlots.Backpack));
         }
 
         void onItemOverBackpack()

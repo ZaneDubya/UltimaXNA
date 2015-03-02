@@ -3,7 +3,7 @@ using System;
 
 namespace UltimaXNA.UltimaLogin
 {
-    class LoginModel : AUltimaModel
+    class LoginModel : Core.AUltimaModel
     {
         private Scenes.SceneManager m_SceneManager;
 

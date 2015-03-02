@@ -39,7 +39,7 @@ namespace UltimaXNA.UltimaGUI
         void mouseUp(int x, int y, MouseButton button)
         {
             Control that = ((Control)_onItemDrop.Target);
-            if (UltimaEngine.UltimaUI.Cursor.IsHolding && 
+            if (UltimaInteraction.Cursor.IsHolding && 
                 (that.Area.Contains(x, y)))
             {
                 _onItemDrop();
@@ -48,7 +48,7 @@ namespace UltimaXNA.UltimaGUI
 
         void mouseOver(int x, int y)
         {
-            if (UltimaEngine.UltimaUI.Cursor.IsHolding)
+            if (UltimaInteraction.Cursor.IsHolding)
             {
                 _onItemOver();
             }

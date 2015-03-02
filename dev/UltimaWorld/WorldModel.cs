@@ -14,7 +14,7 @@ using UltimaXNA.UltimaWorld.Controller;
 
 namespace UltimaXNA.UltimaWorld
 {
-    class WorldModel : AUltimaModel
+    class WorldModel : Core.AUltimaModel
     {
         private EntityManager m_Entities;
         public EntityManager Entities
@@ -72,7 +72,7 @@ namespace UltimaXNA.UltimaWorld
             {
                 if (UltimaEngine.UserInterface.IsModalControlOpen == false)
                 {
-                    MsgBox g = UltimaEngine.UltimaUI.MsgBox("You have lost your connection with the server.", MsgBoxTypes.OkOnly);
+                    MsgBox g = UltimaInteraction.MsgBox("You have lost your connection with the server.", MsgBoxTypes.OkOnly);
                     g.OnClose = onCloseLostConnectionMsgBox;
                 }
             }
@@ -142,7 +142,7 @@ namespace UltimaXNA.UltimaWorld
         {
             TargetCursorMultiPacket p = (TargetCursorMultiPacket)packet;
             m_WorldInput.MouseTargeting(TargetTypes.MultiPlacement, 0);
-            UltimaEngine.UltimaUI.Cursor.TargetingMulti = p.MultiModel;
+            UltimaInteraction.Cursor.TargetingMulti = p.MultiModel;
         }
 
         private void InternalOnEntity_SendMoveRequestPacket(MoveRequestPacket packet)

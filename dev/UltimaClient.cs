@@ -266,7 +266,7 @@ namespace UltimaXNA
         private void receive_DeleteCharacterResponse(IRecvPacket packet)
         {
             DeleteCharacterResponsePacket p = (DeleteCharacterResponsePacket)packet;
-            UltimaEngine.UltimaUI.MsgBox(p.Result, MsgBoxTypes.OkOnly);
+            UltimaInteraction.MsgBox(p.Result, MsgBoxTypes.OkOnly);
         }
 
         private void receive_CharacterListUpdate(IRecvPacket packet)
@@ -783,7 +783,7 @@ namespace UltimaXNA
         private void receive_PopupMessage(IRecvPacket packet)
         {
             PopupMessagePacket p = (PopupMessagePacket)packet;
-            UltimaEngine.UltimaUI.MsgBox(p.Message, MsgBoxTypes.OkOnly);
+            UltimaInteraction.MsgBox(p.Message, MsgBoxTypes.OkOnly);
         }
 
         private void receive_QuestArrow(IRecvPacket packet)
@@ -795,7 +795,7 @@ namespace UltimaXNA
         {
             LiftRejectionPacket p = (LiftRejectionPacket)packet;
             UltimaInteraction.ChatMessage("Could not pick up item: " + p.ErrorMessage);
-            UltimaEngine.UltimaUI.Cursor.ClearHolding();
+            UltimaInteraction.Cursor.ClearHolding();
         }
 
         private void receive_RequestNameResponse(IRecvPacket packet)

@@ -32,12 +32,12 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         protected override void _onPickUp()
         {
-            if (UltimaEngine.UltimaUI.Cursor.HoldingItem != null)
+            if (UltimaInteraction.Cursor.HoldingItem != null)
             {
                 // fix this to be more centered on the object.
-                UltimaEngine.UltimaUI.Cursor.HoldingOffset = new Point(
-                    UltimaEngine.UltimaUI.Cursor.HoldingTexture.Width / 4,
-                    UltimaEngine.UltimaUI.Cursor.HoldingTexture.Height / 4);
+                UltimaInteraction.Cursor.HoldingOffset = new Point(
+                    UltimaInteraction.Cursor.HoldingTexture.Width / 4,
+                    UltimaInteraction.Cursor.HoldingTexture.Height / 4);
             }
         }
 

@@ -122,13 +122,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AUltimaModel.cs" />
+    <Compile Include="Core\AUltimaModel.cs" />
     <Compile Include="UltimaData\BodyData.cs" />
     <Compile Include="UltimaData\Fonts\ASCIIText.cs" />
     <Compile Include="UltimaData\Fonts\UniCharacter.cs" />
     <Compile Include="UltimaData\Fonts\UniText.cs" />
     <Compile Include="UltimaGUI\GUISprite.cs" />
-    <Compile Include="UltimaGUIState.cs" />
+    <Compile Include="UltimaInteraction.cs" />
     <Compile Include="UltimaLogin\LoginModel.cs" />
     <Compile Include="UltimaClientStatus.cs" />
     <Compile Include="UltimaVars\CharacterListEntry.cs" />
@@ -260,7 +260,7 @@
     <Compile Include="UltimaPackets\Server\WeatherPacket.cs" />
     <Compile Include="UltimaPackets\Server\WornItemPacket.cs" />
     <Compile Include="UltimaPackets\Shared.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="Core\Program.cs" />
     <Compile Include="UltimaClient.cs" />
     <Compile Include="UltimaData\ArtData.cs" />
     <Compile Include="UltimaData\Fonts\ASCIIFont.cs" />
@@ -285,7 +285,6 @@
     <Compile Include="UltimaGUI\HTML\Enums.cs" />
     <Compile Include="UltimaGUI\HTML\HTMLImages.cs" />
     <Compile Include="UltimaGUI\HTML\Parser.cs" />
-    <Compile Include="UltimaInteraction.cs" />
     <Compile Include="UltimaVars\Metrics.cs" />
     <Compile Include="UltimaData\GumpData.cs" />
     <Compile Include="UltimaData\Mobtypes.cs" />

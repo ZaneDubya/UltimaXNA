@@ -1,26 +1,64 @@
-﻿/***************************************************************************
- *   Interaction.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 3 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
+﻿using InterXLib.Input.Windows;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using UltimaXNA.Entity;
 using UltimaXNA.UltimaGUI;
+using UltimaXNA.UltimaGUI.Controls;
 using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.UltimaWorld;
 
 namespace UltimaXNA
 {
-    class UltimaInteraction
+    public static class UltimaInteraction
     {
+        private static UltimaCursor m_Cusor = null;
+        public static UltimaCursor Cursor { get { return m_Cusor; } }
+
+        static UltimaInteraction()
+        {
+            m_Cusor = new UltimaCursor();
+        }
+
+        public static void Draw()
+        {
+            // Draw the cursor
+            m_Cusor.Draw(UltimaEngine.Input.MousePosition);
+        }
+
+        public static void Update()
+        {
+            if (UltimaEngine.UserInterface.MouseOverControl != null && Cursor.IsHolding)
+            {
+                Control target = UltimaEngine.UserInterface.MouseOverControl;
+                List<InputEventMouse> events = UltimaEngine.Input.GetMouseEvents();
+                foreach (InputEventMouse e in events)
+                {
+                    if (e.EventType == MouseEvent.Up && e.Button == MouseButton.Left)
+                    {
+                        // dropped an item we were holding.
+                        if (target is ItemGumpling && ((ItemGumpling)target).Item.ItemData.Container)
+                            DropItemToContainer(Cursor.HoldingItem, (Entity.Container)((ItemGumpling)target).Item);
+                        else if (target is GumpPicContainer)
+                        {
+                            int x = (int)UltimaEngine.Input.MousePosition.X - Cursor.HoldingOffset.X - (target.X + target.Owner.X);
+                            int y = (int)UltimaEngine.Input.MousePosition.Y - Cursor.HoldingOffset.Y - (target.Y + target.Owner.Y);
+                            DropItemToContainer(Cursor.HoldingItem, (Entity.Container)((GumpPicContainer)target).Item, x, y);
+                        }
+                    }
+                }
+            }
+        }
+
+        public static MsgBox MsgBox(string msg, MsgBoxTypes type)
+        {
+            // pop up an error message, modal.
+            MsgBox msgbox = new MsgBox(msg, type);
+            UltimaEngine.UserInterface.AddControl(msgbox, 0, 0);
+            return msgbox;
+        }
+
         private static UltimaClient s_Client;
         public static void Initialize(UltimaClient client)
         {
@@ -47,7 +85,7 @@ namespace UltimaXNA
             if (item.PickUp())
             {
                 s_Client.Send(new PickupItemPacket(item.Serial, item.Amount));
-                UltimaEngine.UltimaUI.Cursor.PickUpItem(item, x, y);
+                Cursor.PickUpItem(item, x, y);
             }
         }
 
@@ -70,7 +108,7 @@ namespace UltimaXNA
                 else
                     serial = Serial.World;
                 s_Client.Send(new DropItemPacket(item.Serial, (ushort)X, (ushort)Y, (byte)Z, 0, serial));
-                UltimaEngine.UltimaUI.Cursor.ClearHolding();
+                Cursor.ClearHolding();
             }
         }
 
@@ -92,13 +130,13 @@ namespace UltimaXNA
             if (y < containerBounds.Top) y = containerBounds.Top;
             if (y > containerBounds.Bottom - itemTexture.Height) y = containerBounds.Bottom - itemTexture.Height;
             s_Client.Send(new DropItemPacket(item.Serial, (ushort)x, (ushort)y, 0, 0, container.Serial));
-            UltimaEngine.UltimaUI.Cursor.ClearHolding();
+            Cursor.ClearHolding();
         }
 
         public static void WearItem(Item item) // used by paperdollinteractable.
         {
             s_Client.Send(new DropToLayerPacket(item.Serial, 0x00, EntityManager.MySerial));
-            UltimaEngine.UltimaUI.Cursor.ClearHolding();
+            Cursor.ClearHolding();
         }
 
         public static void UseSkill(int index) // used by ultimainteraction

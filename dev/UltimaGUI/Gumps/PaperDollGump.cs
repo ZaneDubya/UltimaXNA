@@ -93,7 +93,7 @@ namespace UltimaXNA.UltimaGUI.Gumps
                 case Buttons.Options:
                     break;
                 case Buttons.LogOut:
-                    MsgBox g = UltimaEngine.UltimaUI.MsgBox("Quit Ultima Online?", MsgBoxTypes.OkCancel);
+                    MsgBox g = UltimaInteraction.MsgBox("Quit Ultima Online?", MsgBoxTypes.OkCancel);
                     g.OnClose = logout_OnClose;
                     break;
                 case Buttons.Quests:
