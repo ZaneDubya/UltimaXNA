@@ -78,7 +78,7 @@ namespace UltimaXNA.Core.Network
 
         private new PacketReceiveHandler Handler
         {
-            get { return null; }
+            get { return base.Handler; }
             set { base.Handler = value; }
         }
 

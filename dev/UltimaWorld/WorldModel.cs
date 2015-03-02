@@ -10,6 +10,7 @@ using InterXLib.Input.Windows;
 using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.UltimaPackets.Server;
 using UltimaXNA.Core.Network;
+using UltimaXNA.UltimaWorld.Controller;
 
 namespace UltimaXNA.UltimaWorld
 {
@@ -21,14 +22,19 @@ namespace UltimaXNA.UltimaWorld
             get { return m_Entities; }
         }
 
+        private WorldInput m_WorldInput;
+
         public WorldModel()
         {
             m_Entities = new EntityManager();
+            m_WorldInput = new WorldInput(this);
         }
 
         protected override void OnInitialize()
         {
             Client.Register<VersionRequestPacket>(0xBD, "Version Request", -1, new TypedPacketReceiveHandler(receive_VersionRequest));
+            Client.Register<TargetCursorPacket>(0x6C, "TargetCursor", 19, new TypedPacketReceiveHandler(receive_TargetCursor));
+            Client.Register<TargetCursorMultiPacket>(0x99, "Target Cursor Multi Object", 26, new TypedPacketReceiveHandler(receive_TargetCursorMulti));
             Entity.Movement.SendMoveRequestPacket += InternalOnEntity_SendMoveRequestPacket;
 
             UltimaEngine.UserInterface.AddControl(new TopMenu(0), 0, 0);
@@ -55,6 +61,8 @@ namespace UltimaXNA.UltimaWorld
         protected override void OnDispose()
         {
             Client.Unregister(0xBD, receive_VersionRequest);
+            Client.Unregister(0x6C, receive_TargetCursor);
+            Client.Unregister(0x99, receive_TargetCursorMulti);
             Entity.Movement.SendMoveRequestPacket -= InternalOnEntity_SendMoveRequestPacket;
         }
 
@@ -70,6 +78,7 @@ namespace UltimaXNA.UltimaWorld
             }
             else
             {
+                m_WorldInput.Update(frameMS);
                 EntityManager.Update(frameMS);
                 IsometricRenderer.CenterPosition = EntityManager.GetPlayerObject().Position;
                 IsometricRenderer.Update(totalMS, frameMS);
@@ -115,6 +124,19 @@ namespace UltimaXNA.UltimaWorld
         {
             // Automatically respond.
             SendClientVersion("6.0.1.10");
+        }
+
+        private void receive_TargetCursor(IRecvPacket packet)
+        {
+            TargetCursorPacket p = (TargetCursorPacket)packet;
+            m_WorldInput.MouseTargeting((TargetTypes)p.CommandType, p.CursorID);
+        }
+
+        private void receive_TargetCursorMulti(IRecvPacket packet)
+        {
+            TargetCursorMultiPacket p = (TargetCursorMultiPacket)packet;
+            m_WorldInput.MouseTargeting(TargetTypes.MultiPlacement, 0);
+            UltimaEngine.UltimaUI.Cursor.TargetingMulti = p.MultiModel;
         }
 
         private void InternalOnEntity_SendMoveRequestPacket(MoveRequestPacket packet)

@@ -8,7 +8,7 @@ namespace UltimaXNA
 {
     abstract internal class AUltimaModel : AModel
     {
-        protected UltimaClient Client { get; private set; }
+        public UltimaClient Client { get; private set; }
 
         public void Initialize(UltimaClient client)
         {

@@ -275,6 +275,8 @@
     </Compile>
     <Compile Include="UltimaData\TileMatrixRaw.cs" />
     <Compile Include="Core\Diagnostics\Dynamic.cs" />
+    <Compile Include="UltimaWorld\Controller\TargetTypes.cs" />
+    <Compile Include="UltimaWorld\Controller\WorldInput.cs" />
     <Compile Include="UltimaWorld\View\ViewObjects\MapObjectDynamic.cs" />
     <Compile Include="UltimaWorld\View\ViewObjects\MapObjectPrerendered.cs" />
     <Compile Include="UltimaGUI\Controls\TextureGumpling.cs" />
@@ -326,7 +328,6 @@
     <Compile Include="Entity\PlayerMobile.cs" />
     <Compile Include="Entity\PropertyList.cs" />
     <Compile Include="Entity\Shared.cs" />
-    <Compile Include="UltimaGameState.cs" />
     <Compile Include="Core\InputState.cs" />
     <Compile Include="UltimaLogin\Scenes\CharacterListScene.cs" />
     <Compile Include="UltimaLogin\Scenes\CreateCharacterScene.cs" />
