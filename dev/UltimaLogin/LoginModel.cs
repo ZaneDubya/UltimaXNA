@@ -15,7 +15,7 @@ namespace UltimaXNA.UltimaLogin
         protected override void OnInitialize()
         {
             m_SceneManager = new Scenes.SceneManager(Client);
-            m_SceneManager.Reset();
+            m_SceneManager.ResetToLoginScreen();
         }
 
         protected override void OnDispose()

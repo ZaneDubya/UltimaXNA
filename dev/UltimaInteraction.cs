@@ -27,22 +27,22 @@ namespace UltimaXNA
             s_Client = client;
         }
 
-        public static void SendChat(string text)
+        public static void SendChat(string text) // used by chatwindow.
         {
             s_Client.Send(new AsciiSpeechPacket(AsciiSpeechPacketTypes.Normal, 0, 0, "ENU", text));
         }
 
-        public static void SingleClick(BaseEntity item)
+        public static void SingleClick(BaseEntity item) // used by worldinput and itemgumpling.
         {
             s_Client.Send(new SingleClickPacket(item.Serial));
         }
 
-        public static void DoubleClick(BaseEntity item)
+        public static void DoubleClick(BaseEntity item) // used by itemgumpling, paperdollinteractable, topmenu, worldinput.
         {
             s_Client.Send(new DoubleClickPacket(item.Serial));
         } 
 
-        public static void PickUpItem(Item item, int x, int y)
+        public static void PickUpItem(Item item, int x, int y) // used by itemgumpling, worldinput
         {
             if (item.PickUp())
             {
@@ -51,12 +51,12 @@ namespace UltimaXNA
             }
         }
 
-        public static void ToggleWarMode()
+        public static void ToggleWarMode() // used by paperdollgump.
         {
             s_Client.Send(new RequestWarModePacket(!((Mobile)EntityManager.GetPlayerObject()).IsWarMode));
         }
 
-        public static void DropItemToWorld(Item item, int X, int Y, int Z)
+        public static void DropItemToWorld(Item item, int X, int Y, int Z) // used by worldinput.
         {
             if (!UltimaEngine.UserInterface.IsMouseOverUI)
             {
@@ -74,7 +74,7 @@ namespace UltimaXNA
             }
         }
 
-        public static void DropItemToContainer(Item item, Container container)
+        public static void DropItemToContainer(Item item, Container container) // used by paperdollinteractable and ultimaguistate.
         {
             // get random coords and drop the item there.
             Rectangle bounds = UltimaData.ContainerData.GetData(container.ItemID).Bounds;
@@ -83,7 +83,7 @@ namespace UltimaXNA
             DropItemToContainer(item, container, x, y);
         }
 
-        public static void DropItemToContainer(Item item, Container container, int x, int y)
+        public static void DropItemToContainer(Item item, Container container, int x, int y) // used by ultimaguistate.
         {
             Rectangle containerBounds = UltimaData.ContainerData.GetData(container.ItemID).Bounds;
             Texture2D itemTexture = UltimaData.ArtData.GetStaticTexture(item.DisplayItemID);
@@ -95,18 +95,18 @@ namespace UltimaXNA
             UltimaEngine.UltimaUI.Cursor.ClearHolding();
         }
 
-        public static void WearItem(Item item)
+        public static void WearItem(Item item) // used by paperdollinteractable.
         {
             s_Client.Send(new DropToLayerPacket(item.Serial, 0x00, EntityManager.MySerial));
             UltimaEngine.UltimaUI.Cursor.ClearHolding();
         }
 
-        public static void UseSkill(int index)
+        public static void UseSkill(int index) // used by ultimainteraction
         {
             s_Client.Send(new RequestSkillUsePacket(index));
         }
 
-        public static Gump OpenContainerGump(BaseEntity entity)
+        public static Gump OpenContainerGump(BaseEntity entity) // used by ultimaclient.
         {
             Gump gump;
 
@@ -120,7 +120,7 @@ namespace UltimaXNA
             return gump;
         }
 
-        public static void DisconnectToLoginScreen()
+        public static void DisconnectToLoginScreen() // used by paperdoll gump
         {
             if (s_Client.Status != UltimaClientStatus.Unconnected)
                 s_Client.Disconnect();
@@ -128,7 +128,7 @@ namespace UltimaXNA
             UltimaEngine.ActiveModel = new UltimaXNA.UltimaLogin.LoginModel();
         }
 
-        public static void GumpMenuSelect(int id, int gumpId, int buttonId, int[] switchIds, Tuple<short, string>[] textEntries)
+        public static void GumpMenuSelect(int id, int gumpId, int buttonId, int[] switchIds, Tuple<short, string>[] textEntries) // used by gump
         {
             s_Client.Send(new GumpMenuSelectPacket(id, gumpId, buttonId, switchIds, textEntries));
         }
@@ -136,7 +136,7 @@ namespace UltimaXNA
 
         static List<QueuedMessage> m_ChatQueue = new List<QueuedMessage>();
 
-        public static void ChatMessage(string text)
+        public static void ChatMessage(string text) // used by gump
         {
             ChatMessage(text, 0, 0);
         }
@@ -169,7 +169,7 @@ namespace UltimaXNA
             }
         }
 
-        public static void SendLastTargetPacket(Serial last_target)
+        public static void SendLastTargetPacket(Serial last_target) // used by engine vars, which is used by worldinput and ultimaclient.
         {
             s_Client.Send(new GetPlayerStatusPacket(0x04, last_target));
         }

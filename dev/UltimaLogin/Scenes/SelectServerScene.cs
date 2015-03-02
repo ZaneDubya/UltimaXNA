@@ -95,7 +95,7 @@ namespace UltimaXNA.Scenes
 
         public void OnBackToLoginScreen()
         {
-            UltimaInteraction.DisconnectToLoginScreen();
+            Manager.ResetToLoginScreen();
         }
 
         public void OnSelectServer(int index)

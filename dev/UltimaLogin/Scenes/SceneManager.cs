@@ -97,8 +97,9 @@ namespace UltimaXNA.Scenes
             }
         }
 
-        public void Reset()
+        public void ResetToLoginScreen()
         {
+            Client.Disconnect();
             UltimaEngine.UserInterface.Reset();
             if (!(m_CurrentScene is LoginScene))
                 CurrentScene = new LoginScene();

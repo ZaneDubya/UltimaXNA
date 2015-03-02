@@ -117,7 +117,7 @@ namespace UltimaXNA.Scenes
 
         public void OnCancelLogin()
         {
-            UltimaInteraction.DisconnectToLoginScreen();
+            Manager.ResetToLoginScreen();
         }
     }
 }

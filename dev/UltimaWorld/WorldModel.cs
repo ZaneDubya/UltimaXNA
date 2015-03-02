@@ -85,14 +85,20 @@ namespace UltimaXNA.UltimaWorld
 
                 // Toggle for logout
                 if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.Q, false, false, true))
-                    UltimaInteraction.DisconnectToLoginScreen();
+                    Disconnect();
             }
+        }
+
+        public void Disconnect()
+        {
+            Client.Disconnect();
+            UltimaVars.EngineVars.InWorld = false;
+            UltimaEngine.ActiveModel = new UltimaXNA.UltimaLogin.LoginModel();
         }
 
         void onCloseLostConnectionMsgBox()
         {
-            Client.Disconnect();
-            UltimaInteraction.DisconnectToLoginScreen();
+            Disconnect();
         }
 
         public void GetMySkills()
