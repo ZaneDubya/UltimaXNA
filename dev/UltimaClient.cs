@@ -62,7 +62,6 @@ namespace UltimaXNA
             Register<LoginCompletePacket>(0x55, "Login Complete", 1, new TypedPacketReceiveHandler(receive_LoginComplete));
             Register<TimePacket>(0x5B, "Time", 4, new TypedPacketReceiveHandler(receive_Time));
             Register<WeatherPacket>(0x65, "Set Weather", 4, new TypedPacketReceiveHandler(receive_SetWeather));
-            Register<TargetCursorPacket>(0x6C, "TargetCursor", 19, new TypedPacketReceiveHandler(receive_TargetCursor));
             Register<PlayMusicPacket>(0x6D, "Play Music", 3, new TypedPacketReceiveHandler(receive_PlayMusic));
             Register<MobileAnimationPacket>(0x6E, "Character Animation", 14, new TypedPacketReceiveHandler(receive_MobileAnimation));
             Register<GraphicEffectPacket>(0x70, "Graphical Effect 1", 28, new TypedPacketReceiveHandler(receive_GraphicEffect));
@@ -80,7 +79,6 @@ namespace UltimaXNA
             Register<ServerRelayPacket>(0x8C, "ServerRelay", 11, new TypedPacketReceiveHandler(receive_ServerRelay));
             Register<PlayerMovePacket>(0x97, "Player Move", 2, new TypedPacketReceiveHandler(receive_PlayerMove));
             Register<RequestNameResponsePacket>(0x98, "Request Name Response", -1, new TypedPacketReceiveHandler(receive_RequestNameResponse));
-            Register<TargetCursorMultiPacket>(0x99, "Target Cursor Multi Object", 26, new TypedPacketReceiveHandler(receive_TargetCursorMulti));
             Register<VendorSellListPacket>(0x9E, "Vendor Sell List", -1, new TypedPacketReceiveHandler(receive_SellList));
             Register<UpdateHealthPacket>(0xA1, "Update Current Health", 9, new TypedPacketReceiveHandler(receive_UpdateHealth));
             Register<UpdateManaPacket>(0xA2, "Update Current Mana", 9, new TypedPacketReceiveHandler(receive_UpdateMana));
@@ -905,18 +903,7 @@ namespace UltimaXNA
             //  other stuff unhandled !!!
         }
 
-        private void receive_TargetCursor(IRecvPacket packet)
-        {
-            TargetCursorPacket p = (TargetCursorPacket)packet;
-            UltimaGameState.MouseTargeting((TargetTypes)p.CommandType, p.CursorID);
-        }
-
-        private void receive_TargetCursorMulti(IRecvPacket packet)
-        {
-            TargetCursorMultiPacket p = (TargetCursorMultiPacket)packet;
-            UltimaGameState.MouseTargeting(TargetTypes.MultiPlacement, 0);
-            UltimaEngine.UltimaUI.Cursor.TargetingMulti = p.MultiModel;
-        }
+        
 
         private void receive_Time(IRecvPacket packet)
         {

@@ -1,47 +1,33 @@
-﻿/***************************************************************************
- *   GameState.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 3 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-#region usings
-using InterXLib.Input.Windows;
+﻿using InterXLib.Input.Windows;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using UltimaXNA.Entity;
 using UltimaXNA.UltimaData;
 using UltimaXNA.UltimaPackets.Client;
-using UltimaXNA.UltimaWorld;
-#endregion
 
-namespace UltimaXNA
+namespace UltimaXNA.UltimaWorld.Controller
 {
-    public enum TargetTypes
+    class WorldInput
     {
-        Nothing = -1,
-        Object = 0,
-        Position = 1,
-        MultiPlacement = 2
-    }
+        public WorldInput(WorldModel model)
+        {
+            m_Model = model;
+        }
 
-    static class UltimaGameState
-    {
+        private WorldModel m_Model;
+
         // mouse input variables
-        static bool _ContinuousMoveCheck = false;
+        bool _ContinuousMoveCheck = false;
         const int _TimeHoveringBeforeTipMS = 1000;
 
         // make sure we drag the correct object variables
-        static Vector2 _dragOffset;
-        static AMapObject _dragObject;
+        Vector2 _dragOffset;
+        AMapObject _dragObject;
 
         // Are we asking for a target?
-        static TargetTypes _TargettingType = TargetTypes.Nothing;
-        static bool isTargeting
+        TargetTypes _TargettingType = TargetTypes.Nothing;
+        bool isTargeting
         {
             get
             {
@@ -52,10 +38,8 @@ namespace UltimaXNA
             }
         }
 
-        public static void Update(GameTime gameTime)
+        public void Update(double frameMS)
         {
-            UltimaVars.EngineVars.GameTime = gameTime;
-
             // input for debug variables.
             List<InputEventKeyboard> keyEvents = UltimaEngine.Input.GetKeyboardEvents();
             foreach (InputEventKeyboard e in keyEvents)
@@ -107,9 +91,9 @@ namespace UltimaXNA
             doUpdate();
         }
 
-        static void doUpdate()
+        void doUpdate()
         {
-            if (UltimaVars.EngineVars.InWorld && !UltimaEngine.UserInterface.IsModalControlOpen && UltimaEngine.Client.IsConnected)
+            if (UltimaVars.EngineVars.InWorld && !UltimaEngine.UserInterface.IsModalControlOpen && m_Model.Client.IsConnected)
             {
                 parseKeyboard();
                 parseMouse();
@@ -137,7 +121,7 @@ namespace UltimaXNA
             }
         }
 
-        static void doMovement()
+        void doMovement()
         {
             // Get the move direction and add the Running offset if the Cursor is far enough away.
             Direction moveDirection = UltimaVars.EngineVars.CursorDirection;
@@ -150,7 +134,7 @@ namespace UltimaXNA
             m.PlayerMobile_Move(moveDirection);
         }
 
-        static void onMoveButton(InputEventMouse e)
+        void onMoveButton(InputEventMouse e)
         {
             if (e.EventType == MouseEvent.Down)
             {
@@ -166,7 +150,7 @@ namespace UltimaXNA
             e.Handled = true;
         }
 
-        static void onTargetingButton(AMapObject worldObject)
+        void onTargetingButton(AMapObject worldObject)
         {
             if (worldObject == null)
                 return;
@@ -194,7 +178,7 @@ namespace UltimaXNA
             }
         }
 
-        static void onInteractButton(InputEventMouse e)
+        void onInteractButton(InputEventMouse e)
         {
             AMapObject overObject = (e.EventType == MouseEvent.DragBegin) ? _dragObject : IsometricRenderer.MouseOverObject;
             Vector2 overObjectOffset = (e.EventType == MouseEvent.DragBegin) ? _dragOffset : IsometricRenderer.MouseOverObjectPoint;
@@ -227,7 +211,7 @@ namespace UltimaXNA
                 }
                 else if (overObject is MapObjectStatic)
                 {
-                    // clicking a static should pop up the name of the static.
+                    // clicking a should pop up the name of the static.
                     if (e.EventType == MouseEvent.Click)
                     {
 
@@ -265,9 +249,9 @@ namespace UltimaXNA
                             // tool tip
                             UltimaInteraction.SingleClick(entity);
                             if (UltimaVars.EngineVars.WarMode)
-                                UltimaEngine.Client.Send(new AttackRequestPacket(entity.Serial));
+                                m_Model.Client.Send(new AttackRequestPacket(entity.Serial));
                             else
-                                UltimaEngine.Client.Send(new RequestContextMenuPacket(entity.Serial));
+                                m_Model.Client.Send(new RequestContextMenuPacket(entity.Serial));
                             break;
                         case MouseEvent.DoubleClick:
                             UltimaInteraction.DoubleClick(entity);
@@ -298,7 +282,7 @@ namespace UltimaXNA
             e.Handled = true;
         }
 
-        static void checkDropItem()
+        void checkDropItem()
         {
             AMapObject mouseoverObject = IsometricRenderer.MouseOverObject;
 
@@ -341,7 +325,7 @@ namespace UltimaXNA
             }
         }
 
-        static void createHoverLabel(AMapObject mapObject)
+        void createHoverLabel(AMapObject mapObject)
         {
             if (mapObject.OwnerSerial.IsValid)
             {
@@ -355,7 +339,7 @@ namespace UltimaXNA
             }
         }
 
-        static void createHoverLabel(Serial serial)
+        void createHoverLabel(Serial serial)
         {
             if (!serial.IsValid)
                 return;
@@ -377,7 +361,7 @@ namespace UltimaXNA
             }
         }
 
-        static void  parseMouse()
+        void parseMouse()
         {
             // If the mouse is over the world, then interpret mouse input:
             if (!UltimaEngine.UserInterface.IsMouseOverUI)
@@ -401,7 +385,7 @@ namespace UltimaXNA
             }
         }
 
-        static void parseKeyboard()
+        void parseKeyboard()
         {
             List<InputEventKeyboard> events = UltimaEngine.Input.GetKeyboardEvents();
             foreach (InputEventKeyboard e in events)
@@ -415,9 +399,9 @@ namespace UltimaXNA
                 if (e.EventType == KeyboardEventType.Down && e.KeyCode == WinKeys.Tab)
                 {
                     if (UltimaVars.EngineVars.WarMode)
-                        UltimaEngine.Client.Send(new RequestWarModePacket(false));
+                        m_Model.Client.Send(new RequestWarModePacket(false));
                     else
-                        UltimaEngine.Client.Send(new RequestWarModePacket(true));
+                        m_Model.Client.Send(new RequestWarModePacket(true));
                 }
 
                 // toggle for All Names:
@@ -435,12 +419,12 @@ namespace UltimaXNA
             }
         }
 
-        public static void MouseTargeting(TargetTypes targetingType, int cursorID)
+        public void MouseTargeting(TargetTypes targetingType, int cursorID)
         {
             setTargeting(targetingType);
         }
 
-        static void setTargeting(TargetTypes targetingType)
+        void setTargeting(TargetTypes targetingType)
         {
             _TargettingType = targetingType;
             // Set the UserInterface's cursor to a targetting cursor. If multi, tell the cursor which multi.
@@ -449,21 +433,21 @@ namespace UltimaXNA
             _ContinuousMoveCheck = false;
         }
 
-        static void clearTargeting()
+        void clearTargeting()
         {
             // Clear our target cursor.
             _TargettingType = TargetTypes.Nothing;
             UltimaEngine.UltimaUI.Cursor.IsTargeting = false;
         }
 
-        static void mouseTargetingCancel()
+        void mouseTargetingCancel()
         {
             // Send the cancel target message back to the server.
-            UltimaEngine.Client.Send(new TargetCancelPacket());
+            m_Model.Client.Send(new TargetCancelPacket());
             clearTargeting();
         }
 
-        static void mouseTargetingEventXYZ(AMapObject selectedObject)
+        void mouseTargetingEventXYZ(AMapObject selectedObject)
         {
             // Send the targetting event back to the server!
             int modelNumber = 0;
@@ -477,12 +461,12 @@ namespace UltimaXNA
                 modelNumber = 0;
             }
             // Send the target ...
-            UltimaEngine.Client.Send(new TargetXYZPacket((short)selectedObject.Position.X, (short)selectedObject.Position.Y, (short)selectedObject.Z, (ushort)modelNumber));
+            m_Model.Client.Send(new TargetXYZPacket((short)selectedObject.Position.X, (short)selectedObject.Position.Y, (short)selectedObject.Z, (ushort)modelNumber));
             // ... and clear our targeting cursor.
             clearTargeting();
         }
 
-        static void mouseTargetingEventObject(AMapObject selectedObject)
+        void mouseTargetingEventObject(AMapObject selectedObject)
         {
             // If we are passed a null object, keep targeting.
             if (selectedObject == null)
@@ -491,7 +475,7 @@ namespace UltimaXNA
             // Send the targetting event back to the server
             if (serial.IsValid)
             {
-                UltimaEngine.Client.Send(new TargetObjectPacket(serial));
+                m_Model.Client.Send(new TargetObjectPacket(serial));
             }
             else
             {
@@ -505,9 +489,9 @@ namespace UltimaXNA
                 {
                     modelNumber = 0;
                 }
-                UltimaEngine.Client.Send(new TargetXYZPacket((short)selectedObject.Position.X, (short)selectedObject.Position.Y, (short)selectedObject.Z, (ushort)modelNumber));
+                m_Model.Client.Send(new TargetXYZPacket((short)selectedObject.Position.X, (short)selectedObject.Position.Y, (short)selectedObject.Z, (ushort)modelNumber));
             }
-            
+
             // Clear our target cursor.
             clearTargeting();
         }

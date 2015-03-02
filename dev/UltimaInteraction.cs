@@ -10,6 +10,7 @@
  ***************************************************************************/
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using UltimaXNA.Entity;
 using UltimaXNA.UltimaGUI;
@@ -20,28 +21,39 @@ namespace UltimaXNA
 {
     class UltimaInteraction
     {
+        private static UltimaClient s_Client;
+        public static void Initialize(UltimaClient client)
+        {
+            s_Client = client;
+        }
+
         public static void SendChat(string text)
         {
-            UltimaEngine.Client.Send(new AsciiSpeechPacket(AsciiSpeechPacketTypes.Normal, 0, 0, "ENU", text));
+            s_Client.Send(new AsciiSpeechPacket(AsciiSpeechPacketTypes.Normal, 0, 0, "ENU", text));
         }
 
         public static void SingleClick(BaseEntity item)
         {
-            UltimaEngine.Client.Send(new SingleClickPacket(item.Serial));
+            s_Client.Send(new SingleClickPacket(item.Serial));
         }
 
         public static void DoubleClick(BaseEntity item)
         {
-            UltimaEngine.Client.Send(new DoubleClickPacket(item.Serial));
+            s_Client.Send(new DoubleClickPacket(item.Serial));
         } 
 
         public static void PickUpItem(Item item, int x, int y)
         {
             if (item.PickUp())
             {
-                UltimaEngine.Client.Send(new PickupItemPacket(item.Serial, item.Amount));
+                s_Client.Send(new PickupItemPacket(item.Serial, item.Amount));
                 UltimaEngine.UltimaUI.Cursor.PickUpItem(item, x, y);
             }
+        }
+
+        public static void ToggleWarMode()
+        {
+            s_Client.Send(new RequestWarModePacket(!((Mobile)EntityManager.GetPlayerObject()).IsWarMode));
         }
 
         public static void DropItemToWorld(Item item, int X, int Y, int Z)
@@ -57,7 +69,7 @@ namespace UltimaXNA
                 }
                 else
                     serial = Serial.World;
-                UltimaEngine.Client.Send(new DropItemPacket(item.Serial, (ushort)X, (ushort)Y, (byte)Z, 0, serial));
+                s_Client.Send(new DropItemPacket(item.Serial, (ushort)X, (ushort)Y, (byte)Z, 0, serial));
                 UltimaEngine.UltimaUI.Cursor.ClearHolding();
             }
         }
@@ -79,19 +91,19 @@ namespace UltimaXNA
             if (x > containerBounds.Right - itemTexture.Width) x = containerBounds.Right - itemTexture.Width;
             if (y < containerBounds.Top) y = containerBounds.Top;
             if (y > containerBounds.Bottom - itemTexture.Height) y = containerBounds.Bottom - itemTexture.Height;
-            UltimaEngine.Client.Send(new DropItemPacket(item.Serial, (ushort)x, (ushort)y, 0, 0, container.Serial));
+            s_Client.Send(new DropItemPacket(item.Serial, (ushort)x, (ushort)y, 0, 0, container.Serial));
             UltimaEngine.UltimaUI.Cursor.ClearHolding();
         }
 
         public static void WearItem(Item item)
         {
-            UltimaEngine.Client.Send(new DropToLayerPacket(item.Serial, 0x00, EntityManager.MySerial));
+            s_Client.Send(new DropToLayerPacket(item.Serial, 0x00, EntityManager.MySerial));
             UltimaEngine.UltimaUI.Cursor.ClearHolding();
         }
 
         public static void UseSkill(int index)
         {
-            UltimaEngine.Client.Send(new RequestSkillUsePacket(index));
+            s_Client.Send(new RequestSkillUsePacket(index));
         }
 
         public static Gump OpenContainerGump(BaseEntity entity)
@@ -110,10 +122,15 @@ namespace UltimaXNA
 
         public static void DisconnectToLoginScreen()
         {
-            if (UltimaEngine.Client.Status != UltimaClientStatus.Unconnected)
-                UltimaEngine.Client.Disconnect();
+            if (s_Client.Status != UltimaClientStatus.Unconnected)
+                s_Client.Disconnect();
             UltimaVars.EngineVars.InWorld = false;
             UltimaEngine.ActiveModel = new UltimaXNA.UltimaLogin.LoginModel();
+        }
+
+        public static void GumpMenuSelect(int id, int gumpId, int buttonId, int[] switchIds, Tuple<short, string>[] textEntries)
+        {
+            s_Client.Send(new GumpMenuSelectPacket(id, gumpId, buttonId, switchIds, textEntries));
         }
 
 
@@ -150,6 +167,11 @@ namespace UltimaXNA
                 Hue = hue;
                 Font = font;
             }
+        }
+
+        public static void SendLastTargetPacket(Serial last_target)
+        {
+            s_Client.Send(new GetPlayerStatusPacket(0x04, last_target));
         }
     }
 }

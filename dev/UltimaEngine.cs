@@ -23,7 +23,6 @@ namespace UltimaXNA
         internal static UltimaGUIState UltimaUI = new UltimaGUIState();
 
         private static UltimaClient s_Client = new UltimaClient();
-        public static UltimaClient Client { get { return s_Client; } }
 
         private static AUltimaModel m_Model;
         internal static AUltimaModel ActiveModel
@@ -68,6 +67,7 @@ namespace UltimaXNA
 
                 UltimaVars.EngineVars.EngineRunning = true;
                 UltimaVars.EngineVars.InWorld = false;
+                UltimaInteraction.Initialize(s_Client);
 
                 ActiveModel = new LoginModel();
             }
@@ -84,7 +84,7 @@ namespace UltimaXNA
             {
                 UltimaUI.Update();
                 s_Client.Update();
-                UltimaGameState.Update(gameTime);
+                UltimaVars.EngineVars.GameTime = gameTime;
                 ActiveModel.Update(gameTime.TotalGameTime.TotalMilliseconds, gameTime.ElapsedGameTime.TotalMilliseconds);
             }
         }
