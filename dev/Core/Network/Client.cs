@@ -14,8 +14,8 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
-using UltimaXNA.Diagnostics;
 using UltimaXNA.Core.Network.Compression;
+using UltimaXNA.Diagnostics;
 #endregion
 
 namespace UltimaXNA.Core.Network

@@ -114,7 +114,7 @@ namespace UltimaXNA.UltimaGUI
         public override void ActivateByButton(int buttonID)
         {
             int[] switchIDs = new int[0];
-            Pair<short, string>[] textEntries = new Pair<short,string>[0];
+            Tuple<short, string>[] textEntries = new Tuple<short,string>[0];
             UltimaClient.Send(new GumpMenuSelectPacket(
                 this.Serial, this.GumpID, buttonID, switchIDs, textEntries));
             this.Dispose();

@@ -16,6 +16,7 @@
  *
  ***************************************************************************/
 #region usings
+using System;
 using UltimaXNA.Core.Network.Packets;
 #endregion
 
@@ -23,7 +24,7 @@ namespace UltimaXNA.UltimaPackets.Client
 {
     public class SellListReplyPacket : SendPacket
     {
-        public SellListReplyPacket(Serial vendorSerial, Pair<int, short>[] items)
+        public SellListReplyPacket(Serial vendorSerial, Tuple<int, short>[] items)
             : base(0x9F, "Sell List Reply")
         {
             Stream.Write(vendorSerial);
@@ -31,8 +32,8 @@ namespace UltimaXNA.UltimaPackets.Client
 
             for (int i = 0; i < items.Length; i++)
             {
-                Stream.Write(items[i].ItemA);
-                Stream.Write((short)items[i].ItemB);
+                Stream.Write(items[i].Item1);
+                Stream.Write((short)items[i].Item2);
             }
         }
     }

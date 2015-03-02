@@ -125,13 +125,13 @@ namespace UltimaXNA.UltimaData
         {
             public readonly string Name;
             private byte[] _waveBuffer;
-            private List<Pair<DynamicSoundEffectInstance, float>> _instances;
+            private List<Tuple<DynamicSoundEffectInstance, float>> _instances;
 
             public UOSound(string name, byte[] buffer)
             {
                 Name = name;
                 _waveBuffer = buffer;
-                _instances = new List<Pair<DynamicSoundEffectInstance, float>>();
+                _instances = new List<Tuple<DynamicSoundEffectInstance, float>>();
             }
 
             public void Play()
@@ -141,7 +141,7 @@ namespace UltimaXNA.UltimaData
                 // Check to see if any existing instances of this sound effect have stopped playing. If
                 // they have, remove the reference to them so the garbage collector can collect them.
                 for (int i = 0; i < _instances.Count; i++)
-                    if (_instances[i].ItemB < now)
+                    if (_instances[i].Item2 < now)
                     {
                         _instances.RemoveAt(i);
                         i--;
@@ -151,7 +151,7 @@ namespace UltimaXNA.UltimaData
                 instance.BufferNeeded += new EventHandler<EventArgs>(instance_BufferNeeded);
                 instance.SubmitBuffer(_waveBuffer);
                 instance.Play();
-                _instances.Add(new Pair<DynamicSoundEffectInstance, float>(instance,
+                _instances.Add(new Tuple<DynamicSoundEffectInstance, float>(instance,
                     now + (instance.GetSampleDuration(_waveBuffer.Length).Milliseconds / 1000f)));
             }
 

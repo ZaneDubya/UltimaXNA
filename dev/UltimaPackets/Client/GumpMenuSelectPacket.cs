@@ -16,6 +16,7 @@
  *
  ***************************************************************************/
 #region usings
+using System;
 using UltimaXNA.Core.Network.Packets;
 #endregion
 
@@ -23,7 +24,7 @@ namespace UltimaXNA.UltimaPackets.Client
 {
     public class GumpMenuSelectPacket : SendPacket
     {
-        public GumpMenuSelectPacket(int id, int gumpId, int buttonId, int[] switchIds, Pair<short, string>[] textEntries)
+        public GumpMenuSelectPacket(int id, int gumpId, int buttonId, int[] switchIds, Tuple<short, string>[] textEntries)
             : base(0xB1, "Gump Menu Select")
         {
             Stream.Write(id);
@@ -38,11 +39,11 @@ namespace UltimaXNA.UltimaPackets.Client
 
             for (int i = 0; i < textEntries.Length; i++)
             {
-                int length = textEntries[i].ItemB.Length * 2;
+                int length = textEntries[i].Item2.Length * 2;
 
-                Stream.Write(textEntries[i].ItemA);
+                Stream.Write(textEntries[i].Item1);
                 Stream.Write(length);
-                Stream.WriteBigUniFixed(textEntries[i].ItemB, length);
+                Stream.WriteBigUniFixed(textEntries[i].Item2, length);
             }
         }
     }

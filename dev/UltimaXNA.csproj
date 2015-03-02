@@ -259,7 +259,7 @@
     <Compile Include="UltimaPackets\Server\WeatherPacket.cs" />
     <Compile Include="UltimaPackets\Server\WornItemPacket.cs" />
     <Compile Include="UltimaPackets\Shared.cs" />
-    <Compile Include="Core\Program.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="UltimaClient.cs" />
     <Compile Include="UltimaData\ArtData.cs" />
     <Compile Include="UltimaData\Fonts\ASCIIFont.cs" />
@@ -403,7 +403,6 @@
     <Compile Include="Core\Network\IO\PacketWriter.cs" />
     <Compile Include="Core\Network\NetworkException.cs" />
     <Compile Include="Core\Network\PacketHandler.cs" />
-    <Compile Include="Core\Pair.cs" />
     <Compile Include="Core\Network\QueuedPacket.cs" />
     <Compile Include="Core\Network\SocketState.cs" />
     <Compile Include="UltimaLogin\Scenes\AScene.cs" />
