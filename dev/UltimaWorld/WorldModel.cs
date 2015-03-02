@@ -28,6 +28,7 @@ namespace UltimaXNA.UltimaWorld
         {
             m_Entities = new EntityManager();
             m_WorldInput = new WorldInput(this);
+            EntityManager.Reset();
         }
 
         protected override void OnInitialize()

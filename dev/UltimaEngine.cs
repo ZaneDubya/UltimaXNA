@@ -9,7 +9,6 @@
  *
  ***************************************************************************/
 #region usings
-using InterXLib.Patterns.MVC;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.UltimaLogin;
