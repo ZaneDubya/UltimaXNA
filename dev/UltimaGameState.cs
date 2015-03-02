@@ -109,7 +109,7 @@ namespace UltimaXNA
 
         static void doUpdate()
         {
-            if (UltimaVars.EngineVars.InWorld && !UltimaEngine.UserInterface.IsModalControlOpen && UltimaClient.IsConnected)
+            if (UltimaVars.EngineVars.InWorld && !UltimaEngine.UserInterface.IsModalControlOpen && UltimaClient.IsUltimaConnected)
             {
                 parseKeyboard();
                 parseMouse();
@@ -265,9 +265,9 @@ namespace UltimaXNA
                             // tool tip
                             UltimaInteraction.SingleClick(entity);
                             if (UltimaVars.EngineVars.WarMode)
-                                UltimaClient.Send(new AttackRequestPacket(entity.Serial));
+                                UltimaClient.UltimaSend(new AttackRequestPacket(entity.Serial));
                             else
-                                UltimaClient.Send(new RequestContextMenuPacket(entity.Serial));
+                                UltimaClient.UltimaSend(new RequestContextMenuPacket(entity.Serial));
                             break;
                         case MouseEvent.DoubleClick:
                             UltimaInteraction.DoubleClick(entity);
@@ -415,9 +415,9 @@ namespace UltimaXNA
                 if (e.EventType == KeyboardEventType.Down && e.KeyCode == WinKeys.Tab)
                 {
                     if (UltimaVars.EngineVars.WarMode)
-                        UltimaClient.Send(new RequestWarModePacket(false));
+                        UltimaClient.UltimaSend(new RequestWarModePacket(false));
                     else
-                        UltimaClient.Send(new RequestWarModePacket(true));
+                        UltimaClient.UltimaSend(new RequestWarModePacket(true));
                 }
 
                 // toggle for All Names:
@@ -459,7 +459,7 @@ namespace UltimaXNA
         static void mouseTargetingCancel()
         {
             // Send the cancel target message back to the server.
-            UltimaClient.Send(new TargetCancelPacket());
+            UltimaClient.UltimaSend(new TargetCancelPacket());
             clearTargeting();
         }
 
@@ -477,7 +477,7 @@ namespace UltimaXNA
                 modelNumber = 0;
             }
             // Send the target ...
-            UltimaClient.Send(new TargetXYZPacket((short)selectedObject.Position.X, (short)selectedObject.Position.Y, (short)selectedObject.Z, (ushort)modelNumber));
+            UltimaClient.UltimaSend(new TargetXYZPacket((short)selectedObject.Position.X, (short)selectedObject.Position.Y, (short)selectedObject.Z, (ushort)modelNumber));
             // ... and clear our targeting cursor.
             clearTargeting();
         }
@@ -491,7 +491,7 @@ namespace UltimaXNA
             // Send the targetting event back to the server
             if (serial.IsValid)
             {
-                UltimaClient.Send(new TargetObjectPacket(serial));
+                UltimaClient.UltimaSend(new TargetObjectPacket(serial));
             }
             else
             {
@@ -505,7 +505,7 @@ namespace UltimaXNA
                 {
                     modelNumber = 0;
                 }
-                UltimaClient.Send(new TargetXYZPacket((short)selectedObject.Position.X, (short)selectedObject.Position.Y, (short)selectedObject.Z, (ushort)modelNumber));
+                UltimaClient.UltimaSend(new TargetXYZPacket((short)selectedObject.Position.X, (short)selectedObject.Position.Y, (short)selectedObject.Z, (ushort)modelNumber));
             }
             
             // Clear our target cursor.

@@ -30,9 +30,9 @@ namespace UltimaXNA.Scenes
 
         }
 
-        public override void Intitialize()
+        public override void Intitialize(UltimaClient client)
         {
-            base.Intitialize();
+            base.Intitialize(client);
             Gump g = (Gump)UltimaEngine.UserInterface.AddControl(new UltimaGUI.Gumps.LoginGump(), 0, 0);
             ((UltimaGUI.Gumps.LoginGump)g).OnLogin += this.OnLogin;
             EntityManager.Reset();

@@ -18,7 +18,7 @@ using UltimaXNA.UltimaWorld;
 
 namespace UltimaXNA
 {
-    public class UltimaEngine : BaseEngine
+    public class UltimaEngine : Core.BaseEngine
     {
         internal static UltimaGUIState UltimaUI = new UltimaGUIState();
 

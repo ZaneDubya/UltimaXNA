@@ -10,6 +10,8 @@ namespace UltimaXNA.Scenes
         AScene m_CurrentScene;
         bool m_isTransitioning = false;
 
+        protected UltimaClient Client { get; private set; }
+
         public bool IsTransitioning
         {
             get { return m_isTransitioning; }
@@ -51,7 +53,7 @@ namespace UltimaXNA.Scenes
                                 if (!m_CurrentScene.IsInitialized)
                                 {
                                     Logger.Debug("Initializing {0}.", m_CurrentScene.GetType().Name);
-                                    m_CurrentScene.Intitialize();
+                                    m_CurrentScene.Intitialize(Client);
                                 }
                             }
 
@@ -68,12 +70,17 @@ namespace UltimaXNA.Scenes
                     if (!m_CurrentScene.IsInitialized)
                     {
                         Logger.Debug("Initializing {0}.", m_CurrentScene.GetType().Name);
-                        m_CurrentScene.Intitialize();
+                        m_CurrentScene.Intitialize(Client);
                     }
 
                     m_isTransitioning = false;
                 }
             }
+        }
+
+        public SceneManager(UltimaClient client)
+        {
+            Client = client;
         }
 
         public void Update(double totalTime, double frameTime)

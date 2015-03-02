@@ -302,7 +302,16 @@ namespace UltimaXNA.Core.Network
         {
             byte[] buffer = packet.Compile();
 
-            return Send(buffer, 0, packet.Length);
+            if (IsConnected)
+            {
+                bool success = Send(buffer, 0, packet.Length);
+                if (!success)
+                {
+                    Disconnect();
+                }
+            }
+
+            return false;
         }
 
         public virtual bool Send(byte[] buffer, int offset, int length)

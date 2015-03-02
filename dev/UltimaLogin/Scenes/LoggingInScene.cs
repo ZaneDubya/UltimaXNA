@@ -39,8 +39,8 @@ namespace UltimaXNA.Scenes
 
         public LoggingInScene(string server, int port, string account, string password)
         {
-            if (UltimaClient.IsConnected)
-                UltimaClient.Disconnect();
+            if (UltimaClient.IsUltimaConnected)
+                UltimaClient.UltimaDisconnect();
             // Send the accountname and password to the ultimaclient so this gump does not have to save them.
 
             m_ServerHost = server;
@@ -49,9 +49,9 @@ namespace UltimaXNA.Scenes
             m_Password = password;
         }
 
-        public override void Intitialize()
+        public override void Intitialize(UltimaClient client)
         {
-            base.Intitialize();
+            base.Intitialize(client);
             Gump g = (Gump)UltimaEngine.UserInterface.AddControl(new UltimaGUI.Gumps.LoggingInGump(), 0, 0);
             ((UltimaGUI.Gumps.LoggingInGump)g).OnCancelLogin += this.OnCancelLogin;
         }
@@ -65,7 +65,7 @@ namespace UltimaXNA.Scenes
                 switch (UltimaClient.Status)
                 {
                     case UltimaClientStatus.Unconnected:
-                        UltimaClient.Connect(m_ServerHost, m_ServerPort);
+                        UltimaClient.UltimaConnect(m_ServerHost, m_ServerPort);
                         break;
                     case UltimaClientStatus.LoginServer_Connecting:
                         // connecting ...

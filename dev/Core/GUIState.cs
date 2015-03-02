@@ -8,11 +8,13 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using UltimaXNA.Rendering;
+#region Usings
 using InterXLib.Input.Windows;
+using Microsoft.Xna.Framework;
+using System.Collections.Generic;
+using UltimaXNA.Rendering;
 using UltimaXNA.UltimaGUI;
+#endregion
 
 namespace UltimaXNA
 {

@@ -41,9 +41,9 @@ namespace UltimaXNA.Scenes
             m_Password = password;
         }
 
-        public override void Intitialize()
+        public override void Intitialize(UltimaClient client)
         {
-            base.Intitialize();
+            base.Intitialize(client);
             Gump g = (Gump)UltimaEngine.UserInterface.AddControl(new UltimaGUI.Gumps.SelectServerGump(), 0, 0);
             ((UltimaGUI.Gumps.SelectServerGump)g).OnBackToLoginScreen += this.OnBackToLoginScreen;
             ((UltimaGUI.Gumps.SelectServerGump)g).OnSelectLastServer += this.OnSelectLastServer;
@@ -77,7 +77,8 @@ namespace UltimaXNA.Scenes
                         break;
                     case UltimaClientStatus.WorldServer_InWorld:
                         // we've connected!
-                        Manager.CurrentScene = new WorldScene();
+                        UltimaEngine.ActiveModel = new UltimaXNA.UltimaWorld.WorldModel();
+                        // Manager.CurrentScene = new WorldScene();
                         break;
                     default:
                         // what's going on here? Add additional error handlers.

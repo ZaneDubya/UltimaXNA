@@ -23,13 +23,13 @@ using UltimaXNA.UltimaWorld;
 
 namespace UltimaXNA
 {
-    class UltimaClient
+    public class UltimaClient : Client
     {
         // ClientNetwork is the interface to the server.
         static Client m_Client;
 
         public static UltimaClientStatus Status { get; protected set; }
-        public static bool IsConnected { get { return m_Client.IsConnected; } }
+        public static bool IsUltimaConnected { get { return m_Client.IsConnected; } }
         private static int m_ServerRelayKey = 0;
 
         static UltimaClient()
@@ -107,7 +107,6 @@ namespace UltimaXNA
             m_Client.Register<SupportedFeaturesPacket>(0xB9, "Supported Features", 3, new TypedPacketReceiveHandler(receive_EnableFeatures));
             m_Client.Register<QuestArrowPacket>(0xBA, "Quest Arrow", 6, new TypedPacketReceiveHandler(receive_QuestArrow));
             m_Client.Register<SeasonChangePacket>(0xBC, "Seasonal Change", 3, new TypedPacketReceiveHandler(receive_SeasonalInformation));
-            m_Client.Register<VersionRequestPacket>(0xBD, "Version Request", -1, new TypedPacketReceiveHandler(receive_VersionRequest));
             m_Client.Register<GeneralInfoPacket>(0xBF, "General Information", -1, new TypedPacketReceiveHandler(receive_GeneralInfo));
             m_Client.Register<GraphicEffectHuedPacket>(0xC0, "Hued Effect", 36, new TypedPacketReceiveHandler(receive_HuedEffect));
             m_Client.Register<MessageLocalizedPacket>(0xC1, "Message Localized", -1, new TypedPacketReceiveHandler(receive_CLILOCMessage));
@@ -145,7 +144,7 @@ namespace UltimaXNA
             */
         }
 
-        public static bool Connect(string host, int port)
+        public static bool UltimaConnect(string host, int port)
         {
             Status = UltimaClientStatus.LoginServer_Connecting;
             bool success = m_Client.Connect(host, port);
@@ -164,13 +163,13 @@ namespace UltimaXNA
         public static void SendAccountLogin(string account, string password)
         {
             Status = UltimaClientStatus.LoginServer_LoggingIn;
-            Send(new LoginPacket(account, password));
+            UltimaSend(new LoginPacket(account, password));
         }
 
         public static void SendServerRelay(string account, string password)
         {
             Status = UltimaClientStatus.LoginServer_Relaying;
-            Send(new GameLoginPacket(m_ServerRelayKey, account, password));
+            UltimaSend(new GameLoginPacket(m_ServerRelayKey, account, password));
         }
 
         public static void SelectServer(int index)
@@ -178,7 +177,7 @@ namespace UltimaXNA
             if (Status == UltimaClientStatus.LoginServer_HasServerList)
             {
                 Status = UltimaClientStatus.GameServer_Connecting;
-                Send(new SelectServerPacket(index));
+                UltimaSend(new SelectServerPacket(index));
             }
         }
 
@@ -188,7 +187,7 @@ namespace UltimaXNA
             {
                 if (UltimaVars.Characters.List[index].Name != string.Empty)
                 {
-                    Send(new LoginCharacterPacket(UltimaVars.Characters.List[index].Name, index, Utility.IPAddress));
+                    UltimaSend(new LoginCharacterPacket(UltimaVars.Characters.List[index].Name, index, Utility.IPAddress));
                 }
             }
         }
@@ -199,26 +198,26 @@ namespace UltimaXNA
             {
                 if (UltimaVars.Characters.List[index].Name != string.Empty)
                 {
-                    Send(new DeleteCharacterPacket(index, Utility.IPAddress));
+                    UltimaSend(new DeleteCharacterPacket(index, Utility.IPAddress));
                 }
             }
         }
 
-        public static void Disconnect()
+        public static void UltimaDisconnect()
         {
             if (m_Client.IsConnected)
                 m_Client.Disconnect();
             Status = UltimaClientStatus.Unconnected;
         }
 
-        public static void Send(ISendPacket packet)
+        public static void UltimaSend(ISendPacket packet)
         {
             if (m_Client.IsConnected)
             {
                 bool success = m_Client.Send(packet);
                 if (!success)
                 {
-                    Disconnect();
+                    UltimaDisconnect();
                 }
             }
         }
@@ -458,7 +457,7 @@ namespace UltimaXNA
                     }
                     else
                     {
-                        Send(new RequestCustomHousePacket(p.HouseRevisionState.Serial));
+                        UltimaSend(new RequestCustomHousePacket(p.HouseRevisionState.Serial));
                     }
                     break;
                 case 0x21: // (AOS) Ability icon confirm.
@@ -508,7 +507,7 @@ namespace UltimaXNA
 
         private static void receive_LoginRejection(IRecvPacket packet)
         {
-            Disconnect();
+            UltimaDisconnect();
             LoginRejectionPacket p = (LoginRejectionPacket)packet;
             switch (p.Reason)
             {
@@ -576,13 +575,13 @@ namespace UltimaXNA
                 Item item = add_Item(p.Equipment[i].Serial, p.Equipment[i].GumpId, p.Equipment[i].Hue, p.Serial, 0);
                 mobile.WearItem(item, p.Equipment[i].Layer);
                 if (item.PropertyList.Hash == 0)
-                    Send(new QueryPropertiesPacket(item.Serial));
+                    UltimaSend(new QueryPropertiesPacket(item.Serial));
             }
 
             if (mobile.Name == string.Empty)
             {
                 mobile.Name = "Unknown";
-                Send(new RequestNamePacket(p.Serial));
+                UltimaSend(new RequestNamePacket(p.Serial));
             }
         }
 
@@ -627,7 +626,7 @@ namespace UltimaXNA
             if (mobile.Name == string.Empty)
             {
                 mobile.Name = "Unknown";
-                Send(new RequestNamePacket(p.Serial));
+                UltimaSend(new RequestNamePacket(p.Serial));
             }
         }
 
@@ -943,7 +942,7 @@ namespace UltimaXNA
             {
                 if (iObject.PropertyList.Hash != p.RevisionHash)
                 {
-                    Send(new QueryPropertiesPacket(p.Serial));
+                    UltimaSend(new QueryPropertiesPacket(p.Serial));
                 }
             }
         }
@@ -973,12 +972,6 @@ namespace UltimaXNA
             UpdateStaminaPacket p = (UpdateStaminaPacket)packet;
             Mobile u = EntityManager.GetObject<Mobile>(p.Serial, false);
             u.Stamina.Update(p.Current, p.Max);
-        }
-
-        private static void receive_VersionRequest(IRecvPacket packet)
-        {
-            // Automatically respond.
-            UltimaInteraction.SendClientVersion();
         }
 
         static void receive_WarMode(IRecvPacket packet)
@@ -1020,7 +1013,7 @@ namespace UltimaXNA
             Mobile m = EntityManager.GetObject<Mobile>(p.ParentSerial, false);
             m.WearItem(item, p.Layer);
             if (item.PropertyList.Hash == 0)
-                Send(new QueryPropertiesPacket(item.Serial));
+                UltimaSend(new QueryPropertiesPacket(item.Serial));
         }
 
 
@@ -1109,13 +1102,13 @@ namespace UltimaXNA
             {
                 if (context.CanSell)
                 {
-                    Send(new ContextMenuResponsePacket(context.Serial, (short)context.ContextEntry("Sell").ResponseCode));
+                    UltimaSend(new ContextMenuResponsePacket(context.Serial, (short)context.ContextEntry("Sell").ResponseCode));
                 }
             }
             else
             {
                 // no context menu entries are handled. Send a double click.
-                Send(new DoubleClickPacket(context.Serial));
+                UltimaSend(new DoubleClickPacket(context.Serial));
             }
         }
 

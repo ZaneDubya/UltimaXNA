@@ -18,6 +18,8 @@ namespace UltimaXNA.Scenes
         public virtual TimeSpan TransitionOnLength { get { return TimeSpan.FromSeconds(0.05); } }
         public virtual TimeSpan TransitionOffLength { get { return TimeSpan.FromSeconds(0.05); } }
 
+        protected UltimaClient Client { get; private set; }
+
         SceneState _sceneState;
         float _transitionAlpha;
         float _elapsed;
@@ -49,9 +51,9 @@ namespace UltimaXNA.Scenes
             _sceneState = SceneState.TransitioningOn;
         }
 
-        public virtual void Intitialize()
+        public virtual void Intitialize(UltimaClient client)
         {
-
+            Client = client;
         }
 
         public virtual void Update(double totalTime, double frameTime)
