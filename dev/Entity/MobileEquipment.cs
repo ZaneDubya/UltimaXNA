@@ -17,19 +17,19 @@ namespace UltimaXNA.Entity
 {
     public class MobileEquipment
     {
-        private Item[] _Equipment;
-        private Mobile _Owner;
-        private int _UpdateTicker = 0;
+        private Item[] m_Equipment;
+        private Mobile m_Owner;
+        private int m_UpdateTicker = 0;
 
         public int UpdateTicker
         {
-            get { return _UpdateTicker; }
+            get { return m_UpdateTicker; }
         }
 
         public MobileEquipment(Mobile nOwner)
         {
-            _Equipment = new Item[(int)EquipLayer.LastValid + 1];
-            _Owner = nOwner;
+            m_Equipment = new Item[(int)EquipLayer.LastValid + 1];
+            m_Owner = nOwner;
         }
 
         public Item this[int nIndex]
@@ -38,24 +38,24 @@ namespace UltimaXNA.Entity
             {
                 if (nIndex > (int)EquipLayer.LastValid)
                     return null;
-                return _Equipment[nIndex];
+                return m_Equipment[nIndex];
             }
             set
             {
                 if (value == null)
                 {
-                    if (_Equipment[nIndex] != null)
+                    if (m_Equipment[nIndex] != null)
                     {
-                        _Equipment[nIndex].Dispose();
-                        _Equipment[nIndex] = null;
+                        m_Equipment[nIndex].Dispose();
+                        m_Equipment[nIndex] = null;
                     }
                 }
                 else
                 {
-                    _Equipment[nIndex] = value;
-                    value.Parent = _Owner;
+                    m_Equipment[nIndex] = value;
+                    value.Parent = m_Owner;
                 }
-                _UpdateTicker++;
+                m_UpdateTicker++;
             }
         }
 
@@ -69,7 +69,7 @@ namespace UltimaXNA.Entity
                     this[i] = null;
                 }
             }
-            _UpdateTicker++;
+            m_UpdateTicker++;
         }
 
         public void RemoveBySerial(Serial serial)
@@ -83,7 +83,7 @@ namespace UltimaXNA.Entity
                         this[i] = null;
                     }
             }
-            _UpdateTicker++;
+            m_UpdateTicker++;
         }
     }
 

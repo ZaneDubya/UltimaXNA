@@ -34,14 +34,14 @@ namespace UltimaXNA.UltimaVars
         public const float SecondsBetweenClickAndPickUp = 0.8f; // this is close to what the legacy client uses.
         public const float SecondsForDoubleClick = 0.5f;
 
-        private static Serial _lastTarget;
+        private static Serial m_lastTarget;
         public static Serial LastTarget
         {
-            get { return _lastTarget; }
+            get { return m_lastTarget; }
             set
             {
-                _lastTarget = value;
-                UltimaInteraction.SendLastTargetPacket(_lastTarget);
+                m_lastTarget = value;
+                UltimaInteraction.SendLastTargetPacket(m_lastTarget);
             }
         }
         public static bool WarMode
@@ -51,27 +51,27 @@ namespace UltimaXNA.UltimaVars
         }
 
         // Maintain an accurate count of frames per second.
-        static float _FPS = 0, _Frames = 0, _ElapsedSeconds = 0;
-        public static int FPS { get { return (int)_FPS; } }
+        static float m_FPS = 0, m_Frames = 0, m_ElapsedSeconds = 0;
+        public static int FPS { get { return (int)m_FPS; } }
         internal static bool UpdateFPS(GameTime gameTime)
         {
-            _Frames++;
-            _ElapsedSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if (_ElapsedSeconds >= .5f)
+            m_Frames++;
+            m_ElapsedSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (m_ElapsedSeconds >= .5f)
             {
-                _FPS = _Frames / _ElapsedSeconds;
-                _ElapsedSeconds = 0;
-                _Frames = 0;
+                m_FPS = m_Frames / m_ElapsedSeconds;
+                m_ElapsedSeconds = 0;
+                m_Frames = 0;
                 return true;
             }
             return false;
         }
 
-        static int _desiredFPS = 60;
+        static int m_desiredFPS = 60;
         public static int DesiredFPS
         {
-            get { return _desiredFPS; }
-            set { _desiredFPS = value; }
+            get { return m_desiredFPS; }
+            set { m_desiredFPS = value; }
         }
         public static bool LimitFPS = true;
 
@@ -79,28 +79,28 @@ namespace UltimaXNA.UltimaVars
         public static MouseButton MouseButton_Move = MouseButton.Right;
         public static bool MouseEnabled = true;
 
-        static int _map = -1;
-        public static int Map { get { return _map; } set { _map = value; } }
+        static int m_map = -1;
+        public static int Map { get { return m_map; } set { m_map = value; } }
 
-        static int _mapCount = -1;
-        public static int MapCount { get { return _mapCount; } set { _mapCount = value; } }
+        static int m_mapCount = -1;
+        public static int MapCount { get { return m_mapCount; } set { m_mapCount = value; } }
 
-        static int _season = 0;
-        public static int Season { get { return _season; } set { _season = value; } }
+        static int m_season = 0;
+        public static int Season { get { return m_season; } set { m_season = value; } }
 
-        static bool _minimapLarge = false;
-        public static bool MiniMap_LargeFormat { get { return _minimapLarge; } set { _minimapLarge = value; } }
+        static bool m_minimapLarge = false;
+        public static bool MiniMap_LargeFormat { get { return m_minimapLarge; } set { m_minimapLarge = value; } }
 
-        static int _mapSizeInMemory = 16; // We maintain 16 cells (128 tiles) in memory.
-        public static int MapCellsInMemory { get { return _mapSizeInMemory; } }
-        static int _updateRangeInTiles = 32; // Any mobile / item beyond this range is removed from the client. RunUO's range is 24.
-        public static int UpdateRange { get { return _updateRangeInTiles; } }
+        static int m_mapSizeInMemory = 16; // We maintain 16 cells (128 tiles) in memory.
+        public static int MapCellsInMemory { get { return m_mapSizeInMemory; } }
+        static int m_updateRangeInTiles = 32; // Any mobile / item beyond this range is removed from the client. RunUO's range is 24.
+        public static int UpdateRange { get { return m_updateRangeInTiles; } }
 
-        static int _renderSize = 40;
+        static int m_renderSize = 40;
         public static int RenderSize
         {
-            get { return _renderSize; }
-            set { _renderSize = value; }
+            get { return m_renderSize; }
+            set { m_renderSize = value; }
         }
 
         static Point2D m_ScreenSize;

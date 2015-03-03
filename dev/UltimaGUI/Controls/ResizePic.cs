@@ -20,13 +20,13 @@ namespace UltimaXNA.UltimaGUI.Controls
     public class ResizePic : Control
     {
         public bool CloseOnRightClick = false;
-        Texture2D[] _bgGumps = null;
+        Texture2D[] m_bgGumps = null;
         int GumpID = 0;
 
         public ResizePic(Control owner, int page)
             : base(owner, page)
         {
-            _bgGumps = new Texture2D[9];
+            m_bgGumps = new Texture2D[9];
             HandlesMouseInput = true;
         }
 
@@ -56,7 +56,7 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         void buildGumpling(int x, int y, int gumpID, int width, int height)
         {
-            MakeDragger(_owner);
+            MakeDragger(m_owner);
             Position = new Point2D(x, y);
             Size = new Point2D(width, height);
             GumpID = gumpID;
@@ -64,11 +64,11 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         public override void Update(GameTime gameTime)
         {
-            if (_bgGumps[0] == null)
+            if (m_bgGumps[0] == null)
             {
                 for (int i = 0; i < 9; i++)
                 {
-                    _bgGumps[i] = UltimaData.GumpData.GetGumpXNA(GumpID + i);
+                    m_bgGumps[i] = UltimaData.GumpData.GetGumpXNA(GumpID + i);
                 }
             }
 
@@ -77,22 +77,22 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         public override void Draw(SpriteBatchUI spriteBatch)
         {
-            int centerWidth = Width - _bgGumps[0].Width - _bgGumps[2].Width;
-            int centerHeight = Height - _bgGumps[0].Height - _bgGumps[2].Height;
-            int line2Y = Y + _bgGumps[0].Height;
-            int line3Y = Y + Height - _bgGumps[6].Height;
+            int centerWidth = Width - m_bgGumps[0].Width - m_bgGumps[2].Width;
+            int centerHeight = Height - m_bgGumps[0].Height - m_bgGumps[2].Height;
+            int line2Y = Y + m_bgGumps[0].Height;
+            int line3Y = Y + Height - m_bgGumps[6].Height;
 
-            spriteBatch.Draw2D(_bgGumps[0], new Point2D(X, Y), 0, false, false);
-            spriteBatch.Draw2DTiled(_bgGumps[1], new Rectangle(X + _bgGumps[0].Width, Y, centerWidth, _bgGumps[0].Height), 0, false, false);
-            spriteBatch.Draw2D(_bgGumps[2], new Point2D(X + Width - _bgGumps[2].Width, Y), 0, false, false);
+            spriteBatch.Draw2D(m_bgGumps[0], new Point2D(X, Y), 0, false, false);
+            spriteBatch.Draw2DTiled(m_bgGumps[1], new Rectangle(X + m_bgGumps[0].Width, Y, centerWidth, m_bgGumps[0].Height), 0, false, false);
+            spriteBatch.Draw2D(m_bgGumps[2], new Point2D(X + Width - m_bgGumps[2].Width, Y), 0, false, false);
 
-            spriteBatch.Draw2DTiled(_bgGumps[3], new Rectangle(X, line2Y, _bgGumps[0].Width, centerHeight), 0, false, false);
-            spriteBatch.Draw2DTiled(_bgGumps[4], new Rectangle(X + _bgGumps[0].Width, line2Y, centerWidth, centerHeight), 0, false, false);
-            spriteBatch.Draw2DTiled(_bgGumps[5], new Rectangle(X + Width - _bgGumps[2].Width, line2Y, _bgGumps[2].Width, centerHeight), 0, false, false);
+            spriteBatch.Draw2DTiled(m_bgGumps[3], new Rectangle(X, line2Y, m_bgGumps[0].Width, centerHeight), 0, false, false);
+            spriteBatch.Draw2DTiled(m_bgGumps[4], new Rectangle(X + m_bgGumps[0].Width, line2Y, centerWidth, centerHeight), 0, false, false);
+            spriteBatch.Draw2DTiled(m_bgGumps[5], new Rectangle(X + Width - m_bgGumps[2].Width, line2Y, m_bgGumps[2].Width, centerHeight), 0, false, false);
 
-            spriteBatch.Draw2D(_bgGumps[6], new Point2D(X, line3Y), 0, false, false);
-            spriteBatch.Draw2DTiled(_bgGumps[7], new Rectangle(X + _bgGumps[0].Width, line3Y, centerWidth, _bgGumps[6].Height), 0, false, false);
-            spriteBatch.Draw2D(_bgGumps[8], new Point2D(X + Width - _bgGumps[2].Width, line3Y), 0, false, false);
+            spriteBatch.Draw2D(m_bgGumps[6], new Point2D(X, line3Y), 0, false, false);
+            spriteBatch.Draw2DTiled(m_bgGumps[7], new Rectangle(X + m_bgGumps[0].Width, line3Y, centerWidth, m_bgGumps[6].Height), 0, false, false);
+            spriteBatch.Draw2D(m_bgGumps[8], new Point2D(X + Width - m_bgGumps[2].Width, line3Y), 0, false, false);
 
             base.Draw(spriteBatch);
         }
@@ -102,7 +102,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             if (button == MouseButton.Right)
             {
                 if (CloseOnRightClick)
-                    _owner.Dispose();
+                    m_owner.Dispose();
             }
         }
     }

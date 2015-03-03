@@ -30,18 +30,18 @@ namespace UltimaXNA
             get { return (Serial)unchecked((int)0xFFFFFFFF); }
         }
 
-        private int _serial;
+        private int m_serial;
 
         private Serial(int serial)
         {
-            _serial = serial;
+            m_serial = serial;
         }
 
         public int Value
         {
             get
             {
-                return _serial;
+                return m_serial;
             }
         }
 
@@ -49,7 +49,7 @@ namespace UltimaXNA
         {
             get
             {
-                return (_serial > 0 && _serial < 0x40000000);
+                return (m_serial > 0 && m_serial < 0x40000000);
             }
         }
 
@@ -57,7 +57,7 @@ namespace UltimaXNA
         {
             get
             {
-                return (_serial >= 0x40000000 && _serial <= 0x7FFFFFFF);
+                return (m_serial >= 0x40000000 && m_serial <= 0x7FFFFFFF);
             }
         }
 
@@ -65,7 +65,7 @@ namespace UltimaXNA
         {
             get
             {
-                return (_serial > 0);
+                return (m_serial > 0);
             }
         }
 
@@ -73,24 +73,24 @@ namespace UltimaXNA
         {
             get
             {
-                return (_serial < 0);
+                return (m_serial < 0);
             }
         }
 
-        private static int _nextDynamicSerial = -1;
+        private static int m_nextDynamicSerial = -1;
         public static int NewDynamicSerial
         {
-            get { return _nextDynamicSerial--; }
+            get { return m_nextDynamicSerial--; }
         }
 
         public override int GetHashCode()
         {
-            return _serial;
+            return m_serial;
         }
 
         public int CompareTo(Serial other)
         {
-            return _serial.CompareTo(other._serial);
+            return m_serial.CompareTo(other.m_serial);
         }
 
         public int CompareTo(object other)
@@ -107,47 +107,47 @@ namespace UltimaXNA
         {
             if (o == null || !(o is Serial)) return false;
 
-            return ((Serial)o)._serial == _serial;
+            return ((Serial)o).m_serial == m_serial;
         }
 
         public static bool operator ==(Serial l, Serial r)
         {
-            return l._serial == r._serial;
+            return l.m_serial == r.m_serial;
         }
 
         public static bool operator !=(Serial l, Serial r)
         {
-            return l._serial != r._serial;
+            return l.m_serial != r.m_serial;
         }
 
         public static bool operator >(Serial l, Serial r)
         {
-            return l._serial > r._serial;
+            return l.m_serial > r.m_serial;
         }
 
         public static bool operator <(Serial l, Serial r)
         {
-            return l._serial < r._serial;
+            return l.m_serial < r.m_serial;
         }
 
         public static bool operator >=(Serial l, Serial r)
         {
-            return l._serial >= r._serial;
+            return l.m_serial >= r.m_serial;
         }
 
         public static bool operator <=(Serial l, Serial r)
         {
-            return l._serial <= r._serial;
+            return l.m_serial <= r.m_serial;
         }
 
         public override string ToString()
         {
-            return String.Format("0x{0:X8}", _serial);
+            return String.Format("0x{0:X8}", m_serial);
         }
 
         public static implicit operator int(Serial a)
         {
-            return a._serial;
+            return a.m_serial;
         }
 
         public static implicit operator Serial(int a)

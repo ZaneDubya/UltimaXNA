@@ -34,7 +34,7 @@ namespace UltimaXNA.UltimaGUI.Gumps
             : base(0, 0)
         {
             int hue = 1132; // dark brown
-            _renderFullScreen = false;
+            m_renderFullScreen = false;
             // backdrop
             AddControl(new GumpPic(this, 0, 0, 0, 9001,0));
             // quit button

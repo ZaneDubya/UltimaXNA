@@ -18,25 +18,25 @@ namespace InterXLib.Input.Windows
     {
         public abstract int HookType { get; }
 
-        private IntPtr _hWnd;
-        private WndProcHandler _Hook;
-        private IntPtr _prevWndProc;
-        private IntPtr _hIMC;
+        private IntPtr m_hWnd;
+        private WndProcHandler m_Hook;
+        private IntPtr m_prevWndProc;
+        private IntPtr m_hIMC;
 
         public IntPtr HWnd
         {
-            get { return _hWnd; }
+            get { return m_hWnd; }
         }
 
         public MessageHook(IntPtr hWnd)
         {
-            _hWnd = hWnd;
-            _Hook = WndProcHook;
-            _prevWndProc = (IntPtr)NativeMethods.SetWindowLong(
+            m_hWnd = hWnd;
+            m_Hook = WndProcHook;
+            m_prevWndProc = (IntPtr)NativeMethods.SetWindowLong(
                 hWnd,
-                NativeConstants.GWL_WNDPROC, (int)Marshal.GetFunctionPointerForDelegate(_Hook));
-            _hIMC = NativeMethods.ImmGetContext(_hWnd);
-            new InputMessageFilter(_Hook);
+                NativeConstants.GWL_WNDPROC, (int)Marshal.GetFunctionPointerForDelegate(m_Hook));
+            m_hIMC = NativeMethods.ImmGetContext(m_hWnd);
+            new InputMessageFilter(m_Hook);
         }
 
         ~MessageHook()
@@ -52,16 +52,16 @@ namespace InterXLib.Input.Windows
                     return (IntPtr)(NativeConstants.DLGC_WANTALLKEYS);
                case NativeConstants.WM_IME_SETCONTEXT:
                     if ((int)wParam == 1)
-                        NativeMethods.ImmAssociateContext(hWnd, _hIMC);
+                        NativeMethods.ImmAssociateContext(hWnd, m_hIMC);
                     break;
                 case NativeConstants.WM_INPUTLANGCHANGE:
-                    int rrr = (int)NativeMethods.CallWindowProc(_prevWndProc, hWnd, msg, wParam, lParam);
-                    NativeMethods.ImmAssociateContext(hWnd, _hIMC);
+                    int rrr = (int)NativeMethods.CallWindowProc(m_prevWndProc, hWnd, msg, wParam, lParam);
+                    NativeMethods.ImmAssociateContext(hWnd, m_hIMC);
                     
                     return (IntPtr)1;
             }
 
-            return NativeMethods.CallWindowProc(_prevWndProc, hWnd, msg, wParam, lParam);
+            return NativeMethods.CallWindowProc(m_prevWndProc, hWnd, msg, wParam, lParam);
         }
 
         public void Dispose()
@@ -79,15 +79,15 @@ namespace InterXLib.Input.Windows
     // http://www.gamedev.net/community/forums/topic.asp?topic_id=554322
     class InputMessageFilter : System.Windows.Forms.IMessageFilter
     {
-        private WndProcHandler _Hook;
+        private WndProcHandler m_Hook;
 
         public InputMessageFilter(WndProcHandler hook)
         {
-            _Hook = hook;
+            m_Hook = hook;
             System.Windows.Forms.Application.AddMessageFilter(this);
         }
         [DllImport("user32.dll", EntryPoint = "TranslateMessage")]
-        protected extern static bool _TranslateMessage(ref System.Windows.Forms.Message m);
+        protected extern static bool m_TranslateMessage(ref System.Windows.Forms.Message m);
 
         bool System.Windows.Forms.IMessageFilter.PreFilterMessage(ref System.Windows.Forms.Message m)
         {
@@ -96,31 +96,31 @@ namespace InterXLib.Input.Windows
                 case NativeConstants.WM_SYSKEYDOWN:
                 case NativeConstants.WM_SYSKEYUP:
                     {
-                        bool b = _TranslateMessage(ref m);
-                        _Hook(m.HWnd, (uint)m.Msg, m.WParam, m.LParam);
+                        bool b = m_TranslateMessage(ref m);
+                        m_Hook(m.HWnd, (uint)m.Msg, m.WParam, m.LParam);
                         return true;
                     }
 
                 case NativeConstants.WM_SYSCHAR:
                     {
-                        _Hook(m.HWnd, (uint)m.Msg, m.WParam, m.LParam);
+                        m_Hook(m.HWnd, (uint)m.Msg, m.WParam, m.LParam);
                         return true;
                     }
                 case NativeConstants.WM_KEYDOWN:
                 case NativeConstants.WM_KEYUP:
                     {
-                        bool b = _TranslateMessage(ref m);
-                        _Hook(m.HWnd, (uint)m.Msg, m.WParam, m.LParam);
+                        bool b = m_TranslateMessage(ref m);
+                        m_Hook(m.HWnd, (uint)m.Msg, m.WParam, m.LParam);
                         return true;
                     }
                 case NativeConstants.WM_CHAR:
                     {
-                        _Hook(m.HWnd, (uint)m.Msg, m.WParam, m.LParam);
+                        m_Hook(m.HWnd, (uint)m.Msg, m.WParam, m.LParam);
                         return true;
                     }
                 case NativeConstants.WM_DEADCHAR:
                     {
-                        _Hook(m.HWnd, (uint)m.Msg, m.WParam, m.LParam);
+                        m_Hook(m.HWnd, (uint)m.Msg, m.WParam, m.LParam);
                         return true;
                     }
             }

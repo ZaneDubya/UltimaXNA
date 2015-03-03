@@ -9,16 +9,16 @@ namespace UltimaXNA.UltimaData.Fonts
 
     public static class ASCIIText
     {
-        private static ASCIIFont[] _fonts = new ASCIIFont[10];
-        private static bool _initialized;
-        private static GraphicsDevice _graphicsDevice;
+        private static ASCIIFont[] m_fonts = new ASCIIFont[10];
+        private static bool m_initialized;
+        private static GraphicsDevice m_graphicsDevice;
 
         //QUERY: Does this really need to be exposed?
-        public static ASCIIFont[] Fonts { get { return ASCIIText._fonts; } set { ASCIIText._fonts = value; } }
+        public static ASCIIFont[] Fonts { get { return ASCIIText.m_fonts; } set { ASCIIText.m_fonts = value; } }
 
         public static int MaxWidth
         {
-            get { return _graphicsDevice.Viewport.Width; }
+            get { return m_graphicsDevice.Viewport.Width; }
         }
 
         static ASCIIText()
@@ -28,11 +28,11 @@ namespace UltimaXNA.UltimaData.Fonts
 
         public static void Initialize(GraphicsDevice graphicsDevice)
         {
-            if (!_initialized)
+            if (!m_initialized)
             {
-                _initialized = true;
+                m_initialized = true;
                 string path = FileManager.GetFilePath("fonts.mul");
-                _graphicsDevice = graphicsDevice;
+                m_graphicsDevice = graphicsDevice;
                 if (path != null)
                 {
                     byte[] buffer;
@@ -45,7 +45,7 @@ namespace UltimaXNA.UltimaData.Fonts
 
                     for (int i = 0; i < 10; ++i)
                     {
-                        _fonts[i] = new ASCIIFont();
+                        m_fonts[i] = new ASCIIFont();
 
                         byte header = buffer[pos++];
 
@@ -57,12 +57,12 @@ namespace UltimaXNA.UltimaData.Fonts
 
                             if (width > 0 && height > 0)
                             {
-                                if (height > _fonts[i].Height && k < 96)
+                                if (height > m_fonts[i].Height && k < 96)
                                 {
-                                    _fonts[i].Height = height;
+                                    m_fonts[i].Height = height;
                                 }
 
-                                Texture2D texture = new Texture2D(_graphicsDevice, width, height, false, SurfaceFormat.Color);
+                                Texture2D texture = new Texture2D(m_graphicsDevice, width, height, false, SurfaceFormat.Color);
                                 Color[] pixels = new Color[width * height];
 
                                 unsafe
@@ -92,7 +92,7 @@ namespace UltimaXNA.UltimaData.Fonts
                                 }
 
                                 texture.SetData<Color>(pixels);
-                                _fonts[i].Characters[k] = texture;
+                                m_fonts[i].Characters[k] = texture;
                             }
                         }
                     }
@@ -100,35 +100,35 @@ namespace UltimaXNA.UltimaData.Fonts
             }
         }
 
-        private static Dictionary<string, Texture2D> _TextTextureCache;
+        private static Dictionary<string, Texture2D> m_TextTextureCache;
         public static Texture2D GetTextTexture(string text, int fontId)
         {
             string hash = string.Format("<font:{0}>{1}", fontId.ToString(), text);
 
-            if (_TextTextureCache == null)
-                _TextTextureCache = new Dictionary<string, Texture2D>();
+            if (m_TextTextureCache == null)
+                m_TextTextureCache = new Dictionary<string, Texture2D>();
 
-            if (!_TextTextureCache.ContainsKey(hash))
+            if (!m_TextTextureCache.ContainsKey(hash))
             {
                 Texture2D texture = getTexture(text, fontId, 0);
-                _TextTextureCache.Add(hash, texture);
+                m_TextTextureCache.Add(hash, texture);
             }
-            return _TextTextureCache[hash];
+            return m_TextTextureCache[hash];
         }
 
         public static Texture2D GetTextTexture(string text, int fontId, int wrapwidth)
         {
             string hash = string.Format("<font:{0}:w:{1}>{2}", fontId.ToString(), wrapwidth.ToString(), text);
 
-            if (_TextTextureCache == null)
-                _TextTextureCache = new Dictionary<string, Texture2D>();
+            if (m_TextTextureCache == null)
+                m_TextTextureCache = new Dictionary<string, Texture2D>();
 
-            if (!_TextTextureCache.ContainsKey(hash))
+            if (!m_TextTextureCache.ContainsKey(hash))
             {
                 Texture2D texture = getTexture(text, fontId, wrapwidth);
-                _TextTextureCache.Add(hash, texture);
+                m_TextTextureCache.Add(hash, texture);
             }
-            return _TextTextureCache[hash];
+            return m_TextTextureCache[hash];
         }
 
         private unsafe static Texture2D getTexture(string text, int fontId, int wrapwidth)
@@ -142,7 +142,7 @@ namespace UltimaXNA.UltimaData.Fonts
                 font.GetTextDimensions(ref text, ref width, ref height, wrapwidth);
 
             if (width == 0) // empty text string
-                return new Texture2D(_graphicsDevice, 1, 1);
+                return new Texture2D(m_graphicsDevice, 1, 1);
 
             Color[] resultData = new Color[width * height];
 
@@ -186,7 +186,7 @@ namespace UltimaXNA.UltimaData.Fonts
                 }
             }
 
-            Texture2D result = new Texture2D(_graphicsDevice, width, height, false, SurfaceFormat.Color);
+            Texture2D result = new Texture2D(m_graphicsDevice, width, height, false, SurfaceFormat.Color);
             result.SetData<Color>(resultData);
             return result;
         }

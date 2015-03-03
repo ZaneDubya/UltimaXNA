@@ -24,31 +24,31 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class WeatherPacket : RecvPacket
     {
-        readonly byte _weatherType;
-        readonly byte _effectId;
-        readonly byte _temperature;
+        readonly byte m_weatherType;
+        readonly byte m_effectId;
+        readonly byte m_temperature;
 
         public byte WeatherType
         {
-            get { return _weatherType; }
+            get { return m_weatherType; }
         }
 
         public byte NumberOfWeatherEffectsOnScreen
         {
-            get { return _effectId; }        
+            get { return m_effectId; }        
         }
 
         public byte Temperature 
         {
-            get { return _temperature; }
+            get { return m_temperature; }
         }
 
         public WeatherPacket(PacketReader reader)
             : base(0x65, "Set Weather")
         {
-            _weatherType = reader.ReadByte();
-            _effectId = reader.ReadByte();
-            _temperature = reader.ReadByte();
+            m_weatherType = reader.ReadByte();
+            m_effectId = reader.ReadByte();
+            m_temperature = reader.ReadByte();
         }
     }
 }

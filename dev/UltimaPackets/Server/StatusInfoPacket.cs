@@ -24,65 +24,65 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class MobileStatusCompactPacket : RecvPacket
     {
-        readonly Serial _serial;
-        readonly string _playerName;
-        readonly short _currentHealth;
-        readonly short _maxHealth;
-        readonly byte _nameChangeFlag;
-        readonly byte _statusTypeFlag;
+        readonly Serial m_serial;
+        readonly string m_playerName;
+        readonly short m_currentHealth;
+        readonly short m_maxHealth;
+        readonly byte m_nameChangeFlag;
+        readonly byte m_statusTypeFlag;
         readonly Sex sex;
-        readonly short _strength; 
-        readonly short _dexterity;
-        readonly short _intelligence;
-        readonly short _currentStamina; 
-        readonly short _maxStamina;
-        readonly short _currentMana;
-        readonly short _maxMana;
-        readonly int _goldInInventory;
-        readonly short _armorRating;
-        readonly short _weight;
-        readonly short _maxWeight;
-        readonly Race _race;
-        readonly short _statCap;
-        readonly byte _followers;
-        readonly byte _maxFollowers;
-        readonly short _resistFire;
-        readonly short _resistCold;
-        readonly short _resistPoison;
-        readonly short _resistEnergy;
-        readonly short _luck;
-        readonly short _dmgMin;
-        readonly short _dmgMax;
-        readonly short _tithingPoints;
+        readonly short m_strength; 
+        readonly short m_dexterity;
+        readonly short m_intelligence;
+        readonly short m_currentStamina; 
+        readonly short m_maxStamina;
+        readonly short m_currentMana;
+        readonly short m_maxMana;
+        readonly int m_goldInInventory;
+        readonly short m_armorRating;
+        readonly short m_weight;
+        readonly short m_maxWeight;
+        readonly Race m_race;
+        readonly short m_statCap;
+        readonly byte m_followers;
+        readonly byte m_maxFollowers;
+        readonly short m_resistFire;
+        readonly short m_resistCold;
+        readonly short m_resistPoison;
+        readonly short m_resistEnergy;
+        readonly short m_luck;
+        readonly short m_dmgMin;
+        readonly short m_dmgMax;
+        readonly short m_tithingPoints;
 
         public Serial Serial 
         {
-            get { return _serial; }
+            get { return m_serial; }
         }
 
         public string PlayerName
         {
-            get { return _playerName; } 
+            get { return m_playerName; } 
         }
 
         public short CurrentHealth
         {
-            get { return _currentHealth; } 
+            get { return m_currentHealth; } 
         }
 
         public short MaxHealth
         {
-            get { return _maxHealth; }
+            get { return m_maxHealth; }
         }
 
         public bool NameChangeFlag 
         {
-            get { return (_nameChangeFlag == 0x01); } 
+            get { return (m_nameChangeFlag == 0x01); } 
         }
         
         public byte StatusType
         {
-            get { return _statusTypeFlag; } 
+            get { return m_statusTypeFlag; } 
         }
         
         public Sex Sex 
@@ -92,163 +92,163 @@ namespace UltimaXNA.UltimaPackets.Server
         
         public short Strength 
         {
-            get { return _strength; } 
+            get { return m_strength; } 
         }
 
         public short Dexterity 
         {
-            get { return _dexterity; }
+            get { return m_dexterity; }
         }
 
         public short Intelligence
         {
-            get { return _intelligence; }
+            get { return m_intelligence; }
         }
         
         public short CurrentStamina
         {
-            get { return _currentStamina; } 
+            get { return m_currentStamina; } 
         }
 
         public short MaxStamina
         {
-            get { return _maxStamina; } 
+            get { return m_maxStamina; } 
         }
 
         public short CurrentMana
         {
-            get { return _currentMana; } 
+            get { return m_currentMana; } 
         }
 
         public short MaxMana
         {
-            get { return _maxMana; } 
+            get { return m_maxMana; } 
         }
 
         public int GoldInInventory
         {
-            get { return _goldInInventory; } 
+            get { return m_goldInInventory; } 
         }
 
         public short ArmorRating
         {
-            get { return _armorRating; }
+            get { return m_armorRating; }
         }
         
         public short Weight 
         {
-            get { return _weight; } 
+            get { return m_weight; } 
         }
 
         public short WeightMax
         {
-            get { return _maxWeight; } 
+            get { return m_maxWeight; } 
         }
         
         public Race Race 
         {
-            get { return _race; }
+            get { return m_race; }
         } 
         
         public short StatCap
         {
-            get { return _statCap; } 
+            get { return m_statCap; } 
         }
 
         public byte FollowersCurrent 
         {
-            get { return _followers; } 
+            get { return m_followers; } 
         }
 
         public byte FollowersMax
         {
-            get { return _maxFollowers; } 
+            get { return m_maxFollowers; } 
         } 
 
         public short ResistFire 
         {
-            get { return _resistFire; } 
+            get { return m_resistFire; } 
         }
 
         public short ResistCold 
         {
-            get { return _resistCold; } 
+            get { return m_resistCold; } 
         }
 
         public short ResistPoison 
         {
-            get { return _resistPoison; }
+            get { return m_resistPoison; }
         }
 
         public short ResistEnergy 
         {
-            get { return _resistEnergy; } 
+            get { return m_resistEnergy; } 
         }
 
         public short Luck
         {
-            get { return _luck; }
+            get { return m_luck; }
         }
 
         public short DamageMin 
         {
-            get { return _dmgMin; }
+            get { return m_dmgMin; }
         }
 
         public short DamageMax 
         {
-            get { return _dmgMax; } 
+            get { return m_dmgMax; } 
         }
 
         public short TithingPoints
         {
-            get { return _tithingPoints; } 
+            get { return m_tithingPoints; } 
         }
 
         public MobileStatusCompactPacket(PacketReader reader)
             : base(0x11, "StatusInfo")
         {
-            _serial = reader.ReadInt32();
-            _playerName = reader.ReadString(30);
-            _currentHealth = reader.ReadInt16();
-            _maxHealth = reader.ReadInt16();
-            _nameChangeFlag = reader.ReadByte(); // 0x1 = allowed, 0 = not allowed
-            _statusTypeFlag = reader.ReadByte();
+            m_serial = reader.ReadInt32();
+            m_playerName = reader.ReadString(30);
+            m_currentHealth = reader.ReadInt16();
+            m_maxHealth = reader.ReadInt16();
+            m_nameChangeFlag = reader.ReadByte(); // 0x1 = allowed, 0 = not allowed
+            m_statusTypeFlag = reader.ReadByte();
             sex = (Sex)reader.ReadByte(); // 0=male, 1=female
-            _strength = reader.ReadInt16();
-            _dexterity = reader.ReadInt16();
-            _intelligence = reader.ReadInt16();
-            _currentStamina = reader.ReadInt16();
-            _maxStamina = reader.ReadInt16();
-            _currentMana = reader.ReadInt16();
-            _maxMana = reader.ReadInt16();
-            _goldInInventory = reader.ReadInt32();
-            _armorRating = reader.ReadInt16();
-            _weight = reader.ReadInt16();
+            m_strength = reader.ReadInt16();
+            m_dexterity = reader.ReadInt16();
+            m_intelligence = reader.ReadInt16();
+            m_currentStamina = reader.ReadInt16();
+            m_maxStamina = reader.ReadInt16();
+            m_currentMana = reader.ReadInt16();
+            m_maxMana = reader.ReadInt16();
+            m_goldInInventory = reader.ReadInt32();
+            m_armorRating = reader.ReadInt16();
+            m_weight = reader.ReadInt16();
 
-            if (_statusTypeFlag >= 5)
+            if (m_statusTypeFlag >= 5)
             {
-                _maxWeight = reader.ReadInt16();
-                _race = (Race)reader.ReadByte();
+                m_maxWeight = reader.ReadInt16();
+                m_race = (Race)reader.ReadByte();
             }
 
-            if (_statusTypeFlag >= 3)
+            if (m_statusTypeFlag >= 3)
             {
-                _statCap = reader.ReadInt16();
-                _followers = reader.ReadByte();
-                _maxFollowers = reader.ReadByte();
+                m_statCap = reader.ReadInt16();
+                m_followers = reader.ReadByte();
+                m_maxFollowers = reader.ReadByte();
             }
 
-            if (_statusTypeFlag >= 4)
+            if (m_statusTypeFlag >= 4)
             {
-                _resistFire = reader.ReadInt16();
-                _resistCold = reader.ReadInt16();
-                _resistPoison = reader.ReadInt16();
-                _resistEnergy = reader.ReadInt16();
-                _luck = reader.ReadInt16();
-                _dmgMin = reader.ReadInt16();
-                _dmgMax = reader.ReadInt16();
-                _tithingPoints = reader.ReadInt16();
+                m_resistFire = reader.ReadInt16();
+                m_resistCold = reader.ReadInt16();
+                m_resistPoison = reader.ReadInt16();
+                m_resistEnergy = reader.ReadInt16();
+                m_luck = reader.ReadInt16();
+                m_dmgMin = reader.ReadInt16();
+                m_dmgMax = reader.ReadInt16();
+                m_tithingPoints = reader.ReadInt16();
             }
         }
     }

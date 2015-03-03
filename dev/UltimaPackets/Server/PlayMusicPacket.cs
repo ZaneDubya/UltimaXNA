@@ -24,17 +24,17 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class PlayMusicPacket : RecvPacket
     {
-        readonly short _id;
+        readonly short m_id;
 
         public short MusicID
         {
-            get { return _id; }
+            get { return m_id; }
         }
 
         public PlayMusicPacket(PacketReader reader)
             : base(0x6D, "Play Music")
         {
-            _id = reader.ReadInt16();
+            m_id = reader.ReadInt16();
         }
     }
 }

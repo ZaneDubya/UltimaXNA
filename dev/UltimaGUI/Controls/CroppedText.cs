@@ -19,7 +19,7 @@ namespace UltimaXNA.UltimaGUI.Controls
     {
         public int Hue = 0;
         public string Text = string.Empty;
-        UltimaGUI.TextRenderer _textRenderer;
+        UltimaGUI.TextRenderer m_textRenderer;
 
         public CroppedText(Control owner, int page)
             : base(owner, page)
@@ -52,12 +52,12 @@ namespace UltimaXNA.UltimaGUI.Controls
             Size = new Point2D(width, height);
             Hue = hue;
             Text = lines[textIndex];
-            _textRenderer = new UltimaGUI.TextRenderer(Text, width, true);
+            m_textRenderer = new UltimaGUI.TextRenderer(Text, width, true);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)
         {
-            _textRenderer.Draw(spriteBatch, new Rectangle(X, Y, Size.X, Size.Y), 0, 0);
+            m_textRenderer.Draw(spriteBatch, new Rectangle(X, Y, Size.X, Size.Y), 0, 0);
             base.Draw(spriteBatch);
         }
     }

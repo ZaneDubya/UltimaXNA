@@ -21,22 +21,22 @@ namespace UltimaXNA.UltimaGUI.Controls
 
     class Slider : Control
     {
-        Texture2D[] _gumpBar = null;
-        Texture2D _gumpSlider = null;
+        Texture2D[] m_gumpBar = null;
+        Texture2D m_gumpSlider = null;
 
-        // we use _newValue to (a) get delta, (b) so Value only changes once per frame.
-        int _newValue = 0, _value = 0;
+        // we use m_newValue to (a) get delta, (b) so Value only changes once per frame.
+        int m_newValue = 0, m_value = 0;
         public int Value
         {
             get
             {
-                return _value;
+                return m_value;
             }
             set
             {
-                _value = _newValue = value;
+                m_value = m_newValue = value;
                 if (IsInitialized)
-                    _sliderX = (int)((float)(BarWidth - _gumpSlider.Width) * ((float)(Value - MinValue) / (float)(MaxValue - MinValue)));
+                    m_sliderX = (int)((float)(BarWidth - m_gumpSlider.Width) * ((float)(Value - MinValue) / (float)(MaxValue - MinValue)));
             }
         }
 
@@ -44,13 +44,13 @@ namespace UltimaXNA.UltimaGUI.Controls
         public int MaxValue;
         public int BarWidth;
 
-        int _sliderX;
+        int m_sliderX;
 
         public Slider(Control owner, int page)
             : base(owner, page)
         {
             HandlesMouseInput = true;
-            _pairedSliders = new List<Slider>();
+            m_pairedSliders = new List<Slider>();
         }
 
         public Slider(Control owner, int page, int x, int y, int width, int minValue, int maxValue, int value)
@@ -70,19 +70,19 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         public override void Update(GameTime gameTime)
         {
-            if (_gumpSlider == null)
+            if (m_gumpSlider == null)
             {
-                _gumpBar = new Texture2D[3];
-                _gumpBar[0] = UltimaData.GumpData.GetGumpXNA(213);
-                _gumpBar[1] = UltimaData.GumpData.GetGumpXNA(214);
-                _gumpBar[2] = UltimaData.GumpData.GetGumpXNA(215);
-                _gumpSlider = UltimaData.GumpData.GetGumpXNA(216);
-                Size = new Point2D(BarWidth, _gumpSlider.Height);
-                _sliderX = (int)((float)(BarWidth - _gumpSlider.Width) * ((float)(Value - MinValue) / (float)(MaxValue - MinValue)));
+                m_gumpBar = new Texture2D[3];
+                m_gumpBar[0] = UltimaData.GumpData.GetGumpXNA(213);
+                m_gumpBar[1] = UltimaData.GumpData.GetGumpXNA(214);
+                m_gumpBar[2] = UltimaData.GumpData.GetGumpXNA(215);
+                m_gumpSlider = UltimaData.GumpData.GetGumpXNA(216);
+                Size = new Point2D(BarWidth, m_gumpSlider.Height);
+                m_sliderX = (int)((float)(BarWidth - m_gumpSlider.Width) * ((float)(Value - MinValue) / (float)(MaxValue - MinValue)));
             }
             
-            modifyPairedValues(_newValue - Value);
-            _value = _newValue;
+            modifyPairedValues(m_newValue - Value);
+            m_value = m_newValue;
 
 
             base.Update(gameTime);
@@ -90,57 +90,57 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         public override void Draw(SpriteBatchUI spriteBatch)
         {
-            spriteBatch.Draw2D(_gumpBar[0], Position, 0, false, false);
-            spriteBatch.Draw2DTiled(_gumpBar[1], new Rectangle(Area.X + _gumpBar[0].Width, Area.Y, BarWidth - _gumpBar[2].Width - _gumpBar[0].Width, _gumpBar[1].Height), 0, false, false);
-            spriteBatch.Draw2D(_gumpBar[2], new Point2D(Area.X + BarWidth - _gumpBar[2].Width, Area.Y), 0, false, false);
-            spriteBatch.Draw2D(_gumpSlider, new Point2D(Area.X + _sliderX, Area.Y), 0, false, false);
+            spriteBatch.Draw2D(m_gumpBar[0], Position, 0, false, false);
+            spriteBatch.Draw2DTiled(m_gumpBar[1], new Rectangle(Area.X + m_gumpBar[0].Width, Area.Y, BarWidth - m_gumpBar[2].Width - m_gumpBar[0].Width, m_gumpBar[1].Height), 0, false, false);
+            spriteBatch.Draw2D(m_gumpBar[2], new Point2D(Area.X + BarWidth - m_gumpBar[2].Width, Area.Y), 0, false, false);
+            spriteBatch.Draw2D(m_gumpSlider, new Point2D(Area.X + m_sliderX, Area.Y), 0, false, false);
             base.Draw(spriteBatch);
         }
 
-        protected override bool _hitTest(int x, int y)
+        protected override bool m_hitTest(int x, int y)
         {
-            if (new Rectangle(_sliderX, 0, _gumpSlider.Width, _gumpSlider.Height).Contains(new Point(x, y)))
+            if (new Rectangle(m_sliderX, 0, m_gumpSlider.Width, m_gumpSlider.Height).Contains(new Point(x, y)))
                 return true;
             else
                 return false;
         }
 
-        bool _clicked = false;
-        Point _clickPosition;
+        bool m_clicked = false;
+        Point m_clickPosition;
 
         protected override void mouseDown(int x, int y, MouseButton button)
         {
-            _clicked = true;
-            _clickPosition = new Point(x, y);
+            m_clicked = true;
+            m_clickPosition = new Point(x, y);
         }
 
         protected override void mouseUp(int x, int y, MouseButton button)
         {
-            _clicked = false;
+            m_clicked = false;
         }
 
         protected override void mouseOver(int x, int y)
         {
-            if (_clicked)
+            if (m_clicked)
             {
-                _sliderX = _sliderX + (x - _clickPosition.X);
-                if (_sliderX < 0)
-                    _sliderX = 0;
-                if (_sliderX > BarWidth - _gumpSlider.Width)
-                    _sliderX = BarWidth - _gumpSlider.Width;
-                _clickPosition = new Point(x, y);
-                if (_clickPosition.X < _gumpSlider.Width / 2)
-                    _clickPosition.X = _gumpSlider.Width / 2;
-                if (_clickPosition.X > BarWidth - _gumpSlider.Width / 2)
-                    _clickPosition.X = BarWidth - _gumpSlider.Width / 2;
-                _newValue = (int)(((float)_sliderX / (float)(BarWidth - _gumpSlider.Width)) * (float)((MaxValue - MinValue))) + MinValue;
+                m_sliderX = m_sliderX + (x - m_clickPosition.X);
+                if (m_sliderX < 0)
+                    m_sliderX = 0;
+                if (m_sliderX > BarWidth - m_gumpSlider.Width)
+                    m_sliderX = BarWidth - m_gumpSlider.Width;
+                m_clickPosition = new Point(x, y);
+                if (m_clickPosition.X < m_gumpSlider.Width / 2)
+                    m_clickPosition.X = m_gumpSlider.Width / 2;
+                if (m_clickPosition.X > BarWidth - m_gumpSlider.Width / 2)
+                    m_clickPosition.X = BarWidth - m_gumpSlider.Width / 2;
+                m_newValue = (int)(((float)m_sliderX / (float)(BarWidth - m_gumpSlider.Width)) * (float)((MaxValue - MinValue))) + MinValue;
             }
         }
 
-        List<Slider> _pairedSliders;
+        List<Slider> m_pairedSliders;
         public void PairSlider(Slider s)
         {
-            _pairedSliders.Add(s);
+            m_pairedSliders.Add(s);
         }
 
         void modifyPairedValues(int delta)
@@ -148,29 +148,29 @@ namespace UltimaXNA.UltimaGUI.Controls
             bool updateSinceLastCycle = true;
             int d = (delta > 0) ? -1 : 1;
             int points = Math.Abs(delta);
-            int sliderIndex = Value % _pairedSliders.Count;
+            int sliderIndex = Value % m_pairedSliders.Count;
             while (points > 0)
             {
                 if (d > 0)
                 {
-                    if (_pairedSliders[sliderIndex].Value < _pairedSliders[sliderIndex].MaxValue)
+                    if (m_pairedSliders[sliderIndex].Value < m_pairedSliders[sliderIndex].MaxValue)
                     {
                         updateSinceLastCycle = true;
-                        _pairedSliders[sliderIndex].Value += d;
+                        m_pairedSliders[sliderIndex].Value += d;
                         points--;
                     }
                 }
                 else
                 {
-                    if (_pairedSliders[sliderIndex].Value > _pairedSliders[sliderIndex].MinValue)
+                    if (m_pairedSliders[sliderIndex].Value > m_pairedSliders[sliderIndex].MinValue)
                     {
                         updateSinceLastCycle = true;
-                        _pairedSliders[sliderIndex].Value += d;
+                        m_pairedSliders[sliderIndex].Value += d;
                         points--;
                     }
                 }
                 sliderIndex++;
-                if (sliderIndex == _pairedSliders.Count)
+                if (sliderIndex == m_pairedSliders.Count)
                 {
                     if (!updateSinceLastCycle)
                         return;

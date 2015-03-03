@@ -22,26 +22,26 @@ namespace UltimaXNA.UltimaWorld
     {
         private List<AMapObject> m_Objects;
 
-        private bool _NeedsSorting = false;
-        private bool _HasDeferredObjects = false;
+        private bool m_NeedsSorting = false;
+        private bool m_HasDeferredObjects = false;
 
-        private int _X, _Y;
+        private int m_X, m_Y;
         public int X
         {
-            get { return _X; }
-            set { _X = value; }
+            get { return m_X; }
+            set { m_X = value; }
         }
         public int Y
         {
-            get { return _Y; }
-            set { _Y = value; }
+            get { return m_Y; }
+            set { m_Y = value; }
         }
 
         public MapTile(int x, int y)
         {
             m_Objects = new List<AMapObject>();
-            _X = x;
-            _Y = y;
+            m_X = x;
+            m_Y = y;
         }
 
         // Check if under a roof.
@@ -87,7 +87,7 @@ namespace UltimaXNA.UltimaWorld
                 }
             }
             m_Objects = iObjects;
-            _NeedsSorting = true;
+            m_NeedsSorting = true;
         }
 
         public MapObjectGround GroundTile
@@ -131,9 +131,9 @@ namespace UltimaXNA.UltimaWorld
         public void AddMapObject(AMapObject item)
         {
             m_Objects.Add(item);
-            _NeedsSorting = true;
+            m_NeedsSorting = true;
             if (item is MapObjectDeferred)
-                _HasDeferredObjects = true;
+                m_HasDeferredObjects = true;
         }
 
         public void AddMapObject(AMapObject[] items)
@@ -212,11 +212,11 @@ namespace UltimaXNA.UltimaWorld
         {
             get
             {
-                if (_NeedsSorting)
+                if (m_NeedsSorting)
                 {
                     removeDuplicateObjects();
                     m_Objects.Sort(MapObjectComparer.Comparer);
-                    _NeedsSorting = false;
+                    m_NeedsSorting = false;
                 }
                 return m_Objects;
             }
@@ -224,12 +224,12 @@ namespace UltimaXNA.UltimaWorld
 
         public void Resort()
         {
-            _NeedsSorting = true;
+            m_NeedsSorting = true;
         }
 
         public void ClearTemporaryObjects()
         {
-            if (_HasDeferredObjects)
+            if (m_HasDeferredObjects)
             {
                 for (int i = 0; i < m_Objects.Count; i++)
                     if (m_Objects[i] is MapObjectDeferred)
@@ -238,7 +238,7 @@ namespace UltimaXNA.UltimaWorld
                         m_Objects.RemoveAt(i);
                         i--;
                     }
-                _HasDeferredObjects = false;
+                m_HasDeferredObjects = false;
                 Resort();
             }
         }

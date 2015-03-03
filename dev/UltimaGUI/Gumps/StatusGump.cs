@@ -22,7 +22,7 @@ namespace UltimaXNA.UltimaGUI.Gumps
     {
         List<Control> ControlsToUpdate = new List<Control>();
         PlayerMobile m = (PlayerMobile)EntityManager.GetPlayerObject();
-        GameTime _refreshTime = new GameTime();
+        GameTime m_refreshTime = new GameTime();
 
         public StatusGump()
             : base(0, 0)
@@ -91,9 +91,9 @@ namespace UltimaXNA.UltimaGUI.Gumps
 
         public override void Update(GameTime gameTime)
         {
-            if (_refreshTime.TotalGameTime.TotalSeconds + 0.5 < gameTime.TotalGameTime.TotalSeconds) //need to update
+            if (m_refreshTime.TotalGameTime.TotalSeconds + 0.5 < gameTime.TotalGameTime.TotalSeconds) //need to update
             {
-                _refreshTime = new GameTime(gameTime.TotalGameTime, gameTime.ElapsedGameTime);
+                m_refreshTime = new GameTime(gameTime.TotalGameTime, gameTime.ElapsedGameTime);
 
                 foreach (Control c in ControlsToUpdate)
                     Controls.Remove(c);

@@ -24,17 +24,17 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class TimePacket : RecvPacket
     {
-        readonly byte _hour, _minute, _second;
-        public byte Hour { get { return _hour; } }
-        public byte Minute { get { return _minute; } }
-        public byte Second { get { return _second; } }
+        readonly byte m_hour, m_minute, m_second;
+        public byte Hour { get { return m_hour; } }
+        public byte Minute { get { return m_minute; } }
+        public byte Second { get { return m_second; } }
 
         public TimePacket(PacketReader reader)
             : base(0x5B, "Time")
         {
-            _hour = reader.ReadByte();
-            _minute = reader.ReadByte();
-            _second = reader.ReadByte();
+            m_hour = reader.ReadByte();
+            m_minute = reader.ReadByte();
+            m_second = reader.ReadByte();
         }
     }
 }

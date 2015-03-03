@@ -20,7 +20,7 @@ namespace UltimaXNA.UltimaData
     {
         static ParticleData()
         {
-            _Data = new ParticleData[] {
+            m_Data = new ParticleData[] {
                 new ParticleData("Explosion", 0x36B0, 0),           // 14000 explosion 1
                 new ParticleData("Explosion", 0x36BD, 0),           // 14013 explosion 2
                 new ParticleData("Explosion",0x36CB, 0),            // 14027 explosion 3
@@ -59,25 +59,25 @@ namespace UltimaXNA.UltimaData
 
             determineParticleLengths();
 
-            if (_defaultData == null)
-                _defaultData = _Data[0];
+            if (m_defaultData == null)
+                m_defaultData = m_Data[0];
         }
 
         private static void determineParticleLengths()
         {
-            for (int i = 0; i < _Data.Length - 1; i++)
+            for (int i = 0; i < m_Data.Length - 1; i++)
             {
-                _Data[i].FrameLength = _Data[i + 1].ItemID - _Data[i].ItemID;
+                m_Data[i].FrameLength = m_Data[i + 1].ItemID - m_Data[i].ItemID;
             }
         }
 
-        private static ParticleData _defaultData;
-        private static ParticleData[] _Data;
+        private static ParticleData m_defaultData;
+        private static ParticleData[] m_Data;
 
         public static ParticleData DefaultEffect
         {
-            get { return _defaultData; }
-            set { _defaultData = value; }
+            get { return m_defaultData; }
+            set { m_defaultData = value; }
         }
 
         public static ParticleData RandomExplosion
@@ -100,22 +100,22 @@ namespace UltimaXNA.UltimaData
 
         public static ParticleData GetData(int itemID)
         {
-            if (itemID < _Data[0].ItemID)
+            if (itemID < m_Data[0].ItemID)
                 return null;
-            if (itemID >= _Data[_Data.Length - 1].ItemID)
+            if (itemID >= m_Data[m_Data.Length - 1].ItemID)
                 return null;
             
             ParticleData pData = null;
 
-            for (int i = 1; i < _Data.Length; i++)
+            for (int i = 1; i < m_Data.Length; i++)
             {
-                if (itemID < _Data[i].ItemID)
+                if (itemID < m_Data[i].ItemID)
                 {
-                    pData = _Data[i - 1];
+                    pData = m_Data[i - 1];
                     if (itemID != pData.ItemID)
                         Diagnostics.Logger.Error("Mismatch? Requested particle {0}, returning particle {1}.",
                             itemID, pData.ItemID);
-                    return _Data[i - 1];
+                    return m_Data[i - 1];
                 }
             }
 
@@ -124,21 +124,21 @@ namespace UltimaXNA.UltimaData
             return null;
         }
 
-        private int _itemID;
-        private int _frameLength;
-        private int _speed;
-        private string _name;
+        private int m_itemID;
+        private int m_frameLength;
+        private int m_speed;
+        private string m_name;
 
-        public int ItemID { get { return _itemID; } }
-        public int FrameLength { get { return _frameLength; } set { _frameLength = value; } }
-        public int SpeedOffset { get { return _speed; } set { _speed = value; } }
-        public string Name { get { return _name; } }
+        public int ItemID { get { return m_itemID; } }
+        public int FrameLength { get { return m_frameLength; } set { m_frameLength = value; } }
+        public int SpeedOffset { get { return m_speed; } set { m_speed = value; } }
+        public string Name { get { return m_name; } }
 
         public ParticleData(string name, int itemID, int speed)
         {
-            _name = name;
-            _itemID = itemID;
-            _speed = speed;
+            m_name = name;
+            m_itemID = itemID;
+            m_speed = speed;
         }
     }
 }

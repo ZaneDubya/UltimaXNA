@@ -24,59 +24,59 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class MobileAnimationPacket : RecvPacket
     {
-        readonly Serial _serial;
-        readonly short _action;
-        readonly short _framecount;
-        readonly short _repeatcount;
-        readonly byte _reverse;
-        readonly byte _repeat;
-        readonly byte _delay;
+        readonly Serial m_serial;
+        readonly short m_action;
+        readonly short m_framecount;
+        readonly short m_repeatcount;
+        readonly byte m_reverse;
+        readonly byte m_repeat;
+        readonly byte m_delay;
 
         public Serial Serial
         {
-            get { return _serial; } 
+            get { return m_serial; } 
         }
 
         public short Action
         {
-            get { return _action; }
+            get { return m_action; }
         }
 
         public short FrameCount
         {
-            get { return _framecount; }
+            get { return m_framecount; }
         }
 
         public short RepeatCount
         {
-            get { return _repeatcount; }
+            get { return m_repeatcount; }
         }
 
         public bool Reverse 
         {
-            get { return (_reverse == 1); }
+            get { return (m_reverse == 1); }
         }
 
         public bool Repeat
         {
-            get { return (_repeat == 1); } 
+            get { return (m_repeat == 1); } 
         }
 
         public byte Delay
         {
-            get { return _delay; }
+            get { return m_delay; }
         }
 
         public MobileAnimationPacket(PacketReader reader)
             : base(0x6E, "Mobile Animation")
         {
-            _serial = reader.ReadInt32();
-            _action = reader.ReadInt16();
-            _framecount = reader.ReadInt16();
-            _repeatcount = reader.ReadInt16();
-            _reverse = reader.ReadByte(); // 0x00=forward, 0x01=backwards
-            _repeat = reader.ReadByte(); // 0 - Don't repeat / 1 repeat
-            _delay = reader.ReadByte();
+            m_serial = reader.ReadInt32();
+            m_action = reader.ReadInt16();
+            m_framecount = reader.ReadInt16();
+            m_repeatcount = reader.ReadInt16();
+            m_reverse = reader.ReadByte(); // 0x00=forward, 0x01=backwards
+            m_repeat = reader.ReadByte(); // 0 - Don't repeat / 1 repeat
+            m_delay = reader.ReadByte();
         }
     }
 }

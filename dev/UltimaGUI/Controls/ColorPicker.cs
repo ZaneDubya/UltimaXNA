@@ -18,31 +18,31 @@ namespace UltimaXNA.UltimaGUI.Controls
 {
     class ColorPicker : Control
     {
-        protected Texture2D _huesTexture;
-        protected Texture2D _selectedIndicator;
-        protected Rectangle _openArea;
+        protected Texture2D m_huesTexture;
+        protected Texture2D m_selectedIndicator;
+        protected Rectangle m_openArea;
 
-        protected Point _hueSize;
-        protected int[] _hues;
+        protected Point m_hueSize;
+        protected int[] m_hues;
 
-        protected ColorPicker _openColorPicker;
+        protected ColorPicker m_openColorPicker;
 
-        bool _getNewSelectedTexture;
-        int _index = 0;
+        bool m_getNewSelectedTexture;
+        int m_index = 0;
         public int Index
         {
-            get { return _index; }
-            set { _index = value; _getNewSelectedTexture = true; }
+            get { return m_index; }
+            set { m_index = value; m_getNewSelectedTexture = true; }
         }
 
         public int HueValue
         {
-            get { return _hues[Index]; }
+            get { return m_hues[Index]; }
             set
             {
-                for (int i = 0; i < _hues.Length; i++)
+                for (int i = 0; i < m_hues.Length; i++)
                 {
-                    if (value == _hues[i])
+                    if (value == m_hues[i])
                     {
                         Index = i;
                         break;
@@ -60,53 +60,53 @@ namespace UltimaXNA.UltimaGUI.Controls
         public ColorPicker(Control owner, int page, Rectangle area, int swatchWidth, int swatchHeight, int[] hues)
             : this(owner, page)
         {
-            _isAnOpenSwatch = true;
+            m_isAnOpenSwatch = true;
             buildGumpling(area, swatchWidth, swatchHeight, hues);
         }
 
         public ColorPicker(Control owner, int page, Rectangle closedArea, Rectangle openArea, int swatchWidth, int swatchHeight, int[] hues)
             : this(owner, page)
         {
-            _isAnOpenSwatch = false;
-            _openArea = openArea;
+            m_isAnOpenSwatch = false;
+            m_openArea = openArea;
             buildGumpling(closedArea, swatchWidth, swatchHeight, hues);
         }
 
         void buildGumpling(Rectangle area, int swatchWidth, int swatchHeight, int[] hues)
         {
-            _hueSize = new Point(swatchWidth, swatchHeight);
+            m_hueSize = new Point(swatchWidth, swatchHeight);
             Position = new Point2D(area.X, area.Y);
             Size = new Point2D(area.Width, area.Height);
-            _hues = hues;
+            m_hues = hues;
             Index = 0;
             closeSwatch();
         }
 
         public override void Update(GameTime gameTime)
         {
-            if (_isAnOpenSwatch)
+            if (m_isAnOpenSwatch)
             {
-                if (_huesTexture == null)
+                if (m_huesTexture == null)
                 {
-                _huesTexture = UltimaData.HuesXNA.HueSwatch(_hueSize.X, _hueSize.Y, _hues);
-                _selectedIndicator = UltimaData.GumpData.GetGumpXNA(6000);
+                m_huesTexture = UltimaData.HuesXNA.HueSwatch(m_hueSize.X, m_hueSize.Y, m_hues);
+                m_selectedIndicator = UltimaData.GumpData.GetGumpXNA(6000);
                 }
             }
             else
             {
-                if (_huesTexture == null || _getNewSelectedTexture)
+                if (m_huesTexture == null || m_getNewSelectedTexture)
                 {
-                    _getNewSelectedTexture = false;
-                    _huesTexture = null;
-                    _huesTexture = UltimaData.HuesXNA.HueSwatch(1, 1, new int[1] { _hues[Index] });
+                    m_getNewSelectedTexture = false;
+                    m_huesTexture = null;
+                    m_huesTexture = UltimaData.HuesXNA.HueSwatch(1, 1, new int[1] { m_hues[Index] });
                 }
             }
 
-            if (!_isAnOpenSwatch)
+            if (!m_isAnOpenSwatch)
             {
-                if (_isSwatchOpen && _openColorPicker.IsInitialized)
+                if (m_isSwatchOpen && m_openColorPicker.IsInitialized)
                 {
-                    if (UserInterface.MouseOverControl != _openColorPicker)
+                    if (UserInterface.MouseOverControl != m_openColorPicker)
                         closeSwatch();
                 }
             }
@@ -116,51 +116,51 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         public override void Draw(SpriteBatchUI spriteBatch)
         {
-            if (_isAnOpenSwatch)
+            if (m_isAnOpenSwatch)
             {
-                spriteBatch.Draw2D(_huesTexture, Area, 0, false, false);
-                spriteBatch.Draw2D(_selectedIndicator, new Point2D(
-                    (int)(X + (float)(Width / _hueSize.X) * ((Index % _hueSize.X) + 0.5f) - _selectedIndicator.Width / 2),
-                    (int)(Y + (float)(Height / _hueSize.Y) * ((Index / _hueSize.X) + 0.5f) - _selectedIndicator.Height / 2)
+                spriteBatch.Draw2D(m_huesTexture, Area, 0, false, false);
+                spriteBatch.Draw2D(m_selectedIndicator, new Point2D(
+                    (int)(X + (float)(Width / m_hueSize.X) * ((Index % m_hueSize.X) + 0.5f) - m_selectedIndicator.Width / 2),
+                    (int)(Y + (float)(Height / m_hueSize.Y) * ((Index / m_hueSize.X) + 0.5f) - m_selectedIndicator.Height / 2)
                     ), 0, false, false);
             }
             else
             {
-                if (!_isSwatchOpen)
-                    spriteBatch.Draw2D(_huesTexture, Area, 0, false, false);
+                if (!m_isSwatchOpen)
+                    spriteBatch.Draw2D(m_huesTexture, Area, 0, false, false);
             }
             base.Draw(spriteBatch);
         }
 
-        bool _isAnOpenSwatch = false;
-        bool _isSwatchOpen = false;
+        bool m_isAnOpenSwatch = false;
+        bool m_isSwatchOpen = false;
 
         void openSwatch()
         {
-            _isSwatchOpen = true;
-            if (_openColorPicker != null)
+            m_isSwatchOpen = true;
+            if (m_openColorPicker != null)
             {
-                _openColorPicker.Dispose();
-                _openColorPicker = null;
+                m_openColorPicker.Dispose();
+                m_openColorPicker = null;
             }
-            _openColorPicker = new ColorPicker(_owner, Page, _openArea, _hueSize.X, _hueSize.Y, _hues);
-            _openColorPicker.OnMouseClick = onOpenSwatchClick;
-            ((Gump)_owner).AddControl(_openColorPicker);
+            m_openColorPicker = new ColorPicker(m_owner, Page, m_openArea, m_hueSize.X, m_hueSize.Y, m_hues);
+            m_openColorPicker.OnMouseClick = onOpenSwatchClick;
+            ((Gump)m_owner).AddControl(m_openColorPicker);
         }
 
         void closeSwatch()
         {
-            _isSwatchOpen = false;
-            if (_openColorPicker != null)
+            m_isSwatchOpen = false;
+            if (m_openColorPicker != null)
             {
-                _openColorPicker.Dispose();
-                _openColorPicker = null;
+                m_openColorPicker.Dispose();
+                m_openColorPicker = null;
             }
         }
 
         protected override void mouseClick(int x, int y, MouseButton button)
         {
-            if (!_isAnOpenSwatch)
+            if (!m_isAnOpenSwatch)
             {
                 openSwatch();
             }
@@ -168,17 +168,17 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         protected override void mouseOver(int x, int y)
         {
-            if (_isAnOpenSwatch)
+            if (m_isAnOpenSwatch)
             {
-                int clickRow = x / (Width / _hueSize.X);
-                int clickColumn = y / (Height / _hueSize.Y);
-                Index = clickRow + clickColumn * _hueSize.X;
+                int clickRow = x / (Width / m_hueSize.X);
+                int clickColumn = y / (Height / m_hueSize.Y);
+                Index = clickRow + clickColumn * m_hueSize.X;
             }
         }
 
         void onOpenSwatchClick(int x, int y, MouseButton button)
         {
-            Index = _openColorPicker.Index;
+            Index = m_openColorPicker.Index;
             closeSwatch();
         }
     }

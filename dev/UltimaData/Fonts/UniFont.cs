@@ -19,24 +19,24 @@ namespace UltimaXNA.UltimaData.Fonts
 {
     public sealed class UniFont
     {
-        GraphicsDevice _graphics = null;
-        BinaryReader _reader = null;
-        private UniCharacter[] _characters;
+        GraphicsDevice m_graphics = null;
+        BinaryReader m_reader = null;
+        private UniCharacter[] m_characters;
 
-        private int _height = 0;
-        public int Height { get { return _height; } set { _height = value; } }
-        private int _baseline = 0;
-        public int Baseline { get { return _baseline; } set { _baseline = value; } }
-        public int Lineheight { get { return _baseline + 4; } }
+        private int m_height = 0;
+        public int Height { get { return m_height; } set { m_height = value; } }
+        private int m_baseline = 0;
+        public int Baseline { get { return m_baseline; } set { m_baseline = value; } }
+        public int Lineheight { get { return m_baseline + 4; } }
         public UniFont()
         {
-            _characters = new UniCharacter[0x10000];
+            m_characters = new UniCharacter[0x10000];
         }
 
         public void Initialize(GraphicsDevice graphicsDevice, BinaryReader reader)
         {
-            _graphics = graphicsDevice;
-            _reader = reader;
+            m_graphics = graphicsDevice;
+            m_reader = reader;
             // We load the first 128 characters to 'seed' the font with correct spacing values.
             for (int iChar = 0; iChar < 128; iChar++)
             {
@@ -54,23 +54,23 @@ namespace UltimaXNA.UltimaData.Fonts
 
         public UniCharacter GetCharacter(int index)
         {
-            if (_characters[index] == null)
+            if (m_characters[index] == null)
             {
-                _characters[index] = loadCharacter(index);
-                int height = _characters[index].Height + _characters[index].YOffset;
+                m_characters[index] = loadCharacter(index);
+                int height = m_characters[index].Height + m_characters[index].YOffset;
                 if (index < 128 && height > Height)
                 {
                     Height = height;
                 }
             }
-            return _characters[index];
+            return m_characters[index];
         }
 
         UniCharacter loadCharacter(int index)
         {
             // get the lookup table - 0x10000 ints.
-            _reader.BaseStream.Position = index * 4;
-            int lookup = _reader.ReadInt32();
+            m_reader.BaseStream.Position = index * 4;
+            int lookup = m_reader.ReadInt32();
 
             UniCharacter character = new UniCharacter();
 
@@ -81,8 +81,8 @@ namespace UltimaXNA.UltimaData.Fonts
             }
             else
             {
-                _reader.BaseStream.Position = lookup;
-                character.LoadCharacter(_reader, _graphics);
+                m_reader.BaseStream.Position = lookup;
+                character.LoadCharacter(m_reader, m_graphics);
                 return character;
             }
         }

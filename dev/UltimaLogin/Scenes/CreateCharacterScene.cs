@@ -37,16 +37,16 @@ namespace UltimaXNA.Scenes
     }
     public class CreateCharacterScene : AScene
     {
-        CreateCharacterSceneStates _status;
+        CreateCharacterSceneStates m_status;
 
-        bool _skillsSet = false;
-        int[] _attributes = new int[3];
-        int[] _skillIndexes= new int[3];
-        int[] _skillValues = new int[3];
-        bool _appearanceSet = false;
-        string _name;
-        int _gender, _hairStyleID, _facialHairStyleID;
-        int _skinHue, _hairHue, _facialHairHue;
+        bool m_skillsSet = false;
+        int[] m_attributes = new int[3];
+        int[] m_skillIndexes= new int[3];
+        int[] m_skillValues = new int[3];
+        bool m_appearanceSet = false;
+        string m_name;
+        int m_gender, m_hairStyleID, m_facialHairStyleID;
+        int m_skinHue, m_hairHue, m_facialHairHue;
 
         public CreateCharacterScene()
         {
@@ -56,7 +56,7 @@ namespace UltimaXNA.Scenes
         public override void Intitialize(UltimaClient client)
         {
             base.Intitialize(client);
-            _status = CreateCharacterSceneStates.Default;
+            m_status = CreateCharacterSceneStates.Default;
             openSkillsGump();
         }
 
@@ -66,19 +66,19 @@ namespace UltimaXNA.Scenes
             CreateCharSkillsGump g1 = ((CreateCharSkillsGump)g);
             g1.OnForward += this.OnForward;
             g1.OnBackward += this.OnBackward;
-            _status = CreateCharacterSceneStates.ChooseSkills;
+            m_status = CreateCharacterSceneStates.ChooseSkills;
             // restore values
-            if (_skillsSet)
+            if (m_skillsSet)
             {
-                g1.Strength = _attributes[0];
-                g1.Dexterity = _attributes[1];
-                g1.Intelligence = _attributes[2];
-                g1.SkillIndex0 = _skillIndexes[0];
-                g1.SkillIndex1 = _skillIndexes[1];
-                g1.SkillIndex2 = _skillIndexes[2];
-                g1.SkillPoints0 = _skillValues[0];
-                g1.SkillPoints1 = _skillValues[1];
-                g1.SkillPoints2 = _skillValues[2];
+                g1.Strength = m_attributes[0];
+                g1.Dexterity = m_attributes[1];
+                g1.Intelligence = m_attributes[2];
+                g1.SkillIndex0 = m_skillIndexes[0];
+                g1.SkillIndex1 = m_skillIndexes[1];
+                g1.SkillIndex2 = m_skillIndexes[2];
+                g1.SkillPoints0 = m_skillValues[0];
+                g1.SkillPoints1 = m_skillValues[1];
+                g1.SkillPoints2 = m_skillValues[2];
             }
         }
 
@@ -88,17 +88,17 @@ namespace UltimaXNA.Scenes
             CreateCharAppearanceGump g1 = ((CreateCharAppearanceGump)g);
             ((CreateCharAppearanceGump)g1).OnForward += this.OnForward;
             ((CreateCharAppearanceGump)g1).OnBackward += this.OnBackward;
-            _status = CreateCharacterSceneStates.ChooseAppearance;
+            m_status = CreateCharacterSceneStates.ChooseAppearance;
             // restore values
-            if (_appearanceSet)
+            if (m_appearanceSet)
             {
-                g1.Name = _name;
-                g1.Gender = _gender;
-                g1.HairID = _hairStyleID;
-                g1.FacialHairID = _facialHairStyleID;
-                g1.SkinHue = _skinHue;
-                g1.HairHue = _hairHue;
-                g1.FacialHairHue = _facialHairHue;
+                g1.Name = m_name;
+                g1.Gender = m_gender;
+                g1.HairID = m_hairStyleID;
+                g1.FacialHairID = m_facialHairStyleID;
+                g1.SkinHue = m_skinHue;
+                g1.HairHue = m_hairHue;
+                g1.FacialHairHue = m_facialHairHue;
             }
         }
 
@@ -126,16 +126,16 @@ namespace UltimaXNA.Scenes
                 return false;
             }
             // save the values;
-            _attributes[0] = g.Strength;
-            _attributes[1] = g.Dexterity;
-            _attributes[2] = g.Intelligence;
-            _skillIndexes[0] = g.SkillIndex0;
-            _skillIndexes[1] = g.SkillIndex1;
-            _skillIndexes[2] = g.SkillIndex2;
-            _skillValues[0] = g.SkillPoints0;
-            _skillValues[1] = g.SkillPoints1;
-            _skillValues[2] = g.SkillPoints2;
-            _skillsSet = true;
+            m_attributes[0] = g.Strength;
+            m_attributes[1] = g.Dexterity;
+            m_attributes[2] = g.Intelligence;
+            m_skillIndexes[0] = g.SkillIndex0;
+            m_skillIndexes[1] = g.SkillIndex1;
+            m_skillIndexes[2] = g.SkillIndex2;
+            m_skillValues[0] = g.SkillPoints0;
+            m_skillValues[1] = g.SkillPoints1;
+            m_skillValues[2] = g.SkillPoints2;
+            m_skillsSet = true;
             return true;
         }
 
@@ -143,22 +143,22 @@ namespace UltimaXNA.Scenes
         {
             CreateCharAppearanceGump g = UltimaEngine.UserInterface.GetControl<CreateCharAppearanceGump>(0);
             // save the values
-            _appearanceSet = true;
-            _name = g.Name;
-            _gender = g.Gender;
-            _hairStyleID = g.HairID;
-            _facialHairStyleID = g.FacialHairID;
-            _skinHue = g.SkinHue;
-            _hairHue = g.HairHue;
-            _facialHairHue = g.FacialHairHue;
+            m_appearanceSet = true;
+            m_name = g.Name;
+            m_gender = g.Gender;
+            m_hairStyleID = g.HairID;
+            m_facialHairStyleID = g.FacialHairID;
+            m_skinHue = g.SkinHue;
+            m_hairHue = g.HairHue;
+            m_facialHairHue = g.FacialHairHue;
             // make sure name is long enough. 2+ Characters
             // if not, pop up an appropriate error message.
-            if (_name.Length < 2)
+            if (m_name.Length < 2)
             {
                 UltimaInteraction.MsgBox(UltimaData.StringData.Entry(1075458), MsgBoxTypes.OkOnly); // 1075458: Your character name is too short.
                 return false;
             }
-            if (_name[_name.Length - 1] == '.')
+            if (m_name[m_name.Length - 1] == '.')
             {
                 UltimaInteraction.MsgBox(UltimaData.StringData.Entry(1075457), MsgBoxTypes.OkOnly); // 1075457: Your character name cannot end with a period('.').
                 return false;
@@ -172,7 +172,7 @@ namespace UltimaXNA.Scenes
 
             if (SceneState == SceneState.Active)
             {
-                switch (_status)
+                switch (m_status)
                 {
                     case CreateCharacterSceneStates.ChooseSkills:
                         // do nothing
@@ -185,9 +185,9 @@ namespace UltimaXNA.Scenes
                         break;
                     case CreateCharacterSceneStates.CreateCharacter:
                         Client.Send(new CreateCharacterPacket(
-                            _name, (Sex)_gender, (Race)0, (byte)_attributes[0], (byte)_attributes[1], (byte)_attributes[2], 
-                            (byte)_skillIndexes[0], (byte)_skillValues[0], (byte)_skillIndexes[1], (byte)_skillValues[1], (byte)_skillIndexes[2], (byte)_skillValues[2],
-                            (short)_skinHue, (short)_hairStyleID, (short)_hairHue, (short)_facialHairStyleID, (short)_facialHairHue,
+                            m_name, (Sex)m_gender, (Race)0, (byte)m_attributes[0], (byte)m_attributes[1], (byte)m_attributes[2], 
+                            (byte)m_skillIndexes[0], (byte)m_skillValues[0], (byte)m_skillIndexes[1], (byte)m_skillValues[1], (byte)m_skillIndexes[2], (byte)m_skillValues[2],
+                            (short)m_skinHue, (short)m_hairStyleID, (short)m_hairHue, (short)m_facialHairStyleID, (short)m_facialHairHue,
                             0, (short)UltimaVars.Characters.FirstEmptySlot, Utility.IPAddress, 0, 0));
                         break;
                 }
@@ -223,10 +223,10 @@ namespace UltimaXNA.Scenes
 
         public void OnBackward()
         {
-            switch (_status)
+            switch (m_status)
             {
                 case CreateCharacterSceneStates.ChooseSkills:
-                    _status = CreateCharacterSceneStates.Cancel;
+                    m_status = CreateCharacterSceneStates.Cancel;
                     break;
                 case CreateCharacterSceneStates.ChooseAppearance:
                     UltimaEngine.UserInterface.GetControl<CreateCharAppearanceGump>(0).Dispose();
@@ -237,7 +237,7 @@ namespace UltimaXNA.Scenes
 
         public void OnForward()
         {
-            switch (_status)
+            switch (m_status)
             {
                 case CreateCharacterSceneStates.ChooseSkills:
                     if (validateSkills())
@@ -249,7 +249,7 @@ namespace UltimaXNA.Scenes
                 case CreateCharacterSceneStates.ChooseAppearance:
                     if (validateAppearance())
                     {
-                        _status = CreateCharacterSceneStates.CreateCharacter;
+                        m_status = CreateCharacterSceneStates.CreateCharacter;
                     }
                     break;
             }

@@ -22,25 +22,25 @@ namespace UltimaXNA.UltimaData
 {
     public static class SoundData
     {
-        private static BinaryReader _Index;
-        private static Stream _Stream;
-        private static Dictionary<int, int> _Translations;
-        private static Dictionary<int, UOSound> _Sounds;
-        private static bool _filesPrepared = false;
+        private static BinaryReader m_Index;
+        private static Stream m_Stream;
+        private static Dictionary<int, int> m_Translations;
+        private static Dictionary<int, UOSound> m_Sounds;
+        private static bool m_filesPrepared = false;
 
         public static void PlaySound(int soundID)
         {
             // Sounds.mul is exclusively locked by the legacy client, so we need to make sure this file is available
             // before attempting to play any sounds.
-            if (!_filesPrepared)
+            if (!m_filesPrepared)
                 setupFiles();
-            if (_filesPrepared)
+            if (m_filesPrepared)
             {
-                if (!_Sounds.ContainsKey(soundID))
+                if (!m_Sounds.ContainsKey(soundID))
                 {
-                    _Sounds.Add(soundID, getSound(soundID));
+                    m_Sounds.Add(soundID, getSound(soundID));
                 }
-                _Sounds[soundID].Play();
+                m_Sounds[soundID].Play();
             }
         }
 
@@ -48,23 +48,23 @@ namespace UltimaXNA.UltimaData
         {
             if (soundID < 0) { return null; }
 
-            _Index.BaseStream.Seek((long)(soundID * 12), SeekOrigin.Begin);
+            m_Index.BaseStream.Seek((long)(soundID * 12), SeekOrigin.Begin);
 
-            int streamStart = (int)_Index.BaseStream.Position;
+            int streamStart = (int)m_Index.BaseStream.Position;
 
-            int offset = _Index.ReadInt32();
-            int length = _Index.ReadInt32();
-            int extra = _Index.ReadInt32();
+            int offset = m_Index.ReadInt32();
+            int length = m_Index.ReadInt32();
+            int extra = m_Index.ReadInt32();
 
             if ((offset < 0) || (length <= 0))
             {
-                if (!_Translations.TryGetValue(soundID, out soundID)) { return null; }
+                if (!m_Translations.TryGetValue(soundID, out soundID)) { return null; }
 
-                _Index.BaseStream.Seek((long)(soundID * 12), SeekOrigin.Begin);
+                m_Index.BaseStream.Seek((long)(soundID * 12), SeekOrigin.Begin);
 
-                offset = _Index.ReadInt32();
-                length = _Index.ReadInt32();
-                extra = _Index.ReadInt32();
+                offset = m_Index.ReadInt32();
+                length = m_Index.ReadInt32();
+                extra = m_Index.ReadInt32();
             }
 
             if ((offset < 0) || (length <= 0)) { return null; }
@@ -72,13 +72,13 @@ namespace UltimaXNA.UltimaData
             byte[] stringBuffer = new byte[40];
             byte[] buffer = new byte[length - 40];
 
-            _Stream.Seek((long)(offset), SeekOrigin.Begin);
-            _Stream.Read(stringBuffer, 0, 40);
-            _Stream.Read(buffer, 0, length - 40);
+            m_Stream.Seek((long)(offset), SeekOrigin.Begin);
+            m_Stream.Read(stringBuffer, 0, 40);
+            m_Stream.Read(buffer, 0, length - 40);
 
             string str = System.Text.Encoding.ASCII.GetString(stringBuffer); // seems that the null terminator's not being properly recognized :/
 
-            UltimaVars.Metrics.ReportDataRead((int)_Index.BaseStream.Position - streamStart);
+            UltimaVars.Metrics.ReportDataRead((int)m_Index.BaseStream.Position - streamStart);
 
             return new UOSound(str.Substring(0, str.IndexOf('\0')), buffer);
         }
@@ -87,19 +87,19 @@ namespace UltimaXNA.UltimaData
         {
             try
             {
-                _Index = new BinaryReader(new FileStream(FileManager.GetFilePath("soundidx.mul"), FileMode.Open));
-                _Stream = new FileStream(FileManager.GetFilePath("sound.mul"), FileMode.Open);
-                _filesPrepared = true;
+                m_Index = new BinaryReader(new FileStream(FileManager.GetFilePath("soundidx.mul"), FileMode.Open));
+                m_Stream = new FileStream(FileManager.GetFilePath("sound.mul"), FileMode.Open);
+                m_filesPrepared = true;
             }
             catch
             {
-                _filesPrepared = false;
+                m_filesPrepared = false;
                 return;
             }
 
             Regex reg = new Regex(@"(\d{1,3}) \x7B(\d{1,3})\x7D (\d{1,3})", RegexOptions.Compiled);
 
-            _Translations = new Dictionary<int, int>();
+            m_Translations = new Dictionary<int, int>();
 
             string line;
             using (StreamReader reader = new StreamReader(FileManager.GetFilePath("Sound.def")))
@@ -112,26 +112,26 @@ namespace UltimaXNA.UltimaData
 
                         if (match.Success)
                         {
-                            _Translations.Add(int.Parse(match.Groups[1].Value), int.Parse(match.Groups[2].Value));
+                            m_Translations.Add(int.Parse(match.Groups[1].Value), int.Parse(match.Groups[2].Value));
                         }
                     }
                 }
             }
 
-            _Sounds = new Dictionary<int, UOSound>();
+            m_Sounds = new Dictionary<int, UOSound>();
         }
 
         public class UOSound
         {
             public readonly string Name;
-            private byte[] _waveBuffer;
-            private List<Tuple<DynamicSoundEffectInstance, float>> _instances;
+            private byte[] m_waveBuffer;
+            private List<Tuple<DynamicSoundEffectInstance, float>> m_instances;
 
             public UOSound(string name, byte[] buffer)
             {
                 Name = name;
-                _waveBuffer = buffer;
-                _instances = new List<Tuple<DynamicSoundEffectInstance, float>>();
+                m_waveBuffer = buffer;
+                m_instances = new List<Tuple<DynamicSoundEffectInstance, float>>();
             }
 
             public void Play()
@@ -140,19 +140,19 @@ namespace UltimaXNA.UltimaData
 
                 // Check to see if any existing instances of this sound effect have stopped playing. If
                 // they have, remove the reference to them so the garbage collector can collect them.
-                for (int i = 0; i < _instances.Count; i++)
-                    if (_instances[i].Item2 < now)
+                for (int i = 0; i < m_instances.Count; i++)
+                    if (m_instances[i].Item2 < now)
                     {
-                        _instances.RemoveAt(i);
+                        m_instances.RemoveAt(i);
                         i--;
                     }
 
                 DynamicSoundEffectInstance instance = new DynamicSoundEffectInstance(22050, AudioChannels.Mono);
                 instance.BufferNeeded += new EventHandler<EventArgs>(instance_BufferNeeded);
-                instance.SubmitBuffer(_waveBuffer);
+                instance.SubmitBuffer(m_waveBuffer);
                 instance.Play();
-                _instances.Add(new Tuple<DynamicSoundEffectInstance, float>(instance,
-                    now + (instance.GetSampleDuration(_waveBuffer.Length).Milliseconds / 1000f)));
+                m_instances.Add(new Tuple<DynamicSoundEffectInstance, float>(instance,
+                    now + (instance.GetSampleDuration(m_waveBuffer.Length).Milliseconds / 1000f)));
             }
 
             void instance_BufferNeeded(object sender, EventArgs e)

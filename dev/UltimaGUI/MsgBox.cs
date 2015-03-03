@@ -20,9 +20,9 @@ namespace UltimaXNA.UltimaGUI
     }
     public class MsgBox : Gump
     {
-        string _msg;
-        HtmlGump _text;
-        MsgBoxTypes _type;
+        string m_msg;
+        HtmlGump m_text;
+        MsgBoxTypes m_type;
 
         public PublicControlEvent OnClose;
         public PublicControlEvent OnCancel;
@@ -30,31 +30,31 @@ namespace UltimaXNA.UltimaGUI
         public MsgBox(string msg, MsgBoxTypes msgBoxType)
             : base(0, 0)
         {
-            _msg = "<big color=000000>" + msg;
-            _type = msgBoxType;
+            m_msg = "<big color=000000>" + msg;
+            m_type = msgBoxType;
         }
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
-            if (IsInitialized && _text == null)
+            if (IsInitialized && m_text == null)
             {
                 ResizePic resize;
 
-                _text = new HtmlGump(this, 0, 10, 10, 200, 200, 0, 0, _msg);
-                int width = _text.Width + 20;
-                AddControl(resize = new ResizePic(this, 0, 0, 0, 9200, width, _text.Height + 45));
-                AddControl(_text);
+                m_text = new HtmlGump(this, 0, 10, 10, 200, 200, 0, 0, m_msg);
+                int width = m_text.Width + 20;
+                AddControl(resize = new ResizePic(this, 0, 0, 0, 9200, width, m_text.Height + 45));
+                AddControl(m_text);
                 // Add buttons
-                switch (_type)
+                switch (m_type)
                 {
                     case MsgBoxTypes.OkOnly:
-                        AddControl(new Button(this, 0, (_text.Width + 20) / 2 - 23, _text.Height + 15, 2074, 2075, ButtonTypes.Activate, 0, 0));
+                        AddControl(new Button(this, 0, (m_text.Width + 20) / 2 - 23, m_text.Height + 15, 2074, 2075, ButtonTypes.Activate, 0, 0));
                         ((Button)LastControl).GumpOverID = 2076;
                         break;
                     case MsgBoxTypes.OkCancel:
-                        AddControl(new Button(this, 0, (width / 2) - 46 - 10, _text.Height + 15, 0x817, 0x818, ButtonTypes.Activate, 0, 1));
+                        AddControl(new Button(this, 0, (width / 2) - 46 - 10, m_text.Height + 15, 0x817, 0x818, ButtonTypes.Activate, 0, 1));
                         ((Button)LastControl).GumpOverID = 0x819;
-                        AddControl(new Button(this, 0, (width / 2) + 10, _text.Height + 15, 2074, 2075, ButtonTypes.Activate, 0, 0));
+                        AddControl(new Button(this, 0, (width / 2) + 10, m_text.Height + 15, 2074, 2075, ButtonTypes.Activate, 0, 0));
                         ((Button)LastControl).GumpOverID = 2076;
                         break;
                 }

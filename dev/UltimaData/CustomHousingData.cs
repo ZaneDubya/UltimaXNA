@@ -19,13 +19,13 @@ namespace UltimaXNA.UltimaData
 {
     class CustomHousingData
     {
-        static Dictionary<Serial, CustomHouse> _customHouses = new Dictionary<Serial,CustomHouse>();
+        static Dictionary<Serial, CustomHouse> m_customHouses = new Dictionary<Serial,CustomHouse>();
 
         public static bool IsHashCurrent(Serial serial, int hash)
         {
-            if (_customHouses.ContainsKey(serial))
+            if (m_customHouses.ContainsKey(serial))
             {
-                CustomHouse h = _customHouses[serial];
+                CustomHouse h = m_customHouses[serial];
                 if (h.Hash == hash)
                     return true;
                 else
@@ -40,21 +40,21 @@ namespace UltimaXNA.UltimaData
 
         public static CustomHouse GetCustomHouseData(Serial serial)
         {
-            return _customHouses[serial];
+            return m_customHouses[serial];
         }
 
         public static void UpdateCustomHouseData(Serial serial, int hash, int planecount, CustomHousePlane[] planes)
         {
             CustomHouse house;
-            if (_customHouses.ContainsKey(serial))
+            if (m_customHouses.ContainsKey(serial))
             {
-                house = _customHouses[serial];
+                house = m_customHouses[serial];
                 
             }
             else
             {
                 house = new CustomHouse(serial);
-                _customHouses.Add(serial, house);
+                m_customHouses.Add(serial, house);
             }
             house.Update(hash, planecount, planes);
         }
@@ -65,8 +65,8 @@ namespace UltimaXNA.UltimaData
         public Serial Serial;
         public int Hash;
 
-        int _planeCount;
-        CustomHousePlane[] _planes;
+        int m_planeCount;
+        CustomHousePlane[] m_planes;
 
         public CustomHouse(Serial serial)
         {
@@ -76,8 +76,8 @@ namespace UltimaXNA.UltimaData
         public void Update(int hash, int planecount, CustomHousePlane[] planes)
         {
             Hash = hash;
-            _planeCount = planecount;
-            _planes = planes;
+            m_planeCount = planecount;
+            m_planes = planes;
         }
 
         public StaticTile[] GetStatics(int width, int height)
@@ -91,23 +91,23 @@ namespace UltimaXNA.UltimaData
             int numTilesInLastPlane = 0;
             int zIndex = 0;
 
-            for (int plane = 0; plane < _planeCount; plane++)
+            for (int plane = 0; plane < m_planeCount; plane++)
             {
-                int numTiles = _planes[plane].ItemData.Length >> 1;
+                int numTiles = m_planes[plane].ItemData.Length >> 1;
 
-                if ((plane == _planeCount - 1) &&
+                if ((plane == m_planeCount - 1) &&
                     (numTiles != sizeFloor) &&
                     (numTiles != sizeWalls))
                 {
-                    numTiles = _planes[plane].ItemData.Length / 5;
+                    numTiles = m_planes[plane].ItemData.Length / 5;
                     int index = 0;
                     for (int j = 0; j < numTiles; j++)
                     {
                         StaticTile s = new StaticTile();
-                        s.ID = (short)((_planes[plane].ItemData[index++] << 8) + _planes[plane].ItemData[index++]);
-                        int x = (sbyte)_planes[plane].ItemData[index++];
-                        int y = (sbyte)_planes[plane].ItemData[index++];
-                        int z = (sbyte)_planes[plane].ItemData[index++];
+                        s.ID = (short)((m_planes[plane].ItemData[index++] << 8) + m_planes[plane].ItemData[index++]);
+                        int x = (sbyte)m_planes[plane].ItemData[index++];
+                        int y = (sbyte)m_planes[plane].ItemData[index++];
+                        int z = (sbyte)m_planes[plane].ItemData[index++];
                         s.X = (byte)((width >> 1) + x - 1);
                         s.Y = (byte)((height >> 1) + y);
                         s.Z = (sbyte)z;
@@ -162,7 +162,7 @@ namespace UltimaXNA.UltimaData
                     for (int j = 0; j < numTiles; j++)
                     {
                         StaticTile s = new StaticTile();
-                        s.ID = (short)((_planes[plane].ItemData[index++] << 8) + _planes[plane].ItemData[index++]);
+                        s.ID = (short)((m_planes[plane].ItemData[index++] << 8) + m_planes[plane].ItemData[index++]);
                         s.X = (byte)(x + iX);
                         s.Y = (byte)(y + iY);
                         s.Z = (sbyte)z;

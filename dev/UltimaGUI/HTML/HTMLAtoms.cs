@@ -24,33 +24,33 @@ namespace UltimaXNA.UltimaGUI.HTML
     {
         public HTMLImage AssociatedImage;
 
-        private int _overrideWidth = -1;
+        private int m_overrideWidth = -1;
         public override int Width
         {
             set
             {
-                _overrideWidth = value;
+                m_overrideWidth = value;
             }
             get
             {
-                if (_overrideWidth != -1)
-                    return _overrideWidth + 1;
+                if (m_overrideWidth != -1)
+                    return m_overrideWidth + 1;
                 Texture2D gump = UltimaData.GumpData.GetGumpXNA(Value);
                 return gump.Width + 1;
             }
         }
 
-        private int _overrideHeight = -1;
+        private int m_overrideHeight = -1;
         public override int Height
         {
             set
             {
-                _overrideHeight = value;
+                m_overrideHeight = value;
             }
             get
             {
-                if (_overrideHeight != -1)
-                    return _overrideHeight;
+                if (m_overrideHeight != -1)
+                    return m_overrideHeight;
                 Texture2D gump = UltimaData.GumpData.GetGumpXNA(Value);
                 return gump.Height;
             }
@@ -114,23 +114,23 @@ namespace UltimaXNA.UltimaGUI.HTML
 
     public class HTMLAtomSpan : AHTMLAtom
     {
-        private int _width = 0;
+        private int m_width = 0;
         public override int Width
         {
-            get { return _width; }
-            set { _width = value; }
+            get { return m_width; }
+            set { m_width = value; }
         }
 
-        private int _height = 0;
+        private int m_height = 0;
         public override int Height
         {
-            get { return _height; }
-            set { _height = value; }
+            get { return m_height; }
+            set { m_height = value; }
         }
 
         public HTMLAtomSpan()
         {
-            _height = UniText.Fonts[(int)Font].Lineheight;
+            m_height = UniText.Fonts[(int)Font].Lineheight;
         }
     }
 
@@ -195,7 +195,7 @@ namespace UltimaXNA.UltimaGUI.HTML
         public bool Style_IsBold = false;
         public bool Style_IsItalic = false;
         public bool Style_IsOutlined = false;
-        bool _isUnderlined = false;
+        bool m_isUnderlined = false;
         public bool Style_IsUnderlined
         {
             get
@@ -206,10 +206,10 @@ namespace UltimaXNA.UltimaGUI.HTML
                 }
                 else
                 {
-                    return _isUnderlined;
+                    return m_isUnderlined;
                 }
             }
-            set { _isUnderlined = value; }
+            set { m_isUnderlined = value; }
         }
         public Fonts Font = Fonts.Default;
         public Alignments Alignment = Alignments.Default;

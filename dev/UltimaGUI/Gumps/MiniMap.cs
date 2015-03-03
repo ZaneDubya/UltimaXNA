@@ -17,29 +17,29 @@ namespace UltimaXNA.UltimaGUI.Gumps
 {
     class MiniMap : Gump
     {
-        GumpPic _gump;
-        bool _useLargeMap = false;
+        GumpPic m_gump;
+        bool m_useLargeMap = false;
 
         public MiniMap()
             : base(0, 0)
         {
-            _useLargeMap = UltimaVars.EngineVars.MiniMap_LargeFormat;
+            m_useLargeMap = UltimaVars.EngineVars.MiniMap_LargeFormat;
             IsMovable = true;
         }
 
         public override void Update(GameTime gameTime)
         {
-            if (_gump == null || _useLargeMap != UltimaVars.EngineVars.MiniMap_LargeFormat)
+            if (m_gump == null || m_useLargeMap != UltimaVars.EngineVars.MiniMap_LargeFormat)
             {
-                _useLargeMap = UltimaVars.EngineVars.MiniMap_LargeFormat;
-                if (_gump != null)
-                    _gump.Dispose();
-                _gump = new GumpPic(this, 0, 0, 0, (_useLargeMap ? 5011 : 5010), 0);
-                _gump.OnMouseClick = onClickMap;
-                _gump.OnMouseDoubleClick = onDoubleClickMap;
-                _gump.MakeDragger(this);
-                _gump.MakeCloseTarget(this);
-                AddControl(_gump);
+                m_useLargeMap = UltimaVars.EngineVars.MiniMap_LargeFormat;
+                if (m_gump != null)
+                    m_gump.Dispose();
+                m_gump = new GumpPic(this, 0, 0, 0, (m_useLargeMap ? 5011 : 5010), 0);
+                m_gump.OnMouseClick = onClickMap;
+                m_gump.OnMouseDoubleClick = onDoubleClickMap;
+                m_gump.MakeDragger(this);
+                m_gump.MakeCloseTarget(this);
+                AddControl(m_gump);
             }
 
             base.Update(gameTime);

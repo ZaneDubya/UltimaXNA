@@ -24,48 +24,48 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class SubServerPacket : RecvPacket
     {
-        readonly short _x;
-        readonly short _y;
-        readonly short _z;
-        readonly short _mapWidth;
-        readonly short _mapHeight;
+        readonly short m_x;
+        readonly short m_y;
+        readonly short m_z;
+        readonly short m_mapWidth;
+        readonly short m_mapHeight;
 
         public short X
         {
-            get { return _x; }
+            get { return m_x; }
         }
 
         public short Y
         {
-            get { return _y; }
+            get { return m_y; }
         }
 
         public short Z
         {
-            get { return _z; }
+            get { return m_z; }
         }
 
         public short MapWidth
         {
-            get { return _mapWidth; }
+            get { return m_mapWidth; }
         }
 
         public short MapHeight
         {
-            get { return _mapHeight; }
+            get { return m_mapHeight; }
         }
 
         public SubServerPacket(PacketReader reader)
             : base(0xB3, "Chat Packet")
         {
-            _x = reader.ReadInt16();
-            _y = reader.ReadInt16();
-            _z = reader.ReadInt16();
+            m_x = reader.ReadInt16();
+            m_y = reader.ReadInt16();
+            m_z = reader.ReadInt16();
             reader.ReadByte();
             reader.ReadInt16();
             reader.ReadInt16();
-            _mapWidth = reader.ReadInt16();
-            _mapHeight = reader.ReadInt16();
+            m_mapWidth = reader.ReadInt16();
+            m_mapHeight = reader.ReadInt16();
         }
     }
 }

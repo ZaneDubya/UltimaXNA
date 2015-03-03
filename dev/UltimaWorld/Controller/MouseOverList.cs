@@ -18,26 +18,26 @@ namespace UltimaXNA.UltimaWorld
 {
     class MouseOverList
     {
-        List<MouseOverItem> _overList;
+        List<MouseOverItem> m_overList;
 
-        Vector3 _mousePosition;
+        Vector3 m_mousePosition;
         public Point2D MousePosition
         {
             set
             {
-                _mousePosition = new Vector3(value.X, value.Y, 1);
+                m_mousePosition = new Vector3(value.X, value.Y, 1);
             }
         }
 
         public MouseOverList()
         {
-            _overList = new List<MouseOverItem>();
+            m_overList = new List<MouseOverItem>();
         }
 
         internal MouseOverItem GetForemostMouseOverItem(Point2D mousePosition)
         {
             // Parse list backwards to find topmost mouse over object.
-            foreach (MouseOverItem item in CreateReverseIterator(_overList))
+            foreach (MouseOverItem item in CreateReverseIterator(m_overList))
             {
                 if (item.Contains(mousePosition))
                 {
@@ -50,7 +50,7 @@ namespace UltimaXNA.UltimaWorld
         internal MouseOverItem GetForemostMouseOverItem<T>(Point2D mousePosition) where T : AMapObject
         {
             // Parse list backwards to find topmost mouse over object.
-            foreach (MouseOverItem item in CreateReverseIterator(_overList))
+            foreach (MouseOverItem item in CreateReverseIterator(m_overList))
             {
                 if (item.Object.GetType() == typeof(T))
                 {
@@ -74,7 +74,7 @@ namespace UltimaXNA.UltimaWorld
 
         public void Add2DItem(MouseOverItem item)
         {
-            _overList.Add(item);
+            m_overList.Add(item);
         }
 
         public bool IsMouseInObject(Vector3 min, Vector3 max)
@@ -83,7 +83,7 @@ namespace UltimaXNA.UltimaWorld
             // Must correct for bounding box being one pixel larger than actual texture.
             iBoundingBox.Max.X--; iBoundingBox.Max.Y--;
 
-            Vector3 iMousePosition = new Vector3(_mousePosition.X, _mousePosition.Y, min.Z);
+            Vector3 iMousePosition = new Vector3(m_mousePosition.X, m_mousePosition.Y, min.Z);
             if (iBoundingBox.Contains(iMousePosition) == ContainmentType.Contains)
                 return true;
             return false;
@@ -103,13 +103,13 @@ namespace UltimaXNA.UltimaWorld
                     low = v[i].Position.Y;
             }
 
-            if (high < _mousePosition.Y)
+            if (high < m_mousePosition.Y)
                 return false;
-            if (low > _mousePosition.Y)
+            if (low > m_mousePosition.Y)
                 return false;
-            if (v[1].Position.X < _mousePosition.X)
+            if (v[1].Position.X < m_mousePosition.X)
                 return false;
-            if (v[2].Position.X > _mousePosition.X)
+            if (v[2].Position.X > m_mousePosition.X)
                 return false;
 
             float minX = v[0].Position.X, maxX = v[0].Position.X;
@@ -129,14 +129,14 @@ namespace UltimaXNA.UltimaWorld
 
             // Added cursor picking -Poplicola 5/19/2009
             BoundingBox iBoundingBox = new BoundingBox(new Vector3(minX, minY, 0), new Vector3(maxX, maxY, 10));
-            if (iBoundingBox.Contains(_mousePosition) == ContainmentType.Contains)
+            if (iBoundingBox.Contains(m_mousePosition) == ContainmentType.Contains)
             {
                 Point[] p = new Point[4];
                 p[0] = new Point((int)v[0].Position.X, (int)v[0].Position.Y);
                 p[1] = new Point((int)v[1].Position.X, (int)v[1].Position.Y);
                 p[2] = new Point((int)v[3].Position.X, (int)v[3].Position.Y);
                 p[3] = new Point((int)v[2].Position.X, (int)v[2].Position.Y);
-                if (pointInPolygon(new Point((int)_mousePosition.X, (int)_mousePosition.Y), p))
+                if (pointInPolygon(new Point((int)m_mousePosition.X, (int)m_mousePosition.Y), p))
                 {
                     return true;
                 }

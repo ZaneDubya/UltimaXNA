@@ -22,15 +22,15 @@ namespace UltimaXNA.Entity
     public class Container : Item
     {
         public int UpdateTicker { get; internal set; }
-        List<Item> _contents;
+        List<Item> m_contents;
 
         public List<Item> Contents
         {
             get
             {
-                if (_contents == null)
-                    _contents = new List<Item>();
-                return _contents;
+                if (m_contents == null)
+                    m_contents = new List<Item>();
+                return m_contents;
             }
         }
 

@@ -15,13 +15,13 @@ namespace UltimaXNA.UltimaGUI.Controls
 {
     class GumpPicContainer : GumpPic
     {
-        Container _containerItem;
-        public Container Item { get { return _containerItem; } }
+        Container m_containerItem;
+        public Container Item { get { return m_containerItem; } }
 
         public GumpPicContainer(Control owner, int page, int x, int y, int gumpID, int hue, Container containerItem)
             : base(owner, page, x, y, gumpID, hue)
         {
-            _containerItem = containerItem;
+            m_containerItem = containerItem;
         }
     }
 }

@@ -24,41 +24,41 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class UOGInfoResponsePacket : RecvPacket
     {
-        readonly string _name;
-        readonly int _age;
-        readonly int _clientCount;
-        readonly int _itemCount;
-        readonly int _mobileCount;
-        readonly string _memory;
+        readonly string m_name;
+        readonly int m_age;
+        readonly int m_clientCount;
+        readonly int m_itemCount;
+        readonly int m_mobileCount;
+        readonly string m_memory;
 
         public int Age
         {
-            get { return _age; }
+            get { return m_age; }
         }
 
         public int ClientCount
         {
-            get { return _clientCount; }
+            get { return m_clientCount; }
         }
 
         public int ItemCount
         {
-            get { return _itemCount; }
+            get { return m_itemCount; }
         }
 
         public int MobileCount
         {
-            get { return _mobileCount; }
+            get { return m_mobileCount; }
         }
 
         public string ServerName
         {
-            get { return _name; }
+            get { return m_name; }
         }
 
         public string Memory
         {
-            get { return _memory; }
+            get { return m_memory; }
         }
 
         public UOGInfoResponsePacket(PacketReader reader)
@@ -79,22 +79,22 @@ namespace UltimaXNA.UltimaPackets.Server
                     switch (key)
                     {
                         case "Name":
-                            _name = value;
+                            m_name = value;
                             break;
                         case "Age":
-                            _age = int.Parse(value);
+                            m_age = int.Parse(value);
                             break;
                         case "Clients":
-                            _clientCount = int.Parse(value) - 1;
+                            m_clientCount = int.Parse(value) - 1;
                             break;
                         case "Items":
-                            _itemCount = int.Parse(value);
+                            m_itemCount = int.Parse(value);
                             break;
                         case "Chars":
-                            _mobileCount = int.Parse(value);
+                            m_mobileCount = int.Parse(value);
                             break;
                         case "Mem":
-                            _memory = value;
+                            m_memory = value;
                             break;
                     }
                 }

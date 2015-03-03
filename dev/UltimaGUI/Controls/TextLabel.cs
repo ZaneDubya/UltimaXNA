@@ -20,7 +20,7 @@ namespace UltimaXNA.UltimaGUI.Controls
     {
         public int Hue = 0;
         public string Text = string.Empty;
-        UltimaGUI.TextRenderer _textRenderer;
+        UltimaGUI.TextRenderer m_textRenderer;
 
         public TextLabel(Control owner, int page)
             : base(owner, page)
@@ -50,8 +50,8 @@ namespace UltimaXNA.UltimaGUI.Controls
             Position = new Point2D(x, y);
             Hue = hue;
             Text = text;
-            _textRenderer = new UltimaGUI.TextRenderer(Text, 0, true);
-            _textRenderer.Hue = Hue;
+            m_textRenderer = new UltimaGUI.TextRenderer(Text, 0, true);
+            m_textRenderer.Hue = Hue;
         }
 
         public override void Update(GameTime gameTime)
@@ -61,7 +61,7 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         public override void Draw(SpriteBatchUI spriteBatch)
         {
-            _textRenderer.Draw(spriteBatch, Position);
+            m_textRenderer.Draw(spriteBatch, Position);
             base.Draw(spriteBatch);
         }
     }

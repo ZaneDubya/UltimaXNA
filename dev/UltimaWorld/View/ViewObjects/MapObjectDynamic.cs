@@ -19,35 +19,35 @@ namespace UltimaXNA.UltimaWorld
 {
     public class MapObjectDynamic : AMapObject
     {
-        private int _frame;
+        private int m_frame;
 
         public MapObjectDynamic(DynamicObject entity, Position3D position, int itemID, int frame, int hue, bool useGumpArt)
             : base(position)
         {
             OwnerEntity = entity;
             ItemID = itemID;
-            _frame = frame;
+            m_frame = frame;
 
             // set up draw variables
             if (useGumpArt)
             {
-                _draw_texture = UltimaData.GumpData.GetGumpXNA(ItemID + frame);
-                _draw_width = _draw_texture.Width;
-                _draw_height = _draw_texture.Height;
-                _draw_X = (_draw_width >> 1);
-                _draw_Y = (int)(Z * 4) + _draw_height - 22;
+                m_draw_texture = UltimaData.GumpData.GetGumpXNA(ItemID + frame);
+                m_draw_width = m_draw_texture.Width;
+                m_draw_height = m_draw_texture.Height;
+                m_draw_X = (m_draw_width >> 1);
+                m_draw_Y = (int)(Z * 4) + m_draw_height - 22;
             }
             else
             {
-                _draw_texture = UltimaData.ArtData.GetStaticTexture(ItemID + frame);
-                _draw_width = _draw_texture.Width;
-                _draw_height = _draw_texture.Height;
-                _draw_X = (_draw_width >> 1) - 22;
-                _draw_Y = (int)(Z * 4) + _draw_height - 44;
+                m_draw_texture = UltimaData.ArtData.GetStaticTexture(ItemID + frame);
+                m_draw_width = m_draw_texture.Width;
+                m_draw_height = m_draw_texture.Height;
+                m_draw_X = (m_draw_width >> 1) - 22;
+                m_draw_Y = (int)(Z * 4) + m_draw_height - 44;
             }
-            _draw_hue = Utility.GetHueVector(hue);
-            _pickType = PickTypes.PickNothing;
-            _draw_flip = false;
+            m_draw_hue = Utility.GetHueVector(hue);
+            m_pickType = PickTypes.PickNothing;
+            m_draw_flip = false;
         }
 
         internal override bool Draw(SpriteBatch3D sb, Vector3 drawPosition, MouseOverList molist, PickTypes pickType, int maxAlt)
@@ -57,7 +57,7 @@ namespace UltimaXNA.UltimaWorld
 
         public override string ToString()
         {
-            return string.Format("MapObjectDynamic\n   ItemID:{1} Frame:{2{\n{0}", base.ToString(), ItemID, _frame);
+            return string.Format("MapObjectDynamic\n   ItemID:{1} Frame:{2{\n{0}", base.ToString(), ItemID, m_frame);
         }
     }
 }

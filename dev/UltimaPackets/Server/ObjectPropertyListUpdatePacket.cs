@@ -24,24 +24,24 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class ObjectPropertyListUpdatePacket : RecvPacket
     {
-        readonly Serial _serial;
-        readonly int _revisionHash;
+        readonly Serial m_serial;
+        readonly int m_revisionHash;
 
         public Serial Serial
         {
-            get { return _serial; }
+            get { return m_serial; }
         }
 
         public int RevisionHash 
         {
-            get { return _revisionHash; }
+            get { return m_revisionHash; }
         }
 
         public ObjectPropertyListUpdatePacket(PacketReader reader)
             : base(0xDC, "Object Property List Update")
         {
-            _serial = reader.ReadInt32();
-            _revisionHash = reader.ReadInt32();
+            m_serial = reader.ReadInt32();
+            m_revisionHash = reader.ReadInt32();
         }
     }
 }

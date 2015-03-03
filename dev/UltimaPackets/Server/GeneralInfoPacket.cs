@@ -24,55 +24,55 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class GeneralInfoPacket : RecvPacket
     {
-        readonly short _subcommand;
+        readonly short m_subcommand;
         public short Subcommand
         {
-            get { return _subcommand; }
+            get { return m_subcommand; }
         }
 
-        HouseRevisionState _revisionState;
+        HouseRevisionState m_revisionState;
         public HouseRevisionState HouseRevisionState
         {
-            get { return _revisionState; }
+            get { return m_revisionState; }
         }
 
         public Serial Serial;
-        StatLocks _locks;
+        StatLocks m_locks;
         public StatLocks StatisticLocks
         {
-            get { return _locks; }
+            get { return m_locks; }
         }
 
-        ContextMenu _contextmenu;
+        ContextMenu m_contextmenu;
         public ContextMenu ContextMenu
         {
-            get { return _contextmenu; }
+            get { return m_contextmenu; }
         }
 
-        byte _mapid;
+        byte m_mapid;
         public byte MapID
         {
-            get { return _mapid; }
+            get { return m_mapid; }
         }
 
-        int _mapCount;
+        int m_mapCount;
         public int MapCount
         {
-            get { return _mapCount; }
+            get { return m_mapCount; }
         }
 
         public GeneralInfoPacket(PacketReader reader)
             : base(0xBF, "General Information")
         {
-            this._subcommand = reader.ReadInt16();
+            this.m_subcommand = reader.ReadInt16();
 
-            switch (this._subcommand)
+            switch (this.m_subcommand)
             {
                 case 0x06:
                     // party system, not implemented.
                     break;
                 case 0x8: // Set cursor color / set map
-                    _mapid = reader.ReadByte();
+                    m_mapid = reader.ReadByte();
                     break;
                 case 0x14: // return context menu
                     receiveContextMenu(reader);
@@ -115,7 +115,7 @@ namespace UltimaXNA.UltimaPackets.Server
                 int strengthLock = (lockFlags >> 4) & 0x03;
                 int dexterityLock = (lockFlags >> 2) & 0x03;
                 int inteligenceLock = (lockFlags) & 0x03;
-                _locks = new StatLocks(strengthLock, dexterityLock, inteligenceLock);
+                m_locks = new StatLocks(strengthLock, dexterityLock, inteligenceLock);
             }
 
             if (clientFlag == 5)
@@ -138,13 +138,13 @@ namespace UltimaXNA.UltimaPackets.Server
         {
             Serial s = reader.ReadInt32();
             int hash = reader.ReadInt32();
-            _revisionState = new HouseRevisionState(s, hash);
+            m_revisionState = new HouseRevisionState(s, hash);
         }
 
         void receiveMapDiffManifest(PacketReader reader)
         {
-            _mapCount = reader.ReadInt32();
-            for (int i = 0; i < _mapCount; i++)
+            m_mapCount = reader.ReadInt32();
+            for (int i = 0; i < m_mapCount; i++)
             {
                 int mapPatches = reader.ReadInt32();
                 int staticPatches = reader.ReadInt32();
@@ -155,7 +155,7 @@ namespace UltimaXNA.UltimaPackets.Server
         {
             reader.ReadByte(); // unknown (0x00)
             int iSubCommand = reader.ReadByte(); // 0x01 for 2D, 0x02 for KR
-            _contextmenu = new ContextMenu(reader.ReadInt32());
+            m_contextmenu = new ContextMenu(reader.ReadInt32());
             int iNumEntriesInContext = reader.ReadByte();
 
             for (int i = 0; i < iNumEntriesInContext; i++)
@@ -168,9 +168,9 @@ namespace UltimaXNA.UltimaPackets.Server
                 {
                     iColor = reader.ReadUInt16();
                 }
-                _contextmenu.AddItem(iUniqueID, iClilocID, iFlags, iColor);
+                m_contextmenu.AddItem(iUniqueID, iClilocID, iFlags, iColor);
             }
-            _contextmenu.FinalizeMenu();
+            m_contextmenu.FinalizeMenu();
         }
     }
 }

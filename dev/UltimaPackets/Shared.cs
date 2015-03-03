@@ -34,17 +34,17 @@ namespace UltimaXNA.UltimaPackets
         /// 0x40 = warmode
         /// 0x80 = hidden
         /// </summary>
-        readonly byte _flags;
+        readonly byte m_flags;
 
-        public bool IsFemale { get { return ((_flags & 0x02) != 0); } }
-        public bool IsPoisoned { get { return ((_flags & 0x04) != 0); } }
-        public bool IsBlessed { get { return ((_flags & 0x08) != 0); } }
-        public bool IsWarMode { get { return ((_flags & 0x40) != 0); } }
-        public bool IsHidden { get { return ((_flags & 0x80) != 0); } }
+        public bool IsFemale { get { return ((m_flags & 0x02) != 0); } }
+        public bool IsPoisoned { get { return ((m_flags & 0x04) != 0); } }
+        public bool IsBlessed { get { return ((m_flags & 0x08) != 0); } }
+        public bool IsWarMode { get { return ((m_flags & 0x40) != 0); } }
+        public bool IsHidden { get { return ((m_flags & 0x80) != 0); } }
 
         public MobileFlags(byte flags)
         {
-            _flags = flags;
+            m_flags = flags;
         }
     }
 

@@ -20,10 +20,10 @@ namespace UltimaXNA.UltimaGUI.Controls
 {
     class ItemGumpling : Control
     {
-        protected Texture2D _texture = null;
-        Item _item;
-        public Item Item { get { return _item; } }
-        public Serial ContainerSerial { get { return _item.Parent.Serial; } }
+        protected Texture2D m_texture = null;
+        Item m_item;
+        public Item Item { get { return m_item; } }
+        public Serial ContainerSerial { get { return m_item.Parent.Serial; } }
         public bool CanPickUp = true;
 
         bool clickedCanDrag = false;
@@ -41,12 +41,12 @@ namespace UltimaXNA.UltimaGUI.Controls
         void buildGumpling(Item item)
         {
             Position = new Point2D(item.X, item.Y);
-            _item = item;
+            m_item = item;
         }
 
         public override void Update(GameTime gameTime)
         {
-            if (_item.IsDisposed)
+            if (m_item.IsDisposed)
             {
                 Dispose();
                 return;
@@ -56,33 +56,33 @@ namespace UltimaXNA.UltimaGUI.Controls
             if (clickedCanDrag && UltimaVars.EngineVars.TheTime >= pickUpTime)
             {
                 clickedCanDrag = false;
-                UltimaInteraction.PickUpItem(_item, clickPoint.X, clickPoint.Y);
+                UltimaInteraction.PickUpItem(m_item, clickPoint.X, clickPoint.Y);
             }
 
             if (sendClickIfNoDoubleClick && UltimaVars.EngineVars.TheTime >= singleClickTime)
             {
                 sendClickIfNoDoubleClick = false;
-                UltimaInteraction.SingleClick(_item);
+                UltimaInteraction.SingleClick(m_item);
             }
             base.Update(gameTime);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)
         {
-            if (_texture == null)
+            if (m_texture == null)
             {
-                _texture = UltimaData.ArtData.GetStaticTexture(_item.DisplayItemID);
-                Size = new Point2D(_texture.Width, _texture.Height);
+                m_texture = UltimaData.ArtData.GetStaticTexture(m_item.DisplayItemID);
+                Size = new Point2D(m_texture.Width, m_texture.Height);
             }
-            spriteBatch.Draw2D(_texture, Position, _item.Hue, false, false);
+            spriteBatch.Draw2D(m_texture, Position, m_item.Hue, false, false);
             base.Draw(spriteBatch);
         }
 
-        protected override bool _hitTest(int x, int y)
+        protected override bool m_hitTest(int x, int y)
         {
             Color[] pixelData;
             pixelData = new Color[1];
-            _texture.GetData<Color>(0, new Rectangle(x, y, 1, 1), pixelData, 0, 1);
+            m_texture.GetData<Color>(0, new Rectangle(x, y, 1, 1), pixelData, 0, 1);
             if (pixelData[0].A > 0)
                 return true;
             else
@@ -105,8 +105,8 @@ namespace UltimaXNA.UltimaGUI.Controls
                 clickedCanDrag = false;
                 if (CanPickUp)
                 {
-                    UltimaInteraction.PickUpItem(_item, clickPoint.X, clickPoint.Y);
-                    _onPickUp();
+                    UltimaInteraction.PickUpItem(m_item, clickPoint.X, clickPoint.Y);
+                    m_onPickUp();
                 }
             }
         }
@@ -123,11 +123,11 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         protected override void mouseDoubleClick(int x, int y, MouseButton button)
         {
-            UltimaInteraction.DoubleClick(_item);
+            UltimaInteraction.DoubleClick(m_item);
             sendClickIfNoDoubleClick = false;
         }
 
-        protected virtual void _onPickUp()
+        protected virtual void m_onPickUp()
         { 
 
         }

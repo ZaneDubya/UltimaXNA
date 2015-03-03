@@ -22,12 +22,12 @@ namespace UltimaXNA.UltimaWorld
 {
     public class MapObjectDeferred : AMapObject
     {
-        private Texture2D _texture;
+        private Texture2D m_texture;
         public VertexPositionNormalTextureHue[] Vertices;
         public MapObjectDeferred(Texture2D texture, AMapObject parent)
             : base(new Position3D(parent.Position.X, parent.Position.Y, (int)parent.Z))
         {
-            _texture = texture;
+            m_texture = texture;
             Vertices = getVerticesFromBuffer();
             SortZ = parent.SortZ;
             SortThreshold = parent.SortThreshold;
@@ -36,7 +36,7 @@ namespace UltimaXNA.UltimaWorld
 
         internal override bool Draw(SpriteBatch3D sb, Vector3 drawPosition, MouseOverList molist, PickTypes pickType, int maxAlt)
         {
-            sb.Draw(_texture, Vertices);
+            sb.Draw(m_texture, Vertices);
             return false;
         }
 

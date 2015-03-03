@@ -25,47 +25,47 @@ namespace UltimaXNA.UltimaPackets.Server
 
     public class WornItemPacket : RecvPacket
     {
-        readonly Serial _serial;
-        readonly short _itemId;
-        readonly byte _layer;
-        readonly Serial _parentSerial;
-        readonly short _hue;
+        readonly Serial m_serial;
+        readonly short m_itemId;
+        readonly byte m_layer;
+        readonly Serial m_parentSerial;
+        readonly short m_hue;
 
         public Serial Serial
         {
-            get { return _serial; }
+            get { return m_serial; }
         }
 
         public short ItemId
         {
-            get { return _itemId; }
+            get { return m_itemId; }
         }
 
         public byte Layer
         {
-            get { return _layer; }
+            get { return m_layer; }
         }
 
         public Serial ParentSerial
         {
-            get { return _parentSerial; }
+            get { return m_parentSerial; }
         }
 
         public short Hue
         {
-            get { return _hue; }
+            get { return m_hue; }
         }
 
 
         public WornItemPacket(PacketReader reader)
             : base(0x2E, "Worn Item")
         {
-            _serial = reader.ReadInt32();
-            _itemId = reader.ReadInt16();
+            m_serial = reader.ReadInt32();
+            m_itemId = reader.ReadInt16();
             reader.ReadByte();
-            _layer = reader.ReadByte();
-            _parentSerial = reader.ReadInt32();
-            _hue = reader.ReadInt16();
+            m_layer = reader.ReadByte();
+            m_parentSerial = reader.ReadInt32();
+            m_hue = reader.ReadInt16();
         }
     }
 }

@@ -14,7 +14,7 @@ namespace UltimaXNA.UltimaGUI.Gumps
 {
     public class DebugGump : Gump 
     {
-        HtmlGump _html;
+        HtmlGump m_html;
         public DebugGump()
             : base(0, 0)
         {
@@ -28,7 +28,7 @@ namespace UltimaXNA.UltimaGUI.Gumps
             AddControl(new Controls.Button(this, 1, width - 18, 0, 2117, 2118, 0, 2, 0));
             AddControl(new Controls.TextLabel(this, 1, 4, 2, 0, "Debug Gump"));
             // AddGumpling(new Controls.Button(this, 2, 2, 18, 2117, 2118, ButtonTypes.Activate, 0, 0));
-            _html = (Controls.HtmlGump)AddControl(new Controls.HtmlGump(this, 1, 4, 16, width - 8, 230, 0, 0, ""));
+            m_html = (Controls.HtmlGump)AddControl(new Controls.HtmlGump(this, 1, 4, 16, width - 8, 230, 0, 0, ""));
         }
 
         public override void ActivateByButton(int buttonID)
@@ -39,7 +39,7 @@ namespace UltimaXNA.UltimaGUI.Gumps
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
-            _html.Text = UltimaVars.DebugVars.DebugMessage;
+            m_html.Text = UltimaVars.DebugVars.DebugMessage;
             base.Update(gameTime);
         }
     }

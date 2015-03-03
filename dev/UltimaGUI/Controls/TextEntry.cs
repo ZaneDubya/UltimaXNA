@@ -23,28 +23,28 @@ namespace UltimaXNA.UltimaGUI.Controls
         public int LimitSize = 0;
         public bool IsPasswordField = false;
 
-        string _text = string.Empty;
+        string m_text = string.Empty;
         public string Text
         {
-            get { return _text; }
+            get { return m_text; }
             set
             {
-                _text = value;
+                m_text = value;
             }
         }
 
         public string HtmlTag = string.Empty;
 
-        bool _legacyCarat = false;
-        public bool LegacyCarat { get { return _legacyCarat; } set { _legacyCarat = value; } }
+        bool m_legacyCarat = false;
+        public bool LegacyCarat { get { return m_legacyCarat; } set { m_legacyCarat = value; } }
 
-        bool _isFocused = false;
-        bool _caratBlinkOn = false;
-        float _secondsSinceLastBlink = 0f;
-        const float _SecondsPerBlink = 0.5f;
+        bool m_isFocused = false;
+        bool m_caratBlinkOn = false;
+        float m_secondsSinceLastBlink = 0f;
+        const float m_SecondsPerBlink = 0.5f;
 
-        UltimaGUI.TextRenderer _textRenderer;
-        UltimaGUI.TextRenderer _caratRenderer;
+        UltimaGUI.TextRenderer m_textRenderer;
+        UltimaGUI.TextRenderer m_caratRenderer;
 
         public TextEntry(Control owner, int page)
             : base(owner, page)
@@ -85,9 +85,9 @@ namespace UltimaXNA.UltimaGUI.Controls
             EntryID = entryID;
             Text = text;
             LimitSize = limitSize;
-            _caratBlinkOn = false;
-            _textRenderer = new UltimaGUI.TextRenderer("", width, true);
-            _caratRenderer = new UltimaGUI.TextRenderer("", width, true);
+            m_caratBlinkOn = false;
+            m_textRenderer = new UltimaGUI.TextRenderer("", width, true);
+            m_caratRenderer = new UltimaGUI.TextRenderer("", width, true);
         }
 
         public override void Update(GameTime gameTime)
@@ -96,44 +96,44 @@ namespace UltimaXNA.UltimaGUI.Controls
             {
                 // if we're not already focused, turn the carat on immediately.
                 // if we're using the legacy carat, keep it visible. Else blink it every x seconds.
-                if (!_isFocused)
+                if (!m_isFocused)
                 {
-                    _isFocused = true;
-                    _caratBlinkOn = true;
-                    _secondsSinceLastBlink = 0f;
+                    m_isFocused = true;
+                    m_caratBlinkOn = true;
+                    m_secondsSinceLastBlink = 0f;
                 }
-                if (_legacyCarat)
-                    _caratBlinkOn = true;
+                if (m_legacyCarat)
+                    m_caratBlinkOn = true;
                 else
                 {
-                    _secondsSinceLastBlink += ((float)gameTime.ElapsedGameTime.TotalSeconds);
-                    if (_secondsSinceLastBlink >= _SecondsPerBlink)
+                    m_secondsSinceLastBlink += ((float)gameTime.ElapsedGameTime.TotalSeconds);
+                    if (m_secondsSinceLastBlink >= m_SecondsPerBlink)
                     {
-                        _secondsSinceLastBlink -= _SecondsPerBlink;
-                        if (_caratBlinkOn == true)
-                            _caratBlinkOn = false;
+                        m_secondsSinceLastBlink -= m_SecondsPerBlink;
+                        if (m_caratBlinkOn == true)
+                            m_caratBlinkOn = false;
                         else
-                            _caratBlinkOn = true;
+                            m_caratBlinkOn = true;
                     }
                 }
             }
             else
             {
-                _isFocused = false;
-                _caratBlinkOn = false;
+                m_isFocused = false;
+                m_caratBlinkOn = false;
             }
 
-            _textRenderer.Text = HtmlTag + (IsPasswordField ? new string('*', Text.Length) : Text);
-            _caratRenderer.Text = HtmlTag + (_legacyCarat ? "_" : "|");
+            m_textRenderer.Text = HtmlTag + (IsPasswordField ? new string('*', Text.Length) : Text);
+            m_caratRenderer.Text = HtmlTag + (m_legacyCarat ? "_" : "|");
 
             base.Update(gameTime);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)
         {
-            _textRenderer.Draw(spriteBatch, Position);
-            if (_caratBlinkOn)
-                _caratRenderer.Draw(spriteBatch, new Point2D(X + _textRenderer.Width, Y));
+            m_textRenderer.Draw(spriteBatch, Position);
+            if (m_caratBlinkOn)
+                m_caratRenderer.Draw(spriteBatch, new Point2D(X + m_textRenderer.Width, Y));
             
             base.Draw(spriteBatch);
         }
@@ -149,10 +149,10 @@ namespace UltimaXNA.UltimaGUI.Controls
                     }
                     break;
                 case WinKeys.Tab:
-                    _owner.KeyboardTabToNextFocus(this);
+                    m_owner.KeyboardTabToNextFocus(this);
                     break;
                 case WinKeys.Enter:
-                    _owner.ActivateByKeyboardReturn(EntryID, Text);
+                    m_owner.ActivateByKeyboardReturn(EntryID, Text);
                     break;
                 default:
                     if (e.IsChar)

@@ -24,17 +24,17 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class RemoveEntityPacket : RecvPacket
     {
-        readonly Serial _serial;
+        readonly Serial m_serial;
 
         public Serial Serial
         {
-            get { return _serial; }
+            get { return m_serial; }
         }
 
         public RemoveEntityPacket(PacketReader reader)
             : base(0x1D, "Remove Entity")
         {
-            _serial = reader.ReadInt32();
+            m_serial = reader.ReadInt32();
         }
     }
 }

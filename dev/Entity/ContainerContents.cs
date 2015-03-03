@@ -19,14 +19,14 @@ namespace UltimaXNA.Entity
     // This is the class which contains the contents of a container's slots.
     class ContainerContents
     {
-        private const int _NumberOfSlots = 0x100;
-        private Item[] _SlotContents = new Item[_NumberOfSlots];
+        private const int m_NumberOfSlots = 0x100;
+        private Item[] m_SlotContents = new Item[m_NumberOfSlots];
 
         // LastSlotOccupied is set to the value of the last slot within the container which has an object
         // within it. This is useful for: 1. Knowing how far through the container array to iterate when
         // looking for an object; 2. Knowing how many slots a ContainerFrame should show.
-        private int _LastSlotOccupied = 0;
-        public int LastSlotOccupied { get { return _LastSlotOccupied; } } 
+        private int m_LastSlotOccupied = 0;
+        public int LastSlotOccupied { get { return m_LastSlotOccupied; } } 
 
         // Whenever we change the contents of mContents in any way, we increment UpdateTicker.
         // When this value is different from the last time you checked it, you should update
@@ -39,9 +39,9 @@ namespace UltimaXNA.Entity
         {
             get
             {
-                for (int i = 0; i < _NumberOfSlots; i++)
+                for (int i = 0; i < m_NumberOfSlots; i++)
                 {
-                    if (_SlotContents[i] == null)
+                    if (m_SlotContents[i] == null)
                         return i;
                 }
                 throw (new Exception("No open slot!"));
@@ -52,13 +52,13 @@ namespace UltimaXNA.Entity
         {
             get
             {
-                if (nIndex > _NumberOfSlots)
+                if (nIndex > m_NumberOfSlots)
                     return null;
-                return _SlotContents[nIndex];
+                return m_SlotContents[nIndex];
             }
             set
             {
-                _SlotContents[nIndex] = value;
+                m_SlotContents[nIndex] = value;
                 updateLastSlot(nIndex);
                 UpdateTicker++;
             }
@@ -69,26 +69,26 @@ namespace UltimaXNA.Entity
         private void updateLastSlot(int nIndex)
         {
             // iSlotOccupied: set to true if the slot is currently occupied, false if not.
-            bool isSlotOccupied = _SlotContents[nIndex] != null ? true : false;
+            bool isSlotOccupied = m_SlotContents[nIndex] != null ? true : false;
 
             if (isSlotOccupied)
             {
                 // This slot has an item in it. Is it the last slot occupied?
                 // If so, set mLastSlotOccupied to the index of this slot.
-                if (_LastSlotOccupied < nIndex)
-                    _LastSlotOccupied = nIndex;
+                if (m_LastSlotOccupied < nIndex)
+                    m_LastSlotOccupied = nIndex;
             }
             else
             {
                 // This slot has been vacated. If it used to be the last slot occupied, count back until
                 // you find an occupied slot.
-                if (_LastSlotOccupied == nIndex)
+                if (m_LastSlotOccupied == nIndex)
                 {
-                    for (int i = _LastSlotOccupied; i >= 0; i--)
+                    for (int i = m_LastSlotOccupied; i >= 0; i--)
                     {
-                        if (_SlotContents[i] != null)
+                        if (m_SlotContents[i] != null)
                         {
-                            _LastSlotOccupied = i;
+                            m_LastSlotOccupied = i;
                             return;
                         }
                     }
@@ -99,11 +99,11 @@ namespace UltimaXNA.Entity
         // Does mSlots[] contain an item with Serial = serial?
         public bool ContainsItem(Serial serial)
         {
-            for (int i = 0; i < _NumberOfSlots; i++)
+            for (int i = 0; i < m_NumberOfSlots; i++)
             {
-                if (_SlotContents[i] != null)
+                if (m_SlotContents[i] != null)
                 {
-                    if (_SlotContents[i].Serial == serial)
+                    if (m_SlotContents[i].Serial == serial)
                         return true;
                 }
             }
@@ -112,13 +112,13 @@ namespace UltimaXNA.Entity
 
         public void RemoveItemBySerial(Serial serial)
         {
-            for (int i = 0; i < _NumberOfSlots; i++)
+            for (int i = 0; i < m_NumberOfSlots; i++)
             {
-                if (_SlotContents[i] != null)
+                if (m_SlotContents[i] != null)
                 {
-                    if (_SlotContents[i].Serial == serial)
+                    if (m_SlotContents[i].Serial == serial)
                     {
-                        _SlotContents[i] = null;
+                        m_SlotContents[i] = null;
                         UpdateTicker++;
                     }
                 }
@@ -129,18 +129,18 @@ namespace UltimaXNA.Entity
     public class GameObject_Container
     {
         // The parent object. All Containers are part of GameObjects. We need a way to reference them.
-        private Item _ParentObject;
+        private Item m_ParentObject;
         // All the contents of the container are kept in the mContents class,
         // unless they are being moved between slots or into or out of the container.
-        private ContainerContents _contents = new ContainerContents();
+        private ContainerContents m_contents = new ContainerContents();
         // Update tickers are referenced by the UserInterface - when this value changes, the UserInterface knows to update.
-        public int UpdateTicker { get { return _contents.UpdateTicker; } }
+        public int UpdateTicker { get { return m_contents.UpdateTicker; } }
         // Get the last occupied slot, so the UserInterface knows how many slots to draw.
-        public int LastSlotOccupied { get { return _contents.LastSlotOccupied; } }
+        public int LastSlotOccupied { get { return m_contents.LastSlotOccupied; } }
 
         public GameObject_Container(Item nParent)
         {
-            _ParentObject = nParent;
+            m_ParentObject = nParent;
         }
 
         public void Update(double frameMS)
@@ -152,7 +152,7 @@ namespace UltimaXNA.Entity
         {
             // The server often sends as list of all the items in a container.
             // We want to filter out items we already have in our list.
-            if (_contents.ContainsItem(item.Serial))
+            if (m_contents.ContainsItem(item.Serial))
             {
                 // We know the object is already in our container.
                 RemoveItem(item.Serial);
@@ -169,32 +169,32 @@ namespace UltimaXNA.Entity
         {
             if (item.Y == 0x7FFF)
             {
-                if (_contents[item.X] == null)
+                if (m_contents[item.X] == null)
                 {
                     item.SlotIndex = item.X;
-                    _contents[item.SlotIndex] = item;
+                    m_contents[item.SlotIndex] = item;
                 }
                 else
                 {
-                    item.SlotIndex = _contents.NextAvailableSlot;
-                    _contents[item.SlotIndex] = item;
+                    item.SlotIndex = m_contents.NextAvailableSlot;
+                    m_contents[item.SlotIndex] = item;
                 }
             }
             else
             {
-                item.SlotIndex = _contents.NextAvailableSlot;
-                _contents[item.SlotIndex] = item;
+                item.SlotIndex = m_contents.NextAvailableSlot;
+                m_contents[item.SlotIndex] = item;
             }
         }
 
         public void RemoveItem(Serial serial)
         {
-            _contents.RemoveItemBySerial(serial);
+            m_contents.RemoveItemBySerial(serial);
         }
 
         public Item GetContents(int nIndex)
         {
-            return _contents[nIndex];
+            return m_contents[nIndex];
         }
     }
 }

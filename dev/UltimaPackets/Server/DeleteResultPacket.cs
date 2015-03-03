@@ -28,7 +28,7 @@ namespace UltimaXNA.UltimaPackets.Server
         {
             get
             {
-                switch ((DeleteResultType)_result)
+                switch ((DeleteResultType)m_result)
                 {
                     case DeleteResultType.PasswordInvalid:
                         return UltimaData.StringData.Entry(3000018); // 3000018: That character password is invalid.
@@ -58,12 +58,12 @@ namespace UltimaXNA.UltimaPackets.Server
             BadRequest
         }
 
-        byte _result;
+        byte m_result;
 
         public DeleteCharacterResponsePacket(PacketReader reader)
             : base(0x85, "Character Delete Result")
         {
-            _result = reader.ReadByte();
+            m_result = reader.ReadByte();
         }
     }
 }

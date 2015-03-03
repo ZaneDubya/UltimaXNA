@@ -24,17 +24,17 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class OverallLightLevelPacket : RecvPacket
     {
-        readonly byte _lightLevel;
+        readonly byte m_lightLevel;
 
         public byte LightLevel
         {
-            get { return _lightLevel; }
+            get { return m_lightLevel; }
         }
 
         public OverallLightLevelPacket(PacketReader reader)
             : base(0x4F, "OverallLightLevel")
         {
-            this._lightLevel = reader.ReadByte();
+            this.m_lightLevel = reader.ReadByte();
         }
     }
 }

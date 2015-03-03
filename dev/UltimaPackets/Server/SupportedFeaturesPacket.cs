@@ -24,7 +24,7 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class SupportedFeaturesPacket : RecvPacket
     {
-        readonly ushort _flags;
+        readonly ushort m_flags;
 
         /// <summary>
         /// From POLServer packet docs: http://docs.polserver.com/packets/index.php?Packet=0xB9
@@ -48,13 +48,13 @@ namespace UltimaXNA.UltimaPackets.Server
         /// </summary>
         public ushort Flags
         {
-            get { return _flags; }
+            get { return m_flags; }
         }
 
         public SupportedFeaturesPacket(PacketReader reader)
             : base(0xB9, "Enable Features")
         {
-            _flags = (ushort)reader.ReadInt16();
+            m_flags = (ushort)reader.ReadInt16();
         }
     }
 }

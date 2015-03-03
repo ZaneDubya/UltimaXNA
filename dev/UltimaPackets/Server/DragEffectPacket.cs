@@ -24,83 +24,83 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class DragEffectPacket : RecvPacket
     {
-        readonly int _itemId;
-        readonly int _amount;
-        readonly Serial _sourceContainer;
-        readonly int _sourceX;
-        readonly int _sourceY;
-        readonly int _sourceZ;
-        readonly Serial _destContainer;
-        readonly int _destX;
-        readonly int _destY;
-        readonly int _destZ;
+        readonly int m_itemId;
+        readonly int m_amount;
+        readonly Serial m_sourceContainer;
+        readonly int m_sourceX;
+        readonly int m_sourceY;
+        readonly int m_sourceZ;
+        readonly Serial m_destContainer;
+        readonly int m_destX;
+        readonly int m_destY;
+        readonly int m_destZ;
 
         public int ItemId 
         {
-            get { return _itemId; }
+            get { return m_itemId; }
         }
 
         public int Amount 
         {
-            get { return _itemId; } 
+            get { return m_itemId; } 
         }
 
         public Serial SourceContainer 
         {
-            get { return _sourceContainer; }
+            get { return m_sourceContainer; }
         }
 
         public int SourceX 
         {
-            get { return _sourceX; } 
+            get { return m_sourceX; } 
         }
 
         public int SourceY 
         {
-            get { return _sourceY; } 
+            get { return m_sourceY; } 
         }
 
         public int SourceZ
         {
-            get { return _sourceZ; } 
+            get { return m_sourceZ; } 
         }
 
         public Serial DestContainer 
         {
-            get { return _destContainer; } 
+            get { return m_destContainer; } 
         }
 
         public int DestX 
         {
-            get { return _destX; } 
+            get { return m_destX; } 
         }
 
         public int DestY         
         {
-            get { return _destY; }
+            get { return m_destY; }
         }
 
         public int DestZ 
         {
-            get { return _destZ; }
+            get { return m_destZ; }
         }
 
         public DragEffectPacket(PacketReader reader)
             : base(0x23, "Dragging Item")
         {
-            _itemId = reader.ReadUInt16();
+            m_itemId = reader.ReadUInt16();
             reader.ReadByte(); // 0x03 bytes unknown.
             reader.ReadByte(); //
             reader.ReadByte(); //
-            _amount = reader.ReadUInt16();
-            _sourceContainer = reader.ReadInt32(); // 0xFFFFFFFF for ground
-            _sourceX = reader.ReadUInt16();
-            _sourceY = reader.ReadUInt16();
-            _sourceZ = reader.ReadByte();
-            _destContainer = reader.ReadInt32(); // 0xFFFFFFFF for ground
-            _destX = reader.ReadUInt16();
-            _destY = reader.ReadUInt16();
-            _destZ = reader.ReadByte();
+            m_amount = reader.ReadUInt16();
+            m_sourceContainer = reader.ReadInt32(); // 0xFFFFFFFF for ground
+            m_sourceX = reader.ReadUInt16();
+            m_sourceY = reader.ReadUInt16();
+            m_sourceZ = reader.ReadByte();
+            m_destContainer = reader.ReadInt32(); // 0xFFFFFFFF for ground
+            m_destX = reader.ReadUInt16();
+            m_destY = reader.ReadUInt16();
+            m_destZ = reader.ReadByte();
         }
     }
 }

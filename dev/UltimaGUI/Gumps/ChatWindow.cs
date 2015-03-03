@@ -19,12 +19,12 @@ namespace UltimaXNA.UltimaGUI.Gumps
     class ChatWindow : Gump
     {
         TextEntry InputState;
-        List<ChatLineTimed> _textEntries;
+        List<ChatLineTimed> m_textEntries;
 
         public ChatWindow()
             : base(0, 0)
         {
-            _textEntries = new List<ChatLineTimed>();
+            m_textEntries = new List<ChatLineTimed>();
         }
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
@@ -37,13 +37,13 @@ namespace UltimaXNA.UltimaGUI.Gumps
             }
 
             int y = InputState.Y - 48;
-            for (int i = 0; i < _textEntries.Count; i++)
+            for (int i = 0; i < m_textEntries.Count; i++)
             {
-                _textEntries[i].Update(gameTime);
-                if (_textEntries[i].IsExpired)
+                m_textEntries[i].Update(gameTime);
+                if (m_textEntries[i].IsExpired)
                 {
-                    _textEntries[i].Dispose();
-                    _textEntries.RemoveAt(i);
+                    m_textEntries[i].Dispose();
+                    m_textEntries.RemoveAt(i);
                     i--;
                 }
             }
@@ -54,10 +54,10 @@ namespace UltimaXNA.UltimaGUI.Gumps
         public override void Draw(SpriteBatchUI spriteBatch)
         {
             int y = InputState.Y - 20;
-            for (int i = _textEntries.Count - 1; i >= 0; i--)
+            for (int i = m_textEntries.Count - 1; i >= 0; i--)
             {
-                y -= _textEntries[i].TextHeight;
-                _textEntries[i].Draw(spriteBatch, new Point2D(1, y));
+                y -= m_textEntries[i].TextHeight;
+                m_textEntries[i].Draw(spriteBatch, new Point2D(1, y));
             }
             base.Draw(spriteBatch);
         }
@@ -70,64 +70,64 @@ namespace UltimaXNA.UltimaGUI.Gumps
 
         public void AddLine(string text)
         {
-            _textEntries.Add(new ChatLineTimed(string.Format("<{1}>{0}</{1}>", text, "big"), Width));
+            m_textEntries.Add(new ChatLineTimed(string.Format("<{1}>{0}</{1}>", text, "big"), Width));
         }
     }
 
     class ChatLineTimed
     {
-        string _text;
-        public string Text { get { return _text; } }
-        float _createdTime = float.MinValue;
-        bool _isExpired;
-        public bool IsExpired { get { return _isExpired; } }
-        float _alpha;
-        public float Alpha { get { return _alpha; } }
-        private int _width = 0;
+        string m_text;
+        public string Text { get { return m_text; } }
+        float m_createdTime = float.MinValue;
+        bool m_isExpired;
+        public bool IsExpired { get { return m_isExpired; } }
+        float m_alpha;
+        public float Alpha { get { return m_alpha; } }
+        private int m_width = 0;
 
         const float Time_Display = 10.0f;
         const float Time_Fadeout = 4.0f;
 
-        private TextRenderer _renderer;
-        public int TextHeight { get { return _renderer.Height; } }
+        private TextRenderer m_renderer;
+        public int TextHeight { get { return m_renderer.Height; } }
 
         public ChatLineTimed(string text, int width)
         {
-            _text = text;
-            _isExpired = false;
-            _alpha = 1.0f;
-            _width = width;
+            m_text = text;
+            m_isExpired = false;
+            m_alpha = 1.0f;
+            m_width = width;
 
-            _renderer = new TextRenderer(_text, _width, true);
+            m_renderer = new TextRenderer(m_text, m_width, true);
         }
 
         public void Update(GameTime gameTime)
         {
-            if (_createdTime == float.MinValue)
-                _createdTime = (float)gameTime.TotalGameTime.TotalSeconds;
-            float time = (float)gameTime.TotalGameTime.TotalSeconds - _createdTime;
+            if (m_createdTime == float.MinValue)
+                m_createdTime = (float)gameTime.TotalGameTime.TotalSeconds;
+            float time = (float)gameTime.TotalGameTime.TotalSeconds - m_createdTime;
             if (time > Time_Display)
-                _isExpired = true;
+                m_isExpired = true;
             else if (time > (Time_Display - Time_Fadeout))
             {
-                _alpha = 1.0f - ((time) - (Time_Display - Time_Fadeout)) / Time_Fadeout;
+                m_alpha = 1.0f - ((time) - (Time_Display - Time_Fadeout)) / Time_Fadeout;
             }
-            _renderer.Transparent = (_alpha < 1.0f);
+            m_renderer.Transparent = (m_alpha < 1.0f);
         }
 
         public void Draw(SpriteBatchUI sb, Point2D position)
         {
-            _renderer.Draw(sb, position);
+            m_renderer.Draw(sb, position);
         }
 
         public void Dispose()
         {
-            _renderer = null;
+            m_renderer = null;
         }
 
         public override string ToString()
         {
-            return _text;
+            return m_text;
         }
     }
 }

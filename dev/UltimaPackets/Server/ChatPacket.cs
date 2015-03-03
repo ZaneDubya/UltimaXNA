@@ -24,26 +24,26 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class ChatPacket : RecvPacket
     {
-        readonly string _language;
-        readonly byte _commandtype;
+        readonly string m_language;
+        readonly byte m_commandtype;
 
         public string Language
         {
-            get { return _language; }
+            get { return m_language; }
         }
 
         public byte CommandType
         {
-            get { return _commandtype; }
+            get { return m_commandtype; }
         } 
 
         public ChatPacket(PacketReader reader)
             : base(0xB3, "Chat Packet")
         {
 
-            _language = reader.ReadString(3);
+            m_language = reader.ReadString(3);
             reader.ReadInt16(); // unknown.
-            _commandtype = reader.ReadByte();
+            m_commandtype = reader.ReadByte();
         }
     }
 }

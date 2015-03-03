@@ -18,33 +18,33 @@ namespace UltimaXNA.UltimaData
 {
     class ArtData
     {
-        private static Texture2D[][] _cache;
-        private static FileIndexClint _index;
-        private static ushort[][] _dimensions;
-        private static GraphicsDevice _graphics;
+        private static Texture2D[][] m_cache;
+        private static FileIndexClint m_index;
+        private static ushort[][] m_dimensions;
+        private static GraphicsDevice m_graphics;
 
         static ArtData()
         {
-            _cache = new Texture2D[0x10000][];
-            _index = new FileIndexClint("artidx.mul", "art.mul");
-            _dimensions = new ushort[0x4000][];
+            m_cache = new Texture2D[0x10000][];
+            m_index = new FileIndexClint("artidx.mul", "art.mul");
+            m_dimensions = new ushort[0x4000][];
         }
 
         public static void Initialize(GraphicsDevice graphics)
         {
-            _graphics = graphics;
+            m_graphics = graphics;
         }
 
         public static Texture2D GetLandTexture(int index)
         {
             index &= 0x3FFF;
 
-            if (_cache[index] == null) { _cache[index] = new Texture2D[0x1000]; }
-            Texture2D data = _cache[index][0];
+            if (m_cache[index] == null) { m_cache[index] = new Texture2D[0x1000]; }
+            Texture2D data = m_cache[index][0];
 
             if (data == null)
             {
-                _cache[index][0] = data = readLandTexture(index);
+                m_cache[index][0] = data = readLandTexture(index);
             }
 
             return data;
@@ -55,12 +55,12 @@ namespace UltimaXNA.UltimaData
             index &= 0x3FFF;
             index += 0x4000;
 
-            if (_cache[index] == null) { _cache[index] = new Texture2D[0x1000]; }
-            Texture2D data = _cache[index][0];
+            if (m_cache[index] == null) { m_cache[index] = new Texture2D[0x1000]; }
+            Texture2D data = m_cache[index][0];
 
             if (data == null)
             {
-                _cache[index][0] = data = readStaticTexture(index);
+                m_cache[index][0] = data = readStaticTexture(index);
             }
 
             return data;
@@ -68,11 +68,11 @@ namespace UltimaXNA.UltimaData
 
         private static unsafe Texture2D readLandTexture(int index)
         {
-            _index.Seek(index);
+            m_index.Seek(index);
 
             uint[] data = new uint[44 * 44];
 
-            ushort[] fileData = _index.ReadUInt16Array(((44 + 2) / 2) * 44);
+            ushort[] fileData = m_index.ReadUInt16Array(((44 + 2) / 2) * 44);
             int i = 0;
 
             int count = 2;
@@ -122,7 +122,7 @@ namespace UltimaXNA.UltimaData
                 }
             }
 
-            Texture2D texture = new Texture2D(_graphics, 44, 44);
+            Texture2D texture = new Texture2D(m_graphics, 44, 44);
 
             texture.SetData<uint>(data);
 
@@ -133,11 +133,11 @@ namespace UltimaXNA.UltimaData
         {
             index &= 0x3FFF;
 
-            ushort[] dimensions = _dimensions[index];
+            ushort[] dimensions = m_dimensions[index];
 
             if (dimensions == null)
             {
-                _dimensions[index] = dimensions = readStaticDimensions(index + 0x4000);
+                m_dimensions[index] = dimensions = readStaticDimensions(index + 0x4000);
             }
 
             width = dimensions[0];
@@ -146,10 +146,10 @@ namespace UltimaXNA.UltimaData
 
         private static ushort[] readStaticDimensions(int index)
         {
-            _index.Seek(index);
-            _index.BinaryReader.ReadInt32();
+            m_index.Seek(index);
+            m_index.BinaryReader.ReadInt32();
 
-            return new ushort[] { (ushort)_index.BinaryReader.ReadInt16(), (ushort)_index.BinaryReader.ReadInt16() };
+            return new ushort[] { (ushort)m_index.BinaryReader.ReadInt16(), (ushort)m_index.BinaryReader.ReadInt16() };
         }
 
         const int multiplier = 0xFF / 0x1F;
@@ -167,30 +167,30 @@ namespace UltimaXNA.UltimaData
 
         private static unsafe Texture2D readStaticTexture(int index)
         {
-            _index.Seek(index);
-            _index.BinaryReader.ReadInt32();
+            m_index.Seek(index);
+            m_index.BinaryReader.ReadInt32();
 
-            int width = _index.BinaryReader.ReadInt16();
-            int height = _index.BinaryReader.ReadInt16();
+            int width = m_index.BinaryReader.ReadInt16();
+            int height = m_index.BinaryReader.ReadInt16();
 
             if (width <= 0 || height <= 0)
             {
                 return null;
             }
 
-            if (_dimensions[index - 0x4000] == null)
+            if (m_dimensions[index - 0x4000] == null)
             {
-                _dimensions[index - 0x4000] = new ushort[] { (ushort)width, (ushort)height };
+                m_dimensions[index - 0x4000] = new ushort[] { (ushort)width, (ushort)height };
             }
 
             
-            ushort[] lookups = _index.ReadUInt16Array(height);
+            ushort[] lookups = m_index.ReadUInt16Array(height);
 
-            int dataStart = (int)_index.BinaryReader.BaseStream.Position + (height * 2);
+            int dataStart = (int)m_index.BinaryReader.BaseStream.Position + (height * 2);
             int readLength = (getMaxLookup(lookups) + width * 2); // we don't know the length of the last line, so we read width * 2, anticipating worst case compression.
-            if (dataStart + readLength * 2 > _index.BinaryReader.BaseStream.Length)
-                readLength = ((int)_index.BinaryReader.BaseStream.Length - dataStart) >> 1;
-            ushort[] fileData = _index.ReadUInt16Array(readLength);
+            if (dataStart + readLength * 2 > m_index.BinaryReader.BaseStream.Length)
+                readLength = ((int)m_index.BinaryReader.BaseStream.Length - dataStart) >> 1;
+            ushort[] fileData = m_index.ReadUInt16Array(readLength);
             uint[] pixelData = new uint[width * height];
 
             fixed (uint* pData = pixelData)
@@ -226,7 +226,7 @@ namespace UltimaXNA.UltimaData
 
             UltimaVars.Metrics.ReportDataRead(sizeof(ushort) * (fileData.Length + lookups.Length + 2));
 
-            Texture2D texture = new Texture2D(_graphics, width, height);
+            Texture2D texture = new Texture2D(m_graphics, width, height);
 
             texture.SetData<uint>(pixelData);
 

@@ -24,44 +24,44 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class VendorBuyListPacket : RecvPacket
     {
-        readonly Serial _vendorPackSerial;
-        readonly int _itemCount;
-        readonly int[] _prices;
-        readonly string[] _descriptions;
+        readonly Serial m_vendorPackSerial;
+        readonly int m_itemCount;
+        readonly int[] m_prices;
+        readonly string[] m_descriptions;
 
         public Serial VendorPackSerial
         {
-            get { return _vendorPackSerial; }
+            get { return m_vendorPackSerial; }
         }
 
         public int ItemCount
         {
-            get { return _vendorPackSerial; }
+            get { return m_vendorPackSerial; }
         }
 
         public int[] Prices
         {
-            get { return _prices; } 
+            get { return m_prices; } 
         }
 
         public string[] Descriptions
         {
-            get { return _descriptions; }
+            get { return m_descriptions; }
         }
 
         public VendorBuyListPacket(PacketReader reader)
             : base(0x74, "Open Buy Window")
         {
-            _vendorPackSerial = reader.ReadInt32();
-            _itemCount = reader.ReadByte();
-            _prices = new int[_itemCount];
-            _descriptions = new string[_itemCount];
+            m_vendorPackSerial = reader.ReadInt32();
+            m_itemCount = reader.ReadByte();
+            m_prices = new int[m_itemCount];
+            m_descriptions = new string[m_itemCount];
 
-            for (int i = 0; i < this._itemCount; i++)
+            for (int i = 0; i < this.m_itemCount; i++)
             {
-                _prices[i] = reader.ReadInt32();
+                m_prices[i] = reader.ReadInt32();
                 int descriptionLegnth = reader.ReadByte();
-                _descriptions[i] = reader.ReadString(descriptionLegnth);
+                m_descriptions[i] = reader.ReadString(descriptionLegnth);
             }
         }
     }

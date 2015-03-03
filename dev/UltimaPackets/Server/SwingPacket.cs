@@ -24,31 +24,31 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class SwingPacket : RecvPacket
     {
-        readonly Serial _attacker;
-        readonly Serial _defender;
-        readonly byte _flag;
+        readonly Serial m_attacker;
+        readonly Serial m_defender;
+        readonly byte m_flag;
 
         public Serial Attacker
         {
-            get { return _attacker; }
+            get { return m_attacker; }
         }
 
         public Serial Defender
         {
-            get { return _defender; }
+            get { return m_defender; }
         }
 
         public byte Flag
         {
-            get { return _flag; }
+            get { return m_flag; }
         }
 
         public SwingPacket(PacketReader reader)
             : base(0x2F, "Swing")
         {
-            _flag = reader.ReadByte();
-            _attacker = reader.ReadInt32();
-            _defender = reader.ReadInt32();
+            m_flag = reader.ReadByte();
+            m_attacker = reader.ReadInt32();
+            m_defender = reader.ReadInt32();
         }
     }
 }

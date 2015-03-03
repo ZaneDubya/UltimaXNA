@@ -25,55 +25,55 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class MobileIncomingPacket : RecvPacket
     {
-        readonly Serial _serial;
-        readonly short _body;        
-        readonly short _x;
-        readonly short _y;
-        readonly short _z;
-        readonly byte _direction;
-        readonly ushort _hue;
+        readonly Serial m_serial;
+        readonly short m_body;        
+        readonly short m_x;
+        readonly short m_y;
+        readonly short m_z;
+        readonly byte m_direction;
+        readonly ushort m_hue;
         public readonly MobileFlags Flags;
-        readonly byte _notoriety;
-        readonly EquipmentEntry[] _equipment;
+        readonly byte m_notoriety;
+        readonly EquipmentEntry[] m_equipment;
 
         public Serial Serial
         {
-            get { return _serial; } 
+            get { return m_serial; } 
         }
 
         public short BodyID 
         {
-            get { return _body; }
+            get { return m_body; }
         }
 
         public short X
         {
-            get { return _x; } 
+            get { return m_x; } 
         }
 
         public short Y 
         {
-            get { return _y; } 
+            get { return m_y; } 
         }
 
         public short Z 
         {
-            get { return _z; } 
+            get { return m_z; } 
         }
 
         public byte Direction
         {
-            get { return _direction; } 
+            get { return m_direction; } 
         }
 
         public ushort Hue 
         {
-            get { return _hue; } 
+            get { return m_hue; } 
         }
 
         public EquipmentEntry[] Equipment
         {
-            get { return _equipment; }
+            get { return m_equipment; }
         }
 
         /// <summary>
@@ -87,22 +87,22 @@ namespace UltimaXNA.UltimaPackets.Server
         /// </summary>
         public byte Notoriety
         {
-            get { return _notoriety; }
+            get { return m_notoriety; }
         }  
 
         public MobileIncomingPacket(PacketReader reader)
             : base(0x78, "Mobile Incoming")
         {
             // Mobile
-            _serial = reader.ReadInt32();
-            _body = reader.ReadInt16();
-            _x = reader.ReadInt16();
-            _y = reader.ReadInt16();
-            _z = reader.ReadSByte();
-            _direction = reader.ReadByte();
-            _hue = reader.ReadUInt16();
+            m_serial = reader.ReadInt32();
+            m_body = reader.ReadInt16();
+            m_x = reader.ReadInt16();
+            m_y = reader.ReadInt16();
+            m_z = reader.ReadSByte();
+            m_direction = reader.ReadByte();
+            m_hue = reader.ReadUInt16();
             this.Flags = new MobileFlags(reader.ReadByte());
-            _notoriety = reader.ReadByte();
+            m_notoriety = reader.ReadByte();
 
             // Read equipment - nine bytes ea.
             List<EquipmentEntry> items = new List<EquipmentEntry>();
@@ -111,7 +111,7 @@ namespace UltimaXNA.UltimaPackets.Server
             if (!serial.IsValid)
             {
                 reader.ReadByte(); //zero terminated
-                _equipment = new EquipmentEntry[0];
+                m_equipment = new EquipmentEntry[0];
             }
             else
             {
@@ -131,7 +131,7 @@ namespace UltimaXNA.UltimaPackets.Server
                     // read the next serial and begin the loop again. break at 0x00000000
                     serial = reader.ReadInt32();
                 }
-                _equipment = items.ToArray();
+                m_equipment = items.ToArray();
             }
         }
     }

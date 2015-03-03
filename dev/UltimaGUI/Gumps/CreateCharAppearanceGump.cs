@@ -26,20 +26,20 @@ namespace UltimaXNA.UltimaGUI.Gumps
             QuitButton
         }
 
-        public string Name { get { return _Name.Text; } set { _Name.Text = value; } }
-        public int Gender { get { return _Gender.Index; } set { } }
+        public string Name { get { return m_Name.Text; } set { m_Name.Text = value; } }
+        public int Gender { get { return m_Gender.Index; } set { } }
         public int Race { get { return 1; } set { } } // hard coded to human
         public int HairID
         { 
-            get { return (Gender == 0) ? UltimaData.HairStyles.MaleIDs[_HairMale.Index] : UltimaData.HairStyles.FemaleIDs[_HairFemale.Index]; }
+            get { return (Gender == 0) ? UltimaData.HairStyles.MaleIDs[m_HairMale.Index] : UltimaData.HairStyles.FemaleIDs[m_HairFemale.Index]; }
             set
             {
                 for (int i = 0; i < 10; i++)
                 {
                     if (value == ((Gender == 0) ? UltimaData.HairStyles.MaleIDs[i] : UltimaData.HairStyles.FemaleIDs[i]))
                     {
-                        _HairMale.Index = i;
-                        _HairFemale.Index = i;
+                        m_HairMale.Index = i;
+                        m_HairFemale.Index = i;
                         break;
                     }
                 }
@@ -47,14 +47,14 @@ namespace UltimaXNA.UltimaGUI.Gumps
         }
         public int FacialHairID
         {
-            get { return (Gender == 0) ? UltimaData.HairStyles.FacialHairIDs[_FacialHairMale.Index] : 0; }
+            get { return (Gender == 0) ? UltimaData.HairStyles.FacialHairIDs[m_FacialHairMale.Index] : 0; }
             set
             {
                 for (int i = 0; i < 8; i++)
                 {
                     if (value == UltimaData.HairStyles.FacialHairIDs[i])
                     {
-                        _FacialHairMale.Index = i;
+                        m_FacialHairMale.Index = i;
                         break;
                     }
                 }
@@ -62,48 +62,48 @@ namespace UltimaXNA.UltimaGUI.Gumps
         }
         public int SkinHue
         {
-            get { return _SkinHue.HueValue; }
-            set { _SkinHue.HueValue = value; }
+            get { return m_SkinHue.HueValue; }
+            set { m_SkinHue.HueValue = value; }
         }
         public int HairHue
         {
-            get { return _HairHue.HueValue; }
-            set { _HairHue.HueValue = value; }
+            get { return m_HairHue.HueValue; }
+            set { m_HairHue.HueValue = value; }
         }
         public int FacialHairHue
         {
-            get { return (Gender == 0) ? _FacialHairHue.HueValue : 0; }
-            set { _FacialHairHue.HueValue = value; }
+            get { return (Gender == 0) ? m_FacialHairHue.HueValue : 0; }
+            set { m_FacialHairHue.HueValue = value; }
         }
 
-        TextEntry _Name;
-        DropDownList _Gender;
-        DropDownList _HairMale;
-        DropDownList _FacialHairMale;
-        DropDownList _HairFemale;
-        ColorPicker _SkinHue;
-        ColorPicker _HairHue;
-        ColorPicker _FacialHairHue;
-        PaperdollLargeUninteractable _paperdoll;
+        TextEntry m_Name;
+        DropDownList m_Gender;
+        DropDownList m_HairMale;
+        DropDownList m_FacialHairMale;
+        DropDownList m_HairFemale;
+        ColorPicker m_SkinHue;
+        ColorPicker m_HairHue;
+        ColorPicker m_FacialHairHue;
+        PaperdollLargeUninteractable m_paperdoll;
 
         public CreateCharAppearanceGump()
             : base(0, 0)
         {
-            _renderFullScreen = false;
+            m_renderFullScreen = false;
             // backdrop
             AddControl(new GumpPicTiled(this, 0, 0, 0, 640, 480, 9274));
             AddControl(new GumpPic(this, 0, 0, 0, 5500, 0));
             // character name 
             AddControl(new GumpPic(this, 0, 280, 53, 1801, 0));
-            _Name = new TextEntry(this, 0, 238, 70, 234, 20, 0, 0, 29, string.Empty);
-            AddControl(new ResizePic(this, _Name));
-            AddControl(_Name);
+            m_Name = new TextEntry(this, 0, 238, 70, 234, 20, 0, 0, 29, string.Empty);
+            AddControl(new ResizePic(this, m_Name));
+            AddControl(m_Name);
             // character window
             AddControl(new GumpPic(this, 0, 238, 98, 1800, 0));
             // paperdoll
-            _paperdoll = new PaperdollLargeUninteractable(this, 0, 237, 97);
-            _paperdoll.IsCharacterCreation = true;
-            AddControl(_paperdoll);
+            m_paperdoll = new PaperdollLargeUninteractable(this, 0, 237, 97);
+            m_paperdoll.IsCharacterCreation = true;
+            AddControl(m_paperdoll);
 
             // left option window
             AddControl(new ResizePic(this, 0, 82, 125, 3600, 151, 310));
@@ -111,35 +111,35 @@ namespace UltimaXNA.UltimaGUI.Gumps
             // if you do add it, move everything else in this left window down by 45 pixels
             // gender
             AddControl(new TextLabelAscii(this, 1, 100, 141, 2037, 9, UltimaData.StringData.Entry(3000120)));
-            _Gender = new DropDownList(this, 0, 97, 154, 122, 0, 2, new string[] { UltimaData.StringData.Entry(3000118), UltimaData.StringData.Entry(3000119) }, false);
-            AddControl(_Gender);
+            m_Gender = new DropDownList(this, 0, 97, 154, 122, 0, 2, new string[] { UltimaData.StringData.Entry(3000118), UltimaData.StringData.Entry(3000119) }, false);
+            AddControl(m_Gender);
             // hair (male)
             AddControl(new TextLabelAscii(this, 1, 100, 186, 2037, 9, UltimaData.StringData.Entry(3000121)));
-            _HairMale = new DropDownList(this, 1, 97, 199, 122, 0, 6, UltimaData.HairStyles.MaleHairNames, false);
-            AddControl(_HairMale);
+            m_HairMale = new DropDownList(this, 1, 97, 199, 122, 0, 6, UltimaData.HairStyles.MaleHairNames, false);
+            AddControl(m_HairMale);
             // facial hair (male)
             AddControl(new TextLabelAscii(this, 1, 100, 231, 2037, 9, UltimaData.StringData.Entry(3000122)));
-            _FacialHairMale = new DropDownList(this, 1, 97, 244, 122, 0, 6, UltimaData.HairStyles.FacialHair, false);
-            AddControl(_FacialHairMale);
+            m_FacialHairMale = new DropDownList(this, 1, 97, 244, 122, 0, 6, UltimaData.HairStyles.FacialHair, false);
+            AddControl(m_FacialHairMale);
             // hair (female)
             AddControl(new TextLabelAscii(this, 2, 100, 186, 2037, 9, UltimaData.StringData.Entry(3000121)));
-            _HairFemale = new DropDownList(this, 2, 97, 199, 122, 0, 6, UltimaData.HairStyles.FemaleHairNames, false);
-            AddControl(_HairFemale);
+            m_HairFemale = new DropDownList(this, 2, 97, 199, 122, 0, 6, UltimaData.HairStyles.FemaleHairNames, false);
+            AddControl(m_HairFemale);
 
             // right option window
             AddControl(new ResizePic(this, 0, 475, 125, 3600, 151, 310));
             // skin tone
             AddControl(new TextLabelAscii(this, 0, 489, 141, 2037, 9, UltimaData.StringData.Entry(3000183)));
-            _SkinHue = new ColorPicker(this, 0, new Rectangle(490, 154, 120, 24), new Rectangle(490, 140, 120, 280), 7, 8, UltimaData.HueData.SkinTones);
-            AddControl(_SkinHue);
+            m_SkinHue = new ColorPicker(this, 0, new Rectangle(490, 154, 120, 24), new Rectangle(490, 140, 120, 280), 7, 8, UltimaData.HueData.SkinTones);
+            AddControl(m_SkinHue);
             // hair color
             AddControl(new TextLabelAscii(this, 0, 489, 186, 2037, 9, UltimaData.StringData.Entry(3000184)));
-            _HairHue = new ColorPicker(this, 0, new Rectangle(490, 199, 120, 24), new Rectangle(490, 140, 120, 280), 8, 6, UltimaData.HueData.HairTones);
-            AddControl(_HairHue);
+            m_HairHue = new ColorPicker(this, 0, new Rectangle(490, 199, 120, 24), new Rectangle(490, 140, 120, 280), 8, 6, UltimaData.HueData.HairTones);
+            AddControl(m_HairHue);
             // facial hair color (male)
             AddControl(new TextLabelAscii(this, 1, 489, 231, 2037, 9, UltimaData.StringData.Entry(3000185)));
-            _FacialHairHue = new ColorPicker(this, 1, new Rectangle(490, 244, 120, 24), new Rectangle(490, 140, 120, 280), 8, 6, UltimaData.HueData.HairTones);
-            AddControl(_FacialHairHue);
+            m_FacialHairHue = new ColorPicker(this, 1, new Rectangle(490, 244, 120, 24), new Rectangle(490, 140, 120, 280), 8, 6, UltimaData.HueData.HairTones);
+            AddControl(m_FacialHairHue);
 
             // back button
             AddControl(new Button(this, 1, 586, 435, 5537, 5539, ButtonTypes.Activate, 0, (int)Buttons.BackButton));
@@ -158,23 +158,23 @@ namespace UltimaXNA.UltimaGUI.Gumps
             
             // show different controls based on what gender we're looking at.
             // Also copy over the hair id to facilitate easy switching between male and female appearances.
-            if (_Gender.Index == 0)
+            if (m_Gender.Index == 0)
             {
                 ActivePage = 1;
-                _HairFemale.Index = _HairMale.Index;
+                m_HairFemale.Index = m_HairMale.Index;
             }
             else
             {
                 ActivePage = 2;
-                _HairMale.Index = _HairFemale.Index;
+                m_HairMale.Index = m_HairFemale.Index;
             }
             // update the paperdoll
-            _paperdoll.Gender = _Gender.Index;
-            _paperdoll.SetSlotHue(PaperdollLargeUninteractable.EquipSlots.Body, SkinHue);
-            _paperdoll.SetSlotEquipment(PaperdollLargeUninteractable.EquipSlots.Hair, HairID);
-            _paperdoll.SetSlotHue(PaperdollLargeUninteractable.EquipSlots.Hair, HairHue);
-            _paperdoll.SetSlotEquipment(PaperdollLargeUninteractable.EquipSlots.FacialHair, FacialHairID);
-            _paperdoll.SetSlotHue(PaperdollLargeUninteractable.EquipSlots.FacialHair, FacialHairHue);
+            m_paperdoll.Gender = m_Gender.Index;
+            m_paperdoll.SetSlotHue(PaperdollLargeUninteractable.EquipSlots.Body, SkinHue);
+            m_paperdoll.SetSlotEquipment(PaperdollLargeUninteractable.EquipSlots.Hair, HairID);
+            m_paperdoll.SetSlotHue(PaperdollLargeUninteractable.EquipSlots.Hair, HairHue);
+            m_paperdoll.SetSlotEquipment(PaperdollLargeUninteractable.EquipSlots.FacialHair, FacialHairID);
+            m_paperdoll.SetSlotHue(PaperdollLargeUninteractable.EquipSlots.FacialHair, FacialHairHue);
         }
 
         public override void ActivateByButton(int buttonID)

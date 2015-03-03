@@ -24,59 +24,59 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class WorldItemPacket : RecvPacket
     {
-        readonly Serial _serial;
-        readonly short _itemid;
-        readonly short _amount;
-        readonly short _x;
-        readonly short _y;
-        readonly sbyte _z;
-        readonly byte _direction;
-        readonly ushort _hue;
-        readonly byte _flags;
+        readonly Serial m_serial;
+        readonly short m_itemid;
+        readonly short m_amount;
+        readonly short m_x;
+        readonly short m_y;
+        readonly sbyte m_z;
+        readonly byte m_direction;
+        readonly ushort m_hue;
+        readonly byte m_flags;
 
         public Serial Serial 
         {
-            get { return _serial; } 
+            get { return m_serial; } 
         }
 
         public short ItemID
         {
-            get { return _itemid; }
+            get { return m_itemid; }
         }
 
         public short StackAmount 
         {
-            get { return _amount; } 
+            get { return m_amount; } 
         }
 
         public short X 
         {
-            get { return _x; }
+            get { return m_x; }
         }
 
         public short Y 
         {
-            get { return _y; }
+            get { return m_y; }
         }
 
         public short Z 
         {
-            get { return _z; }
+            get { return m_z; }
         }
 
         public byte Direction
         {
-            get { return _direction; }
+            get { return m_direction; }
         }
 
         public ushort Hue 
         {
-            get { return _hue; }
+            get { return m_hue; }
         }
 
         public short Flags
         {
-            get { return _flags; }
+            get { return m_flags; }
         }
 
         public WorldItemPacket(PacketReader reader)
@@ -85,11 +85,11 @@ namespace UltimaXNA.UltimaPackets.Server
             Serial serial = reader.ReadInt32();
             ushort itemId = reader.ReadUInt16();
 
-            _amount = 0;
+            m_amount = 0;
 
             if ((serial & 0x80000000) == 0x80000000)
             {
-                _amount = reader.ReadInt16();
+                m_amount = reader.ReadInt16();
             }
             
             // Doesn't exist this thing in the packet
@@ -103,26 +103,26 @@ namespace UltimaXNA.UltimaPackets.Server
             ushort x = reader.ReadUInt16();
             ushort y = reader.ReadUInt16();
                         
-            _direction = 0;
+            m_direction = 0;
 
             if ((x & 0x8000) == 0x8000)
-                _direction = reader.ReadByte();
+                m_direction = reader.ReadByte();
 
-            _z = reader.ReadSByte();
-            _hue = 0;
+            m_z = reader.ReadSByte();
+            m_hue = 0;
 
             if ((y & 0x8000) == 0x8000)
-                _hue = reader.ReadUInt16();
+                m_hue = reader.ReadUInt16();
 
-            _flags = 0;
+            m_flags = 0;
 
             if ((y & 0x4000) == 0x4000)
-                _flags = reader.ReadByte();
+                m_flags = reader.ReadByte();
 
-            _serial = (int)(serial &= 0x7FFFFFFF);
-            _itemid = (short)(itemId &= 0x7FFF);
-            _x = (short)(x &= 0x7FFF);
-            _y = (short)(y &= 0x3FFF);
+            m_serial = (int)(serial &= 0x7FFFFFFF);
+            m_itemid = (short)(itemId &= 0x7FFF);
+            m_x = (short)(x &= 0x7FFF);
+            m_y = (short)(y &= 0x3FFF);
         }
     }
 }

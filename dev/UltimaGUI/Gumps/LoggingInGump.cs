@@ -29,7 +29,7 @@ namespace UltimaXNA.UltimaGUI.Gumps
             : base(0, 0)
         {
             int hue = 2017;
-            _renderFullScreen = false;
+            m_renderFullScreen = false;
             // backdrop
             AddControl(new GumpPicTiled(this, 0, 0, 0, 640, 480, 9274));
             AddControl(new GumpPic(this, 0, 0, 0, 5500, 0));

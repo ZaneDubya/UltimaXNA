@@ -32,12 +32,12 @@ namespace UltimaXNA.UltimaGUI.Gumps
             Status
         }
 
-        Mobile _Parent;
+        Mobile m_Parent;
 
         public PaperDollGump(Mobile parent)
             : base(0, 0)
         {
-            _Parent = parent;
+            m_Parent = parent;
 
             IsMovable = true;
             AddControl(new GumpPic(this, 0, 0, 0, 0x07d0, 0));
@@ -71,7 +71,7 @@ namespace UltimaXNA.UltimaGUI.Gumps
 
             // Paperdoll
             AddControl(new PaperDollInteractable(this, 0, 8, 21));
-            ((PaperDollInteractable)LastControl).SourceEntity = _Parent;
+            ((PaperDollInteractable)LastControl).SourceEntity = m_Parent;
         }
 
         public override void Update(GameTime gameTime)

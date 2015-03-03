@@ -21,7 +21,7 @@ namespace UltimaXNA.UltimaGUI
     {
         
         Serial GumpID;
-        string[] _gumpPieces, _gumpLines;
+        string[] m_gumpPieces, m_gumpLines;
 
         public Gump(Serial serial, Serial gumpID)
             : base(null, 0)
@@ -33,8 +33,8 @@ namespace UltimaXNA.UltimaGUI
         public Gump(Serial serial, Serial gumpID, String[] pieces, String[] textlines)
             : this(serial, gumpID)
         {
-            _gumpPieces = pieces;
-            _gumpLines = textlines;
+            m_gumpPieces = pieces;
+            m_gumpLines = textlines;
         }
 
         public override void Dispose()
@@ -45,11 +45,11 @@ namespace UltimaXNA.UltimaGUI
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
             // Add any gump pieces that have been given to the gump...
-            if (_gumpPieces != null)
+            if (m_gumpPieces != null)
             {
-                buildGump(_gumpPieces, _gumpLines);
-                _gumpPieces = null;
-                _gumpLines = null;
+                buildGump(m_gumpPieces, m_gumpLines);
+                m_gumpPieces = null;
+                m_gumpLines = null;
             }
 
             // If page = 0, then we've just created this page. We initialize activepage to 1.
@@ -63,33 +63,33 @@ namespace UltimaXNA.UltimaGUI
             // Do we need to resize?
             if (checkResize())
             {
-                if (_gumpTexture != null)
+                if (m_gumpTexture != null)
                 {
-                    _gumpTexture.Dispose();
+                    m_gumpTexture.Dispose();
                 }
             }
         }
 
-        RenderTarget2D _gumpTexture = null;
+        RenderTarget2D m_gumpTexture = null;
 
         public override void Draw(SpriteBatchUI spriteBatch)
         {
             if (!Visible)
                 return;
 
-            if (_renderFullScreen)
+            if (m_renderFullScreen)
             {
                 InputMultiplier = (float)spriteBatch.GraphicsDevice.Viewport.Width / (float)Width;
 
-                if (_gumpTexture == null)
+                if (m_gumpTexture == null)
                 {
                     // the render target CANNOT be larger than the viewport.
                     int w = Width < UserInterface.Width ? Width : UserInterface.Width;
                     int h = Height < UserInterface.Height ? Height : UserInterface.Height;
-                    _gumpTexture = new RenderTarget2D(spriteBatch.GraphicsDevice, w, h, false, SurfaceFormat.Color, DepthFormat.Depth16);
+                    m_gumpTexture = new RenderTarget2D(spriteBatch.GraphicsDevice, w, h, false, SurfaceFormat.Color, DepthFormat.Depth16);
                 }
 
-                spriteBatch.GraphicsDevice.SetRenderTarget(_gumpTexture);
+                spriteBatch.GraphicsDevice.SetRenderTarget(m_gumpTexture);
                 spriteBatch.GraphicsDevice.Clear(Color.Transparent);
 
                 base.Draw(spriteBatch);
@@ -97,12 +97,12 @@ namespace UltimaXNA.UltimaGUI
 
                 spriteBatch.GraphicsDevice.SetRenderTarget(null);
 
-                if (_renderFullScreen)
+                if (m_renderFullScreen)
                 {
-                    spriteBatch.Draw2D(_gumpTexture, new Rectangle(0, 0, (int)(Width * InputMultiplier), (int)(Height * InputMultiplier)), 0, false, false);
+                    spriteBatch.Draw2D(m_gumpTexture, new Rectangle(0, 0, (int)(Width * InputMultiplier), (int)(Height * InputMultiplier)), 0, false, false);
                 }
                 else
-                    spriteBatch.Draw2D(_gumpTexture, Position, 0, false, false);
+                    spriteBatch.Draw2D(m_gumpTexture, Position, 0, false, false);
             }
             else
             {

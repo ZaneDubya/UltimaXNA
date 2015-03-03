@@ -24,66 +24,66 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class UnicodeMessagePacket : RecvPacket
     {
-        readonly Serial _serial;
-        readonly short _model;
-        readonly MessageType _msgType;
-        readonly short _hue;
-        readonly short _font;
-        readonly int _language;
-        readonly string _speakerName;
-        readonly string _spokenText;
+        readonly Serial m_serial;
+        readonly short m_model;
+        readonly MessageType m_msgType;
+        readonly short m_hue;
+        readonly short m_font;
+        readonly int m_language;
+        readonly string m_speakerName;
+        readonly string m_spokenText;
 
         public Serial Serial 
         {
-            get { return _serial; } 
+            get { return m_serial; } 
         }
         
         public short Model 
         {
-            get { return _model; } 
+            get { return m_model; } 
         }
 
         public MessageType MsgType 
         {
-            get { return _msgType; }
+            get { return m_msgType; }
         }
         
         public short Hue 
         {
-            get { return _hue; } 
+            get { return m_hue; } 
         }
         
         public short Font 
         {
-            get { return _font; }
+            get { return m_font; }
         }
 
         public int Language 
         {
-            get { return _language; }
+            get { return m_language; }
         }
 
         public string SpeakerName 
         {
-            get { return _speakerName; } 
+            get { return m_speakerName; } 
         }
         
         public string SpokenText 
         {
-            get { return _spokenText; } 
+            get { return m_spokenText; } 
         }
         
         public UnicodeMessagePacket(PacketReader reader)
             : base(0xAE, "Unicode Message")
         {
-            _serial = reader.ReadInt32();
-            _model = reader.ReadInt16();
-            _msgType = (MessageType)reader.ReadByte();
-            _hue = reader.ReadInt16();
-            _font = reader.ReadInt16();
-            _language = reader.ReadInt32();
-            _speakerName = reader.ReadString(30);
-            _spokenText = reader.ReadUnicodeString((reader.Buffer.Length - 48) / 2);
+            m_serial = reader.ReadInt32();
+            m_model = reader.ReadInt16();
+            m_msgType = (MessageType)reader.ReadByte();
+            m_hue = reader.ReadInt16();
+            m_font = reader.ReadInt16();
+            m_language = reader.ReadInt32();
+            m_speakerName = reader.ReadString(30);
+            m_spokenText = reader.ReadUnicodeString((reader.Buffer.Length - 48) / 2);
         }
     }
 }

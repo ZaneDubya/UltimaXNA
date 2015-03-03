@@ -24,24 +24,24 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class DamagePacket : RecvPacket
     {
-        readonly Serial _serial;
-        readonly short _damage;
+        readonly Serial m_serial;
+        readonly short m_damage;
 
         public Serial Serial
         {
-            get { return _serial; }
+            get { return m_serial; }
         } 
 
         public short Damage
         {
-            get { return _damage; }
+            get { return m_damage; }
         } 
         
         public DamagePacket(PacketReader reader)
             : base(0x0B, "Damage")
         {
-            _serial = reader.ReadInt32();
-            _damage = reader.ReadInt16();
+            m_serial = reader.ReadInt32();
+            m_damage = reader.ReadInt16();
         }
     }
 }

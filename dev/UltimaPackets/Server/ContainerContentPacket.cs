@@ -27,12 +27,12 @@ namespace UltimaXNA.UltimaPackets.Server
     {
         public static bool NextContainerContentsIsPre6017 = false;
 
-        private ContentItem[] _items;
+        private ContentItem[] m_items;
 
         public ContentItem[] Items
         {
-            get { return _items; }
-            set { _items = value; }
+            get { return m_items; }
+            set { m_items = value; }
         }
 
         public ContainerContentPacket(PacketReader reader)
@@ -58,7 +58,7 @@ namespace UltimaXNA.UltimaPackets.Server
                 items.Add(new ContentItem(serial, iItemID, iAmount, iX, iY, iGridLocation, iContainerSerial, iHue));
             }
 
-            _items = items.ToArray();
+            m_items = items.ToArray();
             if (NextContainerContentsIsPre6017)
                 NextContainerContentsIsPre6017 = false;
         }

@@ -26,41 +26,41 @@ namespace UltimaXNA.Entity
         public static Action<MoveRequestPacket> SendMoveRequestPacket;
 
         #region MovementSpeed
-        private static TimeSpan _TimeWalkFoot = TimeSpan.FromSeconds(0.4);
-        private static TimeSpan _TimeRunFoot = TimeSpan.FromSeconds(0.2);
-        private static TimeSpan _TimeWalkMount = TimeSpan.FromSeconds(0.3);
-        private static TimeSpan _TimeRunMount = TimeSpan.FromSeconds(0.1);
+        private static TimeSpan m_TimeWalkFoot = TimeSpan.FromSeconds(0.4);
+        private static TimeSpan m_TimeRunFoot = TimeSpan.FromSeconds(0.2);
+        private static TimeSpan m_TimeWalkMount = TimeSpan.FromSeconds(0.3);
+        private static TimeSpan m_TimeRunMount = TimeSpan.FromSeconds(0.1);
         private TimeSpan TimeToCompleteMove(Direction facing)
         {
-            if (_entity is Mobile && ((Mobile)_entity).IsMounted)
-                return (facing & Direction.Running) == Direction.Running ? _TimeRunMount : _TimeWalkMount;
+            if (m_entity is Mobile && ((Mobile)m_entity).IsMounted)
+                return (facing & Direction.Running) == Direction.Running ? m_TimeRunMount : m_TimeWalkMount;
             else
-                return (facing & Direction.Running) == Direction.Running ? _TimeRunFoot : _TimeWalkFoot;
+                return (facing & Direction.Running) == Direction.Running ? m_TimeRunFoot : m_TimeWalkFoot;
         }
         #endregion
 
         public bool RequiresUpdate = false;
         public bool IsRunning { get { return ((Facing & Direction.Running) == Direction.Running); } }
 
-        Position3D _currentPosition, _goalPosition;
+        Position3D m_currentPosition, m_goalPosition;
         
-        Direction _playerMobile_NextMove = Direction.Nothing;
-        DateTime _playerMobile_NextMoveTime;
-        Direction __facing = Direction.Up;
+        Direction m_playerMobile_NextMove = Direction.Nothing;
+        DateTime m_playerMobile_NextMoveTime;
+        Direction m__facing = Direction.Up;
         public Direction Facing
         {
-            get { return __facing; }
-            set { __facing = value; }
+            get { return m__facing; }
+            set { m__facing = value; }
         }
 
         public bool IsMoving
         {
             get
             {
-                if (_goalPosition == null)
+                if (m_goalPosition == null)
                     return false;
-                if ((_currentPosition.Tile_V3 == _goalPosition.Tile_V3) &&
-                    !_currentPosition.IsOffset)
+                if ((m_currentPosition.Tile_V3 == m_goalPosition.Tile_V3) &&
+                    !m_currentPosition.IsOffset)
                     return false;
                 return true;
             }
@@ -68,64 +68,64 @@ namespace UltimaXNA.Entity
 
         float MoveSequence = 0f;
 
-        internal Position3D Position { get { return _currentPosition; } }
+        internal Position3D Position { get { return m_currentPosition; } }
 
-        MoveEvents _moveEvents;
-        BaseEntity _entity;
+        MoveEvents m_moveEvents;
+        BaseEntity m_entity;
 
         public Movement(BaseEntity entity)
         {
-            _entity = entity;
-            _currentPosition = new Position3D();
-            _moveEvents = new MoveEvents();
+            m_entity = entity;
+            m_currentPosition = new Position3D();
+            m_moveEvents = new MoveEvents();
         }
 
         public void PlayerMobile_MoveEventAck(int nSequence)
         {
-            _moveEvents.MoveRequestAcknowledge(nSequence);
+            m_moveEvents.MoveRequestAcknowledge(nSequence);
         }
 
         public void PlayerMobile_MoveEventRej(int sequenceID, int x, int y, int z, int direction)
         {
             // immediately return to the designated tile.
             int ax, ay, az, af;
-            _moveEvents.MoveRequestReject(sequenceID, out ax, out ay, out az, out af);
+            m_moveEvents.MoveRequestReject(sequenceID, out ax, out ay, out az, out af);
             Move_Instant(x, y, z, direction);
-            _moveEvents.ResetMoveSequence();
+            m_moveEvents.ResetMoveSequence();
         }
 
         public void PlayerMobile_Move(Direction facing)
         {
             if (!IsMoving)
             {
-                _playerMobile_NextMove = facing;
+                m_playerMobile_NextMove = facing;
             }
         }
 
         public void PlayerMobile_CheckForMoveEvent()
         {
-            if (!_entity.IsClientEntity)
+            if (!m_entity.IsClientEntity)
                 return;
 
-            if ((DateTime.Now > _playerMobile_NextMoveTime) && (_playerMobile_NextMove != Direction.Nothing))
+            if ((DateTime.Now > m_playerMobile_NextMoveTime) && (m_playerMobile_NextMove != Direction.Nothing))
             {
-                Direction nextMove = _playerMobile_NextMove;
-                _playerMobile_NextMove = Direction.Nothing;
+                Direction nextMove = m_playerMobile_NextMove;
+                m_playerMobile_NextMove = Direction.Nothing;
 
-                // _nextMove = the time we will next accept a move request from GameState
-                _playerMobile_NextMoveTime = DateTime.Now + TimeToCompleteMove(nextMove);
+                // m_nextMove = the time we will next accept a move request from GameState
+                m_playerMobile_NextMoveTime = DateTime.Now + TimeToCompleteMove(nextMove);
 
                 // get the next tile and the facing necessary to reach it.
                 Direction facing;
-                Vector3 nextTile = MovementCheck.OffsetTile(_currentPosition.Tile_V3, nextMove);
-                Position3D nextPosition = getNextTile(_currentPosition, new Position3D(nextTile), out facing);
+                Vector3 nextTile = MovementCheck.OffsetTile(m_currentPosition.Tile_V3, nextMove);
+                Position3D nextPosition = getNextTile(m_currentPosition, new Position3D(nextTile), out facing);
 
                 // Check facing and about face if necessary.
                 if ((Facing & Direction.FacingMask) != (facing & Direction.FacingMask))
-                    _moveEvents.AddMoveEvent(
-                        _currentPosition.X,
-                        _currentPosition.Y,
-                        _currentPosition.Z,
+                    m_moveEvents.AddMoveEvent(
+                        m_currentPosition.X,
+                        m_currentPosition.Y,
+                        m_currentPosition.Z,
                         (int)(facing & Direction.FacingMask));
 
                 // if nextPosition is false, then we are blocked
@@ -138,11 +138,11 @@ namespace UltimaXNA.Entity
                     else
                         facing &= Direction.FacingMask;
 
-                    if ((_currentPosition.X != nextPosition.X) ||
-                        (_currentPosition.Y != nextPosition.Y) ||
-                        (_currentPosition.Z != nextPosition.Z))
+                    if ((m_currentPosition.X != nextPosition.X) ||
+                        (m_currentPosition.Y != nextPosition.Y) ||
+                        (m_currentPosition.Z != nextPosition.Z))
                     {
-                        _moveEvents.AddMoveEvent(
+                        m_moveEvents.AddMoveEvent(
                             nextPosition.X, 
                             nextPosition.Y, 
                             nextPosition.Z, 
@@ -154,15 +154,15 @@ namespace UltimaXNA.Entity
 
         public void Mobile_AddMoveEvent(int x, int y, int z, int facing)
         {
-            _moveEvents.AddMoveEvent(x, y, z, facing);
+            m_moveEvents.AddMoveEvent(x, y, z, facing);
         }
 
         public void Move_Instant(int x, int y, int z, int facing)
         {
-            _moveEvents.ResetMoveSequence();
+            m_moveEvents.ResetMoveSequence();
             flushDrawObjects();
             Facing = ((Direction)facing & Direction.FacingMask);
-            _goalPosition = _currentPosition = new Position3D(x, y, z);
+            m_goalPosition = m_currentPosition = new Position3D(x, y, z);
         }
 
         public void Update(double frameMS)
@@ -175,11 +175,11 @@ namespace UltimaXNA.Entity
 
                 if (MoveSequence < 1f)
                 {
-                    _currentPosition.Offset_V3 = (_goalPosition.Tile_V3 - _currentPosition.Tile_V3) * MoveSequence;
+                    m_currentPosition.Offset_V3 = (m_goalPosition.Tile_V3 - m_currentPosition.Tile_V3) * MoveSequence;
                 }
                 else
                 {
-                    _currentPosition = _goalPosition;
+                    m_currentPosition = m_goalPosition;
                     MoveSequence = 0f;
                 }
             }
@@ -187,16 +187,16 @@ namespace UltimaXNA.Entity
             {
                 MoveEvent moveEvent;
                 int sequence;
-                while ((moveEvent = _moveEvents.GetMoveEvent(out sequence)) != null)
+                while ((moveEvent = m_moveEvents.GetMoveEvent(out sequence)) != null)
                 {
-                    if (_entity.IsClientEntity)
+                    if (m_entity.IsClientEntity)
                         SendMoveRequestPacket(new MoveRequestPacket((byte)moveEvent.Facing, (byte)sequence, moveEvent.Fastwalk));
                     Facing = (Direction)moveEvent.Facing;
                     Position3D p = new Position3D(
                         moveEvent.X, moveEvent.Y, moveEvent.Z);
-                    if (p != _currentPosition)
+                    if (p != m_currentPosition)
                     {
-                        _goalPosition = p;
+                        m_goalPosition = p;
                         return;
                     }
                 }
@@ -217,7 +217,7 @@ namespace UltimaXNA.Entity
                 return;
             MapTile lastTile = IsometricRenderer.Map.GetMapTile(Position.X, Position.Y, false);
             if (lastTile != null)
-                lastTile.FlushObjectsBySerial(_entity.Serial);
+                lastTile.FlushObjectsBySerial(m_entity.Serial);
         }
 
         private Position3D getNextTile(Position3D current, Position3D goal, out Direction facing)
@@ -226,7 +226,7 @@ namespace UltimaXNA.Entity
             Vector3 nextTile = MovementCheck.OffsetTile(current.Tile_V3, facing);
 
             int nextAltitude;
-            bool moveIsOkay = MovementCheck.CheckMovement((Mobile)_entity, IsometricRenderer.Map, current.Tile_V3, facing, out nextAltitude);
+            bool moveIsOkay = MovementCheck.CheckMovement((Mobile)m_entity, IsometricRenderer.Map, current.Tile_V3, facing, out nextAltitude);
             nextTile.Z = nextAltitude;
             if (moveIsOkay)
             {
@@ -284,17 +284,17 @@ namespace UltimaXNA.Entity
     // This class queues moves and maintains the fastwalk key and current sequence value.
     class MoveEvents
     {
-        private int _lastSequenceAck;
-        private int _sequenceQueued;
-        private int _sequenceNextSend;
-        private int _FastWalkKey;
-        MoveEvent[] _history;
+        private int m_lastSequenceAck;
+        private int m_sequenceQueued;
+        private int m_sequenceNextSend;
+        private int m_FastWalkKey;
+        MoveEvent[] m_history;
 
         public bool SlowSync
         {
             get
             {
-                if (_sequenceNextSend > _lastSequenceAck + 4)
+                if (m_sequenceNextSend > m_lastSequenceAck + 4)
                 {
                     return true;
                 }
@@ -312,31 +312,31 @@ namespace UltimaXNA.Entity
 
         public void ResetMoveSequence()
         {
-            _sequenceQueued = 0;
-            _lastSequenceAck = -1;
-            _sequenceNextSend = 0;
-            _FastWalkKey = new Random().Next(int.MinValue, int.MaxValue);
-            _history = new MoveEvent[256];
+            m_sequenceQueued = 0;
+            m_lastSequenceAck = -1;
+            m_sequenceNextSend = 0;
+            m_FastWalkKey = new Random().Next(int.MinValue, int.MaxValue);
+            m_history = new MoveEvent[256];
         }
 
         public void AddMoveEvent(int x, int y, int z, int facing)
         {
-            _history[_sequenceQueued] = new MoveEvent(x, y, z, facing, _FastWalkKey);
-            _sequenceQueued += 1;
-            if (_sequenceQueued > byte.MaxValue)
-                _sequenceQueued = 1;
+            m_history[m_sequenceQueued] = new MoveEvent(x, y, z, facing, m_FastWalkKey);
+            m_sequenceQueued += 1;
+            if (m_sequenceQueued > byte.MaxValue)
+                m_sequenceQueued = 1;
         }
 
         public MoveEvent GetMoveEvent(out int sequence)
         {
-            if (_history[_sequenceNextSend] != null)
+            if (m_history[m_sequenceNextSend] != null)
             {
-                MoveEvent m = _history[_sequenceNextSend];
-                _history[_sequenceNextSend] = null;
-                sequence = _sequenceNextSend;
-                _sequenceNextSend++;
-                if (_sequenceNextSend > byte.MaxValue)
-                    _sequenceNextSend = 1;
+                MoveEvent m = m_history[m_sequenceNextSend];
+                m_history[m_sequenceNextSend] = null;
+                sequence = m_sequenceNextSend;
+                m_sequenceNextSend++;
+                if (m_sequenceNextSend > byte.MaxValue)
+                    m_sequenceNextSend = 1;
                 return m;
             }
             else
@@ -348,15 +348,15 @@ namespace UltimaXNA.Entity
 
         public void MoveRequestAcknowledge(int sequence)
         {
-            _history[sequence] = null;
-            _lastSequenceAck = sequence;
+            m_history[sequence] = null;
+            m_lastSequenceAck = sequence;
         }
 
         public void MoveRequestReject(int sequence, out int x, out int y, out int z, out int facing)
         {
-            if (_history[sequence] != null)
+            if (m_history[sequence] != null)
             {
-                MoveEvent e = _history[sequence];
+                MoveEvent e = m_history[sequence];
                 x = e.X;
                 y = e.Y;
                 z = e.Z;

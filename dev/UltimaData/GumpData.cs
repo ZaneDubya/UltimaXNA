@@ -22,25 +22,25 @@ namespace UltimaXNA.UltimaData
 {
     public class GumpData
     {
-        private static GraphicsDevice _graphicsDevice;
+        private static GraphicsDevice m_graphicsDevice;
 
         private static FileIndex m_FileIndex = new FileIndex("Gumpidx.mul", "Gumpart.mul", 0x10000, 12);
         public static FileIndex FileIndex { get { return m_FileIndex; } }
 
-        private static Texture2D[] _cache = new Texture2D[0x10000];
+        private static Texture2D[] m_cache = new Texture2D[0x10000];
 
         private const int multiplier = 0xFF / 0x1F;
 
         public static void Initialize(GraphicsDevice graphics)
         {
-            _graphicsDevice = graphics;
+            m_graphicsDevice = graphics;
         }
 
         public unsafe static Texture2D GetGumpXNA(int index)
         {
             if (index < 0)
                 return null;
-            if (_cache[index] == null)
+            if (m_cache[index] == null)
             {
                 int length, extra;
                 bool patched;
@@ -97,11 +97,11 @@ namespace UltimaXNA.UltimaData
 
                 UltimaVars.Metrics.ReportDataRead(length);
 
-                Texture2D texture = new Texture2D(_graphicsDevice, width, height, false, SurfaceFormat.Color);
+                Texture2D texture = new Texture2D(m_graphicsDevice, width, height, false, SurfaceFormat.Color);
                 texture.SetData(pixels);
-                _cache[index] = texture;
+                m_cache[index] = texture;
             }
-            return _cache[index];
+            return m_cache[index];
         }
     }
 }

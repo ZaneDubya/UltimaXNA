@@ -20,23 +20,23 @@ namespace UltimaXNA.Core.Network
 {
     public class PacketReader : IDisposable
     {
-        private static Stack<PacketReader> _pool = new Stack<PacketReader>();
+        private static Stack<PacketReader> m_pool = new Stack<PacketReader>();
 
         public static PacketReader CreateInstance(byte[] buffer, int length, bool fixedSize)
         {
             PacketReader reader = null;
 
-            lock (_pool)
+            lock (m_pool)
             {
-                if (_pool.Count > 0)
+                if (m_pool.Count > 0)
                 {
-                    reader = _pool.Pop();
+                    reader = m_pool.Pop();
 
                     if (reader != null)
                     {
-                        reader._buffer = buffer;
-                        reader._length = length;
-                        reader._index = fixedSize ? 1 : 3;
+                        reader.m_buffer = buffer;
+                        reader.m_length = length;
+                        reader.m_index = fixedSize ? 1 : 3;
                     }
                 }
             }
@@ -49,11 +49,11 @@ namespace UltimaXNA.Core.Network
 
         public static void ReleaseInstance(PacketReader reader)
         {
-            lock (_pool)
+            lock (m_pool)
             {
-                if (!_pool.Contains(reader))
+                if (!m_pool.Contains(reader))
                 {
-                    _pool.Push(reader);
+                    m_pool.Push(reader);
                 }
                 else
                 {
@@ -61,27 +61,27 @@ namespace UltimaXNA.Core.Network
                 }
             }
         }
-        private byte[] _buffer;
-        private int _length;
-        private int _index;
+        private byte[] m_buffer;
+        private int m_length;
+        private int m_index;
 
         public int Index
         {
-            get { return _index; }
+            get { return m_index; }
         }
 
         public PacketReader(byte[] data, int size, bool fixedSize)
         {
-            _buffer = data;
-            _length = size;
-            _index = fixedSize ? 1 : 3;
+            m_buffer = data;
+            m_length = size;
+            m_index = fixedSize ? 1 : 3;
         }
 
         public byte[] Buffer
         {
             get
             {
-                return _buffer;
+                return m_buffer;
             }
         }
 
@@ -89,7 +89,7 @@ namespace UltimaXNA.Core.Network
         {
             get
             {
-                return _length;
+                return m_length;
             }
         }
 
@@ -97,83 +97,83 @@ namespace UltimaXNA.Core.Network
         {
             switch (origin)
             {
-                case SeekOrigin.Begin: _index = offset; break;
-                case SeekOrigin.Current: _index += offset; break;
-                case SeekOrigin.End: _index = _length - offset; break;
+                case SeekOrigin.Begin: m_index = offset; break;
+                case SeekOrigin.Current: m_index += offset; break;
+                case SeekOrigin.End: m_index = m_length - offset; break;
             }
 
-            return _index;
+            return m_index;
         }
 
         public int ReadInt32()
         {
-            if ((_index + 4) > _length)
+            if ((m_index + 4) > m_length)
                 return 0;
 
-            return (_buffer[_index++] << 24)
-                 | (_buffer[_index++] << 16)
-                 | (_buffer[_index++] << 8)
-                 | _buffer[_index++];
+            return (m_buffer[m_index++] << 24)
+                 | (m_buffer[m_index++] << 16)
+                 | (m_buffer[m_index++] << 8)
+                 | m_buffer[m_index++];
         }
 
         public short ReadInt16()
         {
-            if ((_index + 2) > _length)
+            if ((m_index + 2) > m_length)
                 return 0;
 
-            return (short)((_buffer[_index++] << 8) | _buffer[_index++]);
+            return (short)((m_buffer[m_index++] << 8) | m_buffer[m_index++]);
         }
 
         public byte ReadByte()
         {
-            if ((_index + 1) > _length)
+            if ((m_index + 1) > m_length)
                 return 0;
 
-            return _buffer[_index++];
+            return m_buffer[m_index++];
         }
 
         public byte[] ReadBytes(int length)
         {
-            if ((_index + length) > _length)
+            if ((m_index + length) > m_length)
                 return new byte[0];
 
             byte[] b = new byte[length];
 
-            Array.Copy(_buffer, _index, b, 0, length);
-            _index += length;
+            Array.Copy(m_buffer, m_index, b, 0, length);
+            m_index += length;
             return b;
         }
 
         public uint ReadUInt32()
         {
-            if ((_index + 4) > _length)
+            if ((m_index + 4) > m_length)
                 return 0;
 
-            return (uint)((_buffer[_index++] << 24) | (_buffer[_index++] << 16) | (_buffer[_index++] << 8) | _buffer[_index++]);
+            return (uint)((m_buffer[m_index++] << 24) | (m_buffer[m_index++] << 16) | (m_buffer[m_index++] << 8) | m_buffer[m_index++]);
         }
 
         public ushort ReadUInt16()
         {
-            if ((_index + 2) > _length)
+            if ((m_index + 2) > m_length)
                 return 0;
 
-            return (ushort)((_buffer[_index++] << 8) | _buffer[_index++]);
+            return (ushort)((m_buffer[m_index++] << 8) | m_buffer[m_index++]);
         }
 
         public sbyte ReadSByte()
         {
-            if ((_index + 1) > _length)
+            if ((m_index + 1) > m_length)
                 return 0;
 
-            return (sbyte)_buffer[_index++];
+            return (sbyte)m_buffer[m_index++];
         }
 
         public bool ReadBoolean()
         {
-            if ((_index + 1) > _length)
+            if ((m_index + 1) > m_length)
                 return false;
 
-            return (_buffer[_index++] != 0);
+            return (m_buffer[m_index++] != 0);
         }
 
         public string ReadUnicodeStringLE()
@@ -182,7 +182,7 @@ namespace UltimaXNA.Core.Network
 
             int c;
 
-            while ((_index + 1) < _length && (c = (_buffer[_index++] | (_buffer[_index++] << 8))) != 0)
+            while ((m_index + 1) < m_length && (c = (m_buffer[m_index++] | (m_buffer[m_index++] << 8))) != 0)
                 sb.Append((char)c);
 
             return sb.ToString();
@@ -190,23 +190,23 @@ namespace UltimaXNA.Core.Network
 
         public string ReadUnicodeStringLESafe(int fixedLength)
         {
-            int bound = _index + (fixedLength << 1);
+            int bound = m_index + (fixedLength << 1);
             int end = bound;
 
-            if (bound > _length)
-                bound = _length;
+            if (bound > m_length)
+                bound = m_length;
 
             StringBuilder sb = new StringBuilder();
 
             int c;
 
-            while ((_index + 1) < bound && (c = (_buffer[_index++] | (_buffer[_index++] << 8))) != 0)
+            while ((m_index + 1) < bound && (c = (m_buffer[m_index++] | (m_buffer[m_index++] << 8))) != 0)
             {
                 if (IsSafeChar(c))
                     sb.Append((char)c);
             }
 
-            _index = end;
+            m_index = end;
 
             return sb.ToString();
         }
@@ -217,7 +217,7 @@ namespace UltimaXNA.Core.Network
 
             int c;
 
-            while ((_index + 1) < _length && (c = (_buffer[_index++] | (_buffer[_index++] << 8))) != 0)
+            while ((m_index + 1) < m_length && (c = (m_buffer[m_index++] | (m_buffer[m_index++] << 8))) != 0)
             {
                 if (IsSafeChar(c))
                     sb.Append((char)c);
@@ -232,7 +232,7 @@ namespace UltimaXNA.Core.Network
 
             int c;
 
-            while ((_index + 1) < _length && (c = ((_buffer[_index++] << 8) | _buffer[_index++])) != 0)
+            while ((m_index + 1) < m_length && (c = ((m_buffer[m_index++] << 8) | m_buffer[m_index++])) != 0)
             {
                 if (IsSafeChar(c))
                     sb.Append((char)c);
@@ -247,7 +247,7 @@ namespace UltimaXNA.Core.Network
 
             int c;
 
-            while ((_index + 1) < _length && (c = ((_buffer[_index++] << 8) | _buffer[_index++])) != 0)
+            while ((m_index + 1) < m_length && (c = ((m_buffer[m_index++] << 8) | m_buffer[m_index++])) != 0)
                 sb.Append((char)c);
 
             return sb.ToString();
@@ -260,23 +260,23 @@ namespace UltimaXNA.Core.Network
 
         public string ReadUTF8StringSafe(int fixedLength)
         {
-            if (_index >= _length)
+            if (m_index >= m_length)
             {
-                _index += fixedLength;
+                m_index += fixedLength;
                 return String.Empty;
             }
 
-            int bound = _index + fixedLength;
+            int bound = m_index + fixedLength;
             //int end   = bound;
 
-            if (bound > _length)
-                bound = _length;
+            if (bound > m_length)
+                bound = m_length;
 
             int count = 0;
-            int index = _index;
-            int start = _index;
+            int index = m_index;
+            int start = m_index;
 
-            while (index < bound && _buffer[index++] != 0)
+            while (index < bound && m_buffer[index++] != 0)
                 ++count;
 
             index = 0;
@@ -284,7 +284,7 @@ namespace UltimaXNA.Core.Network
             byte[] buffer = new byte[count];
             int value = 0;
 
-            while (_index < bound && (value = _buffer[_index++]) != 0)
+            while (m_index < bound && (value = m_buffer[m_index++]) != 0)
                 buffer[index++] = (byte)value;
 
             string s = Utility.UTF8.GetString(buffer);
@@ -294,7 +294,7 @@ namespace UltimaXNA.Core.Network
             for (int i = 0; isSafe && i < s.Length; ++i)
                 isSafe = IsSafeChar((int)s[i]);
 
-            _index = start + fixedLength;
+            m_index = start + fixedLength;
 
             if (isSafe)
                 return s;
@@ -310,13 +310,13 @@ namespace UltimaXNA.Core.Network
 
         public string ReadUTF8StringSafe()
         {
-            if (_index >= _length)
+            if (m_index >= m_length)
                 return String.Empty;
 
             int count = 0;
-            int index = _index;
+            int index = m_index;
 
-            while (index < _length && _buffer[index++] != 0)
+            while (index < m_length && m_buffer[index++] != 0)
                 ++count;
 
             index = 0;
@@ -324,7 +324,7 @@ namespace UltimaXNA.Core.Network
             byte[] buffer = new byte[count];
             int value = 0;
 
-            while (_index < _length && (value = _buffer[_index++]) != 0)
+            while (m_index < m_length && (value = m_buffer[m_index++]) != 0)
                 buffer[index++] = (byte)value;
 
             string s = Utility.UTF8.GetString(buffer);
@@ -350,13 +350,13 @@ namespace UltimaXNA.Core.Network
 
         public string ReadUTF8String()
         {
-            if (_index >= _length)
+            if (m_index >= m_length)
                 return String.Empty;
 
             int count = 0;
-            int index = _index;
+            int index = m_index;
 
-            while (index < _length && _buffer[index++] != 0)
+            while (index < m_length && m_buffer[index++] != 0)
                 ++count;
 
             index = 0;
@@ -364,7 +364,7 @@ namespace UltimaXNA.Core.Network
             byte[] buffer = new byte[count];
             int value = 0;
 
-            while (_index < _length && (value = _buffer[_index++]) != 0)
+            while (m_index < m_length && (value = m_buffer[m_index++]) != 0)
                 buffer[index++] = (byte)value;
 
             return Utility.UTF8.GetString(buffer);
@@ -376,7 +376,7 @@ namespace UltimaXNA.Core.Network
 
             int c;
 
-            while (_index < _length && (c = _buffer[_index++]) != 0)
+            while (m_index < m_length && (c = m_buffer[m_index++]) != 0)
                 sb.Append((char)c);
 
             return sb.ToString();
@@ -388,7 +388,7 @@ namespace UltimaXNA.Core.Network
 
             int c;
 
-            while (_index < _length && (c = _buffer[_index++]) != 0)
+            while (m_index < m_length && (c = m_buffer[m_index++]) != 0)
             {
                 if (IsSafeChar(c))
                     sb.Append((char)c);
@@ -399,23 +399,23 @@ namespace UltimaXNA.Core.Network
 
         public string ReadUnicodeStringSafe(int fixedLength)
         {
-            int bound = _index + (fixedLength << 1);
+            int bound = m_index + (fixedLength << 1);
             int end = bound;
 
-            if (bound > _length)
-                bound = _length;
+            if (bound > m_length)
+                bound = m_length;
 
             StringBuilder sb = new StringBuilder();
 
             int c;
 
-            while ((_index + 1) < bound && (c = ((_buffer[_index++] << 8) | _buffer[_index++])) != 0)
+            while ((m_index + 1) < bound && (c = ((m_buffer[m_index++] << 8) | m_buffer[m_index++])) != 0)
             {
                 if (IsSafeChar(c))
                     sb.Append((char)c);
             }
 
-            _index = end;
+            m_index = end;
 
             return sb.ToString();
         }
@@ -426,7 +426,7 @@ namespace UltimaXNA.Core.Network
 
             int c;
 
-            while ((_index + 1) < _length && (c = ((_buffer[_index++]) | _buffer[_index++] << 8)) != 0)
+            while ((m_index + 1) < m_length && (c = ((m_buffer[m_index++]) | m_buffer[m_index++] << 8)) != 0)
             {
                 if (IsSafeChar(c))
                     sb.Append((char)c);
@@ -437,92 +437,92 @@ namespace UltimaXNA.Core.Network
 
         public string ReadUnicodeStringReverse(int fixedLength)
         {
-            int bound = _index + (fixedLength << 1);
+            int bound = m_index + (fixedLength << 1);
             int end = bound;
 
-            if (bound > _length)
-                bound = _length;
+            if (bound > m_length)
+                bound = m_length;
 
             StringBuilder sb = new StringBuilder();
 
             int c;
 
-            while ((_index + 1) < bound && (c = ((_buffer[_index++]) | _buffer[_index++] << 8)) != 0)
+            while ((m_index + 1) < bound && (c = ((m_buffer[m_index++]) | m_buffer[m_index++] << 8)) != 0)
                 sb.Append((char)c);
 
-            _index = end;
+            m_index = end;
 
             return sb.ToString();
         }
 
         public string ReadUnicodeString(int fixedLength)
         {
-            int bound = _index + (fixedLength << 1);
+            int bound = m_index + (fixedLength << 1);
             int end = bound;
 
-            if (bound > _length)
-                bound = _length;
+            if (bound > m_length)
+                bound = m_length;
 
             StringBuilder sb = new StringBuilder();
 
             int c;
 
-            while ((_index + 1) < bound && (c = ((_buffer[_index++] << 8) | _buffer[_index++])) != 0)
+            while ((m_index + 1) < bound && (c = ((m_buffer[m_index++] << 8) | m_buffer[m_index++])) != 0)
                 sb.Append((char)c);
 
-            _index = end;
+            m_index = end;
 
             return sb.ToString();
         }
 
         public string ReadStringSafe(int fixedLength)
         {
-            int bound = _index + fixedLength;
+            int bound = m_index + fixedLength;
             int end = bound;
 
-            if (bound > _length)
-                bound = _length;
+            if (bound > m_length)
+                bound = m_length;
 
             StringBuilder sb = new StringBuilder();
 
             int c;
 
-            while (_index < bound && (c = _buffer[_index++]) != 0)
+            while (m_index < bound && (c = m_buffer[m_index++]) != 0)
             {
                 if (IsSafeChar(c))
                     sb.Append((char)c);
             }
 
-            _index = end;
+            m_index = end;
 
             return sb.ToString();
         }
 
         public string ReadString(int fixedLength)
         {
-            int bound = _index + fixedLength;
+            int bound = m_index + fixedLength;
             int end = bound;
 
-            if (bound > _length)
-                bound = _length;
+            if (bound > m_length)
+                bound = m_length;
 
             StringBuilder sb = new StringBuilder();
 
             int c;
 
-            while (_index < bound && (c = _buffer[_index++]) != 0)
+            while (m_index < bound && (c = m_buffer[m_index++]) != 0)
                 sb.Append((char)c);
 
-            _index = end;
+            m_index = end;
 
             return sb.ToString();
         }
 
         public void Dispose()
         {
-            _buffer = null;
-            _length = 0;
-            _index = 0;
+            m_buffer = null;
+            m_length = 0;
+            m_index = 0;
 
             ReleaseInstance(this);
         }

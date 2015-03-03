@@ -25,11 +25,11 @@ namespace UltimaXNA.UltimaData
         }
 
         [DllImport("Kernel32")]
-        private unsafe static extern int _lread(SafeFileHandle hFile, void* lpBuffer, int wBytes);
+        private unsafe static extern int m_lread(SafeFileHandle hFile, void* lpBuffer, int wBytes);
 
         public static unsafe void Read(SafeFileHandle ptr, void* buffer, int length)
         {
-            _lread(ptr, buffer, length);
+            m_lread(ptr, buffer, length);
         }
     }
 }

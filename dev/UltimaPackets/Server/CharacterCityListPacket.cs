@@ -25,36 +25,36 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class CharacterCityListPacket : RecvPacket
     {
-        readonly StartingLocation[] _locations;
-        readonly CharacterListEntry[] _characters;
+        readonly StartingLocation[] m_locations;
+        readonly CharacterListEntry[] m_characters;
 
         public StartingLocation[] Locations
         {
-            get { return _locations; }
+            get { return m_locations; }
         }
 
         public CharacterListEntry[] Characters
         {
-            get { return _characters; }
+            get { return m_characters; }
         }
 
         public CharacterCityListPacket(PacketReader reader)
             : base(0xA9, "Char/City List")
         {
             int characterCount = reader.ReadByte();
-            _characters = new CharacterListEntry[characterCount];
+            m_characters = new CharacterListEntry[characterCount];
 
             for (int i = 0; i < characterCount; i++)
             {
-                _characters[i] = new CharacterListEntry(reader);
+                m_characters[i] = new CharacterListEntry(reader);
             }
 
             int locationCount = reader.ReadByte();
-            _locations = new StartingLocation[locationCount];
+            m_locations = new StartingLocation[locationCount];
 
             for (int i = 0; i < locationCount; i++)
             {
-                _locations[i] = new StartingLocation(reader);
+                m_locations[i] = new StartingLocation(reader);
             }
         }
 

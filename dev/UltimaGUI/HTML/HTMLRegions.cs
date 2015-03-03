@@ -15,49 +15,49 @@ namespace UltimaXNA.UltimaGUI.HTML
 {
     public class HTMLRegions
     {
-        List<HTMLRegion> _regions = new List<HTMLRegion>();
+        List<HTMLRegion> m_regions = new List<HTMLRegion>();
 
         public List<HTMLRegion> Regions
         {
             get
             {
-                return _regions;
+                return m_regions;
             }
         }
 
         public int Count
         {
-            get { return _regions.Count; }
+            get { return m_regions.Count; }
         }
 
         public HTMLRegion AddRegion(HREF_Attributes href)
         {
-            _regions.Add(new HTMLRegion(_regions.Count, href));
-            return _regions[_regions.Count - 1];
+            m_regions.Add(new HTMLRegion(m_regions.Count, href));
+            return m_regions[m_regions.Count - 1];
         }
 
         public void Clear()
         {
-            _regions.Clear();
+            m_regions.Clear();
         }
 
         public HTMLRegion RegionfromPoint(Point p)
         {
             int index = -1;
-            for (int i = 0; i < _regions.Count; i++)
+            for (int i = 0; i < m_regions.Count; i++)
             {
-                if (_regions[i].Area.Contains(p))
+                if (m_regions[i].Area.Contains(p))
                     index = i;
             }
             if (index == -1)
                 return null;
             else
-                return _regions[index];
+                return m_regions[index];
         }
 
         public HTMLRegion Region(int index)
         {
-            return _regions[index];
+            return m_regions[index];
         }
     }
 

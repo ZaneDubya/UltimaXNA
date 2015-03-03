@@ -24,24 +24,24 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class MoveAcknowledgePacket : RecvPacket
     {
-        readonly byte _sequence;
-        readonly byte _notoriety;
+        readonly byte m_sequence;
+        readonly byte m_notoriety;
 
         public byte Sequence 
         {
-            get { return _sequence; } 
+            get { return m_sequence; } 
         }
 
         public byte Notoriety
         {
-            get { return _notoriety; }
+            get { return m_notoriety; }
         }
 
         public MoveAcknowledgePacket(PacketReader reader)
             : base(0x22, "Move Request Acknowledged")
         {
-            _sequence = reader.ReadByte(); // (matches sent sequence)
-            _notoriety = reader.ReadByte(); // Not sure why it sends this.
+            m_sequence = reader.ReadByte(); // (matches sent sequence)
+            m_notoriety = reader.ReadByte(); // Not sure why it sends this.
         }
     }
 }

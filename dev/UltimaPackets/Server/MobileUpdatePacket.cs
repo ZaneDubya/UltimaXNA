@@ -24,68 +24,68 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class MobileUpdatePacket : RecvPacket
     {
-        readonly Serial _serial;
-        readonly short _body;
-        readonly short _x;
-        readonly short _y;
-        readonly short _z;
-        readonly byte _direction;
-        readonly ushort _hue;
-        readonly MobileFlags _flags;
+        readonly Serial m_serial;
+        readonly short m_body;
+        readonly short m_x;
+        readonly short m_y;
+        readonly short m_z;
+        readonly byte m_direction;
+        readonly ushort m_hue;
+        readonly MobileFlags m_flags;
 
         public Serial Serial
         {
-            get { return _serial; }
+            get { return m_serial; }
         }
 
         public short BodyID
         {
-            get { return _body; } 
+            get { return m_body; } 
         }
 
         public short X 
         {
-            get { return _x; }
+            get { return m_x; }
         }
 
         public short Y 
         {
-            get { return _y; }
+            get { return m_y; }
         }
 
         public short Z 
         {
-            get { return _z; }
+            get { return m_z; }
         }
 
         public byte Direction
         {
-            get { return _direction; } 
+            get { return m_direction; } 
         }
 
         public ushort Hue         
         { 
-            get { return _hue; }
+            get { return m_hue; }
         }
 
         public MobileFlags Flags
         {
-            get { return _flags; }
+            get { return m_flags; }
         } 
 
         public MobileUpdatePacket(PacketReader reader)
             : base(0x20, "Mobile Update")
         {
-            _serial = reader.ReadInt32();
-            _body = reader.ReadInt16();
+            m_serial = reader.ReadInt32();
+            m_body = reader.ReadInt16();
             reader.ReadByte(); // Always 0
-            _hue = reader.ReadUInt16(); // Skin hue
-            _flags = new MobileFlags(reader.ReadByte());
-            _x = reader.ReadInt16();
-            _y = reader.ReadInt16();
+            m_hue = reader.ReadUInt16(); // Skin hue
+            m_flags = new MobileFlags(reader.ReadByte());
+            m_x = reader.ReadInt16();
+            m_y = reader.ReadInt16();
             reader.ReadInt16(); // Always 0
-            _direction = reader.ReadByte();
-            _z = reader.ReadSByte();
+            m_direction = reader.ReadByte();
+            m_z = reader.ReadSByte();
         }
     }
 }

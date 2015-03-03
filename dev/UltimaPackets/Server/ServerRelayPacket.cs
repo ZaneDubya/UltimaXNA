@@ -24,31 +24,31 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class ServerRelayPacket : RecvPacket
     {
-        readonly int _ipAddress;
-        readonly int _port;
-        readonly int _accountId;
+        readonly int m_ipAddress;
+        readonly int m_port;
+        readonly int m_accountId;
 
         public int IpAddress
         {
-            get { return _ipAddress; }
+            get { return m_ipAddress; }
         }
 
         public int Port
         {
-            get { return _port; }
+            get { return m_port; }
         }
 
         public int AccountId
         {
-            get { return _accountId; }
+            get { return m_accountId; }
         }
 
         public ServerRelayPacket(PacketReader reader)
             : base(0x8C, "Server Relay")
         {
-            _ipAddress = reader.ReadInt32();
-            _port = reader.ReadInt16();
-            _accountId = reader.ReadInt32();
+            m_ipAddress = reader.ReadInt32();
+            m_port = reader.ReadInt16();
+            m_accountId = reader.ReadInt32();
         }
     }
 }

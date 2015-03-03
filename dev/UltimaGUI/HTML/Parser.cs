@@ -21,12 +21,12 @@ namespace UltimaXNA.UltimaGUI.HTML
 {
     public class Parser
     {
-        List<AHTMLAtom> _atoms;
+        List<AHTMLAtom> m_atoms;
         public List<AHTMLAtom> Atoms
         {
             get
             {
-                return _atoms;
+                return m_atoms;
             }
         }
 
@@ -35,9 +35,9 @@ namespace UltimaXNA.UltimaGUI.HTML
             get
             {
                 string text = string.Empty;
-                for (int i = 0; i < _atoms.Count; i++)
+                for (int i = 0; i < m_atoms.Count; i++)
                 {
-                    text += _atoms[i].ToString();
+                    text += m_atoms[i].ToString();
                 }
                 return text;
             }
@@ -47,13 +47,13 @@ namespace UltimaXNA.UltimaGUI.HTML
         {
             get
             {
-                return _atoms.Count;
+                return m_atoms.Count;
             }
         }
 
         public Parser(string inText, bool parseHTML)
         {
-            _atoms = decodeText(inText, parseHTML);
+            m_atoms = decodeText(inText, parseHTML);
         }
 
         private List<AHTMLAtom> decodeText(string inText, bool parseHTML)

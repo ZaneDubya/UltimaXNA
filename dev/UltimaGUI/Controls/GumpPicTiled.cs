@@ -18,8 +18,8 @@ namespace UltimaXNA.UltimaGUI.Controls
 {
     class GumpPicTiled : Control
     {
-        Texture2D _bgGump = null;
-        int _gumpID;
+        Texture2D m_bgGump = null;
+        int m_gumpID;
 
         public GumpPicTiled(Control owner, int page)
             : base(owner, page)
@@ -49,21 +49,21 @@ namespace UltimaXNA.UltimaGUI.Controls
         {
             Position = new Point2D(x, y);
             Size = new Point2D(width, height);
-            _gumpID = gumpID;
+            m_gumpID = gumpID;
         }
 
         public override void Update(GameTime gameTime)
         {
-            if (_bgGump == null)
+            if (m_bgGump == null)
             {
-                _bgGump = UltimaData.GumpData.GetGumpXNA(_gumpID);
+                m_bgGump = UltimaData.GumpData.GetGumpXNA(m_gumpID);
             }
             base.Update(gameTime);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)
         {
-            spriteBatch.Draw2DTiled(_bgGump, new Rectangle(X, Y, Area.Width, Area.Height), 0, false, false);
+            spriteBatch.Draw2DTiled(m_bgGump, new Rectangle(X, Y, Area.Width, Area.Height), 0, false, false);
             base.Draw(spriteBatch);
         }
     }

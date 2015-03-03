@@ -20,17 +20,17 @@ namespace UltimaXNA.UltimaGUI.Controls
         public int SlotIndex = 0;
         public bool IsFemale = false;
 
-        private int _x, _y;
-        private bool _isBuilt = false;
+        private int m_x, m_y;
+        private bool m_isBuilt = false;
 
         public ItemGumplingPaperdoll(Control owner, int x, int y, Item item)
             : base(owner, item)
         {
-            _x = x;
-            _y = y;
+            m_x = x;
+            m_y = y;
         }
 
-        protected override void _onPickUp()
+        protected override void m_onPickUp()
         {
             if (UltimaInteraction.Cursor.HoldingItem != null)
             {
@@ -44,24 +44,24 @@ namespace UltimaXNA.UltimaGUI.Controls
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            if (!_isBuilt)
+            if (!m_isBuilt)
             {
-                Position = new Point2D(_x, _y);
+                Position = new Point2D(m_x, m_y);
             }
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)
         {
             
-            if (_texture == null)
+            if (m_texture == null)
             {
                 if (IsFemale)
-                    _texture = UltimaData.GumpData.GetGumpXNA(Item.ItemData.AnimID + 60000);
-                if (_texture == null)
-                    _texture = UltimaData.GumpData.GetGumpXNA(Item.ItemData.AnimID + 50000);
-                Size = new Point2D(_texture.Width, _texture.Height);
+                    m_texture = UltimaData.GumpData.GetGumpXNA(Item.ItemData.AnimID + 60000);
+                if (m_texture == null)
+                    m_texture = UltimaData.GumpData.GetGumpXNA(Item.ItemData.AnimID + 50000);
+                Size = new Point2D(m_texture.Width, m_texture.Height);
             }
-            spriteBatch.Draw2D(_texture, Position, Item.Hue & 0x7FFF, (Item.Hue & 0x8000) == 0x8000 ? true : false, false);
+            spriteBatch.Draw2D(m_texture, Position, Item.Hue & 0x7FFF, (Item.Hue & 0x8000) == 0x8000 ? true : false, false);
             base.Draw(spriteBatch);
         }
     }

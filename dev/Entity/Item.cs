@@ -29,27 +29,27 @@ namespace UltimaXNA.Entity
                     return Position;
             }
         }
-        private BaseEntity _lastParent;
-        private int _lastParent_X, _lastParent_Y;
+        private BaseEntity m_lastParent;
+        private int m_lastParent_X, m_lastParent_Y;
         public bool HasLastParent
         {
-            get { return (_lastParent != null); }
+            get { return (m_lastParent != null); }
         }
 
-		private int _amount;
+		private int m_amount;
 		public int Amount
 		{
-			get { return _amount; }
+			get { return m_amount; }
 			set
 			{
 				// if the amount changes from or to one, we need to redraw the item, because of doubled drawing for amount > 1
-				if ((_amount == 1 && value != 1) || (_amount != 1 && value == 1))
+				if ((m_amount == 1 && value != 1) || (m_amount != 1 && value == 1))
 					HasBeenDrawn = false;
 
-				_amount = value;
+				m_amount = value;
 
 				// if there is a special drawing id for this item we need to redraw it
-				if (_ItemID != DisplayItemID) 
+				if (m_ItemID != DisplayItemID) 
                     HasBeenDrawn = false;
 			}
 		}
@@ -62,15 +62,15 @@ namespace UltimaXNA.Entity
 
         public UltimaData.ItemData ItemData;
 
-		private int _ItemID = 0;
+		private int m_ItemID = 0;
         public int ItemID
         {
-            get { return _ItemID; }
+            get { return m_ItemID; }
             set
             {
-				_ItemID = value;
+				m_ItemID = value;
                 HasBeenDrawn = false;
-                ItemData = UltimaXNA.UltimaData.TileData.ItemData[_ItemID];
+                ItemData = UltimaXNA.UltimaData.TileData.ItemData[m_ItemID];
                 AnimationDisplayID = ItemData.AnimID;
             }
         }
@@ -83,25 +83,25 @@ namespace UltimaXNA.Entity
 				{
 					if (Amount > 5)
 					{
-						return _ItemID + 2;
+						return m_ItemID + 2;
 					}
 					else if (Amount > 1)
 					{
-						return _ItemID + 1;
+						return m_ItemID + 1;
 					}
 				}
 
-				return _ItemID;
+				return m_ItemID;
 			}
 		}
 
 		public bool Ignored
 		{
-			get { return _ItemID <= 1; } // no draw
+			get { return m_ItemID <= 1; } // no draw
 		}
 
 		public bool IsCoin {
-			get { return _ItemID == 0xEEA || _ItemID == 0xEED || _ItemID == 0xEF0; }
+			get { return m_ItemID == 0xEEA || m_ItemID == 0xEED || m_ItemID == 0xEF0; }
 		}
 
         public int SlotIndex = 0;
@@ -123,7 +123,7 @@ namespace UltimaXNA.Entity
 
 		public bool AtWorldPoint(int x, int y)
 		{
-            if (_movement.Position.X == x && _movement.Position.Y == y)
+            if (m_movement.Position.X == x && m_movement.Position.Y == y)
 				return true;
 			else
 				return false;
@@ -141,21 +141,21 @@ namespace UltimaXNA.Entity
         {
             if (Parent != null)
             {
-                _lastParent = Parent;
-                _lastParent_X = X;
-                _lastParent_Y = Y;
+                m_lastParent = Parent;
+                m_lastParent_X = X;
+                m_lastParent_Y = Y;
             }
             else
             {
-                _lastParent = null;
+                m_lastParent = null;
             }
         }
 
         public void RestoreLastParent()
         {
-            this.X = _lastParent_X;
-            this.Y = _lastParent_Y;
-            ((Container)_lastParent).AddItem(this);
+            this.X = m_lastParent_X;
+            this.Y = m_lastParent_Y;
+            ((Container)m_lastParent).AddItem(this);
         }
 
         internal override void Draw(MapTile tile, Position3D position)

@@ -21,16 +21,16 @@ namespace UltimaXNA.Rendering
         /// <summary>
         /// The raw set of points, in "model space".
         /// </summary>
-        private Vector3[] _points;
+        private Vector3[] m_points;
         public Vector3[] Points
         {
-            get { return _points; }
+            get { return m_points; }
         }
 
-        private bool _isClosed;
+        private bool m_isClosed;
         public bool IsClosed
         {
-            get { return _isClosed; }
+            get { return m_isClosed; }
         }
 
         /// <summary>
@@ -39,8 +39,8 @@ namespace UltimaXNA.Rendering
         /// <param name="points">The raw set of points.</param>
         public VectorPolygon(Vector3[] points, bool isClosed)
         {
-            this._points = points;
-            _isClosed = isClosed;
+            this.m_points = points;
+            m_isClosed = isClosed;
         }
 
         /// <summary>

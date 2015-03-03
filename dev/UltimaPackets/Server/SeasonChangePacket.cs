@@ -24,23 +24,23 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class SeasonChangePacket : RecvPacket
     {
-        readonly byte _season;
-        readonly byte _playSound;
+        readonly byte m_season;
+        readonly byte m_playSound;
 
         public byte Season
         {
-            get { return _season; }
+            get { return m_season; }
         }
         public byte PlaySound
         {
-            get { return _playSound; }
+            get { return m_playSound; }
         }
 
         public SeasonChangePacket(PacketReader reader)
             : base(0xBC, "Seasonal Information")
         {
-            _season = reader.ReadByte();
-            _playSound = reader.ReadByte();
+            m_season = reader.ReadByte();
+            m_playSound = reader.ReadByte();
         }
     }
 }

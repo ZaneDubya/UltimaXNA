@@ -22,8 +22,8 @@ namespace UltimaXNA.Entity
     {
         public Serial MobileSerial = 0;
 
-        private float _corpseFrame = 0.999f;
-        private int _corpseBody { get { return Amount; } }
+        private float m_corpseFrame = 0.999f;
+        private int m_corpseBody { get { return Amount; } }
 
         public Corpse(Serial serial)
             : base(serial)
@@ -35,16 +35,16 @@ namespace UltimaXNA.Entity
         {
             base.Update(frameMS);
             // HasBeenDrawn = false;
-            _corpseFrame += ((float)frameMS / 500f);
-            if (_corpseFrame >= 1f)
-                _corpseFrame = 0.999f;
+            m_corpseFrame += ((float)frameMS / 500f);
+            if (m_corpseFrame >= 1f)
+                m_corpseFrame = 0.999f;
         }
 
         internal override void Draw(MapTile tile, Position3D position)
         {
-            _movement.ClearImmediate();
-            tile.AddMapObject(new MapObjectCorpse(position, DrawFacing, this, Hue, _corpseBody, _corpseFrame));
-            drawOverheads(tile, new Position3D(_movement.Position.Point_V3));
+            m_movement.ClearImmediate();
+            tile.AddMapObject(new MapObjectCorpse(position, DrawFacing, this, Hue, m_corpseBody, m_corpseFrame));
+            drawOverheads(tile, new Position3D(m_movement.Position.Point_V3));
         }
 
         public void LoadCorpseClothing(List<CorpseClothingPacket.CorpseItem> items)
@@ -54,7 +54,7 @@ namespace UltimaXNA.Entity
 
         public void DeathAnimation()
         {
-            _corpseFrame = 0f;
+            m_corpseFrame = 0f;
         }
     }
 }

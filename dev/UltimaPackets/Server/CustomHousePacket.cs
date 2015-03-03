@@ -25,17 +25,17 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class CustomHousePacket : RecvPacket
     {
-        readonly Serial _houseSerial;
-        public Serial HouseSerial { get { return _houseSerial; } }
+        readonly Serial m_houseSerial;
+        public Serial HouseSerial { get { return m_houseSerial; } }
 
-        readonly int _revisionHash;
-        public int RevisionHash { get { return _revisionHash; } }
+        readonly int m_revisionHash;
+        public int RevisionHash { get { return m_revisionHash; } }
 
-        readonly int _numPlanes;
-        public int PlaneCount { get { return _numPlanes; } }
+        readonly int m_numPlanes;
+        public int PlaneCount { get { return m_numPlanes; } }
 
-        CustomHousePlane[] _planes;
-        public CustomHousePlane[] Planes { get { return _planes; } }
+        CustomHousePlane[] m_planes;
+        public CustomHousePlane[] Planes { get { return m_planes; } }
 
         public CustomHousePacket(PacketReader reader)
             : base(0xD8, "Custom House Packet")
@@ -43,23 +43,23 @@ namespace UltimaXNA.UltimaPackets.Server
             byte CompressionType = reader.ReadByte();
             if (CompressionType != 3)
             {
-                _houseSerial = Serial.Null;
+                m_houseSerial = Serial.Null;
                 return;
             }
             reader.ReadByte(); // unknown, always 0?
-            _houseSerial = reader.ReadInt32();
-            _revisionHash = reader.ReadInt32();
+            m_houseSerial = reader.ReadInt32();
+            m_revisionHash = reader.ReadInt32();
 
             // this is for compression type 3 only
             int bufferLength = reader.ReadInt16();
             int trueBufferLength = reader.ReadInt16();
-            _numPlanes = reader.ReadByte();
+            m_numPlanes = reader.ReadByte();
             // end compression type 3
 
-            _planes = new CustomHousePlane[_numPlanes];
-            for (int i = 0; i < _numPlanes; i++)
+            m_planes = new CustomHousePlane[m_numPlanes];
+            for (int i = 0; i < m_numPlanes; i++)
             {
-                _planes[i] = new CustomHousePlane(reader);
+                m_planes[i] = new CustomHousePlane(reader);
             }
         }
     }

@@ -18,9 +18,9 @@ namespace UltimaXNA.UltimaGUI.Controls
 {
     class TilePic : Control
     {
-        Texture2D _texture = null;
+        Texture2D m_texture = null;
         int Hue;
-        int _tileID;
+        int m_tileID;
 
         public TilePic(Control owner, int page)
             : base(owner, page)
@@ -53,22 +53,22 @@ namespace UltimaXNA.UltimaGUI.Controls
         {
             Position = new Point2D(x, y);
             Hue = hue;
-            _tileID = tileID;
+            m_tileID = tileID;
         }
 
         public override void Update(GameTime gameTime)
         {
-            if (_texture == null)
+            if (m_texture == null)
             {
-                _texture = UltimaData.ArtData.GetStaticTexture(_tileID);
-                Size = new Point2D(_texture.Width, _texture.Height);
+                m_texture = UltimaData.ArtData.GetStaticTexture(m_tileID);
+                Size = new Point2D(m_texture.Width, m_texture.Height);
             }
             base.Update(gameTime);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)
         {
-            spriteBatch.Draw2D(_texture, Position, 0, false, false);
+            spriteBatch.Draw2D(m_texture, Position, 0, false, false);
             base.Draw(spriteBatch);
         }
     }

@@ -19,36 +19,36 @@ namespace UltimaXNA.UltimaGUI
     {
         Item holdingItem;
         Point holdingOffset;
-        bool _isHolding = false;
+        bool m_isHolding = false;
         public bool IsHolding
         {
             get
             {
-                return _isHolding;
+                return m_isHolding;
             }
             set
             {
-                _isHolding = value;
+                m_isHolding = value;
             }
         }
         public Item HoldingItem { get { return holdingItem; } }
         public Point HoldingOffset { get { return holdingOffset; } set { holdingOffset = value; } }
         public Texture2D HoldingTexture { get { return UltimaData.ArtData.GetStaticTexture(holdingItem.DisplayItemID); } }
         
-        bool _isTargeting = false;
+        bool m_isTargeting = false;
         public bool IsTargeting
         {
             get
             {
-                return _isTargeting;
+                return m_isTargeting;
             }
             set
             {
                 // Only change it if we have to...
-                if (_isTargeting != value)
+                if (m_isTargeting != value)
                 {
-                    _isTargeting = value;
-                    if (_isTargeting)
+                    m_isTargeting = value;
+                    if (m_isTargeting)
                     {
                         // If we're carrying something in the mouse cursor...
                         if (IsHolding)
@@ -60,13 +60,13 @@ namespace UltimaXNA.UltimaGUI
                     }
                     else
                     {
-                        _targetingMulti = -1;
+                        m_targetingMulti = -1;
                     }
                 }
             }
         }
-        int _targetingMulti = -1;
-        public int TargetingMulti { set { _targetingMulti = value; } }
+        int m_targetingMulti = -1;
+        public int TargetingMulti { set { m_targetingMulti = value; } }
 
         internal bool TrammelHue
         {
@@ -121,7 +121,7 @@ namespace UltimaXNA.UltimaGUI
                 cursorOffset = new Point2D(13, 13);
                 sourceRect = new Rectangle(1, 1, 46, 34);
                 cursorTextureID = 8310;
-                if (_targetingMulti != -1)
+                if (m_targetingMulti != -1)
                 {
                     // !!! Draw a multi
                 }

@@ -20,18 +20,18 @@ namespace UltimaXNA.UltimaGUI.Controls
     {
         public int Index;
 
-        int _width;
-        List<string> _items;
-        int _visibleItems;
-        bool _canBeNull;
+        int m_width;
+        List<string> m_items;
+        int m_visibleItems;
+        bool m_canBeNull;
 
-        ResizePic _resize;
-        TextLabelAscii _label;
+        ResizePic m_resize;
+        TextLabelAscii m_label;
 
-        bool _listOpen = false;
-        ResizePic _openResizePic;
-        ScrollBar _openScrollBar;
-        TextLabelAscii[] _openLabels;
+        bool m_listOpen = false;
+        ResizePic m_openResizePic;
+        ScrollBar m_openScrollBar;
+        TextLabelAscii[] m_openLabels;
 
         const int hue_Text = 1107;
         const int hue_TextSelected = 588;
@@ -51,127 +51,127 @@ namespace UltimaXNA.UltimaGUI.Controls
         void buildGumpling(int x, int y, int width, int index, int itemsVisible, string[] items, bool canBeNull)
         {
             Position = new Point2D(x, y);
-            _items = new List<string>(items);
-            _width = width;
+            m_items = new List<string>(items);
+            m_width = width;
             Index = index;
-            _visibleItems = itemsVisible;
-            _canBeNull = canBeNull;
+            m_visibleItems = itemsVisible;
+            m_canBeNull = canBeNull;
 
-            _resize = new ResizePic(_owner, Page, X, Y, 3000, _width, UltimaData.Fonts.ASCIIText.Fonts[1].Height + 8);
-            _resize.OnMouseClick = onClickClosedList;
-            _resize.OnMouseOver = onMouseOverClosedList;
-            _resize.OnMouseOut = onMouseOutClosedList;
-            ((Gump)_owner).AddControl(_resize);
-            _label = new TextLabelAscii(_owner, Page, X + 4, Y + 5, hue_Text, 1, string.Empty);
-            ((Gump)_owner).AddControl(_label);
-            ((Gump)_owner).AddControl(new GumpPic(_owner, Page, X + width - 22, Y + 5, 2086, 0));
+            m_resize = new ResizePic(m_owner, Page, X, Y, 3000, m_width, UltimaData.Fonts.ASCIIText.Fonts[1].Height + 8);
+            m_resize.OnMouseClick = onClickClosedList;
+            m_resize.OnMouseOver = onMouseOverClosedList;
+            m_resize.OnMouseOut = onMouseOutClosedList;
+            ((Gump)m_owner).AddControl(m_resize);
+            m_label = new TextLabelAscii(m_owner, Page, X + 4, Y + 5, hue_Text, 1, string.Empty);
+            ((Gump)m_owner).AddControl(m_label);
+            ((Gump)m_owner).AddControl(new GumpPic(m_owner, Page, X + width - 22, Y + 5, 2086, 0));
         }
 
         public override void Update(GameTime gameTime)
         {
-            if (_listOpen)
+            if (m_listOpen)
             {
                 // if we have moused off the open list, close it. We check to see if the mouse is over:
                 // the resizepic for the closed list (because it takes one update cycle to open the list)
                 // the resizepic for the open list, and the scroll bar if it is loaded.
-                if (UserInterface.MouseOverControl != _openResizePic &&
-                    UserInterface.MouseOverControl != _resize &&
-                    (_openScrollBar == null ? false : UserInterface.MouseOverControl != _openScrollBar))
+                if (UserInterface.MouseOverControl != m_openResizePic &&
+                    UserInterface.MouseOverControl != m_resize &&
+                    (m_openScrollBar == null ? false : UserInterface.MouseOverControl != m_openScrollBar))
                 {
                     closeOpenList();
                 }
                 else
                 {
                     // update the visible items
-                    int itemOffset = (_openScrollBar == null ? 0 : _openScrollBar.Value);
-                    for (int i = 0; i < _visibleItems; i++)
+                    int itemOffset = (m_openScrollBar == null ? 0 : m_openScrollBar.Value);
+                    for (int i = 0; i < m_visibleItems; i++)
                     {
-                        _openLabels[i].Text = (i + itemOffset < 0) ? string.Empty : _items[i + itemOffset];
+                        m_openLabels[i].Text = (i + itemOffset < 0) ? string.Empty : m_items[i + itemOffset];
                     }
                 }
             }
             else
             {
                 if (Index == -1)
-                    _label.Text = "Click here";
+                    m_label.Text = "Click here";
                 else
-                    _label.Text = _items[Index];
+                    m_label.Text = m_items[Index];
             }
             base.Update(gameTime);
         }
 
         void closeOpenList()
         {
-            _listOpen = false;
-            _openResizePic.Dispose();
-            if (_openScrollBar != null)
-                _openScrollBar.Dispose();
-            for (int i = 0; i < _visibleItems; i++)
-                _openLabels[i].Dispose();
+            m_listOpen = false;
+            m_openResizePic.Dispose();
+            if (m_openScrollBar != null)
+                m_openScrollBar.Dispose();
+            for (int i = 0; i < m_visibleItems; i++)
+                m_openLabels[i].Dispose();
         }
 
         void onClickClosedList(int x, int y, MouseButton button)
         {
-            _listOpen = true;
-            _openResizePic = new ResizePic(_owner, Page, X, Y, 3000, _width, ASCIIText.Fonts[1].Height * _visibleItems + 8);
-            _openResizePic.OnMouseClick = onClickOpenList;
-            _openResizePic.OnMouseOver = onMouseOverOpenList;
-            _openResizePic.OnMouseOut = onMouseOutOpenList;
-            ((Gump)_owner).AddControl(_openResizePic);
+            m_listOpen = true;
+            m_openResizePic = new ResizePic(m_owner, Page, X, Y, 3000, m_width, ASCIIText.Fonts[1].Height * m_visibleItems + 8);
+            m_openResizePic.OnMouseClick = onClickOpenList;
+            m_openResizePic.OnMouseOver = onMouseOverOpenList;
+            m_openResizePic.OnMouseOut = onMouseOutOpenList;
+            ((Gump)m_owner).AddControl(m_openResizePic);
             // only show the scrollbar if we need to scroll
-            if (_visibleItems < _items.Count)
+            if (m_visibleItems < m_items.Count)
             {
-                _openScrollBar = new ScrollBar(_owner, Page, X + _width - 20, Y + 4, ASCIIText.Fonts[1].Height * _visibleItems, (_canBeNull ? -1 : 0), _items.Count - _visibleItems, Index);
-                ((Gump)_owner).AddControl(_openScrollBar);
+                m_openScrollBar = new ScrollBar(m_owner, Page, X + m_width - 20, Y + 4, ASCIIText.Fonts[1].Height * m_visibleItems, (m_canBeNull ? -1 : 0), m_items.Count - m_visibleItems, Index);
+                ((Gump)m_owner).AddControl(m_openScrollBar);
             }
-            _openLabels = new TextLabelAscii[_visibleItems];
-            for (int i = 0; i < _visibleItems; i++)
+            m_openLabels = new TextLabelAscii[m_visibleItems];
+            for (int i = 0; i < m_visibleItems; i++)
             {
-                _openLabels[i] = new TextLabelAscii(_owner, Page, X + 4, Y + 5 + ASCIIText.Fonts[1].Height * i, 1107, 1, string.Empty);
-                ((Gump)_owner).AddControl(_openLabels[i]);
+                m_openLabels[i] = new TextLabelAscii(m_owner, Page, X + 4, Y + 5 + ASCIIText.Fonts[1].Height * i, 1107, 1, string.Empty);
+                ((Gump)m_owner).AddControl(m_openLabels[i]);
             }
         }
 
         void onMouseOverClosedList(int x, int y)
         {
-            _label.Hue = hue_TextSelected;
+            m_label.Hue = hue_TextSelected;
         }
 
         void onMouseOutClosedList(int x, int y)
         {
-            _label.Hue = hue_Text;
+            m_label.Hue = hue_Text;
         }
 
         void onClickOpenList(int x, int y, MouseButton button)
         {
             int indexOver = getOpenListIndexFromPoint(x, y);
             if (indexOver != -1)
-                Index = indexOver + (_openScrollBar == null ? 0 : _openScrollBar.Value);
+                Index = indexOver + (m_openScrollBar == null ? 0 : m_openScrollBar.Value);
             closeOpenList();
         }
 
         void onMouseOverOpenList(int x, int y)
         {
             int indexOver = getOpenListIndexFromPoint(x, y);
-            for (int i = 0; i < _openLabels.Length; i++)
+            for (int i = 0; i < m_openLabels.Length; i++)
             {
                 if (i == indexOver)
-                    _openLabels[i].Hue = hue_TextSelected;
+                    m_openLabels[i].Hue = hue_TextSelected;
                 else
-                    _openLabels[i].Hue = hue_Text;
+                    m_openLabels[i].Hue = hue_Text;
             }
         }
 
         void onMouseOutOpenList(int x, int y)
         {
-            for (int i = 0; i < _openLabels.Length; i++)
-                _openLabels[i].Hue = hue_Text;
+            for (int i = 0; i < m_openLabels.Length; i++)
+                m_openLabels[i].Hue = hue_Text;
         }
 
         int getOpenListIndexFromPoint(int x, int y)
         {
-            Rectangle r = new Rectangle(4, 5, _width - 20, ASCIIText.Fonts[1].Height);
-            for (int i = 0; i < _openLabels.Length; i++)
+            Rectangle r = new Rectangle(4, 5, m_width - 20, ASCIIText.Fonts[1].Height);
+            for (int i = 0; i < m_openLabels.Length; i++)
             {
                 if (r.Contains(new Point(x, y)))
                     return i;

@@ -33,14 +33,14 @@ namespace UltimaXNA.UltimaWorld
             FontID = fontID;
 
             // set up draw data
-            _draw_texture = Texture = ASCIIText.GetTextTexture(text, 1);
-            _draw_width = _draw_texture.Width;
-            _draw_height = _draw_texture.Height;
-            _draw_X = (_draw_width >> 1) - 22 - (int)((Position.X_offset - Position.Y_offset) * 22);
-            _draw_Y = ((int)Position.Z_offset * 4) + _draw_height - 44 - (int)((Position.X_offset + Position.Y_offset) * 22);
-            _draw_hue = Utility.GetHueVector(Hue);
-            _pickType = PickTypes.PickObjects;
-            _draw_flip = false;
+            m_draw_texture = Texture = ASCIIText.GetTextTexture(text, 1);
+            m_draw_width = m_draw_texture.Width;
+            m_draw_height = m_draw_texture.Height;
+            m_draw_X = (m_draw_width >> 1) - 22 - (int)((Position.X_offset - Position.Y_offset) * 22);
+            m_draw_Y = ((int)Position.Z_offset * 4) + m_draw_height - 44 - (int)((Position.X_offset + Position.Y_offset) * 22);
+            m_draw_hue = Utility.GetHueVector(Hue);
+            m_pickType = PickTypes.PickObjects;
+            m_draw_flip = false;
         }
 
         internal override bool Draw(SpriteBatch3D sb, Vector3 drawPosition, MouseOverList molist, PickTypes pickType, int maxAlt)

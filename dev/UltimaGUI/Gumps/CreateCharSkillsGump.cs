@@ -42,7 +42,7 @@ namespace UltimaXNA.UltimaGUI.Gumps
         public CreateCharSkillsGump()
             : base(0, 0)
         {
-            _renderFullScreen = false;
+            m_renderFullScreen = false;
             // backdrop
             AddControl(new GumpPicTiled(this, 0, 0, 0, 640, 480, 9274));
             AddControl(new GumpPic(this, 0, 0, 0, 5500, 0));

@@ -416,7 +416,7 @@ namespace UltimaXNA
 
         // Color utilities, made freely available on http://snowxna.wordpress.com/
         #region ColorUtility
-        private static char[] _hexDigits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+        private static char[] m_hexDigits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
         public static string ColorToHexString(Color color)
         {
@@ -429,8 +429,8 @@ namespace UltimaXNA
             for(int i = 0; i < 4; i++)
             {
                 int b = bytes[i];
-                chars[i * 2] = _hexDigits[b >> 4];
-                chars[i * 2 + 1] = _hexDigits[b & 0xF];
+                chars[i * 2] = m_hexDigits[b >> 4];
+                chars[i * 2 + 1] = m_hexDigits[b & 0xF];
             }
             return new string(chars);
         }
@@ -482,18 +482,18 @@ namespace UltimaXNA
         #endregion
 
         // Version string.
-        static string _versionString;
+        static string m_versionString;
         public static string VersionString
         {
             get
             {
-                if (_versionString == null)
+                if (m_versionString == null)
                 {
                     Version v = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
                     DateTime d = new DateTime(v.Build * TimeSpan.TicksPerDay).AddYears(1999).AddDays(-1);
-                    _versionString = string.Format("UltimaXNA PreAlpha v{0}.{1} ({2})", v.Major, v.Minor, String.Format("{0:MMMM d, yyyy}", d));
+                    m_versionString = string.Format("UltimaXNA PreAlpha v{0}.{1} ({2})", v.Major, v.Minor, String.Format("{0:MMMM d, yyyy}", d));
                 }
-                return _versionString;
+                return m_versionString;
             }
         }
 
@@ -586,12 +586,12 @@ namespace UltimaXNA
             return (Direction)direction;
         }
 
-        static Random _random;
+        static Random m_random;
         public static int RandomValue(int low, int high)
         {
-            if (_random == null)
-                _random = new Random();
-            int rnd = _random.Next(low, high + 1);
+            if (m_random == null)
+                m_random = new Random();
+            int rnd = m_random.Next(low, high + 1);
             return rnd; 
         }
 

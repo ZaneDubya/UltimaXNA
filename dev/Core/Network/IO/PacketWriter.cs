@@ -20,7 +20,7 @@ namespace UltimaXNA.Core.Network
 {
     public class PacketWriter : IDisposable
     {
-        private static Stack<PacketWriter> _pool = new Stack<PacketWriter>();
+        private static Stack<PacketWriter> m_pool = new Stack<PacketWriter>();
 
         public static PacketWriter CreateInstance()
         {
@@ -31,17 +31,17 @@ namespace UltimaXNA.Core.Network
         {
             PacketWriter writer = null;
 
-            lock (_pool)
+            lock (m_pool)
             {
-                if (_pool.Count > 0)
+                if (m_pool.Count > 0)
                 {
-                    writer = _pool.Pop();
+                    writer = m_pool.Pop();
 
                     if (writer != null)
                     {
-                        writer._capacity = capacity;
-                        writer._stream = new MemoryStream(capacity);
-                        writer._stream.Seek(0, SeekOrigin.Begin);
+                        writer.m_capacity = capacity;
+                        writer.m_stream = new MemoryStream(capacity);
+                        writer.m_stream.Seek(0, SeekOrigin.Begin);
                     }
                 }
             }
@@ -54,11 +54,11 @@ namespace UltimaXNA.Core.Network
 
         public static void ReleaseInstance(PacketWriter writer)
         {
-            lock (_pool)
+            lock (m_pool)
             {
-                if (!_pool.Contains(writer))
+                if (!m_pool.Contains(writer))
                 {
-                    _pool.Push(writer);
+                    m_pool.Push(writer);
                 }
                 else
                 {
@@ -67,16 +67,16 @@ namespace UltimaXNA.Core.Network
             }
         }
 
-        private static byte[] _buffer = new byte[4];
-        private MemoryStream _stream;
-        private int _capacity;
+        private static byte[] m_buffer = new byte[4];
+        private MemoryStream m_stream;
+        private int m_capacity;
         
         /// <summary>
         /// Gets the total stream length.
         /// </summary>
         public long Length
         {
-            get { return _stream.Length; }
+            get { return m_stream.Length; }
         }
 
         /// <summary>
@@ -84,8 +84,8 @@ namespace UltimaXNA.Core.Network
         /// </summary>
         public long Position
         {
-            get { return _stream.Position; }
-            set { _stream.Position = value; }
+            get { return m_stream.Position; }
+            set { m_stream.Position = value; }
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace UltimaXNA.Core.Network
         /// </summary>
         public MemoryStream BaseStream
         {
-            get { return _stream; }
+            get { return m_stream; }
         }
 
         /// <summary>
@@ -111,8 +111,8 @@ namespace UltimaXNA.Core.Network
         /// <param name="capacity">Initial capacity for the internal stream.</param>
         public PacketWriter(int capacity)
         {
-            this._stream = new MemoryStream(capacity);
-            this._capacity = capacity;
+            this.m_stream = new MemoryStream(capacity);
+            this.m_capacity = capacity;
         }
 
         /// <summary>
@@ -120,7 +120,7 @@ namespace UltimaXNA.Core.Network
         /// </summary>
         public void Write(bool value)
         {
-            _stream.WriteByte((byte)(value ? 1 : 0));
+            m_stream.WriteByte((byte)(value ? 1 : 0));
         }
 
         /// <summary>
@@ -128,7 +128,7 @@ namespace UltimaXNA.Core.Network
         /// </summary>
         public void Write(byte value)
         {
-            _stream.WriteByte(value);
+            m_stream.WriteByte(value);
         }
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace UltimaXNA.Core.Network
         /// </summary>
         public void Write(sbyte value)
         {
-            _stream.WriteByte((byte)value);
+            m_stream.WriteByte((byte)value);
         }
 
         /// <summary>
@@ -144,10 +144,10 @@ namespace UltimaXNA.Core.Network
         /// </summary>
         public void Write(short value)
         {
-            _buffer[0] = (byte)(value >> 8);
-            _buffer[1] = (byte)value;
+            m_buffer[0] = (byte)(value >> 8);
+            m_buffer[1] = (byte)value;
 
-            _stream.Write(_buffer, 0, 2);
+            m_stream.Write(m_buffer, 0, 2);
         }
 
         /// <summary>
@@ -155,10 +155,10 @@ namespace UltimaXNA.Core.Network
         /// </summary>
         public void Write(ushort value)
         {
-            _buffer[0] = (byte)(value >> 8);
-            _buffer[1] = (byte)value;
+            m_buffer[0] = (byte)(value >> 8);
+            m_buffer[1] = (byte)value;
 
-            _stream.Write(_buffer, 0, 2);
+            m_stream.Write(m_buffer, 0, 2);
         }
 
         /// <summary>
@@ -166,12 +166,12 @@ namespace UltimaXNA.Core.Network
         /// </summary>
         public void Write(int value)
         {
-            _buffer[0] = (byte)(value >> 24);
-            _buffer[1] = (byte)(value >> 16);
-            _buffer[2] = (byte)(value >> 8);
-            _buffer[3] = (byte)value;
+            m_buffer[0] = (byte)(value >> 24);
+            m_buffer[1] = (byte)(value >> 16);
+            m_buffer[2] = (byte)(value >> 8);
+            m_buffer[3] = (byte)value;
 
-            _stream.Write(_buffer, 0, 4);
+            m_stream.Write(m_buffer, 0, 4);
         }
 
         /// <summary>
@@ -179,12 +179,12 @@ namespace UltimaXNA.Core.Network
         /// </summary>
         public void Write(uint value)
         {
-            _buffer[0] = (byte)(value >> 24);
-            _buffer[1] = (byte)(value >> 16);
-            _buffer[2] = (byte)(value >> 8);
-            _buffer[3] = (byte)value;
+            m_buffer[0] = (byte)(value >> 24);
+            m_buffer[1] = (byte)(value >> 16);
+            m_buffer[2] = (byte)(value >> 8);
+            m_buffer[3] = (byte)value;
 
-            _stream.Write(_buffer, 0, 4);
+            m_stream.Write(m_buffer, 0, 4);
         }
 
         /// <summary>
@@ -192,7 +192,7 @@ namespace UltimaXNA.Core.Network
         /// </summary>
         public void Write(byte[] buffer, int offset, int size)
         {
-            _stream.Write(buffer, offset, size);
+            m_stream.Write(buffer, offset, size);
         }
 
         /// <summary>
@@ -208,14 +208,14 @@ namespace UltimaXNA.Core.Network
 
             int length = value.Length;
 
-            _stream.SetLength(_stream.Length + size);
+            m_stream.SetLength(m_stream.Length + size);
 
             if (length >= size)
-                _stream.Position += Encoding.ASCII.GetBytes(value, 0, size, _stream.GetBuffer(), (int)_stream.Position);
+                m_stream.Position += Encoding.ASCII.GetBytes(value, 0, size, m_stream.GetBuffer(), (int)m_stream.Position);
             else
             {
-                Encoding.ASCII.GetBytes(value, 0, length, _stream.GetBuffer(), (int)_stream.Position);
-                _stream.Position += size;
+                Encoding.ASCII.GetBytes(value, 0, length, m_stream.GetBuffer(), (int)m_stream.Position);
+                m_stream.Position += size;
             }
         }
 
@@ -232,10 +232,10 @@ namespace UltimaXNA.Core.Network
 
             int length = value.Length;
 
-            _stream.SetLength(_stream.Length + length + 1);
+            m_stream.SetLength(m_stream.Length + length + 1);
 
-            Encoding.ASCII.GetBytes(value, 0, length, _stream.GetBuffer(), (int)_stream.Position);
-            _stream.Position += length + 1;
+            Encoding.ASCII.GetBytes(value, 0, length, m_stream.GetBuffer(), (int)m_stream.Position);
+            m_stream.Position += length + 1;
         }
 
         /// <summary>
@@ -251,10 +251,10 @@ namespace UltimaXNA.Core.Network
 
             int length = value.Length;
 
-            _stream.SetLength(_stream.Length + ((length + 1) * 2));
+            m_stream.SetLength(m_stream.Length + ((length + 1) * 2));
 
-            _stream.Position += Encoding.Unicode.GetBytes(value, 0, length, _stream.GetBuffer(), (int)_stream.Position);
-            _stream.Position += 2;
+            m_stream.Position += Encoding.Unicode.GetBytes(value, 0, length, m_stream.GetBuffer(), (int)m_stream.Position);
+            m_stream.Position += 2;
         }
 
         /// <summary>
@@ -272,14 +272,14 @@ namespace UltimaXNA.Core.Network
 
             int length = value.Length;
 
-            _stream.SetLength(_stream.Length + size);
+            m_stream.SetLength(m_stream.Length + size);
 
             if ((length * 2) >= size)
-                _stream.Position += Encoding.Unicode.GetBytes(value, 0, length, _stream.GetBuffer(), (int)_stream.Position);
+                m_stream.Position += Encoding.Unicode.GetBytes(value, 0, length, m_stream.GetBuffer(), (int)m_stream.Position);
             else
             {
-                Encoding.Unicode.GetBytes(value, 0, length, _stream.GetBuffer(), (int)_stream.Position);
-                _stream.Position += size;
+                Encoding.Unicode.GetBytes(value, 0, length, m_stream.GetBuffer(), (int)m_stream.Position);
+                m_stream.Position += size;
             }
         }
 
@@ -296,10 +296,10 @@ namespace UltimaXNA.Core.Network
 
             int length = value.Length;
 
-            _stream.SetLength(_stream.Length + ((length + 1) * 2));
+            m_stream.SetLength(m_stream.Length + ((length + 1) * 2));
 
-            _stream.Position += Encoding.BigEndianUnicode.GetBytes(value, 0, length, _stream.GetBuffer(), (int)_stream.Position);
-            _stream.Position += 2;
+            m_stream.Position += Encoding.BigEndianUnicode.GetBytes(value, 0, length, m_stream.GetBuffer(), (int)m_stream.Position);
+            m_stream.Position += 2;
         }
 
         /// <summary>
@@ -317,14 +317,14 @@ namespace UltimaXNA.Core.Network
 
             int length = value.Length;
 
-            _stream.SetLength(_stream.Length + size);
+            m_stream.SetLength(m_stream.Length + size);
 
             if ((length * 2) >= size)
-                _stream.Position += Encoding.BigEndianUnicode.GetBytes(value, 0, length, _stream.GetBuffer(), (int)_stream.Position);
+                m_stream.Position += Encoding.BigEndianUnicode.GetBytes(value, 0, length, m_stream.GetBuffer(), (int)m_stream.Position);
             else
             {
-                Encoding.BigEndianUnicode.GetBytes(value, 0, length, _stream.GetBuffer(), (int)_stream.Position);
-                _stream.Position += size;
+                Encoding.BigEndianUnicode.GetBytes(value, 0, length, m_stream.GetBuffer(), (int)m_stream.Position);
+                m_stream.Position += size;
             }
         }
 
@@ -333,7 +333,7 @@ namespace UltimaXNA.Core.Network
         /// </summary>
         public void Fill()
         {
-            Fill((int)(_capacity - _stream.Length));
+            Fill((int)(m_capacity - m_stream.Length));
         }
 
         /// <summary>
@@ -341,14 +341,14 @@ namespace UltimaXNA.Core.Network
         /// </summary>
         public void Fill(int length)
         {
-            if (_stream.Position == _stream.Length)
+            if (m_stream.Position == m_stream.Length)
             {
-                _stream.SetLength(_stream.Length + length);
-                _stream.Seek(0, SeekOrigin.End);
+                m_stream.SetLength(m_stream.Length + length);
+                m_stream.Seek(0, SeekOrigin.End);
             }
             else
             {
-                _stream.Write(new byte[length], 0, length);
+                m_stream.Write(new byte[length], 0, length);
             }
         }
 
@@ -357,7 +357,7 @@ namespace UltimaXNA.Core.Network
         /// </summary>
         public long Seek(long offset, SeekOrigin origin)
         {
-            return _stream.Seek(offset, origin);
+            return m_stream.Seek(offset, origin);
         }
 
         /// <summary>
@@ -365,19 +365,19 @@ namespace UltimaXNA.Core.Network
         /// </summary>
         public byte[] ToArray()
         {
-            return _stream.ToArray();
+            return m_stream.ToArray();
         }
 
         #region IDisposable Members
 
         public void Dispose()
         {
-            _capacity = 0;
+            m_capacity = 0;
 
-            if (_stream != null)
+            if (m_stream != null)
             {
-                _stream.Close();
-                _stream.Dispose();
+                m_stream.Close();
+                m_stream.Dispose();
             }
 
             ReleaseInstance(this);
@@ -393,7 +393,7 @@ namespace UltimaXNA.Core.Network
         public byte[] Compile()
         {
             Flush();
-            return _stream.ToArray();
+            return m_stream.ToArray();
         }
     }
 }

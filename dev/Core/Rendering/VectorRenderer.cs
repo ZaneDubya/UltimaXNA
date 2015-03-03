@@ -22,30 +22,30 @@ namespace UltimaXNA.Rendering
     {
         public const float Pi = (float)Math.PI;
 
-        GraphicsDevice _graphics;
-        ContentManager _content;
-        Effect _effect;
+        GraphicsDevice m_graphics;
+        ContentManager m_content;
+        Effect m_effect;
 
-        const int _maxPrimitives = 0x1000;
+        const int m_maxPrimitives = 0x1000;
         VertexPositionColorTexture[] vertices;
-        Texture2D _texture;
-        short[] _indices;
+        Texture2D m_texture;
+        short[] m_indices;
         int currentIndex;
         int lineCount;
 
         public VectorRenderer(GraphicsDevice g, ContentManager c)
         {
-            _graphics = g;
-            _content = c;
-            _effect = _content.Load<Effect>("Shaders/VectorRenderer");
+            m_graphics = g;
+            m_content = c;
+            m_effect = m_content.Load<Effect>("Shaders/VectorRenderer");
 
             Color[] data = new Color[] { Color.White };
-            _texture = new Texture2D(_graphics, 1, 1);
-            _texture.SetData<Color>(data);
+            m_texture = new Texture2D(m_graphics, 1, 1);
+            m_texture.SetData<Color>(data);
 
             // create the vertex and indices array
-            this.vertices = new VertexPositionColorTexture[_maxPrimitives * 2];
-            _indices = createIndexBuffer(_maxPrimitives);
+            this.vertices = new VertexPositionColorTexture[m_maxPrimitives * 2];
+            m_indices = createIndexBuffer(m_maxPrimitives);
             currentIndex = 0;
             lineCount = 0;
         }
@@ -103,7 +103,7 @@ namespace UltimaXNA.Rendering
         /// <param name="end">The ending vertex.</param>
         public void DrawLine(VertexPositionColorTexture start, VertexPositionColorTexture end)
         {
-            if (lineCount >= _maxPrimitives)
+            if (lineCount >= m_maxPrimitives)
                 throw new Exception("Raster graphics count has exceeded limit.");
 
             vertices[currentIndex++] = start;
@@ -138,7 +138,7 @@ namespace UltimaXNA.Rendering
             int length = polygon.Points.Length + ((polygon.IsClosed) ? 0 : -1);
             for (int i = 0; i < length; i += step)
             {
-                if (lineCount >= _maxPrimitives)
+                if (lineCount >= m_maxPrimitives)
                     throw new Exception("Raster graphics count has exceeded limit.");
 
                 vertices[currentIndex].Position = polygon.Points[i % polygon.Points.Length];
@@ -177,14 +177,14 @@ namespace UltimaXNA.Rendering
             float zOffset = (zoom > 1000) ? (zoom - 1000) : 0;
 
             Matrix projection = Matrix.CreateRotationY(rotation.X) * Matrix.CreateRotationX(rotation.Y) * Matrix.CreateTranslation(0, 0, -zOffset) * SpriteBatch3D.ProjectionMatrixWorld;
-            _effect.Parameters["ProjectionMatrix"].SetValue(projection);
-            _effect.Parameters["WorldMatrix"].SetValue(Matrix.CreateScale(zoom * .99f));
-            _effect.Parameters["Viewport"].SetValue(new Vector2(_graphics.Viewport.Width, _graphics.Viewport.Height));
+            m_effect.Parameters["ProjectionMatrix"].SetValue(projection);
+            m_effect.Parameters["WorldMatrix"].SetValue(Matrix.CreateScale(zoom * .99f));
+            m_effect.Parameters["Viewport"].SetValue(new Vector2(m_graphics.Viewport.Width, m_graphics.Viewport.Height));
 
-            _effect.CurrentTechnique.Passes[0].Apply();
+            m_effect.CurrentTechnique.Passes[0].Apply();
 
-            _graphics.Textures[0] = _texture;
-            _graphics.DrawUserIndexedPrimitives<VertexPositionColorTexture>(PrimitiveType.LineList, vertices, 0, currentIndex, _indices, 0, lineCount);
+            m_graphics.Textures[0] = m_texture;
+            m_graphics.DrawUserIndexedPrimitives<VertexPositionColorTexture>(PrimitiveType.LineList, vertices, 0, currentIndex, m_indices, 0, lineCount);
 
             currentIndex = 0;
             lineCount = 0;
@@ -196,19 +196,19 @@ namespace UltimaXNA.Rendering
             if (currentIndex == 0)
                 return;
 
-            _graphics.BlendState = BlendState.AlphaBlend;
-            _graphics.DepthStencilState = DepthStencilState.None;
-            _graphics.SamplerStates[0] = SamplerState.PointClamp;
-            _graphics.RasterizerState = RasterizerState.CullNone;
+            m_graphics.BlendState = BlendState.AlphaBlend;
+            m_graphics.DepthStencilState = DepthStencilState.None;
+            m_graphics.SamplerStates[0] = SamplerState.PointClamp;
+            m_graphics.RasterizerState = RasterizerState.CullNone;
 
-            _effect.Parameters["ProjectionMatrix"].SetValue(SpriteBatch3D.ProjectionMatrixScreen);
-            _effect.Parameters["WorldMatrix"].SetValue(Matrix.Identity);
-            _effect.Parameters["Viewport"].SetValue(new Vector2(_graphics.Viewport.Width, _graphics.Viewport.Height));
+            m_effect.Parameters["ProjectionMatrix"].SetValue(SpriteBatch3D.ProjectionMatrixScreen);
+            m_effect.Parameters["WorldMatrix"].SetValue(Matrix.Identity);
+            m_effect.Parameters["Viewport"].SetValue(new Vector2(m_graphics.Viewport.Width, m_graphics.Viewport.Height));
 
-            _effect.CurrentTechnique.Passes[0].Apply();
+            m_effect.CurrentTechnique.Passes[0].Apply();
 
-            _graphics.Textures[0] = _texture;
-            _graphics.DrawUserIndexedPrimitives<VertexPositionColorTexture>(PrimitiveType.LineList, vertices, 0, currentIndex, _indices, 0, lineCount);
+            m_graphics.Textures[0] = m_texture;
+            m_graphics.DrawUserIndexedPrimitives<VertexPositionColorTexture>(PrimitiveType.LineList, vertices, 0, currentIndex, m_indices, 0, lineCount);
 
             currentIndex = 0;
             lineCount = 0;

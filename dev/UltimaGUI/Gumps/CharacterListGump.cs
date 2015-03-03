@@ -32,14 +32,14 @@ namespace UltimaXNA.UltimaGUI.Gumps
             DeleteCharacterButton
         }
 
-        int _charSelected = -1;
-        int _charListUpdate = -1;
-        HtmlGump[] _characterNames;
+        int m_charSelected = -1;
+        int m_charListUpdate = -1;
+        HtmlGump[] m_characterNames;
 
         public CharacterListGump()
             : base(0, 0)
         {
-            _renderFullScreen = false;
+            m_renderFullScreen = false;
             // backdrop
             AddControl(new GumpPicTiled(this, 0, 0, 0, 640, 480, 9274));
             AddControl(new GumpPic(this, 0, 0, 0, 5500, 0));
@@ -79,21 +79,21 @@ namespace UltimaXNA.UltimaGUI.Gumps
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
-            if (UltimaVars.Characters.UpdateValue != _charListUpdate)
+            if (UltimaVars.Characters.UpdateValue != m_charListUpdate)
             {
                 int entryIndex = 0;
-                _characterNames = new HtmlGump[UltimaVars.Characters.Length];
+                m_characterNames = new HtmlGump[UltimaVars.Characters.Length];
                 foreach (CharacterListEntry e in UltimaVars.Characters.List)
                 {
                     if (e.Name != string.Empty)
                     {
-                        _characterNames[entryIndex] = new HtmlGump(this, 1, 228, 154 + 40 * entryIndex, 272, 22, 0, 0, formatHTMLCharName(entryIndex, e.Name, (_charSelected == entryIndex ? 431 : 1278)));
-                        AddControl(new ResizePic(this, _characterNames[entryIndex]));
-                        AddControl(_characterNames[entryIndex]);
+                        m_characterNames[entryIndex] = new HtmlGump(this, 1, 228, 154 + 40 * entryIndex, 272, 22, 0, 0, formatHTMLCharName(entryIndex, e.Name, (m_charSelected == entryIndex ? 431 : 1278)));
+                        AddControl(new ResizePic(this, m_characterNames[entryIndex]));
+                        AddControl(m_characterNames[entryIndex]);
                     }
                     entryIndex++;
                 }
-                _charListUpdate = UltimaVars.Characters.UpdateValue;
+                m_charListUpdate = UltimaVars.Characters.UpdateValue;
             }
             base.Update(gameTime);
         }
@@ -109,13 +109,13 @@ namespace UltimaXNA.UltimaGUI.Gumps
                     OnBackToSelectServer();
                     break;
                 case Buttons.ForwardButton:
-                    OnLoginWithCharacter(_charSelected);
+                    OnLoginWithCharacter(m_charSelected);
                     break;
                 case Buttons.NewCharacterButton:
                     OnNewCharacter();
                     break;
                 case Buttons.DeleteCharacterButton:
-                    OnDeleteCharacter(_charSelected);
+                    OnDeleteCharacter(m_charSelected);
                     break;
             }
         }
@@ -125,25 +125,25 @@ namespace UltimaXNA.UltimaGUI.Gumps
             if (href.Length > 5 && href.StartsWith("CHAR="))
             {
                 int charIndex = int.Parse(href.Substring(5));
-                if (charIndex == _charSelected)
+                if (charIndex == m_charSelected)
                     OnLoginWithCharacter(charIndex);
                 else
                 {
-                    if ((_charSelected >= 0) && (_charSelected < UltimaVars.Characters.Length))
-                        _characterNames[_charSelected].Text = formatHTMLCharName(_charSelected, UltimaVars.Characters.List[_charSelected].Name, 1278);
-                    _charSelected = charIndex;
-                    if ((_charSelected >= 0) && (_charSelected < UltimaVars.Characters.Length))
-                        _characterNames[_charSelected].Text = formatHTMLCharName(_charSelected, UltimaVars.Characters.List[_charSelected].Name, 431);
+                    if ((m_charSelected >= 0) && (m_charSelected < UltimaVars.Characters.Length))
+                        m_characterNames[m_charSelected].Text = formatHTMLCharName(m_charSelected, UltimaVars.Characters.List[m_charSelected].Name, 1278);
+                    m_charSelected = charIndex;
+                    if ((m_charSelected >= 0) && (m_charSelected < UltimaVars.Characters.Length))
+                        m_characterNames[m_charSelected].Text = formatHTMLCharName(m_charSelected, UltimaVars.Characters.List[m_charSelected].Name, 431);
                 }
             }
         }
 
-        static int _kHoverHue = UltimaData.HuesXNA.GetWebSafeHue("609");
-        static int _kActivateHue = UltimaData.HuesXNA.GetWebSafeHue("F00");
+        static int m_kHoverHue = UltimaData.HuesXNA.GetWebSafeHue("609");
+        static int m_kActivateHue = UltimaData.HuesXNA.GetWebSafeHue("F00");
         string formatHTMLCharName(int index, string name, int hue)
         {
             return string.Format("<center><big><a href=\"CHAR={0}\" style=\"colorhue: #{2}; hoverhue: #{3}; activatehue: #{4}; text-decoration: none\">{1}</a></big></center>", 
-                index, name, hue, _kHoverHue, _kActivateHue);
+                index, name, hue, m_kHoverHue, m_kActivateHue);
         }
     }
 }

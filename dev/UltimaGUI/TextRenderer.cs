@@ -20,19 +20,19 @@ namespace UltimaXNA.UltimaGUI
 {
     class TextRenderer
     {
-        private Texture2D _texture;
-        private Parser _reader;
-        private int _width = 0, _height = 0;
+        private Texture2D m_texture;
+        private Parser m_reader;
+        private int m_width = 0, m_height = 0;
         public int Width
         {
             get
             {
-                if (_texture != null)
-                    return _texture.Width;
+                if (m_texture != null)
+                    return m_texture.Width;
                 else
                 {
                     checkResize();
-                    return _width;
+                    return m_width;
                 }
             }
         }
@@ -40,99 +40,99 @@ namespace UltimaXNA.UltimaGUI
         {
             get
             {
-                if (_texture != null)
-                    return _texture.Height;
+                if (m_texture != null)
+                    return m_texture.Height;
                 else
                 {
                     checkResize();
-                    return _height;
+                    return m_height;
                 }
             }
         }
 
-        private HTMLRegions _href;
-        public HTMLRegions HREFRegions { get { return _href; } }
+        private HTMLRegions m_href;
+        public HTMLRegions HREFRegions { get { return m_href; } }
 
-        private HTMLImages _images;
-        public HTMLImages Images { get { return _images; } }
+        private HTMLImages m_images;
+        public HTMLImages Images { get { return m_images; } }
 
-        private int _activeHREF = -1;
+        private int m_activeHREF = -1;
         public int ActiveHREF
         {
-            get { return _activeHREF; }
-            set { _activeHREF = value; }
+            get { return m_activeHREF; }
+            set { m_activeHREF = value; }
         }
-        private bool _activeHREF_usedownhue = false;
+        private bool m_activeHREF_usedownhue = false;
         public bool ActiveHREF_UseDownHue
         {
-            get { return _activeHREF_usedownhue; }
-            set { _activeHREF_usedownhue = value; }
+            get { return m_activeHREF_usedownhue; }
+            set { m_activeHREF_usedownhue = value; }
         }
 
-        private bool _mustResize = true;
-        private bool _mustRender = true;
+        private bool m_mustResize = true;
+        private bool m_mustRender = true;
 
-        private bool _asHTML = false;
+        private bool m_asHTML = false;
         public bool AsHTML
         {
-            get { return _asHTML; }
+            get { return m_asHTML; }
             set
             {
-                if (_asHTML != value)
+                if (m_asHTML != value)
                 {
-                    _mustResize = true;
-                    _mustRender = true;
-                    _asHTML = value;
+                    m_mustResize = true;
+                    m_mustRender = true;
+                    m_asHTML = value;
                 }
             }
         }
 
-        private int _maxWidth = 0;
+        private int m_maxWidth = 0;
         public int MaxWidth
         {
-            get { return _maxWidth; }
+            get { return m_maxWidth; }
             set
             {
-                if (_maxWidth != value)
+                if (m_maxWidth != value)
                 {
-                    _mustResize = true;
-                    _mustRender = true;
-                    _maxWidth = value;
+                    m_mustResize = true;
+                    m_mustRender = true;
+                    m_maxWidth = value;
                 }
             }
         }
 
-        private string _text = string.Empty;
+        private string m_text = string.Empty;
         public string Text
         {
-            get { return _text; }
+            get { return m_text; }
             set
             {
-                if (_text != value)
+                if (m_text != value)
                 {
-                    _mustResize = true;
-                    _mustRender = true;
-                    _text = value;
+                    m_mustResize = true;
+                    m_mustRender = true;
+                    m_text = value;
                 }
             }
         }
 
-        private int _hue = 0;
+        private int m_hue = 0;
         public int Hue
         {
-            get { return _hue; }
-            set { _hue = value; }
+            get { return m_hue; }
+            set { m_hue = value; }
         }
         private int hueButNotIfHTML
         {
-            get { return _asHTML ? 0 : _hue; }
+            get { return m_asHTML ? 0 : m_hue; }
         }
 
-        private bool _hueTransparent = false;
+        private bool m_hueTransparent = false;
         public bool Transparent
         {
-            get { return _hueTransparent; }
-            set { _hueTransparent = value; }
+            get { return m_hueTransparent; }
+            set { m_hueTransparent = value; }
         }
 
         public TextRenderer(string text, int maxwidth, bool asHTML)
@@ -140,8 +140,8 @@ namespace UltimaXNA.UltimaGUI
             Text = text;
             MaxWidth = maxwidth;
             AsHTML = asHTML;
-            _href = new HTMLRegions();
-            _images = new HTMLImages();
+            m_href = new HTMLRegions();
+            m_images = new HTMLImages();
         }
 
         public void Draw(SpriteBatchUI sb, Point2D position)
@@ -155,14 +155,14 @@ namespace UltimaXNA.UltimaGUI
             
             Rectangle sourceRectangle;
 
-            if (xScroll > _texture.Width)
+            if (xScroll > m_texture.Width)
                 return;
             else if (xScroll < -MaxWidth)
                 return;
             else
                 sourceRectangle.X = xScroll;
 
-            if (yScroll > _texture.Height)
+            if (yScroll > m_texture.Height)
                 return;
             else if (yScroll < - Height)
                 return;
@@ -170,28 +170,28 @@ namespace UltimaXNA.UltimaGUI
                 sourceRectangle.Y = yScroll;
 
             int maxX = sourceRectangle.X + destRectangle.Width;
-            if (maxX <= _texture.Width)
+            if (maxX <= m_texture.Width)
                 sourceRectangle.Width = destRectangle.Width;
             else
             {
-                sourceRectangle.Width = _texture.Width - sourceRectangle.X;
+                sourceRectangle.Width = m_texture.Width - sourceRectangle.X;
                 destRectangle.Width = sourceRectangle.Width;
             }
 
             int maxY = sourceRectangle.Y + destRectangle.Height;
-            if (maxY <= _texture.Height)
+            if (maxY <= m_texture.Height)
             {
                 sourceRectangle.Height = destRectangle.Height;
             }
             else
             {
-                sourceRectangle.Height = _texture.Height - sourceRectangle.Y;
+                sourceRectangle.Height = m_texture.Height - sourceRectangle.Y;
                 destRectangle.Height = sourceRectangle.Height;
             }
 
-            sb.Draw2D(_texture, destRectangle, sourceRectangle, hueButNotIfHTML, false, _hueTransparent);
+            sb.Draw2D(m_texture, destRectangle, sourceRectangle, hueButNotIfHTML, false, m_hueTransparent);
 
-            foreach (HTMLRegion r in _href.Regions)
+            foreach (HTMLRegion r in m_href.Regions)
             {
                 Point2D position;
                 Rectangle sourceRect;
@@ -203,21 +203,21 @@ namespace UltimaXNA.UltimaGUI
                     if (r.HREFAttributes != null)
                     {
                         int hue = 0;
-                        if (r.Index == _activeHREF)
-                            if (_activeHREF_usedownhue)
+                        if (r.Index == m_activeHREF)
+                            if (m_activeHREF_usedownhue)
                                 hue = r.HREFAttributes.DownHue;
                             else
                                 hue = r.HREFAttributes.OverHue;
                         else
                             hue = r.HREFAttributes.UpHue;
 
-                        sb.Draw2D(_texture, position,
+                        sb.Draw2D(m_texture, position,
                             sourceRect, hue, false, false);
                     }
                 }
             }
 
-            foreach (HTMLImage image in _images.Images)
+            foreach (HTMLImage image in m_images.Images)
             {
                 Point2D position;
                 Rectangle sourceRect;
@@ -228,9 +228,9 @@ namespace UltimaXNA.UltimaGUI
                     sourceRect.Y = 0;
                     Texture2D texture = null;
 
-                    if (image.RegionIndex == _activeHREF)
+                    if (image.RegionIndex == m_activeHREF)
                     {
-                        if (_activeHREF_usedownhue)
+                        if (m_activeHREF_usedownhue)
                             texture = image.ImageDown;
                         if (texture == null)
                             texture = image.ImageOver;
@@ -247,58 +247,58 @@ namespace UltimaXNA.UltimaGUI
 
         private void checkResize()
         {
-            if (_mustResize)
+            if (m_mustResize)
             {
-                _mustResize = false;
+                m_mustResize = false;
                 resizeAndParse(Text, MaxWidth, AsHTML);
             }
         }
 
         private void checkRender(GraphicsDevice graphics)
         {
-            if (_mustRender)
+            if (m_mustRender)
             {
                 checkResize();
-                _mustRender = false;
-                _texture = writeTexture(graphics, _reader, _width, _height);
+                m_mustRender = false;
+                m_texture = writeTexture(graphics, m_reader, m_width, m_height);
             }
         }
 
         private void resizeAndParse(string textToRender, int maxWidth, bool parseHTML)
         {
-            if (_reader != null)
-                _reader = null;
-            _reader = new Parser(textToRender, parseHTML);
+            if (m_reader != null)
+                m_reader = null;
+            m_reader = new Parser(textToRender, parseHTML);
 
-            _href.Clear();
-            _images.Clear();
+            m_href.Clear();
+            m_images.Clear();
 
             if (maxWidth < 0)
             {
-                _width = 0;
+                m_width = 0;
             }
             else
             {
                 if (maxWidth == 0)
                 {
-                    getTextDimensions(_reader, ASCIIText.MaxWidth, 0, out _width, out _height);
+                    getTextDimensions(m_reader, ASCIIText.MaxWidth, 0, out m_width, out m_height);
                 }
                 else
                 {
-                    getTextDimensions(_reader, maxWidth, 0, out _width, out _height);
+                    getTextDimensions(m_reader, maxWidth, 0, out m_width, out m_height);
                 }
             }
 
-            if (_texture != null)
+            if (m_texture != null)
             {
-                _texture.Dispose();
-                _texture = null;
+                m_texture.Dispose();
+                m_texture = null;
             }
         }
 
         Texture2D writeTexture(GraphicsDevice graphics, Parser reader, int width, int height)
         {
-            if (_width == 0) // empty text string
+            if (m_width == 0) // empty text string
                 return new Texture2D(graphics, 1, 1);
 
             Color[] resultData = new Color[width * height];
@@ -350,7 +350,7 @@ namespace UltimaXNA.UltimaGUI
                             }
 
                             // get HREF regions for html.
-                            getHREFRegions(_href, alignedAtoms, alignedTextX, dy);
+                            getHREFRegions(m_href, alignedAtoms, alignedTextX, dy);
 
                             // clear the aligned text lists so we can fill them up in our next pass.
                             for (int j = 0; j < 3; j++)
@@ -394,9 +394,9 @@ namespace UltimaXNA.UltimaGUI
                         HTMLImageGump atom = (HTMLImageGump)atoms[i];
                         if (lineheight < atom.Height)
                             lineheight = atom.Height;
-                            _images.AddImage(new Rectangle(x, y + (lineheight - atom.Height) / 2, atom.Width, atom.Height),
+                            m_images.AddImage(new Rectangle(x, y + (lineheight - atom.Height) / 2, atom.Width, atom.Height),
                                 atom.Texture, GumpData.GetGumpXNA(atom.ValueOver), GumpData.GetGumpXNA(atom.ValueDown));
-                            atom.AssociatedImage = _images.Images[_images.Count - 1];
+                            atom.AssociatedImage = m_images.Images[m_images.Count - 1];
                     }
                 }
                 x += atoms[i].Width;

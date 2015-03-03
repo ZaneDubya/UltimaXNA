@@ -7,25 +7,25 @@ namespace InterXLib.Input.Windows
 {
     public class InputEventKeyboard : InputEvent
     {
-        protected readonly KeyboardEventType _eventType;
+        protected readonly KeyboardEventType m_eventType;
         public KeyboardEventType EventType
         {
-            get { return _eventType; }
+            get { return m_eventType; }
         }
 
-        WinKeys _keyChar = WinKeys.None;
+        WinKeys m_keyChar = WinKeys.None;
         public char KeyChar
         {
             get
             {
-                if (_keyChar != WinKeys.None)
-                    return (char)_keyChar;
+                if (m_keyChar != WinKeys.None)
+                    return (char)m_keyChar;
                 else
                     return '\0';
             }
         }
 
-        public void OverrideKeyChar(WinKeys newChar) { _keyChar = newChar; }
+        public void OverrideKeyChar(WinKeys newChar) { m_keyChar = newChar; }
 
         public bool IsChar
         {
@@ -38,17 +38,17 @@ namespace InterXLib.Input.Windows
         }
 
 
-        private WinKeys _keyCode;
-        private int _keyDataExtra;
+        private WinKeys m_keyCode;
+        private int m_keyDataExtra;
 
         public WinKeys KeyCode
         {
-            get { return _keyCode; }
+            get { return m_keyCode; }
         }
 
         public int KeyCodeInt
         {
-            get { return (int)_keyCode; }
+            get { return (int)m_keyCode; }
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace InterXLib.Input.Windows
         /// </summary>
         public int Data_RepeatCount
         {
-            get { return (_keyDataExtra & 0x0000FFFF); }
+            get { return (m_keyDataExtra & 0x0000FFFF); }
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace InterXLib.Input.Windows
         /// </summary>
         public int Data_IsExtendedKey
         {
-            get { return ((_keyDataExtra >> 24) & 0x00000001); }
+            get { return ((m_keyDataExtra >> 24) & 0x00000001); }
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace InterXLib.Input.Windows
         /// </summary>
         public int Data_ContextCode
         {
-            get { return ((_keyDataExtra >> 29) & 0x00000001); }
+            get { return ((m_keyDataExtra >> 29) & 0x00000001); }
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace InterXLib.Input.Windows
         /// </summary>
         public int Data_PreviousState
         {
-            get { return ((_keyDataExtra >> 30) & 0x00000001); }
+            get { return ((m_keyDataExtra >> 30) & 0x00000001); }
         }
 
         /// <summary>
@@ -101,23 +101,23 @@ namespace InterXLib.Input.Windows
         /// </summary>
         public int Data_TransitionState
         {
-            get { return ((_keyDataExtra >> 31) & 0x00000001); }
+            get { return ((m_keyDataExtra >> 31) & 0x00000001); }
         }
 
         public InputEventKeyboard(KeyboardEventType eventType, WinKeys wParam_VirtKeyCode, int lParam_KeyData, WinKeys modifiers)
             : base(modifiers)
         {
-            _eventType = eventType;
-            _keyCode = wParam_VirtKeyCode;
-            _keyDataExtra = lParam_KeyData;
+            m_eventType = eventType;
+            m_keyCode = wParam_VirtKeyCode;
+            m_keyDataExtra = lParam_KeyData;
         }
 
         public InputEventKeyboard(KeyboardEventType eventType, InputEventKeyboard parent)
             : base(parent)
         {
-            _eventType = eventType;
-            _keyCode = parent._keyCode;
-            _keyDataExtra = parent._keyDataExtra;
+            m_eventType = eventType;
+            m_keyCode = parent.m_keyCode;
+            m_keyDataExtra = parent.m_keyDataExtra;
         }
     }
 

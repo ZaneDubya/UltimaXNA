@@ -81,9 +81,9 @@ namespace UltimaXNA
 
                 // update mouse stationary business
                 if (hasMouseBeenStationarySinceLastUpdate)
-                    _mouseStationaryMS += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                    m_mouseStationaryMS += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
                 else
-                    _mouseStationaryMS = 0;
+                    m_mouseStationaryMS = 0;
             }
 
             m_KeyboardStateLastFrame = m_KeyboardStateThisFrame;
@@ -92,12 +92,12 @@ namespace UltimaXNA
             copyEvents();
         }
 
-        private float _mouseStationaryMS = 0f;
+        private float m_mouseStationaryMS = 0f;
         public int MouseStationaryTimeMS
         {
             get
             {
-                return (int)_mouseStationaryMS;
+                return (int)m_mouseStationaryMS;
             }
         }
 

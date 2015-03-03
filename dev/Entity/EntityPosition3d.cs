@@ -22,36 +22,36 @@ namespace UltimaXNA.Entity
     {
         public static Vector3 NullPosition = new Vector3(-1);
 
-        Vector3 _tile;
-        Vector3 _offset;
+        Vector3 m_tile;
+        Vector3 m_offset;
 
-        public Vector3 Tile_V3 { get { return _tile; } set { _tile = value; } }
-        public Vector3 Offset_V3 { get { return _offset; } set { _offset = value; } }
-        public Vector3 Point_V3 { get { return _tile + _offset; } }
+        public Vector3 Tile_V3 { get { return m_tile; } set { m_tile = value; } }
+        public Vector3 Offset_V3 { get { return m_offset; } set { m_offset = value; } }
+        public Vector3 Point_V3 { get { return m_tile + m_offset; } }
 
         public bool IsOffset { get { return (X_offset != 0) || (Y_offset != 0) || (Z_offset != 0); } }
-        public bool IsNullPosition { get { return _tile == NullPosition; } }
+        public bool IsNullPosition { get { return m_tile == NullPosition; } }
 
-        public int X { get { return (int)_tile.X; } set { _tile.X = value; } }
-        public int Y { get { return (int)_tile.Y; } set { _tile.Y = value; } }
-        public int Z { get { return (int)_tile.Z; } set { _tile.Z = value; } }
-        public float X_offset { get { return _offset.X % 1.0f; } }
-        public float Y_offset { get { return _offset.Y % 1.0f; } }
-        public float Z_offset { get { return _offset.Z; } }
+        public int X { get { return (int)m_tile.X; } set { m_tile.X = value; } }
+        public int Y { get { return (int)m_tile.Y; } set { m_tile.Y = value; } }
+        public int Z { get { return (int)m_tile.Z; } set { m_tile.Z = value; } }
+        public float X_offset { get { return m_offset.X % 1.0f; } }
+        public float Y_offset { get { return m_offset.Y % 1.0f; } }
+        public float Z_offset { get { return m_offset.Z; } }
 
         public Position3D()
         {
-            _tile = NullPosition;
+            m_tile = NullPosition;
         }
 
         public Position3D(int x, int y, int z)
         {
-            _tile = new Vector3(x, y, z);
+            m_tile = new Vector3(x, y, z);
         }
 
         public Position3D(Vector3 v)
         {
-            _tile = v;
+            m_tile = v;
         }
 
         public override bool Equals(object o)

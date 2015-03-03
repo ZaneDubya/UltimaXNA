@@ -19,25 +19,25 @@ namespace UltimaXNA.Entity
 {
     public class DynamicObject : BaseEntity
     {
-        private bool _isHued = false;
-        private bool _isInitialized = false;
+        private bool m_isHued = false;
+        private bool m_isInitialized = false;
 
-        private int _baseItemID;
-        private float _frameSequence;
-        private int _frameLength;
-        private bool _useGumpArtInsteadOfTileArt = false;
+        private int m_baseItemID;
+        private float m_frameSequence;
+        private int m_frameLength;
+        private bool m_useGumpArtInsteadOfTileArt = false;
 
-        private float _timeCurrentSeconds;
-        private float _timeEndTotalSeconds;
-        private float _timeRepeatAnimationSeconds;
+        private float m_timeCurrentSeconds;
+        private float m_timeEndTotalSeconds;
+        private float m_timeRepeatAnimationSeconds;
 
-        private GraphicEffectType _effectType;
-        private int _hue;
-        private int _duration;
-        private int _speed;
-        private bool _doesExplode;
-        private GraphicEffectBlendMode _bendMode;
-        private int _targetX, _targetY, _targetZ;
+        private GraphicEffectType m_effectType;
+        private int m_hue;
+        private int m_duration;
+        private int m_speed;
+        private bool m_doesExplode;
+        private GraphicEffectBlendMode m_bendMode;
+        private int m_targetX, m_targetY, m_targetZ;
 
         public DynamicObject(Serial serial)
             : base(serial)
@@ -47,14 +47,14 @@ namespace UltimaXNA.Entity
 
         public override void Update(double frameMS)
         {
-            if (!_isInitialized)
+            if (!m_isInitialized)
             {
-                _timeEndTotalSeconds = _timeCurrentSeconds = 0;
-                _frameSequence = 0;
-                _isInitialized = true;
+                m_timeEndTotalSeconds = m_timeCurrentSeconds = 0;
+                m_frameSequence = 0;
+                m_isInitialized = true;
 
                 ParticleData itemData;
-                switch (_effectType)
+                switch (m_effectType)
                 {
                     case GraphicEffectType.Nothing:
                         this.Dispose();
@@ -63,22 +63,22 @@ namespace UltimaXNA.Entity
                         this.Dispose();
                         break;
                     case GraphicEffectType.Lightning:
-                        _useGumpArtInsteadOfTileArt = true;
-                        _baseItemID = 20000;
-                        _frameLength = 10;
-                        _timeRepeatAnimationSeconds = 0.5f;
-                        _timeEndTotalSeconds += _timeRepeatAnimationSeconds;
+                        m_useGumpArtInsteadOfTileArt = true;
+                        m_baseItemID = 20000;
+                        m_frameLength = 10;
+                        m_timeRepeatAnimationSeconds = 0.5f;
+                        m_timeEndTotalSeconds += m_timeRepeatAnimationSeconds;
                         break;
                     case GraphicEffectType.FixedXYZ:
                     case GraphicEffectType.FixedFrom:
-                        itemData = ParticleData.GetData(_baseItemID);
+                        itemData = ParticleData.GetData(m_baseItemID);
                         if (itemData != null)
                         {
                             // we may need to remap baseItemID from the original value:
-                            _baseItemID = itemData.ItemID;
-                            _frameLength = itemData.FrameLength;
-                            _timeRepeatAnimationSeconds = _duration / (float)(10 + _speed);
-                            _timeEndTotalSeconds += _timeRepeatAnimationSeconds;
+                            m_baseItemID = itemData.ItemID;
+                            m_frameLength = itemData.FrameLength;
+                            m_timeRepeatAnimationSeconds = m_duration / (float)(10 + m_speed);
+                            m_timeEndTotalSeconds += m_timeRepeatAnimationSeconds;
                         }
                         else
                             this.Dispose();
@@ -91,16 +91,16 @@ namespace UltimaXNA.Entity
             }
             else
             {
-                _timeCurrentSeconds += (float)frameMS;
-                _frameSequence = (float)(_timeCurrentSeconds / _timeRepeatAnimationSeconds) % 1.0f;
+                m_timeCurrentSeconds += (float)frameMS;
+                m_frameSequence = (float)(m_timeCurrentSeconds / m_timeRepeatAnimationSeconds) % 1.0f;
             }
 
-            if (_timeCurrentSeconds >= _timeEndTotalSeconds)
+            if (m_timeCurrentSeconds >= m_timeEndTotalSeconds)
             {
-                if (_doesExplode)
+                if (m_doesExplode)
                 {
                     DynamicObject dynamic = EntityManager.AddDynamicObject();
-                    dynamic.Load_AsExplosion(_targetX, _targetY, _targetZ);
+                    dynamic.Load_AsExplosion(m_targetX, m_targetY, m_targetZ);
                 }
                 this.Dispose();
             }
@@ -111,48 +111,48 @@ namespace UltimaXNA.Entity
         internal override void Draw(MapTile tile, Position3D position)
         {
             tile.FlushObjectsBySerial(Serial);
-            int hue = _isHued ? _hue : 0;
-            tile.AddMapObject(new MapObjectDynamic(this, position, _baseItemID, (int)(_frameSequence * _frameLength), hue, _useGumpArtInsteadOfTileArt));
+            int hue = m_isHued ? m_hue : 0;
+            tile.AddMapObject(new MapObjectDynamic(this, position, m_baseItemID, (int)(m_frameSequence * m_frameLength), hue, m_useGumpArtInsteadOfTileArt));
         }
 
         public void Load_FromPacket(GraphicEffectPacket packet)
         {
-            _baseItemID = packet.BaseItemID;
-            _effectType = packet.EffectType;
-            _isHued = false;
-            _hue = 0;
+            m_baseItemID = packet.BaseItemID;
+            m_effectType = packet.EffectType;
+            m_isHued = false;
+            m_hue = 0;
             X = packet.SourceX;
             Y = packet.SourceY;
             Z = packet.SourceZ;
-            _targetX = packet.TargetX;
-            _targetY = packet.TargetY;
-            _targetZ = packet.TargetZ;
-            _duration = packet.Duration;
-            _speed = packet.Speed;
-            _doesExplode = packet.DoesExplode;
+            m_targetX = packet.TargetX;
+            m_targetY = packet.TargetY;
+            m_targetZ = packet.TargetZ;
+            m_duration = packet.Duration;
+            m_speed = packet.Speed;
+            m_doesExplode = packet.DoesExplode;
         }
 
         public void Load_FromPacket(GraphicEffectHuedPacket packet)
         {
             this.Load_FromPacket((GraphicEffectPacket)packet);
-            _isHued = true;
-            _hue = packet.Hue;
-            _bendMode = packet.BlendMode;
+            m_isHued = true;
+            m_hue = packet.Hue;
+            m_bendMode = packet.BlendMode;
         }
 
         public void Load_AsExplosion(int x, int y, int z)
         {
-            _effectType = GraphicEffectType.FixedXYZ;
-            _isHued = false;
-            _hue = 0;
+            m_effectType = GraphicEffectType.FixedXYZ;
+            m_isHued = false;
+            m_hue = 0;
             X = x;
             Y = y;
             Z = z;
             ParticleData itemData = ParticleData.RandomExplosion;
-            _baseItemID = itemData.ItemID;
-            _duration = itemData.FrameLength;
-            _speed = 0;
-            _doesExplode = false;
+            m_baseItemID = itemData.ItemID;
+            m_duration = itemData.FrameLength;
+            m_speed = 0;
+            m_doesExplode = false;
         }
     }
 }

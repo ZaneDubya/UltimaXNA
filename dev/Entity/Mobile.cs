@@ -27,58 +27,58 @@ namespace UltimaXNA.Entity
         public int ArmorRating, ResistFire, ResistCold, ResistPoison, ResistEnergy;
         public int DamageMin, DamageMax;
 
-        protected MobileEquipment _equipment;
-        protected MobileAnimation _animation;
+        protected MobileEquipment m_equipment;
+        protected MobileAnimation m_animation;
 
-        public bool IsMoving { get { return _movement.IsMoving; } }
+        public bool IsMoving { get { return m_movement.IsMoving; } }
         
-        public bool IsRunning { get { return _movement.IsRunning; } }
+        public bool IsRunning { get { return m_movement.IsRunning; } }
         
         public bool IsMounted 
         { 
-            get { return (_equipment[(int)EquipLayer.Mount] != null && _equipment[(int)EquipLayer.Mount].ItemID != 0); } 
+            get { return (m_equipment[(int)EquipLayer.Mount] != null && m_equipment[(int)EquipLayer.Mount].ItemID != 0); } 
         }
         
         public bool IsWarMode 
         { 
-            get { return _isWarMode; }
-            set { _isWarMode = value; _animation.UpdateAnimation(); }
+            get { return m_isWarMode; }
+            set { m_isWarMode = value; m_animation.UpdateAnimation(); }
         }
 
         public bool IsFemale;
         public bool IsPoisoned;
         public bool IsBlessed;
-        bool _isWarMode;
+        bool m_isWarMode;
         public bool IsHidden;
 
-        int _bodyID = 0;
+        int m_bodyID = 0;
         public int BodyID
         {
             get
             {
-                if (_bodyID >= 402 && _bodyID <= 403)
-                    return _bodyID - 2;
-                return _bodyID;
+                if (m_bodyID >= 402 && m_bodyID <= 403)
+                    return m_bodyID - 2;
+                return m_bodyID;
             }
             set
             {
-                _bodyID = value;
+                m_bodyID = value;
                 tickUpdateTicker();
             }
         }
-        public int HairBodyID { get { return (_equipment[(int)EquipLayer.Hair] == null) ? 0 : _equipment[(int)EquipLayer.Hair].AnimationDisplayID; } }
-        public int HairHue { get { return (_equipment[(int)EquipLayer.Hair] == null) ? 0 : _equipment[(int)EquipLayer.Hair].Hue; } }
-        public int FacialHairBodyID { get { return (_equipment[(int)EquipLayer.FacialHair] == null) ? 0 : _equipment[(int)EquipLayer.FacialHair].AnimationDisplayID; } }
-        public int FacialHairHue { get { return (_equipment[(int)EquipLayer.FacialHair] == null) ? 0 : _equipment[(int)EquipLayer.FacialHair].Hue; } }
+        public int HairBodyID { get { return (m_equipment[(int)EquipLayer.Hair] == null) ? 0 : m_equipment[(int)EquipLayer.Hair].AnimationDisplayID; } }
+        public int HairHue { get { return (m_equipment[(int)EquipLayer.Hair] == null) ? 0 : m_equipment[(int)EquipLayer.Hair].Hue; } }
+        public int FacialHairBodyID { get { return (m_equipment[(int)EquipLayer.FacialHair] == null) ? 0 : m_equipment[(int)EquipLayer.FacialHair].AnimationDisplayID; } }
+        public int FacialHairHue { get { return (m_equipment[(int)EquipLayer.FacialHair] == null) ? 0 : m_equipment[(int)EquipLayer.FacialHair].Hue; } }
 
-        int _updateTicker = 0;
+        int m_updateTicker = 0;
         void tickUpdateTicker()
         {
-            _updateTicker++;
+            m_updateTicker++;
         }
         public int UpdateTicker
         {
-            get { return _updateTicker; }
+            get { return m_updateTicker; }
         }
 
         public bool Alive
@@ -86,7 +86,7 @@ namespace UltimaXNA.Entity
             get { return Health.Current != 0; }
         }
 
-        private int _hue;
+        private int m_hue;
         public int Hue
         {
             get {
@@ -95,11 +95,11 @@ namespace UltimaXNA.Entity
                 else if (IsPoisoned)
                     return 0x1CE;
                 else
-                    return _hue;
+                    return m_hue;
             }
             set
             {
-                _hue = value;
+                m_hue = value;
                 tickUpdateTicker();
             }
         }
@@ -140,33 +140,33 @@ namespace UltimaXNA.Entity
             }
         }
 
-        private static int[] _DrawLayerOrderNorth = new int[] { (int)EquipLayer.Mount, (int)EquipLayer.Body, (int)EquipLayer.Shirt, (int)EquipLayer.Pants, (int)EquipLayer.Shoes, (int)EquipLayer.InnerLegs, (int)EquipLayer.InnerTorso, (int)EquipLayer.Ring, (int)EquipLayer.Talisman, (int)EquipLayer.Bracelet, (int)EquipLayer.Unused_xF, (int)EquipLayer.Arms, (int)EquipLayer.Gloves, (int)EquipLayer.OuterLegs, (int)EquipLayer.MiddleTorso, (int)EquipLayer.Neck, (int)EquipLayer.Hair, (int)EquipLayer.OuterTorso, (int)EquipLayer.Waist, (int)EquipLayer.FacialHair, (int)EquipLayer.Earrings, (int)EquipLayer.Helm, (int)EquipLayer.OneHanded, (int)EquipLayer.TwoHanded, (int)EquipLayer.Cloak };
-		private static int[] _DrawLayerOrderRight = new int[] { (int)EquipLayer.Mount, (int)EquipLayer.Body, (int)EquipLayer.Shirt, (int)EquipLayer.Pants, (int)EquipLayer.Shoes, (int)EquipLayer.InnerLegs, (int)EquipLayer.InnerTorso, (int)EquipLayer.Ring, (int)EquipLayer.Talisman, (int)EquipLayer.Bracelet, (int)EquipLayer.Unused_xF, (int)EquipLayer.Arms, (int)EquipLayer.Gloves, (int)EquipLayer.OuterLegs, (int)EquipLayer.MiddleTorso, (int)EquipLayer.Neck, (int)EquipLayer.Hair, (int)EquipLayer.OuterTorso, (int)EquipLayer.Waist, (int)EquipLayer.FacialHair, (int)EquipLayer.Earrings, (int)EquipLayer.Helm, (int)EquipLayer.OneHanded, (int)EquipLayer.Cloak, (int)EquipLayer.TwoHanded };
-		private static int[] _DrawLayerOrderEast = new int[] { (int)EquipLayer.Mount, (int)EquipLayer.Body, (int)EquipLayer.Shirt, (int)EquipLayer.Pants, (int)EquipLayer.Shoes, (int)EquipLayer.InnerLegs, (int)EquipLayer.InnerTorso, (int)EquipLayer.Ring, (int)EquipLayer.Talisman, (int)EquipLayer.Bracelet, (int)EquipLayer.Unused_xF, (int)EquipLayer.Arms, (int)EquipLayer.Gloves, (int)EquipLayer.OuterLegs, (int)EquipLayer.MiddleTorso, (int)EquipLayer.Neck, (int)EquipLayer.Hair, (int)EquipLayer.OuterTorso, (int)EquipLayer.Waist, (int)EquipLayer.FacialHair, (int)EquipLayer.Earrings, (int)EquipLayer.Helm, (int)EquipLayer.OneHanded, (int)EquipLayer.Cloak, (int)EquipLayer.TwoHanded };
-		private static int[] _DrawLayerOrderDown = new int[] { (int)EquipLayer.Mount, (int)EquipLayer.Body, (int)EquipLayer.Cloak, (int)EquipLayer.Shirt, (int)EquipLayer.Pants, (int)EquipLayer.Shoes, (int)EquipLayer.InnerLegs, (int)EquipLayer.InnerTorso, (int)EquipLayer.Ring, (int)EquipLayer.Talisman, (int)EquipLayer.Bracelet, (int)EquipLayer.Unused_xF, (int)EquipLayer.Arms, (int)EquipLayer.Gloves, (int)EquipLayer.OuterLegs, (int)EquipLayer.MiddleTorso, (int)EquipLayer.Neck, (int)EquipLayer.Hair, (int)EquipLayer.OuterTorso, (int)EquipLayer.Waist, (int)EquipLayer.FacialHair, (int)EquipLayer.Earrings, (int)EquipLayer.Helm, (int)EquipLayer.OneHanded, (int)EquipLayer.TwoHanded };
-		private static int[] _DrawLayerOrderSouth = new int[] { (int)EquipLayer.Mount, (int)EquipLayer.Body, (int)EquipLayer.Shirt, (int)EquipLayer.Pants, (int)EquipLayer.Shoes, (int)EquipLayer.InnerLegs, (int)EquipLayer.InnerTorso, (int)EquipLayer.Ring, (int)EquipLayer.Talisman, (int)EquipLayer.Bracelet, (int)EquipLayer.Unused_xF, (int)EquipLayer.Arms, (int)EquipLayer.Gloves, (int)EquipLayer.OuterLegs, (int)EquipLayer.MiddleTorso, (int)EquipLayer.Neck, (int)EquipLayer.Hair, (int)EquipLayer.OuterTorso, (int)EquipLayer.Waist, (int)EquipLayer.FacialHair, (int)EquipLayer.Earrings, (int)EquipLayer.Helm, (int)EquipLayer.OneHanded, (int)EquipLayer.Cloak, (int)EquipLayer.TwoHanded };
-		private static int[] _DrawLayerOrderLeft = new int[] { (int)EquipLayer.Mount, (int)EquipLayer.Body, (int)EquipLayer.Shirt, (int)EquipLayer.Pants, (int)EquipLayer.Shoes, (int)EquipLayer.InnerLegs, (int)EquipLayer.InnerTorso, (int)EquipLayer.Ring, (int)EquipLayer.Talisman, (int)EquipLayer.Bracelet, (int)EquipLayer.Unused_xF, (int)EquipLayer.Arms, (int)EquipLayer.Gloves, (int)EquipLayer.OuterLegs, (int)EquipLayer.MiddleTorso, (int)EquipLayer.Neck, (int)EquipLayer.Hair, (int)EquipLayer.OuterTorso, (int)EquipLayer.Waist, (int)EquipLayer.FacialHair, (int)EquipLayer.Earrings, (int)EquipLayer.Helm, (int)EquipLayer.OneHanded, (int)EquipLayer.Cloak, (int)EquipLayer.TwoHanded };
-		private static int[] _DrawLayerOrderWest = new int[] { (int)EquipLayer.Mount, (int)EquipLayer.Body, (int)EquipLayer.Shirt, (int)EquipLayer.Pants, (int)EquipLayer.Shoes, (int)EquipLayer.InnerLegs, (int)EquipLayer.InnerTorso, (int)EquipLayer.Ring, (int)EquipLayer.Talisman, (int)EquipLayer.Bracelet, (int)EquipLayer.Unused_xF, (int)EquipLayer.Arms, (int)EquipLayer.Gloves, (int)EquipLayer.OuterLegs, (int)EquipLayer.MiddleTorso, (int)EquipLayer.Neck, (int)EquipLayer.Hair, (int)EquipLayer.OuterTorso, (int)EquipLayer.Waist, (int)EquipLayer.FacialHair, (int)EquipLayer.Earrings, (int)EquipLayer.Helm, (int)EquipLayer.OneHanded, (int)EquipLayer.TwoHanded, (int)EquipLayer.Cloak };
-		private static int[] _DrawLayerOrderUp = new int[] { (int)EquipLayer.Mount, (int)EquipLayer.Body, (int)EquipLayer.Shirt, (int)EquipLayer.Pants, (int)EquipLayer.Shoes, (int)EquipLayer.InnerLegs, (int)EquipLayer.InnerTorso, (int)EquipLayer.Ring, (int)EquipLayer.Talisman, (int)EquipLayer.Bracelet, (int)EquipLayer.Unused_xF, (int)EquipLayer.Arms, (int)EquipLayer.Gloves, (int)EquipLayer.OuterLegs, (int)EquipLayer.MiddleTorso, (int)EquipLayer.Neck, (int)EquipLayer.Hair, (int)EquipLayer.OuterTorso, (int)EquipLayer.Waist, (int)EquipLayer.FacialHair, (int)EquipLayer.Earrings, (int)EquipLayer.Helm, (int)EquipLayer.OneHanded, (int)EquipLayer.TwoHanded, (int)EquipLayer.Cloak };
+        private static int[] m_DrawLayerOrderNorth = new int[] { (int)EquipLayer.Mount, (int)EquipLayer.Body, (int)EquipLayer.Shirt, (int)EquipLayer.Pants, (int)EquipLayer.Shoes, (int)EquipLayer.InnerLegs, (int)EquipLayer.InnerTorso, (int)EquipLayer.Ring, (int)EquipLayer.Talisman, (int)EquipLayer.Bracelet, (int)EquipLayer.Unused_xF, (int)EquipLayer.Arms, (int)EquipLayer.Gloves, (int)EquipLayer.OuterLegs, (int)EquipLayer.MiddleTorso, (int)EquipLayer.Neck, (int)EquipLayer.Hair, (int)EquipLayer.OuterTorso, (int)EquipLayer.Waist, (int)EquipLayer.FacialHair, (int)EquipLayer.Earrings, (int)EquipLayer.Helm, (int)EquipLayer.OneHanded, (int)EquipLayer.TwoHanded, (int)EquipLayer.Cloak };
+		private static int[] m_DrawLayerOrderRight = new int[] { (int)EquipLayer.Mount, (int)EquipLayer.Body, (int)EquipLayer.Shirt, (int)EquipLayer.Pants, (int)EquipLayer.Shoes, (int)EquipLayer.InnerLegs, (int)EquipLayer.InnerTorso, (int)EquipLayer.Ring, (int)EquipLayer.Talisman, (int)EquipLayer.Bracelet, (int)EquipLayer.Unused_xF, (int)EquipLayer.Arms, (int)EquipLayer.Gloves, (int)EquipLayer.OuterLegs, (int)EquipLayer.MiddleTorso, (int)EquipLayer.Neck, (int)EquipLayer.Hair, (int)EquipLayer.OuterTorso, (int)EquipLayer.Waist, (int)EquipLayer.FacialHair, (int)EquipLayer.Earrings, (int)EquipLayer.Helm, (int)EquipLayer.OneHanded, (int)EquipLayer.Cloak, (int)EquipLayer.TwoHanded };
+		private static int[] m_DrawLayerOrderEast = new int[] { (int)EquipLayer.Mount, (int)EquipLayer.Body, (int)EquipLayer.Shirt, (int)EquipLayer.Pants, (int)EquipLayer.Shoes, (int)EquipLayer.InnerLegs, (int)EquipLayer.InnerTorso, (int)EquipLayer.Ring, (int)EquipLayer.Talisman, (int)EquipLayer.Bracelet, (int)EquipLayer.Unused_xF, (int)EquipLayer.Arms, (int)EquipLayer.Gloves, (int)EquipLayer.OuterLegs, (int)EquipLayer.MiddleTorso, (int)EquipLayer.Neck, (int)EquipLayer.Hair, (int)EquipLayer.OuterTorso, (int)EquipLayer.Waist, (int)EquipLayer.FacialHair, (int)EquipLayer.Earrings, (int)EquipLayer.Helm, (int)EquipLayer.OneHanded, (int)EquipLayer.Cloak, (int)EquipLayer.TwoHanded };
+		private static int[] m_DrawLayerOrderDown = new int[] { (int)EquipLayer.Mount, (int)EquipLayer.Body, (int)EquipLayer.Cloak, (int)EquipLayer.Shirt, (int)EquipLayer.Pants, (int)EquipLayer.Shoes, (int)EquipLayer.InnerLegs, (int)EquipLayer.InnerTorso, (int)EquipLayer.Ring, (int)EquipLayer.Talisman, (int)EquipLayer.Bracelet, (int)EquipLayer.Unused_xF, (int)EquipLayer.Arms, (int)EquipLayer.Gloves, (int)EquipLayer.OuterLegs, (int)EquipLayer.MiddleTorso, (int)EquipLayer.Neck, (int)EquipLayer.Hair, (int)EquipLayer.OuterTorso, (int)EquipLayer.Waist, (int)EquipLayer.FacialHair, (int)EquipLayer.Earrings, (int)EquipLayer.Helm, (int)EquipLayer.OneHanded, (int)EquipLayer.TwoHanded };
+		private static int[] m_DrawLayerOrderSouth = new int[] { (int)EquipLayer.Mount, (int)EquipLayer.Body, (int)EquipLayer.Shirt, (int)EquipLayer.Pants, (int)EquipLayer.Shoes, (int)EquipLayer.InnerLegs, (int)EquipLayer.InnerTorso, (int)EquipLayer.Ring, (int)EquipLayer.Talisman, (int)EquipLayer.Bracelet, (int)EquipLayer.Unused_xF, (int)EquipLayer.Arms, (int)EquipLayer.Gloves, (int)EquipLayer.OuterLegs, (int)EquipLayer.MiddleTorso, (int)EquipLayer.Neck, (int)EquipLayer.Hair, (int)EquipLayer.OuterTorso, (int)EquipLayer.Waist, (int)EquipLayer.FacialHair, (int)EquipLayer.Earrings, (int)EquipLayer.Helm, (int)EquipLayer.OneHanded, (int)EquipLayer.Cloak, (int)EquipLayer.TwoHanded };
+		private static int[] m_DrawLayerOrderLeft = new int[] { (int)EquipLayer.Mount, (int)EquipLayer.Body, (int)EquipLayer.Shirt, (int)EquipLayer.Pants, (int)EquipLayer.Shoes, (int)EquipLayer.InnerLegs, (int)EquipLayer.InnerTorso, (int)EquipLayer.Ring, (int)EquipLayer.Talisman, (int)EquipLayer.Bracelet, (int)EquipLayer.Unused_xF, (int)EquipLayer.Arms, (int)EquipLayer.Gloves, (int)EquipLayer.OuterLegs, (int)EquipLayer.MiddleTorso, (int)EquipLayer.Neck, (int)EquipLayer.Hair, (int)EquipLayer.OuterTorso, (int)EquipLayer.Waist, (int)EquipLayer.FacialHair, (int)EquipLayer.Earrings, (int)EquipLayer.Helm, (int)EquipLayer.OneHanded, (int)EquipLayer.Cloak, (int)EquipLayer.TwoHanded };
+		private static int[] m_DrawLayerOrderWest = new int[] { (int)EquipLayer.Mount, (int)EquipLayer.Body, (int)EquipLayer.Shirt, (int)EquipLayer.Pants, (int)EquipLayer.Shoes, (int)EquipLayer.InnerLegs, (int)EquipLayer.InnerTorso, (int)EquipLayer.Ring, (int)EquipLayer.Talisman, (int)EquipLayer.Bracelet, (int)EquipLayer.Unused_xF, (int)EquipLayer.Arms, (int)EquipLayer.Gloves, (int)EquipLayer.OuterLegs, (int)EquipLayer.MiddleTorso, (int)EquipLayer.Neck, (int)EquipLayer.Hair, (int)EquipLayer.OuterTorso, (int)EquipLayer.Waist, (int)EquipLayer.FacialHair, (int)EquipLayer.Earrings, (int)EquipLayer.Helm, (int)EquipLayer.OneHanded, (int)EquipLayer.TwoHanded, (int)EquipLayer.Cloak };
+		private static int[] m_DrawLayerOrderUp = new int[] { (int)EquipLayer.Mount, (int)EquipLayer.Body, (int)EquipLayer.Shirt, (int)EquipLayer.Pants, (int)EquipLayer.Shoes, (int)EquipLayer.InnerLegs, (int)EquipLayer.InnerTorso, (int)EquipLayer.Ring, (int)EquipLayer.Talisman, (int)EquipLayer.Bracelet, (int)EquipLayer.Unused_xF, (int)EquipLayer.Arms, (int)EquipLayer.Gloves, (int)EquipLayer.OuterLegs, (int)EquipLayer.MiddleTorso, (int)EquipLayer.Neck, (int)EquipLayer.Hair, (int)EquipLayer.OuterTorso, (int)EquipLayer.Waist, (int)EquipLayer.FacialHair, (int)EquipLayer.Earrings, (int)EquipLayer.Helm, (int)EquipLayer.OneHanded, (int)EquipLayer.TwoHanded, (int)EquipLayer.Cloak };
 
-		private int[] _DrawLayerOrder
+		private int[] m_DrawLayerOrder
 		{
 			get
 			{
                 int direction = DrawFacing;
 				switch (direction)
 				{
-					case 0x00: return _DrawLayerOrderNorth;
-					case 0x01: return _DrawLayerOrderRight;
-					case 0x02: return _DrawLayerOrderEast;
-					case 0x03: return _DrawLayerOrderDown;
-					case 0x04: return _DrawLayerOrderSouth;
-					case 0x05: return _DrawLayerOrderLeft;
-					case 0x06: return _DrawLayerOrderWest;
-					case 0x07: return _DrawLayerOrderUp;
+					case 0x00: return m_DrawLayerOrderNorth;
+					case 0x01: return m_DrawLayerOrderRight;
+					case 0x02: return m_DrawLayerOrderEast;
+					case 0x03: return m_DrawLayerOrderDown;
+					case 0x04: return m_DrawLayerOrderSouth;
+					case 0x05: return m_DrawLayerOrderLeft;
+					case 0x06: return m_DrawLayerOrderWest;
+					case 0x07: return m_DrawLayerOrderUp;
 					default:
 						// TODO: Log an Error
-						return _DrawLayerOrderNorth;
+						return m_DrawLayerOrderNorth;
 				}
 			}
 		}
@@ -174,14 +174,14 @@ namespace UltimaXNA.Entity
         public Mobile(Serial serial)
             : base(serial)
         {
-            _equipment = new MobileEquipment(this);
-            _animation = new MobileAnimation(this);
-            _movement.RequiresUpdate = true;
+            m_equipment = new MobileEquipment(this);
+            m_animation = new MobileAnimation(this);
+            m_movement.RequiresUpdate = true;
         }
 
         public override void Update(double frameMS)
         {
-            _animation.Update(frameMS);
+            m_animation.Update(frameMS);
             base.Update(frameMS);
         }
 
@@ -190,21 +190,21 @@ namespace UltimaXNA.Entity
             if (IsMoving)
             {
                 if (IsRunning)
-                    _animation.Animate(MobileAction.Run);
+                    m_animation.Animate(MobileAction.Run);
                 else
-                    _animation.Animate(MobileAction.Walk);
+                    m_animation.Animate(MobileAction.Walk);
             }
             else
             {
-                if (!_animation.IsAnimating)
-                    _animation.Animate(MobileAction.Stand);
+                if (!m_animation.IsAnimating)
+                    m_animation.Animate(MobileAction.Stand);
             }
 
-            MapObjectMobile mobtile = new MapObjectMobile(position, DrawFacing, _animation.ActionIndex, _animation.AnimationFrame, this);
+            MapObjectMobile mobtile = new MapObjectMobile(position, DrawFacing, m_animation.ActionIndex, m_animation.AnimationFrame, this);
             tile.AddMapObject(mobtile);
 
-            int[] drawLayers = _DrawLayerOrder;
-			bool hasOuterTorso = _equipment[(int)EquipLayer.OuterTorso] != null && _equipment[(int)EquipLayer.OuterTorso].AnimationDisplayID != 0;
+            int[] drawLayers = m_DrawLayerOrder;
+			bool hasOuterTorso = m_equipment[(int)EquipLayer.OuterTorso] != null && m_equipment[(int)EquipLayer.OuterTorso].AnimationDisplayID != 0;
 
             for (int i = 0; i < drawLayers.Length; i++)
             {
@@ -218,24 +218,24 @@ namespace UltimaXNA.Entity
                 {
                     mobtile.AddLayer(BodyID, Hue);
                 }
-                else if (_equipment[drawLayers[i]] != null && _equipment[drawLayers[i]].AnimationDisplayID != 0)
+                else if (m_equipment[drawLayers[i]] != null && m_equipment[drawLayers[i]].AnimationDisplayID != 0)
                 {
-                    mobtile.AddLayer(_equipment[drawLayers[i]].AnimationDisplayID, _equipment[drawLayers[i]].Hue);
+                    mobtile.AddLayer(m_equipment[drawLayers[i]].AnimationDisplayID, m_equipment[drawLayers[i]].Hue);
                 }
             }
-            drawOverheads(tile, new Position3D(_movement.Position.Tile_V3));
+            drawOverheads(tile, new Position3D(m_movement.Position.Tile_V3));
         }
 
         public override void Dispose()
         {
             base.Dispose();
-            _equipment.ClearEquipment();
+            m_equipment.ClearEquipment();
             tickUpdateTicker();
         }
 
         public void WearItem(Item i, int slot)
         {
-            _equipment[slot] = i;
+            m_equipment[slot] = i;
             tickUpdateTicker();
             if (slot == (int)EquipLayer.Mount)
             {
@@ -245,7 +245,7 @@ namespace UltimaXNA.Entity
 
         public void RemoveItem(Serial serial)
         {
-            _equipment.RemoveBySerial(serial);
+            m_equipment.RemoveBySerial(serial);
             tickUpdateTicker();
         }
 
@@ -257,7 +257,7 @@ namespace UltimaXNA.Entity
             }
             else
             {
-                return _equipment[slot];
+                return m_equipment[slot];
             }
         }
 
@@ -265,7 +265,7 @@ namespace UltimaXNA.Entity
         {
             get
             {
-                return (Container)_equipment[(int)EquipLayer.Backpack];
+                return (Container)m_equipment[(int)EquipLayer.Backpack];
             }
         }
 
@@ -273,37 +273,37 @@ namespace UltimaXNA.Entity
         {
             get
             {
-                return (Container)_equipment[(int)EquipLayer.ShopBuy];
+                return (Container)m_equipment[(int)EquipLayer.ShopBuy];
             }
         }
 
         public void Animate(int action, int frameCount, int repeatCount, bool reverse, bool repeat, int delay)
         {
-            _animation.Animate(action, frameCount, repeatCount, reverse, repeat, delay);
+            m_animation.Animate(action, frameCount, repeatCount, reverse, repeat, delay);
         }
 
         public void Mobile_AddMoveEvent(int x, int y, int z, int facing)
         {
-            _movement.Mobile_AddMoveEvent(x, y, z, facing);
+            m_movement.Mobile_AddMoveEvent(x, y, z, facing);
         }
 
         public void Move_Instant(int x, int y, int z, int facing)
         {
-            _movement.Move_Instant(x, y, z, facing);
+            m_movement.Move_Instant(x, y, z, facing);
         }
 
         public void PlayerMobile_Move(Direction facing)
         {
-            _movement.PlayerMobile_Move(facing);
+            m_movement.PlayerMobile_Move(facing);
         }
 
         public void PlayerMobile_MoveEventAck(int sequence)
         {
-            _movement.PlayerMobile_MoveEventAck(sequence);
+            m_movement.PlayerMobile_MoveEventAck(sequence);
         }
         public void PlayerMobile_MoveEventRej(int sequenceID, int x, int y, int z, int direction)
         {
-            _movement.PlayerMobile_MoveEventRej(sequenceID, x, y, z, direction);
+            m_movement.PlayerMobile_MoveEventRej(sequenceID, x, y, z, direction);
         }
     }
 }

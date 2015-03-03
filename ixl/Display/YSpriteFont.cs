@@ -503,24 +503,24 @@ namespace InterXLib.Display
 
         internal struct CharacterSource 
         {
-			private readonly string _string;
-			private readonly StringBuilder _builder;
-            private string[] _lines;
+			private readonly string m_string;
+			private readonly StringBuilder m_builder;
+            private string[] m_lines;
 
 			public CharacterSource(string s)
 			{
-				_string = s;
-				_builder = null;
+				m_string = s;
+				m_builder = null;
 				Length = s.Length;
-                _lines = null;
+                m_lines = null;
 			}
 
 			public CharacterSource(StringBuilder builder)
 			{
-				_builder = builder;
-				_string = null;
-				Length = _builder.Length;
-                _lines = null;
+				m_builder = builder;
+				m_string = null;
+				Length = m_builder.Length;
+                m_lines = null;
 			}
 
 			public readonly int Length;
@@ -528,9 +528,9 @@ namespace InterXLib.Display
             {
 				get 
                 {
-					if (_string != null)
-						return _string[index];
-					return _builder[index];
+					if (m_string != null)
+						return m_string[index];
+					return m_builder[index];
 				}
 			}
 
@@ -538,9 +538,9 @@ namespace InterXLib.Display
             {
                 get
                 {
-                    if (_string != null)
-                        return _string;
-                    return _builder.ToString();
+                    if (m_string != null)
+                        return m_string;
+                    return m_builder.ToString();
                 }
             }
 
@@ -548,11 +548,11 @@ namespace InterXLib.Display
             {
                 get
                 {
-                    if (_lines == null)
+                    if (m_lines == null)
                     {
-                        _lines = Text.Split('\n');
+                        m_lines = Text.Split('\n');
                     }
-                    return _lines.Length;
+                    return m_lines.Length;
                 }
             }
 
@@ -560,7 +560,7 @@ namespace InterXLib.Display
             {
                 if (index < 0 || index >= LineCount)
                     return null;
-                return _lines[index];
+                return m_lines[index];
             }
 		}
 

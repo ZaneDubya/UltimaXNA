@@ -16,32 +16,32 @@ namespace UltimaXNA.UltimaVars
 {
     static class Metrics
     {
-        static List<NameValuePair> _dataReadList = new List<NameValuePair>();
+        static List<NameValuePair> m_dataReadList = new List<NameValuePair>();
         public static int TotalDataRead
         {
             get
             {
                 int total = 0;
-                foreach (NameValuePair p in _dataReadList)
+                foreach (NameValuePair p in m_dataReadList)
                     total += p.Value;
                 return total;
             }
         }
 
-        static string _dataReadBreakdown;
-        static bool _dataReadBreakdown_MustUpdate = true;
+        static string m_dataReadBreakdown;
+        static bool m_dataReadBreakdown_MustUpdate = true;
         public static string DataReadBreakdown
         {
             get
             {
-                if (_dataReadBreakdown_MustUpdate)
+                if (m_dataReadBreakdown_MustUpdate)
                 {
-                    _dataReadBreakdown_MustUpdate = false;
-                    _dataReadBreakdown = "Data Read from HDD:";
-                    foreach (NameValuePair p in _dataReadList)
-                        _dataReadBreakdown += '\n' + p.Name + ": " + p.Value;
+                    m_dataReadBreakdown_MustUpdate = false;
+                    m_dataReadBreakdown = "Data Read from HDD:";
+                    foreach (NameValuePair p in m_dataReadList)
+                        m_dataReadBreakdown += '\n' + p.Name + ": " + p.Value;
                 }
-                return _dataReadBreakdown;
+                return m_dataReadBreakdown;
             }
         }
 
@@ -57,7 +57,7 @@ namespace UltimaXNA.UltimaVars
             name = "Total";
 #endif
             bool mustAddPair = true;
-            foreach (NameValuePair p in _dataReadList)
+            foreach (NameValuePair p in m_dataReadList)
             {
                 if (p.Name == name)
                 {
@@ -67,9 +67,9 @@ namespace UltimaXNA.UltimaVars
             }
             if (mustAddPair)
             {
-                _dataReadList.Add(new NameValuePair(name, dataAmount));
+                m_dataReadList.Add(new NameValuePair(name, dataAmount));
             }
-            _dataReadBreakdown_MustUpdate = true;
+            m_dataReadBreakdown_MustUpdate = true;
         }
     }
 

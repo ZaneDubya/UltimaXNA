@@ -6,20 +6,20 @@ namespace InterXLib.XGUI.Rendering
 {
     class HorizontalSlidingDoorRenderer : ARenderer
     {
-        private readonly Rectangle _center, _edge;
-        private readonly int _buffer;
+        private readonly Rectangle m_center, m_edge;
+        private readonly int m_buffer;
 
         public int Buffer
         {
-            get { return _buffer; }
+            get { return m_buffer; }
         }
 
         public HorizontalSlidingDoorRenderer(Texture2D texture, Rectangle source, int center, int edge, int buffer)
             : base(texture)
         {
-            _center = new Rectangle(source.Left, source.Top, center, source.Height);
-            _edge = new Rectangle(source.Left + center, source.Top, edge, source.Height);
-            _buffer = buffer;
+            m_center = new Rectangle(source.Left, source.Top, center, source.Height);
+            m_edge = new Rectangle(source.Left + center, source.Top, edge, source.Height);
+            m_buffer = buffer;
         }
 
         public override Rectangle BuildChildArea(Point area)
@@ -30,16 +30,16 @@ namespace InterXLib.XGUI.Rendering
         public override void Render(YSpriteBatch batch, Rectangle destination, Color? color = null)
         {
             Color Color = (color == null) ? Color.White : color.Value;
-            Rectangle drawArea = new Rectangle(destination.Left, destination.Top, _edge.Width, _edge.Height);
+            Rectangle drawArea = new Rectangle(destination.Left, destination.Top, m_edge.Width, m_edge.Height);
 
-            batch.GUIDrawSprite(Texture, drawArea, _edge, Color, SpriteEffects.FlipHorizontally);
+            batch.GUIDrawSprite(Texture, drawArea, m_edge, Color, SpriteEffects.FlipHorizontally);
 
-            drawArea.X = destination.Right - _edge.Width;
-            batch.GUIDrawSprite(Texture, drawArea, _edge, Color);
+            drawArea.X = destination.Right - m_edge.Width;
+            batch.GUIDrawSprite(Texture, drawArea, m_edge, Color);
 
-            drawArea.X = destination.Left + _edge.Width;
-            drawArea.Width = destination.Width - (2 * _edge.Width);
-            batch.GUIDrawSprite(Texture, drawArea, _center, Color);
+            drawArea.X = destination.Left + m_edge.Width;
+            drawArea.Width = destination.Width - (2 * m_edge.Width);
+            batch.GUIDrawSprite(Texture, drawArea, m_center, Color);
         }
     }
 }

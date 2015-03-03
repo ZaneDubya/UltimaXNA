@@ -25,30 +25,30 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class ServerListPacket : RecvPacket
     {
-        readonly byte _flags;
-        readonly ServerListEntry[] _servers;
+        readonly byte m_flags;
+        readonly ServerListEntry[] m_servers;
 
         public byte Flags
         {
-            get { return _flags; }
+            get { return m_flags; }
         }
 
         public ServerListEntry[] Servers
         {
-            get { return _servers; }
+            get { return m_servers; }
         }
 
         public ServerListPacket(PacketReader reader)
             : base(0xA8, "Server List")
         {
-            _flags = reader.ReadByte();
+            m_flags = reader.ReadByte();
             ushort count = (ushort)reader.ReadInt16();
 
-            _servers = new ServerListEntry[count];
+            m_servers = new ServerListEntry[count];
 
             for (ushort i = 0; i < count; i++)
             {
-                _servers[i] = new ServerListEntry(reader); ;
+                m_servers[i] = new ServerListEntry(reader); ;
             }
         }
     }

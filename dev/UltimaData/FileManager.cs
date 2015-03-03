@@ -18,13 +18,13 @@ namespace UltimaXNA.UltimaData
 {
     class FileManager
     {
-        static private bool _isDataPresent = false;
+        static private bool m_isDataPresent = false;
         static public bool IsUODataPresent
         {
-            get { return _isDataPresent; }
+            get { return m_isDataPresent; }
         }
 
-        static readonly string[] _knownRegkeys = new string[] { 
+        static readonly string[] m_knownRegkeys = new string[] { 
                 @"Origin Worlds Online\Ultima Online\KR Legacy Beta", 
                 @"EA Games\Ultima Online: Mondain's Legacy\1.00.0000", 
                 @"Origin Worlds Online\Ultima Online\1.0", 
@@ -56,17 +56,17 @@ namespace UltimaXNA.UltimaData
         {
             Logger.Debug("Looking for UO Installation. Is64Bit = {0}", Is64Bit);
 
-            for (int i = 0; i < _knownRegkeys.Length; i++)
+            for (int i = 0; i < m_knownRegkeys.Length; i++)
             {
                 string exePath;
 
                 if (Is64Bit)
                 {
-                    exePath = GetExePath(@"Wow6432Node\" + _knownRegkeys[i]);
+                    exePath = GetExePath(@"Wow6432Node\" + m_knownRegkeys[i]);
                 }
                 else
                 {
-                    exePath = GetExePath(_knownRegkeys[i]);
+                    exePath = GetExePath(m_knownRegkeys[i]);
                 }
 
                 if (exePath != null && Directory.Exists(exePath))
@@ -74,13 +74,13 @@ namespace UltimaXNA.UltimaData
                     Logger.Debug("Found UO Installation at [{0}].", exePath);
 
                     m_FileDirectory = exePath;
-                    _isDataPresent = true;
+                    m_isDataPresent = true;
                 }
             }
             if (m_FileDirectory == null)
             {
                 Logger.Fatal("Did not find a compatible UO Installation.\nUltimaXNA is compatible with any version of UO through Mondian's Legacy.");
-                _isDataPresent = false;
+                m_isDataPresent = false;
             }
         }
 

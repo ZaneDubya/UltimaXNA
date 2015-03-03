@@ -19,25 +19,25 @@ namespace UltimaXNA.UltimaWorld
 {
     public abstract class AMapObject
     {
-        private Position3D __position;
+        private Position3D m__position;
         public Position3D Position
         {
-            get { return __position; }
+            get { return m__position; }
             set
             {
-                __position = value;
-                Z = SortZ = (int)__position.Tile_V3.Z;
+                m__position = value;
+                Z = SortZ = (int)m__position.Tile_V3.Z;
             }
         }
 
-        private float _z = 0;
+        private float m_z = 0;
         public float Z
         {
-            get { return _z; }
+            get { return m_z; }
             set
             {
-                _z = value;
-                SortZ = (int)_z;
+                m_z = value;
+                SortZ = (int)m_z;
             }
         }
         public int SortZ = 0;           // This is the default sort value of the object.
@@ -51,13 +51,13 @@ namespace UltimaXNA.UltimaWorld
             get { return (OwnerEntity == null) ? (Serial)unchecked((int)0) : OwnerEntity.Serial; }
         }
 
-        internal bool _draw_flip;
-        internal int _draw_X, _draw_Y;
-        internal int _draw_width, _draw_height;
-        internal Vector2 _draw_hue; // x is the hue. y = 0, no hue. y = 1, total hue.  y = 2, partial hue. y = 4 is a 50% transparency bitflag.
-        internal Texture2D _draw_texture;
-        internal PickTypes _pickType;
-        internal bool _draw_IsometricOverlap = false; // if this is true, we will draw any corners that are overlapped by tiles drawn after this object.
+        internal bool m_draw_flip;
+        internal int m_draw_X, m_draw_Y;
+        internal int m_draw_width, m_draw_height;
+        internal Vector2 m_draw_hue; // x is the hue. y = 0, no hue. y = 1, total hue.  y = 2, partial hue. y = 4 is a 50% transparency bitflag.
+        internal Texture2D m_draw_texture;
+        internal PickTypes m_pickType;
+        internal bool m_draw_IsometricOverlap = false; // if this is true, we will draw any corners that are overlapped by tiles drawn after this object.
 
         public AMapObject(Position3D position)
         {
@@ -71,7 +71,7 @@ namespace UltimaXNA.UltimaWorld
             if (Z >= maxAlt)
                 return false;
 
-            if (_draw_flip)
+            if (m_draw_flip)
             {
                 // 2   0    
                 // |\  |     
@@ -79,17 +79,17 @@ namespace UltimaXNA.UltimaWorld
                 // 3   1
                 vertexBuffer = VertexPositionNormalTextureHue.PolyBufferFlipped;
                 vertexBuffer[0].Position = drawPosition;
-                vertexBuffer[0].Position.X += _draw_X + 44;
-                vertexBuffer[0].Position.Y -= _draw_Y;
+                vertexBuffer[0].Position.X += m_draw_X + 44;
+                vertexBuffer[0].Position.Y -= m_draw_Y;
 
                 vertexBuffer[1].Position = vertexBuffer[0].Position;
-                vertexBuffer[1].Position.Y += _draw_height;
+                vertexBuffer[1].Position.Y += m_draw_height;
 
                 vertexBuffer[2].Position = vertexBuffer[0].Position;
-                vertexBuffer[2].Position.X -= _draw_width;
+                vertexBuffer[2].Position.X -= m_draw_width;
 
                 vertexBuffer[3].Position = vertexBuffer[1].Position;
-                vertexBuffer[3].Position.X -= _draw_width;
+                vertexBuffer[3].Position.X -= m_draw_width;
             }
             else
             {
@@ -99,46 +99,46 @@ namespace UltimaXNA.UltimaWorld
                 // 2---3
                 vertexBuffer = VertexPositionNormalTextureHue.PolyBuffer;
                 vertexBuffer[0].Position = drawPosition;
-                vertexBuffer[0].Position.X -= _draw_X;
-                vertexBuffer[0].Position.Y -= _draw_Y;
+                vertexBuffer[0].Position.X -= m_draw_X;
+                vertexBuffer[0].Position.Y -= m_draw_Y;
 
                 vertexBuffer[1].Position = vertexBuffer[0].Position;
-                vertexBuffer[1].Position.X += _draw_width;
+                vertexBuffer[1].Position.X += m_draw_width;
 
                 vertexBuffer[2].Position = vertexBuffer[0].Position;
-                vertexBuffer[2].Position.Y += _draw_height;
+                vertexBuffer[2].Position.Y += m_draw_height;
 
                 vertexBuffer[3].Position = vertexBuffer[1].Position;
-                vertexBuffer[3].Position.Y += _draw_height;
+                vertexBuffer[3].Position.Y += m_draw_height;
             }
 
-            if (vertexBuffer[0].Hue != _draw_hue)
-                vertexBuffer[0].Hue = vertexBuffer[1].Hue = vertexBuffer[2].Hue = vertexBuffer[3].Hue = _draw_hue;
+            if (vertexBuffer[0].Hue != m_draw_hue)
+                vertexBuffer[0].Hue = vertexBuffer[1].Hue = vertexBuffer[2].Hue = vertexBuffer[3].Hue = m_draw_hue;
             
-            if (!sb.Draw(_draw_texture, vertexBuffer))
+            if (!sb.Draw(m_draw_texture, vertexBuffer))
             {
                 return false;
             }
             
-            if (_draw_IsometricOverlap)
+            if (m_draw_IsometricOverlap)
             {
                 drawIsometricOverlap(sb, vertexBuffer, new Vector2(drawPosition.X, drawPosition.Y - (Z * 4)));
             }
             
-            if ((pickType & _pickType) == _pickType)
+            if ((pickType & m_pickType) == m_pickType)
             {
-                if (((!_draw_flip) && molist.IsMouseInObject(vertexBuffer[0].Position, vertexBuffer[3].Position)) ||
-                    ((_draw_flip) && molist.IsMouseInObject(vertexBuffer[2].Position, vertexBuffer[1].Position)))
+                if (((!m_draw_flip) && molist.IsMouseInObject(vertexBuffer[0].Position, vertexBuffer[3].Position)) ||
+                    ((m_draw_flip) && molist.IsMouseInObject(vertexBuffer[2].Position, vertexBuffer[1].Position)))
                 {
                     MouseOverItem item;
-                    if (!_draw_flip)
+                    if (!m_draw_flip)
                     {
-                        item = new MouseOverItem(_draw_texture, vertexBuffer[0].Position, this);
+                        item = new MouseOverItem(m_draw_texture, vertexBuffer[0].Position, this);
                         item.Vertices = new Vector3[4] { vertexBuffer[0].Position, vertexBuffer[1].Position, vertexBuffer[2].Position, vertexBuffer[3].Position };
                     }
                     else
                     {
-                        item = new MouseOverItem(_draw_texture, vertexBuffer[2].Position, this);
+                        item = new MouseOverItem(m_draw_texture, vertexBuffer[2].Position, this);
                         item.Vertices = new Vector3[4] { vertexBuffer[2].Position, vertexBuffer[0].Position, vertexBuffer[3].Position, vertexBuffer[1].Position };
                     }
                     molist.Add2DItem(item);
@@ -161,7 +161,7 @@ namespace UltimaXNA.UltimaWorld
         private void drawIsometricOverlap(SpriteBatch3D sb, VertexPositionNormalTextureHue[] vertices, Vector2 screenPosition)
         {
             Vector2 overlapCurrent = new Vector2(screenPosition.X + 22, screenPosition.Y + 44);
-            Vector2 overlapToHere = _draw_flip ? 
+            Vector2 overlapToHere = m_draw_flip ? 
                 new Vector2(vertices[1].Position.X, vertices[1].Position.Y) : 
                 new Vector2(vertices[3].Position.X, vertices[3].Position.Y);
 
@@ -180,12 +180,12 @@ namespace UltimaXNA.UltimaWorld
                 tile = IsometricRenderer.Map.GetMapTile(tileX, tileY, false);
                 if (tile != null)
                 {
-                    deferred = new MapObjectDeferred(_draw_texture, this);
+                    deferred = new MapObjectDeferred(m_draw_texture, this);
                     deferred.Position.X = tileX;
                     deferred.Position.Y = tileY;
                     verts = deferred.Vertices;
 
-                    if (_draw_flip)
+                    if (m_draw_flip)
                     {
                         //     0
                         //    / \
@@ -193,13 +193,13 @@ namespace UltimaXNA.UltimaWorld
                         //  /   /
                         // 2---3
                         verts[0].Position = new Vector3(overlapCurrent, 0) + new Vector3(-22, -22, 0);
-                        verts[0].TextureCoordinate = new Vector3((overlapToHere.X - verts[0].Position.X) / _draw_texture.Width, 1f - (overlapToHere.Y - verts[0].Position.Y) / _draw_texture.Height, 0);
+                        verts[0].TextureCoordinate = new Vector3((overlapToHere.X - verts[0].Position.X) / m_draw_texture.Width, 1f - (overlapToHere.Y - verts[0].Position.Y) / m_draw_texture.Height, 0);
                         verts[1].Position = new Vector3(overlapCurrent, 0);
-                        verts[1].TextureCoordinate = new Vector3((overlapToHere.X - verts[1].Position.X) / _draw_texture.Width, 1f - (overlapToHere.Y - verts[1].Position.Y) / _draw_texture.Height, 0);
+                        verts[1].TextureCoordinate = new Vector3((overlapToHere.X - verts[1].Position.X) / m_draw_texture.Width, 1f - (overlapToHere.Y - verts[1].Position.Y) / m_draw_texture.Height, 0);
                         verts[2].Position = new Vector3(verts[0].Position.X - (overlapToHere.Y - verts[0].Position.Y), overlapToHere.Y, 0);
-                        verts[2].TextureCoordinate = new Vector3((overlapToHere.X - verts[2].Position.X) / _draw_texture.Width, 1f - (overlapToHere.Y - verts[2].Position.Y) / _draw_texture.Height, 0);
+                        verts[2].TextureCoordinate = new Vector3((overlapToHere.X - verts[2].Position.X) / m_draw_texture.Width, 1f - (overlapToHere.Y - verts[2].Position.Y) / m_draw_texture.Height, 0);
                         verts[3].Position = new Vector3(verts[1].Position.X - (overlapToHere.Y - verts[1].Position.Y), overlapToHere.Y, 0);
-                        verts[3].TextureCoordinate = new Vector3((overlapToHere.X - verts[3].Position.X) / _draw_texture.Width, 1f - (overlapToHere.Y - verts[3].Position.Y) / _draw_texture.Height, 0);
+                        verts[3].TextureCoordinate = new Vector3((overlapToHere.X - verts[3].Position.X) / m_draw_texture.Width, 1f - (overlapToHere.Y - verts[3].Position.Y) / m_draw_texture.Height, 0);
                     }
                     else
                     {
@@ -209,13 +209,13 @@ namespace UltimaXNA.UltimaWorld
                         //  /   /
                         // 0---2
                         verts[1].Position = new Vector3(overlapCurrent, 0) + new Vector3(-22, -22, 0);
-                        verts[1].TextureCoordinate = new Vector3(1f - (overlapToHere.X - verts[1].Position.X) / _draw_texture.Width, 1f - (overlapToHere.Y - verts[1].Position.Y) / _draw_texture.Height, 0);
+                        verts[1].TextureCoordinate = new Vector3(1f - (overlapToHere.X - verts[1].Position.X) / m_draw_texture.Width, 1f - (overlapToHere.Y - verts[1].Position.Y) / m_draw_texture.Height, 0);
                         verts[3].Position = new Vector3(overlapCurrent, 0);
-                        verts[3].TextureCoordinate = new Vector3(1f - (overlapToHere.X - verts[3].Position.X) / _draw_texture.Width, 1f - (overlapToHere.Y - verts[3].Position.Y) / _draw_texture.Height, 0);
+                        verts[3].TextureCoordinate = new Vector3(1f - (overlapToHere.X - verts[3].Position.X) / m_draw_texture.Width, 1f - (overlapToHere.Y - verts[3].Position.Y) / m_draw_texture.Height, 0);
                         verts[0].Position = new Vector3(verts[1].Position.X - (overlapToHere.Y - verts[1].Position.Y), overlapToHere.Y, 0);
-                        verts[0].TextureCoordinate = new Vector3(1f - (overlapToHere.X - verts[0].Position.X) / _draw_texture.Width, 1f - (overlapToHere.Y - verts[0].Position.Y) / _draw_texture.Height, 0);
+                        verts[0].TextureCoordinate = new Vector3(1f - (overlapToHere.X - verts[0].Position.X) / m_draw_texture.Width, 1f - (overlapToHere.Y - verts[0].Position.Y) / m_draw_texture.Height, 0);
                         verts[2].Position = new Vector3(verts[3].Position.X - (overlapToHere.Y - verts[3].Position.Y), overlapToHere.Y, 0);
-                        verts[2].TextureCoordinate = new Vector3(1f - (overlapToHere.X - verts[2].Position.X) / _draw_texture.Width, 1f - (overlapToHere.Y - verts[2].Position.Y) / _draw_texture.Height, 0);
+                        verts[2].TextureCoordinate = new Vector3(1f - (overlapToHere.X - verts[2].Position.X) / m_draw_texture.Width, 1f - (overlapToHere.Y - verts[2].Position.Y) / m_draw_texture.Height, 0);
                     }
 
                     verts[0].Normal = verts[1].Normal = verts[2].Normal = verts[3].Normal = vertices[0].Normal;
@@ -256,12 +256,12 @@ namespace UltimaXNA.UltimaWorld
                 if (extendY > 44)
                     extendY = 44;
 
-                deferred = new MapObjectDeferred(_draw_texture, this);
+                deferred = new MapObjectDeferred(m_draw_texture, this);
                 deferred.Position.X = tileX;
                 deferred.Position.Y = tileY;
                 verts = deferred.Vertices;
 
-                if (_draw_flip)
+                if (m_draw_flip)
                 {
                     //       0
                     //      /|
@@ -269,13 +269,13 @@ namespace UltimaXNA.UltimaWorld
                     //  /   /
                     // 2---3
                     verts[0].Position = verticalEdgeOverlapPt;
-                    verts[0].TextureCoordinate = new Vector3(0f, (verts[0].Position.Y - vertices[0].Position.Y) / _draw_texture.Height, 0);
+                    verts[0].TextureCoordinate = new Vector3(0f, (verts[0].Position.Y - vertices[0].Position.Y) / m_draw_texture.Height, 0);
                     verts[1].Position = verticalEdgeOverlapPt + new Vector3(0, extendY, 0);
-                    verts[1].TextureCoordinate = new Vector3(0f, (verts[1].Position.Y - vertices[0].Position.Y) / _draw_texture.Height, 0);
+                    verts[1].TextureCoordinate = new Vector3(0f, (verts[1].Position.Y - vertices[0].Position.Y) / m_draw_texture.Height, 0);
                     verts[2].Position = horizEdgeOverlapPt;
-                    verts[2].TextureCoordinate = new Vector3(1f - (verts[2].Position.X - vertices[2].Position.X) / _draw_texture.Width, 1f, 0);
+                    verts[2].TextureCoordinate = new Vector3(1f - (verts[2].Position.X - vertices[2].Position.X) / m_draw_texture.Width, 1f, 0);
                     verts[3].Position = horizEdgeOverlapPt + new Vector3(extendX, 0, 0);
-                    verts[3].TextureCoordinate = new Vector3(1f - (verts[3].Position.X - vertices[2].Position.X) / _draw_texture.Width, 1f, 0);
+                    verts[3].TextureCoordinate = new Vector3(1f - (verts[3].Position.X - vertices[2].Position.X) / m_draw_texture.Width, 1f, 0);
                 }
                 else
                 {
@@ -285,13 +285,13 @@ namespace UltimaXNA.UltimaWorld
                     //  /   /
                     // 0---2
                     verts[0].Position = horizEdgeOverlapPt;
-                    verts[0].TextureCoordinate = new Vector3((verts[0].Position.X - vertices[0].Position.X) / _draw_texture.Width, 1, 0);
+                    verts[0].TextureCoordinate = new Vector3((verts[0].Position.X - vertices[0].Position.X) / m_draw_texture.Width, 1, 0);
                     verts[1].Position = verticalEdgeOverlapPt;
-                    verts[1].TextureCoordinate = new Vector3(1, (verts[1].Position.Y - vertices[1].Position.Y) / _draw_texture.Height, 0);
+                    verts[1].TextureCoordinate = new Vector3(1, (verts[1].Position.Y - vertices[1].Position.Y) / m_draw_texture.Height, 0);
                     verts[2].Position = horizEdgeOverlapPt + new Vector3(extendX, 0, 0);
-                    verts[2].TextureCoordinate = new Vector3((verts[2].Position.X - vertices[0].Position.X) / _draw_texture.Width, 1, 0);
+                    verts[2].TextureCoordinate = new Vector3((verts[2].Position.X - vertices[0].Position.X) / m_draw_texture.Width, 1, 0);
                     verts[3].Position = verticalEdgeOverlapPt + new Vector3(0, extendY, 0);
-                    verts[3].TextureCoordinate = new Vector3(1, (verts[3].Position.Y - vertices[1].Position.Y) / _draw_texture.Height, 0);
+                    verts[3].TextureCoordinate = new Vector3(1, (verts[3].Position.Y - vertices[1].Position.Y) / m_draw_texture.Height, 0);
                 }
 
                 verts[0].Normal = verts[1].Normal = verts[2].Normal = verts[3].Normal = vertices[0].Normal;

@@ -24,24 +24,24 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class RequestNameResponsePacket : RecvPacket
     {
-        readonly Serial _serial;
-        readonly string _mobileName;
+        readonly Serial m_serial;
+        readonly string m_mobileName;
 
         public Serial Serial
         { 
-            get { return _serial; } 
+            get { return m_serial; } 
         }
 
         public string MobileName
         {
-            get { return _mobileName; }
+            get { return m_mobileName; }
         }
 
         public RequestNameResponsePacket(PacketReader reader)
             : base(0x98, "Request Name Response")
         {
-            _serial = reader.ReadInt32();
-            _mobileName = reader.ReadString(30);
+            m_serial = reader.ReadInt32();
+            m_mobileName = reader.ReadString(30);
         }
     }
 }

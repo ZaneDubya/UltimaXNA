@@ -16,36 +16,36 @@ namespace UltimaXNA.UltimaGUI.HTML
 {
     class HTMLImages
     {
-        List<HTMLImage> _images = new List<HTMLImage>();
+        List<HTMLImage> m_images = new List<HTMLImage>();
 
         public List<HTMLImage> Images
         {
             get
             {
-                return _images;
+                return m_images;
             }
         }
 
         public int Count
         {
-            get { return _images.Count; }
+            get { return m_images.Count; }
         }
 
         public void AddImage(Rectangle area, Texture2D image)
         {
-            _images.Add(new HTMLImage(area, image));
+            m_images.Add(new HTMLImage(area, image));
         }
 
         public void AddImage(Rectangle area, Texture2D image, Texture2D overimage, Texture2D downimage)
         {
             AddImage(area, image);
-            _images[_images.Count - 1].ImageOver = overimage;
-            _images[_images.Count - 1].ImageDown = downimage;
+            m_images[m_images.Count - 1].ImageOver = overimage;
+            m_images[m_images.Count - 1].ImageDown = downimage;
         }
 
         public void Clear()
         {
-            _images.Clear();
+            m_images.Clear();
         }
     }
 

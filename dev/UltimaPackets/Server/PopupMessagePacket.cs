@@ -37,20 +37,20 @@ namespace UltimaXNA.UltimaPackets.Server
                 "Character transfer in progress."
             };
 
-        readonly byte _id;
+        readonly byte m_id;
 
         public string Message
         {
             get
             {
-                return Messages[_id];
+                return Messages[m_id];
             }
         }
 
         public PopupMessagePacket(PacketReader reader)
             : base(0x53, "Popup Message")
         {
-            _id = reader.ReadByte();
+            m_id = reader.ReadByte();
         }
     }
 }

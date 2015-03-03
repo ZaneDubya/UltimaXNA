@@ -133,7 +133,7 @@ namespace UltimaXNA.UltimaWorld
             // Check for existence in the collection.
             if (m_Entities.ContainsKey(serial))
             {
-                // This object is in the _entities collection. If it is being disposed, then we should complete disposal
+                // This object is in the m_entities collection. If it is being disposed, then we should complete disposal
                 // of the object and then return a new object. If it is not being disposed, return the object in the collection.
                 if (m_Entities[serial].IsDisposed)
                 {

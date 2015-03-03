@@ -7,43 +7,43 @@ namespace InterXLib.Input.Windows
 {
     public class InputEvent
     {
-        protected readonly WinKeys _modifiers;
-        protected bool _handled = false;
+        protected readonly WinKeys m_modifiers;
+        protected bool m_handled = false;
 
         public virtual bool Alt
         {
-            get { return ((_modifiers & WinKeys.Alt) == WinKeys.Alt); }
+            get { return ((m_modifiers & WinKeys.Alt) == WinKeys.Alt); }
         }
 
         public bool Control
         {
-            get { return ((_modifiers & WinKeys.Control) == WinKeys.Control); }
+            get { return ((m_modifiers & WinKeys.Control) == WinKeys.Control); }
         }
 
         public virtual bool Shift
         {
-            get { return ((_modifiers & WinKeys.Shift) == WinKeys.Shift); }
+            get { return ((m_modifiers & WinKeys.Shift) == WinKeys.Shift); }
         }
 
         public InputEvent(WinKeys modifiers)
         {
-            _modifiers = modifiers;
+            m_modifiers = modifiers;
         }
 
         protected InputEvent(InputEvent parent)
         {
-            _modifiers = parent._modifiers;
+            m_modifiers = parent.m_modifiers;
         }
 
         public bool Handled
         {
-            get { return _handled; }
-            set { _handled = value; }
+            get { return m_handled; }
+            set { m_handled = value; }
         }
 
         public void SuppressEvent()
         {
-            _handled = true;
+            m_handled = true;
         }
     }
 }

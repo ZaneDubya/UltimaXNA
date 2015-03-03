@@ -7,21 +7,21 @@ namespace InterXLib.Algorithms
 {
     public class PriorityQueue<TValue> where TValue : class, IComparable<TValue>
     {
-        private TValue[] _elements;
-        private int _size;
+        private TValue[] m_elements;
+        private int m_size;
 
         public PriorityQueue(int n)
         {
-            _elements = new TValue[n];
-            _size = 0;
+            m_elements = new TValue[n];
+            m_size = 0;
         }
 
         public void Insert(TValue x)
         {
-            if (_size == _elements.Length - 1) Resize(_elements.Length * 2);
+            if (m_size == m_elements.Length - 1) Resize(m_elements.Length * 2);
 
-            _elements[++_size] = x;
-            Swim(_size);
+            m_elements[++m_size] = x;
+            Swim(m_size);
         }
 
         public TValue DelMin()
@@ -31,40 +31,40 @@ namespace InterXLib.Algorithms
                 throw new InvalidOperationException("Priority queue underflow");
             }
 
-            Exch(1, _size);
+            Exch(1, m_size);
 
-            var min = _elements[_size--];
+            var min = m_elements[m_size--];
 
             Sink(1);
-            _elements[_size + 1] = null;
+            m_elements[m_size + 1] = null;
 
-            if (_size > 0 && _size == (_elements.Length - 1) / 4) Resize(_elements.Length / 2);
+            if (m_size > 0 && m_size == (m_elements.Length - 1) / 4) Resize(m_elements.Length / 2);
 
             return min;
         }
 
         public TValue Min()
         {
-            return _elements[0];
+            return m_elements[0];
         }
 
         public bool IsEmpty()
         {
-            return _size == 0;
+            return m_size == 0;
         }
 
         private void Resize(int capacity)
         {
             var temp = new TValue[capacity];
-            for (int i = 1; i <= _size; i++) temp[i] = _elements[i];
-            _elements = temp;
+            for (int i = 1; i <= m_size; i++) temp[i] = m_elements[i];
+            m_elements = temp;
         }
 
         private void Exch(int n, int m)
         {
-            TValue x = _elements[n];
-            _elements[n] = _elements[m];
-            _elements[m] = x;
+            TValue x = m_elements[n];
+            m_elements[n] = m_elements[m];
+            m_elements[m] = x;
         }
 
         private void Swim(int k)
@@ -78,10 +78,10 @@ namespace InterXLib.Algorithms
 
         private void Sink(int k)
         {
-            while (2 * k <= _size)
+            while (2 * k <= m_size)
             {
                 int j = 2 * k;
-                if (j < _size && Greater(j, j + 1)) j++;
+                if (j < m_size && Greater(j, j + 1)) j++;
                 if (!Greater(k, j)) break;
                 Exch(k, j);
                 k = j;
@@ -90,8 +90,8 @@ namespace InterXLib.Algorithms
 
         private bool Greater(int i, int j)
         {
-            if (j > _size) return false;
-            return (_elements[i]).CompareTo(_elements[j]) > 0;
+            if (j > m_size) return false;
+            return (m_elements[i]).CompareTo(m_elements[j]) > 0;
         }
     }
 }

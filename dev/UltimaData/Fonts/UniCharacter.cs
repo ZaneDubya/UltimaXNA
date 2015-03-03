@@ -12,13 +12,13 @@ namespace UltimaXNA.UltimaData.Fonts
         {
             get
             {
-                return (_textureData == null) ? false : true;
+                return (m_textureData == null) ? false : true;
             }
         }
         public int XOffset = 0, YOffset = 0, Width = 0, Height = 0;
         public int OutlinedYOffset = 0, OutlinedWidth = 0, OutlinedHeight = 0;
-        public Color[] _textureData;
-        public Color[] _textureDataOutlined;
+        public Color[] m_textureData;
+        public Color[] m_textureDataOutlined;
 
         public UniCharacter()
         {
@@ -30,7 +30,7 @@ namespace UltimaXNA.UltimaData.Fonts
             int iWidth = (isOutlined) ? OutlinedWidth : Width;
             int iHeight = (isOutlined) ? OutlinedHeight : Height;
             int iYOffset = (isOutlined) ? OutlinedYOffset : YOffset;
-            Color[] iTexture = (isOutlined) ? _textureDataOutlined : _textureData;
+            Color[] iTexture = (isOutlined) ? m_textureDataOutlined : m_textureData;
             Color iColor = Color.Transparent;
             if (hasTexture)
             {
@@ -95,14 +95,14 @@ namespace UltimaXNA.UltimaData.Fonts
             if ((this.Width > 0) && (this.Height > 0))
             {
                 // At this point, we know we have data, so go ahead and start reading!
-                _textureData = new Color[Width * Height];
-                _textureDataOutlined = new Color[OutlinedWidth * OutlinedHeight];
+                m_textureData = new Color[Width * Height];
+                m_textureDataOutlined = new Color[OutlinedWidth * OutlinedHeight];
 
                 unsafe
                 {
-                    fixed (Color* p = _textureData)
+                    fixed (Color* p = m_textureData)
                     {
-                        fixed (Color* p2 = _textureDataOutlined)
+                        fixed (Color* p2 = m_textureDataOutlined)
                         {
                             for (int y = 0; y < Height; ++y)
                             {

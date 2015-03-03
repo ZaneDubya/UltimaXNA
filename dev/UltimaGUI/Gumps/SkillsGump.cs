@@ -16,29 +16,29 @@ namespace UltimaXNA.UltimaGUI.Gumps
 {
     class SkillsGump : Gump
     {
-        private int _lastUpdateCount = Int32.MinValue;
-        ExpandableScroll _scroll;
-        HtmlGump _list;
+        private int m_lastUpdateCount = Int32.MinValue;
+        ExpandableScroll m_scroll;
+        HtmlGump m_list;
         public SkillsGump()
             : base(0, 0)
         {
-            AddControl(_scroll = new ExpandableScroll(this, 0, 0, 0, 200));
-            _scroll.TitleGumpID = 0x834;
-            _scroll.MakeDragger(this);
-            _scroll.MakeCloseTarget(this);
+            AddControl(m_scroll = new ExpandableScroll(this, 0, 0, 0, 200));
+            m_scroll.TitleGumpID = 0x834;
+            m_scroll.MakeDragger(this);
+            m_scroll.MakeCloseTarget(this);
             IsMovable = true;
 
-            AddControl(_list = new HtmlGump(this, 0, 10, 20, 180, 100, 0, 1, ""));
+            AddControl(m_list = new HtmlGump(this, 0, 10, 20, 180, 100, 0, 1, ""));
         }
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
-            _list.X = 26;
-            _list.Y = 33;
-            _list.Width = this.Width - 56;
-            _list.Height = this.Height - 95;
-            if (_lastUpdateCount != UltimaVars.Skills.UpdateCount)
-                _list.Text = buildSkillsString();
+            m_list.X = 26;
+            m_list.Y = 33;
+            m_list.Width = this.Width - 56;
+            m_list.Height = this.Height - 95;
+            if (m_lastUpdateCount != UltimaVars.Skills.UpdateCount)
+                m_list.Text = buildSkillsString();
             base.Update(gameTime);
         }
 
@@ -51,13 +51,13 @@ namespace UltimaXNA.UltimaGUI.Gumps
                         return;
                 UltimaInteraction.UseSkill(skillIndex);
             }
-            _list.Text = buildSkillsString();
+            m_list.Text = buildSkillsString();
             base.ActivateByHREF(href);
         }
 
         private string buildSkillsString()
         {
-            _lastUpdateCount = UltimaVars.Skills.UpdateCount;
+            m_lastUpdateCount = UltimaVars.Skills.UpdateCount;
             StringBuilder str = new StringBuilder();
 
             foreach (UltimaVars.SkillEntry skill in UltimaVars.Skills.List.Values)

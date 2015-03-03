@@ -10,12 +10,12 @@ namespace UltimaXNA.UltimaData.Fonts
 
     public static class UniText
     {
-        private static UniFont[] _fonts;
-        private static bool _initialized;
-        private static GraphicsDevice _graphicsDevice;
+        private static UniFont[] m_fonts;
+        private static bool m_initialized;
+        private static GraphicsDevice m_graphicsDevice;
         public static UniFont[] Fonts
         {
-            get { return _fonts; }
+            get { return m_fonts; }
         }
 
         static UniText()
@@ -25,15 +25,15 @@ namespace UltimaXNA.UltimaData.Fonts
 
         public static int FontHeight(int index)
         {
-            return _fonts[index].Height;
+            return m_fonts[index].Height;
         }
 
         public static void Initialize(GraphicsDevice graphicsDevice)
         {
-            if (!_initialized)
+            if (!m_initialized)
             {
-                _initialized = true;
-                _graphicsDevice = graphicsDevice;
+                m_initialized = true;
+                m_graphicsDevice = graphicsDevice;
                 graphicsDevice.DeviceReset += graphicsDevice_DeviceReset;
                 loadFonts();
             }
@@ -47,24 +47,24 @@ namespace UltimaXNA.UltimaData.Fonts
         static void loadFonts()
         {
             int maxHeight = 0;
-            _fonts = new UniFont[7];
+            m_fonts = new UniFont[7];
             for (int iFont = 0; iFont < 7; iFont++)
             {
                 string path = FileManager.GetFilePath("unifont" + (iFont == 0 ? "" : iFont.ToString()) + ".mul");
                 if (path != null)
                 {
-                    _fonts[iFont] = new UniFont();
-                    _fonts[iFont].Initialize(_graphicsDevice, new BinaryReader(new FileStream(path, FileMode.Open, FileAccess.Read)));
-                    if (_fonts[iFont].Height > maxHeight)
-                        maxHeight = _fonts[iFont].Height;
+                    m_fonts[iFont] = new UniFont();
+                    m_fonts[iFont].Initialize(m_graphicsDevice, new BinaryReader(new FileStream(path, FileMode.Open, FileAccess.Read)));
+                    if (m_fonts[iFont].Height > maxHeight)
+                        maxHeight = m_fonts[iFont].Height;
                 }
             }
 
             for (int iFont = 0; iFont < 7; iFont++)
             {
-                if (_fonts[iFont] == null)
+                if (m_fonts[iFont] == null)
                     continue;
-                _fonts[iFont].Height = maxHeight;
+                m_fonts[iFont].Height = maxHeight;
             }
         }
     }

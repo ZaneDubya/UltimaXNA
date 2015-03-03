@@ -26,15 +26,15 @@ namespace UltimaXNA.UltimaData
     public class TileMatrixRaw
     {
         private static int[] m_MapBlockHeightList = new int[] { 512, 512, 200, 256, 181 };
-        private const int _size_LandBlock = 196;
-        private const int _size_LandBlockData = 192;
+        private const int m_size_LandBlock = 196;
+        private const int m_size_LandBlockData = 192;
 
         private byte[] m_EmptyStaticsBlock;
         private byte[] m_InvalidLandBlock;
 
-        private const int _bufferedLandBlocksMaxCount = 256; 
-        private byte[][] _bufferedLandBlocks;
-        private int[] _bufferedLandBlocks_Keys;
+        private const int m_bufferedLandBlocksMaxCount = 256; 
+        private byte[][] m_bufferedLandBlocks;
+        private int[] m_bufferedLandBlocks_Keys;
 
         private int m_BlockHeight;
         public int BlockHeight
@@ -117,15 +117,15 @@ namespace UltimaXNA.UltimaData
 
             m_Height = m_MapBlockHeightList[index] << 3;
             m_BlockHeight = m_MapBlockHeightList[index];
-            m_Width = (int)m_MapStream.Length / (m_BlockHeight * _size_LandBlock) << 3;
+            m_Width = (int)m_MapStream.Length / (m_BlockHeight * m_size_LandBlock) << 3;
             m_BlockWidth = m_Width >> 3;
 
             m_EmptyStaticsBlock = new byte[0];
-            m_InvalidLandBlock = new byte[_size_LandBlockData];
-            _bufferedLandBlocks_Keys = new int[_bufferedLandBlocksMaxCount];
-            _bufferedLandBlocks = new byte[_bufferedLandBlocksMaxCount][];
-            for (int i = 0; i < _bufferedLandBlocksMaxCount; i++)
-                _bufferedLandBlocks[i] = new byte[_size_LandBlockData];
+            m_InvalidLandBlock = new byte[m_size_LandBlockData];
+            m_bufferedLandBlocks_Keys = new int[m_bufferedLandBlocksMaxCount];
+            m_bufferedLandBlocks = new byte[m_bufferedLandBlocksMaxCount][];
+            for (int i = 0; i < m_bufferedLandBlocksMaxCount; i++)
+                m_bufferedLandBlocks[i] = new byte[m_size_LandBlockData];
         }
 
         public byte[] GetLandBlock(int x, int y)
@@ -202,20 +202,20 @@ namespace UltimaXNA.UltimaData
 
             int key = (x << 16) + y;
             int index = x % 16 + (y % 16) * 16;
-            if (_bufferedLandBlocks_Keys[index] == key)
-                return _bufferedLandBlocks[index];
+            if (m_bufferedLandBlocks_Keys[index] == key)
+                return m_bufferedLandBlocks[index];
 
-            _bufferedLandBlocks_Keys[index] = key;
+            m_bufferedLandBlocks_Keys[index] = key;
 
-            m_MapStream.Seek(((x * m_BlockHeight) + y) * _size_LandBlock + 4, SeekOrigin.Begin);
+            m_MapStream.Seek(((x * m_BlockHeight) + y) * m_size_LandBlock + 4, SeekOrigin.Begin);
             int streamStart = (int)m_MapStream.Position;
-            fixed (byte* pData = _bufferedLandBlocks[index])
+            fixed (byte* pData = m_bufferedLandBlocks[index])
             {
-                SharedMethods.Read(m_MapStream.SafeFileHandle, pData, _size_LandBlockData);
+                SharedMethods.Read(m_MapStream.SafeFileHandle, pData, m_size_LandBlockData);
             }
             UltimaVars.Metrics.ReportDataRead((int)m_MapStream.Position - streamStart);
 
-            return _bufferedLandBlocks[index];
+            return m_bufferedLandBlocks[index];
         }
 
         public void Dispose()

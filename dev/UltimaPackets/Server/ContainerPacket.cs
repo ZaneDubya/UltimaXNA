@@ -24,17 +24,17 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class OpenContainerPacket : RecvPacket
     {
-        readonly Serial _serial;
-        readonly ushort _gumpId;
+        readonly Serial m_serial;
+        readonly ushort m_gumpId;
 
-        public Serial Serial { get { return _serial; } }
-        public ushort GumpId { get { return _gumpId; } }
+        public Serial Serial { get { return m_serial; } }
+        public ushort GumpId { get { return m_gumpId; } }
 
         public OpenContainerPacket(PacketReader reader)
             : base(0x24, "Open Container")
         {
-            this._serial = reader.ReadInt32();
-            this._gumpId = reader.ReadUInt16();
+            this.m_serial = reader.ReadInt32();
+            this.m_gumpId = reader.ReadUInt16();
         }
     }
 }

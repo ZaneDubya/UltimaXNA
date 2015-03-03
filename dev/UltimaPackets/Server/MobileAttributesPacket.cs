@@ -24,60 +24,60 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class MobileAttributesPacket : RecvPacket
     {
-        readonly Serial _serial;
-        readonly short _maxHits;
-        readonly short _currentHits;
-        readonly short _maxMana;
-        readonly short _currentMana;
-        readonly short _maxStamina;
-        readonly short _currentStamina;
+        readonly Serial m_serial;
+        readonly short m_maxHits;
+        readonly short m_currentHits;
+        readonly short m_maxMana;
+        readonly short m_currentMana;
+        readonly short m_maxStamina;
+        readonly short m_currentStamina;
 
         public Serial Serial
         {
-            get { return _serial; }
+            get { return m_serial; }
         }
 
         public short MaxHits
         {
-            get { return _maxHits; }
+            get { return m_maxHits; }
         }
 
         public short CurrentHits
         {
-            get { return _currentHits; }
+            get { return m_currentHits; }
         }
 
         public short MaxMana
         {
-            get { return _maxMana; }
+            get { return m_maxMana; }
         }
 
         public short CurrentMana
         {
-            get { return _currentMana; }
+            get { return m_currentMana; }
         }
 
         public short MaxStamina
         {
-            get { return _maxStamina; }
+            get { return m_maxStamina; }
         }
 
         public short CurrentStamina
         {
-            get { return _currentStamina; }
+            get { return m_currentStamina; }
         }
 
 
         public MobileAttributesPacket(PacketReader reader)
             : base(0x2D, "Mobile Attributes")
         {
-            _serial = reader.ReadInt32();
-            _maxHits = reader.ReadInt16();
-            _currentHits = reader.ReadInt16();
-            _maxMana = reader.ReadInt16();
-            _currentMana = reader.ReadInt16();
-            _maxStamina = reader.ReadInt16();
-            _currentStamina = reader.ReadInt16();
+            m_serial = reader.ReadInt32();
+            m_maxHits = reader.ReadInt16();
+            m_currentHits = reader.ReadInt16();
+            m_maxMana = reader.ReadInt16();
+            m_currentMana = reader.ReadInt16();
+            m_maxStamina = reader.ReadInt16();
+            m_currentStamina = reader.ReadInt16();
         }
     }
 }

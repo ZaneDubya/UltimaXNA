@@ -19,32 +19,32 @@ namespace UltimaXNA.UltimaPackets
 {
     public class ContextMenuItem
     {
-        private int _responseCode;
-        private string _caption;
+        private int m_responseCode;
+        private string m_caption;
 
         public int ResponseCode 
         {
-            get { return _responseCode; } 
+            get { return m_responseCode; } 
         } 
 
         public string Caption 
         {
-            get { return _caption; } 
+            get { return m_caption; } 
         }
 
         public ContextMenuItem(int nResponseCode, int iStringID, int iFlags, int iHue)
         {
-            _caption = UltimaData.StringData.Entry(iStringID);
-            _responseCode = nResponseCode;
+            m_caption = UltimaData.StringData.Entry(iStringID);
+            m_responseCode = nResponseCode;
         }
     }
 
     public class ContextMenu
     {
-        private List<ContextMenuItem> _entries = new List<ContextMenuItem>();
+        private List<ContextMenuItem> m_entries = new List<ContextMenuItem>();
         public ContextMenuItem ContextEntry(string iCaption)
         {
-            foreach (ContextMenuItem i in _entries)
+            foreach (ContextMenuItem i in m_entries)
             {
                 if (i.Caption == iCaption)
                 {
@@ -54,8 +54,8 @@ namespace UltimaXNA.UltimaPackets
             return null;
         }
 
-        private Serial _serial;
-        public Serial Serial { get { return _serial; } }
+        private Serial m_serial;
+        public Serial Serial { get { return m_serial; } }
 
         public bool HasContextMenu
         {
@@ -77,19 +77,19 @@ namespace UltimaXNA.UltimaPackets
 
         public ContextMenu(Serial serial)
         {
-            _serial = serial;
+            m_serial = serial;
         }
 
         // Add a new context menu entry.
         internal void AddItem(int nResponseCode, int nStringID, int nFlags, int nHue)
         {
-            _entries.Add(new ContextMenuItem(nResponseCode, nStringID, nFlags, nHue));
+            m_entries.Add(new ContextMenuItem(nResponseCode, nStringID, nFlags, nHue));
         }
 
         // Sets up which options are available to the new client.
         internal void FinalizeMenu()
         {
-            foreach (ContextMenuItem i in _entries)
+            foreach (ContextMenuItem i in m_entries)
             {
                 if ((i.Caption.Length >= 5) && (i.Caption.Substring(0, 5) == "Train"))
                 {

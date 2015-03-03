@@ -24,60 +24,60 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class AsciiMessagePacket : RecvPacket
     {
-        readonly Serial _serial;
-        readonly short _graphic;
-        readonly MessageType _type;
-        readonly short _hue;
-        readonly short _font;
-        readonly string _name;
-        readonly string _text;
+        readonly Serial m_serial;
+        readonly short m_graphic;
+        readonly MessageType m_type;
+        readonly short m_hue;
+        readonly short m_font;
+        readonly string m_name;
+        readonly string m_text;
 
         public Serial Serial
         {
-            get { return _serial; }
+            get { return m_serial; }
         }
 
         public short Graphic
         {
-            get { return _graphic; }
+            get { return m_graphic; }
         }
 
         public MessageType MsgType
         {
-            get { return _type; }
+            get { return m_type; }
         }
 
         public short Hue
         {
-            get { return _hue; }
+            get { return m_hue; }
         }
 
         public short Font
         {
-            get { return _font; }
+            get { return m_font; }
         }
 
         public string Name1
         {
-            get { return _name; }
+            get { return m_name; }
         } 
 
         public string Text
         {
-            get { return _text; }
+            get { return m_text; }
         } 
 
 
         public AsciiMessagePacket(PacketReader reader)
             : base(0x1C, "Ascii Message")
         {
-            _serial = reader.ReadInt32();
-            _graphic = reader.ReadInt16();
-            _type = (MessageType)reader.ReadByte();
-            _hue = reader.ReadInt16();
-            _font = reader.ReadInt16();
-            _name = reader.ReadString(30);
-            _text = reader.ReadString();
+            m_serial = reader.ReadInt32();
+            m_graphic = reader.ReadInt16();
+            m_type = (MessageType)reader.ReadByte();
+            m_hue = reader.ReadInt16();
+            m_font = reader.ReadInt16();
+            m_name = reader.ReadString(30);
+            m_text = reader.ReadString();
         }
     }
 }

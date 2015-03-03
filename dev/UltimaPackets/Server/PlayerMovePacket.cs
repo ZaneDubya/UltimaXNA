@@ -24,17 +24,17 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class PlayerMovePacket : RecvPacket
     {
-        readonly byte _direction;
+        readonly byte m_direction;
 
         public byte Direction
         {
-            get { return _direction; }
+            get { return m_direction; }
         }
 
         public PlayerMovePacket(PacketReader reader)
             : base(0x97, "Player Move")
         {
-            _direction = reader.ReadByte();
+            m_direction = reader.ReadByte();
         }
     }
 }

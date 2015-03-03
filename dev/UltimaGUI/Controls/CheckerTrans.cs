@@ -18,7 +18,7 @@ namespace UltimaXNA.UltimaGUI.Controls
 {
     class CheckerTrans : Control
     {
-        Texture2D _renderedTexture = null;
+        Texture2D m_renderedTexture = null;
 
         public CheckerTrans(Control owner, int page)
             : base(owner, page)
@@ -57,7 +57,7 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         public override void Draw(SpriteBatchUI spriteBatch)
         {
-            if (_renderedTexture == null)
+            if (m_renderedTexture == null)
             {
                 Color[] data = new Color[Width * Height];
                 for (int h = 0; h < Height; h++)
@@ -76,13 +76,13 @@ namespace UltimaXNA.UltimaGUI.Controls
                         }
                     }
                 }
-                _renderedTexture = new Texture2D(spriteBatch.GraphicsDevice, Width, Height);
-                _renderedTexture.SetData<Color>(data);
+                m_renderedTexture = new Texture2D(spriteBatch.GraphicsDevice, Width, Height);
+                m_renderedTexture.SetData<Color>(data);
             }
 
             // spriteBatch.Flush();
             // spriteBatch.Begin(SpriteBlendMode.None); !!!
-            spriteBatch.Draw2D(_renderedTexture, new Rectangle(X, Y, Width, Area.Height), new Rectangle(0, 0, Area.Width, Area.Height), 0, false, false);
+            spriteBatch.Draw2D(m_renderedTexture, new Rectangle(X, Y, Width, Area.Height), new Rectangle(0, 0, Area.Width, Area.Height), 0, false, false);
             // spriteBatch.Flush();
 
             base.Draw(spriteBatch);

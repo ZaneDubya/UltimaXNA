@@ -19,10 +19,10 @@ namespace UltimaXNA.UltimaWorld
 {
     public class MapObjectGround : AMapObject
     {
-        public bool _mustUpdateSurroundings = true;
-        private Surroundings _surroundingTiles;
-        private bool _noDraw;
-        private Vector3[] _normals;
+        public bool m_mustUpdateSurroundings = true;
+        private Surroundings m_surroundingTiles;
+        private bool m_noDraw;
+        private Vector3[] m_normals;
 
         public bool Ignored
         {
@@ -33,72 +33,72 @@ namespace UltimaXNA.UltimaWorld
             : base(position)
         {
             ItemID = tileID;
-            _normals = new Vector3[4];
+            m_normals = new Vector3[4];
             SortThreshold = -1;
             SortTiebreaker = -1;
 
             // set no draw flag
-            _noDraw = (ItemID < 3 || (ItemID >= 0x1AF && ItemID <= 0x1B5));
+            m_noDraw = (ItemID < 3 || (ItemID >= 0x1AF && ItemID <= 0x1B5));
 
             // get draw data
             UltimaData.LandData landData = UltimaData.TileData.LandData[ItemID & 0x3FFF];
             if (landData.TextureID <= 0)
             {
-                _draw_3DStretched = false;
-                _draw_texture = UltimaData.ArtData.GetLandTexture(ItemID);
-                _draw_width = _draw_height = 44;
-                _draw_X = 0;
-                _draw_Y = (int)(Z * 4);
-                _draw_hue = Vector2.Zero;
-                _pickType = PickTypes.PickGroundTiles;
-                _draw_flip = false;
+                m_draw_3DStretched = false;
+                m_draw_texture = UltimaData.ArtData.GetLandTexture(ItemID);
+                m_draw_width = m_draw_height = 44;
+                m_draw_X = 0;
+                m_draw_Y = (int)(Z * 4);
+                m_draw_hue = Vector2.Zero;
+                m_pickType = PickTypes.PickGroundTiles;
+                m_draw_flip = false;
             }
             else
             {
-                _draw_3DStretched = true;
-                _draw_texture = UltimaData.TexmapData.GetTexmapTexture(landData.TextureID);
+                m_draw_3DStretched = true;
+                m_draw_texture = UltimaData.TexmapData.GetTexmapTexture(landData.TextureID);
             }
 
             // set pick type
-            _pickType = PickTypes.PickGroundTiles;
+            m_pickType = PickTypes.PickGroundTiles;
         }
 
-        private bool _draw_3DStretched;
+        private bool m_draw_3DStretched;
         internal override bool Draw(SpriteBatch3D sb, Vector3 drawPosition, MouseOverList molist, PickTypes pickType, int maxAlt)
         {
-            if (_noDraw || _mustUpdateSurroundings || !IsometricRenderer.DrawTerrain)
+            if (m_noDraw || m_mustUpdateSurroundings || !IsometricRenderer.DrawTerrain)
                 return false;
-            if (!_draw_3DStretched)
+            if (!m_draw_3DStretched)
                 return base.Draw(sb, drawPosition, molist, pickType, 255);
             else
                 return Draw3DStretched(sb, drawPosition, molist, pickType, 255);
         }
 
-        VertexPositionNormalTextureHue[] _vertexBufferAlternate = new VertexPositionNormalTextureHue[] {
+        VertexPositionNormalTextureHue[] m_vertexBufferAlternate = new VertexPositionNormalTextureHue[] {
                     new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(0, 0, 0)),
                     new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(1, 0, 0)),
                     new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(0, 1, 0)),
                     new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(1, 1, 0))
                 };
 
-        private Vector3 _vertex0_yOffset, _vertex1_yOffset, _vertex2_yOffset, _vertex3_yOffset;
+        private Vector3 m_vertex0_yOffset, m_vertex1_yOffset, m_vertex2_yOffset, m_vertex3_yOffset;
 
         private bool Draw3DStretched(SpriteBatch3D sb, Vector3 drawPosition, MouseOverList molist, PickTypes pickType, int maxAlt)
         {
             // this is an isometric stretched tile and needs a specialized draw routine.
-            _vertexBufferAlternate[0].Position = drawPosition + _vertex0_yOffset;
-            _vertexBufferAlternate[1].Position = drawPosition + _vertex1_yOffset;
-            _vertexBufferAlternate[2].Position = drawPosition + _vertex2_yOffset;
-            _vertexBufferAlternate[3].Position = drawPosition + _vertex3_yOffset;
+            m_vertexBufferAlternate[0].Position = drawPosition + m_vertex0_yOffset;
+            m_vertexBufferAlternate[1].Position = drawPosition + m_vertex1_yOffset;
+            m_vertexBufferAlternate[2].Position = drawPosition + m_vertex2_yOffset;
+            m_vertexBufferAlternate[3].Position = drawPosition + m_vertex3_yOffset;
 
-            if (!sb.Draw(_draw_texture, _vertexBufferAlternate))
+            if (!sb.Draw(m_draw_texture, m_vertexBufferAlternate))
                 return false;
 
-            if ((pickType & _pickType) == _pickType)
-                if (molist.IsMouseInObjectIsometric(_vertexBufferAlternate))
+            if ((pickType & m_pickType) == m_pickType)
+                if (molist.IsMouseInObjectIsometric(m_vertexBufferAlternate))
                 {
-                    MouseOverItem item = new MouseOverItem(_draw_texture, _vertexBufferAlternate[0].Position, this);
-                    item.Vertices = new Vector3[4] { _vertexBufferAlternate[0].Position, _vertexBufferAlternate[1].Position, _vertexBufferAlternate[2].Position, _vertexBufferAlternate[3].Position };
+                    MouseOverItem item = new MouseOverItem(m_draw_texture, m_vertexBufferAlternate[0].Position, this);
+                    item.Vertices = new Vector3[4] { m_vertexBufferAlternate[0].Position, m_vertexBufferAlternate[1].Position, m_vertexBufferAlternate[2].Position, m_vertexBufferAlternate[3].Position };
                     molist.Add2DItem(item);
                 }
 
@@ -107,16 +107,16 @@ namespace UltimaXNA.UltimaWorld
 
         public void FlushSurroundings()
         {
-            _mustUpdateSurroundings = true;
+            m_mustUpdateSurroundings = true;
         }
 
         public void UpdateSurroundingsIfNecessary(Map map)
         {
-            if (!_mustUpdateSurroundings)
+            if (!m_mustUpdateSurroundings)
                 return;
 
             updateSurroundingsAndNormals(map);
-            _mustUpdateSurroundings = false;
+            m_mustUpdateSurroundings = false;
         }
 
         static Point[] kSurroundingsIndexes = new Point[11] { 
@@ -133,14 +133,14 @@ namespace UltimaXNA.UltimaWorld
             for (int i = 0; i < kSurroundingsIndexes.Length; i++)
                 surroundingTilesZ[i] = map.GetTileZ(origin.X + kSurroundingsIndexes[i].X, origin.Y + kSurroundingsIndexes[i].Y);
 
-            _surroundingTiles = new Surroundings(
+            m_surroundingTiles = new Surroundings(
                 surroundingTilesZ[7], surroundingTilesZ[3], surroundingTilesZ[6]);
 
-            bool isFlat = _surroundingTiles.IsFlat && _surroundingTiles.East == Z;
+            bool isFlat = m_surroundingTiles.IsFlat && m_surroundingTiles.East == Z;
             if (!isFlat)
             {
                 int low = 0, high = 0, sort = 0;
-                sort = map.GetAverageZ((int)Z, (int)_surroundingTiles.South, (int)_surroundingTiles.East, (int)_surroundingTiles.Down, ref low, ref high);
+                sort = map.GetAverageZ((int)Z, (int)m_surroundingTiles.South, (int)m_surroundingTiles.East, (int)m_surroundingTiles.Down, ref low, ref high);
                 if (sort != SortZ)
                 {
                     SortZ = sort;
@@ -148,16 +148,16 @@ namespace UltimaXNA.UltimaWorld
                 }
             }
 
-            _normals[0] = calculateNormal_Old(
+            m_normals[0] = calculateNormal_Old(
                 surroundingTilesZ[2], surroundingTilesZ[3],
                 surroundingTilesZ[0], surroundingTilesZ[6]);
-            _normals[1] = calculateNormal_Old(
+            m_normals[1] = calculateNormal_Old(
                 Z, surroundingTilesZ[4],
                 surroundingTilesZ[1], surroundingTilesZ[7]);
-            _normals[2] = calculateNormal_Old(
+            m_normals[2] = calculateNormal_Old(
                 surroundingTilesZ[5], surroundingTilesZ[7],
                 Z, surroundingTilesZ[9]);
-            _normals[3] = calculateNormal_Old(
+            m_normals[3] = calculateNormal_Old(
                 surroundingTilesZ[6], surroundingTilesZ[8],
                 surroundingTilesZ[3], surroundingTilesZ[10]);
 
@@ -166,22 +166,22 @@ namespace UltimaXNA.UltimaWorld
 
         private void updateVertexBuffer()
         {
-            _vertex0_yOffset = new Vector3(22, -(Z * 4), 0);
-            _vertex1_yOffset = new Vector3(44, 22 - (_surroundingTiles.East * 4), 0);
-            _vertex2_yOffset = new Vector3(0, 22 - (_surroundingTiles.South * 4), 0);
-            _vertex3_yOffset = new Vector3(22, 44 - (_surroundingTiles.Down * 4), 0);
+            m_vertex0_yOffset = new Vector3(22, -(Z * 4), 0);
+            m_vertex1_yOffset = new Vector3(44, 22 - (m_surroundingTiles.East * 4), 0);
+            m_vertex2_yOffset = new Vector3(0, 22 - (m_surroundingTiles.South * 4), 0);
+            m_vertex3_yOffset = new Vector3(22, 44 - (m_surroundingTiles.Down * 4), 0);
 
-            _vertexBufferAlternate[0].Normal = _normals[0];
-            _vertexBufferAlternate[1].Normal = _normals[1];
-            _vertexBufferAlternate[2].Normal = _normals[2];
-            _vertexBufferAlternate[3].Normal = _normals[3];
+            m_vertexBufferAlternate[0].Normal = m_normals[0];
+            m_vertexBufferAlternate[1].Normal = m_normals[1];
+            m_vertexBufferAlternate[2].Normal = m_normals[2];
+            m_vertexBufferAlternate[3].Normal = m_normals[3];
 
-            if (_vertexBufferAlternate[0].Hue != _draw_hue)
+            if (m_vertexBufferAlternate[0].Hue != m_draw_hue)
             {
-                _vertexBufferAlternate[0].Hue =
-                _vertexBufferAlternate[1].Hue =
-                _vertexBufferAlternate[2].Hue =
-                _vertexBufferAlternate[3].Hue = _draw_hue;
+                m_vertexBufferAlternate[0].Hue =
+                m_vertexBufferAlternate[1].Hue =
+                m_vertexBufferAlternate[2].Hue =
+                m_vertexBufferAlternate[3].Hue = m_draw_hue;
             }
         }
 
@@ -211,7 +211,7 @@ namespace UltimaXNA.UltimaWorld
 
         public override string ToString()
         {
-            return string.Format("MapObjectGround\n   Z:{1} ({2},{3},{4})\n{0}", base.ToString(), Z, _surroundingTiles.South, _surroundingTiles.Down, _surroundingTiles.East);
+            return string.Format("MapObjectGround\n   Z:{1} ({2},{3},{4})\n{0}", base.ToString(), Z, m_surroundingTiles.South, m_surroundingTiles.Down, m_surroundingTiles.East);
         }
     }
 

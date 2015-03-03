@@ -25,7 +25,7 @@ namespace UltimaXNA.UltimaData
 
 		#region Internals
 
-		private const string _internalMusicName = "UltimaXNAMusic";
+		private const string m_internalMusicName = "UltimaXNAMusic";
 
 		[DllImport( "winmm.dll" )]
 		private static extern int mciSendString(string lpCommand, StringBuilder lpReturn, int nReturnLength, IntPtr callBack);
@@ -33,13 +33,13 @@ namespace UltimaXNA.UltimaData
 		private static void InternalPlay(string path, bool repeat)
 		{
 			// open resource
-            string mciCommand = string.Format("open \"{0}\" type MPEGVideo alias {1}", path, _internalMusicName);
+            string mciCommand = string.Format("open \"{0}\" type MPEGVideo alias {1}", path, m_internalMusicName);
             int error = mciSendString(mciCommand, null, 0, IntPtr.Zero);
             if (error == 0)
             {
                 PlayingId = 1;
 				// start playing
-				string playCommand = string.Format ( "play {0} from 0", _internalMusicName );
+				string playCommand = string.Format ( "play {0} from 0", m_internalMusicName );
 				if (repeat)
 				{
 					playCommand += " repeat";
@@ -58,11 +58,11 @@ namespace UltimaXNA.UltimaData
             if (PlayingId != -1)
             {
                 // Stop playing
-                if (mciSendString(string.Format("stop {0}", _internalMusicName), null, 0, IntPtr.Zero) == 0)
+                if (mciSendString(string.Format("stop {0}", m_internalMusicName), null, 0, IntPtr.Zero) == 0)
                 {
                     PlayingId = -1;
                     // close resource
-                    if (mciSendString(string.Format("close {0}", _internalMusicName), null, 0, IntPtr.Zero) != 0)
+                    if (mciSendString(string.Format("close {0}", m_internalMusicName), null, 0, IntPtr.Zero) != 0)
                     {
                         Logger.Error("Error closing current mp3 file");
                     }
@@ -79,7 +79,7 @@ namespace UltimaXNA.UltimaData
 			get
 			{
 				StringBuilder buffer = new StringBuilder ( 261 );
-				int result = mciSendString ( string.Format("status {0} volume", _internalMusicName),
+				int result = mciSendString ( string.Format("status {0} volume", m_internalMusicName),
 				   buffer, buffer.Capacity, IntPtr.Zero );
 				if (result != 0)
 				{
@@ -91,7 +91,7 @@ namespace UltimaXNA.UltimaData
 
 			set
 			{
-				int result = mciSendString ( string.Format("setaudio {0} volume to {1}", _internalMusicName, value), null, 0, IntPtr.Zero );
+				int result = mciSendString ( string.Format("setaudio {0} volume to {1}", m_internalMusicName, value), null, 0, IntPtr.Zero );
 				if (result != 0)
 				{
                     Logger.Error("Error setting volume");
@@ -101,7 +101,7 @@ namespace UltimaXNA.UltimaData
 
 		#endregion Internals
 
-		private static Hashtable _songList;
+		private static Hashtable m_songList;
 
 		public static int Volume
 		{
@@ -111,7 +111,7 @@ namespace UltimaXNA.UltimaData
 
 		static MusicData()
 		{
-			_songList = new Hashtable ();
+			m_songList = new Hashtable ();
 			StreamReader reader = new StreamReader(FileManager.GetFile ( "Music\\Digital\\Config.txt" ));
 			String line;
 			while ((line = reader.ReadLine ()) != null)
@@ -119,15 +119,15 @@ namespace UltimaXNA.UltimaData
 				UOMusic toAdd = ParseConfigFile ( line );
 				if (toAdd != null)
 				{
-					_songList.Add ( toAdd.Id, toAdd );
+					m_songList.Add ( toAdd.Id, toAdd );
 				}
 			}
 		}
 
-		private static char[] _configFileDelimiters = new char[] { ' ', ',', '\t' };
+		private static char[] m_configFileDelimiters = new char[] { ' ', ',', '\t' };
 		private static UOMusic ParseConfigFile(string line)
 		{
-			string[] splits = line.Split ( _configFileDelimiters );
+			string[] splits = line.Split ( m_configFileDelimiters );
 			if (splits.Length < 2 || splits.Length > 3) {
 				return null;
 			}
@@ -142,8 +142,8 @@ namespace UltimaXNA.UltimaData
 
 		private static UOMusic GetMusicById(int id)
 		{
-			if (_songList.Contains(id)) {
-				return (UOMusic)_songList[id];
+			if (m_songList.Contains(id)) {
+				return (UOMusic)m_songList[id];
 			} else {
 				return null;
 			}

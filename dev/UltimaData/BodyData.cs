@@ -14,14 +14,14 @@ namespace UltimaXNA.UltimaData
     /// </summary>
     public sealed class BodyConverter
     {
-        private static int[] _Table1 = new int[0];
-        private static int[] _Table2 = new int[0];
-        private static int[] _Table3 = new int[0];
-        private static int[] _Table4 = new int[0];
+        private static int[] m_Table1 = new int[0];
+        private static int[] m_Table2 = new int[0];
+        private static int[] m_Table3 = new int[0];
+        private static int[] m_Table4 = new int[0];
 
         // Issue 6 - Missing mounted animations - http://code.google.com/p/ultimaxna/issues/detail?id=6 - Smjert
         // MountItemID , BodyID
-        private static int[][] _MountIDConv = new int[][]
+        private static int[][] m_MountIDConv = new int[][]
 	{
 		new int[]{0x3E94, 0xF3}, // Hiryu
 		new int[]{0x3E97, 0xC3}, // Beetle
@@ -187,34 +187,34 @@ namespace UltimaXNA.UltimaData
                 UltimaVars.Metrics.ReportDataRead(totalDataRead);
             }
 
-            _Table1 = new int[max1 + 1];
-            _Table2 = new int[max2 + 1];
-            _Table3 = new int[max3 + 1];
-            _Table4 = new int[max4 + 1];
+            m_Table1 = new int[max1 + 1];
+            m_Table2 = new int[max2 + 1];
+            m_Table3 = new int[max3 + 1];
+            m_Table4 = new int[max4 + 1];
 
-            for (int i = 0; i < _Table1.Length; ++i)
-                _Table1[i] = -1;
+            for (int i = 0; i < m_Table1.Length; ++i)
+                m_Table1[i] = -1;
 
             for (int i = 0; i < list1.Count; i += 2)
-                _Table1[(int)list1[i]] = (int)list1[i + 1];
+                m_Table1[(int)list1[i]] = (int)list1[i + 1];
 
-            for (int i = 0; i < _Table2.Length; ++i)
-                _Table2[i] = -1;
+            for (int i = 0; i < m_Table2.Length; ++i)
+                m_Table2[i] = -1;
 
             for (int i = 0; i < list2.Count; i += 2)
-                _Table2[(int)list2[i]] = (int)list2[i + 1];
+                m_Table2[(int)list2[i]] = (int)list2[i + 1];
 
-            for (int i = 0; i < _Table3.Length; ++i)
-                _Table3[i] = -1;
+            for (int i = 0; i < m_Table3.Length; ++i)
+                m_Table3[i] = -1;
 
             for (int i = 0; i < list3.Count; i += 2)
-                _Table3[(int)list3[i]] = (int)list3[i + 1];
+                m_Table3[(int)list3[i]] = (int)list3[i + 1];
 
-            for (int i = 0; i < _Table4.Length; ++i)
-                _Table4[i] = -1;
+            for (int i = 0; i < m_Table4.Length; ++i)
+                m_Table4[i] = -1;
 
             for (int i = 0; i < list4.Count; i += 2)
-                _Table4[(int)list4[i]] = (int)list4[i + 1];
+                m_Table4[(int)list4[i]] = (int)list4[i + 1];
         }
 
         /// <summary>
@@ -223,16 +223,16 @@ namespace UltimaXNA.UltimaData
         /// <returns>True if it is, false if not.</returns>
         public static bool Contains(int body)
         {
-            if (_Table1 != null && body >= 0 && body < _Table1.Length && _Table1[body] != -1)
+            if (m_Table1 != null && body >= 0 && body < m_Table1.Length && m_Table1[body] != -1)
                 return true;
 
-            if (_Table2 != null && body >= 0 && body < _Table2.Length && _Table2[body] != -1)
+            if (m_Table2 != null && body >= 0 && body < m_Table2.Length && m_Table2[body] != -1)
                 return true;
 
-            if (_Table3 != null && body >= 0 && body < _Table3.Length && _Table3[body] != -1)
+            if (m_Table3 != null && body >= 0 && body < m_Table3.Length && m_Table3[body] != -1)
                 return true;
 
-            if (_Table4 != null && body >= 0 && body < _Table4.Length && _Table4[body] != -1)
+            if (m_Table4 != null && body >= 0 && body < m_Table4.Length && m_Table4[body] != -1)
                 return true;
 
             return false;
@@ -267,9 +267,9 @@ namespace UltimaXNA.UltimaData
             // Converts MountItemID to BodyID
             if (body > 0x3E93)
             {
-                for (int i = 0; i < _MountIDConv.Length; ++i)
+                for (int i = 0; i < m_MountIDConv.Length; ++i)
                 {
-                    int[] conv = _MountIDConv[i];
+                    int[] conv = m_MountIDConv[i];
                     if (conv[0] == body)
                     {
                         body = conv[1];
@@ -278,9 +278,9 @@ namespace UltimaXNA.UltimaData
                 }
             }
             // Issue 6 - End
-            if (_Table1 != null && body >= 0 && body < _Table1.Length)
+            if (m_Table1 != null && body >= 0 && body < m_Table1.Length)
             {
-                int val = _Table1[body];
+                int val = m_Table1[body];
 
                 if (val != -1)
                 {
@@ -289,9 +289,9 @@ namespace UltimaXNA.UltimaData
                 }
             }
 
-            if (_Table2 != null && body >= 0 && body < _Table2.Length)
+            if (m_Table2 != null && body >= 0 && body < m_Table2.Length)
             {
-                int val = _Table2[body];
+                int val = m_Table2[body];
 
                 if (val != -1)
                 {
@@ -300,9 +300,9 @@ namespace UltimaXNA.UltimaData
                 }
             }
 
-            if (_Table3 != null && body >= 0 && body < _Table3.Length)
+            if (m_Table3 != null && body >= 0 && body < m_Table3.Length)
             {
-                int val = _Table3[body];
+                int val = m_Table3[body];
 
                 if (val != -1)
                 {
@@ -311,9 +311,9 @@ namespace UltimaXNA.UltimaData
                 }
             }
 
-            if (_Table4 != null && body >= 0 && body < _Table4.Length)
+            if (m_Table4 != null && body >= 0 && body < m_Table4.Length)
             {
-                int val = _Table4[body];
+                int val = m_Table4[body];
 
                 if (val != -1)
                 {
@@ -328,25 +328,25 @@ namespace UltimaXNA.UltimaData
 
     public sealed class BodyTableEntry
     {
-        public int _OldID;
-        public int _NewID;
-        public int _NewHue;
+        public int m_OldID;
+        public int m_NewID;
+        public int m_NewHue;
 
         public BodyTableEntry(int oldID, int newID, int newHue)
         {
-            _OldID = oldID;
-            _NewID = newID;
-            _NewHue = newHue;
+            m_OldID = oldID;
+            m_NewID = newID;
+            m_NewHue = newHue;
         }
     }
 
     public sealed class BodyTable
     {
-        public static Hashtable _Entries;
+        public static Hashtable m_Entries;
 
         static BodyTable()
         {
-            _Entries = new Hashtable();
+            m_Entries = new Hashtable();
 
             string filePath = FileManager.GetFilePath("body.def");
 
@@ -383,7 +383,7 @@ namespace UltimaXNA.UltimaData
                     int iParam2 = Convert.ToInt32(param2);
                     int iParam3 = Convert.ToInt32(param3);
 
-                    _Entries[iParam1] = new BodyTableEntry(iParam2, iParam1, iParam3);
+                    m_Entries[iParam1] = new BodyTableEntry(iParam2, iParam1, iParam3);
                 }
                 catch
                 {

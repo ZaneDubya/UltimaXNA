@@ -14,7 +14,7 @@ namespace UltimaXNA.UltimaVars
 {
     class Servers
     {
-        static ServerListEntry[] _serverListPacket;
-        public static ServerListEntry[] List { get { return _serverListPacket; } set { _serverListPacket = value; } }
+        static ServerListEntry[] m_serverListPacket;
+        public static ServerListEntry[] List { get { return m_serverListPacket; } set { m_serverListPacket = value; } }
     }
 }

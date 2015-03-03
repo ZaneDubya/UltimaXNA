@@ -30,7 +30,7 @@ namespace UltimaXNA.Core.Network.Compression
     /// </summary>
     public class ZlibCompression
     {
-        private static int[] _huffmanTable = new int[514]
+        private static int[] m_huffmanTable = new int[514]
 		{
 			0x2, 0x000,	0x5, 0x01F,	0x6, 0x022,	0x7, 0x034,	0x7, 0x075,	0x6, 0x028,	0x6, 0x03B,	0x7, 0x032,
 			0x8, 0x0E0,	0x8, 0x062,	0x7, 0x056,	0x8, 0x079,	0x9, 0x19D,	0x8, 0x097,	0x6, 0x02A,	0x7, 0x057,
@@ -86,9 +86,9 @@ namespace UltimaXNA.Core.Network.Compression
         // If our input exceeds this length, we may potentially overflow the buffer
         private const int PossibleOverflow = ((BufferSize * 8) - TerminalCodeLength) / MaximalCodeLength;
 
-        private static object _syncRoot = new object();
+        private static object m_syncRoot = new object();
 
-        private static byte[] _outputBuffer = new byte[BufferSize];
+        private static byte[] m_outputBuffer = new byte[BufferSize];
 
         [Obsolete("Use Compress( byte[], int, int, ref int ) instead.", false)]
         public static void Compress(byte[] input, int length, out byte[] output, out int outputLength)
@@ -123,12 +123,12 @@ namespace UltimaXNA.Core.Network.Compression
                 return null;
             }
 
-            lock (_syncRoot)
+            lock (m_syncRoot)
             {
                 int bitCount = 0;
                 int bitValue = 0;
 
-                fixed (int* pTable = _huffmanTable)
+                fixed (int* pTable = m_huffmanTable)
                 {
                     int* pEntry;
 
@@ -136,7 +136,7 @@ namespace UltimaXNA.Core.Network.Compression
                     {
                         byte* pInput = pInputBuffer + offset, pInputEnd = pInput + count;
 
-                        fixed (byte* pOutputBuffer = _outputBuffer)
+                        fixed (byte* pOutputBuffer = m_outputBuffer)
                         {
                             byte* pOutput = pOutputBuffer, pOutputEnd = pOutput + BufferSize;
 
@@ -194,7 +194,7 @@ namespace UltimaXNA.Core.Network.Compression
                             }
 
                             length = (int)(pOutput - pOutputBuffer);
-                            return _outputBuffer;
+                            return m_outputBuffer;
                         }
                     }
                 }

@@ -22,37 +22,37 @@ namespace UltimaXNA.UltimaWorld
     public sealed class Map
     {
         public int UpdateTicker;
-        MapTile[] _tiles;
-        TileMatrixRaw _tileMatrix;
-        int _x, _y;
-        bool _loadAllNearbyCells = false; // set when a map is first loaded.
-        bool _mustResetMap = false;
+        MapTile[] m_tiles;
+        TileMatrixRaw m_tileMatrix;
+        int m_x, m_y;
+        bool m_loadAllNearbyCells = false; // set when a map is first loaded.
+        bool m_mustResetMap = false;
         public bool LoadEverything_Override = false;
 
-        int _numCellsLoadedThisFrame = 0;
+        int m_numCellsLoadedThisFrame = 0;
         const int MaxCellsLoadedPerFrame = 200;
-        int _MapTilesDrawRadius = 0;
-        int _MapTilesInMemory = 0;
+        int m_MapTilesDrawRadius = 0;
+        int m_MapTilesInMemory = 0;
 
-        int _index = -1;
-        public int Index { get { return _index; } }
+        int m_index = -1;
+        public int Index { get { return m_index; } }
 
         public Map(int index)
         {
-            _index = index;
-            _mustResetMap = true;
+            m_index = index;
+            m_mustResetMap = true;
         }
 
         private void resetMap()
         {
-            _loadAllNearbyCells = true;
-            _tileMatrix = new TileMatrixRaw(_index, _index);
-            Height = _tileMatrix.Height;
-            Width = _tileMatrix.Width;
-            _MapTilesInMemory = UltimaVars.EngineVars.MapCellsInMemory * 8;
-            _MapTilesDrawRadius = ((_MapTilesInMemory / 2));
+            m_loadAllNearbyCells = true;
+            m_tileMatrix = new TileMatrixRaw(m_index, m_index);
+            Height = m_tileMatrix.Height;
+            Width = m_tileMatrix.Width;
+            m_MapTilesInMemory = UltimaVars.EngineVars.MapCellsInMemory * 8;
+            m_MapTilesDrawRadius = ((m_MapTilesInMemory / 2));
 
-            _tiles = new MapTile[_MapTilesInMemory * _MapTilesInMemory];
+            m_tiles = new MapTile[m_MapTilesInMemory * m_MapTilesInMemory];
         }
 
         public int Height;
@@ -104,42 +104,42 @@ namespace UltimaXNA.UltimaWorld
 
         public MapTile GetMapTile(int x, int y, bool load)
         {
-            int idx = (x % _MapTilesInMemory) + (y % _MapTilesInMemory) * _MapTilesInMemory;
+            int idx = (x % m_MapTilesInMemory) + (y % m_MapTilesInMemory) * m_MapTilesInMemory;
             if (idx < 0)
                 return null;
-            MapTile t = _tiles[idx];
+            MapTile t = m_tiles[idx];
             if (t == null || (x != t.X) || (y != t.Y))
             {
-                if (!load && (Math.Abs(x - _x) > _MapTilesDrawRadius || Math.Abs(y - _y) > _MapTilesDrawRadius))
+                if (!load && (Math.Abs(x - m_x) > m_MapTilesDrawRadius || Math.Abs(y - m_y) > m_MapTilesDrawRadius))
                 {
                     return null;
                 }
-                else if (load && (_numCellsLoadedThisFrame < MaxCellsLoadedPerFrame || LoadEverything_Override))
+                else if (load && (m_numCellsLoadedThisFrame < MaxCellsLoadedPerFrame || LoadEverything_Override))
                 {
-                    _numCellsLoadedThisFrame++;
+                    m_numCellsLoadedThisFrame++;
                     loadMapCellIntotiles(x - x % 8, y - y % 8);
                 }
                 else
                 {
-                    _tiles[idx] = null;
+                    m_tiles[idx] = null;
                 }
             }
 
-            return _tiles[idx];
+            return m_tiles[idx];
         }
 
         private void loadMapCellIntotiles(int x, int y)
         {
             // get data from the tile Matrix
-            byte[] groundData = _tileMatrix.GetLandBlock(x >> 3, y >> 3);
-            byte[] staticsData = _tileMatrix.GetStaticBlock(x >> 3, y >> 3);
+            byte[] groundData = m_tileMatrix.GetLandBlock(x >> 3, y >> 3);
+            byte[] staticsData = m_tileMatrix.GetStaticBlock(x >> 3, y >> 3);
             int[] indexes = new int[64];
-            int thisindex = x % _MapTilesInMemory + (y % _MapTilesInMemory) * _MapTilesInMemory;
+            int thisindex = x % m_MapTilesInMemory + (y % m_MapTilesInMemory) * m_MapTilesInMemory;
             for (int i = 0; i < 64; )
             {
                 indexes[i++] = thisindex++;
                 if ((i % 8) == 0)
-                    thisindex += (_MapTilesInMemory - 8);
+                    thisindex += (m_MapTilesInMemory - 8);
             }
 
             // load the ground data into the tiles.
@@ -153,7 +153,7 @@ namespace UltimaXNA.UltimaWorld
                     new MapObjectGround(iTileID, new Position3D(x + i % 8, y + (i >> 3), iTileZ));
                 MapTile tile = new MapTile(ground.Position.X, ground.Position.Y);
                 tile.AddMapObject(ground);
-                _tiles[indexes[i]] = tile;
+                m_tiles[indexes[i]] = tile;
             }
 
             // load the statics data into the tiles
@@ -165,42 +165,42 @@ namespace UltimaXNA.UltimaWorld
                 int iTileIndex = staticsData[index++] + (staticsData[index++] * 8);
                 int iTileZ = (sbyte)staticsData[index++];
                 index += 2; // unknown 2 byte data, not used.
-                MapTile tile = _tiles[indexes[iTileIndex]];
+                MapTile tile = m_tiles[indexes[iTileIndex]];
                 tile.AddMapObject(new MapObjectStatic(iTileID, i, new Position3D(tile.X, tile.Y, iTileZ)));
             }
 
             // now update this batch of tiles - sets their normals and surroundings as necessary.
             for (int i = 0; i < 64; i++)
             {
-                _tiles[indexes[i]].GroundTile.UpdateSurroundingsIfNecessary(this);
+                m_tiles[indexes[i]].GroundTile.UpdateSurroundingsIfNecessary(this);
             }
         }
 
         public void Update(int centerX, int centerY)
         {
-            if (_x != centerX || _y != centerY)
+            if (m_x != centerX || m_y != centerY)
             {
-                if ((Math.Abs(_x - centerX) > 2) || (Math.Abs(_y - centerY) > 2))
+                if ((Math.Abs(m_x - centerX) > 2) || (Math.Abs(m_y - centerY) > 2))
                 {
-                    _mustResetMap = true;
+                    m_mustResetMap = true;
                 }
-                _x = centerX;
-                _y = centerY;
+                m_x = centerX;
+                m_y = centerY;
             }
 
-            if (_mustResetMap)
+            if (m_mustResetMap)
             {
                 resetMap();
-                _mustResetMap = false;
+                m_mustResetMap = false;
             }
 
-            if (_loadAllNearbyCells)
+            if (m_loadAllNearbyCells)
             {
-                _loadAllNearbyCells = true;
-                _numCellsLoadedThisFrame = int.MinValue;
+                m_loadAllNearbyCells = true;
+                m_numCellsLoadedThisFrame = int.MinValue;
             }
             else
-                _numCellsLoadedThisFrame = 0;
+                m_numCellsLoadedThisFrame = 0;
         }
 
         public float GetTileZ(int x, int y)
@@ -211,7 +211,7 @@ namespace UltimaXNA.UltimaWorld
             else
             {
                 int tileID, alt;
-                _tileMatrix.GetLandTile(x, y, out tileID, out alt);
+                m_tileMatrix.GetLandTile(x, y, out tileID, out alt);
                 return alt;
             }
         }

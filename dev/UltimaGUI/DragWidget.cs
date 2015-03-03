@@ -14,12 +14,12 @@ namespace UltimaXNA.UltimaGUI
 {
     class DragWidget
     {
-        Control _toMove;
+        Control m_toMove;
         bool isMoving = false; int moveOriginalX, moveOriginalY;
 
         public DragWidget(Control inputFrom, Control toMove)
         {
-            _toMove = toMove;
+            m_toMove = toMove;
 
             inputFrom.OnMouseDown += mouseDown;
             inputFrom.OnMouseUp += mouseUp;
@@ -28,9 +28,9 @@ namespace UltimaXNA.UltimaGUI
 
         void mouseDown(int x, int y, MouseButton button)
         {
-            x += _toMove.X;
-            y += _toMove.Y;
-            if (button == MouseButton.Left && _toMove.IsMovable)
+            x += m_toMove.X;
+            y += m_toMove.Y;
+            if (button == MouseButton.Left && m_toMove.IsMovable)
             {
                 // move!
                 isMoving = true;
@@ -41,27 +41,27 @@ namespace UltimaXNA.UltimaGUI
 
         void mouseUp(int x, int y, MouseButton button)
         {
-            x += _toMove.X;
-            y += _toMove.Y;
+            x += m_toMove.X;
+            y += m_toMove.Y;
             if (button == MouseButton.Left)
             {
                 if (isMoving == true)
                 {
                     isMoving = false;
-                    _toMove.X += (x - moveOriginalX);
-                    _toMove.Y += (y - moveOriginalY);
+                    m_toMove.X += (x - moveOriginalX);
+                    m_toMove.Y += (y - moveOriginalY);
                 }
             }
         }
 
         void mouseOver(int x, int y)
         {
-            x += _toMove.X;
-            y += _toMove.Y;
+            x += m_toMove.X;
+            y += m_toMove.Y;
             if (isMoving == true)
             {
-                _toMove.X += (x - moveOriginalX);
-                _toMove.Y += (y - moveOriginalY);
+                m_toMove.X += (x - moveOriginalX);
+                m_toMove.Y += (y - moveOriginalY);
                 moveOriginalX = x;
                 moveOriginalY = y;
             }

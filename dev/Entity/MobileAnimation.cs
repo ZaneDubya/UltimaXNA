@@ -22,50 +22,50 @@ namespace UltimaXNA.Entity
     public class MobileAnimation
     {
         private Mobile Parent = null;
-        private MobileAction _action;
-        private bool _actionCanBeInteruptedByStand = false;
+        private MobileAction m_action;
+        private bool m_actionCanBeInteruptedByStand = false;
         
-        private int _actionIndex;
+        private int m_actionIndex;
         public int ActionIndex
         {
-            get { return _actionIndex; }
+            get { return m_actionIndex; }
         }
 
         public bool IsAnimating
         {
             get
             {
-                if ((!_actionCanBeInteruptedByStand) &&
-                    (_action == MobileAction.None ||
-                    _action == MobileAction.Stand || 
-                    _action == MobileAction.Walk || 
-                    _action == MobileAction.Run))
+                if ((!m_actionCanBeInteruptedByStand) &&
+                    (m_action == MobileAction.None ||
+                    m_action == MobileAction.Stand || 
+                    m_action == MobileAction.Walk || 
+                    m_action == MobileAction.Run))
                     return false;
                 return true;
             }
         }
 
-        private float _animationFrame = 0f;
+        private float m_animationFrame = 0f;
         public float AnimationFrame
         {
             get
             {
-                if (_animationFrame >= 1f)
+                if (m_animationFrame >= 1f)
                     return 0.999f;
                 else
-                    return _animationFrame;
+                    return m_animationFrame;
             }
         }
         
-        private BodyTypes _bodyType
+        private BodyTypes m_bodyType
         {
             get { return AnimationData.BodyType(Parent.BodyID); }
         }
 
         // We use these variables to 'hold' the last frame of an animation before 
         // switching to Stand Action.
-        private bool _holdAnimation = false;
-        private int _holdAnimationTime = 0;
+        private bool m_holdAnimation = false;
+        private int m_holdAnimationTime = 0;
         private int HoldAnimationMS
         {
             get
@@ -89,10 +89,10 @@ namespace UltimaXNA.Entity
 
             // If we are holding the current animation, then we should wait until our hold time is over
             // before switching to the queued Stand animation.
-            if (_holdAnimation)
+            if (m_holdAnimation)
             {
-                _holdAnimationTime -= msSinceLastUpdate;
-                if (_holdAnimationTime >= 0)
+                m_holdAnimationTime -= msSinceLastUpdate;
+                if (m_holdAnimationTime >= 0)
                 {
                     // we are still holding. Do not update the current Animation frame.
                     return;
@@ -101,56 +101,56 @@ namespace UltimaXNA.Entity
                 {
                     // hold time is over, continue to Stand animation.
                     unholdAnimation();
-                    _action = MobileAction.Stand;
-                    _actionIndex = getActionIndex(MobileAction.Stand);
-                    _animationFrame = 0f;
-                    _FrameCount = 1;
-                    _FrameDelay = 0;
+                    m_action = MobileAction.Stand;
+                    m_actionIndex = getActionIndex(MobileAction.Stand);
+                    m_animationFrame = 0f;
+                    m_FrameCount = 1;
+                    m_FrameDelay = 0;
                 }
             }
 
-            if (_action != MobileAction.None)
+            if (m_action != MobileAction.None)
             {
                 // advance the animation one step, based on gametime passed.
-                float animationStep = (float)((_FrameCount * (_FrameDelay + 1)) * 10);
-                float timeStep = ((float)frameMS / animationStep) / _FrameCount;
+                float animationStep = (float)((m_FrameCount * (m_FrameDelay + 1)) * 10);
+                float timeStep = ((float)frameMS / animationStep) / m_FrameCount;
                 
-                float msPerFrame = (float)((1000 * (_FrameDelay + 1)) / (float)_FrameCount);
+                float msPerFrame = (float)((1000 * (m_FrameDelay + 1)) / (float)m_FrameCount);
                 // Mounted movement is 2x normal frame rate
-                if (Parent.IsMounted && ((_action == MobileAction.Walk) || (_action == MobileAction.Run)))
+                if (Parent.IsMounted && ((m_action == MobileAction.Walk) || (m_action == MobileAction.Run)))
                     msPerFrame /= 2;
 
-                float frameAdvance = (float)(frameMS / msPerFrame) / _FrameCount;
+                float frameAdvance = (float)(frameMS / msPerFrame) / m_FrameCount;
                 if (msPerFrame < 0)
                     return;
 
-                _animationFrame += frameAdvance;
+                m_animationFrame += frameAdvance;
 
                 // When animations reach their last frame, if we are queueing to stand, then
                 // hold the animation on the last frame.
-                if (_animationFrame >= 1f)
+                if (m_animationFrame >= 1f)
                 {
-                    if (_repeatCount > 0)
+                    if (m_repeatCount > 0)
                     {
-                        _animationFrame %= 1f;
-                        _repeatCount--;
+                        m_animationFrame %= 1f;
+                        m_repeatCount--;
                     }
                     else
                     {
                         // any requested actions are ended.
-                        _actionCanBeInteruptedByStand = false;
+                        m_actionCanBeInteruptedByStand = false;
                         // Hold the last frame of the current action if animation is not Stand.
-                        if (_action == MobileAction.Stand)
+                        if (m_action == MobileAction.Stand)
                         {
-                            _animationFrame = 0;
+                            m_animationFrame = 0;
                         }
                         else
                         {
                             // for most animations, hold the last frame. For Move animations, cycle through.
-                            if (_action == MobileAction.Run || _action == MobileAction.Walk)
-                                _animationFrame %= 1f;
+                            if (m_action == MobileAction.Run || m_action == MobileAction.Walk)
+                                m_animationFrame %= 1f;
                             else
-                                _animationFrame -= frameAdvance;
+                                m_animationFrame -= frameAdvance;
                             holdAnimation();
                         }
                             
@@ -161,7 +161,7 @@ namespace UltimaXNA.Entity
 
         public void UpdateAnimation()
         {
-            animate(_action, _actionIndex, 0, false, false, 0, false);
+            animate(m_action, m_actionIndex, 0, false, false, 0, false);
         }
 
         public void Animate(MobileAction action)
@@ -178,59 +178,59 @@ namespace UltimaXNA.Entity
             animate(action, actionIndex, repeatCount, reverse, repeat, delay, true);
         }
 
-        private int _FrameCount, _FrameDelay, _repeatCount;
+        private int m_FrameCount, m_FrameDelay, m_repeatCount;
         private void animate(MobileAction action, int actionIndex, int repeatCount, bool reverse, bool repeat, int delay, bool isRequestedAction)
         {
-            if (_action == action)
+            if (m_action == action)
             {
-                if (_holdAnimation)
+                if (m_holdAnimation)
                 {
                     unholdAnimation();
                 }
             }
 
             if (isRequestedAction)
-                _actionCanBeInteruptedByStand = true;
+                m_actionCanBeInteruptedByStand = true;
 
-            if ((_action != action) || (_actionIndex != actionIndex))
+            if ((m_action != action) || (m_actionIndex != actionIndex))
             {
                 // If we are switching from any action to a stand action, then hold the last frame of the 
                 // current animation for a moment. Only Stand actions are held; thus when any hold ends,
                 // then we know we were holding for a Stand action.
-                if (!(_action == MobileAction.None) && (action == MobileAction.Stand && _action != MobileAction.Stand))
+                if (!(m_action == MobileAction.None) && (action == MobileAction.Stand && m_action != MobileAction.Stand))
                 {
-                    if (_action != MobileAction.None)
+                    if (m_action != MobileAction.None)
                         holdAnimation();
                 }
                 else
                 {
-                    _action = action;
+                    m_action = action;
                     unholdAnimation();
-                    _actionIndex = actionIndex;
-                    _animationFrame = 0f;
-                    _FrameCount = UltimaData.AnimationData.GetAnimationFrameCount(
+                    m_actionIndex = actionIndex;
+                    m_animationFrame = 0f;
+                    m_FrameCount = UltimaData.AnimationData.GetAnimationFrameCount(
                         Parent.BodyID, actionIndex, (int)Parent.Facing, Parent.Hue);
-                    _FrameDelay = delay;
+                    m_FrameDelay = delay;
                     if (repeat == false)
-                        _repeatCount = 0;
+                        m_repeatCount = 0;
                     else
-                        _repeatCount = repeatCount;
+                        m_repeatCount = repeatCount;
                 }
             }
         }
 
         private void holdAnimation()
         {
-            if (!_holdAnimation)
+            if (!m_holdAnimation)
             {
-                _holdAnimation = true;
-                _holdAnimationTime = HoldAnimationMS;
+                m_holdAnimation = true;
+                m_holdAnimationTime = HoldAnimationMS;
             }
         }
 
         private void unholdAnimation()
         {
-            _holdAnimation = false;
+            m_holdAnimation = false;
         }
 
         private int getActionIndex(MobileAction action)
@@ -240,7 +240,7 @@ namespace UltimaXNA.Entity
 
         private int getActionIndex(MobileAction action, int index)
         {
-            if (_bodyType == BodyTypes.Humanoid)
+            if (m_bodyType == BodyTypes.Humanoid)
             {
                 switch (action)
                 {
@@ -339,7 +339,7 @@ namespace UltimaXNA.Entity
                         return (int)-1;
                 }
             }
-            else if (_bodyType == BodyTypes.LowDetail)
+            else if (m_bodyType == BodyTypes.LowDetail)
             {
                 switch (action)
                 {
@@ -363,7 +363,7 @@ namespace UltimaXNA.Entity
                         return (int)-1;
                 }
             }
-            else if (_bodyType == BodyTypes.HighDetail)
+            else if (m_bodyType == BodyTypes.HighDetail)
             {
                 switch (action)
                 {
@@ -393,7 +393,7 @@ namespace UltimaXNA.Entity
 
         private MobileAction getActionFromIndex(int index)
         {
-            if (_bodyType == BodyTypes.Humanoid)
+            if (m_bodyType == BodyTypes.Humanoid)
             {
                 switch ((ActionIndexHumanoid)index)
                 {
@@ -472,7 +472,7 @@ namespace UltimaXNA.Entity
                 Diagnostics.Logger.Warn("Unknown action index {0}", index);
                 return MobileAction.None;
             }
-            else if (_bodyType == BodyTypes.LowDetail)
+            else if (m_bodyType == BodyTypes.LowDetail)
             {
                 switch ((ActionIndexAnimal)index)
                 {
@@ -486,7 +486,7 @@ namespace UltimaXNA.Entity
                         return MobileAction.MonsterAction;
                 }
             }
-            else if (_bodyType == BodyTypes.HighDetail)
+            else if (m_bodyType == BodyTypes.HighDetail)
             {
                 switch ((ActionIndexMonster)index)
                 {

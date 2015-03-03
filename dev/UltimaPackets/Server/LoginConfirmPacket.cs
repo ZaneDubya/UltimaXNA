@@ -24,55 +24,55 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class LoginConfirmPacket : RecvPacket
     {
-        readonly Serial _serial;
-        readonly short _body;
-        readonly short _x;
-        readonly short _y;
-        readonly short _z;
-        readonly byte _direction;
+        readonly Serial m_serial;
+        readonly short m_body;
+        readonly short m_x;
+        readonly short m_y;
+        readonly short m_z;
+        readonly byte m_direction;
 
         public Serial Serial
         {
-            get { return _serial; }
+            get { return m_serial; }
         }
 
         public short Body
         {
-            get { return _body; }
+            get { return m_body; }
         }
 
         public short X
         {
-            get { return _x; }
+            get { return m_x; }
         }
 
         public short Y
         {
-            get { return _y; }
+            get { return m_y; }
         }
 
         public short Z
         {
-            get { return _z; }
+            get { return m_z; }
         }
 
         public byte Direction
         {
-            get { return _direction; }
+            get { return m_direction; }
         }
 
         public LoginConfirmPacket(PacketReader reader)
             : base(0x1B, "Login Confirm")
         {
-            _serial = reader.ReadInt32();
+            m_serial = reader.ReadInt32();
 
             reader.ReadInt32(); //unknown. Always 0.
 
-            _body = reader.ReadInt16();
-            _x = reader.ReadInt16();
-            _y = reader.ReadInt16();
-            _z = reader.ReadInt16();
-            _direction = reader.ReadByte();
+            m_body = reader.ReadInt16();
+            m_x = reader.ReadInt16();
+            m_y = reader.ReadInt16();
+            m_z = reader.ReadInt16();
+            m_direction = reader.ReadByte();
         }
     }
 }

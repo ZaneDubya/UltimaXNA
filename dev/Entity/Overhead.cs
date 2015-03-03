@@ -19,101 +19,101 @@ namespace UltimaXNA.Entity
 {
     public class Overhead : BaseEntity
     {
-        private bool _needsRender;
-        private BaseEntity _ownerEntity;
+        private bool m_needsRender;
+        private BaseEntity m_ownerEntity;
 
-        private string _text;
+        private string m_text;
         public string Text
         {
-            get { return _text; }
+            get { return m_text; }
             set
             {
-                _text = value;
-                _needsRender = true;
+                m_text = value;
+                m_needsRender = true;
             }
         }
 
-        private MessageType _msgType;
+        private MessageType m_msgType;
         public MessageType MsgType
         {
-            get { return _msgType; }
+            get { return m_msgType; }
             set
             {
-                _msgType = value;
+                m_msgType = value;
             }
         }
 
-        private string _speakerName;
+        private string m_speakerName;
         public string SpeakerName
         {
-            get { return _speakerName; }
+            get { return m_speakerName; }
             set
             {
-                _speakerName = value;
-                _needsRender = true;
+                m_speakerName = value;
+                m_needsRender = true;
             }
         }
 
-        private int _hue;
+        private int m_hue;
         public int Hue
         {
-            get { return _hue; }
+            get { return m_hue; }
             set
             {
-                _hue = value;
-                _needsRender = true;
+                m_hue = value;
+                m_needsRender = true;
             }
         }
 
-        private int _font;
+        private int m_font;
         public int Font
         {
-            get { return _font; }
+            get { return m_font; }
             set
             {
-                _font = value;
-                _needsRender = true;
+                m_font = value;
+                m_needsRender = true;
             }
         }
 
-        private int _msTimePersist = 0;
+        private int m_msTimePersist = 0;
 
         public Overhead(BaseEntity ownerEntity, MessageType msgType, string text, int font, int hue)
             : base(ownerEntity.Serial)
         {
-            _ownerEntity = ownerEntity;
-            _text = text;
-            _font = font;
-            _hue = hue;
-            _msgType = msgType;
-            _needsRender = true;
+            m_ownerEntity = ownerEntity;
+            m_text = text;
+            m_font = font;
+            m_hue = hue;
+            m_msgType = msgType;
+            m_needsRender = true;
         }
 
         public void RefreshTimer()
         {
-            _needsRender = true;
+            m_needsRender = true;
         }
 
         public override void Update(double frameMS)
         {
             base.Update(frameMS);
-            if (_needsRender)
+            if (m_needsRender)
             {
-                _msTimePersist = 5000;
-                _needsRender = false;
+                m_msTimePersist = 5000;
+                m_needsRender = false;
             }
             else
             {
-                _msTimePersist -= (int)frameMS;
-                if (_msTimePersist <= 0)
+                m_msTimePersist -= (int)frameMS;
+                if (m_msTimePersist <= 0)
                     this.Dispose();
             }
         }
 
         internal override void Draw(MapTile tile, Position3D position)
         {
-            // string text = Utility.WrapASCIIText(_font, _text, 200);
-            // tile.Add(new TileEngine.MapObjectText(position, _ownerEntity, text, _hue, _font));
+            // string text = Utility.WrapASCIIText(m_font, m_text, 200);
+            // tile.Add(new TileEngine.MapObjectText(position, m_ownerEntity, text, m_hue, m_font));
         }
     }
 }

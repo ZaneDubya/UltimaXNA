@@ -22,33 +22,33 @@ namespace UltimaXNA.Entity
         public Serial Serial;
         public PropertyList PropertyList = new PropertyList();
 
-        private Dictionary<int, Overhead> _overheads = new Dictionary<int, Overhead>();
-        int _lastOverheadIndex = 0;
+        private Dictionary<int, Overhead> m_overheads = new Dictionary<int, Overhead>();
+        int m_lastOverheadIndex = 0;
 
-        protected bool _drawn = false; // if this is false this object will redraw itself in the tileengine.}
+        protected bool m_drawn = false; // if this is false this object will redraw itself in the tileengine.}
         protected bool HasBeenDrawn
         {
-            get { return _drawn; }
+            get { return m_drawn; }
             set
             {
-                if ((value == false) && (_drawn == true))
+                if ((value == false) && (m_drawn == true))
                 {
                     flushDrawObjects();
                 }
-                _drawn = value;
+                m_drawn = value;
             }
         }
 
-        bool _Disposed = false; // set this to true to have the object deleted.
-        public bool IsDisposed { get { return _Disposed; } protected set { _Disposed = value; } }
+        bool m_Disposed = false; // set this to true to have the object deleted.
+        public bool IsDisposed { get { return m_Disposed; } protected set { m_Disposed = value; } }
 
-        protected Movement _movement;
-        public int X { get { return _movement.Position.X; } set { _movement.Position.X = value; HasBeenDrawn = false; } }
-        public int Y { get { return _movement.Position.Y; } set { _movement.Position.Y = value; HasBeenDrawn = false; } }
-        public int Z { get { return _movement.Position.Z; } set { _movement.Position.Z = value; HasBeenDrawn = false; } }
-        public Position3D Position { get { return _movement.Position; } }
-        public virtual Position3D WorldPosition { get { return _movement.Position; } }
-        public Direction Facing { get { return _movement.Facing & Direction.FacingMask; } set { _movement.Facing = value; HasBeenDrawn = false; } }
+        protected Movement m_movement;
+        public int X { get { return m_movement.Position.X; } set { m_movement.Position.X = value; HasBeenDrawn = false; } }
+        public int Y { get { return m_movement.Position.Y; } set { m_movement.Position.Y = value; HasBeenDrawn = false; } }
+        public int Z { get { return m_movement.Position.Z; } set { m_movement.Position.Z = value; HasBeenDrawn = false; } }
+        public Position3D Position { get { return m_movement.Position; } }
+        public virtual Position3D WorldPosition { get { return m_movement.Position; } }
+        public Direction Facing { get { return m_movement.Facing & Direction.FacingMask; } set { m_movement.Facing = value; HasBeenDrawn = false; } }
 
         public bool IsClientEntity = false;
 
@@ -56,7 +56,7 @@ namespace UltimaXNA.Entity
         {
             get
             {
-                int iFacing = (int)(_movement.Facing & Direction.FacingMask);
+                int iFacing = (int)(m_movement.Facing & Direction.FacingMask);
                 if (iFacing >= 3)
                     return iFacing - 3;
                 else
@@ -67,7 +67,7 @@ namespace UltimaXNA.Entity
         public BaseEntity(Serial serial)
         {
             Serial = serial;
-            _movement = new Movement(this);
+            m_movement = new Movement(this);
         }
 
         public virtual void Update(double frameMS)
@@ -75,17 +75,17 @@ namespace UltimaXNA.Entity
             if (IsDisposed)
                 return;
 
-            if (!_movement.Position.IsNullPosition)
+            if (!m_movement.Position.IsNullPosition)
             {
-                _movement.Update(frameMS);
+                m_movement.Update(frameMS);
 
                 if (IsometricRenderer.Map == null)
                     return;
 
-                MapTile t = IsometricRenderer.Map.GetMapTile(_movement.Position.X, _movement.Position.Y, false);
+                MapTile t = IsometricRenderer.Map.GetMapTile(m_movement.Position.X, m_movement.Position.Y, false);
                 if (t != null)
                 {
-                    this.Draw(t, _movement.Position);
+                    this.Draw(t, m_movement.Position);
                     HasBeenDrawn = true;
                 }
                 else
@@ -94,7 +94,7 @@ namespace UltimaXNA.Entity
 
             // handle overheads.
             clearDisposedOverheads();
-            foreach (KeyValuePair<int, Overhead> overhead in _overheads)
+            foreach (KeyValuePair<int, Overhead> overhead in m_overheads)
             {
                 overhead.Value.Update(frameMS);
             }
@@ -108,7 +108,7 @@ namespace UltimaXNA.Entity
         internal void drawOverheads(MapTile tile, Position3D position)
         {
             // base entities do not draw, but they can have overheads, so we draw those.
-            foreach (KeyValuePair<int, Overhead> overhead in _overheads)
+            foreach (KeyValuePair<int, Overhead> overhead in m_overheads)
             {
                 if (!overhead.Value.IsDisposed)
                     overhead.Value.Draw(tile, position);
@@ -127,8 +127,8 @@ namespace UltimaXNA.Entity
 
         public virtual void Dispose()
         {
-            _Disposed = true;
-            _movement.ClearImmediate();
+            m_Disposed = true;
+            m_movement.ClearImmediate();
         }
 
         public Overhead AddOverhead(MessageType msgType, string text, int fontID, int hue)
@@ -140,7 +140,7 @@ namespace UltimaXNA.Entity
                 clearDisposedOverheads();
             }
 
-            foreach (Overhead o in _overheads.Values)
+            foreach (Overhead o in m_overheads.Values)
             {
                 if ((o.Text == text) && !(o.IsDisposed))
                 {
@@ -150,13 +150,13 @@ namespace UltimaXNA.Entity
             }
 
             Overhead overhead = new Overhead(this, msgType, text, fontID, hue);
-            _overheads.Add(_lastOverheadIndex++, overhead);
+            m_overheads.Add(m_lastOverheadIndex++, overhead);
             return overhead;
         }
 
         private void disposeLabels()
         {
-            foreach (Overhead o in _overheads.Values)
+            foreach (Overhead o in m_overheads.Values)
             {
                 if (o.MsgType == MessageType.Label)
                 {
@@ -168,7 +168,7 @@ namespace UltimaXNA.Entity
         private void clearDisposedOverheads()
         {
             List<int> removeObjectsList = removeObjectsList = new List<int>();
-            foreach (KeyValuePair<int, Overhead> overhead in _overheads)
+            foreach (KeyValuePair<int, Overhead> overhead in m_overheads)
             {
                 if (overhead.Value.IsDisposed)
                 {
@@ -178,7 +178,7 @@ namespace UltimaXNA.Entity
             }
             foreach (int i in removeObjectsList)
             {
-                _overheads.Remove(i);
+                m_overheads.Remove(i);
             }
         }
 

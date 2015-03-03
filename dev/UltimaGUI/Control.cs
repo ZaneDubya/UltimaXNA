@@ -30,24 +30,24 @@ namespace UltimaXNA.UltimaGUI
         public int Serial = 0;
         public bool IsModal = false;
 
-        bool _enabled = false;
-        bool _visible = false;
-        bool _isInitialized = false;
-        bool _isDisposed = false;
-        public bool Enabled { get { return _enabled; } set { _enabled = value; } }
-        public bool Visible { get { return _visible; } set { _visible = value; } }
-        public bool IsInitialized { get { return _isInitialized; } set { _isInitialized = value; } }
-        public bool IsDisposed { get { return _isDisposed; } set { _isDisposed = value; } }
+        bool m_enabled = false;
+        bool m_visible = false;
+        bool m_isInitialized = false;
+        bool m_isDisposed = false;
+        public bool Enabled { get { return m_enabled; } set { m_enabled = value; } }
+        public bool Visible { get { return m_visible; } set { m_visible = value; } }
+        public bool IsInitialized { get { return m_isInitialized; } set { m_isInitialized = value; } }
+        public bool IsDisposed { get { return m_isDisposed; } set { m_isDisposed = value; } }
         public bool IsMovable = false;
 
-        bool _handlesMouseInput = false;
-        public bool HandlesMouseInput { get { return _handlesMouseInput; } set { _handlesMouseInput = value; } }
-        bool _handlesKeyboardFocus = false;
+        bool m_handlesMouseInput = false;
+        public bool HandlesMouseInput { get { return m_handlesMouseInput; } set { m_handlesMouseInput = value; } }
+        bool m_handlesKeyboardFocus = false;
         public bool HandlesKeyboardFocus
         {
             get
             {
-                if (_handlesKeyboardFocus)
+                if (m_handlesKeyboardFocus)
                     return true;
                 if (m_controls == null)
                     return false;
@@ -58,7 +58,7 @@ namespace UltimaXNA.UltimaGUI
             }
             set
             {
-                _handlesKeyboardFocus = value;
+                m_handlesKeyboardFocus = value;
                 if (UserInterface.KeyboardFocusControl == null)
                     UserInterface.KeyboardFocusControl = this;
             }
@@ -67,7 +67,7 @@ namespace UltimaXNA.UltimaGUI
         {
             get
             {
-                if (_handlesKeyboardFocus)
+                if (m_handlesKeyboardFocus)
                     return this;
                 if (m_controls == null)
                     return null;
@@ -78,7 +78,7 @@ namespace UltimaXNA.UltimaGUI
             }
         }
 
-        protected bool _renderFullScreen = false;
+        protected bool m_renderFullScreen = false;
 
         internal ControlMouseButtonEvent OnMouseClick;
         internal ControlMouseButtonEvent OnMouseDoubleClick;
@@ -87,34 +87,34 @@ namespace UltimaXNA.UltimaGUI
         internal ControlMouseEvent OnMouseOver;
         internal ControlMouseEvent OnMouseOut;
 
-        float _inputMultiplier = 1.0f;
+        float m_inputMultiplier = 1.0f;
         public float InputMultiplier
         {
-            set { _inputMultiplier = value; }
+            set { m_inputMultiplier = value; }
             get
             {
-                if (_renderFullScreen)
-                    return _inputMultiplier;
+                if (m_renderFullScreen)
+                    return m_inputMultiplier;
                 else
                     return 1.0f;
             }
         }
 
-        int _page = 0;
+        int m_page = 0;
         public int Page
         {
             get
             {
-                return _page;
+                return m_page;
             }
         }
-        int _activePage = 0; // we always draw _activePage and Page 0.
+        int m_activePage = 0; // we always draw m_activePage and Page 0.
         public int ActivePage
         {
-            get { return _activePage; }
+            get { return m_activePage; }
             set
             {
-                _activePage = value;
+                m_activePage = value;
                 // If we own the current KeyboardFocusControl, then we should clear it.
                 // UNLESS page = 0; in which case it still exists and should maintain focus.
                 // Clear the current keyboardfocus if we own it and it's page != 0
@@ -131,7 +131,7 @@ namespace UltimaXNA.UltimaGUI
                 // that we should redirect text input to.
                 foreach (Control c in Controls)
                 {
-                    if (c.HandlesKeyboardFocus && (c.Page == _activePage))
+                    if (c.HandlesKeyboardFocus && (c.Page == m_activePage))
                     {
                         UserInterface.KeyboardFocusControl = c;
                         break;
@@ -140,14 +140,14 @@ namespace UltimaXNA.UltimaGUI
             }
         }
 
-        Rectangle _area = Rectangle.Empty;
-        Point2D _position;
+        Rectangle m_area = Rectangle.Empty;
+        Point2D m_position;
         protected int OwnerX
         {
             get
             {
-                if (_owner != null)
-                    return _owner.X + _owner.OwnerX;
+                if (m_owner != null)
+                    return m_owner.X + m_owner.OwnerX;
                 else
                     return 0;
             }
@@ -156,57 +156,57 @@ namespace UltimaXNA.UltimaGUI
         {
             get
             {
-                if (_owner != null)
-                    return _owner.Y + _owner.OwnerY;
+                if (m_owner != null)
+                    return m_owner.Y + m_owner.OwnerY;
                 else
                     return 0;
             }
         }
-        public int X { get { return _position.X; } set { _position.X = value; } }
-        public int Y { get { return _position.Y; } set { _position.Y = value; } }
+        public int X { get { return m_position.X; } set { m_position.X = value; } }
+        public int Y { get { return m_position.Y; } set { m_position.Y = value; } }
         public virtual int Width
         {
-            get { return _area.Width; }
+            get { return m_area.Width; }
             set
             {
-                _area.Width = value;
+                m_area.Width = value;
             }
         }
         public virtual int Height
         {
-            get { return _area.Height; }
+            get { return m_area.Height; }
             set
             {
-                _area.Height = value;
+                m_area.Height = value;
             }
         }
         public Point2D Position
         {
             get
             {
-                return _position;
+                return m_position;
             }
             set
             {
-                _position = value;
+                m_position = value;
             }
         }
         public Point2D Size
         {
-            get { return new Point2D(_area.Width, _area.Height); }
+            get { return new Point2D(m_area.Width, m_area.Height); }
             set
             {
-                _area.Width = value.X;
-                _area.Height = value.Y;
+                m_area.Width = value.X;
+                m_area.Height = value.Y;
             }
         }
         public Rectangle Area
         {
-            get { return _area; }
+            get { return m_area; }
         }
 
-        protected Control _owner = null;
-        public Control Owner { get { return _owner; } }
+        protected Control m_owner = null;
+        public Control Owner { get { return m_owner; } }
         private List<Control> m_controls = null;
         protected List<Control> Controls
         {
@@ -218,18 +218,18 @@ namespace UltimaXNA.UltimaGUI
             }
         }
 
-        static Texture2D _boundsTexture;
+        static Texture2D m_boundsTexture;
 
         public Control(Control owner, int page)
         {
-            _owner = owner;
-            _page = page;
+            m_owner = owner;
+            m_page = page;
         }
 
         public void ControlInitialize()
         {
-            _isInitialized = true;
-            _isDisposed = false;
+            m_isInitialized = true;
+            m_isDisposed = false;
             Visible = true;
             Initialize();
         }
@@ -260,20 +260,20 @@ namespace UltimaXNA.UltimaGUI
         public virtual void Dispose()
         {
             ClearControls();
-            _isDisposed = true;
+            m_isDisposed = true;
         }
 
-        DragWidget _dragger;
+        DragWidget m_dragger;
         public void MakeDragger(Control toMove)
         {
             this.HandlesMouseInput = true;
-            _dragger = new DragWidget(this, _owner);
+            m_dragger = new DragWidget(this, m_owner);
         }
 
-        Control _closeTarget;
+        Control m_closeTarget;
         public void MakeCloseTarget(Control toClose)
         {
-            _closeTarget = toClose;
+            m_closeTarget = toClose;
             this.HandlesMouseInput = true;
             this.OnMouseClick += onCloseTargetClick;
         }
@@ -281,7 +281,7 @@ namespace UltimaXNA.UltimaGUI
         {
             if (button == MouseButton.Right)
             {
-                _closeTarget.Dispose();
+                m_closeTarget.Dispose();
             }
         }
 
@@ -300,7 +300,7 @@ namespace UltimaXNA.UltimaGUI
             bool inBounds = Area.Contains((int)position.X - OwnerX, (int)position.Y - OwnerY);
             if (inBounds)
             {
-                if (_hitTest((int)position.X - X - OwnerX, (int)position.Y - Y - OwnerY))
+                if (m_hitTest((int)position.X - X - OwnerX, (int)position.Y - Y - OwnerY))
                 {
                     if (alwaysHandleMouseInput || this.HandlesMouseInput)
                         focusedControls.Insert(0, this);
@@ -327,19 +327,19 @@ namespace UltimaXNA.UltimaGUI
                 return focusedControls.ToArray();
         }
 
-        protected virtual bool _hitTest(int x, int y)
+        protected virtual bool m_hitTest(int x, int y)
         {
             return true;
         }
 
         virtual public void Update(GameTime gameTime)
         {
-            if (!_isInitialized)
+            if (!m_isInitialized)
                 return;
 
             // update our area X and Y to reflect any movement.
-            _area.X = X;
-            _area.Y = Y;
+            m_area.X = X;
+            m_area.Y = Y;
 
             foreach (Control c in Controls)
             {
@@ -362,7 +362,7 @@ namespace UltimaXNA.UltimaGUI
 
         virtual public void Draw(SpriteBatchUI spriteBatch)
         {
-            if (!_isInitialized)
+            if (!m_isInitialized)
                 return;
             if (!Visible)
                 return;
@@ -390,48 +390,48 @@ namespace UltimaXNA.UltimaGUI
         {
             int hue = UltimaData.HuesXNA.GetWebSafeHue(color);
 
-            Rectangle drawArea = _area;
-            if (_owner == null)
+            Rectangle drawArea = m_area;
+            if (m_owner == null)
             {
-                _area.X -= X;
-                _area.Y -= Y;
+                m_area.X -= X;
+                m_area.Y -= Y;
             }
 
-            if (_boundsTexture == null)
+            if (m_boundsTexture == null)
             {
-                _boundsTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
-                _boundsTexture.SetData<Color>(new Color[] { Color.White });
+                m_boundsTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
+                m_boundsTexture.SetData<Color>(new Color[] { Color.White });
             }
 
-            spriteBatch.Draw2D(_boundsTexture, new Rectangle(X, Y, Width, 1), hue, false, false);
-            spriteBatch.Draw2D(_boundsTexture, new Rectangle(X, Y + Height - 1, Width, 1), hue, false, false);
-            spriteBatch.Draw2D(_boundsTexture, new Rectangle(X, Y, 1, Height), hue, false, false);
-            spriteBatch.Draw2D(_boundsTexture, new Rectangle(X + Width - 1, Y, 1, Height), hue, false, false);
+            spriteBatch.Draw2D(m_boundsTexture, new Rectangle(X, Y, Width, 1), hue, false, false);
+            spriteBatch.Draw2D(m_boundsTexture, new Rectangle(X, Y + Height - 1, Width, 1), hue, false, false);
+            spriteBatch.Draw2D(m_boundsTexture, new Rectangle(X, Y, 1, Height), hue, false, false);
+            spriteBatch.Draw2D(m_boundsTexture, new Rectangle(X + Width - 1, Y, 1, Height), hue, false, false);
         }
 #endif
 
         public virtual void ActivateByButton(int buttonID)
         {
-            if (_owner != null)
-                _owner.ActivateByButton(buttonID);
+            if (m_owner != null)
+                m_owner.ActivateByButton(buttonID);
         }
 
         public virtual void ActivateByHREF(string href)
         {
-            if (_owner != null)
-                _owner.ActivateByHREF(href);
+            if (m_owner != null)
+                m_owner.ActivateByHREF(href);
         }
 
         public virtual void ActivateByKeyboardReturn(int textID, string text)
         {
-            if (_owner != null)
-                _owner.ActivateByKeyboardReturn(textID, text);
+            if (m_owner != null)
+                m_owner.ActivateByKeyboardReturn(textID, text);
         }
 
         public virtual void ChangePage(int pageIndex)
         {
-            if (_owner != null)
-                _owner.ChangePage(pageIndex);
+            if (m_owner != null)
+                m_owner.ChangePage(pageIndex);
         }
 
         public void MouseDown(Point2D position, MouseButton button)

@@ -21,31 +21,31 @@ namespace UltimaXNA.UltimaData
 {
     public sealed class AnimationData
     {
-        private static FileIndex _FileIndex = new FileIndex("Anim.idx", "Anim.mul", 0x40000, 6);
-        public static FileIndex FileIndex { get { return _FileIndex; } }
+        private static FileIndex m_FileIndex = new FileIndex("Anim.idx", "Anim.mul", 0x40000, 6);
+        public static FileIndex FileIndex { get { return m_FileIndex; } }
 
-        private static FileIndex _FileIndex2 = new FileIndex("Anim2.idx", "Anim2.mul", 0x10000, -1);
-        public static FileIndex FileIndex2 { get { return _FileIndex2; } }
+        private static FileIndex m_FileIndex2 = new FileIndex("Anim2.idx", "Anim2.mul", 0x10000, -1);
+        public static FileIndex FileIndex2 { get { return m_FileIndex2; } }
 
-        private static FileIndex _FileIndex3 = new FileIndex("Anim3.idx", "Anim3.mul", 0x20000, -1);
-        public static FileIndex FileIndex3 { get { return _FileIndex3; } }
+        private static FileIndex m_FileIndex3 = new FileIndex("Anim3.idx", "Anim3.mul", 0x20000, -1);
+        public static FileIndex FileIndex3 { get { return m_FileIndex3; } }
 
-        private static FileIndex _FileIndex4 = new FileIndex("Anim4.idx", "Anim4.mul", 0x20000, -1);
-        public static FileIndex FileIndex4 { get { return _FileIndex4; } }
+        private static FileIndex m_FileIndex4 = new FileIndex("Anim4.idx", "Anim4.mul", 0x20000, -1);
+        public static FileIndex FileIndex4 { get { return m_FileIndex4; } }
 
-        private static FileIndex _FileIndex5 = new FileIndex("Anim5.idx", "Anim5.mul", 0x20000, -1);
-        public static FileIndex FileIndex5 { get { return _FileIndex5; } }
+        private static FileIndex m_FileIndex5 = new FileIndex("Anim5.idx", "Anim5.mul", 0x20000, -1);
+        public static FileIndex FileIndex5 { get { return m_FileIndex5; } }
 
-        private static AnimationFrame[][][][] _Cache;
-        private static GraphicsDevice _graphics;
-        private static int[] _Table;
+        private static AnimationFrame[][][][] m_Cache;
+        private static GraphicsDevice m_graphics;
+        private static int[] m_Table;
 
         public static void Initialize(GraphicsDevice graphics)
         {
-            _graphics = graphics;
+            m_graphics = graphics;
         }
 
-        public static GraphicsDevice DEBUG_GFX { get { return _graphics; } }
+        public static GraphicsDevice DEBUG_GFX { get { return m_graphics; } }
 
         public static int GetAnimationFrameCount(int body, int action, int direction, int hue)
         {
@@ -87,7 +87,7 @@ namespace UltimaXNA.UltimaData
             {
                 bin = new BinaryReader(stream);
                 AnimationFrame[] frames = GetAnimation(bin);
-                return _Cache[body][action][direction] = frames;
+                return m_Cache[body][action][direction] = frames;
             }
         }
 
@@ -110,7 +110,7 @@ namespace UltimaXNA.UltimaData
                 else
                 {
                     bin.BaseStream.Seek(lookupStart + lookups[i], SeekOrigin.Begin);
-                    frames[i] = new AnimationFrame(_graphics, palette, bin);
+                    frames[i] = new AnimationFrame(m_graphics, palette, bin);
                 }
             }
             return frames;
@@ -158,15 +158,15 @@ namespace UltimaXNA.UltimaData
         {
             // Make sure the cache is complete.
             // max number of bodies is about 0x1000
-            if (_Cache == null) _Cache = new AnimationFrame[0x1000][][][];
-            if (_Cache[body] == null)
-                _Cache[body] = new AnimationFrame[35][][];
-            if (_Cache[body][action] == null)
-                _Cache[body][action] = new AnimationFrame[8][];
-            if (_Cache[body][action][direction] == null)
-                _Cache[body][action][direction] = new AnimationFrame[1];
-            if (_Cache[body][action][direction][0] != null)
-                return _Cache[body][action][direction];
+            if (m_Cache == null) m_Cache = new AnimationFrame[0x1000][][][];
+            if (m_Cache[body] == null)
+                m_Cache[body] = new AnimationFrame[35][][];
+            if (m_Cache[body][action] == null)
+                m_Cache[body][action] = new AnimationFrame[8][];
+            if (m_Cache[body][action][direction] == null)
+                m_Cache[body][action][direction] = new AnimationFrame[1];
+            if (m_Cache[body][action][direction][0] != null)
+                return m_Cache[body][action][direction];
             else
                 return null;
         }
@@ -181,7 +181,7 @@ namespace UltimaXNA.UltimaData
                 default:
                 case 1:
                     {
-                        fileIndex = _FileIndex;
+                        fileIndex = m_FileIndex;
 
                         if (body < 200)
                             index = body * 110;
@@ -194,7 +194,7 @@ namespace UltimaXNA.UltimaData
                     }
                 case 2:
                     {
-                        fileIndex = _FileIndex2;
+                        fileIndex = m_FileIndex2;
 
                         if (body < 200)
                             index = body * 110;
@@ -205,7 +205,7 @@ namespace UltimaXNA.UltimaData
                     }
                 case 3:
                     {
-                        fileIndex = _FileIndex3;
+                        fileIndex = m_FileIndex3;
 
                         if (body < 300)
                             index = body * 65;
@@ -218,7 +218,7 @@ namespace UltimaXNA.UltimaData
                     }
                 case 4:
                     {
-                        fileIndex = _FileIndex4;
+                        fileIndex = m_FileIndex4;
 
                         if (body < 200)
                             index = body * 110;
@@ -232,7 +232,7 @@ namespace UltimaXNA.UltimaData
                 // Issue 60 - Missing (or wrong) object animations - http://code.google.com/p/ultimaxna/issues/detail?id=60 - Smjert
                 case 5:
                     {
-                        fileIndex = _FileIndex5;
+                        fileIndex = m_FileIndex5;
                         if ((body < 200) && (body != 34)) // looks strange, though it works.
                             index = body * 110;
                         else if (body < 400)
@@ -336,30 +336,30 @@ namespace UltimaXNA.UltimaData
 
         public static void Translate(ref int body)
         {
-            if (_Table == null)
+            if (m_Table == null)
                 LoadTable();
 
-            if (body <= 0 || body >= _Table.Length)
+            if (body <= 0 || body >= m_Table.Length)
             {
                 body = 0;
                 return;
             }
 
-            body = (_Table[body] & 0x7FFF);
+            body = (m_Table[body] & 0x7FFF);
         }
 
         public static void Translate(ref int body, ref int hue)
         {
-            if (_Table == null)
+            if (m_Table == null)
                 LoadTable();
 
-            if (body <= 0 || body >= _Table.Length)
+            if (body <= 0 || body >= m_Table.Length)
             {
                 body = 0;
                 return;
             }
 
-            int table = _Table[body];
+            int table = m_Table[body];
 
             if ((table & (1 << 31)) != 0)
             {
@@ -374,23 +374,23 @@ namespace UltimaXNA.UltimaData
 
         private static void LoadTable()
         {
-            int count = 400 + ((_FileIndex.Index.Length - 35000) / 175);
+            int count = 400 + ((m_FileIndex.Index.Length - 35000) / 175);
 
-            _Table = new int[count];
+            m_Table = new int[count];
 
             for (int i = 0; i < count; ++i)
             {
-                object o = BodyTable._Entries[i];
+                object o = BodyTable.m_Entries[i];
 
                 if (o == null || BodyConverter.Contains(i))
                 {
-                    _Table[i] = i;
+                    m_Table[i] = i;
                 }
                 else
                 {
                     BodyTableEntry bte = (BodyTableEntry)o;
 
-                    _Table[i] = bte._OldID | (1 << 31) | (((bte._NewHue ^ 0x8000) & 0xFFFF) << 15);
+                    m_Table[i] = bte.m_OldID | (1 << 31) | (((bte.m_NewHue ^ 0x8000) & 0xFFFF) << 15);
                 }
             }
         }
@@ -398,11 +398,11 @@ namespace UltimaXNA.UltimaData
 
     public sealed class AnimationFrame
     {
-        private Microsoft.Xna.Framework.Point _Center;
-        private Microsoft.Xna.Framework.Graphics.Texture2D _Texture;
+        private Microsoft.Xna.Framework.Point m_Center;
+        private Microsoft.Xna.Framework.Graphics.Texture2D m_Texture;
 
-        public Microsoft.Xna.Framework.Point Center { get { return _Center; } }
-        public Microsoft.Xna.Framework.Graphics.Texture2D Texture { get { return _Texture; } }
+        public Microsoft.Xna.Framework.Point Center { get { return m_Center; } }
+        public Microsoft.Xna.Framework.Graphics.Texture2D Texture { get { return m_Texture; } }
 
         private const int DoubleXor = (0x200 << 22) | (0x200 << 12);
 
@@ -428,9 +428,9 @@ namespace UltimaXNA.UltimaData
                 }
             }
 
-            _Center = new Microsoft.Xna.Framework.Point(xCenter, yCenter);
-            _Texture = new Texture2D(graphics, width, height);
-            _Texture.SetData<uint>(data);
+            m_Center = new Microsoft.Xna.Framework.Point(xCenter, yCenter);
+            m_Texture = new Texture2D(graphics, width, height);
+            m_Texture.SetData<uint>(data);
             palette[0] = 0;
         }
 
@@ -445,7 +445,7 @@ namespace UltimaXNA.UltimaData
             // Fix for animations with no UltimaData.
             if ((width == 0) || (height == 0))
             {
-                _Texture = null;
+                m_Texture = null;
                 return;
             }
 
@@ -485,10 +485,10 @@ namespace UltimaXNA.UltimaData
                 UltimaVars.Metrics.ReportDataRead(dataRead);
             }
 
-            _Center = new Microsoft.Xna.Framework.Point(xCenter, yCenter);
+            m_Center = new Microsoft.Xna.Framework.Point(xCenter, yCenter);
 
-            _Texture = new Texture2D(graphics, width, height);
-            _Texture.SetData<uint>(data);
+            m_Texture = new Texture2D(graphics, width, height);
+            m_Texture.SetData<uint>(data);
         }
 
         public static unsafe byte[] Frame_ReadData(uint[] palette, BinaryReader bin, bool flip)

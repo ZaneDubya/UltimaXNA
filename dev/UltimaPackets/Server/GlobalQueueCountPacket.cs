@@ -24,24 +24,24 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class GlobalQueuePacket : RecvPacket
     {
-        readonly byte _unk;
-        readonly short _count;
+        readonly byte m_unk;
+        readonly short m_count;
 
         public byte Unknown
         {
-            get { return _unk; }
+            get { return m_unk; }
         }
 
         public short Count
         {
-            get { return _count; }
+            get { return m_count; }
         }
 
         public GlobalQueuePacket(PacketReader reader)
             : base(0xCB, "Global Queue")
         {
-            _unk = reader.ReadByte();
-            _count = reader.ReadInt16();
+            m_unk = reader.ReadByte();
+            m_count = reader.ReadInt16();
         }
     }
 }

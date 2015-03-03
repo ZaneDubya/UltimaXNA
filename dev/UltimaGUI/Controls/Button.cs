@@ -27,15 +27,15 @@ namespace UltimaXNA.UltimaGUI.Controls
     public class Button : Control
     {
         private const int kGump_Up = 0, kGump_Down = 1, kGump_Over = 2;
-        Texture2D[] _gumpTextures = new Texture2D[3] { null, null, null };
-        int[] _gumpID = new int[3] { 0, 0, 0 }; // 0 == up, 1 == down, 2 == additional over state, not sent by the server but can be added for clientside gumps.
+        Texture2D[] m_gumpTextures = new Texture2D[3] { null, null, null };
+        int[] m_gumpID = new int[3] { 0, 0, 0 }; // 0 == up, 1 == down, 2 == additional over state, not sent by the server but can be added for clientside gumps.
 
         public int GumpUpID
         {
             set
             {
-                _gumpID[kGump_Up] = value;
-                _gumpTextures[kGump_Up] = null;
+                m_gumpID[kGump_Up] = value;
+                m_gumpTextures[kGump_Up] = null;
             }
         }
 
@@ -43,8 +43,8 @@ namespace UltimaXNA.UltimaGUI.Controls
         {
             set
             {
-                _gumpID[kGump_Down] = value;
-                _gumpTextures[kGump_Down] = null;
+                m_gumpID[kGump_Down] = value;
+                m_gumpTextures[kGump_Down] = null;
             }
         }
 
@@ -52,8 +52,8 @@ namespace UltimaXNA.UltimaGUI.Controls
         {
             set
             {
-                _gumpID[kGump_Over] = value;
-                _gumpTextures[kGump_Over] = null;
+                m_gumpID[kGump_Over] = value;
+                m_gumpTextures[kGump_Over] = null;
             }
         }
 
@@ -63,9 +63,9 @@ namespace UltimaXNA.UltimaGUI.Controls
         public string Caption = string.Empty;
         public bool DoDrawBounds = false;
 
-        internal bool MouseDownOnThis { get { return (_clicked); } }
+        internal bool MouseDownOnThis { get { return (m_clicked); } }
 
-        UltimaGUI.TextRenderer _textRenderer;
+        UltimaGUI.TextRenderer m_textRenderer;
 
         public Button(Control owner, int page)
             : base(owner, page)
@@ -100,21 +100,21 @@ namespace UltimaXNA.UltimaGUI.Controls
             ButtonType = buttonType;
             ButtonParameter = param;
             ButtonID = buttonID;
-            _textRenderer = new UltimaGUI.TextRenderer("", 100, true);
+            m_textRenderer = new UltimaGUI.TextRenderer("", 100, true);
         }
 
         public override void Update(GameTime gameTime)
         {
             for (int i = kGump_Up; i <= kGump_Over; i++)
             {
-                if (_gumpID[i] != 0 && _gumpTextures[i] == null)
+                if (m_gumpID[i] != 0 && m_gumpTextures[i] == null)
                 {
-                    _gumpTextures[i] = UltimaData.GumpData.GetGumpXNA(_gumpID[i]);
+                    m_gumpTextures[i] = UltimaData.GumpData.GetGumpXNA(m_gumpID[i]);
                 }
             }
 
-            if (Width == 0 && Height == 0 && _gumpTextures[kGump_Up] != null)
-                Size = new Point2D(_gumpTextures[kGump_Up].Width, _gumpTextures[kGump_Up].Height);
+            if (Width == 0 && Height == 0 && m_gumpTextures[kGump_Up] != null)
+                Size = new Point2D(m_gumpTextures[kGump_Up].Width, m_gumpTextures[kGump_Up].Height);
 
             base.Update(gameTime);
         }
@@ -124,7 +124,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             Texture2D texture = getTextureFromMouseState();
 
             if (Caption != string.Empty)
-                _textRenderer.Text = Caption;
+                m_textRenderer.Text = Caption;
 
             spriteBatch.Draw2D(texture, new Rectangle(X, Y, Width, Height), 0, false, false);
             if (DoDrawBounds)
@@ -133,24 +133,24 @@ namespace UltimaXNA.UltimaGUI.Controls
             if (Caption != string.Empty)
             {
                 int yoffset = MouseDownOnThis ? 1 : 0;
-                _textRenderer.Draw(spriteBatch, 
-                    new Point2D(X + (Width - _textRenderer.Width) / 2,
-                        Y + yoffset + (Height - _textRenderer.Height) / 2));
+                m_textRenderer.Draw(spriteBatch, 
+                    new Point2D(X + (Width - m_textRenderer.Width) / 2,
+                        Y + yoffset + (Height - m_textRenderer.Height) / 2));
             }
             base.Draw(spriteBatch);
         }
 
         private Texture2D getTextureFromMouseState()
         {
-            if (MouseDownOnThis && _gumpTextures[kGump_Down] != null)
-                return _gumpTextures[kGump_Down];
-            else if (UserInterface.MouseOverControl == this && _gumpTextures[kGump_Over] != null)
-                return _gumpTextures[kGump_Over];
+            if (MouseDownOnThis && m_gumpTextures[kGump_Down] != null)
+                return m_gumpTextures[kGump_Down];
+            else if (UserInterface.MouseOverControl == this && m_gumpTextures[kGump_Over] != null)
+                return m_gumpTextures[kGump_Over];
             else
-                return _gumpTextures[kGump_Up];
+                return m_gumpTextures[kGump_Up];
         }
 
-        protected override bool _hitTest(int x, int y)
+        protected override bool m_hitTest(int x, int y)
         {
             Color[] pixelData;
             pixelData = new Color[1];
@@ -161,16 +161,16 @@ namespace UltimaXNA.UltimaGUI.Controls
                 return false;
         }
 
-        bool _clicked = false;
+        bool m_clicked = false;
 
         protected override void mouseDown(int x, int y, MouseButton button)
         {
-            _clicked = true;
+            m_clicked = true;
         }
 
         protected override void mouseUp(int x, int y, MouseButton button)
         {
-            _clicked = false;
+            m_clicked = false;
         }
 
         protected override void mouseClick(int x, int y, MouseButton button)

@@ -164,7 +164,7 @@ namespace UltimaXNA.UltimaGUI.HTML.Parsing
 		{
 			set
 			{
-				_bDecodeEntities=oE.bDecodeEntities=value;
+				m_bDecodeEntities = oE.bDecodeEntities=value;
 			}
 			get
 			{
@@ -172,7 +172,7 @@ namespace UltimaXNA.UltimaGUI.HTML.Parsing
 			}
 		}
 
-		bool _bDecodeEntities=false;
+		bool m_bDecodeEntities=false;
 
 		/// <summary>
 		/// If false (default) then mini entity set (&nbsp;) will be decoded, but not all of them

@@ -24,7 +24,7 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class LiftRejectionPacket : RecvPacket
     {
-        private static string[] _reasons = new string[] {
+        private static string[] m_reasons = new string[] {
               "Cannot lift the item.",
               "Out of range.",
               "Out of sight.",
@@ -33,22 +33,22 @@ namespace UltimaXNA.UltimaPackets.Server
               "???",
             };
 
-        readonly byte _errorCode;
+        readonly byte m_errorCode;
 
         public byte ErrorCode 
         {
-            get { return _errorCode; }
+            get { return m_errorCode; }
         }
 
         public string ErrorMessage
         {
-            get { return _reasons[_errorCode]; }
+            get { return m_reasons[m_errorCode]; }
         }
 
         public LiftRejectionPacket(PacketReader reader)
             : base(0x27, "Request Move Item Request")
         {
-            _errorCode = reader.ReadByte();
+            m_errorCode = reader.ReadByte();
         }
     }
 }

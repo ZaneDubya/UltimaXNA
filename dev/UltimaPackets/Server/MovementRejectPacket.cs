@@ -24,45 +24,45 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class MovementRejectPacket : RecvPacket
     {
-        readonly byte _sequence;
-        readonly short _x;
-        readonly short _y;
-        readonly byte _direction;
-        readonly sbyte _z;
+        readonly byte m_sequence;
+        readonly short m_x;
+        readonly short m_y;
+        readonly byte m_direction;
+        readonly sbyte m_z;
 
         public byte Sequence 
         {
-            get { return _sequence; } 
+            get { return m_sequence; } 
         }
         
         public short X
         {
-            get { return _x; }
+            get { return m_x; }
         }
 
         public short Y 
         {
-            get { return _y; }
+            get { return m_y; }
         }
         
         public byte Direction
         {
-            get { return _direction; }
+            get { return m_direction; }
         }
         
         public sbyte Z 
         {
-            get { return _z; } 
+            get { return m_z; } 
         }
 
         public MovementRejectPacket(PacketReader reader)
             : base(0x21, "Move Request Rejected")
         {
-            _sequence = reader.ReadByte(); // (matches sent sequence)
-            _x = reader.ReadInt16();
-            _y = reader.ReadInt16();
-            _direction = reader.ReadByte();
-            _z = reader.ReadSByte();
+            m_sequence = reader.ReadByte(); // (matches sent sequence)
+            m_x = reader.ReadInt16();
+            m_y = reader.ReadInt16();
+            m_direction = reader.ReadByte();
+            m_z = reader.ReadSByte();
         }
     }
 }

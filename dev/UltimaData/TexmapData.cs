@@ -24,11 +24,11 @@ namespace UltimaXNA.UltimaData
     {
         private static Texture2D[] m_Cache = new Texture2D[0x4000];
         private static FileIndexClint m_Index = new FileIndexClint("texidx.mul", "texmaps.mul");
-        private static GraphicsDevice _graphics;
+        private static GraphicsDevice m_graphics;
 
         public static void Initialize(GraphicsDevice graphics)
         {
-            _graphics = graphics;
+            m_graphics = graphics;
         }
 
         public static Texture2D GetTexmapTexture(int index)
@@ -77,7 +77,7 @@ namespace UltimaXNA.UltimaData
                 }
             }
 
-            Texture2D texture = new Texture2D(_graphics, textureSize, textureSize);
+            Texture2D texture = new Texture2D(m_graphics, textureSize, textureSize);
 
             texture.SetData<uint>(pixelData);
 

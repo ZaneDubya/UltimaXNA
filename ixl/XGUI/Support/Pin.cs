@@ -7,30 +7,30 @@ namespace InterXLib.XGUI.Support
     {
         public bool Pushed { get; private set; }
 
-        private Vector2 _start, _offset;
+        private Vector2 m_start, m_offset;
 
         public Vector2 Shift
         {
             get
             {
                 var state = Mouse.GetState();
-                _offset.X = _start.X - state.X;
-                _offset.Y = _start.Y - state.Y;
-                return _offset;
+                m_offset.X = m_start.X - state.X;
+                m_offset.Y = m_start.Y - state.Y;
+                return m_offset;
             }
         }
 
         public Pin()
         {
-            _start = Vector2.Zero;
-            _offset = Vector2.Zero;
+            m_start = Vector2.Zero;
+            m_offset = Vector2.Zero;
         }
 
         public void Push()
         {
             Pushed = true;
             var state = Mouse.GetState();
-            _start = new Vector2(state.X, state.Y);
+            m_start = new Vector2(state.X, state.Y);
         }
 
         public void Pull()

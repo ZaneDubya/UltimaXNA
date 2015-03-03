@@ -15,23 +15,23 @@ namespace UltimaXNA.UltimaVars
 {
     public static class Characters
     {
-        static CharacterListEntry[] _characters;
-        public static CharacterListEntry[] List { get { return _characters; } }
-        public static int Length { get { return _characters.Length; } }
+        static CharacterListEntry[] m_characters;
+        public static CharacterListEntry[] List { get { return m_characters; } }
+        public static int Length { get { return m_characters.Length; } }
 
-        static CharacterCityListPacket.StartingLocation[] _locations;
-        public static CharacterCityListPacket.StartingLocation[] StartingLocations { get { return _locations; } }
+        static CharacterCityListPacket.StartingLocation[] m_locations;
+        public static CharacterCityListPacket.StartingLocation[] StartingLocations { get { return m_locations; } }
 
-        static int _updateValue = 0;
-        public static int UpdateValue { get { return _updateValue; } }
+        static int m_updateValue = 0;
+        public static int UpdateValue { get { return m_updateValue; } }
 
         public static int FirstEmptySlot
         {
             get
             {
-                for (int i = 0; i < _characters.Length; i++)
+                for (int i = 0; i < m_characters.Length; i++)
                 {
-                    if (_characters[i].Name == string.Empty)
+                    if (m_characters[i].Name == string.Empty)
                         return i;
                 }
                 return -1;
@@ -40,14 +40,14 @@ namespace UltimaXNA.UltimaVars
 
         public static void SetCharacterList(CharacterListEntry[] list)
         {
-            _characters = list;
-            _updateValue++;
+            m_characters = list;
+            m_updateValue++;
         }
 
         public static void SetStartingLocations(CharacterCityListPacket.StartingLocation[] list)
         {
-            _locations = list;
-            _updateValue++;
+            m_locations = list;
+            m_updateValue++;
         }
     }
 }

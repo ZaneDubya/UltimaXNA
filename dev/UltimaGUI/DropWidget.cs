@@ -15,13 +15,13 @@ namespace UltimaXNA.UltimaGUI
 {
     class DropWidget
     {
-        ControlEvent _onItemDrop;
-        ControlEvent _onItemOver;
+        ControlEvent m_onItemDrop;
+        ControlEvent m_onItemOver;
 
         public DropWidget(ControlEvent notifyOnDrop, ControlEvent notifyOnOver)
         {
-            _onItemDrop = notifyOnDrop;
-            _onItemOver = notifyOnOver;
+            m_onItemDrop = notifyOnDrop;
+            m_onItemOver = notifyOnOver;
         }
 
         public void AddDropTarget(Control target)
@@ -38,11 +38,11 @@ namespace UltimaXNA.UltimaGUI
 
         void mouseUp(int x, int y, MouseButton button)
         {
-            Control that = ((Control)_onItemDrop.Target);
+            Control that = ((Control)m_onItemDrop.Target);
             if (UltimaInteraction.Cursor.IsHolding && 
                 (that.Area.Contains(x, y)))
             {
-                _onItemDrop();
+                m_onItemDrop();
             }
         }
 
@@ -50,7 +50,7 @@ namespace UltimaXNA.UltimaGUI
         {
             if (UltimaInteraction.Cursor.IsHolding)
             {
-                _onItemOver();
+                m_onItemOver();
             }
         }
     }

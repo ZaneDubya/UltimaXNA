@@ -24,31 +24,31 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class UpdateManaPacket : RecvPacket
     {
-        readonly Serial _serial;
-        readonly short _current;
-        readonly short _max;
+        readonly Serial m_serial;
+        readonly short m_current;
+        readonly short m_max;
 
         public Serial Serial
         {
-            get { return _serial; } 
+            get { return m_serial; } 
         }
 
         public short Current 
         {
-            get { return _current; } 
+            get { return m_current; } 
         }
 
         public short Max
         {
-            get { return _max; }
+            get { return m_max; }
         }
         
         public UpdateManaPacket(PacketReader reader)
             : base(0xA2, "Update Mana")
         {
-            _serial = reader.ReadInt32();
-            _max = reader.ReadInt16();
-            _current = reader.ReadInt16();
+            m_serial = reader.ReadInt32();
+            m_max = reader.ReadInt16();
+            m_current = reader.ReadInt16();
         }
     }
 }

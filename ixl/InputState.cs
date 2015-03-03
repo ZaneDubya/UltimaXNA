@@ -82,9 +82,9 @@ namespace InterXLib
 
             // update mouse stationary business
             if (hasMouseBeenStationarySinceLastUpdate)
-                _mouseStationaryMS += (float)frameTime;
+                m_mouseStationaryMS += (float)frameTime;
             else
-                _mouseStationaryMS = 0;
+                m_mouseStationaryMS = 0;
 
             m_KeyboardStateLastFrame = m_KeyboardStateThisFrame;
             m_KeyboardStateThisFrame = m_WndProc.KeyboardState;
@@ -101,12 +101,12 @@ namespace InterXLib
 
         private float m_TheTime = -1f;
 
-        private float _mouseStationaryMS = 0f;
+        private float m_mouseStationaryMS = 0f;
         public int MouseStationaryTimeMS
         {
             get
             {
-                return (int)_mouseStationaryMS;
+                return (int)m_mouseStationaryMS;
             }
         }
 

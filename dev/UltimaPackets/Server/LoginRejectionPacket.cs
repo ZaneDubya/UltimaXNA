@@ -36,7 +36,7 @@ namespace UltimaXNA.UltimaPackets.Server
 
     public class LoginRejectionPacket : RecvPacket
     {
-        private static Tuple<int, string>[] _Reasons = new Tuple<int, string>[] {
+        private static Tuple<int, string>[] m_Reasons = new Tuple<int, string>[] {
             new Tuple<int, string>(0x00, "Incorrect username and/or password."), 
             new Tuple<int, string>(0x01, "Someone is already using this account."),
             new Tuple<int, string>(0x02, "Your account has been blocked."),
@@ -45,32 +45,32 @@ namespace UltimaXNA.UltimaPackets.Server
             new Tuple<int, string>(0xFF, "Communication problem."),
         };
 
-        byte _id;
+        byte m_id;
 
         public string ReasonText
         {
             get
             {
-                for (int i = 0; i < _Reasons.Length; i++)
+                for (int i = 0; i < m_Reasons.Length; i++)
                 {
-                    if (_Reasons[i].Item1 == _id)
+                    if (m_Reasons[i].Item1 == m_id)
                     {
-                        return _Reasons[i].Item2;
+                        return m_Reasons[i].Item2;
                     }
                 }
-                return (_Reasons[_Reasons.Length - 1].Item2);
+                return (m_Reasons[m_Reasons.Length - 1].Item2);
             }
         }
 
         public LoginRejectionReasons Reason
         {
-            get { return (LoginRejectionReasons)_id; }
+            get { return (LoginRejectionReasons)m_id; }
         }
 
         public LoginRejectionPacket(PacketReader reader)
             : base(0x82, "Login Rejection")
         {
-            _id = reader.ReadByte();
+            m_id = reader.ReadByte();
         }
     }
 }

@@ -24,17 +24,17 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class OpenWebBrowserPacket : RecvPacket
     {
-        readonly string _url;
+        readonly string m_url;
 
         public string WebsiteUrl
         {
-            get { return _url; }
+            get { return m_url; }
         }
 
         public OpenWebBrowserPacket(PacketReader reader)
             : base(0xA5, "Open Web Browser")
         {
-            _url = reader.ReadString(reader.Size);
+            m_url = reader.ReadString(reader.Size);
         }
     }
 }

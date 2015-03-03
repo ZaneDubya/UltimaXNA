@@ -25,20 +25,20 @@ namespace UltimaXNA.UltimaData
 
         private static Skill[] m_List = new Skill[DefaultLength];
         public static Skill[] List { get { return m_List; } }
-        private static string[] _listNames = null;
+        private static string[] m_listNames = null;
         public static string[] ListNames
         {
             get
             {
-                if (_listNames == null)
+                if (m_listNames == null)
                 {
-                    _listNames = new string[m_List.Length];
+                    m_listNames = new string[m_List.Length];
                     for (int i = 0; i < m_List.Length; i++)
                     {
-                        _listNames[i] = m_List[i].Name;
+                        m_listNames[i] = m_List[i].Name;
                     }
                 }
-                return _listNames;
+                return m_listNames;
             }
         }
 

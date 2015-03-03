@@ -18,20 +18,20 @@ namespace UltimaXNA.UltimaWorld.Controller
         private WorldModel m_Model;
 
         // mouse input variables
-        bool _ContinuousMoveCheck = false;
-        const int _TimeHoveringBeforeTipMS = 1000;
+        bool m_ContinuousMoveCheck = false;
+        const int m_TimeHoveringBeforeTipMS = 1000;
 
         // make sure we drag the correct object variables
-        Vector2 _dragOffset;
-        AMapObject _dragObject;
+        Vector2 m_dragOffset;
+        AMapObject m_dragObject;
 
         // Are we asking for a target?
-        TargetTypes _TargettingType = TargetTypes.Nothing;
+        TargetTypes m_TargettingType = TargetTypes.Nothing;
         bool isTargeting
         {
             get
             {
-                if (_TargettingType == TargetTypes.Nothing)
+                if (m_TargettingType == TargetTypes.Nothing)
                     return false;
                 else
                     return true;
@@ -108,12 +108,12 @@ namespace UltimaXNA.UltimaWorld.Controller
                 UltimaVars.EngineVars.CursorDirection = Utility.DirectionFromVectors(new Vector2(400, 300), UltimaEngine.Input.MousePosition.ToVector2());
 
                 // Show a popup tip if we have hovered over this item for X seconds.
-                if (UltimaEngine.Input.MouseStationaryTimeMS >= _TimeHoveringBeforeTipMS)
+                if (UltimaEngine.Input.MouseStationaryTimeMS >= m_TimeHoveringBeforeTipMS)
                     if (IsometricRenderer.MouseOverObject != null)
                         createHoverLabel(IsometricRenderer.MouseOverObject);
 
                 // Changed to leverage movementFollowsMouse interface option -BERT
-                if (_ContinuousMoveCheck)
+                if (m_ContinuousMoveCheck)
                     doMovement();
 
                 // Show our target's name
@@ -139,12 +139,12 @@ namespace UltimaXNA.UltimaWorld.Controller
             if (e.EventType == MouseEvent.Down)
             {
                 // keep moving as long as the move button is down.
-                _ContinuousMoveCheck = true;
+                m_ContinuousMoveCheck = true;
             }
             else if (e.EventType == MouseEvent.Up)
             {
                 // If the movement mouse button has been released, stop moving.
-                _ContinuousMoveCheck = false;
+                m_ContinuousMoveCheck = false;
             }
 
             e.Handled = true;
@@ -157,7 +157,7 @@ namespace UltimaXNA.UltimaWorld.Controller
 
             // If isTargeting is true, then the target cursor is active and we are waiting for the player to target something.
             // If not, then we are just clicking the mouse and we need to find out if something is under the mouse cursor.
-            switch (_TargettingType)
+            switch (m_TargettingType)
             {
                 case TargetTypes.Object:
                     // Select Object
@@ -180,13 +180,13 @@ namespace UltimaXNA.UltimaWorld.Controller
 
         void onInteractButton(InputEventMouse e)
         {
-            AMapObject overObject = (e.EventType == MouseEvent.DragBegin) ? _dragObject : IsometricRenderer.MouseOverObject;
-            Vector2 overObjectOffset = (e.EventType == MouseEvent.DragBegin) ? _dragOffset : IsometricRenderer.MouseOverObjectPoint;
+            AMapObject overObject = (e.EventType == MouseEvent.DragBegin) ? m_dragObject : IsometricRenderer.MouseOverObject;
+            Vector2 overObjectOffset = (e.EventType == MouseEvent.DragBegin) ? m_dragOffset : IsometricRenderer.MouseOverObjectPoint;
 
             if (e.EventType == MouseEvent.Down)
             {
-                _dragObject = overObject;
-                _dragOffset = overObjectOffset;
+                m_dragObject = overObject;
+                m_dragOffset = overObjectOffset;
             }
 
             if (overObject == null)
@@ -426,17 +426,17 @@ namespace UltimaXNA.UltimaWorld.Controller
 
         void setTargeting(TargetTypes targetingType)
         {
-            _TargettingType = targetingType;
+            m_TargettingType = targetingType;
             // Set the UserInterface's cursor to a targetting cursor. If multi, tell the cursor which multi.
             UltimaInteraction.Cursor.IsTargeting = true;
             // Stop continuous movement.
-            _ContinuousMoveCheck = false;
+            m_ContinuousMoveCheck = false;
         }
 
         void clearTargeting()
         {
             // Clear our target cursor.
-            _TargettingType = TargetTypes.Nothing;
+            m_TargettingType = TargetTypes.Nothing;
             UltimaInteraction.Cursor.IsTargeting = false;
         }
 

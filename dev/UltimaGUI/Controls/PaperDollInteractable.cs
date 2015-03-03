@@ -73,54 +73,54 @@ namespace UltimaXNA.UltimaGUI.Controls
             EquipSlots.RightHand
         };
 
-        bool _isFemale;
-        bool _isElf;
+        bool m_isFemale;
+        bool m_isElf;
 
-        DropWidget _dropWidgetPaperdoll;
-        DropWidget _dropWidgetBackpack;
+        DropWidget m_dropWidgetPaperdoll;
+        DropWidget m_dropWidgetBackpack;
 
         public PaperDollInteractable(Control owner, int page, int x, int y)
             : base(0, 0)
         {
-            _owner = owner;
+            m_owner = owner;
             Position = new Point2D(x, y);
         }
 
         public override void Initialize()
         {
-            _dropWidgetPaperdoll = new DropWidget(onItemDropPaperdoll, onItemOverPaperdoll);
-            _dropWidgetBackpack = new DropWidget(onItemDropBackpack, onItemOverBackpack);
+            m_dropWidgetPaperdoll = new DropWidget(onItemDropPaperdoll, onItemOverPaperdoll);
+            m_dropWidgetBackpack = new DropWidget(onItemDropBackpack, onItemOverBackpack);
         }
 
         public override void Update(GameTime gameTime)
         {
             if (hasSourceEntity)
             {
-                _isFemale = ((Mobile)_sourceEntity).IsFemale;
-                _isElf = false;
-                if (_sourceEntityUpdateHash != ((Mobile)_sourceEntity).UpdateTicker)
+                m_isFemale = ((Mobile)m_sourceEntity).IsFemale;
+                m_isElf = false;
+                if (m_sourceEntityUpdateHash != ((Mobile)m_sourceEntity).UpdateTicker)
                 {
                     // update our hash
-                    _sourceEntityUpdateHash = ((Mobile)_sourceEntity).UpdateTicker;
+                    m_sourceEntityUpdateHash = ((Mobile)m_sourceEntity).UpdateTicker;
 
                     // clear the existing Controls
                     ClearControls();
-                    _dropWidgetPaperdoll.ClearDropTargets();
-                    _dropWidgetBackpack.ClearDropTargets();
+                    m_dropWidgetPaperdoll.ClearDropTargets();
+                    m_dropWidgetBackpack.ClearDropTargets();
 
                     // Add the base gump - the semi-naked paper doll.
                     if (true)
                     {
-                        int bodyID = 12 + (_isElf ? 2 : 0) + (_isFemale ? 1 : 0); // ((Mobile)_sourceEntity).BodyID;
-                        AddControl(new GumpPic(this, 0, 0, 0, bodyID, ((Mobile)_sourceEntity).Hue));
+                        int bodyID = 12 + (m_isElf ? 2 : 0) + (m_isFemale ? 1 : 0); // ((Mobile)m_sourceEntity).BodyID;
+                        AddControl(new GumpPic(this, 0, 0, 0, bodyID, ((Mobile)m_sourceEntity).Hue));
                         LastControl.HandlesMouseInput = true;
-                        _dropWidgetPaperdoll.AddDropTarget(LastControl);
+                        m_dropWidgetPaperdoll.AddDropTarget(LastControl);
                     }
 
                     // Loop through the items on the mobile and create the gump pics.
                     for (int i = 0; i < drawOrder.Length; i++)
                     {
-                        Item item = ((Mobile)_sourceEntity).GetItem((int)drawOrder[i]);
+                        Item item = ((Mobile)m_sourceEntity).GetItem((int)drawOrder[i]);
                         if (item == null)
                             continue;
 
@@ -137,17 +137,17 @@ namespace UltimaXNA.UltimaGUI.Controls
 
                         AddControl(new ItemGumplingPaperdoll(this, 0, 0, item));
                         ((ItemGumplingPaperdoll)LastControl).SlotIndex = (int)i;
-                        ((ItemGumplingPaperdoll)LastControl).IsFemale = _isFemale;
+                        ((ItemGumplingPaperdoll)LastControl).IsFemale = m_isFemale;
                         ((ItemGumplingPaperdoll)LastControl).CanPickUp = canPickUp;
-                        _dropWidgetPaperdoll.AddDropTarget(LastControl);
+                        m_dropWidgetPaperdoll.AddDropTarget(LastControl);
                     }
                     // If this object has a backpack, draw it last.
-                    if (((Mobile)_sourceEntity).GetItem((int)EquipSlots.Backpack) != null)
+                    if (((Mobile)m_sourceEntity).GetItem((int)EquipSlots.Backpack) != null)
                     {
                         AddControl(new GumpPic(this, 0, -5, 0, 0xC4F6, 0));
                         LastControl.HandlesMouseInput = true;
                         LastControl.OnMouseDoubleClick += dblclick_Backpack;
-                        _dropWidgetBackpack.AddDropTarget(LastControl);
+                        m_dropWidgetBackpack.AddDropTarget(LastControl);
                     }
                 }
             }
@@ -156,7 +156,7 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         void dblclick_Backpack(int x, int y, MouseButton button)
         {
-            Container i = ((Mobile)_sourceEntity).Backpack;
+            Container i = ((Mobile)m_sourceEntity).Backpack;
             UltimaInteraction.DoubleClick(i);
         }
 
@@ -172,7 +172,7 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         void onItemDropBackpack()
         {
-            UltimaInteraction.DropItemToContainer(UltimaInteraction.Cursor.HoldingItem, (Container)((Mobile)_sourceEntity).GetItem((int)EquipSlots.Backpack));
+            UltimaInteraction.DropItemToContainer(UltimaInteraction.Cursor.HoldingItem, (Container)((Mobile)m_sourceEntity).GetItem((int)EquipSlots.Backpack));
         }
 
         void onItemOverBackpack()
@@ -185,28 +185,28 @@ namespace UltimaXNA.UltimaGUI.Controls
         //     Control.Dispose();
        // }
 
-        int _sourceEntityUpdateHash = 0x7FFFFFFF;
-        BaseEntity _sourceEntity = null;
+        int m_sourceEntityUpdateHash = 0x7FFFFFFF;
+        BaseEntity m_sourceEntity = null;
         public BaseEntity SourceEntity
         {
             set
             {
                 if ((value is Mobile) || value is PlayerMobile)
                 {
-                    _sourceEntity = value;
-                    _sourceEntityUpdateHash = 0x7FFFFFFF;
+                    m_sourceEntity = value;
+                    m_sourceEntityUpdateHash = 0x7FFFFFFF;
                 }
             }
             get
             {
-                return _sourceEntity;
+                return m_sourceEntity;
             }
         }
         bool hasSourceEntity
         {
             get
             {
-                return (_sourceEntity == null) ? false : true;
+                return (m_sourceEntity == null) ? false : true;
             }
         }
     }

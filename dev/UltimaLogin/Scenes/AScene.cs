@@ -20,24 +20,24 @@ namespace UltimaXNA.Scenes
 
         protected UltimaClient Client { get; private set; }
 
-        SceneState _sceneState;
-        float _transitionAlpha;
-        float _elapsed;
-        bool _isInitialized;
+        SceneState m_sceneState;
+        float m_transitionAlpha;
+        float m_elapsed;
+        bool m_isInitialized;
 
         public bool IsInitialized
         {
-            get { return _isInitialized; }
-            set { _isInitialized = value; }
+            get { return m_isInitialized; }
+            set { m_isInitialized = value; }
         }
 
         public SceneState SceneState
         {
-            get { return _sceneState; }
+            get { return m_sceneState; }
             set
             {
-                _sceneState = value;
-                _elapsed = 0;
+                m_sceneState = value;
+                m_elapsed = 0;
             }
         }
 
@@ -48,7 +48,7 @@ namespace UltimaXNA.Scenes
 
         public AScene()
         {
-            _sceneState = SceneState.TransitioningOn;
+            m_sceneState = SceneState.TransitioningOn;
         }
 
         public virtual void Intitialize(UltimaClient client)
@@ -58,30 +58,30 @@ namespace UltimaXNA.Scenes
 
         public virtual void Update(double totalTime, double frameTime)
         {
-            _elapsed += (float)frameTime;
+            m_elapsed += (float)frameTime;
 
-            switch (_sceneState)
+            switch (m_sceneState)
             {
                 case SceneState.TransitioningOn:
                     {
-                        _transitionAlpha = 1 - (_elapsed / (float)TransitionOffLength.TotalSeconds);
+                        m_transitionAlpha = 1 - (m_elapsed / (float)TransitionOffLength.TotalSeconds);
 
-                        if (_elapsed >= (float)TransitionOnLength.TotalSeconds)
+                        if (m_elapsed >= (float)TransitionOnLength.TotalSeconds)
                         {
-                            _elapsed = 0;
-                            _sceneState = SceneState.Active;
+                            m_elapsed = 0;
+                            m_sceneState = SceneState.Active;
                         }
 
                         break;
                     }
                 case SceneState.TransitioningOff:
                     {
-                        _transitionAlpha = _elapsed / (float)TransitionOnLength.TotalSeconds;
+                        m_transitionAlpha = m_elapsed / (float)TransitionOnLength.TotalSeconds;
 
-                        if (_elapsed >= (float)TransitionOffLength.TotalSeconds)
+                        if (m_elapsed >= (float)TransitionOffLength.TotalSeconds)
                         {
-                            _elapsed = 0;
-                            _sceneState = SceneState.None;
+                            m_elapsed = 0;
+                            m_sceneState = SceneState.None;
 
                             if (TransitionCompleted != null)
                                 TransitionCompleted();

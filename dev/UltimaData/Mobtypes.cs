@@ -19,7 +19,7 @@ namespace UltimaXNA.UltimaData
 {
     public sealed class Mobtypes
     {
-        private static Dictionary<int,MobtypeEntry> _entries = new Dictionary<int,MobtypeEntry>();
+        private static Dictionary<int,MobtypeEntry> m_entries = new Dictionary<int,MobtypeEntry>();
 
         static Mobtypes()
         {
@@ -34,11 +34,11 @@ namespace UltimaXNA.UltimaData
                     {
                         string[] data = line.Split('\t');
                         int bodyID = Int32.Parse(data[0]);
-                        if (_entries.ContainsKey(bodyID))
+                        if (m_entries.ContainsKey(bodyID))
                         {
-                            _entries.Remove(bodyID);
+                            m_entries.Remove(bodyID);
                         }
-                        _entries.Add(bodyID, new MobtypeEntry(data[1], data[2]));
+                        m_entries.Add(bodyID, new MobtypeEntry(data[1], data[2]));
                     }
                 }
             }
@@ -46,7 +46,7 @@ namespace UltimaXNA.UltimaData
 
         public static MobType AnimationTypeXXX(int bodyID)
         {
-            return _entries[bodyID].AnimationType;
+            return m_entries[bodyID].AnimationType;
         }
     }
 

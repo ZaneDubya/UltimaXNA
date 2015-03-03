@@ -22,7 +22,7 @@ namespace UltimaXNA.UltimaGUI.Controls
         public int Hue = 0;
         public int FontID = 0;
         public string Text = string.Empty;
-        Texture2D _texture = null;
+        Texture2D m_texture = null;
 
         public TextLabelAsciiCropped(Control owner, int page)
             : base(owner, page)
@@ -52,9 +52,9 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         public override void Draw(SpriteBatchUI spriteBatch)
         {
-            if (_texture == null)
-                _texture = ASCIIText.GetTextTexture(Text, FontID, Area.Width);
-            spriteBatch.Draw2D(_texture, Position, Hue, true, false);
+            if (m_texture == null)
+                m_texture = ASCIIText.GetTextTexture(Text, FontID, Area.Width);
+            spriteBatch.Draw2D(m_texture, Position, Hue, true, false);
             base.Draw(spriteBatch);
         }
     }
