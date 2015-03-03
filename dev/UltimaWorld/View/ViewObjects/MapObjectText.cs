@@ -1,7 +1,6 @@
 ﻿/***************************************************************************
+ *   
  *   MapObjectText.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
- *   Based on code from ClintXNA's renderer: http://www.runuo.com/forums/xna/92023-hi.html
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by

@@ -433,9 +433,9 @@ namespace UltimaXNA
                         Diagnostics.Logger.Warn("Extended Stats packet (0xBF subcommand 0x19) received for a mobile not our own.");
                     else
                     {
-                        UltimaVars.Status.StrengthLock = p.StatisticLocks.Strength;
-                        UltimaVars.Status.DexterityLock = p.StatisticLocks.Dexterity;
-                        UltimaVars.Status.IntelligenceLock = p.StatisticLocks.Intelligence;
+                        UltimaVars.StatLocks.StrengthLock = p.StatisticLocks.Strength;
+                        UltimaVars.StatLocks.DexterityLock = p.StatisticLocks.Dexterity;
+                        UltimaVars.StatLocks.IntelligenceLock = p.StatisticLocks.Intelligence;
                     }
                     break;
                 case 0x1D: // House revision state

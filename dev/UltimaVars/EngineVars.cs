@@ -117,7 +117,7 @@ namespace UltimaXNA.UltimaVars
             set
             {
                 m_theGameTime = value;
-                UltimaVars.EngineVars.UpdateFPS(m_theGameTime);
+                UpdateFPS(m_theGameTime);
             }
         }
     }

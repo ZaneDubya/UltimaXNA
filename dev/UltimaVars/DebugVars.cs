@@ -40,11 +40,6 @@ namespace UltimaXNA.UltimaVars
                     debugMessage += string.Format("\nData Read: {0}", UltimaVars.Metrics.TotalDataRead.ToString());
             }
 
-            BaseEntity e = EntityManager.GetPlayerObject();
-            if (e != null)
-                debugMessage += "\nMyPos:" + e.Position;
-
-
             if (IsometricRenderer.MouseOverObject != null)
                 debugMessage += "\nOVER:" + IsometricRenderer.MouseOverObject.ToString();
             else

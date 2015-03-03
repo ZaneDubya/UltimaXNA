@@ -139,7 +139,7 @@
     <Compile Include="UltimaVars\DebugVars.cs" />
     <Compile Include="UltimaVars\Features.cs" />
     <Compile Include="UltimaVars\Skills.cs" />
-    <Compile Include="UltimaVars\Status.cs" />
+    <Compile Include="UltimaVars\StatLocks.cs" />
     <Compile Include="Core\BaseEngine.cs" />
     <Compile Include="UltimaPackets\Client\AsciiSpeechPacket.cs" />
     <Compile Include="UltimaPackets\Client\AttackRequestPacket.cs" />

@@ -12,7 +12,7 @@ using System;
 
 namespace UltimaXNA.UltimaVars
 {
-    public static class Status
+    public static class StatLocks
     {
         public static int StrengthLock = 0;
         public static int DexterityLock = 0;

@@ -24,7 +24,7 @@ namespace UltimaXNA.UltimaWorld
     {
 
     }
-
+    /*
     class WorldTexture
     {
         Texture2D _texture;
@@ -123,4 +123,5 @@ namespace UltimaXNA.UltimaWorld
             }
         }
     }
+    */
 }
