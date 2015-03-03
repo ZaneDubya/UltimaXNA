@@ -180,6 +180,7 @@
     <Compile Include="UltimaPackets\Client\TargetXYZPacket.cs" />
     <Compile Include="UltimaPackets\Client\UnicodeSpeechPacket.cs" />
     <Compile Include="UltimaPackets\Client\UOGInfoRequestPacket.cs" />
+    <Compile Include="UltimaWorld\Controller\WorldClient.cs" />
     <Compile Include="UltimaWorld\Model\ContextMenu.cs" />
     <Compile Include="UltimaPackets\Server\CharacterListUpdatePacket.cs" />
     <Compile Include="UltimaPackets\Incomplete\DisplayGumpFastPacket.cs" />
