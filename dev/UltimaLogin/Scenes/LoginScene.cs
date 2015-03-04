@@ -33,8 +33,8 @@ namespace UltimaXNA.Scenes
         public override void Intitialize(UltimaClient client)
         {
             base.Intitialize(client);
-            Gump g = (Gump)UltimaEngine.UserInterface.AddControl(new UltimaGUI.Gumps.LoginGump(), 0, 0);
-            ((UltimaGUI.Gumps.LoginGump)g).OnLogin += this.OnLogin;
+            Gump g = (Gump)UltimaEngine.UserInterface.AddControl(new UltimaGUI.LoginGumps.LoginGump(), 0, 0);
+            ((UltimaGUI.LoginGumps.LoginGump)g).OnLogin += this.OnLogin;
             UltimaVars.EngineVars.Map = -1;
         }
 
@@ -45,7 +45,7 @@ namespace UltimaXNA.Scenes
 
         public override void Dispose()
         {
-            UltimaEngine.UserInterface.GetControl<UltimaGUI.Gumps.LoginGump>(0).Dispose();
+            UltimaEngine.UserInterface.GetControl<UltimaGUI.LoginGumps.LoginGump>(0).Dispose();
             base.Dispose();
         }
 

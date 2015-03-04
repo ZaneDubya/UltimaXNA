@@ -44,10 +44,10 @@ namespace UltimaXNA.Scenes
         public override void Intitialize(UltimaClient client)
         {
             base.Intitialize(client);
-            Gump g = (Gump)UltimaEngine.UserInterface.AddControl(new UltimaGUI.Gumps.SelectServerGump(), 0, 0);
-            ((UltimaGUI.Gumps.SelectServerGump)g).OnBackToLoginScreen += this.OnBackToLoginScreen;
-            ((UltimaGUI.Gumps.SelectServerGump)g).OnSelectLastServer += this.OnSelectLastServer;
-            ((UltimaGUI.Gumps.SelectServerGump)g).OnSelectServer += this.OnSelectServer;
+            Gump g = (Gump)UltimaEngine.UserInterface.AddControl(new UltimaGUI.LoginGumps.SelectServerGump(), 0, 0);
+            ((UltimaGUI.LoginGumps.SelectServerGump)g).OnBackToLoginScreen += this.OnBackToLoginScreen;
+            ((UltimaGUI.LoginGumps.SelectServerGump)g).OnSelectLastServer += this.OnSelectLastServer;
+            ((UltimaGUI.LoginGumps.SelectServerGump)g).OnSelectServer += this.OnSelectServer;
         }
 
         public override void Update(double totalTime, double frameTime)
@@ -89,7 +89,7 @@ namespace UltimaXNA.Scenes
 
         public override void Dispose()
         {
-            UltimaEngine.UserInterface.GetControl<UltimaGUI.Gumps.SelectServerGump>(0).Dispose();
+            UltimaEngine.UserInterface.GetControl<UltimaGUI.LoginGumps.SelectServerGump>(0).Dispose();
             base.Dispose();
         }
 
@@ -100,7 +100,7 @@ namespace UltimaXNA.Scenes
 
         public void OnSelectServer(int index)
         {
-            UltimaEngine.UserInterface.GetControl<UltimaGUI.Gumps.SelectServerGump>(0).ActivePage = 2;
+            UltimaEngine.UserInterface.GetControl<UltimaGUI.LoginGumps.SelectServerGump>(0).ActivePage = 2;
             Client.SelectServer(index);
         }
 

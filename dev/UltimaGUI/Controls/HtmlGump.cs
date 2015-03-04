@@ -66,21 +66,33 @@ namespace UltimaXNA.UltimaGUI.Controls
                     base.Width = value;
                     if (m_textRenderer != null)
                     {
-                        m_textRenderer.MaxWidth = ClientWidth;
+                        m_textRenderer.MaxWidth = ContentWidth;
                         m_textChanged = true;
                     }
                 }
             }
         }
 
-        public int ClientWidth
+        public override int Height
+        {
+            get
+            {
+                return base.Height;
+            }
+            set
+            {
+                base.Height = value;
+            }
+        }
+
+        public int ContentWidth
         {
             get
             {
                 if (HasScrollbar)
-                    return Width - 20;
+                    return base.Width - 20;
                 else
-                    return Width;
+                    return base.Width;
             }
         }
 
@@ -117,12 +129,12 @@ namespace UltimaXNA.UltimaGUI.Controls
         {
             Position = new Point2D(x, y);
             Width = width;
-            Height = height;
             Size = new Point2D(width, height);
             Text = text;
             m_background = (background == 1) ? true : false;
             m_hasScrollbar = (scrollbar == 1) ? true : false;
-            m_textRenderer = new UltimaGUI.TextRenderer(text, ClientWidth, true);
+            m_textRenderer = new TextRenderer(text, Width, true);
+            Height = m_textRenderer.Height;
         }
 
         public override void Update(GameTime gameTime)

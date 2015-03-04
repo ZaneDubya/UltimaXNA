@@ -11,7 +11,7 @@
 using UltimaXNA.UltimaGUI.Controls;
 using UltimaXNA.UltimaVars;
 
-namespace UltimaXNA.UltimaGUI.Gumps
+namespace UltimaXNA.UltimaGUI.LoginGumps
 {
     class CharacterListGump : Gump
     {

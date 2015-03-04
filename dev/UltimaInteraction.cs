@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using UltimaXNA.Entity;
 using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaGUI.Controls;
+using UltimaXNA.UltimaGUI.Gumps;
 using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.UltimaWorld;
 
@@ -153,7 +154,7 @@ namespace UltimaXNA
                 gump.Dispose();
             }
 
-            gump = new UltimaGUI.Gumps.ContainerGump(entity, ((Container)entity).ItemID);
+            gump = new ContainerGump(entity, ((Container)entity).ItemID);
             UltimaEngine.UserInterface.AddControl(gump, 64, 64);
             return gump;
         }
@@ -182,12 +183,12 @@ namespace UltimaXNA
         {
             m_ChatQueue.Add(new QueuedMessage(text, hue, font));
 
-            Gump g = UltimaEngine.UserInterface.GetControl<UltimaGUI.Gumps.ChatWindow>(0);
+            Gump g = UltimaEngine.UserInterface.GetControl<ChatWindow>(0);
             if (g != null)
             {
                 foreach (QueuedMessage msg in m_ChatQueue)
                 {
-                    ((UltimaGUI.Gumps.ChatWindow)g).AddLine(msg.Text);
+                    ((ChatWindow)g).AddLine(msg.Text);
                 }
                 m_ChatQueue.Clear();
             }
