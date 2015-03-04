@@ -12,7 +12,7 @@ using UltimaXNA.UltimaGUI.Controls;
 using UltimaXNA.UltimaPackets;
 using UltimaXNA.UltimaVars;
 
-namespace UltimaXNA.UltimaGUI.Gumps
+namespace UltimaXNA.UltimaGUI.LoginGumps
 {
     public delegate void BackToLoginScreenEvent();
     public delegate void SelectLastServerEvent();

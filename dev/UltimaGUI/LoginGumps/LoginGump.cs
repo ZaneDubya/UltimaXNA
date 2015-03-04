@@ -11,7 +11,7 @@
 using UltimaXNA.Rendering;
 using UltimaXNA.UltimaGUI.Controls;
 
-namespace UltimaXNA.UltimaGUI.Gumps
+namespace UltimaXNA.UltimaGUI.LoginGumps
 {
     public delegate void LoginEvent(string server, int port, string account, string password);
 

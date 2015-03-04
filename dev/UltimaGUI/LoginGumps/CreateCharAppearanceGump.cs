@@ -11,7 +11,7 @@
 using Microsoft.Xna.Framework;
 using UltimaXNA.UltimaGUI.Controls;
 
-namespace UltimaXNA.UltimaGUI.Gumps
+namespace UltimaXNA.UltimaGUI.LoginGumps
 {
     class CreateCharAppearanceGump : Gump
     {

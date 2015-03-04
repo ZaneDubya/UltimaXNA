@@ -10,7 +10,7 @@
  ***************************************************************************/
 using UltimaXNA.UltimaGUI.Controls;
 
-namespace UltimaXNA.UltimaGUI.Gumps
+namespace UltimaXNA.UltimaGUI.LoginGumps
 {
     class CreateCharSkillsGump : Gump
     {

@@ -19,7 +19,7 @@
 using Microsoft.Xna.Framework;
 using System;
 using UltimaXNA.UltimaGUI;
-using UltimaXNA.UltimaGUI.Gumps;
+using UltimaXNA.UltimaGUI.LoginGumps;
 using UltimaXNA.UltimaPackets;
 using UltimaXNA.UltimaPackets.Client;
 

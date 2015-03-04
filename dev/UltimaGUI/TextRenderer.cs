@@ -1,6 +1,6 @@
 ﻿/***************************************************************************
+ *   
  *   TextRenderer.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -8,13 +8,15 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using System.Collections.Generic;
+#region usings
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 using UltimaXNA.Rendering;
-using UltimaXNA.UltimaGUI.HTML;
 using UltimaXNA.UltimaData;
 using UltimaXNA.UltimaData.Fonts;
+using UltimaXNA.UltimaGUI.HTML;
+#endregion
 
 namespace UltimaXNA.UltimaGUI
 {
