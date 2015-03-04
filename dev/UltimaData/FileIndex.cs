@@ -12,6 +12,7 @@
 #region usings
 using System.IO;
 using System.Runtime.InteropServices;
+using InterXLib;
 #endregion
 
 namespace UltimaXNA.UltimaData
@@ -24,7 +25,7 @@ namespace UltimaXNA.UltimaData
         public Entry3D[] Index { get { return m_Index; } }
         public Stream Stream { get { return m_Stream; } }
 
-        public Stream Seek(int index, out int length, out int extra, out bool patched)
+        public BinaryFileReader Seek(int index, out int length, out int extra, out bool patched)
         {
             if (index < 0 || index >= m_Index.Length)
             {
@@ -45,12 +46,12 @@ namespace UltimaXNA.UltimaData
             length = e.length & 0x7FFFFFFF;
             extra = e.extra;
 
-            if ((e.length & (1 << 31)) != 0)
+            if ((e.length & 0x80000000) != 0)
             {
                 patched = true;
 
                 Versioning.Stream.Seek(e.lookup, SeekOrigin.Begin);
-                return Versioning.Stream;
+                return new BinaryFileReader(new BinaryReader(Versioning.Stream));
             }
             else if (m_Stream == null)
             {
@@ -61,11 +62,18 @@ namespace UltimaXNA.UltimaData
 
             patched = false;
 
-            m_Stream.Seek(e.lookup, SeekOrigin.Begin);
-            return m_Stream;
+            m_Stream.Position = e.lookup;
+            return new BinaryFileReader(new BinaryReader(m_Stream));
         }
 
-        public FileIndex(string idxFile, string mulFile, int length, int file)
+        /// <summary>
+        /// Creates a reference to an index file. (Ex: anim.idx)
+        /// </summary>
+        /// <param name="idxFile">Name of .idx file in UO base directory.</param>
+        /// <param name="mulFile">Name of .mul file that this index file provides an index for.</param>
+        /// <param name="length">Number of indexes in this index file.</param>
+        /// <param name="patch_file">Index to patch data in Versioning.</param>
+        public FileIndex(string idxFile, string mulFile, int length, int patch_file)
         {
             m_Index = new Entry3D[length];
 
@@ -114,7 +122,7 @@ namespace UltimaXNA.UltimaData
             {
                 Entry5D patch = patches[i];
 
-                if (patch.file == file && patch.index >= 0 && patch.index < length)
+                if (patch.file == patch_file && patch.index >= 0 && patch.index < length)
                 {
                     m_Index[patch.index].lookup = patch.lookup;
                     m_Index[patch.index].length = patch.length | (1 << 31);

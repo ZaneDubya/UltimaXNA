@@ -15,6 +15,7 @@ using System.Collections;
 using System.IO;
 using System.Drawing;
 using System.Drawing.Imaging;
+using InterXLib;
 #endregion
 
 namespace UltimaXNA.UltimaData
@@ -54,12 +55,11 @@ namespace UltimaXNA.UltimaData
             {
                 int length, extra;
                 bool patched;
-                Stream stream = m_FileIndex.Seek(index, out length, out extra, out patched);
-
-                if (stream == null)
+                BinaryFileReader reader = m_FileIndex.Seek(index, out length, out extra, out patched);
+                if (reader == null)
                     return MultiComponentList.Empty;
 
-                return new MultiComponentList(new BinaryReader(stream), length / 12);
+                return new MultiComponentList(reader, length / 12);
             }
             catch
             {
@@ -90,9 +90,9 @@ namespace UltimaXNA.UltimaData
             public int m_Flags;
         }
 
-        public MultiComponentList(BinaryReader reader, int count)
+        public MultiComponentList(BinaryFileReader reader, int count)
         {
-            int streamStart = (int)reader.BaseStream.Position;
+            int metrics_dataread_start = (int)reader.Position;
 
             m_Min = m_Max = Point.Empty;
 
@@ -100,11 +100,11 @@ namespace UltimaXNA.UltimaData
 
             for (int i = 0; i < count; ++i)
             {
-                allTiles[i].m_ItemID = reader.ReadInt16();
-                allTiles[i].m_OffsetX = reader.ReadInt16();
-                allTiles[i].m_OffsetY = reader.ReadInt16();
-                allTiles[i].m_OffsetZ = reader.ReadInt16();
-                allTiles[i].m_Flags = reader.ReadInt32();
+                allTiles[i].m_ItemID = reader.ReadShort();
+                allTiles[i].m_OffsetX = reader.ReadShort();
+                allTiles[i].m_OffsetY = reader.ReadShort();
+                allTiles[i].m_OffsetZ = reader.ReadShort();
+                allTiles[i].m_Flags = reader.ReadInt();
 
                 MultiTileEntry e = allTiles[i];
 
@@ -160,7 +160,7 @@ namespace UltimaXNA.UltimaData
                 }
             }
 
-            UltimaVars.Metrics.ReportDataRead((int)reader.BaseStream.Position - streamStart);
+            UltimaVars.Metrics.ReportDataRead((int)reader.Position - metrics_dataread_start);
         }
 
         private MultiComponentList()

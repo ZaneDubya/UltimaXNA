@@ -307,7 +307,6 @@
     </Compile>
     <Compile Include="UltimaEngine.cs" />
     <Compile Include="UltimaData\FileManager.cs" />
-    <Compile Include="UltimaData\FileIndexClint.cs" />
     <Compile Include="Core\Point.cs" />
     <Compile Include="Entity\Container.cs" />
     <Compile Include="Entity\ContainerItem.cs" />

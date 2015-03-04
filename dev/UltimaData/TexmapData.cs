@@ -10,12 +10,8 @@
  *
  ***************************************************************************/
 #region usings
-using System;
-using System.IO;
-using System.Drawing;
-using System.Drawing.Imaging;
+using InterXLib;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
 #endregion
 
 namespace UltimaXNA.UltimaData
@@ -23,7 +19,7 @@ namespace UltimaXNA.UltimaData
     class TexmapData
     {
         private static Texture2D[] m_Cache = new Texture2D[0x4000];
-        private static FileIndexClint m_Index = new FileIndexClint("texidx.mul", "texmaps.mul");
+        private static FileIndex m_Index = new FileIndex("texidx.mul", "texmaps.mul", 0x4000, -1); // !!! must find patch file reference for artdata.
         private static GraphicsDevice m_graphics;
 
         public static void Initialize(GraphicsDevice graphics)
@@ -47,16 +43,19 @@ namespace UltimaXNA.UltimaData
 
         private static unsafe Texture2D readTexmapTexture(int index)
         {
-            int textureSize;
+            int length, extra;
+            bool is_patched;
 
-            m_Index.Seek(index, out textureSize);
+            BinaryFileReader reader = m_Index.Seek(index, out length, out extra, out is_patched);
+            if (reader == null)
+                return null;
 
-            int streamStart = (int)m_Index.BinaryReader.BaseStream.Position;
+            int metrics_dataread_start = (int)reader.Position;
 
-            textureSize = (textureSize == 0) ? 64 : 128;
+            int textureSize = (extra == 0) ? 64 : 128;
 
             uint[] pixelData = new uint[textureSize * textureSize];
-            ushort[] fileData = m_Index.ReadUInt16Array(textureSize * textureSize);
+            ushort[] fileData = reader.ReadUShorts(textureSize * textureSize);
 
             fixed (uint* pData = pixelData)
             {
@@ -81,7 +80,7 @@ namespace UltimaXNA.UltimaData
 
             texture.SetData<uint>(pixelData);
 
-            UltimaVars.Metrics.ReportDataRead((int)m_Index.BinaryReader.BaseStream.Position - streamStart);
+            UltimaVars.Metrics.ReportDataRead((int)reader.Position - metrics_dataread_start);
 
             return texture;
         }

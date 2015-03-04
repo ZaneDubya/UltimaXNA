@@ -16,6 +16,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using InterXLib;
 #endregion
 
 namespace UltimaXNA.UltimaData
@@ -44,19 +45,18 @@ namespace UltimaXNA.UltimaData
             {
                 int length, extra;
                 bool patched;
-                Stream stream = m_FileIndex.Seek(index, out length, out extra, out patched);
 
-                if (stream == null)
+                BinaryFileReader reader = m_FileIndex.Seek(index, out length, out extra, out patched);
+                if (reader == null)
                     return null;
 
                 int width = (extra >> 16) & 0xFFFF;
                 int height = extra & 0xFFFF;
 
-                BinaryReader bin = new BinaryReader(stream);
-                int start = (int)bin.BaseStream.Position;
+                int metrics_dataread_start = (int)reader.Position;
 
-                int[] lookups = FileIndexClint.ReadInt32Array(bin, height);
-                ushort[] fileData = FileIndexClint.ReadUInt16Array(bin, length - (height * 2));
+                int[] lookups = reader.ReadInts(height);
+                ushort[] fileData = reader.ReadUShorts(length - (height * 2));
 
                 uint[] pixels = new uint[width * height];
 

@@ -9,10 +9,13 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+#region usings
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using InterXLib;
+#endregion
 
 namespace UltimaXNA.UltimaData
 {
@@ -55,18 +58,15 @@ namespace UltimaXNA.UltimaData
 
             int length, extra;
             bool patched;
-            Stream stream = m_FileIndex.Seek(index, out length, out extra, out patched);
-
-            if (stream == null)
+            BinaryFileReader reader = m_FileIndex.Seek(index, out length, out extra, out patched);
+            if (reader == null)
                 return m_List[index] = new Skill(SkillVars.NullV);
 
-            return m_List[index] = LoadSkill(index, stream);
+            return m_List[index] = LoadSkill(index, reader);
         }
 
-        private static unsafe Skill LoadSkill(int index, Stream stream)
+        private static unsafe Skill LoadSkill(int index, BinaryFileReader reader)
         {
-            BinaryReader bin = new BinaryReader(stream);
-
             int nameLength = m_FileIndex.Index[index].length - 2;
             int extra = m_FileIndex.Index[index].extra;
 
@@ -74,9 +74,9 @@ namespace UltimaXNA.UltimaData
             byte[] set2 = new byte[nameLength];
             byte[] set3 = new byte[1];
 
-            bin.Read(set1, 0, 1);
-            bin.Read(set2, 0, nameLength);
-            bin.Read(set3, 0, 1);
+            set1 = reader.ReadBytes(1);
+            set2 = reader.ReadBytes(nameLength);
+            set3 = reader.ReadBytes(1);
 
             bool useBtn = SkillsData.ToBool(set1);
             string name = SkillsData.ToString(set2);
