@@ -15,6 +15,7 @@ using System.Collections;
 using System.IO;
 using System.Text.RegularExpressions;
 using Microsoft.Xna.Framework.Graphics;
+using InterXLib;
 #endregion
 
 namespace UltimaXNA.UltimaData
@@ -61,8 +62,6 @@ namespace UltimaXNA.UltimaData
             FileIndex fileIndex;
             int length, extra;
             bool patched;
-            Stream stream;
-            BinaryReader bin;
 
             //if (body >= 0x2000)
             //    return null;
@@ -77,28 +76,24 @@ namespace UltimaXNA.UltimaData
             if (f != null)
                 return f;
 
-            stream = fileIndex.Seek(animIndex, out length, out extra, out patched);
-
-            if (stream == null)
-            {
+            BinaryFileReader reader = fileIndex.Seek(animIndex, out length, out extra, out patched);
+            if (reader == null)
                 return null;
-            }
-            else
-            {
-                bin = new BinaryReader(stream);
-                AnimationFrame[] frames = GetAnimation(bin);
-                return m_Cache[body][action][direction] = frames;
-            }
+
+            AnimationFrame[] frames = GetAnimation(reader);
+            return m_Cache[body][action][direction] = frames;
         }
 
-        public static AnimationFrame[] GetAnimation(BinaryReader bin)
+        public static AnimationFrame[] GetAnimation(BinaryFileReader reader)
         {
-            uint[] palette = getPalette(bin); // 0x100 * 2 = 0x0200 bytes
-            int lookupStart = (int)bin.BaseStream.Position;
-            int frameCount = bin.ReadInt32(); // 0x04 bytes
+            
+            uint[] palette = getPalette(reader); // 0x100 * 2 = 0x0200 bytes
+            int read_start = (int)reader.Position; // save file position after palette.
+
+            int frameCount = reader.ReadInt(); // 0x04 bytes
 
             int[] lookups = new int[frameCount]; // frameCount * 0x04 bytes
-            for (int i = 0; i < frameCount; ++i) { lookups[i] = bin.ReadInt32(); }
+            for (int i = 0; i < frameCount; ++i) { lookups[i] = reader.ReadInt(); }
 
             AnimationFrame[] frames = new AnimationFrame[frameCount];
             for (int i = 0; i < frameCount; ++i)
@@ -109,8 +104,8 @@ namespace UltimaXNA.UltimaData
                 }
                 else
                 {
-                    bin.BaseStream.Seek(lookupStart + lookups[i], SeekOrigin.Begin);
-                    frames[i] = new AnimationFrame(m_graphics, palette, bin);
+                    reader.Seek(read_start + lookups[i], SeekOrigin.Begin);
+                    frames[i] = new AnimationFrame(m_graphics, palette, reader);
                 }
             }
             return frames;
@@ -122,29 +117,24 @@ namespace UltimaXNA.UltimaData
             FileIndex fileIndex;
             int length, extra;
             bool patched;
-            Stream stream;
-            BinaryReader bin;
 
             if (body >= 0x1000)
                 return null;
 
             getIndexes(ref body, ref hue, action, direction, out animIndex, out fileIndex);
-            stream = fileIndex.Seek(animIndex, out length, out extra, out patched);
-
-            if (stream == null)
+            BinaryFileReader reader = fileIndex.Seek(animIndex, out length, out extra, out patched);
+            if (reader == null)
                 return null;
-            else
-                bin = new BinaryReader(stream);
 
-            return bin.ReadBytes(length);
+            return reader.ReadBytes(length);
         }
 
-        private static uint[] getPalette(BinaryReader bin)
+        private static uint[] getPalette(BinaryFileReader reader)
         {
             uint[] pal = new uint[0x100];
             for (int i = 0; i < 0x100; ++i)
             {
-                uint color = bin.ReadUInt16();
+                uint color = reader.ReadUShort();
                 pal[i] = 0xff000000 + (
                     ((((color >> 10) & 0x1F) * 0xFF / 0x1F)) |
                     ((((color >> 5) & 0x1F) * 0xFF / 0x1F) << 8) |
@@ -434,13 +424,13 @@ namespace UltimaXNA.UltimaData
             palette[0] = 0;
         }
 
-        public unsafe AnimationFrame(GraphicsDevice graphics, uint[] palette, BinaryReader bin)
+        public unsafe AnimationFrame(GraphicsDevice graphics, uint[] palette, BinaryFileReader reader)
         {
-            int xCenter = bin.ReadInt16();
-            int yCenter = bin.ReadInt16();
+            int xCenter = reader.ReadShort();
+            int yCenter = reader.ReadShort();
 
-            int width = bin.ReadUInt16();
-            int height = bin.ReadUInt16();
+            int width = reader.ReadUShort();
+            int height = reader.ReadUShort();
 
             // Fix for animations with no UltimaData.
             if ((width == 0) || (height == 0))
@@ -466,7 +456,7 @@ namespace UltimaXNA.UltimaData
                 dataRef += xBase;
                 dataRef += (yBase * delta);
 
-                while ((header = bin.ReadInt32()) != 0x7FFF7FFF)
+                while ((header = reader.ReadInt()) != 0x7FFF7FFF)
                 {
                     header ^= DoubleXor;
 
@@ -474,7 +464,7 @@ namespace UltimaXNA.UltimaData
                     uint* end = cur + (header & 0xFFF);
 
                     int filecounter = 0;
-                    byte[] filedata = bin.ReadBytes(header & 0xFFF);
+                    byte[] filedata = reader.ReadBytes(header & 0xFFF);
 
                     while (cur < end)
                         *cur++ = palette[filedata[filecounter++]];

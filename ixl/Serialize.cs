@@ -638,6 +638,14 @@ namespace InterXLib
             return data_out;
         }
 
+        public int[] ReadInts(int count)
+        {
+            byte[] data = ReadBytes(count * 4);
+            int[] data_out = new int[count];
+            Buffer.BlockCopy(data, 0, data_out, 0, count * 4);
+            return data_out;
+        }
+
         public uint[] ReadUInts(int count)
         {
             byte[] data = ReadBytes(count * 4);

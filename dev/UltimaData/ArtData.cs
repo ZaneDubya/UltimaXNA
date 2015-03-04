@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
  *   Art.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   Based on code from UltimaSDK: http://ultimasdk.codeplex.com/
  *   
  *   This program is free software; you can redistribute it and/or modify
@@ -12,6 +11,7 @@
 #region usings
 using System.IO;
 using Microsoft.Xna.Framework.Graphics;
+using InterXLib;
 #endregion
 
 namespace UltimaXNA.UltimaData
@@ -19,14 +19,14 @@ namespace UltimaXNA.UltimaData
     class ArtData
     {
         private static Texture2D[][] m_cache;
-        private static FileIndexClint m_index;
+        private static FileIndex m_Index;
         private static ushort[][] m_dimensions;
         private static GraphicsDevice m_graphics;
 
         static ArtData()
         {
             m_cache = new Texture2D[0x10000][];
-            m_index = new FileIndexClint("artidx.mul", "art.mul");
+            m_Index = new FileIndex("artidx.mul", "art.mul", 0x10000, -1); // !!! must find patch file reference for artdata.
             m_dimensions = new ushort[0x4000][];
         }
 
@@ -68,11 +68,16 @@ namespace UltimaXNA.UltimaData
 
         private static unsafe Texture2D readLandTexture(int index)
         {
-            m_index.Seek(index);
+            int length, extra;
+            bool is_patched;
+
+            BinaryFileReader reader = m_Index.Seek(index, out length, out extra, out is_patched);
+            if (reader == null)
+                return null;
 
             uint[] data = new uint[44 * 44];
 
-            ushort[] fileData = m_index.ReadUInt16Array(((44 + 2) / 2) * 44);
+            ushort[] fileData = reader.ReadUShorts(((44 + 2) / 2) * 44);
             int i = 0;
 
             int count = 2;
@@ -146,10 +151,13 @@ namespace UltimaXNA.UltimaData
 
         private static ushort[] readStaticDimensions(int index)
         {
-            m_index.Seek(index);
-            m_index.BinaryReader.ReadInt32();
+            int length, extra;
+            bool is_patched;
 
-            return new ushort[] { (ushort)m_index.BinaryReader.ReadInt16(), (ushort)m_index.BinaryReader.ReadInt16() };
+            BinaryFileReader reader = m_Index.Seek(index, out length, out extra, out is_patched);
+            reader.ReadInt();
+
+            return new ushort[] { reader.ReadUShort(), reader.ReadUShort() };
         }
 
         const int multiplier = 0xFF / 0x1F;
@@ -167,11 +175,14 @@ namespace UltimaXNA.UltimaData
 
         private static unsafe Texture2D readStaticTexture(int index)
         {
-            m_index.Seek(index);
-            m_index.BinaryReader.ReadInt32();
+            int length, extra;
+            bool is_patched;
 
-            int width = m_index.BinaryReader.ReadInt16();
-            int height = m_index.BinaryReader.ReadInt16();
+            BinaryFileReader reader = m_Index.Seek(index, out length, out extra, out is_patched);
+            reader.ReadInt(); // this data is discarded. Why?
+
+            int width = reader.ReadShort();
+            int height = reader.ReadShort();
 
             if (width <= 0 || height <= 0)
             {
@@ -183,14 +194,14 @@ namespace UltimaXNA.UltimaData
                 m_dimensions[index - 0x4000] = new ushort[] { (ushort)width, (ushort)height };
             }
 
-            
-            ushort[] lookups = m_index.ReadUInt16Array(height);
 
-            int dataStart = (int)m_index.BinaryReader.BaseStream.Position + (height * 2);
+            ushort[] lookups = reader.ReadUShorts(height);
+
+            int dataStart = (int)reader.Position + (height * 2);
             int readLength = (getMaxLookup(lookups) + width * 2); // we don't know the length of the last line, so we read width * 2, anticipating worst case compression.
-            if (dataStart + readLength * 2 > m_index.BinaryReader.BaseStream.Length)
-                readLength = ((int)m_index.BinaryReader.BaseStream.Length - dataStart) >> 1;
-            ushort[] fileData = m_index.ReadUInt16Array(readLength);
+            if (dataStart + readLength * 2 > reader.Stream.Length)
+                readLength = ((int)reader.Stream.Length - dataStart) >> 1;
+            ushort[] fileData = reader.ReadUShorts(readLength);
             uint[] pixelData = new uint[width * height];
 
             fixed (uint* pData = pixelData)
