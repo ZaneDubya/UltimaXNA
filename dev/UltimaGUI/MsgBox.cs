@@ -32,6 +32,7 @@ namespace UltimaXNA.UltimaGUI
         {
             m_msg = "<big color=000000>" + msg;
             m_type = msgBoxType;
+            IsModal = true;
         }
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)

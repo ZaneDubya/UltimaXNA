@@ -33,6 +33,7 @@ namespace UltimaXNA.Scenes
         ChooseAppearance,
         Cancel,
         CreateCharacter,
+        WaitingForResponse,
         Default = ChooseSkills,
     }
     public class CreateCharacterScene : AScene
@@ -189,6 +190,10 @@ namespace UltimaXNA.Scenes
                             (byte)m_skillIndexes[0], (byte)m_skillValues[0], (byte)m_skillIndexes[1], (byte)m_skillValues[1], (byte)m_skillIndexes[2], (byte)m_skillValues[2],
                             (short)m_skinHue, (short)m_hairStyleID, (short)m_hairHue, (short)m_facialHairStyleID, (short)m_facialHairHue,
                             0, (short)UltimaVars.Characters.FirstEmptySlot, Utility.IPAddress, 0, 0));
+                        m_status = CreateCharacterSceneStates.WaitingForResponse;
+                        break;
+                    case CreateCharacterSceneStates.WaitingForResponse:
+                        // do nothing, waiting for response to create character request.
                         break;
                 }
 
@@ -198,12 +203,11 @@ namespace UltimaXNA.Scenes
                         // This is where we're supposed to be while creating a character.
                         break;
                     case UltimaClientStatus.WorldServer_LoginComplete:
-                        // Almost completed logging in, just waiting for our client object.
-                        break;
                     case UltimaClientStatus.WorldServer_InWorld:
+                        // Almost completed logging in, just waiting for our client object.
+                        // break;
                         // We're in! Load the world.
                         UltimaEngine.ActiveModel = new UltimaXNA.UltimaWorld.WorldModel();
-                        // Manager.CurrentScene = new WorldScene();
                         break;
                     default:
                         // what's going on here? Add additional error handlers.

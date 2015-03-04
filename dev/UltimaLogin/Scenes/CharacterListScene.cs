@@ -61,10 +61,9 @@ namespace UltimaXNA.Scenes
                         break;
                     case UltimaClientStatus.WorldServer_LoginComplete:
                         // Almost completed logging in, just waiting for our client object.
-                        break;
+                        // break;
                     case UltimaClientStatus.WorldServer_InWorld:
                         // We're in! Load the world.
-                        Manager.CurrentScene = null;
                         UltimaEngine.ActiveModel = new UltimaXNA.UltimaWorld.WorldModel();
                         // Manager.CurrentScene = new WorldScene();
                         break;

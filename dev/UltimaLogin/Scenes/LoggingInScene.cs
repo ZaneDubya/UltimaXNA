@@ -37,6 +37,8 @@ namespace UltimaXNA.Scenes
         private string m_AccountName;
         private string m_Password;
 
+        private bool m_ErrorReceived = false;
+
         public LoggingInScene(string server, int port, string account, string password)
         {
             // Todo: Send the accountname and password to the ultimaclient so this gump does not have to save them.
@@ -61,50 +63,60 @@ namespace UltimaXNA.Scenes
 
             if (SceneState == SceneState.Active)
             {
-                switch (Client.Status)
+                if (!m_ErrorReceived)
                 {
-                    case UltimaClientStatus.Unconnected:
-                        Client.Connect(m_ServerHost, m_ServerPort);
-                        break;
-                    case UltimaClientStatus.LoginServer_Connecting:
-                        // connecting ...
-                        break;
-                    case UltimaClientStatus.LoginServer_WaitingForLogin:
-                        // show 'verifying account...' gump
-                        UltimaEngine.UserInterface.GetControl<UltimaGUI.Gumps.LoggingInGump>(0).ActivePage = 9;
-                        Client.SendAccountLogin(m_AccountName, m_Password);
-                        break;
-                    case UltimaClientStatus.LoginServer_LoggingIn:
-                        // logging in ...
-                        break;
-                    case UltimaClientStatus.LoginServer_HasServerList:
-                        Manager.CurrentScene = new SelectServerScene(m_AccountName, m_Password);
-                        break;
-                    case UltimaClientStatus.Error_CannotConnectToServer:
-                        UltimaEngine.UserInterface.GetControl<UltimaGUI.Gumps.LoggingInGump>(0).ActivePage = 2;
-                        // could not connect to server.
-                        break;
-                    case UltimaClientStatus.Error_InvalidUsernamePassword:
-                        UltimaEngine.UserInterface.GetControl<UltimaGUI.Gumps.LoggingInGump>(0).ActivePage = 3;
-                        break;
-                    case UltimaClientStatus.Error_InUse:
-                        UltimaEngine.UserInterface.GetControl<UltimaGUI.Gumps.LoggingInGump>(0).ActivePage = 4;
-                        break;
-                    case UltimaClientStatus.Error_Blocked:
-                        UltimaEngine.UserInterface.GetControl<UltimaGUI.Gumps.LoggingInGump>(0).ActivePage = 5;
-                        break;
-                    case UltimaClientStatus.Error_BadPassword:
-                        UltimaEngine.UserInterface.GetControl<UltimaGUI.Gumps.LoggingInGump>(0).ActivePage = 6;
-                        break;
-                    case UltimaClientStatus.Error_Idle:
-                        UltimaEngine.UserInterface.GetControl<UltimaGUI.Gumps.LoggingInGump>(0).ActivePage = 7;
-                        break;
-                    case UltimaClientStatus.Error_BadCommunication:
-                        UltimaEngine.UserInterface.GetControl<UltimaGUI.Gumps.LoggingInGump>(0).ActivePage = 8;
-                        break;
-                    default:
-                        // what's going on here? Add additional error handlers.
-                        throw (new Exception("Unknown UltimaClientStatus in LoggingInScene:Update"));
+                    switch (Client.Status)
+                    {
+                        case UltimaClientStatus.Unconnected:
+                            Client.Connect(m_ServerHost, m_ServerPort);
+                            break;
+                        case UltimaClientStatus.LoginServer_Connecting:
+                            // connecting ...
+                            break;
+                        case UltimaClientStatus.LoginServer_WaitingForLogin:
+                            // show 'verifying account...' gump
+                            UltimaEngine.UserInterface.GetControl<UltimaGUI.Gumps.LoggingInGump>(0).ActivePage = 9;
+                            Client.SendAccountLogin(m_AccountName, m_Password);
+                            break;
+                        case UltimaClientStatus.LoginServer_LoggingIn:
+                            // logging in ...
+                            break;
+                        case UltimaClientStatus.LoginServer_HasServerList:
+                            Manager.CurrentScene = new SelectServerScene(m_AccountName, m_Password);
+                            break;
+                        case UltimaClientStatus.Error_CannotConnectToServer:
+                            UltimaEngine.UserInterface.GetControl<UltimaGUI.Gumps.LoggingInGump>(0).ActivePage = 2;
+                            m_ErrorReceived = true;
+                            break;
+                        case UltimaClientStatus.Error_InvalidUsernamePassword:
+                            UltimaEngine.UserInterface.GetControl<UltimaGUI.Gumps.LoggingInGump>(0).ActivePage = 3;
+                            m_ErrorReceived = true;
+                            break;
+                        case UltimaClientStatus.Error_InUse:
+                            UltimaEngine.UserInterface.GetControl<UltimaGUI.Gumps.LoggingInGump>(0).ActivePage = 4;
+                            m_ErrorReceived = true;
+                            break;
+                        case UltimaClientStatus.Error_Blocked:
+                            UltimaEngine.UserInterface.GetControl<UltimaGUI.Gumps.LoggingInGump>(0).ActivePage = 5;
+                            m_ErrorReceived = true;
+                            break;
+                        case UltimaClientStatus.Error_BadPassword:
+                            UltimaEngine.UserInterface.GetControl<UltimaGUI.Gumps.LoggingInGump>(0).ActivePage = 6;
+                            m_ErrorReceived = true;
+                            break;
+                        case UltimaClientStatus.Error_Idle:
+                            UltimaEngine.UserInterface.GetControl<UltimaGUI.Gumps.LoggingInGump>(0).ActivePage = 7;
+                            m_ErrorReceived = true;
+                            break;
+                        case UltimaClientStatus.Error_BadCommunication:
+                            UltimaEngine.UserInterface.GetControl<UltimaGUI.Gumps.LoggingInGump>(0).ActivePage = 8;
+                            m_ErrorReceived = true;
+                            break;
+                        default:
+                            // what's going on here? Add additional error handlers.
+                            throw (new Exception("Unknown UltimaClientStatus in LoggingInScene:Update"));
+                            m_ErrorReceived = true;
+                    }
                 }
             }
         }
