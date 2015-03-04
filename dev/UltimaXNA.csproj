@@ -431,6 +431,12 @@
     <Compile Include="UltimaData\Versioning.cs" />
     <Compile Include="Utility.cs" />
     <Compile Include="UltimaWorld\WorldModel.cs" />
+    <Compile Include="WinForms\ResolutionSet.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\ResolutionSet.designer.cs">
+      <DependentUpon>ResolutionSet.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <NestedContentProject Include="Content\Content.contentproj">
@@ -498,6 +504,11 @@
     <Content Include="zlib32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="WinForms\ResolutionSet.resx">
+      <DependentUpon>ResolutionSet.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
