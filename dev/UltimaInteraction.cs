@@ -183,12 +183,12 @@ namespace UltimaXNA
         {
             m_ChatQueue.Add(new QueuedMessage(text, hue, font));
 
-            Gump g = UltimaEngine.UserInterface.GetControl<ChatWindow>(0);
-            if (g != null)
+            ChatWindow chat = UltimaEngine.UserInterface.GetControl<ChatWindow>(0);
+            if (chat != null)
             {
                 foreach (QueuedMessage msg in m_ChatQueue)
                 {
-                    ((ChatWindow)g).AddLine(msg.Text);
+                    chat.AddLine(msg.Text);
                 }
                 m_ChatQueue.Clear();
             }

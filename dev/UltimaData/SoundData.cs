@@ -78,7 +78,7 @@ namespace UltimaXNA.UltimaData
 
             string str = System.Text.Encoding.ASCII.GetString(stringBuffer); // seems that the null terminator's not being properly recognized :/
 
-            UltimaVars.Metrics.ReportDataRead((int)m_Index.BaseStream.Position - streamStart);
+            Diagnostics.Metrics.ReportDataRead((int)m_Index.BaseStream.Position - streamStart);
 
             return new UOSound(str.Substring(0, str.IndexOf('\0')), buffer);
         }

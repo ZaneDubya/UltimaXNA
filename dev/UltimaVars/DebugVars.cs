@@ -35,9 +35,9 @@ namespace UltimaXNA.UltimaVars
             if (Flag_ShowDataRead)
             {
                 if (Flag_BreakdownDataRead)
-                    debugMessage += UltimaVars.Metrics.DataReadBreakdown;
+                    debugMessage += Diagnostics.Metrics.DataReadBreakdown;
                 else
-                    debugMessage += string.Format("\nData Read: {0}", UltimaVars.Metrics.TotalDataRead.ToString());
+                    debugMessage += string.Format("\nData Read: {0}", Diagnostics.Metrics.TotalDataRead.ToString());
             }
 
             if (IsometricRenderer.MouseOverObject != null)

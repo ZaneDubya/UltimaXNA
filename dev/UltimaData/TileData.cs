@@ -117,7 +117,7 @@ namespace UltimaXNA.UltimaData
                     ItemData[i] = itemData;
                 }
 
-                UltimaVars.Metrics.ReportDataRead((int)binaryReader.BaseStream.Position);
+                Diagnostics.Metrics.ReportDataRead((int)binaryReader.BaseStream.Position);
             }
         }
     }

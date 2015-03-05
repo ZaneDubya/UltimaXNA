@@ -1,14 +1,6 @@
 ﻿/***************************************************************************
  *   CreateCharacterScene.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   
- *   begin                : January 11, 2010
- *   email                : poplicola@ultimaxna.com
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 3 of the License, or
@@ -16,13 +8,11 @@
  *
  ***************************************************************************/
 #region usings
-using Microsoft.Xna.Framework;
 using System;
 using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaGUI.LoginGumps;
 using UltimaXNA.UltimaPackets;
 using UltimaXNA.UltimaPackets.Client;
-
 #endregion
 
 namespace UltimaXNA.Scenes
@@ -38,7 +28,10 @@ namespace UltimaXNA.Scenes
     }
     public class CreateCharacterScene : AScene
     {
-        CreateCharacterSceneStates m_status;
+        CreateCharacterSceneStates m_Status;
+
+        CreateCharSkillsGump m_CreateSkillsGump;
+        CreateCharAppearanceGump m_CreateAppearanceGump;
 
         bool m_skillsSet = false;
         int[] m_attributes = new int[3];
@@ -57,49 +50,47 @@ namespace UltimaXNA.Scenes
         public override void Intitialize(UltimaClient client)
         {
             base.Intitialize(client);
-            m_status = CreateCharacterSceneStates.Default;
+            m_Status = CreateCharacterSceneStates.Default;
             openSkillsGump();
         }
 
         void openSkillsGump()
         {
-            Gump g = (Gump)UltimaEngine.UserInterface.AddControl(new CreateCharSkillsGump(), 0, 0);
-            CreateCharSkillsGump g1 = ((CreateCharSkillsGump)g);
-            g1.OnForward += this.OnForward;
-            g1.OnBackward += this.OnBackward;
-            m_status = CreateCharacterSceneStates.ChooseSkills;
+            m_CreateSkillsGump = (CreateCharSkillsGump)UltimaEngine.UserInterface.AddControl(new CreateCharSkillsGump(), 0, 0);
+            m_CreateSkillsGump.OnForward += this.OnForward;
+            m_CreateSkillsGump.OnBackward += this.OnBackward;
+            m_Status = CreateCharacterSceneStates.ChooseSkills;
             // restore values
             if (m_skillsSet)
             {
-                g1.Strength = m_attributes[0];
-                g1.Dexterity = m_attributes[1];
-                g1.Intelligence = m_attributes[2];
-                g1.SkillIndex0 = m_skillIndexes[0];
-                g1.SkillIndex1 = m_skillIndexes[1];
-                g1.SkillIndex2 = m_skillIndexes[2];
-                g1.SkillPoints0 = m_skillValues[0];
-                g1.SkillPoints1 = m_skillValues[1];
-                g1.SkillPoints2 = m_skillValues[2];
+                m_CreateSkillsGump.Strength = m_attributes[0];
+                m_CreateSkillsGump.Dexterity = m_attributes[1];
+                m_CreateSkillsGump.Intelligence = m_attributes[2];
+                m_CreateSkillsGump.SkillIndex0 = m_skillIndexes[0];
+                m_CreateSkillsGump.SkillIndex1 = m_skillIndexes[1];
+                m_CreateSkillsGump.SkillIndex2 = m_skillIndexes[2];
+                m_CreateSkillsGump.SkillPoints0 = m_skillValues[0];
+                m_CreateSkillsGump.SkillPoints1 = m_skillValues[1];
+                m_CreateSkillsGump.SkillPoints2 = m_skillValues[2];
             }
         }
 
         void openAppearanceGump()
         {
-            Gump g = (Gump)UltimaEngine.UserInterface.AddControl(new CreateCharAppearanceGump(), 0, 0);
-            CreateCharAppearanceGump g1 = ((CreateCharAppearanceGump)g);
-            ((CreateCharAppearanceGump)g1).OnForward += this.OnForward;
-            ((CreateCharAppearanceGump)g1).OnBackward += this.OnBackward;
-            m_status = CreateCharacterSceneStates.ChooseAppearance;
+            m_CreateAppearanceGump = (CreateCharAppearanceGump)UltimaEngine.UserInterface.AddControl(new CreateCharAppearanceGump(), 0, 0);
+            m_CreateAppearanceGump.OnForward += this.OnForward;
+            m_CreateAppearanceGump.OnBackward += this.OnBackward;
+            m_Status = CreateCharacterSceneStates.ChooseAppearance;
             // restore values
             if (m_appearanceSet)
             {
-                g1.Name = m_name;
-                g1.Gender = m_gender;
-                g1.HairID = m_hairStyleID;
-                g1.FacialHairID = m_facialHairStyleID;
-                g1.SkinHue = m_skinHue;
-                g1.HairHue = m_hairHue;
-                g1.FacialHairHue = m_facialHairHue;
+                m_CreateAppearanceGump.Name = m_name;
+                m_CreateAppearanceGump.Gender = m_gender;
+                m_CreateAppearanceGump.HairID = m_hairStyleID;
+                m_CreateAppearanceGump.FacialHairID = m_facialHairStyleID;
+                m_CreateAppearanceGump.SkinHue = m_skinHue;
+                m_CreateAppearanceGump.HairHue = m_hairHue;
+                m_CreateAppearanceGump.FacialHairHue = m_facialHairHue;
             }
         }
 
@@ -107,51 +98,49 @@ namespace UltimaXNA.Scenes
         {
             // we need to make sure that the stats add up to 80, skills add up to 100, and 3 unique skills are selected.
             // if not, pop up an appropriate error message.
-            CreateCharSkillsGump g = UltimaEngine.UserInterface.GetControl<CreateCharSkillsGump>(0);
-            if (g.Strength + g.Dexterity + g.Intelligence != 80)
+            if (m_CreateSkillsGump.Strength + m_CreateSkillsGump.Dexterity + m_CreateSkillsGump.Intelligence != 80)
             {
                 UltimaInteraction.MsgBox("Error: your stat values did not add up to 80. Please logout and try to make another character.", MsgBoxTypes.OkOnly);
                 return false;
             }
-            if (g.SkillPoints0 + g.SkillPoints1 + g.SkillPoints2 != 100)
+            if (m_CreateSkillsGump.SkillPoints0 + m_CreateSkillsGump.SkillPoints1 + m_CreateSkillsGump.SkillPoints2 != 100)
             {
                 UltimaInteraction.MsgBox("Error: your skill values did not add up to 100. Please logout and try to make another character.", MsgBoxTypes.OkOnly);
                 return false;
             }
-            if (g.SkillIndex0 == -1 || g.SkillIndex1 == -1 || g.SkillIndex2 == -1 ||
-                (g.SkillIndex0 == g.SkillIndex1) ||
-                (g.SkillIndex1 == g.SkillIndex2) ||
-                (g.SkillIndex0 == g.SkillIndex2))
+            if (m_CreateSkillsGump.SkillIndex0 == -1 || m_CreateSkillsGump.SkillIndex1 == -1 || m_CreateSkillsGump.SkillIndex2 == -1 ||
+                (m_CreateSkillsGump.SkillIndex0 == m_CreateSkillsGump.SkillIndex1) ||
+                (m_CreateSkillsGump.SkillIndex1 == m_CreateSkillsGump.SkillIndex2) ||
+                (m_CreateSkillsGump.SkillIndex0 == m_CreateSkillsGump.SkillIndex2))
             {
                 UltimaInteraction.MsgBox("You must have three unique skills chosen!", MsgBoxTypes.OkOnly);
                 return false;
             }
             // save the values;
-            m_attributes[0] = g.Strength;
-            m_attributes[1] = g.Dexterity;
-            m_attributes[2] = g.Intelligence;
-            m_skillIndexes[0] = g.SkillIndex0;
-            m_skillIndexes[1] = g.SkillIndex1;
-            m_skillIndexes[2] = g.SkillIndex2;
-            m_skillValues[0] = g.SkillPoints0;
-            m_skillValues[1] = g.SkillPoints1;
-            m_skillValues[2] = g.SkillPoints2;
+            m_attributes[0] = m_CreateSkillsGump.Strength;
+            m_attributes[1] = m_CreateSkillsGump.Dexterity;
+            m_attributes[2] = m_CreateSkillsGump.Intelligence;
+            m_skillIndexes[0] = m_CreateSkillsGump.SkillIndex0;
+            m_skillIndexes[1] = m_CreateSkillsGump.SkillIndex1;
+            m_skillIndexes[2] = m_CreateSkillsGump.SkillIndex2;
+            m_skillValues[0] = m_CreateSkillsGump.SkillPoints0;
+            m_skillValues[1] = m_CreateSkillsGump.SkillPoints1;
+            m_skillValues[2] = m_CreateSkillsGump.SkillPoints2;
             m_skillsSet = true;
             return true;
         }
 
         bool validateAppearance()
         {
-            CreateCharAppearanceGump g = UltimaEngine.UserInterface.GetControl<CreateCharAppearanceGump>(0);
             // save the values
             m_appearanceSet = true;
-            m_name = g.Name;
-            m_gender = g.Gender;
-            m_hairStyleID = g.HairID;
-            m_facialHairStyleID = g.FacialHairID;
-            m_skinHue = g.SkinHue;
-            m_hairHue = g.HairHue;
-            m_facialHairHue = g.FacialHairHue;
+            m_name = m_CreateAppearanceGump.Name;
+            m_gender = m_CreateAppearanceGump.Gender;
+            m_hairStyleID = m_CreateAppearanceGump.HairID;
+            m_facialHairStyleID = m_CreateAppearanceGump.FacialHairID;
+            m_skinHue = m_CreateAppearanceGump.SkinHue;
+            m_hairHue = m_CreateAppearanceGump.HairHue;
+            m_facialHairHue = m_CreateAppearanceGump.FacialHairHue;
             // make sure name is long enough. 2+ Characters
             // if not, pop up an appropriate error message.
             if (m_name.Length < 2)
@@ -173,7 +162,7 @@ namespace UltimaXNA.Scenes
 
             if (SceneState == SceneState.Active)
             {
-                switch (m_status)
+                switch (m_Status)
                 {
                     case CreateCharacterSceneStates.ChooseSkills:
                         // do nothing
@@ -190,7 +179,7 @@ namespace UltimaXNA.Scenes
                             (byte)m_skillIndexes[0], (byte)m_skillValues[0], (byte)m_skillIndexes[1], (byte)m_skillValues[1], (byte)m_skillIndexes[2], (byte)m_skillValues[2],
                             (short)m_skinHue, (short)m_hairStyleID, (short)m_hairHue, (short)m_facialHairStyleID, (short)m_facialHairHue,
                             0, (short)UltimaVars.Characters.FirstEmptySlot, Utility.IPAddress, 0, 0));
-                        m_status = CreateCharacterSceneStates.WaitingForResponse;
+                        m_Status = CreateCharacterSceneStates.WaitingForResponse;
                         break;
                     case CreateCharacterSceneStates.WaitingForResponse:
                         // do nothing, waiting for response to create character request.
@@ -218,22 +207,22 @@ namespace UltimaXNA.Scenes
 
         public override void Dispose()
         {
-            if (UltimaEngine.UserInterface.GetControl<CreateCharAppearanceGump>(0) != null)
-                UltimaEngine.UserInterface.GetControl<CreateCharAppearanceGump>(0).Dispose();
-            if (UltimaEngine.UserInterface.GetControl<CreateCharSkillsGump>(0) != null)
-                UltimaEngine.UserInterface.GetControl<CreateCharSkillsGump>(0).Dispose();
+            if (m_CreateSkillsGump != null)
+                m_CreateSkillsGump.Dispose();
+            if (m_CreateAppearanceGump != null)
+                m_CreateAppearanceGump.Dispose();
             base.Dispose();
         }
 
         public void OnBackward()
         {
-            switch (m_status)
+            switch (m_Status)
             {
                 case CreateCharacterSceneStates.ChooseSkills:
-                    m_status = CreateCharacterSceneStates.Cancel;
+                    m_Status = CreateCharacterSceneStates.Cancel;
                     break;
                 case CreateCharacterSceneStates.ChooseAppearance:
-                    UltimaEngine.UserInterface.GetControl<CreateCharAppearanceGump>(0).Dispose();
+                    m_CreateAppearanceGump.Dispose();
                     openSkillsGump();
                     break;
             }
@@ -241,19 +230,19 @@ namespace UltimaXNA.Scenes
 
         public void OnForward()
         {
-            switch (m_status)
+            switch (m_Status)
             {
                 case CreateCharacterSceneStates.ChooseSkills:
                     if (validateSkills())
                     {
-                        UltimaEngine.UserInterface.GetControl<CreateCharSkillsGump>(0).Dispose();
+                        m_CreateSkillsGump.Dispose();
                         openAppearanceGump();
                     }
                     break;
                 case CreateCharacterSceneStates.ChooseAppearance:
                     if (validateAppearance())
                     {
-                        m_status = CreateCharacterSceneStates.CreateCharacter;
+                        m_Status = CreateCharacterSceneStates.CreateCharacter;
                     }
                     break;
             }

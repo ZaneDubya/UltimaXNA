@@ -92,7 +92,7 @@ namespace UltimaXNA.UltimaData
                     uint* start = dataRef + offset;
                     uint* end = start + count;
 
-                    UltimaVars.Metrics.ReportDataRead(count * 2);
+                    Diagnostics.Metrics.ReportDataRead(count * 2);
 
                     while (start < end)
                     {
@@ -113,7 +113,7 @@ namespace UltimaXNA.UltimaData
                     uint* start = dataRef + offset;
                     uint* end = start + count;
 
-                    UltimaVars.Metrics.ReportDataRead(count * 2);
+                    Diagnostics.Metrics.ReportDataRead(count * 2);
 
                     while (start < end)
                     {
@@ -235,7 +235,7 @@ namespace UltimaXNA.UltimaData
                 }
             }
 
-            UltimaVars.Metrics.ReportDataRead(sizeof(ushort) * (fileData.Length + lookups.Length + 2));
+            Diagnostics.Metrics.ReportDataRead(sizeof(ushort) * (fileData.Length + lookups.Length + 2));
 
             Texture2D texture = new Texture2D(m_graphics, width, height);
 

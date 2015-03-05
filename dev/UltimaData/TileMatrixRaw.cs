@@ -213,7 +213,7 @@ namespace UltimaXNA.UltimaData
             {
                 SharedMethods.Read(m_MapStream.SafeFileHandle, pData, m_size_LandBlockData);
             }
-            UltimaVars.Metrics.ReportDataRead((int)m_MapStream.Position - streamStart);
+            Diagnostics.Metrics.ReportDataRead((int)m_MapStream.Position - streamStart);
 
             return m_bufferedLandBlocks[index];
         }

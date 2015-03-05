@@ -144,7 +144,7 @@ namespace UltimaXNA.UltimaData.Fonts
                     }
                 }
 
-                UltimaVars.Metrics.ReportDataRead((int)reader.BaseStream.Position - readerStart);
+                Diagnostics.Metrics.ReportDataRead((int)reader.BaseStream.Position - readerStart);
             }
         }
     }

@@ -160,7 +160,7 @@ namespace UltimaXNA.UltimaData
                 }
             }
 
-            UltimaVars.Metrics.ReportDataRead((int)reader.Position - metrics_dataread_start);
+            Diagnostics.Metrics.ReportDataRead((int)reader.Position - metrics_dataread_start);
         }
 
         private MultiComponentList()

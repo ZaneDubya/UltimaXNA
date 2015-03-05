@@ -286,7 +286,7 @@
     <Compile Include="UltimaGUI\HTML\Enums.cs" />
     <Compile Include="UltimaGUI\HTML\HTMLImages.cs" />
     <Compile Include="UltimaGUI\HTML\Parser.cs" />
-    <Compile Include="UltimaVars\Metrics.cs" />
+    <Compile Include="Core\Diagnostics\Metrics.cs" />
     <Compile Include="UltimaData\GumpData.cs" />
     <Compile Include="UltimaData\Mobtypes.cs" />
     <Compile Include="UltimaData\MultiData.cs" />
