@@ -80,7 +80,7 @@ namespace UltimaXNA.UltimaData
 
             texture.SetData<uint>(pixelData);
 
-            UltimaVars.Metrics.ReportDataRead((int)reader.Position - metrics_dataread_start);
+            Diagnostics.Metrics.ReportDataRead((int)reader.Position - metrics_dataread_start);
 
             return texture;
         }

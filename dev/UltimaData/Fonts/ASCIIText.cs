@@ -41,7 +41,7 @@ namespace UltimaXNA.UltimaData.Fonts
                     {
                         buffer = reader.ReadBytes((int)reader.BaseStream.Length);
                     }
-                    UltimaVars.Metrics.ReportDataRead(buffer.Length);
+                    Diagnostics.Metrics.ReportDataRead(buffer.Length);
 
                     for (int i = 0; i < 10; ++i)
                     {

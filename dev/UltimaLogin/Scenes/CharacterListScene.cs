@@ -1,14 +1,6 @@
 ﻿/***************************************************************************
  *   LoginScene.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   
- *   begin                : May 31, 2009
- *   email                : poplicola@ultimaxna.com
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 3 of the License, or
@@ -17,22 +9,16 @@
  ***************************************************************************/
 #region usings
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
-using System.Threading;
-using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Network;
-using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaGUI.LoginGumps;
-using UltimaXNA.UltimaPackets;
 #endregion
 
 namespace UltimaXNA.Scenes
 {
     public class CharacterListScene : AScene
     {
+        CharacterListGump m_CharListGump;
+
         public CharacterListScene()
         {
 
@@ -41,11 +27,11 @@ namespace UltimaXNA.Scenes
         public override void Intitialize(UltimaClient client)
         {
             base.Intitialize(client);
-            Gump g = (Gump)UltimaEngine.UserInterface.AddControl(new CharacterListGump(), 0, 0);
-            ((CharacterListGump)g).OnBackToSelectServer += this.OnBackToSelectServer;
-            ((CharacterListGump)g).OnLoginWithCharacter += this.OnLoginWithCharacter;
-            ((CharacterListGump)g).OnDeleteCharacter += this.OnDeleteCharacter;
-            ((CharacterListGump)g).OnNewCharacter += this.OnNewCharacter;
+            m_CharListGump = (CharacterListGump)UltimaEngine.UserInterface.AddControl(new CharacterListGump(), 0, 0);
+            m_CharListGump.OnBackToSelectServer += this.OnBackToSelectServer;
+            m_CharListGump.OnLoginWithCharacter += this.OnLoginWithCharacter;
+            m_CharListGump.OnDeleteCharacter += this.OnDeleteCharacter;
+            m_CharListGump.OnNewCharacter += this.OnNewCharacter;
         }
 
         public override void Update(double totalTime, double frameTime)
@@ -76,7 +62,7 @@ namespace UltimaXNA.Scenes
 
         public override void Dispose()
         {
-            UltimaEngine.UserInterface.GetControl<CharacterListGump>(0).Dispose();
+            m_CharListGump.Dispose();
             base.Dispose();
         }
 
@@ -91,7 +77,7 @@ namespace UltimaXNA.Scenes
 
         public void OnLoginWithCharacter(int index)
         {
-            UltimaEngine.UserInterface.GetControl<CharacterListGump>(0).ActivePage = 2;
+            m_CharListGump.ActivePage = 2;
             Client.SelectCharacter(index);
         }
 

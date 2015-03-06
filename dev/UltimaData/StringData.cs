@@ -58,7 +58,7 @@ namespace UltimaXNA.UltimaData
             using (BinaryReader bin = new BinaryReader(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read)))
             {
                 buffer = bin.ReadBytes((int)bin.BaseStream.Length);
-                UltimaVars.Metrics.ReportDataRead((int)bin.BaseStream.Position);
+                Diagnostics.Metrics.ReportDataRead((int)bin.BaseStream.Position);
             }
 
             int pos = 6;

@@ -29,7 +29,7 @@ namespace UltimaXNA.UltimaData
                 while (!stream.EndOfStream)
                 {
                     string line = stream.ReadLine();
-                    UltimaVars.Metrics.ReportDataRead(line.Length);
+                    Diagnostics.Metrics.ReportDataRead(line.Length);
                     if ((line != string.Empty) && (line.Substring(0, 1) != "#"))
                     {
                         string[] data = line.Split('\t');

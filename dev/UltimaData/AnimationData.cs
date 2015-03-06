@@ -472,7 +472,7 @@ namespace UltimaXNA.UltimaData
                     dataRead += header & 0xFFF;
                 }
 
-                UltimaVars.Metrics.ReportDataRead(dataRead);
+                Diagnostics.Metrics.ReportDataRead(dataRead);
             }
 
             m_Center = new Microsoft.Xna.Framework.Point(xCenter, yCenter);

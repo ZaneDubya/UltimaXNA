@@ -184,7 +184,7 @@ namespace UltimaXNA.UltimaData
                         list4.Add(anim5);
                     }
                 }
-                UltimaVars.Metrics.ReportDataRead(totalDataRead);
+                Diagnostics.Metrics.ReportDataRead(totalDataRead);
             }
 
             m_Table1 = new int[max1 + 1];
@@ -389,7 +389,7 @@ namespace UltimaXNA.UltimaData
                 {
                 }
             }
-            UltimaVars.Metrics.ReportDataRead(totalDataRead);
+            Diagnostics.Metrics.ReportDataRead(totalDataRead);
         }
     }
 }

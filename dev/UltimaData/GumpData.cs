@@ -95,7 +95,7 @@ namespace UltimaXNA.UltimaData
                     }
                 }
 
-                UltimaVars.Metrics.ReportDataRead(length);
+                Diagnostics.Metrics.ReportDataRead(length);
 
                 Texture2D texture = new Texture2D(m_graphicsDevice, width, height, false, SurfaceFormat.Color);
                 texture.SetData(pixels);
