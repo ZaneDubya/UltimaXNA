@@ -1167,7 +1167,7 @@ namespace UltimaXNA
             }
             else
             {
-                if (UltimaData.TileData.ItemData[itemID].Container)
+                if (UltimaData.TileData.ItemData[itemID].IsContainer)
                     item = EntityManager.GetObject<Container>((int)serial, true);
                 else
                     item = EntityManager.GetObject<Item>((int)serial, true);

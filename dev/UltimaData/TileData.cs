@@ -111,7 +111,7 @@ namespace UltimaXNA.UltimaData
 
 					// Issue 5 - Statics (bridge, stairs, etc) should be walkable - http://code.google.com/p/ultimaxna/issues/detail?id=5 - Smjert
 					if(i > 1005 && i < 7640)
-						itemData.Stairs = !(Array.BinarySearch(m_StairsID, i) < 0);
+                        itemData.IsStairs = !(Array.BinarySearch(m_StairsID, i) < 0);
 					// Issue 5 - End
 
                     ItemData[i] = itemData;
@@ -133,16 +133,16 @@ namespace UltimaXNA.UltimaData
         public int Value;
         public string Name;
 		// Issue 5 - Statics (bridge, stairs, etc) should be walkable - http://code.google.com/p/ultimaxna/issues/detail?id=5 - Smjert
-		public bool Stairs;
+        public bool IsStairs;
 		// Issue 5 - End
 
 
-        public bool Background
+        public bool IsBackground
         {
             get { return (Flags & TileFlag.Background) != 0; }
         }
 
-        public bool Bridge
+        public bool IsBridge
         {
             get { return (Flags & TileFlag.Bridge) != 0; }
         }
@@ -162,42 +162,42 @@ namespace UltimaXNA.UltimaData
             }
         }
 
-        public bool Container
+        public bool IsContainer
         {
             get { return (Flags & TileFlag.Container) != 0; }
         }
 
-        public bool Foliage
+        public bool IsFoliage
         {
             get { return (Flags & TileFlag.Foliage) != 0; }
         }
 
-        public bool Impassable
+        public bool IsImpassable
         {
             get { return (Flags & TileFlag.Impassable) != 0; }
         }
 
-        public bool PartialHue
+        public bool IsPartialHue
         {
             get { return (Flags & TileFlag.PartialHue) != 0; }
         }
 
-        public bool Roof
+        public bool IsRoof
         {
             get { return (Flags & TileFlag.Roof) != 0; }
         }
 
-        public bool Surface
+        public bool IsSurface
         {
             get { return (Flags & TileFlag.Surface) != 0; }
         }
 
-        public bool Wall
+        public bool IsWall
         {
             get { return (Flags & TileFlag.Wall) != 0; }
         }
 
-        public bool Wet
+        public bool IsWet
         {
             get { return (Flags & TileFlag.Wet) != 0; }
         }
@@ -208,7 +208,7 @@ namespace UltimaXNA.UltimaData
         public TileFlag Flags;
         public int TextureID;
 
-        public bool Wet
+        public bool IsWet
         {
             get { return (Flags & TileFlag.Wet) != 0; }
         }

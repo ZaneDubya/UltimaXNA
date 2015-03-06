@@ -59,7 +59,7 @@ namespace UltimaXNA.UltimaWorld
                 if (iObjects[i] is MapObjectStatic)
                 {
                     UltimaData.ItemData iData = UltimaData.TileData.ItemData[((MapObjectStatic)iObjects[i]).ItemID & 0x3FFF];
-                    if (iData.Roof || iData.Surface || iData.Wall)
+                    if (iData.IsRoof || iData.IsSurface || iData.IsWall)
                     {
                         if (underItem == null || iObjects[i].Z < underItem.Z)
                             underItem = iObjects[i];

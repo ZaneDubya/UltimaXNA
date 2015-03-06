@@ -277,7 +277,7 @@ namespace UltimaXNA.Entity
                     if (ourZ + PersonHeight > testTop)
                         testTop = ourZ + PersonHeight;
 
-                    if (!itemData.Bridge)
+                    if (!itemData.IsBridge)
                         itemTop += itemData.Height;
 
                     if (stepTop >= itemTop)
@@ -333,7 +333,7 @@ namespace UltimaXNA.Entity
                     if (ourZ + PersonHeight > testTop)
                         testTop = ourZ + PersonHeight;
 
-                    if (!itemData.Bridge)
+                    if (!itemData.IsBridge)
                         itemTop += itemData.Height;
 
                     if (stepTop >= itemTop)

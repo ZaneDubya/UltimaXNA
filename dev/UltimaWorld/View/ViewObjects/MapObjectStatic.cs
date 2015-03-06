@@ -39,12 +39,12 @@ namespace UltimaXNA.UltimaWorld.View
             m_itemData = UltimaData.TileData.ItemData[ItemID & 0x3FFF];
 
             // Set threshold.
-            int background = (m_itemData.Background) ? 0 : 1;
-            if (!m_itemData.Background)
+            int background = (m_itemData.IsBackground) ? 0 : 1;
+            if (!m_itemData.IsBackground)
                 SortThreshold++;
             if (!(m_itemData.Height == 0))
                 SortThreshold++;
-            if (m_itemData.Surface)
+            if (m_itemData.IsSurface)
                 SortThreshold--;
 
             // get no draw flag

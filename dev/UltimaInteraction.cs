@@ -28,7 +28,7 @@ namespace UltimaXNA
                     if (e.EventType == MouseEvent.Up && e.Button == MouseButton.Left)
                     {
                         // dropped an item we were holding.
-                        if (target is ItemGumpling && ((ItemGumpling)target).Item.ItemData.Container)
+                        if (target is ItemGumpling && ((ItemGumpling)target).Item.ItemData.IsContainer)
                             DropItemToContainer(Cursor.HoldingItem, (Entity.Container)((ItemGumpling)target).Item);
                         else if (target is GumpPicContainer)
                         {
@@ -80,7 +80,7 @@ namespace UltimaXNA
             if (!UltimaEngine.UserInterface.IsMouseOverUI)
             {
                 Serial serial;
-                if (IsometricRenderer.MouseOverObject is MapObjectItem && ((Item)IsometricRenderer.MouseOverObject.OwnerEntity).ItemData.Container)
+                if (IsometricRenderer.MouseOverObject is MapObjectItem && ((Item)IsometricRenderer.MouseOverObject.OwnerEntity).ItemData.IsContainer)
                 {
                     serial = IsometricRenderer.MouseOverObject.OwnerEntity.Serial;
                     X = Y = 0xFFFF;
