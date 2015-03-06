@@ -77,8 +77,8 @@ namespace InterXLib.Input.Windows
             m_eventType = eventType;
             m_button = button;
             m_clicks = clicks;
-            m_x = (int)(x / 1); // UNIMPLEMENTED!!!! Settings.ScreenDPI.X);
-            m_y = (int)(y / 1); // UNIMPLEMENTED!!!! Settings.ScreenDPI.Y);
+            m_x = (int)(x / Settings.ScreenDPI.X);
+            m_y = (int)(y / Settings.ScreenDPI.Y);
             m_mouseData = mouseData;
         }
 

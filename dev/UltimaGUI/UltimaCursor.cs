@@ -58,26 +58,32 @@ namespace UltimaXNA.UltimaGUI
 
         public virtual void Update()
         {
-            // Over the interface or not in world. Display a default cursor.
-            CursorOffset = new Point2D(1, 1);
-            CursorSpriteArtIndex = 8305;
-        }
 
-        public void Draw(SpriteBatchUI spritebatch, Point2D position)
-        {
-            BeforeDraw(spritebatch, position);
-
-            if (m_CursorSprite != null)
-            {
-                m_CursorSprite.Offset = m_CursorOffset;
-                m_CursorSprite.Hue = m_CursorHue;
-                m_CursorSprite.Draw(spritebatch, position);
-            }
         }
 
         protected virtual void BeforeDraw(SpriteBatchUI spritebatch, Point2D position)
         {
+            // Over the interface or not in world. Display a default cursor.
+            CursorSpriteArtIndex = 8305 - ((UltimaVars.EngineVars.WarMode) ? 23 : 0);
+            CursorOffset = new Point2D(1, 1);
+        }
 
+        public virtual void Draw(SpriteBatchUI spritebatch, Point2D position)
+        {
+            BeforeDraw(spritebatch, position);
+
+            // Hue the cursor if not in warmode and in trammel.
+            if (!UltimaVars.EngineVars.WarMode && (UltimaVars.EngineVars.Map == 1))
+                CursorHue = 2412;
+            else
+                CursorHue = 0;
+
+            if (m_CursorSprite != null)
+            {
+                m_CursorSprite.Hue = m_CursorHue;
+                m_CursorSprite.Offset = m_CursorOffset;
+                m_CursorSprite.Draw(spritebatch, position);
+            }
         }
     }
 }

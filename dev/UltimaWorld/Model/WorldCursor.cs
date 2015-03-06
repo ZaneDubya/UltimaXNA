@@ -136,9 +136,110 @@ namespace UltimaXNA.UltimaWorld.Model
             base.Dispose();
         }
 
+        // ======================================================================
+        // Drawing routines
+        // ======================================================================
+
+        private Sprite m_ItemSprite = null;
+        private int m_ItemSpriteArtIndex = -1;
+
+        public int ItemSpriteArtIndex
+        {
+            get { return m_ItemSpriteArtIndex; }
+            set
+            {
+                if (value != m_ItemSpriteArtIndex)
+                {
+                    m_ItemSpriteArtIndex = value;
+
+                    Texture2D art = UltimaData.ArtData.GetStaticTexture(m_ItemSpriteArtIndex);
+                    if (art == null)
+                    {
+                        // shouldn't we have a debug texture to show that we are missing this cursor art? !!!
+                        m_ItemSprite = null;
+                    }
+                    else
+                    {
+                        Rectangle sourceRect = new Rectangle(0, 0, art.Width, art.Height);
+                        m_ItemSprite = new Sprite(art, Point2D.Zero, sourceRect, 0);
+                    }
+                }
+            }
+        }
+
         protected override void BeforeDraw(SpriteBatchUI spritebatch, Point2D position)
         {
+            if (IsHoldingItem)
+            {
+                ItemSpriteArtIndex = HeldItem.DisplayItemID;
 
+                if (m_ItemSprite != null)
+                {
+                    m_ItemSprite.Hue = HeldItem.Hue;
+                    m_ItemSprite.Offset = m_HeldItemOffset;
+                    m_ItemSprite.Draw(spritebatch, position);
+                }
+
+                // set up to draw standard cursor sprite above item art.
+                base.BeforeDraw(spritebatch, position);
+            }
+            else if (IsTargeting)
+            {
+                CursorSpriteArtIndex = 8310 - ((UltimaVars.EngineVars.WarMode) ? 23 : 0);
+                CursorOffset = new Point2D(13, 13);
+                // sourceRect = new Rectangle(1, 1, 46, 34);
+                /*if (m_targetingMulti != -1)
+                {
+                    // UNIMPLEMENTED !!! Draw a transparent multi
+                }*/
+            }
+            else if (!UltimaEngine.UserInterface.IsMouseOverUI && !UltimaEngine.UserInterface.IsModalControlOpen)
+            {
+                switch (UltimaVars.EngineVars.CursorDirection)
+                {
+                    case Direction.North:
+                        CursorOffset = new Point2D(29, 1);
+                        CursorSpriteArtIndex = 8299 - ((UltimaVars.EngineVars.WarMode) ? 23 : 0);
+                        break;
+                    case Direction.Right:
+                        CursorOffset = new Point2D(41, 9);
+                        CursorSpriteArtIndex = 8300 - ((UltimaVars.EngineVars.WarMode) ? 23 : 0);
+                        break;
+                    case Direction.East:
+                        CursorOffset = new Point2D(36, 24);
+                        CursorSpriteArtIndex = 8301 - ((UltimaVars.EngineVars.WarMode) ? 23 : 0);
+                        break;
+                    case Direction.Down:
+                        CursorOffset = new Point2D(14, 33);
+                        CursorSpriteArtIndex = 8302 - ((UltimaVars.EngineVars.WarMode) ? 23 : 0);
+                        break;
+                    case Direction.South:
+                        CursorOffset = new Point2D(4, 28);
+                        CursorSpriteArtIndex = 8303 - ((UltimaVars.EngineVars.WarMode) ? 23 : 0);
+                        break;
+                    case Direction.Left:
+                        CursorOffset = new Point2D(2, 10);
+                        CursorSpriteArtIndex = 8304 - ((UltimaVars.EngineVars.WarMode) ? 23 : 0);
+                        break;
+                    case Direction.West:
+                        CursorOffset = new Point2D(1, 1);
+                        CursorSpriteArtIndex = 8305 - ((UltimaVars.EngineVars.WarMode) ? 23 : 0);
+                        break;
+                    case Direction.Up:
+                        CursorOffset = new Point2D(4, 2);
+                        CursorSpriteArtIndex = 8298 - ((UltimaVars.EngineVars.WarMode) ? 23 : 0);
+                        break;
+                    default:
+                        CursorOffset = new Point2D(2, 10);
+                        CursorSpriteArtIndex = 8309 - ((UltimaVars.EngineVars.WarMode) ? 23 : 0);
+                        break;
+                }
+            }
+            else
+            {
+                // cursor is over UI or there is a modal message box open. Set up to draw standard cursor sprite.
+                base.BeforeDraw(spritebatch, position);
+            }
         }
 
         // ======================================================================

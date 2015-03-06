@@ -39,6 +39,10 @@ namespace UltimaXNA
             :base(width, height)
         {
             UltimaVars.EngineVars.ScreenSize = new Point2D(width, height);
+
+            // this is copied from IXL.BaseCore - required for finding the mouse coordinate when moving the cursor over the window.
+            System.Drawing.Graphics graphics = System.Drawing.Graphics.FromHwnd(this.Window.Handle);
+            InterXLib.Settings.ScreenDPI = new Vector2(graphics.DpiX / 96f, graphics.DpiY / 96f);
         }
 
         protected override void OnInitialize()
