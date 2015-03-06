@@ -20,24 +20,16 @@ namespace UltimaXNA.UltimaWorld.Controller
 
         // mouse input variables
         bool m_ContinuousMoveCheck = false;
+        public bool ContinuousMouseMovementCheck
+        {
+            set { m_ContinuousMoveCheck = value; }
+        }
+
         const int m_TimeHoveringBeforeTipMS = 1000;
 
         // make sure we drag the correct object variables
         Vector2 m_dragOffset;
         AMapObject m_dragObject;
-
-        // Are we asking for a target?
-        TargetTypes m_TargettingType = TargetTypes.Nothing;
-        bool isTargeting
-        {
-            get
-            {
-                if (m_TargettingType == TargetTypes.Nothing)
-                    return false;
-                else
-                    return true;
-            }
-        }
 
         public void Update(double frameMS)
         {
@@ -151,34 +143,6 @@ namespace UltimaXNA.UltimaWorld.Controller
             e.Handled = true;
         }
 
-        void onTargetingButton(AMapObject worldObject)
-        {
-            if (worldObject == null)
-                return;
-
-            // If isTargeting is true, then the target cursor is active and we are waiting for the player to target something.
-            // If not, then we are just clicking the mouse and we need to find out if something is under the mouse cursor.
-            switch (m_TargettingType)
-            {
-                case TargetTypes.Object:
-                    // Select Object
-                    IsometricRenderer.PickType = PickTypes.PickStatics | PickTypes.PickObjects;
-                    mouseTargetingEventObject(worldObject);
-                    break;
-                case TargetTypes.Position:
-                    // Select X, Y, Z
-                    IsometricRenderer.PickType = PickTypes.PickStatics | PickTypes.PickObjects;
-                    mouseTargetingEventObject(worldObject); // mouseTargetingEventXYZ(mouseOverObject);
-                    break;
-                case TargetTypes.MultiPlacement:
-                    // select X, Y, Z
-                    mouseTargetingEventXYZ(worldObject);
-                    break;
-                default:
-                    throw new Exception("Unknown targetting type!");
-            }
-        }
-
         void onInteractButton(InputEventMouse e)
         {
             AMapObject overObject = (e.EventType == MouseEvent.DragBegin) ? m_dragObject : IsometricRenderer.MouseOverObject;
@@ -193,15 +157,10 @@ namespace UltimaXNA.UltimaWorld.Controller
             if (overObject == null)
                 return;
 
-            if (isTargeting && e.EventType == MouseEvent.Click)
+            if (m_Model.Cursor.IsTargeting && e.EventType == MouseEvent.Click)
             {
                 // Special case: targeting
-                onTargetingButton(overObject);
-            }
-            else if (UltimaInteraction.Cursor.IsHolding && e.EventType == MouseEvent.Up)
-            {
-                // Special case: if we're holding anything, drop it.
-                checkDropItem();
+                // handled by cursor class.
             }
             else
             {
@@ -283,49 +242,6 @@ namespace UltimaXNA.UltimaWorld.Controller
             e.Handled = true;
         }
 
-        void checkDropItem()
-        {
-            AMapObject mouseoverObject = IsometricRenderer.MouseOverObject;
-
-            if (mouseoverObject != null)
-            {
-                int x, y, z;
-
-                if (mouseoverObject is MapObjectMobile || mouseoverObject is MapObjectCorpse)
-                {
-                    // special case, attempt to give this item.
-                    return;
-                }
-                else if (mouseoverObject is MapObjectItem || mouseoverObject is MapObjectStatic)
-                {
-                    x = (int)mouseoverObject.Position.X;
-                    y = (int)mouseoverObject.Position.Y;
-                    z = (int)mouseoverObject.Z;
-                    if (mouseoverObject is MapObjectStatic)
-                    {
-                        ItemData itemData = UltimaData.TileData.ItemData[mouseoverObject.ItemID & 0x3FFF];
-                        z += itemData.Height;
-                    }
-                    else if (mouseoverObject is MapObjectItem)
-                    {
-                        z += UltimaData.TileData.ItemData[mouseoverObject.ItemID].Height;
-                    }
-                }
-                else if (mouseoverObject is MapObjectGround)
-                {
-                    x = (int)mouseoverObject.Position.X;
-                    y = (int)mouseoverObject.Position.Y;
-                    z = (int)mouseoverObject.Z;
-                }
-                else
-                {
-                    // over text?
-                    return;
-                }
-                UltimaInteraction.DropItemToWorld(UltimaInteraction.Cursor.HoldingItem, x, y, z);
-            }
-        }
-
         void createHoverLabel(AMapObject mapObject)
         {
             if (mapObject.OwnerSerial.IsValid)
@@ -391,11 +307,6 @@ namespace UltimaXNA.UltimaWorld.Controller
             List<InputEventKeyboard> events = UltimaEngine.Input.GetKeyboardEvents();
             foreach (InputEventKeyboard e in events)
             {
-                // If we are targeting, cancel the target cursor if we hit escape.
-                if (isTargeting)
-                    if ((e.EventType == KeyboardEventType.Press) && e.KeyCode == WinKeys.Escape)
-                        mouseTargetingCancel();
-
                 // Toggle for war mode:
                 if (e.EventType == KeyboardEventType.Down && e.KeyCode == WinKeys.Tab)
                 {
@@ -418,83 +329,6 @@ namespace UltimaXNA.UltimaWorld.Controller
                     }
                 }*/
             }
-        }
-
-        public void MouseTargeting(TargetTypes targetingType, int cursorID)
-        {
-            setTargeting(targetingType);
-        }
-
-        void setTargeting(TargetTypes targetingType)
-        {
-            m_TargettingType = targetingType;
-            // Set the UserInterface's cursor to a targetting cursor. If multi, tell the cursor which multi.
-            UltimaInteraction.Cursor.IsTargeting = true;
-            // Stop continuous movement.
-            m_ContinuousMoveCheck = false;
-        }
-
-        void clearTargeting()
-        {
-            // Clear our target cursor.
-            m_TargettingType = TargetTypes.Nothing;
-            UltimaInteraction.Cursor.IsTargeting = false;
-        }
-
-        void mouseTargetingCancel()
-        {
-            // Send the cancel target message back to the server.
-            m_Model.Client.Send(new TargetCancelPacket());
-            clearTargeting();
-        }
-
-        void mouseTargetingEventXYZ(AMapObject selectedObject)
-        {
-            // Send the targetting event back to the server!
-            int modelNumber = 0;
-            Type type = selectedObject.GetType();
-            if (type == typeof(MapObjectStatic))
-            {
-                modelNumber = selectedObject.ItemID;
-            }
-            else
-            {
-                modelNumber = 0;
-            }
-            // Send the target ...
-            m_Model.Client.Send(new TargetXYZPacket((short)selectedObject.Position.X, (short)selectedObject.Position.Y, (short)selectedObject.Z, (ushort)modelNumber));
-            // ... and clear our targeting cursor.
-            clearTargeting();
-        }
-
-        void mouseTargetingEventObject(AMapObject selectedObject)
-        {
-            // If we are passed a null object, keep targeting.
-            if (selectedObject == null)
-                return;
-            Serial serial = selectedObject.OwnerSerial;
-            // Send the targetting event back to the server
-            if (serial.IsValid)
-            {
-                m_Model.Client.Send(new TargetObjectPacket(serial));
-            }
-            else
-            {
-                int modelNumber = 0;
-                Type type = selectedObject.GetType();
-                if (type == typeof(MapObjectStatic))
-                {
-                    modelNumber = selectedObject.ItemID;
-                }
-                else
-                {
-                    modelNumber = 0;
-                }
-                m_Model.Client.Send(new TargetXYZPacket((short)selectedObject.Position.X, (short)selectedObject.Position.Y, (short)selectedObject.Z, (ushort)modelNumber));
-            }
-
-            // Clear our target cursor.
-            clearTargeting();
         }
     }
 }

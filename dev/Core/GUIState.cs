@@ -186,10 +186,10 @@ namespace UltimaXNA
                 m_Controls.Remove(c);
             m_DisposedControls.Clear();
 
-            updateInput();
-
             if (Cursor != null)
                 Cursor.Update();
+
+            updateInput();
         }
 
         public void Draw(double frameTime)
@@ -264,7 +264,6 @@ namespace UltimaXNA
                 if (m_MouseDownControl[iButton] != null && m_MouseDownControl[iButton] != controlGivenMouseOver)
                     m_MouseDownControl[iButton].MouseOver(UltimaEngine.Input.MousePosition);
             }
-
 
             List<InputEventMouse> events = UltimaEngine.Input.GetMouseEvents();
             foreach (InputEventMouse e in events)

@@ -15,8 +15,6 @@ namespace UltimaXNA
 {
     public static class UltimaInteraction
     {
-        public static OldCursor Cursor = new OldCursor();
-
         public static MsgBox MsgBox(string msg, MsgBoxTypes type)
         {
             // pop up an error message, modal.
@@ -49,24 +47,6 @@ namespace UltimaXNA
         public static void ToggleWarMode() // used by paperdollgump.
         {
             s_Client.Send(new RequestWarModePacket(!((Mobile)EntityManager.GetPlayerObject()).IsWarMode));
-        }
-
-        public static void DropItemToWorld(Item item, int X, int Y, int Z) // used by worldinput.
-        {
-            if (!UltimaEngine.UserInterface.IsMouseOverUI)
-            {
-                Serial serial;
-                if (IsometricRenderer.MouseOverObject is MapObjectItem && ((Item)IsometricRenderer.MouseOverObject.OwnerEntity).ItemData.IsContainer)
-                {
-                    serial = IsometricRenderer.MouseOverObject.OwnerEntity.Serial;
-                    X = Y = 0xFFFF;
-                    Z = 0;
-                }
-                else
-                    serial = Serial.World;
-                s_Client.Send(new DropItemPacket(item.Serial, (ushort)X, (ushort)Y, (byte)Z, 0, serial));
-                ClearHolding();
-            }
         }
 
         public static void UseSkill(int index) // used by ultimainteraction

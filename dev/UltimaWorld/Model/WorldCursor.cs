@@ -3,9 +3,13 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Entity;
 using UltimaXNA.Rendering;
+using UltimaXNA.UltimaData;
 using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaGUI.Controls;
 using UltimaXNA.UltimaPackets.Client;
+using UltimaXNA.UltimaWorld.View;
+using UltimaXNA.UltimaWorld.Controller;
+using System;
 
 namespace UltimaXNA.UltimaWorld.Model
 {
@@ -22,34 +26,108 @@ namespace UltimaXNA.UltimaWorld.Model
 
         public override void Update()
         {
-            if (IsHoldingItem && UltimaEngine.UserInterface.IsMouseOverUI && UltimaEngine.Input.HandleMouseEvent(MouseEvent.Up, MouseButton.Left))
+            if (IsHoldingItem && UltimaEngine.Input.HandleMouseEvent(MouseEvent.Up, UltimaVars.EngineVars.MouseButton_Interact))
             {
-                Control target = UltimaEngine.UserInterface.MouseOverControl;
-                // attempt to drop the item onto an interface. The only acceptable targets for dropping items are:
-                // 1. ItemGumplings that represent containers (like a bag icon)
-                // 2. Gumps that represent open Containers (GumpPicContainers, e.g. an open GumpPic of a chest)
-                // 3. Paperdolls for my character.
-                // 4. Backpack gumppics (seen in paperdolls).
-                if ((target is ItemGumpling && ((ItemGumpling)target).Item.ItemData.IsContainer) ||
-                    (target is GumpPic))
+                if (UltimaEngine.UserInterface.IsMouseOverUI)
                 {
-                    DropItemToContainer((Container)((ItemGumpling)target).Item);
+                    Control target = UltimaEngine.UserInterface.MouseOverControl;
+                    // attempt to drop the item onto an interface. The only acceptable targets for dropping items are:
+                    // 1. ItemGumplings that represent containers (like a bag icon)
+                    // 2. Gumps that represent open Containers (GumpPicContainers, e.g. an open GumpPic of a chest)
+                    // 3. Paperdolls for my character.
+                    // 4. Backpack gumppics (seen in paperdolls).
+                    if (target is ItemGumpling && ((ItemGumpling)target).Item.ItemData.IsContainer)
+                    {
+                        DropHeldItemToContainer((Container)((ItemGumpling)target).Item);
+                    }
+                    else if (target is GumpPicContainer)
+                    {
+                        int x = (int)UltimaEngine.Input.MousePosition.X - HeldItemOffset.X - (target.X + target.Owner.X);
+                        int y = (int)UltimaEngine.Input.MousePosition.Y - HeldItemOffset.Y - (target.Y + target.Owner.Y);
+                        DropHeldItemToContainer((Container)((GumpPicContainer)target).Item, x, y);
+                    }
+                    else if (target is ItemGumplingPaperdoll || (target is GumpPic && ((GumpPic)target).IsPaperdoll))
+                    {
+                        WearHeldItem();
+                    }
+                    else if (target is GumpPicBackpack)
+                    {
+                        DropHeldItemToContainer((Container)((GumpPicBackpack)target).BackpackItem);
+                    }
                 }
-                else if (target is GumpPicContainer)
+                else // cursor is over the world display.
                 {
-                    int x = (int)UltimaEngine.Input.MousePosition.X - HeldItemOffset.X - (target.X + target.Owner.X);
-                    int y = (int)UltimaEngine.Input.MousePosition.Y - HeldItemOffset.Y - (target.Y + target.Owner.Y);
-                    DropItemToContainer((Container)((GumpPicContainer)target).Item, x, y);
-                }
-                else if (target is ItemGumplingPaperdoll || (target is GumpPic && ((GumpPic)target).IsPaperdoll))
-                {
-                    WearHeldItem();
-                }
-                else if (target is GumpPicBackpack)
-                {
-                    DropItemToContainer((Container)((GumpPicBackpack)target).BackpackItem);
+                    AMapObject mouseoverObject = IsometricRenderer.MouseOverObject;
+
+                    if (mouseoverObject != null)
+                    {
+                        int x, y, z;
+
+                        if (mouseoverObject is MapObjectMobile || mouseoverObject is MapObjectCorpse)
+                        {
+                            // UNIMPLEMENTED: attempt to give this item to the mobile or corpse.
+                            return;
+                        }
+                        else if (mouseoverObject is MapObjectItem || mouseoverObject is MapObjectStatic)
+                        {
+                            x = (int)mouseoverObject.Position.X;
+                            y = (int)mouseoverObject.Position.Y;
+                            z = (int)mouseoverObject.Z;
+                            if (mouseoverObject is MapObjectStatic)
+                            {
+                                ItemData itemData = UltimaData.TileData.ItemData[mouseoverObject.ItemID & 0x3FFF];
+                                z += itemData.Height;
+                            }
+                            else if (mouseoverObject is MapObjectItem)
+                            {
+                                z += UltimaData.TileData.ItemData[mouseoverObject.ItemID].Height;
+                            }
+                        }
+                        else if (mouseoverObject is MapObjectGround)
+                        {
+                            x = (int)mouseoverObject.Position.X;
+                            y = (int)mouseoverObject.Position.Y;
+                            z = (int)mouseoverObject.Z;
+                        }
+                        else
+                        {
+                            // over text?
+                            return;
+                        }
+                        DropHeldItemToWorld(x, y, z);
+                    }
                 }
             }
+
+            if (IsTargeting && UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Press, WinKeys.Escape, false, false, false))
+            {
+                SetTargeting(TargetTypes.Nothing, 0);
+            }
+
+            if (IsTargeting && UltimaEngine.Input.HandleMouseEvent(MouseEvent.Click, UltimaVars.EngineVars.MouseButton_Interact))
+            {
+                // If isTargeting is true, then the target cursor is active and we are waiting for the player to target something.
+                switch (m_Targeting)
+                {
+                    case TargetTypes.Object:
+                        // Select Object
+                        IsometricRenderer.PickType = PickTypes.PickStatics | PickTypes.PickObjects;
+                        mouseTargetingEventObject(IsometricRenderer.MouseOverObject);
+                        break;
+                    case TargetTypes.Position:
+                        // Select X, Y, Z
+                        IsometricRenderer.PickType = PickTypes.PickStatics | PickTypes.PickObjects;
+                        mouseTargetingEventObject(IsometricRenderer.MouseOverObject); // mouseTargetingEventXYZ(mouseOverObject);
+                        break;
+                    case TargetTypes.MultiPlacement:
+                        // select X, Y, Z
+                        mouseTargetingEventXYZ(IsometricRenderer.MouseOverObject);
+                        break;
+                    default:
+                        throw new Exception("Unknown targetting type!");
+                }
+            }
+
             base.Update(); // reset image
         }
 
@@ -61,6 +139,87 @@ namespace UltimaXNA.UltimaWorld.Model
         protected override void BeforeDraw(SpriteBatchUI spritebatch, Point2D position)
         {
 
+        }
+
+        // ======================================================================
+        // Targeting routines
+        // ======================================================================
+
+        private TargetTypes m_Targeting = TargetTypes.Nothing;
+        public TargetTypes Targeting
+        {
+            get { return m_Targeting; }
+        }
+
+        public bool IsTargeting
+        {
+            get { return m_Targeting != TargetTypes.Nothing; }
+        }
+
+        public void SetTargeting(TargetTypes targeting, int cursorID)
+        {
+            if (m_Targeting != targeting)
+            {
+                if (targeting == TargetTypes.Nothing)
+                {
+                    m_Model.Client.Send(new TargetCancelPacket());
+                }
+                else
+                {
+                    // if we start targeting, we cancel movement.
+                    m_Model.Input.ContinuousMouseMovementCheck = false;
+                }
+                m_Targeting = targeting;
+            }
+        }
+
+        void mouseTargetingEventXYZ(AMapObject selectedObject)
+        {
+            // Send the targetting event back to the server!
+            int modelNumber = 0;
+            Type type = selectedObject.GetType();
+            if (type == typeof(MapObjectStatic))
+            {
+                modelNumber = selectedObject.ItemID;
+            }
+            else
+            {
+                modelNumber = 0;
+            }
+            // Send the target ...
+            m_Model.Client.Send(new TargetXYZPacket((short)selectedObject.Position.X, (short)selectedObject.Position.Y, (short)selectedObject.Z, (ushort)modelNumber));
+            // ... and clear our targeting cursor.
+            SetTargeting(TargetTypes.Nothing, 0);
+        }
+
+        void mouseTargetingEventObject(AMapObject selectedObject)
+        {
+            // If we are passed a null object, keep targeting.
+            if (selectedObject == null)
+                return;
+            Serial serial = selectedObject.OwnerSerial;
+            // Send the targetting event back to the server
+            if (serial.IsValid)
+            {
+                m_Model.Client.Send(new TargetObjectPacket(serial));
+            }
+            else
+            {
+                int modelNumber = 0;
+                Type type = selectedObject.GetType();
+                if (type == typeof(MapObjectStatic))
+                {
+                    modelNumber = selectedObject.ItemID;
+                }
+                else
+                {
+                    modelNumber = 0;
+                }
+                m_Model.Client.Send(new TargetXYZPacket((short)selectedObject.Position.X, (short)selectedObject.Position.Y, (short)selectedObject.Z, (ushort)modelNumber));
+            }
+
+            // Clear our target cursor.
+            SetTargeting(TargetTypes.Nothing, 0);
         }
 
         // ======================================================================
@@ -123,16 +282,33 @@ namespace UltimaXNA.UltimaWorld.Model
             }
         }
 
-        private void DropItemToContainer(Container container)
+        private void DropHeldItemToWorld(int X, int Y, int Z)
+        {
+            Serial serial;
+            if (IsometricRenderer.MouseOverObject is MapObjectItem && ((Item)IsometricRenderer.MouseOverObject.OwnerEntity).ItemData.IsContainer)
+            {
+                serial = IsometricRenderer.MouseOverObject.OwnerEntity.Serial;
+                X = Y = 0xFFFF;
+                Z = 0;
+            }
+            else
+            {
+                serial = Serial.World;
+            }
+            m_Model.Client.Send(new DropItemPacket(HeldItem.Serial, (ushort)X, (ushort)Y, (byte)Z, 0, serial));
+            ClearHolding();
+        }
+
+        private void DropHeldItemToContainer(Container container)
         {
             // get random coords and drop the item there.
             Rectangle bounds = UltimaData.ContainerData.GetData(container.ItemID).Bounds;
             int x = Utility.RandomValue(bounds.Left, bounds.Right);
             int y = Utility.RandomValue(bounds.Top, bounds.Bottom);
-            DropItemToContainer(container, x, y);
+            DropHeldItemToContainer(container, x, y);
         }
 
-        private void DropItemToContainer(Container container, int x, int y)
+        private void DropHeldItemToContainer(Container container, int x, int y)
         {
             Rectangle containerBounds = UltimaData.ContainerData.GetData(container.ItemID).Bounds;
             Texture2D itemTexture = UltimaData.ArtData.GetStaticTexture(HeldItem.DisplayItemID);

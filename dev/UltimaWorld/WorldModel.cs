@@ -24,8 +24,8 @@ namespace UltimaXNA.UltimaWorld
 
         private WorldClient m_WorldClient;
 
-        private UltimaCursor m_Cursor = null;
-        public UltimaCursor Cursor
+        private Model.WorldCursor m_Cursor = null;
+        public Model.WorldCursor Cursor
         {
             get { return m_Cursor; }
             set
@@ -44,7 +44,7 @@ namespace UltimaXNA.UltimaWorld
             m_WorldInput = new WorldInput(this);
             m_WorldClient = new WorldClient(this);
 
-            UltimaEngine.UserInterface.Cursor = new Model.WorldCursor(this);
+            UltimaEngine.UserInterface.Cursor = Cursor = new Model.WorldCursor(this);
         }
 
         protected override AView CreateView()

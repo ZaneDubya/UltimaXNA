@@ -93,14 +93,15 @@ namespace UltimaXNA.UltimaWorld.Controller
         private void receive_TargetCursor(IRecvPacket packet)
         {
             TargetCursorPacket p = (TargetCursorPacket)packet;
-            m_Model.Input.MouseTargeting((TargetTypes)p.CommandType, p.CursorID);
+            m_Model.Cursor.SetTargeting((TargetTypes)p.CommandType, p.CursorID);
         }
 
         private void receive_TargetCursorMulti(IRecvPacket packet)
         {
-            TargetCursorMultiPacket p = (TargetCursorMultiPacket)packet;
-            m_Model.Input.MouseTargeting(TargetTypes.MultiPlacement, 0);
-            UltimaInteraction.Cursor.TargetingMulti = p.MultiModel;
+            // TargetCursorMultiPacket p = (TargetCursorMultiPacket)packet;
+            // m_Model.Input.MouseTargeting(TargetTypes.MultiPlacement, 0);
+            // UltimaInteraction.Cursor.TargetingMulti = p.MultiModel;
+            Diagnostics.Logger.Debug("receive_TargetCursorMulti is not implemented!");
         }
 
         private void InternalOnEntity_SendMoveRequestPacket(MoveRequestPacket packet)

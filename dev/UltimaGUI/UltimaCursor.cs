@@ -67,9 +67,12 @@ namespace UltimaXNA.UltimaGUI
         {
             BeforeDraw(spritebatch, position);
 
-            m_CursorSprite.Offset = m_CursorOffset;
-            m_CursorSprite.Hue = m_CursorHue;
-            m_CursorSprite.Draw(spritebatch, position);
+            if (m_CursorSprite != null)
+            {
+                m_CursorSprite.Offset = m_CursorOffset;
+                m_CursorSprite.Hue = m_CursorHue;
+                m_CursorSprite.Draw(spritebatch, position);
+            }
         }
 
         protected virtual void BeforeDraw(SpriteBatchUI spritebatch, Point2D position)
