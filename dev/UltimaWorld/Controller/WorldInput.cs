@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UltimaXNA.Entity;
 using UltimaXNA.UltimaData;
 using UltimaXNA.UltimaPackets.Client;
+using UltimaXNA.UltimaWorld.View;
 
 namespace UltimaXNA.UltimaWorld.Controller
 {
@@ -219,7 +220,7 @@ namespace UltimaXNA.UltimaWorld.Controller
                 }
                 else if (overObject is MapObjectItem)
                 {
-                    Item entity = (Item)overObject.OwnerEntity;
+                    Item item = (Item)overObject.OwnerEntity;
                     // single click = tool tip
                     // double click = use / open
                     // click and drag = pick up
@@ -227,13 +228,13 @@ namespace UltimaXNA.UltimaWorld.Controller
                     {
                         case MouseEvent.Click:
                             // tool tip
-                            UltimaInteraction.SingleClick(entity);
+                            UltimaInteraction.SingleClick(item);
                             break;
                         case MouseEvent.DoubleClick:
-                            UltimaInteraction.DoubleClick(entity);
+                            UltimaInteraction.DoubleClick(item);
                             break;
                         case MouseEvent.DragBegin:
-                            UltimaInteraction.PickUpItem(entity, (int)overObjectOffset.X, (int)overObjectOffset.Y);
+                            UltimaInteraction.PickupItem(item, new Point2D((int)overObjectOffset.X, (int)overObjectOffset.Y));
                             break;
                     }
                 }

@@ -92,6 +92,11 @@ namespace UltimaXNA
         {
             return new Vector2(X, Y);
         }
+
+        public static Point2D Zero
+        {
+            get { return new Point2D(0, 0); }
+        }
     }
 
     [StructLayout(LayoutKind.Sequential)]

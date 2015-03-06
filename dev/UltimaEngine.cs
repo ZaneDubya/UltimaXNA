@@ -11,8 +11,6 @@
 #region usings
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.UltimaLogin;
-using UltimaXNA.UltimaWorld;
 #endregion
 
 namespace UltimaXNA
@@ -45,7 +43,7 @@ namespace UltimaXNA
 
         protected override void OnInitialize()
         {
-            IsometricRenderer.Initialize(this);
+            UltimaWorld.View.IsometricRenderer.Initialize(this);
 
             // Make sure we have a UO installation before loading UltimaData.
             if (UltimaData.FileManager.IsUODataPresent)
@@ -66,7 +64,7 @@ namespace UltimaXNA
                 UltimaVars.EngineVars.InWorld = false;
                 UltimaInteraction.Initialize(s_Client);
 
-                ActiveModel = new LoginModel();
+                ActiveModel = new UltimaLogin.LoginModel();
             }
         }
 
@@ -88,9 +86,7 @@ namespace UltimaXNA
 
         protected override void OnDraw(GameTime gameTime)
         {
-            if (UltimaVars.EngineVars.InWorld)
-                IsometricRenderer.Draw(gameTime);
-            UltimaInteraction.Draw();
+            ActiveModel.GetView().Draw(null, gameTime.ElapsedGameTime.TotalMilliseconds);
         }
     }
 }

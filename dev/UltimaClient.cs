@@ -9,7 +9,6 @@
  *
  ***************************************************************************/
 #region usings
-using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using UltimaXNA.Core.Network;
@@ -19,6 +18,7 @@ using UltimaXNA.UltimaPackets;
 using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.UltimaPackets.Server;
 using UltimaXNA.UltimaWorld;
+using UltimaXNA.UltimaWorld.View;
 #endregion
 
 namespace UltimaXNA
@@ -795,7 +795,7 @@ namespace UltimaXNA
         {
             LiftRejectionPacket p = (LiftRejectionPacket)packet;
             UltimaInteraction.ChatMessage("Could not pick up item: " + p.ErrorMessage);
-            UltimaInteraction.Cursor.ClearHolding();
+            UltimaInteraction.ClearHolding();
         }
 
         private void receive_RequestNameResponse(IRecvPacket packet)

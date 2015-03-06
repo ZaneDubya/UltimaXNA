@@ -21,21 +21,14 @@ namespace UltimaXNA
     public class GUIState
     {
         SpriteBatchUI m_SpriteBatch;
-        public SpriteBatchUI SpriteBatch { get { return m_SpriteBatch; } }
+        internal SpriteBatchUI SpriteBatch { get { return m_SpriteBatch; } }
 
-        private Sprite m_CursorSprite;
-        public Sprite CursorSprite
+        private UltimaCursor m_Cursor;
+        internal UltimaCursor Cursor
         {
-            get { return m_CursorSprite; }
-            set { m_CursorSprite = value; }
+            get { return m_Cursor; }
+            set { m_Cursor = value; }
         }
-        private Sprite m_BeneathCursorSprite;
-        public Sprite BeneathCursorSprite
-        {
-            get { return m_BeneathCursorSprite; }
-            set { m_BeneathCursorSprite = value; }
-        }
-
 
         public int Width { get { return m_SpriteBatch.GraphicsDevice.Viewport.Width; } }
         public int Height { get { return m_SpriteBatch.GraphicsDevice.Viewport.Height; } }
@@ -194,9 +187,12 @@ namespace UltimaXNA
             m_DisposedControls.Clear();
 
             updateInput();
+
+            if (Cursor != null)
+                Cursor.Update();
         }
 
-        public void Draw(GameTime gameTime)
+        public void Draw(double frameTime)
         {
             m_SpriteBatch.Prepare();
 
@@ -206,10 +202,8 @@ namespace UltimaXNA
                     c.Draw(m_SpriteBatch);
             }
 
-            if (m_BeneathCursorSprite != null)
-                m_BeneathCursorSprite.Draw(m_SpriteBatch, UltimaEngine.Input.MousePosition);
-            if (m_CursorSprite != null)
-                m_CursorSprite.Draw(m_SpriteBatch, UltimaEngine.Input.MousePosition);
+            if (Cursor != null)
+                Cursor.Draw(m_SpriteBatch, UltimaEngine.Input.MousePosition);
 
             m_SpriteBatch.Flush();
         }

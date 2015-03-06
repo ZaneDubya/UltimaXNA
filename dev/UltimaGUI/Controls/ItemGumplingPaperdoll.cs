@@ -30,15 +30,10 @@ namespace UltimaXNA.UltimaGUI.Controls
             m_y = y;
         }
 
-        protected override void m_onPickUp()
+        protected override Point2D InternalGetPickupOffset(Point2D offset)
         {
-            if (UltimaInteraction.Cursor.HoldingItem != null)
-            {
-                // fix this to be more centered on the object.
-                UltimaInteraction.Cursor.HoldingOffset = new Point(
-                    UltimaInteraction.Cursor.HoldingTexture.Width / 4,
-                    UltimaInteraction.Cursor.HoldingTexture.Height / 4);
-            }
+            // fix this to be more centered on the object.
+            return offset;
         }
 
         public override void Update(GameTime gameTime)

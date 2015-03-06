@@ -19,7 +19,7 @@ using InterXLib.Input.Windows;
 using UltimaXNA.UltimaWorld;
 #endregion
 
-namespace UltimaXNA.UltimaWorld
+namespace UltimaXNA.UltimaWorld.View
 {
     public class IsometricRenderer
     {
@@ -155,7 +155,7 @@ namespace UltimaXNA.UltimaWorld
             }
         }
 
-        public static void Draw(GameTime gameTime)
+        public static void Draw(double frameTime)
         {
             if (UltimaVars.EngineVars.Map < 0)
                 return;

@@ -9,24 +9,13 @@ using UltimaXNA.UltimaGUI.Controls;
 using UltimaXNA.UltimaGUI.Gumps;
 using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.UltimaWorld;
+using UltimaXNA.UltimaWorld.View;
 
 namespace UltimaXNA
 {
     public static class UltimaInteraction
     {
-        private static UltimaCursor m_Cusor = null;
-        public static UltimaCursor Cursor { get { return m_Cusor; } }
-
-        static UltimaInteraction()
-        {
-            m_Cusor = new UltimaCursor();
-        }
-
-        public static void Draw()
-        {
-            // Draw the cursor
-            m_Cusor.Draw(UltimaEngine.Input.MousePosition);
-        }
+        public static OldCursor Cursor;
 
         public static void Update()
         {
@@ -81,15 +70,6 @@ namespace UltimaXNA
             s_Client.Send(new DoubleClickPacket(item.Serial));
         } 
 
-        public static void PickUpItem(Item item, int x, int y) // used by itemgumpling, worldinput
-        {
-            if (item.PickUp())
-            {
-                s_Client.Send(new PickupItemPacket(item.Serial, item.Amount));
-                Cursor.PickUpItem(item, x, y);
-            }
-        }
-
         public static void ToggleWarMode() // used by paperdollgump.
         {
             s_Client.Send(new RequestWarModePacket(!((Mobile)EntityManager.GetPlayerObject()).IsWarMode));
@@ -109,7 +89,7 @@ namespace UltimaXNA
                 else
                     serial = Serial.World;
                 s_Client.Send(new DropItemPacket(item.Serial, (ushort)X, (ushort)Y, (byte)Z, 0, serial));
-                Cursor.ClearHolding();
+                ClearHolding();
             }
         }
 
@@ -131,13 +111,13 @@ namespace UltimaXNA
             if (y < containerBounds.Top) y = containerBounds.Top;
             if (y > containerBounds.Bottom - itemTexture.Height) y = containerBounds.Bottom - itemTexture.Height;
             s_Client.Send(new DropItemPacket(item.Serial, (ushort)x, (ushort)y, 0, 0, container.Serial));
-            Cursor.ClearHolding();
+            ClearHolding();
         }
 
         public static void WearItem(Item item) // used by paperdollinteractable.
         {
             s_Client.Send(new DropToLayerPacket(item.Serial, 0x00, EntityManager.MySerial));
-            Cursor.ClearHolding();
+            ClearHolding();
         }
 
         public static void UseSkill(int index) // used by ultimainteraction
@@ -211,6 +191,31 @@ namespace UltimaXNA
         public static void SendLastTargetPacket(Serial last_target) // used by engine vars, which is used by worldinput and ultimaclient.
         {
             s_Client.Send(new GetPlayerStatusPacket(0x04, last_target));
+        }
+
+        // ======================================================================
+        // Cursor handling routines.
+        // ======================================================================
+
+        internal static Action<Item, int, int> OnPickupItem;
+        internal static Action OnClearHolding;
+
+        internal static void PickupItem(Item item, Point2D offset)
+        {
+            if (item == null)
+                return;
+            if (OnPickupItem == null)
+                return;
+
+            OnPickupItem(item, offset.X, offset.Y);
+        }
+
+        internal static void ClearHolding()
+        {
+            if (OnClearHolding == null)
+                return;
+
+            OnClearHolding();
         }
     }
 }

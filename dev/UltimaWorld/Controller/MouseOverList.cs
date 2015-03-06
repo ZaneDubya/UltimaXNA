@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Rendering;
+using UltimaXNA.UltimaWorld.View;
 
 namespace UltimaXNA.UltimaWorld
 {
