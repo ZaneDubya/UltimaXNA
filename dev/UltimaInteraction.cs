@@ -15,31 +15,7 @@ namespace UltimaXNA
 {
     public static class UltimaInteraction
     {
-        public static OldCursor Cursor;
-
-        public static void Update()
-        {
-            if (UltimaEngine.UserInterface.MouseOverControl != null && Cursor.IsHolding)
-            {
-                Control target = UltimaEngine.UserInterface.MouseOverControl;
-                List<InputEventMouse> events = UltimaEngine.Input.GetMouseEvents();
-                foreach (InputEventMouse e in events)
-                {
-                    if (e.EventType == MouseEvent.Up && e.Button == MouseButton.Left)
-                    {
-                        // dropped an item we were holding.
-                        if (target is ItemGumpling && ((ItemGumpling)target).Item.ItemData.IsContainer)
-                            DropItemToContainer(Cursor.HoldingItem, (Entity.Container)((ItemGumpling)target).Item);
-                        else if (target is GumpPicContainer)
-                        {
-                            int x = (int)UltimaEngine.Input.MousePosition.X - Cursor.HoldingOffset.X - (target.X + target.Owner.X);
-                            int y = (int)UltimaEngine.Input.MousePosition.Y - Cursor.HoldingOffset.Y - (target.Y + target.Owner.Y);
-                            DropItemToContainer(Cursor.HoldingItem, (Entity.Container)((GumpPicContainer)target).Item, x, y);
-                        }
-                    }
-                }
-            }
-        }
+        public static OldCursor Cursor = new OldCursor();
 
         public static MsgBox MsgBox(string msg, MsgBoxTypes type)
         {
@@ -91,33 +67,6 @@ namespace UltimaXNA
                 s_Client.Send(new DropItemPacket(item.Serial, (ushort)X, (ushort)Y, (byte)Z, 0, serial));
                 ClearHolding();
             }
-        }
-
-        public static void DropItemToContainer(Item item, Container container) // used by paperdollinteractable and ultimaguistate.
-        {
-            // get random coords and drop the item there.
-            Rectangle bounds = UltimaData.ContainerData.GetData(container.ItemID).Bounds;
-            int x = Utility.RandomValue(bounds.Left, bounds.Right);
-            int y = Utility.RandomValue(bounds.Top, bounds.Bottom);
-            DropItemToContainer(item, container, x, y);
-        }
-
-        public static void DropItemToContainer(Item item, Container container, int x, int y) // used by ultimaguistate.
-        {
-            Rectangle containerBounds = UltimaData.ContainerData.GetData(container.ItemID).Bounds;
-            Texture2D itemTexture = UltimaData.ArtData.GetStaticTexture(item.DisplayItemID);
-            if (x < containerBounds.Left) x = containerBounds.Left;
-            if (x > containerBounds.Right - itemTexture.Width) x = containerBounds.Right - itemTexture.Width;
-            if (y < containerBounds.Top) y = containerBounds.Top;
-            if (y > containerBounds.Bottom - itemTexture.Height) y = containerBounds.Bottom - itemTexture.Height;
-            s_Client.Send(new DropItemPacket(item.Serial, (ushort)x, (ushort)y, 0, 0, container.Serial));
-            ClearHolding();
-        }
-
-        public static void WearItem(Item item) // used by paperdollinteractable.
-        {
-            s_Client.Send(new DropToLayerPacket(item.Serial, 0x00, EntityManager.MySerial));
-            ClearHolding();
         }
 
         public static void UseSkill(int index) // used by ultimainteraction

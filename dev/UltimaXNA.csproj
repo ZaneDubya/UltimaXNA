@@ -127,6 +127,7 @@
     <Compile Include="UltimaData\Fonts\ASCIIText.cs" />
     <Compile Include="UltimaData\Fonts\UniCharacter.cs" />
     <Compile Include="UltimaData\Fonts\UniText.cs" />
+    <Compile Include="UltimaGUI\Controls\GumpPicBackpack.cs" />
     <Compile Include="UltimaGUI\GUISprite.cs" />
     <Compile Include="UltimaGUI\UltimaCursor.cs" />
     <Compile Include="UltimaInteraction.cs" />

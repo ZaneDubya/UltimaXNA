@@ -76,9 +76,6 @@ namespace UltimaXNA.UltimaGUI.Controls
         bool m_isFemale;
         bool m_isElf;
 
-        DropWidget m_dropWidgetPaperdoll;
-        DropWidget m_dropWidgetBackpack;
-
         public PaperDollInteractable(Control owner, int page, int x, int y)
             : base(0, 0)
         {
@@ -88,8 +85,7 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         public override void Initialize()
         {
-            m_dropWidgetPaperdoll = new DropWidget(onItemDropPaperdoll, onItemOverPaperdoll);
-            m_dropWidgetBackpack = new DropWidget(onItemDropBackpack, onItemOverBackpack);
+
         }
 
         public override void Update(GameTime gameTime)
@@ -105,16 +101,14 @@ namespace UltimaXNA.UltimaGUI.Controls
 
                     // clear the existing Controls
                     ClearControls();
-                    m_dropWidgetPaperdoll.ClearDropTargets();
-                    m_dropWidgetBackpack.ClearDropTargets();
 
                     // Add the base gump - the semi-naked paper doll.
                     if (true)
                     {
                         int bodyID = 12 + (m_isElf ? 2 : 0) + (m_isFemale ? 1 : 0); // ((Mobile)m_sourceEntity).BodyID;
-                        AddControl(new GumpPic(this, 0, 0, 0, bodyID, ((Mobile)m_sourceEntity).Hue));
-                        LastControl.HandlesMouseInput = true;
-                        m_dropWidgetPaperdoll.AddDropTarget(LastControl);
+                        GumpPic paperdoll = (GumpPic)AddControl(new GumpPic(this, 0, 0, 0, bodyID, ((Mobile)m_sourceEntity).Hue));
+                        paperdoll.HandlesMouseInput = true;
+                        paperdoll.IsPaperdoll = true;
                     }
 
                     // Loop through the items on the mobile and create the gump pics.
@@ -139,15 +133,14 @@ namespace UltimaXNA.UltimaGUI.Controls
                         ((ItemGumplingPaperdoll)LastControl).SlotIndex = (int)i;
                         ((ItemGumplingPaperdoll)LastControl).IsFemale = m_isFemale;
                         ((ItemGumplingPaperdoll)LastControl).CanPickUp = canPickUp;
-                        m_dropWidgetPaperdoll.AddDropTarget(LastControl);
                     }
                     // If this object has a backpack, draw it last.
                     if (((Mobile)m_sourceEntity).GetItem((int)EquipSlots.Backpack) != null)
                     {
-                        AddControl(new GumpPic(this, 0, -5, 0, 0xC4F6, 0));
+                        Item backpack = ((Mobile)m_sourceEntity).GetItem((int)EquipSlots.Backpack);
+                        AddControl(new GumpPicBackpack(this, 0, -5, 0, backpack));
                         LastControl.HandlesMouseInput = true;
                         LastControl.OnMouseDoubleClick += dblclick_Backpack;
-                        m_dropWidgetBackpack.AddDropTarget(LastControl);
                     }
                 }
             }
@@ -158,26 +151,6 @@ namespace UltimaXNA.UltimaGUI.Controls
         {
             Container i = ((Mobile)m_sourceEntity).Backpack;
             UltimaInteraction.DoubleClick(i);
-        }
-
-        void onItemDropPaperdoll()
-        {
-            UltimaInteraction.WearItem(UltimaInteraction.Cursor.HoldingItem);
-        }
-
-        void onItemOverPaperdoll()
-        {
-
-        }
-
-        void onItemDropBackpack()
-        {
-            UltimaInteraction.DropItemToContainer(UltimaInteraction.Cursor.HoldingItem, (Container)((Mobile)m_sourceEntity).GetItem((int)EquipSlots.Backpack));
-        }
-
-        void onItemOverBackpack()
-        {
-
         }
 
         //void Interaction_OnItemPickUp(ItemGumplingPaperdoll Control)

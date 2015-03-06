@@ -22,6 +22,13 @@ namespace UltimaXNA.UltimaGUI.Controls
         int m_gumpID;
         int m_hue;
 
+        private bool m_IsPaperdoll = false;
+        internal bool IsPaperdoll
+        {
+            get { return m_IsPaperdoll; }
+            set { m_IsPaperdoll = value; }
+        }
+
         public GumpPic(Control owner, int page)
             : base(owner, page)
         {
