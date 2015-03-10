@@ -167,9 +167,7 @@ namespace UltimaXNA.UltimaWorld.View
                 {
                     float x = drawPosition.X - m_draw_X - m_layers[i].Frame.Center.X;
                     float y = drawPosition.Y - m_draw_Y - (m_layers[i].Frame.Texture.Height - m_layers[i].Frame.Center.Y);
-                    sb.DrawSimple(m_layers[i].Frame.Texture,
-                        new Vector3(x, y, 0),
-                            Utility.GetHueVector(m_layers[i].Hue));
+                    sb.DrawSimple(m_layers[i].Frame.Texture, new Vector3(x, y, 0), Utility.GetHueVector(m_layers[i].Hue));
                 }
             }
 
