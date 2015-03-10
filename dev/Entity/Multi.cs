@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using UltimaXNA.UltimaData;
 using UltimaXNA.UltimaWorld;
 using UltimaXNA.UltimaWorld.View;
+using Microsoft.Xna.Framework;
 #endregion
 
 namespace UltimaXNA.Entity
@@ -20,7 +21,7 @@ namespace UltimaXNA.Entity
     class Multi : BaseEntity
     {
         MultiComponentList m_components;
-        List<Point2D> m_unloadedTiles = new List<Point2D>();
+        List<Point> m_unloadedTiles = new List<Point>();
 
         int m_customHouseRevision = 0x7FFFFFFF;
         StaticTile[] m_customHouseTiles;
@@ -58,7 +59,7 @@ namespace UltimaXNA.Entity
             {
                 for (int x = 0; x < m_components.Width; x++)
                 {
-                    Point2D p = new Point2D();
+                    Point p = new Point();
                     p.X = x;
                     p.Y = y;
                     m_unloadedTiles.Add(p);
@@ -84,9 +85,9 @@ namespace UltimaXNA.Entity
             if (m_unloadedTiles.Count == 0)
                 return;
 
-            List<Point2D> drawnTiles = new List<Point2D>();
+            List<Point> drawnTiles = new List<Point>();
 
-            foreach (Point2D p in m_unloadedTiles)
+            foreach (Point p in m_unloadedTiles)
             {
                 int x = tile.X + p.X - m_components.Center.X;
                 int y = tile.Y + p.Y - m_components.Center.Y;
@@ -119,7 +120,7 @@ namespace UltimaXNA.Entity
                 }
             }
 
-            foreach (Point2D p in drawnTiles)
+            foreach (Point p in drawnTiles)
             {
                 m_unloadedTiles.Remove(p);
             }

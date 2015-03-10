@@ -98,7 +98,7 @@ namespace UltimaXNA.UltimaWorld.Controller
                     IsometricRenderer.PickType = PickTypes.PickEverything;
 
                 // Set the cursor direction
-                UltimaVars.EngineVars.CursorDirection = Utility.DirectionFromVectors(new Vector2(400, 300), UltimaEngine.Input.MousePosition.ToVector2());
+                UltimaVars.EngineVars.CursorDirection = Utility.DirectionFromPoints(new Point (400, 300), UltimaEngine.Input.MousePosition);
 
                 // Show a popup tip if we have hovered over this item for X seconds.
                 if (UltimaEngine.Input.MouseStationaryTimeMS >= m_TimeHoveringBeforeTipMS)
@@ -118,7 +118,7 @@ namespace UltimaXNA.UltimaWorld.Controller
         {
             // Get the move direction and add the Running offset if the Cursor is far enough away.
             Direction moveDirection = UltimaVars.EngineVars.CursorDirection;
-            float distanceFromCenterOfScreen = Vector2.Distance(UltimaEngine.Input.MousePosition.ToVector2(), new Vector2(400, 300));
+            float distanceFromCenterOfScreen = Utility.DistanceBetweenTwoPoints(new Point(400, 300), UltimaEngine.Input.MousePosition);
             if (distanceFromCenterOfScreen >= 150.0f)
                 moveDirection |= Direction.Running;
 
@@ -193,7 +193,7 @@ namespace UltimaXNA.UltimaWorld.Controller
                             UltimaInteraction.DoubleClick(item);
                             break;
                         case MouseEvent.DragBegin:
-                            UltimaInteraction.PickupItem(item, new Point2D((int)overObjectOffset.X, (int)overObjectOffset.Y));
+                            UltimaInteraction.PickupItem(item, new Point((int)overObjectOffset.X, (int)overObjectOffset.Y));
                             break;
                     }
                 }

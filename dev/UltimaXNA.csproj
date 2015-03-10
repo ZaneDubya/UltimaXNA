@@ -330,7 +330,6 @@
     <Compile Include="Entity\PlayerMobile.cs" />
     <Compile Include="Entity\PropertyList.cs" />
     <Compile Include="Entity\Shared.cs" />
-    <Compile Include="Core\InputState.cs" />
     <Compile Include="UltimaLogin\Scenes\CharacterListScene.cs" />
     <Compile Include="UltimaLogin\Scenes\CreateCharacterScene.cs" />
     <Compile Include="UltimaLogin\Scenes\LoggingInScene.cs" />

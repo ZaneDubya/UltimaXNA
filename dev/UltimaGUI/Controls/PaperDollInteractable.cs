@@ -80,7 +80,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             : base(0, 0)
         {
             m_owner = owner;
-            Position = new Point2D(x, y);
+            Position = new Point(x, y);
         }
 
         public override void Initialize()

@@ -58,7 +58,7 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         void buildGumpling(int x, int y, int gumpID, int hue)
         {
-            Position = new Point2D(x, y);
+            Position = new Point(x, y);
             m_gumpID = gumpID;
             m_hue = hue;
         }
@@ -68,7 +68,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             if (m_texture == null)
             {
                 m_texture = UltimaData.GumpData.GetGumpXNA(m_gumpID);
-                Size = new Point2D(m_texture.Width, m_texture.Height);
+                Size = new Point(m_texture.Width, m_texture.Height);
             }
 
             base.Update(gameTime);

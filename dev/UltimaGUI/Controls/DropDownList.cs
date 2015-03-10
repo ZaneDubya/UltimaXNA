@@ -50,7 +50,7 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         void buildGumpling(int x, int y, int width, int index, int itemsVisible, string[] items, bool canBeNull)
         {
-            Position = new Point2D(x, y);
+            Position = new Point(x, y);
             m_items = new List<string>(items);
             m_width = width;
             Index = index;

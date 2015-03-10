@@ -46,8 +46,8 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         void buildGumpling(int x, int y, int width, int height)
         {
-            Position = new Point2D(x, y);
-            Size = new Point2D(width, height);
+            Position = new Point(x, y);
+            Size = new Point(width, height);
         }
 
         public override void Update(GameTime gameTime)

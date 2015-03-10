@@ -15,6 +15,7 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using InterXLib;
 #endregion
 
 namespace UltimaXNA.Core
@@ -41,7 +42,7 @@ namespace UltimaXNA.Core
         protected override void Update(GameTime gameTime)
         {
             Rendering.SpriteBatch3D.ResetZ();
-            Input.Update(gameTime);
+            Input.Update(gameTime.TotalGameTime.TotalMilliseconds, gameTime.ElapsedGameTime.TotalMilliseconds);
             UserInterface.Update(gameTime);
             OnUpdate(gameTime);
         }

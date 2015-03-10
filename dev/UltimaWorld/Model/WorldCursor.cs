@@ -161,13 +161,13 @@ namespace UltimaXNA.UltimaWorld.Model
                     else
                     {
                         Rectangle sourceRect = new Rectangle(0, 0, art.Width, art.Height);
-                        m_ItemSprite = new Sprite(art, Point2D.Zero, sourceRect, 0);
+                        m_ItemSprite = new Sprite(art, Point.Zero, sourceRect, 0);
                     }
                 }
             }
         }
 
-        protected override void BeforeDraw(SpriteBatchUI spritebatch, Point2D position)
+        protected override void BeforeDraw(SpriteBatchUI spritebatch, Point position)
         {
             if (IsHoldingItem)
             {
@@ -186,7 +186,7 @@ namespace UltimaXNA.UltimaWorld.Model
             else if (IsTargeting)
             {
                 CursorSpriteArtIndex = 8310 - ((UltimaVars.EngineVars.WarMode) ? 23 : 0);
-                CursorOffset = new Point2D(13, 13);
+                CursorOffset = new Point(13, 13);
                 // sourceRect = new Rectangle(1, 1, 46, 34);
                 /*if (m_targetingMulti != -1)
                 {
@@ -198,39 +198,39 @@ namespace UltimaXNA.UltimaWorld.Model
                 switch (UltimaVars.EngineVars.CursorDirection)
                 {
                     case Direction.North:
-                        CursorOffset = new Point2D(29, 1);
+                        CursorOffset = new Point(29, 1);
                         CursorSpriteArtIndex = 8299 - ((UltimaVars.EngineVars.WarMode) ? 23 : 0);
                         break;
                     case Direction.Right:
-                        CursorOffset = new Point2D(41, 9);
+                        CursorOffset = new Point(41, 9);
                         CursorSpriteArtIndex = 8300 - ((UltimaVars.EngineVars.WarMode) ? 23 : 0);
                         break;
                     case Direction.East:
-                        CursorOffset = new Point2D(36, 24);
+                        CursorOffset = new Point(36, 24);
                         CursorSpriteArtIndex = 8301 - ((UltimaVars.EngineVars.WarMode) ? 23 : 0);
                         break;
                     case Direction.Down:
-                        CursorOffset = new Point2D(14, 33);
+                        CursorOffset = new Point(14, 33);
                         CursorSpriteArtIndex = 8302 - ((UltimaVars.EngineVars.WarMode) ? 23 : 0);
                         break;
                     case Direction.South:
-                        CursorOffset = new Point2D(4, 28);
+                        CursorOffset = new Point(4, 28);
                         CursorSpriteArtIndex = 8303 - ((UltimaVars.EngineVars.WarMode) ? 23 : 0);
                         break;
                     case Direction.Left:
-                        CursorOffset = new Point2D(2, 10);
+                        CursorOffset = new Point(2, 10);
                         CursorSpriteArtIndex = 8304 - ((UltimaVars.EngineVars.WarMode) ? 23 : 0);
                         break;
                     case Direction.West:
-                        CursorOffset = new Point2D(1, 1);
+                        CursorOffset = new Point(1, 1);
                         CursorSpriteArtIndex = 8305 - ((UltimaVars.EngineVars.WarMode) ? 23 : 0);
                         break;
                     case Direction.Up:
-                        CursorOffset = new Point2D(4, 2);
+                        CursorOffset = new Point(4, 2);
                         CursorSpriteArtIndex = 8298 - ((UltimaVars.EngineVars.WarMode) ? 23 : 0);
                         break;
                     default:
-                        CursorOffset = new Point2D(2, 10);
+                        CursorOffset = new Point(2, 10);
                         CursorSpriteArtIndex = 8309 - ((UltimaVars.EngineVars.WarMode) ? 23 : 0);
                         break;
                 }
@@ -349,8 +349,8 @@ namespace UltimaXNA.UltimaWorld.Model
             get { return m_HeldItem; }
         }
 
-        private Point2D m_HeldItemOffset = Point2D.Zero;
-        internal Point2D HeldItemOffset
+        private Point m_HeldItemOffset = Point.Zero;
+        internal Point HeldItemOffset
         {
             get { return m_HeldItemOffset; }
         }
@@ -379,7 +379,7 @@ namespace UltimaXNA.UltimaWorld.Model
 
                 // set our local holding item variables.
                 m_HeldItem = item;
-                m_HeldItemOffset = new Point2D(x, y);
+                m_HeldItemOffset = new Point(x, y);
             }
         }
 

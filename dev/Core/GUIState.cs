@@ -136,14 +136,14 @@ namespace UltimaXNA
             else
             {
                 m_Controls.Add(gump);
-                gump.Position = new Point2D(x, y);
+                gump.Position = new Point(x, y);
             }
             return gump;
         }
 
         public Control AddControl(Control gump, int x, int y)
         {
-            gump.Position = new Point2D(x, y);
+            gump.Position = new Point(x, y);
             m_Controls.Add(gump);
             return gump;
         }

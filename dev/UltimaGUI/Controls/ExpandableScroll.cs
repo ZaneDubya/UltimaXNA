@@ -40,7 +40,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             : base(0, 0)
         {
             m_owner = owner;
-            Position = new Point2D(x, y);
+            Position = new Point(x, y);
             m_expandableScrollHeight = height;
         }
 
@@ -58,7 +58,7 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         protected override bool m_hitTest(int x, int y)
         {
-            Point2D position = new Point2D(x + OwnerX + X, y + OwnerY + Y);
+            Point position = new Point(x + OwnerX + X, y + OwnerY + Y);
             if (m_gumplingTop.HitTest(position, true) != null)
                 return true;
             if (m_gumplingMiddle.HitTest(position, true) != null)

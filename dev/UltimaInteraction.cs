@@ -129,7 +129,7 @@ namespace UltimaXNA
         internal static Action<Item, int, int> OnPickupItem;
         internal static Action OnClearHolding;
 
-        internal static void PickupItem(Item item, Point2D offset)
+        internal static void PickupItem(Item item, Point offset)
         {
             if (item == null)
                 return;

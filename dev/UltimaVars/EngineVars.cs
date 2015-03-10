@@ -103,8 +103,8 @@ namespace UltimaXNA.UltimaVars
             set { m_renderSize = value; }
         }
 
-        static Point2D m_ScreenSize;
-        public static Point2D ScreenSize
+        static Point m_ScreenSize;
+        public static Point ScreenSize
         {
             get { return m_ScreenSize; }
             set { m_ScreenSize = value; }

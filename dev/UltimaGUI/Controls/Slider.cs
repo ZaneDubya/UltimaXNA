@@ -61,7 +61,7 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         void buildGumpling(int x, int y, int width, int minValue, int maxValue, int value)
         {
-            Position = new Point2D(x, y);
+            Position = new Point(x, y);
             MinValue = minValue;
             MaxValue = maxValue;
             BarWidth = width;
@@ -77,7 +77,7 @@ namespace UltimaXNA.UltimaGUI.Controls
                 m_gumpBar[1] = UltimaData.GumpData.GetGumpXNA(214);
                 m_gumpBar[2] = UltimaData.GumpData.GetGumpXNA(215);
                 m_gumpSlider = UltimaData.GumpData.GetGumpXNA(216);
-                Size = new Point2D(BarWidth, m_gumpSlider.Height);
+                Size = new Point(BarWidth, m_gumpSlider.Height);
                 m_sliderX = (int)((float)(BarWidth - m_gumpSlider.Width) * ((float)(Value - MinValue) / (float)(MaxValue - MinValue)));
             }
             
@@ -92,8 +92,8 @@ namespace UltimaXNA.UltimaGUI.Controls
         {
             spriteBatch.Draw2D(m_gumpBar[0], Position, 0, false, false);
             spriteBatch.Draw2DTiled(m_gumpBar[1], new Rectangle(Area.X + m_gumpBar[0].Width, Area.Y, BarWidth - m_gumpBar[2].Width - m_gumpBar[0].Width, m_gumpBar[1].Height), 0, false, false);
-            spriteBatch.Draw2D(m_gumpBar[2], new Point2D(Area.X + BarWidth - m_gumpBar[2].Width, Area.Y), 0, false, false);
-            spriteBatch.Draw2D(m_gumpSlider, new Point2D(Area.X + m_sliderX, Area.Y), 0, false, false);
+            spriteBatch.Draw2D(m_gumpBar[2], new Point(Area.X + BarWidth - m_gumpBar[2].Width, Area.Y), 0, false, false);
+            spriteBatch.Draw2D(m_gumpSlider, new Point(Area.X + m_sliderX, Area.Y), 0, false, false);
             base.Draw(spriteBatch);
         }
 

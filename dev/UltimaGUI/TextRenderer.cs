@@ -146,7 +146,7 @@ namespace UltimaXNA.UltimaGUI
             m_images = new HTMLImages();
         }
 
-        public void Draw(SpriteBatchUI sb, Point2D position)
+        public void Draw(SpriteBatchUI sb, Point position)
         {
             Draw(sb, new Rectangle(position.X, position.Y, Width, Height), 0, 0);
         }
@@ -195,9 +195,9 @@ namespace UltimaXNA.UltimaGUI
 
             foreach (HTMLRegion r in m_href.Regions)
             {
-                Point2D position;
+                Point position;
                 Rectangle sourceRect;
-                if (clipRectangle(new Point2D(xScroll, yScroll), r.Area, destRectangle, out position, out sourceRect))
+                if (clipRectangle(new Point(xScroll, yScroll), r.Area, destRectangle, out position, out sourceRect))
                 {
                     // only draw the font in a different color if this is a HREF region.
                     // otherwise it is a dummy region used to notify images that they are
@@ -221,9 +221,9 @@ namespace UltimaXNA.UltimaGUI
 
             foreach (HTMLImage image in m_images.Images)
             {
-                Point2D position;
+                Point position;
                 Rectangle sourceRect;
-                if (clipRectangle(new Point2D(xScroll, yScroll), image.Area, destRectangle, out position, out sourceRect))
+                if (clipRectangle(new Point(xScroll, yScroll), image.Area, destRectangle, out position, out sourceRect))
                 {
                     // are we mouse over this image?
                     sourceRect.X = 0;
@@ -617,9 +617,9 @@ namespace UltimaXNA.UltimaGUI
                 width = widestline;
         }
 
-        private bool clipRectangle(Point2D offset, Rectangle rect, Rectangle clip, out Point2D outPosition, out Rectangle outClipped)
+        private bool clipRectangle(Point offset, Rectangle rect, Rectangle clip, out Point outPosition, out Rectangle outClipped)
         {
-            outPosition = new Point2D();
+            outPosition = new Point();
             outClipped = new Rectangle();
 
             Rectangle scratchRect = rect;

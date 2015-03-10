@@ -28,7 +28,7 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         bool clickedCanDrag = false;
         float pickUpTime;
-        Point2D m_ClickPoint;
+        Point m_ClickPoint;
         bool sendClickIfNoDoubleClick = false;
         float singleClickTime;
 
@@ -41,7 +41,7 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         void buildGumpling(Item item)
         {
-            Position = new Point2D(item.X, item.Y);
+            Position = new Point(item.X, item.Y);
             m_item = item;
         }
 
@@ -73,7 +73,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             if (m_texture == null)
             {
                 m_texture = UltimaData.ArtData.GetStaticTexture(m_item.DisplayItemID);
-                Size = new Point2D(m_texture.Width, m_texture.Height);
+                Size = new Point(m_texture.Width, m_texture.Height);
             }
             spriteBatch.Draw2D(m_texture, Position, m_item.Hue, false, false);
             base.Draw(spriteBatch);
@@ -95,7 +95,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             // if click, we wait for a moment before picking it up. This allows a single click.
             clickedCanDrag = true;
             pickUpTime = UltimaVars.EngineVars.TheTime + UltimaVars.EngineVars.SecondsBetweenClickAndPickUp;
-            m_ClickPoint = new Point2D(x, y);
+            m_ClickPoint = new Point(x, y);
         }
 
         protected override void mouseOver(int x, int y)
@@ -124,7 +124,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             sendClickIfNoDoubleClick = false;
         }
 
-        protected virtual Point2D InternalGetPickupOffset(Point2D offset)
+        protected virtual Point InternalGetPickupOffset(Point offset)
         {
             return offset;
         }
@@ -137,7 +137,7 @@ namespace UltimaXNA.UltimaGUI.Controls
                 {
                     int w, h;
                     UltimaData.ArtData.GetStaticDimensions(this.Item.DisplayItemID, out w, out h);
-                    Point2D click_point = new Point2D(w / 2, h / 2);
+                    Point click_point = new Point(w / 2, h / 2);
                     UltimaInteraction.PickupItem(m_item, InternalGetPickupOffset(click_point));
                 }
                 else

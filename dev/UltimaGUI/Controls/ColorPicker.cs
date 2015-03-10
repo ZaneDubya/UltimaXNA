@@ -75,8 +75,8 @@ namespace UltimaXNA.UltimaGUI.Controls
         void buildGumpling(Rectangle area, int swatchWidth, int swatchHeight, int[] hues)
         {
             m_hueSize = new Point(swatchWidth, swatchHeight);
-            Position = new Point2D(area.X, area.Y);
-            Size = new Point2D(area.Width, area.Height);
+            Position = new Point(area.X, area.Y);
+            Size = new Point(area.Width, area.Height);
             m_hues = hues;
             Index = 0;
             closeSwatch();
@@ -119,7 +119,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             if (m_isAnOpenSwatch)
             {
                 spriteBatch.Draw2D(m_huesTexture, Area, 0, false, false);
-                spriteBatch.Draw2D(m_selectedIndicator, new Point2D(
+                spriteBatch.Draw2D(m_selectedIndicator, new Point(
                     (int)(X + (float)(Width / m_hueSize.X) * ((Index % m_hueSize.X) + 0.5f) - m_selectedIndicator.Width / 2),
                     (int)(Y + (float)(Height / m_hueSize.Y) * ((Index / m_hueSize.X) + 0.5f) - m_selectedIndicator.Height / 2)
                     ), 0, false, false);

@@ -38,7 +38,7 @@ namespace UltimaXNA
         public UltimaEngine(int width, int height)
             :base(width, height)
         {
-            UltimaVars.EngineVars.ScreenSize = new Point2D(width, height);
+            UltimaVars.EngineVars.ScreenSize = new Point(width, height);
 
             // this is copied from IXL.BaseCore - required for finding the mouse coordinate when moving the cursor over the window.
             System.Drawing.Graphics graphics = System.Drawing.Graphics.FromHwnd(this.Window.Handle);

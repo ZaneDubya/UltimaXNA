@@ -31,14 +31,14 @@ namespace UltimaXNA.UltimaGUI
                     else
                     {
                         Rectangle sourceRect = new Rectangle(1, 1, art.Width - 2, art.Height - 2);
-                        m_CursorSprite = new Sprite(art, Point2D.Zero, sourceRect, 0);
+                        m_CursorSprite = new Sprite(art, Point.Zero, sourceRect, 0);
                     }
                 }
             }
         }
 
-        private Point2D m_CursorOffset = Point2D.Zero;
-        public Point2D CursorOffset
+        private Point m_CursorOffset = Point.Zero;
+        public Point CursorOffset
         {
             set { m_CursorOffset = value; }
             get { return m_CursorOffset; }
@@ -61,14 +61,14 @@ namespace UltimaXNA.UltimaGUI
 
         }
 
-        protected virtual void BeforeDraw(SpriteBatchUI spritebatch, Point2D position)
+        protected virtual void BeforeDraw(SpriteBatchUI spritebatch, Point position)
         {
             // Over the interface or not in world. Display a default cursor.
             CursorSpriteArtIndex = 8305 - ((UltimaVars.EngineVars.WarMode) ? 23 : 0);
-            CursorOffset = new Point2D(1, 1);
+            CursorOffset = new Point(1, 1);
         }
 
-        public virtual void Draw(SpriteBatchUI spritebatch, Point2D position)
+        public virtual void Draw(SpriteBatchUI spritebatch, Point position)
         {
             BeforeDraw(spritebatch, position);
 
