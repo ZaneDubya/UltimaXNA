@@ -381,7 +381,13 @@ namespace UltimaXNA.UltimaWorld.Model
                 if (item.Parent != null)
                 {
                     if (item.Parent is Container)
+                    {
                         ((Container)item.Parent).RemoveItem(item.Serial);
+                    }
+                    // !!! TEST: Does this fix pickup = dispose error??
+                    item.X = item.Parent.X;
+                    item.Y = item.Parent.Y;
+                    item.Z = item.Parent.Z;
                     item.Parent = null;
                 }
 

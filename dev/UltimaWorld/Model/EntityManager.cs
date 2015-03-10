@@ -21,12 +21,19 @@ namespace UltimaXNA.UltimaWorld
 {
     class EntityManager
     {
+        private static WorldModel m_Model;
+
         private static Dictionary<int, BaseEntity> m_Entities = new Dictionary<int, BaseEntity>();
         private static List<BaseEntity> m_Entities_Queued = new List<BaseEntity>();
         private static bool m_EntitiesCollectionIsLocked = false;
         static List<int> m_SerialsToRemove = new List<int>();
 
         public static int MySerial { get; set; }
+
+        public EntityManager(WorldModel model)
+        {
+            m_Model = model;
+        }
 
         public static void Reset()
         {
@@ -39,7 +46,6 @@ namespace UltimaXNA.UltimaWorld
             if (m_Entities.ContainsKey(MySerial))
                 return m_Entities[MySerial];
             else
-
                 return null;
         }
 
@@ -72,7 +78,7 @@ namespace UltimaXNA.UltimaWorld
                     continue;
                 if (!entity.Value.IsDisposed)
                     entity.Value.Update(frameMS);
-                // Dispose the entity if it is out of range.
+                // Dispose the entity if it is out of range
                 if (!Utility.InRange(entity.Value.WorldPosition, player.Position, UltimaVars.EngineVars.UpdateRange))
                     entity.Value.Dispose();
                 if (entity.Value.IsDisposed)

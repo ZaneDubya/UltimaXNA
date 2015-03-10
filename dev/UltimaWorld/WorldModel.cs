@@ -40,7 +40,7 @@ namespace UltimaXNA.UltimaWorld
 
         public WorldModel()
         {
-            m_Entities = new EntityManager();
+            m_Entities = new EntityManager(this);
             m_WorldInput = new WorldInput(this);
             m_WorldClient = new WorldClient(this);
 
