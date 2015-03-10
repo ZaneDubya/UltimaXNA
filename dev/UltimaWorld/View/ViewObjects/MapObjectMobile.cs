@@ -17,7 +17,7 @@ using UltimaXNA.Rendering;
 
 namespace UltimaXNA.UltimaWorld.View
 {
-    public class MapObjectMobile : MapObjectPrerendered
+    public class MapObjectMobile : AMapObject
     {
         public int Action { get; set; }
         public int Facing { get; set; }
@@ -76,7 +76,7 @@ namespace UltimaXNA.UltimaWorld.View
         }
 
         private int m_mobile_drawCenterX, m_mobile_drawCenterY;
-        protected override void Prerender(SpriteBatch3D sb)
+        protected void Prerender(SpriteBatch3D sb)
         {
             if (m_layerCount == 1)
             {
@@ -89,7 +89,7 @@ namespace UltimaXNA.UltimaWorld.View
             {
                 m_draw_hue = Utility.GetHueVector(0);
                 long hash = createHashFromLayers();
-                m_draw_texture = MapObjectPrerendered.RestorePrerenderedTexture(hash, out m_mobile_drawCenterX, out m_mobile_drawCenterY);
+                // m_draw_texture = MapObjectPrerendered.RestorePrerenderedTexture(hash, out m_mobile_drawCenterX, out m_mobile_drawCenterY);
                 if (m_draw_texture == null)
                 {
                     int minX = 0, minY = 0;
@@ -136,7 +136,7 @@ namespace UltimaXNA.UltimaWorld.View
 
                     sb.Flush();
                     m_draw_texture = renderTarget;
-                    MapObjectPrerendered.SavePrerenderedTexture(m_draw_texture, hash, m_mobile_drawCenterX, m_mobile_drawCenterY);
+                    // MapObjectPrerendered.SavePrerenderedTexture(m_draw_texture, hash, m_mobile_drawCenterX, m_mobile_drawCenterY);
                     sb.GraphicsDevice.SetRenderTarget(null);
                 }
             }
@@ -144,8 +144,9 @@ namespace UltimaXNA.UltimaWorld.View
 
         internal override bool Draw(SpriteBatch3D sb, Vector3 drawPosition, MouseOverList molist, PickTypes pickType, int maxAlt)
         {
-            m_draw_width = m_draw_texture.Width;
-            m_draw_height = m_draw_texture.Height;
+            m_draw_texture = m_layers[0].Frame.Texture;
+            m_mobile_drawCenterX = m_layers[0].Frame.Center.X;
+            m_mobile_drawCenterY = m_layers[0].Frame.Center.Y;
             if (m_draw_flip)
             {
                 m_draw_X = m_mobile_drawCenterX - 22 + (int)((Position.X_offset - Position.Y_offset) * 22);
@@ -160,29 +161,19 @@ namespace UltimaXNA.UltimaWorld.View
             if (UltimaVars.EngineVars.LastTarget != null && UltimaVars.EngineVars.LastTarget == OwnerSerial)
                 m_draw_hue = new Vector2(((Mobile)OwnerEntity).NotorietyHue - 1, 1);
 
-            // !!! Test highlight code.
-            bool isHighlight = false;
-            if (isHighlight)
+            for (int i = 0; i < m_layerCount; i++)
             {
-                Vector2 savedHue = m_draw_hue;
-                int savedX = m_draw_X, savedY = m_draw_Y;
-                m_draw_hue = Utility.GetHueVector(1288);
-                int offset = 1;
-                m_draw_X = savedX - offset;
-                base.Draw(sb, drawPosition, molist, pickType, maxAlt);
-                m_draw_X = savedX + offset;
-                base.Draw(sb, drawPosition, molist, pickType, maxAlt);
-                m_draw_X = savedX;
-                m_draw_Y = savedY - offset;
-                base.Draw(sb, drawPosition, molist, pickType, maxAlt);
-                m_draw_Y = savedY + offset;
-                base.Draw(sb, drawPosition, molist, pickType, maxAlt);
-                m_draw_hue = savedHue;
-                m_draw_X = savedX;
-                m_draw_Y = savedY;
+                if (m_layers[i].Frame != null)
+                {
+                    float x = drawPosition.X - m_draw_X - m_layers[i].Frame.Center.X;
+                    float y = drawPosition.Y - m_draw_Y - (m_layers[i].Frame.Texture.Height - m_layers[i].Frame.Center.Y);
+                    sb.DrawSimple(m_layers[i].Frame.Texture,
+                        new Vector3(x, y, 0),
+                            Utility.GetHueVector(m_layers[i].Hue));
+                }
             }
 
-            bool isDrawn = base.Draw(sb, drawPosition, molist, pickType, maxAlt);
+            bool isDrawn = true;
             return isDrawn;
         }
 
