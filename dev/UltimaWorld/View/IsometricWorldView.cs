@@ -19,7 +19,7 @@ using InterXLib.Input.Windows;
 using UltimaXNA.UltimaWorld;
 #endregion
 
-namespace UltimaXNA.UltimaWorld
+namespace UltimaXNA.UltimaWorld.View
 {
     public class IsometricRenderer
     {
@@ -128,7 +128,7 @@ namespace UltimaXNA.UltimaWorld
                         // if we are under a ROOF, then get rid of everything above me.Z + 20
                         // (this accounts for A-frame roofs). Otherwise, get rid of everything
                         // at the object above us.Z.
-                        if (((MapObjectStatic)underObject).ItemData.Roof)
+                        if (((MapObjectStatic)underObject).ItemData.IsRoof)
                         {
                             m_maxItemAltitude = CenterPosition.Z - (CenterPosition.Z % 20) + 20;
                         }
@@ -138,7 +138,7 @@ namespace UltimaXNA.UltimaWorld
                         }
 
                         // If we are under a roof tile, do not make roofs transparent if we are on an edge.
-                        if (underObject is MapObjectStatic && ((MapObjectStatic)underObject).ItemData.Roof)
+                        if (underObject is MapObjectStatic && ((MapObjectStatic)underObject).ItemData.IsRoof)
                         {
                             bool isRoofSouthEast = true;
                             if ((t = m_map.GetMapTile(CenterPosition.X + 1, CenterPosition.Y + 1, true)) != null)
@@ -155,7 +155,7 @@ namespace UltimaXNA.UltimaWorld
             }
         }
 
-        public static void Draw(GameTime gameTime)
+        public static void Draw(double frameTime)
         {
             if (UltimaVars.EngineVars.Map < 0)
                 return;

@@ -22,6 +22,13 @@ namespace UltimaXNA.UltimaGUI.Controls
         int m_gumpID;
         int m_hue;
 
+        private bool m_IsPaperdoll = false;
+        internal bool IsPaperdoll
+        {
+            get { return m_IsPaperdoll; }
+            set { m_IsPaperdoll = value; }
+        }
+
         public GumpPic(Control owner, int page)
             : base(owner, page)
         {
@@ -51,7 +58,7 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         void buildGumpling(int x, int y, int gumpID, int hue)
         {
-            Position = new Point2D(x, y);
+            Position = new Point(x, y);
             m_gumpID = gumpID;
             m_hue = hue;
         }
@@ -61,7 +68,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             if (m_texture == null)
             {
                 m_texture = UltimaData.GumpData.GetGumpXNA(m_gumpID);
-                Size = new Point2D(m_texture.Width, m_texture.Height);
+                Size = new Point(m_texture.Width, m_texture.Height);
             }
 
             base.Update(gameTime);

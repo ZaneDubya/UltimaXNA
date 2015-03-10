@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
  *   DynamicObject.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -13,6 +12,7 @@ using UltimaXNA.UltimaWorld;
 using UltimaXNA.UltimaPackets.Server;
 using Microsoft.Xna.Framework;
 using UltimaXNA.UltimaData;
+using UltimaXNA.UltimaWorld.View;
 #endregion
 
 namespace UltimaXNA.Entity

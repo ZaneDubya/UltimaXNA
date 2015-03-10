@@ -11,8 +11,6 @@
 #region usings
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.UltimaLogin;
-using UltimaXNA.UltimaWorld;
 #endregion
 
 namespace UltimaXNA
@@ -40,12 +38,16 @@ namespace UltimaXNA
         public UltimaEngine(int width, int height)
             :base(width, height)
         {
-            UltimaVars.EngineVars.ScreenSize = new Point2D(width, height);
+            UltimaVars.EngineVars.ScreenSize = new Point(width, height);
+
+            // this is copied from IXL.BaseCore - required for finding the mouse coordinate when moving the cursor over the window.
+            System.Drawing.Graphics graphics = System.Drawing.Graphics.FromHwnd(this.Window.Handle);
+            InterXLib.Settings.ScreenDPI = new Vector2(graphics.DpiX / 96f, graphics.DpiY / 96f);
         }
 
         protected override void OnInitialize()
         {
-            IsometricRenderer.Initialize(this);
+            UltimaWorld.View.IsometricRenderer.Initialize(this);
 
             // Make sure we have a UO installation before loading UltimaData.
             if (UltimaData.FileManager.IsUODataPresent)
@@ -66,7 +68,7 @@ namespace UltimaXNA
                 UltimaVars.EngineVars.InWorld = false;
                 UltimaInteraction.Initialize(s_Client);
 
-                ActiveModel = new LoginModel();
+                ActiveModel = new UltimaLogin.LoginModel();
             }
         }
 
@@ -80,7 +82,6 @@ namespace UltimaXNA
             else
             {
                 UltimaVars.EngineVars.GameTime = gameTime;
-                UltimaInteraction.Update();
                 s_Client.Update();
                 ActiveModel.Update(gameTime.TotalGameTime.TotalMilliseconds, gameTime.ElapsedGameTime.TotalMilliseconds);
             }
@@ -88,9 +89,7 @@ namespace UltimaXNA
 
         protected override void OnDraw(GameTime gameTime)
         {
-            if (UltimaVars.EngineVars.InWorld)
-                IsometricRenderer.Draw(gameTime);
-            UltimaInteraction.Draw();
+            ActiveModel.GetView().Draw(null, gameTime.ElapsedGameTime.TotalMilliseconds);
         }
     }
 }

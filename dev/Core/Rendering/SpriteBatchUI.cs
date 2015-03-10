@@ -55,12 +55,12 @@ namespace UltimaXNA.Rendering
             return new Vector2(hue, hueFlag);
         }
 
-        public void Draw2D(Texture2D texture, Point2D position, int hue, bool partial, bool transparent)
+        public void Draw2D(Texture2D texture, Point position, int hue, bool partial, bool transparent)
         {
             m_SpriteBatch.DrawSimple(texture, new Vector3(position.X, position.Y, 0), hueVector(hue, partial, transparent));
         }
 
-        public void Draw2D(Texture2D texture, Point2D position, Rectangle sourceRect, int hue, bool partial, bool transparent)
+        public void Draw2D(Texture2D texture, Point position, Rectangle sourceRect, int hue, bool partial, bool transparent)
         {
             m_SpriteBatch.DrawSimple(texture, new Vector3(position.X, position.Y, 0), sourceRect, hueVector(hue, partial, transparent));
         }

@@ -1,5 +1,4 @@
 ﻿using InterXLib.Patterns.MVC;
-using System;
 
 namespace UltimaXNA.UltimaLogin
 {
@@ -9,7 +8,12 @@ namespace UltimaXNA.UltimaLogin
 
         public LoginModel()
         {
+            UltimaEngine.UserInterface.Cursor = new UltimaGUI.UltimaCursor();
+        }
 
+        protected override AView CreateView()
+        {
+            return new LoginView(this);
         }
 
         protected override void OnInitialize()

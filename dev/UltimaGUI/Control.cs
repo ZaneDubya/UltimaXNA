@@ -141,7 +141,7 @@ namespace UltimaXNA.UltimaGUI
         }
 
         Rectangle m_area = Rectangle.Empty;
-        Point2D m_position;
+        Point m_position;
         protected int OwnerX
         {
             get
@@ -180,7 +180,7 @@ namespace UltimaXNA.UltimaGUI
                 m_area.Height = value;
             }
         }
-        public Point2D Position
+        public Point Position
         {
             get
             {
@@ -191,9 +191,9 @@ namespace UltimaXNA.UltimaGUI
                 m_position = value;
             }
         }
-        public Point2D Size
+        public Point Size
         {
-            get { return new Point2D(m_area.Width, m_area.Height); }
+            get { return new Point(m_area.Width, m_area.Height); }
             set
             {
                 m_area.Width = value.X;
@@ -285,7 +285,7 @@ namespace UltimaXNA.UltimaGUI
             }
         }
 
-        public Control[] HitTest(Point2D position, bool alwaysHandleMouseInput)
+        public Control[] HitTest(Point position, bool alwaysHandleMouseInput)
         {
             List<Control> focusedControls = new List<Control>();
 
@@ -377,9 +377,10 @@ namespace UltimaXNA.UltimaGUI
                 {
                     if (c.IsInitialized)
                     {
-                        c.Position += Position;
+                        Point saved = c.Position;
+                        c.Position = new Point(c.Position.X + Position.X, c.Position.Y + Position.Y);
                         c.Draw(spriteBatch);
-                        c.Position -= Position;
+                        c.Position = saved;
                     }
                 }
             }
@@ -434,7 +435,7 @@ namespace UltimaXNA.UltimaGUI
                 m_owner.ChangePage(pageIndex);
         }
 
-        public void MouseDown(Point2D position, MouseButton button)
+        public void MouseDown(Point position, MouseButton button)
         {
             lastClickPosition = position;
             int x = (int)position.X - X - OwnerX;
@@ -444,7 +445,7 @@ namespace UltimaXNA.UltimaGUI
                 OnMouseDown(x, y, button);
         }
 
-        public void MouseUp(Point2D position, MouseButton button)
+        public void MouseUp(Point position, MouseButton button)
         {
             int x = (int)position.X - X - OwnerX;
             int y = (int)position.Y - Y - OwnerY;
@@ -453,7 +454,7 @@ namespace UltimaXNA.UltimaGUI
                 OnMouseUp(x, y, button);
         }
 
-        public void MouseOver(Point2D position)
+        public void MouseOver(Point position)
         {
             // Does not double-click if you move your mouse more than x pixels from where you first clicked.
             if (Math.Abs(lastClickPosition.X - position.X) + Math.Abs(lastClickPosition.Y - position.Y) > 3)
@@ -466,7 +467,7 @@ namespace UltimaXNA.UltimaGUI
                 OnMouseOver(x, y);
         }
 
-        public void MouseOut(Point2D position)
+        public void MouseOut(Point position)
         {
             int x = (int)position.X - X - OwnerX;
             int y = (int)position.Y - Y - OwnerY;
@@ -476,9 +477,9 @@ namespace UltimaXNA.UltimaGUI
         }
 
         float maxTimeForDoubleClick = 0f;
-        Point2D lastClickPosition;
+        Point lastClickPosition;
 
-        public void MouseClick(Point2D position, MouseButton button)
+        public void MouseClick(Point position, MouseButton button)
         {
             int x = (int)position.X - X - OwnerX;
             int y = (int)position.Y - Y - OwnerY;
@@ -551,7 +552,7 @@ namespace UltimaXNA.UltimaGUI
 
         internal void Center()
         {
-            Position = new Point2D(
+            Position = new Point(
                 (UserInterface.Width - Width) / 2,
                 (UserInterface.Height - Height) / 2);
         }

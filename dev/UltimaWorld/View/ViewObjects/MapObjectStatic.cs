@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
  *   MapObjectStatic.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   Based on code from ClintXNA's renderer: http://www.runuo.com/forums/xna/92023-hi.html
  *   
  *   This program is free software; you can redistribute it and/or modify
@@ -15,7 +14,7 @@ using UltimaXNA.Entity;
 using UltimaXNA.Rendering;
 #endregion
 
-namespace UltimaXNA.UltimaWorld
+namespace UltimaXNA.UltimaWorld.View
 {
     public class MapObjectStatic : AMapObject
     {
@@ -40,12 +39,12 @@ namespace UltimaXNA.UltimaWorld
             m_itemData = UltimaData.TileData.ItemData[ItemID & 0x3FFF];
 
             // Set threshold.
-            int background = (m_itemData.Background) ? 0 : 1;
-            if (!m_itemData.Background)
+            int background = (m_itemData.IsBackground) ? 0 : 1;
+            if (!m_itemData.IsBackground)
                 SortThreshold++;
             if (!(m_itemData.Height == 0))
                 SortThreshold++;
-            if (m_itemData.Surface)
+            if (m_itemData.IsSurface)
                 SortThreshold--;
 
             // get no draw flag

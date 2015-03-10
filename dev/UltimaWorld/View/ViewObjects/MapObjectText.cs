@@ -1,5 +1,4 @@
 ﻿/***************************************************************************
- *   
  *   MapObjectText.cs
  *   
  *   This program is free software; you can redistribute it and/or modify
@@ -16,7 +15,7 @@ using UltimaXNA.Rendering;
 using UltimaXNA.UltimaData.Fonts;
 #endregion
 
-namespace UltimaXNA.UltimaWorld
+namespace UltimaXNA.UltimaWorld.View
 {
     public class MapObjectText : AMapObject
     {

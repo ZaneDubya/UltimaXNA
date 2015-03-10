@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using InterXLib.Patterns.MVC;
+﻿using InterXLib.Patterns.MVC;
+using System;
 
 namespace UltimaXNA.Core
 {
@@ -25,11 +22,6 @@ namespace UltimaXNA.Core
         protected abstract void OnDispose();
 
         protected override AController CreateController()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override AView CreateView()
         {
             throw new NotImplementedException();
         }

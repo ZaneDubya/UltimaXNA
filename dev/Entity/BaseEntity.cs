@@ -9,10 +9,9 @@
  *
  ***************************************************************************/
 #region usings
-using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
 using UltimaXNA.UltimaWorld;
+using UltimaXNA.UltimaWorld.View;
 #endregion
 
 namespace UltimaXNA.Entity

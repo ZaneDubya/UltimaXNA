@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Rendering;
+using UltimaXNA.UltimaWorld.View;
 
 namespace UltimaXNA.UltimaWorld
 {
@@ -21,7 +22,7 @@ namespace UltimaXNA.UltimaWorld
         List<MouseOverItem> m_overList;
 
         Vector3 m_mousePosition;
-        public Point2D MousePosition
+        public Point MousePosition
         {
             set
             {
@@ -34,12 +35,12 @@ namespace UltimaXNA.UltimaWorld
             m_overList = new List<MouseOverItem>();
         }
 
-        internal MouseOverItem GetForemostMouseOverItem(Point2D mousePosition)
+        internal MouseOverItem GetForemostMouseOverItem(Point mousePosition)
         {
             // Parse list backwards to find topmost mouse over object.
             foreach (MouseOverItem item in CreateReverseIterator(m_overList))
             {
-                if (item.Contains(mousePosition))
+                if (item.TextureContainsPoint(mousePosition))
                 {
                     return item;
                 }
@@ -47,14 +48,14 @@ namespace UltimaXNA.UltimaWorld
             return null;
         }
 
-        internal MouseOverItem GetForemostMouseOverItem<T>(Point2D mousePosition) where T : AMapObject
+        internal MouseOverItem GetForemostMouseOverItem<T>(Point mousePosition) where T : AMapObject
         {
             // Parse list backwards to find topmost mouse over object.
             foreach (MouseOverItem item in CreateReverseIterator(m_overList))
             {
                 if (item.Object.GetType() == typeof(T))
                 {
-                    if (item.Contains(mousePosition))
+                    if (item.TextureContainsPoint(mousePosition))
                     {
                         return item;
                     }
@@ -197,7 +198,7 @@ namespace UltimaXNA.UltimaWorld
             Object = nObject;
         }
 
-        internal bool Contains(Point2D mousePosition)
+        internal bool TextureContainsPoint(Point mousePosition)
         {
             if (Object.GetType() == typeof(MapObjectGround))
             {

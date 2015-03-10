@@ -10,6 +10,7 @@
  ***************************************************************************/
 using UltimaXNA.Rendering;
 using UltimaXNA.UltimaGUI;
+using Microsoft.Xna.Framework;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {
@@ -79,7 +80,7 @@ namespace UltimaXNA.UltimaGUI.Controls
         public PaperdollLargeUninteractable(Control owner, int page, int x, int y)
             : this(owner, page)
         {
-            Position = new Point2D(x, y);
+            Position = new Point(x, y);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)

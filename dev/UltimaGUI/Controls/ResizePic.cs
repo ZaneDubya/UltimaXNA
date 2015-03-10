@@ -57,8 +57,8 @@ namespace UltimaXNA.UltimaGUI.Controls
         void buildGumpling(int x, int y, int gumpID, int width, int height)
         {
             MakeDragger(m_owner);
-            Position = new Point2D(x, y);
-            Size = new Point2D(width, height);
+            Position = new Point(x, y);
+            Size = new Point(width, height);
             GumpID = gumpID;
         }
 
@@ -82,17 +82,17 @@ namespace UltimaXNA.UltimaGUI.Controls
             int line2Y = Y + m_bgGumps[0].Height;
             int line3Y = Y + Height - m_bgGumps[6].Height;
 
-            spriteBatch.Draw2D(m_bgGumps[0], new Point2D(X, Y), 0, false, false);
+            spriteBatch.Draw2D(m_bgGumps[0], new Point(X, Y), 0, false, false);
             spriteBatch.Draw2DTiled(m_bgGumps[1], new Rectangle(X + m_bgGumps[0].Width, Y, centerWidth, m_bgGumps[0].Height), 0, false, false);
-            spriteBatch.Draw2D(m_bgGumps[2], new Point2D(X + Width - m_bgGumps[2].Width, Y), 0, false, false);
+            spriteBatch.Draw2D(m_bgGumps[2], new Point(X + Width - m_bgGumps[2].Width, Y), 0, false, false);
 
             spriteBatch.Draw2DTiled(m_bgGumps[3], new Rectangle(X, line2Y, m_bgGumps[0].Width, centerHeight), 0, false, false);
             spriteBatch.Draw2DTiled(m_bgGumps[4], new Rectangle(X + m_bgGumps[0].Width, line2Y, centerWidth, centerHeight), 0, false, false);
             spriteBatch.Draw2DTiled(m_bgGumps[5], new Rectangle(X + Width - m_bgGumps[2].Width, line2Y, m_bgGumps[2].Width, centerHeight), 0, false, false);
 
-            spriteBatch.Draw2D(m_bgGumps[6], new Point2D(X, line3Y), 0, false, false);
+            spriteBatch.Draw2D(m_bgGumps[6], new Point(X, line3Y), 0, false, false);
             spriteBatch.Draw2DTiled(m_bgGumps[7], new Rectangle(X + m_bgGumps[0].Width, line3Y, centerWidth, m_bgGumps[6].Height), 0, false, false);
-            spriteBatch.Draw2D(m_bgGumps[8], new Point2D(X + Width - m_bgGumps[2].Width, line3Y), 0, false, false);
+            spriteBatch.Draw2D(m_bgGumps[8], new Point(X + Width - m_bgGumps[2].Width, line3Y), 0, false, false);
 
             base.Draw(spriteBatch);
         }

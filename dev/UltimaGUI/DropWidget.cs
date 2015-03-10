@@ -13,12 +13,12 @@ using InterXLib.Input.Windows;
 
 namespace UltimaXNA.UltimaGUI
 {
-    class DropWidget
+    class DropWidget_Unused
     {
         ControlEvent m_onItemDrop;
         ControlEvent m_onItemOver;
 
-        public DropWidget(ControlEvent notifyOnDrop, ControlEvent notifyOnOver)
+        public DropWidget_Unused(ControlEvent notifyOnDrop, ControlEvent notifyOnOver)
         {
             m_onItemDrop = notifyOnDrop;
             m_onItemOver = notifyOnOver;
@@ -38,20 +38,20 @@ namespace UltimaXNA.UltimaGUI
 
         void mouseUp(int x, int y, MouseButton button)
         {
-            Control that = ((Control)m_onItemDrop.Target);
+            /*Control that = ((Control)m_onItemDrop.Target);
             if (UltimaInteraction.Cursor.IsHolding && 
                 (that.Area.Contains(x, y)))
             {
                 m_onItemDrop();
-            }
+            }*/
         }
 
         void mouseOver(int x, int y)
         {
-            if (UltimaInteraction.Cursor.IsHolding)
+            /*if (UltimaInteraction.Cursor.IsHolding)
             {
                 m_onItemOver();
-            }
+            }*/
         }
     }
 }

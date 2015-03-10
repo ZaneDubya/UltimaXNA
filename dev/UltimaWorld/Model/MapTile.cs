@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
  *   MapCell.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   Based on code from ClintXNA's renderer: http://www.runuo.com/forums/xna/92023-hi.html
  *   
  *   This program is free software; you can redistribute it and/or modify
@@ -14,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using UltimaXNA.Entity;
 using Microsoft.Xna.Framework;
+using UltimaXNA.UltimaWorld.View;
 #endregion
 
 namespace UltimaXNA.UltimaWorld
@@ -59,7 +59,7 @@ namespace UltimaXNA.UltimaWorld
                 if (iObjects[i] is MapObjectStatic)
                 {
                     UltimaData.ItemData iData = UltimaData.TileData.ItemData[((MapObjectStatic)iObjects[i]).ItemID & 0x3FFF];
-                    if (iData.Roof || iData.Surface || iData.Wall)
+                    if (iData.IsRoof || iData.IsSurface || iData.IsWall)
                     {
                         if (underItem == null || iObjects[i].Z < underItem.Z)
                             underItem = iObjects[i];

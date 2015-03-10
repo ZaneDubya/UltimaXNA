@@ -51,7 +51,7 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         void buildGumpling(int x, int y, int tileID, int hue)
         {
-            Position = new Point2D(x, y);
+            Position = new Point(x, y);
             Hue = hue;
             m_tileID = tileID;
         }
@@ -61,7 +61,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             if (m_texture == null)
             {
                 m_texture = UltimaData.ArtData.GetStaticTexture(m_tileID);
-                Size = new Point2D(m_texture.Width, m_texture.Height);
+                Size = new Point(m_texture.Width, m_texture.Height);
             }
             base.Update(gameTime);
         }

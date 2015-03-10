@@ -38,7 +38,7 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         void buildGumpling(int x, int y, int hue, int fontid, string text)
         {
-            Position = new Point2D(x, y);
+            Position = new Point(x, y);
             Hue = hue;
             FontID = fontid;
             Text = text;

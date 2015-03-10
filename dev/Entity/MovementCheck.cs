@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
  *   MovementCheck.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   Based on code from RunUO: http://www.runuo.com
  *   
  *   This program is free software; you can redistribute it and/or modify
@@ -14,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using UltimaXNA.UltimaWorld;
+using UltimaXNA.UltimaWorld.View;
 #endregion
 
 namespace UltimaXNA.Entity
@@ -277,7 +277,7 @@ namespace UltimaXNA.Entity
                     if (ourZ + PersonHeight > testTop)
                         testTop = ourZ + PersonHeight;
 
-                    if (!itemData.Bridge)
+                    if (!itemData.IsBridge)
                         itemTop += itemData.Height;
 
                     if (stepTop >= itemTop)
@@ -333,7 +333,7 @@ namespace UltimaXNA.Entity
                     if (ourZ + PersonHeight > testTop)
                         testTop = ourZ + PersonHeight;
 
-                    if (!itemData.Bridge)
+                    if (!itemData.IsBridge)
                         itemTop += itemData.Height;
 
                     if (stepTop >= itemTop)

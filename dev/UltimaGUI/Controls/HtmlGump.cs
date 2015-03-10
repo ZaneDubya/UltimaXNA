@@ -127,9 +127,9 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         void buildGumpling(int x, int y, int width, int height, int background, int scrollbar, string text)
         {
-            Position = new Point2D(x, y);
+            Position = new Point(x, y);
             Width = width;
-            Size = new Point2D(width, height);
+            Size = new Point(width, height);
             Text = text;
             m_background = (background == 1) ? true : false;
             m_hasScrollbar = (scrollbar == 1) ? true : false;
@@ -186,7 +186,7 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         protected override bool m_hitTest(int x, int y)
         {
-            Point2D position = new Point2D(x + OwnerX + X, y + OwnerY + Y);
+            Point position = new Point(x + OwnerX + X, y + OwnerY + Y);
             if (HasScrollbar)
             {
                 if (m_scrollbar.HitTest(position, true) != null)

@@ -275,8 +275,8 @@ namespace InterXLib.Input.Windows
             invokeMouseMove(new InputEventMouse(MouseEvent.Move,
                 translateWParamIntoMouseButtons(Message.SignedLowWord(message.WParam)),
                 0, 
-                Message.SignedLowWord(message.LParam), 
-                Message.SignedHighWord(message.LParam),
+                message.Point.X, 
+                message.Point.Y,
                 (int)(long)message.WParam,
                 ModifierKeys
                 ));

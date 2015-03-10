@@ -1,194 +1,94 @@
-﻿/***************************************************************************
- *   Cursor.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
- *   
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 3 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using UltimaXNA.Rendering;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Entity;
-using UltimaXNA.Rendering;
 
 namespace UltimaXNA.UltimaGUI
 {
-    public class UltimaCursor
+    class UltimaCursor
     {
-        Item holdingItem;
-        Point holdingOffset;
-        bool m_isHolding = false;
-        public bool IsHolding
+        private Sprite m_CursorSprite = null;
+        private int m_CursorSpriteArtIndex = -1;
+
+        public int CursorSpriteArtIndex
         {
-            get
-            {
-                return m_isHolding;
-            }
+            get { return m_CursorSpriteArtIndex; }
             set
             {
-                m_isHolding = value;
-            }
-        }
-        public Item HoldingItem { get { return holdingItem; } }
-        public Point HoldingOffset { get { return holdingOffset; } set { holdingOffset = value; } }
-        public Texture2D HoldingTexture { get { return UltimaData.ArtData.GetStaticTexture(holdingItem.DisplayItemID); } }
-        
-        bool m_isTargeting = false;
-        public bool IsTargeting
-        {
-            get
-            {
-                return m_isTargeting;
-            }
-            set
-            {
-                // Only change it if we have to...
-                if (m_isTargeting != value)
+                if (value != m_CursorSpriteArtIndex)
                 {
-                    m_isTargeting = value;
-                    if (m_isTargeting)
+                    m_CursorSpriteArtIndex = value;
+
+                    Texture2D art = UltimaData.ArtData.GetStaticTexture(m_CursorSpriteArtIndex);
+                    if (art == null)
                     {
-                        // If we're carrying something in the mouse cursor...
-                        if (IsHolding)
-                        {
-                            // drop it!
-                            // UIHelper.MouseHoldingItem = null;
-                            IsHolding = false;
-                        }
+                        // shouldn't we have a debug texture to show that we are missing this cursor art? !!!
+                        m_CursorSprite = null;
                     }
                     else
                     {
-                        m_targetingMulti = -1;
+                        Rectangle sourceRect = new Rectangle(1, 1, art.Width - 2, art.Height - 2);
+                        m_CursorSprite = new Sprite(art, Point.Zero, sourceRect, 0);
                     }
                 }
             }
         }
-        int m_targetingMulti = -1;
-        public int TargetingMulti { set { m_targetingMulti = value; } }
 
-        internal bool TrammelHue
+        private Point m_CursorOffset = Point.Zero;
+        public Point CursorOffset
         {
-            get { return (UltimaVars.EngineVars.Map == 1); }
+            set { m_CursorOffset = value; }
+            get { return m_CursorOffset; }
         }
 
-        public UltimaCursor()
+        private int m_CursorHue = 0;
+        public int CursorHue
+        {
+            set { m_CursorHue = value; }
+            get { return m_CursorHue; }
+        }
+
+        public virtual void Dispose()
         {
 
         }
 
-        public void PickUpItem(Item item, int x, int y)
+        public virtual void Update()
         {
-            if (item.Parent != null)
-            {
-                if (item.Parent is Container)
-                    ((Container)item.Parent).RemoveItem(item.Serial);
-            }
-            IsHolding = true;
-            holdingItem = item;
-            holdingOffset = new Point(x, y);
+
         }
 
-        public void ClearHolding()
+        protected virtual void BeforeDraw(SpriteBatchUI spritebatch, Point position)
         {
-            IsHolding = false;
+            // Over the interface or not in world. Display a default cursor.
+            CursorSpriteArtIndex = 8305 - ((UltimaVars.EngineVars.WarMode) ? 23 : 0);
+            CursorOffset = new Point(1, 1);
         }
 
-        public void Draw(Point2D position)
+        public virtual void Draw(SpriteBatchUI spritebatch, Point position)
         {
-            Point2D cursorOffset;
-            Rectangle sourceRect = Rectangle.Empty;
-            int cursorTextureID = 0;
-            int cursorHue = 0;
-            Texture2D cursorTexture = null;
-            UltimaEngine.UserInterface.BeneathCursorSprite = null;
+            BeforeDraw(spritebatch, position);
 
-            if (IsHolding)
-            {
-                // Draw the item you're holding first.
-                cursorOffset = new Point2D(holdingOffset.X, holdingOffset.Y);
-                cursorTexture = HoldingTexture;
-                sourceRect = new Rectangle(0, 0, cursorTexture.Width, cursorTexture.Height);
-                UltimaEngine.UserInterface.BeneathCursorSprite = new UltimaGUI.Sprite(cursorTexture, cursorOffset, sourceRect, holdingItem.Hue);
-                // sb.Draw2D(cursorTexture, position - cursorOffset, sourceRect, holdingItem.Hue, false, false);
-                // then set the data for the hang which holds it.
-                cursorOffset = new Point2D(1, 1);
-                cursorTextureID = 8305;
-            }
-            else if (IsTargeting)
-            {
-                cursorOffset = new Point2D(13, 13);
-                sourceRect = new Rectangle(1, 1, 46, 34);
-                cursorTextureID = 8310;
-                if (m_targetingMulti != -1)
-                {
-                    // !!! Draw a multi
-                }
-            }
+            // Hue the cursor if not in warmode and in trammel.
+            if (!UltimaVars.EngineVars.WarMode && (UltimaVars.EngineVars.Map == 1))
+                CursorHue = 2412;
             else
+                CursorHue = 0;
+
+            if (m_CursorSprite != null)
             {
-                if (UltimaVars.EngineVars.InWorld && (!UltimaEngine.UserInterface.IsMouseOverUI && !UltimaEngine.UserInterface.IsModalControlOpen))
-                {
-                    switch (UltimaVars.EngineVars.CursorDirection)
-                    {
-                        case Direction.North:
-                            cursorOffset = new Point2D(29, 1);
-                            cursorTextureID = 8299;
-                            break;
-                        case Direction.Right:
-                            cursorOffset = new Point2D(41, 9);
-                            cursorTextureID = 8300;
-                            break;
-                        case Direction.East:
-                            cursorOffset = new Point2D(36, 24);
-                            cursorTextureID = 8301;
-                            break;
-                        case Direction.Down:
-                            cursorOffset = new Point2D(14, 33);
-                            cursorTextureID = 8302;
-                            break;
-                        case Direction.South:
-                            cursorOffset = new Point2D(4, 28);
-                            cursorTextureID = 8303;
-                            break;
-                        case Direction.Left:
-                            cursorOffset = new Point2D(2, 10);
-                            cursorTextureID = 8304;
-                            break;
-                        case Direction.West:
-                            cursorOffset = new Point2D(1, 1);
-                            cursorTextureID = 8305;
-                            break;
-                        case Direction.Up:
-                            cursorOffset = new Point2D(4, 2);
-                            cursorTextureID = 8298;
-                            break;
-                        default:
-                            cursorOffset = new Point2D(2, 10);
-                            cursorTextureID = 8309;
-                            break;
-                    }
-                }
-                else
-                {
-                    // Over the interface or not in world. Display a default cursor.
-                    cursorOffset = new Point2D(1, 1);
-                    cursorTextureID = 8305;
-                }
+                m_CursorSprite.Hue = m_CursorHue;
+                m_CursorSprite.Offset = m_CursorOffset;
+                m_CursorSprite.Draw(spritebatch, position);
             }
+        }
 
-            // Hue the cursor if in warmode.
-            if (UltimaVars.EngineVars.WarMode)
-                cursorTextureID -= 23;
-            else if (TrammelHue)
-                cursorHue = 2412;
-
-            cursorTexture = UltimaData.ArtData.GetStaticTexture(cursorTextureID);
-            sourceRect = new Rectangle(1, 1, cursorTexture.Width - 2, cursorTexture.Height - 2);
-
-            UltimaEngine.UserInterface.CursorSprite = new UltimaGUI.Sprite(cursorTexture, cursorOffset, sourceRect, cursorHue);
-            // sb.Draw2D(cursorTexture, position - cursorOffset, sourceRect, cursorHue, false, false);
+        public virtual bool BlockingUIMouseEvents
+        {
+            get { return false; }
         }
     }
 }

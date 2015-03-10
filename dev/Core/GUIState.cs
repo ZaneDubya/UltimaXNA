@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
  *   UIManager.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -21,21 +20,14 @@ namespace UltimaXNA
     public class GUIState
     {
         SpriteBatchUI m_SpriteBatch;
-        public SpriteBatchUI SpriteBatch { get { return m_SpriteBatch; } }
+        internal SpriteBatchUI SpriteBatch { get { return m_SpriteBatch; } }
 
-        private Sprite m_CursorSprite;
-        public Sprite CursorSprite
+        private UltimaCursor m_Cursor;
+        internal UltimaCursor Cursor
         {
-            get { return m_CursorSprite; }
-            set { m_CursorSprite = value; }
+            get { return m_Cursor; }
+            set { m_Cursor = value; }
         }
-        private Sprite m_BeneathCursorSprite;
-        public Sprite BeneathCursorSprite
-        {
-            get { return m_BeneathCursorSprite; }
-            set { m_BeneathCursorSprite = value; }
-        }
-
 
         public int Width { get { return m_SpriteBatch.GraphicsDevice.Viewport.Width; } }
         public int Height { get { return m_SpriteBatch.GraphicsDevice.Viewport.Height; } }
@@ -143,14 +135,14 @@ namespace UltimaXNA
             else
             {
                 m_Controls.Add(gump);
-                gump.Position = new Point2D(x, y);
+                gump.Position = new Point(x, y);
             }
             return gump;
         }
 
         public Control AddControl(Control gump, int x, int y)
         {
-            gump.Position = new Point2D(x, y);
+            gump.Position = new Point(x, y);
             m_Controls.Add(gump);
             return gump;
         }
@@ -193,10 +185,13 @@ namespace UltimaXNA
                 m_Controls.Remove(c);
             m_DisposedControls.Clear();
 
+            if (Cursor != null)
+                Cursor.Update();
+
             updateInput();
         }
 
-        public void Draw(GameTime gameTime)
+        public void Draw(double frameTime)
         {
             m_SpriteBatch.Prepare();
 
@@ -206,10 +201,8 @@ namespace UltimaXNA
                     c.Draw(m_SpriteBatch);
             }
 
-            if (m_BeneathCursorSprite != null)
-                m_BeneathCursorSprite.Draw(m_SpriteBatch, UltimaEngine.Input.MousePosition);
-            if (m_CursorSprite != null)
-                m_CursorSprite.Draw(m_SpriteBatch, UltimaEngine.Input.MousePosition);
+            if (Cursor != null)
+                Cursor.Draw(m_SpriteBatch, UltimaEngine.Input.MousePosition);
 
             m_SpriteBatch.Flush();
         }
@@ -271,60 +264,62 @@ namespace UltimaXNA
                     m_MouseDownControl[iButton].MouseOver(UltimaEngine.Input.MousePosition);
             }
 
-
-            List<InputEventMouse> events = UltimaEngine.Input.GetMouseEvents();
-            foreach (InputEventMouse e in events)
+            if (!Cursor.BlockingUIMouseEvents)
             {
-                if (e.Handled)
-                    continue;
-
-                if (focusedControls != null)
-                    e.Handled = true;
-
-                // MouseDown event.
-                if (e.EventType == MouseEvent.Down)
+                List<InputEventMouse> events = UltimaEngine.Input.GetMouseEvents();
+                foreach (InputEventMouse e in events)
                 {
+                    if (e.Handled)
+                        continue;
+
                     if (focusedControls != null)
+                        e.Handled = true;
+
+                    // MouseDown event.
+                    if (e.EventType == MouseEvent.Down)
                     {
-                        for (int iControl = 0; iControl < focusedControls.Length; iControl++)
+                        if (focusedControls != null)
                         {
-                            if (focusedControls[iControl].HandlesMouseInput)
+                            for (int iControl = 0; iControl < focusedControls.Length; iControl++)
                             {
-                                focusedControls[iControl].MouseDown(UltimaEngine.Input.MousePosition, e.Button);
-                                // if we're over a keyboard-handling control and press lmb, then give focus to the control.
-                                if (focusedControls[iControl].HandlesKeyboardFocus)
-                                    m_keyboardFocusControl = focusedControls[iControl];
-                                m_MouseDownControl[(int)e.Button] = focusedControls[iControl];
-                                break;
+                                if (focusedControls[iControl].HandlesMouseInput)
+                                {
+                                    focusedControls[iControl].MouseDown(UltimaEngine.Input.MousePosition, e.Button);
+                                    // if we're over a keyboard-handling control and press lmb, then give focus to the control.
+                                    if (focusedControls[iControl].HandlesKeyboardFocus)
+                                        m_keyboardFocusControl = focusedControls[iControl];
+                                    m_MouseDownControl[(int)e.Button] = focusedControls[iControl];
+                                    break;
+                                }
                             }
                         }
                     }
-                }
 
-                // MouseUp and MouseClick events
-                if (e.EventType == MouseEvent.Up)
-                {
-                    if (focusedControls != null)
+                    // MouseUp and MouseClick events
+                    if (e.EventType == MouseEvent.Up)
                     {
-                        if (m_MouseDownControl[(int)e.Button] != null && focusedControls[0] == m_MouseDownControl[(int)e.Button])
+                        if (focusedControls != null)
                         {
-                            focusedControls[0].MouseClick(UltimaEngine.Input.MousePosition, e.Button);
+                            if (m_MouseDownControl[(int)e.Button] != null && focusedControls[0] == m_MouseDownControl[(int)e.Button])
+                            {
+                                focusedControls[0].MouseClick(UltimaEngine.Input.MousePosition, e.Button);
+                            }
+                            focusedControls[0].MouseUp(UltimaEngine.Input.MousePosition, e.Button);
+                            if (m_MouseDownControl[(int)e.Button] != null && focusedControls[0] != m_MouseDownControl[(int)e.Button])
+                            {
+                                m_MouseDownControl[(int)e.Button].MouseUp(UltimaEngine.Input.MousePosition, e.Button);
+                            }
                         }
-                        focusedControls[0].MouseUp(UltimaEngine.Input.MousePosition, e.Button);
-                        if (m_MouseDownControl[(int)e.Button] != null && focusedControls[0] != m_MouseDownControl[(int)e.Button])
+                        else
                         {
-                            m_MouseDownControl[(int)e.Button].MouseUp(UltimaEngine.Input.MousePosition, e.Button);
+                            if (m_MouseDownControl[(int)e.Button] != null)
+                            {
+                                m_MouseDownControl[(int)e.Button].MouseUp(UltimaEngine.Input.MousePosition, e.Button);
+                            }
                         }
-                    }
-                    else
-                    {
-                        if (m_MouseDownControl[(int)e.Button] != null)
-                        {
-                            m_MouseDownControl[(int)e.Button].MouseUp(UltimaEngine.Input.MousePosition, e.Button);
-                        }
-                    }
 
-                    m_MouseDownControl[(int)e.Button] = null;
+                        m_MouseDownControl[(int)e.Button] = null;
+                    }
                 }
             }
 

@@ -95,7 +95,7 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         void buildGumpling(int x, int y, int gumpID1, int gumpID2, ButtonTypes buttonType, int param, int buttonID)
         {
-            Position = new Point2D(x, y);
+            Position = new Point(x, y);
             GumpUpID = gumpID1;
             ButtonType = buttonType;
             ButtonParameter = param;
@@ -114,7 +114,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             }
 
             if (Width == 0 && Height == 0 && m_gumpTextures[kGump_Up] != null)
-                Size = new Point2D(m_gumpTextures[kGump_Up].Width, m_gumpTextures[kGump_Up].Height);
+                Size = new Point(m_gumpTextures[kGump_Up].Width, m_gumpTextures[kGump_Up].Height);
 
             base.Update(gameTime);
         }
@@ -134,7 +134,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             {
                 int yoffset = MouseDownOnThis ? 1 : 0;
                 m_textRenderer.Draw(spriteBatch, 
-                    new Point2D(X + (Width - m_textRenderer.Width) / 2,
+                    new Point(X + (Width - m_textRenderer.Width) / 2,
                         Y + yoffset + (Height - m_textRenderer.Height) / 2));
             }
             base.Draw(spriteBatch);

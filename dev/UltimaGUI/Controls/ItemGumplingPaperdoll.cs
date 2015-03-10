@@ -30,15 +30,10 @@ namespace UltimaXNA.UltimaGUI.Controls
             m_y = y;
         }
 
-        protected override void m_onPickUp()
+        protected override Point InternalGetPickupOffset(Point offset)
         {
-            if (UltimaInteraction.Cursor.HoldingItem != null)
-            {
-                // fix this to be more centered on the object.
-                UltimaInteraction.Cursor.HoldingOffset = new Point(
-                    UltimaInteraction.Cursor.HoldingTexture.Width / 4,
-                    UltimaInteraction.Cursor.HoldingTexture.Height / 4);
-            }
+            // fix this to be more centered on the object.
+            return offset;
         }
 
         public override void Update(GameTime gameTime)
@@ -46,7 +41,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             base.Update(gameTime);
             if (!m_isBuilt)
             {
-                Position = new Point2D(m_x, m_y);
+                Position = new Point(m_x, m_y);
             }
         }
 
@@ -59,7 +54,7 @@ namespace UltimaXNA.UltimaGUI.Controls
                     m_texture = UltimaData.GumpData.GetGumpXNA(Item.ItemData.AnimID + 60000);
                 if (m_texture == null)
                     m_texture = UltimaData.GumpData.GetGumpXNA(Item.ItemData.AnimID + 50000);
-                Size = new Point2D(m_texture.Width, m_texture.Height);
+                Size = new Point(m_texture.Width, m_texture.Height);
             }
             spriteBatch.Draw2D(m_texture, Position, Item.Hue & 0x7FFF, (Item.Hue & 0x8000) == 0x8000 ? true : false, false);
             base.Draw(spriteBatch);

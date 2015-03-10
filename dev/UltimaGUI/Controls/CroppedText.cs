@@ -48,8 +48,8 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         void buildGumpling(int x, int y, int width, int height, int hue, int textIndex, string[] lines)
         {
-            Position = new Point2D(x, y);
-            Size = new Point2D(width, height);
+            Position = new Point(x, y);
+            Size = new Point(width, height);
             Hue = hue;
             Text = lines[textIndex];
             m_textRenderer = new UltimaGUI.TextRenderer(Text, width, true);

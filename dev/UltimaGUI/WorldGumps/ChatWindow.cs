@@ -57,7 +57,7 @@ namespace UltimaXNA.UltimaGUI.Gumps
             for (int i = m_textEntries.Count - 1; i >= 0; i--)
             {
                 y -= m_textEntries[i].TextHeight;
-                m_textEntries[i].Draw(spriteBatch, new Point2D(1, y));
+                m_textEntries[i].Draw(spriteBatch, new Point(1, y));
             }
             base.Draw(spriteBatch);
         }
@@ -115,7 +115,7 @@ namespace UltimaXNA.UltimaGUI.Gumps
             m_renderer.Transparent = (m_alpha < 1.0f);
         }
 
-        public void Draw(SpriteBatchUI sb, Point2D position)
+        public void Draw(SpriteBatchUI sb, Point position)
         {
             m_renderer.Draw(sb, position);
         }

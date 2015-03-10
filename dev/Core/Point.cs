@@ -28,8 +28,8 @@ namespace UltimaXNA
         int Z { get; }
     }
 
-    [StructLayout(LayoutKind.Sequential)]
-    public struct Point2D : IPoint2D
+    /*[StructLayout(LayoutKind.Sequential)]
+    public struct Point : IPoint2D
     {
         private int m_x;
         private int m_y;
@@ -45,7 +45,7 @@ namespace UltimaXNA
             set { m_y = value; }
         }
 
-        public Point2D(int x, int y)
+        public Point(int x, int y)
         {
             m_x = x;
             m_y = y;
@@ -53,12 +53,12 @@ namespace UltimaXNA
 
         public override bool Equals(object obj)
         {
-            if (!(obj is Point2D))
+            if (!(obj is Point))
             {
                 return false;
             }
 
-            Point2D pt = (Point2D)obj;
+            Point pt = (Point)obj;
 
             return pt.X == X && pt.Y == Y;
         }
@@ -68,31 +68,36 @@ namespace UltimaXNA
             return X ^ Y;
         }
 
-        public static bool operator ==(Point2D p1, Point2D p2)
+        public static bool operator ==(Point p1, Point p2)
         {
             return p1.Equals(p2);
         }
 
-        public static bool operator !=(Point2D p1, Point2D p2)
+        public static bool operator !=(Point p1, Point p2)
         {
             return !p1.Equals(p2);
         }
 
-        public static Point2D operator +(Point2D p1, Point2D p2)
+        public static Point operator +(Point p1, Point p2)
         {
-            return new Point2D(p1.X + p2.X, p1.Y + p2.Y);
+            return new Point(p1.X + p2.X, p1.Y + p2.Y);
         }
 
-        public static Point2D operator -(Point2D p1, Point2D p2)
+        public static Point operator -(Point p1, Point p2)
         {
-            return new Point2D(p1.X - p2.X, p1.Y - p2.Y);
+            return new Point(p1.X - p2.X, p1.Y - p2.Y);
         }
 
         public Vector2 ToVector2()
         {
             return new Vector2(X, Y);
         }
-    }
+
+        public static Point Zero
+        {
+            get { return new Point(0, 0); }
+        }
+    }*/
 
     [StructLayout(LayoutKind.Sequential)]
     public struct Point3D : IPoint3D, IComparable, IComparable<Point3D>

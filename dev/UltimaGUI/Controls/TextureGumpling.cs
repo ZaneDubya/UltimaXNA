@@ -14,8 +14,8 @@ namespace UltimaXNA.UltimaGUI.Controls
         public TextureGumpling(Control owner, int page, int x, int y, int width, int height)
             : base(owner, page)
         {
-            Position = new Point2D(x, y);
-            Size = new Point2D(width, height);
+            Position = new Point(x, y);
+            Size = new Point(width, height);
             HandlesMouseInput = true;
         }
 

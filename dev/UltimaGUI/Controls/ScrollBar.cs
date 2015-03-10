@@ -102,7 +102,7 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         void buildGumpling(int x, int y, int height, int minValue, int maxValue, int value)
         {
-            Position = new Point2D(x, y);
+            Position = new Point(x, y);
             MinValue = minValue;
             MaxValue = maxValue;
             Height = height;
@@ -124,7 +124,7 @@ namespace UltimaXNA.UltimaGUI.Controls
                 m_gumpBackground[1] = UltimaData.GumpData.GetGumpXNA(256);
                 m_gumpBackground[2] = UltimaData.GumpData.GetGumpXNA(255);
                 m_gumpSlider = UltimaData.GumpData.GetGumpXNA(254);
-                Size = new Point2D(m_gumpBackground[0].Width, BarHeight);
+                Size = new Point(m_gumpBackground[0].Width, BarHeight);
             }
 
             if (m_btnUpClicked || m_btnDownClicked)
@@ -145,16 +145,16 @@ namespace UltimaXNA.UltimaGUI.Controls
         public override void Draw(SpriteBatchUI spriteBatch)
         {
             // up button
-            spriteBatch.Draw2D(m_btnUpClicked ? m_gumpUpButton[1] : m_gumpUpButton[0], new Point2D(X, Y), 0, false, false);
+            spriteBatch.Draw2D(m_btnUpClicked ? m_gumpUpButton[1] : m_gumpUpButton[0], new Point(X, Y), 0, false, false);
             // scrollbar background
-            spriteBatch.Draw2D(m_gumpBackground[0], new Point2D(X, Y + m_gumpUpButton[0].Height), 0, false, false);
+            spriteBatch.Draw2D(m_gumpBackground[0], new Point(X, Y + m_gumpUpButton[0].Height), 0, false, false);
             int middlewidth = BarHeight - m_gumpUpButton[0].Height - m_gumpDownButton[0].Height - m_gumpBackground[0].Height - m_gumpBackground[2].Height;
             spriteBatch.Draw2DTiled(m_gumpBackground[1], new Rectangle(X, Y + m_gumpUpButton[0].Height + m_gumpBackground[0].Height, m_gumpBackground[0].Width, middlewidth), 0, false, false);
-            spriteBatch.Draw2D(m_gumpBackground[2], new Point2D(X, Y + BarHeight - m_gumpDownButton[0].Height - m_gumpBackground[2].Height), 0, false, false);
+            spriteBatch.Draw2D(m_gumpBackground[2], new Point(X, Y + BarHeight - m_gumpDownButton[0].Height - m_gumpBackground[2].Height), 0, false, false);
             // down button
-            spriteBatch.Draw2D(m_btnDownClicked ? m_gumpDownButton[1] : m_gumpDownButton[0], new Point2D(X, Y + Height - m_gumpDownButton[0].Height), 0, false, false);
+            spriteBatch.Draw2D(m_btnDownClicked ? m_gumpDownButton[1] : m_gumpDownButton[0], new Point(X, Y + Height - m_gumpDownButton[0].Height), 0, false, false);
             // slider
-            spriteBatch.Draw2D(m_gumpSlider, new Point2D(X + (m_gumpBackground[0].Width - m_gumpSlider.Width) / 2, Y + m_gumpUpButton[0].Height + 1 + (int)m_sliderY), 0, false, false);
+            spriteBatch.Draw2D(m_gumpSlider, new Point(X + (m_gumpBackground[0].Width - m_gumpSlider.Width) / 2, Y + m_gumpUpButton[0].Height + 1 + (int)m_sliderY), 0, false, false);
             base.Draw(spriteBatch);
         }
 

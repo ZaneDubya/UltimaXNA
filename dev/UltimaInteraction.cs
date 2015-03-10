@@ -9,49 +9,12 @@ using UltimaXNA.UltimaGUI.Controls;
 using UltimaXNA.UltimaGUI.Gumps;
 using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.UltimaWorld;
+using UltimaXNA.UltimaWorld.View;
 
 namespace UltimaXNA
 {
     public static class UltimaInteraction
     {
-        private static UltimaCursor m_Cusor = null;
-        public static UltimaCursor Cursor { get { return m_Cusor; } }
-
-        static UltimaInteraction()
-        {
-            m_Cusor = new UltimaCursor();
-        }
-
-        public static void Draw()
-        {
-            // Draw the cursor
-            m_Cusor.Draw(UltimaEngine.Input.MousePosition);
-        }
-
-        public static void Update()
-        {
-            if (UltimaEngine.UserInterface.MouseOverControl != null && Cursor.IsHolding)
-            {
-                Control target = UltimaEngine.UserInterface.MouseOverControl;
-                List<InputEventMouse> events = UltimaEngine.Input.GetMouseEvents();
-                foreach (InputEventMouse e in events)
-                {
-                    if (e.EventType == MouseEvent.Up && e.Button == MouseButton.Left)
-                    {
-                        // dropped an item we were holding.
-                        if (target is ItemGumpling && ((ItemGumpling)target).Item.ItemData.Container)
-                            DropItemToContainer(Cursor.HoldingItem, (Entity.Container)((ItemGumpling)target).Item);
-                        else if (target is GumpPicContainer)
-                        {
-                            int x = (int)UltimaEngine.Input.MousePosition.X - Cursor.HoldingOffset.X - (target.X + target.Owner.X);
-                            int y = (int)UltimaEngine.Input.MousePosition.Y - Cursor.HoldingOffset.Y - (target.Y + target.Owner.Y);
-                            DropItemToContainer(Cursor.HoldingItem, (Entity.Container)((GumpPicContainer)target).Item, x, y);
-                        }
-                    }
-                }
-            }
-        }
-
         public static MsgBox MsgBox(string msg, MsgBoxTypes type)
         {
             // pop up an error message, modal.
@@ -81,63 +44,9 @@ namespace UltimaXNA
             s_Client.Send(new DoubleClickPacket(item.Serial));
         } 
 
-        public static void PickUpItem(Item item, int x, int y) // used by itemgumpling, worldinput
-        {
-            if (item.PickUp())
-            {
-                s_Client.Send(new PickupItemPacket(item.Serial, item.Amount));
-                Cursor.PickUpItem(item, x, y);
-            }
-        }
-
         public static void ToggleWarMode() // used by paperdollgump.
         {
             s_Client.Send(new RequestWarModePacket(!((Mobile)EntityManager.GetPlayerObject()).IsWarMode));
-        }
-
-        public static void DropItemToWorld(Item item, int X, int Y, int Z) // used by worldinput.
-        {
-            if (!UltimaEngine.UserInterface.IsMouseOverUI)
-            {
-                Serial serial;
-                if (IsometricRenderer.MouseOverObject is MapObjectItem && ((Item)IsometricRenderer.MouseOverObject.OwnerEntity).ItemData.Container)
-                {
-                    serial = IsometricRenderer.MouseOverObject.OwnerEntity.Serial;
-                    X = Y = 0xFFFF;
-                    Z = 0;
-                }
-                else
-                    serial = Serial.World;
-                s_Client.Send(new DropItemPacket(item.Serial, (ushort)X, (ushort)Y, (byte)Z, 0, serial));
-                Cursor.ClearHolding();
-            }
-        }
-
-        public static void DropItemToContainer(Item item, Container container) // used by paperdollinteractable and ultimaguistate.
-        {
-            // get random coords and drop the item there.
-            Rectangle bounds = UltimaData.ContainerData.GetData(container.ItemID).Bounds;
-            int x = Utility.RandomValue(bounds.Left, bounds.Right);
-            int y = Utility.RandomValue(bounds.Top, bounds.Bottom);
-            DropItemToContainer(item, container, x, y);
-        }
-
-        public static void DropItemToContainer(Item item, Container container, int x, int y) // used by ultimaguistate.
-        {
-            Rectangle containerBounds = UltimaData.ContainerData.GetData(container.ItemID).Bounds;
-            Texture2D itemTexture = UltimaData.ArtData.GetStaticTexture(item.DisplayItemID);
-            if (x < containerBounds.Left) x = containerBounds.Left;
-            if (x > containerBounds.Right - itemTexture.Width) x = containerBounds.Right - itemTexture.Width;
-            if (y < containerBounds.Top) y = containerBounds.Top;
-            if (y > containerBounds.Bottom - itemTexture.Height) y = containerBounds.Bottom - itemTexture.Height;
-            s_Client.Send(new DropItemPacket(item.Serial, (ushort)x, (ushort)y, 0, 0, container.Serial));
-            Cursor.ClearHolding();
-        }
-
-        public static void WearItem(Item item) // used by paperdollinteractable.
-        {
-            s_Client.Send(new DropToLayerPacket(item.Serial, 0x00, EntityManager.MySerial));
-            Cursor.ClearHolding();
         }
 
         public static void UseSkill(int index) // used by ultimainteraction
@@ -211,6 +120,31 @@ namespace UltimaXNA
         public static void SendLastTargetPacket(Serial last_target) // used by engine vars, which is used by worldinput and ultimaclient.
         {
             s_Client.Send(new GetPlayerStatusPacket(0x04, last_target));
+        }
+
+        // ======================================================================
+        // Cursor handling routines.
+        // ======================================================================
+
+        internal static Action<Item, int, int> OnPickupItem;
+        internal static Action OnClearHolding;
+
+        internal static void PickupItem(Item item, Point offset)
+        {
+            if (item == null)
+                return;
+            if (OnPickupItem == null)
+                return;
+
+            OnPickupItem(item, offset.X, offset.Y);
+        }
+
+        internal static void ClearHolding()
+        {
+            if (OnClearHolding == null)
+                return;
+
+            OnClearHolding();
         }
     }
 }

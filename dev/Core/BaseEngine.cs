@@ -15,6 +15,7 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using InterXLib;
 #endregion
 
 namespace UltimaXNA.Core
@@ -41,7 +42,7 @@ namespace UltimaXNA.Core
         protected override void Update(GameTime gameTime)
         {
             Rendering.SpriteBatch3D.ResetZ();
-            Input.Update(gameTime);
+            Input.Update(gameTime.TotalGameTime.TotalMilliseconds, gameTime.ElapsedGameTime.TotalMilliseconds);
             UserInterface.Update(gameTime);
             OnUpdate(gameTime);
         }
@@ -52,7 +53,6 @@ namespace UltimaXNA.Core
             {
                 this.GraphicsDevice.Clear(Color.Black);
                 OnDraw(gameTime);
-                UserInterface.Draw(gameTime);
                 this.Window.Title = 
                     (UltimaVars.DebugVars.Flag_DisplayFPS ? string.Format("UltimaXNA FPS:{0}", UltimaVars.EngineVars.FPS) : "UltimaXNA") + 
                     (UltimaVars.EngineVars.MouseEnabled ? "" : "<Alt-M to enable mouse>");

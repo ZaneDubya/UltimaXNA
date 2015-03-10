@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using InterXLib.Input.Windows;
+﻿using InterXLib.Input.Windows;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using System;
+using System.Collections.Generic;
 
 namespace InterXLib
 {
@@ -132,57 +132,22 @@ namespace InterXLib
             }
         }
 
-        public bool IsMouseButtonDown(MouseButtonInternal button)
-        {
-            if ((m_WndProc.MouseButtons(m_MouseStateThisFrame) & button) == button)
-                return true;
-            else
-                return false;
-        }
-
-        public bool IsMouseButtonUp(MouseButtonInternal button)
-        {
-            if (IsMouseButtonUp(button))
-                return false;
-            else
-                return true;
-        }
-
-        public bool IsKeyDown(WinKeys key)
-        {
-            Keys[] pressed = m_KeyboardStateThisFrame.GetPressedKeys();
-            foreach (Keys k in pressed)
-            {
-                if (k == (Keys)key)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public bool IsKeyUp(WinKeys key)
-        {
-            if (IsKeyDown(key))
-                return false;
-            else
-                return true;
-        }
-
-
         public bool HandleKeyboardEvent(KeyboardEventType type, WinKeys key, bool shift, bool alt, bool ctrl)
         {
-            List<InputEventKeyboard> events = GetKeyboardEvents();
-            foreach (InputEventKeyboard e in events)
+            foreach (InputEvent e in m_EventsThisFrame)
             {
-                if (e.EventType == type && 
-                    e.KeyCode == key &&
-                    e.Shift == shift &&
-                    e.Alt == alt &&
-                    e.Control == ctrl)
+                if (!e.Handled && e is InputEventKeyboard)
                 {
-                    e.Handled = true;
-                    return true;
+                    InputEventKeyboard ek = (InputEventKeyboard)e;
+                    if (ek.EventType == type &&
+                        ek.KeyCode == key &&
+                        ek.Shift == shift &&
+                        ek.Alt == alt &&
+                        ek.Control == ctrl)
+                    {
+                        e.Handled = true;
+                        return true;
+                    }
                 }
             }
             return false;
@@ -190,14 +155,18 @@ namespace InterXLib
 
         public bool HandleMouseEvent(MouseEvent type, InterXLib.Input.Windows.MouseButton mb)
         {
-            List<InputEventMouse> events = GetMouseEvents();
-            foreach (InputEventMouse e in events)
+            foreach (InputEvent e in m_EventsThisFrame)
             {
-                if (e.EventType == type && e.Button == mb)
+                if (!e.Handled && e is InputEventMouse)
                 {
-                    e.Handled = true;
-                    return true;
+                    InputEventMouse em = (InputEventMouse)e;
+                    if (em.EventType == type && em.Button == mb)
+                    {
+                        e.Handled = true;
+                        return true;
+                    }
                 }
+
             }
             return false;
         }
@@ -335,5 +304,48 @@ namespace InterXLib
             else
                 return false;
         }
+
+        /*
+         * These routines are disabled because they could be used by a programmer to get the state of input without handling the
+         * InputEvent that created that state, thus allowing two or more parts of the program to respond to the save event. This
+         * could be bad!
+         * 
+                public bool IsMouseButtonDown(MouseButtonInternal button)
+        {
+            if ((m_WndProc.MouseButtons(m_MouseStateThisFrame) & button) == button)
+                return true;
+            else
+                return false;
+        }
+
+        public bool IsMouseButtonUp(MouseButtonInternal button)
+        {
+            if (IsMouseButtonUp(button))
+                return false;
+            else
+                return true;
+        }
+
+        public bool IsKeyDown(WinKeys key)
+        {
+            Keys[] pressed = m_KeyboardStateThisFrame.GetPressedKeys();
+            foreach (Keys k in pressed)
+            {
+                if (k == (Keys)key)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool IsKeyUp(WinKeys key)
+        {
+            if (IsKeyDown(key))
+                return false;
+            else
+                return true;
+        }
+        */
     }
 }

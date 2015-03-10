@@ -127,10 +127,13 @@
     <Compile Include="UltimaData\Fonts\ASCIIText.cs" />
     <Compile Include="UltimaData\Fonts\UniCharacter.cs" />
     <Compile Include="UltimaData\Fonts\UniText.cs" />
+    <Compile Include="UltimaGUI\Controls\GumpPicBackpack.cs" />
     <Compile Include="UltimaGUI\GUISprite.cs" />
+    <Compile Include="UltimaGUI\UltimaCursor.cs" />
     <Compile Include="UltimaInteraction.cs" />
     <Compile Include="UltimaLogin\LoginModel.cs" />
     <Compile Include="UltimaClientStatus.cs" />
+    <Compile Include="UltimaLogin\LoginView.cs" />
     <Compile Include="UltimaVars\CharacterListEntry.cs" />
     <Compile Include="UltimaVars\Characters.cs" />
     <Compile Include="UltimaVars\ServerListEntry.cs" />
@@ -327,7 +330,6 @@
     <Compile Include="Entity\PlayerMobile.cs" />
     <Compile Include="Entity\PropertyList.cs" />
     <Compile Include="Entity\Shared.cs" />
-    <Compile Include="Core\InputState.cs" />
     <Compile Include="UltimaLogin\Scenes\CharacterListScene.cs" />
     <Compile Include="UltimaLogin\Scenes\CreateCharacterScene.cs" />
     <Compile Include="UltimaLogin\Scenes\LoggingInScene.cs" />
@@ -364,7 +366,7 @@
     <Compile Include="UltimaGUI\WorldGumps\TopMenu.cs" />
     <Compile Include="UltimaGUI\Control.cs" />
     <Compile Include="UltimaGUI\DropWidget.cs" />
-    <Compile Include="UltimaGUI\UltimaCursor.cs" />
+    <Compile Include="UltimaWorld\Model\OldCursor.cs" />
     <Compile Include="Core\Rendering\SpriteBatchUI.cs" />
     <Compile Include="UltimaGUI\Gump.cs" />
     <Compile Include="UltimaGUI\Controls\Button.cs" />
@@ -428,6 +430,8 @@
     <Compile Include="UltimaData\FileIndex.cs" />
     <Compile Include="UltimaData\HueData.cs" />
     <Compile Include="UltimaData\Versioning.cs" />
+    <Compile Include="UltimaWorld\Model\WorldCursor.cs" />
+    <Compile Include="UltimaWorld\WorldView.cs" />
     <Compile Include="Utility.cs" />
     <Compile Include="UltimaWorld\WorldModel.cs" />
   </ItemGroup>

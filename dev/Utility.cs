@@ -559,6 +559,11 @@ namespace UltimaXNA
             }
         }
 
+        public static Direction DirectionFromPoints(Point from, Point to)
+        {
+            return DirectionFromVectors(new Vector2(from.X, from.Y), new Vector2(to.X, to.Y));
+        }
+
         public static Direction DirectionFromVectors(Vector2 fromPosition, Vector2 toPosition)
         {
             double Angle = Math.Atan2(toPosition.Y - fromPosition.Y, toPosition.X - fromPosition.X);
@@ -597,6 +602,7 @@ namespace UltimaXNA
 
         public static bool IsPointThisDistanceAway(Point initial, Point final, int distance)
         {
+            // fast distance. Not super accurate, but fast. Fast is good.
             if (Math.Abs(final.X - initial.X) + Math.Abs(final.Y - initial.Y) > distance)
                 return true;
             else
@@ -625,6 +631,11 @@ namespace UltimaXNA
             }
 
             return new Vector2(hue & 0x3FFF, hueType);
+        }
+
+        public static int DistanceBetweenTwoPoints(Point p1, Point p2)
+        {
+            return (p1.X - p2.X) * (p1.X - p1.X) + (p1.Y - p2.Y) * (p1.Y - p1.Y);
         }
     }
 }

@@ -79,8 +79,8 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         void buildGumpling(int x, int y, int width, int height, int hue, int entryID, int limitSize, string text)
         {
-            Position = new Point2D(x, y);
-            Size = new Point2D(width, height);
+            Position = new Point(x, y);
+            Size = new Point(width, height);
             Hue = hue;
             EntryID = entryID;
             Text = text;
@@ -133,7 +133,7 @@ namespace UltimaXNA.UltimaGUI.Controls
         {
             m_textRenderer.Draw(spriteBatch, Position);
             if (m_caratBlinkOn)
-                m_caratRenderer.Draw(spriteBatch, new Point2D(X + m_textRenderer.Width, Y));
+                m_caratRenderer.Draw(spriteBatch, new Point(X + m_textRenderer.Width, Y));
             
             base.Draw(spriteBatch);
         }
