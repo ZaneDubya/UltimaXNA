@@ -165,9 +165,17 @@ namespace UltimaXNA.UltimaWorld.View
             {
                 if (m_layers[i].Frame != null)
                 {
-                    float x = drawPosition.X - m_draw_X - m_layers[i].Frame.Center.X;
-                    float y = drawPosition.Y - m_draw_Y - (m_layers[i].Frame.Texture.Height - m_layers[i].Frame.Center.Y);
-                    sb.DrawSimple(m_layers[i].Frame.Texture, new Vector3(x, y, 0), Utility.GetHueVector(m_layers[i].Hue));
+                    float x = (!m_draw_flip) ?
+                        drawPosition.X + m_mobile_drawCenterX - (m_draw_X + m_layers[i].Frame.Center.X) :
+                        drawPosition.X + 44 - m_mobile_drawCenterX + (m_draw_X + m_layers[i].Frame.Center.X);
+                    float y = drawPosition.Y - m_draw_Y - (m_layers[i].Frame.Texture.Height + m_layers[i].Frame.Center.Y) + m_mobile_drawCenterY;
+
+                    Rectangle dest = new Rectangle(
+                        (int)x, (int)y,
+                        (!m_draw_flip) ? m_layers[i].Frame.Texture.Width : -m_layers[i].Frame.Texture.Width, 
+                        m_layers[i].Frame.Texture.Height);
+
+                    sb.DrawSimple(m_layers[i].Frame.Texture, dest, Utility.GetHueVector(m_layers[i].Hue));
                 }
             }
 
