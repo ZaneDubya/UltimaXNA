@@ -377,17 +377,21 @@ namespace UltimaXNA.UltimaWorld.Model
                 // TEST: what if we can pick something up and drop it in our inventory before the server has a chance to respond?
                 m_Model.Client.Send(new PickupItemPacket(item.Serial, item.Amount));
 
-                // if the item is in a container, remove it from that container.
+                // if the item is in a container or worn by a mobile, remove it from that container.
                 if (item.Parent != null)
                 {
-                    if (item.Parent is Container)
+                    // set the item's world position to the postion of the container or mobile it is removed from.
+                    item.X = item.Parent.WorldPosition.X;
+                    item.Y = item.Parent.WorldPosition.Y;
+                    item.Z = item.Parent.WorldPosition.Z;
+                    if (item.Parent is Mobile)
+                    {
+                        ((Mobile)item.Parent).RemoveItem(item.Serial);
+                    }
+                    else if (item.Parent is Container)
                     {
                         ((Container)item.Parent).RemoveItem(item.Serial);
                     }
-                    // !!! TEST: Does this fix pickup = dispose error??
-                    item.X = item.Parent.X;
-                    item.Y = item.Parent.Y;
-                    item.Z = item.Parent.Z;
                     item.Parent = null;
                 }
 
