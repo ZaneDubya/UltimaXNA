@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using UltimaXNA.Entity;
-using UltimaXNA.UltimaData;
 using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.UltimaWorld.View;
 
@@ -88,8 +87,13 @@ namespace UltimaXNA.UltimaWorld.Controller
         {
             if (UltimaVars.EngineVars.InWorld && !UltimaEngine.UserInterface.IsModalControlOpen && m_Model.Client.IsConnected)
             {
+                // always parse keyboard. (Really?)
                 parseKeyboard();
-                parseMouse();
+
+                // If 1. The mouse is over the world (not over UI) and
+                //    2. The cursor is not blocking input, then interpret mouse input.
+                if (!UltimaEngine.UserInterface.IsMouseOverUI && !m_Model.Cursor.IsHoldingItem)
+                    parseMouse();
 
                 // PickType is the kind of objects that will show up as the 'MouseOverObject'
                 if (UltimaEngine.UserInterface.IsMouseOverUI)
@@ -280,24 +284,20 @@ namespace UltimaXNA.UltimaWorld.Controller
 
         void parseMouse()
         {
-            // If the mouse is over the world, then interpret mouse input:
-            if (!UltimaEngine.UserInterface.IsMouseOverUI)
+            List<InputEventMouse> events = UltimaEngine.Input.GetMouseEvents();
+            foreach (InputEventMouse e in events)
             {
-                List<InputEventMouse> events = UltimaEngine.Input.GetMouseEvents();
-                foreach (InputEventMouse e in events)
+                if (e.Button == UltimaVars.EngineVars.MouseButton_Move)
                 {
-                    if (e.Button == UltimaVars.EngineVars.MouseButton_Move)
-                    {
-                        onMoveButton(e);
-                    }
-                    else if (e.Button == UltimaVars.EngineVars.MouseButton_Interact)
-                    {
-                        onInteractButton(e);
-                    }
-                    else
-                    {
-                        // no handler for this button.
-                    }
+                    onMoveButton(e);
+                }
+                else if (e.Button == UltimaVars.EngineVars.MouseButton_Interact)
+                {
+                    onInteractButton(e);
+                }
+                else
+                {
+                    // no handler for this button.
                 }
             }
         }

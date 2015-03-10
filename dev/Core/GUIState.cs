@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
  *   UIManager.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -265,59 +264,62 @@ namespace UltimaXNA
                     m_MouseDownControl[iButton].MouseOver(UltimaEngine.Input.MousePosition);
             }
 
-            List<InputEventMouse> events = UltimaEngine.Input.GetMouseEvents();
-            foreach (InputEventMouse e in events)
+            if (!Cursor.BlockingUIMouseEvents)
             {
-                if (e.Handled)
-                    continue;
-
-                if (focusedControls != null)
-                    e.Handled = true;
-
-                // MouseDown event.
-                if (e.EventType == MouseEvent.Down)
+                List<InputEventMouse> events = UltimaEngine.Input.GetMouseEvents();
+                foreach (InputEventMouse e in events)
                 {
+                    if (e.Handled)
+                        continue;
+
                     if (focusedControls != null)
+                        e.Handled = true;
+
+                    // MouseDown event.
+                    if (e.EventType == MouseEvent.Down)
                     {
-                        for (int iControl = 0; iControl < focusedControls.Length; iControl++)
+                        if (focusedControls != null)
                         {
-                            if (focusedControls[iControl].HandlesMouseInput)
+                            for (int iControl = 0; iControl < focusedControls.Length; iControl++)
                             {
-                                focusedControls[iControl].MouseDown(UltimaEngine.Input.MousePosition, e.Button);
-                                // if we're over a keyboard-handling control and press lmb, then give focus to the control.
-                                if (focusedControls[iControl].HandlesKeyboardFocus)
-                                    m_keyboardFocusControl = focusedControls[iControl];
-                                m_MouseDownControl[(int)e.Button] = focusedControls[iControl];
-                                break;
+                                if (focusedControls[iControl].HandlesMouseInput)
+                                {
+                                    focusedControls[iControl].MouseDown(UltimaEngine.Input.MousePosition, e.Button);
+                                    // if we're over a keyboard-handling control and press lmb, then give focus to the control.
+                                    if (focusedControls[iControl].HandlesKeyboardFocus)
+                                        m_keyboardFocusControl = focusedControls[iControl];
+                                    m_MouseDownControl[(int)e.Button] = focusedControls[iControl];
+                                    break;
+                                }
                             }
                         }
                     }
-                }
 
-                // MouseUp and MouseClick events
-                if (e.EventType == MouseEvent.Up)
-                {
-                    if (focusedControls != null)
+                    // MouseUp and MouseClick events
+                    if (e.EventType == MouseEvent.Up)
                     {
-                        if (m_MouseDownControl[(int)e.Button] != null && focusedControls[0] == m_MouseDownControl[(int)e.Button])
+                        if (focusedControls != null)
                         {
-                            focusedControls[0].MouseClick(UltimaEngine.Input.MousePosition, e.Button);
+                            if (m_MouseDownControl[(int)e.Button] != null && focusedControls[0] == m_MouseDownControl[(int)e.Button])
+                            {
+                                focusedControls[0].MouseClick(UltimaEngine.Input.MousePosition, e.Button);
+                            }
+                            focusedControls[0].MouseUp(UltimaEngine.Input.MousePosition, e.Button);
+                            if (m_MouseDownControl[(int)e.Button] != null && focusedControls[0] != m_MouseDownControl[(int)e.Button])
+                            {
+                                m_MouseDownControl[(int)e.Button].MouseUp(UltimaEngine.Input.MousePosition, e.Button);
+                            }
                         }
-                        focusedControls[0].MouseUp(UltimaEngine.Input.MousePosition, e.Button);
-                        if (m_MouseDownControl[(int)e.Button] != null && focusedControls[0] != m_MouseDownControl[(int)e.Button])
+                        else
                         {
-                            m_MouseDownControl[(int)e.Button].MouseUp(UltimaEngine.Input.MousePosition, e.Button);
+                            if (m_MouseDownControl[(int)e.Button] != null)
+                            {
+                                m_MouseDownControl[(int)e.Button].MouseUp(UltimaEngine.Input.MousePosition, e.Button);
+                            }
                         }
-                    }
-                    else
-                    {
-                        if (m_MouseDownControl[(int)e.Button] != null)
-                        {
-                            m_MouseDownControl[(int)e.Button].MouseUp(UltimaEngine.Input.MousePosition, e.Button);
-                        }
-                    }
 
-                    m_MouseDownControl[(int)e.Button] = null;
+                        m_MouseDownControl[(int)e.Button] = null;
+                    }
                 }
             }
 

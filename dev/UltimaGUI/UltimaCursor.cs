@@ -85,5 +85,10 @@ namespace UltimaXNA.UltimaGUI
                 m_CursorSprite.Draw(spritebatch, position);
             }
         }
+
+        public virtual bool BlockingUIMouseEvents
+        {
+            get { return false; }
+        }
     }
 }

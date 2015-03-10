@@ -136,7 +136,7 @@ namespace InterXLib
         {
             foreach (InputEvent e in m_EventsThisFrame)
             {
-                if (!e.Handled && e is InputEventMouse)
+                if (!e.Handled && e is InputEventKeyboard)
                 {
                     InputEventKeyboard ek = (InputEventKeyboard)e;
                     if (ek.EventType == type &&

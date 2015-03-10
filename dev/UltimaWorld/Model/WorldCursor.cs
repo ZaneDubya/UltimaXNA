@@ -1,20 +1,28 @@
 ﻿using InterXLib.Input.Windows;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using UltimaXNA.Entity;
 using UltimaXNA.Rendering;
 using UltimaXNA.UltimaData;
 using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaGUI.Controls;
 using UltimaXNA.UltimaPackets.Client;
-using UltimaXNA.UltimaWorld.View;
 using UltimaXNA.UltimaWorld.Controller;
-using System;
+using UltimaXNA.UltimaWorld.View;
 
 namespace UltimaXNA.UltimaWorld.Model
 {
     class WorldCursor : UltimaCursor
     {
+        public override bool BlockingUIMouseEvents
+        {
+            get
+            {
+                return IsHoldingItem;
+            }
+        }
+
         private WorldModel m_Model;
 
         public WorldCursor(WorldModel model)
