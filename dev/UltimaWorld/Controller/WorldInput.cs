@@ -87,7 +87,7 @@ namespace UltimaXNA.UltimaWorld.Controller
         {
             if (UltimaVars.EngineVars.InWorld && !UltimaEngine.UserInterface.IsModalControlOpen && m_Model.Client.IsConnected)
             {
-                // always parse keyboard. (Really?)
+                // always parse keyboard. (Is it possible there are some situations in which keyboard input is blocked???)
                 parseKeyboard();
 
                 // If 1. The mouse is over the world (not over UI) and
