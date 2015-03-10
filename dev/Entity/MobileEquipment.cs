@@ -46,7 +46,6 @@ namespace UltimaXNA.Entity
                 {
                     if (m_Equipment[nIndex] != null)
                     {
-                        m_Equipment[nIndex].Dispose();
                         m_Equipment[nIndex] = null;
                     }
                 }
