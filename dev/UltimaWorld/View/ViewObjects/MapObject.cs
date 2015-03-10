@@ -19,14 +19,14 @@ namespace UltimaXNA.UltimaWorld.View
 {
     public abstract class AMapObject
     {
-        private Position3D m__position;
+        private Position3D m_Position;
         public Position3D Position
         {
-            get { return m__position; }
+            get { return m_Position; }
             set
             {
-                m__position = value;
-                Z = SortZ = (int)m__position.Tile_V3.Z;
+                m_Position = value;
+                Z = SortZ = (int)m_Position.Tile_V3.Z;
             }
         }
 
