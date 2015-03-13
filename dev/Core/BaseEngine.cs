@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
  *   BaseEngine.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -20,6 +19,10 @@ using InterXLib;
 
 namespace UltimaXNA.Core
 {
+    /// <summary>
+    /// Encapsulates basic engine functions, allowing the main engine to be kept
+    /// clean of extraneous code.
+    /// </summary>
     public class BaseEngine : Game
     {
         public static InputState Input = new InputState();
@@ -43,7 +46,6 @@ namespace UltimaXNA.Core
         {
             Rendering.SpriteBatch3D.ResetZ();
             Input.Update(gameTime.TotalGameTime.TotalMilliseconds, gameTime.ElapsedGameTime.TotalMilliseconds);
-            UserInterface.Update(gameTime);
             OnUpdate(gameTime);
         }
 
