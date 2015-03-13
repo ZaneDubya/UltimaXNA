@@ -366,7 +366,6 @@
     <Compile Include="UltimaGUI\WorldGumps\TopMenu.cs" />
     <Compile Include="UltimaGUI\Control.cs" />
     <Compile Include="UltimaGUI\DropWidget.cs" />
-    <Compile Include="UltimaWorld\Model\OldCursor.cs" />
     <Compile Include="Core\Rendering\SpriteBatchUI.cs" />
     <Compile Include="UltimaGUI\Gump.cs" />
     <Compile Include="UltimaGUI\Controls\Button.cs" />
