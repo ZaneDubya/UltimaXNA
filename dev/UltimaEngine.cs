@@ -82,6 +82,7 @@ namespace UltimaXNA
             else
             {
                 UltimaVars.EngineVars.GameTime = gameTime;
+                UserInterface.Update(gameTime);
                 s_Client.Update();
                 ActiveModel.Update(gameTime.TotalGameTime.TotalMilliseconds, gameTime.ElapsedGameTime.TotalMilliseconds);
             }
