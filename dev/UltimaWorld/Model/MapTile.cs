@@ -125,13 +125,6 @@ namespace UltimaXNA.UltimaWorld
             return (m1.Name == m2.Name);
         }
 
-        public void AddMapObject(AMapObject item)
-        {
-            // !!! FIX THIS - MUST ADD OBJECTS
-            // m_Entities.Add(item);
-            m_NeedsSorting = true;
-        }
-
         private void removeDuplicateObjects()
         {
             int[] itemsToRemove = new int[0x100];

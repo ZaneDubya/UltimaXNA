@@ -112,7 +112,7 @@ namespace UltimaXNA.Entity
         {
             tile.RemoveEntity(Serial);
             int hue = m_isHued ? m_hue : 0;
-            tile.AddMapObject(new MapObjectDynamic(this, position, m_baseItemID, (int)(m_frameSequence * m_frameLength), hue, m_useGumpArtInsteadOfTileArt));
+            // tile.AddMapObject(new MapObjectDynamic(this, position, m_baseItemID, (int)(m_frameSequence * m_frameLength), hue, m_useGumpArtInsteadOfTileArt));
         }
 
         public void Load_FromPacket(GraphicEffectPacket packet)

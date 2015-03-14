@@ -94,7 +94,7 @@ namespace UltimaXNA.UltimaWorld.View
             if ((pickType & m_pickType) == m_pickType)
                 if (molist.IsMouseInObjectIsometric(m_vertexBufferAlternate))
                 {
-                    MouseOverItem item = new MouseOverItem(m_draw_texture, m_vertexBufferAlternate[0].Position, this);
+                    MouseOverItem item = new MouseOverItem(m_draw_texture, m_vertexBufferAlternate[0].Position, null);
                     item.Vertices = new Vector3[4] { m_vertexBufferAlternate[0].Position, m_vertexBufferAlternate[1].Position, m_vertexBufferAlternate[2].Position, m_vertexBufferAlternate[3].Position };
                     molist.Add2DItem(item);
                 }

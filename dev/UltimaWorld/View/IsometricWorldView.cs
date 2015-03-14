@@ -31,8 +31,8 @@ namespace UltimaXNA.UltimaWorld.View
 
         #region MousePickingVariables
         private static MouseOverItem m_overObject, m_overGround;
-        public static AMapObject MouseOverObject { get { return (m_overObject == null) ? null : m_overObject.Object; } }
-        public static AMapObject MouseOverGround { get { return (m_overGround == null) ? null : m_overGround.Object; } }
+        public static BaseEntity MouseOverObject { get { return (m_overObject == null) ? null : m_overObject.Entity; } }
+        public static BaseEntity MouseOverGround { get { return (m_overGround == null) ? null : m_overGround.Entity; } }
         public static Vector2 MouseOverObjectPoint { get { return (m_overObject == null) ? new Vector2(0, 0) : m_overObject.InTexturePosition; } }
         public const PickTypes DefaultPickType = PickTypes.PickStatics | PickTypes.PickObjects;
         public static PickTypes PickType { get; set; }

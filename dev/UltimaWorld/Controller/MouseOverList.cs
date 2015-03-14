@@ -14,6 +14,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Rendering;
 using UltimaXNA.UltimaWorld.View;
+using UltimaXNA.Entity;
 
 namespace UltimaXNA.UltimaWorld
 {
@@ -53,7 +54,7 @@ namespace UltimaXNA.UltimaWorld
             // Parse list backwards to find topmost mouse over object.
             foreach (MouseOverItem item in CreateReverseIterator(m_overList))
             {
-                if (item.Object.GetType() == typeof(T))
+                if (item.Entity.GetType() == typeof(T))
                 {
                     if (item.TextureContainsPoint(mousePosition))
                     {
@@ -189,18 +190,18 @@ namespace UltimaXNA.UltimaWorld
         public Texture2D Texture;
         public Vector3 Position;
         public Vector2 InTexturePosition;
-        public AMapObject Object;
+        public BaseEntity Entity;
 
-        internal MouseOverItem(Texture2D nTexture, Vector3 nPosition, AMapObject nObject)
+        internal MouseOverItem(Texture2D texture, Vector3 position, BaseEntity entity)
         {
-            Texture = nTexture;
-            Position = nPosition;
-            Object = nObject;
+            Texture = texture;
+            Position = position;
+            Entity = entity;
         }
 
         internal bool TextureContainsPoint(Point mousePosition)
         {
-            if (Object.GetType() == typeof(MapObjectGround))
+            if (Entity.GetType() == typeof(MapObjectGround))
             {
                 // we already know we are within this polygon
                 InTexturePosition = new Vector2(mousePosition.X - Position.X, mousePosition.Y - Position.Y);

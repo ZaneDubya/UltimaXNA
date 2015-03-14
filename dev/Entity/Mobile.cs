@@ -232,7 +232,7 @@ namespace UltimaXNA.Entity
             }
 
             MapObjectMobile mobtile = new MapObjectMobile(position, MirrorFacingForDraw(Facing), m_animation.ActionIndex, m_animation.AnimationFrame, this);
-            tile.AddMapObject(mobtile);
+            // tile.AddMapObject(mobtile);
 
             int[] drawLayers = m_DrawLayerOrder;
 			bool hasOuterTorso = m_equipment[(int)EquipLayer.OuterTorso] != null && m_equipment[(int)EquipLayer.OuterTorso].AnimationDisplayID != 0;

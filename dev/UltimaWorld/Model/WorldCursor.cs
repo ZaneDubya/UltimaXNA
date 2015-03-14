@@ -65,37 +65,36 @@ namespace UltimaXNA.UltimaWorld.Model
                 }
                 else // cursor is over the world display.
                 {
-                    AMapObject mouseoverObject = IsometricRenderer.MouseOverObject;
+                    BaseEntity mouseOverEntity = IsometricRenderer.MouseOverObject;
 
-                    if (mouseoverObject != null)
+                    if (mouseOverEntity != null)
                     {
                         int x, y, z;
 
-                        if (mouseoverObject is MapObjectMobile || mouseoverObject is MapObjectCorpse)
+                        if (mouseOverEntity is Mobile || mouseOverEntity is Corpse)
                         {
                             // UNIMPLEMENTED: attempt to give this item to the mobile or corpse.
                             return;
                         }
-                        else if (mouseoverObject is MapObjectItem || mouseoverObject is MapObjectStatic)
+                        else if (mouseOverEntity is Item || mouseOverEntity is StaticItem)
                         {
-                            x = (int)mouseoverObject.Position.X;
-                            y = (int)mouseoverObject.Position.Y;
-                            z = (int)mouseoverObject.Z;
-                            if (mouseoverObject is MapObjectStatic)
+                            x = (int)mouseOverEntity.Position.X;
+                            y = (int)mouseOverEntity.Position.Y;
+                            z = (int)mouseOverEntity.Z;
+                            if (mouseOverEntity is StaticItem)
                             {
-                                ItemData itemData = UltimaData.TileData.ItemData[mouseoverObject.ItemID & 0x3FFF];
-                                z += itemData.Height;
+                                z += ((StaticItem)mouseOverEntity).ItemData.Height;
                             }
-                            else if (mouseoverObject is MapObjectItem)
+                            else if (mouseOverEntity is Item)
                             {
-                                z += UltimaData.TileData.ItemData[mouseoverObject.ItemID].Height;
+                                z += ((Item)mouseOverEntity).ItemData.Height;
                             }
                         }
-                        else if (mouseoverObject is MapObjectGround)
+                        else if (mouseOverEntity is Ground)
                         {
-                            x = (int)mouseoverObject.Position.X;
-                            y = (int)mouseoverObject.Position.Y;
-                            z = (int)mouseoverObject.Z;
+                            x = (int)mouseOverEntity.Position.X;
+                            y = (int)mouseOverEntity.Position.Y;
+                            z = (int)mouseOverEntity.Z;
                         }
                         else
                         {
@@ -282,31 +281,30 @@ namespace UltimaXNA.UltimaWorld.Model
             }
         }
 
-        void mouseTargetingEventXYZ(AMapObject selectedObject)
+        void mouseTargetingEventXYZ(BaseEntity selectedEntity)
         {
             // Send the targetting event back to the server!
             int modelNumber = 0;
-            Type type = selectedObject.GetType();
-            if (type == typeof(MapObjectStatic))
+            if (selectedEntity is StaticItem)
             {
-                modelNumber = selectedObject.ItemID;
+                modelNumber = ((StaticItem)selectedEntity).ItemID;
             }
             else
             {
                 modelNumber = 0;
             }
             // Send the target ...
-            m_Model.Client.Send(new TargetXYZPacket((short)selectedObject.Position.X, (short)selectedObject.Position.Y, (short)selectedObject.Z, (ushort)modelNumber));
+            m_Model.Client.Send(new TargetXYZPacket((short)selectedEntity.Position.X, (short)selectedEntity.Position.Y, (short)selectedEntity.Z, (ushort)modelNumber));
             // ... and clear our targeting cursor.
             SetTargeting(TargetTypes.Nothing, 0);
         }
 
-        void mouseTargetingEventObject(AMapObject selectedObject)
+        void mouseTargetingEventObject(BaseEntity selectedEntity)
         {
             // If we are passed a null object, keep targeting.
-            if (selectedObject == null)
+            if (selectedEntity == null)
                 return;
-            Serial serial = selectedObject.OwnerSerial;
+            Serial serial = selectedEntity.Serial;
             // Send the targetting event back to the server
             if (serial.IsValid)
             {
@@ -315,16 +313,15 @@ namespace UltimaXNA.UltimaWorld.Model
             else
             {
                 int modelNumber = 0;
-                Type type = selectedObject.GetType();
-                if (type == typeof(MapObjectStatic))
+                if (selectedEntity is StaticItem)
                 {
-                    modelNumber = selectedObject.ItemID;
+                    modelNumber = ((StaticItem)selectedEntity).ItemID;
                 }
                 else
                 {
                     modelNumber = 0;
                 }
-                m_Model.Client.Send(new TargetXYZPacket((short)selectedObject.Position.X, (short)selectedObject.Position.Y, (short)selectedObject.Z, (ushort)modelNumber));
+                m_Model.Client.Send(new TargetXYZPacket((short)selectedEntity.Position.X, (short)selectedEntity.Position.Y, (short)selectedEntity.Z, (ushort)modelNumber));
             }
 
             // Clear our target cursor.
@@ -403,9 +400,9 @@ namespace UltimaXNA.UltimaWorld.Model
         private void DropHeldItemToWorld(int X, int Y, int Z)
         {
             Serial serial;
-            if (IsometricRenderer.MouseOverObject is MapObjectItem && ((Item)IsometricRenderer.MouseOverObject.OwnerEntity).ItemData.IsContainer)
+            if (IsometricRenderer.MouseOverObject is Item && ((Item)IsometricRenderer.MouseOverObject).ItemData.IsContainer)
             {
-                serial = IsometricRenderer.MouseOverObject.OwnerEntity.Serial;
+                serial = IsometricRenderer.MouseOverObject.Serial;
                 X = Y = 0xFFFF;
                 Z = 0;
             }

@@ -103,7 +103,7 @@ namespace UltimaXNA.Entity
                         {
                             foreach (StaticTile s in m_components.Tiles[p.X][p.Y])
                             {
-                                t.AddMapObject(new MapObjectStatic(s.ID, 0, new Position3D(x, y, s.Z)));
+                                // t.AddMapObject(new MapObjectStatic(s.ID, 0, new Position3D(x, y, s.Z)));
                             }
                         }
                     }
@@ -113,7 +113,7 @@ namespace UltimaXNA.Entity
                         {
                             if ((s.X == p.X) && (s.Y == p.Y))
                             {
-                                t.AddMapObject(new MapObjectStatic(s.ID, 0, new Position3D(s.X, s.Y, s.Z)));
+                                // t.AddMapObject(new MapObjectStatic(s.ID, 0, new Position3D(s.X, s.Y, s.Z)));
                             }
                         }
                     }

@@ -50,7 +50,7 @@ namespace UltimaXNA.Entity
         internal override void Draw(MapTile tile, Position3D position)
         {
             // m_Movement.ClearImmediate();
-            tile.AddMapObject(new MapObjectCorpse(position, MirrorFacingForDraw(Facing), this, Hue, m_corpseBody, m_corpseFrame));
+            // tile.AddMapObject(new MapObjectCorpse(position, MirrorFacingForDraw(Facing), this, Hue, m_corpseBody, m_corpseFrame));
             // drawOverheads(tile, new Position3D(m_Movement.Position.Point_V3));
         }
 

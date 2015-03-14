@@ -133,12 +133,12 @@ namespace UltimaXNA.UltimaWorld.View
                     MouseOverItem item;
                     if (!m_draw_flip)
                     {
-                        item = new MouseOverItem(m_draw_texture, vertexBuffer[0].Position, this);
+                        item = new MouseOverItem(m_draw_texture, vertexBuffer[0].Position, null);
                         item.Vertices = new Vector3[4] { vertexBuffer[0].Position, vertexBuffer[1].Position, vertexBuffer[2].Position, vertexBuffer[3].Position };
                     }
                     else
                     {
-                        item = new MouseOverItem(m_draw_texture, vertexBuffer[2].Position, this);
+                        item = new MouseOverItem(m_draw_texture, vertexBuffer[2].Position, null);
                         item.Vertices = new Vector3[4] { vertexBuffer[2].Position, vertexBuffer[0].Position, vertexBuffer[3].Position, vertexBuffer[1].Position };
                     }
                     molist.Add2DItem(item);
@@ -221,7 +221,7 @@ namespace UltimaXNA.UltimaWorld.View
                     verts[0].Normal = verts[1].Normal = verts[2].Normal = verts[3].Normal = vertices[0].Normal;
                     verts[0].Hue = verts[1].Hue = verts[2].Hue = verts[3].Hue = vertices[0].Hue;
 
-                    tile.AddMapObject(deferred);
+                    // tile.AddMapObject(deferred);
                 }
             }
 
@@ -300,7 +300,7 @@ namespace UltimaXNA.UltimaWorld.View
                 overlapCurrent.X += 22;
                 overlapCurrent.Y += 22;
 
-                tile.AddMapObject(deferred);
+                // tile.AddMapObject(deferred);
             }
         }
 
