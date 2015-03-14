@@ -116,8 +116,8 @@ namespace UltimaXNA.UltimaWorld.View
                 MapTile t;
                 if ((t = m_map.GetMapTile(CenterPosition.X, CenterPosition.Y, true)) != null)
                 {
-                    AMapObject underObject, underTerrain;
-                    t.IsUnder(CenterPosition.Z, out underObject, out underTerrain);
+                    BaseEntity underObject, underTerrain;
+                    t.IsPointUnderAnEntity(CenterPosition.Z, out underObject, out underTerrain);
 
                     // if we are under terrain, then do not draw any terrain at all.
                     DrawTerrain = !(underTerrain == null);
@@ -128,7 +128,7 @@ namespace UltimaXNA.UltimaWorld.View
                         // if we are under a ROOF, then get rid of everything above me.Z + 20
                         // (this accounts for A-frame roofs). Otherwise, get rid of everything
                         // at the object above us.Z.
-                        if (((MapObjectStatic)underObject).ItemData.IsRoof)
+                        if (((StaticItem)underObject).ItemData.IsRoof)
                         {
                             m_maxItemAltitude = CenterPosition.Z - (CenterPosition.Z % 20) + 20;
                         }
@@ -138,12 +138,12 @@ namespace UltimaXNA.UltimaWorld.View
                         }
 
                         // If we are under a roof tile, do not make roofs transparent if we are on an edge.
-                        if (underObject is MapObjectStatic && ((MapObjectStatic)underObject).ItemData.IsRoof)
+                        if (underObject is StaticItem && ((StaticItem)underObject).ItemData.IsRoof)
                         {
                             bool isRoofSouthEast = true;
                             if ((t = m_map.GetMapTile(CenterPosition.X + 1, CenterPosition.Y + 1, true)) != null)
                             {
-                                t.IsUnder(CenterPosition.Z, out underObject, out underTerrain);
+                                t.IsPointUnderAnEntity(CenterPosition.Z, out underObject, out underTerrain);
                                 isRoofSouthEast = !(underObject == null);
                             }
 
@@ -195,7 +195,7 @@ namespace UltimaXNA.UltimaWorld.View
             ObjectsRendered = 0; // Count of objects rendered for statistics and debug
             MouseOverList overList = new MouseOverList(); // List of items for mouse over
             overList.MousePosition = UltimaEngine.Input.MousePosition;
-            List<AMapObject> mapObjects;
+            List<BaseEntity> mapObjects;
             Vector3 drawPosition = new Vector3();
 
             for (int ix = RenderBeginX; ix < RenderEndX; ix++)
@@ -214,10 +214,9 @@ namespace UltimaXNA.UltimaWorld.View
                     mapObjects = tile.Items;
                     for (int i = 0; i < mapObjects.Count; i++)
                     {
-                        if (mapObjects[i].Draw(m_spriteBatch, drawPosition, overList, PickType, m_maxItemAltitude))
-                            ObjectsRendered++;
+                        //if (mapObjects[i].Draw(m_spriteBatch, drawPosition, overList, PickType, m_maxItemAltitude))
+                        //    ObjectsRendered++;
                     }
-                    tile.ClearTemporaryObjects();
 
                     drawPosition.X -= 22f;
                     drawPosition.Y += 22f;

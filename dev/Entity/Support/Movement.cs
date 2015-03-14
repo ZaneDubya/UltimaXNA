@@ -43,11 +43,11 @@ namespace UltimaXNA.Entity
         
         Direction m_playerMobile_NextMove = Direction.Nothing;
         DateTime m_playerMobile_NextMoveTime;
-        Direction m__facing = Direction.Up;
+        Direction m_facing = Direction.Up;
         public Direction Facing
         {
-            get { return m__facing; }
-            set { m__facing = value; }
+            get { return m_facing; }
+            set { m_facing = value; }
         }
 
         public bool IsMoving
@@ -214,7 +214,7 @@ namespace UltimaXNA.Entity
                 return;
             MapTile lastTile = IsometricRenderer.Map.GetMapTile(Position.X, Position.Y, false);
             if (lastTile != null)
-                lastTile.FlushObjectsBySerial(m_entity.Serial);
+                lastTile.RemoveEntity(m_entity.Serial);
         }
 
         private Position3D getNextTile(Position3D current, Position3D goal, out Direction facing)

@@ -123,6 +123,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\AUltimaModel.cs" />
+    <Compile Include="Entity\Ground.cs" />
+    <Compile Include="Entity\StaticItem.cs" />
     <Compile Include="UltimaData\BodyData.cs" />
     <Compile Include="UltimaData\Fonts\ASCIIText.cs" />
     <Compile Include="UltimaData\Fonts\UniCharacter.cs" />
@@ -312,24 +314,24 @@
     <Compile Include="UltimaData\FileManager.cs" />
     <Compile Include="Core\Point.cs" />
     <Compile Include="Entity\Container.cs" />
-    <Compile Include="Entity\ContainerItem.cs" />
+    <Compile Include="Entity\Support\ContainerItem.cs" />
     <Compile Include="Entity\Corpse.cs" />
     <Compile Include="Entity\DynamicObject.cs" />
-    <Compile Include="Entity\BaseEntity.cs" />
+    <Compile Include="Entity\AEntity.cs" />
     <Compile Include="UltimaWorld\Model\EntityManager.cs" />
-    <Compile Include="Entity\ContainerContents.cs" />
-    <Compile Include="Entity\EntityPosition3d.cs" />
+    <Compile Include="Entity\Support\ContainerContents.cs" />
+    <Compile Include="Entity\Support\EntityPosition3d.cs" />
     <Compile Include="Entity\Item.cs" />
     <Compile Include="Entity\Mobile.cs" />
-    <Compile Include="Entity\MobileAnimation.cs" />
-    <Compile Include="Entity\MobileEquipment.cs" />
-    <Compile Include="Entity\Movement.cs" />
-    <Compile Include="Entity\MovementCheck.cs" />
+    <Compile Include="Entity\Support\MobileAnimation.cs" />
+    <Compile Include="Entity\Support\MobileEquipment.cs" />
+    <Compile Include="Entity\Support\Movement.cs" />
+    <Compile Include="Entity\Support\MovementCheck.cs" />
     <Compile Include="Entity\Multi.cs" />
-    <Compile Include="Entity\Overhead.cs" />
+    <Compile Include="Entity\Support\Overhead.cs" />
     <Compile Include="Entity\PlayerMobile.cs" />
-    <Compile Include="Entity\PropertyList.cs" />
-    <Compile Include="Entity\Shared.cs" />
+    <Compile Include="Entity\Support\PropertyList.cs" />
+    <Compile Include="Entity\Support\Shared.cs" />
     <Compile Include="UltimaLogin\Scenes\CharacterListScene.cs" />
     <Compile Include="UltimaLogin\Scenes\CreateCharacterScene.cs" />
     <Compile Include="UltimaLogin\Scenes\LoggingInScene.cs" />
@@ -410,7 +412,7 @@
     <Compile Include="UltimaLogin\Scenes\AScene.cs" />
     <Compile Include="UltimaLogin\Scenes\SceneManager.cs" />
     <Compile Include="UltimaLogin\Scenes\LoginScene.cs" />
-    <Compile Include="Entity\Serial.cs" />
+    <Compile Include="Entity\Support\Serial.cs" />
     <Compile Include="UltimaData\_Enums.cs" />
     <Compile Include="UltimaWorld\View\ViewObjects\MapObjectCorpse.cs" />
     <Compile Include="UltimaWorld\View\ViewObjects\MapObjectItem.cs" />
@@ -421,7 +423,7 @@
     <Compile Include="UltimaWorld\Controller\PickTypes.cs" />
     <Compile Include="Core\Rendering\SpriteBatch3D.cs" />
     <Compile Include="UltimaWorld\View\ViewObjects\MapObjectText.cs" />
-    <Compile Include="UltimaWorld\View\ViewObjects\MapObject.cs" />
+    <Compile Include="UltimaWorld\View\ViewObjects\AMapObject.cs" />
     <Compile Include="UltimaWorld\View\ViewObjects\MapObjectStatic.cs" />
     <Compile Include="Core\Rendering\VertexPositionNormalTextureHue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -484,6 +486,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Core\Network\Packets\Both\" />
+    <Folder Include="Entity\EntityViews\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ixl\InterXLib.csproj">

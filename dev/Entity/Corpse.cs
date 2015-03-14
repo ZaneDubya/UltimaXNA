@@ -25,6 +25,13 @@ namespace UltimaXNA.Entity
         private float m_corpseFrame = 0.999f;
         private int m_corpseBody { get { return Amount; } }
 
+        private Direction m_Facing = Direction.Nothing;
+        public Direction Facing
+        {
+            get { return m_Facing & Direction.FacingMask; }
+            set { m_Facing = value; HasBeenDrawn = false; }
+        }
+
         public Corpse(Serial serial)
             : base(serial)
         {
@@ -42,9 +49,9 @@ namespace UltimaXNA.Entity
 
         internal override void Draw(MapTile tile, Position3D position)
         {
-            m_movement.ClearImmediate();
-            tile.AddMapObject(new MapObjectCorpse(position, DrawFacing, this, Hue, m_corpseBody, m_corpseFrame));
-            drawOverheads(tile, new Position3D(m_movement.Position.Point_V3));
+            // m_Movement.ClearImmediate();
+            tile.AddMapObject(new MapObjectCorpse(position, MirrorFacingForDraw(Facing), this, Hue, m_corpseBody, m_corpseFrame));
+            // drawOverheads(tile, new Position3D(m_Movement.Position.Point_V3));
         }
 
         public void LoadCorpseClothing(List<CorpseClothingPacket.CorpseItem> items)

@@ -19,12 +19,12 @@ namespace UltimaXNA.Entity
     public class Item : BaseEntity
     {
         public BaseEntity Parent = null;
-        public override Position3D WorldPosition
+        public override Position3D Position
         {
             get
             {
                 if (Parent != null)
-                    return Parent.WorldPosition;
+                    return Parent.Position;
                 else
                     return Position;
             }
@@ -123,7 +123,7 @@ namespace UltimaXNA.Entity
 
 		public bool AtWorldPoint(int x, int y)
 		{
-            if (m_movement.Position.X == x && m_movement.Position.Y == y)
+            if (Position.X == x && Position.Y == y)
 				return true;
 			else
 				return false;
@@ -163,7 +163,7 @@ namespace UltimaXNA.Entity
 			if (Ignored)
 				return;
 
-            tile.AddMapObject(new MapObjectItem(DisplayItemID, position, DrawFacing, this, Hue));
+            tile.AddMapObject(new MapObjectItem(DisplayItemID, position, 0, this, Hue));
             drawOverheads(tile, new Position3D(position.Point_V3));
 		}
 

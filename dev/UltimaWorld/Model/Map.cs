@@ -149,10 +149,8 @@ namespace UltimaXNA.UltimaWorld
                 int iTileID = groundData[index++] + (groundData[index++] << 8);
                 int iTileZ = (sbyte)groundData[index++];
 
-                MapObjectGround ground =
-                    new MapObjectGround(iTileID, new Position3D(x + i % 8, y + (i >> 3), iTileZ));
-                MapTile tile = new MapTile(ground.Position.X, ground.Position.Y);
-                tile.AddMapObject(ground);
+                Ground ground = new Ground(iTileID, x + i % 8, y + (i >> 3), iTileZ);
+                MapTile tile = new MapTile(ground);
                 m_tiles[indexes[i]] = tile;
             }
 
@@ -167,12 +165,6 @@ namespace UltimaXNA.UltimaWorld
                 index += 2; // unknown 2 byte data, not used.
                 MapTile tile = m_tiles[indexes[iTileIndex]];
                 tile.AddMapObject(new MapObjectStatic(iTileID, i, new Position3D(tile.X, tile.Y, iTileZ)));
-            }
-
-            // now update this batch of tiles - sets their normals and surroundings as necessary.
-            for (int i = 0; i < 64; i++)
-            {
-                m_tiles[indexes[i]].GroundTile.UpdateSurroundingsIfNecessary(this);
             }
         }
 
@@ -207,7 +199,7 @@ namespace UltimaXNA.UltimaWorld
         {
             MapTile t = GetMapTile(x, y, false);
             if (t != null)
-                return t.GroundTile.Z;
+                return t.Ground.Z;
             else
             {
                 int tileID, alt;

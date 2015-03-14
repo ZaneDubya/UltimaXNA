@@ -17,19 +17,13 @@ using Microsoft.Xna.Framework;
 
 namespace UltimaXNA.UltimaWorld.View
 {
-    sealed class MapObjectComparer : IComparer<AMapObject>
+    sealed class MapObjectComparer : IComparer<BaseEntity>
     {
         public static readonly MapObjectComparer Comparer = new MapObjectComparer();
 
-        public int Compare(AMapObject x, AMapObject y)
+        public int Compare(BaseEntity x, BaseEntity y)
         {
-            int result = (x.SortZ + x.SortThreshold) - (y.SortZ + y.SortThreshold);
-
-            if (result == 0)
-                result = x.SortThreshold - y.SortThreshold;
-
-            if (result == 0)
-                result = x.SortTiebreaker - y.SortTiebreaker;
+            int result = InternalGetSortZ(x) - InternalGetSortZ(y);
 
             if (result == 0)
                 result = typeSortValue(x) - typeSortValue(y);
@@ -37,21 +31,39 @@ namespace UltimaXNA.UltimaWorld.View
             return result;
         }
 
-        private int typeSortValue(AMapObject mapobject)
+        private int InternalGetSortZ(BaseEntity entity)
+        {
+            int sort = entity.Z;
+            if (entity is Ground)
+                sort--;
+            else if (entity is StaticItem)
+            {
+                UltimaData.ItemData itemdata = ((StaticItem)entity).ItemData;
+                if (!itemdata.IsBackground)
+                    sort++;
+                if (!(itemdata.Height == 0))
+                    sort++;
+                if (itemdata.IsSurface)
+                    sort--;
+            }
+            return entity.Z;
+        }
+
+        private int typeSortValue(BaseEntity mapobject)
         {
             Type type = mapobject.GetType();
-            if (type == typeof(MapObjectGround))
+            if (type == typeof(Ground))
                 return 0;
-            else if (type == typeof(MapObjectStatic))
+            else if (type == typeof(StaticItem))
                 return 1;
-            else if (type == typeof(MapObjectItem))
+            else if (type == typeof(Item))
                 return 2;
-            else if (type == typeof(MapObjectMobile))
+            else if (type == typeof(Mobile))
                 return 3;
-            else if (type == typeof(MapObjectText))
-                return 4;
-            else if (type == typeof(MapObjectDynamic))
-                return 5;
+            //else if (type == typeof(MapObjectText))
+            //    return 4;
+            //else if (type == typeof(MapObjectDynamic))
+            //    return 5;
             return -100;
         }
     }

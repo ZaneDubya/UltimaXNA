@@ -24,10 +24,7 @@ namespace UltimaXNA.UltimaWorld.View
         private bool m_noDraw;
         private Vector3[] m_normals;
 
-        public bool Ignored
-        {
-            get { return (ItemID == 2 || ItemID == 0x1DB || (ItemID >= 0x1AE && ItemID <= 0x1B5)); }
-        }
+
 
         public MapObjectGround(int tileID, Position3D position)
             : base(position)
@@ -103,11 +100,6 @@ namespace UltimaXNA.UltimaWorld.View
                 }
 
             return true;
-        }
-
-        public void FlushSurroundings()
-        {
-            m_mustUpdateSurroundings = true;
         }
 
         public void UpdateSurroundingsIfNecessary(Map map)

@@ -382,9 +382,9 @@ namespace UltimaXNA.UltimaWorld.Model
                 {
                     // Because we are moving the item from a parent entity into the world, the client will now be checking to see if it is out of range.
                     // To make sure it is 'in range', we set the item's world position to the world postion of the entity it was removed from.
-                    item.X = item.Parent.WorldPosition.X;
-                    item.Y = item.Parent.WorldPosition.Y;
-                    item.Z = item.Parent.WorldPosition.Z;
+                    item.X = item.Parent.Position.X;
+                    item.Y = item.Parent.Position.Y;
+                    item.Z = item.Parent.Position.Z;
 
                     // remove the item from the containing entity.
                     if (item.Parent is Mobile)

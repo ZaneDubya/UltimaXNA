@@ -79,7 +79,7 @@ namespace UltimaXNA.UltimaWorld
                 if (!entity.Value.IsDisposed)
                     entity.Value.Update(frameMS);
                 // Dispose the entity if it is out of range
-                if (!Utility.InRange(entity.Value.WorldPosition, player.Position, UltimaVars.EngineVars.UpdateRange))
+                if (!Utility.InRange(entity.Value.Position, player.Position, UltimaVars.EngineVars.UpdateRange))
                     entity.Value.Dispose();
                 if (entity.Value.IsDisposed)
                     m_SerialsToRemove.Add(entity.Key);

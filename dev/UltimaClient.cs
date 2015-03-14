@@ -974,7 +974,6 @@ namespace UltimaXNA
                 item.X = p.X;
                 item.Y = p.Y;
                 item.Z = p.Z;
-                item.Facing = (Direction)p.Direction;
             }
             else
             {

@@ -19,6 +19,29 @@ namespace UltimaXNA.Entity
 {
     public class Mobile : BaseEntity
     {
+        // ============================================================
+        // Movement and Facing
+        // ============================================================
+
+        protected Movement m_movement;
+
+        public override Position3D Position
+        {
+            get
+            {
+                return m_movement.Position;
+            }
+        }
+
+        public Direction Facing
+        {
+            get { return m_movement.Facing & Direction.FacingMask; }
+            set { m_movement.Facing = value; HasBeenDrawn = false; }
+        }
+
+
+
+
         public string Name = string.Empty;
         public int Strength, Dexterity, Intelligence, StatCap, Luck, Gold;
         public CurrentMaxValue Health, Stamina, Mana;
@@ -153,7 +176,7 @@ namespace UltimaXNA.Entity
 		{
 			get
 			{
-                int direction = DrawFacing;
+                int direction = MirrorFacingForDraw(Facing);
 				switch (direction)
 				{
 					case 0x00: return m_DrawLayerOrderNorth;
@@ -176,12 +199,31 @@ namespace UltimaXNA.Entity
         {
             m_equipment = new MobileEquipment(this);
             m_animation = new MobileAnimation(this);
+            m_movement = new Movement(this);
             m_movement.RequiresUpdate = true;
         }
 
         public override void Update(double frameMS)
         {
             m_animation.Update(frameMS);
+
+            if (!m_movement.Position.IsNullPosition)
+            {
+                m_movement.Update(frameMS);
+
+                if (IsometricRenderer.Map == null)
+                    return;
+
+                MapTile t = IsometricRenderer.Map.GetMapTile(m_movement.Position.X, m_movement.Position.Y, false);
+                if (t != null)
+                {
+                    this.Draw(t, m_movement.Position);
+                    HasBeenDrawn = true;
+                }
+                else
+                    HasBeenDrawn = false;
+            }
+
             base.Update(frameMS);
         }
 
@@ -200,7 +242,7 @@ namespace UltimaXNA.Entity
                     m_animation.Animate(MobileAction.Stand);
             }
 
-            MapObjectMobile mobtile = new MapObjectMobile(position, DrawFacing, m_animation.ActionIndex, m_animation.AnimationFrame, this);
+            MapObjectMobile mobtile = new MapObjectMobile(position, MirrorFacingForDraw(Facing), m_animation.ActionIndex, m_animation.AnimationFrame, this);
             tile.AddMapObject(mobtile);
 
             int[] drawLayers = m_DrawLayerOrder;
@@ -229,6 +271,7 @@ namespace UltimaXNA.Entity
         public override void Dispose()
         {
             base.Dispose();
+            m_movement.ClearImmediate();
             m_equipment.ClearEquipment();
             tickUpdateTicker();
         }
