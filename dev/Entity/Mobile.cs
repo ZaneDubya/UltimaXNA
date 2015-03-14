@@ -25,14 +25,6 @@ namespace UltimaXNA.Entity
 
         protected Movement m_movement;
 
-        public override Position3D Position
-        {
-            get
-            {
-                return m_movement.Position;
-            }
-        }
-
         public Direction Facing
         {
             get { return m_movement.Facing & Direction.FacingMask; }

@@ -80,7 +80,18 @@ namespace UltimaXNA.UltimaVars
         public static bool MouseEnabled = true;
 
         static int m_map = -1;
-        public static int Map { get { return m_map; } set { m_map = value; } }
+        public static int Map
+        {
+            get { return m_map; } 
+            set
+            {
+                if (m_map != value)
+                {
+                    m_map = value;
+                    UltimaWorld.View.IsometricRenderer.Map = new Map(m_map);
+                }
+            }
+        }
 
         static int m_mapCount = -1;
         public static int MapCount { get { return m_mapCount; } set { m_mapCount = value; } }

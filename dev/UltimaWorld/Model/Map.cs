@@ -40,7 +40,7 @@ namespace UltimaXNA.UltimaWorld
         public Map(int index)
         {
             m_index = index;
-            m_mustResetMap = true;
+            resetMap();
         }
 
         private void resetMap()

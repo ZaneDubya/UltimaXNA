@@ -26,7 +26,7 @@ namespace UltimaXNA.Entity
                 if (Parent != null)
                     return Parent.Position;
                 else
-                    return Position;
+                    return base.Position;
             }
         }
         private BaseEntity m_lastParent;
