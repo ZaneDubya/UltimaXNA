@@ -32,8 +32,6 @@ namespace UltimaXNA.UltimaWorld
             }
         }
 
-        private List<BaseEntity> m_Entities;
-
         public int X
         {
             get { return m_Ground.X; }
@@ -42,6 +40,19 @@ namespace UltimaXNA.UltimaWorld
         public int Y
         {
             get { return m_Ground.Y; }
+        }
+
+        private List<BaseEntity> m_Entities;
+
+        public void OnEnter(BaseEntity entity)
+        {
+            m_Entities.Add(entity);
+            m_NeedsSorting = true;
+        }
+
+        public void OnExit(BaseEntity entity)
+        {
+            m_Entities.Remove(entity);
         }
 
         public MapTile(Ground ground)

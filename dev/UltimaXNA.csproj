@@ -317,7 +317,7 @@
     <Compile Include="Entity\Support\ContainerItem.cs" />
     <Compile Include="Entity\Corpse.cs" />
     <Compile Include="Entity\DynamicObject.cs" />
-    <Compile Include="Entity\AEntity.cs" />
+    <Compile Include="Entity\BaseEntity.cs" />
     <Compile Include="UltimaWorld\Model\EntityManager.cs" />
     <Compile Include="Entity\Support\ContainerContents.cs" />
     <Compile Include="Entity\Support\EntityPosition3d.cs" />
@@ -423,7 +423,7 @@
     <Compile Include="UltimaWorld\Controller\PickTypes.cs" />
     <Compile Include="Core\Rendering\SpriteBatch3D.cs" />
     <Compile Include="UltimaWorld\View\ViewObjects\MapObjectText.cs" />
-    <Compile Include="UltimaWorld\View\ViewObjects\AMapObject.cs" />
+    <Compile Include="UltimaWorld\View\ViewObjects\MapObject.cs" />
     <Compile Include="UltimaWorld\View\ViewObjects\MapObjectStatic.cs" />
     <Compile Include="Core\Rendering\VertexPositionNormalTextureHue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

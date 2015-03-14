@@ -30,7 +30,7 @@ namespace UltimaXNA.Entity
         private const int PersonHeight = 16;
         private const int StepHeight = 2;
 
-        public static bool CheckMovement(Mobile m, Map map, Vector3 loc, Direction d, out int newZ)
+        public static bool CheckMovement(Mobile m, Map map, Position3D loc, Direction d, out int newZ)
         {
             if (map == null)
             {
@@ -422,9 +422,9 @@ namespace UltimaXNA.Entity
             return true;
         }
 
-        public static Vector3 OffsetTile(Vector3 currentTile, Direction facing)
+        public static Point OffsetTile(Position3D currentTile, Direction facing)
         {
-            Vector3 nextTile = currentTile;
+            Point nextTile = currentTile.Tile;
 
             switch (facing & Direction.FacingMask)
             {
@@ -456,7 +456,7 @@ namespace UltimaXNA.Entity
             }
         }
 
-        private static void getStartZ(BaseEntity m, Map map, Vector3 loc, List<Item> itemList, out int zLow, out int zTop)
+        private static void getStartZ(BaseEntity m, Map map, Position3D loc, List<Item> itemList, out int zLow, out int zTop)
         {
             int xCheck = (int)loc.X, yCheck = (int)loc.Y;
 

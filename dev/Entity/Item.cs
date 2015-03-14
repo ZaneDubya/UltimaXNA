@@ -164,7 +164,7 @@ namespace UltimaXNA.Entity
 				return;
 
             tile.AddMapObject(new MapObjectItem(DisplayItemID, position, 0, this, Hue));
-            drawOverheads(tile, new Position3D(position.Point_V3));
+            // drawOverheads(tile, new Position3D(position.Point_V3));
 		}
 
 		public override void Dispose()

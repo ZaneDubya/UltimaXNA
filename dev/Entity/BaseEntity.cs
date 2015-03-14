@@ -33,11 +33,37 @@ namespace UltimaXNA.Entity
         // Position
         // ============================================================
 
+        private MapTile m_Tile;
+        public MapTile Tile
+        {
+            get { return m_Tile; }
+            set
+            {
+                if (m_Tile != null)
+                    m_Tile.OnExit(this);
+                m_Tile = value;
+                if (m_Tile != null)
+                    m_Tile.OnEnter(this);
+                else
+                    Dispose();
+            }
+        }
+
+        private void OnTileChanged(int x, int y)
+        {
+            Tile = IsometricRenderer.Map.GetMapTile(x, y, false);
+        }
+
         public int X { get { return Position.X; } set { Position.X = value; HasBeenDrawn = false; } }
         public int Y { get { return Position.Y; } set { Position.Y = value; HasBeenDrawn = false; } }
-        public int Z { get { return Position.Z; } set { Position.Z = value; HasBeenDrawn = false; } }
 
-        private Position3D m_Position = new Position3D();
+        public int Z
+        {
+            get { return Position.Z; }
+            set { Position.Z = value; HasBeenDrawn = false; }
+        }
+
+        private Position3D m_Position;
         public virtual Position3D Position { get { return m_Position; } }
 
         // ============================================================
@@ -47,6 +73,7 @@ namespace UltimaXNA.Entity
         public BaseEntity(Serial serial)
         {
             Serial = serial;
+            m_Position = new Position3D(OnTileChanged);
         }
 
         public virtual void Update(double frameMS)

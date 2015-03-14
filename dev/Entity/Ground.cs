@@ -27,10 +27,7 @@ namespace UltimaXNA.Entity
         public Ground(int tileID, int x, int y, int z)
             : base(Serial.Null)
         {
-            X = x;
-            Y = y;
-            Z = z;
-
+            Position.Set(x, y, z);
             m_LandDataID = tileID;
             LandData = UltimaData.TileData.LandData[m_LandDataID & 0x3FFF];
         }

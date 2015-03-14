@@ -121,9 +121,7 @@ namespace UltimaXNA.Entity
             m_effectType = packet.EffectType;
             m_isHued = false;
             m_hue = 0;
-            X = packet.SourceX;
-            Y = packet.SourceY;
-            Z = packet.SourceZ;
+            Position.Set(packet.SourceX, packet.SourceY, packet.SourceZ);
             m_targetX = packet.TargetX;
             m_targetY = packet.TargetY;
             m_targetZ = packet.TargetZ;
@@ -145,9 +143,7 @@ namespace UltimaXNA.Entity
             m_effectType = GraphicEffectType.FixedXYZ;
             m_isHued = false;
             m_hue = 0;
-            X = x;
-            Y = y;
-            Z = z;
+            Position.Set(x, y, z);
             ParticleData itemData = ParticleData.RandomExplosion;
             m_baseItemID = itemData.ItemID;
             m_duration = itemData.FrameLength;

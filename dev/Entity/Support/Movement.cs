@@ -39,7 +39,12 @@ namespace UltimaXNA.Entity
         public bool RequiresUpdate = false;
         public bool IsRunning { get { return ((Facing & Direction.Running) == Direction.Running); } }
 
-        Position3D m_currentPosition, m_goalPosition;
+        protected Position3D CurrentPosition
+        {
+            get { return m_entity.Position; }
+        }
+
+        private Position3D m_goalPosition;
         
         Direction m_playerMobile_NextMove = Direction.Nothing;
         DateTime m_playerMobile_NextMoveTime;
@@ -56,8 +61,8 @@ namespace UltimaXNA.Entity
             {
                 if (m_goalPosition == null)
                     return false;
-                if ((m_currentPosition.Tile_V3 == m_goalPosition.Tile_V3) &&
-                    !m_currentPosition.IsOffset)
+                if ((CurrentPosition.Tile == m_goalPosition.Tile) &&
+                    !CurrentPosition.IsOffset)
                     return false;
                 return true;
             }
@@ -65,7 +70,7 @@ namespace UltimaXNA.Entity
 
         float MoveSequence = 0f;
 
-        internal Position3D Position { get { return m_currentPosition; } }
+        internal Position3D Position { get { return CurrentPosition; } }
 
         MoveEvents m_moveEvents;
         BaseEntity m_entity;
@@ -73,7 +78,6 @@ namespace UltimaXNA.Entity
         public Movement(BaseEntity entity)
         {
             m_entity = entity;
-            m_currentPosition = new Position3D();
             m_moveEvents = new MoveEvents();
         }
 
@@ -114,15 +118,16 @@ namespace UltimaXNA.Entity
 
                 // get the next tile and the facing necessary to reach it.
                 Direction facing;
-                Vector3 nextTile = MovementCheck.OffsetTile(m_currentPosition.Tile_V3, nextMove);
-                Position3D nextPosition = getNextTile(m_currentPosition, new Position3D(nextTile), out facing);
+                Point nextTile = MovementCheck.OffsetTile(CurrentPosition, nextMove);
+                int nextZ;
+                Point nextPosition = getNextTile(CurrentPosition, nextTile, out facing, out nextZ);
 
                 // Check facing and about face if necessary.
                 if ((Facing & Direction.FacingMask) != (facing & Direction.FacingMask))
                     m_moveEvents.AddMoveEvent(
-                        m_currentPosition.X,
-                        m_currentPosition.Y,
-                        m_currentPosition.Z,
+                        CurrentPosition.X,
+                        CurrentPosition.Y,
+                        CurrentPosition.Z,
                         (int)(facing & Direction.FacingMask));
 
                 // if nextPosition is false, then we are blocked
@@ -135,14 +140,14 @@ namespace UltimaXNA.Entity
                     else
                         facing &= Direction.FacingMask;
 
-                    if ((m_currentPosition.X != nextPosition.X) ||
-                        (m_currentPosition.Y != nextPosition.Y) ||
-                        (m_currentPosition.Z != nextPosition.Z))
+                    if ((CurrentPosition.X != nextPosition.X) ||
+                        (CurrentPosition.Y != nextPosition.Y) ||
+                        (CurrentPosition.Z != nextZ))
                     {
                         m_moveEvents.AddMoveEvent(
                             nextPosition.X, 
-                            nextPosition.Y, 
-                            nextPosition.Z, 
+                            nextPosition.Y,
+                            nextZ, 
                             (int)(facing));
                     }
                 }
@@ -159,7 +164,8 @@ namespace UltimaXNA.Entity
             m_moveEvents.ResetMoveSequence();
             flushDrawObjects();
             Facing = ((Direction)facing & Direction.FacingMask);
-            m_goalPosition = m_currentPosition = new Position3D(x, y, z);
+            CurrentPosition.Set(x, y, z);
+            m_goalPosition = null;
         }
 
         public void Update(double frameMS)
@@ -172,11 +178,15 @@ namespace UltimaXNA.Entity
 
                 if (MoveSequence < 1f)
                 {
-                    m_currentPosition.Offset_V3 = (m_goalPosition.Tile_V3 - m_currentPosition.Tile_V3) * MoveSequence;
+                    CurrentPosition.Offset = new Vector3(
+                        m_goalPosition.X - CurrentPosition.X, 
+                        m_goalPosition.Y - CurrentPosition.Y,
+                        m_goalPosition.Z - CurrentPosition.Z) * MoveSequence;
                 }
                 else
                 {
-                    m_currentPosition = m_goalPosition;
+                    CurrentPosition.Tile = new Point(m_goalPosition.X, m_goalPosition.Y);
+                    CurrentPosition.Z = m_goalPosition.Z;
                     MoveSequence = 0f;
                 }
             }
@@ -191,7 +201,7 @@ namespace UltimaXNA.Entity
                     Facing = (Direction)moveEvent.Facing;
                     Position3D p = new Position3D(
                         moveEvent.X, moveEvent.Y, moveEvent.Z);
-                    if (p != m_currentPosition)
+                    if (p != CurrentPosition)
                     {
                         m_goalPosition = p;
                         return;
@@ -217,27 +227,25 @@ namespace UltimaXNA.Entity
                 lastTile.RemoveEntity(m_entity.Serial);
         }
 
-        private Position3D getNextTile(Position3D current, Position3D goal, out Direction facing)
+        private Point getNextTile(Position3D current, Point goal, out Direction facing, out int nextZ)
         {
             facing = getNextFacing(current, goal);
-            Vector3 nextTile = MovementCheck.OffsetTile(current.Tile_V3, facing);
+            Point nextTile = MovementCheck.OffsetTile(current, facing);
 
-            int nextAltitude;
-            bool moveIsOkay = MovementCheck.CheckMovement((Mobile)m_entity, IsometricRenderer.Map, current.Tile_V3, facing, out nextAltitude);
-            nextTile.Z = nextAltitude;
+            bool moveIsOkay = MovementCheck.CheckMovement((Mobile)m_entity, IsometricRenderer.Map, current, facing, out nextZ);
             if (moveIsOkay)
             {
                 if (IsRunning)
                     facing |= Direction.Running;
-                return new Position3D(nextTile);
+                return nextTile;
             }
             else
             {
-                return null;
+                return Position3D.NullTile;
             }
         }
 
-        private Direction getNextFacing(Position3D current, Position3D goal)
+        private Direction getNextFacing(Position3D current, Point goal)
         {
             Direction facing;
 

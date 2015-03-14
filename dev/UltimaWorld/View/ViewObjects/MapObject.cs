@@ -26,7 +26,7 @@ namespace UltimaXNA.UltimaWorld.View
             set
             {
                 m__position = value;
-                Z = SortZ = (int)m__position.Tile_V3.Z;
+                Z = SortZ = m__position.Z;
             }
         }
 

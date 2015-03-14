@@ -163,8 +163,11 @@ namespace UltimaXNA.UltimaWorld
                 int iTileIndex = staticsData[index++] + (staticsData[index++] * 8);
                 int iTileZ = (sbyte)staticsData[index++];
                 index += 2; // unknown 2 byte data, not used.
-                MapTile tile = m_tiles[indexes[iTileIndex]];
-                tile.AddMapObject(new MapObjectStatic(iTileID, i, new Position3D(tile.X, tile.Y, iTileZ)));
+
+                // add statics directly to the tiles themselves - no need to bother with the entity manager.
+                StaticItem item = new StaticItem(iTileID);
+                item.Z = iTileZ;
+                item.Tile = m_tiles[indexes[iTileIndex]];
             }
         }
 

@@ -39,9 +39,6 @@ namespace UltimaXNA.Entity
             set { m_movement.Facing = value; HasBeenDrawn = false; }
         }
 
-
-
-
         public string Name = string.Empty;
         public int Strength, Dexterity, Intelligence, StatCap, Luck, Gold;
         public CurrentMaxValue Health, Stamina, Mana;
@@ -265,7 +262,7 @@ namespace UltimaXNA.Entity
                     mobtile.AddLayer(m_equipment[drawLayers[i]].AnimationDisplayID, m_equipment[drawLayers[i]].Hue);
                 }
             }
-            drawOverheads(tile, new Position3D(m_movement.Position.Tile_V3));
+            // drawOverheads(tile, new Position3D(m_movement.Position.Tile_V3));
         }
 
         public override void Dispose()
