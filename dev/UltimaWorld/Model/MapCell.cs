@@ -46,12 +46,13 @@ namespace UltimaXNA.UltimaWorld.Model
             for (int i = 0; i < countStatics; i++)
             {
                 int iTileID = staticsData[staticDataIndex++] + (staticsData[staticDataIndex++] << 8);
-                int iTileIndex = staticsData[staticDataIndex++] + (staticsData[staticDataIndex++] * 8);
+                int iX = staticsData[staticDataIndex++];
+                int iY = staticsData[staticDataIndex++];
                 int iTileZ = (sbyte)staticsData[staticDataIndex++];
                 staticDataIndex += 2; // unknown 2 byte data, not used?
 
                 StaticItem item = new StaticItem(iTileID);
-                item.Position.Set(X * 8 + i % 8, Y * 8 + (i / 8), iTileZ);
+                item.Position.Set(X * 8 + iX, Y * 8 + iY, iTileZ);
                 item.Z = iTileZ;
             }
         }
