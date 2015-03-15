@@ -47,30 +47,32 @@ namespace UltimaXNA.Entity.EntityViews
                     m_Animation.Animate(MobileAction.Stand);
             }
 
-            int[] drawLayers = m_DrawLayerOrder;
-            bool hasOuterTorso = Entity.Equipment[(int)EquipLayer.OuterTorso] != null && Entity.Equipment[(int)EquipLayer.OuterTorso].ItemData.AnimID != 0;
-
             InternalSetupLayers();
 
             DrawTexture = m_MobileLayers[0].Frame.Texture;
+
+            
+            int m_mobile_drawCenterX, m_mobile_drawCenterY;
+            int m_draw_X, m_draw_Y;
+
             m_mobile_drawCenterX = m_MobileLayers[0].Frame.Center.X;
             m_mobile_drawCenterY = m_MobileLayers[0].Frame.Center.Y;
             DrawArea = new Rectangle(0, 0, DrawTexture.Width, DrawTexture.Height);
             if (DrawFlip)
             {
-                m_draw_X = m_mobile_drawCenterX - 22 + (int)((Position.X_offset - Position.Y_offset) * 22);
-                m_draw_Y = m_mobile_drawCenterY + (int)((Position.Z_offset + Z) * 4) + m_draw_height - 22 - (int)((Position.X_offset + Position.Y_offset) * 22);
+                m_draw_X = m_mobile_drawCenterX - 22 + (int)((Entity.Position.X_offset - Entity.Position.Y_offset) * 22);
+                m_draw_Y = m_mobile_drawCenterY + (int)((Entity.Position.Z_offset + Entity.Z) * 4) - 22 - (int)((Entity.Position.X_offset + Entity.Position.Y_offset) * 22);
             }
             else
             {
-                m_draw_X = m_mobile_drawCenterX - 22 - (int)((Position.X_offset - Position.Y_offset) * 22);
-                m_draw_Y = m_mobile_drawCenterY + (int)((Position.Z_offset + Z) * 4) + m_draw_height - 22 - (int)((Position.X_offset + Position.Y_offset) * 22);
+                m_draw_X = m_mobile_drawCenterX - 22 - (int)((Entity.Position.X_offset - Entity.Position.Y_offset) * 22);
+                m_draw_Y = m_mobile_drawCenterY + (int)((Entity.Position.Z_offset + Entity.Z) * 4) - 22 - (int)((Entity.Position.X_offset + Entity.Position.Y_offset) * 22);
             }
 
-
-
+            // override hue based on notoriety if targeting? Not currently implemented.
+            Vector2 hue;
             if (UltimaVars.EngineVars.LastTarget != null && UltimaVars.EngineVars.LastTarget == Entity.Serial)
-                HueVector = new Vector2((Entity.NotorietyHue - 1, 1);
+                hue = new Vector2(Entity.NotorietyHue - 1, 1);
 
             for (int i = 0; i < m_LayerCount; i++)
             {
@@ -83,21 +85,26 @@ namespace UltimaXNA.Entity.EntityViews
 
                     Rectangle dest = new Rectangle(
                         (int)x, (int)y,
-                        (!m_draw_flip) ? m_MobileLayers[i].Frame.Texture.Width : -m_MobileLayers[i].Frame.Texture.Width,
+                        (!DrawFlip) ? m_MobileLayers[i].Frame.Texture.Width : -m_MobileLayers[i].Frame.Texture.Width,
                         m_MobileLayers[i].Frame.Texture.Height);
 
-                    sb.DrawSimple(m_MobileLayers[i].Frame.Texture, dest, Utility.GetHueVector(m_MobileLayers[i].Hue));
+                    spriteBatch.DrawSimple(m_MobileLayers[i].Frame.Texture, dest, Utility.GetHueVector(m_MobileLayers[i].Hue));
                 }
             }
 
             return true;
-
-            return base.Draw(spriteBatch, drawPosition, mouseOverList, pickType, maxAlt);
         }
+
+        private int m_LayerCount = 0;
+        private int m_FrameCount = 0;
+        private MobileViewLayer[] m_MobileLayers;
 
         private void InternalSetupLayers()
         {
             ClearLayers();
+
+            int[] drawLayers = m_DrawLayerOrder;
+            bool hasOuterTorso = Entity.Equipment[(int)EquipLayer.OuterTorso] != null && Entity.Equipment[(int)EquipLayer.OuterTorso].ItemData.AnimID != 0;
 
             for (int i = 0; i < drawLayers.Length; i++)
             {
@@ -117,23 +124,6 @@ namespace UltimaXNA.Entity.EntityViews
                 }
             }
         }
-
-        protected override Vector2 HueVector
-        {
-            get
-            {
-                if (m_LayerCount == 1)
-                    return base.HueVector;
-                else
-                    return Utility.GetHueVector(0);
-            }
-        }
-
-        private int m_mobile_drawCenterX, m_mobile_drawCenterY;
-
-        private int m_LayerCount = 0;
-        private int m_FrameCount = 0;
-        private MobileViewLayer[] m_MobileLayers;
 
         public void AddLayer(int bodyID, int hue)
         {
