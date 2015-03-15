@@ -12,9 +12,8 @@
 using System;
 using System.Collections.Generic;
 using UltimaXNA.Entity;
-using Microsoft.Xna.Framework;
-using UltimaXNA.UltimaWorld.View;
 using UltimaXNA.UltimaData;
+using UltimaXNA.UltimaWorld.View;
 #endregion
 
 namespace UltimaXNA.UltimaWorld.Model
@@ -181,7 +180,7 @@ namespace UltimaXNA.UltimaWorld.Model
                 if (m_NeedsSorting)
                 {
                     removeDuplicateObjects();
-                    m_Entities.Sort(MapObjectComparer.Comparer);
+                    m_Entities.Sort(Entity.EntityViews.ViewSorter.Comparer);
                     m_NeedsSorting = false;
                 }
                 return m_Entities;
