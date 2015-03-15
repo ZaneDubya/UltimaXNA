@@ -49,24 +49,22 @@ namespace UltimaXNA.Entity.EntityViews
 
             InternalSetupLayers();
 
-            DrawTexture = m_MobileLayers[0].Frame.Texture;
+            Texture2D texture = m_MobileLayers[0].Frame.Texture;
 
+            int drawCenterX, drawCenterY, drawX, drawY;
+
+            drawCenterX = m_MobileLayers[0].Frame.Center.X;
+            drawCenterY = m_MobileLayers[0].Frame.Center.Y;
             
-            int m_mobile_drawCenterX, m_mobile_drawCenterY;
-            int m_draw_X, m_draw_Y;
-
-            m_mobile_drawCenterX = m_MobileLayers[0].Frame.Center.X;
-            m_mobile_drawCenterY = m_MobileLayers[0].Frame.Center.Y;
-            DrawArea = new Rectangle(0, 0, DrawTexture.Width, DrawTexture.Height);
             if (DrawFlip)
             {
-                m_draw_X = m_mobile_drawCenterX - 22 + (int)((Entity.Position.X_offset - Entity.Position.Y_offset) * 22);
-                m_draw_Y = m_mobile_drawCenterY + (int)((Entity.Position.Z_offset + Entity.Z) * 4) - 22 - (int)((Entity.Position.X_offset + Entity.Position.Y_offset) * 22);
+                drawX = drawCenterX - 22 + (int)((Entity.Position.X_offset - Entity.Position.Y_offset) * 22);
+                drawY = drawCenterY + (int)((Entity.Position.Z_offset + Entity.Z) * 4) - 22 - (int)((Entity.Position.X_offset + Entity.Position.Y_offset) * 22);
             }
             else
             {
-                m_draw_X = m_mobile_drawCenterX - 22 - (int)((Entity.Position.X_offset - Entity.Position.Y_offset) * 22);
-                m_draw_Y = m_mobile_drawCenterY + (int)((Entity.Position.Z_offset + Entity.Z) * 4) - 22 - (int)((Entity.Position.X_offset + Entity.Position.Y_offset) * 22);
+                drawX = drawCenterX - 22 - (int)((Entity.Position.X_offset - Entity.Position.Y_offset) * 22);
+                drawY = drawCenterY + (int)((Entity.Position.Z_offset + Entity.Z) * 4) - 22 - (int)((Entity.Position.X_offset + Entity.Position.Y_offset) * 22);
             }
 
             // override hue based on notoriety if targeting? Not currently implemented.
@@ -78,17 +76,14 @@ namespace UltimaXNA.Entity.EntityViews
             {
                 if (m_MobileLayers[i].Frame != null)
                 {
-                    float x = (!DrawFlip) ?
-                        drawPosition.X + m_mobile_drawCenterX - (m_draw_X + m_MobileLayers[i].Frame.Center.X) :
-                        drawPosition.X + 44 - m_mobile_drawCenterX + (m_draw_X + m_MobileLayers[i].Frame.Center.X);
-                    float y = drawPosition.Y - m_draw_Y - (m_MobileLayers[i].Frame.Texture.Height + m_MobileLayers[i].Frame.Center.Y) + m_mobile_drawCenterY;
+                    float x = -drawCenterX + (drawX + m_MobileLayers[i].Frame.Center.X);
+                    float y = -drawY - (m_MobileLayers[i].Frame.Texture.Height + m_MobileLayers[i].Frame.Center.Y) + drawCenterY;
 
-                    Rectangle dest = new Rectangle(
-                        (int)x, (int)y,
-                        (!DrawFlip) ? m_MobileLayers[i].Frame.Texture.Width : -m_MobileLayers[i].Frame.Texture.Width,
-                        m_MobileLayers[i].Frame.Texture.Height);
+                    DrawTexture = m_MobileLayers[i].Frame.Texture;
+                    DrawArea = new Rectangle((int)x, (int)-y, DrawTexture.Width, DrawTexture.Height);
+                    HueVector = Utility.GetHueVector(m_MobileLayers[i].Hue);
 
-                    spriteBatch.DrawSimple(m_MobileLayers[i].Frame.Texture, dest, Utility.GetHueVector(m_MobileLayers[i].Hue));
+                    base.Draw(spriteBatch, drawPosition, mouseOverList, pickType, maxAlt);
                 }
             }
 

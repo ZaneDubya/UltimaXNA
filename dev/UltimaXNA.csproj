@@ -138,6 +138,7 @@
     <Compile Include="UltimaGUI\Controls\GumpPicBackpack.cs" />
     <Compile Include="UltimaGUI\GUISprite.cs" />
     <Compile Include="UltimaGUI\UltimaCursor.cs" />
+    <Compile Include="UltimaGUI\WorldGumps\CorpseGump.cs" />
     <Compile Include="UltimaInteraction.cs" />
     <Compile Include="UltimaLogin\LoginModel.cs" />
     <Compile Include="UltimaClientStatus.cs" />

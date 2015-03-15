@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
  *   ContainerGump.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@ using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaData;
 using UltimaXNA.UltimaGUI.Controls;
 
-namespace UltimaXNA.UltimaGUI.Gumps
+namespace UltimaXNA.UltimaGUI.WorldGumps
 {
     class ContainerGump : Gump
     {

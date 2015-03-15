@@ -13,7 +13,7 @@ using UltimaXNA.Entity;
 using UltimaXNA.Rendering;
 using UltimaXNA.UltimaGUI.Controls;
 
-namespace UltimaXNA.UltimaGUI.Gumps
+namespace UltimaXNA.UltimaGUI.WorldGumps
 {
     class PaperDollGump: Gump
     {

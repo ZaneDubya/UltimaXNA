@@ -1,9 +1,5 @@
-﻿using System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Entity;
+﻿using Microsoft.Xna.Framework;
 using UltimaXNA.Rendering;
-using UltimaXNA.UltimaWorld.View;
 using UltimaXNA.UltimaWorld;
 
 namespace UltimaXNA.Entity.EntityViews
@@ -35,10 +31,10 @@ namespace UltimaXNA.Entity.EntityViews
                 DrawArea = new Rectangle(DrawTexture.Width / 2 - 22, DrawTexture.Height - 44 + (Entity.Z * 4), DrawTexture.Width, DrawTexture.Height);
                 PickType = PickTypes.PickObjects;
                 DrawFlip = false;
+                HueVector = Utility.GetHueVector(Entity.Hue);
             }
 
             return base.Draw(spriteBatch, drawPosition, mouseOverList, pickType, maxAlt);
         }
-
     }
 }

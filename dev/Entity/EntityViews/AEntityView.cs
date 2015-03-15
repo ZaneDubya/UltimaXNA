@@ -111,6 +111,13 @@ namespace UltimaXNA.Entity.EntityViews
 
             // draw overlap ... !!! ??? with deferred objects, perhaps.
 
+            Pick(mouseOverList, pickType, vertexBuffer);
+
+            return true;
+        }
+
+        protected void Pick(MouseOverList mouseOverList, PickTypes pickType, VertexPositionNormalTextureHue[] vertexBuffer)
+        {
             if ((pickType & PickType) == PickType)
             {
                 if (((!DrawFlip) && mouseOverList.IsMouseInObject(vertexBuffer[0].Position, vertexBuffer[3].Position)) ||
@@ -130,16 +137,8 @@ namespace UltimaXNA.Entity.EntityViews
                     mouseOverList.Add2DItem(item);
                 }
             }
-
-            return true;
         }
 
-        protected virtual Vector2 HueVector
-        {
-            get
-            {
-                return Utility.GetHueVector(Entity.Hue);
-            }
-        }
+        protected Vector2 HueVector = Vector2.Zero;
     }
 }

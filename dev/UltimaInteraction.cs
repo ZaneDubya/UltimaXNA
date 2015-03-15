@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using UltimaXNA.Entity;
 using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaGUI.Controls;
-using UltimaXNA.UltimaGUI.Gumps;
+using UltimaXNA.UltimaGUI.WorldGumps;
 using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.UltimaWorld;
 using UltimaXNA.UltimaWorld.View;
@@ -65,6 +65,20 @@ namespace UltimaXNA
 
             gump = new ContainerGump(entity, ((Container)entity).ItemID);
             UltimaEngine.UserInterface.AddControl(gump, 64, 64);
+            return gump;
+        }
+
+        public static Gump OpenCorpseGump(BaseEntity entity) // used by UltimaClient
+        {
+            Gump gump;
+
+            if ((gump = (Gump)UltimaEngine.UserInterface.GetControl(entity.Serial)) != null)
+            {
+                gump.Dispose();
+            }
+
+            gump = new ContainerGump(entity, 0x2006);
+            UltimaEngine.UserInterface.AddControl(gump, 96, 96);
             return gump;
         }
 

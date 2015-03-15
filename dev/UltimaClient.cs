@@ -322,7 +322,11 @@ namespace UltimaXNA
             else
             {
                 item = EntityManager.GetObject<Container>(p.Serial, false);
-                if (item is Container)
+                if (item is Corpse)
+                {
+                    UltimaInteraction.OpenCorpseGump(item);
+                }
+                else if (item is Container)
                 {
                     UltimaInteraction.OpenContainerGump(item);
                 }
@@ -355,7 +359,7 @@ namespace UltimaXNA
             Corpse c = EntityManager.GetObject<Corpse>(p.CorpseSerial, false);
             c.Facing = u.Facing;
             c.MobileSerial = p.PlayerSerial;
-            c.DeathAnimation();
+            c.PlayDeathAnimation();
         }
 
         private void receive_DeleteObject(IRecvPacket packet)

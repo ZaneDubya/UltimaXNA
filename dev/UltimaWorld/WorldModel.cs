@@ -2,7 +2,7 @@
 using InterXLib.Patterns.MVC;
 using UltimaXNA.Core.Network;
 using UltimaXNA.UltimaGUI;
-using UltimaXNA.UltimaGUI.Gumps;
+using UltimaXNA.UltimaGUI.WorldGumps;
 using UltimaXNA.UltimaWorld.Controller;
 using UltimaXNA.UltimaWorld.View;
 using UltimaXNA.UltimaWorld.Model;
