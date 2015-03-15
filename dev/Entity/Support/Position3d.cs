@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
  *   Position3D.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   Based on code from RunUO: http://www.runuo.com
  *   
  *   This program is free software; you can redistribute it and/or modify

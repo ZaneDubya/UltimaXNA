@@ -323,7 +323,7 @@
     <Compile Include="Entity\BaseEntity.cs" />
     <Compile Include="UltimaWorld\Model\EntityManager.cs" />
     <Compile Include="Entity\Support\ContainerContents.cs" />
-    <Compile Include="Entity\Support\EntityPosition3d.cs" />
+    <Compile Include="Entity\Support\Position3d.cs" />
     <Compile Include="Entity\Item.cs" />
     <Compile Include="Entity\Mobile.cs" />
     <Compile Include="Entity\Support\MobileAnimation.cs" />

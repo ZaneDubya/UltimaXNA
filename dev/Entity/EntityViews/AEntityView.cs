@@ -111,7 +111,7 @@ namespace UltimaXNA.Entity.EntityViews
                 return false;
             }
 
-            // draw overlap...
+            // draw overlap ... !!! ??? with deferred objects, perhaps.
 
             if ((pickType & PickType) == PickType)
             {
