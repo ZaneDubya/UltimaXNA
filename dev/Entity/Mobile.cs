@@ -190,18 +190,10 @@ namespace UltimaXNA.Entity
             if (!m_movement.Position.IsNullPosition)
             {
                 m_movement.Update(frameMS);
-
-                if (EntityManager.Model.Map == null)
-                    return;
-
-                MapTile t = EntityManager.Model.Map.GetMapTile(m_movement.Position.X, m_movement.Position.Y);
-                if (t != null)
-                {
-                    this.Draw(t, m_movement.Position);
-                }
+                ((EntityViews.MobileView)GetView()).Update(frameMS);
             }
 
-            ((EntityViews.MobileView)GetView()).Update(frameMS);
+            
 
             base.Update(frameMS);
         }

@@ -119,20 +119,24 @@ namespace UltimaXNA.Entity
                 // get the next tile and the facing necessary to reach it.
                 Direction facing;
                 Point nextTile = MovementCheck.OffsetTile(CurrentPosition, nextMove);
+
                 int nextZ;
-                Point nextPosition = getNextTile(CurrentPosition, nextTile, out facing, out nextZ);
-
-                // Check facing and about face if necessary.
-                if ((Facing & Direction.FacingMask) != (facing & Direction.FacingMask))
-                    m_moveEvents.AddMoveEvent(
-                        CurrentPosition.X,
-                        CurrentPosition.Y,
-                        CurrentPosition.Z,
-                        (int)(facing & Direction.FacingMask));
-
-                // if nextPosition is false, then we are blocked
-                if (nextPosition != null)
+                Point nextPosition;
+                if (getNextTile(CurrentPosition, nextTile, out facing, out nextPosition, out nextZ))
                 {
+
+                    // Check facing and about face if necessary.
+                    if ((Facing & Direction.FacingMask) != (facing & Direction.FacingMask))
+                    {
+                        m_moveEvents.AddMoveEvent(
+                            CurrentPosition.X,
+                            CurrentPosition.Y,
+                            CurrentPosition.Z,
+                            (int)(facing & Direction.FacingMask));
+                    }
+
+
+
                     // copy the running flag to our local facing if we are running,
                     // zero it out if we are not.
                     if ((nextMove & Direction.Running) != 0)
@@ -145,11 +149,15 @@ namespace UltimaXNA.Entity
                         (CurrentPosition.Z != nextZ))
                     {
                         m_moveEvents.AddMoveEvent(
-                            nextPosition.X, 
+                            nextPosition.X,
                             nextPosition.Y,
-                            nextZ, 
+                            nextZ,
                             (int)(facing));
                     }
+                }
+                else
+                {
+                    // blocked
                 }
             }
         }
@@ -210,21 +218,21 @@ namespace UltimaXNA.Entity
             }
         }
 
-        private Point getNextTile(Position3D current, Point goal, out Direction facing, out int nextZ)
+        private bool getNextTile(Position3D current, Point goal, out Direction facing, out Point nextPosition, out int nextZ)
         {
             facing = getNextFacing(current, goal);
-            Point nextTile = MovementCheck.OffsetTile(current, facing);
+            nextPosition = MovementCheck.OffsetTile(current, facing);
 
             bool moveIsOkay = MovementCheck.CheckMovement((Mobile)m_entity, EntityManager.Model.Map, current, facing, out nextZ);
             if (moveIsOkay)
             {
                 if (IsRunning)
                     facing |= Direction.Running;
-                return nextTile;
+                return true;
             }
             else
             {
-                return Position3D.NullTile;
+                return false;
             }
         }
 
