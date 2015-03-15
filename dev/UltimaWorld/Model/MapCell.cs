@@ -53,7 +53,6 @@ namespace UltimaXNA.UltimaWorld.Model
 
                 StaticItem item = new StaticItem(iTileID);
                 item.Position.Set(X * 8 + iX, Y * 8 + iY, iTileZ);
-                item.Z = iTileZ;
             }
         }
     }

@@ -182,8 +182,7 @@ namespace UltimaXNA.UltimaWorld.View
                 if (tile != null)
                 {
                     deferred = new MapObjectDeferred(m_draw_texture, this);
-                    deferred.Position.X = tileX;
-                    deferred.Position.Y = tileY;
+                    deferred.Position.Set(tileX, tileY, Position.Z);
                     verts = deferred.Vertices;
 
                     if (m_draw_flip)
@@ -258,8 +257,7 @@ namespace UltimaXNA.UltimaWorld.View
                     extendY = 44;
 
                 deferred = new MapObjectDeferred(m_draw_texture, this);
-                deferred.Position.X = tileX;
-                deferred.Position.Y = tileY;
+                deferred.Position.Set(tileX, tileY, Position.Z);
                 verts = deferred.Vertices;
 
                 if (m_draw_flip)

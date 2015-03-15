@@ -158,8 +158,7 @@ namespace UltimaXNA.Entity
 
         public void RestoreLastParent()
         {
-            this.X = m_lastParent_X;
-            this.Y = m_lastParent_Y;
+            this.Position.Set(m_lastParent_X, m_lastParent_Y, 0);
             ((Container)m_lastParent).AddItem(this);
         }
     }

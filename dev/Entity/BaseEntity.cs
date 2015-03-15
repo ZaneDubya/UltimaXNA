@@ -63,13 +63,12 @@ namespace UltimaXNA.Entity
             Tile = EntityManager.Model.Map.GetMapTile(x, y);
         }
 
-        public int X { get { return Position.X; } set { Position.X = value; } }
-        public int Y { get { return Position.Y; } set { Position.Y = value; } }
+        public int X { get { return Position.X; } }
+        public int Y { get { return Position.Y; } }
 
         public int Z
         {
             get { return Position.Z; }
-            set { Position.Z = value; }
         }
 
         private Position3D m_Position;

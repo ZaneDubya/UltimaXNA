@@ -232,8 +232,7 @@ namespace UltimaXNA
             {
                 // Add the item...
                 Item iObject = add_Item(i.Serial, i.ItemID, i.Hue, i.ContainerSerial, i.Amount);
-                iObject.X = i.X;
-                iObject.Y = i.Y;
+                iObject.Position.Set(i.X, i.Y, 0);
                 // ... and add it the container contents of the container.
                 Container c = EntityManager.GetObject<Container>(i.ContainerSerial, true);
                 c.AddItem(iObject);
@@ -246,8 +245,7 @@ namespace UltimaXNA
 
             // Add the item...
             Item iObject = add_Item(p.Serial, p.ItemId, p.Hue, p.ContainerSerial, p.Amount);
-            iObject.X = p.X;
-            iObject.Y = p.Y;
+            iObject.Position.Set(p.X, p.Y, 0);
             // ... and add it the container contents of the container.
             Container iContainerObject = EntityManager.GetObject<Container>(p.ContainerSerial, true);
             if (iContainerObject != null)
@@ -946,9 +944,7 @@ namespace UltimaXNA
             if (p.ItemID <= 0x4000)
             {
                 Item item = add_Item(p.Serial, p.ItemID, p.Hue, 0, p.StackAmount);
-                item.X = p.X;
-                item.Y = p.Y;
-                item.Z = p.Z;
+                item.Position.Set(p.X, p.Y, p.Z);
             }
             else
             {
@@ -956,9 +952,7 @@ namespace UltimaXNA
                 int multiID = p.ItemID - 0x4000;
                 Multi multi = EntityManager.GetObject<Multi>(p.Serial, true);
                 multi.ItemID = p.ItemID;
-                multi.X = p.X;
-                multi.Y = p.Y;
-                multi.Z = p.Z;
+                multi.Position.Set(p.X, p.Y, p.Z);
             }
         }
 

@@ -47,37 +47,14 @@ namespace UltimaXNA.Entity
         public int X
         {
             get { return (int)m_tile.X; }
-            set
-            {
-                if (m_tile.X != value)
-                {
-                    m_tile.X = value;
-                    m_OnTileChanged((int)m_tile.X, (int)m_tile.Y);
-                }
-            }
         }
         public int Y
         {
             get { return (int)m_tile.Y; }
-            set
-            {
-                if (m_tile.Y != value)
-                {
-                    m_tile.Y = value;
-                    m_OnTileChanged((int)m_tile.X, (int)m_tile.Y);
-                }
-            }
         }
         public int Z
         {
             get { return (int)m_Z; }
-            set
-            {
-                if (m_Z != value)
-                {
-                    m_Z = value;
-                }
-            }
         }
 
         public float X_offset { get { return m_offset.X % 1.0f; } }

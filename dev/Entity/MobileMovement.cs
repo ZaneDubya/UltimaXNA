@@ -135,8 +135,6 @@ namespace UltimaXNA.Entity
                             (int)(facing & Direction.FacingMask));
                     }
 
-
-
                     // copy the running flag to our local facing if we are running,
                     // zero it out if we are not.
                     if ((nextMove & Direction.Running) != 0)
@@ -191,8 +189,7 @@ namespace UltimaXNA.Entity
                 }
                 else
                 {
-                    CurrentPosition.Tile = new Point(m_goalPosition.X, m_goalPosition.Y);
-                    CurrentPosition.Z = m_goalPosition.Z;
+                    CurrentPosition.Set(m_goalPosition.X, m_goalPosition.Y, m_goalPosition.Z);
                     CurrentPosition.Offset = Vector3.Zero;
                     MoveSequence = 0f;
                 }
