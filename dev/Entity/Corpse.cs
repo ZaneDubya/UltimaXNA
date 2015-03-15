@@ -29,7 +29,7 @@ namespace UltimaXNA.Entity
         public Direction Facing
         {
             get { return m_Facing & Direction.FacingMask; }
-            set { m_Facing = value; HasBeenDrawn = false; }
+            set { m_Facing = value; }
         }
 
         public Corpse(Serial serial)

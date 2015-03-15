@@ -75,7 +75,9 @@ namespace UltimaXNA.Entity
         public override void Update(double frameMS)
         {
             if (m_unloadedTiles.Count > 0)
-                HasBeenDrawn = false;
+            {
+                // what do we do here ???
+            }
 
             base.Update(frameMS);
         }

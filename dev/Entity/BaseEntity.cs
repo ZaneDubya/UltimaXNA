@@ -56,13 +56,13 @@ namespace UltimaXNA.Entity
             Tile = IsometricRenderer.Map.GetMapTile(x, y, false);
         }
 
-        public int X { get { return Position.X; } set { Position.X = value; HasBeenDrawn = false; } }
-        public int Y { get { return Position.Y; } set { Position.Y = value; HasBeenDrawn = false; } }
+        public int X { get { return Position.X; } set { Position.X = value; } }
+        public int Y { get { return Position.Y; } set { Position.Y = value; } }
 
         public int Z
         {
             get { return Position.Z; }
-            set { Position.Z = value; HasBeenDrawn = false; }
+            set { Position.Z = value; }
         }
 
         private Position3D m_Position;
@@ -123,20 +123,6 @@ namespace UltimaXNA.Entity
                 return iFacing + 5;
         }
 
-        protected bool m_drawn = false; // if this is false this object will redraw itself in the tileengine.}
-        protected bool HasBeenDrawn
-        {
-            get { return m_drawn; }
-            set
-            {
-                if ((value == false) && (m_drawn == true))
-                {
-                    flushDrawObjects();
-                }
-                m_drawn = value;
-            }
-        }
-
         internal virtual void Draw(MapTile tile, Position3D position)
         {
 
@@ -149,16 +135,6 @@ namespace UltimaXNA.Entity
             {
                 if (!overhead.Value.IsDisposed)
                     overhead.Value.Draw(tile, position);
-            }
-        }
-
-        void flushDrawObjects()
-        {
-            if (!Position.IsNullPosition)
-            {
-                MapTile lastTile = IsometricRenderer.Map.GetMapTile(Position.X, Position.Y, false);
-                if (lastTile != null)
-                    lastTile.RemoveEntity(Serial);
             }
         }
 

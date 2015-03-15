@@ -28,7 +28,7 @@ namespace UltimaXNA.Entity
         public Direction Facing
         {
             get { return m_movement.Facing & Direction.FacingMask; }
-            set { m_movement.Facing = value; HasBeenDrawn = false; }
+            set { m_movement.Facing = value; }
         }
 
         public string Name = string.Empty;
@@ -78,9 +78,9 @@ namespace UltimaXNA.Entity
                 tickUpdateTicker();
             }
         }
-        public int HairBodyID { get { return (m_equipment[(int)EquipLayer.Hair] == null) ? 0 : m_equipment[(int)EquipLayer.Hair].AnimationDisplayID; } }
+        public int HairBodyID { get { return (m_equipment[(int)EquipLayer.Hair] == null) ? 0 : m_equipment[(int)EquipLayer.Hair].ItemData.AnimID; } }
         public int HairHue { get { return (m_equipment[(int)EquipLayer.Hair] == null) ? 0 : m_equipment[(int)EquipLayer.Hair].Hue; } }
-        public int FacialHairBodyID { get { return (m_equipment[(int)EquipLayer.FacialHair] == null) ? 0 : m_equipment[(int)EquipLayer.FacialHair].AnimationDisplayID; } }
+        public int FacialHairBodyID { get { return (m_equipment[(int)EquipLayer.FacialHair] == null) ? 0 : m_equipment[(int)EquipLayer.FacialHair].ItemData.AnimID; } }
         public int FacialHairHue { get { return (m_equipment[(int)EquipLayer.FacialHair] == null) ? 0 : m_equipment[(int)EquipLayer.FacialHair].Hue; } }
 
         int m_updateTicker = 0;
@@ -207,10 +207,7 @@ namespace UltimaXNA.Entity
                 if (t != null)
                 {
                     this.Draw(t, m_movement.Position);
-                    HasBeenDrawn = true;
                 }
-                else
-                    HasBeenDrawn = false;
             }
 
             base.Update(frameMS);
@@ -235,7 +232,7 @@ namespace UltimaXNA.Entity
             // tile.AddMapObject(mobtile);
 
             int[] drawLayers = m_DrawLayerOrder;
-			bool hasOuterTorso = m_equipment[(int)EquipLayer.OuterTorso] != null && m_equipment[(int)EquipLayer.OuterTorso].AnimationDisplayID != 0;
+            bool hasOuterTorso = m_equipment[(int)EquipLayer.OuterTorso] != null && m_equipment[(int)EquipLayer.OuterTorso].ItemData.AnimID != 0;
 
             for (int i = 0; i < drawLayers.Length; i++)
             {
@@ -249,9 +246,9 @@ namespace UltimaXNA.Entity
                 {
                     mobtile.AddLayer(BodyID, Hue);
                 }
-                else if (m_equipment[drawLayers[i]] != null && m_equipment[drawLayers[i]].AnimationDisplayID != 0)
+                else if (m_equipment[drawLayers[i]] != null && m_equipment[drawLayers[i]].ItemData.AnimID != 0)
                 {
-                    mobtile.AddLayer(m_equipment[drawLayers[i]].AnimationDisplayID, m_equipment[drawLayers[i]].Hue);
+                    mobtile.AddLayer(m_equipment[drawLayers[i]].ItemData.AnimID, m_equipment[drawLayers[i]].Hue);
                 }
             }
             // drawOverheads(tile, new Position3D(m_movement.Position.Tile_V3));

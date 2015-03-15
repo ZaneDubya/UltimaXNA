@@ -368,7 +368,7 @@ namespace UltimaXNA.UltimaWorld.Model
         private void PickUpItem(Item item, int x, int y)
         {
             // make sure we can pick up the item before actually picking it up!
-            if (item.PickUp())
+            if (item.TryPickUp())
             {
                 // let the server know we're picking up the item. If the server says we can't pick it up, it will send us a cancel pick up message.
                 // TEST: what if we can pick something up and drop it in our inventory before the server has a chance to respond?

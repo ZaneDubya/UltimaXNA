@@ -167,24 +167,8 @@ namespace UltimaXNA.Entity
 
         private void addItem(Item item)
         {
-            if (item.Y == 0x7FFF)
-            {
-                if (m_contents[item.X] == null)
-                {
-                    item.SlotIndex = item.X;
-                    m_contents[item.SlotIndex] = item;
-                }
-                else
-                {
-                    item.SlotIndex = m_contents.NextAvailableSlot;
-                    m_contents[item.SlotIndex] = item;
-                }
-            }
-            else
-            {
-                item.SlotIndex = m_contents.NextAvailableSlot;
-                m_contents[item.SlotIndex] = item;
-            }
+            item.ContainerSlotIndex = m_contents.NextAvailableSlot;
+            m_contents[item.ContainerSlotIndex] = item;
         }
 
         public void RemoveItem(Serial serial)
