@@ -327,7 +327,7 @@
     <Compile Include="Entity\Support\Position3d.cs" />
     <Compile Include="Entity\Item.cs" />
     <Compile Include="Entity\Mobile.cs" />
-    <Compile Include="Entity\Support\MobileAnimation.cs" />
+    <Compile Include="Entity\EntityViews\MobileAnimation.cs" />
     <Compile Include="Entity\Support\MobileEquipment.cs" />
     <Compile Include="Entity\Support\Movement.cs" />
     <Compile Include="Entity\Support\MovementCheck.cs" />

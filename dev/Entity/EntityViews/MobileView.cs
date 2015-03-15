@@ -18,16 +18,16 @@ namespace UltimaXNA.Entity.EntityViews
         public MobileView(Mobile mobile)
             : base(mobile)
         {
-            m_animation = new MobileAnimation(mobile);
-            m_layers = new MobileViewLayer[(int)EquipLayer.LastUserValid];
+            m_Animation = new MobileAnimation(mobile);
+            m_MobileLayers = new MobileViewLayer[(int)EquipLayer.LastUserValid];
             PickType = PickTypes.PickObjects;
         }
 
-        public MobileAnimation m_animation;
+        public MobileAnimation m_Animation;
 
         public void Update(double frameMS)
         {
-            m_animation.Update(frameMS);
+            m_Animation.Update(frameMS);
         }
 
         public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, PickTypes pickType, int maxAlt)
@@ -37,19 +37,66 @@ namespace UltimaXNA.Entity.EntityViews
             if (Entity.IsMoving)
             {
                 if (Entity.IsRunning)
-                    m_animation.Animate(MobileAction.Run);
+                    m_Animation.Animate(MobileAction.Run);
                 else
-                    m_animation.Animate(MobileAction.Walk);
+                    m_Animation.Animate(MobileAction.Walk);
             }
             else
             {
-                if (!m_animation.IsAnimating)
-                    m_animation.Animate(MobileAction.Stand);
+                if (!m_Animation.IsAnimating)
+                    m_Animation.Animate(MobileAction.Stand);
             }
 
             int[] drawLayers = m_DrawLayerOrder;
             bool hasOuterTorso = Entity.Equipment[(int)EquipLayer.OuterTorso] != null && Entity.Equipment[(int)EquipLayer.OuterTorso].ItemData.AnimID != 0;
 
+            InternalSetupLayers();
+
+            DrawTexture = m_MobileLayers[0].Frame.Texture;
+            m_mobile_drawCenterX = m_MobileLayers[0].Frame.Center.X;
+            m_mobile_drawCenterY = m_MobileLayers[0].Frame.Center.Y;
+            DrawArea = new Rectangle(0, 0, DrawTexture.Width, DrawTexture.Height);
+            if (DrawFlip)
+            {
+                m_draw_X = m_mobile_drawCenterX - 22 + (int)((Position.X_offset - Position.Y_offset) * 22);
+                m_draw_Y = m_mobile_drawCenterY + (int)((Position.Z_offset + Z) * 4) + m_draw_height - 22 - (int)((Position.X_offset + Position.Y_offset) * 22);
+            }
+            else
+            {
+                m_draw_X = m_mobile_drawCenterX - 22 - (int)((Position.X_offset - Position.Y_offset) * 22);
+                m_draw_Y = m_mobile_drawCenterY + (int)((Position.Z_offset + Z) * 4) + m_draw_height - 22 - (int)((Position.X_offset + Position.Y_offset) * 22);
+            }
+
+
+
+            if (UltimaVars.EngineVars.LastTarget != null && UltimaVars.EngineVars.LastTarget == Entity.Serial)
+                HueVector = new Vector2((Entity.NotorietyHue - 1, 1);
+
+            for (int i = 0; i < m_LayerCount; i++)
+            {
+                if (m_MobileLayers[i].Frame != null)
+                {
+                    float x = (!DrawFlip) ?
+                        drawPosition.X + m_mobile_drawCenterX - (m_draw_X + m_MobileLayers[i].Frame.Center.X) :
+                        drawPosition.X + 44 - m_mobile_drawCenterX + (m_draw_X + m_MobileLayers[i].Frame.Center.X);
+                    float y = drawPosition.Y - m_draw_Y - (m_MobileLayers[i].Frame.Texture.Height + m_MobileLayers[i].Frame.Center.Y) + m_mobile_drawCenterY;
+
+                    Rectangle dest = new Rectangle(
+                        (int)x, (int)y,
+                        (!m_draw_flip) ? m_MobileLayers[i].Frame.Texture.Width : -m_MobileLayers[i].Frame.Texture.Width,
+                        m_MobileLayers[i].Frame.Texture.Height);
+
+                    sb.DrawSimple(m_MobileLayers[i].Frame.Texture, dest, Utility.GetHueVector(m_MobileLayers[i].Hue));
+                }
+            }
+
+            return true;
+
+            return base.Draw(spriteBatch, drawPosition, mouseOverList, pickType, maxAlt);
+        }
+
+        private void InternalSetupLayers()
+        {
             ClearLayers();
 
             for (int i = 0; i < drawLayers.Length; i++)
@@ -69,17 +116,13 @@ namespace UltimaXNA.Entity.EntityViews
                     AddLayer(Entity.Equipment[drawLayers[i]].ItemData.AnimID, Entity.Equipment[drawLayers[i]].Hue);
                 }
             }
-
-            InternalPreRender(spriteBatch);
-
-            return base.Draw(spriteBatch, drawPosition, mouseOverList, pickType, maxAlt);
         }
 
         protected override Vector2 HueVector
         {
             get
             {
-                if (m_layerCount == 1)
+                if (m_LayerCount == 1)
                     return base.HueVector;
                 else
                     return Utility.GetHueVector(0);
@@ -88,87 +131,23 @@ namespace UltimaXNA.Entity.EntityViews
 
         private int m_mobile_drawCenterX, m_mobile_drawCenterY;
 
-        private void InternalPreRender(SpriteBatch3D sb)
-        {
-            if (m_layerCount == 1)
-            {
-                DrawTexture = m_layers[0].Frame.Texture;
-                DrawArea = new Rectangle(0, 0, DrawTexture.Width, DrawTexture.Height);
-                m_mobile_drawCenterX = m_layers[0].Frame.Center.X;
-                m_mobile_drawCenterY = m_layers[0].Frame.Center.Y;
-            }
-            else
-            {
-                long hash = createHashFromLayers();
-                DrawTexture = MapObjectPrerendered.RestorePrerenderedTexture(hash, out m_mobile_drawCenterX, out m_mobile_drawCenterY);
-                if (DrawTexture == null)
-                {
-                    int minX = 0, minY = 0;
-                    int maxX = 0, maxY = 0;
-                    for (int i = 0; i < m_layerCount; i++)
-                    {
-                        if (m_layers[i].Frame != null)
-                        {
-                            int x, y, w, h;
-                            x = m_layers[i].Frame.Center.X;
-                            y = m_layers[i].Frame.Center.Y;
-                            w = m_layers[i].Frame.Texture.Width;
-                            h = m_layers[i].Frame.Texture.Height;
-
-                            if (minX < x)
-                                minX = x;
-                            if (maxX < w - x)
-                                maxX = w - x;
-
-                            if (minY < h + y)
-                                minY = h + y;
-                            if (maxY > y)
-                                maxY = y;
-                        }
-                    }
-
-                    m_mobile_drawCenterX = minX;
-                    m_mobile_drawCenterY = maxY;
-
-                    RenderTarget2D renderTarget = new RenderTarget2D(sb.GraphicsDevice,
-                            minX + maxX, minY - maxY, false, SurfaceFormat.Color, DepthFormat.None);
-
-                    sb.GraphicsDevice.SetRenderTarget(renderTarget);
-                    sb.GraphicsDevice.Clear(Color.Transparent);
-
-                    for (int i = 0; i < m_layerCount; i++)
-                        if (m_layers[i].Frame != null)
-                            sb.DrawSimple(m_layers[i].Frame.Texture,
-                                new Vector3(
-                                    minX - m_layers[i].Frame.Center.X,
-                                    renderTarget.Height - m_layers[i].Frame.Texture.Height + maxY - m_layers[i].Frame.Center.Y,
-                                    0),
-                                    Utility.GetHueVector(m_layers[i].Hue));
-
-                    sb.Flush();
-                    DrawTexture = renderTarget;
-                    MapObjectPrerendered.SavePrerenderedTexture(DrawTexture, hash, m_mobile_drawCenterX, m_mobile_drawCenterY);
-                    sb.GraphicsDevice.SetRenderTarget(null);
-                }
-                DrawArea = new Rectangle(0, 0, DrawTexture.Width, DrawTexture.Height);
-            }
-        }
-
-        private int m_layerCount = 0;
-        private int m_frameCount = 0;
-        private MobileViewLayer[] m_layers;
+        private int m_LayerCount = 0;
+        private int m_FrameCount = 0;
+        private MobileViewLayer[] m_MobileLayers;
 
         public void AddLayer(int bodyID, int hue)
         {
-            m_layers[m_layerCount++] = new MobileViewLayer(
-                bodyID, hue, getFrame(bodyID, hue, MirrorFacingForDraw(Entity.Facing), m_animation.ActionIndex, m_animation.AnimationFrame));
-            m_frameCount = UltimaData.AnimationData.GetAnimationFrameCount(
-                bodyID, m_animation.ActionIndex, MirrorFacingForDraw(Entity.Facing), hue);
+            int facing = MirrorFacingForDraw(Entity.Facing);
+            int animation = m_Animation.ActionIndex;
+            float frame = m_Animation.AnimationFrame;
+
+            m_MobileLayers[m_LayerCount++] = new MobileViewLayer(bodyID, hue, getFrame(bodyID, hue, facing, animation, frame));
+            m_FrameCount = UltimaData.AnimationData.GetAnimationFrameCount(bodyID, animation, facing, hue);
         }
 
         public void ClearLayers()
         {
-            m_layerCount = 0;
+            m_LayerCount = 0;
         }
 
         private UltimaData.AnimationFrame getFrame(int bodyID, int hue, int facing, int action, float frame)
@@ -185,24 +164,6 @@ namespace UltimaXNA.Entity.EntityViews
         private int frameFromSequence(float frame, int maxFrames)
         {
             return (int)(frame * (float)maxFrames);
-        }
-
-        private long createHashFromLayers()
-        {
-            int[] hashArray = new int[m_layerCount * 2 + 3];
-            hashArray[0] = m_animation.ActionIndex;
-            hashArray[1] = MirrorFacingForDraw(Entity.Facing);
-            hashArray[2] = frameFromSequence(m_animation.AnimationFrame, m_frameCount);
-            for (int i = 0; i < m_layerCount; i++)
-            {
-                hashArray[3 + i * 2] = m_layers[i].BodyID;
-                hashArray[4 + i * 2] = m_layers[i].Hue;
-            }
-
-            long hash = 0;
-            for (int i = 0; i < hashArray.Length; i++)
-                hash = unchecked(hash * 31 + hashArray[i]);
-            return hash;
         }
 
         private int[] m_DrawLayerOrder

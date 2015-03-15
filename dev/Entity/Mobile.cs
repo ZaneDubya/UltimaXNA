@@ -59,7 +59,7 @@ namespace UltimaXNA.Entity
                 {
                     m_isWarMode = value;
                     // force an update of the animation object. Is this still necessary?
-                    ((EntityViews.MobileView)GetView()).m_animation.UpdateAnimation();
+                    ((EntityViews.MobileView)GetView()).m_Animation.UpdateAnimation();
                 }
             }
         }
@@ -258,7 +258,7 @@ namespace UltimaXNA.Entity
 
         public void Animate(int action, int frameCount, int repeatCount, bool reverse, bool repeat, int delay)
         {
-            ((EntityViews.MobileView)GetView()).m_animation.Animate(action, frameCount, repeatCount, reverse, repeat, delay);
+            ((EntityViews.MobileView)GetView()).m_Animation.Animate(action, frameCount, repeatCount, reverse, repeat, delay);
         }
 
         public void Mobile_AddMoveEvent(int x, int y, int z, int facing)
