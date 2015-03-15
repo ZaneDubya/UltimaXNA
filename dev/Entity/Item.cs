@@ -55,11 +55,6 @@ namespace UltimaXNA.Entity
 		}
         public int AnimationDisplayID = 0;
 
-        public int Hue
-        {
-            get; internal set;
-        }
-
         public UltimaData.ItemData ItemData;
 
 		private int m_ItemID = 0;

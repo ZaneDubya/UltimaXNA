@@ -11,6 +11,11 @@ namespace UltimaXNA.Entity
         // !!! Don't forget to update surrounding Z values - code is in UpdateSurroundingsIfNecessary(map)
 
         private int m_LandDataID;
+        public int LandDataID
+        {
+            get { return m_LandDataID; }
+        }
+
         public LandData LandData;
 
         public bool IsIgnored
@@ -30,6 +35,11 @@ namespace UltimaXNA.Entity
             Position.Set(x, y, z);
             m_LandDataID = tileID;
             LandData = UltimaData.TileData.LandData[m_LandDataID & 0x3FFF];
+        }
+
+        protected override EntityViews.AEntityView CreateView()
+        {
+            return new EntityViews.GroundView(this);
         }
     }
 }

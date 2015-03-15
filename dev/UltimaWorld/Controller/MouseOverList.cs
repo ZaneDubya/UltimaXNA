@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
  *   MouseOverList.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -18,7 +17,7 @@ using UltimaXNA.Entity;
 
 namespace UltimaXNA.UltimaWorld
 {
-    class MouseOverList
+    public class MouseOverList
     {
         List<MouseOverItem> m_overList;
 
@@ -184,7 +183,7 @@ namespace UltimaXNA.UltimaWorld
         }
     }
 
-    class MouseOverItem
+    public class MouseOverItem
     {
         public Vector3[] Vertices;
         public Texture2D Texture;

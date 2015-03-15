@@ -123,6 +123,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\AUltimaModel.cs" />
+    <Compile Include="Entity\EntityViews\AEntityView.cs" />
+    <Compile Include="Entity\EntityViews\GroundView.cs" />
     <Compile Include="Entity\Ground.cs" />
     <Compile Include="Entity\StaticItem.cs" />
     <Compile Include="UltimaData\BodyData.cs" />
@@ -486,7 +488,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Core\Network\Packets\Both\" />
-    <Folder Include="Entity\EntityViews\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ixl\InterXLib.csproj">

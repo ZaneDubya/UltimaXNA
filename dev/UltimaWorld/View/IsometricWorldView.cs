@@ -214,8 +214,9 @@ namespace UltimaXNA.UltimaWorld.View
                     mapObjects = tile.Items;
                     for (int i = 0; i < mapObjects.Count; i++)
                     {
-                        //if (mapObjects[i].Draw(m_spriteBatch, drawPosition, overList, PickType, m_maxItemAltitude))
-                        //    ObjectsRendered++;
+                        Entity.EntityViews.AEntityView view = mapObjects[i].GetView();
+                        if (view != null && view.Draw(m_spriteBatch, drawPosition, overList, PickType, m_maxItemAltitude))
+                            ObjectsRendered++;
                     }
 
                     drawPosition.X -= 22f;

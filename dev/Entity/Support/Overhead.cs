@@ -54,17 +54,6 @@ namespace UltimaXNA.Entity
             }
         }
 
-        private int m_hue;
-        public int Hue
-        {
-            get { return m_hue; }
-            set
-            {
-                m_hue = value;
-                m_needsRender = true;
-            }
-        }
-
         private int m_font;
         public int Font
         {
@@ -84,7 +73,7 @@ namespace UltimaXNA.Entity
             m_ownerEntity = ownerEntity;
             m_text = text;
             m_font = font;
-            m_hue = hue;
+            Hue = hue;
             m_msgType = msgType;
             m_needsRender = true;
         }

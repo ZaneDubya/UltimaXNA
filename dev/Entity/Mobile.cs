@@ -99,7 +99,7 @@ namespace UltimaXNA.Entity
         }
 
         private int m_hue;
-        public int Hue
+        public new int Hue
         {
             get {
                 if (IsHidden)

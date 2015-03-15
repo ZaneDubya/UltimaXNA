@@ -29,6 +29,8 @@ namespace UltimaXNA.Entity
 
         public bool IsClientEntity = false;
 
+        public int Hue = 0;
+
         // ============================================================
         // Position
         // ============================================================
@@ -97,6 +99,20 @@ namespace UltimaXNA.Entity
         // ============================================================
         // Draw handling code
         // ============================================================
+
+        private EntityViews.AEntityView m_View = null;
+
+        protected virtual EntityViews.AEntityView CreateView()
+        {
+            return null;
+        }
+
+        public EntityViews.AEntityView GetView()
+        {
+            if (m_View == null)
+                m_View = CreateView();
+            return m_View;
+        }
 
         protected int MirrorFacingForDraw(Direction facing)
         {
