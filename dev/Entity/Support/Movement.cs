@@ -215,7 +215,7 @@ namespace UltimaXNA.Entity
             facing = getNextFacing(current, goal);
             Point nextTile = MovementCheck.OffsetTile(current, facing);
 
-            bool moveIsOkay = MovementCheck.CheckMovement((Mobile)m_entity, IsometricRenderer.Map, current, facing, out nextZ);
+            bool moveIsOkay = MovementCheck.CheckMovement((Mobile)m_entity, EntityManager.Model.Map, current, facing, out nextZ);
             if (moveIsOkay)
             {
                 if (IsRunning)

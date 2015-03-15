@@ -33,7 +33,8 @@ namespace UltimaXNA.Entity
                 if (m_tile != value)
                 {
                     m_tile = value;
-                    m_OnTileChanged(m_tile.X, m_tile.Y);
+                    if (m_tile != NullTile && m_OnTileChanged != null)
+                        m_OnTileChanged(m_tile.X, m_tile.Y);
                 }
             }
         }
@@ -87,19 +88,19 @@ namespace UltimaXNA.Entity
 
         public Position3D(Action<int, int> onTileChanged)
         {
-            m_tile = NullTile;
+            Tile = NullTile;
             m_OnTileChanged = onTileChanged;
         }
 
         public Position3D(int x, int y, int z)
         {
-            m_tile = new Point(x, y);
+            Tile = new Point(x, y);
             m_Z = z;
         }
 
         internal void Set(int x, int y, int z)
         {
-            m_tile = new Point(x, y);
+            Tile = new Point(x, y);
             m_Z = z;
             m_offset = Vector3.Zero;
         }

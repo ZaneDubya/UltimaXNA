@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework;
 using UltimaXNA.Entity;
 using UltimaXNA.Rendering;
 using UltimaXNA.UltimaWorld.View;
+using UltimaXNA.UltimaWorld.Model;
 #endregion
 
 namespace UltimaXNA.UltimaWorld.View
@@ -136,7 +137,7 @@ namespace UltimaXNA.UltimaWorld.View
                 if (sort != SortZ)
                 {
                     SortZ = sort;
-                    map.GetMapTile(Position.X, Position.Y, false).Resort();
+                    map.GetMapTile(Position.X, Position.Y).Resort();
                 }
             }
 

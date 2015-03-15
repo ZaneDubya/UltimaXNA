@@ -17,7 +17,7 @@ using UltimaXNA.UltimaWorld.View;
 using UltimaXNA.UltimaData;
 #endregion
 
-namespace UltimaXNA.UltimaWorld
+namespace UltimaXNA.UltimaWorld.Model
 {
     public class MapTile
     {
@@ -46,6 +46,12 @@ namespace UltimaXNA.UltimaWorld
 
         public void OnEnter(BaseEntity entity)
         {
+            if (entity is Ground)
+            {
+                if (m_Ground != null)
+                    m_Ground.Dispose();
+                m_Ground = (Ground)entity;
+            }
             m_Entities.Add(entity);
             m_NeedsSorting = true;
         }
@@ -55,11 +61,9 @@ namespace UltimaXNA.UltimaWorld
             m_Entities.Remove(entity);
         }
 
-        public MapTile(Ground ground)
+        public MapTile()
         {
-            m_Ground = ground;
             m_Entities = new List<BaseEntity>();
-            m_Entities.Add(m_Ground);
         }
 
         /// <summary>

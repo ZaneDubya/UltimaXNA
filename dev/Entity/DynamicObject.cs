@@ -8,11 +8,10 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaPackets.Server;
-using Microsoft.Xna.Framework;
 using UltimaXNA.UltimaData;
-using UltimaXNA.UltimaWorld.View;
+using UltimaXNA.UltimaPackets.Server;
+using UltimaXNA.UltimaWorld;
+using UltimaXNA.UltimaWorld.Model;
 #endregion
 
 namespace UltimaXNA.Entity

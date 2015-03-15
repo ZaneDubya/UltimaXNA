@@ -350,6 +350,7 @@
     <Compile Include="UltimaGUI\HTML\Parsing\HTMLheuristics.cs" />
     <Compile Include="UltimaGUI\HTML\Parsing\HTMLParser.cs" />
     <Compile Include="UltimaGUI\HTML\Parsing\TagParser.cs" />
+    <Compile Include="UltimaWorld\Model\MapCell.cs" />
     <Compile Include="UltimaWorld\View\IsometricWorldView.cs" />
     <Compile Include="UltimaWorld\Model\MapTile.cs" />
     <Compile Include="Entity\EntityViewsOld\MapObjectComparer.cs" />

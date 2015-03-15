@@ -14,6 +14,7 @@ using UltimaXNA.UltimaData;
 using UltimaXNA.UltimaWorld;
 using UltimaXNA.UltimaWorld.View;
 using Microsoft.Xna.Framework;
+using UltimaXNA.UltimaWorld.Model;
 #endregion
 
 namespace UltimaXNA.Entity
@@ -94,7 +95,7 @@ namespace UltimaXNA.Entity
                 int x = tile.X + p.X - m_components.Center.X;
                 int y = tile.Y + p.Y - m_components.Center.Y;
 
-                MapTile t = IsometricRenderer.Map.GetMapTile(x, y, false);
+                MapTile t = EntityManager.Model.Map.GetMapTile(x, y);
                 if (t != null)
                 {
                     drawnTiles.Add(p);

@@ -22,6 +22,10 @@ namespace UltimaXNA.UltimaWorld
     class EntityManager
     {
         private static WorldModel m_Model;
+        public static WorldModel Model
+        {
+            get { return m_Model; }
+        }
 
         private static Dictionary<int, BaseEntity> m_Entities = new Dictionary<int, BaseEntity>();
         private static List<BaseEntity> m_Entities_Queued = new List<BaseEntity>();
@@ -78,10 +82,7 @@ namespace UltimaXNA.UltimaWorld
                     continue;
                 if (!entity.Value.IsDisposed)
                     entity.Value.Update(frameMS);
-                // Dispose the entity if it is out of range
-                if (!Utility.InRange(entity.Value.Position, player.Position, UltimaVars.EngineVars.UpdateRange))
-                    entity.Value.Dispose();
-                if (entity.Value.IsDisposed)
+                else
                     m_SerialsToRemove.Add(entity.Key);
             }
 

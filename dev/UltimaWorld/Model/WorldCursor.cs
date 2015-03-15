@@ -176,6 +176,12 @@ namespace UltimaXNA.UltimaWorld.Model
 
         protected override void BeforeDraw(SpriteBatchUI spritebatch, Point position)
         {
+            // Hue the cursor if not in warmode and in trammel.
+            if (!UltimaVars.EngineVars.WarMode && (m_Model.MapIndex == 1))
+                CursorHue = 2412;
+            else
+                CursorHue = 0;
+
             if (IsHoldingItem)
             {
                 ItemSpriteArtIndex = HeldItem.DisplayItemID;

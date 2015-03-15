@@ -5,6 +5,7 @@ using UltimaXNA.Entity;
 using UltimaXNA.Rendering;
 using UltimaXNA.UltimaWorld.View;
 using UltimaXNA.UltimaWorld;
+using UltimaXNA.UltimaWorld.Model;
 
 namespace UltimaXNA.Entity.EntityViews
 {
@@ -47,7 +48,7 @@ namespace UltimaXNA.Entity.EntityViews
 
             if (m_MustUpdateSurroundings)
             {
-                updateSurroundingsAndNormals(IsometricRenderer.Map);
+                updateSurroundingsAndNormals(EntityManager.Model.Map);
                 m_MustUpdateSurroundings = false;
             }
 
@@ -140,7 +141,7 @@ namespace UltimaXNA.Entity.EntityViews
                 if (sort != SortZ)
                 {
                     SortZ = sort;
-                    map.GetMapTile(Entity.Position.X, Entity.Position.Y, false).Resort();
+                    map.GetMapTile(Entity.Position.X, Entity.Position.Y).Resort();
                 }
             }
 

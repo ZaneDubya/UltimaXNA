@@ -39,7 +39,7 @@ namespace UltimaXNA
             Register<DamagePacket>(0x0B, "Damage", 0x07, new TypedPacketReceiveHandler(receive_Damage));
             Register<MobileStatusCompactPacket>(0x11, "Mobile Status Compact", -1, new TypedPacketReceiveHandler(receive_StatusInfo));
             Register<WorldItemPacket>(0x1A, "World Item", -1, new TypedPacketReceiveHandler(receive_WorldItem));
-            Register<LoginConfirmPacket>(0x1B, "Login Confirm", 37, new TypedPacketReceiveHandler(receive_PlayerLocaleAndBody));
+            Register<LoginConfirmPacket>(0x1B, "Login Confirm", 37, new TypedPacketReceiveHandler(receive_LoginConfirmPacket));
             Register<AsciiMessagePacket>(0x1C, "Ascii Meessage", -1, new TypedPacketReceiveHandler(receive_AsciiMessage));
             Register<RemoveEntityPacket>(0x1D, "Remove Entity", 5, new TypedPacketReceiveHandler(receive_DeleteObject));
             Register<MobileUpdatePacket>(0x20, "Mobile Update", 19, new TypedPacketReceiveHandler(receive_MobileUpdate));
@@ -418,8 +418,8 @@ namespace UltimaXNA
                 case 0x06: // party system
                     announce_UnhandledPacket(packet, "subcommand " + p.Subcommand);
                     break;
-                case 0x08: // Set cursor color / set map
-                    UltimaVars.EngineVars.Map = p.MapID;
+                case 0x08: // set map
+                    receive_MapIndex(p.MapID);
                     break;
                 case 0x14: // return context menu
                     parseContextMenu(p.ContextMenu);
@@ -486,17 +486,7 @@ namespace UltimaXNA
             announce_UnhandledPacket(packet);
         }
 
-        private void receive_LoginComplete(IRecvPacket packet)
-        {
-            // This packet is just one byte, the opcode.
-            // We want to make sure we have the client object before we load the world.
-            // If we don't, just set the status to login complete, which will then
-            // load the world when we finally receive our client object.
-            if (EntityManager.MySerial != 0)
-                Status = UltimaClientStatus.WorldServer_InWorld;
-            else
-                Status = UltimaClientStatus.WorldServer_LoginComplete;
-        }
+
 
         private void receive_LoginRejection(IRecvPacket packet)
         {
@@ -744,21 +734,6 @@ namespace UltimaXNA
             PersonalLightLevelPacket p = (PersonalLightLevelPacket)packet;
             // Console.WriteLine("PersonalLight: {0}", p.LightLevel);
             IsometricRenderer.PersonalLightning = p.LightLevel;
-        }
-
-        private void receive_PlayerLocaleAndBody(IRecvPacket packet)
-        {
-            LoginConfirmPacket p = (LoginConfirmPacket)packet;
-
-            // When loading the player object, we must load the serial before the object.
-            EntityManager.MySerial = p.Serial;
-            PlayerMobile iPlayer = EntityManager.GetObject<PlayerMobile>(p.Serial, true);
-            iPlayer.Move_Instant(p.X, p.Y, p.Z, p.Direction);
-            // iPlayer.SetFacing(p.Direction);
-
-            // We want to make sure we have the client object before we load the world...
-            if (Status == UltimaClientStatus.WorldServer_LoginComplete)
-                Status = UltimaClientStatus.WorldServer_InWorld;
         }
 
         private void receive_PlayerMove(IRecvPacket packet)
@@ -1175,6 +1150,68 @@ namespace UltimaXNA
             item.ItemID = itemID;
             item.Hue = nHue;
             return item;
+        }
+
+        // ======================================================================
+        // New login handling routines
+        // ======================================================================
+
+
+        LoginConfirmPacket m_QueuedLoginConfirmPacket;
+        private int m_QueuedMapIndex = -1;
+
+        private void receive_LoginConfirmPacket(IRecvPacket packet)
+        {
+            m_QueuedLoginConfirmPacket = (LoginConfirmPacket)packet;
+
+            InternalCheckLogin();
+        }
+
+        private void receive_LoginComplete(IRecvPacket packet)
+        {
+            // This packet is just one byte, the opcode.
+            InternalCheckLogin();
+        }
+
+        private void receive_MapIndex(int index)
+        {
+            m_QueuedMapIndex = index;
+
+            InternalCheckLogin();
+        }
+
+        private void InternalCheckLogin()
+        {
+            // We want to make sure we have the client object before we load the world.
+            // If we don't, just set the status to login complete, which will then
+            // load the world when we finally receive our client object.
+            if (Status != UltimaClientStatus.WorldServer_InWorld)
+            {
+                if (m_QueuedMapIndex >= 0 && m_QueuedLoginConfirmPacket != null)
+                {
+                    Status = UltimaClientStatus.WorldServer_InWorld;
+
+                    WorldModel model = new WorldModel();
+                    UltimaEngine.ActiveModel = model;
+                    model.MapIndex = m_QueuedMapIndex;
+
+                    LoginConfirmPacket p = m_QueuedLoginConfirmPacket;
+
+                    EntityManager.MySerial = p.Serial;
+                    PlayerMobile iPlayer = EntityManager.GetObject<PlayerMobile>(p.Serial, true);
+                    iPlayer.Move_Instant(p.X, p.Y, p.Z, p.Direction);
+                    // iPlayer.SetFacing(p.Direction);
+                }
+            }
+            else
+            {
+                // already logged in!
+                WorldModel model = (WorldModel)UltimaEngine.ActiveModel;
+                if (model.MapIndex != m_QueuedMapIndex)
+                {
+                    model.MapIndex = m_QueuedMapIndex;
+                }
+            }
         }
     }
 }

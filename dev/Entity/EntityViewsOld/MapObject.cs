@@ -14,6 +14,7 @@ using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Entity;
 using UltimaXNA.Rendering;
 using UltimaXNA.UltimaWorld.View;
+using UltimaXNA.UltimaWorld.Model;
 
 namespace UltimaXNA.UltimaWorld.View
 {
@@ -166,7 +167,7 @@ namespace UltimaXNA.UltimaWorld.View
                 new Vector2(vertices[3].Position.X, vertices[3].Position.Y);
 
             int tileX, tileY;
-            MapTile tile;
+            
             MapObjectDeferred deferred;
             VertexPositionNormalTextureHue[] verts;
             
@@ -177,7 +178,7 @@ namespace UltimaXNA.UltimaWorld.View
 
                 // Get the tile associated with this (x, y) position. If the tile is not loaded, don't add a deferred object
                 // (it'll be offscreen so it doesn't matter).
-                tile = IsometricRenderer.Map.GetMapTile(tileX, tileY, false);
+                MapTile tile = EntityManager.Model.Map.GetMapTile(tileX, tileY);
                 if (tile != null)
                 {
                     deferred = new MapObjectDeferred(m_draw_texture, this);
@@ -237,7 +238,7 @@ namespace UltimaXNA.UltimaWorld.View
 
                 // Get the tile associated with this (x, y) position. If the tile is not loaded, don't add a deferred object
                 // (it'll be offscreen so it doesn't matter).
-                tile = IsometricRenderer.Map.GetMapTile(tileX, tileY, false);
+                MapTile tile = EntityManager.Model.Map.GetMapTile(tileX, tileY);
                 if (tile == null)
                     break;
 

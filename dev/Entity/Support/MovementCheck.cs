@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using UltimaXNA.UltimaWorld;
 using UltimaXNA.UltimaWorld.View;
+using UltimaXNA.UltimaWorld.Model;
 #endregion
 
 namespace UltimaXNA.Entity
@@ -70,10 +71,10 @@ namespace UltimaXNA.Entity
 
             if (checkDiagonals)
             {
-                MapTile sectorStart = map.GetMapTile(xStart, yStart, false);
-                MapTile sectorForward = map.GetMapTile(xForward, yForward, false);
-                MapTile sectorLeft = map.GetMapTile(xLeft, yLeft, false);
-                MapTile sectorRight = map.GetMapTile(xRight, yRight, false);
+                MapTile sectorStart = map.GetMapTile(xStart, yStart);
+                MapTile sectorForward = map.GetMapTile(xForward, yForward);
+                MapTile sectorLeft = map.GetMapTile(xLeft, yLeft);
+                MapTile sectorRight = map.GetMapTile(xRight, yRight);
                 if ((sectorForward == null) || (sectorStart == null) || (sectorLeft == null) || (sectorRight == null))
                 {
                     newZ = (int)loc.Z;
@@ -119,8 +120,8 @@ namespace UltimaXNA.Entity
             }
             else
             {
-                MapTile sectorStart = map.GetMapTile(xStart, yStart, false);
-                MapTile sectorForward = map.GetMapTile(xForward, yForward, false);
+                MapTile sectorStart = map.GetMapTile(xStart, yStart);
+                MapTile sectorForward = map.GetMapTile(xForward, yForward);
                 if ((sectorForward == null) || (sectorStart == null))
                 {
                     newZ = (int)loc.Z;
@@ -220,7 +221,7 @@ namespace UltimaXNA.Entity
         {
             newZ = 0;
 
-            MapTile mapTile = map.GetMapTile(x, y, false);
+            MapTile mapTile = map.GetMapTile(x, y);
             if (mapTile == null)
                 return false;
 
@@ -460,7 +461,7 @@ namespace UltimaXNA.Entity
         {
             int xCheck = (int)loc.X, yCheck = (int)loc.Y;
 
-            MapTile mapTile = map.GetMapTile(xCheck, yCheck, false);
+            MapTile mapTile = map.GetMapTile(xCheck, yCheck);
             if (mapTile == null)
             {
                 zLow = int.MinValue;

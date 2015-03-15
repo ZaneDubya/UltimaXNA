@@ -17,6 +17,7 @@ using UltimaXNA.Entity;
 using UltimaXNA.Rendering;
 using InterXLib.Input.Windows;
 using UltimaXNA.UltimaWorld;
+using UltimaXNA.UltimaWorld.Model;
 #endregion
 
 namespace UltimaXNA.UltimaWorld.View
@@ -70,12 +71,6 @@ namespace UltimaXNA.UltimaWorld.View
             set { m_flag_HighlightMouseOver = value; }
         }
 
-        private static Map m_map;
-        public static Map Map
-        {
-            get { return m_map; }
-            set { m_map = value; }
-        }
         public static int ObjectsRendered { get; internal set; }
         public static Position3D CenterPosition { get; set; }
         public static bool DrawTerrain = true;
@@ -101,70 +96,59 @@ namespace UltimaXNA.UltimaWorld.View
             };
         }
 
-        public static void Update(double totalTime, double frameTime)
+        public static void Update(Map map)
         {
-            if (UltimaVars.EngineVars.Map != -1)
+            // Are we inside (under a roof)? Do not draw tiles above our head.
+            m_maxItemAltitude = 255;
+
+            MapTile t;
+            if ((t = map.GetMapTile(CenterPosition.X, CenterPosition.Y)) != null)
             {
-                if ((m_map == null) || (m_map.Index != UltimaVars.EngineVars.Map))
-                    m_map = new Map(UltimaVars.EngineVars.Map);
-                // Update the Map's position so it loads the tiles we're going to be drawing
-                m_map.Update(CenterPosition.X, CenterPosition.Y);
+                BaseEntity underObject, underTerrain;
+                t.IsPointUnderAnEntity(CenterPosition.Z, out underObject, out underTerrain);
 
-                // Are we inside (under a roof)? Do not draw tiles above our head.
-                m_maxItemAltitude = 255;
+                // if we are under terrain, then do not draw any terrain at all.
+                DrawTerrain = !(underTerrain == null);
 
-                MapTile t;
-                if ((t = m_map.GetMapTile(CenterPosition.X, CenterPosition.Y, true)) != null)
+                if (!(underObject == null))
                 {
-                    BaseEntity underObject, underTerrain;
-                    t.IsPointUnderAnEntity(CenterPosition.Z, out underObject, out underTerrain);
-
-                    // if we are under terrain, then do not draw any terrain at all.
-                    DrawTerrain = !(underTerrain == null);
-
-                    if (!(underObject == null))
+                    // Roofing and new floors ALWAYS begin at intervals of 20.
+                    // if we are under a ROOF, then get rid of everything above me.Z + 20
+                    // (this accounts for A-frame roofs). Otherwise, get rid of everything
+                    // at the object above us.Z.
+                    if (((StaticItem)underObject).ItemData.IsRoof)
                     {
-                        // Roofing and new floors ALWAYS begin at intervals of 20.
-                        // if we are under a ROOF, then get rid of everything above me.Z + 20
-                        // (this accounts for A-frame roofs). Otherwise, get rid of everything
-                        // at the object above us.Z.
-                        if (((StaticItem)underObject).ItemData.IsRoof)
+                        m_maxItemAltitude = CenterPosition.Z - (CenterPosition.Z % 20) + 20;
+                    }
+                    else
+                    {
+                        m_maxItemAltitude = (int)(underObject.Z - (underObject.Z % 20));
+                    }
+
+                    // If we are under a roof tile, do not make roofs transparent if we are on an edge.
+                    if (underObject is StaticItem && ((StaticItem)underObject).ItemData.IsRoof)
+                    {
+                        bool isRoofSouthEast = true;
+                        if ((t = map.GetMapTile(CenterPosition.X + 1, CenterPosition.Y + 1)) != null)
                         {
-                            m_maxItemAltitude = CenterPosition.Z - (CenterPosition.Z % 20) + 20;
-                        }
-                        else
-                        {
-                            m_maxItemAltitude = (int)(underObject.Z - (underObject.Z % 20));
+                            t.IsPointUnderAnEntity(CenterPosition.Z, out underObject, out underTerrain);
+                            isRoofSouthEast = !(underObject == null);
                         }
 
-                        // If we are under a roof tile, do not make roofs transparent if we are on an edge.
-                        if (underObject is StaticItem && ((StaticItem)underObject).ItemData.IsRoof)
-                        {
-                            bool isRoofSouthEast = true;
-                            if ((t = m_map.GetMapTile(CenterPosition.X + 1, CenterPosition.Y + 1, true)) != null)
-                            {
-                                t.IsPointUnderAnEntity(CenterPosition.Z, out underObject, out underTerrain);
-                                isRoofSouthEast = !(underObject == null);
-                            }
-
-                            if (!isRoofSouthEast)
-                                m_maxItemAltitude = 255;
-                        }
+                        if (!isRoofSouthEast)
+                            m_maxItemAltitude = 255;
                     }
                 }
             }
         }
 
-        public static void Draw(double frameTime)
+        public static void Draw(Map map)
         {
-            if (UltimaVars.EngineVars.Map < 0)
-                return;
-            
-            render(out m_renderOffset);
+            render(map, out m_renderOffset);
             renderVectors(m_renderOffset);
         }
 
-        private static void render(out Vector2 renderOffset)
+        private static void render(Map map, out Vector2 renderOffset)
         {
             if (CenterPosition == null)
             {
@@ -176,18 +160,18 @@ namespace UltimaXNA.UltimaWorld.View
             m_spriteBatch.Prepare(false, false);
             MapObjectPrerendered.RenderObjects(m_spriteBatch);
 
-            // UltimaVars.EngineVars.RenderSize = 20;
+            int debugRenderSize = 40;
 
-            int RenderBeginX = CenterPosition.X - (UltimaVars.EngineVars.RenderSize / 2);
-            int RenderBeginY = CenterPosition.Y - (UltimaVars.EngineVars.RenderSize / 2);
-            int RenderEndX = RenderBeginX + UltimaVars.EngineVars.RenderSize;
-            int RenderEndY = RenderBeginY + UltimaVars.EngineVars.RenderSize;
+            int RenderBeginX = CenterPosition.X - (debugRenderSize / 2);
+            int RenderBeginY = CenterPosition.Y - (debugRenderSize / 2);
+            int RenderEndX = RenderBeginX + debugRenderSize;
+            int RenderEndY = RenderBeginY + debugRenderSize;
 
             renderOffset.X = (UltimaVars.EngineVars.ScreenSize.X >> 1) - 22;
             renderOffset.X -= (int)((CenterPosition.X_offset - CenterPosition.Y_offset) * 22);
             renderOffset.X -= (RenderBeginX - RenderBeginY) * 22;
 
-            renderOffset.Y = ((UltimaVars.EngineVars.ScreenSize.Y - (UltimaVars.EngineVars.RenderSize * 44)) >> 1);
+            renderOffset.Y = ((UltimaVars.EngineVars.ScreenSize.Y - (debugRenderSize * 44)) >> 1);
             renderOffset.Y += (CenterPosition.Z * 4) + (int)(CenterPosition.Z_offset * 4);
             renderOffset.Y -= (int)((CenterPosition.X_offset + CenterPosition.Y_offset) * 22);
             renderOffset.Y -= (RenderBeginX + RenderBeginY) * 22;
@@ -207,7 +191,7 @@ namespace UltimaXNA.UltimaWorld.View
 
                 for (int iy = RenderBeginY; iy < RenderEndY; iy++)
                 {
-                    MapTile tile = m_map.GetMapTile(ix, iy, true);
+                    MapTile tile = map.GetMapTile(ix, iy);
                     if (tile == null)
                         continue;
 

@@ -11,6 +11,8 @@
 using System.Collections.Generic;
 using UltimaXNA.UltimaWorld;
 using UltimaXNA.UltimaWorld.View;
+using Microsoft.Xna.Framework;
+using UltimaXNA.UltimaWorld.Model;
 #endregion
 
 namespace UltimaXNA.Entity
@@ -36,24 +38,29 @@ namespace UltimaXNA.Entity
         // ============================================================
 
         private MapTile m_Tile;
-        public MapTile Tile
+        private MapTile Tile
         {
-            get { return m_Tile; }
             set
             {
                 if (m_Tile != null)
                     m_Tile.OnExit(this);
                 m_Tile = value;
+
                 if (m_Tile != null)
                     m_Tile.OnEnter(this);
                 else
-                    Dispose();
+                {
+                    if (!IsDisposed)
+                        Dispose();
+                }
             }
         }
 
         private void OnTileChanged(int x, int y)
         {
-            Tile = IsometricRenderer.Map.GetMapTile(x, y, false);
+            if (IsClientEntity && EntityManager.Model.MapIndex >= 0)
+                EntityManager.Model.Map.CenterPosition = new Point(x, y);
+            Tile = EntityManager.Model.Map.GetMapTile(x, y);
         }
 
         public int X { get { return Position.X; } set { Position.X = value; } }
@@ -88,8 +95,8 @@ namespace UltimaXNA.Entity
 
         public virtual void Dispose()
         {
-            Tile = null;
             IsDisposed = true;
+            Tile = null;
         }
 
         public override string ToString()

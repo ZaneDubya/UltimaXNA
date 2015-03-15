@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using UltimaXNA.UltimaWorld;
+using UltimaXNA.UltimaWorld.Model;
 
 namespace UltimaXNA.Entity
 {
