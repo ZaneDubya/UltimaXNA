@@ -95,18 +95,6 @@ namespace UltimaXNA.UltimaWorld
             }
         }
 
-        public void RemoveEntity(Serial serial)
-        {
-            for (int i = 0; i < m_Entities.Count; i++)
-            {
-                if (m_Entities[i].Serial == serial)
-                {
-                    m_Entities.RemoveAt(i);
-                    i--;
-                }
-            }
-        }
-
         public List<StaticItem> GetStatics()
         {
             List<StaticItem> items = new List<StaticItem>();

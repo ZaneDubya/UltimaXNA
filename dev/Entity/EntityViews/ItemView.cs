@@ -38,6 +38,7 @@ namespace UltimaXNA.Entity.EntityViews
             }
 
             return base.Draw(spriteBatch, drawPosition, mouseOverList, pickType, maxAlt);
-        }
+        }
+
     }
 }

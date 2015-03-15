@@ -57,8 +57,6 @@ namespace UltimaXNA.Entity.EntityViews
         {
             VertexPositionNormalTextureHue[] vertexBuffer;
 
-            Vector2 hue = Utility.GetHueVector(Entity.Hue);
-
             if (Entity.Z >= maxAlt)
                 return false;
 
@@ -103,8 +101,8 @@ namespace UltimaXNA.Entity.EntityViews
                 vertexBuffer[3].Position.Y += DrawArea.Height;
             }
 
-            if (vertexBuffer[0].Hue != hue)
-                vertexBuffer[0].Hue = vertexBuffer[1].Hue = vertexBuffer[2].Hue = vertexBuffer[3].Hue = hue;
+            if (vertexBuffer[0].Hue != HueVector)
+                vertexBuffer[0].Hue = vertexBuffer[1].Hue = vertexBuffer[2].Hue = vertexBuffer[3].Hue = HueVector;
 
             if (!spriteBatch.Draw(DrawTexture, vertexBuffer))
             {
@@ -134,6 +132,14 @@ namespace UltimaXNA.Entity.EntityViews
             }
 
             return true;
+        }
+
+        protected virtual Vector2 HueVector
+        {
+            get
+            {
+                return Utility.GetHueVector(Entity.Hue);
+            }
         }
     }
 }

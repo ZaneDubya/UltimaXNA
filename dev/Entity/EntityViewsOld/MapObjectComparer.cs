@@ -51,14 +51,13 @@ namespace UltimaXNA.UltimaWorld.View
 
         private int typeSortValue(BaseEntity mapobject)
         {
-            Type type = mapobject.GetType();
-            if (type == typeof(Ground))
+            if (mapobject is Ground)
                 return 0;
-            else if (type == typeof(StaticItem))
+            else if (mapobject is StaticItem)
                 return 1;
-            else if (type == typeof(Item))
+            else if (mapobject is Item)
                 return 2;
-            else if (type == typeof(Mobile))
+            else if (mapobject is Mobile)
                 return 3;
             //else if (type == typeof(MapObjectText))
             //    return 4;

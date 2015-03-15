@@ -162,7 +162,6 @@ namespace UltimaXNA.Entity
         public void Move_Instant(int x, int y, int z, int facing)
         {
             m_moveEvents.ResetMoveSequence();
-            flushDrawObjects();
             Facing = ((Direction)facing & Direction.FacingMask);
             CurrentPosition.Set(x, y, z);
             m_goalPosition = null;
@@ -170,7 +169,6 @@ namespace UltimaXNA.Entity
 
         public void Update(double frameMS)
         {
-            flushDrawObjects();
             // Are we moving? (if our current location != our destination, then we are moving)
             if (IsMoving)
             {
@@ -179,7 +177,7 @@ namespace UltimaXNA.Entity
                 if (MoveSequence < 1f)
                 {
                     CurrentPosition.Offset = new Vector3(
-                        m_goalPosition.X - CurrentPosition.X, 
+                        m_goalPosition.X - CurrentPosition.X,
                         m_goalPosition.Y - CurrentPosition.Y,
                         m_goalPosition.Z - CurrentPosition.Z) * MoveSequence;
                 }
@@ -187,6 +185,7 @@ namespace UltimaXNA.Entity
                 {
                     CurrentPosition.Tile = new Point(m_goalPosition.X, m_goalPosition.Y);
                     CurrentPosition.Z = m_goalPosition.Z;
+                    CurrentPosition.Offset = Vector3.Zero;
                     MoveSequence = 0f;
                 }
             }
@@ -207,24 +206,8 @@ namespace UltimaXNA.Entity
                         return;
                     }
                 }
-                
+
             }
-        }
-
-        public void ClearImmediate()
-        {
-            flushDrawObjects();
-        }
-
-        private void flushDrawObjects()
-        {
-            if (Position.IsNullPosition)
-                return;
-            if (IsometricRenderer.Map == null)
-                return;
-            MapTile lastTile = IsometricRenderer.Map.GetMapTile(Position.X, Position.Y, false);
-            if (lastTile != null)
-                lastTile.RemoveEntity(m_entity.Serial);
         }
 
         private Point getNextTile(Position3D current, Point goal, out Direction facing, out int nextZ)

@@ -88,6 +88,7 @@ namespace UltimaXNA.Entity
 
         public virtual void Dispose()
         {
+            Tile = null;
             IsDisposed = true;
         }
 
@@ -112,15 +113,6 @@ namespace UltimaXNA.Entity
             if (m_View == null)
                 m_View = CreateView();
             return m_View;
-        }
-
-        protected int MirrorFacingForDraw(Direction facing)
-        {
-            int iFacing = (int)((Direction)facing & Direction.FacingMask);
-            if (iFacing >= 3)
-                return iFacing - 3;
-            else
-                return iFacing + 5;
         }
 
         internal virtual void Draw(MapTile tile, Position3D position)

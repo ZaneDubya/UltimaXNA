@@ -41,7 +41,7 @@ namespace UltimaXNA.UltimaWorld.View
         private static Dictionary<long, TextureAndOffsets> m_textureLibrary = new Dictionary<long, TextureAndOffsets>(m_kCapacity);
         private static int m_textureHashes_LastHashRemoved = 0;
 
-        protected static void SavePrerenderedTexture(Texture2D texture, long hash, int xOffset, int yOffset)
+        public static void SavePrerenderedTexture(Texture2D texture, long hash, int xOffset, int yOffset)
         {
             if (m_textureHashes[m_textureHashes_LastHashRemoved] != 0)
                 m_textureLibrary.Remove(m_textureHashes[m_textureHashes_LastHashRemoved]);
@@ -52,7 +52,7 @@ namespace UltimaXNA.UltimaWorld.View
                 m_textureHashes_LastHashRemoved = 0;
         }
 
-        protected static Texture2D RestorePrerenderedTexture(long hash, out int xOffset, out int yOffset)
+        public static Texture2D RestorePrerenderedTexture(long hash, out int xOffset, out int yOffset)
         {
             if (m_textureLibrary.ContainsKey(hash))
             {
