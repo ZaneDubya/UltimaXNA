@@ -15,51 +15,51 @@ using Microsoft.Xna.Framework;
 using UltimaXNA.UltimaWorld;
 #endregion
 
-namespace UltimaXNA.Entity
+namespace UltimaXNA
 {
     public class Position3D : IPoint2D
     {
         public static Point NullTile = new Point(int.MinValue, int.MinValue);
 
-        private Point m_tile;
+        private Point m_Tile;
         private int m_Z;
-        Vector3 m_offset;
+        Vector3 m_Offset;
 
         public Point Tile
         {
-            get { return m_tile; }
+            get { return m_Tile; }
             set
             {
-                if (m_tile != value)
+                if (m_Tile != value)
                 {
-                    m_tile = value;
-                    if (m_tile != NullTile && m_OnTileChanged != null)
-                        m_OnTileChanged(m_tile.X, m_tile.Y);
+                    m_Tile = value;
+                    if (m_Tile != NullTile && m_OnTileChanged != null)
+                        m_OnTileChanged(m_Tile.X, m_Tile.Y);
                 }
             }
         }
 
-        public Vector3 Offset { get { return m_offset; } set { m_offset = value; } }
+        public Vector3 Offset { get { return m_Offset; } set { m_Offset = value; } }
 
-        public bool IsOffset { get { return m_offset != Vector3.Zero; } }
-        public bool IsNullPosition { get { return m_tile == NullTile; } }
+        public bool IsOffset { get { return m_Offset != Vector3.Zero; } }
+        public bool IsNullPosition { get { return m_Tile == NullTile; } }
 
         public int X
         {
-            get { return (int)m_tile.X; }
+            get { return (int)m_Tile.X; }
         }
         public int Y
         {
-            get { return (int)m_tile.Y; }
+            get { return (int)m_Tile.Y; }
         }
         public int Z
         {
             get { return (int)m_Z; }
         }
 
-        public float X_offset { get { return m_offset.X % 1.0f; } }
-        public float Y_offset { get { return m_offset.Y % 1.0f; } }
-        public float Z_offset { get { return m_offset.Z; } }
+        public float X_offset { get { return m_Offset.X % 1.0f; } }
+        public float Y_offset { get { return m_Offset.Y % 1.0f; } }
+        public float Z_offset { get { return m_Offset.Z; } }
 
         private Action<int, int> m_OnTileChanged;
 
@@ -79,7 +79,7 @@ namespace UltimaXNA.Entity
         {
             Tile = new Point(x, y);
             m_Z = z;
-            m_offset = Vector3.Zero;
+            m_Offset = Vector3.Zero;
         }
 
         public override bool Equals(object o)

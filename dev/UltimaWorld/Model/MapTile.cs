@@ -33,12 +33,12 @@ namespace UltimaXNA.UltimaWorld.Model
 
         public int X
         {
-            get { return m_Ground.X; }
+            get { return m_Ground.Position.X; }
         }
 
         public int Y
         {
-            get { return m_Ground.Y; }
+            get { return m_Ground.Position.Y; }
         }
 
         private List<BaseEntity> m_Entities;

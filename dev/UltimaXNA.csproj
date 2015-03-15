@@ -320,13 +320,11 @@
     <Compile Include="UltimaData\FileManager.cs" />
     <Compile Include="Core\Point.cs" />
     <Compile Include="Entity\Container.cs" />
-    <Compile Include="Entity\Support\ContainerItem.cs" />
     <Compile Include="Entity\Corpse.cs" />
     <Compile Include="Entity\DynamicObject.cs" />
     <Compile Include="Entity\BaseEntity.cs" />
     <Compile Include="UltimaWorld\Model\EntityManager.cs" />
-    <Compile Include="Entity\Support\ContainerContents.cs" />
-    <Compile Include="Entity\Support\Position3d.cs" />
+    <Compile Include="Position3D.cs" />
     <Compile Include="Entity\Item.cs" />
     <Compile Include="Entity\Mobile.cs" />
     <Compile Include="Entity\EntityViews\MobileAnimation.cs" />

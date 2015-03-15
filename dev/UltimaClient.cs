@@ -19,6 +19,7 @@ using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.UltimaPackets.Server;
 using UltimaXNA.UltimaWorld;
 using UltimaXNA.UltimaWorld.View;
+using Microsoft.Xna.Framework;
 #endregion
 
 namespace UltimaXNA
@@ -231,11 +232,11 @@ namespace UltimaXNA
             foreach (ContentItem i in p.Items)
             {
                 // Add the item...
-                Item iObject = add_Item(i.Serial, i.ItemID, i.Hue, i.ContainerSerial, i.Amount);
-                iObject.Position.Set(i.X, i.Y, 0);
+                Item item = add_Item(i.Serial, i.ItemID, i.Hue, i.ContainerSerial, i.Amount);
+                item.InContainerPosition = new Point(i.X, i.Y);
                 // ... and add it the container contents of the container.
                 Container c = EntityManager.GetObject<Container>(i.ContainerSerial, true);
-                c.AddItem(iObject);
+                c.AddItem(item);
             }
         }
 
@@ -244,12 +245,12 @@ namespace UltimaXNA
             ContainerContentUpdatePacket p = (ContainerContentUpdatePacket)packet;
 
             // Add the item...
-            Item iObject = add_Item(p.Serial, p.ItemId, p.Hue, p.ContainerSerial, p.Amount);
-            iObject.Position.Set(p.X, p.Y, 0);
+            Item item = add_Item(p.Serial, p.ItemId, p.Hue, p.ContainerSerial, p.Amount);
+            item.InContainerPosition = new Point(p.X, p.Y);
             // ... and add it the container contents of the container.
             Container iContainerObject = EntityManager.GetObject<Container>(p.ContainerSerial, true);
             if (iContainerObject != null)
-                iContainerObject.AddItem(iObject);
+                iContainerObject.AddItem(item);
             else
             {
                 // Special case for game boards... the server will sometimes send us game pieces for a game board before it sends 
@@ -257,7 +258,7 @@ namespace UltimaXNA
                 // board actually exists.
                 // Let's throw an exception if anything other than a gameboard is ever sent to us.
                 // if (iObject.ItemData.Name != "game piece")
-                throw new Exception("Item {" + iObject.ToString() + "} received before containing object received.");
+                throw new Exception("Item {" + item.ToString() + "} received before containing object received.");
             }
         }
 

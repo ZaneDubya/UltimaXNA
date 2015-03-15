@@ -31,6 +31,7 @@ namespace UltimaXNA.Entity
             }
         }
 
+        public Point InContainerPosition = Point.Zero;
 
         public Item(Serial serial)
             : base(serial)
@@ -136,7 +137,6 @@ namespace UltimaXNA.Entity
         // ======================================================================
 
         private BaseEntity m_lastParent;
-        private int m_lastParent_X, m_lastParent_Y;
         public bool HasLastParent
         {
             get { return (m_lastParent != null); }
@@ -144,22 +144,15 @@ namespace UltimaXNA.Entity
 
         public void SaveLastParent()
         {
-            if (Parent != null)
-            {
-                m_lastParent = Parent;
-                m_lastParent_X = X;
-                m_lastParent_Y = Y;
-            }
-            else
-            {
-                m_lastParent = null;
-            }
+            m_lastParent = Parent;
         }
 
         public void RestoreLastParent()
         {
-            this.Position.Set(m_lastParent_X, m_lastParent_Y, 0);
-            ((Container)m_lastParent).AddItem(this);
+            if (m_lastParent != null)
+            {
+                ((Container)m_lastParent).AddItem(this);
+            }
         }
     }
 }
