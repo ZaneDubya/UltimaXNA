@@ -24,7 +24,7 @@ namespace UltimaXNA.Entity
         // Movement and Facing
         // ============================================================
 
-        protected Movement m_movement;
+        protected MobileMovement m_movement;
 
         public Direction Facing
         {
@@ -176,7 +176,7 @@ namespace UltimaXNA.Entity
             : base(serial)
         {
             Equipment = new MobileEquipment(this);
-            m_movement = new Movement(this);
+            m_movement = new MobileMovement(this);
             m_movement.RequiresUpdate = true;
         }
 

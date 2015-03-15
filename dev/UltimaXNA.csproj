@@ -328,9 +328,9 @@
     <Compile Include="Entity\Item.cs" />
     <Compile Include="Entity\Mobile.cs" />
     <Compile Include="Entity\EntityViews\MobileAnimation.cs" />
-    <Compile Include="Entity\Support\MobileEquipment.cs" />
-    <Compile Include="Entity\Support\Movement.cs" />
-    <Compile Include="Entity\Support\MovementCheck.cs" />
+    <Compile Include="Entity\MobileEquipment.cs" />
+    <Compile Include="Entity\MobileMovement.cs" />
+    <Compile Include="Entity\MobileMovementCheck.cs" />
     <Compile Include="Entity\Multi.cs" />
     <Compile Include="Entity\Support\Overhead.cs" />
     <Compile Include="Entity\PlayerMobile.cs" />
@@ -417,7 +417,7 @@
     <Compile Include="UltimaLogin\Scenes\AScene.cs" />
     <Compile Include="UltimaLogin\Scenes\SceneManager.cs" />
     <Compile Include="UltimaLogin\Scenes\LoginScene.cs" />
-    <Compile Include="Entity\Support\Serial.cs" />
+    <Compile Include="Serial.cs" />
     <Compile Include="UltimaData\_Enums.cs" />
     <Compile Include="Entity\EntityViewsOld\MapObjectCorpse.cs" />
     <Compile Include="Entity\EntityViewsOld\MapObjectItem.cs" />

@@ -19,7 +19,7 @@ using UltimaXNA.UltimaWorld.Model;
 
 namespace UltimaXNA.Entity
 {
-    static class MovementCheck
+    static class MobileMovementCheck
     {
         private static List<Item>[] m_Pools = new List<Item>[4]
 			{

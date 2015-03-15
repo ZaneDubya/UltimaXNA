@@ -18,7 +18,7 @@ using UltimaXNA.UltimaWorld.View;
 
 namespace UltimaXNA.Entity
 {
-    public class Movement
+    public class MobileMovement
     {
         public static Action<MoveRequestPacket> SendMoveRequestPacket;
 
@@ -75,7 +75,7 @@ namespace UltimaXNA.Entity
         MoveEvents m_moveEvents;
         BaseEntity m_entity;
 
-        public Movement(BaseEntity entity)
+        public MobileMovement(BaseEntity entity)
         {
             m_entity = entity;
             m_moveEvents = new MoveEvents();
@@ -118,7 +118,7 @@ namespace UltimaXNA.Entity
 
                 // get the next tile and the facing necessary to reach it.
                 Direction facing;
-                Point nextTile = MovementCheck.OffsetTile(CurrentPosition, nextMove);
+                Point nextTile = MobileMovementCheck.OffsetTile(CurrentPosition, nextMove);
 
                 int nextZ;
                 Point nextPosition;
@@ -221,9 +221,9 @@ namespace UltimaXNA.Entity
         private bool getNextTile(Position3D current, Point goal, out Direction facing, out Point nextPosition, out int nextZ)
         {
             facing = getNextFacing(current, goal);
-            nextPosition = MovementCheck.OffsetTile(current, facing);
+            nextPosition = MobileMovementCheck.OffsetTile(current, facing);
 
-            bool moveIsOkay = MovementCheck.CheckMovement((Mobile)m_entity, EntityManager.Model.Map, current, facing, out nextZ);
+            bool moveIsOkay = MobileMovementCheck.CheckMovement((Mobile)m_entity, EntityManager.Model.Map, current, facing, out nextZ);
             if (moveIsOkay)
             {
                 if (IsRunning)
