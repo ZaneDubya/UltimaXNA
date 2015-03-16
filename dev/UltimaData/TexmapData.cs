@@ -67,7 +67,7 @@ namespace UltimaXNA.UltimaData
                 while (count < max)
                 {
                     uint color = fileData[count];
-                    *pDataRef++ = 0xff000000 + (
+                    *pDataRef++ = 0x80000000 + (
                                     ((((color >> 10) & 0x1F) * multiplier)) |
                                     ((((color >> 5) & 0x1F) * multiplier) << 8) |
                                     (((color & 0x1F) * multiplier) << 16)

@@ -73,9 +73,9 @@ namespace UltimaXNA.Entity
         internal Position3D Position { get { return CurrentPosition; } }
 
         MoveEvents m_moveEvents;
-        BaseEntity m_entity;
+        AEntity m_entity;
 
-        public MobileMovement(BaseEntity entity)
+        public MobileMovement(AEntity entity)
         {
             m_entity = entity;
             m_moveEvents = new MoveEvents();

@@ -28,7 +28,7 @@ namespace UltimaXNA.UltimaWorld.Controller
 
         // make sure we drag the correct object variables
         Vector2 m_dragOffset;
-        BaseEntity m_DraggingEntity;
+        AEntity m_DraggingEntity;
 
         public void Update(double frameMS)
         {
@@ -149,7 +149,7 @@ namespace UltimaXNA.UltimaWorld.Controller
 
         void onInteractButton(InputEventMouse e)
         {
-            BaseEntity overEntity = (e.EventType == MouseEvent.DragBegin) ? m_DraggingEntity : IsometricRenderer.MouseOverObject;
+            AEntity overEntity = (e.EventType == MouseEvent.DragBegin) ? m_DraggingEntity : IsometricRenderer.MouseOverObject;
             Vector2 overObjectOffset = (e.EventType == MouseEvent.DragBegin) ? m_dragOffset : IsometricRenderer.MouseOverObjectPoint;
 
             if (e.EventType == MouseEvent.Down)
@@ -246,7 +246,7 @@ namespace UltimaXNA.UltimaWorld.Controller
             e.Handled = true;
         }
 
-        void createHoverLabel(BaseEntity entity)
+        void createHoverLabel(AEntity entity)
         {
             if (entity.Serial.IsValid)
             {
@@ -265,7 +265,7 @@ namespace UltimaXNA.UltimaWorld.Controller
             if (!serial.IsValid)
                 return;
 
-            BaseEntity e = EntityManager.GetObject<BaseEntity>(serial, false);
+            AEntity e = EntityManager.GetObject<AEntity>(serial, false);
 
             if (e is Mobile)
             {

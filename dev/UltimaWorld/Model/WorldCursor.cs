@@ -65,7 +65,7 @@ namespace UltimaXNA.UltimaWorld.Model
                 }
                 else // cursor is over the world display.
                 {
-                    BaseEntity mouseOverEntity = IsometricRenderer.MouseOverObject;
+                    AEntity mouseOverEntity = IsometricRenderer.MouseOverObject;
 
                     if (mouseOverEntity != null)
                     {
@@ -287,7 +287,7 @@ namespace UltimaXNA.UltimaWorld.Model
             }
         }
 
-        void mouseTargetingEventXYZ(BaseEntity selectedEntity)
+        void mouseTargetingEventXYZ(AEntity selectedEntity)
         {
             // Send the targetting event back to the server!
             int modelNumber = 0;
@@ -305,7 +305,7 @@ namespace UltimaXNA.UltimaWorld.Model
             SetTargeting(TargetTypes.Nothing, 0);
         }
 
-        void mouseTargetingEventObject(BaseEntity selectedEntity)
+        void mouseTargetingEventObject(AEntity selectedEntity)
         {
             // If we are passed a null object, keep targeting.
             if (selectedEntity == null)

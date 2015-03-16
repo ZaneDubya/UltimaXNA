@@ -16,7 +16,7 @@ using UltimaXNA.UltimaWorld.Model;
 
 namespace UltimaXNA.Entity
 {
-    public class Effect : BaseEntity
+    public class Effect : AEntity
     {
         private bool m_isHued = false;
         private bool m_isInitialized = false;

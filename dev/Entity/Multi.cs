@@ -19,7 +19,7 @@ using UltimaXNA.UltimaWorld.Model;
 
 namespace UltimaXNA.Entity
 {
-    class Multi : BaseEntity
+    class Multi : AEntity
     {
         MultiComponentList m_components;
         List<Point> m_unloadedTiles = new List<Point>();

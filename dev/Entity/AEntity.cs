@@ -17,7 +17,7 @@ using UltimaXNA.UltimaWorld.Model;
 
 namespace UltimaXNA.Entity
 {
-    public abstract class BaseEntity
+    public abstract class AEntity
     {
         // ============================================================
         // Properties
@@ -75,7 +75,7 @@ namespace UltimaXNA.Entity
         // Methods
         // ============================================================
 
-        public BaseEntity(Serial serial)
+        public AEntity(Serial serial)
         {
             Serial = serial;
             m_Position = new Position3D(OnTileChanged);

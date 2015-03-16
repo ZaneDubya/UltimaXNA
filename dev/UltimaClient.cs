@@ -646,7 +646,7 @@ namespace UltimaXNA
         {
             ObjectPropertyListPacket p = (ObjectPropertyListPacket)packet;
 
-            BaseEntity iObject = EntityManager.GetObject<BaseEntity>(p.Serial, false);
+            AEntity iObject = EntityManager.GetObject<AEntity>(p.Serial, false);
             iObject.PropertyList.Hash = p.Hash;
             iObject.PropertyList.Clear();
 
@@ -897,7 +897,7 @@ namespace UltimaXNA
         private void receive_ToolTipRevision(IRecvPacket packet)
         {
             ObjectPropertyListUpdatePacket p = (ObjectPropertyListUpdatePacket)packet;
-            BaseEntity iObject = EntityManager.GetObject<BaseEntity>(p.Serial, false);
+            AEntity iObject = EntityManager.GetObject<AEntity>(p.Serial, false);
             if (iObject != null)
             {
                 if (iObject.PropertyList.Hash != p.RevisionHash)

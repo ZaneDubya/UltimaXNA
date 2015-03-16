@@ -41,9 +41,9 @@ namespace UltimaXNA.UltimaWorld.Model
             get { return m_Ground.Position.Y; }
         }
 
-        private List<BaseEntity> m_Entities;
+        private List<AEntity> m_Entities;
 
-        public void OnEnter(BaseEntity entity)
+        public void OnEnter(AEntity entity)
         {
             if (entity is Ground)
             {
@@ -55,14 +55,14 @@ namespace UltimaXNA.UltimaWorld.Model
             m_NeedsSorting = true;
         }
 
-        public void OnExit(BaseEntity entity)
+        public void OnExit(AEntity entity)
         {
             m_Entities.Remove(entity);
         }
 
         public MapTile()
         {
-            m_Entities = new List<BaseEntity>();
+            m_Entities = new List<AEntity>();
         }
 
         /// <summary>
@@ -71,12 +71,12 @@ namespace UltimaXNA.UltimaWorld.Model
         /// <param name="originZ"></param>
         /// <param name="underItem"></param>
         /// <param name="underTerrain"></param>
-        public void IsPointUnderAnEntity(int originZ, out BaseEntity underItem, out BaseEntity underTerrain)
+        public void IsPointUnderAnEntity(int originZ, out AEntity underItem, out AEntity underTerrain)
         {
             underItem = null;
             underTerrain = null;
 
-            List<BaseEntity> iObjects = this.Items;
+            List<AEntity> iObjects = this.Items;
             for (int i = iObjects.Count - 1; i >= 0; i--)
             {
                 if (iObjects[i].Z <= originZ)
@@ -173,14 +173,14 @@ namespace UltimaXNA.UltimaWorld.Model
             }
         }
 
-        public List<BaseEntity> Items
+        public List<AEntity> Items
         {
             get
             {
                 if (m_NeedsSorting)
                 {
                     removeDuplicateObjects();
-                    Entity.EntityViews.KrriosSort.Sort(m_Entities);
+                    KrriosSort.Sort(m_Entities);
                     m_NeedsSorting = false;
                 }
                 return m_Entities;

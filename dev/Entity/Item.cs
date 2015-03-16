@@ -16,9 +16,9 @@ using UltimaXNA.UltimaWorld.View;
 
 namespace UltimaXNA.Entity
 {
-    public class Item : BaseEntity
+    public class Item : AEntity
     {
-        public BaseEntity Parent = null;
+        public AEntity Parent = null;
 
         public override Position3D Position
         {
@@ -136,7 +136,7 @@ namespace UltimaXNA.Entity
         // Last Parent routines 
         // ======================================================================
 
-        private BaseEntity m_lastParent;
+        private AEntity m_lastParent;
         public bool HasLastParent
         {
             get { return (m_lastParent != null); }

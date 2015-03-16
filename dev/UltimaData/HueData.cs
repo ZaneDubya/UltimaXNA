@@ -64,7 +64,7 @@ namespace UltimaXNA.UltimaData
                     for (int i = 0; i < 32; i++)
                     {
                         uint color = reader.ReadUInt16();
-                        data[currentHue * 32 + i] = 0xff000000 + (
+                        data[currentHue * 32 + i] = 0x80000000 + (
                             ((((color >> 10) & 0x1F) * multiplier)) |
                             ((((color >> 5) & 0x1F) * multiplier) << 8) |
                             (((color & 0x1F) * multiplier) << 16)

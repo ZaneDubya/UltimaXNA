@@ -125,8 +125,8 @@
     <Compile Include="Core\AUltimaModel.cs" />
     <Compile Include="Entity\EntityViews\AEntityView.cs" />
     <Compile Include="Entity\EntityViews\CorpseView.cs" />
-    <Compile Include="Entity\EntityViews\KrriosSort.cs" />
-    <Compile Include="Entity\EntityViews\UXNASort.cs" />
+    <Compile Include="UltimaWorld\Model\KrriosSort.cs" />
+    <Compile Include="UltimaWorld\Model\ClintSort.cs" />
     <Compile Include="Entity\EntityViews\GroundView.cs" />
     <Compile Include="Entity\EntityViews\ItemView.cs" />
     <Compile Include="Entity\EntityViews\MobileView.cs" />
@@ -322,7 +322,7 @@
     <Compile Include="Entity\Container.cs" />
     <Compile Include="Entity\Corpse.cs" />
     <Compile Include="Entity\Effect.cs" />
-    <Compile Include="Entity\BaseEntity.cs" />
+    <Compile Include="Entity\AEntity.cs" />
     <Compile Include="UltimaWorld\Model\EntityManager.cs" />
     <Compile Include="Position3D.cs" />
     <Compile Include="Entity\Item.cs" />

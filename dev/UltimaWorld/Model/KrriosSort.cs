@@ -1,12 +1,21 @@
-﻿#region usings
+﻿/***************************************************************************
+ *   ClintSort.cs
+ *   Based on code from ClintXNA's renderer.
+ *   
+ *   Liiiicense????
+ * 
+ ***************************************************************************/
+#region usings
 using System.Collections.Generic;
+using UltimaXNA.Entity;
+using UltimaXNA.Entity.EntityViews;
 #endregion
 
-namespace UltimaXNA.Entity.EntityViews
+namespace UltimaXNA.UltimaWorld.Model
 {
     class KrriosSort
     {
-        public static void Sort(List<BaseEntity> items)
+        public static void Sort(List<AEntity> items)
         {
             for (int i = 0; i < items.Count - 1; i++)
             {
@@ -17,7 +26,7 @@ namespace UltimaXNA.Entity.EntityViews
                     int result = Compare(items[j - 1], items[j]);
                     if (result > 0)
                     {
-                        BaseEntity temp = items[j - 1];
+                        AEntity temp = items[j - 1];
                         items[j - 1] = items[j];
                         items[j] = temp;
 
@@ -27,7 +36,7 @@ namespace UltimaXNA.Entity.EntityViews
             }
         }
 
-        public static int Compare(BaseEntity x, BaseEntity y)
+        public static int Compare(AEntity x, AEntity y)
         {
             int x_z;
             int x_threshold;
@@ -60,7 +69,7 @@ namespace UltimaXNA.Entity.EntityViews
             return comparison;
         }
 
-        public static void GetSortValues(BaseEntity e, out int z, out int threshold, out int type, out int tiebreaker)
+        public static void GetSortValues(AEntity e, out int z, out int threshold, out int type, out int tiebreaker)
         {
             if (e is Mobile)
             {

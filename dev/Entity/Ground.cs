@@ -6,7 +6,7 @@ using UltimaXNA.UltimaData;
 
 namespace UltimaXNA.Entity
 {
-    public class Ground : BaseEntity
+    public class Ground : AEntity
     {
         // !!! Don't forget to update surrounding Z values - code is in UpdateSurroundingsIfNecessary(map)
 

@@ -18,10 +18,10 @@ using UltimaXNA.UltimaWorld.Model;
 
 namespace UltimaXNA.Entity
 {
-    public class Overhead : BaseEntity
+    public class Overhead : AEntity
     {
         private bool m_needsRender;
-        private BaseEntity m_ownerEntity;
+        private AEntity m_ownerEntity;
 
         private string m_text;
         public string Text
@@ -68,7 +68,7 @@ namespace UltimaXNA.Entity
 
         private int m_msTimePersist = 0;
 
-        public Overhead(BaseEntity ownerEntity, MessageType msgType, string text, int font, int hue)
+        public Overhead(AEntity ownerEntity, MessageType msgType, string text, int font, int hue)
             : base(ownerEntity.Serial)
         {
             m_ownerEntity = ownerEntity;

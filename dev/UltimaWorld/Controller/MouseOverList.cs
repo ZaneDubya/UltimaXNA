@@ -48,7 +48,7 @@ namespace UltimaXNA.UltimaWorld
             return null;
         }
 
-        internal MouseOverItem GetForemostMouseOverItem<T>(Point mousePosition) where T : BaseEntity
+        internal MouseOverItem GetForemostMouseOverItem<T>(Point mousePosition) where T : AEntity
         {
             // Parse list backwards to find topmost mouse over object.
             foreach (MouseOverItem item in CreateReverseIterator(m_overList))
@@ -189,9 +189,9 @@ namespace UltimaXNA.UltimaWorld
         public Texture2D Texture;
         public Vector3 Position;
         public Vector2 InTexturePosition;
-        public BaseEntity Entity;
+        public AEntity Entity;
 
-        internal MouseOverItem(Texture2D texture, Vector3 position, BaseEntity entity)
+        internal MouseOverItem(Texture2D texture, Vector3 position, AEntity entity)
         {
             Texture = texture;
             Position = position;

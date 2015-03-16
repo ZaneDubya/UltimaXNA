@@ -27,14 +27,14 @@ namespace UltimaXNA.Entity.EntityViews
                 DrawFlip = false;
                 DrawAs3DStretched = false;
 
-                DrawTexture = UltimaData.ArtData.GetLandTexture(Entity.LandDataID);
+                DrawTexture = UltimaData.ArtData.GetLandTexture(0x3E46);
                 DrawArea = new Rectangle(0, Entity.Z * 4, 44, 44);
             }
             else
             {
                 DrawFlip = false;
                 DrawAs3DStretched = true;
-                DrawTexture = UltimaData.TexmapData.GetTexmapTexture(Entity.LandData.TextureID);
+                DrawTexture = UltimaData.TexmapData.GetTexmapTexture(0x3E46);
             }
         }
 
@@ -59,12 +59,13 @@ namespace UltimaXNA.Entity.EntityViews
         }
 
         private Vector3 m_vertex0_yOffset, m_vertex1_yOffset, m_vertex2_yOffset, m_vertex3_yOffset;
-        private VertexPositionNormalTextureHue[] m_vertexBufferAlternate = new VertexPositionNormalTextureHue[] {
+        private VertexPositionNormalTextureHue[] m_vertexBufferAlternate = new VertexPositionNormalTextureHue[]
+        {
                     new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(0, 0, 0)),
                     new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(1, 0, 0)),
                     new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(0, 1, 0)),
                     new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(1, 1, 0))
-                };
+        };
 
         private bool Draw3DStretched(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, PickTypes pickType, int maxAlt)
         {

@@ -13,13 +13,13 @@ namespace UltimaXNA.Entity.EntityViews
     /// </summary>
     public abstract class AEntityView
     {
-        private BaseEntity m_Entity = null;
-        public BaseEntity Entity
+        private AEntity m_Entity = null;
+        public AEntity Entity
         {
             get { return m_Entity; }
         }
 
-        public AEntityView(BaseEntity entity)
+        public AEntityView(AEntity entity)
         {
             m_Entity = entity;
             SortZ = Entity.Z;

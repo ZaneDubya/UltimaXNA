@@ -51,10 +51,10 @@ namespace UltimaXNA.Entity.EntityViews
 
             Texture2D texture = m_MobileLayers[0].Frame.Texture;
 
-            int drawCenterX, drawCenterY, drawX, drawY;
+            int drawX, drawY;
 
-            drawCenterX = m_MobileLayers[0].Frame.Center.X;
-            drawCenterY = m_MobileLayers[0].Frame.Center.Y;
+            int drawCenterX = m_MobileLayers[0].Frame.Center.X;
+            int drawCenterY = m_MobileLayers[0].Frame.Center.Y;
             
             if (DrawFlip)
             {
@@ -82,6 +82,18 @@ namespace UltimaXNA.Entity.EntityViews
                     DrawTexture = m_MobileLayers[i].Frame.Texture;
                     DrawArea = new Rectangle((int)x, (int)-y, DrawTexture.Width, DrawTexture.Height);
                     HueVector = Utility.GetHueVector(m_MobileLayers[i].Hue);
+
+                    Texture2D texture2 = UltimaData.TexmapData.GetTexmapTexture(1);
+                    Rectangle screen_dest = new Rectangle(
+                        DrawFlip ? (int)drawPosition.X + DrawArea.X - DrawArea.Width + 44 : (int)drawPosition.X - DrawArea.X,
+                        (int)drawPosition.Y - DrawArea.Y,
+                        DrawFlip ? DrawArea.Width : DrawArea.Width,
+                        DrawArea.Height);
+                    // spriteBatch.DrawSimple(texture2, screen_dest, Vector2.Zero);
+
+                    int y2 = screen_dest.Y + screen_dest.Height;
+
+                    spriteBatch.DrawSimple(texture2, new Rectangle(screen_dest.X, (int)drawPosition.Y, screen_dest.Width, y2 - (int)drawPosition.Y), Vector2.Zero);
 
                     base.Draw(spriteBatch, drawPosition, mouseOverList, pickType, maxAlt);
                 }

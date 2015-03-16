@@ -94,7 +94,7 @@ namespace UltimaXNA.Entity
 
                     for (int j = 0; j < sector.Items.Count; ++j)
                     {
-                        BaseEntity entity = sector.Items[j]; //Item item = sector.Items[j];
+                        AEntity entity = sector.Items[j]; //Item item = sector.Items[j];
 
                         // if (ignoreMovableImpassables && item.Movable && item.ItemData.Impassable)
                         //     continue;
@@ -132,7 +132,7 @@ namespace UltimaXNA.Entity
                 {
                     for (int i = 0; i < sectorStart.Items.Count; ++i)
                     {
-                        BaseEntity entity = sectorStart.Items[i]; // Item item = sectorStart.Items[i];
+                        AEntity entity = sectorStart.Items[i]; // Item item = sectorStart.Items[i];
 
                         if (entity is Item)
                         {
@@ -155,7 +155,7 @@ namespace UltimaXNA.Entity
                 {
                     for (int i = 0; i < sectorForward.Items.Count; ++i)
                     {
-                        BaseEntity entity = sectorForward.Items[i]; // Item item = sectorForward.Items[i];
+                        AEntity entity = sectorForward.Items[i]; // Item item = sectorForward.Items[i];
 
                         if (entity is Item)
                         {
@@ -174,7 +174,7 @@ namespace UltimaXNA.Entity
 
                     for (int i = 0; i < sectorStart.Items.Count; ++i)
                     {
-                        BaseEntity entity = sectorStart.Items[i]; // Item item = sectorStart.Items[i];
+                        AEntity entity = sectorStart.Items[i]; // Item item = sectorStart.Items[i];
 
                         if (entity is Item)
                         {
@@ -457,7 +457,7 @@ namespace UltimaXNA.Entity
             }
         }
 
-        private static void getStartZ(BaseEntity m, Map map, Position3D loc, List<Item> itemList, out int zLow, out int zTop)
+        private static void getStartZ(AEntity m, Map map, Position3D loc, List<Item> itemList, out int zLow, out int zTop)
         {
             int xCheck = (int)loc.X, yCheck = (int)loc.Y;
 

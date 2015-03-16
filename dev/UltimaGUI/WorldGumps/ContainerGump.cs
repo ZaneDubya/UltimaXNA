@@ -23,7 +23,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
         int m_updateTicker = 0;
         public Serial ContainerSerial { get { return m_item.Serial; } }
 
-        public ContainerGump(BaseEntity containerItem, int gumpID)
+        public ContainerGump(AEntity containerItem, int gumpID)
             : base(containerItem.Serial, 0)
         {
             m_data = UltimaData.ContainerData.GetData(gumpID);

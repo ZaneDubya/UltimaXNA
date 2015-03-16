@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   MapObjectComparer.cs
+ *   ClintSort.cs
  *   Based on code from ClintXNA's renderer.
  *   
  *   This program is free software; you can redistribute it and/or modify
@@ -10,13 +10,15 @@
  ***************************************************************************/
 #region usings
 using System.Collections.Generic;
+using UltimaXNA.Entity;
+using UltimaXNA.Entity.EntityViews;
 #endregion
 
-namespace UltimaXNA.Entity.EntityViews
+namespace UltimaXNA.UltimaWorld.Model
 {
-    class UXNASort
+    class ClintSort
     {
-        public static void Sort(List<BaseEntity> items)
+        public static void Sort(List<AEntity> items)
         {
             for (int i = 0; i < items.Count - 1; i++)
             {
@@ -27,7 +29,7 @@ namespace UltimaXNA.Entity.EntityViews
                     int result = Compare(items[j - 1], items[j]);
                     if (result > 0)
                     {
-                        BaseEntity temp = items[j - 1];
+                        AEntity temp = items[j - 1];
                         items[j - 1] = items[j];
                         items[j] = temp;
 
@@ -37,7 +39,7 @@ namespace UltimaXNA.Entity.EntityViews
             }
         }
 
-        public static int Compare(BaseEntity x, BaseEntity y)
+        public static int Compare(AEntity x, AEntity y)
         {
             int result = InternalGetSortZ(x) - InternalGetSortZ(y);
 
@@ -47,7 +49,7 @@ namespace UltimaXNA.Entity.EntityViews
             return result;
         }
 
-        private static int InternalGetSortZ(BaseEntity entity)
+        private static int InternalGetSortZ(AEntity entity)
         {
             int sort = entity.GetView().SortZ;
             if (entity is Ground)
@@ -69,7 +71,7 @@ namespace UltimaXNA.Entity.EntityViews
             return sort;
         }
 
-        private static int InternalGetTypeSortValue(BaseEntity mapobject)
+        private static int InternalGetTypeSortValue(AEntity mapobject)
         {
             if (mapobject is Ground)
                 return 0;

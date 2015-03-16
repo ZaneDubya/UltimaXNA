@@ -32,8 +32,8 @@ namespace UltimaXNA.UltimaWorld.View
 
         #region MousePickingVariables
         private static MouseOverItem m_overObject, m_overGround;
-        public static BaseEntity MouseOverObject { get { return (m_overObject == null) ? null : m_overObject.Entity; } }
-        public static BaseEntity MouseOverGround { get { return (m_overGround == null) ? null : m_overGround.Entity; } }
+        public static AEntity MouseOverObject { get { return (m_overObject == null) ? null : m_overObject.Entity; } }
+        public static AEntity MouseOverGround { get { return (m_overGround == null) ? null : m_overGround.Entity; } }
         public static Vector2 MouseOverObjectPoint { get { return (m_overObject == null) ? new Vector2(0, 0) : m_overObject.InTexturePosition; } }
         public const PickTypes DefaultPickType = PickTypes.PickStatics | PickTypes.PickObjects;
         public static PickTypes PickType { get; set; }
@@ -104,7 +104,7 @@ namespace UltimaXNA.UltimaWorld.View
             MapTile t;
             if ((t = map.GetMapTile(CenterPosition.X, CenterPosition.Y)) != null)
             {
-                BaseEntity underObject, underTerrain;
+                AEntity underObject, underTerrain;
                 t.IsPointUnderAnEntity(CenterPosition.Z, out underObject, out underTerrain);
 
                 // if we are under terrain, then do not draw any terrain at all.
@@ -175,7 +175,7 @@ namespace UltimaXNA.UltimaWorld.View
             ObjectsRendered = 0; // Count of objects rendered for statistics and debug
             MouseOverList overList = new MouseOverList(); // List of items for mouse over
             overList.MousePosition = UltimaEngine.Input.MousePosition;
-            List<BaseEntity> mapObjects;
+            List<AEntity> mapObjects;
             Vector3 drawPosition = new Vector3();
 
             for (int ix = RenderBeginX; ix < RenderEndX; ix++)

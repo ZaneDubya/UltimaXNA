@@ -18,7 +18,7 @@ using UltimaXNA.UltimaWorld.Model;
 
 namespace UltimaXNA.Entity
 {
-    public class Mobile : BaseEntity
+    public class Mobile : AEntity
     {
         // ============================================================
         // Movement and Facing

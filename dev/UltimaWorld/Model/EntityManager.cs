@@ -27,8 +27,8 @@ namespace UltimaXNA.UltimaWorld
             get { return m_Model; }
         }
 
-        private static Dictionary<int, BaseEntity> m_Entities = new Dictionary<int, BaseEntity>();
-        private static List<BaseEntity> m_Entities_Queued = new List<BaseEntity>();
+        private static Dictionary<int, AEntity> m_Entities = new Dictionary<int, AEntity>();
+        private static List<AEntity> m_Entities_Queued = new List<AEntity>();
         private static bool m_EntitiesCollectionIsLocked = false;
         static List<int> m_SerialsToRemove = new List<int>();
 
@@ -44,7 +44,7 @@ namespace UltimaXNA.UltimaWorld
             m_Entities.Clear();
         }
 
-        public static BaseEntity GetPlayerObject()
+        public static AEntity GetPlayerObject()
         {
             // This could be cached to save time.
             if (m_Entities.ContainsKey(MySerial))
@@ -67,7 +67,7 @@ namespace UltimaXNA.UltimaWorld
             m_EntitiesCollectionIsLocked = true;
 
             // Get the player object
-            BaseEntity player = GetPlayerObject();
+            AEntity player = GetPlayerObject();
 
             // Update the player entity first because we cull entities out of range of this main object.
             player.Update(frameMS);
@@ -75,7 +75,7 @@ namespace UltimaXNA.UltimaWorld
                 m_SerialsToRemove.Add(player.Serial);
 
             // Update all other entities.
-            foreach (KeyValuePair<int, BaseEntity> entity in m_Entities)
+            foreach (KeyValuePair<int, AEntity> entity in m_Entities)
             {
                 // Don't update the player entity twice!
                 if (entity.Key == MySerial)
@@ -95,7 +95,7 @@ namespace UltimaXNA.UltimaWorld
 
             // stop redirecting new entities to the queue and add any queued entities to the main entity collection.
             m_EntitiesCollectionIsLocked = false;
-            foreach (BaseEntity e in m_Entities_Queued)
+            foreach (AEntity e in m_Entities_Queued)
                 m_Entities.Add(e.Serial, e);
             m_Entities_Queued.Clear();
         }
@@ -104,7 +104,7 @@ namespace UltimaXNA.UltimaWorld
         {
             if (m_Entities.ContainsKey(serial))
             {
-                BaseEntity ownerEntity = m_Entities[serial];
+                AEntity ownerEntity = m_Entities[serial];
                 Overhead overhead = ownerEntity.AddOverhead(msgType, text, fontID, hue);
                 return overhead;
             }
@@ -120,10 +120,10 @@ namespace UltimaXNA.UltimaWorld
             return dynamic;
         }
 
-        public static List<T> GetObjectsByType<T>() where T : BaseEntity
+        public static List<T> GetObjectsByType<T>() where T : AEntity
         {
             List<T> list = new List<T>();
-            foreach (BaseEntity e in m_Entities.Values)
+            foreach (AEntity e in m_Entities.Values)
             {
                 if (e is T)
                 {
@@ -134,7 +134,7 @@ namespace UltimaXNA.UltimaWorld
             return list;
         }
 
-        public static T GetObject<T>(Serial serial, bool create) where T : BaseEntity
+        public static T GetObject<T>(Serial serial, bool create) where T : AEntity
         {
             T entity;
             // Check for existence in the collection.
@@ -171,9 +171,9 @@ namespace UltimaXNA.UltimaWorld
             }
         }
 
-        static T addObject<T>(Serial serial) where T : BaseEntity
+        static T addObject<T>(Serial serial) where T : AEntity
         {
-            BaseEntity e;
+            AEntity e;
             Type t = typeof(T);
             switch (t.Name)
             {

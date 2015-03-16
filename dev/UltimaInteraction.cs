@@ -34,12 +34,12 @@ namespace UltimaXNA
             s_Client.Send(new AsciiSpeechPacket(AsciiSpeechPacketTypes.Normal, 0, 0, "ENU", text));
         }
 
-        public static void SingleClick(BaseEntity item) // used by worldinput and itemgumpling.
+        public static void SingleClick(AEntity item) // used by worldinput and itemgumpling.
         {
             s_Client.Send(new SingleClickPacket(item.Serial));
         }
 
-        public static void DoubleClick(BaseEntity item) // used by itemgumpling, paperdollinteractable, topmenu, worldinput.
+        public static void DoubleClick(AEntity item) // used by itemgumpling, paperdollinteractable, topmenu, worldinput.
         {
             s_Client.Send(new DoubleClickPacket(item.Serial));
         } 
@@ -54,7 +54,7 @@ namespace UltimaXNA
             s_Client.Send(new RequestSkillUsePacket(index));
         }
 
-        public static Gump OpenContainerGump(BaseEntity entity) // used by ultimaclient.
+        public static Gump OpenContainerGump(AEntity entity) // used by ultimaclient.
         {
             Gump gump;
 
@@ -68,7 +68,7 @@ namespace UltimaXNA
             return gump;
         }
 
-        public static Gump OpenCorpseGump(BaseEntity entity) // used by UltimaClient
+        public static Gump OpenCorpseGump(AEntity entity) // used by UltimaClient
         {
             Gump gump;
 
