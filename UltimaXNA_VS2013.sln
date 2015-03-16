@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UltimaXNA", "dev\UltimaXNA.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UltimaXNAContent", "dev\Content\UltimaXNAContent.contentproj", "{C4D0357F-85DD-4418-ABA4-7C7875BB3129}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InterXLib", "ixl\InterXLib.csproj", "{5DE77709-9A9F-4059-9F8A-791F5042667A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InterXLib", "dev\InterXLib\InterXLib.csproj", "{5DE77709-9A9F-4059-9F8A-791F5042667A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
