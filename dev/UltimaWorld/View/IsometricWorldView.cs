@@ -199,7 +199,7 @@ namespace UltimaXNA.UltimaWorld.View
 
                         }
                         Entity.EntityViews.AEntityView view = mapObjects[i].GetView();
-                        if (view != null && view.Draw(m_spriteBatch, drawPosition, overList, PickType, m_maxItemAltitude))
+                        if (view != null && view.Draw(m_spriteBatch, tile, drawPosition, overList, PickType, m_maxItemAltitude))
                             ObjectsRendered++;
                     }
 

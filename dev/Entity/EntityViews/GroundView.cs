@@ -41,7 +41,7 @@ namespace UltimaXNA.Entity.EntityViews
         protected bool DrawAs3DStretched = false;
         protected bool NoDraw = false;
 
-        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, PickTypes pickType, int maxAlt)
+        public override bool Draw(SpriteBatch3D spriteBatch, MapTile tile, Vector3 drawPosition, MouseOverList mouseOverList, PickTypes pickType, int maxAlt)
         {
             if (NoDraw || !IsometricRenderer.DrawTerrain)
                 return false;
@@ -53,7 +53,7 @@ namespace UltimaXNA.Entity.EntityViews
             }
 
             if (!DrawAs3DStretched)
-                return base.Draw(spriteBatch, drawPosition, mouseOverList, pickType, 255);
+                return base.Draw(spriteBatch, tile, drawPosition, mouseOverList, pickType, 255);
             else
                 return Draw3DStretched(spriteBatch, drawPosition, mouseOverList, pickType, 255);
         }

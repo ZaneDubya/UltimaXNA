@@ -125,6 +125,7 @@
     <Compile Include="Core\AUltimaModel.cs" />
     <Compile Include="Entity\EntityViews\AEntityView.cs" />
     <Compile Include="Entity\EntityViews\CorpseView.cs" />
+    <Compile Include="Entity\EntityViews\DeferredViews.cs" />
     <Compile Include="UltimaWorld\Model\KrriosSort.cs" />
     <Compile Include="UltimaWorld\Model\ClintSort.cs" />
     <Compile Include="Entity\EntityViews\GroundView.cs" />

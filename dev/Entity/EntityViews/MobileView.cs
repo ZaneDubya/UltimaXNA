@@ -1,10 +1,8 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Entity;
 using UltimaXNA.Rendering;
-using UltimaXNA.UltimaWorld.View;
 using UltimaXNA.UltimaWorld;
+using UltimaXNA.UltimaWorld.Model;
 
 namespace UltimaXNA.Entity.EntityViews
 {
@@ -30,7 +28,7 @@ namespace UltimaXNA.Entity.EntityViews
             m_Animation.Update(frameMS);
         }
 
-        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, PickTypes pickType, int maxAlt)
+        public override bool Draw(SpriteBatch3D spriteBatch, MapTile tile, Vector3 drawPosition, MouseOverList mouseOverList, PickTypes pickType, int maxAlt)
         {
             DrawFlip = (MirrorFacingForDraw(Entity.Facing) > 4) ? true : false;
 
@@ -83,19 +81,14 @@ namespace UltimaXNA.Entity.EntityViews
                     DrawArea = new Rectangle((int)x, (int)-y, DrawTexture.Width, DrawTexture.Height);
                     HueVector = Utility.GetHueVector(m_MobileLayers[i].Hue);
 
-                    Texture2D texture2 = UltimaData.TexmapData.GetTexmapTexture(1);
-                    Rectangle screen_dest = new Rectangle(
+                    Rectangle screenDest = new Rectangle(
                         DrawFlip ? (int)drawPosition.X + DrawArea.X - DrawArea.Width + 44 : (int)drawPosition.X - DrawArea.X,
                         (int)drawPosition.Y - DrawArea.Y,
                         DrawFlip ? DrawArea.Width : DrawArea.Width,
                         DrawArea.Height);
-                    // spriteBatch.DrawSimple(texture2, screen_dest, Vector2.Zero);
+                    DeferredViews.AddDeferredView(tile, drawPosition, DrawTexture, screenDest, HueVector);
 
-                    int y2 = screen_dest.Y + screen_dest.Height;
-
-                    spriteBatch.DrawSimple(texture2, new Rectangle(screen_dest.X, (int)drawPosition.Y, screen_dest.Width, y2 - (int)drawPosition.Y), Vector2.Zero);
-
-                    base.Draw(spriteBatch, drawPosition, mouseOverList, pickType, maxAlt);
+                    base.Draw(spriteBatch, tile, drawPosition, mouseOverList, pickType, maxAlt);
                 }
             }
 

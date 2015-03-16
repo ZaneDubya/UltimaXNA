@@ -5,6 +5,7 @@ using UltimaXNA.Entity;
 using UltimaXNA.Rendering;
 using UltimaXNA.UltimaWorld.View;
 using UltimaXNA.UltimaWorld;
+using UltimaXNA.UltimaWorld.Model;
 
 namespace UltimaXNA.Entity.EntityViews
 {
@@ -41,7 +42,7 @@ namespace UltimaXNA.Entity.EntityViews
         protected Rectangle DrawArea = Rectangle.Empty;
         protected Texture2D DrawTexture = null;
 
-        public virtual bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, PickTypes pickType, int maxAlt)
+        public virtual bool Draw(SpriteBatch3D spriteBatch, MapTile tile, Vector3 drawPosition, MouseOverList mouseOverList, PickTypes pickType, int maxAlt)
         {
             VertexPositionNormalTextureHue[] vertexBuffer;
 
