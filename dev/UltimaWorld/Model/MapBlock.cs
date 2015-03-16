@@ -7,13 +7,13 @@ using UltimaXNA.Entity;
 
 namespace UltimaXNA.UltimaWorld.Model
 {
-    class MapCell
+    class MapBlock
     {
         public MapTile[] Tiles;
 
         public readonly int X, Y;
 
-        public MapCell(int x, int y)
+        public MapBlock(int x, int y)
         {
             X = x;
             Y = y;
@@ -51,7 +51,7 @@ namespace UltimaXNA.UltimaWorld.Model
                 int iTileZ = (sbyte)staticsData[staticDataIndex++];
                 staticDataIndex += 2; // unknown 2 byte data, not used?
 
-                StaticItem item = new StaticItem(iTileID);
+                StaticItem item = new StaticItem(iTileID, i);
                 item.Position.Set(X * 8 + iX, Y * 8 + iY, iTileZ);
             }
         }

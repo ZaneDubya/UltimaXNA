@@ -7,13 +7,13 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using System;
-using System.Collections.Generic;
+#region usings
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Rendering;
-using UltimaXNA.UltimaWorld.View;
+using System.Collections.Generic;
 using UltimaXNA.Entity;
+using UltimaXNA.Rendering;
+#endregion
 
 namespace UltimaXNA.UltimaWorld
 {
@@ -48,7 +48,7 @@ namespace UltimaXNA.UltimaWorld
             return null;
         }
 
-        internal MouseOverItem GetForemostMouseOverItem<T>(Point mousePosition) where T : AMapObject
+        internal MouseOverItem GetForemostMouseOverItem<T>(Point mousePosition) where T : BaseEntity
         {
             // Parse list backwards to find topmost mouse over object.
             foreach (MouseOverItem item in CreateReverseIterator(m_overList))
@@ -200,7 +200,7 @@ namespace UltimaXNA.UltimaWorld
 
         internal bool TextureContainsPoint(Point mousePosition)
         {
-            if (Entity.GetType() == typeof(MapObjectGround))
+            if (Entity is Ground)
             {
                 // we already know we are within this polygon
                 InTexturePosition = new Vector2(mousePosition.X - Position.X, mousePosition.Y - Position.Y);

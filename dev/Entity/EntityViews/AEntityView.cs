@@ -31,18 +31,6 @@ namespace UltimaXNA.Entity.EntityViews
         // Sort routines
         // ======================================================================
 
-        // This is a sort value which should be set based on the type of object.
-        public virtual int SortThreshold
-        {
-            get { return 0; }
-        }
-
-        // This is a sort value which is used to sort layers of a single object.
-        public int SortTiebreaker
-        {
-            get { return 0; }
-        }
-
         public int SortZ = 0;
 
         // ======================================================================

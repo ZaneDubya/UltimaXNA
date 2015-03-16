@@ -474,13 +474,13 @@ namespace UltimaXNA
 
         private void receive_GraphicEffect(IRecvPacket packet)
         {
-            DynamicObject dynamic = EntityManager.AddDynamicObject();
+            Effect dynamic = EntityManager.AddDynamicObject();
             dynamic.Load_FromPacket((GraphicEffectPacket)packet);
         }
 
         private void receive_HuedEffect(IRecvPacket packet)
         {
-            DynamicObject dynamic = EntityManager.AddDynamicObject();
+            Effect dynamic = EntityManager.AddDynamicObject();
             dynamic.Load_FromPacket((GraphicEffectHuedPacket)packet);
         }
 

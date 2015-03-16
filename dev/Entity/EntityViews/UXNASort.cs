@@ -1,6 +1,6 @@
 ﻿/***************************************************************************
  *   MapObjectComparer.cs
- *   Based on code from ClintXNA's renderer: http://www.runuo.com/forums/xna/92023-hi.html
+ *   Based on code from ClintXNA's renderer.
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -9,36 +9,52 @@
  *
  ***************************************************************************/
 #region usings
-using System;
 using System.Collections.Generic;
-using UltimaXNA.Entity;
-using Microsoft.Xna.Framework;
 #endregion
 
-namespace UltimaXNA.UltimaWorld.View
+namespace UltimaXNA.Entity.EntityViews
 {
-    sealed class MapObjectComparer : IComparer<BaseEntity>
+    class UXNASort
     {
-        public static readonly MapObjectComparer Comparer = new MapObjectComparer();
+        public static void Sort(List<BaseEntity> items)
+        {
+            for (int i = 0; i < items.Count - 1; i++)
+            {
+                int j = i + 1;
 
-        public int Compare(BaseEntity x, BaseEntity y)
+                while (j > 0)
+                {
+                    int result = Compare(items[j - 1], items[j]);
+                    if (result > 0)
+                    {
+                        BaseEntity temp = items[j - 1];
+                        items[j - 1] = items[j];
+                        items[j] = temp;
+
+                    }
+                    j--;
+                }
+            }
+        }
+
+        public static int Compare(BaseEntity x, BaseEntity y)
         {
             int result = InternalGetSortZ(x) - InternalGetSortZ(y);
 
             if (result == 0)
-                result = typeSortValue(x) - typeSortValue(y);
+                result = InternalGetTypeSortValue(x) - InternalGetTypeSortValue(y);
 
             return result;
         }
 
-        private int InternalGetSortZ(BaseEntity entity)
+        private static int InternalGetSortZ(BaseEntity entity)
         {
-            int sort = entity.Z;
+            int sort = entity.GetView().SortZ;
             if (entity is Ground)
                 sort--;
-            else if (entity is StaticItem)
+            else if (entity is Item)
             {
-                UltimaData.ItemData itemdata = ((StaticItem)entity).ItemData;
+                UltimaData.ItemData itemdata = ((Item)entity).ItemData;
                 if (!itemdata.IsBackground)
                     sort++;
                 if (!(itemdata.Height == 0))
@@ -46,10 +62,14 @@ namespace UltimaXNA.UltimaWorld.View
                 if (itemdata.IsSurface)
                     sort--;
             }
-            return entity.Z;
+            else if (entity is Mobile)
+            {
+                sort ++;
+            }
+            return sort;
         }
 
-        private int typeSortValue(BaseEntity mapobject)
+        private static int InternalGetTypeSortValue(BaseEntity mapobject)
         {
             if (mapobject is Ground)
                 return 0;

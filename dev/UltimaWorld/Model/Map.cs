@@ -20,7 +20,7 @@ namespace UltimaXNA.UltimaWorld.Model
 {
     public sealed class Map
     {
-        private MapCell[] m_Cells;
+        private MapBlock[] m_Blocks;
         private TileMatrixRaw m_MapData;
         private Point m_Center = new Point(int.MinValue, int.MinValue);
 
@@ -41,7 +41,7 @@ namespace UltimaXNA.UltimaWorld.Model
             Height = m_MapData.Height;
             Width = m_MapData.Width;
 
-            m_Cells = new MapCell[c_CellsInMemorySpan * c_CellsInMemorySpan];
+            m_Blocks = new MapBlock[c_CellsInMemorySpan * c_CellsInMemorySpan];
         }
 
         public Point CenterPosition
@@ -63,7 +63,7 @@ namespace UltimaXNA.UltimaWorld.Model
             int cellX = x / 8, cellY = y / 8;
             int cellIndex = (cellY % c_CellsInMemorySpan) * c_CellsInMemorySpan + (cellX % c_CellsInMemorySpan);
 
-            MapCell cell = m_Cells[cellIndex];
+            MapBlock cell = m_Blocks[cellIndex];
             if (cell == null)
                 return null;
             return cell.Tiles[(y % 8) * 8 + (x % 8)];
@@ -83,10 +83,10 @@ namespace UltimaXNA.UltimaWorld.Model
                         cellX += Width / 8;
 
                     int cellIndex = (cellY % c_CellsInMemorySpan) * c_CellsInMemorySpan + cellX % c_CellsInMemorySpan;
-                    if (m_Cells[cellIndex] == null || m_Cells[cellIndex].X != cellX || m_Cells[cellIndex].Y != cellY)
+                    if (m_Blocks[cellIndex] == null || m_Blocks[cellIndex].X != cellX || m_Blocks[cellIndex].Y != cellY)
                     {
-                        m_Cells[cellIndex] = new MapCell(cellX, cellY);
-                        m_Cells[cellIndex].LoadTiles(m_MapData);
+                        m_Blocks[cellIndex] = new MapBlock(cellX, cellY);
+                        m_Blocks[cellIndex].LoadTiles(m_MapData);
                     }
                 }
             }

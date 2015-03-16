@@ -125,7 +125,8 @@
     <Compile Include="Core\AUltimaModel.cs" />
     <Compile Include="Entity\EntityViews\AEntityView.cs" />
     <Compile Include="Entity\EntityViews\CorpseView.cs" />
-    <Compile Include="Entity\EntityViews\ViewSorter.cs" />
+    <Compile Include="Entity\EntityViews\KrriosSort.cs" />
+    <Compile Include="Entity\EntityViews\UXNASort.cs" />
     <Compile Include="Entity\EntityViews\GroundView.cs" />
     <Compile Include="Entity\EntityViews\ItemView.cs" />
     <Compile Include="Entity\EntityViews\MobileView.cs" />
@@ -290,8 +291,6 @@
     <Compile Include="Core\Diagnostics\Dynamic.cs" />
     <Compile Include="UltimaWorld\Controller\TargetTypes.cs" />
     <Compile Include="UltimaWorld\Controller\WorldInput.cs" />
-    <Compile Include="Entity\EntityViewsOld\MapObjectDynamic.cs" />
-    <Compile Include="Entity\EntityViewsOld\MapObjectPrerendered.cs" />
     <Compile Include="UltimaGUI\Controls\TextureGumpling.cs" />
     <Compile Include="UltimaGUI\HTML\HTMLRegions.cs" />
     <Compile Include="UltimaGUI\HTML\HTMLAtoms.cs" />
@@ -322,7 +321,7 @@
     <Compile Include="Core\Point.cs" />
     <Compile Include="Entity\Container.cs" />
     <Compile Include="Entity\Corpse.cs" />
-    <Compile Include="Entity\DynamicObject.cs" />
+    <Compile Include="Entity\Effect.cs" />
     <Compile Include="Entity\BaseEntity.cs" />
     <Compile Include="UltimaWorld\Model\EntityManager.cs" />
     <Compile Include="Position3D.cs" />
@@ -341,7 +340,6 @@
     <Compile Include="UltimaLogin\Scenes\CreateCharacterScene.cs" />
     <Compile Include="UltimaLogin\Scenes\LoggingInScene.cs" />
     <Compile Include="UltimaLogin\Scenes\SelectServerScene.cs" />
-    <Compile Include="Entity\EntityViewsOld\MapObjectDeferred.cs" />
     <Compile Include="Core\Rendering\VectorPolygon.cs" />
     <Compile Include="Core\Rendering\VectorRenderer.cs" />
     <Compile Include="UltimaGUI\HTML\Parsing\DynaString.cs" />
@@ -351,10 +349,9 @@
     <Compile Include="UltimaGUI\HTML\Parsing\HTMLheuristics.cs" />
     <Compile Include="UltimaGUI\HTML\Parsing\HTMLParser.cs" />
     <Compile Include="UltimaGUI\HTML\Parsing\TagParser.cs" />
-    <Compile Include="UltimaWorld\Model\MapCell.cs" />
+    <Compile Include="UltimaWorld\Model\MapBlock.cs" />
     <Compile Include="UltimaWorld\View\IsometricWorldView.cs" />
     <Compile Include="UltimaWorld\Model\MapTile.cs" />
-    <Compile Include="Entity\EntityViewsOld\MapObjectComparer.cs" />
     <Compile Include="UltimaWorld\Controller\MouseOverList.cs" />
     <Compile Include="UltimaGUI\LoginGumps\CharacterListGump.cs" />
     <Compile Include="UltimaGUI\WorldGumps\ChatWindow.cs" />
@@ -420,17 +417,10 @@
     <Compile Include="UltimaLogin\Scenes\LoginScene.cs" />
     <Compile Include="Serial.cs" />
     <Compile Include="UltimaData\_Enums.cs" />
-    <Compile Include="Entity\EntityViewsOld\MapObjectCorpse.cs" />
-    <Compile Include="Entity\EntityViewsOld\MapObjectItem.cs" />
     <Compile Include="UltimaWorld\View\MiniMapWorldView.cs" />
-    <Compile Include="Entity\EntityViewsOld\MapObjectGround.cs" />
     <Compile Include="UltimaWorld\Model\Map.cs" />
-    <Compile Include="Entity\EntityViewsOld\MapObjectMobile.cs" />
     <Compile Include="UltimaWorld\Controller\PickTypes.cs" />
     <Compile Include="Core\Rendering\SpriteBatch3D.cs" />
-    <Compile Include="Entity\EntityViewsOld\MapObjectText.cs" />
-    <Compile Include="Entity\EntityViewsOld\MapObject.cs" />
-    <Compile Include="Entity\EntityViewsOld\MapObjectStatic.cs" />
     <Compile Include="Core\Rendering\VertexPositionNormalTextureHue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UltimaData\AnimationData.cs" />

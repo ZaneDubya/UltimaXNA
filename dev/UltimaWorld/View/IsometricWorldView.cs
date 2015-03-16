@@ -156,10 +156,6 @@ namespace UltimaXNA.UltimaWorld.View
                 return;
             }
 
-            // Prerender objects
-            m_spriteBatch.Prepare(false, false);
-            MapObjectPrerendered.RenderObjects(m_spriteBatch);
-
             int debugRenderSize = 40;
 
             int RenderBeginX = CenterPosition.X - (debugRenderSize / 2);
@@ -214,7 +210,7 @@ namespace UltimaXNA.UltimaWorld.View
 
             // Update the MouseOver objects
             m_overObject = overList.GetForemostMouseOverItem(UltimaEngine.Input.MousePosition);
-            m_overGround = overList.GetForemostMouseOverItem<MapObjectGround>(UltimaEngine.Input.MousePosition);
+            m_overGround = overList.GetForemostMouseOverItem<Ground>(UltimaEngine.Input.MousePosition);
 
             // Draw the objects we just send to the spritebatch.
             m_spriteBatch.Prepare(true, true);

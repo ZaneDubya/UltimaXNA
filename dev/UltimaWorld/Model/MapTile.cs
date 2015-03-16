@@ -180,7 +180,7 @@ namespace UltimaXNA.UltimaWorld.Model
                 if (m_NeedsSorting)
                 {
                     removeDuplicateObjects();
-                    m_Entities.Sort(Entity.EntityViews.ViewSorter.Comparer);
+                    Entity.EntityViews.KrriosSort.Sort(m_Entities);
                     m_NeedsSorting = false;
                 }
                 return m_Entities;
@@ -190,30 +190,6 @@ namespace UltimaXNA.UltimaWorld.Model
         public void Resort()
         {
             m_NeedsSorting = true;
-        }
-
-        private static bool IsGroundTile(object i)
-        {
-            Type t = typeof(MapObjectGround);
-            return t == i.GetType() || i.GetType().IsSubclassOf(t);
-        }
-
-        private static bool IsMobile(object i)
-        {
-            Type t = typeof(MapObjectMobile);
-            return t == i.GetType() || i.GetType().IsSubclassOf(t);
-        }
-
-        private static bool IsStaticItem(object i)
-        {
-            Type t = typeof(MapObjectStatic);
-            return t == i.GetType() || i.GetType().IsSubclassOf(t);
-        }
-
-        private static bool IsGOTile(object i)
-        {
-            Type t = typeof(MapObjectItem);
-            return t == i.GetType() || i.GetType().IsSubclassOf(t);
         }
     }
 }

@@ -114,9 +114,9 @@ namespace UltimaXNA.UltimaWorld
             }
         }
 
-        public static DynamicObject AddDynamicObject()
+        public static Effect AddDynamicObject()
         {
-            DynamicObject dynamic = addObject<DynamicObject>(Serial.NewDynamicSerial);
+            Effect dynamic = addObject<Effect>(Serial.NewDynamicSerial);
             return dynamic;
         }
 
@@ -196,7 +196,7 @@ namespace UltimaXNA.UltimaWorld
                     e = new Multi(serial);
                     break;
                 case "DynamicObject":
-                    e = new DynamicObject(serial);
+                    e = new Effect(serial);
                     break;
                 default:
                     throw new Exception("Unknown addObject type!");

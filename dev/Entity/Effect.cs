@@ -16,12 +16,14 @@ using UltimaXNA.UltimaWorld.Model;
 
 namespace UltimaXNA.Entity
 {
-    public class DynamicObject : BaseEntity
+    public class Effect : BaseEntity
     {
         private bool m_isHued = false;
         private bool m_isInitialized = false;
 
         private int m_baseItemID;
+        public int ItemID { get { return m_baseItemID; } }
+
         private float m_frameSequence;
         private int m_frameLength;
         private bool m_useGumpArtInsteadOfTileArt = false;
@@ -38,7 +40,7 @@ namespace UltimaXNA.Entity
         private GraphicEffectBlendMode m_bendMode;
         private int m_targetX, m_targetY, m_targetZ;
 
-        public DynamicObject(Serial serial)
+        public Effect(Serial serial)
             : base(serial)
         {
 
@@ -98,7 +100,7 @@ namespace UltimaXNA.Entity
             {
                 if (m_doesExplode)
                 {
-                    DynamicObject dynamic = EntityManager.AddDynamicObject();
+                    Effect dynamic = EntityManager.AddDynamicObject();
                     dynamic.Load_AsExplosion(m_targetX, m_targetY, m_targetZ);
                 }
                 this.Dispose();
