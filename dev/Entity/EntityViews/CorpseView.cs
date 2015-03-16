@@ -19,7 +19,7 @@ namespace UltimaXNA.Entity.EntityViews
             PickType = PickTypes.PickObjects;
         }
 
-        public override bool Draw(SpriteBatch3D spriteBatch, MapTile tile, Vector3 drawPosition, MouseOverList mouseOverList, PickTypes pickType, int maxAlt)
+        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, PickTypes pickType)
         {
             int facing = MirrorFacingForDraw(Entity.Facing);
             int bodyID = Entity.BodyID;
@@ -31,7 +31,7 @@ namespace UltimaXNA.Entity.EntityViews
             DrawArea = new Rectangle(0, 0, DrawTexture.Width, DrawTexture.Height);
             DrawFlip = false;
 
-            return base.Draw(spriteBatch, tile, drawPosition, mouseOverList, pickType, maxAlt);
+            return base.Draw(spriteBatch, drawPosition, mouseOverList, pickType);
         }
 
         private AnimationFrame getFrame(int bodyID, int facing, int frameIndex, int hue)

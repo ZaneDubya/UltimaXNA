@@ -76,7 +76,7 @@ namespace UltimaXNA.UltimaWorld.Model
             underItem = null;
             underTerrain = null;
 
-            List<AEntity> iObjects = this.Items;
+            List<AEntity> iObjects = this.Entities;
             for (int i = iObjects.Count - 1; i >= 0; i--)
             {
                 if (iObjects[i].Z <= originZ)
@@ -173,7 +173,7 @@ namespace UltimaXNA.UltimaWorld.Model
             }
         }
 
-        public List<AEntity> Items
+        public List<AEntity> Entities
         {
             get
             {

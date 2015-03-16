@@ -41,7 +41,7 @@ namespace UltimaXNA.Entity.EntityViews
         protected bool DrawAs3DStretched = false;
         protected bool NoDraw = false;
 
-        public override bool Draw(SpriteBatch3D spriteBatch, MapTile tile, Vector3 drawPosition, MouseOverList mouseOverList, PickTypes pickType, int maxAlt)
+        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, PickTypes pickType)
         {
             if (NoDraw)
                 return false;
@@ -53,9 +53,9 @@ namespace UltimaXNA.Entity.EntityViews
             }
 
             if (!DrawAs3DStretched)
-                return base.Draw(spriteBatch, tile, drawPosition, mouseOverList, pickType, 255);
+                return base.Draw(spriteBatch, drawPosition, mouseOverList, pickType);
             else
-                return Draw3DStretched(spriteBatch, drawPosition, mouseOverList, pickType, 255);
+                return Draw3DStretched(spriteBatch, drawPosition, mouseOverList, pickType);
         }
 
         private Vector3 m_vertex0_yOffset, m_vertex1_yOffset, m_vertex2_yOffset, m_vertex3_yOffset;
@@ -67,7 +67,7 @@ namespace UltimaXNA.Entity.EntityViews
                     new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(1, 1, 0))
         };
 
-        private bool Draw3DStretched(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, PickTypes pickType, int maxAlt)
+        private bool Draw3DStretched(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, PickTypes pickType)
         {
             // this is an isometric stretched tile and needs a specialized draw routine.
             m_vertexBufferAlternate[0].Position = drawPosition + m_vertex0_yOffset;

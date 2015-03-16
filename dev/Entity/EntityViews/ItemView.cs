@@ -20,7 +20,7 @@ namespace UltimaXNA.Entity.EntityViews
 
         private int m_DisplayItemID = -1;
 
-        public override bool Draw(SpriteBatch3D spriteBatch, MapTile tile, Vector3 drawPosition, MouseOverList mouseOverList, PickTypes pickType, int maxAlt)
+        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, PickTypes pickType)
         {
             if (Entity.NoDraw)
                 return false;
@@ -35,7 +35,7 @@ namespace UltimaXNA.Entity.EntityViews
                 HueVector = Utility.GetHueVector(Entity.Hue);
             }
 
-            return base.Draw(spriteBatch, tile, drawPosition, mouseOverList, pickType, maxAlt);
+            return base.Draw(spriteBatch, drawPosition, mouseOverList, pickType);
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
  *   IsometricRenderer.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   Based on code from ClintXNA's renderer: http://www.runuo.com/forums/xna/92023-hi.html
  *   
  *   This program is free software; you can redistribute it and/or modify
@@ -144,11 +143,11 @@ namespace UltimaXNA.UltimaWorld.View
 
         public static void Draw(Map map)
         {
-            render(map, out m_renderOffset);
-            renderVectors(m_renderOffset);
+            InternalDrawEntities(map, out m_renderOffset);
+            InternalDrawVectors(m_renderOffset);
         }
 
-        private static void render(Map map, out Vector2 renderOffset)
+        private static void InternalDrawEntities(Map map, out Vector2 renderOffset)
         {
             if (CenterPosition == null)
             {
@@ -156,14 +155,14 @@ namespace UltimaXNA.UltimaWorld.View
                 return;
             }
 
-            int renderDimensionY = 16;
-            int renderOffsetX = 2;
-            int renderDimensionX = 22;
-            int renderAdditionalColumns = 4; // this is used to draw high objects that would otherwise not be visible until their ground tile was.
+            int renderDimensionY = 16; // the number of tiles that are drawn for half the screen (doubled to fill the entire screen).
+            int renderDimensionX = 18; // the number of tiles that are drawn in the x-direction ( + renderExtraColumnsAtSides * 2 ).
+            int renderExtraColumnsAtSides = 2; // the client draws an additional number of tiles at the edge to make wide objects that are mostly offscreen visible.
+            int renderExtraRowsAtBottom = 4; // this is used to draw tall objects that would otherwise not be visible until their ground tile was on screen.
 
-            Point firstTile = new Point(CenterPosition.X + renderOffsetX, CenterPosition.Y - renderDimensionY - renderOffsetX);
+            Point firstTile = new Point(CenterPosition.X + renderExtraColumnsAtSides, CenterPosition.Y - renderDimensionY - renderExtraColumnsAtSides);
 
-            renderOffset.X = ((UltimaVars.EngineVars.ScreenSize.X + ((renderDimensionY) * 44)) / 2) - 22 + renderOffsetX * 44;
+            renderOffset.X = ((UltimaVars.EngineVars.ScreenSize.X + ((renderDimensionY) * 44)) / 2) - 22 + renderExtraColumnsAtSides * 44;
             renderOffset.X -= (int)((CenterPosition.X_offset - CenterPosition.Y_offset) * 22);
             renderOffset.X -= (firstTile.X - firstTile.Y) * 22;
 
@@ -173,12 +172,11 @@ namespace UltimaXNA.UltimaWorld.View
             renderOffset.Y -= (firstTile.X + firstTile.Y) * 22;
 
             ObjectsRendered = 0; // Count of objects rendered for statistics and debug
+
             MouseOverList overList = new MouseOverList(); // List of items for mouse over
             overList.MousePosition = UltimaEngine.Input.MousePosition;
-            List<AEntity> mapObjects;
 
-
-            for (int col = 0; col < renderDimensionY * 2 + renderAdditionalColumns; col++)
+            for (int col = 0; col < renderDimensionY * 2 + renderExtraRowsAtBottom; col++)
             {
                 Vector3 drawPosition = new Vector3();
                 drawPosition.X = (firstTile.X - firstTile.Y + (col % 2)) * 22 + renderOffset.X;
@@ -186,18 +184,21 @@ namespace UltimaXNA.UltimaWorld.View
 
                 Point index = new Point(firstTile.X + ((col + 1) / 2), firstTile.Y + (col / 2));
 
-                for (int row = 0; row < renderDimensionX; row++)
+                for (int row = 0; row < renderDimensionX + renderExtraColumnsAtSides * 2; row++)
                 {
                     MapTile tile = map.GetMapTile(index.X - row, index.Y + row);
                     if (tile == null)
                         continue;
 
-                    mapObjects = tile.Items;
-                    for (int i = 0; i < mapObjects.Count; i++)
+                    for (int i = 0; i < tile.Entities.Count; i++)
                     {
-                        Entity.EntityViews.AEntityView view = mapObjects[i].GetView();
-                        if (view != null && view.Draw(m_spriteBatch, tile, drawPosition, overList, PickType, m_maxItemAltitude))
+                        if (tile.Entities[i].Z >= m_maxItemAltitude)
+                            continue;
+                        Entity.EntityViews.AEntityView view = tile.Entities[i].GetView();
+                        if (view != null && view.Draw(m_spriteBatch, drawPosition, overList, PickType))
+                        {
                             ObjectsRendered++;
+                        }
                     }
 
                     drawPosition.X -= 44f;
@@ -213,7 +214,7 @@ namespace UltimaXNA.UltimaWorld.View
             m_spriteBatch.Flush();
         }
 
-        private static void renderVectors(Vector2 renderOffset)
+        private static void InternalDrawVectors(Vector2 renderOffset)
         {
             if (Flag_HighlightMouseOver)
             {

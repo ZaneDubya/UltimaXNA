@@ -28,7 +28,7 @@ namespace UltimaXNA.Entity.EntityViews
             m_Animation.Update(frameMS);
         }
 
-        public override bool Draw(SpriteBatch3D spriteBatch, MapTile tile, Vector3 drawPosition, MouseOverList mouseOverList, PickTypes pickType, int maxAlt)
+        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, PickTypes pickType)
         {
             DrawFlip = (MirrorFacingForDraw(Entity.Facing) > 4) ? true : false;
 
@@ -47,13 +47,19 @@ namespace UltimaXNA.Entity.EntityViews
 
             InternalSetupLayers();
 
-            Texture2D texture = m_MobileLayers[0].Frame.Texture;
+            // TODO: determine if mobile should be drawn now, or deferred.
+            // if deferred, return false and create a deferred object.
+            // if drawn now, return true.
 
-            int drawX, drawY;
+            return false;
+        }
 
+        public bool DrawDeferred(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, PickTypes pickType)
+        {
             int drawCenterX = m_MobileLayers[0].Frame.Center.X;
             int drawCenterY = m_MobileLayers[0].Frame.Center.Y;
-            
+
+            int drawX, drawY;
             if (DrawFlip)
             {
                 drawX = drawCenterX - 22 + (int)((Entity.Position.X_offset - Entity.Position.Y_offset) * 22);
@@ -86,9 +92,8 @@ namespace UltimaXNA.Entity.EntityViews
                         (int)drawPosition.Y - DrawArea.Y,
                         DrawFlip ? DrawArea.Width : DrawArea.Width,
                         DrawArea.Height);
-                    DeferredViews.AddDeferredView(tile, drawPosition, DrawTexture, screenDest, HueVector);
 
-                    base.Draw(spriteBatch, tile, drawPosition, mouseOverList, pickType, maxAlt);
+                    base.Draw(spriteBatch, drawPosition, mouseOverList, pickType);
                 }
             }
 

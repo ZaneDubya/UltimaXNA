@@ -92,9 +92,9 @@ namespace UltimaXNA.Entity
                 {
                     MapTile sector = sectors[i];
 
-                    for (int j = 0; j < sector.Items.Count; ++j)
+                    for (int j = 0; j < sector.Entities.Count; ++j)
                     {
-                        AEntity entity = sector.Items[j]; //Item item = sector.Items[j];
+                        AEntity entity = sector.Entities[j]; //Item item = sector.Items[j];
 
                         // if (ignoreMovableImpassables && item.Movable && item.ItemData.Impassable)
                         //     continue;
@@ -130,9 +130,9 @@ namespace UltimaXNA.Entity
 
                 if (sectorStart == sectorForward)
                 {
-                    for (int i = 0; i < sectorStart.Items.Count; ++i)
+                    for (int i = 0; i < sectorStart.Entities.Count; ++i)
                     {
-                        AEntity entity = sectorStart.Items[i]; // Item item = sectorStart.Items[i];
+                        AEntity entity = sectorStart.Entities[i]; // Item item = sectorStart.Items[i];
 
                         if (entity is Item)
                         {
@@ -153,9 +153,9 @@ namespace UltimaXNA.Entity
                 }
                 else
                 {
-                    for (int i = 0; i < sectorForward.Items.Count; ++i)
+                    for (int i = 0; i < sectorForward.Entities.Count; ++i)
                     {
-                        AEntity entity = sectorForward.Items[i]; // Item item = sectorForward.Items[i];
+                        AEntity entity = sectorForward.Entities[i]; // Item item = sectorForward.Items[i];
 
                         if (entity is Item)
                         {
@@ -172,9 +172,9 @@ namespace UltimaXNA.Entity
                         }
                     }
 
-                    for (int i = 0; i < sectorStart.Items.Count; ++i)
+                    for (int i = 0; i < sectorStart.Entities.Count; ++i)
                     {
-                        AEntity entity = sectorStart.Items[i]; // Item item = sectorStart.Items[i];
+                        AEntity entity = sectorStart.Entities[i]; // Item item = sectorStart.Items[i];
 
                         if (entity is Item)
                         {
