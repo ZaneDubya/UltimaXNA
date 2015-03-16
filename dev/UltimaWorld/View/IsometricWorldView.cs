@@ -156,55 +156,51 @@ namespace UltimaXNA.UltimaWorld.View
                 return;
             }
 
-            int debugRenderSize = 40;
+            int renderDimensionY = 16;
+            int renderOffsetX = 2;
+            int renderDimensionX = 22;
+            int renderAdditionalColumns = 4; // this is used to draw high objects that would otherwise not be visible until their ground tile was.
 
-            int RenderBeginX = CenterPosition.X - (debugRenderSize / 2);
-            int RenderBeginY = CenterPosition.Y - (debugRenderSize / 2);
-            int RenderEndX = RenderBeginX + debugRenderSize;
-            int RenderEndY = RenderBeginY + debugRenderSize;
+            Point firstTile = new Point(CenterPosition.X + renderOffsetX, CenterPosition.Y - renderDimensionY - renderOffsetX);
 
-            renderOffset.X = (UltimaVars.EngineVars.ScreenSize.X >> 1) - 22;
+            renderOffset.X = ((UltimaVars.EngineVars.ScreenSize.X + ((renderDimensionY) * 44)) / 2) - 22 + renderOffsetX * 44;
             renderOffset.X -= (int)((CenterPosition.X_offset - CenterPosition.Y_offset) * 22);
-            renderOffset.X -= (RenderBeginX - RenderBeginY) * 22;
+            renderOffset.X -= (firstTile.X - firstTile.Y) * 22;
 
-            renderOffset.Y = ((UltimaVars.EngineVars.ScreenSize.Y - (debugRenderSize * 44)) >> 1);
+            renderOffset.Y = ((UltimaVars.EngineVars.ScreenSize.Y - (renderDimensionY * 44)) / 2);
             renderOffset.Y += (CenterPosition.Z * 4) + (int)(CenterPosition.Z_offset * 4);
             renderOffset.Y -= (int)((CenterPosition.X_offset + CenterPosition.Y_offset) * 22);
-            renderOffset.Y -= (RenderBeginX + RenderBeginY) * 22;
+            renderOffset.Y -= (firstTile.X + firstTile.Y) * 22;
 
             ObjectsRendered = 0; // Count of objects rendered for statistics and debug
             MouseOverList overList = new MouseOverList(); // List of items for mouse over
             overList.MousePosition = UltimaEngine.Input.MousePosition;
             List<AEntity> mapObjects;
-            Vector3 drawPosition = new Vector3();
 
-            for (int ix = RenderBeginX; ix < RenderEndX; ix++)
+
+            for (int col = 0; col < renderDimensionY * 2 + renderAdditionalColumns; col++)
             {
-                drawPosition.X = (ix - RenderBeginY) * 22 + renderOffset.X;
-                drawPosition.Y = (ix + RenderBeginY) * 22 + renderOffset.Y;
+                Vector3 drawPosition = new Vector3();
+                drawPosition.X = (firstTile.X - firstTile.Y + (col % 2)) * 22 + renderOffset.X;
+                drawPosition.Y = (firstTile.X + firstTile.Y + col) * 22 + renderOffset.Y;
 
-                DrawTerrain = true;
+                Point index = new Point(firstTile.X + ((col + 1) / 2), firstTile.Y + (col / 2));
 
-                for (int iy = RenderBeginY; iy < RenderEndY; iy++)
+                for (int row = 0; row < renderDimensionX; row++)
                 {
-                    MapTile tile = map.GetMapTile(ix, iy);
+                    MapTile tile = map.GetMapTile(index.X - row, index.Y + row);
                     if (tile == null)
                         continue;
 
                     mapObjects = tile.Items;
                     for (int i = 0; i < mapObjects.Count; i++)
                     {
-                        if (mapObjects[i] is Mobile)
-                        {
-
-                        }
                         Entity.EntityViews.AEntityView view = mapObjects[i].GetView();
                         if (view != null && view.Draw(m_spriteBatch, tile, drawPosition, overList, PickType, m_maxItemAltitude))
                             ObjectsRendered++;
                     }
 
-                    drawPosition.X -= 22f;
-                    drawPosition.Y += 22f;
+                    drawPosition.X -= 44f;
                 }
             }
 

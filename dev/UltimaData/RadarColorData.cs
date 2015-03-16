@@ -29,7 +29,7 @@ namespace UltimaXNA.UltimaData
                 for (int i = 0; i < Colors.Length; i++)
                 {
                     uint c = bin.ReadUInt16();
-                    Colors[i] = 0x80000000 | (
+                    Colors[i] = 0xFF000000 | (
                             ((((c >> 10) & 0x1F) * multiplier)) |
                             ((((c >> 5) & 0x1F) * multiplier) << 8) |
                             (((c & 0x1F) * multiplier) << 16)

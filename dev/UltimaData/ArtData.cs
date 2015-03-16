@@ -97,7 +97,7 @@ namespace UltimaXNA.UltimaData
                     while (start < end)
                     {
                         uint color = fileData[i++];
-                        *start++ = 0x80000000 + (
+                        *start++ = 0xFF000000 + (
                                     ((((color >> 10) & 0x1F) * multiplier)) |
                                     ((((color >> 5) & 0x1F) * multiplier) << 8) |
                                     (((color & 0x1F) * multiplier) << 16)
@@ -118,7 +118,7 @@ namespace UltimaXNA.UltimaData
                     while (start < end)
                     {
                         uint color = fileData[i++];
-                        *start++ = 0x80000000 + (
+                        *start++ = 0xFF000000 + (
                                     ((((color >> 10) & 0x1F) * multiplier)) |
                                     ((((color >> 5) & 0x1F) * multiplier) << 8) |
                                     (((color & 0x1F) * multiplier) << 16)
@@ -225,7 +225,7 @@ namespace UltimaXNA.UltimaData
                         while (start < end)
                         {
                             uint color = fileData[i++];
-                            *start++ = 0x80000000 + (
+                            *start++ = 0xFF000000 + (
                                     ((((color >> 10) & 0x1F) * multiplier)) |
                                     ((((color >> 5) & 0x1F) * multiplier) << 8) |
                                     (((color & 0x1F) * multiplier) << 16)

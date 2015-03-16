@@ -135,7 +135,7 @@ namespace UltimaXNA.UltimaData
             for (int i = 0; i < 0x100; ++i)
             {
                 uint color = reader.ReadUShort();
-                pal[i] = 0x80000000 + (
+                pal[i] = 0xFF000000 + (
                     ((((color >> 10) & 0x1F) * 0xFF / 0x1F)) |
                     ((((color >> 5) & 0x1F) * 0xFF / 0x1F) << 8) |
                     (((color & 0x1F) * 0xFF / 0x1F) << 16)

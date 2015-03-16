@@ -27,14 +27,14 @@ namespace UltimaXNA.Entity.EntityViews
                 DrawFlip = false;
                 DrawAs3DStretched = false;
 
-                DrawTexture = UltimaData.ArtData.GetLandTexture(0x3E46);
+                DrawTexture = UltimaData.ArtData.GetLandTexture(Entity.LandDataID);
                 DrawArea = new Rectangle(0, Entity.Z * 4, 44, 44);
             }
             else
             {
                 DrawFlip = false;
                 DrawAs3DStretched = true;
-                DrawTexture = UltimaData.TexmapData.GetTexmapTexture(0x3E46);
+                DrawTexture = UltimaData.TexmapData.GetTexmapTexture(Entity.LandData.TextureID);
             }
         }
 
@@ -43,7 +43,7 @@ namespace UltimaXNA.Entity.EntityViews
 
         public override bool Draw(SpriteBatch3D spriteBatch, MapTile tile, Vector3 drawPosition, MouseOverList mouseOverList, PickTypes pickType, int maxAlt)
         {
-            if (NoDraw || !IsometricRenderer.DrawTerrain)
+            if (NoDraw)
                 return false;
 
             if (m_MustUpdateSurroundings)
