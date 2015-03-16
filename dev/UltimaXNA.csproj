@@ -486,7 +486,7 @@
     <Folder Include="Core\Network\Packets\Both\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ixl\InterXLib.csproj">
+    <ProjectReference Include="InterXLib\InterXLib.csproj">
       <Project>{5de77709-9a9f-4059-9f8a-791f5042667a}</Project>
       <Name>InterXLib</Name>
     </ProjectReference>
