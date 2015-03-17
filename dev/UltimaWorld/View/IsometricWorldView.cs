@@ -129,7 +129,7 @@ namespace UltimaXNA.UltimaWorld.View
                     if (underObject is StaticItem && ((StaticItem)underObject).ItemData.IsRoof)
                     {
                         bool isRoofSouthEast = true;
-                        if ((t = map.GetMapTile(CenterPosition.X + 1, CenterPosition.Y + 1)) != null)
+                        if ((t = map.GetMapTile(CenterPosition.X + 1, CenterPosition.Y)) != null)
                         {
                             t.IsPointUnderAnEntity(CenterPosition.Z, out underObject, out underTerrain);
                             isRoofSouthEast = !(underObject == null);
@@ -175,6 +175,7 @@ namespace UltimaXNA.UltimaWorld.View
             ObjectsRendered = 0; // Count of objects rendered for statistics and debug
 
             MouseOverList overList = new MouseOverList(UltimaEngine.Input.MousePosition, PickType); // List of entities mouse is over.
+            List<AEntity> deferredToRemove = new List<AEntity>();
 
             for (int col = 0; col < renderDimensionY * 2 + renderExtraRowsAtBottom; col++)
             {
@@ -202,7 +203,16 @@ namespace UltimaXNA.UltimaWorld.View
                         if (view != null)
                             if (view.Draw(m_spriteBatch, drawPosition, overList, map))
                                 ObjectsRendered++;
+
+                        if (entities[i] is MobileDeferred)
+                        {
+                            deferredToRemove.Add(entities[i]);
+                        }
                     }
+
+                    foreach (AEntity deferred in deferredToRemove)
+                        tile.OnExit(deferred);
+                    deferredToRemove.Clear();
 
                     drawPosition.X -= 44f;
                 }

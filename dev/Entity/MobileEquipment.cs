@@ -18,7 +18,7 @@ namespace UltimaXNA.Entity
     public class MobileEquipment
     {
         private Item[] m_Equipment;
-        private Mobile m_Owner;
+        private Mobile m_Parent;
         private int m_UpdateTicker = 0;
 
         public int UpdateTicker
@@ -26,33 +26,33 @@ namespace UltimaXNA.Entity
             get { return m_UpdateTicker; }
         }
 
-        public MobileEquipment(Mobile nOwner)
+        public MobileEquipment(Mobile parent)
         {
             m_Equipment = new Item[(int)EquipLayer.LastValid + 1];
-            m_Owner = nOwner;
+            m_Parent = parent;
         }
 
-        public Item this[int nIndex]
+        public Item this[int index]
         {
             get
             {
-                if (nIndex > (int)EquipLayer.LastValid)
+                if (index > (int)EquipLayer.LastValid)
                     return null;
-                return m_Equipment[nIndex];
+                return m_Equipment[index];
             }
             set
             {
                 if (value == null)
                 {
-                    if (m_Equipment[nIndex] != null)
+                    if (m_Equipment[index] != null)
                     {
-                        m_Equipment[nIndex] = null;
+                        m_Equipment[index] = null;
                     }
                 }
                 else
                 {
-                    m_Equipment[nIndex] = value;
-                    value.Parent = m_Owner;
+                    m_Equipment[index] = value;
+                    value.Parent = m_Parent;
                 }
                 m_UpdateTicker++;
             }

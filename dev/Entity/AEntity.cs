@@ -38,7 +38,7 @@ namespace UltimaXNA.Entity
         // ============================================================
 
         private MapTile m_Tile;
-        private MapTile Tile
+        protected MapTile Tile
         {
             set
             {

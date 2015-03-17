@@ -12,17 +12,15 @@ namespace UltimaXNA.Entity.EntityViews
             get { return (Mobile)base.Entity; }
         }
 
-        public MobileView(Mobile mobile, bool dontDefer)
+        public MobileView(Mobile mobile)
             : base(mobile)
         {
-            m_DontDefer = dontDefer;
             m_Animation = new MobileAnimation(mobile);
 
             m_MobileLayers = new MobileViewLayer[(int)EquipLayer.LastUserValid];
             PickType = PickTypes.PickObjects;
         }
 
-        private bool m_DontDefer;
         public MobileAnimation m_Animation;
 
         public void Update(double frameMS)
@@ -30,20 +28,32 @@ namespace UltimaXNA.Entity.EntityViews
             m_Animation.Update(frameMS);
         }
 
+        private bool m_AllowDefer = false;
+
+        public void SetAllowDefer()
+        {
+            m_AllowDefer = true;
+        }
+
         public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
         {
-            if (!m_DontDefer)
+            if (m_AllowDefer == false)
             {
-                MapTile tile = map.GetMapTile(Entity.Position.X + 1, Entity.Position.Y + 1);
-                if (tile == null)
+                MapTile tile = map.GetMapTile(Entity.Position.X + 1, Entity.Position.Y);
+                if (tile != null)
                 {
                     int z;
-                    if (MobileMovementCheck.CheckMovement(Entity, map, Entity.Position, Direction.Down, out z))
+                    if (MobileMovementCheck.CheckMovementForced(Entity, map, Entity.Position, Direction.Down, out z))
                     {
-                        tile.OnEnter(new MobileDeferred(Entity, z));
+                        MobileDeferred deferred = new MobileDeferred(Entity, drawPosition, z);
+                        tile.OnEnter(deferred);
                         return false;
                     }
                 }
+            }
+            else
+            {
+                m_AllowDefer = false;
             }
 
             DrawFlip = (MirrorFacingForDraw(Entity.Facing) > 4) ? true : false;

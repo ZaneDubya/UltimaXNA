@@ -29,7 +29,12 @@ namespace UltimaXNA.Entity
         private const int PersonHeight = 16;
         private const int StepHeight = 2;
 
-        public static bool CheckMovement(Mobile m, Map map, Position3D loc, Direction d, out int newZ)
+        public static bool CheckMovementForced(Mobile m, Map map, Position3D loc, Direction d, out int newZ)
+        {
+            return CheckMovement(m, map, loc, d,out newZ, true);
+        }
+
+        public static bool CheckMovement(Mobile m, Map map, Position3D loc, Direction d, out int newZ, bool forceOK = false)
         {
             if (map == null)
             {
@@ -193,7 +198,7 @@ namespace UltimaXNA.Entity
 
             getStartZ(m, map, loc, itemsStart, out startZ, out startTop);
 
-            bool moveIsOk = check(map, m, itemsForward, xForward, yForward, startTop, startZ, out newZ);
+            bool moveIsOk = check(map, m, itemsForward, xForward, yForward, startTop, startZ, out newZ) | forceOK;
 
             if (moveIsOk && checkDiagonals)
             {
