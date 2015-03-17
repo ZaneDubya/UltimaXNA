@@ -29,7 +29,7 @@ namespace UltimaXNA.UltimaWorld.Controller
             m_Model.Client.Register<TargetCursorPacket>(0x6C, "TargetCursor", 19, new TypedPacketReceiveHandler(receive_TargetCursor));
             m_Model.Client.Register<TargetCursorMultiPacket>(0x99, "Target Cursor Multi Object", 26, new TypedPacketReceiveHandler(receive_TargetCursorMulti));
 
-            Entity.Movement.SendMoveRequestPacket += InternalOnEntity_SendMoveRequestPacket;
+            Entity.MobileMovement.SendMoveRequestPacket += InternalOnEntity_SendMoveRequestPacket;
         }
 
         public void Dispose()
@@ -38,7 +38,7 @@ namespace UltimaXNA.UltimaWorld.Controller
             m_Model.Client.Unregister(0x6C, receive_TargetCursor);
             m_Model.Client.Unregister(0x99, receive_TargetCursorMulti);
 
-            Entity.Movement.SendMoveRequestPacket -= InternalOnEntity_SendMoveRequestPacket;
+            Entity.MobileMovement.SendMoveRequestPacket -= InternalOnEntity_SendMoveRequestPacket;
         }
 
         public void AfterLoginSequence()

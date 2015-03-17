@@ -79,9 +79,7 @@ namespace UltimaXNA.Scenes
                         Manager.CurrentScene = new CharacterListScene();
                         break;
                     case UltimaClientStatus.WorldServer_InWorld:
-                        // we've connected!
-                        UltimaEngine.ActiveModel = new UltimaXNA.UltimaWorld.WorldModel();
-                        // Manager.CurrentScene = new WorldScene();
+                        // we've connected! Client takes us into the world and disposes of this Model.
                         break;
                     default:
                         // what's going on here? Add additional error handlers.

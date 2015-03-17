@@ -8,21 +8,22 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaPackets.Server;
-using Microsoft.Xna.Framework;
 using UltimaXNA.UltimaData;
-using UltimaXNA.UltimaWorld.View;
+using UltimaXNA.UltimaPackets.Server;
+using UltimaXNA.UltimaWorld;
+using UltimaXNA.UltimaWorld.Model;
 #endregion
 
 namespace UltimaXNA.Entity
 {
-    public class DynamicObject : BaseEntity
+    public class Effect : AEntity
     {
         private bool m_isHued = false;
         private bool m_isInitialized = false;
 
         private int m_baseItemID;
+        public int ItemID { get { return m_baseItemID; } }
+
         private float m_frameSequence;
         private int m_frameLength;
         private bool m_useGumpArtInsteadOfTileArt = false;
@@ -39,7 +40,7 @@ namespace UltimaXNA.Entity
         private GraphicEffectBlendMode m_bendMode;
         private int m_targetX, m_targetY, m_targetZ;
 
-        public DynamicObject(Serial serial)
+        public Effect(Serial serial)
             : base(serial)
         {
 
@@ -99,7 +100,7 @@ namespace UltimaXNA.Entity
             {
                 if (m_doesExplode)
                 {
-                    DynamicObject dynamic = EntityManager.AddDynamicObject();
+                    Effect dynamic = EntityManager.AddDynamicObject();
                     dynamic.Load_AsExplosion(m_targetX, m_targetY, m_targetZ);
                 }
                 this.Dispose();
@@ -110,9 +111,8 @@ namespace UltimaXNA.Entity
 
         internal override void Draw(MapTile tile, Position3D position)
         {
-            tile.FlushObjectsBySerial(Serial);
             int hue = m_isHued ? m_hue : 0;
-            tile.AddMapObject(new MapObjectDynamic(this, position, m_baseItemID, (int)(m_frameSequence * m_frameLength), hue, m_useGumpArtInsteadOfTileArt));
+            // tile.AddMapObject(new MapObjectDynamic(this, position, m_baseItemID, (int)(m_frameSequence * m_frameLength), hue, m_useGumpArtInsteadOfTileArt));
         }
 
         public void Load_FromPacket(GraphicEffectPacket packet)
@@ -121,9 +121,7 @@ namespace UltimaXNA.Entity
             m_effectType = packet.EffectType;
             m_isHued = false;
             m_hue = 0;
-            X = packet.SourceX;
-            Y = packet.SourceY;
-            Z = packet.SourceZ;
+            Position.Set(packet.SourceX, packet.SourceY, packet.SourceZ);
             m_targetX = packet.TargetX;
             m_targetY = packet.TargetY;
             m_targetZ = packet.TargetZ;
@@ -145,9 +143,7 @@ namespace UltimaXNA.Entity
             m_effectType = GraphicEffectType.FixedXYZ;
             m_isHued = false;
             m_hue = 0;
-            X = x;
-            Y = y;
-            Z = z;
+            Position.Set(x, y, z);
             ParticleData itemData = ParticleData.RandomExplosion;
             m_baseItemID = itemData.ItemID;
             m_duration = itemData.FrameLength;

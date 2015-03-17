@@ -159,8 +159,8 @@ namespace UltimaXNA.UltimaGUI.Controls
        // }
 
         int m_sourceEntityUpdateHash = 0x7FFFFFFF;
-        BaseEntity m_sourceEntity = null;
-        public BaseEntity SourceEntity
+        AEntity m_sourceEntity = null;
+        public AEntity SourceEntity
         {
             set
             {

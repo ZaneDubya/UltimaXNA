@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
  *   Position3D.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   Based on code from RunUO: http://www.runuo.com
  *   
  *   This program is free software; you can redistribute it and/or modify
@@ -16,42 +15,71 @@ using Microsoft.Xna.Framework;
 using UltimaXNA.UltimaWorld;
 #endregion
 
-namespace UltimaXNA.Entity
+namespace UltimaXNA
 {
     public class Position3D : IPoint2D
     {
-        public static Vector3 NullPosition = new Vector3(-1);
+        public static Point NullTile = new Point(int.MinValue, int.MinValue);
 
-        Vector3 m_tile;
-        Vector3 m_offset;
+        private Point m_Tile;
+        private int m_Z;
+        Vector3 m_Offset;
 
-        public Vector3 Tile_V3 { get { return m_tile; } set { m_tile = value; } }
-        public Vector3 Offset_V3 { get { return m_offset; } set { m_offset = value; } }
-        public Vector3 Point_V3 { get { return m_tile + m_offset; } }
-
-        public bool IsOffset { get { return (X_offset != 0) || (Y_offset != 0) || (Z_offset != 0); } }
-        public bool IsNullPosition { get { return m_tile == NullPosition; } }
-
-        public int X { get { return (int)m_tile.X; } set { m_tile.X = value; } }
-        public int Y { get { return (int)m_tile.Y; } set { m_tile.Y = value; } }
-        public int Z { get { return (int)m_tile.Z; } set { m_tile.Z = value; } }
-        public float X_offset { get { return m_offset.X % 1.0f; } }
-        public float Y_offset { get { return m_offset.Y % 1.0f; } }
-        public float Z_offset { get { return m_offset.Z; } }
-
-        public Position3D()
+        public Point Tile
         {
-            m_tile = NullPosition;
+            get { return m_Tile; }
+            set
+            {
+                if (m_Tile != value)
+                {
+                    m_Tile = value;
+                    if (m_Tile != NullTile && m_OnTileChanged != null)
+                        m_OnTileChanged(m_Tile.X, m_Tile.Y);
+                }
+            }
+        }
+
+        public Vector3 Offset { get { return m_Offset; } set { m_Offset = value; } }
+
+        public bool IsOffset { get { return m_Offset != Vector3.Zero; } }
+        public bool IsNullPosition { get { return m_Tile == NullTile; } }
+
+        public int X
+        {
+            get { return (int)m_Tile.X; }
+        }
+        public int Y
+        {
+            get { return (int)m_Tile.Y; }
+        }
+        public int Z
+        {
+            get { return (int)m_Z; }
+        }
+
+        public float X_offset { get { return m_Offset.X % 1.0f; } }
+        public float Y_offset { get { return m_Offset.Y % 1.0f; } }
+        public float Z_offset { get { return m_Offset.Z; } }
+
+        private Action<int, int> m_OnTileChanged;
+
+        public Position3D(Action<int, int> onTileChanged)
+        {
+            Tile = NullTile;
+            m_OnTileChanged = onTileChanged;
         }
 
         public Position3D(int x, int y, int z)
         {
-            m_tile = new Vector3(x, y, z);
+            Tile = new Point(x, y);
+            m_Z = z;
         }
 
-        public Position3D(Vector3 v)
+        internal void Set(int x, int y, int z)
         {
-            m_tile = v;
+            Tile = new Point(x, y);
+            m_Z = z;
+            m_Offset = Vector3.Zero;
         }
 
         public override bool Equals(object o)

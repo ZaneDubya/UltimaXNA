@@ -43,6 +43,8 @@ namespace UltimaXNA
             // this is copied from IXL.BaseCore - required for finding the mouse coordinate when moving the cursor over the window.
             System.Drawing.Graphics graphics = System.Drawing.Graphics.FromHwnd(this.Window.Handle);
             InterXLib.Settings.ScreenDPI = new Vector2(graphics.DpiX / 96f, graphics.DpiY / 96f);
+
+            s_Client.LogPackets = true;
         }
 
         protected override void OnInitialize()

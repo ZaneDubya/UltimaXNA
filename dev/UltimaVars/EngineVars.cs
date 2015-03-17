@@ -79,9 +79,6 @@ namespace UltimaXNA.UltimaVars
         public static MouseButton MouseButton_Move = MouseButton.Right;
         public static bool MouseEnabled = true;
 
-        static int m_map = -1;
-        public static int Map { get { return m_map; } set { m_map = value; } }
-
         static int m_mapCount = -1;
         public static int MapCount { get { return m_mapCount; } set { m_mapCount = value; } }
 
@@ -90,18 +87,6 @@ namespace UltimaXNA.UltimaVars
 
         static bool m_minimapLarge = false;
         public static bool MiniMap_LargeFormat { get { return m_minimapLarge; } set { m_minimapLarge = value; } }
-
-        static int m_mapSizeInMemory = 16; // We maintain 16 cells (128 tiles) in memory.
-        public static int MapCellsInMemory { get { return m_mapSizeInMemory; } }
-        static int m_updateRangeInTiles = 32; // Any mobile / item beyond this range is removed from the client. RunUO's range is 24.
-        public static int UpdateRange { get { return m_updateRangeInTiles; } }
-
-        static int m_renderSize = 40;
-        public static int RenderSize
-        {
-            get { return m_renderSize; }
-            set { m_renderSize = value; }
-        }
 
         static Point m_ScreenSize;
         public static Point ScreenSize

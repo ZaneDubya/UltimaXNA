@@ -2,9 +2,10 @@
 using InterXLib.Patterns.MVC;
 using UltimaXNA.Core.Network;
 using UltimaXNA.UltimaGUI;
-using UltimaXNA.UltimaGUI.Gumps;
+using UltimaXNA.UltimaGUI.WorldGumps;
 using UltimaXNA.UltimaWorld.Controller;
 using UltimaXNA.UltimaWorld.View;
+using UltimaXNA.UltimaWorld.Model;
 
 namespace UltimaXNA.UltimaWorld
 {
@@ -35,6 +36,35 @@ namespace UltimaXNA.UltimaWorld
                     m_Cursor.Dispose();
                 }
                 m_Cursor = value;
+            }
+        }
+
+        private Map m_map = null;
+        public Map Map
+        {
+            get { return m_map; }
+        }
+
+        public int MapIndex
+        {
+            get
+            {
+                if (m_map == null)
+                    return -1;
+                else
+                    return m_map.Index;
+            }
+            set
+            {
+                if (value != MapIndex)
+                {
+                    if (m_map != null)
+                    {
+                        // dispose of map
+                        // clear all entities
+                    }
+                    m_map = new Map(value);
+                }
             }
         }
 
@@ -87,9 +117,9 @@ namespace UltimaXNA.UltimaWorld
             {
                 m_WorldInput.Update(frameMS);
                 EntityManager.Update(frameMS);
-                IsometricRenderer.CenterPosition = EntityManager.GetPlayerObject().Position;
-                IsometricRenderer.Update(totalMS, frameMS);
 
+                IsometricRenderer.CenterPosition = EntityManager.GetPlayerObject().Position;
+                IsometricRenderer.Update(Map);
 
                 // Toggle for logout
                 if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.Q, false, false, true))

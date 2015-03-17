@@ -14,11 +14,12 @@ using UltimaXNA.UltimaData;
 using UltimaXNA.UltimaWorld;
 using UltimaXNA.UltimaWorld.View;
 using Microsoft.Xna.Framework;
+using UltimaXNA.UltimaWorld.Model;
 #endregion
 
 namespace UltimaXNA.Entity
 {
-    class Multi : BaseEntity
+    class Multi : AEntity
     {
         MultiComponentList m_components;
         List<Point> m_unloadedTiles = new List<Point>();
@@ -75,7 +76,9 @@ namespace UltimaXNA.Entity
         public override void Update(double frameMS)
         {
             if (m_unloadedTiles.Count > 0)
-                HasBeenDrawn = false;
+            {
+                // what do we do here ???
+            }
 
             base.Update(frameMS);
         }
@@ -92,7 +95,7 @@ namespace UltimaXNA.Entity
                 int x = tile.X + p.X - m_components.Center.X;
                 int y = tile.Y + p.Y - m_components.Center.Y;
 
-                MapTile t = IsometricRenderer.Map.GetMapTile(x, y, false);
+                MapTile t = EntityManager.Model.Map.GetMapTile(x, y);
                 if (t != null)
                 {
                     drawnTiles.Add(p);
@@ -103,7 +106,7 @@ namespace UltimaXNA.Entity
                         {
                             foreach (StaticTile s in m_components.Tiles[p.X][p.Y])
                             {
-                                t.AddMapObject(new MapObjectStatic(s.ID, 0, new Position3D(x, y, s.Z)));
+                                // t.AddMapObject(new MapObjectStatic(s.ID, 0, new Position3D(x, y, s.Z)));
                             }
                         }
                     }
@@ -113,7 +116,7 @@ namespace UltimaXNA.Entity
                         {
                             if ((s.X == p.X) && (s.Y == p.Y))
                             {
-                                t.AddMapObject(new MapObjectStatic(s.ID, 0, new Position3D(s.X, s.Y, s.Z)));
+                                // t.AddMapObject(new MapObjectStatic(s.ID, 0, new Position3D(s.X, s.Y, s.Z)));
                             }
                         }
                     }

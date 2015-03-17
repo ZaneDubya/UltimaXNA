@@ -14,13 +14,14 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using UltimaXNA.UltimaWorld;
+using UltimaXNA.UltimaWorld.Model;
 
 namespace UltimaXNA.Entity
 {
-    public class Overhead : BaseEntity
+    public class Overhead : AEntity
     {
         private bool m_needsRender;
-        private BaseEntity m_ownerEntity;
+        private AEntity m_ownerEntity;
 
         private string m_text;
         public string Text
@@ -54,17 +55,6 @@ namespace UltimaXNA.Entity
             }
         }
 
-        private int m_hue;
-        public int Hue
-        {
-            get { return m_hue; }
-            set
-            {
-                m_hue = value;
-                m_needsRender = true;
-            }
-        }
-
         private int m_font;
         public int Font
         {
@@ -78,13 +68,13 @@ namespace UltimaXNA.Entity
 
         private int m_msTimePersist = 0;
 
-        public Overhead(BaseEntity ownerEntity, MessageType msgType, string text, int font, int hue)
+        public Overhead(AEntity ownerEntity, MessageType msgType, string text, int font, int hue)
             : base(ownerEntity.Serial)
         {
             m_ownerEntity = ownerEntity;
             m_text = text;
             m_font = font;
-            m_hue = hue;
+            Hue = hue;
             m_msgType = msgType;
             m_needsRender = true;
         }

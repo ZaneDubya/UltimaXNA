@@ -9,11 +9,8 @@
  ***************************************************************************/
 #region usings
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaPackets;
 using UltimaXNA.UltimaPackets.Server;
-using UltimaXNA.UltimaWorld.View;
+using UltimaXNA.UltimaWorld.Model;
 #endregion
 
 namespace UltimaXNA.Entity
@@ -22,8 +19,15 @@ namespace UltimaXNA.Entity
     {
         public Serial MobileSerial = 0;
 
-        private float m_corpseFrame = 0.999f;
-        private int m_corpseBody { get { return Amount; } }
+        public float Frame = 0.999f;
+        public int BodyID { get { return Amount; } }
+
+        private Direction m_Facing = Direction.Nothing;
+        public Direction Facing
+        {
+            get { return m_Facing & Direction.FacingMask; }
+            set { m_Facing = value; }
+        }
 
         public Corpse(Serial serial)
             : base(serial)
@@ -31,20 +35,17 @@ namespace UltimaXNA.Entity
 
         }
 
+        protected override EntityViews.AEntityView CreateView()
+        {
+            return new EntityViews.CorpseView(this);
+        }
+
         public override void Update(double frameMS)
         {
             base.Update(frameMS);
-            // HasBeenDrawn = false;
-            m_corpseFrame += ((float)frameMS / 500f);
-            if (m_corpseFrame >= 1f)
-                m_corpseFrame = 0.999f;
-        }
-
-        internal override void Draw(MapTile tile, Position3D position)
-        {
-            m_movement.ClearImmediate();
-            tile.AddMapObject(new MapObjectCorpse(position, DrawFacing, this, Hue, m_corpseBody, m_corpseFrame));
-            drawOverheads(tile, new Position3D(m_movement.Position.Point_V3));
+            Frame += ((float)frameMS / 500f);
+            if (Frame >= 1f)
+                Frame = 0.999f;
         }
 
         public void LoadCorpseClothing(List<CorpseClothingPacket.CorpseItem> items)
@@ -52,9 +53,9 @@ namespace UltimaXNA.Entity
 
         }
 
-        public void DeathAnimation()
+        public void PlayDeathAnimation()
         {
-            m_corpseFrame = 0f;
+            Frame = 0f;
         }
     }
 }

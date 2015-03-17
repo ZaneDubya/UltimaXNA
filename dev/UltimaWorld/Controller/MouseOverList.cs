@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
  *   MouseOverList.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -8,21 +7,24 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using System;
-using System.Collections.Generic;
+#region usings
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
+using UltimaXNA.Entity;
 using UltimaXNA.Rendering;
-using UltimaXNA.UltimaWorld.View;
+#endregion
 
 namespace UltimaXNA.UltimaWorld
 {
-    class MouseOverList
+    public class MouseOverList
     {
         List<MouseOverItem> m_overList;
 
+        public PickTypes PickType = PickTypes.PickNothing;
+
         Vector3 m_mousePosition;
-        public Point MousePosition
+        protected Point MousePosition
         {
             set
             {
@@ -30,9 +32,11 @@ namespace UltimaXNA.UltimaWorld
             }
         }
 
-        public MouseOverList()
+        public MouseOverList(Point mousePosition, PickTypes pickType)
         {
             m_overList = new List<MouseOverItem>();
+            MousePosition = mousePosition;
+            PickType = pickType;
         }
 
         internal MouseOverItem GetForemostMouseOverItem(Point mousePosition)
@@ -48,12 +52,12 @@ namespace UltimaXNA.UltimaWorld
             return null;
         }
 
-        internal MouseOverItem GetForemostMouseOverItem<T>(Point mousePosition) where T : AMapObject
+        internal MouseOverItem GetForemostMouseOverItem<T>(Point mousePosition) where T : AEntity
         {
             // Parse list backwards to find topmost mouse over object.
             foreach (MouseOverItem item in CreateReverseIterator(m_overList))
             {
-                if (item.Object.GetType() == typeof(T))
+                if (item.Entity.GetType() == typeof(T))
                 {
                     if (item.TextureContainsPoint(mousePosition))
                     {
@@ -183,24 +187,24 @@ namespace UltimaXNA.UltimaWorld
         }
     }
 
-    class MouseOverItem
+    public class MouseOverItem
     {
         public Vector3[] Vertices;
         public Texture2D Texture;
         public Vector3 Position;
         public Vector2 InTexturePosition;
-        public AMapObject Object;
+        public AEntity Entity;
 
-        internal MouseOverItem(Texture2D nTexture, Vector3 nPosition, AMapObject nObject)
+        internal MouseOverItem(Texture2D texture, Vector3 position, AEntity entity)
         {
-            Texture = nTexture;
-            Position = nPosition;
-            Object = nObject;
+            Texture = texture;
+            Position = position;
+            Entity = entity;
         }
 
         internal bool TextureContainsPoint(Point mousePosition)
         {
-            if (Object.GetType() == typeof(MapObjectGround))
+            if (Entity is Ground)
             {
                 // we already know we are within this polygon
                 InTexturePosition = new Vector2(mousePosition.X - Position.X, mousePosition.Y - Position.Y);

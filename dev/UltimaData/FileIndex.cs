@@ -46,7 +46,7 @@ namespace UltimaXNA.UltimaData
             length = e.length & 0x7FFFFFFF;
             extra = e.extra;
 
-            if ((e.length & 0x80000000) != 0)
+            if ((e.length & 0xFF000000) != 0)
             {
                 patched = true;
 

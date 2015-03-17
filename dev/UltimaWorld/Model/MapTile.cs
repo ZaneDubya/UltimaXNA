@@ -1,6 +1,6 @@
 ﻿/***************************************************************************
- *   MapCell.cs
- *   Based on code from ClintXNA's renderer: http://www.runuo.com/forums/xna/92023-hi.html
+ *   MapTile.cs
+ *   Based on code from ClintXNA's renderer.
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -12,136 +12,109 @@
 using System;
 using System.Collections.Generic;
 using UltimaXNA.Entity;
-using Microsoft.Xna.Framework;
+using UltimaXNA.Entity.EntityViews;
+using UltimaXNA.UltimaData;
 using UltimaXNA.UltimaWorld.View;
 #endregion
 
-namespace UltimaXNA.UltimaWorld
+namespace UltimaXNA.UltimaWorld.Model
 {
-    public sealed class MapTile : IPoint2D
+    public class MapTile
     {
-        private List<AMapObject> m_Objects;
-
         private bool m_NeedsSorting = false;
-        private bool m_HasDeferredObjects = false;
 
-        private int m_X, m_Y;
+        private Ground m_Ground;
+        public Ground Ground
+        {
+            get
+            {
+                return m_Ground;
+            }
+        }
+
         public int X
         {
-            get { return m_X; }
-            set { m_X = value; }
+            get { return m_Ground.Position.X; }
         }
+
         public int Y
         {
-            get { return m_Y; }
-            set { m_Y = value; }
+            get { return m_Ground.Position.Y; }
         }
 
-        public MapTile(int x, int y)
+        private List<AEntity> m_Entities;
+
+        public void OnEnter(AEntity entity)
         {
-            m_Objects = new List<AMapObject>();
-            m_X = x;
-            m_Y = y;
+            if (entity is Ground)
+            {
+                if (m_Ground != null)
+                    m_Ground.Dispose();
+                m_Ground = (Ground)entity;
+            }
+            m_Entities.Add(entity);
+            m_NeedsSorting = true;
         }
 
-        // Check if under a roof.
-        public void IsUnder(int originZ, out AMapObject underItem, out AMapObject underTerrain)
+        public void OnExit(AEntity entity)
+        {
+            m_Entities.Remove(entity);
+        }
+
+        public MapTile()
+        {
+            m_Entities = new List<AEntity>();
+        }
+
+        /// <summary>
+        /// Checks if the specified z-height is under an item or a ground.
+        /// </summary>
+        /// <param name="originZ"></param>
+        /// <param name="underItem"></param>
+        /// <param name="underTerrain"></param>
+        public void IsPointUnderAnEntity(int originZ, out AEntity underItem, out AEntity underTerrain)
         {
             underItem = null;
             underTerrain = null;
 
-            List<AMapObject> iObjects = this.Items;
-            for (int i = iObjects.Count - 1; i >= 0; i--)
+            List<AEntity> entities = this.Entities;
+            for (int i = entities.Count - 1; i >= 0; i--)
             {
-                if (iObjects[i].Z <= originZ)
+                if (entities[i].Z <= originZ)
                     continue;
 
-                if (iObjects[i] is MapObjectStatic)
+                if (entities[i] is StaticItem)
                 {
-                    UltimaData.ItemData iData = UltimaData.TileData.ItemData[((MapObjectStatic)iObjects[i]).ItemID & 0x3FFF];
+                    UltimaData.ItemData iData = ((StaticItem)entities[i]).ItemData;
                     if (iData.IsRoof || iData.IsSurface || iData.IsWall)
                     {
-                        if (underItem == null || iObjects[i].Z < underItem.Z)
-                            underItem = iObjects[i];
+                        if (underItem == null || entities[i].Z < underItem.Z)
+                            underItem = entities[i];
                     }
                 }
-                else if (iObjects[i] is MapObjectGround && iObjects[i].Z >= originZ + 20)
+                else if (entities[i] is Ground && entities[i].Z >= originZ + 20)
                 {
-                    underTerrain = iObjects[i];
+                    underTerrain = entities[i];
                 }
             }
         }
 
-        public void FlushObjectsBySerial(Serial serial)
+        public List<StaticItem> GetStatics()
         {
-            List<AMapObject> iObjects = new List<AMapObject>();
-            foreach (AMapObject iObject in m_Objects)
+            List<StaticItem> items = new List<StaticItem>();
+
+            for (int i = 0; i < m_Entities.Count; i++)
             {
-                if (iObject.OwnerSerial == serial)
-                {
-                    // Do nothing. Object is skipped.
-                }
-                else
-                {
-                    iObjects.Add(iObject);
-                }
+                if (m_Entities[i] is StaticItem)
+                    items.Add((StaticItem)m_Entities[i]);
             }
-            m_Objects = iObjects;
-            m_NeedsSorting = true;
+
+            return items;
         }
 
-        public MapObjectGround GroundTile
+        private bool matchNames(ItemData m1, ItemData m2)
         {
-            get
-            {
-                return (MapObjectGround)m_Objects.Find(IsGroundTile);
-            }
-
-        }
-
-        public List<MapObjectStatic> GetStatics()
-        {
-            List<MapObjectStatic> sitems = new List<MapObjectStatic>();
-
-            List<AMapObject> objs = m_Objects.FindAll(IsStaticItem);
-            if (objs == null || objs.Count == 0)
-            {
-                // empty list.
-                return sitems;
-            }
-
-            foreach (AMapObject obj in objs)
-            {
-                sitems.Add((MapObjectStatic)obj);
-            }
-
-            return sitems;
-        }
-
-        private bool matchNames(AMapObject m1, AMapObject m2)
-        {
-            if (UltimaData.TileData.ItemData[m1.ItemID & 0x3FFF].Name ==
-                UltimaData.TileData.ItemData[m2.ItemID & 0x3FFF].Name)
-            {
-                return true;
-            }
-            return false;
-        }
-
-        public void AddMapObject(AMapObject item)
-        {
-            m_Objects.Add(item);
-            m_NeedsSorting = true;
-            if (item is MapObjectDeferred)
-                m_HasDeferredObjects = true;
-        }
-
-        public void AddMapObject(AMapObject[] items)
-        {
-            for (int i = 0; i < items.Length; i++)
-            {
-                AddMapObject(items[i]);
-            }
+            return (m1.Name == m2.Name);
         }
 
         private void removeDuplicateObjects()
@@ -149,7 +122,7 @@ namespace UltimaXNA.UltimaWorld
             int[] itemsToRemove = new int[0x100];
             int removeIndex = 0;
 
-            for (int i = 0; i < m_Objects.Count; i++)
+            for (int i = 0; i < m_Entities.Count; i++)
             {
                 for (int j = 0; j < removeIndex; j++)
                 {
@@ -157,19 +130,16 @@ namespace UltimaXNA.UltimaWorld
                         continue;
                 }
 
-                if (m_Objects[i] is MapObjectStatic)
+                if (m_Entities[i] is StaticItem)
                 {
                     // Make sure we don't double-add a static or replace an item with a static (like doors on multis)
-                    for (int j = i + 1; j < m_Objects.Count; j++)
+                    for (int j = i + 1; j < m_Entities.Count; j++)
                     {
-                        if (m_Objects[i].Z == m_Objects[j].Z)
+                        if (m_Entities[i].Z == m_Entities[j].Z)
                         {
-                            if (m_Objects[j] is MapObjectStatic && m_Objects[i].ItemID == m_Objects[j].ItemID)
-                            {
-                                itemsToRemove[removeIndex++] = i;
-                                break;
-                            }
-                            if (m_Objects[j] is MapObjectItem && matchNames(m_Objects[i], m_Objects[j]))
+                            if (m_Entities[j] is StaticItem && (
+                                ((StaticItem)m_Entities[i]).ItemID == ((StaticItem)m_Entities[j]).ItemID ||
+                                matchNames(((StaticItem)m_Entities[i]).ItemData, ((StaticItem)m_Entities[j]).ItemData)))
                             {
                                 itemsToRemove[removeIndex++] = i;
                                 break;
@@ -177,25 +147,21 @@ namespace UltimaXNA.UltimaWorld
                         }
                     }
                 }
-                else if (m_Objects[i] is MapObjectItem)
+                else if (m_Entities[i] is Item)
                 {
                     // if we are adding an item, replace existing statics with the same *name*
                     // We could use same *id*, but this is more robust for items that can open ...
                     // an open door will have a different id from a closed door, but the same name.
                     // Also, don't double add an item.
-                    for (int j = i + 1; j < m_Objects.Count; j++)
+                    for (int j = i + 1; j < m_Entities.Count; j++)
                     {
-                        if (m_Objects[i].Z == m_Objects[j].Z)
+                        if (m_Entities[i].Z == m_Entities[j].Z)
                         {
-                            if (m_Objects[j] is MapObjectStatic && matchNames(m_Objects[i], m_Objects[j]))
+                            if ((m_Entities[j] is StaticItem && matchNames(((Item)m_Entities[i]).ItemData, ((StaticItem)m_Entities[j]).ItemData)) ||
+                                (m_Entities[j] is Item && m_Entities[i].Serial == m_Entities[j].Serial))
                             {
                                 itemsToRemove[removeIndex++] = j;
                                 continue;
-                            }
-                            if (m_Objects[j] is MapObjectItem && m_Objects[i].OwnerEntity == m_Objects[j].OwnerEntity)
-                            {
-                                itemsToRemove[removeIndex++] = i;
-                                break;
                             }
                         }
                     }
@@ -204,67 +170,27 @@ namespace UltimaXNA.UltimaWorld
 
             for (int i = 0; i < removeIndex; i++)
             {
-                m_Objects.RemoveAt(itemsToRemove[i] - i);
+                m_Entities.RemoveAt(itemsToRemove[i] - i);
             }
         }
 
-        public List<AMapObject> Items
+        public List<AEntity> Entities
         {
             get
             {
                 if (m_NeedsSorting)
                 {
                     removeDuplicateObjects();
-                    m_Objects.Sort(MapObjectComparer.Comparer);
+                    KrriosSort.Sort(m_Entities);
                     m_NeedsSorting = false;
                 }
-                return m_Objects;
+                return m_Entities;
             }
         }
 
         public void Resort()
         {
             m_NeedsSorting = true;
-        }
-
-        public void ClearTemporaryObjects()
-        {
-            if (m_HasDeferredObjects)
-            {
-                for (int i = 0; i < m_Objects.Count; i++)
-                    if (m_Objects[i] is MapObjectDeferred)
-                    {
-                        ((MapObjectDeferred)m_Objects[i]).Dispose();
-                        m_Objects.RemoveAt(i);
-                        i--;
-                    }
-                m_HasDeferredObjects = false;
-                Resort();
-            }
-        }
-
-        private static bool IsGroundTile(object i)
-        {
-            Type t = typeof(MapObjectGround);
-            return t == i.GetType() || i.GetType().IsSubclassOf(t);
-        }
-
-        private static bool IsMobile(object i)
-        {
-            Type t = typeof(MapObjectMobile);
-            return t == i.GetType() || i.GetType().IsSubclassOf(t);
-        }
-
-        private static bool IsStaticItem(object i)
-        {
-            Type t = typeof(MapObjectStatic);
-            return t == i.GetType() || i.GetType().IsSubclassOf(t);
-        }
-
-        private static bool IsGOTile(object i)
-        {
-            Type t = typeof(MapObjectItem);
-            return t == i.GetType() || i.GetType().IsSubclassOf(t);
         }
     }
 }

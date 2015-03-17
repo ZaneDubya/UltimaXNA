@@ -19,6 +19,7 @@ using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.UltimaPackets.Server;
 using UltimaXNA.UltimaWorld;
 using UltimaXNA.UltimaWorld.View;
+using Microsoft.Xna.Framework;
 #endregion
 
 namespace UltimaXNA
@@ -39,7 +40,7 @@ namespace UltimaXNA
             Register<DamagePacket>(0x0B, "Damage", 0x07, new TypedPacketReceiveHandler(receive_Damage));
             Register<MobileStatusCompactPacket>(0x11, "Mobile Status Compact", -1, new TypedPacketReceiveHandler(receive_StatusInfo));
             Register<WorldItemPacket>(0x1A, "World Item", -1, new TypedPacketReceiveHandler(receive_WorldItem));
-            Register<LoginConfirmPacket>(0x1B, "Login Confirm", 37, new TypedPacketReceiveHandler(receive_PlayerLocaleAndBody));
+            Register<LoginConfirmPacket>(0x1B, "Login Confirm", 37, new TypedPacketReceiveHandler(receive_LoginConfirmPacket));
             Register<AsciiMessagePacket>(0x1C, "Ascii Meessage", -1, new TypedPacketReceiveHandler(receive_AsciiMessage));
             Register<RemoveEntityPacket>(0x1D, "Remove Entity", 5, new TypedPacketReceiveHandler(receive_DeleteObject));
             Register<MobileUpdatePacket>(0x20, "Mobile Update", 19, new TypedPacketReceiveHandler(receive_MobileUpdate));
@@ -231,12 +232,11 @@ namespace UltimaXNA
             foreach (ContentItem i in p.Items)
             {
                 // Add the item...
-                Item iObject = add_Item(i.Serial, i.ItemID, i.Hue, i.ContainerSerial, i.Amount);
-                iObject.X = i.X;
-                iObject.Y = i.Y;
+                Item item = add_Item(i.Serial, i.ItemID, i.Hue, i.ContainerSerial, i.Amount);
+                item.InContainerPosition = new Point(i.X, i.Y);
                 // ... and add it the container contents of the container.
                 Container c = EntityManager.GetObject<Container>(i.ContainerSerial, true);
-                c.AddItem(iObject);
+                c.AddItem(item);
             }
         }
 
@@ -245,13 +245,12 @@ namespace UltimaXNA
             ContainerContentUpdatePacket p = (ContainerContentUpdatePacket)packet;
 
             // Add the item...
-            Item iObject = add_Item(p.Serial, p.ItemId, p.Hue, p.ContainerSerial, p.Amount);
-            iObject.X = p.X;
-            iObject.Y = p.Y;
+            Item item = add_Item(p.Serial, p.ItemId, p.Hue, p.ContainerSerial, p.Amount);
+            item.InContainerPosition = new Point(p.X, p.Y);
             // ... and add it the container contents of the container.
             Container iContainerObject = EntityManager.GetObject<Container>(p.ContainerSerial, true);
             if (iContainerObject != null)
-                iContainerObject.AddItem(iObject);
+                iContainerObject.AddItem(item);
             else
             {
                 // Special case for game boards... the server will sometimes send us game pieces for a game board before it sends 
@@ -259,7 +258,7 @@ namespace UltimaXNA
                 // board actually exists.
                 // Let's throw an exception if anything other than a gameboard is ever sent to us.
                 // if (iObject.ItemData.Name != "game piece")
-                throw new Exception("Item {" + iObject.ToString() + "} received before containing object received.");
+                throw new Exception("Item {" + item.ToString() + "} received before containing object received.");
             }
         }
 
@@ -323,7 +322,11 @@ namespace UltimaXNA
             else
             {
                 item = EntityManager.GetObject<Container>(p.Serial, false);
-                if (item is Container)
+                if (item is Corpse)
+                {
+                    UltimaInteraction.OpenCorpseGump(item);
+                }
+                else if (item is Container)
                 {
                     UltimaInteraction.OpenContainerGump(item);
                 }
@@ -356,7 +359,7 @@ namespace UltimaXNA
             Corpse c = EntityManager.GetObject<Corpse>(p.CorpseSerial, false);
             c.Facing = u.Facing;
             c.MobileSerial = p.PlayerSerial;
-            c.DeathAnimation();
+            c.PlayDeathAnimation();
         }
 
         private void receive_DeleteObject(IRecvPacket packet)
@@ -418,8 +421,8 @@ namespace UltimaXNA
                 case 0x06: // party system
                     announce_UnhandledPacket(packet, "subcommand " + p.Subcommand);
                     break;
-                case 0x08: // Set cursor color / set map
-                    UltimaVars.EngineVars.Map = p.MapID;
+                case 0x08: // set map
+                    receive_MapIndex(p.MapID);
                     break;
                 case 0x14: // return context menu
                     parseContextMenu(p.ContextMenu);
@@ -471,13 +474,13 @@ namespace UltimaXNA
 
         private void receive_GraphicEffect(IRecvPacket packet)
         {
-            DynamicObject dynamic = EntityManager.AddDynamicObject();
+            Effect dynamic = EntityManager.AddDynamicObject();
             dynamic.Load_FromPacket((GraphicEffectPacket)packet);
         }
 
         private void receive_HuedEffect(IRecvPacket packet)
         {
-            DynamicObject dynamic = EntityManager.AddDynamicObject();
+            Effect dynamic = EntityManager.AddDynamicObject();
             dynamic.Load_FromPacket((GraphicEffectHuedPacket)packet);
         }
 
@@ -486,17 +489,7 @@ namespace UltimaXNA
             announce_UnhandledPacket(packet);
         }
 
-        private void receive_LoginComplete(IRecvPacket packet)
-        {
-            // This packet is just one byte, the opcode.
-            // We want to make sure we have the client object before we load the world.
-            // If we don't, just set the status to login complete, which will then
-            // load the world when we finally receive our client object.
-            if (EntityManager.MySerial != 0)
-                Status = UltimaClientStatus.WorldServer_InWorld;
-            else
-                Status = UltimaClientStatus.WorldServer_LoginComplete;
-        }
+
 
         private void receive_LoginRejection(IRecvPacket packet)
         {
@@ -653,7 +646,7 @@ namespace UltimaXNA
         {
             ObjectPropertyListPacket p = (ObjectPropertyListPacket)packet;
 
-            BaseEntity iObject = EntityManager.GetObject<BaseEntity>(p.Serial, false);
+            AEntity iObject = EntityManager.GetObject<AEntity>(p.Serial, false);
             iObject.PropertyList.Hash = p.Hash;
             iObject.PropertyList.Clear();
 
@@ -744,21 +737,6 @@ namespace UltimaXNA
             PersonalLightLevelPacket p = (PersonalLightLevelPacket)packet;
             // Console.WriteLine("PersonalLight: {0}", p.LightLevel);
             IsometricRenderer.PersonalLightning = p.LightLevel;
-        }
-
-        private void receive_PlayerLocaleAndBody(IRecvPacket packet)
-        {
-            LoginConfirmPacket p = (LoginConfirmPacket)packet;
-
-            // When loading the player object, we must load the serial before the object.
-            EntityManager.MySerial = p.Serial;
-            PlayerMobile iPlayer = EntityManager.GetObject<PlayerMobile>(p.Serial, true);
-            iPlayer.Move_Instant(p.X, p.Y, p.Z, p.Direction);
-            // iPlayer.SetFacing(p.Direction);
-
-            // We want to make sure we have the client object before we load the world...
-            if (Status == UltimaClientStatus.WorldServer_LoginComplete)
-                Status = UltimaClientStatus.WorldServer_InWorld;
         }
 
         private void receive_PlayerMove(IRecvPacket packet)
@@ -919,7 +897,7 @@ namespace UltimaXNA
         private void receive_ToolTipRevision(IRecvPacket packet)
         {
             ObjectPropertyListUpdatePacket p = (ObjectPropertyListUpdatePacket)packet;
-            BaseEntity iObject = EntityManager.GetObject<BaseEntity>(p.Serial, false);
+            AEntity iObject = EntityManager.GetObject<AEntity>(p.Serial, false);
             if (iObject != null)
             {
                 if (iObject.PropertyList.Hash != p.RevisionHash)
@@ -971,10 +949,7 @@ namespace UltimaXNA
             if (p.ItemID <= 0x4000)
             {
                 Item item = add_Item(p.Serial, p.ItemID, p.Hue, 0, p.StackAmount);
-                item.X = p.X;
-                item.Y = p.Y;
-                item.Z = p.Z;
-                item.Facing = (Direction)p.Direction;
+                item.Position.Set(p.X, p.Y, p.Z);
             }
             else
             {
@@ -982,9 +957,7 @@ namespace UltimaXNA
                 int multiID = p.ItemID - 0x4000;
                 Multi multi = EntityManager.GetObject<Multi>(p.Serial, true);
                 multi.ItemID = p.ItemID;
-                multi.X = p.X;
-                multi.Y = p.Y;
-                multi.Z = p.Z;
+                multi.Position.Set(p.X, p.Y, p.Z);
             }
         }
 
@@ -1176,6 +1149,68 @@ namespace UltimaXNA
             item.ItemID = itemID;
             item.Hue = nHue;
             return item;
+        }
+
+        // ======================================================================
+        // New login handling routines
+        // ======================================================================
+
+
+        LoginConfirmPacket m_QueuedLoginConfirmPacket;
+        private int m_QueuedMapIndex = -1;
+
+        private void receive_LoginConfirmPacket(IRecvPacket packet)
+        {
+            m_QueuedLoginConfirmPacket = (LoginConfirmPacket)packet;
+
+            InternalCheckLogin();
+        }
+
+        private void receive_LoginComplete(IRecvPacket packet)
+        {
+            // This packet is just one byte, the opcode.
+            InternalCheckLogin();
+        }
+
+        private void receive_MapIndex(int index)
+        {
+            m_QueuedMapIndex = index;
+
+            InternalCheckLogin();
+        }
+
+        private void InternalCheckLogin()
+        {
+            // We want to make sure we have the client object before we load the world.
+            // If we don't, just set the status to login complete, which will then
+            // load the world when we finally receive our client object.
+            if (Status != UltimaClientStatus.WorldServer_InWorld)
+            {
+                if (m_QueuedMapIndex >= 0 && m_QueuedLoginConfirmPacket != null)
+                {
+                    Status = UltimaClientStatus.WorldServer_InWorld;
+
+                    WorldModel model = new WorldModel();
+                    UltimaEngine.ActiveModel = model;
+                    model.MapIndex = m_QueuedMapIndex;
+
+                    LoginConfirmPacket p = m_QueuedLoginConfirmPacket;
+
+                    EntityManager.MySerial = p.Serial;
+                    PlayerMobile iPlayer = EntityManager.GetObject<PlayerMobile>(p.Serial, true);
+                    iPlayer.Move_Instant(p.X, p.Y, p.Z, p.Direction);
+                    // iPlayer.SetFacing(p.Direction);
+                }
+            }
+            else
+            {
+                // already logged in!
+                WorldModel model = (WorldModel)UltimaEngine.ActiveModel;
+                if (model.MapIndex != m_QueuedMapIndex)
+                {
+                    model.MapIndex = m_QueuedMapIndex;
+                }
+            }
         }
     }
 }
