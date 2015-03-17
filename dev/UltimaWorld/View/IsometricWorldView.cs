@@ -9,15 +9,13 @@
  *
  ***************************************************************************/
 #region usings
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
 using UltimaXNA.Entity;
 using UltimaXNA.Rendering;
-using InterXLib.Input.Windows;
-using UltimaXNA.UltimaWorld;
 using UltimaXNA.UltimaWorld.Model;
-using UltimaXNA.Entity.EntityViews;
+
 #endregion
 
 namespace UltimaXNA.UltimaWorld.View
@@ -159,9 +157,14 @@ namespace UltimaXNA.UltimaWorld.View
             int renderDimensionY = 16; // the number of tiles that are drawn for half the screen (doubled to fill the entire screen).
             int renderDimensionX = 18; // the number of tiles that are drawn in the x-direction ( + renderExtraColumnsAtSides * 2 ).
             int renderExtraColumnsAtSides = 2; // the client draws additional tiles at the edge to make wide objects that are mostly offscreen visible.
-            int renderExtraRowsAtBottom = 4; // this is used to draw tall objects that would otherwise not be visible until their ground tile was on screen.
+            int renderExtraRowsAtBottom = 13; // this is used to draw tall objects that would otherwise not be visible until their ground tile was on screen. This may still skip VERY tall objects (those weird jungle trees?)
 
-            Point firstTile = new Point(CenterPosition.X + renderExtraColumnsAtSides, CenterPosition.Y - renderDimensionY - renderExtraColumnsAtSides);
+            // when the player entity is higher (z) in the world, we must offset the first row drawn. This variable MUST be a multiple of 2.
+            int renderZOffset = (CenterPosition.Z / 14) * 2; 
+
+            Point firstTile = new Point(
+                CenterPosition.X + renderExtraColumnsAtSides - ((renderZOffset + 1) / 2), 
+                CenterPosition.Y - renderDimensionY - renderExtraColumnsAtSides - (renderZOffset  / 2));
 
             renderOffset.X = ((UltimaVars.EngineVars.ScreenSize.X + ((renderDimensionY) * 44)) / 2) - 22 + renderExtraColumnsAtSides * 44;
             renderOffset.X -= (int)((CenterPosition.X_offset - CenterPosition.Y_offset) * 22);
@@ -171,6 +174,7 @@ namespace UltimaXNA.UltimaWorld.View
             renderOffset.Y += (CenterPosition.Z * 4) + (int)(CenterPosition.Z_offset * 4);
             renderOffset.Y -= (int)((CenterPosition.X_offset + CenterPosition.Y_offset) * 22);
             renderOffset.Y -= (firstTile.X + firstTile.Y) * 22;
+            renderOffset.Y -= (renderZOffset) * 22;
 
             ObjectsRendered = 0; // Count of objects rendered for statistics and debug
 

@@ -195,7 +195,7 @@ namespace UltimaXNA.UltimaWorld
                 case "Multi":
                     e = new Multi(serial);
                     break;
-                case "DynamicObject":
+                case "Effect":
                     e = new Effect(serial);
                     break;
                 default:
