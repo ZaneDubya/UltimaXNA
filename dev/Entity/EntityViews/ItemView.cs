@@ -2,6 +2,7 @@
 using UltimaXNA.Rendering;
 using UltimaXNA.UltimaWorld;
 using UltimaXNA.UltimaWorld.Model;
+using UltimaXNA.UltimaWorld.View;
 
 namespace UltimaXNA.Entity.EntityViews
 {
@@ -20,7 +21,7 @@ namespace UltimaXNA.Entity.EntityViews
 
         private int m_DisplayItemID = -1;
 
-        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, PickTypes pickType)
+        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, PickTypes pickType, DeferredEntities deferred)
         {
             if (Entity.NoDraw)
                 return false;
@@ -35,7 +36,7 @@ namespace UltimaXNA.Entity.EntityViews
                 HueVector = Utility.GetHueVector(Entity.Hue);
             }
 
-            return base.Draw(spriteBatch, drawPosition, mouseOverList, pickType);
+            return base.Draw(spriteBatch, drawPosition, mouseOverList, pickType, deferred);
         }
     }
 }

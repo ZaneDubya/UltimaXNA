@@ -17,6 +17,7 @@ using UltimaXNA.Rendering;
 using InterXLib.Input.Windows;
 using UltimaXNA.UltimaWorld;
 using UltimaXNA.UltimaWorld.Model;
+using UltimaXNA.Entity.EntityViews;
 #endregion
 
 namespace UltimaXNA.UltimaWorld.View
@@ -157,7 +158,7 @@ namespace UltimaXNA.UltimaWorld.View
 
             int renderDimensionY = 16; // the number of tiles that are drawn for half the screen (doubled to fill the entire screen).
             int renderDimensionX = 18; // the number of tiles that are drawn in the x-direction ( + renderExtraColumnsAtSides * 2 ).
-            int renderExtraColumnsAtSides = 2; // the client draws an additional number of tiles at the edge to make wide objects that are mostly offscreen visible.
+            int renderExtraColumnsAtSides = 2; // the client draws additional tiles at the edge to make wide objects that are mostly offscreen visible.
             int renderExtraRowsAtBottom = 4; // this is used to draw tall objects that would otherwise not be visible until their ground tile was on screen.
 
             Point firstTile = new Point(CenterPosition.X + renderExtraColumnsAtSides, CenterPosition.Y - renderDimensionY - renderExtraColumnsAtSides);
@@ -176,6 +177,8 @@ namespace UltimaXNA.UltimaWorld.View
             MouseOverList overList = new MouseOverList(); // List of items for mouse over
             overList.MousePosition = UltimaEngine.Input.MousePosition;
 
+            DeferredEntities deferred = new DeferredEntities();
+
             for (int col = 0; col < renderDimensionY * 2 + renderExtraRowsAtBottom; col++)
             {
                 Vector3 drawPosition = new Vector3();
@@ -190,15 +193,22 @@ namespace UltimaXNA.UltimaWorld.View
                     if (tile == null)
                         continue;
 
-                    for (int i = 0; i < tile.Entities.Count; i++)
+                    List<DeferredView> deferredViews = deferred.GetDeferredViews(new Point(tile.X, tile.Y));
+                    if (deferredViews.Count > 0)
+                        tile.Add(deferredViews);
+
+                    List<AEntity> entities = tile.Entities;
+
+                    for (int i = 0; i < entities.Count; i++)
                     {
-                        if (tile.Entities[i].Z >= m_maxItemAltitude)
+                        if (entities[i].Z >= m_maxItemAltitude)
                             continue;
-                        Entity.EntityViews.AEntityView view = tile.Entities[i].GetView();
-                        if (view != null && view.Draw(m_spriteBatch, drawPosition, overList, PickType))
-                        {
-                            ObjectsRendered++;
-                        }
+
+                        Entity.EntityViews.AEntityView view = entities[i].GetView();
+
+                        if (view != null)
+                            if (view.Draw(m_spriteBatch, drawPosition, overList, PickType, deferred))
+                                ObjectsRendered++;
                     }
 
                     drawPosition.X -= 44f;

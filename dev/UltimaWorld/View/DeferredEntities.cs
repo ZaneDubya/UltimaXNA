@@ -12,7 +12,7 @@ using System.Collections.Generic;
 
 namespace UltimaXNA.UltimaWorld.View
 {
-    class DeferredEntityCollection
+    public class DeferredEntities
     {
         private List<DeferredView> m_DeferredViews = new List<DeferredView>();
         private List<DeferredView> m_TheseDeferredViews = new List<DeferredView>();

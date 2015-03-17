@@ -9,11 +9,9 @@
  *
  ***************************************************************************/
 #region usings
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaWorld.View;
 using UltimaXNA.UltimaWorld.Model;
 #endregion
 
@@ -71,30 +69,30 @@ namespace UltimaXNA.Entity
 
             if (checkDiagonals)
             {
-                MapTile sectorStart = map.GetMapTile(xStart, yStart);
-                MapTile sectorForward = map.GetMapTile(xForward, yForward);
-                MapTile sectorLeft = map.GetMapTile(xLeft, yLeft);
-                MapTile sectorRight = map.GetMapTile(xRight, yRight);
-                if ((sectorForward == null) || (sectorStart == null) || (sectorLeft == null) || (sectorRight == null))
+                MapTile tileStart = map.GetMapTile(xStart, yStart);
+                MapTile tileForward = map.GetMapTile(xForward, yForward);
+                MapTile tileLeft = map.GetMapTile(xLeft, yLeft);
+                MapTile tileRight = map.GetMapTile(xRight, yRight);
+                if ((tileForward == null) || (tileStart == null) || (tileLeft == null) || (tileRight == null))
                 {
                     newZ = (int)loc.Z;
                     return false;
                 }
 
-                List<MapTile> sectors = new List<MapTile>(); //m_Sectors;
+                List<MapTile> tiles = new List<MapTile>(); //m_Sectors;
 
-                sectors.Add(sectorStart);
-                sectors.Add(sectorForward);
-                sectors.Add(sectorLeft);
-                sectors.Add(sectorRight);
+                tiles.Add(tileStart);
+                tiles.Add(tileForward);
+                tiles.Add(tileLeft);
+                tiles.Add(tileRight);
 
-                for (int i = 0; i < sectors.Count; ++i)
+                for (int i = 0; i < tiles.Count; ++i)
                 {
-                    MapTile sector = sectors[i];
+                    MapTile tile = tiles[i];
 
-                    for (int j = 0; j < sector.Entities.Count; ++j)
+                    for (int j = 0; j < tile.Entities.Count; ++j)
                     {
-                        AEntity entity = sector.Entities[j]; //Item item = sector.Items[j];
+                        AEntity entity = tile.Entities[j]; //Item item = sector.Items[j];
 
                         // if (ignoreMovableImpassables && item.Movable && item.ItemData.Impassable)
                         //     continue;
@@ -106,13 +104,13 @@ namespace UltimaXNA.Entity
                             if ((item.ItemData.Flags & reqFlags) == 0)
                                 continue;
 
-                            if (sector == sectorStart && item.AtWorldPoint(xStart, yStart) && item.ItemID < 0x4000)
+                            if (tile == tileStart && item.AtWorldPoint(xStart, yStart) && item.ItemID < 0x4000)
                                 itemsStart.Add(item);
-                            else if (sector == sectorForward && item.AtWorldPoint(xForward, yForward) && item.ItemID < 0x4000)
+                            else if (tile == tileForward && item.AtWorldPoint(xForward, yForward) && item.ItemID < 0x4000)
                                 itemsForward.Add(item);
-                            else if (sector == sectorLeft && item.AtWorldPoint(xLeft, yLeft) && item.ItemID < 0x4000)
+                            else if (tile == tileLeft && item.AtWorldPoint(xLeft, yLeft) && item.ItemID < 0x4000)
                                 itemsLeft.Add(item);
-                            else if (sector == sectorRight && item.AtWorldPoint(xRight, yRight) && item.ItemID < 0x4000)
+                            else if (tile == tileRight && item.AtWorldPoint(xRight, yRight) && item.ItemID < 0x4000)
                                 itemsRight.Add(item);
                         }
                     }
@@ -120,19 +118,19 @@ namespace UltimaXNA.Entity
             }
             else
             {
-                MapTile sectorStart = map.GetMapTile(xStart, yStart);
-                MapTile sectorForward = map.GetMapTile(xForward, yForward);
-                if ((sectorForward == null) || (sectorStart == null))
+                MapTile tileStart = map.GetMapTile(xStart, yStart);
+                MapTile tileForward = map.GetMapTile(xForward, yForward);
+                if ((tileForward == null) || (tileStart == null))
                 {
                     newZ = (int)loc.Z;
                     return false;
                 }
 
-                if (sectorStart == sectorForward)
+                if (tileStart == tileForward)
                 {
-                    for (int i = 0; i < sectorStart.Entities.Count; ++i)
+                    for (int i = 0; i < tileStart.Entities.Count; ++i)
                     {
-                        AEntity entity = sectorStart.Entities[i]; // Item item = sectorStart.Items[i];
+                        AEntity entity = tileStart.Entities[i]; // Item item = sectorStart.Items[i];
 
                         if (entity is Item)
                         {
@@ -153,9 +151,9 @@ namespace UltimaXNA.Entity
                 }
                 else
                 {
-                    for (int i = 0; i < sectorForward.Entities.Count; ++i)
+                    for (int i = 0; i < tileForward.Entities.Count; ++i)
                     {
-                        AEntity entity = sectorForward.Entities[i]; // Item item = sectorForward.Items[i];
+                        AEntity entity = tileForward.Entities[i]; // Item item = sectorForward.Items[i];
 
                         if (entity is Item)
                         {
@@ -172,9 +170,9 @@ namespace UltimaXNA.Entity
                         }
                     }
 
-                    for (int i = 0; i < sectorStart.Entities.Count; ++i)
+                    for (int i = 0; i < tileStart.Entities.Count; ++i)
                     {
-                        AEntity entity = sectorStart.Entities[i]; // Item item = sectorStart.Items[i];
+                        AEntity entity = tileStart.Entities[i]; // Item item = sectorStart.Items[i];
 
                         if (entity is Item)
                         {

@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Rendering;
 using UltimaXNA.UltimaWorld;
 using UltimaXNA.UltimaWorld.Model;
+using UltimaXNA.UltimaWorld.View;
 
 namespace UltimaXNA.Entity.EntityViews
 {
@@ -28,7 +29,7 @@ namespace UltimaXNA.Entity.EntityViews
             m_Animation.Update(frameMS);
         }
 
-        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, PickTypes pickType)
+        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, PickTypes pickType, DeferredEntities deferred)
         {
             DrawFlip = (MirrorFacingForDraw(Entity.Facing) > 4) ? true : false;
 
@@ -50,11 +51,12 @@ namespace UltimaXNA.Entity.EntityViews
             // TODO: determine if mobile should be drawn now, or deferred.
             // if deferred, return false and create a deferred object.
             // if drawn now, return true.
+            deferred.AddDeferredView(new DeferredView(this, drawPosition));
 
             return false;
         }
 
-        public bool DrawDeferred(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, PickTypes pickType)
+        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, PickTypes pickType)
         {
             int drawCenterX = m_MobileLayers[0].Frame.Center.X;
             int drawCenterY = m_MobileLayers[0].Frame.Center.Y;

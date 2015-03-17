@@ -3,6 +3,7 @@ using UltimaXNA.Rendering;
 using UltimaXNA.UltimaWorld;
 using UltimaXNA.UltimaData;
 using UltimaXNA.UltimaWorld.Model;
+using UltimaXNA.UltimaWorld.View;
 
 namespace UltimaXNA.Entity.EntityViews
 {

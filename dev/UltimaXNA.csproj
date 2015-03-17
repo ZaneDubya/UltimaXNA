@@ -125,7 +125,7 @@
     <Compile Include="Core\AUltimaModel.cs" />
     <Compile Include="Entity\EntityViews\AEntityView.cs" />
     <Compile Include="Entity\EntityViews\CorpseView.cs" />
-    <Compile Include="Entity\EntityViews\DeferredView.cs" />
+    <Compile Include="UltimaWorld\View\DeferredEntity.cs" />
     <Compile Include="UltimaWorld\Model\KrriosSort.cs" />
     <Compile Include="UltimaWorld\Model\ClintSort.cs" />
     <Compile Include="Entity\EntityViews\GroundView.cs" />
@@ -351,7 +351,8 @@
     <Compile Include="UltimaGUI\HTML\Parsing\HTMLParser.cs" />
     <Compile Include="UltimaGUI\HTML\Parsing\TagParser.cs" />
     <Compile Include="UltimaWorld\Model\MapBlock.cs" />
-    <Compile Include="UltimaWorld\View\DeferredEntityCollection.cs" />
+    <Compile Include="UltimaWorld\View\DeferredEntities.cs" />
+    <Compile Include="UltimaWorld\View\DeferredEntityView.cs" />
     <Compile Include="UltimaWorld\View\IsometricWorldView.cs" />
     <Compile Include="UltimaWorld\Model\MapTile.cs" />
     <Compile Include="UltimaWorld\Controller\MouseOverList.cs" />

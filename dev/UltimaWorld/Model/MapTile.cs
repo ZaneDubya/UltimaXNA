@@ -12,6 +12,7 @@
 using System;
 using System.Collections.Generic;
 using UltimaXNA.Entity;
+using UltimaXNA.Entity.EntityViews;
 using UltimaXNA.UltimaData;
 using UltimaXNA.UltimaWorld.View;
 #endregion
@@ -76,24 +77,24 @@ namespace UltimaXNA.UltimaWorld.Model
             underItem = null;
             underTerrain = null;
 
-            List<AEntity> iObjects = this.Entities;
-            for (int i = iObjects.Count - 1; i >= 0; i--)
+            List<AEntity> entities = this.Entities;
+            for (int i = entities.Count - 1; i >= 0; i--)
             {
-                if (iObjects[i].Z <= originZ)
+                if (entities[i].Z <= originZ)
                     continue;
 
-                if (iObjects[i] is StaticItem)
+                if (entities[i] is StaticItem)
                 {
-                    UltimaData.ItemData iData = ((StaticItem)iObjects[i]).ItemData;
+                    UltimaData.ItemData iData = ((StaticItem)entities[i]).ItemData;
                     if (iData.IsRoof || iData.IsSurface || iData.IsWall)
                     {
-                        if (underItem == null || iObjects[i].Z < underItem.Z)
-                            underItem = iObjects[i];
+                        if (underItem == null || entities[i].Z < underItem.Z)
+                            underItem = entities[i];
                     }
                 }
-                else if (iObjects[i] is Ground && iObjects[i].Z >= originZ + 20)
+                else if (entities[i] is Ground && entities[i].Z >= originZ + 20)
                 {
-                    underTerrain = iObjects[i];
+                    underTerrain = entities[i];
                 }
             }
         }
