@@ -1,9 +1,5 @@
-﻿using System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Entity;
+﻿using Microsoft.Xna.Framework;
 using UltimaXNA.Rendering;
-using UltimaXNA.UltimaWorld.View;
 using UltimaXNA.UltimaWorld;
 using UltimaXNA.UltimaWorld.Model;
 
@@ -41,7 +37,7 @@ namespace UltimaXNA.Entity.EntityViews
         protected bool DrawAs3DStretched = false;
         protected bool NoDraw = false;
 
-        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, PickTypes pickType)
+        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
         {
             if (NoDraw)
                 return false;
@@ -53,9 +49,9 @@ namespace UltimaXNA.Entity.EntityViews
             }
 
             if (!DrawAs3DStretched)
-                return base.Draw(spriteBatch, drawPosition, mouseOverList, pickType);
+                return base.Draw(spriteBatch, drawPosition, mouseOverList, map);
             else
-                return Draw3DStretched(spriteBatch, drawPosition, mouseOverList, pickType);
+                return Draw3DStretched(spriteBatch, drawPosition, mouseOverList, map);
         }
 
         private Vector3 m_vertex0_yOffset, m_vertex1_yOffset, m_vertex2_yOffset, m_vertex3_yOffset;
@@ -67,7 +63,7 @@ namespace UltimaXNA.Entity.EntityViews
                     new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(1, 1, 0))
         };
 
-        private bool Draw3DStretched(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, PickTypes pickType)
+        private bool Draw3DStretched(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
         {
             // this is an isometric stretched tile and needs a specialized draw routine.
             m_vertexBufferAlternate[0].Position = drawPosition + m_vertex0_yOffset;
@@ -78,7 +74,7 @@ namespace UltimaXNA.Entity.EntityViews
             if (!spriteBatch.Draw(DrawTexture, m_vertexBufferAlternate))
                 return false;
 
-            if ((pickType & pickType) == pickType)
+            if ((mouseOverList.PickType & PickType) == PickType)
             {
                 if (mouseOverList.IsMouseInObjectIsometric(m_vertexBufferAlternate))
                 {

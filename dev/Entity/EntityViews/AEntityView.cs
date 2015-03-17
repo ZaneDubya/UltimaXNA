@@ -42,12 +42,7 @@ namespace UltimaXNA.Entity.EntityViews
         protected Rectangle DrawArea = Rectangle.Empty;
         protected Texture2D DrawTexture = null;
 
-        public virtual bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, PickTypes pickType, DeferredEntities deferred)
-        {
-            return Draw(spriteBatch, drawPosition, mouseOverList, PickType);
-        }
-
-        public virtual bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, PickTypes pickType)
+        public virtual bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
         {
             VertexPositionNormalTextureHue[] vertexBuffer;
 
@@ -102,14 +97,14 @@ namespace UltimaXNA.Entity.EntityViews
 
             // draw overlap ... !!! ??? with deferred objects, perhaps.
 
-            Pick(mouseOverList, pickType, vertexBuffer);
+            Pick(mouseOverList, vertexBuffer);
 
             return true;
         }
 
-        protected void Pick(MouseOverList mouseOverList, PickTypes pickType, VertexPositionNormalTextureHue[] vertexBuffer)
+        protected void Pick(MouseOverList mouseOverList, VertexPositionNormalTextureHue[] vertexBuffer)
         {
-            if ((pickType & PickType) == PickType)
+            if ((mouseOverList.PickType & PickType) == PickType)
             {
                 if (((!DrawFlip) && mouseOverList.IsMouseInObject(vertexBuffer[0].Position, vertexBuffer[3].Position)) ||
                     ((DrawFlip) && mouseOverList.IsMouseInObject(vertexBuffer[2].Position, vertexBuffer[1].Position)))

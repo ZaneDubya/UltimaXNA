@@ -174,10 +174,7 @@ namespace UltimaXNA.UltimaWorld.View
 
             ObjectsRendered = 0; // Count of objects rendered for statistics and debug
 
-            MouseOverList overList = new MouseOverList(); // List of items for mouse over
-            overList.MousePosition = UltimaEngine.Input.MousePosition;
-
-            DeferredEntities deferred = new DeferredEntities();
+            MouseOverList overList = new MouseOverList(UltimaEngine.Input.MousePosition, PickType); // List of entities mouse is over.
 
             for (int col = 0; col < renderDimensionY * 2 + renderExtraRowsAtBottom; col++)
             {
@@ -193,10 +190,6 @@ namespace UltimaXNA.UltimaWorld.View
                     if (tile == null)
                         continue;
 
-                    List<DeferredView> deferredViews = deferred.GetDeferredViews(new Point(tile.X, tile.Y));
-                    if (deferredViews.Count > 0)
-                        tile.Add(deferredViews);
-
                     List<AEntity> entities = tile.Entities;
 
                     for (int i = 0; i < entities.Count; i++)
@@ -207,7 +200,7 @@ namespace UltimaXNA.UltimaWorld.View
                         Entity.EntityViews.AEntityView view = entities[i].GetView();
 
                         if (view != null)
-                            if (view.Draw(m_spriteBatch, drawPosition, overList, PickType, deferred))
+                            if (view.Draw(m_spriteBatch, drawPosition, overList, map))
                                 ObjectsRendered++;
                     }
 

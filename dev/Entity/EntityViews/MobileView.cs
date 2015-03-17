@@ -1,9 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Rendering;
 using UltimaXNA.UltimaWorld;
 using UltimaXNA.UltimaWorld.Model;
-using UltimaXNA.UltimaWorld.View;
 
 namespace UltimaXNA.Entity.EntityViews
 {
@@ -14,14 +12,17 @@ namespace UltimaXNA.Entity.EntityViews
             get { return (Mobile)base.Entity; }
         }
 
-        public MobileView(Mobile mobile)
+        public MobileView(Mobile mobile, bool dontDefer)
             : base(mobile)
         {
+            m_DontDefer = dontDefer;
             m_Animation = new MobileAnimation(mobile);
+
             m_MobileLayers = new MobileViewLayer[(int)EquipLayer.LastUserValid];
             PickType = PickTypes.PickObjects;
         }
 
+        private bool m_DontDefer;
         public MobileAnimation m_Animation;
 
         public void Update(double frameMS)
@@ -29,8 +30,22 @@ namespace UltimaXNA.Entity.EntityViews
             m_Animation.Update(frameMS);
         }
 
-        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, PickTypes pickType, DeferredEntities deferred)
+        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
         {
+            if (!m_DontDefer)
+            {
+                MapTile tile = map.GetMapTile(Entity.Position.X + 1, Entity.Position.Y + 1);
+                if (tile == null)
+                {
+                    int z;
+                    if (MobileMovementCheck.CheckMovement(Entity, map, Entity.Position, Direction.Down, out z))
+                    {
+                        tile.OnEnter(new MobileDeferred(Entity, z));
+                        return false;
+                    }
+                }
+            }
+
             DrawFlip = (MirrorFacingForDraw(Entity.Facing) > 4) ? true : false;
 
             if (Entity.IsMoving)
@@ -51,13 +66,7 @@ namespace UltimaXNA.Entity.EntityViews
             // TODO: determine if mobile should be drawn now, or deferred.
             // if deferred, return false and create a deferred object.
             // if drawn now, return true.
-            deferred.AddDeferredView(new DeferredView(this, drawPosition));
 
-            return false;
-        }
-
-        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, PickTypes pickType)
-        {
             int drawCenterX = m_MobileLayers[0].Frame.Center.X;
             int drawCenterY = m_MobileLayers[0].Frame.Center.Y;
 
@@ -95,11 +104,11 @@ namespace UltimaXNA.Entity.EntityViews
                         DrawFlip ? DrawArea.Width : DrawArea.Width,
                         DrawArea.Height);
 
-                    base.Draw(spriteBatch, drawPosition, mouseOverList, pickType);
+                    base.Draw(spriteBatch, drawPosition, mouseOverList, map);
                 }
             }
 
-            return true;
+            return false;
         }
 
         private int m_LayerCount = 0;

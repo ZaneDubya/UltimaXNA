@@ -182,7 +182,7 @@ namespace UltimaXNA.Entity
 
         protected override EntityViews.AEntityView CreateView()
         {
-            return new EntityViews.MobileView(this);
+            return new EntityViews.MobileView(this, false);
         }
 
         public override void Update(double frameMS)
