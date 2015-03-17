@@ -48,11 +48,11 @@ namespace UltimaXNA.Entity
         
         Direction m_playerMobile_NextMove = Direction.Nothing;
         DateTime m_playerMobile_NextMoveTime;
-        Direction m_facing = Direction.Up;
+        Direction m_Facing = Direction.Up;
         public Direction Facing
         {
-            get { return m_facing; }
-            set { m_facing = value; }
+            get { return m_Facing; }
+            set { m_Facing = value; }
         }
 
         public bool IsMoving

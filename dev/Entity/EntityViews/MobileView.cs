@@ -2,6 +2,7 @@
 using UltimaXNA.Rendering;
 using UltimaXNA.UltimaWorld;
 using UltimaXNA.UltimaWorld.Model;
+using UltimaXNA.UltimaData;
 
 namespace UltimaXNA.Entity.EntityViews
 {
@@ -28,28 +29,12 @@ namespace UltimaXNA.Entity.EntityViews
             m_Animation.Update(frameMS);
         }
 
-        private bool m_AllowDefer = false;
-
-        public void SetAllowDefer()
-        {
-            m_AllowDefer = true;
-        }
-
         public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
         {
             if (m_AllowDefer == false)
             {
-                MapTile tile = map.GetMapTile(Entity.Position.X + 1, Entity.Position.Y);
-                if (tile != null)
-                {
-                    int z;
-                    if (MobileMovementCheck.CheckMovementForced(Entity, map, Entity.Position, Direction.Down, out z))
-                    {
-                        MobileDeferred deferred = new MobileDeferred(Entity, drawPosition, z);
-                        tile.OnEnter(deferred);
-                        return false;
-                    }
-                }
+                if (CheckDefer(map, drawPosition))
+                    return false;
             }
             else
             {
@@ -72,10 +57,6 @@ namespace UltimaXNA.Entity.EntityViews
             }
 
             InternalSetupLayers();
-
-            // TODO: determine if mobile should be drawn now, or deferred.
-            // if deferred, return false and create a deferred object.
-            // if drawn now, return true.
 
             int drawCenterX = m_MobileLayers[0].Frame.Center.X;
             int drawCenterY = m_MobileLayers[0].Frame.Center.Y;
@@ -120,6 +101,94 @@ namespace UltimaXNA.Entity.EntityViews
 
             return false;
         }
+
+        // ======================================================================
+        // Code to get frames for drawing
+        // ======================================================================
+
+        private AnimationFrame getFrame(int bodyID, int hue, int facing, int action, float frame)
+        {
+            AnimationFrame[] iFrames = UltimaData.AnimationData.GetAnimation(bodyID, action, facing, hue);
+            if (iFrames == null)
+                return null;
+            int iFrame = frameFromSequence(frame, iFrames.Length);
+            if (iFrames[iFrame].Texture == null)
+                return null;
+            return iFrames[iFrame];
+        }
+
+        private int frameFromSequence(float frame, int maxFrames)
+        {
+            return (int)(frame * (float)maxFrames);
+        }
+
+        private int MirrorFacingForDraw(Direction facing)
+        {
+            int iFacing = (int)((Direction)facing & Direction.FacingMask);
+            if (iFacing >= 3)
+                return iFacing - 3;
+            else
+                return iFacing + 5;
+        }
+
+        // ======================================================================
+        // Deferred drawing code
+        // ======================================================================
+        
+        private bool m_AllowDefer = false;
+
+        public void SetAllowDefer()
+        {
+            m_AllowDefer = true;
+        }
+
+        private bool CheckDefer(Map map, Vector3 drawPosition)
+        {
+            MapTile deferToTile;
+            Direction checkDirection;
+            if (Entity.IsMoving)
+            {
+                if (
+                    ((Entity.Facing & Direction.FacingMask) == Direction.Left) ||
+                    ((Entity.Facing & Direction.FacingMask) == Direction.South) ||
+                    ((Entity.Facing & Direction.FacingMask) == Direction.East))
+                {
+                    deferToTile = map.GetMapTile(Entity.Position.X, Entity.Position.Y + 1);
+                    checkDirection = Entity.Facing & Direction.FacingMask;
+                }
+                else if ((Entity.Facing & Direction.FacingMask) == Direction.Down)
+                {
+                    deferToTile = map.GetMapTile(Entity.Position.X + 1, Entity.Position.Y + 1);
+                    checkDirection = Direction.Down;
+                }
+                else
+                {
+                    deferToTile = map.GetMapTile(Entity.Position.X + 1, Entity.Position.Y);
+                    checkDirection = Direction.East;
+                }
+            }
+            else
+            {
+                deferToTile = map.GetMapTile(Entity.Position.X + 1, Entity.Position.Y);
+                checkDirection = Direction.East;
+            }
+
+            if (deferToTile != null)
+            {
+                int z;
+                if (MobileMovementCheck.CheckMovementForced(Entity, map, Entity.Position, checkDirection, out z))
+                {
+                    MobileDeferred deferred = new MobileDeferred(Entity, drawPosition, z);
+                    deferToTile.OnEnter(deferred);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // ======================================================================
+        // Layer management
+        // ======================================================================
 
         private int m_LayerCount = 0;
         private int m_FrameCount = 0;
@@ -166,22 +235,6 @@ namespace UltimaXNA.Entity.EntityViews
             m_LayerCount = 0;
         }
 
-        private UltimaData.AnimationFrame getFrame(int bodyID, int hue, int facing, int action, float frame)
-        {
-            UltimaData.AnimationFrame[] iFrames = UltimaData.AnimationData.GetAnimation(bodyID, action, facing, hue);
-            if (iFrames == null)
-                return null;
-            int iFrame = frameFromSequence(frame, iFrames.Length);
-            if (iFrames[iFrame].Texture == null)
-                return null;
-            return iFrames[iFrame];
-        }
-
-        private int frameFromSequence(float frame, int maxFrames)
-        {
-            return (int)(frame * (float)maxFrames);
-        }
-
         private int[] m_DrawLayerOrder
         {
             get
@@ -202,15 +255,6 @@ namespace UltimaXNA.Entity.EntityViews
                         return m_DrawLayerOrderNorth;
                 }
             }
-        }
-
-        private int MirrorFacingForDraw(Direction facing)
-        {
-            int iFacing = (int)((Direction)facing & Direction.FacingMask);
-            if (iFacing >= 3)
-                return iFacing - 3;
-            else
-                return iFacing + 5;
         }
 
         private static int[] m_DrawLayerOrderNorth = new int[] { (int)EquipLayer.Mount, (int)EquipLayer.Body, (int)EquipLayer.Shirt, (int)EquipLayer.Pants, (int)EquipLayer.Shoes, (int)EquipLayer.InnerLegs, (int)EquipLayer.InnerTorso, (int)EquipLayer.Ring, (int)EquipLayer.Talisman, (int)EquipLayer.Bracelet, (int)EquipLayer.Unused_xF, (int)EquipLayer.Arms, (int)EquipLayer.Gloves, (int)EquipLayer.OuterLegs, (int)EquipLayer.MiddleTorso, (int)EquipLayer.Neck, (int)EquipLayer.Hair, (int)EquipLayer.OuterTorso, (int)EquipLayer.Waist, (int)EquipLayer.FacialHair, (int)EquipLayer.Earrings, (int)EquipLayer.Helm, (int)EquipLayer.OneHanded, (int)EquipLayer.TwoHanded, (int)EquipLayer.Cloak };

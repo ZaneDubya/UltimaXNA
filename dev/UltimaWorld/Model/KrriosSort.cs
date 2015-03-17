@@ -71,7 +71,15 @@ namespace UltimaXNA.UltimaWorld.Model
 
         public static void GetSortValues(AEntity e, out int z, out int threshold, out int type, out int tiebreaker)
         {
-            if (e is Mobile)
+            if (e is MobileDeferred)
+            {
+                MobileDeferred mobile = (MobileDeferred)e;
+                z = mobile.Z;
+                threshold = 1;
+                type = 1;
+                tiebreaker = 0;
+            }
+            else if (e is Mobile)
             {
                 Mobile mobile = (Mobile)e;
                 z = mobile.Z;
