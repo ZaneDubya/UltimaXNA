@@ -157,10 +157,12 @@ namespace UltimaXNA.UltimaWorld.View
             int renderDimensionY = 16; // the number of tiles that are drawn for half the screen (doubled to fill the entire screen).
             int renderDimensionX = 18; // the number of tiles that are drawn in the x-direction ( + renderExtraColumnsAtSides * 2 ).
             int renderExtraColumnsAtSides = 2; // the client draws additional tiles at the edge to make wide objects that are mostly offscreen visible.
-            int renderExtraRowsAtBottom = 13; // this is used to draw tall objects that would otherwise not be visible until their ground tile was on screen. This may still skip VERY tall objects (those weird jungle trees?)
+
 
             // when the player entity is higher (z) in the world, we must offset the first row drawn. This variable MUST be a multiple of 2.
-            int renderZOffset = (CenterPosition.Z / 14) * 2; 
+            int renderZOffset = (CenterPosition.Z / 14) * 2 + 4;
+            // this is used to draw tall objects that would otherwise not be visible until their ground tile was on screen. This may still skip VERY tall objects (those weird jungle trees?)
+            int renderExtraRowsAtBottom = renderZOffset + 3; 
 
             Point firstTile = new Point(
                 CenterPosition.X + renderExtraColumnsAtSides - ((renderZOffset + 1) / 2), 
