@@ -92,7 +92,7 @@ namespace UltimaXNA.UltimaGUI.Controls
         {
             if (hasSourceEntity)
             {
-                m_isFemale = ((Mobile)m_sourceEntity).IsFemale;
+                m_isFemale = ((Mobile)m_sourceEntity).Flags.IsFemale;
                 m_isElf = false;
                 if (m_sourceEntityUpdateHash != ((Mobile)m_sourceEntity).UpdateTicker)
                 {

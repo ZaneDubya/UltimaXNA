@@ -46,7 +46,7 @@ namespace UltimaXNA
 
         public static void ToggleWarMode() // used by paperdollgump.
         {
-            s_Client.Send(new RequestWarModePacket(!((Mobile)EntityManager.GetPlayerObject()).IsWarMode));
+            s_Client.Send(new RequestWarModePacket(!((Mobile)EntityManager.GetPlayerObject()).Flags.IsWarMode));
         }
 
         public static void UseSkill(int index) // used by ultimainteraction
