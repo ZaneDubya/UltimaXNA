@@ -1,5 +1,6 @@
 ﻿using InterXLib.Input.Windows;
 using InterXLib.Patterns.MVC;
+using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Network;
 using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaGUI.WorldGumps;
@@ -84,6 +85,12 @@ namespace UltimaXNA.UltimaWorld
 
         protected override void OnInitialize()
         {
+            UltimaEngine.GraphicsDeviceManager.PreferredBackBufferWidth =
+                GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            UltimaEngine.GraphicsDeviceManager.PreferredBackBufferHeight =
+                GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            UltimaEngine.GraphicsDeviceManager.ApplyChanges();
+
             m_WorldClient.Initialize();
             m_WorldClient.AfterLoginSequence();
 

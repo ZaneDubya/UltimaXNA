@@ -82,7 +82,7 @@ namespace UltimaXNA.UltimaWorld.View
 
         public static void Initialize(Game game)
         {
-            m_spriteBatch = new SpriteBatch3D(game);
+            m_spriteBatch = new SpriteBatch3D(game, false);
             m_vectors = new VectorRenderer(game.GraphicsDevice, game.Content);
 
             PickType = PickTypes.PickNothing;

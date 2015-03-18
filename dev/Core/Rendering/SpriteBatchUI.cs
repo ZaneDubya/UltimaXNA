@@ -24,7 +24,7 @@ namespace UltimaXNA.Rendering
 
         public SpriteBatchUI(Game game)
         {
-            m_SpriteBatch = new SpriteBatch3D(game);
+            m_SpriteBatch = new SpriteBatch3D(game, true);
         }
 
         public void Prepare()

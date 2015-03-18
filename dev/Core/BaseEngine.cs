@@ -27,6 +27,7 @@ namespace UltimaXNA.Core
     {
         public static InputState Input = new InputState();
         public static GUIState UserInterface = new GUIState();
+        public static GraphicsDeviceManager GraphicsDeviceManager;
 
         public BaseEngine(int width, int height)
         {
@@ -81,16 +82,16 @@ namespace UltimaXNA.Core
         // Some settings to designate a screen size and fps limit.
         void setupGraphicsDeviceManager(int width, int height)
         {
-            GraphicsDeviceManager graphicsDeviceManager = new GraphicsDeviceManager(this);
-            graphicsDeviceManager.PreferredBackBufferWidth = width;
-            graphicsDeviceManager.PreferredBackBufferHeight = height;
-            graphicsDeviceManager.SynchronizeWithVerticalRetrace = false;
-            graphicsDeviceManager.PreparingDeviceSettings += onPreparingDeviceSettings;
+            GraphicsDeviceManager = new GraphicsDeviceManager(this);
+            GraphicsDeviceManager.PreferredBackBufferWidth = width;
+            GraphicsDeviceManager.PreferredBackBufferHeight = height;
+            GraphicsDeviceManager.SynchronizeWithVerticalRetrace = false;
+            GraphicsDeviceManager.PreparingDeviceSettings += OnPreparingDeviceManagerSettings;
             this.IsFixedTimeStep = false;
-            graphicsDeviceManager.ApplyChanges();
+            GraphicsDeviceManager.ApplyChanges();
         }
 
-        static void onPreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
+        static void OnPreparingDeviceManagerSettings(object sender, PreparingDeviceSettingsEventArgs e)
         {
             e.GraphicsDeviceInformation.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
         }

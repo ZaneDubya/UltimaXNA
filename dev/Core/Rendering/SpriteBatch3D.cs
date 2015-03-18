@@ -36,6 +36,7 @@ namespace UltimaXNA.Rendering
 
         private Effect m_effect;
         private BoundingBox m_boundingBox;
+        private bool forGUI;
 
         static float Z = 0;
         public static void ResetZ()
@@ -43,17 +44,37 @@ namespace UltimaXNA.Rendering
             Z = 0;
         }
 
-        public SpriteBatch3D(Game game)
+        public SpriteBatch3D(Game game, bool gui)
         {
             m_Game = game;
+            forGUI = gui;
 
-            m_boundingBox = new BoundingBox(new Vector3(0, 0, Int32.MinValue), new Vector3(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, Int32.MaxValue));
+            if (gui)
+            {
+                m_boundingBox = new BoundingBox(new Vector3(0, 0, Int32.MinValue),
+                    new Vector3(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, Int32.MaxValue));
+            }
+            else m_boundingBox = new BoundingBox(new Vector3(0, 0, Int32.MinValue),
+                    new Vector3(800, 600, Int32.MaxValue));
+
             m_drawQueue = new Dictionary<Texture2D, List<VertexPositionNormalTextureHue>>(256);
             m_indexBuffer = CreateIndexBuffer(0x1000);
             m_vertexListQueue = new Queue<List<VertexPositionNormalTextureHue>>(256);
 
             m_effect = m_Game.Content.Load<Effect>("Shaders/IsometricWorld");
             m_effect.CurrentTechnique = m_effect.Techniques["StandardEffect"];
+
+            UltimaEngine.GraphicsDeviceManager.PreparingDeviceSettings += new EventHandler<PreparingDeviceSettingsEventArgs>(GraphicsDeviceManager_PreparingDeviceSettings);
+        }
+
+        void GraphicsDeviceManager_PreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
+        {
+            if (forGUI)
+            {
+                m_boundingBox = new BoundingBox(new Vector3(0, 0, Int32.MinValue),
+                    new Vector3(e.GraphicsDeviceInformation.PresentationParameters.BackBufferWidth,
+                        e.GraphicsDeviceInformation.PresentationParameters.BackBufferHeight, Int32.MaxValue));
+            }
         }
 
         public bool DrawSimple(Texture2D texture, Vector3 position, Vector2 hue)

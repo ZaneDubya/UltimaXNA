@@ -112,6 +112,8 @@ namespace UltimaXNA.UltimaData
 		static MusicData()
 		{
 			m_songList = new Hashtable ();
+
+		    if (!FileManager.Exists("Music\\Digital\\Config.txt")) return;
 			StreamReader reader = new StreamReader(FileManager.GetFile ( "Music\\Digital\\Config.txt" ));
 			String line;
 			while ((line = reader.ReadLine ()) != null)

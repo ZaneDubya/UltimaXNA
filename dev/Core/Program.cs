@@ -12,7 +12,7 @@ namespace UltimaXNA.Core
         static void Main(string[] args)
         {
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-            using (UltimaEngine engine = new UltimaEngine(800, 600))
+            using (UltimaEngine engine = new UltimaEngine(640, 480))
             {
                 engine.Run();
             }
