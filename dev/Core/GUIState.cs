@@ -140,7 +140,7 @@ namespace UltimaXNA
                 bool alreadyActive = false;
                 foreach (Control c in m_Controls)
                 {
-                    if (c.GetType() == gump.GetType() && c.Equals(gump))
+                    if (c.Equals(gump) && gump.Equals(c))
                     {
                         alreadyActive = true;
                         c.Dispose();
@@ -153,7 +153,7 @@ namespace UltimaXNA
             {
                 foreach (Control c in m_Controls)
                 {
-                    if (c.GetType() == gump.GetType() && c.Equals(gump))
+                    if (c.Equals(gump) && gump.Equals(c))
                     {
                         c.Dispose();
                     }

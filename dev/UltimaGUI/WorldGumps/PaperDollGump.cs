@@ -149,10 +149,9 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
 
         public override bool Equals(object obj)
         {
-            if (obj == null)
-            {
+            // base equality handles null and cannot cast to same type.
+            if (!base.Equals(obj))
                 return false;
-            }
 
             // If parameter cannot be cast to PaperDollGump return false.
             PaperDollGump p = obj as PaperDollGump;
