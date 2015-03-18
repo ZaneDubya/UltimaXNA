@@ -37,47 +37,29 @@ namespace UltimaXNA.Rendering
             m_SpriteBatch.Flush();
         }
 
-        Vector2 hueVector(int hue, bool partial, bool transparent)
-        {
-            int hueFlag = 0;
-            if (hue != 0)
-            {
-                if (partial)
-                {
-                    hueFlag = 2;
-                    hue -= 1;
-                }
-                else
-                    hueFlag = 1;
-            }
-            if (transparent)
-                hueFlag |= 4;
-            return new Vector2(hue, hueFlag);
-        }
-
         public void Draw2D(Texture2D texture, Point position, int hue, bool partial, bool transparent)
         {
-            m_SpriteBatch.DrawSimple(texture, new Vector3(position.X, position.Y, 0), hueVector(hue, partial, transparent));
+            m_SpriteBatch.DrawSimple(texture, new Vector3(position.X, position.Y, 0), Utility.GetHueVector(hue, partial, transparent));
         }
 
         public void Draw2D(Texture2D texture, Point position, Rectangle sourceRect, int hue, bool partial, bool transparent)
         {
-            m_SpriteBatch.DrawSimple(texture, new Vector3(position.X, position.Y, 0), sourceRect, hueVector(hue, partial, transparent));
+            m_SpriteBatch.DrawSimple(texture, new Vector3(position.X, position.Y, 0), sourceRect, Utility.GetHueVector(hue, partial, transparent));
         }
 
         public void Draw2D(Texture2D texture, Rectangle destRect, Rectangle sourceRect, int hue, bool partial, bool transparent)
         {
-            m_SpriteBatch.DrawSimple(texture, destRect, sourceRect, hueVector(hue, partial, transparent));
+            m_SpriteBatch.DrawSimple(texture, destRect, sourceRect, Utility.GetHueVector(hue, partial, transparent));
         }
 
         public void Draw2D(Texture2D texture, Rectangle destRect, int hue, bool partial, bool transparent)
         {
-            m_SpriteBatch.DrawSimple(texture, destRect, hueVector(hue, partial, transparent));
+            m_SpriteBatch.DrawSimple(texture, destRect, Utility.GetHueVector(hue, partial, transparent));
         }
 
         internal void Draw2DTiled(Texture2D texture, Rectangle destRect, int hue, bool partial, bool transparent)
         {
-            m_SpriteBatch.DrawSimpleTiled(texture, destRect, hueVector(hue, partial, transparent));
+            m_SpriteBatch.DrawSimpleTiled(texture, destRect, Utility.GetHueVector(hue, partial, transparent));
         }
     }
 }

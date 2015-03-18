@@ -10,10 +10,11 @@ namespace UltimaXNA.Entity
     {
         public int SortInfluence = 0;
 
-        public StaticItem(int itemID, int sortInfluence)
+        public StaticItem(int itemID, int hue,  int sortInfluence)
             : base(Serial.Null)
         {
             ItemID = itemID;
+            Hue = hue;
             SortInfluence = sortInfluence;
         }
     }

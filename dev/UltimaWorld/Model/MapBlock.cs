@@ -49,9 +49,9 @@ namespace UltimaXNA.UltimaWorld.Model
                 int iX = staticsData[staticDataIndex++];
                 int iY = staticsData[staticDataIndex++];
                 int iTileZ = (sbyte)staticsData[staticDataIndex++];
-                staticDataIndex += 2; // unknown 2 byte data, not used?
+                int hue = staticsData[staticDataIndex++] + (staticsData[staticDataIndex++] * 256);
 
-                StaticItem item = new StaticItem(iTileID, i);
+                StaticItem item = new StaticItem(iTileID, hue, i);
                 item.Position.Set(X * 8 + iX, Y * 8 + iY, iTileZ);
             }
         }
