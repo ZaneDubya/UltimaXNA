@@ -24,10 +24,24 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class OpenPaperdollPacket : RecvPacket
     {
+        public int Serial
+        {
+            get;
+            set;
+        }
+
+        public string MobileName
+        {
+            get;
+            set;
+        }
+
         public OpenPaperdollPacket(PacketReader reader)
             : base(0x88, "Open Paperdoll")
         {
-
+            Serial = reader.ReadInt32();
+            MobileName = reader.ReadStringSafe(60);
+            //+flags
         }
     }
 }
