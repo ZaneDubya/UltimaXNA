@@ -121,8 +121,8 @@ namespace UltimaXNA
         /// Adds or toggles the passed gump to the list of active gumps.
         /// </summary>
         /// <param name="gump">The gump to be opened or toggled.</param>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
+        /// <param name="x">C coordinate where new gump should be placed.</param>
+        /// <param name="y">Y coordinate where new gump should be placed.</param>
         /// <param name="addType">By default, always adds the gump.
         /// If OnlyAllowOne, then any gumps of the same type that are active are disposed of, and the passed gump is added.
         /// If Toggle, then only adds the gump is another gump of the same type is not active; else, disposes of all gumps of the passed type, including the passed gump.</param>
