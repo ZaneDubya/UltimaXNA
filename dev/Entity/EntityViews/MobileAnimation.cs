@@ -244,7 +244,7 @@ namespace UltimaXNA.Entity.EntityViews
                         if (Parent.IsMounted)
                             return (int)ActionIndexHumanoid.Mounted_RideSlow;
                         else
-                            if (Parent.IsWarMode)
+                            if (Parent.Flags.IsWarMode)
                                 return (int)ActionIndexHumanoid.Walk_Warmode;
                             else
                             {
@@ -260,7 +260,7 @@ namespace UltimaXNA.Entity.EntityViews
                         if (Parent.IsMounted)
                             return (int)ActionIndexHumanoid.Mounted_Stand;
                         else
-                            if (Parent.IsWarMode)
+                            if (Parent.Flags.IsWarMode)
                             {
                                 // Also check if weapon type is 2h. Can be 1H or 2H
                                 return (int)ActionIndexHumanoid.Stand_Warmode1H;

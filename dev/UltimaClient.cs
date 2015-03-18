@@ -548,11 +548,7 @@ namespace UltimaXNA
             mobile.BodyID = p.BodyID;
             mobile.Hue = (int)p.Hue;
             mobile.Move_Instant(p.X, p.Y, p.Z, p.Direction);
-            mobile.IsFemale = p.Flags.IsFemale;
-            mobile.IsPoisoned = p.Flags.IsPoisoned;
-            mobile.IsBlessed = p.Flags.IsBlessed;
-            mobile.IsWarMode = p.Flags.IsWarMode;
-            mobile.IsHidden = p.Flags.IsHidden;
+            mobile.Flags = p.Flags;
             mobile.Notoriety = p.Notoriety;
             mobile.Notoriety = p.Notoriety;
 
@@ -577,18 +573,11 @@ namespace UltimaXNA
 
             Mobile mobile = EntityManager.GetObject<Mobile>(p.Serial, true);
             mobile.BodyID = p.BodyID;
-            mobile.IsFemale = p.Flags.IsFemale;
-            mobile.IsPoisoned = p.Flags.IsPoisoned;
-            mobile.IsBlessed = p.Flags.IsBlessed;
-            mobile.IsWarMode = p.Flags.IsWarMode;
-            mobile.IsHidden = p.Flags.IsHidden;
+            mobile.Flags = p.Flags;
             mobile.Notoriety = p.Notoriety;
-            // Issue 16 - Pet not showing at login - http://code.google.com/p/ultimaxna/issues/detail?id=16 - Smjert
-            // Since no packet arrives to add your pet, when you move and your pet follows you the client crashes
             if (mobile.Position.IsNullPosition)
             {
                 mobile.Move_Instant(p.X, p.Y, p.Z, p.Direction);
-                // Issue 16 - End
             }
             else
             {
@@ -601,11 +590,7 @@ namespace UltimaXNA
             MobileUpdatePacket p = (MobileUpdatePacket)packet;
             Mobile mobile = EntityManager.GetObject<Mobile>(p.Serial, true);
             mobile.BodyID = p.BodyID;
-            mobile.IsFemale = p.Flags.IsFemale;
-            mobile.IsPoisoned = p.Flags.IsPoisoned;
-            mobile.IsBlessed = p.Flags.IsBlessed;
-            mobile.IsWarMode = p.Flags.IsWarMode;
-            mobile.IsHidden = p.Flags.IsHidden;
+            mobile.Flags = p.Flags;
             mobile.Hue = (int)p.Hue;
             mobile.Move_Instant(p.X, p.Y, p.Z, p.Direction);
 
@@ -937,7 +922,7 @@ namespace UltimaXNA
         private void receive_WarMode(IRecvPacket packet)
         {
             WarModePacket p = (WarModePacket)packet;
-            UltimaVars.EngineVars.WarMode = p.WarMode;
+            ((Mobile)EntityManager.GetPlayerObject()).Flags.IsWarMode = p.WarMode;
         }
 
         private void receive_WorldItem(IRecvPacket packet)

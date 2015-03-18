@@ -46,8 +46,12 @@ namespace UltimaXNA.UltimaVars
         }
         public static bool WarMode
         {
-            get { return (EntityManager.GetPlayerObject() != null) ? ((Mobile)EntityManager.GetPlayerObject()).IsWarMode : false; }
-            set { ((Mobile)EntityManager.GetPlayerObject()).IsWarMode = value; }
+            get
+            {
+                return (EntityManager.GetPlayerObject() != null) ? 
+                    ((Mobile)EntityManager.GetPlayerObject()).Flags.IsWarMode : 
+                    false;
+            }
         }
 
         // Maintain an accurate count of frames per second.

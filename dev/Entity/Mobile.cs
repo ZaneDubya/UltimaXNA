@@ -14,6 +14,7 @@ using Microsoft.Xna.Framework;
 using UltimaXNA.UltimaWorld;
 using UltimaXNA.UltimaWorld.View;
 using UltimaXNA.UltimaWorld.Model;
+using UltimaXNA.Entity.Support;
 #endregion
 
 namespace UltimaXNA.Entity
@@ -50,26 +51,16 @@ namespace UltimaXNA.Entity
         { 
             get { return (Equipment[(int)EquipLayer.Mount] != null && Equipment[(int)EquipLayer.Mount].ItemID != 0); } 
         }
-        
-        public bool IsWarMode 
-        { 
-            get { return m_isWarMode; }
+
+        private MobileFlags m_Flags;
+        public MobileFlags Flags
+        {
+            get { return m_Flags; }
             set
             {
-                if (m_isWarMode != value)
-                {
-                    m_isWarMode = value;
-                    // force an update of the animation object. Is this still necessary?
-                    ((EntityViews.MobileView)GetView()).m_Animation.UpdateAnimation();
-                }
+                m_Flags = value;
             }
         }
-
-        public bool IsFemale;
-        public bool IsPoisoned;
-        public bool IsBlessed;
-        bool m_isWarMode;
-        public bool IsHidden;
 
         int m_bodyID = 0;
         public int BodyID
@@ -122,9 +113,9 @@ namespace UltimaXNA.Entity
         public new int Hue
         {
             get {
-                if (IsHidden)
+                if (Flags.IsHidden)
                     return 0x3E7;
-                else if (IsPoisoned)
+                else if (Flags.IsPoisoned)
                     return 0x1CE;
                 else
                     return m_hue;
@@ -254,7 +245,8 @@ namespace UltimaXNA.Entity
 
         public void Mobile_AddMoveEvent(int x, int y, int z, int facing)
         {
-            m_movement.Mobile_AddMoveEvent(x, y, z, facing);
+            Direction currentFacing = m_movement.Facing;
+            m_movement.Mobile_ServerAddMoveEvent(x, y, z, facing);
         }
 
         public void Move_Instant(int x, int y, int z, int facing)
