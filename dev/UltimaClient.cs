@@ -690,7 +690,7 @@ namespace UltimaXNA
         private void receive_OpenPaperdoll(IRecvPacket packet)
         {
             OpenPaperdollPacket opp = packet as OpenPaperdollPacket;
-            UltimaEngine.UserInterface.ToggleLocalGump(new PaperDollGump(EntityManager.GetObject<Mobile>(opp.Serial, false)), 400, 100);
+            UltimaEngine.UserInterface.AddControl(new PaperDollGump(EntityManager.GetObject<Mobile>(opp.Serial, false)), 400, 100);
         }
 
         private void receive_OpenWebBrowser(IRecvPacket packet)

@@ -30,12 +30,16 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
             Status
         }
 
-        Mobile m_Parent;
+        public Mobile Parent
+        {
+            get;
+            private set;
+        }
 
         public PaperDollGump(Mobile parent)
             : base(0, 0)
         {
-            m_Parent = parent;
+            Parent = parent;
 
             IsMovable = true;
 
@@ -84,7 +88,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
             // Paperdoll
             AddControl(new PaperDollInteractable(this, 0, 8, 21)
             {
-                SourceEntity = m_Parent
+                SourceEntity = Parent
             });
 
             LastControl.MakeDragger(this);
@@ -116,7 +120,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
                 case Buttons.Quests:
                     break;
                 case Buttons.Skills:
-                    UserInterface.ToggleLocalGump(new SkillsGump(), 80, 80);
+                    UserInterface.ToggleLocalGump(new SkillsGump(), false, 80, 80);
                     break;
                 case Buttons.Guild:
                     break;
@@ -124,7 +128,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
                     UltimaInteraction.ToggleWarMode();
                     break;
                 case Buttons.Status:
-                    UserInterface.ToggleLocalGump(new StatusGump(), 200, 400);
+                    UserInterface.ToggleLocalGump(new StatusGump(), false, 200, 400);
                     break;
             }
         }
@@ -132,6 +136,23 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
         void logout_OnClose()
         {
             UltimaInteraction.DisconnectToLoginScreen();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+
+            // If parameter cannot be cast to Point return false.
+            PaperDollGump p = obj as PaperDollGump;
+            if (p == null)
+            {
+                return false;
+            }
+
+            return p.Parent == this.Parent;
         }
     }
 }
