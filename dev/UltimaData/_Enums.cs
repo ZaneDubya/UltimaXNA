@@ -63,7 +63,6 @@ namespace UltimaXNA
         West = 0x6,
         Up = 0x7,
         FacingMask = 0x7,
-        WarMode = 0x40,
         Running = 0x80,
         ValueMask = 0x87,
         Nothing = 0xED
