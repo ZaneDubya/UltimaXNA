@@ -46,6 +46,8 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
             if (parent == (Mobile)EntityManager.GetPlayerObject())
             {
                 AddControl(new GumpPic(this, 0, 0, 0, 0x07d0, 0));
+                LastControl.MakeDragger(this);
+                LastControl.MakeCloseTarget(this);
 
                 // HELP
                 AddControl(new Button(this, 0, 185, 44 + 27*0, 0x07ef, 0x07f0, ButtonTypes.Activate, 0,
@@ -79,20 +81,27 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
                 AddControl(new Button(this, 0, 185, 44 + 27*7, 0x07eb, 0x07ec, ButtonTypes.Activate, 0,
                     (int) Buttons.Status));
                 ((Button) LastControl).GumpOverID = 0x07ed;
+
+                // Paperdoll
+                AddControl(new PaperDollInteractable(this, 0, 8, 21)
+                {
+                    SourceEntity = Parent
+                });
             }
             else
             {
                 AddControl(new GumpPic(this, 0, 0, 0, 0x07d1, 0));
+                LastControl.MakeDragger(this);
+                LastControl.MakeCloseTarget(this);
+
+                // Paperdoll
+                AddControl(new PaperDollInteractable(this, 0, 8, 21)
+                {
+                    SourceEntity = Parent
+                });
             }
 
-            // Paperdoll
-            AddControl(new PaperDollInteractable(this, 0, 8, 21)
-            {
-                SourceEntity = Parent
-            });
 
-            LastControl.MakeDragger(this);
-            LastControl.MakeCloseTarget(this);
         }
 
         public override void Update(GameTime gameTime)
@@ -120,7 +129,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
                 case Buttons.Quests:
                     break;
                 case Buttons.Skills:
-                    UserInterface.ToggleLocalGump(new SkillsGump(), false, 80, 80);
+                    UserInterface.AddControl(new SkillsGump(), 80, 80, GUIState.AddGumpType.Toggle);
                     break;
                 case Buttons.Guild:
                     break;
@@ -128,7 +137,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
                     UltimaInteraction.ToggleWarMode();
                     break;
                 case Buttons.Status:
-                    UserInterface.ToggleLocalGump(new StatusGump(), false, 200, 400);
+                    UserInterface.AddControl(new StatusGump(), 200, 400, GUIState.AddGumpType.Toggle);
                     break;
             }
         }
@@ -140,19 +149,28 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
 
         public override bool Equals(object obj)
         {
-            if (obj == null)
-            {
+            // base equality handles null and cannot cast to same type.
+            if (!base.Equals(obj))
                 return false;
-            }
 
-            // If parameter cannot be cast to Point return false.
+            // If parameter cannot be cast to PaperDollGump return false.
             PaperDollGump p = obj as PaperDollGump;
             if (p == null)
             {
                 return false;
             }
 
-            return p.Parent == this.Parent;
+            return p.Parent.Serial == this.Parent.Serial;
+        }
+
+        public override int GetHashCode()
+        {
+            if (Parent == null)
+            {
+                return base.GetHashCode();
+            }
+
+            else return Parent.Serial;
         }
     }
 }

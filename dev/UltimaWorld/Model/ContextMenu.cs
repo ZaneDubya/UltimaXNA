@@ -126,6 +126,7 @@ namespace UltimaXNA.UltimaPackets
                         case "Ask Destination":
                         case "Abandon Escort":
                         case "Open Bankbox":
+                        case "Add Party Member":
                         // unhandled
                             break;
                         default:

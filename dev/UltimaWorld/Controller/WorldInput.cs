@@ -213,9 +213,13 @@ namespace UltimaXNA.UltimaWorld.Controller
                             // tool tip
                             UltimaInteraction.SingleClick(entity);
                             if (UltimaVars.EngineVars.WarMode)
+                            {
                                 m_Model.Client.Send(new AttackRequestPacket(entity.Serial));
+                            }
                             else
-                                m_Model.Client.Send(new RequestContextMenuPacket(entity.Serial));
+                            {
+                                // m_Model.Client.Send(new RequestContextMenuPacket(entity.Serial));
+                            }
                             break;
                         case MouseEvent.DoubleClick:
                             UltimaInteraction.DoubleClick(entity);
