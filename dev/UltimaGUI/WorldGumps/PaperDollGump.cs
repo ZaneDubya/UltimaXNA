@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework;
 using UltimaXNA.Entity;
 using UltimaXNA.Rendering;
 using UltimaXNA.UltimaGUI.Controls;
+using UltimaXNA.UltimaWorld;
 
 namespace UltimaXNA.UltimaGUI.WorldGumps
 {
@@ -29,46 +30,69 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
             Status
         }
 
-        Mobile m_Parent;
+        public Mobile Parent
+        {
+            get;
+            private set;
+        }
 
         public PaperDollGump(Mobile parent)
             : base(0, 0)
         {
-            m_Parent = parent;
+            Parent = parent;
 
             IsMovable = true;
-            AddControl(new GumpPic(this, 0, 0, 0, 0x07d0, 0));
-            LastControl.MakeDragger(this);
-            LastControl.MakeCloseTarget(this);
 
-            // HELP
-            AddControl(new Button(this, 0, 185, 44 + 27 * 0, 0x07ef, 0x07f0, ButtonTypes.Activate, 0, (int)Buttons.Help));
-            ((Button)LastControl).GumpOverID = 0x07f1;
-            // OPTIONS
-            AddControl(new Button(this, 0, 185, 44 + 27 * 1, 0x07d6, 0x07d7, ButtonTypes.Activate, 0, (int)Buttons.Options));
-            ((Button)LastControl).GumpOverID = 0x07d8;
-            // LOG OUT
-            AddControl(new Button(this, 0, 185, 44 + 27 * 2, 0x07d9, 0x07da, ButtonTypes.Activate, 0, (int)Buttons.LogOut));
-            ((Button)LastControl).GumpOverID = 0x07db;
-            // QUESTS
-            AddControl(new Button(this, 0, 185, 44 + 27 * 3, 0x57b5, 0x57b7, ButtonTypes.Activate, 0, (int)Buttons.Quests));
-            ((Button)LastControl).GumpOverID = 0x57b6;
-            // SKILLS
-            AddControl(new Button(this, 0, 185, 44 + 27 * 4, 0x07df, 0x07e0, ButtonTypes.Activate, 0, (int)Buttons.Skills));
-            ((Button)LastControl).GumpOverID = 0x07e1;
-            // GUILD
-            AddControl(new Button(this, 0, 185, 44 + 27 * 5, 0x57b2, 0x57b4, ButtonTypes.Activate, 0, (int)Buttons.Guild));
-            ((Button)LastControl).GumpOverID = 0x57b3;
-            // PEACE / WAR
-            AddControl(new Button(this, 0, 185, 44 + 27 * 6, 0x07e5, 0x07e6, ButtonTypes.Activate, 0, (int)Buttons.PeaceWarToggle));
-            ((Button)LastControl).GumpOverID = 0x07e7;
-            // STATUS
-            AddControl(new Button(this, 0, 185, 44 + 27 * 7, 0x07eb, 0x07ec, ButtonTypes.Activate, 0, (int)Buttons.Status));
-            ((Button)LastControl).GumpOverID = 0x07ed;
+            if (parent == (Mobile)EntityManager.GetPlayerObject())
+            {
+                AddControl(new GumpPic(this, 0, 0, 0, 0x07d0, 0));
+
+                // HELP
+                AddControl(new Button(this, 0, 185, 44 + 27*0, 0x07ef, 0x07f0, ButtonTypes.Activate, 0,
+                    (int) Buttons.Help));
+                ((Button) LastControl).GumpOverID = 0x07f1;
+                // OPTIONS
+                AddControl(new Button(this, 0, 185, 44 + 27*1, 0x07d6, 0x07d7, ButtonTypes.Activate, 0,
+                    (int) Buttons.Options));
+                ((Button) LastControl).GumpOverID = 0x07d8;
+                // LOG OUT
+                AddControl(new Button(this, 0, 185, 44 + 27*2, 0x07d9, 0x07da, ButtonTypes.Activate, 0,
+                    (int) Buttons.LogOut));
+                ((Button) LastControl).GumpOverID = 0x07db;
+                // QUESTS
+                AddControl(new Button(this, 0, 185, 44 + 27*3, 0x57b5, 0x57b7, ButtonTypes.Activate, 0,
+                    (int) Buttons.Quests));
+                ((Button) LastControl).GumpOverID = 0x57b6;
+                // SKILLS
+                AddControl(new Button(this, 0, 185, 44 + 27*4, 0x07df, 0x07e0, ButtonTypes.Activate, 0,
+                    (int) Buttons.Skills));
+                ((Button) LastControl).GumpOverID = 0x07e1;
+                // GUILD
+                AddControl(new Button(this, 0, 185, 44 + 27*5, 0x57b2, 0x57b4, ButtonTypes.Activate, 0,
+                    (int) Buttons.Guild));
+                ((Button) LastControl).GumpOverID = 0x57b3;
+                // PEACE / WAR
+                AddControl(new Button(this, 0, 185, 44 + 27*6, 0x07e5, 0x07e6, ButtonTypes.Activate, 0,
+                    (int) Buttons.PeaceWarToggle));
+                ((Button) LastControl).GumpOverID = 0x07e7;
+                // STATUS
+                AddControl(new Button(this, 0, 185, 44 + 27*7, 0x07eb, 0x07ec, ButtonTypes.Activate, 0,
+                    (int) Buttons.Status));
+                ((Button) LastControl).GumpOverID = 0x07ed;
+            }
+            else
+            {
+                AddControl(new GumpPic(this, 0, 0, 0, 0x07d1, 0));
+            }
 
             // Paperdoll
-            AddControl(new PaperDollInteractable(this, 0, 8, 21));
-            ((PaperDollInteractable)LastControl).SourceEntity = m_Parent;
+            AddControl(new PaperDollInteractable(this, 0, 8, 21)
+            {
+                SourceEntity = Parent
+            });
+
+            LastControl.MakeDragger(this);
+            LastControl.MakeCloseTarget(this);
         }
 
         public override void Update(GameTime gameTime)
@@ -96,7 +120,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
                 case Buttons.Quests:
                     break;
                 case Buttons.Skills:
-                    UserInterface.ToggleLocalGump(new SkillsGump(), 80, 80);
+                    UserInterface.ToggleLocalGump(new SkillsGump(), false, 80, 80);
                     break;
                 case Buttons.Guild:
                     break;
@@ -104,7 +128,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
                     UltimaInteraction.ToggleWarMode();
                     break;
                 case Buttons.Status:
-                    UserInterface.ToggleLocalGump(new StatusGump(), 200, 400);
+                    UserInterface.ToggleLocalGump(new StatusGump(), false, 200, 400);
                     break;
             }
         }
@@ -112,6 +136,23 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
         void logout_OnClose()
         {
             UltimaInteraction.DisconnectToLoginScreen();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+
+            // If parameter cannot be cast to Point return false.
+            PaperDollGump p = obj as PaperDollGump;
+            if (p == null)
+            {
+                return false;
+            }
+
+            return p.Parent == this.Parent;
         }
     }
 }

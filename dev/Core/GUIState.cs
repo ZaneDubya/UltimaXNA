@@ -118,12 +118,12 @@ namespace UltimaXNA
 
         
 
-        public Control ToggleLocalGump(Control gump, int x, int y)
+        public Control ToggleLocalGump(Control gump, bool checkSame, int x, int y)
         {
             Control removeControl = null;
             foreach (Control c in m_Controls)
             {
-                if (c.GetType() == gump.GetType())
+                if (c.GetType() == gump.GetType() && (checkSame && c.Equals(gump)))
                 {
                     removeControl = c;
                     break; 

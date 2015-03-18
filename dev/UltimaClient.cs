@@ -20,6 +20,7 @@ using UltimaXNA.UltimaPackets.Server;
 using UltimaXNA.UltimaWorld;
 using UltimaXNA.UltimaWorld.View;
 using Microsoft.Xna.Framework;
+using UltimaXNA.UltimaGUI.WorldGumps;
 #endregion
 
 namespace UltimaXNA
@@ -688,7 +689,8 @@ namespace UltimaXNA
 
         private void receive_OpenPaperdoll(IRecvPacket packet)
         {
-            announce_UnhandledPacket(packet);
+            OpenPaperdollPacket opp = packet as OpenPaperdollPacket;
+            UltimaEngine.UserInterface.AddControl(new PaperDollGump(EntityManager.GetObject<Mobile>(opp.Serial, false)), 400, 100);
         }
 
         private void receive_OpenWebBrowser(IRecvPacket packet)

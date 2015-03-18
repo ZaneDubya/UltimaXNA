@@ -64,10 +64,10 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
             switch ((Buttons)buttonID)
             {
                 case Buttons.Map:
-                    UserInterface.ToggleLocalGump(new MiniMap(), 566, 25);
+                    UserInterface.ToggleLocalGump(new MiniMap(), false, 566, 25);
                     break;
                 case Buttons.Paperdoll:
-                    UserInterface.ToggleLocalGump(new PaperDollGump((Mobile)EntityManager.GetPlayerObject()), 400, 100);
+                    UserInterface.ToggleLocalGump(new PaperDollGump((Mobile)EntityManager.GetPlayerObject()), true, 400, 100);
                     break;
                 case Buttons.Inventory:
                     PlayerMobile m = (PlayerMobile)EntityManager.GetPlayerObject();
@@ -82,7 +82,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
                 case Buttons.Help:
                     break;
                 case Buttons.Question:
-                    UserInterface.ToggleLocalGump(new DebugGump(), 50, 50);
+                    UserInterface.ToggleLocalGump(new DebugGump(), false, 50, 50);
                     break;
             }
         }
