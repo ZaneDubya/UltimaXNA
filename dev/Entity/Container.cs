@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using UltimaXNA.UltimaWorld;
+using UltimaXNA.UltimaWorld.Model;
 #endregion
 
 namespace UltimaXNA.Entity
@@ -34,8 +35,8 @@ namespace UltimaXNA.Entity
             }
         }
 
-        public Container(Serial serial)
-            : base(serial)
+        public Container(Serial serial, Map map)
+            : base(serial, map)
         {
             UpdateTicker = 0;
         }

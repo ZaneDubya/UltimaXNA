@@ -16,7 +16,7 @@ namespace UltimaXNA.Entity
         private MobileView m_BaseView;
 
         public MobileDeferred(Mobile entity, Vector3 drawPosition, int z)
-            : base(entity.Serial)
+            : base(entity.Serial, entity.Map)
         {
             m_BaseView = (MobileView)entity.GetView();
             m_DrawPosition = drawPosition;

@@ -94,7 +94,14 @@ namespace UltimaXNA.UltimaWorld.View
             };
         }
 
-        public static void Update(Map map)
+        public static void Draw(Map map)
+        {
+            InternalDetermineIfUnderEntity(map);
+            InternalDrawEntities(map, out m_renderOffset);
+            InternalDrawVectors(m_renderOffset);
+        }
+
+        private static void InternalDetermineIfUnderEntity(Map map)
         {
             // Are we inside (under a roof)? Do not draw tiles above our head.
             m_maxItemAltitude = 255;
@@ -138,12 +145,6 @@ namespace UltimaXNA.UltimaWorld.View
                     }
                 }
             }
-        }
-
-        public static void Draw(Map map)
-        {
-            InternalDrawEntities(map, out m_renderOffset);
-            InternalDrawVectors(m_renderOffset);
         }
 
         private static void InternalDrawEntities(Map map, out Vector2 renderOffset)

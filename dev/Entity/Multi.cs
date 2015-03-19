@@ -68,8 +68,8 @@ namespace UltimaXNA.Entity
             }
         }
 
-        public Multi(Serial serial)
-			: base(serial)
+        public Multi(Serial serial, Map map)
+			: base(serial, map)
 		{
 		}
 
@@ -95,7 +95,7 @@ namespace UltimaXNA.Entity
                 int x = tile.X + p.X - m_components.Center.X;
                 int y = tile.Y + p.Y - m_components.Center.Y;
 
-                MapTile t = EntityManager.Model.Map.GetMapTile(x, y);
+                MapTile t = Map.GetMapTile(x, y);
                 if (t != null)
                 {
                     drawnTiles.Add(p);

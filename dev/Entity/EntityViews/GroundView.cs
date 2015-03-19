@@ -44,7 +44,7 @@ namespace UltimaXNA.Entity.EntityViews
 
             if (m_MustUpdateSurroundings)
             {
-                updateSurroundingsAndNormals(EntityManager.Model.Map);
+                updateSurroundingsAndNormals(Entity.Map);
                 m_MustUpdateSurroundings = false;
             }
 

@@ -46,7 +46,7 @@ namespace UltimaXNA.UltimaWorld.Model
             Tiles = null;
         }
 
-        public void LoadTiles(TileMatrixRaw tileData)
+        public void LoadTiles(TileMatrixRaw tileData, Map map)
         {
             // get data from the tile Matrix
             byte[] groundData = tileData.GetLandBlock(X, Y);
@@ -59,7 +59,7 @@ namespace UltimaXNA.UltimaWorld.Model
                 int iTileID = groundData[groundDataIndex++] + (groundData[groundDataIndex++] << 8);
                 int iTileZ = (sbyte)groundData[groundDataIndex++];
 
-                Ground ground = new Ground(iTileID);
+                Ground ground = new Ground(iTileID, map);
                 ground.Position.Set(X * 8 + i % 8, Y * 8 + (i / 8), iTileZ);
             }
 
@@ -74,7 +74,7 @@ namespace UltimaXNA.UltimaWorld.Model
                 int iTileZ = (sbyte)staticsData[staticDataIndex++];
                 int hue = staticsData[staticDataIndex++] + (staticsData[staticDataIndex++] * 256);
 
-                StaticItem item = new StaticItem(iTileID, hue, i);
+                StaticItem item = new StaticItem(iTileID, hue, i, map);
                 item.Position.Set(X * 8 + iX, Y * 8 + iY, iTileZ);
             }
         }

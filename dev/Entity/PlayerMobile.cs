@@ -12,14 +12,15 @@
 using System;
 using Microsoft.Xna.Framework;
 using UltimaXNA.UltimaWorld;
+using UltimaXNA.UltimaWorld.Model;
 #endregion
 
 namespace UltimaXNA.Entity
 {
     public class PlayerMobile : Mobile
     {
-        public PlayerMobile(Serial serial)
-            : base(serial)
+        public PlayerMobile(Serial serial, Map map)
+            : base(serial, map)
         {
 
         }

@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
  *   UltimaClient.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -433,7 +432,7 @@ namespace UltimaXNA
                     UltimaVars.EngineVars.MapCount = p.MapCount;
                     break;
                 case 0x19: // Extended stats
-                    if (p.Serial != EntityManager.MySerial)
+                    if (p.Serial != UltimaVars.EngineVars.PlayerSerial)
                         Diagnostics.Logger.Warn("Extended Stats packet (0xBF subcommand 0x19) received for a mobile not our own.");
                     else
                     {
@@ -671,7 +670,7 @@ namespace UltimaXNA
         private void receive_OnSwing(IRecvPacket packet)
         {
             SwingPacket p = (SwingPacket)packet;
-            if (p.Attacker == EntityManager.MySerial)
+            if (p.Attacker == UltimaVars.EngineVars.PlayerSerial)
             {
                 UltimaVars.EngineVars.LastTarget = p.Defender;
             }
@@ -1183,9 +1182,9 @@ namespace UltimaXNA
 
                     LoginConfirmPacket p = m_QueuedLoginConfirmPacket;
 
-                    EntityManager.MySerial = p.Serial;
-                    PlayerMobile iPlayer = EntityManager.GetObject<PlayerMobile>(p.Serial, true);
-                    iPlayer.Move_Instant(p.X, p.Y, p.Z, p.Direction);
+                    UltimaVars.EngineVars.PlayerSerial = p.Serial;
+                    PlayerMobile player = EntityManager.GetObject<PlayerMobile>(p.Serial, true);
+                    player.Move_Instant(p.X, p.Y, p.Z, p.Direction);
                     // iPlayer.SetFacing(p.Direction);
                 }
             }

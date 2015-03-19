@@ -34,6 +34,12 @@ namespace UltimaXNA.UltimaVars
         public const float SecondsBetweenClickAndPickUp = 0.8f; // this is close to what the legacy client uses.
         public const float SecondsForDoubleClick = 0.5f;
 
+        public static Serial PlayerSerial
+        {
+            get;
+            set;
+        }
+
         private static Serial m_lastTarget;
         public static Serial LastTarget
         {

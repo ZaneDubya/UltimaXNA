@@ -41,7 +41,6 @@ namespace UltimaXNA.UltimaWorld.Controller
                 {
                     if (!e.Alt)
                     {
-
                         if (!UltimaVars.DebugVars.Flag_ShowDataRead)
                             UltimaVars.DebugVars.Flag_ShowDataRead = true;
                         else

@@ -1,6 +1,6 @@
 ﻿/***************************************************************************
  *   MapTile.cs
- *   Based on code from ClintXNA's renderer.
+ *   Based on code from ClintXNA.
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -200,7 +200,7 @@ namespace UltimaXNA.UltimaWorld.Model
                 if (m_NeedsSorting)
                 {
                     InternalRemoveDuplicateEntities();
-                    KrriosSort.Sort(m_Entities);
+                    EntitySort.Sort(m_Entities);
                     m_NeedsSorting = false;
                 }
                 return m_Entities;

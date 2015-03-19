@@ -163,8 +163,8 @@ namespace UltimaXNA.Entity
             }
         }
 
-        public Mobile(Serial serial)
-            : base(serial)
+        public Mobile(Serial serial, Map map)
+            : base(serial, map)
         {
             Equipment = new MobileEquipment(this);
             m_movement = new MobileMovement(this);

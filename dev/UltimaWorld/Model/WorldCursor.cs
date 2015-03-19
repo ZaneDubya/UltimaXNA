@@ -1,15 +1,25 @@
-﻿using InterXLib.Input.Windows;
+﻿/***************************************************************************
+ *   WorldCursor.cs
+ *   
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region usings
+using InterXLib.Input.Windows;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using UltimaXNA.Entity;
 using UltimaXNA.Rendering;
-using UltimaXNA.UltimaData;
 using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaGUI.Controls;
 using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.UltimaWorld.Controller;
 using UltimaXNA.UltimaWorld.View;
+#endregion
 
 namespace UltimaXNA.UltimaWorld.Model
 {
@@ -441,7 +451,7 @@ namespace UltimaXNA.UltimaWorld.Model
 
         private void WearHeldItem()
         {
-            m_Model.Client.Send(new DropToLayerPacket(HeldItem.Serial, 0x00, EntityManager.MySerial));
+            m_Model.Client.Send(new DropToLayerPacket(HeldItem.Serial, 0x00, UltimaVars.EngineVars.PlayerSerial));
             ClearHolding();
         }
 
