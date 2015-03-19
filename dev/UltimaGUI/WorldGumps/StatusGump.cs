@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 /***************************************************************************
  *   StatusGump.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   Based on code by surcouf94
  *   
  *   This program is free software; you can redistribute it and/or modify

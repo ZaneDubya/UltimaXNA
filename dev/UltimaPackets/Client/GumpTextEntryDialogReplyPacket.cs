@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
  *   GumpTextEntryDialogReplyPacket.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   
  *   begin                : May 31, 2009
  *   email                : poplicola@ultimaxna.com
