@@ -66,7 +66,7 @@ namespace UltimaXNA.UltimaPackets.Server
 
         public byte Direction
         {
-            get { return m_direction; }
+            get { return m_Direction; }
         }
 
         public ushort Hue 
@@ -91,14 +91,6 @@ namespace UltimaXNA.UltimaPackets.Server
             {
                 m_amount = reader.ReadInt16();
             }
-            
-            // Doesn't exist this thing in the packet
-            /*byte iIncrement = 0;
-            if ((iItemID & 0x8000) == 0x8000)
-            {
-                iIncrement = reader.ReadByte();
-                iObjectSerial += iIncrement;
-            }*/
 
             ushort x = reader.ReadUInt16();
             ushort y = reader.ReadUInt16();
@@ -124,5 +116,7 @@ namespace UltimaXNA.UltimaPackets.Server
             m_x = (short)(x &= 0x7FFF);
             m_y = (short)(y &= 0x3FFF);
         }
+
+        public byte m_Direction { get; set; }
     }
 }

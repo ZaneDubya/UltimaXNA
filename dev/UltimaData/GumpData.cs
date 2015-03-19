@@ -82,7 +82,7 @@ namespace UltimaXNA.UltimaData
                                 }
                                 else
                                 {
-                                    uint color32 = 0xff000000 + (
+                                    uint color32 = 0xFF000000 + (
                                         ((((color >> 10) & 0x1F) * multiplier)) |
                                         ((((color >> 5) & 0x1F) * multiplier) << 8) |
                                         (((color & 0x1F) * multiplier) << 16)

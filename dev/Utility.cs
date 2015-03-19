@@ -611,17 +611,22 @@ namespace UltimaXNA
 
         public static Vector2 GetHueVector(int hue)
         {
+            return GetHueVector(hue, false, false);
+        }
+
+        public static Vector2 GetHueVector(int hue, bool partial, bool transparent)
+        {
             if (hue == 0)
                 return new Vector2(0);
 
             int hueType = 0;
 
-            if ((hue & 0x4000) != 0) // transparant
+            if ((hue & 0x4000) != 0 || transparent)
+            {
+                // transparant
                 hueType = 4;
-
-            hue -= 1;
-
-            if ((hue & 0x8000) != 0) // partial hue
+            }
+            else if ((hue & 0x8000) != 0 || partial) // partial hue
             {
                 hueType = 2;
             }
@@ -629,7 +634,7 @@ namespace UltimaXNA
             {
                 hueType = 1;
             }
-
+            hue += 1;
             return new Vector2(hue & 0x3FFF, hueType);
         }
 

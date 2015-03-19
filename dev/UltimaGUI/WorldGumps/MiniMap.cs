@@ -13,7 +13,7 @@ using UltimaXNA.Rendering;
 using InterXLib.Input.Windows;
 using UltimaXNA.UltimaGUI.Controls;
 
-namespace UltimaXNA.UltimaGUI.Gumps
+namespace UltimaXNA.UltimaGUI.WorldGumps
 {
     class MiniMap : Gump
     {

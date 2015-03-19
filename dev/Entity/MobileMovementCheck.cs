@@ -9,16 +9,15 @@
  *
  ***************************************************************************/
 #region usings
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaWorld.View;
+using UltimaXNA.UltimaWorld.Model;
 #endregion
 
 namespace UltimaXNA.Entity
 {
-    static class MovementCheck
+    static class MobileMovementCheck
     {
         private static List<Item>[] m_Pools = new List<Item>[4]
 			{
@@ -30,7 +29,12 @@ namespace UltimaXNA.Entity
         private const int PersonHeight = 16;
         private const int StepHeight = 2;
 
-        public static bool CheckMovement(Mobile m, Map map, Vector3 loc, Direction d, out int newZ)
+        public static bool CheckMovementForced(Mobile m, Map map, Position3D loc, Direction d, out int newZ)
+        {
+            return CheckMovement(m, map, loc, d,out newZ, true);
+        }
+
+        public static bool CheckMovement(Mobile m, Map map, Position3D loc, Direction d, out int newZ, bool forceOK = false)
         {
             if (map == null)
             {
@@ -70,30 +74,30 @@ namespace UltimaXNA.Entity
 
             if (checkDiagonals)
             {
-                MapTile sectorStart = map.GetMapTile(xStart, yStart, false);
-                MapTile sectorForward = map.GetMapTile(xForward, yForward, false);
-                MapTile sectorLeft = map.GetMapTile(xLeft, yLeft, false);
-                MapTile sectorRight = map.GetMapTile(xRight, yRight, false);
-                if ((sectorForward == null) || (sectorStart == null) || (sectorLeft == null) || (sectorRight == null))
+                MapTile tileStart = map.GetMapTile(xStart, yStart);
+                MapTile tileForward = map.GetMapTile(xForward, yForward);
+                MapTile tileLeft = map.GetMapTile(xLeft, yLeft);
+                MapTile tileRight = map.GetMapTile(xRight, yRight);
+                if ((tileForward == null) || (tileStart == null) || (tileLeft == null) || (tileRight == null))
                 {
                     newZ = (int)loc.Z;
                     return false;
                 }
 
-                List<MapTile> sectors = new List<MapTile>(); //m_Sectors;
+                List<MapTile> tiles = new List<MapTile>(); //m_Sectors;
 
-                sectors.Add(sectorStart);
-                sectors.Add(sectorForward);
-                sectors.Add(sectorLeft);
-                sectors.Add(sectorRight);
+                tiles.Add(tileStart);
+                tiles.Add(tileForward);
+                tiles.Add(tileLeft);
+                tiles.Add(tileRight);
 
-                for (int i = 0; i < sectors.Count; ++i)
+                for (int i = 0; i < tiles.Count; ++i)
                 {
-                    MapTile sector = sectors[i];
+                    MapTile tile = tiles[i];
 
-                    for (int j = 0; j < sector.Items.Count; ++j)
+                    for (int j = 0; j < tile.Entities.Count; ++j)
                     {
-                        BaseEntity entity = sector.Items[j].OwnerEntity; //Item item = sector.Items[j];
+                        AEntity entity = tile.Entities[j]; //Item item = sector.Items[j];
 
                         // if (ignoreMovableImpassables && item.Movable && item.ItemData.Impassable)
                         //     continue;
@@ -105,13 +109,13 @@ namespace UltimaXNA.Entity
                             if ((item.ItemData.Flags & reqFlags) == 0)
                                 continue;
 
-                            if (sector == sectorStart && item.AtWorldPoint(xStart, yStart) && item.ItemID < 0x4000)
+                            if (tile == tileStart && item.AtWorldPoint(xStart, yStart) && item.ItemID < 0x4000)
                                 itemsStart.Add(item);
-                            else if (sector == sectorForward && item.AtWorldPoint(xForward, yForward) && item.ItemID < 0x4000)
+                            else if (tile == tileForward && item.AtWorldPoint(xForward, yForward) && item.ItemID < 0x4000)
                                 itemsForward.Add(item);
-                            else if (sector == sectorLeft && item.AtWorldPoint(xLeft, yLeft) && item.ItemID < 0x4000)
+                            else if (tile == tileLeft && item.AtWorldPoint(xLeft, yLeft) && item.ItemID < 0x4000)
                                 itemsLeft.Add(item);
-                            else if (sector == sectorRight && item.AtWorldPoint(xRight, yRight) && item.ItemID < 0x4000)
+                            else if (tile == tileRight && item.AtWorldPoint(xRight, yRight) && item.ItemID < 0x4000)
                                 itemsRight.Add(item);
                         }
                     }
@@ -119,19 +123,19 @@ namespace UltimaXNA.Entity
             }
             else
             {
-                MapTile sectorStart = map.GetMapTile(xStart, yStart, false);
-                MapTile sectorForward = map.GetMapTile(xForward, yForward, false);
-                if ((sectorForward == null) || (sectorStart == null))
+                MapTile tileStart = map.GetMapTile(xStart, yStart);
+                MapTile tileForward = map.GetMapTile(xForward, yForward);
+                if ((tileForward == null) || (tileStart == null))
                 {
                     newZ = (int)loc.Z;
                     return false;
                 }
 
-                if (sectorStart == sectorForward)
+                if (tileStart == tileForward)
                 {
-                    for (int i = 0; i < sectorStart.Items.Count; ++i)
+                    for (int i = 0; i < tileStart.Entities.Count; ++i)
                     {
-                        BaseEntity entity = sectorStart.Items[i].OwnerEntity; // Item item = sectorStart.Items[i];
+                        AEntity entity = tileStart.Entities[i]; // Item item = sectorStart.Items[i];
 
                         if (entity is Item)
                         {
@@ -152,9 +156,9 @@ namespace UltimaXNA.Entity
                 }
                 else
                 {
-                    for (int i = 0; i < sectorForward.Items.Count; ++i)
+                    for (int i = 0; i < tileForward.Entities.Count; ++i)
                     {
-                        BaseEntity entity = sectorForward.Items[i].OwnerEntity; // Item item = sectorForward.Items[i];
+                        AEntity entity = tileForward.Entities[i]; // Item item = sectorForward.Items[i];
 
                         if (entity is Item)
                         {
@@ -171,9 +175,9 @@ namespace UltimaXNA.Entity
                         }
                     }
 
-                    for (int i = 0; i < sectorStart.Items.Count; ++i)
+                    for (int i = 0; i < tileStart.Entities.Count; ++i)
                     {
-                        BaseEntity entity = sectorStart.Items[i].OwnerEntity; // Item item = sectorStart.Items[i];
+                        AEntity entity = tileStart.Entities[i]; // Item item = sectorStart.Items[i];
 
                         if (entity is Item)
                         {
@@ -194,7 +198,7 @@ namespace UltimaXNA.Entity
 
             getStartZ(m, map, loc, itemsStart, out startZ, out startTop);
 
-            bool moveIsOk = check(map, m, itemsForward, xForward, yForward, startTop, startZ, out newZ);
+            bool moveIsOk = check(map, m, itemsForward, xForward, yForward, startTop, startZ, out newZ) | forceOK;
 
             if (moveIsOk && checkDiagonals)
             {
@@ -220,17 +224,14 @@ namespace UltimaXNA.Entity
         {
             newZ = 0;
 
-            MapTile mapTile = map.GetMapTile(x, y, false);
+            MapTile mapTile = map.GetMapTile(x, y);
             if (mapTile == null)
                 return false;
 
-            MapObjectStatic[] tiles = mapTile.GetStatics().ToArray();
-            MapObjectGround landTile = mapTile.GroundTile;
-            UltimaData.LandData landData = UltimaData.TileData.LandData[landTile.ItemID & 0x3FFF];
+            StaticItem[] tiles = mapTile.GetStatics().ToArray();
 
-
-            bool landBlocks = (landData.Flags & TileFlag.Impassable) != 0;
-            bool considerLand = !landTile.Ignored;
+            bool landBlocks = (mapTile.Ground.LandData.Flags & TileFlag.Impassable) != 0;
+            bool considerLand = !mapTile.Ground.IsIgnored;
 
             //if (landBlocks && canSwim && (TileData.LandTable[landTile.ID & 0x3FFF].Flags & TileFlag.Wet) != 0)	//Impassable, Can Swim, and Is water.  Don't block it.
             //    landBlocks = false;
@@ -251,18 +252,16 @@ namespace UltimaXNA.Entity
             #region Tiles
             for (int i = 0; i < tiles.Length; ++i)
             {
-                MapObjectStatic tile = tiles[i];
-                UltimaData.ItemData itemData = UltimaData.TileData.ItemData[tile.ItemID & 0x3FFF];
-                TileFlag flags = itemData.Flags;
+                StaticItem tile = tiles[i];
 
-                if ((flags & ImpassableSurface) == TileFlag.Surface) //  || (canSwim && (flags & TileFlag.Wet) != 0) Surface && !Impassable
+                if ((tile.ItemData.Flags & ImpassableSurface) == TileFlag.Surface) //  || (canSwim && (flags & TileFlag.Wet) != 0) Surface && !Impassable
                 {
                     // if (cantWalk && (flags & TileFlag.Wet) == 0)
                     //     continue;
 
                     int itemZ = (int)tile.Z;
                     int itemTop = itemZ;
-                    int ourZ = itemZ + itemData.CalcHeight;
+                    int ourZ = itemZ + tile.ItemData.CalcHeight;
                     int ourTop = ourZ + PersonHeight;
                     int testTop = checkTop;
 
@@ -277,17 +276,17 @@ namespace UltimaXNA.Entity
                     if (ourZ + PersonHeight > testTop)
                         testTop = ourZ + PersonHeight;
 
-                    if (!itemData.IsBridge)
-                        itemTop += itemData.Height;
+                    if (!tile.ItemData.IsBridge)
+                        itemTop += tile.ItemData.Height;
 
                     if (stepTop >= itemTop)
                     {
                         int landCheck = itemZ;
 
-                        if (itemData.Height >= StepHeight)
+                        if (tile.ItemData.Height >= StepHeight)
                             landCheck += StepHeight;
                         else
-                            landCheck += itemData.Height;
+                            landCheck += tile.ItemData.Height;
 
                         if (considerLand && landCheck < landCenter && landCenter > ourZ && testTop > landLow)
                             continue;
@@ -388,17 +387,16 @@ namespace UltimaXNA.Entity
             return moveIsOk;
         }
 
-        private static bool IsOk(bool ignoreDoors, int ourZ, int ourTop, MapObjectStatic[] tiles, List<Item> items)
+        private static bool IsOk(bool ignoreDoors, int ourZ, int ourTop, StaticItem[] tiles, List<Item> items)
         {
             for (int i = 0; i < tiles.Length; ++i)
             {
-                MapObjectStatic check = tiles[i];
-                UltimaData.ItemData itemData = UltimaData.TileData.ItemData[check.ItemID & 0x3FFF];
+                StaticItem check = tiles[i];
 
-                if ((itemData.Flags & ImpassableSurface) != 0) // Impassable || Surface
+                if ((check.ItemData.Flags & ImpassableSurface) != 0) // Impassable || Surface
                 {
                     int checkZ = (int)check.Z;
-                    int checkTop = checkZ + itemData.CalcHeight;
+                    int checkTop = checkZ + check.ItemData.CalcHeight;
 
                     if (checkTop > ourZ && ourTop > checkZ)
                         return false;
@@ -428,9 +426,9 @@ namespace UltimaXNA.Entity
             return true;
         }
 
-        public static Vector3 OffsetTile(Vector3 currentTile, Direction facing)
+        public static Point OffsetTile(Position3D currentTile, Direction facing)
         {
-            Vector3 nextTile = currentTile;
+            Point nextTile = currentTile.Tile;
 
             switch (facing & Direction.FacingMask)
             {
@@ -462,20 +460,18 @@ namespace UltimaXNA.Entity
             }
         }
 
-        private static void getStartZ(BaseEntity m, Map map, Vector3 loc, List<Item> itemList, out int zLow, out int zTop)
+        private static void getStartZ(AEntity m, Map map, Position3D loc, List<Item> itemList, out int zLow, out int zTop)
         {
             int xCheck = (int)loc.X, yCheck = (int)loc.Y;
 
-            MapTile mapTile = map.GetMapTile(xCheck, yCheck, false);
+            MapTile mapTile = map.GetMapTile(xCheck, yCheck);
             if (mapTile == null)
             {
                 zLow = int.MinValue;
                 zTop = int.MinValue;
             }
 
-            MapObjectGround landTile = mapTile.GroundTile; //map.Tiles.GetLandTile(xCheck, yCheck);
-            
-            bool landBlocks = (UltimaData.TileData.LandData[landTile.ItemID & 0x3FFF].Flags & TileFlag.Impassable) != 0; //(TileData.LandTable[landTile.ID & 0x3FFF].Flags & TileFlag.Impassable) != 0;
+            bool landBlocks = mapTile.Ground.LandData.IsImpassible; //(TileData.LandTable[landTile.ID & 0x3FFF].Flags & TileFlag.Impassable) != 0;
 
             // if (landBlocks && m.CanSwim && (TileData.LandTable[landTile.ID & 0x3FFF].Flags & TileFlag.Wet) != 0)
             //     landBlocks = false;
@@ -485,7 +481,7 @@ namespace UltimaXNA.Entity
             int landLow = 0, landCenter = 0, landTop = 0;
             landCenter = map.GetAverageZ(xCheck, yCheck, ref landLow, ref landTop);
 
-            bool considerLand = !landTile.Ignored;
+            bool considerLand = !mapTile.Ground.IsIgnored;
 
             int zCenter = zLow = zTop = 0;
             bool isSet = false;
@@ -501,16 +497,15 @@ namespace UltimaXNA.Entity
                 isSet = true;
             }
 
-            MapObjectStatic[] staticTiles = mapTile.GetStatics().ToArray();
+            StaticItem[] staticTiles = mapTile.GetStatics().ToArray();
 
             for (int i = 0; i < staticTiles.Length; ++i)
             {
-                MapObjectStatic tile = staticTiles[i];
-                UltimaData.ItemData id = UltimaData.TileData.ItemData[tile.ItemID & 0x3FFF];
+                StaticItem tile = staticTiles[i];
 
-                int calcTop = ((int)tile.Z + id.CalcHeight);
+                int calcTop = ((int)tile.Z + tile.ItemData.CalcHeight);
 
-                if ((!isSet || calcTop >= zCenter) && ((id.Flags & TileFlag.Surface) != 0) && loc.Z >= calcTop)
+                if ((!isSet || calcTop >= zCenter) && ((tile.ItemData.Flags & TileFlag.Surface) != 0) && loc.Z >= calcTop)
                 {
                     //  || (m.CanSwim && (id.Flags & TileFlag.Wet) != 0)
                     // if (m.CantWalk && (id.Flags & TileFlag.Wet) == 0)
@@ -519,7 +514,7 @@ namespace UltimaXNA.Entity
                     zLow = (int)tile.Z;
                     zCenter = calcTop;
 
-                    int top = (int)tile.Z + id.Height;
+                    int top = (int)tile.Z + tile.ItemData.Height;
 
                     if (!isSet || top > zTop)
                         zTop = top;

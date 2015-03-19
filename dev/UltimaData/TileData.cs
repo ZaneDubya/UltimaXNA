@@ -212,5 +212,10 @@ namespace UltimaXNA.UltimaData
         {
             get { return (Flags & TileFlag.Wet) != 0; }
         }
+
+        public bool IsImpassible
+        {
+            get { return (Flags & TileFlag.Impassable) != 0; }
+        }
     }
 }

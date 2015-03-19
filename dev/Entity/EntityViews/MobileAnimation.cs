@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
  *   MobileAnimation.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -9,15 +8,10 @@
  *
  ***************************************************************************/
 #region usings
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
 using UltimaXNA.UltimaData;
 #endregion
 
-namespace UltimaXNA.Entity
+namespace UltimaXNA.Entity.EntityViews
 {
     public class MobileAnimation
     {
@@ -250,7 +244,7 @@ namespace UltimaXNA.Entity
                         if (Parent.IsMounted)
                             return (int)ActionIndexHumanoid.Mounted_RideSlow;
                         else
-                            if (Parent.IsWarMode)
+                            if (Parent.Flags.IsWarMode)
                                 return (int)ActionIndexHumanoid.Walk_Warmode;
                             else
                             {
@@ -266,7 +260,7 @@ namespace UltimaXNA.Entity
                         if (Parent.IsMounted)
                             return (int)ActionIndexHumanoid.Mounted_Stand;
                         else
-                            if (Parent.IsWarMode)
+                            if (Parent.Flags.IsWarMode)
                             {
                                 // Also check if weapon type is 2h. Can be 1H or 2H
                                 return (int)ActionIndexHumanoid.Stand_Warmode1H;

@@ -18,7 +18,7 @@ namespace UltimaXNA.UltimaWorld
 
         public override void Draw(YSpriteBatch spritebatch, double frameTime)
         {
-            View.IsometricRenderer.Draw(frameTime);
+            View.IsometricRenderer.Draw(Model.Map);
             UltimaEngine.UserInterface.Draw(frameTime);
         }
     }

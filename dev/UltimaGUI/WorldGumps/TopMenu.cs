@@ -14,7 +14,7 @@ using UltimaXNA.UltimaPackets;
 using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.UltimaWorld;
 
-namespace UltimaXNA.UltimaGUI.Gumps
+namespace UltimaXNA.UltimaGUI.WorldGumps
 {
     class TopMenu : Gump
     {
@@ -64,10 +64,10 @@ namespace UltimaXNA.UltimaGUI.Gumps
             switch ((Buttons)buttonID)
             {
                 case Buttons.Map:
-                    UserInterface.ToggleLocalGump(new MiniMap(), 566, 25);
+                    UserInterface.AddControl(new MiniMap(), 566, 25, GUIState.AddGumpType.Toggle);
                     break;
                 case Buttons.Paperdoll:
-                    UserInterface.ToggleLocalGump(new PaperDollGump((Mobile)EntityManager.GetPlayerObject()), 400, 100);
+                    UserInterface.AddControl(new PaperDollGump((Mobile)EntityManager.GetPlayerObject()), 400, 100, GUIState.AddGumpType.Toggle);
                     break;
                 case Buttons.Inventory:
                     PlayerMobile m = (PlayerMobile)EntityManager.GetPlayerObject();
@@ -82,7 +82,7 @@ namespace UltimaXNA.UltimaGUI.Gumps
                 case Buttons.Help:
                     break;
                 case Buttons.Question:
-                    UserInterface.ToggleLocalGump(new DebugGump(), 50, 50);
+                    UserInterface.AddControl(new DebugGump(), 50, 50, GUIState.AddGumpType.Toggle);
                     break;
             }
         }

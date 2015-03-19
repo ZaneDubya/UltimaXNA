@@ -16,48 +16,49 @@ using UltimaXNA.UltimaWorld.View;
 
 namespace UltimaXNA.Entity
 {
-    public class Item : BaseEntity
+    public class Item : AEntity
     {
-        public BaseEntity Parent = null;
-        public override Position3D WorldPosition
+        public AEntity Parent = null;
+
+        public override Position3D Position
         {
             get
             {
                 if (Parent != null)
-                    return Parent.WorldPosition;
+                    return Parent.Position;
                 else
-                    return Position;
+                    return base.Position;
             }
         }
-        private BaseEntity m_lastParent;
-        private int m_lastParent_X, m_lastParent_Y;
-        public bool HasLastParent
+
+        public Point InContainerPosition = Point.Zero;
+
+        public Item(Serial serial)
+            : base(serial)
         {
-            get { return (m_lastParent != null); }
+
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            // if is worn, let the wearer know we are disposing.
+            if (Parent is Mobile)
+                ((Mobile)Parent).RemoveItem(Serial);
+            else if (Parent is Container)
+                ((Container)Parent).RemoveItem(Serial);
+        }
+
+        protected override EntityViews.AEntityView CreateView()
+        {
+            return new EntityViews.ItemView(this);
         }
 
 		private int m_amount;
-		public int Amount
-		{
-			get { return m_amount; }
-			set
-			{
-				// if the amount changes from or to one, we need to redraw the item, because of doubled drawing for amount > 1
-				if ((m_amount == 1 && value != 1) || (m_amount != 1 && value == 1))
-					HasBeenDrawn = false;
-
-				m_amount = value;
-
-				// if there is a special drawing id for this item we need to redraw it
-				if (m_ItemID != DisplayItemID) 
-                    HasBeenDrawn = false;
-			}
-		}
-        public int AnimationDisplayID = 0;
-
-        public int Hue
+        public int Amount
         {
-            get; internal set;
+            get { return m_amount; }
+            set { m_amount = value; }
         }
 
         public UltimaData.ItemData ItemData;
@@ -69,9 +70,7 @@ namespace UltimaXNA.Entity
             set
             {
 				m_ItemID = value;
-                HasBeenDrawn = false;
-                ItemData = UltimaXNA.UltimaData.TileData.ItemData[m_ItemID];
-                AnimationDisplayID = ItemData.AnimID;
+                ItemData = UltimaXNA.UltimaData.TileData.ItemData[m_ItemID & 0x3FFF];
             }
         }
 
@@ -95,21 +94,17 @@ namespace UltimaXNA.Entity
 			}
 		}
 
-		public bool Ignored
+		public bool NoDraw
 		{
 			get { return m_ItemID <= 1; } // no draw
 		}
 
-		public bool IsCoin {
+		public bool IsCoin
+        {
 			get { return m_ItemID == 0xEEA || m_ItemID == 0xEED || m_ItemID == 0xEF0; }
 		}
 
-        public int SlotIndex = 0;
-
-        public Item(Serial serial)
-			: base(serial)
-		{
-		}
+        public int ContainerSlotIndex = 0;
 
         public override void Update(double frameMS)
         {
@@ -123,13 +118,13 @@ namespace UltimaXNA.Entity
 
 		public bool AtWorldPoint(int x, int y)
 		{
-            if (m_movement.Position.X == x && m_movement.Position.Y == y)
+            if (Position.X == x && Position.Y == y)
 				return true;
 			else
 				return false;
 		}
 
-        public virtual bool PickUp()
+        public virtual bool TryPickUp()
         {
             if (ItemData.Weight == 255)
                 return false;
@@ -137,45 +132,27 @@ namespace UltimaXNA.Entity
                 return true;
         }
 
+        // ======================================================================
+        // Last Parent routines 
+        // ======================================================================
+
+        private AEntity m_lastParent;
+        public bool HasLastParent
+        {
+            get { return (m_lastParent != null); }
+        }
+
         public void SaveLastParent()
         {
-            if (Parent != null)
-            {
-                m_lastParent = Parent;
-                m_lastParent_X = X;
-                m_lastParent_Y = Y;
-            }
-            else
-            {
-                m_lastParent = null;
-            }
+            m_lastParent = Parent;
         }
 
         public void RestoreLastParent()
         {
-            this.X = m_lastParent_X;
-            this.Y = m_lastParent_Y;
-            ((Container)m_lastParent).AddItem(this);
+            if (m_lastParent != null)
+            {
+                ((Container)m_lastParent).AddItem(this);
+            }
         }
-
-        internal override void Draw(MapTile tile, Position3D position)
-		{
-			if (Ignored)
-				return;
-
-            tile.AddMapObject(new MapObjectItem(DisplayItemID, position, DrawFacing, this, Hue));
-            drawOverheads(tile, new Position3D(position.Point_V3));
-		}
-
-		public override void Dispose()
-		{
-            base.Dispose();
-			// if is worn, let the wearer know we are disposing.
-            if (Parent is Mobile)
-                ((Mobile)Parent).RemoveItem(Serial);
-            else if (Parent is Container)
-                ((Container)Parent).RemoveItem(Serial);
-			
-		}
     }
 }

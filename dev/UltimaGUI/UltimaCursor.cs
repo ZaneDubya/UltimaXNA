@@ -72,12 +72,6 @@ namespace UltimaXNA.UltimaGUI
         {
             BeforeDraw(spritebatch, position);
 
-            // Hue the cursor if not in warmode and in trammel.
-            if (!UltimaVars.EngineVars.WarMode && (UltimaVars.EngineVars.Map == 1))
-                CursorHue = 2412;
-            else
-                CursorHue = 0;
-
             if (m_CursorSprite != null)
             {
                 m_CursorSprite.Hue = m_CursorHue;

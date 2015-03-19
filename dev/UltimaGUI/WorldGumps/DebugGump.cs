@@ -10,7 +10,7 @@
  ***************************************************************************/
 using UltimaXNA.UltimaGUI.Controls;
 
-namespace UltimaXNA.UltimaGUI.Gumps
+namespace UltimaXNA.UltimaGUI.WorldGumps
 {
     public class DebugGump : Gump 
     {

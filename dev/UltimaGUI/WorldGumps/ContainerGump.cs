@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
  *   ContainerGump.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@ using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaData;
 using UltimaXNA.UltimaGUI.Controls;
 
-namespace UltimaXNA.UltimaGUI.Gumps
+namespace UltimaXNA.UltimaGUI.WorldGumps
 {
     class ContainerGump : Gump
     {
@@ -24,7 +23,7 @@ namespace UltimaXNA.UltimaGUI.Gumps
         int m_updateTicker = 0;
         public Serial ContainerSerial { get { return m_item.Serial; } }
 
-        public ContainerGump(BaseEntity containerItem, int gumpID)
+        public ContainerGump(AEntity containerItem, int gumpID)
             : base(containerItem.Serial, 0)
         {
             m_data = UltimaData.ContainerData.GetData(gumpID);

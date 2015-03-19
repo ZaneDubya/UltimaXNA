@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using UltimaXNA.Entity;
 using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaGUI.Controls;
-using UltimaXNA.UltimaGUI.Gumps;
+using UltimaXNA.UltimaGUI.WorldGumps;
 using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.UltimaWorld;
 using UltimaXNA.UltimaWorld.View;
@@ -34,19 +34,19 @@ namespace UltimaXNA
             s_Client.Send(new AsciiSpeechPacket(AsciiSpeechPacketTypes.Normal, 0, 0, "ENU", text));
         }
 
-        public static void SingleClick(BaseEntity item) // used by worldinput and itemgumpling.
+        public static void SingleClick(AEntity item) // used by worldinput and itemgumpling.
         {
             s_Client.Send(new SingleClickPacket(item.Serial));
         }
 
-        public static void DoubleClick(BaseEntity item) // used by itemgumpling, paperdollinteractable, topmenu, worldinput.
+        public static void DoubleClick(AEntity item) // used by itemgumpling, paperdollinteractable, topmenu, worldinput.
         {
             s_Client.Send(new DoubleClickPacket(item.Serial));
         } 
 
         public static void ToggleWarMode() // used by paperdollgump.
         {
-            s_Client.Send(new RequestWarModePacket(!((Mobile)EntityManager.GetPlayerObject()).IsWarMode));
+            s_Client.Send(new RequestWarModePacket(!((Mobile)EntityManager.GetPlayerObject()).Flags.IsWarMode));
         }
 
         public static void UseSkill(int index) // used by ultimainteraction
@@ -54,7 +54,7 @@ namespace UltimaXNA
             s_Client.Send(new RequestSkillUsePacket(index));
         }
 
-        public static Gump OpenContainerGump(BaseEntity entity) // used by ultimaclient.
+        public static Gump OpenContainerGump(AEntity entity) // used by ultimaclient.
         {
             Gump gump;
 
@@ -65,6 +65,20 @@ namespace UltimaXNA
 
             gump = new ContainerGump(entity, ((Container)entity).ItemID);
             UltimaEngine.UserInterface.AddControl(gump, 64, 64);
+            return gump;
+        }
+
+        public static Gump OpenCorpseGump(AEntity entity) // used by UltimaClient
+        {
+            Gump gump;
+
+            if ((gump = (Gump)UltimaEngine.UserInterface.GetControl(entity.Serial)) != null)
+            {
+                gump.Dispose();
+            }
+
+            gump = new ContainerGump(entity, 0x2006);
+            UltimaEngine.UserInterface.AddControl(gump, 96, 96);
             return gump;
         }
 

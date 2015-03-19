@@ -12,7 +12,7 @@ using System;
 using System.Text;
 using UltimaXNA.UltimaGUI.Controls;
 
-namespace UltimaXNA.UltimaGUI.Gumps
+namespace UltimaXNA.UltimaGUI.WorldGumps
 {
     class SkillsGump : Gump
     {

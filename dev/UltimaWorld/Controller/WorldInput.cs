@@ -28,7 +28,7 @@ namespace UltimaXNA.UltimaWorld.Controller
 
         // make sure we drag the correct object variables
         Vector2 m_dragOffset;
-        AMapObject m_dragObject;
+        AEntity m_DraggingEntity;
 
         public void Update(double frameMS)
         {
@@ -149,16 +149,16 @@ namespace UltimaXNA.UltimaWorld.Controller
 
         void onInteractButton(InputEventMouse e)
         {
-            AMapObject overObject = (e.EventType == MouseEvent.DragBegin) ? m_dragObject : IsometricRenderer.MouseOverObject;
+            AEntity overEntity = (e.EventType == MouseEvent.DragBegin) ? m_DraggingEntity : IsometricRenderer.MouseOverObject;
             Vector2 overObjectOffset = (e.EventType == MouseEvent.DragBegin) ? m_dragOffset : IsometricRenderer.MouseOverObjectPoint;
 
             if (e.EventType == MouseEvent.Down)
             {
-                m_dragObject = overObject;
+                m_DraggingEntity = overEntity;
                 m_dragOffset = overObjectOffset;
             }
 
-            if (overObject == null)
+            if (overEntity == null)
                 return;
 
             if (m_Model.Cursor.IsTargeting && e.EventType == MouseEvent.Click)
@@ -169,11 +169,11 @@ namespace UltimaXNA.UltimaWorld.Controller
             else
             {
                 // standard interaction actions ...
-                if (overObject is MapObjectGround)
+                if (overEntity is Ground)
                 {
                     // we can't interact with ground tiles.
                 }
-                else if (overObject is MapObjectStatic)
+                else if (overEntity is StaticItem)
                 {
                     // clicking a should pop up the name of the static.
                     if (e.EventType == MouseEvent.Click)
@@ -181,9 +181,9 @@ namespace UltimaXNA.UltimaWorld.Controller
 
                     }
                 }
-                else if (overObject is MapObjectItem)
+                else if (overEntity is Item)
                 {
-                    Item item = (Item)overObject.OwnerEntity;
+                    Item item = (Item)overEntity;
                     // single click = tool tip
                     // double click = use / open
                     // click and drag = pick up
@@ -201,9 +201,9 @@ namespace UltimaXNA.UltimaWorld.Controller
                             break;
                     }
                 }
-                else if (overObject is MapObjectMobile)
+                else if (overEntity is Mobile)
                 {
-                    Mobile entity = (Mobile)overObject.OwnerEntity;
+                    Mobile entity = (Mobile)overEntity;
                     // single click = tool tip; if npc = request context sensitive menu
                     // double click = set last target; if is human open paper doll; if ridable ride; if self and riding, dismount;
                     // click and drag = pull off status bar
@@ -213,9 +213,13 @@ namespace UltimaXNA.UltimaWorld.Controller
                             // tool tip
                             UltimaInteraction.SingleClick(entity);
                             if (UltimaVars.EngineVars.WarMode)
+                            {
                                 m_Model.Client.Send(new AttackRequestPacket(entity.Serial));
+                            }
                             else
-                                m_Model.Client.Send(new RequestContextMenuPacket(entity.Serial));
+                            {
+                                // m_Model.Client.Send(new RequestContextMenuPacket(entity.Serial));
+                            }
                             break;
                         case MouseEvent.DoubleClick:
                             UltimaInteraction.DoubleClick(entity);
@@ -226,17 +230,17 @@ namespace UltimaXNA.UltimaWorld.Controller
                             break;
                     }
                 }
-                else if (overObject is MapObjectCorpse)
+                else if (overEntity is Corpse)
                 {
-                    Corpse entity = (Corpse)overObject.OwnerEntity;
+                    Corpse entity = (Corpse)overEntity;
                     // click and drag = nothing
                     // single click = tool tip
                     // double click = open loot window.
                 }
-                else if (overObject is MapObjectText)
+                /*else if (overEntity is MapObjectText)
                 {
                     // clicking on text should somehow indicate the person speaking.
-                }
+                }*/
                 else
                 {
                     throw new Exception("Unknown object type in onInteractButtonDown()");
@@ -246,17 +250,17 @@ namespace UltimaXNA.UltimaWorld.Controller
             e.Handled = true;
         }
 
-        void createHoverLabel(AMapObject mapObject)
+        void createHoverLabel(AEntity entity)
         {
-            if (mapObject.OwnerSerial.IsValid)
+            if (entity.Serial.IsValid)
             {
                 // this object is an entity of some kind.
-                createHoverLabel(mapObject.OwnerSerial);
+                createHoverLabel(entity.Serial);
             }
-            else if (mapObject is MapObjectStatic)
+            else if (entity is StaticItem)
             {
                 // since statics have no entity object, we can't easily create a label for them at the moment.
-                // surely this will be fixed.
+                // surely this will be fixed. Someday.
             }
         }
 
@@ -265,7 +269,7 @@ namespace UltimaXNA.UltimaWorld.Controller
             if (!serial.IsValid)
                 return;
 
-            BaseEntity e = EntityManager.GetObject<BaseEntity>(serial, false);
+            AEntity e = EntityManager.GetObject<AEntity>(serial, false);
 
             if (e is Mobile)
             {

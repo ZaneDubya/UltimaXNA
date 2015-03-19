@@ -14,7 +14,7 @@ using UltimaXNA.Rendering;
 using UltimaXNA.UltimaGUI.Controls;
 using UltimaXNA.UltimaData.Fonts;
 
-namespace UltimaXNA.UltimaGUI.Gumps
+namespace UltimaXNA.UltimaGUI.WorldGumps
 {
     class ChatWindow : Gump
     {

@@ -41,7 +41,7 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         void buildGumpling(Item item)
         {
-            Position = new Point(item.X, item.Y);
+            Position = item.InContainerPosition;
             m_item = item;
         }
 

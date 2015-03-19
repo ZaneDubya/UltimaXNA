@@ -117,34 +117,69 @@ namespace UltimaXNA
         }
 
         
-
-        public Control ToggleLocalGump(Control gump, int x, int y)
+        /// <summary>
+        /// Adds or toggles the passed gump to the list of active gumps.
+        /// </summary>
+        /// <param name="gump">The gump to be opened or toggled.</param>
+        /// <param name="x">C coordinate where new gump should be placed.</param>
+        /// <param name="y">Y coordinate where new gump should be placed.</param>
+        /// <param name="addType">By default, always adds the gump.
+        /// If OnlyAllowOne, then any gumps of the same type that are active are disposed of, and the passed gump is added.
+        /// If Toggle, then only adds the gump is another gump of the same type is not active; else, disposes of all gumps of the passed type, including the passed gump.</param>
+        /// <returns>If the gump was added to the list of active gumps, then returns the added gump. If the gump was not added, returns null.</returns>
+        public Control AddControl(Control gump, int x, int y, AddGumpType addType = AddGumpType.Always)
         {
-            Control removeControl = null;
-            foreach (Control c in m_Controls)
+            bool addGump = false;
+
+            if (addType == AddGumpType.Always)
             {
-                if (c.GetType() == gump.GetType())
+                addGump = true;
+            }
+            else if (addType == AddGumpType.Toggle)
+            {
+                bool alreadyActive = false;
+                foreach (Control c in m_Controls)
                 {
-                    removeControl = c;
-                    break; 
+                    if (c.Equals(gump) && gump.Equals(c))
+                    {
+                        alreadyActive = true;
+                        c.Dispose();
+                    }
                 }
+
+                addGump = !alreadyActive;
+            }
+            else if (addType == AddGumpType.OnlyAllowOne)
+            {
+                foreach (Control c in m_Controls)
+                {
+                    if (c.Equals(gump) && gump.Equals(c))
+                    {
+                        c.Dispose();
+                    }
+                }
+
+                addGump = true;
             }
 
-            if (removeControl != null)
-                m_Controls.Remove(removeControl);
+            if (addGump)
+            {
+                gump.Position = new Point(x, y);
+                m_Controls.Add(gump);
+                return gump;
+            }
             else
             {
-                m_Controls.Add(gump);
-                gump.Position = new Point(x, y);
+                gump.Dispose();
+                return null;
             }
-            return gump;
         }
 
-        public Control AddControl(Control gump, int x, int y)
+        public enum AddGumpType
         {
-            gump.Position = new Point(x, y);
-            m_Controls.Add(gump);
-            return gump;
+            Always = 0,
+            OnlyAllowOne = 1,
+            Toggle = 2
         }
 
         public Control GetControl(int serial)

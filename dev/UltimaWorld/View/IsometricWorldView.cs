@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
  *   IsometricRenderer.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   Based on code from ClintXNA's renderer: http://www.runuo.com/forums/xna/92023-hi.html
  *   
  *   This program is free software; you can redistribute it and/or modify
@@ -10,13 +9,13 @@
  *
  ***************************************************************************/
 #region usings
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
 using UltimaXNA.Entity;
 using UltimaXNA.Rendering;
-using InterXLib.Input.Windows;
-using UltimaXNA.UltimaWorld;
+using UltimaXNA.UltimaWorld.Model;
+
 #endregion
 
 namespace UltimaXNA.UltimaWorld.View
@@ -31,8 +30,8 @@ namespace UltimaXNA.UltimaWorld.View
 
         #region MousePickingVariables
         private static MouseOverItem m_overObject, m_overGround;
-        public static AMapObject MouseOverObject { get { return (m_overObject == null) ? null : m_overObject.Object; } }
-        public static AMapObject MouseOverGround { get { return (m_overGround == null) ? null : m_overGround.Object; } }
+        public static AEntity MouseOverObject { get { return (m_overObject == null) ? null : m_overObject.Entity; } }
+        public static AEntity MouseOverGround { get { return (m_overGround == null) ? null : m_overGround.Entity; } }
         public static Vector2 MouseOverObjectPoint { get { return (m_overObject == null) ? new Vector2(0, 0) : m_overObject.InTexturePosition; } }
         public const PickTypes DefaultPickType = PickTypes.PickStatics | PickTypes.PickObjects;
         public static PickTypes PickType { get; set; }
@@ -70,12 +69,6 @@ namespace UltimaXNA.UltimaWorld.View
             set { m_flag_HighlightMouseOver = value; }
         }
 
-        private static Map m_map;
-        public static Map Map
-        {
-            get { return m_map; }
-            set { m_map = value; }
-        }
         public static int ObjectsRendered { get; internal set; }
         public static Position3D CenterPosition { get; set; }
         public static bool DrawTerrain = true;
@@ -101,70 +94,59 @@ namespace UltimaXNA.UltimaWorld.View
             };
         }
 
-        public static void Update(double totalTime, double frameTime)
+        public static void Update(Map map)
         {
-            if (UltimaVars.EngineVars.Map != -1)
+            // Are we inside (under a roof)? Do not draw tiles above our head.
+            m_maxItemAltitude = 255;
+
+            MapTile t;
+            if ((t = map.GetMapTile(CenterPosition.X, CenterPosition.Y)) != null)
             {
-                if ((m_map == null) || (m_map.Index != UltimaVars.EngineVars.Map))
-                    m_map = new Map(UltimaVars.EngineVars.Map);
-                // Update the Map's position so it loads the tiles we're going to be drawing
-                m_map.Update(CenterPosition.X, CenterPosition.Y);
+                AEntity underObject, underTerrain;
+                t.IsPointUnderAnEntity(CenterPosition.Z, out underObject, out underTerrain);
 
-                // Are we inside (under a roof)? Do not draw tiles above our head.
-                m_maxItemAltitude = 255;
+                // if we are under terrain, then do not draw any terrain at all.
+                DrawTerrain = !(underTerrain == null);
 
-                MapTile t;
-                if ((t = m_map.GetMapTile(CenterPosition.X, CenterPosition.Y, true)) != null)
+                if (!(underObject == null))
                 {
-                    AMapObject underObject, underTerrain;
-                    t.IsUnder(CenterPosition.Z, out underObject, out underTerrain);
-
-                    // if we are under terrain, then do not draw any terrain at all.
-                    DrawTerrain = !(underTerrain == null);
-
-                    if (!(underObject == null))
+                    // Roofing and new floors ALWAYS begin at intervals of 20.
+                    // if we are under a ROOF, then get rid of everything above me.Z + 20
+                    // (this accounts for A-frame roofs). Otherwise, get rid of everything
+                    // at the object above us.Z.
+                    if (((StaticItem)underObject).ItemData.IsRoof)
                     {
-                        // Roofing and new floors ALWAYS begin at intervals of 20.
-                        // if we are under a ROOF, then get rid of everything above me.Z + 20
-                        // (this accounts for A-frame roofs). Otherwise, get rid of everything
-                        // at the object above us.Z.
-                        if (((MapObjectStatic)underObject).ItemData.IsRoof)
+                        m_maxItemAltitude = CenterPosition.Z - (CenterPosition.Z % 20) + 20;
+                    }
+                    else
+                    {
+                        m_maxItemAltitude = (int)(underObject.Z - (underObject.Z % 20));
+                    }
+
+                    // If we are under a roof tile, do not make roofs transparent if we are on an edge.
+                    if (underObject is StaticItem && ((StaticItem)underObject).ItemData.IsRoof)
+                    {
+                        bool isRoofSouthEast = true;
+                        if ((t = map.GetMapTile(CenterPosition.X + 1, CenterPosition.Y)) != null)
                         {
-                            m_maxItemAltitude = CenterPosition.Z - (CenterPosition.Z % 20) + 20;
-                        }
-                        else
-                        {
-                            m_maxItemAltitude = (int)(underObject.Z - (underObject.Z % 20));
+                            t.IsPointUnderAnEntity(CenterPosition.Z, out underObject, out underTerrain);
+                            isRoofSouthEast = !(underObject == null);
                         }
 
-                        // If we are under a roof tile, do not make roofs transparent if we are on an edge.
-                        if (underObject is MapObjectStatic && ((MapObjectStatic)underObject).ItemData.IsRoof)
-                        {
-                            bool isRoofSouthEast = true;
-                            if ((t = m_map.GetMapTile(CenterPosition.X + 1, CenterPosition.Y + 1, true)) != null)
-                            {
-                                t.IsUnder(CenterPosition.Z, out underObject, out underTerrain);
-                                isRoofSouthEast = !(underObject == null);
-                            }
-
-                            if (!isRoofSouthEast)
-                                m_maxItemAltitude = 255;
-                        }
+                        if (!isRoofSouthEast)
+                            m_maxItemAltitude = 255;
                     }
                 }
             }
         }
 
-        public static void Draw(double frameTime)
+        public static void Draw(Map map)
         {
-            if (UltimaVars.EngineVars.Map < 0)
-                return;
-            
-            render(out m_renderOffset);
-            renderVectors(m_renderOffset);
+            InternalDrawEntities(map, out m_renderOffset);
+            InternalDrawVectors(m_renderOffset);
         }
 
-        private static void render(out Vector2 renderOffset)
+        private static void InternalDrawEntities(Map map, out Vector2 renderOffset)
         {
             if (CenterPosition == null)
             {
@@ -172,68 +154,86 @@ namespace UltimaXNA.UltimaWorld.View
                 return;
             }
 
-            // Prerender objects
-            m_spriteBatch.Prepare(false, false);
-            MapObjectPrerendered.RenderObjects(m_spriteBatch);
+            int renderDimensionY = 16; // the number of tiles that are drawn for half the screen (doubled to fill the entire screen).
+            int renderDimensionX = 18; // the number of tiles that are drawn in the x-direction ( + renderExtraColumnsAtSides * 2 ).
+            int renderExtraColumnsAtSides = 2; // the client draws additional tiles at the edge to make wide objects that are mostly offscreen visible.
 
-            // UltimaVars.EngineVars.RenderSize = 20;
 
-            int RenderBeginX = CenterPosition.X - (UltimaVars.EngineVars.RenderSize / 2);
-            int RenderBeginY = CenterPosition.Y - (UltimaVars.EngineVars.RenderSize / 2);
-            int RenderEndX = RenderBeginX + UltimaVars.EngineVars.RenderSize;
-            int RenderEndY = RenderBeginY + UltimaVars.EngineVars.RenderSize;
+            // when the player entity is higher (z) in the world, we must offset the first row drawn. This variable MUST be a multiple of 2.
+            int renderZOffset = (CenterPosition.Z / 14) * 2 + 4;
+            // this is used to draw tall objects that would otherwise not be visible until their ground tile was on screen. This may still skip VERY tall objects (those weird jungle trees?)
+            int renderExtraRowsAtBottom = renderZOffset + 6; 
 
-            renderOffset.X = (UltimaVars.EngineVars.ScreenSize.X >> 1) - 22;
+            Point firstTile = new Point(
+                CenterPosition.X + renderExtraColumnsAtSides - ((renderZOffset + 1) / 2), 
+                CenterPosition.Y - renderDimensionY - renderExtraColumnsAtSides - (renderZOffset  / 2));
+
+            renderOffset.X = ((UltimaVars.EngineVars.ScreenSize.X + ((renderDimensionY) * 44)) / 2) - 22 + renderExtraColumnsAtSides * 44;
             renderOffset.X -= (int)((CenterPosition.X_offset - CenterPosition.Y_offset) * 22);
-            renderOffset.X -= (RenderBeginX - RenderBeginY) * 22;
+            renderOffset.X -= (firstTile.X - firstTile.Y) * 22;
 
-            renderOffset.Y = ((UltimaVars.EngineVars.ScreenSize.Y - (UltimaVars.EngineVars.RenderSize * 44)) >> 1);
+            renderOffset.Y = ((UltimaVars.EngineVars.ScreenSize.Y - (renderDimensionY * 44)) / 2);
             renderOffset.Y += (CenterPosition.Z * 4) + (int)(CenterPosition.Z_offset * 4);
             renderOffset.Y -= (int)((CenterPosition.X_offset + CenterPosition.Y_offset) * 22);
-            renderOffset.Y -= (RenderBeginX + RenderBeginY) * 22;
+            renderOffset.Y -= (firstTile.X + firstTile.Y) * 22;
+            renderOffset.Y -= (renderZOffset) * 22;
 
             ObjectsRendered = 0; // Count of objects rendered for statistics and debug
-            MouseOverList overList = new MouseOverList(); // List of items for mouse over
-            overList.MousePosition = UltimaEngine.Input.MousePosition;
-            List<AMapObject> mapObjects;
-            Vector3 drawPosition = new Vector3();
 
-            for (int ix = RenderBeginX; ix < RenderEndX; ix++)
+            MouseOverList overList = new MouseOverList(UltimaEngine.Input.MousePosition, PickType); // List of entities mouse is over.
+            List<AEntity> deferredToRemove = new List<AEntity>();
+
+            for (int col = 0; col < renderDimensionY * 2 + renderExtraRowsAtBottom; col++)
             {
-                drawPosition.X = (ix - RenderBeginY) * 22 + renderOffset.X;
-                drawPosition.Y = (ix + RenderBeginY) * 22 + renderOffset.Y;
+                Vector3 drawPosition = new Vector3();
+                drawPosition.X = (firstTile.X - firstTile.Y + (col % 2)) * 22 + renderOffset.X;
+                drawPosition.Y = (firstTile.X + firstTile.Y + col) * 22 + renderOffset.Y;
 
-                DrawTerrain = true;
+                Point index = new Point(firstTile.X + ((col + 1) / 2), firstTile.Y + (col / 2));
 
-                for (int iy = RenderBeginY; iy < RenderEndY; iy++)
+                for (int row = 0; row < renderDimensionX + renderExtraColumnsAtSides * 2; row++)
                 {
-                    MapTile tile = m_map.GetMapTile(ix, iy, true);
+                    MapTile tile = map.GetMapTile(index.X - row, index.Y + row);
                     if (tile == null)
                         continue;
 
-                    mapObjects = tile.Items;
-                    for (int i = 0; i < mapObjects.Count; i++)
-                    {
-                        if (mapObjects[i].Draw(m_spriteBatch, drawPosition, overList, PickType, m_maxItemAltitude))
-                            ObjectsRendered++;
-                    }
-                    tile.ClearTemporaryObjects();
+                    List<AEntity> entities = tile.Entities;
 
-                    drawPosition.X -= 22f;
-                    drawPosition.Y += 22f;
+                    for (int i = 0; i < entities.Count; i++)
+                    {
+                        if (entities[i].Z >= m_maxItemAltitude)
+                            continue;
+
+                        Entity.EntityViews.AEntityView view = entities[i].GetView();
+
+                        if (view != null)
+                            if (view.Draw(m_spriteBatch, drawPosition, overList, map))
+                                ObjectsRendered++;
+
+                        if (entities[i] is MobileDeferred)
+                        {
+                            deferredToRemove.Add(entities[i]);
+                        }
+                    }
+
+                    foreach (AEntity deferred in deferredToRemove)
+                        tile.OnExit(deferred);
+                    deferredToRemove.Clear();
+
+                    drawPosition.X -= 44f;
                 }
             }
 
             // Update the MouseOver objects
             m_overObject = overList.GetForemostMouseOverItem(UltimaEngine.Input.MousePosition);
-            m_overGround = overList.GetForemostMouseOverItem<MapObjectGround>(UltimaEngine.Input.MousePosition);
+            m_overGround = overList.GetForemostMouseOverItem<Ground>(UltimaEngine.Input.MousePosition);
 
             // Draw the objects we just send to the spritebatch.
             m_spriteBatch.Prepare(true, true);
             m_spriteBatch.Flush();
         }
 
-        private static void renderVectors(Vector2 renderOffset)
+        private static void InternalDrawVectors(Vector2 renderOffset)
         {
             if (Flag_HighlightMouseOver)
             {

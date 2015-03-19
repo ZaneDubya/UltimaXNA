@@ -16,7 +16,7 @@ using UltimaXNA.Rendering;
 using UltimaXNA.UltimaGUI.Controls;
 using UltimaXNA.UltimaWorld;
 
-namespace UltimaXNA.UltimaGUI.Gumps
+namespace UltimaXNA.UltimaGUI.WorldGumps
 {
     class StatusGump : Gump
     {
