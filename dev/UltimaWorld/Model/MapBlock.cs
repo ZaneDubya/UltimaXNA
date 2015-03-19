@@ -1,9 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UltimaXNA.UltimaData;
+﻿/***************************************************************************
+ *   MapBlock.cs
+ *   
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region usings
 using UltimaXNA.Entity;
+using UltimaXNA.UltimaData;
+#endregion
 
 namespace UltimaXNA.UltimaWorld.Model
 {
@@ -21,6 +28,22 @@ namespace UltimaXNA.UltimaWorld.Model
             Tiles = new MapTile[64];
             for (int i = 0; i < 64; i++)
                 Tiles[i] = new MapTile();
+        }
+
+        public void Dispose()
+        {
+            for (int i = 0; i < 64; i++)
+            {
+                if (Tiles[i] != null)
+                {
+                    for (int j = 0; j < Tiles[i].Entities.Count; j++)
+                    {
+                        Tiles[i].Entities[j].Dispose();
+                    }
+                    Tiles[i] = null;
+                }
+            }
+            Tiles = null;
         }
 
         public void LoadTiles(TileMatrixRaw tileData)

@@ -103,7 +103,7 @@ namespace UltimaXNA.UltimaWorld.View
             if ((t = map.GetMapTile(CenterPosition.X, CenterPosition.Y)) != null)
             {
                 AEntity underObject, underTerrain;
-                t.IsPointUnderAnEntity(CenterPosition.Z, out underObject, out underTerrain);
+                t.IsZUnderEntityOrGround(CenterPosition.Z, out underObject, out underTerrain);
 
                 // if we are under terrain, then do not draw any terrain at all.
                 DrawTerrain = !(underTerrain == null);
@@ -129,7 +129,7 @@ namespace UltimaXNA.UltimaWorld.View
                         bool isRoofSouthEast = true;
                         if ((t = map.GetMapTile(CenterPosition.X + 1, CenterPosition.Y)) != null)
                         {
-                            t.IsPointUnderAnEntity(CenterPosition.Z, out underObject, out underTerrain);
+                            t.IsZUnderEntityOrGround(CenterPosition.Z, out underObject, out underTerrain);
                             isRoofSouthEast = !(underObject == null);
                         }
 
