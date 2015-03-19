@@ -128,6 +128,7 @@
     <Compile Include="Entity\EntityViews\MobileDeferredView.cs" />
     <Compile Include="Entity\MobileDeferred.cs" />
     <Compile Include="Entity\Support\MobileFlags.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="UltimaWorld\Model\KrriosSort.cs" />
     <Compile Include="Entity\EntityViews\GroundView.cs" />
     <Compile Include="Entity\EntityViews\ItemView.cs" />
