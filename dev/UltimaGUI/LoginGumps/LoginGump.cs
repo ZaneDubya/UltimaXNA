@@ -10,6 +10,7 @@
  ***************************************************************************/
 using UltimaXNA.Rendering;
 using UltimaXNA.UltimaGUI.Controls;
+using UltimaXNA.Settings;
 
 namespace UltimaXNA.UltimaGUI.LoginGumps
 {
@@ -29,6 +30,7 @@ namespace UltimaXNA.UltimaGUI.LoginGumps
     public class LoginGump : Gump
     {
         public LoginEvent OnLogin;
+        IniFile iniFile = new IniFile("Settings.ini");
 
         public LoginGump()
             : base(0, 0)
@@ -47,12 +49,13 @@ namespace UltimaXNA.UltimaGUI.LoginGumps
             // Password
             AddControl(new TextLabelAscii(this, 0, 181, 386, hue, 2, UltimaData.StringData.Entry(3000103)));
             // name field
-            TextEntry g1 = new TextEntry(this, 0, 332, 346, 200, 20, 0, (int)LoginGumpTextFields.AccountName, 32, "Admin");
+            string LastAccount = iniFile.GetString("Server", "LastAccount", "");
+            TextEntry g1 = new TextEntry(this, 0, 332, 346, 200, 20, 0, (int)LoginGumpTextFields.AccountName, 32, LastAccount);
             g1.HtmlTag = "<basefont color=#000000><big>";
             AddControl(new ResizePic(this, g1));
             AddControl(g1);
             // password field
-            TextEntry g2 = new TextEntry(this, 0, 332, 386, 200, 20, 0, (int)LoginGumpTextFields.Password, 32, "Admin");
+            TextEntry g2 = new TextEntry(this, 0, 332, 386, 200, 20, 0, (int)LoginGumpTextFields.Password, 32, "");
             g2.IsPasswordField = true;
             g2.HtmlTag = "<basefont color=#000000><big>";
             AddControl(new ResizePic(this, g2));
@@ -74,7 +77,10 @@ namespace UltimaXNA.UltimaGUI.LoginGumps
                 case LoginGumpButtons.LoginButton:
                     string accountName = getTextEntry((int)LoginGumpTextFields.AccountName);
                     string password = getTextEntry((int)LoginGumpTextFields.Password);
-                    OnLogin("localhost", 2593, accountName, password);
+                    iniFile.WriteValue("Server", "LastAccount", accountName);
+                    string ServerIP = iniFile.GetString("Server", "ServerIP", "localhost");
+                    int ServerPort = iniFile.GetInt32("Server", "ServerPort", 2593);
+                    OnLogin(ServerIP, ServerPort, accountName, password);
                     break;
             }
         }
