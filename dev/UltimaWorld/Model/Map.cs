@@ -86,7 +86,7 @@ namespace UltimaXNA.UltimaWorld.Model
                     if (m_Blocks[cellIndex] == null || m_Blocks[cellIndex].X != cellX || m_Blocks[cellIndex].Y != cellY)
                     {
                         if (m_Blocks[cellIndex] != null)
-                            m_Blocks[cellIndex].Dispose();
+                            m_Blocks[cellIndex].Unload();
                         m_Blocks[cellIndex] = new MapBlock(cellX, cellY);
                         m_Blocks[cellIndex].LoadTiles(m_MapData, this);
                     }

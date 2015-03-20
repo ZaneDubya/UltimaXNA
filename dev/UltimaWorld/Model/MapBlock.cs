@@ -30,7 +30,10 @@ namespace UltimaXNA.UltimaWorld.Model
                 Tiles[i] = new MapTile();
         }
 
-        public void Dispose()
+        /// <summary>
+        /// Unloads all tiles and entities from memory.
+        /// </summary>
+        public void Unload()
         {
             for (int i = 0; i < 64; i++)
             {
@@ -38,7 +41,9 @@ namespace UltimaXNA.UltimaWorld.Model
                 {
                     for (int j = 0; j < Tiles[i].Entities.Count; j++)
                     {
-                        Tiles[i].Entities[j].Dispose();
+                        // Never dispose of the client entity.
+                        if (!Tiles[i].Entities[j].IsClientEntity)
+                            Tiles[i].Entities[j].Dispose();
                     }
                     Tiles[i] = null;
                 }
