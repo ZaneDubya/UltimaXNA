@@ -22,6 +22,10 @@ namespace UltimaXNA.UltimaGUI
 
     public delegate void PublicControlEvent();
 
+    /// <summary>
+    /// The base class used by all GUI objects.
+    /// NOTE: Gumps MUST NOT inherit from Control. They must inherit from Gump instead.
+    /// </summary>
     public class Control
     {
         internal static GUIState UserInterface = null;
@@ -579,27 +583,6 @@ namespace UltimaXNA.UltimaGUI
                     return;
                 }
             }
-        }
-
-        public override bool Equals(object obj)
-        {
-            // if parameter is null or cannot be cast to Control, return false.
-            if (obj == null || (obj as Control) == null)
-            {
-                return false;
-            }
-
-            // by default, Controls are equal to eachother if they are of the same type.
-            // Inheriting controls should override this to base equality on their Parent object's serial, if appropriate.
-            if (this.GetType() == obj.GetType())
-                return true;
-            else
-                return false;
-        }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
         }
     }
 }

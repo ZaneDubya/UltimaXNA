@@ -16,6 +16,9 @@ using UltimaXNA.UltimaPackets.Client;
 
 namespace UltimaXNA.UltimaGUI
 {
+    /// <summary>
+    /// The base class that encapsulates Gump functionality. All Gumps should inherit from this class or a child thereof.
+    /// </summary>
     public class Gump : Control
     {
         
@@ -259,6 +262,29 @@ namespace UltimaXNA.UltimaGUI
                 }
             }
             return string.Empty;
+        }
+
+        public override bool Equals(object obj)
+        {
+            // We override gump equality to provide the ability to NOT add a gump if only one should be active.
+
+            // if parameter is null or cannot be cast to Control, return false.
+            if (obj == null || (obj as Control) == null)
+            {
+                return false;
+            }
+
+            // by default, Gumps are equal to each other if they are of the same type.
+            // Inheriting Gumps should override this to base equality on their Parent object's serial, if appropriate.
+            if (this.GetType() == obj.GetType())
+                return true;
+            else
+                return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 }
