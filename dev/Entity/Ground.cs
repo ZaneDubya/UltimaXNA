@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UltimaXNA.UltimaData;
+using UltimaXNA.UltimaWorld.Model;
 
 namespace UltimaXNA.Entity
 {
@@ -29,8 +30,8 @@ namespace UltimaXNA.Entity
             }
         }
 
-        public Ground(int tileID)
-            : base(Serial.Null)
+        public Ground(int tileID, Map map)
+            : base(Serial.Null, map)
         {
             m_LandDataID = tileID;
             LandData = UltimaData.TileData.LandData[m_LandDataID & 0x3FFF];

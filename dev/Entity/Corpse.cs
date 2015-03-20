@@ -29,8 +29,8 @@ namespace UltimaXNA.Entity
             set { m_Facing = value; }
         }
 
-        public Corpse(Serial serial)
-            : base(serial)
+        public Corpse(Serial serial, Map map)
+            : base(serial, map)
         {
 
         }

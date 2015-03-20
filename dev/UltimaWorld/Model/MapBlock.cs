@@ -1,9 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UltimaXNA.UltimaData;
+﻿/***************************************************************************
+ *   MapBlock.cs
+ *   
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region usings
 using UltimaXNA.Entity;
+using UltimaXNA.UltimaData;
+#endregion
 
 namespace UltimaXNA.UltimaWorld.Model
 {
@@ -23,7 +30,28 @@ namespace UltimaXNA.UltimaWorld.Model
                 Tiles[i] = new MapTile();
         }
 
-        public void LoadTiles(TileMatrixRaw tileData)
+        /// <summary>
+        /// Unloads all tiles and entities from memory.
+        /// </summary>
+        public void Unload()
+        {
+            for (int i = 0; i < 64; i++)
+            {
+                if (Tiles[i] != null)
+                {
+                    for (int j = 0; j < Tiles[i].Entities.Count; j++)
+                    {
+                        // Never dispose of the client entity.
+                        if (!Tiles[i].Entities[j].IsClientEntity)
+                            Tiles[i].Entities[j].Dispose();
+                    }
+                    Tiles[i] = null;
+                }
+            }
+            Tiles = null;
+        }
+
+        public void LoadTiles(TileMatrixRaw tileData, Map map)
         {
             // get data from the tile Matrix
             byte[] groundData = tileData.GetLandBlock(X, Y);
@@ -36,7 +64,7 @@ namespace UltimaXNA.UltimaWorld.Model
                 int iTileID = groundData[groundDataIndex++] + (groundData[groundDataIndex++] << 8);
                 int iTileZ = (sbyte)groundData[groundDataIndex++];
 
-                Ground ground = new Ground(iTileID);
+                Ground ground = new Ground(iTileID, map);
                 ground.Position.Set(X * 8 + i % 8, Y * 8 + (i / 8), iTileZ);
             }
 
@@ -51,7 +79,7 @@ namespace UltimaXNA.UltimaWorld.Model
                 int iTileZ = (sbyte)staticsData[staticDataIndex++];
                 int hue = staticsData[staticDataIndex++] + (staticsData[staticDataIndex++] * 256);
 
-                StaticItem item = new StaticItem(iTileID, hue, i);
+                StaticItem item = new StaticItem(iTileID, hue, i, map);
                 item.Position.Set(X * 8 + iX, Y * 8 + iY, iTileZ);
             }
         }

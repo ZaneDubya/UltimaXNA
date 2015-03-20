@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
  *   Dynamic.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   From: http://www.codeproject.com/KB/cs/DynLoadClassInvokeMethod.aspx
  *
  ***************************************************************************/

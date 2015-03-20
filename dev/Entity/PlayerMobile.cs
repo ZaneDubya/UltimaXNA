@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
  *   PlayerMobile.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -12,14 +11,15 @@
 using System;
 using Microsoft.Xna.Framework;
 using UltimaXNA.UltimaWorld;
+using UltimaXNA.UltimaWorld.Model;
 #endregion
 
 namespace UltimaXNA.Entity
 {
     public class PlayerMobile : Mobile
     {
-        public PlayerMobile(Serial serial)
-            : base(serial)
+        public PlayerMobile(Serial serial, Map map)
+            : base(serial, map)
         {
 
         }

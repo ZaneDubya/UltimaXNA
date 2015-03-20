@@ -1,6 +1,6 @@
 ﻿/***************************************************************************
  *   MapTile.cs
- *   Based on code from ClintXNA's renderer.
+ *   Based on code from ClintXNA.
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -19,82 +19,101 @@ using UltimaXNA.UltimaWorld.View;
 
 namespace UltimaXNA.UltimaWorld.Model
 {
+    /// <summary>
+    /// Represents a single tile on the Ultima Online map.
+    /// </summary>
     public class MapTile
     {
-        private bool m_NeedsSorting = false;
-
-        private Ground m_Ground;
-        public Ground Ground
-        {
-            get
-            {
-                return m_Ground;
-            }
-        }
-
-        public int X
-        {
-            get { return m_Ground.Position.X; }
-        }
-
-        public int Y
-        {
-            get { return m_Ground.Position.Y; }
-        }
-
-        private List<AEntity> m_Entities;
-
-        public void OnEnter(AEntity entity)
-        {
-            if (entity is Ground)
-            {
-                if (m_Ground != null)
-                    m_Ground.Dispose();
-                m_Ground = (Ground)entity;
-            }
-            m_Entities.Add(entity);
-            m_NeedsSorting = true;
-        }
-
-        public void OnExit(AEntity entity)
-        {
-            m_Entities.Remove(entity);
-        }
-
         public MapTile()
         {
             m_Entities = new List<AEntity>();
         }
 
         /// <summary>
+        /// The Ground entity for this tile. Every tile has one and only one ground entity.
+        /// </summary>
+        public Ground Ground
+        {
+            get;
+            private set;
+        }
+
+        public int X
+        {
+            get { return Ground.Position.X; }
+        }
+
+        public int Y
+        {
+            get { return Ground.Position.Y; }
+        }
+
+        // ============================================================
+        // Entity management
+        // ============================================================
+
+        private List<AEntity> m_Entities;
+
+        /// <summary>
+        /// Adds the passed entity to this Tile's entity collection, and forces a resort of the entities on this tile.
+        /// </summary>
+        /// <param name="entity"></param>
+        public void OnEnter(AEntity entity)
+        {
+            // only allow one ground object.
+            if (entity is Ground)
+            {
+                if (Ground != null)
+                    Ground.Dispose();
+                Ground = (Ground)entity;
+            }
+
+            m_Entities.Add(entity);
+            m_NeedsSorting = true;
+        }
+
+        /// <summary>
+        /// Removes the passed entity from this Tile's entity collection.
+        /// </summary>
+        /// <param name="entity"></param>
+        public void OnExit(AEntity entity)
+        {
+            m_Entities.Remove(entity);
+        }
+
+        /// <summary>
         /// Checks if the specified z-height is under an item or a ground.
         /// </summary>
-        /// <param name="originZ"></param>
-        /// <param name="underItem"></param>
-        /// <param name="underTerrain"></param>
-        public void IsPointUnderAnEntity(int originZ, out AEntity underItem, out AEntity underTerrain)
+        /// <param name="z">The z value to check.</param>
+        /// <param name="underEntity">Returns the first roof, surface, or wall that is over the specified z.
+        ///                         If no such objects exist above the specified z, then returns null.</param>
+        /// <param name="underGround">Returns the ground object of this tile if the specified z is under the ground.
+        ///                         Returns null otherwise.</param>
+        public void IsZUnderEntityOrGround(int z, out AEntity underEntity, out AEntity underGround)
         {
-            underItem = null;
-            underTerrain = null;
-
+            // getting the publicly exposed Entities collection will sort the entities if necessary.
             List<AEntity> entities = this.Entities;
+
+            underEntity = null;
+            underGround = null;
+
             for (int i = entities.Count - 1; i >= 0; i--)
             {
-                if (entities[i].Z <= originZ)
+                if (entities[i].Z <= z)
                     continue;
 
-                if (entities[i] is StaticItem)
+                if (entities[i] is Item) // checks Item and StaticItem entities.
                 {
-                    UltimaData.ItemData iData = ((StaticItem)entities[i]).ItemData;
-                    if (iData.IsRoof || iData.IsSurface || iData.IsWall)
+                    UltimaData.ItemData data = ((StaticItem)entities[i]).ItemData;
+                    if (data.IsRoof || data.IsSurface || data.IsWall)
                     {
-                        if (underItem == null || entities[i].Z < underItem.Z)
-                            underItem = entities[i];
+                        if (underEntity == null || entities[i].Z < underEntity.Z)
+                            underEntity = entities[i];
                     }
                 }
-                else if (entities[i] is Ground && entities[i].Z >= originZ + 20)
+                else if (entities[i] is Ground && entities[i].Z >= z + 20)
                 {
-                    underTerrain = entities[i];
+                    underGround = entities[i];
                 }
             }
         }
@@ -117,7 +136,7 @@ namespace UltimaXNA.UltimaWorld.Model
             return (m1.Name == m2.Name);
         }
 
-        private void removeDuplicateObjects()
+        private void InternalRemoveDuplicateEntities()
         {
             int[] itemsToRemove = new int[0x100];
             int removeIndex = 0;
@@ -180,15 +199,21 @@ namespace UltimaXNA.UltimaWorld.Model
             {
                 if (m_NeedsSorting)
                 {
-                    removeDuplicateObjects();
-                    KrriosSort.Sort(m_Entities);
+                    InternalRemoveDuplicateEntities();
+                    EntitySort.Sort(m_Entities);
                     m_NeedsSorting = false;
                 }
                 return m_Entities;
             }
         }
 
-        public void Resort()
+        // ============================================================
+        // Sorting
+        // ============================================================
+
+        private bool m_NeedsSorting = false;
+
+        public void ForceSort()
         {
             m_NeedsSorting = true;
         }

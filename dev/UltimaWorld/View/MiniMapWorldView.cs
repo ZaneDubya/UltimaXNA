@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
  *   MiniMap.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -16,7 +15,7 @@ using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 #endregion
 
-namespace UltimaXNA.UltimaWorld
+namespace UltimaXNA.UltimaWorld.View
 {
     // N.B.
     // This code is currently not used by the engine and may well be nonfunctional.

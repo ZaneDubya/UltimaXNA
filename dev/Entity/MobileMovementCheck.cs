@@ -29,13 +29,15 @@ namespace UltimaXNA.Entity
         private const int PersonHeight = 16;
         private const int StepHeight = 2;
 
-        public static bool CheckMovementForced(Mobile m, Map map, Position3D loc, Direction d, out int newZ)
+        public static bool CheckMovementForced(Mobile m, Position3D loc, Direction d, out int newZ)
         {
-            return CheckMovement(m, map, loc, d,out newZ, true);
+            return CheckMovement(m, loc, d,out newZ, true);
         }
 
-        public static bool CheckMovement(Mobile m, Map map, Position3D loc, Direction d, out int newZ, bool forceOK = false)
+        public static bool CheckMovement(Mobile m, Position3D loc, Direction d, out int newZ, bool forceOK = false)
         {
+            Map map = m.Map;
+
             if (map == null)
             {
                 newZ = 0;
