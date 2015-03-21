@@ -33,7 +33,6 @@ namespace UltimaXNA.Entity.EntityViews
                 DrawArea = new Rectangle(DrawTexture.Width / 2 - 22, DrawTexture.Height - 44 + (Entity.Z * 4), DrawTexture.Width, DrawTexture.Height);
                 PickType = PickTypes.PickObjects;
                 DrawFlip = false;
-                
             }
 
             // Update hue vector.

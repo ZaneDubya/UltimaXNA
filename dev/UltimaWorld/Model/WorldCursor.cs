@@ -127,14 +127,23 @@ namespace UltimaXNA.UltimaWorld.Model
                 switch (m_Targeting)
                 {
                     case TargetTypes.Object:
-                        // Select Object
-                        IsometricRenderer.PickType = PickTypes.PickStatics | PickTypes.PickObjects;
-                        mouseTargetingEventObject(IsometricRenderer.MouseOverObject);
-                        break;
                     case TargetTypes.Position:
-                        // Select X, Y, Z
-                        IsometricRenderer.PickType = PickTypes.PickStatics | PickTypes.PickObjects;
-                        mouseTargetingEventObject(IsometricRenderer.MouseOverObject); // mouseTargetingEventXYZ(mouseOverObject);
+                        if (UltimaEngine.UserInterface.IsMouseOverUI)
+                        {
+                            // get object under mouse cursor. We can only hue items.
+                            // ItemGumping is the base class for all items, containers, and paperdoll items.
+                            Control target = UltimaEngine.UserInterface.MouseOverControl;
+                            if (target is ItemGumpling)
+                            {
+                                mouseTargetingEventObject(((ItemGumpling)target).Item);
+                            }
+                        }
+                        else
+                        {
+                            // Send Select Object or Select XYZ packet, depending on the entity under the mouse cursor.
+                            IsometricRenderer.PickType = PickTypes.PickStatics | PickTypes.PickObjects;
+                            mouseTargetingEventObject(IsometricRenderer.MouseOverObject);
+                        }
                         break;
                     case TargetTypes.MultiPlacement:
                         // select X, Y, Z
