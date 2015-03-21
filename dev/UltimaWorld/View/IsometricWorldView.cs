@@ -163,7 +163,7 @@ namespace UltimaXNA.UltimaWorld.View
             // when the player entity is higher (z) in the world, we must offset the first row drawn. This variable MUST be a multiple of 2.
             int renderZOffset = (CenterPosition.Z / 14) * 2 + 4;
             // this is used to draw tall objects that would otherwise not be visible until their ground tile was on screen. This may still skip VERY tall objects (those weird jungle trees?)
-            int renderExtraRowsAtBottom = renderZOffset + 6; 
+            int renderExtraRowsAtBottom = 12; 
 
             Point firstTile = new Point(
                 CenterPosition.X + renderExtraColumnsAtSides - ((renderZOffset + 1) / 2), 
