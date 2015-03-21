@@ -218,7 +218,7 @@ namespace UltimaXNA.UltimaWorld
                 // each dimension - thus a very thin object (2-3 pixels wide) will be increased.
 
                 int x = (int)(mousePosition.X - Position.X);
-                int y = (int)(mousePosition.Y - Position.Y) - (44 - Texture.Height) / 2;
+                int y = (int)(mousePosition.Y - Position.Y);
 
                 if (Texture.Bounds.Contains(new Point(x, y)))
                 {
