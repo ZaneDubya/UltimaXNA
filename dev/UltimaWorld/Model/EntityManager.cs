@@ -57,20 +57,9 @@ namespace UltimaXNA.UltimaWorld
             // redirect any new entities to a queue while we are enumerating the collection.
             m_EntitiesCollectionIsLocked = true;
 
-            // Get the player object
-            AEntity player = GetPlayerObject();
-
-            // Update the player entity first because we cull entities out of range of this main object.
-            player.Update(frameMS);
-            if (player.IsDisposed)
-                m_SerialsToRemove.Add(player.Serial);
-
             // Update all other entities.
             foreach (KeyValuePair<int, AEntity> entity in m_Entities)
             {
-                // Don't update the player entity twice!
-                if (entity.Key == player.Serial)
-                    continue;
                 if (!entity.Value.IsDisposed)
                     entity.Value.Update(frameMS);
                 else
