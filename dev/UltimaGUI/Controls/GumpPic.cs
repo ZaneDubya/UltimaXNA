@@ -80,7 +80,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             base.Draw(spriteBatch);
         }
 
-        protected override bool m_hitTest(int x, int y)
+        protected override bool InternalHitTest(int x, int y)
         {
             Color[] pixelData;
             pixelData = new Color[1];

@@ -303,7 +303,7 @@ namespace UltimaXNA.UltimaGUI
             bool inBounds = Area.Contains((int)position.X - OwnerX, (int)position.Y - OwnerY);
             if (inBounds)
             {
-                if (m_hitTest((int)position.X - X - OwnerX, (int)position.Y - Y - OwnerY))
+                if (InternalHitTest((int)position.X - X - OwnerX, (int)position.Y - Y - OwnerY))
                 {
                     if (alwaysHandleMouseInput || this.HandlesMouseInput)
                         focusedControls.Insert(0, this);
@@ -330,7 +330,7 @@ namespace UltimaXNA.UltimaGUI
                 return focusedControls.ToArray();
         }
 
-        protected virtual bool m_hitTest(int x, int y)
+        protected virtual bool InternalHitTest(int x, int y)
         {
             return true;
         }
