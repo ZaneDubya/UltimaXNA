@@ -219,7 +219,6 @@ namespace UltimaXNA.UltimaWorld
                 Rectangle pRect = new Rectangle((int)mousePosition.X - (int)Position.X, (int)mousePosition.Y - (int)Position.Y, 1, 1);
                 if (Texture.Bounds.Contains(new Point(pRect.X, pRect.Y)))
                 {
-                    
                     int x = pRect.X, y = pRect.Y;
 
                     if (x == 0)
@@ -237,6 +236,7 @@ namespace UltimaXNA.UltimaWorld
                         (pixelData[4].A > 0) || (pixelData[5].A > 0) ||
                         (pixelData[7].A > 0))
                     {
+                        InTexturePosition = new Vector2(pRect.X, pRect.Y);
                         return true;
                     }
                 }
