@@ -210,17 +210,18 @@ namespace UltimaXNA.UltimaWorld
                 InTexturePosition = new Vector2(mousePosition.X - Position.X, mousePosition.Y - Position.Y);
                 return true;
             }
-            else
+            else if (Entity is Item)
             {
                 // Allow selection if there is a non-transparent pixel below the mouse cursor or at an offset of
                 // (-1,0), (0,-1), (1,0), or (1,1). This will allow selection even when the mouse cursor is directly
                 // over a transparent pixel, and will also increase the 'selection space' of an item by one pixel in
                 // each dimension - thus a very thin object (2-3 pixels wide) will be increased.
-                Rectangle pRect = new Rectangle((int)mousePosition.X - (int)Position.X, (int)mousePosition.Y - (int)Position.Y, 1, 1);
-                if (Texture.Bounds.Contains(new Point(pRect.X, pRect.Y)))
-                {
-                    int x = pRect.X, y = pRect.Y;
 
+                int x = (int)(mousePosition.X - Position.X);
+                int y = (int)(mousePosition.Y - Position.Y) - (44 - Texture.Height) / 2;
+
+                if (Texture.Bounds.Contains(new Point(x, y)))
+                {
                     if (x == 0)
                         x++;
                     if (x == Texture.Width - 1)
@@ -236,11 +237,27 @@ namespace UltimaXNA.UltimaWorld
                         (pixelData[4].A > 0) || (pixelData[5].A > 0) ||
                         (pixelData[7].A > 0))
                     {
-                        InTexturePosition = new Vector2(pRect.X, pRect.Y);
+                        InTexturePosition = new Vector2(x, y);
                         return true;
                     }
                 }
             }
+            else if (Entity is Mobile)
+            {
+                Color[] iPixel = new Color[1];
+                Rectangle pRect = new Rectangle((int)mousePosition.X - (int)Position.X, (int)mousePosition.Y - (int)Position.Y, 1, 1);
+                if (Texture.Bounds.Contains(new Point(pRect.X, pRect.Y)))
+                {
+                    Texture.GetData<Color>(0, pRect, iPixel, 0, 1);
+                    if (iPixel[0].A != 0)
+                        return true;
+                }
+            }
+            else
+            {
+                return false;
+            }
+
             return false;
         }
     }
