@@ -97,12 +97,16 @@ namespace UltimaXNA.UltimaGUI.Controls
 
             pixelData = new Color[9];
             m_texture.GetData<Color>(0, new Rectangle(x - 1, y - 1, 3, 3), pixelData, 0, 9);
-            if ((pixelData[1].A > 0) || (pixelData[3].A > 0) || 
-                (pixelData[4].A > 0) || (pixelData[5].A > 0) || 
+            if ((pixelData[1].A > 0) || (pixelData[3].A > 0) ||
+                (pixelData[4].A > 0) || (pixelData[5].A > 0) ||
                 (pixelData[7].A > 0))
+            {
                 return true;
+            }
             else
+            {
                 return false;
+            }
         }
 
         protected override void mouseDown(int x, int y, MouseButton button)
