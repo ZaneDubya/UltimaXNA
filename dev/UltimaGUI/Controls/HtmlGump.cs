@@ -183,7 +183,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             base.Draw(spriteBatch);
         }
 
-        protected override bool m_hitTest(int x, int y)
+        protected override bool InternalHitTest(int x, int y)
         {
             Point position = new Point(x + OwnerX + X, y + OwnerY + Y);
             if (HasScrollbar)

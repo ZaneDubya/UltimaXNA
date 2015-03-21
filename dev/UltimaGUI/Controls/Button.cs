@@ -149,7 +149,7 @@ namespace UltimaXNA.UltimaGUI.Controls
                 return m_gumpTextures[kGump_Up];
         }
 
-        protected override bool m_hitTest(int x, int y)
+        protected override bool InternalHitTest(int x, int y)
         {
             Color[] pixelData;
             pixelData = new Color[1];

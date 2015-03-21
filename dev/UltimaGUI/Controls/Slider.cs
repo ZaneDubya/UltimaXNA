@@ -96,7 +96,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             base.Draw(spriteBatch);
         }
 
-        protected override bool m_hitTest(int x, int y)
+        protected override bool InternalHitTest(int x, int y)
         {
             if (new Rectangle(m_sliderX, 0, m_gumpSlider.Width, m_gumpSlider.Height).Contains(new Point(x, y)))
                 return true;
