@@ -269,8 +269,9 @@ namespace UltimaXNA
                     m_MouseDownControl[iButton].MouseOver(UltimaEngine.Input.MousePosition);
             }
 
-            // The cursor occasionally must block input events from reaching the UI - for example, when it is carrying an object.
-            if (Cursor.BlockingUIMouseEvents)
+            // The cursor and world input objects occasionally must block input events from reaching the UI:
+            // e.g. when the cursor is carrying an object.
+            if (ObjectsBlockingInput)
                 return;
 
             List<InputEventMouse> events = UltimaEngine.Input.GetMouseEvents();
@@ -390,6 +391,42 @@ namespace UltimaXNA
             }
 
             return null;
+        }
+
+        // ======================================================================
+        // Input blocking objects
+        // ======================================================================
+
+        private List<object> m_InputBlockingObjects = new List<object>();
+
+        protected bool ObjectsBlockingInput
+        {
+            get
+            {
+                return (m_InputBlockingObjects.Count > 0);
+            }
+        }
+
+        /// <summary>
+        /// Add an input blocking object. Until RemoveInputBlocker is called with this same parameter,
+        /// GUIState will not process any MouseDown, MouseUp, or MouseClick events, or any keyboard events.
+        /// </summary>
+        /// <param name="obj"></param>
+        public void AddInputBlocker(object obj)
+        {
+            if (!m_InputBlockingObjects.Contains(obj))
+                m_InputBlockingObjects.Add(obj);
+        }
+
+        /// <summary>
+        /// Removes an input blocking object. Only when there are no input blocking objects will GUIState
+        /// process MouseDown, MouseUp, MouseClick, and all keyboard events.
+        /// </summary>
+        /// <param name="obj"></param>
+        public void RemoveInputBlocker(object obj)
+        {
+            if (m_InputBlockingObjects.Contains(obj))
+                m_InputBlockingObjects.Remove(obj);
         }
     }
 }

@@ -25,14 +25,6 @@ namespace UltimaXNA.UltimaWorld.Model
 {
     class WorldCursor : UltimaCursor
     {
-        public override bool BlockingUIMouseEvents
-        {
-            get
-            {
-                return IsHoldingItem;
-            }
-        }
-
         private WorldModel m_Model;
 
         public WorldCursor(WorldModel model)
@@ -377,6 +369,18 @@ namespace UltimaXNA.UltimaWorld.Model
         internal Item HeldItem
         {
             get { return m_HeldItem; }
+            set
+            {
+                if (value == null && m_HeldItem != null)
+                {
+                    UltimaEngine.UserInterface.RemoveInputBlocker(this);
+                }
+                else if (value != null && m_HeldItem == null)
+                {
+                    UltimaEngine.UserInterface.AddInputBlocker(this);
+                }
+                m_HeldItem = value;
+            }
         }
 
         private Point m_HeldItemOffset = Point.Zero;
@@ -387,7 +391,7 @@ namespace UltimaXNA.UltimaWorld.Model
 
         internal bool IsHoldingItem
         {
-            get { return m_HeldItem != null; }
+            get { return HeldItem != null; }
         }
 
         private void PickUpItem(Item item, int x, int y)
@@ -415,7 +419,7 @@ namespace UltimaXNA.UltimaWorld.Model
                 }
 
                 // set our local holding item variables.
-                m_HeldItem = item;
+                HeldItem = item;
                 m_HeldItemOffset = new Point(x, y);
             }
         }
@@ -466,7 +470,7 @@ namespace UltimaXNA.UltimaWorld.Model
 
         private void ClearHolding()
         {
-            m_HeldItem = null;
+            HeldItem = null;
         }
     }
 }

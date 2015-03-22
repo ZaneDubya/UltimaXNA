@@ -18,10 +18,22 @@ namespace UltimaXNA.UltimaWorld.Controller
         }
 
         // mouse input variables
+        private bool m_ContinuousMouseMovementCheck = false;
         public bool ContinuousMouseMovementCheck
         {
-            get;
-            set;
+            get { return m_ContinuousMouseMovementCheck; }
+            set
+            {
+                if (m_ContinuousMouseMovementCheck != value)
+                {
+                    m_ContinuousMouseMovementCheck = value;
+                    if (m_ContinuousMouseMovementCheck == true)
+                        UltimaEngine.UserInterface.AddInputBlocker(this);
+                    else
+                        UltimaEngine.UserInterface.RemoveInputBlocker(this);
+                }
+
+            }
         }
 
         // make sure we drag the correct object variables
