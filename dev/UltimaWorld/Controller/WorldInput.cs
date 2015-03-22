@@ -8,23 +8,39 @@ using UltimaXNA.UltimaWorld.View;
 
 namespace UltimaXNA.UltimaWorld.Controller
 {
+    /// <summary>
+    /// Handles all the mouse input when the mouse is over the world.
+    /// </summary>
     class WorldInput
     {
+        private WorldModel m_Model;
+
         public WorldInput(WorldModel model)
         {
             m_Model = model;
         }
 
-        private WorldModel m_Model;
-
         // mouse input variables
-        bool m_ContinuousMoveCheck = false;
+        private bool m_ContinuousMouseMovementCheck = false;
         public bool ContinuousMouseMovementCheck
         {
-            set { m_ContinuousMoveCheck = value; }
-        }
+            get
+            {
+                return m_ContinuousMouseMovementCheck;
+            }
+            set
+            {
+                if (m_ContinuousMouseMovementCheck != value)
+                {
+                    m_ContinuousMouseMovementCheck = value;
+                    if (m_ContinuousMouseMovementCheck == true)
+                        UltimaEngine.UserInterface.AddInputBlocker(this);
+                    else
+                        UltimaEngine.UserInterface.RemoveInputBlocker(this);
+                }
 
-        const int m_TimeHoveringBeforeTipMS = 1000;
+            }
+        }
 
         // make sure we drag the correct object variables
         Vector2 m_dragOffset;
@@ -32,62 +48,17 @@ namespace UltimaXNA.UltimaWorld.Controller
 
         public void Update(double frameMS)
         {
-            // input for debug variables.
-            List<InputEventKeyboard> keyEvents = UltimaEngine.Input.GetKeyboardEvents();
-            foreach (InputEventKeyboard e in keyEvents)
-            {
-                // debug flags
-                if ((e.EventType == KeyboardEventType.Press) && (e.KeyCode == WinKeys.D) && e.Control)
-                {
-                    if (!e.Alt)
-                    {
-                        if (!UltimaVars.DebugVars.Flag_ShowDataRead)
-                            UltimaVars.DebugVars.Flag_ShowDataRead = true;
-                        else
-                        {
-                            if (!UltimaVars.DebugVars.Flag_BreakdownDataRead)
-                                UltimaVars.DebugVars.Flag_BreakdownDataRead = true;
-                            else
-                            {
-                                UltimaVars.DebugVars.Flag_ShowDataRead = false;
-                                UltimaVars.DebugVars.Flag_BreakdownDataRead = false;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        Diagnostics.Dynamic.InvokeDebug();
-                    }
-                    e.Handled = true;
-                }
-
-                // fps limiting
-                if ((e.EventType == KeyboardEventType.Press) && (e.KeyCode == WinKeys.F) && e.Alt)
-                {
-                    if (!e.Control)
-                        UltimaVars.DebugVars.Flag_DisplayFPS = Utility.ToggleBoolean(UltimaVars.DebugVars.Flag_DisplayFPS);
-                    else
-                        UltimaVars.EngineVars.LimitFPS = Utility.ToggleBoolean(UltimaVars.EngineVars.LimitFPS);
-                    e.Handled = true;
-                }
-
-                // mouse enabling
-                if ((e.EventType == KeyboardEventType.Press) && (e.KeyCode == WinKeys.M) && e.Alt)
-                {
-                    UltimaVars.EngineVars.MouseEnabled = Utility.ToggleBoolean(UltimaVars.EngineVars.MouseEnabled);
-                    e.Handled = true;
-                }
-            }
-
-            doUpdate();
-        }
-
-        void doUpdate()
-        {
             if (UltimaVars.EngineVars.InWorld && !UltimaEngine.UserInterface.IsModalControlOpen && m_Model.Client.IsConnected)
             {
                 // always parse keyboard. (Is it possible there are some situations in which keyboard input is blocked???)
                 parseKeyboard();
+
+                // In all cases, where we are moving and the move button was released, stop moving.
+                if (ContinuousMouseMovementCheck &&
+                    UltimaEngine.Input.HandleMouseEvent(MouseEvent.Up, UltimaVars.EngineVars.MouseButton_Move))
+                {
+                    ContinuousMouseMovementCheck = false;
+                }
 
                 // If 1. The mouse is over the world (not over UI) and
                 //    2. The cursor is not blocking input, then interpret mouse input.
@@ -101,19 +72,11 @@ namespace UltimaXNA.UltimaWorld.Controller
                     IsometricRenderer.PickType = PickTypes.PickEverything;
 
                 // Set the cursor direction
-                UltimaVars.EngineVars.CursorDirection = Utility.DirectionFromPoints(new Point (400, 300), UltimaEngine.Input.MousePosition);
+                UltimaVars.EngineVars.CursorDirection = Utility.DirectionFromPoints(new Point(400, 300), UltimaEngine.Input.MousePosition);
 
-                // Show a popup tip if we have hovered over this item for X seconds.
-                if (UltimaEngine.Input.MouseStationaryTimeMS >= m_TimeHoveringBeforeTipMS)
-                    if (IsometricRenderer.MouseOverObject != null)
-                        createHoverLabel(IsometricRenderer.MouseOverObject);
-
-                // Changed to leverage movementFollowsMouse interface option -BERT
-                if (m_ContinuousMoveCheck)
+                // Changed to leverage movementFollowsMouse interface option
+                if (ContinuousMouseMovementCheck)
                     doMovement();
-
-                // Show our target's name
-                createHoverLabel(UltimaVars.EngineVars.LastTarget);
             }
         }
 
@@ -135,12 +98,12 @@ namespace UltimaXNA.UltimaWorld.Controller
             if (e.EventType == MouseEvent.Down)
             {
                 // keep moving as long as the move button is down.
-                m_ContinuousMoveCheck = true;
+                ContinuousMouseMovementCheck = true;
             }
             else if (e.EventType == MouseEvent.Up)
             {
                 // If the movement mouse button has been released, stop moving.
-                m_ContinuousMoveCheck = false;
+                ContinuousMouseMovementCheck = false;
             }
 
             e.Handled = true;
@@ -148,141 +111,88 @@ namespace UltimaXNA.UltimaWorld.Controller
 
         void onInteractButton(InputEventMouse e)
         {
-            AEntity overEntity = (e.EventType == MouseEvent.DragBegin) ? m_DraggingEntity : IsometricRenderer.MouseOverObject;
-            Vector2 overObjectOffset = (e.EventType == MouseEvent.DragBegin) ? m_dragOffset : IsometricRenderer.MouseOverObjectPoint;
+            AEntity overEntity = IsometricRenderer.MouseOverObject;
 
             if (e.EventType == MouseEvent.Down)
             {
-                m_DraggingEntity = overEntity;
-                m_dragOffset = overObjectOffset;
+                // prepare to pick this item up.
+                m_DraggingEntity = IsometricRenderer.MouseOverObject;
+                m_dragOffset = IsometricRenderer.MouseOverObjectPoint;
             }
-
-            if (overEntity == null)
-                return;
-
-            if (m_Model.Cursor.IsTargeting && e.EventType == MouseEvent.Click)
+            else if (e.EventType == MouseEvent.Click)
             {
-                // Special case: targeting
-                // handled by cursor class.
+                AEntity entity = IsometricRenderer.MouseOverObject;
+                if (entity is Ground)
+                {
+                    // no action.
+                }
+                else if (entity is StaticItem)
+                {
+                    // pop up name of item.
+                }
+                else if (entity is Item)
+                {
+                    // request context menu
+                    UltimaInteraction.SingleClick(entity);
+                }
+                else if (entity is Mobile)
+                {
+                    // request context menu
+                    UltimaInteraction.SingleClick(entity);
+                }
             }
-            else
+            else if (e.EventType == MouseEvent.DoubleClick)
             {
-                // standard interaction actions ...
-                if (overEntity is Ground)
+                AEntity entity = IsometricRenderer.MouseOverObject;
+                if (entity is Ground)
                 {
-                    // we can't interact with ground tiles.
+                    // no action.
                 }
-                else if (overEntity is StaticItem)
+                else if (entity is StaticItem)
                 {
-                    // clicking a should pop up the name of the static.
-                    if (e.EventType == MouseEvent.Click)
+                    // no action.
+                }
+                else if (entity is Item)
+                {
+                    // request context menu
+                    UltimaInteraction.DoubleClick(entity);
+                }
+                else if (entity is Mobile)
+                {
+                    // Send double click packet.
+                    // Set LastTarget == targeted Mobile.
+                    // If in WarMode, set Attacking == true.
+                    UltimaInteraction.DoubleClick(entity);
+                    UltimaVars.EngineVars.LastTarget = entity.Serial;
+                    if (UltimaVars.EngineVars.WarMode)
                     {
-
+                        m_Model.Client.Send(new AttackRequestPacket(entity.Serial));
                     }
                 }
-                else if (overEntity is Item)
+            }
+            else if (e.EventType == MouseEvent.DragBegin)
+            {
+                AEntity entity = IsometricRenderer.MouseOverObject;
+                if (entity is Ground)
                 {
-                    Item item = (Item)overEntity;
-                    // single click = tool tip
-                    // double click = use / open
-                    // click and drag = pick up
-                    switch (e.EventType)
-                    {
-                        case MouseEvent.Click:
-                            // tool tip
-                            UltimaInteraction.SingleClick(item);
-                            break;
-                        case MouseEvent.DoubleClick:
-                            UltimaInteraction.DoubleClick(item);
-                            break;
-                        case MouseEvent.DragBegin:
-                            UltimaInteraction.PickupItem(item, new Point((int)overObjectOffset.X, (int)overObjectOffset.Y));
-                            break;
-                    }
+                    // no action.
                 }
-                else if (overEntity is Mobile)
+                else if (entity is StaticItem)
                 {
-                    Mobile entity = (Mobile)overEntity;
-                    // single click = tool tip; if npc = request context sensitive menu
-                    // double click = set last target; if is human open paper doll; if ridable ride; if self and riding, dismount;
-                    // click and drag = pull off status bar
-                    switch (e.EventType)
-                    {
-                        case MouseEvent.Click:
-                            // tool tip
-                            UltimaInteraction.SingleClick(entity);
-                            if (UltimaVars.EngineVars.WarMode)
-                            {
-                                m_Model.Client.Send(new AttackRequestPacket(entity.Serial));
-                            }
-                            else
-                            {
-                                // m_Model.Client.Send(new RequestContextMenuPacket(entity.Serial));
-                            }
-                            break;
-                        case MouseEvent.DoubleClick:
-                            UltimaInteraction.DoubleClick(entity);
-                            UltimaVars.EngineVars.LastTarget = entity.Serial;
-                            break;
-                        case MouseEvent.DragBegin:
-                            // pull off status bar
-                            break;
-                    }
+                    // no action.
                 }
-                else if (overEntity is Corpse)
+                else if (entity is Item)
                 {
-                    Corpse entity = (Corpse)overEntity;
-                    // click and drag = nothing
-                    // single click = tool tip
-                    // double click = open loot window.
+                    // attempt to pick up item.
+                    UltimaInteraction.PickupItem((Item)entity, new Point((int)m_dragOffset.X, (int)m_dragOffset.Y));
                 }
-                /*else if (overEntity is MapObjectText)
+                else if (entity is Mobile)
                 {
-                    // clicking on text should somehow indicate the person speaking.
-                }*/
-                else
-                {
-                    throw new Exception("Unknown object type in onInteractButtonDown()");
+                    // drag off a status gump for this mobile.
                 }
             }
 
             e.Handled = true;
-        }
-
-        void createHoverLabel(AEntity entity)
-        {
-            if (entity.Serial.IsValid)
-            {
-                // this object is an entity of some kind.
-                createHoverLabel(entity.Serial);
-            }
-            else if (entity is StaticItem)
-            {
-                // since statics have no entity object, we can't easily create a label for them at the moment.
-                // surely this will be fixed. Someday.
-            }
-        }
-
-        void createHoverLabel(Serial serial)
-        {
-            if (!serial.IsValid)
-                return;
-
-            AEntity e = EntityManager.GetObject<AEntity>(serial, false);
-
-            if (e is Mobile)
-            {
-                Mobile m = (Mobile)e;
-                m.AddOverhead(MessageType.Label, m.Name, 3, m.NotorietyHue);
-            }
-            else if (e is Corpse)
-            {
-                // Currently corpse entities do not Update() so they will not show their label.
-            }
-            else if (e is Item)
-            {
-                // Currently item entities do not Update() so they will not show their label.
-            }
         }
 
         void parseMouse()
@@ -300,37 +210,54 @@ namespace UltimaXNA.UltimaWorld.Controller
                 }
                 else
                 {
-                    // no handler for this button.
+                    // no handler for other buttons.
                 }
             }
         }
 
         void parseKeyboard()
         {
-            List<InputEventKeyboard> events = UltimaEngine.Input.GetKeyboardEvents();
-            foreach (InputEventKeyboard e in events)
+            // Warmode toggle:
+            if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.Tab, false, false, false))
             {
-                // Toggle for war mode:
-                if (e.EventType == KeyboardEventType.Down && e.KeyCode == WinKeys.Tab)
-                {
-                    if (UltimaVars.EngineVars.WarMode)
-                        m_Model.Client.Send(new RequestWarModePacket(false));
-                    else
-                        m_Model.Client.Send(new RequestWarModePacket(true));
-                }
+                if (UltimaVars.EngineVars.WarMode)
+                    m_Model.Client.Send(new RequestWarModePacket(false));
+                else
+                    m_Model.Client.Send(new RequestWarModePacket(true));
+            }
 
-                // toggle for All Names:
-                /*if (InputState.IsKeyDown(Keys.LeftShift) && InputState.IsKeyDown(Keys.LeftControl))
+            if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Press, WinKeys.D, false, false, true))
+            {
+                if (!UltimaVars.DebugVars.Flag_ShowDataRead)
+                    UltimaVars.DebugVars.Flag_ShowDataRead = true;
+                else
                 {
-                    List<Mobile> mobiles = EntitiesCollection.GetObjectsByType<Mobile>();
-                    foreach (Mobile m in mobiles)
+                    if (!UltimaVars.DebugVars.Flag_BreakdownDataRead)
+                        UltimaVars.DebugVars.Flag_BreakdownDataRead = true;
+                    else
                     {
-                        if (m.Name != string.Empty)
-                        {
-                            m.AddOverhead(MessageType.Label, m.Name, 3, m.NotorietyHue);
-                        }
+                        UltimaVars.DebugVars.Flag_ShowDataRead = false;
+                        UltimaVars.DebugVars.Flag_BreakdownDataRead = false;
                     }
-                }*/
+                }
+            }
+
+            // FPS limiting
+            if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Press, WinKeys.F, false, true, false))
+            {
+                UltimaVars.EngineVars.LimitFPS = Utility.ToggleBoolean(UltimaVars.EngineVars.LimitFPS);
+            }
+
+            // Display FPS
+            if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Press, WinKeys.F, false, true, true))
+            {
+                UltimaVars.DebugVars.Flag_DisplayFPS = Utility.ToggleBoolean(UltimaVars.DebugVars.Flag_DisplayFPS);
+            }
+
+            // Mouse enable / disable
+            if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Press, WinKeys.M, false, true, false))
+            {
+                UltimaVars.EngineVars.MouseEnabled = Utility.ToggleBoolean(UltimaVars.EngineVars.MouseEnabled);
             }
         }
     }
