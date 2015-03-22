@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
  *   Control.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -23,6 +22,10 @@ namespace UltimaXNA.UltimaGUI
 
     public delegate void PublicControlEvent();
 
+    /// <summary>
+    /// The base class used by all GUI objects.
+    /// NOTE: Gumps MUST NOT inherit from Control. They must inherit from Gump instead.
+    /// </summary>
     public class Control
     {
         internal static GUIState UserInterface = null;
@@ -300,7 +303,7 @@ namespace UltimaXNA.UltimaGUI
             bool inBounds = Area.Contains((int)position.X - OwnerX, (int)position.Y - OwnerY);
             if (inBounds)
             {
-                if (m_hitTest((int)position.X - X - OwnerX, (int)position.Y - Y - OwnerY))
+                if (InternalHitTest((int)position.X - X - OwnerX, (int)position.Y - Y - OwnerY))
                 {
                     if (alwaysHandleMouseInput || this.HandlesMouseInput)
                         focusedControls.Insert(0, this);
@@ -327,7 +330,7 @@ namespace UltimaXNA.UltimaGUI
                 return focusedControls.ToArray();
         }
 
-        protected virtual bool m_hitTest(int x, int y)
+        protected virtual bool InternalHitTest(int x, int y)
         {
             return true;
         }
@@ -580,27 +583,6 @@ namespace UltimaXNA.UltimaGUI
                     return;
                 }
             }
-        }
-
-        public override bool Equals(object obj)
-        {
-            // if parameter is null or cannot be cast to Control, return false.
-            if (obj == null || (obj as Control) == null)
-            {
-                return false;
-            }
-
-            // by default, Controls are equal to eachother if they are of the same type.
-            // Inheriting controls should override this to base equality on their Parent object's serial, if appropriate.
-            if (this.GetType() == obj.GetType())
-                return true;
-            else
-                return false;
-        }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
         }
     }
 }

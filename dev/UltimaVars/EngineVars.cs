@@ -1,7 +1,6 @@
 ﻿using InterXLib.Input.Windows;
 /***************************************************************************
  *   EngineVars.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -33,6 +32,12 @@ namespace UltimaXNA.UltimaVars
 
         public const float SecondsBetweenClickAndPickUp = 0.8f; // this is close to what the legacy client uses.
         public const float SecondsForDoubleClick = 0.5f;
+
+        public static Serial PlayerSerial
+        {
+            get;
+            set;
+        }
 
         private static Serial m_lastTarget;
         public static Serial LastTarget

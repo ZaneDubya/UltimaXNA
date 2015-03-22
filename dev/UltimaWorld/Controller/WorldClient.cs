@@ -61,7 +61,7 @@ namespace UltimaXNA.UltimaWorld.Controller
 
         public void GetMySkills()
         {
-            m_Model.Client.Send(new GetPlayerStatusPacket(0x05, EntityManager.MySerial));
+            m_Model.Client.Send(new GetPlayerStatusPacket(0x05, UltimaVars.EngineVars.PlayerSerial));
         }
 
         public void SendClientVersion(string version_string)
@@ -81,7 +81,7 @@ namespace UltimaXNA.UltimaWorld.Controller
 
         public void GetMyBasicStatus()
         {
-            m_Model.Client.Send(new GetPlayerStatusPacket(0x04, EntityManager.MySerial));
+            m_Model.Client.Send(new GetPlayerStatusPacket(0x04, UltimaVars.EngineVars.PlayerSerial));
         }
 
         private void receive_VersionRequest(IRecvPacket packet)

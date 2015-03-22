@@ -1,28 +1,34 @@
-﻿using InterXLib.Input.Windows;
+﻿/***************************************************************************
+ *   WorldCursor.cs
+ *   
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region usings
+using InterXLib.Input.Windows;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using UltimaXNA.Entity;
 using UltimaXNA.Rendering;
-using UltimaXNA.UltimaData;
 using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaGUI.Controls;
 using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.UltimaWorld.Controller;
 using UltimaXNA.UltimaWorld.View;
+#endregion
 
 namespace UltimaXNA.UltimaWorld.Model
 {
+    /// <summary>
+    /// Handles targeting, holding items, and dropping items (both into the UI and into the world).
+    /// Draws the mouse cursor and any held item.
+    /// </summary>
     class WorldCursor : UltimaCursor
     {
-        public override bool BlockingUIMouseEvents
-        {
-            get
-            {
-                return IsHoldingItem;
-            }
-        }
-
         private WorldModel m_Model;
 
         public WorldCursor(WorldModel model)
@@ -106,36 +112,46 @@ namespace UltimaXNA.UltimaWorld.Model
                 }
             }
 
-            if (IsTargeting && UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Press, WinKeys.Escape, false, false, false))
+            if (IsTargeting)
             {
-                SetTargeting(TargetTypes.Nothing, 0);
-            }
-
-            if (IsTargeting && UltimaEngine.Input.HandleMouseEvent(MouseEvent.Click, UltimaVars.EngineVars.MouseButton_Interact))
-            {
-                // If isTargeting is true, then the target cursor is active and we are waiting for the player to target something.
-                switch (m_Targeting)
+                if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Press, WinKeys.Escape, false, false, false))
                 {
-                    case TargetTypes.Object:
-                        // Select Object
-                        IsometricRenderer.PickType = PickTypes.PickStatics | PickTypes.PickObjects;
-                        mouseTargetingEventObject(IsometricRenderer.MouseOverObject);
-                        break;
-                    case TargetTypes.Position:
-                        // Select X, Y, Z
-                        IsometricRenderer.PickType = PickTypes.PickStatics | PickTypes.PickObjects;
-                        mouseTargetingEventObject(IsometricRenderer.MouseOverObject); // mouseTargetingEventXYZ(mouseOverObject);
-                        break;
-                    case TargetTypes.MultiPlacement:
-                        // select X, Y, Z
-                        mouseTargetingEventXYZ(IsometricRenderer.MouseOverObject);
-                        break;
-                    default:
-                        throw new Exception("Unknown targetting type!");
+                    SetTargeting(TargetTypes.Nothing, 0);
+                }
+
+                if (UltimaEngine.Input.HandleMouseEvent(MouseEvent.Click, UltimaVars.EngineVars.MouseButton_Interact))
+                {
+                    // If isTargeting is true, then the target cursor is active and we are waiting for the player to target something.
+                    switch (m_Targeting)
+                    {
+                        case TargetTypes.Object:
+                        case TargetTypes.Position:
+                            if (UltimaEngine.UserInterface.IsMouseOverUI)
+                            {
+                                // get object under mouse cursor. We can only hue items.
+                                // ItemGumping is the base class for all items, containers, and paperdoll items.
+                                Control target = UltimaEngine.UserInterface.MouseOverControl;
+                                if (target is ItemGumpling)
+                                {
+                                    mouseTargetingEventObject(((ItemGumpling)target).Item);
+                                }
+                            }
+                            else
+                            {
+                                // Send Select Object or Select XYZ packet, depending on the entity under the mouse cursor.
+                                IsometricRenderer.PickType = PickTypes.PickStatics | PickTypes.PickObjects;
+                                mouseTargetingEventObject(IsometricRenderer.MouseOverObject);
+                            }
+                            break;
+                        case TargetTypes.MultiPlacement:
+                            // select X, Y, Z
+                            mouseTargetingEventXYZ(IsometricRenderer.MouseOverObject);
+                            break;
+                        default:
+                            throw new Exception("Unknown targetting type!");
+                    }
                 }
             }
-
-            base.Update(); // reset image
         }
 
         public override void Dispose()
@@ -206,7 +222,8 @@ namespace UltimaXNA.UltimaWorld.Model
                     // UNIMPLEMENTED !!! Draw a transparent multi
                 }*/
             }
-            else if (!UltimaEngine.UserInterface.IsMouseOverUI && !UltimaEngine.UserInterface.IsModalControlOpen)
+            else if ((m_Model.Input.ContinuousMouseMovementCheck || !UltimaEngine.UserInterface.IsMouseOverUI) && 
+                !UltimaEngine.UserInterface.IsModalControlOpen)
             {
                 switch (UltimaVars.EngineVars.CursorDirection)
                 {
@@ -358,6 +375,18 @@ namespace UltimaXNA.UltimaWorld.Model
         internal Item HeldItem
         {
             get { return m_HeldItem; }
+            set
+            {
+                if (value == null && m_HeldItem != null)
+                {
+                    UltimaEngine.UserInterface.RemoveInputBlocker(this);
+                }
+                else if (value != null && m_HeldItem == null)
+                {
+                    UltimaEngine.UserInterface.AddInputBlocker(this);
+                }
+                m_HeldItem = value;
+            }
         }
 
         private Point m_HeldItemOffset = Point.Zero;
@@ -368,7 +397,7 @@ namespace UltimaXNA.UltimaWorld.Model
 
         internal bool IsHoldingItem
         {
-            get { return m_HeldItem != null; }
+            get { return HeldItem != null; }
         }
 
         private void PickUpItem(Item item, int x, int y)
@@ -396,7 +425,7 @@ namespace UltimaXNA.UltimaWorld.Model
                 }
 
                 // set our local holding item variables.
-                m_HeldItem = item;
+                HeldItem = item;
                 m_HeldItemOffset = new Point(x, y);
             }
         }
@@ -441,13 +470,13 @@ namespace UltimaXNA.UltimaWorld.Model
 
         private void WearHeldItem()
         {
-            m_Model.Client.Send(new DropToLayerPacket(HeldItem.Serial, 0x00, EntityManager.MySerial));
+            m_Model.Client.Send(new DropToLayerPacket(HeldItem.Serial, 0x00, UltimaVars.EngineVars.PlayerSerial));
             ClearHolding();
         }
 
         private void ClearHolding()
         {
-            m_HeldItem = null;
+            HeldItem = null;
         }
     }
 }

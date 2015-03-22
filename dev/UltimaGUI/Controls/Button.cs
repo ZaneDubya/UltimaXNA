@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
  *   Button.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -61,7 +60,6 @@ namespace UltimaXNA.UltimaGUI.Controls
         public int ButtonParameter = 0;
         public int ButtonID = 0;
         public string Caption = string.Empty;
-        public bool DoDrawBounds = false;
 
         internal bool MouseDownOnThis { get { return (m_clicked); } }
 
@@ -127,8 +125,6 @@ namespace UltimaXNA.UltimaGUI.Controls
                 m_textRenderer.Text = Caption;
 
             spriteBatch.Draw2D(texture, new Rectangle(X, Y, Width, Height), 0, false, false);
-            if (DoDrawBounds)
-                DrawBounds(spriteBatch, Color.Black);
 
             if (Caption != string.Empty)
             {
@@ -150,7 +146,7 @@ namespace UltimaXNA.UltimaGUI.Controls
                 return m_gumpTextures[kGump_Up];
         }
 
-        protected override bool m_hitTest(int x, int y)
+        protected override bool InternalHitTest(int x, int y)
         {
             Color[] pixelData;
             pixelData = new Color[1];

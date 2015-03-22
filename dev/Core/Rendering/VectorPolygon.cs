@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
  *   VectorPolygon.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   
  *   Based on LineBatch.cs, made available as part of the 
  *   Microsoft XNA Community Game Platform

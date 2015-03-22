@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
  *   ScrollBar.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -158,7 +157,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             base.Draw(spriteBatch);
         }
 
-        protected override bool m_hitTest(int x, int y)
+        protected override bool InternalHitTest(int x, int y)
         {
             if (new Rectangle(0, 0, Width, Height).Contains(new Point(x, y)))
                 return true;

@@ -25,6 +25,7 @@ namespace UltimaXNA.Entity.EntityViews
             if (Entity.NoDraw)
                 return false;
 
+            // Update Display texture, if necessary.
             if (Entity.DisplayItemID != m_DisplayItemID)
             {
                 m_DisplayItemID = Entity.DisplayItemID;
@@ -32,8 +33,10 @@ namespace UltimaXNA.Entity.EntityViews
                 DrawArea = new Rectangle(DrawTexture.Width / 2 - 22, DrawTexture.Height - 44 + (Entity.Z * 4), DrawTexture.Width, DrawTexture.Height);
                 PickType = PickTypes.PickObjects;
                 DrawFlip = false;
-                HueVector = Utility.GetHueVector(Entity.Hue);
             }
+
+            // Update hue vector.
+            HueVector = Utility.GetHueVector(Entity.Hue);
 
             return base.Draw(spriteBatch, drawPosition, mouseOverList, map);
         }

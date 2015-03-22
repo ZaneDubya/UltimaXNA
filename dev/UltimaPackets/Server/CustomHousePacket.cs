@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
  *   CustomHousePacket.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   
  *   begin                : February 24, 2010
  *   email                : poplicola@ultimaxna.com

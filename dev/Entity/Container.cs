@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
  *   Container.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -15,6 +14,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using UltimaXNA.UltimaWorld;
+using UltimaXNA.UltimaWorld.Model;
 #endregion
 
 namespace UltimaXNA.Entity
@@ -34,8 +34,8 @@ namespace UltimaXNA.Entity
             }
         }
 
-        public Container(Serial serial)
-            : base(serial)
+        public Container(Serial serial, Map map)
+            : base(serial, map)
         {
             UpdateTicker = 0;
         }

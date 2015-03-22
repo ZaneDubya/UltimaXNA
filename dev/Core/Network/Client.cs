@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
- *   ClientNetwork.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
+ *   Client.cs
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -324,7 +323,7 @@ namespace UltimaXNA.Core.Network
 
             if (IsConnected)
             {
-                bool success = Send(buffer, 0, packet.Length);
+                bool success = Send(buffer, 0, packet.Length, packet.Name);
                 if (!success)
                 {
                     Disconnect();
@@ -335,7 +334,7 @@ namespace UltimaXNA.Core.Network
             return false;
         }
 
-        public virtual bool Send(byte[] buffer, int offset, int length)
+        public virtual bool Send(byte[] buffer, int offset, int length, string name)
         {
             bool success = true;
 
@@ -347,6 +346,7 @@ namespace UltimaXNA.Core.Network
             if (m_loggingPackets)
             {
                 Logger.Debug("Client - > Server");
+                Logger.Debug("Id: 0x{0:X2} Name: {1} Length: {2}", buffer[0], name, length);
                 Logger.Debug("{1}{0}", Utility.FormatBuffer(buffer, length), Environment.NewLine);
             }
 

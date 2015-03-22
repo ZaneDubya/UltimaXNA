@@ -1,6 +1,6 @@
 ﻿/***************************************************************************
- *   ClintSort.cs
- *   Based on code from ClintXNA's renderer.
+ *   EntitySort.cs
+ *   Based on code from ClintXNA & PlayUO.
  *   
  *   Liiiicense????
  * 
@@ -13,7 +13,7 @@ using UltimaXNA.Entity.EntityViews;
 
 namespace UltimaXNA.UltimaWorld.Model
 {
-    class KrriosSort
+    static class EntitySort
     {
         public static void Sort(List<AEntity> items)
         {

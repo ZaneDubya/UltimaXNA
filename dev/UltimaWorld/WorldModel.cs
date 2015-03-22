@@ -90,7 +90,6 @@ namespace UltimaXNA.UltimaWorld
             UltimaEngine.UserInterface.AddControl(new TopMenu(0), 0, 0);
             UltimaEngine.UserInterface.AddControl(new ChatWindow(), 0, 0);
 
-            IsometricRenderer.LightDirection = -0.6f;
             UltimaVars.EngineVars.InWorld = true;
         }
 
@@ -117,9 +116,6 @@ namespace UltimaXNA.UltimaWorld
             {
                 m_WorldInput.Update(frameMS);
                 EntityManager.Update(frameMS);
-
-                IsometricRenderer.CenterPosition = EntityManager.GetPlayerObject().Position;
-                IsometricRenderer.Update(Map);
 
                 // Toggle for logout
                 if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.Q, false, false, true))

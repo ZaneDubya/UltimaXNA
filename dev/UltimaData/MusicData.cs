@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
  *   Music.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -102,6 +101,7 @@ namespace UltimaXNA.UltimaData
 		#endregion Internals
 
 		private static Hashtable m_songList;
+        private const string m_ConfigFilePath = @"Music\Digital\Config.txt";
 
 		public static int Volume
 		{
@@ -112,7 +112,9 @@ namespace UltimaXNA.UltimaData
 		static MusicData()
 		{
 			m_songList = new Hashtable ();
-			StreamReader reader = new StreamReader(FileManager.GetFile ( "Music\\Digital\\Config.txt" ));
+		    if (!FileManager.Exists(m_ConfigFilePath))
+                return;
+			StreamReader reader = new StreamReader(FileManager.GetFile(m_ConfigFilePath));
 			String line;
 			while ((line = reader.ReadLine ()) != null)
 			{

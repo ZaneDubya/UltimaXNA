@@ -32,7 +32,10 @@ namespace UltimaXNA.UltimaWorld.View
         private static MouseOverItem m_overObject, m_overGround;
         public static AEntity MouseOverObject { get { return (m_overObject == null) ? null : m_overObject.Entity; } }
         public static AEntity MouseOverGround { get { return (m_overGround == null) ? null : m_overGround.Entity; } }
-        public static Vector2 MouseOverObjectPoint { get { return (m_overObject == null) ? new Vector2(0, 0) : m_overObject.InTexturePosition; } }
+        public static Vector2 MouseOverObjectPoint
+        {
+            get { return (m_overObject == null) ? new Vector2(0, 0) : m_overObject.InTexturePosition; }
+        }
         public const PickTypes DefaultPickType = PickTypes.PickStatics | PickTypes.PickObjects;
         public static PickTypes PickType { get; set; }
         #endregion
@@ -94,7 +97,14 @@ namespace UltimaXNA.UltimaWorld.View
             };
         }
 
-        public static void Update(Map map)
+        public static void Draw(Map map)
+        {
+            InternalDetermineIfUnderEntity(map);
+            InternalDrawEntities(map, out m_renderOffset);
+            InternalDrawVectors(m_renderOffset);
+        }
+
+        private static void InternalDetermineIfUnderEntity(Map map)
         {
             // Are we inside (under a roof)? Do not draw tiles above our head.
             m_maxItemAltitude = 255;
@@ -103,7 +113,7 @@ namespace UltimaXNA.UltimaWorld.View
             if ((t = map.GetMapTile(CenterPosition.X, CenterPosition.Y)) != null)
             {
                 AEntity underObject, underTerrain;
-                t.IsPointUnderAnEntity(CenterPosition.Z, out underObject, out underTerrain);
+                t.IsZUnderEntityOrGround(CenterPosition.Z, out underObject, out underTerrain);
 
                 // if we are under terrain, then do not draw any terrain at all.
                 DrawTerrain = !(underTerrain == null);
@@ -129,7 +139,7 @@ namespace UltimaXNA.UltimaWorld.View
                         bool isRoofSouthEast = true;
                         if ((t = map.GetMapTile(CenterPosition.X + 1, CenterPosition.Y)) != null)
                         {
-                            t.IsPointUnderAnEntity(CenterPosition.Z, out underObject, out underTerrain);
+                            t.IsZUnderEntityOrGround(CenterPosition.Z, out underObject, out underTerrain);
                             isRoofSouthEast = !(underObject == null);
                         }
 
@@ -138,12 +148,6 @@ namespace UltimaXNA.UltimaWorld.View
                     }
                 }
             }
-        }
-
-        public static void Draw(Map map)
-        {
-            InternalDrawEntities(map, out m_renderOffset);
-            InternalDrawVectors(m_renderOffset);
         }
 
         private static void InternalDrawEntities(Map map, out Vector2 renderOffset)

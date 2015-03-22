@@ -1,6 +1,6 @@
 ﻿/***************************************************************************
  *   Map.cs
- *   Based on code from ClintXNA's renderer: http://www.runuo.com/forums/xna/92023-hi.html
+ *   Based on code from ClintXNA.
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@ using UltimaXNA.UltimaData;
 
 namespace UltimaXNA.UltimaWorld.Model
 {
-    public sealed class Map
+    public class Map
     {
         private MapBlock[] m_Blocks;
         private TileMatrixRaw m_MapData;
@@ -85,8 +85,10 @@ namespace UltimaXNA.UltimaWorld.Model
                     int cellIndex = (cellY % c_CellsInMemorySpan) * c_CellsInMemorySpan + cellX % c_CellsInMemorySpan;
                     if (m_Blocks[cellIndex] == null || m_Blocks[cellIndex].X != cellX || m_Blocks[cellIndex].Y != cellY)
                     {
+                        if (m_Blocks[cellIndex] != null)
+                            m_Blocks[cellIndex].Unload();
                         m_Blocks[cellIndex] = new MapBlock(cellX, cellY);
-                        m_Blocks[cellIndex].LoadTiles(m_MapData);
+                        m_Blocks[cellIndex].LoadTiles(m_MapData, this);
                     }
                 }
             }

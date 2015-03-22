@@ -44,7 +44,7 @@ namespace UltimaXNA.Entity.EntityViews
 
             if (m_MustUpdateSurroundings)
             {
-                updateSurroundingsAndNormals(EntityManager.Model.Map);
+                updateSurroundingsAndNormals(Entity.Map);
                 m_MustUpdateSurroundings = false;
             }
 
@@ -138,7 +138,7 @@ namespace UltimaXNA.Entity.EntityViews
                 if (sort != SortZ)
                 {
                     SortZ = sort;
-                    map.GetMapTile(Entity.Position.X, Entity.Position.Y).Resort();
+                    map.GetMapTile(Entity.Position.X, Entity.Position.Y).ForceSort();
                 }
             }
 

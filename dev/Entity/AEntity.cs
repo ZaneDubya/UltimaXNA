@@ -37,6 +37,12 @@ namespace UltimaXNA.Entity
         // Position
         // ============================================================
 
+        public Map Map
+        {
+            get;
+            private set;
+        }
+
         private MapTile m_Tile;
         protected MapTile Tile
         {
@@ -58,9 +64,9 @@ namespace UltimaXNA.Entity
 
         private void OnTileChanged(int x, int y)
         {
-            if (IsClientEntity && EntityManager.Model.MapIndex >= 0)
-                EntityManager.Model.Map.CenterPosition = new Point(x, y);
-            Tile = EntityManager.Model.Map.GetMapTile(x, y);
+            if (IsClientEntity && Map.Index >= 0)
+                Map.CenterPosition = new Point(x, y);
+            Tile = Map.GetMapTile(x, y);
         }
 
         public int Z
@@ -75,9 +81,11 @@ namespace UltimaXNA.Entity
         // Methods
         // ============================================================
 
-        public AEntity(Serial serial)
+        public AEntity(Serial serial, Map map)
         {
             Serial = serial;
+            Map = map;
+
             m_Position = new Position3D(OnTileChanged);
         }
 

@@ -61,7 +61,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>WINDOWS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -128,7 +128,7 @@
     <Compile Include="Entity\EntityViews\MobileDeferredView.cs" />
     <Compile Include="Entity\MobileDeferred.cs" />
     <Compile Include="Entity\Support\MobileFlags.cs" />
-    <Compile Include="UltimaWorld\Model\KrriosSort.cs" />
+    <Compile Include="UltimaWorld\Model\EntitySort.cs" />
     <Compile Include="Entity\EntityViews\GroundView.cs" />
     <Compile Include="Entity\EntityViews\ItemView.cs" />
     <Compile Include="Entity\EntityViews\MobileView.cs" />

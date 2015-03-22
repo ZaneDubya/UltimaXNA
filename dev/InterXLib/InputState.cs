@@ -27,8 +27,10 @@ namespace InterXLib
         // Mouse dragging support
         bool m_MouseIsDragging = false;
         InputEventMouse m_LastMouseDown = null;
+        InputEventMouse m_LastMouseClick = null;
         float m_LastMouseDownTime = 0f;
         float m_LastMouseClickTime = 0f;
+
         private const int MouseDragBeginDistance = 2;
         private const int MouseClickMaxDelta = 2;
 
@@ -194,12 +196,18 @@ namespace InterXLib
             {
                 if (!DistanceBetweenPoints(m_LastMouseDown.Position, e.Position, MouseClickMaxDelta))
                 {
-                    m_LastMouseClickTime = m_TheTime;
                     addEvent(new InputEventMouse(MouseEvent.Click, e));
-                    if ((m_TheTime - m_LastMouseClickTime <= Settings.SecondsForDoubleClick))
+                    
+                    if ((m_TheTime - m_LastMouseClickTime <= Settings.SecondsForDoubleClick * 1000d) &&
+                        !DistanceBetweenPoints(m_LastMouseClick.Position, e.Position, MouseClickMaxDelta))
                     {
                         m_LastMouseClickTime = 0f;
                         addEvent(new InputEventMouse(MouseEvent.DoubleClick, e));
+                    }
+                    else
+                    {
+                        m_LastMouseClickTime = m_TheTime;
+                        m_LastMouseClick = e;
                     }
                 }
             }

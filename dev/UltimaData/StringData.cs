@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
  *   StringList.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   Based on code from UltimaSDK: http://ultimasdk.codeplex.com/
  *   
  *   This program is free software; you can redistribute it and/or modify

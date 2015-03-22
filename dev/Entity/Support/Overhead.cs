@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
  *   Overhead.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -69,7 +68,7 @@ namespace UltimaXNA.Entity
         private int m_msTimePersist = 0;
 
         public Overhead(AEntity ownerEntity, MessageType msgType, string text, int font, int hue)
-            : base(ownerEntity.Serial)
+            : base(ownerEntity.Serial, ownerEntity.Map)
         {
             m_ownerEntity = ownerEntity;
             m_text = text;

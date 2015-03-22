@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
  *   ExpandableScroll.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -56,7 +55,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             m_gumplingExpander.OnMouseOver = expander_OnMouseOver;
         }
 
-        protected override bool m_hitTest(int x, int y)
+        protected override bool InternalHitTest(int x, int y)
         {
             Point position = new Point(x + OwnerX + X, y + OwnerY + Y);
             if (m_gumplingTop.HitTest(position, true) != null)

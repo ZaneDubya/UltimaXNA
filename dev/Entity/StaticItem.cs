@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UltimaXNA.UltimaData;
+using UltimaXNA.UltimaWorld.Model;
 
 namespace UltimaXNA.Entity
 {
@@ -10,8 +11,8 @@ namespace UltimaXNA.Entity
     {
         public int SortInfluence = 0;
 
-        public StaticItem(int itemID, int hue,  int sortInfluence)
-            : base(Serial.Null)
+        public StaticItem(int itemID, int hue,  int sortInfluence, Map map)
+            : base(Serial.Null, map)
         {
             ItemID = itemID;
             Hue = hue;

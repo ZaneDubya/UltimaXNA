@@ -11,6 +11,7 @@
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using UltimaXNA.UltimaWorld;
+using UltimaXNA.UltimaWorld.Model;
 using UltimaXNA.UltimaWorld.View;
 #endregion
 
@@ -33,8 +34,8 @@ namespace UltimaXNA.Entity
 
         public Point InContainerPosition = Point.Zero;
 
-        public Item(Serial serial)
-            : base(serial)
+        public Item(Serial serial, Map map)
+            : base(serial, map)
         {
 
         }

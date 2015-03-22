@@ -40,8 +40,8 @@ namespace UltimaXNA.Entity
         private GraphicEffectBlendMode m_bendMode;
         private int m_targetX, m_targetY, m_targetZ;
 
-        public Effect(Serial serial)
-            : base(serial)
+        public Effect(Serial serial, Map map)
+            : base(serial, map)
         {
 
         }
@@ -100,8 +100,8 @@ namespace UltimaXNA.Entity
             {
                 if (m_doesExplode)
                 {
-                    Effect dynamic = EntityManager.AddDynamicObject();
-                    dynamic.Load_AsExplosion(m_targetX, m_targetY, m_targetZ);
+                    // Effect effect = EntityManager.AddDynamicObject();
+                    // effect.Load_AsExplosion(m_targetX, m_targetY, m_targetZ);
                 }
                 this.Dispose();
             }

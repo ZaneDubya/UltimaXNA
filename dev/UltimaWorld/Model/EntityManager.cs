@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
- *   GameObjects.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
+ *   EntityManager.cs
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -11,10 +10,8 @@
 #region usings
 using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using UltimaXNA.UltimaPackets.Client;
-using UltimaXNA.UltimaWorld;
 using UltimaXNA.Entity;
+using UltimaXNA.UltimaVars;
 #endregion
 
 namespace UltimaXNA.UltimaWorld
@@ -22,17 +19,11 @@ namespace UltimaXNA.UltimaWorld
     class EntityManager
     {
         private static WorldModel m_Model;
-        public static WorldModel Model
-        {
-            get { return m_Model; }
-        }
 
         private static Dictionary<int, AEntity> m_Entities = new Dictionary<int, AEntity>();
         private static List<AEntity> m_Entities_Queued = new List<AEntity>();
         private static bool m_EntitiesCollectionIsLocked = false;
         static List<int> m_SerialsToRemove = new List<int>();
-
-        public static int MySerial { get; set; }
 
         public EntityManager(WorldModel model)
         {
@@ -47,8 +38,8 @@ namespace UltimaXNA.UltimaWorld
         public static AEntity GetPlayerObject()
         {
             // This could be cached to save time.
-            if (m_Entities.ContainsKey(MySerial))
-                return m_Entities[MySerial];
+            if (m_Entities.ContainsKey(EngineVars.PlayerSerial))
+                return m_Entities[EngineVars.PlayerSerial];
             else
                 return null;
         }
@@ -66,20 +57,9 @@ namespace UltimaXNA.UltimaWorld
             // redirect any new entities to a queue while we are enumerating the collection.
             m_EntitiesCollectionIsLocked = true;
 
-            // Get the player object
-            AEntity player = GetPlayerObject();
-
-            // Update the player entity first because we cull entities out of range of this main object.
-            player.Update(frameMS);
-            if (player.IsDisposed)
-                m_SerialsToRemove.Add(player.Serial);
-
             // Update all other entities.
             foreach (KeyValuePair<int, AEntity> entity in m_Entities)
             {
-                // Don't update the player entity twice!
-                if (entity.Key == MySerial)
-                    continue;
                 if (!entity.Value.IsDisposed)
                     entity.Value.Update(frameMS);
                 else
@@ -116,22 +96,8 @@ namespace UltimaXNA.UltimaWorld
 
         public static Effect AddDynamicObject()
         {
-            Effect dynamic = addObject<Effect>(Serial.NewDynamicSerial);
+            Effect dynamic = InternalCreateEntity<Effect>(Serial.NewDynamicSerial);
             return dynamic;
-        }
-
-        public static List<T> GetObjectsByType<T>() where T : AEntity
-        {
-            List<T> list = new List<T>();
-            foreach (AEntity e in m_Entities.Values)
-            {
-                if (e is T)
-                {
-                    T typedEntity = (T)e;
-                    list.Add(typedEntity);
-                }
-            }
-            return list;
         }
 
         public static T GetObject<T>(Serial serial, bool create) where T : AEntity
@@ -147,7 +113,7 @@ namespace UltimaXNA.UltimaWorld
                     if (create)
                     {
                         m_Entities.Remove(serial);
-                        entity = addObject<T>(serial);
+                        entity = InternalCreateEntity<T>(serial);
                         return (T)entity;
                     }
                     else
@@ -162,7 +128,7 @@ namespace UltimaXNA.UltimaWorld
             // will fill us in on the details of this object soon.
             if (create)
             {
-                entity = addObject<T>(serial);
+                entity = InternalCreateEntity<T>(serial);
                 return (T)entity;
             }
             else
@@ -171,38 +137,38 @@ namespace UltimaXNA.UltimaWorld
             }
         }
 
-        static T addObject<T>(Serial serial) where T : AEntity
+        static T InternalCreateEntity<T>(Serial serial) where T : AEntity
         {
             AEntity e;
             Type t = typeof(T);
             switch (t.Name)
             {
                 case "Item":
-                    e = new Item(serial);
+                    e = new Item(serial, m_Model.Map);
                     break;
                 case "Container":
-                    e = new Container(serial);
+                    e = new Container(serial, m_Model.Map);
                     break;
                 case "Mobile":
-                    e = new Mobile(serial);
+                    e = new Mobile(serial, m_Model.Map);
                     break;
                 case "PlayerMobile":
-                    e = new PlayerMobile(serial);
+                    e = new PlayerMobile(serial, m_Model.Map);
                     break;
                 case "Corpse":
-                    e = new Corpse(serial);
+                    e = new Corpse(serial, m_Model.Map);
                     break;
                 case "Multi":
-                    e = new Multi(serial);
+                    e = new Multi(serial, m_Model.Map);
                     break;
                 case "Effect":
-                    e = new Effect(serial);
+                    e = new Effect(serial, m_Model.Map);
                     break;
                 default:
                     throw new Exception("Unknown addObject type!");
             }
 
-            if (e.Serial == MySerial)
+            if (e.Serial == EngineVars.PlayerSerial)
                 e.IsClientEntity = true;
 
             // If the entities collection is locked, add the new entity to the queue. Otherwise 

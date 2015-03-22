@@ -176,7 +176,7 @@ namespace UltimaXNA.Entity.EntityViews
             if (deferToTile != null)
             {
                 int z;
-                if (MobileMovementCheck.CheckMovementForced(Entity, map, Entity.Position, checkDirection, out z))
+                if (MobileMovementCheck.CheckMovementForced(Entity, Entity.Position, checkDirection, out z))
                 {
                     MobileDeferred deferred = new MobileDeferred(Entity, drawPosition, z);
                     deferToTile.OnEnter(deferred);
