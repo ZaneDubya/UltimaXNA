@@ -9,6 +9,7 @@
  ***************************************************************************/
 using UltimaXNA.Rendering;
 using UltimaXNA.UltimaGUI.Controls;
+using UltimaXNA.UltimaVars;
 
 namespace UltimaXNA.UltimaGUI.LoginGumps
 {
@@ -46,12 +47,12 @@ namespace UltimaXNA.UltimaGUI.LoginGumps
             // Password
             AddControl(new TextLabelAscii(this, 0, 181, 386, hue, 2, UltimaData.StringData.Entry(3000103)));
             // name field
-            TextEntry g1 = new TextEntry(this, 0, 332, 346, 200, 20, 0, (int)LoginGumpTextFields.AccountName, 32, "Admin");
+            TextEntry g1 = new TextEntry(this, 0, 332, 346, 200, 20, 0, (int)LoginGumpTextFields.AccountName, 32, UltimaVars.SettingVars.LastAccount);
             g1.HtmlTag = "<basefont color=#000000><big>";
             AddControl(new ResizePic(this, g1));
             AddControl(g1);
             // password field
-            TextEntry g2 = new TextEntry(this, 0, 332, 386, 200, 20, 0, (int)LoginGumpTextFields.Password, 32, "Admin");
+            TextEntry g2 = new TextEntry(this, 0, 332, 386, 200, 20, 0, (int)LoginGumpTextFields.Password, 32, "");
             g2.IsPasswordField = true;
             g2.HtmlTag = "<basefont color=#000000><big>";
             AddControl(new ResizePic(this, g2));
@@ -73,7 +74,8 @@ namespace UltimaXNA.UltimaGUI.LoginGumps
                 case LoginGumpButtons.LoginButton:
                     string accountName = getTextEntry((int)LoginGumpTextFields.AccountName);
                     string password = getTextEntry((int)LoginGumpTextFields.Password);
-                    OnLogin("localhost", 2593, accountName, password);
+                    OnLogin(UltimaVars.SettingVars.ServerIP, UltimaVars.SettingVars.ServerPort, accountName, password);
+                    UltimaVars.SettingVars.LastAccount = accountName;
                     break;
             }
         }

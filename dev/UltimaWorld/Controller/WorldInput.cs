@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UltimaXNA.Entity;
 using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.UltimaWorld.View;
+using UltimaXNA.UltimaVars;
 
 namespace UltimaXNA.UltimaWorld.Controller
 {
@@ -85,7 +86,7 @@ namespace UltimaXNA.UltimaWorld.Controller
             // Get the move direction and add the Running offset if the Cursor is far enough away.
             Direction moveDirection = UltimaVars.EngineVars.CursorDirection;
             float distanceFromCenterOfScreen = Utility.DistanceBetweenTwoPoints(new Point(400, 300), UltimaEngine.Input.MousePosition);
-            if (distanceFromCenterOfScreen >= 150.0f)
+            if (distanceFromCenterOfScreen >= 150.0f || UltimaVars.SettingVars.AlwaysRun)
                 moveDirection |= Direction.Running;
 
             // Tell the player to Move.

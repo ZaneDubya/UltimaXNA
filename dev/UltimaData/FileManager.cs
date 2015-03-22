@@ -56,25 +56,34 @@ namespace UltimaXNA.UltimaData
         {
             Logger.Debug("Looking for UO Installation. Is64Bit = {0}", Is64Bit);
 
-            for (int i = 0; i < m_knownRegkeys.Length; i++)
+            if (UltimaVars.SettingVars.UOData != null && Directory.Exists(UltimaVars.SettingVars.UOData))
             {
-                string exePath;
-
-                if (Is64Bit)
+                Logger.Debug("Found UO Installation from Setttings.ini at [{0}].", UltimaVars.SettingVars.UOData);
+                m_FileDirectory = UltimaVars.SettingVars.UOData;
+                m_isDataPresent = true;
+            }
+            else
+            {
+                for (int i = 0; i < m_knownRegkeys.Length; i++)
                 {
-                    exePath = GetExePath(@"Wow6432Node\" + m_knownRegkeys[i]);
-                }
-                else
-                {
-                    exePath = GetExePath(m_knownRegkeys[i]);
-                }
+                    string exePath;
 
-                if (exePath != null && Directory.Exists(exePath))
-                {
-                    Logger.Debug("Found UO Installation at [{0}].", exePath);
+                    if (Is64Bit)
+                    {
+                        exePath = GetExePath(@"Wow6432Node\" + m_knownRegkeys[i]);
+                    }
+                    else
+                    {
+                        exePath = GetExePath(m_knownRegkeys[i]);
+                    }
 
-                    m_FileDirectory = exePath;
-                    m_isDataPresent = true;
+                    if (exePath != null && Directory.Exists(exePath))
+                    {
+                        Logger.Debug("Found UO Installation from registry key at [{0}].", exePath);
+
+                        m_FileDirectory = exePath;
+                        m_isDataPresent = true;
+                    }
                 }
             }
             if (m_FileDirectory == null)
