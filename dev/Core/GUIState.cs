@@ -36,7 +36,7 @@ namespace UltimaXNA
         List<Control> m_Controls = null;
         List<Control> m_DisposedControls = null;
         // List of controls that the Cursor is over, with the control at index 0 being the frontmost control:
-        Control[] m_MouseOverControl = null;
+        Control m_MouseOverControl = null;
         // Controls that the Cursor was over when a mouse button was clicked. We allow for five buttons:
         Control[] m_MouseDownControl = new Control[5];
         /// <summary>
@@ -49,7 +49,7 @@ namespace UltimaXNA
                 if (m_MouseOverControl == null)
                     return null;
                 else
-                    return m_MouseOverControl[0];
+                    return m_MouseOverControl;
             }
         }
         /// <summary>
@@ -223,7 +223,7 @@ namespace UltimaXNA
             if (Cursor != null)
                 Cursor.Update();
 
-            updateInput();
+            InternalHandleInput();
         }
 
         public void Draw(double frameTime)
@@ -248,117 +248,85 @@ namespace UltimaXNA
                 c.Dispose();
         }
 
-        void updateInput()
+        private void InternalHandleInput()
         {
-            Control[] focusedControls = null;
-            List<Control> workingControls;
-            if (IsModalControlOpen)
-            {
-                workingControls = new List<Control>();
-                foreach (Control c in m_Controls)
-                    if (c.IsModal)
-                        workingControls.Add(c);
-            }
-            else
-            {
-                workingControls = m_Controls;
-            }
+            // Get the topmost control that is under the mouse and handles mouse input.
+            // If this control is different from the previously focused control,
+            // send that previous control a MouseOut event.
+            Control focusedControl = InternalHandleInput_GetMouseOverControl();
+            if (focusedControl != null)
+                focusedControl.MouseOver(UltimaEngine.Input.MousePosition);
+            if ((MouseOverControl != null) && (focusedControl != MouseOverControl))
+                MouseOverControl.MouseOut(UltimaEngine.Input.MousePosition);
 
-            // Get the list of controls under the mouse cursor
-            foreach (Control c in workingControls)
-            {
-                Control[] mouseOverControls = c.HitTest(UltimaEngine.Input.MousePosition, false);
-                if (mouseOverControls != null)
-                {
-                    focusedControls = mouseOverControls;
-                }
-            }
+            // Set the new MouseOverControl.
+            m_MouseOverControl = focusedControl;
 
-            // MouseOver event.
-            Control controlGivenMouseOver = null;
-            if (focusedControls != null)
-            {
-                for (int iControl = 0; iControl < focusedControls.Length; iControl++)
-                {
-                    if (focusedControls[iControl].HandlesMouseInput)
-                    {
-                        // mouse over for the moused over control
-                        focusedControls[iControl].MouseOver(UltimaEngine.Input.MousePosition);
-                        controlGivenMouseOver = focusedControls[iControl];
-                        if (MouseOverControl != null && controlGivenMouseOver != MouseOverControl)
-                            MouseOverControl.MouseOut(UltimaEngine.Input.MousePosition);
-                        break;
-                    }
-                }
-            }
-
-            // mouse over for any controls with mouse focus
+            // Send a MouseOver event to any control that was previously the target of a MouseDown event.
             for (int iButton = 0; iButton < 5; iButton++)
             {
-                if (m_MouseDownControl[iButton] != null && m_MouseDownControl[iButton] != controlGivenMouseOver)
+                if ((m_MouseDownControl[iButton] != null) && (m_MouseDownControl[iButton] != focusedControl))
                     m_MouseDownControl[iButton].MouseOver(UltimaEngine.Input.MousePosition);
             }
 
-            if (!Cursor.BlockingUIMouseEvents)
+            // The cursor and world input objects occasionally must block input events from reaching the UI:
+            // e.g. when the cursor is carrying an object.
+            if (ObjectsBlockingInput)
+                return;
+
+            List<InputEventMouse> events = UltimaEngine.Input.GetMouseEvents();
+            foreach (InputEventMouse e in events)
             {
-                List<InputEventMouse> events = UltimaEngine.Input.GetMouseEvents();
-                foreach (InputEventMouse e in events)
+                // MouseDown event: the currently focused control gets a MouseDown event, and if
+                // it handles Keyboard input, gets Keyboard focus as well.
+                if (e.EventType == MouseEvent.Down)
                 {
-                    if (e.Handled)
-                        continue;
-
-                    if (focusedControls != null)
-                        e.Handled = true;
-
-                    // MouseDown event.
-                    if (e.EventType == MouseEvent.Down)
+                    if (focusedControl != null)
                     {
-                        if (focusedControls != null)
-                        {
-                            for (int iControl = 0; iControl < focusedControls.Length; iControl++)
-                            {
-                                if (focusedControls[iControl].HandlesMouseInput)
-                                {
-                                    focusedControls[iControl].MouseDown(UltimaEngine.Input.MousePosition, e.Button);
-                                    // if we're over a keyboard-handling control and press lmb, then give focus to the control.
-                                    if (focusedControls[iControl].HandlesKeyboardFocus)
-                                        m_keyboardFocusControl = focusedControls[iControl];
-                                    m_MouseDownControl[(int)e.Button] = focusedControls[iControl];
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                    // MouseUp and MouseClick events
-                    if (e.EventType == MouseEvent.Up)
-                    {
-                        if (focusedControls != null)
-                        {
-                            if (m_MouseDownControl[(int)e.Button] != null && focusedControls[0] == m_MouseDownControl[(int)e.Button])
-                            {
-                                focusedControls[0].MouseClick(UltimaEngine.Input.MousePosition, e.Button);
-                            }
-                            focusedControls[0].MouseUp(UltimaEngine.Input.MousePosition, e.Button);
-                            if (m_MouseDownControl[(int)e.Button] != null && focusedControls[0] != m_MouseDownControl[(int)e.Button])
-                            {
-                                m_MouseDownControl[(int)e.Button].MouseUp(UltimaEngine.Input.MousePosition, e.Button);
-                            }
-                        }
-                        else
-                        {
-                            if (m_MouseDownControl[(int)e.Button] != null)
-                            {
-                                m_MouseDownControl[(int)e.Button].MouseUp(UltimaEngine.Input.MousePosition, e.Button);
-                            }
-                        }
-
-                        m_MouseDownControl[(int)e.Button] = null;
+                        focusedControl.MouseDown(UltimaEngine.Input.MousePosition, e.Button);
+                        if (focusedControl.HandlesKeyboardFocus)
+                            m_keyboardFocusControl = focusedControl;
+                        m_MouseDownControl[(int)e.Button] = focusedControl;
                     }
                 }
-            }
 
-            m_MouseOverControl = focusedControls;
+                // MouseUp and MouseClick events
+                if (e.EventType == MouseEvent.Up)
+                {
+                    int btn = (int)e.Button;
+
+                    // If there is a currently focused control:
+                    // 1.   If the currently focused control is the same control that was MouseDowned on with this button,
+                    //      then send that control a MouseClick event.
+                    // 2.   Send the currently focused control a MouseUp event.
+                    // 3.   If the currently focused control is NOT the same control that was MouseDowned on with this button,
+                    //      send that MouseDowned control a MouseUp event (but it does not receive MouseClick).
+                    // If there is NOT a currently focused control, then simply inform the control that was MouseDowned on
+                    // with this button that the button has been released, by sending it a MouseUp event.
+
+                    if (focusedControl != null)
+                    {
+                        if (m_MouseDownControl[btn] != null && focusedControl == m_MouseDownControl[btn])
+                        {
+                            focusedControl.MouseClick(UltimaEngine.Input.MousePosition, e.Button);
+                        }
+                        focusedControl.MouseUp(UltimaEngine.Input.MousePosition, e.Button);
+                        if (m_MouseDownControl[btn] != null && focusedControl != m_MouseDownControl[btn])
+                        {
+                            m_MouseDownControl[btn].MouseUp(UltimaEngine.Input.MousePosition, e.Button);
+                        }
+                    }
+                    else
+                    {
+                        if (m_MouseDownControl[btn] != null)
+                        {
+                            m_MouseDownControl[btn].MouseUp(UltimaEngine.Input.MousePosition, e.Button);
+                        }
+                    }
+
+                    m_MouseDownControl[btn] = null;
+                }
+            }
 
             if (KeyboardFocusControl != null)
             {
@@ -376,6 +344,89 @@ namespace UltimaXNA
                     }
                 }
             }
+        }
+
+        private Control InternalHandleInput_GetMouseOverControl()
+        {
+            List<Control> possibleControls;
+            if (IsModalControlOpen)
+            {
+                possibleControls = new List<Control>();
+                foreach (Control c in m_Controls)
+                    if (c.IsModal)
+                        possibleControls.Add(c);
+            }
+            else
+            {
+                possibleControls = m_Controls;
+            }
+
+            Control[] mouseOverControls = null;
+            // Get the list of controls under the mouse cursor
+            foreach (Control c in possibleControls)
+            {
+                Control[] controls = c.HitTest(UltimaEngine.Input.MousePosition, false);
+                if (controls != null)
+                {
+                    mouseOverControls = controls;
+                    break;
+                }
+            }
+
+            if (mouseOverControls == null)
+                return null;
+
+            // Get the topmost control that is under the mouse and handles mouse input.
+            // If this control is different from the previously focused control,
+            // send that previous control a MouseOut event.
+            if (mouseOverControls != null)
+            {
+                for (int i = 0; i < mouseOverControls.Length; i++)
+                {
+                    if (mouseOverControls[i].HandlesMouseInput)
+                    {
+                        return mouseOverControls[i];
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        // ======================================================================
+        // Input blocking objects
+        // ======================================================================
+
+        private List<object> m_InputBlockingObjects = new List<object>();
+
+        protected bool ObjectsBlockingInput
+        {
+            get
+            {
+                return (m_InputBlockingObjects.Count > 0);
+            }
+        }
+
+        /// <summary>
+        /// Add an input blocking object. Until RemoveInputBlocker is called with this same parameter,
+        /// GUIState will not process any MouseDown, MouseUp, or MouseClick events, or any keyboard events.
+        /// </summary>
+        /// <param name="obj"></param>
+        public void AddInputBlocker(object obj)
+        {
+            if (!m_InputBlockingObjects.Contains(obj))
+                m_InputBlockingObjects.Add(obj);
+        }
+
+        /// <summary>
+        /// Removes an input blocking object. Only when there are no input blocking objects will GUIState
+        /// process MouseDown, MouseUp, MouseClick, and all keyboard events.
+        /// </summary>
+        /// <param name="obj"></param>
+        public void RemoveInputBlocker(object obj)
+        {
+            if (m_InputBlockingObjects.Contains(obj))
+                m_InputBlockingObjects.Remove(obj);
         }
     }
 }
