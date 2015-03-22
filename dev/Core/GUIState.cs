@@ -66,7 +66,7 @@ namespace UltimaXNA
             }
         }
 
-        Control m_keyboardFocusControl;
+        private Control m_keyboardFocusControl;
         public Control KeyboardFocusControl
         {
             get
@@ -93,8 +93,6 @@ namespace UltimaXNA
                 m_keyboardFocusControl = value;
             }
         }
-
-        
 
         public void Initialize(Game game)
         {
@@ -223,7 +221,8 @@ namespace UltimaXNA
             if (Cursor != null)
                 Cursor.Update();
 
-            InternalHandleInput();
+            InternalHandleKeyboardInput();
+            InternalHandleMouseInput();
         }
 
         public void Draw(double frameTime)
@@ -242,18 +241,41 @@ namespace UltimaXNA
             m_SpriteBatch.Flush();
         }
 
+        /// <summary>
+        /// Disposes of all controls.
+        /// </summary>
         public void Reset()
         {
             foreach (Control c in m_Controls)
                 c.Dispose();
         }
 
-        private void InternalHandleInput()
+        private void InternalHandleKeyboardInput()
+        {
+            if (KeyboardFocusControl != null)
+            {
+                if (m_keyboardFocusControl.IsDisposed)
+                {
+                    m_keyboardFocusControl = null;
+                }
+                else
+                {
+                    List<InputEventKeyboard> k_events = UltimaEngine.Input.GetKeyboardEvents();
+                    foreach (InputEventKeyboard e in k_events)
+                    {
+                        if (e.EventType == KeyboardEventType.Press)
+                            m_keyboardFocusControl.KeyboardInput(e);
+                    }
+                }
+            }
+        }
+
+        private void InternalHandleMouseInput()
         {
             // Get the topmost control that is under the mouse and handles mouse input.
             // If this control is different from the previously focused control,
             // send that previous control a MouseOut event.
-            Control focusedControl = InternalHandleInput_GetMouseOverControl();
+            Control focusedControl = InternalGetMouseOverControl();
             if (focusedControl != null)
                 focusedControl.MouseOver(UltimaEngine.Input.MousePosition);
             if ((MouseOverControl != null) && (focusedControl != MouseOverControl))
@@ -327,26 +349,9 @@ namespace UltimaXNA
                     m_MouseDownControl[btn] = null;
                 }
             }
-
-            if (KeyboardFocusControl != null)
-            {
-                if (m_keyboardFocusControl.IsDisposed)
-                {
-                    m_keyboardFocusControl = null;
-                }
-                else
-                {
-                    List<InputEventKeyboard> k_events = UltimaEngine.Input.GetKeyboardEvents();
-                    foreach (InputEventKeyboard e in k_events)
-                    {
-                        if (e.EventType == KeyboardEventType.Press)
-                            m_keyboardFocusControl.KeyboardInput(e);
-                    }
-                }
-            }
         }
 
-        private Control InternalHandleInput_GetMouseOverControl()
+        private Control InternalGetMouseOverControl()
         {
             List<Control> possibleControls;
             if (IsModalControlOpen)
@@ -399,6 +404,9 @@ namespace UltimaXNA
 
         private List<object> m_InputBlockingObjects = new List<object>();
 
+        /// <summary>
+        /// Returns true if there are any active objects blocking input.
+        /// </summary>
         protected bool ObjectsBlockingInput
         {
             get
