@@ -217,7 +217,8 @@ namespace UltimaXNA.UltimaWorld.Model
                     // UNIMPLEMENTED !!! Draw a transparent multi
                 }*/
             }
-            else if (!UltimaEngine.UserInterface.IsMouseOverUI && !UltimaEngine.UserInterface.IsModalControlOpen)
+            else if ((m_Model.Input.ContinuousMouseMovementCheck || !UltimaEngine.UserInterface.IsMouseOverUI) && 
+                !UltimaEngine.UserInterface.IsModalControlOpen)
             {
                 switch (UltimaVars.EngineVars.CursorDirection)
                 {

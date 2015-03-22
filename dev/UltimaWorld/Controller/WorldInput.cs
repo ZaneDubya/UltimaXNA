@@ -8,6 +8,9 @@ using UltimaXNA.UltimaWorld.View;
 
 namespace UltimaXNA.UltimaWorld.Controller
 {
+    /// <summary>
+    /// Handles all the mouse input when the mouse is over the world.
+    /// </summary>
     class WorldInput
     {
         private WorldModel m_Model;
@@ -21,7 +24,10 @@ namespace UltimaXNA.UltimaWorld.Controller
         private bool m_ContinuousMouseMovementCheck = false;
         public bool ContinuousMouseMovementCheck
         {
-            get { return m_ContinuousMouseMovementCheck; }
+            get
+            {
+                return m_ContinuousMouseMovementCheck;
+            }
             set
             {
                 if (m_ContinuousMouseMovementCheck != value)
