@@ -123,6 +123,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\AUltimaModel.cs" />
+    <Compile Include="Core\SpacePacking\CygonRectanglePacker.cs" />
+    <Compile Include="Core\SpacePacking\OutOfSpaceException.cs" />
+    <Compile Include="Core\SpacePacking\RectanglePacker.cs" />
     <Compile Include="Entity\EntityViews\AEntityView.cs" />
     <Compile Include="Entity\EntityViews\CorpseView.cs" />
     <Compile Include="Entity\EntityViews\MobileDeferredView.cs" />
