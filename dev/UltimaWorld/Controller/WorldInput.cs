@@ -35,6 +35,13 @@ namespace UltimaXNA.UltimaWorld.Controller
                 // always parse keyboard. (Is it possible there are some situations in which keyboard input is blocked???)
                 parseKeyboard();
 
+                // In all cases, where we are moving and the move button was released, stop moving.
+                if (ContinuousMouseMovementCheck &&
+                    UltimaEngine.Input.HandleMouseEvent(MouseEvent.Up, UltimaVars.EngineVars.MouseButton_Move))
+                {
+                    ContinuousMouseMovementCheck = false;
+                }
+
                 // If 1. The mouse is over the world (not over UI) and
                 //    2. The cursor is not blocking input, then interpret mouse input.
                 if (!UltimaEngine.UserInterface.IsMouseOverUI && !m_Model.Cursor.IsHoldingItem)
