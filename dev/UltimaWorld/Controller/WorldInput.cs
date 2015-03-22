@@ -111,101 +111,84 @@ namespace UltimaXNA.UltimaWorld.Controller
 
         void onInteractButton(InputEventMouse e)
         {
-            AEntity overEntity = (e.EventType == MouseEvent.DragBegin) ? m_DraggingEntity : IsometricRenderer.MouseOverObject;
-            Vector2 overObjectOffset = (e.EventType == MouseEvent.DragBegin) ? m_dragOffset : IsometricRenderer.MouseOverObjectPoint;
+            AEntity overEntity = IsometricRenderer.MouseOverObject;
 
             if (e.EventType == MouseEvent.Down)
             {
-                m_DraggingEntity = overEntity;
-                m_dragOffset = overObjectOffset;
+                // prepare to pick this item up.
+                m_DraggingEntity = IsometricRenderer.MouseOverObject;
+                m_dragOffset = IsometricRenderer.MouseOverObjectPoint;
             }
-
-            if (overEntity == null)
-                return;
-
-            if (m_Model.Cursor.IsTargeting && e.EventType == MouseEvent.Click)
+            else if (e.EventType == MouseEvent.Click)
             {
-                // Special case: targeting
-                // handled by cursor class.
+                AEntity entity = IsometricRenderer.MouseOverObject;
+                if (entity is Ground)
+                {
+                    // no action.
+                }
+                else if (entity is StaticItem)
+                {
+                    // pop up name of item.
+                }
+                else if (entity is Item)
+                {
+                    // request context menu
+                    UltimaInteraction.SingleClick(entity);
+                }
+                else if (entity is Mobile)
+                {
+                    // request context menu
+                    UltimaInteraction.SingleClick(entity);
+                }
             }
-            else
+            else if (e.EventType == MouseEvent.DoubleClick)
             {
-                // standard interaction actions ...
-                if (overEntity is Ground)
+                AEntity entity = IsometricRenderer.MouseOverObject;
+                if (entity is Ground)
                 {
-                    // we can't interact with ground tiles.
+                    // no action.
                 }
-                else if (overEntity is StaticItem)
+                else if (entity is StaticItem)
                 {
-                    // clicking a should pop up the name of the static.
-                    if (e.EventType == MouseEvent.Click)
+                    // no action.
+                }
+                else if (entity is Item)
+                {
+                    // request context menu
+                    UltimaInteraction.DoubleClick(entity);
+                }
+                else if (entity is Mobile)
+                {
+                    // Send double click packet.
+                    // Set LastTarget == targeted Mobile.
+                    // If in WarMode, set Attacking == true.
+                    UltimaInteraction.DoubleClick(entity);
+                    UltimaVars.EngineVars.LastTarget = entity.Serial;
+                    if (UltimaVars.EngineVars.WarMode)
                     {
-
+                        m_Model.Client.Send(new AttackRequestPacket(entity.Serial));
                     }
                 }
-                else if (overEntity is Item)
+            }
+            else if (e.EventType == MouseEvent.DragBegin)
+            {
+                AEntity entity = IsometricRenderer.MouseOverObject;
+                if (entity is Ground)
                 {
-                    Item item = (Item)overEntity;
-                    // single click = tool tip
-                    // double click = use / open
-                    // click and drag = pick up
-                    switch (e.EventType)
-                    {
-                        case MouseEvent.Click:
-                            // tool tip
-                            UltimaInteraction.SingleClick(item);
-                            break;
-                        case MouseEvent.DoubleClick:
-                            UltimaInteraction.DoubleClick(item);
-                            break;
-                        case MouseEvent.DragBegin:
-                            UltimaInteraction.PickupItem(item, new Point((int)overObjectOffset.X, (int)overObjectOffset.Y));
-                            break;
-                    }
+                    // no action.
                 }
-                else if (overEntity is Mobile)
+                else if (entity is StaticItem)
                 {
-                    Mobile entity = (Mobile)overEntity;
-                    // single click = tool tip; if npc = request context sensitive menu
-                    // double click = set last target; if is human open paper doll; if ridable ride; if self and riding, dismount;
-                    // click and drag = pull off status bar
-                    switch (e.EventType)
-                    {
-                        case MouseEvent.Click:
-                            // tool tip
-                            UltimaInteraction.SingleClick(entity);
-                            if (UltimaVars.EngineVars.WarMode)
-                            {
-                                m_Model.Client.Send(new AttackRequestPacket(entity.Serial));
-                            }
-                            else
-                            {
-                                // m_Model.Client.Send(new RequestContextMenuPacket(entity.Serial));
-                            }
-                            break;
-                        case MouseEvent.DoubleClick:
-                            UltimaInteraction.DoubleClick(entity);
-                            UltimaVars.EngineVars.LastTarget = entity.Serial;
-                            break;
-                        case MouseEvent.DragBegin:
-                            // pull off status bar
-                            break;
-                    }
+                    // no action.
                 }
-                else if (overEntity is Corpse)
+                else if (entity is Item)
                 {
-                    Corpse entity = (Corpse)overEntity;
-                    // click and drag = nothing
-                    // single click = tool tip
-                    // double click = open loot window.
+                    // attempt to pick up item.
+                    UltimaInteraction.PickupItem((Item)entity, new Point((int)m_dragOffset.X, (int)m_dragOffset.Y));
                 }
-                /*else if (overEntity is MapObjectText)
+                else if (entity is Mobile)
                 {
-                    // clicking on text should somehow indicate the person speaking.
-                }*/
-                else
-                {
-                    throw new Exception("Unknown object type in onInteractButtonDown()");
+                    // drag off a status gump for this mobile.
                 }
             }
 
