@@ -58,7 +58,7 @@ namespace UltimaXNA.UltimaData
 
             if (UltimaVars.SettingVars.UOData != null && Directory.Exists(UltimaVars.SettingVars.UOData))
             {
-                Logger.Debug("Found UO Installation from Setttings.ini at [{0}].", UltimaVars.SettingVars.UOData);
+                Logger.Debug("Settings: Choosing UO Installation at [{0}].", UltimaVars.SettingVars.UOData);
                 m_FileDirectory = UltimaVars.SettingVars.UOData;
                 m_isDataPresent = true;
             }
