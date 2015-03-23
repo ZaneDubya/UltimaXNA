@@ -458,6 +458,11 @@ namespace UltimaXNA
             return (byte)0;
         }
 
+        public static uint UintFromColor(Color color)
+        {
+            return (uint)((color.A << 24) | (color.B << 16) | (color.G << 8) | (color.R));
+        }
+
         public static Color ColorFromHexString(string hex)
         {
             if (hex.Length == 8)

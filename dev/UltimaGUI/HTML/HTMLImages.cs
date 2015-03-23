@@ -17,11 +17,17 @@ namespace UltimaXNA.UltimaGUI.HTML
     {
         List<HTMLImage> m_images = new List<HTMLImage>();
 
-        public List<HTMLImage> Images
+        public HTMLImage this[int index]
         {
             get
             {
-                return m_images;
+                if (m_images.Count == 0)
+                    return null;
+                if (index >= m_images.Count)
+                    index = m_images.Count - 1;
+                if (index < 0)
+                    index = 0;
+                return m_images[index];
             }
         }
 

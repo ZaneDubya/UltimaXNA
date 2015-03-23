@@ -44,7 +44,7 @@ namespace UltimaXNA.UltimaData.FontsNew
             }
         }
 
-        internal static DisplayString DisplayText(string text, int fontId, int wrapWidth)
+        /*internal static DisplayString DisplayText(string text, int fontId, int wrapWidth)
         {
             FontASCII font = InternalGetFont(fontId);
 
@@ -79,7 +79,7 @@ namespace UltimaXNA.UltimaData.FontsNew
                 }
             }
             return display;
-        }
+        }*/
 
         private static FontASCII InternalGetFont(int font)
         {

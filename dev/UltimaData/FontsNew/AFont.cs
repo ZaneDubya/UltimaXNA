@@ -15,7 +15,23 @@ namespace UltimaXNA.UltimaData.FontsNew
         public int Height
         {
             get;
-            protected set;
+            set;
+        }
+
+        public int Baseline
+        {
+            get
+            {
+                return GetCharacter('M').Height + GetCharacter('M').YOffset;
+            }
+        }
+
+        public int Lineheight
+        {
+            get
+            {
+                return Baseline + 4;
+            }
         }
 
         // public Texture2D Texture;

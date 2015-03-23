@@ -133,14 +133,13 @@
     <Compile Include="Entity\Support\MobileFlags.cs" />
     <Compile Include="UltimaData\FontsNew\CharacterASCII.cs" />
     <Compile Include="UltimaData\FontsNew\AFont.cs" />
-    <Compile Include="UltimaData\FontsNew\DisplayString.cs" />
     <Compile Include="UltimaData\FontsNew\FontASCII.cs" />
+    <Compile Include="UltimaGUI\RenderedTextTexture.cs" />
     <Compile Include="UltimaData\FontsNew\TextASCII.cs" />
     <Compile Include="UltimaData\FontsNew\ACharacter.cs" />
     <Compile Include="UltimaData\FontsNew\CharacterUni.cs" />
     <Compile Include="UltimaData\FontsNew\FontUni.cs" />
     <Compile Include="UltimaData\FontsNew\TextUni.cs" />
-    <Compile Include="UltimaGUI\FontRenderer.cs" />
     <Compile Include="UltimaGUI\UltimaFonts.cs" />
     <Compile Include="UltimaWorld\Model\EntitySort.cs" />
     <Compile Include="Entity\EntityViews\GroundView.cs" />

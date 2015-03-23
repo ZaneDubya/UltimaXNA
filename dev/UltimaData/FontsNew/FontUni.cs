@@ -16,17 +16,12 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace UltimaXNA.UltimaData.FontsNew
 {
-    public sealed class FontUni : AFont
+    internal class FontUni : AFont
     {
         GraphicsDevice m_graphics = null;
         BinaryReader m_reader = null;
         private CharacterUni[] m_characters;
 
-        private int m_height = 0;
-        public int Height { get { return m_height; } set { m_height = value; } }
-        private int m_baseline = 0;
-        public int Baseline { get { return m_baseline; } set { m_baseline = value; } }
-        public int Lineheight { get { return m_baseline + 4; } }
         public FontUni()
         {
             m_characters = new CharacterUni[0x10000];
@@ -43,7 +38,6 @@ namespace UltimaXNA.UltimaData.FontsNew
             }
             // Determine the width of the space character - arbitrarily .333 the width of capital M (.333 em?).
             GetCharacter(' ').Width = GetCharacter('M').Width / 3;
-            Baseline = GetCharacter('M').Height + GetCharacter('M').YOffset;
         }
 
         internal CharacterUni GetCharacter(char character)

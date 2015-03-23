@@ -11,6 +11,13 @@ namespace UltimaXNA.UltimaData.FontsNew
         public static int FontCount = 7;
         private static FontUni[] m_fonts = new FontUni[FontCount];
 
+        internal static FontUni GetFont(int index)
+        {
+            if (index < 0 || index >= FontCount)
+                return m_fonts[0];
+            return m_fonts[index];
+        }
+
         private static bool m_initialized;
         private static GraphicsDevice m_graphicsDevice;
 

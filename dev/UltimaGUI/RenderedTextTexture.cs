@@ -1,62 +1,55 @@
-﻿/***************************************************************************
- *   
- *   TextRenderer.cs
- *   
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 3 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-#region usings
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using UltimaXNA.Rendering;
-using UltimaXNA.UltimaData;
-using UltimaXNA.UltimaData.Fonts;
 using UltimaXNA.UltimaGUI.HTML;
-#endregion
+using UltimaXNA.UltimaData;
+using UltimaXNA.UltimaData.FontsNew;
 
 namespace UltimaXNA.UltimaGUI
 {
-    class TextRenderer
+    class RenderedTextTexture
     {
-        private Texture2D m_texture;
-        private Parser m_reader;
-        private int m_width = 0, m_height = 0;
+        private Texture2D m_Texture;
+        private Parser m_HtmlParser;
+
         public int Width
         {
             get
             {
-                if (m_texture != null)
-                    return m_texture.Width;
-                else
+                if (m_Texture == null || m_mustRender)
                 {
-                    checkResize();
-                    return m_width;
+
                 }
+
+                return m_Texture.Width;
             }
         }
+
         public int Height
         {
             get
             {
-                if (m_texture != null)
-                    return m_texture.Height;
-                else
+                if (m_Texture == null || m_mustRender)
                 {
-                    checkResize();
-                    return m_height;
+
                 }
+
+                return m_Texture.Height;
             }
         }
 
-        private HTMLRegions m_href;
-        public HTMLRegions HREFRegions { get { return m_href; } }
+        public HTMLRegions Regions
+        {
+            get;
+            protected set;
+        }
 
-        private HTMLImages m_images;
-        public HTMLImages Images { get { return m_images; } }
+        public HTMLImages Images
+        {
+            get;
+            protected set;
+        }
 
         private int m_activeHREF = -1;
         public int ActiveHREF
@@ -64,42 +57,39 @@ namespace UltimaXNA.UltimaGUI
             get { return m_activeHREF; }
             set { m_activeHREF = value; }
         }
-        private bool m_activeHREF_usedownhue = false;
-        public bool ActiveHREF_UseDownHue
+
+        public bool ActiveRegion_UseDownHue
         {
-            get { return m_activeHREF_usedownhue; }
-            set { m_activeHREF_usedownhue = value; }
+            get;
+            set;
         }
 
-        private bool m_mustResize = true;
         private bool m_mustRender = true;
 
-        private bool m_asHTML = false;
+        private bool m_AsHTML = false;
         public bool AsHTML
         {
-            get { return m_asHTML; }
+            get { return m_AsHTML; }
             set
             {
-                if (m_asHTML != value)
+                if (m_AsHTML != value)
                 {
-                    m_mustResize = true;
                     m_mustRender = true;
-                    m_asHTML = value;
+                    m_AsHTML = value;
                 }
             }
         }
 
-        private int m_maxWidth = 0;
+        private int m_MaxWidth = 200;
         public int MaxWidth
         {
-            get { return m_maxWidth; }
+            get { return m_MaxWidth; }
             set
             {
-                if (m_maxWidth != value)
+                if (m_MaxWidth != value)
                 {
-                    m_mustResize = true;
                     m_mustRender = true;
-                    m_maxWidth = value;
+                    m_MaxWidth = value;
                 }
             }
         }
@@ -112,38 +102,32 @@ namespace UltimaXNA.UltimaGUI
             {
                 if (m_text != value)
                 {
-                    m_mustResize = true;
                     m_mustRender = true;
                     m_text = value;
                 }
             }
         }
 
-        private int m_hue = 0;
         public int Hue
         {
-            get { return m_hue; }
-            set { m_hue = value; }
-        }
-        private int hueButNotIfHTML
-        {
-            get { return m_asHTML ? 0 : m_hue; }
+            get;
+            set;
         }
 
-        private bool m_hueTransparent = false;
         public bool Transparent
         {
-            get { return m_hueTransparent; }
-            set { m_hueTransparent = value; }
+            get;
+            set;
         }
 
-        public TextRenderer(string text, int maxwidth, bool asHTML)
+        public RenderedTextTexture(string text, bool asHTML, int maxWidth = 200)
         {
             Text = text;
-            MaxWidth = maxwidth;
             AsHTML = asHTML;
-            m_href = new HTMLRegions();
-            m_images = new HTMLImages();
+            MaxWidth = maxWidth;
+
+            Regions = new HTMLRegions();
+            Images = new HTMLImages();
         }
 
         public void Draw(SpriteBatchUI sb, Point position)
@@ -157,14 +141,14 @@ namespace UltimaXNA.UltimaGUI
             
             Rectangle sourceRectangle;
 
-            if (xScroll > m_texture.Width)
+            if (xScroll > m_Texture.Width)
                 return;
             else if (xScroll < -MaxWidth)
                 return;
             else
                 sourceRectangle.X = xScroll;
 
-            if (yScroll > m_texture.Height)
+            if (yScroll > m_Texture.Height)
                 return;
             else if (yScroll < - Height)
                 return;
@@ -172,33 +156,34 @@ namespace UltimaXNA.UltimaGUI
                 sourceRectangle.Y = yScroll;
 
             int maxX = sourceRectangle.X + destRectangle.Width;
-            if (maxX <= m_texture.Width)
+            if (maxX <= m_Texture.Width)
                 sourceRectangle.Width = destRectangle.Width;
             else
             {
-                sourceRectangle.Width = m_texture.Width - sourceRectangle.X;
+                sourceRectangle.Width = m_Texture.Width - sourceRectangle.X;
                 destRectangle.Width = sourceRectangle.Width;
             }
 
             int maxY = sourceRectangle.Y + destRectangle.Height;
-            if (maxY <= m_texture.Height)
+            if (maxY <= m_Texture.Height)
             {
                 sourceRectangle.Height = destRectangle.Height;
             }
             else
             {
-                sourceRectangle.Height = m_texture.Height - sourceRectangle.Y;
+                sourceRectangle.Height = m_Texture.Height - sourceRectangle.Y;
                 destRectangle.Height = sourceRectangle.Height;
             }
 
-            sb.Draw2D(m_texture, destRectangle, sourceRectangle, hueButNotIfHTML, false, m_hueTransparent);
+            int hue_if_not_html = m_AsHTML ? 0 : Hue;
 
-            for (int i = 0; i < HREFRegions.Count; i++)
+            sb.Draw2D(m_Texture, destRectangle, sourceRectangle, hue_if_not_html, false, Transparent);
+
+            for (int i = 0; i < Regions.Count; i++)
             {
-                HTMLRegion r = HREFRegions[i];
+                HTMLRegion r = Regions[i];
                 Point position;
                 Rectangle sourceRect;
-
                 if (clipRectangle(new Point(xScroll, yScroll), r.Area, destRectangle, out position, out sourceRect))
                 {
                     // only draw the font in a different color if this is a HREF region.
@@ -208,14 +193,14 @@ namespace UltimaXNA.UltimaGUI
                     {
                         int hue = 0;
                         if (r.Index == m_activeHREF)
-                            if (m_activeHREF_usedownhue)
+                            if (ActiveRegion_UseDownHue)
                                 hue = r.HREFAttributes.DownHue;
                             else
                                 hue = r.HREFAttributes.OverHue;
                         else
                             hue = r.HREFAttributes.UpHue;
 
-                        sb.Draw2D(m_texture, position,
+                        sb.Draw2D(m_Texture, position,
                             sourceRect, hue, false, false);
                     }
                 }
@@ -235,7 +220,7 @@ namespace UltimaXNA.UltimaGUI
 
                     if (image.RegionIndex == m_activeHREF)
                     {
-                        if (m_activeHREF_usedownhue)
+                        if (ActiveRegion_UseDownHue)
                             texture = image.ImageDown;
                         if (texture == null)
                             texture = image.ImageOver;
@@ -250,63 +235,59 @@ namespace UltimaXNA.UltimaGUI
             }
         }
 
-        private void checkResize()
-        {
-            if (m_mustResize)
-            {
-                m_mustResize = false;
-                resizeAndParse(Text, MaxWidth, AsHTML);
-            }
-        }
-
         private void checkRender(GraphicsDevice graphics)
         {
-            if (m_mustRender)
+            if (m_Texture == null || m_mustRender)
             {
-                checkResize();
+                if (m_Texture != null)
+                {
+                    m_Texture.Dispose();
+                    m_Texture = null;
+                }
+
+                int width, height;
+                resizeAndParse(Text, MaxWidth, AsHTML, out width, out height);
+                m_Texture = renderToTexture(graphics, m_HtmlParser, width, height);
+
                 m_mustRender = false;
-                m_texture = writeTexture(graphics, m_reader, m_width, m_height);
             }
         }
 
-        private void resizeAndParse(string textToRender, int maxWidth, bool parseHTML)
+        private void resizeAndParse(string textToRender, int maxWidth, bool parseHTML, out int width, out int height)
         {
-            if (m_reader != null)
-                m_reader = null;
-            m_reader = new Parser(textToRender, parseHTML);
+            width = 0;
+            height = 0;
 
-            m_href.Clear();
-            m_images.Clear();
+            if (m_HtmlParser != null)
+                m_HtmlParser = null;
+            m_HtmlParser = new Parser(textToRender, parseHTML);
+
+            Regions.Clear();
+            Images.Clear();
 
             if (maxWidth < 0)
             {
-                m_width = 0;
+                width = 0;
             }
             else
             {
                 if (maxWidth == 0)
                 {
-                    getTextDimensions(m_reader, ASCIIText.MaxWidth, 0, out m_width, out m_height);
+                    getTextDimensions(m_HtmlParser, 200, 0, out width, out height);
                 }
                 else
                 {
-                    getTextDimensions(m_reader, maxWidth, 0, out m_width, out m_height);
+                    getTextDimensions(m_HtmlParser, maxWidth, 0, out width, out height);
                 }
-            }
-
-            if (m_texture != null)
-            {
-                m_texture.Dispose();
-                m_texture = null;
             }
         }
 
-        Texture2D writeTexture(GraphicsDevice graphics, Parser reader, int width, int height)
+        Texture2D renderToTexture(GraphicsDevice graphics, Parser reader, int width, int height)
         {
-            if (m_width == 0) // empty text string
+            if (width == 0) // empty text string
                 return new Texture2D(graphics, 1, 1);
 
-            Color[] resultData = new Color[width * height];
+            uint[] resultData = new uint[width * height];
             // for (int i = 0; i < resultData.Length; i++)
             // resultData[i] = Color.LimeGreen;
 
@@ -314,7 +295,7 @@ namespace UltimaXNA.UltimaGUI
 
             unsafe
             {
-                fixed (Color* rPtr = resultData)
+                fixed (uint* rPtr = resultData)
                 {
                     int[] alignedTextX = new int[3];
                     List<AHTMLAtom>[] alignedAtoms = new List<AHTMLAtom>[3];
@@ -355,7 +336,7 @@ namespace UltimaXNA.UltimaGUI
                             }
 
                             // get HREF regions for html.
-                            getHREFRegions(m_href, alignedAtoms, alignedTextX, dy);
+                            getHREFRegions(Regions, alignedAtoms, alignedTextX, dy);
 
                             // clear the aligned text lists so we can fill them up in our next pass.
                             for (int j = 0; j < 3; j++)
@@ -370,38 +351,38 @@ namespace UltimaXNA.UltimaGUI
             }
 
             Texture2D result = new Texture2D(graphics, width, height, false, SurfaceFormat.Color);
-            result.SetData<Color>(resultData);
+            result.SetData<uint>(resultData);
             return result;
         }
 
         // pass bool = false to get the width of the line to be drawn without actually drawing anything. Useful for aligning text.
-        unsafe void writeTexture_Line(List<AHTMLAtom> atoms, Color* rPtr, ref int x, int y, int linewidth, int maxHeight, ref int lineheight, bool draw)
+        unsafe void writeTexture_Line(List<AHTMLAtom> atoms, uint* rPtr, ref int x, int y, int linewidth, int maxHeight, ref int lineheight, bool draw)
         {
             for (int i = 0; i < atoms.Count; i++)
             {
-                UniFont font = UniText.Fonts[(int)atoms[i].Font];
-                if (lineheight < font.Lineheight)
-                    lineheight = font.Lineheight;
+                AFont font = TextUni.GetFont((int)atoms[i].Font);
+                if (lineheight < font.Height)
+                    lineheight = font.Height;
 
                 if (draw)
                 {
                     if (atoms[i] is HTMLAtomCharacter)
                     {
                         HTMLAtomCharacter atom = (HTMLAtomCharacter)atoms[i];
-                        UniCharacter character = font.GetCharacter(atom.Character);
+                        ACharacter character = font.GetCharacter(atom.Character);
                         // HREF links should be colored white, because we will hue them at runtime.
-                        Color color = atom.IsHREF ? new Color(255, 255, 255) : atom.Color;
+                        uint color = atom.IsHREF ? 0xFFFFFFFF : Utility.UintFromColor(atom.Color);
                         character.WriteToBuffer(rPtr, x, y, linewidth, maxHeight, font.Baseline,
-                            atom.Style_IsBold, atom.Style_IsItalic, atom.Style_IsUnderlined, atom.Style_IsOutlined, color);
+                            atom.Style_IsBold, atom.Style_IsItalic, atom.Style_IsUnderlined, atom.Style_IsOutlined, color, 0xFF000000);
                     }
                     else if (atoms[i] is HTMLImageGump)
                     {
                         HTMLImageGump atom = (HTMLImageGump)atoms[i];
                         if (lineheight < atom.Height)
                             lineheight = atom.Height;
-                            m_images.AddImage(new Rectangle(x, y + (lineheight - atom.Height) / 2, atom.Width, atom.Height),
+                        Images.AddImage(new Rectangle(x, y + (lineheight - atom.Height) / 2, atom.Width, atom.Height),
                                 atom.Texture, GumpData.GetGumpXNA(atom.ValueOver), GumpData.GetGumpXNA(atom.ValueDown));
-                            atom.AssociatedImage = Images[m_images.Count - 1];
+                        atom.AssociatedImage = Images[Images.Count - 1];
                     }
                 }
                 x += atoms[i].Width;
@@ -525,8 +506,8 @@ namespace UltimaXNA.UltimaGUI
                     if (reader.Atoms[i] is HTMLAtomCharacter)
                     {
                         HTMLAtomCharacter atom = (HTMLAtomCharacter)reader.Atoms[i];
-                        UniFont font = UniText.Fonts[(int)atom.Font];
-                        UniCharacter ch = UniText.Fonts[(int)atom.Font].GetCharacter(atom.Character);
+                        AFont font = TextUni.GetFont((int)atom.Font);
+                        ACharacter ch = font.GetCharacter(atom.Character);
 
                         // italic characters need a little extra width if they are at the end of the line.
                         if (atom.Style_IsItalic)
@@ -593,7 +574,7 @@ namespace UltimaXNA.UltimaGUI
                                 int iWordWidth = word_width;
                                 for (int j = word.Count - 1; j >= 1; j--)
                                 {
-                                    int iDashWidth = UniText.Fonts[(int)word[j].Font].GetCharacter('-').Width;
+                                    int iDashWidth = TextUni.GetFont((int)word[j].Font).GetCharacter('-').Width;
                                     if (iWordWidth + iDashWidth <= maxwidth)
                                     {
                                         reader.Atoms.Insert(i - (word.Count - j) + 1, new HTMLAtomCharacter('\n'));
