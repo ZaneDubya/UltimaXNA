@@ -4,48 +4,49 @@ using System.IO;
 
 namespace UltimaXNA.UltimaData.FontsNew
 {
-    public static class ASCIIText
+    public static class TextASCII
     {
         public const int FontCount = 10;
-        private static ASCIIFont[] m_fonts = new ASCIIFont[FontCount];
+        private static FontASCII[] m_fonts = new FontASCII[FontCount];
 
         private static bool m_initialized;
         private static GraphicsDevice m_graphicsDevice;
 
-        static ASCIIText()
+        static TextASCII()
         {
 
         }
 
-        public static void Initialize(GraphicsDevice graphicsDevice)
+        internal static void Initialize(GraphicsDevice graphicsDevice)
         {
             if (!m_initialized)
             {
                 m_initialized = true;
-                string path = FileManager.GetFilePath("fonts.mul");
                 m_graphicsDevice = graphicsDevice;
-                if (path != null)
+
+                string path = FileManager.GetFilePath("fonts.mul");
+                InternalLoadFonts(path);
+            }
+        }
+
+        private static void InternalLoadFonts(string path)
+        {
+            if (path != null)
+            {
+                using (BinaryReader reader = new BinaryReader(new FileStream(path, FileMode.Open, FileAccess.Read)))
                 {
-                    byte[] buffer;
-                    int pos = 0;
-
-                    using (BinaryReader reader = new BinaryReader(new FileStream(path, FileMode.Open, FileAccess.Read)))
-                    {
-                        buffer = reader.ReadBytes((int)reader.BaseStream.Length);
-                        Diagnostics.Metrics.ReportDataRead(buffer.Length);
-                    }
-
                     for (int i = 0; i < FontCount; i++)
                     {
-                        m_fonts[i] = new ASCIIFont(m_graphicsDevice, buffer, ref pos);
+                        m_fonts[i] = new FontASCII(m_graphicsDevice, reader);
                     }
+                    Diagnostics.Metrics.ReportDataRead((int)reader.BaseStream.Length);
                 }
             }
         }
 
-        public static DisplayString DisplayText(string text, int fontId, int wrapWidth)
+        internal static DisplayString DisplayText(string text, int fontId, int wrapWidth)
         {
-            ASCIIFont font = InternalGetFont(fontId);
+            FontASCII font = InternalGetFont(fontId);
 
             int width = 0, height = 0;
             font.GetTextDimensions(ref text, ref width, ref height, wrapWidth);
@@ -80,7 +81,7 @@ namespace UltimaXNA.UltimaData.FontsNew
             return display;
         }
 
-        private static ASCIIFont InternalGetFont(int font)
+        private static FontASCII InternalGetFont(int font)
         {
             if (font < 0 || font > 9)
             {

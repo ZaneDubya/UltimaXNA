@@ -6,18 +6,15 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace UltimaXNA.UltimaData.FontsNew
 {
-    public static class UniText
+    public static class TextUni
     {
-        private static UniFont[] m_fonts;
+        public static int FontCount = 7;
+        private static FontUni[] m_fonts = new FontUni[FontCount];
+
         private static bool m_initialized;
         private static GraphicsDevice m_graphicsDevice;
 
-        public static UniFont[] Fonts
-        {
-            get { return m_fonts; }
-        }
-
-        static UniText()
+        static TextUni()
         {
 
         }
@@ -40,21 +37,21 @@ namespace UltimaXNA.UltimaData.FontsNew
 
         static void loadFonts()
         {
-            int maxHeight = 0;
-            m_fonts = new UniFont[7];
-            for (int iFont = 0; iFont < 7; iFont++)
+            int maxHeight = 0; // because all unifonts are designed to be used together, they must all share a maxheight.
+
+            for (int iFont = 0; iFont < FontCount; iFont++)
             {
                 string path = FileManager.GetFilePath("unifont" + (iFont == 0 ? "" : iFont.ToString()) + ".mul");
                 if (path != null)
                 {
-                    m_fonts[iFont] = new UniFont();
+                    m_fonts[iFont] = new FontUni();
                     m_fonts[iFont].Initialize(m_graphicsDevice, new BinaryReader(new FileStream(path, FileMode.Open, FileAccess.Read)));
                     if (m_fonts[iFont].Height > maxHeight)
                         maxHeight = m_fonts[iFont].Height;
                 }
             }
 
-            for (int iFont = 0; iFont < 7; iFont++)
+            for (int iFont = 0; iFont < FontCount; iFont++)
             {
                 if (m_fonts[iFont] == null)
                     continue;

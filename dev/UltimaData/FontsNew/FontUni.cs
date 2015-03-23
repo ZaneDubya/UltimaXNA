@@ -16,20 +16,20 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace UltimaXNA.UltimaData.FontsNew
 {
-    public sealed class UniFont
+    public sealed class FontUni
     {
         GraphicsDevice m_graphics = null;
         BinaryReader m_reader = null;
-        private UniCharacter[] m_characters;
+        private CharacterUni[] m_characters;
 
         private int m_height = 0;
         public int Height { get { return m_height; } set { m_height = value; } }
         private int m_baseline = 0;
         public int Baseline { get { return m_baseline; } set { m_baseline = value; } }
         public int Lineheight { get { return m_baseline + 4; } }
-        public UniFont()
+        public FontUni()
         {
-            m_characters = new UniCharacter[0x10000];
+            m_characters = new CharacterUni[0x10000];
         }
 
         public void Initialize(GraphicsDevice graphicsDevice, BinaryReader reader)
@@ -46,12 +46,12 @@ namespace UltimaXNA.UltimaData.FontsNew
             Baseline = GetCharacter('M').Height + GetCharacter('M').YOffset;
         }
 
-        public UniCharacter GetCharacter(char character)
+        internal CharacterUni GetCharacter(char character)
         {
             return GetCharacter(((int)character) & 0xFFFFF);
         }
 
-        public UniCharacter GetCharacter(int index)
+        internal CharacterUni GetCharacter(int index)
         {
             if (m_characters[index] == null)
             {
@@ -65,23 +65,21 @@ namespace UltimaXNA.UltimaData.FontsNew
             return m_characters[index];
         }
 
-        UniCharacter loadCharacter(int index)
+        CharacterUni loadCharacter(int index)
         {
             // get the lookup table - 0x10000 ints.
             m_reader.BaseStream.Position = index * 4;
             int lookup = m_reader.ReadInt32();
 
-            UniCharacter character = new UniCharacter();
-
             if (lookup == 0)
             {
-                // no character - so we just return an empty character
-                return character;
+                // no character - so we just return null
+                return null;
             }
             else
             {
                 m_reader.BaseStream.Position = lookup;
-                character.LoadCharacter(m_reader, m_graphics);
+                CharacterUni character = new CharacterUni(m_reader);
                 return character;
             }
         }

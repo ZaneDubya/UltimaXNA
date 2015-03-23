@@ -9,31 +9,31 @@ namespace UltimaXNA.UltimaData.FontsNew
 {
     class DisplayString
     {
-        public Texture2D Texture;
-        public List<DisplayCharacter> Characters;
+        internal Texture2D Texture;
+        internal List<DisplayCharacter> Characters;
 
-        public DisplayString(Texture2D texture)
+        internal DisplayString(Texture2D texture)
         {
             Texture = texture;
         }
 
-        public void AddCharacter(ACharacter character, Point loc, int hue)
+        internal void AddCharacter(ACharacter character, Point loc, int hue)
         {
             Characters.Add(new DisplayCharacter(character, loc, hue));
         }
+    }
 
-        class DisplayCharacter
+    class DisplayCharacter
+    {
+        ACharacter Character;
+        Point Location;
+        int Hue;
+
+        public DisplayCharacter(ACharacter character, Point loc, int hue)
         {
-            ACharacter Character;
-            Point Location;
-            int Hue;
-
-            public DisplayCharacter(ACharacter character, Point loc, int hue)
-            {
-                Character = character;
-                Location = loc;
-                Hue = hue;
-            }
+            Character = character;
+            Location = loc;
+            Hue = hue;
         }
     }
 }

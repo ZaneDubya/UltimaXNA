@@ -1,75 +1,55 @@
-﻿/***************************************************************************
- *   ASCIIFont.cs
- *   Based on code from UltimaSDK: http://ultimasdk.codeplex.com/
- *   
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 3 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-#region usings
-using System;
-using System.Collections.Generic;
-using System.IO;
+﻿#region usings
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 using UltimaXNA.Core.SpacePacking;
 using UltimaXNA.Diagnostics;
 #endregion
 
 namespace UltimaXNA.UltimaData.FontsNew
 {
-    public class ASCIIFont
+    class AFont
     {
-        private int m_Height;
-        private ASCIICharacter[] m_Characters;
+        protected ACharacter[] m_Characters;
 
         public Texture2D Texture;
 
-        public int Height { get { return m_Height; } set { m_Height = value; } }
-
-        public ASCIIFont(GraphicsDevice device, byte[] buffer, ref int pos)
+        public int Height
         {
-            Height = 0;
-            m_Characters = new ASCIICharacter[224];
+            get;
+            protected set;
+        }
 
-            CygonRectanglePacker packer = new CygonRectanglePacker(512, 512);
-            uint[] textureData = new uint[512 * 512];
+        /*protected void InitializeTexture(GraphicsDevice device, bool bigTexture = false)
+        {
+            int textureSize = bigTexture ? 1024 : 512;
 
-            byte header = buffer[pos++];
+            CygonRectanglePacker packer = new CygonRectanglePacker(textureSize, textureSize);
+            uint[] textureData = new uint[textureSize * textureSize];
 
             // get the sprite data and get a place for each character in the texture, then write the character data to an array.
-            for (int k = 0; k < 224; k++)
+            foreach (ACharacter ch in m_Characters)
             {
-                ASCIICharacter ch = new ASCIICharacter(buffer, ref pos);
-                if (k < 96 && ch.Height > Height)
-                {
-                    Height = ch.Height;
-                }
-
                 Point uv;
-                if (packer.TryPack(ch.Width + 2, ch.Height + 2, out uv)) // allow a one-pixel buffer on each side of the character
+                if (packer.TryPack(ch.Width + 4, ch.Height + 4, out uv)) // allow a two-pixel buffer on each side of the character
                 {
-                    ch.TextureBounds = new Rectangle(uv.X + 1, uv.Y + 1, ch.Width, ch.Height);
+                    ch.TextureBounds = new Rectangle(uv.X + 2, uv.Y + 2, ch.Width, ch.Height);
                     ch.WriteTextureData(textureData);
                 }
                 else
                 {
-                    Logger.Fatal("Could not pack font.mul texture with character '{0}'.", (char)(k + 32));
+                    Logger.Fatal("Could not pack font.mul texture.");
                 }
-
-                m_Characters[k] = ch;
             }
 
             // write the completed array of character data to the texture.
-            Texture2D m_Texture = new Texture2D(device, 512, 512);
-            m_Texture.SetData<uint>(textureData);
-        }
+            Texture = new Texture2D(device, textureSize, textureSize);
+            Texture.SetData<uint>(textureData);
+        }*/
 
-        public ASCIICharacter GetCharacter(char character)
+        public ACharacter GetCharacter(char character)
         {
-            int index = (((int)character) & 0x000000ff) - 0x20;
+            int index = ((int)character) - 0x20;
             return m_Characters[index];
         }
 

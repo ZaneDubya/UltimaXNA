@@ -65,7 +65,7 @@ namespace UltimaXNA
                 UltimaData.SkillsData.Initialize();
                 GraphicsDevice.Textures[1] = UltimaXNA.UltimaData.HuesXNA.HueTexture;
 
-                UltimaData.FontsNew.ASCIIText.Initialize(GraphicsDevice);
+                UltimaData.FontsNew.TextASCII.Initialize(GraphicsDevice);
 
                 UltimaVars.EngineVars.EngineRunning = true;
                 UltimaVars.EngineVars.InWorld = false;

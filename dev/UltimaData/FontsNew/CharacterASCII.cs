@@ -4,28 +4,27 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.IO;
 
 namespace UltimaXNA.UltimaData.FontsNew
 {
-    class ASCIICharacter : ACharacter
+    class CharacterASCII : ACharacter
     {
-        private uint[] m_CharacterPixels = null;
-
-        public ASCIICharacter(byte[] buffer, ref int pos)
+        public CharacterASCII(BinaryReader reader)
         {
-            Width = buffer[pos++];
-            Height = buffer[pos++];
-            pos++; // unknown byte value... is this a delimeter or an offset?
+            Width = reader.ReadByte();
+            Height = reader.ReadByte();
+            reader.ReadByte(); // unknown byte value... is this a delimeter or an offset?
 
             if (Width > 0 && Height > 0)
             {
-                m_CharacterPixels = new uint[Width * Height];
+                m_PixelData = new uint[Width * Height];
 
                 for (int y = 0; y < Height; ++y)
                 {
                     for (int x = 0; x < Width; ++x)
                     {
-                        ushort data = (ushort)(buffer[pos++] | (buffer[pos++] << 8));
+                        ushort data = (ushort)(reader.ReadByte() | (reader.ReadByte() << 8));
 
                         uint pixel = 0x000000;
 
@@ -38,22 +37,10 @@ namespace UltimaXNA.UltimaData.FontsNew
                                 ));
                         }
 
-                        m_CharacterPixels[x + y * Width] = pixel;
+                        m_PixelData[x + y * Width] = pixel;
                     }
                 }
             }
-        }
-
-        internal void WriteTextureData(uint[] textureData)
-        {
-            for (int y = 0; y < Height; y++)
-            {
-                for (int x = 0; x < Width; x++)
-                {
-                    textureData[(y + TextureBounds.Y) * Width + (x + TextureBounds.X)] = m_CharacterPixels[y * Width + x];
-                }
-            }
-            m_CharacterPixels = null;
         }
     }
 }
