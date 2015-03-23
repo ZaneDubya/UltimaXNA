@@ -45,6 +45,8 @@ namespace UltimaXNA.UltimaData.FontsNew
         public override ACharacter GetCharacter(char character)
         {
             int index = ((int)character & 0xFFFFF) - 0x20;
+            if (index < 0)
+                return NullCharacter;
             if (m_characters[index] == null)
             {
                 CharacterUni ch = loadCharacter(index + 0x20);

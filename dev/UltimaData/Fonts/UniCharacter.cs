@@ -91,7 +91,7 @@ namespace UltimaXNA.UltimaData.Fonts
             this.OutlinedWidth = this.Width + 2;
             this.OutlinedHeight = this.Height + 2;
 
-            // only read data if there is UltimaData...
+            // only read data if there is data...
             if ((this.Width > 0) && (this.Height > 0))
             {
                 // At this point, we know we have data, so go ahead and start reading!
@@ -124,12 +124,14 @@ namespace UltimaXNA.UltimaData.Fonts
                                         p2[(x + 1) + (y + 1) * OutlinedWidth] = color;
 
                                         for (int ix = -1; ix < 2; ix++)
+                                        {
                                             for (int iy = -1; iy < 2; iy++)
                                             {
                                                 int index = (x + 1 + ix) + (y + 1 + iy) * (OutlinedWidth);
                                                 if (p2[index] != Color.White)
                                                     p2[index] = Color.Black;
                                             }
+                                        }
                                     }
 
                                     bitX--;

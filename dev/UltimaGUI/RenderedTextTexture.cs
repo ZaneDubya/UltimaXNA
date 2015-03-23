@@ -452,6 +452,8 @@ namespace UltimaXNA.UltimaGUI
 
                     if (atom is HTMLAtomCharacter && ((HTMLAtomCharacter)atom).Style_IsItalic)
                         additionalwidth = 2;
+                    else if (atom is HTMLAtomCharacter && ((HTMLAtomCharacter)atom).Style_IsOutlined)
+                        additionalwidth = 2;
                     else
                         additionalwidth = 0;
 
@@ -513,7 +515,7 @@ namespace UltimaXNA.UltimaGUI
                         if (atom.Style_IsItalic)
                             additionalwidth = font.Height / 2;
                         if (atom.Style_IsOutlined)
-                            additionalwidth += 1;
+                            additionalwidth += 2;
                         if (ch.YOffset + ch.Height - lineheight > descenderheight)
                             descenderheight = ch.YOffset + ch.Height - lineheight;
                     }

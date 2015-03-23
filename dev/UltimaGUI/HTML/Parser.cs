@@ -103,6 +103,9 @@ namespace UltimaXNA.UltimaGUI.HTML
                             case "u":
                                 editOpenTags(openTags, isClosing, "u");
                                 break;
+                            case "outline":
+                                editOpenTags(openTags, isClosing, "outline");
+                                break;
                             case "big":
                                 editOpenTags(openTags, isClosing, "big");
                                 break;
@@ -345,6 +348,7 @@ namespace UltimaXNA.UltimaGUI.HTML
             c.Style_IsBold = hasTag(openTags, "b");
             c.Style_IsItalic = hasTag(openTags, "i");
             c.Style_IsUnderlined = hasTag(openTags, "u");
+            c.Style_IsOutlined = hasTag(openTags, "outline");
             string fontTag = lastTag(openTags, new string[] { "big", "small", "medium", "basefont" });
             switch (fontTag)
             {
