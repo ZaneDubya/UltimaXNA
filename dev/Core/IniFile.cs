@@ -109,6 +109,10 @@ namespace UltimaXNA.Core
             // root Windows directory if it is not specified.  By calling 
             // GetFullPath, we make sure we are always passing the full path
             // the win32 functions.
+            if (!System.IO.File.Exists(path))
+            {
+                System.IO.File.Create(path);
+            }
             m_path = System.IO.Path.GetFullPath(path);
         }
 
