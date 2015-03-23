@@ -131,8 +131,11 @@
     <Compile Include="Entity\EntityViews\MobileDeferredView.cs" />
     <Compile Include="Entity\MobileDeferred.cs" />
     <Compile Include="Entity\Support\MobileFlags.cs" />
+    <Compile Include="UltimaData\FontsNew\ASCIICharacter.cs" />
+    <Compile Include="UltimaData\FontsNew\DisplayString.cs" />
     <Compile Include="UltimaData\FontsNew\ASCIIFont.cs" />
     <Compile Include="UltimaData\FontsNew\ASCIIText.cs" />
+    <Compile Include="UltimaData\FontsNew\ACharacter.cs" />
     <Compile Include="UltimaData\FontsNew\UniCharacter.cs" />
     <Compile Include="UltimaData\FontsNew\UniFont.cs" />
     <Compile Include="UltimaData\FontsNew\UniText.cs" />

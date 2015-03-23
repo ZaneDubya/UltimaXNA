@@ -8,54 +8,72 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+#region usings
 using System;
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using UltimaXNA.Core.SpacePacking;
+using UltimaXNA.Diagnostics;
+#endregion
 
 namespace UltimaXNA.UltimaData.FontsNew
 {
-    //QUERY: Does this really need to be exposed? Shouldnt this be a child class of ASCIIText?
-    public sealed class ASCIIFont
+    public class ASCIIFont
     {
         private int m_Height;
-        private Texture2D[] m_Characters;
+        private ASCIICharacter[] m_Characters;
+
+        public Texture2D Texture;
 
         public int Height { get { return m_Height; } set { m_Height = value; } }
-        public Texture2D[] Characters { get { return m_Characters; } set { m_Characters = value; } }
 
-        public ASCIIFont()
+        public ASCIIFont(GraphicsDevice device, byte[] buffer, ref int pos)
         {
             Height = 0;
-            Characters = new Texture2D[224];
-        }
+            m_Characters = new ASCIICharacter[224];
 
-        public Texture2D GetTexture(char character)
-        {
-            return m_Characters[(((((int)character) - 0x20) & 0x7FFFFFFF) % 224)];
-        }
+            CygonRectanglePacker packer = new CygonRectanglePacker(512, 512);
+            uint[] textureData = new uint[512 * 512];
 
-        public int GetWidth(char ch)
-        {
-            return GetTexture(ch).Width;
-        }
+            byte header = buffer[pos++];
 
-        public int GetWidth(string text)
-        {
-            if (text == null || text.Length == 0) { return 0; }
-
-            int width = 0;
-
-            for (int i = 0; i < text.Length; ++i)
+            // get the sprite data and get a place for each character in the texture, then write the character data to an array.
+            for (int k = 0; k < 224; k++)
             {
-                width += GetTexture(text[i]).Width;
+                ASCIICharacter ch = new ASCIICharacter(buffer, ref pos);
+                if (k < 96 && ch.Height > Height)
+                {
+                    Height = ch.Height;
+                }
+
+                Point uv;
+                if (packer.TryPack(ch.Width + 2, ch.Height + 2, out uv)) // allow a one-pixel buffer on each side of the character
+                {
+                    ch.TextureBounds = new Rectangle(uv.X + 1, uv.Y + 1, ch.Width, ch.Height);
+                    ch.WriteTextureData(textureData);
+                }
+                else
+                {
+                    Logger.Fatal("Could not pack font.mul texture with character '{0}'.", (char)(k + 32));
+                }
+
+                m_Characters[k] = ch;
             }
 
-            return width;
+            // write the completed array of character data to the texture.
+            Texture2D m_Texture = new Texture2D(device, 512, 512);
+            m_Texture.SetData<uint>(textureData);
         }
 
-        void getTextDimensions(ref string text, ref int width, ref int height, int wrapwidth)
+        public ASCIICharacter GetCharacter(char character)
+        {
+            int index = (((int)character) & 0x000000ff) - 0x20;
+            return m_Characters[index];
+        }
+
+        public void GetTextDimensions(ref string text, ref int width, ref int height, int wrapwidth)
         {
             width = 0;
             height = Height;
@@ -80,7 +98,7 @@ namespace UltimaXNA.UltimaData.FontsNew
                     {
                         for (int j = 0; j < word.Count; j++)
                         {
-                            int charwidth = GetWidth(word[j]);
+                            int charwidth = GetCharacter(word[j]).Width;
                             wordwidth += charwidth;
                         }
                     }
@@ -93,7 +111,7 @@ namespace UltimaXNA.UltimaData.FontsNew
                         // if this word is followed by a space, does it fit? If not, drop it entirely and insert \n after the word.
                         if (c == ' ')
                         {
-                            int charwidth = GetWidth(c);
+                            int charwidth = GetCharacter(c).Width;
                             if (width + charwidth <= wrapwidth)
                             {
                                 // we can fit an extra space here.
@@ -115,7 +133,7 @@ namespace UltimaXNA.UltimaData.FontsNew
                             int splitwidth = 0;
                             for (int j = 0; j < word.Count; j++)
                             {
-                                splitwidth += GetWidth(word[j]) + 1;
+                                splitwidth += GetCharacter(word[j]).Width + 1;
                                 if (splitwidth > wrapwidth)
                                 {
                                     text = text.Insert(i - word.Count + j - 1, "\n");
@@ -148,21 +166,6 @@ namespace UltimaXNA.UltimaData.FontsNew
 
             if (biggestwidth > width)
                 width = biggestwidth;
-        }
-
-        public void GetTextDimensions(ref string text, ref int width, ref int height, int wrapwidth)
-        {
-            getTextDimensions(ref text, ref width, ref height, wrapwidth);
-        }
-
-        public static ASCIIFont GetFixed(int font)
-        {
-            if (font < 0 || font > 9)
-            {
-                return ASCIIText.Fonts[3];
-            }
-
-            return ASCIIText.Fonts[font];
         }
     }
 }

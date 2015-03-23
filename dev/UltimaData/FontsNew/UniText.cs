@@ -4,15 +4,14 @@ using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-
 namespace UltimaXNA.UltimaData.FontsNew
 {
-
     public static class UniText
     {
         private static UniFont[] m_fonts;
         private static bool m_initialized;
         private static GraphicsDevice m_graphicsDevice;
+
         public static UniFont[] Fonts
         {
             get { return m_fonts; }
@@ -21,11 +20,6 @@ namespace UltimaXNA.UltimaData.FontsNew
         static UniText()
         {
 
-        }
-
-        public static int FontHeight(int index)
-        {
-            return m_fonts[index].Height;
         }
 
         public static void Initialize(GraphicsDevice graphicsDevice)
