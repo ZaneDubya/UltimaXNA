@@ -16,7 +16,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace UltimaXNA.UltimaData.FontsNew
 {
-    public sealed class FontUni
+    public sealed class FontUni : AFont
     {
         GraphicsDevice m_graphics = null;
         BinaryReader m_reader = null;

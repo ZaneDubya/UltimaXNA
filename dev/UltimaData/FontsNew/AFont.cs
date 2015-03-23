@@ -12,13 +12,13 @@ namespace UltimaXNA.UltimaData.FontsNew
     {
         protected ACharacter[] m_Characters;
 
-        public Texture2D Texture;
-
         public int Height
         {
             get;
             protected set;
         }
+
+        // public Texture2D Texture;
 
         /*protected void InitializeTexture(GraphicsDevice device, bool bigTexture = false)
         {
