@@ -1,4 +1,5 @@
-﻿/***************************************************************************
+﻿using Microsoft.Win32;
+/***************************************************************************
  *   FileManager.cs
  *   Based on code from UltimaSDK: http://ultimasdk.codeplex.com/
  *   
@@ -10,7 +11,6 @@
  ***************************************************************************/
 using System;
 using System.IO;
-using Microsoft.Win32;
 using UltimaXNA.Diagnostics;
 
 namespace UltimaXNA.UltimaData

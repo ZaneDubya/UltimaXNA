@@ -6,7 +6,6 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace UltimaXNA.UltimaData.Fonts
 {
-
     public static class ASCIIText
     {
         private static ASCIIFont[] m_fonts = new ASCIIFont[10];
