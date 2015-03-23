@@ -4,7 +4,7 @@ using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace UltimaXNA.UltimaData.Fonts
+namespace UltimaXNA.UltimaData.FontsNew
 {
     public static class ASCIIText
     {
@@ -70,9 +70,9 @@ namespace UltimaXNA.UltimaData.Fonts
                                 {
                                     fixed (Color* p = pixels)
                                     {
-                                        for (int y = 0; y < height; y++)
+                                        for (int y = 0; y < height; ++y)
                                         {
-                                            for (int x = 0; x < width; x++)
+                                            for (int x = 0; x < width; ++x)
                                             {
                                                 short pixel = (short)(buffer[pos++] | (buffer[pos++] << 8));
                                                 Color color = Color.Transparent;

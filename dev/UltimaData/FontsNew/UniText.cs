@@ -4,8 +4,10 @@ using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace UltimaXNA.UltimaData.Fonts
+
+namespace UltimaXNA.UltimaData.FontsNew
 {
+
     public static class UniText
     {
         private static UniFont[] m_fonts;
