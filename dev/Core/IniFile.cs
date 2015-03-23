@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace UltimaXNA.IniHandler
+namespace UltimaXNA.Core
 {
     /// <summary>
     /// Provides methods for reading and writing to an INI file.

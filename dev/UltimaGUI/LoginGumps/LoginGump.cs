@@ -66,18 +66,20 @@ namespace UltimaXNA.UltimaGUI.LoginGumps
 
         public override void ActivateByButton(int buttonID)
         {
+            string accountName = getTextEntry((int)LoginGumpTextFields.AccountName);
+            string password = getTextEntry((int)LoginGumpTextFields.Password);
+
             switch ((LoginGumpButtons)buttonID)
             {
                 case LoginGumpButtons.QuitButton:
                     Quit();
                     break;
                 case LoginGumpButtons.LoginButton:
-                    string accountName = getTextEntry((int)LoginGumpTextFields.AccountName);
-                    string password = getTextEntry((int)LoginGumpTextFields.Password);
                     OnLogin(UltimaVars.SettingVars.ServerIP, UltimaVars.SettingVars.ServerPort, accountName, password);
-                    UltimaVars.SettingVars.LastAccount = accountName;
                     break;
             }
+
+            UltimaVars.SettingVars.LastAccount = accountName;
         }
         public override void ActivateByKeyboardReturn(int textID, string text)
         {

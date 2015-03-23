@@ -128,7 +128,7 @@
     <Compile Include="Entity\EntityViews\MobileDeferredView.cs" />
     <Compile Include="Entity\MobileDeferred.cs" />
     <Compile Include="Entity\Support\MobileFlags.cs" />
-    <Compile Include="IniHandler.cs" />
+    <Compile Include="Core\IniFile.cs" />
     <Compile Include="UltimaVars\SettingVars.cs" />
     <Compile Include="UltimaWorld\Model\EntitySort.cs" />
     <Compile Include="Entity\EntityViews\GroundView.cs" />
