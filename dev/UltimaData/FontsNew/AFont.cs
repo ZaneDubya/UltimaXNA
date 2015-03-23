@@ -8,7 +8,7 @@ using UltimaXNA.Diagnostics;
 
 namespace UltimaXNA.UltimaData.FontsNew
 {
-    class AFont
+    abstract class AFont
     {
         protected ACharacter[] m_Characters;
 
@@ -63,11 +63,7 @@ namespace UltimaXNA.UltimaData.FontsNew
             Texture.SetData<uint>(textureData);
         }*/
 
-        public ACharacter GetCharacter(char character)
-        {
-            int index = ((int)character) - 0x20;
-            return m_Characters[index];
-        }
+        public abstract ACharacter GetCharacter(char character);
 
         public void GetTextDimensions(ref string text, ref int width, ref int height, int wrapwidth)
         {

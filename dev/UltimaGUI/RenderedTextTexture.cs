@@ -2,9 +2,9 @@
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using UltimaXNA.Rendering;
-using UltimaXNA.UltimaGUI.HTML;
 using UltimaXNA.UltimaData;
 using UltimaXNA.UltimaData.FontsNew;
+using UltimaXNA.UltimaGUI.HTML;
 
 namespace UltimaXNA.UltimaGUI
 {
@@ -19,7 +19,7 @@ namespace UltimaXNA.UltimaGUI
             {
                 if (m_Texture == null || m_mustRender)
                 {
-
+                    return 0;
                 }
 
                 return m_Texture.Width;
@@ -32,7 +32,7 @@ namespace UltimaXNA.UltimaGUI
             {
                 if (m_Texture == null || m_mustRender)
                 {
-
+                    return 0;
                 }
 
                 return m_Texture.Height;

@@ -31,34 +31,34 @@ namespace UltimaXNA.UltimaData.FontsNew
         {
             m_graphics = graphicsDevice;
             m_reader = reader;
-            // We load the first 128 characters to 'seed' the font with correct spacing values.
-            for (int iChar = 0; iChar < 128; iChar++)
+            // space characters have no data in UniFont files.
+            m_characters[0] = new CharacterUni();
+            // We load the first 96 characters to 'seed' the font with correct height values.
+            for (int i = 33; i < 128; i++)
             {
-                GetCharacter(iChar);
+                GetCharacter((char)i);
             }
             // Determine the width of the space character - arbitrarily .333 the width of capital M (.333 em?).
             GetCharacter(' ').Width = GetCharacter('M').Width / 3;
         }
 
-        internal CharacterUni GetCharacter(char character)
+        public override ACharacter GetCharacter(char character)
         {
-            return GetCharacter(((int)character) & 0xFFFFF);
-        }
-
-        internal CharacterUni GetCharacter(int index)
-        {
+            int index = ((int)character & 0xFFFFF) - 0x20;
             if (m_characters[index] == null)
             {
-                m_characters[index] = loadCharacter(index);
-                int height = m_characters[index].Height + m_characters[index].YOffset;
+                CharacterUni ch = loadCharacter(index + 0x20);
+                int height = ch.Height + ch.YOffset;
                 if (index < 128 && height > Height)
                 {
                     Height = height;
                 }
+                m_characters[index] = ch;
             }
             return m_characters[index];
         }
 
+        private CharacterUni NullCharacter = new CharacterUni();
         CharacterUni loadCharacter(int index)
         {
             // get the lookup table - 0x10000 ints.
@@ -68,7 +68,7 @@ namespace UltimaXNA.UltimaData.FontsNew
             if (lookup == 0)
             {
                 // no character - so we just return null
-                return null;
+                return NullCharacter;
             }
             else
             {

@@ -42,5 +42,11 @@ namespace UltimaXNA.UltimaData.FontsNew
 
             // InitializeTexture(device, false);
         }
+
+        public override ACharacter GetCharacter(char character)
+        {
+            int index = ((int)character & 0xFF) - 0x20;
+            return m_Characters[index];
+        }
     }
 }

@@ -8,6 +8,11 @@ namespace UltimaXNA.UltimaData.FontsNew
 {
     internal class CharacterUni : ACharacter
     {
+        public CharacterUni()
+        {
+
+        }
+
         public CharacterUni(BinaryReader reader)
         {
             XOffset = reader.ReadByte();
@@ -16,8 +21,10 @@ namespace UltimaXNA.UltimaData.FontsNew
             Height = reader.ReadByte();
 
             // only read data if there is UltimaData...
-            if ((this.Width > 0) && (this.Height > 0))
+            if ((Width > 0) && (Height > 0))
             {
+                m_PixelData = new uint[Width * Height];
+
                 // At this point, we know we have data, so go ahead and start reading!
                 for (int y = 0; y < Height; ++y)
                 {
