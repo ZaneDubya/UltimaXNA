@@ -63,7 +63,7 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         internal bool MouseDownOnThis { get { return (m_clicked); } }
 
-        UltimaGUI.TextRenderer m_textRenderer;
+        RenderedTextTexture m_Texture;
 
         public Button(Control owner, int page)
             : base(owner, page)
@@ -98,7 +98,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             ButtonType = buttonType;
             ButtonParameter = param;
             ButtonID = buttonID;
-            m_textRenderer = new UltimaGUI.TextRenderer("", 100, true);
+            m_Texture = new RenderedTextTexture("", true, 100);
         }
 
         public override void Update(GameTime gameTime)
@@ -122,16 +122,16 @@ namespace UltimaXNA.UltimaGUI.Controls
             Texture2D texture = getTextureFromMouseState();
 
             if (Caption != string.Empty)
-                m_textRenderer.Text = Caption;
+                m_Texture.Text = Caption;
 
             spriteBatch.Draw2D(texture, new Rectangle(X, Y, Width, Height), 0, false, false);
 
             if (Caption != string.Empty)
             {
                 int yoffset = MouseDownOnThis ? 1 : 0;
-                m_textRenderer.Draw(spriteBatch, 
-                    new Point(X + (Width - m_textRenderer.Width) / 2,
-                        Y + yoffset + (Height - m_textRenderer.Height) / 2));
+                m_Texture.Draw(spriteBatch, 
+                    new Point(X + (Width - m_Texture.Width) / 2,
+                        Y + yoffset + (Height - m_Texture.Height) / 2));
             }
             base.Draw(spriteBatch);
         }

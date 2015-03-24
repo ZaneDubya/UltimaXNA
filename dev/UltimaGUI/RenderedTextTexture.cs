@@ -17,9 +17,9 @@ namespace UltimaXNA.UltimaGUI
         {
             get
             {
-                if (m_Texture == null || m_mustRender)
+                if (m_Texture == null || m_MustRender)
                 {
-                    return 0;
+                    checkRender(UltimaEngine.UserInterface.SpriteBatch.GraphicsDevice);
                 }
 
                 return m_Texture.Width;
@@ -30,9 +30,9 @@ namespace UltimaXNA.UltimaGUI
         {
             get
             {
-                if (m_Texture == null || m_mustRender)
+                if (m_Texture == null || m_MustRender)
                 {
-                    return 0;
+                    checkRender(UltimaEngine.UserInterface.SpriteBatch.GraphicsDevice);
                 }
 
                 return m_Texture.Height;
@@ -52,7 +52,7 @@ namespace UltimaXNA.UltimaGUI
         }
 
         private int m_activeHREF = -1;
-        public int ActiveHREF
+        public int ActiveRegion
         {
             get { return m_activeHREF; }
             set { m_activeHREF = value; }
@@ -64,7 +64,7 @@ namespace UltimaXNA.UltimaGUI
             set;
         }
 
-        private bool m_mustRender = true;
+        private bool m_MustRender = true;
 
         private bool m_AsHTML = false;
         public bool AsHTML
@@ -74,7 +74,7 @@ namespace UltimaXNA.UltimaGUI
             {
                 if (m_AsHTML != value)
                 {
-                    m_mustRender = true;
+                    m_MustRender = true;
                     m_AsHTML = value;
                 }
             }
@@ -88,7 +88,7 @@ namespace UltimaXNA.UltimaGUI
             {
                 if (m_MaxWidth != value)
                 {
-                    m_mustRender = true;
+                    m_MustRender = true;
                     m_MaxWidth = value;
                 }
             }
@@ -102,7 +102,7 @@ namespace UltimaXNA.UltimaGUI
             {
                 if (m_text != value)
                 {
-                    m_mustRender = true;
+                    m_MustRender = true;
                     m_text = value;
                 }
             }
@@ -132,6 +132,8 @@ namespace UltimaXNA.UltimaGUI
 
         public void Draw(SpriteBatchUI sb, Point position)
         {
+            checkRender(sb.GraphicsDevice);
+
             Draw(sb, new Rectangle(position.X, position.Y, Width, Height), 0, 0);
         }
 
@@ -237,7 +239,7 @@ namespace UltimaXNA.UltimaGUI
 
         private void checkRender(GraphicsDevice graphics)
         {
-            if (m_Texture == null || m_mustRender)
+            if (m_Texture == null || m_MustRender)
             {
                 if (m_Texture != null)
                 {
@@ -246,10 +248,11 @@ namespace UltimaXNA.UltimaGUI
                 }
 
                 int width, height;
+
                 resizeAndParse(Text, MaxWidth, AsHTML, out width, out height);
                 m_Texture = renderToTexture(graphics, m_HtmlParser, width, height);
 
-                m_mustRender = false;
+                m_MustRender = false;
             }
         }
 

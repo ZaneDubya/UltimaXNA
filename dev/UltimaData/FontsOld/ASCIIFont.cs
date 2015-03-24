@@ -14,7 +14,7 @@ using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace UltimaXNA.UltimaData.Fonts
+namespace UltimaXNA.UltimaData.FontsOld
 {
     //QUERY: Does this really need to be exposed? Shouldnt this be a child class of ASCIIText?
     public sealed class ASCIIFont

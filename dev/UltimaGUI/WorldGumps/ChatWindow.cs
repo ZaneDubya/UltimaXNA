@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using UltimaXNA.Rendering;
 using UltimaXNA.UltimaGUI.Controls;
-using UltimaXNA.UltimaData.Fonts;
+using UltimaXNA.UltimaData.FontsNew;
 
 namespace UltimaXNA.UltimaGUI.WorldGumps
 {
@@ -30,7 +30,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
         {
             if (InputState == null)
             {
-                InputState = new TextEntry(this, 0, 1, UserInterface.Height - UniText.FontHeight(0) + 4, 400, UniText.FontHeight(0), 0, 0, 64, string.Empty);
+                InputState = new TextEntry(this, 0, 1, UserInterface.Height - TextUni.GetFont(0).Height + 4, 400, TextUni.GetFont(0).Height, 0, 0, 64, string.Empty);
                 InputState.LegacyCarat = true;
                 AddControl(InputState);
             }
@@ -87,8 +87,8 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
         const float Time_Display = 10.0f;
         const float Time_Fadeout = 4.0f;
 
-        private TextRenderer m_renderer;
-        public int TextHeight { get { return m_renderer.Height; } }
+        private RenderedTextTexture m_Texture;
+        public int TextHeight { get { return m_Texture.Height; } }
 
         public ChatLineTimed(string text, int width)
         {
@@ -97,7 +97,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
             m_alpha = 1.0f;
             m_width = width;
 
-            m_renderer = new TextRenderer(m_text, m_width, true);
+            m_Texture = new RenderedTextTexture(m_text, true, m_width);
         }
 
         public void Update(GameTime gameTime)
@@ -111,17 +111,17 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
             {
                 m_alpha = 1.0f - ((time) - (Time_Display - Time_Fadeout)) / Time_Fadeout;
             }
-            m_renderer.Transparent = (m_alpha < 1.0f);
+            m_Texture.Transparent = (m_alpha < 1.0f);
         }
 
         public void Draw(SpriteBatchUI sb, Point position)
         {
-            m_renderer.Draw(sb, position);
+            m_Texture.Draw(sb, position);
         }
 
         public void Dispose()
         {
-            m_renderer = null;
+            m_Texture = null;
         }
 
         public override string ToString()

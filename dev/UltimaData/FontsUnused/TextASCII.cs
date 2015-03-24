@@ -1,8 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.IO;
+using UltimaXNA.UltimaData.FontsNew;
 
-namespace UltimaXNA.UltimaData.FontsNew
+namespace UltimaXNA.UltimaData.FontsUnused
 {
     public static class TextASCII
     {

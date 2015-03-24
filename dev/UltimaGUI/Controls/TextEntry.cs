@@ -42,8 +42,8 @@ namespace UltimaXNA.UltimaGUI.Controls
         float m_secondsSinceLastBlink = 0f;
         const float m_SecondsPerBlink = 0.5f;
 
-        UltimaGUI.TextRenderer m_textRenderer;
-        UltimaGUI.TextRenderer m_caratRenderer;
+        RenderedTextTexture m_Texture;
+        RenderedTextTexture m_Carat;
 
         public TextEntry(Control owner, int page)
             : base(owner, page)
@@ -85,8 +85,8 @@ namespace UltimaXNA.UltimaGUI.Controls
             Text = text;
             LimitSize = limitSize;
             m_caratBlinkOn = false;
-            m_textRenderer = new UltimaGUI.TextRenderer("", width, true);
-            m_caratRenderer = new UltimaGUI.TextRenderer("", width, true);
+            m_Texture = new RenderedTextTexture("", true, width);
+            m_Carat = new RenderedTextTexture("", true, width);
         }
 
         public override void Update(GameTime gameTime)
@@ -122,17 +122,17 @@ namespace UltimaXNA.UltimaGUI.Controls
                 m_caratBlinkOn = false;
             }
 
-            m_textRenderer.Text = HtmlTag + (IsPasswordField ? new string('*', Text.Length) : Text);
-            m_caratRenderer.Text = HtmlTag + (m_legacyCarat ? "_" : "|");
+            m_Texture.Text = HtmlTag + (IsPasswordField ? new string('*', Text.Length) : Text);
+            m_Carat.Text = HtmlTag + (m_legacyCarat ? "_" : "|");
 
             base.Update(gameTime);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)
         {
-            m_textRenderer.Draw(spriteBatch, Position);
+            m_Texture.Draw(spriteBatch, Position);
             if (m_caratBlinkOn)
-                m_caratRenderer.Draw(spriteBatch, new Point(X + m_textRenderer.Width, Y));
+                m_Carat.Draw(spriteBatch, new Point(X + m_Texture.Width, Y));
             
             base.Draw(spriteBatch);
         }

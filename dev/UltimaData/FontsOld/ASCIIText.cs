@@ -4,7 +4,7 @@ using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace UltimaXNA.UltimaData.Fonts
+namespace UltimaXNA.UltimaData.FontsOld
 {
     public static class ASCIIText
     {

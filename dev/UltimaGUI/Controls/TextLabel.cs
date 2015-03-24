@@ -19,7 +19,7 @@ namespace UltimaXNA.UltimaGUI.Controls
     {
         public int Hue = 0;
         public string Text = string.Empty;
-        UltimaGUI.TextRenderer m_textRenderer;
+        RenderedTextTexture m_textRenderer;
 
         public TextLabel(Control owner, int page)
             : base(owner, page)
@@ -49,7 +49,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             Position = new Point(x, y);
             Hue = hue;
             Text = text;
-            m_textRenderer = new UltimaGUI.TextRenderer(Text, 0, true);
+            m_textRenderer = new RenderedTextTexture(Text, true);
             m_textRenderer.Hue = Hue;
         }
 

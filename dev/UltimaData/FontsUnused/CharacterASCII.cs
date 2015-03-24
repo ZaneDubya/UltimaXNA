@@ -5,8 +5,9 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.IO;
+using UltimaXNA.UltimaData.FontsNew;
 
-namespace UltimaXNA.UltimaData.FontsNew
+namespace UltimaXNA.UltimaData.FontsUnused
 {
     class CharacterASCII : ACharacter
     {

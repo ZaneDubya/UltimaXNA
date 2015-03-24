@@ -238,15 +238,8 @@ namespace UltimaXNA
             if (Cursor != null)
                 Cursor.Draw(m_SpriteBatch, UltimaEngine.Input.MousePosition);
 
-            if (texture_debug == null)
-                texture_debug = new RenderedTextTexture("<outline><b><u>Mellow world</u></b></outline>", true);
-
-            texture_debug.Draw(m_SpriteBatch, new Point(20, 20));
-
             m_SpriteBatch.Flush();
         }
-
-        private RenderedTextTexture texture_debug;
 
         /// <summary>
         /// Disposes of all controls.

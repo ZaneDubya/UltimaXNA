@@ -17,7 +17,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using UltimaXNA.UltimaData.Fonts;
+using UltimaXNA.UltimaData.FontsOld;
 #endregion
 
 namespace UltimaXNA

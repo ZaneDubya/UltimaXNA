@@ -56,8 +56,10 @@ namespace UltimaXNA
                 // Initialize and load data
                 UltimaData.AnimationData.Initialize(GraphicsDevice);
                 UltimaData.ArtData.Initialize(GraphicsDevice);
-                UltimaData.Fonts.ASCIIText.Initialize(GraphicsDevice);
-                UltimaData.Fonts.UniText.Initialize(GraphicsDevice);
+
+                UltimaData.FontsOld.ASCIIText.Initialize(GraphicsDevice);
+                UltimaData.FontsNew.TextUni.Initialize(GraphicsDevice);
+
                 UltimaData.GumpData.Initialize(GraphicsDevice);
                 UltimaData.HuesXNA.Initialize(GraphicsDevice);
                 UltimaData.TexmapData.Initialize(GraphicsDevice);
@@ -65,8 +67,7 @@ namespace UltimaXNA
                 UltimaData.SkillsData.Initialize();
                 GraphicsDevice.Textures[1] = UltimaXNA.UltimaData.HuesXNA.HueTexture;
 
-                UltimaData.FontsNew.TextASCII.Initialize(GraphicsDevice);
-                UltimaData.FontsNew.TextUni.Initialize(GraphicsDevice);
+                
 
                 UltimaVars.EngineVars.EngineRunning = true;
                 UltimaVars.EngineVars.InWorld = false;

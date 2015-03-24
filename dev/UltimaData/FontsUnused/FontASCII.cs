@@ -15,9 +15,10 @@ using System.Collections.Generic;
 using UltimaXNA.Core.SpacePacking;
 using UltimaXNA.Diagnostics;
 using System.IO;
+using UltimaXNA.UltimaData.FontsNew;
 #endregion
 
-namespace UltimaXNA.UltimaData.FontsNew
+namespace UltimaXNA.UltimaData.FontsUnused
 {
     internal class FontASCII : AFont
     {
