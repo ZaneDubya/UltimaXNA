@@ -52,7 +52,7 @@ namespace InterXLib
             private set;
         }
 
-        public bool IsAltDown
+        public bool IsShiftDown
         {
             get;
             private set;
@@ -294,7 +294,7 @@ namespace InterXLib
         {
             List<InputEvent> list = (m_EventsAccumulatingUseAlternate) ? m_EventsAccumulatingAlternate : m_EventsAccumulating;
             list.Add(e);
-            IsAltDown = e.Alt;
+            IsShiftDown = e.Shift;
             IsCtrlDown = e.Control;
         }
 

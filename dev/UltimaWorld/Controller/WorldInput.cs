@@ -219,7 +219,7 @@ namespace UltimaXNA.UltimaWorld.Controller
         void parseKeyboard()
         {
             // all names mode
-            if (UltimaEngine.Input.IsAltDown && UltimaEngine.Input.IsCtrlDown)
+            if (UltimaEngine.Input.IsShiftDown && UltimaEngine.Input.IsCtrlDown)
             {
                 EngineVars.AllLabels = true;
             }
