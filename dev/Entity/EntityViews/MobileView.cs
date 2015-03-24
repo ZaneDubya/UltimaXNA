@@ -99,7 +99,7 @@ namespace UltimaXNA.Entity.EntityViews
                 }
             }
 
-            return false;
+            return true;
         }
 
         // ======================================================================

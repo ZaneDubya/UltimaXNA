@@ -102,6 +102,20 @@ namespace UltimaXNA.Entity.EntityViews
             return true;
         }
 
+        /// <summary>
+        /// Draws all overheads, starting at [yOffset] pixels above the Entity's anchor point on the ground.
+        /// </summary>
+        /// <param name="yOffset"></param>
+        public void DrawOverheads(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map, int yOffset)
+        {
+            for (int i = 0; i < Entity.Overheads.Count; i++)
+            {
+                AEntityView view = Entity.Overheads[i].GetView();
+                view.DrawArea = new Rectangle(view.DrawTexture.Width / 2, yOffset, view.DrawTexture.Width, view.DrawTexture.Height);
+                view.Draw(spriteBatch, drawPosition, mouseOverList, map);
+            }
+        }
+
         protected void Pick(MouseOverList mouseOverList, VertexPositionNormalTextureHue[] vertexBuffer)
         {
             if ((mouseOverList.PickType & PickType) == PickType)

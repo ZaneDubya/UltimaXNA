@@ -28,19 +28,10 @@ namespace UltimaXNA.Entity.EntityViews
         public OverheadView(Overhead entity)
             : base(entity)
         {
-
+            m_Texture = new RenderedTextTexture(Entity.Text, false);
+            DrawTexture = m_Texture.Texture;
         }
 
         private RenderedTextTexture m_Texture = null;
-
-        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
-        {
-            if (m_Texture == null)
-            {
-                m_Texture = new RenderedTextTexture(Entity.Text, false);
-            }
-
-            return true;
-        }
     }
 }
