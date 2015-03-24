@@ -979,7 +979,6 @@ namespace UltimaXNA
                     if (overhead != null)
                     {
                         UltimaInteraction.ChatMessage(speakerName + ": " + text, font, hue);
-                        overhead.SpeakerName = speakerName;
                     }
                     else
                     {
@@ -996,7 +995,6 @@ namespace UltimaXNA
                     if (serial.IsValid)
                     {
                         overhead = EntityManager.AddOverhead(msgType, serial, text, font, hue);
-                        overhead.SpeakerName = speakerName;
                         // Labels that are longer than the current name should be set as the name
                         if (serial.IsMobile)
                         {

@@ -130,6 +130,15 @@ namespace UltimaXNA.UltimaGUI
             Images = new HTMLImages();
         }
 
+        public Texture2D Texture
+        {
+            get
+            {
+                checkRender(UltimaEngine.UserInterface.SpriteBatch.GraphicsDevice);
+                return m_Texture;
+            }
+        }
+
         public void Draw(SpriteBatchUI sb, Point position)
         {
             checkRender(sb.GraphicsDevice);

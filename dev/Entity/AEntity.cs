@@ -131,81 +131,76 @@ namespace UltimaXNA.Entity
 
         }
 
-        internal void drawOverheads(MapTile tile, Position3D position)
-        {
-            // base entities do not draw, but they can have overheads, so we draw those.
-            foreach (KeyValuePair<int, Overhead> overhead in m_overheads)
-            {
-                if (!overhead.Value.IsDisposed)
-                    overhead.Value.Draw(tile, position);
-            }
-        }
-
         // ============================================================
         // Overhead handling code
         // ============================================================
 
-        private Dictionary<int, Overhead> m_overheads = new Dictionary<int, Overhead>();
-        int m_lastOverheadIndex = 0;
+        private List<Overhead> m_overheads = new List<Overhead>();
+
+        internal void InternalDrawOverheads(MapTile tile, Position3D position)
+        {
+            // base entities do not draw, but they can have overheads, so we draw those.
+            foreach (Overhead overhead in m_overheads)
+            {
+                if (!overhead.IsDisposed)
+                    overhead.Draw(tile, position);
+            }
+        }
 
         private void InternalUpdateOverheads(double frameMS)
         {
             // handle overheads.
-            clearDisposedOverheads();
-            foreach (KeyValuePair<int, Overhead> overhead in m_overheads)
+            InternalClearDisposedOverheads();
+            foreach (Overhead overhead in m_overheads)
             {
-                overhead.Value.Update(frameMS);
+                overhead.Update(frameMS);
             }
         }
 
         public Overhead AddOverhead(MessageType msgType, string text, int fontID, int hue)
         {
-            // Only one label allowed at a time.
+            // Labels are exclusive
             if (msgType == MessageType.Label)
             {
-                disposeLabels();
-                clearDisposedOverheads();
+                InternalDisposeOfAllLabels();
+                InternalClearDisposedOverheads();
             }
 
-            foreach (Overhead o in m_overheads.Values)
+            foreach (Overhead o in m_overheads)
             {
                 if ((o.Text == text) && !(o.IsDisposed))
                 {
-                    o.RefreshTimer();
+                    o.ResetTimer();
                     return o;
                 }
             }
 
-            Overhead overhead = new Overhead(this, msgType, text, fontID, hue);
-            m_overheads.Add(m_lastOverheadIndex++, overhead);
+            Overhead overhead = new Overhead(this, msgType, text);
+            m_overheads.Add(overhead);
             return overhead;
         }
 
-        private void disposeLabels()
+        private void InternalDisposeOfAllLabels()
         {
-            foreach (Overhead o in m_overheads.Values)
+            foreach (Overhead o in m_overheads)
             {
-                if (o.MsgType == MessageType.Label)
+                if (o.MessageType == MessageType.Label)
                 {
                     o.Dispose();
                 }
             }
         }
 
-        private void clearDisposedOverheads()
+        private void InternalClearDisposedOverheads()
         {
             List<int> removeObjectsList = removeObjectsList = new List<int>();
-            foreach (KeyValuePair<int, Overhead> overhead in m_overheads)
+            for (int i = 0; i < m_overheads.Count; i++)
             {
-                if (overhead.Value.IsDisposed)
+                if (m_overheads[i].IsDisposed)
                 {
-                    removeObjectsList.Add(overhead.Key);
-                    continue;
+                    m_overheads.RemoveAt(i);
+                    i--;
                 }
-            }
-            foreach (int i in removeObjectsList)
-            {
-                m_overheads.Remove(i);
             }
         }
     }

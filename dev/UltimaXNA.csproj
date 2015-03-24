@@ -342,7 +342,7 @@
     <Compile Include="Entity\MobileMovement.cs" />
     <Compile Include="Entity\MobileMovementCheck.cs" />
     <Compile Include="Entity\Multi.cs" />
-    <Compile Include="Entity\Support\Overhead.cs" />
+    <Compile Include="Entity\Overhead.cs" />
     <Compile Include="Entity\PlayerMobile.cs" />
     <Compile Include="Entity\Support\PropertyList.cs" />
     <Compile Include="Entity\Support\Shared.cs" />
