@@ -287,6 +287,11 @@ namespace UltimaXNA.UltimaWorld.Model
             get { return m_Targeting != TargetTypes.Nothing; }
         }
 
+        public void ClearTargetingWithoutTargetCancelPacket()
+        {
+            m_Targeting = TargetTypes.Nothing;
+        }
+
         public void SetTargeting(TargetTypes targeting, int cursorID)
         {
             if (m_Targeting != targeting)
@@ -319,7 +324,7 @@ namespace UltimaXNA.UltimaWorld.Model
             // Send the target ...
             m_Model.Client.Send(new TargetXYZPacket((short)selectedEntity.Position.X, (short)selectedEntity.Position.Y, (short)selectedEntity.Z, (ushort)modelNumber));
             // ... and clear our targeting cursor.
-            SetTargeting(TargetTypes.Nothing, 0);
+            ClearTargetingWithoutTargetCancelPacket();
         }
 
         void mouseTargetingEventObject(AEntity selectedEntity)
@@ -348,7 +353,7 @@ namespace UltimaXNA.UltimaWorld.Model
             }
 
             // Clear our target cursor.
-            SetTargeting(TargetTypes.Nothing, 0);
+            ClearTargetingWithoutTargetCancelPacket();
         }
 
         // ======================================================================
