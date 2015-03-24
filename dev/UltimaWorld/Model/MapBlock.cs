@@ -47,7 +47,12 @@ namespace UltimaXNA.UltimaWorld.Model
                         }
                         else
                         {
+                            int entityCount = Tiles[i].Entities.Count;
                             Tiles[i].Entities[j].Dispose();
+                            if (entityCount == Tiles[i].Entities.Count)
+                            {
+                                Tiles[i].Entities.RemoveAt(j);
+                            }
                             j--; // entity will dispose, removing it from collection.
                         }
                     }
