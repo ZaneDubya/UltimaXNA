@@ -153,6 +153,8 @@ namespace UltimaXNA.Entity
                 {
                     // reset the timer for the object so it lasts longer.
                     overhead.ResetTimer();
+                    // update hue?
+                    overhead.Hue = hue;
                     // insert it at the bottom of the queue so it displays closest to the player.
                     m_Overheads.RemoveAt(i);
                     m_Overheads.Insert(0, overhead);

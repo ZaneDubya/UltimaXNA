@@ -32,6 +32,12 @@ namespace UltimaXNA.Entity.EntityViews
             DrawTexture = m_Texture.Texture;
         }
 
+        public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
+        {
+            HueVector = Utility.GetHueVector(Entity.Hue);
+            return base.Draw(spriteBatch, drawPosition, mouseOverList, map);
+        }
+
         private RenderedTextTexture m_Texture = null;
     }
 }
