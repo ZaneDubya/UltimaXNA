@@ -4,12 +4,13 @@ using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace UltimaXNA.UltimaData.Fonts
+namespace UltimaXNA.UltimaData.FontsOld
 {
-
     public static class ASCIIText
     {
-        private static ASCIIFont[] m_fonts = new ASCIIFont[10];
+        public const int FontCount = 10;
+
+        private static ASCIIFont[] m_fonts = new ASCIIFont[FontCount];
         private static bool m_initialized;
         private static GraphicsDevice m_graphicsDevice;
 
@@ -40,16 +41,16 @@ namespace UltimaXNA.UltimaData.Fonts
                     using (BinaryReader reader = new BinaryReader(new FileStream(path, FileMode.Open, FileAccess.Read)))
                     {
                         buffer = reader.ReadBytes((int)reader.BaseStream.Length);
+                        Diagnostics.Metrics.ReportDataRead(buffer.Length);
                     }
-                    Diagnostics.Metrics.ReportDataRead(buffer.Length);
 
-                    for (int i = 0; i < 10; ++i)
+                    for (int i = 0; i < FontCount; i++)
                     {
                         m_fonts[i] = new ASCIIFont();
 
                         byte header = buffer[pos++];
 
-                        for (int k = 0; k < 224; ++k)
+                        for (int k = 0; k < 224; k++)
                         {
                             int width = buffer[pos++];
                             int height = buffer[pos++];
@@ -69,9 +70,9 @@ namespace UltimaXNA.UltimaData.Fonts
                                 {
                                     fixed (Color* p = pixels)
                                     {
-                                        for (int y = 0; y < height; ++y)
+                                        for (int y = 0; y < height; y++)
                                         {
-                                            for (int x = 0; x < width; ++x)
+                                            for (int x = 0; x < width; x++)
                                             {
                                                 short pixel = (short)(buffer[pos++] | (buffer[pos++] << 8));
                                                 Color color = Color.Transparent;

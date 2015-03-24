@@ -63,9 +63,9 @@ namespace UltimaXNA.UltimaGUI.Controls
                 if (value != base.Width)
                 {
                     base.Width = value;
-                    if (m_textRenderer != null)
+                    if (m_Texture != null)
                     {
-                        m_textRenderer.MaxWidth = ContentWidth;
+                        m_Texture.MaxWidth = ContentWidth;
                         m_textChanged = true;
                     }
                 }
@@ -95,7 +95,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             }
         }
 
-        UltimaGUI.TextRenderer m_textRenderer;
+        RenderedTextTexture m_Texture;
 
         public HtmlGump(Control owner, int page)
             : base(owner, page)
@@ -132,8 +132,8 @@ namespace UltimaXNA.UltimaGUI.Controls
             Text = text;
             m_background = (background == 1) ? true : false;
             m_hasScrollbar = (scrollbar == 1) ? true : false;
-            m_textRenderer = new TextRenderer(text, Width, true);
-            Height = m_textRenderer.Height;
+            m_Texture = new RenderedTextTexture(text, true, Width);
+            Height = m_Texture.Height;
         }
 
         public override void Update(GameTime gameTime)
@@ -143,10 +143,10 @@ namespace UltimaXNA.UltimaGUI.Controls
             if (m_textChanged)
             {
                 m_textChanged = false;
-                m_textRenderer.Text = Text;
+                m_Texture.Text = Text;
             }
 
-            HandlesMouseInput = (m_textRenderer.HREFRegions.Count > 0);
+            HandlesMouseInput = (m_Texture.Regions.Count > 0);
 
             if (HasScrollbar)
             {
@@ -157,7 +157,7 @@ namespace UltimaXNA.UltimaGUI.Controls
                 m_scrollbar.Width = 15;
                 m_scrollbar.Height = Height;
                 m_scrollbar.MinValue = 0;
-                m_scrollbar.MaxValue = m_textRenderer.Height - Height;
+                m_scrollbar.MaxValue = m_Texture.Height - Height;
                 ScrollY = m_scrollbar.Value;
             }
 
@@ -176,9 +176,9 @@ namespace UltimaXNA.UltimaGUI.Controls
                 spriteBatch.Draw2D(m_backgroundTexture, new Rectangle(OwnerX + Area.X, OwnerY + Area.Y, Width, Height), 0, false, false);
             }
 
-            m_textRenderer.ActiveHREF = m_hrefOver;
-            m_textRenderer.ActiveHREF_UseDownHue = m_clicked;
-            m_textRenderer.Draw(spriteBatch, new Rectangle(X, Y, Size.X, Size.Y), ScrollX, ScrollY);
+            m_Texture.ActiveRegion = m_hrefOver;
+            m_Texture.ActiveRegion_UseDownHue = m_clicked;
+            m_Texture.Draw(spriteBatch, new Rectangle(X, Y, Size.X, Size.Y), ScrollX, ScrollY);
             
             base.Draw(spriteBatch);
         }
@@ -192,9 +192,9 @@ namespace UltimaXNA.UltimaGUI.Controls
                     return true;
             }
 
-            if (m_textRenderer.HREFRegions.Count > 0)
+            if (m_Texture.Regions.Count > 0)
             {
-                HTMLRegion region = m_textRenderer.HREFRegions.RegionfromPoint(new Point(x + ScrollX, y + ScrollY));
+                HTMLRegion region = m_Texture.Regions.RegionfromPoint(new Point(x + ScrollX, y + ScrollY));
                 if (region != null)
                 {
                     m_hrefOver = region.Index;
@@ -226,8 +226,8 @@ namespace UltimaXNA.UltimaGUI.Controls
             {
                 if (button == MouseButton.Left)
                 {
-                    if (m_textRenderer.HREFRegions.Region(m_hrefOver).HREFAttributes != null)
-                        ActivateByHREF(m_textRenderer.HREFRegions.Region(m_hrefOver).HREFAttributes.HREF);
+                    if (m_Texture.Regions.Region(m_hrefOver).HREFAttributes != null)
+                        ActivateByHREF(m_Texture.Regions.Region(m_hrefOver).HREFAttributes.HREF);
                 }
             }
         }

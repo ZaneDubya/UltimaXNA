@@ -123,11 +123,24 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\AUltimaModel.cs" />
+    <Compile Include="Core\SpacePacking\CygonRectanglePacker.cs" />
+    <Compile Include="Core\SpacePacking\OutOfSpaceException.cs" />
+    <Compile Include="Core\SpacePacking\RectanglePacker.cs" />
     <Compile Include="Entity\EntityViews\AEntityView.cs" />
     <Compile Include="Entity\EntityViews\CorpseView.cs" />
     <Compile Include="Entity\EntityViews\MobileDeferredView.cs" />
     <Compile Include="Entity\MobileDeferred.cs" />
     <Compile Include="Entity\Support\MobileFlags.cs" />
+    <Compile Include="UltimaData\FontsUnused\CharacterASCII.cs" />
+    <Compile Include="UltimaData\FontsNew\AFont.cs" />
+    <Compile Include="UltimaData\FontsUnused\FontASCII.cs" />
+    <Compile Include="UltimaGUI\RenderedTextTexture.cs" />
+    <Compile Include="UltimaData\FontsUnused\TextASCII.cs" />
+    <Compile Include="UltimaData\FontsNew\ACharacter.cs" />
+    <Compile Include="UltimaData\FontsNew\CharacterUni.cs" />
+    <Compile Include="UltimaData\FontsNew\FontUni.cs" />
+    <Compile Include="UltimaData\FontsNew\TextUni.cs" />
+    <Compile Include="UltimaGUI\UltimaFonts.cs" />
     <Compile Include="Core\IniFile.cs" />
     <Compile Include="UltimaVars\SettingVars.cs" />
     <Compile Include="UltimaWorld\Model\EntitySort.cs" />
@@ -137,9 +150,7 @@
     <Compile Include="Entity\Ground.cs" />
     <Compile Include="Entity\StaticItem.cs" />
     <Compile Include="UltimaData\BodyData.cs" />
-    <Compile Include="UltimaData\Fonts\ASCIIText.cs" />
-    <Compile Include="UltimaData\Fonts\UniCharacter.cs" />
-    <Compile Include="UltimaData\Fonts\UniText.cs" />
+    <Compile Include="UltimaData\FontsOld\ASCIIText.cs" />
     <Compile Include="UltimaGUI\Controls\GumpPicBackpack.cs" />
     <Compile Include="UltimaGUI\GUISprite.cs" />
     <Compile Include="UltimaGUI\UltimaCursor.cs" />
@@ -281,7 +292,7 @@
     <Compile Include="Core\Program.cs" />
     <Compile Include="UltimaClient.cs" />
     <Compile Include="UltimaData\ArtData.cs" />
-    <Compile Include="UltimaData\Fonts\ASCIIFont.cs" />
+    <Compile Include="UltimaData\FontsOld\ASCIIFont.cs" />
     <Compile Include="UltimaData\ContainerData.cs" />
     <Compile Include="UltimaData\CustomHousingData.cs" />
     <Compile Include="UltimaData\HairStyles.cs" />
@@ -310,7 +321,6 @@
     <Compile Include="UltimaData\_SharedMethods.cs" />
     <Compile Include="UltimaData\SoundData.cs" />
     <Compile Include="UltimaData\StringData.cs" />
-    <Compile Include="UltimaData\Fonts\UniFont.cs" />
     <Compile Include="Core\Diagnostics\Logger.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -399,7 +409,6 @@
     <Compile Include="UltimaGUI\Controls\TextLabelAscii.cs" />
     <Compile Include="UltimaGUI\Controls\TextLabelAsciiCropped.cs" />
     <Compile Include="UltimaGUI\Controls\TilePic.cs" />
-    <Compile Include="UltimaGUI\TextRenderer.cs" />
     <Compile Include="Core\GUIState.cs" />
     <Compile Include="UltimaData\StaticTileList.cs" />
     <Compile Include="UltimaData\TexmapData.cs" />

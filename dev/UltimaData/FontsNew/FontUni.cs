@@ -14,74 +14,68 @@ using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace UltimaXNA.UltimaData.Fonts
+namespace UltimaXNA.UltimaData.FontsNew
 {
-    public sealed class UniFont
+    internal class FontUni : AFont
     {
         GraphicsDevice m_graphics = null;
         BinaryReader m_reader = null;
-        private UniCharacter[] m_characters;
+        private CharacterUni[] m_characters;
 
-        private int m_height = 0;
-        public int Height { get { return m_height; } set { m_height = value; } }
-        private int m_baseline = 0;
-        public int Baseline { get { return m_baseline; } set { m_baseline = value; } }
-        public int Lineheight { get { return m_baseline + 4; } }
-        public UniFont()
+        public FontUni()
         {
-            m_characters = new UniCharacter[0x10000];
+            m_characters = new CharacterUni[0x10000];
         }
 
         public void Initialize(GraphicsDevice graphicsDevice, BinaryReader reader)
         {
             m_graphics = graphicsDevice;
             m_reader = reader;
-            // We load the first 128 characters to 'seed' the font with correct spacing values.
-            for (int iChar = 0; iChar < 128; iChar++)
+            // space characters have no data in UniFont files.
+            m_characters[0] = new CharacterUni();
+            // We load the first 96 characters to 'seed' the font with correct height values.
+            for (int i = 33; i < 128; i++)
             {
-                GetCharacter(iChar);
+                GetCharacter((char)i);
             }
             // Determine the width of the space character - arbitrarily .333 the width of capital M (.333 em?).
             GetCharacter(' ').Width = GetCharacter('M').Width / 3;
-            Baseline = GetCharacter('M').Height + GetCharacter('M').YOffset;
         }
 
-        public UniCharacter GetCharacter(char character)
+        public override ACharacter GetCharacter(char character)
         {
-            return GetCharacter(((int)character) & 0xFFFFF);
-        }
-
-        public UniCharacter GetCharacter(int index)
-        {
+            int index = ((int)character & 0xFFFFF) - 0x20;
+            if (index < 0)
+                return NullCharacter;
             if (m_characters[index] == null)
             {
-                m_characters[index] = loadCharacter(index);
-                int height = m_characters[index].Height + m_characters[index].YOffset;
+                CharacterUni ch = loadCharacter(index + 0x20);
+                int height = ch.Height + ch.YOffset;
                 if (index < 128 && height > Height)
                 {
                     Height = height;
                 }
+                m_characters[index] = ch;
             }
             return m_characters[index];
         }
 
-        UniCharacter loadCharacter(int index)
+        private CharacterUni NullCharacter = new CharacterUni();
+        CharacterUni loadCharacter(int index)
         {
             // get the lookup table - 0x10000 ints.
             m_reader.BaseStream.Position = index * 4;
             int lookup = m_reader.ReadInt32();
 
-            UniCharacter character = new UniCharacter();
-
             if (lookup == 0)
             {
-                // no character - so we just return an empty character
-                return character;
+                // no character - so we just return null
+                return NullCharacter;
             }
             else
             {
                 m_reader.BaseStream.Position = lookup;
-                character.LoadCharacter(m_reader, m_graphics);
+                CharacterUni character = new CharacterUni(m_reader);
                 return character;
             }
         }

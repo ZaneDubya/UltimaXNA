@@ -16,11 +16,17 @@ namespace UltimaXNA.UltimaGUI.HTML
     {
         List<HTMLRegion> m_regions = new List<HTMLRegion>();
 
-        public List<HTMLRegion> Regions
+        public HTMLRegion this[int index]
         {
             get
             {
-                return m_regions;
+                if (m_regions.Count == 0)
+                    return null;
+                if (index >= m_regions.Count)
+                    index = m_regions.Count - 1;
+                if (index < 0)
+                    index = 0;
+                return m_regions[index];
             }
         }
 

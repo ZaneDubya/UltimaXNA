@@ -15,7 +15,7 @@ using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using UltimaXNA.Diagnostics;
-using UltimaXNA.UltimaData.Fonts;
+using UltimaXNA.UltimaData.FontsNew;
 
 namespace UltimaXNA.UltimaGUI.HTML
 {
@@ -86,7 +86,7 @@ namespace UltimaXNA.UltimaGUI.HTML
             {
                 if (Character < 32)
                     return 0;
-                return UniText.Fonts[(int)Font].GetCharacter(Character).Width + (Style_IsBold ? 1 : 0) + 1;
+                return TextUni.GetFont((int)Font).GetCharacter(Character).Width + (Style_IsBold ? 1 : 0) + 1;
             }
         }
 
@@ -94,7 +94,7 @@ namespace UltimaXNA.UltimaGUI.HTML
         {
             get
             {
-                return UniText.Fonts[(int)Font].Lineheight;
+                return TextUni.GetFont((int)Font).Height;
             }
         }
 
@@ -129,7 +129,7 @@ namespace UltimaXNA.UltimaGUI.HTML
 
         public HTMLAtomSpan()
         {
-            m_height = UniText.Fonts[(int)Font].Lineheight;
+            m_height = TextUni.GetFont((int)Font).Height;
         }
     }
 

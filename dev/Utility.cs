@@ -17,7 +17,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using UltimaXNA.UltimaData.Fonts;
+using UltimaXNA.UltimaData.FontsOld;
 #endregion
 
 namespace UltimaXNA
@@ -458,6 +458,11 @@ namespace UltimaXNA
             return (byte)0;
         }
 
+        public static uint UintFromColor(Color color)
+        {
+            return (uint)((color.A << 24) | (color.B << 16) | (color.G << 8) | (color.R));
+        }
+
         public static Color ColorFromHexString(string hex)
         {
             if (hex.Length == 8)
@@ -615,12 +620,15 @@ namespace UltimaXNA
 
         public static Vector2 GetHueVector(int hue, bool partial, bool transparent)
         {
+            if (transparent)
+                hue |= 0x4000;
+
             if (hue == 0)
                 return new Vector2(0);
 
             int hueType = 0;
 
-            if ((hue & 0x4000) != 0 || transparent)
+            if ((hue & 0x4000) != 0)
             {
                 // transparant
                 hueType = 4;

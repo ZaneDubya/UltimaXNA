@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Rendering;
 using UltimaXNA.UltimaGUI;
-using UltimaXNA.UltimaData.Fonts;
+using UltimaXNA.UltimaData.FontsOld;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {

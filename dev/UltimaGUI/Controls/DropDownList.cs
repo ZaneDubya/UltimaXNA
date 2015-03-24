@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using InterXLib.Input.Windows;
 using UltimaXNA.UltimaGUI;
-using UltimaXNA.UltimaData.Fonts;
+using UltimaXNA.UltimaData.FontsOld;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {
@@ -56,7 +56,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             m_visibleItems = itemsVisible;
             m_canBeNull = canBeNull;
 
-            m_resize = new ResizePic(m_owner, Page, X, Y, 3000, m_width, UltimaData.Fonts.ASCIIText.Fonts[1].Height + 8);
+            m_resize = new ResizePic(m_owner, Page, X, Y, 3000, m_width, UltimaData.FontsOld.ASCIIText.Fonts[1].Height + 8);
             m_resize.OnMouseClick = onClickClosedList;
             m_resize.OnMouseOver = onMouseOverClosedList;
             m_resize.OnMouseOut = onMouseOutClosedList;
