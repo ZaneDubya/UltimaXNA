@@ -99,6 +99,8 @@ namespace UltimaXNA.Entity.EntityViews
                 }
             }
 
+            DrawOverheads(spriteBatch, drawPosition, mouseOverList, map, 100);
+
             return true;
         }
 
