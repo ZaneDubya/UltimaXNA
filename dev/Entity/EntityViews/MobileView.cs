@@ -78,12 +78,18 @@ namespace UltimaXNA.Entity.EntityViews
             if (UltimaVars.EngineVars.LastTarget != null && UltimaVars.EngineVars.LastTarget == Entity.Serial)
                 hue = new Vector2(Entity.NotorietyHue - 1, 1);
 
+            // get the maximum y-extent of this object so we can correctly place overheads.
+            int yOffset = 0;
+
             for (int i = 0; i < m_LayerCount; i++)
             {
                 if (m_MobileLayers[i].Frame != null)
                 {
                     float x = -drawCenterX + (drawX + m_MobileLayers[i].Frame.Center.X);
                     float y = -drawY - (m_MobileLayers[i].Frame.Texture.Height + m_MobileLayers[i].Frame.Center.Y) + drawCenterY;
+
+                    if (yOffset > y)
+                        yOffset = (int)y;
 
                     DrawTexture = m_MobileLayers[i].Frame.Texture;
                     DrawArea = new Rectangle((int)x, (int)-y, DrawTexture.Width, DrawTexture.Height);
@@ -100,10 +106,19 @@ namespace UltimaXNA.Entity.EntityViews
             }
 
             Vector3 overheadDrawPosition = new Vector3(drawPosition.X + (int)((Entity.Position.X_offset - Entity.Position.Y_offset) * 22),
-                drawPosition.Y - (int)((Entity.Position.Z_offset + Entity.Z) * 4) + (int)((Entity.Position.X_offset + Entity.Position.Y_offset) * 22),
+                drawPosition.Y - (int)((Entity.Position.Z_offset + Entity.Z) * 4),
                 drawPosition.Z);
 
-            DrawOverheads(spriteBatch, overheadDrawPosition, mouseOverList, map, 60);
+            if (m_MobileLayers[0].Frame != null)
+            {
+                yOffset = m_MobileLayers[0].Frame.Texture.Height + drawY - 44;
+            }
+            else
+            {
+                yOffset = -(yOffset + 44);
+            }
+
+            DrawOverheads(spriteBatch, overheadDrawPosition, mouseOverList, map, (int)yOffset);
 
             return true;
         }

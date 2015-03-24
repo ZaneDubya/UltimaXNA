@@ -111,8 +111,9 @@ namespace UltimaXNA.Entity.EntityViews
             for (int i = 0; i < Entity.Overheads.Count; i++)
             {
                 AEntityView view = Entity.Overheads[i].GetView();
-                view.DrawArea = new Rectangle((view.DrawTexture.Width / 2) - 22, yOffset, view.DrawTexture.Width, view.DrawTexture.Height);
+                view.DrawArea = new Rectangle((view.DrawTexture.Width / 2) - 22, yOffset + view.DrawTexture.Height, view.DrawTexture.Width, view.DrawTexture.Height);
                 view.Draw(spriteBatch, drawPosition, mouseOverList, map);
+                yOffset += view.DrawTexture.Height;
             }
         }
 
