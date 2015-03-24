@@ -126,6 +126,7 @@
     <Compile Include="Entity\EntityViews\AEntityView.cs" />
     <Compile Include="Entity\EntityViews\CorpseView.cs" />
     <Compile Include="Entity\EntityViews\MobileDeferredView.cs" />
+    <Compile Include="Entity\EntityViews\OverheadView.cs" />
     <Compile Include="Entity\MobileDeferred.cs" />
     <Compile Include="Entity\Support\MobileFlags.cs" />
     <Compile Include="UltimaData\FontsUnused\CharacterASCII.cs" />
@@ -342,7 +343,7 @@
     <Compile Include="Entity\MobileMovement.cs" />
     <Compile Include="Entity\MobileMovementCheck.cs" />
     <Compile Include="Entity\Multi.cs" />
-    <Compile Include="Entity\Support\Overhead.cs" />
+    <Compile Include="Entity\Overhead.cs" />
     <Compile Include="Entity\PlayerMobile.cs" />
     <Compile Include="Entity\Support\PropertyList.cs" />
     <Compile Include="Entity\Support\Shared.cs" />

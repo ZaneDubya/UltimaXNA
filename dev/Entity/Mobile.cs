@@ -178,6 +178,11 @@ namespace UltimaXNA.Entity
 
         public override void Update(double frameMS)
         {
+            if (UltimaVars.EngineVars.AllLabels)
+            {
+                AddOverhead(MessageType.Label, "<big><outline>" + Name, 0, NotorietyHue);
+            }
+
             if (!m_movement.Position.IsNullPosition)
             {
                 m_movement.Update(frameMS);

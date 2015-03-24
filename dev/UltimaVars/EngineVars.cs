@@ -49,6 +49,7 @@ namespace UltimaXNA.UltimaVars
                 UltimaInteraction.SendLastTargetPacket(m_lastTarget);
             }
         }
+
         public static bool WarMode
         {
             get
@@ -57,6 +58,15 @@ namespace UltimaXNA.UltimaVars
                     ((Mobile)EntityManager.GetPlayerObject()).Flags.IsWarMode : 
                     false;
             }
+        }
+
+        /// <summary>
+        ///  When AllLabels is true, all entites should display their name above their object.
+        /// </summary>
+        public static bool AllLabels
+        {
+            get;
+            set;
         }
 
         // Maintain an accurate count of frames per second.

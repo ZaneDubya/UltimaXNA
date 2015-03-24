@@ -218,6 +218,16 @@ namespace UltimaXNA.UltimaWorld.Controller
 
         void parseKeyboard()
         {
+            // all names mode
+            if (UltimaEngine.Input.IsShiftDown && UltimaEngine.Input.IsCtrlDown)
+            {
+                EngineVars.AllLabels = true;
+            }
+            else
+            {
+                EngineVars.AllLabels = false;
+            }
+
             // Warmode toggle:
             if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.Tab, false, false, false))
             {

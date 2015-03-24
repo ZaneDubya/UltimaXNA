@@ -131,81 +131,67 @@ namespace UltimaXNA.Entity
 
         }
 
-        internal void drawOverheads(MapTile tile, Position3D position)
-        {
-            // base entities do not draw, but they can have overheads, so we draw those.
-            foreach (KeyValuePair<int, Overhead> overhead in m_overheads)
-            {
-                if (!overhead.Value.IsDisposed)
-                    overhead.Value.Draw(tile, position);
-            }
-        }
-
         // ============================================================
-        // Overhead handling code
+        // Overhead handling code (labels, chat, etc.)
         // ============================================================
 
-        private Dictionary<int, Overhead> m_overheads = new Dictionary<int, Overhead>();
-        int m_lastOverheadIndex = 0;
-
-        private void InternalUpdateOverheads(double frameMS)
+        private List<Overhead> m_Overheads = new List<Overhead>();
+        public List<Overhead> Overheads
         {
-            // handle overheads.
-            clearDisposedOverheads();
-            foreach (KeyValuePair<int, Overhead> overhead in m_overheads)
-            {
-                overhead.Value.Update(frameMS);
-            }
+            get { return m_Overheads; }
         }
 
         public Overhead AddOverhead(MessageType msgType, string text, int fontID, int hue)
         {
-            // Only one label allowed at a time.
-            if (msgType == MessageType.Label)
-            {
-                disposeLabels();
-                clearDisposedOverheads();
-            }
+            Overhead overhead;
 
-            foreach (Overhead o in m_overheads.Values)
+            for (int i = 0; i < m_Overheads.Count; i++)
             {
-                if ((o.Text == text) && !(o.IsDisposed))
+                overhead = m_Overheads[i];
+                // is this overhead already active?
+                if ((overhead.Text == text) && (overhead.MessageType == msgType) && !(overhead.IsDisposed))
                 {
-                    o.RefreshTimer();
-                    return o;
+                    // reset the timer for the object so it lasts longer.
+                    overhead.ResetTimer();
+                    // update hue?
+                    overhead.Hue = hue;
+                    // insert it at the bottom of the queue so it displays closest to the player.
+                    m_Overheads.RemoveAt(i);
+                    m_Overheads.Insert(0, overhead);
+                    return overhead;
                 }
             }
 
-            Overhead overhead = new Overhead(this, msgType, text, fontID, hue);
-            m_overheads.Add(m_lastOverheadIndex++, overhead);
+            overhead = new Overhead(this, msgType, text);
+            m_Overheads.Insert(0, overhead);
             return overhead;
         }
 
-        private void disposeLabels()
+        internal void InternalDrawOverheads(MapTile tile, Position3D position)
         {
-            foreach (Overhead o in m_overheads.Values)
+            // base entities do not draw, but they can have overheads, so we draw those.
+            foreach (Overhead overhead in m_Overheads)
             {
-                if (o.MsgType == MessageType.Label)
-                {
-                    o.Dispose();
-                }
+                if (!overhead.IsDisposed)
+                    overhead.Draw(tile, position);
             }
         }
 
-        private void clearDisposedOverheads()
+        private void InternalUpdateOverheads(double frameMS)
         {
-            List<int> removeObjectsList = removeObjectsList = new List<int>();
-            foreach (KeyValuePair<int, Overhead> overhead in m_overheads)
+            // update overheads
+            foreach (Overhead overhead in m_Overheads)
             {
-                if (overhead.Value.IsDisposed)
-                {
-                    removeObjectsList.Add(overhead.Key);
-                    continue;
-                }
+                overhead.Update(frameMS);
             }
-            foreach (int i in removeObjectsList)
+            // remove disposed of overheads.
+            for (int i = 0; i < m_Overheads.Count; i++)
             {
-                m_overheads.Remove(i);
+                if (m_Overheads[i].IsDisposed)
+                {
+                    m_Overheads.RemoveAt(i);
+                    i--;
+                }
             }
         }
     }
