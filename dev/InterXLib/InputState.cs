@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Windows.Input;
+using System.Windows.Forms;
 
 namespace InterXLib
 {
@@ -14,9 +16,7 @@ namespace InterXLib
         // Input states
         bool m_IsInitialized = false;
         MouseState m_MouseStateThisFrame;
-        KeyboardState m_KeyboardStateThisFrame;
         MouseState m_MouseStateLastFrame;
-        KeyboardState m_KeyboardStateLastFrame;
 
         // Event lists.
         List<InputEvent> m_EventsThisFrame = new List<InputEvent>();
@@ -46,10 +46,22 @@ namespace InterXLib
             m_WndProc.KeyChar += onKeyChar;
         }
 
+        public bool IsCtrlDown
+        {
+            get;
+            private set;
+        }
+
+        public bool IsAltDown
+        {
+            get;
+            private set;
+        }
+
         public List<InputEventKeyboard> GetKeyboardEvents()
         {
             List<InputEventKeyboard> list = new List<InputEventKeyboard>();
-            foreach (InputEvent e in m_EventsThisFrame  )
+            foreach (InputEvent e in m_EventsThisFrame)
             {
                 if (!e.Handled && e is InputEventKeyboard)
                     list.Add((InputEventKeyboard)e);
@@ -74,7 +86,6 @@ namespace InterXLib
 
             if (!m_IsInitialized)
             {
-                m_KeyboardStateLastFrame = m_KeyboardStateThisFrame = m_WndProc.KeyboardState;
                 m_MouseStateLastFrame = m_MouseStateThisFrame = m_WndProc.MouseState;
                 m_IsInitialized = true;
             }
@@ -87,9 +98,6 @@ namespace InterXLib
                 m_mouseStationaryMS += (float)frameTime;
             else
                 m_mouseStationaryMS = 0;
-
-            m_KeyboardStateLastFrame = m_KeyboardStateThisFrame;
-            m_KeyboardStateThisFrame = m_WndProc.KeyboardState;
             
             copyEvents();
         }
@@ -286,6 +294,8 @@ namespace InterXLib
         {
             List<InputEvent> list = (m_EventsAccumulatingUseAlternate) ? m_EventsAccumulatingAlternate : m_EventsAccumulating;
             list.Add(e);
+            IsAltDown = e.Alt;
+            IsCtrlDown = e.Control;
         }
 
         private InputEventKeyboard LastKeyPressEvent

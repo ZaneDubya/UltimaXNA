@@ -42,14 +42,6 @@ namespace InterXLib.Input.Windows
             }
         }
 
-        public KeyboardState KeyboardState
-        {
-            get
-            {
-                return Keyboard.GetState();
-            }
-        }
-
         /// <summary>
         /// Gets the currently pressed Modifier keys, Control, Alt, Shift
         /// </summary>
