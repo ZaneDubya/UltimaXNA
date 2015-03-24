@@ -390,7 +390,7 @@ namespace UltimaXNA.UltimaGUI
                         // HREF links should be colored white, because we will hue them at runtime.
                         uint color = atom.IsHREF ? 0xFFFFFFFF : Utility.UintFromColor(atom.Color);
                         character.WriteToBuffer(rPtr, x, y, linewidth, maxHeight, font.Baseline,
-                            atom.Style_IsBold, atom.Style_IsItalic, atom.Style_IsUnderlined, atom.Style_IsOutlined, color, 0xFF000000);
+                            atom.Style_IsBold, atom.Style_IsItalic, atom.Style_IsUnderlined, atom.Style_IsOutlined, color, 0xFF000008);
                     }
                     else if (atoms[i] is HTMLImageGump)
                     {
