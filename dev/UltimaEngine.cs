@@ -48,6 +48,8 @@ namespace UltimaXNA
 
         protected override void OnInitialize()
         {
+            UltimaVars.SettingVars.Load();
+
             UltimaWorld.View.IsometricRenderer.Initialize(this);
 
             // Make sure we have a UO installation before loading UltimaData.
@@ -82,6 +84,7 @@ namespace UltimaXNA
             this.IsFixedTimeStep = UltimaVars.EngineVars.LimitFPS;
             if (!UltimaVars.EngineVars.EngineRunning)
             {
+                UltimaVars.SettingVars.Save();
                 Exit();
             }
             else

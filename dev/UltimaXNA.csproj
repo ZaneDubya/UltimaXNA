@@ -141,6 +141,8 @@
     <Compile Include="UltimaData\FontsNew\FontUni.cs" />
     <Compile Include="UltimaData\FontsNew\TextUni.cs" />
     <Compile Include="UltimaGUI\UltimaFonts.cs" />
+    <Compile Include="Core\IniFile.cs" />
+    <Compile Include="UltimaVars\SettingVars.cs" />
     <Compile Include="UltimaWorld\Model\EntitySort.cs" />
     <Compile Include="Entity\EntityViews\GroundView.cs" />
     <Compile Include="Entity\EntityViews\ItemView.cs" />
