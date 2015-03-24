@@ -79,15 +79,23 @@ namespace UltimaXNA.UltimaData
                         exePath = GetExePath(m_knownRegkeys[i]);
                     }
 
-                    if (exePath != null && Directory.Exists(exePath) && InternalClientIsCompatible(exePath))
+                    if (exePath != null && Directory.Exists(exePath))
                     {
-                        Logger.Debug("FileManager: {0}", exePath);
+                        if (InternalClientIsCompatible(exePath))
+                        {
+                            Logger.Debug("Compatible: {0}", exePath);
 
-                        m_FileDirectory = exePath;
-                        m_isDataPresent = true;
+                            m_FileDirectory = exePath;
+                            m_isDataPresent = true;
+                        }
+                        else
+                        {
+                            Logger.Debug("Incompatible: {0}", exePath);
+                        }
                     }
                 }
             }
+
             if (m_FileDirectory == null)
             {
                 Logger.Fatal("Did not find a compatible UO Installation.\nUltimaXNA is compatible with any version of UO through Mondian's Legacy.");
@@ -95,7 +103,8 @@ namespace UltimaXNA.UltimaData
             }
             else
             {
-                Logger.Debug("Path: {0}", m_FileDirectory
+                Logger.Debug(string.Empty);
+                Logger.Debug("Selected: {0}", m_FileDirectory);
             }
         }
 
