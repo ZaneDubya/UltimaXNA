@@ -100,6 +100,7 @@ namespace UltimaXNA.Entity
         public virtual void Dispose()
         {
             IsDisposed = true;
+            Tile = null;
         }
 
         public override string ToString()

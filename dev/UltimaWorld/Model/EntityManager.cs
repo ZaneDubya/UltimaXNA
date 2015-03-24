@@ -69,7 +69,6 @@ namespace UltimaXNA.UltimaWorld
             // Remove disposed entities
             foreach (int i in m_SerialsToRemove)
             {
-                AEntity en = m_Entities[i];
                 m_Entities.Remove(i);
             }
             m_SerialsToRemove.Clear();

@@ -48,6 +48,7 @@ namespace UltimaXNA.UltimaWorld.Model
                         else
                         {
                             Tiles[i].Entities[j].Dispose();
+                            j--; // entity will dispose, removing it from collection.
                         }
                     }
                     Tiles[i] = null;
