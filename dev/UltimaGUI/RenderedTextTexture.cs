@@ -247,19 +247,20 @@ namespace UltimaXNA.UltimaGUI
                     m_Texture = null;
                 }
 
-                int width, height;
+                int width, height, ascender;
 
-                resizeAndParse(Text, MaxWidth, AsHTML, out width, out height);
-                m_Texture = renderToTexture(graphics, m_HtmlParser, width, height);
+                resizeAndParse(Text, MaxWidth, AsHTML, out width, out height, out ascender);
+                m_Texture = renderToTexture(graphics, m_HtmlParser, width, height, ascender);
 
                 m_MustRender = false;
             }
         }
 
-        private void resizeAndParse(string textToRender, int maxWidth, bool parseHTML, out int width, out int height)
+        private void resizeAndParse(string textToRender, int maxWidth, bool parseHTML, out int width, out int height, out int ascender)
         {
             width = 0;
             height = 0;
+            ascender = 0;
 
             if (m_HtmlParser != null)
                 m_HtmlParser = null;
@@ -276,25 +277,29 @@ namespace UltimaXNA.UltimaGUI
             {
                 if (maxWidth == 0)
                 {
-                    getTextDimensions(m_HtmlParser, 200, 0, out width, out height);
+                    getTextDimensions(m_HtmlParser, 200, 0, out width, out height, out ascender);
                 }
                 else
                 {
-                    getTextDimensions(m_HtmlParser, maxWidth, 0, out width, out height);
+                    getTextDimensions(m_HtmlParser, maxWidth, 0, out width, out height, out ascender);
                 }
             }
         }
 
-        Texture2D renderToTexture(GraphicsDevice graphics, Parser reader, int width, int height)
+        Texture2D renderToTexture(GraphicsDevice graphics, Parser reader, int width, int height, int ascender)
         {
             if (width == 0) // empty text string
                 return new Texture2D(graphics, 1, 1);
 
-            uint[] resultData = new uint[width * height];
-            // for (int i = 0; i < resultData.Length; i++)
-            // resultData[i] = Color.LimeGreen;
-
             int dy = 0, lineheight = 0;
+
+            if (ascender < 0)
+            {
+                height = height - ascender;
+                dy = -ascender;
+            }
+
+            uint[] resultData = new uint[width * height];
 
             unsafe
             {
@@ -474,12 +479,13 @@ namespace UltimaXNA.UltimaGUI
             }
         }
 
-        void getTextDimensions(Parser reader, int maxwidth, int maxheight, out int width, out int height)
+        void getTextDimensions(Parser reader, int maxwidth, int maxheight, out int width, out int height, out int ascender)
         {
-            width = 0; height = 0;
+            width = 0; height = 0; ascender = 0;
             int lineheight = 0;
             int widestline = 0;
             int descenderheight = 0;
+            int linecount = 0;
             List<AHTMLAtom> word = new List<AHTMLAtom>();
             int additionalwidth = 0; // for italic + outlined characters, which need a little more room for their slant/outline.
             int word_width = 0;
@@ -499,6 +505,7 @@ namespace UltimaXNA.UltimaGUI
                     if (width + additionalwidth > widestline)
                         widestline = width + additionalwidth;
                     height += lineheight;
+                    linecount += 1;
                     descenderheight = 0;
                     lineheight = 0;
                     width = 0;
@@ -521,6 +528,8 @@ namespace UltimaXNA.UltimaGUI
                             additionalwidth += 2;
                         if (ch.YOffset + ch.Height - lineheight > descenderheight)
                             descenderheight = ch.YOffset + ch.Height - lineheight;
+                        if (ch.YOffset < 0 && linecount == 0 && ascender > ch.YOffset)
+                            ascender = ch.YOffset;
                     }
                     if (reader.Atoms[i].Alignment != Alignments.Left)
                         widestline = maxwidth;
@@ -602,6 +611,7 @@ namespace UltimaXNA.UltimaGUI
 
             width += additionalwidth;
             height += lineheight + descenderheight;
+            linecount += 1;
             if (widestline > width)
                 width = widestline;
         }
