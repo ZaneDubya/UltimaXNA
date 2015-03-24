@@ -99,7 +99,11 @@ namespace UltimaXNA.Entity.EntityViews
                 }
             }
 
-            DrawOverheads(spriteBatch, drawPosition, mouseOverList, map, 100);
+            Vector3 overheadDrawPosition = new Vector3(drawPosition.X + (int)((Entity.Position.X_offset - Entity.Position.Y_offset) * 22),
+                drawPosition.Y - (int)((Entity.Position.Z_offset + Entity.Z) * 4) + (int)((Entity.Position.X_offset + Entity.Position.Y_offset) * 22),
+                drawPosition.Z);
+
+            DrawOverheads(spriteBatch, overheadDrawPosition, mouseOverList, map, 60);
 
             return true;
         }
