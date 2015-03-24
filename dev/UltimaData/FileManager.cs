@@ -12,6 +12,7 @@ using System;
 using System.IO;
 using Microsoft.Win32;
 using UltimaXNA.Diagnostics;
+using System.Collections.Generic;
 
 namespace UltimaXNA.UltimaData
 {
@@ -54,11 +55,12 @@ namespace UltimaXNA.UltimaData
 
         static FileManager()
         {
-            Logger.Debug("Looking for UO Installation. Is64Bit = {0}", Is64Bit);
+            Logger.Debug("Initializing UOData. Is64Bit = {0}", Is64Bit);
+            Logger.Debug("Looking for UO Installation:");
 
             if (UltimaVars.SettingVars.UOData != null && Directory.Exists(UltimaVars.SettingVars.UOData))
             {
-                Logger.Debug("Settings: Choosing UO Installation at [{0}].", UltimaVars.SettingVars.UOData);
+                Logger.Debug("SettingsVars: {0}", UltimaVars.SettingVars.UOData);
                 m_FileDirectory = UltimaVars.SettingVars.UOData;
                 m_isDataPresent = true;
             }
@@ -79,18 +81,45 @@ namespace UltimaXNA.UltimaData
 
                     if (exePath != null && Directory.Exists(exePath))
                     {
-                        Logger.Debug("Found UO Installation from registry key at [{0}].", exePath);
+                        if (InternalClientIsCompatible(exePath))
+                        {
+                            Logger.Debug("Compatible: {0}", exePath);
 
-                        m_FileDirectory = exePath;
-                        m_isDataPresent = true;
+                            m_FileDirectory = exePath;
+                            m_isDataPresent = true;
+                        }
+                        else
+                        {
+                            Logger.Debug("Incompatible: {0}", exePath);
+                        }
                     }
                 }
             }
+
             if (m_FileDirectory == null)
             {
                 Logger.Fatal("Did not find a compatible UO Installation.\nUltimaXNA is compatible with any version of UO through Mondian's Legacy.");
                 m_isDataPresent = false;
             }
+            else
+            {
+                Logger.Debug(string.Empty);
+                Logger.Debug("Selected: {0}", m_FileDirectory);
+            }
+        }
+
+        private static bool InternalClientIsCompatible(string path)
+        {
+            IEnumerable<string> files = Directory.EnumerateFiles(path);
+            foreach (string filepath in files)
+            {
+                string extension = Path.GetExtension(filepath).ToLower();
+                if (extension == ".uop")
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         private static string GetExePath(string subName)
