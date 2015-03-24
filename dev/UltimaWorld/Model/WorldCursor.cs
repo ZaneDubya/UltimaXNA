@@ -277,6 +277,7 @@ namespace UltimaXNA.UltimaWorld.Model
         // ======================================================================
 
         private TargetTypes m_Targeting = TargetTypes.Nothing;
+        private int m_TargetID = int.MinValue;
         public TargetTypes Targeting
         {
             get { return m_Targeting; }
@@ -294,7 +295,7 @@ namespace UltimaXNA.UltimaWorld.Model
 
         public void SetTargeting(TargetTypes targeting, int cursorID)
         {
-            if (m_Targeting != targeting)
+            if (m_Targeting != targeting || cursorID != m_TargetID)
             {
                 if (targeting == TargetTypes.Nothing)
                 {
@@ -306,6 +307,7 @@ namespace UltimaXNA.UltimaWorld.Model
                     m_Model.Input.ContinuousMouseMovementCheck = false;
                 }
                 m_Targeting = targeting;
+                m_TargetID = cursorID;
             }
         }
 
@@ -322,7 +324,7 @@ namespace UltimaXNA.UltimaWorld.Model
                 modelNumber = 0;
             }
             // Send the target ...
-            m_Model.Client.Send(new TargetXYZPacket((short)selectedEntity.Position.X, (short)selectedEntity.Position.Y, (short)selectedEntity.Z, (ushort)modelNumber));
+            m_Model.Client.Send(new TargetXYZPacket((short)selectedEntity.Position.X, (short)selectedEntity.Position.Y, (short)selectedEntity.Z, (ushort)modelNumber, m_TargetID));
             // ... and clear our targeting cursor.
             ClearTargetingWithoutTargetCancelPacket();
         }
@@ -349,7 +351,7 @@ namespace UltimaXNA.UltimaWorld.Model
                 {
                     modelNumber = 0;
                 }
-                m_Model.Client.Send(new TargetXYZPacket((short)selectedEntity.Position.X, (short)selectedEntity.Position.Y, (short)selectedEntity.Z, (ushort)modelNumber));
+                m_Model.Client.Send(new TargetXYZPacket((short)selectedEntity.Position.X, (short)selectedEntity.Position.Y, (short)selectedEntity.Z, (ushort)modelNumber, m_TargetID));
             }
 
             // Clear our target cursor.
