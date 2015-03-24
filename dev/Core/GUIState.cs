@@ -293,7 +293,7 @@ namespace UltimaXNA
 
             // The cursor and world input objects occasionally must block input events from reaching the UI:
             // e.g. when the cursor is carrying an object.
-            if (ObjectsBlockingInput)
+            if (!IsModalControlOpen && ObjectsBlockingInput)
                 return;
 
             List<InputEventMouse> events = UltimaEngine.Input.GetMouseEvents();
