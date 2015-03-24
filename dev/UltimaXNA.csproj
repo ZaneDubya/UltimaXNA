@@ -126,6 +126,7 @@
     <Compile Include="Entity\EntityViews\AEntityView.cs" />
     <Compile Include="Entity\EntityViews\CorpseView.cs" />
     <Compile Include="Entity\EntityViews\MobileDeferredView.cs" />
+    <Compile Include="Entity\EntityViews\OverheadView.cs" />
     <Compile Include="Entity\MobileDeferred.cs" />
     <Compile Include="Entity\Support\MobileFlags.cs" />
     <Compile Include="UltimaData\FontsUnused\CharacterASCII.cs" />

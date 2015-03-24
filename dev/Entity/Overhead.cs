@@ -66,17 +66,12 @@ namespace UltimaXNA.Entity
         }
 
         // ============================================================
-        // Drawing code
+        // View management
         // ============================================================
 
-        private RenderedTextTexture m_Texture = null;
-
-        internal override void Draw(MapTile tile, Position3D position)
+        protected override EntityViews.AEntityView CreateView()
         {
-            if (m_Texture == null)
-            {
-                m_Texture = new RenderedTextTexture(Text, false);
-            }
+            return new EntityViews.OverheadView(this);
         }
     }
 }

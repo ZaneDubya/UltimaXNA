@@ -132,15 +132,43 @@ namespace UltimaXNA.Entity
         }
 
         // ============================================================
-        // Overhead handling code
+        // Overhead handling code (labels, chat, etc.)
         // ============================================================
 
-        private List<Overhead> m_overheads = new List<Overhead>();
+        private List<Overhead> m_Overheads = new List<Overhead>();
+        public List<Overhead> Overheads
+        {
+            get { return m_Overheads; }
+        }
+
+        public Overhead AddOverhead(MessageType msgType, string text, int fontID, int hue)
+        {
+            Overhead overhead;
+
+            for (int i = 0; i < m_Overheads.Count; i++)
+            {
+                overhead = m_Overheads[i];
+                // is this overhead already active?
+                if ((overhead.Text == text) && (overhead.MessageType == msgType) && !(overhead.IsDisposed))
+                {
+                    // reset the timer for the object so it lasts longer.
+                    overhead.ResetTimer();
+                    // insert it at the bottom of the queue so it displays closest to the player.
+                    m_Overheads.RemoveAt(i);
+                    m_Overheads.Insert(0, overhead);
+                    return overhead;
+                }
+            }
+
+            overhead = new Overhead(this, msgType, text);
+            m_Overheads.Insert(0, overhead);
+            return overhead;
+        }
 
         internal void InternalDrawOverheads(MapTile tile, Position3D position)
         {
             // base entities do not draw, but they can have overheads, so we draw those.
-            foreach (Overhead overhead in m_overheads)
+            foreach (Overhead overhead in m_Overheads)
             {
                 if (!overhead.IsDisposed)
                     overhead.Draw(tile, position);
@@ -149,56 +177,17 @@ namespace UltimaXNA.Entity
 
         private void InternalUpdateOverheads(double frameMS)
         {
-            // handle overheads.
-            InternalClearDisposedOverheads();
-            foreach (Overhead overhead in m_overheads)
+            // update overheads
+            foreach (Overhead overhead in m_Overheads)
             {
                 overhead.Update(frameMS);
             }
-        }
-
-        public Overhead AddOverhead(MessageType msgType, string text, int fontID, int hue)
-        {
-            // Labels are exclusive
-            if (msgType == MessageType.Label)
+            // remove disposed of overheads.
+            for (int i = 0; i < m_Overheads.Count; i++)
             {
-                InternalDisposeOfAllLabels();
-                InternalClearDisposedOverheads();
-            }
-
-            foreach (Overhead o in m_overheads)
-            {
-                if ((o.Text == text) && !(o.IsDisposed))
+                if (m_Overheads[i].IsDisposed)
                 {
-                    o.ResetTimer();
-                    return o;
-                }
-            }
-
-            Overhead overhead = new Overhead(this, msgType, text);
-            m_overheads.Add(overhead);
-            return overhead;
-        }
-
-        private void InternalDisposeOfAllLabels()
-        {
-            foreach (Overhead o in m_overheads)
-            {
-                if (o.MessageType == MessageType.Label)
-                {
-                    o.Dispose();
-                }
-            }
-        }
-
-        private void InternalClearDisposedOverheads()
-        {
-            List<int> removeObjectsList = removeObjectsList = new List<int>();
-            for (int i = 0; i < m_overheads.Count; i++)
-            {
-                if (m_overheads[i].IsDisposed)
-                {
-                    m_overheads.RemoveAt(i);
+                    m_Overheads.RemoveAt(i);
                     i--;
                 }
             }
