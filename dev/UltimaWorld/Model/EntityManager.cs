@@ -69,6 +69,7 @@ namespace UltimaXNA.UltimaWorld
             // Remove disposed entities
             foreach (int i in m_SerialsToRemove)
             {
+                AEntity en = m_Entities[i];
                 m_Entities.Remove(i);
             }
             m_SerialsToRemove.Clear();
@@ -108,11 +109,12 @@ namespace UltimaXNA.UltimaWorld
             {
                 // This object is in the m_entities collection. If it is being disposed, then we should complete disposal
                 // of the object and then return a new object. If it is not being disposed, return the object in the collection.
-                if (m_Entities[serial].IsDisposed)
+                entity = (T)m_Entities[serial];
+                if (entity.IsDisposed)
                 {
+                    m_Entities.Remove(serial);
                     if (create)
                     {
-                        m_Entities.Remove(serial);
                         entity = InternalCreateEntity<T>(serial);
                         return (T)entity;
                     }

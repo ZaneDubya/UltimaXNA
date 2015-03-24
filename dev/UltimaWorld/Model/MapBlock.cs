@@ -41,9 +41,14 @@ namespace UltimaXNA.UltimaWorld.Model
                 {
                     for (int j = 0; j < Tiles[i].Entities.Count; j++)
                     {
-                        // Never dispose of the client entity.
-                        if (!Tiles[i].Entities[j].IsClientEntity)
+                        if (Tiles[i].Entities[j].IsClientEntity)
+                        {
+                            // Never dispose of the client entity.
+                        }
+                        else
+                        {
                             Tiles[i].Entities[j].Dispose();
+                        }
                     }
                     Tiles[i] = null;
                 }
