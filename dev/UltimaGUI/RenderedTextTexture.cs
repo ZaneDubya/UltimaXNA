@@ -80,7 +80,7 @@ namespace UltimaXNA.UltimaGUI
             }
         }
 
-        private int m_MaxWidth = 200;
+        private int m_MaxWidth = 400;
         public int MaxWidth
         {
             get { return m_MaxWidth; }
