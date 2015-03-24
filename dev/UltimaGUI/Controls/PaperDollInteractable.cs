@@ -49,10 +49,11 @@ namespace UltimaXNA.UltimaGUI.Controls
             // skip 24, inner legs (!!! do we really skip this?)
         }
 
-        private EquipSlots[] drawOrder = new EquipSlots[20] {
+        private static EquipSlots[] s_DrawOrder = new EquipSlots[21] {
             EquipSlots.Footwear,
             EquipSlots.Legging,
             EquipSlots.Shirt,
+            EquipSlots.Sleeves,
             EquipSlots.Gloves,
             EquipSlots.Ring,
             EquipSlots.Talisman,
@@ -111,14 +112,14 @@ namespace UltimaXNA.UltimaGUI.Controls
                     }
 
                     // Loop through the items on the mobile and create the gump pics.
-                    for (int i = 0; i < drawOrder.Length; i++)
+                    for (int i = 0; i < s_DrawOrder.Length; i++)
                     {
-                        Item item = ((Mobile)m_sourceEntity).GetItem((int)drawOrder[i]);
+                        Item item = ((Mobile)m_sourceEntity).GetItem((int)s_DrawOrder[i]);
                         if (item == null)
                             continue;
 
                         bool canPickUp = true;
-                        switch (drawOrder[i])
+                        switch (s_DrawOrder[i])
                         {
                             case EquipSlots.FacialHair:
                             case EquipSlots.Hair:
