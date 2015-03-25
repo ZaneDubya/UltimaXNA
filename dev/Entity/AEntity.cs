@@ -33,6 +33,18 @@ namespace UltimaXNA.Entity
 
         public int Hue = 0;
 
+        public virtual string Name
+        {
+            get
+            {
+                return "AEntity";
+            }
+            set
+            {
+                // do nothing. This exists so that inheriting classes can override the set accessor.
+            }
+        }
+
         // ============================================================
         // Position
         // ============================================================
@@ -157,14 +169,23 @@ namespace UltimaXNA.Entity
                     overhead.Hue = hue;
                     // insert it at the bottom of the queue so it displays closest to the player.
                     m_Overheads.RemoveAt(i);
-                    m_Overheads.Insert(0, overhead);
+                    InternalInsertOverhead(overhead);
                     return overhead;
                 }
             }
 
             overhead = new Overhead(this, msgType, text);
-            m_Overheads.Insert(0, overhead);
+            overhead.Hue = hue;
+            InternalInsertOverhead(overhead);
             return overhead;
+        }
+
+        private void InternalInsertOverhead(Overhead overhead)
+        {
+            if (m_Overheads.Count == 0 || (m_Overheads[0].MessageType != MessageType.Label))
+                m_Overheads.Insert(0, overhead);
+            else
+                m_Overheads.Insert(1, overhead);
         }
 
         internal void InternalDrawOverheads(MapTile tile, Position3D position)

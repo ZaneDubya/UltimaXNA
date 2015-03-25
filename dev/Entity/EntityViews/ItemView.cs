@@ -38,7 +38,11 @@ namespace UltimaXNA.Entity.EntityViews
             // Update hue vector.
             HueVector = Utility.GetHueVector(Entity.Hue);
 
-            return base.Draw(spriteBatch, drawPosition, mouseOverList, map);
+            bool drawn = base.Draw(spriteBatch, drawPosition, mouseOverList, map);
+
+            DrawOverheads(spriteBatch, drawPosition, mouseOverList, map, (int)DrawArea.Y - 22);
+
+            return drawn;
         }
     }
 }

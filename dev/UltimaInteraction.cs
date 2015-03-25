@@ -131,6 +131,27 @@ namespace UltimaXNA
             }
         }
 
+        public static void CreateLabel(MessageType msgType, Serial serial, string text, int hue, int font)
+        {
+            Overhead overhead;
+
+            if (serial.IsValid)
+            {
+                overhead = EntityManager.AddOverhead(msgType, serial, "<outline>" + text, font, hue);
+                // Labels that are longer than the current name should be set as the name
+                if (serial.IsMobile)
+                {
+                    Mobile m = EntityManager.GetObject<Mobile>(serial, false);
+                    if (m.Name == null || m.Name.Length < text.Length)
+                        m.Name = text;
+                }
+            }
+            else
+            {
+                UltimaInteraction.ChatMessage("[LABEL] " + text, font, hue);
+            }
+        }
+
         public static void SendLastTargetPacket(Serial last_target) // used by engine vars, which is used by worldinput and ultimaclient.
         {
             s_Client.Send(new GetPlayerStatusPacket(0x04, last_target));

@@ -992,21 +992,7 @@ namespace UltimaXNA
                     UltimaInteraction.ChatMessage("[EMOTE] " + text, font, hue);
                     break;
                 case MessageType.Label:
-                    if (serial.IsValid)
-                    {
-                        overhead = EntityManager.AddOverhead(msgType, serial, text, font, hue);
-                        // Labels that are longer than the current name should be set as the name
-                        if (serial.IsMobile)
-                        {
-                            Mobile m = EntityManager.GetObject<Mobile>(serial, false);
-                            if (m.Name.Length < text.Length)
-                                m.Name = text;
-                        }
-                    }
-                    else
-                    {
-                        UltimaInteraction.ChatMessage("[LABEL] " + text, font, hue);
-                    }
+                    UltimaInteraction.CreateLabel(msgType, serial, text, font, hue);
                     break;
                 case MessageType.Focus: // on player?
                     UltimaInteraction.ChatMessage("[FOCUS] " + text, font, hue);

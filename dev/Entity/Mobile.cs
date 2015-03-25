@@ -33,7 +33,12 @@ namespace UltimaXNA.Entity
             set { m_movement.Facing = value; }
         }
 
-        public string Name = string.Empty;
+        public override string Name
+        {
+            get;
+            set;
+        }
+
         public int Strength, Dexterity, Intelligence, StatCap, Luck, Gold;
         public CurrentMaxValue Health, Stamina, Mana;
         public CurrentMaxValue Followers;

@@ -64,7 +64,7 @@ namespace UltimaXNA.UltimaWorld.Controller
                 // If 1. The mouse is over the world (not over UI) and
                 //    2. The cursor is not blocking input, then interpret mouse input.
                 if (!UltimaEngine.UserInterface.IsMouseOverUI && !m_Model.Cursor.IsHoldingItem)
-                    parseMouse();
+                    parseMouse(frameMS);
 
                 // PickType is the kind of objects that will show up as the 'MouseOverObject'
                 if (UltimaEngine.UserInterface.IsMouseOverUI)
@@ -130,6 +130,8 @@ namespace UltimaXNA.UltimaWorld.Controller
                 else if (entity is StaticItem)
                 {
                     // pop up name of item.
+                    entity.AddOverhead(MessageType.Label, "<outline>" + entity.Name, 0, 0);
+                    Model.UpdatingStatics.AddStaticThatNeedsUpdating(entity as StaticItem);
                 }
                 else if (entity is Item)
                 {
@@ -196,7 +198,7 @@ namespace UltimaXNA.UltimaWorld.Controller
             e.Handled = true;
         }
 
-        void parseMouse()
+        void parseMouse(double frameMS)
         {
             List<InputEventMouse> events = UltimaEngine.Input.GetMouseEvents();
             foreach (InputEventMouse e in events)
@@ -207,6 +209,15 @@ namespace UltimaXNA.UltimaWorld.Controller
                 }
                 else if (e.Button == UltimaVars.EngineVars.MouseButton_Interact)
                 {
+                    if (e.EventType == MouseEvent.Click)
+                    {
+                        InternalQueueSingleClick(e);
+                        continue;
+                    }
+                    else if (e.EventType == MouseEvent.DoubleClick)
+                    {
+                        CancelQueuedClick();
+                    }
                     onInteractButton(e);
                 }
                 else
@@ -214,7 +225,43 @@ namespace UltimaXNA.UltimaWorld.Controller
                     // no handler for other buttons.
                 }
             }
+
+            InternalCheckQueuedClick(frameMS);
         }
+
+        #region QueuedClicks
+        // Legacy Client waits about 0.5 seconds before sending a click event when you click in the world.
+        // This allows time for the player to potentially double-click on an object.
+        // If the player does so, this will cancel the single-click event.
+        private bool m_QueuedEvent_InQueue = false;
+        private double m_QueuedEvent_DequeueAt = 0d;
+        private InputEventMouse m_QueuedEvent = null;
+
+        private void InternalCheckQueuedClick(double frameMS)
+        {
+            if (m_QueuedEvent_InQueue)
+            {
+                m_QueuedEvent_DequeueAt -= frameMS;
+                if (m_QueuedEvent_DequeueAt <= 0d)
+                {
+                    m_QueuedEvent_InQueue = false;
+                    onInteractButton(m_QueuedEvent);
+                }
+            }
+        }
+
+        private void InternalQueueSingleClick(InputEventMouse e)
+        {
+            m_QueuedEvent_InQueue = true;
+            m_QueuedEvent_DequeueAt = EngineVars.SecondsForDoubleClick * 1000d;
+            m_QueuedEvent = e;
+        }
+
+        private void CancelQueuedClick()
+        {
+            m_QueuedEvent_InQueue = false;
+        }
+        #endregion
 
         void parseKeyboard()
         {

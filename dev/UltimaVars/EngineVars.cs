@@ -31,7 +31,7 @@ namespace UltimaXNA.UltimaVars
         public static bool EngineRunning { get; set; } // false = engine immediately quits.
 
         public const float SecondsBetweenClickAndPickUp = 0.8f; // this is close to what the legacy client uses.
-        public const float SecondsForDoubleClick = 0.5f;
+        public const float SecondsForDoubleClick = 0.4f;
 
         public static Serial PlayerSerial
         {

@@ -111,7 +111,7 @@ namespace UltimaXNA.Entity.EntityViews
 
             if (m_MobileLayers[0].Frame != null)
             {
-                yOffset = m_MobileLayers[0].Frame.Texture.Height + drawY - 44;
+                yOffset = m_MobileLayers[0].Frame.Texture.Height + drawY - (int)((Entity.Z + Entity.Position.Z_offset) * 4);
             }
             else
             {

@@ -21,6 +21,14 @@ namespace UltimaXNA.Entity
     {
         public AEntity Parent = null;
 
+        public override string Name
+        {
+            get
+            {
+                return ItemData.Name;
+            }
+        }
+
         public override Position3D Position
         {
             get

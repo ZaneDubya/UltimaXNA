@@ -361,6 +361,7 @@
     <Compile Include="UltimaGUI\HTML\Parsing\HTMLParser.cs" />
     <Compile Include="UltimaGUI\HTML\Parsing\TagParser.cs" />
     <Compile Include="UltimaWorld\Model\MapBlock.cs" />
+    <Compile Include="UltimaWorld\Model\UpdatingStatics.cs" />
     <Compile Include="UltimaWorld\View\IsometricWorldView.cs" />
     <Compile Include="UltimaWorld\Model\MapTile.cs" />
     <Compile Include="UltimaWorld\Controller\MouseOverList.cs" />
