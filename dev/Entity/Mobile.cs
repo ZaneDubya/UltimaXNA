@@ -22,151 +22,8 @@ namespace UltimaXNA.Entity
     public class Mobile : AEntity
     {
         // ============================================================
-        // Movement and Facing
+        // Ctor, Dispose, Update, and CreateView()
         // ============================================================
-
-        protected MobileMovement m_movement;
-
-        public Direction Facing
-        {
-            get { return m_movement.Facing & Direction.FacingMask; }
-            set { m_movement.Facing = value; }
-        }
-
-        public override string Name
-        {
-            get;
-            set;
-        }
-
-        public int Strength, Dexterity, Intelligence, StatCap, Luck, Gold;
-        public CurrentMaxValue Health, Stamina, Mana;
-        public CurrentMaxValue Followers;
-        public CurrentMaxValue Weight;
-        public int ArmorRating, ResistFire, ResistCold, ResistPoison, ResistEnergy;
-        public int DamageMin, DamageMax;
-
-        public MobileEquipment Equipment;
-
-        public bool IsMoving { get { return m_movement.IsMoving; } }
-        
-        public bool IsRunning { get { return m_movement.IsRunning; } }
-        
-        public bool IsMounted 
-        { 
-            get { return (Equipment[(int)EquipLayer.Mount] != null && Equipment[(int)EquipLayer.Mount].ItemID != 0); } 
-        }
-
-        private MobileFlags m_Flags;
-        public MobileFlags Flags
-        {
-            get { return m_Flags; }
-            set
-            {
-                m_Flags = value;
-            }
-        }
-
-        int m_bodyID = 0;
-        public int BodyID
-        {
-            get
-            {
-                if (m_bodyID >= 402 && m_bodyID <= 403)
-                    return m_bodyID - 2;
-                return m_bodyID;
-            }
-            set
-            {
-                m_bodyID = value;
-                tickUpdateTicker();
-            }
-        }
-        public int HairBodyID
-        {
-            get { return (Equipment[(int)EquipLayer.Hair] == null) ? 0 : Equipment[(int)EquipLayer.Hair].ItemData.AnimID; }
-        }
-        public int HairHue
-        {
-            get { return (Equipment[(int)EquipLayer.Hair] == null) ? 0 : Equipment[(int)EquipLayer.Hair].Hue; }
-        }
-        public int FacialHairBodyID
-        {
-            get { return (Equipment[(int)EquipLayer.FacialHair] == null) ? 0 : Equipment[(int)EquipLayer.FacialHair].ItemData.AnimID; }
-        }
-        public int FacialHairHue
-        {
-            get { return (Equipment[(int)EquipLayer.FacialHair] == null) ? 0 : Equipment[(int)EquipLayer.FacialHair].Hue; }
-        }
-
-        int m_updateTicker = 0;
-        void tickUpdateTicker()
-        {
-            m_updateTicker++;
-        }
-        public int UpdateTicker
-        {
-            get { return m_updateTicker; }
-        }
-
-        public bool Alive
-        {
-            get { return Health.Current != 0; }
-        }
-
-        private int m_hue;
-        public new int Hue
-        {
-            get {
-                if (Flags.IsHidden)
-                    return 0x3E7;
-                else if (Flags.IsPoisoned)
-                    return 0x1CE;
-                else
-                    return m_hue;
-            }
-            set
-            {
-                m_hue = value;
-                tickUpdateTicker();
-            }
-        }
-
-        /// <summary>
-        /// 0x1: Innocent (Blue)
-        /// 0x2: Friend (Green)
-        /// 0x3: Grey (Grey - Non Criminal)
-        /// 0x4: Criminal (Grey)
-        /// 0x5: Enemy (Orange)
-        /// 0x6: Murderer (Red)
-        /// 0x7: Invulnerable (Yellow)
-        /// </summary>
-        public int Notoriety;
-        public int NotorietyHue
-        {
-            get
-            {
-                switch (Notoriety)
-                {
-                    case 0x01: // 0x1: Innocent (Blue)
-                        return 0x059;
-                    case 0x02: // 0x2: Friend (Green)
-                        return 0x03F;
-                    case 0x03: // Grey (Grey - Non Criminal)
-                        return 0x3B2;
-                    case 0x04: // Criminal (Grey)
-                        return 0x3B2;
-                    case 0x05: // Enemy (Orange)
-                        return 0x090;
-                    case 0x06: // Murderer (Red)
-                        return 0x022;
-                    case 0x07: // Invulnerable (Yellow)
-                        return 0x035;
-                    default:
-                        return 0;
-                }
-            }
-        }
 
         public Mobile(Serial serial, Map map)
             : base(serial, map)
@@ -176,9 +33,11 @@ namespace UltimaXNA.Entity
             m_movement.RequiresUpdate = true;
         }
 
-        protected override EntityViews.AEntityView CreateView()
+        public override void Dispose()
         {
-            return new EntityViews.MobileView(this);
+            base.Dispose();
+            Equipment.ClearEquipment();
+            tickUpdateTicker();
         }
 
         public override void Update(double frameMS)
@@ -197,11 +56,83 @@ namespace UltimaXNA.Entity
             base.Update(frameMS);
         }
 
-        public override void Dispose()
+        protected override EntityViews.AEntityView CreateView()
         {
-            base.Dispose();
-            Equipment.ClearEquipment();
-            tickUpdateTicker();
+            return new EntityViews.MobileView(this);
+        }
+
+        // ============================================================
+        // Movement and Facing
+        // ============================================================
+
+        protected MobileMovement m_movement;
+
+        public Direction Facing
+        {
+            get { return m_movement.Facing & Direction.FacingMask; }
+            set { m_movement.Facing = value; }
+        }
+
+        public bool IsMoving { get { return m_movement.IsMoving; } }
+
+        public bool IsRunning { get { return m_movement.IsRunning; } }
+
+        // ============================================================
+        // Properties
+        // ============================================================
+
+        public override string Name
+        {
+            get;
+            set;
+        }
+
+        public MobileFlags Flags
+        {
+            get;
+            set;
+        }
+
+        public int Strength, Dexterity, Intelligence, StatCap, Luck, Gold;
+        public CurrentMaxValue Health, Stamina, Mana;
+        public CurrentMaxValue Followers;
+        public CurrentMaxValue Weight;
+        public int ArmorRating, ResistFire, ResistCold, ResistPoison, ResistEnergy;
+        public int DamageMin, DamageMax;
+
+        public int Notoriety;
+
+        public bool Alive
+        {
+            get { return Health.Current != 0; }
+        }
+
+        // ============================================================
+        // Equipment and Mount
+        // ============================================================
+
+        public MobileEquipment Equipment;
+        
+        public bool IsMounted 
+        { 
+            get { return (Equipment[(int)EquipLayer.Mount] != null && Equipment[(int)EquipLayer.Mount].ItemID != 0); } 
+        }
+
+        public int HairBodyID
+        {
+            get { return (Equipment[(int)EquipLayer.Hair] == null) ? 0 : Equipment[(int)EquipLayer.Hair].ItemData.AnimID; }
+        }
+        public int HairHue
+        {
+            get { return (Equipment[(int)EquipLayer.Hair] == null) ? 0 : Equipment[(int)EquipLayer.Hair].Hue; }
+        }
+        public int FacialHairBodyID
+        {
+            get { return (Equipment[(int)EquipLayer.FacialHair] == null) ? 0 : Equipment[(int)EquipLayer.FacialHair].ItemData.AnimID; }
+        }
+        public int FacialHairHue
+        {
+            get { return (Equipment[(int)EquipLayer.FacialHair] == null) ? 0 : Equipment[(int)EquipLayer.FacialHair].Hue; }
         }
 
         public void WearItem(Item i, int slot)
@@ -210,7 +141,7 @@ namespace UltimaXNA.Entity
             tickUpdateTicker();
             if (slot == (int)EquipLayer.Mount)
             {
-
+                // Do we do something here?
             }
         }
 
@@ -247,6 +178,98 @@ namespace UltimaXNA.Entity
                 return (Container)Equipment[(int)EquipLayer.ShopBuy];
             }
         }
+
+        // ============================================================
+        // Appearance and Hues
+        // ============================================================
+
+        int m_bodyID = 0;
+        public int BodyID
+        {
+            get
+            {
+                if (m_bodyID >= 402 && m_bodyID <= 403)
+                    return m_bodyID - 2;
+                return m_bodyID;
+            }
+            set
+            {
+                m_bodyID = value;
+                tickUpdateTicker();
+            }
+        }
+
+        private int m_hue;
+        public new int Hue
+        {
+            get {
+                if (Flags.IsHidden)
+                    return 0x3E7;
+                else if (Flags.IsPoisoned)
+                    return 0x1CE;
+                else
+                    return m_hue;
+            }
+            set
+            {
+                m_hue = value;
+                tickUpdateTicker();
+            }
+        }
+
+        /// <summary>
+        /// 0x1: Innocent (Blue)
+        /// 0x2: Friend (Green)
+        /// 0x3: Grey (Grey - Non Criminal)
+        /// 0x4: Criminal (Grey)
+        /// 0x5: Enemy (Orange)
+        /// 0x6: Murderer (Red)
+        /// 0x7: Invulnerable (Yellow)
+        /// </summary>
+        public int NotorietyHue
+        {
+            get
+            {
+                switch (Notoriety)
+                {
+                    case 0x01: // 0x1: Innocent (Blue)
+                        return 0x059;
+                    case 0x02: // 0x2: Friend (Green)
+                        return 0x03F;
+                    case 0x03: // Grey (Grey - Non Criminal)
+                        return 0x3B2;
+                    case 0x04: // Criminal (Grey)
+                        return 0x3B2;
+                    case 0x05: // Enemy (Orange)
+                        return 0x090;
+                    case 0x06: // Murderer (Red)
+                        return 0x022;
+                    case 0x07: // Invulnerable (Yellow)
+                        return 0x035;
+                    default:
+                        return 0;
+                }
+            }
+        }
+
+        // ============================================================
+        // UpdateTicker - used by PaperdollGump to determine when
+        // equipment has changed, requiring a redraw.
+        // ============================================================
+
+        int m_updateTicker = 0;
+        void tickUpdateTicker()
+        {
+            m_updateTicker++;
+        }
+        public int UpdateTicker
+        {
+            get { return m_updateTicker; }
+        }
+
+        // ============================================================
+        // Animation and Movement
+        // ============================================================
 
         public void Animate(int action, int frameCount, int repeatCount, bool reverse, bool repeat, int delay)
         {

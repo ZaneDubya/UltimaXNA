@@ -1125,7 +1125,6 @@ namespace UltimaXNA
         // New login handling routines
         // ======================================================================
 
-
         LoginConfirmPacket m_QueuedLoginConfirmPacket;
         private int m_QueuedMapIndex = -1;
 

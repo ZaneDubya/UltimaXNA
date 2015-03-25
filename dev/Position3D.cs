@@ -23,7 +23,7 @@ namespace UltimaXNA
 
         private Point m_Tile;
         private int m_Z;
-        Vector3 m_Offset;
+        private Vector3 m_Offset;
 
         public Point Tile
         {

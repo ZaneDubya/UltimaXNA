@@ -276,7 +276,7 @@ namespace InterXLib
 
             InputEventKeyboard pressEvent = LastKeyPressEvent;
             if (pressEvent == null)
-                Logging.Fatal("No corresponding KeyPress event for this WM_CHAR message. Please report this error to poplicola@ultimaxna.com");
+                Logging.Fatal("No corresponding KeyPress event for this WM_CHAR message.");
             else
             {
                 pressEvent.OverrideKeyChar(e.KeyCode);

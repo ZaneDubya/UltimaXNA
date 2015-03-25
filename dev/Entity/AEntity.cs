@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   BaseEntity.cs
+ *   AEntity.cs
  *      
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,6 +17,9 @@ using UltimaXNA.UltimaWorld.Model;
 
 namespace UltimaXNA.Entity
 {
+    /// <summary>
+    /// Base class for all entities which exist in the world model.
+    /// </summary>
     public abstract class AEntity
     {
         // ============================================================
@@ -121,7 +124,7 @@ namespace UltimaXNA.Entity
         }
 
         // ============================================================
-        // Draw handling code
+        // Draw and View handling code
         // ============================================================
 
         private EntityViews.AEntityView m_View = null;
