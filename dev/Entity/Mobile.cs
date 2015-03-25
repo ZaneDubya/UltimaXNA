@@ -185,7 +185,7 @@ namespace UltimaXNA.Entity
         {
             if (UltimaVars.EngineVars.AllLabels)
             {
-                AddOverhead(MessageType.Label, "<big><outline>" + Name, 0, NotorietyHue);
+                AddOverhead(MessageType.Label, "<outline>" + Name, 0, NotorietyHue);
             }
 
             if (!m_movement.Position.IsNullPosition)

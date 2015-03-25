@@ -160,8 +160,8 @@ namespace UltimaXNA.Entity
             for (int i = 0; i < m_Overheads.Count; i++)
             {
                 overhead = m_Overheads[i];
-                // is this overhead already active?
-                if ((overhead.Text == text) && (overhead.MessageType == msgType) && !(overhead.IsDisposed))
+                // is this overhead an already active label?
+                if ((msgType  == MessageType.Label) && (overhead.Text == text) && (overhead.MessageType == msgType) && !(overhead.IsDisposed))
                 {
                     // reset the timer for the object so it lasts longer.
                     overhead.ResetTimer();
