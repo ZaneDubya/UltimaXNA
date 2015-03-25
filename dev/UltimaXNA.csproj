@@ -361,7 +361,7 @@
     <Compile Include="UltimaGUI\HTML\Parsing\HTMLParser.cs" />
     <Compile Include="UltimaGUI\HTML\Parsing\TagParser.cs" />
     <Compile Include="UltimaWorld\Model\MapBlock.cs" />
-    <Compile Include="UltimaWorld\Model\UpdatingStatics.cs" />
+    <Compile Include="UltimaWorld\Model\StaticManager.cs" />
     <Compile Include="UltimaWorld\View\IsometricWorldView.cs" />
     <Compile Include="UltimaWorld\Model\MapTile.cs" />
     <Compile Include="UltimaWorld\Controller\MouseOverList.cs" />
@@ -439,6 +439,7 @@
     <Compile Include="UltimaData\HueData.cs" />
     <Compile Include="UltimaData\Versioning.cs" />
     <Compile Include="UltimaWorld\Model\WorldCursor.cs" />
+    <Compile Include="UltimaWorld\View\OverheadRenderer.cs" />
     <Compile Include="UltimaWorld\WorldView.cs" />
     <Compile Include="Utility.cs" />
     <Compile Include="UltimaWorld\WorldModel.cs" />

@@ -228,6 +228,8 @@ namespace UltimaXNA.UltimaWorld.View
                 }
             }
 
+            OverheadRenderer.Render(m_spriteBatch, overList, map);
+
             // Update the MouseOver objects
             m_overObject = overList.GetForemostMouseOverItem(UltimaEngine.Input.MousePosition);
             m_overGround = overList.GetForemostMouseOverItem<Ground>(UltimaEngine.Input.MousePosition);

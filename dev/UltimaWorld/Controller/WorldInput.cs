@@ -110,86 +110,81 @@ namespace UltimaXNA.UltimaWorld.Controller
             e.Handled = true;
         }
 
-        void onInteractButton(InputEventMouse e)
+        void onInteractButton(InputEventMouse e, AEntity overEntity, Vector2 overEntityPoint)
         {
-            AEntity overEntity = IsometricRenderer.MouseOverObject;
-
             if (e.EventType == MouseEvent.Down)
             {
                 // prepare to pick this item up.
-                m_DraggingEntity = IsometricRenderer.MouseOverObject;
-                m_dragOffset = IsometricRenderer.MouseOverObjectPoint;
+                m_DraggingEntity = overEntity;
+                m_dragOffset = overEntityPoint;
             }
             else if (e.EventType == MouseEvent.Click)
             {
-                AEntity entity = IsometricRenderer.MouseOverObject;
-                if (entity is Ground)
+                if (overEntity is Ground)
                 {
                     // no action.
                 }
-                else if (entity is StaticItem)
+                else if (overEntity is StaticItem)
                 {
                     // pop up name of item.
-                    entity.AddOverhead(MessageType.Label, "<outline>" + entity.Name, 0, 0);
-                    Model.UpdatingStatics.AddStaticThatNeedsUpdating(entity as StaticItem);
+                    overEntity.AddOverhead(MessageType.Label, "<outline>" + overEntity.Name, 0, 0);
+                    Model.StaticManager.AddStaticThatNeedsUpdating(overEntity as StaticItem);
                 }
-                else if (entity is Item)
+                else if (overEntity is Item)
                 {
                     // request context menu
-                    UltimaInteraction.SingleClick(entity);
+                    UltimaInteraction.SingleClick(overEntity);
                 }
-                else if (entity is Mobile)
+                else if (overEntity is Mobile)
                 {
                     // request context menu
-                    UltimaInteraction.SingleClick(entity);
+                    UltimaInteraction.SingleClick(overEntity);
                 }
             }
             else if (e.EventType == MouseEvent.DoubleClick)
             {
-                AEntity entity = IsometricRenderer.MouseOverObject;
-                if (entity is Ground)
+                if (overEntity is Ground)
                 {
                     // no action.
                 }
-                else if (entity is StaticItem)
+                else if (overEntity is StaticItem)
                 {
                     // no action.
                 }
-                else if (entity is Item)
+                else if (overEntity is Item)
                 {
                     // request context menu
-                    UltimaInteraction.DoubleClick(entity);
+                    UltimaInteraction.DoubleClick(overEntity);
                 }
-                else if (entity is Mobile)
+                else if (overEntity is Mobile)
                 {
                     // Send double click packet.
                     // Set LastTarget == targeted Mobile.
                     // If in WarMode, set Attacking == true.
-                    UltimaInteraction.DoubleClick(entity);
-                    UltimaVars.EngineVars.LastTarget = entity.Serial;
+                    UltimaInteraction.DoubleClick(overEntity);
+                    UltimaVars.EngineVars.LastTarget = overEntity.Serial;
                     if (UltimaVars.EngineVars.WarMode)
                     {
-                        m_Model.Client.Send(new AttackRequestPacket(entity.Serial));
+                        m_Model.Client.Send(new AttackRequestPacket(overEntity.Serial));
                     }
                 }
             }
             else if (e.EventType == MouseEvent.DragBegin)
             {
-                AEntity entity = IsometricRenderer.MouseOverObject;
-                if (entity is Ground)
+                if (overEntity is Ground)
                 {
                     // no action.
                 }
-                else if (entity is StaticItem)
+                else if (overEntity is StaticItem)
                 {
                     // no action.
                 }
-                else if (entity is Item)
+                else if (overEntity is Item)
                 {
                     // attempt to pick up item.
-                    UltimaInteraction.PickupItem((Item)entity, new Point((int)m_dragOffset.X, (int)m_dragOffset.Y));
+                    UltimaInteraction.PickupItem((Item)overEntity, new Point((int)m_dragOffset.X, (int)m_dragOffset.Y));
                 }
-                else if (entity is Mobile)
+                else if (overEntity is Mobile)
                 {
                     // drag off a status gump for this mobile.
                 }
@@ -211,14 +206,14 @@ namespace UltimaXNA.UltimaWorld.Controller
                 {
                     if (e.EventType == MouseEvent.Click)
                     {
-                        InternalQueueSingleClick(e);
+                        InternalQueueSingleClick(e, IsometricRenderer.MouseOverObject, IsometricRenderer.MouseOverObjectPoint);
                         continue;
                     }
                     else if (e.EventType == MouseEvent.DoubleClick)
                     {
-                        CancelQueuedClick();
+                        ClearQueuedClick();
                     }
-                    onInteractButton(e);
+                    onInteractButton(e, IsometricRenderer.MouseOverObject, IsometricRenderer.MouseOverObjectPoint);
                 }
                 else
                 {
@@ -234,8 +229,17 @@ namespace UltimaXNA.UltimaWorld.Controller
         // This allows time for the player to potentially double-click on an object.
         // If the player does so, this will cancel the single-click event.
         private bool m_QueuedEvent_InQueue = false;
-        private double m_QueuedEvent_DequeueAt = 0d;
         private InputEventMouse m_QueuedEvent = null;
+        private AEntity m_QueuedEntity = null;
+        private double m_QueuedEvent_DequeueAt = 0d;
+        private Vector2 m_QueuedEntityPosition;
+
+        private void ClearQueuedClick()
+        {
+            m_QueuedEvent_InQueue = false;
+            m_QueuedEvent = null;
+            m_QueuedEntity = null;
+        }
 
         private void InternalCheckQueuedClick(double frameMS)
         {
@@ -244,22 +248,19 @@ namespace UltimaXNA.UltimaWorld.Controller
                 m_QueuedEvent_DequeueAt -= frameMS;
                 if (m_QueuedEvent_DequeueAt <= 0d)
                 {
-                    m_QueuedEvent_InQueue = false;
-                    onInteractButton(m_QueuedEvent);
+                    onInteractButton(m_QueuedEvent, m_QueuedEntity, m_QueuedEntityPosition);
+                    ClearQueuedClick();
                 }
             }
         }
 
-        private void InternalQueueSingleClick(InputEventMouse e)
+        private void InternalQueueSingleClick(InputEventMouse e, AEntity overEntity, Vector2 overEntityPoint)
         {
             m_QueuedEvent_InQueue = true;
+            m_QueuedEntity = overEntity;
+            m_QueuedEntityPosition = overEntityPoint;
             m_QueuedEvent_DequeueAt = EngineVars.SecondsForDoubleClick * 1000d;
             m_QueuedEvent = e;
-        }
-
-        private void CancelQueuedClick()
-        {
-            m_QueuedEvent_InQueue = false;
         }
         #endregion
 

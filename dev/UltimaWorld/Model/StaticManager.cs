@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using UltimaXNA.Entity;
 
 namespace UltimaXNA.UltimaWorld.Model
 {
-    public static class UpdatingStatics
+    public static class StaticManager
     {
         private static List<StaticItem> m_ActiveStatics = new List<StaticItem>();
 
