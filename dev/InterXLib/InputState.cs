@@ -3,8 +3,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using System.Windows.Input;
-using System.Windows.Forms;
 
 namespace InterXLib
 {
@@ -48,14 +46,29 @@ namespace InterXLib
 
         public bool IsCtrlDown
         {
-            get;
-            private set;
+            get
+            {
+                if (NativeMethods.GetKeyState((int)WinKeys.ControlKey) < 0)
+                    return true;
+                return false;
+            }
         }
 
         public bool IsShiftDown
         {
-            get;
-            private set;
+            get
+            {
+                if (NativeMethods.GetKeyState((int)WinKeys.ShiftKey) < 0)
+                    return true;
+                return false;
+            }
+        }
+
+        public bool IsKeyDown(WinKeys key)
+        {
+            if (NativeMethods.GetKeyState((int)key) < 0)
+                return true;
+            return false;
         }
 
         public List<InputEventKeyboard> GetKeyboardEvents()
@@ -294,8 +307,6 @@ namespace InterXLib
         {
             List<InputEvent> list = (m_EventsAccumulatingUseAlternate) ? m_EventsAccumulatingAlternate : m_EventsAccumulating;
             list.Add(e);
-            IsShiftDown = e.Shift;
-            IsCtrlDown = e.Control;
         }
 
         private InputEventKeyboard LastKeyPressEvent

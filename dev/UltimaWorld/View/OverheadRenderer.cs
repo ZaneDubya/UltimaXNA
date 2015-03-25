@@ -1,10 +1,7 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UltimaXNA.Entity.EntityViews;
 using UltimaXNA.Rendering;
-using Microsoft.Xna.Framework;
 using UltimaXNA.UltimaWorld.Model;
 
 namespace UltimaXNA.UltimaWorld.View

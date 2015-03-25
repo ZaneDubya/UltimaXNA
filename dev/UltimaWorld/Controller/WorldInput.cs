@@ -44,15 +44,19 @@ namespace UltimaXNA.UltimaWorld.Controller
         }
 
         // make sure we drag the correct object variables
-        Vector2 m_dragOffset;
-        AEntity m_DraggingEntity;
+        private Vector2 m_dragOffset;
+        private AEntity m_DraggingEntity;
+
+        // keyboard movement variables.
+        private double m_PauseBeforeKeyboardMovementMS = 0;
+        private const double c_PauseBeforeKeyboardMovementMS = 50d;
 
         public void Update(double frameMS)
         {
             if (UltimaVars.EngineVars.InWorld && !UltimaEngine.UserInterface.IsModalControlOpen && m_Model.Client.IsConnected)
             {
                 // always parse keyboard. (Is it possible there are some situations in which keyboard input is blocked???)
-                parseKeyboard();
+                InternalParseKeyboard(frameMS);
 
                 // In all cases, where we are moving and the move button was released, stop moving.
                 if (ContinuousMouseMovementCheck &&
@@ -64,7 +68,7 @@ namespace UltimaXNA.UltimaWorld.Controller
                 // If 1. The mouse is over the world (not over UI) and
                 //    2. The cursor is not blocking input, then interpret mouse input.
                 if (!UltimaEngine.UserInterface.IsMouseOverUI && !m_Model.Cursor.IsHoldingItem)
-                    parseMouse(frameMS);
+                    InternalParseMouse(frameMS);
 
                 // PickType is the kind of objects that will show up as the 'MouseOverObject'
                 if (UltimaEngine.UserInterface.IsMouseOverUI)
@@ -193,7 +197,7 @@ namespace UltimaXNA.UltimaWorld.Controller
             e.Handled = true;
         }
 
-        void parseMouse(double frameMS)
+        void InternalParseMouse(double frameMS)
         {
             List<InputEventMouse> events = UltimaEngine.Input.GetMouseEvents();
             foreach (InputEventMouse e in events)
@@ -264,17 +268,10 @@ namespace UltimaXNA.UltimaWorld.Controller
         }
         #endregion
 
-        void parseKeyboard()
+        void InternalParseKeyboard(double frameMS)
         {
             // all names mode
-            if (UltimaEngine.Input.IsShiftDown && UltimaEngine.Input.IsCtrlDown)
-            {
-                EngineVars.AllLabels = true;
-            }
-            else
-            {
-                EngineVars.AllLabels = false;
-            }
+            EngineVars.AllLabels = (UltimaEngine.Input.IsShiftDown && UltimaEngine.Input.IsCtrlDown);
 
             // Warmode toggle:
             if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.Tab, false, false, false))
@@ -285,6 +282,57 @@ namespace UltimaXNA.UltimaWorld.Controller
                     m_Model.Client.Send(new RequestWarModePacket(true));
             }
 
+            // movement with arrow keys if the player is not moving and the mouse isn't moving the player.
+            if (!ContinuousMouseMovementCheck)
+            {
+                Mobile m = (Mobile)EntityManager.GetPlayerObject();
+                bool up = UltimaEngine.Input.IsKeyDown(WinKeys.Up);
+                bool left = UltimaEngine.Input.IsKeyDown(WinKeys.Left);
+                bool right = UltimaEngine.Input.IsKeyDown(WinKeys.Right);
+                bool down = UltimaEngine.Input.IsKeyDown(WinKeys.Down);
+                if (!m.IsMoving && (up | left | right | down))
+                {
+                    // Allow a short span of time (50ms) to get all the keys pressed.
+                    // Otherwise, when moving diagonally, we would only get the first key
+                    // in most circumstances and the second key a frame or two later - but
+                    // too late, we would already be moving in the non-diagonal direction :(
+                    m_PauseBeforeKeyboardMovementMS -= frameMS;
+                    if (m_PauseBeforeKeyboardMovementMS <= 0)
+                    {
+                        if (up)
+                        {
+                            if (left)
+                                m.PlayerMobile_Move(Direction.West);
+                            else if (UltimaEngine.Input.IsKeyDown(WinKeys.Right))
+                                m.PlayerMobile_Move(Direction.North);
+                            else
+                                m.PlayerMobile_Move(Direction.Up);
+                        }
+                        else if (down)
+                        {
+                            if (left)
+                                m.PlayerMobile_Move(Direction.South);
+                            else if (right)
+                                m.PlayerMobile_Move(Direction.East);
+                            else
+                                m.PlayerMobile_Move(Direction.Down);
+                        }
+                        else
+                        {
+                            if (left)
+                                m.PlayerMobile_Move(Direction.Left);
+                            else if (right)
+                                m.PlayerMobile_Move(Direction.Right);
+                        }
+                    }
+                }
+                else
+                {
+                    m_PauseBeforeKeyboardMovementMS = c_PauseBeforeKeyboardMovementMS;
+                }
+            }
+
+            // debug variables.
             if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Press, WinKeys.D, false, false, true))
             {
                 if (!UltimaVars.DebugVars.Flag_ShowDataRead)

@@ -51,17 +51,17 @@ namespace InterXLib.Input.Windows
             {
                 WinKeys keys = WinKeys.None;
 
-                if (NativeMethods.GetKeyState(0x10) < 0)
+                if (NativeMethods.GetKeyState((int)WinKeys.ShiftKey) < 0)
                 {
                     keys |= WinKeys.Shift;
                 }
 
-                if (NativeMethods.GetKeyState(0x11) < 0)
+                if (NativeMethods.GetKeyState((int)WinKeys.ControlKey) < 0)
                 {
                     keys |= WinKeys.Control;
                 }
 
-                if (NativeMethods.GetKeyState(0x12) < 0)
+                if (NativeMethods.GetKeyState((int)WinKeys.Menu) < 0)
                 {
                     keys |= WinKeys.Alt;
                 }

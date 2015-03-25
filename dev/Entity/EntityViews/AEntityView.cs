@@ -1,11 +1,9 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Entity;
 using UltimaXNA.Rendering;
-using UltimaXNA.UltimaWorld.View;
 using UltimaXNA.UltimaWorld;
 using UltimaXNA.UltimaWorld.Model;
+using UltimaXNA.UltimaWorld.View;
 
 namespace UltimaXNA.Entity.EntityViews
 {
@@ -94,8 +92,6 @@ namespace UltimaXNA.Entity.EntityViews
             {
                 return false;
             }
-
-            // draw overlap ... !!! ??? with deferred objects, perhaps.
 
             Pick(mouseOverList, vertexBuffer);
 
