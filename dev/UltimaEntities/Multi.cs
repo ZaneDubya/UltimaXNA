@@ -20,8 +20,33 @@ namespace UltimaXNA.UltimaEntities
 {
     class Multi : AEntity
     {
-        MultiComponentList m_components;
-        List<Point> m_unloadedTiles = new List<Point>();
+        private static List<Multi> s_RegisteredMultis = new List<Multi>();
+
+        private static void RegisterForMapBlockLoads(Multi multi)
+        {
+            if (!s_RegisteredMultis.Contains(multi))
+                s_RegisteredMultis.Add(multi);
+        }
+
+        private static void UnregisterForMapBlockLoads(Multi multi)
+        {
+            if (s_RegisteredMultis.Contains(multi))
+                s_RegisteredMultis.Remove(multi);
+        }
+
+        public static void AnnounceMapBlockLoaded(MapBlock block)
+        {
+            for (int i = 0; i < s_RegisteredMultis.Count; i++)
+                if (!s_RegisteredMultis[i].IsDisposed)
+                    s_RegisteredMultis[i].ReceiveMapBlockLoaded(block);
+        }
+
+        private void ReceiveMapBlockLoaded(MapBlock block)
+        {
+
+        }
+
+        MultiComponentList m_Components;
 
         int m_customHouseRevision = 0x7FFFFFFF;
         StaticTile[] m_customHouseTiles;
@@ -33,31 +58,29 @@ namespace UltimaXNA.UltimaEntities
         {
             m_hasCustomTiles = true;
             m_customHouse = house;
-            m_customHouseTiles = house.GetStatics(m_components.Width, m_components.Height);
-            redrawAllTiles();
+            m_customHouseTiles = house.GetStatics(m_Components.Width, m_Components.Height);
         }
 
-        int m_ItemID;
-        public int ItemID
+        int m_StaticID;
+        public int StaticID
         {
-            get { return m_ItemID; }
+            get { return m_StaticID; }
             set
             {
-                if (m_ItemID != value)
+                if (m_StaticID != value)
                 {
-                    m_ItemID = value;
-                    redrawAllTiles();
+                    m_StaticID = value;
                 }
             }
         }
 
         void redrawAllTiles()
         {
-            m_components = MultiData.GetComponents(m_ItemID);
+            m_Components = MultiData.GetComponents(m_StaticID);
             m_unloadedTiles.Clear();
-            for (int y = 0; y < m_components.Height + 1; y++)
+            for (int y = 0; y < m_Components.Height + 1; y++)
             {
-                for (int x = 0; x < m_components.Width; x++)
+                for (int x = 0; x < m_Components.Width; x++)
                 {
                     Point p = new Point();
                     p.X = x;
@@ -70,16 +93,13 @@ namespace UltimaXNA.UltimaEntities
         public Multi(Serial serial, Map map)
 			: base(serial, map)
 		{
+            RegisterForMapBlockLoads(this);
 		}
 
-        public override void Update(double frameMS)
+        public override void Dispose()
         {
-            if (m_unloadedTiles.Count > 0)
-            {
-                // what do we do here ???
-            }
-
-            base.Update(frameMS);
+            UnregisterForMapBlockLoads(this);
+            base.Dispose();
         }
 
         internal override void Draw(MapTile tile, Position3D position)
@@ -91,8 +111,8 @@ namespace UltimaXNA.UltimaEntities
 
             foreach (Point p in m_unloadedTiles)
             {
-                int x = tile.X + p.X - m_components.Center.X;
-                int y = tile.Y + p.Y - m_components.Center.Y;
+                int x = tile.X + p.X - m_Components.Center.X;
+                int y = tile.Y + p.Y - m_Components.Center.Y;
 
                 MapTile t = Map.GetMapTile(x, y);
                 if (t != null)
@@ -101,9 +121,9 @@ namespace UltimaXNA.UltimaEntities
 
                     if (!m_hasCustomTiles)
                     {
-                        if (p.X < m_components.Width && p.Y < m_components.Height)
+                        if (p.X < m_Components.Width && p.Y < m_Components.Height)
                         {
-                            foreach (StaticTile s in m_components.Tiles[p.X][p.Y])
+                            foreach (StaticTile s in m_Components.Tiles[p.X][p.Y])
                             {
                                 // t.AddMapObject(new MapObjectStatic(s.ID, 0, new Position3D(x, y, s.Z)));
                             }
