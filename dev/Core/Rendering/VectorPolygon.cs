@@ -10,7 +10,7 @@
 using System;
 using Microsoft.Xna.Framework;
 
-namespace UltimaXNA.Rendering
+namespace UltimaXNA.Core.Rendering
 {
     /// <summary>
     /// A series of points that may be drawn together to form a line.

@@ -11,8 +11,9 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Rendering;
+using UltimaXNA.Core.Rendering;
 using InterXLib.Input.Windows;
+using UltimaXNA.Core;
 
 namespace UltimaXNA.UltimaGUI
 {
@@ -28,7 +29,7 @@ namespace UltimaXNA.UltimaGUI
     /// </summary>
     public class Control
     {
-        internal static GUIState UserInterface = null;
+        internal static GUIManager UserInterface = null;
 
         public int Serial = 0;
         public bool IsModal = false;

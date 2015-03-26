@@ -12,8 +12,8 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using UltimaXNA.Entity;
-using UltimaXNA.Rendering;
+using UltimaXNA.UltimaEntities;
+using UltimaXNA.Core.Rendering;
 using UltimaXNA.UltimaWorld.Model;
 
 #endregion
@@ -208,7 +208,7 @@ namespace UltimaXNA.UltimaWorld.View
                         if (entities[i].Z >= m_maxItemAltitude)
                             continue;
 
-                        Entity.EntityViews.AEntityView view = entities[i].GetView();
+                        UltimaEntities.EntityViews.AEntityView view = entities[i].GetView();
 
                         if (view != null)
                             if (view.Draw(m_spriteBatch, drawPosition, overList, map))

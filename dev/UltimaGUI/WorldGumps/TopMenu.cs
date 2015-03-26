@@ -7,11 +7,12 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using UltimaXNA.Entity;
+using UltimaXNA.UltimaEntities;
 using UltimaXNA.UltimaGUI.Controls;
 using UltimaXNA.UltimaPackets;
 using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.UltimaWorld;
+using UltimaXNA.Core;
 
 namespace UltimaXNA.UltimaGUI.WorldGumps
 {
@@ -63,10 +64,10 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
             switch ((Buttons)buttonID)
             {
                 case Buttons.Map:
-                    UserInterface.AddControl(new MiniMap(), 566, 25, GUIState.AddGumpType.Toggle);
+                    UserInterface.AddControl(new MiniMap(), 566, 25, GUIManager.AddGumpType.Toggle);
                     break;
                 case Buttons.Paperdoll:
-                    UserInterface.AddControl(new PaperDollGump((Mobile)EntityManager.GetPlayerObject()), 400, 100, GUIState.AddGumpType.Toggle);
+                    UserInterface.AddControl(new PaperDollGump((Mobile)EntityManager.GetPlayerObject()), 400, 100, GUIManager.AddGumpType.Toggle);
                     break;
                 case Buttons.Inventory:
                     PlayerMobile m = (PlayerMobile)EntityManager.GetPlayerObject();
@@ -81,7 +82,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
                 case Buttons.Help:
                     break;
                 case Buttons.Question:
-                    UserInterface.AddControl(new DebugGump(), 50, 50, GUIState.AddGumpType.Toggle);
+                    UserInterface.AddControl(new DebugGump(), 50, 50, GUIManager.AddGumpType.Toggle);
                     break;
             }
         }

@@ -11,8 +11,8 @@
 #region usings
 using System;
 using System.Collections.Generic;
-using UltimaXNA.Entity;
-using UltimaXNA.Entity.EntityViews;
+using UltimaXNA.UltimaEntities;
+using UltimaXNA.UltimaEntities.EntityViews;
 using UltimaXNA.UltimaData;
 using UltimaXNA.UltimaWorld.View;
 #endregion

@@ -11,6 +11,7 @@
 #region usings
 using System;
 using System.IO;
+using UltimaXNA.Core.Diagnostics;
 #endregion
 
 namespace UltimaXNA.UltimaData
@@ -116,7 +117,7 @@ namespace UltimaXNA.UltimaData
                     ItemData[i] = itemData;
                 }
 
-                Diagnostics.Metrics.ReportDataRead((int)binaryReader.BaseStream.Position);
+                Metrics.ReportDataRead((int)binaryReader.BaseStream.Position);
             }
         }
     }

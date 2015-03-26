@@ -17,8 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Text;
+using UltimaXNA.Core.Diagnostics;
 #endregion
 
 namespace UltimaXNA.UltimaData
@@ -213,7 +212,7 @@ namespace UltimaXNA.UltimaData
             {
                 SharedMethods.Read(m_MapStream.SafeFileHandle, pData, m_size_LandBlockData);
             }
-            Diagnostics.Metrics.ReportDataRead((int)m_MapStream.Position - streamStart);
+            Metrics.ReportDataRead((int)m_MapStream.Position - streamStart);
 
             return m_bufferedLandBlocks[index];
         }

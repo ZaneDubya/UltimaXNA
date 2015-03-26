@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   Animations.cs
+ *   AnimationData.cs
  *   Based on code from UltimaSDK: http://ultimasdk.codeplex.com/
  *   
  *   This program is free software; you can redistribute it and/or modify
@@ -9,12 +9,10 @@
  *
  ***************************************************************************/
 #region usings
-using System;
-using System.Collections;
-using System.IO;
-using System.Text.RegularExpressions;
-using Microsoft.Xna.Framework.Graphics;
 using InterXLib;
+using Microsoft.Xna.Framework.Graphics;
+using System.IO;
+using UltimaXNA.Core.Diagnostics;
 #endregion
 
 namespace UltimaXNA.UltimaData
@@ -471,7 +469,7 @@ namespace UltimaXNA.UltimaData
                     dataRead += header & 0xFFF;
                 }
 
-                Diagnostics.Metrics.ReportDataRead(dataRead);
+                Metrics.ReportDataRead(dataRead);
             }
 
             m_Center = new Microsoft.Xna.Framework.Point(xCenter, yCenter);

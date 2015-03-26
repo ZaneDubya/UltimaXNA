@@ -8,7 +8,7 @@
  *
  ***************************************************************************/
 using System.Collections.Generic;
-using UltimaXNA.Entity;
+using UltimaXNA.UltimaEntities;
 using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaData;
 using UltimaXNA.UltimaGUI.Controls;

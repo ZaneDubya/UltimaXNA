@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using UltimaXNA.Entity;
+using UltimaXNA.UltimaEntities;
 
 namespace UltimaXNA.UltimaWorld.Model
 {

@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   Art.cs
+ *   ArtData.cs
  *   Based on code from UltimaSDK: http://ultimasdk.codeplex.com/
  *   
  *   This program is free software; you can redistribute it and/or modify
@@ -12,6 +12,7 @@
 using System.IO;
 using Microsoft.Xna.Framework.Graphics;
 using InterXLib;
+using UltimaXNA.Core.Diagnostics;
 #endregion
 
 namespace UltimaXNA.UltimaData
@@ -92,7 +93,7 @@ namespace UltimaXNA.UltimaData
                     uint* start = dataRef + offset;
                     uint* end = start + count;
 
-                    Diagnostics.Metrics.ReportDataRead(count * 2);
+                    Metrics.ReportDataRead(count * 2);
 
                     while (start < end)
                     {
@@ -113,7 +114,7 @@ namespace UltimaXNA.UltimaData
                     uint* start = dataRef + offset;
                     uint* end = start + count;
 
-                    Diagnostics.Metrics.ReportDataRead(count * 2);
+                    Metrics.ReportDataRead(count * 2);
 
                     while (start < end)
                     {
@@ -235,7 +236,7 @@ namespace UltimaXNA.UltimaData
                 }
             }
 
-            Diagnostics.Metrics.ReportDataRead(sizeof(ushort) * (fileData.Length + lookups.Length + 2));
+            Metrics.ReportDataRead(sizeof(ushort) * (fileData.Length + lookups.Length + 2));
 
             Texture2D texture = new Texture2D(m_graphics, width, height);
 

@@ -18,7 +18,7 @@
 using System.Collections.Generic;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Network.Packets;
-using UltimaXNA.Entity.Support;
+using UltimaXNA.UltimaEntities.Support;
 #endregion
 
 namespace UltimaXNA.UltimaPackets.Server

@@ -10,7 +10,7 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Rendering;
+using UltimaXNA.Core.Rendering;
 using InterXLib.Input.Windows;
 using UltimaXNA.UltimaGUI.HTML;
 using UltimaXNA.UltimaGUI;
@@ -95,7 +95,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             }
         }
 
-        RenderedTextTexture m_Texture;
+        RenderedText m_Texture;
 
         public HtmlGump(Control owner, int page)
             : base(owner, page)
@@ -132,7 +132,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             Text = text;
             m_background = (background == 1) ? true : false;
             m_hasScrollbar = (scrollbar == 1) ? true : false;
-            m_Texture = new RenderedTextTexture(text, true, Width);
+            m_Texture = new RenderedText(text, true, Width);
             Height = m_Texture.Height;
         }
 

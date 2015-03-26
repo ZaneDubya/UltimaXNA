@@ -9,13 +9,9 @@
  *
  ***************************************************************************/
 #region usings
-using System;
-using System.IO;
-using System.Drawing;
-using System.Drawing.Imaging;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
 using InterXLib;
+using Microsoft.Xna.Framework.Graphics;
+using UltimaXNA.Core.Diagnostics;
 #endregion
 
 namespace UltimaXNA.UltimaData
@@ -94,7 +90,7 @@ namespace UltimaXNA.UltimaData
                     }
                 }
 
-                Diagnostics.Metrics.ReportDataRead(length);
+                Metrics.ReportDataRead(length);
 
                 Texture2D texture = new Texture2D(m_graphicsDevice, width, height, false, SurfaceFormat.Color);
                 texture.SetData(pixels);

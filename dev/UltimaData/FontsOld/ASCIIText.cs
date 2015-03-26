@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using UltimaXNA.Core.Diagnostics;
 
 namespace UltimaXNA.UltimaData.FontsOld
 {
@@ -41,7 +42,7 @@ namespace UltimaXNA.UltimaData.FontsOld
                     using (BinaryReader reader = new BinaryReader(new FileStream(path, FileMode.Open, FileAccess.Read)))
                     {
                         buffer = reader.ReadBytes((int)reader.BaseStream.Length);
-                        Diagnostics.Metrics.ReportDataRead(buffer.Length);
+                        Metrics.ReportDataRead(buffer.Length);
                     }
 
                     for (int i = 0; i < FontCount; i++)

@@ -8,10 +8,11 @@
  *
  ***************************************************************************/
 using Microsoft.Xna.Framework;
-using UltimaXNA.Entity;
-using UltimaXNA.Rendering;
+using UltimaXNA.UltimaEntities;
+using UltimaXNA.Core.Rendering;
 using UltimaXNA.UltimaGUI.Controls;
 using UltimaXNA.UltimaWorld;
+using UltimaXNA.Core;
 
 namespace UltimaXNA.UltimaGUI.WorldGumps
 {
@@ -128,7 +129,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
                 case Buttons.Quests:
                     break;
                 case Buttons.Skills:
-                    UserInterface.AddControl(new SkillsGump(), 80, 80, GUIState.AddGumpType.Toggle);
+                    UserInterface.AddControl(new SkillsGump(), 80, 80, GUIManager.AddGumpType.Toggle);
                     break;
                 case Buttons.Guild:
                     break;
@@ -136,7 +137,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
                     UltimaInteraction.ToggleWarMode();
                     break;
                 case Buttons.Status:
-                    UserInterface.AddControl(new StatusGump(), 200, 400, GUIState.AddGumpType.Toggle);
+                    UserInterface.AddControl(new StatusGump(), 200, 400, GUIManager.AddGumpType.Toggle);
                     break;
             }
         }

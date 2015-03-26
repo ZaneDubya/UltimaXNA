@@ -7,7 +7,7 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using UltimaXNA.Entity;
+using UltimaXNA.UltimaEntities;
 using UltimaXNA.UltimaGUI;
 
 namespace UltimaXNA.UltimaGUI.Controls

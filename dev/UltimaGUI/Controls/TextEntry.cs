@@ -9,7 +9,7 @@
  ***************************************************************************/
 using System;
 using Microsoft.Xna.Framework;
-using UltimaXNA.Rendering;
+using UltimaXNA.Core.Rendering;
 using InterXLib.Input.Windows;
 using UltimaXNA.UltimaGUI;
 
@@ -42,8 +42,8 @@ namespace UltimaXNA.UltimaGUI.Controls
         float m_secondsSinceLastBlink = 0f;
         const float m_SecondsPerBlink = 0.5f;
 
-        RenderedTextTexture m_Texture;
-        RenderedTextTexture m_Carat;
+        RenderedText m_Texture;
+        RenderedText m_Carat;
 
         public TextEntry(Control owner, int page)
             : base(owner, page)
@@ -85,8 +85,8 @@ namespace UltimaXNA.UltimaGUI.Controls
             Text = text;
             LimitSize = limitSize;
             m_caratBlinkOn = false;
-            m_Texture = new RenderedTextTexture("", true, width);
-            m_Carat = new RenderedTextTexture("", true, width);
+            m_Texture = new RenderedText("", true, width);
+            m_Carat = new RenderedText("", true, width);
         }
 
         public override void Update(GameTime gameTime)

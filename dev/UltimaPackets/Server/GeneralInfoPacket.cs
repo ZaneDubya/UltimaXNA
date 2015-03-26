@@ -1,13 +1,6 @@
 ﻿/***************************************************************************
  *   GeneralInfoPacket.cs
  *   
- *   begin                : May 31, 2009
- *   email                : poplicola@ultimaxna.com
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 3 of the License, or
@@ -17,6 +10,7 @@
 #region usings
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Network.Packets;
+using UltimaXNA.Core.Diagnostics;
 #endregion
 
 namespace UltimaXNA.UltimaPackets.Server
@@ -119,7 +113,7 @@ namespace UltimaXNA.UltimaPackets.Server
 
             if (clientFlag == 5)
             {
-                Diagnostics.Logger.Warn("ClientFlags == 5 in GeneralInfoPacket ExtendedStats 0x19. This is not a KR client.");
+                Logger.Warn("ClientFlags == 5 in GeneralInfoPacket ExtendedStats 0x19. This is not a KR client.");
                 // If(Lock flags = 0xFF) //Update mobile status animation
                 //  BYTE[1] Status // Unveryfied if lock flags == FF the locks will be handled here
                 //  BYTE[1] unknown (0x00) 

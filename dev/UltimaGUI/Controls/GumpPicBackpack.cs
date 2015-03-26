@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using UltimaXNA.Entity;
+using UltimaXNA.UltimaEntities;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {

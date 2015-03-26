@@ -11,7 +11,7 @@
  ***************************************************************************/
 using System;
 using System.IO;
-using UltimaXNA.Diagnostics;
+using UltimaXNA.Core.Diagnostics;
 using System.Collections.Generic;
 
 namespace UltimaXNA.UltimaData

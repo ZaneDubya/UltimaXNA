@@ -8,7 +8,7 @@
  *
  ***************************************************************************/
 using Microsoft.Xna.Framework;
-using UltimaXNA.Rendering;
+using UltimaXNA.Core.Rendering;
 using InterXLib.Input.Windows;
 using UltimaXNA.UltimaGUI;
 

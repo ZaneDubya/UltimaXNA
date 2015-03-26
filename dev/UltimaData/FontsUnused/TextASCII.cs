@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System.IO;
 using UltimaXNA.UltimaData.FontsNew;
+using UltimaXNA.Core.Diagnostics;
 
 namespace UltimaXNA.UltimaData.FontsUnused
 {
@@ -40,7 +41,7 @@ namespace UltimaXNA.UltimaData.FontsUnused
                     {
                         m_fonts[i] = new FontASCII(m_graphicsDevice, reader);
                     }
-                    Diagnostics.Metrics.ReportDataRead((int)reader.BaseStream.Length);
+                    Metrics.ReportDataRead((int)reader.BaseStream.Length);
                 }
             }
         }

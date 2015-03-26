@@ -11,7 +11,7 @@
 using System;
 #endregion
 
-namespace UltimaXNA.Diagnostics
+namespace UltimaXNA.Core.Diagnostics
 {
     /// <summary>
     /// The Logger class is a simple wrapper for log4net.

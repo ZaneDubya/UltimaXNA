@@ -14,7 +14,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
-using UltimaXNA.Diagnostics;
+using UltimaXNA.Core.Diagnostics;
 
 namespace UltimaXNA.UltimaGUI.HTML
 {

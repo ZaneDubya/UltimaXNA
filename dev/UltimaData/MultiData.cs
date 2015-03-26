@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   Multis.cs
+ *   MultiData.cs
  *   Based on code from UltimaSDK: http://ultimasdk.codeplex.com/
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -9,12 +9,9 @@
  *
  ***************************************************************************/
 #region usings
-using System;
-using System.Collections;
-using System.IO;
-using System.Drawing;
-using System.Drawing.Imaging;
 using InterXLib;
+using System.Drawing;
+using UltimaXNA.Core.Diagnostics;
 #endregion
 
 namespace UltimaXNA.UltimaData
@@ -159,7 +156,7 @@ namespace UltimaXNA.UltimaData
                 }
             }
 
-            Diagnostics.Metrics.ReportDataRead((int)reader.Position - metrics_dataread_start);
+            Metrics.ReportDataRead((int)reader.Position - metrics_dataread_start);
         }
 
         private MultiComponentList()

@@ -26,7 +26,7 @@ namespace UltimaXNA.Core
     public class BaseEngine : Game
     {
         public static InputState Input = new InputState();
-        public static GUIState UserInterface = new GUIState();
+        public static GUIManager UserInterface = new GUIManager();
 
         public BaseEngine(int width, int height)
         {

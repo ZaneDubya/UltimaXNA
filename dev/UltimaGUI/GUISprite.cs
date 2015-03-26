@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Rendering;
+using UltimaXNA.Core.Rendering;
 
 namespace UltimaXNA.UltimaGUI
 {

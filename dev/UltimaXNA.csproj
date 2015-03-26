@@ -123,16 +123,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\AUltimaModel.cs" />
-    <Compile Include="Entity\EntityViews\AEntityView.cs" />
-    <Compile Include="Entity\EntityViews\CorpseView.cs" />
-    <Compile Include="Entity\EntityViews\MobileDeferredView.cs" />
-    <Compile Include="Entity\EntityViews\OverheadView.cs" />
-    <Compile Include="Entity\MobileDeferred.cs" />
-    <Compile Include="Entity\Support\MobileFlags.cs" />
+    <Compile Include="UltimaEntities\EntityViews\AEntityView.cs" />
+    <Compile Include="UltimaEntities\EntityViews\CorpseView.cs" />
+    <Compile Include="UltimaEntities\EntityViews\MobileDeferredView.cs" />
+    <Compile Include="UltimaEntities\EntityViews\OverheadView.cs" />
+    <Compile Include="UltimaEntities\MobileDeferred.cs" />
+    <Compile Include="UltimaEntities\Support\MobileFlags.cs" />
     <Compile Include="UltimaData\FontsUnused\CharacterASCII.cs" />
     <Compile Include="UltimaData\FontsNew\AFont.cs" />
     <Compile Include="UltimaData\FontsUnused\FontASCII.cs" />
-    <Compile Include="UltimaGUI\RenderedTextTexture.cs" />
+    <Compile Include="UltimaGUI\RenderedText.cs" />
     <Compile Include="UltimaData\FontsUnused\TextASCII.cs" />
     <Compile Include="UltimaData\FontsNew\ACharacter.cs" />
     <Compile Include="UltimaData\FontsNew\CharacterUni.cs" />
@@ -141,11 +141,11 @@
     <Compile Include="Core\IniFile.cs" />
     <Compile Include="UltimaVars\SettingVars.cs" />
     <Compile Include="UltimaWorld\Model\EntitySort.cs" />
-    <Compile Include="Entity\EntityViews\GroundView.cs" />
-    <Compile Include="Entity\EntityViews\ItemView.cs" />
-    <Compile Include="Entity\EntityViews\MobileView.cs" />
-    <Compile Include="Entity\Ground.cs" />
-    <Compile Include="Entity\StaticItem.cs" />
+    <Compile Include="UltimaEntities\EntityViews\GroundView.cs" />
+    <Compile Include="UltimaEntities\EntityViews\ItemView.cs" />
+    <Compile Include="UltimaEntities\EntityViews\MobileView.cs" />
+    <Compile Include="UltimaEntities\Ground.cs" />
+    <Compile Include="UltimaEntities\StaticItem.cs" />
     <Compile Include="UltimaData\BodyData.cs" />
     <Compile Include="UltimaData\FontsOld\ASCIIText.cs" />
     <Compile Include="UltimaGUI\Controls\GumpPicBackpack.cs" />
@@ -286,7 +286,7 @@
     <Compile Include="UltimaPackets\Server\WeatherPacket.cs" />
     <Compile Include="UltimaPackets\Server\WornItemPacket.cs" />
     <Compile Include="UltimaPackets\Shared.cs" />
-    <Compile Include="Core\Program.cs" />
+    <Compile Include="Core\EntryPoint.cs" />
     <Compile Include="UltimaClient.cs" />
     <Compile Include="UltimaData\ArtData.cs" />
     <Compile Include="UltimaData\FontsOld\ASCIIFont.cs" />
@@ -330,23 +330,23 @@
     <Compile Include="UltimaEngine.cs" />
     <Compile Include="UltimaData\FileManager.cs" />
     <Compile Include="Core\Point.cs" />
-    <Compile Include="Entity\Container.cs" />
-    <Compile Include="Entity\Corpse.cs" />
-    <Compile Include="Entity\Effect.cs" />
-    <Compile Include="Entity\AEntity.cs" />
+    <Compile Include="UltimaEntities\Container.cs" />
+    <Compile Include="UltimaEntities\Corpse.cs" />
+    <Compile Include="UltimaEntities\Effect.cs" />
+    <Compile Include="UltimaEntities\AEntity.cs" />
     <Compile Include="UltimaWorld\Model\EntityManager.cs" />
     <Compile Include="Position3D.cs" />
-    <Compile Include="Entity\Item.cs" />
-    <Compile Include="Entity\Mobile.cs" />
-    <Compile Include="Entity\EntityViews\MobileAnimation.cs" />
-    <Compile Include="Entity\MobileEquipment.cs" />
-    <Compile Include="Entity\MobileMovement.cs" />
-    <Compile Include="Entity\MobileMovementCheck.cs" />
-    <Compile Include="Entity\Multi.cs" />
-    <Compile Include="Entity\Overhead.cs" />
-    <Compile Include="Entity\PlayerMobile.cs" />
-    <Compile Include="Entity\Support\PropertyList.cs" />
-    <Compile Include="Entity\Support\Shared.cs" />
+    <Compile Include="UltimaEntities\Item.cs" />
+    <Compile Include="UltimaEntities\Mobile.cs" />
+    <Compile Include="UltimaEntities\EntityViews\MobileAnimation.cs" />
+    <Compile Include="UltimaEntities\MobileEquipment.cs" />
+    <Compile Include="UltimaEntities\MobileMovement.cs" />
+    <Compile Include="UltimaEntities\MobileMovementCheck.cs" />
+    <Compile Include="UltimaEntities\Multi.cs" />
+    <Compile Include="UltimaEntities\Overhead.cs" />
+    <Compile Include="UltimaEntities\PlayerMobile.cs" />
+    <Compile Include="UltimaEntities\Support\PropertyList.cs" />
+    <Compile Include="UltimaEntities\Support\Shared.cs" />
     <Compile Include="UltimaLogin\Scenes\CharacterListScene.cs" />
     <Compile Include="UltimaLogin\Scenes\CreateCharacterScene.cs" />
     <Compile Include="UltimaLogin\Scenes\LoggingInScene.cs" />
@@ -407,7 +407,7 @@
     <Compile Include="UltimaGUI\Controls\TextLabelAscii.cs" />
     <Compile Include="UltimaGUI\Controls\TextLabelAsciiCropped.cs" />
     <Compile Include="UltimaGUI\Controls\TilePic.cs" />
-    <Compile Include="Core\GUIState.cs" />
+    <Compile Include="Core\GUIManager.cs" />
     <Compile Include="UltimaData\StaticTileList.cs" />
     <Compile Include="UltimaData\TexmapData.cs" />
     <Compile Include="UltimaData\TileData.cs" />
@@ -492,9 +492,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Core\Network\Packets\Both\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="InterXLib\InterXLib.csproj">
       <Project>{5de77709-9a9f-4059-9f8a-791f5042667a}</Project>

@@ -12,7 +12,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
-using UltimaXNA.Diagnostics;
+using UltimaXNA.Core.Diagnostics;
 using System.IO;
 using UltimaXNA.UltimaData.FontsNew;
 #endregion

@@ -10,6 +10,7 @@
  ***************************************************************************/
 #region usings
 using System.IO;
+using UltimaXNA.Core.Diagnostics;
 #endregion
 
 namespace UltimaXNA.UltimaData
@@ -34,7 +35,7 @@ namespace UltimaXNA.UltimaData
                             (((c & 0x1F) * multiplier) << 16)
                             );
                 }
-                Diagnostics.Metrics.ReportDataRead((int)bin.BaseStream.Position);
+                Metrics.ReportDataRead((int)bin.BaseStream.Position);
             }
         }
     }

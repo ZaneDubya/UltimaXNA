@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using Microsoft.Xna.Framework.Audio;
+using UltimaXNA.Core.Diagnostics;
 #endregion
 
 
@@ -77,7 +78,7 @@ namespace UltimaXNA.UltimaData
 
             string str = System.Text.Encoding.ASCII.GetString(stringBuffer); // seems that the null terminator's not being properly recognized :/
 
-            Diagnostics.Metrics.ReportDataRead((int)m_Index.BaseStream.Position - streamStart);
+            Metrics.ReportDataRead((int)m_Index.BaseStream.Position - streamStart);
 
             return new UOSound(str.Substring(0, str.IndexOf('\0')), buffer);
         }

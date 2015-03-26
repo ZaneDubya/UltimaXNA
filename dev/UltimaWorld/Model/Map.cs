@@ -11,7 +11,7 @@
 #region usings
 using Microsoft.Xna.Framework;
 using System;
-using UltimaXNA.Entity;
+using UltimaXNA.UltimaEntities;
 using UltimaXNA.UltimaData;
 
 #endregion

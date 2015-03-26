@@ -10,7 +10,7 @@
 #region usings
 using System;
 using System.Collections.Generic;
-using UltimaXNA.Entity;
+using UltimaXNA.UltimaEntities;
 using UltimaXNA.UltimaVars;
 #endregion
 

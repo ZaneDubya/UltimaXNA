@@ -7,8 +7,8 @@
  ***************************************************************************/
 #region usings
 using System.Collections.Generic;
-using UltimaXNA.Entity;
-using UltimaXNA.Entity.EntityViews;
+using UltimaXNA.UltimaEntities;
+using UltimaXNA.UltimaEntities.EntityViews;
 #endregion
 
 namespace UltimaXNA.UltimaWorld.Model

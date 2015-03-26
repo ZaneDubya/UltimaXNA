@@ -7,7 +7,7 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using UltimaXNA.Rendering;
+using UltimaXNA.Core.Rendering;
 using UltimaXNA.UltimaGUI;
 using Microsoft.Xna.Framework;
 

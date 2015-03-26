@@ -10,7 +10,7 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Rendering;
+using UltimaXNA.Core.Rendering;
 using InterXLib.Input.Windows;
 using UltimaXNA.UltimaGUI;
 
@@ -63,7 +63,7 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         internal bool MouseDownOnThis { get { return (m_clicked); } }
 
-        RenderedTextTexture m_Texture;
+        RenderedText m_Texture;
 
         public Button(Control owner, int page)
             : base(owner, page)
@@ -98,7 +98,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             ButtonType = buttonType;
             ButtonParameter = param;
             ButtonID = buttonID;
-            m_Texture = new RenderedTextTexture("", true, 100);
+            m_Texture = new RenderedText("", true, 100);
         }
 
         public override void Update(GameTime gameTime)

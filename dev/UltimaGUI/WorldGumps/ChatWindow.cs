@@ -9,7 +9,7 @@
  ***************************************************************************/
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using UltimaXNA.Rendering;
+using UltimaXNA.Core.Rendering;
 using UltimaXNA.UltimaGUI.Controls;
 using UltimaXNA.UltimaData.FontsNew;
 
@@ -88,7 +88,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
         const float Time_Display = 10.0f;
         const float Time_Fadeout = 4.0f;
 
-        private RenderedTextTexture m_Texture;
+        private RenderedText m_Texture;
         public int TextHeight { get { return m_Texture.Height; } }
 
         public ChatLineTimed(string text, int width)
@@ -98,7 +98,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
             m_alpha = 1.0f;
             m_width = width;
 
-            m_Texture = new RenderedTextTexture(m_text, true, m_width);
+            m_Texture = new RenderedText(m_text, true, m_width);
         }
 
         public void Update(GameTime gameTime)

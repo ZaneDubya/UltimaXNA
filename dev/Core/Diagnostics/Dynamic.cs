@@ -7,7 +7,7 @@ using System;
 using System.Collections;
 using System.Reflection;
 
-namespace UltimaXNA.Diagnostics
+namespace UltimaXNA.Core.Diagnostics
 {
     public class Dynamic
     {

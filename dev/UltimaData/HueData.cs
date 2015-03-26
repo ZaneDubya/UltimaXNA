@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   Hues.cs
+ *   HuesXNA.cs
  *   Based on code from UltimaSDK: http://ultimasdk.codeplex.com/
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -9,11 +9,11 @@
  *
  ***************************************************************************/
 #region usings
-using System.IO;
-using System.Text;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.IO;
+using System.Text;
+using UltimaXNA.Core.Diagnostics;
 #endregion
 
 namespace UltimaXNA.UltimaData
@@ -52,7 +52,7 @@ namespace UltimaXNA.UltimaData
             int currentHue = 0;
             uint[] data = new uint[m_HueTextureWidth * m_HueTextureHeight];
 
-            Diagnostics.Metrics.ReportDataRead((int)reader.BaseStream.Length);
+            Metrics.ReportDataRead((int)reader.BaseStream.Length);
 
             while (reader.BaseStream.Position < reader.BaseStream.Length)
             {

@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using UltimaXNA.Entity;
+using UltimaXNA.UltimaEntities;
 using UltimaXNA.UltimaPackets;
 using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.UltimaWorld;

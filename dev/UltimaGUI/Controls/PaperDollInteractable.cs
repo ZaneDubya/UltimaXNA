@@ -9,7 +9,7 @@
  ***************************************************************************/
 using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Network;
-using UltimaXNA.Entity;
+using UltimaXNA.UltimaEntities;
 using InterXLib.Input.Windows;
 using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaPackets;

@@ -7,12 +7,11 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+#region usings
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.InteropServices;
-using Microsoft.Xna.Framework;
+
+#endregion
 
 namespace UltimaXNA
 {

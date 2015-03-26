@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 
-namespace UltimaXNA.Diagnostics
+namespace UltimaXNA.Core.Diagnostics
 {
     static class Metrics
     {

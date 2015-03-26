@@ -11,6 +11,7 @@ using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.UltimaPackets.Server;
 using UltimaXNA.Core.Network;
 using UltimaXNA.UltimaWorld.Controller;
+using UltimaXNA.Core.Diagnostics;
 
 namespace UltimaXNA.UltimaWorld.Controller
 {
@@ -29,7 +30,7 @@ namespace UltimaXNA.UltimaWorld.Controller
             m_Model.Client.Register<TargetCursorPacket>(0x6C, "TargetCursor", 19, new TypedPacketReceiveHandler(receive_TargetCursor));
             m_Model.Client.Register<TargetCursorMultiPacket>(0x99, "Target Cursor Multi Object", 26, new TypedPacketReceiveHandler(receive_TargetCursorMulti));
 
-            Entity.MobileMovement.SendMoveRequestPacket += InternalOnEntity_SendMoveRequestPacket;
+            UltimaEntities.MobileMovement.SendMoveRequestPacket += InternalOnEntity_SendMoveRequestPacket;
         }
 
         public void Dispose()
@@ -38,7 +39,7 @@ namespace UltimaXNA.UltimaWorld.Controller
             m_Model.Client.Unregister(0x6C, receive_TargetCursor);
             m_Model.Client.Unregister(0x99, receive_TargetCursorMulti);
 
-            Entity.MobileMovement.SendMoveRequestPacket -= InternalOnEntity_SendMoveRequestPacket;
+            UltimaEntities.MobileMovement.SendMoveRequestPacket -= InternalOnEntity_SendMoveRequestPacket;
         }
 
         public void AfterLoginSequence()
@@ -101,7 +102,7 @@ namespace UltimaXNA.UltimaWorld.Controller
             // TargetCursorMultiPacket p = (TargetCursorMultiPacket)packet;
             // m_Model.Input.MouseTargeting(TargetTypes.MultiPlacement, 0);
             // UltimaInteraction.Cursor.TargetingMulti = p.MultiModel;
-            Diagnostics.Logger.Debug("receive_TargetCursorMulti is not implemented!");
+            Logger.Debug("receive_TargetCursorMulti is not implemented!");
         }
 
         private void InternalOnEntity_SendMoveRequestPacket(MoveRequestPacket packet)

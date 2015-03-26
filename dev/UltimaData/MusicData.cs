@@ -14,7 +14,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 
-using UltimaXNA.Diagnostics;
+using UltimaXNA.Core.Diagnostics;
 
 namespace UltimaXNA.UltimaData
 {

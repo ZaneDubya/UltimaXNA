@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   Texmaps.cs
+ *   TexmapData.cs
  *   Based on code from UltimaSDK: http://ultimasdk.codeplex.com/
  *   
  *   This program is free software; you can redistribute it and/or modify
@@ -11,6 +11,7 @@
 #region usings
 using InterXLib;
 using Microsoft.Xna.Framework.Graphics;
+using UltimaXNA.Core.Diagnostics;
 #endregion
 
 namespace UltimaXNA.UltimaData
@@ -79,7 +80,7 @@ namespace UltimaXNA.UltimaData
 
             texture.SetData<uint>(pixelData);
 
-            Diagnostics.Metrics.ReportDataRead((int)reader.Position - metrics_dataread_start);
+            Metrics.ReportDataRead((int)reader.Position - metrics_dataread_start);
 
             return texture;
         }

@@ -15,10 +15,10 @@
  ***************************************************************************/
 #region usings
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using UltimaXNA.Core.Diagnostics;
 #endregion
 
 namespace UltimaXNA.UltimaData
@@ -324,7 +324,7 @@ namespace UltimaXNA.UltimaData
                     SharedMethods.Read(m_MapStream.SafeFileHandle, pTiles, 192);
                 }
 
-                Diagnostics.Metrics.ReportDataRead((int)m_MapStream.Position - streamStart);
+                Metrics.ReportDataRead((int)m_MapStream.Position - streamStart);
 
                 return tiles;
             }

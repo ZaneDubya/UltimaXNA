@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   StringList.cs
+ *   StringData.cs
  *   Based on code from UltimaSDK: http://ultimasdk.codeplex.com/
  *   
  *   This program is free software; you can redistribute it and/or modify
@@ -13,6 +13,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Collections;
+using UltimaXNA.Core.Diagnostics;
 #endregion
 
 namespace UltimaXNA.UltimaData
@@ -57,7 +58,7 @@ namespace UltimaXNA.UltimaData
             using (BinaryReader bin = new BinaryReader(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read)))
             {
                 buffer = bin.ReadBytes((int)bin.BaseStream.Length);
-                Diagnostics.Metrics.ReportDataRead((int)bin.BaseStream.Position);
+                Metrics.ReportDataRead((int)bin.BaseStream.Position);
             }
 
             int pos = 6;

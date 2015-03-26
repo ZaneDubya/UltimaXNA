@@ -11,8 +11,8 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
-using UltimaXNA.Entity;
-using UltimaXNA.Rendering;
+using UltimaXNA.UltimaEntities;
+using UltimaXNA.Core.Rendering;
 #endregion
 
 namespace UltimaXNA.UltimaWorld

@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
  *
  ***************************************************************************/
 using System;
-using UltimaXNA.Rendering;
+using UltimaXNA.Core.Rendering;
 using UltimaXNA.UltimaPackets;
 using UltimaXNA.UltimaPackets.Client;
 

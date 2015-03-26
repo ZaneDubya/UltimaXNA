@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.UltimaData;
-using UltimaXNA.Diagnostics;
+using UltimaXNA.Core.Diagnostics;
 using InterXLib.Input.Windows;
 using UltimaXNA.Core.Network;
 using UltimaXNA.UltimaGUI;

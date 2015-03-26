@@ -14,7 +14,7 @@ using System.Linq;
 using System.Text;
 #endregion
 
-namespace UltimaXNA.Diagnostics
+namespace UltimaXNA.Core.Diagnostics
 {
     /// <summary>
     /// Status level used to filter out events from IStatusNotifier

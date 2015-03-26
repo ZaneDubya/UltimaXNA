@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace UltimaXNA.Rendering
+namespace UltimaXNA.Core.Rendering
 {
     public class SpriteBatch3D
     {

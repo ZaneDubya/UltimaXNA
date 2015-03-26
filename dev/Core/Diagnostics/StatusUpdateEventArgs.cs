@@ -15,7 +15,7 @@ using System.Text;
 using System.Globalization;
 #endregion
 
-namespace UltimaXNA.Diagnostics
+namespace UltimaXNA.Core.Diagnostics
 {
     /// <summary>
     /// Defines events used to notify progress 

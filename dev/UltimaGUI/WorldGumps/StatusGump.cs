@@ -10,8 +10,8 @@
  *
  ***************************************************************************/
 using System.Collections.Generic;
-using UltimaXNA.Entity;
-using UltimaXNA.Rendering;
+using UltimaXNA.UltimaEntities;
+using UltimaXNA.Core.Rendering;
 using UltimaXNA.UltimaGUI.Controls;
 using UltimaXNA.UltimaWorld;
 

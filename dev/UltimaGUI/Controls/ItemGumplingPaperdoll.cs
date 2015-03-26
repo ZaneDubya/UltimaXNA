@@ -8,8 +8,8 @@
  *
  ***************************************************************************/
 using Microsoft.Xna.Framework;
-using UltimaXNA.Entity;
-using UltimaXNA.Rendering;
+using UltimaXNA.UltimaEntities;
+using UltimaXNA.Core.Rendering;
 using UltimaXNA.UltimaGUI;
 
 namespace UltimaXNA.UltimaGUI.Controls

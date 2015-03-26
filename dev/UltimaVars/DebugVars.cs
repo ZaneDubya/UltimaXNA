@@ -9,6 +9,7 @@
  ***************************************************************************/
 using System;
 using UltimaXNA.UltimaWorld.View;
+using UltimaXNA.Core.Diagnostics;
 
 namespace UltimaXNA.UltimaVars
 {
@@ -33,9 +34,9 @@ namespace UltimaXNA.UltimaVars
             if (Flag_ShowDataRead)
             {
                 if (Flag_BreakdownDataRead)
-                    debugMessage += Diagnostics.Metrics.DataReadBreakdown;
+                    debugMessage += Metrics.DataReadBreakdown;
                 else
-                    debugMessage += string.Format("\nData Read: {0}", Diagnostics.Metrics.TotalDataRead.ToString());
+                    debugMessage += string.Format("\nData Read: {0}", Metrics.TotalDataRead.ToString());
             }
 
             if (IsometricRenderer.MouseOverObject != null)

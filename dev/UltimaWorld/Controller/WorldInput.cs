@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using UltimaXNA.Entity;
+using UltimaXNA.UltimaEntities;
 using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.UltimaWorld.View;
 using UltimaXNA.UltimaVars;

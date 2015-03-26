@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Text.RegularExpressions;
-using Microsoft.Xna.Framework.Graphics;
+using UltimaXNA.Core.Diagnostics;
 #endregion
 
 namespace UltimaXNA.UltimaData
@@ -184,7 +184,7 @@ namespace UltimaXNA.UltimaData
                         list4.Add(anim5);
                     }
                 }
-                Diagnostics.Metrics.ReportDataRead(totalDataRead);
+                Metrics.ReportDataRead(totalDataRead);
             }
 
             m_Table1 = new int[max1 + 1];
@@ -389,7 +389,7 @@ namespace UltimaXNA.UltimaData
                 {
                 }
             }
-            Diagnostics.Metrics.ReportDataRead(totalDataRead);
+            Metrics.ReportDataRead(totalDataRead);
         }
     }
 }

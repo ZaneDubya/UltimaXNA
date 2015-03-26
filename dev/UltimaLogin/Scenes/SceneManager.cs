@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using UltimaXNA.Diagnostics;
+using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.UltimaGUI;
 using UltimaXNA.Scenes;
 

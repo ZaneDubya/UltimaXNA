@@ -8,18 +8,20 @@
  *
  ***************************************************************************/
 #region usings
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using UltimaXNA.Core;
+using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.Network;
-using UltimaXNA.Entity;
+using UltimaXNA.UltimaEntities;
 using UltimaXNA.UltimaGUI;
+using UltimaXNA.UltimaGUI.WorldGumps;
 using UltimaXNA.UltimaPackets;
 using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.UltimaPackets.Server;
 using UltimaXNA.UltimaWorld;
 using UltimaXNA.UltimaWorld.View;
-using Microsoft.Xna.Framework;
-using UltimaXNA.UltimaGUI.WorldGumps;
 #endregion
 
 namespace UltimaXNA
@@ -433,7 +435,7 @@ namespace UltimaXNA
                     break;
                 case 0x19: // Extended stats
                     if (p.Serial != UltimaVars.EngineVars.PlayerSerial)
-                        Diagnostics.Logger.Warn("Extended Stats packet (0xBF subcommand 0x19) received for a mobile not our own.");
+                        Logger.Warn("Extended Stats packet (0xBF subcommand 0x19) received for a mobile not our own.");
                     else
                     {
                         UltimaVars.StatLocks.StrengthLock = p.StatisticLocks.Strength;
@@ -689,7 +691,7 @@ namespace UltimaXNA
         private void receive_OpenPaperdoll(IRecvPacket packet)
         {
             OpenPaperdollPacket opp = packet as OpenPaperdollPacket;
-            UltimaEngine.UserInterface.AddControl(new PaperDollGump(EntityManager.GetObject<Mobile>(opp.Serial, false)), 400, 100, GUIState.AddGumpType.OnlyAllowOne);
+            UltimaEngine.UserInterface.AddControl(new PaperDollGump(EntityManager.GetObject<Mobile>(opp.Serial, false)), 400, 100, GUIManager.AddGumpType.OnlyAllowOne);
         }
 
         private void receive_OpenWebBrowser(IRecvPacket packet)
@@ -961,12 +963,12 @@ namespace UltimaXNA
 
         private void announce_UnhandledPacket(IRecvPacket packet)
         {
-            Diagnostics.Logger.Warn(string.Format("Client: Unhandled {0} [ID:{1}]", packet.Name, packet.Id));
+            Logger.Warn(string.Format("Client: Unhandled {0} [ID:{1}]", packet.Name, packet.Id));
         }
 
         private void announce_UnhandledPacket(IRecvPacket packet, string addendum)
         {
-            Diagnostics.Logger.Warn(string.Format("Client: Unhandled {0} [ID:{1}] {2}]", packet.Name, packet.Id, addendum));
+            Logger.Warn(string.Format("Client: Unhandled {0} [ID:{1}] {2}]", packet.Name, packet.Id, addendum));
         }
 
         private void receive_TextMessage(MessageType msgType, string text, int hue, int font, Serial serial, string speakerName)
