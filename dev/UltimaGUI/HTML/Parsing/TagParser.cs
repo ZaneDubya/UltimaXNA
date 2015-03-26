@@ -289,7 +289,7 @@ namespace UltimaXNA.UltimaGUI.HTML.Parsing
 			{
 				// empty tag but its not closed, so we will call it open...
 				oChunk.oType=HTMLchunkType.OpenTag;
-				// end of UltimaData... before it started
+				// end of data... before it started
 				return oChunk;
 			}
 

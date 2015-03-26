@@ -5,13 +5,14 @@ using UltimaXNA.Core.Rendering;
 using UltimaXNA.UltimaData;
 using UltimaXNA.UltimaData.FontsNew;
 using UltimaXNA.UltimaGUI.HTML;
+using UltimaXNA.UltimaGUI.HTML.Atoms;
 
 namespace UltimaXNA.UltimaGUI
 {
     class RenderedText
     {
         private Texture2D m_Texture;
-        private Parser m_HtmlParser;
+        private Reader m_HtmlParser;
 
         public int Width
         {
@@ -39,13 +40,13 @@ namespace UltimaXNA.UltimaGUI
             }
         }
 
-        public HTMLRegions Regions
+        public Regions Regions
         {
             get;
             protected set;
         }
 
-        public HTMLImages Images
+        public Images Images
         {
             get;
             protected set;
@@ -126,8 +127,8 @@ namespace UltimaXNA.UltimaGUI
             AsHTML = asHTML;
             MaxWidth = maxWidth;
 
-            Regions = new HTMLRegions();
-            Images = new HTMLImages();
+            Regions = new Regions();
+            Images = new Images();
         }
 
         public Texture2D Texture
@@ -192,7 +193,7 @@ namespace UltimaXNA.UltimaGUI
 
             for (int i = 0; i < Regions.Count; i++)
             {
-                HTMLRegion r = Regions[i];
+                Region r = Regions[i];
                 Point position;
                 Rectangle sourceRect;
                 if (clipRectangle(new Point(xScroll, yScroll), r.Area, destRectangle, out position, out sourceRect))
@@ -219,7 +220,7 @@ namespace UltimaXNA.UltimaGUI
 
             for (int i = 0; i < Images.Count; i++)
             {
-                HTMLImage image = Images[i];
+                Image image = Images[i];
                 Point position;
                 Rectangle sourceRect;
                 if (clipRectangle(new Point(xScroll, yScroll), image.Area, destRectangle, out position, out sourceRect))
@@ -232,13 +233,13 @@ namespace UltimaXNA.UltimaGUI
                     if (image.RegionIndex == m_activeHREF)
                     {
                         if (ActiveRegion_UseDownHue)
-                            texture = image.ImageDown;
+                            texture = image.TextureDown;
                         if (texture == null)
-                            texture = image.ImageOver;
+                            texture = image.TextureOver;
                     }
 
                     if (texture == null)
-                        texture = image.Image;
+                        texture = image.Texture;
 
                     sb.Draw2D(texture, position,
                         sourceRect, 0, false, false);
@@ -273,7 +274,7 @@ namespace UltimaXNA.UltimaGUI
 
             if (m_HtmlParser != null)
                 m_HtmlParser = null;
-            m_HtmlParser = new Parser(textToRender, parseHTML);
+            m_HtmlParser = new Reader(textToRender, parseHTML);
 
             Regions.Clear();
             Images.Clear();
@@ -295,7 +296,7 @@ namespace UltimaXNA.UltimaGUI
             }
         }
 
-        Texture2D renderToTexture(GraphicsDevice graphics, Parser reader, int width, int height, int ascender)
+        Texture2D renderToTexture(GraphicsDevice graphics, Reader reader, int width, int height, int ascender)
         {
             if (width == 0) // empty text string
                 return new Texture2D(graphics, 1, 1);
@@ -315,13 +316,13 @@ namespace UltimaXNA.UltimaGUI
                 fixed (uint* rPtr = resultData)
                 {
                     int[] alignedTextX = new int[3];
-                    List<AHTMLAtom>[] alignedAtoms = new List<AHTMLAtom>[3];
+                    List<AAtom>[] alignedAtoms = new List<AAtom>[3];
                     for (int i = 0; i < 3; i++)
-                        alignedAtoms[i] = new List<AHTMLAtom>();
+                        alignedAtoms[i] = new List<AAtom>();
 
                     for (int i = 0; i < reader.Length; i++)
                     {
-                        AHTMLAtom atom = reader.Atoms[i];
+                        AAtom atom = reader.Atoms[i];
                         alignedAtoms[(int)atom.Alignment].Add(atom);
 
                         if (atom.IsThisAtomALineBreak || (i == reader.Length - 1))
@@ -373,7 +374,7 @@ namespace UltimaXNA.UltimaGUI
         }
 
         // pass bool = false to get the width of the line to be drawn without actually drawing anything. Useful for aligning text.
-        unsafe void writeTexture_Line(List<AHTMLAtom> atoms, uint* rPtr, ref int x, int y, int linewidth, int maxHeight, ref int lineheight, bool draw)
+        unsafe void writeTexture_Line(List<AAtom> atoms, uint* rPtr, ref int x, int y, int linewidth, int maxHeight, ref int lineheight, bool draw)
         {
             for (int i = 0; i < atoms.Count; i++)
             {
@@ -383,18 +384,18 @@ namespace UltimaXNA.UltimaGUI
 
                 if (draw)
                 {
-                    if (atoms[i] is HTMLAtomCharacter)
+                    if (atoms[i] is CharacterAtom)
                     {
-                        HTMLAtomCharacter atom = (HTMLAtomCharacter)atoms[i];
+                        CharacterAtom atom = (CharacterAtom)atoms[i];
                         ACharacter character = font.GetCharacter(atom.Character);
                         // HREF links should be colored white, because we will hue them at runtime.
                         uint color = atom.IsHREF ? 0xFFFFFFFF : Utility.UintFromColor(atom.Color);
                         character.WriteToBuffer(rPtr, x, y, linewidth, maxHeight, font.Baseline,
                             atom.Style_IsBold, atom.Style_IsItalic, atom.Style_IsUnderlined, atom.Style_IsOutlined, color, 0xFF000008);
                     }
-                    else if (atoms[i] is HTMLImageGump)
+                    else if (atoms[i] is ImageAtom)
                     {
-                        HTMLImageGump atom = (HTMLImageGump)atoms[i];
+                        ImageAtom atom = (ImageAtom)atoms[i];
                         if (lineheight < atom.Height)
                             lineheight = atom.Height;
                         Images.AddImage(new Rectangle(x, y + (lineheight - atom.Height) / 2, atom.Width, atom.Height),
@@ -406,20 +407,20 @@ namespace UltimaXNA.UltimaGUI
             }
         }
 
-        void getHREFRegions(HTMLRegions regions, List<AHTMLAtom>[] text, int[] x, int y)
+        void getHREFRegions(Regions regions, List<AAtom>[] text, int[] x, int y)
         {
             for (int alignment = 0; alignment < 3; alignment++)
             {
                 // variables for the open href region
                 bool isRegionOpen = false;
-                HTMLRegion region = null;
+                Region region = null;
                 int regionHeight = 0;
                 int additionalwidth = 0;
 
                 int dx = x[alignment];
                 for (int i = 0; i < text[alignment].Count; i++)
                 {
-                    AHTMLAtom atom = text[alignment][i];
+                    AAtom atom = text[alignment][i];
 
                     if ((region == null && atom.HREFAttributes != null) ||
                         (region != null && atom.HREFAttributes != region.HREFAttributes))
@@ -444,12 +445,12 @@ namespace UltimaXNA.UltimaGUI
                         }
                     }
 
-                    if (atom is HTMLImageGump)
+                    if (atom is ImageAtom)
                     {
                         // we need regions for images so that we can do mouse over images.
                         // if we're currently in an open href region, we'll use that one.
                         // if we don't have an open region, we'll create one just for this image.
-                        HTMLImage image = ((HTMLImageGump)atom).AssociatedImage;
+                        Image image = ((ImageAtom)atom).AssociatedImage;
                         if (image != null)
                         {
                             if (!isRegionOpen)
@@ -467,9 +468,9 @@ namespace UltimaXNA.UltimaGUI
 
                     dx += atom.Width;
 
-                    if (atom is HTMLAtomCharacter && ((HTMLAtomCharacter)atom).Style_IsItalic)
+                    if (atom is CharacterAtom && ((CharacterAtom)atom).Style_IsItalic)
                         additionalwidth = 2;
-                    else if (atom is HTMLAtomCharacter && ((HTMLAtomCharacter)atom).Style_IsOutlined)
+                    else if (atom is CharacterAtom && ((CharacterAtom)atom).Style_IsOutlined)
                         additionalwidth = 2;
                     else
                         additionalwidth = 0;
@@ -488,14 +489,14 @@ namespace UltimaXNA.UltimaGUI
             }
         }
 
-        void getTextDimensions(Parser reader, int maxwidth, int maxheight, out int width, out int height, out int ascender)
+        void getTextDimensions(Reader reader, int maxwidth, int maxheight, out int width, out int height, out int ascender)
         {
             width = 0; height = 0; ascender = 0;
             int lineheight = 0;
             int widestline = 0;
             int descenderheight = 0;
             int linecount = 0;
-            List<AHTMLAtom> word = new List<AHTMLAtom>();
+            List<AAtom> word = new List<AAtom>();
             int additionalwidth = 0; // for italic + outlined characters, which need a little more room for their slant/outline.
             int word_width = 0;
 
@@ -524,9 +525,9 @@ namespace UltimaXNA.UltimaGUI
                     word.Add(reader.Atoms[i]);
 
                     // we may need to add additional width for special style characters.
-                    if (reader.Atoms[i] is HTMLAtomCharacter)
+                    if (reader.Atoms[i] is CharacterAtom)
                     {
-                        HTMLAtomCharacter atom = (HTMLAtomCharacter)reader.Atoms[i];
+                        CharacterAtom atom = (CharacterAtom)reader.Atoms[i];
                         AFont font = TextUni.GetFont((int)atom.Font);
                         ACharacter ch = font.GetCharacter(atom.Character);
 
@@ -565,7 +566,7 @@ namespace UltimaXNA.UltimaGUI
                                 else
                                 {
                                     // can't fit an extra space on the end of the line. replace the space with a \n.
-                                    ((HTMLAtomCharacter)reader.Atoms[i + 1]).Character = '\n';
+                                    ((CharacterAtom)reader.Atoms[i + 1]).Character = '\n';
                                 }
                             }
                         }
@@ -578,12 +579,12 @@ namespace UltimaXNA.UltimaGUI
                                 // and back up to the beginning of this word.
                                 if (reader.Atoms[i - word.Count].IsThisAtomABreakingSpace)
                                 {
-                                    ((HTMLAtomCharacter)reader.Atoms[i - word.Count]).Character = '\n';
+                                    ((CharacterAtom)reader.Atoms[i - word.Count]).Character = '\n';
                                     i = i - word.Count - 1;
                                 }
                                 else
                                 {
-                                    reader.Atoms.Insert(i - word.Count, new HTMLAtomCharacter('\n'));
+                                    reader.Atoms.Insert(i - word.Count, new CharacterAtom('\n'));
                                     i = i - word.Count;
                                 }
                                 word.Clear();
@@ -600,8 +601,8 @@ namespace UltimaXNA.UltimaGUI
                                     int iDashWidth = TextUni.GetFont((int)word[j].Font).GetCharacter('-').Width;
                                     if (iWordWidth + iDashWidth <= maxwidth)
                                     {
-                                        reader.Atoms.Insert(i - (word.Count - j) + 1, new HTMLAtomCharacter('\n'));
-                                        reader.Atoms.Insert(i - (word.Count - j) + 1, new HTMLAtomCharacter('-'));
+                                        reader.Atoms.Insert(i - (word.Count - j) + 1, new CharacterAtom('\n'));
+                                        reader.Atoms.Insert(i - (word.Count - j) + 1, new CharacterAtom('-'));
                                         break;
                                     }
                                     iWordWidth -= word[j].Width;

@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   HTMLImages.cs
+ *   Images.cs
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -13,11 +13,11 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace UltimaXNA.UltimaGUI.HTML
 {
-    class HTMLImages
+    class Images
     {
-        List<HTMLImage> m_images = new List<HTMLImage>();
+        List<Image> m_images = new List<Image>();
 
-        public HTMLImage this[int index]
+        public Image this[int index]
         {
             get
             {
@@ -38,14 +38,14 @@ namespace UltimaXNA.UltimaGUI.HTML
 
         public void AddImage(Rectangle area, Texture2D image)
         {
-            m_images.Add(new HTMLImage(area, image));
+            m_images.Add(new Image(area, image));
         }
 
         public void AddImage(Rectangle area, Texture2D image, Texture2D overimage, Texture2D downimage)
         {
             AddImage(area, image);
-            m_images[m_images.Count - 1].ImageOver = overimage;
-            m_images[m_images.Count - 1].ImageDown = downimage;
+            m_images[m_images.Count - 1].TextureOver = overimage;
+            m_images[m_images.Count - 1].TextureDown = downimage;
         }
 
         public void Clear()
@@ -54,18 +54,18 @@ namespace UltimaXNA.UltimaGUI.HTML
         }
     }
 
-    public class HTMLImage
+    public class Image
     {
         public Rectangle Area;
-        public Texture2D Image;
-        public Texture2D ImageOver;
-        public Texture2D ImageDown;
+        public Texture2D Texture;
+        public Texture2D TextureOver;
+        public Texture2D TextureDown;
         public int RegionIndex = -1;
 
-        public HTMLImage(Rectangle area, Texture2D image)
+        public Image(Rectangle area, Texture2D image)
         {
             Area = area;
-            Image = image;
+            Texture = image;
         }
     }
 }

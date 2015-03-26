@@ -7,11 +7,12 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using System;
-using Microsoft.Xna.Framework;
-using UltimaXNA.Core.Rendering;
+#region usings
 using InterXLib.Input.Windows;
-using UltimaXNA.UltimaGUI;
+using Microsoft.Xna.Framework;
+using System;
+using UltimaXNA.Core.Rendering;
+#endregion
 
 namespace UltimaXNA.UltimaGUI.Controls
 {
@@ -132,7 +133,9 @@ namespace UltimaXNA.UltimaGUI.Controls
         {
             m_Texture.Draw(spriteBatch, Position);
             if (m_caratBlinkOn)
+            {
                 m_Carat.Draw(spriteBatch, new Point(X + m_Texture.Width, Y));
+            }
             
             base.Draw(spriteBatch);
         }
@@ -144,7 +147,15 @@ namespace UltimaXNA.UltimaGUI.Controls
                 case WinKeys.Back:
                     if (Text.Length > 0)
                     {
-                        Text = Text.Substring(0, Text.Length - 1);
+                        int escapedLength;
+                        if (HTML.EscapeCharacters.TryFindEscapeCharacterBackwards(Text, Text.Length - 1, out escapedLength))
+                        {
+                            Text = Text.Substring(0, Text.Length - escapedLength);
+                        }
+                        else
+                        {
+                            Text = Text.Substring(0, Text.Length - 1);
+                        }
                     }
                     break;
                 case WinKeys.Tab:
@@ -156,7 +167,15 @@ namespace UltimaXNA.UltimaGUI.Controls
                 default:
                     if (e.IsChar)
                     {
-                        Text += e.KeyChar;
+                        string escapedCharacter;
+                        if (HTML.EscapeCharacters.TryMatchChar(e.KeyChar, out escapedCharacter))
+                        {
+                            Text += escapedCharacter;
+                        }
+                        else
+                        {
+                            Text += e.KeyChar;
+                        }
                     }
                     break;
             }

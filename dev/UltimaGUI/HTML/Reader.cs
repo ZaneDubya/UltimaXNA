@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   HTMLParser.cs
+ *   Reader.cs
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -7,26 +7,22 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using System;
+#region usings
+using Microsoft.Xna.Framework;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Diagnostics;
+using UltimaXNA.UltimaGUI.HTML.Atoms;
+#endregion
 
 namespace UltimaXNA.UltimaGUI.HTML
 {
-    public class Parser
+    public class Reader
     {
-        List<AHTMLAtom> m_atoms;
-        public List<AHTMLAtom> Atoms
+        public List<AAtom> Atoms
         {
-            get
-            {
-                return m_atoms;
-            }
+            get;
+            private set;
         }
 
         public string Text
@@ -34,9 +30,9 @@ namespace UltimaXNA.UltimaGUI.HTML
             get
             {
                 string text = string.Empty;
-                for (int i = 0; i < m_atoms.Count; i++)
+                for (int i = 0; i < Atoms.Count; i++)
                 {
-                    text += m_atoms[i].ToString();
+                    text += Atoms[i].ToString();
                 }
                 return text;
             }
@@ -46,18 +42,18 @@ namespace UltimaXNA.UltimaGUI.HTML
         {
             get
             {
-                return m_atoms.Count;
+                return Atoms.Count;
             }
         }
 
-        public Parser(string inText, bool parseHTML)
+        public Reader(string inText, bool parseHTML)
         {
-            m_atoms = decodeText(inText, parseHTML);
+            Atoms = decodeText(inText, parseHTML);
         }
 
-        private List<AHTMLAtom> decodeText(string inText, bool parseHTML)
+        private List<AAtom> decodeText(string inText, bool parseHTML)
         {
-            List<AHTMLAtom> outAtoms = new List<AHTMLAtom>();
+            List<AAtom> outAtoms = new List<AAtom>();
             List<string> openTags = new List<string>();
             Color currentColor = Color.White;
             List<HREF_Attributes> openHREFs = new List<HREF_Attributes>();
@@ -76,11 +72,15 @@ namespace UltimaXNA.UltimaGUI.HTML
                 Parsing.HTMLchunk chunk;
                 while ((chunk = parser.ParseNext()) != null)
                 {
-                    if (!(chunk.oHTML == ""))
+                    if (!(chunk.oHTML == string.Empty))
                     {
-                        // this is text. add the characters to the outText list.
-                        for (int i = 0; i < chunk.oHTML.Length; i++)
-                            addCharacter(chunk.oHTML[i], outAtoms, openTags, currentColor, openHREFs);
+                        // this is a span of text.
+                        string span = chunk.oHTML;
+                        // make sure to replace escape characters!
+                        span = EscapeCharacters.ReplaceEscapeCharacters(span);
+                        //Add the characters to the outText list.
+                        for (int i = 0; i < span.Length; i++)
+                            addCharacter(span[i], outAtoms, openTags, currentColor, openHREFs);
                     }
                     else
                     {
@@ -226,11 +226,11 @@ namespace UltimaXNA.UltimaGUI.HTML
                                         {
                                             case "gumpimg":
                                                 if (key == "src")
-                                                    ((HTMLImageGump)outAtoms[outAtoms.Count - 1]).Value = int.Parse(value);
+                                                    ((ImageAtom)outAtoms[outAtoms.Count - 1]).Value = int.Parse(value);
                                                 else if (key == "hoversrc")
-                                                    ((HTMLImageGump)outAtoms[outAtoms.Count - 1]).ValueOver = int.Parse(value);
+                                                    ((ImageAtom)outAtoms[outAtoms.Count - 1]).ValueOver = int.Parse(value);
                                                 else if (key == "activesrc")
-                                                    ((HTMLImageGump)outAtoms[outAtoms.Count - 1]).ValueDown = int.Parse(value);
+                                                    ((ImageAtom)outAtoms[outAtoms.Count - 1]).ValueDown = int.Parse(value);
                                                 break;
                                             default:
                                                 Logger.Warn("src param encountered within " + chunk.sTag + " which does not use this param.");
@@ -320,9 +320,9 @@ namespace UltimaXNA.UltimaGUI.HTML
             return ret;
         }
 
-        void addSpan(List<AHTMLAtom> outHTML, List<string> openTags, List<HREF_Attributes> openHREFs)
+        void addSpan(List<AAtom> outHTML, List<string> openTags, List<HREF_Attributes> openHREFs)
         {
-            HTMLAtomSpan atom = new HTMLAtomSpan();
+            SpanAtom atom = new SpanAtom();
             atom.Alignment = getAlignmentFromOpenTags(openTags);
 
             if (openHREFs.Count > 0)
@@ -331,9 +331,9 @@ namespace UltimaXNA.UltimaGUI.HTML
             outHTML.Add(atom);
         }
 
-        void addGumpImage(List<AHTMLAtom> outHTML, List<string> openTags, List<HREF_Attributes> openHREFs)
+        void addGumpImage(List<AAtom> outHTML, List<string> openTags, List<HREF_Attributes> openHREFs)
         {
-            HTMLImageGump atom = new HTMLImageGump(-1);
+            ImageAtom atom = new ImageAtom(-1);
             atom.Alignment = getAlignmentFromOpenTags(openTags);
 
             if (openHREFs.Count > 0)
@@ -342,9 +342,9 @@ namespace UltimaXNA.UltimaGUI.HTML
             outHTML.Add(atom);
         }
 
-        void addCharacter(char inText, List<AHTMLAtom> outHTML, List<string> openTags, Color currentColor, List<HREF_Attributes> openHREFs)
+        void addCharacter(char inText, List<AAtom> outHTML, List<string> openTags, Color currentColor, List<HREF_Attributes> openHREFs)
         {
-            HTMLAtomCharacter c = new HTMLAtomCharacter(inText);
+            CharacterAtom c = new CharacterAtom(inText);
             c.Style_IsBold = hasTag(openTags, "b");
             c.Style_IsItalic = hasTag(openTags, "i");
             c.Style_IsUnderlined = hasTag(openTags, "u");

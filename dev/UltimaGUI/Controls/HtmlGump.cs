@@ -194,7 +194,7 @@ namespace UltimaXNA.UltimaGUI.Controls
 
             if (m_Texture.Regions.Count > 0)
             {
-                HTMLRegion region = m_Texture.Regions.RegionfromPoint(new Point(x + ScrollX, y + ScrollY));
+                Region region = m_Texture.Regions.RegionfromPoint(new Point(x + ScrollX, y + ScrollY));
                 if (region != null)
                 {
                     m_hrefOver = region.Index;

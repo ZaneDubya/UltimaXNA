@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   HTMLRegions.cs
+ *   Regions.cs
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -12,11 +12,11 @@ using Microsoft.Xna.Framework;
 
 namespace UltimaXNA.UltimaGUI.HTML
 {
-    public class HTMLRegions
+    public class Regions
     {
-        List<HTMLRegion> m_regions = new List<HTMLRegion>();
+        List<Region> m_regions = new List<Region>();
 
-        public HTMLRegion this[int index]
+        public Region this[int index]
         {
             get
             {
@@ -35,9 +35,9 @@ namespace UltimaXNA.UltimaGUI.HTML
             get { return m_regions.Count; }
         }
 
-        public HTMLRegion AddRegion(HREF_Attributes href)
+        public Region AddRegion(HREF_Attributes href)
         {
-            m_regions.Add(new HTMLRegion(m_regions.Count, href));
+            m_regions.Add(new Region(m_regions.Count, href));
             return m_regions[m_regions.Count - 1];
         }
 
@@ -46,7 +46,7 @@ namespace UltimaXNA.UltimaGUI.HTML
             m_regions.Clear();
         }
 
-        public HTMLRegion RegionfromPoint(Point p)
+        public Region RegionfromPoint(Point p)
         {
             int index = -1;
             for (int i = 0; i < m_regions.Count; i++)
@@ -60,19 +60,19 @@ namespace UltimaXNA.UltimaGUI.HTML
                 return m_regions[index];
         }
 
-        public HTMLRegion Region(int index)
+        public Region Region(int index)
         {
             return m_regions[index];
         }
     }
 
-    public class HTMLRegion
+    public class Region
     {
         public Rectangle Area;
         public int Index;
         public HREF_Attributes HREFAttributes;
 
-        public HTMLRegion(int i, HREF_Attributes data)
+        public Region(int i, HREF_Attributes data)
         {
             Area = new Rectangle();
             HREFAttributes = data;
