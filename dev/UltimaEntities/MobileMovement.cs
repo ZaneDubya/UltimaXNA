@@ -118,11 +118,11 @@ namespace UltimaXNA.UltimaEntities
 
                 // get the next tile and the facing necessary to reach it.
                 Direction facing;
-                Point nextTile = MobileMovementCheck.OffsetTile(CurrentPosition, nextMove);
+                Point targetTile = MobileMovementCheck.OffsetTile(CurrentPosition, nextMove);
 
                 int nextZ;
-                Point nextPosition;
-                if (getNextTile(CurrentPosition, nextTile, out facing, out nextPosition, out nextZ))
+                Point nextTile;
+                if (PlayerMobile_GetNextTile(CurrentPosition, targetTile, out facing, out nextTile, out nextZ))
                 {
 
                     // Check facing and about face if necessary.
@@ -143,13 +143,13 @@ namespace UltimaXNA.UltimaEntities
                     else
                         facing &= Direction.FacingMask;
 
-                    if ((CurrentPosition.X != nextPosition.X) ||
-                        (CurrentPosition.Y != nextPosition.Y) ||
+                    if ((CurrentPosition.X != nextTile.X) ||
+                        (CurrentPosition.Y != nextTile.Y) ||
                         (CurrentPosition.Z != nextZ))
                     {
                         m_moveEvents.AddMoveEvent(
-                            nextPosition.X,
-                            nextPosition.Y,
+                            nextTile.X,
+                            nextTile.Y,
                             nextZ,
                             (int)(facing),
                             true);
@@ -217,12 +217,32 @@ namespace UltimaXNA.UltimaEntities
             }
         }
 
-        private bool getNextTile(Position3D current, Point goal, out Direction facing, out Point nextPosition, out int nextZ)
+        private bool PlayerMobile_GetNextTile(Position3D current, Point goal, out Direction facing, out Point nextPosition, out int nextZ)
         {
+            bool moveIsOkay;
+
+            // attempt to move in the direction specified.
             facing = getNextFacing(current, goal);
             nextPosition = MobileMovementCheck.OffsetTile(current, facing);
+            moveIsOkay = MobileMovementCheck.CheckMovement((Mobile)m_entity, current, facing, out nextZ);
 
-            bool moveIsOkay = MobileMovementCheck.CheckMovement((Mobile)m_entity, current, facing, out nextZ);
+            // if blocked, attempt moving in the direction 1/8 counterclockwise to the direction specified.
+            if (!moveIsOkay)
+            {
+                facing = (Direction)((facing - 1) & Direction.ValueMask);
+                nextPosition = MobileMovementCheck.OffsetTile(current, facing);
+                moveIsOkay = MobileMovementCheck.CheckMovement((Mobile)m_entity, current, facing, out nextZ);
+            }
+
+            // if blocked again, attempt moving in the direction 1/8 clockwise to the direction specified.
+            if (!moveIsOkay)
+            {
+                facing = (Direction)((facing + 2) & Direction.ValueMask);
+                nextPosition = MobileMovementCheck.OffsetTile(current, facing);
+                moveIsOkay = MobileMovementCheck.CheckMovement((Mobile)m_entity, current, facing, out nextZ);
+            }
+
+            // if we were able to move, then set the running flag (if necessary) and return true.
             if (moveIsOkay)
             {
                 if (IsRunning)
@@ -231,6 +251,7 @@ namespace UltimaXNA.UltimaEntities
             }
             else
             {
+                // otherwise return false, indicating that the player is blocked.
                 return false;
             }
         }
