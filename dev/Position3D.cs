@@ -77,8 +77,8 @@ namespace UltimaXNA
 
         internal void Set(int x, int y, int z)
         {
-            Tile = new Point(x, y);
             m_Z = z;
+            Tile = new Point(x, y);
             m_Offset = Vector3.Zero;
         }
 

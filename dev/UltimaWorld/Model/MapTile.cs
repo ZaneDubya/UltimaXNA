@@ -91,6 +91,23 @@ namespace UltimaXNA.UltimaWorld.Model
             m_NeedsSorting = true;
         }
 
+        public bool ItemExists(int itemID, int z)
+        {
+            for (int i = 0; i < m_Entities.Count; i++)
+            {
+                if (m_Entities[i] is Item)
+                {
+                    Item comparison = m_Entities[i] as Item;
+                    if (comparison.ItemID == itemID &&
+                        comparison.Z == z)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
         /// <summary>
         /// Removes the passed entity from this Tile's entity collection.
         /// </summary>

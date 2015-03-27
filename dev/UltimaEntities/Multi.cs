@@ -96,52 +96,41 @@ namespace UltimaXNA.UltimaEntities
                 MapTile tile = Map.GetMapTile(x, y);
                 if (tile != null)
                 {
-                    StaticItem staticItem = new StaticItem(item.ItemID, 0, 0, this.Map);
-                    staticItem.Position.Set(x, y, this.Z + item.OffsetZ);
+                    if (!tile.ItemExists(item.ItemID, item.OffsetZ))
+                    {
+                        StaticItem staticItem = new StaticItem(item.ItemID, 0, 0, this.Map);
+                        staticItem.Position.Set(x, y, this.Z + item.OffsetZ);
+                    }
                 }
             }
-
-            /*if (m_unloadedTiles.Count == 0)
-                return;
-
-            List<Point> drawnTiles = new List<Point>();
-
-            foreach (Point p in m_unloadedTiles)
-            {
-                int x = tile.X + p.X - m_Components.Center.X;
-                int y = tile.Y + p.Y - m_Components.Center.Y;
-
-                MapTile t = Map.GetMapTile(x, y);
-                if (t != null)
-                {
-                    drawnTiles.Add(p);
-
-                    if (!m_hasCustomTiles)
-                    {
-                        if (p.X < m_Components.Width && p.Y < m_Components.Height)
-                        {
-                            foreach (StaticTile s in m_Components.Tiles[p.X][p.Y])
-                            {
-                                // t.AddMapObject(new MapObjectStatic(s.ID, 0, new Position3D(x, y, s.Z)));
-                            }
-                        }
-                    }
-                    else
-                    {
-                        foreach (StaticTile s in m_customHouseTiles)
-                        {
-                            if ((s.X == p.X) && (s.Y == p.Y))
-                            {
-                                // t.AddMapObject(new MapObjectStatic(s.ID, 0, new Position3D(s.X, s.Y, s.Z)));
-                            }
-                        }
-                    }
-                }*/
         }
 
         private void PlaceTilesIntoNewlyLoadedBlock(MapBlock block)
         {
+            int px = Position.X;
+            int py = Position.Y;
 
+            Rectangle bounds = new Rectangle(block.X, block.Y, 8, 8);
+
+            foreach (MultiComponentList.MultiItem item in m_Components.Items)
+            {
+                int x = px + item.OffsetX;
+                int y = py + item.OffsetY;
+
+                if (bounds.Contains(x, y))
+                {
+                    // would it be faster to get the tile from the block?
+                    MapTile tile = Map.GetMapTile(x, y);
+                    if (tile != null)
+                    {
+                        if (!tile.ItemExists(item.ItemID, item.OffsetZ))
+                        {
+                            StaticItem staticItem = new StaticItem(item.ItemID, 0, 0, this.Map);
+                            staticItem.Position.Set(x, y, this.Z + item.OffsetZ);
+                        }
+                    }
+                }
+            }
         }
     }
 }

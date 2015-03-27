@@ -1,11 +1,10 @@
 ﻿using InterXLib.Input.Windows;
 using Microsoft.Xna.Framework;
-using System;
 using System.Collections.Generic;
 using UltimaXNA.UltimaEntities;
 using UltimaXNA.UltimaPackets.Client;
-using UltimaXNA.UltimaWorld.View;
 using UltimaXNA.UltimaVars;
+using UltimaXNA.UltimaWorld.View;
 
 namespace UltimaXNA.UltimaWorld.Controller
 {
