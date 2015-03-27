@@ -21,6 +21,11 @@ namespace UltimaXNA.UltimaWorld.Controller
             m_Model = model;
         }
 
+        public void Dispose()
+        {
+            UltimaEngine.UserInterface.RemoveInputBlocker(this);
+        }
+
         // mouse input variables
         private bool m_ContinuousMouseMovementCheck = false;
         public bool ContinuousMouseMovementCheck

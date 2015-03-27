@@ -56,7 +56,7 @@ namespace UltimaXNA.UltimaEntities
             m_customHouseTiles = house.GetStatics(m_Components.Width, m_Components.Height);
         }
 
-        int m_MultiID;
+        int m_MultiID = -1;
         public int MultiID
         {
             get { return m_MultiID; }
@@ -65,6 +65,8 @@ namespace UltimaXNA.UltimaEntities
                 if (m_MultiID != value)
                 {
                     m_MultiID = value;
+                    m_Components = MultiData.GetComponents(m_MultiID);
+                    InitialLoadTiles();
                 }
             }
         }
@@ -72,9 +74,7 @@ namespace UltimaXNA.UltimaEntities
         public Multi(Serial serial, Map map)
 			: base(serial, map)
 		{
-            m_Components = MultiData.GetComponents(m_MultiID);
             RegisterForMapBlockLoads(this);
-            InitialLoadTiles();
 		}
 
         public override void Dispose()
@@ -85,6 +85,22 @@ namespace UltimaXNA.UltimaEntities
 
         private void InitialLoadTiles()
         {
+            int px = Position.X;
+            int py = Position.Y;
+
+            foreach (MultiComponentList.MultiItem item in m_Components.Items)
+            {
+                int x = px + item.OffsetX;
+                int y = py + item.OffsetY;
+
+                MapTile tile = Map.GetMapTile(x, y);
+                if (tile != null)
+                {
+                    StaticItem staticItem = new StaticItem(item.ItemID, 0, 0, this.Map);
+                    staticItem.Position.Set(x, y, this.Z + item.OffsetZ);
+                }
+            }
+
             /*if (m_unloadedTiles.Count == 0)
                 return;
 

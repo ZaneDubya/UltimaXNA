@@ -97,7 +97,10 @@ namespace UltimaXNA.UltimaWorld
         {
             m_WorldClient.Dispose();
             m_WorldClient = null;
+
+            m_WorldInput.Dispose();
             m_WorldInput = null;
+
             EntityManager.Reset();
             m_Entities = null;
         }

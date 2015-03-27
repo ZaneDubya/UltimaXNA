@@ -68,6 +68,25 @@ namespace UltimaXNA.UltimaWorld.Model
                 Ground = (Ground)entity;
             }
 
+            // if we are receiving a Item with the same position and itemID as a static item, then replace the static item.
+            if (entity is Item)
+            {
+                Item item = entity as Item;
+                for (int i = 0; i < m_Entities.Count; i++)
+                {
+                    if (m_Entities[i] is Item)
+                    {
+                        Item comparison = m_Entities[i] as Item;
+                        if (comparison.ItemID == item.ItemID &&
+                            comparison.Z == item.Z)
+                        {
+                            m_Entities.RemoveAt(i);
+                            i--;
+                        }
+                    }
+                }
+            }
+
             m_Entities.Add(entity);
             m_NeedsSorting = true;
         }

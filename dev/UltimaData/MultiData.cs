@@ -12,6 +12,8 @@
 using InterXLib;
 using System.Drawing;
 using UltimaXNA.Core.Diagnostics;
+using System;
+using System.Linq;
 #endregion
 
 namespace UltimaXNA.UltimaData
@@ -68,7 +70,6 @@ namespace UltimaXNA.UltimaData
     {
         private Point m_Min, m_Max, m_Center;
         private int m_Width, m_Height;
-        private StaticTile[][][] m_Tiles;
 
         public static readonly MultiComponentList Empty = new MultiComponentList();
 
@@ -77,13 +78,23 @@ namespace UltimaXNA.UltimaData
         public Point Center { get { return m_Center; } }
         public int Width { get { return m_Width; } }
         public int Height { get { return m_Height; } }
-        public StaticTile[][][] Tiles { get { return m_Tiles; } }
 
-        private struct MultiTileEntry
+        public MultiItem[] Items
         {
-            public short m_ItemID;
-            public short m_OffsetX, m_OffsetY, m_OffsetZ;
-            public int m_Flags;
+            get;
+            private set;
+        }
+
+        public struct MultiItem
+        {
+            public short ItemID;
+            public short OffsetX, OffsetY, OffsetZ;
+            public int Flags;
+
+            public override string ToString()
+            {
+                return string.Format("{0:X4} {1} {2} {3} {4:X4}", ItemID, OffsetX, OffsetY, OffsetZ, Flags);
+            }
         }
 
         public MultiComponentList(BinaryFileReader reader, int count)
@@ -92,76 +103,46 @@ namespace UltimaXNA.UltimaData
 
             m_Min = m_Max = Point.Empty;
 
-            MultiTileEntry[] allTiles = new MultiTileEntry[count];
+            Items = new MultiItem[count];
 
             for (int i = 0; i < count; ++i)
             {
-                allTiles[i].m_ItemID = reader.ReadShort();
-                allTiles[i].m_OffsetX = reader.ReadShort();
-                allTiles[i].m_OffsetY = reader.ReadShort();
-                allTiles[i].m_OffsetZ = reader.ReadShort();
-                allTiles[i].m_Flags = reader.ReadInt();
+                Items[i].ItemID = reader.ReadShort();
+                Items[i].OffsetX = reader.ReadShort();
+                Items[i].OffsetY = reader.ReadShort();
+                Items[i].OffsetZ = reader.ReadShort();
+                Items[i].Flags = reader.ReadInt();
 
-                MultiTileEntry e = allTiles[i];
+                if (Items[i].OffsetX < m_Min.X)
+                    m_Min.X = Items[i].OffsetX;
 
-                if (e.m_OffsetX < m_Min.X)
-                    m_Min.X = e.m_OffsetX;
+                if (Items[i].OffsetY < m_Min.Y)
+                    m_Min.Y = Items[i].OffsetY;
 
-                if (e.m_OffsetY < m_Min.Y)
-                    m_Min.Y = e.m_OffsetY;
+                if (Items[i].OffsetX > m_Max.X)
+                    m_Max.X = Items[i].OffsetX;
 
-                if (e.m_OffsetX > m_Max.X)
-                    m_Max.X = e.m_OffsetX;
-
-                if (e.m_OffsetY > m_Max.Y)
-                    m_Max.Y = e.m_OffsetY;
+                if (Items[i].OffsetY > m_Max.Y)
+                    m_Max.Y = Items[i].OffsetY;
             }
 
             m_Center = new Point(-m_Min.X, -m_Min.Y);
             m_Width = (m_Max.X - m_Min.X) + 1;
             m_Height = (m_Max.Y - m_Min.Y) + 1;
 
-            StaticTileList[][] tiles = new StaticTileList[m_Width][];
-            m_Tiles = new StaticTile[m_Width][][];
-
-            for (int x = 0; x < m_Width; ++x)
-            {
-                tiles[x] = new StaticTileList[m_Height];
-                m_Tiles[x] = new StaticTile[m_Height][];
-
-                for (int y = 0; y < m_Height; ++y)
-                    tiles[x][y] = new StaticTileList();
-            }
-
-            for (int i = 0; i < allTiles.Length; ++i)
-            {
-                int xOffset = allTiles[i].m_OffsetX + m_Center.X;
-                int yOffset = allTiles[i].m_OffsetY + m_Center.Y;
-
-                tiles[xOffset][yOffset].Add((short)((allTiles[i].m_ItemID & 0x3FFF) + 0x4000), (sbyte)allTiles[i].m_OffsetZ);
-            }
-
-            for (int x = 0; x < m_Width; ++x)
-            {
-                for (int y = 0; y < m_Height; ++y)
-                {
-                    m_Tiles[x][y] = tiles[x][y].ToArray();
-                    // 
-                    // This is unnecessary, since TileEngine has to sort/resort anyways.
-                    // 
-                    // if (m_Tiles[x][y].Length > 1)
-                    // {
-                    //     Array.Sort(m_Tiles[x][y]);
-                    // }
-                }
-            }
+            // SortMultiComponentList();
 
             Metrics.ReportDataRead((int)reader.Position - metrics_dataread_start);
         }
 
+        private void SortMultiComponentList()
+        {
+            Items = Items.OrderBy(a => a.OffsetY).ThenBy(a => a.OffsetX).ToArray();
+        }
+
         private MultiComponentList()
         {
-            m_Tiles = new StaticTile[0][][];
+            Items = new MultiItem[0];
         }
     }
 }
