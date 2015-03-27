@@ -38,12 +38,7 @@ namespace UltimaXNA.UltimaEntities
         {
             for (int i = 0; i < s_RegisteredMultis.Count; i++)
                 if (!s_RegisteredMultis[i].IsDisposed)
-                    s_RegisteredMultis[i].ReceiveMapBlockLoaded(block);
-        }
-
-        private void ReceiveMapBlockLoaded(MapBlock block)
-        {
-
+                    s_RegisteredMultis[i].PlaceTilesIntoNewlyLoadedBlock(block);
         }
 
         MultiComponentList m_Components;
@@ -61,31 +56,15 @@ namespace UltimaXNA.UltimaEntities
             m_customHouseTiles = house.GetStatics(m_Components.Width, m_Components.Height);
         }
 
-        int m_StaticID;
-        public int StaticID
+        int m_MultiID;
+        public int MultiID
         {
-            get { return m_StaticID; }
+            get { return m_MultiID; }
             set
             {
-                if (m_StaticID != value)
+                if (m_MultiID != value)
                 {
-                    m_StaticID = value;
-                }
-            }
-        }
-
-        void redrawAllTiles()
-        {
-            m_Components = MultiData.GetComponents(m_StaticID);
-            m_unloadedTiles.Clear();
-            for (int y = 0; y < m_Components.Height + 1; y++)
-            {
-                for (int x = 0; x < m_Components.Width; x++)
-                {
-                    Point p = new Point();
-                    p.X = x;
-                    p.Y = y;
-                    m_unloadedTiles.Add(p);
+                    m_MultiID = value;
                 }
             }
         }
@@ -93,7 +72,9 @@ namespace UltimaXNA.UltimaEntities
         public Multi(Serial serial, Map map)
 			: base(serial, map)
 		{
+            m_Components = MultiData.GetComponents(m_MultiID);
             RegisterForMapBlockLoads(this);
+            InitialLoadTiles();
 		}
 
         public override void Dispose()
@@ -102,9 +83,9 @@ namespace UltimaXNA.UltimaEntities
             base.Dispose();
         }
 
-        internal override void Draw(MapTile tile, Position3D position)
+        private void InitialLoadTiles()
         {
-            if (m_unloadedTiles.Count == 0)
+            /*if (m_unloadedTiles.Count == 0)
                 return;
 
             List<Point> drawnTiles = new List<Point>();
@@ -139,13 +120,12 @@ namespace UltimaXNA.UltimaEntities
                             }
                         }
                     }
-                }
-            }
+                }*/
+        }
 
-            foreach (Point p in drawnTiles)
-            {
-                m_unloadedTiles.Remove(p);
-            }
-       }
+        private void PlaceTilesIntoNewlyLoadedBlock(MapBlock block)
+        {
+
+        }
     }
 }
