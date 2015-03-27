@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Rendering;
 using UltimaXNA.UltimaGUI.Controls;
 using UltimaXNA.UltimaData.FontsNew;
+using InterXLib.Input.Windows;
 
 namespace UltimaXNA.UltimaGUI.WorldGumps
 {
@@ -19,11 +20,14 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
     {
         TextEntry InputState;
         List<ChatLineTimed> m_textEntries;
+        List<string> m_messages;
+        int messageIndex = -1;
 
         public ChatWindow()
             : base(0, 0)
         {
             m_textEntries = new List<ChatLineTimed>();
+            m_messages = new List<string>();
             Width = 400;
         }
 
@@ -48,6 +52,19 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
                 }
             }
 
+            if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.Q, false, false, true) && messageIndex > -1)
+            {
+                InputState.Text = m_messages[messageIndex];
+                if (messageIndex > 0)
+                    messageIndex -= 1;
+            }
+            //Zane must give attention, i couldn't deny keyboard taking q as an input, it works but add q key at the end of the message
+            /*else if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.Q, false, true, false) && messageIndex < m_messages.Count-1)
+            {
+                messageIndex += 1;
+                InputState.Text = m_messages[messageIndex];
+            }
+            */
             base.Update(gameTime);
         }
 
@@ -65,6 +82,8 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
         public override void ActivateByKeyboardReturn(int textID, string text)
         {
             InputState.Text = string.Empty;
+            m_messages.Add(text);
+            messageIndex = m_messages.Count-1;
             UltimaInteraction.SendChat(text);
         }
 
