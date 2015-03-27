@@ -311,6 +311,13 @@ namespace UltimaXNA.UltimaWorld.Model
             }
         }
 
+        int m_MultiModel;
+        public void SetTargetingMulti(Serial deedSerial, int model)
+        {
+            SetTargeting(TargetTypes.MultiPlacement, (int)deedSerial);
+            m_MultiModel = model;
+        }
+
         void mouseTargetingEventXYZ(AEntity selectedEntity)
         {
             // Send the targetting event back to the server!

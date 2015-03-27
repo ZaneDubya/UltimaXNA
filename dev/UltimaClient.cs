@@ -944,8 +944,8 @@ namespace UltimaXNA
                 // create a multi object. Unhandled !!!
                 int multiID = p.ItemID - 0x4000;
                 Multi multi = EntityManager.GetObject<Multi>(p.Serial, true);
-                multi.ItemID = p.ItemID;
                 multi.Position.Set(p.X, p.Y, p.Z);
+                multi.MultiID = p.ItemID;
             }
         }
 

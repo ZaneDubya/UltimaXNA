@@ -187,6 +187,11 @@ namespace UltimaXNA.UltimaData
             get { return (Flags & TileFlag.Roof) != 0; }
         }
 
+        public bool IsDoor
+        {
+            get { return (Flags & TileFlag.Door) != 0; }
+        }
+
         public bool IsSurface
         {
             get { return (Flags & TileFlag.Surface) != 0; }

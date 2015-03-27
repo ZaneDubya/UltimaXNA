@@ -124,7 +124,7 @@ namespace UltimaXNA.UltimaWorld.View
                     // if we are under a ROOF, then get rid of everything above me.Z + 20
                     // (this accounts for A-frame roofs). Otherwise, get rid of everything
                     // at the object above us.Z.
-                    if (((StaticItem)underObject).ItemData.IsRoof)
+                    if (((Item)underObject).ItemData.IsRoof)
                     {
                         m_maxItemAltitude = CenterPosition.Z - (CenterPosition.Z % 20) + 20;
                     }
@@ -134,7 +134,7 @@ namespace UltimaXNA.UltimaWorld.View
                     }
 
                     // If we are under a roof tile, do not make roofs transparent if we are on an edge.
-                    if (underObject is StaticItem && ((StaticItem)underObject).ItemData.IsRoof)
+                    if (underObject is Item && ((Item)underObject).ItemData.IsRoof)
                     {
                         bool isRoofSouthEast = true;
                         if ((t = map.GetMapTile(CenterPosition.X + 1, CenterPosition.Y)) != null)

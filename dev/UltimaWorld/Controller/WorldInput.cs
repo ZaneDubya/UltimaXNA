@@ -1,11 +1,10 @@
 ﻿using InterXLib.Input.Windows;
 using Microsoft.Xna.Framework;
-using System;
 using System.Collections.Generic;
 using UltimaXNA.UltimaEntities;
 using UltimaXNA.UltimaPackets.Client;
-using UltimaXNA.UltimaWorld.View;
 using UltimaXNA.UltimaVars;
+using UltimaXNA.UltimaWorld.View;
 
 namespace UltimaXNA.UltimaWorld.Controller
 {
@@ -19,6 +18,11 @@ namespace UltimaXNA.UltimaWorld.Controller
         public WorldInput(WorldModel model)
         {
             m_Model = model;
+        }
+
+        public void Dispose()
+        {
+            UltimaEngine.UserInterface.RemoveInputBlocker(this);
         }
 
         // mouse input variables

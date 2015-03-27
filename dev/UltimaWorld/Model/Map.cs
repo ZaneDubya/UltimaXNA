@@ -22,7 +22,7 @@ namespace UltimaXNA.UltimaWorld.Model
     {
         private MapBlock[] m_Blocks;
         private TileMatrixRaw m_MapData;
-        private Point m_Center = new Point(int.MinValue, int.MinValue);
+        private Point m_Center = new Point(int.MinValue, int.MinValue); // player position.
 
         public int Index;
         public int Height, Width;
@@ -88,7 +88,8 @@ namespace UltimaXNA.UltimaWorld.Model
                         if (m_Blocks[cellIndex] != null)
                             m_Blocks[cellIndex].Unload();
                         m_Blocks[cellIndex] = new MapBlock(cellX, cellY);
-                        m_Blocks[cellIndex].LoadTiles(m_MapData, this);
+                        m_Blocks[cellIndex].Load(m_MapData, this);
+                        Multi.AnnounceMapBlockLoaded(m_Blocks[cellIndex]);
                     }
                 }
             }

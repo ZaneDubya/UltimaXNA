@@ -20,8 +20,28 @@ namespace UltimaXNA.UltimaEntities
 {
     class Multi : AEntity
     {
-        MultiComponentList m_components;
-        List<Point> m_unloadedTiles = new List<Point>();
+        private static List<Multi> s_RegisteredMultis = new List<Multi>();
+
+        private static void RegisterForMapBlockLoads(Multi multi)
+        {
+            if (!s_RegisteredMultis.Contains(multi))
+                s_RegisteredMultis.Add(multi);
+        }
+
+        private static void UnregisterForMapBlockLoads(Multi multi)
+        {
+            if (s_RegisteredMultis.Contains(multi))
+                s_RegisteredMultis.Remove(multi);
+        }
+
+        public static void AnnounceMapBlockLoaded(MapBlock block)
+        {
+            for (int i = 0; i < s_RegisteredMultis.Count; i++)
+                if (!s_RegisteredMultis[i].IsDisposed)
+                    s_RegisteredMultis[i].PlaceTilesIntoNewlyLoadedBlock(block);
+        }
+
+        MultiComponentList m_Components;
 
         int m_customHouseRevision = 0x7FFFFFFF;
         StaticTile[] m_customHouseTiles;
@@ -33,36 +53,20 @@ namespace UltimaXNA.UltimaEntities
         {
             m_hasCustomTiles = true;
             m_customHouse = house;
-            m_customHouseTiles = house.GetStatics(m_components.Width, m_components.Height);
-            redrawAllTiles();
+            m_customHouseTiles = house.GetStatics(m_Components.Width, m_Components.Height);
         }
 
-        int m_ItemID;
-        public int ItemID
+        int m_MultiID = -1;
+        public int MultiID
         {
-            get { return m_ItemID; }
+            get { return m_MultiID; }
             set
             {
-                if (m_ItemID != value)
+                if (m_MultiID != value)
                 {
-                    m_ItemID = value;
-                    redrawAllTiles();
-                }
-            }
-        }
-
-        void redrawAllTiles()
-        {
-            m_components = MultiData.GetComponents(m_ItemID);
-            m_unloadedTiles.Clear();
-            for (int y = 0; y < m_components.Height + 1; y++)
-            {
-                for (int x = 0; x < m_components.Width; x++)
-                {
-                    Point p = new Point();
-                    p.X = x;
-                    p.Y = y;
-                    m_unloadedTiles.Add(p);
+                    m_MultiID = value;
+                    m_Components = MultiData.GetComponents(m_MultiID);
+                    InitialLoadTiles();
                 }
             }
         }
@@ -70,62 +74,65 @@ namespace UltimaXNA.UltimaEntities
         public Multi(Serial serial, Map map)
 			: base(serial, map)
 		{
+            RegisterForMapBlockLoads(this);
 		}
 
-        public override void Update(double frameMS)
+        public override void Dispose()
         {
-            if (m_unloadedTiles.Count > 0)
-            {
-                // what do we do here ???
-            }
-
-            base.Update(frameMS);
+            UnregisterForMapBlockLoads(this);
+            base.Dispose();
         }
 
-        internal override void Draw(MapTile tile, Position3D position)
+        private void InitialLoadTiles()
         {
-            if (m_unloadedTiles.Count == 0)
-                return;
+            int px = Position.X;
+            int py = Position.Y;
 
-            List<Point> drawnTiles = new List<Point>();
-
-            foreach (Point p in m_unloadedTiles)
+            foreach (MultiComponentList.MultiItem item in m_Components.Items)
             {
-                int x = tile.X + p.X - m_components.Center.X;
-                int y = tile.Y + p.Y - m_components.Center.Y;
+                int x = px + item.OffsetX;
+                int y = py + item.OffsetY;
 
-                MapTile t = Map.GetMapTile(x, y);
-                if (t != null)
+                MapTile tile = Map.GetMapTile(x, y);
+                if (tile != null)
                 {
-                    drawnTiles.Add(p);
+                    if (tile.ItemExists(item.ItemID, item.OffsetZ))
+                        continue;
 
-                    if (!m_hasCustomTiles)
+                    StaticItem staticItem = new StaticItem(item.ItemID, 0, 0, this.Map);
+                    if (staticItem.ItemData.IsDoor)
+                        continue;
+                    staticItem.Position.Set(x, y, this.Z + item.OffsetZ);
+                }
+            }
+        }
+
+        private void PlaceTilesIntoNewlyLoadedBlock(MapBlock block)
+        {
+            int px = Position.X;
+            int py = Position.Y;
+
+            Rectangle bounds = new Rectangle(block.X, block.Y, 8, 8);
+
+            foreach (MultiComponentList.MultiItem item in m_Components.Items)
+            {
+                int x = px + item.OffsetX;
+                int y = py + item.OffsetY;
+
+                if (bounds.Contains(x, y))
+                {
+                    // would it be faster to get the tile from the block?
+                    MapTile tile = Map.GetMapTile(x, y);
+                    if (tile != null)
                     {
-                        if (p.X < m_components.Width && p.Y < m_components.Height)
+                        if (!tile.ItemExists(item.ItemID, item.OffsetZ))
                         {
-                            foreach (StaticTile s in m_components.Tiles[p.X][p.Y])
-                            {
-                                // t.AddMapObject(new MapObjectStatic(s.ID, 0, new Position3D(x, y, s.Z)));
-                            }
-                        }
-                    }
-                    else
-                    {
-                        foreach (StaticTile s in m_customHouseTiles)
-                        {
-                            if ((s.X == p.X) && (s.Y == p.Y))
-                            {
-                                // t.AddMapObject(new MapObjectStatic(s.ID, 0, new Position3D(s.X, s.Y, s.Z)));
-                            }
+                            StaticItem staticItem = new StaticItem(item.ItemID, 0, 0, this.Map);
+                            staticItem.Position.Set(x, y, this.Z + item.OffsetZ);
                         }
                     }
                 }
             }
-
-            foreach (Point p in drawnTiles)
-            {
-                m_unloadedTiles.Remove(p);
-            }
-       }
+        }
     }
 }
