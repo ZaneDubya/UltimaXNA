@@ -96,11 +96,13 @@ namespace UltimaXNA.UltimaEntities
                 MapTile tile = Map.GetMapTile(x, y);
                 if (tile != null)
                 {
-                    if (!tile.ItemExists(item.ItemID, item.OffsetZ))
-                    {
-                        StaticItem staticItem = new StaticItem(item.ItemID, 0, 0, this.Map);
-                        staticItem.Position.Set(x, y, this.Z + item.OffsetZ);
-                    }
+                    if (tile.ItemExists(item.ItemID, item.OffsetZ))
+                        continue;
+
+                    StaticItem staticItem = new StaticItem(item.ItemID, 0, 0, this.Map);
+                    if (staticItem.ItemData.IsDoor)
+                        continue;
+                    staticItem.Position.Set(x, y, this.Z + item.OffsetZ);
                 }
             }
         }
