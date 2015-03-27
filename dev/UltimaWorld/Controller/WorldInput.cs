@@ -22,6 +22,8 @@ namespace UltimaXNA.UltimaWorld.Controller
         }
 
         // mouse input variables
+        private double m_TimeSinceMovementButtonPressed = 0;
+        private const double c_PauseBeforeMouseMovementMS = 105d;
         private bool m_ContinuousMouseMovementCheck = false;
         public bool ContinuousMouseMovementCheck
         {
@@ -39,7 +41,6 @@ namespace UltimaXNA.UltimaWorld.Controller
                     else
                         UltimaEngine.UserInterface.RemoveInputBlocker(this);
                 }
-
             }
         }
 
@@ -49,7 +50,8 @@ namespace UltimaXNA.UltimaWorld.Controller
 
         // keyboard movement variables.
         private double m_PauseBeforeKeyboardMovementMS = 0;
-        private const double c_PauseBeforeKeyboardMovementMS = 50d;
+        private const double c_PauseBeforeKeyboardFacingMS = 55d; // a little more than three frames @ 60fps.
+        private const double c_PauseBeforeKeyboardMovementMS = 125d; // a little more than seven frames @ 60fps.
 
         public void Update(double frameMS)
         {
@@ -79,23 +81,127 @@ namespace UltimaXNA.UltimaWorld.Controller
                 // Set the cursor direction
                 UltimaVars.EngineVars.CursorDirection = Utility.DirectionFromPoints(new Point(400, 300), UltimaEngine.Input.MousePosition);
 
-                // Changed to leverage movementFollowsMouse interface option
-                if (ContinuousMouseMovementCheck)
-                    doMovement();
+                doMouseMovement(frameMS);
             }
         }
 
-        void doMovement()
+        private void doMouseMovement(double frameMS)
         {
-            // Get the move direction and add the Running offset if the Cursor is far enough away.
-            Direction moveDirection = UltimaVars.EngineVars.CursorDirection;
-            float distanceFromCenterOfScreen = Utility.DistanceBetweenTwoPoints(new Point(400, 300), UltimaEngine.Input.MousePosition);
-            if (distanceFromCenterOfScreen >= 150.0f || UltimaVars.SettingVars.AlwaysRun)
-                moveDirection |= Direction.Running;
+            // if the move button is pressed, change facing and move based on mouse cursor direction.
+            if (ContinuousMouseMovementCheck)
+            {
+                m_TimeSinceMovementButtonPressed += frameMS;
+                if (m_TimeSinceMovementButtonPressed >= c_PauseBeforeMouseMovementMS)
+                {
+                    // Get the move direction.
+                    Direction moveDirection = UltimaVars.EngineVars.CursorDirection;
 
-            // Tell the player to Move.
+                    // add the running flag if the mouse cursor is far enough away from the center of the screen.
+                    float distanceFromCenterOfScreen = Utility.DistanceBetweenTwoPoints(new Point(400, 300), UltimaEngine.Input.MousePosition);
+                    if (distanceFromCenterOfScreen >= 150.0f || UltimaVars.SettingVars.AlwaysRun)
+                        moveDirection |= Direction.Running;
+
+                    // Tell the player to Move.
+                    Mobile m = (Mobile)EntityManager.GetPlayerObject();
+                    m.PlayerMobile_Move(moveDirection);
+                }
+                else
+                {
+                    // Get the move direction.
+                    Direction facing = UltimaVars.EngineVars.CursorDirection;
+
+                    Mobile m = (Mobile)EntityManager.GetPlayerObject();
+                    if (m.Facing != facing)
+                    {
+                        // Tell the player entity to change facing to this direction.
+                        m.PlayerMobile_ChangeFacing(facing);
+                        // reset the time since the mouse cursor was pressed - allows multiple facing changes.
+                        m_TimeSinceMovementButtonPressed = 0d;
+                    }
+                }
+            }
+            else
+            {
+                m_TimeSinceMovementButtonPressed = 0d;
+            }
+        }
+
+        private void doKeyboardMovement(double frameMS)
+        {
+            if (m_PauseBeforeKeyboardMovementMS < c_PauseBeforeKeyboardMovementMS)
+            {
+                if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Up, WinKeys.Up, false, false, false))
+                    m_PauseBeforeKeyboardMovementMS = 0;
+                if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Up, WinKeys.Down, false, false, false))
+                    m_PauseBeforeKeyboardMovementMS = 0;
+                if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Up, WinKeys.Left, false, false, false))
+                    m_PauseBeforeKeyboardMovementMS = 0;
+                if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Up, WinKeys.Right, false, false, false))
+                    m_PauseBeforeKeyboardMovementMS = 0;
+            }
+
             Mobile m = (Mobile)EntityManager.GetPlayerObject();
-            m.PlayerMobile_Move(moveDirection);
+            bool up = UltimaEngine.Input.IsKeyDown(WinKeys.Up);
+            bool left = UltimaEngine.Input.IsKeyDown(WinKeys.Left);
+            bool right = UltimaEngine.Input.IsKeyDown(WinKeys.Right);
+            bool down = UltimaEngine.Input.IsKeyDown(WinKeys.Down);
+            if (up | left | right | down)
+            {
+                // Allow a short span of time (50ms) to get all the keys pressed.
+                // Otherwise, when moving diagonally, we would only get the first key
+                // in most circumstances and the second key a frame or two later - but
+                // too late, we would already be moving in the non-diagonal direction :(
+                m_PauseBeforeKeyboardMovementMS += frameMS;
+                if (m_PauseBeforeKeyboardMovementMS >= c_PauseBeforeKeyboardFacingMS)
+                {
+                    Direction facing = Direction.Up;
+                    if (up)
+                    {
+                        if (left)
+                            facing = Direction.West;
+                        else if (UltimaEngine.Input.IsKeyDown(WinKeys.Right))
+                            facing = Direction.North;
+                        else
+                            facing = Direction.Up;
+                    }
+                    else if (down)
+                    {
+                        if (left)
+                            facing = Direction.South;
+                        else if (right)
+                            facing = Direction.East;
+                        else
+                            facing = Direction.Down;
+                    }
+                    else
+                    {
+                        if (left)
+                            facing = Direction.Left;
+                        else if (right)
+                            facing = Direction.Right;
+                    }
+
+                    // only send messages if we're not moving.
+                    if (!m.IsMoving)
+                    {
+                        if (m_PauseBeforeKeyboardMovementMS >= c_PauseBeforeKeyboardMovementMS)
+                        {
+                            m.PlayerMobile_Move(facing);
+                        }
+                        else
+                        {
+                            if (m.Facing != facing)
+                            {
+                                m.PlayerMobile_ChangeFacing(facing);
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                m_PauseBeforeKeyboardMovementMS = 0;
+            }
         }
 
         void onMoveButton(InputEventMouse e)
@@ -285,51 +391,7 @@ namespace UltimaXNA.UltimaWorld.Controller
             // movement with arrow keys if the player is not moving and the mouse isn't moving the player.
             if (!ContinuousMouseMovementCheck)
             {
-                Mobile m = (Mobile)EntityManager.GetPlayerObject();
-                bool up = UltimaEngine.Input.IsKeyDown(WinKeys.Up);
-                bool left = UltimaEngine.Input.IsKeyDown(WinKeys.Left);
-                bool right = UltimaEngine.Input.IsKeyDown(WinKeys.Right);
-                bool down = UltimaEngine.Input.IsKeyDown(WinKeys.Down);
-                if (!m.IsMoving && (up | left | right | down))
-                {
-                    // Allow a short span of time (50ms) to get all the keys pressed.
-                    // Otherwise, when moving diagonally, we would only get the first key
-                    // in most circumstances and the second key a frame or two later - but
-                    // too late, we would already be moving in the non-diagonal direction :(
-                    m_PauseBeforeKeyboardMovementMS -= frameMS;
-                    if (m_PauseBeforeKeyboardMovementMS <= 0)
-                    {
-                        if (up)
-                        {
-                            if (left)
-                                m.PlayerMobile_Move(Direction.West);
-                            else if (UltimaEngine.Input.IsKeyDown(WinKeys.Right))
-                                m.PlayerMobile_Move(Direction.North);
-                            else
-                                m.PlayerMobile_Move(Direction.Up);
-                        }
-                        else if (down)
-                        {
-                            if (left)
-                                m.PlayerMobile_Move(Direction.South);
-                            else if (right)
-                                m.PlayerMobile_Move(Direction.East);
-                            else
-                                m.PlayerMobile_Move(Direction.Down);
-                        }
-                        else
-                        {
-                            if (left)
-                                m.PlayerMobile_Move(Direction.Left);
-                            else if (right)
-                                m.PlayerMobile_Move(Direction.Right);
-                        }
-                    }
-                }
-                else
-                {
-                    m_PauseBeforeKeyboardMovementMS = c_PauseBeforeKeyboardMovementMS;
-                }
+                doKeyboardMovement(frameMS);
             }
 
             // debug variables.

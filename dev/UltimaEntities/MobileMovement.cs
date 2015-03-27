@@ -95,6 +95,33 @@ namespace UltimaXNA.UltimaEntities
             m_moveEvents.ResetMoveSequence();
         }
 
+        public void PlayerMobile_ChangeFacing(Direction facing)
+        {
+            if (!IsMoving)
+            {
+                PlayerMobile_SendChangeFacingMsg(facing);
+                Facing = facing;
+            }
+        }
+
+        /// <summary>
+        /// If current Facing does not match param facing, will send a message to the server with the new facing.
+        /// Does not change the actual facing value.
+        /// </summary>
+        /// <param name="facing"></param>
+        private void PlayerMobile_SendChangeFacingMsg(Direction facing)
+        {
+            if ((Facing & Direction.FacingMask) != (facing & Direction.FacingMask))
+            {
+                m_moveEvents.AddMoveEvent(
+                    CurrentPosition.X,
+                    CurrentPosition.Y,
+                    CurrentPosition.Z,
+                    (int)(facing & Direction.FacingMask),
+                    true);
+            }
+        }
+
         public void PlayerMobile_Move(Direction facing)
         {
             if (!IsMoving)
@@ -124,17 +151,8 @@ namespace UltimaXNA.UltimaEntities
                 Point nextTile;
                 if (PlayerMobile_GetNextTile(CurrentPosition, targetTile, out facing, out nextTile, out nextZ))
                 {
-
-                    // Check facing and about face if necessary.
-                    if ((Facing & Direction.FacingMask) != (facing & Direction.FacingMask))
-                    {
-                        m_moveEvents.AddMoveEvent(
-                            CurrentPosition.X,
-                            CurrentPosition.Y,
-                            CurrentPosition.Z,
-                            (int)(facing & Direction.FacingMask),
-                            true);
-                    }
+                    // Check facing and send change facing message to server if necessary.
+                    PlayerMobile_SendChangeFacingMsg(facing);
 
                     // copy the running flag to our local facing if we are running,
                     // zero it out if we are not.

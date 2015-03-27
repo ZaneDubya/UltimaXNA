@@ -278,13 +278,17 @@ namespace UltimaXNA.UltimaEntities
 
         public void Mobile_AddMoveEvent(int x, int y, int z, int facing)
         {
-            Direction currentFacing = m_movement.Facing;
             m_movement.Mobile_ServerAddMoveEvent(x, y, z, facing);
         }
 
         public void Move_Instant(int x, int y, int z, int facing)
         {
             m_movement.Move_Instant(x, y, z, facing);
+        }
+
+        public void PlayerMobile_ChangeFacing(Direction facing)
+        {
+            m_movement.PlayerMobile_ChangeFacing(facing);
         }
 
         public void PlayerMobile_Move(Direction facing)
