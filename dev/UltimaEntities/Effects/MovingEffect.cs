@@ -103,25 +103,25 @@ namespace UltimaXNA.UltimaEntities.Effects
             {
                 if (target is Mobile)
                 {
-                    base.SetSource(target);
+                    base.SetTarget(target);
                     Mobile mobile = target as Mobile;
-                    if ((!mobile.IsClientEntity && !mobile.IsMoving) && ((xSource | ySource | zSource) != 0))
+                    if ((!mobile.IsClientEntity && !mobile.IsMoving) && ((xTarget | yTarget | zTarget) != 0))
                     {
-                        mobile.Position.Set(xSource, ySource, zSource);
+                        mobile.Position.Set(xTarget, yTarget, zTarget);
                     }
                 }
                 else if (target is Item)
                 {
-                    base.SetSource(target);
+                    base.SetTarget(target);
                     Item item = target as Item;
-                    if ((xSource | ySource | zSource) != 0)
+                    if ((xTarget | yTarget | zTarget) != 0)
                     {
-                        item.Position.Set(xSource, ySource, zSource);
+                        item.Position.Set(xTarget, yTarget, zTarget);
                     }
                 }
                 else
                 {
-                    base.SetSource(xSource, ySource, zSource);
+                    base.SetSource(xTarget, yTarget, zTarget);
                 }
             }
         }
