@@ -123,6 +123,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\AUltimaModel.cs" />
+    <Compile Include="UltimaData\AnimData.cs" />
     <Compile Include="UltimaEntities\EntityViews\AEntityView.cs" />
     <Compile Include="UltimaEntities\EntityViews\CorpseView.cs" />
     <Compile Include="UltimaEntities\EntityViews\MobileDeferredView.cs" />
@@ -438,7 +439,7 @@
     <Compile Include="Core\Rendering\SpriteBatch3D.cs" />
     <Compile Include="Core\Rendering\VertexPositionNormalTextureHue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UltimaData\AnimationData.cs" />
+    <Compile Include="UltimaData\Animations.cs" />
     <Compile Include="UltimaData\FileIndex.cs" />
     <Compile Include="UltimaData\HueData.cs" />
     <Compile Include="UltimaData\Versioning.cs" />

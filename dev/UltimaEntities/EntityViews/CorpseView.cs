@@ -36,7 +36,7 @@ namespace UltimaXNA.UltimaEntities.EntityViews
 
         private AnimationFrame getFrame(int bodyID, int facing, int frameIndex, int hue)
         {
-            AnimationFrame[] iFrames = AnimationData.GetAnimation(bodyID, UltimaData.BodyConverter.DeathAnimationIndex(bodyID), facing, hue);
+            AnimationFrame[] iFrames = Animations.GetAnimation(bodyID, UltimaData.BodyConverter.DeathAnimationIndex(bodyID), facing, hue);
             if (iFrames == null)
                 return null;
             if (iFrames[frameIndex].Texture == null)

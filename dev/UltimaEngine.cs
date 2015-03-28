@@ -56,7 +56,8 @@ namespace UltimaXNA
             if (UltimaData.FileManager.IsUODataPresent)
             {
                 // Initialize and load data
-                UltimaData.AnimationData.Initialize(GraphicsDevice);
+                UltimaData.AnimData.Initialize();
+                UltimaData.Animations.Initialize(GraphicsDevice);
                 UltimaData.ArtData.Initialize(GraphicsDevice);
 
                 UltimaData.FontsOld.ASCIIText.Initialize(GraphicsDevice);

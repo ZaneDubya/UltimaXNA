@@ -17,7 +17,7 @@ using UltimaXNA.Core.Diagnostics;
 
 namespace UltimaXNA.UltimaData
 {
-    public sealed class AnimationData
+    public sealed class Animations
     {
         private static FileIndex m_FileIndex = new FileIndex("Anim.idx", "Anim.mul", 0x40000, 6);
         public static FileIndex FileIndex { get { return m_FileIndex; } }

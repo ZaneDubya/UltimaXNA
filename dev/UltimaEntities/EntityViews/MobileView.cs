@@ -129,7 +129,7 @@ namespace UltimaXNA.UltimaEntities.EntityViews
 
         private AnimationFrame getFrame(int bodyID, int hue, int facing, int action, float frame)
         {
-            AnimationFrame[] iFrames = UltimaData.AnimationData.GetAnimation(bodyID, action, facing, hue);
+            AnimationFrame[] iFrames = UltimaData.Animations.GetAnimation(bodyID, action, facing, hue);
             if (iFrames == null)
                 return null;
             int iFrame = frameFromSequence(frame, iFrames.Length);
@@ -248,7 +248,7 @@ namespace UltimaXNA.UltimaEntities.EntityViews
             float frame = m_Animation.AnimationFrame;
 
             m_MobileLayers[m_LayerCount++] = new MobileViewLayer(bodyID, hue, getFrame(bodyID, hue, facing, animation, frame));
-            m_FrameCount = UltimaData.AnimationData.GetAnimationFrameCount(bodyID, animation, facing, hue);
+            m_FrameCount = UltimaData.Animations.GetAnimationFrameCount(bodyID, animation, facing, hue);
         }
 
         public void ClearLayers()
