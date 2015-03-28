@@ -68,7 +68,7 @@ namespace UltimaXNA.UltimaData
 
         public static int DeathAnimationIndex(int bodyID)
         {
-            switch (AnimationData.BodyType(bodyID))
+            switch (Animations.BodyType(bodyID))
             {
                 case BodyTypes.HighDetail:
                     return 2;
@@ -83,7 +83,7 @@ namespace UltimaXNA.UltimaData
 
         public static int DeathAnimationFrameCount(int bodyID)
         {
-            switch (AnimationData.BodyType(bodyID))
+            switch (Animations.BodyType(bodyID))
             {
                 case BodyTypes.HighDetail:
                     return 4;

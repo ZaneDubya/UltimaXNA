@@ -137,5 +137,71 @@ namespace UltimaXNA.UltimaEntities.EntityViews
         }
 
         protected Vector2 HueVector = Vector2.Zero;
+
+        // ======================================================================
+        // Deferred drawing code
+        // ======================================================================
+
+        protected bool m_AllowDefer = false;
+
+        public void SetAllowDefer()
+        {
+            m_AllowDefer = true;
+        }
+
+        protected bool CheckDefer(Map map, Vector3 drawPosition)
+        {
+            MapTile deferToTile;
+            Direction checkDirection;
+            if (Entity is Mobile && ((Mobile)Entity).IsMoving)
+            {
+                Mobile mobile = Entity as Mobile;
+                if (
+                    ((mobile.Facing & Direction.FacingMask) == Direction.Left) ||
+                    ((mobile.Facing & Direction.FacingMask) == Direction.South) ||
+                    ((mobile.Facing & Direction.FacingMask) == Direction.East))
+                {
+                    deferToTile = map.GetMapTile(Entity.Position.X, Entity.Position.Y + 1);
+                    checkDirection = mobile.Facing & Direction.FacingMask;
+                }
+                else if ((mobile.Facing & Direction.FacingMask) == Direction.Down)
+                {
+                    deferToTile = map.GetMapTile(Entity.Position.X + 1, Entity.Position.Y + 1);
+                    checkDirection = Direction.Down;
+                }
+                else
+                {
+                    deferToTile = map.GetMapTile(Entity.Position.X + 1, Entity.Position.Y);
+                    checkDirection = Direction.East;
+                }
+            }
+            else
+            {
+                deferToTile = map.GetMapTile(Entity.Position.X + 1, Entity.Position.Y);
+                checkDirection = Direction.East;
+            }
+
+            if (deferToTile != null)
+            {
+                if (Entity is Mobile)
+                {
+                    Mobile mobile = Entity as Mobile;
+                    int z;
+                    if (MobileMovementCheck.CheckMovementForced(mobile, Entity.Position, checkDirection, out z))
+                    {
+                        DeferredEntity deferred = new DeferredEntity(mobile, drawPosition, z);
+                        deferToTile.OnEnter(deferred);
+                        return true;
+                    }
+                }
+                else
+                {
+                    DeferredEntity deferred = new DeferredEntity(Entity, drawPosition, Entity.Z);
+                    deferToTile.OnEnter(deferred);
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

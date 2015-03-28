@@ -123,11 +123,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\AUltimaModel.cs" />
+    <Compile Include="UltimaData\AnimData.cs" />
+    <Compile Include="UltimaEntities\Effects\AEffect.cs" />
+    <Compile Include="UltimaEntities\Effects\AnimatedItemEffect.cs" />
+    <Compile Include="UltimaEntities\Effects\LightningEffect.cs" />
+    <Compile Include="UltimaEntities\Effects\MovingEffect.cs" />
     <Compile Include="UltimaEntities\EntityViews\AEntityView.cs" />
     <Compile Include="UltimaEntities\EntityViews\CorpseView.cs" />
-    <Compile Include="UltimaEntities\EntityViews\MobileDeferredView.cs" />
+    <Compile Include="UltimaEntities\EntityViews\AnimatedItemEffectView.cs" />
+    <Compile Include="UltimaEntities\EntityViews\LightningEffectView.cs" />
+    <Compile Include="UltimaEntities\EntityViews\DeferredView.cs" />
     <Compile Include="UltimaEntities\EntityViews\OverheadView.cs" />
-    <Compile Include="UltimaEntities\MobileDeferred.cs" />
+    <Compile Include="UltimaEntities\DeferredEntity.cs" />
     <Compile Include="UltimaEntities\Support\MobileFlags.cs" />
     <Compile Include="UltimaData\FontsUnused\CharacterASCII.cs" />
     <Compile Include="UltimaData\FontsNew\AFont.cs" />
@@ -152,6 +159,7 @@
     <Compile Include="UltimaData\FontsNew\TextUni.cs" />
     <Compile Include="Core\IniFile.cs" />
     <Compile Include="UltimaVars\SettingVars.cs" />
+    <Compile Include="UltimaWorld\Model\EffectsManager.cs" />
     <Compile Include="UltimaWorld\Model\EntitySort.cs" />
     <Compile Include="UltimaEntities\EntityViews\GroundView.cs" />
     <Compile Include="UltimaEntities\EntityViews\ItemView.cs" />
@@ -343,7 +351,6 @@
     <Compile Include="Core\Point.cs" />
     <Compile Include="UltimaEntities\Container.cs" />
     <Compile Include="UltimaEntities\Corpse.cs" />
-    <Compile Include="UltimaEntities\Effect.cs" />
     <Compile Include="UltimaEntities\AEntity.cs" />
     <Compile Include="UltimaWorld\Model\EntityManager.cs" />
     <Compile Include="Position3D.cs" />
@@ -438,7 +445,7 @@
     <Compile Include="Core\Rendering\SpriteBatch3D.cs" />
     <Compile Include="Core\Rendering\VertexPositionNormalTextureHue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UltimaData\AnimationData.cs" />
+    <Compile Include="UltimaData\Animations.cs" />
     <Compile Include="UltimaData\FileIndex.cs" />
     <Compile Include="UltimaData\HueData.cs" />
     <Compile Include="UltimaData\Versioning.cs" />

@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Rendering;
 using UltimaXNA.UltimaWorld;
 using UltimaXNA.UltimaWorld.Model;
 
 namespace UltimaXNA.UltimaEntities.EntityViews
 {
-    public class MobileDeferredView : AEntityView
+    public class DeferredView : AEntityView
     {
         Vector3 m_DrawPosition;
-        MobileView m_BaseView;
+        AEntityView m_BaseView;
 
-        public MobileDeferredView(Vector3 drawPosition, MobileView baseView)
+        public DeferredView(Vector3 drawPosition, AEntityView baseView)
             : base(baseView.Entity)
         {
             m_DrawPosition = drawPosition;

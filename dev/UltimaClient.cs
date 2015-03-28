@@ -15,6 +15,7 @@ using UltimaXNA.Core;
 using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.Network;
 using UltimaXNA.UltimaEntities;
+using UltimaXNA.UltimaEntities.Effects;
 using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaGUI.WorldGumps;
 using UltimaXNA.UltimaPackets;
@@ -474,18 +475,6 @@ namespace UltimaXNA
             UltimaInteraction.ChatMessage("System: There are currently " + p.Count + " available calls in the global queue.");
         }
 
-        private void receive_GraphicEffect(IRecvPacket packet)
-        {
-            Effect dynamic = EntityManager.AddDynamicObject();
-            dynamic.Load_FromPacket((GraphicEffectPacket)packet);
-        }
-
-        private void receive_HuedEffect(IRecvPacket packet)
-        {
-            Effect dynamic = EntityManager.AddDynamicObject();
-            dynamic.Load_FromPacket((GraphicEffectHuedPacket)packet);
-        }
-
         private void receive_InvalidMapEnable(IRecvPacket packet)
         {
             announce_UnhandledPacket(packet);
@@ -662,11 +651,6 @@ namespace UltimaXNA
                 UltimaData.CustomHouse house = UltimaData.CustomHousingData.GetCustomHouseData(p.HouseSerial);
                 e.AddCustomHousingTiles(house);
             }
-        }
-
-        private void receive_OnParticleEffect(IRecvPacket packet)
-        {
-            announce_UnhandledPacket(packet);
         }
 
         private void receive_OnSwing(IRecvPacket packet)
@@ -1182,6 +1166,25 @@ namespace UltimaXNA
                     model.MapIndex = m_QueuedMapIndex;
                 }
             }
+        }
+
+        // ======================================================================
+        // Effect handling
+        // ======================================================================
+
+        private void receive_GraphicEffect(IRecvPacket packet)
+        {
+            EffectsManager.Add((GraphicEffectPacket)packet);
+        }
+
+        private void receive_HuedEffect(IRecvPacket packet)
+        {
+            EffectsManager.Add((GraphicEffectHuedPacket)packet);
+        }
+
+        private void receive_OnParticleEffect(IRecvPacket packet)
+        {
+            EffectsManager.Add((GraphicEffectExtendedPacket)packet);
         }
     }
 }

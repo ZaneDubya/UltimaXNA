@@ -54,7 +54,7 @@ namespace UltimaXNA.UltimaEntities.EntityViews
         
         private BodyTypes m_bodyType
         {
-            get { return AnimationData.BodyType(Parent.BodyID); }
+            get { return Animations.BodyType(Parent.BodyID); }
         }
 
         // We use these variables to 'hold' the last frame of an animation before 
@@ -203,7 +203,7 @@ namespace UltimaXNA.UltimaEntities.EntityViews
                     unholdAnimation();
                     m_actionIndex = actionIndex;
                     m_animationFrame = 0f;
-                    m_FrameCount = UltimaData.AnimationData.GetAnimationFrameCount(
+                    m_FrameCount = UltimaData.Animations.GetAnimationFrameCount(
                         Parent.BodyID, actionIndex, (int)Parent.Facing, Parent.Hue);
                     m_FrameDelay = delay;
                     if (repeat == false)

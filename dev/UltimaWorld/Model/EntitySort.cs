@@ -9,6 +9,7 @@
 using System.Collections.Generic;
 using UltimaXNA.UltimaEntities;
 using UltimaXNA.UltimaEntities.EntityViews;
+using UltimaXNA.UltimaEntities.Effects;
 #endregion
 
 namespace UltimaXNA.UltimaWorld.Model
@@ -71,12 +72,20 @@ namespace UltimaXNA.UltimaWorld.Model
 
         public static void GetSortValues(AEntity e, out int z, out int threshold, out int type, out int tiebreaker)
         {
-            if (e is MobileDeferred)
+            if (e is AEffect)
             {
-                MobileDeferred mobile = (MobileDeferred)e;
+                AEffect effect = e as AEffect;
+                z = effect.Z;
+                threshold = 2;
+                type = 4;
+                tiebreaker = 0;
+            }
+            else if (e is DeferredEntity)
+            {
+                DeferredEntity mobile = (DeferredEntity)e;
                 z = mobile.Z;
                 threshold = 1;
-                type = 1;
+                type = 2;
                 tiebreaker = 0;
             }
             else if (e is Mobile)
