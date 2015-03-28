@@ -18,56 +18,58 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
 {
     class ChatWindow : Gump
     {
-        TextEntry InputState;
-        List<ChatLineTimed> m_textEntries;
-        List<string> m_messages;
-        int messageIndex = -1;
+        TextEntry m_Input;
+        List<ChatLineTimed> m_TextEntries;
+        List<string> m_MessageHistory;
+        int m_MessageHistoryIndex = -1;
 
         public ChatWindow()
             : base(0, 0)
         {
-            m_textEntries = new List<ChatLineTimed>();
-            m_messages = new List<string>();
+            m_TextEntries = new List<ChatLineTimed>();
+            m_MessageHistory = new List<string>();
             Width = 400;
         }
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
-            if (InputState == null)
+            if (m_Input == null)
             {
-                InputState = new TextEntry(this, 0, 1, UserInterface.Height - TextUni.GetFont(0).Height + 4, 400, TextUni.GetFont(0).Height, 0, 0, 64, string.Empty);
-                InputState.LegacyCarat = true;
-                AddControl(InputState);
+                m_Input = new TextEntry(this, 0, 1, UserInterface.Height - TextUni.GetFont(0).Height + 4, 400, TextUni.GetFont(0).Height, 0, 0, 64, string.Empty);
+                m_Input.LegacyCarat = true;
+                AddControl(m_Input);
             }
 
-            int y = InputState.Y - 48;
-            for (int i = 0; i < m_textEntries.Count; i++)
+            int y = m_Input.Y - 48;
+            for (int i = 0; i < m_TextEntries.Count; i++)
             {
-                m_textEntries[i].Update(gameTime);
-                if (m_textEntries[i].IsExpired)
+                m_TextEntries[i].Update(gameTime);
+                if (m_TextEntries[i].IsExpired)
                 {
-                    m_textEntries[i].Dispose();
-                    m_textEntries.RemoveAt(i);
+                    m_TextEntries[i].Dispose();
+                    m_TextEntries.RemoveAt(i);
                     i--;
                 }
             }
 
-            if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.Q, false, false, true) && messageIndex > -1)
+            // Ctrl-Q = Cycle backwards through the things you have said today
+            // Ctrl-W = Cycle forwards through the things you have said today
+            if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.Q, false, false, true) && m_MessageHistoryIndex > -1)
             {
-                if (messageIndex > 0)
-                    messageIndex -= 1;
-                InputState.Text = m_messages[messageIndex];
+                if (m_MessageHistoryIndex > 0)
+                    m_MessageHistoryIndex -= 1;
+                m_Input.Text = m_MessageHistory[m_MessageHistoryIndex];
 
             }
             else if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.W, false, false, true))
             {
-                if (messageIndex < m_messages.Count - 1)
+                if (m_MessageHistoryIndex < m_MessageHistory.Count - 1)
                 {
-                    messageIndex += 1;
-                    InputState.Text = m_messages[messageIndex];
+                    m_MessageHistoryIndex += 1;
+                    m_Input.Text = m_MessageHistory[m_MessageHistoryIndex];
                 }
                 else
-                    InputState.Text = "";
+                    m_Input.Text = string.Empty;
             }
 
             base.Update(gameTime);
@@ -75,26 +77,26 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
 
         public override void Draw(SpriteBatchUI spriteBatch)
         {
-            int y = InputState.Y - 20;
-            for (int i = m_textEntries.Count - 1; i >= 0; i--)
+            int y = m_Input.Y - 20;
+            for (int i = m_TextEntries.Count - 1; i >= 0; i--)
             {
-                y -= m_textEntries[i].TextHeight;
-                m_textEntries[i].Draw(spriteBatch, new Point(1, y));
+                y -= m_TextEntries[i].TextHeight;
+                m_TextEntries[i].Draw(spriteBatch, new Point(1, y));
             }
             base.Draw(spriteBatch);
         }
 
         public override void ActivateByKeyboardReturn(int textID, string text)
         {
-            InputState.Text = string.Empty;
-            m_messages.Add(text);
-            messageIndex = m_messages.Count;
+            m_Input.Text = string.Empty;
+            m_MessageHistory.Add(text);
+            m_MessageHistoryIndex = m_MessageHistory.Count;
             UltimaInteraction.SendChat(text);
         }
 
         public void AddLine(string text)
         {
-            m_textEntries.Add(new ChatLineTimed(string.Format("<{1}>{0}</{1}>", text, "big"), Width));
+            m_TextEntries.Add(new ChatLineTimed(string.Format("<{1}>{0}</{1}>", text, "big"), Width));
         }
     }
 
