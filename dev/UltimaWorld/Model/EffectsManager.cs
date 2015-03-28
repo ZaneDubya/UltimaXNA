@@ -25,9 +25,6 @@ namespace UltimaXNA.UltimaWorld
                 Core.Diagnostics.Logger.Warn("Unhandled particles in an effects packet.");
             }
 
-            if (packet.ItemID <= 0)
-                return;
-
             AEffect effect = null;
             int hue = hasHueData ? ((GraphicEffectHuedPacket)packet).Hue : 0;
             int blend = hasHueData ? (int)((GraphicEffectHuedPacket)packet).BlendMode : 0;
@@ -35,6 +32,8 @@ namespace UltimaXNA.UltimaWorld
             switch (packet.EffectType)
             {
                 case GraphicEffectType.Moving:
+                    if (packet.ItemID <= 0)
+                        return;
                     effect = new MovingEffect(m_Model.Map, packet.SourceSerial, packet.TargetSerial,
                         packet.SourceX, packet.SourceY, packet.SourceZ,
                         packet.TargetX, packet.TargetY, packet.TargetZ, 
@@ -52,12 +51,16 @@ namespace UltimaXNA.UltimaWorld
                         packet.SourceX, packet.SourceY, packet.SourceZ, hue);
                     break;
                 case GraphicEffectType.FixedXYZ:
+                    if (packet.ItemID <= 0)
+                        return;
                     effect = new AnimatedItemEffect(m_Model.Map, 
                         packet.SourceX, packet.SourceY, packet.SourceZ,
                         packet.ItemID, hue, packet.Duration);
                     effect.BlendMode = blend;
                     break;
                 case GraphicEffectType.FixedFrom:
+                    if (packet.ItemID <= 0)
+                        return;
                     effect = new AnimatedItemEffect(m_Model.Map, packet.SourceSerial, 
                         packet.SourceX, packet.SourceY, packet.SourceZ,
                         packet.ItemID, hue, packet.Duration);
@@ -90,7 +93,7 @@ namespace UltimaXNA.UltimaWorld
                 {
                     m_Effects.RemoveAt(i);
                     i--;
-                    if (effect.Children != null)
+                    if (effect.ChildrenCount > 0)
                     {
                         for (int j = 0; j < effect.Children.Count; i++)
                         {

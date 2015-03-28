@@ -214,7 +214,7 @@ namespace UltimaXNA.UltimaWorld.View
                             if (view.Draw(m_spriteBatch, drawPosition, overList, map))
                                 ObjectsRendered++;
 
-                        if (entities[i] is MobileDeferred)
+                        if (entities[i] is DeferredEntity)
                         {
                             deferredToRemove.Add(entities[i]);
                         }

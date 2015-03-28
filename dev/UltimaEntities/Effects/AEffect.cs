@@ -21,7 +21,17 @@ namespace UltimaXNA.UltimaEntities.Effects
         {
             get
             {
+                if (m_Children == null)
+                    m_Children = new List<AEffect>();
                 return m_Children;
+            }
+        }
+
+        public int ChildrenCount
+        {
+            get
+            {
+                return (m_Children == null) ? 0 : m_Children.Count;
             }
         }
 

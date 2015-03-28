@@ -131,9 +131,10 @@
     <Compile Include="UltimaEntities\EntityViews\AEntityView.cs" />
     <Compile Include="UltimaEntities\EntityViews\CorpseView.cs" />
     <Compile Include="UltimaEntities\EntityViews\AnimatedItemEffectView.cs" />
-    <Compile Include="UltimaEntities\EntityViews\MobileDeferredView.cs" />
+    <Compile Include="UltimaEntities\EntityViews\LightningEffectView.cs" />
+    <Compile Include="UltimaEntities\EntityViews\DeferredView.cs" />
     <Compile Include="UltimaEntities\EntityViews\OverheadView.cs" />
-    <Compile Include="UltimaEntities\MobileDeferred.cs" />
+    <Compile Include="UltimaEntities\DeferredEntity.cs" />
     <Compile Include="UltimaEntities\Support\MobileFlags.cs" />
     <Compile Include="UltimaData\FontsUnused\CharacterASCII.cs" />
     <Compile Include="UltimaData\FontsNew\AFont.cs" />

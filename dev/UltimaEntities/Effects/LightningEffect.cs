@@ -19,10 +19,6 @@ namespace UltimaXNA.UltimaEntities.Effects
 {
     class LightningEffect : AEffect
     {
-        protected Texture m_tCache;
-
-        private int m_Frame = 0;
-
         public LightningEffect(Map map, int hue)
             : base (map)
         {
@@ -68,14 +64,16 @@ namespace UltimaXNA.UltimaEntities.Effects
                 GetSource(out x, out y, out z);
                 Position.Set(x, y, z);
             }
-
-            Texture lightningTexture = UltimaData.GumpData.GetGumpXNA(0x4e20 + m_Frame++);
-            // draw this.m_vCache.DrawGame(gump, num10 - (gump.Width / 2), num11 - gump.Height);
         }
 
         public override string ToString()
         {
             return string.Format("LightningEffect");
+        }
+
+        protected override EntityViews.AEntityView CreateView()
+        {
+            return new EntityViews.LightningEffectView(this);
         }
     }
 }
