@@ -4,7 +4,6 @@ using UltimaXNA.Core.Network;
 using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaGUI.WorldGumps;
 using UltimaXNA.UltimaWorld.Controller;
-using UltimaXNA.UltimaWorld.View;
 using UltimaXNA.UltimaWorld.Model;
 
 namespace UltimaXNA.UltimaWorld
@@ -15,6 +14,12 @@ namespace UltimaXNA.UltimaWorld
         public EntityManager Entities
         {
             get { return m_Entities; }
+        }
+
+        private EffectsManager m_Effects;
+        public EffectsManager Effects
+        {
+            get { return m_Effects; }
         }
 
         private WorldInput m_WorldInput;
@@ -71,6 +76,7 @@ namespace UltimaXNA.UltimaWorld
         public WorldModel()
         {
             m_Entities = new EntityManager(this);
+            m_Effects = new EffectsManager(this);
             m_WorldInput = new WorldInput(this);
             m_WorldClient = new WorldClient(this);
 
@@ -119,6 +125,7 @@ namespace UltimaXNA.UltimaWorld
             {
                 m_WorldInput.Update(frameMS);
                 EntityManager.Update(frameMS);
+                m_Effects.Update(frameMS);
                 StaticManager.Update(frameMS);
             }
         }

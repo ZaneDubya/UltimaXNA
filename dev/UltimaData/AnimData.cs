@@ -1,4 +1,8 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.IO;
 
 namespace UltimaXNA.UltimaData
 {
@@ -9,9 +13,10 @@ namespace UltimaXNA.UltimaData
     {
         const int Count = 0x0800;
         static AnimDataEntry[][] m_AnimData;
-        public static AnimDataEntry[] GetAnimData(int index)
+        public static AnimDataEntry GetAnimData(int itemID)
         {
-            return m_AnimData[index & 0x07FF];
+            itemID &= 0x3fff;
+            return m_AnimData[(itemID >> 3)][itemID & 0x07];
         }
 
         public static void Initialize()
@@ -49,7 +54,7 @@ namespace UltimaXNA.UltimaData
 
         public struct AnimDataEntry
         {
-            public byte[] Frames;
+            public sbyte[] Frames;
             private byte m_Unknown;
             public byte FrameCount;
             public byte FrameInterval;
@@ -57,10 +62,18 @@ namespace UltimaXNA.UltimaData
 
             public AnimDataEntry(BinaryReader reader)
             {
-                Frames = reader.ReadBytes(0x40);
+                byte[] data = reader.ReadBytes(0x40);
+                Frames = Array.ConvertAll(data, b => unchecked((sbyte)b));
                 m_Unknown = reader.ReadByte();
                 FrameCount = reader.ReadByte();
+                if (FrameCount == 0)
+                {
+                    FrameCount = 1;
+                    Frames[0] = 0;
+                }
                 FrameInterval = reader.ReadByte();
+                if (FrameInterval == 0)
+                    FrameInterval = 1;
                 StartInterval = reader.ReadByte();
             }
         }

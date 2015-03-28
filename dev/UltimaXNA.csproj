@@ -124,8 +124,13 @@
   <ItemGroup>
     <Compile Include="Core\AUltimaModel.cs" />
     <Compile Include="UltimaData\AnimData.cs" />
+    <Compile Include="UltimaEntities\Effects\AEffect.cs" />
+    <Compile Include="UltimaEntities\Effects\AnimatedItemEffect.cs" />
+    <Compile Include="UltimaEntities\Effects\LightningEffect.cs" />
+    <Compile Include="UltimaEntities\Effects\MovingEffect.cs" />
     <Compile Include="UltimaEntities\EntityViews\AEntityView.cs" />
     <Compile Include="UltimaEntities\EntityViews\CorpseView.cs" />
+    <Compile Include="UltimaEntities\EntityViews\AnimatedItemEffectView.cs" />
     <Compile Include="UltimaEntities\EntityViews\MobileDeferredView.cs" />
     <Compile Include="UltimaEntities\EntityViews\OverheadView.cs" />
     <Compile Include="UltimaEntities\MobileDeferred.cs" />
@@ -153,6 +158,7 @@
     <Compile Include="UltimaData\FontsNew\TextUni.cs" />
     <Compile Include="Core\IniFile.cs" />
     <Compile Include="UltimaVars\SettingVars.cs" />
+    <Compile Include="UltimaWorld\Model\EffectsManager.cs" />
     <Compile Include="UltimaWorld\Model\EntitySort.cs" />
     <Compile Include="UltimaEntities\EntityViews\GroundView.cs" />
     <Compile Include="UltimaEntities\EntityViews\ItemView.cs" />
@@ -344,7 +350,6 @@
     <Compile Include="Core\Point.cs" />
     <Compile Include="UltimaEntities\Container.cs" />
     <Compile Include="UltimaEntities\Corpse.cs" />
-    <Compile Include="UltimaEntities\Effect.cs" />
     <Compile Include="UltimaEntities\AEntity.cs" />
     <Compile Include="UltimaWorld\Model\EntityManager.cs" />
     <Compile Include="Position3D.cs" />

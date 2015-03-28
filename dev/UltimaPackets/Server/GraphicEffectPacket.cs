@@ -1,13 +1,6 @@
 ﻿/***************************************************************************
  *   GraphicEffectPacket.cs
  *   
- *   begin                : May 31, 2009
- *   email                : poplicola@ultimaxna.com
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 3 of the License, or
@@ -15,9 +8,9 @@
  *
  ***************************************************************************/
 #region usings
+using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Network.Packets;
-using UltimaXNA.Core.Diagnostics;
 #endregion
 
 namespace UltimaXNA.UltimaPackets.Server
@@ -67,7 +60,7 @@ namespace UltimaXNA.UltimaPackets.Server
         public readonly GraphicEffectType EffectType;
         public readonly Serial SourceSerial;
         public readonly Serial TargetSerial;
-        public readonly int BaseItemID;
+        public readonly int ItemID;
         public readonly int SourceX;
         public readonly int SourceY;
         public readonly int SourceZ;
@@ -85,7 +78,7 @@ namespace UltimaXNA.UltimaPackets.Server
             EffectType = (GraphicEffectType)reader.ReadByte();
             SourceSerial = reader.ReadInt32();
             TargetSerial = reader.ReadInt32();
-            BaseItemID = reader.ReadUInt16();
+            ItemID = reader.ReadUInt16();
             SourceX = reader.ReadUInt16();
             SourceY = reader.ReadUInt16();
             SourceZ = reader.ReadByte();
@@ -94,7 +87,7 @@ namespace UltimaXNA.UltimaPackets.Server
             TargetZ = reader.ReadByte();
             Speed = reader.ReadByte();
             Duration = reader.ReadByte();
-            int unknown0 = reader.ReadUInt16();
+            int unknown0 = reader.ReadUInt16(); // on OSI, flamestrike is 0x0100.
             FixedDirection = (reader.ReadByte() != 0);
             DoesExplode = (reader.ReadByte() != 0);
         }

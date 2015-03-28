@@ -43,8 +43,6 @@ namespace UltimaXNA.UltimaData
             m_graphics = graphics;
         }
 
-        public static GraphicsDevice DEBUG_GFX { get { return m_graphics; } }
-
         public static int GetAnimationFrameCount(int body, int action, int direction, int hue)
         {
             AnimationFrame[] frames = GetAnimation(body, action, direction, hue);
@@ -59,9 +57,6 @@ namespace UltimaXNA.UltimaData
             FileIndex fileIndex;
             int length, extra;
             bool patched;
-
-            //if (body >= 0x2000)
-            //    return null;
 
             // The UO Server can request actions with an index greater
             // than the total number of actions. Check for this.

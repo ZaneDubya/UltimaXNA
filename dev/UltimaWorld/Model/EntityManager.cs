@@ -94,12 +94,6 @@ namespace UltimaXNA.UltimaWorld
             }
         }
 
-        public static Effect AddDynamicObject()
-        {
-            Effect dynamic = InternalCreateEntity<Effect>(Serial.NewDynamicSerial);
-            return dynamic;
-        }
-
         public static T GetObject<T>(Serial serial, bool create) where T : AEntity
         {
             T entity;
@@ -161,9 +155,6 @@ namespace UltimaXNA.UltimaWorld
                     break;
                 case "Multi":
                     e = new Multi(serial, m_Model.Map);
-                    break;
-                case "Effect":
-                    e = new Effect(serial, m_Model.Map);
                     break;
                 default:
                     throw new Exception("Unknown addObject type!");

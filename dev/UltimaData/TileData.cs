@@ -162,6 +162,11 @@ namespace UltimaXNA.UltimaData
             }
         }
 
+        public bool IsAnimation
+        {
+            get { return (Flags & TileFlag.Animation) != 0; }
+        }
+
         public bool IsContainer
         {
             get { return (Flags & TileFlag.Container) != 0; }
