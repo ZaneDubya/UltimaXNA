@@ -121,9 +121,6 @@ namespace UltimaXNA.UltimaWorld
                 EntityManager.Update(frameMS);
                 StaticManager.Update(frameMS);
 
-                // Toggle for logout
-                if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.Q, false, false, true))
-                    Disconnect();
             }
         }
 
