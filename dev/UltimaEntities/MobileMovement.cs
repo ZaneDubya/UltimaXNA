@@ -223,20 +223,19 @@ namespace UltimaXNA.UltimaEntities
 
             // attempt to move in the direction specified.
             facing = getNextFacing(current, goal);
-            Direction initialFacing = facing;
             nextPosition = MobileMovementCheck.OffsetTile(current, facing);
             moveIsOkay = MobileMovementCheck.CheckMovement((Mobile)m_entity, current, facing, out nextZ);
 
-            // if blocked and if its and cross direction, attempt moving in the direction 1/8 counterclockwise to the direction specified.
-            if (!moveIsOkay && (int)initialFacing % 2 == 1)
+            // if blocked, attempt moving in the direction 1/8 counterclockwise to the direction specified.
+            if (!moveIsOkay)
             {
                 facing = (Direction)((facing - 1) & Direction.ValueMask);
                 nextPosition = MobileMovementCheck.OffsetTile(current, facing);
                 moveIsOkay = MobileMovementCheck.CheckMovement((Mobile)m_entity, current, facing, out nextZ);
             }
 
-            // if blocked and if its and cross direction again, attempt moving in the direction 1/8 clockwise to the direction specified.
-            if (!moveIsOkay && (int)initialFacing % 2 == 1)
+            // if blocked again, attempt moving in the direction 1/8 clockwise to the direction specified.
+            if (!moveIsOkay)
             {
                 facing = (Direction)((facing + 2) & Direction.ValueMask);
                 nextPosition = MobileMovementCheck.OffsetTile(current, facing);
