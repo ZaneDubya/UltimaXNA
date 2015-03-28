@@ -245,20 +245,26 @@ namespace UltimaXNA.UltimaEntities
             nextPosition = MobileMovementCheck.OffsetTile(current, facing);
             moveIsOkay = MobileMovementCheck.CheckMovement((Mobile)m_entity, current, facing, out nextZ);
 
-            // if blocked and if its and cross direction, attempt moving in the direction 1/8 counterclockwise to the direction specified.
-            if (!moveIsOkay && (int)initialFacing % 2 == 1)
+            // The legacy client only allows alternative direction checking when moving in a cardinal (NSEW) direction.
+            // This is checked by only checked alterate directions when the initial facing modulo 2 is 1.
+            // By contrast, this client allows, when enabled, alternative direction checking in any direction.
+            if (UltimaVars.EngineVars.NewDiagonalMovement || ((int)initialFacing % 2 == 1))
             {
-                facing = (Direction)((facing - 1) & Direction.ValueMask);
-                nextPosition = MobileMovementCheck.OffsetTile(current, facing);
-                moveIsOkay = MobileMovementCheck.CheckMovement((Mobile)m_entity, current, facing, out nextZ);
-            }
+                // if blocked, attempt moving in the direction 1/8 counterclockwise to the direction specified.
+                if (!moveIsOkay)
+                {
+                    facing = (Direction)((facing - 1) & Direction.ValueMask);
+                    nextPosition = MobileMovementCheck.OffsetTile(current, facing);
+                    moveIsOkay = MobileMovementCheck.CheckMovement((Mobile)m_entity, current, facing, out nextZ);
+                }
 
-            // if blocked and if its and cross direction again, attempt moving in the direction 1/8 clockwise to the direction specified.
-            if (!moveIsOkay && (int)initialFacing % 2 == 1)
-            {
-                facing = (Direction)((facing + 2) & Direction.ValueMask);
-                nextPosition = MobileMovementCheck.OffsetTile(current, facing);
-                moveIsOkay = MobileMovementCheck.CheckMovement((Mobile)m_entity, current, facing, out nextZ);
+                // if blocked, attempt moving in the direction 1/8 clockwise to the direction specified.
+                if (!moveIsOkay)
+                {
+                    facing = (Direction)((facing + 2) & Direction.ValueMask);
+                    nextPosition = MobileMovementCheck.OffsetTile(current, facing);
+                    moveIsOkay = MobileMovementCheck.CheckMovement((Mobile)m_entity, current, facing, out nextZ);
+                }
             }
 
             // if we were able to move, then set the running flag (if necessary) and return true.
