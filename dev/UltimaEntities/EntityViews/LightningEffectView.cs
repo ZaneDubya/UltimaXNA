@@ -28,20 +28,6 @@ namespace UltimaXNA.UltimaEntities.EntityViews
 
         public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
         {
-            Point[] m_Offsets = new Point[10]
-            {
-                new Point(48, 0),
-                new Point(68, 0),
-                new Point(92, 0),
-                new Point(72, 0),
-                new Point(48, 0),
-                new Point(56, 0),
-                new Point(76, 0),
-                new Point(76, 0),
-                new Point(92, 0),
-                new Point(80, 0)
-            };
-
             if (!m_AllowDefer)
             {
                 if (CheckDefer(map, drawPosition))
@@ -69,5 +55,19 @@ namespace UltimaXNA.UltimaEntities.EntityViews
 
             return base.Draw(spriteBatch, drawPosition, mouseOverList, map);
         }
+
+        static Point[] m_Offsets = new Point[10]
+            {
+                new Point(48, 0),
+                new Point(68, 0),
+                new Point(92, 0),
+                new Point(72, 0),
+                new Point(48, 0),
+                new Point(56, 0),
+                new Point(76, 0),
+                new Point(76, 0),
+                new Point(92, 0),
+                new Point(80, 0)
+            };
     }
 }

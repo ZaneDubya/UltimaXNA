@@ -42,8 +42,8 @@ namespace UltimaXNA.UltimaWorld
                     if (packet.DoesExplode)
                     {
                         effect.Children.Add(new AnimatedItemEffect(m_Model.Map, packet.TargetSerial, 
-                            packet.TargetX, packet.TargetX, packet.TargetX,
-                            0x36cb, hue, packet.Duration));
+                            packet.TargetX, packet.TargetY, packet.TargetZ,
+                            0x36cb, hue, 9));
                     }
                     break;
                 case GraphicEffectType.Lightning:
@@ -95,7 +95,7 @@ namespace UltimaXNA.UltimaWorld
                     i--;
                     if (effect.ChildrenCount > 0)
                     {
-                        for (int j = 0; j < effect.Children.Count; i++)
+                        for (int j = 0; j < effect.Children.Count; j++)
                         {
                             m_Effects.Add(effect.Children[j]);
                         }

@@ -73,7 +73,7 @@ namespace UltimaXNA.UltimaEntities.Effects
             {
                 if (source is Mobile)
                 {
-                    base.SetSource(source);
+                    base.SetSource(source.X, source.Y, source.Z);
                     Mobile mobile = source as Mobile;
                     if ((!mobile.IsClientEntity && !mobile.IsMoving) && ((xSource | ySource | zSource) != 0))
                     {
@@ -82,7 +82,7 @@ namespace UltimaXNA.UltimaEntities.Effects
                 }
                 else if (source is Item)
                 {
-                    base.SetSource(source);
+                    base.SetSource(source.X, source.Y, source.Z);
                     Item item = source as Item;
                     if ((xSource | ySource | zSource) != 0)
                     {
@@ -135,14 +135,14 @@ namespace UltimaXNA.UltimaEntities.Effects
             GetSource(out sx, out sy, out sz);
             GetTarget(out tx, out ty, out tz);
 
-            // Texture2D texture = ArtData.GetStaticTexture(m_ItemID + ((FramesActive / m_AnimData.FrameInterval) % m_AnimData.FrameCount));
-
             // m_RenderMode:
             // 2: Alpha = 1.0, Additive.
             // 3: Alpha = 1.5, Additive.
             // 4: Alpha = 0.5, AlphaBlend.
 
             // draw rotated.
+
+            Dispose();
         }
 
         public override string ToString()
