@@ -124,5 +124,7 @@ namespace UltimaXNA.UltimaVars
                 UpdateFPS(m_theGameTime);
             }
         }
+
+        public static bool NewDiagonalMovement = false;
     }
 }
