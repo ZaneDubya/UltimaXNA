@@ -112,7 +112,7 @@ namespace UltimaXNA.UltimaEntities
             int px = Position.X;
             int py = Position.Y;
 
-            Rectangle bounds = new Rectangle(block.X, block.Y, 8, 8);
+            Rectangle bounds = new Rectangle(block.X * 8, block.Y * 8, 8, 8);
 
             foreach (MultiComponentList.MultiItem item in m_Components.Items)
             {
