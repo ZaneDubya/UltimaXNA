@@ -127,6 +127,9 @@ namespace UltimaXNA.UltimaWorld.Controller
             else
             {
                 m_TimeSinceMovementButtonPressed = 0d;
+                // Tell the player to stop moving.
+                Mobile m = (Mobile)EntityManager.GetPlayerObject();
+                m.PlayerMobile_Move(Direction.Nothing);
             }
         }
 

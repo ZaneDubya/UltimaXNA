@@ -43,7 +43,7 @@ namespace UltimaXNA
             System.Drawing.Graphics graphics = System.Drawing.Graphics.FromHwnd(this.Window.Handle);
             InterXLib.Settings.ScreenDPI = new Vector2(graphics.DpiX / 96f, graphics.DpiY / 96f);
 
-            s_Client.LogPackets = true;
+            s_Client.LogPackets = false;
         }
 
         protected override void OnInitialize()

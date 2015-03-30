@@ -12,8 +12,6 @@
 using Microsoft.Xna.Framework;
 using System;
 using UltimaXNA.UltimaPackets.Client;
-using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaWorld.View;
 #endregion
 
 namespace UltimaXNA.UltimaEntities
@@ -23,11 +21,12 @@ namespace UltimaXNA.UltimaEntities
         public static Action<MoveRequestPacket> SendMoveRequestPacket;
 
         #region MovementSpeed
-        private static TimeSpan m_TimeWalkFoot = TimeSpan.FromSeconds(0.4);
-        private static TimeSpan m_TimeRunFoot = TimeSpan.FromSeconds(0.2);
-        private static TimeSpan m_TimeWalkMount = TimeSpan.FromSeconds(0.3);
-        private static TimeSpan m_TimeRunMount = TimeSpan.FromSeconds(0.1);
-        private TimeSpan TimeToCompleteMove(Direction facing)
+        double m_playerMobile_NextMoveInMS;
+        private static double m_TimeWalkFoot = (8d / 20d) * 1000d;
+        private static double m_TimeRunFoot = (4d / 20d) * 1000d;
+        private static double m_TimeWalkMount = (4d / 20d) * 1000d;
+        private static double m_TimeRunMount = (2d / 20d) * 1000d;
+        private double TimeToCompleteMove(Direction facing)
         {
             if (m_entity is Mobile && ((Mobile)m_entity).IsMounted)
                 return (facing & Direction.Running) == Direction.Running ? m_TimeRunMount : m_TimeWalkMount;
@@ -47,7 +46,6 @@ namespace UltimaXNA.UltimaEntities
         private Position3D m_goalPosition;
         
         Direction m_playerMobile_NextMove = Direction.Nothing;
-        DateTime m_playerMobile_NextMoveTime;
         Direction m_Facing = Direction.Up;
         public Direction Facing
         {
@@ -68,7 +66,7 @@ namespace UltimaXNA.UltimaEntities
             }
         }
 
-        float MoveSequence = 0f;
+        double MoveSequence = 0d;
 
         internal Position3D Position { get { return CurrentPosition; } }
 
@@ -124,24 +122,94 @@ namespace UltimaXNA.UltimaEntities
 
         public void PlayerMobile_Move(Direction facing)
         {
+            m_playerMobile_NextMove = facing;
+        }
+
+        public void Mobile_ServerAddMoveEvent(int x, int y, int z, int facing)
+        {
+            m_moveEvents.AddMoveEvent(x, y, z, facing, false);
+        }
+
+        public void Move_Instant(int x, int y, int z, int facing)
+        {
+            m_moveEvents.ResetMoveSequence();
+            Facing = (Direction)facing;
+            CurrentPosition.Set(x, y, z);
+            m_goalPosition = null;
+        }
+
+        public void Update(double frameMS)
+        {
             if (!IsMoving)
             {
-                m_playerMobile_NextMove = facing;
+                if (m_entity.IsClientEntity && m_playerMobile_NextMoveInMS <= 0d)
+                {
+                    if (PlayerMobile_CheckForMoveEvent())
+                    {
+
+                    }
+                }
+
+                MoveEvent moveEvent;
+                int sequence;
+
+                while ((moveEvent = m_moveEvents.GetMoveEvent(out sequence)) != null)
+                {
+                    if (m_entity.IsClientEntity && moveEvent.CreatedByPlayerInput)
+                    {
+                        SendMoveRequestPacket(new MoveRequestPacket((byte)moveEvent.Facing, (byte)sequence, moveEvent.Fastwalk));
+                    }
+                    Facing = (Direction)moveEvent.Facing;
+                    Position3D p = new Position3D(moveEvent.X, moveEvent.Y, moveEvent.Z);
+                    if (p != CurrentPosition)
+                    {
+                        m_goalPosition = p;
+                        break;
+                    }
+                }
+            }
+
+            // Are we moving? (if our current location != our destination, then we are moving)
+            if (IsMoving)
+            {
+                MoveSequence += (frameMS / TimeToCompleteMove(Facing));
+                if (m_entity.IsClientEntity)
+                    m_playerMobile_NextMoveInMS -= frameMS;
+
+                if (MoveSequence < 1f)
+                {
+                    CurrentPosition.Offset = new Vector3(
+                        m_goalPosition.X - CurrentPosition.X,
+                        m_goalPosition.Y - CurrentPosition.Y,
+                        m_goalPosition.Z - CurrentPosition.Z) * (float)MoveSequence;
+                }
+                else
+                {
+                    CurrentPosition.Set(m_goalPosition.X, m_goalPosition.Y, m_goalPosition.Z);
+                    CurrentPosition.Offset = Vector3.Zero;
+                    MoveSequence = 0f;
+                    if (m_entity.IsClientEntity)
+                    {
+                        m_playerMobile_NextMoveInMS = 0;// TimeToCompleteMove((Direction)Facing);
+                    }
+                }
+            }
+            else
+            {
+                MoveSequence = 0f;
+                if (m_entity.IsClientEntity)
+                {
+                    m_playerMobile_NextMoveInMS = 0d;
+                }
             }
         }
 
-        public void PlayerMobile_CheckForMoveEvent()
+        private bool PlayerMobile_CheckForMoveEvent()
         {
-            if (!m_entity.IsClientEntity)
-                return;
-
-            if ((DateTime.Now > m_playerMobile_NextMoveTime) && (m_playerMobile_NextMove != Direction.Nothing))
+            if (m_playerMobile_NextMove != Direction.Nothing)
             {
                 Direction nextMove = m_playerMobile_NextMove;
                 m_playerMobile_NextMove = Direction.Nothing;
-
-                // m_nextMove = the time we will next accept a move request from GameState
-                m_playerMobile_NextMoveTime = DateTime.Now + TimeToCompleteMove(nextMove);
 
                 // get the next tile and the facing necessary to reach it.
                 Direction facing;
@@ -165,74 +233,17 @@ namespace UltimaXNA.UltimaEntities
                         (CurrentPosition.Y != nextTile.Y) ||
                         (CurrentPosition.Z != nextZ))
                     {
-                        m_moveEvents.AddMoveEvent(
-                            nextTile.X,
-                            nextTile.Y,
-                            nextZ,
-                            (int)(facing),
-                            true);
+                        m_moveEvents.AddMoveEvent(nextTile.X, nextTile.Y, nextZ, (int)(facing), true);
+                        return true;
                     }
                 }
                 else
                 {
                     // blocked
+                    return false;
                 }
             }
-        }
-
-        public void Mobile_ServerAddMoveEvent(int x, int y, int z, int facing)
-        {
-            m_moveEvents.AddMoveEvent(x, y, z, facing, false);
-        }
-
-        public void Move_Instant(int x, int y, int z, int facing)
-        {
-            m_moveEvents.ResetMoveSequence();
-            Facing = (Direction)facing;
-            CurrentPosition.Set(x, y, z);
-            m_goalPosition = null;
-        }
-
-        public void Update(double frameMS)
-        {
-            // Are we moving? (if our current location != our destination, then we are moving)
-            if (IsMoving)
-            {
-                MoveSequence += ((float)(frameMS) / TimeToCompleteMove(Facing).Milliseconds);
-
-                if (MoveSequence < 1f)
-                {
-                    CurrentPosition.Offset = new Vector3(
-                        m_goalPosition.X - CurrentPosition.X,
-                        m_goalPosition.Y - CurrentPosition.Y,
-                        m_goalPosition.Z - CurrentPosition.Z) * MoveSequence;
-                }
-                else
-                {
-                    CurrentPosition.Set(m_goalPosition.X, m_goalPosition.Y, m_goalPosition.Z);
-                    CurrentPosition.Offset = Vector3.Zero;
-                    MoveSequence = 0f;
-                }
-            }
-            else
-            {
-                MoveEvent moveEvent;
-                int sequence;
-                while ((moveEvent = m_moveEvents.GetMoveEvent(out sequence)) != null)
-                {
-                    if (m_entity.IsClientEntity && moveEvent.CreatedByPlayerInput)
-                        SendMoveRequestPacket(new MoveRequestPacket((byte)moveEvent.Facing, (byte)sequence, moveEvent.Fastwalk));
-                    Facing = (Direction)moveEvent.Facing;
-                    Position3D p = new Position3D(
-                        moveEvent.X, moveEvent.Y, moveEvent.Z);
-                    if (p != CurrentPosition)
-                    {
-                        m_goalPosition = p;
-                        return;
-                    }
-                }
-
-            }
+            return false;
         }
 
         private bool PlayerMobile_GetNextTile(Position3D current, Point goal, out Direction facing, out Point nextPosition, out int nextZ)
