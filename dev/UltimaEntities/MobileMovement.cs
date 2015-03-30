@@ -12,8 +12,6 @@
 using Microsoft.Xna.Framework;
 using System;
 using UltimaXNA.UltimaPackets.Client;
-using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaWorld.View;
 #endregion
 
 namespace UltimaXNA.UltimaEntities
@@ -124,61 +122,7 @@ namespace UltimaXNA.UltimaEntities
 
         public void PlayerMobile_Move(Direction facing)
         {
-            if (!IsMoving)
-            {
-                m_playerMobile_NextMove = facing;
-            }
-        }
-
-        public void PlayerMobile_CheckForMoveEvent(double frameMS)
-        {
-            if (!m_entity.IsClientEntity)
-                return;
-
-            m_playerMobile_NextMoveInMS -= frameMS;
-            if (m_playerMobile_NextMove != Direction.Nothing && (m_playerMobile_NextMoveInMS <= 0d))
-            {
-                Direction nextMove = m_playerMobile_NextMove;
-                m_playerMobile_NextMove = Direction.Nothing;
-
-                // m_playerMobile_NextMoveInMS is the time we will next accept a move request from GameState
-                m_playerMobile_NextMoveInMS += TimeToCompleteMove(nextMove);
-
-                // get the next tile and the facing necessary to reach it.
-                Direction facing;
-                Point targetTile = MobileMovementCheck.OffsetTile(CurrentPosition, nextMove);
-
-                int nextZ;
-                Point nextTile;
-                if (PlayerMobile_GetNextTile(CurrentPosition, targetTile, out facing, out nextTile, out nextZ))
-                {
-                    // Check facing and send change facing message to server if necessary.
-                    PlayerMobile_SendChangeFacingMsg(facing);
-
-                    // copy the running flag to our local facing if we are running,
-                    // zero it out if we are not.
-                    if ((nextMove & Direction.Running) != 0)
-                        facing |= Direction.Running;
-                    else
-                        facing &= Direction.FacingMask;
-
-                    if ((CurrentPosition.X != nextTile.X) ||
-                        (CurrentPosition.Y != nextTile.Y) ||
-                        (CurrentPosition.Z != nextZ))
-                    {
-                        m_moveEvents.AddMoveEvent(
-                            nextTile.X,
-                            nextTile.Y,
-                            nextZ,
-                            (int)(facing),
-                            true);
-                    }
-                }
-                else
-                {
-                    // blocked
-                }
-            }
+            m_playerMobile_NextMove = facing;
         }
 
         public void Mobile_ServerAddMoveEvent(int x, int y, int z, int facing)
@@ -218,6 +162,9 @@ namespace UltimaXNA.UltimaEntities
 
             if (!IsMoving)
             {
+                if (m_entity.IsClientEntity)
+                    PlayerMobile_CheckForMoveEvent();
+
                 MoveEvent moveEvent;
                 int sequence;
                 while ((moveEvent = m_moveEvents.GetMoveEvent(out sequence)) != null)
@@ -233,7 +180,55 @@ namespace UltimaXNA.UltimaEntities
                         return;
                     }
                 }
+            }
 
+            if (!IsMoving)
+            {
+                MoveSequence = 0f;
+            }
+        }
+
+        private void PlayerMobile_CheckForMoveEvent()
+        {
+            if (m_playerMobile_NextMove != Direction.Nothing)
+            {
+                Direction nextMove = m_playerMobile_NextMove;
+                m_playerMobile_NextMove = Direction.Nothing;
+
+                // get the next tile and the facing necessary to reach it.
+                Direction facing;
+                Point targetTile = MobileMovementCheck.OffsetTile(CurrentPosition, nextMove);
+
+                int nextZ;
+                Point nextTile;
+                if (PlayerMobile_GetNextTile(CurrentPosition, targetTile, out facing, out nextTile, out nextZ))
+                {
+                    // Check facing and send change facing message to server if necessary.
+                    PlayerMobile_SendChangeFacingMsg(facing);
+
+                    // copy the running flag to our local facing if we are running,
+                    // zero it out if we are not.
+                    if ((nextMove & Direction.Running) != 0)
+                        facing |= Direction.Running;
+                    else
+                        facing &= Direction.FacingMask;
+
+                    if ((CurrentPosition.X != nextTile.X) ||
+                        (CurrentPosition.Y != nextTile.Y) ||
+                        (CurrentPosition.Z != nextZ))
+                    {
+                        m_moveEvents.AddMoveEvent(
+                            nextTile.X,
+                            nextTile.Y,
+                            nextZ,
+                            (int)(facing),
+                            true);
+                    }
+                }
+                else
+                {
+                    // blocked
+                }
             }
         }
 
