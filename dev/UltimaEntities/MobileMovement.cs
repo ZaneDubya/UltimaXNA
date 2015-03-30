@@ -212,10 +212,11 @@ namespace UltimaXNA.UltimaEntities
                 {
                     CurrentPosition.Set(m_goalPosition.X, m_goalPosition.Y, m_goalPosition.Z);
                     CurrentPosition.Offset = Vector3.Zero;
-                    MoveSequence = 0f;
+                    MoveSequence -= 1f;
                 }
             }
-            else
+
+            if (!IsMoving)
             {
                 MoveEvent moveEvent;
                 int sequence;
