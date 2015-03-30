@@ -31,7 +31,7 @@ namespace UltimaXNA.UltimaEntities
 
         public override void Update(double frameMS)
         {
-            m_movement.PlayerMobile_CheckForMoveEvent();
+            m_movement.PlayerMobile_CheckForMoveEvent(frameMS);
 
             base.Update(frameMS);
         }

@@ -23,11 +23,12 @@ namespace UltimaXNA.UltimaEntities
         public static Action<MoveRequestPacket> SendMoveRequestPacket;
 
         #region MovementSpeed
-        private static TimeSpan m_TimeWalkFoot = TimeSpan.FromSeconds(0.4);
-        private static TimeSpan m_TimeRunFoot = TimeSpan.FromSeconds(0.2);
-        private static TimeSpan m_TimeWalkMount = TimeSpan.FromSeconds(0.3);
-        private static TimeSpan m_TimeRunMount = TimeSpan.FromSeconds(0.1);
-        private TimeSpan TimeToCompleteMove(Direction facing)
+        double m_playerMobile_NextMoveInMS;
+        private static double m_TimeWalkFoot = 400d;
+        private static double m_TimeRunFoot = 200d;
+        private static double m_TimeWalkMount = 300d;
+        private static double m_TimeRunMount = 100d;
+        private double TimeToCompleteMove(Direction facing)
         {
             if (m_entity is Mobile && ((Mobile)m_entity).IsMounted)
                 return (facing & Direction.Running) == Direction.Running ? m_TimeRunMount : m_TimeWalkMount;
@@ -47,7 +48,6 @@ namespace UltimaXNA.UltimaEntities
         private Position3D m_goalPosition;
         
         Direction m_playerMobile_NextMove = Direction.Nothing;
-        DateTime m_playerMobile_NextMoveTime;
         Direction m_Facing = Direction.Up;
         public Direction Facing
         {
@@ -130,18 +130,19 @@ namespace UltimaXNA.UltimaEntities
             }
         }
 
-        public void PlayerMobile_CheckForMoveEvent()
+        public void PlayerMobile_CheckForMoveEvent(double frameMS)
         {
             if (!m_entity.IsClientEntity)
                 return;
 
-            if ((DateTime.Now > m_playerMobile_NextMoveTime) && (m_playerMobile_NextMove != Direction.Nothing))
+            m_playerMobile_NextMoveInMS -= frameMS;
+            if (m_playerMobile_NextMove != Direction.Nothing && (m_playerMobile_NextMoveInMS <= 0d))
             {
                 Direction nextMove = m_playerMobile_NextMove;
                 m_playerMobile_NextMove = Direction.Nothing;
 
-                // m_nextMove = the time we will next accept a move request from GameState
-                m_playerMobile_NextMoveTime = DateTime.Now + TimeToCompleteMove(nextMove);
+                // m_playerMobile_NextMoveInMS is the time we will next accept a move request from GameState
+                m_playerMobile_NextMoveInMS += TimeToCompleteMove(nextMove);
 
                 // get the next tile and the facing necessary to reach it.
                 Direction facing;
@@ -198,7 +199,7 @@ namespace UltimaXNA.UltimaEntities
             // Are we moving? (if our current location != our destination, then we are moving)
             if (IsMoving)
             {
-                MoveSequence += ((float)(frameMS) / TimeToCompleteMove(Facing).Milliseconds);
+                MoveSequence += (float)((frameMS) / TimeToCompleteMove(Facing));
 
                 if (MoveSequence < 1f)
                 {
