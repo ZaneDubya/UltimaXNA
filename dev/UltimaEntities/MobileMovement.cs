@@ -146,7 +146,7 @@ namespace UltimaXNA.UltimaEntities
                 {
                     if (PlayerMobile_CheckForMoveEvent())
                     {
-
+                        
                     }
                 }
 
@@ -158,6 +158,7 @@ namespace UltimaXNA.UltimaEntities
                     if (m_entity.IsClientEntity && moveEvent.CreatedByPlayerInput)
                     {
                         SendMoveRequestPacket(new MoveRequestPacket((byte)moveEvent.Facing, (byte)sequence, moveEvent.Fastwalk));
+                        Core.Diagnostics.Logger.Debug(ConsoleColor.Blue, "XNA: sent new move event.");
                     }
                     Facing = (Direction)moveEvent.Facing;
                     Position3D p = new Position3D(moveEvent.X, moveEvent.Y, moveEvent.Z);
@@ -182,6 +183,10 @@ namespace UltimaXNA.UltimaEntities
                         m_goalPosition.X - CurrentPosition.X,
                         m_goalPosition.Y - CurrentPosition.Y,
                         m_goalPosition.Z - CurrentPosition.Z) * (float)MoveSequence;
+                    if (m_entity.IsClientEntity)
+                        Core.Diagnostics.Logger.Debug(ConsoleColor.Cyan, string.Format("XNA: Moving: {0}", MoveSequence));
+                    else
+                        Core.Diagnostics.Logger.Debug(ConsoleColor.DarkCyan, string.Format("OTH: Moving: {0}", MoveSequence));
                 }
                 else
                 {
@@ -192,6 +197,10 @@ namespace UltimaXNA.UltimaEntities
                     {
                         m_playerMobile_NextMoveInMS = 0;// TimeToCompleteMove((Direction)Facing);
                     }
+                    if (m_entity.IsClientEntity)
+                        Core.Diagnostics.Logger.Debug(ConsoleColor.Green, string.Format("XNA: Move complete: {0}", MoveSequence));
+                    else
+                        Core.Diagnostics.Logger.Debug(ConsoleColor.DarkGreen, string.Format("OTH: Move complete: {0}", MoveSequence));
                 }
             }
             else

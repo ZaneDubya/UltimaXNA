@@ -30,6 +30,18 @@ namespace UltimaXNA.Core.Diagnostics
         }
 
         /// <summary>
+        /// Logs debug information to the objects Logger.
+        /// </summary>
+        /// <param name="message">message string</param>
+        public static void Debug(ConsoleColor color, string message)
+        {
+            ConsoleColor color2 = Console.ForegroundColor;
+            Console.ForegroundColor = color;
+            Console.WriteLine(message);
+            Console.ForegroundColor = color2;
+        }
+
+        /// <summary>
         /// Logs debug information to the objects Logger.  This will also raise the StatusUpdate event
         /// </summary>
         /// <param name="message">message string</param>
