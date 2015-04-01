@@ -135,6 +135,10 @@ namespace UltimaXNA.UltimaEntities
             m_moveEvents.ResetMoveSequence();
             Facing = (Direction)facing;
             CurrentPosition.Set(x, y, z);
+            if (m_entity.IsClientEntity)
+                Core.Diagnostics.Logger.Debug(ConsoleColor.Yellow, string.Format("XNA: move instant. {0}", CurrentPosition));
+            else
+                Core.Diagnostics.Logger.Debug(ConsoleColor.DarkYellow, string.Format("OTH: move instant. {0}", CurrentPosition));
             m_goalPosition = null;
         }
 
@@ -146,7 +150,7 @@ namespace UltimaXNA.UltimaEntities
                 {
                     if (PlayerMobile_CheckForMoveEvent())
                     {
-                        
+                        Core.Diagnostics.Logger.Debug(ConsoleColor.Blue, "XNA: new move event queued.");
                     }
                 }
 
@@ -158,7 +162,15 @@ namespace UltimaXNA.UltimaEntities
                     if (m_entity.IsClientEntity && moveEvent.CreatedByPlayerInput)
                     {
                         SendMoveRequestPacket(new MoveRequestPacket((byte)moveEvent.Facing, (byte)sequence, moveEvent.Fastwalk));
-                        Core.Diagnostics.Logger.Debug(ConsoleColor.Blue, "XNA: sent new move event.");
+                        Core.Diagnostics.Logger.Debug(ConsoleColor.Blue, "XNA: sent move event.");
+                    }
+                    else if (m_entity.IsClientEntity && !moveEvent.CreatedByPlayerInput)
+                    {
+                        Core.Diagnostics.Logger.Debug(ConsoleColor.Green, "XNA: recieved move event.");
+                    }
+                    else
+                    {
+                        Core.Diagnostics.Logger.Debug(ConsoleColor.DarkGreen, "OTH: recieved move event.");
                     }
                     Facing = (Direction)moveEvent.Facing;
                     Position3D p = new Position3D(moveEvent.X, moveEvent.Y, moveEvent.Z);
@@ -184,23 +196,21 @@ namespace UltimaXNA.UltimaEntities
                         m_goalPosition.Y - CurrentPosition.Y,
                         m_goalPosition.Z - CurrentPosition.Z) * (float)MoveSequence;
                     if (m_entity.IsClientEntity)
-                        Core.Diagnostics.Logger.Debug(ConsoleColor.Cyan, string.Format("XNA: Moving: {0}", MoveSequence));
+                        Core.Diagnostics.Logger.Debug(ConsoleColor.Cyan, string.Format("XNA: Moving: {0:0.000} {1:0.000}", MoveSequence, m_playerMobile_NextMoveInMS));
                     else
-                        Core.Diagnostics.Logger.Debug(ConsoleColor.DarkCyan, string.Format("OTH: Moving: {0}", MoveSequence));
+                        Core.Diagnostics.Logger.Debug(ConsoleColor.DarkCyan, string.Format("OTH: Moving: {0:0.000}", MoveSequence));
                 }
                 else
                 {
                     CurrentPosition.Set(m_goalPosition.X, m_goalPosition.Y, m_goalPosition.Z);
                     CurrentPosition.Offset = Vector3.Zero;
+                    if (m_entity.IsClientEntity)
+                        Core.Diagnostics.Logger.Debug(ConsoleColor.Green, string.Format("XNA: Move complete: {2} {0:0.000} {1:0.000}", MoveSequence, m_playerMobile_NextMoveInMS, CurrentPosition));
+                    else
+                        Core.Diagnostics.Logger.Debug(ConsoleColor.DarkGreen, string.Format("OTH: Move complete: {1:0.000} {0:0.000}", MoveSequence));
                     MoveSequence = 0f;
                     if (m_entity.IsClientEntity)
-                    {
                         m_playerMobile_NextMoveInMS = 0;// TimeToCompleteMove((Direction)Facing);
-                    }
-                    if (m_entity.IsClientEntity)
-                        Core.Diagnostics.Logger.Debug(ConsoleColor.Green, string.Format("XNA: Move complete: {0}", MoveSequence));
-                    else
-                        Core.Diagnostics.Logger.Debug(ConsoleColor.DarkGreen, string.Format("OTH: Move complete: {0}", MoveSequence));
                 }
             }
             else
