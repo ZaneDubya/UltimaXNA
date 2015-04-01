@@ -102,7 +102,8 @@ namespace UltimaXNA.UltimaGUI.Controls
             EquipSlots[] slotsToDraw = new EquipSlots[6] { EquipSlots.Body, EquipSlots.Footwear, EquipSlots.Legging, EquipSlots.Shirt, EquipSlots.Hair, EquipSlots.FacialHair };
             for (int i = 0; i < slotsToDraw.Length; i++)
             {
-                int bodyID = 0, hue = hueSlot(slotsToDraw[i]);
+                int bodyID = 0;
+                int hue = hueSlot(slotsToDraw[i]);
                 bool hueGreyPixelsOnly = true;
 
                 switch (slotsToDraw[i])
