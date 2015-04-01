@@ -207,7 +207,7 @@ namespace UltimaXNA.UltimaEntities
                     if (m_entity.IsClientEntity)
                         Core.Diagnostics.Logger.Debug(ConsoleColor.Green, string.Format("XNA: Move complete: {2} {0:0.000} {1:0.000}", MoveSequence, m_playerMobile_NextMoveInMS, CurrentPosition));
                     else
-                        Core.Diagnostics.Logger.Debug(ConsoleColor.DarkGreen, string.Format("OTH: Move complete: {1:0.000} {0:0.000}", MoveSequence));
+                        Core.Diagnostics.Logger.Debug(ConsoleColor.DarkGreen, string.Format("OTH: Move complete: {1:0.000} {0:0.000}", MoveSequence, CurrentPosition));
                     MoveSequence = 0f;
                     if (m_entity.IsClientEntity)
                         m_playerMobile_NextMoveInMS = 0;// TimeToCompleteMove((Direction)Facing);
