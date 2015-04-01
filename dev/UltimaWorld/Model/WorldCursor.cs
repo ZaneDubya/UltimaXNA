@@ -345,7 +345,7 @@ namespace UltimaXNA.UltimaWorld.Model
             // Send the targetting event back to the server
             if (serial.IsValid)
             {
-                m_Model.Client.Send(new TargetObjectPacket(serial));
+                m_Model.Client.Send(new TargetObjectPacket(selectedEntity, m_TargetID));
             }
             else
             {
