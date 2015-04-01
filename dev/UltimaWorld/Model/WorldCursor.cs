@@ -194,7 +194,7 @@ namespace UltimaXNA.UltimaWorld.Model
         {
             // Hue the cursor if not in warmode and in trammel.
             if (!UltimaVars.EngineVars.WarMode && (m_Model.MapIndex == 1))
-                CursorHue = 2412;
+                CursorHue = 2414;
             else
                 CursorHue = 0;
 

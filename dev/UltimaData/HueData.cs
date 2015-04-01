@@ -50,6 +50,7 @@ namespace UltimaXNA.UltimaData
         {
             BinaryReader reader = new BinaryReader( FileManager.GetFile( "hues.mul" ) );
             int currentHue = 0;
+            int currentIndex = 0;
             uint[] data = new uint[m_HueTextureWidth * m_HueTextureHeight];
 
             Metrics.ReportDataRead((int)reader.BaseStream.Length);
@@ -63,7 +64,7 @@ namespace UltimaXNA.UltimaData
                     for (int i = 0; i < 32; i++)
                     {
                         uint color = reader.ReadUInt16();
-                        data[currentHue * 32 + i] = 0xFF000000 + (
+                        data[currentIndex++] = 0xFF000000 + (
                             ((((color >> 10) & 0x1F) * multiplier)) |
                             ((((color >> 5) & 0x1F) * multiplier) << 8) |
                             (((color & 0x1F) * multiplier) << 16)
@@ -84,7 +85,7 @@ namespace UltimaXNA.UltimaData
             Color[] pixels = new Color[width * height];
             for (int i = 0; i < pixels.Length; i++)
             {
-                System.Drawing.Color c = HueData.GetHue(hues[i]).GetColor(31);
+                System.Drawing.Color c = HueData.GetHue(hues[i] - 1).GetColor(31);
                 pixels[i] = new Color(c.R, c.G, c.B, c.A);
             }
             Texture2D t = new Texture2D(graphicsDevice, width, height);
@@ -172,7 +173,7 @@ namespace UltimaXNA.UltimaData
                 int[] hues = new int[max];
                 for (int i = 0; i < max; i++)
                 {
-                    hues[i] = (i < 37) ? i + 1001 : i + 1002;
+                    hues[i] = (i < 37) ? i + 1002 : i + 1003;
                 }
                 return hues;
             }
@@ -186,7 +187,7 @@ namespace UltimaXNA.UltimaData
                 int[] hues = new int[max];
                 for (int i = 0; i < max; i++)
                 {
-                    hues[i] = i + 1101;
+                    hues[i] = i + 1102;
                 }
                 return hues;
             }

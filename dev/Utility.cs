@@ -641,7 +641,6 @@ namespace UltimaXNA
             {
                 hueType = 1;
             }
-            hue -= 1;
             return new Vector2(hue & 0x3FFF, hueType);
         }
 
