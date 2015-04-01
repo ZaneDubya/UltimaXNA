@@ -29,6 +29,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
             m_TextEntries = new List<ChatLineTimed>();
             m_MessageHistory = new List<string>();
             Width = 400;
+            Enabled = true;
         }
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
