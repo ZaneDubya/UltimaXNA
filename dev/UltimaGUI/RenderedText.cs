@@ -18,6 +18,9 @@ namespace UltimaXNA.UltimaGUI
         {
             get
             {
+                if (Text == null)
+                    return 0;
+
                 if (m_Texture == null || m_MustRender)
                 {
                     checkRender(UltimaEngine.UserInterface.SpriteBatch.GraphicsDevice);
@@ -31,6 +34,9 @@ namespace UltimaXNA.UltimaGUI
         {
             get
             {
+                if (Text == null)
+                    return 0;
+
                 if (m_Texture == null || m_MustRender)
                 {
                     checkRender(UltimaEngine.UserInterface.SpriteBatch.GraphicsDevice);
@@ -149,6 +155,9 @@ namespace UltimaXNA.UltimaGUI
 
         public void Draw(SpriteBatchUI sb, Rectangle destRectangle, int xScroll, int yScroll)
         {
+            if (Text == null)
+                return;
+
             checkRender(sb.GraphicsDevice);
             
             Rectangle sourceRectangle;
@@ -257,12 +266,16 @@ namespace UltimaXNA.UltimaGUI
                     m_Texture = null;
                 }
 
-                int width, height, ascender;
+                if (Text != null)
+                {
 
-                resizeAndParse(Text, MaxWidth, AsHTML, out width, out height, out ascender);
-                m_Texture = renderToTexture(graphics, m_HtmlParser, width, height, ascender);
+                    int width, height, ascender;
 
-                m_MustRender = false;
+                    resizeAndParse(Text, MaxWidth, AsHTML, out width, out height, out ascender);
+                    m_Texture = renderToTexture(graphics, m_HtmlParser, width, height, ascender);
+
+                    m_MustRender = false;
+                }
             }
         }
 

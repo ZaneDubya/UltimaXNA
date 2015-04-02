@@ -276,10 +276,10 @@ namespace UltimaXNA.Core
             // If this control is different from the previously focused control,
             // send that previous control a MouseOut event.
             Control focusedControl = InternalGetMouseOverControl();
-            if (focusedControl != null)
-                focusedControl.MouseOver(UltimaEngine.Input.MousePosition);
             if ((MouseOverControl != null) && (focusedControl != MouseOverControl))
                 MouseOverControl.MouseOut(UltimaEngine.Input.MousePosition);
+            if (focusedControl != null)
+                focusedControl.MouseOver(UltimaEngine.Input.MousePosition);
 
             // Set the new MouseOverControl.
             m_MouseOverControl = focusedControl;

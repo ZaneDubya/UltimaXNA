@@ -631,15 +631,15 @@ namespace UltimaXNA
             if ((hue & 0x4000) != 0)
             {
                 // transparant
-                hueType = 4;
+                hueType |= 4;
             }
             else if ((hue & 0x8000) != 0 || partial) // partial hue
             {
-                hueType = 2;
+                hueType |= 2;
             }
             else
             {
-                hueType = 1;
+                hueType |= 1;
             }
             return new Vector2(hue & 0x3FFF, hueType);
         }

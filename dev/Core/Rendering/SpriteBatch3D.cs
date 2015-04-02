@@ -48,7 +48,7 @@ namespace UltimaXNA.Core.Rendering
 
             m_boundingBox = new BoundingBox(new Vector3(0, 0, Int32.MinValue), new Vector3(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, Int32.MaxValue));
             m_drawQueue = new Dictionary<Texture2D, List<VertexPositionNormalTextureHue>>(256);
-            m_indexBuffer = CreateIndexBuffer(0x1000);
+            m_indexBuffer = CreateIndexBuffer(0x2000);
             m_vertexListQueue = new Queue<List<VertexPositionNormalTextureHue>>(256);
 
             m_effect = m_Game.Content.Load<Effect>("Shaders/IsometricWorld");
