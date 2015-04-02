@@ -193,8 +193,7 @@ namespace UltimaXNA.UltimaWorld.Model
                         if (m_Entities[i].Z == m_Entities[j].Z)
                         {
                             if (m_Entities[j] is StaticItem && (
-                                ((StaticItem)m_Entities[i]).ItemID == ((StaticItem)m_Entities[j]).ItemID ||
-                                matchNames(((StaticItem)m_Entities[i]).ItemData, ((StaticItem)m_Entities[j]).ItemData)))
+                                ((StaticItem)m_Entities[i]).ItemID == ((StaticItem)m_Entities[j]).ItemID))
                             {
                                 itemsToRemove[removeIndex++] = i;
                                 break;
