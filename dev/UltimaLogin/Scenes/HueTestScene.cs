@@ -25,12 +25,9 @@ namespace UltimaXNA.UltimaLogin.Scenes
             m_Gump = (Gump)UltimaEngine.UserInterface.AddControl(new Gump(Serial.Null, Serial.Null), 0, 0);
             m_Gump.Size = new Point(800, 600);
 
-            int rowwidth = 30;
 
-            for (int i = 0; i < 450; i++)
             {
                 m_Gump.AddControl(new HuedControl(m_Gump));
-                m_Gump.LastControl.Position = new Point((i % rowwidth) * 26 + 5, (i / rowwidth) * 40);
                 ((HuedControl)m_Gump.LastControl).Hue = i + 2;
             }
         }
@@ -51,7 +48,6 @@ namespace UltimaXNA.UltimaLogin.Scenes
             {
                 if (m_texture == null)
                 {
-                    m_texture = UltimaData.ArtData.GetStaticTexture(0x1b75);
                     Size = new Point(m_texture.Width, m_texture.Height);
                 }
                 spriteBatch.Draw2D(m_texture, Position, Hue, false, false);
