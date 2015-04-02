@@ -47,6 +47,7 @@ namespace UltimaXNA.Core
             Rendering.SpriteBatch3D.ResetZ();
             Input.Update(gameTime.TotalGameTime.TotalMilliseconds, gameTime.ElapsedGameTime.TotalMilliseconds);
             OnUpdate(gameTime);
+            OnDraw(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)

@@ -19,10 +19,9 @@ namespace UltimaXNA.UltimaEntities.Effects
 {
     public class MovingEffect : AEffect
     {
-        AnimData.AnimDataEntry m_AnimData;
-        
-        int m_ItemID;
+        public float AngleToTarget = 0f;
 
+        int m_ItemID;
         public int ItemID
         {
             get { return m_ItemID; }
@@ -138,7 +137,7 @@ namespace UltimaXNA.UltimaEntities.Effects
             if (m_TimeUntilHit == 0f)
             {
                 m_TimeActive = 0f;
-                m_TimeUntilHit = (float)System.Math.Sqrt(System.Math.Pow((tx - sx), 2) + System.Math.Pow((ty - sy), 2) + System.Math.Pow((tz - sz), 2)) * 200f;
+                m_TimeUntilHit = (float)System.Math.Sqrt(System.Math.Pow((tx - sx), 2) + System.Math.Pow((ty - sy), 2) + System.Math.Pow((tz - sz), 2)) * 100f;
             }
             else
             {
@@ -158,6 +157,7 @@ namespace UltimaXNA.UltimaEntities.Effects
                 z = (sz + (m_TimeActive / m_TimeUntilHit) * (float)(tz - sz));
                 Position.Set((int)x, (int)y, (int)z);
                 Position.Offset = new Vector3(x % 1, y % 1, z % 1);
+                AngleToTarget = (float)System.Math.Atan2(y, x); // In radians
             }
 
             // m_RenderMode:

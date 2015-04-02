@@ -53,10 +53,15 @@ namespace UltimaXNA.UltimaEntities.EntityViews
             {
                 m_DisplayItemID = displayItemdID;
                 DrawTexture = UltimaData.ArtData.GetStaticTexture(m_DisplayItemID);
-                DrawArea = new Rectangle(DrawTexture.Width / 2 - 22, DrawTexture.Height - 44 + (Entity.Z * 4), DrawTexture.Width, DrawTexture.Height);
+                DrawArea = new Rectangle(DrawTexture.Width / 2 - 22, DrawTexture.Height - 44, DrawTexture.Width, DrawTexture.Height);
                 PickType = PickTypes.PickNothing;
                 DrawFlip = false;
             }
+
+            DrawArea.X = 0 - (int)((Entity.Position.X_offset - Entity.Position.Y_offset) * 22);
+            DrawArea.Y = 44 + (int)((Entity.Position.Z_offset + Entity.Z) * 4) - 22 - (int)((Entity.Position.X_offset + Entity.Position.Y_offset) * 22);
+
+            Rotation = Effect.AngleToTarget;
 
             // Update hue vector.
             HueVector = Utility.GetHueVector(Entity.Hue);
