@@ -33,6 +33,8 @@ namespace UltimaXNA.UltimaEntities
                 return (LightningEffectView)entity.GetView();
             else if (entity is AnimatedItemEffect)
                 return (AnimatedItemEffectView)entity.GetView();
+            else if (entity is MovingEffect)
+                return (MovingEffectView)entity.GetView();
             else
                 Core.Diagnostics.Logger.Fatal("Cannot defer this type of object.");
             return null;

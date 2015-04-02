@@ -12,15 +12,20 @@ using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.UltimaData;
 using UltimaXNA.UltimaWorld;
 using UltimaXNA.UltimaWorld.Model;
+using Microsoft.Xna.Framework;
 #endregion
 
 namespace UltimaXNA.UltimaEntities.Effects
 {
-    class MovingEffect : AEffect
+    public class MovingEffect : AEffect
     {
-        AnimData.AnimDataEntry m_AnimData;
-        bool m_Animated;
+        public float AngleToTarget = 0f;
+
         int m_ItemID;
+        public int ItemID
+        {
+            get { return m_ItemID; }
+        }
 
         public MovingEffect(Map map,int itemID, int hue)
             : base(map)
@@ -28,12 +33,6 @@ namespace UltimaXNA.UltimaEntities.Effects
             Hue = hue;
             itemID &= 0x3fff;
             m_ItemID = itemID | 0x4000;
-            m_Animated = UltimaData.TileData.ItemData[itemID].IsAnimation;
-            if (m_Animated)
-            {
-                m_AnimData = AnimData.GetAnimData(itemID);
-                m_Animated = m_AnimData.FrameCount > 0;
-            }
         }
 
         #region Constructors
@@ -135,14 +134,47 @@ namespace UltimaXNA.UltimaEntities.Effects
             GetSource(out sx, out sy, out sz);
             GetTarget(out tx, out ty, out tz);
 
+            if (m_TimeUntilHit == 0f)
+            {
+                m_TimeActive = 0f;
+                m_TimeUntilHit = (float)System.Math.Sqrt(System.Math.Pow((tx - sx), 2) + System.Math.Pow((ty - sy), 2) + System.Math.Pow((tz - sz), 2)) * 75f;
+            }
+            else
+            {
+                m_TimeActive += (float)frameMS;
+            }
+
+            if (m_TimeActive >= m_TimeUntilHit)
+            {
+                Dispose();
+                return;
+            }
+            else
+            {
+                float x, y, z;
+                x = (sx + (m_TimeActive / m_TimeUntilHit) * (float)(tx - sx));
+                y = (sy + (m_TimeActive / m_TimeUntilHit) * (float)(ty - sy));
+                z = (sz + (m_TimeActive / m_TimeUntilHit) * (float)(tz - sz));
+                Position.Set((int)x, (int)y, (int)z);
+                Position.Offset = new Vector3(x % 1, y % 1, z % 1);
+                AngleToTarget = -((float)System.Math.Atan2((ty - sy), (tx - sx)) + (float)(System.Math.PI) * (1f / 4f)); // In radians
+            }
+
             // m_RenderMode:
             // 2: Alpha = 1.0, Additive.
             // 3: Alpha = 1.5, Additive.
             // 4: Alpha = 0.5, AlphaBlend.
 
             // draw rotated.
+            
+        }
 
-            Dispose();
+        private float m_TimeActive = 0f;
+        private float m_TimeUntilHit = 0f;
+
+        protected override EntityViews.AEntityView CreateView()
+        {
+            return new EntityViews.MovingEffectView(this);
         }
 
         public override string ToString()

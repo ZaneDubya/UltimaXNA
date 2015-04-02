@@ -133,6 +133,7 @@
     <Compile Include="UltimaEntities\EntityViews\AnimatedItemEffectView.cs" />
     <Compile Include="UltimaEntities\EntityViews\LightningEffectView.cs" />
     <Compile Include="UltimaEntities\EntityViews\DeferredView.cs" />
+    <Compile Include="UltimaEntities\EntityViews\MovingEffectView.cs" />
     <Compile Include="UltimaEntities\EntityViews\OverheadView.cs" />
     <Compile Include="UltimaEntities\DeferredEntity.cs" />
     <Compile Include="UltimaEntities\Support\MobileFlags.cs" />

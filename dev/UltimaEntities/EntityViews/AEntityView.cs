@@ -36,6 +36,9 @@ namespace UltimaXNA.UltimaEntities.EntityViews
         // Draw methods and properties
         // ======================================================================
 
+        public float Rotation = 0f;
+        public static float PI = (float)System.Math.PI;
+
         protected bool DrawFlip = false;
         protected Rectangle DrawArea = Rectangle.Empty;
         protected Texture2D DrawTexture = null;
@@ -44,45 +47,77 @@ namespace UltimaXNA.UltimaEntities.EntityViews
         {
             VertexPositionNormalTextureHue[] vertexBuffer;
 
-            if (DrawFlip)
+            if (Rotation != 0)
             {
+                Vector3 center = drawPosition - new Vector3(DrawArea.X - 44 + DrawArea.Width / 2, DrawArea.Y + DrawArea.Height / 2, 0);
+                float sinx = (float)System.Math.Sin(Rotation) * DrawArea.Width / 2f;
+                float cosx = (float)System.Math.Cos(Rotation) * DrawArea.Width / 2f;
+                float siny = (float)System.Math.Sin(Rotation) * -DrawArea.Height / 2f;
+                float cosy = (float)System.Math.Cos(Rotation) * -DrawArea.Height / 2f;
                 // 2   0    
                 // |\  |     
                 // |  \|     
                 // 3   1
                 vertexBuffer = VertexPositionNormalTextureHue.PolyBufferFlipped;
-                vertexBuffer[0].Position = drawPosition;
-                vertexBuffer[0].Position.X += DrawArea.X + 44;
-                vertexBuffer[0].Position.Y -= DrawArea.Y;
 
-                vertexBuffer[1].Position = vertexBuffer[0].Position;
-                vertexBuffer[1].Position.Y += DrawArea.Height;
+                vertexBuffer[0].Position = center;
+                vertexBuffer[0].Position.X += cosx - -siny;
+                vertexBuffer[0].Position.Y -= sinx + -cosy;
 
-                vertexBuffer[2].Position = vertexBuffer[0].Position;
-                vertexBuffer[2].Position.X -= DrawArea.Width;
+                vertexBuffer[1].Position = center;
+                vertexBuffer[1].Position.X += cosx - siny;
+                vertexBuffer[1].Position.Y += -sinx + -cosy;
 
-                vertexBuffer[3].Position = vertexBuffer[1].Position;
-                vertexBuffer[3].Position.X -= DrawArea.Width;
+                vertexBuffer[2].Position = center;
+                vertexBuffer[2].Position.X += -cosx - -siny;
+                vertexBuffer[2].Position.Y += sinx + cosy;
+
+                vertexBuffer[3].Position = center;
+                vertexBuffer[3].Position.X += -cosx - siny;
+                vertexBuffer[3].Position.Y += sinx + -cosy;
             }
             else
             {
-                // 0---1    
-                //    /     
-                //  /       
-                // 2---3
-                vertexBuffer = VertexPositionNormalTextureHue.PolyBuffer;
-                vertexBuffer[0].Position = drawPosition;
-                vertexBuffer[0].Position.X -= DrawArea.X;
-                vertexBuffer[0].Position.Y -= DrawArea.Y;
+                if (DrawFlip)
+                {
+                    // 2   0    
+                    // |\  |     
+                    // |  \|     
+                    // 3   1
+                    vertexBuffer = VertexPositionNormalTextureHue.PolyBufferFlipped;
+                    vertexBuffer[0].Position = drawPosition;
+                    vertexBuffer[0].Position.X += DrawArea.X + 44;
+                    vertexBuffer[0].Position.Y -= DrawArea.Y;
 
-                vertexBuffer[1].Position = vertexBuffer[0].Position;
-                vertexBuffer[1].Position.X += DrawArea.Width;
+                    vertexBuffer[1].Position = vertexBuffer[0].Position;
+                    vertexBuffer[1].Position.Y += DrawArea.Height;
 
-                vertexBuffer[2].Position = vertexBuffer[0].Position;
-                vertexBuffer[2].Position.Y += DrawArea.Height;
+                    vertexBuffer[2].Position = vertexBuffer[0].Position;
+                    vertexBuffer[2].Position.X -= DrawArea.Width;
 
-                vertexBuffer[3].Position = vertexBuffer[1].Position;
-                vertexBuffer[3].Position.Y += DrawArea.Height;
+                    vertexBuffer[3].Position = vertexBuffer[1].Position;
+                    vertexBuffer[3].Position.X -= DrawArea.Width;
+                }
+                else
+                {
+                    // 0---1    
+                    //    /     
+                    //  /       
+                    // 2---3
+                    vertexBuffer = VertexPositionNormalTextureHue.PolyBuffer;
+                    vertexBuffer[0].Position = drawPosition;
+                    vertexBuffer[0].Position.X -= DrawArea.X;
+                    vertexBuffer[0].Position.Y -= DrawArea.Y;
+
+                    vertexBuffer[1].Position = vertexBuffer[0].Position;
+                    vertexBuffer[1].Position.X += DrawArea.Width;
+
+                    vertexBuffer[2].Position = vertexBuffer[0].Position;
+                    vertexBuffer[2].Position.Y += DrawArea.Height;
+
+                    vertexBuffer[3].Position = vertexBuffer[1].Position;
+                    vertexBuffer[3].Position.Y += DrawArea.Height;
+                }
             }
 
             if (vertexBuffer[0].Hue != HueVector)
