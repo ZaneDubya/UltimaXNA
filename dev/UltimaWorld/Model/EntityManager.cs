@@ -180,5 +180,10 @@ namespace UltimaXNA.UltimaWorld
                 m_Entities[serial].Dispose();
             }
         }
+
+        public static void AddEntity(AEntity entity)
+        {
+            m_Entities.Add(entity.Serial, entity);
+        }
     }
 }

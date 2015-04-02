@@ -44,6 +44,15 @@ namespace UltimaXNA.UltimaWorld.Model
             m_Blocks = new MapBlock[c_CellsInMemorySpan * c_CellsInMemorySpan];
         }
 
+        public void Dispose()
+        {
+            for (int i = 0; i < m_Blocks.Length; i++)
+            {
+                if (m_Blocks[i] != null)
+                    m_Blocks[i].Unload();
+            }
+        }
+
         public Point CenterPosition
         {
             get { return m_Center; }

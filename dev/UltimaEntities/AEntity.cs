@@ -58,6 +58,16 @@ namespace UltimaXNA.UltimaEntities
             private set;
         }
 
+        public void SetMap(Map map)
+        {
+            if (map != Map)
+            {
+                Map = map;
+                if (Map == null)
+                    Position.Tile = Position3D.NullTile;
+            }
+        }
+
         private MapTile m_Tile;
         protected MapTile Tile
         {
@@ -71,8 +81,9 @@ namespace UltimaXNA.UltimaEntities
                     m_Tile.OnEnter(this);
                 else
                 {
-                    if (!IsDisposed)
-                        Dispose();
+                    if (!IsClientEntity)
+                        if (!IsDisposed)
+                            Dispose();
                 }
             }
         }
