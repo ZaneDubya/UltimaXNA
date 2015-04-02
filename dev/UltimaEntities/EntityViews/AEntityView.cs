@@ -47,31 +47,34 @@ namespace UltimaXNA.UltimaEntities.EntityViews
         {
             VertexPositionNormalTextureHue[] vertexBuffer;
 
-            float rotation = Rotation % 2;
-            if (rotation != 0)
+            if (Rotation != 0)
             {
-                Vector3 center = drawPosition + new Vector3(DrawArea.Width, DrawArea.Height, 0) / 2;
-                Vector3 offset = new Vector3(DrawArea.Width * (float)System.Math.Cos(rotation), DrawArea.Height * (float)System.Math.Sin(rotation), 0) / 2;
+                Vector3 center = drawPosition - new Vector3(DrawArea.X - 44 + DrawArea.Width / 2, DrawArea.Y + DrawArea.Height / 2, 0);
+                float sinx = (float)System.Math.Sin(Rotation) * DrawArea.Width / 2f;
+                float cosx = (float)System.Math.Cos(Rotation) * DrawArea.Width / 2f;
+                float siny = (float)System.Math.Sin(Rotation) * -DrawArea.Height / 2f;
+                float cosy = (float)System.Math.Cos(Rotation) * -DrawArea.Height / 2f;
                 // 2   0    
                 // |\  |     
                 // |  \|     
                 // 3   1
                 vertexBuffer = VertexPositionNormalTextureHue.PolyBufferFlipped;
 
-                vertexBuffer[0].Position = drawPosition + center;
-                vertexBuffer[0].Position.X += offset.X;
-                vertexBuffer[0].Position.Y -= offset.Y;
+                vertexBuffer[0].Position = center;
+                vertexBuffer[0].Position.X += cosx - -siny;
+                vertexBuffer[0].Position.Y -= sinx + -cosy;
 
-                vertexBuffer[1].Position = drawPosition + center;
-                vertexBuffer[1].Position.Y += offset.Y;
+                vertexBuffer[1].Position = center;
+                vertexBuffer[1].Position.X += cosx - siny;
+                vertexBuffer[1].Position.Y += -sinx + -cosy;
 
-                vertexBuffer[2].Position = drawPosition + center;
-                vertexBuffer[2].Position.X -= offset.X;
-                vertexBuffer[1].Position.Y += offset.Y;
+                vertexBuffer[2].Position = center;
+                vertexBuffer[2].Position.X += -cosx - -siny;
+                vertexBuffer[2].Position.Y += sinx + cosy;
 
-                vertexBuffer[3].Position = drawPosition + center;
-                vertexBuffer[3].Position.X -= offset.X;
-                vertexBuffer[1].Position.Y += offset.Y;
+                vertexBuffer[3].Position = center;
+                vertexBuffer[3].Position.X += -cosx - siny;
+                vertexBuffer[3].Position.Y += sinx + -cosy;
             }
             else
             {

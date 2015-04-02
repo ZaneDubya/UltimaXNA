@@ -59,7 +59,7 @@ namespace UltimaXNA.UltimaEntities.EntityViews
             }
 
             DrawArea.X = 0 - (int)((Entity.Position.X_offset - Entity.Position.Y_offset) * 22);
-            DrawArea.Y = 44 + (int)((Entity.Position.Z_offset + Entity.Z) * 4) - 22 - (int)((Entity.Position.X_offset + Entity.Position.Y_offset) * 22);
+            DrawArea.Y = 0 + (int)((Entity.Position.Z_offset + Entity.Z) * 4) - (int)((Entity.Position.X_offset + Entity.Position.Y_offset) * 22);
 
             Rotation = Effect.AngleToTarget;
 
