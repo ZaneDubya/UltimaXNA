@@ -66,18 +66,19 @@ namespace UltimaXNA.UltimaWorld
                 {
                     if (m_map != null)
                     {
-                        // clear all entities and re-add the player 
+                        // clear all entities
+                        EntityManager.Reset(false);
                         UltimaEntities.AEntity player = EntityManager.GetPlayerObject();
-                        Point3D tile = new Point3D(player.X, player.Y, player.Z);
+                        Point3D position = new Point3D(player.X, player.Y, player.Z);
                         player.SetMap(null);
-                        EntityManager.Reset();
-                        EntityManager.AddEntity(player);
                         // dispose of map
                         m_map.Dispose();
                         m_map = null;
+                        // add new map!
                         m_map = new Map(value);
                         player.SetMap(m_map);
-                        player.Position.Set(tile.X, tile.Y, tile.Z);
+                        // restore previous player position
+                        player.Position.Set(position.X, position.Y, position.Z);
                     }
                     else
                     {

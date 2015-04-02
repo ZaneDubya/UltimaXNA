@@ -30,9 +30,27 @@ namespace UltimaXNA.UltimaWorld
             m_Model = model;
         }
 
-        public static void Reset()
+        public static void Reset(bool clearPlayerEntity = false)
         {
-            m_Entities.Clear();
+            if (clearPlayerEntity)
+            {
+                m_Entities.Clear();
+                foreach (AEntity entity in m_Entities.Values)
+                {
+                    entity.Dispose();
+                }
+            }
+            else
+            {
+                foreach (AEntity entity in m_Entities.Values)
+                {
+                    if (!entity.IsClientEntity)
+                        entity.Dispose();
+                }
+                AEntity player = GetPlayerObject();
+                m_Entities.Clear();
+                AddEntity(player);
+            }
         }
 
         public static AEntity GetPlayerObject()
