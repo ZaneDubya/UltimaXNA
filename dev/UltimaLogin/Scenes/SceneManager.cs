@@ -1,9 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.UltimaGUI;
-using UltimaXNA.Scenes;
 
-namespace UltimaXNA.Scenes
+namespace UltimaXNA.UltimaLogin.Scenes
 {
     public class SceneManager
     {

@@ -9,7 +9,7 @@ using UltimaXNA.Core.Network;
 using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaWorld;
 
-namespace UltimaXNA.Scenes
+namespace UltimaXNA.UltimaLogin.Scenes
 {
     public abstract class AScene : IDisposable
     {

@@ -11,7 +11,7 @@
 using UltimaXNA.UltimaGUI.LoginGumps;
 #endregion
 
-namespace UltimaXNA.Scenes
+namespace UltimaXNA.UltimaLogin.Scenes
 {
     public class LoginScene : AScene
     {
@@ -32,6 +32,11 @@ namespace UltimaXNA.Scenes
         public override void Update(double totalTime, double frameTime)
         {
             base.Update(totalTime, frameTime);
+
+            if (UltimaEngine.Input.HandleKeyboardEvent(InterXLib.Input.Windows.KeyboardEventType.Down, InterXLib.Input.Windows.WinKeys.D, false, false, true))
+            {
+                Manager.CurrentScene = new HueTestScene();
+            }
         }
 
         public override void Dispose()

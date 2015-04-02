@@ -15,7 +15,7 @@ using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaGUI.LoginGumps;
 #endregion
 
-namespace UltimaXNA.Scenes
+namespace UltimaXNA.UltimaLogin.Scenes
 {
     public class LoggingInScene : AScene
     {

@@ -15,7 +15,7 @@ using UltimaXNA.UltimaPackets;
 using UltimaXNA.UltimaPackets.Client;
 #endregion
 
-namespace UltimaXNA.Scenes
+namespace UltimaXNA.UltimaLogin.Scenes
 {
     enum CreateCharacterSceneStates
     {
