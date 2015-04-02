@@ -358,11 +358,18 @@ namespace UltimaXNA
         private void receive_DeathAnimation(IRecvPacket packet)
         {
             DeathAnimationPacket p = (DeathAnimationPacket)packet;
-            Mobile u = EntityManager.GetObject<Mobile>(p.PlayerSerial, false);
+            Mobile m = EntityManager.GetObject<Mobile>(p.PlayerSerial, false);
             Corpse c = EntityManager.GetObject<Corpse>(p.CorpseSerial, false);
-            c.Facing = u.Facing;
-            c.MobileSerial = p.PlayerSerial;
-            c.PlayDeathAnimation();
+            if (m == null)
+                Logger.Warn("DeathAnimation received for mobile which does not exist.");
+            else if (c == null)
+                Logger.Warn("DeathAnimation received for corpse which does not exist.");
+            else
+            {
+                c.Facing = m.Facing;
+                c.MobileSerial = p.PlayerSerial;
+                c.PlayDeathAnimation();
+            }
         }
 
         private void receive_DeleteObject(IRecvPacket packet)
