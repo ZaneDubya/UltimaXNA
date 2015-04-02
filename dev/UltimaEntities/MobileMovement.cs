@@ -159,9 +159,10 @@ namespace UltimaXNA.UltimaEntities
             {
                 if (m_entity.IsClientEntity && m_playerMobile_NextMoveInMS <= 0d)
                 {
-                    if (LogMovement && PlayerMobile_CheckForMoveEvent())
+                    if (PlayerMobile_CheckForMoveEvent())
                     {
-                        Logger.Debug(ConsoleColor.Blue, "XNA: new move event queued.");
+                        if (LogMovement)
+                            Logger.Debug(ConsoleColor.Blue, "XNA: new move event queued.");
                     }
                 }
 
