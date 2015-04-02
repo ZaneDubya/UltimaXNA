@@ -1130,7 +1130,6 @@ namespace UltimaXNA
         private void receive_MapIndex(int index)
         {
             m_QueuedMapIndex = index;
-
             InternalCheckLogin();
         }
 

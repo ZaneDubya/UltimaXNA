@@ -5,6 +5,7 @@ using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaGUI.WorldGumps;
 using UltimaXNA.UltimaWorld.Controller;
 using UltimaXNA.UltimaWorld.Model;
+using Microsoft.Xna.Framework;
 
 namespace UltimaXNA.UltimaWorld
 {
@@ -65,10 +66,24 @@ namespace UltimaXNA.UltimaWorld
                 {
                     if (m_map != null)
                     {
-                        // dispose of map
                         // clear all entities
+                        EntityManager.Reset(false);
+                        UltimaEntities.AEntity player = EntityManager.GetPlayerObject();
+                        Point3D position = new Point3D(player.X, player.Y, player.Z);
+                        player.SetMap(null);
+                        // dispose of map
+                        m_map.Dispose();
+                        m_map = null;
+                        // add new map!
+                        m_map = new Map(value);
+                        player.SetMap(m_map);
+                        // restore previous player position
+                        player.Position.Set(position.X, position.Y, position.Z);
                     }
-                    m_map = new Map(value);
+                    else
+                    {
+                        m_map = new Map(value);
+                    }
                 }
             }
         }
