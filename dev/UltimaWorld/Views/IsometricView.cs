@@ -83,10 +83,14 @@ namespace UltimaXNA.UltimaWorld.Views
             get { return m_renderOffset; }
         }
 
-        public static void Initialize(Game game)
+        protected static UltimaEngine Engine { get; private set; }
+
+        public static void Initialize(UltimaEngine engine)
         {
-            m_spriteBatch = new SpriteBatch3D(game);
-            m_vectors = new VectorRenderer(game.GraphicsDevice, game.Content);
+            Engine = engine;
+
+            m_spriteBatch = new SpriteBatch3D(Engine);
+            m_vectors = new VectorRenderer(Engine.GraphicsDevice, Engine.Content);
 
             PickType = PickTypes.PickNothing;
             m_vertexBufferStretched = new VertexPositionNormalTextureHue[] {
@@ -189,7 +193,7 @@ namespace UltimaXNA.UltimaWorld.Views
 
             ObjectsRendered = 0; // Count of objects rendered for statistics and debug
 
-            MouseOverList overList = new MouseOverList(UltimaEngine.Input.MousePosition, PickType); // List of entities mouse is over.
+            MouseOverList overList = new MouseOverList(Engine.Input.MousePosition, PickType); // List of entities mouse is over.
             List<AEntity> deferredToRemove = new List<AEntity>();
 
             for (int col = 0; col < renderDimensionY * 2 + renderExtraRowsAtBottom; col++)
@@ -244,8 +248,8 @@ namespace UltimaXNA.UltimaWorld.Views
             OverheadRenderer.Render(m_spriteBatch, overList, map);
 
             // Update the MouseOver objects
-            m_overObject = overList.GetForemostMouseOverItem(UltimaEngine.Input.MousePosition);
-            m_overGround = overList.GetForemostMouseOverItem<Ground>(UltimaEngine.Input.MousePosition);
+            m_overObject = overList.GetForemostMouseOverItem(Engine.Input.MousePosition);
+            m_overGround = overList.GetForemostMouseOverItem<Ground>(Engine.Input.MousePosition);
 
             // Draw the objects we just send to the spritebatch.
             m_spriteBatch.Prepare(true, true);

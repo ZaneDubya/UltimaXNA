@@ -129,7 +129,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
                 case Buttons.Quests:
                     break;
                 case Buttons.Skills:
-                    UserInterface.AddControl(new SkillsGump(), 80, 80, GUIManager.AddGumpType.Toggle);
+                    Engine.UserInterface.AddControl(new SkillsGump(), 80, 80, GUIManager.AddGumpType.Toggle);
                     break;
                 case Buttons.Guild:
                     break;
@@ -137,7 +137,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
                     WorldInteraction.ToggleWarMode();
                     break;
                 case Buttons.Status:
-                    UserInterface.AddControl(new StatusGump(), 200, 400, GUIManager.AddGumpType.Toggle);
+                    Engine.UserInterface.AddControl(new StatusGump(), 200, 400, GUIManager.AddGumpType.Toggle);
                     break;
             }
         }

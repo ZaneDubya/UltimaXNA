@@ -21,7 +21,6 @@ namespace UltimaXNA.UltimaWorld
 
             Views.IsometricRenderer.CenterPosition = EntityManager.GetPlayerObject().Position;
             Views.IsometricRenderer.Draw(Model.Map);
-            UltimaEngine.UserInterface.Draw(frameTime);
         }
     }
 }

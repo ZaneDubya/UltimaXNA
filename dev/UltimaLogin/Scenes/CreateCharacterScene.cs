@@ -57,7 +57,7 @@ namespace UltimaXNA.UltimaLogin.Scenes
 
         void openSkillsGump()
         {
-            m_CreateSkillsGump = (CreateCharSkillsGump)UltimaEngine.UserInterface.AddControl(new CreateCharSkillsGump(), 0, 0);
+            m_CreateSkillsGump = (CreateCharSkillsGump)Engine.UserInterface.AddControl(new CreateCharSkillsGump(), 0, 0);
             m_CreateSkillsGump.OnForward += this.OnForward;
             m_CreateSkillsGump.OnBackward += this.OnBackward;
             m_Status = CreateCharacterSceneStates.ChooseSkills;
@@ -78,7 +78,7 @@ namespace UltimaXNA.UltimaLogin.Scenes
 
         void openAppearanceGump()
         {
-            m_CreateAppearanceGump = (CreateCharAppearanceGump)UltimaEngine.UserInterface.AddControl(new CreateCharAppearanceGump(), 0, 0);
+            m_CreateAppearanceGump = (CreateCharAppearanceGump)Engine.UserInterface.AddControl(new CreateCharAppearanceGump(), 0, 0);
             m_CreateAppearanceGump.OnForward += this.OnForward;
             m_CreateAppearanceGump.OnBackward += this.OnBackward;
             m_Status = CreateCharacterSceneStates.ChooseAppearance;

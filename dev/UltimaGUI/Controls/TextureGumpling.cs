@@ -37,7 +37,7 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         protected override void mouseOver(int x, int y)
         {
-            if (UserInterface.MouseOverControl == this)
+            if (Engine.UserInterface.MouseOverControl == this)
                 SetPixel(new Color(255, 255, 255, 255), x, y);
         }
 

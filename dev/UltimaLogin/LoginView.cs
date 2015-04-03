@@ -18,7 +18,7 @@ namespace UltimaXNA.UltimaLogin
 
         public override void Draw(YSpriteBatch spritebatch, double frameTime)
         {
-            UltimaEngine.UserInterface.Draw(frameTime);
+            // don't need to do anything above and beyond having the GUI drawn, which is handled by UltimaEngine.
         }
     }
 }

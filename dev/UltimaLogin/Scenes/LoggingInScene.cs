@@ -40,7 +40,7 @@ namespace UltimaXNA.UltimaLogin.Scenes
         public override void Intitialize(UltimaEngine engine)
         {
             base.Intitialize(engine);
-            m_Gump = (LoggingInGump)UltimaEngine.UserInterface.AddControl(new LoggingInGump(), 0, 0);
+            m_Gump = (LoggingInGump)Engine.UserInterface.AddControl(new LoggingInGump(), 0, 0);
             m_Gump.OnCancelLogin += this.OnCancelLogin;
             if (Engine.Client.IsConnected)
                 Engine.Client.Disconnect();

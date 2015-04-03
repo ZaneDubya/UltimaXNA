@@ -27,7 +27,7 @@ namespace UltimaXNA.UltimaLogin.Scenes
         public override void Intitialize(UltimaEngine engine)
         {
             base.Intitialize(engine);
-            m_CharListGump = (CharacterListGump)UltimaEngine.UserInterface.AddControl(new CharacterListGump(), 0, 0);
+            m_CharListGump = (CharacterListGump)Engine.UserInterface.AddControl(new CharacterListGump(), 0, 0);
             m_CharListGump.OnBackToSelectServer += this.OnBackToSelectServer;
             m_CharListGump.OnLoginWithCharacter += this.OnLoginWithCharacter;
             m_CharListGump.OnDeleteCharacter += this.OnDeleteCharacter;

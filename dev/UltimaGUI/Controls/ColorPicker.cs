@@ -105,7 +105,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             {
                 if (m_isSwatchOpen && m_openColorPicker.IsInitialized)
                 {
-                    if (UserInterface.MouseOverControl != m_openColorPicker)
+                    if (Engine.UserInterface.MouseOverControl != m_openColorPicker)
                         closeSwatch();
                 }
             }

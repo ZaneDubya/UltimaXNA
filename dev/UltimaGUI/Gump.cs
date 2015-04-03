@@ -87,8 +87,8 @@ namespace UltimaXNA.UltimaGUI
                 if (m_gumpTexture == null)
                 {
                     // the render target CANNOT be larger than the viewport.
-                    int w = Width < UserInterface.Width ? Width : UserInterface.Width;
-                    int h = Height < UserInterface.Height ? Height : UserInterface.Height;
+                    int w = Width < Engine.UserInterface.Width ? Width : Engine.UserInterface.Width;
+                    int h = Height < Engine.UserInterface.Height ? Height : Engine.UserInterface.Height;
                     m_gumpTexture = new RenderTarget2D(spriteBatch.GraphicsDevice, w, h, false, SurfaceFormat.Color, DepthFormat.Depth16);
                 }
 

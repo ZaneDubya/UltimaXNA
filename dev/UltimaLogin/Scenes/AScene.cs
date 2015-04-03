@@ -123,7 +123,7 @@ namespace UltimaXNA.UltimaLogin.Scenes
 
         public virtual void Dispose()
         {
-            UltimaEngine.UserInterface.Reset();
+            Engine.UserInterface.Reset();
         }
     }
 

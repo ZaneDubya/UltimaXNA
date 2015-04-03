@@ -73,9 +73,9 @@ namespace UltimaXNA.UltimaGUI.Controls
                 // if we have moused off the open list, close it. We check to see if the mouse is over:
                 // the resizepic for the closed list (because it takes one update cycle to open the list)
                 // the resizepic for the open list, and the scroll bar if it is loaded.
-                if (UserInterface.MouseOverControl != m_openResizePic &&
-                    UserInterface.MouseOverControl != m_resize &&
-                    (m_openScrollBar == null ? false : UserInterface.MouseOverControl != m_openScrollBar))
+                if (Engine.UserInterface.MouseOverControl != m_openResizePic &&
+                    Engine.UserInterface.MouseOverControl != m_resize &&
+                    (m_openScrollBar == null ? false : Engine.UserInterface.MouseOverControl != m_openScrollBar))
                 {
                     closeOpenList();
                 }

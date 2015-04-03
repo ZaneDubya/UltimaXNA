@@ -99,7 +99,7 @@ namespace UltimaXNA.UltimaLogin.Scenes
         public void ResetToLoginScreen()
         {
             Engine.Client.Disconnect();
-            UltimaEngine.UserInterface.Reset();
+            Engine.UserInterface.Reset();
             if (!(m_CurrentScene is LoginScene))
                 CurrentScene = new LoginScene();
         }

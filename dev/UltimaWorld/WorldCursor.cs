@@ -40,11 +40,11 @@ namespace UltimaXNA.UltimaWorld
 
         public override void Update()
         {
-            if (IsHoldingItem && UltimaEngine.Input.HandleMouseEvent(MouseEvent.Up, UltimaVars.EngineVars.MouseButton_Interact))
+            if (IsHoldingItem && m_Model.Engine.Input.HandleMouseEvent(MouseEvent.Up, UltimaVars.EngineVars.MouseButton_Interact))
             {
-                if (UltimaEngine.UserInterface.IsMouseOverUI)
+                if (m_Model.Engine.UserInterface.IsMouseOverUI)
                 {
-                    Control target = UltimaEngine.UserInterface.MouseOverControl;
+                    Control target = m_Model.Engine.UserInterface.MouseOverControl;
                     // attempt to drop the item onto an interface. The only acceptable targets for dropping items are:
                     // 1. ItemGumplings that represent containers (like a bag icon)
                     // 2. Gumps that represent open Containers (GumpPicContainers, e.g. an open GumpPic of a chest)
@@ -56,8 +56,8 @@ namespace UltimaXNA.UltimaWorld
                     }
                     else if (target is GumpPicContainer)
                     {
-                        int x = (int)UltimaEngine.Input.MousePosition.X - HeldItemOffset.X - (target.X + target.Owner.X);
-                        int y = (int)UltimaEngine.Input.MousePosition.Y - HeldItemOffset.Y - (target.Y + target.Owner.Y);
+                        int x = (int)m_Model.Engine.Input.MousePosition.X - HeldItemOffset.X - (target.X + target.Owner.X);
+                        int y = (int)m_Model.Engine.Input.MousePosition.Y - HeldItemOffset.Y - (target.Y + target.Owner.Y);
                         DropHeldItemToContainer((Container)((GumpPicContainer)target).Item, x, y);
                     }
                     else if (target is ItemGumplingPaperdoll || (target is GumpPic && ((GumpPic)target).IsPaperdoll))
@@ -114,23 +114,23 @@ namespace UltimaXNA.UltimaWorld
 
             if (IsTargeting)
             {
-                if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Press, WinKeys.Escape, false, false, false))
+                if (m_Model.Engine.Input.HandleKeyboardEvent(KeyboardEventType.Press, WinKeys.Escape, false, false, false))
                 {
                     SetTargeting(TargetTypes.Nothing, 0);
                 }
 
-                if (UltimaEngine.Input.HandleMouseEvent(MouseEvent.Click, UltimaVars.EngineVars.MouseButton_Interact))
+                if (m_Model.Engine.Input.HandleMouseEvent(MouseEvent.Click, UltimaVars.EngineVars.MouseButton_Interact))
                 {
                     // If isTargeting is true, then the target cursor is active and we are waiting for the player to target something.
                     switch (m_Targeting)
                     {
                         case TargetTypes.Object:
                         case TargetTypes.Position:
-                            if (UltimaEngine.UserInterface.IsMouseOverUI)
+                            if (m_Model.Engine.UserInterface.IsMouseOverUI)
                             {
                                 // get object under mouse cursor. We can only hue items.
                                 // ItemGumping is the base class for all items, containers, and paperdoll items.
-                                Control target = UltimaEngine.UserInterface.MouseOverControl;
+                                Control target = m_Model.Engine.UserInterface.MouseOverControl;
                                 if (target is ItemGumpling)
                                 {
                                     mouseTargetingEventObject(((ItemGumpling)target).Item);
@@ -222,8 +222,8 @@ namespace UltimaXNA.UltimaWorld
                     // UNIMPLEMENTED !!! Draw a transparent multi
                 }*/
             }
-            else if ((m_Model.Input.ContinuousMouseMovementCheck || !UltimaEngine.UserInterface.IsMouseOverUI) && 
-                !UltimaEngine.UserInterface.IsModalControlOpen)
+            else if ((m_Model.Input.ContinuousMouseMovementCheck || !m_Model.Engine.UserInterface.IsMouseOverUI) &&
+                !m_Model.Engine.UserInterface.IsModalControlOpen)
             {
                 switch (UltimaVars.EngineVars.CursorDirection)
                 {
@@ -393,11 +393,11 @@ namespace UltimaXNA.UltimaWorld
             {
                 if (value == null && m_HeldItem != null)
                 {
-                    UltimaEngine.UserInterface.RemoveInputBlocker(this);
+                    m_Model.Engine.UserInterface.RemoveInputBlocker(this);
                 }
                 else if (value != null && m_HeldItem == null)
                 {
-                    UltimaEngine.UserInterface.AddInputBlocker(this);
+                    m_Model.Engine.UserInterface.AddInputBlocker(this);
                 }
                 m_HeldItem = value;
             }

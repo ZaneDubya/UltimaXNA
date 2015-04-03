@@ -23,9 +23,9 @@ namespace UltimaXNA.UltimaGUI
 
         public GUIManager(UltimaEngine engine)
         {
-            Engine = engine;
+            Control.Engine = Engine = engine;
+            RenderedText.Graphics = Engine.GraphicsDevice;
 
-            Control.UserInterface = this;
             m_SpriteBatch = new SpriteBatchUI(Engine);
 
             m_Controls = new List<Control>();
@@ -240,7 +240,7 @@ namespace UltimaXNA.UltimaGUI
             }
 
             if (Cursor != null)
-                Cursor.Draw(m_SpriteBatch, UltimaEngine.Input.MousePosition);
+                Cursor.Draw(m_SpriteBatch, Engine.Input.MousePosition);
 
             m_SpriteBatch.Flush();
         }
@@ -264,7 +264,7 @@ namespace UltimaXNA.UltimaGUI
                 }
                 else
                 {
-                    List<InputEventKeyboard> k_events = UltimaEngine.Input.GetKeyboardEvents();
+                    List<InputEventKeyboard> k_events = Engine.Input.GetKeyboardEvents();
                     foreach (InputEventKeyboard e in k_events)
                     {
                         if (e.EventType == KeyboardEventType.Press)
@@ -281,9 +281,9 @@ namespace UltimaXNA.UltimaGUI
             // send that previous control a MouseOut event.
             Control focusedControl = InternalGetMouseOverControl();
             if ((MouseOverControl != null) && (focusedControl != MouseOverControl))
-                MouseOverControl.MouseOut(UltimaEngine.Input.MousePosition);
+                MouseOverControl.MouseOut(Engine.Input.MousePosition);
             if (focusedControl != null)
-                focusedControl.MouseOver(UltimaEngine.Input.MousePosition);
+                focusedControl.MouseOver(Engine.Input.MousePosition);
 
             // Set the new MouseOverControl.
             m_MouseOverControl = focusedControl;
@@ -292,7 +292,7 @@ namespace UltimaXNA.UltimaGUI
             for (int iButton = 0; iButton < 5; iButton++)
             {
                 if ((m_MouseDownControl[iButton] != null) && (m_MouseDownControl[iButton] != focusedControl))
-                    m_MouseDownControl[iButton].MouseOver(UltimaEngine.Input.MousePosition);
+                    m_MouseDownControl[iButton].MouseOver(Engine.Input.MousePosition);
             }
 
             // The cursor and world input objects occasionally must block input events from reaching the UI:
@@ -300,7 +300,7 @@ namespace UltimaXNA.UltimaGUI
             if (!IsModalControlOpen && ObjectsBlockingInput)
                 return;
 
-            List<InputEventMouse> events = UltimaEngine.Input.GetMouseEvents();
+            List<InputEventMouse> events = Engine.Input.GetMouseEvents();
             foreach (InputEventMouse e in events)
             {
                 // MouseDown event: the currently focused control gets a MouseDown event, and if
@@ -309,7 +309,7 @@ namespace UltimaXNA.UltimaGUI
                 {
                     if (focusedControl != null)
                     {
-                        focusedControl.MouseDown(UltimaEngine.Input.MousePosition, e.Button);
+                        focusedControl.MouseDown(Engine.Input.MousePosition, e.Button);
                         if (focusedControl.HandlesKeyboardFocus)
                             m_keyboardFocusControl = focusedControl;
                         m_MouseDownControl[(int)e.Button] = focusedControl;
@@ -334,19 +334,19 @@ namespace UltimaXNA.UltimaGUI
                     {
                         if (m_MouseDownControl[btn] != null && focusedControl == m_MouseDownControl[btn])
                         {
-                            focusedControl.MouseClick(UltimaEngine.Input.MousePosition, e.Button);
+                            focusedControl.MouseClick(Engine.Input.MousePosition, e.Button);
                         }
-                        focusedControl.MouseUp(UltimaEngine.Input.MousePosition, e.Button);
+                        focusedControl.MouseUp(Engine.Input.MousePosition, e.Button);
                         if (m_MouseDownControl[btn] != null && focusedControl != m_MouseDownControl[btn])
                         {
-                            m_MouseDownControl[btn].MouseUp(UltimaEngine.Input.MousePosition, e.Button);
+                            m_MouseDownControl[btn].MouseUp(Engine.Input.MousePosition, e.Button);
                         }
                     }
                     else
                     {
                         if (m_MouseDownControl[btn] != null)
                         {
-                            m_MouseDownControl[btn].MouseUp(UltimaEngine.Input.MousePosition, e.Button);
+                            m_MouseDownControl[btn].MouseUp(Engine.Input.MousePosition, e.Button);
                         }
                     }
 
@@ -374,7 +374,7 @@ namespace UltimaXNA.UltimaGUI
             // Get the list of controls under the mouse cursor
             foreach (Control c in possibleControls)
             {
-                Control[] controls = c.HitTest(UltimaEngine.Input.MousePosition, false);
+                Control[] controls = c.HitTest(Engine.Input.MousePosition, false);
                 if (controls != null)
                 {
                     mouseOverControls = controls;

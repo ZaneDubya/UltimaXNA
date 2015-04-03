@@ -39,7 +39,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
         {
             if (m_Input == null)
             {
-                m_Input = new TextEntry(this, 0, 1, UserInterface.Height - TextUni.GetFont(0).Height + 4, 400, TextUni.GetFont(0).Height, 0, 0, 64, string.Empty);
+                m_Input = new TextEntry(this, 0, 1, Engine.UserInterface.Height - TextUni.GetFont(0).Height + 4, 400, TextUni.GetFont(0).Height, 0, 0, 64, string.Empty);
                 m_Input.LegacyCarat = true;
                 AddControl(m_Input);
             }
@@ -58,14 +58,14 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
 
             // Ctrl-Q = Cycle backwards through the things you have said today
             // Ctrl-W = Cycle forwards through the things you have said today
-            if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.Q, false, false, true) && m_MessageHistoryIndex > -1)
+            if (Engine.Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.Q, false, false, true) && m_MessageHistoryIndex > -1)
             {
                 if (m_MessageHistoryIndex > 0)
                     m_MessageHistoryIndex -= 1;
                 m_Input.Text = m_MessageHistory[m_MessageHistoryIndex];
 
             }
-            else if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.W, false, false, true))
+            else if (Engine.Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.W, false, false, true))
             {
                 if (m_MessageHistoryIndex < m_MessageHistory.Count - 1)
                 {

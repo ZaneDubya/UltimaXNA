@@ -311,7 +311,7 @@ namespace UltimaXNA
             if (p.HasData)
             {
                 string[] gumpPieces = interpretGumpPieces(p.GumpData);
-                Gump g = (Gump)UltimaEngine.UserInterface.AddControl(new Gump(p.Serial, p.GumpID, gumpPieces, p.TextLines), p.X, p.Y);
+                Gump g = (Gump)Engine.UserInterface.AddControl(new Gump(p.Serial, p.GumpID, gumpPieces, p.TextLines), p.X, p.Y);
                 g.IsMovable = true;
             }
         }
@@ -687,7 +687,7 @@ namespace UltimaXNA
         private void receive_OpenPaperdoll(IRecvPacket packet)
         {
             OpenPaperdollPacket opp = packet as OpenPaperdollPacket;
-            UltimaEngine.UserInterface.AddControl(new PaperDollGump(EntityManager.GetObject<Mobile>(opp.Serial, false)), 400, 100, GUIManager.AddGumpType.OnlyAllowOne);
+            Engine.UserInterface.AddControl(new PaperDollGump(EntityManager.GetObject<Mobile>(opp.Serial, false)), 400, 100, GUIManager.AddGumpType.OnlyAllowOne);
         }
 
         private void receive_OpenWebBrowser(IRecvPacket packet)

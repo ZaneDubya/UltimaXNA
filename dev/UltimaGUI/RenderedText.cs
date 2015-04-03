@@ -14,6 +14,8 @@ namespace UltimaXNA.UltimaGUI
         private Texture2D m_Texture;
         private Reader m_HtmlParser;
 
+        public static GraphicsDevice Graphics;
+
         public int Width
         {
             get
@@ -23,7 +25,7 @@ namespace UltimaXNA.UltimaGUI
 
                 if (m_Texture == null || m_MustRender)
                 {
-                    checkRender(UltimaEngine.UserInterface.SpriteBatch.GraphicsDevice);
+                    checkRender();
                 }
 
                 return m_Texture.Width;
@@ -39,7 +41,7 @@ namespace UltimaXNA.UltimaGUI
 
                 if (m_Texture == null || m_MustRender)
                 {
-                    checkRender(UltimaEngine.UserInterface.SpriteBatch.GraphicsDevice);
+                    checkRender();
                 }
 
                 return m_Texture.Height;
@@ -141,14 +143,14 @@ namespace UltimaXNA.UltimaGUI
         {
             get
             {
-                checkRender(UltimaEngine.UserInterface.SpriteBatch.GraphicsDevice);
+                checkRender();
                 return m_Texture;
             }
         }
 
         public void Draw(SpriteBatchUI sb, Point position)
         {
-            checkRender(sb.GraphicsDevice);
+            checkRender();
 
             Draw(sb, new Rectangle(position.X, position.Y, Width, Height), 0, 0);
         }
@@ -158,7 +160,7 @@ namespace UltimaXNA.UltimaGUI
             if (Text == null)
                 return;
 
-            checkRender(sb.GraphicsDevice);
+            checkRender();
             
             Rectangle sourceRectangle;
 
@@ -256,7 +258,7 @@ namespace UltimaXNA.UltimaGUI
             }
         }
 
-        private void checkRender(GraphicsDevice graphics)
+        private void checkRender()
         {
             if (m_Texture == null || m_MustRender)
             {
@@ -272,7 +274,7 @@ namespace UltimaXNA.UltimaGUI
                     int width, height, ascender;
 
                     resizeAndParse(Text, MaxWidth, AsHTML, out width, out height, out ascender);
-                    m_Texture = renderToTexture(graphics, m_HtmlParser, width, height, ascender);
+                    m_Texture = renderToTexture(Graphics, m_HtmlParser, width, height, ascender);
 
                     m_MustRender = false;
                 }

@@ -29,7 +29,7 @@ namespace UltimaXNA.UltimaWorld
         {
             // pop up an error message, modal.
             MsgBox msgbox = new MsgBox(msg, type);
-            UltimaEngine.UserInterface.AddControl(msgbox, 0, 0);
+            Engine.UserInterface.AddControl(msgbox, 0, 0);
             return msgbox;
         }
 
@@ -68,13 +68,13 @@ namespace UltimaXNA.UltimaWorld
         {
             Gump gump;
 
-            if ((gump = (Gump)UltimaEngine.UserInterface.GetControl(entity.Serial)) != null)
+            if ((gump = (Gump)Engine.UserInterface.GetControl(entity.Serial)) != null)
             {
                 gump.Dispose();
             }
 
             gump = new ContainerGump(entity, ((Container)entity).ItemID);
-            UltimaEngine.UserInterface.AddControl(gump, 64, 64);
+            Engine.UserInterface.AddControl(gump, 64, 64);
             return gump;
         }
 
@@ -82,13 +82,13 @@ namespace UltimaXNA.UltimaWorld
         {
             Gump gump;
 
-            if ((gump = (Gump)UltimaEngine.UserInterface.GetControl(entity.Serial)) != null)
+            if ((gump = (Gump)Engine.UserInterface.GetControl(entity.Serial)) != null)
             {
                 gump.Dispose();
             }
 
             gump = new ContainerGump(entity, 0x2006);
-            UltimaEngine.UserInterface.AddControl(gump, 96, 96);
+            Engine.UserInterface.AddControl(gump, 96, 96);
             return gump;
         }
 
@@ -116,7 +116,7 @@ namespace UltimaXNA.UltimaWorld
         {
             m_ChatQueue.Add(new QueuedMessage(text, hue, font));
 
-            ChatWindow chat = UltimaEngine.UserInterface.GetControl<ChatWindow>(0);
+            ChatWindow chat = Engine.UserInterface.GetControl<ChatWindow>(0);
             if (chat != null)
             {
                 foreach (QueuedMessage msg in m_ChatQueue)

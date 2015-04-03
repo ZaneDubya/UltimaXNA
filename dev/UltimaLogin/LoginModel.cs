@@ -8,7 +8,7 @@ namespace UltimaXNA.UltimaLogin
 
         public LoginModel()
         {
-            UltimaEngine.UserInterface.Cursor = new UltimaGUI.UltimaCursor();
+            
         }
 
         protected override AView CreateView()
@@ -18,13 +18,14 @@ namespace UltimaXNA.UltimaLogin
 
         protected override void OnInitialize()
         {
+            Engine.UserInterface.Cursor = new UltimaGUI.UltimaCursor();
             m_SceneManager = new Scenes.SceneManager(Engine);
             m_SceneManager.ResetToLoginScreen();
         }
 
         protected override void OnDispose()
         {
-            UltimaEngine.UserInterface.Reset();
+            Engine.UserInterface.Reset();
             m_SceneManager.CurrentScene = null;
             m_SceneManager = null;
         }

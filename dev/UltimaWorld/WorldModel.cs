@@ -93,8 +93,6 @@ namespace UltimaXNA.UltimaWorld
             m_Effects = new EffectsManager(this);
             m_WorldInput = new WorldInput(this);
             m_WorldClient = new WorldClient(this);
-
-            UltimaEngine.UserInterface.Cursor = Cursor = new WorldCursor(this);
         }
 
         protected override AView CreateView()
@@ -104,11 +102,13 @@ namespace UltimaXNA.UltimaWorld
 
         protected override void OnInitialize()
         {
+            Engine.UserInterface.Cursor = Cursor = new WorldCursor(this);
+
             m_WorldClient.Initialize();
             m_WorldClient.AfterLoginSequence();
 
-            UltimaEngine.UserInterface.AddControl(new TopMenu(0), 0, 0);
-            UltimaEngine.UserInterface.AddControl(new ChatWindow(), 0, 0);
+            Engine.UserInterface.AddControl(new TopMenu(0), 0, 0);
+            Engine.UserInterface.AddControl(new ChatWindow(), 0, 0);
 
             UltimaVars.EngineVars.InWorld = true;
         }
@@ -129,7 +129,7 @@ namespace UltimaXNA.UltimaWorld
         {
             if (!Engine.Client.IsConnected)
             {
-                if (UltimaEngine.UserInterface.IsModalControlOpen == false)
+                if (Engine.UserInterface.IsModalControlOpen == false)
                 {
                     MsgBox g = WorldInteraction.MsgBox("You have lost your connection with the server.", MsgBoxTypes.OkOnly);
                     g.OnClose = onCloseLostConnectionMsgBox;

@@ -45,7 +45,7 @@ namespace UltimaXNA.UltimaLogin.Scenes
         {
             base.Intitialize(engine);
 
-            m_Gump = (Gump)UltimaEngine.UserInterface.AddControl(new Gump(Serial.Null, Serial.Null), 0, 0);
+            m_Gump = (Gump)Engine.UserInterface.AddControl(new Gump(Serial.Null, Serial.Null), 0, 0);
             m_Gump.Size = new Point(800, 600);
             m_Gump.AddControl(new ResizePic(m_Gump, 0, 5, 5, 3000, 790, 590));
 

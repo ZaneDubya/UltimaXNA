@@ -140,7 +140,7 @@ namespace UltimaXNA.UltimaGUI.Controls
         {
             if (MouseDownOnThis && m_gumpTextures[kGump_Down] != null)
                 return m_gumpTextures[kGump_Down];
-            else if (UserInterface.MouseOverControl == this && m_gumpTextures[kGump_Over] != null)
+            else if (Engine.UserInterface.MouseOverControl == this && m_gumpTextures[kGump_Over] != null)
                 return m_gumpTextures[kGump_Over];
             else
                 return m_gumpTextures[kGump_Up];

@@ -25,7 +25,7 @@ namespace UltimaXNA.UltimaLogin.Scenes
         public override void Intitialize(UltimaEngine engine)
         {
             base.Intitialize(engine);
-            m_LoginGump = (LoginGump)UltimaEngine.UserInterface.AddControl(new LoginGump(), 0, 0);
+            m_LoginGump = (LoginGump)Engine.UserInterface.AddControl(new LoginGump(), 0, 0);
             m_LoginGump.OnLogin += this.OnLogin;
         }
 
@@ -33,7 +33,7 @@ namespace UltimaXNA.UltimaLogin.Scenes
         {
             base.Update(totalTime, frameTime);
 
-            if (UltimaEngine.Input.HandleKeyboardEvent(InterXLib.Input.Windows.KeyboardEventType.Down, InterXLib.Input.Windows.WinKeys.D, false, false, true))
+            if (Engine.Input.HandleKeyboardEvent(InterXLib.Input.Windows.KeyboardEventType.Down, InterXLib.Input.Windows.WinKeys.D, false, false, true))
             {
                 Manager.CurrentScene = new HueTestScene();
             }

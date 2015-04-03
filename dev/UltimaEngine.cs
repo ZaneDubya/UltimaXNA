@@ -8,9 +8,9 @@
  *
  ***************************************************************************/
 #region usings
+using InterXLib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using InterXLib;
 using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaWorld;
 #endregion
@@ -21,8 +21,17 @@ namespace UltimaXNA
     {
         public static double TotalMS = 0d;
 
-        public static InputState Input;
-        public static GUIManager UserInterface;
+        public InputState Input
+        {
+            get;
+            private set;
+        }
+
+        public GUIManager UserInterface
+        {
+            get;
+            private set;
+        }
 
         public UltimaClient Client { get; private set; }
 
@@ -56,7 +65,7 @@ namespace UltimaXNA
         {
             this.Content.RootDirectory = "Content";
 
-            // Initialize all the services we need.
+            // Create all the services we need.
             Client = new UltimaClient(this);
             Client.IsLoggingPackets = false;
             Input = new InputState(this.Window.Handle);
@@ -121,6 +130,7 @@ namespace UltimaXNA
                 Core.Rendering.SpriteBatch3D.ResetZ();
                 this.GraphicsDevice.Clear(Color.Black);
                 ActiveModel.GetView().Draw(null, gameTime.ElapsedGameTime.TotalMilliseconds);
+                UserInterface.Draw(gameTime.ElapsedGameTime.TotalMilliseconds);
 
                 this.Window.Title =
                     (UltimaVars.DebugVars.Flag_DisplayFPS ? string.Format("UltimaXNA FPS:{0}", UltimaVars.EngineVars.FPS) : "UltimaXNA") +

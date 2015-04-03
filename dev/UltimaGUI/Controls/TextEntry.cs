@@ -92,7 +92,7 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         public override void Update(double totalMS, double frameMS)
         {
-            if (UserInterface.KeyboardFocusControl == this)
+            if (Engine.UserInterface.KeyboardFocusControl == this)
             {
                 // if we're not already focused, turn the carat on immediately.
                 // if we're using the legacy carat, keep it visible. Else blink it every x seconds.
