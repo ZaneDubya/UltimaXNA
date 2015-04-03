@@ -33,7 +33,11 @@ namespace UltimaXNA
             private set;
         }
 
-        public UltimaClient Client { get; private set; }
+        public UltimaClient Client
+        {
+            get;
+            private set;
+        }
 
         private AUltimaModel m_Model;
         internal AUltimaModel ActiveModel

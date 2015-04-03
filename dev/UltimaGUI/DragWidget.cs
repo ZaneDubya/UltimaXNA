@@ -7,7 +7,9 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+#region usings
 using InterXLib.Input.Windows;
+#endregion
 
 namespace UltimaXNA.UltimaGUI
 {

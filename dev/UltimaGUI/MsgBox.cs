@@ -1,5 +1,4 @@
-﻿using UltimaXNA.UltimaGUI;
-/***************************************************************************
+﻿/***************************************************************************
  *   MsgBox.cs
  *   
  *   This program is free software; you can redistribute it and/or modify
@@ -8,7 +7,9 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+#region usings
 using UltimaXNA.UltimaGUI.Controls;
+#endregion
 
 namespace UltimaXNA.UltimaGUI
 {

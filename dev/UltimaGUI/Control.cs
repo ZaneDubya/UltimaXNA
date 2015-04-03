@@ -7,6 +7,7 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+#region usings
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
@@ -14,6 +15,7 @@ using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Rendering;
 using InterXLib.Input.Windows;
 using UltimaXNA.Core;
+#endregion
 
 namespace UltimaXNA.UltimaGUI
 {

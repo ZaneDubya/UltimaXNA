@@ -1,5 +1,4 @@
-﻿using UltimaXNA.UltimaGUI;
-/***************************************************************************
+﻿/***************************************************************************
  *   DropWidget.cs
  *   
  *   This program is free software; you can redistribute it and/or modify
@@ -8,7 +7,10 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+#region usings
+using UltimaXNA.UltimaGUI;
 using InterXLib.Input.Windows;
+#endregion
 
 namespace UltimaXNA.UltimaGUI
 {
