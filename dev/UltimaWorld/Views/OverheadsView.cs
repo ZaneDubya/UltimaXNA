@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using UltimaXNA.UltimaEntities.EntityViews;
 using UltimaXNA.Core.Rendering;
-using UltimaXNA.UltimaWorld.Model;
+using UltimaXNA.UltimaWorld.Maps;
+using UltimaXNA.UltimaWorld.Controllers;
 
-namespace UltimaXNA.UltimaWorld.View
+namespace UltimaXNA.UltimaWorld.Views
 {
     static class OverheadRenderer
     {

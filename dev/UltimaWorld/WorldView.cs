@@ -13,14 +13,14 @@ namespace UltimaXNA.UltimaWorld
         public WorldView(WorldModel model)
             : base(model)
         {
-            View.IsometricRenderer.LightDirection = -0.6f;
+            Views.IsometricRenderer.LightDirection = -0.6f;
         }
 
         public override void Draw(YSpriteBatch spritebatch, double frameTime)
         {
 
-            View.IsometricRenderer.CenterPosition = EntityManager.GetPlayerObject().Position;
-            View.IsometricRenderer.Draw(Model.Map);
+            Views.IsometricRenderer.CenterPosition = EntityManager.GetPlayerObject().Position;
+            Views.IsometricRenderer.Draw(Model.Map);
             UltimaEngine.UserInterface.Draw(frameTime);
         }
     }

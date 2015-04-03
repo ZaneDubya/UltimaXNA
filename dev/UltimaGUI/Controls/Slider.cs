@@ -67,7 +67,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             Value = value; // must set this last
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
             if (m_gumpSlider == null)
             {
@@ -84,7 +84,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             m_value = m_newValue;
 
 
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)

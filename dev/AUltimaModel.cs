@@ -1,15 +1,15 @@
 ﻿using InterXLib.Patterns.MVC;
 using System;
 
-namespace UltimaXNA.Core
+namespace UltimaXNA
 {
     abstract internal class AUltimaModel : AModel
     {
-        public UltimaClient Client { get; private set; }
+        public UltimaEngine Engine { get; private set; }
 
-        public void Initialize(UltimaClient client)
+        public void Initialize(UltimaEngine engine)
         {
-            Client = client;
+            Engine = engine;
             OnInitialize();
         }
 

@@ -69,7 +69,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             return false;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
             if (m_expandableScrollHeight < m_expandableScrollHeight_Min)
                 m_expandableScrollHeight = m_expandableScrollHeight_Min;
@@ -112,7 +112,7 @@ namespace UltimaXNA.UltimaGUI.Controls
                 }
             }
 
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)

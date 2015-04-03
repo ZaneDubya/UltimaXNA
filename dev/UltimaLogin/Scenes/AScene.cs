@@ -18,7 +18,7 @@ namespace UltimaXNA.UltimaLogin.Scenes
         public virtual TimeSpan TransitionOnLength { get { return TimeSpan.FromSeconds(0.05); } }
         public virtual TimeSpan TransitionOffLength { get { return TimeSpan.FromSeconds(0.05); } }
 
-        protected UltimaClient Client { get; private set; }
+        protected UltimaEngine Engine { get; private set; }
 
         SceneState m_sceneState;
         float m_transitionAlpha;
@@ -51,9 +51,9 @@ namespace UltimaXNA.UltimaLogin.Scenes
             m_sceneState = SceneState.TransitioningOn;
         }
 
-        public virtual void Intitialize(UltimaClient client)
+        public virtual void Intitialize(UltimaEngine engine)
         {
-            Client = client;
+            Engine = engine;
         }
 
         public virtual void Update(double totalTime, double frameTime)

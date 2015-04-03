@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UltimaXNA.UltimaData;
-using UltimaXNA.UltimaWorld.Model;
+using UltimaXNA.UltimaWorld.Maps;
 
 namespace UltimaXNA.UltimaEntities
 {

@@ -9,7 +9,7 @@ namespace UltimaXNA.UltimaLogin.Scenes
         AScene m_CurrentScene;
         bool m_isTransitioning = false;
 
-        protected UltimaClient Client { get; private set; }
+        protected UltimaEngine Engine { get; private set; }
 
         public bool IsTransitioning
         {
@@ -52,7 +52,7 @@ namespace UltimaXNA.UltimaLogin.Scenes
                                 if (!m_CurrentScene.IsInitialized)
                                 {
                                     Logger.Debug("Initializing {0}.", m_CurrentScene.GetType().Name);
-                                    m_CurrentScene.Intitialize(Client);
+                                    m_CurrentScene.Intitialize(Engine);
                                 }
                             }
 
@@ -69,7 +69,7 @@ namespace UltimaXNA.UltimaLogin.Scenes
                     if (!m_CurrentScene.IsInitialized)
                     {
                         Logger.Debug("Initializing {0}.", m_CurrentScene.GetType().Name);
-                        m_CurrentScene.Intitialize(Client);
+                        m_CurrentScene.Intitialize(Engine);
                     }
 
                     m_isTransitioning = false;
@@ -77,9 +77,9 @@ namespace UltimaXNA.UltimaLogin.Scenes
             }
         }
 
-        public SceneManager(UltimaClient client)
+        public SceneManager(UltimaEngine engine)
         {
-            Client = client;
+            Engine = engine;
         }
 
         public void Update(double totalTime, double frameTime)
@@ -98,7 +98,7 @@ namespace UltimaXNA.UltimaLogin.Scenes
 
         public void ResetToLoginScreen()
         {
-            Client.Disconnect();
+            Engine.Client.Disconnect();
             UltimaEngine.UserInterface.Reset();
             if (!(m_CurrentScene is LoginScene))
                 CurrentScene = new LoginScene();

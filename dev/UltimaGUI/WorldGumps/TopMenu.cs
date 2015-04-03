@@ -72,7 +72,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
                 case Buttons.Inventory:
                     PlayerMobile m = (PlayerMobile)EntityManager.GetPlayerObject();
                     Container i = m.Backpack;
-                    UltimaInteraction.DoubleClick(i);
+                    WorldInteraction.DoubleClick(i);
                     // UserInterface.AddContainerGump(i, 0);
                     break;
                 case Buttons.Journal:

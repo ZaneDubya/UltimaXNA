@@ -35,9 +35,9 @@ namespace UltimaXNA.UltimaGUI.Controls
             return offset;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
             if (!m_isBuilt)
             {
                 Position = new Point(m_x, m_y);

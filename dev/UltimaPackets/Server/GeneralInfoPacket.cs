@@ -11,6 +11,7 @@
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Network.Packets;
 using UltimaXNA.Core.Diagnostics;
+using UltimaXNA.UltimaWorld.Controllers;
 #endregion
 
 namespace UltimaXNA.UltimaPackets.Server

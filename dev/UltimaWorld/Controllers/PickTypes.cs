@@ -12,7 +12,7 @@
 using System;
 #endregion
 
-namespace UltimaXNA.UltimaWorld
+namespace UltimaXNA.UltimaWorld.Controllers
 {
     [Flags]
     public enum PickTypes : int

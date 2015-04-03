@@ -1,5 +1,5 @@
 ﻿using UltimaXNA.UltimaEntities.EntityViews;
-using UltimaXNA.UltimaWorld.Model;
+using UltimaXNA.UltimaWorld.Maps;
 using Microsoft.Xna.Framework;
 using UltimaXNA.UltimaEntities.Effects;
 

@@ -51,13 +51,13 @@ namespace UltimaXNA.UltimaGUI.Controls
             m_gumpID = gumpID;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
             if (m_bgGump == null)
             {
                 m_bgGump = UltimaData.GumpData.GetGumpXNA(m_gumpID);
             }
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)

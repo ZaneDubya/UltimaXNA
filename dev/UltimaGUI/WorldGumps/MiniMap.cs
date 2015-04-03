@@ -26,7 +26,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
             IsMovable = true;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
             if (m_gump == null || m_useLargeMap != UltimaVars.EngineVars.MiniMap_LargeFormat)
             {
@@ -41,7 +41,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
                 AddControl(m_gump);
             }
 
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)

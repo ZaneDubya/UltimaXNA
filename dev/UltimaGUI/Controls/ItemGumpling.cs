@@ -14,6 +14,7 @@ using UltimaXNA.UltimaEntities;
 using UltimaXNA.Core.Rendering;
 using InterXLib.Input.Windows;
 using UltimaXNA.UltimaGUI;
+using UltimaXNA.UltimaWorld;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {
@@ -44,7 +45,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             m_item = item;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
             if (m_item.IsDisposed)
             {
@@ -53,18 +54,18 @@ namespace UltimaXNA.UltimaGUI.Controls
             }
            
 
-            if (clickedCanDrag && UltimaVars.EngineVars.TheTime >= pickUpTime)
+            if (clickedCanDrag && UltimaEngine.TotalMS >= pickUpTime)
             {
                 clickedCanDrag = false;
                 AttemptPickUp();
             }
 
-            if (sendClickIfNoDoubleClick && UltimaVars.EngineVars.TheTime >= singleClickTime)
+            if (sendClickIfNoDoubleClick && UltimaEngine.TotalMS >= singleClickTime)
             {
                 sendClickIfNoDoubleClick = false;
-                UltimaInteraction.SingleClick(m_item);
+                WorldInteraction.SingleClick(m_item);
             }
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)
@@ -113,7 +114,7 @@ namespace UltimaXNA.UltimaGUI.Controls
         {
             // if click, we wait for a moment before picking it up. This allows a single click.
             clickedCanDrag = true;
-            pickUpTime = UltimaVars.EngineVars.TheTime + UltimaVars.EngineVars.SecondsBetweenClickAndPickUp;
+            pickUpTime = (float)UltimaEngine.TotalMS + UltimaVars.EngineVars.ClickAndPickUpMS;
             m_ClickPoint = new Point(x, y);
         }
 
@@ -133,13 +134,13 @@ namespace UltimaXNA.UltimaGUI.Controls
             {
                 clickedCanDrag = false;
                 sendClickIfNoDoubleClick = true;
-                singleClickTime = UltimaVars.EngineVars.TheTime + UltimaVars.EngineVars.SecondsForDoubleClick;
+                singleClickTime = (float)UltimaEngine.TotalMS + UltimaVars.EngineVars.DoubleClickMS;
             }
         }
 
         protected override void mouseDoubleClick(int x, int y, MouseButton button)
         {
-            UltimaInteraction.DoubleClick(m_item);
+            WorldInteraction.DoubleClick(m_item);
             sendClickIfNoDoubleClick = false;
         }
 
@@ -157,11 +158,11 @@ namespace UltimaXNA.UltimaGUI.Controls
                     int w, h;
                     UltimaData.ArtData.GetStaticDimensions(this.Item.DisplayItemID, out w, out h);
                     Point click_point = new Point(w / 2, h / 2);
-                    UltimaInteraction.PickupItem(m_item, InternalGetPickupOffset(click_point));
+                    WorldInteraction.PickupItem(m_item, InternalGetPickupOffset(click_point));
                 }
                 else
                 {
-                    UltimaInteraction.PickupItem(m_item, InternalGetPickupOffset(m_ClickPoint));
+                    WorldInteraction.PickupItem(m_item, InternalGetPickupOffset(m_ClickPoint));
                 }
             }
         }

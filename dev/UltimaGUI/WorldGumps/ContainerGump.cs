@@ -37,9 +37,9 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
             m_tickerText = (HtmlGump)AddControl(new HtmlGump(this, 0, 50, 50, 0, 0, 0, 0, string.Empty));
         }
 
-        public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
             if (m_updateTicker != m_item.UpdateTicker)
             {
                 m_updateTicker = m_item.UpdateTicker;

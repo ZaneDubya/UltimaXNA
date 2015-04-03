@@ -62,7 +62,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             m_hue = hue;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
             if (m_texture == null)
             {
@@ -70,7 +70,7 @@ namespace UltimaXNA.UltimaGUI.Controls
                 Size = new Point(m_texture.Width, m_texture.Height);
             }
 
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)

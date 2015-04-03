@@ -1,7 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Rendering;
 using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaWorld.Model;
+using UltimaXNA.UltimaWorld.Maps;
+using UltimaXNA.UltimaWorld.Controllers;
 
 namespace UltimaXNA.UltimaEntities.EntityViews
 {

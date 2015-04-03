@@ -13,6 +13,7 @@ using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaGUI.LoginGumps;
 using UltimaXNA.UltimaPackets;
 using UltimaXNA.UltimaPackets.Client;
+using UltimaXNA.UltimaWorld;
 #endregion
 
 namespace UltimaXNA.UltimaLogin.Scenes
@@ -47,9 +48,9 @@ namespace UltimaXNA.UltimaLogin.Scenes
 
         }
 
-        public override void Intitialize(UltimaClient client)
+        public override void Intitialize(UltimaEngine engine)
         {
-            base.Intitialize(client);
+            base.Intitialize(engine);
             m_Status = CreateCharacterSceneStates.Default;
             openSkillsGump();
         }
@@ -100,12 +101,12 @@ namespace UltimaXNA.UltimaLogin.Scenes
             // if not, pop up an appropriate error message.
             if (m_CreateSkillsGump.Strength + m_CreateSkillsGump.Dexterity + m_CreateSkillsGump.Intelligence != 80)
             {
-                UltimaInteraction.MsgBox("Error: your stat values did not add up to 80. Please logout and try to make another character.", MsgBoxTypes.OkOnly);
+                WorldInteraction.MsgBox("Error: your stat values did not add up to 80. Please logout and try to make another character.", MsgBoxTypes.OkOnly);
                 return false;
             }
             if (m_CreateSkillsGump.SkillPoints0 + m_CreateSkillsGump.SkillPoints1 + m_CreateSkillsGump.SkillPoints2 != 100)
             {
-                UltimaInteraction.MsgBox("Error: your skill values did not add up to 100. Please logout and try to make another character.", MsgBoxTypes.OkOnly);
+                WorldInteraction.MsgBox("Error: your skill values did not add up to 100. Please logout and try to make another character.", MsgBoxTypes.OkOnly);
                 return false;
             }
             if (m_CreateSkillsGump.SkillIndex0 == -1 || m_CreateSkillsGump.SkillIndex1 == -1 || m_CreateSkillsGump.SkillIndex2 == -1 ||
@@ -113,7 +114,7 @@ namespace UltimaXNA.UltimaLogin.Scenes
                 (m_CreateSkillsGump.SkillIndex1 == m_CreateSkillsGump.SkillIndex2) ||
                 (m_CreateSkillsGump.SkillIndex0 == m_CreateSkillsGump.SkillIndex2))
             {
-                UltimaInteraction.MsgBox("You must have three unique skills chosen!", MsgBoxTypes.OkOnly);
+                WorldInteraction.MsgBox("You must have three unique skills chosen!", MsgBoxTypes.OkOnly);
                 return false;
             }
             // save the values;
@@ -145,12 +146,12 @@ namespace UltimaXNA.UltimaLogin.Scenes
             // if not, pop up an appropriate error message.
             if (m_name.Length < 2)
             {
-                UltimaInteraction.MsgBox(UltimaData.StringData.Entry(1075458), MsgBoxTypes.OkOnly); // 1075458: Your character name is too short.
+                WorldInteraction.MsgBox(UltimaData.StringData.Entry(1075458), MsgBoxTypes.OkOnly); // 1075458: Your character name is too short.
                 return false;
             }
             if (m_name[m_name.Length - 1] == '.')
             {
-                UltimaInteraction.MsgBox(UltimaData.StringData.Entry(1075457), MsgBoxTypes.OkOnly); // 1075457: Your character name cannot end with a period('.').
+                WorldInteraction.MsgBox(UltimaData.StringData.Entry(1075457), MsgBoxTypes.OkOnly); // 1075457: Your character name cannot end with a period('.').
                 return false;
             }
             return true;
@@ -174,7 +175,7 @@ namespace UltimaXNA.UltimaLogin.Scenes
                         Manager.CurrentScene = new CharacterListScene();
                         break;
                     case CreateCharacterSceneStates.CreateCharacter:
-                        Client.Send(new CreateCharacterPacket(
+                        Engine.Client.Send(new CreateCharacterPacket(
                             m_name, (Sex)m_gender, (Race)0, (byte)m_attributes[0], (byte)m_attributes[1], (byte)m_attributes[2], 
                             (byte)m_skillIndexes[0], (byte)m_skillValues[0], (byte)m_skillIndexes[1], (byte)m_skillValues[1], (byte)m_skillIndexes[2], (byte)m_skillValues[2],
                             (short)m_skinHue, (short)m_hairStyleID, (short)m_hairHue, (short)m_facialHairStyleID, (short)m_facialHairHue,
@@ -186,7 +187,7 @@ namespace UltimaXNA.UltimaLogin.Scenes
                         break;
                 }
 
-                switch (Client.Status)
+                switch (Engine.Client.Status)
                 {
                     case UltimaClientStatus.GameServer_CharList:
                         // This is where we're supposed to be while creating a character.

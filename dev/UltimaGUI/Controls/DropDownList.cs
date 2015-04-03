@@ -66,7 +66,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             ((Gump)m_owner).AddControl(new GumpPic(m_owner, Page, X + width - 22, Y + 5, 2086, 0));
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
             if (m_listOpen)
             {
@@ -96,7 +96,7 @@ namespace UltimaXNA.UltimaGUI.Controls
                 else
                     m_label.Text = m_items[Index];
             }
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
         }
 
         void closeOpenList()

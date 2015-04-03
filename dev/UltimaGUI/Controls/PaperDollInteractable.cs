@@ -7,14 +7,12 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using Microsoft.Xna.Framework;
-using UltimaXNA.Core.Network;
-using UltimaXNA.UltimaEntities;
+#region usings
 using InterXLib.Input.Windows;
-using UltimaXNA.UltimaGUI;
-using UltimaXNA.UltimaPackets;
-using UltimaXNA.UltimaPackets.Client;
-using UltimaXNA.UltimaPackets.Server;
+using Microsoft.Xna.Framework;
+using UltimaXNA.UltimaEntities;
+using UltimaXNA.UltimaWorld;
+#endregion
 
 namespace UltimaXNA.UltimaGUI.Controls
 {
@@ -88,7 +86,7 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
             if (hasSourceEntity)
             {
@@ -144,13 +142,13 @@ namespace UltimaXNA.UltimaGUI.Controls
                     }
                 }
             }
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
         }
 
         void dblclick_Backpack(int x, int y, MouseButton button)
         {
             Container i = ((Mobile)m_sourceEntity).Backpack;
-            UltimaInteraction.DoubleClick(i);
+            WorldInteraction.DoubleClick(i);
         }
 
         //void Interaction_OnItemPickUp(ItemGumplingPaperdoll Control)

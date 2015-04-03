@@ -2,7 +2,7 @@
 
 namespace UltimaXNA.UltimaLogin
 {
-    class LoginModel : Core.AUltimaModel
+    class LoginModel : AUltimaModel
     {
         private Scenes.SceneManager m_SceneManager;
 
@@ -18,7 +18,7 @@ namespace UltimaXNA.UltimaLogin
 
         protected override void OnInitialize()
         {
-            m_SceneManager = new Scenes.SceneManager(Client);
+            m_SceneManager = new Scenes.SceneManager(Engine);
             m_SceneManager.ResetToLoginScreen();
         }
 

@@ -12,13 +12,26 @@ using InterXLib.Input.Windows;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using UltimaXNA.Core.Rendering;
-using UltimaXNA.UltimaGUI;
+
 #endregion
 
-namespace UltimaXNA.Core
+namespace UltimaXNA.UltimaGUI
 {
     public class GUIManager
     {
+        protected UltimaEngine Engine { get; private set; }
+
+        public GUIManager(UltimaEngine engine)
+        {
+            Engine = engine;
+
+            Control.UserInterface = this;
+            m_SpriteBatch = new SpriteBatchUI(Engine);
+
+            m_Controls = new List<Control>();
+            m_DisposedControls = new List<Control>();
+        }
+
         SpriteBatchUI m_SpriteBatch;
         internal SpriteBatchUI SpriteBatch { get { return m_SpriteBatch; } }
 
@@ -92,15 +105,6 @@ namespace UltimaXNA.Core
             {
                 m_keyboardFocusControl = value;
             }
-        }
-
-        public void Initialize(Game game)
-        {
-            Control.UserInterface = this;
-            m_SpriteBatch = new SpriteBatchUI(game);
-            m_Controls = new List<Control>();
-            m_DisposedControls = new List<Control>();
-            
         }
 
         public bool IsModalControlOpen
@@ -201,13 +205,13 @@ namespace UltimaXNA.Core
             return null;
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(double totalMS, double frameMS)
         {
             foreach (Control c in m_Controls)
             {
                 if (!c.IsInitialized)
                     c.ControlInitialize();
-                c.Update(gameTime);
+                c.Update(totalMS, frameMS);
             }
 
             foreach (Control c in m_Controls)

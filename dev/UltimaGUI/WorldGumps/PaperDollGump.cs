@@ -104,9 +104,9 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
 
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)
@@ -123,7 +123,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
                 case Buttons.Options:
                     break;
                 case Buttons.LogOut:
-                    MsgBox g = UltimaInteraction.MsgBox("Quit Ultima Online?", MsgBoxTypes.OkCancel);
+                    MsgBox g = WorldInteraction.MsgBox("Quit Ultima Online?", MsgBoxTypes.OkCancel);
                     g.OnClose = logout_OnClose;
                     break;
                 case Buttons.Quests:
@@ -134,7 +134,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
                 case Buttons.Guild:
                     break;
                 case Buttons.PeaceWarToggle:
-                    UltimaInteraction.ToggleWarMode();
+                    WorldInteraction.ToggleWarMode();
                     break;
                 case Buttons.Status:
                     UserInterface.AddControl(new StatusGump(), 200, 400, GUIManager.AddGumpType.Toggle);
@@ -144,7 +144,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
 
         void logout_OnClose()
         {
-            UltimaInteraction.DisconnectToLoginScreen();
+            WorldInteraction.DisconnectToLoginScreen();
         }
 
         public override bool Equals(object obj)

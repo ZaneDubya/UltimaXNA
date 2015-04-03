@@ -36,9 +36,9 @@ namespace UltimaXNA.UltimaLogin.Scenes
             m_Password = password;
         }
 
-        public override void Intitialize(UltimaClient client)
+        public override void Intitialize(UltimaEngine engine)
         {
-            base.Intitialize(client);
+            base.Intitialize(engine);
             m_SelectServerGump = (SelectServerGump)UltimaEngine.UserInterface.AddControl(new SelectServerGump(), 0, 0);
             m_SelectServerGump.OnBackToLoginScreen += this.OnBackToLoginScreen;
             m_SelectServerGump.OnSelectLastServer += this.OnSelectLastServer;
@@ -51,14 +51,14 @@ namespace UltimaXNA.UltimaLogin.Scenes
 
             if (SceneState == SceneState.Active)
             {
-                switch (Client.Status)
+                switch (Engine.Client.Status)
                 {
                     case UltimaClientStatus.LoginServer_HasServerList:
                         // This is where we're supposed to be while waiting to select a server.
                         break;
                     case UltimaClientStatus.LoginServer_WaitingForRelay:
                         // we must now send the relay packet.
-                        Client.SendServerRelay(m_AccountName, m_Password);
+                        Engine.Client.SendServerRelay(m_AccountName, m_Password);
                         break;
                     case UltimaClientStatus.LoginServer_Relaying:
                         // relaying to the server we will log in to ...
@@ -94,7 +94,7 @@ namespace UltimaXNA.UltimaLogin.Scenes
         public void OnSelectServer(int index)
         {
             m_SelectServerGump.ActivePage = 2;
-            Client.SelectServer(index);
+            Engine.Client.SelectServer(index);
         }
 
         public void OnSelectLastServer()

@@ -17,6 +17,17 @@ using UltimaXNA.UltimaWorld;
 
 namespace UltimaXNA
 {
+    public interface IPoint2D
+    {
+        int X { get; }
+        int Y { get; }
+    }
+
+    public interface IPoint3D : IPoint2D
+    {
+        int Z { get; }
+    }
+
     public class Position3D : IPoint2D
     {
         public static Point NullTile = new Point(int.MinValue, int.MinValue);

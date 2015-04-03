@@ -336,7 +336,7 @@ namespace UltimaXNA.UltimaGUI
             return true;
         }
 
-        virtual public void Update(GameTime gameTime)
+        virtual public void Update(double totalMS, double frameMS)
         {
             if (!m_isInitialized)
                 return;
@@ -349,7 +349,7 @@ namespace UltimaXNA.UltimaGUI
             {
                 if (!c.IsInitialized)
                     c.ControlInitialize();
-                c.Update(gameTime);
+                c.Update(totalMS, frameMS);
             }
 
             List<Control> disposedControls = new List<Control>();
@@ -491,7 +491,7 @@ namespace UltimaXNA.UltimaGUI
             bool doubleClick = false;
             if (maxTimeForDoubleClick != 0f)
             {
-                if (UltimaVars.EngineVars.TheTime <= maxTimeForDoubleClick)
+                if (UltimaEngine.TotalMS <= maxTimeForDoubleClick)
                 {
                     maxTimeForDoubleClick = 0f;
                     doubleClick = true;
@@ -499,7 +499,7 @@ namespace UltimaXNA.UltimaGUI
             }
             else
             {
-                maxTimeForDoubleClick = UltimaVars.EngineVars.TheTime + UltimaVars.EngineVars.SecondsForDoubleClick;
+                maxTimeForDoubleClick = (float)UltimaEngine.TotalMS + UltimaVars.EngineVars.DoubleClickMS;
             }
 
             mouseClick(x, y, button);

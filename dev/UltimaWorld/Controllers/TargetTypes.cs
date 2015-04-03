@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace UltimaXNA.UltimaWorld.Controller
+namespace UltimaXNA.UltimaWorld.Controllers
 {
     public enum TargetTypes
     {

@@ -34,7 +34,7 @@ namespace UltimaXNA.UltimaGUI
             IsModal = true;
         }
 
-        public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
             if (IsInitialized && m_text == null)
             {
@@ -59,10 +59,10 @@ namespace UltimaXNA.UltimaGUI
                         break;
                 }
                 
-                base.Update(gameTime);
+                base.Update(totalMS, frameMS);
                 Center();
             }
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
         }
 
         public override void ActivateByButton(int buttonID)

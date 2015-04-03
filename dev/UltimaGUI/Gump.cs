@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-/***************************************************************************
+﻿/***************************************************************************
  *   Gump.cs
  *   
  *   This program is free software; you can redistribute it and/or modify
@@ -9,10 +7,13 @@ using Microsoft.Xna.Framework.Graphics;
  *   (at your option) any later version.
  *
  ***************************************************************************/
+#region usings
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using UltimaXNA.Core.Rendering;
-using UltimaXNA.UltimaPackets;
-using UltimaXNA.UltimaPackets.Client;
+using UltimaXNA.UltimaWorld;
+#endregion
 
 namespace UltimaXNA.UltimaGUI
 {
@@ -44,7 +45,7 @@ namespace UltimaXNA.UltimaGUI
             base.Dispose();
         }
 
-        public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
             // Add any gump pieces that have been given to the gump...
             if (m_gumpPieces != null)
@@ -60,7 +61,7 @@ namespace UltimaXNA.UltimaGUI
                 ActivePage = 1;
 
             // Update the Controls...
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
 
             // Do we need to resize?
             if (checkResize())
@@ -117,7 +118,7 @@ namespace UltimaXNA.UltimaGUI
         {
             int[] switchIDs = new int[0];
             Tuple<short, string>[] textEntries = new Tuple<short,string>[0];
-            UltimaInteraction.GumpMenuSelect(this.Serial, this.GumpID, buttonID, switchIDs, textEntries);
+            WorldInteraction.GumpMenuSelect(this.Serial, this.GumpID, buttonID, switchIDs, textEntries);
             this.Dispose();
         }
 
@@ -178,31 +179,31 @@ namespace UltimaXNA.UltimaGUI
                         break;
 
                     case "checkbox":
-                        UltimaInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
+                        WorldInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
                         break;
                     case "group":
-                        UltimaInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
+                        WorldInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
                         break;
                     case "xmfhtmlgump":
-                        UltimaInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
+                        WorldInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
                         break;
                     case "xmfhtmlgumpcolor":
-                        UltimaInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
+                        WorldInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
                         break;
                     case "xmfhtmltok":
-                        UltimaInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
+                        WorldInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
                         break;
                     case "buttontileart":
-                        UltimaInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
+                        WorldInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
                         break;
                     case "tooltip":
-                        UltimaInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
+                        WorldInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
                         break;
                     case "radio":
-                        UltimaInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
+                        WorldInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
                         break;
                     default:
-                        UltimaInteraction.ChatMessage("GUMP: Unknown piece '" + arguements[0] + "'.");
+                        WorldInteraction.ChatMessage("GUMP: Unknown piece '" + arguements[0] + "'.");
                         break;
                 }
             }

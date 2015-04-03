@@ -4,7 +4,7 @@ using UltimaXNA.Core.Rendering;
 
 namespace UltimaXNA.UltimaGUI
 {
-    public class Sprite
+    public class HuedTexture
     {
         private Texture2D m_Texture = null;
         private Rectangle m_SourceRect = Rectangle.Empty;
@@ -23,7 +23,7 @@ namespace UltimaXNA.UltimaGUI
             get { return m_Hue; }
         }
 
-        public Sprite(Texture2D texture, Point offset, Rectangle source, int hue)
+        public HuedTexture(Texture2D texture, Point offset, Rectangle source, int hue)
         {
             m_Texture = texture;
             m_Offset = offset;

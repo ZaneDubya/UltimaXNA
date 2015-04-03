@@ -22,7 +22,8 @@ using UltimaXNA.UltimaPackets;
 using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.UltimaPackets.Server;
 using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaWorld.View;
+using UltimaXNA.UltimaWorld.Views;
+using UltimaXNA.UltimaWorld.Controllers;
 #endregion
 
 namespace UltimaXNA
@@ -32,8 +33,12 @@ namespace UltimaXNA
         public UltimaClientStatus Status { get; protected set; }
         private int m_ServerRelayKey = 0;
 
-        public UltimaClient()
+        protected UltimaEngine Engine { get; private set; }
+
+        public UltimaClient(UltimaEngine engine)
         {
+            Engine = engine;
+
             Status = UltimaClientStatus.Unconnected;
             InternalRegisterAllPackets();
         }
@@ -268,7 +273,7 @@ namespace UltimaXNA
         private void receive_DeleteCharacterResponse(IRecvPacket packet)
         {
             DeleteCharacterResponsePacket p = (DeleteCharacterResponsePacket)packet;
-            UltimaInteraction.MsgBox(p.Result, MsgBoxTypes.OkOnly);
+            WorldInteraction.MsgBox(p.Result, MsgBoxTypes.OkOnly);
         }
 
         private void receive_CharacterListUpdate(IRecvPacket packet)
@@ -327,15 +332,15 @@ namespace UltimaXNA
                 item = EntityManager.GetObject<Container>(p.Serial, false);
                 if (item is Corpse)
                 {
-                    UltimaInteraction.OpenCorpseGump(item);
+                    WorldInteraction.OpenCorpseGump(item);
                 }
                 else if (item is Container)
                 {
-                    UltimaInteraction.OpenContainerGump(item);
+                    WorldInteraction.OpenContainerGump(item);
                 }
                 else
                 {
-                    UltimaInteraction.ChatMessage(string.Format("Client: Object {0} has no support for a container object!", item.Serial));
+                    WorldInteraction.ChatMessage(string.Format("Client: Object {0} has no support for a container object!", item.Serial));
                 }
             }
         }
@@ -352,7 +357,7 @@ namespace UltimaXNA
             DamagePacket p = (DamagePacket)packet;
             Mobile u = EntityManager.GetObject<Mobile>(p.Serial, false);
 
-            UltimaInteraction.ChatMessage(string.Format("{0} takes {1} damage!", u.Name, p.Damage));
+            WorldInteraction.ChatMessage(string.Format("{0} takes {1} damage!", u.Name, p.Damage));
         }
 
         private void receive_DeathAnimation(IRecvPacket packet)
@@ -479,7 +484,7 @@ namespace UltimaXNA
         private void receive_GlobalQueueCount(IRecvPacket packet)
         {
             GlobalQueuePacket p = (GlobalQueuePacket)packet;
-            UltimaInteraction.ChatMessage("System: There are currently " + p.Count + " available calls in the global queue.");
+            WorldInteraction.ChatMessage("System: There are currently " + p.Count + " available calls in the global queue.");
         }
 
         private void receive_InvalidMapEnable(IRecvPacket packet)
@@ -740,7 +745,7 @@ namespace UltimaXNA
         private void receive_PopupMessage(IRecvPacket packet)
         {
             PopupMessagePacket p = (PopupMessagePacket)packet;
-            UltimaInteraction.MsgBox(p.Message, MsgBoxTypes.OkOnly);
+            WorldInteraction.MsgBox(p.Message, MsgBoxTypes.OkOnly);
         }
 
         private void receive_QuestArrow(IRecvPacket packet)
@@ -751,8 +756,8 @@ namespace UltimaXNA
         private void receive_RejectMoveItemRequest(IRecvPacket packet)
         {
             LiftRejectionPacket p = (LiftRejectionPacket)packet;
-            UltimaInteraction.ChatMessage("Could not pick up item: " + p.ErrorMessage);
-            UltimaInteraction.ClearHolding();
+            WorldInteraction.ChatMessage("Could not pick up item: " + p.ErrorMessage);
+            WorldInteraction.ClearHolding();
         }
 
         private void receive_RequestNameResponse(IRecvPacket packet)
@@ -865,7 +870,7 @@ namespace UltimaXNA
         private void receive_Time(IRecvPacket packet)
         {
             TimePacket p = (TimePacket)packet;
-            UltimaInteraction.ChatMessage(string.Format("The current server time is {0}:{1}:{2}", p.Hour, p.Minute, p.Second));
+            WorldInteraction.ChatMessage(string.Format("The current server time is {0}:{1}:{2}", p.Hour, p.Minute, p.Second));
         }
 
         private void receive_TipNotice(IRecvPacket packet)
@@ -971,45 +976,45 @@ namespace UltimaXNA
                     overhead = EntityManager.AddOverhead(msgType, serial, "<outline>" + text, font, hue);
                     if (overhead != null)
                     {
-                        UltimaInteraction.ChatMessage(speakerName + ": " + text, font, hue);
+                        WorldInteraction.ChatMessage(speakerName + ": " + text, font, hue);
                     }
                     else
                     {
-                        UltimaInteraction.ChatMessage(text, font, hue);
+                        WorldInteraction.ChatMessage(text, font, hue);
                     }
                     break;
                 case MessageType.System:
-                    UltimaInteraction.ChatMessage("[SYSTEM] " + text, font, hue);
+                    WorldInteraction.ChatMessage("[SYSTEM] " + text, font, hue);
                     break;
                 case MessageType.Emote:
-                    UltimaInteraction.ChatMessage("[EMOTE] " + text, font, hue);
+                    WorldInteraction.ChatMessage("[EMOTE] " + text, font, hue);
                     break;
                 case MessageType.Label:
-                    UltimaInteraction.CreateLabel(msgType, serial, text, font, hue);
+                    WorldInteraction.CreateLabel(msgType, serial, text, font, hue);
                     break;
                 case MessageType.Focus: // on player?
-                    UltimaInteraction.ChatMessage("[FOCUS] " + text, font, hue);
+                    WorldInteraction.ChatMessage("[FOCUS] " + text, font, hue);
                     break;
                 case MessageType.Whisper:
-                    UltimaInteraction.ChatMessage("[WHISPER] " + text, font, hue);
+                    WorldInteraction.ChatMessage("[WHISPER] " + text, font, hue);
                     break;
                 case MessageType.Yell:
-                    UltimaInteraction.ChatMessage("[YELL] " + text, font, hue);
+                    WorldInteraction.ChatMessage("[YELL] " + text, font, hue);
                     break;
                 case MessageType.Spell:
-                    UltimaInteraction.ChatMessage("[SPELL] " + text, font, hue);
+                    WorldInteraction.ChatMessage("[SPELL] " + text, font, hue);
                     break;
                 case MessageType.UIld:
-                    UltimaInteraction.ChatMessage("[UILD] " + text, font, hue);
+                    WorldInteraction.ChatMessage("[UILD] " + text, font, hue);
                     break;
                 case MessageType.Alliance:
-                    UltimaInteraction.ChatMessage("[ALLIANCE] " + text, font, hue);
+                    WorldInteraction.ChatMessage("[ALLIANCE] " + text, font, hue);
                     break;
                 case MessageType.Command:
-                    UltimaInteraction.ChatMessage("[COMMAND] " + text, font, hue);
+                    WorldInteraction.ChatMessage("[COMMAND] " + text, font, hue);
                     break;
                 default:
-                    UltimaInteraction.ChatMessage("[[ERROR UNKNOWN COMMAND]] " + msgType.ToString());
+                    WorldInteraction.ChatMessage("[[ERROR UNKNOWN COMMAND]] " + msgType.ToString());
                     break;
             }
         }
@@ -1152,7 +1157,7 @@ namespace UltimaXNA
                     Status = UltimaClientStatus.WorldServer_InWorld;
 
                     WorldModel model = new WorldModel();
-                    UltimaEngine.ActiveModel = model;
+                    Engine.ActiveModel = model;
                     model.MapIndex = m_QueuedMapIndex;
 
                     LoginConfirmPacket p = m_QueuedLoginConfirmPacket;
@@ -1166,7 +1171,7 @@ namespace UltimaXNA
             else
             {
                 // already logged in!
-                WorldModel model = (WorldModel)UltimaEngine.ActiveModel;
+                WorldModel model = (WorldModel)Engine.ActiveModel;
                 if (model.MapIndex != m_QueuedMapIndex)
                 {
                     model.MapIndex = m_QueuedMapIndex;

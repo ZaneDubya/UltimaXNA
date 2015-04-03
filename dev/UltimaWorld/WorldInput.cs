@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using UltimaXNA.UltimaEntities;
 using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.UltimaVars;
-using UltimaXNA.UltimaWorld.View;
+using UltimaXNA.UltimaWorld.Views;
+using UltimaXNA.UltimaWorld.Controllers;
 
-namespace UltimaXNA.UltimaWorld.Controller
+namespace UltimaXNA.UltimaWorld
 {
     /// <summary>
     /// Handles all the mouse input when the mouse is over the world.
@@ -59,7 +60,7 @@ namespace UltimaXNA.UltimaWorld.Controller
 
         public void Update(double frameMS)
         {
-            if (UltimaVars.EngineVars.InWorld && !UltimaEngine.UserInterface.IsModalControlOpen && m_Model.Client.IsConnected)
+            if (UltimaVars.EngineVars.InWorld && !UltimaEngine.UserInterface.IsModalControlOpen && m_Model.Engine.Client.IsConnected)
             {
                 // always parse keyboard. (Is it possible there are some situations in which keyboard input is blocked???)
                 InternalParseKeyboard(frameMS);
@@ -245,17 +246,17 @@ namespace UltimaXNA.UltimaWorld.Controller
                 {
                     // pop up name of item.
                     overEntity.AddOverhead(MessageType.Label, "<outline>" + overEntity.Name, 0, 0);
-                    Model.StaticManager.AddStaticThatNeedsUpdating(overEntity as StaticItem);
+                    StaticManager.AddStaticThatNeedsUpdating(overEntity as StaticItem);
                 }
                 else if (overEntity is Item)
                 {
                     // request context menu
-                    UltimaInteraction.SingleClick(overEntity);
+                    WorldInteraction.SingleClick(overEntity);
                 }
                 else if (overEntity is Mobile)
                 {
                     // request context menu
-                    UltimaInteraction.SingleClick(overEntity);
+                    WorldInteraction.SingleClick(overEntity);
                 }
             }
             else if (e.EventType == MouseEvent.DoubleClick)
@@ -271,18 +272,18 @@ namespace UltimaXNA.UltimaWorld.Controller
                 else if (overEntity is Item)
                 {
                     // request context menu
-                    UltimaInteraction.DoubleClick(overEntity);
+                    WorldInteraction.DoubleClick(overEntity);
                 }
                 else if (overEntity is Mobile)
                 {
                     // Send double click packet.
                     // Set LastTarget == targeted Mobile.
                     // If in WarMode, set Attacking == true.
-                    UltimaInteraction.DoubleClick(overEntity);
+                    WorldInteraction.DoubleClick(overEntity);
                     UltimaVars.EngineVars.LastTarget = overEntity.Serial;
                     if (UltimaVars.EngineVars.WarMode)
                     {
-                        m_Model.Client.Send(new AttackRequestPacket(overEntity.Serial));
+                        m_Model.Engine.Client.Send(new AttackRequestPacket(overEntity.Serial));
                     }
                 }
             }
@@ -299,7 +300,7 @@ namespace UltimaXNA.UltimaWorld.Controller
                 else if (overEntity is Item)
                 {
                     // attempt to pick up item.
-                    UltimaInteraction.PickupItem((Item)overEntity, new Point((int)m_dragOffset.X, (int)m_dragOffset.Y));
+                    WorldInteraction.PickupItem((Item)overEntity, new Point((int)m_dragOffset.X, (int)m_dragOffset.Y));
                 }
                 else if (overEntity is Mobile)
                 {
@@ -376,7 +377,7 @@ namespace UltimaXNA.UltimaWorld.Controller
             m_QueuedEvent_InQueue = true;
             m_QueuedEntity = overEntity;
             m_QueuedEntityPosition = overEntityPoint;
-            m_QueuedEvent_DequeueAt = EngineVars.SecondsForDoubleClick * 1000d;
+            m_QueuedEvent_DequeueAt = EngineVars.DoubleClickMS * 1000d;
             m_QueuedEvent = e;
         }
         #endregion
@@ -390,9 +391,9 @@ namespace UltimaXNA.UltimaWorld.Controller
             if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.Tab, false, false, false))
             {
                 if (UltimaVars.EngineVars.WarMode)
-                    m_Model.Client.Send(new RequestWarModePacket(false));
+                    m_Model.Engine.Client.Send(new RequestWarModePacket(false));
                 else
-                    m_Model.Client.Send(new RequestWarModePacket(true));
+                    m_Model.Engine.Client.Send(new RequestWarModePacket(true));
             }
 
             // movement with arrow keys if the player is not moving and the mouse isn't moving the player.

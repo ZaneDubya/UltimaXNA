@@ -14,7 +14,7 @@ using System.Linq;
 using System.Text;
 #endregion
 
-namespace UltimaXNA.UltimaPackets
+namespace UltimaXNA.UltimaWorld.Controllers
 {
     public class ContextMenuItem
     {

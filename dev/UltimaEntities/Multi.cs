@@ -11,9 +11,9 @@
 using System.Collections.Generic;
 using UltimaXNA.UltimaData;
 using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaWorld.View;
+using UltimaXNA.UltimaWorld.Views;
 using Microsoft.Xna.Framework;
-using UltimaXNA.UltimaWorld.Model;
+using UltimaXNA.UltimaWorld.Maps;
 #endregion
 
 namespace UltimaXNA.UltimaEntities

@@ -15,7 +15,7 @@ using UltimaXNA.UltimaEntities;
 using UltimaXNA.Core.Rendering;
 #endregion
 
-namespace UltimaXNA.UltimaWorld
+namespace UltimaXNA.UltimaWorld.Controllers
 {
     public class MouseOverList
     {

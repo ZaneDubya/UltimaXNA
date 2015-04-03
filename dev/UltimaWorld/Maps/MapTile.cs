@@ -14,10 +14,10 @@ using System.Collections.Generic;
 using UltimaXNA.UltimaEntities;
 using UltimaXNA.UltimaEntities.EntityViews;
 using UltimaXNA.UltimaData;
-using UltimaXNA.UltimaWorld.View;
+using UltimaXNA.UltimaWorld.Views;
 #endregion
 
-namespace UltimaXNA.UltimaWorld.Model
+namespace UltimaXNA.UltimaWorld.Maps
 {
     /// <summary>
     /// Represents a single tile on the Ultima Online map.
@@ -235,7 +235,7 @@ namespace UltimaXNA.UltimaWorld.Model
                 if (m_NeedsSorting)
                 {
                     InternalRemoveDuplicateEntities();
-                    EntitySort.Sort(m_Entities);
+                    TileSorter.Sort(m_Entities);
                     m_NeedsSorting = false;
                 }
                 return m_Entities;

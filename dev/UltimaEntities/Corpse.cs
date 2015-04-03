@@ -10,7 +10,7 @@
 #region usings
 using System.Collections.Generic;
 using UltimaXNA.UltimaPackets.Server;
-using UltimaXNA.UltimaWorld.Model;
+using UltimaXNA.UltimaWorld.Maps;
 #endregion
 
 namespace UltimaXNA.UltimaEntities

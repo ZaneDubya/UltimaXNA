@@ -151,9 +151,9 @@ namespace UltimaXNA.UltimaGUI.LoginGumps
             ((Button)LastControl).GumpOverID = 5514;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
             
             // show different controls based on what gender we're looking at.
             // Also copy over the hair id to facilitate easy switching between male and female appearances.

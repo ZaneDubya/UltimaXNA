@@ -37,13 +37,13 @@ namespace UltimaXNA.UltimaLogin.Scenes
             m_Password = password;
         }
 
-        public override void Intitialize(UltimaClient client)
+        public override void Intitialize(UltimaEngine engine)
         {
-            base.Intitialize(client);
+            base.Intitialize(engine);
             m_Gump = (LoggingInGump)UltimaEngine.UserInterface.AddControl(new LoggingInGump(), 0, 0);
             m_Gump.OnCancelLogin += this.OnCancelLogin;
-            if (Client.IsConnected)
-                Client.Disconnect();
+            if (Engine.Client.IsConnected)
+                Engine.Client.Disconnect();
         }
 
         public override void Update(double totalTime, double frameTime)
@@ -54,10 +54,10 @@ namespace UltimaXNA.UltimaLogin.Scenes
             {
                 if (!m_ErrorReceived)
                 {
-                    switch (Client.Status)
+                    switch (Engine.Client.Status)
                     {
                         case UltimaClientStatus.Unconnected:
-                            Client.Connect(m_ServerHost, m_ServerPort);
+                            Engine.Client.Connect(m_ServerHost, m_ServerPort);
                             break;
                         case UltimaClientStatus.LoginServer_Connecting:
                             // connecting ...
@@ -65,7 +65,7 @@ namespace UltimaXNA.UltimaLogin.Scenes
                         case UltimaClientStatus.LoginServer_WaitingForLogin:
                             // show 'verifying account...' gump
                             m_Gump.ActivePage = 9;
-                            Client.SendAccountLogin(m_AccountName, m_Password);
+                            Engine.Client.SendAccountLogin(m_AccountName, m_Password);
                             break;
                         case UltimaClientStatus.LoginServer_LoggingIn:
                             // logging in ...

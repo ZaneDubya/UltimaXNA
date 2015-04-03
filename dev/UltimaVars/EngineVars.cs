@@ -18,11 +18,6 @@ namespace UltimaXNA.UltimaVars
 {
     public class EngineVars
     {
-        public static float TheTime
-        {
-            get { return (float)GameTime.TotalGameTime.TotalSeconds; }
-        }
-
         public static Direction CursorDirection { get; internal set; }
 
         // InWorld allows us to tell when our character object has been loaded in the world.
@@ -30,8 +25,8 @@ namespace UltimaXNA.UltimaVars
 
         public static bool EngineRunning { get; set; } // false = engine immediately quits.
 
-        public const float SecondsBetweenClickAndPickUp = 0.8f; // this is close to what the legacy client uses.
-        public const float SecondsForDoubleClick = 0.4f;
+        public const float ClickAndPickUpMS = 800f; // this is close to what the legacy client uses.
+        public const float DoubleClickMS = 400f;
 
         public static Serial PlayerSerial
         {
@@ -46,7 +41,7 @@ namespace UltimaXNA.UltimaVars
             set
             {
                 m_lastTarget = value;
-                UltimaInteraction.SendLastTargetPacket(m_lastTarget);
+                WorldInteraction.SendLastTargetPacket(m_lastTarget);
             }
         }
 
@@ -112,17 +107,6 @@ namespace UltimaXNA.UltimaVars
         {
             get { return m_ScreenSize; }
             set { m_ScreenSize = value; }
-        }
-
-        static GameTime m_theGameTime;
-        internal static GameTime GameTime
-        {
-            get { return m_theGameTime; }
-            set
-            {
-                m_theGameTime = value;
-                UpdateFPS(m_theGameTime);
-            }
         }
 
         public static bool NewDiagonalMovement = false;

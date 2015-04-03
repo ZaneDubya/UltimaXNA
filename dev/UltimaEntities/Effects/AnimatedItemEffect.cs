@@ -10,7 +10,7 @@
 #region usings
 using UltimaXNA.UltimaData;
 using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaWorld.Model;
+using UltimaXNA.UltimaWorld.Maps;
 #endregion
 
 namespace UltimaXNA.UltimaEntities.Effects

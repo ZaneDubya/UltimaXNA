@@ -136,7 +136,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             Height = m_Texture.Height;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
             m_hrefOver = -1; // this value is changed every frame if we mouse over a region.
 
@@ -161,7 +161,7 @@ namespace UltimaXNA.UltimaGUI.Controls
                 ScrollY = m_scrollbar.Value;
             }
 
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)

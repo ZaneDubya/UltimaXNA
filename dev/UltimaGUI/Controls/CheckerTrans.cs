@@ -49,9 +49,9 @@ namespace UltimaXNA.UltimaGUI.Controls
             Size = new Point(width, height);
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)

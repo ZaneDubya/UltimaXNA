@@ -22,9 +22,9 @@ namespace UltimaXNA.UltimaLogin.Scenes
 
         }
 
-        public override void Intitialize(UltimaClient client)
+        public override void Intitialize(UltimaEngine engine)
         {
-            base.Intitialize(client);
+            base.Intitialize(engine);
             m_LoginGump = (LoginGump)UltimaEngine.UserInterface.AddControl(new LoginGump(), 0, 0);
             m_LoginGump.OnLogin += this.OnLogin;
         }

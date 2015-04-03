@@ -10,7 +10,7 @@ namespace UltimaXNA.UltimaGUI
 {
     class UltimaCursor
     {
-        private Sprite m_CursorSprite = null;
+        private HuedTexture m_CursorSprite = null;
         private int m_CursorSpriteArtIndex = -1;
 
         public int CursorSpriteArtIndex
@@ -31,7 +31,7 @@ namespace UltimaXNA.UltimaGUI
                     else
                     {
                         Rectangle sourceRect = new Rectangle(1, 1, art.Width - 2, art.Height - 2);
-                        m_CursorSprite = new Sprite(art, Point.Zero, sourceRect, 0);
+                        m_CursorSprite = new HuedTexture(art, Point.Zero, sourceRect, 0);
                     }
                 }
             }

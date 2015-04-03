@@ -41,9 +41,9 @@ namespace UltimaXNA.UltimaLogin.Scenes
             OverHue = -1;
         }
 
-        public override void Intitialize(UltimaClient client)
+        public override void Intitialize(UltimaEngine engine)
         {
-            base.Intitialize(client);
+            base.Intitialize(engine);
 
             m_Gump = (Gump)UltimaEngine.UserInterface.AddControl(new Gump(Serial.Null, Serial.Null), 0, 0);
             m_Gump.Size = new Point(800, 600);

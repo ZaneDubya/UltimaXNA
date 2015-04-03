@@ -81,7 +81,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             closeSwatch();
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
             if (m_isAnOpenSwatch)
             {
@@ -110,7 +110,7 @@ namespace UltimaXNA.UltimaGUI.Controls
                 }
             }
 
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)

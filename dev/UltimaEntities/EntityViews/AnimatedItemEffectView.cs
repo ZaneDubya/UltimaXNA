@@ -4,7 +4,8 @@ using UltimaXNA.Core.Rendering;
 using UltimaXNA.UltimaData;
 using UltimaXNA.UltimaEntities.Effects;
 using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaWorld.Model;
+using UltimaXNA.UltimaWorld.Maps;
+using UltimaXNA.UltimaWorld.Controllers;
 
 namespace UltimaXNA.UltimaEntities.EntityViews
 {

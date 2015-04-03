@@ -1,19 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using InterXLib.Patterns.MVC;
-using UltimaXNA.UltimaPackets;
-using UltimaXNA.UltimaGUI.LoginGumps;
-using UltimaXNA.UltimaGUI;
-using InterXLib.Input.Windows;
+﻿using UltimaXNA.Core.Network;
 using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.UltimaPackets.Server;
-using UltimaXNA.Core.Network;
-using UltimaXNA.UltimaWorld.Controller;
-using UltimaXNA.Core.Diagnostics;
+using UltimaXNA.UltimaWorld.Controllers;
 
-namespace UltimaXNA.UltimaWorld.Controller
+namespace UltimaXNA.UltimaWorld
 {
     class WorldClient
     {
@@ -26,18 +16,18 @@ namespace UltimaXNA.UltimaWorld.Controller
 
         public void Initialize()
         {
-            m_Model.Client.Register<VersionRequestPacket>(0xBD, "Version Request", -1, new TypedPacketReceiveHandler(receive_VersionRequest));
-            m_Model.Client.Register<TargetCursorPacket>(0x6C, "TargetCursor", 19, new TypedPacketReceiveHandler(receive_TargetCursor));
-            m_Model.Client.Register<TargetCursorMultiPacket>(0x99, "Target Cursor Multi Object", 26, new TypedPacketReceiveHandler(receive_TargetCursorMulti));
+            m_Model.Engine.Client.Register<VersionRequestPacket>(0xBD, "Version Request", -1, new TypedPacketReceiveHandler(receive_VersionRequest));
+            m_Model.Engine.Client.Register<TargetCursorPacket>(0x6C, "TargetCursor", 19, new TypedPacketReceiveHandler(receive_TargetCursor));
+            m_Model.Engine.Client.Register<TargetCursorMultiPacket>(0x99, "Target Cursor Multi Object", 26, new TypedPacketReceiveHandler(receive_TargetCursorMulti));
 
             UltimaEntities.MobileMovement.SendMoveRequestPacket += InternalOnEntity_SendMoveRequestPacket;
         }
 
         public void Dispose()
         {
-            m_Model.Client.Unregister(0xBD, receive_VersionRequest);
-            m_Model.Client.Unregister(0x6C, receive_TargetCursor);
-            m_Model.Client.Unregister(0x99, receive_TargetCursorMulti);
+            m_Model.Engine.Client.Unregister(0xBD, receive_VersionRequest);
+            m_Model.Engine.Client.Unregister(0x6C, receive_TargetCursor);
+            m_Model.Engine.Client.Unregister(0x99, receive_TargetCursorMulti);
 
             UltimaEntities.MobileMovement.SendMoveRequestPacket -= InternalOnEntity_SendMoveRequestPacket;
         }
@@ -62,27 +52,27 @@ namespace UltimaXNA.UltimaWorld.Controller
 
         public void GetMySkills()
         {
-            m_Model.Client.Send(new GetPlayerStatusPacket(0x05, UltimaVars.EngineVars.PlayerSerial));
+            m_Model.Engine.Client.Send(new GetPlayerStatusPacket(0x05, UltimaVars.EngineVars.PlayerSerial));
         }
 
         public void SendClientVersion(string version_string)
         {
-            m_Model.Client.Send(new ClientVersionPacket(version_string));
+            m_Model.Engine.Client.Send(new ClientVersionPacket(version_string));
         }
 
         public void SendClientScreenSize()
         {
-            m_Model.Client.Send(new ReportClientScreenSizePacket(800, 600));
+            m_Model.Engine.Client.Send(new ReportClientScreenSizePacket(800, 600));
         }
 
         public void SendClientLocalization()
         {
-            m_Model.Client.Send(new ReportClientLocalizationPacket("ENU"));
+            m_Model.Engine.Client.Send(new ReportClientLocalizationPacket("ENU"));
         }
 
         public void GetMyBasicStatus()
         {
-            m_Model.Client.Send(new GetPlayerStatusPacket(0x04, UltimaVars.EngineVars.PlayerSerial));
+            m_Model.Engine.Client.Send(new GetPlayerStatusPacket(0x04, UltimaVars.EngineVars.PlayerSerial));
         }
 
         private void receive_VersionRequest(IRecvPacket packet)
@@ -105,7 +95,7 @@ namespace UltimaXNA.UltimaWorld.Controller
 
         private void InternalOnEntity_SendMoveRequestPacket(MoveRequestPacket packet)
         {
-            m_Model.Client.Send(packet);
+            m_Model.Engine.Client.Send(packet);
         }
     }
 }

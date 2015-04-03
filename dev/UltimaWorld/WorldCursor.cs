@@ -17,11 +17,11 @@ using UltimaXNA.Core.Rendering;
 using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaGUI.Controls;
 using UltimaXNA.UltimaPackets.Client;
-using UltimaXNA.UltimaWorld.Controller;
-using UltimaXNA.UltimaWorld.View;
+using UltimaXNA.UltimaWorld.Controllers;
+using UltimaXNA.UltimaWorld.Views;
 #endregion
 
-namespace UltimaXNA.UltimaWorld.Model
+namespace UltimaXNA.UltimaWorld
 {
     /// <summary>
     /// Handles targeting, holding items, and dropping items (both into the UI and into the world).
@@ -163,7 +163,7 @@ namespace UltimaXNA.UltimaWorld.Model
         // Drawing routines
         // ======================================================================
 
-        private Sprite m_ItemSprite = null;
+        private HuedTexture m_ItemSprite = null;
         private int m_ItemSpriteArtIndex = -1;
 
         public int ItemSpriteArtIndex
@@ -184,7 +184,7 @@ namespace UltimaXNA.UltimaWorld.Model
                     else
                     {
                         Rectangle sourceRect = new Rectangle(0, 0, art.Width, art.Height);
-                        m_ItemSprite = new Sprite(art, Point.Zero, sourceRect, 0);
+                        m_ItemSprite = new HuedTexture(art, Point.Zero, sourceRect, 0);
                     }
                 }
             }
@@ -299,7 +299,7 @@ namespace UltimaXNA.UltimaWorld.Model
             {
                 if (targeting == TargetTypes.Nothing)
                 {
-                    m_Model.Client.Send(new TargetCancelPacket());
+                    m_Model.Engine.Client.Send(new TargetCancelPacket());
                 }
                 else
                 {
@@ -331,7 +331,7 @@ namespace UltimaXNA.UltimaWorld.Model
                 modelNumber = 0;
             }
             // Send the target ...
-            m_Model.Client.Send(new TargetXYZPacket((short)selectedEntity.Position.X, (short)selectedEntity.Position.Y, (short)selectedEntity.Z, (ushort)modelNumber, m_TargetID));
+            m_Model.Engine.Client.Send(new TargetXYZPacket((short)selectedEntity.Position.X, (short)selectedEntity.Position.Y, (short)selectedEntity.Z, (ushort)modelNumber, m_TargetID));
             // ... and clear our targeting cursor.
             ClearTargetingWithoutTargetCancelPacket();
         }
@@ -345,7 +345,7 @@ namespace UltimaXNA.UltimaWorld.Model
             // Send the targetting event back to the server
             if (serial.IsValid)
             {
-                m_Model.Client.Send(new TargetObjectPacket(selectedEntity, m_TargetID));
+                m_Model.Engine.Client.Send(new TargetObjectPacket(selectedEntity, m_TargetID));
             }
             else
             {
@@ -358,7 +358,7 @@ namespace UltimaXNA.UltimaWorld.Model
                 {
                     modelNumber = 0;
                 }
-                m_Model.Client.Send(new TargetXYZPacket((short)selectedEntity.Position.X, (short)selectedEntity.Position.Y, (short)selectedEntity.Z, (ushort)modelNumber, m_TargetID));
+                m_Model.Engine.Client.Send(new TargetXYZPacket((short)selectedEntity.Position.X, (short)selectedEntity.Position.Y, (short)selectedEntity.Z, (ushort)modelNumber, m_TargetID));
             }
 
             // Clear our target cursor.
@@ -371,14 +371,14 @@ namespace UltimaXNA.UltimaWorld.Model
 
         private void InternalRegisterInteraction()
         {
-            UltimaInteraction.OnPickupItem += PickUpItem;
-            UltimaInteraction.OnClearHolding += ClearHolding;
+            WorldInteraction.OnPickupItem += PickUpItem;
+            WorldInteraction.OnClearHolding += ClearHolding;
         }
 
         private void InternalUnregisterInteraction()
         {
-            UltimaInteraction.OnPickupItem -= PickUpItem;
-            UltimaInteraction.OnClearHolding -= ClearHolding;
+            WorldInteraction.OnPickupItem -= PickUpItem;
+            WorldInteraction.OnClearHolding -= ClearHolding;
         }
 
         // ======================================================================
@@ -421,7 +421,7 @@ namespace UltimaXNA.UltimaWorld.Model
             {
                 // let the server know we're picking up the item. If the server says we can't pick it up, it will send us a cancel pick up message.
                 // TEST: what if we can pick something up and drop it in our inventory before the server has a chance to respond?
-                m_Model.Client.Send(new PickupItemPacket(item.Serial, item.Amount));
+                m_Model.Engine.Client.Send(new PickupItemPacket(item.Serial, item.Amount));
 
                 // if the item is within a container or worn by a mobile, remove it from that containing entity.
                 if (item.Parent != null)
@@ -457,7 +457,7 @@ namespace UltimaXNA.UltimaWorld.Model
             {
                 serial = Serial.World;
             }
-            m_Model.Client.Send(new DropItemPacket(HeldItem.Serial, (ushort)X, (ushort)Y, (byte)Z, 0, serial));
+            m_Model.Engine.Client.Send(new DropItemPacket(HeldItem.Serial, (ushort)X, (ushort)Y, (byte)Z, 0, serial));
             ClearHolding();
         }
 
@@ -478,13 +478,13 @@ namespace UltimaXNA.UltimaWorld.Model
             if (x > containerBounds.Right - itemTexture.Width) x = containerBounds.Right - itemTexture.Width;
             if (y < containerBounds.Top) y = containerBounds.Top;
             if (y > containerBounds.Bottom - itemTexture.Height) y = containerBounds.Bottom - itemTexture.Height;
-            m_Model.Client.Send(new DropItemPacket(HeldItem.Serial, (ushort)x, (ushort)y, 0, 0, container.Serial));
+            m_Model.Engine.Client.Send(new DropItemPacket(HeldItem.Serial, (ushort)x, (ushort)y, 0, 0, container.Serial));
             ClearHolding();
         }
 
         private void WearHeldItem()
         {
-            m_Model.Client.Send(new DropToLayerPacket(HeldItem.Serial, 0x00, UltimaVars.EngineVars.PlayerSerial));
+            m_Model.Engine.Client.Send(new DropToLayerPacket(HeldItem.Serial, 0x00, UltimaVars.EngineVars.PlayerSerial));
             ClearHolding();
         }
 

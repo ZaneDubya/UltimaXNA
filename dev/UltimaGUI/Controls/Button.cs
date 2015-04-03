@@ -101,7 +101,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             m_Texture = new RenderedText("", true, 100);
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
             for (int i = kGump_Up; i <= kGump_Over; i++)
             {
@@ -114,7 +114,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             if (Width == 0 && Height == 0 && m_gumpTextures[kGump_Up] != null)
                 Size = new Point(m_gumpTextures[kGump_Up].Width, m_gumpTextures[kGump_Up].Height);
 
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)

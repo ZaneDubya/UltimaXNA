@@ -14,11 +14,11 @@ using System;
 using System.Collections.Generic;
 using UltimaXNA.UltimaEntities;
 using UltimaXNA.Core.Rendering;
-using UltimaXNA.UltimaWorld.Model;
-
+using UltimaXNA.UltimaWorld.Maps;
+using UltimaXNA.UltimaWorld.Controllers;
 #endregion
 
-namespace UltimaXNA.UltimaWorld.View
+namespace UltimaXNA.UltimaWorld.Views
 {
     public class IsometricRenderer
     {

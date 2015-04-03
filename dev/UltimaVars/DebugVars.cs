@@ -8,7 +8,7 @@
  *
  ***************************************************************************/
 using System;
-using UltimaXNA.UltimaWorld.View;
+using UltimaXNA.UltimaWorld.Views;
 using UltimaXNA.Core.Diagnostics;
 
 namespace UltimaXNA.UltimaVars

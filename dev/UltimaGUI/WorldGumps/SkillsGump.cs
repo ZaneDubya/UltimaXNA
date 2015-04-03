@@ -10,6 +10,7 @@
 using System;
 using System.Text;
 using UltimaXNA.UltimaGUI.Controls;
+using UltimaXNA.UltimaWorld;
 
 namespace UltimaXNA.UltimaGUI.WorldGumps
 {
@@ -30,7 +31,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
             AddControl(m_list = new HtmlGump(this, 0, 10, 20, 180, 100, 0, 1, ""));
         }
 
-        public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
             m_list.X = 26;
             m_list.Y = 33;
@@ -38,7 +39,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
             m_list.Height = this.Height - 95;
             if (m_lastUpdateCount != UltimaVars.Skills.UpdateCount)
                 m_list.Text = buildSkillsString();
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
         }
 
         public override void ActivateByHREF(string href)
@@ -48,7 +49,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
                 int skillIndex;
                 if (!int.TryParse(href.Substring(6), out skillIndex))
                         return;
-                UltimaInteraction.UseSkill(skillIndex);
+                WorldInteraction.UseSkill(skillIndex);
             }
             m_list.Text = buildSkillsString();
             base.ActivateByHREF(href);
