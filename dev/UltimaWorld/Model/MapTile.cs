@@ -141,7 +141,7 @@ namespace UltimaXNA.UltimaWorld.Model
                 if (entities[i] is Item) // checks Item and StaticItem entities.
                 {
                     UltimaData.ItemData data = ((Item)entities[i]).ItemData;
-                    if (data.IsRoof || data.IsSurface || data.IsWall)
+                    if (data.IsRoof || data.IsSurface || (data.IsWall && data.IsImpassable))
                     {
                         if (underEntity == null || entities[i].Z < underEntity.Z)
                             underEntity = entities[i];

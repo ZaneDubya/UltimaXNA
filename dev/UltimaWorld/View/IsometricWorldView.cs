@@ -129,11 +129,11 @@ namespace UltimaXNA.UltimaWorld.View
                         Item item = (Item)underObject;
                         if (item.ItemData.IsRoof)
                             m_maxItemAltitude = CenterPosition.Z - (CenterPosition.Z % 20) + 20;
-                        else if (item.ItemData.IsSurface)
-                            m_maxItemAltitude = CenterPosition.Z + 20;
+                        else if (item.ItemData.IsSurface || item.ItemData.IsWall)
+                            m_maxItemAltitude = item.Z - (item.Z % 10);
                         else
                         {
-                            int z = CenterPosition.Z + ((item.ItemData.Height > 20) ? item.ItemData.Height : 0);
+                            int z = CenterPosition.Z + ((item.ItemData.Height > 20) ? item.ItemData.Height : 20);
                             m_maxItemAltitude = (int)(z);// - (z % 20));
                         }
                     }
