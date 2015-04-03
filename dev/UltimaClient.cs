@@ -11,19 +11,17 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using UltimaXNA.Core;
 using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.Network;
 using UltimaXNA.UltimaEntities;
-using UltimaXNA.UltimaEntities.Effects;
 using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaGUI.WorldGumps;
 using UltimaXNA.UltimaPackets;
 using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.UltimaPackets.Server;
 using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaWorld.Views;
 using UltimaXNA.UltimaWorld.Controllers;
+using UltimaXNA.UltimaWorld.Views;
 #endregion
 
 namespace UltimaXNA

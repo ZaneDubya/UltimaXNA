@@ -18,9 +18,7 @@ namespace UltimaXNA.UltimaWorld
 
         public override void Draw(YSpriteBatch spritebatch, double frameTime)
         {
-
-            Views.IsometricRenderer.CenterPosition = EntityManager.GetPlayerObject().Position;
-            Views.IsometricRenderer.Draw(Model.Map);
+            Views.IsometricRenderer.Draw(Model.Map, EntityManager.GetPlayerObject().Position);
         }
     }
 }
