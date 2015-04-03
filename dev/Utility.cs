@@ -641,7 +641,7 @@ namespace UltimaXNA
             {
                 hueType |= 1;
             }
-            return new Vector2(hue & 0x3FFF, hueType);
+            return new Vector2((hue - 1) & 0x3FFF, hueType);
         }
 
         public static int DistanceBetweenTwoPoints(Point p1, Point p2)

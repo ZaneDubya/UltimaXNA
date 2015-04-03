@@ -73,7 +73,7 @@ float4 PixelShaderFunction(PS_INPUT IN) : COLOR0
 		// 0x02 = partially hued
 		// 0x04 = 50% transparent.
 		// 0x01 & 0x02 should be mutually exclusive.
-		float hueIndex = IN.Hue.x - 1; // hue index '0' is true black in Hues.mul
+		float hueIndex = IN.Hue.x; // hue index '0' is true black in Hues.mul
 		float hueColumn = (((hueIndex - (hueIndex % 2)) / HuesPerRow) / (HuesPerColumn));
 		float gray = ((color.r + color.g + color.b) / 3.0f / HuesPerRow + ((hueIndex % 2) * 0.5f)) * 0.999f;
 		float4 huedColor = tex2D(hueTextureSampler, float2(gray, hueColumn));
