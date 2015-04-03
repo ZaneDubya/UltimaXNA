@@ -116,7 +116,7 @@ namespace UltimaXNA.UltimaWorld.View
                 t.IsZUnderEntityOrGround(CenterPosition.Z, out underObject, out underTerrain);
 
                 // if we are under terrain, then do not draw any terrain at all.
-                DrawTerrain = !(underTerrain == null);
+                DrawTerrain = (underTerrain == null);
 
                 if (!(underObject == null))
                 {
@@ -124,13 +124,18 @@ namespace UltimaXNA.UltimaWorld.View
                     // if we are under a ROOF, then get rid of everything above me.Z + 20
                     // (this accounts for A-frame roofs). Otherwise, get rid of everything
                     // at the object above us.Z.
-                    if (((Item)underObject).ItemData.IsRoof)
+                    if (underObject is Item)
                     {
-                        m_maxItemAltitude = CenterPosition.Z - (CenterPosition.Z % 20) + 20;
-                    }
-                    else
-                    {
-                        m_maxItemAltitude = (int)(underObject.Z - (underObject.Z % 20));
+                        Item item = (Item)underObject;
+                        if (item.ItemData.IsRoof)
+                            m_maxItemAltitude = CenterPosition.Z - (CenterPosition.Z % 20) + 20;
+                        else if (item.ItemData.IsSurface)
+                            m_maxItemAltitude = CenterPosition.Z + 20;
+                        else
+                        {
+                            int z = CenterPosition.Z + ((item.ItemData.Height > 20) ? item.ItemData.Height : 0);
+                            m_maxItemAltitude = (int)(z);// - (z % 20));
+                        }
                     }
 
                     // If we are under a roof tile, do not make roofs transparent if we are on an edge.
@@ -205,6 +210,14 @@ namespace UltimaXNA.UltimaWorld.View
 
                     for (int i = 0; i < entities.Count; i++)
                     {
+                        if (!DrawTerrain)
+                        {
+                            if (entities[i] is Ground)
+                                break;
+                            else if (entities[i].Z > tile.Ground.Z)
+                                break;
+                        }
+
                         if (entities[i].Z >= m_maxItemAltitude)
                             continue;
 

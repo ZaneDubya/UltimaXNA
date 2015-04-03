@@ -134,7 +134,7 @@ namespace UltimaXNA.UltimaEntities.EntityViews
             if (!isFlat)
             {
                 int low = 0, high = 0, sort = 0;
-                sort = map.GetAverageZ((int)Entity.Z, (int)m_SurroundingTiles.South, (int)m_SurroundingTiles.East, (int)m_SurroundingTiles.Down, ref low, ref high);
+                sort = map.GetAverageZ((int)Entity.Z, (int)m_SurroundingTiles.South, (int)m_SurroundingTiles.East, (int)m_SurroundingTiles.Down, ref low, ref high) + 1;
                 if (sort != SortZ)
                 {
                     SortZ = sort;
