@@ -55,6 +55,8 @@ namespace UltimaXNA.UltimaData
 
             Metrics.ReportDataRead((int)reader.BaseStream.Length);
 
+            currentIndex = 32;
+
             while (reader.BaseStream.Position < reader.BaseStream.Length)
             {
                 reader.ReadInt32(); //Header
