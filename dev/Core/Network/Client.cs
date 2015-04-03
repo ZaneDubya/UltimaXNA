@@ -37,7 +37,6 @@ namespace UltimaXNA.Core.Network
 
         bool m_isDecompressionEnabled;
         bool m_isConnected;
-        bool m_loggingPackets;
         bool m_appendNextMessage = false;
 
         byte[] m_receiveBuffer;
@@ -83,10 +82,10 @@ namespace UltimaXNA.Core.Network
             get { return m_isConnected; }
         }
 
-        public bool LogPackets
+        public bool IsLoggingPackets
         {
-            get { return m_loggingPackets; }
-            set { m_loggingPackets = value; }
+            get;
+            set;
         }
 
         public Client()
@@ -343,7 +342,7 @@ namespace UltimaXNA.Core.Network
                 throw new NetworkException("Unable to send, buffer was null or empty");
             }
 
-            if (m_loggingPackets)
+            if (IsLoggingPackets)
             {
                 Logger.Debug("Client - > Server");
                 Logger.Debug("Id: 0x{0:X2} Name: {1} Length: {2}", buffer[0], name, length);
@@ -564,7 +563,7 @@ namespace UltimaXNA.Core.Network
         
         private void LogPacket(byte[] buffer, string name, int length)
         {
-            if (m_loggingPackets)
+            if (IsLoggingPackets)
             {
                 Logger.Debug("Server - > Client");
                 Logger.Debug("Id: 0x{0:X2} Name: {1} Length: {2}", buffer[0], name, length);
