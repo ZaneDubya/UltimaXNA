@@ -21,6 +21,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
         TextEntry m_Input;
         List<ChatLineTimed> m_TextEntries;
         List<string> m_MessageHistory;
+        public List<string> m_journalHistory;
         int m_MessageHistoryIndex = -1;
 
         public ChatWindow()
@@ -28,6 +29,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
         {
             m_TextEntries = new List<ChatLineTimed>();
             m_MessageHistory = new List<string>();
+            m_journalHistory = new List<string>();
             Width = 400;
             Enabled = true;
         }
@@ -98,6 +100,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
         public void AddLine(string text)
         {
             m_TextEntries.Add(new ChatLineTimed(string.Format("<{1}>{0}</{1}>", text, "big"), Width));
+            m_journalHistory.Add(text);
         }
     }
 
