@@ -75,6 +75,11 @@ namespace UltimaXNA.UltimaLogin.Scenes
                 m_Gump.LastControl.Position = new Point((i % rowwidth) * 11 - 5, (i / rowwidth) * 10 + 28);
                 ((HuedControl)m_Gump.LastControl).Hue = i + 2;
             }
+
+            using (System.IO.FileStream file = new System.IO.FileStream("hues.png", System.IO.FileMode.Create))
+            {
+                UltimaData.HuesXNA.HueTexture.SaveAsPng(file, UltimaData.HuesXNA.HueTexture.Width, UltimaData.HuesXNA.HueTexture.Height);
+            }
         }
 
         public override void Update(double totalTime, double frameTime)
