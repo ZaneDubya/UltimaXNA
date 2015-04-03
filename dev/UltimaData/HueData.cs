@@ -22,8 +22,8 @@ namespace UltimaXNA.UltimaData
     {
         private static GraphicsDevice graphicsDevice;
         private static Texture2D m_hueTexture;
-        private const int m_HueTextureWidth = 64; // Each hue is 32 pixels wide, so divided by 32 = 2 hues wide.
-        private const int m_HueTextureHeight = 2024;
+        private const int m_HueTextureWidth = 32; // Each hue is 32 pixels wide, so divided by 32 = 2 hues wide.
+        private const int m_HueTextureHeight = 4096;
         private const int multiplier = 0xFF / 0x1F;
 
         public static void Initialize(GraphicsDevice graphicsDevice)
@@ -55,7 +55,7 @@ namespace UltimaXNA.UltimaData
 
             Metrics.ReportDataRead((int)reader.BaseStream.Length);
 
-            currentIndex = 32;
+            currentIndex += 32;
 
             while (reader.BaseStream.Position < reader.BaseStream.Length)
             {
