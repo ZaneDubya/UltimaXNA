@@ -84,7 +84,7 @@ namespace UltimaXNA.UltimaWorld
         private void receive_TargetCursor(IRecvPacket packet)
         {
             TargetCursorPacket p = (TargetCursorPacket)packet;
-            m_Model.Cursor.SetTargeting((TargetTypes)p.CommandType, p.CursorID);
+            m_Model.Cursor.SetTargeting((WorldCursor.TargetType)p.CommandType, p.CursorID);
         }
 
         private void receive_TargetCursorMulti(IRecvPacket packet)

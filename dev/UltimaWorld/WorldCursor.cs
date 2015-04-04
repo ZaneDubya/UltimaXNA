@@ -29,22 +29,26 @@ namespace UltimaXNA.UltimaWorld
     /// </summary>
     class WorldCursor : UltimaCursor
     {
-        private WorldModel m_Model;
+        protected WorldModel World
+        {
+            get;
+            private set;
+        }
 
         public WorldCursor(WorldModel model)
             : base()
         {
-            m_Model = model;
+            World = model;
             InternalRegisterInteraction();
         }
 
         public override void Update()
         {
-            if (IsHoldingItem && m_Model.Engine.Input.HandleMouseEvent(MouseEvent.Up, UltimaVars.EngineVars.MouseButton_Interact))
+            if (IsHoldingItem && World.Engine.Input.HandleMouseEvent(MouseEvent.Up, UltimaVars.EngineVars.MouseButton_Interact))
             {
-                if (m_Model.Engine.UserInterface.IsMouseOverUI)
+                if (World.Engine.UserInterface.IsMouseOverUI)
                 {
-                    Control target = m_Model.Engine.UserInterface.MouseOverControl;
+                    Control target = World.Engine.UserInterface.MouseOverControl;
                     // attempt to drop the item onto an interface. The only acceptable targets for dropping items are:
                     // 1. ItemGumplings that represent containers (like a bag icon)
                     // 2. Gumps that represent open Containers (GumpPicContainers, e.g. an open GumpPic of a chest)
@@ -56,8 +60,8 @@ namespace UltimaXNA.UltimaWorld
                     }
                     else if (target is GumpPicContainer)
                     {
-                        int x = (int)m_Model.Engine.Input.MousePosition.X - HeldItemOffset.X - (target.X + target.Owner.X);
-                        int y = (int)m_Model.Engine.Input.MousePosition.Y - HeldItemOffset.Y - (target.Y + target.Owner.Y);
+                        int x = (int)World.Engine.Input.MousePosition.X - HeldItemOffset.X - (target.X + target.Owner.X);
+                        int y = (int)World.Engine.Input.MousePosition.Y - HeldItemOffset.Y - (target.Y + target.Owner.Y);
                         DropHeldItemToContainer((Container)((GumpPicContainer)target).Item, x, y);
                     }
                     else if (target is ItemGumplingPaperdoll || (target is GumpPic && ((GumpPic)target).IsPaperdoll))
@@ -71,7 +75,7 @@ namespace UltimaXNA.UltimaWorld
                 }
                 else // cursor is over the world display.
                 {
-                    AEntity mouseOverEntity = IsometricRenderer.MouseOverObject;
+                    AEntity mouseOverEntity = World.Input.MousePick.MouseOverObject;
 
                     if (mouseOverEntity != null)
                     {
@@ -114,23 +118,23 @@ namespace UltimaXNA.UltimaWorld
 
             if (IsTargeting)
             {
-                if (m_Model.Engine.Input.HandleKeyboardEvent(KeyboardEventType.Press, WinKeys.Escape, false, false, false))
+                if (World.Engine.Input.HandleKeyboardEvent(KeyboardEventType.Press, WinKeys.Escape, false, false, false))
                 {
-                    SetTargeting(TargetTypes.Nothing, 0);
+                    SetTargeting(TargetType.Nothing, 0);
                 }
 
-                if (m_Model.Engine.Input.HandleMouseEvent(MouseEvent.Click, UltimaVars.EngineVars.MouseButton_Interact))
+                if (World.Engine.Input.HandleMouseEvent(MouseEvent.Click, UltimaVars.EngineVars.MouseButton_Interact))
                 {
                     // If isTargeting is true, then the target cursor is active and we are waiting for the player to target something.
                     switch (m_Targeting)
                     {
-                        case TargetTypes.Object:
-                        case TargetTypes.Position:
-                            if (m_Model.Engine.UserInterface.IsMouseOverUI)
+                        case TargetType.Object:
+                        case TargetType.Position:
+                            if (World.Engine.UserInterface.IsMouseOverUI)
                             {
                                 // get object under mouse cursor. We can only hue items.
                                 // ItemGumping is the base class for all items, containers, and paperdoll items.
-                                Control target = m_Model.Engine.UserInterface.MouseOverControl;
+                                Control target = World.Engine.UserInterface.MouseOverControl;
                                 if (target is ItemGumpling)
                                 {
                                     mouseTargetingEventObject(((ItemGumpling)target).Item);
@@ -139,13 +143,13 @@ namespace UltimaXNA.UltimaWorld
                             else
                             {
                                 // Send Select Object or Select XYZ packet, depending on the entity under the mouse cursor.
-                                IsometricRenderer.PickType = PickTypes.PickStatics | PickTypes.PickObjects;
-                                mouseTargetingEventObject(IsometricRenderer.MouseOverObject);
+                                World.Input.MousePick.PickOnly = PickType.PickStatics | PickType.PickObjects;
+                                mouseTargetingEventObject(World.Input.MousePick.MouseOverObject);
                             }
                             break;
-                        case TargetTypes.MultiPlacement:
+                        case TargetType.MultiPlacement:
                             // select X, Y, Z
-                            mouseTargetingEventXYZ(IsometricRenderer.MouseOverObject);
+                            mouseTargetingEventXYZ(World.Input.MousePick.MouseOverObject);
                             break;
                         default:
                             throw new Exception("Unknown targetting type!");
@@ -193,7 +197,7 @@ namespace UltimaXNA.UltimaWorld
         protected override void BeforeDraw(SpriteBatchUI spritebatch, Point position)
         {
             // Hue the cursor if not in warmode and in trammel.
-            if (!UltimaVars.EngineVars.WarMode && (m_Model.MapIndex == 1))
+            if (!UltimaVars.EngineVars.WarMode && (World.MapIndex == 1))
                 CursorHue = 2414;
             else
                 CursorHue = 0;
@@ -222,8 +226,8 @@ namespace UltimaXNA.UltimaWorld
                     // UNIMPLEMENTED !!! Draw a transparent multi
                 }*/
             }
-            else if ((m_Model.Input.ContinuousMouseMovementCheck || !m_Model.Engine.UserInterface.IsMouseOverUI) &&
-                !m_Model.Engine.UserInterface.IsModalControlOpen)
+            else if ((World.Input.ContinuousMouseMovementCheck || !World.Engine.UserInterface.IsMouseOverUI) &&
+                !World.Engine.UserInterface.IsModalControlOpen)
             {
                 switch (UltimaVars.EngineVars.CursorDirection)
                 {
@@ -273,38 +277,46 @@ namespace UltimaXNA.UltimaWorld
         }
 
         // ======================================================================
-        // Targeting routines
+        // Targeting enum and routines
         // ======================================================================
 
-        private TargetTypes m_Targeting = TargetTypes.Nothing;
+        public enum TargetType
+        {
+            Nothing = -1,
+            Object = 0,
+            Position = 1,
+            MultiPlacement = 2
+        }
+
+        private TargetType m_Targeting = TargetType.Nothing;
         private int m_TargetID = int.MinValue;
-        public TargetTypes Targeting
+        public TargetType Targeting
         {
             get { return m_Targeting; }
         }
 
         public bool IsTargeting
         {
-            get { return m_Targeting != TargetTypes.Nothing; }
+            get { return m_Targeting != TargetType.Nothing; }
         }
 
         public void ClearTargetingWithoutTargetCancelPacket()
         {
-            m_Targeting = TargetTypes.Nothing;
+            m_Targeting = TargetType.Nothing;
         }
 
-        public void SetTargeting(TargetTypes targeting, int cursorID)
+        public void SetTargeting(TargetType targeting, int cursorID)
         {
             if (m_Targeting != targeting || cursorID != m_TargetID)
             {
-                if (targeting == TargetTypes.Nothing)
+                if (targeting == TargetType.Nothing)
                 {
-                    m_Model.Engine.Client.Send(new TargetCancelPacket());
+                    World.Engine.Client.Send(new TargetCancelPacket());
                 }
                 else
                 {
                     // if we start targeting, we cancel movement.
-                    m_Model.Input.ContinuousMouseMovementCheck = false;
+                    World.Input.ContinuousMouseMovementCheck = false;
                 }
                 m_Targeting = targeting;
                 m_TargetID = cursorID;
@@ -314,7 +326,7 @@ namespace UltimaXNA.UltimaWorld
         int m_MultiModel;
         public void SetTargetingMulti(Serial deedSerial, int model)
         {
-            SetTargeting(TargetTypes.MultiPlacement, (int)deedSerial);
+            SetTargeting(TargetType.MultiPlacement, (int)deedSerial);
             m_MultiModel = model;
         }
 
@@ -331,7 +343,7 @@ namespace UltimaXNA.UltimaWorld
                 modelNumber = 0;
             }
             // Send the target ...
-            m_Model.Engine.Client.Send(new TargetXYZPacket((short)selectedEntity.Position.X, (short)selectedEntity.Position.Y, (short)selectedEntity.Z, (ushort)modelNumber, m_TargetID));
+            World.Engine.Client.Send(new TargetXYZPacket((short)selectedEntity.Position.X, (short)selectedEntity.Position.Y, (short)selectedEntity.Z, (ushort)modelNumber, m_TargetID));
             // ... and clear our targeting cursor.
             ClearTargetingWithoutTargetCancelPacket();
         }
@@ -345,7 +357,7 @@ namespace UltimaXNA.UltimaWorld
             // Send the targetting event back to the server
             if (serial.IsValid)
             {
-                m_Model.Engine.Client.Send(new TargetObjectPacket(selectedEntity, m_TargetID));
+                World.Engine.Client.Send(new TargetObjectPacket(selectedEntity, m_TargetID));
             }
             else
             {
@@ -358,7 +370,7 @@ namespace UltimaXNA.UltimaWorld
                 {
                     modelNumber = 0;
                 }
-                m_Model.Engine.Client.Send(new TargetXYZPacket((short)selectedEntity.Position.X, (short)selectedEntity.Position.Y, (short)selectedEntity.Z, (ushort)modelNumber, m_TargetID));
+                World.Engine.Client.Send(new TargetXYZPacket((short)selectedEntity.Position.X, (short)selectedEntity.Position.Y, (short)selectedEntity.Z, (ushort)modelNumber, m_TargetID));
             }
 
             // Clear our target cursor.
@@ -393,11 +405,11 @@ namespace UltimaXNA.UltimaWorld
             {
                 if (value == null && m_HeldItem != null)
                 {
-                    m_Model.Engine.UserInterface.RemoveInputBlocker(this);
+                    World.Engine.UserInterface.RemoveInputBlocker(this);
                 }
                 else if (value != null && m_HeldItem == null)
                 {
-                    m_Model.Engine.UserInterface.AddInputBlocker(this);
+                    World.Engine.UserInterface.AddInputBlocker(this);
                 }
                 m_HeldItem = value;
             }
@@ -421,7 +433,7 @@ namespace UltimaXNA.UltimaWorld
             {
                 // let the server know we're picking up the item. If the server says we can't pick it up, it will send us a cancel pick up message.
                 // TEST: what if we can pick something up and drop it in our inventory before the server has a chance to respond?
-                m_Model.Engine.Client.Send(new PickupItemPacket(item.Serial, item.Amount));
+                World.Engine.Client.Send(new PickupItemPacket(item.Serial, item.Amount));
 
                 // if the item is within a container or worn by a mobile, remove it from that containing entity.
                 if (item.Parent != null)
@@ -447,9 +459,10 @@ namespace UltimaXNA.UltimaWorld
         private void DropHeldItemToWorld(int X, int Y, int Z)
         {
             Serial serial;
-            if (IsometricRenderer.MouseOverObject is Item && ((Item)IsometricRenderer.MouseOverObject).ItemData.IsContainer)
+            AEntity entity = World.Input.MousePick.MouseOverObject;
+            if (entity is Item && ((Item)entity).ItemData.IsContainer)
             {
-                serial = IsometricRenderer.MouseOverObject.Serial;
+                serial = entity.Serial;
                 X = Y = 0xFFFF;
                 Z = 0;
             }
@@ -457,7 +470,7 @@ namespace UltimaXNA.UltimaWorld
             {
                 serial = Serial.World;
             }
-            m_Model.Engine.Client.Send(new DropItemPacket(HeldItem.Serial, (ushort)X, (ushort)Y, (byte)Z, 0, serial));
+            World.Engine.Client.Send(new DropItemPacket(HeldItem.Serial, (ushort)X, (ushort)Y, (byte)Z, 0, serial));
             ClearHolding();
         }
 
@@ -478,13 +491,13 @@ namespace UltimaXNA.UltimaWorld
             if (x > containerBounds.Right - itemTexture.Width) x = containerBounds.Right - itemTexture.Width;
             if (y < containerBounds.Top) y = containerBounds.Top;
             if (y > containerBounds.Bottom - itemTexture.Height) y = containerBounds.Bottom - itemTexture.Height;
-            m_Model.Engine.Client.Send(new DropItemPacket(HeldItem.Serial, (ushort)x, (ushort)y, 0, 0, container.Serial));
+            World.Engine.Client.Send(new DropItemPacket(HeldItem.Serial, (ushort)x, (ushort)y, 0, 0, container.Serial));
             ClearHolding();
         }
 
         private void WearHeldItem()
         {
-            m_Model.Engine.Client.Send(new DropToLayerPacket(HeldItem.Serial, 0x00, UltimaVars.EngineVars.PlayerSerial));
+            World.Engine.Client.Send(new DropToLayerPacket(HeldItem.Serial, 0x00, UltimaVars.EngineVars.PlayerSerial));
             ClearHolding();
         }
 

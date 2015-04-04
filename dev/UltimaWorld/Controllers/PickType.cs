@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
- *   Shared.cs
- *   Based on code from ClintXNA's renderer: http://www.runuo.com/forums/xna/92023-hi.html
+ *   PickType.cs
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -9,13 +8,15 @@
  *
  ***************************************************************************/
 #region usings
+using Microsoft.Xna.Framework;
 using System;
+using UltimaXNA.UltimaEntities;
 #endregion
 
 namespace UltimaXNA.UltimaWorld.Controllers
 {
     [Flags]
-    public enum PickTypes : int
+    public enum PickType : int
     {
         PickNothing = 0,
         PickObjects = 1,

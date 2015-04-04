@@ -74,7 +74,6 @@ namespace UltimaXNA
             Client.IsLoggingPackets = false;
             Input = new InputState(this.Window.Handle);
             UserInterface = new GUIManager(this);
-            UltimaWorld.Views.IsometricRenderer.Initialize(this);
 
             // Load vars from Settings.ini.
             UltimaVars.SettingVars.Load();

@@ -703,8 +703,15 @@ namespace UltimaXNA
             // Max normal val = 0x1F
 
             OverallLightLevelPacket p = (OverallLightLevelPacket)packet;
-            // Console.WriteLine("OverallLight: {0}", p.LightLevel);
-            IsometricRenderer.OverallLightning = p.LightLevel;
+
+            if (Engine.ActiveModel is WorldModel)
+            {
+                ((WorldView)Engine.ActiveModel.GetView()).Isometric.OverallLightning = p.LightLevel;
+            }
+            else
+            {
+                Console.WriteLine("Unhandled OverallLight: {0}", p.LightLevel);
+            }
         }
 
         private void receive_PersonalLightLevel(IRecvPacket packet)
@@ -717,8 +724,15 @@ namespace UltimaXNA
             // Max normal val = 0x1F
 
             PersonalLightLevelPacket p = (PersonalLightLevelPacket)packet;
-            // Console.WriteLine("PersonalLight: {0}", p.LightLevel);
-            IsometricRenderer.PersonalLightning = p.LightLevel;
+
+            if (Engine.ActiveModel is WorldModel)
+            {
+                ((WorldView)Engine.ActiveModel.GetView()).Isometric.PersonalLightning = p.LightLevel;
+            }
+            else
+            {
+                Console.WriteLine("Unhandled PersonalLightning: {0}", p.LightLevel);
+            }
         }
 
         private void receive_PlayerMove(IRecvPacket packet)

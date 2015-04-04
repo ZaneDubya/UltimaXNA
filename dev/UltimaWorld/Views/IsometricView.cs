@@ -23,76 +23,60 @@ namespace UltimaXNA.UltimaWorld.Views
     public class IsometricRenderer
     {
         #region RenderingVariables
-        static VectorRenderer m_vectors;
-        static SpriteBatch3D m_spriteBatch;
-        static VertexPositionNormalTextureHue[] m_vertexBufferStretched;
-        #endregion
-
-        #region MousePickingVariables
-        private static MouseOverItem m_overObject, m_overGround;
-        public static AEntity MouseOverObject { get { return (m_overObject == null) ? null : m_overObject.Entity; } }
-        public static AEntity MouseOverGround { get { return (m_overGround == null) ? null : m_overGround.Entity; } }
-        public static Vector2 MouseOverObjectPoint
-        {
-            get { return (m_overObject == null) ? new Vector2(0, 0) : m_overObject.InTexturePosition; }
-        }
-        public const PickTypes DefaultPickType = PickTypes.PickStatics | PickTypes.PickObjects;
-        public static PickTypes PickType { get; set; }
+        private SpriteBatch3D m_spriteBatch;
+        private VertexPositionNormalTextureHue[] m_vertexBufferStretched;
         #endregion
 
         #region LightingVariables
-        private static int m_lightLevelPersonal = 9, m_lightLevelOverall = 9;
-        private static float m_lightDirection = 4.12f, m_lightHeight = -0.75f;
-        public static int PersonalLightning
+        private int m_lightLevelPersonal = 9, m_lightLevelOverall = 9;
+        private float m_lightDirection = 4.12f, m_lightHeight = -0.75f;
+        public int PersonalLightning
         {
             set { m_lightLevelPersonal = value; recalculateLightning(); }
             get { return m_lightLevelPersonal; }
         }
-        public static int OverallLightning
+        public int OverallLightning
         {
             set { m_lightLevelOverall = value; recalculateLightning(); }
             get { return m_lightLevelOverall; }
         }
-        public static float LightDirection
+        public float LightDirection
         {
             set { m_lightDirection = value; recalculateLightning(); }
             get { return m_lightDirection; }
         }
-        public static float LightHeight
+        public float LightHeight
         {
             set { m_lightHeight = value; recalculateLightning(); }
             get { return m_lightHeight; }
         }
         #endregion
 
-        private static bool m_flag_HighlightMouseOver = false;
-        public static bool Flag_HighlightMouseOver
+        private bool m_flag_HighlightMouseOver = false;
+        public bool Flag_HighlightMouseOver
         {
             get { return m_flag_HighlightMouseOver; }
             set { m_flag_HighlightMouseOver = value; }
         }
 
-        public static int ObjectsRendered { get; internal set; }
-        public static Position3D CenterPosition { get; set; }
-        public static bool DrawTerrain = true;
-        private static int m_maxItemAltitude;
+        public int ObjectsRendered { get; internal set; }
+        public bool DrawTerrain = true;
+        private int m_maxItemAltitude;
 
-        static Vector2 m_renderOffset;
-        public static Vector2 RenderOffset
+        Vector2 m_renderOffset;
+        public Vector2 RenderOffset
         {
             get { return m_renderOffset; }
         }
 
-        protected static UltimaEngine Engine { get; private set; }
+        protected UltimaEngine Engine { get; private set; }
 
-        public static void Initialize(UltimaEngine engine)
+        public void Initialize(UltimaEngine engine)
         {
             Engine = engine;
 
             m_spriteBatch = new SpriteBatch3D(Engine);
-            m_vectors = new VectorRenderer(Engine.GraphicsDevice, Engine.Content);
-
-            PickType = PickTypes.PickNothing;
+            
             m_vertexBufferStretched = new VertexPositionNormalTextureHue[] {
                 new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(0, 0, 0)),
                 new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(1, 0, 0)),
@@ -101,23 +85,22 @@ namespace UltimaXNA.UltimaWorld.Views
             };
         }
 
-        public static void Draw(Map map)
+        public void Draw(Map map, Position3D center, MousePicking mousePick)
         {
-            InternalDetermineIfUnderEntity(map);
-            InternalDrawEntities(map, out m_renderOffset);
-            InternalDrawVectors(m_renderOffset);
+            InternalDetermineIfUnderEntity(map, center);
+            InternalDrawEntities(map, center, mousePick, out m_renderOffset);
         }
 
-        private static void InternalDetermineIfUnderEntity(Map map)
+        private void InternalDetermineIfUnderEntity(Map map, Position3D center)
         {
             // Are we inside (under a roof)? Do not draw tiles above our head.
             m_maxItemAltitude = 255;
 
             MapTile t;
-            if ((t = map.GetMapTile(CenterPosition.X, CenterPosition.Y)) != null)
+            if ((t = map.GetMapTile(center.X, center.Y)) != null)
             {
                 AEntity underObject, underTerrain;
-                t.IsZUnderEntityOrGround(CenterPosition.Z, out underObject, out underTerrain);
+                t.IsZUnderEntityOrGround(center.Z, out underObject, out underTerrain);
 
                 // if we are under terrain, then do not draw any terrain at all.
                 DrawTerrain = (underTerrain == null);
@@ -132,12 +115,12 @@ namespace UltimaXNA.UltimaWorld.Views
                     {
                         Item item = (Item)underObject;
                         if (item.ItemData.IsRoof)
-                            m_maxItemAltitude = CenterPosition.Z - (CenterPosition.Z % 20) + 20;
+                            m_maxItemAltitude = center.Z - (center.Z % 20) + 20;
                         else if (item.ItemData.IsSurface || item.ItemData.IsWall)
                             m_maxItemAltitude = item.Z - (item.Z % 10);
                         else
                         {
-                            int z = CenterPosition.Z + ((item.ItemData.Height > 20) ? item.ItemData.Height : 20);
+                            int z = center.Z + ((item.ItemData.Height > 20) ? item.ItemData.Height : 20);
                             m_maxItemAltitude = (int)(z);// - (z % 20));
                         }
                     }
@@ -146,9 +129,9 @@ namespace UltimaXNA.UltimaWorld.Views
                     if (underObject is Item && ((Item)underObject).ItemData.IsRoof)
                     {
                         bool isRoofSouthEast = true;
-                        if ((t = map.GetMapTile(CenterPosition.X + 1, CenterPosition.Y)) != null)
+                        if ((t = map.GetMapTile(center.X + 1, center.Y)) != null)
                         {
-                            t.IsZUnderEntityOrGround(CenterPosition.Z, out underObject, out underTerrain);
+                            t.IsZUnderEntityOrGround(center.Z, out underObject, out underTerrain);
                             isRoofSouthEast = !(underObject == null);
                         }
 
@@ -159,9 +142,9 @@ namespace UltimaXNA.UltimaWorld.Views
             }
         }
 
-        private static void InternalDrawEntities(Map map, out Vector2 renderOffset)
+        private void InternalDrawEntities(Map map, Position3D center, MousePicking mousePick, out Vector2 renderOffset)
         {
-            if (CenterPosition == null)
+            if (center == null)
             {
                 renderOffset = new Vector2();
                 return;
@@ -173,27 +156,27 @@ namespace UltimaXNA.UltimaWorld.Views
 
 
             // when the player entity is higher (z) in the world, we must offset the first row drawn. This variable MUST be a multiple of 2.
-            int renderZOffset = (CenterPosition.Z / 14) * 2 + 4;
+            int renderZOffset = (center.Z / 14) * 2 + 4;
             // this is used to draw tall objects that would otherwise not be visible until their ground tile was on screen. This may still skip VERY tall objects (those weird jungle trees?)
             int renderExtraRowsAtBottom = renderZOffset + 6; 
 
             Point firstTile = new Point(
-                CenterPosition.X + renderExtraColumnsAtSides - ((renderZOffset + 1) / 2), 
-                CenterPosition.Y - renderDimensionY - renderExtraColumnsAtSides - (renderZOffset  / 2));
+                center.X + renderExtraColumnsAtSides - ((renderZOffset + 1) / 2),
+                center.Y - renderDimensionY - renderExtraColumnsAtSides - (renderZOffset / 2));
 
             renderOffset.X = ((UltimaVars.EngineVars.ScreenSize.X + ((renderDimensionY) * 44)) / 2) - 22 + renderExtraColumnsAtSides * 44;
-            renderOffset.X -= (int)((CenterPosition.X_offset - CenterPosition.Y_offset) * 22);
+            renderOffset.X -= (int)((center.X_offset - center.Y_offset) * 22);
             renderOffset.X -= (firstTile.X - firstTile.Y) * 22;
 
             renderOffset.Y = ((UltimaVars.EngineVars.ScreenSize.Y - (renderDimensionY * 44)) / 2);
-            renderOffset.Y += (CenterPosition.Z * 4) + (int)(CenterPosition.Z_offset * 4);
-            renderOffset.Y -= (int)((CenterPosition.X_offset + CenterPosition.Y_offset) * 22);
+            renderOffset.Y += (center.Z * 4) + (int)(center.Z_offset * 4);
+            renderOffset.Y -= (int)((center.X_offset + center.Y_offset) * 22);
             renderOffset.Y -= (firstTile.X + firstTile.Y) * 22;
             renderOffset.Y -= (renderZOffset) * 22;
 
             ObjectsRendered = 0; // Count of objects rendered for statistics and debug
 
-            MouseOverList overList = new MouseOverList(Engine.Input.MousePosition, PickType); // List of entities mouse is over.
+            MouseOverList overList = new MouseOverList(Engine.Input.MousePosition, mousePick.PickOnly); // List of entities mouse is over.
             List<AEntity> deferredToRemove = new List<AEntity>();
 
             for (int col = 0; col < renderDimensionY * 2 + renderExtraRowsAtBottom; col++)
@@ -248,38 +231,14 @@ namespace UltimaXNA.UltimaWorld.Views
             OverheadRenderer.Render(m_spriteBatch, overList, map);
 
             // Update the MouseOver objects
-            m_overObject = overList.GetForemostMouseOverItem(Engine.Input.MousePosition);
-            m_overGround = overList.GetForemostMouseOverItem<Ground>(Engine.Input.MousePosition);
+            mousePick.UpdateOverEntities(overList, Engine.Input.MousePosition);
 
             // Draw the objects we just send to the spritebatch.
             m_spriteBatch.Prepare(true, true);
             m_spriteBatch.Flush();
         }
 
-        private static void InternalDrawVectors(Vector2 renderOffset)
-        {
-            if (Flag_HighlightMouseOver)
-            {
-                if (m_overObject != null)
-                {
-                    m_vectors.DrawLine(m_overObject.Vertices[0], m_overObject.Vertices[1], Color.LightBlue);
-                    m_vectors.DrawLine(m_overObject.Vertices[1], m_overObject.Vertices[3], Color.LightBlue);
-                    m_vectors.DrawLine(m_overObject.Vertices[3], m_overObject.Vertices[2], Color.LightBlue);
-                    m_vectors.DrawLine(m_overObject.Vertices[2], m_overObject.Vertices[0], Color.LightBlue);
-                }
-                if (m_overGround != null)
-                {
-                    m_vectors.DrawLine(m_overGround.Vertices[0], m_overGround.Vertices[1], Color.Teal);
-                    m_vectors.DrawLine(m_overGround.Vertices[1], m_overGround.Vertices[3], Color.Teal);
-                    m_vectors.DrawLine(m_overGround.Vertices[3], m_overGround.Vertices[2], Color.Teal);
-                    m_vectors.DrawLine(m_overGround.Vertices[2], m_overGround.Vertices[0], Color.Teal);
-                }
-            }
-
-            m_vectors.Render_ViewportSpace();
-        }
-
-        private static void recalculateLightning()
+        private void recalculateLightning()
         {
             float light = Math.Min(30 - OverallLightning + PersonalLightning, 30f);
             light = Math.Max(light, 0);

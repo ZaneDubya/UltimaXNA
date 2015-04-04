@@ -1,10 +1,24 @@
 ﻿using InterXLib.Display;
 using InterXLib.Patterns.MVC;
+using UltimaXNA.UltimaWorld.Views;
+using UltimaXNA.UltimaWorld.Controllers;
 
 namespace UltimaXNA.UltimaWorld
 {
     class WorldView : AView
     {
+        public IsometricRenderer Isometric
+        {
+            get;
+            private set;
+        }
+
+        public MousePicking MousePick
+        {
+            get;
+            private set;
+        }
+
         protected new WorldModel Model
         {
             get { return (WorldModel)base.Model; }
@@ -13,12 +27,14 @@ namespace UltimaXNA.UltimaWorld
         public WorldView(WorldModel model)
             : base(model)
         {
-            Views.IsometricRenderer.LightDirection = -0.6f;
+            Isometric = new IsometricRenderer();
+            Isometric.Initialize(Model.Engine);
+            Isometric.LightDirection = -0.6f;
         }
 
         public override void Draw(YSpriteBatch spritebatch, double frameTime)
         {
-            Views.IsometricRenderer.Draw(Model.Map, EntityManager.GetPlayerObject().Position);
+            Isometric.Draw(Model.Map, EntityManager.GetPlayerObject().Position, MousePick);
         }
     }
 }

@@ -47,7 +47,7 @@ namespace UltimaXNA.UltimaEntities.EntityViews
                 DrawTexture = UltimaData.GumpData.GetGumpXNA(displayItemdID);
                 Point offset = m_Offsets[m_DisplayItemID - 20000];
                 DrawArea = new Rectangle(offset.X, DrawTexture.Height - 33 + (Entity.Z * 4) + offset.Y, DrawTexture.Width, DrawTexture.Height);
-                PickType = PickTypes.PickNothing;
+                PickType = PickType.PickNothing;
                 DrawFlip = false;
             }
 

@@ -25,7 +25,7 @@ namespace UltimaXNA.UltimaEntities.EntityViews
             SortZ = Entity.Z;
         }
 
-        public PickTypes PickType = PickTypes.PickNothing;
+        public PickType PickType = PickType.PickNothing;
 
         // ======================================================================
         // Sort routines

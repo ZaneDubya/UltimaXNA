@@ -16,9 +16,9 @@ namespace UltimaXNA.UltimaEntities.EntityViews
         public GroundView(Ground ground)
             : base(ground)
         {
-            PickType = PickTypes.PickGroundTiles;
+            PickType = PickType.PickGroundTiles;
             NoDraw = (Entity.LandDataID < 3 || (Entity.LandDataID >= 0x1AF && Entity.LandDataID <= 0x1B5));
-
+             
             if (Entity.LandData.TextureID <= 0)
             {
                 DrawFlip = false;

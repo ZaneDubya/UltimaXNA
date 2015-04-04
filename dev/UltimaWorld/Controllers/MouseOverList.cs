@@ -21,7 +21,7 @@ namespace UltimaXNA.UltimaWorld.Controllers
     {
         List<MouseOverItem> m_overList;
 
-        public PickTypes PickType = PickTypes.PickNothing;
+        public PickType PickType = PickType.PickNothing;
 
         Vector3 m_mousePosition;
         protected Point MousePosition
@@ -32,7 +32,7 @@ namespace UltimaXNA.UltimaWorld.Controllers
             }
         }
 
-        public MouseOverList(Point mousePosition, PickTypes pickType)
+        public MouseOverList(Point mousePosition, PickType pickType)
         {
             m_overList = new List<MouseOverItem>();
             MousePosition = mousePosition;

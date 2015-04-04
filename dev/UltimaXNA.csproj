@@ -163,6 +163,8 @@
     <Compile Include="UltimaLogin\Scenes\HueTestScene.cs" />
     <Compile Include="UltimaVars\Journaling.cs" />
     <Compile Include="UltimaVars\SettingVars.cs" />
+    <Compile Include="UltimaWorld\Controllers\MousePicking.cs" />
+    <Compile Include="UltimaWorld\Controllers\PickType.cs" />
     <Compile Include="UltimaWorld\EffectManager.cs" />
     <Compile Include="UltimaWorld\Maps\TileSorter.cs" />
     <Compile Include="UltimaEntities\EntityViews\GroundView.cs" />
@@ -324,7 +326,6 @@
     </Compile>
     <Compile Include="UltimaData\TileMatrixRaw.cs" />
     <Compile Include="Core\Diagnostics\Dynamic.cs" />
-    <Compile Include="UltimaWorld\Controllers\TargetTypes.cs" />
     <Compile Include="UltimaWorld\WorldInput.cs" />
     <Compile Include="UltimaGUI\Controls\TextureGumpling.cs" />
     <Compile Include="UltimaGUI\HTML\Regions.cs" />
@@ -443,7 +444,6 @@
     <Compile Include="UltimaData\Support\_Enums.cs" />
     <Compile Include="UltimaWorld\Views\MiniMapView.cs" />
     <Compile Include="UltimaWorld\Maps\Map.cs" />
-    <Compile Include="UltimaWorld\Controllers\PickTypes.cs" />
     <Compile Include="Core\Rendering\SpriteBatch3D.cs" />
     <Compile Include="Core\Rendering\VertexPositionNormalTextureHue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

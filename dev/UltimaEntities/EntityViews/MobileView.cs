@@ -20,7 +20,7 @@ namespace UltimaXNA.UltimaEntities.EntityViews
             m_Animation = new MobileAnimation(mobile);
 
             m_MobileLayers = new MobileViewLayer[(int)EquipLayer.LastUserValid];
-            PickType = PickTypes.PickObjects;
+            PickType = PickType.PickObjects;
         }
 
         public MobileAnimation m_Animation;

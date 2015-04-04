@@ -44,9 +44,9 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
             UltimaVars.Journaling.OnJournalEntryAdded += AddJournalEntry;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
 
             m_ScrollBar.Position = new Point(this.Width - 45, 35);
             m_ScrollBar.Height = this.Height - 100;

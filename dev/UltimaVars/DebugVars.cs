@@ -26,8 +26,6 @@ namespace UltimaXNA.UltimaVars
         {
             String debugMessage = string.Empty;
 
-            debugMessage += string.Format("#Objects: {0}", IsometricRenderer.ObjectsRendered);
-
             if (Flag_DisplayFPS)
                 debugMessage += string.Format("\nFPS: {0}", (int)EngineVars.FPS);
 
@@ -38,16 +36,6 @@ namespace UltimaXNA.UltimaVars
                 else
                     debugMessage += string.Format("\nData Read: {0}", Metrics.TotalDataRead.ToString());
             }
-
-            if (IsometricRenderer.MouseOverObject != null)
-                debugMessage += "\nOVER:" + IsometricRenderer.MouseOverObject.ToString();
-            else
-                debugMessage += "\nOVER: " + "null";
-
-            if (IsometricRenderer.MouseOverGround != null)
-                debugMessage += "\nGROUND: " + IsometricRenderer.MouseOverGround.Position.ToString();
-            else
-                debugMessage += "\nGROUND: null";
 
             return debugMessage;
         }
