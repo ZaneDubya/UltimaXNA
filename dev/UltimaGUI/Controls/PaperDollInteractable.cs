@@ -74,7 +74,7 @@ namespace UltimaXNA.UltimaGUI.Controls
         bool m_isFemale;
         bool m_isElf;
 
-        public PaperDollInteractable(Control owner, int page, int x, int y)
+        public PaperDollInteractable(AControl owner, int page, int x, int y)
             : base(0, 0)
         {
             m_owner = owner;

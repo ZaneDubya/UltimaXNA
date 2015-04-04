@@ -15,18 +15,18 @@ using UltimaXNA.UltimaGUI;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {
-    class GumpPicTiled : Control
+    class GumpPicTiled : AControl
     {
         Texture2D m_bgGump = null;
         int m_gumpID;
 
-        public GumpPicTiled(Control owner, int page)
+        public GumpPicTiled(AControl owner, int page)
             : base(owner, page)
         {
 
         }
 
-        public GumpPicTiled(Control owner, int page, string[] arguements)
+        public GumpPicTiled(AControl owner, int page, string[] arguements)
             : this(owner, page)
         {
             int x, y, gumpID, width, height;
@@ -38,7 +38,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             buildGumpling(x, y, width, height, gumpID);
         }
 
-        public GumpPicTiled(Control owner, int page, int x, int y, int width, int height, int gumpID)
+        public GumpPicTiled(AControl owner, int page, int x, int y, int width, int height, int gumpID)
             : this(owner, page)
         {
             buildGumpling(x, y, width, height, gumpID);

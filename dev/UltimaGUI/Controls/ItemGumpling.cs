@@ -18,7 +18,7 @@ using UltimaXNA.UltimaWorld;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {
-    class ItemGumpling : Control
+    class ItemGumpling : AControl
     {
         protected Texture2D m_texture = null;
         Item m_item;
@@ -32,7 +32,7 @@ namespace UltimaXNA.UltimaGUI.Controls
         bool sendClickIfNoDoubleClick = false;
         float singleClickTime;
 
-        public ItemGumpling(Control owner, Item item)
+        public ItemGumpling(AControl owner, Item item)
             : base(owner, 0)
         {
             buildGumpling(item);

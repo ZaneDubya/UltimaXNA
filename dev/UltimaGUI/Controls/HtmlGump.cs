@@ -17,7 +17,7 @@ using UltimaXNA.UltimaGUI;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {
-    public class HtmlGump : Control
+    public class HtmlGump : AControl
     {
         public int ScrollX = 0, ScrollY = 0;
         ScrollBar m_scrollbar;
@@ -97,13 +97,13 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         RenderedText m_Texture;
 
-        public HtmlGump(Control owner, int page)
+        public HtmlGump(AControl owner, int page)
             : base(owner, page)
         {
             m_textChanged = true;
         }
 
-        public HtmlGump(Control owner, int page, string[] arguements, string[] lines)
+        public HtmlGump(AControl owner, int page, string[] arguements, string[] lines)
             : this(owner, page)
         {
             int x, y, width, height, textIndex, background, scrollbar;
@@ -118,7 +118,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             buildGumpling(x, y, width, height, background, scrollbar, lines[textIndex]);
         }
 
-        public HtmlGump(Control owner, int page, int x, int y, int width, int height, int background, int scrollbar, string text)
+        public HtmlGump(AControl owner, int page, int x, int y, int width, int height, int background, int scrollbar, string text)
             : this(owner, page)
         {
             buildGumpling(x, y, width, height, background, scrollbar, text);

@@ -20,7 +20,7 @@ namespace UltimaXNA.UltimaGUI
     /// <summary>
     /// The base class that encapsulates Gump functionality. All Gumps should inherit from this class or a child thereof.
     /// </summary>
-    public class Gump : Control
+    public class Gump : AControl
     {
         
         Serial GumpID;
@@ -221,7 +221,7 @@ namespace UltimaXNA.UltimaGUI
             if (Controls.Count > 0)
             {
                 int w = 0, h = 0;
-                foreach (Control c in Controls)
+                foreach (AControl c in Controls)
                 {
                     if (c.Page == 0 || c.Page == this.ActivePage)
                     {
@@ -253,7 +253,7 @@ namespace UltimaXNA.UltimaGUI
 
         protected string getTextEntry(int entryID)
         {
-            foreach (Control c in Controls)
+            foreach (AControl c in Controls)
             {
                 if (c.GetType() == typeof(UltimaGUI.Controls.TextEntry))
                 {
@@ -270,7 +270,7 @@ namespace UltimaXNA.UltimaGUI
             // We override gump equality to provide the ability to NOT add a gump if only one should be active.
 
             // if parameter is null or cannot be cast to Control, return false.
-            if (obj == null || (obj as Control) == null)
+            if (obj == null || (obj as AControl) == null)
             {
                 return false;
             }

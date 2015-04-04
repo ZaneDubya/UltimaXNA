@@ -15,7 +15,7 @@ using UltimaXNA.UltimaGUI;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {
-    class GumpPic : Control
+    class GumpPic : AControl
     {
         protected Texture2D m_texture = null;
         int m_gumpID;
@@ -28,13 +28,13 @@ namespace UltimaXNA.UltimaGUI.Controls
             set { m_IsPaperdoll = value; }
         }
 
-        public GumpPic(Control owner, int page)
+        public GumpPic(AControl owner, int page)
             : base(owner, page)
         {
 
         }
 
-        public GumpPic(Control owner, int page, string[] arguements)
+        public GumpPic(AControl owner, int page, string[] arguements)
             : this(owner, page)
         {
             int x, y, gumpID, hue = 0;
@@ -49,7 +49,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             buildGumpling(x, y, gumpID, hue);
         }
 
-        public GumpPic(Control owner, int page, int x, int y, int gumpID, int hue)
+        public GumpPic(AControl owner, int page, int x, int y, int gumpID, int hue)
             : this(owner, page)
         {
             buildGumpling(x, y, gumpID, hue);

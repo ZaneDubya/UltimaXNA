@@ -25,7 +25,7 @@ namespace UltimaXNA.UltimaGUI
             m_onItemOver = notifyOnOver;
         }
 
-        public void AddDropTarget(Control target)
+        public void AddDropTarget(AControl target)
         {
             target.OnMouseUp += mouseUp;
             target.OnMouseOver += mouseOver;

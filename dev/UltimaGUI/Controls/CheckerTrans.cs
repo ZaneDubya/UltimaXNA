@@ -15,17 +15,17 @@ using UltimaXNA.UltimaGUI;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {
-    class CheckerTrans : Control
+    class CheckerTrans : AControl
     {
         Texture2D m_renderedTexture = null;
 
-        public CheckerTrans(Control owner, int page)
+        public CheckerTrans(AControl owner, int page)
             : base(owner, page)
         {
 
         }
 
-        public CheckerTrans(Control owner, int page, string[] arguements)
+        public CheckerTrans(AControl owner, int page, string[] arguements)
             : this(owner, page)
         {
             int x, y, width, height;
@@ -37,7 +37,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             buildGumpling(x, y, width, height);
         }
 
-        public CheckerTrans(Control owner, int page, int x, int y, int width, int height)
+        public CheckerTrans(AControl owner, int page, int x, int y, int width, int height)
             : this(owner, page)
         {
             buildGumpling(x, y, width, height);

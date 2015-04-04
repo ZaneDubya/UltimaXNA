@@ -19,7 +19,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
 {
     class StatusGump : Gump
     {
-        List<Control> ControlsToUpdate = new List<Control>();
+        List<AControl> ControlsToUpdate = new List<AControl>();
         PlayerMobile m = (PlayerMobile)EntityManager.GetPlayerObject();
         double m_RefreshTime = 0d;
 
@@ -94,7 +94,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
             {
                 m_RefreshTime = totalMS;
 
-                foreach (Control c in ControlsToUpdate)
+                foreach (AControl c in ControlsToUpdate)
                     Controls.Remove(c);
 
                 AddControl(new TextLabelAscii(this, 0, 54, 44, 1, 6, "" + m.Name.ToString()));

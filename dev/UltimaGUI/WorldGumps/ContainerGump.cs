@@ -45,21 +45,21 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
                 m_updateTicker = m_item.UpdateTicker;
                 m_tickerText.Text = string.Format("Update#{0}", m_updateTicker);
                 // delete any items in our pack that are no longer in the container.
-                List<Control> ControlsToRemove = new List<Control>();
-                foreach (Control c in Controls)
+                List<AControl> ControlsToRemove = new List<AControl>();
+                foreach (AControl c in Controls)
                 {
                     if (c is ItemGumpling && !m_item.Contents.Contains(((ItemGumpling)c).Item))
                     {
                         ControlsToRemove.Add(c);
                     }
                 }
-                foreach (Control c in ControlsToRemove)
+                foreach (AControl c in ControlsToRemove)
                     Controls.Remove(c);
                 // add any items in the container that are not in our pack.
                 foreach (Item item in m_item.Contents)
                 {
                     bool controlForThisItem = false;
-                    foreach (Control c in Controls)
+                    foreach (AControl c in Controls)
                     {
                         if (c is ItemGumpling && ((ItemGumpling)c).Item == item)
                         {

@@ -18,7 +18,7 @@ using UltimaXNA.UltimaGUI;
 namespace UltimaXNA.UltimaGUI.Controls
 {
 
-    class Slider : Control
+    class Slider : AControl
     {
         Texture2D[] m_gumpBar = null;
         Texture2D m_gumpSlider = null;
@@ -45,14 +45,14 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         int m_sliderX;
 
-        public Slider(Control owner, int page)
+        public Slider(AControl owner, int page)
             : base(owner, page)
         {
             HandlesMouseInput = true;
             m_pairedSliders = new List<Slider>();
         }
 
-        public Slider(Control owner, int page, int x, int y, int width, int minValue, int maxValue, int value)
+        public Slider(AControl owner, int page, int x, int y, int width, int minValue, int maxValue, int value)
             : this(owner, page)
         {
             buildGumpling(x, y, width, minValue, maxValue, value);

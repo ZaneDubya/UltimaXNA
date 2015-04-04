@@ -29,7 +29,7 @@ namespace UltimaXNA.UltimaGUI
     /// The base class used by all GUI objects.
     /// NOTE: Gumps MUST NOT inherit from Control. They must inherit from Gump instead.
     /// </summary>
-    public class Control
+    public abstract class AControl
     {
         internal static UltimaEngine Engine = null;
 
@@ -57,7 +57,7 @@ namespace UltimaXNA.UltimaGUI
                     return true;
                 if (m_controls == null)
                     return false;
-                foreach (Control c in m_controls)
+                foreach (AControl c in m_controls)
                     if (c.HandlesKeyboardFocus)
                         return true;
                 return false;
@@ -69,7 +69,7 @@ namespace UltimaXNA.UltimaGUI
                     Engine.UserInterface.KeyboardFocusControl = this;
             }
         }
-        public Control KeyboardFocusControl
+        public AControl KeyboardFocusControl
         {
             get
             {
@@ -77,7 +77,7 @@ namespace UltimaXNA.UltimaGUI
                     return this;
                 if (m_controls == null)
                     return null;
-                foreach (Control c in m_controls)
+                foreach (AControl c in m_controls)
                     if (c.HandlesKeyboardFocus)
                         return c.KeyboardFocusControl;
                 return null;
@@ -135,7 +135,7 @@ namespace UltimaXNA.UltimaGUI
                 }
                 // When ActivePage changes, check to see if there are new text input boxes
                 // that we should redirect text input to.
-                foreach (Control c in Controls)
+                foreach (AControl c in Controls)
                 {
                     if (c.HandlesKeyboardFocus && (c.Page == m_activePage))
                     {
@@ -211,22 +211,22 @@ namespace UltimaXNA.UltimaGUI
             get { return m_area; }
         }
 
-        protected Control m_owner = null;
-        public Control Owner { get { return m_owner; } }
-        private List<Control> m_controls = null;
-        protected List<Control> Controls
+        protected AControl m_owner = null;
+        public AControl Owner { get { return m_owner; } }
+        private List<AControl> m_controls = null;
+        protected List<AControl> Controls
         {
             get
             {
                 if (m_controls == null)
-                    m_controls = new List<Control>();
+                    m_controls = new List<AControl>();
                 return m_controls;
             }
         }
 
         static Texture2D m_boundsTexture;
 
-        public Control(Control owner, int page)
+        public AControl(AControl owner, int page)
         {
             m_owner = owner;
             m_page = page;
@@ -245,13 +245,13 @@ namespace UltimaXNA.UltimaGUI
 
         }
 
-        public Control AddControl(Control c)
+        public AControl AddControl(AControl c)
         {
             Controls.Add(c);
             return LastControl;
         }
 
-        public Control LastControl
+        public AControl LastControl
         {
             get { return Controls[Controls.Count - 1]; }
         }
@@ -259,7 +259,7 @@ namespace UltimaXNA.UltimaGUI
         public void ClearControls()
         {
             if (Controls != null)
-                foreach (Control c in Controls)
+                foreach (AControl c in Controls)
                     c.Dispose();
         }
 
@@ -270,14 +270,14 @@ namespace UltimaXNA.UltimaGUI
         }
 
         DragWidget m_dragger;
-        public void MakeDragger(Control toMove)
+        public void MakeDragger(AControl toMove)
         {
             this.HandlesMouseInput = true;
             m_dragger = new DragWidget(this, m_owner);
         }
 
-        Control m_closeTarget;
-        public void MakeCloseTarget(Control toClose)
+        AControl m_closeTarget;
+        public void MakeCloseTarget(AControl toClose)
         {
             m_closeTarget = toClose;
             this.HandlesMouseInput = true;
@@ -291,9 +291,9 @@ namespace UltimaXNA.UltimaGUI
             }
         }
 
-        public Control[] HitTest(Point position, bool alwaysHandleMouseInput)
+        public AControl[] HitTest(Point position, bool alwaysHandleMouseInput)
         {
-            List<Control> focusedControls = new List<Control>();
+            List<AControl> focusedControls = new List<AControl>();
 
             // offset the mouse position if we are rendering full screen...
             position.X = (int)((float)(position.X) / InputMultiplier);
@@ -310,11 +310,11 @@ namespace UltimaXNA.UltimaGUI
                 {
                     if (alwaysHandleMouseInput || this.HandlesMouseInput)
                         focusedControls.Insert(0, this);
-                    foreach (Control c in Controls)
+                    foreach (AControl c in Controls)
                     {
                         if ((c.Page == 0) || (c.Page == ActivePage))
                         {
-                            Control[] c1 = c.HitTest(position, false);
+                            AControl[] c1 = c.HitTest(position, false);
                             if (c1 != null)
                             {
                                 for (int i = c1.Length - 1; i >= 0; i--)
@@ -347,20 +347,20 @@ namespace UltimaXNA.UltimaGUI
             m_area.X = X;
             m_area.Y = Y;
 
-            foreach (Control c in Controls)
+            foreach (AControl c in Controls)
             {
                 if (!c.IsInitialized)
                     c.ControlInitialize();
                 c.Update(totalMS, frameMS);
             }
 
-            List<Control> disposedControls = new List<Control>();
-            foreach (Control c in Controls)
+            List<AControl> disposedControls = new List<AControl>();
+            foreach (AControl c in Controls)
             {
                 if (c.IsDisposed)
                     disposedControls.Add(c);
             }
-            foreach (Control c in disposedControls)
+            foreach (AControl c in disposedControls)
             {
                 Controls.Remove(c);
             }
@@ -377,7 +377,7 @@ namespace UltimaXNA.UltimaGUI
             // DrawBounds(spriteBatch);
 #endif
         
-            foreach (Control c in Controls)
+            foreach (AControl c in Controls)
             {
                 if ((c.Page == 0) || (c.Page == ActivePage))
                 {
@@ -567,7 +567,7 @@ namespace UltimaXNA.UltimaGUI
         /// This is called when the Control that current has keyboard focus releases that focus; for example, when Tab is pressed.
         /// </summary>
         /// <param name="c">The control that is releasing focus.</param>
-        internal void KeyboardTabToNextFocus(Control c)
+        internal void KeyboardTabToNextFocus(AControl c)
         {
             int startIndex = Controls.IndexOf(c);
             for (int i = startIndex + 1; i < Controls.Count; i++)

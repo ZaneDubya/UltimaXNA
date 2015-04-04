@@ -15,7 +15,7 @@ using UltimaXNA.UltimaData.FontsOld;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {
-    class DropDownList : Control
+    class DropDownList : AControl
     {
         public int Index;
 
@@ -35,13 +35,13 @@ namespace UltimaXNA.UltimaGUI.Controls
         const int hue_Text = 1107;
         const int hue_TextSelected = 588;
 
-        public DropDownList(Control owner, int page)
+        public DropDownList(AControl owner, int page)
             : base(owner, page)
         {
             HandlesMouseInput = true;
         }
 
-        public DropDownList(Control owner, int page, int x, int y, int width, int index, int itemsVisible, string[] items, bool canBeNull)
+        public DropDownList(AControl owner, int page, int x, int y, int width, int index, int itemsVisible, string[] items, bool canBeNull)
             : this(owner, page)
         {
             buildGumpling(x, y, width, index, itemsVisible, items, canBeNull);

@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {
-    class PaperdollLargeUninteractable : Control
+    class PaperdollLargeUninteractable : AControl
     {
         public enum EquipSlots : int
         {
@@ -70,13 +70,13 @@ namespace UltimaXNA.UltimaGUI.Controls
             get { return m_equipmentSlots[(int)slot]; }
         }
 
-        PaperdollLargeUninteractable(Control owner, int page)
+        PaperdollLargeUninteractable(AControl owner, int page)
             : base(owner, page)
         {
 
         }
 
-        public PaperdollLargeUninteractable(Control owner, int page, int x, int y)
+        public PaperdollLargeUninteractable(AControl owner, int page, int x, int y)
             : this(owner, page)
         {
             Position = new Point(x, y);

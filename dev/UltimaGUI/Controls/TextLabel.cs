@@ -15,7 +15,7 @@ using UltimaXNA.UltimaGUI;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {
-    public class TextLabel : Control
+    public class TextLabel : AControl
     {
         public int Hue = 0;
 
@@ -35,13 +35,13 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         RenderedText m_textRenderer;
 
-        public TextLabel(Control owner, int page)
+        public TextLabel(AControl owner, int page)
             : base(owner, page)
         {
 
         }
 
-        public TextLabel(Control owner, int page, string[] arguements, string[] lines)
+        public TextLabel(AControl owner, int page, string[] arguements, string[] lines)
             : this(owner, page)
         {
             int x, y, hue, textIndex;
@@ -52,7 +52,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             buildGumpling(x, y, hue, lines[textIndex]);
         }
 
-        public TextLabel(Control owner, int page, int x, int y, int hue, string text)
+        public TextLabel(AControl owner, int page, int x, int y, int hue, string text)
             : this(owner, page)
         {
             buildGumpling(x, y, hue, text);

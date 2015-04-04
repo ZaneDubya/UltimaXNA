@@ -23,7 +23,7 @@ namespace UltimaXNA.UltimaGUI.Controls
         Activate = 1
     }
 
-    public class Button : Control
+    public class Button : AControl
     {
         private const int kGump_Up = 0, kGump_Down = 1, kGump_Over = 2;
         Texture2D[] m_gumpTextures = new Texture2D[3] { null, null, null };
@@ -65,13 +65,13 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         RenderedText m_Texture;
 
-        public Button(Control owner, int page)
+        public Button(AControl owner, int page)
             : base(owner, page)
         {
             HandlesMouseInput = true;
         }
 
-        public Button(Control owner, int page, string[] arguements)
+        public Button(AControl owner, int page, string[] arguements)
             : this(owner, page)
         {
             int x, y, gumpID1, gumpID2, buttonType, param, buttonID;
@@ -85,7 +85,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             buildGumpling(x, y, gumpID1, gumpID2, (ButtonTypes)buttonType, param, buttonID);
         }
 
-        public Button(Control owner, int page, int x, int y, int gumpID1, int gumpID2, ButtonTypes buttonType, int param, int buttonID)
+        public Button(AControl owner, int page, int x, int y, int gumpID1, int gumpID2, ButtonTypes buttonType, int param, int buttonID)
             : this(owner, page)
         {
             buildGumpling(x, y, gumpID1, gumpID2, buttonType, param, buttonID);

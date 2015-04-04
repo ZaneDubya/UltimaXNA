@@ -22,13 +22,13 @@ namespace UltimaXNA.UltimaGUI
 
         public GUIManager(UltimaEngine engine)
         {
-            Control.Engine = Engine = engine;
+            AControl.Engine = Engine = engine;
             RenderedText.Graphics = Engine.GraphicsDevice;
 
             m_SpriteBatch = new SpriteBatchUI(Engine);
 
-            m_Controls = new List<Control>();
-            m_DisposedControls = new List<Control>();
+            m_Controls = new List<AControl>();
+            m_DisposedControls = new List<AControl>();
         }
 
         SpriteBatchUI m_SpriteBatch;
@@ -45,16 +45,16 @@ namespace UltimaXNA.UltimaGUI
         public int Height { get { return m_SpriteBatch.GraphicsDevice.Viewport.Height; } }
 
         // All open controls:
-        List<Control> m_Controls = null;
-        List<Control> m_DisposedControls = null;
+        List<AControl> m_Controls = null;
+        List<AControl> m_DisposedControls = null;
         // List of controls that the Cursor is over, with the control at index 0 being the frontmost control:
-        Control m_MouseOverControl = null;
+        AControl m_MouseOverControl = null;
         // Controls that the Cursor was over when a mouse button was clicked. We allow for five buttons:
-        Control[] m_MouseDownControl = new Control[5];
+        AControl[] m_MouseDownControl = new AControl[5];
         /// <summary>
         /// Returns the control directly under the Cursor.
         /// </summary>
-        public Control MouseOverControl
+        public AControl MouseOverControl
         {
             get
             {
@@ -78,8 +78,8 @@ namespace UltimaXNA.UltimaGUI
             }
         }
 
-        private Control m_keyboardFocusControl;
-        public Control KeyboardFocusControl
+        private AControl m_keyboardFocusControl;
+        public AControl KeyboardFocusControl
         {
             get
             {
@@ -89,7 +89,7 @@ namespace UltimaXNA.UltimaGUI
                 {
                     for (int i = m_Controls.Count - 1; i >= 0; i--)
                     {
-                        Control c = m_Controls[i];
+                        AControl c = m_Controls[i];
                         if (!c.IsDisposed && c.Visible && c.Enabled && c.HandlesKeyboardFocus)
                         {
                             m_keyboardFocusControl = c.KeyboardFocusControl;
@@ -110,7 +110,7 @@ namespace UltimaXNA.UltimaGUI
         {
             get
             {
-                foreach (Control c in m_Controls)
+                foreach (AControl c in m_Controls)
                     if (c.IsModal)
                         return true;
                 return false;
@@ -128,7 +128,7 @@ namespace UltimaXNA.UltimaGUI
         /// If OnlyAllowOne, then any gumps of the same type that are active are disposed of, and the passed gump is added.
         /// If Toggle, then only adds the gump is another gump of the same type is not active; else, disposes of all gumps of the passed type, including the passed gump.</param>
         /// <returns>If the gump was added to the list of active gumps, then returns the added gump. If the gump was not added, returns null.</returns>
-        public Control AddControl(Control gump, int x, int y, AddGumpType addType = AddGumpType.Always)
+        public AControl AddControl(AControl gump, int x, int y, AddGumpType addType = AddGumpType.Always)
         {
             bool addGump = false;
 
@@ -139,7 +139,7 @@ namespace UltimaXNA.UltimaGUI
             else if (addType == AddGumpType.Toggle)
             {
                 bool alreadyActive = false;
-                foreach (Control c in m_Controls)
+                foreach (AControl c in m_Controls)
                 {
                     if (c.Equals(gump) && gump.Equals(c))
                     {
@@ -152,7 +152,7 @@ namespace UltimaXNA.UltimaGUI
             }
             else if (addType == AddGumpType.OnlyAllowOne)
             {
-                foreach (Control c in m_Controls)
+                foreach (AControl c in m_Controls)
                 {
                     if (c.Equals(gump) && gump.Equals(c))
                     {
@@ -183,9 +183,9 @@ namespace UltimaXNA.UltimaGUI
             Toggle = 2
         }
 
-        public Control GetControl(int serial)
+        public AControl GetControl(int serial)
         {
-            foreach (Control c in m_Controls)
+            foreach (AControl c in m_Controls)
             {
                 if (c.Serial == serial)
                     return c;
@@ -193,9 +193,9 @@ namespace UltimaXNA.UltimaGUI
             return null;
         }
 
-        public T GetControl<T>(int serial) where T : Control
+        public T GetControl<T>(int serial) where T : AControl
         {
-            foreach (Control c in m_Controls)
+            foreach (AControl c in m_Controls)
             {
                 if (c.Serial == serial)
                     if (c.GetType() == typeof(T))
@@ -206,18 +206,18 @@ namespace UltimaXNA.UltimaGUI
 
         public void Update(double totalMS, double frameMS)
         {
-            foreach (Control c in m_Controls)
+            foreach (AControl c in m_Controls)
             {
                 if (!c.IsInitialized)
                     c.ControlInitialize();
                 c.Update(totalMS, frameMS);
             }
 
-            foreach (Control c in m_Controls)
+            foreach (AControl c in m_Controls)
                 if (c.IsDisposed)
                     m_DisposedControls.Add(c);
 
-            foreach (Control c in m_DisposedControls)
+            foreach (AControl c in m_DisposedControls)
                 m_Controls.Remove(c);
             m_DisposedControls.Clear();
 
@@ -232,7 +232,7 @@ namespace UltimaXNA.UltimaGUI
         {
             m_SpriteBatch.Prepare();
 
-            foreach (Control c in m_Controls)
+            foreach (AControl c in m_Controls)
             {
                 if (c.IsInitialized)
                     c.Draw(m_SpriteBatch);
@@ -249,7 +249,7 @@ namespace UltimaXNA.UltimaGUI
         /// </summary>
         public void Reset()
         {
-            foreach (Control c in m_Controls)
+            foreach (AControl c in m_Controls)
                 c.Dispose();
         }
 
@@ -278,7 +278,7 @@ namespace UltimaXNA.UltimaGUI
             // Get the topmost control that is under the mouse and handles mouse input.
             // If this control is different from the previously focused control,
             // send that previous control a MouseOut event.
-            Control focusedControl = InternalGetMouseOverControl();
+            AControl focusedControl = InternalGetMouseOverControl();
             if ((MouseOverControl != null) && (focusedControl != MouseOverControl))
                 MouseOverControl.MouseOut(Engine.Input.MousePosition);
             if (focusedControl != null)
@@ -354,13 +354,13 @@ namespace UltimaXNA.UltimaGUI
             }
         }
 
-        private Control InternalGetMouseOverControl()
+        private AControl InternalGetMouseOverControl()
         {
-            List<Control> possibleControls;
+            List<AControl> possibleControls;
             if (IsModalControlOpen)
             {
-                possibleControls = new List<Control>();
-                foreach (Control c in m_Controls)
+                possibleControls = new List<AControl>();
+                foreach (AControl c in m_Controls)
                     if (c.IsModal)
                         possibleControls.Add(c);
             }
@@ -369,11 +369,11 @@ namespace UltimaXNA.UltimaGUI
                 possibleControls = m_Controls;
             }
 
-            Control[] mouseOverControls = null;
+            AControl[] mouseOverControls = null;
             // Get the list of controls under the mouse cursor
-            foreach (Control c in possibleControls)
+            foreach (AControl c in possibleControls)
             {
-                Control[] controls = c.HitTest(Engine.Input.MousePosition, false);
+                AControl[] controls = c.HitTest(Engine.Input.MousePosition, false);
                 if (controls != null)
                 {
                     mouseOverControls = controls;

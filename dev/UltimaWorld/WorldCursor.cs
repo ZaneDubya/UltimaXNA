@@ -48,7 +48,7 @@ namespace UltimaXNA.UltimaWorld
             {
                 if (World.Engine.UserInterface.IsMouseOverUI)
                 {
-                    Control target = World.Engine.UserInterface.MouseOverControl;
+                    AControl target = World.Engine.UserInterface.MouseOverControl;
                     // attempt to drop the item onto an interface. The only acceptable targets for dropping items are:
                     // 1. ItemGumplings that represent containers (like a bag icon)
                     // 2. Gumps that represent open Containers (GumpPicContainers, e.g. an open GumpPic of a chest)
@@ -134,7 +134,7 @@ namespace UltimaXNA.UltimaWorld
                             {
                                 // get object under mouse cursor. We can only hue items.
                                 // ItemGumping is the base class for all items, containers, and paperdoll items.
-                                Control target = World.Engine.UserInterface.MouseOverControl;
+                                AControl target = World.Engine.UserInterface.MouseOverControl;
                                 if (target is ItemGumpling)
                                 {
                                     mouseTargetingEventObject(((ItemGumpling)target).Item);

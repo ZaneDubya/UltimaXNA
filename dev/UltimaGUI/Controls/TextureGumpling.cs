@@ -6,12 +6,12 @@ using UltimaXNA.UltimaGUI;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {
-    class TextureGumpling : Control
+    class TextureGumpling : AControl
     {
         Texture2D m_Texture;
         Color[] m_TextureData;
 
-        public TextureGumpling(Control owner, int page, int x, int y, int width, int height)
+        public TextureGumpling(AControl owner, int page, int x, int y, int width, int height)
             : base(owner, page)
         {
             Position = new Point(x, y);

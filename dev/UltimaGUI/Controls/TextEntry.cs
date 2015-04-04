@@ -16,7 +16,7 @@ using UltimaXNA.Core.Rendering;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {
-    class TextEntry : Control
+    class TextEntry : AControl
     {
         public int Hue = 0;
         public int EntryID = 0;
@@ -46,14 +46,14 @@ namespace UltimaXNA.UltimaGUI.Controls
         RenderedText m_Texture;
         RenderedText m_Carat;
 
-        public TextEntry(Control owner, int page)
+        public TextEntry(AControl owner, int page)
             : base(owner, page)
         {
             HandlesMouseInput = true;
             HandlesKeyboardFocus = true;
         }
 
-        public TextEntry(Control owner, int page, string[] arguements, string[] lines)
+        public TextEntry(AControl owner, int page, string[] arguements, string[] lines)
             : this(owner, page)
         {
             int x, y, width, height, hue, entryID, textIndex, limitSize = 0;
@@ -71,7 +71,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             buildGumpling(x, y, width, height, hue, entryID, limitSize, lines[textIndex]);
         }
 
-        public TextEntry(Control owner, int page, int x, int y, int width, int height, int hue, int entryID, int limitSize, string text)
+        public TextEntry(AControl owner, int page, int x, int y, int width, int height, int hue, int entryID, int limitSize, string text)
             : this(owner, page)
         {
             buildGumpling(x, y, width, height, hue, entryID, limitSize, text);

@@ -395,7 +395,7 @@
     <Compile Include="UltimaGUI\WorldGumps\PaperDollGump.cs" />
     <Compile Include="UltimaGUI\LoginGumps\SelectServerGump.cs" />
     <Compile Include="UltimaGUI\WorldGumps\TopMenu.cs" />
-    <Compile Include="UltimaGUI\Control.cs" />
+    <Compile Include="UltimaGUI\AControl.cs" />
     <Compile Include="UltimaGUI\DropWidget.cs" />
     <Compile Include="Core\Rendering\SpriteBatchUI.cs" />
     <Compile Include="UltimaGUI\Gump.cs" />

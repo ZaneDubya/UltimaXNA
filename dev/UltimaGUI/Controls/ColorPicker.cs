@@ -15,7 +15,7 @@ using UltimaXNA.UltimaGUI;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {
-    class ColorPicker : Control
+    class ColorPicker : AControl
     {
         protected Texture2D m_huesTexture;
         protected Texture2D m_selectedIndicator;
@@ -50,20 +50,20 @@ namespace UltimaXNA.UltimaGUI.Controls
             }
         }
 
-        public ColorPicker(Control owner, int page)
+        public ColorPicker(AControl owner, int page)
             : base(owner, page)
         {
             HandlesMouseInput = true;
         }
 
-        public ColorPicker(Control owner, int page, Rectangle area, int swatchWidth, int swatchHeight, int[] hues)
+        public ColorPicker(AControl owner, int page, Rectangle area, int swatchWidth, int swatchHeight, int[] hues)
             : this(owner, page)
         {
             m_isAnOpenSwatch = true;
             buildGumpling(area, swatchWidth, swatchHeight, hues);
         }
 
-        public ColorPicker(Control owner, int page, Rectangle closedArea, Rectangle openArea, int swatchWidth, int swatchHeight, int[] hues)
+        public ColorPicker(AControl owner, int page, Rectangle closedArea, Rectangle openArea, int swatchWidth, int swatchHeight, int[] hues)
             : this(owner, page)
         {
             m_isAnOpenSwatch = false;

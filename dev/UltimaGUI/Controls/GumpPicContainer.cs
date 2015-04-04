@@ -17,7 +17,7 @@ namespace UltimaXNA.UltimaGUI.Controls
         Container m_containerItem;
         public Container Item { get { return m_containerItem; } }
 
-        public GumpPicContainer(Control owner, int page, int x, int y, int gumpID, int hue, Container containerItem)
+        public GumpPicContainer(AControl owner, int page, int x, int y, int gumpID, int hue, Container containerItem)
             : base(owner, page, x, y, gumpID, hue)
         {
             m_containerItem = containerItem;

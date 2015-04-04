@@ -89,11 +89,11 @@ namespace UltimaXNA.UltimaLogin.Scenes
             base.Update(totalTime, frameTime);
         }
 
-        class HuedControl : Control
+        class HuedControl : AControl
         {
             private int m_StaticTextureID = 0;
 
-            public HuedControl(Control owner, int staticID = 0x1bf5)
+            public HuedControl(AControl owner, int staticID = 0x1bf5)
                 : base(owner, 0)
             {
                 HandlesMouseInput = true;
