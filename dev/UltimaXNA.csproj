@@ -159,6 +159,7 @@
     <Compile Include="UltimaData\FontsNew\FontUni.cs" />
     <Compile Include="UltimaData\FontsNew\TextUni.cs" />
     <Compile Include="Core\IniFile.cs" />
+    <Compile Include="UltimaGUI\WorldGumps\JournalGump.cs" />
     <Compile Include="UltimaLogin\Scenes\HueTestScene.cs" />
     <Compile Include="UltimaVars\SettingVars.cs" />
     <Compile Include="UltimaWorld\Model\EffectsManager.cs" />
