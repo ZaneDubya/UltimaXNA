@@ -7,29 +7,47 @@ namespace UltimaXNA.UltimaWorld
 {
     class WorldClient
     {
-        private WorldModel m_Model;
-
-        public WorldClient(WorldModel model)
+        protected WorldModel World
         {
-            m_Model = model;
+            get;
+            private set;
+        }
+
+        public WorldClient(WorldModel world)
+        {
+            World = world;
         }
 
         public void Initialize()
         {
-            m_Model.Engine.Client.Register<VersionRequestPacket>(0xBD, "Version Request", -1, new TypedPacketReceiveHandler(receive_VersionRequest));
-            m_Model.Engine.Client.Register<TargetCursorPacket>(0x6C, "TargetCursor", 19, new TypedPacketReceiveHandler(receive_TargetCursor));
-            m_Model.Engine.Client.Register<TargetCursorMultiPacket>(0x99, "Target Cursor Multi Object", 26, new TypedPacketReceiveHandler(receive_TargetCursorMulti));
+            Register<VersionRequestPacket>(0xBD, "Version Request", -1, new TypedPacketReceiveHandler(receive_VersionRequest));
+            Register<TargetCursorPacket>(0x6C, "TargetCursor", 19, new TypedPacketReceiveHandler(receive_TargetCursor));
+            Register<TargetCursorMultiPacket>(0x99, "Target Cursor Multi Object", 26, new TypedPacketReceiveHandler(receive_TargetCursorMulti));
+
+            Register<GraphicEffectPacket>(0x70, "Graphical Effect 1", 28, new TypedPacketReceiveHandler(receive_GraphicEffect));
+            Register<GraphicEffectHuedPacket>(0xC0, "Hued Effect", 36, new TypedPacketReceiveHandler(receive_HuedEffect));
+            Register<GraphicEffectExtendedPacket>(0xC7, "Particle Effect", 49, new TypedPacketReceiveHandler(receive_OnParticleEffect));
 
             UltimaEntities.MobileMovement.SendMoveRequestPacket += InternalOnEntity_SendMoveRequestPacket;
         }
 
         public void Dispose()
         {
-            m_Model.Engine.Client.Unregister(0xBD, receive_VersionRequest);
-            m_Model.Engine.Client.Unregister(0x6C, receive_TargetCursor);
-            m_Model.Engine.Client.Unregister(0x99, receive_TargetCursorMulti);
+            Unregister(0xBD, receive_VersionRequest);
+            Unregister(0x6C, receive_TargetCursor);
+            Unregister(0x99, receive_TargetCursorMulti);
 
             UltimaEntities.MobileMovement.SendMoveRequestPacket -= InternalOnEntity_SendMoveRequestPacket;
+        }
+
+        public void Register<T>(int id, string name, int length, TypedPacketReceiveHandler onReceive) where T : IRecvPacket
+        {
+
+        }
+
+        public void Unregister(int id, TypedPacketReceiveHandler onReceive)
+        {
+
         }
 
         public void AfterLoginSequence()
@@ -96,6 +114,25 @@ namespace UltimaXNA.UltimaWorld
         private void InternalOnEntity_SendMoveRequestPacket(MoveRequestPacket packet)
         {
             m_Model.Engine.Client.Send(packet);
+        }
+
+        // ======================================================================
+        // Effect handling
+        // ======================================================================
+
+        private void receive_GraphicEffect(IRecvPacket packet)
+        {
+            EffectsManager.Add((GraphicEffectPacket)packet);
+        }
+
+        private void receive_HuedEffect(IRecvPacket packet)
+        {
+            EffectsManager.Add((GraphicEffectHuedPacket)packet);
+        }
+
+        private void receive_OnParticleEffect(IRecvPacket packet)
+        {
+            EffectsManager.Add((GraphicEffectExtendedPacket)packet);
         }
     }
 }

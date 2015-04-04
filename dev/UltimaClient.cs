@@ -71,7 +71,7 @@ namespace UltimaXNA
             Register<WeatherPacket>(0x65, "Set Weather", 4, new TypedPacketReceiveHandler(receive_SetWeather));
             Register<PlayMusicPacket>(0x6D, "Play Music", 3, new TypedPacketReceiveHandler(receive_PlayMusic));
             Register<MobileAnimationPacket>(0x6E, "Character Animation", 14, new TypedPacketReceiveHandler(receive_MobileAnimation));
-            Register<GraphicEffectPacket>(0x70, "Graphical Effect 1", 28, new TypedPacketReceiveHandler(receive_GraphicEffect));
+            
             Register<WarModePacket>(0x72, "War Mode", 5, new TypedPacketReceiveHandler(receive_WarMode));
             Register<VendorBuyListPacket>(0x74, "Vendor Buy List", -1, new TypedPacketReceiveHandler(receive_OpenBuyWindow));
             Register<SubServerPacket>(0x76, "New Subserver", 16, new TypedPacketReceiveHandler(receive_NewSubserver));
@@ -103,10 +103,10 @@ namespace UltimaXNA
             Register<QuestArrowPacket>(0xBA, "Quest Arrow", 6, new TypedPacketReceiveHandler(receive_QuestArrow));
             Register<SeasonChangePacket>(0xBC, "Seasonal Change", 3, new TypedPacketReceiveHandler(receive_SeasonalInformation));
             Register<GeneralInfoPacket>(0xBF, "General Information", -1, new TypedPacketReceiveHandler(receive_GeneralInfo));
-            Register<GraphicEffectHuedPacket>(0xC0, "Hued Effect", 36, new TypedPacketReceiveHandler(receive_HuedEffect));
+            
             Register<MessageLocalizedPacket>(0xC1, "Message Localized", -1, new TypedPacketReceiveHandler(receive_CLILOCMessage));
             Register<InvalidMapEnablePacket>(0xC6, "Invalid Map Enable", 1, new TypedPacketReceiveHandler(receive_InvalidMapEnable));
-            Register<GraphicEffectExtendedPacket>(0xC7, "Particle Effect", 49, new TypedPacketReceiveHandler(receive_OnParticleEffect));
+            
             Register<GlobalQueuePacket>(0xCB, "Global Queue Count", 7, new TypedPacketReceiveHandler(receive_GlobalQueueCount));
             Register<MessageLocalizedAffixPacket>(0xCC, "Message Localized Affix ", -1, new TypedPacketReceiveHandler(receive_MessageLocalizedAffix));
             Register<Extended0x78Packet>(0xD3, "Extended 0x78", -1, new TypedPacketReceiveHandler(receive_Extended0x78));
@@ -1191,25 +1191,6 @@ namespace UltimaXNA
                     model.MapIndex = m_QueuedMapIndex;
                 }
             }
-        }
-
-        // ======================================================================
-        // Effect handling
-        // ======================================================================
-
-        private void receive_GraphicEffect(IRecvPacket packet)
-        {
-            EffectsManager.Add((GraphicEffectPacket)packet);
-        }
-
-        private void receive_HuedEffect(IRecvPacket packet)
-        {
-            EffectsManager.Add((GraphicEffectHuedPacket)packet);
-        }
-
-        private void receive_OnParticleEffect(IRecvPacket packet)
-        {
-            EffectsManager.Add((GraphicEffectExtendedPacket)packet);
         }
     }
 }
