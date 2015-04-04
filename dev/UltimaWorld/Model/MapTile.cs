@@ -147,7 +147,7 @@ namespace UltimaXNA.UltimaWorld.Model
                             underEntity = entities[i];
                     }
                 }
-                else if (entities[i] is Ground && entities[i].Z >= z + 20)
+                else if (entities[i] is Ground && entities[i].GetView().SortZ >= z + 12)
                 {
                     underGround = entities[i];
                 }
