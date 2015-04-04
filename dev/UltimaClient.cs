@@ -964,6 +964,8 @@ namespace UltimaXNA
 
         private void receive_TextMessage(MessageType msgType, string text, int hue, int font, Serial serial, string speakerName)
         {
+            UltimaVars.Journaling.AddEntry(text);
+
             Overhead overhead;
             switch (msgType)
             {
