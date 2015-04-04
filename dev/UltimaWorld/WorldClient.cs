@@ -70,27 +70,27 @@ namespace UltimaXNA.UltimaWorld
 
         public void GetMySkills()
         {
-            m_Model.Engine.Client.Send(new GetPlayerStatusPacket(0x05, UltimaVars.EngineVars.PlayerSerial));
+            World.Engine.Client.Send(new GetPlayerStatusPacket(0x05, UltimaVars.EngineVars.PlayerSerial));
         }
 
         public void SendClientVersion(string version_string)
         {
-            m_Model.Engine.Client.Send(new ClientVersionPacket(version_string));
+            World.Engine.Client.Send(new ClientVersionPacket(version_string));
         }
 
         public void SendClientScreenSize()
         {
-            m_Model.Engine.Client.Send(new ReportClientScreenSizePacket(800, 600));
+            World.Engine.Client.Send(new ReportClientScreenSizePacket(800, 600));
         }
 
         public void SendClientLocalization()
         {
-            m_Model.Engine.Client.Send(new ReportClientLocalizationPacket("ENU"));
+            World.Engine.Client.Send(new ReportClientLocalizationPacket("ENU"));
         }
 
         public void GetMyBasicStatus()
         {
-            m_Model.Engine.Client.Send(new GetPlayerStatusPacket(0x04, UltimaVars.EngineVars.PlayerSerial));
+            World.Engine.Client.Send(new GetPlayerStatusPacket(0x04, UltimaVars.EngineVars.PlayerSerial));
         }
 
         private void receive_VersionRequest(IRecvPacket packet)
@@ -102,18 +102,18 @@ namespace UltimaXNA.UltimaWorld
         private void receive_TargetCursor(IRecvPacket packet)
         {
             TargetCursorPacket p = (TargetCursorPacket)packet;
-            m_Model.Cursor.SetTargeting((WorldCursor.TargetType)p.CommandType, p.CursorID);
+            World.Cursor.SetTargeting((WorldCursor.TargetType)p.CommandType, p.CursorID);
         }
 
         private void receive_TargetCursorMulti(IRecvPacket packet)
         {
             TargetCursorMultiPacket p = (TargetCursorMultiPacket)packet;
-            m_Model.Cursor.SetTargetingMulti(p.DeedSerial, p.MultiModel);
+            World.Cursor.SetTargetingMulti(p.DeedSerial, p.MultiModel);
         }
 
         private void InternalOnEntity_SendMoveRequestPacket(MoveRequestPacket packet)
         {
-            m_Model.Engine.Client.Send(packet);
+            World.Engine.Client.Send(packet);
         }
 
         // ======================================================================
