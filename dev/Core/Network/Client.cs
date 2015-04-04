@@ -149,7 +149,7 @@ namespace UltimaXNA.Core.Network
             m_typedHandlers[id].Add(handler);
         }
 
-        public virtual void Unregister(int id, Action<IRecvPacket> onRecieve)
+        public virtual void Unregister(int id, TypedPacketReceiveHandler onRecieve)
         {
             for (int i = 0; i < m_typedHandlers[id].Count; i++)
             {
