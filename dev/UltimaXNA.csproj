@@ -23,7 +23,7 @@
     <XnaUpgrade>
     </XnaUpgrade>
     <XnaOutputType>Game</XnaOutputType>
-    <XnaProfile>Reach</XnaProfile>
+    <XnaProfile>HiDef</XnaProfile>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -159,7 +159,9 @@
     <Compile Include="UltimaData\FontsNew\FontUni.cs" />
     <Compile Include="UltimaData\FontsNew\TextUni.cs" />
     <Compile Include="Core\IniFile.cs" />
+    <Compile Include="UltimaGUI\WorldGumps\JournalGump.cs" />
     <Compile Include="UltimaLogin\Scenes\HueTestScene.cs" />
+    <Compile Include="UltimaVars\Journaling.cs" />
     <Compile Include="UltimaVars\SettingVars.cs" />
     <Compile Include="UltimaWorld\EffectManager.cs" />
     <Compile Include="UltimaWorld\Maps\TileSorter.cs" />

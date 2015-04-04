@@ -24,6 +24,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
         TextEntry m_Input;
         List<ChatLineTimed> m_TextEntries;
         List<string> m_MessageHistory;
+
         int m_MessageHistoryIndex = -1;
 
         public ChatWindow()

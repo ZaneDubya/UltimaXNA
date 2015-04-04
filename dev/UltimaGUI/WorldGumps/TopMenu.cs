@@ -76,6 +76,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
                     // UserInterface.AddContainerGump(i, 0);
                     break;
                 case Buttons.Journal:
+                    UserInterface.AddControl(new JournalGump(), 80, 80, GUIManager.AddGumpType.Toggle);
                     break;
                 case Buttons.Chat:
                     break;

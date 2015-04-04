@@ -143,6 +143,9 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         public override void Draw(SpriteBatchUI spriteBatch)
         {
+            if (!Visible)
+                return;
+
             // up button
             spriteBatch.Draw2D(m_btnUpClicked ? m_gumpUpButton[1] : m_gumpUpButton[0], new Point(X, Y), 0, false, false);
             // scrollbar background

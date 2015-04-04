@@ -16,7 +16,8 @@ namespace UltimaXNA.UltimaEntities.EntityViews
         public ItemView(Item item)
             : base(item)
         {
-
+            if (Entity.ItemData.IsWet)
+                SortZ += 1;
         }
 
         private int m_DisplayItemID = -1;
