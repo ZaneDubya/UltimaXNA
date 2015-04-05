@@ -30,6 +30,7 @@ namespace UltimaXNA.UltimaWorld
             Isometric = new IsometricRenderer();
             Isometric.Initialize(Model.Engine);
             Isometric.LightDirection = -0.6f;
+            MousePick = new MousePicking();
         }
 
         public override void Draw(YSpriteBatch spritebatch, double frameTime)

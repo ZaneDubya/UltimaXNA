@@ -51,7 +51,7 @@ namespace UltimaXNA
                     m_QueuedModel = null;
                 }
                 m_QueuedModel = value;
-                if (m_QueuedModel != null)
+                if (m_QueuedModel != null && m_QueuedModel.Engine == null)
                 {
                     m_QueuedModel.Initialize(this);
                 }
@@ -70,7 +70,7 @@ namespace UltimaXNA
                     m_Model = null;
                 }
                 m_Model = value;
-                if (m_Model != null)
+                if (m_Model != null && m_Model.Engine == null)
                 {
                     m_Model.Initialize(this);
                 }
@@ -82,7 +82,7 @@ namespace UltimaXNA
             if (m_QueuedModel != null)
             {
                 ActiveModel = QueuedModel;
-                QueuedModel = null;
+                m_QueuedModel = null;
             }
         }
 

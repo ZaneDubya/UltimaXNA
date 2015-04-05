@@ -226,24 +226,19 @@ namespace UltimaXNA
         // ======================================================================
 
         LoginConfirmPacket m_QueuedLoginConfirmPacket;
-        private int m_QueuedMapIndex = -1;
 
         private void receive_LoginConfirmPacket(IRecvPacket packet)
         {
             m_QueuedLoginConfirmPacket = (LoginConfirmPacket)packet;
+            // set the player serial var and create the player entity. Don't need to do anything with it yet.
             UltimaVars.EngineVars.PlayerSerial = m_QueuedLoginConfirmPacket.Serial;
+            PlayerMobile player = EntityManager.GetObject<PlayerMobile>(m_QueuedLoginConfirmPacket.Serial, true);
             InternalCheckLogin();
         }
 
         private void receive_LoginComplete(IRecvPacket packet)
         {
             // This packet is just one byte, the opcode.
-            InternalCheckLogin();
-        }
-
-        private void receive_MapIndex(int index)
-        {
-            m_QueuedMapIndex = index;
             InternalCheckLogin();
         }
 
@@ -254,14 +249,13 @@ namespace UltimaXNA
             // load the world when we finally receive our client object.
             if (Status != UltimaClientStatus.WorldServer_InWorld)
             {
-                if (m_QueuedMapIndex >= 0 && m_QueuedLoginConfirmPacket != null)
+                if (m_QueuedLoginConfirmPacket != null && (Engine.QueuedModel as WorldModel).MapIndex >= 0)
                 {
                     Status = UltimaClientStatus.WorldServer_InWorld;
 
                     Engine.ActivateQueuedModel();
                     if (Engine.ActiveModel is WorldModel)
                     {
-                        ((WorldModel)Engine.ActiveModel).MapIndex = m_QueuedMapIndex;
                         ((WorldModel)Engine.ActiveModel).LoginSequence();
 
                         LoginConfirmPacket p = m_QueuedLoginConfirmPacket;
@@ -279,13 +273,6 @@ namespace UltimaXNA
             else
             {
                 // already logged in!
-                Engine.ActivateQueuedModel();
-                WorldModel model = (WorldModel)Engine.ActiveModel;
-                if (model.MapIndex != m_QueuedMapIndex)
-                {
-                    model.MapIndex = m_QueuedMapIndex;
-                }
-                model.LoginSequence();
             }
         }
     }

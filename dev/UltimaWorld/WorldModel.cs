@@ -61,10 +61,10 @@ namespace UltimaXNA.UltimaWorld
             {
                 if (value != MapIndex)
                 {
+                    // clear all entities
+                    EntityManager.Reset(false);
                     if (m_map != null)
                     {
-                        // clear all entities
-                        EntityManager.Reset(false);
                         UltimaEntities.AEntity player = EntityManager.GetPlayerObject();
                         // save current player position
                         int x = player.X, y = player.Y, z = player.Z;
@@ -81,7 +81,9 @@ namespace UltimaXNA.UltimaWorld
                     }
                     else
                     {
+                        UltimaEntities.AEntity player = EntityManager.GetPlayerObject();
                         m_map = new Map(value);
+                        player.SetMap(m_map);
                     }
                 }
             }
