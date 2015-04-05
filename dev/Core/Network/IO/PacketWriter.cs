@@ -110,8 +110,8 @@ namespace UltimaXNA.Core.Network
         /// <param name="capacity">Initial capacity for the internal stream.</param>
         public PacketWriter(int capacity)
         {
-            this.m_stream = new MemoryStream(capacity);
-            this.m_capacity = capacity;
+            m_stream = new MemoryStream(capacity);
+            m_capacity = capacity;
         }
 
         /// <summary>

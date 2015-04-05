@@ -58,10 +58,13 @@ namespace UltimaXNA.UltimaPackets.Server
         public GeneralInfoPacket(PacketReader reader)
             : base(0xBF, "General Information")
         {
-            this.m_subcommand = reader.ReadInt16();
+            m_subcommand = reader.ReadInt16();
 
-            switch (this.m_subcommand)
+            switch (m_subcommand)
             {
+                case 0x04: // Close generic gump
+                    // !!! Not implemented yet.
+                    break;
                 case 0x06:
                     // party system, not implemented.
                     break;
@@ -76,9 +79,6 @@ namespace UltimaXNA.UltimaPackets.Server
                     break;
                 case 0x1D: // House revision
                     receiveHouseRevisionState(reader);
-                    break;
-                case 0x04: // Close generic gump
-                    // !!! Not implemented yet.
                     break;
                 case 0x19: // Extended stats
                     receiveExtendedStats(reader);

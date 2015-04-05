@@ -272,7 +272,7 @@ namespace UltimaXNA.UltimaGUI
         DragWidget m_dragger;
         public void MakeDragger(AControl toMove)
         {
-            this.HandlesMouseInput = true;
+            HandlesMouseInput = true;
             m_dragger = new DragWidget(this, m_owner);
         }
 
@@ -280,8 +280,8 @@ namespace UltimaXNA.UltimaGUI
         public void MakeCloseTarget(AControl toClose)
         {
             m_closeTarget = toClose;
-            this.HandlesMouseInput = true;
-            this.OnMouseClick += onCloseTargetClick;
+            HandlesMouseInput = true;
+            OnMouseClick += onCloseTargetClick;
         }
         void onCloseTargetClick(int x, int y, MouseButton button)
         {
@@ -299,7 +299,7 @@ namespace UltimaXNA.UltimaGUI
             position.X = (int)((float)(position.X) / InputMultiplier);
             position.Y = (int)((float)(position.Y) / InputMultiplier);
 
-            // If we're owned by something, make sure we increment our hitArea to show this.
+            // If we're owned by something, make sure we increment our hitArea to show 
             // position.X -= OwnerX;
             // position.Y -= OwnerY;
 
@@ -308,7 +308,7 @@ namespace UltimaXNA.UltimaGUI
             {
                 if (InternalHitTest((int)position.X - X - OwnerX, (int)position.Y - Y - OwnerY))
                 {
-                    if (alwaysHandleMouseInput || this.HandlesMouseInput)
+                    if (alwaysHandleMouseInput || HandlesMouseInput)
                         focusedControls.Insert(0, this);
                     foreach (AControl c in Controls)
                     {

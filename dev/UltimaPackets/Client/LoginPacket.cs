@@ -25,9 +25,9 @@ namespace UltimaXNA.UltimaPackets.Client
         public LoginPacket(string username, string password)
             : base(0x80, "Account Login", 0x3E)
         {
-            this.Stream.WriteAsciiFixed(username, 30);
-            this.Stream.WriteAsciiFixed(password, 30);
-            this.Stream.Write((byte)0x5D);
+            Stream.WriteAsciiFixed(username, 30);
+            Stream.WriteAsciiFixed(password, 30);
+            Stream.Write((byte)0x5D);
         }
     }
 }

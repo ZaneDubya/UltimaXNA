@@ -95,7 +95,7 @@ namespace UltimaXNA
         public int CompareTo(object other)
         {
             if (other is Serial)
-                return this.CompareTo((Serial)other);
+                return CompareTo((Serial)other);
             else if (other == null)
                 return -1;
 

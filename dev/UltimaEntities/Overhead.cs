@@ -62,7 +62,7 @@ namespace UltimaXNA.UltimaEntities
             base.Update(frameMS);
             m_TimePersist -= (int)frameMS;
             if (m_TimePersist <= 0)
-                this.Dispose();
+                Dispose();
         }
 
         // ============================================================

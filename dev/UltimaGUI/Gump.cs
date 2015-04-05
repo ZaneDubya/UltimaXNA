@@ -118,8 +118,8 @@ namespace UltimaXNA.UltimaGUI
         {
             int[] switchIDs = new int[0];
             Tuple<short, string>[] textEntries = new Tuple<short,string>[0];
-            WorldInteraction.GumpMenuSelect(this.Serial, this.GumpID, buttonID, switchIDs, textEntries);
-            this.Dispose();
+            WorldInteraction.GumpMenuSelect(Serial, GumpID, buttonID, switchIDs, textEntries);
+            Dispose();
         }
 
         public override void ChangePage(int pageIndex)
@@ -223,7 +223,7 @@ namespace UltimaXNA.UltimaGUI
                 int w = 0, h = 0;
                 foreach (AControl c in Controls)
                 {
-                    if (c.Page == 0 || c.Page == this.ActivePage)
+                    if (c.Page == 0 || c.Page == ActivePage)
                     {
                         if (w < c.X + c.Width)
                         {
@@ -277,7 +277,7 @@ namespace UltimaXNA.UltimaGUI
 
             // by default, Gumps are equal to each other if they are of the same type.
             // Inheriting Gumps should override this to base equality on their Parent object's serial, if appropriate.
-            if (this.GetType() == obj.GetType())
+            if (GetType() == obj.GetType())
                 return true;
             else
                 return false;

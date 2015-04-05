@@ -15,23 +15,23 @@ namespace UltimaXNA.Core.Network.Packets
 {
     public abstract class RecvPacket : IRecvPacket
     {
-        readonly int id;
-        readonly string name;
+        readonly int m_Id;
+        readonly string m_Name;
 
         public int Id
         {
-            get { return id; }
+            get { return m_Id; }
         }
 
         public string Name
         {
-            get { return name; }
+            get { return m_Name; }
         }
 
         public RecvPacket(int id, string name)
         {
-            this.id = id;
-            this.name = name;
+            m_Id = id;
+            m_Name = name;
         }
     }
 }

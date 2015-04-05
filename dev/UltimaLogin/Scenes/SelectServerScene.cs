@@ -40,9 +40,9 @@ namespace UltimaXNA.UltimaLogin.Scenes
         {
             base.Intitialize(engine);
             m_SelectServerGump = (SelectServerGump)Engine.UserInterface.AddControl(new SelectServerGump(), 0, 0);
-            m_SelectServerGump.OnBackToLoginScreen += this.OnBackToLoginScreen;
-            m_SelectServerGump.OnSelectLastServer += this.OnSelectLastServer;
-            m_SelectServerGump.OnSelectServer += this.OnSelectServer;
+            m_SelectServerGump.OnBackToLoginScreen += OnBackToLoginScreen;
+            m_SelectServerGump.OnSelectLastServer += OnSelectLastServer;
+            m_SelectServerGump.OnSelectServer += OnSelectServer;
         }
 
         public override void Update(double totalTime, double frameTime)

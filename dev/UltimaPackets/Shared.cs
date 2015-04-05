@@ -48,14 +48,14 @@ namespace UltimaXNA.UltimaPackets
 
         public ContentItem(Serial serial, int itemId, int amount, int x, int y, int gridLocation, int containerSerial, int hue)
         {
-            this.Serial = serial;
-            this.ItemID = itemId;
-            this.Amount = amount;
-            this.X = x;
-            this.Y = y;
-            this.GridLocation = gridLocation;
-            this.ContainerSerial = containerSerial;
-            this.Hue = hue;
+            Serial = serial;
+            ItemID = itemId;
+            Amount = amount;
+            X = x;
+            Y = y;
+            GridLocation = gridLocation;
+            ContainerSerial = containerSerial;
+            Hue = hue;
         }
     }
 

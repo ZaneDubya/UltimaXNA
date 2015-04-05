@@ -39,8 +39,8 @@ namespace UltimaXNA.UltimaPackets.Server
         public PersonalLightLevelPacket(PacketReader reader)
             : base(0x4E, "Personal Light Level")
         {
-            this.m_creatureSerial = reader.ReadInt32();
-            this.m_lightLevel = reader.ReadByte();
+            m_creatureSerial = reader.ReadInt32();
+            m_lightLevel = reader.ReadByte();
         }
     }
 }

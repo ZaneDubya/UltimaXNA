@@ -128,7 +128,7 @@ namespace UltimaXNA.UltimaWorld.Maps
         public void IsZUnderEntityOrGround(int z, out AEntity underEntity, out AEntity underGround)
         {
             // getting the publicly exposed Entities collection will sort the entities if necessary.
-            List<AEntity> entities = this.Entities;
+            List<AEntity> entities = Entities;
 
             underEntity = null;
             underGround = null;

@@ -38,16 +38,16 @@ namespace UltimaXNA.Core.Diagnostics
     /// </summary>
     public class ProgressUpdateEventArgs : EventArgs
     {
-        readonly int current;
-        readonly int max;
-        readonly int progressPercentage;
+        readonly int m_Current;
+        readonly int m_Max;
+        readonly int m_ProgressPercentage;
 
         /// <summary>
         /// Gets the percent completed 0-100
         /// </summary>
         public int ProgressPercentage
         {
-            get { return progressPercentage; }
+            get { return m_ProgressPercentage; }
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace UltimaXNA.Core.Diagnostics
         /// </summary>
         public int Current
         {
-            get { return current; }
+            get { return m_Current; }
         }
 
         /// <summary>
@@ -63,14 +63,14 @@ namespace UltimaXNA.Core.Diagnostics
         /// </summary>
         public int Max
         {
-            get { return max; }
+            get { return m_Max; }
         }
 
         public ProgressUpdateEventArgs(int current, int max)
         {
-            this.current = current;
-            this.max = max;
-            this.progressPercentage = (int)(100 * ((double)current / max));
+            m_Current = current;
+            m_Max = max;
+            m_ProgressPercentage = (int)(100 * ((double)current / max));
         }
     }
 
@@ -79,15 +79,15 @@ namespace UltimaXNA.Core.Diagnostics
     /// </summary>
     public class StatusUpdateEventArgs : EventArgs
     {
-        readonly string status;
-        readonly int statusLevel;
+        readonly string m_Status;
+        readonly int m_StatusLevel;
 
         /// <summary>
         /// Gets the status message
         /// </summary>
         public string Status
         {
-            get { return status; }
+            get { return m_Status; }
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace UltimaXNA.Core.Diagnostics
         /// </summary>
         public int StatusLevel
         {
-            get { return statusLevel; }
+            get { return m_StatusLevel; }
         }
 
         /// <summary>
@@ -125,8 +125,8 @@ namespace UltimaXNA.Core.Diagnostics
         /// <param name="objects">An object array containing zero or more objects to format</param>
         public StatusUpdateEventArgs(int statusLevel, string status, params object[] objects)
         {
-            this.statusLevel = statusLevel;
-            this.status = String.Format(CultureInfo.CurrentCulture, status, objects);
+            m_StatusLevel = statusLevel;
+            status = String.Format(CultureInfo.CurrentCulture, status, objects);
         }
 
         /// <summary>
@@ -136,8 +136,8 @@ namespace UltimaXNA.Core.Diagnostics
         /// <param name="status">The status message</param>
         public StatusUpdateEventArgs(int statusLevel, string status)
         {
-            this.statusLevel = statusLevel;
-            this.status = status;
+            m_StatusLevel = statusLevel;
+            m_Status = status;
         }
     }
 

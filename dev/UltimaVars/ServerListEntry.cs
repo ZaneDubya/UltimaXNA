@@ -41,11 +41,11 @@ namespace UltimaXNA.UltimaVars
 
         public ServerListEntry(PacketReader reader)
         {
-            this.index = (ushort)reader.ReadInt16();
-            this.name = reader.ReadString(30);
-            this.percentFull = reader.ReadByte();
-            this.timezone = reader.ReadByte();
-            this.address = (uint)reader.ReadInt32();
+            index = (ushort)reader.ReadInt16();
+            name = reader.ReadString(30);
+            percentFull = reader.ReadByte();
+            timezone = reader.ReadByte();
+            address = (uint)reader.ReadInt32();
         }
     }
 }

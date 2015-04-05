@@ -79,7 +79,7 @@ namespace UltimaXNA.UltimaGUI
                         OnCancel();
                     break;
             }
-            this.Dispose();
+            Dispose();
         }
     }
 }

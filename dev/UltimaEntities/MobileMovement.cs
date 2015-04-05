@@ -362,7 +362,7 @@ namespace UltimaXNA.UltimaEntities
                     facing = Direction.South;
                 else
                 {
-                    // We should never reach this.
+                    // We should never reach 
                     facing = Facing & Direction.FacingMask;
                 }
             }

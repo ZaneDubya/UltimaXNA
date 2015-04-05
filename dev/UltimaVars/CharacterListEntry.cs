@@ -23,8 +23,8 @@ namespace UltimaXNA.UltimaVars
 
         public CharacterListEntry(PacketReader reader)
         {
-            this.name = reader.ReadString(30);
-            this.password = reader.ReadString(30);
+            name = reader.ReadString(30);
+            password = reader.ReadString(30);
         }
     }
 }

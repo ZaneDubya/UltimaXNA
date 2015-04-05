@@ -35,8 +35,8 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
         {
             m_list.X = 26;
             m_list.Y = 33;
-            m_list.Width = this.Width - 56;
-            m_list.Height = this.Height - 95;
+            m_list.Width = Width - 56;
+            m_list.Height = Height - 95;
             if (m_lastUpdateCount != UltimaVars.Skills.UpdateCount)
                 m_list.Text = buildSkillsString();
             base.Update(totalMS, frameMS);

@@ -28,10 +28,10 @@ namespace UltimaXNA.UltimaLogin.Scenes
         {
             base.Intitialize(engine);
             m_CharListGump = (CharacterListGump)Engine.UserInterface.AddControl(new CharacterListGump(), 0, 0);
-            m_CharListGump.OnBackToSelectServer += this.OnBackToSelectServer;
-            m_CharListGump.OnLoginWithCharacter += this.OnLoginWithCharacter;
-            m_CharListGump.OnDeleteCharacter += this.OnDeleteCharacter;
-            m_CharListGump.OnNewCharacter += this.OnNewCharacter;
+            m_CharListGump.OnBackToSelectServer += OnBackToSelectServer;
+            m_CharListGump.OnLoginWithCharacter += OnLoginWithCharacter;
+            m_CharListGump.OnDeleteCharacter += OnDeleteCharacter;
+            m_CharListGump.OnNewCharacter += OnNewCharacter;
         }
 
         public override void Update(double totalTime, double frameTime)
@@ -69,7 +69,7 @@ namespace UltimaXNA.UltimaLogin.Scenes
             // !!! This SHOULD take us back to the 'logging in' screen,
             // which automatically logs in again. But we can't do that,
             // since I have UltimaClient clear your account/password data
-            // once connected (is this really neccesary?) Have to fix this...
+            // once connected (is this really neccesary?) Have to fix ..
             Manager.CurrentScene = new LoginScene();
         }
 

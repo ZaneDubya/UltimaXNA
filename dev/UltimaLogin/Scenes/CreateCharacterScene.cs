@@ -23,7 +23,6 @@ namespace UltimaXNA.UltimaLogin.Scenes
         ChooseSkills,
         ChooseAppearance,
         Cancel,
-        CreateCharacter,
         WaitingForResponse,
         Default = ChooseSkills,
     }
@@ -58,8 +57,8 @@ namespace UltimaXNA.UltimaLogin.Scenes
         void openSkillsGump()
         {
             m_CreateSkillsGump = (CreateCharSkillsGump)Engine.UserInterface.AddControl(new CreateCharSkillsGump(), 0, 0);
-            m_CreateSkillsGump.OnForward += this.OnForward;
-            m_CreateSkillsGump.OnBackward += this.OnBackward;
+            m_CreateSkillsGump.OnForward += OnForward;
+            m_CreateSkillsGump.OnBackward += OnBackward;
             m_Status = CreateCharacterSceneStates.ChooseSkills;
             // restore values
             if (m_skillsSet)
@@ -79,8 +78,8 @@ namespace UltimaXNA.UltimaLogin.Scenes
         void openAppearanceGump()
         {
             m_CreateAppearanceGump = (CreateCharAppearanceGump)Engine.UserInterface.AddControl(new CreateCharAppearanceGump(), 0, 0);
-            m_CreateAppearanceGump.OnForward += this.OnForward;
-            m_CreateAppearanceGump.OnBackward += this.OnBackward;
+            m_CreateAppearanceGump.OnForward += OnForward;
+            m_CreateAppearanceGump.OnBackward += OnBackward;
             m_Status = CreateCharacterSceneStates.ChooseAppearance;
             // restore values
             if (m_appearanceSet)
@@ -174,14 +173,6 @@ namespace UltimaXNA.UltimaLogin.Scenes
                     case CreateCharacterSceneStates.Cancel:
                         Manager.CurrentScene = new CharacterListScene();
                         break;
-                    case CreateCharacterSceneStates.CreateCharacter:
-                        Engine.Client.Send(new CreateCharacterPacket(
-                            m_name, (Sex)m_gender, (Race)0, (byte)m_attributes[0], (byte)m_attributes[1], (byte)m_attributes[2], 
-                            (byte)m_skillIndexes[0], (byte)m_skillValues[0], (byte)m_skillIndexes[1], (byte)m_skillValues[1], (byte)m_skillIndexes[2], (byte)m_skillValues[2],
-                            (short)m_skinHue, (short)m_hairStyleID, (short)m_hairHue, (short)m_facialHairStyleID, (short)m_facialHairHue,
-                            0, (short)UltimaVars.Characters.FirstEmptySlot, Utility.IPAddress, 0, 0));
-                        m_Status = CreateCharacterSceneStates.WaitingForResponse;
-                        break;
                     case CreateCharacterSceneStates.WaitingForResponse:
                         // do nothing, waiting for response to create character request.
                         break;
@@ -240,7 +231,12 @@ namespace UltimaXNA.UltimaLogin.Scenes
                 case CreateCharacterSceneStates.ChooseAppearance:
                     if (validateAppearance())
                     {
-                        m_Status = CreateCharacterSceneStates.CreateCharacter;
+                        Engine.Client.CreateCharacter(new CreateCharacterPacket(
+                            m_name, (Sex)m_gender, (Race)0, (byte)m_attributes[0], (byte)m_attributes[1], (byte)m_attributes[2], 
+                            (byte)m_skillIndexes[0], (byte)m_skillValues[0], (byte)m_skillIndexes[1], (byte)m_skillValues[1], (byte)m_skillIndexes[2], (byte)m_skillValues[2],
+                            (short)m_skinHue, (short)m_hairStyleID, (short)m_hairHue, (short)m_facialHairStyleID, (short)m_facialHairHue,
+                            0, (short)UltimaVars.Characters.FirstEmptySlot, Utility.IPAddress, 0, 0));
+                        m_Status = CreateCharacterSceneStates.WaitingForResponse;
                     }
                     break;
             }

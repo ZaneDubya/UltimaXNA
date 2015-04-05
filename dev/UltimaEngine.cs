@@ -39,6 +39,25 @@ namespace UltimaXNA
             private set;
         }
 
+        private AUltimaModel m_QueuedModel;
+        internal AUltimaModel QueuedModel
+        {
+            get { return m_QueuedModel; }
+            set
+            {
+                if (m_QueuedModel != null)
+                {
+                    m_QueuedModel.Dispose();
+                    m_QueuedModel = null;
+                }
+                m_QueuedModel = value;
+                if (m_QueuedModel != null)
+                {
+                    m_QueuedModel.Initialize(this);
+                }
+            }
+        }
+
         private AUltimaModel m_Model;
         internal AUltimaModel ActiveModel
         {
@@ -51,7 +70,19 @@ namespace UltimaXNA
                     m_Model = null;
                 }
                 m_Model = value;
-                m_Model.Initialize(this);
+                if (m_Model != null)
+                {
+                    m_Model.Initialize(this);
+                }
+            }
+        }
+
+        internal void ActivateQueuedModel()
+        {
+            if (m_QueuedModel != null)
+            {
+                ActiveModel = QueuedModel;
+                QueuedModel = null;
             }
         }
 
@@ -61,18 +92,18 @@ namespace UltimaXNA
             UltimaVars.EngineVars.ScreenSize = new Point(width, height);
 
             // this is copied from IXL.BaseCore - required for finding the mouse coordinate when moving the cursor over the window.
-            System.Drawing.Graphics graphics = System.Drawing.Graphics.FromHwnd(this.Window.Handle);
+            System.Drawing.Graphics graphics = System.Drawing.Graphics.FromHwnd(Window.Handle);
             InterXLib.Settings.ScreenDPI = new Vector2(graphics.DpiX / 96f, graphics.DpiY / 96f);
         }
 
         protected override void Initialize()
         {
-            this.Content.RootDirectory = "Content";
+            Content.RootDirectory = "Content";
 
             // Create all the services we need.
             Client = new UltimaClient(this);
-            Client.IsLoggingPackets = false;
-            Input = new InputState(this.Window.Handle);
+            Client.IsLoggingPackets = true;
+            Input = new InputState(Window.Handle);
             UserInterface = new GUIManager(this);
 
             // Load vars from Settings.ini.
@@ -106,7 +137,7 @@ namespace UltimaXNA
 
         protected override void Update(GameTime gameTime)
         {
-            this.IsFixedTimeStep = UltimaVars.EngineVars.LimitFPS;
+            IsFixedTimeStep = UltimaVars.EngineVars.LimitFPS;
 
             if (!UltimaVars.EngineVars.EngineRunning)
             {
@@ -131,11 +162,11 @@ namespace UltimaXNA
             if (!IsMinimized)
             {
                 Core.Rendering.SpriteBatch3D.ResetZ();
-                this.GraphicsDevice.Clear(Color.Black);
+                GraphicsDevice.Clear(Color.Black);
                 ActiveModel.GetView().Draw(null, gameTime.ElapsedGameTime.TotalMilliseconds);
                 UserInterface.Draw(gameTime.ElapsedGameTime.TotalMilliseconds);
 
-                this.Window.Title =
+                Window.Title =
                     (UltimaVars.DebugVars.Flag_DisplayFPS ? string.Format("UltimaXNA FPS:{0}", UltimaVars.EngineVars.FPS) : "UltimaXNA") +
                     (UltimaVars.EngineVars.MouseEnabled ? "" : "<Alt-M to enable mouse>");
             }
@@ -162,7 +193,7 @@ namespace UltimaXNA
             graphicsDeviceManager.PreferredBackBufferHeight = height;
             graphicsDeviceManager.SynchronizeWithVerticalRetrace = false;
             graphicsDeviceManager.PreparingDeviceSettings += onPreparingDeviceSettings;
-            this.IsFixedTimeStep = false;
+            IsFixedTimeStep = false;
             graphicsDeviceManager.ApplyChanges();
         }
 

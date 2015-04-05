@@ -41,7 +41,7 @@ namespace UltimaXNA.UltimaLogin.Scenes
         {
             base.Intitialize(engine);
             m_Gump = (LoggingInGump)Engine.UserInterface.AddControl(new LoggingInGump(), 0, 0);
-            m_Gump.OnCancelLogin += this.OnCancelLogin;
+            m_Gump.OnCancelLogin += OnCancelLogin;
             if (Engine.Client.IsConnected)
                 Engine.Client.Disconnect();
         }

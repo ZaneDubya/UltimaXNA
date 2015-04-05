@@ -32,8 +32,8 @@ namespace UltimaXNA.UltimaPackets.Server
         public OpenContainerPacket(PacketReader reader)
             : base(0x24, "Open Container")
         {
-            this.m_serial = reader.ReadInt32();
-            this.m_gumpId = reader.ReadUInt16();
+            m_serial = reader.ReadInt32();
+            m_gumpId = reader.ReadUInt16();
         }
     }
 }

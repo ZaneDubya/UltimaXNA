@@ -26,7 +26,7 @@ namespace UltimaXNA.UltimaLogin.Scenes
         {
             base.Intitialize(engine);
             m_LoginGump = (LoginGump)Engine.UserInterface.AddControl(new LoginGump(), 0, 0);
-            m_LoginGump.OnLogin += this.OnLogin;
+            m_LoginGump.OnLogin += OnLogin;
         }
 
         public override void Update(double totalTime, double frameTime)

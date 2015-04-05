@@ -173,15 +173,15 @@ namespace UltimaXNA.UltimaGUI.Controls
         {
             if (button == MouseButton.Left)
             {
-                switch (this.ButtonType)
+                switch (ButtonType)
                 {
                     case ButtonTypes.SwitchPage:
                         // switch page
-                        ChangePage(this.ButtonParameter);
+                        ChangePage(ButtonParameter);
                         break;
                     case ButtonTypes.Activate:
                         // send response
-                        ActivateByButton(this.ButtonID);
+                        ActivateByButton(ButtonID);
                         break;
                 }
             }

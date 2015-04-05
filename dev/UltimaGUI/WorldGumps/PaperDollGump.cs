@@ -160,7 +160,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
                 return false;
             }
 
-            return p.Parent.Serial == this.Parent.Serial;
+            return p.Parent.Serial == Parent.Serial;
         }
 
         public override int GetHashCode()

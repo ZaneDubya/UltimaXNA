@@ -97,9 +97,9 @@ namespace UltimaXNA
         {
             if (o == null) return false;
             if (o.GetType() != typeof(Position3D)) return false;
-            if (this.X != ((Position3D)o).X) return false;
-            if (this.Y != ((Position3D)o).Y) return false;
-            if (this.Z != ((Position3D)o).Z) return false;
+            if (X != ((Position3D)o).X) return false;
+            if (Y != ((Position3D)o).Y) return false;
+            if (Z != ((Position3D)o).Z) return false;
             return true;
         }
 

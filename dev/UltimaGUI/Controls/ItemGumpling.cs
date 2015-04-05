@@ -156,7 +156,7 @@ namespace UltimaXNA.UltimaGUI.Controls
                 if (this is ItemGumplingPaperdoll)
                 {
                     int w, h;
-                    UltimaData.ArtData.GetStaticDimensions(this.Item.DisplayItemID, out w, out h);
+                    UltimaData.ArtData.GetStaticDimensions(Item.DisplayItemID, out w, out h);
                     Point click_point = new Point(w / 2, h / 2);
                     WorldInteraction.PickupItem(m_item, InternalGetPickupOffset(click_point));
                 }
