@@ -152,8 +152,15 @@ namespace UltimaXNA.UltimaWorld
                 if (serial.IsMobile)
                 {
                     Mobile m = EntityManager.GetObject<Mobile>(serial, false);
-                    if (m.Name == null || m.Name.Length < text.Length)
-                        m.Name = text;
+                    if (m == null)
+                    {
+                        // received a label for a mobile that does not exist!
+                    }
+                    else
+                    {
+                        if (m.Name == null || m.Name.Length < text.Length)
+                            m.Name = text;
+                    }
                 }
             }
             else

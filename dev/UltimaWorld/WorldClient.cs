@@ -232,8 +232,9 @@ namespace UltimaXNA.UltimaWorld
                 Item item = add_Item(i.Serial, i.ItemID, i.Hue, i.ContainerSerial, i.Amount);
                 item.InContainerPosition = new Point(i.X, i.Y);
                 // ... and add it the container contents of the container.
-                Container c = EntityManager.GetObject<Container>(i.ContainerSerial, true);
-                c.AddItem(item);
+                Container container = EntityManager.GetObject<Container>(i.ContainerSerial, true);
+                if (container != null)
+                    container.AddItem(item);
             }
         }
 
@@ -275,6 +276,8 @@ namespace UltimaXNA.UltimaWorld
                 else
                     item = EntityManager.GetObject<Item>((int)serial, true);
             }
+            if (item == null)
+                return null;
             item.Amount = amount;
             item.ItemID = itemID;
             item.Hue = nHue;
@@ -289,12 +292,23 @@ namespace UltimaXNA.UltimaWorld
             // Special case for 0x30, which tells us to open a buy from vendor window.
             if (p.GumpId == 0x30)
             {
-                Mobile m = EntityManager.GetObject<Mobile>(p.Serial, false);
-                item = m.VendorShopContents;
+                Mobile mobile = EntityManager.GetObject<Mobile>(p.Serial, false);
+                if (mobile == null)
+                {
+                    // log error - shopkeeper does not exist?
+                }
+                else
+                {
+                    item = mobile.VendorShopContents;
+                }
             }
             else
             {
                 item = EntityManager.GetObject<Container>(p.Serial, false);
+                if (item == null)
+                {
+                    // log error - item does not exist
+                }
                 if (item is Corpse)
                 {
                     WorldInteraction.OpenCorpseGump(item);
@@ -323,7 +337,6 @@ namespace UltimaXNA.UltimaWorld
             }
             else
             {
-                // create a multi object. Unhandled !!!
                 int multiID = p.ItemID - 0x4000;
                 Multi multi = EntityManager.GetObject<Multi>(p.Serial, true);
                 multi.Position.Set(p.X, p.Y, p.Z);
@@ -419,16 +432,20 @@ namespace UltimaXNA.UltimaWorld
         private void receive_MobileAnimation(IRecvPacket packet)
         {
             MobileAnimationPacket p = (MobileAnimationPacket)packet;
+            Mobile mobile = EntityManager.GetObject<Mobile>(p.Serial, false);
+            if (mobile == null)
+                return;
 
-            Mobile m = EntityManager.GetObject<Mobile>(p.Serial, false);
-            m.Animate(p.Action, p.FrameCount, p.RepeatCount, p.Reverse, p.Repeat, p.Delay);
+            mobile.Animate(p.Action, p.FrameCount, p.RepeatCount, p.Reverse, p.Repeat, p.Delay);
         }
 
         private void receive_MobileMoving(IRecvPacket packet)
         {
             MobileMovingPacket p = (MobileMovingPacket)packet;
-
             Mobile mobile = EntityManager.GetObject<Mobile>(p.Serial, true);
+            if (mobile == null)
+                return;
+
             mobile.BodyID = p.BodyID;
             mobile.Flags = p.Flags;
             mobile.Notoriety = p.Notoriety;
@@ -446,6 +463,9 @@ namespace UltimaXNA.UltimaWorld
         {
             MobileUpdatePacket p = (MobileUpdatePacket)packet;
             Mobile mobile = EntityManager.GetObject<Mobile>(p.Serial, true);
+            if (mobile == null)
+                return;
+
             mobile.BodyID = p.BodyID;
             mobile.Flags = p.Flags;
             mobile.Hue = (int)p.Hue;
@@ -493,8 +513,10 @@ namespace UltimaXNA.UltimaWorld
         private void receive_CorpseClothing(IRecvPacket packet)
         {
             CorpseClothingPacket p = (CorpseClothingPacket)packet;
-            Corpse e = EntityManager.GetObject<Corpse>(p.CorpseSerial, false);
-            e.LoadCorpseClothing(p.Items);
+            Corpse corpse = EntityManager.GetObject<Corpse>(p.CorpseSerial, false);
+            if (corpse == null)
+                return;
+            corpse.LoadCorpseClothing(p.Items);
         }
 
         // ======================================================================
@@ -511,9 +533,11 @@ namespace UltimaXNA.UltimaWorld
         private void receive_Damage(IRecvPacket packet)
         {
             DamagePacket p = (DamagePacket)packet;
-            Mobile u = EntityManager.GetObject<Mobile>(p.Serial, false);
+            Mobile entity = EntityManager.GetObject<Mobile>(p.Serial, false);
+            if (entity == null)
+                return;
 
-            WorldInteraction.ChatMessage(string.Format("{0} takes {1} damage!", u.Name, p.Damage));
+            WorldInteraction.ChatMessage(string.Format("{0} takes {1} damage!", entity.Name, p.Damage));
         }
 
         private void receive_OnSwing(IRecvPacket packet)
@@ -534,22 +558,28 @@ namespace UltimaXNA.UltimaWorld
         private void receive_UpdateMana(IRecvPacket packet)
         {
             UpdateManaPacket p = (UpdateManaPacket)packet;
-            Mobile u = EntityManager.GetObject<Mobile>(p.Serial, false);
-            u.Mana.Update(p.Current, p.Max);
+            Mobile entity = EntityManager.GetObject<Mobile>(p.Serial, false);
+            if (entity == null)
+                return;
+            entity.Mana.Update(p.Current, p.Max);
         }
 
         private void receive_UpdateStamina(IRecvPacket packet)
         {
             UpdateStaminaPacket p = (UpdateStaminaPacket)packet;
-            Mobile u = EntityManager.GetObject<Mobile>(p.Serial, false);
-            u.Stamina.Update(p.Current, p.Max);
+            Mobile entity = EntityManager.GetObject<Mobile>(p.Serial, false);
+            if (entity == null)
+                return;
+            entity.Stamina.Update(p.Current, p.Max);
         }
 
         private void receive_UpdateHealth(IRecvPacket packet)
         {
             UpdateHealthPacket p = (UpdateHealthPacket)packet;
-            Mobile u = EntityManager.GetObject<Mobile>(p.Serial, false);
-            u.Health.Update(p.Current, p.Max);
+            Mobile entity = EntityManager.GetObject<Mobile>(p.Serial, false);
+            if (entity == null)
+                return;
+            entity.Health.Update(p.Current, p.Max);
         }
 
         // ======================================================================
@@ -684,8 +714,8 @@ namespace UltimaXNA.UltimaWorld
         private void receive_OpenBuyWindow(IRecvPacket packet)
         {
             VendorBuyListPacket p = (VendorBuyListPacket)packet;
-            Item iObject = EntityManager.GetObject<Item>(p.VendorPackSerial, false);
-            if (iObject == null)
+            Item entity = EntityManager.GetObject<Item>(p.VendorPackSerial, false);
+            if (entity == null)
                 return;
             // UserInterface.Merchant_Open(iObject, 0);
             // !!!
@@ -787,20 +817,23 @@ namespace UltimaXNA.UltimaWorld
         {
             ObjectPropertyListPacket p = (ObjectPropertyListPacket)packet;
 
-            AEntity iObject = EntityManager.GetObject<AEntity>(p.Serial, false);
-            iObject.PropertyList.Hash = p.Hash;
-            iObject.PropertyList.Clear();
+            AEntity entity = EntityManager.GetObject<AEntity>(p.Serial, false);
+            if (entity == null)
+                return; // received property list for entity that does not exist.
+
+            entity.PropertyList.Hash = p.Hash;
+            entity.PropertyList.Clear();
 
             for (int i = 0; i < p.CliLocs.Count; i++)
             {
                 string iCliLoc = UltimaData.StringData.Entry(p.CliLocs[i]);
                 if (p.Arguements[i] == string.Empty)
                 {
-                    iObject.PropertyList.AddProperty(iCliLoc);
+                    entity.PropertyList.AddProperty(iCliLoc);
                 }
                 else
                 {
-                    iObject.PropertyList.AddProperty(constructCliLoc(iCliLoc, p.Arguements[i]));
+                    entity.PropertyList.AddProperty(constructCliLoc(iCliLoc, p.Arguements[i]));
                 }
             }
         }
@@ -810,11 +843,11 @@ namespace UltimaXNA.UltimaWorld
             CustomHousePacket p = (CustomHousePacket)packet;
             UltimaData.CustomHousingData.UpdateCustomHouseData(p.HouseSerial, p.RevisionHash, p.PlaneCount, p.Planes);
 
-            Multi e = EntityManager.GetObject<Multi>(p.HouseSerial, false);
-            if (e.CustomHouseRevision != p.RevisionHash)
+            Multi multi = EntityManager.GetObject<Multi>(p.HouseSerial, false);
+            if (multi.CustomHouseRevision != p.RevisionHash)
             {
                 UltimaData.CustomHouse house = UltimaData.CustomHousingData.GetCustomHouseData(p.HouseSerial);
-                e.AddCustomHousingTiles(house);
+                multi.AddCustomHousingTiles(house);
             }
         }
 
@@ -844,26 +877,29 @@ namespace UltimaXNA.UltimaWorld
                 throw (new Exception("KR Status not handled."));
             }
 
-            Mobile u = EntityManager.GetObject<Mobile>(p.Serial, false);
-            u.Name = p.PlayerName;
-            u.Strength = p.Strength;
-            u.Dexterity = p.Dexterity;
-            u.Intelligence = p.Intelligence;
-            u.Health.Update(p.CurrentHealth, p.MaxHealth);
-            u.Stamina.Update(p.CurrentStamina, p.MaxStamina);
-            u.Mana.Update(p.CurrentMana, p.MaxMana);
-            u.Followers.Update(p.FollowersCurrent, p.FollowersMax);
-            u.Weight.Update(p.Weight, p.WeightMax);
-            u.StatCap = p.StatCap;
-            u.Luck = p.Luck;
-            u.Gold = p.GoldInInventory;
-            u.ArmorRating = p.ArmorRating;
-            u.ResistFire = p.ResistFire;
-            u.ResistCold = p.ResistCold;
-            u.ResistPoison = p.ResistPoison;
-            u.ResistEnergy = p.ResistEnergy;
-            u.DamageMin = p.DamageMin;
-            u.DamageMax = p.DamageMax;
+            Mobile mobile = EntityManager.GetObject<Mobile>(p.Serial, false);
+            if (mobile == null)
+                return;
+
+            mobile.Name = p.PlayerName;
+            mobile.Strength = p.Strength;
+            mobile.Dexterity = p.Dexterity;
+            mobile.Intelligence = p.Intelligence;
+            mobile.Health.Update(p.CurrentHealth, p.MaxHealth);
+            mobile.Stamina.Update(p.CurrentStamina, p.MaxStamina);
+            mobile.Mana.Update(p.CurrentMana, p.MaxMana);
+            mobile.Followers.Update(p.FollowersCurrent, p.FollowersMax);
+            mobile.Weight.Update(p.Weight, p.WeightMax);
+            mobile.StatCap = p.StatCap;
+            mobile.Luck = p.Luck;
+            mobile.Gold = p.GoldInInventory;
+            mobile.ArmorRating = p.ArmorRating;
+            mobile.ResistFire = p.ResistFire;
+            mobile.ResistCold = p.ResistCold;
+            mobile.ResistPoison = p.ResistPoison;
+            mobile.ResistEnergy = p.ResistEnergy;
+            mobile.DamageMin = p.DamageMin;
+            mobile.DamageMax = p.DamageMax;
             //  other stuff unhandled !!!
         }
 
@@ -883,10 +919,14 @@ namespace UltimaXNA.UltimaWorld
         private void receive_ToolTipRevision(IRecvPacket packet)
         {
             ObjectPropertyListUpdatePacket p = (ObjectPropertyListUpdatePacket)packet;
-            AEntity iObject = EntityManager.GetObject<AEntity>(p.Serial, false);
-            if (iObject != null)
+            AEntity entity = EntityManager.GetObject<AEntity>(p.Serial, false);
+            if (entity == null)
             {
-                if (iObject.PropertyList.Hash != p.RevisionHash)
+                // received a tool tip revision for an entity.
+            }
+            else
+            {
+                if (entity.PropertyList.Hash != p.RevisionHash)
                 {
                     World.Engine.Client.Send(new QueryPropertiesPacket(p.Serial));
                 }
@@ -970,11 +1010,18 @@ namespace UltimaXNA.UltimaWorld
                 case 0x1D: // House revision state
                     if (UltimaData.CustomHousingData.IsHashCurrent(p.HouseRevisionState.Serial, p.HouseRevisionState.Hash))
                     {
-                        Multi e = EntityManager.GetObject<Multi>(p.HouseRevisionState.Serial, false);
-                        if (e.CustomHouseRevision != p.HouseRevisionState.Hash)
+                        Multi multi = EntityManager.GetObject<Multi>(p.HouseRevisionState.Serial, false);
+                        if (multi == null)
                         {
-                            UltimaData.CustomHouse house = UltimaData.CustomHousingData.GetCustomHouseData(p.HouseRevisionState.Serial);
-                            e.AddCustomHousingTiles(house);
+                            // received a house revision for a multi that does not exist.
+                        }
+                        else
+                        {
+                            if (multi.CustomHouseRevision != p.HouseRevisionState.Hash)
+                            {
+                                UltimaData.CustomHouse house = UltimaData.CustomHousingData.GetCustomHouseData(p.HouseRevisionState.Serial);
+                                multi.AddCustomHousingTiles(house);
+                            }
                         }
                     }
                     else
@@ -1064,8 +1111,9 @@ namespace UltimaXNA.UltimaWorld
         {
             RequestNameResponsePacket p = (RequestNameResponsePacket)packet;
             Mobile mobile = EntityManager.GetObject<Mobile>(p.Serial, false);
-            if (mobile != null)
-                mobile.Name = p.MobileName;
+            if (mobile == null)
+                return;
+            mobile.Name = p.MobileName;
         }
 
 
