@@ -107,13 +107,12 @@ namespace UltimaXNA.UltimaWorld
             Engine.UserInterface.Cursor = Cursor = new WorldCursor(this);
 
             m_WorldClient.Initialize();
-
-            Engine.UserInterface.AddControl(new TopMenu(0), 0, 0);
-            Engine.UserInterface.AddControl(new ChatWindow(), 0, 0);
         }
 
         public void LoginSequence()
         {
+            Engine.UserInterface.AddControl(new TopMenu(0), 0, 0);
+            Engine.UserInterface.AddControl(new ChatWindow(), 0, 0);
             m_WorldClient.SendWorldLoginPackets();
             UltimaVars.EngineVars.InWorld = true;
         }

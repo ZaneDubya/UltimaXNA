@@ -28,10 +28,10 @@ namespace UltimaXNA.UltimaPackets.Client
             Stream.Write(seed);
             if (version.Length != 4)
                 Core.Diagnostics.Logger.Fatal("SeedPacket: version array is not the correct length (4).");
-            Stream.Write(version[0]);
-            Stream.Write(version[1]);
-            Stream.Write(version[2]);
-            Stream.Write(version[3]);
+            Stream.Write((int)version[0]);
+            Stream.Write((int)version[1]);
+            Stream.Write((int)version[2]);
+            Stream.Write((int)version[3]);
         }
     }
 }
