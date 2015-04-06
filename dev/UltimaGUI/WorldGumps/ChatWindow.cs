@@ -96,7 +96,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
             m_Input.Text = string.Empty;
             m_MessageHistory.Add(text);
             m_MessageHistoryIndex = m_MessageHistory.Count;
-            WorldInteraction.SendChat(text);
+            (Engine.ActiveModel as WorldModel).Interaction.SendChat(text);
         }
 
         public void AddLine(string text)

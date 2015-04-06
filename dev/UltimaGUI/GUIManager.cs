@@ -10,8 +10,10 @@
 #region Usings
 using InterXLib.Input.Windows;
 using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using UltimaXNA.Core.Rendering;
+using UltimaXNA.UltimaPackets.Client;
 #endregion
 
 namespace UltimaXNA.UltimaGUI
@@ -43,6 +45,33 @@ namespace UltimaXNA.UltimaGUI
 
         public int Width { get { return m_SpriteBatch.GraphicsDevice.Viewport.Width; } }
         public int Height { get { return m_SpriteBatch.GraphicsDevice.Viewport.Height; } }
+
+        /// <summary>
+        /// Opens a modal message box with either 'OK' or 'OK and Cancel' buttons.
+        /// </summary>
+        /// <param name="msg"></param>
+        /// <param name="type"></param>
+        /// <returns>The created message box.</returns>
+        public MsgBox MsgBox(string msg, MsgBoxTypes type)
+        {
+            // pop up an error message, modal.
+            MsgBox msgbox = new MsgBox(msg, type);
+            Engine.UserInterface.AddControl(msgbox, 0, 0);
+            return msgbox;
+        }
+
+        /// <summary>
+        /// Informs the server that we have activated a gump control.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="gumpId"></param>
+        /// <param name="buttonId"></param>
+        /// <param name="switchIds"></param>
+        /// <param name="textEntries"></param>
+        public void GumpMenuSelect(int id, int gumpId, int buttonId, int[] switchIds, Tuple<short, string>[] textEntries) // used by gump
+        {
+            Engine.Client.Send(new GumpMenuSelectPacket(id, gumpId, buttonId, switchIds, textEntries));
+        }
 
         // All open controls:
         List<AControl> m_Controls = null;

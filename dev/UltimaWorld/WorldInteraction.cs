@@ -21,102 +21,98 @@ using UltimaXNA.UltimaWorld;
 namespace UltimaXNA.UltimaWorld
 {
     /// <summary>
-    /// Static class that hosts methods for interacting with the world.
+    /// Hosts methods for interacting with the world.
     /// </summary>
-    public static class WorldInteraction
+    internal class WorldInteraction
     {
-        public static MsgBox MsgBox(string msg, MsgBoxTypes type)
+        protected WorldModel World
         {
-            // pop up an error message, modal.
-            MsgBox msgbox = new MsgBox(msg, type);
-            Engine.UserInterface.AddControl(msgbox, 0, 0);
-            return msgbox;
+            get;
+            private set;
         }
 
-        private static UltimaEngine Engine;
-        public static void Initialize(UltimaEngine engine)
+        public WorldInteraction(WorldModel world)
         {
-            Engine = engine;
+            World = world;
         }
 
-        public static void SendChat(string text) // used by chatwindow.
+        private Serial m_lastTarget;
+        public Serial LastTarget
         {
-            Engine.Client.Send(new AsciiSpeechPacket(AsciiSpeechPacketTypes.Normal, 0, 0, "ENU", text));
+            get { return m_lastTarget; }
+            set
+            {
+                m_lastTarget = value;
+                // send last target packet to server.
+                World.Engine.Client.Send(new GetPlayerStatusPacket(0x04, m_lastTarget));
+            }
         }
 
-        public static void SingleClick(AEntity item) // used by worldinput and itemgumpling.
+        public void SendChat(string text) // used by chatwindow.
         {
-            Engine.Client.Send(new SingleClickPacket(item.Serial));
+            World.Engine.Client.Send(new AsciiSpeechPacket(AsciiSpeechPacketTypes.Normal, 0, 0, "ENU", text));
         }
 
-        public static void DoubleClick(AEntity item) // used by itemgumpling, paperdollinteractable, topmenu, worldinput.
+        public void SingleClick(AEntity item) // used by worldinput and itemgumpling.
         {
-            Engine.Client.Send(new DoubleClickPacket(item.Serial));
+            World.Engine.Client.Send(new SingleClickPacket(item.Serial));
+        }
+
+        public void DoubleClick(AEntity item) // used by itemgumpling, paperdollinteractable, topmenu, worldinput.
+        {
+            World.Engine.Client.Send(new DoubleClickPacket(item.Serial));
         } 
 
-        public static void ToggleWarMode() // used by paperdollgump.
+        public void ToggleWarMode() // used by paperdollgump.
         {
-            Engine.Client.Send(new RequestWarModePacket(!((Mobile)EntityManager.GetPlayerObject()).Flags.IsWarMode));
+            World.Engine.Client.Send(new RequestWarModePacket(!((Mobile)EntityManager.GetPlayerObject()).Flags.IsWarMode));
         }
 
-        public static void UseSkill(int index) // used by WorldInteraction
+        public void UseSkill(int index) // used by WorldInteraction
         {
-            Engine.Client.Send(new RequestSkillUsePacket(index));
+            World.Engine.Client.Send(new RequestSkillUsePacket(index));
         }
 
-        public static Gump OpenContainerGump(AEntity entity) // used by ultimaclient.
+        public Gump OpenContainerGump(AEntity entity) // used by ultimaclient.
         {
             Gump gump;
 
-            if ((gump = (Gump)Engine.UserInterface.GetControl(entity.Serial)) != null)
+            if ((gump = (Gump)World.Engine.UserInterface.GetControl(entity.Serial)) != null)
             {
                 gump.Dispose();
             }
 
             gump = new ContainerGump(entity, ((Container)entity).ItemID);
-            Engine.UserInterface.AddControl(gump, 64, 64);
+            World.Engine.UserInterface.AddControl(gump, 64, 64);
             return gump;
         }
 
-        public static Gump OpenCorpseGump(AEntity entity) // used by UltimaClient
+        public Gump OpenCorpseGump(AEntity entity) // used by UltimaClient
         {
             Gump gump;
 
-            if ((gump = (Gump)Engine.UserInterface.GetControl(entity.Serial)) != null)
+            if ((gump = (Gump)World.Engine.UserInterface.GetControl(entity.Serial)) != null)
             {
                 gump.Dispose();
             }
 
             gump = new ContainerGump(entity, 0x2006);
-            Engine.UserInterface.AddControl(gump, 96, 96);
+            World.Engine.UserInterface.AddControl(gump, 96, 96);
             return gump;
         }
 
-        public static void DisconnectToLoginScreen() // used by paperdoll gump
-        {
-            if (Engine.Client.Status != UltimaClientStatus.Unconnected)
-                Engine.Client.Disconnect();
-            UltimaVars.EngineVars.InWorld = false;
-            Engine.ActiveModel = new UltimaXNA.UltimaLogin.LoginModel();
-        }
 
-        public static void GumpMenuSelect(int id, int gumpId, int buttonId, int[] switchIds, Tuple<short, string>[] textEntries) // used by gump
-        {
-            Engine.Client.Send(new GumpMenuSelectPacket(id, gumpId, buttonId, switchIds, textEntries));
-        }
+        List<QueuedMessage> m_ChatQueue = new List<QueuedMessage>();
 
-
-        static List<QueuedMessage> m_ChatQueue = new List<QueuedMessage>();
-
-        public static void ChatMessage(string text) // used by gump
+        public void ChatMessage(string text) // used by gump
         {
             ChatMessage(text, 0, 0);
         }
-        public static void ChatMessage(string text, int hue, int font)
+        public void ChatMessage(string text, int hue, int font)
         {
             m_ChatQueue.Add(new QueuedMessage(text, hue, font));
 
-            ChatWindow chat = Engine.UserInterface.GetControl<ChatWindow>(0);
+            ChatWindow chat = World.Engine.UserInterface.GetControl<ChatWindow>(0);
             if (chat != null)
             {
                 foreach (QueuedMessage msg in m_ChatQueue)
@@ -141,7 +137,7 @@ namespace UltimaXNA.UltimaWorld
             }
         }
 
-        public static void CreateLabel(MessageType msgType, Serial serial, string text, int hue, int font)
+        public void CreateLabel(MessageType msgType, Serial serial, string text, int hue, int font)
         {
             Overhead overhead;
 
@@ -165,23 +161,18 @@ namespace UltimaXNA.UltimaWorld
             }
             else
             {
-                WorldInteraction.ChatMessage("[LABEL] " + text, font, hue);
+                ChatMessage("[LABEL] " + text, font, hue);
             }
-        }
-
-        public static void SendLastTargetPacket(Serial last_target) // used by engine vars, which is used by worldinput and ultimaclient.
-        {
-            Engine.Client.Send(new GetPlayerStatusPacket(0x04, last_target));
         }
 
         // ======================================================================
         // Cursor handling routines.
         // ======================================================================
 
-        internal static Action<Item, int, int> OnPickupItem;
-        internal static Action OnClearHolding;
+        public Action<Item, int, int> OnPickupItem;
+        public Action OnClearHolding;
 
-        internal static void PickupItem(Item item, Point offset)
+        internal void PickupItem(Item item, Point offset)
         {
             if (item == null)
                 return;
@@ -191,7 +182,7 @@ namespace UltimaXNA.UltimaWorld
             OnPickupItem(item, offset.X, offset.Y);
         }
 
-        internal static void ClearHolding()
+        internal void ClearHolding()
         {
             if (OnClearHolding == null)
                 return;

@@ -100,12 +100,12 @@ namespace UltimaXNA.UltimaLogin.Scenes
             // if not, pop up an appropriate error message.
             if (m_CreateSkillsGump.Strength + m_CreateSkillsGump.Dexterity + m_CreateSkillsGump.Intelligence != 80)
             {
-                WorldInteraction.MsgBox("Error: your stat values did not add up to 80. Please logout and try to make another character.", MsgBoxTypes.OkOnly);
+                Engine.UserInterface.MsgBox("Error: your stat values did not add up to 80. Please logout and try to make another character.", MsgBoxTypes.OkOnly);
                 return false;
             }
             if (m_CreateSkillsGump.SkillPoints0 + m_CreateSkillsGump.SkillPoints1 + m_CreateSkillsGump.SkillPoints2 != 100)
             {
-                WorldInteraction.MsgBox("Error: your skill values did not add up to 100. Please logout and try to make another character.", MsgBoxTypes.OkOnly);
+                Engine.UserInterface.MsgBox("Error: your skill values did not add up to 100. Please logout and try to make another character.", MsgBoxTypes.OkOnly);
                 return false;
             }
             if (m_CreateSkillsGump.SkillIndex0 == -1 || m_CreateSkillsGump.SkillIndex1 == -1 || m_CreateSkillsGump.SkillIndex2 == -1 ||
@@ -113,7 +113,7 @@ namespace UltimaXNA.UltimaLogin.Scenes
                 (m_CreateSkillsGump.SkillIndex1 == m_CreateSkillsGump.SkillIndex2) ||
                 (m_CreateSkillsGump.SkillIndex0 == m_CreateSkillsGump.SkillIndex2))
             {
-                WorldInteraction.MsgBox("You must have three unique skills chosen!", MsgBoxTypes.OkOnly);
+                Engine.UserInterface.MsgBox("You must have three unique skills chosen!", MsgBoxTypes.OkOnly);
                 return false;
             }
             // save the values;
@@ -145,12 +145,12 @@ namespace UltimaXNA.UltimaLogin.Scenes
             // if not, pop up an appropriate error message.
             if (m_name.Length < 2)
             {
-                WorldInteraction.MsgBox(UltimaData.StringData.Entry(1075458), MsgBoxTypes.OkOnly); // 1075458: Your character name is too short.
+                Engine.UserInterface.MsgBox(UltimaData.StringData.Entry(1075458), MsgBoxTypes.OkOnly); // 1075458: Your character name is too short.
                 return false;
             }
             if (m_name[m_name.Length - 1] == '.')
             {
-                WorldInteraction.MsgBox(UltimaData.StringData.Entry(1075457), MsgBoxTypes.OkOnly); // 1075457: Your character name cannot end with a period('.').
+                Engine.UserInterface.MsgBox(UltimaData.StringData.Entry(1075457), MsgBoxTypes.OkOnly); // 1075457: Your character name cannot end with a period('.').
                 return false;
             }
             return true;

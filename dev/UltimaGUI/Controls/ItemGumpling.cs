@@ -15,6 +15,7 @@ using UltimaXNA.Core.Rendering;
 using InterXLib.Input.Windows;
 using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaWorld;
+using UltimaXNA.UltimaPackets.Client;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {
@@ -63,7 +64,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             if (sendClickIfNoDoubleClick && UltimaEngine.TotalMS >= singleClickTime)
             {
                 sendClickIfNoDoubleClick = false;
-                WorldInteraction.SingleClick(m_item);
+                (Engine.ActiveModel as WorldModel).Interaction.SingleClick(m_item);
             }
             base.Update(totalMS, frameMS);
         }
@@ -140,7 +141,7 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         protected override void mouseDoubleClick(int x, int y, MouseButton button)
         {
-            WorldInteraction.DoubleClick(m_item);
+            (Engine.ActiveModel as WorldModel).Interaction.DoubleClick(m_item);
             sendClickIfNoDoubleClick = false;
         }
 
@@ -158,11 +159,11 @@ namespace UltimaXNA.UltimaGUI.Controls
                     int w, h;
                     UltimaData.ArtData.GetStaticDimensions(Item.DisplayItemID, out w, out h);
                     Point click_point = new Point(w / 2, h / 2);
-                    WorldInteraction.PickupItem(m_item, InternalGetPickupOffset(click_point));
+                    (Engine.ActiveModel as WorldModel).Interaction.PickupItem(m_item, InternalGetPickupOffset(click_point));
                 }
                 else
                 {
-                    WorldInteraction.PickupItem(m_item, InternalGetPickupOffset(m_ClickPoint));
+                    (Engine.ActiveModel as WorldModel).Interaction.PickupItem(m_item, InternalGetPickupOffset(m_ClickPoint));
                 }
             }
         }

@@ -11,6 +11,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.Rendering;
 using UltimaXNA.UltimaWorld;
 #endregion
@@ -118,7 +119,7 @@ namespace UltimaXNA.UltimaGUI
         {
             int[] switchIDs = new int[0];
             Tuple<short, string>[] textEntries = new Tuple<short,string>[0];
-            WorldInteraction.GumpMenuSelect(Serial, GumpID, buttonID, switchIDs, textEntries);
+            Engine.UserInterface.GumpMenuSelect(Serial, GumpID, buttonID, switchIDs, textEntries);
             Dispose();
         }
 
@@ -179,31 +180,31 @@ namespace UltimaXNA.UltimaGUI
                         break;
 
                     case "checkbox":
-                        WorldInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
+                        Logger.Warn("GUMP: Unhandled '" + arguements[0] + "'.");
                         break;
                     case "group":
-                        WorldInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
+                        Logger.Warn("GUMP: Unhandled '" + arguements[0] + "'.");
                         break;
                     case "xmfhtmlgump":
-                        WorldInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
+                        Logger.Warn("GUMP: Unhandled '" + arguements[0] + "'.");
                         break;
                     case "xmfhtmlgumpcolor":
-                        WorldInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
+                        Logger.Warn("GUMP: Unhandled '" + arguements[0] + "'.");
                         break;
                     case "xmfhtmltok":
-                        WorldInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
+                        Logger.Warn("GUMP: Unhandled '" + arguements[0] + "'.");
                         break;
                     case "buttontileart":
-                        WorldInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
+                        Logger.Warn("GUMP: Unhandled '" + arguements[0] + "'.");
                         break;
                     case "tooltip":
-                        WorldInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
+                        Logger.Warn("GUMP: Unhandled '" + arguements[0] + "'.");
                         break;
                     case "radio":
-                        WorldInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
+                        Logger.Warn("GUMP: Unhandled '" + arguements[0] + "'.");
                         break;
                     default:
-                        WorldInteraction.ChatMessage("GUMP: Unknown piece '" + arguements[0] + "'.");
+                        Logger.Warn("GUMP: Unknown piece '" + arguements[0] + "'.");
                         break;
                 }
             }

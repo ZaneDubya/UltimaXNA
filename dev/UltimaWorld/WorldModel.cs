@@ -26,6 +26,12 @@ namespace UltimaXNA.UltimaWorld
             private set;
         }
 
+        public WorldInteraction Interaction
+        {
+            get;
+            private set;
+        }
+
         private WorldClient m_WorldClient;
 
         private WorldCursor m_Cursor = null;
@@ -94,6 +100,7 @@ namespace UltimaXNA.UltimaWorld
             Entities = new EntityManager(this);
             Effects = new EffectsManager(this);
             Input = new WorldInput(this);
+            Interaction = new WorldInteraction(this);
             m_WorldClient = new WorldClient(this);
         }
 
@@ -135,7 +142,7 @@ namespace UltimaXNA.UltimaWorld
             {
                 if (Engine.UserInterface.IsModalControlOpen == false)
                 {
-                    MsgBox g = WorldInteraction.MsgBox("You have lost your connection with the server.", MsgBoxTypes.OkOnly);
+                    MsgBox g = Engine.UserInterface.MsgBox("You have lost your connection with the server.", MsgBoxTypes.OkOnly);
                     g.OnClose = onCloseLostConnectionMsgBox;
                 }
             }

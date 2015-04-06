@@ -303,15 +303,15 @@ namespace UltimaXNA.UltimaWorld
                 }
                 if (item is Corpse)
                 {
-                    WorldInteraction.OpenCorpseGump(item);
+                    World.Interaction.OpenCorpseGump(item);
                 }
                 else if (item is Container)
                 {
-                    WorldInteraction.OpenContainerGump(item);
+                    World.Interaction.OpenContainerGump(item);
                 }
                 else
                 {
-                    WorldInteraction.ChatMessage(string.Format("Client: Object {0} has no support for a container object!", item.Serial));
+                    World.Interaction.ChatMessage(string.Format("Client: Object {0} has no support for a container object!", item.Serial));
                 }
             }
         }
@@ -494,8 +494,8 @@ namespace UltimaXNA.UltimaWorld
         private void ReceiveRejectMoveItemRequest(IRecvPacket packet)
         {
             LiftRejectionPacket p = (LiftRejectionPacket)packet;
-            WorldInteraction.ChatMessage("Could not pick up item: " + p.ErrorMessage);
-            WorldInteraction.ClearHolding();
+            World.Interaction.ChatMessage("Could not pick up item: " + p.ErrorMessage);
+            World.Interaction.ClearHolding();
         }
 
         // ======================================================================
@@ -519,7 +519,7 @@ namespace UltimaXNA.UltimaWorld
         {
             ChangeCombatantPacket p = (ChangeCombatantPacket)packet;
             if (p.Serial > 0x00000000)
-                UltimaVars.EngineVars.LastTarget = p.Serial;
+                World.Interaction.LastTarget = p.Serial;
         }
 
         private void ReceiveDamage(IRecvPacket packet)
@@ -529,15 +529,16 @@ namespace UltimaXNA.UltimaWorld
             if (entity == null)
                 return;
 
-            WorldInteraction.ChatMessage(string.Format("{0} takes {1} damage!", entity.Name, p.Damage));
+            World.Interaction.ChatMessage(string.Format("{0} takes {1} damage!", entity.Name, p.Damage));
         }
 
         private void ReceiveOnSwing(IRecvPacket packet)
         {
             SwingPacket p = (SwingPacket)packet;
+            // this changes our last target - does this behavior match legacy?
             if (p.Attacker == UltimaVars.EngineVars.PlayerSerial)
             {
-                UltimaVars.EngineVars.LastTarget = p.Defender;
+                World.Interaction.LastTarget = p.Defender;
             }
         }
 
@@ -639,45 +640,45 @@ namespace UltimaXNA.UltimaWorld
                     overhead = EntityManager.AddOverhead(msgType, serial, "<outline>" + text, font, hue);
                     if (overhead != null)
                     {
-                        WorldInteraction.ChatMessage(speakerName + ": " + text, font, hue);
+                        World.Interaction.ChatMessage(speakerName + ": " + text, font, hue);
                     }
                     else
                     {
-                        WorldInteraction.ChatMessage(text, font, hue);
+                        World.Interaction.ChatMessage(text, font, hue);
                     }
                     break;
                 case MessageType.System:
-                    WorldInteraction.ChatMessage("[SYSTEM] " + text, font, hue);
+                    World.Interaction.ChatMessage("[SYSTEM] " + text, font, hue);
                     break;
                 case MessageType.Emote:
-                    WorldInteraction.ChatMessage("[EMOTE] " + text, font, hue);
+                    World.Interaction.ChatMessage("[EMOTE] " + text, font, hue);
                     break;
                 case MessageType.Label:
-                    WorldInteraction.CreateLabel(msgType, serial, text, font, hue);
+                    World.Interaction.CreateLabel(msgType, serial, text, font, hue);
                     break;
                 case MessageType.Focus: // on player?
-                    WorldInteraction.ChatMessage("[FOCUS] " + text, font, hue);
+                    World.Interaction.ChatMessage("[FOCUS] " + text, font, hue);
                     break;
                 case MessageType.Whisper:
-                    WorldInteraction.ChatMessage("[WHISPER] " + text, font, hue);
+                    World.Interaction.ChatMessage("[WHISPER] " + text, font, hue);
                     break;
                 case MessageType.Yell:
-                    WorldInteraction.ChatMessage("[YELL] " + text, font, hue);
+                    World.Interaction.ChatMessage("[YELL] " + text, font, hue);
                     break;
                 case MessageType.Spell:
-                    WorldInteraction.ChatMessage("[SPELL] " + text, font, hue);
+                    World.Interaction.ChatMessage("[SPELL] " + text, font, hue);
                     break;
                 case MessageType.UIld:
-                    WorldInteraction.ChatMessage("[UILD] " + text, font, hue);
+                    World.Interaction.ChatMessage("[UILD] " + text, font, hue);
                     break;
                 case MessageType.Alliance:
-                    WorldInteraction.ChatMessage("[ALLIANCE] " + text, font, hue);
+                    World.Interaction.ChatMessage("[ALLIANCE] " + text, font, hue);
                     break;
                 case MessageType.Command:
-                    WorldInteraction.ChatMessage("[COMMAND] " + text, font, hue);
+                    World.Interaction.ChatMessage("[COMMAND] " + text, font, hue);
                     break;
                 default:
-                    WorldInteraction.ChatMessage("[[ERROR UNKNOWN COMMAND]] " + msgType.ToString());
+                    World.Interaction.ChatMessage("[[ERROR UNKNOWN COMMAND]] " + msgType.ToString());
                     break;
             }
         }
@@ -700,7 +701,7 @@ namespace UltimaXNA.UltimaWorld
         private void ReceivePopupMessage(IRecvPacket packet)
         {
             PopupMessagePacket p = (PopupMessagePacket)packet;
-            WorldInteraction.MsgBox(p.Message, MsgBoxTypes.OkOnly);
+            World.Engine.UserInterface.MsgBox(p.Message, MsgBoxTypes.OkOnly);
         }
 
         private void ReceiveOpenBuyWindow(IRecvPacket packet)
@@ -900,7 +901,7 @@ namespace UltimaXNA.UltimaWorld
         private void ReceiveTime(IRecvPacket packet)
         {
             TimePacket p = (TimePacket)packet;
-            WorldInteraction.ChatMessage(string.Format("The current server time is {0}:{1}:{2}", p.Hour, p.Minute, p.Second));
+            World.Interaction.ChatMessage(string.Format("The current server time is {0}:{1}:{2}", p.Hour, p.Minute, p.Second));
         }
 
         private void ReceiveTipNotice(IRecvPacket packet)
@@ -1034,7 +1035,7 @@ namespace UltimaXNA.UltimaWorld
         private void ReceiveGlobalQueueCount(IRecvPacket packet)
         {
             GlobalQueuePacket p = (GlobalQueuePacket)packet;
-            WorldInteraction.ChatMessage("System: There are currently " + p.Count + " available calls in the global queue.");
+            World.Interaction.ChatMessage("System: There are currently " + p.Count + " available calls in the global queue.");
         }
 
         private void ReceiveInvalidMapEnable(IRecvPacket packet)

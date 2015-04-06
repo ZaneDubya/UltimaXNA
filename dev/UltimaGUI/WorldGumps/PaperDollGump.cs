@@ -123,7 +123,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
                 case Buttons.Options:
                     break;
                 case Buttons.LogOut:
-                    MsgBox g = WorldInteraction.MsgBox("Quit Ultima Online?", MsgBoxTypes.OkCancel);
+                    MsgBox g = Engine.UserInterface.MsgBox("Quit Ultima Online?", MsgBoxTypes.OkCancel);
                     g.OnClose = logout_OnClose;
                     break;
                 case Buttons.Quests:
@@ -134,7 +134,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
                 case Buttons.Guild:
                     break;
                 case Buttons.PeaceWarToggle:
-                    WorldInteraction.ToggleWarMode();
+                    (Engine.ActiveModel as WorldModel).Interaction.ToggleWarMode();
                     break;
                 case Buttons.Status:
                     Engine.UserInterface.AddControl(new StatusGump(), 200, 400, GUIManager.AddGumpType.Toggle);
@@ -144,7 +144,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
 
         void logout_OnClose()
         {
-            WorldInteraction.DisconnectToLoginScreen();
+            Engine.Client.Disconnect();
         }
 
         public override bool Equals(object obj)

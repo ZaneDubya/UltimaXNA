@@ -70,10 +70,10 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
                     Engine.UserInterface.AddControl(new PaperDollGump((Mobile)EntityManager.GetPlayerObject()), 400, 100, GUIManager.AddGumpType.Toggle);
                     break;
                 case Buttons.Inventory:
-                    PlayerMobile m = (PlayerMobile)EntityManager.GetPlayerObject();
-                    Container i = m.Backpack;
-                    WorldInteraction.DoubleClick(i);
-                    // UserInterface.AddContainerGump(i, 0);
+                    // opens the player's backpack.
+                    PlayerMobile mobile = (PlayerMobile)EntityManager.GetPlayerObject();
+                    Container backpack = mobile.Backpack;
+                    (Engine.ActiveModel as WorldModel).Interaction.DoubleClick(backpack);
                     break;
                 case Buttons.Journal:
                     Engine.UserInterface.AddControl(new JournalGump(), 80, 80, GUIManager.AddGumpType.Toggle);

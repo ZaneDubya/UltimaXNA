@@ -74,11 +74,6 @@ namespace UltimaXNA.UltimaEntities.EntityViews
                 drawY = drawCenterY + (int)((Entity.Position.Z_offset + Entity.Z) * 4) - 22 - (int)((Entity.Position.X_offset + Entity.Position.Y_offset) * 22);
             }
 
-            // override hue based on notoriety if targeting? Not currently implemented.
-            Vector2 hue;
-            if (UltimaVars.EngineVars.LastTarget != null && UltimaVars.EngineVars.LastTarget == Entity.Serial)
-                hue = new Vector2(Entity.NotorietyHue - 1, 1);
-
             // get the maximum y-extent of this object so we can correctly place overheads.
             int yOffset = 0;
 

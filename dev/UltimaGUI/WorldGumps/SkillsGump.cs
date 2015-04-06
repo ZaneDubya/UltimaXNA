@@ -49,7 +49,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
                 int skillIndex;
                 if (!int.TryParse(href.Substring(6), out skillIndex))
                         return;
-                WorldInteraction.UseSkill(skillIndex);
+                (Engine.ActiveModel as WorldModel).Interaction.UseSkill(skillIndex);
             }
             m_list.Text = buildSkillsString();
             base.ActivateByHREF(href);

@@ -40,17 +40,6 @@ namespace UltimaXNA.UltimaVars
             set;
         }
 
-        private static Serial m_lastTarget;
-        public static Serial LastTarget
-        {
-            get { return m_lastTarget; }
-            set
-            {
-                m_lastTarget = value;
-                WorldInteraction.SendLastTargetPacket(m_lastTarget);
-            }
-        }
-
         public static bool WarMode
         {
             get

@@ -190,7 +190,7 @@ namespace UltimaXNA
         private void ReceiveDeleteCharacterResponse(IRecvPacket packet)
         {
             DeleteCharacterResponsePacket p = (DeleteCharacterResponsePacket)packet;
-            WorldInteraction.MsgBox(p.Result, MsgBoxTypes.OkOnly);
+            Engine.UserInterface.MsgBox(p.Result, MsgBoxTypes.OkOnly);
         }
 
         private void ReceiveCharacterListUpdate(IRecvPacket packet)

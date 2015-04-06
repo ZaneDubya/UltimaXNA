@@ -383,14 +383,14 @@ namespace UltimaXNA.UltimaWorld
 
         private void InternalRegisterInteraction()
         {
-            WorldInteraction.OnPickupItem += PickUpItem;
-            WorldInteraction.OnClearHolding += ClearHolding;
+            World.Interaction.OnPickupItem += PickUpItem;
+            World.Interaction.OnClearHolding += ClearHolding;
         }
 
         private void InternalUnregisterInteraction()
         {
-            WorldInteraction.OnPickupItem -= PickUpItem;
-            WorldInteraction.OnClearHolding -= ClearHolding;
+            World.Interaction.OnPickupItem -= PickUpItem;
+            World.Interaction.OnClearHolding -= ClearHolding;
         }
 
         // ======================================================================

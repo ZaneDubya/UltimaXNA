@@ -129,7 +129,6 @@ namespace UltimaXNA
 
                 UltimaVars.EngineVars.EngineRunning = true;
                 UltimaVars.EngineVars.InWorld = false;
-                WorldInteraction.Initialize(this);
 
                 ActiveModel = new UltimaLogin.LoginModel();
             }

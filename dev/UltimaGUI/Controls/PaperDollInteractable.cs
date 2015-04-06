@@ -147,8 +147,8 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         void dblclick_Backpack(int x, int y, MouseButton button)
         {
-            Container i = ((Mobile)m_sourceEntity).Backpack;
-            WorldInteraction.DoubleClick(i);
+            Container backpack = ((Mobile)m_sourceEntity).Backpack;
+            (Engine.ActiveModel as WorldModel).Interaction.DoubleClick(backpack);
         }
 
         //void Interaction_OnItemPickUp(ItemGumplingPaperdoll Control)

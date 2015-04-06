@@ -262,12 +262,12 @@ namespace UltimaXNA.UltimaWorld
                 else if (overEntity is Item)
                 {
                     // request context menu
-                    WorldInteraction.SingleClick(overEntity);
+                    World.Interaction.SingleClick(overEntity);
                 }
                 else if (overEntity is Mobile)
                 {
                     // request context menu
-                    WorldInteraction.SingleClick(overEntity);
+                    World.Interaction.SingleClick(overEntity);
                 }
             }
             else if (e.EventType == MouseEvent.DoubleClick)
@@ -283,15 +283,15 @@ namespace UltimaXNA.UltimaWorld
                 else if (overEntity is Item)
                 {
                     // request context menu
-                    WorldInteraction.DoubleClick(overEntity);
+                    World.Interaction.DoubleClick(overEntity);
                 }
                 else if (overEntity is Mobile)
                 {
                     // Send double click packet.
                     // Set LastTarget == targeted Mobile.
                     // If in WarMode, set Attacking == true.
-                    WorldInteraction.DoubleClick(overEntity);
-                    UltimaVars.EngineVars.LastTarget = overEntity.Serial;
+                    World.Interaction.DoubleClick(overEntity);
+                    World.Interaction.LastTarget = overEntity.Serial;
                     if (UltimaVars.EngineVars.WarMode)
                     {
                         World.Engine.Client.Send(new AttackRequestPacket(overEntity.Serial));
@@ -311,7 +311,7 @@ namespace UltimaXNA.UltimaWorld
                 else if (overEntity is Item)
                 {
                     // attempt to pick up item.
-                    WorldInteraction.PickupItem((Item)overEntity, new Point((int)m_dragOffset.X, (int)m_dragOffset.Y));
+                    World.Interaction.PickupItem((Item)overEntity, new Point((int)m_dragOffset.X, (int)m_dragOffset.Y));
                 }
                 else if (overEntity is Mobile)
                 {
