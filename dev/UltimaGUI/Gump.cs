@@ -69,14 +69,6 @@ namespace UltimaXNA.UltimaGUI
             }
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch)
-        {
-            if (!Visible)
-                return;
-
-            base.Draw(spriteBatch);
-        }
-
         public override void ActivateByButton(int buttonID)
         {
             int[] switchIDs = new int[0];
@@ -100,69 +92,126 @@ namespace UltimaXNA.UltimaGUI
                 string[] gumpParams = gumpPieces[i].Split(' ');
                 switch (gumpParams[0])
                 {
-                    case "page":
-                        currentGUMPPage = Int32.Parse(gumpParams[1]);
+                    case "button":
+                        // Button [x] [y] [released-id] [pressed-id] [quit] [page-id] [return-value]
+                        // [released-id] and [pressed-id] specify the buttongraphic.
+                        // If pressed check for [return-value].
+                        // Use [page-id] to switch between pages and [quit]=1/0 to close the gump.
+                        AddControl(new Controls.Button(this, currentGUMPPage, gumpParams));
                         break;
+                    case "buttontileart":
+                        // ButtonTileArt [x] [y] [released-id] [pressed-id] [quit] [page-id] [return-value] [tilepic-id] [hue] [tile-x] [tile-y]
+                        //  Adds a button to the gump with the specified coordinates and tilepic as graphic.
+                        // [tile-x] and [tile-y] define the coordinates of the tile graphic and are relative to [x] and [y]. 
                     case "checkertrans":
+                        // CheckerTrans [x] [y] [width] [height]
+                        // Creates a transparent rectangle on position [x,y] using [width] and [height].
                         AddControl(new Controls.CheckerTrans(this, currentGUMPPage, gumpParams));
                         break;
+                    case "croppedtext":
+                        // CroppedText [x] [y] [width] [height] [color] [text-id]
+                        // Adds a text field to the gump. This is similar to the text command, but the text is cropped to the defined area.
+                        AddControl(new Controls.CroppedText(this, currentGUMPPage, gumpParams, gumpLines));
+                        break;
+                    case "gumppic":
+                        // GumpPic [x] [y] [id] hue=[color]
+                        // Adds a graphic to the gump, where [id] ist the graphic id of an item. For example use InsideUO to get them. Optionaly there is a color parameter.
+                        AddControl(new Controls.GumpPic(this, currentGUMPPage, gumpParams));
+                        break;
+                    case "gumppictiled":
+                        // GumpPicTiled [x] [y] [width] [height] [id]
+                        // Similar to GumpPic, but the gumppic is tiled to the given [height] and [width].
+                        AddControl(new Controls.GumpPicTiled(this, currentGUMPPage, gumpParams));
+                        break;
+                    case "htmlgump":
+                        // HtmlGump [x] [y] [width] [height] [text-id] [background] [scrollbar]
+                        // Defines a text-area where Html-commands are allowed.
+                        // [background] and [scrollbar] can be 0 or 1 and define whether the background is transparent and a scrollbar is displayed.
+                        AddControl(new Controls.HtmlGump(this, currentGUMPPage, gumpParams, gumpLines));
+                        break;
+                    case "page":
+                        // Page [Number]
+                        // Specifies which page to define. Page 0 is the background thus always visible.
+                        currentGUMPPage = Int32.Parse(gumpParams[1]);
+                        break;
                     case "resizepic":
+                        // ResizePic [x] [y] [gump-id] [width] [height]
+                        // Similar to GumpPic but the pic is automatically resized to the given [width] and [height].
                         AddControl(new Controls.ResizePic(this, currentGUMPPage, gumpParams));
                         ((Controls.ResizePic)LastControl).CloseOnRightClick = true;
                         break;
-                    case "button":
-                        AddControl(new Controls.Button(this, currentGUMPPage, gumpParams));
-                        break;
-                    case "croppedtext":
-                        AddControl(new Controls.CroppedText(this, currentGUMPPage, gumpParams, gumpLines));
-                        break;
-                    case "htmlgump":
-                        AddControl(new Controls.HtmlGump(this, currentGUMPPage, gumpParams, gumpLines));
-                        break;
-                    case "gumppictiled":
-                        AddControl(new Controls.GumpPicTiled(this, currentGUMPPage, gumpParams));
-                        break;
-                    case "gumppic":
-                        AddControl(new Controls.GumpPic(this, currentGUMPPage, gumpParams));
-                        break;
                     case "text":
+                        // Text [x] [y] [color] [text-id]
+                        // Defines the position and color of a text (data) entry.
                         AddControl(new Controls.TextLabel(this, currentGUMPPage, gumpParams, gumpLines));
                         break;
-                    case "tilepic":
-                        AddControl(new Controls.TilePic(this, currentGUMPPage, gumpParams));
-                        break;
-                    case "tilepichue":
-                        AddControl(new Controls.TilePic(this, currentGUMPPage, gumpParams));
-                        break;
                     case "textentry":
+                        // TextEntry [x] [y] [width] [height] [color] [return-value] [default-text-id]
+                        // Defines an area where the [default-text-id] is displayed.
+                        // The player can modify this data. To get this data check the [return-value].
                         AddControl(new Controls.TextEntry(this, currentGUMPPage, gumpParams, gumpLines));
                         break;
                     case "textentrylimited":
+                        // TextEntryLimited [x] [y] [width] [height] [color] [return-value] [default-text-id] [textlen]
+                        // Similar to TextEntry but you can specify via [textlen] the maximum of characters the player can type in.
                         AddControl(new Controls.TextEntry(this, currentGUMPPage, gumpParams, gumpLines));
                         break;
-
-                    case "checkbox":
-                        Logger.Warn("GUMP: Unhandled '" + gumpParams[0] + "'.");
+                    case "tilepic":
+                        // TilePic [x] [y] [id]
+                        // Adds a Tilepicture to the gump. [id] defines the tile graphic-id. For example use InsideUO to get them.
+                        AddControl(new Controls.TilePic(this, currentGUMPPage, gumpParams));
                         break;
+                    case "tilepichue":
+                        // TilePicHue [x] [y] [id] [hue]
+                        // Similar to the tilepic command, but with an additional hue parameter.
+                        AddControl(new Controls.TilePic(this, currentGUMPPage, gumpParams));
+                        break;
+                    case "noclose":
+                        // NoClose 
+                        // Prevents that the gump can be closed by right clicking.
+                    case "nodispose":
+                        // NoDispose 
+                        //Prevents that the gump can be closed by hitting Esc.
+                    case "nomove":
+                        // NoMove
+                        // Locks the gump in his position. 
                     case "group":
+                        // Group [Number]
+                        // Links radio buttons to a group. Add this before radiobuttons to do so. See also endgroup.
+                    case "endgroup":
+                        // EndGroup
+                        //  Links radio buttons to a group. Add this before radiobuttons to do so. See also endgroup. 
+                    case "radio":
+                        // Radio [x] [y] [released-id] [pressed-id] [status] [return-value]
+                        // Same as Checkbox, but only one Radiobutton can be pressed at the same time, and they are linked via the 'Group' command.
+                        Logger.Warn(string.Format("GUMP: Unhandled {0}.", gumpParams[0]));
+                        break;
+                    case "checkbox":
+                        // CheckBox [x] [y] [released-id] [pressed-id] [status] [return-value]
+                        // Adds a CheckBox to the gump. Multiple CheckBoxes can be pressed at the same time.
+                        // Check the [return-value] if you want to know which CheckBoxes were selected.
                         Logger.Warn("GUMP: Unhandled '" + gumpParams[0] + "'.");
                         break;
                     case "xmfhtmlgump":
+                        // XmfHtmlGump [x] [y] [width] [height] [cliloc-nr] [background] [scrollbar]
+                        // Similar to the htmlgump command, but in place of the [text-id] a CliLoc entry is used.
                         Logger.Warn("GUMP: Unhandled '" + gumpParams[0] + "'.");
                         break;
                     case "xmfhtmlgumpcolor":
+                        // XmfHtmlGumpColor [x] [y] [width] [height] [cliloc-nr] [background] [scrollbar] [color]
+                        // Similar to the xmfhtmlgump command, but additionally a [color] can be specified.
                         Logger.Warn("GUMP: Unhandled '" + gumpParams[0] + "'.");
                         break;
                     case "xmfhtmltok":
-                        Logger.Warn("GUMP: Unhandled '" + gumpParams[0] + "'.");
-                        break;
-                    case "buttontileart":
+                        // XmfHtmlTok [x] [y] [width] [height] [background] [scrollbar] [color] [cliloc-nr] @[arguments]@
+                        // Similar to xmfhtmlgumpcolor command, but the parameter order is different and an additionally
+                        // [argument] entry enclosed with @'s can be used. With this you can specify texts that will be
+                        // added to the CliLoc entry. 
                         Logger.Warn("GUMP: Unhandled '" + gumpParams[0] + "'.");
                         break;
                     case "tooltip":
-                        Logger.Warn("GUMP: Unhandled '" + gumpParams[0] + "'.");
-                        break;
-                    case "radio":
+                        // Tooltip [cliloc-nr]
+                        // Adds to the previous layoutarray entry a Tooltip with the in [cliloc-nr] defined CliLoc entry.
                         Logger.Warn("GUMP: Unhandled '" + gumpParams[0] + "'.");
                         break;
                     default:
