@@ -388,7 +388,7 @@ namespace UltimaXNA.UltimaWorld
             m_QueuedEvent_InQueue = true;
             m_QueuedEntity = overEntity;
             m_QueuedEntityPosition = overEntityPoint;
-            m_QueuedEvent_DequeueAt = EngineVars.DoubleClickMS * 1000d;
+            m_QueuedEvent_DequeueAt = EngineVars.DoubleClickMS;
             m_QueuedEvent = e;
         }
         #endregion
