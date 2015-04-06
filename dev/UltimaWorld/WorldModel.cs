@@ -8,22 +8,22 @@ namespace UltimaXNA.UltimaWorld
 {
     class WorldModel : AUltimaModel
     {
-        private EntityManager m_Entities;
         public EntityManager Entities
         {
-            get { return m_Entities; }
+            get;
+            private set;
         }
 
-        private EffectsManager m_Effects;
         public EffectsManager Effects
         {
-            get { return m_Effects; }
+            get;
+            private set;
         }
 
-        private WorldInput m_WorldInput;
         public WorldInput Input
         {
-            get { return m_WorldInput; }
+            get;
+            private set;
         }
 
         private WorldClient m_WorldClient;
@@ -91,9 +91,9 @@ namespace UltimaXNA.UltimaWorld
 
         public WorldModel()
         {
-            m_Entities = new EntityManager(this);
-            m_Effects = new EffectsManager(this);
-            m_WorldInput = new WorldInput(this);
+            Entities = new EntityManager(this);
+            Effects = new EffectsManager(this);
+            Input = new WorldInput(this);
             m_WorldClient = new WorldClient(this);
         }
 
@@ -114,7 +114,7 @@ namespace UltimaXNA.UltimaWorld
 
         public void LoginSequence()
         {
-            m_WorldClient.AfterLoginSequence();
+            m_WorldClient.SendWorldLoginPackets();
             UltimaVars.EngineVars.InWorld = true;
         }
 
@@ -123,11 +123,11 @@ namespace UltimaXNA.UltimaWorld
             m_WorldClient.Dispose();
             m_WorldClient = null;
 
-            m_WorldInput.Dispose();
-            m_WorldInput = null;
+            Input.Dispose();
+            Input = null;
 
             EntityManager.Reset();
-            m_Entities = null;
+            Entities = null;
         }
 
         public override void Update(double totalMS, double frameMS)
@@ -142,9 +142,9 @@ namespace UltimaXNA.UltimaWorld
             }
             else
             {
-                m_WorldInput.Update(frameMS);
+                Input.Update(frameMS);
                 EntityManager.Update(frameMS);
-                m_Effects.Update(frameMS);
+                Effects.Update(frameMS);
                 StaticManager.Update(frameMS);
             }
         }

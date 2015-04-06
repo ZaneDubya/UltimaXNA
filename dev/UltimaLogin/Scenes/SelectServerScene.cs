@@ -94,7 +94,7 @@ namespace UltimaXNA.UltimaLogin.Scenes
         public void OnSelectServer(int index)
         {
             m_SelectServerGump.ActivePage = 2;
-            Engine.Client.SelectServer(index);
+            Engine.Client.SelectShard(index);
         }
 
         public void OnSelectLastServer()

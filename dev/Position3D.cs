@@ -23,11 +23,6 @@ namespace UltimaXNA
         int Y { get; }
     }
 
-    public interface IPoint3D : IPoint2D
-    {
-        int Z { get; }
-    }
-
     public class Position3D : IPoint2D
     {
         public static Point NullTile = new Point(int.MinValue, int.MinValue);

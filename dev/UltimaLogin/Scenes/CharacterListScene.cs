@@ -76,7 +76,7 @@ namespace UltimaXNA.UltimaLogin.Scenes
         public void OnLoginWithCharacter(int index)
         {
             m_CharListGump.ActivePage = 2;
-            Engine.Client.SelectCharacter(index);
+            Engine.Client.LoginWithCharacter(index);
         }
 
         public void OnDeleteCharacter(int index)

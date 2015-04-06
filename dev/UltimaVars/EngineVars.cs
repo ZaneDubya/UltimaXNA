@@ -1,4 +1,4 @@
-﻿using InterXLib.Input.Windows;
+﻿
 /***************************************************************************
  *   EngineVars.cs
  *
@@ -8,16 +8,22 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+#region usings
+using InterXLib.Input.Windows;
 using Microsoft.Xna.Framework;
 using UltimaXNA.UltimaEntities;
 using UltimaXNA.UltimaPackets;
 using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.UltimaWorld;
+using System.Collections.Generic;
+#endregion
 
 namespace UltimaXNA.UltimaVars
 {
     public class EngineVars
     {
+        public static byte[] Version = new byte[4] { 6, 0, 6, 2 };
+
         public static Direction CursorDirection { get; internal set; }
 
         // InWorld allows us to tell when our character object has been loaded in the world.
@@ -65,20 +71,22 @@ namespace UltimaXNA.UltimaVars
         }
 
         // Maintain an accurate count of frames per second.
-        static float m_FPS = 0, m_Frames = 0, m_ElapsedSeconds = 0;
-        public static int FPS { get { return (int)m_FPS; } }
-        internal static bool UpdateFPS(GameTime gameTime)
+        static List<float> m_FPS = new List<float>();
+        internal static int UpdateFPS(double frameMS)
         {
-            m_Frames++;
-            m_ElapsedSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if (m_ElapsedSeconds >= .5f)
+            while (m_FPS.Count > 9)
+                m_FPS.RemoveAt(0);
+            m_FPS.Add(1000.0f / (float)frameMS);
+
+            float count = 0.0f;
+            for (int i = 0; i < m_FPS.Count; i++)
             {
-                m_FPS = m_Frames / m_ElapsedSeconds;
-                m_ElapsedSeconds = 0;
-                m_Frames = 0;
-                return true;
+                count += m_FPS[i];
             }
-            return false;
+
+            count /= m_FPS.Count;
+
+            return (int)System.Math.Ceiling(count);
         }
 
         static int m_desiredFPS = 60;

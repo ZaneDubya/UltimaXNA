@@ -166,9 +166,11 @@ namespace UltimaXNA
                 ActiveModel.GetView().Draw(null, gameTime.ElapsedGameTime.TotalMilliseconds);
                 UserInterface.Draw(gameTime.ElapsedGameTime.TotalMilliseconds);
 
+                UltimaVars.EngineVars.UpdateFPS(gameTime.ElapsedGameTime.TotalMilliseconds);
                 Window.Title =
-                    (UltimaVars.DebugVars.Flag_DisplayFPS ? string.Format("UltimaXNA FPS:{0}", UltimaVars.EngineVars.FPS) : "UltimaXNA") +
-                    (UltimaVars.EngineVars.MouseEnabled ? "" : "<Alt-M to enable mouse>");
+                    UltimaVars.DebugVars.Flag_DisplayFPS ? 
+                    string.Format("UltimaXNA FPS:{0}", UltimaVars.EngineVars.UpdateFPS(gameTime.ElapsedGameTime.TotalMilliseconds)) : 
+                    "UltimaXNA";
             }
         }
 

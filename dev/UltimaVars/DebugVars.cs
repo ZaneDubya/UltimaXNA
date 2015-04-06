@@ -26,9 +26,6 @@ namespace UltimaXNA.UltimaVars
         {
             String debugMessage = string.Empty;
 
-            if (Flag_DisplayFPS)
-                debugMessage += string.Format("\nFPS: {0}", (int)EngineVars.FPS);
-
             if (Flag_ShowDataRead)
             {
                 if (Flag_BreakdownDataRead)

@@ -146,11 +146,10 @@ namespace UltimaXNA.UltimaWorld
             World.Engine.Client.Register<T>(id, name, length, onReceive);
         }
 
-        public void AfterLoginSequence()
+        public void SendWorldLoginPackets()
         {
-            // this is the after login sequence for 0.6.1.10
             GetMySkills();
-            World.Engine.Client.SendClientVersion("6.0.1.10");
+            World.Engine.Client.SendClientVersion();
             SendClientScreenSize();
             SendClientLocalization();
             // Packet: BF 00 0A 00 0F 0A 00 00 00 1F
