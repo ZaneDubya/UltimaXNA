@@ -371,7 +371,7 @@ namespace UltimaXNA.Core.Network
 
                             if (!GetPacketSize(packetHandlers, out realLength))
                             {
-                                Logger.Fatal("Unhandled packet with id: 0x{0:x2}, possible subid: 0x{1:x2}", m_ReceiveBuffer[0], m_ReceiveBuffer[1]);
+                                Logger.Warn("Unhandled packet with id: 0x{0:x2}, possible subid: 0x{1:x2}", m_ReceiveBuffer[0], m_ReceiveBuffer[1]);
                                 m_ReceiveBufferPosition = 0;
                                 break;
                             }

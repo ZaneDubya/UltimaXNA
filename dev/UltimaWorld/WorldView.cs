@@ -13,12 +13,6 @@ namespace UltimaXNA.UltimaWorld
             private set;
         }
 
-        public MousePicking MousePick
-        {
-            get;
-            private set;
-        }
-
         protected new WorldModel Model
         {
             get { return (WorldModel)base.Model; }
@@ -30,12 +24,11 @@ namespace UltimaXNA.UltimaWorld
             Isometric = new IsometricRenderer();
             Isometric.Initialize(Model.Engine);
             Isometric.LightDirection = -0.6f;
-            MousePick = new MousePicking();
         }
 
         public override void Draw(YSpriteBatch spritebatch, double frameTime)
         {
-            Isometric.Draw(Model.Map, EntityManager.GetPlayerObject().Position, MousePick);
+            Isometric.Draw(Model.Map, EntityManager.GetPlayerObject().Position, Model.Input.MousePick);
         }
     }
 }
