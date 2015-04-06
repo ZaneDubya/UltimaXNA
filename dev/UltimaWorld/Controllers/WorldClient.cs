@@ -9,9 +9,8 @@ using UltimaXNA.UltimaGUI.WorldGumps;
 using UltimaXNA.UltimaPackets;
 using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.UltimaPackets.Server;
-using UltimaXNA.UltimaWorld.Controllers;
 
-namespace UltimaXNA.UltimaWorld
+namespace UltimaXNA.UltimaWorld.Controllers
 {
     class WorldClient
     {

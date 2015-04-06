@@ -15,10 +15,9 @@ using UltimaXNA.UltimaEntities;
 using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaGUI.WorldGumps;
 using UltimaXNA.UltimaPackets.Client;
-using UltimaXNA.UltimaWorld;
 #endregion
 
-namespace UltimaXNA.UltimaWorld
+namespace UltimaXNA.UltimaWorld.Controllers
 {
     /// <summary>
     /// Hosts methods for interacting with the world.

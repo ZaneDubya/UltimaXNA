@@ -12,16 +12,14 @@ using InterXLib.Input.Windows;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using UltimaXNA.UltimaEntities;
 using UltimaXNA.Core.Rendering;
+using UltimaXNA.UltimaEntities;
 using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaGUI.Controls;
 using UltimaXNA.UltimaPackets.Client;
-using UltimaXNA.UltimaWorld.Controllers;
-using UltimaXNA.UltimaWorld.Views;
 #endregion
 
-namespace UltimaXNA.UltimaWorld
+namespace UltimaXNA.UltimaWorld.Controllers
 {
     /// <summary>
     /// Handles targeting, holding items, and dropping items (both into the UI and into the world).

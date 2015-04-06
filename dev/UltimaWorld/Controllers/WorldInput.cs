@@ -4,10 +4,8 @@ using System.Collections.Generic;
 using UltimaXNA.UltimaEntities;
 using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.UltimaVars;
-using UltimaXNA.UltimaWorld.Views;
-using UltimaXNA.UltimaWorld.Controllers;
 
-namespace UltimaXNA.UltimaWorld
+namespace UltimaXNA.UltimaWorld.Controllers
 {
     /// <summary>
     /// Handles all the mouse input when the mouse is over the world.

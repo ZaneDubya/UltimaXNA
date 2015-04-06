@@ -1,9 +1,9 @@
 ﻿using InterXLib.Patterns.MVC;
-using UltimaXNA.Core.Network;
+using UltimaXNA.UltimaEntities;
 using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaGUI.WorldGumps;
+using UltimaXNA.UltimaWorld.Controllers;
 using UltimaXNA.UltimaWorld.Maps;
-using UltimaXNA.UltimaEntities;
 
 namespace UltimaXNA.UltimaWorld
 {
