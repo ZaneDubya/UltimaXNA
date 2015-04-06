@@ -40,7 +40,7 @@ namespace UltimaXNA.UltimaPackets.Server
             : base(0x22, "Move Request Acknowledged")
         {
             m_sequence = reader.ReadByte(); // (matches sent sequence)
-            m_notoriety = reader.ReadByte(); // Not sure why it sends this.
+            m_notoriety = reader.ReadByte(); // Not sure why it sends 
         }
     }
 }

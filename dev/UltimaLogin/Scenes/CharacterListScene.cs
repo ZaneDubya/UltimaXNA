@@ -24,14 +24,14 @@ namespace UltimaXNA.UltimaLogin.Scenes
 
         }
 
-        public override void Intitialize(UltimaClient client)
+        public override void Intitialize(UltimaEngine engine)
         {
-            base.Intitialize(client);
-            m_CharListGump = (CharacterListGump)UltimaEngine.UserInterface.AddControl(new CharacterListGump(), 0, 0);
-            m_CharListGump.OnBackToSelectServer += this.OnBackToSelectServer;
-            m_CharListGump.OnLoginWithCharacter += this.OnLoginWithCharacter;
-            m_CharListGump.OnDeleteCharacter += this.OnDeleteCharacter;
-            m_CharListGump.OnNewCharacter += this.OnNewCharacter;
+            base.Intitialize(engine);
+            m_CharListGump = (CharacterListGump)Engine.UserInterface.AddControl(new CharacterListGump(), 0, 0);
+            m_CharListGump.OnBackToSelectServer += OnBackToSelectServer;
+            m_CharListGump.OnLoginWithCharacter += OnLoginWithCharacter;
+            m_CharListGump.OnDeleteCharacter += OnDeleteCharacter;
+            m_CharListGump.OnNewCharacter += OnNewCharacter;
         }
 
         public override void Update(double totalTime, double frameTime)
@@ -40,7 +40,7 @@ namespace UltimaXNA.UltimaLogin.Scenes
 
             if (SceneState == SceneState.Active)
             {
-                switch (Client.Status)
+                switch (Engine.Client.Status)
                 {
                     case UltimaClientStatus.GameServer_CharList:
                         // This is where we're supposed to be while waiting to select a character.
@@ -69,19 +69,19 @@ namespace UltimaXNA.UltimaLogin.Scenes
             // !!! This SHOULD take us back to the 'logging in' screen,
             // which automatically logs in again. But we can't do that,
             // since I have UltimaClient clear your account/password data
-            // once connected (is this really neccesary?) Have to fix this...
+            // once connected (is this really neccesary?) Have to fix ..
             Manager.CurrentScene = new LoginScene();
         }
 
         public void OnLoginWithCharacter(int index)
         {
             m_CharListGump.ActivePage = 2;
-            Client.SelectCharacter(index);
+            Engine.Client.LoginWithCharacter(index);
         }
 
         public void OnDeleteCharacter(int index)
         {
-            Client.DeleteCharacter(index);
+            Engine.Client.DeleteCharacter(index);
         }
 
         public void OnNewCharacter()

@@ -22,10 +22,12 @@ namespace UltimaXNA.UltimaPackets.Client
 {
     public class ClientVersionPacket : SendPacket
     {
-        public ClientVersionPacket(string version)
+        public ClientVersionPacket(byte[] version)
             : base(0xBD, "Client Version")
         {
-            Stream.WriteAsciiNull(version);
+            if (version.Length != 4)
+                Core.Diagnostics.Logger.Fatal("SeedPacket: Incorrect length of version.");
+            Stream.WriteAsciiNull(string.Format("{0}.{1}.{2}.{3}", version[0], version[1], version[2], version[3]));
         }
     }
 }

@@ -43,7 +43,7 @@ namespace UltimaXNA.Core.Rendering
             m_texture.SetData<Color>(data);
 
             // create the vertex and indices array
-            this.vertices = new VertexPositionColorTexture[m_maxPrimitives * 2];
+            vertices = new VertexPositionColorTexture[m_maxPrimitives * 2];
             m_indices = createIndexBuffer(m_maxPrimitives);
             currentIndex = 0;
             lineCount = 0;

@@ -76,7 +76,7 @@ namespace UltimaXNA.UltimaGUI.LoginGumps
             
         }
 
-        public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
             if (UltimaVars.Characters.UpdateValue != m_charListUpdate)
             {
@@ -94,7 +94,7 @@ namespace UltimaXNA.UltimaGUI.LoginGumps
                 }
                 m_charListUpdate = UltimaVars.Characters.UpdateValue;
             }
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
         }
 
         public override void ActivateByButton(int buttonID)

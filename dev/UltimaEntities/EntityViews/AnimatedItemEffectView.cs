@@ -4,7 +4,8 @@ using UltimaXNA.Core.Rendering;
 using UltimaXNA.UltimaData;
 using UltimaXNA.UltimaEntities.Effects;
 using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaWorld.Model;
+using UltimaXNA.UltimaWorld.Maps;
+using UltimaXNA.UltimaWorld.Controllers;
 
 namespace UltimaXNA.UltimaEntities.EntityViews
 {
@@ -48,7 +49,7 @@ namespace UltimaXNA.UltimaEntities.EntityViews
                 m_DisplayItemID = displayItemdID;
                 DrawTexture = UltimaData.ArtData.GetStaticTexture(m_DisplayItemID);
                 DrawArea = new Rectangle(DrawTexture.Width / 2 - 22, DrawTexture.Height - 44 + (Entity.Z * 4), DrawTexture.Width, DrawTexture.Height);
-                PickType = PickTypes.PickNothing;
+                PickType = PickType.PickNothing;
                 DrawFlip = false;
             }
 

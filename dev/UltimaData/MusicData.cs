@@ -195,16 +195,16 @@ namespace UltimaXNA.UltimaData
 
             public UOMusic()
             {
-                this.Id = -1;
-                this.Name = "";
-                this.DoLoop = false;
+                Id = -1;
+                Name = "";
+                DoLoop = false;
             }
 
             public UOMusic(int id, string name, bool doLoop)
             {
-                this.Id = id;
-                this.Name = name;
-                this.DoLoop = doLoop;
+                Id = id;
+                Name = name;
+                DoLoop = doLoop;
             }
         }
 	}

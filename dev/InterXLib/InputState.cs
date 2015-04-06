@@ -32,7 +32,7 @@ namespace InterXLib
         private const int MouseDragBeginDistance = 2;
         private const int MouseClickMaxDelta = 2;
 
-        public void Initialize(IntPtr handle)
+        public InputState(IntPtr handle)
         {
             m_WndProc = new WndProc(handle);
             m_WndProc.MouseWheel += onMouseWheel;

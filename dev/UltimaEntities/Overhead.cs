@@ -14,7 +14,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaWorld.Model;
+using UltimaXNA.UltimaWorld.Maps;
 using UltimaXNA.UltimaGUI;
 #endregion
 
@@ -62,7 +62,7 @@ namespace UltimaXNA.UltimaEntities
             base.Update(frameMS);
             m_TimePersist -= (int)frameMS;
             if (m_TimePersist <= 0)
-                this.Dispose();
+                Dispose();
         }
 
         // ============================================================

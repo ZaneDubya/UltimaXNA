@@ -1,10 +1,21 @@
-﻿using Microsoft.Xna.Framework;
+﻿/***************************************************************************
+ *   HuedTexture.cs
+ *   
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region Usings
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Rendering;
+#endregion
 
 namespace UltimaXNA.UltimaGUI
 {
-    public class Sprite
+    public class HuedTexture
     {
         private Texture2D m_Texture = null;
         private Rectangle m_SourceRect = Rectangle.Empty;
@@ -23,7 +34,7 @@ namespace UltimaXNA.UltimaGUI
             get { return m_Hue; }
         }
 
-        public Sprite(Texture2D texture, Point offset, Rectangle source, int hue)
+        public HuedTexture(Texture2D texture, Point offset, Rectangle source, int hue)
         {
             m_Texture = texture;
             m_Offset = offset;

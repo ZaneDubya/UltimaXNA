@@ -44,12 +44,12 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
             UltimaVars.Journaling.OnJournalEntryAdded += AddJournalEntry;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
 
-            m_ScrollBar.Position = new Point(this.Width - 45, 35);
-            m_ScrollBar.Height = this.Height - 100;
+            m_ScrollBar.Position = new Point(Width - 45, 35);
+            m_ScrollBar.Height = Height - 100;
             if (m_ScrollBar.MaxValue <= 0)
                 m_ScrollBar.Visible = false;
             else
@@ -64,8 +64,8 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
         {
             base.Draw(spriteBatch);
 
-            Point p = new Point(this.X + 36, this.Y + this.Height - 65);
-            int maxheight = this.Height - 100;
+            Point p = new Point(X + 36, Y + Height - 65);
+            int maxheight = Height - 100;
             int height = 0;
 
             for (int i = m_JournalEntries.Count - 1; i >= 0; i--)
@@ -79,7 +79,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
                 else
                 {
                     int y = (maxheight - height);
-                    m_JournalEntries[i].Draw(spriteBatch, new Rectangle(p.X, this.Y + 35, m_JournalEntries[i].Width, y), 0, m_JournalEntries[i].Height - y);
+                    m_JournalEntries[i].Draw(spriteBatch, new Rectangle(p.X, Y + 35, m_JournalEntries[i].Width, y), 0, m_JournalEntries[i].Height - y);
                     break;
                 }
             }

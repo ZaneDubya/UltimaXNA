@@ -12,7 +12,7 @@ using UltimaXNA.UltimaEntities;
 using UltimaXNA.UltimaData;
 #endregion
 
-namespace UltimaXNA.UltimaWorld.Model
+namespace UltimaXNA.UltimaWorld.Maps
 {
     class MapBlock
     {

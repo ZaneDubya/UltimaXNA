@@ -16,7 +16,7 @@ using UltimaXNA.Core.Rendering;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {
-    class TextEntry : Control
+    class TextEntry : AControl
     {
         public int Hue = 0;
         public int EntryID = 0;
@@ -40,20 +40,20 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         bool m_isFocused = false;
         bool m_caratBlinkOn = false;
-        float m_secondsSinceLastBlink = 0f;
-        const float m_SecondsPerBlink = 0.5f;
+        float m_MSSinceLastCaratBlink = 0f;
+        const float c_MSBetweenCaratBlinks = 500f;
 
         RenderedText m_Texture;
         RenderedText m_Carat;
 
-        public TextEntry(Control owner, int page)
+        public TextEntry(AControl owner, int page)
             : base(owner, page)
         {
             HandlesMouseInput = true;
             HandlesKeyboardFocus = true;
         }
 
-        public TextEntry(Control owner, int page, string[] arguements, string[] lines)
+        public TextEntry(AControl owner, int page, string[] arguements, string[] lines)
             : this(owner, page)
         {
             int x, y, width, height, hue, entryID, textIndex, limitSize = 0;
@@ -71,7 +71,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             buildGumpling(x, y, width, height, hue, entryID, limitSize, lines[textIndex]);
         }
 
-        public TextEntry(Control owner, int page, int x, int y, int width, int height, int hue, int entryID, int limitSize, string text)
+        public TextEntry(AControl owner, int page, int x, int y, int width, int height, int hue, int entryID, int limitSize, string text)
             : this(owner, page)
         {
             buildGumpling(x, y, width, height, hue, entryID, limitSize, text);
@@ -90,9 +90,9 @@ namespace UltimaXNA.UltimaGUI.Controls
             m_Carat = new RenderedText("", true, width);
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
-            if (UserInterface.KeyboardFocusControl == this)
+            if (Engine.UserInterface.KeyboardFocusControl == this)
             {
                 // if we're not already focused, turn the carat on immediately.
                 // if we're using the legacy carat, keep it visible. Else blink it every x seconds.
@@ -100,16 +100,16 @@ namespace UltimaXNA.UltimaGUI.Controls
                 {
                     m_isFocused = true;
                     m_caratBlinkOn = true;
-                    m_secondsSinceLastBlink = 0f;
+                    m_MSSinceLastCaratBlink = 0f;
                 }
                 if (m_legacyCarat)
                     m_caratBlinkOn = true;
                 else
                 {
-                    m_secondsSinceLastBlink += ((float)gameTime.ElapsedGameTime.TotalSeconds);
-                    if (m_secondsSinceLastBlink >= m_SecondsPerBlink)
+                    m_MSSinceLastCaratBlink += ((float)frameMS);
+                    if (m_MSSinceLastCaratBlink >= c_MSBetweenCaratBlinks)
                     {
-                        m_secondsSinceLastBlink -= m_SecondsPerBlink;
+                        m_MSSinceLastCaratBlink = 0;
                         if (m_caratBlinkOn == true)
                             m_caratBlinkOn = false;
                         else
@@ -126,7 +126,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             m_Texture.Text = HtmlTag + (IsPasswordField ? new string('*', Text.Length) : Text);
             m_Carat.Text = HtmlTag + (m_legacyCarat ? "_" : "|");
 
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)

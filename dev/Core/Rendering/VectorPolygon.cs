@@ -38,7 +38,7 @@ namespace UltimaXNA.Core.Rendering
         /// <param name="points">The raw set of points.</param>
         public VectorPolygon(Vector3[] points, bool isClosed)
         {
-            this.m_points = points;
+            m_points = points;
             m_isClosed = isClosed;
         }
 

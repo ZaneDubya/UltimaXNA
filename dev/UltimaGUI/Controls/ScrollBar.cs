@@ -15,7 +15,7 @@ using UltimaXNA.UltimaGUI;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {
-    class ScrollBar : Control
+    class ScrollBar : AControl
     {
         Texture2D[] m_gumpUpButton = null;
         Texture2D[] m_gumpDownButton = null;
@@ -87,13 +87,13 @@ namespace UltimaXNA.UltimaGUI.Controls
         }
         public int BarHeight;
 
-        public ScrollBar(Control owner, int page)
+        public ScrollBar(AControl owner, int page)
             : base(owner, page)
         {
             HandlesMouseInput = true;
         }
 
-        public ScrollBar(Control owner, int page, int x, int y, int height, int minValue, int maxValue, int value)
+        public ScrollBar(AControl owner, int page, int x, int y, int height, int minValue, int maxValue, int value)
             : this(owner, page)
         {
             buildGumpling(x, y, height, minValue, maxValue, value);
@@ -108,7 +108,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             Value = value;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
             if (m_gumpSlider == null)
             {
@@ -136,9 +136,9 @@ namespace UltimaXNA.UltimaGUI.Controls
                     if (m_btnDownClicked)
                         m_value += 1;
                 }
-                m_timeUntilNextClick -= (float)gameTime.ElapsedGameTime.TotalSeconds / 1000f;
+                m_timeUntilNextClick -= (float)totalMS / 1000f;
             }
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)

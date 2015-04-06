@@ -9,7 +9,7 @@
  ***************************************************************************/
 #region usings
 using System.Collections.Generic;
-using UltimaXNA.UltimaWorld.Model;
+using UltimaXNA.UltimaWorld.Maps;
 #endregion
 
 namespace UltimaXNA.UltimaEntities.Effects

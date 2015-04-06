@@ -15,7 +15,7 @@ using UltimaXNA.UltimaGUI;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {
-    class GumpPic : Control
+    class GumpPic : AControl
     {
         protected Texture2D m_texture = null;
         int m_gumpID;
@@ -28,13 +28,13 @@ namespace UltimaXNA.UltimaGUI.Controls
             set { m_IsPaperdoll = value; }
         }
 
-        public GumpPic(Control owner, int page)
+        public GumpPic(AControl owner, int page)
             : base(owner, page)
         {
 
         }
 
-        public GumpPic(Control owner, int page, string[] arguements)
+        public GumpPic(AControl owner, int page, string[] arguements)
             : this(owner, page)
         {
             int x, y, gumpID, hue = 0;
@@ -49,7 +49,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             buildGumpling(x, y, gumpID, hue);
         }
 
-        public GumpPic(Control owner, int page, int x, int y, int gumpID, int hue)
+        public GumpPic(AControl owner, int page, int x, int y, int gumpID, int hue)
             : this(owner, page)
         {
             buildGumpling(x, y, gumpID, hue);
@@ -62,7 +62,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             m_hue = hue;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
             if (m_texture == null)
             {
@@ -70,7 +70,7 @@ namespace UltimaXNA.UltimaGUI.Controls
                 Size = new Point(m_texture.Width, m_texture.Height);
             }
 
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)

@@ -15,7 +15,7 @@ using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 #endregion
 
-namespace UltimaXNA.UltimaWorld.View
+namespace UltimaXNA.UltimaWorld.Views
 {
     // N.B.
     // This code is currently not used by the engine and may well be nonfunctional.

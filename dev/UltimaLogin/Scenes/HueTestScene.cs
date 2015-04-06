@@ -41,11 +41,11 @@ namespace UltimaXNA.UltimaLogin.Scenes
             OverHue = -1;
         }
 
-        public override void Intitialize(UltimaClient client)
+        public override void Intitialize(UltimaEngine engine)
         {
-            base.Intitialize(client);
+            base.Intitialize(engine);
 
-            m_Gump = (Gump)UltimaEngine.UserInterface.AddControl(new Gump(Serial.Null, Serial.Null), 0, 0);
+            m_Gump = (Gump)Engine.UserInterface.AddControl(new Gump(Serial.Null, Serial.Null), 0, 0);
             m_Gump.Size = new Point(800, 600);
             m_Gump.AddControl(new ResizePic(m_Gump, 0, 5, 5, 3000, 790, 590));
 
@@ -89,11 +89,11 @@ namespace UltimaXNA.UltimaLogin.Scenes
             base.Update(totalTime, frameTime);
         }
 
-        class HuedControl : Control
+        class HuedControl : AControl
         {
             private int m_StaticTextureID = 0;
 
-            public HuedControl(Control owner, int staticID = 0x1bf5)
+            public HuedControl(AControl owner, int staticID = 0x1bf5)
                 : base(owner, 0)
             {
                 HandlesMouseInput = true;

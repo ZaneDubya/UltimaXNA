@@ -21,58 +21,58 @@ namespace UltimaXNA.Core.Network
 
     public class PacketHandler
     {
-        int id;
-        int length;
-        string name;
-        PacketReceiveHandler handler;
+        int m_ID;
+        int m_Length;
+        string m_Name;
+        PacketReceiveHandler m_Handler;
 
         public int Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return m_ID; }
+            set { m_ID = value; }
         }
 
         public int Length
         {
-            get { return length; }
-            set { length = value; }
+            get { return m_Length; }
+            set { m_Length = value; }
         }
 
         public string Name
         {
-            get { return name; }
-            set { name = value; }
+            get { return m_Name; }
+            set { m_Name = value; }
         }
 
         public PacketReceiveHandler Handler
         {
-            get { return handler; }
-            set { handler = value; }
+            get { return m_Handler; }
+            set { m_Handler = value; }
         }
 
         public PacketHandler(int id, string name, int length, PacketReceiveHandler handler)
         {
-            this.id = id;
-            this.name = name;
-            this.length = length;
-            this.handler = handler;
+            m_ID = id;
+            m_Name = name;
+            m_Length = length;
+            m_Handler = handler;
         }
     }
 
     public class TypedPacketHandler : PacketHandler
     {
-        Type type;
-        TypedPacketReceiveHandler handler;
+        Type m_Type;
+        TypedPacketReceiveHandler m_Handler;
 
         public Type Type
         {
-            get { return type; }
+            get { return m_Type; }
         }
 
         public TypedPacketReceiveHandler TypeHandler
         {
-            get { return handler; }
-            set { handler = value; }
+            get { return m_Handler; }
+            set { m_Handler = value; }
         }
 
         private new PacketReceiveHandler Handler
@@ -84,13 +84,13 @@ namespace UltimaXNA.Core.Network
         public TypedPacketHandler(int id, string name, Type type, int length, TypedPacketReceiveHandler handler)
             : base(id, name, length, null)
         {
-            this.type = type;
-            this.handler = handler;
+            m_Type = type;
+            m_Handler = handler;
         }
 
         public IRecvPacket CreatePacket(PacketReader reader)
         {
-                return (IRecvPacket)Activator.CreateInstance(type, new object[] { reader });
+                return (IRecvPacket)Activator.CreateInstance(m_Type, new object[] { reader });
         }
     }
 }

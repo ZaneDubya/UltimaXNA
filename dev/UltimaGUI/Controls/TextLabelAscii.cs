@@ -16,20 +16,20 @@ using UltimaXNA.UltimaData.FontsOld;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {
-    class TextLabelAscii : Control
+    class TextLabelAscii : AControl
     {
         public int Hue = 0;
         public int FontID = 0;
         public string Text = string.Empty;
         Texture2D m_texture = null;
 
-        public TextLabelAscii(Control owner, int page)
+        public TextLabelAscii(AControl owner, int page)
             : base(owner, page)
         {
 
         }
 
-        public TextLabelAscii(Control owner, int page, int x, int y, int hue, int fontid, string text)
+        public TextLabelAscii(AControl owner, int page, int x, int y, int hue, int fontid, string text)
             : this(owner, page)
         {
             buildGumpling(x, y, hue, fontid, text);
@@ -43,9 +43,9 @@ namespace UltimaXNA.UltimaGUI.Controls
             Text = text;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)

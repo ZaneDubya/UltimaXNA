@@ -64,26 +64,26 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
             switch ((Buttons)buttonID)
             {
                 case Buttons.Map:
-                    UserInterface.AddControl(new MiniMap(), 566, 25, GUIManager.AddGumpType.Toggle);
+                    Engine.UserInterface.AddControl(new MiniMap(), 566, 25, GUIManager.AddGumpType.Toggle);
                     break;
                 case Buttons.Paperdoll:
-                    UserInterface.AddControl(new PaperDollGump((Mobile)EntityManager.GetPlayerObject()), 400, 100, GUIManager.AddGumpType.Toggle);
+                    Engine.UserInterface.AddControl(new PaperDollGump((Mobile)EntityManager.GetPlayerObject()), 400, 100, GUIManager.AddGumpType.Toggle);
                     break;
                 case Buttons.Inventory:
                     PlayerMobile m = (PlayerMobile)EntityManager.GetPlayerObject();
                     Container i = m.Backpack;
-                    UltimaInteraction.DoubleClick(i);
+                    WorldInteraction.DoubleClick(i);
                     // UserInterface.AddContainerGump(i, 0);
                     break;
                 case Buttons.Journal:
-                    UserInterface.AddControl(new JournalGump(), 80, 80, GUIManager.AddGumpType.Toggle);
+                    Engine.UserInterface.AddControl(new JournalGump(), 80, 80, GUIManager.AddGumpType.Toggle);
                     break;
                 case Buttons.Chat:
                     break;
                 case Buttons.Help:
                     break;
                 case Buttons.Question:
-                    UserInterface.AddControl(new DebugGump(), 50, 50, GUIManager.AddGumpType.Toggle);
+                    Engine.UserInterface.AddControl(new DebugGump(), 50, 50, GUIManager.AddGumpType.Toggle);
                     break;
             }
         }

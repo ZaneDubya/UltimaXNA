@@ -1,4 +1,4 @@
-﻿using InterXLib.Input.Windows;
+﻿
 /***************************************************************************
  *   EngineVars.cs
  *
@@ -8,20 +8,21 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+#region usings
+using InterXLib.Input.Windows;
 using Microsoft.Xna.Framework;
 using UltimaXNA.UltimaEntities;
 using UltimaXNA.UltimaPackets;
 using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.UltimaWorld;
+using System.Collections.Generic;
+#endregion
 
 namespace UltimaXNA.UltimaVars
 {
     public class EngineVars
     {
-        public static float TheTime
-        {
-            get { return (float)GameTime.TotalGameTime.TotalSeconds; }
-        }
+        public static byte[] Version = new byte[4] { 6, 0, 6, 2 };
 
         public static Direction CursorDirection { get; internal set; }
 
@@ -30,8 +31,8 @@ namespace UltimaXNA.UltimaVars
 
         public static bool EngineRunning { get; set; } // false = engine immediately quits.
 
-        public const float SecondsBetweenClickAndPickUp = 0.8f; // this is close to what the legacy client uses.
-        public const float SecondsForDoubleClick = 0.4f;
+        public const float ClickAndPickUpMS = 800f; // this is close to what the legacy client uses.
+        public const float DoubleClickMS = 400f;
 
         public static Serial PlayerSerial
         {
@@ -46,7 +47,7 @@ namespace UltimaXNA.UltimaVars
             set
             {
                 m_lastTarget = value;
-                UltimaInteraction.SendLastTargetPacket(m_lastTarget);
+                WorldInteraction.SendLastTargetPacket(m_lastTarget);
             }
         }
 
@@ -70,20 +71,22 @@ namespace UltimaXNA.UltimaVars
         }
 
         // Maintain an accurate count of frames per second.
-        static float m_FPS = 0, m_Frames = 0, m_ElapsedSeconds = 0;
-        public static int FPS { get { return (int)m_FPS; } }
-        internal static bool UpdateFPS(GameTime gameTime)
+        static List<float> m_FPS = new List<float>();
+        internal static int UpdateFPS(double frameMS)
         {
-            m_Frames++;
-            m_ElapsedSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if (m_ElapsedSeconds >= .5f)
+            while (m_FPS.Count > 9)
+                m_FPS.RemoveAt(0);
+            m_FPS.Add(1000.0f / (float)frameMS);
+
+            float count = 0.0f;
+            for (int i = 0; i < m_FPS.Count; i++)
             {
-                m_FPS = m_Frames / m_ElapsedSeconds;
-                m_ElapsedSeconds = 0;
-                m_Frames = 0;
-                return true;
+                count += m_FPS[i];
             }
-            return false;
+
+            count /= m_FPS.Count;
+
+            return (int)System.Math.Ceiling(count);
         }
 
         static int m_desiredFPS = 60;
@@ -112,17 +115,6 @@ namespace UltimaXNA.UltimaVars
         {
             get { return m_ScreenSize; }
             set { m_ScreenSize = value; }
-        }
-
-        static GameTime m_theGameTime;
-        internal static GameTime GameTime
-        {
-            get { return m_theGameTime; }
-            set
-            {
-                m_theGameTime = value;
-                UpdateFPS(m_theGameTime);
-            }
         }
 
         public static bool NewDiagonalMovement = false;

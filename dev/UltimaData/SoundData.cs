@@ -136,7 +136,7 @@ namespace UltimaXNA.UltimaData
 
             public void Play()
             {
-                float now = UltimaVars.EngineVars.TheTime;
+                float now = (float)UltimaEngine.TotalMS;
 
                 // Check to see if any existing instances of this sound effect have stopped playing. If
                 // they have, remove the reference to them so the garbage collector can collect them.
@@ -152,7 +152,7 @@ namespace UltimaXNA.UltimaData
                 instance.SubmitBuffer(m_waveBuffer);
                 instance.Play();
                 m_instances.Add(new Tuple<DynamicSoundEffectInstance, float>(instance,
-                    now + (instance.GetSampleDuration(m_waveBuffer.Length).Milliseconds / 1000f)));
+                    now + (instance.GetSampleDuration(m_waveBuffer.Length).Milliseconds)));
             }
 
             void instance_BufferNeeded(object sender, EventArgs e)

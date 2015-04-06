@@ -1,5 +1,4 @@
-﻿using UltimaXNA.UltimaGUI;
-/***************************************************************************
+﻿/***************************************************************************
  *   MsgBox.cs
  *   
  *   This program is free software; you can redistribute it and/or modify
@@ -8,7 +7,9 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+#region usings
 using UltimaXNA.UltimaGUI.Controls;
+#endregion
 
 namespace UltimaXNA.UltimaGUI
 {
@@ -34,7 +35,7 @@ namespace UltimaXNA.UltimaGUI
             IsModal = true;
         }
 
-        public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
             if (IsInitialized && m_text == null)
             {
@@ -59,10 +60,10 @@ namespace UltimaXNA.UltimaGUI
                         break;
                 }
                 
-                base.Update(gameTime);
+                base.Update(totalMS, frameMS);
                 Center();
             }
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
         }
 
         public override void ActivateByButton(int buttonID)
@@ -78,7 +79,7 @@ namespace UltimaXNA.UltimaGUI
                         OnCancel();
                     break;
             }
-            this.Dispose();
+            Dispose();
         }
     }
 }

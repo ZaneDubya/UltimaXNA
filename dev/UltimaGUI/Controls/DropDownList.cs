@@ -15,7 +15,7 @@ using UltimaXNA.UltimaData.FontsOld;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {
-    class DropDownList : Control
+    class DropDownList : AControl
     {
         public int Index;
 
@@ -35,13 +35,13 @@ namespace UltimaXNA.UltimaGUI.Controls
         const int hue_Text = 1107;
         const int hue_TextSelected = 588;
 
-        public DropDownList(Control owner, int page)
+        public DropDownList(AControl owner, int page)
             : base(owner, page)
         {
             HandlesMouseInput = true;
         }
 
-        public DropDownList(Control owner, int page, int x, int y, int width, int index, int itemsVisible, string[] items, bool canBeNull)
+        public DropDownList(AControl owner, int page, int x, int y, int width, int index, int itemsVisible, string[] items, bool canBeNull)
             : this(owner, page)
         {
             buildGumpling(x, y, width, index, itemsVisible, items, canBeNull);
@@ -66,16 +66,16 @@ namespace UltimaXNA.UltimaGUI.Controls
             ((Gump)m_owner).AddControl(new GumpPic(m_owner, Page, X + width - 22, Y + 5, 2086, 0));
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
             if (m_listOpen)
             {
                 // if we have moused off the open list, close it. We check to see if the mouse is over:
                 // the resizepic for the closed list (because it takes one update cycle to open the list)
                 // the resizepic for the open list, and the scroll bar if it is loaded.
-                if (UserInterface.MouseOverControl != m_openResizePic &&
-                    UserInterface.MouseOverControl != m_resize &&
-                    (m_openScrollBar == null ? false : UserInterface.MouseOverControl != m_openScrollBar))
+                if (Engine.UserInterface.MouseOverControl != m_openResizePic &&
+                    Engine.UserInterface.MouseOverControl != m_resize &&
+                    (m_openScrollBar == null ? false : Engine.UserInterface.MouseOverControl != m_openScrollBar))
                 {
                     closeOpenList();
                 }
@@ -96,7 +96,7 @@ namespace UltimaXNA.UltimaGUI.Controls
                 else
                     m_label.Text = m_items[Index];
             }
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
         }
 
         void closeOpenList()

@@ -17,7 +17,7 @@ using UltimaXNA.UltimaGUI;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {
-    public class HtmlGump : Control
+    public class HtmlGump : AControl
     {
         public int ScrollX = 0, ScrollY = 0;
         ScrollBar m_scrollbar;
@@ -97,13 +97,13 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         RenderedText m_Texture;
 
-        public HtmlGump(Control owner, int page)
+        public HtmlGump(AControl owner, int page)
             : base(owner, page)
         {
             m_textChanged = true;
         }
 
-        public HtmlGump(Control owner, int page, string[] arguements, string[] lines)
+        public HtmlGump(AControl owner, int page, string[] arguements, string[] lines)
             : this(owner, page)
         {
             int x, y, width, height, textIndex, background, scrollbar;
@@ -118,7 +118,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             buildGumpling(x, y, width, height, background, scrollbar, lines[textIndex]);
         }
 
-        public HtmlGump(Control owner, int page, int x, int y, int width, int height, int background, int scrollbar, string text)
+        public HtmlGump(AControl owner, int page, int x, int y, int width, int height, int background, int scrollbar, string text)
             : this(owner, page)
         {
             buildGumpling(x, y, width, height, background, scrollbar, text);
@@ -136,7 +136,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             Height = m_Texture.Height;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
             m_hrefOver = -1; // this value is changed every frame if we mouse over a region.
 
@@ -161,7 +161,7 @@ namespace UltimaXNA.UltimaGUI.Controls
                 ScrollY = m_scrollbar.Value;
             }
 
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)

@@ -80,9 +80,9 @@ namespace UltimaXNA.UltimaPackets.Server
 
             public StartingLocation(PacketReader reader)
             {
-                this.index = reader.ReadByte();
-                this.cityName = reader.ReadString(31);
-                this.areaOfCityOrTown = reader.ReadString(31);
+                index = reader.ReadByte();
+                cityName = reader.ReadString(31);
+                areaOfCityOrTown = reader.ReadString(31);
             }
         }
     }

@@ -14,7 +14,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             protected set;
         }
 
-        public GumpPicBackpack(Control owner, int page, int x, int y, Item backpack)
+        public GumpPicBackpack(AControl owner, int page, int x, int y, Item backpack)
             : base(owner, page, x, y, 0xC4F6, 0)
         {
             BackpackItem = backpack;

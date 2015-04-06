@@ -8,18 +8,58 @@
  *
  ***************************************************************************/
 #region usings
+using InterXLib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using UltimaXNA.UltimaGUI;
+using UltimaXNA.UltimaWorld;
 #endregion
 
 namespace UltimaXNA
 {
-    public class UltimaEngine : Core.BaseEngine
+    public class UltimaEngine : Game
     {
-        private static UltimaClient s_Client = new UltimaClient();
+        public static double TotalMS = 0d;
 
-        private static Core.AUltimaModel m_Model;
-        internal static Core.AUltimaModel ActiveModel
+        public InputState Input
+        {
+            get;
+            private set;
+        }
+
+        public GUIManager UserInterface
+        {
+            get;
+            private set;
+        }
+
+        public UltimaClient Client
+        {
+            get;
+            private set;
+        }
+
+        private AUltimaModel m_QueuedModel;
+        internal AUltimaModel QueuedModel
+        {
+            get { return m_QueuedModel; }
+            set
+            {
+                if (m_QueuedModel != null)
+                {
+                    m_QueuedModel.Dispose();
+                    m_QueuedModel = null;
+                }
+                m_QueuedModel = value;
+                if (m_QueuedModel != null && m_QueuedModel.Engine == null)
+                {
+                    m_QueuedModel.Initialize(this);
+                }
+            }
+        }
+
+        private AUltimaModel m_Model;
+        internal AUltimaModel ActiveModel
         {
             get { return m_Model; }
             set
@@ -30,27 +70,44 @@ namespace UltimaXNA
                     m_Model = null;
                 }
                 m_Model = value;
-                m_Model.Initialize(s_Client);
+                if (m_Model != null && m_Model.Engine == null)
+                {
+                    m_Model.Initialize(this);
+                }
+            }
+        }
+
+        internal void ActivateQueuedModel()
+        {
+            if (m_QueuedModel != null)
+            {
+                ActiveModel = QueuedModel;
+                m_QueuedModel = null;
             }
         }
 
         public UltimaEngine(int width, int height)
-            :base(width, height)
         {
+            setupGraphicsDeviceManager(width, height);
             UltimaVars.EngineVars.ScreenSize = new Point(width, height);
 
             // this is copied from IXL.BaseCore - required for finding the mouse coordinate when moving the cursor over the window.
-            System.Drawing.Graphics graphics = System.Drawing.Graphics.FromHwnd(this.Window.Handle);
+            System.Drawing.Graphics graphics = System.Drawing.Graphics.FromHwnd(Window.Handle);
             InterXLib.Settings.ScreenDPI = new Vector2(graphics.DpiX / 96f, graphics.DpiY / 96f);
-
-            s_Client.IsLoggingPackets = false;
         }
 
-        protected override void OnInitialize()
+        protected override void Initialize()
         {
-            UltimaVars.SettingVars.Load();
+            Content.RootDirectory = "Content";
 
-            UltimaWorld.View.IsometricRenderer.Initialize(this);
+            // Create all the services we need.
+            Client = new UltimaClient(this);
+            Client.IsLoggingPackets = true;
+            Input = new InputState(Window.Handle);
+            UserInterface = new GUIManager(this);
+
+            // Load vars from Settings.ini.
+            UltimaVars.SettingVars.Load();
 
             // Make sure we have a UO installation before loading UltimaData.
             if (UltimaData.FileManager.IsUODataPresent)
@@ -70,19 +127,18 @@ namespace UltimaXNA
                 UltimaData.SkillsData.Initialize();
                 GraphicsDevice.Textures[1] = UltimaXNA.UltimaData.HuesXNA.HueTexture;
 
-                
-
                 UltimaVars.EngineVars.EngineRunning = true;
                 UltimaVars.EngineVars.InWorld = false;
-                UltimaInteraction.Initialize(s_Client);
+                WorldInteraction.Initialize(this);
 
                 ActiveModel = new UltimaLogin.LoginModel();
             }
         }
 
-        protected override void OnUpdate(GameTime gameTime)
+        protected override void Update(GameTime gameTime)
         {
-            this.IsFixedTimeStep = UltimaVars.EngineVars.LimitFPS;
+            IsFixedTimeStep = UltimaVars.EngineVars.LimitFPS;
+
             if (!UltimaVars.EngineVars.EngineRunning)
             {
                 UltimaVars.SettingVars.Save();
@@ -90,16 +146,62 @@ namespace UltimaXNA
             }
             else
             {
-                UltimaVars.EngineVars.GameTime = gameTime;
-                UserInterface.Update(gameTime);
-                s_Client.Update();
-                ActiveModel.Update(gameTime.TotalGameTime.TotalMilliseconds, gameTime.ElapsedGameTime.TotalMilliseconds);
+                double totalMS = gameTime.TotalGameTime.TotalMilliseconds;
+                double frameMS = gameTime.ElapsedGameTime.TotalMilliseconds;
+
+                TotalMS = totalMS;
+                Input.Update(totalMS, frameMS);
+                UserInterface.Update(totalMS, frameMS);
+                Client.Update();
+                ActiveModel.Update(totalMS, frameMS);
             }
         }
 
-        protected override void OnDraw(GameTime gameTime)
+        protected override void Draw(GameTime gameTime)
         {
-            ActiveModel.GetView().Draw(null, gameTime.ElapsedGameTime.TotalMilliseconds);
+            if (!IsMinimized)
+            {
+                Core.Rendering.SpriteBatch3D.ResetZ();
+                GraphicsDevice.Clear(Color.Black);
+                ActiveModel.GetView().Draw(null, gameTime.ElapsedGameTime.TotalMilliseconds);
+                UserInterface.Draw(gameTime.ElapsedGameTime.TotalMilliseconds);
+
+                UltimaVars.EngineVars.UpdateFPS(gameTime.ElapsedGameTime.TotalMilliseconds);
+                Window.Title =
+                    UltimaVars.DebugVars.Flag_DisplayFPS ? 
+                    string.Format("UltimaXNA FPS:{0}", UltimaVars.EngineVars.UpdateFPS(gameTime.ElapsedGameTime.TotalMilliseconds)) : 
+                    "UltimaXNA";
+            }
+        }
+
+        public bool IsMinimized
+        {
+            get
+            {
+                //Get out top level form via the handle.
+                System.Windows.Forms.Control MainForm = System.Windows.Forms.Form.FromHandle(Window.Handle);
+                //If we are minimized don't waste time trying to draw, and avoid crash on resume.
+                if (((System.Windows.Forms.Form)MainForm).WindowState == System.Windows.Forms.FormWindowState.Minimized)
+                    return true;
+                return false;
+            }
+        }
+
+        // Some settings to designate a screen size and fps limit.
+        void setupGraphicsDeviceManager(int width, int height)
+        {
+            GraphicsDeviceManager graphicsDeviceManager = new GraphicsDeviceManager(this);
+            graphicsDeviceManager.PreferredBackBufferWidth = width;
+            graphicsDeviceManager.PreferredBackBufferHeight = height;
+            graphicsDeviceManager.SynchronizeWithVerticalRetrace = false;
+            graphicsDeviceManager.PreparingDeviceSettings += onPreparingDeviceSettings;
+            IsFixedTimeStep = false;
+            graphicsDeviceManager.ApplyChanges();
+        }
+
+        static void onPreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
+        {
+            e.GraphicsDeviceInformation.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
         }
     }
 }

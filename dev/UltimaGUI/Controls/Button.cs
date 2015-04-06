@@ -23,7 +23,7 @@ namespace UltimaXNA.UltimaGUI.Controls
         Activate = 1
     }
 
-    public class Button : Control
+    public class Button : AControl
     {
         private const int kGump_Up = 0, kGump_Down = 1, kGump_Over = 2;
         Texture2D[] m_gumpTextures = new Texture2D[3] { null, null, null };
@@ -65,13 +65,13 @@ namespace UltimaXNA.UltimaGUI.Controls
 
         RenderedText m_Texture;
 
-        public Button(Control owner, int page)
+        public Button(AControl owner, int page)
             : base(owner, page)
         {
             HandlesMouseInput = true;
         }
 
-        public Button(Control owner, int page, string[] arguements)
+        public Button(AControl owner, int page, string[] arguements)
             : this(owner, page)
         {
             int x, y, gumpID1, gumpID2, buttonType, param, buttonID;
@@ -85,7 +85,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             buildGumpling(x, y, gumpID1, gumpID2, (ButtonTypes)buttonType, param, buttonID);
         }
 
-        public Button(Control owner, int page, int x, int y, int gumpID1, int gumpID2, ButtonTypes buttonType, int param, int buttonID)
+        public Button(AControl owner, int page, int x, int y, int gumpID1, int gumpID2, ButtonTypes buttonType, int param, int buttonID)
             : this(owner, page)
         {
             buildGumpling(x, y, gumpID1, gumpID2, buttonType, param, buttonID);
@@ -101,7 +101,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             m_Texture = new RenderedText("", true, 100);
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
             for (int i = kGump_Up; i <= kGump_Over; i++)
             {
@@ -114,7 +114,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             if (Width == 0 && Height == 0 && m_gumpTextures[kGump_Up] != null)
                 Size = new Point(m_gumpTextures[kGump_Up].Width, m_gumpTextures[kGump_Up].Height);
 
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)
@@ -140,7 +140,7 @@ namespace UltimaXNA.UltimaGUI.Controls
         {
             if (MouseDownOnThis && m_gumpTextures[kGump_Down] != null)
                 return m_gumpTextures[kGump_Down];
-            else if (UserInterface.MouseOverControl == this && m_gumpTextures[kGump_Over] != null)
+            else if (Engine.UserInterface.MouseOverControl == this && m_gumpTextures[kGump_Over] != null)
                 return m_gumpTextures[kGump_Over];
             else
                 return m_gumpTextures[kGump_Up];
@@ -173,15 +173,15 @@ namespace UltimaXNA.UltimaGUI.Controls
         {
             if (button == MouseButton.Left)
             {
-                switch (this.ButtonType)
+                switch (ButtonType)
                 {
                     case ButtonTypes.SwitchPage:
                         // switch page
-                        ChangePage(this.ButtonParameter);
+                        ChangePage(ButtonParameter);
                         break;
                     case ButtonTypes.Activate:
                         // send response
-                        ActivateByButton(this.ButtonID);
+                        ActivateByButton(ButtonID);
                         break;
                 }
             }

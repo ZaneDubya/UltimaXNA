@@ -29,12 +29,12 @@ namespace UltimaXNA.Core.Rendering
 
         VertexDeclaration IVertexType.VertexDeclaration { get { return VertexDeclaration; } }
 
-        public VertexPositionNormalTextureHue(Vector3 Position, Vector3 Normal, Vector3 TextureCoordinate)
+        public VertexPositionNormalTextureHue(Vector3 position, Vector3 normal, Vector3 textureCoordinate)
         {
-            this.Position = Position;
-            this.Normal = Normal;
-            this.TextureCoordinate = TextureCoordinate;
-            this.Hue = Vector2.Zero;
+            Position = position;
+            Normal = normal;
+            TextureCoordinate = textureCoordinate;
+            Hue = Vector2.Zero;
         }
 
         public static readonly VertexPositionNormalTextureHue[] PolyBuffer = {
@@ -55,7 +55,7 @@ namespace UltimaXNA.Core.Rendering
 
         public override string ToString()
         {
-            return string.Format("VPNTH: <{0}> <{1}>", this.Position.ToString(), this.TextureCoordinate.ToString());
+            return string.Format("VPNTH: <{0}> <{1}>", Position.ToString(), TextureCoordinate.ToString());
         }
     }
 }

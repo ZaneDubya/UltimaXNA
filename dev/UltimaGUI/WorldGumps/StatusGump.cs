@@ -19,9 +19,9 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
 {
     class StatusGump : Gump
     {
-        List<Control> ControlsToUpdate = new List<Control>();
+        List<AControl> ControlsToUpdate = new List<AControl>();
         PlayerMobile m = (PlayerMobile)EntityManager.GetPlayerObject();
-        GameTime m_refreshTime = new GameTime();
+        double m_RefreshTime = 0d;
 
         public StatusGump()
             : base(0, 0)
@@ -88,13 +88,13 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
 
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
-            if (m_refreshTime.TotalGameTime.TotalSeconds + 0.5 < gameTime.TotalGameTime.TotalSeconds) //need to update
+            if (m_RefreshTime + 0.5d < totalMS) //need to update
             {
-                m_refreshTime = new GameTime(gameTime.TotalGameTime, gameTime.ElapsedGameTime);
+                m_RefreshTime = totalMS;
 
-                foreach (Control c in ControlsToUpdate)
+                foreach (AControl c in ControlsToUpdate)
                     Controls.Remove(c);
 
                 AddControl(new TextLabelAscii(this, 0, 54, 44, 1, 6, "" + m.Name.ToString()));
@@ -153,7 +153,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
 
             }
 
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)

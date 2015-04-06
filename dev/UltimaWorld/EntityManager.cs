@@ -49,7 +49,8 @@ namespace UltimaXNA.UltimaWorld
                 }
                 AEntity player = GetPlayerObject();
                 m_Entities.Clear();
-                AddEntity(player);
+                if (player != null)
+                    AddEntity(player);
             }
         }
 

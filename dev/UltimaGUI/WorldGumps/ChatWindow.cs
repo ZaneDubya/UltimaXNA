@@ -7,12 +7,15 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using UltimaXNA.Core.Rendering;
-using UltimaXNA.UltimaGUI.Controls;
-using UltimaXNA.UltimaData.FontsNew;
+#region usings
 using InterXLib.Input.Windows;
+using Microsoft.Xna.Framework;
+using System.Collections.Generic;
+using UltimaXNA.Core.Rendering;
+using UltimaXNA.UltimaData.FontsNew;
+using UltimaXNA.UltimaGUI.Controls;
+using UltimaXNA.UltimaWorld;
+#endregion
 
 namespace UltimaXNA.UltimaGUI.WorldGumps
 {
@@ -33,11 +36,11 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
             Enabled = true;
         }
 
-        public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
             if (m_Input == null)
             {
-                m_Input = new TextEntry(this, 0, 1, UserInterface.Height - TextUni.GetFont(0).Height + 4, 400, TextUni.GetFont(0).Height, 0, 0, 64, string.Empty);
+                m_Input = new TextEntry(this, 0, 1, Engine.UserInterface.Height - TextUni.GetFont(0).Height + 4, 400, TextUni.GetFont(0).Height, 0, 0, 64, string.Empty);
                 m_Input.LegacyCarat = true;
                 AddControl(m_Input);
             }
@@ -45,7 +48,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
             int y = m_Input.Y - 48;
             for (int i = 0; i < m_TextEntries.Count; i++)
             {
-                m_TextEntries[i].Update(gameTime);
+                m_TextEntries[i].Update(totalMS, frameMS);
                 if (m_TextEntries[i].IsExpired)
                 {
                     m_TextEntries[i].Dispose();
@@ -56,14 +59,14 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
 
             // Ctrl-Q = Cycle backwards through the things you have said today
             // Ctrl-W = Cycle forwards through the things you have said today
-            if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.Q, false, false, true) && m_MessageHistoryIndex > -1)
+            if (Engine.Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.Q, false, false, true) && m_MessageHistoryIndex > -1)
             {
                 if (m_MessageHistoryIndex > 0)
                     m_MessageHistoryIndex -= 1;
                 m_Input.Text = m_MessageHistory[m_MessageHistoryIndex];
 
             }
-            else if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.W, false, false, true))
+            else if (Engine.Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.W, false, false, true))
             {
                 if (m_MessageHistoryIndex < m_MessageHistory.Count - 1)
                 {
@@ -74,7 +77,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
                     m_Input.Text = string.Empty;
             }
 
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)
@@ -93,7 +96,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
             m_Input.Text = string.Empty;
             m_MessageHistory.Add(text);
             m_MessageHistoryIndex = m_MessageHistory.Count;
-            UltimaInteraction.SendChat(text);
+            WorldInteraction.SendChat(text);
         }
 
         public void AddLine(string text)
@@ -129,11 +132,11 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
             m_Texture = new RenderedText(m_text, true, m_width);
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(double totalMS, double frameMS)
         {
             if (m_createdTime == float.MinValue)
-                m_createdTime = (float)gameTime.TotalGameTime.TotalSeconds;
-            float time = (float)gameTime.TotalGameTime.TotalSeconds - m_createdTime;
+                m_createdTime = (float)totalMS;
+            float time = (float)totalMS - m_createdTime;
             if (time > Time_Display)
                 m_isExpired = true;
             else if (time > (Time_Display - Time_Fadeout))

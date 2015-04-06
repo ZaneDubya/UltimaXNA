@@ -1,8 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Rendering;
 using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaWorld.Model;
+using UltimaXNA.UltimaWorld.Maps;
 using UltimaXNA.UltimaData;
+using UltimaXNA.UltimaWorld.Controllers;
 
 namespace UltimaXNA.UltimaEntities.EntityViews
 {
@@ -19,7 +20,7 @@ namespace UltimaXNA.UltimaEntities.EntityViews
             m_Animation = new MobileAnimation(mobile);
 
             m_MobileLayers = new MobileViewLayer[(int)EquipLayer.LastUserValid];
-            PickType = PickTypes.PickObjects;
+            PickType = PickType.PickObjects;
         }
 
         public MobileAnimation m_Animation;

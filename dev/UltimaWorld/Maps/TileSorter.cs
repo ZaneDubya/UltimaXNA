@@ -12,9 +12,9 @@ using UltimaXNA.UltimaEntities.EntityViews;
 using UltimaXNA.UltimaEntities.Effects;
 #endregion
 
-namespace UltimaXNA.UltimaWorld.Model
+namespace UltimaXNA.UltimaWorld.Maps
 {
-    static class EntitySort
+    static class TileSorter
     {
         public static void Sort(List<AEntity> items)
         {

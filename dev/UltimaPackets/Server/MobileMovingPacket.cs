@@ -77,15 +77,15 @@ namespace UltimaXNA.UltimaPackets.Server
         public MobileMovingPacket(PacketReader reader)
             : base(0x77, "Mobile Moving")
         {
-            this.serial = reader.ReadInt32();
-            this.bodyid = reader.ReadUInt16();
-            this.x = reader.ReadInt16();
-            this.y = reader.ReadInt16();
-            this.z = reader.ReadSByte();
-            this.direction = reader.ReadByte();
-            this.hue = reader.ReadUInt16();
-            this.Flags = new MobileFlags(reader.ReadByte());
-            this.notoriety = reader.ReadByte();
+            serial = reader.ReadInt32();
+            bodyid = reader.ReadUInt16();
+            x = reader.ReadInt16();
+            y = reader.ReadInt16();
+            z = reader.ReadSByte();
+            direction = reader.ReadByte();
+            hue = reader.ReadUInt16();
+            Flags = new MobileFlags(reader.ReadByte());
+            notoriety = reader.ReadByte();
         }
     }
 }

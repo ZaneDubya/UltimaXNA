@@ -10,9 +10,9 @@
 #region usings
 using System.Collections.Generic;
 using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaWorld.View;
+using UltimaXNA.UltimaWorld.Views;
 using Microsoft.Xna.Framework;
-using UltimaXNA.UltimaWorld.Model;
+using UltimaXNA.UltimaWorld.Maps;
 #endregion
 
 namespace UltimaXNA.UltimaEntities
@@ -90,9 +90,17 @@ namespace UltimaXNA.UltimaEntities
 
         private void OnTileChanged(int x, int y)
         {
-            if (IsClientEntity && Map.Index >= 0)
-                Map.CenterPosition = new Point(x, y);
-            Tile = Map.GetMapTile(x, y);
+            if (Map != null)
+            {
+                if (IsClientEntity && Map.Index >= 0)
+                    Map.CenterPosition = new Point(x, y);
+                Tile = Map.GetMapTile(x, y);
+            }
+            else
+            {
+                if (!IsClientEntity)
+                    Dispose();
+            }
         }
 
         public int X

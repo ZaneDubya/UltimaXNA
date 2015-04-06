@@ -2,7 +2,8 @@
 using UltimaXNA.Core.Rendering;
 using UltimaXNA.UltimaData;
 using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaWorld.Model;
+using UltimaXNA.UltimaWorld.Maps;
+using UltimaXNA.UltimaWorld.Controllers;
 
 namespace UltimaXNA.UltimaEntities.EntityViews
 {
@@ -16,7 +17,7 @@ namespace UltimaXNA.UltimaEntities.EntityViews
         public CorpseView(Corpse entity)
             : base(entity)
         {
-            PickType = PickTypes.PickObjects;
+            PickType = PickType.PickObjects;
         }
 
         public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)

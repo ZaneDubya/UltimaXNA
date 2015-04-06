@@ -65,8 +65,7 @@ namespace InterXLib
             m_Graphics.PreferredBackBufferHeight = 240;
             m_Graphics.SynchronizeWithVerticalRetrace = false;
 
-            m_Input = new InterXLib.InputState();
-            m_Input.Initialize(this.Window.Handle);
+            m_Input = new InterXLib.InputState(this.Window.Handle);
             m_Actions = new ActionBinder();
 
             m_SpriteBatch = new InterXLib.Display.YSpriteBatch(this);

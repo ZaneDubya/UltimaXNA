@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using UltimaXNA.UltimaEntities.Effects;
 using UltimaXNA.UltimaPackets.Server;
-using UltimaXNA.UltimaWorld.Model;
 
 namespace UltimaXNA.UltimaWorld
 {

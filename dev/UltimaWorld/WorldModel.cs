@@ -1,38 +1,35 @@
-﻿using InterXLib.Input.Windows;
-using InterXLib.Patterns.MVC;
+﻿using InterXLib.Patterns.MVC;
 using UltimaXNA.Core.Network;
 using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaGUI.WorldGumps;
-using UltimaXNA.UltimaWorld.Controller;
-using UltimaXNA.UltimaWorld.Model;
-using Microsoft.Xna.Framework;
+using UltimaXNA.UltimaWorld.Maps;
 
 namespace UltimaXNA.UltimaWorld
 {
-    class WorldModel : Core.AUltimaModel
+    class WorldModel : AUltimaModel
     {
-        private EntityManager m_Entities;
         public EntityManager Entities
         {
-            get { return m_Entities; }
+            get;
+            private set;
         }
 
-        private EffectsManager m_Effects;
         public EffectsManager Effects
         {
-            get { return m_Effects; }
+            get;
+            private set;
         }
 
-        private WorldInput m_WorldInput;
         public WorldInput Input
         {
-            get { return m_WorldInput; }
+            get;
+            private set;
         }
 
         private WorldClient m_WorldClient;
 
-        private Model.WorldCursor m_Cursor = null;
-        public Model.WorldCursor Cursor
+        private WorldCursor m_Cursor = null;
+        public WorldCursor Cursor
         {
             get { return m_Cursor; }
             set
@@ -64,12 +61,14 @@ namespace UltimaXNA.UltimaWorld
             {
                 if (value != MapIndex)
                 {
+                    // clear all entities
+                    EntityManager.Reset(false);
                     if (m_map != null)
                     {
-                        // clear all entities
-                        EntityManager.Reset(false);
                         UltimaEntities.AEntity player = EntityManager.GetPlayerObject();
-                        Point3D position = new Point3D(player.X, player.Y, player.Z);
+                        // save current player position
+                        int x = player.X, y = player.Y, z = player.Z;
+                        // place the player in null space (allows the map to be reloaded when we return to the same location in a different map).
                         player.SetMap(null);
                         // dispose of map
                         m_map.Dispose();
@@ -78,11 +77,13 @@ namespace UltimaXNA.UltimaWorld
                         m_map = new Map(value);
                         player.SetMap(m_map);
                         // restore previous player position
-                        player.Position.Set(position.X, position.Y, position.Z);
+                        player.Position.Set(x, y, z);
                     }
                     else
                     {
+                        UltimaEntities.AEntity player = EntityManager.GetPlayerObject();
                         m_map = new Map(value);
+                        player.SetMap(m_map);
                     }
                 }
             }
@@ -90,12 +91,10 @@ namespace UltimaXNA.UltimaWorld
 
         public WorldModel()
         {
-            m_Entities = new EntityManager(this);
-            m_Effects = new EffectsManager(this);
-            m_WorldInput = new WorldInput(this);
+            Entities = new EntityManager(this);
+            Effects = new EffectsManager(this);
+            Input = new WorldInput(this);
             m_WorldClient = new WorldClient(this);
-
-            UltimaEngine.UserInterface.Cursor = Cursor = new Model.WorldCursor(this);
         }
 
         protected override AView CreateView()
@@ -105,12 +104,16 @@ namespace UltimaXNA.UltimaWorld
 
         protected override void OnInitialize()
         {
+            Engine.UserInterface.Cursor = Cursor = new WorldCursor(this);
+
             m_WorldClient.Initialize();
-            m_WorldClient.AfterLoginSequence();
+        }
 
-            UltimaEngine.UserInterface.AddControl(new TopMenu(0), 0, 0);
-            UltimaEngine.UserInterface.AddControl(new ChatWindow(), 0, 0);
-
+        public void LoginSequence()
+        {
+            Engine.UserInterface.AddControl(new TopMenu(0), 0, 0);
+            Engine.UserInterface.AddControl(new ChatWindow(), 0, 0);
+            m_WorldClient.SendWorldLoginPackets();
             UltimaVars.EngineVars.InWorld = true;
         }
 
@@ -119,37 +122,37 @@ namespace UltimaXNA.UltimaWorld
             m_WorldClient.Dispose();
             m_WorldClient = null;
 
-            m_WorldInput.Dispose();
-            m_WorldInput = null;
+            Input.Dispose();
+            Input = null;
 
             EntityManager.Reset();
-            m_Entities = null;
+            Entities = null;
         }
 
         public override void Update(double totalMS, double frameMS)
         {
-            if (!Client.IsConnected)
+            if (!Engine.Client.IsConnected)
             {
-                if (UltimaEngine.UserInterface.IsModalControlOpen == false)
+                if (Engine.UserInterface.IsModalControlOpen == false)
                 {
-                    MsgBox g = UltimaInteraction.MsgBox("You have lost your connection with the server.", MsgBoxTypes.OkOnly);
+                    MsgBox g = WorldInteraction.MsgBox("You have lost your connection with the server.", MsgBoxTypes.OkOnly);
                     g.OnClose = onCloseLostConnectionMsgBox;
                 }
             }
             else
             {
-                m_WorldInput.Update(frameMS);
+                Input.Update(frameMS);
                 EntityManager.Update(frameMS);
-                m_Effects.Update(frameMS);
+                Effects.Update(frameMS);
                 StaticManager.Update(frameMS);
             }
         }
 
         public void Disconnect()
         {
-            Client.Disconnect();
+            Engine.Client.Disconnect();
             UltimaVars.EngineVars.InWorld = false;
-            UltimaEngine.ActiveModel = new UltimaXNA.UltimaLogin.LoginModel();
+            Engine.ActiveModel = new UltimaXNA.UltimaLogin.LoginModel();
         }
 
         void onCloseLostConnectionMsgBox()

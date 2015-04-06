@@ -36,10 +36,10 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
             // UltimaData.AnimEncode.TransformData(59, "animdata");
         }
 
-        public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
             m_html.Text = UltimaVars.DebugVars.DebugMessage;
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
         }
     }
 }

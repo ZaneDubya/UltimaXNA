@@ -11,7 +11,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.UltimaData;
 using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaWorld.Model;
+using UltimaXNA.UltimaWorld.Maps;
 using Microsoft.Xna.Framework;
 #endregion
 

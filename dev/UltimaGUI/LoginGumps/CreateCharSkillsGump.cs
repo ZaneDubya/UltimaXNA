@@ -120,9 +120,9 @@ namespace UltimaXNA.UltimaGUI.LoginGumps
             ((Button)LastControl).GumpOverID = 5514;
         }
 
-        public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
             for (int i = 0; i < 3; i++)
             {
                 lblAttributes[i].Text = sliderAttributes[i].Value.ToString();

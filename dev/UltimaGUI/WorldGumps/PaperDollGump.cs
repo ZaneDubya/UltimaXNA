@@ -104,9 +104,9 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
 
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)
@@ -123,28 +123,28 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
                 case Buttons.Options:
                     break;
                 case Buttons.LogOut:
-                    MsgBox g = UltimaInteraction.MsgBox("Quit Ultima Online?", MsgBoxTypes.OkCancel);
+                    MsgBox g = WorldInteraction.MsgBox("Quit Ultima Online?", MsgBoxTypes.OkCancel);
                     g.OnClose = logout_OnClose;
                     break;
                 case Buttons.Quests:
                     break;
                 case Buttons.Skills:
-                    UserInterface.AddControl(new SkillsGump(), 80, 80, GUIManager.AddGumpType.Toggle);
+                    Engine.UserInterface.AddControl(new SkillsGump(), 80, 80, GUIManager.AddGumpType.Toggle);
                     break;
                 case Buttons.Guild:
                     break;
                 case Buttons.PeaceWarToggle:
-                    UltimaInteraction.ToggleWarMode();
+                    WorldInteraction.ToggleWarMode();
                     break;
                 case Buttons.Status:
-                    UserInterface.AddControl(new StatusGump(), 200, 400, GUIManager.AddGumpType.Toggle);
+                    Engine.UserInterface.AddControl(new StatusGump(), 200, 400, GUIManager.AddGumpType.Toggle);
                     break;
             }
         }
 
         void logout_OnClose()
         {
-            UltimaInteraction.DisconnectToLoginScreen();
+            WorldInteraction.DisconnectToLoginScreen();
         }
 
         public override bool Equals(object obj)
@@ -160,7 +160,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
                 return false;
             }
 
-            return p.Parent.Serial == this.Parent.Serial;
+            return p.Parent.Serial == Parent.Serial;
         }
 
         public override int GetHashCode()

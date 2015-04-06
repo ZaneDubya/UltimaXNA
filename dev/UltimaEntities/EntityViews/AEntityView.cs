@@ -2,8 +2,9 @@
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Rendering;
 using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaWorld.Model;
-using UltimaXNA.UltimaWorld.View;
+using UltimaXNA.UltimaWorld.Maps;
+using UltimaXNA.UltimaWorld.Views;
+using UltimaXNA.UltimaWorld.Controllers;
 
 namespace UltimaXNA.UltimaEntities.EntityViews
 {
@@ -24,7 +25,7 @@ namespace UltimaXNA.UltimaEntities.EntityViews
             SortZ = Entity.Z;
         }
 
-        public PickTypes PickType = PickTypes.PickNothing;
+        public PickType PickType = PickType.PickNothing;
 
         // ======================================================================
         // Sort routines

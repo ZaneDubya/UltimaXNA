@@ -56,7 +56,7 @@ namespace UltimaXNA.UltimaPackets.Server
             m_prices = new int[m_itemCount];
             m_descriptions = new string[m_itemCount];
 
-            for (int i = 0; i < this.m_itemCount; i++)
+            for (int i = 0; i < m_itemCount; i++)
             {
                 m_prices[i] = reader.ReadInt32();
                 int descriptionLegnth = reader.ReadByte();

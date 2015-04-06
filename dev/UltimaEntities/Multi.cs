@@ -11,9 +11,9 @@
 using System.Collections.Generic;
 using UltimaXNA.UltimaData;
 using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaWorld.View;
+using UltimaXNA.UltimaWorld.Views;
 using Microsoft.Xna.Framework;
-using UltimaXNA.UltimaWorld.Model;
+using UltimaXNA.UltimaWorld.Maps;
 #endregion
 
 namespace UltimaXNA.UltimaEntities
@@ -99,10 +99,10 @@ namespace UltimaXNA.UltimaEntities
                     if (tile.ItemExists(item.ItemID, item.OffsetZ))
                         continue;
 
-                    StaticItem staticItem = new StaticItem(item.ItemID, 0, 0, this.Map);
+                    StaticItem staticItem = new StaticItem(item.ItemID, 0, 0, Map);
                     if (staticItem.ItemData.IsDoor)
                         continue;
-                    staticItem.Position.Set(x, y, this.Z + item.OffsetZ);
+                    staticItem.Position.Set(x, y, Z + item.OffsetZ);
                 }
             }
         }
@@ -127,8 +127,8 @@ namespace UltimaXNA.UltimaEntities
                     {
                         if (!tile.ItemExists(item.ItemID, item.OffsetZ))
                         {
-                            StaticItem staticItem = new StaticItem(item.ItemID, 0, 0, this.Map);
-                            staticItem.Position.Set(x, y, this.Z + item.OffsetZ);
+                            StaticItem staticItem = new StaticItem(item.ItemID, 0, 0, Map);
+                            staticItem.Position.Set(x, y, Z + item.OffsetZ);
                         }
                     }
                 }

@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-/***************************************************************************
+﻿/***************************************************************************
  *   Gump.cs
  *   
  *   This program is free software; you can redistribute it and/or modify
@@ -9,17 +7,20 @@ using Microsoft.Xna.Framework.Graphics;
  *   (at your option) any later version.
  *
  ***************************************************************************/
+#region usings
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using UltimaXNA.Core.Rendering;
-using UltimaXNA.UltimaPackets;
-using UltimaXNA.UltimaPackets.Client;
+using UltimaXNA.UltimaWorld;
+#endregion
 
 namespace UltimaXNA.UltimaGUI
 {
     /// <summary>
     /// The base class that encapsulates Gump functionality. All Gumps should inherit from this class or a child thereof.
     /// </summary>
-    public class Gump : Control
+    public class Gump : AControl
     {
         
         Serial GumpID;
@@ -44,7 +45,7 @@ namespace UltimaXNA.UltimaGUI
             base.Dispose();
         }
 
-        public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
             // Add any gump pieces that have been given to the gump...
             if (m_gumpPieces != null)
@@ -60,7 +61,7 @@ namespace UltimaXNA.UltimaGUI
                 ActivePage = 1;
 
             // Update the Controls...
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
 
             // Do we need to resize?
             if (checkResize())
@@ -86,8 +87,8 @@ namespace UltimaXNA.UltimaGUI
                 if (m_gumpTexture == null)
                 {
                     // the render target CANNOT be larger than the viewport.
-                    int w = Width < UserInterface.Width ? Width : UserInterface.Width;
-                    int h = Height < UserInterface.Height ? Height : UserInterface.Height;
+                    int w = Width < Engine.UserInterface.Width ? Width : Engine.UserInterface.Width;
+                    int h = Height < Engine.UserInterface.Height ? Height : Engine.UserInterface.Height;
                     m_gumpTexture = new RenderTarget2D(spriteBatch.GraphicsDevice, w, h, false, SurfaceFormat.Color, DepthFormat.Depth16);
                 }
 
@@ -117,8 +118,8 @@ namespace UltimaXNA.UltimaGUI
         {
             int[] switchIDs = new int[0];
             Tuple<short, string>[] textEntries = new Tuple<short,string>[0];
-            UltimaInteraction.GumpMenuSelect(this.Serial, this.GumpID, buttonID, switchIDs, textEntries);
-            this.Dispose();
+            WorldInteraction.GumpMenuSelect(Serial, GumpID, buttonID, switchIDs, textEntries);
+            Dispose();
         }
 
         public override void ChangePage(int pageIndex)
@@ -178,31 +179,31 @@ namespace UltimaXNA.UltimaGUI
                         break;
 
                     case "checkbox":
-                        UltimaInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
+                        WorldInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
                         break;
                     case "group":
-                        UltimaInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
+                        WorldInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
                         break;
                     case "xmfhtmlgump":
-                        UltimaInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
+                        WorldInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
                         break;
                     case "xmfhtmlgumpcolor":
-                        UltimaInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
+                        WorldInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
                         break;
                     case "xmfhtmltok":
-                        UltimaInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
+                        WorldInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
                         break;
                     case "buttontileart":
-                        UltimaInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
+                        WorldInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
                         break;
                     case "tooltip":
-                        UltimaInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
+                        WorldInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
                         break;
                     case "radio":
-                        UltimaInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
+                        WorldInteraction.ChatMessage("GUMP: Unhandled '" + arguements[0] + "'.");
                         break;
                     default:
-                        UltimaInteraction.ChatMessage("GUMP: Unknown piece '" + arguements[0] + "'.");
+                        WorldInteraction.ChatMessage("GUMP: Unknown piece '" + arguements[0] + "'.");
                         break;
                 }
             }
@@ -220,9 +221,9 @@ namespace UltimaXNA.UltimaGUI
             if (Controls.Count > 0)
             {
                 int w = 0, h = 0;
-                foreach (Control c in Controls)
+                foreach (AControl c in Controls)
                 {
-                    if (c.Page == 0 || c.Page == this.ActivePage)
+                    if (c.Page == 0 || c.Page == ActivePage)
                     {
                         if (w < c.X + c.Width)
                         {
@@ -252,7 +253,7 @@ namespace UltimaXNA.UltimaGUI
 
         protected string getTextEntry(int entryID)
         {
-            foreach (Control c in Controls)
+            foreach (AControl c in Controls)
             {
                 if (c.GetType() == typeof(UltimaGUI.Controls.TextEntry))
                 {
@@ -269,14 +270,14 @@ namespace UltimaXNA.UltimaGUI
             // We override gump equality to provide the ability to NOT add a gump if only one should be active.
 
             // if parameter is null or cannot be cast to Control, return false.
-            if (obj == null || (obj as Control) == null)
+            if (obj == null || (obj as AControl) == null)
             {
                 return false;
             }
 
             // by default, Gumps are equal to each other if they are of the same type.
             // Inheriting Gumps should override this to base equality on their Parent object's serial, if appropriate.
-            if (this.GetType() == obj.GetType())
+            if (GetType() == obj.GetType())
                 return true;
             else
                 return false;

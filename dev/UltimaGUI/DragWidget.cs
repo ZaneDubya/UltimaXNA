@@ -7,16 +7,18 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+#region usings
 using InterXLib.Input.Windows;
+#endregion
 
 namespace UltimaXNA.UltimaGUI
 {
     class DragWidget
     {
-        Control m_toMove;
+        AControl m_toMove;
         bool isMoving = false; int moveOriginalX, moveOriginalY;
 
-        public DragWidget(Control inputFrom, Control toMove)
+        public DragWidget(AControl inputFrom, AControl toMove)
         {
             m_toMove = toMove;
 

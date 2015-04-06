@@ -194,10 +194,10 @@ namespace UltimaXNA.UltimaData
 
         private unsafe byte[] readLandBlock_Bytes(int x, int y)
         {
-            if (x < 0) x += this.Width;
-            if (x >= this.Width) x -= this.Width;
-            if (y < 0) y += this.Height;
-            if (y >= this.Height) y -= this.Height;
+            if (x < 0) x += Width;
+            if (x >= Width) x -= Width;
+            if (y < 0) y += Height;
+            if (y >= Height) y -= Height;
 
             int key = (x << 16) + y;
             int index = x % 16 + (y % 16) * 16;

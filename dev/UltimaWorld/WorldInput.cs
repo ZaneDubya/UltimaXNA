@@ -4,25 +4,37 @@ using System.Collections.Generic;
 using UltimaXNA.UltimaEntities;
 using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.UltimaVars;
-using UltimaXNA.UltimaWorld.View;
+using UltimaXNA.UltimaWorld.Views;
+using UltimaXNA.UltimaWorld.Controllers;
 
-namespace UltimaXNA.UltimaWorld.Controller
+namespace UltimaXNA.UltimaWorld
 {
     /// <summary>
     /// Handles all the mouse input when the mouse is over the world.
     /// </summary>
     class WorldInput
     {
-        private WorldModel m_Model;
+        protected WorldModel World
+        {
+            get;
+            private set;
+        }
+
+        public MousePicking MousePick
+        {
+            get;
+            private set;
+        }
 
         public WorldInput(WorldModel model)
         {
-            m_Model = model;
+            World = model;
+            MousePick = new MousePicking();
         }
 
         public void Dispose()
         {
-            UltimaEngine.UserInterface.RemoveInputBlocker(this);
+            World.Engine.UserInterface.RemoveInputBlocker(this);
         }
 
         // mouse input variables
@@ -41,9 +53,9 @@ namespace UltimaXNA.UltimaWorld.Controller
                 {
                     m_ContinuousMouseMovementCheck = value;
                     if (m_ContinuousMouseMovementCheck == true)
-                        UltimaEngine.UserInterface.AddInputBlocker(this);
+                        World.Engine.UserInterface.AddInputBlocker(this);
                     else
-                        UltimaEngine.UserInterface.RemoveInputBlocker(this);
+                        World.Engine.UserInterface.RemoveInputBlocker(this);
                 }
             }
         }
@@ -59,31 +71,31 @@ namespace UltimaXNA.UltimaWorld.Controller
 
         public void Update(double frameMS)
         {
-            if (UltimaVars.EngineVars.InWorld && !UltimaEngine.UserInterface.IsModalControlOpen && m_Model.Client.IsConnected)
+            if (UltimaVars.EngineVars.InWorld && !World.Engine.UserInterface.IsModalControlOpen && World.Engine.Client.IsConnected)
             {
                 // always parse keyboard. (Is it possible there are some situations in which keyboard input is blocked???)
                 InternalParseKeyboard(frameMS);
 
                 // In all cases, where we are moving and the move button was released, stop moving.
                 if (ContinuousMouseMovementCheck &&
-                    UltimaEngine.Input.HandleMouseEvent(MouseEvent.Up, UltimaVars.EngineVars.MouseButton_Move))
+                    World.Engine.Input.HandleMouseEvent(MouseEvent.Up, UltimaVars.EngineVars.MouseButton_Move))
                 {
                     ContinuousMouseMovementCheck = false;
                 }
 
                 // If 1. The mouse is over the world (not over UI) and
                 //    2. The cursor is not blocking input, then interpret mouse input.
-                if (!UltimaEngine.UserInterface.IsMouseOverUI && !m_Model.Cursor.IsHoldingItem)
+                if (!World.Engine.UserInterface.IsMouseOverUI && !World.Cursor.IsHoldingItem)
                     InternalParseMouse(frameMS);
 
                 // PickType is the kind of objects that will show up as the 'MouseOverObject'
-                if (UltimaEngine.UserInterface.IsMouseOverUI)
-                    IsometricRenderer.PickType = PickTypes.PickNothing;
+                if (World.Engine.UserInterface.IsMouseOverUI)
+                    MousePick.PickOnly = PickType.PickNothing;
                 else
-                    IsometricRenderer.PickType = PickTypes.PickEverything;
+                    MousePick.PickOnly = PickType.PickEverything;
 
                 // Set the cursor direction
-                UltimaVars.EngineVars.CursorDirection = Utility.DirectionFromPoints(new Point(400, 300), UltimaEngine.Input.MousePosition);
+                UltimaVars.EngineVars.CursorDirection = Utility.DirectionFromPoints(new Point(400, 300), World.Engine.Input.MousePosition);
 
                 doMouseMovement(frameMS);
             }
@@ -101,7 +113,7 @@ namespace UltimaXNA.UltimaWorld.Controller
                     Direction moveDirection = UltimaVars.EngineVars.CursorDirection;
 
                     // add the running flag if the mouse cursor is far enough away from the center of the screen.
-                    float distanceFromCenterOfScreen = Utility.DistanceBetweenTwoPoints(new Point(400, 300), UltimaEngine.Input.MousePosition);
+                    float distanceFromCenterOfScreen = Utility.DistanceBetweenTwoPoints(new Point(400, 300), World.Engine.Input.MousePosition);
                     if (distanceFromCenterOfScreen >= 150.0f || UltimaVars.SettingVars.AlwaysRun)
                         moveDirection |= Direction.Running;
 
@@ -137,21 +149,21 @@ namespace UltimaXNA.UltimaWorld.Controller
         {
             if (m_PauseBeforeKeyboardMovementMS < c_PauseBeforeKeyboardMovementMS)
             {
-                if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Up, WinKeys.Up, false, false, false))
+                if (World.Engine.Input.HandleKeyboardEvent(KeyboardEventType.Up, WinKeys.Up, false, false, false))
                     m_PauseBeforeKeyboardMovementMS = 0;
-                if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Up, WinKeys.Down, false, false, false))
+                if (World.Engine.Input.HandleKeyboardEvent(KeyboardEventType.Up, WinKeys.Down, false, false, false))
                     m_PauseBeforeKeyboardMovementMS = 0;
-                if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Up, WinKeys.Left, false, false, false))
+                if (World.Engine.Input.HandleKeyboardEvent(KeyboardEventType.Up, WinKeys.Left, false, false, false))
                     m_PauseBeforeKeyboardMovementMS = 0;
-                if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Up, WinKeys.Right, false, false, false))
+                if (World.Engine.Input.HandleKeyboardEvent(KeyboardEventType.Up, WinKeys.Right, false, false, false))
                     m_PauseBeforeKeyboardMovementMS = 0;
             }
 
             Mobile m = (Mobile)EntityManager.GetPlayerObject();
-            bool up = UltimaEngine.Input.IsKeyDown(WinKeys.Up);
-            bool left = UltimaEngine.Input.IsKeyDown(WinKeys.Left);
-            bool right = UltimaEngine.Input.IsKeyDown(WinKeys.Right);
-            bool down = UltimaEngine.Input.IsKeyDown(WinKeys.Down);
+            bool up = World.Engine.Input.IsKeyDown(WinKeys.Up);
+            bool left = World.Engine.Input.IsKeyDown(WinKeys.Left);
+            bool right = World.Engine.Input.IsKeyDown(WinKeys.Right);
+            bool down = World.Engine.Input.IsKeyDown(WinKeys.Down);
             if (up | left | right | down)
             {
                 // Allow a short span of time (50ms) to get all the keys pressed.
@@ -166,7 +178,7 @@ namespace UltimaXNA.UltimaWorld.Controller
                     {
                         if (left)
                             facing = Direction.West;
-                        else if (UltimaEngine.Input.IsKeyDown(WinKeys.Right))
+                        else if (World.Engine.Input.IsKeyDown(WinKeys.Right))
                             facing = Direction.North;
                         else
                             facing = Direction.Up;
@@ -245,17 +257,17 @@ namespace UltimaXNA.UltimaWorld.Controller
                 {
                     // pop up name of item.
                     overEntity.AddOverhead(MessageType.Label, "<outline>" + overEntity.Name, 0, 0);
-                    Model.StaticManager.AddStaticThatNeedsUpdating(overEntity as StaticItem);
+                    StaticManager.AddStaticThatNeedsUpdating(overEntity as StaticItem);
                 }
                 else if (overEntity is Item)
                 {
                     // request context menu
-                    UltimaInteraction.SingleClick(overEntity);
+                    WorldInteraction.SingleClick(overEntity);
                 }
                 else if (overEntity is Mobile)
                 {
                     // request context menu
-                    UltimaInteraction.SingleClick(overEntity);
+                    WorldInteraction.SingleClick(overEntity);
                 }
             }
             else if (e.EventType == MouseEvent.DoubleClick)
@@ -271,18 +283,18 @@ namespace UltimaXNA.UltimaWorld.Controller
                 else if (overEntity is Item)
                 {
                     // request context menu
-                    UltimaInteraction.DoubleClick(overEntity);
+                    WorldInteraction.DoubleClick(overEntity);
                 }
                 else if (overEntity is Mobile)
                 {
                     // Send double click packet.
                     // Set LastTarget == targeted Mobile.
                     // If in WarMode, set Attacking == true.
-                    UltimaInteraction.DoubleClick(overEntity);
+                    WorldInteraction.DoubleClick(overEntity);
                     UltimaVars.EngineVars.LastTarget = overEntity.Serial;
                     if (UltimaVars.EngineVars.WarMode)
                     {
-                        m_Model.Client.Send(new AttackRequestPacket(overEntity.Serial));
+                        World.Engine.Client.Send(new AttackRequestPacket(overEntity.Serial));
                     }
                 }
             }
@@ -299,7 +311,7 @@ namespace UltimaXNA.UltimaWorld.Controller
                 else if (overEntity is Item)
                 {
                     // attempt to pick up item.
-                    UltimaInteraction.PickupItem((Item)overEntity, new Point((int)m_dragOffset.X, (int)m_dragOffset.Y));
+                    WorldInteraction.PickupItem((Item)overEntity, new Point((int)m_dragOffset.X, (int)m_dragOffset.Y));
                 }
                 else if (overEntity is Mobile)
                 {
@@ -312,7 +324,7 @@ namespace UltimaXNA.UltimaWorld.Controller
 
         void InternalParseMouse(double frameMS)
         {
-            List<InputEventMouse> events = UltimaEngine.Input.GetMouseEvents();
+            List<InputEventMouse> events = World.Engine.Input.GetMouseEvents();
             foreach (InputEventMouse e in events)
             {
                 if (e.Button == UltimaVars.EngineVars.MouseButton_Move)
@@ -323,14 +335,14 @@ namespace UltimaXNA.UltimaWorld.Controller
                 {
                     if (e.EventType == MouseEvent.Click)
                     {
-                        InternalQueueSingleClick(e, IsometricRenderer.MouseOverObject, IsometricRenderer.MouseOverObjectPoint);
+                        InternalQueueSingleClick(e, MousePick.MouseOverObject, MousePick.MouseOverObjectPoint);
                         continue;
                     }
                     else if (e.EventType == MouseEvent.DoubleClick)
                     {
                         ClearQueuedClick();
                     }
-                    onInteractButton(e, IsometricRenderer.MouseOverObject, IsometricRenderer.MouseOverObjectPoint);
+                    onInteractButton(e, MousePick.MouseOverObject, MousePick.MouseOverObjectPoint);
                 }
                 else
                 {
@@ -376,7 +388,7 @@ namespace UltimaXNA.UltimaWorld.Controller
             m_QueuedEvent_InQueue = true;
             m_QueuedEntity = overEntity;
             m_QueuedEntityPosition = overEntityPoint;
-            m_QueuedEvent_DequeueAt = EngineVars.SecondsForDoubleClick * 1000d;
+            m_QueuedEvent_DequeueAt = EngineVars.DoubleClickMS;
             m_QueuedEvent = e;
         }
         #endregion
@@ -384,15 +396,15 @@ namespace UltimaXNA.UltimaWorld.Controller
         void InternalParseKeyboard(double frameMS)
         {
             // all names mode
-            EngineVars.AllLabels = (UltimaEngine.Input.IsShiftDown && UltimaEngine.Input.IsCtrlDown);
+            EngineVars.AllLabels = (World.Engine.Input.IsShiftDown && World.Engine.Input.IsCtrlDown);
 
             // Warmode toggle:
-            if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.Tab, false, false, false))
+            if (World.Engine.Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.Tab, false, false, false))
             {
                 if (UltimaVars.EngineVars.WarMode)
-                    m_Model.Client.Send(new RequestWarModePacket(false));
+                    World.Engine.Client.Send(new RequestWarModePacket(false));
                 else
-                    m_Model.Client.Send(new RequestWarModePacket(true));
+                    World.Engine.Client.Send(new RequestWarModePacket(true));
             }
 
             // movement with arrow keys if the player is not moving and the mouse isn't moving the player.
@@ -402,7 +414,7 @@ namespace UltimaXNA.UltimaWorld.Controller
             }
 
             // debug variables.
-            if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Press, WinKeys.D, false, false, true))
+            if (World.Engine.Input.HandleKeyboardEvent(KeyboardEventType.Press, WinKeys.D, false, false, true))
             {
                 if (!UltimaVars.DebugVars.Flag_ShowDataRead)
                     UltimaVars.DebugVars.Flag_ShowDataRead = true;
@@ -419,19 +431,19 @@ namespace UltimaXNA.UltimaWorld.Controller
             }
 
             // FPS limiting
-            if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Press, WinKeys.F, false, true, false))
+            if (World.Engine.Input.HandleKeyboardEvent(KeyboardEventType.Press, WinKeys.F, false, true, false))
             {
                 UltimaVars.EngineVars.LimitFPS = Utility.ToggleBoolean(UltimaVars.EngineVars.LimitFPS);
             }
 
             // Display FPS
-            if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Press, WinKeys.F, false, true, true))
+            if (World.Engine.Input.HandleKeyboardEvent(KeyboardEventType.Press, WinKeys.F, false, true, true))
             {
                 UltimaVars.DebugVars.Flag_DisplayFPS = Utility.ToggleBoolean(UltimaVars.DebugVars.Flag_DisplayFPS);
             }
 
             // Mouse enable / disable
-            if (UltimaEngine.Input.HandleKeyboardEvent(KeyboardEventType.Press, WinKeys.M, false, true, false))
+            if (World.Engine.Input.HandleKeyboardEvent(KeyboardEventType.Press, WinKeys.M, false, true, false))
             {
                 UltimaVars.EngineVars.MouseEnabled = Utility.ToggleBoolean(UltimaVars.EngineVars.MouseEnabled);
             }

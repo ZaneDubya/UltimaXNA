@@ -184,7 +184,7 @@ namespace UltimaXNA.Core.Diagnostics
             // m_log.ErrorFormat(message, objects);
             // Utility.PopColor();
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(string.Format(message, objects)); // m_log.Fatal(message);
+            Console.WriteLine(string.Format(message, objects));
             Console.ResetColor();
         }
 

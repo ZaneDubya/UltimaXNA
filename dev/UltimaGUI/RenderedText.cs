@@ -1,4 +1,14 @@
-﻿using Microsoft.Xna.Framework;
+﻿/***************************************************************************
+ *   RenderedText.cs
+ *   
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region usings
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using UltimaXNA.Core.Rendering;
@@ -6,6 +16,7 @@ using UltimaXNA.UltimaData;
 using UltimaXNA.UltimaData.FontsNew;
 using UltimaXNA.UltimaGUI.HTML;
 using UltimaXNA.UltimaGUI.HTML.Atoms;
+#endregion
 
 namespace UltimaXNA.UltimaGUI
 {
@@ -13,6 +24,8 @@ namespace UltimaXNA.UltimaGUI
     {
         private Texture2D m_Texture;
         private Reader m_HtmlParser;
+
+        public static GraphicsDevice Graphics;
 
         public int Width
         {
@@ -23,7 +36,7 @@ namespace UltimaXNA.UltimaGUI
 
                 if (m_Texture == null || m_MustRender)
                 {
-                    checkRender(UltimaEngine.UserInterface.SpriteBatch.GraphicsDevice);
+                    checkRender();
                 }
 
                 return m_Texture.Width;
@@ -39,7 +52,7 @@ namespace UltimaXNA.UltimaGUI
 
                 if (m_Texture == null || m_MustRender)
                 {
-                    checkRender(UltimaEngine.UserInterface.SpriteBatch.GraphicsDevice);
+                    checkRender();
                 }
 
                 return m_Texture.Height;
@@ -141,14 +154,14 @@ namespace UltimaXNA.UltimaGUI
         {
             get
             {
-                checkRender(UltimaEngine.UserInterface.SpriteBatch.GraphicsDevice);
+                checkRender();
                 return m_Texture;
             }
         }
 
         public void Draw(SpriteBatchUI sb, Point position)
         {
-            checkRender(sb.GraphicsDevice);
+            checkRender();
 
             Draw(sb, new Rectangle(position.X, position.Y, Width, Height), 0, 0);
         }
@@ -158,7 +171,7 @@ namespace UltimaXNA.UltimaGUI
             if (Text == null)
                 return;
 
-            checkRender(sb.GraphicsDevice);
+            checkRender();
             
             Rectangle sourceRectangle;
 
@@ -256,7 +269,7 @@ namespace UltimaXNA.UltimaGUI
             }
         }
 
-        private void checkRender(GraphicsDevice graphics)
+        private void checkRender()
         {
             if (m_Texture == null || m_MustRender)
             {
@@ -272,7 +285,7 @@ namespace UltimaXNA.UltimaGUI
                     int width, height, ascender;
 
                     resizeAndParse(Text, MaxWidth, AsHTML, out width, out height, out ascender);
-                    m_Texture = renderToTexture(graphics, m_HtmlParser, width, height, ascender);
+                    m_Texture = renderToTexture(Graphics, m_HtmlParser, width, height, ascender);
 
                     m_MustRender = false;
                 }

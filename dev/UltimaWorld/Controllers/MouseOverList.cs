@@ -15,13 +15,13 @@ using UltimaXNA.UltimaEntities;
 using UltimaXNA.Core.Rendering;
 #endregion
 
-namespace UltimaXNA.UltimaWorld
+namespace UltimaXNA.UltimaWorld.Controllers
 {
     public class MouseOverList
     {
         List<MouseOverItem> m_overList;
 
-        public PickTypes PickType = PickTypes.PickNothing;
+        public PickType PickType = PickType.PickNothing;
 
         Vector3 m_mousePosition;
         protected Point MousePosition
@@ -32,7 +32,7 @@ namespace UltimaXNA.UltimaWorld
             }
         }
 
-        public MouseOverList(Point mousePosition, PickTypes pickType)
+        public MouseOverList(Point mousePosition, PickType pickType)
         {
             m_overList = new List<MouseOverItem>();
             MousePosition = mousePosition;

@@ -33,7 +33,7 @@ namespace UltimaXNA.UltimaPackets.Server
         public OverallLightLevelPacket(PacketReader reader)
             : base(0x4F, "OverallLightLevel")
         {
-            this.m_lightLevel = reader.ReadByte();
+            m_lightLevel = reader.ReadByte();
         }
     }
 }

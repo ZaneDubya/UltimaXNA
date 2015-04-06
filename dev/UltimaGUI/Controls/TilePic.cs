@@ -15,19 +15,19 @@ using UltimaXNA.UltimaGUI;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {
-    class TilePic : Control
+    class TilePic : AControl
     {
         Texture2D m_texture = null;
         int Hue;
         int m_tileID;
 
-        public TilePic(Control owner, int page)
+        public TilePic(AControl owner, int page)
             : base(owner, page)
         {
 
         }
 
-        public TilePic(Control owner, int page, string[] arguements)
+        public TilePic(AControl owner, int page, string[] arguements)
             : this(owner, page)
         {
             int x, y, tileID, hue = 0;
@@ -42,7 +42,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             buildGumpling(x, y, tileID, hue);
         }
 
-        public TilePic(Control owner, int page, int x, int y, int tileID, int hue)
+        public TilePic(AControl owner, int page, int x, int y, int tileID, int hue)
             : this(owner, page)
         {
             buildGumpling(x, y, tileID, hue);
@@ -55,14 +55,14 @@ namespace UltimaXNA.UltimaGUI.Controls
             m_tileID = tileID;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
             if (m_texture == null)
             {
                 m_texture = UltimaData.ArtData.GetStaticTexture(m_tileID);
                 Size = new Point(m_texture.Width, m_texture.Height);
             }
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)

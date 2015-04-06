@@ -16,7 +16,7 @@ using UltimaXNA.UltimaData;
 
 #endregion
 
-namespace UltimaXNA.UltimaWorld.Model
+namespace UltimaXNA.UltimaWorld.Maps
 {
     public class Map
     {

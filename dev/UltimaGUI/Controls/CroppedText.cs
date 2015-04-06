@@ -14,19 +14,19 @@ using UltimaXNA.UltimaGUI;
 
 namespace UltimaXNA.UltimaGUI.Controls
 {
-    class CroppedText : Control
+    class CroppedText : AControl
     {
         public int Hue = 0;
         public string Text = string.Empty;
         RenderedText m_Texture;
 
-        public CroppedText(Control owner, int page)
+        public CroppedText(AControl owner, int page)
             : base(owner, page)
         {
 
         }
 
-        public CroppedText(Control owner, int page, string[] arguements, string[] lines)
+        public CroppedText(AControl owner, int page, string[] arguements, string[] lines)
             : this(owner, page)
         {
             int x, y, width, height, hue, textIndex;
@@ -39,7 +39,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             buildGumpling(x, y, width, height, hue, textIndex, lines);
         }
 
-        public CroppedText(Control owner, int page, int x, int y, int width, int height, int hue, int textIndex, string[] lines)
+        public CroppedText(AControl owner, int page, int x, int y, int width, int height, int hue, int textIndex, string[] lines)
             : this(owner, page)
         {
             buildGumpling(x, y, width, height, hue, textIndex, lines);

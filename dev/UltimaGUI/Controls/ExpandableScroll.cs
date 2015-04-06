@@ -35,7 +35,7 @@ namespace UltimaXNA.UltimaGUI.Controls
         bool m_isExpanding = false;
         int m_isExpanding_InitialX, m_isExpanding_InitialY, m_isExpanding_InitialHeight;
 
-        public ExpandableScroll(Control owner, int page, int x, int y, int height)
+        public ExpandableScroll(AControl owner, int page, int x, int y, int height)
             : base(0, 0)
         {
             m_owner = owner;
@@ -69,7 +69,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             return false;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(double totalMS, double frameMS)
         {
             if (m_expandableScrollHeight < m_expandableScrollHeight_Min)
                 m_expandableScrollHeight = m_expandableScrollHeight_Min;
@@ -112,7 +112,7 @@ namespace UltimaXNA.UltimaGUI.Controls
                 }
             }
 
-            base.Update(gameTime);
+            base.Update(totalMS, frameMS);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)
