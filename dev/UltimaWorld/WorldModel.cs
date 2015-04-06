@@ -3,6 +3,7 @@ using UltimaXNA.Core.Network;
 using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaGUI.WorldGumps;
 using UltimaXNA.UltimaWorld.Maps;
+using UltimaXNA.UltimaEntities;
 
 namespace UltimaXNA.UltimaWorld
 {
@@ -71,7 +72,7 @@ namespace UltimaXNA.UltimaWorld
                     EntityManager.Reset(false);
                     if (m_map != null)
                     {
-                        UltimaEntities.AEntity player = EntityManager.GetPlayerObject();
+                        AEntity player = EntityManager.GetPlayerObject();
                         // save current player position
                         int x = player.X, y = player.Y, z = player.Z;
                         // place the player in null space (allows the map to be reloaded when we return to the same location in a different map).
@@ -87,7 +88,7 @@ namespace UltimaXNA.UltimaWorld
                     }
                     else
                     {
-                        UltimaEntities.AEntity player = EntityManager.GetPlayerObject();
+                        AEntity player = EntityManager.GetPlayerObject();
                         m_map = new Map(value);
                         player.SetMap(m_map);
                     }
@@ -112,7 +113,6 @@ namespace UltimaXNA.UltimaWorld
         protected override void OnInitialize()
         {
             Engine.UserInterface.Cursor = Cursor = new WorldCursor(this);
-
             m_WorldClient.Initialize();
         }
 

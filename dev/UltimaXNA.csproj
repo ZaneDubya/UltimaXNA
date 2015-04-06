@@ -179,7 +179,7 @@
     <Compile Include="UltimaGUI\HuedTexture.cs" />
     <Compile Include="UltimaGUI\UltimaCursor.cs" />
     <Compile Include="UltimaGUI\WorldGumps\CorpseGump.cs" />
-    <Compile Include="UltimaWorld\WorldInteraction.cs" />
+    <Compile Include="UltimaWorld\Controllers\WorldInteraction.cs" />
     <Compile Include="UltimaLogin\LoginModel.cs" />
     <Compile Include="UltimaClientStatus.cs" />
     <Compile Include="UltimaLogin\LoginView.cs" />
@@ -231,7 +231,7 @@
     <Compile Include="UltimaPackets\Client\TargetXYZPacket.cs" />
     <Compile Include="UltimaPackets\Client\UnicodeSpeechPacket.cs" />
     <Compile Include="UltimaPackets\Client\UOGInfoRequestPacket.cs" />
-    <Compile Include="UltimaWorld\WorldClient.cs" />
+    <Compile Include="UltimaWorld\Controllers\WorldClient.cs" />
     <Compile Include="UltimaWorld\Controllers\ContextMenu.cs" />
     <Compile Include="UltimaPackets\Server\CharacterListUpdatePacket.cs" />
     <Compile Include="UltimaPackets\Incomplete\DisplayGumpFastPacket.cs" />
@@ -327,7 +327,7 @@
     </Compile>
     <Compile Include="UltimaData\TileMatrixRaw.cs" />
     <Compile Include="Core\Diagnostics\Dynamic.cs" />
-    <Compile Include="UltimaWorld\WorldInput.cs" />
+    <Compile Include="UltimaWorld\Controllers\WorldInput.cs" />
     <Compile Include="UltimaGUI\Controls\TextureGumpling.cs" />
     <Compile Include="UltimaGUI\HTML\Regions.cs" />
     <Compile Include="UltimaGUI\HTML\Enums.cs" />
@@ -452,7 +452,7 @@
     <Compile Include="UltimaData\FileIndex.cs" />
     <Compile Include="UltimaData\HueData.cs" />
     <Compile Include="UltimaData\Versioning.cs" />
-    <Compile Include="UltimaWorld\WorldCursor.cs" />
+    <Compile Include="UltimaWorld\Controllers\WorldCursor.cs" />
     <Compile Include="UltimaWorld\Views\OverheadsView.cs" />
     <Compile Include="UltimaWorld\WorldView.cs" />
     <Compile Include="Utility.cs" />
