@@ -66,13 +66,13 @@ namespace UltimaXNA.UltimaGUI.LoginGumps
 
         public override void ActivateByButton(int buttonID)
         {
-            string accountName = getTextEntry((int)LoginGumpTextFields.AccountName);
-            string password = getTextEntry((int)LoginGumpTextFields.Password);
+            string accountName = GetTextEntry((int)LoginGumpTextFields.AccountName);
+            string password = GetTextEntry((int)LoginGumpTextFields.Password);
 
             switch ((LoginGumpButtons)buttonID)
             {
                 case LoginGumpButtons.QuitButton:
-                    Quit();
+                    EngineVars.EngineRunning = false;
                     break;
                 case LoginGumpButtons.LoginButton:
                     OnLogin(UltimaVars.SettingVars.ServerIP, UltimaVars.SettingVars.ServerPort, accountName, password);
@@ -84,14 +84,6 @@ namespace UltimaXNA.UltimaGUI.LoginGumps
         public override void ActivateByKeyboardReturn(int textID, string text)
         {
             ActivateByButton((int)LoginGumpButtons.LoginButton);
-        }
-
-        public override void Draw(SpriteBatchUI spriteBatch)
-        {
-            base.Draw(spriteBatch);
-            // DEBUG !!! Draws a dragon
-            // UltimaData.FrameXNA[] f = UltimaData.AnimationsXNA.GetAnimation(59, 0, 0, 0, false);
-            // spriteBatch.Draw(f[0].Texture, new Microsoft.Xna.Framework.Vector2(10, 10), 0, false);
         }
     }
 }

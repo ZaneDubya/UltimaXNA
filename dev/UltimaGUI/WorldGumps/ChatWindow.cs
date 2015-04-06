@@ -116,8 +116,8 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
         public float Alpha { get { return m_alpha; } }
         private int m_width = 0;
 
-        const float Time_Display = 10.0f;
-        const float Time_Fadeout = 4.0f;
+        const float Time_Display = 10000.0f;
+        const float Time_Fadeout = 4000.0f;
 
         private RenderedText m_Texture;
         public int TextHeight { get { return m_Texture.Height; } }

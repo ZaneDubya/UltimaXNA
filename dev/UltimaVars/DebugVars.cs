@@ -15,6 +15,8 @@ namespace UltimaXNA.UltimaVars
 {
     class DebugVars
     {
+        public static bool DrawUIOutlines = false;
+
         public static bool Flag_ShowDataRead = false;
         public static bool Flag_BreakdownDataRead = false;
         public static bool Flag_DisplayFPS = true;

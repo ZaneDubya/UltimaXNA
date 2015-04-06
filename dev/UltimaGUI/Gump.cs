@@ -13,7 +13,6 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.Rendering;
-using UltimaXNA.UltimaWorld;
 #endregion
 
 namespace UltimaXNA.UltimaGUI
@@ -23,15 +22,14 @@ namespace UltimaXNA.UltimaGUI
     /// </summary>
     public class Gump : AControl
     {
-        
-        Serial GumpID;
+        Serial m_GumpID;
         string[] m_gumpPieces, m_gumpLines;
 
         public Gump(Serial serial, Serial gumpID)
             : base(null, 0)
         {
             Serial = serial;
-            GumpID = gumpID;
+            m_GumpID = gumpID;
         }
 
         public Gump(Serial serial, Serial gumpID, String[] pieces, String[] textlines)
@@ -51,7 +49,7 @@ namespace UltimaXNA.UltimaGUI
             // Add any gump pieces that have been given to the gump...
             if (m_gumpPieces != null)
             {
-                buildGump(m_gumpPieces, m_gumpLines);
+                BuildGump(m_gumpPieces, m_gumpLines);
                 m_gumpPieces = null;
                 m_gumpLines = null;
             }
@@ -65,61 +63,25 @@ namespace UltimaXNA.UltimaGUI
             base.Update(totalMS, frameMS);
 
             // Do we need to resize?
-            if (checkResize())
+            if (CheckResize())
             {
-                if (m_gumpTexture != null)
-                {
-                    m_gumpTexture.Dispose();
-                }
+
             }
         }
-
-        RenderTarget2D m_gumpTexture = null;
 
         public override void Draw(SpriteBatchUI spriteBatch)
         {
             if (!Visible)
                 return;
 
-            if (m_renderFullScreen)
-            {
-                InputMultiplier = (float)spriteBatch.GraphicsDevice.Viewport.Width / (float)Width;
-
-                if (m_gumpTexture == null)
-                {
-                    // the render target CANNOT be larger than the viewport.
-                    int w = Width < Engine.UserInterface.Width ? Width : Engine.UserInterface.Width;
-                    int h = Height < Engine.UserInterface.Height ? Height : Engine.UserInterface.Height;
-                    m_gumpTexture = new RenderTarget2D(spriteBatch.GraphicsDevice, w, h, false, SurfaceFormat.Color, DepthFormat.Depth16);
-                }
-
-                spriteBatch.GraphicsDevice.SetRenderTarget(m_gumpTexture);
-                spriteBatch.GraphicsDevice.Clear(Color.Transparent);
-
-                base.Draw(spriteBatch);
-                spriteBatch.Flush();
-
-                spriteBatch.GraphicsDevice.SetRenderTarget(null);
-
-                if (m_renderFullScreen)
-                {
-                    spriteBatch.Draw2D(m_gumpTexture, new Rectangle(0, 0, (int)(Width * InputMultiplier), (int)(Height * InputMultiplier)), 0, false, false);
-                }
-                else
-                    spriteBatch.Draw2D(m_gumpTexture, Position, 0, false, false);
-            }
-            else
-            {
-                spriteBatch.Flush();
-                base.Draw(spriteBatch);
-            }
+            base.Draw(spriteBatch);
         }
 
         public override void ActivateByButton(int buttonID)
         {
             int[] switchIDs = new int[0];
             Tuple<short, string>[] textEntries = new Tuple<short,string>[0];
-            Engine.UserInterface.GumpMenuSelect(Serial, GumpID, buttonID, switchIDs, textEntries);
+            Engine.UserInterface.GumpMenuSelect(Serial, m_GumpID, buttonID, switchIDs, textEntries);
             Dispose();
         }
 
@@ -129,94 +91,88 @@ namespace UltimaXNA.UltimaGUI
             ActivePage = pageIndex;
         }
 
-        private void buildGump(string[] gumpPieces, string[] gumpLines)
+        private void BuildGump(string[] gumpPieces, string[] gumpLines)
         {
             int currentGUMPPage = 0;
 
             for (int i = 0; i < gumpPieces.Length; i++)
             {
-                string[] arguements = gumpPieces[i].Split(' ');
-                switch (arguements[0])
+                string[] gumpParams = gumpPieces[i].Split(' ');
+                switch (gumpParams[0])
                 {
                     case "page":
-                        currentGUMPPage = interpret_page(arguements);
+                        currentGUMPPage = Int32.Parse(gumpParams[1]);
                         break;
                     case "checkertrans":
-                        AddControl(new Controls.CheckerTrans(this, currentGUMPPage, arguements));
+                        AddControl(new Controls.CheckerTrans(this, currentGUMPPage, gumpParams));
                         break;
                     case "resizepic":
-                        AddControl(new Controls.ResizePic(this, currentGUMPPage, arguements));
+                        AddControl(new Controls.ResizePic(this, currentGUMPPage, gumpParams));
                         ((Controls.ResizePic)LastControl).CloseOnRightClick = true;
                         break;
                     case "button":
-                        AddControl(new Controls.Button(this, currentGUMPPage, arguements));
+                        AddControl(new Controls.Button(this, currentGUMPPage, gumpParams));
                         break;
                     case "croppedtext":
-                        AddControl(new Controls.CroppedText(this, currentGUMPPage, arguements, gumpLines));
+                        AddControl(new Controls.CroppedText(this, currentGUMPPage, gumpParams, gumpLines));
                         break;
                     case "htmlgump":
-                        AddControl(new Controls.HtmlGump(this, currentGUMPPage, arguements, gumpLines));
+                        AddControl(new Controls.HtmlGump(this, currentGUMPPage, gumpParams, gumpLines));
                         break;
                     case "gumppictiled":
-                        AddControl(new Controls.GumpPicTiled(this, currentGUMPPage, arguements));
+                        AddControl(new Controls.GumpPicTiled(this, currentGUMPPage, gumpParams));
                         break;
                     case "gumppic":
-                        AddControl(new Controls.GumpPic(this, currentGUMPPage, arguements));
+                        AddControl(new Controls.GumpPic(this, currentGUMPPage, gumpParams));
                         break;
                     case "text":
-                        AddControl(new Controls.TextLabel(this, currentGUMPPage, arguements, gumpLines));
+                        AddControl(new Controls.TextLabel(this, currentGUMPPage, gumpParams, gumpLines));
                         break;
                     case "tilepic":
-                        AddControl(new Controls.TilePic(this, currentGUMPPage, arguements));
+                        AddControl(new Controls.TilePic(this, currentGUMPPage, gumpParams));
                         break;
                     case "tilepichue":
-                        AddControl(new Controls.TilePic(this, currentGUMPPage, arguements));
+                        AddControl(new Controls.TilePic(this, currentGUMPPage, gumpParams));
                         break;
                     case "textentry":
-                        AddControl(new Controls.TextEntry(this, currentGUMPPage, arguements, gumpLines));
+                        AddControl(new Controls.TextEntry(this, currentGUMPPage, gumpParams, gumpLines));
                         break;
                     case "textentrylimited":
-                        AddControl(new Controls.TextEntry(this, currentGUMPPage, arguements, gumpLines));
+                        AddControl(new Controls.TextEntry(this, currentGUMPPage, gumpParams, gumpLines));
                         break;
 
                     case "checkbox":
-                        Logger.Warn("GUMP: Unhandled '" + arguements[0] + "'.");
+                        Logger.Warn("GUMP: Unhandled '" + gumpParams[0] + "'.");
                         break;
                     case "group":
-                        Logger.Warn("GUMP: Unhandled '" + arguements[0] + "'.");
+                        Logger.Warn("GUMP: Unhandled '" + gumpParams[0] + "'.");
                         break;
                     case "xmfhtmlgump":
-                        Logger.Warn("GUMP: Unhandled '" + arguements[0] + "'.");
+                        Logger.Warn("GUMP: Unhandled '" + gumpParams[0] + "'.");
                         break;
                     case "xmfhtmlgumpcolor":
-                        Logger.Warn("GUMP: Unhandled '" + arguements[0] + "'.");
+                        Logger.Warn("GUMP: Unhandled '" + gumpParams[0] + "'.");
                         break;
                     case "xmfhtmltok":
-                        Logger.Warn("GUMP: Unhandled '" + arguements[0] + "'.");
+                        Logger.Warn("GUMP: Unhandled '" + gumpParams[0] + "'.");
                         break;
                     case "buttontileart":
-                        Logger.Warn("GUMP: Unhandled '" + arguements[0] + "'.");
+                        Logger.Warn("GUMP: Unhandled '" + gumpParams[0] + "'.");
                         break;
                     case "tooltip":
-                        Logger.Warn("GUMP: Unhandled '" + arguements[0] + "'.");
+                        Logger.Warn("GUMP: Unhandled '" + gumpParams[0] + "'.");
                         break;
                     case "radio":
-                        Logger.Warn("GUMP: Unhandled '" + arguements[0] + "'.");
+                        Logger.Warn("GUMP: Unhandled '" + gumpParams[0] + "'.");
                         break;
                     default:
-                        Logger.Warn("GUMP: Unknown piece '" + arguements[0] + "'.");
+                        Logger.Warn("GUMP: Unknown piece '" + gumpParams[0] + "'.");
                         break;
                 }
             }
         }
 
-        private int interpret_page(string[] arguements)
-        {
-            int page = Int32.Parse(arguements[1]);
-            return page;
-        }
-
-        private bool checkResize()
+        private bool CheckResize()
         {
             bool changedDimensions = false;
             if (Controls.Count > 0)
@@ -247,12 +203,7 @@ namespace UltimaXNA.UltimaGUI
             return changedDimensions;
         }
 
-        protected void Quit()
-        {
-            UltimaVars.EngineVars.EngineRunning = false;
-        }
-
-        protected string getTextEntry(int entryID)
+        protected string GetTextEntry(int entryID)
         {
             foreach (AControl c in Controls)
             {

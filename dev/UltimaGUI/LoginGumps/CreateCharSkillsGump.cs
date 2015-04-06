@@ -8,6 +8,7 @@
  *
  ***************************************************************************/
 using UltimaXNA.UltimaGUI.Controls;
+using UltimaXNA.UltimaVars;
 
 namespace UltimaXNA.UltimaGUI.LoginGumps
 {
@@ -141,7 +142,7 @@ namespace UltimaXNA.UltimaGUI.LoginGumps
                     OnForward();
                     break;
                 case Buttons.QuitButton:
-                    Quit();
+                    EngineVars.EngineRunning = false;
                     break;
             }
         }

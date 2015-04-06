@@ -374,7 +374,8 @@ namespace UltimaXNA.UltimaGUI
                 return;
 
 #if DEBUG
-            // DrawBounds(spriteBatch);
+            if (UltimaXNA.UltimaVars.DebugVars.DrawUIOutlines)
+                DrawBounds(spriteBatch, Color.White);
 #endif
         
             foreach (AControl c in Controls)

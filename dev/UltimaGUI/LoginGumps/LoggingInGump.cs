@@ -8,6 +8,7 @@
  *
  ***************************************************************************/
 using UltimaXNA.UltimaGUI.Controls;
+using UltimaXNA.UltimaVars;
 
 namespace UltimaXNA.UltimaGUI.LoginGumps
 {
@@ -89,7 +90,7 @@ namespace UltimaXNA.UltimaGUI.LoginGumps
             switch ((LoggingInGumpButtons)buttonID)
             {
                 case LoggingInGumpButtons.QuitButton:
-                    Quit();
+                    EngineVars.EngineRunning = false;
                     break;
                 case LoggingInGumpButtons.CancelLoginButton:
                     OnCancelLogin();
