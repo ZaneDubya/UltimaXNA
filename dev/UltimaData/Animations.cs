@@ -59,7 +59,7 @@ namespace UltimaXNA.UltimaData
             bool patched;
 
             // The UO Server can request actions with an index greater
-            // than the total number of actions. Check for 
+            // than the total number of actions. Check for this.
             action = LimitActionIndex(body, hue, action);
 
             getIndexes(ref body, ref hue, action, direction, out animIndex, out fileIndex);
