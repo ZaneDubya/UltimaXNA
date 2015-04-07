@@ -165,6 +165,7 @@ namespace UltimaXNA.UltimaWorld
 
         public void Disconnect()
         {
+            UltimaVars.SettingVars.Save();
             Engine.Client.Disconnect();
             UltimaVars.EngineVars.InWorld = false;
             Engine.ActiveModel = new UltimaXNA.UltimaLogin.LoginModel();

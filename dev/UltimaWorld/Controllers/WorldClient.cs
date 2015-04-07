@@ -700,7 +700,13 @@ namespace UltimaXNA.UltimaWorld.Controllers
         private void ReceivePopupMessage(IRecvPacket packet)
         {
             PopupMessagePacket p = (PopupMessagePacket)packet;
-            World.Engine.UserInterface.MsgBox(p.Message, MsgBoxTypes.OkOnly);
+            MsgBox g = World.Engine.UserInterface.MsgBox(p.Message, MsgBoxTypes.OkOnly);
+            g.OnClose = ReceivePopupMessage_OnClose;
+        }
+
+        void ReceivePopupMessage_OnClose()
+        {
+            World.Disconnect();
         }
 
         private void ReceiveOpenBuyWindow(IRecvPacket packet)

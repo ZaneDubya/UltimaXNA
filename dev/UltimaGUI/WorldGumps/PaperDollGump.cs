@@ -145,7 +145,6 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
 
         void logout_OnClose()
         {
-            SettingVars.Save();
             (Engine.ActiveModel as WorldModel).Disconnect();
         }
 
