@@ -21,9 +21,9 @@ namespace UltimaXNA.UltimaData
     public class HuesXNA
     {
         private static GraphicsDevice graphicsDevice;
-        private static Texture2D m_hueTexture;
-        private const int m_HueTextureWidth = 32; // Each hue is 32 pixels wide, so divided by 32 = 2 hues wide.
-        private const int m_HueTextureHeight = 4096;
+        private static Texture2D m_HueTexture0, m_HueTexture1;
+        private const int m_HueTextureWidth = 32; // Each hue is 32 pixels wide
+        private const int m_HueTextureHeight = 2048;
         private const int multiplier = 0xFF / 0x1F;
 
         public static void Initialize(GraphicsDevice graphicsDevice)
@@ -41,9 +41,11 @@ namespace UltimaXNA.UltimaData
 
         static void CreateTexture()
         {
-            m_hueTexture = new Texture2D(graphicsDevice, m_HueTextureWidth, m_HueTextureHeight);
-            uint[] iTextData = getTextureData();
-            m_hueTexture.SetData(iTextData);
+            m_HueTexture0 = new Texture2D(graphicsDevice, m_HueTextureWidth, m_HueTextureHeight);
+            m_HueTexture1 = new Texture2D(graphicsDevice, m_HueTextureWidth, m_HueTextureHeight);
+            uint[] hueData = getTextureData();
+            m_HueTexture0.SetData(hueData, 0, m_HueTextureWidth * m_HueTextureHeight);
+            m_HueTexture1.SetData(hueData, m_HueTextureWidth * m_HueTextureHeight, m_HueTextureWidth * m_HueTextureHeight);
         }
 
         static uint[] getTextureData()
@@ -51,7 +53,7 @@ namespace UltimaXNA.UltimaData
             BinaryReader reader = new BinaryReader( FileManager.GetFile( "hues.mul" ) );
             int currentHue = 0;
             int currentIndex = 0;
-            uint[] data = new uint[m_HueTextureWidth * m_HueTextureHeight];
+            uint[] data = new uint[m_HueTextureWidth * m_HueTextureHeight * 2];
 
             Metrics.ReportDataRead((int)reader.BaseStream.Length);
 
@@ -95,11 +97,19 @@ namespace UltimaXNA.UltimaData
             return t;
         }
 
-        public static Texture2D HueTexture
+        public static Texture2D HueTexture0
         {
             get
             {
-                return m_hueTexture;
+                return m_HueTexture0;
+            }
+        }
+
+        public static Texture2D HueTexture1
+        {
+            get
+            {
+                return m_HueTexture1;
             }
         }
 
