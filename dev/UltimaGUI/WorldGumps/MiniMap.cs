@@ -9,7 +9,7 @@
  ***************************************************************************/
 using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Rendering;
-using InterXLib.Input.Windows;
+using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.UltimaGUI.Controls;
 
 namespace UltimaXNA.UltimaGUI.WorldGumps

@@ -1,5 +1,4 @@
-﻿using InterXLib.Display;
-using InterXLib.Patterns.MVC;
+﻿using InterXLib.Patterns.MVC;
 
 namespace UltimaXNA.UltimaLogin
 {
@@ -14,11 +13,6 @@ namespace UltimaXNA.UltimaLogin
             : base(model)
         {
 
-        }
-
-        public override void Draw(YSpriteBatch spritebatch, double frameTime)
-        {
-            // don't need to do anything above and beyond having the GUI drawn, which is handled by UltimaEngine.
         }
     }
 }

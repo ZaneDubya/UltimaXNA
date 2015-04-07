@@ -9,7 +9,7 @@
  ***************************************************************************/
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using InterXLib.Input.Windows;
+using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaData.FontsOld;
 

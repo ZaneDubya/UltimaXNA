@@ -33,7 +33,7 @@ namespace UltimaXNA.UltimaLogin.Scenes
         {
             base.Update(totalTime, frameTime);
 
-            if (Engine.Input.HandleKeyboardEvent(InterXLib.Input.Windows.KeyboardEventType.Down, InterXLib.Input.Windows.WinKeys.D, false, false, true))
+            if (Engine.Input.HandleKeyboardEvent(UltimaXNA.Core.Input.Windows.KeyboardEventType.Down, UltimaXNA.Core.Input.Windows.WinKeys.D, false, false, true))
             {
                 Manager.CurrentScene = new HueTestScene();
             }

@@ -11,7 +11,7 @@
 #region usings
 using System.IO;
 using System.Runtime.InteropServices;
-using InterXLib;
+using UltimaXNA.Core;
 #endregion
 
 namespace UltimaXNA.UltimaData

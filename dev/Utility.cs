@@ -15,6 +15,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Text;
 using UltimaXNA.UltimaData.FontsOld;
@@ -561,6 +562,13 @@ namespace UltimaXNA
                 int iAddress = BitConverter.ToInt32(iIPAdress, 0);
                 return iAddress;
             }
+        }
+
+        public static long GetLongAddressValue(IPAddress address)
+        {
+#pragma warning disable 618
+            return address.Address;
+#pragma warning restore 618
         }
 
         public static Direction DirectionFromPoints(Point from, Point to)

@@ -9,11 +9,10 @@
  *
  ***************************************************************************/
 #region usings
-using InterXLib;
 using System.Drawing;
-using UltimaXNA.Core.Diagnostics;
-using System;
 using System.Linq;
+using UltimaXNA.Core;
+using UltimaXNA.Core.Diagnostics;
 #endregion
 
 namespace UltimaXNA.UltimaData

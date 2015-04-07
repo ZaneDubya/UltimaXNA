@@ -9,7 +9,7 @@
  ***************************************************************************/
 #region usings
 using UltimaXNA.UltimaGUI;
-using InterXLib.Input.Windows;
+using UltimaXNA.Core.Input.Windows;
 #endregion
 
 namespace UltimaXNA.UltimaGUI

@@ -8,7 +8,7 @@
  *
  ***************************************************************************/
 #region usings
-using InterXLib;
+using UltimaXNA.Core.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.UltimaGUI;
@@ -21,7 +21,7 @@ namespace UltimaXNA
     {
         public static double TotalMS = 0d;
 
-        public InputState Input
+        public InputManager Input
         {
             get;
             private set;
@@ -93,7 +93,7 @@ namespace UltimaXNA
 
             // this is copied from IXL.BaseCore - required for finding the mouse coordinate when moving the cursor over the window.
             System.Drawing.Graphics graphics = System.Drawing.Graphics.FromHwnd(Window.Handle);
-            InterXLib.Settings.ScreenDPI = new Vector2(graphics.DpiX / 96f, graphics.DpiY / 96f);
+            UltimaVars.EngineVars.ScreenDPI = new Vector2(graphics.DpiX / 96f, graphics.DpiY / 96f);
         }
 
         protected override void Initialize()
@@ -103,7 +103,7 @@ namespace UltimaXNA
             // Create all the services we need.
             Client = new UltimaClient(this);
             Client.IsLoggingPackets = true;
-            Input = new InputState(Window.Handle);
+            Input = new InputManager(Window.Handle);
             UserInterface = new GUIManager(this);
 
             // Load vars from Settings.ini.
@@ -162,7 +162,7 @@ namespace UltimaXNA
             {
                 Core.Rendering.SpriteBatch3D.ResetZ();
                 GraphicsDevice.Clear(Color.Black);
-                ActiveModel.GetView().Draw(null, gameTime.ElapsedGameTime.TotalMilliseconds);
+                ActiveModel.GetView().Draw(gameTime.ElapsedGameTime.TotalMilliseconds);
                 UserInterface.Draw(gameTime.ElapsedGameTime.TotalMilliseconds);
 
                 UltimaVars.EngineVars.UpdateFPS(gameTime.ElapsedGameTime.TotalMilliseconds);

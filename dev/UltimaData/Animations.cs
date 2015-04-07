@@ -9,9 +9,9 @@
  *
  ***************************************************************************/
 #region usings
-using InterXLib;
 using Microsoft.Xna.Framework.Graphics;
 using System.IO;
+using UltimaXNA.Core;
 using UltimaXNA.Core.Diagnostics;
 #endregion
 

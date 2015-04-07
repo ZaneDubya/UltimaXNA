@@ -9,7 +9,7 @@
  *
  ***************************************************************************/
 #region usings
-using InterXLib.Input.Windows;
+using UltimaXNA.Core.Input.Windows;
 using Microsoft.Xna.Framework;
 using UltimaXNA.UltimaEntities;
 using UltimaXNA.UltimaPackets;
@@ -22,6 +22,8 @@ namespace UltimaXNA.UltimaVars
 {
     public class EngineVars
     {
+        public static Vector2 ScreenDPI;
+
         public static byte[] Version = new byte[4] { 6, 0, 6, 2 };
 
         public static Direction CursorDirection { get; internal set; }

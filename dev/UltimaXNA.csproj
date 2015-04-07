@@ -72,6 +72,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553">
       <Private>False</Private>
     </Reference>
@@ -123,6 +124,25 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AUltimaModel.cs" />
+    <Compile Include="Core\Input\ActionBinder.cs" />
+    <Compile Include="Core\Input\InputManager.cs" />
+    <Compile Include="Core\Input\Windows\Enums.cs" />
+    <Compile Include="Core\Input\Windows\InputEvent.cs" />
+    <Compile Include="Core\Input\Windows\InputEventKB.cs" />
+    <Compile Include="Core\Input\Windows\InputEventM.cs" />
+    <Compile Include="Core\Input\Windows\Message.cs" />
+    <Compile Include="Core\Input\Windows\MessageHook.cs" />
+    <Compile Include="Core\Input\Windows\NativeMethods.cs" />
+    <Compile Include="Core\Input\Windows\WndProc.cs" />
+    <Compile Include="Core\Patterns\MVC\AController.cs" />
+    <Compile Include="Core\Patterns\MVC\AModel.cs" />
+    <Compile Include="Core\Patterns\MVC\AView.cs" />
+    <Compile Include="Core\Patterns\Observers.cs" />
+    <Compile Include="Core\Patterns\Properties.cs" />
+    <Compile Include="Core\Patterns\Unused\ACommand.cs" />
+    <Compile Include="Core\Patterns\Unused\AState.cs" />
+    <Compile Include="Core\Patterns\Unused\Commands.cs" />
+    <Compile Include="Core\Serialize.cs" />
     <Compile Include="UltimaData\AnimData.cs" />
     <Compile Include="UltimaEntities\Effects\AEffect.cs" />
     <Compile Include="UltimaEntities\Effects\AnimatedItemEffect.cs" />
@@ -508,10 +528,6 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="InterXLib\InterXLib.csproj">
-      <Project>{5de77709-9a9f-4059-9f8a-791f5042667a}</Project>
-      <Name>InterXLib</Name>
-    </ProjectReference>
     <ProjectReference Include="Content\UltimaXNAContent.contentproj">
       <Project>{C4D0357F-85DD-4418-ABA4-7C7875BB3129}</Project>
       <Name>UltimaXNAContent %28Content%29</Name>

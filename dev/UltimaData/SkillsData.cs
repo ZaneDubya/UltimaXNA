@@ -13,7 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using InterXLib;
+using UltimaXNA.Core;
 #endregion
 
 namespace UltimaXNA.UltimaData

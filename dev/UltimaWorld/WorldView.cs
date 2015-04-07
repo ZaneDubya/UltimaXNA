@@ -1,5 +1,4 @@
-﻿using InterXLib.Display;
-using InterXLib.Patterns.MVC;
+﻿using InterXLib.Patterns.MVC;
 using UltimaXNA.UltimaWorld.Views;
 using UltimaXNA.UltimaWorld.Controllers;
 
@@ -26,7 +25,7 @@ namespace UltimaXNA.UltimaWorld
             Isometric.LightDirection = -0.6f;
         }
 
-        public override void Draw(YSpriteBatch spritebatch, double frameTime)
+        public override void Draw(double frameTime)
         {
             Isometric.Draw(Model.Map, EntityManager.GetPlayerObject().Position, Model.Input.MousePick);
         }
