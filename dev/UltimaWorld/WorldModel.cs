@@ -68,7 +68,7 @@ namespace UltimaXNA.UltimaWorld
             {
                 if (value != MapIndex)
                 {
-                    // clear all entities
+                    // clear all entities except for player.
                     EntityManager.Reset(false);
                     if (m_map != null)
                     {
@@ -99,6 +99,7 @@ namespace UltimaXNA.UltimaWorld
         public WorldModel()
         {
             Entities = new EntityManager(this);
+            EntityManager.Reset(true);
             Effects = new EffectsManager(this);
             Input = new WorldInput(this);
             Interaction = new WorldInteraction(this);
@@ -138,20 +139,27 @@ namespace UltimaXNA.UltimaWorld
 
         public override void Update(double totalMS, double frameMS)
         {
-            if (!Engine.Client.IsConnected)
+            if (UltimaVars.EngineVars.InWorld)
             {
-                if (Engine.UserInterface.IsModalControlOpen == false)
+                if (!Engine.Client.IsConnected)
                 {
-                    MsgBox g = Engine.UserInterface.MsgBox("You have lost your connection with the server.", MsgBoxTypes.OkOnly);
-                    g.OnClose = onCloseLostConnectionMsgBox;
+                    if (Engine.UserInterface.IsModalControlOpen == false)
+                    {
+                        MsgBox g = Engine.UserInterface.MsgBox("You have lost your connection with the server.", MsgBoxTypes.OkOnly);
+                        g.OnClose = onCloseLostConnectionMsgBox;
+                    }
+                }
+                else
+                {
+                    Input.Update(frameMS);
+                    EntityManager.Update(frameMS);
+                    Effects.Update(frameMS);
+                    StaticManager.Update(frameMS);
                 }
             }
             else
             {
-                Input.Update(frameMS);
-                EntityManager.Update(frameMS);
-                Effects.Update(frameMS);
-                StaticManager.Update(frameMS);
+                Disconnect();
             }
         }
 

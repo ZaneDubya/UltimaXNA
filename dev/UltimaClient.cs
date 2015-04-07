@@ -303,11 +303,12 @@ namespace UltimaXNA
                     {
                         ((WorldModel)Engine.ActiveModel).LoginSequence();
                         LoginConfirmPacket packet = m_QueuedLoginConfirmPacket;
-                        PlayerMobile player = EntityManager.GetObject<PlayerMobile>(m_QueuedLoginConfirmPacket.Serial, true);
+                        m_QueuedLoginConfirmPacket = null;
+                        PlayerMobile player = EntityManager.GetObject<PlayerMobile>(packet.Serial, true);
                         if (player == null)
                             Logger.Fatal("No player object ready in CheckIfOkayToLogin().");
                         player.Move_Instant(packet.X, packet.Y, packet.Z, packet.Direction);
-                        // iPlayer.SetFacing(p.Direction);
+                        
                     }
                     else
                     {

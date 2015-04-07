@@ -146,7 +146,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
         void logout_OnClose()
         {
             SettingVars.Save();
-            Engine.Client.Disconnect();
+            (Engine.ActiveModel as WorldModel).Disconnect();
         }
 
         public override bool Equals(object obj)
