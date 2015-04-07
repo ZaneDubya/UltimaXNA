@@ -125,7 +125,8 @@ namespace UltimaXNA
                 UltimaData.TexmapData.Initialize(GraphicsDevice);
                 UltimaData.StringData.LoadStringList("enu");
                 UltimaData.SkillsData.Initialize();
-                GraphicsDevice.Textures[1] = UltimaXNA.UltimaData.HuesXNA.HueTexture;
+                GraphicsDevice.Textures[1] = UltimaXNA.UltimaData.HuesXNA.HueTexture0;
+                GraphicsDevice.Textures[2] = UltimaXNA.UltimaData.HuesXNA.HueTexture1;
 
                 UltimaVars.EngineVars.EngineRunning = true;
                 UltimaVars.EngineVars.InWorld = false;

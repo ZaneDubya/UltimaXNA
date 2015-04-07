@@ -8,7 +8,8 @@ float ambientLightIntensity;
 bool DrawLighting;
 
 sampler textureSampler;
-sampler hueTextureSampler;
+sampler hueSampler0;
+sampler hueSampler1;
 
 struct VS_INPUT
 {
@@ -44,9 +45,8 @@ PS_INPUT VertexShaderFunction(VS_INPUT IN)
     return OUT;
 }
 
-const float HuesPerColumn = 2024;
-const float HuesPerRow = 2;
-const float ToGrayScale = 6; // (3.0f * HuesPerRow)
+const float HuesPerTexture = 2048;
+const float ToGrayScale = 3; // (3.0f * HuesPerRow)
 
 float4 PixelShaderFunction(PS_INPUT IN) : COLOR0
 {	
@@ -75,10 +75,17 @@ float4 PixelShaderFunction(PS_INPUT IN) : COLOR0
 		// 0x04 = 50% transparent.
 		// 0x01 & 0x02 should be mutually exclusive.
 
-		float hueRow = IN.Hue.x / 4096;
 		float inHueIndex = ((color.r + color.g + color.b) / 3.0f);
-		float4 huedColor = tex2D(hueTextureSampler, float2(inHueIndex, hueRow));
-		huedColor.a = color.a;
+		float4 hueColor;
+		if (IN.Hue.x >= HuesPerTexture)
+		{
+			hueColor = tex2D(hueSampler1, float2(inHueIndex, (IN.Hue.x - HuesPerTexture) / HuesPerTexture));
+		}
+		else
+		{
+			hueColor = tex2D(hueSampler0, float2(inHueIndex, IN.Hue.x / HuesPerTexture));
+		}
+		hueColor.a = color.a;
 
 		if (IN.Hue.y >= 4) 
 		{
@@ -91,12 +98,12 @@ float4 PixelShaderFunction(PS_INPUT IN) : COLOR0
 		{
 			// partial hue - map any grayscale pixels to the hue. Colored pixels remain colored.
 			if ((color.r == color.g) && (color.r == color.b))
-				color = huedColor;
+				color = hueColor;
 		}
 		else if (IN.Hue.y >= 1) 
 		{
 			// normal hue - map the hue to the grayscale.
-			color = huedColor;
+			color = hueColor;
 		}
 	}
 

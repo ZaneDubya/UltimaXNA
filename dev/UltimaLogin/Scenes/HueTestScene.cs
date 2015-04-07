@@ -76,9 +76,14 @@ namespace UltimaXNA.UltimaLogin.Scenes
                 ((HuedControl)m_Gump.LastControl).Hue = i + 2;
             }
 
-            using (System.IO.FileStream file = new System.IO.FileStream("hues.png", System.IO.FileMode.Create))
+            using (System.IO.FileStream file = new System.IO.FileStream("hues0.png", System.IO.FileMode.Create))
             {
-                UltimaData.HuesXNA.HueTexture.SaveAsPng(file, UltimaData.HuesXNA.HueTexture.Width, UltimaData.HuesXNA.HueTexture.Height);
+                UltimaData.HuesXNA.HueTexture0.SaveAsPng(file, UltimaData.HuesXNA.HueTexture0.Width, UltimaData.HuesXNA.HueTexture0.Height);
+            }
+
+            using (System.IO.FileStream file = new System.IO.FileStream("hues1.png", System.IO.FileMode.Create))
+            {
+                UltimaData.HuesXNA.HueTexture1.SaveAsPng(file, UltimaData.HuesXNA.HueTexture1.Width, UltimaData.HuesXNA.HueTexture1.Height);
             }
         }
 
