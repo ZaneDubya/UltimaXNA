@@ -84,7 +84,7 @@ namespace UltimaXNA.UltimaPackets.Server
             z = reader.ReadSByte();
             direction = reader.ReadByte();
             hue = reader.ReadUInt16();
-            Flags = new MobileFlags(reader.ReadByte());
+            Flags = new MobileFlags((MobileFlag)reader.ReadByte());
             notoriety = reader.ReadByte();
         }
     }

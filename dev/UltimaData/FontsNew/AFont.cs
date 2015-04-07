@@ -53,7 +53,7 @@ namespace UltimaXNA.UltimaData.FontsNew
                 }
                 else
                 {
-                    Logger.Fatal("Could not pack font.mul texture.");
+                    Tracer.Critical("Could not pack font.mul texture.");
                 }
             }
 

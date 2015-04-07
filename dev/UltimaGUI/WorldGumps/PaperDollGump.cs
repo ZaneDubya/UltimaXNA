@@ -13,7 +13,6 @@ using UltimaXNA.Core.Rendering;
 using UltimaXNA.UltimaGUI.Controls;
 using UltimaXNA.UltimaWorld;
 using UltimaXNA.Core;
-using UltimaXNA.UltimaVars;
 
 namespace UltimaXNA.UltimaGUI.WorldGumps
 {
@@ -145,7 +144,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
 
         void logout_OnClose()
         {
-            (Engine.ActiveModel as WorldModel).Disconnect();
+            Engine.Client.Disconnect();
         }
 
         public override bool Equals(object obj)

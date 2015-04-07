@@ -13,7 +13,7 @@ using System.Collections;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
-
+using UltimaXNA.Diagnostics.Tracing;
 using UltimaXNA.Core.Diagnostics;
 
 namespace UltimaXNA.UltimaData
@@ -45,10 +45,10 @@ namespace UltimaXNA.UltimaData
 				}
 				if (mciSendString ( playCommand, null, 0, IntPtr.Zero ) != 0)
 				{
-                    Logger.Error("Error playing mp3 file {0}", path);
+                    Tracer.Error("Error playing mp3 file {0}", path);
 				}
 			} else {
-                Logger.Error("Error opening mp3 file {0}", path);
+                Tracer.Error("Error opening mp3 file {0}", path);
 			}
 		}
 
@@ -63,12 +63,12 @@ namespace UltimaXNA.UltimaData
                     // close resource
                     if (mciSendString(string.Format("close {0}", m_internalMusicName), null, 0, IntPtr.Zero) != 0)
                     {
-                        Logger.Error("Error closing current mp3 file");
+                        Tracer.Error("Error closing current mp3 file");
                     }
                 }
                 else
                 {
-                    Logger.Error("Error stopping current mp3 file");
+                    Tracer.Error("Error stopping current mp3 file");
                 }
             }
 		}
@@ -82,7 +82,7 @@ namespace UltimaXNA.UltimaData
 				   buffer, buffer.Capacity, IntPtr.Zero );
 				if (result != 0)
 				{
-                    Logger.Error("Error reading volume");
+                    Tracer.Error("Error reading volume");
 					return 0;
 				}
 				return int.Parse ( buffer.ToString() );
@@ -93,7 +93,7 @@ namespace UltimaXNA.UltimaData
 				int result = mciSendString ( string.Format("setaudio {0} volume to {1}", m_internalMusicName, value), null, 0, IntPtr.Zero );
 				if (result != 0)
 				{
-                    Logger.Error("Error setting volume");
+                    Tracer.Error("Error setting volume");
 				}
 			}
 		}
@@ -166,7 +166,7 @@ namespace UltimaXNA.UltimaData
 			UOMusic music = GetMusicById ( id );
 			if (music == null)
 			{
-                Logger.Error("Received unknown music id {0}", id);
+                Tracer.Error("Received unknown music id {0}", id);
 				return;
 			}
 

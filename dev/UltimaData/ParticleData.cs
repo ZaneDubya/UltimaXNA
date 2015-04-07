@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Diagnostics;
+using UltimaXNA.Diagnostics.Tracing;
 
 namespace UltimaXNA.UltimaData
 {
@@ -113,13 +114,13 @@ namespace UltimaXNA.UltimaData
                 {
                     pData = m_Data[i - 1];
                     if (itemID != pData.ItemID)
-                        Logger.Error("Mismatch? Requested particle {0}, returning particle {1}.",
+                        Tracer.Error("Mismatch? Requested particle {0}, returning particle {1}.",
                             itemID, pData.ItemID);
                     return m_Data[i - 1];
                 }
             }
 
-            Logger.Error("Unknown particle effect with ItemID={0}", itemID);
+            Tracer.Error("Unknown particle effect with ItemID={0}", itemID);
 
             return null;
         }

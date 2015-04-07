@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UltimaXNA.Diagnostics.Tracing;
 using UltimaXNA.UltimaEntities.Effects;
 using UltimaXNA.UltimaPackets.Server;
 
@@ -21,7 +22,7 @@ namespace UltimaXNA.UltimaWorld
             bool hasParticles = (packet as GraphicEffectExtendedPacket != null); // we don't yet handle these.
             if (hasParticles)
             {
-                Core.Diagnostics.Logger.Warn("Unhandled particles in an effects packet.");
+                Tracer.Warn("Unhandled particles in an effects packet.");
             }
 
             AEffect effect = null;
@@ -66,10 +67,10 @@ namespace UltimaXNA.UltimaWorld
                     effect.BlendMode = blend;
                     break;
                 case GraphicEffectType.ScreenFade:
-                    Core.Diagnostics.Logger.Warn("Unhandled screen fade effect.");
+                    Tracer.Warn("Unhandled screen fade effect.");
                     break;
                 default:
-                    Core.Diagnostics.Logger.Warn("Unhandled effect.");
+                    Tracer.Warn("Unhandled effect.");
                     return;
             }
 

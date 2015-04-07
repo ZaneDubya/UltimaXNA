@@ -8,7 +8,7 @@
  *
  ***************************************************************************/
 #region Usings
-using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Input.Windows;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;

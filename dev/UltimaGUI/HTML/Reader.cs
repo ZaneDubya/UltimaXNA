@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using UltimaXNA.Core.Diagnostics;
+using UltimaXNA.Diagnostics.Tracing;
 using UltimaXNA.UltimaGUI.HTML.Atoms;
 #endregion
 
@@ -173,7 +174,7 @@ namespace UltimaXNA.UltimaGUI.HTML
                                         }
                                         else
                                         {
-                                            Logger.Warn("href paramater used outside of an 'a' tag link. href is ignored in this case.");
+                                            Tracer.Warn("href paramater used outside of an 'a' tag link. href is ignored in this case.");
                                         }
                                         break;
                                     case "color":
@@ -205,7 +206,7 @@ namespace UltimaXNA.UltimaGUI.HTML
                                             }
                                         }
                                         else
-                                            Logger.Warn("Improperly formatted color:" + color);
+                                            Tracer.Warn("Improperly formatted color:" + color);
                                         break;
                                     case "text-decoration":
                                         switch (value)
@@ -215,7 +216,7 @@ namespace UltimaXNA.UltimaGUI.HTML
                                                     openHREFs[openHREFs.Count - 1].Underline = false;
                                                 break;
                                             default:
-                                                Logger.Warn(string.Format("Unknown text-decoration:{0}", value));
+                                                Tracer.Warn(string.Format("Unknown text-decoration:{0}", value));
                                                 break;
                                         }
                                         break;
@@ -233,7 +234,7 @@ namespace UltimaXNA.UltimaGUI.HTML
                                                     ((ImageAtom)outAtoms[outAtoms.Count - 1]).ValueDown = int.Parse(value);
                                                 break;
                                             default:
-                                                Logger.Warn("src param encountered within " + chunk.sTag + " which does not use this param.");
+                                                Tracer.Warn("src param encountered within " + chunk.sTag + " which does not use this param.");
                                                 break;
                                         }
                                         break;
@@ -245,7 +246,7 @@ namespace UltimaXNA.UltimaGUI.HTML
                                                 outAtoms[outAtoms.Count - 1].Width = int.Parse(value);
                                                 break;
                                             default:
-                                                Logger.Warn("width param encountered within " + chunk.sTag + " which does not use this param.");
+                                                Tracer.Warn("width param encountered within " + chunk.sTag + " which does not use this param.");
                                                 break;
                                         }
                                         break;
@@ -257,12 +258,12 @@ namespace UltimaXNA.UltimaGUI.HTML
                                                 outAtoms[outAtoms.Count - 1].Width = int.Parse(value);
                                                 break;
                                             default:
-                                                Logger.Warn("height param encountered within " + chunk.sTag + " which does not use this param.");
+                                                Tracer.Warn("height param encountered within " + chunk.sTag + " which does not use this param.");
                                                 break;
                                         }
                                         break;
                                     default:
-                                        Logger.Warn(string.Format("Unknown parameter:{0}", key));
+                                        Tracer.Warn(string.Format("Unknown parameter:{0}", key));
                                         break;
                                 }
                             }

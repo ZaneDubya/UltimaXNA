@@ -5,11 +5,11 @@
     <ProjectTypeGuids>{6D335F3A-9D43-41b4-9D22-F6F17C4BE596};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>UltimaXNA</RootNamespace>
     <AssemblyName>UltimaXNA</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
     <XnaPlatform>Windows</XnaPlatform>
     <XnaCrossPlatformGroupID>50bfd68f-b3c7-4d72-866a-2cf8c22b84b0</XnaCrossPlatformGroupID>
@@ -23,8 +23,9 @@
     <XnaUpgrade>
     </XnaUpgrade>
     <XnaOutputType>Game</XnaOutputType>
-    <XnaProfile>Reach</XnaProfile>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <XnaProfile>HiDef</XnaProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
@@ -53,7 +54,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoStdLib>true</NoStdLib>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
     <PlatformTarget>x86</PlatformTarget>
     <XnaCompressContent>false</XnaCompressContent>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -106,11 +107,28 @@
     <Reference Include="mscorlib">
       <Private>False</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Reactive.Core">
+      <HintPath>..\packages\Rx-Core.2.2.5\lib\net45\System.Reactive.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Interfaces">
+      <HintPath>..\packages\Rx-Interfaces.2.2.5\lib\net45\System.Reactive.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Linq">
+      <HintPath>..\packages\Rx-Linq.2.2.5\lib\net45\System.Reactive.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.PlatformServices">
+      <HintPath>..\packages\Rx-PlatformServices.2.2.5\lib\net45\System.Reactive.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml">
       <Private>False</Private>
@@ -123,17 +141,32 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="-\JetBrains\Annotations\CoreAnnotations.cs" />
+    <Compile Include="ApplicationBootstrapper.cs" />
     <Compile Include="AUltimaModel.cs" />
-    <Compile Include="Core\Input\ActionBinder.cs" />
-    <Compile Include="Core\Input\InputManager.cs" />
-    <Compile Include="Core\Input\Windows\Enums.cs" />
-    <Compile Include="Core\Input\Windows\InputEvent.cs" />
-    <Compile Include="Core\Input\Windows\InputEventKB.cs" />
-    <Compile Include="Core\Input\Windows\InputEventM.cs" />
-    <Compile Include="Core\Input\Windows\Message.cs" />
-    <Compile Include="Core\Input\Windows\MessageHook.cs" />
-    <Compile Include="Core\Input\Windows\NativeMethods.cs" />
-    <Compile Include="Core\Input\Windows\WndProc.cs" />
+    <Compile Include="Collections\SafeDictionary.cs" />
+    <Compile Include="Configuration\DebugSettings.cs" />
+    <Compile Include="Configuration\GameSettings.cs" />
+    <Compile Include="Configuration\ServerSettings.cs" />
+    <Compile Include="Configuration\Settings.cs" />
+    <Compile Include="Configuration\SettingsBase.cs" />
+    <Compile Include="Configuration\UltimaOnlineSettings.cs" />
+    <Compile Include="ConsoleManager.cs" />
+    <Compile Include="CoreModule.cs" />
+    <Compile Include="Core\Diagnostics\IProgressNotifier.cs" />
+    <Compile Include="Core\Diagnostics\ProgressCompletedEventArgs.cs" />
+    <Compile Include="Core\Diagnostics\ProgressUpdateEventArgs.cs" />
+    <Compile Include="Core\Diagnostics\StartedEventArgs.cs" />
+    <Compile Include="Input\ActionBinder.cs" />
+    <Compile Include="Input\InputManager.cs" />
+    <Compile Include="Input\Windows\Enums.cs" />
+    <Compile Include="Input\Windows\InputEvent.cs" />
+    <Compile Include="Input\Windows\InputEventKB.cs" />
+    <Compile Include="Input\Windows\InputEventM.cs" />
+    <Compile Include="Input\Windows\Message.cs" />
+    <Compile Include="Input\Windows\MessageHook.cs" />
+    <Compile Include="NativeMethods.cs" />
+    <Compile Include="Input\Windows\WndProc.cs" />
     <Compile Include="Core\Patterns\MVC\AController.cs" />
     <Compile Include="Core\Patterns\MVC\AModel.cs" />
     <Compile Include="Core\Patterns\MVC\AView.cs" />
@@ -143,6 +176,46 @@
     <Compile Include="Core\Patterns\Unused\AState.cs" />
     <Compile Include="Core\Patterns\Unused\Commands.cs" />
     <Compile Include="Core\Serialize.cs" />
+    <Compile Include="Diagnostics\ConcreteTracer.cs" />
+    <Compile Include="Diagnostics\Guard.cs" />
+    <Compile Include="Diagnostics\ITracer.cs" />
+    <Compile Include="Diagnostics\Listeners\ConsoleOutputEventListener.cs" />
+    <Compile Include="Diagnostics\Listeners\DebugOutputEventListener.cs" />
+    <Compile Include="Diagnostics\Listeners\FileLogEventListener.cs" />
+    <Compile Include="Diagnostics\Listeners\StreamOuputEventListener.cs" />
+    <Compile Include="Diagnostics\TraceEventId.cs" />
+    <Compile Include="Diagnostics\Tracer.cs" />
+    <Compile Include="Diagnostics\TracerEventSource.cs" />
+    <Compile Include="Extensions\AssemblyExtensions.cs" />
+    <Compile Include="Extensions\MethodInfoExtensions.cs" />
+    <Compile Include="Extensions\TypeExtensions.cs" />
+    <Compile Include="GeneralExceptionHandler.cs" />
+    <Compile Include="Patterns\IoC\Container.cs" />
+    <Compile Include="Patterns\IoC\Exceptions\AutoRegistrationException.cs" />
+    <Compile Include="Patterns\IoC\Exceptions\ConstructorResolutionException.cs" />
+    <Compile Include="Patterns\IoC\Exceptions\RegistrationException.cs" />
+    <Compile Include="Patterns\IoC\Exceptions\RegistrationTypeException.cs" />
+    <Compile Include="Patterns\IoC\Exceptions\ResolutionException.cs" />
+    <Compile Include="Patterns\IoC\Exceptions\WeakReferenceException.cs" />
+    <Compile Include="Patterns\IoC\Factory\CustomObjectLifetimeFactory.cs" />
+    <Compile Include="Patterns\IoC\Factory\DelegateFactory.cs" />
+    <Compile Include="Patterns\IoC\Factory\InstanceFactory.cs" />
+    <Compile Include="Patterns\IoC\Factory\MultiInstanceFactory.cs" />
+    <Compile Include="Patterns\IoC\Factory\ObjectFactoryBase.cs" />
+    <Compile Include="Patterns\IoC\Factory\SingletonFactory.cs" />
+    <Compile Include="Patterns\IoC\Factory\WeakDelegateFactory.cs" />
+    <Compile Include="Patterns\IoC\Factory\WeakInstanceFactory.cs" />
+    <Compile Include="Patterns\IoC\IContainer.cs" />
+    <Compile Include="Patterns\IoC\IModule.cs" />
+    <Compile Include="Patterns\IoC\IObjectLifetimeProvider.cs" />
+    <Compile Include="Patterns\IoC\NamedParameterOverloads.cs" />
+    <Compile Include="Patterns\IoC\NamedResolutionFailureActions.cs" />
+    <Compile Include="Patterns\IoC\Options\MultiRegisterOptions.cs" />
+    <Compile Include="Patterns\IoC\Options\RegisterOptions.cs" />
+    <Compile Include="Patterns\IoC\Options\ResolveOptions.cs" />
+    <Compile Include="Patterns\IoC\TypeRegistration.cs" />
+    <Compile Include="Patterns\IoC\UnregisteredResolutionActions.cs" />
+    <Compile Include="Configuration\SettingsFile.cs" />
     <Compile Include="UltimaData\AnimData.cs" />
     <Compile Include="UltimaEntities\Effects\AEffect.cs" />
     <Compile Include="UltimaEntities\Effects\AnimatedItemEffect.cs" />
@@ -178,12 +251,10 @@
     <Compile Include="UltimaData\FontsNew\CharacterUni.cs" />
     <Compile Include="UltimaData\FontsNew\FontUni.cs" />
     <Compile Include="UltimaData\FontsNew\TextUni.cs" />
-    <Compile Include="Core\IniFile.cs" />
     <Compile Include="UltimaGUI\WorldGumps\JournalGump.cs" />
     <Compile Include="UltimaLogin\LoginClient.cs" />
     <Compile Include="UltimaLogin\Scenes\HueTestScene.cs" />
     <Compile Include="UltimaVars\Journaling.cs" />
-    <Compile Include="UltimaVars\SettingVars.cs" />
     <Compile Include="UltimaWorld\Controllers\MousePicking.cs" />
     <Compile Include="UltimaWorld\Controllers\PickType.cs" />
     <Compile Include="UltimaWorld\EffectManager.cs" />
@@ -346,7 +417,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="UltimaData\TileMatrixRaw.cs" />
-    <Compile Include="Core\Diagnostics\Dynamic.cs" />
     <Compile Include="UltimaWorld\Controllers\WorldInput.cs" />
     <Compile Include="UltimaGUI\Controls\TextureGumpling.cs" />
     <Compile Include="UltimaGUI\HTML\Regions.cs" />
@@ -362,15 +432,6 @@
     <Compile Include="UltimaData\Support\_SharedMethods.cs" />
     <Compile Include="UltimaData\SoundData.cs" />
     <Compile Include="UltimaData\StringData.cs" />
-    <Compile Include="Core\Diagnostics\Logger.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Core\Diagnostics\StatusLevel.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Core\Diagnostics\StatusUpdateEventArgs.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="UltimaEngine.cs" />
     <Compile Include="UltimaData\FileManager.cs" />
     <Compile Include="UltimaEntities\Container.cs" />
@@ -447,7 +508,7 @@
     <Compile Include="UltimaData\TexmapData.cs" />
     <Compile Include="UltimaData\TileData.cs" />
     <Compile Include="UltimaData\TileMatrixPatch.cs" />
-    <Compile Include="Core\Network\Client.cs" />
+    <Compile Include="Core\Network\ClientBase.cs" />
     <Compile Include="Core\Network\Compression\HuffmanDecompression.cs" />
     <Compile Include="Core\Network\Compression\ZlibDecompression.cs" />
     <Compile Include="Core\Network\IRecvPacket.cs" />
@@ -526,11 +587,14 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Content\UltimaXNAContent.contentproj">
       <Project>{C4D0357F-85DD-4418-ABA4-7C7875BB3129}</Project>
-      <Name>UltimaXNAContent %28Content%29</Name>
+      <Name>UltimaXNAContent</Name>
       <XnaReferenceType>Content</XnaReferenceType>
     </ProjectReference>
   </ItemGroup>
@@ -539,6 +603,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

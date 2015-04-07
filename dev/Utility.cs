@@ -179,40 +179,6 @@ namespace UltimaXNA
         }
         #endregion
 
-        #region Console Helpers
-        private static Stack<ConsoleColor> consoleColors = new Stack<ConsoleColor>();
-
-        /// <summary>
-        /// Pushes the color to the console
-        /// </summary>
-        public static void PushColor(ConsoleColor color)
-        {
-            try
-            {
-                consoleColors.Push(Console.ForegroundColor);
-                Console.ForegroundColor = color;
-            }
-            catch
-            {
-            }
-        }
-
-        /// <summary>
-        /// Pops the color of the console to the previous value.
-        /// </summary>
-        public static void PopColor()
-        {
-            try
-            {
-                Console.ForegroundColor = consoleColors.Pop();
-            }
-            catch
-            {
-
-            }
-        }
-        #endregion
-
         #region Encoding
         private static Encoding utf8, utf8WithEncoding;
 

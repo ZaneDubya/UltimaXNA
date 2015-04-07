@@ -16,6 +16,8 @@
  ***************************************************************************/
 #region usings
 using UltimaXNA.Core.Network.Packets;
+using UltimaXNA.Diagnostics.Tracing;
+
 #endregion
 
 namespace UltimaXNA.UltimaPackets.Client
@@ -26,7 +28,7 @@ namespace UltimaXNA.UltimaPackets.Client
             : base(0xBD, "Client Version")
         {
             if (version.Length != 4)
-                Core.Diagnostics.Logger.Fatal("SeedPacket: Incorrect length of version.");
+                Tracer.Critical("SeedPacket: Incorrect length of version.");
             Stream.WriteAsciiNull(string.Format("{0}.{1}.{2}.{3}", version[0], version[1], version[2], version[3]));
         }
     }

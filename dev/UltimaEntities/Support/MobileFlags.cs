@@ -5,6 +5,17 @@ using System.Text;
 
 namespace UltimaXNA.UltimaEntities.Support
 {
+    [Flags]
+    public enum MobileFlag
+    {
+        None = 0x00,
+        Female = 0x02,
+        Poisoned = 0x04,
+        Blessed = 0x08,
+        Warmode = 0x40,
+        Hidden = 0x80,
+    }
+
     public class MobileFlags
     {
         /// <summary>
@@ -15,29 +26,29 @@ namespace UltimaXNA.UltimaEntities.Support
         /// 0x40 = warmode
         /// 0x80 = hidden
         /// </summary>
-        private byte m_flags;
+        private MobileFlag m_flags;
 
-        public bool IsFemale { get { return ((m_flags & 0x02) != 0); } }
-        public bool IsPoisoned { get { return ((m_flags & 0x04) != 0); } }
-        public bool IsBlessed { get { return ((m_flags & 0x08) != 0); } }
+        public bool IsFemale { get { return ((m_flags & MobileFlag.Female) != 0); } }
+        public bool IsPoisoned { get { return ((m_flags & MobileFlag.Poisoned) != 0); } }
+        public bool IsBlessed { get { return ((m_flags & MobileFlag.Blessed) != 0); } }
         public bool IsWarMode
         {
-            get { return ((m_flags & 0x40) != 0); }
+            get { return ((m_flags & MobileFlag.Warmode) != 0); }
             set
             {
                 if (value == true)
                 {
-                    m_flags |= 0x40;
+                    m_flags |= MobileFlag.Warmode;
                 }
                 else
                 {
-                    m_flags &= unchecked((byte)(~0x40));
+                    m_flags &= ~MobileFlag.Warmode;
                 }
             }
         }
-        public bool IsHidden { get { return ((m_flags & 0x80) != 0); } }
+        public bool IsHidden { get { return ((m_flags & MobileFlag.Hidden) != 0); } }
 
-        public MobileFlags(byte flags)
+        public MobileFlags(MobileFlag flags)
         {
             m_flags = flags;
         }

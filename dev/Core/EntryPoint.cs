@@ -1,4 +1,6 @@
 ﻿using System;
+using UltimaXNA.Diagnostics.Tracing;
+using UltimaXNA.Core.Diagnostics;
 
 namespace UltimaXNA.Core
 {
@@ -7,15 +9,11 @@ namespace UltimaXNA.Core
         [STAThread]
         static void Main(string[] args)
         {
-            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-            using (UltimaEngine engine = new UltimaEngine(800, 600))
-            {
-                engine.Run();
-            }
+            new ApplicationBootstrapper().Initialize();
         }
         static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            Diagnostics.Logger.Fatal(e.ExceptionObject);
+            Tracer.Critical((Exception)e.ExceptionObject);
         }
     }
 }

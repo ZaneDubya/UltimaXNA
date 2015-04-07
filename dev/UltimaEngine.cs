@@ -8,7 +8,9 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Core.Input;
+
+using UltimaXNA.Data;
+using UltimaXNA.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.UltimaGUI;
@@ -106,9 +108,6 @@ namespace UltimaXNA
             Input = new InputManager(Window.Handle);
             UserInterface = new GUIManager(this);
 
-            // Load vars from Settings.ini.
-            UltimaVars.SettingVars.Load();
-
             // Make sure we have a UO installation before loading UltimaData.
             if (UltimaData.FileManager.IsUODataPresent)
             {
@@ -125,8 +124,8 @@ namespace UltimaXNA
                 UltimaData.TexmapData.Initialize(GraphicsDevice);
                 UltimaData.StringData.LoadStringList("enu");
                 UltimaData.SkillsData.Initialize();
-                GraphicsDevice.Textures[1] = UltimaXNA.UltimaData.HuesXNA.HueTexture0;
-                GraphicsDevice.Textures[2] = UltimaXNA.UltimaData.HuesXNA.HueTexture1;
+                GraphicsDevice.Textures[1] = UltimaData.HuesXNA.HueTexture0;
+                GraphicsDevice.Textures[2] = UltimaData.HuesXNA.HueTexture1;
 
                 UltimaVars.EngineVars.EngineRunning = true;
                 UltimaVars.EngineVars.InWorld = false;
@@ -141,7 +140,7 @@ namespace UltimaXNA
 
             if (!UltimaVars.EngineVars.EngineRunning)
             {
-                UltimaVars.SettingVars.Save();
+                Settings.Save();
                 Exit();
             }
             else

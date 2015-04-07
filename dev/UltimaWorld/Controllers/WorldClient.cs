@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.Network;
+using UltimaXNA.Diagnostics.Tracing;
 using UltimaXNA.UltimaEntities;
 using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaGUI.WorldGumps;
@@ -383,9 +384,9 @@ namespace UltimaXNA.UltimaWorld.Controllers
             Mobile m = EntityManager.GetObject<Mobile>(p.PlayerSerial, false);
             Corpse c = EntityManager.GetObject<Corpse>(p.CorpseSerial, false);
             if (m == null)
-                Logger.Warn("DeathAnimation received for mobile which does not exist.");
+                Tracer.Warn("DeathAnimation received for mobile which does not exist.");
             else if (c == null)
-                Logger.Warn("DeathAnimation received for corpse which does not exist.");
+                Tracer.Warn("DeathAnimation received for corpse which does not exist.");
             else
             {
                 c.Facing = m.Facing;
@@ -700,13 +701,7 @@ namespace UltimaXNA.UltimaWorld.Controllers
         private void ReceivePopupMessage(IRecvPacket packet)
         {
             PopupMessagePacket p = (PopupMessagePacket)packet;
-            MsgBox g = World.Engine.UserInterface.MsgBox(p.Message, MsgBoxTypes.OkOnly);
-            g.OnClose = ReceivePopupMessage_OnClose;
-        }
-
-        void ReceivePopupMessage_OnClose()
-        {
-            World.Disconnect();
+            World.Engine.UserInterface.MsgBox(p.Message, MsgBoxTypes.OkOnly);
         }
 
         private void ReceiveOpenBuyWindow(IRecvPacket packet)
@@ -943,12 +938,12 @@ namespace UltimaXNA.UltimaWorld.Controllers
 
         private void announce_UnhandledPacket(IRecvPacket packet)
         {
-            Logger.Warn(string.Format("Client: Unhandled {0} [ID:{1}]", packet.Name, packet.Id));
+            Tracer.Warn(string.Format("Client: Unhandled {0} [ID:{1}]", packet.Name, packet.Id));
         }
 
         private void announce_UnhandledPacket(IRecvPacket packet, string addendum)
         {
-            Logger.Warn(string.Format("Client: Unhandled {0} [ID:{1}] {2}]", packet.Name, packet.Id, addendum));
+            Tracer.Warn(string.Format("Client: Unhandled {0} [ID:{1}] {2}]", packet.Name, packet.Id, addendum));
         }
 
 
@@ -997,7 +992,7 @@ namespace UltimaXNA.UltimaWorld.Controllers
                     break;
                 case 0x19: // Extended stats
                     if (p.Serial != UltimaVars.EngineVars.PlayerSerial)
-                        Logger.Warn("Extended Stats packet (0xBF subcommand 0x19) received for a mobile not our own.");
+                        Tracer.Warn("Extended Stats packet (0xBF subcommand 0x19) received for a mobile not our own.");
                     else
                     {
                         UltimaVars.StatLocks.StrengthLock = p.StatisticLocks.Strength;

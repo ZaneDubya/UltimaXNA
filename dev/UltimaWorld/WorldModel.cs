@@ -68,7 +68,7 @@ namespace UltimaXNA.UltimaWorld
             {
                 if (value != MapIndex)
                 {
-                    // clear all entities except for player.
+                    // clear all entities
                     EntityManager.Reset(false);
                     if (m_map != null)
                     {
@@ -99,7 +99,6 @@ namespace UltimaXNA.UltimaWorld
         public WorldModel()
         {
             Entities = new EntityManager(this);
-            EntityManager.Reset(true);
             Effects = new EffectsManager(this);
             Input = new WorldInput(this);
             Interaction = new WorldInteraction(this);
@@ -139,33 +138,25 @@ namespace UltimaXNA.UltimaWorld
 
         public override void Update(double totalMS, double frameMS)
         {
-            if (UltimaVars.EngineVars.InWorld)
+            if (!Engine.Client.IsConnected)
             {
-                if (!Engine.Client.IsConnected)
+                if (Engine.UserInterface.IsModalControlOpen == false)
                 {
-                    if (Engine.UserInterface.IsModalControlOpen == false)
-                    {
-                        MsgBox g = Engine.UserInterface.MsgBox("You have lost your connection with the server.", MsgBoxTypes.OkOnly);
-                        g.OnClose = onCloseLostConnectionMsgBox;
-                    }
-                }
-                else
-                {
-                    Input.Update(frameMS);
-                    EntityManager.Update(frameMS);
-                    Effects.Update(frameMS);
-                    StaticManager.Update(frameMS);
+                    MsgBox g = Engine.UserInterface.MsgBox("You have lost your connection with the server.", MsgBoxTypes.OkOnly);
+                    g.OnClose = onCloseLostConnectionMsgBox;
                 }
             }
             else
             {
-                Disconnect();
+                Input.Update(frameMS);
+                EntityManager.Update(frameMS);
+                Effects.Update(frameMS);
+                StaticManager.Update(frameMS);
             }
         }
 
         public void Disconnect()
         {
-            UltimaVars.SettingVars.Save();
             Engine.Client.Disconnect();
             UltimaVars.EngineVars.InWorld = false;
             Engine.ActiveModel = new UltimaXNA.UltimaLogin.LoginModel();

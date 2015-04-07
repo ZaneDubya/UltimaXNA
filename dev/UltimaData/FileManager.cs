@@ -13,6 +13,8 @@ using System;
 using System.IO;
 using UltimaXNA.Core.Diagnostics;
 using System.Collections.Generic;
+using UltimaXNA.Data;
+using UltimaXNA.Diagnostics.Tracing;
 
 namespace UltimaXNA.UltimaData
 {
@@ -48,6 +50,11 @@ namespace UltimaXNA.UltimaData
 
         private static string m_FileDirectory;
 
+        public static string DataPath
+        {
+            get { return m_FileDirectory; }
+        }
+
         public static bool Is64Bit
         {
             get { return IntPtr.Size == 8; } 
@@ -55,13 +62,14 @@ namespace UltimaXNA.UltimaData
 
         static FileManager()
         {
-            Logger.Debug("Initializing UOData. Is64Bit = {0}", Is64Bit);
-            Logger.Debug("Looking for UO Installation:");
+            Tracer.Debug("Initializing UOData. Is64Bit = {0}", Is64Bit);
+            Tracer.Debug("Looking for UO Installation:");
 
-            if (UltimaVars.SettingVars.UOData != null && Directory.Exists(UltimaVars.SettingVars.UOData))
+            if (Settings.UltimaOnline.DataDirectory != null && Directory.Exists(Settings.UltimaOnline.DataDirectory))
             {
-                Logger.Debug("SettingsVars: {0}", UltimaVars.SettingVars.UOData);
-                m_FileDirectory = UltimaVars.SettingVars.UOData;
+                Tracer.Debug("Settings: {0}", Settings.UltimaOnline.DataDirectory);
+
+                m_FileDirectory = Settings.UltimaOnline.DataDirectory;
                 m_isDataPresent = true;
             }
             else
@@ -83,14 +91,14 @@ namespace UltimaXNA.UltimaData
                     {
                         if (InternalClientIsCompatible(exePath))
                         {
-                            Logger.Debug("Compatible: {0}", exePath);
+                            Tracer.Debug("Compatible: {0}", exePath);
 
                             m_FileDirectory = exePath;
                             m_isDataPresent = true;
                         }
                         else
                         {
-                            Logger.Debug("Incompatible: {0}", exePath);
+                            Tracer.Debug("Incompatible: {0}", exePath);
                         }
                     }
                 }
@@ -98,13 +106,13 @@ namespace UltimaXNA.UltimaData
 
             if (m_FileDirectory == null)
             {
-                Logger.Fatal("Did not find a compatible UO Installation.\nUltimaXNA is compatible with any version of UO through Mondian's Legacy.");
+                Tracer.Critical("Did not find a compatible UO Installation.\nUltimaXNA is compatible with any version of UO through Mondian's Legacy.");
                 m_isDataPresent = false;
             }
             else
             {
-                Logger.Debug(string.Empty);
-                Logger.Debug("Selected: {0}", m_FileDirectory);
+                Tracer.Debug(string.Empty);
+                Tracer.Debug("Selected: {0}", m_FileDirectory);
             }
         }
 
@@ -191,7 +199,7 @@ namespace UltimaXNA.UltimaData
             try
             {
                 name = Path.Combine(m_FileDirectory, name);
-                Logger.Debug("Checking if file exists [{0}]", name);
+                Tracer.Debug("Checking if file exists [{0}]", name);
 
                 if (File.Exists(name))
                 {

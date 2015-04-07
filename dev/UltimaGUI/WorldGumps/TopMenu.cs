@@ -73,7 +73,6 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
                     // opens the player's backpack.
                     PlayerMobile mobile = (PlayerMobile)EntityManager.GetPlayerObject();
                     Container backpack = mobile.Backpack;
-                    if (backpack!=null)
                     (Engine.ActiveModel as WorldModel).Interaction.DoubleClick(backpack);
                     break;
                 case Buttons.Journal:

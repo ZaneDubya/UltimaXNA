@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.UltimaData;
 using UltimaXNA.Core.Diagnostics;
-using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Input.Windows;
 using UltimaXNA.Core.Network;
 using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaWorld;
@@ -44,7 +44,6 @@ namespace UltimaXNA.UltimaLogin.Scenes
         public event TransitionCompleteHandler TransitionCompleted;
         public event EventHandler<ProgressUpdateEventArgs> ProgressUpdated;
         public event EventHandler<ProgressCompletedEventArgs> ProgressCompleted;
-        public event EventHandler<StatusUpdateEventArgs> StatusUpdate;
 
         public AScene()
         {
@@ -107,12 +106,6 @@ namespace UltimaXNA.UltimaLogin.Scenes
         {
             if (ProgressCompleted != null)
                 ProgressCompleted(sender, e);
-        }
-
-        protected virtual void OnStatusUpdate(object sender, StatusUpdateEventArgs e)
-        {
-            if (StatusUpdate != null)
-                StatusUpdate(sender, e);
         }
 
         protected virtual void OnTransitionComplete()

@@ -8,6 +8,7 @@
  *
  ***************************************************************************/
 using UltimaXNA.Core.Rendering;
+using UltimaXNA.Data;
 using UltimaXNA.UltimaGUI.Controls;
 using UltimaXNA.UltimaVars;
 
@@ -47,7 +48,7 @@ namespace UltimaXNA.UltimaGUI.LoginGumps
             // Password
             AddControl(new TextLabelAscii(this, 0, 181, 386, hue, 2, UltimaData.StringData.Entry(3000103)));
             // name field
-            TextEntry g1 = new TextEntry(this, 0, 332, 346, 200, 20, 0, (int)LoginGumpTextFields.AccountName, 32, UltimaVars.SettingVars.LastAccount);
+            TextEntry g1 = new TextEntry(this, 0, 332, 346, 200, 20, 0, (int)LoginGumpTextFields.AccountName, 32, Settings.Server.UserName);
             g1.HtmlTag = "<basefont color=#000000><big>";
             AddControl(new ResizePic(this, g1));
             AddControl(g1);
@@ -75,11 +76,11 @@ namespace UltimaXNA.UltimaGUI.LoginGumps
                     EngineVars.EngineRunning = false;
                     break;
                 case LoginGumpButtons.LoginButton:
-                    OnLogin(UltimaVars.SettingVars.ServerIP, UltimaVars.SettingVars.ServerPort, accountName, password);
+                    OnLogin(Settings.Server.ServerAddress, Settings.Server.ServerPort, accountName, password);
                     break;
             }
 
-            UltimaVars.SettingVars.LastAccount = accountName;
+            Settings.Server.UserName = accountName;
         }
         public override void ActivateByKeyboardReturn(int textID, string text)
         {

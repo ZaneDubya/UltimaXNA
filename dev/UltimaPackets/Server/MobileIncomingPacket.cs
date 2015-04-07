@@ -101,7 +101,7 @@ namespace UltimaXNA.UltimaPackets.Server
             m_z = reader.ReadSByte();
             m_direction = reader.ReadByte();
             m_hue = reader.ReadUInt16();
-            Flags = new MobileFlags(reader.ReadByte());
+            Flags = new MobileFlags((MobileFlag)reader.ReadByte());
             m_notoriety = reader.ReadByte();
 
             // Read equipment - nine bytes ea.

@@ -8,6 +8,8 @@
  *
  ***************************************************************************/
 #region usings
+
+using UltimaXNA.Diagnostics.Tracing;
 using UltimaXNA.UltimaData;
 using UltimaXNA.Core.Diagnostics;
 #endregion
@@ -464,7 +466,7 @@ namespace UltimaXNA.UltimaEntities.EntityViews
                 if (index >= 200)
                     return MobileAction.Cast_Directed;
 
-                Logger.Warn("Unknown action index {0}", index);
+                Tracer.Warn("Unknown action index {0}", index);
                 return MobileAction.None;
             }
             else if (m_bodyType == BodyTypes.LowDetail)

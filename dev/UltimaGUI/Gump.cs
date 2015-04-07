@@ -13,6 +13,8 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.Rendering;
+using UltimaXNA.Diagnostics.Tracing;
+
 #endregion
 
 namespace UltimaXNA.UltimaGUI
@@ -184,38 +186,38 @@ namespace UltimaXNA.UltimaGUI
                     case "radio":
                         // Radio [x] [y] [released-id] [pressed-id] [status] [return-value]
                         // Same as Checkbox, but only one Radiobutton can be pressed at the same time, and they are linked via the 'Group' command.
-                        Logger.Warn(string.Format("GUMP: Unhandled {0}.", gumpParams[0]));
+                        Tracer.Warn(string.Format("GUMP: Unhandled {0}.", gumpParams[0]));
                         break;
                     case "checkbox":
                         // CheckBox [x] [y] [released-id] [pressed-id] [status] [return-value]
                         // Adds a CheckBox to the gump. Multiple CheckBoxes can be pressed at the same time.
                         // Check the [return-value] if you want to know which CheckBoxes were selected.
-                        Logger.Warn("GUMP: Unhandled '" + gumpParams[0] + "'.");
+                        Tracer.Warn("GUMP: Unhandled '" + gumpParams[0] + "'.");
                         break;
                     case "xmfhtmlgump":
                         // XmfHtmlGump [x] [y] [width] [height] [cliloc-nr] [background] [scrollbar]
                         // Similar to the htmlgump command, but in place of the [text-id] a CliLoc entry is used.
-                        Logger.Warn("GUMP: Unhandled '" + gumpParams[0] + "'.");
+                        Tracer.Warn("GUMP: Unhandled '" + gumpParams[0] + "'.");
                         break;
                     case "xmfhtmlgumpcolor":
                         // XmfHtmlGumpColor [x] [y] [width] [height] [cliloc-nr] [background] [scrollbar] [color]
                         // Similar to the xmfhtmlgump command, but additionally a [color] can be specified.
-                        Logger.Warn("GUMP: Unhandled '" + gumpParams[0] + "'.");
+                        Tracer.Warn("GUMP: Unhandled '" + gumpParams[0] + "'.");
                         break;
                     case "xmfhtmltok":
                         // XmfHtmlTok [x] [y] [width] [height] [background] [scrollbar] [color] [cliloc-nr] @[arguments]@
                         // Similar to xmfhtmlgumpcolor command, but the parameter order is different and an additionally
                         // [argument] entry enclosed with @'s can be used. With this you can specify texts that will be
                         // added to the CliLoc entry. 
-                        Logger.Warn("GUMP: Unhandled '" + gumpParams[0] + "'.");
+                        Tracer.Warn("GUMP: Unhandled '" + gumpParams[0] + "'.");
                         break;
                     case "tooltip":
                         // Tooltip [cliloc-nr]
                         // Adds to the previous layoutarray entry a Tooltip with the in [cliloc-nr] defined CliLoc entry.
-                        Logger.Warn("GUMP: Unhandled '" + gumpParams[0] + "'.");
+                        Tracer.Warn("GUMP: Unhandled '" + gumpParams[0] + "'.");
                         break;
                     default:
-                        Logger.Warn("GUMP: Unknown piece '" + gumpParams[0] + "'.");
+                        Tracer.Warn("GUMP: Unknown piece '" + gumpParams[0] + "'.");
                         break;
                 }
             }

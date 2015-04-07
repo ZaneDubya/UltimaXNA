@@ -11,6 +11,7 @@
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Network.Packets;
 using UltimaXNA.Core.Diagnostics;
+using UltimaXNA.Diagnostics.Tracing;
 using UltimaXNA.UltimaWorld.Controllers;
 #endregion
 
@@ -114,7 +115,7 @@ namespace UltimaXNA.UltimaPackets.Server
 
             if (clientFlag == 5)
             {
-                Logger.Warn("ClientFlags == 5 in GeneralInfoPacket ExtendedStats 0x19. This is not a KR client.");
+                Tracer.Warn("ClientFlags == 5 in GeneralInfoPacket ExtendedStats 0x19. This is not a KR client.");
                 // If(Lock flags = 0xFF) //Update mobile status animation
                 //  BYTE[1] Status // Unveryfied if lock flags == FF the locks will be handled here
                 //  BYTE[1] unknown (0x00) 

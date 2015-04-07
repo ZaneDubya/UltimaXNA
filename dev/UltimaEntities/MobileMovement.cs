@@ -11,6 +11,7 @@
 #region usings
 using Microsoft.Xna.Framework;
 using System;
+using UltimaXNA.Diagnostics.Tracing;
 using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.Core.Diagnostics;
 #endregion
@@ -146,9 +147,9 @@ namespace UltimaXNA.UltimaEntities
             if (LogMovement)
             {
                 if (m_entity.IsClientEntity)
-                    Logger.Debug(ConsoleColor.Yellow, string.Format("XNA: move instant. {0}", CurrentPosition));
+                    Tracer.Debug(string.Format("XNA: move instant. {0}", CurrentPosition), ConsoleColor.Yellow);
                 else
-                    Logger.Debug(ConsoleColor.DarkYellow, string.Format("OTH: move instant. {0}", CurrentPosition));
+                    Tracer.Debug(string.Format("OTH: move instant. {0}", CurrentPosition), ConsoleColor.DarkYellow);
             }
             m_goalPosition = null;
         }
@@ -162,7 +163,7 @@ namespace UltimaXNA.UltimaEntities
                     if (PlayerMobile_CheckForMoveEvent())
                     {
                         if (LogMovement)
-                            Logger.Debug(ConsoleColor.Blue, "XNA: new move event queued.");
+                            Tracer.Debug("XNA: new move event queued.", ConsoleColor.Blue);
                     }
                 }
 
@@ -175,17 +176,17 @@ namespace UltimaXNA.UltimaEntities
                     {
                         SendMoveRequestPacket(new MoveRequestPacket((byte)moveEvent.Facing, (byte)sequence, moveEvent.Fastwalk));
                         if (LogMovement)
-                            Logger.Debug(ConsoleColor.Blue, "XNA: sent move event.");
+                            Tracer.Debug("XNA: sent move event.", ConsoleColor.Blue);
                     }
                     else if (m_entity.IsClientEntity && !moveEvent.CreatedByPlayerInput)
                     {
                         if (LogMovement)
-                            Logger.Debug(ConsoleColor.Green, "XNA: recieved move event.");
+                            Tracer.Debug("XNA: recieved move event.", ConsoleColor.Green);
                     }
                     else
                     {
                         if (LogMovement)
-                            Logger.Debug(ConsoleColor.DarkGreen, "OTH: recieved move event.");
+                            Tracer.Debug("OTH: recieved move event.", ConsoleColor.DarkGreen);
                     }
                     Facing = (Direction)moveEvent.Facing;
                     Position3D p = new Position3D(moveEvent.X, moveEvent.Y, moveEvent.Z);
@@ -213,9 +214,9 @@ namespace UltimaXNA.UltimaEntities
                     if (LogMovement)
                     {
                         if (m_entity.IsClientEntity)
-                            Logger.Debug(ConsoleColor.Cyan, string.Format("XNA: Moving: {0:0.000} {1:0.000}", MoveSequence, m_playerMobile_NextMoveInMS));
+                            Tracer.Debug(string.Format("XNA: Moving: {0:0.000} {1:0.000}", MoveSequence, m_playerMobile_NextMoveInMS), ConsoleColor.Cyan);
                         else
-                            Logger.Debug(ConsoleColor.DarkCyan, string.Format("OTH: Moving: {0:0.000}", MoveSequence));
+                            Tracer.Debug(string.Format("OTH: Moving: {0:0.000}", MoveSequence), ConsoleColor.DarkCyan);
                     }
                 }
                 else
@@ -225,9 +226,9 @@ namespace UltimaXNA.UltimaEntities
                     if (LogMovement)
                     {
                         if (m_entity.IsClientEntity)
-                            Logger.Debug(ConsoleColor.Green, string.Format("XNA: Move complete: {2} {0:0.000} {1:0.000}", MoveSequence, m_playerMobile_NextMoveInMS, CurrentPosition));
+                            Tracer.Debug(string.Format("XNA: Move complete: {2} {0:0.000} {1:0.000}", MoveSequence, m_playerMobile_NextMoveInMS, CurrentPosition), ConsoleColor.Green);
                         else
-                            Logger.Debug(ConsoleColor.DarkGreen, string.Format("OTH: Move complete: {1:0.000} {0:0.000}", MoveSequence, CurrentPosition));
+                            Tracer.Debug(string.Format("OTH: Move complete: {1:0.000} {0:0.000}", MoveSequence, CurrentPosition), ConsoleColor.DarkGreen);
                     }
                     MoveSequence = 0f;
                     if (m_entity.IsClientEntity)

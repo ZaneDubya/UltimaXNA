@@ -1,4 +1,5 @@
-﻿using UltimaXNA.UltimaEntities.EntityViews;
+﻿using UltimaXNA.Diagnostics.Tracing;
+using UltimaXNA.UltimaEntities.EntityViews;
 using UltimaXNA.UltimaWorld.Maps;
 using Microsoft.Xna.Framework;
 using UltimaXNA.UltimaEntities.Effects;
@@ -36,7 +37,7 @@ namespace UltimaXNA.UltimaEntities
             else if (entity is MovingEffect)
                 return (MovingEffectView)entity.GetView();
             else
-                Core.Diagnostics.Logger.Fatal("Cannot defer this type of object.");
+                Tracer.Critical("Cannot defer this type of object.");
             return null;
         }
 

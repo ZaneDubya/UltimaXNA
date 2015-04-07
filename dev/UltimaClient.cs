@@ -10,6 +10,7 @@
 #region usings
 using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.Network;
+using UltimaXNA.Diagnostics.Tracing;
 using UltimaXNA.UltimaEntities;
 using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaPackets.Client;
@@ -20,7 +21,7 @@ using UltimaXNA.UltimaVars;
 
 namespace UltimaXNA
 {
-    public class UltimaClient : Client
+    public class UltimaClient : ClientBase
     {
         public UltimaClientStatus Status { get; protected set; }
         private int m_ServerRelayKey = 0;
@@ -67,7 +68,7 @@ namespace UltimaXNA
             {
                 Status = UltimaClientStatus.LoginServer_WaitingForLogin;
                 if (EngineVars.Version.Length != 4)
-                    Core.Diagnostics.Logger.Warn("Cannot send seed packet: Version array is incorrectly sized.");
+                    Tracer.Warn("Cannot send seed packet: Version array is incorrectly sized.");
                 else
                     Send(new SeedPacket(1, EngineVars.Version));
                 
@@ -171,7 +172,7 @@ namespace UltimaXNA
         public void SendClientVersion()
         {
             if (EngineVars.Version.Length != 4)
-                Logger.Warn("Cannot send seed packet: Version array is incorrectly sized.");
+                Tracer.Warn("Cannot send seed packet: Version array is incorrectly sized.");
             else
                 Send(new ClientVersionPacket(EngineVars.Version));
         }
@@ -277,7 +278,7 @@ namespace UltimaXNA
             UltimaVars.EngineVars.PlayerSerial = m_QueuedLoginConfirmPacket.Serial;
             PlayerMobile player = EntityManager.GetObject<PlayerMobile>(m_QueuedLoginConfirmPacket.Serial, true);
             if (player == null)
-                Logger.Fatal("Could not create player object.");
+                Tracer.Critical("Could not create player object.");
             CheckIfOkayToLogin();
         }
 
@@ -303,16 +304,15 @@ namespace UltimaXNA
                     {
                         ((WorldModel)Engine.ActiveModel).LoginSequence();
                         LoginConfirmPacket packet = m_QueuedLoginConfirmPacket;
-                        m_QueuedLoginConfirmPacket = null;
-                        PlayerMobile player = EntityManager.GetObject<PlayerMobile>(packet.Serial, true);
+                        PlayerMobile player = EntityManager.GetObject<PlayerMobile>(m_QueuedLoginConfirmPacket.Serial, true);
                         if (player == null)
-                            Logger.Fatal("No player object ready in CheckIfOkayToLogin().");
+                            Tracer.Critical("No player object ready in CheckIfOkayToLogin().");
                         player.Move_Instant(packet.X, packet.Y, packet.Z, packet.Direction);
-                        
+                        // iPlayer.SetFacing(p.Direction);
                     }
                     else
                     {
-                        Logger.Fatal("Not in world model at login.");
+                        Tracer.Critical("Not in world model at login.");
                     }
                 }
             }

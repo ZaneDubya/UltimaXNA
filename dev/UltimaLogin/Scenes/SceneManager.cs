@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Diagnostics;
+using UltimaXNA.Diagnostics.Tracing;
 using UltimaXNA.UltimaGUI;
 
 namespace UltimaXNA.UltimaLogin.Scenes
@@ -28,7 +29,7 @@ namespace UltimaXNA.UltimaLogin.Scenes
 
                 if (m_CurrentScene != null)
                 {
-                    Logger.Debug("Starting scene transition from {0} to {1}", m_CurrentScene.GetType().Name, value == null ? "Null" : value.GetType().Name);
+                    Tracer.Debug("Starting scene transition from {0} to {1}", m_CurrentScene.GetType().Name, value == null ? "Null" : value.GetType().Name);
                     m_CurrentScene.SceneState = SceneState.TransitioningOff;
 
                     if (value == null)
@@ -40,8 +41,8 @@ namespace UltimaXNA.UltimaLogin.Scenes
                     {
                         m_CurrentScene.TransitionCompleted += new TransitionCompleteHandler(delegate()
                         {
-                            Logger.Debug("Scene transition complete.");
-                            Logger.Debug("Disposing {0}.", m_CurrentScene.GetType().Name);
+                            Tracer.Debug("Scene transition complete.");
+                            Tracer.Debug("Disposing {0}.", m_CurrentScene.GetType().Name);
 
                             m_CurrentScene.Dispose();
                             m_CurrentScene = value;
@@ -51,7 +52,7 @@ namespace UltimaXNA.UltimaLogin.Scenes
 
                                 if (!m_CurrentScene.IsInitialized)
                                 {
-                                    Logger.Debug("Initializing {0}.", m_CurrentScene.GetType().Name);
+                                    Tracer.Debug("Initializing {0}.", m_CurrentScene.GetType().Name);
                                     m_CurrentScene.Intitialize(Engine);
                                 }
                             }
@@ -62,13 +63,13 @@ namespace UltimaXNA.UltimaLogin.Scenes
                 }
                 else
                 {
-                    Logger.Debug("Starting scene {0}", value.GetType().Name);
+                    Tracer.Debug("Starting scene {0}", value.GetType().Name);
                     m_CurrentScene = value;
                     m_CurrentScene.Manager = this;
 
                     if (!m_CurrentScene.IsInitialized)
                     {
-                        Logger.Debug("Initializing {0}.", m_CurrentScene.GetType().Name);
+                        Tracer.Debug("Initializing {0}.", m_CurrentScene.GetType().Name);
                         m_CurrentScene.Intitialize(Engine);
                     }
 

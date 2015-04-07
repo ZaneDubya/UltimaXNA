@@ -11,6 +11,8 @@
 using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Network.Packets;
+using UltimaXNA.Diagnostics.Tracing;
+
 #endregion
 
 namespace UltimaXNA.UltimaPackets.Server
@@ -26,7 +28,7 @@ namespace UltimaXNA.UltimaPackets.Server
             // BYTE[4] if target is item (type 2) that's itemId, 0 otherwise
             // BYTE[1] layer (of the character, e.g left hand, right hand, ... 0-4, 0xff: moving effect or target is no char)
             // BYTE[2] yet another (unknown) additional effect that's only set for moving effect, 0 otherwise
-        	Logger.Warn("Packet 0xC7 received; support for this packet is not yet implemented.");
+        	Tracer.Warn("Packet 0xC7 received; support for this packet is not yet implemented.");
 		}
 
         public GraphicEffectExtendedPacket(PacketReader reader)

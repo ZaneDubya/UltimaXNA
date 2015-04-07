@@ -9,7 +9,7 @@
  ***************************************************************************/
 using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Rendering;
-using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Input.Windows;
 using UltimaXNA.UltimaGUI;
 
 namespace UltimaXNA.UltimaGUI.Controls

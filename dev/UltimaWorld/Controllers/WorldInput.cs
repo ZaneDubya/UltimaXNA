@@ -1,4 +1,5 @@
-﻿using UltimaXNA.Core.Input.Windows;
+﻿using UltimaXNA.Data;
+using UltimaXNA.Input.Windows;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using UltimaXNA.UltimaEntities;
@@ -112,7 +113,7 @@ namespace UltimaXNA.UltimaWorld.Controllers
 
                     // add the running flag if the mouse cursor is far enough away from the center of the screen.
                     float distanceFromCenterOfScreen = Utility.DistanceBetweenTwoPoints(new Point(400, 300), World.Engine.Input.MousePosition);
-                    if (distanceFromCenterOfScreen >= 150.0f || UltimaVars.SettingVars.AlwaysRun)
+                    if (distanceFromCenterOfScreen >= 150.0f || Settings.Game.AlwaysRun)
                         moveDirection |= Direction.Running;
 
                     // Tell the player to Move.
