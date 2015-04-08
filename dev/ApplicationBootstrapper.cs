@@ -118,7 +118,19 @@ namespace UltimaXNA
             if (!Settings.IsSettingsFileCreated)
             {
                 Settings.Debug.IsConsoleEnabled = false;
+                Settings.Debug.ShowDataRead = false;
+                Settings.Debug.ShowDataReadBreakdown = false;
+                Settings.Debug.ShowFps = false;
+                Settings.Debug.ShowUIOutlines = false;
                 Settings.Game.AlwaysRun = false;
+                Settings.Game.AutoSelectLastCharacter = false;
+                Settings.Game.IsFixedTimeStep = false;
+                Settings.Game.IsVSyncEnabled = false;
+                Settings.Game.LastCharacterName = "Jeff";
+                Settings.Game.Mouse.InteractionButton = Input.Windows.MouseButton.Left;
+                Settings.Game.Mouse.MovementButton = Input.Windows.MouseButton.Right;
+                Settings.Game.Mouse.IsEnabled = true;
+                Settings.Game.Resolution = new Resolution(800, 600);
                 Settings.Server.ServerAddress = Settings.Server.ServerAddress;
                 Settings.Server.ServerPort = Settings.Server.ServerPort;
                 Settings.Server.UserName = "";

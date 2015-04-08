@@ -25,12 +25,6 @@ namespace UltimaXNA.Data
             get { return Game; }
         }
 
-        public bool Width
-        {
-            get { return GetValue(false); }
-            set { SetValue(value); }
-        }
-
         public bool AutoSelectLastCharacter
         {
             get { return GetValue(false); }

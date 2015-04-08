@@ -44,6 +44,11 @@ namespace UltimaXNA.Data
                 _sections.Add(section, container);
             }
 
+            if(typeof(T) == typeof(string) && value == null)
+            {
+                value = (T)(object)"";
+            }
+
             var v = JToken.FromObject(value);
 
             if(container[key] != v)
