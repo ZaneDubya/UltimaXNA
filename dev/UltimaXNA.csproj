@@ -135,6 +135,9 @@
     <Compile Include="ComponentModel\EqualityHelper.cs" />
     <Compile Include="ComponentModel\NotifyPropertyChangedBase.cs" />
     <Compile Include="Configuration\Resolution.cs" />
+    <Compile Include="Configuration\SettingsContainer.cs" />
+    <Compile Include="Configuration\SettingsToken.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="UltimaWorld\AUltimaModel.cs" />
     <Compile Include="Collections\SafeDictionary.cs" />
     <Compile Include="Configuration\DebugSettings.cs" />

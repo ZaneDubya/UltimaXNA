@@ -14,16 +14,26 @@ namespace UltimaXNA.Data
             get { return Debug; }
         }
 
+        protected override string Comments
+        {
+            get 
+            { 
+                return @"This section is responsible for all debugging related settings.  " + 
+                       @"These are not needed unless you are a developer.  " +
+                       @"Changing these settings may affect performance"; 
+            }
+        }
+
         public bool IsConsoleEnabled
         {
             get { return GetValue(false); }
-            set { SetValue(value); }
+            set { SetValue(value, "Allocates a console along side of the client to help with debugging"); }
         }
 
         public bool ShowFps
         {
             get { return GetValue(false); }
-            set { SetValue(value); }
+            set { SetValue(value, "Turns on the FPS counter"); }
         }
 
         public bool ShowDataRead

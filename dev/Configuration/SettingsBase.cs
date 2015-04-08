@@ -23,7 +23,12 @@ namespace UltimaXNA.Data
             get;
         }
 
-        protected void SetValue<T>(T value, [CallerMemberName] string propertyName = null)
+        protected virtual string Comments
+        {
+            get { return string.Empty; }
+        }
+
+        protected void SetValue<T>(T value, string comment = null, [CallerMemberName] string propertyName = null)
         {
             Guard.Requires<ArgumentNullException>(!string.IsNullOrWhiteSpace(propertyName), "propertyName");
 
@@ -35,7 +40,7 @@ namespace UltimaXNA.Data
                 notify.PropertyChanged -= OnSettingPropertyChanged;
             }
 
-            _file.SetValue(Name, char.ToLowerInvariant(propertyName[0]) + propertyName.Substring(1), value);
+            _file.SetValue(Name, char.ToLowerInvariant(propertyName[0]) + propertyName.Substring(1), value, Comments, comment);
 
             notify = value as INotifyPropertyChanged;
 
