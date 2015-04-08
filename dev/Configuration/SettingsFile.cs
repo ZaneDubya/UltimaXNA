@@ -1,37 +1,34 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reactive.Concurrency;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
-using Newtonsoft.Json.Linq;
-using UltimaXNA.Diagnostics.Tracing;
+using System.Timers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Linq;
+using UltimaXNA.Diagnostics.Tracing;
 
 namespace UltimaXNA.Data
 {
     public class SettingsFile
     {
         private static readonly object _syncRoot = new object();
-
         private readonly string _filename;
-        private readonly Subject<bool> _isDirty;
-
+        private readonly Timer _saveTimer;
         private Dictionary<string, JContainer> _sections;
 
         public SettingsFile(string filename)
         {
+            _saveTimer = new Timer();
+            _saveTimer.Interval = 300; // 0.3 Seconds
+            _saveTimer.AutoReset = true;
+            _saveTimer.Elapsed += OnTimerElapsed;
+
             _filename = filename;
             _sections = new Dictionary<string, JContainer>();
 
-            _isDirty = new Subject<bool>();
-            _isDirty.Throttle(TimeSpan.FromSeconds(1), Scheduler.Default);
-            _isDirty.Subscribe(OnDirtyChanged);
-
             Reload();
         }
-        
+
         public bool Exists
         {
             get { return File.Exists(_filename); }
@@ -41,7 +38,7 @@ namespace UltimaXNA.Data
         {
             JContainer container;
 
-            if (!_sections.TryGetValue(section, out container))
+            if(!_sections.TryGetValue(section, out container))
             {
                 container = JToken.Parse("{}") as JContainer;
                 _sections.Add(section, container);
@@ -49,7 +46,7 @@ namespace UltimaXNA.Data
 
             var v = JToken.FromObject(value);
 
-            if (container[key] != v)
+            if(container[key] != v)
             {
                 container[key] = v;
                 InvalidateDirty();
@@ -58,7 +55,7 @@ namespace UltimaXNA.Data
 
         public T GetValue<T>(string section, string key, T defaultValue = default(T))
         {
-            if (!_sections.ContainsKey(section))
+            if(!_sections.ContainsKey(section))
             {
                 return defaultValue;
             }
@@ -69,19 +66,55 @@ namespace UltimaXNA.Data
             return value == null ? defaultValue : value.ToObject<T>();
         }
 
-        private void Reload()
+        public void Save()
         {
-            if (File.Exists(_filename))
+            try
             {
-                Load();
+                lock(_syncRoot)
+                {
+                    var settings = new JsonSerializerSettings
+                                   {
+                                       NullValueHandling = NullValueHandling.Ignore,
+                                       DateFormatHandling = DateFormatHandling.IsoDateFormat,
+                                       DateParseHandling = DateParseHandling.DateTimeOffset,
+                                       DateTimeZoneHandling = DateTimeZoneHandling.Local,
+                                   };
+
+                    var result = JsonConvert.SerializeObject(_sections, Formatting.Indented, settings);
+
+                    File.WriteAllText(_filename, result);
+                }
+            }
+            catch(Exception e)
+            {
+                Tracer.Error(e);
             }
         }
 
-        private void OnDirtyChanged(bool isDirty)
+        internal void InvalidateDirty()
         {
-            lock (_isDirty)
+            //Lock the timer so we dont start it while its saving
+            lock(_saveTimer)
+            {
+                _saveTimer.Stop();
+                _saveTimer.Start();
+            }
+        }
+
+        private void OnTimerElapsed(object sender, ElapsedEventArgs e)
+        {
+            // Lock the timer so we dont start it till its done save.
+            lock(_saveTimer)
             {
                 Save();
+            }
+        }
+
+        private void Reload()
+        {
+            if(File.Exists(_filename))
+            {
+                Load();
             }
         }
 
@@ -91,9 +124,9 @@ namespace UltimaXNA.Data
 
             try
             {
-                lock (_syncRoot)
+                lock(_syncRoot)
                 {
-                    if (!File.Exists(_filename))
+                    if(!File.Exists(_filename))
                     {
                         return;
                     }
@@ -109,40 +142,10 @@ namespace UltimaXNA.Data
                     _sections = JsonConvert.DeserializeObject<Dictionary<string, JContainer>>(contents, settings);
                 }
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 Tracer.Error(e);
             }
-        }
-
-        public void Save()
-        {
-            try
-            {
-                lock (_syncRoot)
-                {
-                    var settings = new JsonSerializerSettings
-                                   {
-                                       NullValueHandling = NullValueHandling.Ignore,
-                                       DateFormatHandling = DateFormatHandling.IsoDateFormat,
-                                       DateParseHandling = DateParseHandling.DateTimeOffset,
-                                       DateTimeZoneHandling = DateTimeZoneHandling.Local,
-                                   };
-
-                    var result = JsonConvert.SerializeObject(_sections, Formatting.Indented, settings);
-
-                    File.WriteAllText(_filename, result);
-                }
-            }
-            catch (Exception e)
-            {
-                Tracer.Error(e);
-            }
-        }
-
-        internal void InvalidateDirty()
-        {
-            _isDirty.OnNext(true);
         }
     }
 }
