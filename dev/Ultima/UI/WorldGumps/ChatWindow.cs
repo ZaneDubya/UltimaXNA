@@ -40,8 +40,10 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
         {
             if (m_Input == null)
             {
-                m_Input = new TextEntry(this, 0, 1, Engine.UserInterface.Height - TextUni.GetFont(0).Height + 4, 400, TextUni.GetFont(0).Height, 0, 0, 64, string.Empty);
+                m_Input = new TextEntry(this, 0, 1, Engine.UserInterface.Height - TextUni.GetFont(0).Height , 400, TextUni.GetFont(0).Height, 0, 0, 64, string.Empty);
                 m_Input.LegacyCarat = true;
+
+                AddControl(new CheckerTrans(this, 0, 0, Engine.UserInterface.Height - 20, Engine.UserInterface.Width, 20));
                 AddControl(m_Input);
             }
 
