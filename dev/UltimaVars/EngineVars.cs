@@ -80,17 +80,6 @@ namespace UltimaXNA.UltimaVars
             return (int)System.Math.Ceiling(count);
         }
 
-        static int m_desiredFPS = 60;
-        public static int DesiredFPS
-        {
-            get { return m_desiredFPS; }
-            set { m_desiredFPS = value; }
-        }
-        public static bool LimitFPS = true;
-
-        public static MouseButton MouseButton_Interact = MouseButton.Left;
-        public static MouseButton MouseButton_Move = MouseButton.Right;
-        public static bool MouseEnabled = true;
 
         static int m_mapCount = -1;
         public static int MapCount { get { return m_mapCount; } set { m_mapCount = value; } }
@@ -101,12 +90,6 @@ namespace UltimaXNA.UltimaVars
         static bool m_minimapLarge = false;
         public static bool MiniMap_LargeFormat { get { return m_minimapLarge; } set { m_minimapLarge = value; } }
 
-        static Point m_ScreenSize;
-        public static Point ScreenSize
-        {
-            get { return m_ScreenSize; }
-            set { m_ScreenSize = value; }
-        }
 
         public static bool NewDiagonalMovement = false;
     }

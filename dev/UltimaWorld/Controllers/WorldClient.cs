@@ -953,7 +953,7 @@ namespace UltimaXNA.UltimaWorld.Controllers
             {
                 if (context.CanSell)
                 {
-                    World.Engine.Client.Send(new ContextMenuResponsePacket(context.Serial, (short)context.ContextEntry("Sell").ResponseCode));
+                    World.Engine.Client.Send(new ContextMenuResponsePacket(context.Serial, (short)context.GetContextEntry("Sell").ResponseCode));
                 }
             }
             else

@@ -12,9 +12,6 @@ namespace UltimaXNA
     {
         private static readonly Stack<ConsoleColor> _consoleColors = new Stack<ConsoleColor>();
 
-        /// <summary>
-        ///     Pushes the color to the console
-        /// </summary>
         public static void PushColor(ConsoleColor color)
         {
             try
@@ -27,9 +24,6 @@ namespace UltimaXNA
             }
         }
 
-        /// <summary>
-        ///     Pops the color of the console to the previous value.
-        /// </summary>
         public static ConsoleColor PopColor()
         {
             try
@@ -62,32 +56,22 @@ namespace UltimaXNA
         [DllImport(Kernel32_DllName)]
         private static extern int GetConsoleOutputCP();
 
-        /// <summary>
-        /// Creates a new console instance if the process is not attached to a console already.
-        /// </summary>
         public static void Show()
         {
-            //#if DEBUG
             if (!HasConsole)
             {
                 AllocConsole();
                 InvalidateOutAndError();
             }
-            //#endif
         }
 
-        /// <summary>
-        /// If the process has a console attached to it, it will be detached and no longer visible. Writing to the System.Console is still possible, but no output will be shown.
-        /// </summary>
         public static void Hide()
         {
-            //#if DEBUG
             if (HasConsole)
             {
                 SetOutAndErrorNull();
                 FreeConsole();
             }
-            //#endif
         }
 
         public static void Toggle()

@@ -52,7 +52,7 @@ namespace UltimaXNA.Data
             if (container[key] != v)
             {
                 container[key] = v;
-                _isDirty.OnNext(true);
+                InvalidateDirty();
             }
         }
 
@@ -138,6 +138,11 @@ namespace UltimaXNA.Data
             {
                 Tracer.Error(e);
             }
+        }
+
+        internal void InvalidateDirty()
+        {
+            _isDirty.OnNext(true);
         }
     }
 }

@@ -7,34 +7,103 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using System;
+
+using UltimaXNA.UltimaPackets.Server;
 
 namespace UltimaXNA.UltimaVars
 {
-    static class Features
+    internal static class Features
     {
-        static uint m_featureFlags;
-        public static bool EnableT2A { get { return ((m_featureFlags & 0x1) != 0); } }
-        public static bool EnableRen { get { return ((m_featureFlags & 0x2) != 0); } }
-        public static bool EnableThirdDawn { get { return ((m_featureFlags & 0x4) != 0); } }
-        public static bool EnableLBR { get { return ((m_featureFlags & 0x8) != 0); } }
-        public static bool EnableAOS { get { return ((m_featureFlags & 0x10) != 0); } }
-        public static bool Enable6CharSlots { get { return ((m_featureFlags & 0x20) != 0); } }
-        public static bool EnableSE { get { return ((m_featureFlags & 0x40) != 0); } }
-        public static bool EnableML { get { return ((m_featureFlags & 0x80) != 0); } }
-        public static bool Enable8thSplash { get { return ((m_featureFlags & 0x100) != 0); } }
-        public static bool Enable9thSplash { get { return ((m_featureFlags & 0x200) != 0); } }
-        public static bool Enable10thAge { get { return ((m_featureFlags & 0x400) != 0); } }
-        public static bool EnableMoreStorage { get { return ((m_featureFlags & 0x800) != 0); } }
-        public static bool Enable7CharSlots { get { return ((m_featureFlags & 0x1000) != 0); } }
-        public static bool Enable10thAgeFaces { get { return ((m_featureFlags & 0x2000) != 0); } }
-        public static bool EnableTrialAccount { get { return ((m_featureFlags & 0x4000) != 0); } }
-        public static bool Enable11thAge { get { return ((m_featureFlags & 0x8000) != 0); } }
-        public static bool EnableSA { get { return ((m_featureFlags & 0x10000) != 0); } }
+        private static FeatureFlags _flags;
 
-        public static void SetFlags(uint flags)
+        public static bool EnableT2A
         {
-            m_featureFlags |= flags;
+            get { return _flags.HasFlag(FeatureFlags.TheSecondAge); }
+        }
+
+        public static bool EnableRen
+        {
+            get { return _flags.HasFlag(FeatureFlags.Renaissance); }
+        }
+
+        public static bool EnableThirdDawn
+        {
+            get { return _flags.HasFlag(FeatureFlags.ThirdDawn); }
+        }
+
+        public static bool EnableLBR
+        {
+            get { return _flags.HasFlag(FeatureFlags.LordBlackthornsRevenge); }
+        }
+
+        public static bool EnableAOS
+        {
+            get { return _flags.HasFlag(FeatureFlags.AgeOfShadows); }
+        }
+
+        public static bool Enable6CharSlots
+        {
+            get { return _flags.HasFlag(FeatureFlags.CharacterSlot6); }
+        }
+
+        public static bool EnableSE
+        {
+            get { return _flags.HasFlag(FeatureFlags.SameraiEmpire); }
+        }
+
+        public static bool EnableML
+        {
+            get { return _flags.HasFlag(FeatureFlags.MondainsLegacy); }
+        }
+
+        public static bool Enable8thSplash
+        {
+            get { return _flags.HasFlag(FeatureFlags.Splash8); }
+        }
+
+        public static bool Enable9thSplash
+        {
+            get { return _flags.HasFlag(FeatureFlags.Splash9); }
+        }
+
+        public static bool Enable10thAge
+        {
+            get { return _flags.HasFlag(FeatureFlags.TenthAge); }
+        }
+
+        public static bool EnableMoreStorage
+        {
+            get { return _flags.HasFlag(FeatureFlags.MoreStorage); }
+        }
+
+        public static bool Enable7CharSlots
+        {
+            get { return _flags.HasFlag(FeatureFlags.TheSecondAge); }
+        }
+
+        public static bool Enable10thAgeFaces
+        {
+            get { return _flags.HasFlag(FeatureFlags.TenthAgeFaces); }
+        }
+
+        public static bool EnableTrialAccount
+        {
+            get { return _flags.HasFlag(FeatureFlags.TrialAccount); }
+        }
+
+        public static bool Enable11thAge
+        {
+            get { return _flags.HasFlag(FeatureFlags.EleventhAge); }
+        }
+
+        public static bool EnableSA
+        {
+            get { return _flags.HasFlag(FeatureFlags.StygianAbys); }
+        }
+        
+        public static void SetFlags(FeatureFlags flags)
+        {
+            _flags |= flags;
         }
     }
 }

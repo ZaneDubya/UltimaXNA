@@ -1,6 +1,7 @@
 ﻿#region Usings
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -19,9 +20,15 @@ namespace UltimaXNA
 {
     public sealed class ApplicationBootstrapper
     {
+        [STAThread]
+        private static void Main(string[] args)
+        {
+            new ApplicationBootstrapper(args).Initialize();
+        }
+
         private bool _isInitialized;
 
-        public ApplicationBootstrapper()
+        public ApplicationBootstrapper(string[] args)
         {
             GeneralExceptionHandler.Instance = new GeneralExceptionHandler();
         }
@@ -38,19 +45,29 @@ namespace UltimaXNA
 
         private void ConfigureTraceListeners()
         {
-#if DEBUG
-            Tracer.RegisterListener(new ConsoleOutputEventListener());
-            Tracer.RegisterListener(new DebugOutputEventListener());
-#endif
+            if (Settings.Debug.IsConsoleEnabled)
+            {
+                Tracer.RegisterListener(new ConsoleOutputEventListener());
+            }
+
+            if (Debugger.IsAttached)
+            {
+                Tracer.RegisterListener(new DebugOutputEventListener());
+            }
+
             Tracer.RegisterListener(new FileLogEventListener("debug.log"));
         }
 
+        private IContainer _container;
+
         private void Configure()
         {
-            var container = new Container();
+            var rootContainer = new Container();
 
-            ConfigureContainer(container);
-            ConfigurePlugins(container);
+            _container = rootContainer.CreateChildContainer();
+
+            ConfigureContainer(rootContainer);
+            ConfigurePlugins(_container);
         }
 
         private void ConfigurePlugins(IContainer container)
@@ -108,7 +125,7 @@ namespace UltimaXNA
                 Settings.UltimaOnline.DataDirectory = FileManager.DataPath;
             }
 
-            if (Settings.Debug.IsConsoleEnabled && !NativeMethods.HasConsole)
+            if (Settings.Debug.IsConsoleEnabled && !ConsoleManager.HasConsole)
             {
                 ConsoleManager.Show();
             }
@@ -139,7 +156,7 @@ namespace UltimaXNA
             Prepare();
             Configure();
 
-            using (var engine = new UltimaEngine(800, 600))
+            using (var engine = new UltimaEngine(_container))
             {
                 engine.Run();
             }

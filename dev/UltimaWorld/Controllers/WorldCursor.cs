@@ -17,6 +17,7 @@ using UltimaXNA.UltimaEntities;
 using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaGUI.Controls;
 using UltimaXNA.UltimaPackets.Client;
+using UltimaXNA.Data;
 #endregion
 
 namespace UltimaXNA.UltimaWorld.Controllers
@@ -42,7 +43,7 @@ namespace UltimaXNA.UltimaWorld.Controllers
 
         public override void Update()
         {
-            if (IsHoldingItem && World.Engine.Input.HandleMouseEvent(MouseEvent.Up, UltimaVars.EngineVars.MouseButton_Interact))
+            if (IsHoldingItem && World.Engine.Input.HandleMouseEvent(MouseEvent.Up, Settings.Game.Mouse.InteractionButton))
             {
                 if (World.Engine.UserInterface.IsMouseOverUI)
                 {
@@ -121,7 +122,7 @@ namespace UltimaXNA.UltimaWorld.Controllers
                     SetTargeting(TargetType.Nothing, 0);
                 }
 
-                if (World.Engine.Input.HandleMouseEvent(MouseEvent.Click, UltimaVars.EngineVars.MouseButton_Interact))
+                if (World.Engine.Input.HandleMouseEvent(MouseEvent.Click, Settings.Game.Mouse.InteractionButton))
                 {
                     // If isTargeting is true, then the target cursor is active and we are waiting for the player to target something.
                     switch (m_Targeting)

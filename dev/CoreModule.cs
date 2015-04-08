@@ -1,4 +1,8 @@
+#region Usings
+
 using UltimaXNA.Patterns.IoC;
+
+#endregion
 
 namespace UltimaXNA
 {
@@ -11,7 +15,6 @@ namespace UltimaXNA
 
         public void Load(IContainer container)
         {
-
         }
 
         public void Unload(IContainer container)

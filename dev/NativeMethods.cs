@@ -7,9 +7,13 @@
  *  
  ********************************************************/
 
+#region Usings
+
 using System;
 using System.Runtime.InteropServices;
 using UltimaXNA.Input.Windows;
+
+#endregion
 
 namespace UltimaXNA
 {
@@ -286,25 +290,6 @@ namespace UltimaXNA
 
     public static class NativeMethods
     {
-
-        [DllImport("kernel32.dll")]
-        private static extern IntPtr GetConsoleWindow();
-        [DllImport("kernel32.dll")]
-    private static extern int GetConsoleOutputCP();
-        public static bool HasConsole
-        {
-            get { return GetConsoleWindow() != IntPtr.Zero; }
-        }
-        [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern int FreeConsole();
-        public const UInt32 StdOutputHandle = 0xFFFFFFF5;
-        [DllImport("kernel32.dll")]
-        public static extern IntPtr GetStdHandle(UInt32 nStdHandle);
-        [DllImport("kernel32.dll")]
-        public static extern void SetStdHandle(UInt32 nStdHandle, IntPtr handle);
-        [DllImport("Kernel32.dll")]
-        public static extern Boolean AllocConsole();
-
         // new methods ...
         [DllImport("Imm32.dll")]
         public static extern IntPtr ImmGetContext(IntPtr hWnd);
@@ -321,7 +306,7 @@ namespace UltimaXNA
         // old methods ...
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true, ExactSpelling = true)]
         public static extern int MultiByteToWideChar(int CodePage, int dwFlags, byte[] lpMultiByteStr, int cchMultiByte, char[] lpWideCharStr, int cchWideChar);
-       
+
         [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
         public static extern short GetKeyState(int keyCode);
 
@@ -346,9 +331,9 @@ namespace UltimaXNA
         public static extern IntPtr SendMessage(IntPtr hWnd, int wMsg, int wParam, int lParam);
 
         [DllImport("user32.dll", EntryPoint = "TranslateMessage")]
-        public extern static bool TranslateMessage(ref Message m);
+        public static extern bool TranslateMessage(ref Message m);
 
         [DllImport("user32.dll")]
-        public extern static uint GetWindowThreadProcessId(IntPtr window, IntPtr module);
+        public static extern uint GetWindowThreadProcessId(IntPtr window, IntPtr module);
     }
 }

@@ -7,14 +7,26 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-#region usings
 
-using UltimaXNA.Data;
-using UltimaXNA.Input;
+#region Usings
+
+using System.Drawing;
+using System.Windows.Forms;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using UltimaXNA.Core.Rendering;
+using UltimaXNA.Data;
+using UltimaXNA.Input;
+using UltimaXNA.Patterns.IoC;
+using UltimaXNA.UltimaData;
+using UltimaXNA.UltimaData.FontsNew;
+using UltimaXNA.UltimaData.FontsOld;
 using UltimaXNA.UltimaGUI;
-using UltimaXNA.UltimaWorld;
+using UltimaXNA.UltimaLogin;
+using UltimaXNA.UltimaVars;
+using Color = Microsoft.Xna.Framework.Color;
+using Point = Microsoft.Xna.Framework.Point;
+
 #endregion
 
 namespace UltimaXNA
@@ -22,6 +34,21 @@ namespace UltimaXNA
     public class UltimaEngine : Game
     {
         public static double TotalMS = 0d;
+        private IContainer _container;
+        private AUltimaModel m_Model;
+        private AUltimaModel m_QueuedModel;
+
+        public UltimaEngine(IContainer container)
+        {
+            _container = container;
+
+            InitializeGraphicsDevice();
+
+            // TODO: Remove this code, calculate DPI from kernel32 GetDeviceCaps
+            // this is copied from IXL.BaseCore - required for finding the mouse coordinate when moving the cursor over the window.
+            var graphics = Graphics.FromHwnd(Window.Handle);
+            EngineVars.ScreenDPI = new Vector2(graphics.DpiX / 96f, graphics.DpiY / 96f);
+        }
 
         public InputManager Input
         {
@@ -41,61 +68,64 @@ namespace UltimaXNA
             private set;
         }
 
-        private AUltimaModel m_QueuedModel;
         internal AUltimaModel QueuedModel
         {
             get { return m_QueuedModel; }
             set
             {
-                if (m_QueuedModel != null)
+                if(m_QueuedModel != null)
                 {
                     m_QueuedModel.Dispose();
                     m_QueuedModel = null;
                 }
                 m_QueuedModel = value;
-                if (m_QueuedModel != null && m_QueuedModel.Engine == null)
+                if(m_QueuedModel != null && m_QueuedModel.Engine == null)
                 {
                     m_QueuedModel.Initialize(this);
                 }
             }
         }
 
-        private AUltimaModel m_Model;
         internal AUltimaModel ActiveModel
         {
             get { return m_Model; }
             set
             {
-                if (m_Model != null)
+                if(m_Model != null)
                 {
                     m_Model.Dispose();
                     m_Model = null;
                 }
                 m_Model = value;
-                if (m_Model != null && m_Model.Engine == null)
+                if(m_Model != null && m_Model.Engine == null)
                 {
                     m_Model.Initialize(this);
                 }
             }
         }
 
+        public bool IsMinimized
+        {
+            get
+            {
+                //Get out top level form via the handle.
+                var MainForm = Control.FromHandle(Window.Handle);
+                //If we are minimized don't waste time trying to draw, and avoid crash on resume.
+                if(((Form)MainForm).WindowState == FormWindowState.Minimized)
+                {
+                    return true;
+                }
+                return false;
+            }
+        }
+
         internal void ActivateQueuedModel()
         {
-            if (m_QueuedModel != null)
+            if(m_QueuedModel != null)
             {
                 ActiveModel = QueuedModel;
                 m_QueuedModel = null;
             }
-        }
-
-        public UltimaEngine(int width, int height)
-        {
-            setupGraphicsDeviceManager(width, height);
-            UltimaVars.EngineVars.ScreenSize = new Point(width, height);
-
-            // this is copied from IXL.BaseCore - required for finding the mouse coordinate when moving the cursor over the window.
-            System.Drawing.Graphics graphics = System.Drawing.Graphics.FromHwnd(Window.Handle);
-            UltimaVars.EngineVars.ScreenDPI = new Vector2(graphics.DpiX / 96f, graphics.DpiY / 96f);
         }
 
         protected override void Initialize()
@@ -109,44 +139,44 @@ namespace UltimaXNA
             UserInterface = new GUIManager(this);
 
             // Make sure we have a UO installation before loading UltimaData.
-            if (UltimaData.FileManager.IsUODataPresent)
+            if(FileManager.IsUODataPresent)
             {
                 // Initialize and load data
-                UltimaData.AnimData.Initialize();
-                UltimaData.Animations.Initialize(GraphicsDevice);
-                UltimaData.ArtData.Initialize(GraphicsDevice);
+                AnimData.Initialize();
+                Animations.Initialize(GraphicsDevice);
+                ArtData.Initialize(GraphicsDevice);
 
-                UltimaData.FontsOld.ASCIIText.Initialize(GraphicsDevice);
-                UltimaData.FontsNew.TextUni.Initialize(GraphicsDevice);
+                ASCIIText.Initialize(GraphicsDevice);
+                TextUni.Initialize(GraphicsDevice);
 
-                UltimaData.GumpData.Initialize(GraphicsDevice);
-                UltimaData.HuesXNA.Initialize(GraphicsDevice);
-                UltimaData.TexmapData.Initialize(GraphicsDevice);
-                UltimaData.StringData.LoadStringList("enu");
-                UltimaData.SkillsData.Initialize();
-                GraphicsDevice.Textures[1] = UltimaData.HuesXNA.HueTexture0;
-                GraphicsDevice.Textures[2] = UltimaData.HuesXNA.HueTexture1;
+                GumpData.Initialize(GraphicsDevice);
+                HuesXNA.Initialize(GraphicsDevice);
+                TexmapData.Initialize(GraphicsDevice);
+                StringData.LoadStringList("enu");
+                SkillsData.Initialize();
+                GraphicsDevice.Textures[1] = HuesXNA.HueTexture0;
+                GraphicsDevice.Textures[2] = HuesXNA.HueTexture1;
 
-                UltimaVars.EngineVars.EngineRunning = true;
-                UltimaVars.EngineVars.InWorld = false;
+                EngineVars.EngineRunning = true;
+                EngineVars.InWorld = false;
 
-                ActiveModel = new UltimaLogin.LoginModel();
+                ActiveModel = new LoginModel();
             }
         }
 
         protected override void Update(GameTime gameTime)
         {
-            IsFixedTimeStep = UltimaVars.EngineVars.LimitFPS;
+            IsFixedTimeStep = Settings.Game.IsFixedTimeStep;
 
-            if (!UltimaVars.EngineVars.EngineRunning)
+            if(!EngineVars.EngineRunning)
             {
                 Settings.Save();
                 Exit();
             }
             else
             {
-                double totalMS = gameTime.TotalGameTime.TotalMilliseconds;
-                double frameMS = gameTime.ElapsedGameTime.TotalMilliseconds;
+                var totalMS = gameTime.TotalGameTime.TotalMilliseconds;
+                var frameMS = gameTime.ElapsedGameTime.TotalMilliseconds;
 
                 TotalMS = totalMS;
                 Input.Update(totalMS, frameMS);
@@ -158,47 +188,40 @@ namespace UltimaXNA
 
         protected override void Draw(GameTime gameTime)
         {
-            if (!IsMinimized)
+            if(!IsMinimized)
             {
-                Core.Rendering.SpriteBatch3D.ResetZ();
+                SpriteBatch3D.ResetZ();
                 GraphicsDevice.Clear(Color.Black);
-                ActiveModel.GetView().Draw(gameTime.ElapsedGameTime.TotalMilliseconds);
+                ActiveModel.GetView()
+                    .Draw(gameTime.ElapsedGameTime.TotalMilliseconds);
                 UserInterface.Draw(gameTime.ElapsedGameTime.TotalMilliseconds);
 
-                UltimaVars.EngineVars.UpdateFPS(gameTime.ElapsedGameTime.TotalMilliseconds);
+                EngineVars.UpdateFPS(gameTime.ElapsedGameTime.TotalMilliseconds);
                 Window.Title =
-                    UltimaVars.DebugVars.Flag_DisplayFPS ? 
-                    string.Format("UltimaXNA FPS:{0}", UltimaVars.EngineVars.UpdateFPS(gameTime.ElapsedGameTime.TotalMilliseconds)) : 
-                    "UltimaXNA";
-            }
-        }
-
-        public bool IsMinimized
-        {
-            get
-            {
-                //Get out top level form via the handle.
-                System.Windows.Forms.Control MainForm = System.Windows.Forms.Form.FromHandle(Window.Handle);
-                //If we are minimized don't waste time trying to draw, and avoid crash on resume.
-                if (((System.Windows.Forms.Form)MainForm).WindowState == System.Windows.Forms.FormWindowState.Minimized)
-                    return true;
-                return false;
+                    Settings.Debug.ShowFps ?
+                        string.Format("UltimaXNA FPS:{0}", EngineVars.UpdateFPS(gameTime.ElapsedGameTime.TotalMilliseconds)) :
+                        "UltimaXNA";
             }
         }
 
         // Some settings to designate a screen size and fps limit.
-        void setupGraphicsDeviceManager(int width, int height)
+        private void InitializeGraphicsDevice()
         {
-            GraphicsDeviceManager graphicsDeviceManager = new GraphicsDeviceManager(this);
-            graphicsDeviceManager.PreferredBackBufferWidth = width;
-            graphicsDeviceManager.PreferredBackBufferHeight = height;
-            graphicsDeviceManager.SynchronizeWithVerticalRetrace = false;
+            var resolution = Settings.Game.Resolution;
+            var graphicsDeviceManager = new GraphicsDeviceManager(this)
+            {
+                PreferredBackBufferWidth = resolution.Width,
+                PreferredBackBufferHeight = resolution.Height,
+                SynchronizeWithVerticalRetrace = Settings.Game.IsVSyncEnabled
+            };
+
             graphicsDeviceManager.PreparingDeviceSettings += onPreparingDeviceSettings;
+
             IsFixedTimeStep = false;
             graphicsDeviceManager.ApplyChanges();
         }
 
-        static void onPreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
+        private static void onPreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
         {
             e.GraphicsDeviceInformation.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
         }

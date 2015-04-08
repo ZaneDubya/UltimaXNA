@@ -19,5 +19,29 @@ namespace UltimaXNA.Data
             get { return GetValue(false); }
             set { SetValue(value); }
         }
+
+        public bool ShowFps
+        {
+            get { return GetValue(false); }
+            set { SetValue(value); }
+        }
+
+        public bool ShowDataRead
+        {
+            get { return GetValue(false); }
+            set { SetValue(value); }
+        }
+
+        public bool ShowDataReadBreakdown
+        {
+            get { return GetValue(false); }
+            set { SetValue(value); }
+        }
+
+        public bool ShowUIOutlines
+        {
+            get { return GetValue(false); }
+            set { SetValue(value); }
+        }
     }
 }
