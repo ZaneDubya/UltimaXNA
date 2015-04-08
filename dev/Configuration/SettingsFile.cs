@@ -18,9 +18,12 @@ namespace UltimaXNA.Data
 
         public SettingsFile(string filename)
         {
-            _saveTimer = new Timer();
-            _saveTimer.Interval = 300; // 0.3 Seconds
-            _saveTimer.AutoReset = true;
+            _saveTimer = new Timer 
+            {
+                Interval = 300, 
+                AutoReset = true
+            };
+
             _saveTimer.Elapsed += OnTimerElapsed;
 
             _filename = filename;
@@ -46,7 +49,7 @@ namespace UltimaXNA.Data
 
             container.Comments = sectionComments;
 
-            if(typeof(T) == typeof(string) && value == null)
+            if(typeof(T) == typeof(string) && string.IsNullOrWhiteSpace(value as string))
             {
                 value = (T)(object)"";
             }
@@ -61,7 +64,7 @@ namespace UltimaXNA.Data
             }
             else
             {
-                token.Token = v;
+                token.Value = v;
                 token.Comments = valueComments;
             }
         }
@@ -73,15 +76,11 @@ namespace UltimaXNA.Data
                 return defaultValue;
             }
 
+            SettingsToken token;
+
             var container = _sections[section];
-            var token = default(SettingsToken);
 
-            if(!container.TryGetValue(key, out token))
-            {
-                return defaultValue;
-            }
-
-            return token.Token.ToObject<T>();
+            return !container.TryGetValue(key, out token) ? defaultValue : token.Value.ToObject<T>();
         }
 
         public void Save()
@@ -164,92 +163,6 @@ namespace UltimaXNA.Data
             catch(Exception e)
             {
                 Tracer.Error(e);
-            }
-        }
-
-        private sealed class CommentJsonConverter : JsonConverter
-        {
-            public override bool CanWrite
-            {
-                get { return true; }
-            }
-
-            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-            {
-                var containers = value as Dictionary<string, SettingsContainer>;
-
-                if(containers == null)
-                {
-                    return;
-                }
-
-                writer.WriteStartObject();
-
-                var textWriter = writer as JsonTextWriter;
-
-                foreach(var kvp in containers)
-                {
-                    if(!string.IsNullOrWhiteSpace(kvp.Value.Comments))
-                    {
-                        if(textWriter != null)
-                        {
-                            writer.WriteWhitespace(Environment.NewLine);
-
-                            for(int i = 0; i < textWriter.Indentation + 1; i++)
-                            {
-                                writer.WriteWhitespace(textWriter.IndentChar.ToString());
-                            }
-
-                            writer.WriteComment(kvp.Value.Comments.Wrap(80, textWriter.Indentation + 1, textWriter.IndentChar));
-                        }
-                        else
-                        {
-                            writer.WriteComment(kvp.Value.Comments);
-                        }
-                    }
-
-                    writer.WritePropertyName(kvp.Key);
-                    writer.WriteStartObject();
-
-                    foreach(var item in kvp.Value)
-                    {
-                        if(!string.IsNullOrWhiteSpace(item.Value.Comments))
-                        {
-                            if(textWriter != null)
-                            {
-                                writer.WriteWhitespace(Environment.NewLine);
-
-                                for(int i = 0; i < textWriter.Indentation + 1; i++)
-                                {
-                                    writer.WriteWhitespace(textWriter.IndentChar.ToString());
-                                }
-
-                                writer.WriteComment(item.Value.Comments.Wrap(80, textWriter.Indentation + 1, textWriter.IndentChar));
-                            }
-                            else
-                            {
-                                writer.WriteComment(item.Value.Comments);
-                            }
-                        }
-
-                        writer.WritePropertyName(item.Key);
-                        serializer.Serialize(writer, item.Value.Token);
-                    }
-
-                    writer.WriteEndObject();
-                }
-
-                writer.WriteEndObject();
-            }
-
-            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-            {
-                throw new NotImplementedException();
-            }
-
-            public override bool CanConvert(Type objectType)
-            {
-                return objectType == typeof(Dictionary<string, SettingsContainer>);
             }
         }
     }

@@ -134,6 +134,7 @@
     <Compile Include="ApplicationBootstrapper.cs" />
     <Compile Include="ComponentModel\EqualityHelper.cs" />
     <Compile Include="ComponentModel\NotifyPropertyChangedBase.cs" />
+    <Compile Include="Configuration\CommentJsonConverter.cs" />
     <Compile Include="Configuration\Resolution.cs" />
     <Compile Include="Configuration\SettingsContainer.cs" />
     <Compile Include="Configuration\SettingsToken.cs" />

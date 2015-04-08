@@ -4,12 +4,12 @@ namespace UltimaXNA.Data
 {
     internal sealed class SettingsToken
     {
-        public JToken Token;
+        public JToken Value;
         public string Comments;
 
-        public SettingsToken(JToken token, string comments = null)
+        public SettingsToken(JToken value, string comments = null)
         {
-            Token = token;
+            Value = value;
             Comments = comments;
         }
 
@@ -20,12 +20,12 @@ namespace UltimaXNA.Data
                 return false;
             }
 
-            return Token == ((SettingsToken)obj).Token;
+            return Value == ((SettingsToken)obj).Value;
         }
 
         public override int GetHashCode()
         {
-            return Token == null ? 0 : Token.GetHashCode();
+            return Value == null ? 0 : Value.GetHashCode();
         }
     }
 }
