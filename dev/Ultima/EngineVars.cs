@@ -79,7 +79,6 @@ namespace UltimaXNA.UltimaVars
         static bool m_minimapLarge = false;
         public static bool MiniMap_LargeFormat { get { return m_minimapLarge; } set { m_minimapLarge = value; } }
 
-
         public static bool NewDiagonalMovement = false;
     }
 }
