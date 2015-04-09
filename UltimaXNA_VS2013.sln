@@ -11,11 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{78D4
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExamplePlugin", "plugins\ExamplePlugin\ExamplePlugin.csproj", "{E47B15BD-68F4-4A69-9659-F4398575F01F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{103CA604-3772-457C-9465-C8561785F345}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", "dev\.nuget", "{103CA604-3772-457C-9465-C8561785F345}"
 	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
 Global
