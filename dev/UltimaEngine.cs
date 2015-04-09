@@ -43,11 +43,6 @@ namespace UltimaXNA
             _container = container;
 
             InitializeGraphicsDevice();
-
-            // TODO: Remove this code, calculate DPI from kernel32 GetDeviceCaps
-            // this is copied from IXL.BaseCore - required for finding the mouse coordinate when moving the cursor over the window.
-            var graphics = Graphics.FromHwnd(Window.Handle);
-            EngineVars.ScreenDPI = new Vector2(graphics.DpiX / 96f, graphics.DpiY / 96f);
         }
 
         public InputManager Input

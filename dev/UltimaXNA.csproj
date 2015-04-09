@@ -138,6 +138,7 @@
     <Compile Include="Configuration\Resolution.cs" />
     <Compile Include="Configuration\SettingsContainer.cs" />
     <Compile Include="Configuration\SettingsToken.cs" />
+    <Compile Include="DpiManager.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Ultima\World\AUltimaModel.cs" />
     <Compile Include="Collections\SafeDictionary.cs" />

@@ -181,7 +181,8 @@ namespace UltimaXNA.Input
 
         public MouseState CreateMouseState(MouseState state)
         {
-            var newstate = new MouseState((int)(state.X / EngineVars.ScreenDPI.X), (int)(state.Y / EngineVars.ScreenDPI.Y),
+            var dpi = DpiManager.GetSystemDpiScalar();
+            var newstate = new MouseState((int)(state.X / dpi.X), (int)(state.Y / dpi.Y),
                 state.ScrollWheelValue, state.LeftButton, state.MiddleButton, state.RightButton, state.XButton1, state.XButton2);
             return newstate;
         }

@@ -1,3 +1,5 @@
+#region Usings
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -5,12 +7,20 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Security;
 
+#endregion
+
 namespace UltimaXNA
 {
     [SuppressUnmanagedCodeSecurity]
     internal static class ConsoleManager
     {
+        private const string Kernel32_DllName = "kernel32.dll";
         private static readonly Stack<ConsoleColor> _consoleColors = new Stack<ConsoleColor>();
+
+        public static bool HasConsole
+        {
+            get { return GetConsoleWindow() != IntPtr.Zero; }
+        }
 
         public static void PushColor(ConsoleColor color)
         {
@@ -37,13 +47,6 @@ namespace UltimaXNA
             return Console.ForegroundColor;
         }
 
-        private const string Kernel32_DllName = "kernel32.dll";
-
-        public static bool HasConsole
-        {
-            get { return GetConsoleWindow() != IntPtr.Zero; }
-        }
-
         [DllImport(Kernel32_DllName)]
         private static extern bool AllocConsole();
 
@@ -53,12 +56,9 @@ namespace UltimaXNA
         [DllImport(Kernel32_DllName)]
         private static extern IntPtr GetConsoleWindow();
 
-        [DllImport(Kernel32_DllName)]
-        private static extern int GetConsoleOutputCP();
-
         public static void Show()
         {
-            if (!HasConsole)
+            if(!HasConsole)
             {
                 AllocConsole();
                 InvalidateOutAndError();
@@ -67,7 +67,7 @@ namespace UltimaXNA
 
         public static void Hide()
         {
-            if (HasConsole)
+            if(HasConsole)
             {
                 SetOutAndErrorNull();
                 FreeConsole();
@@ -76,7 +76,7 @@ namespace UltimaXNA
 
         public static void Toggle()
         {
-            if (HasConsole)
+            if(HasConsole)
             {
                 Hide();
             }
@@ -88,7 +88,7 @@ namespace UltimaXNA
 
         private static void InvalidateOutAndError()
         {
-            var type = typeof (Console);
+            var type = typeof(Console);
 
             var output = type.GetField("_out",
                 System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
