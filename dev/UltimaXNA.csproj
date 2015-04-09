@@ -131,7 +131,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="-\JetBrains\Annotations\CoreAnnotations.cs" />
-    <Compile Include="ApplicationBootstrapper.cs" />
+    <Compile Include="Bootstrapper.cs" />
     <Compile Include="ComponentModel\EqualityHelper.cs" />
     <Compile Include="ComponentModel\NotifyPropertyChangedBase.cs" />
     <Compile Include="Configuration\CommentJsonConverter.cs" />
@@ -139,7 +139,7 @@
     <Compile Include="Configuration\SettingsContainer.cs" />
     <Compile Include="Configuration\SettingsToken.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="UltimaWorld\AUltimaModel.cs" />
+    <Compile Include="Ultima\World\AUltimaModel.cs" />
     <Compile Include="Collections\SafeDictionary.cs" />
     <Compile Include="Configuration\DebugSettings.cs" />
     <Compile Include="Configuration\GameSettings.cs" />
@@ -209,7 +209,7 @@
     <Compile Include="Configuration\SettingsFile.cs" />
     <Compile Include="Ultima\Items\ItemEnchantment.cs" />
     <Compile Include="Ultima\Mobiles\NPCFlags.cs" />
-    <Compile Include="Ultima\Mobiles\PlayerQuest.cs" />
+    <Compile Include="Ultima\Mobiles\Player\PlayerQuest.cs" />
     <Compile Include="Ultima\Mobiles\UnitFlags.cs" />
     <Compile Include="Ultima\Mobiles\CurrentMaxValue.cs" />
     <Compile Include="Ultima\IO\AnimData.cs" />
@@ -220,14 +220,14 @@
     <Compile Include="Ultima\Effects\AnimatedItemEffect.cs" />
     <Compile Include="Ultima\Effects\LightningEffect.cs" />
     <Compile Include="Ultima\Effects\MovingEffect.cs" />
-    <Compile Include="Ultima\Entities\EntityViews\AEntityView.cs" />
-    <Compile Include="Ultima\Entities\EntityViews\CorpseView.cs" />
-    <Compile Include="Ultima\Entities\EntityViews\AnimatedItemEffectView.cs" />
-    <Compile Include="Ultima\Entities\EntityViews\LightningEffectView.cs" />
-    <Compile Include="Ultima\Entities\EntityViews\DeferredView.cs" />
-    <Compile Include="Ultima\Entities\EntityViews\MovingEffectView.cs" />
-    <Compile Include="Ultima\Entities\EntityViews\OverheadView.cs" />
-    <Compile Include="Ultima\Entities\DeferredEntity.cs" />
+    <Compile Include="Ultima\Graphics\AEntityView.cs" />
+    <Compile Include="Ultima\Graphics\CorpseView.cs" />
+    <Compile Include="Ultima\Graphics\AnimatedItemEffectView.cs" />
+    <Compile Include="Ultima\Graphics\LightningEffectView.cs" />
+    <Compile Include="Ultima\Graphics\DeferredView.cs" />
+    <Compile Include="Ultima\Graphics\MovingEffectView.cs" />
+    <Compile Include="Ultima\Graphics\OverheadView.cs" />
+    <Compile Include="Ultima\DeferredEntity.cs" />
     <Compile Include="Ultima\Mobiles\MobileFlags.cs" />
     <Compile Include="Ultima\IO\FontsNew\AFont.cs" />
     <Compile Include="Ultima\Network\Server\FeatureFlags.cs" />
@@ -251,33 +251,33 @@
     <Compile Include="Ultima\UI\WorldGumps\JournalGump.cs" />
     <Compile Include="Ultima\Scenes\Login\LoginClient.cs" />
     <Compile Include="Ultima\Scenes\HueTestScene.cs" />
-    <Compile Include="UltimaVars\Journaling.cs" />
-    <Compile Include="UltimaWorld\Controllers\MousePicking.cs" />
-    <Compile Include="UltimaWorld\Controllers\PickType.cs" />
-    <Compile Include="UltimaWorld\EffectManager.cs" />
-    <Compile Include="UltimaWorld\Maps\TileSorter.cs" />
-    <Compile Include="Ultima\Entities\EntityViews\GroundView.cs" />
-    <Compile Include="Ultima\Entities\EntityViews\ItemView.cs" />
-    <Compile Include="Ultima\Entities\EntityViews\MobileView.cs" />
-    <Compile Include="Ultima\Entities\Ground.cs" />
+    <Compile Include="Ultima\Mobiles\Player\Journal.cs" />
+    <Compile Include="Ultima\World\Controllers\MousePicking.cs" />
+    <Compile Include="Ultima\World\Controllers\PickType.cs" />
+    <Compile Include="Ultima\World\EffectManager.cs" />
+    <Compile Include="Ultima\World\Maps\TileSorter.cs" />
+    <Compile Include="Ultima\Graphics\GroundView.cs" />
+    <Compile Include="Ultima\Graphics\ItemView.cs" />
+    <Compile Include="Ultima\Graphics\MobileView.cs" />
+    <Compile Include="Ultima\Items\Ground.cs" />
     <Compile Include="Ultima\Items\StaticItem.cs" />
     <Compile Include="Ultima\IO\BodyData.cs" />
     <Compile Include="Ultima\UI\Controls\GumpPicBackpack.cs" />
     <Compile Include="Ultima\UI\HuedTexture.cs" />
     <Compile Include="Ultima\UI\UltimaCursor.cs" />
     <Compile Include="Ultima\UI\WorldGumps\CorpseGump.cs" />
-    <Compile Include="UltimaWorld\Controllers\WorldInteraction.cs" />
+    <Compile Include="Ultima\World\Controllers\WorldInteraction.cs" />
     <Compile Include="Ultima\Scenes\Login\LoginModel.cs" />
     <Compile Include="UltimaClientStatus.cs" />
     <Compile Include="Ultima\Scenes\Login\LoginView.cs" />
-    <Compile Include="UltimaVars\CharacterListEntry.cs" />
-    <Compile Include="UltimaVars\Characters.cs" />
-    <Compile Include="UltimaVars\ServerListEntry.cs" />
-    <Compile Include="UltimaVars\Servers.cs" />
+    <Compile Include="Ultima\Accounts\CharacterListEntry.cs" />
+    <Compile Include="Ultima\Accounts\Characters.cs" />
+    <Compile Include="Ultima\Servers\ServerListEntry.cs" />
+    <Compile Include="Ultima\Servers\Servers.cs" />
     <Compile Include="UltimaVars\EngineVars.cs" />
-    <Compile Include="UltimaVars\Features.cs" />
-    <Compile Include="UltimaVars\Skills.cs" />
-    <Compile Include="UltimaVars\StatLocks.cs" />
+    <Compile Include="Ultima\Features.cs" />
+    <Compile Include="Ultima\Mobiles\Skills.cs" />
+    <Compile Include="Ultima\Mobiles\Player\StatLocks.cs" />
     <Compile Include="Ultima\Network\Client\AsciiSpeechPacket.cs" />
     <Compile Include="Ultima\Network\Client\AttackRequestPacket.cs" />
     <Compile Include="Ultima\Network\Client\BuyItemsPacket.cs" />
@@ -317,8 +317,8 @@
     <Compile Include="Ultima\Network\Client\TargetXYZPacket.cs" />
     <Compile Include="Ultima\Network\Client\UnicodeSpeechPacket.cs" />
     <Compile Include="Ultima\Network\Client\UOGInfoRequestPacket.cs" />
-    <Compile Include="UltimaWorld\Controllers\WorldClient.cs" />
-    <Compile Include="UltimaWorld\Controllers\ContextMenu.cs" />
+    <Compile Include="Ultima\World\Controllers\WorldClient.cs" />
+    <Compile Include="Ultima\World\Controllers\ContextMenu.cs" />
     <Compile Include="Ultima\Network\Server\CharacterListUpdatePacket.cs" />
     <Compile Include="Ultima\Network\Incomplete\DisplayGumpFastPacket.cs" />
     <Compile Include="Ultima\Network\Incomplete\DisplayMenuPacket.cs" />
@@ -410,7 +410,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Ultima\IO\TileMatrixRaw.cs" />
-    <Compile Include="UltimaWorld\Controllers\WorldInput.cs" />
+    <Compile Include="Ultima\World\Controllers\WorldInput.cs" />
     <Compile Include="Ultima\UI\Controls\TextureGumpling.cs" />
     <Compile Include="Ultima\UI\HTML\Regions.cs" />
     <Compile Include="Ultima\UI\HTML\Enums.cs" />
@@ -429,18 +429,18 @@
     <Compile Include="Ultima\IO\FileManager.cs" />
     <Compile Include="Ultima\Items\Containers\Container.cs" />
     <Compile Include="Ultima\Items\Containers\Corpse.cs" />
-    <Compile Include="Ultima\Entities\AEntity.cs" />
-    <Compile Include="UltimaWorld\EntityManager.cs" />
-    <Compile Include="Ultima\Data\Position3D.cs" />
+    <Compile Include="Ultima\AEntity.cs" />
+    <Compile Include="Ultima\World\EntityManager.cs" />
+    <Compile Include="Ultima\Position3D.cs" />
     <Compile Include="Ultima\Items\Item.cs" />
     <Compile Include="Ultima\Mobiles\Mobile.cs" />
-    <Compile Include="Ultima\Entities\EntityViews\MobileAnimation.cs" />
+    <Compile Include="Ultima\Graphics\MobileAnimation.cs" />
     <Compile Include="Ultima\Mobiles\MobileEquipment.cs" />
     <Compile Include="Ultima\Mobiles\MobileMovement.cs" />
     <Compile Include="Ultima\Mobiles\MobileMovementCheck.cs" />
     <Compile Include="Ultima\Multis\Multi.cs" />
-    <Compile Include="Ultima\Entities\Overhead.cs" />
-    <Compile Include="Ultima\Mobiles\PlayerMobile.cs" />
+    <Compile Include="Ultima\Overhead.cs" />
+    <Compile Include="Ultima\Mobiles\Player\PlayerMobile.cs" />
     <Compile Include="Ultima\Mobiles\PropertyList.cs" />
     <Compile Include="Ultima\Scenes\CharacterListScene.cs" />
     <Compile Include="Ultima\Scenes\CreateCharacterScene.cs" />
@@ -448,11 +448,11 @@
     <Compile Include="Ultima\Scenes\SelectServerScene.cs" />
     <Compile Include="Graphics\VectorPolygon.cs" />
     <Compile Include="Graphics\VectorRenderer.cs" />
-    <Compile Include="UltimaWorld\Maps\MapBlock.cs" />
-    <Compile Include="UltimaWorld\StaticManager.cs" />
-    <Compile Include="UltimaWorld\Views\IsometricView.cs" />
-    <Compile Include="UltimaWorld\Maps\MapTile.cs" />
-    <Compile Include="UltimaWorld\Controllers\MouseOverList.cs" />
+    <Compile Include="Ultima\World\Maps\MapBlock.cs" />
+    <Compile Include="Ultima\World\StaticManager.cs" />
+    <Compile Include="Ultima\World\Views\IsometricView.cs" />
+    <Compile Include="Ultima\World\Maps\MapTile.cs" />
+    <Compile Include="Ultima\World\Controllers\MouseOverList.cs" />
     <Compile Include="Ultima\UI\LoginGumps\CharacterListGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\ChatWindow.cs" />
     <Compile Include="Ultima\UI\WorldGumps\ContainerGump.cs" />
@@ -514,10 +514,10 @@
     <Compile Include="Ultima\Scenes\AScene.cs" />
     <Compile Include="Ultima\Scenes\SceneManager.cs" />
     <Compile Include="Ultima\Scenes\LoginScene.cs" />
-    <Compile Include="Ultima\Data\Serial.cs" />
+    <Compile Include="Ultima\Serial.cs" />
     <Compile Include="Ultima\IO\Support\_Enums.cs" />
-    <Compile Include="UltimaWorld\Views\MiniMapView.cs" />
-    <Compile Include="UltimaWorld\Maps\Map.cs" />
+    <Compile Include="Ultima\World\Views\MiniMapView.cs" />
+    <Compile Include="Ultima\World\Maps\Map.cs" />
     <Compile Include="Graphics\SpriteBatch3D.cs" />
     <Compile Include="Graphics\VertexPositionNormalTextureHue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -525,11 +525,11 @@
     <Compile Include="Ultima\IO\FileIndex.cs" />
     <Compile Include="Ultima\IO\HueData.cs" />
     <Compile Include="Ultima\IO\Entry5D.cs" />
-    <Compile Include="UltimaWorld\Controllers\WorldCursor.cs" />
-    <Compile Include="UltimaWorld\Views\OverheadsView.cs" />
-    <Compile Include="UltimaWorld\WorldView.cs" />
+    <Compile Include="Ultima\World\Controllers\WorldCursor.cs" />
+    <Compile Include="Ultima\World\Views\OverheadsView.cs" />
+    <Compile Include="Ultima\World\WorldView.cs" />
     <Compile Include="Utility.cs" />
-    <Compile Include="UltimaWorld\WorldModel.cs" />
+    <Compile Include="Ultima\World\WorldModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <NestedContentProject Include="Content\Content.contentproj">
@@ -595,9 +595,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Ultima\Entities\Support\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
