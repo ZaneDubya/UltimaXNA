@@ -181,6 +181,12 @@ namespace UltimaXNA.UltimaData
             bool is_patched;
 
             BinaryFileReader reader = m_Index.Seek(index, out length, out extra, out is_patched);
+
+            if(reader == null)
+            {
+                return null;
+            }
+
             reader.ReadInt(); // this data is discarded. Why?
 
             int width = reader.ReadShort();
