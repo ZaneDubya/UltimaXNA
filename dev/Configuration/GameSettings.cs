@@ -1,11 +1,5 @@
 #region Usings
 
-#endregion
-
-#region Usings
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using UltimaXNA.ComponentModel;
 using UltimaXNA.Input.Windows;
 

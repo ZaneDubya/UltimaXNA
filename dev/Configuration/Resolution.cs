@@ -1,4 +1,8 @@
+#region Usings
+
 using UltimaXNA.ComponentModel;
+
+#endregion
 
 namespace UltimaXNA.Data
 {

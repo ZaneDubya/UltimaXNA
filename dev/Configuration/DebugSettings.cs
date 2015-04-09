@@ -16,11 +16,11 @@ namespace UltimaXNA.Data
 
         protected override string Comments
         {
-            get 
-            { 
-                return @"This section is responsible for all debugging related settings.  " + 
+            get
+            {
+                return @"This section is responsible for all debugging related settings.  " +
                        @"These are not needed unless you are a developer.  " +
-                       @"Changing these settings may affect performance"; 
+                       @"Changing these settings may affect performance";
             }
         }
 

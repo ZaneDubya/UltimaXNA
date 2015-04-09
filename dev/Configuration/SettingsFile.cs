@@ -1,3 +1,5 @@
+#region Usings
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,6 +8,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using UltimaXNA.Diagnostics.Tracing;
+
+#endregion
 
 namespace UltimaXNA.Data
 {
@@ -18,9 +22,9 @@ namespace UltimaXNA.Data
 
         public SettingsFile(string filename)
         {
-            _saveTimer = new Timer 
+            _saveTimer = new Timer
             {
-                Interval = 300, 
+                Interval = 300,
                 AutoReset = true
             };
 
@@ -90,13 +94,13 @@ namespace UltimaXNA.Data
                 lock(_syncRoot)
                 {
                     var settings = new JsonSerializerSettings
-                                   {
-                                       NullValueHandling = NullValueHandling.Ignore,
-                                       DateFormatHandling = DateFormatHandling.IsoDateFormat,
-                                       DateParseHandling = DateParseHandling.DateTimeOffset,
-                                       DateTimeZoneHandling = DateTimeZoneHandling.Local,
-                                       Converters = new List<JsonConverter> {new CommentJsonConverter()}
-                                   };
+                    {
+                        NullValueHandling = NullValueHandling.Ignore,
+                        DateFormatHandling = DateFormatHandling.IsoDateFormat,
+                        DateParseHandling = DateParseHandling.DateTimeOffset,
+                        DateTimeZoneHandling = DateTimeZoneHandling.Local,
+                        Converters = new List<JsonConverter> {new CommentJsonConverter()}
+                    };
 
                     var result = JsonConvert.SerializeObject(_sections, Formatting.Indented, settings);
 
@@ -151,9 +155,9 @@ namespace UltimaXNA.Data
 
                     var contents = File.ReadAllText(_filename);
                     var settings = new JsonSerializerSettings
-                                   {
-                                       NullValueHandling = NullValueHandling.Ignore,
-                                   };
+                    {
+                        NullValueHandling = NullValueHandling.Ignore,
+                    };
 
                     settings.Converters.Add(new IsoDateTimeConverter());
 

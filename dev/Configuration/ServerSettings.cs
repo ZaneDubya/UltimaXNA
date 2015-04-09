@@ -16,11 +16,7 @@ namespace UltimaXNA.Data
 
         protected override string Comments
         {
-            get
-            {
-                return @"This section is responsible for all server related settings.  " +
-                       @"These values can be modified to change the server connection.  ";
-            }
+            get { return @"This section is responsible for all server related settings.  These values can be modified to change the server connection."; }
         }
 
         public string ServerAddress

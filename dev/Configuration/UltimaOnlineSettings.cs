@@ -1,4 +1,8 @@
+#region Usings
+
 using UltimaXNA.UltimaData;
+
+#endregion
 
 namespace UltimaXNA.Data
 {

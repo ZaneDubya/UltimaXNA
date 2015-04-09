@@ -1,11 +1,15 @@
+#region Usings
+
 using Newtonsoft.Json.Linq;
+
+#endregion
 
 namespace UltimaXNA.Data
 {
     internal sealed class SettingsToken
     {
-        public JToken Value;
         public string Comments;
+        public JToken Value;
 
         public SettingsToken(JToken value, string comments = null)
         {

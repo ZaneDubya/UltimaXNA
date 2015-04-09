@@ -1,4 +1,9 @@
+#region Usings
+
 using System;
+
+#endregion
+
 namespace UltimaXNA.Data
 {
     public static class Settings

@@ -1,6 +1,10 @@
+#region Usings
+
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+
+#endregion
 
 namespace UltimaXNA.Data
 {
@@ -15,7 +19,7 @@ namespace UltimaXNA.Data
         {
             var containers = value as Dictionary<string, SettingsContainer>;
 
-            if (containers == null)
+            if(containers == null)
             {
                 return;
             }
@@ -24,15 +28,15 @@ namespace UltimaXNA.Data
 
             var textWriter = writer as JsonTextWriter;
 
-            foreach (var kvp in containers)
+            foreach(var kvp in containers)
             {
-                if (!string.IsNullOrWhiteSpace(kvp.Value.Comments))
+                if(!string.IsNullOrWhiteSpace(kvp.Value.Comments))
                 {
-                    if (textWriter != null)
+                    if(textWriter != null)
                     {
                         writer.WriteWhitespace(Environment.NewLine);
 
-                        for (int i = 0; i < textWriter.Indentation; i++)
+                        for(var i = 0; i < textWriter.Indentation; i++)
                         {
                             writer.WriteWhitespace(textWriter.IndentChar.ToString());
                         }
@@ -48,15 +52,15 @@ namespace UltimaXNA.Data
                 writer.WritePropertyName(kvp.Key);
                 writer.WriteStartObject();
 
-                foreach (var item in kvp.Value)
+                foreach(var item in kvp.Value)
                 {
-                    if (!string.IsNullOrWhiteSpace(item.Value.Comments))
+                    if(!string.IsNullOrWhiteSpace(item.Value.Comments))
                     {
-                        if (textWriter != null)
+                        if(textWriter != null)
                         {
                             writer.WriteWhitespace(Environment.NewLine);
 
-                            for (int i = 0; i < textWriter.Indentation * 2; i++)
+                            for(var i = 0; i < textWriter.Indentation * 2; i++)
                             {
                                 writer.WriteWhitespace(textWriter.IndentChar.ToString());
                             }
