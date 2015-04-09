@@ -5,8 +5,8 @@ namespace UltimaXNA.Patterns.IoC
 {
     internal class WeakDelegateFactory : ObjectFactoryBase
     {
-        private readonly WeakReference _factory;
-        private readonly Type _registerType;
+        private readonly WeakReference m_factory;
+        private readonly Type m_registerType;
 
         public WeakDelegateFactory(Type registerType, Func<Container, NamedParameterOverloads, object> factory)
         {
@@ -15,8 +15,8 @@ namespace UltimaXNA.Patterns.IoC
                 throw new ArgumentNullException("factory");
             }
 
-            _factory = new WeakReference(factory);
-            _registerType = registerType;
+            m_factory = new WeakReference(factory);
+            m_registerType = registerType;
         }
 
         public override bool AssumeConstruction
@@ -26,7 +26,7 @@ namespace UltimaXNA.Patterns.IoC
 
         public override Type CreatesType
         {
-            get { return _registerType; }
+            get { return m_registerType; }
         }
 
         public override ObjectFactoryBase StrongReferenceVariant
@@ -34,14 +34,14 @@ namespace UltimaXNA.Patterns.IoC
             get
             {
                 var factory =
-                    _factory.Target as Func<Container, NamedParameterOverloads, object>;
+                    m_factory.Target as Func<Container, NamedParameterOverloads, object>;
 
                 if (factory == null)
                 {
-                    throw new WeakReferenceException(_registerType);
+                    throw new WeakReferenceException(m_registerType);
                 }
 
-                return new DelegateFactory(_registerType, factory);
+                return new DelegateFactory(m_registerType, factory);
             }
         }
 
@@ -52,11 +52,11 @@ namespace UltimaXNA.Patterns.IoC
 
         public override object GetObject(Container container, NamedParameterOverloads parameters, ResolveOptions options)
         {
-            var factory = _factory.Target as Func<Container, NamedParameterOverloads, object>;
+            var factory = m_factory.Target as Func<Container, NamedParameterOverloads, object>;
 
             if (factory == null)
             {
-                throw new WeakReferenceException(_registerType);
+                throw new WeakReferenceException(m_registerType);
             }
 
             try
@@ -65,7 +65,7 @@ namespace UltimaXNA.Patterns.IoC
             }
             catch (Exception ex)
             {
-                throw new ResolutionException(_registerType, ex);
+                throw new ResolutionException(m_registerType, ex);
             }
         }
 

@@ -5,9 +5,9 @@ namespace UltimaXNA.Patterns.IoC
 {
     internal class InstanceFactory : ObjectFactoryBase, IDisposable
     {
-        private readonly object _instance;
-        private readonly Type _registerImplementation;
-        private readonly Type _registerType;
+        private readonly object m_instance;
+        private readonly Type m_registerImplementation;
+        private readonly Type m_registerType;
 
         public InstanceFactory(Type registerType, Type registerImplementation, object instance)
         {
@@ -16,9 +16,9 @@ namespace UltimaXNA.Patterns.IoC
                 throw new RegistrationTypeException(registerImplementation, "InstanceFactory");
             }
 
-            _registerType = registerType;
-            _registerImplementation = registerImplementation;
-            _instance = instance;
+            m_registerType = registerType;
+            m_registerImplementation = registerImplementation;
+            m_instance = instance;
         }
 
         public override bool AssumeConstruction
@@ -28,12 +28,12 @@ namespace UltimaXNA.Patterns.IoC
 
         public override Type CreatesType
         {
-            get { return _registerImplementation; }
+            get { return m_registerImplementation; }
         }
 
         public override ObjectFactoryBase MultiInstanceVariant
         {
-            get { return new MultiInstanceFactory(_registerType, _registerImplementation); }
+            get { return new MultiInstanceFactory(m_registerType, m_registerImplementation); }
         }
 
         public override ObjectFactoryBase StrongReferenceVariant
@@ -43,14 +43,14 @@ namespace UltimaXNA.Patterns.IoC
 
         public override ObjectFactoryBase WeakReferenceVariant
         {
-            get { return new WeakInstanceFactory(_registerType, _registerImplementation, _instance); }
+            get { return new WeakInstanceFactory(m_registerType, m_registerImplementation, m_instance); }
         }
 
         #region IDisposable Members
 
         public void Dispose()
         {
-            var disposable = _instance as IDisposable;
+            var disposable = m_instance as IDisposable;
 
             if (disposable != null)
             {
@@ -63,7 +63,7 @@ namespace UltimaXNA.Patterns.IoC
         public override object GetObject(Container container,
             NamedParameterOverloads parameters, ResolveOptions options)
         {
-            return _instance;
+            return m_instance;
         }
 
         public override void SetConstructor(ConstructorInfo constructor)

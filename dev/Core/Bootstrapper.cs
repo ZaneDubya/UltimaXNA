@@ -2,6 +2,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -26,7 +27,7 @@ namespace UltimaXNA
             new Bootstrapper(args).Initialize();
         }
 
-        private bool _isInitialized;
+        private bool m_isInitialized;
 
         public Bootstrapper(string[] args)
         {
@@ -58,43 +59,43 @@ namespace UltimaXNA
             Tracer.RegisterListener(new FileLogEventListener("debug.log"));
         }
 
-        private IContainer _container;
+        private IContainer m_container;
 
         private void Configure()
         {
-            var rootContainer = new Container();
+            Container rootContainer = new Container();
 
-            _container = rootContainer.CreateChildContainer();
+            m_container = rootContainer.CreateChildContainer();
 
             ConfigureContainer(rootContainer);
-            ConfigurePlugins(_container);
+            ConfigurePlugins(m_container);
         }
 
         private void ConfigurePlugins(IContainer container)
         {
-            var directory = new DirectoryInfo(Path.Combine(BaseApplicationPath, "plugins"));
+            DirectoryInfo directory = new DirectoryInfo(Path.Combine(BaseApplicationPath, "plugins"));
 
             if (!directory.Exists)
             {
                 return;
             }
 
-            var assemblies = directory.GetFiles("*.dll");
+            FileInfo[] assemblies = directory.GetFiles("*.dll");
 
-            foreach (var file in assemblies)
+            foreach (FileInfo file in assemblies)
             {
                 try
                 {
                     Tracer.Info("Loading plugin {0}.", file.Name);
 
-                    var assembly = Assembly.LoadFile(file.FullName);
-                    var modules = assembly.GetTypes().Where(t => t.GetInterfaces().Contains(typeof (IModule)));
+                    Assembly assembly = Assembly.LoadFile(file.FullName);
+                    IEnumerable<Type> modules = assembly.GetTypes().Where(t => t.GetInterfaces().Contains(typeof (IModule)));
 
-                    foreach (var module in modules)
+                    foreach (Type module in modules)
                     {
                         Tracer.Info("Activating module {0}.", module.FullName);
 
-                        var instance = (IModule) Activator.CreateInstance(module);
+                        IModule instance = (IModule)Activator.CreateInstance(module);
 
                         instance.Load(container);
                     }
@@ -108,12 +109,12 @@ namespace UltimaXNA
 
         public void Initialize()
         {
-            if (_isInitialized)
+            if (m_isInitialized)
             {
                 return;
             }
 
-            _isInitialized = true;
+            m_isInitialized = true;
 
             if (!Settings.IsSettingsFileCreated)
             {
@@ -168,7 +169,7 @@ namespace UltimaXNA
             Prepare();
             Configure();
 
-            using (var engine = new UltimaEngine(_container))
+            using (var engine = new UltimaEngine(m_container))
             {
                 engine.Run();
             }

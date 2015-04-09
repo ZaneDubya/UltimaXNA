@@ -105,10 +105,10 @@ namespace JetBrains.Annotations
     ///   [NotifyPropertyChangedInvocator]
     ///   protected virtual void NotifyChanged(string propertyName) { ... }
     ///
-    ///   private string _name;
+    ///   private string m_name;
     ///   public string Name {
-    ///     get { return _name; }
-    ///     set { _name = value; NotifyChanged("LastName"); /* Warning */ }
+    ///     get { return m_name; }
+    ///     set { m_name = value; NotifyChanged("LastName"); /* Warning */ }
     ///   }
     /// }
     /// </code>

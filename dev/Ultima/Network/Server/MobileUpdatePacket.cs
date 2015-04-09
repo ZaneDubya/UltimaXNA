@@ -24,7 +24,7 @@ namespace UltimaXNA.UltimaPackets.Server
 {
     public class MobileUpdatePacket : RecvPacket
     {
-        readonly Serial _serial;
+        readonly Serial m_serial;
         readonly short m_body;
         readonly short m_x;
         readonly short m_y;
@@ -35,7 +35,7 @@ namespace UltimaXNA.UltimaPackets.Server
 
         public Serial Serial
         {
-            get { return _serial; }
+            get { return m_serial; }
         }
 
         public short BodyID
@@ -76,7 +76,7 @@ namespace UltimaXNA.UltimaPackets.Server
         public MobileUpdatePacket(PacketReader reader)
             : base(0x20, "Mobile Update")
         {
-            _serial = reader.ReadInt32();
+            m_serial = reader.ReadInt32();
             m_body = reader.ReadInt16();
             reader.ReadByte(); // Always 0
             m_hue = reader.ReadUInt16(); // Skin hue

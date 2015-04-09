@@ -4,11 +4,11 @@ namespace UltimaXNA.Patterns.IoC
 {
     public sealed class NamedParameterOverloads : Dictionary<string, object>
     {
-        private static readonly NamedParameterOverloads _default = new NamedParameterOverloads();
+        private static readonly NamedParameterOverloads m_default = new NamedParameterOverloads();
 
         public static NamedParameterOverloads Default
         {
-            get { return _default; }
+            get { return m_default; }
         }
 
         public static NamedParameterOverloads FromIDictionary(IDictionary<string, object> data)

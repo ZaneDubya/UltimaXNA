@@ -34,13 +34,13 @@ namespace UltimaXNA
     public class UltimaEngine : Game
     {
         public static double TotalMS = 0d;
-        private IContainer _container;
+        private IContainer m_container;
         private AUltimaModel m_Model;
         private AUltimaModel m_QueuedModel;
 
         public UltimaEngine(IContainer container)
         {
-            _container = container;
+            m_container = container;
 
             InitializeGraphicsDevice();
         }
@@ -104,7 +104,7 @@ namespace UltimaXNA
             get
             {
                 //Get out top level form via the handle.
-                var MainForm = Control.FromHandle(Window.Handle);
+                Control MainForm = Control.FromHandle(Window.Handle);
                 //If we are minimized don't waste time trying to draw, and avoid crash on resume.
                 if(((Form)MainForm).WindowState == FormWindowState.Minimized)
                 {
@@ -170,8 +170,8 @@ namespace UltimaXNA
             }
             else
             {
-                var totalMS = gameTime.TotalGameTime.TotalMilliseconds;
-                var frameMS = gameTime.ElapsedGameTime.TotalMilliseconds;
+                double totalMS = gameTime.TotalGameTime.TotalMilliseconds;
+                double frameMS = gameTime.ElapsedGameTime.TotalMilliseconds;
 
                 TotalMS = totalMS;
                 Input.Update(totalMS, frameMS);
@@ -202,8 +202,8 @@ namespace UltimaXNA
         // Some settings to designate a screen size and fps limit.
         private void InitializeGraphicsDevice()
         {
-            var resolution = Settings.Game.Resolution;
-            var graphicsDeviceManager = new GraphicsDeviceManager(this)
+            Resolution resolution = Settings.Game.Resolution;
+            GraphicsDeviceManager graphicsDeviceManager = new GraphicsDeviceManager(this)
             {
                 PreferredBackBufferWidth = resolution.Width,
                 PreferredBackBufferHeight = resolution.Height,

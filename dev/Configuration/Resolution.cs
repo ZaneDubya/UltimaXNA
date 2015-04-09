@@ -8,8 +8,8 @@ namespace UltimaXNA.Data
 {
     public class Resolution : NotifyPropertyChangedBase
     {
-        private int _height;
-        private int _width;
+        private int m_height;
+        private int m_width;
 
         public Resolution(int width, int height)
         {
@@ -19,14 +19,14 @@ namespace UltimaXNA.Data
 
         public int Height
         {
-            get { return _height; }
-            set { SetProperty(ref _height, value); }
+            get { return m_height; }
+            set { SetProperty(ref m_height, value); }
         }
 
         public int Width
         {
-            get { return _width; }
-            set { SetProperty(ref _width, value); }
+            get { return m_width; }
+            set { SetProperty(ref m_width, value); }
         }
     }
 }

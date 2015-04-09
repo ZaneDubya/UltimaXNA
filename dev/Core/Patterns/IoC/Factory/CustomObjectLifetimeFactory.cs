@@ -4,10 +4,10 @@ namespace UltimaXNA.Patterns.IoC
 {
     internal class CustomObjectLifetimeFactory : ObjectFactoryBase, IDisposable
     {
-        private readonly IObjectLifetimeProvider _lifetimeProvider;
-        private readonly Type _registerImplementation;
-        private readonly Type _registerType;
-        private readonly object _singletonLock = new object();
+        private readonly IObjectLifetimeProvider m_lifetimeProvider;
+        private readonly Type m_registerImplementation;
+        private readonly Type m_registerType;
+        private readonly object m_singletonLock = new object();
 
         public CustomObjectLifetimeFactory(Type registerType, Type registerImplementation,
             IObjectLifetimeProvider lifetimeProvider, string errorMessage)
@@ -27,22 +27,22 @@ namespace UltimaXNA.Patterns.IoC
                 throw new RegistrationTypeException(registerImplementation, errorMessage);
             }
 
-            _registerType = registerType;
-            _registerImplementation = registerImplementation;
-            _lifetimeProvider = lifetimeProvider;
+            m_registerType = registerType;
+            m_registerImplementation = registerImplementation;
+            m_lifetimeProvider = lifetimeProvider;
         }
 
         public override Type CreatesType
         {
-            get { return _registerImplementation; }
+            get { return m_registerImplementation; }
         }
 
         public override ObjectFactoryBase MultiInstanceVariant
         {
             get
             {
-                _lifetimeProvider.ReleaseObject();
-                return new MultiInstanceFactory(_registerType, _registerImplementation);
+                m_lifetimeProvider.ReleaseObject();
+                return new MultiInstanceFactory(m_registerType, m_registerImplementation);
             }
         }
 
@@ -50,8 +50,8 @@ namespace UltimaXNA.Patterns.IoC
         {
             get
             {
-                _lifetimeProvider.ReleaseObject();
-                return new SingletonFactory(_registerType, _registerImplementation);
+                m_lifetimeProvider.ReleaseObject();
+                return new SingletonFactory(m_registerType, m_registerImplementation);
             }
         }
 
@@ -59,7 +59,7 @@ namespace UltimaXNA.Patterns.IoC
 
         public void Dispose()
         {
-            _lifetimeProvider.ReleaseObject();
+            m_lifetimeProvider.ReleaseObject();
         }
 
         #endregion
@@ -67,8 +67,8 @@ namespace UltimaXNA.Patterns.IoC
         public override ObjectFactoryBase GetCustomObjectLifetimeVariant(
             IObjectLifetimeProvider lifetimeProvider, string errorString)
         {
-            _lifetimeProvider.ReleaseObject();
-            return new CustomObjectLifetimeFactory(_registerType, _registerImplementation, lifetimeProvider,
+            m_lifetimeProvider.ReleaseObject();
+            return new CustomObjectLifetimeFactory(m_registerType, m_registerImplementation, lifetimeProvider,
                 errorString);
         }
 
@@ -86,13 +86,13 @@ namespace UltimaXNA.Patterns.IoC
         {
             object current;
 
-            lock (_singletonLock)
+            lock (m_singletonLock)
             {
-                current = _lifetimeProvider.GetObject();
+                current = m_lifetimeProvider.GetObject();
                 if (current == null)
                 {
-                    current = container.ConstructType(_registerImplementation, Constructor, options);
-                    _lifetimeProvider.SetObject(current);
+                    current = container.ConstructType(m_registerImplementation, Constructor, options);
+                    m_lifetimeProvider.SetObject(current);
                 }
             }
 

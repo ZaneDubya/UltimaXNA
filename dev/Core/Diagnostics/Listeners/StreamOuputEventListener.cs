@@ -13,40 +13,40 @@ namespace UltimaXNA.Diagnostics.Tracing.Listeners
     {
         private const string Format = "{0} {1:yyyy-MM-dd HH\\:mm\\:ss\\:ffff} {2}";
 
-        private readonly object _syncRoot = new object();
-        private readonly bool _closeStreamOnDispose;
+        private readonly object m_syncRoot = new object();
+        private readonly bool m_closeStreamOnDispose;
 
-        private Stream _stream;
-        private StreamWriter _writer;
+        private Stream m_stream;
+        private StreamWriter m_writer;
 
         public StreamOuputEventListener(Stream stream, bool closeStreamOnDispose)
         {
-            _stream = stream;
-            _writer = new StreamWriter(_stream, Encoding.Unicode);
-            _closeStreamOnDispose = closeStreamOnDispose;
+            m_stream = stream;
+            m_writer = new StreamWriter(m_stream, Encoding.Unicode);
+            m_closeStreamOnDispose = closeStreamOnDispose;
         }
 
         public override void Dispose()
         {
             base.Dispose();
 
-            if (!_closeStreamOnDispose || _stream == null)
+            if (!m_closeStreamOnDispose || m_stream == null)
             {
                 return;
             }
 
-            _stream.Dispose();
-            _stream = null;
+            m_stream.Dispose();
+            m_stream = null;
         }
 
         protected override void OnEventWritten(EventWrittenEventArgs e)
         {
             var output = string.Format(Format, e.Level, DateTime.Now, e.Payload[0]);
 
-            lock (_syncRoot)
+            lock (m_syncRoot)
             {
-                _writer.WriteLine(output);
-                _writer.Flush();
+                m_writer.WriteLine(output);
+                m_writer.Flush();
             }
         }
     }

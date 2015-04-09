@@ -6,28 +6,28 @@ namespace UltimaXNA.Patterns.IoC
 {
     public sealed class MultiRegisterOptions
     {
-        private IEnumerable<RegisterOptions> _registerOptions;
+        private IEnumerable<RegisterOptions> m_registerOptions;
 
         public MultiRegisterOptions(IEnumerable<RegisterOptions> registerOptions)
         {
-            _registerOptions = registerOptions;
+            m_registerOptions = registerOptions;
         }
 
         public MultiRegisterOptions AsMultiInstance()
         {
-            _registerOptions = executeOnAllRegisterOptions(ro => ro.AsMultiInstance());
+            m_registerOptions = executeOnAllRegisterOptions(ro => ro.AsMultiInstance());
             return this;
         }
 
         public MultiRegisterOptions AsSingleton()
         {
-            _registerOptions = executeOnAllRegisterOptions(ro => ro.AsSingleton());
+            m_registerOptions = executeOnAllRegisterOptions(ro => ro.AsSingleton());
             return this;
         }
 
         private IEnumerable<RegisterOptions> executeOnAllRegisterOptions(Func<RegisterOptions, RegisterOptions> action)
         {
-            return _registerOptions.Select(action).ToList();
+            return m_registerOptions.Select(action).ToList();
         }
     }
 }

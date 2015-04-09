@@ -4,8 +4,8 @@ namespace UltimaXNA.Patterns.IoC
 {
     internal class MultiInstanceFactory : ObjectFactoryBase
     {
-        private readonly Type _registerImplementation;
-        private readonly Type _registerType;
+        private readonly Type m_registerImplementation;
+        private readonly Type m_registerType;
 
         public MultiInstanceFactory(Type registerType, Type registerImplementation)
         {
@@ -19,13 +19,13 @@ namespace UltimaXNA.Patterns.IoC
                 throw new RegistrationTypeException(registerImplementation, "MultiInstanceFactory");
             }
 
-            _registerType = registerType;
-            _registerImplementation = registerImplementation;
+            m_registerType = registerType;
+            m_registerImplementation = registerImplementation;
         }
 
         public override Type CreatesType
         {
-            get { return _registerImplementation; }
+            get { return m_registerImplementation; }
         }
 
         public override ObjectFactoryBase MultiInstanceVariant
@@ -35,13 +35,13 @@ namespace UltimaXNA.Patterns.IoC
 
         public override ObjectFactoryBase SingletonVariant
         {
-            get { return new SingletonFactory(_registerType, _registerImplementation); }
+            get { return new SingletonFactory(m_registerType, m_registerImplementation); }
         }
 
         public override ObjectFactoryBase GetCustomObjectLifetimeVariant(
             IObjectLifetimeProvider lifetimeProvider, string errorString)
         {
-            return new CustomObjectLifetimeFactory(_registerType, _registerImplementation, lifetimeProvider,
+            return new CustomObjectLifetimeFactory(m_registerType, m_registerImplementation, lifetimeProvider,
                 errorString);
         }
 
@@ -49,12 +49,12 @@ namespace UltimaXNA.Patterns.IoC
         {
             try
             {
-                return container.ConstructType(_registerImplementation, Constructor, parameters,
+                return container.ConstructType(m_registerImplementation, Constructor, parameters,
                     options);
             }
             catch (ResolutionException ex)
             {
-                throw new ResolutionException(_registerType, ex);
+                throw new ResolutionException(m_registerType, ex);
             }
         }
     }

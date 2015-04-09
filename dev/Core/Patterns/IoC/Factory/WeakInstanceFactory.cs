@@ -5,9 +5,9 @@ namespace UltimaXNA.Patterns.IoC
 {
     internal class WeakInstanceFactory : ObjectFactoryBase, IDisposable
     {
-        private readonly WeakReference _instance;
-        private readonly Type _registerImplementation;
-        private readonly Type _registerType;
+        private readonly WeakReference m_instance;
+        private readonly Type m_registerImplementation;
+        private readonly Type m_registerType;
 
         public WeakInstanceFactory(Type registerType, Type registerImplementation, object instance)
         {
@@ -16,33 +16,33 @@ namespace UltimaXNA.Patterns.IoC
                 throw new RegistrationTypeException(registerImplementation, "WeakInstanceFactory");
             }
 
-            _registerType = registerType;
-            _registerImplementation = registerImplementation;
-            _instance = new WeakReference(instance);
+            m_registerType = registerType;
+            m_registerImplementation = registerImplementation;
+            m_instance = new WeakReference(instance);
         }
 
         public override Type CreatesType
         {
-            get { return _registerImplementation; }
+            get { return m_registerImplementation; }
         }
 
         public override ObjectFactoryBase MultiInstanceVariant
         {
-            get { return new MultiInstanceFactory(_registerType, _registerImplementation); }
+            get { return new MultiInstanceFactory(m_registerType, m_registerImplementation); }
         }
 
         public override ObjectFactoryBase StrongReferenceVariant
         {
             get
             {
-                object instance = _instance.Target;
+                object instance = m_instance.Target;
 
                 if (instance == null)
                 {
-                    throw new WeakReferenceException(_registerType);
+                    throw new WeakReferenceException(m_registerType);
                 }
 
-                return new InstanceFactory(_registerType, _registerImplementation, instance);
+                return new InstanceFactory(m_registerType, m_registerImplementation, instance);
             }
         }
 
@@ -55,7 +55,7 @@ namespace UltimaXNA.Patterns.IoC
 
         public void Dispose()
         {
-            var disposable = _instance.Target as IDisposable;
+            var disposable = m_instance.Target as IDisposable;
 
             if (disposable != null)
             {
@@ -68,11 +68,11 @@ namespace UltimaXNA.Patterns.IoC
         public override object GetObject(Container container,
             NamedParameterOverloads parameters, ResolveOptions options)
         {
-            object instance = _instance.Target;
+            object instance = m_instance.Target;
 
             if (instance == null)
             {
-                throw new WeakReferenceException(_registerType);
+                throw new WeakReferenceException(m_registerType);
             }
 
             return instance;

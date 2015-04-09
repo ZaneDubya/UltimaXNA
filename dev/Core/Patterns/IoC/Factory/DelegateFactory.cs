@@ -5,8 +5,8 @@ namespace UltimaXNA.Patterns.IoC
 {
     internal class DelegateFactory : ObjectFactoryBase
     {
-        private readonly Func<Container, NamedParameterOverloads, object> _factory;
-        private readonly Type _registerType;
+        private readonly Func<Container, NamedParameterOverloads, object> m_factory;
+        private readonly Type m_registerType;
 
         public DelegateFactory(Type registerType, Func<Container, NamedParameterOverloads, object> factory)
         {
@@ -15,8 +15,8 @@ namespace UltimaXNA.Patterns.IoC
                 throw new ArgumentNullException("factory");
             }
 
-            _factory = factory;
-            _registerType = registerType;
+            m_factory = factory;
+            m_registerType = registerType;
         }
 
         public override bool AssumeConstruction
@@ -26,7 +26,7 @@ namespace UltimaXNA.Patterns.IoC
 
         public override Type CreatesType
         {
-            get { return _registerType; }
+            get { return m_registerType; }
         }
 
         public override ObjectFactoryBase StrongReferenceVariant
@@ -36,18 +36,18 @@ namespace UltimaXNA.Patterns.IoC
 
         public override ObjectFactoryBase WeakReferenceVariant
         {
-            get { return new WeakDelegateFactory(_registerType, _factory); }
+            get { return new WeakDelegateFactory(m_registerType, m_factory); }
         }
 
         public override object GetObject(Container container, NamedParameterOverloads parameters, ResolveOptions options)
         {
             try
             {
-                return _factory.Invoke(container, parameters);
+                return m_factory.Invoke(container, parameters);
             }
             catch (Exception ex)
             {
-                throw new ResolutionException(_registerType, ex);
+                throw new ResolutionException(m_registerType, ex);
             }
         }
 

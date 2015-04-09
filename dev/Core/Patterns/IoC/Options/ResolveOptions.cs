@@ -2,44 +2,44 @@ namespace UltimaXNA.Patterns.IoC
 {
     public sealed class ResolveOptions
     {
-        private static readonly ResolveOptions _default = new ResolveOptions();
-        private static readonly ResolveOptions _failNameNotFoundOnly = new ResolveOptions {NamedResolutionFailureAction = NamedResolutionFailureActions.Fail, UnregisteredResolutionAction = UnregisteredResolutionActions.AttemptResolve};
-        private static readonly ResolveOptions _failUnregisteredAndNameNotFound = new ResolveOptions {NamedResolutionFailureAction = NamedResolutionFailureActions.Fail, UnregisteredResolutionAction = UnregisteredResolutionActions.Fail};
-        private static readonly ResolveOptions _failUnregisteredOnly = new ResolveOptions {NamedResolutionFailureAction = NamedResolutionFailureActions.AttemptUnnamedResolution, UnregisteredResolutionAction = UnregisteredResolutionActions.Fail};
+        private static readonly ResolveOptions m_default = new ResolveOptions();
+        private static readonly ResolveOptions m_failNameNotFoundOnly = new ResolveOptions {NamedResolutionFailureAction = NamedResolutionFailureActions.Fail, UnregisteredResolutionAction = UnregisteredResolutionActions.AttemptResolve};
+        private static readonly ResolveOptions m_failUnregisteredAndNameNotFound = new ResolveOptions {NamedResolutionFailureAction = NamedResolutionFailureActions.Fail, UnregisteredResolutionAction = UnregisteredResolutionActions.Fail};
+        private static readonly ResolveOptions m_failUnregisteredOnly = new ResolveOptions {NamedResolutionFailureAction = NamedResolutionFailureActions.AttemptUnnamedResolution, UnregisteredResolutionAction = UnregisteredResolutionActions.Fail};
 
         public static ResolveOptions Default
         {
-            get { return _default; }
+            get { return m_default; }
         }
 
         public static ResolveOptions FailNameNotFoundOnly
         {
-            get { return _failNameNotFoundOnly; }
+            get { return m_failNameNotFoundOnly; }
         }
 
         public static ResolveOptions FailUnregisteredAndNameNotFound
         {
-            get { return _failUnregisteredAndNameNotFound; }
+            get { return m_failUnregisteredAndNameNotFound; }
         }
 
         public static ResolveOptions FailUnregisteredOnly
         {
-            get { return _failUnregisteredOnly; }
+            get { return m_failUnregisteredOnly; }
         }
 
-        private NamedResolutionFailureActions _namedResolutionFailureAction = NamedResolutionFailureActions.Fail;
-        private UnregisteredResolutionActions _unregisteredResolutionAction = UnregisteredResolutionActions.AttemptResolve;
+        private NamedResolutionFailureActions m_namedResolutionFailureAction = NamedResolutionFailureActions.Fail;
+        private UnregisteredResolutionActions m_unregisteredResolutionAction = UnregisteredResolutionActions.AttemptResolve;
 
         public NamedResolutionFailureActions NamedResolutionFailureAction
         {
-            get { return _namedResolutionFailureAction; }
-            set { _namedResolutionFailureAction = value; }
+            get { return m_namedResolutionFailureAction; }
+            set { m_namedResolutionFailureAction = value; }
         }
 
         public UnregisteredResolutionActions UnregisteredResolutionAction
         {
-            get { return _unregisteredResolutionAction; }
-            set { _unregisteredResolutionAction = value; }
+            get { return m_unregisteredResolutionAction; }
+            set { m_unregisteredResolutionAction = value; }
         }
     }
 }

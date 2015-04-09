@@ -8,21 +8,21 @@ namespace UltimaXNA.Data
 {
     public static class Settings
     {
-        private static readonly SettingsFile _file;
+        private static readonly SettingsFile m_file;
 
         static Settings()
         {
-            _file = new SettingsFile("settings.json");
+            m_file = new SettingsFile("settings.json");
 
-            Debug = new DebugSettings(_file);
-            Server = new ServerSettings(_file);
-            UltimaOnline = new UltimaOnlineSettings(_file);
-            Game = new GameSettings(_file);
+            Debug = new DebugSettings(m_file);
+            Server = new ServerSettings(m_file);
+            UltimaOnline = new UltimaOnlineSettings(m_file);
+            Game = new GameSettings(m_file);
         }
 
         public static bool IsSettingsFileCreated
         {
-            get { return _file.Exists; }
+            get { return m_file.Exists; }
         }
 
         public static DebugSettings Debug
@@ -51,13 +51,13 @@ namespace UltimaXNA.Data
 
         internal static void Save()
         {
-            _file.Save();
+            m_file.Save();
         }
 
         public static T OpenSection<T>()
             where T : SettingsBase
         {
-            var settings = (T)Activator.CreateInstance(typeof(T), _file);
+            var settings = (T)Activator.CreateInstance(typeof(T), m_file);
             return settings;
         }
     }

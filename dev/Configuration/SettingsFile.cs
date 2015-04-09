@@ -15,40 +15,40 @@ namespace UltimaXNA.Data
 {
     public class SettingsFile
     {
-        private static readonly object _syncRoot = new object();
-        private readonly string _filename;
-        private readonly Timer _saveTimer;
-        private Dictionary<string, SettingsContainer> _sections;
+        private static readonly object m_syncRoot = new object();
+        private readonly string m_filename;
+        private readonly Timer m_saveTimer;
+        private Dictionary<string, SettingsContainer> m_sections;
 
         public SettingsFile(string filename)
         {
-            _saveTimer = new Timer
+            m_saveTimer = new Timer
             {
                 Interval = 300,
                 AutoReset = true
             };
 
-            _saveTimer.Elapsed += OnTimerElapsed;
+            m_saveTimer.Elapsed += OnTimerElapsed;
 
-            _filename = filename;
-            _sections = new Dictionary<string, SettingsContainer>();
+            m_filename = filename;
+            m_sections = new Dictionary<string, SettingsContainer>();
 
             Reload();
         }
 
         public bool Exists
         {
-            get { return File.Exists(_filename); }
+            get { return File.Exists(m_filename); }
         }
 
         public void SetValue<T>(string section, string key, T value, string sectionComments = null, string valueComments = null)
         {
             SettingsContainer container;
 
-            if(!_sections.TryGetValue(section, out container))
+            if(!m_sections.TryGetValue(section, out container))
             {
                 container = new SettingsContainer(sectionComments);
-                _sections.Add(section, container);
+                m_sections.Add(section, container);
             }
 
             container.Comments = sectionComments;
@@ -75,14 +75,14 @@ namespace UltimaXNA.Data
 
         public T GetValue<T>(string section, string key, T defaultValue = default(T))
         {
-            if(!_sections.ContainsKey(section))
+            if(!m_sections.ContainsKey(section))
             {
                 return defaultValue;
             }
 
             SettingsToken token;
 
-            var container = _sections[section];
+            var container = m_sections[section];
 
             return !container.TryGetValue(key, out token) ? defaultValue : token.Value.ToObject<T>();
         }
@@ -91,7 +91,7 @@ namespace UltimaXNA.Data
         {
             try
             {
-                lock(_syncRoot)
+                lock(m_syncRoot)
                 {
                     var settings = new JsonSerializerSettings
                     {
@@ -102,9 +102,9 @@ namespace UltimaXNA.Data
                         Converters = new List<JsonConverter> {new CommentJsonConverter()}
                     };
 
-                    var result = JsonConvert.SerializeObject(_sections, Formatting.Indented, settings);
+                    var result = JsonConvert.SerializeObject(m_sections, Formatting.Indented, settings);
 
-                    File.WriteAllText(_filename, result);
+                    File.WriteAllText(m_filename, result);
                 }
             }
             catch(Exception e)
@@ -116,17 +116,17 @@ namespace UltimaXNA.Data
         internal void InvalidateDirty()
         {
             //Lock the timer so we dont start it while its saving
-            lock(_saveTimer)
+            lock(m_saveTimer)
             {
-                _saveTimer.Stop();
-                _saveTimer.Start();
+                m_saveTimer.Stop();
+                m_saveTimer.Start();
             }
         }
 
         private void OnTimerElapsed(object sender, ElapsedEventArgs e)
         {
             // Lock the timer so we dont start it till its done save.
-            lock(_saveTimer)
+            lock(m_saveTimer)
             {
                 Save();
             }
@@ -134,7 +134,7 @@ namespace UltimaXNA.Data
 
         private void Reload()
         {
-            if(File.Exists(_filename))
+            if(File.Exists(m_filename))
             {
                 Load();
             }
@@ -142,18 +142,18 @@ namespace UltimaXNA.Data
 
         private void Load()
         {
-            _sections.Clear();
+            m_sections.Clear();
 
             try
             {
-                lock(_syncRoot)
+                lock(m_syncRoot)
                 {
-                    if(!File.Exists(_filename))
+                    if(!File.Exists(m_filename))
                     {
                         return;
                     }
 
-                    var contents = File.ReadAllText(_filename);
+                    var contents = File.ReadAllText(m_filename);
                     var settings = new JsonSerializerSettings
                     {
                         NullValueHandling = NullValueHandling.Ignore,
@@ -161,7 +161,7 @@ namespace UltimaXNA.Data
 
                     settings.Converters.Add(new IsoDateTimeConverter());
 
-                    _sections = JsonConvert.DeserializeObject<Dictionary<string, SettingsContainer>>(contents, settings);
+                    m_sections = JsonConvert.DeserializeObject<Dictionary<string, SettingsContainer>>(contents, settings);
                 }
             }
             catch(Exception e)

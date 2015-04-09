@@ -15,7 +15,7 @@ namespace UltimaXNA
     internal static class ConsoleManager
     {
         private const string Kernel32_DllName = "kernel32.dll";
-        private static readonly Stack<ConsoleColor> _consoleColors = new Stack<ConsoleColor>();
+        private static readonly Stack<ConsoleColor> m_consoleColors = new Stack<ConsoleColor>();
 
         public static bool HasConsole
         {
@@ -26,7 +26,7 @@ namespace UltimaXNA
         {
             try
             {
-                _consoleColors.Push(Console.ForegroundColor);
+                m_consoleColors.Push(Console.ForegroundColor);
                 Console.ForegroundColor = color;
             }
             catch
@@ -38,7 +38,7 @@ namespace UltimaXNA
         {
             try
             {
-                Console.ForegroundColor = _consoleColors.Pop();
+                Console.ForegroundColor = m_consoleColors.Pop();
             }
             catch
             {

@@ -37,7 +37,7 @@ namespace UltimaXNA.UltimaLogin.Scenes
             m_CharListGump.OnNewCharacter += OnNewCharacter;
         }
 
-        private bool _autoSelectedCharacter;
+        private bool m_autoSelectedCharacter;
 
         public override void Update(double totalTime, double frameTime)
         {
@@ -48,9 +48,9 @@ namespace UltimaXNA.UltimaLogin.Scenes
                 switch (Engine.Client.Status)
                 {
                     case UltimaClientStatus.GameServer_CharList:
-                        if (!_autoSelectedCharacter && Settings.Game.AutoSelectLastCharacter && !string.IsNullOrWhiteSpace(Settings.Game.LastCharacterName))
+                        if (!m_autoSelectedCharacter && Settings.Game.AutoSelectLastCharacter && !string.IsNullOrWhiteSpace(Settings.Game.LastCharacterName))
                         {
-                            _autoSelectedCharacter = true;
+                            m_autoSelectedCharacter = true;
 
                             for(int i = 0; i < Characters.List.Length; i++)
                             {

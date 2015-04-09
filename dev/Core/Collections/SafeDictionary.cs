@@ -6,18 +6,18 @@ namespace UltimaXNA.Collections
 {
     public class SafeDictionary<TKey, TValue> : IDisposable
     {
-        private readonly Dictionary<TKey, TValue> _dictionary = new Dictionary<TKey, TValue>();
-        private readonly object _syncRoot = new object();
+        private readonly Dictionary<TKey, TValue> m_dictionary = new Dictionary<TKey, TValue>();
+        private readonly object m_syncRoot = new object();
 
         public TValue this[TKey key]
         {
             set
             {
-                lock (_syncRoot)
+                lock (m_syncRoot)
                 {
                     TValue current;
 
-                    if (_dictionary.TryGetValue(key, out current))
+                    if (m_dictionary.TryGetValue(key, out current))
                     {
                         var disposable = current as IDisposable;
 
@@ -27,14 +27,14 @@ namespace UltimaXNA.Collections
                         }
                     }
 
-                    _dictionary[key] = value;
+                    m_dictionary[key] = value;
                 }
             }
         }
 
         public IEnumerable<TKey> Keys
         {
-            get { return _dictionary.Keys; }
+            get { return m_dictionary.Keys; }
         }
 
         public void Dispose()
@@ -45,25 +45,25 @@ namespace UltimaXNA.Collections
 
         public void Clear()
         {
-            lock (_syncRoot)
+            lock (m_syncRoot)
             {
-                _dictionary.Clear();
+                m_dictionary.Clear();
             }
         }
 
         public bool Remove(TKey key)
         {
-            lock (_syncRoot)
+            lock (m_syncRoot)
             {
-                return _dictionary.Remove(key);
+                return m_dictionary.Remove(key);
             }
         }
 
         public bool TryGetValue(TKey key, out TValue value)
         {
-            lock (_syncRoot)
+            lock (m_syncRoot)
             {
-                return _dictionary.TryGetValue(key, out value);
+                return m_dictionary.TryGetValue(key, out value);
             }
         }
 
@@ -71,16 +71,16 @@ namespace UltimaXNA.Collections
         {
             if (disposing)
             {
-                lock (_syncRoot)
+                lock (m_syncRoot)
                 {
-                    IEnumerable<IDisposable> disposableItems = _dictionary.Values.Where(o => o is IDisposable).Cast<IDisposable>().ToArray();
+                    IEnumerable<IDisposable> disposableItems = m_dictionary.Values.Where(o => o is IDisposable).Cast<IDisposable>().ToArray();
 
                     foreach (IDisposable item in disposableItems)
                     {
                         item.Dispose();
                     }
 
-                    _dictionary.Clear();
+                    m_dictionary.Clear();
                 }
             }
         }

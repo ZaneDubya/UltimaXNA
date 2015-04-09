@@ -11,11 +11,11 @@ namespace UltimaXNA.Data
 {
     public abstract class SettingsBase
     {
-        private readonly SettingsFile _file;
+        private readonly SettingsFile m_file;
 
         protected SettingsBase(SettingsFile file)
         {
-            _file = file;
+            m_file = file;
         }
 
         protected abstract string Name
@@ -40,7 +40,7 @@ namespace UltimaXNA.Data
                 notify.PropertyChanged -= OnSettingPropertyChanged;
             }
 
-            _file.SetValue(Name, char.ToLowerInvariant(propertyName[0]) + propertyName.Substring(1), value, Comments, comment);
+            m_file.SetValue(Name, char.ToLowerInvariant(propertyName[0]) + propertyName.Substring(1), value, Comments, comment);
 
             notify = value as INotifyPropertyChanged;
 
@@ -53,12 +53,12 @@ namespace UltimaXNA.Data
         protected T GetValue<T>(T defaultValue, [CallerMemberName] string propertyName = null)
         {
             Guard.Requires<ArgumentNullException>(!string.IsNullOrWhiteSpace(propertyName), "propertyName");
-            return _file.GetValue(Name, char.ToLowerInvariant(propertyName[0]) + propertyName.Substring(1), defaultValue);
+            return m_file.GetValue(Name, char.ToLowerInvariant(propertyName[0]) + propertyName.Substring(1), defaultValue);
         }
 
         private void OnSettingPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            _file.InvalidateDirty();
+            m_file.InvalidateDirty();
         }
     }
 }

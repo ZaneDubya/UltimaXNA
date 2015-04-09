@@ -43,8 +43,8 @@ namespace UltimaXNA.UltimaWorld.Controllers
 
     public class ContextMenu
     {
-        private readonly List<ContextMenuItem> _entries = new List<ContextMenuItem>();
-        private readonly Serial _serial;
+        private readonly List<ContextMenuItem> m_entries = new List<ContextMenuItem>();
+        private readonly Serial m_serial;
 
         public bool CanBuy = false;
         public bool CanSell = false;
@@ -58,12 +58,12 @@ namespace UltimaXNA.UltimaWorld.Controllers
 
         public ContextMenu(Serial serial)
         {
-            _serial = serial;
+            m_serial = serial;
         }
 
         public Serial Serial
         {
-            get { return _serial; }
+            get { return m_serial; }
         }
 
         public bool HasContextMenu
@@ -78,27 +78,27 @@ namespace UltimaXNA.UltimaWorld.Controllers
 
         public ContextMenuItem GetContextEntry(string caption)
         {
-            return _entries.FirstOrDefault(i => i.Caption == caption);
+            return m_entries.FirstOrDefault(i => i.Caption == caption);
         }
 
         // Add a new context menu entry.
         internal void AddItem(int nResponseCode, int nStringID, int nFlags, int nHue)
         {
-            _entries.Add(new ContextMenuItem(nResponseCode, nStringID, nFlags, nHue));
+            m_entries.Add(new ContextMenuItem(nResponseCode, nStringID, nFlags, nHue));
         }
 
         // Sets up which options are available to the new client.
         internal void FinalizeMenu()
         {
-            foreach(var i in _entries)
+            foreach(ContextMenuItem item in m_entries)
             {
-                if((i.Caption.Length >= 5) && (i.Caption.Substring(0, 5) == "Train"))
+                if((item.Caption.Length >= 5) && (item.Caption.Substring(0, 5) == "Train"))
                 {
                     // train option
                 }
                 else
                 {
-                    switch(i.Caption)
+                    switch(item.Caption)
                     {
                         case "Buy":
                             CanBuy = true;
@@ -131,7 +131,7 @@ namespace UltimaXNA.UltimaWorld.Controllers
                             // unhandled
                             break;
                         default:
-                            throw new Exception("Unknown context item: " + i.Caption);
+                            throw new Exception("Unknown context item: " + item.Caption);
                     }
                 }
             }

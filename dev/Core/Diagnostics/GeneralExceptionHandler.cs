@@ -5,12 +5,12 @@ namespace UltimaXNA.Diagnostics
 {
     public class GeneralExceptionHandler
     {
-        private static GeneralExceptionHandler _instance;
+        private static GeneralExceptionHandler m_instance;
 
         public static GeneralExceptionHandler Instance
         {
-            get { return _instance ?? (_instance = new GeneralExceptionHandler()); }
-            set { _instance = value; }
+            get { return m_instance ?? (m_instance = new GeneralExceptionHandler()); }
+            set { m_instance = value; }
         }
 
         public void OnError(Exception e)

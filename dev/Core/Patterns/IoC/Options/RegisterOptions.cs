@@ -23,47 +23,47 @@ namespace UltimaXNA.Patterns.IoC
                 throw new ArgumentException("errorString is null or empty.", "errorString");
             }
 
-            ObjectFactoryBase currentFactory = instance._container.GetCurrentFactory(instance._registration);
+            ObjectFactoryBase currentFactory = instance.m_container.GetCurrentFactory(instance.m_registration);
 
             if (currentFactory == null)
             {
-                throw new RegistrationException(instance._registration.Type, errorString);
+                throw new RegistrationException(instance.m_registration.Type, errorString);
             }
 
-            return instance._container.AddUpdateRegistration(instance._registration, currentFactory.GetCustomObjectLifetimeVariant(lifetimeProvider, errorString));
+            return instance.m_container.AddUpdateRegistration(instance.m_registration, currentFactory.GetCustomObjectLifetimeVariant(lifetimeProvider, errorString));
         }
 
-        private readonly Container _container;
-        private readonly TypeRegistration _registration;
+        private readonly Container m_container;
+        private readonly TypeRegistration m_registration;
 
         public RegisterOptions(Container container, TypeRegistration registration)
         {
-            _container = container;
-            _registration = registration;
+            m_container = container;
+            m_registration = registration;
         }
 
         public RegisterOptions AsMultiInstance()
         {
-            ObjectFactoryBase currentFactory = _container.GetCurrentFactory(_registration);
+            ObjectFactoryBase currentFactory = m_container.GetCurrentFactory(m_registration);
 
             if (currentFactory == null)
             {
-                throw new RegistrationException(_registration.Type, "multi-instance");
+                throw new RegistrationException(m_registration.Type, "multi-instance");
             }
 
-            return _container.AddUpdateRegistration(_registration, currentFactory.MultiInstanceVariant);
+            return m_container.AddUpdateRegistration(m_registration, currentFactory.MultiInstanceVariant);
         }
 
         public RegisterOptions AsSingleton()
         {
-            ObjectFactoryBase currentFactory = _container.GetCurrentFactory(_registration);
+            ObjectFactoryBase currentFactory = m_container.GetCurrentFactory(m_registration);
 
             if (currentFactory == null)
             {
-                throw new RegistrationException(_registration.Type, "singleton");
+                throw new RegistrationException(m_registration.Type, "singleton");
             }
 
-            return _container.AddUpdateRegistration(_registration, currentFactory.SingletonVariant);
+            return m_container.AddUpdateRegistration(m_registration, currentFactory.SingletonVariant);
         }
 
         public RegisterOptions UsingConstructor<RegisterType>(Expression<Func<RegisterType>> constructor)
@@ -86,7 +86,7 @@ namespace UltimaXNA.Patterns.IoC
                 throw new ConstructorResolutionException(typeof (RegisterType));
             }
 
-            ObjectFactoryBase currentFactory = _container.GetCurrentFactory(_registration);
+            ObjectFactoryBase currentFactory = m_container.GetCurrentFactory(m_registration);
             if (currentFactory == null)
             {
                 throw new ConstructorResolutionException(typeof (RegisterType));
@@ -99,26 +99,26 @@ namespace UltimaXNA.Patterns.IoC
 
         public RegisterOptions WithStrongReference()
         {
-            ObjectFactoryBase currentFactory = _container.GetCurrentFactory(_registration);
+            ObjectFactoryBase currentFactory = m_container.GetCurrentFactory(m_registration);
 
             if (currentFactory == null)
             {
-                throw new RegistrationException(_registration.Type, "strong reference");
+                throw new RegistrationException(m_registration.Type, "strong reference");
             }
 
-            return _container.AddUpdateRegistration(_registration, currentFactory.StrongReferenceVariant);
+            return m_container.AddUpdateRegistration(m_registration, currentFactory.StrongReferenceVariant);
         }
 
         public RegisterOptions WithWeakReference()
         {
-            ObjectFactoryBase currentFactory = _container.GetCurrentFactory(_registration);
+            ObjectFactoryBase currentFactory = m_container.GetCurrentFactory(m_registration);
 
             if (currentFactory == null)
             {
-                throw new RegistrationException(_registration.Type, "weak reference");
+                throw new RegistrationException(m_registration.Type, "weak reference");
             }
 
-            return _container.AddUpdateRegistration(_registration, currentFactory.WeakReferenceVariant);
+            return m_container.AddUpdateRegistration(m_registration, currentFactory.WeakReferenceVariant);
         }
     }
 }

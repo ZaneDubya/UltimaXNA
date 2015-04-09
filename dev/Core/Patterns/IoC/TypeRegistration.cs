@@ -4,7 +4,7 @@ namespace UltimaXNA.Patterns.IoC
 {
     public sealed class TypeRegistration
     {
-        private readonly int _hashCode;
+        private readonly int m_hashCode;
 
         public TypeRegistration(Type type)
             : this(type, string.Empty)
@@ -16,7 +16,7 @@ namespace UltimaXNA.Patterns.IoC
             Type = type;
             Name = name;
 
-            _hashCode = String.Concat(Type.FullName, "|", Name).GetHashCode();
+            m_hashCode = String.Concat(Type.FullName, "|", Name).GetHashCode();
         }
 
         public string Name
@@ -55,7 +55,7 @@ namespace UltimaXNA.Patterns.IoC
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return m_hashCode;
         }
     }
 }

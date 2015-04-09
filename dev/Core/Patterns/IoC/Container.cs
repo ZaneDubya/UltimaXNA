@@ -38,34 +38,34 @@ namespace UltimaXNA.Patterns.IoC
             return true;
         }
 
-        private readonly Dictionary<Type, IModule> _modules = new Dictionary<Type, IModule>();
-        private readonly object _autoRegisterLock = new object();
-        private readonly Container _parent;
-        private readonly SafeDictionary<TypeRegistration, ObjectFactoryBase> _registeredTypes;
-        private bool _disposed;
+        private readonly Dictionary<Type, IModule> m_modules = new Dictionary<Type, IModule>();
+        private readonly object m_autoRegisterLock = new object();
+        private readonly Container m_parent;
+        private readonly SafeDictionary<TypeRegistration, ObjectFactoryBase> m_registeredTypes;
+        private bool m_disposed;
 
         public Container()
         {
-            _registeredTypes = new SafeDictionary<TypeRegistration, ObjectFactoryBase>();
+            m_registeredTypes = new SafeDictionary<TypeRegistration, ObjectFactoryBase>();
             registerDefaultTypes();
         }
 
         private Container(Container parent)
         {
-            _parent = parent;
-            _registeredTypes = new SafeDictionary<TypeRegistration, ObjectFactoryBase>();
+            m_parent = parent;
+            m_registeredTypes = new SafeDictionary<TypeRegistration, ObjectFactoryBase>();
             registerDefaultTypes();
         }
 
         public bool IsDisposed
         {
-            get { return _disposed; }
+            get { return m_disposed; }
         }
 
         public void RegisterModule<TModule>()
             where TModule : class, IModule
         {
-            if (_modules.ContainsKey(typeof (TModule)))
+            if (m_modules.ContainsKey(typeof (TModule)))
             {
                 throw new Exception("Unable to load module " + typeof (TModule).Name + " because it is already registered.");
             }
@@ -73,7 +73,7 @@ namespace UltimaXNA.Patterns.IoC
             Register<TModule>();
             TModule module = Resolve<TModule>();
             module.Load(this);
-            _modules.Add(typeof (TModule), module);
+            m_modules.Add(typeof (TModule), module);
         }
 
         public void AutoRegister(IEnumerable<Assembly> assemblies = null, bool ignoreDuplicateImplementations = true, Func<Type, bool> registrationPredicate = null)
@@ -141,7 +141,7 @@ namespace UltimaXNA.Patterns.IoC
 
         public Container CreateSiblingContainer()
         {
-            return new Container(_parent);
+            return new Container(m_parent);
         }
 
         public RegisterOptions Register(Type registerType)
@@ -411,7 +411,7 @@ namespace UltimaXNA.Patterns.IoC
             return tryResolveInternal(registration, parameters, options, out resolvedType);
         }
 
-        private readonly Guid _containerId = Guid.NewGuid();
+        private readonly Guid m_containerId = Guid.NewGuid();
 
         public bool TryResolve<TResolveType>(out TResolveType resolvedType,
             string name = null,
@@ -437,12 +437,12 @@ namespace UltimaXNA.Patterns.IoC
 
         public void Dispose()
         {
-            if (!_disposed)
+            if (!m_disposed)
             {
-                //Tracer.Debug("Disposing container {0}", _containerId);
+                //Tracer.Debug("Disposing container {0}", m_containerId);
 
-                _disposed = true;
-                _registeredTypes.Dispose();
+                m_disposed = true;
+                m_registeredTypes.Dispose();
 
                 GC.SuppressFinalize(this);
             }
@@ -450,7 +450,7 @@ namespace UltimaXNA.Patterns.IoC
 
         internal RegisterOptions AddUpdateRegistration(TypeRegistration typeRegistration, ObjectFactoryBase factory)
         {
-            _registeredTypes[typeRegistration] = factory;
+            m_registeredTypes[typeRegistration] = factory;
 
             return new RegisterOptions(this, typeRegistration);
         }
@@ -468,7 +468,7 @@ namespace UltimaXNA.Patterns.IoC
 
         internal object ConstructType(Type implementationType, ConstructorInfo constructor, NamedParameterOverloads parameters, ResolveOptions options)
         {
-            Guard.Requires<InvalidOperationException>(!_disposed, "Container is disposed.");
+            Guard.Requires<InvalidOperationException>(!m_disposed, "Container is disposed.");
 
             Type typeToConstruct = implementationType;
 
@@ -528,18 +528,18 @@ namespace UltimaXNA.Patterns.IoC
 
         internal ObjectFactoryBase GetCurrentFactory(TypeRegistration registration)
         {
-            Guard.Requires<InvalidOperationException>(!_disposed, "Container is disposed.");
+            Guard.Requires<InvalidOperationException>(!m_disposed, "Container is disposed.");
 
             ObjectFactoryBase current;
 
-            _registeredTypes.TryGetValue(registration, out current);
+            m_registeredTypes.TryGetValue(registration, out current);
 
             return current;
         }
 
         internal RegisterOptions RegisterInternal(Type registerType, string name, ObjectFactoryBase factory)
         {
-            Guard.Requires<InvalidOperationException>(!_disposed, "Container is disposed.");
+            Guard.Requires<InvalidOperationException>(!m_disposed, "Container is disposed.");
 
             var typeRegistration = new TypeRegistration(registerType, name);
 
@@ -548,9 +548,9 @@ namespace UltimaXNA.Patterns.IoC
 
         internal void RemoveRegistration(TypeRegistration typeRegistration)
         {
-            Guard.Requires<InvalidOperationException>(!_disposed, "Container is disposed.");
+            Guard.Requires<InvalidOperationException>(!m_disposed, "Container is disposed.");
 
-            _registeredTypes.Remove(typeRegistration);
+            m_registeredTypes.Remove(typeRegistration);
         }
 
         private static ObjectFactoryBase getDefaultObjectFactory(Type registerType, Type registerImplementation)
@@ -636,14 +636,14 @@ namespace UltimaXNA.Patterns.IoC
 
         private RegisterOptions addUpdateRegistration(TypeRegistration typeRegistration, ObjectFactoryBase factory)
         {
-            _registeredTypes[typeRegistration] = factory;
+            m_registeredTypes[typeRegistration] = factory;
 
             return new RegisterOptions(this, typeRegistration);
         }
 
         private void autoRegisterInternal(IEnumerable<Assembly> assemblies, bool ignoreDuplicateImplementations, Func<Type, bool> registrationPredicate)
         {
-            lock (_autoRegisterLock)
+            lock (m_autoRegisterLock)
             {
                 List<Type> types =
                     assemblies.SelectMany(a => a.SafeGetTypes()).Where(t => !isIgnoredType(t, registrationPredicate)).
@@ -726,7 +726,7 @@ namespace UltimaXNA.Patterns.IoC
 
         private bool canConstruct(ConstructorInfo ctor, NamedParameterOverloads parameters, ResolveOptions options)
         {
-            Guard.Requires<InvalidOperationException>(!_disposed, "Container is disposed.");
+            Guard.Requires<InvalidOperationException>(!m_disposed, "Container is disposed.");
 
             if (parameters == null)
             {
@@ -760,7 +760,7 @@ namespace UltimaXNA.Patterns.IoC
 
         private bool canResolveInternal(TypeRegistration registration, NamedParameterOverloads parameters, ResolveOptions options)
         {
-            Guard.Requires<InvalidOperationException>(!_disposed, "Container is disposed.");
+            Guard.Requires<InvalidOperationException>(!m_disposed, "Container is disposed.");
 
             if (parameters == null)
             {
@@ -771,7 +771,7 @@ namespace UltimaXNA.Patterns.IoC
             string name = registration.Name;
 
             ObjectFactoryBase factory;
-            if (_registeredTypes.TryGetValue(new TypeRegistration(checkType, name), out factory))
+            if (m_registeredTypes.TryGetValue(new TypeRegistration(checkType, name), out factory))
             {
                 if (factory.AssumeConstruction)
                 {
@@ -791,14 +791,14 @@ namespace UltimaXNA.Patterns.IoC
             if (!String.IsNullOrEmpty(name) &&
                 options.NamedResolutionFailureAction == NamedResolutionFailureActions.Fail)
             {
-                return (_parent != null) && _parent.canResolveInternal(registration, parameters, options);
+                return (m_parent != null) && m_parent.canResolveInternal(registration, parameters, options);
             }
 
             // Attemped unnamed fallback container resolution if relevant and requested
             if (!String.IsNullOrEmpty(name) &&
                 options.NamedResolutionFailureAction == NamedResolutionFailureActions.AttemptUnnamedResolution)
             {
-                if (_registeredTypes.TryGetValue(new TypeRegistration(checkType), out factory))
+                if (m_registeredTypes.TryGetValue(new TypeRegistration(checkType), out factory))
                 {
                     if (factory.AssumeConstruction)
                     {
@@ -827,13 +827,13 @@ namespace UltimaXNA.Patterns.IoC
                 (checkType.IsGenericType() &&
                  options.UnregisteredResolutionAction == UnregisteredResolutionActions.GenericsOnly))
             {
-                return (getBestConstructor(checkType, parameters, options) != null) || (_parent != null) && _parent.canResolveInternal(registration, parameters, options);
+                return (getBestConstructor(checkType, parameters, options) != null) || (m_parent != null) && m_parent.canResolveInternal(registration, parameters, options);
             }
 
             // Bubble resolution up the container tree if we have a parent
-            if (_parent != null)
+            if (m_parent != null)
             {
-                return _parent.canResolveInternal(registration, parameters, options);
+                return m_parent.canResolveInternal(registration, parameters, options);
             }
 
             return false;
@@ -869,43 +869,43 @@ namespace UltimaXNA.Patterns.IoC
 
         private ObjectFactoryBase getParentObjectFactory(TypeRegistration registration)
         {
-            if (_parent == null)
+            if (m_parent == null)
             {
                 return null;
             }
 
             ObjectFactoryBase factory;
-            if (_parent._registeredTypes.TryGetValue(registration, out factory))
+            if (m_parent.m_registeredTypes.TryGetValue(registration, out factory))
             {
-                return factory.GetFactoryForChildContainer(_parent);
+                return factory.GetFactoryForChildContainer(m_parent);
             }
 
-            return _parent.getParentObjectFactory(registration);
+            return m_parent.getParentObjectFactory(registration);
         }
 
         private IEnumerable<TypeRegistration> getParentRegistrationsForType(Type resolveType)
         {
-            if (_parent == null)
+            if (m_parent == null)
             {
                 return new TypeRegistration[] {};
             }
 
             IEnumerable<TypeRegistration> registrations =
-                _parent._registeredTypes.Keys.Where(tr => tr.Type == resolveType);
+                m_parent.m_registeredTypes.Keys.Where(tr => tr.Type == resolveType);
 
-            return registrations.Concat(_parent.getParentRegistrationsForType(resolveType));
+            return registrations.Concat(m_parent.getParentRegistrationsForType(resolveType));
         }
 
         private void registerDefaultTypes()
         {
-            Guard.Requires<InvalidOperationException>(!_disposed, "Container is disposed.");
+            Guard.Requires<InvalidOperationException>(!m_disposed, "Container is disposed.");
 
             Register<IContainer>(this);
         }
 
         private RegisterOptions registerInternal(Type registerType, string name, ObjectFactoryBase factory)
         {
-            Guard.Requires<InvalidOperationException>(!_disposed, "Container is disposed.");
+            Guard.Requires<InvalidOperationException>(!m_disposed, "Container is disposed.");
 
             var typeRegistration = new TypeRegistration(registerType, name);
 
@@ -914,10 +914,10 @@ namespace UltimaXNA.Patterns.IoC
 
         private IEnumerable<object> resolveAllInternal(Type resolveType, NamedParameterOverloads parameters, bool includeUnnamed)
         {
-            Guard.Requires<InvalidOperationException>(!_disposed, "Container is disposed.");
+            Guard.Requires<InvalidOperationException>(!m_disposed, "Container is disposed.");
 
             IEnumerable<TypeRegistration> registrations =
-                _registeredTypes.Keys.Where(tr => tr.Type == resolveType).Concat(
+                m_registeredTypes.Keys.Where(tr => tr.Type == resolveType).Concat(
                     getParentRegistrationsForType(resolveType));
 
             if (!includeUnnamed)
@@ -933,12 +933,12 @@ namespace UltimaXNA.Patterns.IoC
 
         private object resolveInternal(TypeRegistration registration, NamedParameterOverloads parameters, ResolveOptions options)
         {
-            Guard.Requires<InvalidOperationException>(!_disposed, "Container is disposed.");
+            Guard.Requires<InvalidOperationException>(!m_disposed, "Container is disposed.");
 
             ObjectFactoryBase factory;
 
             // Attempt container resolution
-            if (_registeredTypes.TryGetValue(registration, out factory))
+            if (m_registeredTypes.TryGetValue(registration, out factory))
             {
                 try
                 {
@@ -987,7 +987,7 @@ namespace UltimaXNA.Patterns.IoC
             if (!String.IsNullOrEmpty(registration.Name) &&
                 options.NamedResolutionFailureAction == NamedResolutionFailureActions.AttemptUnnamedResolution)
             {
-                if (_registeredTypes.TryGetValue(new TypeRegistration(registration.Type, string.Empty), out factory))
+                if (m_registeredTypes.TryGetValue(new TypeRegistration(registration.Type, string.Empty), out factory))
                 {
                     try
                     {
@@ -1032,13 +1032,13 @@ namespace UltimaXNA.Patterns.IoC
 
         private bool tryResolveInternal(TypeRegistration registration, NamedParameterOverloads parameters, ResolveOptions options, out object result)
         {
-            Guard.Requires<InvalidOperationException>(!_disposed, "Container is disposed.");
+            Guard.Requires<InvalidOperationException>(!m_disposed, "Container is disposed.");
 
             result = null;
             ObjectFactoryBase factory;
 
             // Attempt container resolution
-            if (_registeredTypes.TryGetValue(registration, out factory))
+            if (m_registeredTypes.TryGetValue(registration, out factory))
             {
                 result = factory.GetObject(this, parameters, options);
                 return true;
@@ -1063,7 +1063,7 @@ namespace UltimaXNA.Patterns.IoC
             if (!String.IsNullOrEmpty(registration.Name) &&
                 options.NamedResolutionFailureAction == NamedResolutionFailureActions.AttemptUnnamedResolution)
             {
-                if (_registeredTypes.TryGetValue(new TypeRegistration(registration.Type, string.Empty), out factory))
+                if (m_registeredTypes.TryGetValue(new TypeRegistration(registration.Type, string.Empty), out factory))
                 {
                     result = factory.GetObject(this, parameters, options);
                     return true;

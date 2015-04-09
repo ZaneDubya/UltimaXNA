@@ -192,11 +192,11 @@ public static class TypeExtensions
 {
     public static readonly Type[] EmptyTypes = {};
 
-    private static readonly SafeDictionary<GenericMethodCacheKey, MethodInfo> _genericMethodCache;
+    private static readonly SafeDictionary<GenericMethodCacheKey, MethodInfo> m_genericMethodCache;
 
     static TypeExtensions()
     {
-        _genericMethodCache = new SafeDictionary<GenericMethodCacheKey, MethodInfo>();
+        m_genericMethodCache = new SafeDictionary<GenericMethodCacheKey, MethodInfo>();
     }
 
     public static Assembly Assembly(this Type type)
@@ -305,10 +305,10 @@ public static class TypeExtensions
         // Shouldn't need any additional locking
         // we don't care if we do the method info generation
         // more than once before it gets cached.
-        if (!_genericMethodCache.TryGetValue(cacheKey, out method))
+        if (!m_genericMethodCache.TryGetValue(cacheKey, out method))
         {
             method = GetMethod(sourceType, bindingFlags, methodName, genericTypes, parameterTypes);
-            _genericMethodCache[cacheKey] = method;
+            m_genericMethodCache[cacheKey] = method;
         }
 
         return method;
@@ -644,19 +644,19 @@ public static class TypeExtensions
 
     private sealed class GenericMethodCacheKey
     {
-        private readonly Type[] _genericTypes;
-        private readonly int _hashCode;
-        private readonly string _methodName;
-        private readonly Type[] _parameterTypes;
-        private readonly Type _sourceType;
+        private readonly Type[] m_genericTypes;
+        private readonly int m_hashCode;
+        private readonly string m_methodName;
+        private readonly Type[] m_parameterTypes;
+        private readonly Type m_sourceType;
 
         public GenericMethodCacheKey(Type sourceType, string methodName, Type[] genericTypes, Type[] parameterTypes)
         {
-            _sourceType = sourceType;
-            _methodName = methodName;
-            _genericTypes = genericTypes;
-            _parameterTypes = parameterTypes;
-            _hashCode = GenerateHashCode();
+            m_sourceType = sourceType;
+            m_methodName = methodName;
+            m_genericTypes = genericTypes;
+            m_parameterTypes = parameterTypes;
+            m_hashCode = GenerateHashCode();
         }
 
         public override bool Equals(object obj)
@@ -667,37 +667,37 @@ public static class TypeExtensions
                 return false;
             }
 
-            if (_sourceType != cacheKey._sourceType)
+            if (m_sourceType != cacheKey.m_sourceType)
             {
                 return false;
             }
 
-            if (!String.Equals(_methodName, cacheKey._methodName, StringComparison.Ordinal))
+            if (!String.Equals(m_methodName, cacheKey.m_methodName, StringComparison.Ordinal))
             {
                 return false;
             }
 
-            if (_genericTypes.Length != cacheKey._genericTypes.Length)
+            if (m_genericTypes.Length != cacheKey.m_genericTypes.Length)
             {
                 return false;
             }
 
-            if (_parameterTypes.Length != cacheKey._parameterTypes.Length)
+            if (m_parameterTypes.Length != cacheKey.m_parameterTypes.Length)
             {
                 return false;
             }
 
-            for (int i = 0; i < _genericTypes.Length; ++i)
+            for (int i = 0; i < m_genericTypes.Length; ++i)
             {
-                if (_genericTypes[i] != cacheKey._genericTypes[i])
+                if (m_genericTypes[i] != cacheKey.m_genericTypes[i])
                 {
                     return false;
                 }
             }
 
-            for (int i = 0; i < _parameterTypes.Length; ++i)
+            for (int i = 0; i < m_parameterTypes.Length; ++i)
             {
-                if (_parameterTypes[i] != cacheKey._parameterTypes[i])
+                if (m_parameterTypes[i] != cacheKey.m_parameterTypes[i])
                 {
                     return false;
                 }
@@ -708,25 +708,25 @@ public static class TypeExtensions
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return m_hashCode;
         }
 
         private int GenerateHashCode()
         {
             unchecked
             {
-                int result = _sourceType.GetHashCode();
+                int result = m_sourceType.GetHashCode();
 
-                result = (result * 397) ^ _methodName.GetHashCode();
+                result = (result * 397) ^ m_methodName.GetHashCode();
 
-                for (int i = 0; i < _genericTypes.Length; ++i)
+                for (int i = 0; i < m_genericTypes.Length; ++i)
                 {
-                    result = (result * 397) ^ _genericTypes[i].GetHashCode();
+                    result = (result * 397) ^ m_genericTypes[i].GetHashCode();
                 }
 
-                for (int i = 0; i < _parameterTypes.Length; ++i)
+                for (int i = 0; i < m_parameterTypes.Length; ++i)
                 {
-                    result = (result * 397) ^ _parameterTypes[i].GetHashCode();
+                    result = (result * 397) ^ m_parameterTypes[i].GetHashCode();
                 }
 
                 return result;
