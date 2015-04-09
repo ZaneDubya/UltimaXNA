@@ -13,6 +13,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExamplePlugin", "plugins\Ex
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", "dev\.nuget", "{103CA604-3772-457C-9465-C8561785F345}"
 	ProjectSection(SolutionItems) = preProject
+		dev\.nuget\NuGet.Config = dev\.nuget\NuGet.Config
+		dev\.nuget\NuGet.exe = dev\.nuget\NuGet.exe
+		dev\.nuget\NuGet.targets = dev\.nuget\NuGet.targets
 	EndProjectSection
 EndProject
 Global
