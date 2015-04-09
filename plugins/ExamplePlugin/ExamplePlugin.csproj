@@ -43,7 +43,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\dev\UltimaXNA.csproj">
+    <ProjectReference Include="..\..\dev\UltimaXNA.csproj">
       <Project>{205e21c9-4a74-4b0f-bda0-270a38a0c4ea}</Project>
       <Name>UltimaXNA</Name>
     </ProjectReference>
