@@ -18,6 +18,8 @@ using UltimaXNA.UltimaGUI;
 using UltimaXNA.UltimaGUI.Controls;
 using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.Data;
+using UltimaXNA.UltimaVars;
+
 #endregion
 
 namespace UltimaXNA.UltimaWorld.Controllers
@@ -196,7 +198,7 @@ namespace UltimaXNA.UltimaWorld.Controllers
         protected override void BeforeDraw(SpriteBatchUI spritebatch, Point position)
         {
             // Hue the cursor if not in warmode and in trammel.
-            if (!UltimaVars.EngineVars.WarMode && (World.MapIndex == 1))
+            if (EngineVars.InWorld && !EntityManager.GetPlayerObject().Flags.IsWarMode && (World.MapIndex == 1))
                 CursorHue = 2414;
             else
                 CursorHue = 0;
@@ -217,7 +219,15 @@ namespace UltimaXNA.UltimaWorld.Controllers
             }
             else if (IsTargeting)
             {
-                CursorSpriteArtIndex = 8310 - ((UltimaVars.EngineVars.WarMode) ? 23 : 0);
+                var artworkIndex = 8310;
+
+                if (EngineVars.InWorld && EntityManager.GetPlayerObject().Flags.IsWarMode)
+                {
+                    // Over the interface or not in world. Display a default cursor.
+                    artworkIndex -= 23;
+                }
+
+                CursorSpriteArtIndex = artworkIndex;
                 CursorOffset = new Point(13, 13);
                 // sourceRect = new Rectangle(1, 1, 46, 34);
                 /*if (m_targetingMulti != -1)
@@ -228,45 +238,57 @@ namespace UltimaXNA.UltimaWorld.Controllers
             else if ((World.Input.ContinuousMouseMovementCheck || !World.Engine.UserInterface.IsMouseOverUI) &&
                 !World.Engine.UserInterface.IsModalControlOpen)
             {
-                switch (UltimaVars.EngineVars.CursorDirection)
+                var resolution = Settings.Game.Resolution;
+                var mouseDirection = Utility.DirectionFromPoints(new Point(resolution.Width / 2, resolution.Height / 2), World.Engine.Input.MousePosition);
+
+                var artIndex = 0;
+
+                switch (mouseDirection)
                 {
                     case Direction.North:
                         CursorOffset = new Point(29, 1);
-                        CursorSpriteArtIndex = 8299 - ((UltimaVars.EngineVars.WarMode) ? 23 : 0);
+                        artIndex = 8299;
                         break;
                     case Direction.Right:
                         CursorOffset = new Point(41, 9);
-                        CursorSpriteArtIndex = 8300 - ((UltimaVars.EngineVars.WarMode) ? 23 : 0);
+                        artIndex = 8300;
                         break;
                     case Direction.East:
                         CursorOffset = new Point(36, 24);
-                        CursorSpriteArtIndex = 8301 - ((UltimaVars.EngineVars.WarMode) ? 23 : 0);
-                        break;
+                        artIndex = 8301;break;
                     case Direction.Down:
                         CursorOffset = new Point(14, 33);
-                        CursorSpriteArtIndex = 8302 - ((UltimaVars.EngineVars.WarMode) ? 23 : 0);
+                        artIndex = 8302;
                         break;
                     case Direction.South:
                         CursorOffset = new Point(4, 28);
-                        CursorSpriteArtIndex = 8303 - ((UltimaVars.EngineVars.WarMode) ? 23 : 0);
+                        artIndex = 8303;
                         break;
                     case Direction.Left:
                         CursorOffset = new Point(2, 10);
-                        CursorSpriteArtIndex = 8304 - ((UltimaVars.EngineVars.WarMode) ? 23 : 0);
+                        artIndex = 8304;
                         break;
                     case Direction.West:
                         CursorOffset = new Point(1, 1);
-                        CursorSpriteArtIndex = 8305 - ((UltimaVars.EngineVars.WarMode) ? 23 : 0);
+                        artIndex = 8305;
                         break;
                     case Direction.Up:
                         CursorOffset = new Point(4, 2);
-                        CursorSpriteArtIndex = 8298 - ((UltimaVars.EngineVars.WarMode) ? 23 : 0);
+                        artIndex = 8298;
                         break;
                     default:
                         CursorOffset = new Point(2, 10);
-                        CursorSpriteArtIndex = 8309 - ((UltimaVars.EngineVars.WarMode) ? 23 : 0);
+                        artIndex = 8309;
                         break;
                 }
+
+                if (EngineVars.InWorld && EntityManager.GetPlayerObject().Flags.IsWarMode)
+                {
+                    // Over the interface or not in world. Display a default cursor.
+                    artIndex -= 23;
+                }
+
+                CursorSpriteArtIndex = artIndex;
             }
             else
             {

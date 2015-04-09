@@ -166,5 +166,9 @@ namespace UltimaXNA.UltimaWorld
         {
             Disconnect();
         }
+
+        public int MapCount { get; set; }
+
+        public byte Season { get; set; }
     }
 }

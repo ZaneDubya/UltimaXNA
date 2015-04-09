@@ -20,17 +20,23 @@ using System.Collections.Generic;
 
 namespace UltimaXNA.UltimaVars
 {
+    //TODO this should merge to something like Client or Engine.  All of these settings pertain to states that should be controlled by specific systems.
+    // InWorld is a "Client" state
+    // Version is a "Client" value
+    // EngineRunning should be "Engine.IsRunning"
+    // ClickAndPickupMS should be controlled by the InputManager
+    // DoubleClickMS should be controlled by the InputManager
+    // PlayerSerial needs to move to EntityManager
+    // AllLabels should be "ShowAllLabels" and needs to be either in UI or Client
+    // FPS calculations should be done by Client/Engine
+    // MiniMap_LargeFormat, should be controlled by the radar itself.
+    // NewDiagonalMovement should be a setting.
     public class EngineVars
     {
-        public static Vector2 ScreenDPI;
-
         public static byte[] Version = new byte[4] { 6, 0, 6, 2 };
-
-        public static Direction CursorDirection { get; internal set; }
-
+        
         // InWorld allows us to tell when our character object has been loaded in the world.
         public static bool InWorld { get; set; }
-
         public static bool EngineRunning { get; set; } // false = engine immediately quits.
 
         public const float ClickAndPickUpMS = 800f; // this is close to what the legacy client uses.
@@ -40,16 +46,6 @@ namespace UltimaXNA.UltimaVars
         {
             get;
             set;
-        }
-
-        public static bool WarMode
-        {
-            get
-            {
-                return (EntityManager.GetPlayerObject() != null) ? 
-                    ((Mobile)EntityManager.GetPlayerObject()).Flags.IsWarMode : 
-                    false;
-            }
         }
 
         /// <summary>
@@ -79,14 +75,7 @@ namespace UltimaXNA.UltimaVars
 
             return (int)System.Math.Ceiling(count);
         }
-
-
-        static int m_mapCount = -1;
-        public static int MapCount { get { return m_mapCount; } set { m_mapCount = value; } }
-
-        static int m_season = 0;
-        public static int Season { get { return m_season; } set { m_season = value; } }
-
+        
         static bool m_minimapLarge = false;
         public static bool MiniMap_LargeFormat { get { return m_minimapLarge; } set { m_minimapLarge = value; } }
 

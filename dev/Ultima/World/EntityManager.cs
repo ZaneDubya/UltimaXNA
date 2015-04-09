@@ -54,11 +54,11 @@ namespace UltimaXNA.UltimaWorld
             }
         }
 
-        public static AEntity GetPlayerObject()
+        public static PlayerMobile GetPlayerObject()
         {
             // This could be cached to save time.
             if (m_Entities.ContainsKey(EngineVars.PlayerSerial))
-                return m_Entities[EngineVars.PlayerSerial];
+                return (PlayerMobile)m_Entities[EngineVars.PlayerSerial];
             else
                 return null;
         }

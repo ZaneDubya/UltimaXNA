@@ -101,10 +101,7 @@ namespace UltimaXNA.UltimaWorld.Controllers
                 {
                     MousePick.PickOnly = PickType.PickEverything;
                 }
-
-                // Set the cursor direction
-                EngineVars.CursorDirection = Utility.DirectionFromPoints(new Point(400, 300), World.Engine.Input.MousePosition);
-
+                
                 doMouseMovement(frameMS);
             }
         }
@@ -114,14 +111,20 @@ namespace UltimaXNA.UltimaWorld.Controllers
             // if the move button is pressed, change facing and move based on mouse cursor direction.
             if(ContinuousMouseMovementCheck)
             {
+                var resolution = Settings.Game.Resolution;
+                var centerScreen = new Point(resolution.Width / 2, resolution.Height / 2);
+                var mouseDirection = Utility.DirectionFromPoints(centerScreen, World.Engine.Input.MousePosition);
+
                 m_TimeSinceMovementButtonPressed += frameMS;
+
                 if(m_TimeSinceMovementButtonPressed >= c_PauseBeforeMouseMovementMS)
                 {
                     // Get the move direction.
-                    var moveDirection = EngineVars.CursorDirection;
+                    var moveDirection = mouseDirection;
 
                     // add the running flag if the mouse cursor is far enough away from the center of the screen.
-                    float distanceFromCenterOfScreen = Utility.DistanceBetweenTwoPoints(new Point(400, 300), World.Engine.Input.MousePosition);
+                    float distanceFromCenterOfScreen = Utility.DistanceBetweenTwoPoints(centerScreen, World.Engine.Input.MousePosition);
+
                     if(distanceFromCenterOfScreen >= 150.0f || Settings.Game.AlwaysRun)
                     {
                         moveDirection |= Direction.Running;
@@ -134,7 +137,7 @@ namespace UltimaXNA.UltimaWorld.Controllers
                 else
                 {
                     // Get the move direction.
-                    var facing = EngineVars.CursorDirection;
+                    var facing = mouseDirection;
 
                     var m = (Mobile)EntityManager.GetPlayerObject();
                     if(m.Facing != facing)
@@ -326,7 +329,8 @@ namespace UltimaXNA.UltimaWorld.Controllers
                     // If in WarMode, set Attacking == true.
                     World.Interaction.DoubleClick(overEntity);
                     World.Interaction.LastTarget = overEntity.Serial;
-                    if(EngineVars.WarMode)
+
+                    if (EntityManager.GetPlayerObject().Flags.IsWarMode)
                     {
                         World.Engine.Client.Send(new AttackRequestPacket(overEntity.Serial));
                     }
@@ -391,14 +395,7 @@ namespace UltimaXNA.UltimaWorld.Controllers
             // Warmode toggle:
             if(World.Engine.Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.Tab, false, false, false))
             {
-                if(EngineVars.WarMode)
-                {
-                    World.Engine.Client.Send(new RequestWarModePacket(false));
-                }
-                else
-                {
-                    World.Engine.Client.Send(new RequestWarModePacket(true));
-                }
+                World.Engine.Client.Send(new RequestWarModePacket(!EntityManager.GetPlayerObject().Flags.IsWarMode));
             }
 
             // movement with arrow keys if the player is not moving and the mouse isn't moving the player.

@@ -988,7 +988,7 @@ namespace UltimaXNA.UltimaWorld.Controllers
                     break;
                 case 0x18: // Enable map-diff (files) / number of maps
                     // as of 6.0.0.0, this only tells us the number of maps.
-                    UltimaVars.EngineVars.MapCount = p.MapCount;
+                    World.MapCount = p.MapCount;
                     break;
                 case 0x19: // Extended stats
                     if (p.Serial != UltimaVars.EngineVars.PlayerSerial)
@@ -1116,7 +1116,7 @@ namespace UltimaXNA.UltimaWorld.Controllers
             // Only partially handled !!! If iSeason2 = 1, then this is a season change.
             // If season change, then iSeason1 = (0=spring, 1=summer, 2=fall, 3=winter, 4 = desolation)
             SeasonChangePacket p = (SeasonChangePacket)packet;
-            UltimaVars.EngineVars.Season = p.Season;
+            World.Season = p.Season;
         }
 
 

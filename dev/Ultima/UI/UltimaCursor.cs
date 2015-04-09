@@ -11,6 +11,9 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Rendering;
+using UltimaXNA.UltimaVars;
+using UltimaXNA.UltimaWorld;
+
 #endregion
 
 namespace UltimaXNA.UltimaGUI
@@ -70,8 +73,15 @@ namespace UltimaXNA.UltimaGUI
 
         protected virtual void BeforeDraw(SpriteBatchUI spritebatch, Point position)
         {
-            // Over the interface or not in world. Display a default cursor.
-            CursorSpriteArtIndex = 8305 - ((UltimaVars.EngineVars.WarMode) ? 23 : 0);
+            var artworkIndex = 8305;
+
+            if (EngineVars.InWorld && EntityManager.GetPlayerObject().Flags.IsWarMode)
+            {
+                // Over the interface or not in world. Display a default cursor.
+                artworkIndex -= 23;
+            }
+
+            CursorSpriteArtIndex = artworkIndex;
             CursorOffset = new Point(1, 1);
         }
 
