@@ -50,7 +50,7 @@ namespace UltimaXNA.Patterns.IoC
                 return;
             }
 
-            var disposable = m_currentObj as IDisposable;
+            IDisposable disposable = m_currentObj as IDisposable;
 
             if (disposable != null)
             {

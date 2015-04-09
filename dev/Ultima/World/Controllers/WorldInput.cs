@@ -6,7 +6,7 @@ using UltimaXNA.Input.Windows;
 using UltimaXNA.UltimaEntities;
 using UltimaXNA.UltimaPackets.Client;
 using UltimaXNA.UltimaVars;
-
+using System.Collections.Generic;
 #endregion
 
 namespace UltimaXNA.UltimaWorld.Controllers
@@ -111,16 +111,16 @@ namespace UltimaXNA.UltimaWorld.Controllers
             // if the move button is pressed, change facing and move based on mouse cursor direction.
             if(ContinuousMouseMovementCheck)
             {
-                var resolution = Settings.Game.Resolution;
-                var centerScreen = new Point(resolution.Width / 2, resolution.Height / 2);
-                var mouseDirection = Utility.DirectionFromPoints(centerScreen, World.Engine.Input.MousePosition);
+                Resolution resolution = Settings.Game.Resolution;
+                Point centerScreen = new Point(resolution.Width / 2, resolution.Height / 2);
+                Direction mouseDirection = Utility.DirectionFromPoints(centerScreen, World.Engine.Input.MousePosition);
 
                 m_TimeSinceMovementButtonPressed += frameMS;
 
                 if(m_TimeSinceMovementButtonPressed >= c_PauseBeforeMouseMovementMS)
                 {
                     // Get the move direction.
-                    var moveDirection = mouseDirection;
+                    Direction moveDirection = mouseDirection;
 
                     // add the running flag if the mouse cursor is far enough away from the center of the screen.
                     float distanceFromCenterOfScreen = Utility.DistanceBetweenTwoPoints(centerScreen, World.Engine.Input.MousePosition);
@@ -131,15 +131,15 @@ namespace UltimaXNA.UltimaWorld.Controllers
                     }
 
                     // Tell the player to Move.
-                    var m = (Mobile)EntityManager.GetPlayerObject();
+                    Mobile m = (Mobile)EntityManager.GetPlayerObject();
                     m.PlayerMobile_Move(moveDirection);
                 }
                 else
                 {
                     // Get the move direction.
-                    var facing = mouseDirection;
+                    Direction facing = mouseDirection;
 
-                    var m = (Mobile)EntityManager.GetPlayerObject();
+                    Mobile m = (Mobile)EntityManager.GetPlayerObject();
                     if(m.Facing != facing)
                     {
                         // Tell the player entity to change facing to this direction.
@@ -153,7 +153,7 @@ namespace UltimaXNA.UltimaWorld.Controllers
             {
                 m_TimeSinceMovementButtonPressed = 0d;
                 // Tell the player to stop moving.
-                var m = (Mobile)EntityManager.GetPlayerObject();
+                Mobile m = (Mobile)EntityManager.GetPlayerObject();
                 m.PlayerMobile_Move(Direction.Nothing);
             }
         }
@@ -180,11 +180,11 @@ namespace UltimaXNA.UltimaWorld.Controllers
                 }
             }
 
-            var m = (Mobile)EntityManager.GetPlayerObject();
-            var up = World.Engine.Input.IsKeyDown(WinKeys.Up);
-            var left = World.Engine.Input.IsKeyDown(WinKeys.Left);
-            var right = World.Engine.Input.IsKeyDown(WinKeys.Right);
-            var down = World.Engine.Input.IsKeyDown(WinKeys.Down);
+            Mobile m = (Mobile)EntityManager.GetPlayerObject();
+            bool up = World.Engine.Input.IsKeyDown(WinKeys.Up);
+            bool left = World.Engine.Input.IsKeyDown(WinKeys.Left);
+            bool right = World.Engine.Input.IsKeyDown(WinKeys.Right);
+            bool down = World.Engine.Input.IsKeyDown(WinKeys.Down);
             if(up | left | right | down)
             {
                 // Allow a short span of time (50ms) to get all the keys pressed.
@@ -194,7 +194,7 @@ namespace UltimaXNA.UltimaWorld.Controllers
                 m_PauseBeforeKeyboardMovementMS += frameMS;
                 if(m_PauseBeforeKeyboardMovementMS >= c_PauseBeforeKeyboardFacingMS)
                 {
-                    var facing = Direction.Up;
+                    Direction facing = Direction.Up;
                     if(up)
                     {
                         if(left)
@@ -362,8 +362,8 @@ namespace UltimaXNA.UltimaWorld.Controllers
 
         private void InternalParseMouse(double frameMS)
         {
-            var events = World.Engine.Input.GetMouseEvents();
-            foreach(var e in events)
+            List<InputEventMouse> events = World.Engine.Input.GetMouseEvents();
+            foreach (InputEventMouse e in events)
             {
                 if(e.Button == Settings.Game.Mouse.MovementButton)
                 {

@@ -274,7 +274,7 @@ namespace UltimaXNA
         private void ReceiveLoginConfirmPacket(IRecvPacket packet)
         {
             m_QueuedLoginConfirmPacket = (LoginConfirmPacket)packet;
-            // set the player serial var and create the player entity. Don't need to do anything with it yet.
+            // set the player serial and create the player entity. Don't need to do anything with it yet.
             UltimaVars.EngineVars.PlayerSerial = m_QueuedLoginConfirmPacket.Serial;
             PlayerMobile player = EntityManager.GetObject<PlayerMobile>(m_QueuedLoginConfirmPacket.Serial, true);
             if (player == null)

@@ -24,7 +24,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
         public DebugGump()
             : base(0, 0)
         {
-            var width = 200;
+            int width = 200;
             // minimized view
             IsMovable = true;
             AddControl(new ResizePic(this, 2, 0, 0, 0x2486, width, 16));
@@ -45,7 +45,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
 
         public override void Update(double totalMS, double frameMS)
         {
-            var debugMessage = string.Empty;
+            string debugMessage = string.Empty;
 
             if(Settings.Debug.ShowDataRead)
             {

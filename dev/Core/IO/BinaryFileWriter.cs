@@ -82,7 +82,7 @@ namespace UltimaXNA.IO
 
         public override void WriteEncodedInt(int value)
         {
-            var v = (uint)value;
+            uint v = (uint)value;
 
             while(v >= 0x80)
             {
@@ -109,7 +109,7 @@ namespace UltimaXNA.IO
             {
                 value = string.Empty;
             }
-            var length = m_Encoding.GetByteCount(value);
+            int length = m_Encoding.GetByteCount(value);
 
             WriteEncodedInt(length);
 
@@ -121,13 +121,13 @@ namespace UltimaXNA.IO
 
             if(length > LargeByteBufferSize)
             {
-                var current = 0;
-                var charsLeft = value.Length;
+                int current = 0;
+                int charsLeft = value.Length;
 
                 while(charsLeft > 0)
                 {
-                    var charCount = (charsLeft > m_MaxBufferChars) ? m_MaxBufferChars : charsLeft;
-                    var byteLength = m_Encoding.GetBytes(value, current, charCount, m_CharacterBuffer, 0);
+                    int charCount = (charsLeft > m_MaxBufferChars) ? m_MaxBufferChars : charsLeft;
+                    int byteLength = m_Encoding.GetBytes(value, current, charCount, m_CharacterBuffer, 0);
 
                     if((m_Index + byteLength) > m_Buffer.Length)
                     {
@@ -143,7 +143,7 @@ namespace UltimaXNA.IO
             }
             else
             {
-                var byteLength = m_Encoding.GetBytes(value, 0, value.Length, m_CharacterBuffer, 0);
+                int byteLength = m_Encoding.GetBytes(value, 0, value.Length, m_CharacterBuffer, 0);
 
                 if((m_Index + byteLength) > m_Buffer.Length)
                 {
@@ -193,8 +193,8 @@ namespace UltimaXNA.IO
 
         public override void WriteDeltaTime(DateTime value)
         {
-            var ticks = value.Ticks;
-            var now = DateTime.Now.Ticks;
+            long ticks = value.Ticks;
+            long now = DateTime.Now.Ticks;
 
             TimeSpan d;
 
@@ -229,9 +229,9 @@ namespace UltimaXNA.IO
 
         public override void Write(decimal value)
         {
-            var bits = Decimal.GetBits(value);
+            int[] bits = Decimal.GetBits(value);
 
-            for(var i = 0; i < bits.Length; ++i)
+            for(int i = 0; i < bits.Length; ++i)
             {
                 Write(bits[i]);
             }
@@ -364,7 +364,7 @@ namespace UltimaXNA.IO
 
             m_SingleCharBuffer[0] = value;
 
-            var byteCount = m_Encoding.GetBytes(m_SingleCharBuffer, 0, 1, m_Buffer, m_Index);
+            int byteCount = m_Encoding.GetBytes(m_SingleCharBuffer, 0, 1, m_Buffer, m_Index);
             m_Index += byteCount;
         }
 
@@ -380,7 +380,7 @@ namespace UltimaXNA.IO
 
         public override void Write(byte[] value)
         {
-            for(var i = 0; i < value.Length; i++)
+            for(int i = 0; i < value.Length; i++)
             {
                 Write(value[i]);
             }

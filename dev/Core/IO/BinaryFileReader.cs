@@ -42,11 +42,11 @@ namespace UltimaXNA.IO
 
         public string ReadLine()
         {
-            var sb = new StringBuilder();
-            var reading = true;
+            StringBuilder sb = new StringBuilder();
+            bool reading = true;
             while(reading && !End())
             {
-                var c = this.ReadChar();
+                char c = this.ReadChar();
                 if(c == '\n')
                 {
                     reading = false;
@@ -70,8 +70,8 @@ namespace UltimaXNA.IO
 
         public override DateTime ReadDeltaTime()
         {
-            var ticks = m_File.ReadInt64();
-            var now = DateTime.Now.Ticks;
+            long ticks = m_File.ReadInt64();
+            long now = DateTime.Now.Ticks;
 
             if(ticks > 0 && (ticks + now) < 0)
             {
@@ -188,34 +188,34 @@ namespace UltimaXNA.IO
 
         public ushort[] ReadUShorts(int count)
         {
-            var data = ReadBytes(count * 2);
-            var data_out = new ushort[count];
+            byte[] data = ReadBytes(count * 2);
+            ushort[] data_out = new ushort[count];
             Buffer.BlockCopy(data, 0, data_out, 0, count * 2);
             return data_out;
         }
 
         public int[] ReadInts(int count)
         {
-            var data = ReadBytes(count * 4);
-            var data_out = new int[count];
+            byte[] data = ReadBytes(count * 4);
+            int[] data_out = new int[count];
             Buffer.BlockCopy(data, 0, data_out, 0, count * 4);
             return data_out;
         }
 
         public uint[] ReadUInts(int count)
         {
-            var data = ReadBytes(count * 4);
-            var data_out = new uint[count];
+            byte[] data = ReadBytes(count * 4);
+            uint[] data_out = new uint[count];
             Buffer.BlockCopy(data, 0, data_out, 0, count * 4);
             return data_out;
         }
 
         public int Read7BitEncodedInt()
         {
-            var value = 0;
+            int value = 0;
             while(true)
             {
-                var temp = ReadByte();
+                byte temp = ReadByte();
                 value += temp & 0x7F;
                 if((temp & 0x80) == 0x80)
                 {
@@ -234,8 +234,8 @@ namespace UltimaXNA.IO
         /// <returns></returns>
         public char ReadCharUTF8()
         {
-            var value = 0;
-            var b0 = ReadByte();
+            int value = 0;
+            byte b0 = ReadByte();
             if((b0 & 0x80) == 0x00)
             {
                 value = (b0 & 0x7F);
@@ -243,7 +243,7 @@ namespace UltimaXNA.IO
             else
             {
                 value = (b0 & 0x3F);
-                var b1 = ReadByte();
+                byte b1 = ReadByte();
                 if((b1 & 0xE0) == 0xC0)
                 {
                     value += (b1 & 0x1F) << 6;

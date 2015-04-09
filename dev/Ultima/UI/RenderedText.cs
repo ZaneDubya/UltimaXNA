@@ -361,7 +361,7 @@ namespace UltimaXNA.UltimaGUI
                                 writeTexture_Line(alignedAtoms[0], rPtr, ref dx, dy, width, height, ref lineheight, true);
                             }
 
-                            // centered text. We need to get the width first. Do this by drawing the line with var draw = false.
+                            // centered text. We need to get the width first. Do this by drawing the line with draw = false.
                             if (alignedAtoms[1].Count > 0)
                             {
                                 dx = 0;

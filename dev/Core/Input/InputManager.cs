@@ -143,7 +143,7 @@ namespace UltimaXNA.Input
         public List<InputEventMouse> GetMouseEvents()
         {
             List<InputEventMouse> list = new List<InputEventMouse>();
-            foreach (InputEventMouse e in m_EventsThisFrame)
+            foreach (InputEvent e in m_EventsThisFrame)
             {
                 if(!e.Handled && e is InputEventMouse)
                 {
@@ -210,11 +210,11 @@ namespace UltimaXNA.Input
 
         public bool HandleMouseEvent(MouseEvent type, MouseButton mb)
         {
-            foreach(var e in m_EventsThisFrame)
+            foreach(InputEvent e in m_EventsThisFrame)
             {
                 if(!e.Handled && e is InputEventMouse)
                 {
-                    var em = (InputEventMouse)e;
+                    InputEventMouse em = (InputEventMouse)e;
                     if(em.EventType == type && em.Button == mb)
                     {
                         e.Handled = true;
@@ -288,7 +288,7 @@ namespace UltimaXNA.Input
                 addEvent(new InputEventKeyboard(KeyboardEventType.Down, e));
             }
             // handle the key presses. Possibly multiple per keydown message.
-            for(var i = 0; i < e.Data_RepeatCount; i++)
+            for(int i = 0; i < e.Data_RepeatCount; i++)
             {
                 addEvent(new InputEventKeyboard(KeyboardEventType.Press, e));
             }
@@ -307,7 +307,7 @@ namespace UltimaXNA.Input
                 return;
             }
 
-            var pressEvent = LastKeyPressEvent;
+            InputEventKeyboard pressEvent = LastKeyPressEvent;
             if(pressEvent == null)
             {
                 Tracer.Critical("No corresponding KeyPress event for this WM_CHAR message.");
@@ -325,7 +325,7 @@ namespace UltimaXNA.Input
 
             // clear the old events list, copy all accumulated events to the this frame event list, then clear the accumulated events list.
             m_EventsThisFrame.Clear();
-            foreach(var e in m_EventsAccumulating)
+            foreach (InputEvent e in m_EventsAccumulating)
             {
                 m_EventsThisFrame.Add(e);
             }
@@ -335,7 +335,7 @@ namespace UltimaXNA.Input
             m_EventsAccumulatingUseAlternate = false;
 
             // copy all events in the alternate accumulating list to the this frame event list, then clear the alternate accumulating list.
-            foreach(var e in m_EventsAccumulatingAlternate)
+            foreach (InputEvent e in m_EventsAccumulatingAlternate)
             {
                 m_EventsThisFrame.Add(e);
             }
@@ -344,7 +344,7 @@ namespace UltimaXNA.Input
 
         private void addEvent(InputEvent e)
         {
-            var list = (m_EventsAccumulatingUseAlternate) ? m_EventsAccumulatingAlternate : m_EventsAccumulating;
+            List<InputEvent> list = (m_EventsAccumulatingUseAlternate) ? m_EventsAccumulatingAlternate : m_EventsAccumulating;
             list.Add(e);
         }
 

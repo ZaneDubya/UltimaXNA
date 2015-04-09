@@ -73,7 +73,7 @@ namespace UltimaXNA.UltimaGUI
 
         protected virtual void BeforeDraw(SpriteBatchUI spritebatch, Point position)
         {
-            var artworkIndex = 8305;
+            int artworkIndex = 8305;
 
             if (EngineVars.InWorld && EntityManager.GetPlayerObject().Flags.IsWarMode)
             {

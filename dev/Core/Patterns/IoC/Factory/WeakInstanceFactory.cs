@@ -55,7 +55,7 @@ namespace UltimaXNA.Patterns.IoC
 
         public void Dispose()
         {
-            var disposable = m_instance.Target as IDisposable;
+            IDisposable disposable = m_instance.Target as IDisposable;
 
             if (disposable != null)
             {

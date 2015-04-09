@@ -68,13 +68,13 @@ namespace UltimaXNA.Patterns.IoC
 
         public RegisterOptions UsingConstructor<RegisterType>(Expression<Func<RegisterType>> constructor)
         {
-            var lambda = constructor as LambdaExpression;
+            LambdaExpression lambda = constructor as LambdaExpression;
             if (lambda == null)
             {
                 throw new ConstructorResolutionException(typeof (RegisterType));
             }
 
-            var newExpression = lambda.Body as NewExpression;
+            NewExpression newExpression = lambda.Body as NewExpression;
             if (newExpression == null)
             {
                 throw new ConstructorResolutionException(typeof (RegisterType));

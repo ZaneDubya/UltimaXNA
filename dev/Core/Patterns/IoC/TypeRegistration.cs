@@ -33,7 +33,7 @@ namespace UltimaXNA.Patterns.IoC
 
         public override bool Equals(object obj)
         {
-            var typeRegistration = obj as TypeRegistration;
+            TypeRegistration typeRegistration = obj as TypeRegistration;
 
             if (typeRegistration == null)
             {

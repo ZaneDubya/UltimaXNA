@@ -33,7 +33,7 @@ namespace UltimaXNA.Patterns.IoC
         {
             get
             {
-                var factory =
+                Func<Container, NamedParameterOverloads, object> factory =
                     m_factory.Target as Func<Container, NamedParameterOverloads, object>;
 
                 if (factory == null)
@@ -52,7 +52,8 @@ namespace UltimaXNA.Patterns.IoC
 
         public override object GetObject(Container container, NamedParameterOverloads parameters, ResolveOptions options)
         {
-            var factory = m_factory.Target as Func<Container, NamedParameterOverloads, object>;
+            Func<Container, NamedParameterOverloads, object> factory = 
+                m_factory.Target as Func<Container, NamedParameterOverloads, object>;
 
             if (factory == null)
             {

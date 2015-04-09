@@ -488,7 +488,7 @@ namespace UltimaXNA.Patterns.IoC
             }
 
             ParameterInfo[] ctorParams = constructor.GetParameters();
-            var args = new object[ctorParams.Count()];
+            object[] args = new object[ctorParams.Count()];
 
             for (int parameterIndex = 0; parameterIndex < ctorParams.Count(); parameterIndex++)
             {
@@ -541,7 +541,7 @@ namespace UltimaXNA.Patterns.IoC
         {
             Guard.Requires<InvalidOperationException>(!m_disposed, "Container is disposed.");
 
-            var typeRegistration = new TypeRegistration(registerType, name);
+            TypeRegistration typeRegistration = new TypeRegistration(registerType, name);
 
             return AddUpdateRegistration(typeRegistration, factory);
         }
@@ -616,7 +616,7 @@ namespace UltimaXNA.Patterns.IoC
 
         private static bool isIgnoredType(Type type, Func<Type, bool> registrationPredicate)
         {
-            var ignoreChecks = new List<Func<Type, bool>>
+            List<Func<Type, bool>> ignoreChecks = new List<Func<Type, bool>>
                                {
                                    t => t.FullName.StartsWith("System.", StringComparison.Ordinal),
                                    t => t.FullName.StartsWith("Microsoft.", StringComparison.Ordinal),
@@ -907,7 +907,7 @@ namespace UltimaXNA.Patterns.IoC
         {
             Guard.Requires<InvalidOperationException>(!m_disposed, "Container is disposed.");
 
-            var typeRegistration = new TypeRegistration(registerType, name);
+            TypeRegistration typeRegistration = new TypeRegistration(registerType, name);
 
             return addUpdateRegistration(typeRegistration, factory);
         }

@@ -83,7 +83,7 @@ namespace UltimaXNA.IO
 
         private void OnWrite()
         {
-            var curlen = m_Mem.Length;
+            long curlen = m_Mem.Length;
             m_CurPos += curlen - m_LastPos;
             m_LastPos = curlen;
             if(curlen >= BufferSize)
@@ -130,8 +130,8 @@ namespace UltimaXNA.IO
 
         public override void WriteDeltaTime(DateTime value)
         {
-            var ticks = value.Ticks;
-            var now = DateTime.Now.Ticks;
+            long ticks = value.Ticks;
+            long now = DateTime.Now.Ticks;
 
             TimeSpan d;
 
@@ -186,7 +186,7 @@ namespace UltimaXNA.IO
 
         public override void WriteEncodedInt(int value)
         {
-            var v = (uint)value;
+            uint v = (uint)value;
 
             while(v >= 0x80)
             {
@@ -248,7 +248,7 @@ namespace UltimaXNA.IO
 
         public override void Write(byte[] value)
         {
-            for(var i = 0; i < value.Length; i++)
+            for(int i = 0; i < value.Length; i++)
             {
                 m_Bin.Write(value[i]);
             }
@@ -281,7 +281,7 @@ namespace UltimaXNA.IO
                 m_ThreadCount++;
                 while(m_Owner.m_WriteQueue.Count > 0)
                 {
-                    var mem = (MemoryStream)m_Owner.m_WriteQueue.Dequeue();
+                    MemoryStream mem = (MemoryStream)m_Owner.m_WriteQueue.Dequeue();
 
                     if(mem != null && mem.Length > 0)
                     {

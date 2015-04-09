@@ -219,7 +219,7 @@ namespace UltimaXNA.UltimaWorld.Controllers
             }
             else if (IsTargeting)
             {
-                var artworkIndex = 8310;
+                int artworkIndex = 8310;
 
                 if (EngineVars.InWorld && EntityManager.GetPlayerObject().Flags.IsWarMode)
                 {
@@ -238,10 +238,10 @@ namespace UltimaXNA.UltimaWorld.Controllers
             else if ((World.Input.ContinuousMouseMovementCheck || !World.Engine.UserInterface.IsMouseOverUI) &&
                 !World.Engine.UserInterface.IsModalControlOpen)
             {
-                var resolution = Settings.Game.Resolution;
-                var mouseDirection = Utility.DirectionFromPoints(new Point(resolution.Width / 2, resolution.Height / 2), World.Engine.Input.MousePosition);
+                Resolution resolution = Settings.Game.Resolution;
+                Direction mouseDirection = Utility.DirectionFromPoints(new Point(resolution.Width / 2, resolution.Height / 2), World.Engine.Input.MousePosition);
 
-                var artIndex = 0;
+                int artIndex = 0;
 
                 switch (mouseDirection)
                 {
