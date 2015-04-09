@@ -11,12 +11,12 @@
 #region usings
 using Microsoft.Xna.Framework;
 using System;
-using UltimaXNA.Diagnostics.Tracing;
-using UltimaXNA.UltimaPackets.Client;
+using UltimaXNA.Core.Diagnostics.Tracing;
+using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Core.Diagnostics;
 #endregion
 
-namespace UltimaXNA.UltimaEntities
+namespace UltimaXNA.Ultima.Entities.Mobiles
 {
     public class MobileMovement
     {
@@ -300,7 +300,7 @@ namespace UltimaXNA.UltimaEntities
             // The legacy client only allows alternative direction checking when moving in a cardinal (NSEW) direction.
             // This is checked by only checked alterate directions when the initial facing modulo 2 is 1.
             // By contrast, this client allows, when enabled, alternative direction checking in any direction.
-            if (UltimaVars.EngineVars.NewDiagonalMovement || ((int)initialFacing % 2 == 1))
+            if (EngineVars.NewDiagonalMovement || ((int)initialFacing % 2 == 1))
             {
                 // if blocked, attempt moving in the direction 1/8 counterclockwise to the direction specified.
                 if (!moveIsOkay)

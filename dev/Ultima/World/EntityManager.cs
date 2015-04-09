@@ -10,11 +10,16 @@
 #region usings
 using System;
 using System.Collections.Generic;
-using UltimaXNA.UltimaEntities;
-using UltimaXNA.UltimaVars;
+using UltimaXNA.Ultima.Entities;
+using UltimaXNA.Ultima.Entities.Items.Containers;
+using UltimaXNA.Ultima.Entities.Items;
+using UltimaXNA.Ultima.Entities.Mobiles;
+using UltimaXNA.Ultima.Entities.Multis;
+using UltimaXNA.Ultima.ClientVars;
+using UltimaXNA.Ultima.Data;
 #endregion
 
-namespace UltimaXNA.UltimaWorld
+namespace UltimaXNA.Ultima.World
 {
     class EntityManager
     {
@@ -65,7 +70,7 @@ namespace UltimaXNA.UltimaWorld
 
         public static void Update(double frameMS)
         {
-            if (UltimaVars.EngineVars.InWorld)
+            if (EngineVars.InWorld)
             {
                 updateEntities(frameMS);
             }

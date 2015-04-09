@@ -9,14 +9,14 @@
  ***************************************************************************/
 
 #region Usings
-
 using System;
-using UltimaXNA.UltimaGUI.LoginGumps;
-using UltimaXNA.UltimaVars;
-
+using UltimaXNA.Ultima.UI.LoginGumps;
+using UltimaXNA.Ultima.ClientVars;
+using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.Data.Servers;
 #endregion
 
-namespace UltimaXNA.UltimaLogin.Scenes
+namespace UltimaXNA.Ultima.Login.Scenes
 {
     public class SelectServerScene : AScene
     {

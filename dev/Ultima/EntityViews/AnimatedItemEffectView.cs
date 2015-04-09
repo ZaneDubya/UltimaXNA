@@ -1,13 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Core.Rendering;
-using UltimaXNA.UltimaData;
-using UltimaXNA.UltimaEntities.Effects;
-using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaWorld.Maps;
-using UltimaXNA.UltimaWorld.Controllers;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.Entities.Effects;
+using UltimaXNA.Ultima.World;
+using UltimaXNA.Ultima.World.Maps;
+using UltimaXNA.Ultima.World.Controllers;
 
-namespace UltimaXNA.UltimaEntities.EntityViews
+namespace UltimaXNA.Ultima.EntityViews
 {
     public class AnimatedItemEffectView : AEntityView
     {
@@ -47,7 +47,7 @@ namespace UltimaXNA.UltimaEntities.EntityViews
             if (displayItemdID != m_DisplayItemID)
             {
                 m_DisplayItemID = displayItemdID;
-                DrawTexture = UltimaData.ArtData.GetStaticTexture(m_DisplayItemID);
+                DrawTexture = IO.ArtData.GetStaticTexture(m_DisplayItemID);
                 DrawArea = new Rectangle(DrawTexture.Width / 2 - 22, DrawTexture.Height - 44 + (Entity.Z * 4), DrawTexture.Width, DrawTexture.Height);
                 PickType = PickType.PickNothing;
                 DrawFlip = false;

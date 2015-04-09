@@ -13,9 +13,9 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Diagnostics;
-using UltimaXNA.Diagnostics.Tracing;
+using UltimaXNA.Core.Diagnostics.Tracing;
 
-namespace UltimaXNA.UltimaData
+namespace UltimaXNA.Ultima.IO
 {
     public class ParticleData
     {

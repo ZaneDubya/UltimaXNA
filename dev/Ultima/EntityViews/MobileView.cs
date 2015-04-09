@@ -1,11 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
-using UltimaXNA.Core.Rendering;
-using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaWorld.Maps;
-using UltimaXNA.UltimaData;
-using UltimaXNA.UltimaWorld.Controllers;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Ultima.World;
+using UltimaXNA.Ultima.World.Maps;
+using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.World.Controllers;
+using UltimaXNA.Ultima.Entities.Mobiles;
 
-namespace UltimaXNA.UltimaEntities.EntityViews
+namespace UltimaXNA.Ultima.EntityViews
 {
     public class MobileView : AEntityView
     {
@@ -125,7 +126,7 @@ namespace UltimaXNA.UltimaEntities.EntityViews
 
         private AnimationFrame getFrame(int bodyID, int hue, int facing, int action, float frame)
         {
-            AnimationFrame[] iFrames = UltimaData.Animations.GetAnimation(bodyID, action, facing, hue);
+            AnimationFrame[] iFrames = IO.Animations.GetAnimation(bodyID, action, facing, hue);
             if (iFrames == null)
                 return null;
             int iFrame = frameFromSequence(frame, iFrames.Length);
@@ -189,7 +190,7 @@ namespace UltimaXNA.UltimaEntities.EntityViews
             float frame = m_Animation.AnimationFrame;
 
             m_MobileLayers[m_LayerCount++] = new MobileViewLayer(bodyID, hue, getFrame(bodyID, hue, facing, animation, frame));
-            m_FrameCount = UltimaData.Animations.GetAnimationFrameCount(bodyID, animation, facing, hue);
+            m_FrameCount = IO.Animations.GetAnimationFrameCount(bodyID, animation, facing, hue);
         }
 
         public void ClearLayers()
@@ -231,10 +232,10 @@ namespace UltimaXNA.UltimaEntities.EntityViews
         struct MobileViewLayer
         {
             public int Hue;
-            public UltimaData.AnimationFrame Frame;
+            public IO.AnimationFrame Frame;
             public int BodyID;
 
-            public MobileViewLayer(int bodyID, int hue, UltimaData.AnimationFrame frame)
+            public MobileViewLayer(int bodyID, int hue, IO.AnimationFrame frame)
             {
                 BodyID = bodyID;
                 Hue = hue;

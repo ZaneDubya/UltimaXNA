@@ -8,13 +8,16 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Input.Windows;
+using UltimaXNA.Core.Input.Windows;
 using Microsoft.Xna.Framework;
-using UltimaXNA.UltimaEntities;
-using UltimaXNA.UltimaWorld;
+using UltimaXNA.Ultima.Entities;
+using UltimaXNA.Ultima.World;
+using UltimaXNA.Ultima.Entities.Mobiles;
+using UltimaXNA.Ultima.Entities.Items;
+using UltimaXNA.Ultima.Entities.Items.Containers;
 #endregion
 
-namespace UltimaXNA.UltimaGUI.Controls
+namespace UltimaXNA.Ultima.UI.Controls
 {
     class PaperDollInteractable : Gump
     {

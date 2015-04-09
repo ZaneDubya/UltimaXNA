@@ -9,10 +9,10 @@
  ***************************************************************************/
 #region usings
 using System.Collections.Generic;
-using UltimaXNA.UltimaWorld.Maps;
+using UltimaXNA.Ultima.World.Maps;
 #endregion
 
-namespace UltimaXNA.UltimaEntities.Effects
+namespace UltimaXNA.Ultima.Entities.Effects
 {
     public abstract class AEffect : AEntity
     {

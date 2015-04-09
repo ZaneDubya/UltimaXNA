@@ -15,7 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace UltimaXNA.UltimaData
+namespace UltimaXNA.Ultima.IO
 {
     class SpeechEntry
     {

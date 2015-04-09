@@ -7,9 +7,9 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using UltimaXNA.UltimaPackets;
+using UltimaXNA.Ultima.Network;
 
-namespace UltimaXNA.UltimaVars
+namespace UltimaXNA.Ultima.Data.Servers
 {
     class Servers
     {

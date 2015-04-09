@@ -1,4 +1,4 @@
-namespace UltimaXNA.Data
+namespace UltimaXNA.Configuration
 {
     public sealed class DebugSettings : SettingsBase
     {

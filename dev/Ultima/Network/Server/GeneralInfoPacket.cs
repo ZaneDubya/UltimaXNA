@@ -11,11 +11,11 @@
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Network.Packets;
 using UltimaXNA.Core.Diagnostics;
-using UltimaXNA.Diagnostics.Tracing;
-using UltimaXNA.UltimaWorld.Controllers;
+using UltimaXNA.Core.Diagnostics.Tracing;
+using UltimaXNA.Ultima.World.Controllers;
 #endregion
 
-namespace UltimaXNA.UltimaPackets.Server
+namespace UltimaXNA.Ultima.Network.Server
 {
     public class GeneralInfoPacket : RecvPacket
     {

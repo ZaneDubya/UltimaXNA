@@ -15,12 +15,12 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.UltimaData;
+using UltimaXNA.Ultima.IO;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Network.Packets;
 #endregion
 
-namespace UltimaXNA.UltimaPackets.Server
+namespace UltimaXNA.Ultima.Network.Server
 {
     public class CustomHousePacket : RecvPacket
     {

@@ -7,14 +7,17 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using UltimaXNA.UltimaEntities;
-using UltimaXNA.UltimaGUI.Controls;
-using UltimaXNA.UltimaPackets;
-using UltimaXNA.UltimaPackets.Client;
-using UltimaXNA.UltimaWorld;
+using UltimaXNA.Ultima.Entities;
+using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Ultima.Network;
+using UltimaXNA.Ultima.Network.Client;
+using UltimaXNA.Ultima.World;
 using UltimaXNA.Core;
+using UltimaXNA.Ultima.Entities.Mobiles;
+using UltimaXNA.Ultima.Entities.Items;
+using UltimaXNA.Ultima.Entities.Items.Containers;
 
-namespace UltimaXNA.UltimaGUI.WorldGumps
+namespace UltimaXNA.Ultima.UI.WorldGumps
 {
     class TopMenu : Gump
     {

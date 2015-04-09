@@ -10,11 +10,11 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Core.Rendering;
-using UltimaXNA.Input.Windows;
-using UltimaXNA.UltimaGUI;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Ultima.UI;
 
-namespace UltimaXNA.UltimaGUI.Controls
+namespace UltimaXNA.Ultima.UI.Controls
 {
     public enum ButtonTypes
     {
@@ -107,7 +107,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             {
                 if (m_gumpID[i] != 0 && m_gumpTextures[i] == null)
                 {
-                    m_gumpTextures[i] = UltimaData.GumpData.GetGumpXNA(m_gumpID[i]);
+                    m_gumpTextures[i] = IO.GumpData.GetGumpXNA(m_gumpID[i]);
                 }
             }
 

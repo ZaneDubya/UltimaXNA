@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using UltimaXNA.UltimaGUI.WorldGumps;
+using UltimaXNA.Ultima.UI.WorldGumps;
 
-namespace UltimaXNA.UltimaVars
+namespace UltimaXNA.Ultima.ClientVars
 {
     static class Journal
     {

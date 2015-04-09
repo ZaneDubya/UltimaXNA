@@ -1,6 +1,6 @@
 using System.Diagnostics.Tracing;
 
-namespace UltimaXNA.Diagnostics.Tracing
+namespace UltimaXNA.Core.Diagnostics.Tracing
 {
     internal sealed class TracerEventSource : EventSource
     {

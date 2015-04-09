@@ -208,10 +208,10 @@
     <Compile Include="Core\Patterns\IoC\TypeRegistration.cs" />
     <Compile Include="Core\Patterns\IoC\UnregisteredResolutionActions.cs" />
     <Compile Include="Configuration\SettingsFile.cs" />
-    <Compile Include="Ultima\Entities\Items\ItemEnchantment.cs" />
-    <Compile Include="Ultima\Entities\Mobiles\NPCFlags.cs" />
-    <Compile Include="Ultima\Entities\Mobiles\Player\PlayerQuest.cs" />
-    <Compile Include="Ultima\Entities\Mobiles\UnitFlags.cs" />
+    <Compile Include="Ultima\Direction.cs" />
+    <Compile Include="Ultima\Data\MessageType.cs" />
+    <Compile Include="Ultima\Data\TileFlags.cs" />
+    <Compile Include="Ultima\ClientVars\PlayerQuest.cs" />
     <Compile Include="Ultima\Entities\Mobiles\CurrentMaxValue.cs" />
     <Compile Include="Ultima\IO\AnimData.cs" />
     <Compile Include="Ultima\IO\FontsOld\ASCIIFont.cs" />
@@ -252,7 +252,7 @@
     <Compile Include="Ultima\UI\WorldGumps\JournalGump.cs" />
     <Compile Include="Ultima\Login\LoginClient.cs" />
     <Compile Include="Ultima\Login\Scenes\HueTestScene.cs" />
-    <Compile Include="Ultima\Entities\Mobiles\Player\Journal.cs" />
+    <Compile Include="Ultima\ClientVars\Journal.cs" />
     <Compile Include="Ultima\World\Controllers\MousePicking.cs" />
     <Compile Include="Ultima\World\Controllers\PickType.cs" />
     <Compile Include="Ultima\World\EffectManager.cs" />
@@ -260,7 +260,7 @@
     <Compile Include="Ultima\EntityViews\GroundView.cs" />
     <Compile Include="Ultima\EntityViews\ItemView.cs" />
     <Compile Include="Ultima\EntityViews\MobileView.cs" />
-    <Compile Include="Ultima\Entities\Items\Ground.cs" />
+    <Compile Include="Ultima\Entities\Ground.cs" />
     <Compile Include="Ultima\Entities\Items\StaticItem.cs" />
     <Compile Include="Ultima\IO\BodyData.cs" />
     <Compile Include="Ultima\UI\Controls\GumpPicBackpack.cs" />
@@ -277,8 +277,8 @@
     <Compile Include="Ultima\Data\Servers\Servers.cs" />
     <Compile Include="Ultima\EngineVars.cs" />
     <Compile Include="Ultima\Data\Features.cs" />
-    <Compile Include="Ultima\Entities\Mobiles\Skills.cs" />
-    <Compile Include="Ultima\Entities\Mobiles\Player\StatLocks.cs" />
+    <Compile Include="Ultima\ClientVars\Skills.cs" />
+    <Compile Include="Ultima\ClientVars\StatLocks.cs" />
     <Compile Include="Ultima\Network\Client\AsciiSpeechPacket.cs" />
     <Compile Include="Ultima\Network\Client\AttackRequestPacket.cs" />
     <Compile Include="Ultima\Network\Client\BuyItemsPacket.cs" />
@@ -423,7 +423,6 @@
     <Compile Include="Ultima\IO\MultiData.cs" />
     <Compile Include="Ultima\IO\MusicData.cs" />
     <Compile Include="Ultima\IO\RadarColorData.cs" />
-    <Compile Include="Ultima\IO\Support\_SharedMethods.cs" />
     <Compile Include="Ultima\IO\SoundData.cs" />
     <Compile Include="Ultima\IO\StringData.cs" />
     <Compile Include="UltimaEngine.cs" />
@@ -432,7 +431,7 @@
     <Compile Include="Ultima\Entities\Items\Containers\Corpse.cs" />
     <Compile Include="Ultima\Entities\AEntity.cs" />
     <Compile Include="Ultima\World\EntityManager.cs" />
-    <Compile Include="Ultima\Data\Position3D.cs" />
+    <Compile Include="Ultima\Position3D.cs" />
     <Compile Include="Ultima\Entities\Items\Item.cs" />
     <Compile Include="Ultima\Entities\Mobiles\Mobile.cs" />
     <Compile Include="Ultima\EntityViews\MobileAnimation.cs" />
@@ -441,8 +440,8 @@
     <Compile Include="Ultima\Entities\Mobiles\MobileMovementCheck.cs" />
     <Compile Include="Ultima\Entities\Multis\Multi.cs" />
     <Compile Include="Ultima\Entities\Overhead.cs" />
-    <Compile Include="Ultima\Entities\Mobiles\Player\PlayerMobile.cs" />
-    <Compile Include="Ultima\Entities\Mobiles\PropertyList.cs" />
+    <Compile Include="Ultima\Entities\Mobiles\PlayerMobile.cs" />
+    <Compile Include="Ultima\Entities\PropertyList.cs" />
     <Compile Include="Ultima\Login\Scenes\CharacterListScene.cs" />
     <Compile Include="Ultima\Login\Scenes\CreateCharacterScene.cs" />
     <Compile Include="Ultima\Login\Scenes\LoggingInScene.cs" />
@@ -515,8 +514,7 @@
     <Compile Include="Ultima\Login\Scenes\AScene.cs" />
     <Compile Include="Ultima\Login\Scenes\SceneManager.cs" />
     <Compile Include="Ultima\Login\Scenes\LoginScene.cs" />
-    <Compile Include="Ultima\Data\Serial.cs" />
-    <Compile Include="Ultima\IO\Support\_Enums.cs" />
+    <Compile Include="Ultima\Serial.cs" />
     <Compile Include="Ultima\World\Views\MiniMapView.cs" />
     <Compile Include="Ultima\World\Maps\Map.cs" />
     <Compile Include="Core\Graphics\SpriteBatch3D.cs" />

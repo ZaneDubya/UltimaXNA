@@ -11,11 +11,11 @@
 #region usings
 using System;
 using UltimaXNA.Core.Network;
-using UltimaXNA.UltimaGUI;
-using UltimaXNA.UltimaGUI.LoginGumps;
+using UltimaXNA.Ultima.UI;
+using UltimaXNA.Ultima.UI.LoginGumps;
 #endregion
 
-namespace UltimaXNA.UltimaLogin.Scenes
+namespace UltimaXNA.Ultima.Login.Scenes
 {
     public class LoggingInScene : AScene
     {

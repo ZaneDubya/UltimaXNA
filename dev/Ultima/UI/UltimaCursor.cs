@@ -10,13 +10,13 @@
 #region usings
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Core.Rendering;
-using UltimaXNA.UltimaVars;
-using UltimaXNA.UltimaWorld;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Ultima.ClientVars;
+using UltimaXNA.Ultima.World;
 
 #endregion
 
-namespace UltimaXNA.UltimaGUI
+namespace UltimaXNA.Ultima.UI
 {
     class UltimaCursor
     {
@@ -32,7 +32,7 @@ namespace UltimaXNA.UltimaGUI
                 {
                     m_CursorSpriteArtIndex = value;
 
-                    Texture2D art = UltimaData.ArtData.GetStaticTexture(m_CursorSpriteArtIndex);
+                    Texture2D art = IO.ArtData.GetStaticTexture(m_CursorSpriteArtIndex);
                     if (art == null)
                     {
                         // shouldn't we have a debug texture to show that we are missing this cursor art? !!!

@@ -11,13 +11,15 @@
 #region usings
 using System;
 using System.Collections.Generic;
-using UltimaXNA.UltimaEntities;
-using UltimaXNA.UltimaEntities.EntityViews;
-using UltimaXNA.UltimaData;
-using UltimaXNA.UltimaWorld.Views;
+using UltimaXNA.Ultima.Entities;
+using UltimaXNA.Ultima.EntityViews;
+using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.World.Views;
+using UltimaXNA.Ultima.Entities.Items;
+using UltimaXNA.Ultima.Entities.Items.Containers;
 #endregion
 
-namespace UltimaXNA.UltimaWorld.Maps
+namespace UltimaXNA.Ultima.World.Maps
 {
     /// <summary>
     /// Represents a single tile on the Ultima Online map.
@@ -140,7 +142,7 @@ namespace UltimaXNA.UltimaWorld.Maps
 
                 if (entities[i] is Item) // checks Item and StaticItem entities.
                 {
-                    UltimaData.ItemData data = ((Item)entities[i]).ItemData;
+                    IO.ItemData data = ((Item)entities[i]).ItemData;
                     if (data.IsRoof || data.IsSurface || (data.IsWall && data.IsImpassable))
                     {
                         if (underEntity == null || entities[i].Z < underEntity.Z)

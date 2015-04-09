@@ -8,12 +8,13 @@
  *
  ***************************************************************************/
 
-using UltimaXNA.Data;
-using UltimaXNA.UltimaGUI.Controls;
-using UltimaXNA.UltimaPackets;
-using UltimaXNA.UltimaVars;
+using UltimaXNA.Configuration;
+using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Ultima.Network;
+using UltimaXNA.Ultima.ClientVars;
+using UltimaXNA.Ultima.Data.Servers;
 
-namespace UltimaXNA.UltimaGUI.LoginGumps
+namespace UltimaXNA.Ultima.UI.LoginGumps
 {
     public delegate void BackToLoginScreenEvent();
     public delegate void SelectLastServerEvent();
@@ -53,9 +54,9 @@ namespace UltimaXNA.UltimaGUI.LoginGumps
 
             // center message window backdrop
             AddControl(new ResizePic(this, 1, 152, 90, 3500, 382, 274));
-            AddControl(new HtmlGump(this, 1, 158, 72, 200, 20, 0, 0, UltimaData.StringData.Entry(1044579)));
-            AddControl(new HtmlGump(this, 1, 402, 72, 50, 20, 0, 0, UltimaData.StringData.Entry(1044577)));
-            AddControl(new HtmlGump(this, 1, 472, 72, 80, 20, 0, 0, UltimaData.StringData.Entry(1044578)));
+            AddControl(new HtmlGump(this, 1, 158, 72, 200, 20, 0, 0, IO.StringData.Entry(1044579)));
+            AddControl(new HtmlGump(this, 1, 402, 72, 50, 20, 0, 0, IO.StringData.Entry(1044577)));
+            AddControl(new HtmlGump(this, 1, 472, 72, 80, 20, 0, 0, IO.StringData.Entry(1044578)));
             // display the serverlist the server list.
             foreach (ServerListEntry e in Servers.List)
             {
@@ -65,7 +66,7 @@ namespace UltimaXNA.UltimaGUI.LoginGumps
             // Page 2 - logging in to server ... with cancel login button
             // center message window backdrop
             AddControl(new ResizePic(this, 2, 116, 95, 2600, 408, 288));
-            AddControl(new TextLabelAscii(this, 2, 166, 143, 2017, 2, UltimaData.StringData.Entry(3000053) + "..."));
+            AddControl(new TextLabelAscii(this, 2, 166, 143, 2017, 2, IO.StringData.Entry(3000053) + "..."));
             AddControl(new Button(this, 2, 305, 342, 1150, 1152, ButtonTypes.Activate, 0, (int)SelectServerGumpButtons.BackButton));
             ((Button)LastControl).GumpOverID = 1151;
         }

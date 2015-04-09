@@ -9,11 +9,11 @@
  ***************************************************************************/
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using UltimaXNA.Input.Windows;
-using UltimaXNA.UltimaData.FontsOld;
-using UltimaXNA.UltimaGUI;
+using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Ultima.IO.FontsOld;
+using UltimaXNA.Ultima.UI;
 
-namespace UltimaXNA.UltimaGUI.Controls
+namespace UltimaXNA.Ultima.UI.Controls
 {
     class DropDownList : AControl
     {
@@ -56,7 +56,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             m_visibleItems = itemsVisible;
             m_canBeNull = canBeNull;
 
-            m_resize = new ResizePic(m_owner, Page, X, Y, 3000, m_width, UltimaData.FontsOld.ASCIIText.Fonts[1].Height + 8);
+            m_resize = new ResizePic(m_owner, Page, X, Y, 3000, m_width, IO.FontsOld.ASCIIText.Fonts[1].Height + 8);
             m_resize.OnMouseClick = onClickClosedList;
             m_resize.OnMouseOver = onMouseOverClosedList;
             m_resize.OnMouseOut = onMouseOutClosedList;

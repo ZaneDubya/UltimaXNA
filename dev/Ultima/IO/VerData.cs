@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace UltimaXNA.UltimaData
+namespace UltimaXNA.Ultima.IO
 {
     public class VerData
     {

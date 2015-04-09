@@ -1,11 +1,11 @@
 #region Usings
 
-using UltimaXNA.ComponentModel;
-using UltimaXNA.Input.Windows;
+using UltimaXNA.Core.ComponentModel;
+using UltimaXNA.Core.Input.Windows;
 
 #endregion
 
-namespace UltimaXNA.Data
+namespace UltimaXNA.Configuration
 {
     public sealed class GameSettings : SettingsBase
     {

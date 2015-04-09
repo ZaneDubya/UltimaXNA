@@ -10,12 +10,12 @@
 #region usings
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
-using UltimaXNA.UltimaEntities;
-using UltimaXNA.UltimaWorld.Maps;
-using UltimaXNA.UltimaWorld;
+using UltimaXNA.Ultima.Entities;
+using UltimaXNA.Ultima.World.Maps;
+using UltimaXNA.Ultima.World;
 #endregion
 
-namespace UltimaXNA.UltimaEntities.Effects
+namespace UltimaXNA.Ultima.Entities.Effects
 {
     class LightningEffect : AEffect
     {

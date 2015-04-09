@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using UltimaXNA.Diagnostics.Tracing.Listeners;
+using UltimaXNA.Core.Diagnostics.Tracing.Listeners;
 
 namespace UltimaXNA.Windows.Diagnostics.Tracing.Listeners
 {

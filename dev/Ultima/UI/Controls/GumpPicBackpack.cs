@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UltimaXNA.UltimaEntities;
+﻿using UltimaXNA.Ultima.Entities.Items;
 
-namespace UltimaXNA.UltimaGUI.Controls
+namespace UltimaXNA.Ultima.UI.Controls
 {
     class GumpPicBackpack : GumpPic
     {

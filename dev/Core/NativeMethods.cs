@@ -8,14 +8,13 @@
  ********************************************************/
 
 #region Usings
-
+using Microsoft.Win32.SafeHandles;
 using System;
 using System.Runtime.InteropServices;
-using UltimaXNA.Input.Windows;
-
+using UltimaXNA.Core.Input.Windows;
 #endregion
 
-namespace UltimaXNA
+namespace UltimaXNA.Core
 {
     internal static class NativeConstants
     {
@@ -335,5 +334,13 @@ namespace UltimaXNA
 
         [DllImport("user32.dll")]
         public static extern uint GetWindowThreadProcessId(IntPtr window, IntPtr module);
+
+        [DllImport("Kernel32")]
+        private unsafe static extern int _lread(SafeFileHandle hFile, void* lpBuffer, int wBytes);
+
+        public static unsafe void Read(SafeFileHandle ptr, void* buffer, int length)
+        {
+            _lread(ptr, buffer, length);
+        }
     }
 }

@@ -10,13 +10,13 @@
 #region usings
 using System;
 using UltimaXNA.Core.Network;
-using UltimaXNA.Data;
-using UltimaXNA.UltimaGUI.LoginGumps;
-using UltimaXNA.UltimaVars;
-
+using UltimaXNA.Configuration;
+using UltimaXNA.Ultima.UI.LoginGumps;
+using UltimaXNA.Ultima.ClientVars;
+using UltimaXNA.Ultima.Data.Accounts;
 #endregion
 
-namespace UltimaXNA.UltimaLogin.Scenes
+namespace UltimaXNA.Ultima.Login.Scenes
 {
     public class CharacterListScene : AScene
     {

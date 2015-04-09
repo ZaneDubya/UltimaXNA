@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UltimaXNA.Input.Windows
+namespace UltimaXNA.Core.Input.Windows
 {
     public enum MouseButtonInternal
     {

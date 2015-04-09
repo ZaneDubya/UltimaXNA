@@ -14,7 +14,7 @@
 
 #endregion
 
-namespace UltimaXNA.UltimaData
+namespace UltimaXNA.Ultima.IO
 {
     public struct Entry5D
     {

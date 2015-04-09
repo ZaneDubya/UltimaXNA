@@ -12,10 +12,13 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using UltimaXNA.UltimaWorld.Maps;
+using UltimaXNA.Ultima.World.Maps;
+using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.Entities.Items;
+using UltimaXNA.Ultima.Entities.Items.Containers;
 #endregion
 
-namespace UltimaXNA.UltimaEntities
+namespace UltimaXNA.Ultima.Entities.Mobiles
 {
 	static class MobileMovementCheck
 	{
@@ -307,7 +310,7 @@ namespace UltimaXNA.UltimaEntities
 			for (int i = 0; i < items.Count; ++i)
 			{
 				Item item = items[i];
-				UltimaData.ItemData itemData = item.ItemData;
+				IO.ItemData itemData = item.ItemData;
 				TileFlag flags = itemData.Flags;
 
 				if ((flags & ImpassableSurface) == TileFlag.Surface) // Surface && !Impassable && !Movable
@@ -409,7 +412,7 @@ namespace UltimaXNA.UltimaEntities
 			{
 				Item item = items[i];
 				int itemID = item.ItemID & 0x3FFF;
-				UltimaData.ItemData itemData = UltimaData.TileData.ItemData[itemID];
+				IO.ItemData itemData = IO.TileData.ItemData[itemID];
 				TileFlag flags = itemData.Flags;
 
 				if ((flags & ImpassableSurface) != 0) // Impassable || Surface
@@ -529,7 +532,7 @@ namespace UltimaXNA.UltimaEntities
 			{
 				Item item = itemList[i];
 
-				UltimaData.ItemData id = item.ItemData;
+				IO.ItemData id = item.ItemData;
 
 				int calcTop = item.Z + id.CalcHeight;
 

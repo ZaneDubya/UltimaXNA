@@ -12,13 +12,13 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Core.Rendering;
-using UltimaXNA.Input.Windows;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core;
-using UltimaXNA.Data;
+using UltimaXNA.Configuration;
 #endregion
 
-namespace UltimaXNA.UltimaGUI
+namespace UltimaXNA.Ultima.UI
 {
     internal delegate void ControlMouseButtonEvent(int x, int y, MouseButton button);
     internal delegate void ControlMouseEvent(int x, int y);
@@ -397,7 +397,7 @@ namespace UltimaXNA.UltimaGUI
 #if DEBUG
         protected void DrawBounds(SpriteBatchUI spriteBatch, Color color)
         {
-            int hue = UltimaData.HuesXNA.GetWebSafeHue(color);
+            int hue = IO.HuesXNA.GetWebSafeHue(color);
 
             Rectangle drawArea = m_area;
             if (m_owner == null)
@@ -503,7 +503,7 @@ namespace UltimaXNA.UltimaGUI
             }
             else
             {
-                maxTimeForDoubleClick = (float)UltimaEngine.TotalMS + UltimaVars.EngineVars.DoubleClickMS;
+                maxTimeForDoubleClick = (float)UltimaEngine.TotalMS + EngineVars.DoubleClickMS;
             }
 
             mouseClick(x, y, button);

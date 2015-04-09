@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
-namespace UltimaXNA.UltimaData
+namespace UltimaXNA.Ultima.IO
 {
     /// <summary>
     /// This file contains information about animated statics.

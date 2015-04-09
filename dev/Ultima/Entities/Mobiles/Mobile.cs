@@ -11,13 +11,16 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaWorld.Views;
-using UltimaXNA.UltimaWorld.Maps;
-using UltimaXNA.UltimaEntities.Support;
+using UltimaXNA.Ultima.World;
+using UltimaXNA.Ultima.World.Views;
+using UltimaXNA.Ultima.World.Maps;
+using UltimaXNA.Ultima.Entities;
+using UltimaXNA.Ultima.Entities.Items;
+using UltimaXNA.Ultima.Entities.Items.Containers;
+using UltimaXNA.Ultima.Data;
 #endregion
 
-namespace UltimaXNA.UltimaEntities
+namespace UltimaXNA.Ultima.Entities.Mobiles
 {
     public class Mobile : AEntity
     {
@@ -42,7 +45,7 @@ namespace UltimaXNA.UltimaEntities
 
         public override void Update(double frameMS)
         {
-            if (UltimaVars.EngineVars.AllLabels)
+            if (EngineVars.AllLabels)
             {
                 AddOverhead(MessageType.Label, "<outline>" + Name, 0, NotorietyHue);
             }

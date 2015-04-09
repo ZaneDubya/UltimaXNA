@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using UltimaXNA.Collections;
-using UltimaXNA.Diagnostics;
-using UltimaXNA.Diagnostics.Tracing;
+using UltimaXNA.Core.Collections;
+using UltimaXNA.Core.Diagnostics;
+using UltimaXNA.Core.Diagnostics.Tracing;
 
-namespace UltimaXNA.Patterns.IoC
+namespace UltimaXNA.Core.Patterns.IoC
 {
     public class Container : IDisposable, IContainer
     {

@@ -9,14 +9,15 @@
  ***************************************************************************/
 #region usings
 using System.Collections.Generic;
-using UltimaXNA.UltimaData;
-using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaWorld.Views;
+using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.World;
+using UltimaXNA.Ultima.World.Views;
 using Microsoft.Xna.Framework;
-using UltimaXNA.UltimaWorld.Maps;
+using UltimaXNA.Ultima.World.Maps;
+using UltimaXNA.Ultima.Entities.Items;
 #endregion
 
-namespace UltimaXNA.UltimaEntities
+namespace UltimaXNA.Ultima.Entities.Multis
 {
     class Multi : AEntity
     {

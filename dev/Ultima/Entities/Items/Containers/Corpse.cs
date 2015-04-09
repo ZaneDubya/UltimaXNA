@@ -9,11 +9,11 @@
  ***************************************************************************/
 #region usings
 using System.Collections.Generic;
-using UltimaXNA.UltimaPackets.Server;
-using UltimaXNA.UltimaWorld.Maps;
+using UltimaXNA.Ultima.Network.Server;
+using UltimaXNA.Ultima.World.Maps;
 #endregion
 
-namespace UltimaXNA.UltimaEntities
+namespace UltimaXNA.Ultima.Entities.Items.Containers
 {
     class Corpse : Container
     {

@@ -8,13 +8,13 @@
  *
  ***************************************************************************/
 #region usings
-
-using UltimaXNA.Diagnostics.Tracing;
-using UltimaXNA.UltimaData;
+using UltimaXNA.Ultima.Entities.Mobiles;
+using UltimaXNA.Core.Diagnostics.Tracing;
+using UltimaXNA.Ultima.IO;
 using UltimaXNA.Core.Diagnostics;
 #endregion
 
-namespace UltimaXNA.UltimaEntities.EntityViews
+namespace UltimaXNA.Ultima.EntityViews
 {
     public class MobileAnimation
     {
@@ -205,7 +205,7 @@ namespace UltimaXNA.UltimaEntities.EntityViews
                     unholdAnimation();
                     m_actionIndex = actionIndex;
                     m_animationFrame = 0f;
-                    m_FrameCount = UltimaData.Animations.GetAnimationFrameCount(
+                    m_FrameCount = IO.Animations.GetAnimationFrameCount(
                         Parent.BodyID, actionIndex, (int)Parent.Facing, Parent.Hue);
                     m_FrameDelay = delay;
                     if (repeat == false)

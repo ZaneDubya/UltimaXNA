@@ -10,10 +10,10 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Core.Rendering;
-using UltimaXNA.UltimaGUI;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Ultima.UI;
 
-namespace UltimaXNA.UltimaGUI.Controls
+namespace UltimaXNA.Ultima.UI.Controls
 {
     class GumpPic : AControl
     {
@@ -66,7 +66,7 @@ namespace UltimaXNA.UltimaGUI.Controls
         {
             if (m_texture == null)
             {
-                m_texture = UltimaData.GumpData.GetGumpXNA(m_gumpID);
+                m_texture = IO.GumpData.GetGumpXNA(m_gumpID);
                 Size = new Point(m_texture.Width, m_texture.Height);
             }
 

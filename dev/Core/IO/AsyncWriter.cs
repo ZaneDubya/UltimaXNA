@@ -4,7 +4,7 @@ using System.IO;
 using System.Net;
 using System.Threading;
 
-namespace UltimaXNA.IO
+namespace UltimaXNA.Core.IO
 {
     public sealed class AsyncWriter : GenericWriter
     {

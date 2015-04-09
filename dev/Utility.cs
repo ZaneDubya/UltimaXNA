@@ -10,7 +10,6 @@
 #region usings
 using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
@@ -18,7 +17,8 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text;
-using UltimaXNA.UltimaData.FontsOld;
+using UltimaXNA.Ultima;
+using UltimaXNA.Ultima.Data;
 #endregion
 
 namespace UltimaXNA

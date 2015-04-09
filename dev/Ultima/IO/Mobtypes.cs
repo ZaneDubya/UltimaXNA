@@ -15,7 +15,7 @@ using System;
 using UltimaXNA.Core.Diagnostics;
 #endregion
 
-namespace UltimaXNA.UltimaData
+namespace UltimaXNA.Ultima.IO
 {
     public sealed class Mobtypes
     {

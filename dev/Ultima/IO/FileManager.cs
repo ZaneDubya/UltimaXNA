@@ -13,10 +13,10 @@ using System;
 using System.IO;
 using UltimaXNA.Core.Diagnostics;
 using System.Collections.Generic;
-using UltimaXNA.Data;
-using UltimaXNA.Diagnostics.Tracing;
+using UltimaXNA.Configuration;
+using UltimaXNA.Core.Diagnostics.Tracing;
 
-namespace UltimaXNA.UltimaData
+namespace UltimaXNA.Ultima.IO
 {
     class FileManager
     {

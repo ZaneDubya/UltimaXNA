@@ -9,10 +9,10 @@
  ***************************************************************************/
 using System;
 using System.Text;
-using UltimaXNA.UltimaGUI.Controls;
-using UltimaXNA.UltimaWorld;
+using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Ultima.World;
 
-namespace UltimaXNA.UltimaGUI.WorldGumps
+namespace UltimaXNA.Ultima.UI.WorldGumps
 {
     class SkillsGump : Gump
     {
@@ -37,7 +37,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
             m_list.Y = 33;
             m_list.Width = Width - 56;
             m_list.Height = Height - 95;
-            if (m_lastUpdateCount != UltimaVars.Skills.UpdateCount)
+            if (m_lastUpdateCount != Ultima.ClientVars.Skills.UpdateCount)
                 m_list.Text = buildSkillsString();
             base.Update(totalMS, frameMS);
         }
@@ -57,10 +57,10 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
 
         private string buildSkillsString()
         {
-            m_lastUpdateCount = UltimaVars.Skills.UpdateCount;
+            m_lastUpdateCount = Ultima.ClientVars.Skills.UpdateCount;
             StringBuilder str = new StringBuilder();
 
-            foreach (UltimaVars.SkillEntry skill in UltimaVars.Skills.List.Values)
+            foreach (Ultima.ClientVars.SkillEntry skill in Ultima.ClientVars.Skills.List.Values)
             {
                 str.Append(string.Format(skill.HasUseButton ? kSkillName_UseButton : kSkillName_NoUseButton, skill.Index, skill.Name));
                 str.Append(string.Format(kSkillValues[skill.LockType], skill.Value));

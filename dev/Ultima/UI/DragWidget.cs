@@ -8,10 +8,10 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Input.Windows;
+using UltimaXNA.Core.Input.Windows;
 #endregion
 
-namespace UltimaXNA.UltimaGUI
+namespace UltimaXNA.Ultima.UI
 {
     class DragWidget
     {

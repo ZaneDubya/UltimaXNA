@@ -1,16 +1,13 @@
 ﻿#region Usings
-
-using System;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using UltimaXNA.Diagnostics.Tracing;
-using UltimaXNA.Input.Windows;
-using UltimaXNA.UltimaVars;
-
+using System;
+using System.Collections.Generic;
+using UltimaXNA.Core.Diagnostics.Tracing;
+using UltimaXNA.Core.Input.Windows;
 #endregion
 
-namespace UltimaXNA.Input
+namespace UltimaXNA.Core.Input
 {
     public class InputManager
     {
@@ -250,7 +247,7 @@ namespace UltimaXNA.Input
                 {
                     addEvent(new InputEventMouse(MouseEvent.Click, e));
 
-                    if((m_TheTime - m_LastMouseClickTime <= EngineVars.DoubleClickMS) &&
+                    if((m_TheTime - m_LastMouseClickTime <= UltimaXNA.Ultima.EngineVars.DoubleClickMS) &&
                        !DistanceBetweenPoints(m_LastMouseClick.Position, e.Position, MouseClickMaxDelta))
                     {
                         m_LastMouseClickTime = 0f;

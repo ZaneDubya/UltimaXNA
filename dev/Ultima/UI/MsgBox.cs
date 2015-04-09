@@ -8,10 +8,10 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.UltimaGUI.Controls;
+using UltimaXNA.Ultima.UI.Controls;
 #endregion
 
-namespace UltimaXNA.UltimaGUI
+namespace UltimaXNA.Ultima.UI
 {
     public enum MsgBoxTypes
     {

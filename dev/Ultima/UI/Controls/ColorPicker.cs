@@ -9,11 +9,11 @@
  ***************************************************************************/
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Core.Rendering;
-using UltimaXNA.Input.Windows;
-using UltimaXNA.UltimaGUI;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Ultima.UI;
 
-namespace UltimaXNA.UltimaGUI.Controls
+namespace UltimaXNA.Ultima.UI.Controls
 {
     class ColorPicker : AControl
     {
@@ -87,8 +87,8 @@ namespace UltimaXNA.UltimaGUI.Controls
             {
                 if (m_huesTexture == null)
                 {
-                m_huesTexture = UltimaData.HuesXNA.HueSwatch(m_hueSize.X, m_hueSize.Y, m_hues);
-                m_selectedIndicator = UltimaData.GumpData.GetGumpXNA(6000);
+                m_huesTexture = IO.HuesXNA.HueSwatch(m_hueSize.X, m_hueSize.Y, m_hues);
+                m_selectedIndicator = IO.GumpData.GetGumpXNA(6000);
                 }
             }
             else
@@ -97,7 +97,7 @@ namespace UltimaXNA.UltimaGUI.Controls
                 {
                     m_getNewSelectedTexture = false;
                     m_huesTexture = null;
-                    m_huesTexture = UltimaData.HuesXNA.HueSwatch(1, 1, new int[1] { m_hues[Index] });
+                    m_huesTexture = IO.HuesXNA.HueSwatch(1, 1, new int[1] { m_hues[Index] });
                 }
             }
 

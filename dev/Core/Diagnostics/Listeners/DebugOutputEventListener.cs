@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Diagnostics.Tracing;
 
-namespace UltimaXNA.Diagnostics.Tracing.Listeners
+namespace UltimaXNA.Core.Diagnostics.Tracing.Listeners
 {
     public class DebugOutputEventListener : EventListener
     {

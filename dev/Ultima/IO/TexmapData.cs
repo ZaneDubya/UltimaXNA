@@ -12,11 +12,11 @@
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core;
 using UltimaXNA.Core.Diagnostics;
-using UltimaXNA.IO;
+using UltimaXNA.Core.IO;
 
 #endregion
 
-namespace UltimaXNA.UltimaData
+namespace UltimaXNA.Ultima.IO
 {
     class TexmapData
     {

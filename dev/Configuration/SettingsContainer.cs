@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace UltimaXNA.Data
+namespace UltimaXNA.Configuration
 {
     internal sealed class SettingsContainer : Dictionary<string, SettingsToken>
     {

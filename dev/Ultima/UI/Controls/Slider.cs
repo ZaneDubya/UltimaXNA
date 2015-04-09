@@ -11,11 +11,11 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Core.Rendering;
-using UltimaXNA.Input.Windows;
-using UltimaXNA.UltimaGUI;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Ultima.UI;
 
-namespace UltimaXNA.UltimaGUI.Controls
+namespace UltimaXNA.Ultima.UI.Controls
 {
 
     class Slider : AControl
@@ -72,10 +72,10 @@ namespace UltimaXNA.UltimaGUI.Controls
             if (m_gumpSlider == null)
             {
                 m_gumpBar = new Texture2D[3];
-                m_gumpBar[0] = UltimaData.GumpData.GetGumpXNA(213);
-                m_gumpBar[1] = UltimaData.GumpData.GetGumpXNA(214);
-                m_gumpBar[2] = UltimaData.GumpData.GetGumpXNA(215);
-                m_gumpSlider = UltimaData.GumpData.GetGumpXNA(216);
+                m_gumpBar[0] = IO.GumpData.GetGumpXNA(213);
+                m_gumpBar[1] = IO.GumpData.GetGumpXNA(214);
+                m_gumpBar[2] = IO.GumpData.GetGumpXNA(215);
+                m_gumpSlider = IO.GumpData.GetGumpXNA(216);
                 Size = new Point(BarWidth, m_gumpSlider.Height);
                 m_sliderX = (int)((float)(BarWidth - m_gumpSlider.Width) * ((float)(Value - MinValue) / (float)(MaxValue - MinValue)));
             }

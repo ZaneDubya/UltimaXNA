@@ -13,12 +13,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
-using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaWorld.Maps;
-using UltimaXNA.UltimaGUI;
+using UltimaXNA.Ultima.World;
+using UltimaXNA.Ultima.World.Maps;
+using UltimaXNA.Ultima.UI;
+using UltimaXNA.Ultima.Data;
 #endregion
 
-namespace UltimaXNA.UltimaEntities
+namespace UltimaXNA.Ultima.Entities
 {
     public class Overhead : AEntity
     {

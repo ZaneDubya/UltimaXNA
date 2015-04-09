@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 
-namespace UltimaXNA.Input.Windows
+namespace UltimaXNA.Core.Input.Windows
 {
     public class InputEventMouse : InputEvent
     {
@@ -79,8 +79,8 @@ namespace UltimaXNA.Input.Windows
             m_eventType = eventType;
             m_button = button;
             m_clicks = clicks;
-            m_x = (int)(x / dpi.X);//UltimaVars.EngineVars.ScreenDPI.X);
-            m_y = (int)(y / dpi.Y);//UltimaVars.EngineVars.ScreenDPI.Y);
+            m_x = (int)(x / dpi.X);//EngineVars.ScreenDPI.X);
+            m_y = (int)(y / dpi.Y);//EngineVars.ScreenDPI.Y);
             m_mouseData = mouseData;
         }
 

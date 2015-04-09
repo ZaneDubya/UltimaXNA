@@ -9,7 +9,7 @@ using System.Security;
 
 #endregion
 
-namespace UltimaXNA
+namespace UltimaXNA.Core
 {
     [SuppressUnmanagedCodeSecurity]
     internal static class ConsoleManager

@@ -8,11 +8,11 @@
  *
  ***************************************************************************/
 using Microsoft.Xna.Framework;
-using UltimaXNA.UltimaEntities;
-using UltimaXNA.Core.Rendering;
-using UltimaXNA.UltimaGUI;
+using UltimaXNA.Ultima.Entities.Items;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Ultima.UI;
 
-namespace UltimaXNA.UltimaGUI.Controls
+namespace UltimaXNA.Ultima.UI.Controls
 {
     class ItemGumplingPaperdoll : ItemGumpling
     {
@@ -50,9 +50,9 @@ namespace UltimaXNA.UltimaGUI.Controls
             if (m_texture == null)
             {
                 if (IsFemale)
-                    m_texture = UltimaData.GumpData.GetGumpXNA(Item.ItemData.AnimID + 60000);
+                    m_texture = IO.GumpData.GetGumpXNA(Item.ItemData.AnimID + 60000);
                 if (m_texture == null)
-                    m_texture = UltimaData.GumpData.GetGumpXNA(Item.ItemData.AnimID + 50000);
+                    m_texture = IO.GumpData.GetGumpXNA(Item.ItemData.AnimID + 50000);
                 Size = new Point(m_texture.Width, m_texture.Height);
             }
             spriteBatch.Draw2D(m_texture, Position, Item.Hue & 0x7FFF, (Item.Hue & 0x8000) == 0x8000 ? true : false, false);

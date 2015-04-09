@@ -11,11 +11,13 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
-using UltimaXNA.UltimaEntities;
-using UltimaXNA.Core.Rendering;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Ultima.Entities;
+using UltimaXNA.Ultima.Entities.Items;
+using UltimaXNA.Ultima.Entities.Mobiles;
 #endregion
 
-namespace UltimaXNA.UltimaWorld.Controllers
+namespace UltimaXNA.Ultima.World.Controllers
 {
     public class MouseOverList
     {

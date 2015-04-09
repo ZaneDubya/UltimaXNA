@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using UltimaXNA.UltimaData;
-using UltimaXNA.UltimaWorld.Maps;
+using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.World.Maps;
 
-namespace UltimaXNA.UltimaEntities
+namespace UltimaXNA.Ultima.Entities
 {
     public class Ground : AEntity
     {
@@ -34,7 +34,7 @@ namespace UltimaXNA.UltimaEntities
             : base(Serial.Null, map)
         {
             m_LandDataID = tileID;
-            LandData = UltimaData.TileData.LandData[m_LandDataID & 0x3FFF];
+            LandData = IO.TileData.LandData[m_LandDataID & 0x3FFF];
         }
 
         protected override EntityViews.AEntityView CreateView()

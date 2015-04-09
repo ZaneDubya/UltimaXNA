@@ -9,7 +9,7 @@
  ***************************************************************************/
 using UltimaXNA.Core.Network;
 
-namespace UltimaXNA.UltimaPackets
+namespace UltimaXNA.Ultima.Network
 {
     public enum Sex
     {

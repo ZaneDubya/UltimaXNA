@@ -15,7 +15,7 @@ using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 #endregion
 
-namespace UltimaXNA.UltimaWorld.Views
+namespace UltimaXNA.Ultima.World.Views
 {
     // N.B.
     // This code is currently not used by the engine and may well be nonfunctional.
@@ -85,16 +85,16 @@ namespace UltimaXNA.UltimaWorld.Views
         {
             if ((map.UpdateTicker != m_lastUpdateTicker) || (m_texture == null))
             {
-                int size = UltimaVars.EngineVars.RenderSize * 2;
+                int size = EngineVars.RenderSize * 2;
                 m_lastUpdateTicker = map.UpdateTicker;
                 m_texture = new Texture2D(m_graphics, size, size, false, SurfaceFormat.Bgra5551);
                 ushort[] data = new ushort[size * size];
                 fixed (ushort* pData = data)
                 {
-                    for (int y = 0; y < UltimaVars.EngineVars.RenderSize; y++)
+                    for (int y = 0; y < EngineVars.RenderSize; y++)
                     {
                         ushort* cur = pData + ((size /2 - 1) + (size - 1) * y);
-                        for (int x = 0; x < UltimaVars.EngineVars.RenderSize; x++)
+                        for (int x = 0; x < EngineVars.RenderSize; x++)
                         {
                             MapTile m = map.GetMapTile(renderBeginX + x, renderBeginY + y, true);
                             List<AMapObject> o = m.Items;
@@ -103,16 +103,16 @@ namespace UltimaXNA.UltimaWorld.Views
                             {
                                 if (o[i] is MapObjectStatic)
                                 {
-                                    *cur++ = (ushort)(UltimaData.RadarColorData.Colors[o[i].ItemID] | 0x8000);
-                                    *cur = (ushort)(UltimaData.RadarColorData.Colors[o[i].ItemID] | 0x8000);
+                                    *cur++ = (ushort)(IO.RadarColorData.Colors[o[i].ItemID] | 0x8000);
+                                    *cur = (ushort)(IO.RadarColorData.Colors[o[i].ItemID] | 0x8000);
                                     cur += size;
                                     break;
                                 }
                             }
                             if (i == 0)
                             {
-                                *cur++ = (ushort)(UltimaData.RadarColorData.Colors[m.GroundTile.ItemID] | 0x8000);
-                                *cur = (ushort)(UltimaData.RadarColorData.Colors[o[i].ItemID] | 0x8000);
+                                *cur++ = (ushort)(IO.RadarColorData.Colors[m.GroundTile.ItemID] | 0x8000);
+                                *cur = (ushort)(IO.RadarColorData.Colors[o[i].ItemID] | 0x8000);
                                 cur += size;
                             }
                         }

@@ -42,7 +42,7 @@ using System;
 using System.Text;
 using System.Collections;
 
-namespace UltimaXNA.UltimaGUI.HTML.Parsing
+namespace UltimaXNA.Ultima.UI.HTML.Parsing
 {
 	/// <summary>
 	/// This class will control HTML tag heuristics that will allow faster matching of tags

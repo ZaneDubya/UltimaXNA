@@ -14,7 +14,7 @@ using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace UltimaXNA.UltimaData.FontsNew
+namespace UltimaXNA.Ultima.IO.FontsNew
 {
     internal class FontUni : AFont
     {

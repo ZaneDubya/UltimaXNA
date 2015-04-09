@@ -12,11 +12,11 @@ using Microsoft.Xna.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using UltimaXNA.Core.Diagnostics;
-using UltimaXNA.UltimaGUI.HTML.Atoms;
-using UltimaXNA.Diagnostics.Tracing;
+using UltimaXNA.Ultima.UI.HTML.Atoms;
+using UltimaXNA.Core.Diagnostics.Tracing;
 #endregion
 
-namespace UltimaXNA.UltimaGUI.HTML
+namespace UltimaXNA.Ultima.UI.HTML
 {
     public class Reader
     {
@@ -194,13 +194,13 @@ namespace UltimaXNA.UltimaGUI.HTML
                                                 switch (key)
                                                 {
                                                     case "color":
-                                                        openHREFs[openHREFs.Count - 1].UpHue = UltimaData.HuesXNA.GetWebSafeHue(c);
+                                                        openHREFs[openHREFs.Count - 1].UpHue = IO.HuesXNA.GetWebSafeHue(c);
                                                         break;
                                                     case "hovercolor":
-                                                        openHREFs[openHREFs.Count - 1].OverHue = UltimaData.HuesXNA.GetWebSafeHue(c);
+                                                        openHREFs[openHREFs.Count - 1].OverHue = IO.HuesXNA.GetWebSafeHue(c);
                                                         break;
                                                     case "activecolor":
-                                                        openHREFs[openHREFs.Count - 1].DownHue = UltimaData.HuesXNA.GetWebSafeHue(c);
+                                                        openHREFs[openHREFs.Count - 1].DownHue = IO.HuesXNA.GetWebSafeHue(c);
                                                         break;
                                                 }
                                             }

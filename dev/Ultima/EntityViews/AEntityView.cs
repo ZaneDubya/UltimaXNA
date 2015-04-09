@@ -1,12 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Core.Rendering;
-using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaWorld.Maps;
-using UltimaXNA.UltimaWorld.Views;
-using UltimaXNA.UltimaWorld.Controllers;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Ultima.World;
+using UltimaXNA.Ultima.World.Maps;
+using UltimaXNA.Ultima.World.Views;
+using UltimaXNA.Ultima.World.Controllers;
+using UltimaXNA.Ultima.Entities;
+using UltimaXNA.Ultima.Entities.Mobiles;
 
-namespace UltimaXNA.UltimaEntities.EntityViews
+namespace UltimaXNA.Ultima.EntityViews
 {
     /// <summary>
     /// An abstract class that can be attached to an entity and used to maintain data for a 'View'.

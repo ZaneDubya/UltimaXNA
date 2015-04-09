@@ -16,7 +16,7 @@ using System.Collections;
 using UltimaXNA.Core.Diagnostics;
 #endregion
 
-namespace UltimaXNA.UltimaData
+namespace UltimaXNA.Ultima.IO
 {
     public class StringData
     {

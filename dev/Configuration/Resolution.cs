@@ -1,10 +1,10 @@
 #region Usings
 
-using UltimaXNA.ComponentModel;
+using UltimaXNA.Core.ComponentModel;
 
 #endregion
 
-namespace UltimaXNA.Data
+namespace UltimaXNA.Configuration
 {
     public class Resolution : NotifyPropertyChangedBase
     {

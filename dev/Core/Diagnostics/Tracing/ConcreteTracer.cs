@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Text;
-using UltimaXNA.Diagnostics;
-using UltimaXNA.Diagnostics.Tracing;
+using UltimaXNA.Core.Diagnostics;
+using UltimaXNA.Core.Diagnostics.Tracing;
 
-namespace CCC.Core.Diagnostics.Tracing
+namespace UltimaXNA.Core.Diagnostics.Tracing
 {
     public sealed class ConcreteTracer : ITracer
     {

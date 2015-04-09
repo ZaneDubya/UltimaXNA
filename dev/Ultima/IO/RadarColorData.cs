@@ -13,7 +13,7 @@ using System.IO;
 using UltimaXNA.Core.Diagnostics;
 #endregion
 
-namespace UltimaXNA.UltimaData
+namespace UltimaXNA.Ultima.IO
 {
     class RadarColorData
     {

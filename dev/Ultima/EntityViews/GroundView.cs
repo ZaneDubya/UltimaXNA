@@ -1,10 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
-using UltimaXNA.Core.Rendering;
-using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaWorld.Maps;
-using UltimaXNA.UltimaWorld.Controllers;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Ultima.World;
+using UltimaXNA.Ultima.World.Maps;
+using UltimaXNA.Ultima.World.Controllers;
+using UltimaXNA.Ultima.Entities;
 
-namespace UltimaXNA.UltimaEntities.EntityViews
+namespace UltimaXNA.Ultima.EntityViews
 {
     public class GroundView : AEntityView
     {
@@ -24,14 +25,14 @@ namespace UltimaXNA.UltimaEntities.EntityViews
                 DrawFlip = false;
                 DrawAs3DStretched = false;
 
-                DrawTexture = UltimaData.ArtData.GetLandTexture(Entity.LandDataID);
+                DrawTexture = IO.ArtData.GetLandTexture(Entity.LandDataID);
                 DrawArea = new Rectangle(0, Entity.Z * 4, 44, 44);
             }
             else
             {
                 DrawFlip = false;
                 DrawAs3DStretched = true;
-                DrawTexture = UltimaData.TexmapData.GetTexmapTexture(Entity.LandData.TextureID);
+                DrawTexture = IO.TexmapData.GetTexmapTexture(Entity.LandData.TextureID);
             }
         }
 

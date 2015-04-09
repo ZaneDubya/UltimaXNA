@@ -11,11 +11,11 @@
 using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Network.Packets;
-using UltimaXNA.Diagnostics.Tracing;
+using UltimaXNA.Core.Diagnostics.Tracing;
 
 #endregion
 
-namespace UltimaXNA.UltimaPackets.Server
+namespace UltimaXNA.Ultima.Network.Server
 {
     public class GraphicEffectExtendedPacket : GraphicEffectHuedPacket
     {

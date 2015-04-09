@@ -10,11 +10,11 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Core.Rendering;
-using UltimaXNA.UltimaGUI;
-using UltimaXNA.UltimaData.FontsOld;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Ultima.UI;
+using UltimaXNA.Ultima.IO.FontsOld;
 
-namespace UltimaXNA.UltimaGUI.Controls
+namespace UltimaXNA.Ultima.UI.Controls
 {
     class TextLabelAscii : AControl
     {

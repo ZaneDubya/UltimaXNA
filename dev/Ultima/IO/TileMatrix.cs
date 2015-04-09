@@ -18,10 +18,11 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using UltimaXNA.Core;
 using UltimaXNA.Core.Diagnostics;
 #endregion
 
-namespace UltimaXNA.UltimaData
+namespace UltimaXNA.Ultima.IO
 {
     public class TileMatrix
     {
@@ -258,7 +259,7 @@ namespace UltimaXNA.UltimaData
 
                     fixed (StaticTile* pStaticTiles = staticTiles)
                     {
-                        SharedMethods.Read(m_Statics.SafeFileHandle, pStaticTiles, length);
+                        NativeMethods.Read(m_Statics.SafeFileHandle, pStaticTiles, length);
 
                         if (m_StaticTileLists == null)
                         {
@@ -321,7 +322,7 @@ namespace UltimaXNA.UltimaData
 
                 fixed (Tile* pTiles = tiles)
                 {
-                    SharedMethods.Read(m_MapStream.SafeFileHandle, pTiles, 192);
+                    NativeMethods.Read(m_MapStream.SafeFileHandle, pTiles, 192);
                 }
 
                 Metrics.ReportDataRead((int)m_MapStream.Position - streamStart);
@@ -410,7 +411,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace UltimaXNA
+namespace UltimaXNA.Ultima
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     struct LandTile

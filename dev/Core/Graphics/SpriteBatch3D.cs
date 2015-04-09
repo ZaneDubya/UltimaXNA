@@ -18,7 +18,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 #endregion
 
-namespace UltimaXNA.Core.Rendering
+namespace UltimaXNA.Core.Graphics
 {
     public class SpriteBatch3D
     {

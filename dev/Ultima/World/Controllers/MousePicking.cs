@@ -10,10 +10,10 @@
 #region usings
 using Microsoft.Xna.Framework;
 using System;
-using UltimaXNA.UltimaEntities;
+using UltimaXNA.Ultima.Entities;
 #endregion
 
-namespace UltimaXNA.UltimaWorld.Controllers
+namespace UltimaXNA.Ultima.World.Controllers
 {
     public class MousePicking
     {

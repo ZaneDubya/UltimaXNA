@@ -17,10 +17,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using UltimaXNA.Core;
 using UltimaXNA.Core.Diagnostics;
 #endregion
 
-namespace UltimaXNA.UltimaData
+namespace UltimaXNA.Ultima.IO
 {
     public class TileMatrixRaw
     {
@@ -180,7 +181,7 @@ namespace UltimaXNA.UltimaData
 
                     fixed (byte* pStaticTiles = staticTiles)
                     {
-                        SharedMethods.Read(m_Statics.SafeFileHandle, pStaticTiles, length);
+                        NativeMethods.Read(m_Statics.SafeFileHandle, pStaticTiles, length);
                     }
                     return staticTiles;
                 }
@@ -210,7 +211,7 @@ namespace UltimaXNA.UltimaData
             int streamStart = (int)m_MapStream.Position;
             fixed (byte* pData = m_bufferedLandBlocks[index])
             {
-                SharedMethods.Read(m_MapStream.SafeFileHandle, pData, m_size_LandBlockData);
+                NativeMethods.Read(m_MapStream.SafeFileHandle, pData, m_size_LandBlockData);
             }
             Metrics.ReportDataRead((int)m_MapStream.Position - streamStart);
 

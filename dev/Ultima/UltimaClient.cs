@@ -8,18 +8,21 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Core.Diagnostics;
+using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Network;
-using UltimaXNA.Diagnostics.Tracing;
-using UltimaXNA.UltimaEntities;
-using UltimaXNA.UltimaGUI;
-using UltimaXNA.UltimaPackets.Client;
-using UltimaXNA.UltimaPackets.Server;
-using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaVars;
+using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.Data.Accounts;
+using UltimaXNA.Ultima.Data.Servers;
+using UltimaXNA.Ultima.Entities;
+using UltimaXNA.Ultima.UI;
+using UltimaXNA.Ultima.Network.Client;
+using UltimaXNA.Ultima.Network.Server;
+using UltimaXNA.Ultima.World;
+using UltimaXNA.Ultima.Entities.Mobiles;
+using UltimaXNA.Ultima.Entities.Items;
 #endregion
 
-namespace UltimaXNA
+namespace UltimaXNA.Ultima
 {
     public class UltimaClient : ClientBase
     {
@@ -133,10 +136,10 @@ namespace UltimaXNA
         {
             if (Status == UltimaClientStatus.GameServer_CharList)
             {
-                if (UltimaVars.Characters.List[index].Name != string.Empty)
+                if (Characters.List[index].Name != string.Empty)
                 {
                     Engine.QueuedModel = new WorldModel();
-                    Send(new LoginCharacterPacket(UltimaVars.Characters.List[index].Name, index, Utility.IPAddress));
+                    Send(new LoginCharacterPacket(Characters.List[index].Name, index, Utility.IPAddress));
                 }
             }
         }
@@ -159,7 +162,7 @@ namespace UltimaXNA
         {
             if (Status == UltimaClientStatus.GameServer_CharList)
             {
-                if (UltimaVars.Characters.List[index].Name != string.Empty)
+                if (Characters.List[index].Name != string.Empty)
                 {
                     Send(new DeleteCharacterPacket(index, Utility.IPAddress));
                 }
@@ -197,20 +200,20 @@ namespace UltimaXNA
         private void ReceiveCharacterListUpdate(IRecvPacket packet)
         {
             CharacterListUpdatePacket p = (CharacterListUpdatePacket)packet;
-            UltimaVars.Characters.SetCharacterList(p.Characters);
+            Characters.SetCharacterList(p.Characters);
         }
 
         private void ReceiveCharacterList(IRecvPacket packet)
         {
             CharacterCityListPacket p = (CharacterCityListPacket)packet;
-            UltimaVars.Characters.SetCharacterList(p.Characters);
-            UltimaVars.Characters.SetStartingLocations(p.Locations);
+            Characters.SetCharacterList(p.Characters);
+            Characters.SetStartingLocations(p.Locations);
             Status = UltimaClientStatus.GameServer_CharList;
         }
 
         private void ReceiveServerList(IRecvPacket packet)
         {
-            UltimaVars.Servers.List = ((ServerListPacket)packet).Servers;
+            Servers.List = ((ServerListPacket)packet).Servers;
             Status = UltimaClientStatus.LoginServer_HasServerList;
         }
 
@@ -255,7 +258,7 @@ namespace UltimaXNA
         private void ReceiveEnableFeatures(IRecvPacket packet)
         {
             SupportedFeaturesPacket p = (SupportedFeaturesPacket)packet;
-            UltimaVars.Features.SetFlags(p.Flags);
+            Features.SetFlags(p.Flags);
         }
 
         private void ReceiveVersionRequest(IRecvPacket packet)
@@ -275,7 +278,7 @@ namespace UltimaXNA
         {
             m_QueuedLoginConfirmPacket = (LoginConfirmPacket)packet;
             // set the player serial and create the player entity. Don't need to do anything with it yet.
-            UltimaVars.EngineVars.PlayerSerial = m_QueuedLoginConfirmPacket.Serial;
+            EngineVars.PlayerSerial = m_QueuedLoginConfirmPacket.Serial;
             PlayerMobile player = EntityManager.GetObject<PlayerMobile>(m_QueuedLoginConfirmPacket.Serial, true);
             if (player == null)
                 Tracer.Critical("Could not create player object.");

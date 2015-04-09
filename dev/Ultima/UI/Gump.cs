@@ -12,12 +12,12 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using UltimaXNA.Core.Diagnostics;
-using UltimaXNA.Core.Rendering;
-using UltimaXNA.Diagnostics.Tracing;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.Diagnostics.Tracing;
 
 #endregion
 
-namespace UltimaXNA.UltimaGUI
+namespace UltimaXNA.Ultima.UI
 {
     /// <summary>
     /// The base class that encapsulates Gump functionality. All Gumps should inherit from this class or a child thereof.
@@ -258,9 +258,9 @@ namespace UltimaXNA.UltimaGUI
         {
             foreach (AControl c in Controls)
             {
-                if (c.GetType() == typeof(UltimaGUI.Controls.TextEntry))
+                if (c.GetType() == typeof(UI.Controls.TextEntry))
                 {
-                    UltimaGUI.Controls.TextEntry g = (UltimaGUI.Controls.TextEntry)c;
+                    UI.Controls.TextEntry g = (UI.Controls.TextEntry)c;
                     if (g.EntryID == entryID)
                         return g.Text;
                 }

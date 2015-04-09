@@ -8,14 +8,14 @@
  *
  ***************************************************************************/
 #region usings
-using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.UltimaData;
-using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaWorld.Maps;
 using Microsoft.Xna.Framework;
+using UltimaXNA.Ultima.Entities.Items;
+using UltimaXNA.Ultima.Entities.Mobiles;
+using UltimaXNA.Ultima.World;
+using UltimaXNA.Ultima.World.Maps;
 #endregion
 
-namespace UltimaXNA.UltimaEntities.Effects
+namespace UltimaXNA.Ultima.Entities.Effects
 {
     public class MovingEffect : AEffect
     {

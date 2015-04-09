@@ -3,11 +3,11 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using UltimaXNA.Diagnostics;
+using UltimaXNA.Core.Diagnostics;
 
 #endregion
 
-namespace UltimaXNA.Data
+namespace UltimaXNA.Configuration
 {
     public abstract class SettingsBase
     {

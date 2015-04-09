@@ -1,6 +1,6 @@
 ﻿using InterXLib.Patterns.MVC;
 
-namespace UltimaXNA.UltimaLogin
+namespace UltimaXNA.Ultima.Login
 {
     class LoginView : AView
     {

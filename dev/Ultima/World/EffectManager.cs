@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using UltimaXNA.Diagnostics.Tracing;
-using UltimaXNA.UltimaEntities.Effects;
-using UltimaXNA.UltimaPackets.Server;
+using UltimaXNA.Core.Diagnostics.Tracing;
+using UltimaXNA.Ultima.Entities.Effects;
+using UltimaXNA.Ultima.Network.Server;
 
-namespace UltimaXNA.UltimaWorld
+namespace UltimaXNA.Ultima.World
 {
     class EffectsManager
     {

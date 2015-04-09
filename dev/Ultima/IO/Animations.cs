@@ -13,11 +13,11 @@ using Microsoft.Xna.Framework.Graphics;
 using System.IO;
 using UltimaXNA.Core;
 using UltimaXNA.Core.Diagnostics;
-using UltimaXNA.IO;
+using UltimaXNA.Core.IO;
 
 #endregion
 
-namespace UltimaXNA.UltimaData
+namespace UltimaXNA.Ultima.IO
 {
     public sealed class Animations
     {
@@ -159,7 +159,7 @@ namespace UltimaXNA.UltimaData
         {
             Translate(ref body, ref hue);
 
-            int fileType = UltimaData.BodyConverter.Convert(ref body);
+            int fileType = IO.BodyConverter.Convert(ref body);
             switch (fileType)
             {
                 default:
@@ -426,7 +426,7 @@ namespace UltimaXNA.UltimaData
             int width = reader.ReadUShort();
             int height = reader.ReadUShort();
 
-            // Fix for animations with no UltimaData.
+            // Fix for animations with no IO.
             if ((width == 0) || (height == 0))
             {
                 m_Texture = null;
@@ -485,7 +485,7 @@ namespace UltimaXNA.UltimaData
             int width = bin.ReadUInt16();
             int height = bin.ReadUInt16();
 
-            // Fix for animations with no UltimaData.
+            // Fix for animations with no IO.
             if ((width == 0) || (height == 0))
             {
                 return getData(bin, dataStart);

@@ -14,16 +14,17 @@ using System.Drawing;
 using System.Windows.Forms;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Core.Rendering;
-using UltimaXNA.Data;
-using UltimaXNA.Input;
-using UltimaXNA.Patterns.IoC;
-using UltimaXNA.UltimaData;
-using UltimaXNA.UltimaData.FontsNew;
-using UltimaXNA.UltimaData.FontsOld;
-using UltimaXNA.UltimaGUI;
-using UltimaXNA.UltimaLogin;
-using UltimaXNA.UltimaVars;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Configuration;
+using UltimaXNA.Core.Input;
+using UltimaXNA.Core.Patterns.IoC;
+using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.IO.FontsNew;
+using UltimaXNA.Ultima.IO.FontsOld;
+using UltimaXNA.Ultima.UI;
+using UltimaXNA.Ultima;
+using UltimaXNA.Ultima.Login;
+using UltimaXNA.Ultima.ClientVars;
 using Color = Microsoft.Xna.Framework.Color;
 using Point = Microsoft.Xna.Framework.Point;
 
@@ -133,7 +134,7 @@ namespace UltimaXNA
             Input = new InputManager(Window.Handle);
             UserInterface = new GUIManager(this);
 
-            // Make sure we have a UO installation before loading UltimaData.
+            // Make sure we have a UO installation before loading IO.
             if(FileManager.IsUODataPresent)
             {
                 // Initialize and load data

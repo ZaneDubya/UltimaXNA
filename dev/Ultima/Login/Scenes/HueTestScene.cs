@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using UltimaXNA.UltimaGUI;
-using UltimaXNA.UltimaGUI.Controls;
+using UltimaXNA.Ultima.UI;
+using UltimaXNA.Ultima.UI.Controls;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace UltimaXNA.UltimaLogin.Scenes
+namespace UltimaXNA.Ultima.Login.Scenes
 {
     class HueTestScene : AScene
     {
@@ -78,12 +78,12 @@ namespace UltimaXNA.UltimaLogin.Scenes
 
             using (System.IO.FileStream file = new System.IO.FileStream("hues0.png", System.IO.FileMode.Create))
             {
-                UltimaData.HuesXNA.HueTexture0.SaveAsPng(file, UltimaData.HuesXNA.HueTexture0.Width, UltimaData.HuesXNA.HueTexture0.Height);
+                IO.HuesXNA.HueTexture0.SaveAsPng(file, IO.HuesXNA.HueTexture0.Width, IO.HuesXNA.HueTexture0.Height);
             }
 
             using (System.IO.FileStream file = new System.IO.FileStream("hues1.png", System.IO.FileMode.Create))
             {
-                UltimaData.HuesXNA.HueTexture1.SaveAsPng(file, UltimaData.HuesXNA.HueTexture1.Width, UltimaData.HuesXNA.HueTexture1.Height);
+                IO.HuesXNA.HueTexture1.SaveAsPng(file, IO.HuesXNA.HueTexture1.Width, IO.HuesXNA.HueTexture1.Height);
             }
         }
 
@@ -109,11 +109,11 @@ namespace UltimaXNA.UltimaLogin.Scenes
 
             private Texture2D m_texture;
 
-            public override void Draw(Core.Rendering.SpriteBatchUI spriteBatch)
+            public override void Draw(Core.Graphics.SpriteBatchUI spriteBatch)
             {
                 if (m_texture == null)
                 {
-                    m_texture = UltimaData.ArtData.GetStaticTexture(m_StaticTextureID);
+                    m_texture = IO.ArtData.GetStaticTexture(m_StaticTextureID);
                     Size = new Point(m_texture.Width, m_texture.Height);
                 }
                 spriteBatch.Draw2D(m_texture, Position, Hue, false, false);

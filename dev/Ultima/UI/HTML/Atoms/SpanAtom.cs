@@ -1,6 +1,6 @@
-﻿using UltimaXNA.UltimaData.FontsNew;
+﻿using UltimaXNA.Ultima.IO.FontsNew;
 
-namespace UltimaXNA.UltimaGUI.HTML.Atoms
+namespace UltimaXNA.Ultima.UI.HTML.Atoms
 {
     public class SpanAtom : AAtom
     {

@@ -1,7 +1,7 @@
 ﻿using System;
-using UltimaXNA.Diagnostics.Tracing;
+using UltimaXNA.Core.Diagnostics.Tracing;
 
-namespace UltimaXNA.Diagnostics
+namespace UltimaXNA.Core.Diagnostics
 {
     public class GeneralExceptionHandler
     {

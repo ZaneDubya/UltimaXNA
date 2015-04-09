@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace UltimaXNA.Patterns.IoC
+namespace UltimaXNA.Core.Patterns.IoC
 {
     public sealed class NamedParameterOverloads : Dictionary<string, object>
     {

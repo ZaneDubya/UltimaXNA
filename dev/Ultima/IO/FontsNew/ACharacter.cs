@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace UltimaXNA.UltimaData.FontsNew
+namespace UltimaXNA.Ultima.IO.FontsNew
 {
     abstract internal class ACharacter
     {

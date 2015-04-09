@@ -9,7 +9,7 @@
  ***************************************************************************/
 using System.Collections.Generic;
 
-namespace UltimaXNA.UltimaVars
+namespace UltimaXNA.Ultima.Ultima.ClientVars
 {
     public static class Skills
     {
@@ -24,7 +24,7 @@ namespace UltimaXNA.UltimaVars
                 if (!m_skillsLoaded)
                 {
                     m_skillsLoaded = true;
-                    foreach (UltimaData.Skill skill in UltimaData.SkillsData.List)
+                    foreach (IO.Skill skill in IO.SkillsData.List)
                         m_skills.Add(skill.ID, new SkillEntry(skill.ID, skill.Index, skill.UseButton, skill.Name, 0.0f, 0.0f, 0, 0.0f));
                 }
                 return m_skills;

@@ -18,7 +18,7 @@ using UltimaXNA.Core.Diagnostics;
 #endregion
 
 
-namespace UltimaXNA.UltimaData
+namespace UltimaXNA.Ultima.IO
 {
     public static class SoundData
     {

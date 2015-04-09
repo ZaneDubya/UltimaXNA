@@ -8,13 +8,14 @@
  *
  ***************************************************************************/
 using Microsoft.Xna.Framework;
-using UltimaXNA.UltimaEntities;
-using UltimaXNA.Core.Rendering;
-using UltimaXNA.UltimaGUI.Controls;
-using UltimaXNA.UltimaWorld;
+using UltimaXNA.Ultima.Entities;
+using UltimaXNA.Ultima.Entities.Mobiles;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Ultima.World;
 using UltimaXNA.Core;
 
-namespace UltimaXNA.UltimaGUI.WorldGumps
+namespace UltimaXNA.Ultima.UI.WorldGumps
 {
     class PaperDollGump: Gump
     {

@@ -1,11 +1,11 @@
 ﻿using InterXLib.Patterns.MVC;
-using UltimaXNA.UltimaEntities;
-using UltimaXNA.UltimaGUI;
-using UltimaXNA.UltimaGUI.WorldGumps;
-using UltimaXNA.UltimaWorld.Controllers;
-using UltimaXNA.UltimaWorld.Maps;
+using UltimaXNA.Ultima.Entities;
+using UltimaXNA.Ultima.UI;
+using UltimaXNA.Ultima.UI.WorldGumps;
+using UltimaXNA.Ultima.World.Controllers;
+using UltimaXNA.Ultima.World.Maps;
 
-namespace UltimaXNA.UltimaWorld
+namespace UltimaXNA.Ultima.World
 {
     class WorldModel : AUltimaModel
     {
@@ -121,7 +121,7 @@ namespace UltimaXNA.UltimaWorld
             Engine.UserInterface.AddControl(new TopMenu(0), 0, 0);
             Engine.UserInterface.AddControl(new ChatWindow(), 0, 0);
             m_WorldClient.SendWorldLoginPackets();
-            UltimaVars.EngineVars.InWorld = true;
+            EngineVars.InWorld = true;
         }
 
         protected override void OnDispose()
@@ -158,8 +158,8 @@ namespace UltimaXNA.UltimaWorld
         public void Disconnect()
         {
             Engine.Client.Disconnect();
-            UltimaVars.EngineVars.InWorld = false;
-            Engine.ActiveModel = new UltimaXNA.UltimaLogin.LoginModel();
+            EngineVars.InWorld = false;
+            Engine.ActiveModel = new Login.LoginModel();
         }
 
         void onCloseLostConnectionMsgBox()

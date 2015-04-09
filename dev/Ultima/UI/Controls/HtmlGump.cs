@@ -10,12 +10,12 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Core.Rendering;
-using UltimaXNA.Input.Windows;
-using UltimaXNA.UltimaGUI.HTML;
-using UltimaXNA.UltimaGUI;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Ultima.UI.HTML;
+using UltimaXNA.Ultima.UI;
 
-namespace UltimaXNA.UltimaGUI.Controls
+namespace UltimaXNA.Ultima.UI.Controls
 {
     public class HtmlGump : AControl
     {

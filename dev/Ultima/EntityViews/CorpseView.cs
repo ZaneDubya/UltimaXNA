@@ -1,11 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
-using UltimaXNA.Core.Rendering;
-using UltimaXNA.UltimaData;
-using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaWorld.Maps;
-using UltimaXNA.UltimaWorld.Controllers;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.World;
+using UltimaXNA.Ultima.World.Maps;
+using UltimaXNA.Ultima.World.Controllers;
+using UltimaXNA.Ultima.Entities.Items.Containers;
 
-namespace UltimaXNA.UltimaEntities.EntityViews
+namespace UltimaXNA.Ultima.EntityViews
 {
     class CorpseView : AEntityView
     {
@@ -37,7 +38,7 @@ namespace UltimaXNA.UltimaEntities.EntityViews
 
         private AnimationFrame getFrame(int bodyID, int facing, int frameIndex, int hue)
         {
-            AnimationFrame[] iFrames = Animations.GetAnimation(bodyID, UltimaData.BodyConverter.DeathAnimationIndex(bodyID), facing, hue);
+            AnimationFrame[] iFrames = Animations.GetAnimation(bodyID, IO.BodyConverter.DeathAnimationIndex(bodyID), facing, hue);
             if (iFrames == null)
                 return null;
             if (iFrames[frameIndex].Texture == null)

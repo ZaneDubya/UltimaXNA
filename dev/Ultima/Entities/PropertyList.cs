@@ -14,7 +14,7 @@ using System.Linq;
 using System.Text;
 #endregion
 
-namespace UltimaXNA.UltimaEntities
+namespace UltimaXNA.Ultima.Entities
 {
     public class PropertyList
     {

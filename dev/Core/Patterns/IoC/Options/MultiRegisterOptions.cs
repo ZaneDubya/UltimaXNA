@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace UltimaXNA.Patterns.IoC
+namespace UltimaXNA.Core.Patterns.IoC
 {
     public sealed class MultiRegisterOptions
     {

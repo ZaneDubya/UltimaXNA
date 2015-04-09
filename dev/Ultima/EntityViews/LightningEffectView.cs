@@ -1,13 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Core.Rendering;
-using UltimaXNA.UltimaData;
-using UltimaXNA.UltimaEntities.Effects;
-using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaWorld.Maps;
-using UltimaXNA.UltimaWorld.Controllers;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.Entities.Effects;
+using UltimaXNA.Ultima.World;
+using UltimaXNA.Ultima.World.Maps;
+using UltimaXNA.Ultima.World.Controllers;
 
-namespace UltimaXNA.UltimaEntities.EntityViews
+namespace UltimaXNA.Ultima.EntityViews
 {
     class LightningEffectView : AEntityView
     {
@@ -44,7 +44,7 @@ namespace UltimaXNA.UltimaEntities.EntityViews
             if (displayItemdID != m_DisplayItemID)
             {
                 m_DisplayItemID = displayItemdID;
-                DrawTexture = UltimaData.GumpData.GetGumpXNA(displayItemdID);
+                DrawTexture = IO.GumpData.GetGumpXNA(displayItemdID);
                 Point offset = m_Offsets[m_DisplayItemID - 20000];
                 DrawArea = new Rectangle(offset.X, DrawTexture.Height - 33 + (Entity.Z * 4) + offset.Y, DrawTexture.Width, DrawTexture.Height);
                 PickType = PickType.PickNothing;

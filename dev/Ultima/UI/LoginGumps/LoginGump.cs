@@ -7,12 +7,12 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using UltimaXNA.Core.Rendering;
-using UltimaXNA.Data;
-using UltimaXNA.UltimaGUI.Controls;
-using UltimaXNA.UltimaVars;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Configuration;
+using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Ultima.ClientVars;
 
-namespace UltimaXNA.UltimaGUI.LoginGumps
+namespace UltimaXNA.Ultima.UI.LoginGumps
 {
     public delegate void LoginEvent(string server, int port, string account, string password);
 
@@ -43,11 +43,11 @@ namespace UltimaXNA.UltimaGUI.LoginGumps
             AddControl(new Button(this, 0, 554, 2, 5513, 5515, ButtonTypes.Activate, 0, (int)LoginGumpButtons.QuitButton));
             ((Button)LastControl).GumpOverID = 5514;
             // Log in to Ultima Online
-            AddControl(new TextLabelAscii(this, 0, 254, 305, hue, 2, UltimaData.StringData.Entry(3000038)));
+            AddControl(new TextLabelAscii(this, 0, 254, 305, hue, 2, IO.StringData.Entry(3000038)));
             // Account Name
-            AddControl(new TextLabelAscii(this, 0, 181, 346, hue, 2, UltimaData.StringData.Entry(3000099)));
+            AddControl(new TextLabelAscii(this, 0, 181, 346, hue, 2, IO.StringData.Entry(3000099)));
             // Password
-            AddControl(new TextLabelAscii(this, 0, 181, 386, hue, 2, UltimaData.StringData.Entry(3000103)));
+            AddControl(new TextLabelAscii(this, 0, 181, 386, hue, 2, IO.StringData.Entry(3000103)));
             // name field
             TextEntry g1 = new TextEntry(this, 0, 332, 346, 200, 20, 0, (int)LoginGumpTextFields.AccountName, 32, Settings.Server.UserName);
             g1.HtmlTag = "<basefont color=#000000><big>";

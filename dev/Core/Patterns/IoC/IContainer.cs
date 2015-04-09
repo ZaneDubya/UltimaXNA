@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace UltimaXNA.Patterns.IoC
+namespace UltimaXNA.Core.Patterns.IoC
 {
     public interface IContainer
     {

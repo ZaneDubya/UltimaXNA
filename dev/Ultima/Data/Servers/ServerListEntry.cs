@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UltimaXNA.Core.Network;
 
-namespace UltimaXNA.UltimaVars
+namespace UltimaXNA.Ultima.Data.Servers
 {
     public class ServerListEntry
     {

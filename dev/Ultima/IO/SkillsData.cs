@@ -14,11 +14,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using UltimaXNA.Core;
-using UltimaXNA.IO;
+using UltimaXNA.Core.IO;
 
 #endregion
 
-namespace UltimaXNA.UltimaData
+namespace UltimaXNA.Ultima.IO
 {
     public class SkillsData
     {

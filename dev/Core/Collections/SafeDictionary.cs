@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace UltimaXNA.Collections
+namespace UltimaXNA.Core.Collections
 {
     public class SafeDictionary<TKey, TValue> : IDisposable
     {

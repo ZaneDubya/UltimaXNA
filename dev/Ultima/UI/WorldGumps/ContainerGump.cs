@@ -8,12 +8,14 @@
  *
  ***************************************************************************/
 using System.Collections.Generic;
-using UltimaXNA.UltimaEntities;
-using UltimaXNA.UltimaGUI;
-using UltimaXNA.UltimaData;
-using UltimaXNA.UltimaGUI.Controls;
+using UltimaXNA.Ultima.Entities.Items.Containers;
+using UltimaXNA.Ultima.UI;
+using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Ultima.Entities.Items;
+using UltimaXNA.Ultima.Entities;
 
-namespace UltimaXNA.UltimaGUI.WorldGumps
+namespace UltimaXNA.Ultima.UI.WorldGumps
 {
     class ContainerGump : Gump
     {
@@ -26,7 +28,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
         public ContainerGump(AEntity containerItem, int gumpID)
             : base(containerItem.Serial, 0)
         {
-            m_data = UltimaData.ContainerData.GetData(gumpID);
+            m_data = IO.ContainerData.GetData(gumpID);
             m_item = (Container)containerItem;
             IsMovable = true;
 

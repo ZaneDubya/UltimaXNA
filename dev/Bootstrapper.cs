@@ -1,20 +1,20 @@
 ﻿#region Usings
-
 using System;
-using System.Diagnostics;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using UltimaXNA.Data;
-using UltimaXNA.Diagnostics;
-using UltimaXNA.Diagnostics.Tracing;
-using UltimaXNA.Diagnostics.Tracing.Listeners;
-using UltimaXNA.Patterns.IoC;
-using UltimaXNA.UltimaData;
+using UltimaXNA.Configuration;
+using UltimaXNA.Core;
+using UltimaXNA.Core.Diagnostics;
+using UltimaXNA.Core.Diagnostics.Tracing;
+using UltimaXNA.Core.Diagnostics.Tracing.Listeners;
+using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Core.Patterns.IoC;
+using UltimaXNA.Ultima.IO;
 using UltimaXNA.Windows.Diagnostics.Tracing.Listeners;
-
 #endregion
 
 namespace UltimaXNA
@@ -128,8 +128,8 @@ namespace UltimaXNA
                 Settings.Game.IsFixedTimeStep = false;
                 Settings.Game.IsVSyncEnabled = false;
                 Settings.Game.LastCharacterName = "Jeff";
-                Settings.Game.Mouse.InteractionButton = Input.Windows.MouseButton.Left;
-                Settings.Game.Mouse.MovementButton = Input.Windows.MouseButton.Right;
+                Settings.Game.Mouse.InteractionButton = MouseButton.Left;
+                Settings.Game.Mouse.MovementButton = MouseButton.Right;
                 Settings.Game.Mouse.IsEnabled = true;
                 Settings.Game.Resolution = new Resolution(800, 600);
                 Settings.Server.ServerAddress = Settings.Server.ServerAddress;

@@ -8,9 +8,9 @@
  *
  ***************************************************************************/
 
-using UltimaXNA.UltimaPackets.Server;
+using UltimaXNA.Ultima.Network.Server;
 
-namespace UltimaXNA.UltimaVars
+namespace UltimaXNA.Ultima.Data
 {
     internal static class Features
     {

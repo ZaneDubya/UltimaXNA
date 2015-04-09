@@ -1,4 +1,4 @@
-namespace UltimaXNA.Diagnostics.Tracing
+namespace UltimaXNA.Core.Diagnostics.Tracing
 {
     public static class TraceEventId
     {

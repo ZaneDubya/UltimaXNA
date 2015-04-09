@@ -1,4 +1,4 @@
-namespace UltimaXNA.Patterns.IoC
+namespace UltimaXNA.Core.Patterns.IoC
 {
     public sealed class ResolveOptions
     {

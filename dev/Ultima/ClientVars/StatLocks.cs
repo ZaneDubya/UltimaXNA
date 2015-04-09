@@ -9,7 +9,7 @@
  ***************************************************************************/
 using System;
 
-namespace UltimaXNA.UltimaVars
+namespace UltimaXNA.Ultima.ClientVars
 {
     public static class StatLocks
     {

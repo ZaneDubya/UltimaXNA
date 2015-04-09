@@ -3,7 +3,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 
-namespace UltimaXNA.IO
+namespace UltimaXNA.Core.IO
 {
     public sealed class BinaryFileReader : GenericReader
     {

@@ -16,11 +16,11 @@
  ***************************************************************************/
 #region usings
 using UltimaXNA.Core.Network.Packets;
-using UltimaXNA.Diagnostics.Tracing;
+using UltimaXNA.Core.Diagnostics.Tracing;
 
 #endregion
 
-namespace UltimaXNA.UltimaPackets.Client
+namespace UltimaXNA.Ultima.Network.Client
 {
     public class ClientVersionPacket : SendPacket
     {

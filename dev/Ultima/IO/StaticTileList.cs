@@ -16,7 +16,7 @@
 #region usings
 #endregion
 
-namespace UltimaXNA.UltimaData
+namespace UltimaXNA.Ultima.IO
 {
     public class StaticTileList
     {

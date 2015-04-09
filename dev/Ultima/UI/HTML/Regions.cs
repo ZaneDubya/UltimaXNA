@@ -10,7 +10,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
-namespace UltimaXNA.UltimaGUI.HTML
+namespace UltimaXNA.Ultima.UI.HTML
 {
     public class Regions
     {

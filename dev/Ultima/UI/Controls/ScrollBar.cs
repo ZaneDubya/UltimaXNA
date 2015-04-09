@@ -9,11 +9,11 @@
  ***************************************************************************/
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Core.Rendering;
-using UltimaXNA.Input.Windows;
-using UltimaXNA.UltimaGUI;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Ultima.UI;
 
-namespace UltimaXNA.UltimaGUI.Controls
+namespace UltimaXNA.Ultima.UI.Controls
 {
     class ScrollBar : AControl
     {
@@ -113,16 +113,16 @@ namespace UltimaXNA.UltimaGUI.Controls
             if (m_gumpSlider == null)
             {
                 m_gumpUpButton = new Texture2D[2];
-                m_gumpUpButton[0] = UltimaData.GumpData.GetGumpXNA(251);
-                m_gumpUpButton[1] = UltimaData.GumpData.GetGumpXNA(250);
+                m_gumpUpButton[0] = IO.GumpData.GetGumpXNA(251);
+                m_gumpUpButton[1] = IO.GumpData.GetGumpXNA(250);
                 m_gumpDownButton = new Texture2D[2];
-                m_gumpDownButton[0] = UltimaData.GumpData.GetGumpXNA(253);
-                m_gumpDownButton[1] = UltimaData.GumpData.GetGumpXNA(252);
+                m_gumpDownButton[0] = IO.GumpData.GetGumpXNA(253);
+                m_gumpDownButton[1] = IO.GumpData.GetGumpXNA(252);
                 m_gumpBackground = new Texture2D[3];
-                m_gumpBackground[0] = UltimaData.GumpData.GetGumpXNA(257);
-                m_gumpBackground[1] = UltimaData.GumpData.GetGumpXNA(256);
-                m_gumpBackground[2] = UltimaData.GumpData.GetGumpXNA(255);
-                m_gumpSlider = UltimaData.GumpData.GetGumpXNA(254);
+                m_gumpBackground[0] = IO.GumpData.GetGumpXNA(257);
+                m_gumpBackground[1] = IO.GumpData.GetGumpXNA(256);
+                m_gumpBackground[2] = IO.GumpData.GetGumpXNA(255);
+                m_gumpSlider = IO.GumpData.GetGumpXNA(254);
                 Size = new Point(m_gumpBackground[0].Width, BarHeight);
             }
 

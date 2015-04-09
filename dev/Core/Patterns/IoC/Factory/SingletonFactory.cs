@@ -1,6 +1,6 @@
 using System;
 
-namespace UltimaXNA.Patterns.IoC
+namespace UltimaXNA.Core.Patterns.IoC
 {
     internal class SingletonFactory : ObjectFactoryBase, IDisposable
     {

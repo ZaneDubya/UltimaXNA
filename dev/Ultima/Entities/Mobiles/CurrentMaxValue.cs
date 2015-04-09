@@ -1,4 +1,4 @@
-﻿namespace UltimaXNA.UltimaEntities
+﻿namespace UltimaXNA.Ultima.Entities.Mobiles
 {
     public struct CurrentMaxValue
     {

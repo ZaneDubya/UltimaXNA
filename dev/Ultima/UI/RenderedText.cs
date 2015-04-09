@@ -11,14 +11,14 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
-using UltimaXNA.Core.Rendering;
-using UltimaXNA.UltimaData;
-using UltimaXNA.UltimaData.FontsNew;
-using UltimaXNA.UltimaGUI.HTML;
-using UltimaXNA.UltimaGUI.HTML.Atoms;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.IO.FontsNew;
+using UltimaXNA.Ultima.UI.HTML;
+using UltimaXNA.Ultima.UI.HTML.Atoms;
 #endregion
 
-namespace UltimaXNA.UltimaGUI
+namespace UltimaXNA.Ultima.UI
 {
     class RenderedText
     {

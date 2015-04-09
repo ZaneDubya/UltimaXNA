@@ -8,14 +8,13 @@
  *
  ***************************************************************************/
 #region usings
-using System.Collections.Generic;
-using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaWorld.Views;
 using Microsoft.Xna.Framework;
-using UltimaXNA.UltimaWorld.Maps;
+using System.Collections.Generic;
+using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.World.Maps;
 #endregion
 
-namespace UltimaXNA.UltimaEntities
+namespace UltimaXNA.Ultima.Entities
 {
     /// <summary>
     /// Base class for all entities which exist in the world model.

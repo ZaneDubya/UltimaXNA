@@ -10,7 +10,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace UltimaXNA.Input.Windows
+namespace UltimaXNA.Core.Input.Windows
 {
     public delegate IntPtr WndProcHandler(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 

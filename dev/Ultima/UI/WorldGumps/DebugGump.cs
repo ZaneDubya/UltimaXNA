@@ -10,12 +10,12 @@
  *
  ***************************************************************************/
 using UltimaXNA.Core.Diagnostics;
-using UltimaXNA.Data;
-using UltimaXNA.UltimaGUI.Controls;
+using UltimaXNA.Configuration;
+using UltimaXNA.Ultima.UI.Controls;
 
 #endregion
 
-namespace UltimaXNA.UltimaGUI.WorldGumps
+namespace UltimaXNA.Ultima.UI.WorldGumps
 {
     public class DebugGump : Gump
     {
@@ -39,8 +39,8 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
 
         public override void ActivateByButton(int buttonID)
         {
-            // UltimaData.AnimEncode.SaveData(59, "animdata");
-            // UltimaData.AnimEncode.TransformData(59, "animdata");
+            // IO.AnimEncode.SaveData(59, "animdata");
+            // IO.AnimEncode.TransformData(59, "animdata");
         }
 
         public override void Update(double totalMS, double frameMS)

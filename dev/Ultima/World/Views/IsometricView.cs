@@ -12,13 +12,16 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using UltimaXNA.UltimaEntities;
-using UltimaXNA.Core.Rendering;
-using UltimaXNA.UltimaWorld.Maps;
-using UltimaXNA.UltimaWorld.Controllers;
+using UltimaXNA.Configuration;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Ultima.Entities;
+using UltimaXNA.Ultima.Entities.Items;
+using UltimaXNA.Ultima.EntityViews;
+using UltimaXNA.Ultima.World.Controllers;
+using UltimaXNA.Ultima.World.Maps;
 #endregion
 
-namespace UltimaXNA.UltimaWorld.Views
+namespace UltimaXNA.Ultima.World.Views
 {
     public class IsometricRenderer
     {
@@ -164,11 +167,11 @@ namespace UltimaXNA.UltimaWorld.Views
                 center.X + renderExtraColumnsAtSides - ((renderZOffset + 1) / 2),
                 center.Y - renderDimensionY - renderExtraColumnsAtSides - (renderZOffset / 2));
 
-            renderOffset.X = ((UltimaXNA.Data.Settings.Game.Resolution.Width + ((renderDimensionY) * 44)) / 2) - 22 + renderExtraColumnsAtSides * 44;
+            renderOffset.X = ((Settings.Game.Resolution.Width + ((renderDimensionY) * 44)) / 2) - 22 + renderExtraColumnsAtSides * 44;
             renderOffset.X -= (int)((center.X_offset - center.Y_offset) * 22);
             renderOffset.X -= (firstTile.X - firstTile.Y) * 22;
 
-            renderOffset.Y = ((UltimaXNA.Data.Settings.Game.Resolution.Height - (renderDimensionY * 44)) / 2);
+            renderOffset.Y = ((Settings.Game.Resolution.Height - (renderDimensionY * 44)) / 2);
             renderOffset.Y += (center.Z * 4) + (int)(center.Z_offset * 4);
             renderOffset.Y -= (int)((center.X_offset + center.Y_offset) * 22);
             renderOffset.Y -= (firstTile.X + firstTile.Y) * 22;
@@ -208,7 +211,7 @@ namespace UltimaXNA.UltimaWorld.Views
                         if (entities[i].Z >= m_maxItemAltitude)
                             continue;
 
-                        UltimaEntities.EntityViews.AEntityView view = entities[i].GetView();
+                        AEntityView view = entities[i].GetView();
 
                         if (view != null)
                             if (view.Draw(m_spriteBatch, drawPosition, overList, map))

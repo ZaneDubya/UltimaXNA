@@ -17,10 +17,11 @@
 #region usings
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Network.Packets;
-using UltimaXNA.UltimaVars;
+using UltimaXNA.Ultima.ClientVars;
+using UltimaXNA.Ultima.Data.Servers;
 #endregion
 
-namespace UltimaXNA.UltimaPackets.Server
+namespace UltimaXNA.Ultima.Network.Server
 {
     public class ServerListPacket : RecvPacket
     {

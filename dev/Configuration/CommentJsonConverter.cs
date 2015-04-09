@@ -1,12 +1,10 @@
 #region Usings
-
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-
 #endregion
 
-namespace UltimaXNA.Data
+namespace UltimaXNA.Configuration
 {
     internal sealed class CommentJsonConverter : JsonConverter
     {

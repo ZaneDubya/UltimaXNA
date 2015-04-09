@@ -10,10 +10,10 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Core.Rendering;
-using UltimaXNA.UltimaGUI;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Ultima.UI;
 
-namespace UltimaXNA.UltimaGUI.Controls
+namespace UltimaXNA.Ultima.UI.Controls
 {
     class GumpPicTiled : AControl
     {
@@ -55,7 +55,7 @@ namespace UltimaXNA.UltimaGUI.Controls
         {
             if (m_bgGump == null)
             {
-                m_bgGump = UltimaData.GumpData.GetGumpXNA(m_gumpID);
+                m_bgGump = IO.GumpData.GetGumpXNA(m_gumpID);
             }
             base.Update(totalMS, frameMS);
         }

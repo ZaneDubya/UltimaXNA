@@ -11,12 +11,12 @@
 #region usings
 using Microsoft.Xna.Framework;
 using System;
-using UltimaXNA.UltimaEntities;
-using UltimaXNA.UltimaData;
-
+using UltimaXNA.Ultima.Entities;
+using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.Entities.Multis;
 #endregion
 
-namespace UltimaXNA.UltimaWorld.Maps
+namespace UltimaXNA.Ultima.World.Maps
 {
     public class Map
     {

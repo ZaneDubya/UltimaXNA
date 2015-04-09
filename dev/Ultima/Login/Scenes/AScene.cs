@@ -2,14 +2,14 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.UltimaData;
+using UltimaXNA.Ultima.IO;
 using UltimaXNA.Core.Diagnostics;
-using UltimaXNA.Input.Windows;
+using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.Network;
-using UltimaXNA.UltimaGUI;
-using UltimaXNA.UltimaWorld;
+using UltimaXNA.Ultima.UI;
+using UltimaXNA.Ultima.World;
 
-namespace UltimaXNA.UltimaLogin.Scenes
+namespace UltimaXNA.Ultima.Login.Scenes
 {
     public abstract class AScene : IDisposable
     {

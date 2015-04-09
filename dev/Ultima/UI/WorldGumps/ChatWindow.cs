@@ -8,16 +8,16 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Input.Windows;
+using UltimaXNA.Core.Input.Windows;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using UltimaXNA.Core.Rendering;
-using UltimaXNA.UltimaData.FontsNew;
-using UltimaXNA.UltimaGUI.Controls;
-using UltimaXNA.UltimaWorld;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Ultima.IO.FontsNew;
+using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Ultima.World;
 #endregion
 
-namespace UltimaXNA.UltimaGUI.WorldGumps
+namespace UltimaXNA.Ultima.UI.WorldGumps
 {
     class ChatWindow : Gump
     {

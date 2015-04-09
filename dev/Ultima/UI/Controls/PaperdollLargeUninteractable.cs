@@ -7,11 +7,11 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using UltimaXNA.Core.Rendering;
-using UltimaXNA.UltimaGUI;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Ultima.UI;
 using Microsoft.Xna.Framework;
 
-namespace UltimaXNA.UltimaGUI.Controls
+namespace UltimaXNA.Ultima.UI.Controls
 {
     class PaperdollLargeUninteractable : AControl
     {
@@ -130,8 +130,8 @@ namespace UltimaXNA.UltimaGUI.Controls
                         if (equipmentSlot(EquipSlots.Hair) != 0)
                         {
                             bodyID = m_isFemale ?
-                                UltimaData.HairStyles.FemaleGumpIDForCharacterCreationFromItemID(equipmentSlot(EquipSlots.Hair)) :
-                                UltimaData.HairStyles.MaleGumpIDForCharacterCreationFromItemID(equipmentSlot(EquipSlots.Hair));
+                                IO.HairStyles.FemaleGumpIDForCharacterCreationFromItemID(equipmentSlot(EquipSlots.Hair)) :
+                                IO.HairStyles.MaleGumpIDForCharacterCreationFromItemID(equipmentSlot(EquipSlots.Hair));
                             hueGreyPixelsOnly = false;
                         }
                         break;
@@ -139,14 +139,14 @@ namespace UltimaXNA.UltimaGUI.Controls
                         if (equipmentSlot(EquipSlots.FacialHair) != 0)
                         {
                             bodyID = m_isFemale ?
-                                0 : UltimaData.HairStyles.FacialHairGumpIDForCharacterCreationFromItemID(equipmentSlot(EquipSlots.FacialHair));
+                                0 : IO.HairStyles.FacialHairGumpIDForCharacterCreationFromItemID(equipmentSlot(EquipSlots.FacialHair));
                             hueGreyPixelsOnly = false;
                         }
                         break;
                 }
 
                 if (bodyID != 0)
-                    spriteBatch.Draw2D(UltimaData.GumpData.GetGumpXNA(bodyID), Position, hue, hueGreyPixelsOnly, false);
+                    spriteBatch.Draw2D(IO.GumpData.GetGumpXNA(bodyID), Position, hue, hueGreyPixelsOnly, false);
             }
         }
     }

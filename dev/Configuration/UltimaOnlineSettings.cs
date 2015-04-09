@@ -1,10 +1,10 @@
 #region Usings
 
-using UltimaXNA.UltimaData;
+using UltimaXNA.Ultima.IO;
 
 #endregion
 
-namespace UltimaXNA.Data
+namespace UltimaXNA.Configuration
 {
     public sealed class UltimaOnlineSettings : SettingsBase
     {

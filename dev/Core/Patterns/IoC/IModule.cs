@@ -1,6 +1,6 @@
-﻿using UltimaXNA.Diagnostics.Tracing;
+﻿using UltimaXNA.Core.Diagnostics.Tracing;
 
-namespace UltimaXNA.Patterns.IoC
+namespace UltimaXNA.Core.Patterns.IoC
 {
     public interface IModule
     {

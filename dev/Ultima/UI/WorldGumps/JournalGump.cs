@@ -9,13 +9,13 @@
  ***************************************************************************/
 using System;
 using System.Text;
-using UltimaXNA.UltimaGUI.Controls;
+using UltimaXNA.Ultima.UI.Controls;
 using System.Collections.Generic;
-using UltimaXNA.UltimaGUI.WorldGumps;
+using UltimaXNA.Ultima.UI.WorldGumps;
 using Microsoft.Xna.Framework;
-using UltimaXNA.Core.Rendering;
+using UltimaXNA.Core.Graphics;
 
-namespace UltimaXNA.UltimaGUI.WorldGumps
+namespace UltimaXNA.Ultima.UI.WorldGumps
 {
     class JournalGump : Gump
     {
@@ -41,7 +41,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
 
             m_JournalEntries = new List<RenderedText>();
             InitializeJournalEntries();
-            UltimaVars.Journal.OnJournalEntryAdded += AddJournalEntry;
+            ClientVars.Journal.OnJournalEntryAdded += AddJournalEntry;
         }
 
         public override void Update(double totalMS, double frameMS)
@@ -100,9 +100,9 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
         private void InitializeJournalEntries()
         {
             int height = 0;
-            for (int i = 0; i < UltimaVars.Journal.JournalEntries.Count; i++)
+            for (int i = 0; i < ClientVars.Journal.JournalEntries.Count; i++)
             {
-                AddJournalEntry(UltimaVars.Journal.JournalEntries[i]);
+                AddJournalEntry(ClientVars.Journal.JournalEntries[i]);
                 height += m_JournalEntries[i].Height;
             }
 

@@ -4,7 +4,7 @@ using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace UltimaXNA.UltimaData.FontsNew
+namespace UltimaXNA.Ultima.IO.FontsNew
 {
     public static class TextUni
     {

@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
-using UltimaXNA.UltimaEntities;
+using UltimaXNA.Ultima.Entities;
+using UltimaXNA.Ultima.Entities.Items;
 
-namespace UltimaXNA.UltimaWorld
+namespace UltimaXNA.Ultima.World
 {
     public static class StaticManager
     {

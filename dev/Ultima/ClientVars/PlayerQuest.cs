@@ -1,4 +1,4 @@
-namespace UltimaXNA.UltimaEntities
+namespace UltimaXNA.Ultima.Entities
 {
     public class PlayerQuest
     {

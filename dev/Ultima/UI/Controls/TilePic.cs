@@ -10,10 +10,10 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Core.Rendering;
-using UltimaXNA.UltimaGUI;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Ultima.UI;
 
-namespace UltimaXNA.UltimaGUI.Controls
+namespace UltimaXNA.Ultima.UI.Controls
 {
     class TilePic : AControl
     {
@@ -59,7 +59,7 @@ namespace UltimaXNA.UltimaGUI.Controls
         {
             if (m_texture == null)
             {
-                m_texture = UltimaData.ArtData.GetStaticTexture(m_tileID);
+                m_texture = IO.ArtData.GetStaticTexture(m_tileID);
                 Size = new Point(m_texture.Width, m_texture.Height);
             }
             base.Update(totalMS, frameMS);

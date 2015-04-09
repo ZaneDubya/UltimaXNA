@@ -10,9 +10,10 @@
 #region usings
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Network.Packets;
+using UltimaXNA.Ultima.Data;
 #endregion
 
-namespace UltimaXNA.UltimaPackets.Server
+namespace UltimaXNA.Ultima.Network.Server
 {
     public class MessageLocalizedAffixPacket : RecvPacket
     {

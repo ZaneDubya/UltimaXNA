@@ -8,10 +8,10 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.UltimaGUI.LoginGumps;
+using UltimaXNA.Ultima.UI.LoginGumps;
 #endregion
 
-namespace UltimaXNA.UltimaLogin.Scenes
+namespace UltimaXNA.Ultima.Login.Scenes
 {
     public class LoginScene : AScene
     {
@@ -33,7 +33,7 @@ namespace UltimaXNA.UltimaLogin.Scenes
         {
             base.Update(totalTime, frameTime);
 
-            if (Engine.Input.HandleKeyboardEvent(UltimaXNA.Input.Windows.KeyboardEventType.Down, UltimaXNA.Input.Windows.WinKeys.D, false, false, true))
+            if (Engine.Input.HandleKeyboardEvent(UltimaXNA.Core.Input.Windows.KeyboardEventType.Down, UltimaXNA.Core.Input.Windows.WinKeys.D, false, false, true))
             {
                 Manager.CurrentScene = new HueTestScene();
             }

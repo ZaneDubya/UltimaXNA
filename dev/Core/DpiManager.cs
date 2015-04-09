@@ -2,7 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework;
 
-namespace UltimaXNA
+namespace UltimaXNA.Core
 {
     internal static class DpiManager
     {

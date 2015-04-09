@@ -12,10 +12,10 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using UltimaXNA.UltimaWorld;
+using UltimaXNA.Ultima.World;
 #endregion
 
-namespace UltimaXNA
+namespace UltimaXNA.Ultima
 {
     public interface IPoint2D
     {

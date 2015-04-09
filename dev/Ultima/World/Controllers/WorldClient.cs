@@ -3,15 +3,21 @@ using System;
 using System.Collections.Generic;
 using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.Network;
-using UltimaXNA.Diagnostics.Tracing;
-using UltimaXNA.UltimaEntities;
-using UltimaXNA.UltimaGUI;
-using UltimaXNA.UltimaGUI.WorldGumps;
-using UltimaXNA.UltimaPackets;
-using UltimaXNA.UltimaPackets.Client;
-using UltimaXNA.UltimaPackets.Server;
+using UltimaXNA.Core.Diagnostics.Tracing;
+using UltimaXNA.Ultima.Entities;
+using UltimaXNA.Ultima.Entities.Items;
+using UltimaXNA.Ultima.Entities.Items.Containers;
+using UltimaXNA.Ultima.Entities.Mobiles;
+using UltimaXNA.Ultima.Entities.Multis;
+using UltimaXNA.Ultima.Entities.Effects;
+using UltimaXNA.Ultima.UI;
+using UltimaXNA.Ultima.UI.WorldGumps;
+using UltimaXNA.Ultima.Network;
+using UltimaXNA.Ultima.Network.Client;
+using UltimaXNA.Ultima.Network.Server;
+using UltimaXNA.Ultima.Data;
 
-namespace UltimaXNA.UltimaWorld.Controllers
+namespace UltimaXNA.Ultima.World.Controllers
 {
     class WorldClient
     {
@@ -119,7 +125,7 @@ namespace UltimaXNA.UltimaWorld.Controllers
             network.Register<RecvPacket>(0xE2, "Mobile status/Animation update", -1, OnMobileStatusAnimationUpdate);
             network.Register<RecvPacket>(0xF0, "Krrios client special", -1, OnKrriosClientSpecial);
             */
-            UltimaEntities.MobileMovement.SendMoveRequestPacket += InternalOnEntity_SendMoveRequestPacket;
+            MobileMovement.SendMoveRequestPacket += InternalOnEntity_SendMoveRequestPacket;
         }
 
         public void Dispose()
@@ -129,7 +135,7 @@ namespace UltimaXNA.UltimaWorld.Controllers
             m_RegisteredHandlers.Clear();
             m_RegisteredHandlers = null;
 
-            UltimaEntities.MobileMovement.SendMoveRequestPacket -= InternalOnEntity_SendMoveRequestPacket;
+            MobileMovement.SendMoveRequestPacket -= InternalOnEntity_SendMoveRequestPacket;
         }
 
         public void Register<T>(int id, string name, int length, TypedPacketReceiveHandler onReceive) where T : IRecvPacket
@@ -157,7 +163,7 @@ namespace UltimaXNA.UltimaWorld.Controllers
 
         public void GetMySkills()
         {
-            World.Engine.Client.Send(new GetPlayerStatusPacket(0x05, UltimaVars.EngineVars.PlayerSerial));
+            World.Engine.Client.Send(new GetPlayerStatusPacket(0x05, EngineVars.PlayerSerial));
         }
 
         public void SendClientScreenSize()
@@ -172,7 +178,7 @@ namespace UltimaXNA.UltimaWorld.Controllers
 
         public void GetMyBasicStatus()
         {
-            World.Engine.Client.Send(new GetPlayerStatusPacket(0x04, UltimaVars.EngineVars.PlayerSerial));
+            World.Engine.Client.Send(new GetPlayerStatusPacket(0x04, EngineVars.PlayerSerial));
         }
 
         private void ReceiveTargetCursor(IRecvPacket packet)
@@ -263,7 +269,7 @@ namespace UltimaXNA.UltimaWorld.Controllers
             }
             else
             {
-                if (UltimaData.TileData.ItemData[itemID].IsContainer)
+                if (IO.TileData.ItemData[itemID].IsContainer)
                     item = EntityManager.GetObject<Container>((int)serial, true);
                 else
                     item = EntityManager.GetObject<Item>((int)serial, true);
@@ -536,7 +542,7 @@ namespace UltimaXNA.UltimaWorld.Controllers
         {
             SwingPacket p = (SwingPacket)packet;
             // this changes our last target - does this behavior match legacy?
-            if (p.Attacker == UltimaVars.EngineVars.PlayerSerial)
+            if (p.Attacker == EngineVars.PlayerSerial)
             {
                 World.Interaction.LastTarget = p.Defender;
             }
@@ -583,7 +589,7 @@ namespace UltimaXNA.UltimaWorld.Controllers
         {
             MessageLocalizedPacket p = (MessageLocalizedPacket)packet;
 
-            string iCliLoc = constructCliLoc(UltimaData.StringData.Entry(p.CliLocNumber), p.Arguements);
+            string iCliLoc = constructCliLoc(IO.StringData.Entry(p.CliLocNumber), p.Arguements);
             ReceiveTextMessage(p.MessageType, iCliLoc, p.Hue, p.Font, p.Serial, p.SpeakerName);
         }
 
@@ -607,7 +613,7 @@ namespace UltimaXNA.UltimaWorld.Controllers
                 if ((iArgs[i].Length > 0) && (iArgs[i].Substring(0, 1) == "#"))
                 {
                     int clilocID = Convert.ToInt32(iArgs[i].Substring(1));
-                    iArgs[i] = UltimaData.StringData.Entry(clilocID);
+                    iArgs[i] = IO.StringData.Entry(clilocID);
                 }
             }
 
@@ -631,7 +637,7 @@ namespace UltimaXNA.UltimaWorld.Controllers
 
         private void ReceiveTextMessage(MessageType msgType, string text, int hue, int font, Serial serial, string speakerName)
         {
-            UltimaVars.Journal.AddEntry(text);
+            ClientVars.Journal.AddEntry(text);
 
             Overhead overhead;
             switch (msgType)
@@ -787,7 +793,7 @@ namespace UltimaXNA.UltimaWorld.Controllers
             MessageLocalizedAffixPacket p = (MessageLocalizedAffixPacket)packet;
 
             string localizedString = string.Format(p.Flag_IsPrefix ? "{1}{0}" : "{0}{1}",
-                constructCliLoc(UltimaData.StringData.Entry(p.CliLocNumber), p.Arguements), p.Affix);
+                constructCliLoc(IO.StringData.Entry(p.CliLocNumber), p.Arguements), p.Affix);
             ReceiveTextMessage(p.MessageType, localizedString, p.Hue, p.Font, p.Serial, p.SpeakerName);
         }
 
@@ -819,7 +825,7 @@ namespace UltimaXNA.UltimaWorld.Controllers
 
             for (int i = 0; i < p.CliLocs.Count; i++)
             {
-                string iCliLoc = UltimaData.StringData.Entry(p.CliLocs[i]);
+                string iCliLoc = IO.StringData.Entry(p.CliLocs[i]);
                 if (p.Arguements[i] == string.Empty)
                 {
                     entity.PropertyList.AddProperty(iCliLoc);
@@ -834,12 +840,12 @@ namespace UltimaXNA.UltimaWorld.Controllers
         private void ReceiveSendCustomHouse(IRecvPacket packet)
         {
             CustomHousePacket p = (CustomHousePacket)packet;
-            UltimaData.CustomHousingData.UpdateCustomHouseData(p.HouseSerial, p.RevisionHash, p.PlaneCount, p.Planes);
+            IO.CustomHousingData.UpdateCustomHouseData(p.HouseSerial, p.RevisionHash, p.PlaneCount, p.Planes);
 
             Multi multi = EntityManager.GetObject<Multi>(p.HouseSerial, false);
             if (multi.CustomHouseRevision != p.RevisionHash)
             {
-                UltimaData.CustomHouse house = UltimaData.CustomHousingData.GetCustomHouseData(p.HouseSerial);
+                IO.CustomHouse house = IO.CustomHousingData.GetCustomHouseData(p.HouseSerial);
                 multi.AddCustomHousingTiles(house);
             }
         }
@@ -848,7 +854,7 @@ namespace UltimaXNA.UltimaWorld.Controllers
         {
             foreach (SendSkillsPacket_SkillEntry skill in ((SendSkillsPacket)packet).Skills)
             {
-                UltimaVars.SkillEntry entry = UltimaVars.Skills.SkillEntry(skill.SkillID);
+                Ultima.ClientVars.SkillEntry entry = Ultima.ClientVars.Skills.SkillEntry(skill.SkillID);
                 if (entry != null)
                 {
                     entry.Value = skill.SkillValue;
@@ -991,17 +997,17 @@ namespace UltimaXNA.UltimaWorld.Controllers
                     World.MapCount = p.MapCount;
                     break;
                 case 0x19: // Extended stats
-                    if (p.Serial != UltimaVars.EngineVars.PlayerSerial)
+                    if (p.Serial != EngineVars.PlayerSerial)
                         Tracer.Warn("Extended Stats packet (0xBF subcommand 0x19) received for a mobile not our own.");
                     else
                     {
-                        UltimaVars.StatLocks.StrengthLock = p.StatisticLocks.Strength;
-                        UltimaVars.StatLocks.DexterityLock = p.StatisticLocks.Dexterity;
-                        UltimaVars.StatLocks.IntelligenceLock = p.StatisticLocks.Intelligence;
+                        ClientVars.StatLocks.StrengthLock = p.StatisticLocks.Strength;
+                        ClientVars.StatLocks.DexterityLock = p.StatisticLocks.Dexterity;
+                        ClientVars.StatLocks.IntelligenceLock = p.StatisticLocks.Intelligence;
                     }
                     break;
                 case 0x1D: // House revision state
-                    if (UltimaData.CustomHousingData.IsHashCurrent(p.HouseRevisionState.Serial, p.HouseRevisionState.Hash))
+                    if (IO.CustomHousingData.IsHashCurrent(p.HouseRevisionState.Serial, p.HouseRevisionState.Hash))
                     {
                         Multi multi = EntityManager.GetObject<Multi>(p.HouseRevisionState.Serial, false);
                         if (multi == null)
@@ -1012,7 +1018,7 @@ namespace UltimaXNA.UltimaWorld.Controllers
                         {
                             if (multi.CustomHouseRevision != p.HouseRevisionState.Hash)
                             {
-                                UltimaData.CustomHouse house = UltimaData.CustomHousingData.GetCustomHouseData(p.HouseRevisionState.Serial);
+                                IO.CustomHouse house = IO.CustomHousingData.GetCustomHouseData(p.HouseRevisionState.Serial);
                                 multi.AddCustomHousingTiles(house);
                             }
                         }
@@ -1082,13 +1088,13 @@ namespace UltimaXNA.UltimaWorld.Controllers
         {
             PlayMusicPacket p = (PlayMusicPacket)packet;
             // System.Console.WriteLine ( "Play music, id={0}", p.MusicID );
-            UltimaData.MusicData.PlayMusic(p.MusicID);
+            IO.MusicData.PlayMusic(p.MusicID);
         }
 
         private void ReceivePlaySoundEffect(IRecvPacket packet)
         {
             PlaySoundEffectPacket p = (PlaySoundEffectPacket)packet;
-            UltimaData.SoundData.PlaySound(p.SoundModel);
+            IO.SoundData.PlaySound(p.SoundModel);
         }
 
 

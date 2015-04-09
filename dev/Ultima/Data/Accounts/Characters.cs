@@ -7,10 +7,10 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using UltimaXNA.UltimaPackets;
-using UltimaXNA.UltimaPackets.Server;
+using UltimaXNA.Ultima.Network;
+using UltimaXNA.Ultima.Network.Server;
 
-namespace UltimaXNA.UltimaVars
+namespace UltimaXNA.Ultima.Data.Accounts
 {
     public static class Characters
     {

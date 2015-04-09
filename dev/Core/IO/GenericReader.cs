@@ -5,7 +5,7 @@ using System.Net;
 
 #endregion
 
-namespace UltimaXNA.IO
+namespace UltimaXNA.Core.IO
 {
     public abstract class GenericReader
     {

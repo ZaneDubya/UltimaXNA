@@ -4,7 +4,7 @@ using Newtonsoft.Json.Linq;
 
 #endregion
 
-namespace UltimaXNA.Data
+namespace UltimaXNA.Configuration
 {
     internal sealed class SettingsToken
     {

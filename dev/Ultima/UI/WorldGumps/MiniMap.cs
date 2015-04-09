@@ -8,11 +8,11 @@
  *
  ***************************************************************************/
 using Microsoft.Xna.Framework;
-using UltimaXNA.Core.Rendering;
-using UltimaXNA.Input.Windows;
-using UltimaXNA.UltimaGUI.Controls;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Ultima.UI.Controls;
 
-namespace UltimaXNA.UltimaGUI.WorldGumps
+namespace UltimaXNA.Ultima.UI.WorldGumps
 {
     class MiniMap : Gump
     {
@@ -22,15 +22,15 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
         public MiniMap()
             : base(0, 0)
         {
-            m_useLargeMap = UltimaVars.EngineVars.MiniMap_LargeFormat;
+            m_useLargeMap = EngineVars.MiniMap_LargeFormat;
             IsMovable = true;
         }
 
         public override void Update(double totalMS, double frameMS)
         {
-            if (m_gump == null || m_useLargeMap != UltimaVars.EngineVars.MiniMap_LargeFormat)
+            if (m_gump == null || m_useLargeMap != EngineVars.MiniMap_LargeFormat)
             {
-                m_useLargeMap = UltimaVars.EngineVars.MiniMap_LargeFormat;
+                m_useLargeMap = EngineVars.MiniMap_LargeFormat;
                 if (m_gump != null)
                     m_gump.Dispose();
                 m_gump = new GumpPic(this, 0, 0, 0, (m_useLargeMap ? 5011 : 5010), 0);
@@ -58,7 +58,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
         {
             if (button == MouseButton.Left)
             {
-                UltimaVars.EngineVars.MiniMap_LargeFormat = !UltimaVars.EngineVars.MiniMap_LargeFormat;
+                EngineVars.MiniMap_LargeFormat = !EngineVars.MiniMap_LargeFormat;
             }
         }
     }

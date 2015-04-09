@@ -10,7 +10,7 @@
 using System;
 using Microsoft.Xna.Framework.Input;
 
-namespace UltimaXNA.Input.Windows
+namespace UltimaXNA.Core.Input.Windows
 {
     public delegate void MouseEventHandler(InputEventMouse e);
     public delegate void KeyboardEventHandler(InputEventKeyboard e);

@@ -14,7 +14,7 @@ using System.Text;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Network.Compression;
 
-namespace UltimaXNA.UltimaData
+namespace UltimaXNA.Ultima.IO
 {
     class CustomHousingData
     {

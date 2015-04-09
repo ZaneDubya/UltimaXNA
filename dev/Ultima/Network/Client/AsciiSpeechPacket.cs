@@ -15,7 +15,7 @@ using System.Text;
 using UltimaXNA.Core.Network.Packets;
 #endregion
 
-namespace UltimaXNA.UltimaPackets.Client
+namespace UltimaXNA.Ultima.Network.Client
 {
     // from http://docs.polserver.com/packets/index.php?Packet=0xAD
     public enum AsciiSpeechPacketTypes
@@ -42,7 +42,7 @@ namespace UltimaXNA.UltimaPackets.Client
         {
             // get triggers
             int triggerCount; int[] triggers;
-            UltimaData.SpeechData.GetSpeechTriggers(text, lang, out triggerCount, out triggers);
+            IO.SpeechData.GetSpeechTriggers(text, lang, out triggerCount, out triggers);
             if (triggerCount > 0)
                 type = (AsciiSpeechPacketTypes)((byte)type | HasTriggers);
 

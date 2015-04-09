@@ -20,7 +20,7 @@ using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Network.Packets;
 #endregion
 
-namespace UltimaXNA.UltimaPackets.Server
+namespace UltimaXNA.Ultima.Network.Server
 {
     // RunUO (Packets.cs:3402)
     public enum LoginRejectionReasons : byte

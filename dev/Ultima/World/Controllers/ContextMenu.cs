@@ -13,11 +13,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UltimaXNA.UltimaData;
+using UltimaXNA.Ultima.IO;
 
 #endregion
 
-namespace UltimaXNA.UltimaWorld.Controllers
+namespace UltimaXNA.Ultima.World.Controllers
 {
     public class ContextMenuItem
     {

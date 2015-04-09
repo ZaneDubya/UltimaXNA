@@ -10,10 +10,10 @@
 #region Usings
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Core.Rendering;
+using UltimaXNA.Core.Graphics;
 #endregion
 
-namespace UltimaXNA.UltimaGUI
+namespace UltimaXNA.Ultima.UI
 {
     public class HuedTexture
     {

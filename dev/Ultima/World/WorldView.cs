@@ -1,8 +1,8 @@
 ﻿using InterXLib.Patterns.MVC;
-using UltimaXNA.UltimaWorld.Views;
-using UltimaXNA.UltimaWorld.Controllers;
+using UltimaXNA.Ultima.World.Views;
+using UltimaXNA.Ultima.World.Controllers;
 
-namespace UltimaXNA.UltimaWorld
+namespace UltimaXNA.Ultima.World
 {
     class WorldView : AView
     {

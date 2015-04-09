@@ -1,10 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
-using UltimaXNA.Core.Rendering;
-using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaWorld.Maps;
-using UltimaXNA.UltimaWorld.Controllers;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Ultima.World;
+using UltimaXNA.Ultima.World.Maps;
+using UltimaXNA.Ultima.World.Controllers;
+using UltimaXNA.Ultima.Entities.Items;
 
-namespace UltimaXNA.UltimaEntities.EntityViews
+namespace UltimaXNA.Ultima.EntityViews
 {
     class ItemView : AEntityView
     {
@@ -31,7 +32,7 @@ namespace UltimaXNA.UltimaEntities.EntityViews
             if (Entity.DisplayItemID != m_DisplayItemID)
             {
                 m_DisplayItemID = Entity.DisplayItemID;
-                DrawTexture = UltimaData.ArtData.GetStaticTexture(m_DisplayItemID);
+                DrawTexture = IO.ArtData.GetStaticTexture(m_DisplayItemID);
 
                 if(DrawTexture == null)
                 {

@@ -9,16 +9,16 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Input.Windows;
+using UltimaXNA.Core.Input.Windows;
 using Microsoft.Xna.Framework;
-using UltimaXNA.UltimaEntities;
-using UltimaXNA.UltimaPackets;
-using UltimaXNA.UltimaPackets.Client;
-using UltimaXNA.UltimaWorld;
+using UltimaXNA.Ultima.Entities;
+using UltimaXNA.Ultima.Network;
+using UltimaXNA.Ultima.Network.Client;
+using UltimaXNA.Ultima.World;
 using System.Collections.Generic;
 #endregion
 
-namespace UltimaXNA.UltimaVars
+namespace UltimaXNA.Ultima
 {
     //TODO this should merge to something like Client or Engine.  All of these settings pertain to states that should be controlled by specific systems.
     // InWorld is a "Client" state

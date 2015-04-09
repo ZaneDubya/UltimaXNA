@@ -2,7 +2,7 @@
 using System.Text;
 using JetBrains.Annotations;
 
-namespace UltimaXNA.Diagnostics
+namespace UltimaXNA.Core.Diagnostics
 {
     public static class Guard
     {

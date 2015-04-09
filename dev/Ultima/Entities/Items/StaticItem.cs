@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using UltimaXNA.UltimaData;
-using UltimaXNA.UltimaWorld.Maps;
+using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.World.Maps;
 
-namespace UltimaXNA.UltimaEntities
+namespace UltimaXNA.Ultima.Entities.Items
 {
     public class StaticItem : Item
     {

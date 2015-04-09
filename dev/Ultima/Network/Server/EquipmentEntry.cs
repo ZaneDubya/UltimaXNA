@@ -21,7 +21,7 @@ using System.Linq;
 using System.Text;
 #endregion
 
-namespace UltimaXNA.UltimaPackets.Server
+namespace UltimaXNA.Ultima.Network.Server
 {
     public struct EquipmentEntry
     {

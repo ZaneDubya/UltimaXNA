@@ -1,10 +1,10 @@
-﻿using UltimaXNA.Diagnostics.Tracing;
-using UltimaXNA.UltimaEntities.EntityViews;
-using UltimaXNA.UltimaWorld.Maps;
-using Microsoft.Xna.Framework;
-using UltimaXNA.UltimaEntities.Effects;
+﻿using Microsoft.Xna.Framework;
+using UltimaXNA.Core.Diagnostics.Tracing;
+using UltimaXNA.Ultima.Entities.Effects;
+using UltimaXNA.Ultima.Entities.Mobiles;
+using UltimaXNA.Ultima.EntityViews;
 
-namespace UltimaXNA.UltimaEntities
+namespace UltimaXNA.Ultima.Entities
 {
     public class DeferredEntity : AEntity
     {

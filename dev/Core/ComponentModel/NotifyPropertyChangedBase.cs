@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 
-namespace UltimaXNA.ComponentModel
+namespace UltimaXNA.Core.ComponentModel
 {
     public abstract class NotifyPropertyChangedBase : INotifyPropertyChanged
     {

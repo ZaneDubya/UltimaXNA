@@ -8,15 +8,15 @@
  *
  ***************************************************************************/
 #region Usings
-using UltimaXNA.Input.Windows;
+using UltimaXNA.Core.Input.Windows;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using UltimaXNA.Core.Rendering;
-using UltimaXNA.UltimaPackets.Client;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Ultima.Network.Client;
 #endregion
 
-namespace UltimaXNA.UltimaGUI
+namespace UltimaXNA.Ultima.UI
 {
     public class GUIManager
     {

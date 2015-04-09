@@ -1,11 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using UltimaXNA.UltimaEntities.EntityViews;
-using UltimaXNA.Core.Rendering;
-using UltimaXNA.UltimaWorld.Maps;
-using UltimaXNA.UltimaWorld.Controllers;
+using UltimaXNA.Ultima.EntityViews;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Ultima.World.Maps;
+using UltimaXNA.Ultima.World.Controllers;
 
-namespace UltimaXNA.UltimaWorld.Views
+namespace UltimaXNA.Ultima.World.Views
 {
     static class OverheadRenderer
     {

@@ -12,11 +12,11 @@
 using System.IO;
 using System.Runtime.InteropServices;
 using UltimaXNA.Core;
-using UltimaXNA.IO;
+using UltimaXNA.Core.IO;
 
 #endregion
 
-namespace UltimaXNA.UltimaData
+namespace UltimaXNA.Ultima.IO
 {
     public class FileIndex
     {

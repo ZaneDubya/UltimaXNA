@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CCC.Core.Diagnostics.Tracing
+namespace UltimaXNA.Core.Diagnostics.Tracing
 {
     public interface ITracer
     {

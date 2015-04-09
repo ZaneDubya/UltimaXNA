@@ -8,13 +8,13 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Input.Windows;
+using UltimaXNA.Core.Input.Windows;
 using Microsoft.Xna.Framework;
 using System;
-using UltimaXNA.Core.Rendering;
+using UltimaXNA.Core.Graphics;
 #endregion
 
-namespace UltimaXNA.UltimaGUI.Controls
+namespace UltimaXNA.Ultima.UI.Controls
 {
     class TextEntry : AControl
     {

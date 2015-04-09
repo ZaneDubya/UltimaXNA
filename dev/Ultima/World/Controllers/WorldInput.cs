@@ -1,15 +1,16 @@
 ﻿#region Usings
-
 using Microsoft.Xna.Framework;
-using UltimaXNA.Data;
-using UltimaXNA.Input.Windows;
-using UltimaXNA.UltimaEntities;
-using UltimaXNA.UltimaPackets.Client;
-using UltimaXNA.UltimaVars;
 using System.Collections.Generic;
+using UltimaXNA.Configuration;
+using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.Entities;
+using UltimaXNA.Ultima.Entities.Items;
+using UltimaXNA.Ultima.Entities.Mobiles;
+using UltimaXNA.Ultima.Network.Client;
 #endregion
 
-namespace UltimaXNA.UltimaWorld.Controllers
+namespace UltimaXNA.Ultima.World.Controllers
 {
     /// <summary>
     /// Handles all the mouse input when the mouse is over the world.

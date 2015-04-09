@@ -8,11 +8,12 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.UltimaEntities;
-using UltimaXNA.UltimaData;
+using UltimaXNA.Ultima.Entities;
+using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.Entities.Items;
 #endregion
 
-namespace UltimaXNA.UltimaWorld.Maps
+namespace UltimaXNA.Ultima.World.Maps
 {
     class MapBlock
     {

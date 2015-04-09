@@ -1,7 +1,7 @@
 using System;
 using System.Net;
 
-namespace UltimaXNA.IO
+namespace UltimaXNA.Core.IO
 {
     public abstract class GenericWriter
     {

@@ -1,6 +1,6 @@
 using System;
 
-namespace UltimaXNA.Patterns.IoC
+namespace UltimaXNA.Core.Patterns.IoC
 {
     public class ConstructorResolutionException : Exception
     {

@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace UltimaXNA.Core.Rendering
+namespace UltimaXNA.Core.Graphics
 {
     /// <summary>
     /// Batches line "draw" calls from the game, and renders them at one time.

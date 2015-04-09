@@ -9,13 +9,12 @@
  ***************************************************************************/
 #region usings
 using Microsoft.Xna.Framework;
-using System.Collections.Generic;
-using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaWorld.Maps;
-using UltimaXNA.UltimaWorld.Views;
+using UltimaXNA.Ultima.Entities.Items.Containers;
+using UltimaXNA.Ultima.Entities.Mobiles;
+using UltimaXNA.Ultima.World.Maps;
 #endregion
 
-namespace UltimaXNA.UltimaEntities
+namespace UltimaXNA.Ultima.Entities.Items
 {
     public class Item : AEntity
     {
@@ -70,7 +69,7 @@ namespace UltimaXNA.UltimaEntities
             set { m_amount = value; }
         }
 
-        public UltimaData.ItemData ItemData;
+        public IO.ItemData ItemData;
 
 		private int m_ItemID = 0;
         public int ItemID
@@ -79,7 +78,7 @@ namespace UltimaXNA.UltimaEntities
             set
             {
 				m_ItemID = value;
-                ItemData = UltimaXNA.UltimaData.TileData.ItemData[m_ItemID & 0x3FFF];
+                ItemData = UltimaXNA.Ultima.IO.TileData.ItemData[m_ItemID & 0x3FFF];
             }
         }
 

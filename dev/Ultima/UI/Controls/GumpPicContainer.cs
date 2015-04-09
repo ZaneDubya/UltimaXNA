@@ -7,10 +7,10 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using UltimaXNA.UltimaEntities;
-using UltimaXNA.UltimaGUI;
+using UltimaXNA.Ultima.Entities.Items.Containers;
+using UltimaXNA.Ultima.UI;
 
-namespace UltimaXNA.UltimaGUI.Controls
+namespace UltimaXNA.Ultima.UI.Controls
 {
     class GumpPicContainer : GumpPic
     {

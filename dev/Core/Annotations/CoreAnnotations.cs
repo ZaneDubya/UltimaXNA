@@ -86,7 +86,7 @@ namespace JetBrains.Annotations
 
     /// <summary>
     /// Indicates that the method is contained in a type that implements
-    /// <see cref="System.ComponentModel.INotifyPropertyChanged"/> interface
+    /// <see cref="System.Core.ComponentModel.INotifyPropertyChanged"/> interface
     /// and this method is used to notify that some property value changed
     /// </summary>
     /// <remarks>
@@ -555,7 +555,7 @@ namespace JetBrains.Annotations
     /// <summary>
     /// ASP.NET MVC attribute. Indicates that a parameter is an MVC template.
     /// Use this attribute for custom wrappers similar to
-    /// <c>System.ComponentModel.DataAnnotations.UIHintAttribute(System.String)</c>
+    /// <c>System.Core.ComponentModel.DataAnnotations.UIHintAttribute(System.String)</c>
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter)]
     public sealed class AspMvcTemplateAttribute : Attribute { }

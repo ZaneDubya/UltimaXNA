@@ -1,7 +1,7 @@
-﻿using UltimaXNA.Input.Windows;
+﻿using UltimaXNA.Core.Input.Windows;
 using System.Collections.Generic;
 
-namespace UltimaXNA.Input
+namespace UltimaXNA.Core.Input
 {
     public class ActionBinder
     {

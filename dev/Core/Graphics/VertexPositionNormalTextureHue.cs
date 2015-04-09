@@ -10,7 +10,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace UltimaXNA.Core.Rendering
+namespace UltimaXNA.Core.Graphics
 {
     public struct VertexPositionNormalTextureHue : IVertexType
     {

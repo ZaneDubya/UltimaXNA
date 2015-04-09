@@ -1,6 +1,6 @@
 ﻿using InterXLib.Patterns.MVC;
 
-namespace UltimaXNA.UltimaLogin
+namespace UltimaXNA.Ultima.Login
 {
     class LoginModel : AUltimaModel
     {
@@ -18,7 +18,7 @@ namespace UltimaXNA.UltimaLogin
 
         protected override void OnInitialize()
         {
-            Engine.UserInterface.Cursor = new UltimaGUI.UltimaCursor();
+            Engine.UserInterface.Cursor = new UI.UltimaCursor();
             m_SceneManager = new Scenes.SceneManager(Engine);
             m_SceneManager.ResetToLoginScreen();
         }

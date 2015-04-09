@@ -9,14 +9,15 @@
  ***************************************************************************/
 #region usings
 using System;
-using UltimaXNA.UltimaGUI;
-using UltimaXNA.UltimaGUI.LoginGumps;
-using UltimaXNA.UltimaPackets;
-using UltimaXNA.UltimaPackets.Client;
-using UltimaXNA.UltimaWorld;
+using UltimaXNA.Ultima.UI;
+using UltimaXNA.Ultima.UI.LoginGumps;
+using UltimaXNA.Ultima.Network;
+using UltimaXNA.Ultima.Network.Client;
+using UltimaXNA.Ultima.World;
+using UltimaXNA.Ultima.Data.Accounts;
 #endregion
 
-namespace UltimaXNA.UltimaLogin.Scenes
+namespace UltimaXNA.Ultima.Login.Scenes
 {
     enum CreateCharacterSceneStates
     {
@@ -145,12 +146,12 @@ namespace UltimaXNA.UltimaLogin.Scenes
             // if not, pop up an appropriate error message.
             if (m_name.Length < 2)
             {
-                Engine.UserInterface.MsgBox(UltimaData.StringData.Entry(1075458), MsgBoxTypes.OkOnly); // 1075458: Your character name is too short.
+                Engine.UserInterface.MsgBox(IO.StringData.Entry(1075458), MsgBoxTypes.OkOnly); // 1075458: Your character name is too short.
                 return false;
             }
             if (m_name[m_name.Length - 1] == '.')
             {
-                Engine.UserInterface.MsgBox(UltimaData.StringData.Entry(1075457), MsgBoxTypes.OkOnly); // 1075457: Your character name cannot end with a period('.').
+                Engine.UserInterface.MsgBox(IO.StringData.Entry(1075457), MsgBoxTypes.OkOnly); // 1075457: Your character name cannot end with a period('.').
                 return false;
             }
             return true;
@@ -235,7 +236,7 @@ namespace UltimaXNA.UltimaLogin.Scenes
                             m_name, (Sex)m_gender, (Race)0, (byte)m_attributes[0], (byte)m_attributes[1], (byte)m_attributes[2], 
                             (byte)m_skillIndexes[0], (byte)m_skillValues[0], (byte)m_skillIndexes[1], (byte)m_skillValues[1], (byte)m_skillIndexes[2], (byte)m_skillValues[2],
                             (short)m_skinHue, (short)m_hairStyleID, (short)m_hairHue, (short)m_facialHairStyleID, (short)m_facialHairHue,
-                            0, (short)UltimaVars.Characters.FirstEmptySlot, Utility.IPAddress, 0, 0));
+                            0, (short)Characters.FirstEmptySlot, Utility.IPAddress, 0, 0));
                         m_Status = CreateCharacterSceneStates.WaitingForResponse;
                     }
                     break;

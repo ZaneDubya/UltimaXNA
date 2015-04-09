@@ -1,13 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Core.Rendering;
-using UltimaXNA.UltimaData;
-using UltimaXNA.UltimaEntities.Effects;
-using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaWorld.Maps;
-using UltimaXNA.UltimaWorld.Controllers;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.Entities.Effects;
+using UltimaXNA.Ultima.World;
+using UltimaXNA.Ultima.World.Maps;
+using UltimaXNA.Ultima.World.Controllers;
 
-namespace UltimaXNA.UltimaEntities.EntityViews
+namespace UltimaXNA.Ultima.EntityViews
 {
     public class MovingEffectView : AEntityView
     {
@@ -28,7 +28,7 @@ namespace UltimaXNA.UltimaEntities.EntityViews
             : base(effect)
         {
             m_Animated = true;
-            m_Animated = UltimaData.TileData.ItemData[Effect.ItemID & 0x3fff].IsAnimation;
+            m_Animated = IO.TileData.ItemData[Effect.ItemID & 0x3fff].IsAnimation;
             if (m_Animated)
             {
                 m_AnimData = AnimData.GetAnimData(Effect.ItemID & 0x3fff);
@@ -53,7 +53,7 @@ namespace UltimaXNA.UltimaEntities.EntityViews
             if (displayItemdID != m_DisplayItemID)
             {
                 m_DisplayItemID = displayItemdID;
-                DrawTexture = UltimaData.ArtData.GetStaticTexture(m_DisplayItemID);
+                DrawTexture = IO.ArtData.GetStaticTexture(m_DisplayItemID);
                 DrawArea = new Rectangle(DrawTexture.Width / 2 - 22, DrawTexture.Height - 44, DrawTexture.Width, DrawTexture.Height);
                 PickType = PickType.PickNothing;
                 DrawFlip = false;

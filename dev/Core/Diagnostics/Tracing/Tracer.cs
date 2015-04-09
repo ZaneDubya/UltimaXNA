@@ -1,8 +1,8 @@
 using System;
 using System.Diagnostics.Tracing;
-using CCC.Core.Diagnostics.Tracing;
+using UltimaXNA.Core.Diagnostics.Tracing;
 
-namespace UltimaXNA.Diagnostics.Tracing
+namespace UltimaXNA.Core.Diagnostics.Tracing
 {
     public static class Tracer
     {

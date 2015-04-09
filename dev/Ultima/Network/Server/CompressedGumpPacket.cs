@@ -24,7 +24,7 @@ using UltimaXNA.Core.Network.Packets;
 #endregion
 
 
-namespace UltimaXNA.UltimaPackets.Server
+namespace UltimaXNA.Ultima.Network.Server
 {
     public class CompressedGumpPacket : RecvPacket
     {

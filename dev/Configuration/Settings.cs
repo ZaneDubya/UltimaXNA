@@ -4,7 +4,7 @@ using System;
 
 #endregion
 
-namespace UltimaXNA.Data
+namespace UltimaXNA.Configuration
 {
     public static class Settings
     {

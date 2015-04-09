@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UltimaXNA.Core.Diagnostics;
 #endregion
 
-namespace UltimaXNA.UltimaData.FontsNew
+namespace UltimaXNA.Ultima.IO.FontsNew
 {
     abstract class AFont
     {

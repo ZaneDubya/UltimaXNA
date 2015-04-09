@@ -8,11 +8,11 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.UltimaGUI;
-using UltimaXNA.Input.Windows;
+using UltimaXNA.Ultima.UI;
+using UltimaXNA.Core.Input.Windows;
 #endregion
 
-namespace UltimaXNA.UltimaGUI
+namespace UltimaXNA.Ultima.UI
 {
     class DropWidget_Unused
     {

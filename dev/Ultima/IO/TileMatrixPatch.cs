@@ -16,9 +16,10 @@
 #region usings
 using System;
 using System.IO;
+using UltimaXNA.Core;
 #endregion
 
-namespace UltimaXNA.UltimaData
+namespace UltimaXNA.Ultima.IO
 {
     public class TileMatrixPatch
     {
@@ -74,7 +75,7 @@ namespace UltimaXNA.UltimaData
 
                         fixed (Tile* pTiles = tiles)
                         {
-                            SharedMethods.Read(fsData.SafeFileHandle, pTiles, 192);
+                            NativeMethods.Read(fsData.SafeFileHandle, pTiles, 192);
                         }
 
                         tileMatrix.SetLandBlock(x, y, tiles);
@@ -144,7 +145,7 @@ namespace UltimaXNA.UltimaData
 
                             fixed (StaticTile* pStaticTiles = staticTiles)
                             {
-                                SharedMethods.Read(fsData.SafeFileHandle, pStaticTiles, length);
+                                NativeMethods.Read(fsData.SafeFileHandle, pStaticTiles, length);
 
                                 StaticTile* pCur = pStaticTiles, pEnd = pStaticTiles + tileCount;
 

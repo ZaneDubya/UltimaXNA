@@ -10,14 +10,14 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.UltimaEntities;
-using UltimaXNA.Core.Rendering;
-using UltimaXNA.Input.Windows;
-using UltimaXNA.UltimaGUI;
-using UltimaXNA.UltimaWorld;
-using UltimaXNA.UltimaPackets.Client;
+using UltimaXNA.Ultima.Entities.Items;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Ultima.UI;
+using UltimaXNA.Ultima.World;
+using UltimaXNA.Ultima.Network.Client;
 
-namespace UltimaXNA.UltimaGUI.Controls
+namespace UltimaXNA.Ultima.UI.Controls
 {
     class ItemGumpling : AControl
     {
@@ -73,7 +73,7 @@ namespace UltimaXNA.UltimaGUI.Controls
         {
             if (m_texture == null)
             {
-                m_texture = UltimaData.ArtData.GetStaticTexture(m_item.DisplayItemID);
+                m_texture = IO.ArtData.GetStaticTexture(m_item.DisplayItemID);
                 Size = new Point(m_texture.Width, m_texture.Height);
             }
             spriteBatch.Draw2D(m_texture, Position, m_item.Hue, false, false);
@@ -115,7 +115,7 @@ namespace UltimaXNA.UltimaGUI.Controls
         {
             // if click, we wait for a moment before picking it up. This allows a single click.
             clickedCanDrag = true;
-            pickUpTime = (float)UltimaEngine.TotalMS + UltimaVars.EngineVars.ClickAndPickUpMS;
+            pickUpTime = (float)UltimaEngine.TotalMS + EngineVars.ClickAndPickUpMS;
             m_ClickPoint = new Point(x, y);
         }
 
@@ -135,7 +135,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             {
                 clickedCanDrag = false;
                 sendClickIfNoDoubleClick = true;
-                singleClickTime = (float)UltimaEngine.TotalMS + UltimaVars.EngineVars.DoubleClickMS;
+                singleClickTime = (float)UltimaEngine.TotalMS + EngineVars.DoubleClickMS;
             }
         }
 
@@ -157,7 +157,7 @@ namespace UltimaXNA.UltimaGUI.Controls
                 if (this is ItemGumplingPaperdoll)
                 {
                     int w, h;
-                    UltimaData.ArtData.GetStaticDimensions(Item.DisplayItemID, out w, out h);
+                    IO.ArtData.GetStaticDimensions(Item.DisplayItemID, out w, out h);
                     Point click_point = new Point(w / 2, h / 2);
                     (Engine.ActiveModel as WorldModel).Interaction.PickupItem(m_item, InternalGetPickupOffset(click_point));
                 }

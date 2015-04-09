@@ -16,10 +16,10 @@
  ***************************************************************************/
 #region usings
 using UltimaXNA.Core.Network.Packets;
-using UltimaXNA.UltimaEntities;
+using UltimaXNA.Ultima.Entities;
 #endregion
 
-namespace UltimaXNA.UltimaPackets.Client
+namespace UltimaXNA.Ultima.Network.Client
 {
     public class TargetObjectPacket : SendPacket
     {

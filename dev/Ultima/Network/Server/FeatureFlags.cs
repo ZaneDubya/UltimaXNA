@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UltimaXNA.UltimaPackets.Server
+namespace UltimaXNA.Ultima.Network.Server
 {
     [Flags]
     public enum FeatureFlags : uint

@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using UltimaXNA.Core.Diagnostics;
 #endregion
 
-namespace UltimaXNA.UltimaData
+namespace UltimaXNA.Ultima.IO
 {
     /// <summary>
     /// Contains translation tables used for mapping body values to file subsets.

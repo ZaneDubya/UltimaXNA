@@ -12,9 +12,10 @@
 using System;
 using System.IO;
 using UltimaXNA.Core.Diagnostics;
+using UltimaXNA.Ultima.Data;
 #endregion
 
-namespace UltimaXNA.UltimaData
+namespace UltimaXNA.Ultima.IO
 {
     public class TileData
     {

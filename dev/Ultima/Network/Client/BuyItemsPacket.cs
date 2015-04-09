@@ -20,7 +20,7 @@ using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Network.Packets;
 #endregion
 
-namespace UltimaXNA.UltimaPackets.Client
+namespace UltimaXNA.Ultima.Network.Client
 {
     public class BuyItemsPacket : SendPacket
     {

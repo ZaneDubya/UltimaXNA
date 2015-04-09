@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-/***************************************************************************
+﻿/***************************************************************************
  *   StatusGump.cs
  *   Based on code by surcouf94
  *   
@@ -10,12 +9,12 @@
  *
  ***************************************************************************/
 using System.Collections.Generic;
-using UltimaXNA.UltimaEntities;
-using UltimaXNA.Core.Rendering;
-using UltimaXNA.UltimaGUI.Controls;
-using UltimaXNA.UltimaWorld;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Ultima.Entities.Mobiles;
+using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Ultima.World;
 
-namespace UltimaXNA.UltimaGUI.WorldGumps
+namespace UltimaXNA.Ultima.UI.WorldGumps
 {
     class StatusGump : Gump
     {

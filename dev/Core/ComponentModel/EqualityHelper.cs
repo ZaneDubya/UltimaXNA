@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UltimaXNA.ComponentModel
+namespace UltimaXNA.Core.ComponentModel
 {
     public static class EqualityHelper
     {

@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace UltimaXNA.Patterns.IoC
+namespace UltimaXNA.Core.Patterns.IoC
 {
     internal class WeakDelegateFactory : ObjectFactoryBase
     {

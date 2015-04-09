@@ -8,11 +8,11 @@
  *
  ***************************************************************************/
 
-using UltimaXNA.Data;
-using UltimaXNA.UltimaGUI.Controls;
-using UltimaXNA.UltimaVars;
+using UltimaXNA.Configuration;
+using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Ultima.Data.Accounts;
 
-namespace UltimaXNA.UltimaGUI.LoginGumps
+namespace UltimaXNA.Ultima.UI.LoginGumps
 {
     class CharacterListGump : Gump
     {
@@ -57,7 +57,7 @@ namespace UltimaXNA.UltimaGUI.LoginGumps
             ((Button)LastControl).GumpOverID = 5541;
             // center message window backdrop
             AddControl(new ResizePic(this, 1, 160, 70, 2600, 408, 390));
-            AddControl(new TextLabelAscii(this, 1, 266, 112, 2017, 2, UltimaData.StringData.Entry(3000050)));
+            AddControl(new TextLabelAscii(this, 1, 266, 112, 2017, 2, IO.StringData.Entry(3000050)));
             // display the character list.
             ReloadCharList();
             // delete button
@@ -70,7 +70,7 @@ namespace UltimaXNA.UltimaGUI.LoginGumps
             // Page 2 - logging in to server
             // center message window backdrop
             AddControl(new ResizePic(this, 2, 116, 95, 2600, 408, 288));
-            AddControl(new TextLabelAscii(this, 2, 166, 143, 2017, 2, UltimaData.StringData.Entry(3000001)));
+            AddControl(new TextLabelAscii(this, 2, 166, 143, 2017, 2, IO.StringData.Entry(3000001)));
         }
 
         public void ReloadCharList()
@@ -80,11 +80,11 @@ namespace UltimaXNA.UltimaGUI.LoginGumps
 
         public override void Update(double totalMS, double frameMS)
         {
-            if (UltimaVars.Characters.UpdateValue != m_charListUpdate)
+            if (Characters.UpdateValue != m_charListUpdate)
             {
                 int entryIndex = 0;
-                m_characterNames = new HtmlGump[UltimaVars.Characters.Length];
-                foreach (CharacterListEntry e in UltimaVars.Characters.List)
+                m_characterNames = new HtmlGump[Characters.Length];
+                foreach (CharacterListEntry e in Characters.List)
                 {
                     if (e.Name != string.Empty)
                     {
@@ -94,7 +94,7 @@ namespace UltimaXNA.UltimaGUI.LoginGumps
                     }
                     entryIndex++;
                 }
-                m_charListUpdate = UltimaVars.Characters.UpdateValue;
+                m_charListUpdate = Characters.UpdateValue;
             }
             base.Update(totalMS, frameMS);
         }
@@ -130,17 +130,17 @@ namespace UltimaXNA.UltimaGUI.LoginGumps
                     OnLoginWithCharacter(charIndex);
                 else
                 {
-                    if ((m_charSelected >= 0) && (m_charSelected < UltimaVars.Characters.Length))
-                        m_characterNames[m_charSelected].Text = formatHTMLCharName(m_charSelected, UltimaVars.Characters.List[m_charSelected].Name, 1278);
+                    if ((m_charSelected >= 0) && (m_charSelected < Characters.Length))
+                        m_characterNames[m_charSelected].Text = formatHTMLCharName(m_charSelected, Characters.List[m_charSelected].Name, 1278);
                     m_charSelected = charIndex;
-                    if ((m_charSelected >= 0) && (m_charSelected < UltimaVars.Characters.Length))
-                        m_characterNames[m_charSelected].Text = formatHTMLCharName(m_charSelected, UltimaVars.Characters.List[m_charSelected].Name, 431);
+                    if ((m_charSelected >= 0) && (m_charSelected < Characters.Length))
+                        m_characterNames[m_charSelected].Text = formatHTMLCharName(m_charSelected, Characters.List[m_charSelected].Name, 431);
                 }
             }
         }
 
-        static int m_kHoverHue = UltimaData.HuesXNA.GetWebSafeHue("609");
-        static int m_kActivateHue = UltimaData.HuesXNA.GetWebSafeHue("F00");
+        static int m_kHoverHue = IO.HuesXNA.GetWebSafeHue("609");
+        static int m_kActivateHue = IO.HuesXNA.GetWebSafeHue("F00");
         string formatHTMLCharName(int index, string name, int hue)
         {
             return string.Format("<center><big><a href=\"CHAR={0}\" style=\"colorhue: #{2}; hoverhue: #{3}; activatehue: #{4}; text-decoration: none\">{1}</a></big></center>", 

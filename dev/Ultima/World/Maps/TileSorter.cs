@@ -7,12 +7,15 @@
  ***************************************************************************/
 #region usings
 using System.Collections.Generic;
-using UltimaXNA.UltimaEntities;
-using UltimaXNA.UltimaEntities.EntityViews;
-using UltimaXNA.UltimaEntities.Effects;
+using UltimaXNA.Ultima.Entities;
+using UltimaXNA.Ultima.EntityViews;
+using UltimaXNA.Ultima.Entities.Effects;
+using UltimaXNA.Ultima.Entities.Items;
+using UltimaXNA.Ultima.Entities.Items.Containers;
+using UltimaXNA.Ultima.Entities.Mobiles;
 #endregion
 
-namespace UltimaXNA.UltimaWorld.Maps
+namespace UltimaXNA.Ultima.World.Maps
 {
     static class TileSorter
     {

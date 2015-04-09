@@ -19,14 +19,14 @@ using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Network.Packets;
 #endregion
 
-namespace UltimaXNA.UltimaPackets.Server
+namespace UltimaXNA.Ultima.Network.Server
 {
     public class VersionRequestPacket : RecvPacket
     {
         public VersionRequestPacket(PacketReader reader)
             : base(0xBD, "Client Version Request")
         {
-            // no UltimaData.
+            // no IO.
         }
     }
 }

@@ -1,6 +1,6 @@
 #region Usings
 
-using UltimaXNA.Patterns.IoC;
+using UltimaXNA.Core.Patterns.IoC;
 
 #endregion
 

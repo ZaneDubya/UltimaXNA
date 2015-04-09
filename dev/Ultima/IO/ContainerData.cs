@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
 
-namespace UltimaXNA.UltimaData
+namespace UltimaXNA.Ultima.IO
 {
     public class ContainerData
     {

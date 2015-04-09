@@ -11,13 +11,17 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using UltimaXNA.UltimaEntities;
-using UltimaXNA.UltimaGUI;
-using UltimaXNA.UltimaGUI.WorldGumps;
-using UltimaXNA.UltimaPackets.Client;
+using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.Entities;
+using UltimaXNA.Ultima.Entities.Items;
+using UltimaXNA.Ultima.Entities.Items.Containers;
+using UltimaXNA.Ultima.Entities.Mobiles;
+using UltimaXNA.Ultima.Network.Client;
+using UltimaXNA.Ultima.UI;
+using UltimaXNA.Ultima.UI.WorldGumps;
 #endregion
 
-namespace UltimaXNA.UltimaWorld.Controllers
+namespace UltimaXNA.Ultima.World.Controllers
 {
     /// <summary>
     /// Hosts methods for interacting with the world.

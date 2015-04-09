@@ -1,7 +1,7 @@
 ﻿using InterXLib.Patterns.MVC;
 using System;
 
-namespace UltimaXNA
+namespace UltimaXNA.Ultima
 {
     abstract internal class AUltimaModel : AModel
     {

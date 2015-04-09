@@ -10,11 +10,11 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Core.Rendering;
-using UltimaXNA.Input.Windows;
-using UltimaXNA.UltimaGUI;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Ultima.UI;
 
-namespace UltimaXNA.UltimaGUI.Controls
+namespace UltimaXNA.Ultima.UI.Controls
 {
     public class ResizePic : AControl
     {
@@ -67,7 +67,7 @@ namespace UltimaXNA.UltimaGUI.Controls
             {
                 for (int i = 0; i < 9; i++)
                 {
-                    m_bgGumps[i] = UltimaData.GumpData.GetGumpXNA(GumpID + i);
+                    m_bgGumps[i] = IO.GumpData.GetGumpXNA(GumpID + i);
                 }
             }
 

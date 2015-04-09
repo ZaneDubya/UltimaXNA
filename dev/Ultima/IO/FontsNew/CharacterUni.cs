@@ -4,7 +4,7 @@ using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace UltimaXNA.UltimaData.FontsNew
+namespace UltimaXNA.Ultima.IO.FontsNew
 {
     internal class CharacterUni : ACharacter
     {
@@ -20,7 +20,7 @@ namespace UltimaXNA.UltimaData.FontsNew
             Width = reader.ReadByte();
             Height = reader.ReadByte();
 
-            // only read data if there is UltimaData...
+            // only read data if there is IO...
             if ((Width > 0) && (Height > 0))
             {
                 m_PixelData = new uint[Width * Height];

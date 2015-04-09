@@ -13,11 +13,11 @@ using System.Drawing;
 using System.Linq;
 using UltimaXNA.Core;
 using UltimaXNA.Core.Diagnostics;
-using UltimaXNA.IO;
+using UltimaXNA.Core.IO;
 
 #endregion
 
-namespace UltimaXNA.UltimaData
+namespace UltimaXNA.Ultima.IO
 {
     public class MultiData
     {

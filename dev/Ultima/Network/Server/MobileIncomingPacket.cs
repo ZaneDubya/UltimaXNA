@@ -18,10 +18,10 @@
 using System.Collections.Generic;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Network.Packets;
-using UltimaXNA.UltimaEntities.Support;
+using UltimaXNA.Ultima.Entities.Mobiles;
 #endregion
 
-namespace UltimaXNA.UltimaPackets.Server
+namespace UltimaXNA.Ultima.Network.Server
 {
     public class MobileIncomingPacket : RecvPacket
     {
