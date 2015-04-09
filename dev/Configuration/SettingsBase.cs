@@ -33,7 +33,7 @@ namespace UltimaXNA.Data
             Guard.Requires<ArgumentNullException>(!string.IsNullOrWhiteSpace(propertyName), "propertyName");
 
             // ReSharper disable once ExplicitCallerInfoArgument
-            var notify = GetValue(default(T), propertyName) as INotifyPropertyChanged;
+            INotifyPropertyChanged notify = GetValue(default(T), propertyName) as INotifyPropertyChanged;
 
             if(notify != null)
             {

@@ -57,7 +57,7 @@ namespace UltimaXNA.Data
         public static T OpenSection<T>()
             where T : SettingsBase
         {
-            var settings = (T)Activator.CreateInstance(typeof(T), m_file);
+            T settings = (T)Activator.CreateInstance(typeof(T), m_file);
             return settings;
         }
     }

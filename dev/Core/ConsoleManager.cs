@@ -88,15 +88,15 @@ namespace UltimaXNA
 
         private static void InvalidateOutAndError()
         {
-            var type = typeof(Console);
+            Type type = typeof(Console);
 
-            var output = type.GetField("_out",
+            _FieldInfo output = type.GetField("_out",
                 System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
 
-            var error = type.GetField("_error",
+            _FieldInfo error = type.GetField("_error",
                 System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
 
-            var initializeStdOutError = type.GetMethod("InitializeStdOutError",
+            _MethodInfo initializeStdOutError = type.GetMethod("InitializeStdOutError",
                 System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
 
             Debug.Assert(output != null);

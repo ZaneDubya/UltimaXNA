@@ -169,7 +169,7 @@ namespace UltimaXNA
             Prepare();
             Configure();
 
-            using (var engine = new UltimaEngine(m_container))
+            using (UltimaEngine engine = new UltimaEngine(m_container))
             {
                 engine.Run();
             }

@@ -19,7 +19,7 @@ namespace UltimaXNA.Collections
 
                     if (m_dictionary.TryGetValue(key, out current))
                     {
-                        var disposable = current as IDisposable;
+                        IDisposable disposable = current as IDisposable;
 
                         if (disposable != null)
                         {

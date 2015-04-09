@@ -137,14 +137,14 @@ namespace UltimaXNA.Core.Rendering
 
         public bool DrawSimpleTiled(Texture2D texture, Rectangle destRect, Vector2 hue)
         {
-            var y = destRect.Y;
-            var h = destRect.Height;
+            int y = destRect.Y;
+            int h = destRect.Height;
             Rectangle sRect;
 
             while(h > 0)
             {
-                var x = destRect.X;
-                var w = destRect.Width;
+                int x = destRect.X;
+                int w = destRect.Width;
                 if(h < texture.Height)
                 {
                     sRect = new Rectangle(0, 0, texture.Width, h);
@@ -172,14 +172,14 @@ namespace UltimaXNA.Core.Rendering
 
         public bool Draw(Texture2D texture, VertexPositionNormalTextureHue[] vertices)
         {
-            var draw = false;
+            bool draw = false;
 
             if(texture == null)
             {
                 return false;
             }
 
-            for(var i = 0; i < 4; i++) // only draws a 2 triangle tristrip.
+            for(int i = 0; i < 4; i++) // only draws a 2 triangle tristrip.
             {
                 if(m_boundingBox.Contains(vertices[i].Position) == ContainmentType.Contains)
                 {
@@ -221,7 +221,7 @@ namespace UltimaXNA.Core.Rendering
                 m_drawQueue.Add(texture, vertexList);
             }
 
-            for(var i = 0; i < vertices.Length; i++)
+            for(int i = 0; i < vertices.Length; i++)
             {
                 vertexList.Add(vertices[i]);
             }
@@ -231,7 +231,7 @@ namespace UltimaXNA.Core.Rendering
 
         public void Prepare(bool doLighting, bool doDepth)
         {
-            var depth = new DepthStencilState();
+            DepthStencilState depth = new DepthStencilState();
             depth.DepthBufferEnable = doDepth;
             GraphicsDevice.DepthStencilState = depth;
 
@@ -287,9 +287,9 @@ namespace UltimaXNA.Core.Rendering
 
         private short[] CreateIndexBuffer(int primitiveCount)
         {
-            var indices = new short[primitiveCount * 6];
+            short[] indices = new short[primitiveCount * 6];
 
-            for(var i = 0; i < primitiveCount; i++)
+            for(int i = 0; i < primitiveCount; i++)
             {
                 indices[i * 6] = (short)(i * 4);
                 indices[i * 6 + 1] = (short)(i * 4 + 1);

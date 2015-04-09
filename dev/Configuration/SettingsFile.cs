@@ -59,7 +59,7 @@ namespace UltimaXNA.Data
             }
 
             SettingsToken token;
-            var v = JToken.FromObject(value);
+            JToken v = JToken.FromObject(value);
 
             if(!container.TryGetValue(key, out token))
             {
@@ -82,7 +82,7 @@ namespace UltimaXNA.Data
 
             SettingsToken token;
 
-            var container = m_sections[section];
+            SettingsContainer container = m_sections[section];
 
             return !container.TryGetValue(key, out token) ? defaultValue : token.Value.ToObject<T>();
         }
@@ -93,7 +93,7 @@ namespace UltimaXNA.Data
             {
                 lock(m_syncRoot)
                 {
-                    var settings = new JsonSerializerSettings
+                    JsonSerializerSettings settings = new JsonSerializerSettings
                     {
                         NullValueHandling = NullValueHandling.Ignore,
                         DateFormatHandling = DateFormatHandling.IsoDateFormat,
@@ -102,7 +102,7 @@ namespace UltimaXNA.Data
                         Converters = new List<JsonConverter> {new CommentJsonConverter()}
                     };
 
-                    var result = JsonConvert.SerializeObject(m_sections, Formatting.Indented, settings);
+                    string result = JsonConvert.SerializeObject(m_sections, Formatting.Indented, settings);
 
                     File.WriteAllText(m_filename, result);
                 }
@@ -153,8 +153,8 @@ namespace UltimaXNA.Data
                         return;
                     }
 
-                    var contents = File.ReadAllText(m_filename);
-                    var settings = new JsonSerializerSettings
+                    string contents = File.ReadAllText(m_filename);
+                    JsonSerializerSettings settings = new JsonSerializerSettings
                     {
                         NullValueHandling = NullValueHandling.Ignore,
                     };

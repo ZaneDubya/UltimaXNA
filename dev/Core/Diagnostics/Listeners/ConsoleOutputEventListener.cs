@@ -13,7 +13,7 @@ namespace UltimaXNA.Diagnostics.Tracing.Listeners
 
         protected override void OnEventWritten(EventWrittenEventArgs e)
         {
-            var color = ConsoleColor.Gray;
+            ConsoleColor color = ConsoleColor.Gray;
 
             switch (e.Level)
             {

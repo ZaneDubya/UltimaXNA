@@ -81,7 +81,7 @@ namespace UltimaXNA.Input
         {
             get
             {
-                var p = new Point();
+                Point p = new Point();
                 p.X = m_MouseStateThisFrame.X;
                 p.Y = m_MouseStateThisFrame.Y;
                 return p;
@@ -105,10 +105,10 @@ namespace UltimaXNA.Input
         {
             get
             {
-                var list = (m_EventsAccumulatingUseAlternate) ? m_EventsAccumulatingAlternate : m_EventsAccumulating;
-                for(var i = list.Count; i > 0; i--)
+                List<InputEvent> list = (m_EventsAccumulatingUseAlternate) ? m_EventsAccumulatingAlternate : m_EventsAccumulating;
+                for(int i = list.Count; i > 0; i--)
                 {
-                    var e = list[i - 1];
+                    InputEvent e = list[i - 1];
                     if((e is InputEventKeyboard) && (((InputEventKeyboard)e).EventType == KeyboardEventType.Press))
                     {
                         return (InputEventKeyboard)e;
@@ -129,8 +129,8 @@ namespace UltimaXNA.Input
 
         public List<InputEventKeyboard> GetKeyboardEvents()
         {
-            var list = new List<InputEventKeyboard>();
-            foreach(var e in m_EventsThisFrame)
+            List<InputEventKeyboard> list = new List<InputEventKeyboard>();
+            foreach (InputEvent e in m_EventsThisFrame)
             {
                 if(!e.Handled && e is InputEventKeyboard)
                 {
@@ -142,8 +142,8 @@ namespace UltimaXNA.Input
 
         public List<InputEventMouse> GetMouseEvents()
         {
-            var list = new List<InputEventMouse>();
-            foreach(var e in m_EventsThisFrame)
+            List<InputEventMouse> list = new List<InputEventMouse>();
+            foreach (InputEventMouse e in m_EventsThisFrame)
             {
                 if(!e.Handled && e is InputEventMouse)
                 {
@@ -181,19 +181,19 @@ namespace UltimaXNA.Input
 
         public MouseState CreateMouseState(MouseState state)
         {
-            var dpi = DpiManager.GetSystemDpiScalar();
-            var newstate = new MouseState((int)(state.X / dpi.X), (int)(state.Y / dpi.Y),
+            Vector2 dpi = DpiManager.GetSystemDpiScalar();
+            MouseState newstate = new MouseState((int)(state.X / dpi.X), (int)(state.Y / dpi.Y),
                 state.ScrollWheelValue, state.LeftButton, state.MiddleButton, state.RightButton, state.XButton1, state.XButton2);
             return newstate;
         }
 
         public bool HandleKeyboardEvent(KeyboardEventType type, WinKeys key, bool shift, bool alt, bool ctrl)
         {
-            foreach(var e in m_EventsThisFrame)
+            foreach(InputEvent e in m_EventsThisFrame)
             {
                 if(!e.Handled && e is InputEventKeyboard)
                 {
-                    var ek = (InputEventKeyboard)e;
+                    InputEventKeyboard ek = (InputEventKeyboard)e;
                     if(ek.EventType == type &&
                        ek.KeyCode == key &&
                        ek.Shift == shift &&

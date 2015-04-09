@@ -41,7 +41,7 @@ namespace UltimaXNA.Diagnostics.Tracing.Listeners
 
         protected override void OnEventWritten(EventWrittenEventArgs e)
         {
-            var output = string.Format(Format, e.Level, DateTime.Now, e.Payload[0]);
+            string output = string.Format(Format, e.Level, DateTime.Now, e.Payload[0]);
 
             lock (m_syncRoot)
             {

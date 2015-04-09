@@ -93,25 +93,25 @@ public static class MemberInfoExtensions
 
     public static bool IsPublic(this MemberInfo member)
     {
-        var methodBase = member as MethodBase;
+        MethodBase methodBase = member as MethodBase;
 
         if (methodBase != null)
         {
             return methodBase.IsPublic;
         }
-        var prop = member as PropertyInfo;
+        PropertyInfo prop = member as PropertyInfo;
         if (prop != null)
         {
             return (prop.GetMethod != null && prop.GetMethod.IsPublic) || (prop.SetMethod != null && prop.SetMethod.IsPublic);
         }
 
-        var fieldInfo = member as FieldInfo;
+        FieldInfo fieldInfo = member as FieldInfo;
         if (fieldInfo != null)
         {
             return fieldInfo.IsPublic;
         }
 
-        var evt = member as EventInfo;
+        EventInfo evt = member as EventInfo;
         if (evt != null)
         {
             return (evt.AddMethod != null && evt.AddMethod.IsPublic) || (evt.RemoveMethod != null && evt.RemoveMethod.IsPublic);
@@ -122,22 +122,22 @@ public static class MemberInfoExtensions
 
     public static bool IsStatic(this MemberInfo member)
     {
-        var methodBase = member as MethodBase;
+        MethodBase methodBase = member as MethodBase;
         if (methodBase != null)
         {
             return methodBase.IsStatic;
         }
-        var prop = member as PropertyInfo;
+        PropertyInfo prop = member as PropertyInfo;
         if (prop != null)
         {
             return (prop.GetMethod != null && prop.GetMethod.IsStatic) || (prop.SetMethod != null && prop.SetMethod.IsStatic);
         }
-        var fieldInfo = member as FieldInfo;
+        FieldInfo fieldInfo = member as FieldInfo;
         if (fieldInfo != null)
         {
             return fieldInfo.IsStatic;
         }
-        var evt = member as EventInfo;
+        EventInfo evt = member as EventInfo;
         if (evt != null)
         {
             return (evt.AddMethod != null && evt.AddMethod.IsStatic) || (evt.RemoveMethod != null && evt.RemoveMethod.IsStatic);
@@ -147,7 +147,7 @@ public static class MemberInfoExtensions
 
     public static MemberTypes MemberType(this MemberInfo member)
     {
-        var methodInfo = member as MethodInfo;
+        MethodInfo methodInfo = member as MethodInfo;
         if (methodInfo != null)
         {
             return MethodInfoExtensions.MemberType();
@@ -300,7 +300,7 @@ public static class TypeExtensions
     public static MethodInfo GetGenericMethod(this Type sourceType, BindingFlags bindingFlags, string methodName, Type[] genericTypes, Type[] parameterTypes)
     {
         MethodInfo method;
-        var cacheKey = new GenericMethodCacheKey(sourceType, methodName, genericTypes, parameterTypes);
+        GenericMethodCacheKey cacheKey = new GenericMethodCacheKey(sourceType, methodName, genericTypes, parameterTypes);
 
         // Shouldn't need any additional locking
         // we don't care if we do the method info generation
@@ -594,7 +594,7 @@ public static class TypeExtensions
     private static List<T> GetMembers<T>(Type type, BindingFlags flags)
         where T : MemberInfo
     {
-        var results = new List<T>();
+        List<T> results = new List<T>();
 
         TypeInfo info = type.GetTypeInfo();
         bool inParent = false;
@@ -661,7 +661,7 @@ public static class TypeExtensions
 
         public override bool Equals(object obj)
         {
-            var cacheKey = obj as GenericMethodCacheKey;
+            GenericMethodCacheKey cacheKey = obj as GenericMethodCacheKey;
             if (cacheKey == null)
             {
                 return false;

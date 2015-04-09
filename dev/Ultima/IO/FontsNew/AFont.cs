@@ -9,8 +9,6 @@ namespace UltimaXNA.UltimaData.FontsNew
 {
     abstract class AFont
     {
-        protected ACharacter[] m_Characters;
-
         public int Height
         {
             get;

@@ -12,8 +12,8 @@ namespace UltimaXNA
 
         public static Vector2 GetSystemDpiScalar()
         {
-            var result = new Vector2();
-            var hdc = GetDC(IntPtr.Zero);
+            Vector2 result = new Vector2();
+            IntPtr hdc = GetDC(IntPtr.Zero);
 
             result.X = GetDeviceCaps(hdc, LogPixelsX) / StandardDpi;
             result.Y = GetDeviceCaps(hdc, LogPixelsY) / StandardDpi;

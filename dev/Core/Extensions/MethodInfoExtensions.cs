@@ -6,7 +6,7 @@ public static class MethodInfoExtensions
 {
     public static MethodInfo GetBaseDefinition(this MethodInfo method)
     {
-        var flags = BindingFlags.Instance;
+        BindingFlags flags = BindingFlags.Instance;
 
         if (method.IsPublic)
         {
@@ -19,7 +19,7 @@ public static class MethodInfoExtensions
 
         // get...
         TypeInfo info = method.DeclaringType.GetTypeInfo();
-        var found = new List<MethodInfo>();
+        List<MethodInfo> found = new List<MethodInfo>();
 
         while (true)
         {

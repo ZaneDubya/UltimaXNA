@@ -17,7 +17,7 @@ namespace UltimaXNA.Data
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            var containers = value as Dictionary<string, SettingsContainer>;
+            Dictionary<string, SettingsContainer> containers = value as Dictionary<string, SettingsContainer>;
 
             if(containers == null)
             {
@@ -26,9 +26,9 @@ namespace UltimaXNA.Data
 
             writer.WriteStartObject();
 
-            var textWriter = writer as JsonTextWriter;
+            JsonTextWriter textWriter = writer as JsonTextWriter;
 
-            foreach(var kvp in containers)
+            foreach(KeyValuePair<string, SettingsContainer> kvp in containers)
             {
                 if(!string.IsNullOrWhiteSpace(kvp.Value.Comments))
                 {
@@ -36,7 +36,7 @@ namespace UltimaXNA.Data
                     {
                         writer.WriteWhitespace(Environment.NewLine);
 
-                        for(var i = 0; i < textWriter.Indentation; i++)
+                        for(int i = 0; i < textWriter.Indentation; i++)
                         {
                             writer.WriteWhitespace(textWriter.IndentChar.ToString());
                         }
@@ -52,7 +52,7 @@ namespace UltimaXNA.Data
                 writer.WritePropertyName(kvp.Key);
                 writer.WriteStartObject();
 
-                foreach(var item in kvp.Value)
+                foreach(KeyValuePair<string, SettingsToken> item in kvp.Value)
                 {
                     if(!string.IsNullOrWhiteSpace(item.Value.Comments))
                     {
@@ -60,7 +60,7 @@ namespace UltimaXNA.Data
                         {
                             writer.WriteWhitespace(Environment.NewLine);
 
-                            for(var i = 0; i < textWriter.Indentation * 2; i++)
+                            for(int i = 0; i < textWriter.Indentation * 2; i++)
                             {
                                 writer.WriteWhitespace(textWriter.IndentChar.ToString());
                             }
