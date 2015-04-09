@@ -41,6 +41,7 @@ local.properties
 *.user
 *.sln.docstates
 *.DotSettings
+*.sln.DotSettings
 
 # Build results
 
