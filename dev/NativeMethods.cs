@@ -17,7 +17,7 @@ using UltimaXNA.Input.Windows;
 
 namespace UltimaXNA
 {
-    public static class NativeConstants
+    internal static class NativeConstants
     {
         public const int WM_NULL = 0x00;
         public const int WM_CREATE = 0x01;

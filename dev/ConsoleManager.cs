@@ -8,7 +8,7 @@ using System.Security;
 namespace UltimaXNA
 {
     [SuppressUnmanagedCodeSecurity]
-    public static class ConsoleManager
+    internal static class ConsoleManager
     {
         private static readonly Stack<ConsoleColor> _consoleColors = new Stack<ConsoleColor>();
 

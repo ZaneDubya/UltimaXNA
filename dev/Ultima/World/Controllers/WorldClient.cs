@@ -631,7 +631,7 @@ namespace UltimaXNA.UltimaWorld.Controllers
 
         private void ReceiveTextMessage(MessageType msgType, string text, int hue, int font, Serial serial, string speakerName)
         {
-            UltimaVars.Journaling.AddEntry(text);
+            UltimaVars.Journal.AddEntry(text);
 
             Overhead overhead;
             switch (msgType)

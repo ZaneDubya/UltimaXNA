@@ -41,7 +41,7 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
 
             m_JournalEntries = new List<RenderedText>();
             InitializeJournalEntries();
-            UltimaVars.Journaling.OnJournalEntryAdded += AddJournalEntry;
+            UltimaVars.Journal.OnJournalEntryAdded += AddJournalEntry;
         }
 
         public override void Update(double totalMS, double frameMS)
@@ -100,9 +100,9 @@ namespace UltimaXNA.UltimaGUI.WorldGumps
         private void InitializeJournalEntries()
         {
             int height = 0;
-            for (int i = 0; i < UltimaVars.Journaling.JournalEntries.Count; i++)
+            for (int i = 0; i < UltimaVars.Journal.JournalEntries.Count; i++)
             {
-                AddJournalEntry(UltimaVars.Journaling.JournalEntries[i]);
+                AddJournalEntry(UltimaVars.Journal.JournalEntries[i]);
                 height += m_JournalEntries[i].Height;
             }
 

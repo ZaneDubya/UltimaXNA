@@ -18,17 +18,17 @@ using UltimaXNA.Windows.Diagnostics.Tracing.Listeners;
 
 namespace UltimaXNA
 {
-    public sealed class ApplicationBootstrapper
+    internal sealed class Bootstrapper
     {
         [STAThread]
         private static void Main(string[] args)
         {
-            new ApplicationBootstrapper(args).Initialize();
+            new Bootstrapper(args).Initialize();
         }
 
         private bool _isInitialized;
 
-        public ApplicationBootstrapper(string[] args)
+        public Bootstrapper(string[] args)
         {
             GeneralExceptionHandler.Instance = new GeneralExceptionHandler();
         }

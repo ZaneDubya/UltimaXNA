@@ -12,7 +12,7 @@ using UltimaXNA.UltimaPackets.Server;
 
 namespace UltimaXNA.UltimaVars
 {
-    public static class Characters
+    public static class Character
     {
         static CharacterListEntry[] m_characters;
         public static CharacterListEntry[] List { get { return m_characters; } }

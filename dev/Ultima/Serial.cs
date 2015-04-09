@@ -26,10 +26,10 @@ namespace UltimaXNA
 
         public static Serial World
         {
-            get { return (Serial)unchecked((int)0xFFFFFFFF); }
+            get { return unchecked((int)0xFFFFFFFF); }
         }
 
-        private int m_serial;
+        private readonly int m_serial;
 
         private Serial(int serial)
         {

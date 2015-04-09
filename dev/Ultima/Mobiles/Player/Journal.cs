@@ -6,7 +6,7 @@ using UltimaXNA.UltimaGUI.WorldGumps;
 
 namespace UltimaXNA.UltimaVars
 {
-    static class Journaling
+    static class Journal
     {
         private static List<string> m_JournalEntries = new List<string>();
         public static List<string> JournalEntries
