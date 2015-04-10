@@ -212,7 +212,8 @@
     <Compile Include="Ultima\Direction.cs" />
     <Compile Include="Ultima\Data\MessageType.cs" />
     <Compile Include="Ultima\Data\TileFlags.cs" />
-    <Compile Include="Ultima\ClientVars\PlayerQuest.cs" />
+    <Compile Include="Ultima\Player\PlayerState.cs" />
+    <Compile Include="Ultima\Player\Quest.cs" />
     <Compile Include="Ultima\Entities\Mobiles\CurrentMaxValue.cs" />
     <Compile Include="Ultima\IO\AnimData.cs" />
     <Compile Include="Ultima\IO\FontsOld\ASCIIFont.cs" />
@@ -253,7 +254,7 @@
     <Compile Include="Ultima\UI\WorldGumps\JournalGump.cs" />
     <Compile Include="Ultima\Login\LoginClient.cs" />
     <Compile Include="Ultima\Login\States\HueTestState.cs" />
-    <Compile Include="Ultima\ClientVars\Journal.cs" />
+    <Compile Include="Ultima\Player\JournalData.cs" />
     <Compile Include="Ultima\World\Controllers\MousePicking.cs" />
     <Compile Include="Ultima\World\Controllers\PickType.cs" />
     <Compile Include="Ultima\World\EffectManager.cs" />
@@ -278,8 +279,8 @@
     <Compile Include="Ultima\Data\Servers\Servers.cs" />
     <Compile Include="Ultima\EngineVars.cs" />
     <Compile Include="Ultima\Data\Features.cs" />
-    <Compile Include="Ultima\ClientVars\Skills.cs" />
-    <Compile Include="Ultima\ClientVars\StatLocks.cs" />
+    <Compile Include="Ultima\Player\SkillData.cs" />
+    <Compile Include="Ultima\Player\StatLockData.cs" />
     <Compile Include="Ultima\Network\Client\AsciiSpeechPacket.cs" />
     <Compile Include="Ultima\Network\Client\AttackRequestPacket.cs" />
     <Compile Include="Ultima\Network\Client\BuyItemsPacket.cs" />

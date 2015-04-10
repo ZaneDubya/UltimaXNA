@@ -4,19 +4,19 @@ using System.Linq;
 using System.Text;
 using UltimaXNA.Ultima.UI.WorldGumps;
 
-namespace UltimaXNA.Ultima.ClientVars
+namespace UltimaXNA.Ultima.Player
 {
-    static class Journal
+    public class JournalData
     {
-        private static List<string> m_JournalEntries = new List<string>();
-        public static List<string> JournalEntries
+        private List<string> m_JournalEntries = new List<string>();
+        public List<string> JournalEntries
         {
             get { return m_JournalEntries; }
         }
 
-        public static Action<string> OnJournalEntryAdded = null;
+        public Action<string> OnJournalEntryAdded = null;
 
-        public static void AddEntry(string text)
+        public void AddEntry(string text)
         {
             while (m_JournalEntries.Count > 99)
                 m_JournalEntries.RemoveAt(0);
