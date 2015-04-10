@@ -9,9 +9,9 @@ using UltimaXNA.Core.Network;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.World;
 
-namespace UltimaXNA.Ultima.Login.Scenes
+namespace UltimaXNA.Ultima.Login.States
 {
-    public abstract class AScene : IDisposable
+    public abstract class AState : IDisposable
     {
         internal SceneManager Manager;
 
@@ -43,7 +43,7 @@ namespace UltimaXNA.Ultima.Login.Scenes
 
         public event TransitionCompleteHandler TransitionCompleted;
 
-        public AScene()
+        public AState()
         {
             m_sceneState = SceneState.TransitioningOn;
         }

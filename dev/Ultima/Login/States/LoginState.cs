@@ -11,13 +11,13 @@
 using UltimaXNA.Ultima.UI.LoginGumps;
 #endregion
 
-namespace UltimaXNA.Ultima.Login.Scenes
+namespace UltimaXNA.Ultima.Login.States
 {
-    public class LoginScene : AScene
+    public class LoginState : AState
     {
         LoginGump m_LoginGump;
 
-        public LoginScene()
+        public LoginState()
         {
 
         }
@@ -35,7 +35,7 @@ namespace UltimaXNA.Ultima.Login.Scenes
 
             if (Engine.Input.HandleKeyboardEvent(UltimaXNA.Core.Input.Windows.KeyboardEventType.Down, UltimaXNA.Core.Input.Windows.WinKeys.D, false, false, true))
             {
-                Manager.CurrentScene = new HueTestScene();
+                Manager.CurrentScene = new HueTestState();
             }
         }
 
@@ -47,7 +47,7 @@ namespace UltimaXNA.Ultima.Login.Scenes
 
         public void OnLogin(string server, int port, string account, string password)
         {
-            Manager.CurrentScene = new LoggingInScene(server, port, account, password);
+            Manager.CurrentScene = new LoggingInState(server, port, account, password);
         }
     }
 }

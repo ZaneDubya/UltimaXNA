@@ -9,12 +9,12 @@
  ***************************************************************************/
 using System;
 
-namespace UltimaXNA.Ultima.ClientVars
+namespace UltimaXNA.Ultima.Player
 {
-    public static class StatLocks
+    public class StatLockData
     {
-        public static int StrengthLock = 0;
-        public static int DexterityLock = 0;
-        public static int IntelligenceLock = 0;
+        public int StrengthLock = 0;
+        public int DexterityLock = 0;
+        public int IntelligenceLock = 0;
     }
 }

@@ -9,15 +9,14 @@
  ***************************************************************************/
 using System.Collections.Generic;
 
-namespace UltimaXNA.Ultima.Ultima.ClientVars
+namespace UltimaXNA.Ultima.Player
 {
-    public static class Skills
+    public class SkillData
     {
-        static Dictionary<int, SkillEntry> m_skills = new Dictionary<int,SkillEntry>();
-        static bool m_skillsLoaded = false;
-        public static int UpdateCount = 0;
+        Dictionary<int, SkillEntry> m_skills = new Dictionary<int,SkillEntry>();
+        bool m_skillsLoaded = false;
 
-        public static Dictionary<int, SkillEntry> List
+        public Dictionary<int, SkillEntry> List
         {
             get
             {
@@ -31,7 +30,7 @@ namespace UltimaXNA.Ultima.Ultima.ClientVars
             }
         }
 
-        public static SkillEntry SkillEntry(int skillID)
+        public SkillEntry SkillEntry(int skillID)
         {
             if (List.Count > skillID)
                 return List[skillID];
@@ -54,42 +53,42 @@ namespace UltimaXNA.Ultima.Ultima.ClientVars
         public int ID
         {
             get { return m_id; }
-            set { m_id = value; Skills.UpdateCount++; }
+            set { m_id = value; }
         }
         public int Index
         {
             get { return m_index; }
-            set { m_index = value; Skills.UpdateCount++; }
+            set { m_index = value; }
         }
         public bool HasUseButton
         {
             get { return m_hasUseButton; }
-            set { m_hasUseButton = value; Skills.UpdateCount++; }
+            set { m_hasUseButton = value; }
         }
         public string Name
         {
             get { return m_name; }
-            set { m_name = value; Skills.UpdateCount++; }
+            set { m_name = value; }
         }
         public float Value
         {
             get { return m_value; }
-            set { m_value = value; Skills.UpdateCount++; }
+            set { m_value = value; }
         }
         public float ValueUnmodified
         {
             get { return m_valueUnmodified; }
-            set { m_valueUnmodified = value; Skills.UpdateCount++; }
+            set { m_valueUnmodified = value; }
         }
         public byte LockType
         {
             get { return m_lockType; }
-            set { m_lockType = value; Skills.UpdateCount++; }
+            set { m_lockType = value; }
         }
         public float Cap
         {
             get { return m_cap; }
-            set { m_cap = value; Skills.UpdateCount++; }
+            set { m_cap = value; }
         }
 
         public SkillEntry(int id, int index, bool useButton, string name, float value, float unmodified, byte locktype, float cap)

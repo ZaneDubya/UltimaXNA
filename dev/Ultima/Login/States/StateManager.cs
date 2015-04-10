@@ -3,11 +3,11 @@ using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Ultima.UI;
 
-namespace UltimaXNA.Ultima.Login.Scenes
+namespace UltimaXNA.Ultima.Login.States
 {
     public class SceneManager
     {
-        AScene m_CurrentScene;
+        AState m_CurrentScene;
         bool m_isTransitioning = false;
 
         protected UltimaEngine Engine { get; private set; }
@@ -17,7 +17,7 @@ namespace UltimaXNA.Ultima.Login.Scenes
             get { return m_isTransitioning; }
         }
 
-        public AScene CurrentScene
+        public AState CurrentScene
         {
             get { return m_CurrentScene; }
             set
@@ -85,7 +85,7 @@ namespace UltimaXNA.Ultima.Login.Scenes
 
         public void Update(double totalTime, double frameTime)
         {
-            AScene current = m_CurrentScene;
+            AState current = m_CurrentScene;
 
             if (m_CurrentScene != null)
                 m_CurrentScene.Update(totalTime, frameTime);
@@ -101,8 +101,8 @@ namespace UltimaXNA.Ultima.Login.Scenes
         {
             Engine.Client.Disconnect();
             Engine.UserInterface.Reset();
-            if (!(m_CurrentScene is LoginScene))
-                CurrentScene = new LoginScene();
+            if (!(m_CurrentScene is LoginState))
+                CurrentScene = new LoginState();
         }
     }
 }

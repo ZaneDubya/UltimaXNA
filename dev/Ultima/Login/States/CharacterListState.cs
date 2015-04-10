@@ -16,13 +16,13 @@ using UltimaXNA.Ultima.ClientVars;
 using UltimaXNA.Ultima.Data.Accounts;
 #endregion
 
-namespace UltimaXNA.Ultima.Login.Scenes
+namespace UltimaXNA.Ultima.Login.States
 {
-    public class CharacterListScene : AScene
+    public class CharacterListState : AState
     {
         CharacterListGump m_CharListGump;
 
-        public CharacterListScene()
+        public CharacterListState()
         {
 
         }
@@ -87,7 +87,7 @@ namespace UltimaXNA.Ultima.Login.Scenes
             // which automatically logs in again. But we can't do that,
             // since I have UltimaClient clear your account/password data
             // once connected (is this really neccesary?) Have to fix ..
-            Manager.CurrentScene = new LoginScene();
+            Manager.CurrentScene = new LoginState();
         }
 
         public void OnLoginWithCharacter(int index)
@@ -103,7 +103,7 @@ namespace UltimaXNA.Ultima.Login.Scenes
 
         public void OnNewCharacter()
         {
-            Manager.CurrentScene = new CreateCharacterScene();
+            Manager.CurrentScene = new CreateCharacterState();
         }
     }
 }

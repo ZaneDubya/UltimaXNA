@@ -4,7 +4,7 @@ namespace UltimaXNA.Ultima.Login
 {
     class LoginModel : AUltimaModel
     {
-        private Scenes.SceneManager m_SceneManager;
+        private States.SceneManager m_SceneManager;
 
         public LoginModel()
         {
@@ -19,7 +19,7 @@ namespace UltimaXNA.Ultima.Login
         protected override void OnInitialize()
         {
             Engine.UserInterface.Cursor = new UI.UltimaCursor();
-            m_SceneManager = new Scenes.SceneManager(Engine);
+            m_SceneManager = new States.SceneManager(Engine);
             m_SceneManager.ResetToLoginScreen();
         }
 

@@ -1,10 +1,10 @@
-namespace UltimaXNA.Ultima.Entities
+namespace UltimaXNA.Ultima.Player
 {
-    public class PlayerQuest
+    public class Quest
     {
         int[] QuestData;
 
-        PlayerQuest()
+        Quest()
         {
             QuestData = new int[4];
         }

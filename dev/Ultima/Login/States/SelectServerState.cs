@@ -16,16 +16,16 @@ using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Data.Servers;
 #endregion
 
-namespace UltimaXNA.Ultima.Login.Scenes
+namespace UltimaXNA.Ultima.Login.States
 {
-    public class SelectServerScene : AScene
+    public class SelectServerState : AState
     {
         private readonly string m_AccountName;
         private readonly string m_Password;
 
         private SelectServerGump m_SelectServerGump;
 
-        public SelectServerScene(string account, string password)
+        public SelectServerState(string account, string password)
         {
             m_AccountName = account;
             m_Password = password;
@@ -68,7 +68,7 @@ namespace UltimaXNA.Ultima.Login.Scenes
                         break;
                     case UltimaClientStatus.GameServer_CharList:
                         // we've got the char list
-                        Manager.CurrentScene = new CharacterListScene();
+                        Manager.CurrentScene = new CharacterListState();
                         break;
                     case UltimaClientStatus.WorldServer_InWorld:
                         // we've connected! Client takes us into the world and disposes of this Model.
