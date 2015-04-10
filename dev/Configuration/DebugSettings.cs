@@ -1,57 +1,43 @@
 namespace UltimaXNA.Configuration
 {
-    public sealed class DebugSettings : SettingsBase
+    public sealed class DebugSettings : SettingsSectionBase
     {
-        private const string Debug = "debug";
+        public const string SectionName = "debug";
 
-        internal DebugSettings(SettingsFile file)
-            : base(file)
+        private bool m_IsConsoleEnabled;
+        private bool m_ShowFps;
+        private bool m_ShowDataRead;
+        private bool m_ShowDataReadBreakdown;
+        private bool m_ShowUIOutlines;
+        
+        public bool ShowUIOutlines
         {
-        }
-
-        protected override string Name
-        {
-            get { return Debug; }
-        }
-
-        protected override string Comments
-        {
-            get
-            {
-                return @"This section is responsible for all debugging related settings.  " +
-                       @"These are not needed unless you are a developer.  " +
-                       @"Changing these settings may affect performance";
-            }
-        }
-
-        public bool IsConsoleEnabled
-        {
-            get { return GetValue(false); }
-            set { SetValue(value, "Allocates a console along side of the client to help with debugging"); }
-        }
-
-        public bool ShowFps
-        {
-            get { return GetValue(false); }
-            set { SetValue(value, "Turns on the FPS counter"); }
-        }
-
-        public bool ShowDataRead
-        {
-            get { return GetValue(false); }
-            set { SetValue(value); }
+            get { return m_ShowUIOutlines; }
+            set { SetProperty(ref m_ShowUIOutlines, value); }
         }
 
         public bool ShowDataReadBreakdown
         {
-            get { return GetValue(false); }
-            set { SetValue(value); }
+            get { return m_ShowDataReadBreakdown; }
+            set { SetProperty(ref m_ShowDataReadBreakdown, value); }
         }
 
-        public bool ShowUIOutlines
+        public bool ShowDataRead
         {
-            get { return GetValue(false); }
-            set { SetValue(value); }
+            get { return m_ShowDataRead; }
+            set { SetProperty(ref m_ShowDataRead, value); }
+        }
+
+        public bool ShowFps
+        {
+            get { return m_ShowFps; }
+            set { SetProperty(ref m_ShowFps, value); }
+        }
+
+        public bool IsConsoleEnabled
+        {
+            get { return m_IsConsoleEnabled; }
+            set { SetProperty(ref m_IsConsoleEnabled, value); }
         }
     }
 }

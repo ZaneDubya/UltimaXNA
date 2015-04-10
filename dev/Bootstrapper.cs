@@ -116,28 +116,6 @@ namespace UltimaXNA
 
             m_isInitialized = true;
 
-            if (!Settings.IsSettingsFileCreated)
-            {
-                Settings.Debug.IsConsoleEnabled = false;
-                Settings.Debug.ShowDataRead = false;
-                Settings.Debug.ShowDataReadBreakdown = false;
-                Settings.Debug.ShowFps = false;
-                Settings.Debug.ShowUIOutlines = false;
-                Settings.Game.AlwaysRun = false;
-                Settings.Game.AutoSelectLastCharacter = false;
-                Settings.Game.IsFixedTimeStep = false;
-                Settings.Game.IsVSyncEnabled = false;
-                Settings.Game.LastCharacterName = "Jeff";
-                Settings.Game.Mouse.InteractionButton = MouseButton.Left;
-                Settings.Game.Mouse.MovementButton = MouseButton.Right;
-                Settings.Game.Mouse.IsEnabled = true;
-                Settings.Game.Resolution = new Resolution(800, 600);
-                Settings.Server.ServerAddress = Settings.Server.ServerAddress;
-                Settings.Server.ServerPort = Settings.Server.ServerPort;
-                Settings.Server.UserName = "";
-                Settings.UltimaOnline.DataDirectory = FileManager.DataPath;
-            }
-
             if (Settings.Debug.IsConsoleEnabled && !ConsoleManager.HasConsole)
             {
                 ConsoleManager.Show();

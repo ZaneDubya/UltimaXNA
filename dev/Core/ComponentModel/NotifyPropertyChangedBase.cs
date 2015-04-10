@@ -18,11 +18,18 @@ namespace UltimaXNA.Core.ComponentModel
             {
                 return false;
             }
-            
+
+            SetPropertyOverride(ref storage, value, propertyName);
+
             storage = value;
             OnPropertyChanged(propertyName);
 
             return true;
+        }
+
+        protected virtual void SetPropertyOverride<T>(ref T storage, object value, string propertyName)
+        {
+
         }
 
         [NotifyPropertyChangedInvocator]

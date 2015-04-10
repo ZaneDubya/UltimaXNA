@@ -1,4 +1,5 @@
 ﻿using UltimaXNA.Configuration;
+using UltimaXNA.Core.ComponentModel;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Patterns.IoC;
 
@@ -17,80 +18,77 @@ namespace ExamplePlugin
         {
             Tracer.Info("Example plugin loaded.");
 
-            _pluginSettings = Settings.OpenSection<ExampleSettigs>();
+            _pluginSettings = Settings.CreateOrOpenSection<ExampleSettigs>(ExampleSettigs.SectionName);
             _pluginSettings.Boolean = true;
             _pluginSettings.String = "Testing the string value";
             _pluginSettings.Int = 100;
-            _pluginSettings.ComplexSettingObject =
+            _pluginSettings.ComplexObject =
                 new ComplexSettingObject
                 {
                     SomeInt = 1000, SomeString = "This is a string"
                 };
-
         }
 
         public void Unload(IContainer container)
         {
-
         }
     }
 
-    internal class ExampleSettigs : SettingsBase
+    internal class ExampleSettigs : SettingsSectionBase
     {
-        public ExampleSettigs(SettingsFile file)
-            : base(file)
-        {
-        }
+        public const string SectionName = "examplePlugin";
 
-        protected override string Name
-        {
-            get { return "exampleSettings"; }
-        }
+        private bool m_Boolean;
+        private string m_String;
+        private int m_Int;
+        private ComplexSettingObject m_ComplexObject;
 
-        public bool Boolean
+        public int Int
         {
-            get { return GetValue(false); }
-            set { SetValue(value); }
+            get { return m_Int; }
+            set { SetProperty(ref m_Int, value); }
         }
 
         public string String
         {
-            get { return GetValue("test"); }
-            set { SetValue(value); }
+            get { return m_String; }
+            set { SetProperty(ref m_String, value); }
         }
 
-        public int Int
+        public bool Boolean
         {
-            get { return GetValue(10); }
-            set { SetValue(value); }
+            get { return m_Boolean; }
+            set { SetProperty(ref m_Boolean, value); }
         }
 
-        public ComplexSettingObject ComplexSettingObject
+        public ComplexSettingObject ComplexObject
         {
-            get { return GetValue(new ComplexSettingObject()); }
-            set { SetValue(value); }
+            get { return m_ComplexObject; }
+            set { SetProperty(ref m_ComplexObject, value); }
         }
     }
 
-    public class ComplexSettingObject
+    public class ComplexSettingObject : NotifyPropertyChangedBase
     {
+        private string _SomeString;
+        private int _SomeInt;
+
         public ComplexSettingObject()
         {
             SomeString = "SomeString";
             SomeInt = 50;
         }
 
-        public string SomeString
-        {
-            get;
-            set;
-        }
-
-
         public int SomeInt
         {
-            get;
-            set;
+            get { return _SomeInt; }
+            set { SetProperty(ref _SomeInt, value); }
+        }
+
+        public string SomeString
+        {
+            get { return _SomeString; }
+            set { SetProperty(ref _SomeString, value); }
         }
     }
 }

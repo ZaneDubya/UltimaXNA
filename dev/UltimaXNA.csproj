@@ -130,6 +130,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\Mouse.cs" />
     <Compile Include="Core\Annotations\CoreAnnotations.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Core\ComponentModel\EqualityHelper.cs" />
@@ -146,7 +147,7 @@
     <Compile Include="Configuration\GameSettings.cs" />
     <Compile Include="Configuration\ServerSettings.cs" />
     <Compile Include="Configuration\Settings.cs" />
-    <Compile Include="Configuration\SettingsBase.cs" />
+    <Compile Include="Configuration\SettingsSectionBase.cs" />
     <Compile Include="Configuration\UltimaOnlineSettings.cs" />
     <Compile Include="Core\ConsoleManager.cs" />
     <Compile Include="CoreModule.cs" />
