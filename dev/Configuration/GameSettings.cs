@@ -1,102 +1,69 @@
 #region Usings
 
-using UltimaXNA.Core.ComponentModel;
 using UltimaXNA.Core.Input.Windows;
 
 #endregion
 
 namespace UltimaXNA.Configuration
 {
-    public sealed class GameSettings : SettingsBase
+    public sealed class GameSettings : SettingsSectionBase
     {
-        private const string Game = "game";
+        public const string SectionName = "game";
 
-        internal GameSettings(SettingsFile file)
-            : base(file)
-        {
-        }
-        
-        protected override string Name
-        {
-            get { return Game; }
-        }
+        private bool m_AutoSelectLastCharacter;
+        private string m_LastCharacterName;
+        private bool m_AlwaysRun;
+        private bool m_IsVSyncEnabled;
+        private Resolution m_Resolution;
+        private Mouse m_Mouse;
+        private bool m_IsFixedTimeStep;
 
-        protected override string Comments
+        public GameSettings()
         {
-            get { return "This section is responsible for all game engine related settings"; }
-        }
-
-        public bool AutoSelectLastCharacter
-        {
-            get { return GetValue(false); }
-            set { SetValue(value, "Specifies wether the game will attempt to login to the last character you played"); }
-        }
-
-        public string LastCharacterName
-        {
-            get { return GetValue(string.Empty); }
-            set { SetValue(value, "The name of the last character you logged in with"); }
-        }
-
-        public bool AlwaysRun
-        {
-            get { return GetValue(false); }
-            set { SetValue(value, "Never walk, always run"); }
-        }
-
-        public bool IsVSyncEnabled
-        {
-            get { return GetValue(false); }
-            set { SetValue(value, "Vertical synchronization is an option in most systems, wherein the video card is prevented from doing anything visible to the display memory until after the monitor finishes its current refresh cycle."); }
+            Resolution = new Resolution(800, 600);
+            Mouse = new Mouse(MouseButton.Left, MouseButton.Right);
         }
 
         public bool IsFixedTimeStep
         {
-            get { return GetValue(false); }
-            set { SetValue(value, "In a fixed-step game loop, Game calls Update once the TargetElapsedTime has elapsed. After Update is called, if it is not time to call Update again, Game calls Draw. After Draw is called, if it is not time to call Update again, Game idles until it is time to call Update."); }
-        }
-
-        public Resolution Resolution
-        {
-            get { return GetValue(new Resolution(800, 600)); }
-            set { SetValue(value, "Resolution the game will run at"); }
+            get { return m_IsFixedTimeStep; }
+            set { SetProperty(ref m_IsFixedTimeStep, value); }
         }
 
         public Mouse Mouse
         {
-            get { return GetValue(new Mouse(MouseButton.Left, MouseButton.Right), "Defines what each mouse button does, and if the mouse is enabled."); }
-        }
-    }
-
-    public class Mouse : NotifyPropertyChangedBase
-    {
-        private MouseButton m_interactionButton;
-        private MouseButton m_movementButton;
-        private bool m_isEnabled;
-
-        public Mouse(MouseButton interaction, MouseButton movement)
-        {
-            InteractionButton = interaction;
-            MovementButton = movement;
-            IsEnabled = true;
+            get { return m_Mouse; }
+            set { SetProperty(ref m_Mouse, value); }
         }
 
-        public bool IsEnabled
+        public Resolution Resolution
         {
-            get { return m_isEnabled; }
-            set { SetProperty(ref m_isEnabled, value); }
+            get { return m_Resolution; }
+            set { SetProperty(ref m_Resolution, value); }
         }
 
-        public MouseButton MovementButton
+        public bool IsVSyncEnabled
         {
-            get { return m_movementButton; }
-            set { SetProperty(ref m_movementButton, value); }
+            get { return m_IsVSyncEnabled; }
+            set { SetProperty(ref m_IsVSyncEnabled, value); }
         }
 
-        public MouseButton InteractionButton
+        public bool AlwaysRun
         {
-            get { return m_interactionButton; }
-            set { SetProperty(ref m_interactionButton, value); }
+            get { return m_AlwaysRun; }
+            set { SetProperty(ref m_AlwaysRun, value); }
+        }
+
+        public string LastCharacterName
+        {
+            get { return m_LastCharacterName; }
+            set { SetProperty(ref m_LastCharacterName, value); }
+        }
+
+        public bool AutoSelectLastCharacter
+        {
+            get { return m_AutoSelectLastCharacter; }
+            set { SetProperty(ref m_AutoSelectLastCharacter, value); }
         }
     }
 }

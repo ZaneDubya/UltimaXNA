@@ -15,96 +15,60 @@ namespace UltimaXNA.Configuration
 {
     public class SettingsFile
     {
-        private static readonly object m_syncRoot = new object();
-        private readonly string m_filename;
-        private readonly Timer m_saveTimer;
-        private Dictionary<string, SettingsContainer> m_sections;
+        private readonly Dictionary<string, SettingsSectionBase> m_SectionCache;
+        private static readonly object m_SyncRoot = new object();
+
+        private readonly string m_Filename;
+        private readonly Timer m_SaveTimer;
+        private Dictionary<string, JToken> m_TokenCache;
 
         public SettingsFile(string filename)
         {
-            m_saveTimer = new Timer
+            m_SectionCache = new Dictionary<string, SettingsSectionBase>();
+            m_TokenCache = new Dictionary<string, JToken>();
+            m_SaveTimer = new Timer
             {
                 Interval = 300,
                 AutoReset = true
             };
+            m_SaveTimer.Elapsed += OnTimerElapsed;
+            m_Filename = filename;
 
-            m_saveTimer.Elapsed += OnTimerElapsed;
-
-            m_filename = filename;
-            m_sections = new Dictionary<string, SettingsContainer>();
-
-            Reload();
+            if (File.Exists(m_Filename))
+            {
+                try
+                {
+                    Load();
+                }
+                catch (Exception e)
+                {
+                    Tracer.Error(e, "Unable to load settings file {0}", m_Filename);
+                }
+            }
         }
 
         public bool Exists
         {
-            get { return File.Exists(m_filename); }
+            get { return File.Exists(m_Filename); }
         }
-
-        public void SetValue<T>(string section, string key, T value, string sectionComments = null, string valueComments = null)
-        {
-            SettingsContainer container;
-
-            if(!m_sections.TryGetValue(section, out container))
-            {
-                container = new SettingsContainer(sectionComments);
-                m_sections.Add(section, container);
-            }
-
-            container.Comments = sectionComments;
-
-            if(typeof(T) == typeof(string) && string.IsNullOrWhiteSpace(value as string))
-            {
-                value = (T)(object)"";
-            }
-
-            SettingsToken token;
-            JToken v = JToken.FromObject(value);
-
-            if(!container.TryGetValue(key, out token))
-            {
-                token = new SettingsToken(v, valueComments);
-                container[key] = token;
-            }
-            else
-            {
-                token.Value = v;
-                token.Comments = valueComments;
-            }
-        }
-
-        public T GetValue<T>(string section, string key, T defaultValue = default(T))
-        {
-            if(!m_sections.ContainsKey(section))
-            {
-                return defaultValue;
-            }
-
-            SettingsToken token;
-
-            SettingsContainer container = m_sections[section];
-
-            return !container.TryGetValue(key, out token) ? defaultValue : token.Value.ToObject<T>();
-        }
-
+        
         public void Save()
         {
             try
             {
-                lock(m_syncRoot)
+                lock(m_SyncRoot)
                 {
                     JsonSerializerSettings settings = new JsonSerializerSettings
                     {
                         NullValueHandling = NullValueHandling.Ignore,
                         DateFormatHandling = DateFormatHandling.IsoDateFormat,
                         DateParseHandling = DateParseHandling.DateTimeOffset,
-                        DateTimeZoneHandling = DateTimeZoneHandling.Local,
-                        Converters = new List<JsonConverter> {new CommentJsonConverter()}
+                        DateTimeZoneHandling = DateTimeZoneHandling.Local
                     };
 
-                    string result = JsonConvert.SerializeObject(m_sections, Formatting.Indented, settings);
+                    string result = JsonConvert.SerializeObject(m_SectionCache, Formatting.Indented, settings);
 
-                    File.WriteAllText(m_filename, result);
+                    File.WriteAllText(m_Filename, result);
                 }
             }
             catch(Exception e)
@@ -116,58 +80,79 @@ namespace UltimaXNA.Configuration
         internal void InvalidateDirty()
         {
             //Lock the timer so we dont start it while its saving
-            lock(m_saveTimer)
+            lock(m_SaveTimer)
             {
-                m_saveTimer.Stop();
-                m_saveTimer.Start();
+                m_SaveTimer.Stop();
+                m_SaveTimer.Start();
             }
         }
 
         private void OnTimerElapsed(object sender, ElapsedEventArgs e)
         {
             // Lock the timer so we dont start it till its done save.
-            lock(m_saveTimer)
+            lock(m_SaveTimer)
             {
                 Save();
             }
         }
 
-        private void Reload()
-        {
-            if(File.Exists(m_filename))
-            {
-                Load();
-            }
-        }
-
         private void Load()
         {
-            m_sections.Clear();
-
             try
             {
-                lock(m_syncRoot)
+                lock(m_SyncRoot)
                 {
-                    if(!File.Exists(m_filename))
+                    if(!File.Exists(m_Filename))
                     {
                         return;
                     }
 
-                    string contents = File.ReadAllText(m_filename);
+                    string contents = File.ReadAllText(m_Filename);
                     JsonSerializerSettings settings = new JsonSerializerSettings
                     {
                         NullValueHandling = NullValueHandling.Ignore,
+                        Converters = new List<JsonConverter> { new IsoDateTimeConverter() }
                     };
-
-                    settings.Converters.Add(new IsoDateTimeConverter());
-
-                    m_sections = JsonConvert.DeserializeObject<Dictionary<string, SettingsContainer>>(contents, settings);
+                    
+                    m_TokenCache = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(contents, settings);
                 }
             }
             catch(Exception e)
             {
                 Tracer.Error(e);
             }
+        }
+
+        internal T CreateOrOpenSection<T>(string sectionName)
+            where T : SettingsSectionBase, new()
+        {
+            JToken token;
+            SettingsSectionBase section;
+
+            // We've already deserialized the section, so just return it.
+            if(m_SectionCache.TryGetValue(sectionName, out section))
+            {
+                return (T)section;
+            }
+
+            bool isCached = m_TokenCache.TryGetValue(sectionName, out token);
+            
+            if (isCached)
+            {
+                // We've haven't deserialized it but it exists, so read it in and save it to the local cache
+                section = token.ToObject<T>();
+            }
+            else
+            {
+                // New section not saved in the file, create it and save it.
+                section = new T();
+                m_TokenCache[sectionName] = JToken.FromObject(section);
+                InvalidateDirty();
+            }
+            
+            m_SectionCache[sectionName] = section;
+
+            return (T)section;
         }
     }
 }

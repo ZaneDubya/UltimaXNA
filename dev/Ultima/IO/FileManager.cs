@@ -93,6 +93,8 @@ namespace UltimaXNA.Ultima.IO
                         {
                             Tracer.Debug("Compatible: {0}", exePath);
 
+                            Settings.UltimaOnline.DataDirectory = exePath;
+
                             m_FileDirectory = exePath;
                             m_isDataPresent = true;
                         }

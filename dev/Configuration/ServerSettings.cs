@@ -1,40 +1,35 @@
 namespace UltimaXNA.Configuration
 {
-    public sealed class ServerSettings : SettingsBase
+    public sealed class ServerSettings : SettingsSectionBase
     {
-        private const string Server = "server";
+        public const string SectionName = "server";
 
-        internal ServerSettings(SettingsFile file)
-            : base(file)
-        {
-        }
+        private string m_ServerAddress;
+        private int m_ServerPort;
+        private string m_UserName;
 
-        protected override string Name
+        public ServerSettings()
         {
-            get { return Server; }
-        }
-
-        protected override string Comments
-        {
-            get { return @"This section is responsible for all server related settings.  These values can be modified to change the server connection."; }
-        }
-
-        public string ServerAddress
-        {
-            get { return GetValue("127.0.0.1"); }
-            set { SetValue(value, "Address of the server you want to connect to."); }
-        }
-
-        public int ServerPort
-        {
-            get { return GetValue(2593); }
-            set { SetValue(value, "Port number of the server you want to connect to."); }
+            ServerAddress = "127.0.0.1";
+            ServerPort = 2593;
         }
 
         public string UserName
         {
-            get { return GetValue(""); }
-            set { SetValue(value, "Username last used when connecting to a server."); }
+            get { return m_UserName; }
+            set { SetProperty(ref m_UserName, value); }
+        }
+
+        public int ServerPort
+        {
+            get { return m_ServerPort; }
+            set { SetProperty(ref m_ServerPort, value); }
+        }
+
+        public string ServerAddress
+        {
+            get { return m_ServerAddress; }
+            set { SetProperty(ref m_ServerAddress, value); }
         }
     }
 }
