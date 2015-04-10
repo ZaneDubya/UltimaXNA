@@ -251,7 +251,7 @@
     <Compile Include="Ultima\IO\FontsNew\TextUni.cs" />
     <Compile Include="Ultima\UI\WorldGumps\JournalGump.cs" />
     <Compile Include="Ultima\Login\LoginClient.cs" />
-    <Compile Include="Ultima\Login\Scenes\HueTestScene.cs" />
+    <Compile Include="Ultima\Login\States\HueTestState.cs" />
     <Compile Include="Ultima\ClientVars\Journal.cs" />
     <Compile Include="Ultima\World\Controllers\MousePicking.cs" />
     <Compile Include="Ultima\World\Controllers\PickType.cs" />
@@ -442,10 +442,10 @@
     <Compile Include="Ultima\Entities\Overhead.cs" />
     <Compile Include="Ultima\Entities\Mobiles\PlayerMobile.cs" />
     <Compile Include="Ultima\Entities\PropertyList.cs" />
-    <Compile Include="Ultima\Login\Scenes\CharacterListScene.cs" />
-    <Compile Include="Ultima\Login\Scenes\CreateCharacterScene.cs" />
-    <Compile Include="Ultima\Login\Scenes\LoggingInScene.cs" />
-    <Compile Include="Ultima\Login\Scenes\SelectServerScene.cs" />
+    <Compile Include="Ultima\Login\States\CharacterListState.cs" />
+    <Compile Include="Ultima\Login\States\CreateCharacterState.cs" />
+    <Compile Include="Ultima\Login\States\LoggingInState.cs" />
+    <Compile Include="Ultima\Login\States\SelectServerState.cs" />
     <Compile Include="Core\Graphics\VectorPolygon.cs" />
     <Compile Include="Core\Graphics\VectorRenderer.cs" />
     <Compile Include="Ultima\World\Maps\MapBlock.cs" />
@@ -511,9 +511,9 @@
     <Compile Include="Core\Network\PacketHandler.cs" />
     <Compile Include="Core\Network\QueuedPacket.cs" />
     <Compile Include="Core\Network\SocketState.cs" />
-    <Compile Include="Ultima\Login\Scenes\AScene.cs" />
-    <Compile Include="Ultima\Login\Scenes\SceneManager.cs" />
-    <Compile Include="Ultima\Login\Scenes\LoginScene.cs" />
+    <Compile Include="Ultima\Login\States\AState.cs" />
+    <Compile Include="Ultima\Login\States\StateManager.cs" />
+    <Compile Include="Ultima\Login\States\LoginState.cs" />
     <Compile Include="Ultima\Serial.cs" />
     <Compile Include="Ultima\World\Views\MiniMapView.cs" />
     <Compile Include="Ultima\World\Maps\Map.cs" />

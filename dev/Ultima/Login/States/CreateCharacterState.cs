@@ -17,7 +17,7 @@ using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.Data.Accounts;
 #endregion
 
-namespace UltimaXNA.Ultima.Login.Scenes
+namespace UltimaXNA.Ultima.Login.States
 {
     enum CreateCharacterSceneStates
     {
@@ -27,7 +27,7 @@ namespace UltimaXNA.Ultima.Login.Scenes
         WaitingForResponse,
         Default = ChooseSkills,
     }
-    public class CreateCharacterScene : AScene
+    public class CreateCharacterState : AState
     {
         CreateCharacterSceneStates m_Status;
 
@@ -43,7 +43,7 @@ namespace UltimaXNA.Ultima.Login.Scenes
         int m_gender, m_hairStyleID, m_facialHairStyleID;
         int m_skinHue, m_hairHue, m_facialHairHue;
 
-        public CreateCharacterScene()
+        public CreateCharacterState()
         {
 
         }
@@ -172,7 +172,7 @@ namespace UltimaXNA.Ultima.Login.Scenes
                         // do nothing
                         break;
                     case CreateCharacterSceneStates.Cancel:
-                        Manager.CurrentScene = new CharacterListScene();
+                        Manager.CurrentScene = new CharacterListState();
                         break;
                     case CreateCharacterSceneStates.WaitingForResponse:
                         // do nothing, waiting for response to create character request.

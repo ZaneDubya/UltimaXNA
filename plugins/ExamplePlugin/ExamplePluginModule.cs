@@ -6,7 +6,7 @@ namespace ExamplePlugin
 {
     internal sealed class ExamplePluginModule : IModule
     {
-        private ExampleSettigs _pluginSettings;
+        private ExampleSettigs m_PluginSettings;
 
         public string Name
         {
@@ -17,11 +17,11 @@ namespace ExamplePlugin
         {
             Tracer.Info("Example plugin loaded.");
 
-            _pluginSettings = Settings.OpenSection<ExampleSettigs>();
-            _pluginSettings.Boolean = true;
-            _pluginSettings.String = "Testing the string value";
-            _pluginSettings.Int = 100;
-            _pluginSettings.ComplexSettingObject =
+            m_PluginSettings = Settings.OpenSection<ExampleSettigs>();
+            m_PluginSettings.Boolean = true;
+            m_PluginSettings.String = "Testing the string value";
+            m_PluginSettings.Int = 100;
+            m_PluginSettings.ComplexSettingObject =
                 new ComplexSettingObject
                 {
                     SomeInt = 1000, SomeString = "This is a string"

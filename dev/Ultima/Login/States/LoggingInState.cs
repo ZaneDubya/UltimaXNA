@@ -15,9 +15,9 @@ using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.LoginGumps;
 #endregion
 
-namespace UltimaXNA.Ultima.Login.Scenes
+namespace UltimaXNA.Ultima.Login.States
 {
-    public class LoggingInScene : AScene
+    public class LoggingInState : AState
     {
         private LoggingInGump m_Gump;
 
@@ -28,7 +28,7 @@ namespace UltimaXNA.Ultima.Login.Scenes
 
         private bool m_ErrorReceived = false;
 
-        public LoggingInScene(string server, int port, string account, string password)
+        public LoggingInState(string server, int port, string account, string password)
         {
             // Todo: Send the accountname and password to the ultimaclient so this gump does not have to save them.
             m_ServerHost = server;
@@ -71,7 +71,7 @@ namespace UltimaXNA.Ultima.Login.Scenes
                             // logging in ...
                             break;
                         case UltimaClientStatus.LoginServer_HasServerList:
-                            Manager.CurrentScene = new SelectServerScene(m_AccountName, m_Password);
+                            Manager.CurrentScene = new SelectServerState(m_AccountName, m_Password);
                             break;
                         case UltimaClientStatus.Error_CannotConnectToServer:
                             m_Gump.ActivePage = 2;

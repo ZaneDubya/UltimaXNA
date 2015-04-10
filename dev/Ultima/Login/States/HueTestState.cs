@@ -7,9 +7,9 @@ using UltimaXNA.Ultima.UI.Controls;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace UltimaXNA.Ultima.Login.Scenes
+namespace UltimaXNA.Ultima.Login.States
 {
-    class HueTestScene : AScene
+    class HueTestState : AState
     {
         Gump m_Gump;
         TextLabel m_Label;
@@ -36,7 +36,7 @@ namespace UltimaXNA.Ultima.Login.Scenes
             set;
         }
 
-        public HueTestScene()
+        public HueTestState()
         {
             OverHue = -1;
         }
