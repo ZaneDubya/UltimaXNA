@@ -32,7 +32,7 @@ namespace UltimaXNA.Ultima.UI
     /// </summary>
     public abstract class AControl
     {
-        internal static UltimaEngine Engine = null;
+        internal static IEngine Engine = null;
 
         public int Serial = 0;
         public bool IsModal = false;

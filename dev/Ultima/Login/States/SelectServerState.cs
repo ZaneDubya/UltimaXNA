@@ -10,9 +10,8 @@
 
 #region Usings
 using System;
+using UltimaXNA.Core.Patterns.IoC;
 using UltimaXNA.Ultima.UI.LoginGumps;
-using UltimaXNA.Ultima.ClientVars;
-using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Data.Servers;
 #endregion
 
@@ -20,20 +19,17 @@ namespace UltimaXNA.Ultima.Login.States
 {
     public class SelectServerState : AState
     {
-        private readonly string m_AccountName;
-        private readonly string m_Password;
-
         private SelectServerGump m_SelectServerGump;
 
-        public SelectServerState(string account, string password)
+        public SelectServerState(IContainer container)
+            : base(container)
         {
-            m_AccountName = account;
-            m_Password = password;
+            
         }
 
-        public override void Intitialize(UltimaEngine engine)
+        public override void Intitialize()
         {
-            base.Intitialize(engine);
+            base.Intitialize();
 
             m_SelectServerGump = (SelectServerGump)Engine.UserInterface.AddControl(new SelectServerGump(), 0, 0);
             m_SelectServerGump.OnBackToLoginScreen += OnBackToLoginScreen;
@@ -58,7 +54,7 @@ namespace UltimaXNA.Ultima.Login.States
                         break;
                     case UltimaClientStatus.LoginServer_WaitingForRelay:
                         // we must now send the relay packet.
-                        Engine.Client.SendServerRelay(m_AccountName, m_Password);
+                        Engine.Client.Relay();
                         break;
                     case UltimaClientStatus.LoginServer_Relaying:
                         // relaying to the server we will log in to ...
@@ -68,7 +64,7 @@ namespace UltimaXNA.Ultima.Login.States
                         break;
                     case UltimaClientStatus.GameServer_CharList:
                         // we've got the char list
-                        Manager.CurrentScene = new CharacterListState();
+                        Manager.CurrentScene = Container.Resolve<CharacterListState>();
                         break;
                     case UltimaClientStatus.WorldServer_InWorld:
                         // we've connected! Client takes us into the world and disposes of this Model.

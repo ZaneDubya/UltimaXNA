@@ -13,6 +13,8 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.Network;
+using UltimaXNA.Core.Patterns.IoC;
 using UltimaXNA.Ultima.Network.Client;
 #endregion
 
@@ -20,14 +22,18 @@ namespace UltimaXNA.Ultima.UI
 {
     public class GUIManager
     {
-        protected UltimaEngine Engine { get; private set; }
+        private readonly INetworkClient m_Network;
 
-        public GUIManager(UltimaEngine engine)
+        protected IEngine Engine { get; private set; }
+
+        public GUIManager(IContainer container)
         {
-            AControl.Engine = Engine = engine;
+            m_Network = container.Resolve<INetworkClient>();
+
+            AControl.Engine = Engine = container.Resolve<IEngine>();
             RenderedText.Graphics = Engine.GraphicsDevice;
 
-            m_SpriteBatch = new SpriteBatchUI(Engine);
+            m_SpriteBatch = new SpriteBatchUI(Engine.Game);
 
             m_Controls = new List<AControl>();
             m_DisposedControls = new List<AControl>();
@@ -70,7 +76,7 @@ namespace UltimaXNA.Ultima.UI
         /// <param name="textEntries"></param>
         public void GumpMenuSelect(int id, int gumpId, int buttonId, int[] switchIds, Tuple<short, string>[] textEntries) // used by gump
         {
-            Engine.Client.Send(new GumpMenuSelectPacket(id, gumpId, buttonId, switchIds, textEntries));
+            m_Network.Send(new GumpMenuSelectPacket(id, gumpId, buttonId, switchIds, textEntries));
         }
 
         // All open controls:

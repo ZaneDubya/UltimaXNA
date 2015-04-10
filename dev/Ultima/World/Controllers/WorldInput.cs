@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using UltimaXNA.Configuration;
 using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Core.Network;
+using UltimaXNA.Core.Patterns.IoC;
 using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Entities;
 using UltimaXNA.Ultima.Entities.Items;
@@ -23,14 +25,17 @@ namespace UltimaXNA.Ultima.World.Controllers
         private bool m_ContinuousMouseMovementCheck;
 
         private AEntity m_DraggingEntity;
+        private INetworkClient m_Network;
 
         // keyboard movement variables.
         private double m_PauseBeforeKeyboardMovementMS;
         private double m_TimeSinceMovementButtonPressed;
         private Vector2 m_dragOffset;
 
-        public WorldInput(WorldModel model)
+        public WorldInput(IContainer container, WorldModel model)
         {
+            m_Network = container.Resolve<INetworkClient>();
+
             World = model;
             MousePick = new MousePicking();
         }
@@ -74,7 +79,7 @@ namespace UltimaXNA.Ultima.World.Controllers
 
         public void Update(double frameMS)
         {
-            if(EngineVars.InWorld && !World.Engine.UserInterface.IsModalControlOpen && World.Engine.Client.IsConnected)
+            if (EngineVars.InWorld && !World.Engine.UserInterface.IsModalControlOpen && m_Network.IsConnected)
             {
                 // always parse keyboard. (Is it possible there are some situations in which keyboard input is blocked???)
                 InternalParseKeyboard(frameMS);
@@ -333,7 +338,7 @@ namespace UltimaXNA.Ultima.World.Controllers
 
                     if (EntityManager.GetPlayerObject().Flags.IsWarMode)
                     {
-                        World.Engine.Client.Send(new AttackRequestPacket(overEntity.Serial));
+                        m_Network.Send(new AttackRequestPacket(overEntity.Serial));
                     }
                 }
             }
@@ -396,7 +401,7 @@ namespace UltimaXNA.Ultima.World.Controllers
             // Warmode toggle:
             if(World.Engine.Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.Tab, false, false, false))
             {
-                World.Engine.Client.Send(new RequestWarModePacket(!EntityManager.GetPlayerObject().Flags.IsWarMode));
+                m_Network.Send(new RequestWarModePacket(!EntityManager.GetPlayerObject().Flags.IsWarMode));
             }
 
             // movement with arrow keys if the player is not moving and the mouse isn't moving the player.

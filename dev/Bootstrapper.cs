@@ -27,7 +27,8 @@ namespace UltimaXNA
             new Bootstrapper(args).Initialize();
         }
 
-        private bool m_isInitialized;
+        private bool m_IsInitialized;
+        private IContainer m_Container;
 
         public Bootstrapper(string[] args)
         {
@@ -59,16 +60,14 @@ namespace UltimaXNA
             Tracer.RegisterListener(new FileLogEventListener("debug.log"));
         }
 
-        private IContainer m_container;
-
         private void Configure()
         {
             Container rootContainer = new Container();
 
-            m_container = rootContainer.CreateChildContainer();
+            m_Container = rootContainer.CreateChildContainer();
 
             ConfigureContainer(rootContainer);
-            ConfigurePlugins(m_container);
+            ConfigurePlugins(m_Container);
         }
 
         private void ConfigurePlugins(IContainer container)
@@ -109,12 +108,12 @@ namespace UltimaXNA
 
         public void Initialize()
         {
-            if (m_isInitialized)
+            if (m_IsInitialized)
             {
                 return;
             }
 
-            m_isInitialized = true;
+            m_IsInitialized = true;
 
             if (Settings.Debug.IsConsoleEnabled && !ConsoleManager.HasConsole)
             {
@@ -147,7 +146,7 @@ namespace UltimaXNA
             Prepare();
             Configure();
 
-            using (UltimaEngine engine = new UltimaEngine(m_container))
+            using (IEngine engine = m_Container.Resolve<IEngine>())
             {
                 engine.Run();
             }

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using UltimaXNA.Core.Patterns.IoC;
 using UltimaXNA.Ultima.IO;
 using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.Input.Windows;
@@ -18,7 +19,8 @@ namespace UltimaXNA.Ultima.Login.States
         public virtual TimeSpan TransitionOnLength { get { return TimeSpan.FromSeconds(0.05); } }
         public virtual TimeSpan TransitionOffLength { get { return TimeSpan.FromSeconds(0.05); } }
 
-        protected UltimaEngine Engine { get; private set; }
+        protected IEngine Engine { get; private set; }
+        protected IContainer Container { get; private set; }
 
         SceneState m_sceneState;
         float m_transitionAlpha;
@@ -43,14 +45,17 @@ namespace UltimaXNA.Ultima.Login.States
 
         public event TransitionCompleteHandler TransitionCompleted;
 
-        public AState()
+        protected AState(IContainer container)
         {
+            Container = container;
+            Engine = container.Resolve<IEngine>();
+
             m_sceneState = SceneState.TransitioningOn;
         }
 
-        public virtual void Intitialize(UltimaEngine engine)
+        public virtual void Intitialize()
         {
-            Engine = engine;
+
         }
 
         public virtual void Update(double totalTime, double frameTime)

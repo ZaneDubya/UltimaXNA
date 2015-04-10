@@ -8,32 +8,51 @@
  *
  ***************************************************************************/
 #region usings
+
+using System.Security;
+using UltimaXNA.Configuration;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Network;
+using UltimaXNA.Core.Patterns.IoC;
 using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Data.Accounts;
 using UltimaXNA.Ultima.Data.Servers;
-using UltimaXNA.Ultima.Entities;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.Network.Server;
 using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.Entities.Mobiles;
-using UltimaXNA.Ultima.Entities.Items;
 #endregion
 
 namespace UltimaXNA.Ultima
 {
-    public class UltimaClient : ClientBase
+    public class Client
     {
-        public UltimaClientStatus Status { get; protected set; }
-        private int m_ServerRelayKey = 0;
+        private readonly INetworkClient m_Network;
+        private readonly IEngine m_Engine;
+        private readonly IContainer m_Container;
 
-        protected UltimaEngine Engine { get; private set; }
+        private int m_ServerRelayKey;
 
-        public UltimaClient(UltimaEngine engine)
+        internal string UserName
         {
-            Engine = engine;
+            get;
+            set;
+        }
+
+        internal SecureString Password
+        {
+            get;
+            set;
+        }
+
+        public UltimaClientStatus Status { get; protected set; }
+
+        public Client(IContainer container)//UltimaEngine engine)
+        {
+            m_Container = container;
+            m_Network = container.Resolve<INetworkClient>();
+            m_Engine = container.Resolve<IEngine>();
 
             Status = UltimaClientStatus.Unconnected;
 
@@ -45,16 +64,16 @@ namespace UltimaXNA.Ultima
         /// </summary>
         private void Initialize()
         {
-            Register<LoginConfirmPacket>(0x1B, "Login Confirm", 37, new TypedPacketReceiveHandler(ReceiveLoginConfirmPacket));
-            Register<LoginCompletePacket>(0x55, "Login Complete", 1, new TypedPacketReceiveHandler(ReceiveLoginComplete));
-            Register<LoginRejectionPacket>(0x82, "Login Rejection", 2, new TypedPacketReceiveHandler(ReceiveLoginRejection));
-            Register<DeleteCharacterResponsePacket>(0x85, "Delete Character Response", 2, new TypedPacketReceiveHandler(ReceiveDeleteCharacterResponse));
-            Register<CharacterListUpdatePacket>(0x86, "Character List Update", -1, new TypedPacketReceiveHandler(ReceiveCharacterListUpdate));
-            Register<ServerRelayPacket>(0x8C, "ServerRelay", 11, new TypedPacketReceiveHandler(ReceiveServerRelay));
-            Register<ServerListPacket>(0xA8, "Game Server List", -1, new TypedPacketReceiveHandler(ReceiveServerList));
-            Register<CharacterCityListPacket>(0xA9, "Characters / Starting Locations", -1, new TypedPacketReceiveHandler(ReceiveCharacterList));
-            Register<SupportedFeaturesPacket>(0xB9, "Supported Features", 3, new TypedPacketReceiveHandler(ReceiveEnableFeatures));
-            Register<VersionRequestPacket>(0xBD, "Version Request", -1, new TypedPacketReceiveHandler(ReceiveVersionRequest));
+            m_Network.Register<LoginConfirmPacket>(0x1B, "Login Confirm", 37, ReceiveLoginConfirmPacket);
+            m_Network.Register<LoginCompletePacket>(0x55, "Login Complete", 1, ReceiveLoginComplete);
+            m_Network.Register<LoginRejectionPacket>(0x82, "Login Rejection", 2, ReceiveLoginRejection);
+            m_Network.Register<DeleteCharacterResponsePacket>(0x85, "Delete Character Response", 2, ReceiveDeleteCharacterResponse);
+            m_Network.Register<CharacterListUpdatePacket>(0x86, "Character List Update", -1, ReceiveCharacterListUpdate);
+            m_Network.Register<ServerRelayPacket>(0x8C, "ServerRelay", 11, ReceiveServerRelay);
+            m_Network.Register<ServerListPacket>(0xA8, "Game Server List", -1, ReceiveServerList);
+            m_Network.Register<CharacterCityListPacket>(0xA9, "Characters / Starting Locations", -1, ReceiveCharacterList);
+            m_Network.Register<SupportedFeaturesPacket>(0xB9, "Supported Features", 3, ReceiveEnableFeatures);
+            m_Network.Register<VersionRequestPacket>(0xBD, "Version Request", -1, ReceiveVersionRequest);
         }
 
         /// <summary>
@@ -63,17 +82,21 @@ namespace UltimaXNA.Ultima
         /// <param name="host">Address of the host. Can be a website or an ip address. IP addresses should be IPv4.</param>
         /// <param name="port">Port of the server on the host.</param>
         /// <returns></returns>
-        public override bool Connect(string host, int port)
+        public bool Connect(string host, int port)
         {
             Status = UltimaClientStatus.LoginServer_Connecting;
-            bool success = base.Connect(host, port);
+            bool success = m_Network.Connect(host, port);
+
             if (success)
             {
                 Status = UltimaClientStatus.LoginServer_WaitingForLogin;
-                if (EngineVars.Version.Length != 4)
+
+                var clientVersion = Settings.UltimaOnline.ClientVersion;
+
+                if (clientVersion.Length != 4)
                     Tracer.Warn("Cannot send seed packet: Version array is incorrectly sized.");
                 else
-                    Send(new SeedPacket(1, EngineVars.Version));
+                    m_Network.Send(new SeedPacket(1, clientVersion));
                 
             }
             else
@@ -86,10 +109,13 @@ namespace UltimaXNA.Ultima
         /// <summary>
         /// Disconnects from the server.
         /// </summary>
-        public override void Disconnect()
+        public void Disconnect()
         {
-            if (IsConnected)
-                base.Disconnect();
+            if (m_Network.IsConnected)
+            {
+                m_Network.Disconnect();
+            }
+
             Status = UltimaClientStatus.Unconnected;
         }
 
@@ -98,10 +124,11 @@ namespace UltimaXNA.Ultima
         /// </summary>
         /// <param name="account">The username of the account to be logged in.</param>
         /// <param name="password">The password of the account to be logged in. This is encrypted in transit.</param>
-        public void SendAccountLogin(string account, string password)
+        public void Login()
         {
             Status = UltimaClientStatus.LoginServer_LoggingIn;
-            Send(new LoginPacket(account, password));
+
+            m_Network.Send(new LoginPacket(Settings.Server.UserName, Password.ConvertToUnsecureString()));
         }
 
         /// <summary>
@@ -109,10 +136,10 @@ namespace UltimaXNA.Ultima
         /// </summary>
         /// <param name="account">The username of the account to be logged in.</param>
         /// <param name="password">The password of the account to be logged in. This is encrypted in transit.</param>
-        public void SendServerRelay(string account, string password)
+        public void Relay()
         {
             Status = UltimaClientStatus.LoginServer_Relaying;
-            Send(new GameLoginPacket(m_ServerRelayKey, account, password));
+            m_Network.Send(new GameLoginPacket(m_ServerRelayKey, Settings.Server.UserName, Password.ConvertToUnsecureString()));
         }
 
         /// <summary>
@@ -124,7 +151,7 @@ namespace UltimaXNA.Ultima
             if (Status == UltimaClientStatus.LoginServer_HasServerList)
             {
                 Status = UltimaClientStatus.GameServer_Connecting;
-                Send(new SelectServerPacket(index));
+                m_Network.Send(new SelectServerPacket(index));
             }
         }
 
@@ -138,8 +165,8 @@ namespace UltimaXNA.Ultima
             {
                 if (Characters.List[index].Name != string.Empty)
                 {
-                    Engine.QueuedModel = new WorldModel();
-                    Send(new LoginCharacterPacket(Characters.List[index].Name, index, Utility.IPAddress));
+                    m_Engine.QueuedModel = new WorldModel(m_Container);
+                    m_Network.Send(new LoginCharacterPacket(Characters.List[index].Name, index, Utility.IPAddress));
                 }
             }
         }
@@ -150,8 +177,8 @@ namespace UltimaXNA.Ultima
         /// <param name="packet">A completed character creation packet.</param>
         public void CreateCharacter(CreateCharacterPacket packet)
         {
-            Engine.QueuedModel = new WorldModel();
-            Send(packet);
+            m_Engine.QueuedModel = new WorldModel(m_Container);
+            m_Network.Send(packet);
         }
 
         /// <summary>
@@ -164,7 +191,7 @@ namespace UltimaXNA.Ultima
             {
                 if (Characters.List[index].Name != string.Empty)
                 {
-                    Send(new DeleteCharacterPacket(index, Utility.IPAddress));
+                    m_Network.Send(new DeleteCharacterPacket(index, Utility.IPAddress));
                 }
             }
         }
@@ -174,27 +201,20 @@ namespace UltimaXNA.Ultima
         /// </summary>
         public void SendClientVersion()
         {
-            if (EngineVars.Version.Length != 4)
+            if (Settings.UltimaOnline.ClientVersion.Length != 4)
+            {
                 Tracer.Warn("Cannot send seed packet: Version array is incorrectly sized.");
+            }
             else
-                Send(new ClientVersionPacket(EngineVars.Version));
+            {
+                m_Network.Send(new ClientVersionPacket(Settings.UltimaOnline.ClientVersion));
+            }
         }
-
-
-
-
-
-
-
-
-
-
-
 
         private void ReceiveDeleteCharacterResponse(IRecvPacket packet)
         {
             DeleteCharacterResponsePacket p = (DeleteCharacterResponsePacket)packet;
-            Engine.UserInterface.MsgBox(p.Result, MsgBoxTypes.OkOnly);
+            m_Engine.UserInterface.MsgBox(p.Result, MsgBoxTypes.OkOnly);
         }
 
         private void ReceiveCharacterListUpdate(IRecvPacket packet)
@@ -251,7 +271,7 @@ namespace UltimaXNA.Ultima
             // On OSI, upon receiving this packet, the client would disconnect and
             // log in to the specified server. Since emulated servers use the same
             // server for both shard selection and world, we don't need to disconnect.
-            IsDecompressionEnabled = true;
+            m_Network.IsDecompressionEnabled = true;
             Status = UltimaClientStatus.LoginServer_WaitingForRelay;
         }
 
@@ -298,14 +318,14 @@ namespace UltimaXNA.Ultima
             // delay loading until we do.
             if (Status != UltimaClientStatus.WorldServer_InWorld)
             {
-                if (m_QueuedLoginConfirmPacket != null && (Engine.QueuedModel as WorldModel).MapIndex >= 0)
+                if (m_QueuedLoginConfirmPacket != null && (m_Engine.QueuedModel as WorldModel).MapIndex >= 0)
                 {
                     Status = UltimaClientStatus.WorldServer_InWorld;
 
-                    Engine.ActivateQueuedModel();
-                    if (Engine.ActiveModel is WorldModel)
+                    m_Engine.ActivateQueuedModel();
+                    if (m_Engine.ActiveModel is WorldModel)
                     {
-                        ((WorldModel)Engine.ActiveModel).LoginSequence();
+                        ((WorldModel)m_Engine.ActiveModel).LoginSequence();
                         LoginConfirmPacket packet = m_QueuedLoginConfirmPacket;
                         PlayerMobile player = EntityManager.GetObject<PlayerMobile>(m_QueuedLoginConfirmPacket.Serial, true);
                         if (player == null)

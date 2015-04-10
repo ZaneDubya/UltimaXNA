@@ -11,14 +11,17 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using UltimaXNA.Core.Network;
+using UltimaXNA.Core.Patterns.IoC;
 using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Entities;
 using UltimaXNA.Ultima.Entities.Items;
-using UltimaXNA.Ultima.Entities.Items.Containers;
 using UltimaXNA.Ultima.Entities.Mobiles;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.WorldGumps;
+using Container = UltimaXNA.Ultima.Entities.Items.Containers.Container;
+
 #endregion
 
 namespace UltimaXNA.Ultima.World.Controllers
@@ -28,14 +31,18 @@ namespace UltimaXNA.Ultima.World.Controllers
     /// </summary>
     internal class WorldInteraction
     {
+        private INetworkClient m_Network;
+
         protected WorldModel World
         {
             get;
             private set;
         }
 
-        public WorldInteraction(WorldModel world)
+        public WorldInteraction(IContainer container, WorldModel world)
         {
+            m_Network = container.Resolve<INetworkClient>();
+
             World = world;
         }
 
@@ -47,33 +54,33 @@ namespace UltimaXNA.Ultima.World.Controllers
             {
                 m_lastTarget = value;
                 // send last target packet to server.
-                World.Engine.Client.Send(new GetPlayerStatusPacket(0x04, m_lastTarget));
+                m_Network.Send(new GetPlayerStatusPacket(0x04, m_lastTarget));
             }
         }
 
         public void SendChat(string text) // used by chatwindow.
         {
-            World.Engine.Client.Send(new AsciiSpeechPacket(AsciiSpeechPacketTypes.Normal, 0, 0, "ENU", text));
+            m_Network.Send(new AsciiSpeechPacket(AsciiSpeechPacketTypes.Normal, 0, 0, "ENU", text));
         }
 
         public void SingleClick(AEntity item) // used by worldinput and itemgumpling.
         {
-            World.Engine.Client.Send(new SingleClickPacket(item.Serial));
+            m_Network.Send(new SingleClickPacket(item.Serial));
         }
 
         public void DoubleClick(AEntity item) // used by itemgumpling, paperdollinteractable, topmenu, worldinput.
         {
-            World.Engine.Client.Send(new DoubleClickPacket(item.Serial));
+            m_Network.Send(new DoubleClickPacket(item.Serial));
         } 
 
         public void ToggleWarMode() // used by paperdollgump.
         {
-            World.Engine.Client.Send(new RequestWarModePacket(!((Mobile)EntityManager.GetPlayerObject()).Flags.IsWarMode));
+            m_Network.Send(new RequestWarModePacket(!((Mobile)EntityManager.GetPlayerObject()).Flags.IsWarMode));
         }
 
         public void UseSkill(int index) // used by WorldInteraction
         {
-            World.Engine.Client.Send(new RequestSkillUsePacket(index));
+            m_Network.Send(new RequestSkillUsePacket(index));
         }
 
         public Gump OpenContainerGump(AEntity entity) // used by ultimaclient.

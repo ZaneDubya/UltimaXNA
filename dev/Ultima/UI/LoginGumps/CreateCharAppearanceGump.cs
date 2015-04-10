@@ -10,7 +10,6 @@
 using Microsoft.Xna.Framework;
 using UltimaXNA.Configuration;
 using UltimaXNA.Ultima.UI.Controls;
-using UltimaXNA.Ultima.ClientVars;
 
 namespace UltimaXNA.Ultima.UI.LoginGumps
 {

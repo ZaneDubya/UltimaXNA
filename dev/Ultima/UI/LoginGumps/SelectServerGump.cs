@@ -10,8 +10,6 @@
 
 using UltimaXNA.Configuration;
 using UltimaXNA.Ultima.UI.Controls;
-using UltimaXNA.Ultima.Network;
-using UltimaXNA.Ultima.ClientVars;
 using UltimaXNA.Ultima.Data.Servers;
 
 namespace UltimaXNA.Ultima.UI.LoginGumps

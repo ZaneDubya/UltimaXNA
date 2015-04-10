@@ -8,6 +8,9 @@
  *
  ***************************************************************************/
 #region usings
+
+using System.Security;
+using UltimaXNA.Core.Patterns.IoC;
 using UltimaXNA.Ultima.UI.LoginGumps;
 #endregion
 
@@ -17,14 +20,16 @@ namespace UltimaXNA.Ultima.Login.States
     {
         LoginGump m_LoginGump;
 
-        public LoginState()
+        public LoginState(IContainer container)
+            : base(container)
         {
 
         }
 
-        public override void Intitialize(UltimaEngine engine)
+        public override void Intitialize()
         {
-            base.Intitialize(engine);
+            base.Intitialize();
+
             m_LoginGump = (LoginGump)Engine.UserInterface.AddControl(new LoginGump(), 0, 0);
             m_LoginGump.OnLogin += OnLogin;
         }
@@ -33,9 +38,9 @@ namespace UltimaXNA.Ultima.Login.States
         {
             base.Update(totalTime, frameTime);
 
-            if (Engine.Input.HandleKeyboardEvent(UltimaXNA.Core.Input.Windows.KeyboardEventType.Down, UltimaXNA.Core.Input.Windows.WinKeys.D, false, false, true))
+            if (Engine.Input.HandleKeyboardEvent(Core.Input.Windows.KeyboardEventType.Down, Core.Input.Windows.WinKeys.D, false, false, true))
             {
-                Manager.CurrentScene = new HueTestState();
+                Manager.CurrentScene = Container.Resolve<LoggingInState>();
             }
         }
 
@@ -45,9 +50,12 @@ namespace UltimaXNA.Ultima.Login.States
             base.Dispose();
         }
 
-        public void OnLogin(string server, int port, string account, string password)
-        {
-            Manager.CurrentScene = new LoggingInState(server, port, account, password);
+        public void OnLogin(string server, int port, string account, SecureString password)
+        {   
+            Engine.Client.UserName = account;
+            Engine.Client.Password = password;
+
+            Manager.CurrentScene = Container.Resolve<LoggingInState>();
         }
     }
 }

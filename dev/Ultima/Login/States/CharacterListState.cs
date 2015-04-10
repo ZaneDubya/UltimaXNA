@@ -9,10 +9,9 @@
  ***************************************************************************/
 #region usings
 using System;
-using UltimaXNA.Core.Network;
 using UltimaXNA.Configuration;
+using UltimaXNA.Core.Patterns.IoC;
 using UltimaXNA.Ultima.UI.LoginGumps;
-using UltimaXNA.Ultima.ClientVars;
 using UltimaXNA.Ultima.Data.Accounts;
 #endregion
 
@@ -22,14 +21,16 @@ namespace UltimaXNA.Ultima.Login.States
     {
         CharacterListGump m_CharListGump;
 
-        public CharacterListState()
+        public CharacterListState(IContainer container)
+            : base(container)
         {
 
         }
 
-        public override void Intitialize(UltimaEngine engine)
+        public override void Intitialize()
         {
-            base.Intitialize(engine);
+            base.Intitialize();
+
             m_CharListGump = (CharacterListGump)Engine.UserInterface.AddControl(new CharacterListGump(), 0, 0);
             m_CharListGump.OnBackToSelectServer += OnBackToSelectServer;
             m_CharListGump.OnLoginWithCharacter += OnLoginWithCharacter;
@@ -87,7 +88,7 @@ namespace UltimaXNA.Ultima.Login.States
             // which automatically logs in again. But we can't do that,
             // since I have UltimaClient clear your account/password data
             // once connected (is this really neccesary?) Have to fix ..
-            Manager.CurrentScene = new LoginState();
+            Manager.CurrentScene = Container.Resolve<LoginState>();
         }
 
         public void OnLoginWithCharacter(int index)
@@ -103,7 +104,7 @@ namespace UltimaXNA.Ultima.Login.States
 
         public void OnNewCharacter()
         {
-            Manager.CurrentScene = new CreateCharacterState();
+            Manager.CurrentScene = Container.Resolve<CreateCharacterState>();
         }
     }
 }

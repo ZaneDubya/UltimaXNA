@@ -15,7 +15,6 @@ using UltimaXNA.Ultima.Entities.Items.Containers;
 using UltimaXNA.Ultima.Entities.Items;
 using UltimaXNA.Ultima.Entities.Mobiles;
 using UltimaXNA.Ultima.Entities.Multis;
-using UltimaXNA.Ultima.ClientVars;
 using UltimaXNA.Ultima.Data;
 #endregion
 

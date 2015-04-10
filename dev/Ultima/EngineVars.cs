@@ -22,7 +22,6 @@ namespace UltimaXNA.Ultima
 {
     //TODO this should merge to something like Client or Engine.  All of these settings pertain to states that should be controlled by specific systems.
     // InWorld is a "Client" state
-    // Version is a "Client" value
     // EngineRunning should be "Engine.IsRunning"
     // ClickAndPickupMS should be controlled by the InputManager
     // DoubleClickMS should be controlled by the InputManager
@@ -33,8 +32,6 @@ namespace UltimaXNA.Ultima
     // NewDiagonalMovement should be a setting.
     public class EngineVars
     {
-        public static byte[] Version = new byte[4] { 6, 0, 6, 2 };
-        
         // InWorld allows us to tell when our character object has been loaded in the world.
         public static bool InWorld { get; set; }
         public static bool EngineRunning { get; set; } // false = engine immediately quits.

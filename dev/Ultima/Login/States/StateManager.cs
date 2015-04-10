@@ -1,16 +1,18 @@
 ﻿using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.Diagnostics.Tracing;
+using UltimaXNA.Core.Patterns.IoC;
 using UltimaXNA.Ultima.UI;
 
 namespace UltimaXNA.Ultima.Login.States
 {
     public class SceneManager
     {
+        private IContainer m_Container;
         AState m_CurrentScene;
         bool m_isTransitioning = false;
 
-        protected UltimaEngine Engine { get; private set; }
+        protected IEngine Engine { get; private set; }
 
         public bool IsTransitioning
         {
@@ -53,7 +55,7 @@ namespace UltimaXNA.Ultima.Login.States
                                 if (!m_CurrentScene.IsInitialized)
                                 {
                                     Tracer.Debug("Initializing {0}.", m_CurrentScene.GetType().Name);
-                                    m_CurrentScene.Intitialize(Engine);
+                                    m_CurrentScene.Intitialize();
                                 }
                             }
 
@@ -70,7 +72,7 @@ namespace UltimaXNA.Ultima.Login.States
                     if (!m_CurrentScene.IsInitialized)
                     {
                         Tracer.Debug("Initializing {0}.", m_CurrentScene.GetType().Name);
-                        m_CurrentScene.Intitialize(Engine);
+                        m_CurrentScene.Intitialize();
                     }
 
                     m_isTransitioning = false;
@@ -78,9 +80,11 @@ namespace UltimaXNA.Ultima.Login.States
             }
         }
 
-        public SceneManager(UltimaEngine engine)
+        public SceneManager(IContainer container)
         {
-            Engine = engine;
+            m_Container = container;
+
+            Engine = container.Resolve<IEngine>();
         }
 
         public void Update(double totalTime, double frameTime)
@@ -102,7 +106,7 @@ namespace UltimaXNA.Ultima.Login.States
             Engine.Client.Disconnect();
             Engine.UserInterface.Reset();
             if (!(m_CurrentScene is LoginState))
-                CurrentScene = new LoginState();
+                CurrentScene = m_Container.Resolve<LoginState>();
         }
     }
 }

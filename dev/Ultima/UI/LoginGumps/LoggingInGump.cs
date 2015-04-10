@@ -9,7 +9,6 @@
  *
  ***************************************************************************/
 using UltimaXNA.Ultima.UI.Controls;
-using UltimaXNA.Ultima.ClientVars;
 
 namespace UltimaXNA.Ultima.UI.LoginGumps
 {

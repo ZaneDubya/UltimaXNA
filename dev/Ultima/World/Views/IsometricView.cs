@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using UltimaXNA.Configuration;
 using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.Patterns.IoC;
 using UltimaXNA.Ultima.Entities;
 using UltimaXNA.Ultima.Entities.Items;
 using UltimaXNA.Ultima.EntityViews;
@@ -72,15 +73,18 @@ namespace UltimaXNA.Ultima.World.Views
             get { return m_renderOffset; }
         }
 
-        protected UltimaEngine Engine { get; private set; }
-
-        public void Initialize(UltimaEngine engine)
+        public IsometricRenderer(IContainer container)
         {
-            Engine = engine;
+            Engine = container.Resolve<IEngine>();
+        }
 
-            m_spriteBatch = new SpriteBatch3D(Engine);
+        protected IEngine Engine { get; private set; }
 
-            m_vertexBufferStretched = new VertexPositionNormalTextureHue[] {
+        public void Initialize()
+        {
+            m_spriteBatch = new SpriteBatch3D(Engine.Game);
+
+            m_vertexBufferStretched = new [] {
                 new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(0, 0, 0)),
                 new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(1, 0, 0)),
                 new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(0, 1, 0)),

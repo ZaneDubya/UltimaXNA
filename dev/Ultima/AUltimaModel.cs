@@ -1,15 +1,31 @@
 ﻿using InterXLib.Patterns.MVC;
 using System;
+using UltimaXNA.Core.Patterns.IoC;
 
 namespace UltimaXNA.Ultima
 {
-    abstract internal class AUltimaModel : AModel
+    abstract public class AUltimaModel : AModel
     {
-        public UltimaEngine Engine { get; private set; }
+        public IEngine Engine { get; private set; }
+        protected IContainer Container { get; private set; }
 
-        public void Initialize(UltimaEngine engine)
+        protected AUltimaModel(IContainer container)
         {
-            Engine = engine;
+            Container = container;
+            Engine = container.Resolve<IEngine>();
+        }
+
+        private bool m_IsInitialized;
+
+        public void Initialize()
+        {
+            if (m_IsInitialized)
+            {
+                return;
+            }
+
+            m_IsInitialized = true;
+
             OnInitialize();
         }
 

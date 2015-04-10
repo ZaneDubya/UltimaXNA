@@ -7,14 +7,15 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+
+using System.Security;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Configuration;
 using UltimaXNA.Ultima.UI.Controls;
-using UltimaXNA.Ultima.ClientVars;
 
 namespace UltimaXNA.Ultima.UI.LoginGumps
 {
-    public delegate void LoginEvent(string server, int port, string account, string password);
+    public delegate void LoginEvent(string server, int port, string account, SecureString password);
 
     enum LoginGumpButtons
     {
@@ -77,8 +78,20 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
                     EngineVars.EngineRunning = false;
                     break;
                 case LoginGumpButtons.LoginButton:
-                    OnLogin(Settings.Server.ServerAddress, Settings.Server.ServerPort, accountName, password);
+                {
+                    var secureStr = new SecureString();
+
+                    if (password.Length > 0)
+                    {
+                        foreach (var c in password.ToCharArray())
+                        {
+                            secureStr.AppendChar(c);
+                        }
+                    }
+
+                    OnLogin(Settings.Server.ServerAddress, Settings.Server.ServerPort, accountName, secureStr);
                     break;
+                }
             }
 
             Settings.Server.UserName = accountName;

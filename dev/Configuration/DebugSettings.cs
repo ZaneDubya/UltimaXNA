@@ -9,6 +9,13 @@ namespace UltimaXNA.Configuration
         private bool m_ShowDataRead;
         private bool m_ShowDataReadBreakdown;
         private bool m_ShowUIOutlines;
+        private bool m_LogPackets;
+
+        public bool LogPackets
+        {
+            get { return m_LogPackets; }
+            set { SetProperty(ref m_LogPackets, value); }
+        }
         
         public bool ShowUIOutlines
         {

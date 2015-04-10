@@ -68,6 +68,7 @@ namespace UltimaXNA.Configuration
 
                     string result = JsonConvert.SerializeObject(m_SectionCache, Formatting.Indented, settings);
 
+                    File.Copy(m_Filename, m_Filename + ".bak", true);
                     File.WriteAllText(m_Filename, result);
                 }
             }
@@ -102,25 +103,46 @@ namespace UltimaXNA.Configuration
             {
                 lock(m_SyncRoot)
                 {
-                    if(!File.Exists(m_Filename))
-                    {
-                        return;
-                    }
+                    LoadFromFile(m_Filename);
 
-                    string contents = File.ReadAllText(m_Filename);
-                    JsonSerializerSettings settings = new JsonSerializerSettings
+                    if (m_TokenCache == null && File.Exists(m_Filename + ".bak"))
                     {
-                        NullValueHandling = NullValueHandling.Ignore,
-                        Converters = new List<JsonConverter> { new IsoDateTimeConverter() }
-                    };
-                    
-                    m_TokenCache = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(contents, settings);
+                        Tracer.Error("Unable to read settings file.  Trying backup file");
+                        LoadFromFile(m_Filename + ".bak");
+
+                        if (m_TokenCache == null)
+                        {
+                            Tracer.Error("Unable to read settings backup file.  Resettings all settings.");
+                            m_TokenCache = new Dictionary<string, JToken>();
+                        }
+                    }
+                    else
+                    {
+                        Tracer.Error("Unable to read settings file.  Resettings all settings.");
+                        m_TokenCache = new Dictionary<string, JToken>();
+                    }
                 }
             }
             catch(Exception e)
             {
                 Tracer.Error(e);
             }
+        }
+
+        private void LoadFromFile(string fileName)
+        {
+            if (!File.Exists(fileName))
+            {
+                return;
+            }
+            string contents = File.ReadAllText(fileName);
+            JsonSerializerSettings settings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                Converters = new List<JsonConverter> { new IsoDateTimeConverter() }
+            };
+
+            m_TokenCache = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(contents, settings);
         }
 
         internal T CreateOrOpenSection<T>(string sectionName)
@@ -141,6 +163,7 @@ namespace UltimaXNA.Configuration
             {
                 // We've haven't deserialized it but it exists, so read it in and save it to the local cache
                 section = token.ToObject<T>();
+                section.OnDeserialized();
             }
             else
             {

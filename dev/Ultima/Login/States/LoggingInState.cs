@@ -10,7 +10,9 @@
  ***************************************************************************/
 #region usings
 using System;
+using UltimaXNA.Configuration;
 using UltimaXNA.Core.Network;
+using UltimaXNA.Core.Patterns.IoC;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.LoginGumps;
 #endregion
@@ -19,31 +21,30 @@ namespace UltimaXNA.Ultima.Login.States
 {
     public class LoggingInState : AState
     {
+        private readonly INetworkClient m_Network;
+
         private LoggingInGump m_Gump;
-
-        private string m_ServerHost;
-        private int m_ServerPort;
-        private string m_AccountName;
-        private string m_Password;
-
+        
         private bool m_ErrorReceived = false;
 
-        public LoggingInState(string server, int port, string account, string password)
+        public LoggingInState(IContainer container)
+            : base(container)
         {
+            m_Network = container.Resolve<INetworkClient>();
             // Todo: Send the accountname and password to the ultimaclient so this gump does not have to save them.
-            m_ServerHost = server;
-            m_ServerPort = port;
-            m_AccountName = account;
-            m_Password = password;
         }
 
-        public override void Intitialize(UltimaEngine engine)
+        public override void Intitialize()
         {
-            base.Intitialize(engine);
+            base.Intitialize();
+
             m_Gump = (LoggingInGump)Engine.UserInterface.AddControl(new LoggingInGump(), 0, 0);
             m_Gump.OnCancelLogin += OnCancelLogin;
-            if (Engine.Client.IsConnected)
-                Engine.Client.Disconnect();
+
+            if (m_Network.IsConnected)
+            {
+                m_Network.Disconnect();
+            }
         }
 
         public override void Update(double totalTime, double frameTime)
@@ -57,7 +58,9 @@ namespace UltimaXNA.Ultima.Login.States
                     switch (Engine.Client.Status)
                     {
                         case UltimaClientStatus.Unconnected:
-                            Engine.Client.Connect(m_ServerHost, m_ServerPort);
+                            string serverAddress = Settings.Server.ServerAddress;
+                            int serverPort = Settings.Server.ServerPort;
+                            Engine.Client.Connect(serverAddress, serverPort);
                             break;
                         case UltimaClientStatus.LoginServer_Connecting:
                             // connecting ...
@@ -65,13 +68,13 @@ namespace UltimaXNA.Ultima.Login.States
                         case UltimaClientStatus.LoginServer_WaitingForLogin:
                             // show 'verifying account...' gump
                             m_Gump.ActivePage = 9;
-                            Engine.Client.SendAccountLogin(m_AccountName, m_Password);
+                            Engine.Client.Login();
                             break;
                         case UltimaClientStatus.LoginServer_LoggingIn:
                             // logging in ...
                             break;
                         case UltimaClientStatus.LoginServer_HasServerList:
-                            Manager.CurrentScene = new SelectServerState(m_AccountName, m_Password);
+                            Manager.CurrentScene = Container.Resolve<SelectServerState>();
                             break;
                         case UltimaClientStatus.Error_CannotConnectToServer:
                             m_Gump.ActivePage = 2;

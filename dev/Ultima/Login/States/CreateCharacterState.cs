@@ -9,6 +9,7 @@
  ***************************************************************************/
 #region usings
 using System;
+using UltimaXNA.Core.Patterns.IoC;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.LoginGumps;
 using UltimaXNA.Ultima.Network;
@@ -30,7 +31,6 @@ namespace UltimaXNA.Ultima.Login.States
     public class CreateCharacterState : AState
     {
         CreateCharacterSceneStates m_Status;
-
         CreateCharSkillsGump m_CreateSkillsGump;
         CreateCharAppearanceGump m_CreateAppearanceGump;
 
@@ -43,14 +43,16 @@ namespace UltimaXNA.Ultima.Login.States
         int m_gender, m_hairStyleID, m_facialHairStyleID;
         int m_skinHue, m_hairHue, m_facialHairHue;
 
-        public CreateCharacterState()
+        public CreateCharacterState(IContainer container)
+            : base(container)
         {
 
         }
 
-        public override void Intitialize(UltimaEngine engine)
+        public override void Intitialize()
         {
-            base.Intitialize(engine);
+            base.Intitialize();
+
             m_Status = CreateCharacterSceneStates.Default;
             openSkillsGump();
         }
@@ -172,7 +174,7 @@ namespace UltimaXNA.Ultima.Login.States
                         // do nothing
                         break;
                     case CreateCharacterSceneStates.Cancel:
-                        Manager.CurrentScene = new CharacterListState();
+                        Manager.CurrentScene = Container.Resolve<CharacterListState>();
                         break;
                     case CreateCharacterSceneStates.WaitingForResponse:
                         // do nothing, waiting for response to create character request.

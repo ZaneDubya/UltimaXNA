@@ -1,4 +1,5 @@
 ﻿using InterXLib.Patterns.MVC;
+using UltimaXNA.Core.Patterns.IoC;
 
 namespace UltimaXNA.Ultima.Login
 {
@@ -6,7 +7,8 @@ namespace UltimaXNA.Ultima.Login
     {
         private States.SceneManager m_SceneManager;
 
-        public LoginModel()
+        public LoginModel(IContainer container)
+            : base(container)
         {
             
         }
@@ -19,7 +21,7 @@ namespace UltimaXNA.Ultima.Login
         protected override void OnInitialize()
         {
             Engine.UserInterface.Cursor = new UI.UltimaCursor();
-            m_SceneManager = new States.SceneManager(Engine);
+            m_SceneManager = new States.SceneManager(Container);
             m_SceneManager.ResetToLoginScreen();
         }
 

@@ -14,6 +14,8 @@ using System;
 using UltimaXNA.Configuration;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Core.Network;
+using UltimaXNA.Core.Patterns.IoC;
 using UltimaXNA.Ultima.Entities;
 using UltimaXNA.Ultima.Entities.Items;
 using UltimaXNA.Ultima.Entities.Items.Containers;
@@ -21,6 +23,8 @@ using UltimaXNA.Ultima.Entities.Mobiles;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
+using Container = UltimaXNA.Ultima.Entities.Items.Containers.Container;
+
 #endregion
 
 namespace UltimaXNA.Ultima.World.Controllers
@@ -37,9 +41,12 @@ namespace UltimaXNA.Ultima.World.Controllers
             private set;
         }
 
-        public WorldCursor(WorldModel model)
-            : base()
+        private INetworkClient m_Network;
+
+        public WorldCursor(IContainer container, WorldModel model)
         {
+            m_Network = container.Resolve<INetworkClient>();
+
             World = model;
             InternalRegisterInteraction();
         }
@@ -333,7 +340,7 @@ namespace UltimaXNA.Ultima.World.Controllers
             {
                 if (targeting == TargetType.Nothing)
                 {
-                    World.Engine.Client.Send(new TargetCancelPacket());
+                    m_Network.Send(new TargetCancelPacket());
                 }
                 else
                 {
@@ -365,7 +372,7 @@ namespace UltimaXNA.Ultima.World.Controllers
                 modelNumber = 0;
             }
             // Send the target ...
-            World.Engine.Client.Send(new TargetXYZPacket((short)selectedEntity.Position.X, (short)selectedEntity.Position.Y, (short)selectedEntity.Z, (ushort)modelNumber, m_TargetID));
+            m_Network.Send(new TargetXYZPacket((short)selectedEntity.Position.X, (short)selectedEntity.Position.Y, (short)selectedEntity.Z, (ushort)modelNumber, m_TargetID));
             // ... and clear our targeting cursor.
             ClearTargetingWithoutTargetCancelPacket();
         }
@@ -379,7 +386,7 @@ namespace UltimaXNA.Ultima.World.Controllers
             // Send the targetting event back to the server
             if (serial.IsValid)
             {
-                World.Engine.Client.Send(new TargetObjectPacket(selectedEntity, m_TargetID));
+                m_Network.Send(new TargetObjectPacket(selectedEntity, m_TargetID));
             }
             else
             {
@@ -392,7 +399,7 @@ namespace UltimaXNA.Ultima.World.Controllers
                 {
                     modelNumber = 0;
                 }
-                World.Engine.Client.Send(new TargetXYZPacket((short)selectedEntity.Position.X, (short)selectedEntity.Position.Y, (short)selectedEntity.Z, (ushort)modelNumber, m_TargetID));
+                m_Network.Send(new TargetXYZPacket((short)selectedEntity.Position.X, (short)selectedEntity.Position.Y, (short)selectedEntity.Z, (ushort)modelNumber, m_TargetID));
             }
 
             // Clear our target cursor.
@@ -455,7 +462,7 @@ namespace UltimaXNA.Ultima.World.Controllers
             {
                 // let the server know we're picking up the item. If the server says we can't pick it up, it will send us a cancel pick up message.
                 // TEST: what if we can pick something up and drop it in our inventory before the server has a chance to respond?
-                World.Engine.Client.Send(new PickupItemPacket(item.Serial, item.Amount));
+                m_Network.Send(new PickupItemPacket(item.Serial, item.Amount));
 
                 // if the item is within a container or worn by a mobile, remove it from that containing entity.
                 if (item.Parent != null)
@@ -492,7 +499,7 @@ namespace UltimaXNA.Ultima.World.Controllers
             {
                 serial = Serial.World;
             }
-            World.Engine.Client.Send(new DropItemPacket(HeldItem.Serial, (ushort)X, (ushort)Y, (byte)Z, 0, serial));
+            m_Network.Send(new DropItemPacket(HeldItem.Serial, (ushort)X, (ushort)Y, (byte)Z, 0, serial));
             ClearHolding();
         }
 
@@ -513,13 +520,13 @@ namespace UltimaXNA.Ultima.World.Controllers
             if (x > containerBounds.Right - itemTexture.Width) x = containerBounds.Right - itemTexture.Width;
             if (y < containerBounds.Top) y = containerBounds.Top;
             if (y > containerBounds.Bottom - itemTexture.Height) y = containerBounds.Bottom - itemTexture.Height;
-            World.Engine.Client.Send(new DropItemPacket(HeldItem.Serial, (ushort)x, (ushort)y, 0, 0, container.Serial));
+            m_Network.Send(new DropItemPacket(HeldItem.Serial, (ushort)x, (ushort)y, 0, 0, container.Serial));
             ClearHolding();
         }
 
         private void WearHeldItem()
         {
-            World.Engine.Client.Send(new DropToLayerPacket(HeldItem.Serial, 0x00, EngineVars.PlayerSerial));
+            m_Network.Send(new DropToLayerPacket(HeldItem.Serial, 0x00, EngineVars.PlayerSerial));
             ClearHolding();
         }
 

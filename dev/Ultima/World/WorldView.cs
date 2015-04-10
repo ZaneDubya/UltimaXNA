@@ -1,4 +1,5 @@
 ﻿using InterXLib.Patterns.MVC;
+using UltimaXNA.Core.Patterns.IoC;
 using UltimaXNA.Ultima.World.Views;
 using UltimaXNA.Ultima.World.Controllers;
 
@@ -17,11 +18,11 @@ namespace UltimaXNA.Ultima.World
             get { return (WorldModel)base.Model; }
         }
 
-        public WorldView(WorldModel model)
+        public WorldView(IContainer container, WorldModel model)
             : base(model)
         {
-            Isometric = new IsometricRenderer();
-            Isometric.Initialize(Model.Engine);
+            Isometric = container.Resolve<IsometricRenderer>();
+            Isometric.Initialize();
             Isometric.LightDirection = -0.6f;
         }
 

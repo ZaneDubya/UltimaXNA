@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UltimaXNA.Core.Patterns.IoC;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
 using Microsoft.Xna.Framework;
@@ -36,14 +37,15 @@ namespace UltimaXNA.Ultima.Login.States
             set;
         }
 
-        public HueTestState()
+        public HueTestState(IContainer container)
+            : base(container)
         {
             OverHue = -1;
         }
 
-        public override void Intitialize(UltimaEngine engine)
+        public override void Intitialize()
         {
-            base.Intitialize(engine);
+            base.Intitialize();
 
             m_Gump = (Gump)Engine.UserInterface.AddControl(new Gump(Serial.Null, Serial.Null), 0, 0);
             m_Gump.Size = new Point(800, 600);

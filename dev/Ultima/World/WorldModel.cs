@@ -1,5 +1,8 @@
 ﻿using InterXLib.Patterns.MVC;
+using UltimaXNA.Core.Network;
+using UltimaXNA.Core.Patterns.IoC;
 using UltimaXNA.Ultima.Entities;
+using UltimaXNA.Ultima.Login;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.WorldGumps;
 using UltimaXNA.Ultima.World.Controllers;
@@ -9,6 +12,9 @@ namespace UltimaXNA.Ultima.World
 {
     class WorldModel : AUltimaModel
     {
+        private INetworkClient m_Network;
+        private IContainer m_Container;
+
         public EntityManager Entities
         {
             get;
@@ -96,23 +102,28 @@ namespace UltimaXNA.Ultima.World
             }
         }
 
-        public WorldModel()
+        public WorldModel(IContainer container)
+            : base(container)
         {
+            m_Container = container;
+            m_Network = container.Resolve<INetworkClient>();
+
             Entities = new EntityManager(this);
             Effects = new EffectsManager(this);
-            Input = new WorldInput(this);
-            Interaction = new WorldInteraction(this);
-            m_WorldClient = new WorldClient(this);
+            Input = new WorldInput(container, this);
+            Interaction = new WorldInteraction(container, this);
+            m_WorldClient = new WorldClient(container, this);
         }
 
         protected override AView CreateView()
         {
-            return new WorldView(this);
+            //TODO: this needs to be resolved, not newed up.
+            return new WorldView(Container, this);
         }
 
         protected override void OnInitialize()
         {
-            Engine.UserInterface.Cursor = Cursor = new WorldCursor(this);
+            Engine.UserInterface.Cursor = Cursor = new WorldCursor(m_Container, this);
             m_WorldClient.Initialize();
         }
 
@@ -138,7 +149,7 @@ namespace UltimaXNA.Ultima.World
 
         public override void Update(double totalMS, double frameMS)
         {
-            if (!Engine.Client.IsConnected)
+            if (!m_Network.IsConnected)
             {
                 if (Engine.UserInterface.IsModalControlOpen == false)
                 {
@@ -159,7 +170,7 @@ namespace UltimaXNA.Ultima.World
         {
             Engine.Client.Disconnect();
             EngineVars.InWorld = false;
-            Engine.ActiveModel = new Login.LoginModel();
+            Engine.ActiveModel = Container.Resolve<LoginModel>();
         }
 
         void onCloseLostConnectionMsgBox()

@@ -141,6 +141,7 @@
     <Compile Include="Configuration\SettingsToken.cs" />
     <Compile Include="Core\DpiManager.cs" />
     <Compile Include="Core\Extensions\StringExtensions.cs" />
+    <Compile Include="Core\Network\INetworkClient.cs" />
     <Compile Include="Ultima\AUltimaModel.cs" />
     <Compile Include="Core\Collections\SafeDictionary.cs" />
     <Compile Include="Configuration\DebugSettings.cs" />
@@ -502,7 +503,7 @@
     <Compile Include="Ultima\IO\TexmapData.cs" />
     <Compile Include="Ultima\IO\TileData.cs" />
     <Compile Include="Ultima\IO\TileMatrixPatch.cs" />
-    <Compile Include="Core\Network\ClientBase.cs" />
+    <Compile Include="Core\Network\NetworkClient.cs" />
     <Compile Include="Core\Network\Compression\HuffmanDecompression.cs" />
     <Compile Include="Core\Network\Compression\ZlibDecompression.cs" />
     <Compile Include="Core\Network\IRecvPacket.cs" />

@@ -10,7 +10,6 @@
 #region usings
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Network.Packets;
-using UltimaXNA.Ultima.ClientVars;
 using UltimaXNA.Ultima.Data.Accounts;
 #endregion
 

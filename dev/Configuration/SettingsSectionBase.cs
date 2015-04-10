@@ -20,6 +20,16 @@ namespace UltimaXNA.Configuration
 
         public event EventHandler Invalidated;
 
+        internal void OnDeserialized()
+        {
+            UpdateVersionValues();
+        }
+
+        protected virtual void UpdateVersionValues()
+        {
+            
+        }
+
         protected override void SetPropertyOverride<T>(ref T storage, object value, string propertyName)
         {
             base.SetPropertyOverride<T>(ref storage, value, propertyName);
