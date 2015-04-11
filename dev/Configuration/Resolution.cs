@@ -1,7 +1,6 @@
 #region Usings
-
 using UltimaXNA.Core.ComponentModel;
-
+using UltimaXNA.Core.Configuration;
 #endregion
 
 namespace UltimaXNA.Configuration
@@ -10,6 +9,12 @@ namespace UltimaXNA.Configuration
     {
         private int m_height;
         private int m_width;
+
+        public Resolution()
+        {
+            Width = 800;
+            Height = 600;
+        }
 
         public Resolution(int width, int height)
         {

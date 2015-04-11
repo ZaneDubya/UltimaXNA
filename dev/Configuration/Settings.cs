@@ -1,7 +1,6 @@
 #region Usings
-
 using System;
-
+using UltimaXNA.Core.Configuration;
 #endregion
 
 namespace UltimaXNA.Configuration
@@ -18,13 +17,15 @@ namespace UltimaXNA.Configuration
 
         static Settings()
         {
-            m_File = new SettingsFile("settings.json");
             m_Instance = new Settings();
+            m_File = new SettingsFile("settings.cfg");
 
             m_Instance.m_Debug = CreateOrOpenSection<DebugSettings>(DebugSettings.SectionName);
             m_Instance.m_Server = CreateOrOpenSection<ServerSettings>(ServerSettings.SectionName);
             m_Instance.m_UltimaOnline = CreateOrOpenSection<UltimaOnlineSettings>(UltimaOnlineSettings.SectionName);
             m_Instance.m_Game = CreateOrOpenSection<GameSettings>(GameSettings.SectionName);
+
+            m_File.Load();
         }
 
         public static bool IsSettingsFileCreated
@@ -58,7 +59,7 @@ namespace UltimaXNA.Configuration
         }
 
         public static T CreateOrOpenSection<T>(string sectionName)
-            where T : SettingsSectionBase, new()
+            where T : ASettingsSection, new()
         {
             var section =  m_File.CreateOrOpenSection<T>(sectionName);
 

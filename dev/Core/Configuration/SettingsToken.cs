@@ -1,8 +1,8 @@
 #region Usings
-using Newtonsoft.Json.Linq;
+using System;
 #endregion
 
-namespace UltimaXNA.Configuration
+namespace UltimaXNA.Core.Configuration
 {
     internal sealed class SettingsToken
     {

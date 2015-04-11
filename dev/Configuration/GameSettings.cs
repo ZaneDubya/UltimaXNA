@@ -1,10 +1,11 @@
 #region Usings
 using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Core.Configuration;
 #endregion
 
 namespace UltimaXNA.Configuration
 {
-    public sealed class GameSettings : SettingsSectionBase
+    public sealed class GameSettings : ASettingsSection
     {
         public const string SectionName = "game";
 

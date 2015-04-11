@@ -1,5 +1,8 @@
+#region usings
 using UltimaXNA.Core.ComponentModel;
 using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Core.Configuration;
+#endregion
 
 namespace UltimaXNA.Configuration
 {
@@ -8,6 +11,13 @@ namespace UltimaXNA.Configuration
         private MouseButton m_InteractionButton;
         private MouseButton m_movementButton;
         private bool m_isEnabled;
+
+        public Mouse()
+        {
+            InteractionButton = MouseButton.Left;
+            MovementButton = MouseButton.Right;
+            IsEnabled = true;
+        }
 
         public Mouse(MouseButton interaction, MouseButton movement)
         {

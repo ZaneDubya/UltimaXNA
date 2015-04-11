@@ -1,6 +1,10 @@
+#region usings
+using UltimaXNA.Core.Configuration;
+#endregion
+
 namespace UltimaXNA.Configuration
 {
-    public sealed class ServerSettings : SettingsSectionBase
+    public sealed class ServerSettings : ASettingsSection
     {
         public const string SectionName = "server";
 

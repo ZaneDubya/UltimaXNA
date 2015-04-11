@@ -4,26 +4,11 @@ using System.ComponentModel;
 using UltimaXNA.Core.ComponentModel;
 #endregion
 
-namespace UltimaXNA.Configuration
+namespace UltimaXNA.Core.Configuration
 {
-    public abstract class SettingsSectionBase : NotifyPropertyChangedBase
+    public abstract class ASettingsSection : NotifyPropertyChangedBase
     {
-        protected SettingsSectionBase()
-        {
-
-        }
-
         public event EventHandler Invalidated;
-
-        internal void OnDeserialized()
-        {
-            UpdateVersionValues();
-        }
-
-        protected virtual void UpdateVersionValues()
-        {
-            
-        }
 
         protected override void SetPropertyOverride<T>(ref T storage, object value, string propertyName)
         {

@@ -118,6 +118,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml">
       <Private>False</Private>
@@ -135,8 +136,9 @@
     <Compile Include="Core\ComponentModel\EqualityHelper.cs" />
     <Compile Include="Core\ComponentModel\NotifyPropertyChangedBase.cs" />
     <Compile Include="Configuration\Resolution.cs" />
-    <Compile Include="Configuration\SettingsContainer.cs" />
-    <Compile Include="Configuration\SettingsToken.cs" />
+    <Compile Include="Core\Configuration\SettingsContainer.cs" />
+    <Compile Include="Core\Configuration\SettingsToken.cs" />
+    <Compile Include="Core\Configuration\TextSettingsFileWriter.cs" />
     <Compile Include="Core\DpiManager.cs" />
     <Compile Include="Core\Extensions\MethodInfoExtensions.cs" />
     <Compile Include="Core\Extensions\StringExtensions.cs" />
@@ -150,7 +152,7 @@
     <Compile Include="Configuration\GameSettings.cs" />
     <Compile Include="Configuration\ServerSettings.cs" />
     <Compile Include="Configuration\Settings.cs" />
-    <Compile Include="Configuration\SettingsSectionBase.cs" />
+    <Compile Include="Core\Configuration\ASettingsSection.cs" />
     <Compile Include="Configuration\UltimaOnlineSettings.cs" />
     <Compile Include="Core\ConsoleManager.cs" />
     <Compile Include="CoreModule.cs" />
@@ -183,7 +185,7 @@
     <Compile Include="Core\Diagnostics\Tracing\Tracer.cs" />
     <Compile Include="Core\Diagnostics\Tracing\TracerEventSource.cs" />
     <Compile Include="Core\Diagnostics\GeneralExceptionHandler.cs" />
-    <Compile Include="Configuration\SettingsFile.cs" />
+    <Compile Include="Core\Configuration\SettingsFile.cs" />
     <Compile Include="Ultima\Direction.cs" />
     <Compile Include="Ultima\Data\MessageType.cs" />
     <Compile Include="Ultima\Data\TileFlags.cs" />

@@ -1,12 +1,10 @@
 #region Usings
-
-
-
+using UltimaXNA.Core.Configuration;
 #endregion
 
 namespace UltimaXNA.Configuration
 {
-    public sealed class UltimaOnlineSettings : SettingsSectionBase
+    public sealed class UltimaOnlineSettings : ASettingsSection
     {
         public const string SectionName = "ultimaOnline";
 
@@ -16,16 +14,6 @@ namespace UltimaXNA.Configuration
         public UltimaOnlineSettings()
         {
             ClientVersion = new byte[] {6, 0, 6, 2};
-        }
-
-        protected override void UpdateVersionValues()
-        {
-            base.UpdateVersionValues();
-
-            if (ClientVersion == null)
-            {
-                ClientVersion = new byte[] { 6, 0, 6, 2 };
-            }
         }
 
         public byte[] ClientVersion

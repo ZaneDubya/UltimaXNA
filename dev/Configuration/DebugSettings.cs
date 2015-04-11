@@ -1,6 +1,10 @@
+#region usings
+using UltimaXNA.Core.Configuration;
+#endregion
+
 namespace UltimaXNA.Configuration
 {
-    public sealed class DebugSettings : SettingsSectionBase
+    public sealed class DebugSettings : ASettingsSection
     {
         public const string SectionName = "debug";
 

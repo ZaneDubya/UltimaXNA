@@ -1,10 +1,8 @@
 #region Usings
-
 using System.Collections.Generic;
-
 #endregion
 
-namespace UltimaXNA.Configuration
+namespace UltimaXNA.Core.Configuration
 {
     internal sealed class SettingsContainer : Dictionary<string, SettingsToken>
     {
