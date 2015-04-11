@@ -11,8 +11,6 @@
 #region usings
 using System;
 using UltimaXNA.Configuration;
-using UltimaXNA.Core.Network;
-using UltimaXNA.Core.Patterns.IoC;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.LoginGumps;
 #endregion
@@ -21,16 +19,16 @@ namespace UltimaXNA.Ultima.Login.States
 {
     public class LoggingInState : AState
     {
-        private readonly INetworkClient m_Network;
+        GUIManager m_UserInterface;
+        LoginClient m_Client;
 
         private LoggingInGump m_Gump;
         
         private bool m_ErrorReceived = false;
 
-        public LoggingInState(IContainer container)
-            : base(container)
+        public LoggingInState()
+            : base()
         {
-            m_Network = container.Resolve<INetworkClient>();
             // Todo: Send the accountname and password to the ultimaclient so this gump does not have to save them.
         }
 
@@ -38,13 +36,13 @@ namespace UltimaXNA.Ultima.Login.States
         {
             base.Intitialize();
 
-            m_Gump = (LoggingInGump)Engine.UserInterface.AddControl(new LoggingInGump(), 0, 0);
+            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_Client = UltimaServices.GetService<LoginClient>();
+
+            m_Gump = (LoggingInGump)m_UserInterface.AddControl(new LoggingInGump(), 0, 0);
             m_Gump.OnCancelLogin += OnCancelLogin;
 
-            if (m_Network.IsConnected)
-            {
-                m_Network.Disconnect();
-            }
+            m_Client.Disconnect();
         }
 
         public override void Update(double totalTime, double frameTime)
@@ -55,52 +53,52 @@ namespace UltimaXNA.Ultima.Login.States
             {
                 if (!m_ErrorReceived)
                 {
-                    switch (Engine.Client.Status)
+                    switch (m_Client.Status)
                     {
-                        case UltimaClientStatus.Unconnected:
+                        case LoginClientStatus.Unconnected:
                             string serverAddress = Settings.Server.ServerAddress;
                             int serverPort = Settings.Server.ServerPort;
-                            Engine.Client.Connect(serverAddress, serverPort);
+                            m_Client.Connect(serverAddress, serverPort);
                             break;
-                        case UltimaClientStatus.LoginServer_Connecting:
+                        case LoginClientStatus.LoginServer_Connecting:
                             // connecting ...
                             break;
-                        case UltimaClientStatus.LoginServer_WaitingForLogin:
+                        case LoginClientStatus.LoginServer_WaitingForLogin:
                             // show 'verifying account...' gump
                             m_Gump.ActivePage = 9;
-                            Engine.Client.Login();
+                            m_Client.Login();
                             break;
-                        case UltimaClientStatus.LoginServer_LoggingIn:
+                        case LoginClientStatus.LoginServer_LoggingIn:
                             // logging in ...
                             break;
-                        case UltimaClientStatus.LoginServer_HasServerList:
-                            Manager.CurrentScene = Container.Resolve<SelectServerState>();
+                        case LoginClientStatus.LoginServer_HasServerList:
+                            Manager.CurrentState = new SelectServerState();
                             break;
-                        case UltimaClientStatus.Error_CannotConnectToServer:
+                        case LoginClientStatus.Error_CannotConnectToServer:
                             m_Gump.ActivePage = 2;
                             m_ErrorReceived = true;
                             break;
-                        case UltimaClientStatus.Error_InvalidUsernamePassword:
+                        case LoginClientStatus.Error_InvalidUsernamePassword:
                             m_Gump.ActivePage = 3;
                             m_ErrorReceived = true;
                             break;
-                        case UltimaClientStatus.Error_InUse:
+                        case LoginClientStatus.Error_InUse:
                             m_Gump.ActivePage = 4;
                             m_ErrorReceived = true;
                             break;
-                        case UltimaClientStatus.Error_Blocked:
+                        case LoginClientStatus.Error_Blocked:
                             m_Gump.ActivePage = 5;
                             m_ErrorReceived = true;
                             break;
-                        case UltimaClientStatus.Error_BadPassword:
+                        case LoginClientStatus.Error_BadPassword:
                             m_Gump.ActivePage = 6;
                             m_ErrorReceived = true;
                             break;
-                        case UltimaClientStatus.Error_Idle:
+                        case LoginClientStatus.Error_Idle:
                             m_Gump.ActivePage = 7;
                             m_ErrorReceived = true;
                             break;
-                        case UltimaClientStatus.Error_BadCommunication:
+                        case LoginClientStatus.Error_BadCommunication:
                             m_Gump.ActivePage = 8;
                             m_ErrorReceived = true;
                             break;

@@ -1,14 +1,12 @@
 #region Usings
-
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Timers;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Linq;
 using UltimaXNA.Core.Diagnostics.Tracing;
-
 #endregion
 
 namespace UltimaXNA.Configuration

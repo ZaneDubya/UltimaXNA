@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics.Tracing;
 
 namespace UltimaXNA.Core.Diagnostics.Tracing
@@ -10,6 +11,7 @@ namespace UltimaXNA.Core.Diagnostics.Tracing
         public void Critical(string message)
         {
             WriteEvent(TraceEventId.Critical, message);
+            throw new Exception(message);
         }
 
         [Event(TraceEventId.Error, Level = EventLevel.Error)]

@@ -8,10 +8,11 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Core.Input.Windows;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.Input;
+using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Ultima.IO.FontsNew;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World;
@@ -21,9 +22,13 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 {
     class ChatWindow : Gump
     {
-        TextEntry m_Input;
+        TextEntry m_TextEntry;
         List<ChatLineTimed> m_TextEntries;
         List<string> m_MessageHistory;
+
+        GUIManager m_UserInterface;
+        InputManager m_Input;
+        WorldModel m_World;
 
         int m_MessageHistoryIndex = -1;
 
@@ -34,20 +39,24 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_MessageHistory = new List<string>();
             Width = 400;
             Enabled = true;
+
+            m_Input = UltimaServices.GetService<InputManager>();
+            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_World = UltimaServices.GetService<WorldModel>();
         }
 
         public override void Update(double totalMS, double frameMS)
         {
-            if (m_Input == null)
+            if (m_TextEntry == null)
             {
-                m_Input = new TextEntry(this, 0, 1, Engine.UserInterface.Height - TextUni.GetFont(0).Height , 400, TextUni.GetFont(0).Height, 0, 0, 64, string.Empty);
-                m_Input.LegacyCarat = true;
+                m_TextEntry = new TextEntry(this, 0, 1, m_UserInterface.Height - TextUni.GetFont(0).Height, 400, TextUni.GetFont(0).Height, 0, 0, 64, string.Empty);
+                m_TextEntry.LegacyCarat = true;
 
-                AddControl(new CheckerTrans(this, 0, 0, Engine.UserInterface.Height - 20, Engine.UserInterface.Width, 20));
-                AddControl(m_Input);
+                AddControl(new CheckerTrans(this, 0, 0, m_UserInterface.Height - 20, m_UserInterface.Width, 20));
+                AddControl(m_TextEntry);
             }
 
-            int y = m_Input.Y - 48;
+            int y = m_TextEntry.Y - 48;
             for (int i = 0; i < m_TextEntries.Count; i++)
             {
                 m_TextEntries[i].Update(totalMS, frameMS);
@@ -61,22 +70,22 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
             // Ctrl-Q = Cycle backwards through the things you have said today
             // Ctrl-W = Cycle forwards through the things you have said today
-            if (Engine.Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.Q, false, false, true) && m_MessageHistoryIndex > -1)
+            if (m_Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.Q, false, false, true) && m_MessageHistoryIndex > -1)
             {
                 if (m_MessageHistoryIndex > 0)
                     m_MessageHistoryIndex -= 1;
-                m_Input.Text = m_MessageHistory[m_MessageHistoryIndex];
+                m_TextEntry.Text = m_MessageHistory[m_MessageHistoryIndex];
 
             }
-            else if (Engine.Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.W, false, false, true))
+            else if (m_Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.W, false, false, true))
             {
                 if (m_MessageHistoryIndex < m_MessageHistory.Count - 1)
                 {
                     m_MessageHistoryIndex += 1;
-                    m_Input.Text = m_MessageHistory[m_MessageHistoryIndex];
+                    m_TextEntry.Text = m_MessageHistory[m_MessageHistoryIndex];
                 }
                 else
-                    m_Input.Text = string.Empty;
+                    m_TextEntry.Text = string.Empty;
             }
 
             base.Update(totalMS, frameMS);
@@ -84,7 +93,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         public override void Draw(SpriteBatchUI spriteBatch)
         {
-            int y = m_Input.Y - 20;
+            int y = m_TextEntry.Y - 20;
             for (int i = m_TextEntries.Count - 1; i >= 0; i--)
             {
                 y -= m_TextEntries[i].TextHeight;
@@ -95,10 +104,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         public override void ActivateByKeyboardReturn(int textID, string text)
         {
-            m_Input.Text = string.Empty;
+            m_TextEntry.Text = string.Empty;
             m_MessageHistory.Add(text);
             m_MessageHistoryIndex = m_MessageHistory.Count;
-            (Engine.ActiveModel as WorldModel).Interaction.SendChat(text);
+            m_World.Interaction.SendChat(text);
         }
 
         public void AddLine(string text)

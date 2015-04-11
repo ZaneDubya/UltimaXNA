@@ -1,18 +1,13 @@
 ﻿using InterXLib.Patterns.MVC;
 using System;
-using UltimaXNA.Core.Patterns.IoC;
 
 namespace UltimaXNA.Ultima
 {
     abstract public class AUltimaModel : AModel
     {
-        public IEngine Engine { get; private set; }
-        protected IContainer Container { get; private set; }
-
-        protected AUltimaModel(IContainer container)
+        protected AUltimaModel()
         {
-            Container = container;
-            Engine = container.Resolve<IEngine>();
+
         }
 
         private bool m_IsInitialized;

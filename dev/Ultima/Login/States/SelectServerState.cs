@@ -7,22 +7,24 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-
 #region Usings
 using System;
-using UltimaXNA.Core.Patterns.IoC;
-using UltimaXNA.Ultima.UI.LoginGumps;
 using UltimaXNA.Ultima.Data.Servers;
+using UltimaXNA.Ultima.UI;
+using UltimaXNA.Ultima.UI.LoginGumps;
 #endregion
 
 namespace UltimaXNA.Ultima.Login.States
 {
     public class SelectServerState : AState
     {
+        GUIManager m_UserInterface;
+        LoginClient m_Client;
+
         private SelectServerGump m_SelectServerGump;
 
-        public SelectServerState(IContainer container)
-            : base(container)
+        public SelectServerState()
+            : base()
         {
             
         }
@@ -31,7 +33,10 @@ namespace UltimaXNA.Ultima.Login.States
         {
             base.Intitialize();
 
-            m_SelectServerGump = (SelectServerGump)Engine.UserInterface.AddControl(new SelectServerGump(), 0, 0);
+            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_Client = UltimaServices.GetService<LoginClient>();
+
+            m_SelectServerGump = (SelectServerGump)m_UserInterface.AddControl(new SelectServerGump(), 0, 0);
             m_SelectServerGump.OnBackToLoginScreen += OnBackToLoginScreen;
             m_SelectServerGump.OnSelectLastServer += OnSelectLastServer;
             m_SelectServerGump.OnSelectServer += OnSelectServer;
@@ -43,30 +48,30 @@ namespace UltimaXNA.Ultima.Login.States
 
             if(SceneState == SceneState.Active)
             {
-                switch(Engine.Client.Status)
+                switch (m_Client.Status)
                 {
-                    case UltimaClientStatus.LoginServer_HasServerList:
+                    case LoginClientStatus.LoginServer_HasServerList:
                         if(Servers.List.Length == 1)
                         {
                             OnSelectServer(0);
                         }
                         // This is where we're supposed to be while waiting to select a server.
                         break;
-                    case UltimaClientStatus.LoginServer_WaitingForRelay:
+                    case LoginClientStatus.LoginServer_WaitingForRelay:
                         // we must now send the relay packet.
-                        Engine.Client.Relay();
+                        m_Client.Relay();
                         break;
-                    case UltimaClientStatus.LoginServer_Relaying:
+                    case LoginClientStatus.LoginServer_Relaying:
                         // relaying to the server we will log in to ...
                         break;
-                    case UltimaClientStatus.GameServer_Connecting:
+                    case LoginClientStatus.GameServer_Connecting:
                         // we are logging in to the shard.
                         break;
-                    case UltimaClientStatus.GameServer_CharList:
+                    case LoginClientStatus.GameServer_CharList:
                         // we've got the char list
-                        Manager.CurrentScene = Container.Resolve<CharacterListState>();
+                        Manager.CurrentState = new CharacterListState();
                         break;
-                    case UltimaClientStatus.WorldServer_InWorld:
+                    case LoginClientStatus.WorldServer_InWorld:
                         // we've connected! Client takes us into the world and disposes of this Model.
                         break;
                     default:
@@ -90,7 +95,7 @@ namespace UltimaXNA.Ultima.Login.States
         public void OnSelectServer(int index)
         {
             m_SelectServerGump.ActivePage = 2;
-            Engine.Client.SelectShard(index);
+            m_Client.SelectShard(index);
         }
 
         public void OnSelectLastServer()

@@ -21,72 +21,18 @@ namespace UltimaXNA.Ultima.UI.Controls
 {
     class PaperDollInteractable : Gump
     {
-        public enum EquipSlots : int
-        {
-            Body = 0,
-            RightHand = 1,
-            LeftHand = 2,
-            Footwear = 3,
-            Legging = 4,
-            Shirt = 5,
-            Head = 6,
-            Gloves = 7,
-            Ring = 8,
-            Talisman = 9,
-            Neck = 10,
-            Hair = 11,
-            Belt = 12,
-            Chest = 13,
-            Bracelet = 14,
-            Unused = 15,
-            FacialHair = 16,
-            Sash = 17,
-            Earring = 18,
-            Sleeves = 19,
-            Back = 20,
-            Backpack = 21,
-            Robe = 22,
-            Skirt = 23,
-            // skip 24, inner legs (!!! do we really skip this?)
-        }
-
-        private static EquipSlots[] s_DrawOrder = new EquipSlots[21] {
-            EquipSlots.Footwear,
-            EquipSlots.Legging,
-            EquipSlots.Shirt,
-            EquipSlots.Sleeves,
-            EquipSlots.Gloves,
-            EquipSlots.Ring,
-            EquipSlots.Talisman,
-            EquipSlots.Neck,
-            EquipSlots.Belt,
-            EquipSlots.Chest,
-            EquipSlots.Bracelet,
-            EquipSlots.Hair,
-            EquipSlots.FacialHair,
-            EquipSlots.Head,
-            EquipSlots.Sash,
-            EquipSlots.Earring,
-            EquipSlots.Back,
-            EquipSlots.Skirt,
-            EquipSlots.Robe,
-            EquipSlots.LeftHand,
-            EquipSlots.RightHand
-        };
-
         bool m_isFemale;
         bool m_isElf;
+
+        WorldModel m_World;
 
         public PaperDollInteractable(AControl owner, int page, int x, int y)
             : base(0, 0)
         {
             m_owner = owner;
             Position = new Point(x, y);
-        }
 
-        public override void Initialize()
-        {
-
+            m_World = UltimaServices.GetService<WorldModel>();
         }
 
         public override void Update(double totalMS, double frameMS)
@@ -151,7 +97,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         void dblclick_Backpack(int x, int y, MouseButton button)
         {
             Container backpack = ((Mobile)m_sourceEntity).Backpack;
-            (Engine.ActiveModel as WorldModel).Interaction.DoubleClick(backpack);
+            m_World.Interaction.DoubleClick(backpack);
         }
 
         //void Interaction_OnItemPickUp(ItemGumplingPaperdoll Control)
@@ -183,5 +129,58 @@ namespace UltimaXNA.Ultima.UI.Controls
                 return (m_sourceEntity == null) ? false : true;
             }
         }
+
+        public enum EquipSlots : int
+        {
+            Body = 0,
+            RightHand = 1,
+            LeftHand = 2,
+            Footwear = 3,
+            Legging = 4,
+            Shirt = 5,
+            Head = 6,
+            Gloves = 7,
+            Ring = 8,
+            Talisman = 9,
+            Neck = 10,
+            Hair = 11,
+            Belt = 12,
+            Chest = 13,
+            Bracelet = 14,
+            Unused = 15,
+            FacialHair = 16,
+            Sash = 17,
+            Earring = 18,
+            Sleeves = 19,
+            Back = 20,
+            Backpack = 21,
+            Robe = 22,
+            Skirt = 23,
+            // skip 24, inner legs (!!! do we really skip this?)
+        }
+
+        private static EquipSlots[] s_DrawOrder = new EquipSlots[21] {
+            EquipSlots.Footwear,
+            EquipSlots.Legging,
+            EquipSlots.Shirt,
+            EquipSlots.Sleeves,
+            EquipSlots.Gloves,
+            EquipSlots.Ring,
+            EquipSlots.Talisman,
+            EquipSlots.Neck,
+            EquipSlots.Belt,
+            EquipSlots.Chest,
+            EquipSlots.Bracelet,
+            EquipSlots.Hair,
+            EquipSlots.FacialHair,
+            EquipSlots.Head,
+            EquipSlots.Sash,
+            EquipSlots.Earring,
+            EquipSlots.Back,
+            EquipSlots.Skirt,
+            EquipSlots.Robe,
+            EquipSlots.LeftHand,
+            EquipSlots.RightHand
+        };
     }
 }

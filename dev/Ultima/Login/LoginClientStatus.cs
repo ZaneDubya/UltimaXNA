@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace UltimaXNA.Ultima
+namespace UltimaXNA.Ultima.Login
 {
-    public enum UltimaClientStatus
+    public enum LoginClientStatus
     {
         Unconnected,
         LoginServer_Connecting,

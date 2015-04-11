@@ -135,13 +135,13 @@
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Core\ComponentModel\EqualityHelper.cs" />
     <Compile Include="Core\ComponentModel\NotifyPropertyChangedBase.cs" />
-    <Compile Include="Configuration\CommentJsonConverter.cs" />
     <Compile Include="Configuration\Resolution.cs" />
     <Compile Include="Configuration\SettingsContainer.cs" />
     <Compile Include="Configuration\SettingsToken.cs" />
     <Compile Include="Core\DpiManager.cs" />
     <Compile Include="Core\Extensions\StringExtensions.cs" />
     <Compile Include="Core\Network\INetworkClient.cs" />
+    <Compile Include="UltimaServices.cs" />
     <Compile Include="Ultima\AUltimaModel.cs" />
     <Compile Include="Core\Collections\SafeDictionary.cs" />
     <Compile Include="Configuration\DebugSettings.cs" />
@@ -253,9 +253,9 @@
     <Compile Include="Ultima\IO\FontsNew\FontUni.cs" />
     <Compile Include="Ultima\IO\FontsNew\TextUni.cs" />
     <Compile Include="Ultima\UI\WorldGumps\JournalGump.cs" />
-    <Compile Include="Ultima\Login\LoginClient.cs" />
     <Compile Include="Ultima\Login\States\HueTestState.cs" />
     <Compile Include="Ultima\Player\JournalData.cs" />
+    <Compile Include="Ultima\Login\LoginClient.cs" />
     <Compile Include="Ultima\World\Controllers\MousePicking.cs" />
     <Compile Include="Ultima\World\Controllers\PickType.cs" />
     <Compile Include="Ultima\World\EffectManager.cs" />
@@ -272,7 +272,7 @@
     <Compile Include="Ultima\UI\WorldGumps\CorpseGump.cs" />
     <Compile Include="Ultima\World\Controllers\WorldInteraction.cs" />
     <Compile Include="Ultima\Login\LoginModel.cs" />
-    <Compile Include="Ultima\UltimaClientStatus.cs" />
+    <Compile Include="Ultima\Login\LoginClientStatus.cs" />
     <Compile Include="Ultima\Login\LoginView.cs" />
     <Compile Include="Ultima\Data\Accounts\CharacterListEntry.cs" />
     <Compile Include="Ultima\Data\Accounts\Characters.cs" />
@@ -402,7 +402,6 @@
     <Compile Include="Ultima\Network\Server\WeatherPacket.cs" />
     <Compile Include="Ultima\Network\Server\WornItemPacket.cs" />
     <Compile Include="Ultima\Network\Shared.cs" />
-    <Compile Include="Ultima\UltimaClient.cs" />
     <Compile Include="Ultima\IO\ArtData.cs" />
     <Compile Include="Ultima\IO\ContainerData.cs" />
     <Compile Include="Ultima\IO\CustomHousingData.cs" />
@@ -415,7 +414,6 @@
     </Compile>
     <Compile Include="Ultima\IO\TileMatrixRaw.cs" />
     <Compile Include="Ultima\World\Controllers\WorldInput.cs" />
-    <Compile Include="Ultima\UI\Controls\TextureGumpling.cs" />
     <Compile Include="Ultima\UI\HTML\Regions.cs" />
     <Compile Include="Ultima\UI\HTML\Enums.cs" />
     <Compile Include="Ultima\UI\HTML\Images.cs" />

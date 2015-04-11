@@ -7,30 +7,19 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using UltimaXNA.Ultima.Entities;
-using UltimaXNA.Ultima.UI.Controls;
-using UltimaXNA.Ultima.Network;
-using UltimaXNA.Ultima.Network.Client;
-using UltimaXNA.Ultima.World;
-using UltimaXNA.Core;
-using UltimaXNA.Ultima.Entities.Mobiles;
-using UltimaXNA.Ultima.Entities.Items;
+#region usings
 using UltimaXNA.Ultima.Entities.Items.Containers;
+using UltimaXNA.Ultima.Entities.Mobiles;
+using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Ultima.World;
+#endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
 {
     class TopMenu : Gump
     {
-        enum Buttons
-        {
-            Map,
-            Paperdoll,
-            Inventory,
-            Journal,
-            Chat,
-            Help,
-            Question
-        }
+        GUIManager m_UserInterface;
+        WorldModel m_World;
 
         public TopMenu(Serial serial)
             : base(serial, 0)
@@ -60,6 +49,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             AddControl(new ResizePic(this, 2, 0, 0, 9200, 30, 27));
             AddControl(new Button(this, 2, 5, 3, 5537, 5539, 0, 1, 0));
             ((Button)LastControl).GumpOverID = 5538;
+
+            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_World = UltimaServices.GetService<WorldModel>();
         }
 
         public override void ActivateByButton(int buttonID)
@@ -67,28 +59,39 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             switch ((Buttons)buttonID)
             {
                 case Buttons.Map:
-                    Engine.UserInterface.AddControl(new MiniMap(), 566, 25, GUIManager.AddGumpType.Toggle);
+                    m_UserInterface.AddControl(new MiniMap(), 566, 25, GUIManager.AddControlType.Toggle);
                     break;
                 case Buttons.Paperdoll:
-                    Engine.UserInterface.AddControl(new PaperDollGump((Mobile)EntityManager.GetPlayerObject()), 400, 100, GUIManager.AddGumpType.Toggle);
+                    m_UserInterface.AddControl(new PaperDollGump((Mobile)EntityManager.GetPlayerObject()), 400, 100, GUIManager.AddControlType.Toggle);
                     break;
                 case Buttons.Inventory:
                     // opens the player's backpack.
                     PlayerMobile mobile = (PlayerMobile)EntityManager.GetPlayerObject();
                     Container backpack = mobile.Backpack;
-                    (Engine.ActiveModel as WorldModel).Interaction.DoubleClick(backpack);
+                    m_World.Interaction.DoubleClick(backpack);
                     break;
                 case Buttons.Journal:
-                    Engine.UserInterface.AddControl(new JournalGump(), 80, 80, GUIManager.AddGumpType.Toggle);
+                    m_UserInterface.AddControl(new JournalGump(), 80, 80, GUIManager.AddControlType.Toggle);
                     break;
                 case Buttons.Chat:
                     break;
                 case Buttons.Help:
                     break;
                 case Buttons.Question:
-                    Engine.UserInterface.AddControl(new DebugGump(), 50, 50, GUIManager.AddGumpType.Toggle);
+                    m_UserInterface.AddControl(new DebugGump(), 50, 50, GUIManager.AddControlType.Toggle);
                     break;
             }
+        }
+
+        enum Buttons
+        {
+            Map,
+            Paperdoll,
+            Inventory,
+            Journal,
+            Chat,
+            Help,
+            Question
         }
     }
 }

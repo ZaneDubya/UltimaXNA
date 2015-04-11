@@ -14,6 +14,7 @@ using UltimaXNA.Core.Graphics;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World;
 using UltimaXNA.Core;
+using UltimaXNA.Core.Network;
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
 {
@@ -37,10 +38,18 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             private set;
         }
 
+        GUIManager m_UserInterface;
+        WorldModel m_World;
+        INetworkClient m_Client;
+
         public PaperDollGump(Mobile parent)
             : base(0, 0)
         {
             Parent = parent;
+
+            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_World = UltimaServices.GetService<WorldModel>();
+            m_Client = UltimaServices.GetService<INetworkClient>();
 
             IsMovable = true;
 
@@ -124,28 +133,28 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 case Buttons.Options:
                     break;
                 case Buttons.LogOut:
-                    MsgBox g = Engine.UserInterface.MsgBox("Quit Ultima Online?", MsgBoxTypes.OkCancel);
+                    MsgBox g = m_UserInterface.MsgBox("Quit Ultima Online?", MsgBoxTypes.OkCancel);
                     g.OnClose = logout_OnClose;
                     break;
                 case Buttons.Quests:
                     break;
                 case Buttons.Skills:
-                    Engine.UserInterface.AddControl(new SkillsGump(), 80, 80, GUIManager.AddGumpType.Toggle);
+                    m_UserInterface.AddControl(new SkillsGump(), 80, 80, GUIManager.AddControlType.Toggle);
                     break;
                 case Buttons.Guild:
                     break;
                 case Buttons.PeaceWarToggle:
-                    (Engine.ActiveModel as WorldModel).Interaction.ToggleWarMode();
+                    m_World.Interaction.ToggleWarMode();
                     break;
                 case Buttons.Status:
-                    Engine.UserInterface.AddControl(new StatusGump(), 200, 400, GUIManager.AddGumpType.Toggle);
+                    m_UserInterface.AddControl(new StatusGump(), 200, 400, GUIManager.AddControlType.Toggle);
                     break;
             }
         }
 
         void logout_OnClose()
         {
-            Engine.Client.Disconnect();
+            m_Client.Disconnect();
         }
 
         public override bool Equals(object obj)

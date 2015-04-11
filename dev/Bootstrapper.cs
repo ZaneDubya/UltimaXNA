@@ -11,10 +11,7 @@ using UltimaXNA.Core;
 using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Diagnostics.Tracing.Listeners;
-using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.Patterns.IoC;
-using UltimaXNA.Ultima.IO;
-using UltimaXNA.Windows.Diagnostics.Tracing.Listeners;
 #endregion
 
 namespace UltimaXNA
@@ -40,7 +37,7 @@ namespace UltimaXNA
             get { return AppDomain.CurrentDomain.BaseDirectory; }
         }
 
-        private void ConfigureContainer(IContainer container)
+        private void ConfigureContainer(Container container)
         {
             container.RegisterModule<CoreModule>();
         }
@@ -67,10 +64,10 @@ namespace UltimaXNA
             m_Container = rootContainer.CreateChildContainer();
 
             ConfigureContainer(rootContainer);
-            ConfigurePlugins(m_Container);
+            ConfigurePlugins();
         }
 
-        private void ConfigurePlugins(IContainer container)
+        private void ConfigurePlugins()
         {
             DirectoryInfo directory = new DirectoryInfo(Path.Combine(BaseApplicationPath, "plugins"));
 
@@ -96,7 +93,7 @@ namespace UltimaXNA
 
                         IModule instance = (IModule)Activator.CreateInstance(module);
 
-                        instance.Load(container);
+                        instance.Load();
                     }
                 }
                 catch (Exception e)
@@ -146,7 +143,7 @@ namespace UltimaXNA
             Prepare();
             Configure();
 
-            using (IEngine engine = m_Container.Resolve<IEngine>())
+            using (UltimaEngine engine = UltimaServices.GetService<UltimaEngine>())
             {
                 engine.Run();
             }

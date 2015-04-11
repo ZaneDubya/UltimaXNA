@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using UltimaXNA.Core.Collections;
@@ -72,7 +71,7 @@ namespace UltimaXNA.Core.Patterns.IoC
 
             Register<TModule>();
             TModule module = Resolve<TModule>();
-            module.Load(this);
+            module.Load();
             m_modules.Add(typeof (TModule), module);
         }
 

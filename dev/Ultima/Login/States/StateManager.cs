@@ -1,25 +1,19 @@
-﻿using Microsoft.Xna.Framework;
-using UltimaXNA.Core.Diagnostics;
-using UltimaXNA.Core.Diagnostics.Tracing;
-using UltimaXNA.Core.Patterns.IoC;
+﻿using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Ultima.UI;
 
 namespace UltimaXNA.Ultima.Login.States
 {
-    public class SceneManager
+    public class StateManager
     {
-        private IContainer m_Container;
         AState m_CurrentScene;
         bool m_isTransitioning = false;
-
-        protected IEngine Engine { get; private set; }
 
         public bool IsTransitioning
         {
             get { return m_isTransitioning; }
         }
 
-        public AState CurrentScene
+        public AState CurrentState
         {
             get { return m_CurrentScene; }
             set
@@ -80,11 +74,13 @@ namespace UltimaXNA.Ultima.Login.States
             }
         }
 
-        public SceneManager(IContainer container)
-        {
-            m_Container = container;
+        GUIManager m_UserInterface;
+        LoginClient m_Client;
 
-            Engine = container.Resolve<IEngine>();
+        public StateManager()
+        {
+            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_Client = UltimaServices.GetService<LoginClient>();
         }
 
         public void Update(double totalTime, double frameTime)
@@ -103,10 +99,10 @@ namespace UltimaXNA.Ultima.Login.States
 
         public void ResetToLoginScreen()
         {
-            Engine.Client.Disconnect();
-            Engine.UserInterface.Reset();
+            m_Client.Disconnect();
+            m_UserInterface.Reset();
             if (!(m_CurrentScene is LoginState))
-                CurrentScene = m_Container.Resolve<LoginState>();
+                CurrentState = new LoginState();
         }
     }
 }

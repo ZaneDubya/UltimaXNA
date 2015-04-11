@@ -8,9 +8,9 @@
  *
  ***************************************************************************/
 #region usings
-
 using System.Security;
-using UltimaXNA.Core.Patterns.IoC;
+using UltimaXNA.Core.Input;
+using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.LoginGumps;
 #endregion
 
@@ -20,17 +20,23 @@ namespace UltimaXNA.Ultima.Login.States
     {
         LoginGump m_LoginGump;
 
-        public LoginState(IContainer container)
-            : base(container)
-        {
+        GUIManager m_UserInterface;
+        InputManager m_Input;
+        LoginClient m_Client;
 
+        public LoginState()
+            : base()
+        {
+            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_Client = UltimaServices.GetService<LoginClient>();
+            m_Input = UltimaServices.GetService<InputManager>();
         }
 
         public override void Intitialize()
         {
             base.Intitialize();
 
-            m_LoginGump = (LoginGump)Engine.UserInterface.AddControl(new LoginGump(), 0, 0);
+            m_LoginGump = (LoginGump)m_UserInterface.AddControl(new LoginGump(), 0, 0);
             m_LoginGump.OnLogin += OnLogin;
         }
 
@@ -38,9 +44,9 @@ namespace UltimaXNA.Ultima.Login.States
         {
             base.Update(totalTime, frameTime);
 
-            if (Engine.Input.HandleKeyboardEvent(Core.Input.Windows.KeyboardEventType.Down, Core.Input.Windows.WinKeys.D, false, false, true))
+            if (m_Input.HandleKeyboardEvent(Core.Input.Windows.KeyboardEventType.Down, Core.Input.Windows.WinKeys.D, false, false, true))
             {
-                Manager.CurrentScene = Container.Resolve<LoggingInState>();
+                Manager.CurrentState = new LoggingInState();
             }
         }
 
@@ -52,10 +58,10 @@ namespace UltimaXNA.Ultima.Login.States
 
         public void OnLogin(string server, int port, string account, SecureString password)
         {   
-            Engine.Client.UserName = account;
-            Engine.Client.Password = password;
+            m_Client.UserName = account;
+            m_Client.Password = password;
 
-            Manager.CurrentScene = Container.Resolve<LoggingInState>();
+            Manager.CurrentState = new LoggingInState();
         }
     }
 }

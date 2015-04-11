@@ -7,136 +7,36 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-
 #region Usings
-
-using System;
-using System.Drawing;
-using System.Windows.Forms;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Core.Graphics;
+using System.Windows.Forms;
 using UltimaXNA.Configuration;
+using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Network;
-using UltimaXNA.Core.Patterns.IoC;
+using UltimaXNA.Ultima;
 using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.IO.FontsNew;
 using UltimaXNA.Ultima.IO.FontsOld;
-using UltimaXNA.Ultima.UI;
-using UltimaXNA.Ultima;
 using UltimaXNA.Ultima.Login;
-using Color = Microsoft.Xna.Framework.Color;
-using Point = Microsoft.Xna.Framework.Point;
-
+using UltimaXNA.Ultima.UI;
 #endregion
 
 namespace UltimaXNA
 {
-    public interface IEngine : IDisposable
-    {
-        InputManager Input
-        {
-            get;
-        }
-        
-        Game Game
-        {
-            get;
-        }
-
-        GraphicsDevice GraphicsDevice
-        {
-            get;
-        }
-
-        GUIManager UserInterface
-        {
-            get;
-        }
-
-        Client Client
-        {
-            get;
-        }
-
-        AUltimaModel QueuedModel
-        {
-            get;
-            set;
-        }
-
-        AUltimaModel ActiveModel
-        {
-            get;
-            set;
-        }
-
-        GameWindow Window
-        {
-            get;
-        }
-
-        bool IsActive
-        {
-            get;
-        }
-
-        void ActivateQueuedModel();
-
-        void Run();
-
-        void Tick();
-
-        void SuppressDraw();
-
-        void Exit();
-
-        void ResetElapsedTime();
-
-    }
-
-    internal class UltimaEngine : Game, IEngine
+    internal class UltimaEngine : Game
     {
         public static double TotalMS = 0d;
 
-        private readonly IContainer m_Container;
-        private readonly INetworkClient m_Network;
-
-        private AUltimaModel m_Model;
-        private AUltimaModel m_QueuedModel;
-
-        public UltimaEngine(IContainer container)
+        public UltimaEngine()
         {
-            m_Container = container;
-            m_Network = container.Resolve<INetworkClient>();
-
             InitializeGraphicsDevice();
         }
 
-        public InputManager Input
-        {
-            get;
-            private set;
-        }
-
-        public Game Game
-        {
-            get { return this; }
-        }
-
-        public GUIManager UserInterface
-        {
-            get;
-            private set;
-        }
-
-        public Client Client
-        {
-            get;
-            private set;
-        }
+        #region Active & Queued Models
+        private AUltimaModel m_Model;
+        private AUltimaModel m_QueuedModel;
 
         public AUltimaModel QueuedModel
         {
@@ -175,7 +75,17 @@ namespace UltimaXNA
             }
         }
 
-        public bool IsMinimized
+        public void ActivateQueuedModel()
+        {
+            if (m_QueuedModel != null)
+            {
+                ActiveModel = QueuedModel;
+                m_QueuedModel = null;
+            }
+        }
+        #endregion
+
+        protected bool IsMinimized
         {
             get
             {
@@ -190,13 +100,23 @@ namespace UltimaXNA
             }
         }
 
-        public void ActivateQueuedModel()
+
+        protected InputManager Input
         {
-            if(m_QueuedModel != null)
-            {
-                ActiveModel = QueuedModel;
-                m_QueuedModel = null;
-            }
+            get;
+            private set;
+        }
+
+        protected GUIManager UserInterface
+        {
+            get;
+            private set;
+        }
+
+        protected INetworkClient Network
+        {
+            get;
+            private set;
         }
 
         protected override void Initialize()
@@ -204,9 +124,11 @@ namespace UltimaXNA
             Content.RootDirectory = "Content";
 
             // Create all the services we need.
-            Client = m_Container.Resolve<Client>();
-            Input = new InputManager(Window.Handle);
-            UserInterface = new GUIManager(m_Container);
+            UltimaServices.Register<SpriteBatch3D>(new SpriteBatch3D(this));
+            UltimaServices.Register<SpriteBatchUI>(new SpriteBatchUI(this));
+            Network = UltimaServices.Register<INetworkClient>(new NetworkClient());
+            Input = UltimaServices.Register<InputManager>(new InputManager(Window.Handle));
+            UserInterface = UltimaServices.Register<GUIManager>(new GUIManager());
 
             // Make sure we have a UO installation before loading IO.
             if(FileManager.IsUODataPresent)
@@ -230,7 +152,7 @@ namespace UltimaXNA
                 EngineVars.EngineRunning = true;
                 EngineVars.InWorld = false;
 
-                ActiveModel = m_Container.Resolve<LoginModel>();
+                ActiveModel = new LoginModel();
             }
         }
 
@@ -251,7 +173,7 @@ namespace UltimaXNA
                 TotalMS = totalMS;
                 Input.Update(totalMS, frameMS);
                 UserInterface.Update(totalMS, frameMS);
-                m_Network.Slice();
+                Network.Slice();
                 ActiveModel.Update(totalMS, frameMS);
             }
         }

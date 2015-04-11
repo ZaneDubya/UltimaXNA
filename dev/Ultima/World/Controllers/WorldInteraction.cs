@@ -12,7 +12,6 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using UltimaXNA.Core.Network;
-using UltimaXNA.Core.Patterns.IoC;
 using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Entities;
 using UltimaXNA.Ultima.Entities.Items;
@@ -20,8 +19,7 @@ using UltimaXNA.Ultima.Entities.Mobiles;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.WorldGumps;
-using Container = UltimaXNA.Ultima.Entities.Items.Containers.Container;
-
+using UltimaXNA.Ultima.Entities.Items.Containers;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Controllers
@@ -32,6 +30,7 @@ namespace UltimaXNA.Ultima.World.Controllers
     internal class WorldInteraction
     {
         private INetworkClient m_Network;
+        private GUIManager m_UserInterface;
 
         protected WorldModel World
         {
@@ -39,9 +38,10 @@ namespace UltimaXNA.Ultima.World.Controllers
             private set;
         }
 
-        public WorldInteraction(IContainer container, WorldModel world)
+        public WorldInteraction(WorldModel world)
         {
-            m_Network = container.Resolve<INetworkClient>();
+            m_Network = UltimaServices.GetService<INetworkClient>();
+            m_UserInterface = UltimaServices.GetService<GUIManager>();
 
             World = world;
         }
@@ -87,13 +87,13 @@ namespace UltimaXNA.Ultima.World.Controllers
         {
             Gump gump;
 
-            if ((gump = (Gump)World.Engine.UserInterface.GetControl(entity.Serial)) != null)
+            if ((gump = (Gump)m_UserInterface.GetControl(entity.Serial)) != null)
             {
                 gump.Dispose();
             }
 
             gump = new ContainerGump(entity, ((Container)entity).ItemID);
-            World.Engine.UserInterface.AddControl(gump, 64, 64);
+            m_UserInterface.AddControl(gump, 64, 64);
             return gump;
         }
 
@@ -101,13 +101,13 @@ namespace UltimaXNA.Ultima.World.Controllers
         {
             Gump gump;
 
-            if ((gump = (Gump)World.Engine.UserInterface.GetControl(entity.Serial)) != null)
+            if ((gump = (Gump)m_UserInterface.GetControl(entity.Serial)) != null)
             {
                 gump.Dispose();
             }
 
             gump = new ContainerGump(entity, 0x2006);
-            World.Engine.UserInterface.AddControl(gump, 96, 96);
+            m_UserInterface.AddControl(gump, 96, 96);
             return gump;
         }
 
@@ -122,7 +122,7 @@ namespace UltimaXNA.Ultima.World.Controllers
         {
             m_ChatQueue.Add(new QueuedMessage(text, hue, font));
 
-            ChatWindow chat = World.Engine.UserInterface.GetControl<ChatWindow>(0);
+            ChatWindow chat = m_UserInterface.GetControl<ChatWindow>(0);
             if (chat != null)
             {
                 foreach (QueuedMessage msg in m_ChatQueue)

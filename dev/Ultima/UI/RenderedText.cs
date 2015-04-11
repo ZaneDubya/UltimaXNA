@@ -25,8 +25,6 @@ namespace UltimaXNA.Ultima.UI
         private Texture2D m_Texture;
         private Reader m_HtmlParser;
 
-        public static GraphicsDevice Graphics;
-
         public int Width
         {
             get
@@ -140,6 +138,8 @@ namespace UltimaXNA.Ultima.UI
             set;
         }
 
+        private readonly SpriteBatchUI m_SpriteBatch;
+
         public RenderedText(string text, bool asHTML, int maxWidth = 200)
         {
             Text = text;
@@ -148,6 +148,8 @@ namespace UltimaXNA.Ultima.UI
 
             Regions = new Regions();
             Images = new Images();
+
+            m_SpriteBatch = UltimaServices.GetService<SpriteBatchUI>();
         }
 
         public Texture2D Texture
@@ -285,7 +287,7 @@ namespace UltimaXNA.Ultima.UI
                     int width, height, ascender;
 
                     resizeAndParse(Text, MaxWidth, AsHTML, out width, out height, out ascender);
-                    m_Texture = renderToTexture(Graphics, m_HtmlParser, width, height, ascender);
+                    m_Texture = renderToTexture(m_SpriteBatch.GraphicsDevice, m_HtmlParser, width, height, ascender);
 
                     m_MustRender = false;
                 }

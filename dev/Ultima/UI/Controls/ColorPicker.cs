@@ -50,10 +50,14 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
+        GUIManager m_UserInterface;
+
         public ColorPicker(AControl owner, int page)
             : base(owner, page)
         {
             HandlesMouseInput = true;
+
+            m_UserInterface = UltimaServices.GetService<GUIManager>();
         }
 
         public ColorPicker(AControl owner, int page, Rectangle area, int swatchWidth, int swatchHeight, int[] hues)
@@ -105,7 +109,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             {
                 if (m_isSwatchOpen && m_openColorPicker.IsInitialized)
                 {
-                    if (Engine.UserInterface.MouseOverControl != m_openColorPicker)
+                    if (m_UserInterface.MouseOverControl != m_openColorPicker)
                         closeSwatch();
                 }
             }

@@ -27,11 +27,15 @@ namespace UltimaXNA.Ultima.UI
         Serial m_GumpID;
         string[] m_gumpPieces, m_gumpLines;
 
+        GUIManager m_UserInterface;
+
         public Gump(Serial serial, Serial gumpID)
             : base(null, 0)
         {
             Serial = serial;
             m_GumpID = gumpID;
+
+            m_UserInterface = UltimaServices.GetService<GUIManager>();
         }
 
         public Gump(Serial serial, Serial gumpID, String[] pieces, String[] textlines)
@@ -75,7 +79,7 @@ namespace UltimaXNA.Ultima.UI
         {
             int[] switchIDs = new int[0];
             Tuple<short, string>[] textEntries = new Tuple<short,string>[0];
-            Engine.UserInterface.GumpMenuSelect(Serial, m_GumpID, buttonID, switchIDs, textEntries);
+            m_UserInterface.GumpMenuSelect(Serial, m_GumpID, buttonID, switchIDs, textEntries);
             Dispose();
         }
 

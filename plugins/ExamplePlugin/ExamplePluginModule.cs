@@ -35,16 +35,11 @@ namespace ExamplePlugin
         }
     }
 
-    internal class ExampleSettigs : SettingsBase
+    internal class ExampleSettigs : SettingsSectionBase
     {
         public ExampleSettigs(SettingsFile file)
             : base(file)
         {
-        }
-
-        protected override string Name
-        {
-            get { return "exampleSettings"; }
         }
 
         public bool Boolean

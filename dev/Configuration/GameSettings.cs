@@ -1,7 +1,5 @@
 #region Usings
-
 using UltimaXNA.Core.Input.Windows;
-
 #endregion
 
 namespace UltimaXNA.Configuration

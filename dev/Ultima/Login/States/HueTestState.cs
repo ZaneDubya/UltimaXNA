@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UltimaXNA.Core.Patterns.IoC;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace UltimaXNA.Ultima.Login.States
 {
@@ -15,6 +10,16 @@ namespace UltimaXNA.Ultima.Login.States
         Gump m_Gump;
         TextLabel m_Label;
         HuedControl m_HueDisplay;
+
+        GUIManager m_UserInterface;
+
+        public HueTestState()
+            : base()
+        {
+            OverHue = -1;
+
+            m_UserInterface = UltimaServices.GetService<GUIManager>();
+        }
 
         public static string Caption
         {
@@ -37,17 +42,11 @@ namespace UltimaXNA.Ultima.Login.States
             set;
         }
 
-        public HueTestState(IContainer container)
-            : base(container)
-        {
-            OverHue = -1;
-        }
-
         public override void Intitialize()
         {
             base.Intitialize();
 
-            m_Gump = (Gump)Engine.UserInterface.AddControl(new Gump(Serial.Null, Serial.Null), 0, 0);
+            m_Gump = (Gump)m_UserInterface.AddControl(new Gump(Serial.Null, Serial.Null), 0, 0);
             m_Gump.Size = new Point(800, 600);
             m_Gump.AddControl(new ResizePic(m_Gump, 0, 5, 5, 3000, 790, 590));
 

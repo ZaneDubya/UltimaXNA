@@ -5,7 +5,7 @@ namespace UltimaXNA.Configuration
 {
     public class Mouse : NotifyPropertyChangedBase
     {
-        private MouseButton m_interactionButton;
+        private MouseButton m_InteractionButton;
         private MouseButton m_movementButton;
         private bool m_isEnabled;
 
@@ -30,8 +30,8 @@ namespace UltimaXNA.Configuration
 
         public MouseButton InteractionButton
         {
-            get { return m_interactionButton; }
-            set { SetProperty(ref m_interactionButton, value); }
+            get { return m_InteractionButton; }
+            set { SetProperty(ref m_InteractionButton, value); }
         }
     }
 }

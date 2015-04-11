@@ -10,6 +10,7 @@ namespace UltimaXNA.Configuration
     {
         private static readonly Settings m_Instance;
         private static readonly SettingsFile m_File;
+
         private DebugSettings m_Debug;
         private GameSettings m_Game;
         private ServerSettings m_Server;

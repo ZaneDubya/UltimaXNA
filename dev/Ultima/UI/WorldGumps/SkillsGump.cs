@@ -17,12 +17,16 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 {
     class SkillsGump : Gump
     {
-        private int m_lastUpdateCount = Int32.MinValue;
-        ExpandableScroll m_scroll;
-        HtmlGump m_list;
+        private ExpandableScroll m_scroll;
+        private HtmlGump m_list;
+
+        private WorldModel m_World;
+
         public SkillsGump()
             : base(0, 0)
         {
+            m_World = UltimaServices.GetService<WorldModel>();
+
             AddControl(m_scroll = new ExpandableScroll(this, 0, 0, 0, 200));
             m_scroll.TitleGumpID = 0x834;
             m_scroll.MakeDragger(this);
@@ -50,7 +54,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 int skillIndex;
                 if (!int.TryParse(href.Substring(6), out skillIndex))
                         return;
-                (Engine.ActiveModel as WorldModel).Interaction.UseSkill(skillIndex);
+                m_World.Interaction.UseSkill(skillIndex);
             }
             m_list.Text = buildSkillsString();
             base.ActivateByHREF(href);

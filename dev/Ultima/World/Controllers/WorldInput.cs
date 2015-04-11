@@ -2,14 +2,15 @@
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using UltimaXNA.Configuration;
+using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.Network;
-using UltimaXNA.Core.Patterns.IoC;
 using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Entities;
 using UltimaXNA.Ultima.Entities.Items;
 using UltimaXNA.Ultima.Entities.Mobiles;
 using UltimaXNA.Ultima.Network.Client;
+using UltimaXNA.Ultima.UI;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Controllers
@@ -25,25 +26,31 @@ namespace UltimaXNA.Ultima.World.Controllers
         private bool m_ContinuousMouseMovementCheck;
 
         private AEntity m_DraggingEntity;
+
         private INetworkClient m_Network;
+        private GUIManager m_UserInterface;
+        private InputManager m_Input;
 
         // keyboard movement variables.
         private double m_PauseBeforeKeyboardMovementMS;
         private double m_TimeSinceMovementButtonPressed;
         private Vector2 m_dragOffset;
 
-        public WorldInput(IContainer container, WorldModel model)
-        {
-            m_Network = container.Resolve<INetworkClient>();
-
-            World = model;
-            MousePick = new MousePicking();
-        }
-
         protected WorldModel World
         {
             get;
             private set;
+        }
+
+        public WorldInput(WorldModel world)
+        {
+            World = world;
+
+            m_Network = UltimaServices.GetService<INetworkClient>();
+            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_Input = UltimaServices.GetService<InputManager>();
+
+            MousePick = new MousePicking();
         }
 
         public MousePicking MousePick
@@ -62,11 +69,11 @@ namespace UltimaXNA.Ultima.World.Controllers
                     m_ContinuousMouseMovementCheck = value;
                     if(m_ContinuousMouseMovementCheck)
                     {
-                        World.Engine.UserInterface.AddInputBlocker(this);
+                        m_UserInterface.AddInputBlocker(this);
                     }
                     else
                     {
-                        World.Engine.UserInterface.RemoveInputBlocker(this);
+                        m_UserInterface.RemoveInputBlocker(this);
                     }
                 }
             }
@@ -74,32 +81,32 @@ namespace UltimaXNA.Ultima.World.Controllers
 
         public void Dispose()
         {
-            World.Engine.UserInterface.RemoveInputBlocker(this);
+            m_UserInterface.RemoveInputBlocker(this);
         }
 
         public void Update(double frameMS)
         {
-            if (EngineVars.InWorld && !World.Engine.UserInterface.IsModalControlOpen && m_Network.IsConnected)
+            if (EngineVars.InWorld && !m_UserInterface.IsModalControlOpen && m_Network.IsConnected)
             {
                 // always parse keyboard. (Is it possible there are some situations in which keyboard input is blocked???)
                 InternalParseKeyboard(frameMS);
 
                 // In all cases, where we are moving and the move button was released, stop moving.
                 if(ContinuousMouseMovementCheck &&
-                   World.Engine.Input.HandleMouseEvent(MouseEvent.Up, Settings.Game.Mouse.MovementButton))
+                   m_Input.HandleMouseEvent(MouseEvent.Up, Settings.Game.Mouse.MovementButton))
                 {
                     ContinuousMouseMovementCheck = false;
                 }
 
                 // If 1. The mouse is over the world (not over UI) and
                 //    2. The cursor is not blocking input, then interpret mouse input.
-                if(!World.Engine.UserInterface.IsMouseOverUI && !World.Cursor.IsHoldingItem)
+                if(!m_UserInterface.IsMouseOverUI && !World.Cursor.IsHoldingItem)
                 {
                     InternalParseMouse(frameMS);
                 }
 
                 // PickType is the kind of objects that will show up as the 'MouseOverObject'
-                if(World.Engine.UserInterface.IsMouseOverUI)
+                if(m_UserInterface.IsMouseOverUI)
                 {
                     MousePick.PickOnly = PickType.PickNothing;
                 }
@@ -119,7 +126,7 @@ namespace UltimaXNA.Ultima.World.Controllers
             {
                 Resolution resolution = Settings.Game.Resolution;
                 Point centerScreen = new Point(resolution.Width / 2, resolution.Height / 2);
-                Direction mouseDirection = Utility.DirectionFromPoints(centerScreen, World.Engine.Input.MousePosition);
+                Direction mouseDirection = Utility.DirectionFromPoints(centerScreen, m_Input.MousePosition);
 
                 m_TimeSinceMovementButtonPressed += frameMS;
 
@@ -129,7 +136,7 @@ namespace UltimaXNA.Ultima.World.Controllers
                     Direction moveDirection = mouseDirection;
 
                     // add the running flag if the mouse cursor is far enough away from the center of the screen.
-                    float distanceFromCenterOfScreen = Utility.DistanceBetweenTwoPoints(centerScreen, World.Engine.Input.MousePosition);
+                    float distanceFromCenterOfScreen = Utility.DistanceBetweenTwoPoints(centerScreen, m_Input.MousePosition);
 
                     if(distanceFromCenterOfScreen >= 150.0f || Settings.Game.AlwaysRun)
                     {
@@ -168,29 +175,29 @@ namespace UltimaXNA.Ultima.World.Controllers
         {
             if(m_PauseBeforeKeyboardMovementMS < c_PauseBeforeKeyboardMovementMS)
             {
-                if(World.Engine.Input.HandleKeyboardEvent(KeyboardEventType.Up, WinKeys.Up, false, false, false))
+                if(m_Input.HandleKeyboardEvent(KeyboardEventType.Up, WinKeys.Up, false, false, false))
                 {
                     m_PauseBeforeKeyboardMovementMS = 0;
                 }
-                if(World.Engine.Input.HandleKeyboardEvent(KeyboardEventType.Up, WinKeys.Down, false, false, false))
+                if(m_Input.HandleKeyboardEvent(KeyboardEventType.Up, WinKeys.Down, false, false, false))
                 {
                     m_PauseBeforeKeyboardMovementMS = 0;
                 }
-                if(World.Engine.Input.HandleKeyboardEvent(KeyboardEventType.Up, WinKeys.Left, false, false, false))
+                if(m_Input.HandleKeyboardEvent(KeyboardEventType.Up, WinKeys.Left, false, false, false))
                 {
                     m_PauseBeforeKeyboardMovementMS = 0;
                 }
-                if(World.Engine.Input.HandleKeyboardEvent(KeyboardEventType.Up, WinKeys.Right, false, false, false))
+                if(m_Input.HandleKeyboardEvent(KeyboardEventType.Up, WinKeys.Right, false, false, false))
                 {
                     m_PauseBeforeKeyboardMovementMS = 0;
                 }
             }
 
             Mobile m = (Mobile)EntityManager.GetPlayerObject();
-            bool up = World.Engine.Input.IsKeyDown(WinKeys.Up);
-            bool left = World.Engine.Input.IsKeyDown(WinKeys.Left);
-            bool right = World.Engine.Input.IsKeyDown(WinKeys.Right);
-            bool down = World.Engine.Input.IsKeyDown(WinKeys.Down);
+            bool up = m_Input.IsKeyDown(WinKeys.Up);
+            bool left = m_Input.IsKeyDown(WinKeys.Left);
+            bool right = m_Input.IsKeyDown(WinKeys.Right);
+            bool down = m_Input.IsKeyDown(WinKeys.Down);
             if(up | left | right | down)
             {
                 // Allow a short span of time (50ms) to get all the keys pressed.
@@ -207,7 +214,7 @@ namespace UltimaXNA.Ultima.World.Controllers
                         {
                             facing = Direction.West;
                         }
-                        else if(World.Engine.Input.IsKeyDown(WinKeys.Right))
+                        else if(m_Input.IsKeyDown(WinKeys.Right))
                         {
                             facing = Direction.North;
                         }
@@ -368,7 +375,7 @@ namespace UltimaXNA.Ultima.World.Controllers
 
         private void InternalParseMouse(double frameMS)
         {
-            List<InputEventMouse> events = World.Engine.Input.GetMouseEvents();
+            List<InputEventMouse> events = m_Input.GetMouseEvents();
             foreach (InputEventMouse e in events)
             {
                 if(e.Button == Settings.Game.Mouse.MovementButton)
@@ -396,10 +403,10 @@ namespace UltimaXNA.Ultima.World.Controllers
         private void InternalParseKeyboard(double frameMS)
         {
             // all names mode
-            EngineVars.AllLabels = (World.Engine.Input.IsShiftDown && World.Engine.Input.IsCtrlDown);
+            EngineVars.AllLabels = (m_Input.IsShiftDown && m_Input.IsCtrlDown);
 
             // Warmode toggle:
-            if(World.Engine.Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.Tab, false, false, false))
+            if(m_Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.Tab, false, false, false))
             {
                 m_Network.Send(new RequestWarModePacket(!EntityManager.GetPlayerObject().Flags.IsWarMode));
             }
@@ -411,7 +418,7 @@ namespace UltimaXNA.Ultima.World.Controllers
             }
 
             // debug variables.
-            if(World.Engine.Input.HandleKeyboardEvent(KeyboardEventType.Press, WinKeys.D, false, false, true))
+            if(m_Input.HandleKeyboardEvent(KeyboardEventType.Press, WinKeys.D, false, false, true))
             {
                 if(!Settings.Debug.ShowDataRead)
                 {
@@ -432,19 +439,19 @@ namespace UltimaXNA.Ultima.World.Controllers
             }
 
             // FPS limiting
-            if(World.Engine.Input.HandleKeyboardEvent(KeyboardEventType.Press, WinKeys.F, false, true, false))
+            if(m_Input.HandleKeyboardEvent(KeyboardEventType.Press, WinKeys.F, false, true, false))
             {
                 Settings.Game.IsFixedTimeStep = !Settings.Game.IsFixedTimeStep;
             }
 
             // Display FPS
-            if(World.Engine.Input.HandleKeyboardEvent(KeyboardEventType.Press, WinKeys.F, false, true, true))
+            if(m_Input.HandleKeyboardEvent(KeyboardEventType.Press, WinKeys.F, false, true, true))
             {
                 Settings.Debug.ShowFps = !Settings.Debug.ShowFps;
             }
 
             // Mouse enable / disable
-            if(World.Engine.Input.HandleKeyboardEvent(KeyboardEventType.Press, WinKeys.M, false, true, false))
+            if(m_Input.HandleKeyboardEvent(KeyboardEventType.Press, WinKeys.M, false, true, false))
             {
                 Settings.Game.Mouse.IsEnabled = !Settings.Game.Mouse.IsEnabled;
             }

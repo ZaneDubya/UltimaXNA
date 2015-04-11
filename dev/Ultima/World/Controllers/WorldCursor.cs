@@ -13,9 +13,9 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using UltimaXNA.Configuration;
 using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.Network;
-using UltimaXNA.Core.Patterns.IoC;
 using UltimaXNA.Ultima.Entities;
 using UltimaXNA.Ultima.Entities.Items;
 using UltimaXNA.Ultima.Entities.Items.Containers;
@@ -23,8 +23,6 @@ using UltimaXNA.Ultima.Entities.Mobiles;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
-using Container = UltimaXNA.Ultima.Entities.Items.Containers.Container;
-
 #endregion
 
 namespace UltimaXNA.Ultima.World.Controllers
@@ -42,10 +40,14 @@ namespace UltimaXNA.Ultima.World.Controllers
         }
 
         private INetworkClient m_Network;
+        private GUIManager m_UserInterface;
+        private InputManager m_Input;
 
-        public WorldCursor(IContainer container, WorldModel model)
+        public WorldCursor(WorldModel model)
         {
-            m_Network = container.Resolve<INetworkClient>();
+            m_Network = UltimaServices.GetService<INetworkClient>();
+            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_Input = UltimaServices.GetService<InputManager>();
 
             World = model;
             InternalRegisterInteraction();
@@ -53,11 +55,11 @@ namespace UltimaXNA.Ultima.World.Controllers
 
         public override void Update()
         {
-            if (IsHoldingItem && World.Engine.Input.HandleMouseEvent(MouseEvent.Up, Settings.Game.Mouse.InteractionButton))
+            if (IsHoldingItem && m_Input.HandleMouseEvent(MouseEvent.Up, Settings.Game.Mouse.InteractionButton))
             {
-                if (World.Engine.UserInterface.IsMouseOverUI)
+                if (m_UserInterface.IsMouseOverUI)
                 {
-                    AControl target = World.Engine.UserInterface.MouseOverControl;
+                    AControl target = m_UserInterface.MouseOverControl;
                     // attempt to drop the item onto an interface. The only acceptable targets for dropping items are:
                     // 1. ItemGumplings that represent containers (like a bag icon)
                     // 2. Gumps that represent open Containers (GumpPicContainers, e.g. an open GumpPic of a chest)
@@ -69,8 +71,8 @@ namespace UltimaXNA.Ultima.World.Controllers
                     }
                     else if (target is GumpPicContainer)
                     {
-                        int x = (int)World.Engine.Input.MousePosition.X - HeldItemOffset.X - (target.X + target.Owner.X);
-                        int y = (int)World.Engine.Input.MousePosition.Y - HeldItemOffset.Y - (target.Y + target.Owner.Y);
+                        int x = (int)m_Input.MousePosition.X - HeldItemOffset.X - (target.X + target.Owner.X);
+                        int y = (int)m_Input.MousePosition.Y - HeldItemOffset.Y - (target.Y + target.Owner.Y);
                         DropHeldItemToContainer((Container)((GumpPicContainer)target).Item, x, y);
                     }
                     else if (target is ItemGumplingPaperdoll || (target is GumpPic && ((GumpPic)target).IsPaperdoll))
@@ -127,23 +129,23 @@ namespace UltimaXNA.Ultima.World.Controllers
 
             if (IsTargeting)
             {
-                if (World.Engine.Input.HandleKeyboardEvent(KeyboardEventType.Press, WinKeys.Escape, false, false, false))
+                if (m_Input.HandleKeyboardEvent(KeyboardEventType.Press, WinKeys.Escape, false, false, false))
                 {
                     SetTargeting(TargetType.Nothing, 0);
                 }
 
-                if (World.Engine.Input.HandleMouseEvent(MouseEvent.Click, Settings.Game.Mouse.InteractionButton))
+                if (m_Input.HandleMouseEvent(MouseEvent.Click, Settings.Game.Mouse.InteractionButton))
                 {
                     // If isTargeting is true, then the target cursor is active and we are waiting for the player to target something.
                     switch (m_Targeting)
                     {
                         case TargetType.Object:
                         case TargetType.Position:
-                            if (World.Engine.UserInterface.IsMouseOverUI)
+                            if (m_UserInterface.IsMouseOverUI)
                             {
                                 // get object under mouse cursor. We can only hue items.
                                 // ItemGumping is the base class for all items, containers, and paperdoll items.
-                                AControl target = World.Engine.UserInterface.MouseOverControl;
+                                AControl target = m_UserInterface.MouseOverControl;
                                 if (target is ItemGumpling)
                                 {
                                     mouseTargetingEventObject(((ItemGumpling)target).Item);
@@ -243,11 +245,11 @@ namespace UltimaXNA.Ultima.World.Controllers
                     // UNIMPLEMENTED !!! Draw a transparent multi
                 }*/
             }
-            else if ((World.Input.ContinuousMouseMovementCheck || !World.Engine.UserInterface.IsMouseOverUI) &&
-                !World.Engine.UserInterface.IsModalControlOpen)
+            else if ((World.Input.ContinuousMouseMovementCheck || !m_UserInterface.IsMouseOverUI) &&
+                !m_UserInterface.IsModalControlOpen)
             {
                 Resolution resolution = Settings.Game.Resolution;
-                Direction mouseDirection = Utility.DirectionFromPoints(new Point(resolution.Width / 2, resolution.Height / 2), World.Engine.Input.MousePosition);
+                Direction mouseDirection = Utility.DirectionFromPoints(new Point(resolution.Width / 2, resolution.Height / 2), m_Input.MousePosition);
 
                 int artIndex = 0;
 
@@ -434,11 +436,11 @@ namespace UltimaXNA.Ultima.World.Controllers
             {
                 if (value == null && m_HeldItem != null)
                 {
-                    World.Engine.UserInterface.RemoveInputBlocker(this);
+                    m_UserInterface.RemoveInputBlocker(this);
                 }
                 else if (value != null && m_HeldItem == null)
                 {
-                    World.Engine.UserInterface.AddInputBlocker(this);
+                    m_UserInterface.AddInputBlocker(this);
                 }
                 m_HeldItem = value;
             }

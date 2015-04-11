@@ -1,13 +1,5 @@
 #region Usings
-
-using System;
-using System.Threading;
-using UltimaXNA.Configuration;
-using UltimaXNA.Core.Diagnostics.Tracing;
-using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Patterns.IoC;
-using UltimaXNA.Ultima.IO;
-
 #endregion
 
 namespace UltimaXNA
@@ -19,14 +11,16 @@ namespace UltimaXNA
             get { return "UltimaXNA Core Module"; }
         }
 
-        public void Load(IContainer container)
+        UltimaEngine m_Engine;
+
+        public void Load()
         {
-            container.Register<INetworkClient, NetworkClient>(new NetworkClient());
-            container.Register<IEngine, UltimaEngine>(new UltimaEngine(container));
+            m_Engine = UltimaServices.Register<UltimaEngine>(new UltimaEngine());
         }
 
-        public void Unload(IContainer container)
+        public void Unload()
         {
+            UltimaServices.Unregister<UltimaEngine>(m_Engine);
         }
     }
 }

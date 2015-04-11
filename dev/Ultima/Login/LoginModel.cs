@@ -1,16 +1,24 @@
 ﻿using InterXLib.Patterns.MVC;
-using UltimaXNA.Core.Patterns.IoC;
+using UltimaXNA.Ultima.Login.States;
+using UltimaXNA.Ultima.UI;
 
 namespace UltimaXNA.Ultima.Login
 {
     class LoginModel : AUltimaModel
     {
-        private States.SceneManager m_SceneManager;
+        private StateManager m_SceneManager;
+        private GUIManager m_UserInterface;
 
-        public LoginModel(IContainer container)
-            : base(container)
+        public LoginClient Client
         {
-            
+            get;
+            private set;
+        }
+
+        public LoginModel()
+            : base()
+        {
+            Client = UltimaServices.Register<LoginClient>(new LoginClient());
         }
 
         protected override AView CreateView()
@@ -20,15 +28,22 @@ namespace UltimaXNA.Ultima.Login
 
         protected override void OnInitialize()
         {
-            Engine.UserInterface.Cursor = new UI.UltimaCursor();
-            m_SceneManager = new States.SceneManager(Container);
+            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_UserInterface.Cursor = new UI.UltimaCursor();
+
+            m_SceneManager = new StateManager();
             m_SceneManager.ResetToLoginScreen();
         }
 
         protected override void OnDispose()
         {
-            Engine.UserInterface.Reset();
-            m_SceneManager.CurrentScene = null;
+            UltimaServices.Unregister<LoginClient>(Client);
+
+            Client.Dispose();
+            Client = null;
+
+            m_UserInterface.Reset();
+            m_SceneManager.CurrentState = null;
             m_SceneManager = null;
         }
 

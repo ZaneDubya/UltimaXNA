@@ -1,7 +1,16 @@
-﻿using InterXLib.Patterns.MVC;
-using UltimaXNA.Core.Patterns.IoC;
+﻿/***************************************************************************
+ *   WorldView.cs
+ *   
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region usings
+using InterXLib.Patterns.MVC;
 using UltimaXNA.Ultima.World.Views;
-using UltimaXNA.Ultima.World.Controllers;
+#endregion
 
 namespace UltimaXNA.Ultima.World
 {
@@ -18,10 +27,10 @@ namespace UltimaXNA.Ultima.World
             get { return (WorldModel)base.Model; }
         }
 
-        public WorldView(IContainer container, WorldModel model)
+        public WorldView(WorldModel model)
             : base(model)
         {
-            Isometric = container.Resolve<IsometricRenderer>();
+            Isometric = new IsometricRenderer();
             Isometric.Initialize();
             Isometric.LightDirection = -0.6f;
         }

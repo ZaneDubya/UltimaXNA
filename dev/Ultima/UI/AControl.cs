@@ -32,8 +32,6 @@ namespace UltimaXNA.Ultima.UI
     /// </summary>
     public abstract class AControl
     {
-        internal static IEngine Engine = null;
-
         public int Serial = 0;
         public bool IsModal = false;
 
@@ -66,8 +64,8 @@ namespace UltimaXNA.Ultima.UI
             set
             {
                 m_handlesKeyboardFocus = value;
-                if (Engine.UserInterface.KeyboardFocusControl == null)
-                    Engine.UserInterface.KeyboardFocusControl = this;
+                if (m_UserInterface.KeyboardFocusControl == null)
+                    m_UserInterface.KeyboardFocusControl = this;
             }
         }
         public AControl KeyboardFocusControl
@@ -126,12 +124,12 @@ namespace UltimaXNA.Ultima.UI
                 // UNLESS page = 0; in which case it still exists and should maintain focus.
                 // Clear the current keyboardfocus if we own it and it's page != 0
                 // If the page = 0, then it will still exist so it should maintain focus.
-                if (Engine.UserInterface.KeyboardFocusControl != null)
+                if (m_UserInterface.KeyboardFocusControl != null)
                 {
-                    if (Controls.Contains(Engine.UserInterface.KeyboardFocusControl))
+                    if (Controls.Contains(m_UserInterface.KeyboardFocusControl))
                     {
-                        if (Engine.UserInterface.KeyboardFocusControl.Page != 0)
-                            Engine.UserInterface.KeyboardFocusControl = null;
+                        if (m_UserInterface.KeyboardFocusControl.Page != 0)
+                            m_UserInterface.KeyboardFocusControl = null;
                     }
                 }
                 // When ActivePage changes, check to see if there are new text input boxes
@@ -140,7 +138,7 @@ namespace UltimaXNA.Ultima.UI
                 {
                     if (c.HandlesKeyboardFocus && (c.Page == m_activePage))
                     {
-                        Engine.UserInterface.KeyboardFocusControl = c;
+                        m_UserInterface.KeyboardFocusControl = c;
                         break;
                     }
                 }
@@ -227,10 +225,14 @@ namespace UltimaXNA.Ultima.UI
 
         static Texture2D m_boundsTexture;
 
+        GUIManager m_UserInterface;
+
         public AControl(AControl owner, int page)
         {
             m_owner = owner;
             m_page = page;
+
+            m_UserInterface = UltimaServices.GetService<GUIManager>();
         }
 
         public void ControlInitialize()
@@ -561,8 +563,8 @@ namespace UltimaXNA.Ultima.UI
         internal void Center()
         {
             Position = new Point(
-                (Engine.UserInterface.Width - Width) / 2,
-                (Engine.UserInterface.Height - Height) / 2);
+                (m_UserInterface.Width - Width) / 2,
+                (m_UserInterface.Height - Height) / 2);
         }
 
         /// <summary>
@@ -576,7 +578,7 @@ namespace UltimaXNA.Ultima.UI
             {
                 if (Controls[i].HandlesKeyboardFocus)
                 {
-                    Engine.UserInterface.KeyboardFocusControl = Controls[i];
+                    m_UserInterface.KeyboardFocusControl = Controls[i];
                     return;
                 }
             }
@@ -584,7 +586,7 @@ namespace UltimaXNA.Ultima.UI
             {
                 if (Controls[i].HandlesKeyboardFocus)
                 {
-                    Engine.UserInterface.KeyboardFocusControl = Controls[i];
+                    m_UserInterface.KeyboardFocusControl = Controls[i];
                     return;
                 }
             }

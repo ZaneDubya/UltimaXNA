@@ -9,8 +9,8 @@ namespace UltimaXNA.Core.Patterns.IoC
             get;
         }
 
-        void Load(IContainer container);
-        void Unload(IContainer container);
+        void Load();
+        void Unload();
     }
 
     public abstract class Module : IModule
@@ -20,20 +20,20 @@ namespace UltimaXNA.Core.Patterns.IoC
             get { return GetType().Name; }
         }
 
-        public void Load(IContainer container)
+        public void Load()
         {
             Tracer.Info("Loading Module {0}.", Name);
-            OnLoad(container);
+            OnLoad();
         }
 
-        public void Unload(IContainer container)
+        public void Unload()
         {
             Tracer.Info("Unloading Module {0}.", Name);
-            OnUnload(container);
+            OnUnload();
         }
 
-        protected abstract void OnLoad(IContainer container);
+        protected abstract void OnLoad();
 
-        protected abstract void OnUnload(IContainer container);
+        protected abstract void OnUnload();
     }
 }

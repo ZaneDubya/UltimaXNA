@@ -1,26 +1,18 @@
-﻿using System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Core.Patterns.IoC;
-using UltimaXNA.Ultima.IO;
-using UltimaXNA.Core.Diagnostics;
-using UltimaXNA.Core.Input.Windows;
-using UltimaXNA.Core.Network;
+using System;
 using UltimaXNA.Ultima.UI;
-using UltimaXNA.Ultima.World;
 
 namespace UltimaXNA.Ultima.Login.States
 {
     public abstract class AState : IDisposable
     {
-        internal SceneManager Manager;
+        internal StateManager Manager;
+
+        GUIManager m_UserInterface;
 
         public virtual TimeSpan TransitionOnLength { get { return TimeSpan.FromSeconds(0.05); } }
         public virtual TimeSpan TransitionOffLength { get { return TimeSpan.FromSeconds(0.05); } }
-
-        protected IEngine Engine { get; private set; }
-        protected IContainer Container { get; private set; }
 
         SceneState m_sceneState;
         float m_transitionAlpha;
@@ -45,17 +37,14 @@ namespace UltimaXNA.Ultima.Login.States
 
         public event TransitionCompleteHandler TransitionCompleted;
 
-        protected AState(IContainer container)
+        protected AState()
         {
-            Container = container;
-            Engine = container.Resolve<IEngine>();
-
             m_sceneState = SceneState.TransitioningOn;
         }
 
         public virtual void Intitialize()
         {
-
+            m_UserInterface = UltimaServices.GetService<GUIManager>();
         }
 
         public virtual void Update(double totalTime, double frameTime)
@@ -107,7 +96,7 @@ namespace UltimaXNA.Ultima.Login.States
 
         public virtual void Dispose()
         {
-            Engine.UserInterface.Reset();
+            m_UserInterface.Reset();
         }
     }
 

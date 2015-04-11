@@ -33,11 +33,15 @@ namespace UltimaXNA.Ultima.UI.Controls
         bool sendClickIfNoDoubleClick = false;
         float singleClickTime;
 
+        private readonly WorldModel m_World;
+
         public ItemGumpling(AControl owner, Item item)
             : base(owner, 0)
         {
             buildGumpling(item);
             HandlesMouseInput = true;
+
+            m_World = UltimaServices.GetService<WorldModel>();
         }
 
         void buildGumpling(Item item)
@@ -64,7 +68,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             if (sendClickIfNoDoubleClick && UltimaEngine.TotalMS >= singleClickTime)
             {
                 sendClickIfNoDoubleClick = false;
-                (Engine.ActiveModel as WorldModel).Interaction.SingleClick(m_item);
+                m_World.Interaction.SingleClick(m_item);
             }
             base.Update(totalMS, frameMS);
         }
@@ -141,7 +145,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         protected override void mouseDoubleClick(int x, int y, MouseButton button)
         {
-            (Engine.ActiveModel as WorldModel).Interaction.DoubleClick(m_item);
+            m_World.Interaction.DoubleClick(m_item);
             sendClickIfNoDoubleClick = false;
         }
 
@@ -159,11 +163,11 @@ namespace UltimaXNA.Ultima.UI.Controls
                     int w, h;
                     IO.ArtData.GetStaticDimensions(Item.DisplayItemID, out w, out h);
                     Point click_point = new Point(w / 2, h / 2);
-                    (Engine.ActiveModel as WorldModel).Interaction.PickupItem(m_item, InternalGetPickupOffset(click_point));
+                    m_World.Interaction.PickupItem(m_item, InternalGetPickupOffset(click_point));
                 }
                 else
                 {
-                    (Engine.ActiveModel as WorldModel).Interaction.PickupItem(m_item, InternalGetPickupOffset(m_ClickPoint));
+                    m_World.Interaction.PickupItem(m_item, InternalGetPickupOffset(m_ClickPoint));
                 }
             }
         }

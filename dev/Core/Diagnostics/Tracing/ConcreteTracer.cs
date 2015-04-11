@@ -12,7 +12,7 @@ namespace UltimaXNA.Core.Diagnostics.Tracing
         public void Critical(string message, params object[] args)
         {
             Guard.Requires<ArgumentNullException>(message != null, "message");
-            TracerEventSource.Instance.Warn(getFormattedString(null, message, args));
+            TracerEventSource.Instance.Critical(getFormattedString(null, message, args));
         }
 
         public void Critical(Exception ex)

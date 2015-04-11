@@ -1,6 +1,5 @@
 ﻿using InterXLib.Patterns.MVC;
 using UltimaXNA.Core.Network;
-using UltimaXNA.Core.Patterns.IoC;
 using UltimaXNA.Ultima.Entities;
 using UltimaXNA.Ultima.Login;
 using UltimaXNA.Ultima.UI;
@@ -13,7 +12,8 @@ namespace UltimaXNA.Ultima.World
     class WorldModel : AUltimaModel
     {
         private INetworkClient m_Network;
-        private IContainer m_Container;
+        private GUIManager m_UserInterface;
+        private UltimaEngine m_Engine;
 
         public EntityManager Entities
         {
@@ -22,6 +22,12 @@ namespace UltimaXNA.Ultima.World
         }
 
         public EffectsManager Effects
+        {
+            get;
+            private set;
+        }
+
+        public WorldClient Client
         {
             get;
             private set;
@@ -38,8 +44,6 @@ namespace UltimaXNA.Ultima.World
             get;
             private set;
         }
-
-        private WorldClient m_WorldClient;
 
         private WorldCursor m_Cursor = null;
         public WorldCursor Cursor
@@ -102,58 +106,67 @@ namespace UltimaXNA.Ultima.World
             }
         }
 
-        public WorldModel(IContainer container)
-            : base(container)
+        public WorldModel()
+            : base()
         {
-            m_Container = container;
-            m_Network = container.Resolve<INetworkClient>();
+            UltimaServices.Register<WorldModel>(this);
+
+            m_Engine = UltimaServices.GetService<UltimaEngine>();
+            m_Network = UltimaServices.GetService<INetworkClient>();
+            m_UserInterface = UltimaServices.GetService<GUIManager>();
 
             Entities = new EntityManager(this);
             Effects = new EffectsManager(this);
-            Input = new WorldInput(container, this);
-            Interaction = new WorldInteraction(container, this);
-            m_WorldClient = new WorldClient(container, this);
+            Input = new WorldInput(this);
+            Interaction = new WorldInteraction(this);
+            Client = new WorldClient(this);
         }
 
         protected override AView CreateView()
         {
             //TODO: this needs to be resolved, not newed up.
-            return new WorldView(Container, this);
+            return new WorldView(this);
         }
 
         protected override void OnInitialize()
         {
-            Engine.UserInterface.Cursor = Cursor = new WorldCursor(m_Container, this);
-            m_WorldClient.Initialize();
+            m_UserInterface.Cursor = Cursor = new WorldCursor(this);
+            Client.Initialize();
         }
 
         public void LoginSequence()
         {
-            Engine.UserInterface.AddControl(new TopMenu(0), 0, 0);
-            Engine.UserInterface.AddControl(new ChatWindow(), 0, 0);
-            m_WorldClient.SendWorldLoginPackets();
+            m_UserInterface.AddControl(new TopMenu(0), 0, 0);
+            m_UserInterface.AddControl(new ChatWindow(), 0, 0);
+            Client.SendWorldLoginPackets();
             EngineVars.InWorld = true;
         }
 
         protected override void OnDispose()
         {
-            m_WorldClient.Dispose();
-            m_WorldClient = null;
+            UltimaServices.Unregister<WorldModel>(this);
+
+            EntityManager.Reset();
+            Entities = null;
+
+            Effects = null;
 
             Input.Dispose();
             Input = null;
 
-            EntityManager.Reset();
-            Entities = null;
+            Interaction = null;
+
+            Client.Dispose();
+            Client = null;
         }
 
         public override void Update(double totalMS, double frameMS)
         {
             if (!m_Network.IsConnected)
             {
-                if (Engine.UserInterface.IsModalControlOpen == false)
+                if (m_UserInterface.IsModalControlOpen == false)
                 {
-                    MsgBox g = Engine.UserInterface.MsgBox("You have lost your connection with the server.", MsgBoxTypes.OkOnly);
+                    MsgBox g = m_UserInterface.MsgBox("You have lost your connection with the server.", MsgBoxTypes.OkOnly);
                     g.OnClose = onCloseLostConnectionMsgBox;
                 }
             }
@@ -168,9 +181,9 @@ namespace UltimaXNA.Ultima.World
 
         public void Disconnect()
         {
-            Engine.Client.Disconnect();
+            m_Network.Disconnect();
             EngineVars.InWorld = false;
-            Engine.ActiveModel = Container.Resolve<LoginModel>();
+            m_Engine.ActiveModel = new LoginModel();
         }
 
         void onCloseLostConnectionMsgBox()

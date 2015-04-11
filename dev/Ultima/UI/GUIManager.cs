@@ -8,13 +8,13 @@
  *
  ***************************************************************************/
 #region Usings
-using UltimaXNA.Core.Input.Windows;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.Input;
+using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.Network;
-using UltimaXNA.Core.Patterns.IoC;
 using UltimaXNA.Ultima.Network.Client;
 #endregion
 
@@ -23,17 +23,13 @@ namespace UltimaXNA.Ultima.UI
     public class GUIManager
     {
         private readonly INetworkClient m_Network;
+        private readonly InputManager m_Input;
 
-        protected IEngine Engine { get; private set; }
-
-        public GUIManager(IContainer container)
+        public GUIManager()
         {
-            m_Network = container.Resolve<INetworkClient>();
-
-            AControl.Engine = Engine = container.Resolve<IEngine>();
-            RenderedText.Graphics = Engine.GraphicsDevice;
-
-            m_SpriteBatch = new SpriteBatchUI(Engine.Game);
+            m_Network = UltimaServices.GetService<INetworkClient>();
+            m_Input = UltimaServices.GetService<InputManager>();
+            m_SpriteBatch = UltimaServices.GetService<SpriteBatchUI>();
 
             m_Controls = new List<AControl>();
             m_DisposedControls = new List<AControl>();
@@ -62,19 +58,19 @@ namespace UltimaXNA.Ultima.UI
         {
             // pop up an error message, modal.
             MsgBox msgbox = new MsgBox(msg, type);
-            Engine.UserInterface.AddControl(msgbox, 0, 0);
+            AddControl(msgbox, 0, 0);
             return msgbox;
         }
 
         /// <summary>
-        /// Informs the server that we have activated a gump control.
+        /// Informs the server that we have activated a control.
         /// </summary>
         /// <param name="id"></param>
         /// <param name="gumpId"></param>
         /// <param name="buttonId"></param>
         /// <param name="switchIds"></param>
         /// <param name="textEntries"></param>
-        public void GumpMenuSelect(int id, int gumpId, int buttonId, int[] switchIds, Tuple<short, string>[] textEntries) // used by gump
+        public void GumpMenuSelect(int id, int gumpId, int buttonId, int[] switchIds, Tuple<short, string>[] textEntries)
         {
             m_Network.Send(new GumpMenuSelectPacket(id, gumpId, buttonId, switchIds, textEntries));
         }
@@ -154,64 +150,64 @@ namespace UltimaXNA.Ultima.UI
 
         
         /// <summary>
-        /// Adds or toggles the passed gump to the list of active gumps.
+        /// Adds or toggles the passed control to the list of active controls.
         /// </summary>
-        /// <param name="gump">The gump to be opened or toggled.</param>
-        /// <param name="x">C coordinate where new gump should be placed.</param>
-        /// <param name="y">Y coordinate where new gump should be placed.</param>
-        /// <param name="addType">By default, always adds the gump.
-        /// If OnlyAllowOne, then any gumps of the same type that are active are disposed of, and the passed gump is added.
-        /// If Toggle, then only adds the gump is another gump of the same type is not active; else, disposes of all gumps of the passed type, including the passed gump.</param>
-        /// <returns>If the gump was added to the list of active gumps, then returns the added gump. If the gump was not added, returns null.</returns>
-        public AControl AddControl(AControl gump, int x, int y, AddGumpType addType = AddGumpType.Always)
+        /// <param name="control">The control to be opened or toggled.</param>
+        /// <param name="x">C coordinate where new control should be placed.</param>
+        /// <param name="y">Y coordinate where new control should be placed.</param>
+        /// <param name="addType">By default, always adds the control.
+        /// If OnlyAllowOne, then any controls of the same type that are active are disposed of, and the passed control is added.
+        /// If Toggle, then only adds the control is another control of the same type is not active; else, disposes of all controls of the passed type, including the passed control.</param>
+        /// <returns>If the control was added to the list of active controls, then returns the added control. If the control was not added, returns null.</returns>
+        public AControl AddControl(AControl control, int x, int y, AddControlType addType = AddControlType.Always)
         {
-            bool addGump = false;
+            bool addControl = false;
 
-            if (addType == AddGumpType.Always)
+            if (addType == AddControlType.Always)
             {
-                addGump = true;
+                addControl = true;
             }
-            else if (addType == AddGumpType.Toggle)
+            else if (addType == AddControlType.Toggle)
             {
                 bool alreadyActive = false;
                 foreach (AControl c in m_Controls)
                 {
-                    if (c.Equals(gump) && gump.Equals(c))
+                    if (c.Equals(control) && control.Equals(c))
                     {
                         alreadyActive = true;
                         c.Dispose();
                     }
                 }
 
-                addGump = !alreadyActive;
+                addControl = !alreadyActive;
             }
-            else if (addType == AddGumpType.OnlyAllowOne)
+            else if (addType == AddControlType.OnlyAllowOne)
             {
                 foreach (AControl c in m_Controls)
                 {
-                    if (c.Equals(gump) && gump.Equals(c))
+                    if (c.Equals(control) && control.Equals(c))
                     {
                         c.Dispose();
                     }
                 }
 
-                addGump = true;
+                addControl = true;
             }
 
-            if (addGump)
+            if (addControl)
             {
-                gump.Position = new Point(x, y);
-                m_Controls.Add(gump);
-                return gump;
+                control.Position = new Point(x, y);
+                m_Controls.Add(control);
+                return control;
             }
             else
             {
-                gump.Dispose();
+                control.Dispose();
                 return null;
             }
         }
 
-        public enum AddGumpType
+        public enum AddControlType
         {
             Always = 0,
             OnlyAllowOne = 1,
@@ -274,7 +270,7 @@ namespace UltimaXNA.Ultima.UI
             }
 
             if (Cursor != null)
-                Cursor.Draw(m_SpriteBatch, Engine.Input.MousePosition);
+                Cursor.Draw(m_SpriteBatch, m_Input.MousePosition);
 
             m_SpriteBatch.Flush();
         }
@@ -298,7 +294,7 @@ namespace UltimaXNA.Ultima.UI
                 }
                 else
                 {
-                    List<InputEventKeyboard> k_events = Engine.Input.GetKeyboardEvents();
+                    List<InputEventKeyboard> k_events = m_Input.GetKeyboardEvents();
                     foreach (InputEventKeyboard e in k_events)
                     {
                         if (e.EventType == KeyboardEventType.Press)
@@ -315,9 +311,9 @@ namespace UltimaXNA.Ultima.UI
             // send that previous control a MouseOut event.
             AControl focusedControl = InternalGetMouseOverControl();
             if ((MouseOverControl != null) && (focusedControl != MouseOverControl))
-                MouseOverControl.MouseOut(Engine.Input.MousePosition);
+                MouseOverControl.MouseOut(m_Input.MousePosition);
             if (focusedControl != null)
-                focusedControl.MouseOver(Engine.Input.MousePosition);
+                focusedControl.MouseOver(m_Input.MousePosition);
 
             // Set the new MouseOverControl.
             m_MouseOverControl = focusedControl;
@@ -326,7 +322,7 @@ namespace UltimaXNA.Ultima.UI
             for (int iButton = 0; iButton < 5; iButton++)
             {
                 if ((m_MouseDownControl[iButton] != null) && (m_MouseDownControl[iButton] != focusedControl))
-                    m_MouseDownControl[iButton].MouseOver(Engine.Input.MousePosition);
+                    m_MouseDownControl[iButton].MouseOver(m_Input.MousePosition);
             }
 
             // The cursor and world input objects occasionally must block input events from reaching the UI:
@@ -334,7 +330,7 @@ namespace UltimaXNA.Ultima.UI
             if (!IsModalControlOpen && ObjectsBlockingInput)
                 return;
 
-            List<InputEventMouse> events = Engine.Input.GetMouseEvents();
+            List<InputEventMouse> events = m_Input.GetMouseEvents();
             foreach (InputEventMouse e in events)
             {
                 // MouseDown event: the currently focused control gets a MouseDown event, and if
@@ -343,7 +339,7 @@ namespace UltimaXNA.Ultima.UI
                 {
                     if (focusedControl != null)
                     {
-                        focusedControl.MouseDown(Engine.Input.MousePosition, e.Button);
+                        focusedControl.MouseDown(m_Input.MousePosition, e.Button);
                         if (focusedControl.HandlesKeyboardFocus)
                             m_keyboardFocusControl = focusedControl;
                         m_MouseDownControl[(int)e.Button] = focusedControl;
@@ -368,19 +364,19 @@ namespace UltimaXNA.Ultima.UI
                     {
                         if (m_MouseDownControl[btn] != null && focusedControl == m_MouseDownControl[btn])
                         {
-                            focusedControl.MouseClick(Engine.Input.MousePosition, e.Button);
+                            focusedControl.MouseClick(m_Input.MousePosition, e.Button);
                         }
-                        focusedControl.MouseUp(Engine.Input.MousePosition, e.Button);
+                        focusedControl.MouseUp(m_Input.MousePosition, e.Button);
                         if (m_MouseDownControl[btn] != null && focusedControl != m_MouseDownControl[btn])
                         {
-                            m_MouseDownControl[btn].MouseUp(Engine.Input.MousePosition, e.Button);
+                            m_MouseDownControl[btn].MouseUp(m_Input.MousePosition, e.Button);
                         }
                     }
                     else
                     {
                         if (m_MouseDownControl[btn] != null)
                         {
-                            m_MouseDownControl[btn].MouseUp(Engine.Input.MousePosition, e.Button);
+                            m_MouseDownControl[btn].MouseUp(m_Input.MousePosition, e.Button);
                         }
                     }
 
@@ -408,7 +404,7 @@ namespace UltimaXNA.Ultima.UI
             // Get the list of controls under the mouse cursor
             foreach (AControl c in possibleControls)
             {
-                AControl[] controls = c.HitTest(Engine.Input.MousePosition, false);
+                AControl[] controls = c.HitTest(m_Input.MousePosition, false);
                 if (controls != null)
                 {
                     mouseOverControls = controls;

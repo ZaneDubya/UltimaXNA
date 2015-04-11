@@ -10,19 +10,22 @@
 #region usings
 using System;
 using UltimaXNA.Configuration;
-using UltimaXNA.Core.Patterns.IoC;
-using UltimaXNA.Ultima.UI.LoginGumps;
 using UltimaXNA.Ultima.Data.Accounts;
+using UltimaXNA.Ultima.UI;
+using UltimaXNA.Ultima.UI.LoginGumps;
 #endregion
 
 namespace UltimaXNA.Ultima.Login.States
 {
     public class CharacterListState : AState
     {
+        GUIManager m_UserInterface;
+        LoginClient m_Client;
+
         CharacterListGump m_CharListGump;
 
-        public CharacterListState(IContainer container)
-            : base(container)
+        public CharacterListState()
+            : base()
         {
 
         }
@@ -31,7 +34,10 @@ namespace UltimaXNA.Ultima.Login.States
         {
             base.Intitialize();
 
-            m_CharListGump = (CharacterListGump)Engine.UserInterface.AddControl(new CharacterListGump(), 0, 0);
+            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_Client = UltimaServices.GetService<LoginClient>();
+
+            m_CharListGump = (CharacterListGump)m_UserInterface.AddControl(new CharacterListGump(), 0, 0);
             m_CharListGump.OnBackToSelectServer += OnBackToSelectServer;
             m_CharListGump.OnLoginWithCharacter += OnLoginWithCharacter;
             m_CharListGump.OnDeleteCharacter += OnDeleteCharacter;
@@ -46,9 +52,9 @@ namespace UltimaXNA.Ultima.Login.States
 
             if (SceneState == SceneState.Active)
             {
-                switch (Engine.Client.Status)
+                switch (m_Client.Status)
                 {
-                    case UltimaClientStatus.GameServer_CharList:
+                    case LoginClientStatus.GameServer_CharList:
                         if (!m_autoSelectedCharacter && Settings.Game.AutoSelectLastCharacter && !string.IsNullOrWhiteSpace(Settings.Game.LastCharacterName))
                         {
                             m_autoSelectedCharacter = true;
@@ -63,10 +69,10 @@ namespace UltimaXNA.Ultima.Login.States
                         }
                         // This is where we're supposed to be while waiting to select a character.
                         break;
-                    case UltimaClientStatus.WorldServer_LoginComplete:
+                    case LoginClientStatus.WorldServer_LoginComplete:
                         // Almost completed logging in, just waiting for our client object.
                         // break;
-                    case UltimaClientStatus.WorldServer_InWorld:
+                    case LoginClientStatus.WorldServer_InWorld:
                         // we've connected! Client takes us into the world and disposes of this Model.
                         break;
                     default:
@@ -88,23 +94,23 @@ namespace UltimaXNA.Ultima.Login.States
             // which automatically logs in again. But we can't do that,
             // since I have UltimaClient clear your account/password data
             // once connected (is this really neccesary?) Have to fix ..
-            Manager.CurrentScene = Container.Resolve<LoginState>();
+            Manager.CurrentState = new LoginState();
         }
 
         public void OnLoginWithCharacter(int index)
         {
             m_CharListGump.ActivePage = 2;
-            Engine.Client.LoginWithCharacter(index);
+            m_Client.LoginWithCharacter(index);
         }
 
         public void OnDeleteCharacter(int index)
         {
-            Engine.Client.DeleteCharacter(index);
+            m_Client.DeleteCharacter(index);
         }
 
         public void OnNewCharacter()
         {
-            Manager.CurrentScene = Container.Resolve<CreateCharacterState>();
+            Manager.CurrentState = new CreateCharacterState();
         }
     }
 }

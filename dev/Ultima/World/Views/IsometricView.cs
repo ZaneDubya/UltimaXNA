@@ -14,7 +14,7 @@ using System;
 using System.Collections.Generic;
 using UltimaXNA.Configuration;
 using UltimaXNA.Core.Graphics;
-using UltimaXNA.Core.Patterns.IoC;
+using UltimaXNA.Core.Input;
 using UltimaXNA.Ultima.Entities;
 using UltimaXNA.Ultima.Entities.Items;
 using UltimaXNA.Ultima.EntityViews;
@@ -73,16 +73,16 @@ namespace UltimaXNA.Ultima.World.Views
             get { return m_renderOffset; }
         }
 
-        public IsometricRenderer(IContainer container)
-        {
-            Engine = container.Resolve<IEngine>();
-        }
+        private readonly InputManager m_Input;
 
-        protected IEngine Engine { get; private set; }
+        public IsometricRenderer()
+        {
+            m_Input = UltimaServices.GetService<InputManager>();
+        }
 
         public void Initialize()
         {
-            m_spriteBatch = new SpriteBatch3D(Engine.Game);
+            m_spriteBatch = UltimaServices.GetService<SpriteBatch3D>();
 
             m_vertexBufferStretched = new [] {
                 new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(0, 0, 0)),
@@ -183,7 +183,7 @@ namespace UltimaXNA.Ultima.World.Views
 
             ObjectsRendered = 0; // Count of objects rendered for statistics and debug
 
-            MouseOverList overList = new MouseOverList(Engine.Input.MousePosition, mousePick.PickOnly); // List of entities mouse is over.
+            MouseOverList overList = new MouseOverList(m_Input.MousePosition, mousePick.PickOnly); // List of entities mouse is over.
             List<AEntity> deferredToRemove = new List<AEntity>();
 
             for (int col = 0; col < renderDimensionY * 2 + renderExtraRowsAtBottom; col++)
@@ -238,7 +238,7 @@ namespace UltimaXNA.Ultima.World.Views
             OverheadRenderer.Render(m_spriteBatch, overList, map);
 
             // Update the MouseOver objects
-            mousePick.UpdateOverEntities(overList, Engine.Input.MousePosition);
+            mousePick.UpdateOverEntities(overList, m_Input.MousePosition);
 
             // Draw the objects we just send to the spritebatch.
             m_spriteBatch.Prepare(true, true);

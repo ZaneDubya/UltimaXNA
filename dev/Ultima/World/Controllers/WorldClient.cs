@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Diagnostics.Tracing;
-using UltimaXNA.Core.Patterns.IoC;
 using UltimaXNA.Ultima.Entities;
 using UltimaXNA.Ultima.Entities.Items;
 using UltimaXNA.Ultima.Entities.Items.Containers;
@@ -18,7 +17,7 @@ using UltimaXNA.Ultima.Network;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.Network.Server;
 using UltimaXNA.Ultima.Data;
-using Container = UltimaXNA.Ultima.Entities.Items.Containers.Container;
+using UltimaXNA.Configuration;
 
 namespace UltimaXNA.Ultima.World.Controllers
 {
@@ -31,80 +30,86 @@ namespace UltimaXNA.Ultima.World.Controllers
         }
 
         private INetworkClient m_Network;
+        private GUIManager m_UserInterface;
 
-        public WorldClient(IContainer container, WorldModel world)
+        private List<Tuple<int, TypedPacketReceiveHandler>> m_RegisteredHandlers;
+
+        public WorldClient(WorldModel world)
         {
             World = world;
 
-            m_Network = container.Resolve<INetworkClient>();
+            m_RegisteredHandlers = new List<Tuple<int, TypedPacketReceiveHandler>>();
+
+            m_Network = UltimaServices.GetService<INetworkClient>();
+            m_UserInterface = UltimaServices.GetService<GUIManager>();
         }
 
         public void Initialize()
         {
-            m_Network.Register<DamagePacket>(0x0B, "Damage", 0x07, new TypedPacketReceiveHandler(ReceiveDamage));
-            m_Network.Register<MobileStatusCompactPacket>(0x11, "Mobile Status Compact", -1, new TypedPacketReceiveHandler(ReceiveStatusInfo));
-            m_Network.Register<WorldItemPacket>(0x1A, "World Item", -1, new TypedPacketReceiveHandler(ReceiveWorldItem));
-            m_Network.Register<AsciiMessagePacket>(0x1C, "Ascii Meessage", -1, new TypedPacketReceiveHandler(ReceiveAsciiMessage));
-            m_Network.Register<RemoveEntityPacket>(0x1D, "Remove Entity", 5, new TypedPacketReceiveHandler(ReceiveDeleteObject));
-            m_Network.Register<MobileUpdatePacket>(0x20, "Mobile Update", 19, new TypedPacketReceiveHandler(ReceiveMobileUpdate));
-            m_Network.Register<MovementRejectPacket>(0x21, "Movement Rejection", 8, new TypedPacketReceiveHandler(ReceiveMoveRej));
-            m_Network.Register<MoveAcknowledgePacket>(0x22, "Move Acknowledged", 3, new TypedPacketReceiveHandler(ReceiveMoveAck));
-            m_Network.Register<DragEffectPacket>(0x23, "Drag Effect", 26, new TypedPacketReceiveHandler(ReceiveDragItem));
-            m_Network.Register<OpenContainerPacket>(0x24, "Open Container", 7, new TypedPacketReceiveHandler(ReceiveContainer));
-            m_Network.Register<ContainerContentUpdatePacket>(0x25, "Container Content Update", 21, new TypedPacketReceiveHandler(ReceiveAddSingleItemToContainer));
-            m_Network.Register<LiftRejectionPacket>(0x27, "Lift Rejection", 2, new TypedPacketReceiveHandler(ReceiveRejectMoveItemRequest));
-            m_Network.Register<ResurrectionMenuPacket>(0x2C, "Resurect menu", 2, new TypedPacketReceiveHandler(ReceiveResurrectionMenu));
-            m_Network.Register<MobileAttributesPacket>(0x2D, "Mob Attributes", 17, new TypedPacketReceiveHandler(ReceiveMobileAttributes));
-            m_Network.Register<WornItemPacket>(0x2E, "Worn Item", 15, new TypedPacketReceiveHandler(ReceiveWornItem));
-            m_Network.Register<SwingPacket>(0x2F, "Swing", 10, new TypedPacketReceiveHandler(ReceiveOnSwing));
-            m_Network.Register<SendSkillsPacket>(0x3A, "Skills list", -1, new TypedPacketReceiveHandler(ReceiveSkillsList));
-            m_Network.Register<ContainerContentPacket>(0x3C, "Container Content", -1, new TypedPacketReceiveHandler(ReceiveAddMultipleItemsToContainer));
-            m_Network.Register<PersonalLightLevelPacket>(0x4E, "Personal Light Level", 6, new TypedPacketReceiveHandler(ReceivePersonalLightLevel));
-            m_Network.Register<OverallLightLevelPacket>(0x4F, "Overall Light Level", 2, new TypedPacketReceiveHandler(ReceiveOverallLightLevel));
-            m_Network.Register<PopupMessagePacket>(0x53, "Popup Message", 2, new TypedPacketReceiveHandler(ReceivePopupMessage));
-            m_Network.Register<PlaySoundEffectPacket>(0x54, "Play Sound Effect", 12, new TypedPacketReceiveHandler(ReceivePlaySoundEffect));
-            m_Network.Register<TimePacket>(0x5B, "Time", 4, new TypedPacketReceiveHandler(ReceiveTime));
-            m_Network.Register<WeatherPacket>(0x65, "Set Weather", 4, new TypedPacketReceiveHandler(ReceiveSetWeather));
-            m_Network.Register<TargetCursorPacket>(0x6C, "TargetCursor", 19, new TypedPacketReceiveHandler(ReceiveTargetCursor));
-            m_Network.Register<PlayMusicPacket>(0x6D, "Play Music", 3, new TypedPacketReceiveHandler(ReceivePlayMusic));
-            m_Network.Register<MobileAnimationPacket>(0x6E, "Character Animation", 14, new TypedPacketReceiveHandler(ReceiveMobileAnimation));
-            m_Network.Register<GraphicEffectPacket>(0x70, "Graphical Effect 1", 28, new TypedPacketReceiveHandler(ReceiveGraphicEffect));
-            m_Network.Register<WarModePacket>(0x72, "War Mode", 5, new TypedPacketReceiveHandler(ReceiveWarMode));
-            m_Network.Register<VendorBuyListPacket>(0x74, "Vendor Buy List", -1, new TypedPacketReceiveHandler(ReceiveOpenBuyWindow));
-            m_Network.Register<SubServerPacket>(0x76, "New Subserver", 16, new TypedPacketReceiveHandler(ReceiveNewSubserver));
-            m_Network.Register<MobileMovingPacket>(0x77, "Mobile Moving", 17, new TypedPacketReceiveHandler(ReceiveMobileMoving));
-            m_Network.Register<MobileIncomingPacket>(0x78, "Mobile Incoming", -1, new TypedPacketReceiveHandler(ReceiveMobileIncoming));
-            m_Network.Register<DisplayMenuPacket>(0x7C, "Display Menu", -1, new TypedPacketReceiveHandler(ReceiveDisplayMenu));
-            m_Network.Register<OpenPaperdollPacket>(0x88, "Open Paperdoll", 66, new TypedPacketReceiveHandler(ReceiveOpenPaperdoll));
-            m_Network.Register<CorpseClothingPacket>(0x89, "Corpse Clothing", -1, new TypedPacketReceiveHandler(ReceiveCorpseClothing));
-            m_Network.Register<PlayerMovePacket>(0x97, "Player Move", 2, new TypedPacketReceiveHandler(ReceivePlayerMove));
-            m_Network.Register<RequestNameResponsePacket>(0x98, "Request Name Response", -1, new TypedPacketReceiveHandler(ReceiveRequestNameResponse));
-            m_Network.Register<TargetCursorMultiPacket>(0x99, "Target Cursor Multi Object", 26, new TypedPacketReceiveHandler(ReceiveTargetCursorMulti));
-            m_Network.Register<VendorSellListPacket>(0x9E, "Vendor Sell List", -1, new TypedPacketReceiveHandler(ReceiveSellList));
-            m_Network.Register<UpdateHealthPacket>(0xA1, "Update Current Health", 9, new TypedPacketReceiveHandler(ReceiveUpdateHealth));
-            m_Network.Register<UpdateManaPacket>(0xA2, "Update Current Mana", 9, new TypedPacketReceiveHandler(ReceiveUpdateMana));
-            m_Network.Register<UpdateStaminaPacket>(0xA3, "Update Current Stamina", 9, new TypedPacketReceiveHandler(ReceiveUpdateStamina));
-            m_Network.Register<OpenWebBrowserPacket>(0xA5, "Open Web Browser", -1, new TypedPacketReceiveHandler(ReceiveOpenWebBrowser));
-            m_Network.Register<TipNoticePacket>(0xA6, "Tip/Notice Window", -1, new TypedPacketReceiveHandler(ReceiveTipNotice));
-            m_Network.Register<ChangeCombatantPacket>(0xAA, "Change Combatant", 5, new TypedPacketReceiveHandler(ReceiveChangeCombatant));
-            m_Network.Register<UnicodeMessagePacket>(0xAE, "Unicode Message", -1, new TypedPacketReceiveHandler(ReceiveUnicodeMessage));
-            m_Network.Register<DeathAnimationPacket>(0xAF, "Death Animation", 13, new TypedPacketReceiveHandler(ReceiveDeathAnimation));
-            m_Network.Register<DisplayGumpFastPacket>(0xB0, "Display Gump Fast", -1, new TypedPacketReceiveHandler(ReceiveDisplayGumpFast));
-            m_Network.Register<ObjectHelpResponsePacket>(0xB7, "Object Help Response ", -1, new TypedPacketReceiveHandler(ReceiveObjectHelpResponse));
-            m_Network.Register<QuestArrowPacket>(0xBA, "Quest Arrow", 6, new TypedPacketReceiveHandler(ReceiveQuestArrow));
-            m_Network.Register<SeasonChangePacket>(0xBC, "Seasonal Change", 3, new TypedPacketReceiveHandler(ReceiveSeasonalInformation));
-            m_Network.Register<GeneralInfoPacket>(0xBF, "General Information", -1, new TypedPacketReceiveHandler(ReceiveGeneralInfo));
-            m_Network.Register<GraphicEffectHuedPacket>(0xC0, "Hued Effect", 36, new TypedPacketReceiveHandler(ReceiveHuedEffect));
-            m_Network.Register<MessageLocalizedPacket>(0xC1, "Message Localized", -1, new TypedPacketReceiveHandler(ReceiveCLILOCMessage));
-            m_Network.Register<InvalidMapEnablePacket>(0xC6, "Invalid Map Enable", 1, new TypedPacketReceiveHandler(ReceiveInvalidMapEnable));
-            m_Network.Register<GraphicEffectExtendedPacket>(0xC7, "Particle Effect", 49, new TypedPacketReceiveHandler(ReceiveOnParticleEffect));
-            m_Network.Register<GlobalQueuePacket>(0xCB, "Global Queue Count", 7, new TypedPacketReceiveHandler(ReceiveGlobalQueueCount));
-            m_Network.Register<MessageLocalizedAffixPacket>(0xCC, "Message Localized Affix ", -1, new TypedPacketReceiveHandler(ReceiveMessageLocalizedAffix));
-            m_Network.Register<Extended0x78Packet>(0xD3, "Extended 0x78", -1, new TypedPacketReceiveHandler(ReceiveExtended0x78));
-            m_Network.Register<ObjectPropertyListPacket>(0xD6, "Mega Cliloc", -1, new TypedPacketReceiveHandler(ReceiveObjectPropertyList));
-            m_Network.Register<CustomHousePacket>(0xD8, "Send Custom House", -1, new TypedPacketReceiveHandler(ReceiveSendCustomHouse));
-            m_Network.Register<ObjectPropertyListUpdatePacket>(0xDC, "SE Introduced Revision", 9, new TypedPacketReceiveHandler(ReceiveToolTipRevision));
-            m_Network.Register<CompressedGumpPacket>(0xDD, "Compressed Gump", -1, new TypedPacketReceiveHandler(ReceiveCompressedGump));
+            Register<DamagePacket>(0x0B, "Damage", 0x07, new TypedPacketReceiveHandler(ReceiveDamage));
+            Register<MobileStatusCompactPacket>(0x11, "Mobile Status Compact", -1, new TypedPacketReceiveHandler(ReceiveStatusInfo));
+            Register<WorldItemPacket>(0x1A, "World Item", -1, new TypedPacketReceiveHandler(ReceiveWorldItem));
+            Register<AsciiMessagePacket>(0x1C, "Ascii Meessage", -1, new TypedPacketReceiveHandler(ReceiveAsciiMessage));
+            Register<RemoveEntityPacket>(0x1D, "Remove Entity", 5, new TypedPacketReceiveHandler(ReceiveDeleteObject));
+            Register<MobileUpdatePacket>(0x20, "Mobile Update", 19, new TypedPacketReceiveHandler(ReceiveMobileUpdate));
+            Register<MovementRejectPacket>(0x21, "Movement Rejection", 8, new TypedPacketReceiveHandler(ReceiveMoveRej));
+            Register<MoveAcknowledgePacket>(0x22, "Move Acknowledged", 3, new TypedPacketReceiveHandler(ReceiveMoveAck));
+            Register<DragEffectPacket>(0x23, "Drag Effect", 26, new TypedPacketReceiveHandler(ReceiveDragItem));
+            Register<OpenContainerPacket>(0x24, "Open Container", 7, new TypedPacketReceiveHandler(ReceiveContainer));
+            Register<ContainerContentUpdatePacket>(0x25, "Container Content Update", 21, new TypedPacketReceiveHandler(ReceiveAddSingleItemToContainer));
+            Register<LiftRejectionPacket>(0x27, "Lift Rejection", 2, new TypedPacketReceiveHandler(ReceiveRejectMoveItemRequest));
+            Register<ResurrectionMenuPacket>(0x2C, "Resurect menu", 2, new TypedPacketReceiveHandler(ReceiveResurrectionMenu));
+            Register<MobileAttributesPacket>(0x2D, "Mob Attributes", 17, new TypedPacketReceiveHandler(ReceiveMobileAttributes));
+            Register<WornItemPacket>(0x2E, "Worn Item", 15, new TypedPacketReceiveHandler(ReceiveWornItem));
+            Register<SwingPacket>(0x2F, "Swing", 10, new TypedPacketReceiveHandler(ReceiveOnSwing));
+            Register<SendSkillsPacket>(0x3A, "Skills list", -1, new TypedPacketReceiveHandler(ReceiveSkillsList));
+            Register<ContainerContentPacket>(0x3C, "Container Content", -1, new TypedPacketReceiveHandler(ReceiveAddMultipleItemsToContainer));
+            Register<PersonalLightLevelPacket>(0x4E, "Personal Light Level", 6, new TypedPacketReceiveHandler(ReceivePersonalLightLevel));
+            Register<OverallLightLevelPacket>(0x4F, "Overall Light Level", 2, new TypedPacketReceiveHandler(ReceiveOverallLightLevel));
+            Register<PopupMessagePacket>(0x53, "Popup Message", 2, new TypedPacketReceiveHandler(ReceivePopupMessage));
+            Register<PlaySoundEffectPacket>(0x54, "Play Sound Effect", 12, new TypedPacketReceiveHandler(ReceivePlaySoundEffect));
+            Register<TimePacket>(0x5B, "Time", 4, new TypedPacketReceiveHandler(ReceiveTime));
+            Register<WeatherPacket>(0x65, "Set Weather", 4, new TypedPacketReceiveHandler(ReceiveSetWeather));
+            Register<TargetCursorPacket>(0x6C, "TargetCursor", 19, new TypedPacketReceiveHandler(ReceiveTargetCursor));
+            Register<PlayMusicPacket>(0x6D, "Play Music", 3, new TypedPacketReceiveHandler(ReceivePlayMusic));
+            Register<MobileAnimationPacket>(0x6E, "Character Animation", 14, new TypedPacketReceiveHandler(ReceiveMobileAnimation));
+            Register<GraphicEffectPacket>(0x70, "Graphical Effect 1", 28, new TypedPacketReceiveHandler(ReceiveGraphicEffect));
+            Register<WarModePacket>(0x72, "War Mode", 5, new TypedPacketReceiveHandler(ReceiveWarMode));
+            Register<VendorBuyListPacket>(0x74, "Vendor Buy List", -1, new TypedPacketReceiveHandler(ReceiveOpenBuyWindow));
+            Register<SubServerPacket>(0x76, "New Subserver", 16, new TypedPacketReceiveHandler(ReceiveNewSubserver));
+            Register<MobileMovingPacket>(0x77, "Mobile Moving", 17, new TypedPacketReceiveHandler(ReceiveMobileMoving));
+            Register<MobileIncomingPacket>(0x78, "Mobile Incoming", -1, new TypedPacketReceiveHandler(ReceiveMobileIncoming));
+            Register<DisplayMenuPacket>(0x7C, "Display Menu", -1, new TypedPacketReceiveHandler(ReceiveDisplayMenu));
+            Register<OpenPaperdollPacket>(0x88, "Open Paperdoll", 66, new TypedPacketReceiveHandler(ReceiveOpenPaperdoll));
+            Register<CorpseClothingPacket>(0x89, "Corpse Clothing", -1, new TypedPacketReceiveHandler(ReceiveCorpseClothing));
+            Register<PlayerMovePacket>(0x97, "Player Move", 2, new TypedPacketReceiveHandler(ReceivePlayerMove));
+            Register<RequestNameResponsePacket>(0x98, "Request Name Response", -1, new TypedPacketReceiveHandler(ReceiveRequestNameResponse));
+            Register<TargetCursorMultiPacket>(0x99, "Target Cursor Multi Object", 26, new TypedPacketReceiveHandler(ReceiveTargetCursorMulti));
+            Register<VendorSellListPacket>(0x9E, "Vendor Sell List", -1, new TypedPacketReceiveHandler(ReceiveSellList));
+            Register<UpdateHealthPacket>(0xA1, "Update Current Health", 9, new TypedPacketReceiveHandler(ReceiveUpdateHealth));
+            Register<UpdateManaPacket>(0xA2, "Update Current Mana", 9, new TypedPacketReceiveHandler(ReceiveUpdateMana));
+            Register<UpdateStaminaPacket>(0xA3, "Update Current Stamina", 9, new TypedPacketReceiveHandler(ReceiveUpdateStamina));
+            Register<OpenWebBrowserPacket>(0xA5, "Open Web Browser", -1, new TypedPacketReceiveHandler(ReceiveOpenWebBrowser));
+            Register<TipNoticePacket>(0xA6, "Tip/Notice Window", -1, new TypedPacketReceiveHandler(ReceiveTipNotice));
+            Register<ChangeCombatantPacket>(0xAA, "Change Combatant", 5, new TypedPacketReceiveHandler(ReceiveChangeCombatant));
+            Register<UnicodeMessagePacket>(0xAE, "Unicode Message", -1, new TypedPacketReceiveHandler(ReceiveUnicodeMessage));
+            Register<DeathAnimationPacket>(0xAF, "Death Animation", 13, new TypedPacketReceiveHandler(ReceiveDeathAnimation));
+            Register<DisplayGumpFastPacket>(0xB0, "Display Gump Fast", -1, new TypedPacketReceiveHandler(ReceiveDisplayGumpFast));
+            Register<ObjectHelpResponsePacket>(0xB7, "Object Help Response ", -1, new TypedPacketReceiveHandler(ReceiveObjectHelpResponse));
+            Register<QuestArrowPacket>(0xBA, "Quest Arrow", 6, new TypedPacketReceiveHandler(ReceiveQuestArrow));
+            Register<SeasonChangePacket>(0xBC, "Seasonal Change", 3, new TypedPacketReceiveHandler(ReceiveSeasonalInformation));
+            Register<GeneralInfoPacket>(0xBF, "General Information", -1, new TypedPacketReceiveHandler(ReceiveGeneralInfo));
+            Register<GraphicEffectHuedPacket>(0xC0, "Hued Effect", 36, new TypedPacketReceiveHandler(ReceiveHuedEffect));
+            Register<MessageLocalizedPacket>(0xC1, "Message Localized", -1, new TypedPacketReceiveHandler(ReceiveCLILOCMessage));
+            Register<InvalidMapEnablePacket>(0xC6, "Invalid Map Enable", 1, new TypedPacketReceiveHandler(ReceiveInvalidMapEnable));
+            Register<GraphicEffectExtendedPacket>(0xC7, "Particle Effect", 49, new TypedPacketReceiveHandler(ReceiveOnParticleEffect));
+            Register<GlobalQueuePacket>(0xCB, "Global Queue Count", 7, new TypedPacketReceiveHandler(ReceiveGlobalQueueCount));
+            Register<MessageLocalizedAffixPacket>(0xCC, "Message Localized Affix ", -1, new TypedPacketReceiveHandler(ReceiveMessageLocalizedAffix));
+            Register<Extended0x78Packet>(0xD3, "Extended 0x78", -1, new TypedPacketReceiveHandler(ReceiveExtended0x78));
+            Register<ObjectPropertyListPacket>(0xD6, "Mega Cliloc", -1, new TypedPacketReceiveHandler(ReceiveObjectPropertyList));
+            Register<CustomHousePacket>(0xD8, "Send Custom House", -1, new TypedPacketReceiveHandler(ReceiveSendCustomHouse));
+            Register<ObjectPropertyListUpdatePacket>(0xDC, "SE Introduced Revision", 9, new TypedPacketReceiveHandler(ReceiveToolTipRevision));
+            Register<CompressedGumpPacket>(0xDD, "Compressed Gump", -1, new TypedPacketReceiveHandler(ReceiveCompressedGump));
 
             /* Deprecated (not used by RunUO) and/or not implmented
              * Left them here incase we need to implement in the future
@@ -133,13 +138,24 @@ namespace UltimaXNA.Ultima.World.Controllers
 
         public void Dispose()
         {
+            for (int i = 0; i < m_RegisteredHandlers.Count; i++)
+                m_Network.Unregister(m_RegisteredHandlers[i].Item1, m_RegisteredHandlers[i].Item2);
+            m_RegisteredHandlers.Clear();
+            m_RegisteredHandlers = null;
+
             MobileMovement.SendMoveRequestPacket -= InternalOnEntity_SendMoveRequestPacket;
+        }
+
+        public void Register<T>(int id, string name, int length, TypedPacketReceiveHandler onReceive) where T : IRecvPacket
+        {
+            m_RegisteredHandlers.Add(new Tuple<int, TypedPacketReceiveHandler>(id, onReceive));
+            m_Network.Register<T>(id, name, length, onReceive);
         }
         
         public void SendWorldLoginPackets()
         {
             GetMySkills();
-            World.Engine.Client.SendClientVersion();
+            SendClientVersion();
             SendClientScreenSize();
             SendClientLocalization();
             // Packet: BF 00 0A 00 0F 0A 00 00 00 1F
@@ -151,6 +167,21 @@ namespace UltimaXNA.Ultima.World.Controllers
             //         00 00 FF 40 00 01 00 40 00 01 02 40 00 01 03 40
             //         00 01 04 40 00 01 05 40 00 01 06 40 00 01 07 40
             //         00 01 24 40 00 01 26 
+        }
+
+        /// <summary>
+        /// Sends the server the client version. Version is specified in EngineVars.
+        /// </summary>
+        public void SendClientVersion()
+        {
+            if (Settings.UltimaOnline.ClientVersion.Length != 4)
+            {
+                Tracer.Warn("Cannot send seed packet: Version array is incorrectly sized.");
+            }
+            else
+            {
+                m_Network.Send(new ClientVersionPacket(Settings.UltimaOnline.ClientVersion));
+            }
         }
 
         public void GetMySkills()
@@ -699,7 +730,7 @@ namespace UltimaXNA.Ultima.World.Controllers
         private void ReceivePopupMessage(IRecvPacket packet)
         {
             PopupMessagePacket p = (PopupMessagePacket)packet;
-            World.Engine.UserInterface.MsgBox(p.Message, MsgBoxTypes.OkOnly);
+            m_UserInterface.MsgBox(p.Message, MsgBoxTypes.OkOnly);
         }
 
         private void ReceiveOpenBuyWindow(IRecvPacket packet)
@@ -720,7 +751,7 @@ namespace UltimaXNA.Ultima.World.Controllers
         private void ReceiveOpenPaperdoll(IRecvPacket packet)
         {
             OpenPaperdollPacket opp = packet as OpenPaperdollPacket;
-            World.Engine.UserInterface.AddControl(new PaperDollGump(EntityManager.GetObject<Mobile>(opp.Serial, false)), 400, 100, GUIManager.AddGumpType.OnlyAllowOne);
+            m_UserInterface.AddControl(new PaperDollGump(EntityManager.GetObject<Mobile>(opp.Serial, false)), 400, 100, GUIManager.AddControlType.OnlyAllowOne);
         }
 
         private void ReceiveCompressedGump(IRecvPacket packet)
@@ -729,7 +760,7 @@ namespace UltimaXNA.Ultima.World.Controllers
             if (p.HasData)
             {
                 string[] gumpPieces = interpretGumpPieces(p.GumpData);
-                Gump g = (Gump)World.Engine.UserInterface.AddControl(new Gump(p.Serial, p.GumpID, gumpPieces, p.TextLines), p.X, p.Y);
+                Gump g = (Gump)m_UserInterface.AddControl(new Gump(p.Serial, p.GumpID, gumpPieces, p.TextLines), p.X, p.Y);
                 g.IsMovable = true;
             }
         }
