@@ -15,6 +15,12 @@ namespace UltimaXNA.Configuration
         private bool m_ShowUIOutlines;
         private bool m_LogPackets;
 
+        public DebugSettings()
+        {
+            IsConsoleEnabled = true;
+            ShowFps = true;
+        }
+
         public bool LogPackets
         {
             get { return m_LogPackets; }

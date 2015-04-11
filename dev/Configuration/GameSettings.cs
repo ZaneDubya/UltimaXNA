@@ -15,12 +15,13 @@ namespace UltimaXNA.Configuration
         private bool m_IsVSyncEnabled;
         private Resolution m_Resolution;
         private Mouse m_Mouse;
-        private bool m_IsFixedTimeStep = true;
+        private bool m_IsFixedTimeStep;
 
         public GameSettings()
         {
             Resolution = new Resolution(800, 600);
             Mouse = new Mouse(MouseButton.Left, MouseButton.Right);
+            IsFixedTimeStep = true;
         }
 
         public bool IsFixedTimeStep
