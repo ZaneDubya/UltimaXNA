@@ -99,6 +99,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             Position = new Point(x, y);
             GumpUpID = gumpID1;
+            GumpDownID = gumpID2;
             ButtonType = buttonType;
             ButtonParameter = param;
             ButtonID = buttonID;
