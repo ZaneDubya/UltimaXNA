@@ -4,7 +4,6 @@ float2	 Viewport;
 
 float3 lightDirection;
 float lightIntensity;
-float ambientLightIntensity;
 
 bool DrawLighting;
 
@@ -58,16 +57,6 @@ float4 PixelShaderFunction(PS_INPUT IN) : COLOR0
 		discard;
 	}
 
-	// Darken the color based on the ambient lighting and the normal.
-	if (DrawLighting)
-	{
-		float3 light = normalize(lightDirection);
-		float3 normal = normalize(IN.Normal);
-		float3 nDotL = saturate(dot(-light, normal));
-
-		color.rgb = saturate((color.rgb * nDotL * lightIntensity) + (color.rgb * ambientLightIntensity));
-	}
-
 	// Hue the color if the hue vector y component is greater than 0.
 	if (IN.Hue.y > 0)
 	{
@@ -107,6 +96,16 @@ float4 PixelShaderFunction(PS_INPUT IN) : COLOR0
 			// normal hue - map the hue to the grayscale.
 			color = hueColor;
 		}
+	}
+
+	// Darken the color based on the ambient lighting and the normal.
+	if (DrawLighting)
+	{
+		float3 light = normalize(lightDirection);
+		float3 normal = normalize(IN.Normal);
+		float3 nDotL = min(saturate(dot(light, normal)), 1.0f);
+
+		color.rgb = saturate((color.rgb * nDotL * lightIntensity * 0.2f + color.rgb * lightIntensity * 0.8f));
 	}
 
 	return color;

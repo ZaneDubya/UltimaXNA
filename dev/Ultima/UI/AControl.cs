@@ -8,14 +8,13 @@
  *
  ***************************************************************************/
 #region usings
-using System;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
+using UltimaXNA.Configuration;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
-using UltimaXNA.Core;
-using UltimaXNA.Configuration;
 #endregion
 
 namespace UltimaXNA.Ultima.UI
@@ -223,7 +222,9 @@ namespace UltimaXNA.Ultima.UI
             }
         }
 
+#if DEBUG
         static Texture2D m_boundsTexture;
+#endif
 
         GUIManager m_UserInterface;
 

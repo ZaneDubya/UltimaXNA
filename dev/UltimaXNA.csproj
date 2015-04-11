@@ -132,8 +132,6 @@
     <Compile Include="Core\ComponentModel\EqualityHelper.cs" />
     <Compile Include="Core\ComponentModel\NotifyPropertyChangedBase.cs" />
     <Compile Include="Configuration\Resolution.cs" />
-    <Compile Include="Core\Configuration\SettingsContainer.cs" />
-    <Compile Include="Core\Configuration\SettingsToken.cs" />
     <Compile Include="Core\Configuration\TextSettingsFileWriter.cs" />
     <Compile Include="Core\DpiManager.cs" />
     <Compile Include="Core\Extensions\MethodInfoExtensions.cs" />

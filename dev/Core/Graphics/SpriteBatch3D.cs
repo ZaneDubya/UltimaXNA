@@ -275,12 +275,7 @@ namespace UltimaXNA.Core.Graphics
             m_effect.Parameters["lightDirection"].SetValue(direction);
         }
 
-        public void SetAmbientLightIntensity(float intensity)
-        {
-            m_effect.Parameters["ambientLightIntensity"].SetValue(intensity);
-        }
-
-        public void SetDirectionalLightIntensity(float intensity)
+        public void SetLightIntensity(float intensity)
         {
             m_effect.Parameters["lightIntensity"].SetValue(intensity);
         }

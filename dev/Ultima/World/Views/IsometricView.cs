@@ -251,21 +251,13 @@ namespace UltimaXNA.Ultima.World.Views
             light = Math.Max(light, 0);
             light /= 30; // bring it between 0-1
 
-            // -0.3 corresponds pretty well to the darkest possible light in the original client
-            // 0.5 is quite okay for the brightest light.
-            // so we'll just interpolate between those two values
+            m_spriteBatch.SetLightIntensity(light);
 
-            light *= 0.8f;
-            light -= 0.3f;
 
             // i'd use a fixed lightning direction for now - maybe enable this effect with a custom packet?
-            Vector3 lightDirection = new Vector3((float)Math.Cos(m_lightDirection), m_lightHeight, (float)Math.Sin(m_lightDirection));
-
+            m_lightDirection = 1.2f;
+            Vector3 lightDirection = Vector3.Normalize(new Vector3((float)Math.Cos(m_lightDirection), (float)Math.Sin(m_lightDirection), 1f));
             m_spriteBatch.SetLightDirection(lightDirection);
-
-            // again some guesstimated values, but to me it looks okay this way :) 
-            m_spriteBatch.SetAmbientLightIntensity(light * 0.8f);
-            m_spriteBatch.SetDirectionalLightIntensity(light);
         }
     }
 }

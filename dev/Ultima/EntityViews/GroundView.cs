@@ -144,16 +144,16 @@ namespace UltimaXNA.Ultima.EntityViews
                 }
             }
 
-            m_Normals[0] = calculateNormal_Old(
+            m_Normals[0] = calculateNormal(
                 surroundingTilesZ[2], surroundingTilesZ[3],
                 surroundingTilesZ[0], surroundingTilesZ[6]);
-            m_Normals[1] = calculateNormal_Old(
+            m_Normals[1] = calculateNormal(
                 Entity.Z, surroundingTilesZ[4],
                 surroundingTilesZ[1], surroundingTilesZ[7]);
-            m_Normals[2] = calculateNormal_Old(
+            m_Normals[2] = calculateNormal(
                 surroundingTilesZ[5], surroundingTilesZ[7],
                 Entity.Z, surroundingTilesZ[9]);
-            m_Normals[3] = calculateNormal_Old(
+            m_Normals[3] = calculateNormal(
                 surroundingTilesZ[6], surroundingTilesZ[8],
                 surroundingTilesZ[3], surroundingTilesZ[10]);
 
@@ -161,12 +161,12 @@ namespace UltimaXNA.Ultima.EntityViews
         }
 
         public static float Y_Normal = 1f;
-        private Vector3 calculateNormal_Old(float A, float B, float C, float D)
+        private Vector3 calculateNormal(float A, float B, float C, float D)
         {
             Vector3 iVector = new Vector3(
-                (A - B) / 2f,
+                (A - B),
                 Y_Normal,
-                (C - D) / 2f);
+                (C - D));
             iVector.Normalize();
             return iVector;
         }
