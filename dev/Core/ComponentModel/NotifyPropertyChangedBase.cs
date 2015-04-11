@@ -4,7 +4,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
 
 namespace UltimaXNA.Core.ComponentModel
 {
@@ -32,7 +31,6 @@ namespace UltimaXNA.Core.ComponentModel
 
         }
 
-        [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChangedEventHandler handler = PropertyChanged;

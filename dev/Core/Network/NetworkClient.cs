@@ -253,7 +253,6 @@ namespace UltimaXNA.Core.Network
                     m_ServerSocket.Shutdown(SocketShutdown.Both);
                     m_ServerSocket.Close();
                 }
-                // ReSharper disable once EmptyGeneralCatchClause
                 catch
                 {
 

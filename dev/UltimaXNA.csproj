@@ -131,7 +131,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\Mouse.cs" />
-    <Compile Include="Core\Annotations\CoreAnnotations.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Core\ComponentModel\EqualityHelper.cs" />
     <Compile Include="Core\ComponentModel\NotifyPropertyChangedBase.cs" />

@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Text;
-using JetBrains.Annotations;
 
 namespace UltimaXNA.Core.Diagnostics
 {
     public static class Guard
     {
-        [ContractAnnotation("halt <= condition: false")]
         public static void Requires(bool condition)
         {
             if (!condition)
@@ -15,7 +13,6 @@ namespace UltimaXNA.Core.Diagnostics
             }
         }
 
-        [ContractAnnotation("halt <= condition: false")]
         public static void Requires(bool condition, string message, params object[] parameters)
         {
             if (!condition)
@@ -29,7 +26,6 @@ namespace UltimaXNA.Core.Diagnostics
             }
         }
 
-        [ContractAnnotation("halt <= condition: false")]
         public static void Requires<TException>(bool condition, string message = null)
             where TException : Exception
         {
@@ -44,7 +40,6 @@ namespace UltimaXNA.Core.Diagnostics
             }
         }
 
-        [ContractAnnotation("halt <= obj: null")]
         public static void RequireIsNotNull(object obj, string message)
         {
             if (obj == null)
