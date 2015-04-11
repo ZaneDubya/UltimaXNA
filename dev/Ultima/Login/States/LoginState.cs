@@ -22,13 +22,13 @@ namespace UltimaXNA.Ultima.Login.States
 
         GUIManager m_UserInterface;
         InputManager m_Input;
-        LoginClient m_Client;
+        LoginModel m_Login;
 
         public LoginState()
             : base()
         {
             m_UserInterface = UltimaServices.GetService<GUIManager>();
-            m_Client = UltimaServices.GetService<LoginClient>();
+            m_Login = UltimaServices.GetService<LoginModel>();
             m_Input = UltimaServices.GetService<InputManager>();
         }
 
@@ -57,9 +57,9 @@ namespace UltimaXNA.Ultima.Login.States
         }
 
         public void OnLogin(string server, int port, string account, SecureString password)
-        {   
-            m_Client.UserName = account;
-            m_Client.Password = password;
+        {
+            m_Login.Client.UserName = account;
+            m_Login.Client.Password = password;
 
             Manager.CurrentState = new LoggingInState();
         }

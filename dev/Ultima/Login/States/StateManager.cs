@@ -75,12 +75,12 @@ namespace UltimaXNA.Ultima.Login.States
         }
 
         GUIManager m_UserInterface;
-        LoginClient m_Client;
+        LoginModel m_Login;
 
         public StateManager()
         {
             m_UserInterface = UltimaServices.GetService<GUIManager>();
-            m_Client = UltimaServices.GetService<LoginClient>();
+            m_Login = UltimaServices.GetService<LoginModel>();
         }
 
         public void Update(double totalTime, double frameTime)
@@ -99,7 +99,7 @@ namespace UltimaXNA.Ultima.Login.States
 
         public void ResetToLoginScreen()
         {
-            m_Client.Disconnect();
+            m_Login.Client.Disconnect();
             m_UserInterface.Reset();
             if (!(m_CurrentScene is LoginState))
                 CurrentState = new LoginState();

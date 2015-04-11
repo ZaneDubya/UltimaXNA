@@ -20,7 +20,7 @@ namespace UltimaXNA.Ultima.Login.States
     public class LoggingInState : AState
     {
         GUIManager m_UserInterface;
-        LoginClient m_Client;
+        LoginModel m_Login;
 
         private LoggingInGump m_Gump;
         
@@ -37,12 +37,12 @@ namespace UltimaXNA.Ultima.Login.States
             base.Intitialize();
 
             m_UserInterface = UltimaServices.GetService<GUIManager>();
-            m_Client = UltimaServices.GetService<LoginClient>();
+            m_Login = UltimaServices.GetService<LoginModel>();
 
             m_Gump = (LoggingInGump)m_UserInterface.AddControl(new LoggingInGump(), 0, 0);
             m_Gump.OnCancelLogin += OnCancelLogin;
 
-            m_Client.Disconnect();
+            m_Login.Client.Disconnect();
         }
 
         public override void Update(double totalTime, double frameTime)
@@ -53,12 +53,12 @@ namespace UltimaXNA.Ultima.Login.States
             {
                 if (!m_ErrorReceived)
                 {
-                    switch (m_Client.Status)
+                    switch (m_Login.Client.Status)
                     {
                         case LoginClientStatus.Unconnected:
                             string serverAddress = Settings.Server.ServerAddress;
                             int serverPort = Settings.Server.ServerPort;
-                            m_Client.Connect(serverAddress, serverPort);
+                            m_Login.Client.Connect(serverAddress, serverPort);
                             break;
                         case LoginClientStatus.LoginServer_Connecting:
                             // connecting ...
@@ -66,7 +66,7 @@ namespace UltimaXNA.Ultima.Login.States
                         case LoginClientStatus.LoginServer_WaitingForLogin:
                             // show 'verifying account...' gump
                             m_Gump.ActivePage = 9;
-                            m_Client.Login();
+                            m_Login.Client.Login();
                             break;
                         case LoginClientStatus.LoginServer_LoggingIn:
                             // logging in ...

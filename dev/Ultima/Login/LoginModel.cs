@@ -18,7 +18,9 @@ namespace UltimaXNA.Ultima.Login
         public LoginModel()
             : base()
         {
-            Client = UltimaServices.Register<LoginClient>(new LoginClient());
+            UltimaServices.Register<LoginModel>(this);
+
+            Client = new LoginClient();
         }
 
         protected override AView CreateView()
@@ -37,7 +39,7 @@ namespace UltimaXNA.Ultima.Login
 
         protected override void OnDispose()
         {
-            UltimaServices.Unregister<LoginClient>(Client);
+            UltimaServices.Unregister<LoginModel>(this);
 
             Client.Dispose();
             Client = null;

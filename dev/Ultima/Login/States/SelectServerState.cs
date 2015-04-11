@@ -19,7 +19,7 @@ namespace UltimaXNA.Ultima.Login.States
     public class SelectServerState : AState
     {
         GUIManager m_UserInterface;
-        LoginClient m_Client;
+        LoginModel m_Login;
 
         private SelectServerGump m_SelectServerGump;
 
@@ -34,7 +34,7 @@ namespace UltimaXNA.Ultima.Login.States
             base.Intitialize();
 
             m_UserInterface = UltimaServices.GetService<GUIManager>();
-            m_Client = UltimaServices.GetService<LoginClient>();
+            m_Login = UltimaServices.GetService<LoginModel>();
 
             m_SelectServerGump = (SelectServerGump)m_UserInterface.AddControl(new SelectServerGump(), 0, 0);
             m_SelectServerGump.OnBackToLoginScreen += OnBackToLoginScreen;
@@ -48,7 +48,7 @@ namespace UltimaXNA.Ultima.Login.States
 
             if(SceneState == SceneState.Active)
             {
-                switch (m_Client.Status)
+                switch (m_Login.Client.Status)
                 {
                     case LoginClientStatus.LoginServer_HasServerList:
                         if(Servers.List.Length == 1)
@@ -59,7 +59,7 @@ namespace UltimaXNA.Ultima.Login.States
                         break;
                     case LoginClientStatus.LoginServer_WaitingForRelay:
                         // we must now send the relay packet.
-                        m_Client.Relay();
+                        m_Login.Client.Relay();
                         break;
                     case LoginClientStatus.LoginServer_Relaying:
                         // relaying to the server we will log in to ...
@@ -95,7 +95,7 @@ namespace UltimaXNA.Ultima.Login.States
         public void OnSelectServer(int index)
         {
             m_SelectServerGump.ActivePage = 2;
-            m_Client.SelectShard(index);
+            m_Login.Client.SelectShard(index);
         }
 
         public void OnSelectLastServer()

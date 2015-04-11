@@ -20,7 +20,7 @@ namespace UltimaXNA.Ultima.Login.States
     public class CharacterListState : AState
     {
         GUIManager m_UserInterface;
-        LoginClient m_Client;
+        LoginModel m_Login;
 
         CharacterListGump m_CharListGump;
 
@@ -35,7 +35,7 @@ namespace UltimaXNA.Ultima.Login.States
             base.Intitialize();
 
             m_UserInterface = UltimaServices.GetService<GUIManager>();
-            m_Client = UltimaServices.GetService<LoginClient>();
+            m_Login = UltimaServices.GetService<LoginModel>();
 
             m_CharListGump = (CharacterListGump)m_UserInterface.AddControl(new CharacterListGump(), 0, 0);
             m_CharListGump.OnBackToSelectServer += OnBackToSelectServer;
@@ -52,7 +52,7 @@ namespace UltimaXNA.Ultima.Login.States
 
             if (SceneState == SceneState.Active)
             {
-                switch (m_Client.Status)
+                switch (m_Login.Client.Status)
                 {
                     case LoginClientStatus.GameServer_CharList:
                         if (!m_autoSelectedCharacter && Settings.Game.AutoSelectLastCharacter && !string.IsNullOrWhiteSpace(Settings.Game.LastCharacterName))
@@ -100,12 +100,12 @@ namespace UltimaXNA.Ultima.Login.States
         public void OnLoginWithCharacter(int index)
         {
             m_CharListGump.ActivePage = 2;
-            m_Client.LoginWithCharacter(index);
+            m_Login.Client.LoginWithCharacter(index);
         }
 
         public void OnDeleteCharacter(int index)
         {
-            m_Client.DeleteCharacter(index);
+            m_Login.Client.DeleteCharacter(index);
         }
 
         public void OnNewCharacter()

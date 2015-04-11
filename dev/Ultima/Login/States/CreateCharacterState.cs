@@ -42,13 +42,13 @@ namespace UltimaXNA.Ultima.Login.States
         int m_skinHue, m_hairHue, m_facialHairHue;
 
         GUIManager m_UserInterface;
-        LoginClient m_Client;
+        LoginModel m_Login;
 
         public CreateCharacterState()
             : base()
         {
             m_UserInterface = UltimaServices.GetService<GUIManager>();
-            m_Client = UltimaServices.GetService<LoginClient>();
+            m_Login = UltimaServices.GetService<LoginModel>();
         }
 
         public override void Intitialize()
@@ -183,7 +183,7 @@ namespace UltimaXNA.Ultima.Login.States
                         break;
                 }
 
-                switch (m_Client.Status)
+                switch (m_Login.Client.Status)
                 {
                     case LoginClientStatus.GameServer_CharList:
                         // This is where we're supposed to be while creating a character.
@@ -236,7 +236,7 @@ namespace UltimaXNA.Ultima.Login.States
                 case CreateCharacterSceneStates.ChooseAppearance:
                     if (validateAppearance())
                     {
-                        m_Client.CreateCharacter(new CreateCharacterPacket(
+                        m_Login.Client.CreateCharacter(new CreateCharacterPacket(
                             m_name, (Sex)m_gender, (Race)0, (byte)m_attributes[0], (byte)m_attributes[1], (byte)m_attributes[2], 
                             (byte)m_skillIndexes[0], (byte)m_skillValues[0], (byte)m_skillIndexes[1], (byte)m_skillValues[1], (byte)m_skillIndexes[2], (byte)m_skillValues[2],
                             (short)m_skinHue, (short)m_hairStyleID, (short)m_hairHue, (short)m_facialHairStyleID, (short)m_facialHairHue,
