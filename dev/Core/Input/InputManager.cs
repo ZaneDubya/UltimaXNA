@@ -353,48 +353,5 @@ namespace UltimaXNA.Core.Input
             }
             return false;
         }
-
-        /*
-         * These routines are disabled because they could be used by a programmer to get the state of input without handling the
-         * InputEvent that created that state, thus allowing two or more parts of the program to respond to the save event. This
-         * could be bad!
-         * 
-                public bool IsMouseButtonDown(MouseButtonInternal button)
-        {
-            if ((m_WndProc.MouseButtons(m_MouseStateThisFrame) & button) == button)
-                return true;
-            else
-                return false;
-        }
-
-        public bool IsMouseButtonUp(MouseButtonInternal button)
-        {
-            if (IsMouseButtonUp(button))
-                return false;
-            else
-                return true;
-        }
-
-        public bool IsKeyDown(WinKeys key)
-        {
-            Keys[] pressed = m_KeyboardStateThisFrame.GetPressedKeys();
-            foreach (Keys k in pressed)
-            {
-                if (k == (Keys)key)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public bool IsKeyUp(WinKeys key)
-        {
-            if (IsKeyDown(key))
-                return false;
-            else
-                return true;
-        }
-        */
     }
 }
