@@ -62,8 +62,7 @@ namespace UltimaXNA.Ultima.Entities
             if (map != Map)
             {
                 Map = map;
-                if (Map == null)
-                    Position.Tile = Position3D.NullTile;
+                Position.Tile = Position3D.NullTile;
             }
         }
 

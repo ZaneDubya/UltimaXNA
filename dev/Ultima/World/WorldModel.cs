@@ -116,6 +116,8 @@ namespace UltimaXNA.Ultima.World
             m_UserInterface = UltimaServices.GetService<GUIManager>();
 
             Entities = new EntityManager(this);
+            EntityManager.Reset(true);
+
             Effects = new EffectsManager(this);
             Input = new WorldInput(this);
             Interaction = new WorldInteraction(this);

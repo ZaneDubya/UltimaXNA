@@ -154,7 +154,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         void logout_OnClose()
         {
-            m_Client.Disconnect();
+            m_World.Disconnect();
         }
 
         public override bool Equals(object obj)
