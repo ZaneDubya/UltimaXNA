@@ -11,7 +11,7 @@ using UltimaXNA.Core;
 using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Diagnostics.Tracing.Listeners;
-using UltimaXNA.Core.Patterns.IoC;
+using UltimaXNA.Core.Patterns;
 #endregion
 
 namespace UltimaXNA
@@ -25,21 +25,23 @@ namespace UltimaXNA
         }
 
         private bool m_IsInitialized;
-        private IContainer m_Container;
+
+        private List<IModule> m_Modules = new List<IModule>();
 
         public Bootstrapper(string[] args)
         {
             GeneralExceptionHandler.Instance = new GeneralExceptionHandler();
         }
+
+        private void LoadModule(IModule module)
+        {
+            m_Modules.Add(module);
+            module.Load();
+        }
         
         public string BaseApplicationPath
         {
             get { return AppDomain.CurrentDomain.BaseDirectory; }
-        }
-
-        private void ConfigureContainer(Container container)
-        {
-            container.RegisterModule<CoreModule>();
         }
 
         private void ConfigureTraceListeners()
@@ -59,11 +61,7 @@ namespace UltimaXNA
 
         private void Configure()
         {
-            Container rootContainer = new Container();
-
-            m_Container = rootContainer.CreateChildContainer();
-
-            ConfigureContainer(rootContainer);
+            LoadModule(new CoreModule());
             ConfigurePlugins();
         }
 
@@ -93,7 +91,7 @@ namespace UltimaXNA
 
                         IModule instance = (IModule)Activator.CreateInstance(module);
 
-                        instance.Load();
+                        LoadModule(instance);
                     }
                 }
                 catch (Exception e)

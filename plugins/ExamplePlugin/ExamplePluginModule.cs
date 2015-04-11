@@ -1,23 +1,23 @@
 ﻿using UltimaXNA.Configuration;
 using UltimaXNA.Core.Diagnostics.Tracing;
-using UltimaXNA.Core.Patterns.IoC;
+using UltimaXNA.Core.Patterns;
 
 namespace ExamplePlugin
 {
     internal sealed class ExamplePluginModule : IModule
     {
-        private ExampleSettigs m_PluginSettings;
+        // private ExampleSettigs m_PluginSettings;
 
         public string Name
         {
             get { return "UltimaXNA Example Plugin"; }
         }
 
-        public void Load(IContainer container)
+        public void Load()
         {
             Tracer.Info("Example plugin loaded.");
 
-            m_PluginSettings = Settings.OpenSection<ExampleSettigs>();
+            /*m_PluginSettings = Settings.OpenSection<ExampleSettigs>();
             m_PluginSettings.Boolean = true;
             m_PluginSettings.String = "Testing the string value";
             m_PluginSettings.Int = 100;
@@ -26,16 +26,16 @@ namespace ExamplePlugin
                 {
                     SomeInt = 1000, SomeString = "This is a string"
                 };
-
+            */
         }
 
-        public void Unload(IContainer container)
+        public void Unload()
         {
 
         }
     }
 
-    internal class ExampleSettigs : SettingsSectionBase
+    /*internal class ExampleSettigs : SettingsSectionBase
     {
         public ExampleSettigs(SettingsFile file)
             : base(file)
@@ -87,5 +87,5 @@ namespace ExamplePlugin
             get;
             set;
         }
-    }
+    }*/
 }

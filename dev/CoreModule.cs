@@ -1,5 +1,5 @@
 #region Usings
-using UltimaXNA.Core.Patterns.IoC;
+using UltimaXNA.Core.Patterns;
 #endregion
 
 namespace UltimaXNA
