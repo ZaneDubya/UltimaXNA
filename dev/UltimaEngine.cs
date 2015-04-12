@@ -7,77 +7,75 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-#region usings
-using UltimaXNA.Core.Input;
+#region Usings
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.UltimaGUI;
-using UltimaXNA.UltimaWorld;
+using System.Windows.Forms;
+using UltimaXNA.Configuration;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.Input;
+using UltimaXNA.Core.Network;
+using UltimaXNA.Ultima;
+using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.IO.FontsNew;
+using UltimaXNA.Ultima.IO.FontsOld;
+using UltimaXNA.Ultima.Login;
+using UltimaXNA.Ultima.UI;
 #endregion
 
 namespace UltimaXNA
 {
-    public class UltimaEngine : Game
+    internal class UltimaEngine : Game
     {
         public static double TotalMS = 0d;
 
-        public InputManager Input
+        public UltimaEngine()
         {
-            get;
-            private set;
+            InitializeGraphicsDevice();
         }
 
-        public GUIManager UserInterface
-        {
-            get;
-            private set;
-        }
-
-        public UltimaClient Client
-        {
-            get;
-            private set;
-        }
-
+        #region Active & Queued Models
+        private AUltimaModel m_Model;
         private AUltimaModel m_QueuedModel;
-        internal AUltimaModel QueuedModel
+
+        public AUltimaModel QueuedModel
         {
             get { return m_QueuedModel; }
             set
             {
-                if (m_QueuedModel != null)
+                if(m_QueuedModel != null)
                 {
                     m_QueuedModel.Dispose();
                     m_QueuedModel = null;
                 }
                 m_QueuedModel = value;
-                if (m_QueuedModel != null && m_QueuedModel.Engine == null)
+
+                if(m_QueuedModel != null)
                 {
-                    m_QueuedModel.Initialize(this);
+                    m_QueuedModel.Initialize();
                 }
             }
         }
 
-        private AUltimaModel m_Model;
-        internal AUltimaModel ActiveModel
+        public AUltimaModel ActiveModel
         {
             get { return m_Model; }
             set
             {
-                if (m_Model != null)
+                if(m_Model != null)
                 {
                     m_Model.Dispose();
                     m_Model = null;
                 }
                 m_Model = value;
-                if (m_Model != null && m_Model.Engine == null)
+                if(m_Model != null)
                 {
-                    m_Model.Initialize(this);
+                    m_Model.Initialize();
                 }
             }
         }
 
-        internal void ActivateQueuedModel()
+        public void ActivateQueuedModel()
         {
             if (m_QueuedModel != null)
             {
@@ -85,15 +83,40 @@ namespace UltimaXNA
                 m_QueuedModel = null;
             }
         }
+        #endregion
 
-        public UltimaEngine(int width, int height)
+        protected bool IsMinimized
         {
-            setupGraphicsDeviceManager(width, height);
-            UltimaVars.EngineVars.ScreenSize = new Point(width, height);
+            get
+            {
+                //Get out top level form via the handle.
+                Control MainForm = Control.FromHandle(Window.Handle);
+                //If we are minimized don't waste time trying to draw, and avoid crash on resume.
+                if(((Form)MainForm).WindowState == FormWindowState.Minimized)
+                {
+                    return true;
+                }
+                return false;
+            }
+        }
 
-            // this is copied from IXL.BaseCore - required for finding the mouse coordinate when moving the cursor over the window.
-            System.Drawing.Graphics graphics = System.Drawing.Graphics.FromHwnd(Window.Handle);
-            UltimaVars.EngineVars.ScreenDPI = new Vector2(graphics.DpiX / 96f, graphics.DpiY / 96f);
+
+        protected InputManager Input
+        {
+            get;
+            private set;
+        }
+
+        protected GUIManager UserInterface
+        {
+            get;
+            private set;
+        }
+
+        protected INetworkClient Network
+        {
+            get;
+            private set;
         }
 
         protected override void Initialize()
@@ -101,47 +124,45 @@ namespace UltimaXNA
             Content.RootDirectory = "Content";
 
             // Create all the services we need.
-            Client = new UltimaClient(this);
-            Client.IsLoggingPackets = true;
-            Input = new InputManager(Window.Handle);
-            UserInterface = new GUIManager(this);
+            UltimaServices.Register<SpriteBatch3D>(new SpriteBatch3D(this));
+            UltimaServices.Register<SpriteBatchUI>(new SpriteBatchUI(this));
+            Network = UltimaServices.Register<INetworkClient>(new NetworkClient());
+            Input = UltimaServices.Register<InputManager>(new InputManager(Window.Handle));
+            UserInterface = UltimaServices.Register<GUIManager>(new GUIManager());
 
-            // Load vars from Settings.ini.
-            UltimaVars.SettingVars.Load();
-
-            // Make sure we have a UO installation before loading UltimaData.
-            if (UltimaData.FileManager.IsUODataPresent)
+            // Make sure we have a UO installation before loading IO.
+            if(FileManager.IsUODataPresent)
             {
                 // Initialize and load data
-                UltimaData.AnimData.Initialize();
-                UltimaData.Animations.Initialize(GraphicsDevice);
-                UltimaData.ArtData.Initialize(GraphicsDevice);
+                AnimData.Initialize();
+                Animations.Initialize(GraphicsDevice);
+                ArtData.Initialize(GraphicsDevice);
 
-                UltimaData.FontsOld.ASCIIText.Initialize(GraphicsDevice);
-                UltimaData.FontsNew.TextUni.Initialize(GraphicsDevice);
+                ASCIIText.Initialize(GraphicsDevice);
+                TextUni.Initialize(GraphicsDevice);
 
-                UltimaData.GumpData.Initialize(GraphicsDevice);
-                UltimaData.HuesXNA.Initialize(GraphicsDevice);
-                UltimaData.TexmapData.Initialize(GraphicsDevice);
-                UltimaData.StringData.LoadStringList("enu");
-                UltimaData.SkillsData.Initialize();
-                GraphicsDevice.Textures[1] = UltimaXNA.UltimaData.HuesXNA.HueTexture0;
-                GraphicsDevice.Textures[2] = UltimaXNA.UltimaData.HuesXNA.HueTexture1;
+                GumpData.Initialize(GraphicsDevice);
+                HuesXNA.Initialize(GraphicsDevice);
+                TexmapData.Initialize(GraphicsDevice);
+                StringData.LoadStringList("enu");
+                SkillsData.Initialize();
+                GraphicsDevice.Textures[1] = HuesXNA.HueTexture0;
+                GraphicsDevice.Textures[2] = HuesXNA.HueTexture1;
 
-                UltimaVars.EngineVars.EngineRunning = true;
-                UltimaVars.EngineVars.InWorld = false;
+                EngineVars.EngineRunning = true;
+                EngineVars.InWorld = false;
 
-                ActiveModel = new UltimaLogin.LoginModel();
+                ActiveModel = new LoginModel();
             }
         }
 
         protected override void Update(GameTime gameTime)
         {
-            IsFixedTimeStep = UltimaVars.EngineVars.LimitFPS;
+            IsFixedTimeStep = Settings.Game.IsFixedTimeStep;
 
-            if (!UltimaVars.EngineVars.EngineRunning)
+            if(!EngineVars.EngineRunning)
             {
-                UltimaVars.SettingVars.Save();
+                Settings.Save();
                 Exit();
             }
             else
@@ -152,54 +173,47 @@ namespace UltimaXNA
                 TotalMS = totalMS;
                 Input.Update(totalMS, frameMS);
                 UserInterface.Update(totalMS, frameMS);
-                Client.Update();
+                Network.Slice();
                 ActiveModel.Update(totalMS, frameMS);
             }
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            if (!IsMinimized)
+            if(!IsMinimized)
             {
-                Core.Rendering.SpriteBatch3D.ResetZ();
+                SpriteBatch3D.ResetZ();
                 GraphicsDevice.Clear(Color.Black);
-                ActiveModel.GetView().Draw(gameTime.ElapsedGameTime.TotalMilliseconds);
+                ActiveModel.GetView()
+                    .Draw(gameTime.ElapsedGameTime.TotalMilliseconds);
                 UserInterface.Draw(gameTime.ElapsedGameTime.TotalMilliseconds);
 
-                UltimaVars.EngineVars.UpdateFPS(gameTime.ElapsedGameTime.TotalMilliseconds);
+                EngineVars.UpdateFPS(gameTime.ElapsedGameTime.TotalMilliseconds);
                 Window.Title =
-                    UltimaVars.DebugVars.Flag_DisplayFPS ? 
-                    string.Format("UltimaXNA FPS:{0}", UltimaVars.EngineVars.UpdateFPS(gameTime.ElapsedGameTime.TotalMilliseconds)) : 
-                    "UltimaXNA";
-            }
-        }
-
-        public bool IsMinimized
-        {
-            get
-            {
-                //Get out top level form via the handle.
-                System.Windows.Forms.Control MainForm = System.Windows.Forms.Form.FromHandle(Window.Handle);
-                //If we are minimized don't waste time trying to draw, and avoid crash on resume.
-                if (((System.Windows.Forms.Form)MainForm).WindowState == System.Windows.Forms.FormWindowState.Minimized)
-                    return true;
-                return false;
+                    Settings.Debug.ShowFps ?
+                        string.Format("UltimaXNA FPS:{0}", EngineVars.UpdateFPS(gameTime.ElapsedGameTime.TotalMilliseconds)) :
+                        "UltimaXNA";
             }
         }
 
         // Some settings to designate a screen size and fps limit.
-        void setupGraphicsDeviceManager(int width, int height)
+        private void InitializeGraphicsDevice()
         {
-            GraphicsDeviceManager graphicsDeviceManager = new GraphicsDeviceManager(this);
-            graphicsDeviceManager.PreferredBackBufferWidth = width;
-            graphicsDeviceManager.PreferredBackBufferHeight = height;
-            graphicsDeviceManager.SynchronizeWithVerticalRetrace = false;
+            Resolution resolution = Settings.Game.Resolution;
+            GraphicsDeviceManager graphicsDeviceManager = new GraphicsDeviceManager(this)
+            {
+                PreferredBackBufferWidth = resolution.Width,
+                PreferredBackBufferHeight = resolution.Height,
+                SynchronizeWithVerticalRetrace = Settings.Game.IsVSyncEnabled
+            };
+
             graphicsDeviceManager.PreparingDeviceSettings += onPreparingDeviceSettings;
+
             IsFixedTimeStep = false;
             graphicsDeviceManager.ApplyChanges();
         }
 
-        static void onPreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
+        private static void onPreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
         {
             e.GraphicsDeviceInformation.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
         }

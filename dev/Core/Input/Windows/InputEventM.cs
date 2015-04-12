@@ -74,11 +74,13 @@ namespace UltimaXNA.Core.Input.Windows
         public InputEventMouse(MouseEvent eventType, MouseButtonInternal button, int clicks, int x, int y, int mouseData, WinKeys modifiers)
             : base(modifiers)
         {
+            Vector2 dpi = DpiManager.GetSystemDpiScalar();
+
             m_eventType = eventType;
             m_button = button;
             m_clicks = clicks;
-            m_x = (int)(x / UltimaVars.EngineVars.ScreenDPI.X);
-            m_y = (int)(y / UltimaVars.EngineVars.ScreenDPI.Y);
+            m_x = (int)(x / dpi.X);//EngineVars.ScreenDPI.X);
+            m_y = (int)(y / dpi.Y);//EngineVars.ScreenDPI.Y);
             m_mouseData = mouseData;
         }
 

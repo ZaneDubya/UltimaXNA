@@ -1,15 +1,18 @@
 float4x4 ProjectionMatrix;
 float4x4 WorldMatrix;
-float2 Viewport;
+float2	 Viewport;
 
 float3 lightDirection;
 float lightIntensity;
-float ambientLightIntensity;
+
 bool DrawLighting;
 
 sampler textureSampler;
 sampler hueSampler0;
 sampler hueSampler1;
+
+const float HuesPerTexture = 2048;
+const float ToGrayScale = 3; // (3.0f * HuesPerRow)
 
 struct VS_INPUT
 {
@@ -17,7 +20,6 @@ struct VS_INPUT
 	float3 Normal	: NORMAL0;
 	float3 TexCoord : TEXCOORD0;
 	float2 Hue		: TEXCOORD1;
-
 };
 
 struct PS_INPUT
@@ -45,25 +47,14 @@ PS_INPUT VertexShaderFunction(VS_INPUT IN)
     return OUT;
 }
 
-const float HuesPerTexture = 2048;
-const float ToGrayScale = 3; // (3.0f * HuesPerRow)
-
 float4 PixelShaderFunction(PS_INPUT IN) : COLOR0
 {	
 	// Get the initial pixel and discard it if the alpha == 0
 	float4 color = tex2D(textureSampler, IN.TexCoord);
+
 	if (color.a == 0)
 	{
 		discard;
-	}
-
-	// Darken the color based on the ambient lighting and the normal.
-	if (DrawLighting)
-	{
-		float light_DirectedIntensity = 0.5f + lightIntensity / 2;
-		float light_AmbientIntensity = (1.0f - lightIntensity / 10) * ambientLightIntensity;
-		float NDotL = saturate(dot(-lightDirection, IN.Normal));
-		color.rgb = (light_AmbientIntensity * color.rgb) + (light_DirectedIntensity * NDotL * color.rgb);
 	}
 
 	// Hue the color if the hue vector y component is greater than 0.
@@ -105,6 +96,16 @@ float4 PixelShaderFunction(PS_INPUT IN) : COLOR0
 			// normal hue - map the hue to the grayscale.
 			color = hueColor;
 		}
+	}
+
+	// Darken the color based on the ambient lighting and the normal.
+	if (DrawLighting)
+	{
+		float3 light = normalize(lightDirection);
+		float3 normal = normalize(IN.Normal);
+		float3 nDotL = min(saturate(dot(light, normal)), 1.0f);
+
+		color.rgb = saturate((color.rgb * nDotL * lightIntensity * 0.2f + color.rgb * lightIntensity * 0.8f));
 	}
 
 	return color;
