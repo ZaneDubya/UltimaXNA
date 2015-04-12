@@ -46,17 +46,17 @@ namespace UltimaXNA
 
         private void ConfigureTraceListeners()
         {
-            if (Settings.Debug.IsConsoleEnabled)
-            {
-                Tracer.RegisterListener(new ConsoleOutputEventListener());
-            }
-
             if (Debugger.IsAttached)
             {
                 Tracer.RegisterListener(new DebugOutputEventListener());
             }
 
             Tracer.RegisterListener(new FileLogEventListener("debug.log"));
+
+            if (Settings.Debug.IsConsoleEnabled)
+            {
+                Tracer.RegisterListener(new ConsoleOutputEventListener());
+            }
         }
 
         private void Configure()
@@ -111,12 +111,12 @@ namespace UltimaXNA
 
             m_IsInitialized = true;
 
+            ConfigureTraceListeners();
+
             if (Settings.Debug.IsConsoleEnabled && !ConsoleManager.HasConsole)
             {
                 ConsoleManager.Show();
             }
-
-            ConfigureTraceListeners();
 
             try
             {

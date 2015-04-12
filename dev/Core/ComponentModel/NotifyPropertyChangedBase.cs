@@ -1,38 +1,33 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System;
 
 namespace UltimaXNA.Core.ComponentModel
 {
-    public abstract class NotifyPropertyChangedBase : INotifyPropertyChanged
+    public abstract class NotifyPropertyChangedBase
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        public EventHandler PropertyChanged;
 
-        public bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
+        public virtual bool SetProperty<T>(ref T storage, T value)
         {
             if (EqualityHelper.IsEqual(storage, value))
             {
                 return false;
             }
 
-            SetPropertyOverride(ref storage, value, propertyName);
-
             storage = value;
-            OnPropertyChanged(propertyName);
+
+            OnPropertyChanged();
 
             return true;
         }
 
-        protected virtual void SetPropertyOverride<T>(ref T storage, object value, string propertyName)
+        protected virtual void OnPropertyChanged()
         {
-
-        }
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
+            EventHandler handler = PropertyChanged;
             if(handler != null)
             {
-                handler(this, new PropertyChangedEventArgs(propertyName));
+                handler(this, null);
             }
         }
     }

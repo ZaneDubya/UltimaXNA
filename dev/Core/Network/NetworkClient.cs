@@ -478,7 +478,7 @@ namespace UltimaXNA.Core.Network
             }
         }
 
-        private bool GetPacketSize(IReadOnlyList<PacketHandler> packetHandlers, out int realLength)
+        private bool GetPacketSize(List<PacketHandler> packetHandlers, out int realLength)
         {
             realLength = 0;
 
@@ -509,7 +509,7 @@ namespace UltimaXNA.Core.Network
             }
         }
 
-        private void InvokeHandlers(IReadOnlyList<PacketHandler> packetHandlers, byte[] buffer, int length)
+        private void InvokeHandlers(List<PacketHandler> packetHandlers, byte[] buffer, int length)
         {
             if (packetHandlers == null)
             {

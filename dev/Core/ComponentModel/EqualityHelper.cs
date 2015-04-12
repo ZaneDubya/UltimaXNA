@@ -18,7 +18,7 @@ namespace UltimaXNA.Core.ComponentModel
 
             Type type = typeof(T);
 
-            if (type.IsValueType())
+            if (type.IsValueType)
             {
                 return oldValue.Equals(newValue);
             }

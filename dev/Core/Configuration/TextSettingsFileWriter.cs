@@ -39,19 +39,19 @@ namespace UltimaXNA.Core.Configuration
 
                     if (property.PropertyType.IsArray)
                     {
-                        object value = property.GetValue(section.Value);
+                        object value = property.GetValue(section.Value, null);
                         string sValue = (value != null) ? StringifyArray(property.PropertyType, (Array)value) : string.Empty;
                         result.AppendLine(string.Format("{0}={1}", key, sValue));
                     }
                     else if (property.PropertyType.IsClass && property.PropertyType != typeof(String))
                     {
-                        object value = property.GetValue(section.Value);
+                        object value = property.GetValue(section.Value, null);
                         string json = m_Serializer.Serialize(value);
                         result.AppendLine(string.Format("{0}={1}", key, json));
                     }
                     else
                     {
-                        object value = property.GetValue(section.Value);
+                        object value = property.GetValue(section.Value, null);
                         string sValue = (value != null) ? Convert.ToString(value) : string.Empty;
                         result.AppendLine(string.Format("{0}={1}", key, sValue));
                     }

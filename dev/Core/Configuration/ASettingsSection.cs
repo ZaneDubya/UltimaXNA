@@ -10,11 +10,12 @@ namespace UltimaXNA.Core.Configuration
     {
         public event EventHandler Invalidated;
 
-        protected override void SetPropertyOverride<T>(ref T storage, object value, string propertyName)
+        public override bool SetProperty<T>(ref T storage, T value)
         {
-            base.SetPropertyOverride<T>(ref storage, value, propertyName);
+            if (!base.SetProperty<T>(ref storage, value))
+                return false;
 
-            var notifier = storage as INotifyPropertyChanged;
+            INotifyPropertyChanged notifier = storage as INotifyPropertyChanged;
 
             if (notifier != null)
             {
@@ -30,6 +31,8 @@ namespace UltimaXNA.Core.Configuration
                 // Start listening to the new value 
                 notifier.PropertyChanged += onSectionPropertyChanged;
             }
+
+            return true;
         }
 
         void onSectionPropertyChanged(object sender, PropertyChangedEventArgs e)

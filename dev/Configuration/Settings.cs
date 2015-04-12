@@ -61,7 +61,7 @@ namespace UltimaXNA.Configuration
         public static T CreateOrOpenSection<T>(string sectionName)
             where T : ASettingsSection, new()
         {
-            var section =  m_File.CreateOrOpenSection<T>(sectionName);
+            T section = m_File.CreateOrOpenSection<T>(sectionName);
 
             // Resubscribe incase this is called for a section 2 times.
             section.Invalidated -= OnSectionInvalidated;
@@ -72,7 +72,7 @@ namespace UltimaXNA.Configuration
             return section;
         }
 
-        private static void OnSectionPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private static void OnSectionPropertyChanged(object sender, EventArgs e)
         {
             m_File.InvalidateDirty();
         }

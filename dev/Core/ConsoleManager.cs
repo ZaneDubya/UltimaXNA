@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Security;
+using UltimaXNA.Core.Diagnostics.Tracing;
 
 #endregion
 
@@ -58,16 +59,20 @@ namespace UltimaXNA.Core
 
         public static void Show()
         {
-            if(!HasConsole)
+            if (!HasConsole)
             {
+#if DEBUG
                 AllocConsole();
                 InvalidateOutAndError();
+#else
+                Tracer.Info("Cannot show console when project is built in Release mode.");
+#endif
             }
         }
 
         public static void Hide()
         {
-            if(HasConsole)
+            if (HasConsole)
             {
                 SetOutAndErrorNull();
                 FreeConsole();
@@ -76,7 +81,7 @@ namespace UltimaXNA.Core
 
         public static void Toggle()
         {
-            if(HasConsole)
+            if (HasConsole)
             {
                 Hide();
             }
@@ -105,7 +110,7 @@ namespace UltimaXNA.Core
 
             output.SetValue(null, null);
             error.SetValue(null, null);
-            initializeStdOutError.Invoke(null, new object[] {true});
+            initializeStdOutError.Invoke(null, new object[] { true });
         }
 
         private static void SetOutAndErrorNull()

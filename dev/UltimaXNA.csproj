@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>UltimaXNA</RootNamespace>
     <AssemblyName>UltimaXNA</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
     <XnaPlatform>Windows</XnaPlatform>
     <XnaCrossPlatformGroupID>50bfd68f-b3c7-4d72-866a-2cf8c22b84b0</XnaCrossPlatformGroupID>
@@ -136,9 +136,7 @@
     <Compile Include="Core\Diagnostics\Tracing\EventLevel.cs" />
     <Compile Include="Core\Diagnostics\Tracing\Listeners\AEventListener.cs" />
     <Compile Include="Core\DpiManager.cs" />
-    <Compile Include="Core\Extensions\MethodInfoExtensions.cs" />
     <Compile Include="Core\Extensions\StringExtensions.cs" />
-    <Compile Include="Core\Extensions\TypeExtensions.cs" />
     <Compile Include="Core\Network\INetworkClient.cs" />
     <Compile Include="Core\Patterns\IModule.cs" />
     <Compile Include="UltimaServices.cs" />
