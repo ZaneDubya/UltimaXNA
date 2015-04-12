@@ -1,6 +1,4 @@
-﻿#region Usings
-
-/***************************************************************************
+﻿/***************************************************************************
  *   DebugGump.cs
  *   
  *   This program is free software; you can redistribute it and/or modify
@@ -9,13 +7,14 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using UltimaXNA.Core.Diagnostics;
+#region usings
 using UltimaXNA.Configuration;
+using UltimaXNA.Core.Diagnostics;
+using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
-
 #endregion
 
-namespace UltimaXNA.Ultima.UI.WorldGumps
+namespace UltimaXNA.Ultima.World.Gumps
 {
     public class DebugGump : Gump
     {

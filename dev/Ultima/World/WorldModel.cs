@@ -3,7 +3,7 @@ using UltimaXNA.Core.Network;
 using UltimaXNA.Ultima.Entities;
 using UltimaXNA.Ultima.Login;
 using UltimaXNA.Ultima.UI;
-using UltimaXNA.Ultima.UI.WorldGumps;
+using UltimaXNA.Ultima.World.Gumps;
 using UltimaXNA.Ultima.World.Controllers;
 using UltimaXNA.Ultima.World.Maps;
 
@@ -12,7 +12,7 @@ namespace UltimaXNA.Ultima.World
     class WorldModel : AUltimaModel
     {
         private INetworkClient m_Network;
-        private GUIManager m_UserInterface;
+        private UserInterfaceService m_UserInterface;
         private UltimaEngine m_Engine;
 
         public EntityManager Entities
@@ -113,7 +113,7 @@ namespace UltimaXNA.Ultima.World
 
             m_Engine = UltimaServices.GetService<UltimaEngine>();
             m_Network = UltimaServices.GetService<INetworkClient>();
-            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
 
             Entities = new EntityManager(this);
             EntityManager.Reset(true);

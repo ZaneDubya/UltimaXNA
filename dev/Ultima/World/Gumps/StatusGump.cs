@@ -8,13 +8,15 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+#region usings
 using System.Collections.Generic;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Ultima.Entities.Mobiles;
+using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
-using UltimaXNA.Ultima.World;
+#endregion
 
-namespace UltimaXNA.Ultima.UI.WorldGumps
+namespace UltimaXNA.Ultima.World.Gumps
 {
     class StatusGump : Gump
     {

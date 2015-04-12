@@ -7,11 +7,13 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-
+#region usings
 using UltimaXNA.Configuration;
+using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
+#endregion
 
-namespace UltimaXNA.Ultima.UI.LoginGumps
+namespace UltimaXNA.Ultima.Login.Gumps
 {
     class CreateCharSkillsGump : Gump
     {

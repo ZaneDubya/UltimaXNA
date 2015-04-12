@@ -107,7 +107,7 @@ namespace UltimaXNA
             private set;
         }
 
-        protected GUIManager UserInterface
+        protected UserInterfaceService UserInterface
         {
             get;
             private set;
@@ -128,7 +128,7 @@ namespace UltimaXNA
             UltimaServices.Register<SpriteBatchUI>(new SpriteBatchUI(this));
             Network = UltimaServices.Register<INetworkClient>(new NetworkClient());
             Input = UltimaServices.Register<InputManager>(new InputManager(Window.Handle));
-            UserInterface = UltimaServices.Register<GUIManager>(new GUIManager());
+            UserInterface = UltimaServices.Register<UserInterfaceService>(new UserInterfaceService());
 
             // Make sure we have a UO installation before loading IO.
             if(FileManager.IsUODataPresent)

@@ -13,7 +13,7 @@ using UltimaXNA.Ultima.Data.Accounts;
 using UltimaXNA.Ultima.Network;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.UI;
-using UltimaXNA.Ultima.UI.LoginGumps;
+using UltimaXNA.Ultima.Login.Gumps;
 #endregion
 
 namespace UltimaXNA.Ultima.Login.States
@@ -41,13 +41,13 @@ namespace UltimaXNA.Ultima.Login.States
         int m_gender, m_hairStyleID, m_facialHairStyleID;
         int m_skinHue, m_hairHue, m_facialHairHue;
 
-        GUIManager m_UserInterface;
+        UserInterfaceService m_UserInterface;
         LoginModel m_Login;
 
         public CreateCharacterState()
             : base()
         {
-            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
             m_Login = UltimaServices.GetService<LoginModel>();
         }
 

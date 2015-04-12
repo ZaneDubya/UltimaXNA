@@ -7,13 +7,14 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using System;
+#region usings
 using System.Text;
 using UltimaXNA.Ultima.Player;
+using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
-using UltimaXNA.Ultima.World;
+#endregion
 
-namespace UltimaXNA.Ultima.UI.WorldGumps
+namespace UltimaXNA.Ultima.World.Gumps
 {
     class SkillsGump : Gump
     {

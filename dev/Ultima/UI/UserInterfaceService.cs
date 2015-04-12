@@ -20,12 +20,12 @@ using UltimaXNA.Ultima.Network.Client;
 
 namespace UltimaXNA.Ultima.UI
 {
-    public class GUIManager
+    public class UserInterfaceService
     {
         private readonly INetworkClient m_Network;
         private readonly InputManager m_Input;
 
-        public GUIManager()
+        public UserInterfaceService()
         {
             m_Network = UltimaServices.GetService<INetworkClient>();
             m_Input = UltimaServices.GetService<InputManager>();

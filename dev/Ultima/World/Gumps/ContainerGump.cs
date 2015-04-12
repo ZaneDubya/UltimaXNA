@@ -7,15 +7,17 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+#region usings
 using System.Collections.Generic;
-using UltimaXNA.Ultima.Entities.Items.Containers;
-using UltimaXNA.Ultima.UI;
-using UltimaXNA.Ultima.IO;
-using UltimaXNA.Ultima.UI.Controls;
-using UltimaXNA.Ultima.Entities.Items;
 using UltimaXNA.Ultima.Entities;
+using UltimaXNA.Ultima.Entities.Items;
+using UltimaXNA.Ultima.Entities.Items.Containers;
+using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.UI;
+using UltimaXNA.Ultima.UI.Controls;
+#endregion
 
-namespace UltimaXNA.Ultima.UI.WorldGumps
+namespace UltimaXNA.Ultima.World.Gumps
 {
     class ContainerGump : Gump
     {

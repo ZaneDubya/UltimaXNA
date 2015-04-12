@@ -50,14 +50,14 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        GUIManager m_UserInterface;
+        UserInterfaceService m_UserInterface;
 
         public ColorPicker(AControl owner, int page)
             : base(owner, page)
         {
             HandlesMouseInput = true;
 
-            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
         }
 
         public ColorPicker(AControl owner, int page, Rectangle area, int swatchWidth, int swatchHeight, int[] hues)

@@ -9,7 +9,7 @@ namespace UltimaXNA.Ultima.Login.States
     {
         internal StateManager Manager;
 
-        GUIManager m_UserInterface;
+        UserInterfaceService m_UserInterface;
 
         public virtual TimeSpan TransitionOnLength { get { return TimeSpan.FromSeconds(0.05); } }
         public virtual TimeSpan TransitionOffLength { get { return TimeSpan.FromSeconds(0.05); } }
@@ -44,7 +44,7 @@ namespace UltimaXNA.Ultima.Login.States
 
         public virtual void Intitialize()
         {
-            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
         }
 
         public virtual void Update(double totalTime, double frameTime)

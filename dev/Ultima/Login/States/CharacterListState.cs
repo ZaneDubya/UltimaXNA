@@ -12,14 +12,14 @@ using System;
 using UltimaXNA.Configuration;
 using UltimaXNA.Ultima.Data.Accounts;
 using UltimaXNA.Ultima.UI;
-using UltimaXNA.Ultima.UI.LoginGumps;
+using UltimaXNA.Ultima.Login.Gumps;
 #endregion
 
 namespace UltimaXNA.Ultima.Login.States
 {
     public class CharacterListState : AState
     {
-        GUIManager m_UserInterface;
+        UserInterfaceService m_UserInterface;
         LoginModel m_Login;
 
         CharacterListGump m_CharListGump;
@@ -34,7 +34,7 @@ namespace UltimaXNA.Ultima.Login.States
         {
             base.Intitialize();
 
-            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
             m_Login = UltimaServices.GetService<LoginModel>();
 
             m_CharListGump = (CharacterListGump)m_UserInterface.AddControl(new CharacterListGump(), 0, 0);

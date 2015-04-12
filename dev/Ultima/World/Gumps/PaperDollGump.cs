@@ -7,16 +7,15 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using Microsoft.Xna.Framework;
-using UltimaXNA.Ultima.Entities;
-using UltimaXNA.Ultima.Entities.Mobiles;
+#region usings
 using UltimaXNA.Core.Graphics;
-using UltimaXNA.Ultima.UI.Controls;
-using UltimaXNA.Ultima.World;
-using UltimaXNA.Core;
 using UltimaXNA.Core.Network;
+using UltimaXNA.Ultima.Entities.Mobiles;
+using UltimaXNA.Ultima.UI;
+using UltimaXNA.Ultima.UI.Controls;
+#endregion
 
-namespace UltimaXNA.Ultima.UI.WorldGumps
+namespace UltimaXNA.Ultima.World.Gumps
 {
     class PaperDollGump: Gump
     {
@@ -38,7 +37,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             private set;
         }
 
-        GUIManager m_UserInterface;
+        UserInterfaceService m_UserInterface;
         WorldModel m_World;
         INetworkClient m_Client;
 
@@ -47,7 +46,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
             Parent = parent;
 
-            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
             m_World = UltimaServices.GetService<WorldModel>();
             m_Client = UltimaServices.GetService<INetworkClient>();
 
@@ -139,7 +138,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 case Buttons.Quests:
                     break;
                 case Buttons.Skills:
-                    m_UserInterface.AddControl(new SkillsGump(), 80, 80, GUIManager.AddControlType.Toggle);
+                    m_UserInterface.AddControl(new SkillsGump(), 80, 80, UserInterfaceService.AddControlType.Toggle);
                     break;
                 case Buttons.Guild:
                     break;
@@ -147,7 +146,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     m_World.Interaction.ToggleWarMode();
                     break;
                 case Buttons.Status:
-                    m_UserInterface.AddControl(new StatusGump(), 200, 400, GUIManager.AddControlType.Toggle);
+                    m_UserInterface.AddControl(new StatusGump(), 200, 400, UserInterfaceService.AddControlType.Toggle);
                     break;
             }
         }
