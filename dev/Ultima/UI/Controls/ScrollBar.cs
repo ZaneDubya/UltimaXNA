@@ -70,19 +70,34 @@ namespace UltimaXNA.Ultima.UI.Controls
             return BarHeight - m_gumpUpButton[0].Height - m_gumpDownButton[0].Height - m_gumpSlider.Height - 2;
         }
 
-        public int MinValue;
-        private int m_maxValue;
+        private int m_Max, m_Min;
+        public int MinValue
+        {
+            get
+            {
+                return m_Min;
+            }
+            set
+            {
+                m_Min = value;
+                if (m_value < m_Min)
+                    m_value = m_Min;
+            }
+        }
+        
         public int MaxValue
         {
             get
             {
-                return m_maxValue;
+                return m_Max;
             }
             set
             {
-                m_maxValue = value;
-                if (m_value > m_maxValue)
-                    m_value = m_maxValue;
+                if (value < 0)
+                    value = 0;
+                m_Max = value;
+                if (m_value > m_Max)
+                    m_value = m_Max;
             }
         }
         public int BarHeight;
@@ -132,9 +147,9 @@ namespace UltimaXNA.Ultima.UI.Controls
                 {
                     m_timeUntilNextClick = m_timeBetweenClicks;
                     if (m_btnUpClicked)
-                        m_value -= 1;
+                        Value -= 1;
                     if (m_btnDownClicked)
-                        m_value += 1;
+                        Value += 1;
                 }
                 m_timeUntilNextClick -= (float)totalMS / 1000f;
             }
@@ -146,13 +161,13 @@ namespace UltimaXNA.Ultima.UI.Controls
             if (!Visible)
                 return;
 
-            // up button
-            spriteBatch.Draw2D(m_btnUpClicked ? m_gumpUpButton[1] : m_gumpUpButton[0], new Point(X, Y), 0, false, false);
             // scrollbar background
             spriteBatch.Draw2D(m_gumpBackground[0], new Point(X, Y + m_gumpUpButton[0].Height), 0, false, false);
             int middlewidth = BarHeight - m_gumpUpButton[0].Height - m_gumpDownButton[0].Height - m_gumpBackground[0].Height - m_gumpBackground[2].Height;
             spriteBatch.Draw2DTiled(m_gumpBackground[1], new Rectangle(X, Y + m_gumpUpButton[0].Height + m_gumpBackground[0].Height, m_gumpBackground[0].Width, middlewidth), 0, false, false);
             spriteBatch.Draw2D(m_gumpBackground[2], new Point(X, Y + BarHeight - m_gumpDownButton[0].Height - m_gumpBackground[2].Height), 0, false, false);
+            // up button
+            spriteBatch.Draw2D(m_btnUpClicked ? m_gumpUpButton[1] : m_gumpUpButton[0], new Point(X, Y), 0, false, false);
             // down button
             spriteBatch.Draw2D(m_btnDownClicked ? m_gumpDownButton[1] : m_gumpDownButton[0], new Point(X, Y + Height - m_gumpDownButton[0].Height), 0, false, false);
             // slider
@@ -218,7 +233,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                         m_clickPosition.Y = m_gumpUpButton[0].Height + m_gumpSlider.Height / 2;
                     if (sliderY == (scrollableArea()) && m_clickPosition.Y > BarHeight - m_gumpDownButton[0].Height - m_gumpSlider.Height / 2)
                         m_clickPosition.Y = BarHeight - m_gumpDownButton[0].Height - m_gumpSlider.Height / 2;
-                    m_value = ((sliderY / scrollableArea()) * (float)((MaxValue - MinValue))) + MinValue;
+                    Value = (int)((sliderY / scrollableArea()) * (float)((MaxValue - MinValue))) + MinValue;
                     m_sliderY = sliderY;
                 }
             }

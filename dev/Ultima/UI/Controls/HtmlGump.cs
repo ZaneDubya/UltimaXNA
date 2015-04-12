@@ -62,9 +62,9 @@ namespace UltimaXNA.Ultima.UI.Controls
                 if (value != base.Width)
                 {
                     base.Width = value;
-                    if (m_Texture != null)
+                    if (m_RenderedText != null)
                     {
-                        m_Texture.MaxWidth = ContentWidth;
+                        m_RenderedText.MaxWidth = ContentWidth;
                         m_textChanged = true;
                     }
                 }
@@ -94,7 +94,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        RenderedText m_Texture;
+        RenderedText m_RenderedText;
 
         public HtmlGump(AControl owner, int page)
             : base(owner, page)
@@ -131,12 +131,11 @@ namespace UltimaXNA.Ultima.UI.Controls
             Text = text;
             m_background = (background == 1) ? true : false;
             m_hasScrollbar = (scrollbar == 1) ? true : false;
-            m_Texture = new RenderedText(text, true, Width);
-            Height = m_Texture.Height;
+            m_RenderedText = new RenderedText(text, true, Width - (HasScrollbar ? 15 : 0) - (Background ? 8 : 0));
 
             if (Background)
             {
-                this.AddControl(new ResizePic(this, 0, 0, 0, 0x2486, Width, Height));
+                this.AddControl(new ResizePic(this, 0, 0, 0, 0x2486, Width - (HasScrollbar ? 15 : 0), Height));
             }
         }
 
@@ -147,21 +146,23 @@ namespace UltimaXNA.Ultima.UI.Controls
             if (m_textChanged)
             {
                 m_textChanged = false;
-                m_Texture.Text = Text;
+                m_RenderedText.Text = Text;
             }
 
-            HandlesMouseInput = (m_Texture.Regions.Count > 0);
+            HandlesMouseInput = (m_RenderedText.Regions.Count > 0);
 
             if (HasScrollbar)
             {
                 if (m_scrollbar == null)
+                {
                     AddControl(m_scrollbar = new ScrollBar(this, 0));
-                m_scrollbar.X = Width - 15;
-                m_scrollbar.Y = 0;
-                m_scrollbar.Width = 15;
-                m_scrollbar.Height = Height;
-                m_scrollbar.MinValue = 0;
-                m_scrollbar.MaxValue = m_Texture.Height - Height;
+                    m_scrollbar.X = Width - 15;
+                    m_scrollbar.Y = 0;
+                    m_scrollbar.Width = 15;
+                    m_scrollbar.Height = Height;
+                    m_scrollbar.MinValue = 0;
+                    m_scrollbar.MaxValue = m_RenderedText.Height - Height;
+                }
                 ScrollY = m_scrollbar.Value;
             }
 
@@ -172,9 +173,9 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             base.Draw(spriteBatch);
 
-            m_Texture.ActiveRegion = m_hrefOver;
-            m_Texture.ActiveRegion_UseDownHue = m_clicked;
-            m_Texture.Draw(spriteBatch, new Rectangle(X, Y, Size.X, Size.Y), ScrollX, ScrollY);
+            m_RenderedText.ActiveRegion = m_hrefOver;
+            m_RenderedText.ActiveRegion_UseDownHue = m_clicked;
+            m_RenderedText.Draw(spriteBatch, new Rectangle(X + (Background ? 4 : 0), Y + (Background ? 4 : 0), Size.X, Size.Y), ScrollX, ScrollY);
         }
 
         protected override bool InternalHitTest(int x, int y)
@@ -186,9 +187,9 @@ namespace UltimaXNA.Ultima.UI.Controls
                     return true;
             }
 
-            if (m_Texture.Regions.Count > 0)
+            if (m_RenderedText.Regions.Count > 0)
             {
-                Region region = m_Texture.Regions.RegionfromPoint(new Point(x + ScrollX, y + ScrollY));
+                Region region = m_RenderedText.Regions.RegionfromPoint(new Point(x + ScrollX, y + ScrollY));
                 if (region != null)
                 {
                     m_hrefOver = region.Index;
@@ -220,8 +221,8 @@ namespace UltimaXNA.Ultima.UI.Controls
             {
                 if (button == MouseButton.Left)
                 {
-                    if (m_Texture.Regions.Region(m_hrefOver).HREFAttributes != null)
-                        ActivateByHREF(m_Texture.Regions.Region(m_hrefOver).HREFAttributes.HREF);
+                    if (m_RenderedText.Regions.Region(m_hrefOver).HREFAttributes != null)
+                        ActivateByHREF(m_RenderedText.Regions.Region(m_hrefOver).HREFAttributes.HREF);
                 }
             }
         }
