@@ -1,15 +1,12 @@
 ﻿#region Usings
-
 using System;
-using System.Diagnostics.Tracing;
 using System.IO;
 using System.Text;
-
 #endregion
 
 namespace UltimaXNA.Core.Diagnostics.Tracing.Listeners
 {
-    public class StreamOuputEventListener : EventListener
+    public class StreamOuputEventListener : AEventListener
     {
         private const string Format = "{0} {1:yyyy-MM-dd HH\\:mm\\:ss\\:ffff} {2}";
 
@@ -26,10 +23,8 @@ namespace UltimaXNA.Core.Diagnostics.Tracing.Listeners
             m_closeStreamOnDispose = closeStreamOnDispose;
         }
 
-        public override void Dispose()
+        public void Dispose()
         {
-            base.Dispose();
-
             if (!m_closeStreamOnDispose || m_stream == null)
             {
                 return;
@@ -39,9 +34,9 @@ namespace UltimaXNA.Core.Diagnostics.Tracing.Listeners
             m_stream = null;
         }
 
-        protected override void OnEventWritten(EventWrittenEventArgs e)
+        public override void OnEventWritten(EventLevel level, string message)
         {
-            string output = string.Format(Format, e.Level, DateTime.Now, e.Payload[0]);
+            string output = string.Format(Format, level, DateTime.Now, message);
 
             lock (m_syncRoot)
             {

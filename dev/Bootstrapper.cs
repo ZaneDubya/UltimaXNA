@@ -96,7 +96,8 @@ namespace UltimaXNA
                 }
                 catch (Exception e)
                 {
-                    Tracer.Warn(e, "An error occurred while trying to load plugin. [{0}]", file.FullName);
+                    Tracer.Warn("An error occurred while trying to load plugin. [{0}]", file.FullName);
+                    Tracer.Warn(e);
                 }
             }
         }

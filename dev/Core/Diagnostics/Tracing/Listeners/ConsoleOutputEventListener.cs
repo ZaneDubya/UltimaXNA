@@ -1,23 +1,21 @@
 ﻿using System;
-using System.Diagnostics.Tracing;
-using UltimaXNA;
 
 namespace UltimaXNA.Core.Diagnostics.Tracing.Listeners
 {
-    public class ConsoleOutputEventListener : EventListener
+    public class ConsoleOutputEventListener : AEventListener
     {
         public ConsoleOutputEventListener()
         {
 
         }
 
-        protected override void OnEventWritten(EventWrittenEventArgs e)
+        public override void OnEventWritten(EventLevel level, string messag)
         {
             ConsoleColor color = ConsoleColor.Gray;
 
-            switch (e.Level)
+            switch (level)
             {
-                case EventLevel.Informational:
+                case EventLevel.Info:
                     color = ConsoleColor.White;
                     break;
                 case EventLevel.Warning:
@@ -30,7 +28,7 @@ namespace UltimaXNA.Core.Diagnostics.Tracing.Listeners
             }
 
             ConsoleManager.PushColor(color);
-            Console.WriteLine(e.Payload[0]);
+            Console.WriteLine(messag);
             ConsoleManager.PopColor();
         }
     }
