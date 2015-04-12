@@ -37,7 +37,6 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        Texture2D m_backgroundTexture;
         bool m_background = false;
         public bool Background
         {
@@ -134,6 +133,11 @@ namespace UltimaXNA.Ultima.UI.Controls
             m_hasScrollbar = (scrollbar == 1) ? true : false;
             m_Texture = new RenderedText(text, true, Width);
             Height = m_Texture.Height;
+
+            if (Background)
+            {
+                this.AddControl(new ResizePic(this, 0, 0, 0, 0x2486, Width, Height));
+            }
         }
 
         public override void Update(double totalMS, double frameMS)
@@ -166,21 +170,11 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         public override void Draw(SpriteBatchUI spriteBatch)
         {
-            if (m_background)
-            {
-                if (m_backgroundTexture == null)
-                {
-                    m_backgroundTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
-                    m_backgroundTexture.SetData<Color>(new Color[] { Color.White });
-                }
-                spriteBatch.Draw2D(m_backgroundTexture, new Rectangle(OwnerX + Area.X, OwnerY + Area.Y, Width, Height), 0, false, false);
-            }
+            base.Draw(spriteBatch);
 
             m_Texture.ActiveRegion = m_hrefOver;
             m_Texture.ActiveRegion_UseDownHue = m_clicked;
             m_Texture.Draw(spriteBatch, new Rectangle(X, Y, Size.X, Size.Y), ScrollX, ScrollY);
-            
-            base.Draw(spriteBatch);
         }
 
         protected override bool InternalHitTest(int x, int y)

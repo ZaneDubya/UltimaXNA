@@ -175,18 +175,28 @@ namespace UltimaXNA.Ultima.UI
                     case "noclose":
                         // NoClose 
                         // Prevents that the gump can be closed by right clicking.
+                        Tracer.Warn(string.Format("GUMP: Unhandled {0}.", gumpParams[0]));
+                        break;
                     case "nodispose":
                         // NoDispose 
                         //Prevents that the gump can be closed by hitting Esc.
+                        Tracer.Warn(string.Format("GUMP: Unhandled {0}.", gumpParams[0]));
+                        break;
                     case "nomove":
                         // NoMove
                         // Locks the gump in his position. 
+                        Tracer.Warn(string.Format("GUMP: Unhandled {0}.", gumpParams[0]));
+                        break;
                     case "group":
                         // Group [Number]
                         // Links radio buttons to a group. Add this before radiobuttons to do so. See also endgroup.
+                        Tracer.Warn(string.Format("GUMP: Unhandled {0}.", gumpParams[0]));
+                        break;
                     case "endgroup":
                         // EndGroup
                         //  Links radio buttons to a group. Add this before radiobuttons to do so. See also endgroup. 
+                        Tracer.Warn(string.Format("GUMP: Unhandled {0}.", gumpParams[0]));
+                        break;
                     case "radio":
                         // Radio [x] [y] [released-id] [pressed-id] [status] [return-value]
                         // Same as Checkbox, but only one Radiobutton can be pressed at the same time, and they are linked via the 'Group' command.
@@ -196,32 +206,33 @@ namespace UltimaXNA.Ultima.UI
                         // CheckBox [x] [y] [released-id] [pressed-id] [status] [return-value]
                         // Adds a CheckBox to the gump. Multiple CheckBoxes can be pressed at the same time.
                         // Check the [return-value] if you want to know which CheckBoxes were selected.
-                        Tracer.Warn("GUMP: Unhandled '" + gumpParams[0] + "'.");
+                        Tracer.Warn(string.Format("GUMP: Unhandled {0}.", gumpParams[0]));
                         break;
                     case "xmfhtmlgump":
                         // XmfHtmlGump [x] [y] [width] [height] [cliloc-nr] [background] [scrollbar]
                         // Similar to the htmlgump command, but in place of the [text-id] a CliLoc entry is used.
-                        Tracer.Warn("GUMP: Unhandled '" + gumpParams[0] + "'.");
+                        AddControl(new Controls.HtmlGump(this, currentGUMPPage, int.Parse(gumpParams[1]), int.Parse(gumpParams[2]), int.Parse(gumpParams[3]), int.Parse(gumpParams[4]),
+                            int.Parse(gumpParams[6]), int.Parse(gumpParams[7]), IO.StringData.Entry(int.Parse(gumpParams[5]))));
                         break;
                     case "xmfhtmlgumpcolor":
                         // XmfHtmlGumpColor [x] [y] [width] [height] [cliloc-nr] [background] [scrollbar] [color]
                         // Similar to the xmfhtmlgump command, but additionally a [color] can be specified.
-                        Tracer.Warn("GUMP: Unhandled '" + gumpParams[0] + "'.");
+                        Tracer.Warn(string.Format("GUMP: Unhandled {0}.", gumpParams[0]));
                         break;
                     case "xmfhtmltok":
                         // XmfHtmlTok [x] [y] [width] [height] [background] [scrollbar] [color] [cliloc-nr] @[arguments]@
                         // Similar to xmfhtmlgumpcolor command, but the parameter order is different and an additionally
                         // [argument] entry enclosed with @'s can be used. With this you can specify texts that will be
                         // added to the CliLoc entry. 
-                        Tracer.Warn("GUMP: Unhandled '" + gumpParams[0] + "'.");
+                        Tracer.Warn(string.Format("GUMP: Unhandled {0}.", gumpParams[0]));
                         break;
                     case "tooltip":
                         // Tooltip [cliloc-nr]
                         // Adds to the previous layoutarray entry a Tooltip with the in [cliloc-nr] defined CliLoc entry.
-                        Tracer.Warn("GUMP: Unhandled '" + gumpParams[0] + "'.");
+                        Tracer.Warn(string.Format("GUMP: Unhandled {0}.", gumpParams[0]));
                         break;
                     default:
-                        Tracer.Warn("GUMP: Unknown piece '" + gumpParams[0] + "'.");
+                        Tracer.Critical("GUMP: Unknown piece '" + gumpParams[0] + "'.");
                         break;
                 }
             }

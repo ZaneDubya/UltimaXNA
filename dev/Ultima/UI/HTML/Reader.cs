@@ -262,6 +262,9 @@ namespace UltimaXNA.Ultima.UI.HTML
                                                 break;
                                         }
                                         break;
+                                    case "style":
+                                        Tracer.Warn(string.Format("Html style parameter unhandled: {0}", value));
+                                        break;
                                     default:
                                         Tracer.Warn(string.Format("Unknown parameter:{0}", key));
                                         break;
