@@ -555,6 +555,17 @@ namespace UltimaXNA
             return new Vector2(hue & 0x0FFF, hueType);
         }
 
+        public static string GetColorFromUshortColor(ushort color)
+        {
+            const int multiplier = 0xFF / 0x1F;
+            uint uintColor = (uint)(
+                ((((color >> 10) & 0x1F) * multiplier)) |
+                ((((color >> 5) & 0x1F) * multiplier) << 8) |
+                (((color & 0x1F) * multiplier) << 16)
+                );
+            return string.Format("{0:X6}", uintColor);
+        }
+
         public static int DistanceBetweenTwoPoints(Point p1, Point p2)
         {
             return Convert.ToInt32(Math.Sqrt((p1.X - p2.X) * (p1.X - p2.X) + (p1.Y - p2.Y) * (p1.Y - p2.Y)));

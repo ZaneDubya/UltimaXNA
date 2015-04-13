@@ -17,7 +17,21 @@ namespace UltimaXNA.Ultima.UI.Controls
 {
     public class TextLabel : AControl
     {
-        public int Hue = 0;
+        public int Hue
+        {
+            get
+            {
+                if (m_textRenderer == null)
+                    return 0;
+                return m_textRenderer.Hue;
+            }
+            set
+            {
+                if (m_textRenderer == null)
+                    return;
+                m_textRenderer.Hue = value;
+            }
+        }
 
         private string m_Text;
         public string Text
@@ -27,7 +41,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             {
                 if (m_textRenderer == null)
                 {
-                    m_textRenderer = new RenderedText(m_Text, true, 300);
+                    m_textRenderer = new RenderedText(m_Text, 300);
                 }
                 m_textRenderer.Text = m_Text = value;
             }
@@ -61,9 +75,8 @@ namespace UltimaXNA.Ultima.UI.Controls
         void buildGumpling(int x, int y, int hue, string text)
         {
             Position = new Point(x, y);
-            Hue = hue;
             Text = text;
-            m_textRenderer.Hue = Hue;
+            m_textRenderer.Hue = hue;
         }
 
         public override void Update(double totalMS, double frameMS)

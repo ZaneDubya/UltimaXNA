@@ -37,6 +37,21 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
+        public int Hue
+        {
+            get
+            {
+                if (m_RenderedText == null)
+                    return 0;
+                return m_RenderedText.Hue;
+            }
+            set
+            {
+                if (m_RenderedText != null)
+                    m_RenderedText.Hue = value;
+            }
+        }
+
         bool m_background = false;
         public bool Background
         {
@@ -114,7 +129,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             background = Int32.Parse(arguements[6]);
             scrollbar = Int32.Parse(arguements[7]);
 
-            buildGumpling(x, y, width, height, background, scrollbar, lines[textIndex]);
+            buildGumpling(x, y, width, height, background, scrollbar, "<font color=#000>" + lines[textIndex]);
         }
 
         public HtmlGump(AControl owner, int page, int x, int y, int width, int height, int background, int scrollbar, string text)
@@ -131,7 +146,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             Text = text;
             m_background = (background == 1) ? true : false;
             m_hasScrollbar = (scrollbar == 1) ? true : false;
-            m_RenderedText = new RenderedText(text, true, Width - (HasScrollbar ? 15 : 0) - (Background ? 8 : 0));
+            m_RenderedText = new RenderedText(text, Width - (HasScrollbar ? 15 : 0) - (Background ? 8 : 0));
 
             if (Background)
             {

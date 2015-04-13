@@ -84,20 +84,6 @@ namespace UltimaXNA.Ultima.UI
 
         private bool m_MustRender = true;
 
-        private bool m_AsHTML = false;
-        public bool AsHTML
-        {
-            get { return m_AsHTML; }
-            set
-            {
-                if (m_AsHTML != value)
-                {
-                    m_MustRender = true;
-                    m_AsHTML = value;
-                }
-            }
-        }
-
         private int m_MaxWidth = 400;
         public int MaxWidth
         {
@@ -140,10 +126,9 @@ namespace UltimaXNA.Ultima.UI
 
         private readonly SpriteBatchUI m_SpriteBatch;
 
-        public RenderedText(string text, bool asHTML, int maxWidth = 200)
+        public RenderedText(string text, int maxWidth = 200)
         {
             Text = text;
-            AsHTML = asHTML;
             MaxWidth = maxWidth;
 
             Regions = new Regions();
@@ -211,7 +196,7 @@ namespace UltimaXNA.Ultima.UI
                 destRectangle.Height = sourceRectangle.Height;
             }
 
-            int hue_if_not_html = m_AsHTML ? 1 : Hue;
+            int hue_if_not_html = Hue;
 
             sb.Draw2D(m_Texture, destRectangle, sourceRectangle, hue_if_not_html, false, Transparent);
 
@@ -286,7 +271,7 @@ namespace UltimaXNA.Ultima.UI
 
                     int width, height, ascender;
 
-                    resizeAndParse(Text, MaxWidth, AsHTML, out width, out height, out ascender);
+                    resizeAndParse(Text, MaxWidth, out width, out height, out ascender);
                     m_Texture = renderToTexture(m_SpriteBatch.GraphicsDevice, m_HtmlParser, width, height, ascender);
 
                     m_MustRender = false;
@@ -294,7 +279,7 @@ namespace UltimaXNA.Ultima.UI
             }
         }
 
-        private void resizeAndParse(string textToRender, int maxWidth, bool parseHTML, out int width, out int height, out int ascender)
+        private void resizeAndParse(string textToRender, int maxWidth, out int width, out int height, out int ascender)
         {
             width = 0;
             height = 0;
@@ -302,7 +287,7 @@ namespace UltimaXNA.Ultima.UI
 
             if (m_HtmlParser != null)
                 m_HtmlParser = null;
-            m_HtmlParser = new Reader(textToRender, parseHTML);
+            m_HtmlParser = new Reader(textToRender);
 
             Regions.Clear();
             Images.Clear();

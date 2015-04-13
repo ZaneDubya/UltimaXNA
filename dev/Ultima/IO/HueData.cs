@@ -131,10 +131,12 @@ namespace UltimaXNA.Ultima.IO
                 return 0;
             }
         }
+
         public static int GetWebSafeHue(Color inColor)
         {
             return GetWebSafeHue(inColor.R, inColor.G, inColor.B);
         }
+
         public static int GetWebSafeHue(int inColor)
         {
             

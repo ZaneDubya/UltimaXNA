@@ -90,8 +90,8 @@ namespace UltimaXNA.Ultima.UI.Controls
             Text = text;
             LimitSize = limitSize;
             m_caratBlinkOn = false;
-            m_Texture = new RenderedText("", true, width);
-            m_Carat = new RenderedText("", true, width);
+            m_Texture = new RenderedText(string.Empty, width);
+            m_Carat = new RenderedText(string.Empty, width);
         }
 
         public override void Update(double totalMS, double frameMS)

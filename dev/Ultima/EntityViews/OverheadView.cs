@@ -29,7 +29,7 @@ namespace UltimaXNA.Ultima.EntityViews
         public OverheadView(Overhead entity)
             : base(entity)
         {
-            m_Texture = new RenderedText(Entity.Text, true);
+            m_Texture = new RenderedText(Entity.Text);
             DrawTexture = m_Texture.Texture;
         }
 

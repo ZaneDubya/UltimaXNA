@@ -118,6 +118,7 @@ namespace UltimaXNA.Ultima.UI
                         // CroppedText [x] [y] [width] [height] [color] [text-id]
                         // Adds a text field to the gump. This is similar to the text command, but the text is cropped to the defined area.
                         AddControl(new Controls.CroppedText(this, currentGUMPPage, gumpParams, gumpLines));
+                        (LastControl as Controls.CroppedText).Hue = 1;
                         break;
                     case "gumppic":
                         // GumpPic [x] [y] [id] hue=[color]
@@ -212,12 +213,17 @@ namespace UltimaXNA.Ultima.UI
                         // XmfHtmlGump [x] [y] [width] [height] [cliloc-nr] [background] [scrollbar]
                         // Similar to the htmlgump command, but in place of the [text-id] a CliLoc entry is used.
                         AddControl(new Controls.HtmlGump(this, currentGUMPPage, int.Parse(gumpParams[1]), int.Parse(gumpParams[2]), int.Parse(gumpParams[3]), int.Parse(gumpParams[4]),
-                            int.Parse(gumpParams[6]), int.Parse(gumpParams[7]), IO.StringData.Entry(int.Parse(gumpParams[5]))));
+                            int.Parse(gumpParams[6]), int.Parse(gumpParams[7]), 
+                            "<font color=#000>" + IO.StringData.Entry(int.Parse(gumpParams[5]))));
                         break;
                     case "xmfhtmlgumpcolor":
                         // XmfHtmlGumpColor [x] [y] [width] [height] [cliloc-nr] [background] [scrollbar] [color]
                         // Similar to the xmfhtmlgump command, but additionally a [color] can be specified.
-                        Tracer.Warn(string.Format("GUMP: Unhandled {0}.", gumpParams[0]));
+                        AddControl(new Controls.HtmlGump(this, currentGUMPPage, int.Parse(gumpParams[1]), int.Parse(gumpParams[2]), int.Parse(gumpParams[3]), int.Parse(gumpParams[4]),
+                            int.Parse(gumpParams[6]), int.Parse(gumpParams[7]), 
+                            string.Format("<font color=#{0}>", Utility.GetColorFromUshortColor(ushort.Parse(gumpParams[8]))) + 
+                            IO.StringData.Entry(int.Parse(gumpParams[5]))));
+                        (LastControl as Controls.HtmlGump).Hue = 0;
                         break;
                     case "xmfhtmltok":
                         // XmfHtmlTok [x] [y] [width] [height] [background] [scrollbar] [color] [cliloc-nr] @[arguments]@

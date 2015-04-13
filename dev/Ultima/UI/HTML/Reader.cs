@@ -47,12 +47,12 @@ namespace UltimaXNA.Ultima.UI.HTML
             }
         }
 
-        public Reader(string inText, bool parseHTML)
+        public Reader(string inText)
         {
-            Atoms = decodeText(inText, parseHTML);
+            Atoms = decodeText(inText);
         }
 
-        private List<AAtom> decodeText(string inText, bool parseHTML)
+        private List<AAtom> decodeText(string inText)
         {
             List<AAtom> outAtoms = new List<AAtom>();
             List<string> openTags = new List<string>();
@@ -60,6 +60,7 @@ namespace UltimaXNA.Ultima.UI.HTML
             List<HREF_Attributes> openHREFs = new List<HREF_Attributes>();
 
             // if this is not HTML, do not parse tags. Otherwise search out and interpret tags.
+            bool parseHTML = true;
             if (!parseHTML)
             {
                 for (int i = 0; i < inText.Length; i++)

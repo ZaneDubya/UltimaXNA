@@ -140,7 +140,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_alpha = 1.0f;
             m_width = width;
 
-            m_Texture = new RenderedText(m_text, true, m_width);
+            m_Texture = new RenderedText(m_text, m_width);
         }
 
         public void Update(double totalMS, double frameMS)
