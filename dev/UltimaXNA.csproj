@@ -180,6 +180,7 @@
     <Compile Include="Ultima\Direction.cs" />
     <Compile Include="Ultima\Data\MessageType.cs" />
     <Compile Include="Ultima\Data\TileFlags.cs" />
+    <Compile Include="Ultima\Login\LoginModel.cs" />
     <Compile Include="Ultima\Player\PlayerState.cs" />
     <Compile Include="Ultima\Player\Quest.cs" />
     <Compile Include="Ultima\Entities\Mobiles\CurrentMaxValue.cs" />
@@ -237,7 +238,6 @@
     <Compile Include="Ultima\UI\HuedTexture.cs" />
     <Compile Include="Ultima\UI\UltimaCursor.cs" />
     <Compile Include="Ultima\World\Controllers\WorldInteraction.cs" />
-    <Compile Include="Ultima\Login\LoginModel.cs" />
     <Compile Include="Ultima\Login\LoginClientStatus.cs" />
     <Compile Include="Ultima\Login\LoginView.cs" />
     <Compile Include="Ultima\Data\Accounts\CharacterListEntry.cs" />
