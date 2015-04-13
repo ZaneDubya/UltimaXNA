@@ -161,7 +161,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                     m_scrollbar.Width = 15;
                     m_scrollbar.Height = Height;
                     m_scrollbar.MinValue = 0;
-                    m_scrollbar.MaxValue = m_RenderedText.Height - Height;
+                    m_scrollbar.MaxValue = m_RenderedText.Height - Height + (Background ? 8 : 0);
                 }
                 ScrollY = m_scrollbar.Value;
             }
@@ -175,7 +175,9 @@ namespace UltimaXNA.Ultima.UI.Controls
 
             m_RenderedText.ActiveRegion = m_hrefOver;
             m_RenderedText.ActiveRegion_UseDownHue = m_clicked;
-            m_RenderedText.Draw(spriteBatch, new Rectangle(X + (Background ? 4 : 0), Y + (Background ? 4 : 0), Size.X, Size.Y), ScrollX, ScrollY);
+            m_RenderedText.Draw(spriteBatch, 
+                new Rectangle(X + (Background ? 4 : 0), Y + (Background ? 4 : 0),
+                    Size.X - (Background ? 8 : 0), Size.Y - (Background ? 8 : 0)), ScrollX, ScrollY);
         }
 
         protected override bool InternalHitTest(int x, int y)

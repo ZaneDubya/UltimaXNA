@@ -211,7 +211,7 @@ namespace UltimaXNA.Ultima.UI
                 destRectangle.Height = sourceRectangle.Height;
             }
 
-            int hue_if_not_html = m_AsHTML ? 0 : Hue;
+            int hue_if_not_html = m_AsHTML ? 1 : Hue;
 
             sb.Draw2D(m_Texture, destRectangle, sourceRectangle, hue_if_not_html, false, Transparent);
 
