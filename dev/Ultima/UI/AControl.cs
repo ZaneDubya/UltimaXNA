@@ -232,7 +232,6 @@ namespace UltimaXNA.Ultima.UI
         {
             m_owner = owner;
             m_page = page;
-
             m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
         }
 
@@ -240,7 +239,6 @@ namespace UltimaXNA.Ultima.UI
         {
             m_isInitialized = true;
             m_isDisposed = false;
-            Visible = true;
             Initialize();
         }
 
