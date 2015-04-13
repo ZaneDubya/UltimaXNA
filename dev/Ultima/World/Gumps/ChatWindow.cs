@@ -14,11 +14,11 @@ using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Ultima.IO.FontsNew;
+using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
-using UltimaXNA.Ultima.World;
 #endregion
 
-namespace UltimaXNA.Ultima.UI.WorldGumps
+namespace UltimaXNA.Ultima.World.Gumps
 {
     class ChatWindow : Gump
     {
@@ -26,7 +26,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         List<ChatLineTimed> m_TextEntries;
         List<string> m_MessageHistory;
 
-        GUIManager m_UserInterface;
+        UserInterfaceService m_UserInterface;
         InputManager m_Input;
         WorldModel m_World;
 
@@ -41,7 +41,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             Enabled = true;
 
             m_Input = UltimaServices.GetService<InputManager>();
-            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
             m_World = UltimaServices.GetService<WorldModel>();
         }
 

@@ -30,7 +30,7 @@ namespace UltimaXNA.Ultima.Login
     {
         private readonly INetworkClient m_Network;
         private readonly UltimaEngine m_Engine;
-        private readonly GUIManager m_UserInterface;
+        private readonly UserInterfaceService m_UserInterface;
 
         private List<Tuple<int, TypedPacketReceiveHandler>> m_RegisteredHandlers;
 
@@ -54,7 +54,7 @@ namespace UltimaXNA.Ultima.Login
         {
             m_Network = UltimaServices.GetService<INetworkClient>();
             m_Engine = UltimaServices.GetService<UltimaEngine>();
-            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
 
             Status = LoginClientStatus.Unconnected;
 

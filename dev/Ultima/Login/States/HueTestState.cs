@@ -11,14 +11,14 @@ namespace UltimaXNA.Ultima.Login.States
         TextLabel m_Label;
         HuedControl m_HueDisplay;
 
-        GUIManager m_UserInterface;
+        UserInterfaceService m_UserInterface;
 
         public HueTestState()
             : base()
         {
             OverHue = -1;
 
-            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
         }
 
         public static string Caption

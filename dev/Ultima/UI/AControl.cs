@@ -226,14 +226,13 @@ namespace UltimaXNA.Ultima.UI
         static Texture2D m_boundsTexture;
 #endif
 
-        GUIManager m_UserInterface;
+        UserInterfaceService m_UserInterface;
 
         public AControl(AControl owner, int page)
         {
             m_owner = owner;
             m_page = page;
-            Visible = true;
-            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
         }
 
         public void ControlInitialize()

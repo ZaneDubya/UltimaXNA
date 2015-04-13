@@ -40,13 +40,13 @@ namespace UltimaXNA.Ultima.World.Controllers
         }
 
         private INetworkClient m_Network;
-        private GUIManager m_UserInterface;
+        private UserInterfaceService m_UserInterface;
         private InputManager m_Input;
 
         public WorldCursor(WorldModel model)
         {
             m_Network = UltimaServices.GetService<INetworkClient>();
-            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
             m_Input = UltimaServices.GetService<InputManager>();
 
             World = model;

@@ -74,12 +74,12 @@ namespace UltimaXNA.Ultima.Login.States
             }
         }
 
-        GUIManager m_UserInterface;
+        UserInterfaceService m_UserInterface;
         LoginModel m_Login;
 
         public StateManager()
         {
-            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
             m_Login = UltimaServices.GetService<LoginModel>();
         }
 

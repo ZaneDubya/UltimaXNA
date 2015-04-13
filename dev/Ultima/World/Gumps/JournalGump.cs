@@ -7,16 +7,16 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using System;
-using System.Text;
-using UltimaXNA.Ultima.Player;
-using UltimaXNA.Ultima.UI.Controls;
-using System.Collections.Generic;
-using UltimaXNA.Ultima.UI.WorldGumps;
+#region Usings
 using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 using UltimaXNA.Core.Graphics;
+using UltimaXNA.Ultima.Player;
+using UltimaXNA.Ultima.UI;
+using UltimaXNA.Ultima.UI.Controls;
+#endregion
 
-namespace UltimaXNA.Ultima.UI.WorldGumps
+namespace UltimaXNA.Ultima.World.Gumps
 {
     class JournalGump : Gump
     {

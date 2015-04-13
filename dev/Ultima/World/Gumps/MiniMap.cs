@@ -7,12 +7,14 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using Microsoft.Xna.Framework;
+#region usings
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
+#endregion
 
-namespace UltimaXNA.Ultima.UI.WorldGumps
+namespace UltimaXNA.Ultima.World.Gumps
 {
     class MiniMap : Gump
     {

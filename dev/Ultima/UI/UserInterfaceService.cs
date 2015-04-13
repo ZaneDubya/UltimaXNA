@@ -20,12 +20,12 @@ using UltimaXNA.Ultima.Network.Client;
 
 namespace UltimaXNA.Ultima.UI
 {
-    public class GUIManager
+    public class UserInterfaceService
     {
         private readonly INetworkClient m_Network;
         private readonly InputManager m_Input;
 
-        public GUIManager()
+        public UserInterfaceService()
         {
             m_Network = UltimaServices.GetService<INetworkClient>();
             m_Input = UltimaServices.GetService<InputManager>();
@@ -339,6 +339,7 @@ namespace UltimaXNA.Ultima.UI
                 {
                     if (focusedControl != null)
                     {
+                        MakeTopMostGump(focusedControl);
                         focusedControl.MouseDown(m_Input.MousePosition, e.Button);
                         if (focusedControl.HandlesKeyboardFocus)
                             m_keyboardFocusControl = focusedControl;
@@ -385,6 +386,22 @@ namespace UltimaXNA.Ultima.UI
             }
         }
 
+        private void MakeTopMostGump(AControl control)
+        {
+            AControl c = control;
+            while ((c as Gump) == null || !m_Controls.Contains(c))
+            {
+                if (c.Owner == null)
+                    return;
+                c = c.Owner;
+            }
+            if (m_Controls.Contains(c))
+            {
+                m_Controls.Remove(c);
+                m_Controls.Add(c);
+            }
+        }
+
         private AControl InternalGetMouseOverControl()
         {
             List<AControl> possibleControls;
@@ -402,14 +419,19 @@ namespace UltimaXNA.Ultima.UI
 
             AControl[] mouseOverControls = null;
             // Get the list of controls under the mouse cursor
-            foreach (AControl c in possibleControls)
+            for (int i = possibleControls.Count - 1; i >= 0; i--)
             {
-                AControl[] controls = c.HitTest(m_Input.MousePosition, false);
+                AControl[] controls = possibleControls[i].HitTest(m_Input.MousePosition, false);
                 if (controls != null)
                 {
                     mouseOverControls = controls;
                     break;
                 }
+            }
+
+            foreach (AControl c in possibleControls)
+            {
+
             }
 
             if (mouseOverControls == null)

@@ -10,15 +10,15 @@
 #region usings
 using UltimaXNA.Ultima.Entities.Items.Containers;
 using UltimaXNA.Ultima.Entities.Mobiles;
+using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
-using UltimaXNA.Ultima.World;
 #endregion
 
-namespace UltimaXNA.Ultima.UI.WorldGumps
+namespace UltimaXNA.Ultima.World.Gumps
 {
     class TopMenu : Gump
     {
-        GUIManager m_UserInterface;
+        UserInterfaceService m_UserInterface;
         WorldModel m_World;
 
         public TopMenu(Serial serial)
@@ -50,7 +50,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             AddControl(new Button(this, 2, 5, 3, 5537, 5539, 0, 1, 0));
             ((Button)LastControl).GumpOverID = 5538;
 
-            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
             m_World = UltimaServices.GetService<WorldModel>();
         }
 
@@ -59,10 +59,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             switch ((Buttons)buttonID)
             {
                 case Buttons.Map:
-                    m_UserInterface.AddControl(new MiniMap(), 566, 25, GUIManager.AddControlType.Toggle);
+                    m_UserInterface.AddControl(new MiniMap(), 566, 25, UserInterfaceService.AddControlType.Toggle);
                     break;
                 case Buttons.Paperdoll:
-                    m_UserInterface.AddControl(new PaperDollGump((Mobile)EntityManager.GetPlayerObject()), 400, 100, GUIManager.AddControlType.Toggle);
+                    m_UserInterface.AddControl(new PaperDollGump((Mobile)EntityManager.GetPlayerObject()), 400, 100, UserInterfaceService.AddControlType.Toggle);
                     break;
                 case Buttons.Inventory:
                     // opens the player's backpack.
@@ -71,14 +71,14 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     m_World.Interaction.DoubleClick(backpack);
                     break;
                 case Buttons.Journal:
-                    m_UserInterface.AddControl(new JournalGump(), 80, 80, GUIManager.AddControlType.Toggle);
+                    m_UserInterface.AddControl(new JournalGump(), 80, 80, UserInterfaceService.AddControlType.Toggle);
                     break;
                 case Buttons.Chat:
                     break;
                 case Buttons.Help:
                     break;
                 case Buttons.Question:
-                    m_UserInterface.AddControl(new DebugGump(), 50, 50, GUIManager.AddControlType.Toggle);
+                    m_UserInterface.AddControl(new DebugGump(), 50, 50, UserInterfaceService.AddControlType.Toggle);
                     break;
             }
         }

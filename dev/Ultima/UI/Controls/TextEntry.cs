@@ -46,7 +46,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         RenderedText m_Texture;
         RenderedText m_Carat;
 
-        private GUIManager m_UserInterface;
+        private UserInterfaceService m_UserInterface;
 
         public TextEntry(AControl owner, int page)
             : base(owner, page)
@@ -54,7 +54,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             HandlesMouseInput = true;
             HandlesKeyboardFocus = true;
 
-            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
         }
 
         public TextEntry(AControl owner, int page, string[] arguements, string[] lines)
