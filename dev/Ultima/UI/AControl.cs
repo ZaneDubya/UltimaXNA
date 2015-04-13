@@ -232,6 +232,7 @@ namespace UltimaXNA.Ultima.UI
         {
             m_owner = owner;
             m_page = page;
+            Visible = true;
             m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
         }
 
