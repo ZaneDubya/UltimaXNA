@@ -24,6 +24,7 @@ namespace UltimaXNA.Ultima.World.Gumps
         bool m_useLargeMap = false;
         WorldModel m_World;
         Texture2D m_GumpTexture;
+        Texture2D m_PlayerIndicator;
 
         public MiniMap()
             : base(0, 0)
@@ -71,6 +72,16 @@ namespace UltimaXNA.Ultima.World.Gumps
             };
 
             spriteBatch.Draw(m_GumpTexture, v, Techniques.MiniMap);
+
+            if (UltimaEngine.TotalMS % 500f < 250f)
+            {
+                if (m_PlayerIndicator == null)
+                {
+                    m_PlayerIndicator = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
+                    m_PlayerIndicator.SetData<uint>(new uint[1] { 0xFFFFFFFF });
+                }
+                spriteBatch.Draw2D(m_PlayerIndicator, new Vector3(X + Size.X / 2, Y + Size.Y / 2 - 8, 0), Vector3.Zero);
+            }
         }
 
         protected override void mouseDoubleClick(int x, int y, MouseButton button)

@@ -137,7 +137,7 @@
     <Compile Include="Core\Diagnostics\Tracing\Listeners\AEventListener.cs" />
     <Compile Include="Core\DpiManager.cs" />
     <Compile Include="Core\Extensions\StringExtensions.cs" />
-    <Compile Include="Core\Graphics\Effects.cs" />
+    <Compile Include="Core\Graphics\Techniques.cs" />
     <Compile Include="Core\Network\INetworkClient.cs" />
     <Compile Include="Core\Patterns\IModule.cs" />
     <Compile Include="UltimaServices.cs" />
