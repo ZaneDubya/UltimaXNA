@@ -24,10 +24,31 @@ namespace UltimaXNA.Ultima.UI
     /// </summary>
     public class Gump : AControl
     {
+        public virtual bool IsMovable
+        {
+            get
+            {
+                return !IsNotMovable && base.IsMovable;
+            }
+            set
+            {
+                base.IsMovable = value;
+            }
+        }
+
+        /// <summary>
+        /// If true, gump cannot be moved.
+        /// </summary>
+        public bool IsNotMovable
+        {
+            get;
+            protected set;
+        }
+
         Serial m_GumpID;
         string[] m_gumpPieces, m_gumpLines;
-
         GUIManager m_UserInterface;
+
 
         public Gump(Serial serial, Serial gumpID)
             : base(null, 0)
@@ -181,17 +202,17 @@ namespace UltimaXNA.Ultima.UI
                     case "noclose":
                         // NoClose 
                         // Prevents that the gump can be closed by right clicking.
-                        Tracer.Warn(string.Format("GUMP: Unhandled {0}.", gumpParams[0]));
+                        DoesNotCloseOnRightClick = true;
                         break;
                     case "nodispose":
                         // NoDispose 
                         //Prevents that the gump can be closed by hitting Esc.
-                        Tracer.Warn(string.Format("GUMP: Unhandled {0}.", gumpParams[0]));
+                        DoesNotCloseOnEsc = true;
                         break;
                     case "nomove":
                         // NoMove
                         // Locks the gump in his position. 
-                        Tracer.Warn(string.Format("GUMP: Unhandled {0}.", gumpParams[0]));
+                        IsNotMovable = true;
                         break;
                     case "group":
                         // Group [Number]

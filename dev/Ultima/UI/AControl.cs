@@ -42,7 +42,30 @@ namespace UltimaXNA.Ultima.UI
         public bool Visible { get { return m_visible; } set { m_visible = value; } }
         public bool IsInitialized { get { return m_isInitialized; } set { m_isInitialized = value; } }
         public bool IsDisposed { get { return m_isDisposed; } set { m_isDisposed = value; } }
-        public bool IsMovable = false;
+
+        public virtual bool IsMovable
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// If true, gump cannot be closed with right-click.
+        /// </summary>
+        public bool DoesNotCloseOnRightClick
+        {
+            get;
+            protected set;
+        }
+
+        /// <summary>
+        /// If true, gump does not close when the player hits the Escape key. This behavior is currently unimplemented.
+        /// </summary>
+        public bool DoesNotCloseOnEsc
+        {
+            get;
+            protected set;
+        }
 
         bool m_handlesMouseInput = false;
         public bool HandlesMouseInput { get { return m_handlesMouseInput; } set { m_handlesMouseInput = value; } }
@@ -285,11 +308,12 @@ namespace UltimaXNA.Ultima.UI
         {
             m_closeTarget = toClose;
             HandlesMouseInput = true;
-            OnMouseClick += onCloseTargetClick;
+            OnMouseClick += OnCloseTargetClick;
         }
-        void onCloseTargetClick(int x, int y, MouseButton button)
+
+        void OnCloseTargetClick(int x, int y, MouseButton button)
         {
-            if (button == MouseButton.Right)
+            if (button == MouseButton.Right && !m_closeTarget.DoesNotCloseOnRightClick)
             {
                 m_closeTarget.Dispose();
             }
