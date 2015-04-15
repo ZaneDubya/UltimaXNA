@@ -109,6 +109,11 @@ namespace UltimaXNA.Ultima.UI
                         // ButtonTileArt [x] [y] [released-id] [pressed-id] [quit] [page-id] [return-value] [tilepic-id] [hue] [tile-x] [tile-y]
                         //  Adds a button to the gump with the specified coordinates and tilepic as graphic.
                         // [tile-x] and [tile-y] define the coordinates of the tile graphic and are relative to [x] and [y]. 
+                        AddControl(new Controls.Button(this, currentGUMPPage, int.Parse(gumpParams[1]), int.Parse(gumpParams[2]), int.Parse(gumpParams[3]), int.Parse(gumpParams[4]),
+                            (Controls.ButtonTypes)int.Parse(gumpParams[5]), int.Parse(gumpParams[6]), int.Parse(gumpParams[7])));
+                        AddControl(new Controls.TilePic(this, currentGUMPPage, int.Parse(gumpParams[1]) + int.Parse(gumpParams[10]), int.Parse(gumpParams[2]) + int.Parse(gumpParams[11]),
+                            int.Parse(gumpParams[8]), int.Parse(gumpParams[9])));
+                        break;
                     case "checkertrans":
                         // CheckerTrans [x] [y] [width] [height]
                         // Creates a transparent rectangle on position [x,y] using [width] and [height].
