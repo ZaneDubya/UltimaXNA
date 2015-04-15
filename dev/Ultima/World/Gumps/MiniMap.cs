@@ -57,16 +57,18 @@ namespace UltimaXNA.Ultima.World.Gumps
         public override void Draw(SpriteBatchUI spriteBatch)
         {
             AEntity player = EntityManager.GetPlayerObject();
-            float x = (player.Position.X % 256) / 256f;
-            float y = (player.Position.Y % 256) / 256f;
+            float x = ((player.Position.X % 256) + player.Position.X_offset) / 256f;
+            float y = ((player.Position.Y % 256) + player.Position.Y_offset) / 256f;
             Vector3 playerPosition = new Vector3(x - y, y + x, 0f);
+            float minimapU = (m_GumpTexture.Width / 256f) / 2f;
+            float minimapV = (m_GumpTexture.Height / 256f) / 2f;
 
             VertexPositionNormalTextureHue[] v = new VertexPositionNormalTextureHue[4]
             {
-                new VertexPositionNormalTextureHue(new Vector3(X, Y, 0), playerPosition + new Vector3(-.5f, -.5f, 0), new Vector3(0, 0, 0)),
-                new VertexPositionNormalTextureHue(new Vector3(X + Size.X, Y, 0), playerPosition + new Vector3(.5f, -.5f, 0), new Vector3(1, 0, 0)),
-                new VertexPositionNormalTextureHue(new Vector3(X, Y + Size.Y, 0), playerPosition + new Vector3(-.5f, .5f, 0), new Vector3(0, 1, 0)),
-                new VertexPositionNormalTextureHue(new Vector3(X + Size.X, Y + Size.Y, 0), playerPosition + new Vector3(.5f, .5f, 0), new Vector3(1, 1, 0))
+                new VertexPositionNormalTextureHue(new Vector3(X, Y, 0), playerPosition + new Vector3(-minimapU, -minimapV, 0), new Vector3(0, 0, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(X + Size.X, Y, 0), playerPosition + new Vector3(minimapU, -minimapV, 0), new Vector3(1, 0, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(X, Y + Size.Y, 0), playerPosition + new Vector3(-minimapU, minimapV, 0), new Vector3(0, 1, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(X + Size.X, Y + Size.Y, 0), playerPosition + new Vector3(minimapU, minimapV, 0), new Vector3(1, 1, 0))
             };
 
             spriteBatch.Draw(m_GumpTexture, v);

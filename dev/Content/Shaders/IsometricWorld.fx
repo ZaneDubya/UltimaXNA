@@ -107,7 +107,9 @@ float4 PixelShader_MiniMap(PS_INPUT IN) : COLOR0
 	if ((color.r == minimapTransparentColor) &&
 		(color.g == minimapTransparentColor) &&
 		(color.b == minimapTransparentColor))
+	{
 		color = tex2D(MiniMapSampler, IN.Normal);
+	}
 
 	if (color.a == 0)
 		discard;

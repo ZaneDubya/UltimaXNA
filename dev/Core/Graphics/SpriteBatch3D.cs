@@ -140,7 +140,7 @@ namespace UltimaXNA.Core.Graphics
             GraphicsDevice.SamplerStates[0] = SamplerState.PointClamp;
             GraphicsDevice.SamplerStates[1] = SamplerState.PointClamp;
             GraphicsDevice.SamplerStates[2] = SamplerState.PointClamp;
-            GraphicsDevice.SamplerStates[3] = SamplerState.LinearWrap;
+            GraphicsDevice.SamplerStates[3] = SamplerState.AnisotropicWrap;
             // do normal lighting? Yes in world, no in UI.
             m_Effect.Parameters["DrawLighting"].SetValue(doLighting);
             // set up viewport.
