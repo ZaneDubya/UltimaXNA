@@ -30,7 +30,7 @@ namespace UltimaXNA.Ultima.World.Views
         
 
         private Texture2D m_Texture;
-        private SpriteBatch3D m_SpriteBatch;
+        private SpriteBatchUI m_SpriteBatch;
 
         private bool m_MustRedrawEntireTexture;
         private uint m_LastCenterCellX, m_LastCenterCellY;
@@ -41,7 +41,7 @@ namespace UltimaXNA.Ultima.World.Views
 
         public void Initialize()
         {
-            m_SpriteBatch = UltimaServices.GetService<SpriteBatch3D>();
+            m_SpriteBatch = UltimaServices.GetService<SpriteBatchUI>();
             m_Texture = new Texture2D(m_SpriteBatch.GraphicsDevice, (int)Stride, (int)Stride);
 
             m_TextureData = new uint[Stride * Stride];
@@ -66,12 +66,9 @@ namespace UltimaXNA.Ultima.World.Views
 
             uint mapCellsWidth = (uint)map.Width / 8;
             uint mapCellsHeight = (uint)map.Height / 8;
-            // m_MustRedrawEntireTexture = false;
 
             if (m_MustRedrawEntireTexture)
             {
-
-
                 uint firstX = centerCellX - 7;
                 uint firstY = centerCellY;
                 for (uint y = 0; y < 32; y++)
@@ -81,9 +78,6 @@ namespace UltimaXNA.Ultima.World.Views
                         InternalDrawMapBlock(map, firstX + ((y + 1) / 2) + x, firstY + (y / 2) - x);
                     }
                 }
-                //for (int i = 0; i < m_TextureData.Length; i++)
-                //    m_TextureData[i] = 0xffff00ff;
-                
 
                 m_Texture.SetData<uint>(m_TextureData);
                 m_MustRedrawEntireTexture = false;
@@ -164,7 +158,6 @@ namespace UltimaXNA.Ultima.World.Views
                 }
                 m_Texture.SetData<uint>(m_TextureData);
             }
-            m_SpriteBatch.DrawSimple(m_Texture, new Rectangle(32, 32, 256, 256), Vector2.Zero);
         }
 
         private void InternalDrawMapBlock(Map map, uint cellx, uint celly)

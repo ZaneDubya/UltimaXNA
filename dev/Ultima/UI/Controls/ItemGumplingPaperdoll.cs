@@ -55,7 +55,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                     m_texture = IO.GumpData.GetGumpXNA(Item.ItemData.AnimID + 50000);
                 Size = new Point(m_texture.Width, m_texture.Height);
             }
-            spriteBatch.Draw2D(m_texture, Position, Item.Hue & 0x7FFF, (Item.Hue & 0x8000) == 0x8000 ? true : false, false);
+            spriteBatch.Draw2D(m_texture, new Vector3(X, Y, 0), Utility.GetHueVector(Item.Hue));
             base.Draw(spriteBatch);
         }
     }

@@ -17,14 +17,14 @@ namespace UltimaXNA.Core.Graphics
         public Vector3 Position;
         public Vector3 Normal;
         public Vector3 TextureCoordinate;
-        public Vector2 Hue;
+        public Vector3 Hue;
 
         public readonly static VertexDeclaration VertexDeclaration = new VertexDeclaration
         (
-            new VertexElement(0, VertexElementFormat.Vector3, VertexElementUsage.Position, 0),
-            new VertexElement(sizeof(float) * 3, VertexElementFormat.Vector3, VertexElementUsage.Normal, 0),
-            new VertexElement(sizeof(float) * 6, VertexElementFormat.Vector3, VertexElementUsage.TextureCoordinate, 0),
-            new VertexElement(sizeof(float) * 9, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 1)
+            new VertexElement(0, VertexElementFormat.Vector3, VertexElementUsage.Position, 0), // position
+            new VertexElement(sizeof(float) * 3, VertexElementFormat.Vector3, VertexElementUsage.Normal, 0), // normal
+            new VertexElement(sizeof(float) * 6, VertexElementFormat.Vector3, VertexElementUsage.TextureCoordinate, 0), // tex coord
+            new VertexElement(sizeof(float) * 9, VertexElementFormat.Vector3, VertexElementUsage.TextureCoordinate, 1) // hue
         );
 
         VertexDeclaration IVertexType.VertexDeclaration { get { return VertexDeclaration; } }
@@ -34,7 +34,7 @@ namespace UltimaXNA.Core.Graphics
             Position = position;
             Normal = normal;
             TextureCoordinate = textureCoordinate;
-            Hue = Vector2.Zero;
+            Hue = Vector3.Zero;
         }
 
         public static readonly VertexPositionNormalTextureHue[] PolyBuffer = {
@@ -51,7 +51,7 @@ namespace UltimaXNA.Core.Graphics
                 new VertexPositionNormalTextureHue(new Vector3(), new Vector3(0, 0, 1), new Vector3(1, 1, 0))
             };
 
-        public static int SizeInBytes { get { return sizeof( float ) * 11; } }
+        public static int SizeInBytes { get { return sizeof( float ) * 12; } }
 
         public override string ToString()
         {

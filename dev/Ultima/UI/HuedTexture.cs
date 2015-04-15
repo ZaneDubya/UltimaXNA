@@ -44,8 +44,9 @@ namespace UltimaXNA.Ultima.UI
 
         public void Draw(SpriteBatchUI sb, Point position)
         {
-            Point p = new Point(position.X - m_Offset.X, position.Y - m_Offset.Y);
-            sb.Draw2D(m_Texture, p, m_SourceRect, m_Hue, false, false);
+            Vector3 v = new Vector3(position.X - m_Offset.X, position.Y - m_Offset.Y, 0);
+            Vector3 hueVector = Utility.GetHueVector(m_Hue, false, false);
+            sb.Draw2D(m_Texture, v, m_SourceRect, hueVector);
         }
     }
 }

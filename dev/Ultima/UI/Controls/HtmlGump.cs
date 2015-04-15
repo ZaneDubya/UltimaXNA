@@ -173,7 +173,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                     m_backgroundTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
                     m_backgroundTexture.SetData<Color>(new Color[] { Color.White });
                 }
-                spriteBatch.Draw2D(m_backgroundTexture, new Rectangle(OwnerX + Area.X, OwnerY + Area.Y, Width, Height), 0, false, false);
+                spriteBatch.Draw2D(m_backgroundTexture, new Rectangle(OwnerX + Area.X, OwnerY + Area.Y, Width, Height), Vector3.Zero);
             }
 
             m_Texture.ActiveRegion = m_hrefOver;

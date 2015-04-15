@@ -117,7 +117,7 @@ namespace UltimaXNA.Ultima.Login.States
                     m_texture = IO.ArtData.GetStaticTexture(m_StaticTextureID);
                     Size = new Point(m_texture.Width, m_texture.Height);
                 }
-                spriteBatch.Draw2D(m_texture, Position, Hue, false, false);
+                spriteBatch.Draw2D(m_texture, new Vector3(X, Y, 0), Utility.GetHueVector(Hue, false, false));
                 base.Draw(spriteBatch);
             }
 

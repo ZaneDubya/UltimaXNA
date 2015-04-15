@@ -146,7 +146,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                 }
 
                 if (bodyID != 0)
-                    spriteBatch.Draw2D(IO.GumpData.GetGumpXNA(bodyID), Position, hue, hueGreyPixelsOnly, false);
+                    spriteBatch.Draw2D(IO.GumpData.GetGumpXNA(bodyID), new Vector3(X, Y, 0), Utility.GetHueVector(hue, hueGreyPixelsOnly, false));
             }
         }
     }

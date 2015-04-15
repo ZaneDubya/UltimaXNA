@@ -414,10 +414,12 @@ namespace UltimaXNA.Ultima.UI
                 m_boundsTexture.SetData<Color>(new Color[] { Color.White });
             }
 
-            spriteBatch.Draw2D(m_boundsTexture, new Rectangle(X, Y, Width, 1), hue, false, false);
-            spriteBatch.Draw2D(m_boundsTexture, new Rectangle(X, Y + Height - 1, Width, 1), hue, false, false);
-            spriteBatch.Draw2D(m_boundsTexture, new Rectangle(X, Y, 1, Height), hue, false, false);
-            spriteBatch.Draw2D(m_boundsTexture, new Rectangle(X + Width - 1, Y, 1, Height), hue, false, false);
+            Vector3 hueVector = Utility.GetHueVector(hue, false, false);
+
+            spriteBatch.Draw2D(m_boundsTexture, new Rectangle(X, Y, Width, 1), hueVector);
+            spriteBatch.Draw2D(m_boundsTexture, new Rectangle(X, Y + Height - 1, Width, 1), hueVector);
+            spriteBatch.Draw2D(m_boundsTexture, new Rectangle(X, Y, 1, Height), hueVector);
+            spriteBatch.Draw2D(m_boundsTexture, new Rectangle(X + Width - 1, Y, 1, Height), hueVector);
         }
 #endif
 

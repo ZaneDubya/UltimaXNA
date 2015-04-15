@@ -79,10 +79,8 @@ namespace UltimaXNA.Ultima.UI.Controls
                 m_renderedTexture.SetData<Color>(data);
             }
 
-            // spriteBatch.Flush();
-            // spriteBatch.Begin(SpriteBlendMode.None); !!!
-            spriteBatch.Draw2D(m_renderedTexture, new Rectangle(X, Y, Width, Area.Height), new Rectangle(0, 0, Area.Width, Area.Height), 0, false, false);
-            // spriteBatch.Flush();
+            Vector3 hueVector = Utility.GetHueVector(0, false, false);
+            spriteBatch.Draw2D(m_renderedTexture, new Rectangle(X, Y, Width, Area.Height), new Rectangle(0, 0, Area.Width, Area.Height), hueVector);
 
             base.Draw(spriteBatch);
         }

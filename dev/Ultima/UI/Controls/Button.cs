@@ -129,7 +129,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             if (Caption != string.Empty)
                 m_Texture.Text = Caption;
 
-            spriteBatch.Draw2D(texture, new Rectangle(X, Y, Width, Height), 0, false, false);
+            spriteBatch.Draw2D(texture, new Rectangle(X, Y, Width, Height), Vector3.Zero);
 
             if (Caption != string.Empty)
             {
