@@ -13,15 +13,134 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Ultima.World.Maps;
+using Microsoft.Xna.Framework;
+using UltimaXNA.Ultima.Entities;
+using UltimaXNA.Ultima.Entities.Items;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Views
 {
-    // N.B.
-    // This code is currently not used by the engine and may well be nonfunctional.
-    public class MiniMap
+    public class MiniMapTexture
     {
+        private uint[] m_TextureData;
+        private uint[] m_BlockColors;
+        private Texture2D m_Texture;
+        private SpriteBatch3D m_SpriteBatch;
+        private bool m_MustRedrawEntireTexture;
+        private uint m_LastCenterCellX, m_LastCenterCellY;
 
+        private const uint Stride = 256;
+
+        public void Initialize()
+        {
+            m_SpriteBatch = UltimaServices.GetService<SpriteBatch3D>();
+            m_Texture = new Texture2D(m_SpriteBatch.GraphicsDevice, (int)Stride, (int)Stride);
+            m_TextureData = new uint[Stride * Stride];
+            m_BlockColors = new uint[64];
+            m_MustRedrawEntireTexture = true;
+        }
+
+        public void Draw(Map map, Position3D center)
+        {
+            uint centerCellX = (uint)center.X / 8, centerCellY = (uint)center.Y / 8;
+            int centerDiffX = (int)(m_LastCenterCellX - centerCellX), centerDiffY = (int)(m_LastCenterCellY - center.Y);
+            if (centerDiffX < -1 || centerDiffX > 1 || centerDiffY < -1 || centerDiffY > 1)
+                m_MustRedrawEntireTexture = true;
+
+            uint mapCellsWidth = (uint)map.Width / 8;
+            uint mapCellsHeight = (uint)map.Height / 8;
+
+            if (m_MustRedrawEntireTexture)
+            {
+                for (uint col = 0; col < 16; col++)
+                {
+                    for (int row = 0; row < 16; row++)
+                    {
+
+                    }
+                }
+
+                for (uint y = (uint)(centerCellY - 4) % mapCellsWidth; y <= centerCellY + 4; y++)
+                {
+                    for (uint x = centerCellX - 4; x <= centerCellX + 4; x++)
+                    {
+                        InternalDrawMapBlock(map, x, y);
+                    }
+                }
+                m_Texture.SetData<uint>(m_TextureData);
+            }
+            else if (centerDiffX != 0 || centerDiffY != 0)
+            {
+                // draw just a row or two.
+            }
+            m_SpriteBatch.DrawSimple(m_Texture, new Rectangle(32, 32, 256, 256), Vector2.Zero);
+        }
+
+        private void InternalDrawMapBlock(Map map, uint cellx, uint celly)
+        {
+            MapBlock block = map.GetMapBlock(cellx, celly);
+            if (block == null)
+                return;
+
+            // get the colors for this block
+            for (uint tile = 0; tile < 64; tile++)
+            {
+                uint color = 0xffff00ff;
+                // get the topmost static item or ground
+                int eIndex = block.Tiles[tile].Entities.Count - 1;
+                while (eIndex >= 0)
+                {
+                    AEntity e = block.Tiles[tile].Entities[eIndex];
+                    if (e is Ground)
+                    {
+                        color = IO.RadarColorData.Colors[(e as Ground).LandDataID];
+                        break;
+                    }
+                    else if (e is StaticItem)
+                    {
+                        color = IO.RadarColorData.Colors[(e as StaticItem).ItemID + 0x4000];
+                        break;
+                    }
+                    eIndex--;
+                }
+                m_BlockColors[tile] = color;
+            }
+
+            uint cellX32 = cellx % 32, cellY32 = celly % 32;
+
+            // now draw the block
+            if (cellX32 == 0 && cellY32 == 0)
+            {
+                // draw the block split out over four corners of the texture.
+            }
+            else if (cellX32 + cellY32 == 32)
+            {
+                // draw the block split on the top and bottom of the texture.
+            }
+            else if (cellX32 == cellY32)
+            {
+                // draw the block split on the left and right side of the texture.
+            }
+            else
+            {
+                // draw the block normally.
+                int blockindex = 0;
+                for (uint tiley = 0; tiley < 8; tiley++)
+                {
+                    uint drawy = (cellX32 * 8 + cellY32 * 8 - 8 + tiley) % Stride;
+                    uint drawx = (cellX32 * 8 - cellY32 * 8 - tiley) % Stride;
+                    for (uint tilex = 0; tilex < 8; tilex++)
+                    {
+                        m_TextureData[drawy * Stride + drawx] = m_BlockColors[blockindex];
+                        m_TextureData[drawy * Stride + Stride + drawx] = m_BlockColors[blockindex++];
+                        drawx = (drawx + 1) % Stride;
+                        drawy = (drawy + 1) % Stride;
+                    }
+                }
+            }
+        }
     }
     /*
     class WorldTexture

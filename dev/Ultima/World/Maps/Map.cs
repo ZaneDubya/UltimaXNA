@@ -67,6 +67,17 @@ namespace UltimaXNA.Ultima.World.Maps
             }
         }
 
+        public MapBlock GetMapBlock(uint x, uint y)
+        {
+            uint cellIndex = (y % c_CellsInMemorySpan) * c_CellsInMemorySpan + (x % c_CellsInMemorySpan);
+            MapBlock cell = m_Blocks[cellIndex];
+            if (cell == null)
+                return null;
+            if (cell.X != x || cell.Y != y)
+                return null;
+            return cell;
+        }
+
         public MapTile GetMapTile(int x, int y)
         {
             int cellX = x / 8, cellY = y / 8;
