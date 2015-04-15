@@ -89,17 +89,19 @@ namespace UltimaXNA.Ultima.World.Views
                     {
                         // traveling UP/WEST, draw new rows.
                         uint firstX = centerCellX - 7;
+                        uint firstY = centerCellY;
                         for (uint y = 0; y < 2; y++)
                             for (uint x = 0; x < 16; x++)
-                                InternalDrawMapBlock(map, firstX + x + ((y + 1) / 2), centerCellY - x + (y / 2));
+                                InternalDrawMapBlock(map, firstX + x + ((y + 1) / 2), firstY - x + (y / 2));
                     }
 
                     if (centerDiffY >= 0)
                     {
                         // traveling LEFT/WEST, draw a new column.
                         uint firstX = centerCellX - 7;
+                        uint firstY = centerCellY + 0;
                         for (uint y = 0; y < 32; y++)
-                            InternalDrawMapBlock(map, firstX + ((y + 1) / 2), centerCellY + (y / 2));
+                            InternalDrawMapBlock(map, firstX + ((y + 1) / 2), firstY + (y / 2));
                     }
                 }
                 else if (centerDiffX > 0)
@@ -107,8 +109,8 @@ namespace UltimaXNA.Ultima.World.Views
                     if (centerDiffY <= 0)
                     {
                         // traveling RIGHT/EAST, draw a new column.
-                        uint firstX = centerCellX - 0 + 8;
-                        uint firstY = centerCellY - 7 - 8;
+                        uint firstX = centerCellX + 8;
+                        uint firstY = centerCellY - 15;
                         for (uint y = 0; y < 32; y++)
                             InternalDrawMapBlock(map, firstX + ((y + 1) / 2), firstY + (y / 2));
                     }
@@ -129,13 +131,13 @@ namespace UltimaXNA.Ultima.World.Views
                     {
                         // traveling NORTH, draw a new row and column.
                         uint firstX = centerCellX - 7;
-                        uint firstY = centerCellY;
+                        uint firstY = centerCellY + 0;
                         for (uint y = 0; y < 2; y++)
                             for (uint x = 0; x < 16; x++)
                                 InternalDrawMapBlock(map, firstX + x + ((y + 1) / 2), firstY - x + (y / 2));
 
-                        firstX = centerCellX - 0 + 8;
-                        firstY = centerCellY - 7 - 8;
+                        firstX = centerCellX - 0;
+                        firstY = centerCellY - 23;
                         for (uint y = 0; y < 32; y++)
                             InternalDrawMapBlock(map, firstX + ((y + 1) / 2), firstY + (y / 2));
                     }
@@ -143,7 +145,7 @@ namespace UltimaXNA.Ultima.World.Views
                     {
                         // traveling SOUTH, draw a new row and column.
                         uint firstX = centerCellX - 7;
-                        uint firstY = centerCellY;
+                        uint firstY = centerCellY + 0;
                         for (uint y = 0; y < 32; y++)
                             InternalDrawMapBlock(map, firstX + ((y + 1) / 2), firstY + (y / 2));
 
@@ -163,6 +165,7 @@ namespace UltimaXNA.Ultima.World.Views
                 m_Texture.SetData<uint>(m_TextureData);
                 m_SpriteBatch.GraphicsDevice.Textures[3] = m_Texture;
             }
+            m_SpriteBatch.Draw2D(m_Texture, new Vector3(32, 32, 0), Vector3.Zero);
         }
 
         private void InternalDrawMapBlock(Map map, uint cellx, uint celly)
