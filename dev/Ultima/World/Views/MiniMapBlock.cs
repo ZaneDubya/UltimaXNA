@@ -11,14 +11,20 @@ namespace UltimaXNA.Ultima.World.Views
 {
     class MiniMapBlock
     {
-        public uint[] Colors = new uint[64];
+        public uint X, Y;
+
+        public uint[] Colors;
         private static sbyte[] m_Zs = new sbyte[64]; // shared between all instances of MiniMapBlock.
 
-        public MiniMapBlock(uint X, uint Y, TileMatrixRaw tileData)
+        public MiniMapBlock(uint x, uint y, TileMatrixRaw tileData)
         {
+            X = x;
+            Y = y;
+            Colors = new uint[64];
+
             // get data from the tile Matrix
-            byte[] groundData = tileData.GetLandBlock((int)X, (int)Y);
-            byte[] staticsData = tileData.GetStaticBlock((int)X, (int)Y);
+            byte[] groundData = tileData.GetLandBlock((int)x, (int)y);
+            byte[] staticsData = tileData.GetStaticBlock((int)x, (int)y);
 
             // get the ground colors
             int groundDataIndex = 0;
@@ -48,6 +54,10 @@ namespace UltimaXNA.Ultima.World.Views
 
         public MiniMapBlock(MapBlock block)
         {
+            X = (uint)block.X;
+            Y = (uint)block.Y;
+            Colors = new uint[64];
+
             for (uint tile = 0; tile < 64; tile++)
             {
                 uint color = 0xffff00ff;
