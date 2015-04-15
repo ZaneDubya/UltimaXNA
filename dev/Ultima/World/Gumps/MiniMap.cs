@@ -8,14 +8,13 @@
  *
  ***************************************************************************/
 #region usings
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
-using UltimaXNA.Ultima.UI;
-using UltimaXNA.Ultima.UI.Controls;
-using Microsoft.Xna.Framework;
 using UltimaXNA.Ultima.Entities;
-using UltimaXNA.Ultima.World;
-using Microsoft.Xna.Framework.Graphics;
+using UltimaXNA.Ultima.UI;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Gumps
@@ -57,9 +56,9 @@ namespace UltimaXNA.Ultima.World.Gumps
         public override void Draw(SpriteBatchUI spriteBatch)
         {
             AEntity player = EntityManager.GetPlayerObject();
-            float x = ((player.Position.X % 256) + player.Position.X_offset) / 256f;
-            float y = ((player.Position.Y % 256) + player.Position.Y_offset) / 256f;
-            Vector3 playerPosition = new Vector3(x - y, y + x, 0f);
+            float x = (float)Math.Round((player.Position.X % 256) + player.Position.X_offset) / 256f;
+            float y = (float)Math.Round((player.Position.Y % 256) + player.Position.Y_offset) / 256f;
+            Vector3 playerPosition = new Vector3(x - y, x + y, 0f);
             float minimapU = (m_GumpTexture.Width / 256f) / 2f;
             float minimapV = (m_GumpTexture.Height / 256f) / 2f;
 
@@ -71,7 +70,7 @@ namespace UltimaXNA.Ultima.World.Gumps
                 new VertexPositionNormalTextureHue(new Vector3(X + Size.X, Y + Size.Y, 0), playerPosition + new Vector3(minimapU, minimapV, 0), new Vector3(1, 1, 0))
             };
 
-            spriteBatch.Draw(m_GumpTexture, v);
+            spriteBatch.Draw(m_GumpTexture, v, Techniques.MiniMap);
         }
 
         protected override void mouseDoubleClick(int x, int y, MouseButton button)

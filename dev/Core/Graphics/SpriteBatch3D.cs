@@ -8,14 +8,12 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-
 #region Usings
-
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-
+using UltimaXNA.Core.Diagnostics.Tracing;
 #endregion
 
 namespace UltimaXNA.Core.Graphics
@@ -25,7 +23,7 @@ namespace UltimaXNA.Core.Graphics
         private static float Z; // shared between all spritebatches.
         private readonly Game m_Game;
 
-        private readonly Dictionary<Texture2D, List<VertexPositionNormalTextureHue>> m_drawQueue;
+        private readonly List<Dictionary<Texture2D, List<VertexPositionNormalTextureHue>>> m_drawQueue;
 
         private readonly Effect m_Effect;
         private readonly short[] m_indexBuffer;
@@ -37,8 +35,11 @@ namespace UltimaXNA.Core.Graphics
         {
             m_Game = game;
 
+            m_drawQueue = new List<Dictionary<Texture2D, List<VertexPositionNormalTextureHue>>>(1024);
+            for (int i = 0; i <= (int)Techniques.Max; i++)
+                m_drawQueue.Add(new Dictionary<Texture2D, List<VertexPositionNormalTextureHue>>());
+
             m_ViewportArea = new BoundingBox(new Vector3(0, 0, Int32.MinValue), new Vector3(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, Int32.MaxValue));
-            m_drawQueue = new Dictionary<Texture2D, List<VertexPositionNormalTextureHue>>(256);
             m_indexBuffer = CreateIndexBuffer(0x2000);
             m_vertexListQueue = new Queue<List<VertexPositionNormalTextureHue>>(256);
 
@@ -78,7 +79,7 @@ namespace UltimaXNA.Core.Graphics
         /// <param name="texture"></param>
         /// <param name="vertices"></param>
         /// <returns>True if the object was drawn, false otherwise.</returns>
-        public bool Draw(Texture2D texture, VertexPositionNormalTextureHue[] vertices)
+        public bool Draw(Texture2D texture, VertexPositionNormalTextureHue[] vertices, Techniques effects = Techniques.Default)
         {
             bool draw = false;
 
@@ -103,9 +104,9 @@ namespace UltimaXNA.Core.Graphics
 
             // Get the vertex list for this texture. if none exists, dequeue or create a new vertex list.
             List<VertexPositionNormalTextureHue> vertexList;
-            if(m_drawQueue.ContainsKey(texture))
+            if(m_drawQueue[(int)effects].ContainsKey(texture))
             {
-                vertexList = m_drawQueue[texture];
+                vertexList = m_drawQueue[(int)effects][texture];
             }
             else
             {
@@ -118,7 +119,7 @@ namespace UltimaXNA.Core.Graphics
                 {
                     vertexList = new List<VertexPositionNormalTextureHue>(1024);
                 }
-                m_drawQueue.Add(texture, vertexList);
+                m_drawQueue[(int)effects].Add(texture, vertexList);
             }
 
             // Add the drawn object to the vertex list.
@@ -140,7 +141,7 @@ namespace UltimaXNA.Core.Graphics
             GraphicsDevice.SamplerStates[0] = SamplerState.PointClamp;
             GraphicsDevice.SamplerStates[1] = SamplerState.PointClamp;
             GraphicsDevice.SamplerStates[2] = SamplerState.PointClamp;
-            GraphicsDevice.SamplerStates[3] = SamplerState.AnisotropicWrap;
+            GraphicsDevice.SamplerStates[3] = SamplerState.PointWrap;
             // do normal lighting? Yes in world, no in UI.
             m_Effect.Parameters["DrawLighting"].SetValue(doLighting);
             // set up viewport.
@@ -153,22 +154,34 @@ namespace UltimaXNA.Core.Graphics
             Texture2D texture;
             List<VertexPositionNormalTextureHue> vertexList;
 
-            IEnumerator<KeyValuePair<Texture2D, List<VertexPositionNormalTextureHue>>> keyValuePairs = m_drawQueue.GetEnumerator();
-
-            
-            while(keyValuePairs.MoveNext())
+            for (Techniques effect = 0; effect <= Techniques.Max; effect += 1)
             {
-                m_Effect.CurrentTechnique = m_Effect.Techniques["MiniMapTechnique"];
+                switch (effect)
+                {
+                    case Techniques.Hued:
+                        m_Effect.CurrentTechnique = m_Effect.Techniques["HueTechnique"];
+                        break;
+                    case Techniques.MiniMap:
+                        m_Effect.CurrentTechnique = m_Effect.Techniques["MiniMapTechnique"];
+                        break;
+                    default:
+                        Tracer.Critical("Unknown effect in SpriteBatch3D.Flush(). Effect index is {0}", effect);
+                        break;
+                }
                 m_Effect.CurrentTechnique.Passes[0].Apply();
-                texture = keyValuePairs.Current.Key;
-                vertexList = keyValuePairs.Current.Value;
-                GraphicsDevice.Textures[0] = texture;
-                GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertexList.ToArray(), 0, vertexList.Count, m_indexBuffer, 0, vertexList.Count / 2);
-                vertexList.Clear();
-                m_vertexListQueue.Enqueue(vertexList);
-            }
 
-            m_drawQueue.Clear();
+                IEnumerator<KeyValuePair<Texture2D, List<VertexPositionNormalTextureHue>>> keyValuePairs = m_drawQueue[(int)effect].GetEnumerator();
+                while (keyValuePairs.MoveNext())
+                {
+                    texture = keyValuePairs.Current.Key;
+                    vertexList = keyValuePairs.Current.Value;
+                    GraphicsDevice.Textures[0] = texture;
+                    GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertexList.ToArray(), 0, vertexList.Count, m_indexBuffer, 0, vertexList.Count / 2);
+                    vertexList.Clear();
+                    m_vertexListQueue.Enqueue(vertexList);
+                }
+                m_drawQueue[(int)effect].Clear();
+            }
         }
 
         public void SetLightDirection(Vector3 direction)

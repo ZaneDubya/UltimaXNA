@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   MiniMap.cs
+ *   MiniMapTexture.cs
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -8,16 +8,10 @@
  *
  ***************************************************************************/
 #region usings
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Ultima.World.Maps;
-using Microsoft.Xna.Framework;
-using UltimaXNA.Ultima.Entities;
-using UltimaXNA.Ultima.Entities.Items;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Views
@@ -165,7 +159,6 @@ namespace UltimaXNA.Ultima.World.Views
                 m_Texture.SetData<uint>(m_TextureData);
                 m_SpriteBatch.GraphicsDevice.Textures[3] = m_Texture;
             }
-            m_SpriteBatch.Draw2D(m_Texture, new Vector3(32, 32, 0), Vector3.Zero);
         }
 
         private void InternalDrawMapBlock(Map map, uint cellx, uint celly)
