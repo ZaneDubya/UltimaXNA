@@ -247,8 +247,7 @@ namespace UltimaXNA.Ultima.UI
                         // Similar to the xmfhtmlgump command, but additionally a [color] can be specified.
                         AddControl(new Controls.HtmlGump(this, currentGUMPPage, int.Parse(gumpParams[1]), int.Parse(gumpParams[2]), int.Parse(gumpParams[3]), int.Parse(gumpParams[4]),
                             int.Parse(gumpParams[6]), int.Parse(gumpParams[7]), 
-                            string.Format("<font color=#{0}>", Utility.GetColorFromUshortColor(ushort.Parse(gumpParams[8]))) + 
-                            IO.StringData.Entry(int.Parse(gumpParams[5]))));
+                            string.Format("<font color=#{0}>", Utility.GetColorFromUshortColor(ushort.Parse(gumpParams[8]))) + IO.StringData.Entry(int.Parse(gumpParams[5]))));
                         (LastControl as Controls.HtmlGump).Hue = 0;
                         break;
                     case "xmfhtmltok":
@@ -261,7 +260,11 @@ namespace UltimaXNA.Ultima.UI
                     case "tooltip":
                         // Tooltip [cliloc-nr]
                         // Adds to the previous layoutarray entry a Tooltip with the in [cliloc-nr] defined CliLoc entry.
-                        Tracer.Warn(string.Format("GUMP: Unhandled {0}.", gumpParams[0]));
+                        string cliloc = IO.StringData.Entry(int.Parse(gumpPieces[1]));
+                        if (LastControl != null)
+                            LastControl.SetTooltip(cliloc);
+                        else
+                            Tracer.Warn(string.Format("GUMP: No control for this tooltip: {0}.", gumpParams[1]));
                         break;
                     default:
                         Tracer.Critical("GUMP: Unknown piece '" + gumpParams[0] + "'.");

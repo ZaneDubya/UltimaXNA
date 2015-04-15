@@ -46,23 +46,28 @@ namespace UltimaXNA.Ultima.UI
             }
         }
 
-        private Point m_CursorOffset = Point.Zero;
         public Point CursorOffset
         {
-            set { m_CursorOffset = value; }
-            get { return m_CursorOffset; }
+            get;
+            protected set;
         }
 
-        private int m_CursorHue = 0;
         public int CursorHue
         {
-            set { m_CursorHue = value; }
-            get { return m_CursorHue; }
+            get;
+            protected set;
+        }
+
+        private GUIManager m_UserInterface;
+
+        public UltimaCursor()
+        {
+            m_UserInterface = UltimaServices.GetService<GUIManager>();
         }
 
         public virtual void Dispose()
         {
-
+            m_UserInterface = null;
         }
 
         public virtual void Update()
@@ -72,11 +77,12 @@ namespace UltimaXNA.Ultima.UI
 
         protected virtual void BeforeDraw(SpriteBatchUI spritebatch, Point position)
         {
+            // Over the interface or not in world. Display a default cursor.
             int artworkIndex = 8305;
 
             if (EngineVars.InWorld && EntityManager.GetPlayerObject().Flags.IsWarMode)
             {
-                // Over the interface or not in world. Display a default cursor.
+                // if in warmode, show the red-hued cursor.
                 artworkIndex -= 23;
             }
 
@@ -84,16 +90,40 @@ namespace UltimaXNA.Ultima.UI
             CursorOffset = new Point(1, 1);
         }
 
-        public virtual void Draw(SpriteBatchUI spritebatch, Point position)
+        public void Draw(SpriteBatchUI spritebatch, Point position)
         {
             BeforeDraw(spritebatch, position);
 
             if (m_CursorSprite != null)
             {
-                m_CursorSprite.Hue = m_CursorHue;
-                m_CursorSprite.Offset = m_CursorOffset;
+                m_CursorSprite.Hue = CursorHue;
+                m_CursorSprite.Offset = CursorOffset;
                 m_CursorSprite.Draw(spritebatch, position);
             }
+
+            if (m_UserInterface.IsMouseOverUI && m_UserInterface.MouseOverControl != null && m_UserInterface.MouseOverControl.HasTooltip)
+            {
+                if (m_Tooltip != null && m_Tooltip.Caption != m_UserInterface.MouseOverControl.Tooltip)
+                {
+                    m_Tooltip.Dispose();
+                    m_Tooltip = null;
+                }
+                if (m_Tooltip == null)
+                {
+                    m_Tooltip = new Tooltip(m_UserInterface.MouseOverControl.Tooltip);
+                }
+                m_Tooltip.Draw(spritebatch, position.X, position.Y + 24);
+            }
+            else
+            {
+                if (m_Tooltip != null)
+                {
+                    m_Tooltip.Dispose();
+                    m_Tooltip = null;
+                }
+            }
         }
+
+        private Tooltip m_Tooltip = null;
     }
 }

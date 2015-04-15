@@ -43,6 +43,10 @@ namespace UltimaXNA.Ultima.UI
         public bool IsInitialized { get { return m_isInitialized; } set { m_isInitialized = value; } }
         public bool IsDisposed { get { return m_isDisposed; } set { m_isDisposed = value; } }
 
+        /// <summary>
+        /// If true, control can be moved by click-dragging with left mouse button.
+        /// A child control can be made a dragger for a parent control with MakeDragger().
+        /// </summary>
         public virtual bool IsMovable
         {
             get;
@@ -102,6 +106,17 @@ namespace UltimaXNA.Ultima.UI
                     if (c.HandlesKeyboardFocus)
                         return c.KeyboardFocusControl;
                 return null;
+            }
+        }
+
+        public bool IsMouseOver
+        {
+            get
+            {
+                if (m_UserInterface.MouseOverControl == this)
+                    return true;
+                // check for children?
+                return false;
             }
         }
 
@@ -615,6 +630,35 @@ namespace UltimaXNA.Ultima.UI
                     return;
                 }
             }
+        }
+
+        private string m_Tooltip = null;
+        public string Tooltip
+        {
+            get { return m_Tooltip; }
+        }
+
+        public bool HasTooltip
+        {
+            get
+            {
+                return (m_Tooltip != null);
+            }
+        }
+
+        public void SetTooltip(string caption)
+        {
+            if (caption == null)
+                ClearTooltip();
+            else
+            {
+                m_Tooltip = caption;
+            }
+        }
+
+        public void ClearTooltip()
+        {
+            m_Tooltip = null;
         }
     }
 }

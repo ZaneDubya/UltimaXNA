@@ -17,7 +17,37 @@ namespace UltimaXNA.Ultima.UI.Controls
 {
     class CheckerTrans : AControl
     {
-        Texture2D m_renderedTexture = null;
+        private static Texture2D s_CheckeredTransTexture = null;
+        public static Texture2D CheckeredTransTexture
+        {
+            get
+            {
+                if (s_CheckeredTransTexture == null)
+                {
+                    Color[] data = new Color[32 * 32];
+                    for (int h = 0; h < 32; h++)
+                    {
+                        int i = h % 2;
+                        for (int w = 0; w < 32; w++)
+                        {
+                            if (i++ >= 1)
+                            {
+                                data[h * 32 + w] = Color.Black;
+                                i = 0;
+                            }
+                            else
+                            {
+                                data[h * 32 + w] = Color.Transparent;
+                            }
+                        }
+                    }
+                    SpriteBatchUI sb = UltimaServices.GetService<SpriteBatchUI>();
+                    s_CheckeredTransTexture = new Texture2D(sb.GraphicsDevice, 32, 32);
+                    s_CheckeredTransTexture.SetData<Color>(data);
+                }
+                return s_CheckeredTransTexture;
+            }
+        }
 
         public CheckerTrans(AControl owner, int page)
             : base(owner, page)
@@ -56,32 +86,9 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         public override void Draw(SpriteBatchUI spriteBatch)
         {
-            if (m_renderedTexture == null)
-            {
-                Color[] data = new Color[Width * Height];
-                for (int h = 0; h < Height; h++)
-                {
-                    int i = h % 2;
-                    for (int w = 0; w < Width; w++)
-                    {
-                        if (i++ >= 1)
-                        {
-                            data[h * Width + w] = Color.Black;
-                            i = 0;
-                        }
-                        else
-                        {
-                            data[h * Width + w] = Color.Transparent;
-                        }
-                    }
-                }
-                m_renderedTexture = new Texture2D(spriteBatch.GraphicsDevice, Width, Height);
-                m_renderedTexture.SetData<Color>(data);
-            }
-
             // spriteBatch.Flush();
             // spriteBatch.Begin(SpriteBlendMode.None); !!!
-            spriteBatch.Draw2D(m_renderedTexture, new Rectangle(X, Y, Width, Area.Height), new Rectangle(0, 0, Area.Width, Area.Height), 0, false, false);
+            spriteBatch.Draw2DTiled(CheckeredTransTexture, new Rectangle(X, Y, Width, Area.Height), 0, false, false);
             // spriteBatch.Flush();
 
             base.Draw(spriteBatch);
