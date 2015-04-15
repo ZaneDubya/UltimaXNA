@@ -261,8 +261,6 @@ namespace UltimaXNA.Ultima.UI
 
         public void Draw(double frameTime)
         {
-            m_SpriteBatch.Prepare();
-
             foreach (AControl c in m_Controls)
             {
                 if (c.IsInitialized)
@@ -272,7 +270,7 @@ namespace UltimaXNA.Ultima.UI
             if (Cursor != null)
                 Cursor.Draw(m_SpriteBatch, m_Input.MousePosition);
 
-            m_SpriteBatch.Flush();
+            m_SpriteBatch.Flush(false);
         }
 
         /// <summary>

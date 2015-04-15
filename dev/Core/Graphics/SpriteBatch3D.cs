@@ -22,7 +22,7 @@ namespace UltimaXNA.Core.Graphics
 {
     public class SpriteBatch3D
     {
-        private static float Z;
+        private static float Z; // shared between all spritebatches.
         private readonly Game m_Game;
 
         private readonly Dictionary<Texture2D, List<VertexPositionNormalTextureHue>> m_drawQueue;
@@ -128,23 +128,22 @@ namespace UltimaXNA.Core.Graphics
             return true;
         }
 
-        public virtual void PrepareWorld(bool doLighting)
+        public void Flush(bool doLighting)
         {
-            m_Effect.CurrentTechnique = m_Effect.Techniques["HueEffect"];
-            m_Effect.Parameters["DrawLighting"].SetValue(doLighting);
-
+            //set up depth buffer
             DepthStencilState depth = new DepthStencilState();
             depth.DepthBufferEnable = true;
             GraphicsDevice.DepthStencilState = depth;
-
+            // set up graphics device and texture sampling.
             GraphicsDevice.BlendState = BlendState.AlphaBlend;
             GraphicsDevice.RasterizerState = RasterizerState.CullNone;
             GraphicsDevice.SamplerStates[0] = SamplerState.PointClamp;
             GraphicsDevice.SamplerStates[1] = SamplerState.PointClamp;
-        }
-
-        public void Flush()
-        {
+            GraphicsDevice.SamplerStates[2] = SamplerState.PointClamp;
+            GraphicsDevice.SamplerStates[3] = SamplerState.LinearWrap;
+            // do normal lighting? Yes in world, no in UI.
+            m_Effect.Parameters["DrawLighting"].SetValue(doLighting);
+            // set up viewport.
             float width = GraphicsDevice.Viewport.Width;
             float height = GraphicsDevice.Viewport.Height;
             m_Effect.Parameters["ProjectionMatrix"].SetValue(Matrix.CreateOrthographicOffCenter(0, width, height, 0f, Int16.MinValue, Int16.MaxValue));
@@ -156,8 +155,10 @@ namespace UltimaXNA.Core.Graphics
 
             IEnumerator<KeyValuePair<Texture2D, List<VertexPositionNormalTextureHue>>> keyValuePairs = m_drawQueue.GetEnumerator();
 
+            
             while(keyValuePairs.MoveNext())
             {
+                m_Effect.CurrentTechnique = m_Effect.Techniques["MiniMapTechnique"];
                 m_Effect.CurrentTechnique.Passes[0].Apply();
                 texture = keyValuePairs.Current.Key;
                 vertexList = keyValuePairs.Current.Value;

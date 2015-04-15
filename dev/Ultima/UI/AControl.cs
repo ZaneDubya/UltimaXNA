@@ -276,7 +276,7 @@ namespace UltimaXNA.Ultima.UI
         public void MakeDragger(AControl toMove)
         {
             HandlesMouseInput = true;
-            m_dragger = new DragWidget(this, m_owner);
+            m_dragger = new DragWidget(this, toMove);
         }
 
         AControl m_closeTarget;

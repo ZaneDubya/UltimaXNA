@@ -20,11 +20,6 @@ namespace UltimaXNA.Core.Graphics
 
         }
 
-        public void Prepare()
-        {
-            base.PrepareWorld(false);
-        }
-
         public bool Draw2D(Texture2D texture, Vector3 position, Vector3 hue)
         {
             VertexPositionNormalTextureHue[] v =

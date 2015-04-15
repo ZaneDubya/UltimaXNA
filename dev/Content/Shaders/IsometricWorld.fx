@@ -2,18 +2,18 @@ float4x4 ProjectionMatrix;
 float4x4 WorldMatrix;
 float2	 Viewport;
 
+bool DrawLighting;
 float3 lightDirection;
 float lightIntensity;
 
-bool DrawLighting;
-
-sampler textureSampler;
-sampler hueSampler0;
-sampler hueSampler1;
-sampler miniMapSampler;
-
 const float HuesPerTexture = 2048;
 const float ToGrayScale = 3;
+const float minimapTransparentColor = 8.0f / 255.0f;
+
+sampler DrawSampler : register(s0);
+sampler HueSampler0 : register(s1);
+sampler HueSampler1 : register(s2);
+sampler MiniMapSampler : register(s3);
 
 struct VS_INPUT
 {
@@ -51,12 +51,9 @@ PS_INPUT VertexShaderFunction(VS_INPUT IN)
 float4 PixelShader_Hue(PS_INPUT IN) : COLOR0
 {	
 	// Get the initial pixel and discard it if the alpha == 0
-	float4 color = tex2D(textureSampler, IN.TexCoord);
-
+	float4 color = tex2D(DrawSampler, IN.TexCoord);
 	if (color.a == 0)
-	{
 		discard;
-	}
 
 	// Hue the color if the hue vector y component is greater than 0.
 	if (IN.Hue.y > 0)
@@ -65,11 +62,11 @@ float4 PixelShader_Hue(PS_INPUT IN) : COLOR0
 		float4 hueColor;
 		if (IN.Hue.x >= HuesPerTexture)
 		{
-			hueColor = tex2D(hueSampler1, float2(inHueIndex, (IN.Hue.x - HuesPerTexture) / HuesPerTexture));
+			hueColor = tex2D(HueSampler1, float2(inHueIndex, (IN.Hue.x - HuesPerTexture) / HuesPerTexture));
 		}
 		else
 		{
-			hueColor = tex2D(hueSampler0, float2(inHueIndex, IN.Hue.x / HuesPerTexture));
+			hueColor = tex2D(HueSampler0, float2(inHueIndex, IN.Hue.x / HuesPerTexture));
 		}
 		hueColor.a = color.a;
 
@@ -103,12 +100,37 @@ float4 PixelShader_Hue(PS_INPUT IN) : COLOR0
 	return color;
 }
 
+float4 PixelShader_MiniMap(PS_INPUT IN) : COLOR0
+{
+	// Get the initial pixel and discard it if the alpha == 0
+	float4 color = tex2D(DrawSampler, IN.TexCoord);
+	if ((color.r == minimapTransparentColor) &&
+		(color.g == minimapTransparentColor) &&
+		(color.b == minimapTransparentColor))
+		color = tex2D(MiniMapSampler, IN.Normal);
 
-technique HueEffect
+	if (color.a == 0)
+		discard;
+	
+
+	return color;
+}
+
+
+technique HueTechnique
 {
 	pass p0
 	{
 		VertexShader = compile vs_2_0 VertexShaderFunction();
 		PixelShader = compile ps_2_0 PixelShader_Hue();
+	}
+}
+
+technique MiniMapTechnique
+{
+	pass p0
+	{
+		VertexShader = compile vs_2_0 VertexShaderFunction();
+		PixelShader = compile ps_2_0 PixelShader_MiniMap();
 	}
 }
