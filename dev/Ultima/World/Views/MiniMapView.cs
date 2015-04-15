@@ -27,7 +27,6 @@ namespace UltimaXNA.Ultima.World.Views
         private uint[] m_TextureData;
         private uint[] m_BlockColors;
         private MiniMapBlock[] m_BlockCache;
-        
 
         private Texture2D m_Texture;
         private SpriteBatchUI m_SpriteBatch;
@@ -64,8 +63,7 @@ namespace UltimaXNA.Ultima.World.Views
             if (centerDiffX < -1 || centerDiffX > 1 || centerDiffY < -1 || centerDiffY > 1)
                 m_MustRedrawEntireTexture = true;
 
-            uint mapCellsWidth = (uint)map.Width / 8;
-            uint mapCellsHeight = (uint)map.Height / 8;
+            bool newTextureData = false;
 
             if (m_MustRedrawEntireTexture)
             {
@@ -79,7 +77,7 @@ namespace UltimaXNA.Ultima.World.Views
                     }
                 }
 
-                m_Texture.SetData<uint>(m_TextureData);
+                newTextureData = true;
                 m_MustRedrawEntireTexture = false;
             }
             else if (centerDiffX != 0 || centerDiffY != 0)
@@ -156,7 +154,14 @@ namespace UltimaXNA.Ultima.World.Views
                                 InternalDrawMapBlock(map, firstX + ((y + 1) / 2) + x, firstY - x + (y / 2));
                     }
                 }
+                newTextureData = true;
+            }
+
+            if (newTextureData)
+            {
+                m_SpriteBatch.GraphicsDevice.Textures[3] = null;
                 m_Texture.SetData<uint>(m_TextureData);
+                m_SpriteBatch.GraphicsDevice.Textures[3] = m_Texture;
             }
         }
 

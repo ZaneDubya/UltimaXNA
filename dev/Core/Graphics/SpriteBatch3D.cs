@@ -151,20 +151,20 @@ namespace UltimaXNA.Core.Graphics
             m_Effect.Parameters["WorldMatrix"].SetValue(ProjectionMatrixWorld);
             m_Effect.Parameters["Viewport"].SetValue(new Vector2(width, height));
 
-            Texture2D iTexture;
-            List<VertexPositionNormalTextureHue> iVertexList;
+            Texture2D texture;
+            List<VertexPositionNormalTextureHue> vertexList;
 
             IEnumerator<KeyValuePair<Texture2D, List<VertexPositionNormalTextureHue>>> keyValuePairs = m_drawQueue.GetEnumerator();
 
             while(keyValuePairs.MoveNext())
             {
                 m_Effect.CurrentTechnique.Passes[0].Apply();
-                iTexture = keyValuePairs.Current.Key;
-                iVertexList = keyValuePairs.Current.Value;
-                GraphicsDevice.Textures[0] = iTexture;
-                GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, iVertexList.ToArray(), 0, iVertexList.Count, m_indexBuffer, 0, iVertexList.Count / 2);
-                iVertexList.Clear();
-                m_vertexListQueue.Enqueue(iVertexList);
+                texture = keyValuePairs.Current.Key;
+                vertexList = keyValuePairs.Current.Value;
+                GraphicsDevice.Textures[0] = texture;
+                GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertexList.ToArray(), 0, vertexList.Count, m_indexBuffer, 0, vertexList.Count / 2);
+                vertexList.Clear();
+                m_vertexListQueue.Enqueue(vertexList);
             }
 
             m_drawQueue.Clear();
