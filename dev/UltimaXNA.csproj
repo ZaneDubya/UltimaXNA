@@ -482,6 +482,7 @@
     <Compile Include="Ultima\Login\States\StateManager.cs" />
     <Compile Include="Ultima\Login\States\LoginState.cs" />
     <Compile Include="Ultima\Serial.cs" />
+    <Compile Include="Ultima\World\Views\MiniMapBlock.cs" />
     <Compile Include="Ultima\World\Views\MiniMapView.cs" />
     <Compile Include="Ultima\World\Maps\Map.cs" />
     <Compile Include="Core\Graphics\SpriteBatch3D.cs" />

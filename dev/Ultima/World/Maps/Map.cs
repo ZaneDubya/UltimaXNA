@@ -22,6 +22,11 @@ namespace UltimaXNA.Ultima.World.Maps
     {
         private MapBlock[] m_Blocks;
         private TileMatrixRaw m_MapData;
+        public TileMatrixRaw MapData
+        {
+            get { return m_MapData; }
+        }
+
         private Point m_Center = new Point(int.MinValue, int.MinValue); // player position.
 
         public int Index;
