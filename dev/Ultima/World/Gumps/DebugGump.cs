@@ -12,55 +12,32 @@ using UltimaXNA.Configuration;
 using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Core.Graphics;
+using Microsoft.Xna.Framework;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Gumps
 {
     public class DebugGump : Gump
     {
-        private readonly HtmlGump m_html;
+        private WorldModel m_World;
 
         public DebugGump()
             : base(0, 0)
         {
-            int width = 200;
-            // minimized view
+            m_World = UltimaServices.GetService<WorldModel>();
+
             IsMovable = true;
-            AddControl(new ResizePic(this, 2, 0, 0, 0x2486, width, 16));
-            AddControl(new Button(this, 2, width - 18, 0, 2117, 2118, 0, 1, 0));
-            // maximized view
-            AddControl(new ResizePic(this, 1, 0, 0, 0x2486, width, 256));
-            AddControl(new Button(this, 1, width - 18, 0, 2117, 2118, 0, 2, 0));
-            AddControl(new TextLabel(this, 1, 4, 2, 0, "Debug Gump"));
-            // AddGumpling(new Controls.Button(this, 2, 2, 18, 2117, 2118, ButtonTypes.Activate, 0, 0));
-            m_html = (HtmlGump)AddControl(new HtmlGump(this, 1, 4, 16, width - 8, 230, 0, 0, ""));
+
+            AddControl(new ResizePic(this, 0, 0, 0, 0x2436, 256 + 16, 256 + 16));
+            LastControl.MakeCloseTarget(this);
         }
 
-        public override void ActivateByButton(int buttonID)
+        public override void Draw(SpriteBatchUI spriteBatch)
         {
-            // IO.AnimEncode.SaveData(59, "animdata");
-            // IO.AnimEncode.TransformData(59, "animdata");
-        }
+            base.Draw(spriteBatch);
 
-        public override void Update(double totalMS, double frameMS)
-        {
-            string debugMessage = string.Empty;
-
-            if(Settings.Debug.ShowDataRead)
-            {
-                if(Settings.Debug.ShowDataReadBreakdown)
-                {
-                    debugMessage += Metrics.DataReadBreakdown;
-                }
-                else
-                {
-                    debugMessage += string.Format("\nData Read: {0}", Metrics.TotalDataRead);
-                }
-            }
-
-            m_html.Text = debugMessage;
-
-            base.Update(totalMS, frameMS);
+            spriteBatch.Draw2D(((WorldView)m_World.GetView()).MiniMap.Texture, new Vector3(X + 8, Y + 8, 0), Vector3.Zero);
         }
     }
 }

@@ -23,7 +23,12 @@ namespace UltimaXNA.Ultima.World.Views
         private uint[] m_BlockColors;
         private MiniMapBlock[] m_BlockCache;
 
-        private Texture2D m_Texture;
+        public Texture2D Texture
+        {
+            get;
+            private set;
+        }
+
         private SpriteBatchUI m_SpriteBatch;
 
         private bool m_MustRedrawEntireTexture;
@@ -38,7 +43,7 @@ namespace UltimaXNA.Ultima.World.Views
         public void Initialize()
         {
             m_SpriteBatch = UltimaServices.GetService<SpriteBatchUI>();
-            m_Texture = new Texture2D(m_SpriteBatch.GraphicsDevice, (int)Stride, (int)Stride);
+            Texture = new Texture2D(m_SpriteBatch.GraphicsDevice, (int)Stride, (int)Stride);
 
             m_TextureData = new uint[Stride * Stride];
             m_BlockColors = new uint[TilesPerBlock];
@@ -157,8 +162,8 @@ namespace UltimaXNA.Ultima.World.Views
             {
                 InternalDrawQueuedMapBlocks();
                 m_SpriteBatch.GraphicsDevice.Textures[3] = null;
-                m_Texture.SetData<uint>(m_TextureData);
-                m_SpriteBatch.GraphicsDevice.Textures[3] = m_Texture;
+                Texture.SetData<uint>(m_TextureData);
+                m_SpriteBatch.GraphicsDevice.Textures[3] = Texture;
             }
         }
 
