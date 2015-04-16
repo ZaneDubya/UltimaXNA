@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Ultima.World.Maps;
+using System.Collections.Generic;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Views
@@ -28,6 +29,8 @@ namespace UltimaXNA.Ultima.World.Views
         private bool m_MustRedrawEntireTexture;
         private uint m_LastCenterCellX, m_LastCenterCellY;
 
+        private List<uint> m_QueuedToDrawBlocks;
+
         private const uint Stride = 256;
         private const uint BlockCacheWidth = 48, BlockCacheHeight = 48;
         private const uint TilesPerBlock = 64;
@@ -41,6 +44,8 @@ namespace UltimaXNA.Ultima.World.Views
             m_BlockColors = new uint[TilesPerBlock];
             m_BlockCache = new MiniMapBlock[BlockCacheWidth * BlockCacheHeight];
             m_MustRedrawEntireTexture = true;
+
+            m_QueuedToDrawBlocks = new List<uint>();
         }
 
         public void Update(Map map, Position3D center)
@@ -57,8 +62,6 @@ namespace UltimaXNA.Ultima.World.Views
             if (centerDiffX < -1 || centerDiffX > 1 || centerDiffY < -1 || centerDiffY > 1)
                 m_MustRedrawEntireTexture = true;
 
-            bool newTextureData = false;
-
             if (m_MustRedrawEntireTexture)
             {
                 uint firstX = centerCellX - 15;
@@ -67,11 +70,9 @@ namespace UltimaXNA.Ultima.World.Views
                 {
                     for (uint x = 0; x < 16; x++)
                     {
-                        InternalDrawMapBlock(map, firstX + ((y + 1) / 2) + x, firstY + (y / 2) - x);
+                        InternalQueueMapBlock(map, firstX + ((y + 1) / 2) + x, firstY + (y / 2) - x);
                     }
                 }
-
-                newTextureData = true;
                 m_MustRedrawEntireTexture = false;
             }
             else if (centerDiffX != 0 || centerDiffY != 0)
@@ -86,7 +87,7 @@ namespace UltimaXNA.Ultima.World.Views
                         uint firstY = centerCellY;
                         for (uint y = 0; y < 2; y++)
                             for (uint x = 0; x < 16; x++)
-                                InternalDrawMapBlock(map, firstX + x + ((y + 1) / 2), firstY - x + (y / 2));
+                                InternalQueueMapBlock(map, firstX + x + ((y + 1) / 2), firstY - x + (y / 2));
                     }
 
                     if (centerDiffY >= 0)
@@ -95,7 +96,7 @@ namespace UltimaXNA.Ultima.World.Views
                         uint firstX = centerCellX - 15;
                         uint firstY = centerCellY + 0;
                         for (uint y = 0; y < 32; y++)
-                            InternalDrawMapBlock(map, firstX + ((y + 1) / 2), firstY + (y / 2));
+                            InternalQueueMapBlock(map, firstX + ((y + 1) / 2), firstY + (y / 2));
                     }
                 }
                 else if (centerDiffX > 0)
@@ -106,7 +107,7 @@ namespace UltimaXNA.Ultima.World.Views
                         uint firstX = centerCellX + 0;
                         uint firstY = centerCellY - 15;
                         for (uint y = 0; y < 32; y++)
-                            InternalDrawMapBlock(map, firstX + ((y + 1) / 2), firstY + (y / 2));
+                            InternalQueueMapBlock(map, firstX + ((y + 1) / 2), firstY + (y / 2));
                     }
 
                     if (centerDiffY >= 0)
@@ -116,7 +117,7 @@ namespace UltimaXNA.Ultima.World.Views
                         uint firstY = centerCellY + 15;
                         for (uint y = 0; y < 2; y++)
                             for (uint x = 0; x < 16; x++)
-                                InternalDrawMapBlock(map, firstX + ((y + 1) / 2) + x, firstY - x + (y / 2));
+                                InternalQueueMapBlock(map, firstX + ((y + 1) / 2) + x, firstY - x + (y / 2));
                     }
                 }
                 else if (centerDiffY != 0)
@@ -128,12 +129,12 @@ namespace UltimaXNA.Ultima.World.Views
                         uint firstY = centerCellY + 0;
                         for (uint y = 0; y < 2; y++)
                             for (uint x = 0; x < 16; x++)
-                                InternalDrawMapBlock(map, firstX + x + ((y + 1) / 2), firstY - x + (y / 2));
+                                InternalQueueMapBlock(map, firstX + x + ((y + 1) / 2), firstY - x + (y / 2));
 
                         firstX = centerCellX + 0;
                         firstY = centerCellY - 15;
                         for (uint y = 0; y < 32; y++)
-                            InternalDrawMapBlock(map, firstX + ((y + 1) / 2), firstY + (y / 2));
+                            InternalQueueMapBlock(map, firstX + ((y + 1) / 2), firstY + (y / 2));
                     }
                     else if (centerDiffY > 0)
                     {
@@ -141,27 +142,27 @@ namespace UltimaXNA.Ultima.World.Views
                         uint firstX = centerCellX - 15;
                         uint firstY = centerCellY + 0;
                         for (uint y = 0; y < 32; y++)
-                            InternalDrawMapBlock(map, firstX + ((y + 1) / 2), firstY + (y / 2));
+                            InternalQueueMapBlock(map, firstX + ((y + 1) / 2), firstY + (y / 2));
 
                         firstX = centerCellX - 0;
                         firstY = centerCellY + 15;
                         for (uint y = 0; y < 2; y++)
                             for (uint x = 0; x < 16; x++)
-                                InternalDrawMapBlock(map, firstX + ((y + 1) / 2) + x, firstY - x + (y / 2));
+                                InternalQueueMapBlock(map, firstX + ((y + 1) / 2) + x, firstY - x + (y / 2));
                     }
                 }
-                newTextureData = true;
             }
 
-            if (newTextureData)
+            if (m_QueuedToDrawBlocks.Count > 0)
             {
+                InternalDrawQueuedMapBlocks();
                 m_SpriteBatch.GraphicsDevice.Textures[3] = null;
                 m_Texture.SetData<uint>(m_TextureData);
                 m_SpriteBatch.GraphicsDevice.Textures[3] = m_Texture;
             }
         }
 
-        private void InternalDrawMapBlock(Map map, uint cellx, uint celly)
+        private void InternalQueueMapBlock(Map map, uint cellx, uint celly)
         {
             uint blockIndex = (cellx % BlockCacheWidth) + (celly % BlockCacheHeight) * BlockCacheWidth;
 
@@ -174,13 +175,11 @@ namespace UltimaXNA.Ultima.World.Views
                 {
                     // if the block is not loaded in memory, load it from the filesystem.
                     m_BlockCache[blockIndex] = new MiniMapBlock(cellx, celly, map.MapData);
-                    m_BlockColors = m_BlockCache[blockIndex].Colors;
                 }
                 else
                 {
                     // get the colors for this block from the map block, which will have already sorted the objects.
                     m_BlockCache[blockIndex] = new MiniMapBlock(mapBlock);
-                    m_BlockColors = m_BlockCache[blockIndex].Colors;
                 }
             }
             else
@@ -188,91 +187,102 @@ namespace UltimaXNA.Ultima.World.Views
                 m_BlockColors = block.Colors;
             }
 
-            uint cellX32 = cellx % 32, cellY32 = celly % 32;
+            m_QueuedToDrawBlocks.Add(blockIndex);
+        }
 
-            // now draw the block
-            if (cellX32 == 0 && cellY32 == 0)
+        private void InternalDrawQueuedMapBlocks()
+        {
+            IEnumerator<uint> blocks = m_QueuedToDrawBlocks.GetEnumerator();
+
+            for (int i = 0; i < m_QueuedToDrawBlocks.Count; i++)
             {
-                // draw the block split out over four corners of the texture.
-                int blockindex = 0;
-                for (uint tiley = 0; tiley < 8; tiley++)
+                MiniMapBlock block = m_BlockCache[m_QueuedToDrawBlocks[i]];
+
+                uint cellX32 = block.X % 32, cellY32 = block.Y % 32;
+                m_BlockColors = block.Colors;
+
+                // now draw the block
+                if (cellX32 == 0 && cellY32 == 0)
                 {
-                    uint drawy = (cellX32 * 8 + cellY32 * 8 - 8 + tiley) % Stride;
-                    uint drawx = (cellX32 * 8 - cellY32 * 8 - tiley) % Stride;
-                    for (uint tilex = 0; tilex < 8; tilex++)
+                    // draw the block split out over four corners of the texture.
+                    int blockindex = 0;
+                    for (uint tiley = 0; tiley < 8; tiley++)
                     {
-                        m_TextureData[drawy * Stride + drawx] = m_BlockColors[blockindex];
-                        if (drawy == 255)
+                        uint drawy = (cellX32 * 8 + cellY32 * 8 - 8 + tiley) % Stride;
+                        uint drawx = (cellX32 * 8 - cellY32 * 8 - tiley) % Stride;
+                        for (uint tilex = 0; tilex < 8; tilex++)
                         {
-                            m_TextureData[drawx] = m_BlockColors[blockindex++];
+                            uint color = m_BlockColors[blockindex++];
+                            m_TextureData[drawy * Stride + drawx] = color;
+                            if (drawy == 255)
+                                m_TextureData[drawx] = color;
+                            else
+                                m_TextureData[drawy * Stride + Stride + drawx] = color;
+                            drawx = (drawx + 1) % Stride;
+                            drawy = (drawy + 1) % Stride;
                         }
-                        else
+                    }
+                }
+                else if (cellX32 + cellY32 == 32)
+                {
+                    // draw the block split on the top and bottom of the texture.
+                    int blockindex = 0;
+                    for (uint tiley = 0; tiley < 8; tiley++)
+                    {
+                        uint drawy = (cellX32 * 8 + cellY32 * 8 - 8 + tiley) % Stride;
+                        uint drawx = (cellX32 * 8 - cellY32 * 8 - tiley) % Stride;
+                        for (uint tilex = 0; tilex < 8; tilex++)
                         {
-                            m_TextureData[drawy * Stride + Stride + drawx] = m_BlockColors[blockindex++];
+                            uint color = m_BlockColors[blockindex++];
+                            m_TextureData[drawy * Stride + drawx] = color;
+                            if (drawy == 255)
+                                m_TextureData[drawx] = color;
+                            else
+                                m_TextureData[drawy * Stride + Stride + drawx] = color;
+                            drawx = (drawx + 1) % Stride;
+                            drawy = (drawy + 1) % Stride;
                         }
-                        drawx = (drawx + 1) % Stride;
-                        drawy = (drawy + 1) % Stride;
+                    }
+                }
+                else if (cellX32 == cellY32)
+                {
+                    // draw the block split on the left and right side of the texture.
+                    int blockindex = 0;
+                    for (uint tiley = 0; tiley < 8; tiley++)
+                    {
+                        uint drawy = (cellX32 * 8 + cellY32 * 8 - 8 + tiley) % Stride;
+                        uint drawx = (cellX32 * 8 - cellY32 * 8 - tiley) % Stride;
+                        for (uint tilex = 0; tilex < 8; tilex++)
+                        {
+                            uint color = m_BlockColors[blockindex++];
+                            m_TextureData[drawy * Stride + drawx] = color;
+                            m_TextureData[drawy * Stride + Stride + drawx] = color;
+                            drawx = (drawx + 1) % Stride;
+                            drawy = (drawy + 1) % Stride;
+                        }
+                    }
+                }
+                else
+                {
+                    // draw the block normally.
+                    int blockindex = 0;
+                    for (uint tiley = 0; tiley < 8; tiley++)
+                    {
+                        uint drawy = (cellX32 * 8 + cellY32 * 8 - 8 + tiley) % Stride;
+                        uint drawx = (cellX32 * 8 - cellY32 * 8 - tiley) % Stride;
+                        for (uint tilex = 0; tilex < 8; tilex++)
+                        {
+                            uint color = m_BlockColors[blockindex++];
+                            m_TextureData[drawy * Stride + drawx] = color;
+                            m_TextureData[drawy * Stride + Stride + drawx] = color;
+                            drawx = (drawx + 1) % Stride;
+                            drawy = (drawy + 1) % Stride;
+                        }
                     }
                 }
             }
-            else if (cellX32 + cellY32 == 32)
-            {
-                // draw the block split on the top and bottom of the texture.
-                int blockindex = 0;
-                for (uint tiley = 0; tiley < 8; tiley++)
-                {
-                    uint drawy = (cellX32 * 8 + cellY32 * 8 - 8 + tiley) % Stride;
-                    uint drawx = (cellX32 * 8 - cellY32 * 8 - tiley) % Stride;
-                    for (uint tilex = 0; tilex < 8; tilex++)
-                    {
-                        m_TextureData[drawy * Stride + drawx] = m_BlockColors[blockindex];
-                        if (drawy == 255)
-                        {
-                            m_TextureData[drawx] = m_BlockColors[blockindex++];
-                        }
-                        else
-                        {
-                            m_TextureData[drawy * Stride + Stride + drawx] = m_BlockColors[blockindex++];
-                        }
-                        drawx = (drawx + 1) % Stride;
-                        drawy = (drawy + 1) % Stride;
-                    }
-                }
-            }
-            else if (cellX32 == cellY32)
-            {
-                // draw the block split on the left and right side of the texture.
-                int blockindex = 0;
-                for (uint tiley = 0; tiley < 8; tiley++)
-                {
-                    uint drawy = (cellX32 * 8 + cellY32 * 8 - 8 + tiley) % Stride;
-                    uint drawx = (cellX32 * 8 - cellY32 * 8 - tiley) % Stride;
-                    for (uint tilex = 0; tilex < 8; tilex++)
-                    {
-                        m_TextureData[drawy * Stride + drawx] = m_BlockColors[blockindex];
-                        m_TextureData[drawy * Stride + Stride + drawx] = m_BlockColors[blockindex++];
-                        drawx = (drawx + 1) % Stride;
-                        drawy = (drawy + 1) % Stride;
-                    }
-                }
-            }
-            else
-            {
-                // draw the block normally.
-                int blockindex = 0;
-                for (uint tiley = 0; tiley < 8; tiley++)
-                {
-                    uint drawy = (cellX32 * 8 + cellY32 * 8 - 8 + tiley) % Stride;
-                    uint drawx = (cellX32 * 8 - cellY32 * 8 - tiley) % Stride;
-                    for (uint tilex = 0; tilex < 8; tilex++)
-                    {
-                        m_TextureData[drawy * Stride + drawx] = m_BlockColors[blockindex];
-                        m_TextureData[drawy * Stride + Stride + drawx] = m_BlockColors[blockindex++];
-                        drawx = (drawx + 1) % Stride;
-                        drawy = (drawy + 1) % Stride;
-                    }
-                }
-            }
+
+            m_QueuedToDrawBlocks.Clear();
         }
     }
 }

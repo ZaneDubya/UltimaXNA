@@ -44,10 +44,22 @@ namespace UltimaXNA.Ultima.World.Views
                 sbyte z = (sbyte)staticsData[staticDataIndex++];
                 int hue = staticsData[staticDataIndex++] + (staticsData[staticDataIndex++] * 256); // is this used?
 
-                if (z > m_Zs[tile])
+                ItemData data = TileData.ItemData[itemID];
+                int iz = z + data.Height + (data.IsRoof || data.IsSurface ? 1 : 0);
+
+                if ((x * 8 + (tile % 8) == 1480) && (y * 8 + (tile / 8) == 1608))
+                {
+                    if (iz > m_Zs[tile])
+                    {
+                        Colors[tile] = IO.RadarColorData.Colors[itemID + 0x4000];
+                        m_Zs[tile] = (sbyte)iz;
+                    }
+                }
+
+                if (iz > m_Zs[tile])
                 {
                     Colors[tile] = IO.RadarColorData.Colors[itemID + 0x4000];
-                    m_Zs[tile] = z;
+                    m_Zs[tile] = (sbyte)iz;
                 }
             }
         }
