@@ -21,6 +21,7 @@ using UltimaXNA.Ultima.IO.FontsNew;
 using UltimaXNA.Ultima.IO.FontsOld;
 using UltimaXNA.Ultima.Login;
 using UltimaXNA.Ultima.UI;
+using UltimaXNA.Ultima.Audio;
 #endregion
 
 namespace UltimaXNA
@@ -129,6 +130,7 @@ namespace UltimaXNA
             Network = UltimaServices.Register<INetworkClient>(new NetworkClient());
             Input = UltimaServices.Register<InputManager>(new InputManager(Window.Handle));
             UserInterface = UltimaServices.Register<UserInterfaceService>(new UserInterfaceService());
+            UltimaServices.Register<AudioService>(new AudioService());
 
             // Make sure we have a UO installation before loading IO.
             if(FileManager.IsUODataPresent)

@@ -14,6 +14,7 @@ namespace UltimaXNA.Configuration
         private bool m_ShowDataReadBreakdown;
         private bool m_ShowUIOutlines;
         private bool m_LogPackets;
+        private bool m_IsMovementLogged;
 
         public DebugSettings()
         {
@@ -55,6 +56,12 @@ namespace UltimaXNA.Configuration
         {
             get { return m_IsConsoleEnabled; }
             set { SetProperty(ref m_IsConsoleEnabled, value); }
+        }
+
+        public bool IsMovementLogged
+        {
+            get { return m_IsMovementLogged; }
+            set { SetProperty(ref m_IsMovementLogged, value); }
         }
     }
 }
