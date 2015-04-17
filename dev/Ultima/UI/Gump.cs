@@ -11,10 +11,11 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Diagnostics.Tracing;
-
+using UltimaXNA.Ultima.UI.Controls;
 #endregion
 
 namespace UltimaXNA.Ultima.UI
@@ -98,9 +99,17 @@ namespace UltimaXNA.Ultima.UI
 
         public override void ActivateByButton(int buttonID)
         {
-            int[] switchIDs = new int[0];
-            Tuple<short, string>[] textEntries = new Tuple<short,string>[0];
-            m_UserInterface.GumpMenuSelect(Serial, m_GumpID, buttonID, switchIDs, textEntries);
+            int[] switchIDs = new int[0]; // radio buttons and checkboxes
+            List<Tuple<short, string>> textEntries = new List<Tuple<short,string>>();
+            foreach (AControl control in Controls)
+            {
+                if (control is TextEntry)
+                {
+                    textEntries.Add(new Tuple<short, string>((short)control.Serial, (control as TextEntry).Text));
+                }
+            }
+
+            m_UserInterface.GumpMenuSelect(Serial, m_GumpID, buttonID, switchIDs, textEntries.ToArray());
             Dispose();
         }
 
