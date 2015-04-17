@@ -196,9 +196,9 @@ namespace UltimaXNA.Ultima.UI
                 destRectangle.Height = sourceRectangle.Height;
             }
 
-            int hue_if_not_html = Hue;
+            int hue = (Hue < 2) ? 0 : Hue - 2;
 
-            sb.Draw2D(m_Texture, destRectangle, sourceRectangle, hue_if_not_html, false, Transparent);
+            sb.Draw2D(m_Texture, destRectangle, sourceRectangle, hue, true, Transparent);
 
             for (int i = 0; i < Regions.Count; i++)
             {
@@ -212,17 +212,17 @@ namespace UltimaXNA.Ultima.UI
                     // being mouse overed.
                     if (r.HREFAttributes != null)
                     {
-                        int hue = 0;
+                        int linkHue = 0;
                         if (r.Index == m_activeHREF)
                             if (ActiveRegion_UseDownHue)
-                                hue = r.HREFAttributes.DownHue;
+                                linkHue = r.HREFAttributes.DownHue;
                             else
-                                hue = r.HREFAttributes.OverHue;
+                                linkHue = r.HREFAttributes.OverHue;
                         else
-                            hue = r.HREFAttributes.UpHue;
+                            linkHue = r.HREFAttributes.UpHue;
 
                         sb.Draw2D(m_Texture, position,
-                            sourceRect, hue, false, false);
+                            sourceRect, linkHue, false, false);
                     }
                 }
             }
