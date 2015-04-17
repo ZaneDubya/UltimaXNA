@@ -101,7 +101,7 @@ namespace UltimaXNA.Ultima.UI
         {
             int[] switchIDs = new int[0]; // radio buttons and checkboxes
             List<Tuple<short, string>> textEntries = new List<Tuple<short,string>>();
-            foreach (AControl control in Controls)
+            foreach (AControl control in Children)
             {
                 if (control is TextEntry)
                 {
@@ -211,12 +211,12 @@ namespace UltimaXNA.Ultima.UI
                     case "noclose":
                         // NoClose 
                         // Prevents that the gump can be closed by right clicking.
-                        DoesNotCloseOnRightClick = true;
+                        IsUncloseableWithRMB = true;
                         break;
                     case "nodispose":
                         // NoDispose 
                         //Prevents that the gump can be closed by hitting Esc.
-                        DoesNotCloseOnEsc = true;
+                        IsUncloseableWithEsc = true;
                         break;
                     case "nomove":
                         // NoMove
@@ -285,10 +285,10 @@ namespace UltimaXNA.Ultima.UI
         private bool CheckResize()
         {
             bool changedDimensions = false;
-            if (Controls.Count > 0)
+            if (Children.Count > 0)
             {
                 int w = 0, h = 0;
-                foreach (AControl c in Controls)
+                foreach (AControl c in Children)
                 {
                     if (c.Page == 0 || c.Page == ActivePage)
                     {
@@ -315,7 +315,7 @@ namespace UltimaXNA.Ultima.UI
 
         protected string GetTextEntry(int entryID)
         {
-            foreach (AControl c in Controls)
+            foreach (AControl c in Children)
             {
                 if (c.GetType() == typeof(UI.Controls.TextEntry))
                 {

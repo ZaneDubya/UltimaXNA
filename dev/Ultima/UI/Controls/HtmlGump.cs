@@ -220,19 +220,19 @@ namespace UltimaXNA.Ultima.UI.Controls
         int m_hrefClicked = -1;
         int m_hrefOver = -1;
 
-        protected override void mouseDown(int x, int y, MouseButton button)
+        protected override void OnMouseDown(int x, int y, MouseButton button)
         {
             m_clicked = true;
             m_hrefClicked = m_hrefOver;
         }
 
-        protected override void mouseUp(int x, int y, MouseButton button)
+        protected override void OnMouseUp(int x, int y, MouseButton button)
         {
             m_clicked = false;
             m_hrefClicked = -1;
         }
 
-        protected override void mouseClick(int x, int y, MouseButton button)
+        protected override void OnMouseClick(int x, int y, MouseButton button)
         {
             if (m_hrefOver != -1 && m_hrefClicked == m_hrefOver)
             {
@@ -244,7 +244,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        protected override void mouseOver(int x, int y)
+        protected override void OnMouseOver(int x, int y)
         {
 
         }

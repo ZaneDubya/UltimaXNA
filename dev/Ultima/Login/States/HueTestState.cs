@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
+using System.IO;
 
 namespace UltimaXNA.Ultima.Login.States
 {
@@ -121,12 +122,12 @@ namespace UltimaXNA.Ultima.Login.States
                 base.Draw(spriteBatch);
             }
 
-            protected override void mouseOver(int x, int y)
+            protected override void OnMouseOver(int x, int y)
             {
                 OverHue = Hue;
             }
 
-            protected override void mouseOut(int x, int y)
+            protected override void OnMouseOut(int x, int y)
             {
                 OverHue = -1;
             }

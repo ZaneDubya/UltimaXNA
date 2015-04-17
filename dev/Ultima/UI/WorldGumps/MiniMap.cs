@@ -34,10 +34,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 if (m_gump != null)
                     m_gump.Dispose();
                 m_gump = new GumpPic(this, 0, 0, 0, (m_useLargeMap ? 5011 : 5010), 0);
-                m_gump.OnMouseClick = onClickMap;
-                m_gump.OnMouseDoubleClick = onDoubleClickMap;
-                m_gump.MakeDragger(this);
-                m_gump.MakeCloseTarget(this);
+                m_gump.MouseClickEvent = onClickMap;
+                m_gump.MouseDoubleClickEvent = onDoubleClickMap;
                 AddControl(m_gump);
             }
 

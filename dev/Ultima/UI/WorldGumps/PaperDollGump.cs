@@ -56,8 +56,6 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             if (parent == (Mobile)EntityManager.GetPlayerObject())
             {
                 AddControl(new GumpPic(this, 0, 0, 0, 0x07d0, 0));
-                LastControl.MakeDragger(this);
-                LastControl.MakeCloseTarget(this);
 
                 // HELP
                 AddControl(new Button(this, 0, 185, 44 + 27*0, 0x07ef, 0x07f0, ButtonTypes.Activate, 0,
@@ -101,8 +99,6 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             else
             {
                 AddControl(new GumpPic(this, 0, 0, 0, 0x07d1, 0));
-                LastControl.MakeDragger(this);
-                LastControl.MakeCloseTarget(this);
 
                 // Paperdoll
                 AddControl(new PaperDollInteractable(this, 0, 8, 21)

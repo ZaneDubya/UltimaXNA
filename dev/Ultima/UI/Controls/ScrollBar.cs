@@ -158,7 +158,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         public override void Draw(SpriteBatchUI spriteBatch)
         {
-            if (!Visible)
+            if (!IsVisible)
                 return;
 
             // scrollbar background
@@ -192,7 +192,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         float m_timeUntilNextClick;
         const float m_timeBetweenClicks = 0.5f;
 
-        protected override void mouseDown(int x, int y, MouseButton button)
+        protected override void OnMouseDown(int x, int y, MouseButton button)
         {
             m_timeUntilNextClick = 0f;
             if (new Rectangle(0, 0, m_gumpUpButton[0].Width, m_gumpUpButton[0].Height).Contains(new Point(x, y)))
@@ -211,14 +211,14 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        protected override void mouseUp(int x, int y, MouseButton button)
+        protected override void OnMouseUp(int x, int y, MouseButton button)
         {
             m_btnUpClicked = false;
             m_btnDownClicked = false;
             m_btnSliderClicked = false;
         }
 
-        protected override void mouseOver(int x, int y)
+        protected override void OnMouseOver(int x, int y)
         {
             if (m_btnSliderClicked)
             {

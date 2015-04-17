@@ -439,7 +439,6 @@
     <Compile Include="Ultima\UI\LoginGumps\SelectServerGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\TopMenu.cs" />
     <Compile Include="Ultima\UI\AControl.cs" />
-    <Compile Include="Ultima\UI\DropWidget.cs" />
     <Compile Include="Core\Graphics\SpriteBatchUI.cs" />
     <Compile Include="Ultima\UI\Gump.cs" />
     <Compile Include="Ultima\UI\Controls\Button.cs" />

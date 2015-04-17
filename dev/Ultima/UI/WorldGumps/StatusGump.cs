@@ -27,8 +27,6 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
             IsMovable = true;
             AddControl(new GumpPic(this, 0, 0, 0, 0x2A6C, 0));
-            LastControl.MakeDragger(this);
-            LastControl.MakeCloseTarget(this);
 
 
             AddControl(new TextLabelAscii(this, 0, 54, 44, 1, 6, "" + m.Name.ToString()));
@@ -94,7 +92,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 m_RefreshTime = totalMS;
 
                 foreach (AControl c in ControlsToUpdate)
-                    Controls.Remove(c);
+                    Children.Remove(c);
 
                 AddControl(new TextLabelAscii(this, 0, 54, 44, 1, 6, "" + m.Name.ToString()));
                 ControlsToUpdate.Add(LastControl);

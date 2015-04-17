@@ -89,7 +89,6 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
         public CreateCharAppearanceGump()
             : base(0, 0)
         {
-            m_renderFullScreen = false;
             // backdrop
             AddControl(new GumpPicTiled(this, 0, 0, 0, Settings.Game.Resolution.Width, Settings.Game.Resolution.Height, 9274));
             AddControl(new GumpPic(this, 0, 0, 0, 5500, 0));

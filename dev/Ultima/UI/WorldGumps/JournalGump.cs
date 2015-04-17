@@ -29,16 +29,14 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
             AddControl(m_Background = new ExpandableScroll(this, 0, 0, 0, 300));
             m_Background.TitleGumpID = 0x82A;
-            m_Background.MakeDragger(this);
-            m_Background.MakeCloseTarget(this);
 
             AddControl(m_ScrollBar = new ScrollBar(this, 0));
             IsMovable = true;
         }
 
-        public override void Initialize()
+        protected override void OnInitialize()
         {
-            base.Initialize();
+            base.OnInitialize();
 
             m_JournalEntries = new List<RenderedText>();
             InitializeJournalEntries();
@@ -51,14 +49,6 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
             m_ScrollBar.Position = new Point(Width - 45, 35);
             m_ScrollBar.Height = Height - 100;
-            if (m_ScrollBar.MaxValue <= 0)
-                m_ScrollBar.Visible = false;
-            else
-            {
-                if (m_ScrollBar.Value < 0)
-                    m_ScrollBar.Value = 0;
-                m_ScrollBar.Visible = false;
-            }
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)

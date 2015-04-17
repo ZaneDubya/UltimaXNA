@@ -107,18 +107,18 @@ namespace UltimaXNA.Ultima.UI.Controls
         bool m_clicked = false;
         Point m_clickPosition;
 
-        protected override void mouseDown(int x, int y, MouseButton button)
+        protected override void OnMouseDown(int x, int y, MouseButton button)
         {
             m_clicked = true;
             m_clickPosition = new Point(x, y);
         }
 
-        protected override void mouseUp(int x, int y, MouseButton button)
+        protected override void OnMouseUp(int x, int y, MouseButton button)
         {
             m_clicked = false;
         }
 
-        protected override void mouseOver(int x, int y)
+        protected override void OnMouseOver(int x, int y)
         {
             if (m_clicked)
             {

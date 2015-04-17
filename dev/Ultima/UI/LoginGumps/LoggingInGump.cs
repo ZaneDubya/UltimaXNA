@@ -29,7 +29,6 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             : base(0, 0)
         {
             int hue = 2017;
-            m_renderFullScreen = false;
             // backdrop
             AddControl(new GumpPicTiled(this, 0, 0, 0, Settings.Game.Resolution.Width, Settings.Game.Resolution.Height, 9274));
             AddControl(new GumpPic(this, 0, 0, 0, 5500, 0));

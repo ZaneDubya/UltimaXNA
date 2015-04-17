@@ -26,7 +26,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             : base(owner, page)
         {
             m_bgGumps = new Texture2D[9];
-            HandlesMouseInput = true;
+            MakeThisADragger();
         }
 
         public ResizePic(AControl owner, int page, string[] arguements)
@@ -55,7 +55,6 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         void buildGumpling(int x, int y, int gumpID, int width, int height)
         {
-            MakeDragger(m_owner);
             Position = new Point(x, y);
             Size = new Point(width, height);
             GumpID = gumpID;
@@ -96,12 +95,12 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Draw(spriteBatch);
         }
 
-        protected override void mouseClick(int x, int y, MouseButton button)
+        protected override void OnMouseClick(int x, int y, MouseButton button)
         {
             if (button == MouseButton.Right)
             {
                 if (CloseOnRightClick)
-                    m_owner.Dispose();
+                    m_Owner.Dispose();
             }
         }
     }

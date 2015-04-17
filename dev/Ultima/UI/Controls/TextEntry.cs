@@ -144,7 +144,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Draw(spriteBatch);
         }
 
-        protected override void keyboardInput(InputEventKeyboard e)
+        protected override void OnKeyboardInput(InputEventKeyboard e)
         {
             switch (e.KeyCode)
             {
@@ -163,10 +163,10 @@ namespace UltimaXNA.Ultima.UI.Controls
                     }
                     break;
                 case WinKeys.Tab:
-                    m_owner.KeyboardTabToNextFocus(this);
+                    m_Owner.KeyboardTabToNextFocus(this);
                     break;
                 case WinKeys.Enter:
-                    m_owner.ActivateByKeyboardReturn(EntryID, Text);
+                    m_Owner.ActivateByKeyboardReturn(EntryID, Text);
                     break;
                 default:
                     if (e.IsChar)

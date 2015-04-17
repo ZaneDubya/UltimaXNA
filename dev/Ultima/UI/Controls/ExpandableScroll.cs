@@ -38,21 +38,22 @@ namespace UltimaXNA.Ultima.UI.Controls
         public ExpandableScroll(AControl owner, int page, int x, int y, int height)
             : base(0, 0)
         {
-            m_owner = owner;
+            m_Owner = owner;
             Position = new Point(x, y);
             m_expandableScrollHeight = height;
+            MakeThisADragger();
         }
 
-        public override void Initialize()
+        protected override void OnInitialize()
         {
             m_gumplingTop = (GumpPic)AddControl(new GumpPic(this, 0, 0, 0, 0x0820, 0));
             m_gumplingMiddle = (GumpPicTiled)AddControl(new GumpPicTiled(this, 0, 0, 0, 0, 0, 0x0822));
             m_gumplingBottom = (GumpPic)AddControl(new GumpPic(this, 0, 0, 0, 0x0823, 0));
             m_gumplingExpander = (Button)AddControl(new Button(this, 0, 0, 0, 0x082E, 0x82F, ButtonTypes.Activate, 0, gumplingExpander_ButtonID));
             
-            m_gumplingExpander.OnMouseDown = expander_OnMouseDown;
-            m_gumplingExpander.OnMouseUp = expander_OnMouseUp;
-            m_gumplingExpander.OnMouseOver = expander_OnMouseOver;
+            m_gumplingExpander.MouseDownEvent = expander_OnMouseDown;
+            m_gumplingExpander.MouseUpEvent = expander_OnMouseUp;
+            m_gumplingExpander.MouseOverEvent = expander_OnMouseOver;
         }
 
         protected override bool InternalHitTest(int x, int y)
@@ -86,11 +87,11 @@ namespace UltimaXNA.Ultima.UI.Controls
 
             if (!m_gumplingTop.IsInitialized)
             {
-                Visible = false;
+                IsVisible = false;
             }
             else 
             {
-                Visible = true;
+                IsVisible = true;
                 m_gumplingTop.X = 0;
                 m_gumplingTop.Y = 0;
 

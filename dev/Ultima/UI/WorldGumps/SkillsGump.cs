@@ -29,9 +29,6 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
             AddControl(m_scroll = new ExpandableScroll(this, 0, 0, 0, 200));
             m_scroll.TitleGumpID = 0x834;
-            m_scroll.MakeDragger(this);
-            m_scroll.MakeCloseTarget(this);
-            IsMovable = true;
 
             AddControl(m_list = new HtmlGump(this, 0, 10, 20, 180, 100, 0, 1, ""));
         }

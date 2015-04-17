@@ -121,9 +121,9 @@ namespace UltimaXNA.Ultima.UI
                     for (int i = m_Controls.Count - 1; i >= 0; i--)
                     {
                         AControl c = m_Controls[i];
-                        if (!c.IsDisposed && c.Visible && c.Enabled && c.HandlesKeyboardFocus)
+                        if (!c.IsDisposed && c.IsVisible && c.IsEnabled && c.HandlesKeyboardFocus)
                         {
-                            m_keyboardFocusControl = c.KeyboardFocusControl;
+                            m_keyboardFocusControl = c.FindControlThatAcceptsKeyboardFocus();
                             if (m_keyboardFocusControl != null)
                                 break;
                         }
@@ -240,7 +240,7 @@ namespace UltimaXNA.Ultima.UI
             foreach (AControl c in m_Controls)
             {
                 if (!c.IsInitialized)
-                    c.ControlInitialize();
+                    c.Initialize();
                 c.Update(totalMS, frameMS);
             }
 

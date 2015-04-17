@@ -38,7 +38,6 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_TextEntries = new List<ChatLineTimed>();
             m_MessageHistory = new List<string>();
             Width = 400;
-            Enabled = true;
 
             m_Input = UltimaServices.GetService<InputManager>();
             m_UserInterface = UltimaServices.GetService<GUIManager>();
