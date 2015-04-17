@@ -8,7 +8,6 @@ float lightIntensity;
 
 const float HuesPerTexture = 2048;
 const float ToGrayScale = 3;
-const float minimapTransparentColor = 8.0f / 255.0f;
 
 sampler DrawSampler : register(s0);
 sampler HueSampler0 : register(s1);
@@ -104,9 +103,7 @@ float4 PixelShader_MiniMap(PS_INPUT IN) : COLOR0
 {
 	// Get the initial pixel and discard it if the alpha == 0
 	float4 color = tex2D(DrawSampler, IN.TexCoord);
-	if ((color.r == minimapTransparentColor) &&
-		(color.g == minimapTransparentColor) &&
-		(color.b == minimapTransparentColor))
+	if ((color.r == 1) && (color.g == 0) && (color.b == 1))
 	{
 		color = tex2D(MiniMapSampler, IN.Normal);
 	}

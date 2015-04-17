@@ -47,7 +47,7 @@ namespace UltimaXNA.Ultima.World.Gumps
                 {
                     m_GumpTexture = null;
                 }
-                m_GumpTexture = IO.GumpData.GetGumpXNA((m_useLargeMap ? 5011 : 5010));
+                m_GumpTexture = IO.GumpData.GetGumpXNA((m_useLargeMap ? 5011 : 5010), true);
                 Size = new Point(m_GumpTexture.Width, m_GumpTexture.Height);
             }
 
