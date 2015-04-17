@@ -25,7 +25,7 @@ namespace UltimaXNA.Ultima.UI
     /// </summary>
     public class Gump : AControl
     {
-        public virtual bool IsMovable
+        public override bool IsMovable
         {
             get
             {
@@ -99,18 +99,28 @@ namespace UltimaXNA.Ultima.UI
 
         public override void ActivateByButton(int buttonID)
         {
-            int[] switchIDs = new int[0]; // radio buttons and checkboxes
-            List<Tuple<short, string>> textEntries = new List<Tuple<short,string>>();
-            foreach (AControl control in Children)
+            if (Serial != 0)
             {
-                if (control is TextEntry)
+                if (buttonID == 0) // cancel
                 {
-                    textEntries.Add(new Tuple<short, string>((short)control.Serial, (control as TextEntry).Text));
+                    m_UserInterface.GumpMenuSelect(Serial, m_GumpID, buttonID, null, null);
                 }
-            }
+                else
+                {
+                    int[] switchIDs = new int[0]; // radio buttons and checkboxes
+                    List<Tuple<short, string>> textEntries = new List<Tuple<short, string>>();
+                    foreach (AControl control in Children)
+                    {
+                        if (control is TextEntry)
+                        {
+                            textEntries.Add(new Tuple<short, string>((short)control.Serial, (control as TextEntry).Text));
+                        }
+                    }
 
-            m_UserInterface.GumpMenuSelect(Serial, m_GumpID, buttonID, switchIDs, textEntries.ToArray());
-            Dispose();
+                    m_UserInterface.GumpMenuSelect(Serial, m_GumpID, buttonID, switchIDs, textEntries.ToArray());
+                }
+                Dispose();
+            }
         }
 
         public override void ChangePage(int pageIndex)
@@ -180,7 +190,6 @@ namespace UltimaXNA.Ultima.UI
                         // ResizePic [x] [y] [gump-id] [width] [height]
                         // Similar to GumpPic but the pic is automatically resized to the given [width] and [height].
                         AddControl(new Controls.ResizePic(this, currentGUMPPage, gumpParams));
-                        ((Controls.ResizePic)LastControl).CloseOnRightClick = true;
                         break;
                     case "text":
                         // Text [x] [y] [color] [text-id]

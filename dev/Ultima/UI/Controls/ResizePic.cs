@@ -18,7 +18,6 @@ namespace UltimaXNA.Ultima.UI.Controls
 {
     public class ResizePic : AControl
     {
-        public bool CloseOnRightClick = false;
         Texture2D[] m_bgGumps = null;
         int GumpID = 0;
 
@@ -93,15 +92,6 @@ namespace UltimaXNA.Ultima.UI.Controls
             spriteBatch.Draw2D(m_bgGumps[8], new Point(X + Width - m_bgGumps[2].Width, line3Y), 0, false, false);
 
             base.Draw(spriteBatch);
-        }
-
-        protected override void OnMouseClick(int x, int y, MouseButton button)
-        {
-            if (button == MouseButton.Right)
-            {
-                if (CloseOnRightClick)
-                    m_Owner.Dispose();
-            }
         }
     }
 }

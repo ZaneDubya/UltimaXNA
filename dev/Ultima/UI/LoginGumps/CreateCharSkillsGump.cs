@@ -119,6 +119,8 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             // quit button
             AddControl(new Button(this, 0, 554, 2, 5513, 5515, ButtonTypes.Activate, 0, (int)Buttons.QuitButton));
             ((Button)LastControl).GumpOverID = 5514;
+
+            IsUncloseableWithRMB = true;
         }
 
         public override void Update(double totalMS, double frameMS)

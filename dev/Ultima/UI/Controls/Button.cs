@@ -166,12 +166,14 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         protected override void OnMouseDown(int x, int y, MouseButton button)
         {
-            m_clicked = true;
+            if (button == MouseButton.Left)
+                m_clicked = true;
         }
 
         protected override void OnMouseUp(int x, int y, MouseButton button)
         {
-            m_clicked = false;
+            if (button == MouseButton.Left)
+                m_clicked = false;
         }
 
         protected override void OnMouseClick(int x, int y, MouseButton button)

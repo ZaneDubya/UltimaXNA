@@ -42,6 +42,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_Input = UltimaServices.GetService<InputManager>();
             m_UserInterface = UltimaServices.GetService<GUIManager>();
             m_World = UltimaServices.GetService<WorldModel>();
+
+            IsUncloseableWithRMB = true;
         }
 
         public override void Update(double totalMS, double frameMS)

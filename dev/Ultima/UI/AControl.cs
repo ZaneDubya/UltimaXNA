@@ -583,13 +583,25 @@ namespace UltimaXNA.Ultima.UI
 
         private void CloseWithRightMouseButton()
         {
-            if (!IsUncloseableWithRMB)
+            if (IsUncloseableWithRMB)
+                return;
+            AControl parent = m_Owner;
+            while (parent != null)
             {
-                if (m_Owner == null)
-                    Dispose();
-                else
-                    m_Owner.CloseWithRightMouseButton();
+                if (parent.IsUncloseableWithRMB)
+                    return;
+                parent = parent.m_Owner;
             }
+
+            // send cancel message for server gump
+            if (Serial != 0)
+                ActivateByButton(0);
+
+            // dispose of this, or owner, if it has one, which will close this as a child.
+            if (m_Owner == null)
+                Dispose();
+            else
+                m_Owner.CloseWithRightMouseButton();
         }
 
         public AControl[] HitTest(Point position, bool alwaysHandleMouseInput)

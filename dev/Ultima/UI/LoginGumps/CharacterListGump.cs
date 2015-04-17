@@ -70,6 +70,8 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             // center message window backdrop
             AddControl(new ResizePic(this, 2, 116, 95, 2600, 408, 288));
             AddControl(new TextLabelAscii(this, 2, 166, 143, 2017, 2, IO.StringData.Entry(3000001)));
+
+            IsUncloseableWithRMB = true;
         }
 
         public void ReloadCharList()

@@ -82,6 +82,8 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             AddControl(new TextLabelAscii(this, 9, 166, 143, hue, 2, IO.StringData.Entry(3000003)));
             AddControl(new Button(this, 9, 305, 342, 1150, 1152, ButtonTypes.Activate, 0, (int)LoggingInGumpButtons.CancelLoginButton));
             ((Button)LastControl).GumpOverID = 1151;
+
+            IsUncloseableWithRMB = true;
         }
 
         public override void ActivateByButton(int buttonID)

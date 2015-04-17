@@ -121,11 +121,6 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Draw(spriteBatch);
         }
 
-        public override void ActivateByButton(int buttonID)
-        {
-            // this is necessary to override the default behavior for buttons, which is to send a msg to the server.
-        }
-
         void expander_OnMouseDown(int x, int y, MouseButton button)
         {
             y += m_gumplingExpander.Y + OwnerY;

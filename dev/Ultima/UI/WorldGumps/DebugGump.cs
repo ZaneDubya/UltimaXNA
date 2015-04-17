@@ -37,11 +37,6 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_html = (HtmlGump)AddControl(new HtmlGump(this, 1, 4, 16, width - 8, 230, 0, 0, ""));
         }
 
-        public override void ActivateByButton(int buttonID)
-        {
-            // IO.AnimEncode.SaveData(59, "animdata");
-            // IO.AnimEncode.TransformData(59, "animdata");
-        }
 
         public override void Update(double totalMS, double frameMS)
         {

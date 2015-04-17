@@ -52,6 +52,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
             m_UserInterface = UltimaServices.GetService<GUIManager>();
             m_World = UltimaServices.GetService<WorldModel>();
+
+            IsUncloseableWithRMB = true;
         }
 
         public override void ActivateByButton(int buttonID)
