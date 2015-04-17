@@ -35,7 +35,7 @@ namespace UltimaXNA.Ultima.IO
         {
             if (m_Table[index] == null)
             {
-                Tracer.Warn("Missing cliloc with index {0}. Client version is lower than expected by RunUO.", index);
+                Tracer.Warn("Missing cliloc with index {0}. Client version is lower than expected by Server.", index);
                 return string.Format("<Error : Cliloc Entry {0} not found.>", index);
             }
             else
