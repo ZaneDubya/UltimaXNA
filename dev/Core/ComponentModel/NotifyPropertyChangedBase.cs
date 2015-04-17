@@ -1,11 +1,13 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Web.Script.Serialization;
 using System;
 
 namespace UltimaXNA.Core.ComponentModel
 {
     public abstract class NotifyPropertyChangedBase
     {
+        [ScriptIgnore]
         public EventHandler PropertyChanged;
 
         public virtual bool SetProperty<T>(ref T storage, T value)
