@@ -105,7 +105,7 @@ namespace UltimaXNA.Ultima.EntityViews
             m_vertexBufferAlternate[2].Normal = m_Normals[2];
             m_vertexBufferAlternate[3].Normal = m_Normals[3];
 
-            Vector2 hue = Utility.GetHueVector(Entity.Hue);
+            Vector3 hue = Utility.GetHueVector(Entity.Hue);
             if (m_vertexBufferAlternate[0].Hue != hue)
             {
                 m_vertexBufferAlternate[0].Hue =

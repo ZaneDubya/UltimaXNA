@@ -160,16 +160,16 @@ namespace UltimaXNA.Ultima.UI.Controls
                 return;
 
             // up button
-            spriteBatch.Draw2D(m_btnUpClicked ? m_gumpUpButton[1] : m_gumpUpButton[0], new Point(X, Y), 0, false, false);
+            spriteBatch.Draw2D(m_btnUpClicked ? m_gumpUpButton[1] : m_gumpUpButton[0], new Vector3(X, Y, 0), Vector3.Zero);
             // scrollbar background
-            spriteBatch.Draw2D(m_gumpBackground[0], new Point(X, Y + m_gumpUpButton[0].Height), 0, false, false);
+            spriteBatch.Draw2D(m_gumpBackground[0], new Vector3(X, Y + m_gumpUpButton[0].Height, 0), Vector3.Zero);
             int middlewidth = BarHeight - m_gumpUpButton[0].Height - m_gumpDownButton[0].Height - m_gumpBackground[0].Height - m_gumpBackground[2].Height;
-            spriteBatch.Draw2DTiled(m_gumpBackground[1], new Rectangle(X, Y + m_gumpUpButton[0].Height + m_gumpBackground[0].Height, m_gumpBackground[0].Width, middlewidth), 0, false, false);
-            spriteBatch.Draw2D(m_gumpBackground[2], new Point(X, Y + BarHeight - m_gumpDownButton[0].Height - m_gumpBackground[2].Height), 0, false, false);
+            spriteBatch.Draw2DTiled(m_gumpBackground[1], new Rectangle(X, Y + m_gumpUpButton[0].Height + m_gumpBackground[0].Height, m_gumpBackground[0].Width, middlewidth), Vector3.Zero);
+            spriteBatch.Draw2D(m_gumpBackground[2], new Vector3(X, Y + BarHeight - m_gumpDownButton[0].Height - m_gumpBackground[2].Height, 0), Vector3.Zero);
             // down button
-            spriteBatch.Draw2D(m_btnDownClicked ? m_gumpDownButton[1] : m_gumpDownButton[0], new Point(X, Y + Height - m_gumpDownButton[0].Height), 0, false, false);
+            spriteBatch.Draw2D(m_btnDownClicked ? m_gumpDownButton[1] : m_gumpDownButton[0], new Vector3(X, Y + Height - m_gumpDownButton[0].Height, 0), Vector3.Zero);
             // slider
-            spriteBatch.Draw2D(m_gumpSlider, new Point(X + (m_gumpBackground[0].Width - m_gumpSlider.Width) / 2, Y + m_gumpUpButton[0].Height + 1 + (int)m_SliderPosition), 0, false, false);
+            spriteBatch.Draw2D(m_gumpSlider, new Vector3(X + (m_gumpBackground[0].Width - m_gumpSlider.Width) / 2, Y + m_gumpUpButton[0].Height + 1 + (int)m_SliderPosition, 0), Vector3.Zero);
             base.Draw(spriteBatch);
         }
 

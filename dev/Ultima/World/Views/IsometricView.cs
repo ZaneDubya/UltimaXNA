@@ -241,8 +241,7 @@ namespace UltimaXNA.Ultima.World.Views
             mousePick.UpdateOverEntities(overList, m_Input.MousePosition);
 
             // Draw the objects we just send to the spritebatch.
-            m_spriteBatch.Prepare(true, true);
-            m_spriteBatch.Flush();
+            m_spriteBatch.Flush(true);
         }
 
         private void recalculateLightning()

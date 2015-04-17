@@ -137,6 +137,7 @@
     <Compile Include="Core\Diagnostics\Tracing\Listeners\AEventListener.cs" />
     <Compile Include="Core\DpiManager.cs" />
     <Compile Include="Core\Extensions\StringExtensions.cs" />
+    <Compile Include="Core\Graphics\Techniques.cs" />
     <Compile Include="Core\Network\INetworkClient.cs" />
     <Compile Include="Core\Patterns\IModule.cs" />
     <Compile Include="UltimaServices.cs" />
@@ -482,7 +483,8 @@
     <Compile Include="Ultima\Login\States\StateManager.cs" />
     <Compile Include="Ultima\Login\States\LoginState.cs" />
     <Compile Include="Ultima\Serial.cs" />
-    <Compile Include="Ultima\World\Views\MiniMapView.cs" />
+    <Compile Include="Ultima\World\Views\MiniMapBlock.cs" />
+    <Compile Include="Ultima\World\Views\MiniMapTexture.cs" />
     <Compile Include="Ultima\World\Maps\Map.cs" />
     <Compile Include="Core\Graphics\SpriteBatch3D.cs" />
     <Compile Include="Core\Graphics\VertexPositionNormalTextureHue.cs" />

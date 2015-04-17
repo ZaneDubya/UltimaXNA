@@ -62,7 +62,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         public override void Draw(SpriteBatchUI spriteBatch)
         {
-            spriteBatch.Draw2DTiled(m_bgGump, new Rectangle(X, Y, Area.Width, Area.Height), 0, false, false);
+            spriteBatch.Draw2DTiled(m_bgGump, new Rectangle(X, Y, Area.Width, Area.Height), Vector3.Zero);
             base.Draw(spriteBatch);
         }
     }

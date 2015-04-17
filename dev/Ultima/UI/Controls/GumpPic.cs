@@ -75,8 +75,8 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         public override void Draw(SpriteBatchUI spriteBatch)
         {
-            bool hueOnlyGreyPixels = (m_hue & 0x8000) == 0x8000;
-            spriteBatch.Draw2D(m_texture, Position, m_hue & 0x7FFF, hueOnlyGreyPixels, false);
+            Vector3 hueVector = Utility.GetHueVector(m_hue);
+            spriteBatch.Draw2D(m_texture, new Vector3(X, Y, 0), hueVector);
             base.Draw(spriteBatch);
         }
 

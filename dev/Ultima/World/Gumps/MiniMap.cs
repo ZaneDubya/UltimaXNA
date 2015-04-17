@@ -8,39 +8,47 @@
  *
  ***************************************************************************/
 #region usings
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Ultima.Entities;
 using UltimaXNA.Ultima.UI;
-using UltimaXNA.Ultima.UI.Controls;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Gumps
 {
     class MiniMap : Gump
     {
-        GumpPic m_gump;
         bool m_useLargeMap = false;
+        WorldModel m_World;
+        Texture2D m_GumpTexture;
+        Texture2D m_PlayerIndicator;
 
         public MiniMap()
             : base(0, 0)
         {
+            m_World = UltimaServices.GetService<WorldModel>();
+
             m_useLargeMap = EngineVars.MiniMap_LargeFormat;
+
             IsMovable = true;
+            MakeCloseTarget(this);
+            MakeDragger(this);
         }
 
         public override void Update(double totalMS, double frameMS)
         {
-            if (m_gump == null || m_useLargeMap != EngineVars.MiniMap_LargeFormat)
+            if (m_GumpTexture == null || m_useLargeMap != EngineVars.MiniMap_LargeFormat)
             {
                 m_useLargeMap = EngineVars.MiniMap_LargeFormat;
-                if (m_gump != null)
-                    m_gump.Dispose();
-                m_gump = new GumpPic(this, 0, 0, 0, (m_useLargeMap ? 5011 : 5010), 0);
-                m_gump.OnMouseClick = onClickMap;
-                m_gump.OnMouseDoubleClick = onDoubleClickMap;
-                m_gump.MakeDragger(this);
-                m_gump.MakeCloseTarget(this);
-                AddControl(m_gump);
+                if (m_GumpTexture != null)
+                {
+                    m_GumpTexture = null;
+                }
+                m_GumpTexture = IO.GumpData.GetGumpXNA((m_useLargeMap ? 5011 : 5010), true);
+                Size = new Point(m_GumpTexture.Width, m_GumpTexture.Height);
             }
 
             base.Update(totalMS, frameMS);
@@ -48,15 +56,35 @@ namespace UltimaXNA.Ultima.World.Gumps
 
         public override void Draw(SpriteBatchUI spriteBatch)
         {
-            base.Draw(spriteBatch);
+            AEntity player = EntityManager.GetPlayerObject();
+            float x = (float)Math.Round((player.Position.X % 256) + player.Position.X_offset) / 256f;
+            float y = (float)Math.Round((player.Position.Y % 256) + player.Position.Y_offset) / 256f;
+            Vector3 playerPosition = new Vector3(x - y, x + y, 0f);
+            float minimapU = (m_GumpTexture.Width / 256f) / 2f;
+            float minimapV = (m_GumpTexture.Height / 256f) / 2f;
+
+            VertexPositionNormalTextureHue[] v = new VertexPositionNormalTextureHue[4]
+            {
+                new VertexPositionNormalTextureHue(new Vector3(X, Y, 0), playerPosition + new Vector3(-minimapU, -minimapV, 0), new Vector3(0, 0, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(X + Size.X, Y, 0), playerPosition + new Vector3(minimapU, -minimapV, 0), new Vector3(1, 0, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(X, Y + Size.Y, 0), playerPosition + new Vector3(-minimapU, minimapV, 0), new Vector3(0, 1, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(X + Size.X, Y + Size.Y, 0), playerPosition + new Vector3(minimapU, minimapV, 0), new Vector3(1, 1, 0))
+            };
+
+            spriteBatch.Draw(m_GumpTexture, v, Techniques.MiniMap);
+
+            if (UltimaEngine.TotalMS % 500f < 250f)
+            {
+                if (m_PlayerIndicator == null)
+                {
+                    m_PlayerIndicator = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
+                    m_PlayerIndicator.SetData<uint>(new uint[1] { 0xFFFFFFFF });
+                }
+                spriteBatch.Draw2D(m_PlayerIndicator, new Vector3(X + Size.X / 2, Y + Size.Y / 2 - 8, 0), Vector3.Zero);
+            }
         }
 
-        void onClickMap(int x, int y, MouseButton button)
-        {
-
-        }
-
-        void onDoubleClickMap(int x, int y, MouseButton button)
+        protected override void mouseDoubleClick(int x, int y, MouseButton button)
         {
             if (button == MouseButton.Left)
             {
