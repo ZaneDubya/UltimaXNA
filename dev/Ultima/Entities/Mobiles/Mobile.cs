@@ -9,6 +9,7 @@
  ***************************************************************************/
 #region usings
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using UltimaXNA.Ultima.World;
@@ -186,18 +187,37 @@ namespace UltimaXNA.Ultima.Entities.Mobiles
         // Appearance and Hues
         // ============================================================
 
+        private static int[] s_HumanoidBodyIDs = new int[] { 
+            183, 184, 185, 186, // savages
+            400, 401, 402, 403, // humans
+            694, 695,
+            744, 745,
+            750, 751,
+            987, 988, 990, 991,
+            994,
+            605, 606, 607, 608, // elves
+            666, 667 // gargoyles. 666. Clever.
+        };
+
+        public bool IsHumanoid
+        {
+            get;
+            private set;
+        }
+
         int m_bodyID = 0;
         public int BodyID
         {
             get
             {
-                if (m_bodyID >= 402 && m_bodyID <= 403)
+                if (m_bodyID >= 402 && m_bodyID <= 403) // 402 == 400 and 403 == 401
                     return m_bodyID - 2;
                 return m_bodyID;
             }
             set
             {
                 m_bodyID = value;
+                IsHumanoid = (s_HumanoidBodyIDs.Contains(m_bodyID));
                 tickUpdateTicker();
             }
         }

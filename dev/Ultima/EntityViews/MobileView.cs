@@ -161,25 +161,32 @@ namespace UltimaXNA.Ultima.EntityViews
         {
             ClearLayers();
 
-            int[] drawLayers = m_DrawLayerOrder;
-            bool hasOuterTorso = Entity.Equipment[(int)EquipLayer.OuterTorso] != null && Entity.Equipment[(int)EquipLayer.OuterTorso].ItemData.AnimID != 0;
-
-            for (int i = 0; i < drawLayers.Length; i++)
+            if (Entity.IsHumanoid)
             {
-                // when wearing something on the outer torso the other torso stuff is not drawn
-                if (hasOuterTorso && (drawLayers[i] == (int)EquipLayer.InnerTorso || drawLayers[i] == (int)EquipLayer.MiddleTorso))
-                {
-                    continue;
-                }
+                int[] drawLayers = m_DrawLayerOrder;
+                bool hasOuterTorso = Entity.Equipment[(int)EquipLayer.OuterTorso] != null && Entity.Equipment[(int)EquipLayer.OuterTorso].ItemData.AnimID != 0;
 
-                if (drawLayers[i] == (int)EquipLayer.Body)
+                for (int i = 0; i < drawLayers.Length; i++)
                 {
-                    AddLayer(Entity.BodyID, Entity.Hue);
+                    // when wearing something on the outer torso the other torso stuff is not drawn
+                    if (hasOuterTorso && (drawLayers[i] == (int)EquipLayer.InnerTorso || drawLayers[i] == (int)EquipLayer.MiddleTorso))
+                    {
+                        continue;
+                    }
+
+                    if (drawLayers[i] == (int)EquipLayer.Body)
+                    {
+                        AddLayer(Entity.BodyID, Entity.Hue);
+                    }
+                    else if (Entity.Equipment[drawLayers[i]] != null && Entity.Equipment[drawLayers[i]].ItemData.AnimID != 0)
+                    {
+                        AddLayer(Entity.Equipment[drawLayers[i]].ItemData.AnimID, Entity.Equipment[drawLayers[i]].Hue);
+                    }
                 }
-                else if (Entity.Equipment[drawLayers[i]] != null && Entity.Equipment[drawLayers[i]].ItemData.AnimID != 0)
-                {
-                    AddLayer(Entity.Equipment[drawLayers[i]].ItemData.AnimID, Entity.Equipment[drawLayers[i]].Hue);
-                }
+            }
+            else
+            {
+                AddLayer(Entity.BodyID, Entity.Hue);
             }
         }
 
