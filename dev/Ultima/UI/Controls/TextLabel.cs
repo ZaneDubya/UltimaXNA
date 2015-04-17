@@ -75,7 +75,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         void buildGumpling(int x, int y, int hue, string text)
         {
             Position = new Point(x, y);
-            Text = text;
+            Text = string.Format("{0}{1}", (hue == 0 ? string.Empty : "<outline>"), text);
             m_textRenderer.Hue = hue;
         }
 
