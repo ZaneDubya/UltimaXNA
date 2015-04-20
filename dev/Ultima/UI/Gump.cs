@@ -107,7 +107,14 @@ namespace UltimaXNA.Ultima.UI
                 }
                 else
                 {
-                    int[] switchIDs = new int[0]; // radio buttons and checkboxes
+                    List<int> switchIDs = new List<int>();
+                    foreach (AControl control in Children)
+                    {
+                        if (control is CheckBox && (control as CheckBox).IsChecked)
+                            switchIDs.Add(control.Serial);
+                        else if (control is RadioButton && (control as RadioButton).IsChecked)
+                            switchIDs.Add(control.Serial);
+                    }
                     List<Tuple<short, string>> textEntries = new List<Tuple<short, string>>();
                     foreach (AControl control in Children)
                     {
@@ -117,7 +124,7 @@ namespace UltimaXNA.Ultima.UI
                         }
                     }
 
-                    m_UserInterface.GumpMenuSelect(Serial, m_GumpID, buttonID, switchIDs, textEntries.ToArray());
+                    m_UserInterface.GumpMenuSelect(Serial, m_GumpID, buttonID, switchIDs.ToArray(), textEntries.ToArray());
                 }
                 Dispose();
             }
@@ -132,6 +139,7 @@ namespace UltimaXNA.Ultima.UI
         private void BuildGump(string[] gumpPieces, string[] gumpLines)
         {
             int currentGUMPPage = 0;
+            int currentRadioGroup = 0;
 
             for (int i = 0; i < gumpPieces.Length; i++)
             {
@@ -235,17 +243,17 @@ namespace UltimaXNA.Ultima.UI
                     case "group":
                         // Group [Number]
                         // Links radio buttons to a group. Add this before radiobuttons to do so. See also endgroup.
-                        Tracer.Warn(string.Format("GUMP: Unhandled {0}.", gumpParams[0]));
+                        currentRadioGroup++;
                         break;
                     case "endgroup":
                         // EndGroup
-                        //  Links radio buttons to a group. Add this before radiobuttons to do so. See also endgroup. 
-                        Tracer.Warn(string.Format("GUMP: Unhandled {0}.", gumpParams[0]));
+                        //  Links radio buttons to a group. Add this after radiobuttons to do so. See also group. 
+                        currentRadioGroup++;
                         break;
                     case "radio":
                         // Radio [x] [y] [released-id] [pressed-id] [status] [return-value]
                         // Same as Checkbox, but only one Radiobutton can be pressed at the same time, and they are linked via the 'Group' command.
-                        Tracer.Warn(string.Format("GUMP: Unhandled {0}.", gumpParams[0]));
+                        AddControl(new Controls.RadioButton(this, currentGUMPPage, currentRadioGroup, gumpParams, gumpLines));
                         break;
                     case "checkbox":
                         // CheckBox [x] [y] [released-id] [pressed-id] [status] [return-value]

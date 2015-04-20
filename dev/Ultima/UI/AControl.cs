@@ -228,7 +228,7 @@ namespace UltimaXNA.Ultima.UI
         public AControl Owner { get { return m_Owner; } }
 
         private List<AControl> m_Children = null;
-        protected List<AControl> Children
+        public List<AControl> Children
         {
             get
             {
