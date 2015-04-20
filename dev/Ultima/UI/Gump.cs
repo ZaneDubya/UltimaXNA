@@ -251,7 +251,7 @@ namespace UltimaXNA.Ultima.UI
                         // CheckBox [x] [y] [released-id] [pressed-id] [status] [return-value]
                         // Adds a CheckBox to the gump. Multiple CheckBoxes can be pressed at the same time.
                         // Check the [return-value] if you want to know which CheckBoxes were selected.
-                        Tracer.Warn(string.Format("GUMP: Unhandled {0}.", gumpParams[0]));
+                        AddControl(new Controls.CheckBox(this, currentGUMPPage, gumpParams, gumpLines));
                         break;
                     case "xmfhtmlgump":
                         // XmfHtmlGump [x] [y] [width] [height] [cliloc-nr] [background] [scrollbar]
