@@ -65,14 +65,14 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         RenderedText m_Texture;
 
-        GUIManager m_UserInterface;
+        UserInterfaceService m_UserInterface;
 
         public Button(AControl owner, int page)
             : base(owner, page)
         {
             HandlesMouseInput = true;
 
-            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
         }
 
         public Button(AControl owner, int page, string[] arguements)
@@ -129,7 +129,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             if (Caption != string.Empty)
                 m_Texture.Text = Caption;
 
-            spriteBatch.Draw2D(texture, new Rectangle(X, Y, Width, Height), 0, false, false);
+            spriteBatch.Draw2D(texture, new Rectangle(X, Y, Width, Height), Vector3.Zero);
 
             if (Caption != string.Empty)
             {

@@ -58,11 +58,11 @@ namespace UltimaXNA.Ultima.UI
             protected set;
         }
 
-        private GUIManager m_UserInterface;
+        private UserInterfaceService m_UserInterface;
 
         public UltimaCursor()
         {
-            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
         }
 
         public virtual void Dispose()

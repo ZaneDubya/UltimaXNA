@@ -35,14 +35,14 @@ namespace UltimaXNA.Ultima.UI.Controls
         const int hue_Text = 1107;
         const int hue_TextSelected = 588;
 
-        GUIManager m_UserInterface;
+        UserInterfaceService m_UserInterface;
 
         public DropDownList(AControl owner, int page)
             : base(owner, page)
         {
             HandlesMouseInput = true;
 
-            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
         }
 
         public DropDownList(AControl owner, int page, int x, int y, int width, int index, int itemsVisible, string[] items, bool canBeNull)

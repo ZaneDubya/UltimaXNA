@@ -198,7 +198,7 @@ namespace UltimaXNA.Ultima.UI
 
             int hue = (Hue < 2) ? 0 : Hue - 2;
 
-            sb.Draw2D(m_Texture, destRectangle, sourceRectangle, hue, true, Transparent);
+            sb.Draw2D(m_Texture, destRectangle, sourceRectangle, Utility.GetHueVector(hue, true, Transparent));
 
             for (int i = 0; i < Regions.Count; i++)
             {
@@ -221,8 +221,8 @@ namespace UltimaXNA.Ultima.UI
                         else
                             linkHue = r.HREFAttributes.UpHue;
 
-                        sb.Draw2D(m_Texture, position,
-                            sourceRect, linkHue, false, false);
+                        sb.Draw2D(m_Texture, new Vector3(position.X, position.Y, 0),
+                            sourceRect, Utility.GetHueVector(linkHue));
                     }
                 }
             }
@@ -250,8 +250,8 @@ namespace UltimaXNA.Ultima.UI
                     if (texture == null)
                         texture = image.Texture;
 
-                    sb.Draw2D(texture, position,
-                        sourceRect, 0, false, false);
+                    sb.Draw2D(texture, new Vector3(position.X, position.Y, 0),
+                        sourceRect, Utility.GetHueVector(0, false, false));
                 }
             }
         }

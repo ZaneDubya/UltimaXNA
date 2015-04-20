@@ -86,11 +86,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         public override void Draw(SpriteBatchUI spriteBatch)
         {
-            // spriteBatch.Flush();
-            // spriteBatch.Begin(SpriteBlendMode.None); !!!
-            spriteBatch.Draw2DTiled(CheckeredTransTexture, new Rectangle(X, Y, Width, Area.Height), 0, false, false);
-            // spriteBatch.Flush();
-
+            spriteBatch.Draw2DTiled(CheckeredTransTexture, new Rectangle(X, Y, Width, Area.Height), Vector3.Zero);
             base.Draw(spriteBatch);
         }
     }

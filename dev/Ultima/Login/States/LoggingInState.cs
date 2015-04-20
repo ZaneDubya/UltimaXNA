@@ -12,14 +12,14 @@
 using System;
 using UltimaXNA.Configuration;
 using UltimaXNA.Ultima.UI;
-using UltimaXNA.Ultima.UI.LoginGumps;
+using UltimaXNA.Ultima.Login.Gumps;
 #endregion
 
 namespace UltimaXNA.Ultima.Login.States
 {
     public class LoggingInState : AState
     {
-        GUIManager m_UserInterface;
+        UserInterfaceService m_UserInterface;
         LoginModel m_Login;
 
         private LoggingInGump m_Gump;
@@ -36,7 +36,7 @@ namespace UltimaXNA.Ultima.Login.States
         {
             base.Intitialize();
 
-            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
             m_Login = UltimaServices.GetService<LoginModel>();
 
             m_Gump = (LoggingInGump)m_UserInterface.AddControl(new LoggingInGump(), 0, 0);

@@ -50,14 +50,14 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        GUIManager m_UserInterface;
+        UserInterfaceService m_UserInterface;
 
         public ColorPicker(AControl owner, int page)
             : base(owner, page)
         {
             HandlesMouseInput = true;
 
-            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
         }
 
         public ColorPicker(AControl owner, int page, Rectangle area, int swatchWidth, int swatchHeight, int[] hues)
@@ -121,16 +121,16 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             if (m_isAnOpenSwatch)
             {
-                spriteBatch.Draw2D(m_huesTexture, Area, 0, false, false);
-                spriteBatch.Draw2D(m_selectedIndicator, new Point(
+                spriteBatch.Draw2D(m_huesTexture, Area, Vector3.Zero);
+                spriteBatch.Draw2D(m_selectedIndicator, new Vector3(
                     (int)(X + (float)(Width / m_hueSize.X) * ((Index % m_hueSize.X) + 0.5f) - m_selectedIndicator.Width / 2),
-                    (int)(Y + (float)(Height / m_hueSize.Y) * ((Index / m_hueSize.X) + 0.5f) - m_selectedIndicator.Height / 2)
-                    ), 0, false, false);
+                    (int)(Y + (float)(Height / m_hueSize.Y) * ((Index / m_hueSize.X) + 0.5f) - m_selectedIndicator.Height / 2),
+                    0), Vector3.Zero);
             }
             else
             {
                 if (!m_isSwatchOpen)
-                    spriteBatch.Draw2D(m_huesTexture, Area, 0, false, false);
+                    spriteBatch.Draw2D(m_huesTexture, Area, Vector3.Zero);
             }
             base.Draw(spriteBatch);
         }

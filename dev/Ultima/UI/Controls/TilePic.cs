@@ -67,7 +67,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         public override void Draw(SpriteBatchUI spriteBatch)
         {
-            spriteBatch.Draw2D(m_texture, Position, 0, false, false);
+            spriteBatch.Draw2D(m_texture, new Vector3(X, Y, 0), Utility.GetHueVector(0, false, false));
             base.Draw(spriteBatch);
         }
     }

@@ -7,7 +7,7 @@ namespace UltimaXNA.Ultima.Login
     class LoginModel : AUltimaModel
     {
         private StateManager m_SceneManager;
-        private GUIManager m_UserInterface;
+        private UserInterfaceService m_UserInterface;
 
         public LoginClient Client
         {
@@ -30,7 +30,7 @@ namespace UltimaXNA.Ultima.Login
 
         protected override void OnInitialize()
         {
-            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
             m_UserInterface.Cursor = new UI.UltimaCursor();
 
             m_SceneManager = new StateManager();

@@ -62,11 +62,11 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Draw(spriteBatch);
             if (IsChecked && m_Active != null)
             {
-                spriteBatch.Draw2D(m_Active, Position, 0, false, false);
+                spriteBatch.Draw2D(m_Active, new Vector3(X, Y, 0), Vector3.Zero);
             }
             else if (!IsChecked && m_Inactive != null)
             {
-                spriteBatch.Draw2D(m_Inactive, Position, 0, false, false);
+                spriteBatch.Draw2D(m_Inactive, new Vector3(X, Y, 0), Vector3.Zero);
             }
         }
 

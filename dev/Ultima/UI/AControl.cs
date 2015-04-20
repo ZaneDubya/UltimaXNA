@@ -112,7 +112,7 @@ namespace UltimaXNA.Ultima.UI
         public bool IsVisible
         {
             get;
-            protected set;
+            set;
         }
 
         int m_Page = 0;
@@ -245,14 +245,13 @@ namespace UltimaXNA.Ultima.UI
                 (m_UserInterface.Height - Height) / 2);
         }
 
-        GUIManager m_UserInterface;
+        UserInterfaceService m_UserInterface;
 
         public AControl(AControl owner, int page)
         {
             m_Owner = owner;
             m_Page = page;
-
-            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
         }
 
         public void Initialize()
@@ -270,7 +269,14 @@ namespace UltimaXNA.Ultima.UI
             IsDisposed = true;
         }
 
-        virtual public void Update(double totalMS, double frameMS)
+        DragWidget m_dragger;
+        public void MakeDragger(AControl toMove)
+        {
+            HandlesMouseInput = true;
+            m_dragger = new DragWidget(this, toMove);
+        }
+
+        public virtual void Update(double totalMS, double frameMS)
         {
             if (!IsInitialized || IsDisposed)
                 return;
@@ -745,10 +751,10 @@ namespace UltimaXNA.Ultima.UI
                 s_BoundsTexture.SetData<Color>(new Color[] { Color.White });
             }
 
-            spriteBatch.Draw2D(s_BoundsTexture, new Rectangle(X, Y, Width, 1), hue, false, false);
-            spriteBatch.Draw2D(s_BoundsTexture, new Rectangle(X, Y + Height - 1, Width, 1), hue, false, false);
-            spriteBatch.Draw2D(s_BoundsTexture, new Rectangle(X, Y, 1, Height), hue, false, false);
-            spriteBatch.Draw2D(s_BoundsTexture, new Rectangle(X + Width - 1, Y, 1, Height), hue, false, false);
+            spriteBatch.Draw2D(s_BoundsTexture, new Rectangle(X, Y, Width, 1), Utility.GetHueVector(hue));
+            spriteBatch.Draw2D(s_BoundsTexture, new Rectangle(X, Y + Height - 1, Width, 1), Utility.GetHueVector(hue));
+            spriteBatch.Draw2D(s_BoundsTexture, new Rectangle(X, Y, 1, Height), Utility.GetHueVector(hue));
+            spriteBatch.Draw2D(s_BoundsTexture, new Rectangle(X + Width - 1, Y, 1, Height), Utility.GetHueVector(hue));
 #endif
         #endregion
         }

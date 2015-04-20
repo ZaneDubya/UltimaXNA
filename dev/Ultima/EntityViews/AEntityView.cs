@@ -174,7 +174,7 @@ namespace UltimaXNA.Ultima.EntityViews
             }
         }
 
-        protected Vector2 HueVector = Vector2.Zero;
+        protected Vector3 HueVector = Vector3.Zero;
 
         // ======================================================================
         // Deferred drawing code

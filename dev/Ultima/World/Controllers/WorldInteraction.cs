@@ -18,7 +18,7 @@ using UltimaXNA.Ultima.Entities.Items;
 using UltimaXNA.Ultima.Entities.Mobiles;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.UI;
-using UltimaXNA.Ultima.UI.WorldGumps;
+using UltimaXNA.Ultima.World.Gumps;
 using UltimaXNA.Ultima.Entities.Items.Containers;
 #endregion
 
@@ -30,7 +30,7 @@ namespace UltimaXNA.Ultima.World.Controllers
     internal class WorldInteraction
     {
         private INetworkClient m_Network;
-        private GUIManager m_UserInterface;
+        private UserInterfaceService m_UserInterface;
 
         protected WorldModel World
         {
@@ -41,7 +41,7 @@ namespace UltimaXNA.Ultima.World.Controllers
         public WorldInteraction(WorldModel world)
         {
             m_Network = UltimaServices.GetService<INetworkClient>();
-            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
 
             World = world;
         }

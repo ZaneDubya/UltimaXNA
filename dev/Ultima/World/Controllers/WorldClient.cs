@@ -12,7 +12,7 @@ using UltimaXNA.Ultima.Entities.Multis;
 using UltimaXNA.Ultima.Entities.Effects;
 using UltimaXNA.Ultima.Player;
 using UltimaXNA.Ultima.UI;
-using UltimaXNA.Ultima.UI.WorldGumps;
+using UltimaXNA.Ultima.World.Gumps;
 using UltimaXNA.Ultima.Network;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.Network.Server;
@@ -30,7 +30,7 @@ namespace UltimaXNA.Ultima.World.Controllers
         }
 
         private INetworkClient m_Network;
-        private GUIManager m_UserInterface;
+        private UserInterfaceService m_UserInterface;
 
         private List<Tuple<int, TypedPacketReceiveHandler>> m_RegisteredHandlers;
 
@@ -41,7 +41,7 @@ namespace UltimaXNA.Ultima.World.Controllers
             m_RegisteredHandlers = new List<Tuple<int, TypedPacketReceiveHandler>>();
 
             m_Network = UltimaServices.GetService<INetworkClient>();
-            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
         }
 
         public void Initialize()
@@ -751,7 +751,7 @@ namespace UltimaXNA.Ultima.World.Controllers
         private void ReceiveOpenPaperdoll(IRecvPacket packet)
         {
             OpenPaperdollPacket opp = packet as OpenPaperdollPacket;
-            m_UserInterface.AddControl(new PaperDollGump(EntityManager.GetObject<Mobile>(opp.Serial, false)), 400, 100, GUIManager.AddControlType.OnlyAllowOne);
+            m_UserInterface.AddControl(new PaperDollGump(EntityManager.GetObject<Mobile>(opp.Serial, false)), 400, 100, UserInterfaceService.AddControlType.OnlyAllowOne);
         }
 
         private void ReceiveCompressedGump(IRecvPacket packet)

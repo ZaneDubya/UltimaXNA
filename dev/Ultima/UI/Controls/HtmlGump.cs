@@ -151,6 +151,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             if (Background)
             {
                 this.AddControl(new ResizePic(this, 0, 0, 0, 0x2486, Width - (HasScrollbar ? 15 : 0), Height));
+                LastControl.HandlesMouseInput = false;
             }
         }
 

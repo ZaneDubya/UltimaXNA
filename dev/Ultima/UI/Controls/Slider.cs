@@ -89,10 +89,10 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         public override void Draw(SpriteBatchUI spriteBatch)
         {
-            spriteBatch.Draw2D(m_gumpBar[0], Position, 0, false, false);
-            spriteBatch.Draw2DTiled(m_gumpBar[1], new Rectangle(Area.X + m_gumpBar[0].Width, Area.Y, BarWidth - m_gumpBar[2].Width - m_gumpBar[0].Width, m_gumpBar[1].Height), 0, false, false);
-            spriteBatch.Draw2D(m_gumpBar[2], new Point(Area.X + BarWidth - m_gumpBar[2].Width, Area.Y), 0, false, false);
-            spriteBatch.Draw2D(m_gumpSlider, new Point(Area.X + m_sliderX, Area.Y), 0, false, false);
+            spriteBatch.Draw2D(m_gumpBar[0], new Vector3(X, Y, 0), Vector3.Zero);
+            spriteBatch.Draw2DTiled(m_gumpBar[1], new Rectangle(Area.X + m_gumpBar[0].Width, Area.Y, BarWidth - m_gumpBar[2].Width - m_gumpBar[0].Width, m_gumpBar[1].Height), Vector3.Zero);
+            spriteBatch.Draw2D(m_gumpBar[2], new Vector3(Area.X + BarWidth - m_gumpBar[2].Width, Area.Y, 0), Vector3.Zero);
+            spriteBatch.Draw2D(m_gumpSlider, new Vector3(Area.X + m_sliderX, Area.Y, 0), Vector3.Zero);
             base.Draw(spriteBatch);
         }
 

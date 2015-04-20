@@ -48,7 +48,7 @@ namespace UltimaXNA.Ultima.UI
 
         Serial m_GumpID;
         string[] m_gumpPieces, m_gumpLines;
-        GUIManager m_UserInterface;
+        UserInterfaceService m_UserInterface;
 
 
         public Gump(Serial serial, Serial gumpID)
@@ -57,7 +57,7 @@ namespace UltimaXNA.Ultima.UI
             Serial = serial;
             m_GumpID = gumpID;
 
-            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
         }
 
         public Gump(Serial serial, Serial gumpID, String[] pieces, String[] textlines)

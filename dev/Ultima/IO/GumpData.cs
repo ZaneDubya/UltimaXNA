@@ -34,7 +34,7 @@ namespace UltimaXNA.Ultima.IO
             m_graphicsDevice = graphics;
         }
 
-        public unsafe static Texture2D GetGumpXNA(int index)
+        public unsafe static Texture2D GetGumpXNA(int index, bool replaceMask080808 = false)
         {
             if (index < 0)
                 return null;
@@ -93,6 +93,13 @@ namespace UltimaXNA.Ultima.IO
                 }
 
                 Metrics.ReportDataRead(length);
+
+                if (replaceMask080808)
+                {
+                    for (int i = 0; i < pixels.Length; i++)
+                        if (pixels[i] == 0xff080808)
+                            pixels[i] = 0xffff00ff;
+                }
 
                 Texture2D texture = new Texture2D(m_graphicsDevice, width, height, false, SurfaceFormat.Color);
                 texture.SetData(pixels);

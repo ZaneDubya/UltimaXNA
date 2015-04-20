@@ -80,7 +80,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                 m_texture = IO.ArtData.GetStaticTexture(m_item.DisplayItemID);
                 Size = new Point(m_texture.Width, m_texture.Height);
             }
-            spriteBatch.Draw2D(m_texture, Position, m_item.Hue, false, false);
+            spriteBatch.Draw2D(m_texture, new Vector3(X, Y, 0), Utility.GetHueVector(m_item.Hue));
             base.Draw(spriteBatch);
         }
 

@@ -124,7 +124,7 @@ namespace UltimaXNA.Ultima.World.Views
                         if (item.ItemData.IsRoof)
                             m_maxItemAltitude = center.Z - (center.Z % 20) + 20;
                         else if (item.ItemData.IsSurface || item.ItemData.IsWall)
-                            m_maxItemAltitude = item.Z - (item.Z % 10);
+                            m_maxItemAltitude = item.Z;
                         else
                         {
                             int z = center.Z + ((item.ItemData.Height > 20) ? item.ItemData.Height : 20);
@@ -241,8 +241,7 @@ namespace UltimaXNA.Ultima.World.Views
             mousePick.UpdateOverEntities(overList, m_Input.MousePosition);
 
             // Draw the objects we just send to the spritebatch.
-            m_spriteBatch.Prepare(true, true);
-            m_spriteBatch.Flush();
+            m_spriteBatch.Flush(true);
         }
 
         private void recalculateLightning()

@@ -11,7 +11,7 @@
 using System.Security;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Ultima.UI;
-using UltimaXNA.Ultima.UI.LoginGumps;
+using UltimaXNA.Ultima.Login.Gumps;
 #endregion
 
 namespace UltimaXNA.Ultima.Login.States
@@ -20,14 +20,14 @@ namespace UltimaXNA.Ultima.Login.States
     {
         LoginGump m_LoginGump;
 
-        GUIManager m_UserInterface;
+        UserInterfaceService m_UserInterface;
         InputManager m_Input;
         LoginModel m_Login;
 
         public LoginState()
             : base()
         {
-            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
             m_Login = UltimaServices.GetService<LoginModel>();
             m_Input = UltimaServices.GetService<InputManager>();
         }

@@ -11,14 +11,14 @@
 using System;
 using UltimaXNA.Ultima.Data.Servers;
 using UltimaXNA.Ultima.UI;
-using UltimaXNA.Ultima.UI.LoginGumps;
+using UltimaXNA.Ultima.Login.Gumps;
 #endregion
 
 namespace UltimaXNA.Ultima.Login.States
 {
     public class SelectServerState : AState
     {
-        GUIManager m_UserInterface;
+        UserInterfaceService m_UserInterface;
         LoginModel m_Login;
 
         private SelectServerGump m_SelectServerGump;
@@ -33,7 +33,7 @@ namespace UltimaXNA.Ultima.Login.States
         {
             base.Intitialize();
 
-            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
             m_Login = UltimaServices.GetService<LoginModel>();
 
             m_SelectServerGump = (SelectServerGump)m_UserInterface.AddControl(new SelectServerGump(), 0, 0);

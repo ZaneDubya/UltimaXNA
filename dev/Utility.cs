@@ -524,35 +524,22 @@ namespace UltimaXNA
                 return false;
         }
 
-        public static Vector2 GetHueVector(int hue)
+        public static Vector3 GetHueVector(int hue)
         {
             return GetHueVector(hue, false, false);
         }
 
-        public static Vector2 GetHueVector(int hue, bool partial, bool transparent)
+        public static Vector3 GetHueVector(int hue, bool partial, bool transparent)
         {
-            if (transparent)
-                hue |= 0x4000;
+            if ((hue & 0x4000) != 0)
+                transparent = true;
+            if ((hue & 0x8000) != 0)
+                partial = true;
 
             if (hue == 0)
-                return new Vector2(0);
+                return new Vector3(0);
 
-            int hueType = 0;
-
-            if ((hue & 0x4000) != 0)
-            {
-                // transparant
-                hueType |= 4;
-            }
-            else if ((hue & 0x8000) != 0 || partial) // partial hue
-            {
-                hueType |= 2;
-            }
-            else
-            {
-                hueType |= 1;
-            }
-            return new Vector2(hue & 0x0FFF, hueType);
+            return new Vector3(hue & 0x0FFF, partial ? 2 : 1, transparent ? 0.5f : 0);
         }
 
         public static string GetColorFromUshortColor(ushort color)

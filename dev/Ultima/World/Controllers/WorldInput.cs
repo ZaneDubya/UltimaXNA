@@ -28,7 +28,7 @@ namespace UltimaXNA.Ultima.World.Controllers
         private AEntity m_DraggingEntity;
 
         private INetworkClient m_Network;
-        private GUIManager m_UserInterface;
+        private UserInterfaceService m_UserInterface;
         private InputManager m_Input;
 
         // keyboard movement variables.
@@ -47,7 +47,7 @@ namespace UltimaXNA.Ultima.World.Controllers
             World = world;
 
             m_Network = UltimaServices.GetService<INetworkClient>();
-            m_UserInterface = UltimaServices.GetService<GUIManager>();
+            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
             m_Input = UltimaServices.GetService<InputManager>();
 
             MousePick = new MousePicking();
