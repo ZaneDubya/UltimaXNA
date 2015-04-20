@@ -162,16 +162,19 @@ namespace UltimaXNA.Ultima.UI.Controls
                 return;
 
             // scrollbar background
-            spriteBatch.Draw2D(m_gumpBackground[0], new Point(X, Y + m_gumpUpButton[0].Height), 0, false, false);
             int middlewidth = BarHeight - m_gumpUpButton[0].Height - m_gumpDownButton[0].Height - m_gumpBackground[0].Height - m_gumpBackground[2].Height;
-            spriteBatch.Draw2DTiled(m_gumpBackground[1], new Rectangle(X, Y + m_gumpUpButton[0].Height + m_gumpBackground[0].Height, m_gumpBackground[0].Width, middlewidth), 0, false, false);
-            spriteBatch.Draw2D(m_gumpBackground[2], new Point(X, Y + BarHeight - m_gumpDownButton[0].Height - m_gumpBackground[2].Height), 0, false, false);
+            if (middlewidth > 0)
+            {
+                spriteBatch.Draw2D(m_gumpBackground[0], new Point(X, Y + m_gumpUpButton[0].Height), 0, false, false);
+                spriteBatch.Draw2DTiled(m_gumpBackground[1], new Rectangle(X, Y + m_gumpUpButton[0].Height + m_gumpBackground[0].Height, m_gumpBackground[0].Width, middlewidth), 0, false, false);
+                spriteBatch.Draw2D(m_gumpBackground[2], new Point(X, Y + BarHeight - m_gumpDownButton[0].Height - m_gumpBackground[2].Height), 0, false, false);
+            }
             // up button
             spriteBatch.Draw2D(m_btnUpClicked ? m_gumpUpButton[1] : m_gumpUpButton[0], new Point(X, Y), 0, false, false);
             // down button
             spriteBatch.Draw2D(m_btnDownClicked ? m_gumpDownButton[1] : m_gumpDownButton[0], new Point(X, Y + Height - m_gumpDownButton[0].Height), 0, false, false);
             // slider
-            if (MaxValue > MinValue)
+            if (MaxValue > MinValue && middlewidth > 0)
                 spriteBatch.Draw2D(m_gumpSlider, new Point(X + (m_gumpBackground[0].Width - m_gumpSlider.Width) / 2, Y + m_gumpUpButton[0].Height + (int)m_sliderY), 0, false, false);
             base.Draw(spriteBatch);
         }
@@ -195,10 +198,10 @@ namespace UltimaXNA.Ultima.UI.Controls
         protected override void OnMouseDown(int x, int y, MouseButton button)
         {
             m_timeUntilNextClick = 0f;
-            if (new Rectangle(0, 0, m_gumpUpButton[0].Width, m_gumpUpButton[0].Height).Contains(new Point(x, y)))
-                m_btnUpClicked = true;
-            else if (new Rectangle(0, Height - m_gumpDownButton[0].Height, m_gumpDownButton[0].Width, m_gumpDownButton[0].Height).Contains(new Point(x, y)))
+            if (new Rectangle(0, Height - m_gumpDownButton[0].Height, m_gumpDownButton[0].Width, m_gumpDownButton[0].Height).Contains(new Point(x, y)))
                 m_btnDownClicked = true;
+            else if (new Rectangle(0, 0, m_gumpUpButton[0].Width, m_gumpUpButton[0].Height).Contains(new Point(x, y)))
+                m_btnUpClicked = true;
             else if (new Rectangle((m_gumpBackground[0].Width - m_gumpSlider.Width) / 2, m_gumpUpButton[0].Height + (int)m_sliderY, m_gumpSlider.Width, m_gumpSlider.Height).Contains(new Point(x, y)))
             {
                 m_btnSliderClicked = true;
