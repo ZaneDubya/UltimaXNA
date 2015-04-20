@@ -265,7 +265,7 @@ namespace UltimaXNA.Ultima.UI
                         // Similar to the xmfhtmlgump command, but additionally a [color] can be specified.
                         AddControl(new Controls.HtmlGump(this, currentGUMPPage, int.Parse(gumpParams[1]), int.Parse(gumpParams[2]), int.Parse(gumpParams[3]), int.Parse(gumpParams[4]),
                             int.Parse(gumpParams[6]), int.Parse(gumpParams[7]), 
-                            string.Format("<font color=#{0}>", Utility.GetColorFromUshortColor(ushort.Parse(gumpParams[8]))) + IO.StringData.Entry(int.Parse(gumpParams[5]))));
+                            string.Format("<font color=#{0}>{1}", Utility.GetColorFromUshortColor(ushort.Parse(gumpParams[8])), IO.StringData.Entry(int.Parse(gumpParams[5])))));
                         (LastControl as Controls.HtmlGump).Hue = 0;
                         break;
                     case "xmfhtmltok":
@@ -273,6 +273,27 @@ namespace UltimaXNA.Ultima.UI
                         // Similar to xmfhtmlgumpcolor command, but the parameter order is different and an additionally
                         // [argument] entry enclosed with @'s can be used. With this you can specify texts that will be
                         // added to the CliLoc entry. 
+                        string messageWithArgs = IO.StringData.Entry(1070788);
+                        int argReplaceBegin = messageWithArgs.IndexOf("~1");
+                        if (argReplaceBegin != -1)
+                        {
+                            int argReplaceEnd = messageWithArgs.IndexOf("~", argReplaceBegin + 2);
+                            if (argReplaceEnd != -1)
+                            {
+                                if (gumpParams.Length == 10 && gumpParams[9].Length >= 2)
+                                {
+                                    messageWithArgs = string.Format("{0}{1}{2}",
+                                        messageWithArgs.Substring(0, argReplaceBegin),
+                                        gumpParams[9].Substring(1, gumpParams[9].Length - 2),
+                                        (argReplaceEnd > messageWithArgs.Length - 1) ? messageWithArgs.Substring(argReplaceEnd) : string.Empty);
+                                }
+                            }
+                        }
+                        AddControl(new Controls.HtmlGump(this, currentGUMPPage, 
+                            int.Parse(gumpParams[1]), int.Parse(gumpParams[2]), int.Parse(gumpParams[3]), int.Parse(gumpParams[4]),
+                            int.Parse(gumpParams[5]), int.Parse(gumpParams[6]), 
+                            string.Format("<font color=#{0}>{1}", Utility.GetColorFromUshortColor(ushort.Parse(gumpParams[7])), messageWithArgs)));
+                        (LastControl as Controls.HtmlGump).Hue = 0;
                         Tracer.Warn(string.Format("GUMP: Unhandled {0}.", gumpParams[0]));
                         break;
                     case "tooltip":
