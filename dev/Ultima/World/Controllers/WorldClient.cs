@@ -470,6 +470,10 @@ namespace UltimaXNA.Ultima.World.Controllers
             mobile.BodyID = p.BodyID;
             mobile.Flags = p.Flags;
             mobile.Notoriety = p.Notoriety;
+
+            if (mobile is PlayerMobile)
+                return;
+
             if (mobile.Position.IsNullPosition)
             {
                 mobile.Move_Instant(p.X, p.Y, p.Z, p.Direction);
