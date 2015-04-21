@@ -30,17 +30,15 @@ namespace UltimaXNA.Ultima.World.Gumps
         {
             AddControl(m_Background = new ExpandableScroll(this, 0, 0, 0, 300));
             m_Background.TitleGumpID = 0x82A;
-            m_Background.MakeDragger(this);
-            m_Background.MakeCloseTarget(this);
 
             AddControl(m_ScrollBar = new ScrollBar(this, 0));
-            m_ScrollBar.Visible = false;
+            m_ScrollBar.IsVisible = false;
             IsMovable = true;
         }
 
-        public override void Initialize()
+        protected override void OnInitialize()
         {
-            base.Initialize();
+            base.OnInitialize();
 
             m_JournalEntries = new List<RenderedText>();
             InitializeJournalEntries();
@@ -51,18 +49,10 @@ namespace UltimaXNA.Ultima.World.Gumps
         {
             base.Update(totalMS, frameMS);
 
-            m_ScrollBar.Position = new Point(Width - 40, 35);
+            m_ScrollBar.Position = new Point(Width - 45, 35);
             m_EntriesHeight = m_ScrollBar.Height = Height - 100;
             CalculateScrollBarMaxValue();
-
-            if (m_ScrollBar.MaxValue <= 0)
-            {
-                m_ScrollBar.Visible = false;
-            }
-            else
-            {
-                m_ScrollBar.Visible = true;
-            }
+            m_ScrollBar.IsVisible = m_ScrollBar.MaxValue > m_ScrollBar.MinValue;
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)
@@ -136,11 +126,18 @@ namespace UltimaXNA.Ultima.World.Gumps
 
         private void AddJournalEntry(string text)
         {
+            bool maxScroll = (m_ScrollBar.Value == m_ScrollBar.MaxValue);
+
             while (m_JournalEntries.Count > 99)
             {
                 m_JournalEntries.RemoveAt(0);
             }
-            m_JournalEntries.Add(new RenderedText(string.Format("<left color=50422D><span width='14'/>{0}</left><br/>", text), true, 200));
+            m_JournalEntries.Add(new RenderedText(string.Format("<left color=50422D><span width='14'/>{0}</left><br/>", text), 200));
+            m_ScrollBar.MaxValue += m_JournalEntries[m_JournalEntries.Count - 1].Height;
+            if (maxScroll)
+            {
+                m_ScrollBar.Value = m_ScrollBar.MaxValue;
+            }
         }
 
         private void InitializeJournalEntries()

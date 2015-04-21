@@ -51,7 +51,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             Size = new Point(width, height);
             Hue = hue;
             Text = lines[textIndex];
-            m_Texture = new RenderedText(Text, true, width);
+            m_Texture = new RenderedText(Text, width);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)

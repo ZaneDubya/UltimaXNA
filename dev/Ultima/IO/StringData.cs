@@ -14,6 +14,7 @@ using System.IO;
 using System.Text;
 using System.Collections;
 using UltimaXNA.Core.Diagnostics;
+using UltimaXNA.Core.Diagnostics.Tracing;
 #endregion
 
 namespace UltimaXNA.Ultima.IO
@@ -33,7 +34,10 @@ namespace UltimaXNA.Ultima.IO
         public static string Entry(int index)
         {
             if (m_Table[index] == null)
-                return string.Empty;
+            {
+                Tracer.Warn("Missing cliloc with index {0}. Client version is lower than expected by Server.", index);
+                return string.Format("<Error : Cliloc Entry {0} not found.>", index);
+            }
             else
                 return m_Table[index].ToString();
         }

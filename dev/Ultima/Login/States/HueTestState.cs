@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
+using System.IO;
 
 namespace UltimaXNA.Ultima.Login.States
 {
@@ -117,16 +118,16 @@ namespace UltimaXNA.Ultima.Login.States
                     m_texture = IO.ArtData.GetStaticTexture(m_StaticTextureID);
                     Size = new Point(m_texture.Width, m_texture.Height);
                 }
-                spriteBatch.Draw2D(m_texture, new Vector3(X, Y, 0), Utility.GetHueVector(Hue, false, false));
+                spriteBatch.Draw2D(m_texture, new Vector3(X, Y, 0), Utility.GetHueVector(Hue));
                 base.Draw(spriteBatch);
             }
 
-            protected override void mouseOver(int x, int y)
+            protected override void OnMouseOver(int x, int y)
             {
                 OverHue = Hue;
             }
 
-            protected override void mouseOut(int x, int y)
+            protected override void OnMouseOut(int x, int y)
             {
                 OverHue = -1;
             }

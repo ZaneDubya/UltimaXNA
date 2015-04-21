@@ -8,6 +8,7 @@
  *
  ***************************************************************************/
 #region usings
+using System;
 using UltimaXNA.Ultima.UI.Controls;
 #endregion
 
@@ -24,8 +25,8 @@ namespace UltimaXNA.Ultima.UI
         HtmlGump m_text;
         MsgBoxTypes m_type;
 
-        public PublicControlEvent OnClose;
-        public PublicControlEvent OnCancel;
+        public Action OnClose;
+        public Action OnCancel;
 
         public MsgBox(string msg, MsgBoxTypes msgBoxType)
             : base(0, 0)

@@ -83,9 +83,9 @@ namespace UltimaXNA.Ultima.UI.HTML
     public class HREF_Attributes
     {
         public string HREF;
-        public int UpHue = 1;
-        public int OverHue = 31;
-        public int DownHue = 11;
+        public int UpHue = 4;
+        public int OverHue = 6;
+        public int DownHue = 2;
         public bool Underline = true;
     }
 }

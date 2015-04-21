@@ -22,13 +22,16 @@ namespace UltimaXNA.Ultima.UI
         {
             m_toMove = toMove;
 
-            inputFrom.OnMouseDown += mouseDown;
-            inputFrom.OnMouseUp += mouseUp;
-            inputFrom.OnMouseOver += mouseOver;
+            inputFrom.MouseDownEvent += mouseDown;
+            inputFrom.MouseUpEvent += mouseUp;
+            inputFrom.MouseOverEvent += mouseOver;
         }
 
         void mouseDown(int x, int y, MouseButton button)
         {
+            if (!m_toMove.IsMovable)
+                return;
+
             x += m_toMove.X;
             y += m_toMove.Y;
             if (button == MouseButton.Left && m_toMove.IsMovable)

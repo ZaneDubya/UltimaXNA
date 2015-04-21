@@ -38,11 +38,12 @@ namespace UltimaXNA.Ultima.World.Gumps
             m_TextEntries = new List<ChatLineTimed>();
             m_MessageHistory = new List<string>();
             Width = 400;
-            Enabled = true;
 
             m_Input = UltimaServices.GetService<InputManager>();
             m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
             m_World = UltimaServices.GetService<WorldModel>();
+
+            IsUncloseableWithRMB = true;
         }
 
         public override void Update(double totalMS, double frameMS)
@@ -140,7 +141,7 @@ namespace UltimaXNA.Ultima.World.Gumps
             m_alpha = 1.0f;
             m_width = width;
 
-            m_Texture = new RenderedText(m_text, true, m_width);
+            m_Texture = new RenderedText(m_text, m_width);
         }
 
         public void Update(double totalMS, double frameMS)

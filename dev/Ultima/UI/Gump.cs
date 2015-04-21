@@ -11,10 +11,11 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Diagnostics.Tracing;
-
+using UltimaXNA.Ultima.UI.Controls;
 #endregion
 
 namespace UltimaXNA.Ultima.UI
@@ -24,10 +25,31 @@ namespace UltimaXNA.Ultima.UI
     /// </summary>
     public class Gump : AControl
     {
+        public override bool IsMovable
+        {
+            get
+            {
+                return !IsNotMovable && base.IsMovable;
+            }
+            set
+            {
+                base.IsMovable = value;
+            }
+        }
+
+        /// <summary>
+        /// If true, gump cannot be moved.
+        /// </summary>
+        public bool IsNotMovable
+        {
+            get;
+            protected set;
+        }
+
         Serial m_GumpID;
         string[] m_gumpPieces, m_gumpLines;
-
         UserInterfaceService m_UserInterface;
+
 
         public Gump(Serial serial, Serial gumpID)
             : base(null, 0)
@@ -77,10 +99,35 @@ namespace UltimaXNA.Ultima.UI
 
         public override void ActivateByButton(int buttonID)
         {
-            int[] switchIDs = new int[0];
-            Tuple<short, string>[] textEntries = new Tuple<short,string>[0];
-            m_UserInterface.GumpMenuSelect(Serial, m_GumpID, buttonID, switchIDs, textEntries);
-            Dispose();
+            if (Serial != 0)
+            {
+                if (buttonID == 0) // cancel
+                {
+                    m_UserInterface.GumpMenuSelect(Serial, m_GumpID, buttonID, null, null);
+                }
+                else
+                {
+                    List<int> switchIDs = new List<int>();
+                    foreach (AControl control in Children)
+                    {
+                        if (control is CheckBox && (control as CheckBox).IsChecked)
+                            switchIDs.Add(control.Serial);
+                        else if (control is RadioButton && (control as RadioButton).IsChecked)
+                            switchIDs.Add(control.Serial);
+                    }
+                    List<Tuple<short, string>> textEntries = new List<Tuple<short, string>>();
+                    foreach (AControl control in Children)
+                    {
+                        if (control is TextEntry)
+                        {
+                            textEntries.Add(new Tuple<short, string>((short)control.Serial, (control as TextEntry).Text));
+                        }
+                    }
+
+                    m_UserInterface.GumpMenuSelect(Serial, m_GumpID, buttonID, switchIDs.ToArray(), textEntries.ToArray());
+                }
+                Dispose();
+            }
         }
 
         public override void ChangePage(int pageIndex)
@@ -92,6 +139,7 @@ namespace UltimaXNA.Ultima.UI
         private void BuildGump(string[] gumpPieces, string[] gumpLines)
         {
             int currentGUMPPage = 0;
+            int currentRadioGroup = 0;
 
             for (int i = 0; i < gumpPieces.Length; i++)
             {
@@ -109,6 +157,11 @@ namespace UltimaXNA.Ultima.UI
                         // ButtonTileArt [x] [y] [released-id] [pressed-id] [quit] [page-id] [return-value] [tilepic-id] [hue] [tile-x] [tile-y]
                         //  Adds a button to the gump with the specified coordinates and tilepic as graphic.
                         // [tile-x] and [tile-y] define the coordinates of the tile graphic and are relative to [x] and [y]. 
+                        AddControl(new Controls.Button(this, currentGUMPPage, int.Parse(gumpParams[1]), int.Parse(gumpParams[2]), int.Parse(gumpParams[3]), int.Parse(gumpParams[4]),
+                            (Controls.ButtonTypes)int.Parse(gumpParams[5]), int.Parse(gumpParams[6]), int.Parse(gumpParams[7])));
+                        AddControl(new Controls.TilePic(this, currentGUMPPage, int.Parse(gumpParams[1]) + int.Parse(gumpParams[10]), int.Parse(gumpParams[2]) + int.Parse(gumpParams[11]),
+                            int.Parse(gumpParams[8]), int.Parse(gumpParams[9])));
+                        break;
                     case "checkertrans":
                         // CheckerTrans [x] [y] [width] [height]
                         // Creates a transparent rectangle on position [x,y] using [width] and [height].
@@ -118,6 +171,7 @@ namespace UltimaXNA.Ultima.UI
                         // CroppedText [x] [y] [width] [height] [color] [text-id]
                         // Adds a text field to the gump. This is similar to the text command, but the text is cropped to the defined area.
                         AddControl(new Controls.CroppedText(this, currentGUMPPage, gumpParams, gumpLines));
+                        (LastControl as Controls.CroppedText).Hue = 1;
                         break;
                     case "gumppic":
                         // GumpPic [x] [y] [id] hue=[color]
@@ -144,7 +198,6 @@ namespace UltimaXNA.Ultima.UI
                         // ResizePic [x] [y] [gump-id] [width] [height]
                         // Similar to GumpPic but the pic is automatically resized to the given [width] and [height].
                         AddControl(new Controls.ResizePic(this, currentGUMPPage, gumpParams));
-                        ((Controls.ResizePic)LastControl).CloseOnRightClick = true;
                         break;
                     case "text":
                         // Text [x] [y] [color] [text-id]
@@ -175,53 +228,93 @@ namespace UltimaXNA.Ultima.UI
                     case "noclose":
                         // NoClose 
                         // Prevents that the gump can be closed by right clicking.
+                        IsUncloseableWithRMB = true;
+                        break;
                     case "nodispose":
                         // NoDispose 
                         //Prevents that the gump can be closed by hitting Esc.
+                        IsUncloseableWithEsc = true;
+                        break;
                     case "nomove":
                         // NoMove
                         // Locks the gump in his position. 
+                        IsNotMovable = true;
+                        break;
                     case "group":
                         // Group [Number]
                         // Links radio buttons to a group. Add this before radiobuttons to do so. See also endgroup.
+                        currentRadioGroup++;
+                        break;
                     case "endgroup":
                         // EndGroup
-                        //  Links radio buttons to a group. Add this before radiobuttons to do so. See also endgroup. 
+                        //  Links radio buttons to a group. Add this after radiobuttons to do so. See also group. 
+                        currentRadioGroup++;
+                        break;
                     case "radio":
                         // Radio [x] [y] [released-id] [pressed-id] [status] [return-value]
                         // Same as Checkbox, but only one Radiobutton can be pressed at the same time, and they are linked via the 'Group' command.
-                        Tracer.Warn(string.Format("GUMP: Unhandled {0}.", gumpParams[0]));
+                        AddControl(new Controls.RadioButton(this, currentGUMPPage, currentRadioGroup, gumpParams, gumpLines));
                         break;
                     case "checkbox":
                         // CheckBox [x] [y] [released-id] [pressed-id] [status] [return-value]
                         // Adds a CheckBox to the gump. Multiple CheckBoxes can be pressed at the same time.
                         // Check the [return-value] if you want to know which CheckBoxes were selected.
-                        Tracer.Warn("GUMP: Unhandled '" + gumpParams[0] + "'.");
+                        AddControl(new Controls.CheckBox(this, currentGUMPPage, gumpParams, gumpLines));
                         break;
                     case "xmfhtmlgump":
                         // XmfHtmlGump [x] [y] [width] [height] [cliloc-nr] [background] [scrollbar]
                         // Similar to the htmlgump command, but in place of the [text-id] a CliLoc entry is used.
-                        Tracer.Warn("GUMP: Unhandled '" + gumpParams[0] + "'.");
+                        AddControl(new Controls.HtmlGump(this, currentGUMPPage, int.Parse(gumpParams[1]), int.Parse(gumpParams[2]), int.Parse(gumpParams[3]), int.Parse(gumpParams[4]),
+                            int.Parse(gumpParams[6]), int.Parse(gumpParams[7]), 
+                            "<font color=#000>" + IO.StringData.Entry(int.Parse(gumpParams[5]))));
                         break;
                     case "xmfhtmlgumpcolor":
                         // XmfHtmlGumpColor [x] [y] [width] [height] [cliloc-nr] [background] [scrollbar] [color]
                         // Similar to the xmfhtmlgump command, but additionally a [color] can be specified.
-                        Tracer.Warn("GUMP: Unhandled '" + gumpParams[0] + "'.");
+                        AddControl(new Controls.HtmlGump(this, currentGUMPPage, int.Parse(gumpParams[1]), int.Parse(gumpParams[2]), int.Parse(gumpParams[3]), int.Parse(gumpParams[4]),
+                            int.Parse(gumpParams[6]), int.Parse(gumpParams[7]), 
+                            string.Format("<font color=#{0}>{1}", Utility.GetColorFromUshortColor(ushort.Parse(gumpParams[8])), IO.StringData.Entry(int.Parse(gumpParams[5])))));
+                        (LastControl as Controls.HtmlGump).Hue = 0;
                         break;
                     case "xmfhtmltok":
                         // XmfHtmlTok [x] [y] [width] [height] [background] [scrollbar] [color] [cliloc-nr] @[arguments]@
                         // Similar to xmfhtmlgumpcolor command, but the parameter order is different and an additionally
                         // [argument] entry enclosed with @'s can be used. With this you can specify texts that will be
                         // added to the CliLoc entry. 
-                        Tracer.Warn("GUMP: Unhandled '" + gumpParams[0] + "'.");
+                        string messageWithArgs = IO.StringData.Entry(1070788);
+                        int argReplaceBegin = messageWithArgs.IndexOf("~1");
+                        if (argReplaceBegin != -1)
+                        {
+                            int argReplaceEnd = messageWithArgs.IndexOf("~", argReplaceBegin + 2);
+                            if (argReplaceEnd != -1)
+                            {
+                                if (gumpParams.Length == 10 && gumpParams[9].Length >= 2)
+                                {
+                                    messageWithArgs = string.Format("{0}{1}{2}",
+                                        messageWithArgs.Substring(0, argReplaceBegin),
+                                        gumpParams[9].Substring(1, gumpParams[9].Length - 2),
+                                        (argReplaceEnd > messageWithArgs.Length - 1) ? messageWithArgs.Substring(argReplaceEnd) : string.Empty);
+                                }
+                            }
+                        }
+                        AddControl(new Controls.HtmlGump(this, currentGUMPPage, 
+                            int.Parse(gumpParams[1]), int.Parse(gumpParams[2]), int.Parse(gumpParams[3]), int.Parse(gumpParams[4]),
+                            int.Parse(gumpParams[5]), int.Parse(gumpParams[6]), 
+                            string.Format("<font color=#{0}>{1}", Utility.GetColorFromUshortColor(ushort.Parse(gumpParams[7])), messageWithArgs)));
+                        (LastControl as Controls.HtmlGump).Hue = 0;
+                        Tracer.Warn(string.Format("GUMP: Unhandled {0}.", gumpParams[0]));
                         break;
                     case "tooltip":
                         // Tooltip [cliloc-nr]
                         // Adds to the previous layoutarray entry a Tooltip with the in [cliloc-nr] defined CliLoc entry.
-                        Tracer.Warn("GUMP: Unhandled '" + gumpParams[0] + "'.");
+                        string cliloc = IO.StringData.Entry(int.Parse(gumpPieces[1]));
+                        if (LastControl != null)
+                            LastControl.SetTooltip(cliloc);
+                        else
+                            Tracer.Warn(string.Format("GUMP: No control for this tooltip: {0}.", gumpParams[1]));
                         break;
                     default:
-                        Tracer.Warn("GUMP: Unknown piece '" + gumpParams[0] + "'.");
+                        Tracer.Critical("GUMP: Unknown piece '" + gumpParams[0] + "'.");
                         break;
                 }
             }
@@ -230,10 +323,10 @@ namespace UltimaXNA.Ultima.UI
         private bool CheckResize()
         {
             bool changedDimensions = false;
-            if (Controls.Count > 0)
+            if (Children.Count > 0)
             {
                 int w = 0, h = 0;
-                foreach (AControl c in Controls)
+                foreach (AControl c in Children)
                 {
                     if (c.Page == 0 || c.Page == ActivePage)
                     {
@@ -260,7 +353,7 @@ namespace UltimaXNA.Ultima.UI
 
         protected string GetTextEntry(int entryID)
         {
-            foreach (AControl c in Controls)
+            foreach (AControl c in Children)
             {
                 if (c.GetType() == typeof(UI.Controls.TextEntry))
                 {

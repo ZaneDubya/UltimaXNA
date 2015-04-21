@@ -31,7 +31,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         public GumpPic(AControl owner, int page)
             : base(owner, page)
         {
-
+            MakeThisADragger();
         }
 
         public GumpPic(AControl owner, int page, string[] arguements)

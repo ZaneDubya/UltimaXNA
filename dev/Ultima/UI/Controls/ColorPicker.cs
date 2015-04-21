@@ -146,9 +146,9 @@ namespace UltimaXNA.Ultima.UI.Controls
                 m_openColorPicker.Dispose();
                 m_openColorPicker = null;
             }
-            m_openColorPicker = new ColorPicker(m_owner, Page, m_openArea, m_hueSize.X, m_hueSize.Y, m_hues);
-            m_openColorPicker.OnMouseClick = onOpenSwatchClick;
-            ((Gump)m_owner).AddControl(m_openColorPicker);
+            m_openColorPicker = new ColorPicker(m_Owner, Page, m_openArea, m_hueSize.X, m_hueSize.Y, m_hues);
+            m_openColorPicker.MouseClickEvent = onOpenSwatchClick;
+            ((Gump)m_Owner).AddControl(m_openColorPicker);
         }
 
         void closeSwatch()
@@ -161,7 +161,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        protected override void mouseClick(int x, int y, MouseButton button)
+        protected override void OnMouseClick(int x, int y, MouseButton button)
         {
             if (!m_isAnOpenSwatch)
             {
@@ -169,7 +169,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        protected override void mouseOver(int x, int y)
+        protected override void OnMouseOver(int x, int y)
         {
             if (m_isAnOpenSwatch)
             {

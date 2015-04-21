@@ -34,7 +34,6 @@ namespace UltimaXNA.Ultima.World.Gumps
             m_useLargeMap = EngineVars.MiniMap_LargeFormat;
 
             IsMovable = true;
-            MakeCloseTarget(this);
             MakeDragger(this);
         }
 
@@ -84,7 +83,7 @@ namespace UltimaXNA.Ultima.World.Gumps
             }
         }
 
-        protected override void mouseDoubleClick(int x, int y, MouseButton button)
+        protected override void OnMouseDoubleClick(int x, int y, MouseButton button)
         {
             if (button == MouseButton.Left)
             {

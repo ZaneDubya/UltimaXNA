@@ -42,7 +42,6 @@ namespace UltimaXNA.Ultima.Login.Gumps
         public CharacterListGump()
             : base(0, 0)
         {
-            m_renderFullScreen = false;
             // backdrop
             AddControl(new GumpPicTiled(this, 0, 0, 0, Settings.Game.Resolution.Width, Settings.Game.Resolution.Height, 9274));
             AddControl(new GumpPic(this, 0, 0, 0, 5500, 0));
@@ -73,6 +72,8 @@ namespace UltimaXNA.Ultima.Login.Gumps
             // center message window backdrop
             AddControl(new ResizePic(this, 2, 116, 95, 2600, 408, 288));
             AddControl(new TextLabelAscii(this, 2, 166, 143, 2017, 2, IO.StringData.Entry(3000001)));
+
+            IsUncloseableWithRMB = true;
         }
 
         public void ReloadCharList()

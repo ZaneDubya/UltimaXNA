@@ -103,7 +103,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             ButtonType = buttonType;
             ButtonParameter = param;
             ButtonID = buttonID;
-            m_Texture = new RenderedText("", true, 100);
+            m_Texture = new RenderedText(string.Empty, 100);
         }
 
         public override void Update(double totalMS, double frameMS)
@@ -164,17 +164,19 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         bool m_clicked = false;
 
-        protected override void mouseDown(int x, int y, MouseButton button)
+        protected override void OnMouseDown(int x, int y, MouseButton button)
         {
-            m_clicked = true;
+            if (button == MouseButton.Left)
+                m_clicked = true;
         }
 
-        protected override void mouseUp(int x, int y, MouseButton button)
+        protected override void OnMouseUp(int x, int y, MouseButton button)
         {
-            m_clicked = false;
+            if (button == MouseButton.Left)
+                m_clicked = false;
         }
 
-        protected override void mouseClick(int x, int y, MouseButton button)
+        protected override void OnMouseClick(int x, int y, MouseButton button)
         {
             if (button == MouseButton.Left)
             {

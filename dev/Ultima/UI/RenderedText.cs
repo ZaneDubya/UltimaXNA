@@ -84,20 +84,6 @@ namespace UltimaXNA.Ultima.UI
 
         private bool m_MustRender = true;
 
-        private bool m_AsHTML = false;
-        public bool AsHTML
-        {
-            get { return m_AsHTML; }
-            set
-            {
-                if (m_AsHTML != value)
-                {
-                    m_MustRender = true;
-                    m_AsHTML = value;
-                }
-            }
-        }
-
         private int m_MaxWidth = 400;
         public int MaxWidth
         {
@@ -140,10 +126,9 @@ namespace UltimaXNA.Ultima.UI
 
         private readonly SpriteBatchUI m_SpriteBatch;
 
-        public RenderedText(string text, bool asHTML, int maxWidth = 200)
+        public RenderedText(string text, int maxWidth = 200)
         {
             Text = text;
-            AsHTML = asHTML;
             MaxWidth = maxWidth;
 
             Regions = new Regions();
@@ -211,9 +196,9 @@ namespace UltimaXNA.Ultima.UI
                 destRectangle.Height = sourceRectangle.Height;
             }
 
-            int hue_if_not_html = m_AsHTML ? 0 : Hue;
+            int hue = (Hue < 2) ? 0 : Hue - 2;
 
-            sb.Draw2D(m_Texture, destRectangle, sourceRectangle, Utility.GetHueVector(hue_if_not_html, false, Transparent));
+            sb.Draw2D(m_Texture, destRectangle, sourceRectangle, Utility.GetHueVector(hue, true, Transparent));
 
             for (int i = 0; i < Regions.Count; i++)
             {
@@ -227,17 +212,17 @@ namespace UltimaXNA.Ultima.UI
                     // being mouse overed.
                     if (r.HREFAttributes != null)
                     {
-                        int hue = 0;
+                        int linkHue = 0;
                         if (r.Index == m_activeHREF)
                             if (ActiveRegion_UseDownHue)
-                                hue = r.HREFAttributes.DownHue;
+                                linkHue = r.HREFAttributes.DownHue;
                             else
-                                hue = r.HREFAttributes.OverHue;
+                                linkHue = r.HREFAttributes.OverHue;
                         else
-                            hue = r.HREFAttributes.UpHue;
+                            linkHue = r.HREFAttributes.UpHue;
 
                         sb.Draw2D(m_Texture, new Vector3(position.X, position.Y, 0),
-                            sourceRect, Utility.GetHueVector(hue, false, false));
+                            sourceRect, Utility.GetHueVector(linkHue));
                     }
                 }
             }
@@ -286,7 +271,7 @@ namespace UltimaXNA.Ultima.UI
 
                     int width, height, ascender;
 
-                    resizeAndParse(Text, MaxWidth, AsHTML, out width, out height, out ascender);
+                    resizeAndParse(Text, MaxWidth, out width, out height, out ascender);
                     m_Texture = renderToTexture(m_SpriteBatch.GraphicsDevice, m_HtmlParser, width, height, ascender);
 
                     m_MustRender = false;
@@ -294,7 +279,7 @@ namespace UltimaXNA.Ultima.UI
             }
         }
 
-        private void resizeAndParse(string textToRender, int maxWidth, bool parseHTML, out int width, out int height, out int ascender)
+        private void resizeAndParse(string textToRender, int maxWidth, out int width, out int height, out int ascender)
         {
             width = 0;
             height = 0;
@@ -302,7 +287,7 @@ namespace UltimaXNA.Ultima.UI
 
             if (m_HtmlParser != null)
                 m_HtmlParser = null;
-            m_HtmlParser = new Reader(textToRender, parseHTML);
+            m_HtmlParser = new Reader(textToRender);
 
             Regions.Clear();
             Images.Clear();
