@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
  *   Utility.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -11,14 +10,15 @@
 #region usings
 using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Text;
-using UltimaXNA.UltimaData.Fonts;
+using UltimaXNA.Ultima;
+using UltimaXNA.Ultima.Data;
 #endregion
 
 namespace UltimaXNA
@@ -179,40 +179,6 @@ namespace UltimaXNA
         }
         #endregion
 
-        #region Console Helpers
-        private static Stack<ConsoleColor> consoleColors = new Stack<ConsoleColor>();
-
-        /// <summary>
-        /// Pushes the color to the console
-        /// </summary>
-        public static void PushColor(ConsoleColor color)
-        {
-            try
-            {
-                consoleColors.Push(Console.ForegroundColor);
-                Console.ForegroundColor = color;
-            }
-            catch
-            {
-            }
-        }
-
-        /// <summary>
-        /// Pops the color of the console to the previous value.
-        /// </summary>
-        public static void PopColor()
-        {
-            try
-            {
-                Console.ForegroundColor = consoleColors.Pop();
-            }
-            catch
-            {
-
-            }
-        }
-        #endregion
-
         #region Encoding
         private static Encoding utf8, utf8WithEncoding;
 
@@ -336,56 +302,6 @@ namespace UltimaXNA
         }
         #endregion
 
-        public static string WrapASCIIText(int fontNumber, string text, float maxLineWidth)
-        {
-            if (string.IsNullOrEmpty(text))
-            {
-                text = string.Empty;
-            }
-
-            string[] words = text.Split(' ');
-
-            StringBuilder sb = new StringBuilder();
-
-            float lineWidth = 0f;
-            float spaceWidth = ASCIIFont.GetFixed(fontNumber).GetWidth(" ");
-
-            foreach (string word in words)
-            {
-                Vector2 size = new Vector2(ASCIIFont.GetFixed(fontNumber).GetWidth(word), ASCIIFont.GetFixed(fontNumber).Height);
-
-                if (lineWidth + size.X < maxLineWidth)
-                {
-                    sb.Append(word + " ");
-                    lineWidth += size.X + spaceWidth;
-                }
-                else
-                {
-                    sb.Append("\n" + word + " ");
-                    lineWidth = size.X + spaceWidth;
-                }
-            }
-
-            return sb.ToString();
-        }
-
-        public static string ClipASCIIText(int fontNumber, string text, int width, int pixelBuffer)
-        {
-            int charIndex = text.Length;
-            string textToWrite = text.Substring(0, charIndex);
-
-            Vector2 fontDimensions = new Vector2(ASCIIFont.GetFixed(fontNumber).GetWidth(textToWrite), ASCIIFont.GetFixed(fontNumber).Height);
-
-            while (fontDimensions.X > width - (pixelBuffer * 2))
-            {
-                charIndex--;
-                textToWrite = text.Substring(0, charIndex);
-                fontDimensions = new Vector2(ASCIIFont.GetFixed(fontNumber).GetWidth(textToWrite), ASCIIFont.GetFixed(fontNumber).Height);
-            }
-
-            return textToWrite;
-        }
-
         public static bool InRange(IPoint2D from, IPoint2D to, int range)
         {
             return (from.X >= (to.X - range)) && (from.X <= (to.X + range)) && (from.Y >= (to.Y - range)) && (from.Y <= (to.Y + range));
@@ -457,6 +373,11 @@ namespace UltimaXNA
                 case 'F': return (byte)15;
             }
             return (byte)0;
+        }
+
+        public static uint UintFromColor(Color color)
+        {
+            return (uint)((color.A << 24) | (color.B << 16) | (color.G << 8) | (color.R));
         }
 
         public static Color ColorFromHexString(string hex)
@@ -535,20 +456,7 @@ namespace UltimaXNA
             return i;
         }
         #endregion
-
-        public static bool ToggleBoolean(bool b)
-        {
-            if (b)
-                return false;
-            else
-                return true;
-        }
-
-        public static void ToogleBoolean(ref bool b)
-        {
-            b = !b;
-        }
-
+        
         public static int IPAddress
         {
             get
@@ -557,6 +465,13 @@ namespace UltimaXNA
                 int iAddress = BitConverter.ToInt32(iIPAdress, 0);
                 return iAddress;
             }
+        }
+
+        public static long GetLongAddressValue(IPAddress address)
+        {
+#pragma warning disable 618
+            return address.Address;
+#pragma warning restore 618
         }
 
         public static Direction DirectionFromPoints(Point from, Point to)
@@ -609,33 +524,33 @@ namespace UltimaXNA
                 return false;
         }
 
-        public static Vector2 GetHueVector(int hue)
+        public static Vector3 GetHueVector(int hue)
         {
             return GetHueVector(hue, false, false);
         }
 
-        public static Vector2 GetHueVector(int hue, bool partial, bool transparent)
+        public static Vector3 GetHueVector(int hue, bool partial, bool transparent)
         {
+            if ((hue & 0x4000) != 0)
+                transparent = true;
+            if ((hue & 0x8000) != 0)
+                partial = true;
+
             if (hue == 0)
-                return new Vector2(0);
+                return new Vector3(0);
 
-            int hueType = 0;
+            return new Vector3(hue & 0x0FFF, partial ? 2 : 1, transparent ? 0.5f : 0);
+        }
 
-            if ((hue & 0x4000) != 0 || transparent)
-            {
-                // transparant
-                hueType = 4;
-            }
-            else if ((hue & 0x8000) != 0 || partial) // partial hue
-            {
-                hueType = 2;
-            }
-            else
-            {
-                hueType = 1;
-            }
-            hue += 1;
-            return new Vector2(hue & 0x3FFF, hueType);
+        public static string GetColorFromUshortColor(ushort color)
+        {
+            const int multiplier = 0xFF / 0x1F;
+            uint uintColor = (uint)(
+                ((((color >> 10) & 0x1F) * multiplier)) |
+                ((((color >> 5) & 0x1F) * multiplier) << 8) |
+                (((color & 0x1F) * multiplier) << 16)
+                );
+            return string.Format("{0:X6}", uintColor);
         }
 
         public static int DistanceBetweenTwoPoints(Point p1, Point p2)

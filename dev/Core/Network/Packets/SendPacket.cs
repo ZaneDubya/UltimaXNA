@@ -1,6 +1,5 @@
 ﻿/***************************************************************************
  *   SendPacket.cs
- *   Part of UltimaXNA: http://code.google.com/p/ultimaxna
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -27,16 +26,16 @@ namespace UltimaXNA.Core.Network.Packets
         /// </summary>
         protected PacketWriter Stream;
 
-        int id;
-        int length;
-        string name;
+        int m_Id;
+        int m_Length;
+        string m_Name;
 
         /// <summary>
         /// Gets the name of the packet
         /// </summary>
         public string Name
         {
-            get { return name; }
+            get { return m_Name; }
         }
 
         /// <summary>
@@ -44,7 +43,7 @@ namespace UltimaXNA.Core.Network.Packets
         /// </summary>
         public int Length
         {
-            get { return length; }
+            get { return m_Length; }
         }
 
         /// <summary>
@@ -52,7 +51,7 @@ namespace UltimaXNA.Core.Network.Packets
         /// </summary>
         public int Id
         {
-            get { return id; }
+            get { return m_Id; }
         }
 
         /// <summary>
@@ -62,11 +61,11 @@ namespace UltimaXNA.Core.Network.Packets
         /// <param name="name">The name of the packet</param>
         public SendPacket(int id, string name)
         {
-            this.id = id;
-            this.name = name;
-            this.Stream = PacketWriter.CreateInstance(length);
-            this.Stream.Write((byte)id);
-            this.Stream.Write((short)0);
+            m_Id = id;
+            m_Name = name;
+            Stream = PacketWriter.CreateInstance(m_Length);
+            Stream.Write((byte)id);
+            Stream.Write((short)0);
         }
 
         /// <summary>
@@ -77,12 +76,12 @@ namespace UltimaXNA.Core.Network.Packets
         /// <param name="length">The size in bytes of the packet</param>
         public SendPacket(int id, string name, int length)
         {
-            this.id = id;
-            this.name = name;
-            this.length = length;
+            m_Id = id;
+            m_Name = name;
+            m_Length = length;
 
-            this.Stream = PacketWriter.CreateInstance(length);
-            this.Stream.Write((byte)id);
+            Stream = PacketWriter.CreateInstance(length);
+            Stream.Write((byte)id);
         }
 
         /// <summary>
@@ -92,7 +91,7 @@ namespace UltimaXNA.Core.Network.Packets
         public void EnsureCapacity(int length)
         {
             Stream = PacketWriter.CreateInstance(length);
-            Stream.Write((byte)id);
+            Stream.Write((byte)m_Id);
             Stream.Write((short)length);
         }
 
@@ -102,13 +101,13 @@ namespace UltimaXNA.Core.Network.Packets
         /// <returns></returns>
         public byte[] Compile()
         {
-            this.Stream.Flush();
+            Stream.Flush();
 
-            if (this.Length == 0)
+            if (Length == 0)
             {
-                length = (int)Stream.Length;
+                m_Length = (int)Stream.Length;
                 Stream.Seek((long)1, SeekOrigin.Begin);
-                Stream.Write((ushort)length);
+                Stream.Write((ushort)m_Length);
             }
 
             return Stream.Compile();
@@ -116,7 +115,7 @@ namespace UltimaXNA.Core.Network.Packets
 
         public override string ToString()
         {
-            return string.Format("Id: {0:X2} Name: {1} Length: {2}", id, name, length);
+            return string.Format("Id: {0:X2} Name: {1} Length: {2}", m_Id, m_Name, m_Length);
         }
     }
 }
