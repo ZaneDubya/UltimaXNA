@@ -20,7 +20,7 @@ using UltimaXNA.Ultima.UI.Controls;
 
 namespace UltimaXNA.Ultima.World.Gumps
 {
-    class ChatWindow : Gump
+    class ChatControl : AControl
     {
         TextEntry m_TextEntry;
         List<ChatLineTimed> m_TextEntries;
@@ -32,12 +32,14 @@ namespace UltimaXNA.Ultima.World.Gumps
 
         int m_MessageHistoryIndex = -1;
 
-        public ChatWindow()
-            : base(0, 0)
+        public ChatControl(AControl owner, int x, int y, int width, int height)
+            : base(owner, 0)
         {
+            Position = new Point(x, y);
+            Size = new Point(width, height);
+
             m_TextEntries = new List<ChatLineTimed>();
             m_MessageHistory = new List<string>();
-            Width = 400;
 
             m_Input = UltimaServices.GetService<InputManager>();
             m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
@@ -50,14 +52,13 @@ namespace UltimaXNA.Ultima.World.Gumps
         {
             if (m_TextEntry == null)
             {
-                m_TextEntry = new TextEntry(this, 0, 1, m_UserInterface.Height - TextUni.GetFont(0).Height, 400, TextUni.GetFont(0).Height, 0, 0, 64, string.Empty);
+                m_TextEntry = new TextEntry(this, 0, 1, Height - TextUni.GetFont(0).Height, Width, TextUni.GetFont(0).Height, 0, 0, 64, string.Empty);
                 m_TextEntry.LegacyCarat = true;
 
-                AddControl(new CheckerTrans(this, 0, 0, m_UserInterface.Height - 20, m_UserInterface.Width, 20));
+                AddControl(new CheckerTrans(this, 0, 0, Height - 20, Width, 20));
                 AddControl(m_TextEntry);
             }
 
-            int y = m_TextEntry.Y - 48;
             for (int i = 0; i < m_TextEntries.Count; i++)
             {
                 m_TextEntries[i].Update(totalMS, frameMS);
@@ -94,11 +95,11 @@ namespace UltimaXNA.Ultima.World.Gumps
 
         public override void Draw(SpriteBatchUI spriteBatch)
         {
-            int y = m_TextEntry.Y - 20;
+            int y = m_TextEntry.Y + Y - 6;
             for (int i = m_TextEntries.Count - 1; i >= 0; i--)
             {
                 y -= m_TextEntries[i].TextHeight;
-                m_TextEntries[i].Draw(spriteBatch, new Point(1, y));
+                m_TextEntries[i].Draw(spriteBatch, new Point(X + 2, y));
             }
             base.Draw(spriteBatch);
         }

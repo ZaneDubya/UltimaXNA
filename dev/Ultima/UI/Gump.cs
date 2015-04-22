@@ -25,11 +25,24 @@ namespace UltimaXNA.Ultima.UI
     /// </summary>
     public class Gump : AControl
     {
+        Serial m_GumpID;
+        string[] m_gumpPieces, m_gumpLines;
+        UserInterfaceService m_UserInterface;
+
+        /// <summary>
+        /// If true, gump will not be moved.
+        /// </summary>
+        public bool BlockMovement
+        {
+            get;
+            protected set;
+        }
+
         public override bool IsMovable
         {
             get
             {
-                return !IsNotMovable && base.IsMovable;
+                return !BlockMovement && base.IsMovable;
             }
             set
             {
@@ -37,19 +50,11 @@ namespace UltimaXNA.Ultima.UI
             }
         }
 
-        /// <summary>
-        /// If true, gump cannot be moved.
-        /// </summary>
-        public bool IsNotMovable
+        public GumpLayer Layer
         {
             get;
             protected set;
         }
-
-        Serial m_GumpID;
-        string[] m_gumpPieces, m_gumpLines;
-        UserInterfaceService m_UserInterface;
-
 
         public Gump(Serial serial, Serial gumpID)
             : base(null, 0)
@@ -91,10 +96,7 @@ namespace UltimaXNA.Ultima.UI
             base.Update(totalMS, frameMS);
 
             // Do we need to resize?
-            if (CheckResize())
-            {
-
-            }
+            CheckResize();
         }
 
         public override void ActivateByButton(int buttonID)
@@ -238,7 +240,7 @@ namespace UltimaXNA.Ultima.UI
                     case "nomove":
                         // NoMove
                         // Locks the gump in his position. 
-                        IsNotMovable = true;
+                        BlockMovement = true;
                         break;
                     case "group":
                         // Group [Number]

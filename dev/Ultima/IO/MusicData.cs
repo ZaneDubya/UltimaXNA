@@ -112,9 +112,11 @@ namespace UltimaXNA.Ultima.IO
 		static MusicData()
 		{
 			m_songList = new Hashtable ();
+
 		    if (!FileManager.Exists(m_ConfigFilePath))
                 return;
 			StreamReader reader = new StreamReader(FileManager.GetFile(m_ConfigFilePath));
+
 			String line;
 			while ((line = reader.ReadLine ()) != null)
 			{

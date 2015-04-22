@@ -181,6 +181,22 @@ namespace UltimaXNA.Ultima.UI
         public int X { get { return m_Position.X; } set { m_Position.X = value; } }
         public int Y { get { return m_Position.Y; } set { m_Position.Y = value; } }
 
+        public int ScreenX
+        {
+            get
+            {
+                return OwnerX + X;
+            }
+        }
+
+        public int ScreenY
+        {
+            get
+            {
+                return OwnerY + Y;
+            }
+        }
+
         public virtual int Width
         {
             get { return m_Area.Width; }
@@ -269,13 +285,6 @@ namespace UltimaXNA.Ultima.UI
             IsDisposed = true;
         }
 
-        DragWidget m_dragger;
-        public void MakeDragger(AControl toMove)
-        {
-            HandlesMouseInput = true;
-            m_dragger = new DragWidget(this, toMove);
-        }
-
         public virtual void Update(double totalMS, double frameMS)
         {
             if (!IsInitialized || IsDisposed)
@@ -346,8 +355,6 @@ namespace UltimaXNA.Ultima.UI
                 foreach (AControl c in Children)
                     c.Dispose();
         }
-
-
 
         DragWidget m_Dragger;
         public void MakeThisADragger()
@@ -621,16 +628,17 @@ namespace UltimaXNA.Ultima.UI
                 {
                     if (alwaysHandleMouseInput || HandlesMouseInput)
                         focusedControls.Insert(0, this);
-                    foreach (AControl c in Children)
+                    for (int i = 0; i < Children.Count; i++)
                     {
+                        AControl c = Children[i];
                         if ((c.Page == 0) || (c.Page == ActivePage))
                         {
                             AControl[] c1 = c.HitTest(position, false);
                             if (c1 != null)
                             {
-                                for (int i = c1.Length - 1; i >= 0; i--)
+                                for (int j = c1.Length - 1; j >= 0; j--)
                                 {
-                                    focusedControls.Insert(0, c1[i]);
+                                    focusedControls.Insert(0, c1[j]);
                                 }
                             }
                         }

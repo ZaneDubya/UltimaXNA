@@ -34,11 +34,11 @@ namespace UltimaXNA.Ultima.World.Controllers
             }
         }
 
-        public MouseOverList(Point mousePosition, PickType pickType)
+        public MouseOverList(MousePicking mousePicking)
         {
             m_overList = new List<MouseOverItem>();
-            MousePosition = mousePosition;
-            PickType = pickType;
+            MousePosition = mousePicking.Position;
+            PickType = mousePicking.PickOnly;
         }
 
         internal MouseOverItem GetForemostMouseOverItem(Point mousePosition)

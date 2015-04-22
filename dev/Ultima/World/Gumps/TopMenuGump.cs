@@ -16,12 +16,12 @@ using UltimaXNA.Ultima.UI.Controls;
 
 namespace UltimaXNA.Ultima.World.Gumps
 {
-    class TopMenu : Gump
+    class TopMenuGump : Gump
     {
         UserInterfaceService m_UserInterface;
         WorldModel m_World;
 
-        public TopMenu(Serial serial)
+        public TopMenuGump(Serial serial)
             : base(serial, 0)
         {
             // maximized view
@@ -54,6 +54,8 @@ namespace UltimaXNA.Ultima.World.Gumps
             m_World = UltimaServices.GetService<WorldModel>();
 
             IsUncloseableWithRMB = true;
+
+            Layer = GumpLayer.Over;
         }
 
         public override void ActivateByButton(int buttonID)
@@ -61,7 +63,7 @@ namespace UltimaXNA.Ultima.World.Gumps
             switch ((Buttons)buttonID)
             {
                 case Buttons.Map:
-                    m_UserInterface.AddControl(new MiniMap(), 566, 25, UserInterfaceService.AddControlType.Toggle);
+                    m_UserInterface.AddControl(new MiniMapGump(), 566, 25, UserInterfaceService.AddControlType.Toggle);
                     break;
                 case Buttons.Paperdoll:
                     m_UserInterface.AddControl(new PaperDollGump((Mobile)EntityManager.GetPlayerObject()), 400, 100, UserInterfaceService.AddControlType.Toggle);

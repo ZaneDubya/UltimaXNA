@@ -12,6 +12,7 @@ namespace UltimaXNA.Configuration
 
         private DebugSettings m_Debug;
         private GameSettings m_Game;
+        private WorldSettings m_World;
         private ServerSettings m_Server;
         private UltimaOnlineSettings m_UltimaOnline;
 
@@ -24,7 +25,9 @@ namespace UltimaXNA.Configuration
             m_Instance.m_Server = CreateOrOpenSection<ServerSettings>(ServerSettings.SectionName);
             m_Instance.m_UltimaOnline = CreateOrOpenSection<UltimaOnlineSettings>(UltimaOnlineSettings.SectionName);
             m_Instance.m_Game = CreateOrOpenSection<GameSettings>(GameSettings.SectionName);
+            m_Instance.m_World = CreateOrOpenSection<WorldSettings>(WorldSettings.SectionName);
 
+            
             m_File.Load();
         }
 
@@ -51,6 +54,11 @@ namespace UltimaXNA.Configuration
         public static GameSettings Game
         {
             get { return m_Instance.m_Game; }
+        }
+
+        public static WorldSettings World
+        {
+            get { return m_Instance.m_World; }
         }
         
         internal static void Save()

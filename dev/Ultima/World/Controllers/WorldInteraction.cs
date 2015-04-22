@@ -122,7 +122,7 @@ namespace UltimaXNA.Ultima.World.Controllers
         {
             m_ChatQueue.Add(new QueuedMessage(text, hue, font));
 
-            ChatWindow chat = m_UserInterface.GetControl<ChatWindow>(0);
+            ChatControl chat = UltimaServices.GetService<ChatControl>();
             if (chat != null)
             {
                 foreach (QueuedMessage msg in m_ChatQueue)

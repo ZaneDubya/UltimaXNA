@@ -129,6 +129,7 @@
   <ItemGroup>
     <Compile Include="Configuration\Mouse.cs" />
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Configuration\WorldSettings.cs" />
     <Compile Include="Core\ComponentModel\EqualityHelper.cs" />
     <Compile Include="Core\ComponentModel\NotifyPropertyChangedBase.cs" />
     <Compile Include="Configuration\Resolution.cs" />
@@ -206,6 +207,8 @@
     <Compile Include="Ultima\Network\Server\FeatureFlags.cs" />
     <Compile Include="Ultima\UI\Controls\CheckBox.cs" />
     <Compile Include="Ultima\UI\Controls\RadioButton.cs" />
+    <Compile Include="Ultima\World\Gumps\WorldControl.cs" />
+    <Compile Include="Ultima\UI\GumpLayer.cs" />
     <Compile Include="Ultima\UI\Tooltip.cs" />
     <Compile Include="Ultima\UI\HTML\AAtom.cs" />
     <Compile Include="Ultima\UI\HTML\Atoms\CharacterAtom.cs" />
@@ -231,6 +234,7 @@
     <Compile Include="Ultima\World\Controllers\MousePicking.cs" />
     <Compile Include="Ultima\World\Controllers\PickType.cs" />
     <Compile Include="Ultima\World\EffectManager.cs" />
+    <Compile Include="Ultima\World\Gumps\WorldViewGump.cs" />
     <Compile Include="Ultima\World\Maps\TileSorter.cs" />
     <Compile Include="Ultima\EntityViews\GroundView.cs" />
     <Compile Include="Ultima\EntityViews\ItemView.cs" />
@@ -417,29 +421,27 @@
     <Compile Include="Ultima\Login\States\CreateCharacterState.cs" />
     <Compile Include="Ultima\Login\States\LoggingInState.cs" />
     <Compile Include="Ultima\Login\States\SelectServerState.cs" />
-    <Compile Include="Core\Graphics\VectorPolygon.cs" />
-    <Compile Include="Core\Graphics\VectorRenderer.cs" />
     <Compile Include="Ultima\World\Maps\MapBlock.cs" />
     <Compile Include="Ultima\World\StaticManager.cs" />
     <Compile Include="Ultima\World\Views\IsometricView.cs" />
     <Compile Include="Ultima\World\Maps\MapTile.cs" />
     <Compile Include="Ultima\World\Controllers\MouseOverList.cs" />
     <Compile Include="Ultima\Login\Gumps\CharacterListGump.cs" />
-    <Compile Include="Ultima\World\Gumps\ChatWindow.cs" />
+    <Compile Include="Ultima\World\Gumps\ChatControl.cs" />
     <Compile Include="Ultima\World\Gumps\ContainerGump.cs" />
     <Compile Include="Ultima\Login\Gumps\CreateCharSkillsGump.cs" />
     <Compile Include="Ultima\Login\Gumps\CreateCharAppearanceGump.cs" />
     <Compile Include="Ultima\World\Gumps\DebugGump.cs" />
     <Compile Include="Ultima\Login\Gumps\LoggingInGump.cs" />
     <Compile Include="Ultima\Login\Gumps\LoginGump.cs" />
-    <Compile Include="Ultima\World\Gumps\MiniMap.cs" />
+    <Compile Include="Ultima\World\Gumps\MiniMapGump.cs" />
     <Compile Include="Ultima\World\Gumps\SkillsGump.cs" />
     <Compile Include="Ultima\World\Gumps\StatusGump.cs" />
     <Compile Include="Ultima\UI\Controls\ExpandableScroll.cs" />
     <Compile Include="Ultima\UI\MsgBox.cs" />
     <Compile Include="Ultima\World\Gumps\PaperDollGump.cs" />
     <Compile Include="Ultima\Login\Gumps\SelectServerGump.cs" />
-    <Compile Include="Ultima\World\Gumps\TopMenu.cs" />
+    <Compile Include="Ultima\World\Gumps\TopMenuGump.cs" />
     <Compile Include="Ultima\UI\AControl.cs" />
     <Compile Include="Core\Graphics\SpriteBatchUI.cs" />
     <Compile Include="Ultima\UI\Gump.cs" />

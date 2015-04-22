@@ -237,6 +237,8 @@ namespace UltimaXNA.Ultima.UI
 
         public void Update(double totalMS, double frameMS)
         {
+            ReorderGumps();
+
             foreach (AControl c in m_Controls)
             {
                 if (!c.IsInitialized)
@@ -261,6 +263,8 @@ namespace UltimaXNA.Ultima.UI
 
         public void Draw(double frameTime)
         {
+            ReorderGumps();
+
             foreach (AControl c in m_Controls)
             {
                 if (c.IsInitialized)
@@ -298,6 +302,35 @@ namespace UltimaXNA.Ultima.UI
                         if (e.EventType == KeyboardEventType.Press)
                             m_keyboardFocusControl.KeyboardInput(e);
                     }
+                }
+            }
+        }
+
+        private void ReorderGumps()
+        {
+            List<Gump> gumps = new List<Gump>();
+
+            foreach (AControl control in m_Controls)
+            {
+                Gump gump = control as Gump;
+                if (gump != null)
+                {
+                    if (gump.Layer != GumpLayer.Default)
+                        gumps.Add(gump);
+                }
+            }
+
+            foreach (Gump gump in gumps)
+            {
+                if (gump.Layer == GumpLayer.Under)
+                {
+                    m_Controls.Remove(gump);
+                    m_Controls.Insert(0, gump);
+                }
+                else if (gump.Layer == GumpLayer.Over)
+                {
+                    m_Controls.Remove(gump);
+                    m_Controls.Insert(m_Controls.Count, gump);
                 }
             }
         }
