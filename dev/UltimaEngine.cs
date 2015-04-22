@@ -33,6 +33,7 @@ namespace UltimaXNA
         public UltimaEngine()
         {
             InitializeGraphicsDeviceAndWindow();
+            InitializeExitGuard();
             SetupWindowForLogin();
         }
 
@@ -93,21 +94,6 @@ namespace UltimaXNA
             private set;
         }
 
-        protected bool IsMinimized
-        {
-            get
-            {
-                //Get out top level form via the handle.
-                Control MainForm = Control.FromHandle(Window.Handle);
-                //If we are minimized don't waste time trying to draw, and avoid crash on resume.
-                if(((Form)MainForm).WindowState == FormWindowState.Minimized)
-                {
-                    return true;
-                }
-                return false;
-            }
-        }
-
         protected InputManager Input
         {
             get;
@@ -163,13 +149,6 @@ namespace UltimaXNA
             }
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (ActiveModel != null)
-                ActiveModel = null;
-            base.Dispose(disposing);
-        }
-
         protected override void Update(GameTime gameTime)
         {
             IsFixedTimeStep = Settings.Game.IsFixedTimeStep;
@@ -220,10 +199,9 @@ namespace UltimaXNA
         public void SetupWindowForWorld()
         {
             Window.AllowUserResizing = true;
-            if (Settings.World.IsFullScreen)
+            if (Settings.World.IsMaximized)
             {
-                // not implemented!
-                SetGraphicsDeviceWidthHeight(Settings.World.WindowResolution);
+                Maximize();
             }
             else
             {
@@ -233,7 +211,63 @@ namespace UltimaXNA
 
         public void SaveResolution()
         {
-            Settings.World.WindowResolution = new Resolution(GraphicsDeviceManager.PreferredBackBufferWidth, GraphicsDeviceManager.PreferredBackBufferHeight);
+            if (IsMaximized)
+            {
+                Settings.World.IsMaximized = true;
+            }
+            else
+            {
+                Settings.World.WindowResolution = new Resolution(GraphicsDeviceManager.PreferredBackBufferWidth, GraphicsDeviceManager.PreferredBackBufferHeight);
+            }
+        }
+
+        private void InitializeExitGuard()
+        {
+            Form form = (Form)Form.FromHandle(Window.Handle);
+            form.Closing += ExitGuard;
+        }
+
+        private void ExitGuard(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            // we should dispose of the active model BEFORE we dispose of the window.
+            if (ActiveModel != null)
+                ActiveModel = null;
+        }
+
+        protected bool IsMinimized
+        {
+            get
+            {
+                //Get our top level form via the handle.
+                Control MainForm = Control.FromHandle(Window.Handle);
+                //If we are minimized don't waste time trying to draw, and avoid crash on resume.
+                if (((Form)MainForm).WindowState == FormWindowState.Minimized)
+                {
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        protected bool IsMaximized
+        {
+            get
+            {
+                // Get our top level form via the handle.
+                Control MainForm = Control.FromHandle(Window.Handle);
+                if (((Form)MainForm).WindowState == FormWindowState.Maximized)
+                {
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        protected void Maximize()
+        {
+            // Get our top level form via the handle.
+            Control MainForm = Control.FromHandle(Window.Handle);
+            ((Form)MainForm).WindowState = FormWindowState.Maximized;
         }
 
         private void InitializeGraphicsDeviceAndWindow()

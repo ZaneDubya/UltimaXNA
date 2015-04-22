@@ -19,12 +19,12 @@ namespace UltimaXNA.Configuration
         {
             WindowResolution = new Resolution(800, 600);
             GumpResolution = new Resolution(800, 600);
-            IsFullScreen = false;
+            IsMaximized = false;
             Mouse = new Mouse(MouseButton.Left, MouseButton.Right);
             AlwaysRun = false;
         }
 
-        public bool IsFullScreen
+        public bool IsMaximized
         {
             get { return m_IsFullScreen; }
             set { SetProperty(ref m_IsFullScreen, value); }
