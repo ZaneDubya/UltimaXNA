@@ -192,6 +192,7 @@ namespace UltimaXNA
 
         public void SetupWindowForLogin()
         {
+            Restore();
             Window.AllowUserResizing = false;
             SetGraphicsDeviceWidthHeight(new Resolution(800, 600)); // a wee bit bigger than legacy. Looks nicer.
         }
@@ -268,6 +269,14 @@ namespace UltimaXNA
             // Get our top level form via the handle.
             Control MainForm = Control.FromHandle(Window.Handle);
             ((Form)MainForm).WindowState = FormWindowState.Maximized;
+        }
+
+        protected void Restore()
+        {
+            // Get our top level form via the handle.
+            Control MainForm = Control.FromHandle(Window.Handle);
+            if (((Form)MainForm).WindowState != FormWindowState.Normal)
+                ((Form)MainForm).WindowState = FormWindowState.Normal;
         }
 
         private void InitializeGraphicsDeviceAndWindow()
