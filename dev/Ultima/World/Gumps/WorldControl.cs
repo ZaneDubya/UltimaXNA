@@ -20,11 +20,18 @@ namespace UltimaXNA.Ultima.UI.Controls
             Size = new Point(width, height);
 
             HandlesMouseInput = true;
+            UltimaServices.Register<WorldControl>(this);
         }
 
         protected override void OnInitialize()
         {
             m_Model = UltimaServices.GetService<WorldModel>();
+        }
+
+        public override void Dispose()
+        {
+            UltimaServices.Unregister<WorldControl>();
+            base.Dispose();
         }
 
         public override void Draw(SpriteBatchUI spriteBatch)

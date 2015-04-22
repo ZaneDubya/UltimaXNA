@@ -87,7 +87,7 @@ namespace UltimaXNA.Ultima.UI
             }
 
             CursorSpriteArtIndex = artworkIndex;
-            CursorOffset = new Point(1, 1);
+            CursorOffset = new Point(-1, 1);
         }
 
         public void Draw(SpriteBatchUI spritebatch, Point position)

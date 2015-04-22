@@ -110,9 +110,9 @@ namespace UltimaXNA.Ultima.World.Controllers
         {
             get
             {
-                if (IsMouseOverWorld)
-                    return (m_UserInterface.MouseOverControl as WorldControl).MousePosition;
-                return Point.Zero;
+                WorldControl world = UltimaServices.GetService<WorldControl>();
+                Point mouse = new Point(m_Input.MousePosition.X - world.ScreenX, m_Input.MousePosition.Y - world.ScreenY);
+                return mouse;
             }
         }
 
@@ -130,7 +130,7 @@ namespace UltimaXNA.Ultima.World.Controllers
 
                 // In all cases, where we are moving and the move button was released, stop moving.
                 if(ContinuousMouseMovementCheck &&
-                   m_Input.HandleMouseEvent(MouseEvent.Up, Settings.Game.Mouse.MovementButton))
+                   m_Input.HandleMouseEvent(MouseEvent.Up, Settings.World.Mouse.MovementButton))
                 {
                     ContinuousMouseMovementCheck = false;
                 }
@@ -162,9 +162,9 @@ namespace UltimaXNA.Ultima.World.Controllers
             // if the move button is pressed, change facing and move based on mouse cursor direction.
             if(ContinuousMouseMovementCheck)
             {
-                Resolution resolution = Settings.Game.WindowResolution;
+                Resolution resolution = Settings.World.GumpResolution;
                 Point centerScreen = new Point(resolution.Width / 2, resolution.Height / 2);
-                Direction mouseDirection = Utility.DirectionFromPoints(centerScreen, m_Input.MousePosition);
+                Direction mouseDirection = Utility.DirectionFromPoints(centerScreen, MouseOverWorldPosition);
 
                 m_TimeSinceMovementButtonPressed += frameMS;
 
@@ -174,9 +174,9 @@ namespace UltimaXNA.Ultima.World.Controllers
                     Direction moveDirection = mouseDirection;
 
                     // add the running flag if the mouse cursor is far enough away from the center of the screen.
-                    float distanceFromCenterOfScreen = Utility.DistanceBetweenTwoPoints(centerScreen, m_Input.MousePosition);
+                    float distanceFromCenterOfScreen = Utility.DistanceBetweenTwoPoints(centerScreen, MouseOverWorldPosition);
 
-                    if(distanceFromCenterOfScreen >= 150.0f || Settings.Game.AlwaysRun)
+                    if (distanceFromCenterOfScreen >= 150.0f || Settings.World.AlwaysRun)
                     {
                         moveDirection |= Direction.Running;
                     }
@@ -416,11 +416,11 @@ namespace UltimaXNA.Ultima.World.Controllers
             List<InputEventMouse> events = m_Input.GetMouseEvents();
             foreach (InputEventMouse e in events)
             {
-                if(e.Button == Settings.Game.Mouse.MovementButton)
+                if (e.Button == Settings.World.Mouse.MovementButton)
                 {
                     onMoveButton(e);
                 }
-                else if (e.Button == Settings.Game.Mouse.InteractionButton)
+                else if (e.Button == Settings.World.Mouse.InteractionButton)
                 {
                     if(e.EventType == MouseEvent.Click)
                     {
@@ -491,7 +491,7 @@ namespace UltimaXNA.Ultima.World.Controllers
             // Mouse enable / disable
             if(m_Input.HandleKeyboardEvent(KeyboardEventType.Press, WinKeys.M, false, true, false))
             {
-                Settings.Game.Mouse.IsEnabled = !Settings.Game.Mouse.IsEnabled;
+                Settings.World.Mouse.IsEnabled = !Settings.World.Mouse.IsEnabled;
             }
         }
 

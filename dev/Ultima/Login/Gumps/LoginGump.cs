@@ -38,7 +38,7 @@ namespace UltimaXNA.Ultima.Login.Gumps
         {
             int hue = 1132; // dark brown
             // backdrop
-            AddControl(new GumpPicTiled(this, 0, 0, 0, Settings.Game.WindowResolution.Width, Settings.Game.WindowResolution.Height, 9274));
+            AddControl(new GumpPicTiled(this, 0, 0, 0, 800, 600, 9274));
             AddControl(new GumpPic(this, 0, 0, 0, 9001, 0));
             // quit button
             AddControl(new Button(this, 0, 554, 2, 5513, 5515, ButtonTypes.Activate, 0, (int)LoginGumpButtons.QuitButton));

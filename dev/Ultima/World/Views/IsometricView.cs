@@ -105,11 +105,11 @@ namespace UltimaXNA.Ultima.World.Views
 
         public void Update(Map map, Position3D center, MousePicking mousePick)
         {
-            if (RenderTarget == null || RenderTarget.Width != Settings.Game.WorldGumpResolution.Width || RenderTarget.Height != Settings.Game.WorldGumpResolution.Height)
+            if (RenderTarget == null || RenderTarget.Width != Settings.World.GumpResolution.Width || RenderTarget.Height != Settings.World.GumpResolution.Height)
             {
                 if (RenderTarget != null)
                     RenderTarget.Dispose();
-                RenderTarget = new RenderTarget2D(m_spriteBatch.GraphicsDevice, Settings.Game.WorldGumpResolution.Width, Settings.Game.WorldGumpResolution.Height, false, SurfaceFormat.Color, DepthFormat.Depth16, 0, RenderTargetUsage.DiscardContents);
+                RenderTarget = new RenderTarget2D(m_spriteBatch.GraphicsDevice, Settings.World.GumpResolution.Width, Settings.World.GumpResolution.Height, false, SurfaceFormat.Color, DepthFormat.Depth16, 0, RenderTargetUsage.DiscardContents);
             }
 
             InternalDetermineIfUnderEntity(map, center);
@@ -194,11 +194,11 @@ namespace UltimaXNA.Ultima.World.Views
                 center.X + renderExtraColumnsAtSides - ((renderZOffset + 1) / 2),
                 center.Y - renderDimensionY - renderExtraColumnsAtSides - (renderZOffset / 2));
 
-            renderOffset.X = ((Settings.Game.WorldGumpResolution.Width + ((renderDimensionY) * 44)) / 2) - 22 + renderExtraColumnsAtSides * 44;
+            renderOffset.X = ((Settings.World.GumpResolution.Width + ((renderDimensionY) * 44)) / 2) - 22 + renderExtraColumnsAtSides * 44;
             renderOffset.X -= (int)((center.X_offset - center.Y_offset) * 22);
             renderOffset.X -= (firstTile.X - firstTile.Y) * 22;
 
-            renderOffset.Y = ((Settings.Game.WorldGumpResolution.Height - (renderDimensionY * 44)) / 2);
+            renderOffset.Y = ((Settings.World.GumpResolution.Height - (renderDimensionY * 44)) / 2);
             renderOffset.Y += (center.Z * 4) + (int)(center.Z_offset * 4);
             renderOffset.Y -= (int)((center.X_offset + center.Y_offset) * 22);
             renderOffset.Y -= (firstTile.X + firstTile.Y) * 22;

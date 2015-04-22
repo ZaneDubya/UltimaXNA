@@ -181,6 +181,22 @@ namespace UltimaXNA.Ultima.UI
         public int X { get { return m_Position.X; } set { m_Position.X = value; } }
         public int Y { get { return m_Position.Y; } set { m_Position.Y = value; } }
 
+        public int ScreenX
+        {
+            get
+            {
+                return OwnerX + X;
+            }
+        }
+
+        public int ScreenY
+        {
+            get
+            {
+                return OwnerY + Y;
+            }
+        }
+
         public virtual int Width
         {
             get { return m_Area.Width; }

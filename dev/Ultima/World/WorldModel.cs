@@ -141,7 +141,7 @@ namespace UltimaXNA.Ultima.World
         public void LoginSequence()
         {
             m_UserInterface.AddControl(new WorldViewGump(), 0, 0); // world gump will always place itself correctly.
-            m_UserInterface.AddControl(new TopMenu(0), 0, 0);
+            m_UserInterface.AddControl(new TopMenuGump(0), 0, 0);
 
             Client.SendWorldLoginPackets();
             EngineVars.InWorld = true;

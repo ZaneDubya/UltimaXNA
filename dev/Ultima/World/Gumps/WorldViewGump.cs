@@ -10,7 +10,7 @@ namespace UltimaXNA.Ultima.World.Gumps
     {
         private WorldModel m_Model;
 
-        private ChatWindow m_ChatWindow;
+        private ChatControl m_ChatWindow;
 
         private const int BorderWidth = 5, BorderHeight = 7;
         private int m_WorldWidth, m_WorldHeight;
@@ -26,8 +26,8 @@ namespace UltimaXNA.Ultima.World.Gumps
 
             m_Model = UltimaServices.GetService<WorldModel>();
 
-            m_WorldWidth = Settings.Game.WorldGumpResolution.Width;
-            m_WorldHeight = Settings.Game.WorldGumpResolution.Height;
+            m_WorldWidth = Settings.World.GumpResolution.Width;
+            m_WorldHeight = Settings.World.GumpResolution.Height;
 
             Position = new Point(32, 32);
             Size = new Point(m_WorldWidth + BorderWidth * 2, m_WorldHeight + BorderHeight * 2);
@@ -60,8 +60,8 @@ namespace UltimaXNA.Ultima.World.Gumps
 
         private void OnResize()
         {
-            if (UltimaServices.ServiceExists<ChatWindow>())
-                UltimaServices.Unregister<ChatWindow>();
+            if (UltimaServices.ServiceExists<ChatControl>())
+                UltimaServices.Unregister<ChatControl>();
 
             ClearControls();
             // border for dragging
@@ -69,8 +69,8 @@ namespace UltimaXNA.Ultima.World.Gumps
             // world control!
             AddControl(new WorldControl(this, BorderWidth, BorderHeight, m_WorldWidth, m_WorldHeight));
             // chat!
-            AddControl(m_ChatWindow = new ChatWindow(this, BorderWidth, BorderHeight, 400, m_WorldHeight));
-            UltimaServices.Register<ChatWindow>(m_ChatWindow);
+            AddControl(m_ChatWindow = new ChatControl(this, BorderWidth, BorderHeight, 400, m_WorldHeight));
+            UltimaServices.Register<ChatControl>(m_ChatWindow);
         }
     }
 }

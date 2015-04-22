@@ -163,6 +163,13 @@ namespace UltimaXNA
             }
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            if (ActiveModel != null)
+                ActiveModel = null;
+            base.Dispose(disposing);
+        }
+
         protected override void Update(GameTime gameTime)
         {
             IsFixedTimeStep = Settings.Game.IsFixedTimeStep;
@@ -207,25 +214,26 @@ namespace UltimaXNA
         public void SetupWindowForLogin()
         {
             Window.AllowUserResizing = false;
-            SetGraphicsDeviceWidthHeight(new Resolution(800, 600));
+            SetGraphicsDeviceWidthHeight(new Resolution(800, 600)); // a wee bit bigger than legacy. Looks nicer.
         }
 
         public void SetupWindowForWorld()
         {
             Window.AllowUserResizing = true;
-            if (Settings.Game.IsFullScreen)
+            if (Settings.World.IsFullScreen)
             {
                 // not implemented!
+                SetGraphicsDeviceWidthHeight(Settings.World.WindowResolution);
             }
             else
             {
-                SetGraphicsDeviceWidthHeight(Settings.Game.WindowResolution);
+                SetGraphicsDeviceWidthHeight(Settings.World.WindowResolution);
             }
         }
 
         public void SaveResolution()
         {
-            Settings.Game.WindowResolution = new Resolution(GraphicsDeviceManager.PreferredBackBufferWidth, GraphicsDeviceManager.PreferredBackBufferHeight);
+            Settings.World.WindowResolution = new Resolution(GraphicsDeviceManager.PreferredBackBufferWidth, GraphicsDeviceManager.PreferredBackBufferHeight);
         }
 
         private void InitializeGraphicsDeviceAndWindow()
@@ -239,6 +247,12 @@ namespace UltimaXNA
         {
             GameWindow window = (sender as GameWindow);
             Resolution resolution = new Resolution(window.ClientBounds.Width, window.ClientBounds.Height);
+            // this only occurs when the world is active. Make sure that we don't reduce the window size
+            // smaller than the world gump size.
+            if (resolution.Width < Settings.World.GumpResolution.Width)
+                resolution.Width = Settings.World.GumpResolution.Width;
+            if (resolution.Height < Settings.World.GumpResolution.Height)
+                resolution.Height = Settings.World.GumpResolution.Height;
             SetGraphicsDeviceWidthHeight(resolution);
         }
 

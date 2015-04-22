@@ -81,11 +81,18 @@ namespace UltimaXNA.Core.Configuration
             for (int i = 0; i < content.Length; i++)
             {
                 if (content[i] == string.Empty)
+                {
+                    // empty lines are skipped
                     continue;
+                }
                 else if (content[i][0] == '#')
+                {
+                    // # comments are skipped
                     continue;
+                }
                 else if (content[i].Length >= 3 && content[i][0] == '[' && content[i][content[i].Length - 1] == ']')
                 {
+                    // [section] or [/section]
                     if (content[i][1] == '/')
                     {
                         string sectionName = content[i].Substring(2, content[i].Length - 3);
@@ -127,7 +134,7 @@ namespace UltimaXNA.Core.Configuration
                     {
                         throw new Exception(string.Format("Found settings line in settings file outside of open section. Line:{0}\n{1}",
                                 i, content[i]));
-                        
+
                     }
                     if (settingSection.ContainsKey(line[0]))
                     {
@@ -166,6 +173,7 @@ namespace UltimaXNA.Core.Configuration
                     else if (property.PropertyType.IsClass && property.PropertyType != typeof(String))
                     {
                         object cValue = m_Serializer.Deserialize(value, property.PropertyType);
+                        property.SetValue(section.Value, Convert.ChangeType(cValue, property.PropertyType), null);
                     }
                     else
                     {

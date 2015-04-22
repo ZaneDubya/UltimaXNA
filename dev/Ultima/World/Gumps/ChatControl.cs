@@ -20,7 +20,7 @@ using UltimaXNA.Ultima.UI.Controls;
 
 namespace UltimaXNA.Ultima.World.Gumps
 {
-    class ChatWindow : AControl
+    class ChatControl : AControl
     {
         TextEntry m_TextEntry;
         List<ChatLineTimed> m_TextEntries;
@@ -32,7 +32,7 @@ namespace UltimaXNA.Ultima.World.Gumps
 
         int m_MessageHistoryIndex = -1;
 
-        public ChatWindow(AControl owner, int x, int y, int width, int height)
+        public ChatControl(AControl owner, int x, int y, int width, int height)
             : base(owner, 0)
         {
             Position = new Point(x, y);

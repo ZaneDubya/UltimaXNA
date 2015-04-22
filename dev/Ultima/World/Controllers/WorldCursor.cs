@@ -53,47 +53,11 @@ namespace UltimaXNA.Ultima.World.Controllers
             InternalRegisterInteraction();
         }
 
-        public bool IsMouseOverUI
-        {
-            get
-            {
-                if (m_UserInterface.IsMouseOverUI)
-                {
-                    AControl over = m_UserInterface.MouseOverControl;
-                    return !(over is WorldControl);
-                }
-                return false;
-            }
-        }
-
-        public bool IsMouseOverWorld
-        {
-            get
-            {
-                if (m_UserInterface.IsMouseOverUI)
-                {
-                    AControl over = m_UserInterface.MouseOverControl;
-                    return (over is WorldControl);
-                }
-                return false;
-            }
-        }
-
-        public Point MouseOverWorldPosition
-        {
-            get
-            {
-                if (IsMouseOverWorld)
-                    return (m_UserInterface.MouseOverControl as WorldControl).MousePosition;
-                return Point.Zero;
-            }
-        }
-
         public override void Update()
         {
-            if (IsHoldingItem && m_Input.HandleMouseEvent(MouseEvent.Up, Settings.Game.Mouse.InteractionButton))
+            if (IsHoldingItem && m_Input.HandleMouseEvent(MouseEvent.Up, Settings.World.Mouse.InteractionButton))
             {
-                if (IsMouseOverUI)
+                if (World.Input.IsMouseOverUI)
                 {
                     // mouse over ui
                     AControl target = m_UserInterface.MouseOverControl;
@@ -121,7 +85,7 @@ namespace UltimaXNA.Ultima.World.Controllers
                         DropHeldItemToContainer((Container)((GumpPicBackpack)target).BackpackItem);
                     }
                 }
-                else if (IsMouseOverWorld)
+                else if (World.Input.IsMouseOverWorld)
                 {
                     // mouse over world
                     AEntity mouseOverEntity = World.Input.MousePick.MouseOverObject;
@@ -172,14 +136,14 @@ namespace UltimaXNA.Ultima.World.Controllers
                     SetTargeting(TargetType.Nothing, 0);
                 }
 
-                if (m_Input.HandleMouseEvent(MouseEvent.Click, Settings.Game.Mouse.InteractionButton))
+                if (m_Input.HandleMouseEvent(MouseEvent.Click, Settings.World.Mouse.InteractionButton))
                 {
                     // If isTargeting is true, then the target cursor is active and we are waiting for the player to target something.
                     switch (m_Targeting)
                     {
                         case TargetType.Object:
                         case TargetType.Position:
-                            if (IsMouseOverUI)
+                            if (World.Input.IsMouseOverUI)
                             {
                                 // get object under mouse cursor. We can only hue items.
                                 // ItemGumping is the base class for all items, containers, and paperdoll items.
@@ -189,7 +153,7 @@ namespace UltimaXNA.Ultima.World.Controllers
                                     mouseTargetingEventObject(((ItemGumpling)target).Item);
                                 }
                             }
-                            else if (IsMouseOverWorld)
+                            else if (World.Input.IsMouseOverWorld)
                             {
                                 // Send Select Object or Select XYZ packet, depending on the entity under the mouse cursor.
                                 World.Input.MousePick.PickOnly = PickType.PickStatics | PickType.PickObjects;
@@ -283,10 +247,10 @@ namespace UltimaXNA.Ultima.World.Controllers
                     // UNIMPLEMENTED !!! Draw a transparent multi
                 }*/
             }
-            else if ((World.Input.ContinuousMouseMovementCheck || IsMouseOverWorld) && !m_UserInterface.IsModalControlOpen)
+            else if ((World.Input.ContinuousMouseMovementCheck || World.Input.IsMouseOverWorld) && !m_UserInterface.IsModalControlOpen)
             {
-                Resolution resolution = Settings.Game.WorldGumpResolution;
-                Direction mouseDirection = Utility.DirectionFromPoints(new Point(resolution.Width / 2, resolution.Height / 2), MouseOverWorldPosition);
+                Resolution resolution = Settings.World.GumpResolution;
+                Direction mouseDirection = Utility.DirectionFromPoints(new Point(resolution.Width / 2, resolution.Height / 2), World.Input.MouseOverWorldPosition);
 
                 int artIndex = 0;
 

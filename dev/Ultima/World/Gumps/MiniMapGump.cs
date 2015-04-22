@@ -19,14 +19,14 @@ using UltimaXNA.Ultima.UI;
 
 namespace UltimaXNA.Ultima.World.Gumps
 {
-    class MiniMap : Gump
+    class MiniMapGump : Gump
     {
         bool m_useLargeMap = false;
         WorldModel m_World;
         Texture2D m_GumpTexture;
         Texture2D m_PlayerIndicator;
 
-        public MiniMap()
+        public MiniMapGump()
             : base(0, 0)
         {
             m_World = UltimaServices.GetService<WorldModel>();

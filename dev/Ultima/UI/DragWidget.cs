@@ -16,77 +16,78 @@ namespace UltimaXNA.Ultima.UI
 {
     class DragWidget
     {
-        AControl m_toMove;
-        bool isMoving = false; int moveOriginalX, moveOriginalY;
+        private AControl m_DragTarget;
+        private bool m_IsMoving = false;
+        private int m_DragOriginX, m_DragOriginY;
 
         public DragWidget(AControl inputFrom, AControl toMove)
         {
-            m_toMove = toMove;
+            m_DragTarget = toMove;
 
-            inputFrom.MouseDownEvent += mouseDown;
-            inputFrom.MouseUpEvent += mouseUp;
-            inputFrom.MouseOverEvent += mouseOver;
+            inputFrom.MouseDownEvent += OnMouseDown;
+            inputFrom.MouseUpEvent += OnMouseUp;
+            inputFrom.MouseOverEvent += OnMouseOver;
         }
 
-        void mouseDown(int x, int y, MouseButton button)
+        private void OnMouseDown(int x, int y, MouseButton button)
         {
-            if (!m_toMove.IsMovable)
+            if (!m_DragTarget.IsMovable)
                 return;
 
-            x += m_toMove.X;
-            y += m_toMove.Y;
-            if (button == MouseButton.Left && m_toMove.IsMovable)
+            x += m_DragTarget.X;
+            y += m_DragTarget.Y;
+            if (button == MouseButton.Left && m_DragTarget.IsMovable)
             {
                 ClipMouse(ref x, ref y);
-                isMoving = true;
-                moveOriginalX = x;
-                moveOriginalY = y;
+                m_IsMoving = true;
+                m_DragOriginX = x;
+                m_DragOriginY = y;
             }
         }
 
-        void mouseUp(int x, int y, MouseButton button)
+        private void OnMouseUp(int x, int y, MouseButton button)
         {
-            x += m_toMove.X;
-            y += m_toMove.Y;
+            x += m_DragTarget.X;
+            y += m_DragTarget.Y;
             if (button == MouseButton.Left)
             {
-                if (isMoving == true)
+                if (m_IsMoving == true)
                 {
                     UnclipMouse();
-                    isMoving = false;
-                    m_toMove.X += (x - moveOriginalX);
-                    m_toMove.Y += (y - moveOriginalY);
+                    m_IsMoving = false;
+                    m_DragTarget.X += (x - m_DragOriginX);
+                    m_DragTarget.Y += (y - m_DragOriginY);
                 }
             }
         }
 
-        void mouseOver(int x, int y)
+        private void OnMouseOver(int x, int y)
         {
-            x += m_toMove.X;
-            y += m_toMove.Y;
-            if (isMoving == true)
+            x += m_DragTarget.X;
+            y += m_DragTarget.Y;
+            if (m_IsMoving == true)
             {
                 ClipMouse(ref x, ref y);
-                m_toMove.X += (x - moveOriginalX);
-                m_toMove.Y += (y - moveOriginalY);
-                moveOriginalX = x;
-                moveOriginalY = y;
+                m_DragTarget.X += (x - m_DragOriginX);
+                m_DragTarget.Y += (y - m_DragOriginY);
+                m_DragOriginX = x;
+                m_DragOriginY = y;
             }
         }
 
         private void ClipMouse(ref int x, ref int y)
         {
             UltimaEngine engine = UltimaServices.GetService<UltimaEngine>();
-            Rectangle rect = engine.Window.ClientBounds;
+            Rectangle window = engine.Window.ClientBounds;
 
             if (x < -8)
                 x = -8;
             if (y < -8)
                 y = -8;
-            if (x >= rect.Width + 8)
-                x = rect.Width + 8;
-            if (y >= rect.Height + 8)
-                y = rect.Height + 8;
+            if (x >= window.Width + 8)
+                x = window.Width + 8;
+            if (y >= window.Height + 8)
+                y = window.Height + 8;
         }
 
         private void UnclipMouse()
