@@ -200,13 +200,10 @@ namespace UltimaXNA
         public void SetupWindowForWorld()
         {
             Window.AllowUserResizing = true;
+            SetGraphicsDeviceWidthHeight(Settings.World.WindowResolution);
             if (Settings.World.IsMaximized)
             {
                 Maximize();
-            }
-            else
-            {
-                SetGraphicsDeviceWidthHeight(Settings.World.WindowResolution);
             }
         }
 
