@@ -23,10 +23,7 @@ namespace UltimaXNA.Ultima.World.Gumps
             IsUncloseableWithEsc = true;
             IsMovable = true;
             Layer = GumpLayer.Under;
-        }
 
-        protected override void OnInitialize()
-        {
             m_Model = UltimaServices.GetService<WorldModel>();
 
             m_WorldWidth = Settings.Game.WorldGumpResolution.Width;
@@ -63,8 +60,8 @@ namespace UltimaXNA.Ultima.World.Gumps
 
         private void OnResize()
         {
-            if (UltimaServices.GetService<ChatWindow>() != null)
-                UltimaServices.Unregister<ChatWindow>(m_ChatWindow);
+            if (UltimaServices.ServiceExists<ChatWindow>())
+                UltimaServices.Unregister<ChatWindow>();
 
             ClearControls();
             // border for dragging

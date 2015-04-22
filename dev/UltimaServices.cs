@@ -22,17 +22,31 @@ namespace UltimaXNA
             return service;
         }
 
-        public static void Unregister<T>(T service)
+        public static void Unregister<T>()
         {
             Type type = typeof(T);
 
-            if (m_Services.ContainsKey(type) && (object)m_Services[type] == (object)service)
+            if (m_Services.ContainsKey(type))
             {
                 m_Services.Remove(type);
             }
             else
             {
                 Tracer.Critical(string.Format("Attempted to unregister service of type {0}, but no service of this type (or type and equality) is registered.", type.ToString()));
+            }
+        }
+
+        public static bool ServiceExists<T>()
+        {
+            Type type = typeof(T);
+
+            if (m_Services.ContainsKey(type))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
 

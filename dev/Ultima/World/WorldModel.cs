@@ -151,7 +151,7 @@ namespace UltimaXNA.Ultima.World
         {
             m_Engine.SaveResolution();
 
-            UltimaServices.Unregister<WorldModel>(this);
+            UltimaServices.Unregister<WorldModel>();
 
             EntityManager.Reset();
             Entities = null;

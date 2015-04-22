@@ -41,7 +41,7 @@ namespace UltimaXNA.Ultima.Login
 
         protected override void OnDispose()
         {
-            UltimaServices.Unregister<LoginModel>(this);
+            UltimaServices.Unregister<LoginModel>();
 
             Client.Dispose();
             Client = null;
