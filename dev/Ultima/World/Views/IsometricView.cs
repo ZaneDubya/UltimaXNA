@@ -235,7 +235,7 @@ namespace UltimaXNA.Ultima.World.Views
                                 break;
                         }
 
-                        if (entities[i].Z >= m_maxItemAltitude)
+                        if (entities[i].Z >= m_maxItemAltitude && !(entities[i] is Ground))
                             continue;
 
                         AEntityView view = entities[i].GetView();
