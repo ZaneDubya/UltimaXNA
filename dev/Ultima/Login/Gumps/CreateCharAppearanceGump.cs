@@ -93,7 +93,7 @@ namespace UltimaXNA.Ultima.Login.Gumps
             : base(0, 0)
         {
             // backdrop
-            AddControl(new GumpPicTiled(this, 0, 0, 0, Settings.Game.Resolution.Width, Settings.Game.Resolution.Height, 9274));
+            AddControl(new GumpPicTiled(this, 0, 0, 0, Settings.Game.WindowResolution.Width, Settings.Game.WindowResolution.Height, 9274));
             AddControl(new GumpPic(this, 0, 0, 0, 5500, 0));
             // character name 
             AddControl(new GumpPic(this, 0, 280, 53, 1801, 0));

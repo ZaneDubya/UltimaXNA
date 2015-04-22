@@ -21,56 +21,57 @@ namespace UltimaXNA.Core.Graphics
     public class SpriteBatch3D
     {
         private static float Z; // shared between all spritebatches.
-        private readonly Game m_Game;
+        private static BoundingBox ViewportArea;
+        private static Game Game;
 
         private readonly List<Dictionary<Texture2D, List<VertexPositionNormalTextureHue>>> m_drawQueue;
 
         private readonly Effect m_Effect;
         private readonly short[] m_indexBuffer;
         private readonly Queue<List<VertexPositionNormalTextureHue>> m_vertexListQueue;
-        private BoundingBox m_ViewportArea;
+        
         private List<VertexPositionNormalTextureHue> m_vertices = new List<VertexPositionNormalTextureHue>();
 
         public SpriteBatch3D(Game game)
         {
-            m_Game = game;
+            Game = game;
 
             m_drawQueue = new List<Dictionary<Texture2D, List<VertexPositionNormalTextureHue>>>(1024);
             for (int i = 0; i <= (int)Techniques.Max; i++)
                 m_drawQueue.Add(new Dictionary<Texture2D, List<VertexPositionNormalTextureHue>>());
 
-            m_ViewportArea = new BoundingBox(new Vector3(0, 0, Int32.MinValue), new Vector3(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, Int32.MaxValue));
             m_indexBuffer = CreateIndexBuffer(0x2000);
             m_vertexListQueue = new Queue<List<VertexPositionNormalTextureHue>>(256);
 
-            m_Effect = m_Game.Content.Load<Effect>("Shaders/IsometricWorld");
+            m_Effect = Game.Content.Load<Effect>("Shaders/IsometricWorld");
         }
 
         public GraphicsDevice GraphicsDevice
         {
             get
             {
-                if(m_Game == null)
+                if (Game == null)
                 {
                     return null;
                 }
-                return m_Game.GraphicsDevice;
+                return Game.GraphicsDevice;
             }
         }
 
-        public static Matrix ProjectionMatrixWorld
+        public Matrix ProjectionMatrixWorld
         {
             get { return Matrix.Identity; }
         }
 
-        public static Matrix ProjectionMatrixScreen
+        public Matrix ProjectionMatrixScreen
         {
-            get { return Matrix.CreateOrthographicOffCenter(0, 800f, 600f, 0f, Int16.MinValue, Int16.MaxValue); }
+            get { return Matrix.CreateOrthographicOffCenter(0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, 0f, Int16.MinValue, Int16.MaxValue); }
         }
 
-        public static void ResetZ()
+        public static void Reset()
         {
             Z = 0;
+            ViewportArea = new BoundingBox(new Vector3(0, 0, Int32.MinValue), new Vector3(Game.GraphicsDevice.Viewport.Width, Game.GraphicsDevice.Viewport.Height, Int32.MaxValue));
         }
 
         /// <summary>
@@ -90,7 +91,7 @@ namespace UltimaXNA.Core.Graphics
             // Check: only draw if the texture is within the visible area.
             for (int i = 0; i < 4; i++) // only draws a 2 triangle tristrip.
             {
-                if (m_ViewportArea.Contains(vertices[i].Position) == ContainmentType.Contains)
+                if (ViewportArea.Contains(vertices[i].Position) == ContainmentType.Contains)
                 {
                     draw = true;
                     break;
@@ -145,11 +146,9 @@ namespace UltimaXNA.Core.Graphics
             // do normal lighting? Yes in world, no in UI.
             m_Effect.Parameters["DrawLighting"].SetValue(doLighting);
             // set up viewport.
-            float width = GraphicsDevice.Viewport.Width;
-            float height = GraphicsDevice.Viewport.Height;
-            m_Effect.Parameters["ProjectionMatrix"].SetValue(Matrix.CreateOrthographicOffCenter(0, width, height, 0f, Int16.MinValue, Int16.MaxValue));
+            m_Effect.Parameters["ProjectionMatrix"].SetValue(ProjectionMatrixScreen);
             m_Effect.Parameters["WorldMatrix"].SetValue(ProjectionMatrixWorld);
-            m_Effect.Parameters["Viewport"].SetValue(new Vector2(width, height));
+            m_Effect.Parameters["Viewport"].SetValue(new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height));
 
             Texture2D texture;
             List<VertexPositionNormalTextureHue> vertexList;

@@ -30,6 +30,8 @@ namespace UltimaXNA.Ultima.Login
 
         protected override void OnInitialize()
         {
+            UltimaServices.GetService<UltimaEngine>().SetupWindowForLogin();
+
             m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
             m_UserInterface.Cursor = new UI.UltimaCursor();
 

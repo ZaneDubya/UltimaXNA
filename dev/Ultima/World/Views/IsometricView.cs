@@ -10,6 +10,7 @@
  ***************************************************************************/
 #region usings
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using UltimaXNA.Configuration;
@@ -26,6 +27,20 @@ namespace UltimaXNA.Ultima.World.Views
 {
     public class IsometricRenderer
     {
+        public Texture2D Texture
+        {
+            get
+            {
+                return RenderTarget;
+            }
+        }
+
+        protected RenderTarget2D RenderTarget
+        {
+            get;
+            private set;
+        }
+
         #region RenderingVariables
         private SpriteBatch3D m_spriteBatch;
         private VertexPositionNormalTextureHue[] m_vertexBufferStretched;
@@ -73,17 +88,13 @@ namespace UltimaXNA.Ultima.World.Views
             get { return m_renderOffset; }
         }
 
-        private readonly InputManager m_Input;
-
         public IsometricRenderer()
         {
-            m_Input = UltimaServices.GetService<InputManager>();
+            m_spriteBatch = UltimaServices.GetService<SpriteBatch3D>();
         }
 
         public void Initialize()
         {
-            m_spriteBatch = UltimaServices.GetService<SpriteBatch3D>();
-
             m_vertexBufferStretched = new [] {
                 new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(0, 0, 0)),
                 new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(1, 0, 0)),
@@ -92,10 +103,22 @@ namespace UltimaXNA.Ultima.World.Views
             };
         }
 
-        public void Draw(Map map, Position3D center, MousePicking mousePick)
+        public void Update(Map map, Position3D center, MousePicking mousePick)
         {
+            if (RenderTarget == null || RenderTarget.Width != Settings.Game.WorldGumpResolution.Width || RenderTarget.Height != Settings.Game.WorldGumpResolution.Height)
+            {
+                if (RenderTarget != null)
+                    RenderTarget.Dispose();
+                RenderTarget = new RenderTarget2D(m_spriteBatch.GraphicsDevice, Settings.Game.WorldGumpResolution.Width, Settings.Game.WorldGumpResolution.Height, false, SurfaceFormat.Color, DepthFormat.Depth16, 0, RenderTargetUsage.DiscardContents);
+            }
+
             InternalDetermineIfUnderEntity(map, center);
+
+            m_spriteBatch.GraphicsDevice.SetRenderTarget(RenderTarget);
+
             InternalDrawEntities(map, center, mousePick, out m_renderOffset);
+
+            m_spriteBatch.GraphicsDevice.SetRenderTarget(null);
         }
 
         private void InternalDetermineIfUnderEntity(Map map, Position3D center)
@@ -149,7 +172,7 @@ namespace UltimaXNA.Ultima.World.Views
             }
         }
 
-        private void InternalDrawEntities(Map map, Position3D center, MousePicking mousePick, out Vector2 renderOffset)
+        private void InternalDrawEntities(Map map, Position3D center, MousePicking mousePicking, out Vector2 renderOffset)
         {
             if (center == null)
             {
@@ -171,11 +194,11 @@ namespace UltimaXNA.Ultima.World.Views
                 center.X + renderExtraColumnsAtSides - ((renderZOffset + 1) / 2),
                 center.Y - renderDimensionY - renderExtraColumnsAtSides - (renderZOffset / 2));
 
-            renderOffset.X = ((Settings.Game.Resolution.Width + ((renderDimensionY) * 44)) / 2) - 22 + renderExtraColumnsAtSides * 44;
+            renderOffset.X = ((Settings.Game.WorldGumpResolution.Width + ((renderDimensionY) * 44)) / 2) - 22 + renderExtraColumnsAtSides * 44;
             renderOffset.X -= (int)((center.X_offset - center.Y_offset) * 22);
             renderOffset.X -= (firstTile.X - firstTile.Y) * 22;
 
-            renderOffset.Y = ((Settings.Game.Resolution.Height - (renderDimensionY * 44)) / 2);
+            renderOffset.Y = ((Settings.Game.WorldGumpResolution.Height - (renderDimensionY * 44)) / 2);
             renderOffset.Y += (center.Z * 4) + (int)(center.Z_offset * 4);
             renderOffset.Y -= (int)((center.X_offset + center.Y_offset) * 22);
             renderOffset.Y -= (firstTile.X + firstTile.Y) * 22;
@@ -183,7 +206,7 @@ namespace UltimaXNA.Ultima.World.Views
 
             ObjectsRendered = 0; // Count of objects rendered for statistics and debug
 
-            MouseOverList overList = new MouseOverList(m_Input.MousePosition, mousePick.PickOnly); // List of entities mouse is over.
+            MouseOverList overList = new MouseOverList(mousePicking); // List of entities mouse is over.
             List<AEntity> deferredToRemove = new List<AEntity>();
 
             for (int col = 0; col < renderDimensionY * 2 + renderExtraRowsAtBottom; col++)
@@ -238,7 +261,7 @@ namespace UltimaXNA.Ultima.World.Views
             OverheadRenderer.Render(m_spriteBatch, overList, map);
 
             // Update the MouseOver objects
-            mousePick.UpdateOverEntities(overList, m_Input.MousePosition);
+            mousePicking.UpdateOverEntities(overList, mousePicking.Position);
 
             // Draw the objects we just send to the spritebatch.
             m_spriteBatch.Flush(true);

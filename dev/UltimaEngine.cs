@@ -10,6 +10,7 @@
 #region Usings
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Windows.Forms;
 using UltimaXNA.Configuration;
 using UltimaXNA.Core.Graphics;
@@ -31,7 +32,8 @@ namespace UltimaXNA
 
         public UltimaEngine()
         {
-            InitializeGraphicsDevice();
+            InitializeGraphicsDeviceAndWindow();
+            SetupWindowForLogin();
         }
 
         #region Active & Queued Models
@@ -85,6 +87,12 @@ namespace UltimaXNA
         }
         #endregion
 
+        protected GraphicsDeviceManager GraphicsDeviceManager
+        {
+            get;
+            private set;
+        }
+
         protected bool IsMinimized
         {
             get
@@ -99,7 +107,6 @@ namespace UltimaXNA
                 return false;
             }
         }
-
 
         protected InputManager Input
         {
@@ -182,8 +189,9 @@ namespace UltimaXNA
         {
             if(!IsMinimized)
             {
-                SpriteBatch3D.ResetZ();
+                SpriteBatch3D.Reset();
                 GraphicsDevice.Clear(Color.Black);
+
                 ActiveModel.GetView()
                     .Draw(gameTime.ElapsedGameTime.TotalMilliseconds);
                 UserInterface.Draw(gameTime.ElapsedGameTime.TotalMilliseconds);
@@ -196,24 +204,53 @@ namespace UltimaXNA
             }
         }
 
-        // Some settings to designate a screen size and fps limit.
-        private void InitializeGraphicsDevice()
+        public void SetupWindowForLogin()
         {
-            Resolution resolution = Settings.Game.Resolution;
-            GraphicsDeviceManager graphicsDeviceManager = new GraphicsDeviceManager(this)
-            {
-                PreferredBackBufferWidth = resolution.Width,
-                PreferredBackBufferHeight = resolution.Height,
-                SynchronizeWithVerticalRetrace = Settings.Game.IsVSyncEnabled
-            };
-
-            graphicsDeviceManager.PreparingDeviceSettings += onPreparingDeviceSettings;
-
-            IsFixedTimeStep = false;
-            graphicsDeviceManager.ApplyChanges();
+            Window.AllowUserResizing = false;
+            SetGraphicsDeviceWidthHeight(new Resolution(800, 600));
         }
 
-        private static void onPreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
+        public void SetupWindowForWorld()
+        {
+            Window.AllowUserResizing = true;
+            if (Settings.Game.IsFullScreen)
+            {
+                // not implemented!
+            }
+            else
+            {
+                SetGraphicsDeviceWidthHeight(Settings.Game.WindowResolution);
+            }
+        }
+
+        public void SaveResolution()
+        {
+            Settings.Game.WindowResolution = new Resolution(GraphicsDeviceManager.PreferredBackBufferWidth, GraphicsDeviceManager.PreferredBackBufferHeight);
+        }
+
+        private void InitializeGraphicsDeviceAndWindow()
+        {
+            GraphicsDeviceManager = new GraphicsDeviceManager(this);
+            GraphicsDeviceManager.PreparingDeviceSettings += OnPreparingDeviceSettings;
+            Window.ClientSizeChanged += new EventHandler<EventArgs>(OnWindowSizeChanged);
+        }
+
+        private void OnWindowSizeChanged(object sender, EventArgs e)
+        {
+            GameWindow window = (sender as GameWindow);
+            Resolution resolution = new Resolution(window.ClientBounds.Width, window.ClientBounds.Height);
+            SetGraphicsDeviceWidthHeight(resolution);
+        }
+
+        private void SetGraphicsDeviceWidthHeight(Resolution resolution)
+        {
+            GraphicsDeviceManager.PreferredBackBufferWidth = resolution.Width;
+            GraphicsDeviceManager.PreferredBackBufferHeight = resolution.Height;
+            GraphicsDeviceManager.SynchronizeWithVerticalRetrace = Settings.Game.IsVSyncEnabled;
+            GraphicsDeviceManager.ApplyChanges();
+        }
+
+        private static void OnPreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
         {
             e.GraphicsDeviceInformation.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
         }

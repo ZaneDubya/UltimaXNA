@@ -48,7 +48,7 @@ namespace UltimaXNA.Ultima.World
         {
             Position3D center = EntityManager.GetPlayerObject().Position;
 
-            Isometric.Draw(Model.Map, center, Model.Input.MousePick);
+            Isometric.Update(Model.Map, center, Model.Input.MousePick);
             MiniMap.Update(Model.Map, center);
         }
     }

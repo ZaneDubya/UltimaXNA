@@ -8,6 +8,7 @@
  *
  ***************************************************************************/
 #region usings
+using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Input.Windows;
 #endregion
 
@@ -36,7 +37,7 @@ namespace UltimaXNA.Ultima.UI
             y += m_toMove.Y;
             if (button == MouseButton.Left && m_toMove.IsMovable)
             {
-                // move!
+                ClipMouse(ref x, ref y);
                 isMoving = true;
                 moveOriginalX = x;
                 moveOriginalY = y;
@@ -51,6 +52,7 @@ namespace UltimaXNA.Ultima.UI
             {
                 if (isMoving == true)
                 {
+                    UnclipMouse();
                     isMoving = false;
                     m_toMove.X += (x - moveOriginalX);
                     m_toMove.Y += (y - moveOriginalY);
@@ -64,11 +66,32 @@ namespace UltimaXNA.Ultima.UI
             y += m_toMove.Y;
             if (isMoving == true)
             {
+                ClipMouse(ref x, ref y);
                 m_toMove.X += (x - moveOriginalX);
                 m_toMove.Y += (y - moveOriginalY);
                 moveOriginalX = x;
                 moveOriginalY = y;
             }
+        }
+
+        private void ClipMouse(ref int x, ref int y)
+        {
+            UltimaEngine engine = UltimaServices.GetService<UltimaEngine>();
+            Rectangle rect = engine.Window.ClientBounds;
+
+            if (x < -8)
+                x = -8;
+            if (y < -8)
+                y = -8;
+            if (x >= rect.Width + 8)
+                x = rect.Width + 8;
+            if (y >= rect.Height + 8)
+                y = rect.Height + 8;
+        }
+
+        private void UnclipMouse()
+        {
+
         }
     }
 }

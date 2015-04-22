@@ -206,6 +206,8 @@
     <Compile Include="Ultima\Network\Server\FeatureFlags.cs" />
     <Compile Include="Ultima\UI\Controls\CheckBox.cs" />
     <Compile Include="Ultima\UI\Controls\RadioButton.cs" />
+    <Compile Include="Ultima\UI\Controls\WorldControl.cs" />
+    <Compile Include="Ultima\UI\GumpLayer.cs" />
     <Compile Include="Ultima\UI\Tooltip.cs" />
     <Compile Include="Ultima\UI\HTML\AAtom.cs" />
     <Compile Include="Ultima\UI\HTML\Atoms\CharacterAtom.cs" />
@@ -231,6 +233,7 @@
     <Compile Include="Ultima\World\Controllers\MousePicking.cs" />
     <Compile Include="Ultima\World\Controllers\PickType.cs" />
     <Compile Include="Ultima\World\EffectManager.cs" />
+    <Compile Include="Ultima\World\Gumps\WorldViewGump.cs" />
     <Compile Include="Ultima\World\Maps\TileSorter.cs" />
     <Compile Include="Ultima\EntityViews\GroundView.cs" />
     <Compile Include="Ultima\EntityViews\ItemView.cs" />
@@ -417,8 +420,6 @@
     <Compile Include="Ultima\Login\States\CreateCharacterState.cs" />
     <Compile Include="Ultima\Login\States\LoggingInState.cs" />
     <Compile Include="Ultima\Login\States\SelectServerState.cs" />
-    <Compile Include="Core\Graphics\VectorPolygon.cs" />
-    <Compile Include="Core\Graphics\VectorRenderer.cs" />
     <Compile Include="Ultima\World\Maps\MapBlock.cs" />
     <Compile Include="Ultima\World\StaticManager.cs" />
     <Compile Include="Ultima\World\Views\IsometricView.cs" />

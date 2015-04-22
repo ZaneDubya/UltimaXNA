@@ -11,6 +11,7 @@ using UltimaXNA.Ultima.Entities.Items;
 using UltimaXNA.Ultima.Entities.Mobiles;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.UI;
+using UltimaXNA.Ultima.UI.Controls;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Controllers
@@ -79,6 +80,42 @@ namespace UltimaXNA.Ultima.World.Controllers
             }
         }
 
+        public bool IsMouseOverUI
+        {
+            get
+            {
+                if (m_UserInterface.IsMouseOverUI)
+                {
+                    AControl over = m_UserInterface.MouseOverControl;
+                    return !(over is WorldControl);
+                }
+                return false;
+            }
+        }
+
+        public bool IsMouseOverWorld
+        {
+            get
+            {
+                if (m_UserInterface.IsMouseOverUI)
+                {
+                    AControl over = m_UserInterface.MouseOverControl;
+                    return (over is WorldControl);
+                }
+                return false;
+            }
+        }
+
+        public Point MouseOverWorldPosition
+        {
+            get
+            {
+                if (IsMouseOverWorld)
+                    return (m_UserInterface.MouseOverControl as WorldControl).MousePosition;
+                return Point.Zero;
+            }
+        }
+
         public void Dispose()
         {
             m_UserInterface.RemoveInputBlocker(this);
@@ -100,19 +137,20 @@ namespace UltimaXNA.Ultima.World.Controllers
 
                 // If 1. The mouse is over the world (not over UI) and
                 //    2. The cursor is not blocking input, then interpret mouse input.
-                if(!m_UserInterface.IsMouseOverUI && !World.Cursor.IsHoldingItem)
+                if(IsMouseOverWorld && !World.Cursor.IsHoldingItem)
                 {
                     InternalParseMouse(frameMS);
                 }
 
                 // PickType is the kind of objects that will show up as the 'MouseOverObject'
-                if(m_UserInterface.IsMouseOverUI)
+                if(IsMouseOverWorld)
                 {
-                    MousePick.PickOnly = PickType.PickNothing;
+                    MousePick.PickOnly = PickType.PickEverything;
+                    MousePick.Position = MouseOverWorldPosition;
                 }
                 else
                 {
-                    MousePick.PickOnly = PickType.PickEverything;
+                    MousePick.PickOnly = PickType.PickNothing;
                 }
                 
                 doMouseMovement(frameMS);
@@ -124,7 +162,7 @@ namespace UltimaXNA.Ultima.World.Controllers
             // if the move button is pressed, change facing and move based on mouse cursor direction.
             if(ContinuousMouseMovementCheck)
             {
-                Resolution resolution = Settings.Game.Resolution;
+                Resolution resolution = Settings.Game.WindowResolution;
                 Point centerScreen = new Point(resolution.Width / 2, resolution.Height / 2);
                 Direction mouseDirection = Utility.DirectionFromPoints(centerScreen, m_Input.MousePosition);
 

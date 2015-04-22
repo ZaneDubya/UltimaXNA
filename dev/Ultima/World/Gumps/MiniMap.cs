@@ -34,7 +34,7 @@ namespace UltimaXNA.Ultima.World.Gumps
             m_useLargeMap = EngineVars.MiniMap_LargeFormat;
 
             IsMovable = true;
-            MakeDragger(this);
+            MakeThisADragger();
         }
 
         public override void Update(double totalMS, double frameMS)

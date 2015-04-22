@@ -13,13 +13,17 @@ namespace UltimaXNA.Configuration
         private string m_LastCharacterName;
         private bool m_AlwaysRun;
         private bool m_IsVSyncEnabled;
-        private Resolution m_Resolution;
+        private Resolution m_WindowResolution;
+        private Resolution m_WorldGumpResolution;
+        private bool m_IsFullScreen;
         private Mouse m_Mouse;
         private bool m_IsFixedTimeStep;
 
         public GameSettings()
         {
-            Resolution = new Resolution(800, 600);
+            WindowResolution = new Resolution(800, 600);
+            WorldGumpResolution = new Resolution(640, 480);
+            IsFullScreen = false;
             Mouse = new Mouse(MouseButton.Left, MouseButton.Right);
             IsFixedTimeStep = true;
         }
@@ -30,16 +34,28 @@ namespace UltimaXNA.Configuration
             set { SetProperty(ref m_IsFixedTimeStep, value); }
         }
 
+        public bool IsFullScreen
+        {
+            get { return m_IsFullScreen; }
+            set { SetProperty(ref m_IsFullScreen, value); }
+        }
+
         public Mouse Mouse
         {
             get { return m_Mouse; }
             set { SetProperty(ref m_Mouse, value); }
         }
 
-        public Resolution Resolution
+        public Resolution WindowResolution
         {
-            get { return m_Resolution; }
-            set { SetProperty(ref m_Resolution, value); }
+            get { return m_WindowResolution; }
+            set { SetProperty(ref m_WindowResolution, value); }
+        }
+
+        public Resolution WorldGumpResolution
+        {
+            get { return m_WorldGumpResolution; }
+            set { SetProperty(ref m_WorldGumpResolution, value); }
         }
 
         public bool IsVSyncEnabled

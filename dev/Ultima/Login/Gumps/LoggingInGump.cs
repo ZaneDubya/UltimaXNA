@@ -33,7 +33,7 @@ namespace UltimaXNA.Ultima.Login.Gumps
         {
             int hue = 2017;
             // backdrop
-            AddControl(new GumpPicTiled(this, 0, 0, 0, Settings.Game.Resolution.Width, Settings.Game.Resolution.Height, 9274));
+            AddControl(new GumpPicTiled(this, 0, 0, 0, Settings.Game.WindowResolution.Width, Settings.Game.WindowResolution.Height, 9274));
             AddControl(new GumpPic(this, 0, 0, 0, 5500, 0));
             // quit button
             AddControl(new Button(this, 0, 554, 2, 5513, 5515, ButtonTypes.Activate, 0, (int)LoggingInGumpButtons.QuitButton));

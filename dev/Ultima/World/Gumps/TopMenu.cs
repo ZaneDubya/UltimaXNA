@@ -54,6 +54,8 @@ namespace UltimaXNA.Ultima.World.Gumps
             m_World = UltimaServices.GetService<WorldModel>();
 
             IsUncloseableWithRMB = true;
+
+            Layer = GumpLayer.Over;
         }
 
         public override void ActivateByButton(int buttonID)
