@@ -136,6 +136,7 @@
     <Compile Include="Core\Configuration\TextSettingsFileWriter.cs" />
     <Compile Include="Core\Diagnostics\Tracing\EventLevel.cs" />
     <Compile Include="Core\Diagnostics\Tracing\Listeners\AEventListener.cs" />
+    <Compile Include="Core\Diagnostics\Tracing\Listeners\MsgBoxOnCriticalListener.cs" />
     <Compile Include="Core\DpiManager.cs" />
     <Compile Include="Core\Extensions\StringExtensions.cs" />
     <Compile Include="Core\Graphics\Techniques.cs" />
