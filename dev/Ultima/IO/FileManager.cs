@@ -108,7 +108,6 @@ namespace UltimaXNA.Ultima.IO
 
             if (m_FileDirectory == null)
             {
-                Tracer.Critical("Did not find a compatible UO Installation.\nUltimaXNA is compatible with any version of UO through Mondian's Legacy.");
                 m_isDataPresent = false;
             }
             else

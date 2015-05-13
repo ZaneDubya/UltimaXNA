@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Windows.Forms;
 using UltimaXNA.Configuration;
+using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Network;
@@ -124,7 +125,7 @@ namespace UltimaXNA
             UserInterface = UltimaServices.Register<UserInterfaceService>(new UserInterfaceService());
 
             // Make sure we have a UO installation before loading IO.
-            if(FileManager.IsUODataPresent)
+            if (FileManager.IsUODataPresent)
             {
                 // Initialize and load data
                 AnimData.Initialize();
@@ -146,6 +147,10 @@ namespace UltimaXNA
                 EngineVars.InWorld = false;
 
                 ActiveModel = new LoginModel();
+            }
+            else
+            {
+                Tracer.Critical("Did not find a compatible UO Installation. UltimaXNA is compatible with any version of UO through Mondian's Legacy.");
             }
         }
 
