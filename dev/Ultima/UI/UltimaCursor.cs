@@ -1,5 +1,6 @@
 ﻿/***************************************************************************
  *   UltimaCursor.cs
+ *   Copyright (c) 2015 UltimaXNA Development Team
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -12,7 +13,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.World;
 #endregion
 
 namespace UltimaXNA.Ultima.UI

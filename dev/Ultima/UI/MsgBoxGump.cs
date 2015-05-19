@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   MsgBox.cs
+ *   MsgBoxGump.cs
  *   Copyright (c) 2015 UltimaXNA Development Team
  * 
  *   This program is free software; you can redistribute it and/or modify
@@ -10,7 +10,6 @@
  ***************************************************************************/
 #region usings
 using System;
-using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.UI.Controls;
 #endregion
 

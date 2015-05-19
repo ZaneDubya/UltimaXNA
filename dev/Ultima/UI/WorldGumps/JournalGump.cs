@@ -1,5 +1,6 @@
 ﻿/***************************************************************************
  *   JournalGump.cs
+ *   Copyright (c) 2015 UltimaXNA Development Team
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -13,7 +14,6 @@ using System.Collections.Generic;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Player;
-using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
 #endregion
 
