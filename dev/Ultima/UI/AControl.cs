@@ -114,7 +114,10 @@ namespace UltimaXNA.Ultima.UI
             get;
             set;
         }
-
+        /// <summary>
+        /// This's control's drawing/input page index. On Update() and Draw(), only those controls with Page == 0 or
+        /// Page == Parent.ActivePage will accept input and be drawn.
+        /// </summary>
         public int Page
         {
             get;
@@ -122,6 +125,10 @@ namespace UltimaXNA.Ultima.UI
         }
 
         int m_ActivePage = 0; // we always draw m_activePage and Page 0.
+        /// <summary>
+        /// This control's active page index. On Update and Draw(), this control will send update to and draw all children with Page == 0 or
+        /// Page == this.Page.
+        /// </summary>
         public int ActivePage
         {
             get { return m_ActivePage; }
