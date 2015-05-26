@@ -148,6 +148,9 @@ namespace UltimaXNA.Ultima.UI.HTML
                                     openHREFs.Add(href);
                                 }
                                 break;
+                            case "body":
+                                //ignore
+                                break;
                             default:
                                 readParams = false;
                                 for (int i = 0; i < chunk.iChunkLength; i++)
