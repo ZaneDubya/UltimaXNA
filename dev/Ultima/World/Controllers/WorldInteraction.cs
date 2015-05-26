@@ -70,7 +70,8 @@ namespace UltimaXNA.Ultima.World.Controllers
 
         public void DoubleClick(AEntity item) // used by itemgumpling, paperdollinteractable, topmenu, worldinput.
         {
-            m_Network.Send(new DoubleClickPacket(item.Serial));
+            if (item!=null)
+                m_Network.Send(new DoubleClickPacket(item.Serial));
         } 
 
         public void ToggleWarMode() // used by paperdollgump.
