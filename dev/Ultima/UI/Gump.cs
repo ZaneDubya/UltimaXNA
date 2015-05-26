@@ -320,6 +320,9 @@ namespace UltimaXNA.Ultima.UI
                         else
                             Tracer.Warn(string.Format("GUMP: No control for this tooltip: {0}.", gumpParams[1]));
                         break;
+                    case "noresize":
+
+                        break;
                     default:
                         Tracer.Critical("GUMP: Unknown piece '" + gumpParams[0] + "'.");
                         break;
