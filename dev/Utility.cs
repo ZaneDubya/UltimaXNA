@@ -8,6 +8,8 @@
  *
  ***************************************************************************/
 #region usings
+
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using System;
 using System.ComponentModel;
@@ -399,6 +401,25 @@ namespace UltimaXNA
             }
             else
                 return Color.Black;
+        }
+
+        private static Dictionary<string, Color> colorTable = new Dictionary<string, Color>()
+        {
+            {"white", Color.White},
+            {"red", Color.Red},
+            {"blue", Color.Blue},
+            {"green", Color.Green},
+            {"orange", Color.Orange},
+            {"yellow", Color.Yellow}
+            //add more colors here
+        };
+
+        public static Color? ColorFromString(string color)
+        {
+            Color output;
+            if (!colorTable.TryGetValue(color.ToLower(), out output)) return null;
+
+            return output;
         }
         #endregion
 

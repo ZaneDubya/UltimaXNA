@@ -183,25 +183,37 @@ namespace UltimaXNA.Ultima.UI.HTML
                                     case "activecolor":
                                         // get the color!
                                         string color = value;
+                                        Color? c=null;
                                         if (color[0] == '#')
-                                            color = color.Substring(1);
-                                        if (color.Length == 3 || color.Length == 6)
                                         {
-                                            Color c = Utility.ColorFromHexString(color);
+                                            color = color.Substring(1);
+                                            if (color.Length == 3 || color.Length == 6)
+                                            {
+                                                c = Utility.ColorFromHexString(color);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            //try to parse color by name
+                                            c = Utility.ColorFromString(color);
+                                        }
+
+                                        if (c.HasValue)
+                                        {
                                             if (key == "color")
-                                                currentColor = c;
+                                                currentColor = c.Value;
                                             if (chunk.sTag == "a")
                                             {
                                                 switch (key)
                                                 {
                                                     case "color":
-                                                        openHREFs[openHREFs.Count - 1].UpHue = IO.HuesXNA.GetWebSafeHue(c);
+                                                        openHREFs[openHREFs.Count - 1].UpHue = IO.HuesXNA.GetWebSafeHue(c.Value);
                                                         break;
                                                     case "hovercolor":
-                                                        openHREFs[openHREFs.Count - 1].OverHue = IO.HuesXNA.GetWebSafeHue(c);
+                                                        openHREFs[openHREFs.Count - 1].OverHue = IO.HuesXNA.GetWebSafeHue(c.Value);
                                                         break;
                                                     case "activecolor":
-                                                        openHREFs[openHREFs.Count - 1].DownHue = IO.HuesXNA.GetWebSafeHue(c);
+                                                        openHREFs[openHREFs.Count - 1].DownHue = IO.HuesXNA.GetWebSafeHue(c.Value);
                                                         break;
                                                 }
                                             }
