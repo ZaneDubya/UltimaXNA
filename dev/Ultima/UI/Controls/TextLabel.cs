@@ -17,20 +17,12 @@ namespace UltimaXNA.Ultima.UI.Controls
 {
     public class TextLabel : AControl
     {
+        private const int DefaultLabelWidth = 300;
+
         public int Hue
         {
-            get
-            {
-                if (m_textRenderer == null)
-                    return 0;
-                return m_textRenderer.Hue;
-            }
-            set
-            {
-                if (m_textRenderer == null)
-                    return;
-                m_textRenderer.Hue = value;
-            }
+            get;
+            set;
         }
 
         private string m_Text;
@@ -41,7 +33,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             {
                 if (m_textRenderer == null)
                 {
-                    m_textRenderer = new RenderedText(m_Text, 300);
+                    m_textRenderer = new RenderedText(m_Text, DefaultLabelWidth);
                 }
                 m_textRenderer.Text = m_Text = value;
             }
@@ -76,7 +68,6 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             Position = new Point(x, y);
             Text = string.Format("{0}{1}", (hue == 0 ? string.Empty : "<outline>"), text);
-            m_textRenderer.Hue = hue;
         }
 
         public override void Update(double totalMS, double frameMS)
@@ -86,7 +77,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         public override void Draw(SpriteBatchUI spriteBatch)
         {
-            m_textRenderer.Draw(spriteBatch, Position);
+            m_textRenderer.Draw(spriteBatch, Position, Utility.GetHueVector(Hue, false, false));
             base.Draw(spriteBatch);
         }
     }

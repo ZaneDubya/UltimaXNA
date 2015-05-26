@@ -146,9 +146,9 @@ namespace UltimaXNA.Ultima.UI.Controls
                 m_openColorPicker.Dispose();
                 m_openColorPicker = null;
             }
-            m_openColorPicker = new ColorPicker(m_Owner, Page, m_openArea, m_hueSize.X, m_hueSize.Y, m_hues);
+            m_openColorPicker = new ColorPicker(Owner, Page, m_openArea, m_hueSize.X, m_hueSize.Y, m_hues);
             m_openColorPicker.MouseClickEvent = onOpenSwatchClick;
-            ((Gump)m_Owner).AddControl(m_openColorPicker);
+            ((Gump)Owner).AddControl(m_openColorPicker);
         }
 
         void closeSwatch()

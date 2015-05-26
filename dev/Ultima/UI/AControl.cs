@@ -114,17 +114,21 @@ namespace UltimaXNA.Ultima.UI
             get;
             set;
         }
-
-        int m_Page = 0;
+        /// <summary>
+        /// This's control's drawing/input page index. On Update() and Draw(), only those controls with Page == 0 or
+        /// Page == Parent.ActivePage will accept input and be drawn.
+        /// </summary>
         public int Page
         {
-            get
-            {
-                return m_Page;
-            }
+            get;
+            set;
         }
 
         int m_ActivePage = 0; // we always draw m_activePage and Page 0.
+        /// <summary>
+        /// This control's active page index. On Update and Draw(), this control will send update to and draw all children with Page == 0 or
+        /// Page == this.Page.
+        /// </summary>
         public int ActivePage
         {
             get { return m_ActivePage; }
@@ -162,8 +166,8 @@ namespace UltimaXNA.Ultima.UI
         {
             get
             {
-                if (m_Owner != null)
-                    return m_Owner.X + m_Owner.OwnerX;
+                if (Owner != null)
+                    return Owner.X + Owner.OwnerX;
                 else
                     return 0;
             }
@@ -172,8 +176,8 @@ namespace UltimaXNA.Ultima.UI
         {
             get
             {
-                if (m_Owner != null)
-                    return m_Owner.Y + m_Owner.OwnerY;
+                if (Owner != null)
+                    return Owner.Y + Owner.OwnerY;
                 else
                     return 0;
             }
@@ -240,8 +244,11 @@ namespace UltimaXNA.Ultima.UI
             get { return m_Area; }
         }
 
-        protected AControl m_Owner = null;
-        public AControl Owner { get { return m_Owner; } }
+        public AControl Owner
+        {
+            get;
+            protected set;
+        }
 
         private List<AControl> m_Children = null;
         public List<AControl> Children
@@ -265,8 +272,8 @@ namespace UltimaXNA.Ultima.UI
 
         public AControl(AControl owner, int page)
         {
-            m_Owner = owner;
-            m_Page = page;
+            Owner = owner;
+            Page = page;
             m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
         }
 
@@ -361,9 +368,9 @@ namespace UltimaXNA.Ultima.UI
         {
             HandlesMouseInput = true;
             AControl dragTarget = this;
-            while (dragTarget.m_Owner != null)
+            while (dragTarget.Owner != null)
             {
-                dragTarget = dragTarget.m_Owner;
+                dragTarget = dragTarget.Owner;
             }
 
             m_Dragger = new DragWidget(this, dragTarget);
@@ -373,26 +380,26 @@ namespace UltimaXNA.Ultima.UI
 
         public virtual void ActivateByButton(int buttonID)
         {
-            if (m_Owner != null)
-                m_Owner.ActivateByButton(buttonID);
+            if (Owner != null)
+                Owner.ActivateByButton(buttonID);
         }
 
         public virtual void ActivateByHREF(string href)
         {
-            if (m_Owner != null)
-                m_Owner.ActivateByHREF(href);
+            if (Owner != null)
+                Owner.ActivateByHREF(href);
         }
 
         public virtual void ActivateByKeyboardReturn(int textID, string text)
         {
-            if (m_Owner != null)
-                m_Owner.ActivateByKeyboardReturn(textID, text);
+            if (Owner != null)
+                Owner.ActivateByKeyboardReturn(textID, text);
         }
 
         public virtual void ChangePage(int pageIndex)
         {
-            if (m_Owner != null)
-                m_Owner.ChangePage(pageIndex);
+            if (Owner != null)
+                Owner.ChangePage(pageIndex);
         }
 
         // ================================================================================
@@ -598,12 +605,12 @@ namespace UltimaXNA.Ultima.UI
         {
             if (IsUncloseableWithRMB)
                 return;
-            AControl parent = m_Owner;
+            AControl parent = Owner;
             while (parent != null)
             {
                 if (parent.IsUncloseableWithRMB)
                     return;
-                parent = parent.m_Owner;
+                parent = parent.Owner;
             }
 
             // send cancel message for server gump
@@ -611,10 +618,10 @@ namespace UltimaXNA.Ultima.UI
                 ActivateByButton(0);
 
             // dispose of this, or owner, if it has one, which will close this as a child.
-            if (m_Owner == null)
+            if (Owner == null)
                 Dispose();
             else
-                m_Owner.CloseWithRightMouseButton();
+                Owner.CloseWithRightMouseButton();
         }
 
         public AControl[] HitTest(Point position, bool alwaysHandleMouseInput)
@@ -747,7 +754,7 @@ namespace UltimaXNA.Ultima.UI
             int hue = IO.HuesXNA.GetWebSafeHue(color);
 
             Rectangle drawArea = m_Area;
-            if (m_Owner == null)
+            if (Owner == null)
             {
                 m_Area.X -= X;
                 m_Area.Y -= Y;
