@@ -64,7 +64,7 @@ namespace UltimaXNA.Ultima.World.Gumps
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
             AEntity player = EntityManager.GetPlayerObject();
             float x = (float)Math.Round((player.Position.X % 256) + player.Position.X_offset) / 256f;
@@ -75,10 +75,10 @@ namespace UltimaXNA.Ultima.World.Gumps
 
             VertexPositionNormalTextureHue[] v = new VertexPositionNormalTextureHue[4]
             {
-                new VertexPositionNormalTextureHue(new Vector3(X, Y, 0), playerPosition + new Vector3(-minimapU, -minimapV, 0), new Vector3(0, 0, 0)),
-                new VertexPositionNormalTextureHue(new Vector3(X + Size.X, Y, 0), playerPosition + new Vector3(minimapU, -minimapV, 0), new Vector3(1, 0, 0)),
-                new VertexPositionNormalTextureHue(new Vector3(X, Y + Size.Y, 0), playerPosition + new Vector3(-minimapU, minimapV, 0), new Vector3(0, 1, 0)),
-                new VertexPositionNormalTextureHue(new Vector3(X + Size.X, Y + Size.Y, 0), playerPosition + new Vector3(minimapU, minimapV, 0), new Vector3(1, 1, 0))
+                new VertexPositionNormalTextureHue(new Vector3(position.X, position.Y, 0), playerPosition + new Vector3(-minimapU, -minimapV, 0), new Vector3(0, 0, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(position.X + Width, position.Y, 0), playerPosition + new Vector3(minimapU, -minimapV, 0), new Vector3(1, 0, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(position.X, position.Y + Height, 0), playerPosition + new Vector3(-minimapU, minimapV, 0), new Vector3(0, 1, 0)),
+                new VertexPositionNormalTextureHue(new Vector3(position.X + Width, position.Y + Height, 0), playerPosition + new Vector3(minimapU, minimapV, 0), new Vector3(1, 1, 0))
             };
 
             spriteBatch.Draw(m_GumpTexture, v, Techniques.MiniMap);
@@ -90,7 +90,7 @@ namespace UltimaXNA.Ultima.World.Gumps
                     m_PlayerIndicator = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
                     m_PlayerIndicator.SetData<uint>(new uint[1] { 0xFFFFFFFF });
                 }
-                spriteBatch.Draw2D(m_PlayerIndicator, new Vector3(X + Size.X / 2, Y + Size.Y / 2 - 8, 0), Vector3.Zero);
+                spriteBatch.Draw2D(m_PlayerIndicator, new Vector3(position.X + Width / 2, position.Y + Height / 2 - 8, 0), Vector3.Zero);
             }
         }
 

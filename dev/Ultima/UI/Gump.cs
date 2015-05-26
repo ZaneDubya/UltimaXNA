@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using UltimaXNA.Configuration;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Core.Graphics;
 #endregion
 
 namespace UltimaXNA.Ultima.UI
@@ -72,13 +73,12 @@ namespace UltimaXNA.Ultima.UI
 
         protected override void OnInitialize()
         {
-            LoadLastPosition();
             base.OnInitialize();
         }
 
         public override void Dispose()
         {
-            SaveLastPosition();
+            SavePosition();
             base.Dispose();
         }
 
@@ -102,6 +102,7 @@ namespace UltimaXNA.Ultima.UI
 
             // Do we need to resize?
             CheckResize();
+            CheckRestoreSavedPosition();
         }
 
         public override void ActivateByButton(int buttonID)
@@ -398,9 +399,31 @@ namespace UltimaXNA.Ultima.UI
             return base.GetHashCode();
         }
 
-        private bool m_WillSavePosition = false, m_WillOffsetNextSavePosition = false;
+        protected override void OnMove()
+        {
+            SpriteBatchUI sb = UltimaServices.GetService<SpriteBatchUI>();
+            Point position = Position;
+
+            int halfWidth = Width / 2;
+            int halfHeight = Height / 2;
+
+            if (X < -halfWidth)
+                position.X = -halfWidth;
+            if (Y < -halfHeight)
+                position.Y = -halfHeight;
+            if (X > sb.GraphicsDevice.Viewport.Width - halfWidth)
+                position.X = sb.GraphicsDevice.Viewport.Width - halfWidth;
+            if (Y > sb.GraphicsDevice.Viewport.Height - halfHeight)
+                position.Y = sb.GraphicsDevice.Viewport.Height - halfHeight;
+
+            Position = position;
+        }
+
+        #region Position Save and Restore
+        private bool m_WillSavePosition = false, m_WillOffsetNextPosition = false;
         private string m_SavePositionName = null;
         private static Point s_SavePositionOffsetAmount = new Point(24, 24);
+        private bool m_HasRestoredPosition = false;
 
         protected void SetSavePositionName(string positionName, bool offsetNext = false)
         {
@@ -408,30 +431,30 @@ namespace UltimaXNA.Ultima.UI
             {
                 m_WillSavePosition = true;
                 m_SavePositionName = positionName;
-                m_WillOffsetNextSavePosition = offsetNext;
+                m_WillOffsetNextPosition = offsetNext;
             }
         }
 
-        private void LoadLastPosition()
+        private void CheckRestoreSavedPosition()
         {
-            if (m_WillSavePosition && m_SavePositionName != null)
+            if (!m_HasRestoredPosition && m_WillSavePosition && m_SavePositionName != null)
             {
-                Point gumpPosition = Settings.Gumps.GetLastPosition(m_SavePositionName, new Point(X, Y));
-                X = gumpPosition.X;
-                Y = gumpPosition.Y;
-                if (m_WillOffsetNextSavePosition)
+                Point gumpPosition = Settings.Gumps.GetLastPosition(m_SavePositionName, Position);
+                Position = gumpPosition;
+                if (m_WillOffsetNextPosition)
                 {
-                    SaveLastPosition();
+                    SavePosition();
                 }
             }
+            m_HasRestoredPosition = true;
         }
 
-        private void SaveLastPosition()
+        private void SavePosition()
         {
             if (m_WillSavePosition && m_SavePositionName != null)
             {
-                Point savePosition = new Point(X, Y);
-                if (m_WillOffsetNextSavePosition)
+                Point savePosition = Position;
+                if (m_WillOffsetNextPosition)
                 {
                     savePosition.X += s_SavePositionOffsetAmount.X;
                     savePosition.Y += s_SavePositionOffsetAmount.Y;
@@ -440,5 +463,6 @@ namespace UltimaXNA.Ultima.UI
 
             }
         }
+        #endregion
     }
 }

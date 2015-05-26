@@ -95,15 +95,15 @@ namespace UltimaXNA.Ultima.World.Gumps
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
-            int y = m_TextEntry.Y + Y - 6;
+            int y = m_TextEntry.Y + position.Y - 6;
             for (int i = m_TextEntries.Count - 1; i >= 0; i--)
             {
                 y -= m_TextEntries[i].TextHeight;
-                m_TextEntries[i].Draw(spriteBatch, new Point(X + 2, y));
+                m_TextEntries[i].Draw(spriteBatch, new Point(position.X + 2, y));
             }
-            base.Draw(spriteBatch);
+            base.Draw(spriteBatch, position);
         }
 
         public override void ActivateByKeyboardReturn(int textID, string text)

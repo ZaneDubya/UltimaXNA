@@ -72,26 +72,26 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
             int centerWidth = Width - m_bgGumps[0].Width - m_bgGumps[2].Width;
             int centerHeight = Height - m_bgGumps[0].Height - m_bgGumps[2].Height;
-            int line2Y = Y + m_bgGumps[0].Height;
-            int line3Y = Y + Height - m_bgGumps[6].Height;
+            int line2Y = position.Y + m_bgGumps[0].Height;
+            int line3Y = position.Y + Height - m_bgGumps[6].Height;
 
-            spriteBatch.Draw2D(m_bgGumps[0], new Vector3(X, Y, 0), Vector3.Zero);
-            spriteBatch.Draw2DTiled(m_bgGumps[1], new Rectangle(X + m_bgGumps[0].Width, Y, centerWidth, m_bgGumps[0].Height), Vector3.Zero);
-            spriteBatch.Draw2D(m_bgGumps[2], new Vector3(X + Width - m_bgGumps[2].Width, Y, 0), Vector3.Zero);
+            spriteBatch.Draw2D(m_bgGumps[0], new Vector3(position.X, position.Y, 0), Vector3.Zero);
+            spriteBatch.Draw2DTiled(m_bgGumps[1], new Rectangle(position.X + m_bgGumps[0].Width, position.Y, centerWidth, m_bgGumps[0].Height), Vector3.Zero);
+            spriteBatch.Draw2D(m_bgGumps[2], new Vector3(position.X + Width - m_bgGumps[2].Width, position.Y, 0), Vector3.Zero);
 
-            spriteBatch.Draw2DTiled(m_bgGumps[3], new Rectangle(X, line2Y, m_bgGumps[0].Width, centerHeight), Vector3.Zero);
-            spriteBatch.Draw2DTiled(m_bgGumps[4], new Rectangle(X + m_bgGumps[0].Width, line2Y, centerWidth, centerHeight), Vector3.Zero);
-            spriteBatch.Draw2DTiled(m_bgGumps[5], new Rectangle(X + Width - m_bgGumps[2].Width, line2Y, m_bgGumps[2].Width, centerHeight), Vector3.Zero);
+            spriteBatch.Draw2DTiled(m_bgGumps[3], new Rectangle(position.X, line2Y, m_bgGumps[0].Width, centerHeight), Vector3.Zero);
+            spriteBatch.Draw2DTiled(m_bgGumps[4], new Rectangle(position.X + m_bgGumps[0].Width, line2Y, centerWidth, centerHeight), Vector3.Zero);
+            spriteBatch.Draw2DTiled(m_bgGumps[5], new Rectangle(position.X + Width - m_bgGumps[2].Width, line2Y, m_bgGumps[2].Width, centerHeight), Vector3.Zero);
 
-            spriteBatch.Draw2D(m_bgGumps[6], new Vector3(X, line3Y, 0), Vector3.Zero);
-            spriteBatch.Draw2DTiled(m_bgGumps[7], new Rectangle(X + m_bgGumps[0].Width, line3Y, centerWidth, m_bgGumps[6].Height), Vector3.Zero);
-            spriteBatch.Draw2D(m_bgGumps[8], new Vector3(X + Width - m_bgGumps[2].Width, line3Y, 0), Vector3.Zero);
+            spriteBatch.Draw2D(m_bgGumps[6], new Vector3(position.X, line3Y, 0), Vector3.Zero);
+            spriteBatch.Draw2DTiled(m_bgGumps[7], new Rectangle(position.X + m_bgGumps[0].Width, line3Y, centerWidth, m_bgGumps[6].Height), Vector3.Zero);
+            spriteBatch.Draw2D(m_bgGumps[8], new Vector3(position.X + Width - m_bgGumps[2].Width, line3Y, 0), Vector3.Zero);
 
-            base.Draw(spriteBatch);
+            base.Draw(spriteBatch, position);
         }
     }
 }

@@ -169,7 +169,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
             if (!IsVisible)
                 return;
@@ -178,23 +178,23 @@ namespace UltimaXNA.Ultima.UI.Controls
             int middleHeight = BarHeight - m_gumpUpButton[0].Height - m_gumpDownButton[0].Height - m_gumpBackground[0].Height - m_gumpBackground[2].Height;
             if (middleHeight > 0)
             {
-                spriteBatch.Draw2D(m_gumpBackground[0], new Vector3(X, Y + m_gumpUpButton[0].Height, 0), Vector3.Zero);
-                spriteBatch.Draw2DTiled(m_gumpBackground[1], new Rectangle(X, Y + m_gumpUpButton[0].Height + m_gumpBackground[0].Height, m_gumpBackground[0].Width, middleHeight), Vector3.Zero);
-                spriteBatch.Draw2D(m_gumpBackground[2], new Vector3(X, Y + BarHeight - m_gumpDownButton[0].Height - m_gumpBackground[2].Height, 0), Vector3.Zero);
+                spriteBatch.Draw2D(m_gumpBackground[0], new Vector3(position.X, position.Y + m_gumpUpButton[0].Height, 0), Vector3.Zero);
+                spriteBatch.Draw2DTiled(m_gumpBackground[1], new Rectangle(position.X, position.Y + m_gumpUpButton[0].Height + m_gumpBackground[0].Height, m_gumpBackground[0].Width, middleHeight), Vector3.Zero);
+                spriteBatch.Draw2D(m_gumpBackground[2], new Vector3(position.X, position.Y + BarHeight - m_gumpDownButton[0].Height - m_gumpBackground[2].Height, 0), Vector3.Zero);
             }
             else
             {
                 middleHeight = Height - m_gumpUpButton[0].Height - m_gumpDownButton[0].Height;
-                spriteBatch.Draw2DTiled(m_gumpBackground[1], new Rectangle(X, Y + m_gumpUpButton[0].Height, m_gumpBackground[0].Width, middleHeight), Vector3.Zero);
+                spriteBatch.Draw2DTiled(m_gumpBackground[1], new Rectangle(position.X, position.Y + m_gumpUpButton[0].Height, m_gumpBackground[0].Width, middleHeight), Vector3.Zero);
             }
             // up button
-            spriteBatch.Draw2D(m_btnUpClicked ? m_gumpUpButton[1] : m_gumpUpButton[0], new Vector3(X, Y, 0), Vector3.Zero);
+            spriteBatch.Draw2D(m_btnUpClicked ? m_gumpUpButton[1] : m_gumpUpButton[0], new Vector3(position.X, position.Y, 0), Vector3.Zero);
             // down button
-            spriteBatch.Draw2D(m_btnDownClicked ? m_gumpDownButton[1] : m_gumpDownButton[0], new Vector3(X, Y + Height - m_gumpDownButton[0].Height, 0), Vector3.Zero);
+            spriteBatch.Draw2D(m_btnDownClicked ? m_gumpDownButton[1] : m_gumpDownButton[0], new Vector3(position.X, position.Y + Height - m_gumpDownButton[0].Height, 0), Vector3.Zero);
             // slider
             if (MaxValue > MinValue && middleHeight > 0)
-                spriteBatch.Draw2D(m_gumpSlider, new Vector3(X + (m_gumpBackground[0].Width - m_gumpSlider.Width) / 2, Y + m_gumpUpButton[0].Height + m_SliderPosition, 0), Vector3.Zero);
-            base.Draw(spriteBatch);
+                spriteBatch.Draw2D(m_gumpSlider, new Vector3(position.X + (m_gumpBackground[0].Width - m_gumpSlider.Width) / 2, position.Y + m_gumpUpButton[0].Height + m_SliderPosition, 0), Vector3.Zero);
+            base.Draw(spriteBatch, position);
         }
 
         protected override bool InternalHitTest(int x, int y)

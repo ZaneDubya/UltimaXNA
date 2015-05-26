@@ -92,33 +92,30 @@ namespace UltimaXNA.Ultima.UI.Controls
             else 
             {
                 IsVisible = true;
-                m_gumplingTop.X = 0;
-                m_gumplingTop.Y = 0;
+                m_gumplingTop.Position = new Point(0, 0);
 
-                m_gumplingMiddle.X = 17;
-                m_gumplingMiddle.Y = gumplingMidY;
+                m_gumplingMiddle.Position = new Point(17, gumplingMidY);
                 m_gumplingMiddle.Width = 263;
                 m_gumplingMiddle.Height = gumplingMidHeight;
 
-                m_gumplingBottom.X = 17;
-                m_gumplingBottom.Y = gumplingBottomY;
+                m_gumplingBottom.Position = new Point(17, gumplingBottomY);
 
-                m_gumplingExpander.X = gumplingExpanderX;
-                m_gumplingExpander.Y = gumplingExpanderY;
+                m_gumplingExpander.Position = new Point(gumplingExpanderX, gumplingExpanderY);
 
                 if (m_gumplingTitle != null && m_gumplingTitle.IsInitialized)
                 {
-                    m_gumplingTitle.X = (m_gumplingTop.Width - m_gumplingTitle.Width) / 2;
-                    m_gumplingTitle.Y = (m_gumplingTop.Height - m_gumplingTitle.Height) / 2;
+                    m_gumplingTitle.Position = new Point(
+                        (m_gumplingTop.Width - m_gumplingTitle.Width) / 2,
+                        (m_gumplingTop.Height - m_gumplingTitle.Height) / 2);
                 }
             }
 
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
-            base.Draw(spriteBatch);
+            base.Draw(spriteBatch, position);
         }
 
         void expander_OnMouseDown(int x, int y, MouseButton button)

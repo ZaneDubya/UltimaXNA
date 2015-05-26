@@ -38,9 +38,10 @@ namespace UltimaXNA.Ultima.World.Gumps
 
         protected override void OnInitialize()
         {
+            SetSavePositionName("journal");
             base.OnInitialize();
 
-            SetSavePositionName("journal");
+            
 
             m_JournalEntries = new List<RenderedText>();
             InitializeJournalEntries();
@@ -62,11 +63,11 @@ namespace UltimaXNA.Ultima.World.Gumps
             m_ScrollBar.IsVisible = m_ScrollBar.MaxValue > m_ScrollBar.MinValue;
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
-            base.Draw(spriteBatch);
+            base.Draw(spriteBatch, position);
 
-            Point p = new Point(X + 36, Y + 35);
+            Point p = new Point(position.X + 36, position.Y + 35);
             int height = 0;
             int maxheight = m_ScrollBar.Value + m_EntriesHeight;
 
@@ -83,7 +84,7 @@ namespace UltimaXNA.Ultima.World.Gumps
                     if (y < 0)
                     {
                         // this entry starts above the renderable area, but exists partially within it.
-                        m_JournalEntries[i].Draw(spriteBatch, new Rectangle(p.X, Y + 35, m_JournalEntries[i].Width, m_JournalEntries[i].Height + y), 0, -y);
+                        m_JournalEntries[i].Draw(spriteBatch, new Rectangle(p.X, position.Y + 35, m_JournalEntries[i].Width, m_JournalEntries[i].Height + y), 0, -y);
                         p.Y += m_JournalEntries[i].Height + y;
                     }
                     else
@@ -97,7 +98,7 @@ namespace UltimaXNA.Ultima.World.Gumps
                 else
                 {
                     int y = maxheight - height;
-                    m_JournalEntries[i].Draw(spriteBatch, new Rectangle(p.X, Y + 35 + m_EntriesHeight - y, m_JournalEntries[i].Width, y), 0, 0);
+                    m_JournalEntries[i].Draw(spriteBatch, new Rectangle(p.X, position.Y + 35 + m_EntriesHeight - y, m_JournalEntries[i].Width, y), 0, 0);
                     // can't fit any more entries - so we break!
                     break;
                 }

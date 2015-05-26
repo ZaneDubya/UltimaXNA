@@ -129,26 +129,26 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
-            Point caratPosition = new Point(X, Y);
+            Point caratPosition = new Point(position.X, position.Y);
 
             if (m_RenderedText.Width + m_Carat.Width <= Width)
             {
-                m_RenderedText.Draw(spriteBatch, Position);
+                m_RenderedText.Draw(spriteBatch, position);
                 caratPosition.X += m_RenderedText.Width;
             }
             else
             {
                 int textOffset = m_RenderedText.Width - (Width - m_Carat.Width);
-                m_RenderedText.Draw(spriteBatch, new Rectangle(Position.X, Position.Y, m_RenderedText.Width - textOffset, m_RenderedText.Height), textOffset, 0);
+                m_RenderedText.Draw(spriteBatch, new Rectangle(position.X, position.Y, m_RenderedText.Width - textOffset, m_RenderedText.Height), textOffset, 0);
                 caratPosition.X += (Width - m_Carat.Width);
             }
 
 
             if (m_caratBlinkOn)
                 m_Carat.Draw(spriteBatch, caratPosition);
-            base.Draw(spriteBatch);
+            base.Draw(spriteBatch, position);
         }
 
         protected override void OnKeyboardInput(InputEventKeyboard e)

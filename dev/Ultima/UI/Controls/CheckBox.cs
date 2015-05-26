@@ -57,16 +57,16 @@ namespace UltimaXNA.Ultima.UI.Controls
             Serial = switchID;
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
-            base.Draw(spriteBatch);
+            base.Draw(spriteBatch, position);
             if (IsChecked && m_Active != null)
             {
-                spriteBatch.Draw2D(m_Active, new Vector3(X, Y, 0), Vector3.Zero);
+                spriteBatch.Draw2D(m_Active, new Vector3(position.X, position.Y, 0), Vector3.Zero);
             }
             else if (!IsChecked && m_Inactive != null)
             {
-                spriteBatch.Draw2D(m_Inactive, new Vector3(X, Y, 0), Vector3.Zero);
+                spriteBatch.Draw2D(m_Inactive, new Vector3(position.X, position.Y, 0), Vector3.Zero);
             }
         }
 

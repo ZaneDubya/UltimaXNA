@@ -44,7 +44,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
             
             if (m_texture == null)
@@ -55,8 +55,8 @@ namespace UltimaXNA.Ultima.UI.Controls
                     m_texture = IO.GumpData.GetGumpXNA(Item.ItemData.AnimID + 50000);
                 Size = new Point(m_texture.Width, m_texture.Height);
             }
-            spriteBatch.Draw2D(m_texture, new Vector3(X, Y, 0), Utility.GetHueVector(Item.Hue));
-            base.Draw(spriteBatch);
+            spriteBatch.Draw2D(m_texture, new Vector3(position.X, position.Y, 0), Utility.GetHueVector(Item.Hue));
+            base.Draw(spriteBatch, position);
         }
     }
 }

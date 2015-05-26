@@ -35,6 +35,12 @@ namespace UltimaXNA.Ultima.UI
             m_DisposedControls = new List<AControl>();
         }
 
+        public void Dispose()
+        {
+            foreach (AControl c in m_Controls)
+                c.Dispose();
+        }
+
         SpriteBatchUI m_SpriteBatch;
         internal SpriteBatchUI SpriteBatch { get { return m_SpriteBatch; } }
 
@@ -285,7 +291,7 @@ namespace UltimaXNA.Ultima.UI
             foreach (AControl c in m_Controls)
             {
                 if (c.IsInitialized)
-                    c.Draw(m_SpriteBatch);
+                    c.Draw(m_SpriteBatch, c.Position);
             }
 
             if (Cursor != null)

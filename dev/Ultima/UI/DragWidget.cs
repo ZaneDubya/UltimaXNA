@@ -55,8 +55,9 @@ namespace UltimaXNA.Ultima.UI
                 {
                     UnclipMouse();
                     m_IsMoving = false;
-                    m_DragTarget.X += (x - m_DragOriginX);
-                    m_DragTarget.Y += (y - m_DragOriginY);
+                    m_DragTarget.Position = new Point(
+                        m_DragTarget.X + (x - m_DragOriginX),
+                        m_DragTarget.Y + (y - m_DragOriginY));
                 }
             }
         }
@@ -68,8 +69,9 @@ namespace UltimaXNA.Ultima.UI
             if (m_IsMoving == true)
             {
                 ClipMouse(ref x, ref y);
-                m_DragTarget.X += (x - m_DragOriginX);
-                m_DragTarget.Y += (y - m_DragOriginY);
+                m_DragTarget.Position = new Point(
+                    m_DragTarget.X + (x - m_DragOriginX),
+                    m_DragTarget.Y + (y - m_DragOriginY));
                 m_DragOriginX = x;
                 m_DragOriginY = y;
             }

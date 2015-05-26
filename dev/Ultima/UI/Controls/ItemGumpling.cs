@@ -73,15 +73,15 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
             if (m_texture == null)
             {
                 m_texture = IO.ArtData.GetStaticTexture(m_item.DisplayItemID);
                 Size = new Point(m_texture.Width, m_texture.Height);
             }
-            spriteBatch.Draw2D(m_texture, new Vector3(X, Y, 0), Utility.GetHueVector(m_item.Hue));
-            base.Draw(spriteBatch);
+            spriteBatch.Draw2D(m_texture, new Vector3(position.X, position.Y, 0), Utility.GetHueVector(m_item.Hue));
+            base.Draw(spriteBatch, position);
         }
 
         protected override bool InternalHitTest(int x, int y)
