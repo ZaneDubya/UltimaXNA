@@ -29,7 +29,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         public PaperDollInteractable(AControl owner, int page, int x, int y)
             : base(0, 0)
         {
-            m_Owner = owner;
+            Owner = owner;
             Position = new Point(x, y);
 
             m_World = UltimaServices.GetService<WorldModel>();

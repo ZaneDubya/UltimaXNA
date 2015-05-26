@@ -38,7 +38,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         public ExpandableScroll(AControl owner, int page, int x, int y, int height)
             : base(0, 0)
         {
-            m_Owner = owner;
+            Owner = owner;
             Position = new Point(x, y);
             m_expandableScrollHeight = height;
             MakeThisADragger();

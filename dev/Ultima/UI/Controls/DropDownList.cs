@@ -60,14 +60,14 @@ namespace UltimaXNA.Ultima.UI.Controls
             m_visibleItems = itemsVisible;
             m_canBeNull = canBeNull;
 
-            m_resize = new ResizePic(m_Owner, Page, X, Y, 3000, m_width, IO.FontsOld.ASCIIText.Fonts[1].Height + 8);
+            m_resize = new ResizePic(Owner, Page, X, Y, 3000, m_width, IO.FontsOld.ASCIIText.Fonts[1].Height + 8);
             m_resize.MouseClickEvent = onClickClosedList;
             m_resize.MouseOverEvent = onMouseOverClosedList;
             m_resize.MouseOutEvent = onMouseOutClosedList;
-            ((Gump)m_Owner).AddControl(m_resize);
-            m_label = new TextLabelAscii(m_Owner, Page, X + 4, Y + 5, hue_Text, 1, string.Empty);
-            ((Gump)m_Owner).AddControl(m_label);
-            ((Gump)m_Owner).AddControl(new GumpPic(m_Owner, Page, X + width - 22, Y + 5, 2086, 0));
+            ((Gump)Owner).AddControl(m_resize);
+            m_label = new TextLabelAscii(Owner, Page, X + 4, Y + 5, hue_Text, 1, string.Empty);
+            ((Gump)Owner).AddControl(m_label);
+            ((Gump)Owner).AddControl(new GumpPic(Owner, Page, X + width - 22, Y + 5, 2086, 0));
         }
 
         public override void Update(double totalMS, double frameMS)
@@ -116,22 +116,22 @@ namespace UltimaXNA.Ultima.UI.Controls
         void onClickClosedList(int x, int y, MouseButton button)
         {
             m_listOpen = true;
-            m_openResizePic = new ResizePic(m_Owner, Page, X, Y, 3000, m_width, ASCIIText.Fonts[1].Height * m_visibleItems + 8);
+            m_openResizePic = new ResizePic(Owner, Page, X, Y, 3000, m_width, ASCIIText.Fonts[1].Height * m_visibleItems + 8);
             m_openResizePic.MouseClickEvent = onClickOpenList;
             m_openResizePic.MouseOverEvent = onMouseOverOpenList;
             m_openResizePic.MouseOutEvent = onMouseOutOpenList;
-            ((Gump)m_Owner).AddControl(m_openResizePic);
+            ((Gump)Owner).AddControl(m_openResizePic);
             // only show the scrollbar if we need to scroll
             if (m_visibleItems < m_items.Count)
             {
-                m_openScrollBar = new ScrollBar(m_Owner, Page, X + m_width - 20, Y + 4, ASCIIText.Fonts[1].Height * m_visibleItems, (m_canBeNull ? -1 : 0), m_items.Count - m_visibleItems, Index);
-                ((Gump)m_Owner).AddControl(m_openScrollBar);
+                m_openScrollBar = new ScrollBar(Owner, Page, X + m_width - 20, Y + 4, ASCIIText.Fonts[1].Height * m_visibleItems, (m_canBeNull ? -1 : 0), m_items.Count - m_visibleItems, Index);
+                ((Gump)Owner).AddControl(m_openScrollBar);
             }
             m_openLabels = new TextLabelAscii[m_visibleItems];
             for (int i = 0; i < m_visibleItems; i++)
             {
-                m_openLabels[i] = new TextLabelAscii(m_Owner, Page, X + 4, Y + 5 + ASCIIText.Fonts[1].Height * i, 1107, 1, string.Empty);
-                ((Gump)m_Owner).AddControl(m_openLabels[i]);
+                m_openLabels[i] = new TextLabelAscii(Owner, Page, X + 4, Y + 5 + ASCIIText.Fonts[1].Height * i, 1107, 1, string.Empty);
+                ((Gump)Owner).AddControl(m_openLabels[i]);
             }
         }
 

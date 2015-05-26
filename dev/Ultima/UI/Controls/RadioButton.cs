@@ -22,7 +22,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         protected override void OnMouseClick(int x, int y, Core.Input.Windows.MouseButton button)
         {
             base.OnMouseClick(x, y, button);
-            if (m_Owner != null)
+            if (Owner != null)
             {
                 foreach (AControl control in Owner.Children)
                 {

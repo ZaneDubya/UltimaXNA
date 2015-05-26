@@ -163,10 +163,10 @@ namespace UltimaXNA.Ultima.UI.Controls
                     }
                     break;
                 case WinKeys.Tab:
-                    m_Owner.KeyboardTabToNextFocus(this);
+                    Owner.KeyboardTabToNextFocus(this);
                     break;
                 case WinKeys.Enter:
-                    m_Owner.ActivateByKeyboardReturn(EntryID, Text);
+                    Owner.ActivateByKeyboardReturn(EntryID, Text);
                     break;
                 default:
                     if (e.IsChar)
