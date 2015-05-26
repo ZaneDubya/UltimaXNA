@@ -22,6 +22,8 @@ namespace UltimaXNA.Ultima.World.Gumps
 {
     class ChatControl : AControl
     {
+        private const int MaxChatMessageLength = 96;
+
         TextEntry m_TextEntry;
         List<ChatLineTimed> m_TextEntries;
         List<string> m_MessageHistory;
@@ -52,7 +54,7 @@ namespace UltimaXNA.Ultima.World.Gumps
         {
             if (m_TextEntry == null)
             {
-                m_TextEntry = new TextEntry(this, 0, 1, Height - TextUni.GetFont(0).Height, Width, TextUni.GetFont(0).Height, 0, 0, 64, string.Empty);
+                m_TextEntry = new TextEntry(this, 0, 1, Height - TextUni.GetFont(0).Height, Width, TextUni.GetFont(0).Height, 0, 0, MaxChatMessageLength, string.Empty);
                 m_TextEntry.LegacyCarat = true;
 
                 AddControl(new CheckerTrans(this, 0, 0, Height - 20, Width, 20));
@@ -156,12 +158,11 @@ namespace UltimaXNA.Ultima.World.Gumps
             {
                 m_alpha = 1.0f - ((time) - (Time_Display - Time_Fadeout)) / Time_Fadeout;
             }
-            m_Texture.Transparent = (m_alpha < 1.0f);
         }
 
         public void Draw(SpriteBatchUI sb, Point position)
         {
-            m_Texture.Draw(sb, position);
+            m_Texture.Draw(sb, position, Utility.GetHueVector(0, false, (m_alpha < 1.0f)));
         }
 
         public void Dispose()

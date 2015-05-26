@@ -39,17 +39,8 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         public int Hue
         {
-            get
-            {
-                if (m_RenderedText == null)
-                    return 0;
-                return m_RenderedText.Hue;
-            }
-            set
-            {
-                if (m_RenderedText != null)
-                    m_RenderedText.Hue = value;
-            }
+            get;
+            set;
         }
 
         bool m_background = false;
