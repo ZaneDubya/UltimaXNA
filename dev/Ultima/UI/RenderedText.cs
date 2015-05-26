@@ -22,6 +22,8 @@ namespace UltimaXNA.Ultima.UI
 {
     class RenderedText
     {
+        private const int c_DefaultMaxWidth = 200;
+
         private Texture2D m_Texture;
         private Reader m_HtmlParser;
 
@@ -55,6 +57,12 @@ namespace UltimaXNA.Ultima.UI
 
                 return m_Texture.Height;
             }
+        }
+
+        public int LineCount
+        {
+            get;
+            private set;
         }
 
         public Regions Regions
@@ -126,7 +134,7 @@ namespace UltimaXNA.Ultima.UI
 
         private readonly SpriteBatchUI m_SpriteBatch;
 
-        public RenderedText(string text, int maxWidth = 200)
+        public RenderedText(string text, int maxWidth = c_DefaultMaxWidth)
         {
             Text = text;
             MaxWidth = maxWidth;
@@ -153,13 +161,18 @@ namespace UltimaXNA.Ultima.UI
             Draw(sb, new Rectangle(position.X, position.Y, Width, Height), 0, 0);
         }
 
+        public void Draw(SpriteBatchUI sb, Rectangle destRectangle, int xScroll, int yScroll, bool fff)
+        {
+
+        }
+
         public void Draw(SpriteBatchUI sb, Rectangle destRectangle, int xScroll, int yScroll)
         {
             if (Text == null)
                 return;
 
             checkRender();
-            
+
             Rectangle sourceRectangle;
 
             if (xScroll > m_Texture.Width)
@@ -171,7 +184,7 @@ namespace UltimaXNA.Ultima.UI
 
             if (yScroll > m_Texture.Height)
                 return;
-            else if (yScroll < - Height)
+            else if (yScroll < -Height)
                 return;
             else
                 sourceRectangle.Y = yScroll;
@@ -269,21 +282,23 @@ namespace UltimaXNA.Ultima.UI
                 if (Text != null)
                 {
 
-                    int width, height, ascender;
+                    int width, height, ascender, linecount;
 
-                    resizeAndParse(Text, MaxWidth, out width, out height, out ascender);
+                    resizeAndParse(Text, MaxWidth, out width, out height, out ascender, out linecount);
                     m_Texture = renderToTexture(m_SpriteBatch.GraphicsDevice, m_HtmlParser, width, height, ascender);
+                    LineCount = linecount;
 
                     m_MustRender = false;
                 }
             }
         }
 
-        private void resizeAndParse(string textToRender, int maxWidth, out int width, out int height, out int ascender)
+        private void resizeAndParse(string textToRender, int maxWidth, out int width, out int height, out int ascender, out int linecount)
         {
             width = 0;
             height = 0;
             ascender = 0;
+            linecount = 0;
 
             if (m_HtmlParser != null)
                 m_HtmlParser = null;
@@ -300,11 +315,11 @@ namespace UltimaXNA.Ultima.UI
             {
                 if (maxWidth == 0)
                 {
-                    getTextDimensions(m_HtmlParser, 200, 0, out width, out height, out ascender);
+                    getTextDimensions(m_HtmlParser, c_DefaultMaxWidth, 0, out width, out height, out ascender, out linecount);
                 }
                 else
                 {
-                    getTextDimensions(m_HtmlParser, maxWidth, 0, out width, out height, out ascender);
+                    getTextDimensions(m_HtmlParser, maxWidth, 0, out width, out height, out ascender, out linecount);
                 }
             }
         }
@@ -363,7 +378,7 @@ namespace UltimaXNA.Ultima.UI
                                 dx = 0;
                                 writeTexture_Line(alignedAtoms[2], rPtr, ref dx, dy, width, height, ref lineheight, false);
                                 alignedTextX[2] = dx = width - dx;
-                                writeTexture_Line(alignedAtoms[2], rPtr, ref dx, dy, width, height,ref lineheight, true);
+                                writeTexture_Line(alignedAtoms[2], rPtr, ref dx, dy, width, height, ref lineheight, true);
                             }
 
                             // get HREF regions for html.
@@ -502,13 +517,16 @@ namespace UltimaXNA.Ultima.UI
             }
         }
 
-        void getTextDimensions(Reader reader, int maxwidth, int maxheight, out int width, out int height, out int ascender)
+        void getTextDimensions(Reader reader, int maxwidth, int maxheight, out int width, out int height, out int ascender, out int linecount)
         {
-            width = 0; height = 0; ascender = 0;
+            width = 0;
+            height = 0;
+            ascender = 0;
+            linecount = 0;
+
             int lineheight = 0;
             int widestline = 0;
             int descenderheight = 0;
-            int linecount = 0;
             List<AAtom> word = new List<AAtom>();
             int additionalwidth = 0; // for italic + outlined characters, which need a little more room for their slant/outline.
             int word_width = 0;
