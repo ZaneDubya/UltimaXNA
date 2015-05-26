@@ -42,7 +42,7 @@ namespace UltimaXNA.Ultima.World.Gumps
         INetworkClient m_Client;
 
         public PaperDollGump(Mobile parent)
-            : base(0, 0)
+            : base(parent.Serial, 0)
         {
             Parent = parent;
 
@@ -105,8 +105,18 @@ namespace UltimaXNA.Ultima.World.Gumps
                     SourceEntity = Parent
                 });
             }
+        }
 
+        protected override void OnInitialize()
+        {
+            LoadLastPosition(Parent.IsClientEntity ? "paperdoll_self" : "paperdoll");
+            base.OnInitialize();
+        }
 
+        public override void Dispose()
+        {
+            SaveLastPosition(Parent.IsClientEntity ? "paperdoll_self" : "paperdoll");
+            base.Dispose();
         }
 
         public override void Update(double totalMS, double frameMS)

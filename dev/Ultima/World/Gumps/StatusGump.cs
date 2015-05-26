@@ -84,7 +84,18 @@ namespace UltimaXNA.Ultima.World.Gumps
 
             AddControl(new TextLabelAscii(this, 0, 277, 70, 1, 6, "" + m.DamageMin + "/" + m.DamageMax));
             ControlsToUpdate.Add(LastControl);
+        }
 
+        protected override void OnInitialize()
+        {
+            LoadLastPosition("status");
+            base.OnInitialize();
+        }
+
+        public override void Dispose()
+        {
+            SaveLastPosition("status");
+            base.Dispose();
         }
 
         public override void Update(double totalMS, double frameMS)

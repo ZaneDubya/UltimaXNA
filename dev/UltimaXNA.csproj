@@ -127,6 +127,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\GumpSettings.cs" />
     <Compile Include="Configuration\Mouse.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Configuration\WorldSettings.cs" />

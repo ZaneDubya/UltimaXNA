@@ -34,14 +34,25 @@ namespace UltimaXNA.Ultima.World.Gumps
             AddControl(m_list = new HtmlGump(this, 0, 10, 20, 180, 100, 0, 1, ""));
         }
 
+        protected override void OnInitialize()
+        {
+            LoadLastPosition("skills");
+            base.OnInitialize();
+        }
+
+        public override void Dispose()
+        {
+            SaveLastPosition("skills");
+            base.Dispose();
+        }
+
         public override void Update(double totalMS, double frameMS)
         {
             m_list.X = 26;
             m_list.Y = 33;
             m_list.Width = Width - 56;
             m_list.Height = Height - 95;
-            //if (m_lastUpdateCount != Ultima.ClientVars.Skills.UpdateCount)  Could not resolve this...
-                m_list.Text = buildSkillsString();
+            m_list.Text = buildSkillsString();
             base.Update(totalMS, frameMS);
         }
 

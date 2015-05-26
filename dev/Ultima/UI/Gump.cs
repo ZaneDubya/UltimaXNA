@@ -9,6 +9,8 @@
  ***************************************************************************/
 #region usings
 using Microsoft.Xna.Framework;
+using UltimaXNA.Configuration;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -365,6 +367,19 @@ namespace UltimaXNA.Ultima.UI
                 }
             }
             return string.Empty;
+        }
+
+        protected void LoadLastPosition(string positionName)
+        {
+            Point gumpPosition = Settings.Gumps.GetLastPosition(positionName, new Point(X, Y));
+            X = gumpPosition.X;
+            Y = gumpPosition.Y;
+        }
+
+        protected void SaveLastPosition(string positionName)
+        {
+            Point savePosition = new Point(X, Y);
+            Settings.Gumps.SetLastPosition(positionName, savePosition);
         }
 
         public override bool Equals(object obj)

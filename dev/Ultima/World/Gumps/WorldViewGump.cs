@@ -11,7 +11,6 @@ namespace UltimaXNA.Ultima.World.Gumps
         private WorldModel m_Model;
 
         private ChatControl m_ChatWindow;
-
         private const int BorderWidth = 5, BorderHeight = 7;
         private int m_WorldWidth, m_WorldHeight;
 
@@ -33,6 +32,18 @@ namespace UltimaXNA.Ultima.World.Gumps
             Size = new Point(m_WorldWidth + BorderWidth * 2, m_WorldHeight + BorderHeight * 2);
 
             OnResize();
+        }
+
+        protected override void OnInitialize()
+        {
+            LoadLastPosition("worldview");
+            base.OnInitialize();
+        }
+
+        public override void Dispose()
+        {
+            SaveLastPosition("worldview");
+            base.Dispose();
         }
 
         public override void Update(double totalMS, double frameMS)

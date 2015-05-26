@@ -37,6 +37,18 @@ namespace UltimaXNA.Ultima.World.Gumps
             MakeThisADragger();
         }
 
+        protected override void OnInitialize()
+        {
+            LoadLastPosition("minimap");
+            base.OnInitialize();
+        }
+
+        public override void Dispose()
+        {
+            SaveLastPosition("minimap");
+            base.Dispose();
+        }
+
         public override void Update(double totalMS, double frameMS)
         {
             if (m_GumpTexture == null || m_useLargeMap != EngineVars.MiniMap_LargeFormat)

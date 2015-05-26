@@ -40,9 +40,17 @@ namespace UltimaXNA.Ultima.World.Gumps
         {
             base.OnInitialize();
 
+            LoadLastPosition("journal");
+
             m_JournalEntries = new List<RenderedText>();
             InitializeJournalEntries();
             PlayerState.Journaling.OnJournalEntryAdded += AddJournalEntry;
+        }
+
+        public override void Dispose()
+        {
+            SaveLastPosition("journal");
+            base.Dispose();
         }
 
         public override void Update(double totalMS, double frameMS)

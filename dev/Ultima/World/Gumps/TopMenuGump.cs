@@ -63,10 +63,17 @@ namespace UltimaXNA.Ultima.World.Gumps
             switch ((Buttons)buttonID)
             {
                 case Buttons.Map:
-                    m_UserInterface.AddControl(new MiniMapGump(), 566, 25, UserInterfaceService.AddControlType.Toggle);
+                    if (m_UserInterface.GetControl<MiniMapGump>() == null)
+                        m_UserInterface.AddControl(new MiniMapGump(), 566, 25, UserInterfaceService.AddControlType.Toggle);
+                    else
+                        m_UserInterface.RemoveControl<MiniMapGump>();
                     break;
                 case Buttons.Paperdoll:
-                    m_UserInterface.AddControl(new PaperDollGump((Mobile)EntityManager.GetPlayerObject()), 400, 100, UserInterfaceService.AddControlType.Toggle);
+                    Mobile player = (Mobile)EntityManager.GetPlayerObject();
+                    if (m_UserInterface.GetControl<PaperDollGump>(player.Serial) == null)
+                        m_UserInterface.AddControl(new PaperDollGump((Mobile)EntityManager.GetPlayerObject()), 400, 100, UserInterfaceService.AddControlType.Toggle);
+                    else
+                        m_UserInterface.RemoveControl<PaperDollGump>(player.Serial);
                     break;
                 case Buttons.Inventory:
                     // opens the player's backpack.
@@ -75,14 +82,20 @@ namespace UltimaXNA.Ultima.World.Gumps
                     m_World.Interaction.DoubleClick(backpack);
                     break;
                 case Buttons.Journal:
-                    m_UserInterface.AddControl(new JournalGump(), 80, 80, UserInterfaceService.AddControlType.Toggle);
+                    if (m_UserInterface.GetControl<JournalGump>() == null)
+                        m_UserInterface.AddControl(new JournalGump(), 80, 80, UserInterfaceService.AddControlType.Toggle);
+                    else
+                        m_UserInterface.RemoveControl<JournalGump>();
                     break;
                 case Buttons.Chat:
                     break;
                 case Buttons.Help:
                     break;
                 case Buttons.Question:
-                    m_UserInterface.AddControl(new DebugGump(), 50, 50, UserInterfaceService.AddControlType.Toggle);
+                    if (m_UserInterface.GetControl<DebugGump>() == null)
+                        m_UserInterface.AddControl(new DebugGump(), 50, 50, UserInterfaceService.AddControlType.Toggle);
+                    else
+                        m_UserInterface.RemoveControl<DebugGump>();
                     break;
             }
         }

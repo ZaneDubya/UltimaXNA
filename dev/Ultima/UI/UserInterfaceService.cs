@@ -175,7 +175,8 @@ namespace UltimaXNA.Ultima.UI
                     if (c.Equals(control) && control.Equals(c))
                     {
                         alreadyActive = true;
-                        c.Dispose();
+                        if (!c.IsDisposed)
+                            c.Dispose();
                     }
                 }
 
@@ -202,8 +203,24 @@ namespace UltimaXNA.Ultima.UI
             }
             else
             {
-                control.Dispose();
+                if (!control.IsDisposed)
+                    control.Dispose();
                 return null;
+            }
+        }
+
+        public void RemoveControl<T>(Serial? serial = null) where T : AControl
+        {
+            foreach (AControl c in m_Controls)
+            {
+                if (c.GetType() == typeof(T))
+                {
+                    if (!serial.HasValue || (c.Serial == serial))
+                    {
+                    if (!c.IsDisposed)
+                        c.Dispose();
+                    }
+                }
             }
         }
 
@@ -214,22 +231,22 @@ namespace UltimaXNA.Ultima.UI
             Toggle = 2
         }
 
-        public AControl GetControl(int serial)
+        public AControl GetControl(Serial? serial = null)
         {
             foreach (AControl c in m_Controls)
             {
-                if (c.Serial == serial)
+                if (!serial.HasValue || (c.Serial == serial))
                     return c;
             }
             return null;
         }
 
-        public T GetControl<T>(int serial) where T : AControl
+        public T GetControl<T>(Serial? serial = null) where T : AControl
         {
             foreach (AControl c in m_Controls)
             {
-                if (c.Serial == serial)
-                    if (c.GetType() == typeof(T))
+                if (c.GetType() == typeof(T))
+                    if (!serial.HasValue || (c.Serial == serial))
                         return (T)c;
             }
             return null;
