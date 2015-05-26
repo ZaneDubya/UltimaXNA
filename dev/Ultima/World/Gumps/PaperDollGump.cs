@@ -13,6 +13,7 @@ using UltimaXNA.Core.Network;
 using UltimaXNA.Ultima.Entities.Mobiles;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
+using Microsoft.Xna.Framework;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Gumps
@@ -123,9 +124,9 @@ namespace UltimaXNA.Ultima.World.Gumps
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
-            base.Draw(spriteBatch);
+            base.Draw(spriteBatch, position);
         }
 
         public override void ActivateByButton(int buttonID)

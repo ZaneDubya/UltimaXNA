@@ -87,13 +87,13 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
-            spriteBatch.Draw2D(m_gumpBar[0], new Vector3(X, Y, 0), Vector3.Zero);
-            spriteBatch.Draw2DTiled(m_gumpBar[1], new Rectangle(Area.X + m_gumpBar[0].Width, Area.Y, BarWidth - m_gumpBar[2].Width - m_gumpBar[0].Width, m_gumpBar[1].Height), Vector3.Zero);
-            spriteBatch.Draw2D(m_gumpBar[2], new Vector3(Area.X + BarWidth - m_gumpBar[2].Width, Area.Y, 0), Vector3.Zero);
-            spriteBatch.Draw2D(m_gumpSlider, new Vector3(Area.X + m_sliderX, Area.Y, 0), Vector3.Zero);
-            base.Draw(spriteBatch);
+            spriteBatch.Draw2D(m_gumpBar[0], new Vector3(position.X, position.Y, 0), Vector3.Zero);
+            spriteBatch.Draw2DTiled(m_gumpBar[1], new Rectangle(Area.X + m_gumpBar[0].Width, position.Y, BarWidth - m_gumpBar[2].Width - m_gumpBar[0].Width, m_gumpBar[1].Height), Vector3.Zero);
+            spriteBatch.Draw2D(m_gumpBar[2], new Vector3(position.X + BarWidth - m_gumpBar[2].Width, position.Y, 0), Vector3.Zero);
+            spriteBatch.Draw2D(m_gumpSlider, new Vector3(position.X + m_sliderX, position.Y, 0), Vector3.Zero);
+            base.Draw(spriteBatch, position);
         }
 
         protected override bool InternalHitTest(int x, int y)

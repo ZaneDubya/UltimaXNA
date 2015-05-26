@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
 using System.IO;
+using UltimaXNA.Core.Graphics;
 
 namespace UltimaXNA.Ultima.Login.States
 {
@@ -111,15 +112,15 @@ namespace UltimaXNA.Ultima.Login.States
 
             private Texture2D m_texture;
 
-            public override void Draw(Core.Graphics.SpriteBatchUI spriteBatch)
+            public override void Draw(SpriteBatchUI spriteBatch, Point position)
             {
                 if (m_texture == null)
                 {
                     m_texture = IO.ArtData.GetStaticTexture(m_StaticTextureID);
                     Size = new Point(m_texture.Width, m_texture.Height);
                 }
-                spriteBatch.Draw2D(m_texture, new Vector3(X, Y, 0), Utility.GetHueVector(Hue));
-                base.Draw(spriteBatch);
+                spriteBatch.Draw2D(m_texture, new Vector3(position.X, position.Y, 0), Utility.GetHueVector(Hue));
+                base.Draw(spriteBatch, position);
             }
 
             protected override void OnMouseOver(int x, int y)

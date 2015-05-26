@@ -32,11 +32,11 @@ namespace UltimaXNA.Ultima.World.Gumps
             AddControl(new ResizePic(this, 0, 0, 0, 0x2436, 256 + 16, 256 + 16));
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
-            base.Draw(spriteBatch);
+            base.Draw(spriteBatch, position);
 
-            spriteBatch.Draw2D(((WorldView)m_World.GetView()).MiniMap.Texture, new Vector3(X + 8, Y + 8, 0), Vector3.Zero);
+            spriteBatch.Draw2D(((WorldView)m_World.GetView()).MiniMap.Texture, new Vector3(position.X + 8, position.Y + 8, 0), Vector3.Zero);
         }
     }
 }

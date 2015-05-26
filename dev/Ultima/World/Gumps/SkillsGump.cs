@@ -12,6 +12,7 @@ using System.Text;
 using UltimaXNA.Ultima.Player;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
+using Microsoft.Xna.Framework;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Gumps
@@ -47,8 +48,7 @@ namespace UltimaXNA.Ultima.World.Gumps
 
         public override void Update(double totalMS, double frameMS)
         {
-            m_list.X = 26;
-            m_list.Y = 33;
+            m_list.Position = new Point(26, 33);
             m_list.Width = Width - 56;
             m_list.Height = Height - 95;
             m_list.Text = buildSkillsString();

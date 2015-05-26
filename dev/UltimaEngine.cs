@@ -154,6 +154,12 @@ namespace UltimaXNA
             }
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            UserInterface.Dispose();
+            base.Dispose(disposing);
+        }
+
         protected override void Update(GameTime gameTime)
         {
             IsFixedTimeStep = Settings.Game.IsFixedTimeStep;

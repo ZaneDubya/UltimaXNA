@@ -163,8 +163,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                 if (m_scrollbar == null)
                 {
                     AddControl(m_scrollbar = new ScrollBar(this, 0));
-                    m_scrollbar.X = Width - 15;
-                    m_scrollbar.Y = 0;
+                    m_scrollbar.Position = new Point(Width - 15, 0);
                     m_scrollbar.Width = 15;
                     m_scrollbar.Height = Height;
                     m_scrollbar.MinValue = 0;
@@ -176,15 +175,15 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
-            base.Draw(spriteBatch);
+            base.Draw(spriteBatch, position);
 
             m_RenderedText.ActiveRegion = m_hrefOver;
             m_RenderedText.ActiveRegion_UseDownHue = m_clicked;
-            m_RenderedText.Draw(spriteBatch, 
-                new Rectangle(X + (Background ? 4 : 0), Y + (Background ? 4 : 0),
-                    Size.X - (Background ? 8 : 0), Size.Y - (Background ? 8 : 0)), ScrollX, ScrollY);
+            m_RenderedText.Draw(spriteBatch,
+                new Rectangle(position.X + (Background ? 4 : 0), position.Y + (Background ? 4 : 0),
+                    Width - (Background ? 8 : 0), Height - (Background ? 8 : 0)), ScrollX, ScrollY);
         }
 
         protected override bool InternalHitTest(int x, int y)

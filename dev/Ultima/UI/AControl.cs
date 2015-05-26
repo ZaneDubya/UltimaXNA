@@ -161,7 +161,6 @@ namespace UltimaXNA.Ultima.UI
         }
 
         Rectangle m_Area = Rectangle.Empty;
-        Point m_Position;
         protected int OwnerX
         {
             get
@@ -182,8 +181,8 @@ namespace UltimaXNA.Ultima.UI
                     return 0;
             }
         }
-        public int X { get { return m_Position.X; } set { m_Position.X = value; } }
-        public int Y { get { return m_Position.Y; } set { m_Position.Y = value; } }
+        public int X { get { return Position.X; } }
+        public int Y { get { return Position.Y; } }
 
         public int ScreenX
         {
@@ -227,7 +226,11 @@ namespace UltimaXNA.Ultima.UI
             }
             set
             {
-                m_Position = value;
+                if (value != m_Position)
+                {
+                    m_Position = value;
+                    OnMove();
+                }
             }
         }
         public Point Size
@@ -269,6 +272,7 @@ namespace UltimaXNA.Ultima.UI
         }
 
         UserInterfaceService m_UserInterface;
+        Point m_Position;
 
         public AControl(AControl owner, int page)
         {
@@ -320,13 +324,13 @@ namespace UltimaXNA.Ultima.UI
             }
         }
 
-        virtual public void Draw(SpriteBatchUI spriteBatch)
+        virtual public void Draw(SpriteBatchUI spriteBatch, Point position)
         {
             if (!IsInitialized || !IsVisible)
                 return;
 
             if (Settings.Debug.ShowUIOutlines)
-                DebugDrawBounds(spriteBatch, Color.White);
+                DebugDrawBounds(spriteBatch, position, Color.White);
 
             foreach (AControl c in Children)
             {
@@ -334,10 +338,8 @@ namespace UltimaXNA.Ultima.UI
                 {
                     if (c.IsInitialized)
                     {
-                        Point saved = c.Position;
-                        c.Position = new Point(c.Position.X + Position.X, c.Position.Y + Position.Y);
-                        c.Draw(spriteBatch);
-                        c.Position = saved;
+                        Point offset = new Point(c.Position.X + position.X, c.Position.Y + position.Y);
+                        c.Draw(spriteBatch, offset);
                     }
                 }
             }
@@ -442,6 +444,11 @@ namespace UltimaXNA.Ultima.UI
         }
 
         protected virtual void OnInitialize()
+        {
+
+        }
+
+        protected virtual void OnMove()
         {
 
         }
@@ -748,7 +755,7 @@ namespace UltimaXNA.Ultima.UI
         static Texture2D s_BoundsTexture;
 #endif
 
-        protected void DebugDrawBounds(SpriteBatchUI spriteBatch, Color color)
+        protected void DebugDrawBounds(SpriteBatchUI spriteBatch, Point position, Color color)
         {
 #if DEBUG
             int hue = IO.HuesXNA.GetWebSafeHue(color);
@@ -766,10 +773,10 @@ namespace UltimaXNA.Ultima.UI
                 s_BoundsTexture.SetData<Color>(new Color[] { Color.White });
             }
 
-            spriteBatch.Draw2D(s_BoundsTexture, new Rectangle(X, Y, Width, 1), Utility.GetHueVector(hue));
-            spriteBatch.Draw2D(s_BoundsTexture, new Rectangle(X, Y + Height - 1, Width, 1), Utility.GetHueVector(hue));
-            spriteBatch.Draw2D(s_BoundsTexture, new Rectangle(X, Y, 1, Height), Utility.GetHueVector(hue));
-            spriteBatch.Draw2D(s_BoundsTexture, new Rectangle(X + Width - 1, Y, 1, Height), Utility.GetHueVector(hue));
+            spriteBatch.Draw2D(s_BoundsTexture, new Rectangle(position.X, position.Y, Width, 1), Utility.GetHueVector(hue));
+            spriteBatch.Draw2D(s_BoundsTexture, new Rectangle(position.X, position.Y + Height - 1, Width, 1), Utility.GetHueVector(hue));
+            spriteBatch.Draw2D(s_BoundsTexture, new Rectangle(position.X, position.Y, 1, Height), Utility.GetHueVector(hue));
+            spriteBatch.Draw2D(s_BoundsTexture, new Rectangle(position.X + Width - 1, position.Y, 1, Height), Utility.GetHueVector(hue));
 #endif
         #endregion
         }

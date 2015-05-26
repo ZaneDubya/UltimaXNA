@@ -50,22 +50,27 @@ namespace UltimaXNA.Ultima.World.Gumps
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
-            CheckPosition(spriteBatch);
-            base.Draw(spriteBatch);
+            base.Draw(spriteBatch, position);
         }
 
-        private void CheckPosition(SpriteBatchUI spriteBatch)
+        protected override void OnMove()
         {
-            if (X < -BorderWidth)
-                X = -BorderWidth;
-            if (Y < -BorderHeight)
-                Y = -BorderHeight;
-            if (X + Width - BorderWidth > spriteBatch.GraphicsDevice.Viewport.Width)
-                X = spriteBatch.GraphicsDevice.Viewport.Width - (Width - BorderWidth);
-            if (Y + Height - BorderHeight > spriteBatch.GraphicsDevice.Viewport.Height)
-                Y = spriteBatch.GraphicsDevice.Viewport.Height - (Height - BorderHeight);
+            // base.OnMove(); - this would make sure that the gump remained at least half on screen, but we want more fine-grained control over movement.
+            SpriteBatchUI sb = UltimaServices.GetService<SpriteBatchUI>();
+            Point position = Position;
+
+            if (position.X < -BorderWidth)
+                position.X = -BorderWidth;
+            if (position.Y < -BorderHeight)
+                position.Y = -BorderHeight;
+            if (position.X + Width - BorderWidth > sb.GraphicsDevice.Viewport.Width)
+                position.X = sb.GraphicsDevice.Viewport.Width - (Width - BorderWidth);
+            if (position.Y + Height - BorderHeight > sb.GraphicsDevice.Viewport.Height)
+                position.Y = sb.GraphicsDevice.Viewport.Height - (Height - BorderHeight);
+
+            Position = position;
         }
 
         private void OnResize()
