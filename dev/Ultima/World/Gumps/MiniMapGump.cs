@@ -39,13 +39,12 @@ namespace UltimaXNA.Ultima.World.Gumps
 
         protected override void OnInitialize()
         {
-            LoadLastPosition("minimap");
+            SetSavePositionName("minimap");
             base.OnInitialize();
         }
 
         public override void Dispose()
         {
-            SaveLastPosition("minimap");
             base.Dispose();
         }
 

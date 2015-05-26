@@ -88,13 +88,12 @@ namespace UltimaXNA.Ultima.World.Gumps
 
         protected override void OnInitialize()
         {
-            LoadLastPosition("status");
+            SetSavePositionName("status");
             base.OnInitialize();
         }
 
         public override void Dispose()
         {
-            SaveLastPosition("status");
             base.Dispose();
         }
 

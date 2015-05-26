@@ -36,13 +36,12 @@ namespace UltimaXNA.Ultima.World.Gumps
 
         protected override void OnInitialize()
         {
-            LoadLastPosition("worldview");
+            SetSavePositionName("worldview");
             base.OnInitialize();
         }
 
         public override void Dispose()
         {
-            SaveLastPosition("worldview");
             base.Dispose();
         }
 

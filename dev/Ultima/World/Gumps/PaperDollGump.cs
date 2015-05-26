@@ -109,13 +109,12 @@ namespace UltimaXNA.Ultima.World.Gumps
 
         protected override void OnInitialize()
         {
-            LoadLastPosition(Parent.IsClientEntity ? "paperdoll_self" : "paperdoll");
+            SetSavePositionName(Parent.IsClientEntity ? "paperdoll_self" : "paperdoll");
             base.OnInitialize();
         }
 
         public override void Dispose()
         {
-            SaveLastPosition(Parent.IsClientEntity ? "paperdoll_self" : "paperdoll");
             base.Dispose();
         }
 

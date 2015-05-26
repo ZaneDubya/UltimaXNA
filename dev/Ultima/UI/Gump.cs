@@ -9,13 +9,9 @@
  ***************************************************************************/
 #region usings
 using Microsoft.Xna.Framework;
-using UltimaXNA.Configuration;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using UltimaXNA.Core.Diagnostics;
-using UltimaXNA.Core.Graphics;
+using UltimaXNA.Configuration;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Ultima.UI.Controls;
 #endregion
@@ -74,8 +70,15 @@ namespace UltimaXNA.Ultima.UI
             m_gumpLines = textlines;
         }
 
+        protected override void OnInitialize()
+        {
+            LoadLastPosition();
+            base.OnInitialize();
+        }
+
         public override void Dispose()
         {
+            SaveLastPosition();
             base.Dispose();
         }
 
@@ -369,19 +372,6 @@ namespace UltimaXNA.Ultima.UI
             return string.Empty;
         }
 
-        protected void LoadLastPosition(string positionName)
-        {
-            Point gumpPosition = Settings.Gumps.GetLastPosition(positionName, new Point(X, Y));
-            X = gumpPosition.X;
-            Y = gumpPosition.Y;
-        }
-
-        protected void SaveLastPosition(string positionName)
-        {
-            Point savePosition = new Point(X, Y);
-            Settings.Gumps.SetLastPosition(positionName, savePosition);
-        }
-
         public override bool Equals(object obj)
         {
             // We override gump equality to provide the ability to NOT add a gump if only one should be active.
@@ -403,6 +393,49 @@ namespace UltimaXNA.Ultima.UI
         public override int GetHashCode()
         {
             return base.GetHashCode();
+        }
+
+        private bool m_WillSavePosition = false, m_WillOffsetNextSavePosition = false;
+        private string m_SavePositionName = null;
+        private static Point s_SavePositionOffsetAmount = new Point(24, 24);
+
+        protected void SetSavePositionName(string positionName, bool offsetNext = false)
+        {
+            if (positionName != null)
+            {
+                m_WillSavePosition = true;
+                m_SavePositionName = positionName;
+                m_WillOffsetNextSavePosition = offsetNext;
+            }
+        }
+
+        private void LoadLastPosition()
+        {
+            if (m_WillSavePosition && m_SavePositionName != null)
+            {
+                Point gumpPosition = Settings.Gumps.GetLastPosition(m_SavePositionName, new Point(X, Y));
+                X = gumpPosition.X;
+                Y = gumpPosition.Y;
+                if (m_WillOffsetNextSavePosition)
+                {
+                    SaveLastPosition();
+                }
+            }
+        }
+
+        private void SaveLastPosition()
+        {
+            if (m_WillSavePosition && m_SavePositionName != null)
+            {
+                Point savePosition = new Point(X, Y);
+                if (m_WillOffsetNextSavePosition)
+                {
+                    savePosition.X += s_SavePositionOffsetAmount.X;
+                    savePosition.Y += s_SavePositionOffsetAmount.Y;
+                }
+                Settings.Gumps.SetLastPosition(m_SavePositionName, savePosition);
+
+            }
         }
     }
 }

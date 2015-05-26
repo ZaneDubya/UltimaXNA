@@ -40,7 +40,7 @@ namespace UltimaXNA.Ultima.World.Gumps
         {
             base.OnInitialize();
 
-            LoadLastPosition("journal");
+            SetSavePositionName("journal");
 
             m_JournalEntries = new List<RenderedText>();
             InitializeJournalEntries();
@@ -49,7 +49,6 @@ namespace UltimaXNA.Ultima.World.Gumps
 
         public override void Dispose()
         {
-            SaveLastPosition("journal");
             base.Dispose();
         }
 
