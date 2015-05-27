@@ -209,6 +209,7 @@
     <Compile Include="Ultima\Network\Server\FeatureFlags.cs" />
     <Compile Include="Ultima\UI\Controls\CheckBox.cs" />
     <Compile Include="Ultima\UI\Controls\RadioButton.cs" />
+    <Compile Include="Ultima\World\Gumps\SplitItemStackGump.cs" />
     <Compile Include="Ultima\World\Gumps\WorldControl.cs" />
     <Compile Include="Ultima\UI\GumpLayer.cs" />
     <Compile Include="Ultima\UI\Tooltip.cs" />
@@ -463,7 +464,7 @@
     <Compile Include="Ultima\UI\Controls\GumpPicTiled.cs" />
     <Compile Include="Ultima\UI\Controls\HtmlGump.cs" />
     <Compile Include="Ultima\UI\Controls\ResizePic.cs" />
-    <Compile Include="Ultima\UI\Controls\Slider.cs" />
+    <Compile Include="Ultima\UI\Controls\HSliderBar.cs" />
     <Compile Include="Ultima\UI\Controls\TextEntry.cs" />
     <Compile Include="Ultima\UI\Controls\TextLabel.cs" />
     <Compile Include="Ultima\UI\Controls\TextLabelAscii.cs" />

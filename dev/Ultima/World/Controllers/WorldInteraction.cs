@@ -180,17 +180,17 @@ namespace UltimaXNA.Ultima.World.Controllers
         // Cursor handling routines.
         // ======================================================================
 
-        public Action<Item, int, int> OnPickupItem;
+        public Action<Item, int, int, int?> OnPickupItem;
         public Action OnClearHolding;
 
-        internal void PickupItem(Item item, Point offset)
+        internal void PickupItem(Item item, Point offset, int? amount = null)
         {
             if (item == null)
                 return;
             if (OnPickupItem == null)
                 return;
 
-            OnPickupItem(item, offset.X, offset.Y);
+            OnPickupItem(item, offset.X, offset.Y, amount);
         }
 
         internal void ClearHolding()

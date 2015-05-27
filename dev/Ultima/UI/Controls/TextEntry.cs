@@ -87,7 +87,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             LimitSize = limitSize;
             m_caratBlinkOn = false;
             m_RenderedText = new RenderedText(string.Empty, 1024);
-            m_Carat = new RenderedText(string.Empty, 8);
+            m_Carat = new RenderedText(string.Empty, 16);
         }
 
         public override void Update(double totalMS, double frameMS)
@@ -135,19 +135,19 @@ namespace UltimaXNA.Ultima.UI.Controls
 
             if (m_RenderedText.Width + m_Carat.Width <= Width)
             {
-                m_RenderedText.Draw(spriteBatch, position);
+                m_RenderedText.Draw(spriteBatch, position, Utility.GetHueVector(Hue));
                 caratPosition.X += m_RenderedText.Width;
             }
             else
             {
                 int textOffset = m_RenderedText.Width - (Width - m_Carat.Width);
-                m_RenderedText.Draw(spriteBatch, new Rectangle(position.X, position.Y, m_RenderedText.Width - textOffset, m_RenderedText.Height), textOffset, 0);
+                m_RenderedText.Draw(spriteBatch, new Rectangle(position.X, position.Y, m_RenderedText.Width - textOffset, m_RenderedText.Height), textOffset, 0, Utility.GetHueVector(Hue));
                 caratPosition.X += (Width - m_Carat.Width);
             }
 
 
             if (m_caratBlinkOn)
-                m_Carat.Draw(spriteBatch, caratPosition);
+                m_Carat.Draw(spriteBatch, caratPosition, Utility.GetHueVector(Hue));
             base.Draw(spriteBatch, position);
         }
 

@@ -64,14 +64,14 @@ namespace UltimaXNA.Ultima.World.Gumps
             {
                 case Buttons.Map:
                     if (m_UserInterface.GetControl<MiniMapGump>() == null)
-                        m_UserInterface.AddControl(new MiniMapGump(), 566, 25, UserInterfaceService.AddControlType.Toggle);
+                        m_UserInterface.AddControl(new MiniMapGump(), 566, 25);
                     else
                         m_UserInterface.RemoveControl<MiniMapGump>();
                     break;
                 case Buttons.Paperdoll:
                     Mobile player = (Mobile)EntityManager.GetPlayerObject();
                     if (m_UserInterface.GetControl<PaperDollGump>(player.Serial) == null)
-                        m_UserInterface.AddControl(new PaperDollGump((Mobile)EntityManager.GetPlayerObject()), 400, 100, UserInterfaceService.AddControlType.Toggle);
+                        m_UserInterface.AddControl(new PaperDollGump((Mobile)EntityManager.GetPlayerObject()), 400, 100);
                     else
                         m_UserInterface.RemoveControl<PaperDollGump>(player.Serial);
                     break;
@@ -83,7 +83,7 @@ namespace UltimaXNA.Ultima.World.Gumps
                     break;
                 case Buttons.Journal:
                     if (m_UserInterface.GetControl<JournalGump>() == null)
-                        m_UserInterface.AddControl(new JournalGump(), 80, 80, UserInterfaceService.AddControlType.Toggle);
+                        m_UserInterface.AddControl(new JournalGump(), 80, 80);
                     else
                         m_UserInterface.RemoveControl<JournalGump>();
                     break;
@@ -93,7 +93,7 @@ namespace UltimaXNA.Ultima.World.Gumps
                     break;
                 case Buttons.Question:
                     if (m_UserInterface.GetControl<DebugGump>() == null)
-                        m_UserInterface.AddControl(new DebugGump(), 50, 50, UserInterfaceService.AddControlType.Toggle);
+                        m_UserInterface.AddControl(new DebugGump(), 50, 50);
                     else
                         m_UserInterface.RemoveControl<DebugGump>();
                     break;

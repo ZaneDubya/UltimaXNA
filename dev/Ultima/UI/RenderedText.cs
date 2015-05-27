@@ -603,11 +603,15 @@ namespace UltimaXNA.Ultima.UI
                                     iWordWidth -= word[j].Width;
                                 }
                                 i -= word.Count + 2;
-                                if (i < 0)
-                                    i = -1;
                                 word.Clear();
                                 width = 0;
                                 wordWidth = 0;
+                                if (i < 0)
+                                {
+                                    // the texture size is too small to hold this small number of characters. This is a problem.
+                                    i = -1;
+                                    return;
+                                }
                             }
                         }
                     }

@@ -71,9 +71,9 @@ namespace UltimaXNA.Ultima.UI
             m_gumpLines = textlines;
         }
 
-        protected override void OnInitialize()
+        public override string ToString()
         {
-            base.OnInitialize();
+            return GetType().ToString();
         }
 
         public override void Dispose()
@@ -376,7 +376,7 @@ namespace UltimaXNA.Ultima.UI
             return string.Empty;
         }
 
-        public override bool Equals(object obj)
+        /*public override bool Equals(object obj)
         {
             // We override gump equality to provide the ability to NOT add a gump if only one should be active.
 
@@ -392,7 +392,7 @@ namespace UltimaXNA.Ultima.UI
                 return true;
             else
                 return false;
-        }
+        }*/
 
         public override int GetHashCode()
         {
@@ -402,7 +402,7 @@ namespace UltimaXNA.Ultima.UI
         protected override void OnMove()
         {
             SpriteBatchUI sb = UltimaServices.GetService<SpriteBatchUI>();
-            Point position = Position;
+            Point position = m_Position;
 
             int halfWidth = Width / 2;
             int halfHeight = Height / 2;
@@ -416,7 +416,7 @@ namespace UltimaXNA.Ultima.UI
             if (Y > sb.GraphicsDevice.Viewport.Height - halfHeight)
                 position.Y = sb.GraphicsDevice.Viewport.Height - halfHeight;
 
-            Position = position;
+            m_Position = position;
         }
 
         #region Position Save and Restore

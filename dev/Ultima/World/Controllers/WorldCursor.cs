@@ -23,6 +23,7 @@ using UltimaXNA.Ultima.Entities.Mobiles;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Ultima.World.Gumps;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Controllers
@@ -72,8 +73,8 @@ namespace UltimaXNA.Ultima.World.Controllers
                     }
                     else if (target is GumpPicContainer)
                     {
-                        int x = (int)m_Input.MousePosition.X - HeldItemOffset.X - (target.X + target.Owner.X);
-                        int y = (int)m_Input.MousePosition.Y - HeldItemOffset.Y - (target.Y + target.Owner.Y);
+                        int x = (int)m_Input.MousePosition.X - m_HeldItemOffset.X - (target.X + target.Owner.X);
+                        int y = (int)m_Input.MousePosition.Y - m_HeldItemOffset.Y - (target.Y + target.Owner.Y);
                         DropHeldItemToContainer((Container)((GumpPicContainer)target).Item, x, y);
                     }
                     else if (target is ItemGumplingPaperdoll || (target is GumpPic && ((GumpPic)target).IsPaperdoll))
@@ -448,25 +449,30 @@ namespace UltimaXNA.Ultima.World.Controllers
         }
 
         private Point m_HeldItemOffset = Point.Zero;
-        internal Point HeldItemOffset
-        {
-            get { return m_HeldItemOffset; }
-        }
 
-        internal bool IsHoldingItem
+        public bool IsHoldingItem
         {
             get { return HeldItem != null; }
         }
 
-        private void PickUpItem(Item item, int x, int y)
+        private void PickUpItem(Item item, int x, int y, int? amount = null)
+        {
+            // if in a bag and is a quantity, then show the 'lift amount' prompt, else just lift it outright.
+            if (item.Parent != null && !amount.HasValue && item.Amount > 1)
+            {
+                m_UserInterface.AddControl(new SplitItemStackGump(item, new Point(x, y)), m_Input.MousePosition.X - 60, m_Input.MousePosition.Y - 30);
+            }
+            else
+            {
+                PickupItemWithoutAmountCheck(item, x, y, amount.HasValue ? amount.Value : item.Amount);
+            }
+        }
+
+        private void PickupItemWithoutAmountCheck(Item item, int x, int y, int amount)
         {
             // make sure we can pick up the item before actually picking it up!
             if (item.TryPickUp())
             {
-                // let the server know we're picking up the item. If the server says we can't pick it up, it will send us a cancel pick up message.
-                // TEST: what if we can pick something up and drop it in our inventory before the server has a chance to respond?
-                m_Network.Send(new PickupItemPacket(item.Serial, item.Amount));
-
                 // if the item is within a container or worn by a mobile, remove it from that containing entity.
                 if (item.Parent != null)
                 {
@@ -485,6 +491,10 @@ namespace UltimaXNA.Ultima.World.Controllers
                 // set our local holding item variables.
                 HeldItem = item;
                 m_HeldItemOffset = new Point(x, y);
+
+                // let the server know we're picking up the item. If the server says we can't pick it up, it will send us a cancel pick up message.
+                // TEST: what if we can pick something up and drop it in our inventory before the server has a chance to respond?
+                m_Network.Send(new PickupItemPacket(item.Serial, amount));
             }
         }
 
