@@ -76,11 +76,6 @@ namespace UltimaXNA.Ultima.UI
             return GetType().ToString();
         }
 
-        protected override void OnInitialize()
-        {
-            base.OnInitialize();
-        }
-
         public override void Dispose()
         {
             SavePosition();

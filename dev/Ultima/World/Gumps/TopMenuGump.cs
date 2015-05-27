@@ -90,7 +90,6 @@ namespace UltimaXNA.Ultima.World.Gumps
                 case Buttons.Chat:
                     break;
                 case Buttons.Help:
-                    m_UserInterface.AddControl(new SplitItemStackGump(EntityManager.GetObject<Entities.Items.Item>(0x400000E9, false)), 100, 100);
                     break;
                 case Buttons.Question:
                     if (m_UserInterface.GetControl<DebugGump>() == null)

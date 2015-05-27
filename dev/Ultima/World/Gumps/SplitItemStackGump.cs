@@ -11,6 +11,8 @@
 using UltimaXNA.Ultima.Entities.Items;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
+using Microsoft.Xna.Framework;
+using UltimaXNA.Core.Input.Windows;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Gumps
@@ -23,16 +25,19 @@ namespace UltimaXNA.Ultima.World.Gumps
             private set;
         }
 
+        private Point m_PickupOffset;
+
         private HSliderBar m_Slider;
         private TextEntry m_AmountEntry;
         private int m_LastValue = 0;
 
-        public SplitItemStackGump(Item item)
+        public SplitItemStackGump(Item item, Point pickupOffset)
             : base(0, 0)
         {
             IsMovable = true;
 
             Item = item;
+            m_PickupOffset = pickupOffset;
             // Background
             AddControl(new GumpPic(this, 0, 0, 0, 0x085c, 0));
             // Slider
@@ -41,11 +46,18 @@ namespace UltimaXNA.Ultima.World.Gumps
             // Ok button
             AddControl(new Button(this, 1, 102, 38, 0x085d, 0x085e, ButtonTypes.Default, 0, 0));
             ((Button)LastControl).GumpOverID = 0x085f;
+            ((Button)LastControl).MouseClickEvent += ClickOkayButton;
             // Text entry field
             m_AmountEntry = (TextEntry)AddControl(new TextEntry(this, 0, 30, 39, 60, 16, 0, 0, 5, item.Amount.ToString()));
             m_AmountEntry.HtmlTag = "<big>";
             m_AmountEntry.LegacyCarat = true;
             m_AmountEntry.Hue = 1001;
+        }
+
+        protected override void OnInitialize()
+        {
+            base.OnInitialize();
+
         }
 
         public override void Update(double totalMS, double frameMS)
@@ -88,6 +100,13 @@ namespace UltimaXNA.Ultima.World.Gumps
                 }
             }
             m_LastValue = m_Slider.Value;
+        }
+
+        private void ClickOkayButton(int x, int y, MouseButton button)
+        {
+            WorldModel world = UltimaServices.GetService<WorldModel>();
+            world.Interaction.PickupItem(Item, m_PickupOffset, m_Slider.Value);
+            Dispose();
         }
     }
 }
