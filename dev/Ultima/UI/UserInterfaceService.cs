@@ -174,7 +174,7 @@ namespace UltimaXNA.Ultima.UI
         public AControl AddControl(AControl control, int x, int y)
         {
             control.Position = new Point(x, y);
-            m_Controls.Add(control);
+            m_Controls.Insert(0, control);
             return control;
         }
 
