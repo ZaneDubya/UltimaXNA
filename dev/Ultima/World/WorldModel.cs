@@ -132,21 +132,26 @@ namespace UltimaXNA.Ultima.World
 
         protected override void OnInitialize()
         {
+            m_Engine.SetupWindowForWorld();
+
             m_UserInterface.Cursor = Cursor = new WorldCursor(this);
             Client.Initialize();
         }
 
         public void LoginSequence()
         {
-            m_UserInterface.AddControl(new TopMenu(0), 0, 0);
-            m_UserInterface.AddControl(new ChatWindow(), 0, 0);
+            m_UserInterface.AddControl(new WorldViewGump(), 0, 0); // world gump will always place itself correctly.
+            m_UserInterface.AddControl(new TopMenuGump(0), 0, 0);
+
             Client.SendWorldLoginPackets();
             EngineVars.InWorld = true;
         }
 
         protected override void OnDispose()
         {
-            UltimaServices.Unregister<WorldModel>(this);
+            m_Engine.SaveResolution();
+
+            UltimaServices.Unregister<WorldModel>();
 
             EntityManager.Reset();
             Entities = null;

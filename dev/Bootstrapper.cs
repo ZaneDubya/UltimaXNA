@@ -57,6 +57,8 @@ namespace UltimaXNA
             {
                 Tracer.RegisterListener(new ConsoleOutputEventListener());
             }
+
+            Tracer.RegisterListener(new MsgBoxOnCriticalListener());
         }
 
         private void Configure()

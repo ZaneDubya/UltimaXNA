@@ -29,8 +29,8 @@ namespace UltimaXNA.Ultima.Login.Gumps
         public EventNoParams OnForward;
         public EventNoParams OnBackward;
 
-        Slider[] sliderAttributes; TextLabelAscii[] lblAttributes;
-        Slider[] sliderSkills; TextLabelAscii[] lblSkills; DropDownList[] listSkills;
+        HSliderBar[] sliderAttributes; TextLabelAscii[] lblAttributes;
+        HSliderBar[] sliderSkills; TextLabelAscii[] lblSkills; DropDownList[] listSkills;
 
         public int Strength { get { return sliderAttributes[0].Value; } set { sliderAttributes[0].Value = value; } }
         public int Dexterity { get { return sliderAttributes[1].Value; } set { sliderAttributes[1].Value = value; } }
@@ -45,9 +45,8 @@ namespace UltimaXNA.Ultima.Login.Gumps
         public CreateCharSkillsGump()
             : base(0, 0)
         {
-            m_renderFullScreen = false;
             // backdrop
-            AddControl(new GumpPicTiled(this, 0, 0, 0, Settings.Game.Resolution.Width, Settings.Game.Resolution.Height, 9274));
+            AddControl(new GumpPicTiled(this, 0, 0, 0, 800, 600, 9274));
             AddControl(new GumpPic(this, 0, 0, 0, 5500, 0));
             // center menu with fancy top
             AddControl(new ResizePic(this, 1, 100, 80, 2600, 470, 372));
@@ -62,10 +61,10 @@ namespace UltimaXNA.Ultima.Login.Gumps
             AddControl(new TextLabelAscii(this, 1, 158, 250, 2430, 1, IO.StringData.Entry(3000112)));
             AddControl(new TextLabelAscii(this, 1, 158, 330, 2430, 1, IO.StringData.Entry(3000113)));
             // sliders for attributes
-            sliderAttributes = new Slider[3];
-            sliderAttributes[0] = new Slider(this, 1, 164, 196, 93, 10, 60, 60);
-            sliderAttributes[1] = new Slider(this, 1, 164, 276, 93, 10, 60, 10);
-            sliderAttributes[2] = new Slider(this, 1, 164, 356, 93, 10, 60, 10);
+            sliderAttributes = new HSliderBar[3];
+            sliderAttributes[0] = new HSliderBar(this, 1, 164, 196, 93, 10, 60, 60, HSliderBarStyle.MetalWidgetRecessedBar);
+            sliderAttributes[1] = new HSliderBar(this, 1, 164, 276, 93, 10, 60, 10, HSliderBarStyle.MetalWidgetRecessedBar);
+            sliderAttributes[2] = new HSliderBar(this, 1, 164, 356, 93, 10, 60, 10, HSliderBarStyle.MetalWidgetRecessedBar);
             // labels for attributes
             lblAttributes = new TextLabelAscii[3];
             lblAttributes[0] = new TextLabelAscii(this, 1, 284, 170, 2430, 1, string.Empty);
@@ -83,10 +82,10 @@ namespace UltimaXNA.Ultima.Login.Gumps
             }
 
             // sliders for skills
-            sliderSkills = new Slider[3];
-            sliderSkills[0] = new Slider(this, 1, 344, 204, 93, 0, 50, 50);
-            sliderSkills[1] = new Slider(this, 1, 344, 284, 93, 0, 50, 50);
-            sliderSkills[2] = new Slider(this, 1, 344, 364, 93, 0, 50, 0);
+            sliderSkills = new HSliderBar[3];
+            sliderSkills[0] = new HSliderBar(this, 1, 344, 204, 93, 0, 50, 50, HSliderBarStyle.MetalWidgetRecessedBar);
+            sliderSkills[1] = new HSliderBar(this, 1, 344, 284, 93, 0, 50, 50, HSliderBarStyle.MetalWidgetRecessedBar);
+            sliderSkills[2] = new HSliderBar(this, 1, 344, 364, 93, 0, 50, 0, HSliderBarStyle.MetalWidgetRecessedBar);
             // labels for skills
             lblSkills = new TextLabelAscii[3];
             lblSkills[0] = new TextLabelAscii(this, 1, 494, 200, 2430, 1, string.Empty);
@@ -122,6 +121,8 @@ namespace UltimaXNA.Ultima.Login.Gumps
             // quit button
             AddControl(new Button(this, 0, 554, 2, 5513, 5515, ButtonTypes.Activate, 0, (int)Buttons.QuitButton));
             ((Button)LastControl).GumpOverID = 5514;
+
+            IsUncloseableWithRMB = true;
         }
 
         public override void Update(double totalMS, double frameMS)

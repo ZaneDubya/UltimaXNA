@@ -20,7 +20,7 @@ namespace UltimaXNA
 
         public void Unload()
         {
-            UltimaServices.Unregister<UltimaEngine>(m_Engine);
+            UltimaServices.Unregister<UltimaEngine>();
         }
     }
 }

@@ -470,6 +470,10 @@ namespace UltimaXNA.Ultima.World.Controllers
             mobile.BodyID = p.BodyID;
             mobile.Flags = p.Flags;
             mobile.Notoriety = p.Notoriety;
+
+            if (mobile is PlayerMobile)
+                return;
+
             if (mobile.Position.IsNullPosition)
             {
                 mobile.Move_Instant(p.X, p.Y, p.Z, p.Direction);
@@ -750,8 +754,9 @@ namespace UltimaXNA.Ultima.World.Controllers
 
         private void ReceiveOpenPaperdoll(IRecvPacket packet)
         {
-            OpenPaperdollPacket opp = packet as OpenPaperdollPacket;
-            m_UserInterface.AddControl(new PaperDollGump(EntityManager.GetObject<Mobile>(opp.Serial, false)), 400, 100, UserInterfaceService.AddControlType.OnlyAllowOne);
+            OpenPaperdollPacket p = packet as OpenPaperdollPacket;
+            if (m_UserInterface.GetControl<JournalGump>(p.Serial) == null)
+                m_UserInterface.AddControl(new PaperDollGump(EntityManager.GetObject<Mobile>(p.Serial, false)), 400, 100);
         }
 
         private void ReceiveCompressedGump(IRecvPacket packet)
@@ -759,9 +764,12 @@ namespace UltimaXNA.Ultima.World.Controllers
             CompressedGumpPacket p = (CompressedGumpPacket)packet;
             if (p.HasData)
             {
-                string[] gumpPieces = interpretGumpPieces(p.GumpData);
-                Gump g = (Gump)m_UserInterface.AddControl(new Gump(p.Serial, p.GumpID, gumpPieces, p.TextLines), p.X, p.Y);
-                g.IsMovable = true;
+                string[] gumpPieces;
+                if (TryParseGumplings(p.GumpData, out gumpPieces))
+                {
+                    Gump g = (Gump)m_UserInterface.AddControl(new Gump(p.Serial, p.GumpID, gumpPieces, p.TextLines), p.X, p.Y);
+                    g.IsMovable = true;
+                }
             }
         }
 
@@ -775,36 +783,35 @@ namespace UltimaXNA.Ultima.World.Controllers
             announce_UnhandledPacket(packet);
         }
 
-        private string[] interpretGumpPieces(string gumpData)
+        private bool TryParseGumplings(string gumpData, out string[] pieces)
         {
             List<string> i = new List<string>(); ;
-            bool isData = true;
             int dataIndex = 0;
-            while (isData)
+            while (dataIndex < gumpData.Length)
             {
                 if (gumpData.Substring(dataIndex) == "\0")
                 {
-                    isData = false;
+                    break;
                 }
                 else
                 {
-                    int begin = gumpData.IndexOf("{ ", dataIndex);
-                    int end = gumpData.IndexOf(" }", dataIndex + 1);
+                    int begin = gumpData.IndexOf("{", dataIndex);
+                    int end = gumpData.IndexOf("}", dataIndex + 1);
                     if ((begin != -1) && (end != -1))
                     {
-                        string sub = gumpData.Substring(begin + 2, end - begin - 2);
-                        // iConstruct = iConstruct.Substring(0, iBeginReplace) + iArgs[i] + iConstruct.Substring(iEndReplace + 1, iConstruct.Length - iEndReplace - 1);
+                        string sub = gumpData.Substring(begin + 1, end - begin - 1).Trim();
                         i.Add(sub);
-                        dataIndex += end - begin + 2;
+                        dataIndex = end;
                     }
                     else
                     {
-                        isData = false;
+                        break;
                     }
                 }
             }
 
-            return i.ToArray();
+            pieces = i.ToArray();
+            return (pieces.Length > 0);
         }
 
         //

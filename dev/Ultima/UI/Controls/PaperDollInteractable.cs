@@ -29,7 +29,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         public PaperDollInteractable(AControl owner, int page, int x, int y)
             : base(0, 0)
         {
-            m_owner = owner;
+            Owner = owner;
             Position = new Point(x, y);
 
             m_World = UltimaServices.GetService<WorldModel>();
@@ -87,7 +87,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                         Item backpack = ((Mobile)m_sourceEntity).GetItem((int)EquipSlots.Backpack);
                         AddControl(new GumpPicBackpack(this, 0, -5, 0, backpack));
                         LastControl.HandlesMouseInput = true;
-                        LastControl.OnMouseDoubleClick += dblclick_Backpack;
+                        LastControl.MouseDoubleClickEvent += dblclick_Backpack;
                     }
                 }
             }

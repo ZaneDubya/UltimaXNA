@@ -37,9 +37,8 @@ namespace UltimaXNA.Ultima.Login.Gumps
             : base(0, 0)
         {
             int hue = 1132; // dark brown
-            m_renderFullScreen = false;
             // backdrop
-            AddControl(new GumpPicTiled(this, 0, 0, 0, Settings.Game.Resolution.Width, Settings.Game.Resolution.Height, 9274));
+            AddControl(new GumpPicTiled(this, 0, 0, 0, 800, 600, 9274));
             AddControl(new GumpPic(this, 0, 0, 0, 9001, 0));
             // quit button
             AddControl(new Button(this, 0, 554, 2, 5513, 5515, ButtonTypes.Activate, 0, (int)LoginGumpButtons.QuitButton));
@@ -66,6 +65,8 @@ namespace UltimaXNA.Ultima.Login.Gumps
             ((Button)LastControl).GumpOverID = 5541;
             // Version information
             AddControl(new TextLabelAscii(this, 0, 183, 421, hue, 9, Utility.VersionString));
+
+            IsUncloseableWithRMB = true;
         }
 
         public override void ActivateByButton(int buttonID)

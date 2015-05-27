@@ -31,7 +31,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         public GumpPic(AControl owner, int page)
             : base(owner, page)
         {
-
+            MakeThisADragger();
         }
 
         public GumpPic(AControl owner, int page, string[] arguements)
@@ -73,11 +73,11 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
-            bool hueOnlyGreyPixels = (m_hue & 0x8000) == 0x8000;
-            spriteBatch.Draw2D(m_texture, Position, m_hue & 0x7FFF, hueOnlyGreyPixels, false);
-            base.Draw(spriteBatch);
+            Vector3 hueVector = Utility.GetHueVector(m_hue);
+            spriteBatch.Draw2D(m_texture, new Vector3(position.X, position.Y, 0), hueVector);
+            base.Draw(spriteBatch, position);
         }
 
         protected override bool InternalHitTest(int x, int y)

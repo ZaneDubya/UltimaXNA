@@ -13,6 +13,7 @@ using UltimaXNA.Core.Network;
 using UltimaXNA.Ultima.Entities.Mobiles;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
+using Microsoft.Xna.Framework;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Gumps
@@ -42,7 +43,7 @@ namespace UltimaXNA.Ultima.World.Gumps
         INetworkClient m_Client;
 
         public PaperDollGump(Mobile parent)
-            : base(0, 0)
+            : base(parent.Serial, 0)
         {
             Parent = parent;
 
@@ -55,8 +56,6 @@ namespace UltimaXNA.Ultima.World.Gumps
             if (parent == (Mobile)EntityManager.GetPlayerObject())
             {
                 AddControl(new GumpPic(this, 0, 0, 0, 0x07d0, 0));
-                LastControl.MakeDragger(this);
-                LastControl.MakeCloseTarget(this);
 
                 // HELP
                 AddControl(new Button(this, 0, 185, 44 + 27*0, 0x07ef, 0x07f0, ButtonTypes.Activate, 0,
@@ -100,8 +99,6 @@ namespace UltimaXNA.Ultima.World.Gumps
             else
             {
                 AddControl(new GumpPic(this, 0, 0, 0, 0x07d1, 0));
-                LastControl.MakeDragger(this);
-                LastControl.MakeCloseTarget(this);
 
                 // Paperdoll
                 AddControl(new PaperDollInteractable(this, 0, 8, 21)
@@ -109,8 +106,17 @@ namespace UltimaXNA.Ultima.World.Gumps
                     SourceEntity = Parent
                 });
             }
+        }
 
+        protected override void OnInitialize()
+        {
+            SetSavePositionName(Parent.IsClientEntity ? "paperdoll_self" : "paperdoll");
+            base.OnInitialize();
+        }
 
+        public override void Dispose()
+        {
+            base.Dispose();
         }
 
         public override void Update(double totalMS, double frameMS)
@@ -118,9 +124,9 @@ namespace UltimaXNA.Ultima.World.Gumps
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
-            base.Draw(spriteBatch);
+            base.Draw(spriteBatch, position);
         }
 
         public override void ActivateByButton(int buttonID)
@@ -138,7 +144,10 @@ namespace UltimaXNA.Ultima.World.Gumps
                 case Buttons.Quests:
                     break;
                 case Buttons.Skills:
-                    m_UserInterface.AddControl(new SkillsGump(), 80, 80, UserInterfaceService.AddControlType.Toggle);
+                    if (m_UserInterface.GetControl<SkillsGump>() == null)
+                        m_UserInterface.AddControl(new SkillsGump(), 80, 80);
+                    else
+                        m_UserInterface.RemoveControl<SkillsGump>();
                     break;
                 case Buttons.Guild:
                     break;
@@ -146,7 +155,10 @@ namespace UltimaXNA.Ultima.World.Gumps
                     m_World.Interaction.ToggleWarMode();
                     break;
                 case Buttons.Status:
-                    m_UserInterface.AddControl(new StatusGump(), 200, 400, UserInterfaceService.AddControlType.Toggle);
+                    if (m_UserInterface.GetControl<StatusGump>() == null)
+                        m_UserInterface.AddControl(new StatusGump(), 200, 400);
+                    else
+                        m_UserInterface.RemoveControl<StatusGump>();
                     break;
             }
         }
@@ -156,7 +168,7 @@ namespace UltimaXNA.Ultima.World.Gumps
             m_World.Disconnect();
         }
 
-        public override bool Equals(object obj)
+        /*public override bool Equals(object obj)
         {
             // base equality handles null and cannot cast to same type.
             if (!base.Equals(obj))
@@ -170,7 +182,7 @@ namespace UltimaXNA.Ultima.World.Gumps
             }
 
             return p.Parent.Serial == Parent.Serial;
-        }
+        }*/
 
         public override int GetHashCode()
         {

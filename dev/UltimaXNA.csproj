@@ -127,16 +127,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\GumpSettings.cs" />
     <Compile Include="Configuration\Mouse.cs" />
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Configuration\WorldSettings.cs" />
     <Compile Include="Core\ComponentModel\EqualityHelper.cs" />
     <Compile Include="Core\ComponentModel\NotifyPropertyChangedBase.cs" />
     <Compile Include="Configuration\Resolution.cs" />
     <Compile Include="Core\Configuration\TextSettingsFileWriter.cs" />
     <Compile Include="Core\Diagnostics\Tracing\EventLevel.cs" />
     <Compile Include="Core\Diagnostics\Tracing\Listeners\AEventListener.cs" />
+    <Compile Include="Core\Diagnostics\Tracing\Listeners\MsgBoxOnCriticalListener.cs" />
     <Compile Include="Core\DpiManager.cs" />
     <Compile Include="Core\Extensions\StringExtensions.cs" />
+    <Compile Include="Core\Graphics\Techniques.cs" />
     <Compile Include="Core\Network\INetworkClient.cs" />
     <Compile Include="Core\Patterns\IModule.cs" />
     <Compile Include="UltimaServices.cs" />
@@ -206,6 +210,12 @@
     <Compile Include="Ultima\Entities\Mobiles\MobileFlags.cs" />
     <Compile Include="Ultima\IO\FontsNew\AFont.cs" />
     <Compile Include="Ultima\Network\Server\FeatureFlags.cs" />
+    <Compile Include="Ultima\UI\Controls\CheckBox.cs" />
+    <Compile Include="Ultima\UI\Controls\RadioButton.cs" />
+    <Compile Include="Ultima\World\Gumps\SplitItemStackGump.cs" />
+    <Compile Include="Ultima\World\Gumps\WorldControl.cs" />
+    <Compile Include="Ultima\UI\GumpLayer.cs" />
+    <Compile Include="Ultima\UI\Tooltip.cs" />
     <Compile Include="Ultima\UI\HTML\AAtom.cs" />
     <Compile Include="Ultima\UI\HTML\Atoms\CharacterAtom.cs" />
     <Compile Include="Ultima\UI\HTML\Atoms\ImageAtom.cs" />
@@ -230,6 +240,7 @@
     <Compile Include="Ultima\World\Controllers\MousePicking.cs" />
     <Compile Include="Ultima\World\Controllers\PickType.cs" />
     <Compile Include="Ultima\World\EffectManager.cs" />
+    <Compile Include="Ultima\World\Gumps\WorldViewGump.cs" />
     <Compile Include="Ultima\World\Maps\TileSorter.cs" />
     <Compile Include="Ultima\EntityViews\GroundView.cs" />
     <Compile Include="Ultima\EntityViews\ItemView.cs" />
@@ -416,31 +427,28 @@
     <Compile Include="Ultima\Login\States\CreateCharacterState.cs" />
     <Compile Include="Ultima\Login\States\LoggingInState.cs" />
     <Compile Include="Ultima\Login\States\SelectServerState.cs" />
-    <Compile Include="Core\Graphics\VectorPolygon.cs" />
-    <Compile Include="Core\Graphics\VectorRenderer.cs" />
     <Compile Include="Ultima\World\Maps\MapBlock.cs" />
     <Compile Include="Ultima\World\StaticManager.cs" />
     <Compile Include="Ultima\World\Views\IsometricView.cs" />
     <Compile Include="Ultima\World\Maps\MapTile.cs" />
     <Compile Include="Ultima\World\Controllers\MouseOverList.cs" />
     <Compile Include="Ultima\Login\Gumps\CharacterListGump.cs" />
-    <Compile Include="Ultima\World\Gumps\ChatWindow.cs" />
+    <Compile Include="Ultima\World\Gumps\ChatControl.cs" />
     <Compile Include="Ultima\World\Gumps\ContainerGump.cs" />
     <Compile Include="Ultima\Login\Gumps\CreateCharSkillsGump.cs" />
     <Compile Include="Ultima\Login\Gumps\CreateCharAppearanceGump.cs" />
     <Compile Include="Ultima\World\Gumps\DebugGump.cs" />
     <Compile Include="Ultima\Login\Gumps\LoggingInGump.cs" />
     <Compile Include="Ultima\Login\Gumps\LoginGump.cs" />
-    <Compile Include="Ultima\World\Gumps\MiniMap.cs" />
+    <Compile Include="Ultima\World\Gumps\MiniMapGump.cs" />
     <Compile Include="Ultima\World\Gumps\SkillsGump.cs" />
     <Compile Include="Ultima\World\Gumps\StatusGump.cs" />
     <Compile Include="Ultima\UI\Controls\ExpandableScroll.cs" />
     <Compile Include="Ultima\UI\MsgBox.cs" />
     <Compile Include="Ultima\World\Gumps\PaperDollGump.cs" />
     <Compile Include="Ultima\Login\Gumps\SelectServerGump.cs" />
-    <Compile Include="Ultima\World\Gumps\TopMenu.cs" />
+    <Compile Include="Ultima\World\Gumps\TopMenuGump.cs" />
     <Compile Include="Ultima\UI\AControl.cs" />
-    <Compile Include="Ultima\UI\DropWidget.cs" />
     <Compile Include="Core\Graphics\SpriteBatchUI.cs" />
     <Compile Include="Ultima\UI\Gump.cs" />
     <Compile Include="Ultima\UI\Controls\Button.cs" />
@@ -459,7 +467,7 @@
     <Compile Include="Ultima\UI\Controls\GumpPicTiled.cs" />
     <Compile Include="Ultima\UI\Controls\HtmlGump.cs" />
     <Compile Include="Ultima\UI\Controls\ResizePic.cs" />
-    <Compile Include="Ultima\UI\Controls\Slider.cs" />
+    <Compile Include="Ultima\UI\Controls\HSliderBar.cs" />
     <Compile Include="Ultima\UI\Controls\TextEntry.cs" />
     <Compile Include="Ultima\UI\Controls\TextLabel.cs" />
     <Compile Include="Ultima\UI\Controls\TextLabelAscii.cs" />
@@ -485,7 +493,8 @@
     <Compile Include="Ultima\Login\States\StateManager.cs" />
     <Compile Include="Ultima\Login\States\LoginState.cs" />
     <Compile Include="Ultima\Serial.cs" />
-    <Compile Include="Ultima\World\Views\MiniMapView.cs" />
+    <Compile Include="Ultima\World\Views\MiniMapBlock.cs" />
+    <Compile Include="Ultima\World\Views\MiniMapTexture.cs" />
     <Compile Include="Ultima\World\Maps\Map.cs" />
     <Compile Include="Core\Graphics\SpriteBatch3D.cs" />
     <Compile Include="Core\Graphics\VertexPositionNormalTextureHue.cs" />

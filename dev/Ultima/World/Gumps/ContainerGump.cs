@@ -35,8 +35,6 @@ namespace UltimaXNA.Ultima.World.Gumps
             IsMovable = true;
 
             AddControl(new GumpPicContainer(this, 0, 0, 0, m_data.GumpID, 0, m_item));
-            LastControl.MakeDragger(this);
-            LastControl.MakeCloseTarget(this);
 
             m_tickerText = (HtmlGump)AddControl(new HtmlGump(this, 0, 50, 50, 0, 0, 0, 0, string.Empty));
         }
@@ -50,7 +48,7 @@ namespace UltimaXNA.Ultima.World.Gumps
                 m_tickerText.Text = string.Format("Update#{0}", m_updateTicker);
                 // delete any items in our pack that are no longer in the container.
                 List<AControl> ControlsToRemove = new List<AControl>();
-                foreach (AControl c in Controls)
+                foreach (AControl c in Children)
                 {
                     if (c is ItemGumpling && !m_item.Contents.Contains(((ItemGumpling)c).Item))
                     {
@@ -58,12 +56,12 @@ namespace UltimaXNA.Ultima.World.Gumps
                     }
                 }
                 foreach (AControl c in ControlsToRemove)
-                    Controls.Remove(c);
+                    Children.Remove(c);
                 // add any items in the container that are not in our pack.
                 foreach (Item item in m_item.Contents)
                 {
                     bool controlForThisItem = false;
-                    foreach (AControl c in Controls)
+                    foreach (AControl c in Children)
                     {
                         if (c is ItemGumpling && ((ItemGumpling)c).Item == item)
                         {

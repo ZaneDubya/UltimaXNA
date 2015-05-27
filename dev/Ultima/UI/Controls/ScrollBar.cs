@@ -69,22 +69,37 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             if (!IsInitialized)
                 return 0f;
-            return BarHeight - m_gumpUpButton[0].Height - m_gumpDownButton[0].Height - m_gumpSlider.Height - 2;
+            return BarHeight - m_gumpUpButton[0].Height - m_gumpDownButton[0].Height - m_gumpSlider.Height - 0;
         }
 
-        public int MinValue;
-        private int m_maxValue;
+        private int m_Max, m_Min;
+        public int MinValue
+        {
+            get
+            {
+                return m_Min;
+            }
+            set
+            {
+                m_Min = value;
+                if (m_value < m_Min)
+                    m_value = m_Min;
+            }
+        }
+        
         public int MaxValue
         {
             get
             {
-                return m_maxValue;
+                return m_Max;
             }
             set
             {
-                m_maxValue = value;
-                if (m_value > m_maxValue)
-                    m_value = m_maxValue;
+                if (value < 0)
+                    value = 0;
+                m_Max = value;
+                if (m_value > m_Max)
+                    m_value = m_Max;
             }
         }
         public int BarHeight;
@@ -134,9 +149,9 @@ namespace UltimaXNA.Ultima.UI.Controls
                 {
                     m_timeUntilNextClick = m_timeBetweenClicks;
                     if (m_btnUpClicked)
-                        m_value -= 1;
+                        Value -= 1;
                     if (m_btnDownClicked)
-                        m_value += 1;
+                        Value += 1;
                 }
                 m_timeUntilNextClick -= (float)totalMS / 1000f;
             }
@@ -154,23 +169,32 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
-            if (!Visible)
+            if (!IsVisible)
                 return;
 
-            // up button
-            spriteBatch.Draw2D(m_btnUpClicked ? m_gumpUpButton[1] : m_gumpUpButton[0], new Point(X, Y), 0, false, false);
             // scrollbar background
-            spriteBatch.Draw2D(m_gumpBackground[0], new Point(X, Y + m_gumpUpButton[0].Height), 0, false, false);
-            int middlewidth = BarHeight - m_gumpUpButton[0].Height - m_gumpDownButton[0].Height - m_gumpBackground[0].Height - m_gumpBackground[2].Height;
-            spriteBatch.Draw2DTiled(m_gumpBackground[1], new Rectangle(X, Y + m_gumpUpButton[0].Height + m_gumpBackground[0].Height, m_gumpBackground[0].Width, middlewidth), 0, false, false);
-            spriteBatch.Draw2D(m_gumpBackground[2], new Point(X, Y + BarHeight - m_gumpDownButton[0].Height - m_gumpBackground[2].Height), 0, false, false);
+            int middleHeight = BarHeight - m_gumpUpButton[0].Height - m_gumpDownButton[0].Height - m_gumpBackground[0].Height - m_gumpBackground[2].Height;
+            if (middleHeight > 0)
+            {
+                spriteBatch.Draw2D(m_gumpBackground[0], new Vector3(position.X, position.Y + m_gumpUpButton[0].Height, 0), Vector3.Zero);
+                spriteBatch.Draw2DTiled(m_gumpBackground[1], new Rectangle(position.X, position.Y + m_gumpUpButton[0].Height + m_gumpBackground[0].Height, m_gumpBackground[0].Width, middleHeight), Vector3.Zero);
+                spriteBatch.Draw2D(m_gumpBackground[2], new Vector3(position.X, position.Y + BarHeight - m_gumpDownButton[0].Height - m_gumpBackground[2].Height, 0), Vector3.Zero);
+            }
+            else
+            {
+                middleHeight = Height - m_gumpUpButton[0].Height - m_gumpDownButton[0].Height;
+                spriteBatch.Draw2DTiled(m_gumpBackground[1], new Rectangle(position.X, position.Y + m_gumpUpButton[0].Height, m_gumpBackground[0].Width, middleHeight), Vector3.Zero);
+            }
+            // up button
+            spriteBatch.Draw2D(m_btnUpClicked ? m_gumpUpButton[1] : m_gumpUpButton[0], new Vector3(position.X, position.Y, 0), Vector3.Zero);
             // down button
-            spriteBatch.Draw2D(m_btnDownClicked ? m_gumpDownButton[1] : m_gumpDownButton[0], new Point(X, Y + Height - m_gumpDownButton[0].Height), 0, false, false);
+            spriteBatch.Draw2D(m_btnDownClicked ? m_gumpDownButton[1] : m_gumpDownButton[0], new Vector3(position.X, position.Y + Height - m_gumpDownButton[0].Height, 0), Vector3.Zero);
             // slider
-            spriteBatch.Draw2D(m_gumpSlider, new Point(X + (m_gumpBackground[0].Width - m_gumpSlider.Width) / 2, Y + m_gumpUpButton[0].Height + 1 + (int)m_SliderPosition), 0, false, false);
-            base.Draw(spriteBatch);
+            if (MaxValue > MinValue && middleHeight > 0)
+                spriteBatch.Draw2D(m_gumpSlider, new Vector3(position.X + (m_gumpBackground[0].Width - m_gumpSlider.Width) / 2, position.Y + m_gumpUpButton[0].Height + m_SliderPosition, 0), Vector3.Zero);
+            base.Draw(spriteBatch, position);
         }
 
         protected override bool InternalHitTest(int x, int y)
@@ -189,13 +213,13 @@ namespace UltimaXNA.Ultima.UI.Controls
         float m_timeUntilNextClick;
         const float m_timeBetweenClicks = 0.5f;
 
-        protected override void mouseDown(int x, int y, MouseButton button)
+        protected override void OnMouseDown(int x, int y, MouseButton button)
         {
             m_timeUntilNextClick = 0f;
-            if (new Rectangle(0, 0, m_gumpUpButton[0].Width, m_gumpUpButton[0].Height).Contains(new Point(x, y)))
-                m_btnUpClicked = true;
-            else if (new Rectangle(0, Height - m_gumpDownButton[0].Height, m_gumpDownButton[0].Width, m_gumpDownButton[0].Height).Contains(new Point(x, y)))
+            if (new Rectangle(0, Height - m_gumpDownButton[0].Height, m_gumpDownButton[0].Width, m_gumpDownButton[0].Height).Contains(new Point(x, y)))
                 m_btnDownClicked = true;
+            else if (new Rectangle(0, 0, m_gumpUpButton[0].Width, m_gumpUpButton[0].Height).Contains(new Point(x, y)))
+                m_btnUpClicked = true;
             else if (new Rectangle((m_gumpBackground[0].Width - m_gumpSlider.Width) / 2, m_gumpUpButton[0].Height + (int)m_SliderPosition, m_gumpSlider.Width, m_gumpSlider.Height).Contains(new Point(x, y)))
             {
                 m_btnSliderClicked = true;
@@ -208,29 +232,35 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        protected override void mouseUp(int x, int y, MouseButton button)
+        protected override void OnMouseUp(int x, int y, MouseButton button)
         {
             m_btnUpClicked = false;
             m_btnDownClicked = false;
             m_btnSliderClicked = false;
         }
 
-        protected override void mouseOver(int x, int y)
+        protected override void OnMouseOver(int x, int y)
         {
             if (m_btnSliderClicked)
             {
                 if (y != m_clickPosition.Y)
                 {
                     float sliderY = m_SliderPosition + (y - m_clickPosition.Y);
+
                     if (sliderY < 0)
                         sliderY = 0;
+
                     if (sliderY > scrollableArea())
                         sliderY = scrollableArea();
+
                     m_clickPosition = new Point(x, y);
+
                     if (sliderY == 0 && m_clickPosition.Y < m_gumpUpButton[0].Height + m_gumpSlider.Height / 2)
                         m_clickPosition.Y = m_gumpUpButton[0].Height + m_gumpSlider.Height / 2;
+
                     if (sliderY == (scrollableArea()) && m_clickPosition.Y > BarHeight - m_gumpDownButton[0].Height - m_gumpSlider.Height / 2)
                         m_clickPosition.Y = BarHeight - m_gumpDownButton[0].Height - m_gumpSlider.Height / 2;
+
                     m_value = ((sliderY / scrollableArea()) * (float)((MaxValue - MinValue))) + MinValue;
                     m_SliderPosition = sliderY;
                 }

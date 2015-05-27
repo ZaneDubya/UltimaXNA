@@ -23,14 +23,10 @@ namespace UltimaXNA.Ultima.UI.Controls
         public int LimitSize = 0;
         public bool IsPasswordField = false;
 
-        string m_text = string.Empty;
         public string Text
         {
-            get { return m_text; }
-            set
-            {
-                m_text = value;
-            }
+            get;
+            set;
         }
 
         public string HtmlTag = string.Empty;
@@ -43,7 +39,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         float m_MSSinceLastCaratBlink = 0f;
         const float c_MSBetweenCaratBlinks = 500f;
 
-        RenderedText m_Texture;
+        RenderedText m_RenderedText;
         RenderedText m_Carat;
 
         private UserInterfaceService m_UserInterface;
@@ -90,8 +86,8 @@ namespace UltimaXNA.Ultima.UI.Controls
             Text = text;
             LimitSize = limitSize;
             m_caratBlinkOn = false;
-            m_Texture = new RenderedText("", true, width);
-            m_Carat = new RenderedText("", true, width);
+            m_RenderedText = new RenderedText(string.Empty, 1024);
+            m_Carat = new RenderedText(string.Empty, 16);
         }
 
         public override void Update(double totalMS, double frameMS)
@@ -127,24 +123,35 @@ namespace UltimaXNA.Ultima.UI.Controls
                 m_caratBlinkOn = false;
             }
 
-            m_Texture.Text = HtmlTag + (IsPasswordField ? new string('*', Text.Length) : Text);
+            m_RenderedText.Text = HtmlTag + (IsPasswordField ? new string('*', Text.Length) : Text);
             m_Carat.Text = HtmlTag + (m_legacyCarat ? "_" : "|");
 
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
-            m_Texture.Draw(spriteBatch, Position);
-            if (m_caratBlinkOn)
+            Point caratPosition = new Point(position.X, position.Y);
+
+            if (m_RenderedText.Width + m_Carat.Width <= Width)
             {
-                m_Carat.Draw(spriteBatch, new Point(X + m_Texture.Width, Y));
+                m_RenderedText.Draw(spriteBatch, position, Utility.GetHueVector(Hue));
+                caratPosition.X += m_RenderedText.Width;
             }
-            
-            base.Draw(spriteBatch);
+            else
+            {
+                int textOffset = m_RenderedText.Width - (Width - m_Carat.Width);
+                m_RenderedText.Draw(spriteBatch, new Rectangle(position.X, position.Y, m_RenderedText.Width - textOffset, m_RenderedText.Height), textOffset, 0, Utility.GetHueVector(Hue));
+                caratPosition.X += (Width - m_Carat.Width);
+            }
+
+
+            if (m_caratBlinkOn)
+                m_Carat.Draw(spriteBatch, caratPosition, Utility.GetHueVector(Hue));
+            base.Draw(spriteBatch, position);
         }
 
-        protected override void keyboardInput(InputEventKeyboard e)
+        protected override void OnKeyboardInput(InputEventKeyboard e)
         {
             switch (e.KeyCode)
             {
@@ -163,10 +170,10 @@ namespace UltimaXNA.Ultima.UI.Controls
                     }
                     break;
                 case WinKeys.Tab:
-                    m_owner.KeyboardTabToNextFocus(this);
+                    Owner.KeyboardTabToNextFocus(this);
                     break;
                 case WinKeys.Enter:
-                    m_owner.ActivateByKeyboardReturn(EntryID, Text);
+                    Owner.ActivateByKeyboardReturn(EntryID, Text);
                     break;
                 default:
                     if (e.IsChar)

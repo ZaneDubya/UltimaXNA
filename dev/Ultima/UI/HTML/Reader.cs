@@ -47,12 +47,12 @@ namespace UltimaXNA.Ultima.UI.HTML
             }
         }
 
-        public Reader(string inText, bool parseHTML)
+        public Reader(string inText)
         {
-            Atoms = decodeText(inText, parseHTML);
+            Atoms = decodeText(inText);
         }
 
-        private List<AAtom> decodeText(string inText, bool parseHTML)
+        private List<AAtom> decodeText(string inText)
         {
             List<AAtom> outAtoms = new List<AAtom>();
             List<string> openTags = new List<string>();
@@ -60,6 +60,7 @@ namespace UltimaXNA.Ultima.UI.HTML
             List<HREF_Attributes> openHREFs = new List<HREF_Attributes>();
 
             // if this is not HTML, do not parse tags. Otherwise search out and interpret tags.
+            bool parseHTML = true;
             if (!parseHTML)
             {
                 for (int i = 0; i < inText.Length; i++)
@@ -147,6 +148,9 @@ namespace UltimaXNA.Ultima.UI.HTML
                                     openHREFs.Add(href);
                                 }
                                 break;
+                            case "body":
+                                //ignore
+                                break;
                             default:
                                 readParams = false;
                                 for (int i = 0; i < chunk.iChunkLength; i++)
@@ -182,25 +186,37 @@ namespace UltimaXNA.Ultima.UI.HTML
                                     case "activecolor":
                                         // get the color!
                                         string color = value;
+                                        Color? c=null;
                                         if (color[0] == '#')
-                                            color = color.Substring(1);
-                                        if (color.Length == 3 || color.Length == 6)
                                         {
-                                            Color c = Utility.ColorFromHexString(color);
+                                            color = color.Substring(1);
+                                            if (color.Length == 3 || color.Length == 6)
+                                            {
+                                                c = Utility.ColorFromHexString(color);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            //try to parse color by name
+                                            c = Utility.ColorFromString(color);
+                                        }
+
+                                        if (c.HasValue)
+                                        {
                                             if (key == "color")
-                                                currentColor = c;
+                                                currentColor = c.Value;
                                             if (chunk.sTag == "a")
                                             {
                                                 switch (key)
                                                 {
                                                     case "color":
-                                                        openHREFs[openHREFs.Count - 1].UpHue = IO.HuesXNA.GetWebSafeHue(c);
+                                                        openHREFs[openHREFs.Count - 1].UpHue = IO.HuesXNA.GetWebSafeHue(c.Value);
                                                         break;
                                                     case "hovercolor":
-                                                        openHREFs[openHREFs.Count - 1].OverHue = IO.HuesXNA.GetWebSafeHue(c);
+                                                        openHREFs[openHREFs.Count - 1].OverHue = IO.HuesXNA.GetWebSafeHue(c.Value);
                                                         break;
                                                     case "activecolor":
-                                                        openHREFs[openHREFs.Count - 1].DownHue = IO.HuesXNA.GetWebSafeHue(c);
+                                                        openHREFs[openHREFs.Count - 1].DownHue = IO.HuesXNA.GetWebSafeHue(c.Value);
                                                         break;
                                                 }
                                             }
@@ -261,6 +277,9 @@ namespace UltimaXNA.Ultima.UI.HTML
                                                 Tracer.Warn("height param encountered within " + chunk.sTag + " which does not use this param.");
                                                 break;
                                         }
+                                        break;
+                                    case "style":
+                                        Tracer.Warn(string.Format("Html style parameter unhandled: {0}", value));
                                         break;
                                     default:
                                         Tracer.Warn(string.Format("Unknown parameter:{0}", key));

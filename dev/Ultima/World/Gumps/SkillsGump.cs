@@ -12,6 +12,7 @@ using System.Text;
 using UltimaXNA.Ultima.Player;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
+using Microsoft.Xna.Framework;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Gumps
@@ -30,21 +31,27 @@ namespace UltimaXNA.Ultima.World.Gumps
 
             AddControl(m_scroll = new ExpandableScroll(this, 0, 0, 0, 200));
             m_scroll.TitleGumpID = 0x834;
-            m_scroll.MakeDragger(this);
-            m_scroll.MakeCloseTarget(this);
-            IsMovable = true;
 
             AddControl(m_list = new HtmlGump(this, 0, 10, 20, 180, 100, 0, 1, ""));
         }
 
+        protected override void OnInitialize()
+        {
+            SetSavePositionName("skills");
+            base.OnInitialize();
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+        }
+
         public override void Update(double totalMS, double frameMS)
         {
-            m_list.X = 26;
-            m_list.Y = 33;
+            m_list.Position = new Point(26, 33);
             m_list.Width = Width - 56;
             m_list.Height = Height - 95;
-            //if (m_lastUpdateCount != Ultima.ClientVars.Skills.UpdateCount)  Could not resolve this...
-                m_list.Text = buildSkillsString();
+            m_list.Text = buildSkillsString();
             base.Update(totalMS, frameMS);
         }
 

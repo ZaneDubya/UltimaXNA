@@ -7,14 +7,12 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-#region usings
+using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
-using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
-#endregion
 
-namespace UltimaXNA.Ultima.World.Gumps
+namespace UltimaXNA.Ultima.UI.WorldGumps
 {
     class MiniMap : Gump
     {
@@ -36,10 +34,8 @@ namespace UltimaXNA.Ultima.World.Gumps
                 if (m_gump != null)
                     m_gump.Dispose();
                 m_gump = new GumpPic(this, 0, 0, 0, (m_useLargeMap ? 5011 : 5010), 0);
-                m_gump.OnMouseClick = onClickMap;
-                m_gump.OnMouseDoubleClick = onDoubleClickMap;
-                m_gump.MakeDragger(this);
-                m_gump.MakeCloseTarget(this);
+                m_gump.MouseClickEvent = onClickMap;
+                m_gump.MouseDoubleClickEvent = onDoubleClickMap;
                 AddControl(m_gump);
             }
 

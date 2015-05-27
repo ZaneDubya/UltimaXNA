@@ -22,6 +22,12 @@ namespace UltimaXNA.Ultima.World
             private set;
         }
 
+        public MiniMapTexture MiniMap
+        {
+            get;
+            private set;
+        }
+
         protected new WorldModel Model
         {
             get { return (WorldModel)base.Model; }
@@ -33,11 +39,17 @@ namespace UltimaXNA.Ultima.World
             Isometric = new IsometricRenderer();
             Isometric.Initialize();
             Isometric.LightDirection = -0.6f;
+
+            MiniMap = new MiniMapTexture();
+            MiniMap.Initialize();
         }
 
         public override void Draw(double frameTime)
         {
-            Isometric.Draw(Model.Map, EntityManager.GetPlayerObject().Position, Model.Input.MousePick);
+            Position3D center = EntityManager.GetPlayerObject().Position;
+
+            Isometric.Update(Model.Map, center, Model.Input.MousePick);
+            MiniMap.Update(Model.Map, center);
         }
     }
 }

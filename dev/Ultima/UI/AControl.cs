@@ -19,113 +19,129 @@ using UltimaXNA.Core.Input.Windows;
 
 namespace UltimaXNA.Ultima.UI
 {
-    internal delegate void ControlMouseButtonEvent(int x, int y, MouseButton button);
-    internal delegate void ControlMouseEvent(int x, int y);
-    internal delegate void ControlEvent();
-
-    public delegate void PublicControlEvent();
-
     /// <summary>
     /// The base class used by all GUI objects.
     /// NOTE: Gumps MUST NOT inherit from Control. They must inherit from Gump instead.
     /// </summary>
     public abstract class AControl
     {
-        public int Serial = 0;
-        public bool IsModal = false;
+        internal Action<int, int, MouseButton> MouseClickEvent;
+        internal Action<int, int, MouseButton> MouseDoubleClickEvent;
+        internal Action<int, int, MouseButton> MouseDownEvent;
+        internal Action<int, int, MouseButton> MouseUpEvent;
+        internal Action<int, int> MouseOverEvent;
+        internal Action<int, int> MouseOutEvent;
 
-        bool m_enabled = false;
-        bool m_visible = false;
-        bool m_isInitialized = false;
-        bool m_isDisposed = false;
-        public bool Enabled { get { return m_enabled; } set { m_enabled = value; } }
-        public bool Visible { get { return m_visible; } set { m_visible = value; } }
-        public bool IsInitialized { get { return m_isInitialized; } set { m_isInitialized = value; } }
-        public bool IsDisposed { get { return m_isDisposed; } set { m_isDisposed = value; } }
-        public bool IsMovable = false;
-
-        bool m_handlesMouseInput = false;
-        public bool HandlesMouseInput { get { return m_handlesMouseInput; } set { m_handlesMouseInput = value; } }
-        bool m_handlesKeyboardFocus = false;
-        public bool HandlesKeyboardFocus
+        /// <summary>
+        /// An identifier for this control.
+        /// </summary>
+        public int Serial
         {
-            get
-            {
-                if (m_handlesKeyboardFocus)
-                    return true;
-                if (m_controls == null)
-                    return false;
-                foreach (AControl c in m_controls)
-                    if (c.HandlesKeyboardFocus)
-                        return true;
-                return false;
-            }
-            set
-            {
-                m_handlesKeyboardFocus = value;
-                if (m_UserInterface.KeyboardFocusControl == null)
-                    m_UserInterface.KeyboardFocusControl = this;
-            }
-        }
-        public AControl KeyboardFocusControl
-        {
-            get
-            {
-                if (m_handlesKeyboardFocus)
-                    return this;
-                if (m_controls == null)
-                    return null;
-                foreach (AControl c in m_controls)
-                    if (c.HandlesKeyboardFocus)
-                        return c.KeyboardFocusControl;
-                return null;
-            }
+            get;
+            protected set;
         }
 
-        protected bool m_renderFullScreen = false;
-
-        internal ControlMouseButtonEvent OnMouseClick;
-        internal ControlMouseButtonEvent OnMouseDoubleClick;
-        internal ControlMouseButtonEvent OnMouseDown;
-        internal ControlMouseButtonEvent OnMouseUp;
-        internal ControlMouseEvent OnMouseOver;
-        internal ControlMouseEvent OnMouseOut;
-
-        float m_inputMultiplier = 1.0f;
-        public float InputMultiplier
+        /// <summary>
+        /// Indicates that the control has been disposed, and will be removed on the next Update() of the UserInterface object.
+        /// </summary>
+        public bool IsDisposed
         {
-            set { m_inputMultiplier = value; }
-            get
-            {
-                if (m_renderFullScreen)
-                    return m_inputMultiplier;
-                else
-                    return 1.0f;
-            }
+            get;
+            protected set;
         }
 
-        int m_page = 0;
+        /// <summary>
+        /// Controls that are not enabled cannot receive keyboard and mouse input, but still Draw.
+        /// </summary>
+        public bool IsEnabled
+        {
+            get;
+            protected set;
+        }
+
+        /// <summary>
+        /// Indicates whether the control has been Initialized by the UserInterface object, which happens every time the UserInterface updates.
+        /// Controls that are not initialized do not update and do not draw.
+        /// </summary>
+        public bool IsInitialized
+        {
+            get;
+            protected set;
+        }
+
+        /// <summary>
+        /// If controls with IsModal are active, they appear on top of all other controls and block input to all other controls and the world.
+        /// </summary>
+        public bool IsModal
+        {
+            get;
+            protected set;
+        }
+
+        /// <summary>
+        /// If true, control can be moved by click-dragging with left mouse button.
+        /// A child control can be made a dragger for a parent control with MakeDragger().
+        /// </summary>
+        public virtual bool IsMovable
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// If true, gump cannot be closed with right-click.
+        /// </summary>
+        public bool IsUncloseableWithRMB
+        {
+            get;
+            protected set;
+        }
+
+        /// <summary>
+        /// If true, gump does not close when the player hits the Escape key. This behavior is currently unimplemented.
+        /// </summary>
+        public bool IsUncloseableWithEsc
+        {
+            get;
+            protected set;
+        }
+
+        /// <summary>
+        /// If true, the gump will draw. Not visible gumps still update and receive mouse input (but not keyboard input).
+        /// </summary>
+        public bool IsVisible
+        {
+            get;
+            set;
+        }
+        /// <summary>
+        /// This's control's drawing/input page index. On Update() and Draw(), only those controls with Page == 0 or
+        /// Page == Parent.ActivePage will accept input and be drawn.
+        /// </summary>
         public int Page
         {
-            get
-            {
-                return m_page;
-            }
+            get;
+            set;
         }
-        int m_activePage = 0; // we always draw m_activePage and Page 0.
+
+        int m_ActivePage = 0; // we always draw m_activePage and Page 0.
+        /// <summary>
+        /// This control's active page index. On Update and Draw(), this control will send update to and draw all children with Page == 0 or
+        /// Page == this.Page.
+        /// </summary>
         public int ActivePage
         {
-            get { return m_activePage; }
+            get { return m_ActivePage; }
             set
             {
-                m_activePage = value;
+                m_ActivePage = value;
                 // If we own the current KeyboardFocusControl, then we should clear it.
                 // UNLESS page = 0; in which case it still exists and should maintain focus.
                 // Clear the current keyboardfocus if we own it and it's page != 0
                 // If the page = 0, then it will still exist so it should maintain focus.
                 if (m_UserInterface.KeyboardFocusControl != null)
                 {
-                    if (Controls.Contains(m_UserInterface.KeyboardFocusControl))
+                    if (Children.Contains(m_UserInterface.KeyboardFocusControl))
                     {
                         if (m_UserInterface.KeyboardFocusControl.Page != 0)
                             m_UserInterface.KeyboardFocusControl = null;
@@ -133,9 +149,9 @@ namespace UltimaXNA.Ultima.UI
                 }
                 // When ActivePage changes, check to see if there are new text input boxes
                 // that we should redirect text input to.
-                foreach (AControl c in Controls)
+                foreach (AControl c in Children)
                 {
-                    if (c.HandlesKeyboardFocus && (c.Page == m_activePage))
+                    if (c.HandlesKeyboardFocus && (c.Page == m_ActivePage))
                     {
                         m_UserInterface.KeyboardFocusControl = c;
                         break;
@@ -144,14 +160,13 @@ namespace UltimaXNA.Ultima.UI
             }
         }
 
-        Rectangle m_area = Rectangle.Empty;
-        Point m_position;
+        Rectangle m_Area = Rectangle.Empty;
         protected int OwnerX
         {
             get
             {
-                if (m_owner != null)
-                    return m_owner.X + m_owner.OwnerX;
+                if (Owner != null)
+                    return Owner.X + Owner.OwnerX;
                 else
                     return 0;
             }
@@ -160,151 +175,465 @@ namespace UltimaXNA.Ultima.UI
         {
             get
             {
-                if (m_owner != null)
-                    return m_owner.Y + m_owner.OwnerY;
+                if (Owner != null)
+                    return Owner.Y + Owner.OwnerY;
                 else
                     return 0;
             }
         }
-        public int X { get { return m_position.X; } set { m_position.X = value; } }
-        public int Y { get { return m_position.Y; } set { m_position.Y = value; } }
+        public int X { get { return Position.X; } }
+        public int Y { get { return Position.Y; } }
+
+        public int ScreenX
+        {
+            get
+            {
+                return OwnerX + X;
+            }
+        }
+
+        public int ScreenY
+        {
+            get
+            {
+                return OwnerY + Y;
+            }
+        }
+
         public virtual int Width
         {
-            get { return m_area.Width; }
+            get { return m_Area.Width; }
             set
             {
-                m_area.Width = value;
+                m_Area.Width = value;
             }
         }
+
         public virtual int Height
         {
-            get { return m_area.Height; }
+            get { return m_Area.Height; }
             set
             {
-                m_area.Height = value;
+                m_Area.Height = value;
             }
         }
+
         public Point Position
         {
             get
             {
-                return m_position;
+                return m_Position;
             }
             set
             {
-                m_position = value;
+                if (value != m_Position)
+                {
+                    m_Position = value;
+                    OnMove();
+                }
             }
         }
         public Point Size
         {
-            get { return new Point(m_area.Width, m_area.Height); }
+            get { return new Point(m_Area.Width, m_Area.Height); }
             set
             {
-                m_area.Width = value.X;
-                m_area.Height = value.Y;
+                m_Area.Width = value.X;
+                m_Area.Height = value.Y;
             }
         }
         public Rectangle Area
         {
-            get { return m_area; }
+            get { return m_Area; }
         }
 
-        protected AControl m_owner = null;
-        public AControl Owner { get { return m_owner; } }
-        private List<AControl> m_controls = null;
-        protected List<AControl> Controls
+        public AControl Owner
+        {
+            get;
+            protected set;
+        }
+
+        private List<AControl> m_Children = null;
+        public List<AControl> Children
         {
             get
             {
-                if (m_controls == null)
-                    m_controls = new List<AControl>();
-                return m_controls;
+                if (m_Children == null)
+                    m_Children = new List<AControl>();
+                return m_Children;
             }
         }
 
-#if DEBUG
-        static Texture2D m_boundsTexture;
-#endif
+        public void Center()
+        {
+            Position = new Point(
+                (m_UserInterface.Width - Width) / 2,
+                (m_UserInterface.Height - Height) / 2);
+        }
 
         UserInterfaceService m_UserInterface;
+        protected Point m_Position;
 
         public AControl(AControl owner, int page)
         {
-            m_owner = owner;
-            m_page = page;
-            Visible = true;
+            Owner = owner;
+            Page = page;
             m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
         }
 
-        public void ControlInitialize()
+        public void Initialize()
         {
-            m_isInitialized = true;
-            m_isDisposed = false;
-            Initialize();
-        }
-
-        public virtual void Initialize()
-        {
-
-        }
-
-        public AControl AddControl(AControl c)
-        {
-            Controls.Add(c);
-            return LastControl;
-        }
-
-        public AControl LastControl
-        {
-            get { return Controls[Controls.Count - 1]; }
-        }
-
-        public void ClearControls()
-        {
-            if (Controls != null)
-                foreach (AControl c in Controls)
-                    c.Dispose();
+            IsDisposed = false;
+            IsEnabled = true;
+            IsInitialized = true;
+            IsVisible = true;
+            OnInitialize();
         }
 
         public virtual void Dispose()
         {
             ClearControls();
-            m_isDisposed = true;
+            IsDisposed = true;
         }
 
-        DragWidget m_dragger;
-        public void MakeDragger(AControl toMove)
+        public virtual void Update(double totalMS, double frameMS)
         {
-            HandlesMouseInput = true;
-            m_dragger = new DragWidget(this, m_owner);
+            if (!IsInitialized || IsDisposed)
+                return;
+
+            // update our area X and Y to reflect any movement.
+            m_Area.X = X;
+            m_Area.Y = Y;
+
+            foreach (AControl c in Children)
+            {
+                if (!c.IsInitialized)
+                    c.Initialize();
+                c.Update(totalMS, frameMS);
+            }
+
+            List<AControl> disposedControls = new List<AControl>();
+            foreach (AControl c in Children)
+            {
+                if (c.IsDisposed)
+                    disposedControls.Add(c);
+            }
+            foreach (AControl c in disposedControls)
+            {
+                Children.Remove(c);
+            }
         }
 
-        AControl m_closeTarget;
-        public void MakeCloseTarget(AControl toClose)
+        virtual public void Draw(SpriteBatchUI spriteBatch, Point position)
         {
-            m_closeTarget = toClose;
-            HandlesMouseInput = true;
-            OnMouseClick += onCloseTargetClick;
+            if (!IsInitialized || !IsVisible)
+                return;
+
+            if (Settings.Debug.ShowUIOutlines)
+                DebugDrawBounds(spriteBatch, position, Color.White);
+
+            foreach (AControl c in Children)
+            {
+                if ((c.Page == 0) || (c.Page == ActivePage))
+                {
+                    if (c.IsInitialized)
+                    {
+                        Point offset = new Point(c.Position.X + position.X, c.Position.Y + position.Y);
+                        c.Draw(spriteBatch, offset);
+                    }
+                }
+            }
         }
-        void onCloseTargetClick(int x, int y, MouseButton button)
+
+
+
+        public AControl AddControl(AControl c)
         {
+            Children.Add(c);
+            return LastControl;
+        }
+
+        public AControl LastControl
+        {
+            get { return Children[Children.Count - 1]; }
+        }
+
+        public void ClearControls()
+        {
+            if (Children != null)
+                foreach (AControl c in Children)
+                    c.Dispose();
+        }
+
+        DragWidget m_Dragger;
+        public void MakeThisADragger()
+        {
+            HandlesMouseInput = true;
+            AControl dragTarget = this;
+            while (dragTarget.Owner != null)
+            {
+                dragTarget = dragTarget.Owner;
+            }
+
+            m_Dragger = new DragWidget(this, dragTarget);
+        }
+
+
+
+        public virtual void ActivateByButton(int buttonID)
+        {
+            if (Owner != null)
+                Owner.ActivateByButton(buttonID);
+        }
+
+        public virtual void ActivateByHREF(string href)
+        {
+            if (Owner != null)
+                Owner.ActivateByHREF(href);
+        }
+
+        public virtual void ActivateByKeyboardReturn(int textID, string text)
+        {
+            if (Owner != null)
+                Owner.ActivateByKeyboardReturn(textID, text);
+        }
+
+        public virtual void ChangePage(int pageIndex)
+        {
+            if (Owner != null)
+                Owner.ChangePage(pageIndex);
+        }
+
+        // ================================================================================
+        // Overrideable methods
+        // ================================================================================
+        #region OverrideableMethods
+        protected virtual void OnMouseDown(int x, int y, MouseButton button)
+        {
+
+        }
+
+        protected virtual void OnMouseUp(int x, int y, MouseButton button)
+        {
+
+        }
+
+        protected virtual void OnMouseOver(int x, int y)
+        {
+
+        }
+
+        protected virtual void OnMouseOut(int x, int y)
+        {
+
+        }
+
+        protected virtual void OnMouseClick(int x, int y, MouseButton button)
+        {
+
+        }
+
+        protected virtual void OnMouseDoubleClick(int x, int y, MouseButton button)
+        {
+
+        }
+
+        protected virtual void OnKeyboardInput(InputEventKeyboard e)
+        {
+
+        }
+
+        protected virtual void OnInitialize()
+        {
+
+        }
+
+        protected virtual void OnMove()
+        {
+
+        }
+
+        protected virtual bool InternalHitTest(int x, int y)
+        {
+            return true;
+        }
+        #endregion
+
+        // ================================================================================
+        // Tooltip handling code - shows text when the player mouses over this control.
+        // ================================================================================
+        #region Tooltip
+
+        private string m_Tooltip = null;
+
+        public string Tooltip
+        {
+            get { return m_Tooltip; }
+        }
+
+        public bool HasTooltip
+        {
+            get
+            {
+                return (m_Tooltip != null);
+            }
+        }
+
+        public void SetTooltip(string caption)
+        {
+            if (caption == null)
+                ClearTooltip();
+            else
+            {
+                m_Tooltip = caption;
+            }
+        }
+
+        public void ClearTooltip()
+        {
+            m_Tooltip = null;
+        }
+
+        #endregion
+
+        // ================================================================================
+        // Mouse handling code
+        // ================================================================================
+        #region MouseInput
+
+        // private variables
+
+        private bool m_HandlesMouseInput = false;
+        private float m_MaxTimeForDoubleClick = 0f;
+        private Point m_LastClickPosition;
+
+        // public methods
+
+        public bool IsMouseOver
+        {
+            get
+            {
+                if (m_UserInterface.MouseOverControl == this)
+                    return true;
+                return false;
+            }
+        }
+
+        public bool HandlesMouseInput
+        {
+            get
+            {
+                return (IsEnabled && IsInitialized && !IsDisposed && m_HandlesMouseInput);
+            }
+            set
+            {
+                m_HandlesMouseInput = value;
+            }
+        }
+
+        public void MouseDown(Point position, MouseButton button)
+        {
+            m_LastClickPosition = position;
+            int x = (int)position.X - X - OwnerX;
+            int y = (int)position.Y - Y - OwnerY;
+            OnMouseDown(x, y, button);
+            if (MouseDownEvent != null)
+                MouseDownEvent(x, y, button);
+        }
+
+        public void MouseUp(Point position, MouseButton button)
+        {
+            int x = (int)position.X - X - OwnerX;
+            int y = (int)position.Y - Y - OwnerY;
+            OnMouseUp(x, y, button);
+            if (MouseUpEvent != null)
+                MouseUpEvent(x, y, button);
+        }
+
+        public void MouseOver(Point position)
+        {
+            // Does not double-click if you move your mouse more than x pixels from where you first clicked.
+            if (Math.Abs(m_LastClickPosition.X - position.X) + Math.Abs(m_LastClickPosition.Y - position.Y) > 3)
+                m_MaxTimeForDoubleClick = 0.0f;
+
+            int x = (int)position.X - X - OwnerX;
+            int y = (int)position.Y - Y - OwnerY;
+            OnMouseOver(x, y);
+            if (MouseOverEvent != null)
+                MouseOverEvent(x, y);
+        }
+
+        public void MouseOut(Point position)
+        {
+            int x = (int)position.X - X - OwnerX;
+            int y = (int)position.Y - Y - OwnerY;
+            OnMouseOut(x, y);
+            if (MouseOutEvent != null)
+                MouseOutEvent(x, y);
+        }
+
+        public void MouseClick(Point position, MouseButton button)
+        {
+            int x = (int)position.X - X - OwnerX;
+            int y = (int)position.Y - Y - OwnerY;
+
+            bool doubleClick = false;
+            if (m_MaxTimeForDoubleClick != 0f)
+            {
+                if (UltimaEngine.TotalMS <= m_MaxTimeForDoubleClick)
+                {
+                    m_MaxTimeForDoubleClick = 0f;
+                    doubleClick = true;
+                }
+            }
+            else
+            {
+                m_MaxTimeForDoubleClick = (float)UltimaEngine.TotalMS + EngineVars.DoubleClickMS;
+            }
+
+            OnMouseClick(x, y, button);
+            if (MouseClickEvent != null)
+                MouseClickEvent(x, y, button);
+
+            if (doubleClick)
+            {
+                OnMouseDoubleClick(x, y, button);
+                if (MouseDoubleClickEvent != null)
+                    MouseDoubleClickEvent(x, y, button);
+            }
+
             if (button == MouseButton.Right)
             {
-                m_closeTarget.Dispose();
+                CloseWithRightMouseButton();
             }
+        }
+
+        private void CloseWithRightMouseButton()
+        {
+            if (IsUncloseableWithRMB)
+                return;
+            AControl parent = Owner;
+            while (parent != null)
+            {
+                if (parent.IsUncloseableWithRMB)
+                    return;
+                parent = parent.Owner;
+            }
+
+            // send cancel message for server gump
+            if (Serial != 0)
+                ActivateByButton(0);
+
+            // dispose of this, or owner, if it has one, which will close this as a child.
+            if (Owner == null)
+                Dispose();
+            else
+                Owner.CloseWithRightMouseButton();
         }
 
         public AControl[] HitTest(Point position, bool alwaysHandleMouseInput)
         {
             List<AControl> focusedControls = new List<AControl>();
-
-            // offset the mouse position if we are rendering full screen...
-            position.X = (int)((float)(position.X) / InputMultiplier);
-            position.Y = (int)((float)(position.Y) / InputMultiplier);
-
-            // If we're owned by something, make sure we increment our hitArea to show 
-            // position.X -= OwnerX;
-            // position.Y -= OwnerY;
 
             bool inBounds = Area.Contains((int)position.X - OwnerX, (int)position.Y - OwnerY);
             if (inBounds)
@@ -313,16 +642,17 @@ namespace UltimaXNA.Ultima.UI
                 {
                     if (alwaysHandleMouseInput || HandlesMouseInput)
                         focusedControls.Insert(0, this);
-                    foreach (AControl c in Controls)
+                    for (int i = 0; i < Children.Count; i++)
                     {
+                        AControl c = Children[i];
                         if ((c.Page == 0) || (c.Page == ActivePage))
                         {
                             AControl[] c1 = c.HitTest(position, false);
                             if (c1 != null)
                             {
-                                for (int i = c1.Length - 1; i >= 0; i--)
+                                for (int j = c1.Length - 1; j >= 0; j--)
                                 {
-                                    focusedControls.Insert(0, c1[i]);
+                                    focusedControls.Insert(0, c1[j]);
                                 }
                             }
                         }
@@ -335,261 +665,120 @@ namespace UltimaXNA.Ultima.UI
             else
                 return focusedControls.ToArray();
         }
+        #endregion
 
-        protected virtual bool InternalHitTest(int x, int y)
+        // ================================================================================
+        // Keyboard handling code
+        // ================================================================================
+        #region KeyboardInput
+
+        // private variables
+
+        private bool m_HandlesKeyboardFocus = false;
+
+        // public methods
+
+        public bool HandlesKeyboardFocus
         {
-            return true;
-        }
-
-        virtual public void Update(double totalMS, double frameMS)
-        {
-            if (!m_isInitialized)
-                return;
-
-            // update our area X and Y to reflect any movement.
-            m_area.X = X;
-            m_area.Y = Y;
-
-            foreach (AControl c in Controls)
+            get
             {
-                if (!c.IsInitialized)
-                    c.ControlInitialize();
-                c.Update(totalMS, frameMS);
+                if (!IsEnabled || !IsInitialized || IsDisposed || !IsVisible)
+                    return false;
+
+                if (m_HandlesKeyboardFocus)
+                    return true;
+
+                if (m_Children == null)
+                    return false;
+
+                foreach (AControl c in m_Children)
+                    if (c.HandlesKeyboardFocus)
+                        return true;
+
+                return false;
             }
-
-            List<AControl> disposedControls = new List<AControl>();
-            foreach (AControl c in Controls)
+            set
             {
-                if (c.IsDisposed)
-                    disposedControls.Add(c);
-            }
-            foreach (AControl c in disposedControls)
-            {
-                Controls.Remove(c);
-            }
-        }
-
-        virtual public void Draw(SpriteBatchUI spriteBatch)
-        {
-            if (!m_isInitialized)
-                return;
-            if (!Visible)
-                return;
-
-#if DEBUG
-            if (Settings.Debug.ShowUIOutlines)
-                DrawBounds(spriteBatch, Color.White);
-#endif
-
-            foreach (AControl c in Controls)
-            {
-                if ((c.Page == 0) || (c.Page == ActivePage))
-                {
-                    if (c.IsInitialized)
-                    {
-                        Point saved = c.Position;
-                        c.Position = new Point(c.Position.X + Position.X, c.Position.Y + Position.Y);
-                        c.Draw(spriteBatch);
-                        c.Position = saved;
-                    }
-                }
-            }
-        }
-
-#if DEBUG
-        protected void DrawBounds(SpriteBatchUI spriteBatch, Color color)
-        {
-            int hue = IO.HuesXNA.GetWebSafeHue(color);
-
-            Rectangle drawArea = m_area;
-            if (m_owner == null)
-            {
-                m_area.X -= X;
-                m_area.Y -= Y;
-            }
-
-            if (m_boundsTexture == null)
-            {
-                m_boundsTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
-                m_boundsTexture.SetData<Color>(new Color[] { Color.White });
-            }
-
-            spriteBatch.Draw2D(m_boundsTexture, new Rectangle(X, Y, Width, 1), hue, false, false);
-            spriteBatch.Draw2D(m_boundsTexture, new Rectangle(X, Y + Height - 1, Width, 1), hue, false, false);
-            spriteBatch.Draw2D(m_boundsTexture, new Rectangle(X, Y, 1, Height), hue, false, false);
-            spriteBatch.Draw2D(m_boundsTexture, new Rectangle(X + Width - 1, Y, 1, Height), hue, false, false);
-        }
-#endif
-
-        public virtual void ActivateByButton(int buttonID)
-        {
-            if (m_owner != null)
-                m_owner.ActivateByButton(buttonID);
-        }
-
-        public virtual void ActivateByHREF(string href)
-        {
-            if (m_owner != null)
-                m_owner.ActivateByHREF(href);
-        }
-
-        public virtual void ActivateByKeyboardReturn(int textID, string text)
-        {
-            if (m_owner != null)
-                m_owner.ActivateByKeyboardReturn(textID, text);
-        }
-
-        public virtual void ChangePage(int pageIndex)
-        {
-            if (m_owner != null)
-                m_owner.ChangePage(pageIndex);
-        }
-
-        public void MouseDown(Point position, MouseButton button)
-        {
-            lastClickPosition = position;
-            int x = (int)position.X - X - OwnerX;
-            int y = (int)position.Y - Y - OwnerY;
-            mouseDown(x, y, button);
-            if (OnMouseDown != null)
-                OnMouseDown(x, y, button);
-        }
-
-        public void MouseUp(Point position, MouseButton button)
-        {
-            int x = (int)position.X - X - OwnerX;
-            int y = (int)position.Y - Y - OwnerY;
-            mouseUp(x, y, button);
-            if (OnMouseUp != null)
-                OnMouseUp(x, y, button);
-        }
-
-        public void MouseOver(Point position)
-        {
-            // Does not double-click if you move your mouse more than x pixels from where you first clicked.
-            if (Math.Abs(lastClickPosition.X - position.X) + Math.Abs(lastClickPosition.Y - position.Y) > 3)
-                maxTimeForDoubleClick = 0.0f;
-
-            int x = (int)position.X - X - OwnerX;
-            int y = (int)position.Y - Y - OwnerY;
-            mouseOver(x, y);
-            if (OnMouseOver != null)
-                OnMouseOver(x, y);
-        }
-
-        public void MouseOut(Point position)
-        {
-            int x = (int)position.X - X - OwnerX;
-            int y = (int)position.Y - Y - OwnerY;
-            mouseOut(x, y);
-            if (OnMouseOut != null)
-                OnMouseOut(x, y);
-        }
-
-        float maxTimeForDoubleClick = 0f;
-        Point lastClickPosition;
-
-        public void MouseClick(Point position, MouseButton button)
-        {
-            int x = (int)position.X - X - OwnerX;
-            int y = (int)position.Y - Y - OwnerY;
-
-            bool doubleClick = false;
-            if (maxTimeForDoubleClick != 0f)
-            {
-                if (UltimaEngine.TotalMS <= maxTimeForDoubleClick)
-                {
-                    maxTimeForDoubleClick = 0f;
-                    doubleClick = true;
-                }
-            }
-            else
-            {
-                maxTimeForDoubleClick = (float)UltimaEngine.TotalMS + EngineVars.DoubleClickMS;
-            }
-
-            mouseClick(x, y, button);
-            if (OnMouseClick != null)
-                OnMouseClick(x, y, button);
-
-            if (doubleClick)
-            {
-                mouseDoubleClick(x, y, button);
-                if (OnMouseDoubleClick != null)
-                    OnMouseDoubleClick(x, y, button);
+                m_HandlesKeyboardFocus = value;
             }
         }
 
         public void KeyboardInput(InputEventKeyboard e)
         {
-            keyboardInput(e);
-        }
-
-        protected virtual void mouseDown(int x, int y, MouseButton button)
-        {
-
-        }
-
-        protected virtual void mouseUp(int x, int y, MouseButton button)
-        {
-
-        }
-
-        protected virtual void mouseOver(int x, int y)
-        {
-
-        }
-
-        protected virtual void mouseOut(int x, int y)
-        {
-
-        }
-
-        protected virtual void mouseClick(int x, int y, MouseButton button)
-        {
-
-        }
-
-        protected virtual void mouseDoubleClick(int x, int y, MouseButton button)
-        {
-
-        }
-
-        protected virtual void keyboardInput(InputEventKeyboard e)
-        {
-
-        }
-
-        internal void Center()
-        {
-            Position = new Point(
-                (m_UserInterface.Width - Width) / 2,
-                (m_UserInterface.Height - Height) / 2);
+            OnKeyboardInput(e);
         }
 
         /// <summary>
-        /// This is called when the Control that current has keyboard focus releases that focus; for example, when Tab is pressed.
+        /// Called when the Control that current has keyboard focus releases that focus; for example, when Tab is pressed.
         /// </summary>
         /// <param name="c">The control that is releasing focus.</param>
         internal void KeyboardTabToNextFocus(AControl c)
         {
-            int startIndex = Controls.IndexOf(c);
-            for (int i = startIndex + 1; i < Controls.Count; i++)
+            int startIndex = Children.IndexOf(c);
+            for (int i = startIndex + 1; i < Children.Count; i++)
             {
-                if (Controls[i].HandlesKeyboardFocus)
+                if (Children[i].HandlesKeyboardFocus)
                 {
-                    m_UserInterface.KeyboardFocusControl = Controls[i];
+                    m_UserInterface.KeyboardFocusControl = Children[i];
                     return;
                 }
             }
             for (int i = 0; i < startIndex; i++)
             {
-                if (Controls[i].HandlesKeyboardFocus)
+                if (Children[i].HandlesKeyboardFocus)
                 {
-                    m_UserInterface.KeyboardFocusControl = Controls[i];
+                    m_UserInterface.KeyboardFocusControl = Children[i];
                     return;
                 }
             }
+        }
+
+        public AControl FindControlThatAcceptsKeyboardFocus()
+        {
+            if (m_HandlesKeyboardFocus)
+                return this;
+            if (m_Children == null)
+                return null;
+            foreach (AControl c in m_Children)
+                if (c.HandlesKeyboardFocus)
+                    return c.FindControlThatAcceptsKeyboardFocus();
+            return null;
+        }
+
+        #endregion
+
+        // ================================================================================
+        // Debug control boundary drawing code
+        // ================================================================================
+        #region DebugBoundaryDrawing
+#if DEBUG
+        static Texture2D s_BoundsTexture;
+#endif
+
+        protected void DebugDrawBounds(SpriteBatchUI spriteBatch, Point position, Color color)
+        {
+#if DEBUG
+            int hue = IO.HuesXNA.GetWebSafeHue(color);
+
+            Rectangle drawArea = m_Area;
+            if (Owner == null)
+            {
+                m_Area.X -= X;
+                m_Area.Y -= Y;
+            }
+
+            if (s_BoundsTexture == null)
+            {
+                s_BoundsTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
+                s_BoundsTexture.SetData<Color>(new Color[] { Color.White });
+            }
+
+            spriteBatch.Draw2D(s_BoundsTexture, new Rectangle(position.X, position.Y, Width, 1), Utility.GetHueVector(hue));
+            spriteBatch.Draw2D(s_BoundsTexture, new Rectangle(position.X, position.Y + Height - 1, Width, 1), Utility.GetHueVector(hue));
+            spriteBatch.Draw2D(s_BoundsTexture, new Rectangle(position.X, position.Y, 1, Height), Utility.GetHueVector(hue));
+            spriteBatch.Draw2D(s_BoundsTexture, new Rectangle(position.X + Width - 1, position.Y, 1, Height), Utility.GetHueVector(hue));
+#endif
+        #endregion
         }
     }
 }

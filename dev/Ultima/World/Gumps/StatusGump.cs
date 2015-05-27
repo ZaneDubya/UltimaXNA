@@ -9,6 +9,7 @@
  *
  ***************************************************************************/
 #region usings
+using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Ultima.Entities.Mobiles;
@@ -29,8 +30,6 @@ namespace UltimaXNA.Ultima.World.Gumps
         {
             IsMovable = true;
             AddControl(new GumpPic(this, 0, 0, 0, 0x2A6C, 0));
-            LastControl.MakeDragger(this);
-            LastControl.MakeCloseTarget(this);
 
 
             AddControl(new TextLabelAscii(this, 0, 54, 44, 1, 6, "" + m.Name.ToString()));
@@ -86,7 +85,17 @@ namespace UltimaXNA.Ultima.World.Gumps
 
             AddControl(new TextLabelAscii(this, 0, 277, 70, 1, 6, "" + m.DamageMin + "/" + m.DamageMax));
             ControlsToUpdate.Add(LastControl);
+        }
 
+        protected override void OnInitialize()
+        {
+            SetSavePositionName("status");
+            base.OnInitialize();
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
         }
 
         public override void Update(double totalMS, double frameMS)
@@ -96,7 +105,7 @@ namespace UltimaXNA.Ultima.World.Gumps
                 m_RefreshTime = totalMS;
 
                 foreach (AControl c in ControlsToUpdate)
-                    Controls.Remove(c);
+                    Children.Remove(c);
 
                 AddControl(new TextLabelAscii(this, 0, 54, 44, 1, 6, "" + m.Name.ToString()));
                 ControlsToUpdate.Add(LastControl);
@@ -157,9 +166,9 @@ namespace UltimaXNA.Ultima.World.Gumps
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
-            base.Draw(spriteBatch);
+            base.Draw(spriteBatch, position);
         }
     }
 }

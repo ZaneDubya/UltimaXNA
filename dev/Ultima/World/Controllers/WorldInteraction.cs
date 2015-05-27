@@ -70,7 +70,8 @@ namespace UltimaXNA.Ultima.World.Controllers
 
         public void DoubleClick(AEntity item) // used by itemgumpling, paperdollinteractable, topmenu, worldinput.
         {
-            m_Network.Send(new DoubleClickPacket(item.Serial));
+            if (item!=null)
+                m_Network.Send(new DoubleClickPacket(item.Serial));
         } 
 
         public void ToggleWarMode() // used by paperdollgump.
@@ -122,7 +123,7 @@ namespace UltimaXNA.Ultima.World.Controllers
         {
             m_ChatQueue.Add(new QueuedMessage(text, hue, font));
 
-            ChatWindow chat = m_UserInterface.GetControl<ChatWindow>(0);
+            ChatControl chat = UltimaServices.GetService<ChatControl>();
             if (chat != null)
             {
                 foreach (QueuedMessage msg in m_ChatQueue)
@@ -179,17 +180,17 @@ namespace UltimaXNA.Ultima.World.Controllers
         // Cursor handling routines.
         // ======================================================================
 
-        public Action<Item, int, int> OnPickupItem;
+        public Action<Item, int, int, int?> OnPickupItem;
         public Action OnClearHolding;
 
-        internal void PickupItem(Item item, Point offset)
+        internal void PickupItem(Item item, Point offset, int? amount = null)
         {
             if (item == null)
                 return;
             if (OnPickupItem == null)
                 return;
 
-            OnPickupItem(item, offset.X, offset.Y);
+            OnPickupItem(item, offset.X, offset.Y, amount);
         }
 
         internal void ClearHolding()

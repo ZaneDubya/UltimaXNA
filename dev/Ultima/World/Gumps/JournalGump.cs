@@ -30,46 +30,44 @@ namespace UltimaXNA.Ultima.World.Gumps
         {
             AddControl(m_Background = new ExpandableScroll(this, 0, 0, 0, 300));
             m_Background.TitleGumpID = 0x82A;
-            m_Background.MakeDragger(this);
-            m_Background.MakeCloseTarget(this);
 
             AddControl(m_ScrollBar = new ScrollBar(this, 0));
-            m_ScrollBar.Visible = false;
+            m_ScrollBar.IsVisible = false;
             IsMovable = true;
         }
 
-        public override void Initialize()
+        protected override void OnInitialize()
         {
-            base.Initialize();
+            SetSavePositionName("journal");
+            base.OnInitialize();
+
+            
 
             m_JournalEntries = new List<RenderedText>();
             InitializeJournalEntries();
             PlayerState.Journaling.OnJournalEntryAdded += AddJournalEntry;
         }
 
+        public override void Dispose()
+        {
+            base.Dispose();
+        }
+
         public override void Update(double totalMS, double frameMS)
         {
             base.Update(totalMS, frameMS);
 
-            m_ScrollBar.Position = new Point(Width - 40, 35);
+            m_ScrollBar.Position = new Point(Width - 45, 35);
             m_EntriesHeight = m_ScrollBar.Height = Height - 100;
             CalculateScrollBarMaxValue();
-
-            if (m_ScrollBar.MaxValue <= 0)
-            {
-                m_ScrollBar.Visible = false;
-            }
-            else
-            {
-                m_ScrollBar.Visible = true;
-            }
+            m_ScrollBar.IsVisible = m_ScrollBar.MaxValue > m_ScrollBar.MinValue;
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
-            base.Draw(spriteBatch);
+            base.Draw(spriteBatch, position);
 
-            Point p = new Point(X + 36, Y + 35);
+            Point p = new Point(position.X + 36, position.Y + 35);
             int height = 0;
             int maxheight = m_ScrollBar.Value + m_EntriesHeight;
 
@@ -86,7 +84,7 @@ namespace UltimaXNA.Ultima.World.Gumps
                     if (y < 0)
                     {
                         // this entry starts above the renderable area, but exists partially within it.
-                        m_JournalEntries[i].Draw(spriteBatch, new Rectangle(p.X, Y + 35, m_JournalEntries[i].Width, m_JournalEntries[i].Height + y), 0, -y);
+                        m_JournalEntries[i].Draw(spriteBatch, new Rectangle(p.X, position.Y + 35, m_JournalEntries[i].Width, m_JournalEntries[i].Height + y), 0, -y);
                         p.Y += m_JournalEntries[i].Height + y;
                     }
                     else
@@ -100,7 +98,7 @@ namespace UltimaXNA.Ultima.World.Gumps
                 else
                 {
                     int y = maxheight - height;
-                    m_JournalEntries[i].Draw(spriteBatch, new Rectangle(p.X, Y + 35 + m_EntriesHeight - y, m_JournalEntries[i].Width, y), 0, 0);
+                    m_JournalEntries[i].Draw(spriteBatch, new Rectangle(p.X, position.Y + 35 + m_EntriesHeight - y, m_JournalEntries[i].Width, y), 0, 0);
                     // can't fit any more entries - so we break!
                     break;
                 }
@@ -136,11 +134,18 @@ namespace UltimaXNA.Ultima.World.Gumps
 
         private void AddJournalEntry(string text)
         {
+            bool maxScroll = (m_ScrollBar.Value == m_ScrollBar.MaxValue);
+
             while (m_JournalEntries.Count > 99)
             {
                 m_JournalEntries.RemoveAt(0);
             }
-            m_JournalEntries.Add(new RenderedText(string.Format("<left color=50422D><span width='14'/>{0}</left><br/>", text), true, 200));
+            m_JournalEntries.Add(new RenderedText(string.Format("<left color=50422D><span width='14'/>{0}</left><br/>", text), 200));
+            m_ScrollBar.MaxValue += m_JournalEntries[m_JournalEntries.Count - 1].Height;
+            if (maxScroll)
+            {
+                m_ScrollBar.Value = m_ScrollBar.MaxValue;
+            }
         }
 
         private void InitializeJournalEntries()

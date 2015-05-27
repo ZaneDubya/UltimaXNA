@@ -92,9 +92,8 @@ namespace UltimaXNA.Ultima.Login.Gumps
         public CreateCharAppearanceGump()
             : base(0, 0)
         {
-            m_renderFullScreen = false;
             // backdrop
-            AddControl(new GumpPicTiled(this, 0, 0, 0, Settings.Game.Resolution.Width, Settings.Game.Resolution.Height, 9274));
+            AddControl(new GumpPicTiled(this, 0, 0, 0, 800, 600, 9274));
             AddControl(new GumpPic(this, 0, 0, 0, 5500, 0));
             // character name 
             AddControl(new GumpPic(this, 0, 280, 53, 1801, 0));
@@ -153,6 +152,8 @@ namespace UltimaXNA.Ultima.Login.Gumps
             // quit button
             AddControl(new Button(this, 0, 554, 2, 5513, 5515, ButtonTypes.Activate, 0, (int)Buttons.QuitButton));
             ((Button)LastControl).GumpOverID = 5514;
+
+            IsUncloseableWithRMB = true;
         }
 
         public override void Update(double totalMS, double frameMS)

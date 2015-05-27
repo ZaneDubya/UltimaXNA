@@ -82,22 +82,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             Position = new Point(x, y);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch)
-        {
-            drawLargePaperdoll_Noninteractable(spriteBatch);
-        }
-
-        int equipmentSlot(EquipSlots slotID)
-        {
-            return m_equipmentSlots[(int)slotID];
-        }
-
-        int hueSlot(EquipSlots slotID)
-        {
-            return m_hueSlots[(int)slotID];
-        }
-
-        void drawLargePaperdoll_Noninteractable(SpriteBatchUI spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
             EquipSlots[] slotsToDraw = new EquipSlots[6] { EquipSlots.Body, EquipSlots.Footwear, EquipSlots.Legging, EquipSlots.Shirt, EquipSlots.Hair, EquipSlots.FacialHair };
             for (int i = 0; i < slotsToDraw.Length; i++)
@@ -146,8 +131,18 @@ namespace UltimaXNA.Ultima.UI.Controls
                 }
 
                 if (bodyID != 0)
-                    spriteBatch.Draw2D(IO.GumpData.GetGumpXNA(bodyID), Position, hue, hueGreyPixelsOnly, false);
+                    spriteBatch.Draw2D(IO.GumpData.GetGumpXNA(bodyID), new Vector3(position.X, position.Y, 0), Utility.GetHueVector(hue, hueGreyPixelsOnly, false));
             }
+        }
+
+        int equipmentSlot(EquipSlots slotID)
+        {
+            return m_equipmentSlots[(int)slotID];
+        }
+
+        int hueSlot(EquipSlots slotID)
+        {
+            return m_hueSlots[(int)slotID];
         }
     }
 }

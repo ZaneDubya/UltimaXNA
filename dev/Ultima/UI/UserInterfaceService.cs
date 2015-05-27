@@ -10,6 +10,7 @@
 #region Usings
 using Microsoft.Xna.Framework;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
@@ -33,6 +34,21 @@ namespace UltimaXNA.Ultima.UI
 
             m_Controls = new List<AControl>();
             m_DisposedControls = new List<AControl>();
+        }
+
+        public void Dispose()
+        {
+            Reset();
+        }
+
+        /// <summary>
+        /// Disposes of all controls.
+        /// </summary>
+        public void Reset()
+        {
+            foreach (AControl c in m_Controls)
+                c.Dispose();
+            m_Controls.Clear();
         }
 
         SpriteBatchUI m_SpriteBatch;
@@ -118,12 +134,11 @@ namespace UltimaXNA.Ultima.UI
                     return null;
                 if (m_keyboardFocusControl == null)
                 {
-                    for (int i = m_Controls.Count - 1; i >= 0; i--)
+                    foreach(AControl c in m_Controls)
                     {
-                        AControl c = m_Controls[i];
-                        if (!c.IsDisposed && c.Visible && c.Enabled && c.HandlesKeyboardFocus)
+                        if (!c.IsDisposed && c.IsVisible && c.IsEnabled && c.HandlesKeyboardFocus)
                         {
-                            m_keyboardFocusControl = c.KeyboardFocusControl;
+                            m_keyboardFocusControl = c.FindControlThatAcceptsKeyboardFocus();
                             if (m_keyboardFocusControl != null)
                                 break;
                         }
@@ -155,66 +170,30 @@ namespace UltimaXNA.Ultima.UI
         /// <param name="control">The control to be opened or toggled.</param>
         /// <param name="x">C coordinate where new control should be placed.</param>
         /// <param name="y">Y coordinate where new control should be placed.</param>
-        /// <param name="addType">By default, always adds the control.
-        /// If OnlyAllowOne, then any controls of the same type that are active are disposed of, and the passed control is added.
-        /// If Toggle, then only adds the control is another control of the same type is not active; else, disposes of all controls of the passed type, including the passed control.</param>
         /// <returns>If the control was added to the list of active controls, then returns the added control. If the control was not added, returns null.</returns>
-        public AControl AddControl(AControl control, int x, int y, AddControlType addType = AddControlType.Always)
+        public AControl AddControl(AControl control, int x, int y)
         {
-            bool addControl = false;
+            control.Position = new Point(x, y);
+            m_Controls.Insert(0, control);
+            return control;
+        }
 
-            if (addType == AddControlType.Always)
+        public void RemoveControl<T>(Serial? serial = null) where T : AControl
+        {
+            foreach (AControl c in m_Controls)
             {
-                addControl = true;
-            }
-            else if (addType == AddControlType.Toggle)
-            {
-                bool alreadyActive = false;
-                foreach (AControl c in m_Controls)
+                if (c.GetType() == typeof(T))
                 {
-                    if (c.Equals(control) && control.Equals(c))
+                    if (!serial.HasValue || (c.Serial == serial))
                     {
-                        alreadyActive = true;
+                    if (!c.IsDisposed)
                         c.Dispose();
                     }
                 }
-
-                addControl = !alreadyActive;
-            }
-            else if (addType == AddControlType.OnlyAllowOne)
-            {
-                foreach (AControl c in m_Controls)
-                {
-                    if (c.Equals(control) && control.Equals(c))
-                    {
-                        c.Dispose();
-                    }
-                }
-
-                addControl = true;
-            }
-
-            if (addControl)
-            {
-                control.Position = new Point(x, y);
-                m_Controls.Add(control);
-                return control;
-            }
-            else
-            {
-                control.Dispose();
-                return null;
             }
         }
 
-        public enum AddControlType
-        {
-            Always = 0,
-            OnlyAllowOne = 1,
-            Toggle = 2
-        }
-
-        public AControl GetControl(int serial)
+        public AControl GetControl(Serial serial)
         {
             foreach (AControl c in m_Controls)
             {
@@ -224,29 +203,28 @@ namespace UltimaXNA.Ultima.UI
             return null;
         }
 
-        public T GetControl<T>(int serial) where T : AControl
+        public T GetControl<T>(Serial? serial = null) where T : AControl
         {
             foreach (AControl c in m_Controls)
             {
-                if (c.Serial == serial)
-                    if (c.GetType() == typeof(T))
-                        return (T)c;
+                if (c.GetType() == typeof(T) && (!serial.HasValue || c.Serial == serial))
+                    return (T)c;
             }
             return null;
         }
 
         public void Update(double totalMS, double frameMS)
         {
+            ReorderGumps();
+
             foreach (AControl c in m_Controls)
             {
                 if (!c.IsInitialized)
-                    c.ControlInitialize();
+                    c.Initialize();
                 c.Update(totalMS, frameMS);
-            }
-
-            foreach (AControl c in m_Controls)
                 if (c.IsDisposed)
                     m_DisposedControls.Add(c);
+            }
 
             foreach (AControl c in m_DisposedControls)
                 m_Controls.Remove(c);
@@ -261,27 +239,18 @@ namespace UltimaXNA.Ultima.UI
 
         public void Draw(double frameTime)
         {
-            m_SpriteBatch.Prepare();
+            ReorderGumps();
 
-            foreach (AControl c in m_Controls)
+            foreach (AControl c in m_Controls.Reverse<AControl>())
             {
                 if (c.IsInitialized)
-                    c.Draw(m_SpriteBatch);
+                    c.Draw(m_SpriteBatch, c.Position);
             }
 
             if (Cursor != null)
                 Cursor.Draw(m_SpriteBatch, m_Input.MousePosition);
 
-            m_SpriteBatch.Flush();
-        }
-
-        /// <summary>
-        /// Disposes of all controls.
-        /// </summary>
-        public void Reset()
-        {
-            foreach (AControl c in m_Controls)
-                c.Dispose();
+            m_SpriteBatch.Flush(false);
         }
 
         private void InternalHandleKeyboardInput()
@@ -300,6 +269,36 @@ namespace UltimaXNA.Ultima.UI
                         if (e.EventType == KeyboardEventType.Press)
                             m_keyboardFocusControl.KeyboardInput(e);
                     }
+                }
+            }
+        }
+
+        private void ReorderGumps()
+        {
+            List<Gump> gumps = new List<Gump>();
+            List<AControl> controls = m_Controls;
+
+            foreach (AControl control in controls)
+            {
+                Gump gump = control as Gump;
+                if (gump != null)
+                {
+                    if (gump.Layer != GumpLayer.Default)
+                        gumps.Add(gump);
+                }
+            }
+
+            foreach (Gump gump in gumps)
+            {
+                if (gump.Layer == GumpLayer.Under)
+                {
+                    controls.Remove(gump);
+                    controls.Insert(controls.Count, gump);
+                }
+                else if (gump.Layer == GumpLayer.Over)
+                {
+                    controls.Remove(gump);
+                    controls.Insert(0, gump);
                 }
             }
         }
@@ -398,7 +397,7 @@ namespace UltimaXNA.Ultima.UI
             if (m_Controls.Contains(c))
             {
                 m_Controls.Remove(c);
-                m_Controls.Add(c);
+                m_Controls.Insert(0, c);
             }
         }
 
@@ -419,19 +418,14 @@ namespace UltimaXNA.Ultima.UI
 
             AControl[] mouseOverControls = null;
             // Get the list of controls under the mouse cursor
-            for (int i = possibleControls.Count - 1; i >= 0; i--)
+            foreach (AControl c in possibleControls)
             {
-                AControl[] controls = possibleControls[i].HitTest(m_Input.MousePosition, false);
+                AControl[] controls = c.HitTest(m_Input.MousePosition, false);
                 if (controls != null)
                 {
                     mouseOverControls = controls;
                     break;
                 }
-            }
-
-            foreach (AControl c in possibleControls)
-            {
-
             }
 
             if (mouseOverControls == null)

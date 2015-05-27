@@ -8,6 +8,8 @@
  *
  ***************************************************************************/
 #region usings
+
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using System;
 using System.ComponentModel;
@@ -400,6 +402,25 @@ namespace UltimaXNA
             else
                 return Color.Black;
         }
+
+        private static Dictionary<string, Color> colorTable = new Dictionary<string, Color>()
+        {
+            {"white", Color.White},
+            {"red", Color.Red},
+            {"blue", Color.Blue},
+            {"green", Color.Green},
+            {"orange", Color.Orange},
+            {"yellow", Color.Yellow}
+            //add more colors here
+        };
+
+        public static Color? ColorFromString(string color)
+        {
+            Color output;
+            if (!colorTable.TryGetValue(color.ToLower(), out output)) return null;
+
+            return output;
+        }
         #endregion
 
         // Version string.
@@ -524,35 +545,33 @@ namespace UltimaXNA
                 return false;
         }
 
-        public static Vector2 GetHueVector(int hue)
+        public static Vector3 GetHueVector(int hue)
         {
             return GetHueVector(hue, false, false);
         }
 
-        public static Vector2 GetHueVector(int hue, bool partial, bool transparent)
+        public static Vector3 GetHueVector(int hue, bool partial, bool transparent)
         {
-            if (transparent)
-                hue |= 0x4000;
+            if ((hue & 0x4000) != 0)
+                transparent = true;
+            if ((hue & 0x8000) != 0)
+                partial = true;
 
             if (hue == 0)
-                return new Vector2(0);
+                return new Vector3(0);
 
-            int hueType = 0;
+            return new Vector3(hue & 0x0FFF, partial ? 2 : 1, transparent ? 0.5f : 0);
+        }
 
-            if ((hue & 0x4000) != 0)
-            {
-                // transparant
-                hueType |= 4;
-            }
-            else if ((hue & 0x8000) != 0 || partial) // partial hue
-            {
-                hueType |= 2;
-            }
-            else
-            {
-                hueType |= 1;
-            }
-            return new Vector2(hue & 0x0FFF, hueType);
+        public static string GetColorFromUshortColor(ushort color)
+        {
+            const int multiplier = 0xFF / 0x1F;
+            uint uintColor = (uint)(
+                ((((color >> 10) & 0x1F) * multiplier)) |
+                ((((color >> 5) & 0x1F) * multiplier) << 8) |
+                (((color & 0x1F) * multiplier) << 16)
+                );
+            return string.Format("{0:X6}", uintColor);
         }
 
         public static int DistanceBetweenTwoPoints(Point p1, Point p2)

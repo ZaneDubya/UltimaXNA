@@ -127,7 +127,6 @@ namespace UltimaXNA.Ultima.Entities
         {
             Serial = serial;
             Map = map;
-
             m_Position = new Position3D(OnTileChanged);
         }
 

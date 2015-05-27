@@ -51,13 +51,13 @@ namespace UltimaXNA.Ultima.UI.Controls
             Size = new Point(width, height);
             Hue = hue;
             Text = lines[textIndex];
-            m_Texture = new RenderedText(Text, true, width);
+            m_Texture = new RenderedText(Text, width);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
-            m_Texture.Draw(spriteBatch, new Rectangle(X, Y, Size.X, Size.Y), 0, 0);
-            base.Draw(spriteBatch);
+            m_Texture.Draw(spriteBatch, new Rectangle(position.X, position.Y, Width, Height), 0, 0);
+            base.Draw(spriteBatch, position);
         }
     }
 }

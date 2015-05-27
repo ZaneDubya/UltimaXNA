@@ -103,7 +103,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             ButtonType = buttonType;
             ButtonParameter = param;
             ButtonID = buttonID;
-            m_Texture = new RenderedText("", true, 100);
+            m_Texture = new RenderedText(string.Empty, 100);
         }
 
         public override void Update(double totalMS, double frameMS)
@@ -122,23 +122,23 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
             Texture2D texture = getTextureFromMouseState();
 
             if (Caption != string.Empty)
                 m_Texture.Text = Caption;
 
-            spriteBatch.Draw2D(texture, new Rectangle(X, Y, Width, Height), 0, false, false);
+            spriteBatch.Draw2D(texture, new Rectangle(position.X, position.Y, Width, Height), Vector3.Zero);
 
             if (Caption != string.Empty)
             {
                 int yoffset = MouseDownOnThis ? 1 : 0;
-                m_Texture.Draw(spriteBatch, 
-                    new Point(X + (Width - m_Texture.Width) / 2,
-                        Y + yoffset + (Height - m_Texture.Height) / 2));
+                m_Texture.Draw(spriteBatch,
+                    new Point(position.X + (Width - m_Texture.Width) / 2,
+                        position.Y + yoffset + (Height - m_Texture.Height) / 2));
             }
-            base.Draw(spriteBatch);
+            base.Draw(spriteBatch, position);
         }
 
         private Texture2D getTextureFromMouseState()
@@ -164,17 +164,19 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         bool m_clicked = false;
 
-        protected override void mouseDown(int x, int y, MouseButton button)
+        protected override void OnMouseDown(int x, int y, MouseButton button)
         {
-            m_clicked = true;
+            if (button == MouseButton.Left)
+                m_clicked = true;
         }
 
-        protected override void mouseUp(int x, int y, MouseButton button)
+        protected override void OnMouseUp(int x, int y, MouseButton button)
         {
-            m_clicked = false;
+            if (button == MouseButton.Left)
+                m_clicked = false;
         }
 
-        protected override void mouseClick(int x, int y, MouseButton button)
+        protected override void OnMouseClick(int x, int y, MouseButton button)
         {
             if (button == MouseButton.Left)
             {

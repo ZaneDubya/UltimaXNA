@@ -26,23 +26,36 @@ namespace UltimaXNA.Ultima.Network.Client
         public GumpMenuSelectPacket(int id, int gumpId, int buttonId, int[] switchIds, Tuple<short, string>[] textEntries)
             : base(0xB1, "Gump Menu Select")
         {
-            Stream.Write(id);
-            Stream.Write(gumpId);
-            Stream.Write(buttonId);
-            Stream.Write(switchIds.Length);
+            Stream.Write((uint)id);
+            Stream.Write((uint)gumpId);
+            Stream.Write((uint)buttonId);
 
-            for (int i = 0; i < switchIds.Length; i++)
-                Stream.Write(switchIds[i]);
-
-            Stream.Write(textEntries.Length);
-
-            for (int i = 0; i < textEntries.Length; i++)
+            if (switchIds == null)
             {
-                int length = textEntries[i].Item2.Length * 2;
+                Stream.Write((uint)0);
+            }
+            else
+            {
+                Stream.Write((uint)switchIds.Length);
+                for (int i = 0; i < switchIds.Length; i++)
+                    Stream.Write((uint)switchIds[i]);
+            }
 
-                Stream.Write(textEntries[i].Item1);
-                Stream.Write(length);
-                Stream.WriteBigUniFixed(textEntries[i].Item2, length);
+            if (textEntries == null)
+            {
+                Stream.Write((uint)0);
+            }
+            else
+            {
+                Stream.Write((uint)textEntries.Length);
+                for (int i = 0; i < textEntries.Length; i++)
+                {
+                    int length = textEntries[i].Item2.Length * 2;
+
+                    Stream.Write((ushort)textEntries[i].Item1);
+                    Stream.Write((ushort)length);
+                    Stream.WriteBigUniFixed(textEntries[i].Item2, textEntries[i].Item2.Length);
+                }
             }
         }
     }

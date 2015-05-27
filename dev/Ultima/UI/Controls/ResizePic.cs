@@ -18,7 +18,6 @@ namespace UltimaXNA.Ultima.UI.Controls
 {
     public class ResizePic : AControl
     {
-        public bool CloseOnRightClick = false;
         Texture2D[] m_bgGumps = null;
         int GumpID = 0;
 
@@ -26,7 +25,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             : base(owner, page)
         {
             m_bgGumps = new Texture2D[9];
-            HandlesMouseInput = true;
+            MakeThisADragger();
         }
 
         public ResizePic(AControl owner, int page, string[] arguements)
@@ -55,7 +54,6 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         void buildGumpling(int x, int y, int gumpID, int width, int height)
         {
-            MakeDragger(m_owner);
             Position = new Point(x, y);
             Size = new Point(width, height);
             GumpID = gumpID;
@@ -74,35 +72,26 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
             int centerWidth = Width - m_bgGumps[0].Width - m_bgGumps[2].Width;
             int centerHeight = Height - m_bgGumps[0].Height - m_bgGumps[2].Height;
-            int line2Y = Y + m_bgGumps[0].Height;
-            int line3Y = Y + Height - m_bgGumps[6].Height;
+            int line2Y = position.Y + m_bgGumps[0].Height;
+            int line3Y = position.Y + Height - m_bgGumps[6].Height;
 
-            spriteBatch.Draw2D(m_bgGumps[0], new Point(X, Y), 0, false, false);
-            spriteBatch.Draw2DTiled(m_bgGumps[1], new Rectangle(X + m_bgGumps[0].Width, Y, centerWidth, m_bgGumps[0].Height), 0, false, false);
-            spriteBatch.Draw2D(m_bgGumps[2], new Point(X + Width - m_bgGumps[2].Width, Y), 0, false, false);
+            spriteBatch.Draw2D(m_bgGumps[0], new Vector3(position.X, position.Y, 0), Vector3.Zero);
+            spriteBatch.Draw2DTiled(m_bgGumps[1], new Rectangle(position.X + m_bgGumps[0].Width, position.Y, centerWidth, m_bgGumps[0].Height), Vector3.Zero);
+            spriteBatch.Draw2D(m_bgGumps[2], new Vector3(position.X + Width - m_bgGumps[2].Width, position.Y, 0), Vector3.Zero);
 
-            spriteBatch.Draw2DTiled(m_bgGumps[3], new Rectangle(X, line2Y, m_bgGumps[0].Width, centerHeight), 0, false, false);
-            spriteBatch.Draw2DTiled(m_bgGumps[4], new Rectangle(X + m_bgGumps[0].Width, line2Y, centerWidth, centerHeight), 0, false, false);
-            spriteBatch.Draw2DTiled(m_bgGumps[5], new Rectangle(X + Width - m_bgGumps[2].Width, line2Y, m_bgGumps[2].Width, centerHeight), 0, false, false);
+            spriteBatch.Draw2DTiled(m_bgGumps[3], new Rectangle(position.X, line2Y, m_bgGumps[0].Width, centerHeight), Vector3.Zero);
+            spriteBatch.Draw2DTiled(m_bgGumps[4], new Rectangle(position.X + m_bgGumps[0].Width, line2Y, centerWidth, centerHeight), Vector3.Zero);
+            spriteBatch.Draw2DTiled(m_bgGumps[5], new Rectangle(position.X + Width - m_bgGumps[2].Width, line2Y, m_bgGumps[2].Width, centerHeight), Vector3.Zero);
 
-            spriteBatch.Draw2D(m_bgGumps[6], new Point(X, line3Y), 0, false, false);
-            spriteBatch.Draw2DTiled(m_bgGumps[7], new Rectangle(X + m_bgGumps[0].Width, line3Y, centerWidth, m_bgGumps[6].Height), 0, false, false);
-            spriteBatch.Draw2D(m_bgGumps[8], new Point(X + Width - m_bgGumps[2].Width, line3Y), 0, false, false);
+            spriteBatch.Draw2D(m_bgGumps[6], new Vector3(position.X, line3Y, 0), Vector3.Zero);
+            spriteBatch.Draw2DTiled(m_bgGumps[7], new Rectangle(position.X + m_bgGumps[0].Width, line3Y, centerWidth, m_bgGumps[6].Height), Vector3.Zero);
+            spriteBatch.Draw2D(m_bgGumps[8], new Vector3(position.X + Width - m_bgGumps[2].Width, line3Y, 0), Vector3.Zero);
 
-            base.Draw(spriteBatch);
-        }
-
-        protected override void mouseClick(int x, int y, MouseButton button)
-        {
-            if (button == MouseButton.Right)
-            {
-                if (CloseOnRightClick)
-                    m_owner.Dispose();
-            }
+            base.Draw(spriteBatch, position);
         }
     }
 }

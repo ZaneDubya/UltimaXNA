@@ -15,7 +15,7 @@ using UltimaXNA.Ultima.Entities.Items;
 
 namespace UltimaXNA.Ultima.World.Maps
 {
-    class MapBlock
+    public class MapBlock
     {
         public MapTile[] Tiles;
 

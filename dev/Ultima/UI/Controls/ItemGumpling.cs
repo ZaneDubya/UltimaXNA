@@ -73,15 +73,15 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
             if (m_texture == null)
             {
                 m_texture = IO.ArtData.GetStaticTexture(m_item.DisplayItemID);
                 Size = new Point(m_texture.Width, m_texture.Height);
             }
-            spriteBatch.Draw2D(m_texture, Position, m_item.Hue, false, false);
-            base.Draw(spriteBatch);
+            spriteBatch.Draw2D(m_texture, new Vector3(position.X, position.Y, 0), Utility.GetHueVector(m_item.Hue));
+            base.Draw(spriteBatch, position);
         }
 
         protected override bool InternalHitTest(int x, int y)
@@ -115,7 +115,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        protected override void mouseDown(int x, int y, MouseButton button)
+        protected override void OnMouseDown(int x, int y, MouseButton button)
         {
             // if click, we wait for a moment before picking it up. This allows a single click.
             clickedCanDrag = true;
@@ -123,7 +123,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             m_ClickPoint = new Point(x, y);
         }
 
-        protected override void mouseOver(int x, int y)
+        protected override void OnMouseOver(int x, int y)
         {
             // if we have not yet picked up the item, AND we've moved more than 3 pixels total away from the original item, pick it up!
             if (clickedCanDrag && (Math.Abs(m_ClickPoint.X - x) + Math.Abs(m_ClickPoint.Y - y) > 3))
@@ -133,7 +133,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        protected override void mouseClick(int x, int y, MouseButton button)
+        protected override void OnMouseClick(int x, int y, MouseButton button)
         {
             if (clickedCanDrag)
             {
@@ -143,7 +143,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        protected override void mouseDoubleClick(int x, int y, MouseButton button)
+        protected override void OnMouseDoubleClick(int x, int y, MouseButton button)
         {
             m_World.Interaction.DoubleClick(m_item);
             sendClickIfNoDoubleClick = false;

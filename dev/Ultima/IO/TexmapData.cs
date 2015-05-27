@@ -51,6 +51,11 @@ namespace UltimaXNA.Ultima.IO
             BinaryFileReader reader = m_Index.Seek(index, out length, out extra, out is_patched);
             if (reader == null)
                 return null;
+            if (reader.Stream.Length == 0)
+            {
+                UltimaXNA.Core.Diagnostics.Tracing.Tracer.Critical("Empty texmap texture with index {0}!", index);
+                return null;
+            }
 
             int metrics_dataread_start = (int)reader.Position;
 

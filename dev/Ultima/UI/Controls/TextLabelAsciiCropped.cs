@@ -49,12 +49,12 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
             if (m_texture == null)
                 m_texture = ASCIIText.GetTextTexture(Text, FontID, Area.Width);
-            spriteBatch.Draw2D(m_texture, Position, Hue, true, false);
-            base.Draw(spriteBatch);
+            spriteBatch.Draw2D(m_texture, new Vector3(position.X, position.Y, 0), Utility.GetHueVector(Hue, true, false));
+            base.Draw(spriteBatch, position);
         }
     }
 }

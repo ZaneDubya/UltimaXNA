@@ -37,7 +37,12 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        Texture2D m_backgroundTexture;
+        public int Hue
+        {
+            get;
+            set;
+        }
+
         bool m_background = false;
         public bool Background
         {
@@ -63,9 +68,9 @@ namespace UltimaXNA.Ultima.UI.Controls
                 if (value != base.Width)
                 {
                     base.Width = value;
-                    if (m_Texture != null)
+                    if (m_RenderedText != null)
                     {
-                        m_Texture.MaxWidth = ContentWidth;
+                        m_RenderedText.MaxWidth = ContentWidth;
                         m_textChanged = true;
                     }
                 }
@@ -95,7 +100,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        RenderedText m_Texture;
+        RenderedText m_RenderedText;
 
         public HtmlGump(AControl owner, int page)
             : base(owner, page)
@@ -115,7 +120,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             background = Int32.Parse(arguements[6]);
             scrollbar = Int32.Parse(arguements[7]);
 
-            buildGumpling(x, y, width, height, background, scrollbar, lines[textIndex]);
+            buildGumpling(x, y, width, height, background, scrollbar, "<font color=#000>" + lines[textIndex]);
         }
 
         public HtmlGump(AControl owner, int page, int x, int y, int width, int height, int background, int scrollbar, string text)
@@ -132,8 +137,13 @@ namespace UltimaXNA.Ultima.UI.Controls
             Text = text;
             m_background = (background == 1) ? true : false;
             m_hasScrollbar = (scrollbar == 1) ? true : false;
-            m_Texture = new RenderedText(text, true, Width);
-            Height = m_Texture.Height;
+            m_RenderedText = new RenderedText(text, Width - (HasScrollbar ? 15 : 0) - (Background ? 8 : 0));
+
+            if (Background)
+            {
+                this.AddControl(new ResizePic(this, 0, 0, 0, 0x2486, Width - (HasScrollbar ? 15 : 0), Height));
+                LastControl.HandlesMouseInput = false;
+            }
         }
 
         public override void Update(double totalMS, double frameMS)
@@ -143,44 +153,37 @@ namespace UltimaXNA.Ultima.UI.Controls
             if (m_textChanged)
             {
                 m_textChanged = false;
-                m_Texture.Text = Text;
+                m_RenderedText.Text = Text;
             }
 
-            HandlesMouseInput = (m_Texture.Regions.Count > 0);
+            HandlesMouseInput = (m_RenderedText.Regions.Count > 0);
 
             if (HasScrollbar)
             {
                 if (m_scrollbar == null)
+                {
                     AddControl(m_scrollbar = new ScrollBar(this, 0));
-                m_scrollbar.X = Width - 15;
-                m_scrollbar.Y = 0;
-                m_scrollbar.Width = 15;
-                m_scrollbar.Height = Height;
-                m_scrollbar.MinValue = 0;
-                m_scrollbar.MaxValue = m_Texture.Height - Height;
+                    m_scrollbar.Position = new Point(Width - 15, 0);
+                    m_scrollbar.Width = 15;
+                    m_scrollbar.Height = Height;
+                    m_scrollbar.MinValue = 0;
+                    m_scrollbar.MaxValue = m_RenderedText.Height - Height + (Background ? 8 : 0);
+                }
                 ScrollY = m_scrollbar.Value;
             }
 
             base.Update(totalMS, frameMS);
         }
 
-        public override void Draw(SpriteBatchUI spriteBatch)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
-            if (m_background)
-            {
-                if (m_backgroundTexture == null)
-                {
-                    m_backgroundTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
-                    m_backgroundTexture.SetData<Color>(new Color[] { Color.White });
-                }
-                spriteBatch.Draw2D(m_backgroundTexture, new Rectangle(OwnerX + Area.X, OwnerY + Area.Y, Width, Height), 0, false, false);
-            }
+            base.Draw(spriteBatch, position);
 
-            m_Texture.ActiveRegion = m_hrefOver;
-            m_Texture.ActiveRegion_UseDownHue = m_clicked;
-            m_Texture.Draw(spriteBatch, new Rectangle(X, Y, Size.X, Size.Y), ScrollX, ScrollY);
-            
-            base.Draw(spriteBatch);
+            m_RenderedText.ActiveRegion = m_hrefOver;
+            m_RenderedText.ActiveRegion_UseDownHue = m_clicked;
+            m_RenderedText.Draw(spriteBatch,
+                new Rectangle(position.X + (Background ? 4 : 0), position.Y + (Background ? 4 : 0),
+                    Width - (Background ? 8 : 0), Height - (Background ? 8 : 0)), ScrollX, ScrollY);
         }
 
         protected override bool InternalHitTest(int x, int y)
@@ -192,9 +195,9 @@ namespace UltimaXNA.Ultima.UI.Controls
                     return true;
             }
 
-            if (m_Texture.Regions.Count > 0)
+            if (m_RenderedText.Regions.Count > 0)
             {
-                Region region = m_Texture.Regions.RegionfromPoint(new Point(x + ScrollX, y + ScrollY));
+                Region region = m_RenderedText.Regions.RegionfromPoint(new Point(x + ScrollX, y + ScrollY));
                 if (region != null)
                 {
                     m_hrefOver = region.Index;
@@ -208,31 +211,31 @@ namespace UltimaXNA.Ultima.UI.Controls
         int m_hrefClicked = -1;
         int m_hrefOver = -1;
 
-        protected override void mouseDown(int x, int y, MouseButton button)
+        protected override void OnMouseDown(int x, int y, MouseButton button)
         {
             m_clicked = true;
             m_hrefClicked = m_hrefOver;
         }
 
-        protected override void mouseUp(int x, int y, MouseButton button)
+        protected override void OnMouseUp(int x, int y, MouseButton button)
         {
             m_clicked = false;
             m_hrefClicked = -1;
         }
 
-        protected override void mouseClick(int x, int y, MouseButton button)
+        protected override void OnMouseClick(int x, int y, MouseButton button)
         {
             if (m_hrefOver != -1 && m_hrefClicked == m_hrefOver)
             {
                 if (button == MouseButton.Left)
                 {
-                    if (m_Texture.Regions.Region(m_hrefOver).HREFAttributes != null)
-                        ActivateByHREF(m_Texture.Regions.Region(m_hrefOver).HREFAttributes.HREF);
+                    if (m_RenderedText.Regions.Region(m_hrefOver).HREFAttributes != null)
+                        ActivateByHREF(m_RenderedText.Regions.Region(m_hrefOver).HREFAttributes.HREF);
                 }
             }
         }
 
-        protected override void mouseOver(int x, int y)
+        protected override void OnMouseOver(int x, int y)
         {
 
         }

@@ -42,6 +42,12 @@ namespace UltimaXNA.Ultima.World.Controllers
             set; 
         }
 
+        public Point Position
+        {
+            get;
+            set;
+        }
+
         public MousePicking()
         {
             PickOnly = PickType.PickNothing;

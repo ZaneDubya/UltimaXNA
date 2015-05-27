@@ -45,7 +45,7 @@ namespace UltimaXNA.Ultima.EntityViews
             }
 
             // Update hue vector.
-            HueVector = Utility.GetHueVector(Entity.Hue);
+            HueVector = Utility.GetHueVector(Entity.Hue, Entity.ItemData.IsPartialHue, false);
 
             bool drawn = base.Draw(spriteBatch, drawPosition, mouseOverList, map);
 
