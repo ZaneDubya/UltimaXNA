@@ -464,7 +464,7 @@
     <Compile Include="Ultima\UI\Controls\GumpPicTiled.cs" />
     <Compile Include="Ultima\UI\Controls\HtmlGump.cs" />
     <Compile Include="Ultima\UI\Controls\ResizePic.cs" />
-    <Compile Include="Ultima\UI\Controls\Slider.cs" />
+    <Compile Include="Ultima\UI\Controls\HSliderBar.cs" />
     <Compile Include="Ultima\UI\Controls\TextEntry.cs" />
     <Compile Include="Ultima\UI\Controls\TextLabel.cs" />
     <Compile Include="Ultima\UI\Controls\TextLabelAscii.cs" />

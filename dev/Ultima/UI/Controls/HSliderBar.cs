@@ -7,21 +7,27 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using System;
-using System.Collections.Generic;
+#region usings
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
-using UltimaXNA.Ultima.UI;
+#endregion
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
-
-    class Slider : AControl
+    enum HSliderBarStyle
     {
-        Texture2D[] m_gumpBar = null;
-        Texture2D m_gumpSlider = null;
+        MetalWidgetRecessedBar,
+        BlueWidgetNoBar
+    }
+
+    class HSliderBar : AControl
+    {
+        Texture2D[] m_GumpSliderBackground = null;
+        Texture2D m_GumpWidget = null;
 
         // we use m_newValue to (a) get delta, (b) so Value only changes once per frame.
         int m_newValue = 0, m_value = 0;
@@ -35,49 +41,65 @@ namespace UltimaXNA.Ultima.UI.Controls
             {
                 m_value = m_newValue = value;
                 if (IsInitialized)
-                    m_sliderX = (int)((float)(BarWidth - m_gumpSlider.Width) * ((float)(Value - MinValue) / (float)(MaxValue - MinValue)));
+                    RecalculateSliderX();
             }
+        }
+
+        private void RecalculateSliderX()
+        {
+            m_sliderX = (int)((float)(BarWidth - m_GumpWidget.Width) * ((float)(Value - MinValue) / (float)(MaxValue - MinValue)));
         }
 
         public int MinValue;
         public int MaxValue;
         public int BarWidth;
 
-        int m_sliderX;
+        private int m_sliderX;
+        private HSliderBarStyle Style;
 
-        public Slider(AControl owner, int page)
+        public HSliderBar(AControl owner, int page)
             : base(owner, page)
         {
             HandlesMouseInput = true;
-            m_pairedSliders = new List<Slider>();
+            m_pairedSliders = new List<HSliderBar>();
         }
 
-        public Slider(AControl owner, int page, int x, int y, int width, int minValue, int maxValue, int value)
+        public HSliderBar(AControl owner, int page, int x, int y, int width, int minValue, int maxValue, int value, HSliderBarStyle style)
             : this(owner, page)
         {
-            buildGumpling(x, y, width, minValue, maxValue, value);
+            buildGumpling(x, y, width, minValue, maxValue, value, style);
         }
 
-        void buildGumpling(int x, int y, int width, int minValue, int maxValue, int value)
+        void buildGumpling(int x, int y, int width, int minValue, int maxValue, int value, HSliderBarStyle style)
         {
             Position = new Point(x, y);
             MinValue = minValue;
             MaxValue = maxValue;
             BarWidth = width;
-            Value = value; // must set this last
+            Value = value;
+            Style = style;
         }
 
         public override void Update(double totalMS, double frameMS)
         {
-            if (m_gumpSlider == null)
+            if (m_GumpWidget == null)
             {
-                m_gumpBar = new Texture2D[3];
-                m_gumpBar[0] = IO.GumpData.GetGumpXNA(213);
-                m_gumpBar[1] = IO.GumpData.GetGumpXNA(214);
-                m_gumpBar[2] = IO.GumpData.GetGumpXNA(215);
-                m_gumpSlider = IO.GumpData.GetGumpXNA(216);
-                Size = new Point(BarWidth, m_gumpSlider.Height);
-                m_sliderX = (int)((float)(BarWidth - m_gumpSlider.Width) * ((float)(Value - MinValue) / (float)(MaxValue - MinValue)));
+                switch (Style)
+                {
+                    default:
+                    case HSliderBarStyle.MetalWidgetRecessedBar:
+                        m_GumpSliderBackground = new Texture2D[3];
+                        m_GumpSliderBackground[0] = IO.GumpData.GetGumpXNA(213);
+                        m_GumpSliderBackground[1] = IO.GumpData.GetGumpXNA(214);
+                        m_GumpSliderBackground[2] = IO.GumpData.GetGumpXNA(215);
+                        m_GumpWidget = IO.GumpData.GetGumpXNA(216);
+                        break;
+                    case HSliderBarStyle.BlueWidgetNoBar:
+                        m_GumpWidget = IO.GumpData.GetGumpXNA(0x845);
+                        break;
+                }
+                Size = new Point(BarWidth, m_GumpWidget.Height);
+                RecalculateSliderX();
             }
             
             modifyPairedValues(m_newValue - Value);
@@ -89,16 +111,19 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
-            spriteBatch.Draw2D(m_gumpBar[0], new Vector3(position.X, position.Y, 0), Vector3.Zero);
-            spriteBatch.Draw2DTiled(m_gumpBar[1], new Rectangle(Area.X + m_gumpBar[0].Width, position.Y, BarWidth - m_gumpBar[2].Width - m_gumpBar[0].Width, m_gumpBar[1].Height), Vector3.Zero);
-            spriteBatch.Draw2D(m_gumpBar[2], new Vector3(position.X + BarWidth - m_gumpBar[2].Width, position.Y, 0), Vector3.Zero);
-            spriteBatch.Draw2D(m_gumpSlider, new Vector3(position.X + m_sliderX, position.Y, 0), Vector3.Zero);
+            if (m_GumpSliderBackground != null)
+            {
+                spriteBatch.Draw2D(m_GumpSliderBackground[0], new Vector3(position.X, position.Y, 0), Vector3.Zero);
+                spriteBatch.Draw2DTiled(m_GumpSliderBackground[1], new Rectangle(Area.X + m_GumpSliderBackground[0].Width, position.Y, BarWidth - m_GumpSliderBackground[2].Width - m_GumpSliderBackground[0].Width, m_GumpSliderBackground[1].Height), Vector3.Zero);
+                spriteBatch.Draw2D(m_GumpSliderBackground[2], new Vector3(position.X + BarWidth - m_GumpSliderBackground[2].Width, position.Y, 0), Vector3.Zero);
+            }
+            spriteBatch.Draw2D(m_GumpWidget, new Vector3(position.X + m_sliderX, position.Y, 0), Vector3.Zero);
             base.Draw(spriteBatch, position);
         }
 
         protected override bool InternalHitTest(int x, int y)
         {
-            if (new Rectangle(m_sliderX, 0, m_gumpSlider.Width, m_gumpSlider.Height).Contains(new Point(x, y)))
+            if (new Rectangle(m_sliderX, 0, m_GumpWidget.Width, m_GumpWidget.Height).Contains(new Point(x, y)))
                 return true;
             else
                 return false;
@@ -125,25 +150,28 @@ namespace UltimaXNA.Ultima.UI.Controls
                 m_sliderX = m_sliderX + (x - m_clickPosition.X);
                 if (m_sliderX < 0)
                     m_sliderX = 0;
-                if (m_sliderX > BarWidth - m_gumpSlider.Width)
-                    m_sliderX = BarWidth - m_gumpSlider.Width;
+                if (m_sliderX > BarWidth - m_GumpWidget.Width)
+                    m_sliderX = BarWidth - m_GumpWidget.Width;
                 m_clickPosition = new Point(x, y);
-                if (m_clickPosition.X < m_gumpSlider.Width / 2)
-                    m_clickPosition.X = m_gumpSlider.Width / 2;
-                if (m_clickPosition.X > BarWidth - m_gumpSlider.Width / 2)
-                    m_clickPosition.X = BarWidth - m_gumpSlider.Width / 2;
-                m_newValue = (int)(((float)m_sliderX / (float)(BarWidth - m_gumpSlider.Width)) * (float)((MaxValue - MinValue))) + MinValue;
+                if (m_clickPosition.X < m_GumpWidget.Width / 2)
+                    m_clickPosition.X = m_GumpWidget.Width / 2;
+                if (m_clickPosition.X > BarWidth - m_GumpWidget.Width / 2)
+                    m_clickPosition.X = BarWidth - m_GumpWidget.Width / 2;
+                m_newValue = (int)(((float)m_sliderX / (float)(BarWidth - m_GumpWidget.Width)) * (float)((MaxValue - MinValue))) + MinValue;
             }
         }
 
-        List<Slider> m_pairedSliders;
-        public void PairSlider(Slider s)
+        List<HSliderBar> m_pairedSliders;
+        public void PairSlider(HSliderBar s)
         {
             m_pairedSliders.Add(s);
         }
 
         void modifyPairedValues(int delta)
         {
+            if (m_pairedSliders.Count == 0)
+                return;
+
             bool updateSinceLastCycle = true;
             int d = (delta > 0) ? -1 : 1;
             int points = Math.Abs(delta);
