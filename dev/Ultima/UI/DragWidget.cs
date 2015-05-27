@@ -34,10 +34,10 @@ namespace UltimaXNA.Ultima.UI
             if (!m_DragTarget.IsMovable)
                 return;
 
-            x += m_DragTarget.X;
-            y += m_DragTarget.Y;
             if (button == MouseButton.Left && m_DragTarget.IsMovable)
             {
+                x += m_DragTarget.X;
+                y += m_DragTarget.Y;
                 ClipMouse(ref x, ref y);
                 m_IsMoving = true;
                 m_DragOriginX = x;

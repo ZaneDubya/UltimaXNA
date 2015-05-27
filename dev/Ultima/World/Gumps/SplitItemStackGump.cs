@@ -8,11 +8,6 @@
  *
  ***************************************************************************/
 #region usings
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-using UltimaXNA.Core.Graphics;
-using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Ultima.Entities.Items;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
@@ -36,6 +31,8 @@ namespace UltimaXNA.Ultima.World.Gumps
             Item = item;
 
             AddControl(new GumpPic(this, 0, 0, 0, 0x085c, 0));
+            AddControl(new Button(this, 1, 102, 38, 0x085d, 0x085e, ButtonTypes.Default, 0, 0));
+            ((Button)LastControl).GumpOverID = 0x085f;
         }
     }
 }

@@ -272,7 +272,7 @@ namespace UltimaXNA.Ultima.UI
         }
 
         UserInterfaceService m_UserInterface;
-        Point m_Position;
+        protected Point m_Position;
 
         public AControl(AControl owner, int page)
         {

@@ -754,8 +754,9 @@ namespace UltimaXNA.Ultima.World.Controllers
 
         private void ReceiveOpenPaperdoll(IRecvPacket packet)
         {
-            OpenPaperdollPacket opp = packet as OpenPaperdollPacket;
-            m_UserInterface.AddControl(new PaperDollGump(EntityManager.GetObject<Mobile>(opp.Serial, false)), 400, 100, UserInterfaceService.AddControlType.OnlyAllowOne);
+            OpenPaperdollPacket p = packet as OpenPaperdollPacket;
+            if (m_UserInterface.GetControl<JournalGump>(p.Serial) == null)
+                m_UserInterface.AddControl(new PaperDollGump(EntityManager.GetObject<Mobile>(p.Serial, false)), 400, 100);
         }
 
         private void ReceiveCompressedGump(IRecvPacket packet)

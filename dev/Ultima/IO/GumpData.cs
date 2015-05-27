@@ -38,6 +38,7 @@ namespace UltimaXNA.Ultima.IO
         {
             if (index < 0)
                 return null;
+
             if (m_cache[index] == null)
             {
                 int length, extra;

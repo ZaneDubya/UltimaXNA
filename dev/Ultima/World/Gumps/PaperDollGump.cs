@@ -144,7 +144,10 @@ namespace UltimaXNA.Ultima.World.Gumps
                 case Buttons.Quests:
                     break;
                 case Buttons.Skills:
-                    m_UserInterface.AddControl(new SkillsGump(), 80, 80, UserInterfaceService.AddControlType.Toggle);
+                    if (m_UserInterface.GetControl<SkillsGump>() == null)
+                        m_UserInterface.AddControl(new SkillsGump(), 80, 80);
+                    else
+                        m_UserInterface.RemoveControl<SkillsGump>();
                     break;
                 case Buttons.Guild:
                     break;
@@ -152,7 +155,10 @@ namespace UltimaXNA.Ultima.World.Gumps
                     m_World.Interaction.ToggleWarMode();
                     break;
                 case Buttons.Status:
-                    m_UserInterface.AddControl(new StatusGump(), 200, 400, UserInterfaceService.AddControlType.Toggle);
+                    if (m_UserInterface.GetControl<StatusGump>() == null)
+                        m_UserInterface.AddControl(new StatusGump(), 200, 400);
+                    else
+                        m_UserInterface.RemoveControl<StatusGump>();
                     break;
             }
         }
@@ -162,7 +168,7 @@ namespace UltimaXNA.Ultima.World.Gumps
             m_World.Disconnect();
         }
 
-        public override bool Equals(object obj)
+        /*public override bool Equals(object obj)
         {
             // base equality handles null and cannot cast to same type.
             if (!base.Equals(obj))
@@ -176,7 +182,7 @@ namespace UltimaXNA.Ultima.World.Gumps
             }
 
             return p.Parent.Serial == Parent.Serial;
-        }
+        }*/
 
         public override int GetHashCode()
         {
