@@ -12,7 +12,16 @@ namespace UltimaXNA.Ultima.Entities.Mobiles
 
         private static Dictionary<Serial, MobileSoundData> m_Data = new Dictionary<Serial,MobileSoundData>();
 
-        public static void DoFootstepSounds(Mobile mobile, double current, double frame)
+        public static void ResetFootstepSounds(Mobile mobile)
+        {
+            if (m_Data.ContainsKey(mobile.Serial))
+            {
+                m_Data[mobile.Serial].LastFootstep = 1.0f;
+                m_Data[mobile.Serial].LastFootstepWasRight = false;
+            }
+        }
+
+        public static void DoFootstepSounds(Mobile mobile, double frame)
         {
             MobileSoundData data;
             if (!m_Data.TryGetValue(mobile.Serial, out data))
@@ -21,7 +30,7 @@ namespace UltimaXNA.Ultima.Entities.Mobiles
                 m_Data.Add(mobile.Serial, data);
             }
 
-            bool play = (data.LastFootstep < 1d && data.LastFootstep + frame >= 1d);
+            bool play = (data.LastFootstep + frame >= 1d);
 
             if (play)
             {

@@ -194,7 +194,6 @@ namespace UltimaXNA.Ultima.Entities.Mobiles
             if (IsMoving)
             {
                 double diff = (frameMS / MovementSpeed.TimeToCompleteMove(m_entity, Facing));
-                MobileSounds.DoFootstepSounds(m_entity as Mobile, MoveSequence, diff);
 
                 MoveSequence += diff;
                 if (m_entity.IsClientEntity)

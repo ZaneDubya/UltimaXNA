@@ -108,10 +108,6 @@ namespace UltimaXNA.Ultima.EntityViews
 
             if (m_action != MobileAction.None)
             {
-                // advance the animation one step, based on gametime passed.
-                float animationStep = (float)((m_FrameCount * (m_FrameDelay + 1)) * 10);
-                float timeStep = ((float)frameMS / animationStep) / m_FrameCount;
-                
                 float msPerFrame = (float)((1000 * (m_FrameDelay + 1)) / (float)m_FrameCount);
                 // Mounted movement is 2x normal frame rate
                 if (Parent.IsMounted && ((m_action == MobileAction.Walk) || (m_action == MobileAction.Run)))
@@ -122,6 +118,10 @@ namespace UltimaXNA.Ultima.EntityViews
                     return;
 
                 m_animationFrame += frameAdvance;
+                if (m_action == MobileAction.Walk || m_action == MobileAction.Run)
+                    MobileSounds.DoFootstepSounds(Parent as Mobile, frameAdvance * 2f);
+                else
+                    MobileSounds.ResetFootstepSounds(Parent as Mobile);
 
                 // When animations reach their last frame, if we are queueing to stand, then
                 // hold the animation on the last frame.
