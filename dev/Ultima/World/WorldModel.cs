@@ -1,10 +1,11 @@
 ﻿using InterXLib.Patterns.MVC;
 using UltimaXNA.Core.Network;
+using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Entities;
 using UltimaXNA.Ultima.Login;
 using UltimaXNA.Ultima.UI;
-using UltimaXNA.Ultima.World.Gumps;
 using UltimaXNA.Ultima.World.Controllers;
+using UltimaXNA.Ultima.World.Gumps;
 using UltimaXNA.Ultima.World.Maps;
 
 namespace UltimaXNA.Ultima.World
@@ -200,6 +201,17 @@ namespace UltimaXNA.Ultima.World
 
         public int MapCount { get; set; }
 
-        public byte Season { get; set; }
+        private Seasons m_Season = Seasons.Summer;
+        public Seasons Season
+        {
+            get { return m_Season; }
+            set
+            {
+                if (m_Season != value)
+                {
+                    m_Season = value;
+                }
+            }
+        }
     }
 }
