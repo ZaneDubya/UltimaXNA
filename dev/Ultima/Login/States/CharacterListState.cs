@@ -99,6 +99,9 @@ namespace UltimaXNA.Ultima.Login.States
 
         public void OnLoginWithCharacter(int index)
         {
+            if (index < 0 || index >= Characters.List.Length)
+                return;
+
             m_CharListGump.ActivePage = 2;
             m_Login.Client.LoginWithCharacter(index);
         }
