@@ -8,6 +8,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
+    /// <summary>
+    /// A checkbox control.
+    /// </summary>
     class CheckBox : AControl
     {
         private Texture2D m_Inactive, m_Active;
@@ -37,16 +40,16 @@ namespace UltimaXNA.Ultima.UI.Controls
             initialState = Int32.Parse(arguements[5]) == 1;
             switchID = Int32.Parse(arguements[6]);
 
-            MemberBuildGumpling(x, y, inactiveID, activeID, initialState, switchID);
+            buildGumpling(x, y, inactiveID, activeID, initialState, switchID);
         }
 
         public CheckBox(AControl owner, int page, int x, int y, int inactiveID, int activeID, bool initialState, int switchID)
             : this(owner, page)
         {
-            MemberBuildGumpling(x, y, inactiveID, activeID, initialState, switchID);
+            buildGumpling(x, y, inactiveID, activeID, initialState, switchID);
         }
 
-        void MemberBuildGumpling(int x, int y, int inactiveID, int activeID, bool initialState, int switchID)
+        void buildGumpling(int x, int y, int inactiveID, int activeID, bool initialState, int switchID)
         {
             m_Inactive = IO.GumpData.GetGumpXNA(inactiveID);
             m_Active = IO.GumpData.GetGumpXNA(activeID);
