@@ -129,7 +129,7 @@ namespace UltimaXNA.Ultima.EntityViews
             AnimationFrame[] iFrames = IO.Animations.GetAnimation(bodyID, action, facing, hue);
             if (iFrames == null)
                 return null;
-            int iFrame = frameFromSequence(frame, iFrames.Length);
+            int iFrame = (int)frame; // frameFromSequence(frame, iFrames.Length);
             if (iFrames[iFrame].Texture == null)
                 return null;
             return iFrames[iFrame];
