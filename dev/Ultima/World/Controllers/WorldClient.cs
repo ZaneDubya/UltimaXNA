@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Diagnostics.Tracing;
@@ -29,6 +30,7 @@ namespace UltimaXNA.Ultima.World.Controllers
             private set;
         }
 
+        private Timer m_KeepAliveTimer;
         private INetworkClient m_Network;
         private UserInterfaceService m_UserInterface;
 
@@ -138,6 +140,8 @@ namespace UltimaXNA.Ultima.World.Controllers
 
         public void Dispose()
         {
+            StopKeepAlivePackets();
+
             for (int i = 0; i < m_RegisteredHandlers.Count; i++)
                 m_Network.Unregister(m_RegisteredHandlers[i].Item1, m_RegisteredHandlers[i].Item2);
             m_RegisteredHandlers.Clear();
@@ -167,6 +171,26 @@ namespace UltimaXNA.Ultima.World.Controllers
             //         00 00 FF 40 00 01 00 40 00 01 02 40 00 01 03 40
             //         00 01 04 40 00 01 05 40 00 01 06 40 00 01 07 40
             //         00 01 24 40 00 01 26 
+        }
+
+        public void StartKeepAlivePackets()
+        {
+            m_KeepAliveTimer = new System.Threading.Timer(
+                e => SendKeepAlivePacket(),
+                null,
+                TimeSpan.Zero,
+                TimeSpan.FromSeconds(4));
+        }
+
+        private void StopKeepAlivePackets()
+        {
+            if (m_KeepAliveTimer != null)
+                m_KeepAliveTimer.Dispose();
+        }
+
+        private void SendKeepAlivePacket()
+        {
+            m_Network.Send(new UOSEKeepAlivePacket());
         }
 
         /// <summary>
