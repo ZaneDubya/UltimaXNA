@@ -145,6 +145,7 @@ namespace UltimaXNA.Ultima.World
 
             Client.SendWorldLoginPackets();
             EngineVars.InWorld = true;
+            Client.StartKeepAlivePackets();
         }
 
         protected override void OnDispose()

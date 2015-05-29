@@ -14,14 +14,18 @@ using UltimaXNA.Core.Network.Packets;
 
 namespace UltimaXNA.Ultima.Network.Client
 {
-    public class ClientVersionPacket : SendPacket
+    /// <summary>
+    /// The legacy client sends this packet every four seconds. Not certain what use it has, but
+    /// it serves to keep the connection with the server alive.
+    /// </summary>
+    public class UOSEKeepAlivePacket : SendPacket
     {
-        public ClientVersionPacket(byte[] version)
-            : base(0xBD, "Client Version")
+        public UOSEKeepAlivePacket()
+            : base(0xBF, "UOSE Keep Alive")
         {
-            if (version.Length != 4)
-                Tracer.Critical("SeedPacket: Incorrect length of version.");
-            Stream.WriteAsciiNull(string.Format("{0}.{1}.{2}.{3}", version[0], version[1], version[2], version[3]));
+            byte value = (byte)Utility.RandomValue(0x20, 0x80);
+            Stream.Write((ushort)0x0024);
+            Stream.Write((byte)value);
         }
     }
 }
