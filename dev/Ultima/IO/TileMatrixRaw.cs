@@ -4,8 +4,6 @@
  *   begin                : May 1, 2002
  *   copyright            : (C) The RunUO Software Team
  *   email                : info@runuo.com
- *
- *   $Id: TileMatrix.cs 252 2007-09-14 07:59:32Z mark $
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -57,8 +55,6 @@ namespace UltimaXNA.Ultima.IO
             get;
             private set;
         }
-
-        private List<TileMatrix> m_FileShare = new List<TileMatrix>();
 
         public TileMatrixRaw(uint index, uint id)
         {
