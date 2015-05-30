@@ -242,6 +242,7 @@
     <Compile Include="Ultima\World\Controllers\PickType.cs" />
     <Compile Include="Ultima\World\EffectManager.cs" />
     <Compile Include="Ultima\World\Gumps\WorldViewGump.cs" />
+    <Compile Include="Ultima\World\Maps\SeasonalItemTranslator.cs" />
     <Compile Include="Ultima\World\Maps\TileSorter.cs" />
     <Compile Include="Ultima\EntityViews\GroundView.cs" />
     <Compile Include="Ultima\EntityViews\ItemView.cs" />
