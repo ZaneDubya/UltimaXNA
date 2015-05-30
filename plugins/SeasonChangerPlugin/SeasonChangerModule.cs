@@ -40,8 +40,13 @@ namespace SeasonChangerPlugin
                 foreach (AEntity e in block.Tiles[tile].Entities)
                 {
                     int[] translations;
-                    if (e is StaticItem && m_TranslationTable.TryGetValue((e as StaticItem).ItemID, out translations))
-                        (e as StaticItem).DisplayItemID = (season == Seasons.Spring) ? (e as StaticItem).ItemID : translations[(int)season - 1];
+                    StaticItem si = (e as StaticItem);
+                    if (si == null)
+                        continue;
+                    if (m_TranslationTable.TryGetValue(si.ItemID, out translations))
+                    {
+                        si.DisplayItemID = (season == Seasons.Spring) ? si.ItemID : translations[(int)season - 1];
+                    }
                 }
             }
         }
@@ -86,7 +91,7 @@ namespace SeasonChangerPlugin
             table.Add(3306, new int[] { 3306, 3391, 3391, 3391 }); // 3306,10645 ; sapling (brambles in fal/win/des)
             // 3319,10615 ; fallen log
             table.Add(3305, new int[] { 3305, 3392, 3392, 3392 }); // 3305,10395 ; sapling (brambles in fal/win/des)
-            // 3239,8144 ; rushes (despite these being common, I couldn't find any in the map.)
+            table.Add(3239, new int[] { 3204, 3144, 3239, 7068 }); // 3239,8144 ; rushes (in legacy, these are foxgloves in spring! I switched this to foxgloves in summer)
             table.Add(3375, new int[] { 3248, 1, 3248, 1 }); // 3375,8057 ; flowers (-> grasses -> nothing -> grasses -> nothing)
             table.Add(3373, new int[] { 3373, 3373, 3373, 1 }); // 3373,7858 ; flowers (not drawn in des)
             table.Add(3371, new int[] { 3371, 3371, 3371, 6933 }); // 3371,7634 ; flowers (pelvis in des)
@@ -599,6 +604,9 @@ namespace SeasonChangerPlugin
             // 3498,1 ; pear tree
             // 3479,1 ; fall leaves
             // 3298,1 ; walnut leaves
+
+            table.Add(3230, new int[] { 3230, 3230, 3230, 4482 }); // 4804,92 ; O'Hii tree (gravestone in des)
+
             return table;
         }
     }
