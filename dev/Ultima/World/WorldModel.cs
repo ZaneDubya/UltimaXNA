@@ -200,18 +200,5 @@ namespace UltimaXNA.Ultima.World
         }
 
         public int MapCount { get; set; }
-
-        private Seasons m_Season = Seasons.Summer;
-        public Seasons Season
-        {
-            get { return m_Season; }
-            set
-            {
-                if (m_Season != value)
-                {
-                    m_Season = value;
-                }
-            }
-        }
     }
 }

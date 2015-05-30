@@ -41,33 +41,10 @@ namespace UltimaXNA.Ultima.IO
             get { return m_EmptyStaticsBlock; }
         }
 
-        private BinaryReader m_IndexReader;
-        public BinaryReader IndexReader
-        {
-            get { return m_IndexReader; }
-            set { m_IndexReader = value; }
-        }
-
-        private FileStream m_IndexStream;
-        public FileStream IndexStream
-        {
-            get { return m_IndexStream; }
-            set { m_IndexStream = value; }
-        }
-
-        private FileStream m_MapStream;
-        public FileStream MapStream
-        {
-            get { return m_MapStream; }
-            set { m_MapStream = value; }
-        }
-
-        private FileStream m_Statics;
-        public FileStream Statics
-        {
-            get { return m_Statics; }
-            set { m_Statics = value; }
-        }
+        private readonly FileStream MapStream;
+        private readonly FileStream StaticIndexStream;
+        private readonly FileStream StaticDataStream;
+        private readonly BinaryReader StaticIndexReader;
 
         public uint BlockHeight
         {
@@ -85,26 +62,26 @@ namespace UltimaXNA.Ultima.IO
 
         public TileMatrixRaw(uint index, uint id)
         {
-            m_MapStream = FileManager.GetFile("map{0}.mul", index);
-            m_IndexStream = FileManager.GetFile("staidx{0}.mul", index);
-            m_Statics = FileManager.GetFile("statics{0}.mul", index);
+            MapStream = FileManager.GetFile("map{0}.mul", index);
+            StaticIndexStream = FileManager.GetFile("staidx{0}.mul", index);
+            StaticDataStream = FileManager.GetFile("statics{0}.mul", index);
 
-            if (m_MapStream == null)
+            if (MapStream == null)
             {
                 // the map we tried to load does not exist. Try alternate for felucca / trammel ?
                 if (index == 1)
                 {
                     index = 0;
-                    m_MapStream = FileManager.GetFile("map{0}.mul", index);
-                    m_IndexStream = FileManager.GetFile("staidx{0}.mul", index);
-                    m_Statics = FileManager.GetFile("statics{0}.mul", index);
+                    MapStream = FileManager.GetFile("map{0}.mul", index);
+                    StaticIndexStream = FileManager.GetFile("staidx{0}.mul", index);
+                    StaticDataStream = FileManager.GetFile("statics{0}.mul", index);
                 }
             }
 
-            m_IndexReader = new BinaryReader(m_IndexStream);
+            StaticIndexReader = new BinaryReader(StaticIndexStream);
 
             BlockHeight = m_MapBlockHeightList[index];
-            BlockWidth = (uint)m_MapStream.Length / (BlockHeight * m_SizeLandBlock);
+            BlockWidth = (uint)MapStream.Length / (BlockHeight * m_SizeLandBlock);
 
             m_EmptyStaticsBlock = new byte[0];
             m_InvalidLandBlock = new byte[m_SizeLandBlockData];
@@ -116,7 +93,7 @@ namespace UltimaXNA.Ultima.IO
 
         public byte[] GetLandBlock(uint x, uint y)
         {
-            if (m_MapStream == null)
+            if (MapStream == null)
             {
                 return m_InvalidLandBlock;
             }
@@ -143,7 +120,7 @@ namespace UltimaXNA.Ultima.IO
 
         public byte[] GetStaticBlock(uint x, uint y)
         {
-            if (x >= BlockWidth || y >= BlockHeight || m_Statics == null || m_IndexStream == null)
+            if (x >= BlockWidth || y >= BlockHeight || StaticDataStream == null || StaticIndexStream == null)
             {
                 return m_EmptyStaticsBlock;
             }
@@ -157,10 +134,10 @@ namespace UltimaXNA.Ultima.IO
         {
             try
             {
-                m_IndexReader.BaseStream.Seek(((x * BlockHeight) + y) * 12, SeekOrigin.Begin);
+                StaticIndexStream.Seek(((x * BlockHeight) + y) * 12, SeekOrigin.Begin);
 
-                int lookup = m_IndexReader.ReadInt32();
-                int length = m_IndexReader.ReadInt32();
+                int lookup = StaticIndexReader.ReadInt32();
+                int length = StaticIndexReader.ReadInt32();
 
                 if (lookup < 0 || length <= 0)
                 {
@@ -168,13 +145,13 @@ namespace UltimaXNA.Ultima.IO
                 }
                 else
                 {
-                    m_Statics.Seek(lookup, SeekOrigin.Begin);
+                    StaticDataStream.Seek(lookup, SeekOrigin.Begin);
 
                     byte[] staticTiles = new byte[length];
 
                     fixed (byte* pStaticTiles = staticTiles)
                     {
-                        NativeMethods.Read(m_Statics.SafeFileHandle, pStaticTiles, length);
+                        NativeMethods.Read(StaticDataStream.SafeFileHandle, pStaticTiles, length);
                     }
                     return staticTiles;
                 }
@@ -198,32 +175,32 @@ namespace UltimaXNA.Ultima.IO
 
             m_bufferedLandBlocks_Keys[index] = key;
 
-            m_MapStream.Seek(((x * BlockHeight) + y) * m_SizeLandBlock + 4, SeekOrigin.Begin);
-            int streamStart = (int)m_MapStream.Position;
+            MapStream.Seek(((x * BlockHeight) + y) * m_SizeLandBlock + 4, SeekOrigin.Begin);
+            int streamStart = (int)MapStream.Position;
             fixed (byte* pData = m_bufferedLandBlocks[index])
             {
-                NativeMethods.Read(m_MapStream.SafeFileHandle, pData, m_SizeLandBlockData);
+                NativeMethods.Read(MapStream.SafeFileHandle, pData, m_SizeLandBlockData);
             }
-            Metrics.ReportDataRead((int)m_MapStream.Position - streamStart);
+            Metrics.ReportDataRead((int)MapStream.Position - streamStart);
 
             return m_bufferedLandBlocks[index];
         }
 
         public void Dispose()
         {
-            if (m_IndexReader != null)
+            if (StaticIndexReader != null)
             {
-                m_IndexReader.Close();
+                StaticIndexReader.Close();
             }
 
-            if (m_MapStream != null)
+            if (MapStream != null)
             {
-                m_MapStream.Close();
+                MapStream.Close();
             }
 
-            if (m_Statics != null)
+            if (StaticDataStream != null)
             {
-                m_Statics.Close();
+                StaticDataStream.Close();
             }
         }
     }

@@ -19,12 +19,13 @@ namespace UltimaXNA.Ultima.World.Maps
     {
         public MapTile[] Tiles;
 
-        public readonly uint X, Y;
+        public readonly uint BlockX;
+        public readonly uint BlockY;
 
         public MapBlock(uint x, uint y)
         {
-            X = x;
-            Y = y;
+            BlockX = x;
+            BlockY = y;
 
             Tiles = new MapTile[64];
             for (int i = 0; i < 64; i++)
@@ -66,8 +67,8 @@ namespace UltimaXNA.Ultima.World.Maps
         public void Load(TileMatrixRaw tileData, Map map)
         {
             // get data from the tile Matrix
-            byte[] groundData = tileData.GetLandBlock(X, Y);
-            byte[] staticsData = tileData.GetStaticBlock(X, Y);
+            byte[] groundData = tileData.GetLandBlock(BlockX, BlockY);
+            byte[] staticsData = tileData.GetStaticBlock(BlockX, BlockY);
 
             // load the ground data into the tiles.
             int groundDataIndex = 0;
@@ -77,7 +78,7 @@ namespace UltimaXNA.Ultima.World.Maps
                 int iTileZ = (sbyte)groundData[groundDataIndex++];
 
                 Ground ground = new Ground(iTileID, map);
-                ground.Position.Set((int)X * 8 + i % 8, (int)Y * 8 + (i / 8), iTileZ);
+                ground.Position.Set((int)BlockX * 8 + i % 8, (int)BlockY * 8 + (i / 8), iTileZ);
             }
 
             // load the statics data into the tiles
@@ -92,7 +93,7 @@ namespace UltimaXNA.Ultima.World.Maps
                 int hue = staticsData[staticDataIndex++] + (staticsData[staticDataIndex++] * 256);
 
                 StaticItem item = new StaticItem(iTileID, hue, i, map);
-                item.Position.Set((int)X * 8 + iX, (int)Y * 8 + iY, iTileZ);
+                item.Position.Set((int)BlockX * 8 + iX, (int)BlockY * 8 + iY, iTileZ);
             }
         }
     }

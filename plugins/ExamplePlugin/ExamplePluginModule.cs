@@ -1,12 +1,10 @@
-﻿using UltimaXNA.Core.Diagnostics.Tracing;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Patterns;
 using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.World.Maps;
-using System.Collections.Generic;
-using UltimaXNA.Ultima.Entities;
-using UltimaXNA.Ultima.Entities.Items;
-using System.IO;
-using System.Linq;
 
 namespace ExamplePlugin
 {
@@ -14,61 +12,76 @@ namespace ExamplePlugin
     {
         public string Name
         {
-            get { return "UltimaXNA Example Plugin"; }
+            get { return "Map Parser Plugin"; }
         }
 
         public void Load()
         {
-            Tracer.Info("Map Parser loaded.");
+            // Tracer.Info("Map Parser loaded.");
+        }
+
+        public void Unload()
+        {
+            m_StaticCounts = null;
+        }
+
+        public void CreateSeasonalTileInfo()
+        {
+            m_StaticCounts = new Dictionary<int, int>();
 
             TileMatrixRaw tileData = new TileMatrixRaw(0, 0);
 
             Map map = new Map(0);
 
-            for (uint y = 0; y < 32; y++)
+            for (uint y = 0; y < tileData.BlockHeight; y++)
             {
                 Tracer.Info("Map Parser: row {0}.", y);
-                for (uint x = 0; x < 896; x++)
+                for (uint x = 0; x < tileData.BlockWidth; x++)
                 {
-                    MapBlock block = new MapBlock(x, y);
-                    block.Load(tileData, map);
-                    ParseMapBlock(block);
-                    block.Unload();
+                    ParseMapBlock(tileData, x, y);
                 }
             }
 
             var items = from pair in m_StaticCounts
-		        orderby pair.Value ascending
-		        select pair;
+                        orderby pair.Value descending
+                        select pair;
 
-            using (StreamWriter tileFile = new StreamWriter(@"\AllTiles.txt"))
+            using (FileStream file = new FileStream(@"AllTiles.txt", FileMode.Create))
             {
+                StreamWriter stream = new StreamWriter(file);
                 foreach (KeyValuePair<int, int> pair in items)
-                    tileFile.WriteLine(string.Format("{0},{1}", pair.Key, pair.Value));
+                {
+                    ItemData itemData = TileData.ItemData[pair.Key];
+                    if ((itemData.IsBackground || itemData.IsFoliage) && !itemData.IsWet && !itemData.IsSurface)
+                        stream.WriteLine(string.Format("{0},{1} ; {2}", pair.Key, pair.Value, itemData.Name));
+                }
+                stream.Flush();
+                file.Flush();
             }
         }
 
-        public void Unload()
+        private Dictionary<int, int> m_StaticCounts;
+
+        private void ParseMapBlock(TileMatrixRaw tileData, uint x, uint y)
         {
+            byte[] groundData = tileData.GetLandBlock(x, y);
+            byte[] staticsData = tileData.GetStaticBlock(x, y);
 
-        }
-
-        private Dictionary<int, int> m_StaticCounts = new Dictionary<int, int>();
-
-        private void ParseMapBlock(MapBlock block)
-        {
-            for (int t = 0; t < 64; t++)
+            // load the statics data
+            int countStatics = staticsData.Length / 7;
+            int staticDataIndex = 0;
+            for (int i = 0; i < countStatics; i++)
             {
-                foreach (AEntity e in block.Tiles[t].Entities)
-                {
-                    if (e is StaticItem)
-                    {
-                        if (m_StaticCounts.ContainsKey((e as StaticItem).ItemID))
-                            m_StaticCounts[(e as StaticItem).ItemID]++;
-                        else
-                            m_StaticCounts.Add((e as StaticItem).ItemID, 1);
-                    }
-                }
+                int iTileID = staticsData[staticDataIndex++] + (staticsData[staticDataIndex++] << 8);
+                int iX = staticsData[staticDataIndex++];
+                int iY = staticsData[staticDataIndex++];
+                int iTileZ = (sbyte)staticsData[staticDataIndex++];
+                int hue = staticsData[staticDataIndex++] + (staticsData[staticDataIndex++] * 256);
+
+                if (m_StaticCounts.ContainsKey(iTileID))
+                    m_StaticCounts[iTileID]++;
+                else
+                    m_StaticCounts.Add(iTileID, 1);
             }
         }
     }

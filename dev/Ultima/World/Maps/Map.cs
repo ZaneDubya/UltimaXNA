@@ -11,9 +11,9 @@
 #region usings
 using Microsoft.Xna.Framework;
 using System;
-using UltimaXNA.Ultima.Entities;
-using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Entities.Multis;
+using UltimaXNA.Ultima.IO;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Maps
@@ -21,10 +21,10 @@ namespace UltimaXNA.Ultima.World.Maps
     public class Map
     {
         private MapBlock[] m_Blocks;
-        private TileMatrixRaw m_MapData;
         public TileMatrixRaw MapData
         {
-            get { return m_MapData; }
+            get;
+            private set;
         }
 
         private Point m_Center = new Point(int.MinValue, int.MinValue); // player position.
@@ -42,9 +42,9 @@ namespace UltimaXNA.Ultima.World.Maps
         {
             Index = index;
 
-            m_MapData = new TileMatrixRaw(Index, Index);
-            TileHeight = m_MapData.BlockHeight * 8;
-            TileWidth = m_MapData.BlockWidth * 8;
+            MapData = new TileMatrixRaw(Index, Index);
+            TileHeight = MapData.BlockHeight * 8;
+            TileWidth = MapData.BlockWidth * 8;
 
             m_Blocks = new MapBlock[c_CellsInMemorySpan * c_CellsInMemorySpan];
         }
@@ -78,7 +78,7 @@ namespace UltimaXNA.Ultima.World.Maps
             MapBlock cell = m_Blocks[cellIndex];
             if (cell == null)
                 return null;
-            if (cell.X != x || cell.Y != y)
+            if (cell.BlockX != x || cell.BlockY != y)
                 return null;
             return cell;
         }
@@ -105,18 +105,22 @@ namespace UltimaXNA.Ultima.World.Maps
             uint centerY = ((uint)CenterPosition.Y / 8);
             for (int y = -c_CellsInMemory; y <= c_CellsInMemory; y++)
             {
-                uint cellY = (uint)(centerY + y) % m_MapData.BlockHeight;
+                uint cellY = (uint)(centerY + y) % MapData.BlockHeight;
                 for (int x = -c_CellsInMemory; x <= c_CellsInMemory; x++)
                 {
-                    uint cellX = (uint)(centerX + x) % m_MapData.BlockWidth;
+                    uint cellX = (uint)(centerX + x) % MapData.BlockWidth;
 
                     uint cellIndex = (cellY % c_CellsInMemorySpan) * c_CellsInMemorySpan + cellX % c_CellsInMemorySpan;
-                    if (m_Blocks[cellIndex] == null || m_Blocks[cellIndex].X != cellX || m_Blocks[cellIndex].Y != cellY)
+                    if (m_Blocks[cellIndex] == null || m_Blocks[cellIndex].BlockX != cellX || m_Blocks[cellIndex].BlockY != cellY)
                     {
                         if (m_Blocks[cellIndex] != null)
                             m_Blocks[cellIndex].Unload();
                         m_Blocks[cellIndex] = new MapBlock(cellX, cellY);
-                        m_Blocks[cellIndex].Load(m_MapData, this);
+                        m_Blocks[cellIndex].Load(MapData, this);
+                        // if we have a translator and it's not spring, change some statics!
+                        if (Season != Seasons.Spring && SeasonalTranslator != null)
+                            SeasonalTranslator(m_Blocks[cellIndex], Season);
+                        // let any active multis know that a new map block is ready, so they can load in their pieces.
                         Multi.AnnounceMapBlockLoaded(m_Blocks[cellIndex]);
                     }
                 }
@@ -133,7 +137,7 @@ namespace UltimaXNA.Ultima.World.Maps
                 ushort tileID;
                 sbyte alt;
                 // THIS IS VERY INEFFICIENT :(
-                m_MapData.GetLandTile((uint)x, (uint)y, out tileID, out alt);
+                MapData.GetLandTile((uint)x, (uint)y, out tileID, out alt);
                 return alt;
             }
         }
@@ -181,5 +185,22 @@ namespace UltimaXNA.Ultima.World.Maps
 
             return (v / 2);
         }
+
+        private Seasons m_Season = Seasons.Summer;
+        public Seasons Season
+        {
+            get { return m_Season; }
+            set
+            {
+                if (m_Season != value)
+                {
+                    m_Season = value;
+                    foreach (MapBlock block in m_Blocks)
+                        SeasonalTranslator(block, Season);
+                }
+            }
+        }
+
+        public static Action<MapBlock, Seasons> SeasonalTranslator = null;
     }
 }

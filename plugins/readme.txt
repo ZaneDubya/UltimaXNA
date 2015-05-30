@@ -1,1 +1,0 @@
-This is the directory for all plugins. Currently not used.

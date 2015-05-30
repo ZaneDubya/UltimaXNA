@@ -66,8 +66,8 @@ namespace UltimaXNA.Ultima.World.Views
 
         public MiniMapBlock(MapBlock block)
         {
-            X = (uint)block.X;
-            Y = (uint)block.Y;
+            X = (uint)block.BlockX;
+            Y = (uint)block.BlockY;
             Colors = new uint[64];
 
             for (uint tile = 0; tile < 64; tile++)

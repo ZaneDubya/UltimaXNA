@@ -1155,7 +1155,7 @@ namespace UltimaXNA.Ultima.World.Controllers
             SeasonChangePacket p = (SeasonChangePacket)packet;
             if (p.SeasonChanged)
             {
-                World.Season = p.Season;
+                World.Map.Season = p.Season;
             }
         }
 
