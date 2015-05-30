@@ -195,8 +195,9 @@ namespace UltimaXNA.Ultima.World.Maps
                 if (m_Season != value)
                 {
                     m_Season = value;
-                    foreach (MapBlock block in m_Blocks)
-                        SeasonalTranslator(block, Season);
+                    if (SeasonalTranslator != null)
+                        foreach (MapBlock block in m_Blocks)
+                            SeasonalTranslator(block, Season);
                 }
             }
         }

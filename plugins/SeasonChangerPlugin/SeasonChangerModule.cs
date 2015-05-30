@@ -41,7 +41,7 @@ namespace SeasonChangerPlugin
                 {
                     int[] translations;
                     if (e is StaticItem && m_TranslationTable.TryGetValue((e as StaticItem).ItemID, out translations))
-                        (e as StaticItem).DisplayItemID = translations[(int)season - 1];
+                        (e as StaticItem).DisplayItemID = (season == Seasons.Spring) ? (e as StaticItem).ItemID : translations[(int)season - 1];
                 }
             }
         }
@@ -93,7 +93,7 @@ namespace SeasonChangerPlugin
             table.Add(3205, new int[] { 3205, 3205, 3205, 7068 }); // 3205,7425 ; orfluer flowers (stick in des)
             table.Add(3204, new int[] { 3204, 0, 0, 7044 }); // 3204,6577 ; foxglove flowers (nothing in fall/win;wood in des)
             table.Add(3211, new int[] { 3211, 3378, 0, 7044 }); // 3211,6315 ; white flowers (grasses in fall,disp in winter,wood in des)
-            table.Add(3211, new int[] { 3211, 3379, 0, 7044 }); // 3212,6279 ; white flowers (grasses in fall,disp in winter,wood in des)
+            table.Add(3212, new int[] { 3212, 3379, 0, 7044 }); // 3212,6279 ; white flowers (grasses in fall,disp in winter,wood in des)
             // 3271,6268 ; weed
             // 3269,6262 ; grasses
             // 3415,5594 ; tree
@@ -130,57 +130,57 @@ namespace SeasonChangerPlugin
             // 3219,2703 ; blade plant
             // 2273,2660 ; stalagmites
             // 3220,2495 ; bulrushes
-            table.Add(3450, new int[] { 3450, 3450, 0, 0 }); // 3450,1980 ; leaves (yew, nothing in win/des)
-            table.Add(3455, new int[] { 3455, 3455, 0, 0 }); // 3455,1977 ; leaves (yew, nothing in win/des)
-            table.Add(3451, new int[] { 3451, 3451, 0, 0 }); // 3451,1977 ; leaves (yew, nothing in win/des)
-            table.Add(3454, new int[] { 3454, 3454, 0, 0 }); // 3454,1975 ; leaves (yew, nothing in win/des)
-            table.Add(3452, new int[] { 3452, 3452, 0, 0 }); // 3452,1975 ; leaves (yew, nothing in win/des)
-            table.Add(3453, new int[] { 3453, 3453, 0, 0 }); // 3453,1975 ; leaves (yew, nothing in win/des)
-            table.Add(3404, new int[] { 3404, 3404, 0, 0 }); // 3404,1924 ; leaves (yew, nothing in win/des)
-            table.Add(3411, new int[] { 3411, 3411, 0, 0 }); // 3411,1924 ; leaves (yew, nothing in win/des)
-            table.Add(3402, new int[] { 3402, 3402, 0, 0 }); // 3402,1918 ; leaves (yew, nothing in win/des)
-            table.Add(3407, new int[] { 3407, 3407, 0, 0 }); // 3407,1917 ; leaves (yew, nothing in win/des)
-            table.Add(3408, new int[] { 3408, 3408, 0, 0 }); // 3408,1917 ; leaves (yew, nothing in win/des)
-            table.Add(3406, new int[] { 3406, 3406, 0, 0 }); // 3406,1917 ; leaves (yew, nothing in win/des)
-            table.Add(3403, new int[] { 3403, 3403, 0, 0 }); // 3403,1916 ; leaves (yew, nothing in win/des)
-            table.Add(3409, new int[] { 3409, 3409, 0, 0 }); // 3409,1916 ; leaves (yew, nothing in win/des)
-            table.Add(3410, new int[] { 3410, 3410, 0, 0 }); // 3410,1915 ; leaves (yew, nothing in win/des)
-            table.Add(3405, new int[] { 3405, 3405, 0, 0 }); // 3405,1915 ; leaves (yew, nothing in win/des)
-            table.Add(3401, new int[] { 3401, 3401, 0, 0 }); // 3401,1914 ; leaves (yew, nothing in win/des)
-            table.Add(3400, new int[] { 3400, 3400, 0, 0 }); // 3400,1912 ; leaves (yew, nothing in win/des)
-            table.Add(3398, new int[] { 3398, 3398, 0, 0 }); // 3398,1910 ; leaves (yew, nothing in win/des)
-            table.Add(3397, new int[] { 3397, 3397, 0, 0 }); // 3397,1910 ; leaves (yew, nothing in win/des)
-            table.Add(3449, new int[] { 3449, 3449, 0, 0 }); // 3449,1909 ; leaves (yew, nothing in win/des)
-            table.Add(3399, new int[] { 3399, 3399, 0, 0 }); // 3399,1909 ; leaves (yew, nothing in win/des)
-            table.Add(3467, new int[] { 3467, 3467, 0, 0 }); // 3467,1907 ; leaves (yew, nothing in win/des)
-            table.Add(3465, new int[] { 3465, 3465, 0, 0 }); // 3465,1905 ; leaves (yew, nothing in win/des)
-            table.Add(3466, new int[] { 3466, 3466, 0, 0 }); // 3466,1905 ; leaves (yew, nothing in win/des)
-            table.Add(3463, new int[] { 3463, 3463, 0, 0 }); // 3463,1905 ; leaves (yew, nothing in win/des)
-            table.Add(3464, new int[] { 3464, 3464, 0, 0 }); // 3464,1904 ; leaves (yew, nothing in win/des)
-            table.Add(3420, new int[] { 3420, 3420, 0, 0 }); // 3420,1896 ; leaves (yew, nothing in win/des)
-            table.Add(3424, new int[] { 3424, 3424, 0, 0 }); // 3424,1896 ; leaves (yew, nothing in win/des)
-            table.Add(3422, new int[] { 3422, 3422, 0, 0 }); // 3422,1895 ; leaves (yew, nothing in win/des)
-            table.Add(3421, new int[] { 3421, 3421, 0, 0 }); // 3421,1895 ; leaves (yew, nothing in win/des)
-            table.Add(3423, new int[] { 3423, 3423, 0, 0 }); // 3423,1895 ; leaves (yew, nothing in win/des)
-            table.Add(3426, new int[] { 3426, 3426, 0, 0 }); // 3426,1894 ; leaves (yew, nothing in win/des)
-            table.Add(3425, new int[] { 3425, 3425, 0, 0 }); // 3425,1894 ; leaves (yew, nothing in win/des)
-            table.Add(3468, new int[] { 3468, 3468, 0, 0 }); // 3468,1892 ; leaves (yew, nothing in win/des)
-            table.Add(3472, new int[] { 3472, 3472, 0, 0 }); // 3472,1891 ; leaves (yew, nothing in win/des)
-            table.Add(3471, new int[] { 3471, 3471, 0, 0 }); // 3471,1890 ; leaves (yew, nothing in win/des)
-            table.Add(3470, new int[] { 3470, 3470, 0, 0 }); // 3470,1890 ; leaves (yew, nothing in win/des)
-            table.Add(3469, new int[] { 3469, 3469, 0, 0 }); // 3469,1889 ; leaves (yew, nothing in win/des)
-            table.Add(3448, new int[] { 3448, 3448, 0, 0 }); // 3448,1869 ; leaves (yew, nothing in win/des)
-            table.Add(3447, new int[] { 3447, 3447, 0, 0 }); // 3447,1868 ; leaves (yew, nothing in win/des)
-            table.Add(3445, new int[] { 3445, 3445, 0, 0 }); // 3445,1868 ; leaves (yew, nothing in win/des)
-            table.Add(3444, new int[] { 3444, 3444, 0, 0 }); // 3444,1868 ; leaves (yew, nothing in win/des)
-            table.Add(3446, new int[] { 3446, 3446, 0, 0 }); // 3446,1867 ; leaves (yew, nothing in win/des)
-            table.Add(3427, new int[] { 3427, 3427, 0, 0 }); // 3427,1847 ; leaves (yew, nothing in win/des)
-            table.Add(3428, new int[] { 3428, 3428, 0, 0 }); // 3428,1844 ; leaves (yew, nothing in win/des)
-            table.Add(3432, new int[] { 3432, 3432, 0, 0 }); // 3432,1843 ; leaves (yew, nothing in win/des)
-            table.Add(3431, new int[] { 3431, 3431, 0, 0 }); // 3431,1843 ; leaves (yew, nothing in win/des)
-            table.Add(3429, new int[] { 3429, 3429, 0, 0 }); // 3429,1843 ; leaves (yew, nothing in win/des)
-            table.Add(3430, new int[] { 3430, 3430, 0, 0 }); // 3430,1842 ; leaves (yew, nothing in win/des)
-            table.Add(3433, new int[] { 3433, 3433, 0, 0 }); // 3433,1841 ; leaves (yew, nothing in win/des)
+            table.Add(3450, new int[] { 3450, 3450, 0, 0 }); // 3450,1980 ; leaves (tall trees, nothing in win/des)
+            table.Add(3455, new int[] { 3455, 3455, 0, 0 }); // 3455,1977 ; leaves (tall trees, nothing in win/des)
+            table.Add(3451, new int[] { 3451, 3451, 0, 0 }); // 3451,1977 ; leaves (tall trees, nothing in win/des)
+            table.Add(3454, new int[] { 3454, 3454, 0, 0 }); // 3454,1975 ; leaves (tall trees, nothing in win/des)
+            table.Add(3452, new int[] { 3452, 3452, 0, 0 }); // 3452,1975 ; leaves (tall trees, nothing in win/des)
+            table.Add(3453, new int[] { 3453, 3453, 0, 0 }); // 3453,1975 ; leaves (tall trees, nothing in win/des)
+            table.Add(3404, new int[] { 3404, 3404, 0, 0 }); // 3404,1924 ; leaves (tall trees, nothing in win/des)
+            table.Add(3411, new int[] { 3411, 3411, 0, 0 }); // 3411,1924 ; leaves (tall trees, nothing in win/des)
+            table.Add(3402, new int[] { 3402, 3402, 0, 0 }); // 3402,1918 ; leaves (tall trees, nothing in win/des)
+            table.Add(3407, new int[] { 3407, 3407, 0, 0 }); // 3407,1917 ; leaves (tall trees, nothing in win/des)
+            table.Add(3408, new int[] { 3408, 3408, 0, 0 }); // 3408,1917 ; leaves (tall trees, nothing in win/des)
+            table.Add(3406, new int[] { 3406, 3406, 0, 0 }); // 3406,1917 ; leaves (tall trees, nothing in win/des)
+            table.Add(3403, new int[] { 3403, 3403, 0, 0 }); // 3403,1916 ; leaves (tall trees, nothing in win/des)
+            table.Add(3409, new int[] { 3409, 3409, 0, 0 }); // 3409,1916 ; leaves (tall trees, nothing in win/des)
+            table.Add(3410, new int[] { 3410, 3410, 0, 0 }); // 3410,1915 ; leaves (tall trees, nothing in win/des)
+            table.Add(3405, new int[] { 3405, 3405, 0, 0 }); // 3405,1915 ; leaves (tall trees, nothing in win/des)
+            table.Add(3401, new int[] { 3401, 3401, 0, 0 }); // 3401,1914 ; leaves (tall trees, nothing in win/des)
+            table.Add(3400, new int[] { 3400, 3400, 0, 0 }); // 3400,1912 ; leaves (tall trees, nothing in win/des)
+            table.Add(3398, new int[] { 3398, 3398, 0, 0 }); // 3398,1910 ; leaves (tall trees, nothing in win/des)
+            table.Add(3397, new int[] { 3397, 3397, 0, 0 }); // 3397,1910 ; leaves (tall trees, nothing in win/des)
+            table.Add(3449, new int[] { 3449, 3449, 0, 0 }); // 3449,1909 ; leaves (tall trees, nothing in win/des)
+            table.Add(3399, new int[] { 3399, 3399, 0, 0 }); // 3399,1909 ; leaves (tall trees, nothing in win/des)
+            table.Add(3467, new int[] { 3467, 3467, 0, 0 }); // 3467,1907 ; leaves (tall trees, nothing in win/des)
+            table.Add(3465, new int[] { 3465, 3465, 0, 0 }); // 3465,1905 ; leaves (tall trees, nothing in win/des)
+            table.Add(3466, new int[] { 3466, 3466, 0, 0 }); // 3466,1905 ; leaves (tall trees, nothing in win/des)
+            table.Add(3463, new int[] { 3463, 3463, 0, 0 }); // 3463,1905 ; leaves (tall trees, nothing in win/des)
+            table.Add(3464, new int[] { 3464, 3464, 0, 0 }); // 3464,1904 ; leaves (tall trees, nothing in win/des)
+            table.Add(3420, new int[] { 3420, 3420, 0, 0 }); // 3420,1896 ; leaves (tall trees, nothing in win/des)
+            table.Add(3424, new int[] { 3424, 3424, 0, 0 }); // 3424,1896 ; leaves (tall trees, nothing in win/des)
+            table.Add(3422, new int[] { 3422, 3422, 0, 0 }); // 3422,1895 ; leaves (tall trees, nothing in win/des)
+            table.Add(3421, new int[] { 3421, 3421, 0, 0 }); // 3421,1895 ; leaves (tall trees, nothing in win/des)
+            table.Add(3423, new int[] { 3423, 3423, 0, 0 }); // 3423,1895 ; leaves (tall trees, nothing in win/des)
+            table.Add(3426, new int[] { 3426, 3426, 0, 0 }); // 3426,1894 ; leaves (tall trees, nothing in win/des)
+            table.Add(3425, new int[] { 3425, 3425, 0, 0 }); // 3425,1894 ; leaves (tall trees, nothing in win/des)
+            table.Add(3468, new int[] { 3468, 3468, 0, 0 }); // 3468,1892 ; leaves (tall trees, nothing in win/des)
+            table.Add(3472, new int[] { 3472, 3472, 0, 0 }); // 3472,1891 ; leaves (tall trees, nothing in win/des)
+            table.Add(3471, new int[] { 3471, 3471, 0, 0 }); // 3471,1890 ; leaves (tall trees, nothing in win/des)
+            table.Add(3470, new int[] { 3470, 3470, 0, 0 }); // 3470,1890 ; leaves (tall trees, nothing in win/des)
+            table.Add(3469, new int[] { 3469, 3469, 0, 0 }); // 3469,1889 ; leaves (tall trees, nothing in win/des)
+            table.Add(3448, new int[] { 3448, 3448, 0, 0 }); // 3448,1869 ; leaves (tall trees, nothing in win/des)
+            table.Add(3447, new int[] { 3447, 3447, 0, 0 }); // 3447,1868 ; leaves (tall trees, nothing in win/des)
+            table.Add(3445, new int[] { 3445, 3445, 0, 0 }); // 3445,1868 ; leaves (tall trees, nothing in win/des)
+            table.Add(3444, new int[] { 3444, 3444, 0, 0 }); // 3444,1868 ; leaves (tall trees, nothing in win/des)
+            table.Add(3446, new int[] { 3446, 3446, 0, 0 }); // 3446,1867 ; leaves (tall trees, nothing in win/des)
+            table.Add(3427, new int[] { 3427, 3427, 0, 0 }); // 3427,1847 ; leaves (tall trees, nothing in win/des)
+            table.Add(3428, new int[] { 3428, 3428, 0, 0 }); // 3428,1844 ; leaves (tall trees, nothing in win/des)
+            table.Add(3432, new int[] { 3432, 3432, 0, 0 }); // 3432,1843 ; leaves (tall trees, nothing in win/des)
+            table.Add(3431, new int[] { 3431, 3431, 0, 0 }); // 3431,1843 ; leaves (tall trees, nothing in win/des)
+            table.Add(3429, new int[] { 3429, 3429, 0, 0 }); // 3429,1843 ; leaves (tall trees, nothing in win/des)
+            table.Add(3430, new int[] { 3430, 3430, 0, 0 }); // 3430,1842 ; leaves (tall trees, nothing in win/des)
+            table.Add(3433, new int[] { 3433, 3433, 0, 0 }); // 3433,1841 ; leaves (tall trees, nothing in win/des)
 
             // 3333,1832 ; reeds
             // 3241,1795 ; snake plant
@@ -247,19 +247,19 @@ namespace SeasonChangerPlugin
             // 4794,94 ; Yew tree
             // 4793,94 ; Yew tree
             // 3382,93 ; flowers
-            // 4807,93 ; Yew tree
-            // 4806,93 ; Yew tree
-            // 4805,93 ; Yew tree
+            table.Add(4807, new int[] { 4807, 4807, 0, 0 }); // 4807,93 ; Yew tree !
+            table.Add(4806, new int[] { 4806, 4806, 0, 0 }); // 4806,93 ; Yew tree !
+            table.Add(4805, new int[] { 4805, 4805, 0, 0 }); // 4805,93 ; Yew tree !
             // 4795,93 ; Yew tree
             // 4796,93 ; Yew tree
             // 4797,93 ; Yew tree
-            // 4804,92 ; Yew tree
-            // 4803,92 ; Yew tree
-            // 4802,92 ; Yew tree
-            // 4801,92 ; Yew tree
-            // 4800,92 ; Yew tree
-            // 4799,92 ; Yew tree
-            // 4798,92 ; Yew tree
+            table.Add(4804, new int[] { 4804, 4804, 0, 0 }); // 4804,92 ; Yew tree !
+            table.Add(4803, new int[] { 4803, 4803, 0, 0 }); // 4803,92 ; Yew tree !
+            table.Add(4802, new int[] { 4802, 4802, 0, 0 }); // 4802,92 ; Yew tree !
+            table.Add(4801, new int[] { 4801, 4801, 0, 0 }); // 4801,92 ; Yew tree !
+            table.Add(4800, new int[] { 4800, 4800, 0, 0 }); // 4800,92 ; Yew tree !
+            table.Add(4799, new int[] { 4799, 4799, 0, 0 }); // 4799,92 ; Yew tree !
+            table.Add(4798, new int[] { 4798, 4798, 0, 0 }); // 4798,92 ; Yew tree !
             // 3324,92 ; cypress leaves
             // 3160,88 ; wheat
             // 8612,83 ; no draw
