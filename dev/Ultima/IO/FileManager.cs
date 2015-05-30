@@ -238,12 +238,12 @@ namespace UltimaXNA.Ultima.IO
             catch { return null; }
         }
 
-        public static FileStream GetFile(string name, int index)
+        public static FileStream GetFile(string name, uint index)
         {
             return GetFile(String.Format(name, index));
         }
 
-        public static FileStream GetFile(string name, int index, string type)
+        public static FileStream GetFile(string name, uint index, string type)
         {
             return GetFile(String.Format("{0}{1}.{2}", name, index, type));
         }

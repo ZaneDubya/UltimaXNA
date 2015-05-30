@@ -7,7 +7,7 @@ namespace UltimaXNA.Ultima.World.Maps
 {
     static class SeasonalItemTranslator
     {
-        private static Dictionary<int, int[]> s_Translations;
+        // private static Dictionary<int, int[]> s_Translations;
 
         static SeasonalItemTranslator()
         {

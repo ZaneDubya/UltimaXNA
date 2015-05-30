@@ -100,7 +100,7 @@ namespace UltimaXNA.Ultima.IO
             get { return m_Width; }
         }
 
-        public TileMatrix(int index, int id)
+        public TileMatrix(uint index, uint id)
         {
             m_MapStream = FileManager.GetFile("map{0}.mul", index);
             m_IndexStream = FileManager.GetFile("staidx{0}.mul", index);

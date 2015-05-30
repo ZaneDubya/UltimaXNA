@@ -42,7 +42,7 @@ namespace UltimaXNA.Ultima.IO
             get { return m_StaticBlocks; }
         }
 
-        public TileMatrixPatch(TileMatrix matrix, int index)
+        public TileMatrixPatch(TileMatrix matrix, uint index)
         {
             if (!m_Enabled)
             {

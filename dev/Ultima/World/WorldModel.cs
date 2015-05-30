@@ -66,12 +66,12 @@ namespace UltimaXNA.Ultima.World
             get { return m_map; }
         }
 
-        public int MapIndex
+        public uint MapIndex
         {
             get
             {
                 if (m_map == null)
-                    return -1;
+                    return 0xFFFFFFFF;
                 else
                     return m_map.Index;
             }

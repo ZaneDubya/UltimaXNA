@@ -1,13 +1,17 @@
-﻿using UltimaXNA.Configuration;
-using UltimaXNA.Core.Diagnostics.Tracing;
+﻿using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Patterns;
+using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.World.Maps;
+using System.Collections.Generic;
+using UltimaXNA.Ultima.Entities;
+using UltimaXNA.Ultima.Entities.Items;
+using System.IO;
+using System.Linq;
 
 namespace ExamplePlugin
 {
     internal sealed class ExamplePluginModule : IModule
     {
-        // private ExampleSettigs m_PluginSettings;
-
         public string Name
         {
             get { return "UltimaXNA Example Plugin"; }
@@ -15,77 +19,57 @@ namespace ExamplePlugin
 
         public void Load()
         {
-            Tracer.Info("Example plugin loaded.");
+            Tracer.Info("Map Parser loaded.");
 
-            /*m_PluginSettings = Settings.OpenSection<ExampleSettigs>();
-            m_PluginSettings.Boolean = true;
-            m_PluginSettings.String = "Testing the string value";
-            m_PluginSettings.Int = 100;
-            m_PluginSettings.ComplexSettingObject =
-                new ComplexSettingObject
+            TileMatrixRaw tileData = new TileMatrixRaw(0, 0);
+
+            Map map = new Map(0);
+
+            for (uint y = 0; y < 32; y++)
+            {
+                Tracer.Info("Map Parser: row {0}.", y);
+                for (uint x = 0; x < 896; x++)
                 {
-                    SomeInt = 1000, SomeString = "This is a string"
-                };
-            */
+                    MapBlock block = new MapBlock(x, y);
+                    block.Load(tileData, map);
+                    ParseMapBlock(block);
+                    block.Unload();
+                }
+            }
+
+            var items = from pair in m_StaticCounts
+		        orderby pair.Value ascending
+		        select pair;
+
+            using (StreamWriter tileFile = new StreamWriter(@"\AllTiles.txt"))
+            {
+                foreach (KeyValuePair<int, int> pair in items)
+                    tileFile.WriteLine(string.Format("{0},{1}", pair.Key, pair.Value));
+            }
         }
 
         public void Unload()
         {
 
         }
-    }
 
-    /*internal class ExampleSettigs : SettingsSectionBase
-    {
-        public ExampleSettigs(SettingsFile file)
-            : base(file)
-        {
-        }
+        private Dictionary<int, int> m_StaticCounts = new Dictionary<int, int>();
 
-        public bool Boolean
+        private void ParseMapBlock(MapBlock block)
         {
-            get { return GetValue(false); }
-            set { SetValue(value); }
-        }
-
-        public string String
-        {
-            get { return GetValue("test"); }
-            set { SetValue(value); }
-        }
-
-        public int Int
-        {
-            get { return GetValue(10); }
-            set { SetValue(value); }
-        }
-
-        public ComplexSettingObject ComplexSettingObject
-        {
-            get { return GetValue(new ComplexSettingObject()); }
-            set { SetValue(value); }
+            for (int t = 0; t < 64; t++)
+            {
+                foreach (AEntity e in block.Tiles[t].Entities)
+                {
+                    if (e is StaticItem)
+                    {
+                        if (m_StaticCounts.ContainsKey((e as StaticItem).ItemID))
+                            m_StaticCounts[(e as StaticItem).ItemID]++;
+                        else
+                            m_StaticCounts.Add((e as StaticItem).ItemID, 1);
+                    }
+                }
+            }
         }
     }
-
-    public class ComplexSettingObject
-    {
-        public ComplexSettingObject()
-        {
-            SomeString = "SomeString";
-            SomeInt = 50;
-        }
-
-        public string SomeString
-        {
-            get;
-            set;
-        }
-
-
-        public int SomeInt
-        {
-            get;
-            set;
-        }
-    }*/
 }

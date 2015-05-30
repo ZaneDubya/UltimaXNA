@@ -19,9 +19,9 @@ namespace UltimaXNA.Ultima.World.Maps
     {
         public MapTile[] Tiles;
 
-        public readonly int X, Y;
+        public readonly uint X, Y;
 
-        public MapBlock(int x, int y)
+        public MapBlock(uint x, uint y)
         {
             X = x;
             Y = y;
@@ -77,7 +77,7 @@ namespace UltimaXNA.Ultima.World.Maps
                 int iTileZ = (sbyte)groundData[groundDataIndex++];
 
                 Ground ground = new Ground(iTileID, map);
-                ground.Position.Set(X * 8 + i % 8, Y * 8 + (i / 8), iTileZ);
+                ground.Position.Set((int)X * 8 + i % 8, (int)Y * 8 + (i / 8), iTileZ);
             }
 
             // load the statics data into the tiles
@@ -92,7 +92,7 @@ namespace UltimaXNA.Ultima.World.Maps
                 int hue = staticsData[staticDataIndex++] + (staticsData[staticDataIndex++] * 256);
 
                 StaticItem item = new StaticItem(iTileID, hue, i, map);
-                item.Position.Set(X * 8 + iX, Y * 8 + iY, iTileZ);
+                item.Position.Set((int)X * 8 + iX, (int)Y * 8 + iY, iTileZ);
             }
         }
     }

@@ -29,8 +29,8 @@ namespace UltimaXNA.Ultima.World.Maps
 
         private Point m_Center = new Point(int.MinValue, int.MinValue); // player position.
 
-        public int Index;
-        public int Height, Width;
+        public readonly uint Index;
+        public readonly uint TileHeight, TileWidth;
 
         // Any mobile / item beyond this range is removed from the client. RunUO's range is 24 tiles, which would equal 3 cells.
         // We keep 4 cells in memory to allow for drawing further, and also as a safety precaution - don't want to unload an 
@@ -38,13 +38,13 @@ namespace UltimaXNA.Ultima.World.Maps
         private const int c_CellsInMemory = 4;
         private const int c_CellsInMemorySpan = c_CellsInMemory * 2 + 1;
 
-        public Map(int index)
+        public Map(uint index)
         {
             Index = index;
 
             m_MapData = new TileMatrixRaw(Index, Index);
-            Height = m_MapData.Height;
-            Width = m_MapData.Width;
+            TileHeight = m_MapData.BlockHeight * 8;
+            TileWidth = m_MapData.BlockWidth * 8;
 
             m_Blocks = new MapBlock[c_CellsInMemorySpan * c_CellsInMemorySpan];
         }
@@ -85,6 +85,11 @@ namespace UltimaXNA.Ultima.World.Maps
 
         public MapTile GetMapTile(int x, int y)
         {
+            return GetMapTile((uint)x, (uint)y);
+        }
+
+        public MapTile GetMapTile(uint x, uint y)
+        {
             uint cellX = (uint)x / 8, cellY = (uint)y / 8;
             uint cellIndex = (cellY % c_CellsInMemorySpan) * c_CellsInMemorySpan + (cellX % c_CellsInMemorySpan);
 
@@ -96,18 +101,16 @@ namespace UltimaXNA.Ultima.World.Maps
 
         private void InternalCheckCellsInMemory()
         {
+            uint centerX = ((uint)CenterPosition.X / 8);
+            uint centerY = ((uint)CenterPosition.Y / 8);
             for (int y = -c_CellsInMemory; y <= c_CellsInMemory; y++)
             {
-                int cellY = (CenterPosition.Y / 8) + y;
-                if (cellY < 0)
-                    cellY += Height / 8;
+                uint cellY = (uint)(centerY + y) % m_MapData.BlockHeight;
                 for (int x = -c_CellsInMemory; x <= c_CellsInMemory; x++)
                 {
-                    int cellX = (CenterPosition.X / 8) + x;
-                    if (cellX < 0)
-                        cellX += Width / 8;
+                    uint cellX = (uint)(centerX + x) % m_MapData.BlockWidth;
 
-                    int cellIndex = (cellY % c_CellsInMemorySpan) * c_CellsInMemorySpan + cellX % c_CellsInMemorySpan;
+                    uint cellIndex = (cellY % c_CellsInMemorySpan) * c_CellsInMemorySpan + cellX % c_CellsInMemorySpan;
                     if (m_Blocks[cellIndex] == null || m_Blocks[cellIndex].X != cellX || m_Blocks[cellIndex].Y != cellY)
                     {
                         if (m_Blocks[cellIndex] != null)
@@ -127,8 +130,10 @@ namespace UltimaXNA.Ultima.World.Maps
                 return t.Ground.Z;
             else
             {
-                int tileID, alt;
-                m_MapData.GetLandTile(x, y, out tileID, out alt);
+                ushort tileID;
+                sbyte alt;
+                // THIS IS VERY INEFFICIENT :(
+                m_MapData.GetLandTile((uint)x, (uint)y, out tileID, out alt);
                 return alt;
             }
         }
