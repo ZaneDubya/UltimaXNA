@@ -52,15 +52,15 @@ namespace UltimaXNA.Ultima
 
         public int X
         {
-            get { return (int)m_Tile.X; }
+            get { return m_Tile.X; }
         }
         public int Y
         {
-            get { return (int)m_Tile.Y; }
+            get { return m_Tile.Y; }
         }
         public int Z
         {
-            get { return (int)m_Z; }
+            get { return m_Z; }
         }
 
         public float X_offset { get { return m_Offset.X % 1.0f; } }

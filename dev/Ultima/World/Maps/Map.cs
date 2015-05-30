@@ -11,9 +11,9 @@
 #region usings
 using Microsoft.Xna.Framework;
 using System;
-using UltimaXNA.Ultima.Entities;
-using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Entities.Multis;
+using UltimaXNA.Ultima.IO;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Maps
@@ -21,16 +21,16 @@ namespace UltimaXNA.Ultima.World.Maps
     public class Map
     {
         private MapBlock[] m_Blocks;
-        private TileMatrixRaw m_MapData;
         public TileMatrixRaw MapData
         {
-            get { return m_MapData; }
+            get;
+            private set;
         }
 
         private Point m_Center = new Point(int.MinValue, int.MinValue); // player position.
 
-        public int Index;
-        public int Height, Width;
+        public readonly uint Index;
+        public readonly uint TileHeight, TileWidth;
 
         // Any mobile / item beyond this range is removed from the client. RunUO's range is 24 tiles, which would equal 3 cells.
         // We keep 4 cells in memory to allow for drawing further, and also as a safety precaution - don't want to unload an 
@@ -38,13 +38,13 @@ namespace UltimaXNA.Ultima.World.Maps
         private const int c_CellsInMemory = 4;
         private const int c_CellsInMemorySpan = c_CellsInMemory * 2 + 1;
 
-        public Map(int index)
+        public Map(uint index)
         {
             Index = index;
 
-            m_MapData = new TileMatrixRaw(Index, Index);
-            Height = m_MapData.Height;
-            Width = m_MapData.Width;
+            MapData = new TileMatrixRaw(Index, Index);
+            TileHeight = MapData.BlockHeight * 8;
+            TileWidth = MapData.BlockWidth * 8;
 
             m_Blocks = new MapBlock[c_CellsInMemorySpan * c_CellsInMemorySpan];
         }
@@ -78,12 +78,17 @@ namespace UltimaXNA.Ultima.World.Maps
             MapBlock cell = m_Blocks[cellIndex];
             if (cell == null)
                 return null;
-            if (cell.X != x || cell.Y != y)
+            if (cell.BlockX != x || cell.BlockY != y)
                 return null;
             return cell;
         }
 
         public MapTile GetMapTile(int x, int y)
+        {
+            return GetMapTile((uint)x, (uint)y);
+        }
+
+        public MapTile GetMapTile(uint x, uint y)
         {
             uint cellX = (uint)x / 8, cellY = (uint)y / 8;
             uint cellIndex = (cellY % c_CellsInMemorySpan) * c_CellsInMemorySpan + (cellX % c_CellsInMemorySpan);
@@ -96,24 +101,26 @@ namespace UltimaXNA.Ultima.World.Maps
 
         private void InternalCheckCellsInMemory()
         {
+            uint centerX = ((uint)CenterPosition.X / 8);
+            uint centerY = ((uint)CenterPosition.Y / 8);
             for (int y = -c_CellsInMemory; y <= c_CellsInMemory; y++)
             {
-                int cellY = (CenterPosition.Y / 8) + y;
-                if (cellY < 0)
-                    cellY += Height / 8;
+                uint cellY = (uint)(centerY + y) % MapData.BlockHeight;
                 for (int x = -c_CellsInMemory; x <= c_CellsInMemory; x++)
                 {
-                    int cellX = (CenterPosition.X / 8) + x;
-                    if (cellX < 0)
-                        cellX += Width / 8;
+                    uint cellX = (uint)(centerX + x) % MapData.BlockWidth;
 
-                    int cellIndex = (cellY % c_CellsInMemorySpan) * c_CellsInMemorySpan + cellX % c_CellsInMemorySpan;
-                    if (m_Blocks[cellIndex] == null || m_Blocks[cellIndex].X != cellX || m_Blocks[cellIndex].Y != cellY)
+                    uint cellIndex = (cellY % c_CellsInMemorySpan) * c_CellsInMemorySpan + cellX % c_CellsInMemorySpan;
+                    if (m_Blocks[cellIndex] == null || m_Blocks[cellIndex].BlockX != cellX || m_Blocks[cellIndex].BlockY != cellY)
                     {
                         if (m_Blocks[cellIndex] != null)
                             m_Blocks[cellIndex].Unload();
                         m_Blocks[cellIndex] = new MapBlock(cellX, cellY);
-                        m_Blocks[cellIndex].Load(m_MapData, this);
+                        m_Blocks[cellIndex].Load(MapData, this);
+                        // if we have a translator and it's not spring, change some statics!
+                        if (Season != Seasons.Spring && SeasonalTranslator != null)
+                            SeasonalTranslator(m_Blocks[cellIndex], Season);
+                        // let any active multis know that a new map block is ready, so they can load in their pieces.
                         Multi.AnnounceMapBlockLoaded(m_Blocks[cellIndex]);
                     }
                 }
@@ -127,8 +134,10 @@ namespace UltimaXNA.Ultima.World.Maps
                 return t.Ground.Z;
             else
             {
-                int tileID, alt;
-                m_MapData.GetLandTile(x, y, out tileID, out alt);
+                ushort tileID;
+                sbyte alt;
+                // THIS IS VERY INEFFICIENT :(
+                MapData.GetLandTile((uint)x, (uint)y, out tileID, out alt);
                 return alt;
             }
         }
@@ -176,5 +185,22 @@ namespace UltimaXNA.Ultima.World.Maps
 
             return (v / 2);
         }
+
+        private Seasons m_Season = Seasons.Summer;
+        public Seasons Season
+        {
+            get { return m_Season; }
+            set
+            {
+                if (m_Season != value)
+                {
+                    m_Season = value;
+                    foreach (MapBlock block in m_Blocks)
+                        SeasonalTranslator(block, Season);
+                }
+            }
+        }
+
+        public static Action<MapBlock, Seasons> SeasonalTranslator = null;
     }
 }

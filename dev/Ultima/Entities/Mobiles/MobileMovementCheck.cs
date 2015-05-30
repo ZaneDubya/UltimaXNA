@@ -59,7 +59,7 @@ namespace UltimaXNA.Ultima.Entities.Mobiles
 			offsetXY((Direction)(((int)d - 1) & 0x7), ref xLeft, ref yLeft);
 			offsetXY((Direction)(((int)d + 1) & 0x7), ref xRight, ref yRight);
 
-			if (xForward < 0 || yForward < 0 || xForward >= map.Width || yForward >= map.Height)
+			if (xForward < 0 || yForward < 0 || xForward >= map.TileWidth || yForward >= map.TileHeight)
 			{
 				newZ = 0;
 				return false;

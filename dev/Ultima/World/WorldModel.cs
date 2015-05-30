@@ -1,10 +1,11 @@
 ﻿using InterXLib.Patterns.MVC;
 using UltimaXNA.Core.Network;
+using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Entities;
 using UltimaXNA.Ultima.Login;
 using UltimaXNA.Ultima.UI;
-using UltimaXNA.Ultima.World.Gumps;
 using UltimaXNA.Ultima.World.Controllers;
+using UltimaXNA.Ultima.World.Gumps;
 using UltimaXNA.Ultima.World.Maps;
 
 namespace UltimaXNA.Ultima.World
@@ -65,12 +66,12 @@ namespace UltimaXNA.Ultima.World
             get { return m_map; }
         }
 
-        public int MapIndex
+        public uint MapIndex
         {
             get
             {
                 if (m_map == null)
-                    return -1;
+                    return 0xFFFFFFFF;
                 else
                     return m_map.Index;
             }
@@ -200,7 +201,5 @@ namespace UltimaXNA.Ultima.World
         }
 
         public int MapCount { get; set; }
-
-        public byte Season { get; set; }
     }
 }

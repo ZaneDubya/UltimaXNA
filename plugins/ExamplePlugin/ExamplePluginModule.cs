@@ -1,91 +1,88 @@
-﻿using UltimaXNA.Configuration;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Patterns;
+using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.World.Maps;
 
 namespace ExamplePlugin
 {
     internal sealed class ExamplePluginModule : IModule
     {
-        // private ExampleSettigs m_PluginSettings;
-
         public string Name
         {
-            get { return "UltimaXNA Example Plugin"; }
+            get { return "Map Parser Plugin"; }
         }
 
         public void Load()
         {
-            Tracer.Info("Example plugin loaded.");
-
-            /*m_PluginSettings = Settings.OpenSection<ExampleSettigs>();
-            m_PluginSettings.Boolean = true;
-            m_PluginSettings.String = "Testing the string value";
-            m_PluginSettings.Int = 100;
-            m_PluginSettings.ComplexSettingObject =
-                new ComplexSettingObject
-                {
-                    SomeInt = 1000, SomeString = "This is a string"
-                };
-            */
+            // Tracer.Info("Map Parser loaded.");
         }
 
         public void Unload()
         {
+            m_StaticCounts = null;
+        }
 
+        public void CreateSeasonalTileInfo()
+        {
+            m_StaticCounts = new Dictionary<int, int>();
+
+            TileMatrixRaw tileData = new TileMatrixRaw(0, 0);
+
+            Map map = new Map(0);
+
+            for (uint y = 0; y < tileData.BlockHeight; y++)
+            {
+                Tracer.Info("Map Parser: row {0}.", y);
+                for (uint x = 0; x < tileData.BlockWidth; x++)
+                {
+                    ParseMapBlock(tileData, x, y);
+                }
+            }
+
+            var items = from pair in m_StaticCounts
+                        orderby pair.Value descending
+                        select pair;
+
+            using (FileStream file = new FileStream(@"AllTiles.txt", FileMode.Create))
+            {
+                StreamWriter stream = new StreamWriter(file);
+                foreach (KeyValuePair<int, int> pair in items)
+                {
+                    ItemData itemData = TileData.ItemData[pair.Key];
+                    if ((itemData.IsBackground || itemData.IsFoliage) && !itemData.IsWet && !itemData.IsSurface)
+                        stream.WriteLine(string.Format("{0},{1} ; {2}", pair.Key, pair.Value, itemData.Name));
+                }
+                stream.Flush();
+                file.Flush();
+            }
+        }
+
+        private Dictionary<int, int> m_StaticCounts;
+
+        private void ParseMapBlock(TileMatrixRaw tileData, uint x, uint y)
+        {
+            byte[] groundData = tileData.GetLandBlock(x, y);
+            byte[] staticsData = tileData.GetStaticBlock(x, y);
+
+            // load the statics data
+            int countStatics = staticsData.Length / 7;
+            int staticDataIndex = 0;
+            for (int i = 0; i < countStatics; i++)
+            {
+                int iTileID = staticsData[staticDataIndex++] + (staticsData[staticDataIndex++] << 8);
+                int iX = staticsData[staticDataIndex++];
+                int iY = staticsData[staticDataIndex++];
+                int iTileZ = (sbyte)staticsData[staticDataIndex++];
+                int hue = staticsData[staticDataIndex++] + (staticsData[staticDataIndex++] * 256);
+
+                if (m_StaticCounts.ContainsKey(iTileID))
+                    m_StaticCounts[iTileID]++;
+                else
+                    m_StaticCounts.Add(iTileID, 1);
+            }
         }
     }
-
-    /*internal class ExampleSettigs : SettingsSectionBase
-    {
-        public ExampleSettigs(SettingsFile file)
-            : base(file)
-        {
-        }
-
-        public bool Boolean
-        {
-            get { return GetValue(false); }
-            set { SetValue(value); }
-        }
-
-        public string String
-        {
-            get { return GetValue("test"); }
-            set { SetValue(value); }
-        }
-
-        public int Int
-        {
-            get { return GetValue(10); }
-            set { SetValue(value); }
-        }
-
-        public ComplexSettingObject ComplexSettingObject
-        {
-            get { return GetValue(new ComplexSettingObject()); }
-            set { SetValue(value); }
-        }
-    }
-
-    public class ComplexSettingObject
-    {
-        public ComplexSettingObject()
-        {
-            SomeString = "SomeString";
-            SomeInt = 50;
-        }
-
-        public string SomeString
-        {
-            get;
-            set;
-        }
-
-
-        public int SomeInt
-        {
-            get;
-            set;
-        }
-    }*/
 }

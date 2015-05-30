@@ -23,8 +23,8 @@ namespace UltimaXNA.Ultima.World.Views
             Colors = new uint[64];
 
             // get data from the tile Matrix
-            byte[] groundData = tileData.GetLandBlock((int)x, (int)y);
-            byte[] staticsData = tileData.GetStaticBlock((int)x, (int)y);
+            byte[] groundData = tileData.GetLandBlock(x, y);
+            byte[] staticsData = tileData.GetStaticBlock(x, y);
 
             // get the ground colors
             int groundDataIndex = 0;
@@ -66,8 +66,8 @@ namespace UltimaXNA.Ultima.World.Views
 
         public MiniMapBlock(MapBlock block)
         {
-            X = (uint)block.X;
-            Y = (uint)block.Y;
+            X = (uint)block.BlockX;
+            Y = (uint)block.BlockY;
             Colors = new uint[64];
 
             for (uint tile = 0; tile < 64; tile++)

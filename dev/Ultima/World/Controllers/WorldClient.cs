@@ -1170,13 +1170,17 @@ namespace UltimaXNA.Ultima.World.Controllers
         }
 
 
-
+        /// <summary>
+        /// Handle a season change packet.
+        /// </summary>
+        /// <param name="packet">Should be of type SeasonChangePacket.</param>
         private void ReceiveSeasonalInformation(IRecvPacket packet)
         {
-            // Only partially handled !!! If iSeason2 = 1, then this is a season change.
-            // If season change, then iSeason1 = (0=spring, 1=summer, 2=fall, 3=winter, 4 = desolation)
             SeasonChangePacket p = (SeasonChangePacket)packet;
-            World.Season = p.Season;
+            if (p.SeasonChanged)
+            {
+                World.Map.Season = p.Season;
+            }
         }
 
 

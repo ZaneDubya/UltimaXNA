@@ -48,11 +48,11 @@ namespace UltimaXNA.Ultima.Entities.Multis
         StaticTile[] m_customHouseTiles;
         public int CustomHouseRevision { get { return m_customHouseRevision; } }
 
-        bool m_hasCustomTiles = false;
+        // bool m_hasCustomTiles = false;
         CustomHouse m_customHouse;
         public void AddCustomHousingTiles(CustomHouse house)
         {
-            m_hasCustomTiles = true;
+            // m_hasCustomTiles = true;
             m_customHouse = house;
             m_customHouseTiles = house.GetStatics(m_Components.Width, m_Components.Height);
         }
@@ -94,7 +94,7 @@ namespace UltimaXNA.Ultima.Entities.Multis
                 int x = px + item.OffsetX;
                 int y = py + item.OffsetY;
 
-                MapTile tile = Map.GetMapTile(x, y);
+                MapTile tile = Map.GetMapTile((uint)x, (uint)y);
                 if (tile != null)
                 {
                     if (tile.ItemExists(item.ItemID, item.OffsetZ))
@@ -113,7 +113,7 @@ namespace UltimaXNA.Ultima.Entities.Multis
             int px = Position.X;
             int py = Position.Y;
 
-            Rectangle bounds = new Rectangle(block.X * 8, block.Y * 8, 8, 8);
+            Rectangle bounds = new Rectangle((int)block.BlockX * 8, (int)block.BlockY * 8, 8, 8);
 
             foreach (MultiComponentList.MultiItem item in m_Components.Items)
             {

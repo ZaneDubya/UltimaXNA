@@ -65,13 +65,32 @@ namespace UltimaXNA.Ultima.Entities.Items
 		private int m_amount;
         public int Amount
         {
-            get { return m_amount; }
-            set { m_amount = value; }
+            get
+            {
+                return m_amount;
+            }
+            set
+            {
+                m_amount = value;
+                if (IsCoin)
+                {
+                    if (Amount > 5)
+                    {
+                        DisplayItemID = m_ItemID + 2;
+                    }
+                    else if (Amount > 1)
+                    {
+                        DisplayItemID = m_ItemID + 1;
+                    }
+                }
+            }
         }
 
         public IO.ItemData ItemData;
 
 		private int m_ItemID = 0;
+        private int? m_DisplayItemID = null;
+
         public int ItemID
         {
             get { return m_ItemID; }
@@ -84,27 +103,21 @@ namespace UltimaXNA.Ultima.Entities.Items
 
 		public int DisplayItemID
 		{
-			get
-			{
-				if (IsCoin)
-				{
-					if (Amount > 5)
-					{
-						return m_ItemID + 2;
-					}
-					else if (Amount > 1)
-					{
-						return m_ItemID + 1;
-					}
-				}
-
-				return m_ItemID;
-			}
+            get
+            {
+                if (m_DisplayItemID.HasValue)
+                    return m_DisplayItemID.Value;
+                return m_ItemID;
+            }
+            set
+            {
+                m_DisplayItemID = value;
+            }
 		}
 
 		public bool NoDraw
 		{
-			get { return m_ItemID <= 1; } // no draw
+			get { return m_DisplayItemID <= 1; } // no draw
 		}
 
 		public bool IsCoin

@@ -126,6 +126,8 @@ namespace UltimaXNA.Ultima.EntityViews
             Point origin = new Point(Entity.Position.X, Entity.Position.Y);
 
             float[] surroundingTilesZ = new float[kSurroundingsIndexes.Length];
+
+
             for (int i = 0; i < kSurroundingsIndexes.Length; i++)
                 surroundingTilesZ[i] = map.GetTileZ(origin.X + kSurroundingsIndexes[i].X, origin.Y + kSurroundingsIndexes[i].Y);
 

@@ -1,13 +1,6 @@
 ﻿/***************************************************************************
  *   SeasonChangePacket.cs
  *   
- *   begin                : May 31, 2009
- *   email                : poplicola@ultimaxna.com
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 3 of the License, or
@@ -17,29 +10,32 @@
 #region usings
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Network.Packets;
+using UltimaXNA.Ultima.Data;
 #endregion
 
 namespace UltimaXNA.Ultima.Network.Server
 {
+    /// <summary>
+    /// Seasonal Information packet.
+    /// </summary>
     public class SeasonChangePacket : RecvPacket
     {
-        readonly byte m_season;
-        readonly byte m_playSound;
-
-        public byte Season
+        public bool SeasonChanged
         {
-            get { return m_season; }
+            get;
+            private set;
         }
-        public byte PlaySound
+        public Seasons Season
         {
-            get { return m_playSound; }
+            get;
+            private set;
         }
 
         public SeasonChangePacket(PacketReader reader)
             : base(0xBC, "Seasonal Information")
         {
-            m_season = reader.ReadByte();
-            m_playSound = reader.ReadByte();
+            Season = (Seasons)reader.ReadByte();
+            SeasonChanged = reader.ReadByte() == 1;
         }
     }
 }
