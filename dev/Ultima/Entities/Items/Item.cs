@@ -72,17 +72,6 @@ namespace UltimaXNA.Ultima.Entities.Items
             set
             {
                 m_amount = value;
-                if (IsCoin)
-                {
-                    if (Amount > 5)
-                    {
-                        DisplayItemID = m_ItemID + 2;
-                    }
-                    else if (Amount > 1)
-                    {
-                        DisplayItemID = m_ItemID + 1;
-                    }
-                }
             }
         }
 
@@ -107,6 +96,17 @@ namespace UltimaXNA.Ultima.Entities.Items
             {
                 if (m_DisplayItemID.HasValue)
                     return m_DisplayItemID.Value;
+                if (IsCoin)
+                {
+                    if (Amount > 5)
+                    {
+                        return m_ItemID + 2;
+                    }
+                    else if (Amount > 1)
+                    {
+                        return m_ItemID + 1;
+                    }
+                }
                 return m_ItemID;
             }
             set

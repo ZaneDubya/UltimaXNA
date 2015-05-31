@@ -178,6 +178,12 @@ namespace UltimaXNA.Ultima.IO
             get { return (Flags & TileFlag.Foliage) != 0; }
         }
 
+        
+        public bool IsGeneric
+        {
+            get { return (Flags & TileFlag.Generic) != 0; }
+        }
+
         public bool IsImpassable
         {
             get { return (Flags & TileFlag.Impassable) != 0; }

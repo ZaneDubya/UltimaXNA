@@ -67,9 +67,17 @@ namespace UltimaXNA.Ultima.World.Controllers
                     // 2. Gumps that represent open Containers (GumpPicContainers, e.g. an open GumpPic of a chest)
                     // 3. Paperdolls for my character.
                     // 4. Backpack gumppics (seen in paperdolls).
-                    if (target is ItemGumpling && ((ItemGumpling)target).Item.ItemData.IsContainer)
+                    if (target is ItemGumpling)
                     {
-                        DropHeldItemToContainer((Container)((ItemGumpling)target).Item);
+                        Item targetItem = ((ItemGumpling)target).Item;
+                        if (targetItem.ItemData.IsContainer)
+                        {
+                            DropHeldItemToContainer((Container)targetItem);
+                        }
+                        else if (HeldItem.ItemID == targetItem.ItemID && HeldItem.ItemData.IsGeneric)
+                        {
+                            MergeHeldItem(targetItem);
+                        }
                     }
                     else if (target is GumpPicContainer)
                     {
@@ -496,6 +504,12 @@ namespace UltimaXNA.Ultima.World.Controllers
                 // TEST: what if we can pick something up and drop it in our inventory before the server has a chance to respond?
                 m_Network.Send(new PickupItemPacket(item.Serial, amount));
             }
+        }
+
+        private void MergeHeldItem(Item target)
+        {
+            m_Network.Send(new DropItemPacket(HeldItem.Serial, 0, 0, 0, 0, target.Serial));
+            ClearHolding();
         }
 
         private void DropHeldItemToWorld(int X, int Y, int Z)
