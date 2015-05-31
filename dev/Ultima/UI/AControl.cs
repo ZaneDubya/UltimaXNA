@@ -305,10 +305,24 @@ namespace UltimaXNA.Ultima.UI
             m_Area.X = X;
             m_Area.Y = Y;
 
+            UpdateChildren(totalMS, frameMS);
+        }
+
+        private void UpdateChildren(double totalMS, double frameMS)
+        {
+            bool newlyInitializedChildReceivedKeyboardFocus = false;
+
             foreach (AControl c in Children)
             {
                 if (!c.IsInitialized)
+                {
                     c.Initialize();
+                    if (!newlyInitializedChildReceivedKeyboardFocus && c.HandlesKeyboardFocus)
+                    {
+                        m_UserInterface.KeyboardFocusControl = c;
+                        newlyInitializedChildReceivedKeyboardFocus = true;
+                    }
+                }
                 c.Update(totalMS, frameMS);
             }
 

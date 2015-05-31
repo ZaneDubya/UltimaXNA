@@ -71,15 +71,15 @@ namespace UltimaXNA.Ultima.UI
             m_gumpLines = textlines;
         }
 
-        public override string ToString()
-        {
-            return GetType().ToString();
-        }
-
         public override void Dispose()
         {
             SavePosition();
             base.Dispose();
+        }
+
+        public override string ToString()
+        {
+            return GetType().ToString();
         }
 
         public override void Update(double totalMS, double frameMS)
