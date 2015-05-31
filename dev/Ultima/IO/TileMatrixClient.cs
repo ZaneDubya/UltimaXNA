@@ -13,6 +13,7 @@ using System;
 using System.IO;
 using UltimaXNA.Core;
 using UltimaXNA.Core.Diagnostics;
+using UltimaXNA.Core.Diagnostics.Tracing;
 #endregion
 
 namespace UltimaXNA.Ultima.IO
@@ -30,10 +31,7 @@ namespace UltimaXNA.Ultima.IO
         private byte[][] m_bufferedLandBlocks;
         private uint[] m_bufferedLandBlocks_Keys;
 
-        public byte[] EmptyStaticsBlock
-        {
-            get { return m_EmptyStaticsBlock; }
-        }
+        private TileMatrixClientPatch m_Patch;
 
         private readonly FileStream MapStream;
         private readonly FileStream StaticIndexStream;
@@ -52,7 +50,7 @@ namespace UltimaXNA.Ultima.IO
             private set;
         }
 
-        public TileMatrixClient(uint index, uint id)
+        public TileMatrixClient(uint index)
         {
             MapStream = FileManager.GetFile("map{0}.mul", index);
             StaticIndexStream = FileManager.GetFile("staidx{0}.mul", index);
@@ -63,10 +61,14 @@ namespace UltimaXNA.Ultima.IO
                 // the map we tried to load does not exist. Try alternate for felucca / trammel ?
                 if (index == 1)
                 {
-                    index = 0;
-                    MapStream = FileManager.GetFile("map{0}.mul", index);
-                    StaticIndexStream = FileManager.GetFile("staidx{0}.mul", index);
-                    StaticDataStream = FileManager.GetFile("statics{0}.mul", index);
+                    uint trammel = 0;
+                    MapStream = FileManager.GetFile("map{0}.mul", trammel);
+                    StaticIndexStream = FileManager.GetFile("staidx{0}.mul", trammel);
+                    StaticDataStream = FileManager.GetFile("statics{0}.mul", trammel);
+                }
+                else
+                {
+                    Tracer.Critical("Unknown map index {0}", index);
                 }
             }
 
@@ -81,6 +83,8 @@ namespace UltimaXNA.Ultima.IO
             m_bufferedLandBlocks = new byte[m_bufferedLandBlocksMaxCount][];
             for (uint i = 0; i < m_bufferedLandBlocksMaxCount; i++)
                 m_bufferedLandBlocks[i] = new byte[m_SizeLandBlockData];
+
+            m_Patch = new TileMatrixClientPatch(this, index);
         }
 
         public byte[] GetLandBlock(uint blockX, uint blockY)
@@ -157,25 +161,35 @@ namespace UltimaXNA.Ultima.IO
 
         private unsafe byte[] readLandBlock_Bytes(uint blockX, uint blockY)
         {
-            if (blockX >= BlockWidth) blockX -= BlockWidth;
-            if (blockY >= BlockHeight) blockY -= BlockHeight;
+            // bounds check: keep block index within bounds of map
+            blockX %= BlockWidth;
+            blockY %= BlockHeight;
 
+            // if this block is cached in the buffer, return the cached block.
             uint key = (blockX << 16) + blockY;
-            uint index = blockX % 16 + (blockY % 16) * 16;
+            uint index = blockX % 16 + ((blockY % 16) * 16);
             if (m_bufferedLandBlocks_Keys[index] == key)
                 return m_bufferedLandBlocks[index];
 
+            // if it was not cached in the buffer, we will be loading it.
             m_bufferedLandBlocks_Keys[index] = key;
 
-            MapStream.Seek(((blockX * BlockHeight) + blockY) * m_SizeLandBlock + 4, SeekOrigin.Begin);
-            int streamStart = (int)MapStream.Position;
-            fixed (byte* pData = m_bufferedLandBlocks[index])
+            // load the map block from a file. Check the patch file first (mapdif#.mul), then the base file (map#.mul).
+            if (m_Patch.TryGetLandPatch(blockX, blockY, ref m_bufferedLandBlocks[index]))
             {
-                NativeMethods.Read(MapStream.SafeFileHandle, pData, m_SizeLandBlockData);
+                return m_bufferedLandBlocks[index];
             }
-            Metrics.ReportDataRead((int)MapStream.Position - streamStart);
-
-            return m_bufferedLandBlocks[index];
+            else
+            {
+                uint ptr = ((blockX * BlockHeight) + blockY) * m_SizeLandBlock + 4;
+                MapStream.Seek(ptr, SeekOrigin.Begin);
+                fixed (byte* pData = m_bufferedLandBlocks[index])
+                {
+                    NativeMethods.Read(MapStream.SafeFileHandle, pData, m_SizeLandBlockData);
+                }
+                Metrics.ReportDataRead(m_SizeLandBlockData);
+                return m_bufferedLandBlocks[index];
+            }
         }
 
         public void Dispose()

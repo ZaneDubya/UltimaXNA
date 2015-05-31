@@ -29,7 +29,7 @@ namespace ExamplePlugin
         {
             m_StaticCounts = new Dictionary<int, int>();
 
-            TileMatrixClient tileData = new TileMatrixClient(0, 0);
+            TileMatrixClient tileData = new TileMatrixClient(0);
 
             Map map = new Map(0);
 

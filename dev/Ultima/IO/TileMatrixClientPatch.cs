@@ -12,6 +12,7 @@
 using System;
 using System.IO;
 using UltimaXNA.Core;
+using System.Collections.Generic;
 #endregion
 
 namespace UltimaXNA.Ultima.IO
@@ -25,8 +26,10 @@ namespace UltimaXNA.Ultima.IO
             set { m_Enabled = value; }
         }
 
-        private BinaryReader m_LandPatches;
-        private BinaryReader m_StaticPatches;
+        private FileStream m_LandPatchStream;
+
+        private Dictionary<uint, uint> m_LandPatchPtrs;
+        private Dictionary<uint, uint> m_StaticPatchPtrs;
 
         public TileMatrixClientPatch(TileMatrixClient matrix, uint index)
         {
@@ -35,62 +38,83 @@ namespace UltimaXNA.Ultima.IO
                 return;
             }
 
-            m_LandBlocks = LoadLandPatches(matrix, String.Format("mapdif{0}.mul", index), String.Format("mapdifl{0}.mul", index));
-            m_StaticBlocks = LoadStaticPatches(matrix, String.Format("stadif{0}.mul", index), String.Format("stadifl{0}.mul", index), String.Format("stadifi{0}.mul", index));
+            LoadLandPatches(matrix, String.Format("mapdif{0}.mul", index), String.Format("mapdifl{0}.mul", index));
+            // LoadStaticPatches(matrix, String.Format("stadif{0}.mul", index), String.Format("stadifl{0}.mul", index), String.Format("stadifi{0}.mul", index));
         }
 
-        public bool TryGetLandBlock(uint blockX, uint blockY, out byte[] landData)
+        public unsafe bool TryGetLandPatch(uint blockX, uint blockY, ref byte[] landData)
         {
-            landData = null;
+            uint key = ((blockY & 0x0000ffff) << 16) | (blockX & 0x0000ffff);
+            uint ptr;
+
+            if (m_LandPatchPtrs.TryGetValue(key, out ptr))
+            {
+                m_LandPatchStream.Seek(ptr, SeekOrigin.Begin);
+
+                landData = new byte[192];
+                fixed (byte* pTiles = landData)
+                {
+                    NativeMethods.Read(m_LandPatchStream.SafeFileHandle, pTiles, 192);
+                }
+                return true;
+            }
 
             return false;
+        }
+
+        private unsafe int LoadLandPatches(TileMatrixClient tileMatrix, string landPath, string indexPath)
+        {
+            m_LandPatchPtrs = new Dictionary<uint, uint>();
+
+            m_LandPatchStream = FileManager.GetFile(landPath);
+
+            using (FileStream fsIndex = FileManager.GetFile(indexPath))
+            {
+                BinaryReader indexReader = new BinaryReader(fsIndex);
+
+                int count = (int)(indexReader.BaseStream.Length / 4);
+
+                uint ptr = 0;
+
+                for (int i = 0; i < count; ++i)
+                {
+
+                    uint blockID = indexReader.ReadUInt32();
+                    uint x = blockID / tileMatrix.BlockHeight;
+                    uint y = blockID % tileMatrix.BlockHeight;
+                    uint key = ((y & 0x0000ffff) << 16) | (x & 0x0000ffff);
+
+                    ptr += 4;
+
+                    m_LandPatchPtrs.Add(key, ptr);
+
+                    ptr += 192;
+                }
+
+                indexReader.Close();
+
+                return count;
+            }
         }
 
         public bool TryGetStaticBlock(uint blockX, uint blockY, out byte[] staticData)
         {
             staticData = null;
 
-            return false;
-        }
-
-        private unsafe int LoadLandPatches(TileMatrix tileMatrix, string landPath, string indexPath)
-        {
-            using (FileStream fsData = FileManager.GetFile(landPath))
+            uint key = ((blockY & 0x0000ffff) << 16) | (blockX & 0x0000ffff);
+            uint ptr;
+            if (m_StaticPatchPtrs.TryGetValue(key, out ptr))
             {
-                using (FileStream fsIndex = FileManager.GetFile(indexPath))
-                {
-                    BinaryReader indexReader = new BinaryReader(fsIndex);
 
-                    int count = (int)(indexReader.BaseStream.Length / 4);
-
-                    for (int i = 0; i < count; ++i)
-                    {
-                        int blockID = indexReader.ReadInt32();
-                        int x = blockID / tileMatrix.BlockHeight;
-                        int y = blockID % tileMatrix.BlockHeight;
-
-                        fsData.Seek(4, SeekOrigin.Current);
-
-                        Tile[] tiles = new Tile[64];
-
-                        fixed (Tile* pTiles = tiles)
-                        {
-                            NativeMethods.Read(fsData.SafeFileHandle, pTiles, 192);
-                        }
-
-                        tileMatrix.SetLandBlock(x, y, tiles);
-                    }
-
-                    indexReader.Close();
-
-                    return count;
-                }
+                return true;
             }
+
+            return false;
         }
 
         private static StaticTile[] m_TileBuffer = new StaticTile[128];
 
-        private unsafe int LoadStaticPatches(TileMatrix tileMatrix, string dataPath, string indexPath, string lookupPath)
+        private unsafe int LoadStaticPatches(TileMatrixClient tileMatrix, string dataPath, string indexPath, string lookupPath)
         {
             using (FileStream fsData = FileManager.GetFile(dataPath))
             {
@@ -117,9 +141,9 @@ namespace UltimaXNA.Ultima.IO
 
                         for (int i = 0; i < count; ++i)
                         {
-                            int blockID = indexReader.ReadInt32();
-                            int blockX = blockID / tileMatrix.BlockHeight;
-                            int blockY = blockID % tileMatrix.BlockHeight;
+                            uint blockID = indexReader.ReadUInt32();
+                            uint blockX = blockID / tileMatrix.BlockHeight;
+                            uint blockY = blockID % tileMatrix.BlockHeight;
 
                             int offset = lookupReader.ReadInt32();
                             int length = lookupReader.ReadInt32();
@@ -127,7 +151,7 @@ namespace UltimaXNA.Ultima.IO
 
                             if (offset < 0 || length <= 0)
                             {
-                                tileMatrix.SetStaticBlock(blockX, blockY, tileMatrix.EmptyStaticsBlock);
+                                // tileMatrix.SetStaticBlock(blockX, blockY, tileMatrix.EmptyStaticsBlock);
 
                                 continue;
                             }
@@ -168,7 +192,7 @@ namespace UltimaXNA.Ultima.IO
                                     }
                                 }
 
-                                tileMatrix.SetStaticBlock(blockX, blockY, tiles);
+                                // tileMatrix.SetStaticBlock(blockX, blockY, tiles);
                             }
                         }
 

@@ -130,7 +130,7 @@ namespace UltimaXNA.Ultima.IO
             m_StaticTiles = new StaticTile[m_BlockWidth][][][][];
             m_StaticsPatches = new int[m_BlockWidth][];
 
-            m_Patch = new TileMatrixClientPatch(this, id);
+            // m_Patch = new TileMatrixClientPatch(this, id);
         }
 
         public void SetStaticBlock(int x, int y, StaticTile[][][] value)
