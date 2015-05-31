@@ -24,7 +24,8 @@ namespace UltimaXNA.Ultima.World.Views
 
             // get data from the tile Matrix
             byte[] groundData = tileData.GetLandBlock(x, y);
-            byte[] staticsData = tileData.GetStaticBlock(x, y);
+            int staticLength;
+            byte[] staticsData = tileData.GetStaticBlock(x, y, out staticLength);
 
             // get the ground colors
             int groundDataIndex = 0;
@@ -35,7 +36,7 @@ namespace UltimaXNA.Ultima.World.Views
             }
 
             // get the static colors
-            int countStatics = staticsData.Length / 7;
+            int countStatics = staticLength / 7;
             int staticDataIndex = 0;
             for (int i = 0; i < countStatics; i++)
             {

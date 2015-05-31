@@ -65,10 +65,11 @@ namespace ExamplePlugin
         private void ParseMapBlock(TileMatrixClient tileData, uint x, uint y)
         {
             byte[] groundData = tileData.GetLandBlock(x, y);
-            byte[] staticsData = tileData.GetStaticBlock(x, y);
+            int staticLength;
+            byte[] staticsData = tileData.GetStaticBlock(x, y, out staticLength);
 
             // load the statics data
-            int countStatics = staticsData.Length / 7;
+            int countStatics = staticLength / 7;
             int staticDataIndex = 0;
             for (int i = 0; i < countStatics; i++)
             {

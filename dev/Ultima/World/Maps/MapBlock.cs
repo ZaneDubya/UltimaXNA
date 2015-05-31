@@ -68,7 +68,8 @@ namespace UltimaXNA.Ultima.World.Maps
         {
             // get data from the tile Matrix
             byte[] groundData = tileData.GetLandBlock(BlockX, BlockY);
-            byte[] staticsData = tileData.GetStaticBlock(BlockX, BlockY);
+            int staticLength;
+            byte[] staticsData = tileData.GetStaticBlock(BlockX, BlockY, out staticLength);
 
             // load the ground data into the tiles.
             int groundDataIndex = 0;
@@ -82,7 +83,7 @@ namespace UltimaXNA.Ultima.World.Maps
             }
 
             // load the statics data into the tiles
-            int countStatics = staticsData.Length / 7;
+            int countStatics = staticLength / 7;
             int staticDataIndex = 0;
             for (int i = 0; i < countStatics; i++)
             {

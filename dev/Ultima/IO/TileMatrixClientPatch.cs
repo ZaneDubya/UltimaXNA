@@ -27,9 +27,10 @@ namespace UltimaXNA.Ultima.IO
         }
 
         private FileStream m_LandPatchStream;
+        private FileStream m_StaticPatchStream;
 
         private Dictionary<uint, uint> m_LandPatchPtrs;
-        private Dictionary<uint, uint> m_StaticPatchPtrs;
+        private Dictionary<uint, Tuple<int, int>> m_StaticPatchPtrs;
 
         public TileMatrixClientPatch(TileMatrixClient matrix, uint index)
         {
@@ -39,12 +40,17 @@ namespace UltimaXNA.Ultima.IO
             }
 
             LoadLandPatches(matrix, String.Format("mapdif{0}.mul", index), String.Format("mapdifl{0}.mul", index));
-            // LoadStaticPatches(matrix, String.Format("stadif{0}.mul", index), String.Format("stadifl{0}.mul", index), String.Format("stadifi{0}.mul", index));
+            LoadStaticPatches(matrix, String.Format("stadif{0}.mul", index), String.Format("stadifl{0}.mul", index), String.Format("stadifi{0}.mul", index));
+        }
+
+        private uint MakeBlockKey(uint blockX, uint blockY)
+        {
+            return ((blockY & 0x0000ffff) << 16) | (blockX & 0x0000ffff);
         }
 
         public unsafe bool TryGetLandPatch(uint blockX, uint blockY, ref byte[] landData)
         {
-            uint key = ((blockY & 0x0000ffff) << 16) | (blockX & 0x0000ffff);
+            uint key = MakeBlockKey(blockX, blockY);
             uint ptr;
 
             if (m_LandPatchPtrs.TryGetValue(key, out ptr))
@@ -82,7 +88,7 @@ namespace UltimaXNA.Ultima.IO
                     uint blockID = indexReader.ReadUInt32();
                     uint x = blockID / tileMatrix.BlockHeight;
                     uint y = blockID % tileMatrix.BlockHeight;
-                    uint key = ((y & 0x0000ffff) << 16) | (x & 0x0000ffff);
+                    uint key = MakeBlockKey(x, y);
 
                     ptr += 4;
 
@@ -97,110 +103,86 @@ namespace UltimaXNA.Ultima.IO
             }
         }
 
-        public bool TryGetStaticBlock(uint blockX, uint blockY, out byte[] staticData)
+        public unsafe bool TryGetStaticBlock(uint blockX, uint blockY, ref byte[] staticData, out int length)
         {
-            staticData = null;
-
-            uint key = ((blockY & 0x0000ffff) << 16) | (blockX & 0x0000ffff);
-            uint ptr;
-            if (m_StaticPatchPtrs.TryGetValue(key, out ptr))
+            try
             {
+                uint key = MakeBlockKey(blockX, blockY);
+                Tuple<int, int> ptr; // offset, length
+                if (m_StaticPatchPtrs.TryGetValue(key, out ptr))
+                {
+                    int offset = ptr.Item1;
+                    length = ptr.Item2;
 
-                return true;
+                    if (offset < 0 || length <= 0)
+                    {
+                        return false;
+                    }
+
+                    m_StaticPatchStream.Seek(offset, SeekOrigin.Begin);
+
+                    if (length > staticData.Length)
+                        staticData = new byte[length];
+
+                    fixed (byte* pStaticTiles = staticData)
+                    {
+                        NativeMethods.Read(m_StaticPatchStream.SafeFileHandle, pStaticTiles, length);
+                    }
+
+                    return true;
+                }
+                length = 0;
+                return false;
             }
-
-            return false;
+            catch (EndOfStreamException)
+            {
+                throw new Exception("End of stream in static patch block!");
+            }
         }
-
-        private static StaticTile[] m_TileBuffer = new StaticTile[128];
 
         private unsafe int LoadStaticPatches(TileMatrixClient tileMatrix, string dataPath, string indexPath, string lookupPath)
         {
-            using (FileStream fsData = FileManager.GetFile(dataPath))
+            m_StaticPatchPtrs = new Dictionary<uint, Tuple<int, int>>();
+
+            m_StaticPatchStream = FileManager.GetFile(dataPath);
+
+            using (FileStream fsIndex = FileManager.GetFile(indexPath))
             {
-                using (FileStream fsIndex = FileManager.GetFile(indexPath))
+                using (FileStream fsLookup = FileManager.GetFile(lookupPath))
                 {
-                    using (FileStream fsLookup = FileManager.GetFile(lookupPath))
+                    BinaryReader indexReader = new BinaryReader(fsIndex);
+                    BinaryReader lookupReader = new BinaryReader(fsLookup);
+
+                    int count = (int)(indexReader.BaseStream.Length / 4);
+
+                    for (int i = 0; i < count; ++i)
                     {
-                        BinaryReader indexReader = new BinaryReader(fsIndex);
-                        BinaryReader lookupReader = new BinaryReader(fsLookup);
+                        uint blockID = indexReader.ReadUInt32();
+                        uint blockX = blockID / tileMatrix.BlockHeight;
+                        uint blockY = blockID % tileMatrix.BlockHeight;
+                        uint key = MakeBlockKey(blockX, blockY);
 
-                        int count = (int)(indexReader.BaseStream.Length / 4);
+                        int offset = lookupReader.ReadInt32();
+                        int length = lookupReader.ReadInt32();
+                        lookupReader.ReadInt32();
 
-                        StaticTileList[][] lists = new StaticTileList[8][];
-
-                        for (int x = 0; x < 8; ++x)
+                        if (m_StaticPatchPtrs.ContainsKey(key))
                         {
-                            lists[x] = new StaticTileList[8];
-
-                            for (int y = 0; y < 8; ++y)
-                            {
-                                lists[x][y] = new StaticTileList();
-                            }
+                            // Tuple<int, int> old = m_StaticPatchPtrs[key];
+                            m_StaticPatchPtrs[key] = new Tuple<int, int>(offset, length);
+                        }
+                        else
+                        {
+                            m_StaticPatchPtrs.Add(key, new Tuple<int, int>(offset, length));
                         }
 
-                        for (int i = 0; i < count; ++i)
-                        {
-                            uint blockID = indexReader.ReadUInt32();
-                            uint blockX = blockID / tileMatrix.BlockHeight;
-                            uint blockY = blockID % tileMatrix.BlockHeight;
-
-                            int offset = lookupReader.ReadInt32();
-                            int length = lookupReader.ReadInt32();
-                            lookupReader.ReadInt32();
-
-                            if (offset < 0 || length <= 0)
-                            {
-                                // tileMatrix.SetStaticBlock(blockX, blockY, tileMatrix.EmptyStaticsBlock);
-
-                                continue;
-                            }
-
-                            fsData.Seek(offset, SeekOrigin.Begin);
-
-                            int tileCount = length / 7;
-
-                            if (m_TileBuffer.Length < tileCount)
-                            {
-                                m_TileBuffer = new StaticTile[tileCount];
-                            }
-
-                            StaticTile[] staticTiles = m_TileBuffer;
-
-                            fixed (StaticTile* pStaticTiles = staticTiles)
-                            {
-                                NativeMethods.Read(fsData.SafeFileHandle, pStaticTiles, length);
-
-                                StaticTile* pCur = pStaticTiles, pEnd = pStaticTiles + tileCount;
-
-                                while (pCur < pEnd)
-                                {
-                                    lists[pCur->X & 0x07][pCur->Y & 0x07].Add((short)((pCur->ID & 0x3FFF) + 0x4000), pCur->Z);
-
-                                    pCur = pCur + 1;
-                                }
-
-                                StaticTile[][][] tiles = new StaticTile[8][][];
-
-                                for (int x = 0; x < 8; ++x)
-                                {
-                                    tiles[x] = new StaticTile[8][];
-
-                                    for (int y = 0; y < 8; ++y)
-                                    {
-                                        tiles[x][y] = lists[x][y].ToArray();
-                                    }
-                                }
-
-                                // tileMatrix.SetStaticBlock(blockX, blockY, tiles);
-                            }
-                        }
-
-                        indexReader.Close();
-                        lookupReader.Close();
-
-                        return count;
+                        
                     }
+
+                    indexReader.Close();
+                    lookupReader.Close();
+
+                    return count;
                 }
             }
         }
