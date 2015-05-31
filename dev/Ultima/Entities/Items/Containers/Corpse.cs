@@ -9,6 +9,7 @@
  ***************************************************************************/
 #region usings
 using System.Collections.Generic;
+using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Network.Server;
 using UltimaXNA.Ultima.World.Maps;
 #endregion
@@ -20,7 +21,7 @@ namespace UltimaXNA.Ultima.Entities.Items.Containers
         public Serial MobileSerial = 0;
 
         public float Frame = 0.999f;
-        public int BodyID { get { return Amount; } }
+        public Body Body { get { return Amount; } }
 
         private Direction m_Facing = Direction.Nothing;
         public Direction Facing

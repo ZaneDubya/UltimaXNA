@@ -5,6 +5,7 @@ using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.World.Maps;
 using UltimaXNA.Ultima.World.Controllers;
 using UltimaXNA.Ultima.Entities.Items.Containers;
+using UltimaXNA.Ultima.Data;
 
 namespace UltimaXNA.Ultima.EntityViews
 {
@@ -24,10 +25,9 @@ namespace UltimaXNA.Ultima.EntityViews
         public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
         {
             int facing = MirrorFacingForDraw(Entity.Facing);
-            int bodyID = Entity.BodyID;
-            int frameIndex = (int)(Entity.Frame * BodyConverter.DeathAnimationFrameCount(bodyID));
+            int frameIndex = (int)(Entity.Frame * BodyConverter.DeathAnimationFrameCount(Entity.Body));
 
-            AnimationFrame animationFrame = getFrame(bodyID, facing, frameIndex, Entity.Hue);
+            AnimationFrame animationFrame = getFrame(Entity.Body, facing, frameIndex, Entity.Hue);
 
             DrawTexture = animationFrame.Texture;
             DrawArea = new Rectangle(0, 0, DrawTexture.Width, DrawTexture.Height);
@@ -36,9 +36,9 @@ namespace UltimaXNA.Ultima.EntityViews
             return base.Draw(spriteBatch, drawPosition, mouseOverList, map);
         }
 
-        private AnimationFrame getFrame(int bodyID, int facing, int frameIndex, int hue)
+        private AnimationFrame getFrame(Body body, int facing, int frameIndex, int hue)
         {
-            AnimationFrame[] iFrames = Animations.GetAnimation(bodyID, IO.BodyConverter.DeathAnimationIndex(bodyID), facing, hue);
+            AnimationFrame[] iFrames = Animations.GetAnimation(body, IO.BodyConverter.DeathAnimationIndex(body), facing, hue);
             if (iFrames == null)
                 return null;
             if (iFrames[frameIndex].Texture == null)

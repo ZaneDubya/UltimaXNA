@@ -25,7 +25,13 @@ namespace UltimaXNA.Ultima.EntityViews
         private int m_actionIndex;
         public int ActionIndex
         {
-            get { return m_actionIndex; }
+            get
+            {
+                if (Parent.Body == 5 || Parent.Body == 6)
+                    if (m_actionIndex > 8)
+                        return m_actionIndex + 8;
+                return m_actionIndex;
+            }
         }
 
         public bool IsAnimating
@@ -52,11 +58,6 @@ namespace UltimaXNA.Ultima.EntityViews
                 else
                     return m_animationFrame;
             }
-        }
-        
-        private BodyTypes m_bodyType
-        {
-            get { return Animations.BodyType(Parent.BodyID); }
         }
 
         // We use these variables to 'hold' the last frame of an animation before 
@@ -206,7 +207,7 @@ namespace UltimaXNA.Ultima.EntityViews
                     m_actionIndex = actionIndex;
                     m_animationFrame = 0f;
                     m_FrameCount = IO.Animations.GetAnimationFrameCount(
-                        Parent.BodyID, actionIndex, (int)Parent.Facing, Parent.Hue);
+                        Parent.Body, actionIndex, (int)Parent.Facing, Parent.Hue);
                     m_FrameDelay = delay;
                     if (repeat == false)
                         m_repeatCount = 0;
@@ -237,7 +238,7 @@ namespace UltimaXNA.Ultima.EntityViews
 
         private int getActionIndex(MobileAction action, int index)
         {
-            if (m_bodyType == BodyTypes.Humanoid)
+            if (Parent.Body.IsHuman)
             {
                 switch (action)
                 {
@@ -336,7 +337,7 @@ namespace UltimaXNA.Ultima.EntityViews
                         return (int)-1;
                 }
             }
-            else if (m_bodyType == BodyTypes.LowDetail)
+            else if (Parent.Body.IsAnimal)
             {
                 switch (action)
                 {
@@ -360,7 +361,7 @@ namespace UltimaXNA.Ultima.EntityViews
                         return (int)-1;
                 }
             }
-            else if (m_bodyType == BodyTypes.HighDetail)
+            else if (Parent.Body.IsMonster)
             {
                 switch (action)
                 {
@@ -390,7 +391,7 @@ namespace UltimaXNA.Ultima.EntityViews
 
         private MobileAction getActionFromIndex(int index)
         {
-            if (m_bodyType == BodyTypes.Humanoid)
+            if (Parent.Body.IsHuman)
             {
                 switch ((ActionIndexHumanoid)index)
                 {
@@ -469,7 +470,7 @@ namespace UltimaXNA.Ultima.EntityViews
                 Tracer.Warn("Unknown action index {0}", index);
                 return MobileAction.None;
             }
-            else if (m_bodyType == BodyTypes.LowDetail)
+            else if (Parent.Body.IsAnimal)
             {
                 switch ((ActionIndexAnimal)index)
                 {
@@ -483,7 +484,7 @@ namespace UltimaXNA.Ultima.EntityViews
                         return MobileAction.MonsterAction;
                 }
             }
-            else if (m_bodyType == BodyTypes.HighDetail)
+            else if (Parent.Body.IsMonster)
             {
                 switch ((ActionIndexMonster)index)
                 {

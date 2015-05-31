@@ -409,7 +409,7 @@ namespace UltimaXNA.Ultima.World.Controllers
         {
             MobileIncomingPacket p = (MobileIncomingPacket)packet;
             Mobile mobile = EntityManager.GetObject<Mobile>(p.Serial, true);
-            mobile.BodyID = p.BodyID;
+            mobile.Body = p.BodyID;
             mobile.Hue = (int)p.Hue;
             mobile.Move_Instant(p.X, p.Y, p.Z, p.Direction);
             mobile.Flags = p.Flags;
@@ -491,7 +491,7 @@ namespace UltimaXNA.Ultima.World.Controllers
             if (mobile == null)
                 return;
 
-            mobile.BodyID = p.BodyID;
+            mobile.Body = p.BodyID;
             mobile.Flags = p.Flags;
             mobile.Notoriety = p.Notoriety;
 
@@ -515,7 +515,7 @@ namespace UltimaXNA.Ultima.World.Controllers
             if (mobile == null)
                 return;
 
-            mobile.BodyID = p.BodyID;
+            mobile.Body = p.BodyID;
             mobile.Flags = p.Flags;
             mobile.Hue = (int)p.Hue;
             mobile.Move_Instant(p.X, p.Y, p.Z, p.Direction);

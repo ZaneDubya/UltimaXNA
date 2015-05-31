@@ -4,6 +4,7 @@ using System.Collections;
 using System.IO;
 using System.Text.RegularExpressions;
 using UltimaXNA.Core.Diagnostics;
+using UltimaXNA.Ultima.Data;
 #endregion
 
 namespace UltimaXNA.Ultima.IO
@@ -66,31 +67,31 @@ namespace UltimaXNA.Ultima.IO
 
         private BodyConverter() { }
 
-        public static int DeathAnimationIndex(int bodyID)
+        public static int DeathAnimationIndex(Body body)
         {
-            switch (Animations.BodyType(bodyID))
+            switch (body.Type)
             {
-                case BodyTypes.HighDetail:
-                    return 2;
-                case BodyTypes.LowDetail:
-                    return 8;
-                case BodyTypes.Humanoid:
+                case BodyType.Human:
                     return 21;
+                case BodyType.Monster:
+                    return 2;
+                case BodyType.Animal:
+                    return 8;
                 default:
                     return 2;
             }
         }
 
-        public static int DeathAnimationFrameCount(int bodyID)
+        public static int DeathAnimationFrameCount(Body body)
         {
-            switch (Animations.BodyType(bodyID))
+            switch (body.Type)
             {
-                case BodyTypes.HighDetail:
-                    return 4;
-                case BodyTypes.LowDetail:
-                    return 4;
-                case BodyTypes.Humanoid:
+                case BodyType.Human:
                     return 6;
+                case BodyType.Monster:
+                    return 4;
+                case BodyType.Animal:
+                    return 4;
                 default:
                     return 4;
             }

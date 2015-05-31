@@ -182,6 +182,7 @@
     <Compile Include="Core\Diagnostics\Tracing\Tracer.cs" />
     <Compile Include="Core\Diagnostics\GeneralExceptionHandler.cs" />
     <Compile Include="Core\Configuration\SettingsFile.cs" />
+    <Compile Include="Ultima\Data\Body.cs" />
     <Compile Include="Ultima\Data\Seasons.cs" />
     <Compile Include="Ultima\Direction.cs" />
     <Compile Include="Ultima\Data\MessageType.cs" />

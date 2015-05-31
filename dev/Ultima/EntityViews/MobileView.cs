@@ -161,7 +161,7 @@ namespace UltimaXNA.Ultima.EntityViews
         {
             ClearLayers();
 
-            if (Entity.IsHumanoid)
+            if (Entity.Body.IsHuman)
             {
                 int[] drawLayers = m_DrawLayerOrder;
                 bool hasOuterTorso = Entity.Equipment[(int)EquipLayer.OuterTorso] != null && Entity.Equipment[(int)EquipLayer.OuterTorso].ItemData.AnimID != 0;
@@ -176,7 +176,7 @@ namespace UltimaXNA.Ultima.EntityViews
 
                     if (drawLayers[i] == (int)EquipLayer.Body)
                     {
-                        AddLayer(Entity.BodyID, Entity.Hue);
+                        AddLayer(Entity.Body, Entity.Hue);
                     }
                     else if (Entity.Equipment[drawLayers[i]] != null && Entity.Equipment[drawLayers[i]].ItemData.AnimID != 0)
                     {
@@ -186,7 +186,7 @@ namespace UltimaXNA.Ultima.EntityViews
             }
             else
             {
-                AddLayer(Entity.BodyID, Entity.Hue);
+                AddLayer(Entity.Body, Entity.Hue);
             }
         }
 

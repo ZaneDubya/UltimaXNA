@@ -60,10 +60,6 @@ namespace UltimaXNA.Ultima.IO
             int length, extra;
             bool patched;
 
-            // The UO Server can request actions with an index greater
-            // than the total number of actions. Check for this.
-            action = LimitActionIndex(body, hue, action);
-
             getIndexes(ref body, ref hue, action, direction, out animIndex, out fileIndex);
 
             AnimationFrame[] f = checkCache(body, action, direction);
@@ -238,83 +234,6 @@ namespace UltimaXNA.Ultima.IO
             else
             {
                 index += direction - (direction - 4) * 2;
-            }
-        }
-
-        public static BodyTypes BodyType(int body)
-        {
-            return BodyType(body, -1);
-        }
-
-        public static BodyTypes BodyType(int body, int hue)
-        {
-            if (hue == -1)
-                Translate(ref body);
-            else
-                Translate(ref body, ref hue);
-
-            int fileType = BodyConverter.Convert(ref body);
-            switch (fileType)
-            {
-                default:
-                case 1:
-                    {
-                        if (body < 200)
-                            return BodyTypes.HighDetail;
-                        else if (body < 400)
-                            return BodyTypes.LowDetail;
-                        else
-                            return BodyTypes.Humanoid;
-                    }
-                case 2:
-                    {
-                        if (body < 200)
-                            return BodyTypes.HighDetail;
-                        else
-                            return BodyTypes.LowDetail;
-                    }
-                case 3:
-                    {
-                        if (body < 300)
-                            return BodyTypes.LowDetail;
-                        else if (body < 400)
-                            return BodyTypes.HighDetail;
-                        else
-                            return BodyTypes.Humanoid;
-                    }
-                case 4:
-                    {
-                        if (body < 200)
-                            return BodyTypes.HighDetail;
-                        else if (body < 400)
-                            return BodyTypes.LowDetail;
-                        else
-                            return BodyTypes.Humanoid;
-                    }
-                case 5:
-                    {
-                        if ((body < 200) && (body != 34))
-                            return BodyTypes.HighDetail;
-                        else if (body < 400)
-                            return BodyTypes.LowDetail;
-                        else
-                            return BodyTypes.Humanoid;
-                    }
-            }
-        }
-
-        public static int LimitActionIndex(int bodyID, int hue, int action)
-        {
-            switch (BodyType(bodyID, hue))
-            {
-                case BodyTypes.HighDetail:
-                    return action % 0x16;
-                case BodyTypes.LowDetail:
-                    return action % 0x13;
-                case BodyTypes.Humanoid:
-                    return action % 0x23;
-                default:
-                    return -1;
             }
         }
 
@@ -558,13 +477,5 @@ namespace UltimaXNA.Ultima.IO
             byte[] b = bin.ReadBytes(length);
             return b;
         }
-    }
-
-    public enum BodyTypes
-    {
-        Null = -1,
-        HighDetail = 0,
-        LowDetail = 1,
-        Humanoid = 2
     }
 } 

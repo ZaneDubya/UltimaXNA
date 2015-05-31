@@ -252,7 +252,7 @@ namespace UltimaXNA.Ultima.Entities.Mobiles
 			int stepTop = startTop + StepHeight;
 			int checkTop = startZ + PersonHeight;
 
-			bool ignoreDoors = (!m.Alive || m.BodyID == 0x3DB);
+			bool ignoreDoors = (!m.Alive || m.Body == 0x3DB);
 
 			#region Tiles
 			for (int i = 0; i < tiles.Length; ++i)

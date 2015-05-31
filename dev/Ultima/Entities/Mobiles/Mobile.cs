@@ -199,14 +199,8 @@ namespace UltimaXNA.Ultima.Entities.Mobiles
             666, 667 // gargoyles. 666. Clever.
         };
 
-        public bool IsHumanoid
-        {
-            get;
-            private set;
-        }
-
         int m_bodyID = 0;
-        public int BodyID
+        public Body Body
         {
             get
             {
@@ -217,7 +211,6 @@ namespace UltimaXNA.Ultima.Entities.Mobiles
             set
             {
                 m_bodyID = value;
-                IsHumanoid = (s_HumanoidBodyIDs.Contains(m_bodyID));
                 tickUpdateTicker();
             }
         }
