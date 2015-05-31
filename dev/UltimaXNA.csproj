@@ -394,7 +394,7 @@
     <Compile Include="Ultima\IO\TileMatrix.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Ultima\IO\TileMatrixRaw.cs" />
+    <Compile Include="Ultima\IO\TileMatrixClient.cs" />
     <Compile Include="Ultima\World\Controllers\WorldInput.cs" />
     <Compile Include="Ultima\UI\HTML\Regions.cs" />
     <Compile Include="Ultima\UI\HTML\Enums.cs" />
@@ -479,7 +479,7 @@
     <Compile Include="Ultima\IO\StaticTileList.cs" />
     <Compile Include="Ultima\IO\TexmapData.cs" />
     <Compile Include="Ultima\IO\TileData.cs" />
-    <Compile Include="Ultima\IO\TileMatrixPatch.cs" />
+    <Compile Include="Ultima\IO\TileMatrixClientPatch.cs" />
     <Compile Include="Core\Network\NetworkClient.cs" />
     <Compile Include="Core\Network\Compression\HuffmanDecompression.cs" />
     <Compile Include="Core\Network\Compression\ZlibDecompression.cs" />
