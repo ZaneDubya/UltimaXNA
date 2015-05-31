@@ -1,15 +1,10 @@
 ﻿/***************************************************************************
- *                            TileMatrixPatch.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id: TileMatrixPatch.cs 252 2007-09-14 07:59:32Z mark $
+ *   TileMatrixClientPatch.cs
+ *   Based on TileMatrixPatch.cs (c) The RunUO Software Team
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
+ *   the Free Software Foundation; either version 3 of the License, or
  *   (at your option) any later version.
  *
  ***************************************************************************/
@@ -21,7 +16,7 @@ using UltimaXNA.Core;
 
 namespace UltimaXNA.Ultima.IO
 {
-    public class TileMatrixPatch
+    public class TileMatrixClientPatch
     {
         private static bool m_Enabled = true;
         public static bool Enabled
@@ -30,32 +25,37 @@ namespace UltimaXNA.Ultima.IO
             set { m_Enabled = value; }
         }
 
-        private int m_LandBlocks;
-        public int LandBlocks
-        {
-            get { return m_LandBlocks; }
-        }
+        private BinaryReader m_LandPatches;
+        private BinaryReader m_StaticPatches;
 
-        private int m_StaticBlocks;
-        public int StaticBlocks
-        {
-            get { return m_StaticBlocks; }
-        }
-
-        public TileMatrixPatch(TileMatrix matrix, uint index)
+        public TileMatrixClientPatch(TileMatrixClient matrix, uint index)
         {
             if (!m_Enabled)
             {
                 return;
             }
 
-            m_LandBlocks = PatchLand(matrix, String.Format("mapdif{0}.mul", index), String.Format("mapdifl{0}.mul", index));
-            m_StaticBlocks = PatchStatics(matrix, String.Format("stadif{0}.mul", index), String.Format("stadifl{0}.mul", index), String.Format("stadifi{0}.mul", index));
+            m_LandBlocks = LoadLandPatches(matrix, String.Format("mapdif{0}.mul", index), String.Format("mapdifl{0}.mul", index));
+            m_StaticBlocks = LoadStaticPatches(matrix, String.Format("stadif{0}.mul", index), String.Format("stadifl{0}.mul", index), String.Format("stadifi{0}.mul", index));
         }
 
-        private unsafe int PatchLand(TileMatrix tileMatrix, string dataPath, string indexPath)
+        public bool TryGetLandBlock(uint blockX, uint blockY, out byte[] landData)
         {
-            using (FileStream fsData = FileManager.GetFile(dataPath))
+            landData = null;
+
+            return false;
+        }
+
+        public bool TryGetStaticBlock(uint blockX, uint blockY, out byte[] staticData)
+        {
+            staticData = null;
+
+            return false;
+        }
+
+        private unsafe int LoadLandPatches(TileMatrix tileMatrix, string landPath, string indexPath)
+        {
+            using (FileStream fsData = FileManager.GetFile(landPath))
             {
                 using (FileStream fsIndex = FileManager.GetFile(indexPath))
                 {
@@ -90,7 +90,7 @@ namespace UltimaXNA.Ultima.IO
 
         private static StaticTile[] m_TileBuffer = new StaticTile[128];
 
-        private unsafe int PatchStatics(TileMatrix tileMatrix, string dataPath, string indexPath, string lookupPath)
+        private unsafe int LoadStaticPatches(TileMatrix tileMatrix, string dataPath, string indexPath, string lookupPath)
         {
             using (FileStream fsData = FileManager.GetFile(dataPath))
             {

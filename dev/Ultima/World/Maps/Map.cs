@@ -21,7 +21,7 @@ namespace UltimaXNA.Ultima.World.Maps
     public class Map
     {
         private MapBlock[] m_Blocks;
-        public TileMatrixRaw MapData
+        public TileMatrixClient MapData
         {
             get;
             private set;
@@ -42,7 +42,7 @@ namespace UltimaXNA.Ultima.World.Maps
         {
             Index = index;
 
-            MapData = new TileMatrixRaw(Index, Index);
+            MapData = new TileMatrixClient(Index, Index);
             TileHeight = MapData.BlockHeight * 8;
             TileWidth = MapData.BlockWidth * 8;
 

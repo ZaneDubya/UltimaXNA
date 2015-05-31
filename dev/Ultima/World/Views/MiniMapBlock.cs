@@ -16,7 +16,7 @@ namespace UltimaXNA.Ultima.World.Views
         public uint[] Colors;
         private static sbyte[] m_Zs = new sbyte[64]; // shared between all instances of MiniMapBlock.
 
-        public MiniMapBlock(uint x, uint y, TileMatrixRaw tileData)
+        public MiniMapBlock(uint x, uint y, TileMatrixClient tileData)
         {
             X = x;
             Y = y;

@@ -1,19 +1,15 @@
 ﻿/***************************************************************************
- *                               TileMatrix.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
+ *   TileMatrixClient.cs
+ *   Based on TileMatrix.cs (c) The RunUO Software Team
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
+ *   the Free Software Foundation; either version 3 of the License, or
  *   (at your option) any later version.
  *
  ***************************************************************************/
 #region usings
 using System;
-using System.Collections.Generic;
 using System.IO;
 using UltimaXNA.Core;
 using UltimaXNA.Core.Diagnostics;
@@ -21,7 +17,7 @@ using UltimaXNA.Core.Diagnostics;
 
 namespace UltimaXNA.Ultima.IO
 {
-    public class TileMatrixRaw
+    public class TileMatrixClient
     {
         private static uint[] m_MapBlockHeightList = new uint[] { 512, 512, 200, 256, 181 };
         private const int m_SizeLandBlock = 196;
@@ -56,7 +52,7 @@ namespace UltimaXNA.Ultima.IO
             private set;
         }
 
-        public TileMatrixRaw(uint index, uint id)
+        public TileMatrixClient(uint index, uint id)
         {
             MapStream = FileManager.GetFile("map{0}.mul", index);
             StaticIndexStream = FileManager.GetFile("staidx{0}.mul", index);
@@ -87,7 +83,7 @@ namespace UltimaXNA.Ultima.IO
                 m_bufferedLandBlocks[i] = new byte[m_SizeLandBlockData];
         }
 
-        public byte[] GetLandBlock(uint x, uint y)
+        public byte[] GetLandBlock(uint blockX, uint blockY)
         {
             if (MapStream == null)
             {
@@ -95,42 +91,42 @@ namespace UltimaXNA.Ultima.IO
             }
             else
             {
-                return readLandBlock_Bytes(x, y);
+                return readLandBlock_Bytes(blockX, blockY);
             }
         }
 
         /// <summary>
-        /// Retrieve the tileID and altitude of a specific land tile. N.B. VERY INEFFECIENT.
+        /// Retrieve the tileID and altitude of a specific land tile. VERY INEFFECIENT.
         /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
+        /// <param name="tileX"></param>
+        /// <param name="tileY"></param>
         /// <param name="TileID"></param>
         /// <param name="alt"></param>
-        public void GetLandTile(uint x, uint y, out ushort TileID, out sbyte alt)
+        public void GetLandTile(uint tileX, uint tileY, out ushort TileID, out sbyte alt)
         {
-            uint index = (((x % 8) + (y % 8) * 8) * 3);
-            byte[] data = readLandBlock_Bytes(x >> 3, y >> 3);
+            uint index = (((tileX % 8) + (tileY % 8) * 8) * 3);
+            byte[] data = readLandBlock_Bytes(tileX >> 3, tileY >> 3);
             TileID = BitConverter.ToUInt16(data, (int)index);
             alt = (sbyte)data[index + 2];
         }
 
-        public byte[] GetStaticBlock(uint x, uint y)
+        public byte[] GetStaticBlock(uint blockX, uint blockY)
         {
-            if (x >= BlockWidth || y >= BlockHeight || StaticDataStream == null || StaticIndexStream == null)
+            if (blockX >= BlockWidth || blockY >= BlockHeight || StaticDataStream == null || StaticIndexStream == null)
             {
                 return m_EmptyStaticsBlock;
             }
             else
             {
-                return readStaticBlock_Bytes(x, y);
+                return readStaticBlock_Bytes(blockX, blockY);
             }
         }
 
-        private unsafe byte[] readStaticBlock_Bytes(uint x, uint y)
+        private unsafe byte[] readStaticBlock_Bytes(uint blockX, uint blockY)
         {
             try
             {
-                StaticIndexStream.Seek(((x * BlockHeight) + y) * 12, SeekOrigin.Begin);
+                StaticIndexStream.Seek(((blockX * BlockHeight) + blockY) * 12, SeekOrigin.Begin);
 
                 int lookup = StaticIndexReader.ReadInt32();
                 int length = StaticIndexReader.ReadInt32();
@@ -159,19 +155,19 @@ namespace UltimaXNA.Ultima.IO
             }
         }
 
-        private unsafe byte[] readLandBlock_Bytes(uint x, uint y)
+        private unsafe byte[] readLandBlock_Bytes(uint blockX, uint blockY)
         {
-            if (x >= BlockWidth) x -= BlockWidth;
-            if (y >= BlockHeight) y -= BlockHeight;
+            if (blockX >= BlockWidth) blockX -= BlockWidth;
+            if (blockY >= BlockHeight) blockY -= BlockHeight;
 
-            uint key = (x << 16) + y;
-            uint index = x % 16 + (y % 16) * 16;
+            uint key = (blockX << 16) + blockY;
+            uint index = blockX % 16 + (blockY % 16) * 16;
             if (m_bufferedLandBlocks_Keys[index] == key)
                 return m_bufferedLandBlocks[index];
 
             m_bufferedLandBlocks_Keys[index] = key;
 
-            MapStream.Seek(((x * BlockHeight) + y) * m_SizeLandBlock + 4, SeekOrigin.Begin);
+            MapStream.Seek(((blockX * BlockHeight) + blockY) * m_SizeLandBlock + 4, SeekOrigin.Begin);
             int streamStart = (int)MapStream.Position;
             fixed (byte* pData = m_bufferedLandBlocks[index])
             {

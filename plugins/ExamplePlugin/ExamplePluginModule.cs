@@ -29,7 +29,7 @@ namespace ExamplePlugin
         {
             m_StaticCounts = new Dictionary<int, int>();
 
-            TileMatrixRaw tileData = new TileMatrixRaw(0, 0);
+            TileMatrixClient tileData = new TileMatrixClient(0, 0);
 
             Map map = new Map(0);
 
@@ -62,7 +62,7 @@ namespace ExamplePlugin
 
         private Dictionary<int, int> m_StaticCounts;
 
-        private void ParseMapBlock(TileMatrixRaw tileData, uint x, uint y)
+        private void ParseMapBlock(TileMatrixClient tileData, uint x, uint y)
         {
             byte[] groundData = tileData.GetLandBlock(x, y);
             byte[] staticsData = tileData.GetStaticBlock(x, y);

@@ -64,7 +64,7 @@ namespace UltimaXNA.Ultima.World.Maps
             Tiles = null;
         }
 
-        public void Load(TileMatrixRaw tileData, Map map)
+        public void Load(TileMatrixClient tileData, Map map)
         {
             // get data from the tile Matrix
             byte[] groundData = tileData.GetLandBlock(BlockX, BlockY);
