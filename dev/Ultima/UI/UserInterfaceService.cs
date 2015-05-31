@@ -557,7 +557,7 @@ namespace UltimaXNA.Ultima.UI
 
         private void DoDragControl(Point mousePosition)
         {
-            ClipMouse(ref mousePosition.X, ref mousePosition.Y);
+            ClipMouseForDragging(ref mousePosition.X, ref mousePosition.Y);
             int deltaX = mousePosition.X - m_DragOriginX;
             int deltaY = mousePosition.Y - m_DragOriginY;
             m_DraggingControl.Position = new Point(m_DraggingControl.X + deltaX, m_DraggingControl.Y + deltaY);
@@ -572,19 +572,16 @@ namespace UltimaXNA.Ultima.UI
             m_IsDragging = false;
         }
 
-        private void ClipMouse(ref int x, ref int y)
+        private void ClipMouseForDragging(ref int x, ref int y)
         {
-            UltimaEngine engine = UltimaServices.GetService<UltimaEngine>();
-            Rectangle window = engine.Window.ClientBounds;
-
             if (x < -8)
                 x = -8;
             if (y < -8)
                 y = -8;
-            if (x >= window.Width + 8)
-                x = window.Width + 8;
-            if (y >= window.Height + 8)
-                y = window.Height + 8;
+            if (x >= Width + 8)
+                x = Width + 8;
+            if (y >= Height + 8)
+                y = Height + 8;
         }
     }
 }
