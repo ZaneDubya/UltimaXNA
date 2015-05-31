@@ -189,6 +189,7 @@
     <Compile Include="Ultima\Data\TileFlags.cs" />
     <Compile Include="Ultima\Entities\Mobiles\MobileSounds.cs" />
     <Compile Include="Ultima\Entities\Mobiles\MovementSpeed.cs" />
+    <Compile Include="Ultima\IO\StaticTile.cs" />
     <Compile Include="Ultima\Login\LoginModel.cs" />
     <Compile Include="Ultima\Network\Client\UOSEKeepAlivePacket.cs" />
     <Compile Include="Ultima\Player\PlayerState.cs" />
@@ -392,9 +393,6 @@
     <Compile Include="Ultima\IO\ParticleData.cs" />
     <Compile Include="Ultima\IO\SkillsData.cs" />
     <Compile Include="Ultima\IO\SpeechData.cs" />
-    <Compile Include="Ultima\IO\TileMatrix.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Ultima\IO\TileMatrixClient.cs" />
     <Compile Include="Ultima\World\Controllers\WorldInput.cs" />
     <Compile Include="Ultima\UI\HTML\Regions.cs" />
@@ -477,7 +475,6 @@
     <Compile Include="Ultima\UI\Controls\TextLabelAsciiCropped.cs" />
     <Compile Include="Ultima\UI\Controls\TilePic.cs" />
     <Compile Include="Ultima\UI\UserInterfaceService.cs" />
-    <Compile Include="Ultima\IO\StaticTileList.cs" />
     <Compile Include="Ultima\IO\TexmapData.cs" />
     <Compile Include="Ultima\IO\TileData.cs" />
     <Compile Include="Ultima\IO\TileMatrixClientPatch.cs" />
