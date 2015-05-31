@@ -27,6 +27,10 @@ namespace UltimaXNA.Ultima.UI
         Serial m_GumpID;
         string[] m_gumpPieces, m_gumpLines;
         UserInterfaceService m_UserInterface;
+        protected UserInterfaceService UserInterface
+        {
+            get { return m_UserInterface; }
+        }
 
         /// <summary>
         /// If true, gump will not be moved.

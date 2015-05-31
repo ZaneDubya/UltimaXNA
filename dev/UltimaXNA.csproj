@@ -457,7 +457,6 @@
     <Compile Include="Ultima\UI\Controls\ColorPicker.cs" />
     <Compile Include="Ultima\UI\Controls\CroppedText.cs" />
     <Compile Include="Ultima\UI\Controls\DropDownList.cs" />
-    <Compile Include="Ultima\UI\DragWidget.cs" />
     <Compile Include="Ultima\UI\Controls\ItemGumplingPaperdoll.cs" />
     <Compile Include="Ultima\UI\Controls\ItemGumpling.cs" />
     <Compile Include="Ultima\UI\Controls\PaperdollLargeUninteractable.cs" />

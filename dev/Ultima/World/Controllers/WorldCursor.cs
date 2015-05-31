@@ -67,7 +67,7 @@ namespace UltimaXNA.Ultima.World.Controllers
                     // 2. Gumps that represent open Containers (GumpPicContainers, e.g. an open GumpPic of a chest)
                     // 3. Paperdolls for my character.
                     // 4. Backpack gumppics (seen in paperdolls).
-                    if (target is ItemGumpling)
+                    if (target is ItemGumpling && !(target is ItemGumplingPaperdoll))
                     {
                         Item targetItem = ((ItemGumpling)target).Item;
                         if (targetItem.ItemData.IsContainer)

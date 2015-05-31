@@ -54,12 +54,6 @@ namespace UltimaXNA.Ultima.World.Gumps
             m_AmountEntry.Hue = 1001;
         }
 
-        protected override void OnInitialize()
-        {
-            base.OnInitialize();
-
-        }
-
         public override void Update(double totalMS, double frameMS)
         {
             // update children controls first

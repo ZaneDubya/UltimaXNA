@@ -287,6 +287,7 @@ namespace UltimaXNA.Ultima.UI
             IsEnabled = true;
             IsInitialized = true;
             IsVisible = true;
+            InitializeChildren();
             OnInitialize();
         }
 
@@ -305,10 +306,11 @@ namespace UltimaXNA.Ultima.UI
             m_Area.X = X;
             m_Area.Y = Y;
 
+            InitializeChildren();
             UpdateChildren(totalMS, frameMS);
         }
 
-        private void UpdateChildren(double totalMS, double frameMS)
+        private void InitializeChildren()
         {
             bool newlyInitializedChildReceivedKeyboardFocus = false;
 
@@ -323,6 +325,13 @@ namespace UltimaXNA.Ultima.UI
                         newlyInitializedChildReceivedKeyboardFocus = true;
                     }
                 }
+            }
+        }
+
+        private void UpdateChildren(double totalMS, double frameMS)
+        {
+            foreach (AControl c in Children)
+            {
                 c.Update(totalMS, frameMS);
             }
 
@@ -379,17 +388,10 @@ namespace UltimaXNA.Ultima.UI
                     c.Dispose();
         }
 
-        DragWidget m_Dragger;
         public void MakeThisADragger()
         {
             HandlesMouseInput = true;
-            AControl dragTarget = this;
-            while (dragTarget.Owner != null)
-            {
-                dragTarget = dragTarget.Owner;
-            }
-
-            m_Dragger = new DragWidget(this, dragTarget);
+            IsMovable = true;
         }
 
 

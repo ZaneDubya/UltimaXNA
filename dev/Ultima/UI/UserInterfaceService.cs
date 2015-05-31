@@ -311,8 +311,15 @@ namespace UltimaXNA.Ultima.UI
             AControl focusedControl = InternalGetMouseOverControl();
             if ((MouseOverControl != null) && (focusedControl != MouseOverControl))
                 MouseOverControl.MouseOut(m_Input.MousePosition);
+
             if (focusedControl != null)
+            {
                 focusedControl.MouseOver(m_Input.MousePosition);
+                if (m_MouseDownControl[0] == focusedControl)
+                    AttemptDragControl(focusedControl, m_Input.MousePosition);
+                if (IsDraggingControl)
+                    DoDragControl(m_Input.MousePosition);
+            }
 
             // Set the new MouseOverControl.
             m_MouseOverControl = focusedControl;
@@ -321,7 +328,9 @@ namespace UltimaXNA.Ultima.UI
             for (int iButton = 0; iButton < 5; iButton++)
             {
                 if ((m_MouseDownControl[iButton] != null) && (m_MouseDownControl[iButton] != focusedControl))
+                {
                     m_MouseDownControl[iButton].MouseOver(m_Input.MousePosition);
+                }
             }
 
             // The cursor and world input objects occasionally must block input events from reaching the UI:
@@ -359,6 +368,9 @@ namespace UltimaXNA.Ultima.UI
                     //      send that MouseDowned control a MouseUp event (but it does not receive MouseClick).
                     // If there is NOT a currently focused control, then simply inform the control that was MouseDowned on
                     // with this button that the button has been released, by sending it a MouseUp event.
+
+                    if (IsDraggingControl)
+                        EndDragControl(e.Position);
 
                     if (focusedControl != null)
                     {
@@ -403,6 +415,11 @@ namespace UltimaXNA.Ultima.UI
 
         private AControl InternalGetMouseOverControl()
         {
+            if (IsDraggingControl)
+            {
+                return m_DraggingControl;
+            }
+
             List<AControl> possibleControls;
             if (IsModalControlOpen)
             {
@@ -485,6 +502,80 @@ namespace UltimaXNA.Ultima.UI
         {
             if (m_InputBlockingObjects.Contains(obj))
                 m_InputBlockingObjects.Remove(obj);
+        }
+
+        // ======================================================================
+        // Control dragging
+        // ======================================================================
+
+        private AControl m_DraggingControl = null;
+        private bool m_IsDragging = false;
+        private int m_DragOriginX, m_DragOriginY;
+
+        public bool IsDraggingControl
+        {
+            get { return m_IsDragging; }
+        }
+
+        public void AttemptDragControl(AControl control, Point mousePosition)
+        {
+            AControl dragTarget = control;
+            if (!dragTarget.IsMovable)
+                return;
+
+            while (dragTarget.Owner != null)
+                dragTarget = dragTarget.Owner;
+
+            if (dragTarget.IsMovable)
+            {
+                if (m_DraggingControl == dragTarget)
+                {
+                    int deltaX = mousePosition.X - m_DragOriginX;
+                    int deltaY = mousePosition.Y - m_DragOriginY;
+                    if (Math.Abs(deltaX) + Math.Abs(deltaY) > 4)
+                    {
+                        m_IsDragging = true;
+                    }
+                }
+                else
+                {
+                    m_DraggingControl = dragTarget;
+                    m_DragOriginX = mousePosition.X;
+                    m_DragOriginY = mousePosition.Y;
+                }
+            }
+        }
+
+        private void DoDragControl(Point mousePosition)
+        {
+            ClipMouse(ref mousePosition.X, ref mousePosition.Y);
+            int deltaX = mousePosition.X - m_DragOriginX;
+            int deltaY = mousePosition.Y - m_DragOriginY;
+            m_DraggingControl.Position = new Point(m_DraggingControl.X + deltaX, m_DraggingControl.Y + deltaY);
+            m_DragOriginX = mousePosition.X;
+            m_DragOriginY = mousePosition.Y;
+        }
+
+        public void EndDragControl(Point mousePosition)
+        {
+            DoDragControl(mousePosition);
+            m_DraggingControl = null;
+            m_IsDragging = false;
+        }
+
+        private void ClipMouse(ref int x, ref int y)
+        {
+            UltimaEngine engine = UltimaServices.GetService<UltimaEngine>();
+            Rectangle window = engine.Window.ClientBounds;
+
+            if (x < -8)
+                x = -8;
+            if (y < -8)
+                y = -8;
+            if (x >= window.Width + 8)
+                x = window.Width + 8;
+            if (y >= window.Height + 8)
+                y = window.Height + 8;
         }
     }
 }
