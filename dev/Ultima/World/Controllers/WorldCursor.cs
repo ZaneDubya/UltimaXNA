@@ -468,7 +468,9 @@ namespace UltimaXNA.Ultima.World.Controllers
             // if in a bag and is a quantity, then show the 'lift amount' prompt, else just lift it outright.
             if (item.Parent != null && !amount.HasValue && item.Amount > 1)
             {
-                m_UserInterface.AddControl(new SplitItemStackGump(item, new Point(x, y)), m_Input.MousePosition.X - 60, m_Input.MousePosition.Y - 30);
+                SplitItemStackGump gump = new SplitItemStackGump(item, new Point(x, y));
+                m_UserInterface.AddControl(gump, m_Input.MousePosition.X - 80, m_Input.MousePosition.Y - 40);
+                m_UserInterface.AttemptDragControl(gump, m_Input.MousePosition, true);
             }
             else
             {

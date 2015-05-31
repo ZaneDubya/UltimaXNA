@@ -517,8 +517,11 @@ namespace UltimaXNA.Ultima.UI
             get { return m_IsDragging; }
         }
 
-        public void AttemptDragControl(AControl control, Point mousePosition)
+        public void AttemptDragControl(AControl control, Point mousePosition, bool attemptAlwaysSuccessful = false)
         {
+            if (IsDraggingControl)
+                return;
+
             AControl dragTarget = control;
             if (!dragTarget.IsMovable)
                 return;
@@ -528,11 +531,17 @@ namespace UltimaXNA.Ultima.UI
 
             if (dragTarget.IsMovable)
             {
+                if (attemptAlwaysSuccessful)
+                {
+                    m_DraggingControl = dragTarget;
+                    m_DragOriginX = mousePosition.X;
+                    m_DragOriginY = mousePosition.Y;
+                }
                 if (m_DraggingControl == dragTarget)
                 {
                     int deltaX = mousePosition.X - m_DragOriginX;
                     int deltaY = mousePosition.Y - m_DragOriginY;
-                    if (Math.Abs(deltaX) + Math.Abs(deltaY) > 4)
+                    if (attemptAlwaysSuccessful || Math.Abs(deltaX) + Math.Abs(deltaY) > 4)
                     {
                         m_IsDragging = true;
                     }
@@ -556,7 +565,7 @@ namespace UltimaXNA.Ultima.UI
             m_DragOriginY = mousePosition.Y;
         }
 
-        public void EndDragControl(Point mousePosition)
+        private void EndDragControl(Point mousePosition)
         {
             DoDragControl(mousePosition);
             m_DraggingControl = null;
