@@ -498,6 +498,8 @@ namespace UltimaXNA.Ultima.World.Controllers
                     item.Parent = null;
                 }
 
+                // set the amount
+                item.Amount = amount;
                 // set our local holding item variables.
                 HeldItem = item;
                 m_HeldItemOffset = new Point(x, y);
