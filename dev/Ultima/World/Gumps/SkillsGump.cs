@@ -164,9 +164,9 @@ namespace UltimaXNA.Ultima.World.Gumps
         }
 
         // 0 = skill index, 1 = skill name
-        const string kSkillName_HasUseButton = "<left><a href='skill={0}' color='5b4f29' hovercolor='857951' activecolor='402708' text-decoration=none>" +
+        const string kSkillName_HasUseButton = "<left><a href='skill={0}' color='#5b4f29' hovercolor='#857951' activecolor='#402708' text-decoration=none>" +
                         "<gumpimg src='2103' hoversrc='2104' activesrc='2103'/><span width='2'/>{1}</a></left>";
-        const string kSkillName_NoUseButton = "<left><span width='14'/><medium color=50422D>{1}</medium></left>";
+        const string kSkillName_NoUseButton = "<left><span width='14'/><medium color=#50422D>{1}</medium></left>";
         // 0 = skill value
         static string[] kSkillValues = new string[3] {
             "<right>{0:0.0}<gumpimg src='2436'/></right><br/>",
