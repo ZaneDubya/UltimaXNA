@@ -465,7 +465,7 @@
     <Compile Include="Ultima\UI\Controls\GumpPic.cs" />
     <Compile Include="Ultima\UI\Controls\GumpPicContainer.cs" />
     <Compile Include="Ultima\UI\Controls\GumpPicTiled.cs" />
-    <Compile Include="Ultima\UI\Controls\HtmlGump.cs" />
+    <Compile Include="Ultima\UI\Controls\HtmlGumpling.cs" />
     <Compile Include="Ultima\UI\Controls\ResizePic.cs" />
     <Compile Include="Ultima\UI\Controls\HSliderBar.cs" />
     <Compile Include="Ultima\UI\Controls\TextEntry.cs" />

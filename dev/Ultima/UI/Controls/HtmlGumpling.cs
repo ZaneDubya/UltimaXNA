@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   HtmlGump.cs
+ *   HtmlGumpling.cs
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -7,17 +7,17 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using System;
+#region using
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using System;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Ultima.UI.HTML;
-using UltimaXNA.Ultima.UI;
+#endregion
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
-    public class HtmlGump : AControl
+    public class HtmlGumpling : AControl
     {
         public int ScrollX = 0, ScrollY = 0;
         ScrollBar m_scrollbar;
@@ -102,13 +102,13 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         RenderedText m_RenderedText;
 
-        public HtmlGump(AControl owner, int page)
+        public HtmlGumpling(AControl owner, int page)
             : base(owner, page)
         {
             m_textChanged = true;
         }
 
-        public HtmlGump(AControl owner, int page, string[] arguements, string[] lines)
+        public HtmlGumpling(AControl owner, int page, string[] arguements, string[] lines)
             : this(owner, page)
         {
             int x, y, width, height, textIndex, background, scrollbar;
@@ -123,7 +123,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             buildGumpling(x, y, width, height, background, scrollbar, "<font color=#000>" + lines[textIndex]);
         }
 
-        public HtmlGump(AControl owner, int page, int x, int y, int width, int height, int background, int scrollbar, string text)
+        public HtmlGumpling(AControl owner, int page, int x, int y, int width, int height, int background, int scrollbar, string text)
             : this(owner, page)
         {
             buildGumpling(x, y, width, height, background, scrollbar, text);

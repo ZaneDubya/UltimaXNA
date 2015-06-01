@@ -23,7 +23,7 @@ namespace UltimaXNA.Ultima.World.Gumps
     {
         ContainerData m_data;
         Container m_item;
-        HtmlGump m_tickerText;
+        HtmlGumpling m_tickerText;
         int m_updateTicker = 0;
         public Serial ContainerSerial { get { return m_item.Serial; } }
 
@@ -36,7 +36,7 @@ namespace UltimaXNA.Ultima.World.Gumps
 
             AddControl(new GumpPicContainer(this, 0, 0, 0, m_data.GumpID, 0, m_item));
 
-            m_tickerText = (HtmlGump)AddControl(new HtmlGump(this, 0, 50, 50, 0, 0, 0, 0, string.Empty));
+            m_tickerText = (HtmlGumpling)AddControl(new HtmlGumpling(this, 0, 50, 50, 0, 0, 0, 0, string.Empty));
         }
 
         public override void Update(double totalMS, double frameMS)

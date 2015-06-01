@@ -192,7 +192,7 @@ namespace UltimaXNA.Ultima.UI
                         // HtmlGump [x] [y] [width] [height] [text-id] [background] [scrollbar]
                         // Defines a text-area where Html-commands are allowed.
                         // [background] and [scrollbar] can be 0 or 1 and define whether the background is transparent and a scrollbar is displayed.
-                        AddControl(new Controls.HtmlGump(this, currentGUMPPage, gumpParams, gumpLines));
+                        AddControl(new Controls.HtmlGumpling(this, currentGUMPPage, gumpParams, gumpLines));
                         break;
                     case "page":
                         // Page [Number]
@@ -269,17 +269,17 @@ namespace UltimaXNA.Ultima.UI
                     case "xmfhtmlgump":
                         // XmfHtmlGump [x] [y] [width] [height] [cliloc-nr] [background] [scrollbar]
                         // Similar to the htmlgump command, but in place of the [text-id] a CliLoc entry is used.
-                        AddControl(new Controls.HtmlGump(this, currentGUMPPage, int.Parse(gumpParams[1]), int.Parse(gumpParams[2]), int.Parse(gumpParams[3]), int.Parse(gumpParams[4]),
+                        AddControl(new Controls.HtmlGumpling(this, currentGUMPPage, int.Parse(gumpParams[1]), int.Parse(gumpParams[2]), int.Parse(gumpParams[3]), int.Parse(gumpParams[4]),
                             int.Parse(gumpParams[6]), int.Parse(gumpParams[7]), 
                             "<font color=#000>" + IO.StringData.Entry(int.Parse(gumpParams[5]))));
                         break;
                     case "xmfhtmlgumpcolor":
                         // XmfHtmlGumpColor [x] [y] [width] [height] [cliloc-nr] [background] [scrollbar] [color]
                         // Similar to the xmfhtmlgump command, but additionally a [color] can be specified.
-                        AddControl(new Controls.HtmlGump(this, currentGUMPPage, int.Parse(gumpParams[1]), int.Parse(gumpParams[2]), int.Parse(gumpParams[3]), int.Parse(gumpParams[4]),
+                        AddControl(new Controls.HtmlGumpling(this, currentGUMPPage, int.Parse(gumpParams[1]), int.Parse(gumpParams[2]), int.Parse(gumpParams[3]), int.Parse(gumpParams[4]),
                             int.Parse(gumpParams[6]), int.Parse(gumpParams[7]), 
                             string.Format("<font color=#{0}>{1}", Utility.GetColorFromUshortColor(ushort.Parse(gumpParams[8])), IO.StringData.Entry(int.Parse(gumpParams[5])))));
-                        (LastControl as Controls.HtmlGump).Hue = 0;
+                        (LastControl as Controls.HtmlGumpling).Hue = 0;
                         break;
                     case "xmfhtmltok":
                         // XmfHtmlTok [x] [y] [width] [height] [background] [scrollbar] [color] [cliloc-nr] @[arguments]@
@@ -302,11 +302,11 @@ namespace UltimaXNA.Ultima.UI
                                 }
                             }
                         }
-                        AddControl(new Controls.HtmlGump(this, currentGUMPPage, 
+                        AddControl(new Controls.HtmlGumpling(this, currentGUMPPage, 
                             int.Parse(gumpParams[1]), int.Parse(gumpParams[2]), int.Parse(gumpParams[3]), int.Parse(gumpParams[4]),
                             int.Parse(gumpParams[5]), int.Parse(gumpParams[6]), 
                             string.Format("<font color=#{0}>{1}", Utility.GetColorFromUshortColor(ushort.Parse(gumpParams[7])), messageWithArgs)));
-                        (LastControl as Controls.HtmlGump).Hue = 0;
+                        (LastControl as Controls.HtmlGumpling).Hue = 0;
                         Tracer.Warn(string.Format("GUMP: Unhandled {0}.", gumpParams[0]));
                         break;
                     case "tooltip":

@@ -37,7 +37,7 @@ namespace UltimaXNA.Ultima.Login.Gumps
 
         int m_charSelected = -1;
         int m_charListUpdate = -1;
-        HtmlGump[] m_characterNames;
+        HtmlGumpling[] m_characterNames;
 
         public CharacterListGump()
             : base(0, 0)
@@ -86,12 +86,12 @@ namespace UltimaXNA.Ultima.Login.Gumps
             if (Characters.UpdateValue != m_charListUpdate)
             {
                 int entryIndex = 0;
-                m_characterNames = new HtmlGump[Characters.Length];
+                m_characterNames = new HtmlGumpling[Characters.Length];
                 foreach (CharacterListEntry e in Characters.List)
                 {
                     if (e.Name != string.Empty)
                     {
-                        m_characterNames[entryIndex] = new HtmlGump(this, 1, 228, 154 + 40 * entryIndex, 272, 22, 0, 0, formatHTMLCharName(entryIndex, e.Name, (m_charSelected == entryIndex ? 431 : 1278)));
+                        m_characterNames[entryIndex] = new HtmlGumpling(this, 1, 228, 154 + 40 * entryIndex, 272, 22, 0, 0, formatHTMLCharName(entryIndex, e.Name, (m_charSelected == entryIndex ? 431 : 1278)));
                         AddControl(new ResizePic(this, m_characterNames[entryIndex]));
                         AddControl(m_characterNames[entryIndex]);
                     }
