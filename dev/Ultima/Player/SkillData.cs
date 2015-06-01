@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   Skills.cs
+ *   SkillData.cs
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -7,26 +7,31 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+#region usings
+using System;
 using System.Collections.Generic;
+#endregion
 
 namespace UltimaXNA.Ultima.Player
 {
     public class SkillData
     {
-        Dictionary<int, SkillEntry> m_skills = new Dictionary<int,SkillEntry>();
-        bool m_skillsLoaded = false;
+        public Action<SkillEntry> OnSkillChanged = null;
+
+        private Dictionary<int, SkillEntry> m_Skills = new Dictionary<int,SkillEntry>();
+        private bool m_SkillsLoaded = false;
 
         public Dictionary<int, SkillEntry> List
         {
             get
             {
-                if (!m_skillsLoaded)
+                if (!m_SkillsLoaded)
                 {
-                    m_skillsLoaded = true;
+                    m_SkillsLoaded = true;
                     foreach (IO.Skill skill in IO.SkillsData.List)
-                        m_skills.Add(skill.ID, new SkillEntry(skill.ID, skill.Index, skill.UseButton, skill.Name, 0.0f, 0.0f, 0, 0.0f));
+                        m_Skills.Add(skill.ID, new SkillEntry(skill.ID, skill.Index, skill.UseButton, skill.Name, 0.0f, 0.0f, 0, 0.0f));
                 }
-                return m_skills;
+                return m_Skills;
             }
         }
 

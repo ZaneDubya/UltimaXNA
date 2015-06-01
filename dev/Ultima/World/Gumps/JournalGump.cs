@@ -23,7 +23,6 @@ namespace UltimaXNA.Ultima.World.Gumps
         private ExpandableScroll m_Background;
         private List<RenderedText> m_JournalEntries;
         private ScrollBar m_ScrollBar;
-        private int m_EntriesHeight;
 
         public JournalGump()
             : base(0, 0)
@@ -51,7 +50,7 @@ namespace UltimaXNA.Ultima.World.Gumps
             base.Update(totalMS, frameMS);
 
             m_ScrollBar.Position = new Point(Width - 45, 35);
-            m_EntriesHeight = m_ScrollBar.Height = Height - 100;
+            m_ScrollBar.Height = Height - 100;
             CalculateScrollBarMaxValue();
             m_ScrollBar.IsVisible = m_ScrollBar.MaxValue > m_ScrollBar.MinValue;
         }
@@ -62,7 +61,7 @@ namespace UltimaXNA.Ultima.World.Gumps
 
             Point p = new Point(position.X + 36, position.Y + 35);
             int height = 0;
-            int maxheight = m_ScrollBar.Value + m_EntriesHeight;
+            int maxheight = m_ScrollBar.Value + m_ScrollBar.Height;
 
             for (int i = 0; i < m_JournalEntries.Count; i++)
             {
@@ -91,7 +90,7 @@ namespace UltimaXNA.Ultima.World.Gumps
                 else
                 {
                     int y = maxheight - height;
-                    m_JournalEntries[i].Draw(spriteBatch, new Rectangle(p.X, position.Y + 35 + m_EntriesHeight - y, m_JournalEntries[i].Width, y), 0, 0);
+                    m_JournalEntries[i].Draw(spriteBatch, new Rectangle(p.X, position.Y + 35 + m_ScrollBar.Height - y, m_JournalEntries[i].Width, y), 0, 0);
                     // can't fit any more entries - so we break!
                     break;
                 }
@@ -109,7 +108,7 @@ namespace UltimaXNA.Ultima.World.Gumps
                 height += m_JournalEntries[i].Height;
             }
 
-            height -= m_EntriesHeight;
+            height -= m_ScrollBar.Height;
 
             if (height > 0)
             {
@@ -122,7 +121,6 @@ namespace UltimaXNA.Ultima.World.Gumps
                 m_ScrollBar.MaxValue = 0;
                 m_ScrollBar.Value = 0;
             }
-
         }
 
         private void AddJournalEntry(string text)
