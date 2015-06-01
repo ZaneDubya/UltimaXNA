@@ -40,11 +40,6 @@ namespace UltimaXNA.Ultima.World.Gumps
             base.OnInitialize();
         }
 
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
         public override void Update(double totalMS, double frameMS)
         {
             base.Update(totalMS, frameMS);

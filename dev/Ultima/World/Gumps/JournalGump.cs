@@ -20,20 +20,21 @@ namespace UltimaXNA.Ultima.World.Gumps
 {
     class JournalGump : Gump
     {
-        ExpandableScroll m_Background;
-        List<RenderedText> m_JournalEntries;
-        ScrollBar m_ScrollBar;
+        private ExpandableScroll m_Background;
+        private List<RenderedText> m_JournalEntries;
+        private ScrollBar m_ScrollBar;
         private int m_EntriesHeight;
 
         public JournalGump()
             : base(0, 0)
         {
+            IsMovable = true;
+
             AddControl(m_Background = new ExpandableScroll(this, 0, 0, 0, 300));
             m_Background.TitleGumpID = 0x82A;
 
             AddControl(m_ScrollBar = new ScrollBar(this, 0));
             m_ScrollBar.IsVisible = false;
-            IsMovable = true;
         }
 
         protected override void OnInitialize()
@@ -43,11 +44,6 @@ namespace UltimaXNA.Ultima.World.Gumps
             m_JournalEntries = new List<RenderedText>();
             InitializeJournalEntries();
             PlayerState.Journaling.OnJournalEntryAdded += AddJournalEntry;
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
         }
 
         public override void Update(double totalMS, double frameMS)

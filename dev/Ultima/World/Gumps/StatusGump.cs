@@ -93,11 +93,6 @@ namespace UltimaXNA.Ultima.World.Gumps
             base.OnInitialize();
         }
 
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
         public override void Update(double totalMS, double frameMS)
         {
             if (m_RefreshTime + 0.5d < totalMS) //need to update

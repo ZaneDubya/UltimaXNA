@@ -19,20 +19,26 @@ namespace UltimaXNA.Ultima.World.Gumps
 {
     class SkillsGump : Gump
     {
-        private ExpandableScroll m_scroll;
-        private HtmlGump m_list;
+        private ExpandableScroll m_Background;
+        private ScrollBar m_ScrollBar;
+        private HtmlGump m_SkillsList;
 
         private WorldModel m_World;
 
         public SkillsGump()
             : base(0, 0)
         {
+            IsMovable = true;
+
             m_World = UltimaServices.GetService<WorldModel>();
 
-            AddControl(m_scroll = new ExpandableScroll(this, 0, 0, 0, 200));
-            m_scroll.TitleGumpID = 0x834;
+            AddControl(m_Background = new ExpandableScroll(this, 0, 0, 0, 200));
+            m_Background.TitleGumpID = 0x834;
 
-            AddControl(m_list = new HtmlGump(this, 0, 10, 20, 180, 100, 0, 1, ""));
+            AddControl(m_ScrollBar = new ScrollBar(this, 0));
+            m_ScrollBar.IsVisible = false;
+
+            AddControl(m_SkillsList = new HtmlGump(this, 0, 10, 20, 180, 100, 0, 1, string.Empty));
         }
 
         protected override void OnInitialize()
@@ -41,17 +47,12 @@ namespace UltimaXNA.Ultima.World.Gumps
             base.OnInitialize();
         }
 
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
         public override void Update(double totalMS, double frameMS)
         {
-            m_list.Position = new Point(26, 33);
-            m_list.Width = Width - 56;
-            m_list.Height = Height - 95;
-            m_list.Text = buildSkillsString();
+            m_SkillsList.Position = new Point(26, 33);
+            m_SkillsList.Width = Width - 56;
+            m_SkillsList.Height = Height - 95;
+            m_SkillsList.Text = buildSkillsString();
             base.Update(totalMS, frameMS);
         }
 
@@ -64,7 +65,7 @@ namespace UltimaXNA.Ultima.World.Gumps
                         return;
                 m_World.Interaction.UseSkill(skillIndex);
             }
-            m_list.Text = buildSkillsString();
+            m_SkillsList.Text = buildSkillsString();
             base.ActivateByHREF(href);
         }
 
