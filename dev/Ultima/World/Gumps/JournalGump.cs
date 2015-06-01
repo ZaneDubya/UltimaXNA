@@ -39,9 +39,6 @@ namespace UltimaXNA.Ultima.World.Gumps
         protected override void OnInitialize()
         {
             SetSavePositionName("journal");
-            base.OnInitialize();
-
-            
 
             m_JournalEntries = new List<RenderedText>();
             InitializeJournalEntries();

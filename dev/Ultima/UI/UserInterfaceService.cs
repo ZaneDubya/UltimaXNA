@@ -369,8 +369,7 @@ namespace UltimaXNA.Ultima.UI
                     // If there is NOT a currently focused control, then simply inform the control that was MouseDowned on
                     // with this button that the button has been released, by sending it a MouseUp event.
 
-                    if (IsDraggingControl)
-                        EndDragControl(e.Position);
+                    EndDragControl(e.Position);
 
                     if (focusedControl != null)
                     {
@@ -557,6 +556,9 @@ namespace UltimaXNA.Ultima.UI
 
         private void DoDragControl(Point mousePosition)
         {
+            if (m_DraggingControl == null)
+                return;
+
             ClipMouseForDragging(ref mousePosition.X, ref mousePosition.Y);
             int deltaX = mousePosition.X - m_DragOriginX;
             int deltaY = mousePosition.Y - m_DragOriginY;
@@ -567,7 +569,8 @@ namespace UltimaXNA.Ultima.UI
 
         private void EndDragControl(Point mousePosition)
         {
-            DoDragControl(mousePosition);
+            if (m_IsDragging)
+                DoDragControl(mousePosition);
             m_DraggingControl = null;
             m_IsDragging = false;
         }
