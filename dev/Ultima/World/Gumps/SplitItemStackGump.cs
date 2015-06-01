@@ -41,7 +41,7 @@ namespace UltimaXNA.Ultima.World.Gumps
             // Background
             AddControl(new GumpPic(this, 0, 0, 0, 0x085c, 0));
             // Slider
-            m_Slider = (HSliderBar)AddControl(new HSliderBar(this, 0, 30, 16, 104, 1, item.Amount, item.Amount, HSliderBarStyle.BlueWidgetNoBar));
+            m_Slider = (HSliderBar)AddControl(new HSliderBar(this, 0, 30, 16, 104, 0, item.Amount, item.Amount, HSliderBarStyle.BlueWidgetNoBar));
             m_LastValue = m_Slider.Value;
             // Ok button
             AddControl(new Button(this, 1, 102, 38, 0x085d, 0x085e, ButtonTypes.Default, 0, 0));
@@ -52,6 +52,7 @@ namespace UltimaXNA.Ultima.World.Gumps
             m_AmountEntry.HtmlTag = "<big>";
             m_AmountEntry.LegacyCarat = true;
             m_AmountEntry.Hue = 1001;
+            m_AmountEntry.ReplaceDefaultTextOnFirstKeypress = true;
         }
 
         public override void Update(double totalMS, double frameMS)
@@ -73,7 +74,6 @@ namespace UltimaXNA.Ultima.World.Gumps
                 if (m_AmountEntry.Text.Length == 0)
                 {
                     m_Slider.Value = m_Slider.MinValue;
-                    m_AmountEntry.Text = m_Slider.Value.ToString();
                 }
                 else if (!int.TryParse(m_AmountEntry.Text, out textValue))
                 {
@@ -98,8 +98,21 @@ namespace UltimaXNA.Ultima.World.Gumps
 
         private void ClickOkayButton(int x, int y, MouseButton button)
         {
-            WorldModel world = UltimaServices.GetService<WorldModel>();
-            world.Interaction.PickupItem(Item, m_PickupOffset, m_Slider.Value);
+            if (m_Slider.Value > 0)
+            {
+                WorldModel world = UltimaServices.GetService<WorldModel>();
+                world.Interaction.PickupItem(Item, m_PickupOffset, m_Slider.Value);
+            }
+            Dispose();
+        }
+
+        public override void ActivateByKeyboardReturn(int textID, string text)
+        {
+            if (m_Slider.Value > 0)
+            {
+                WorldModel world = UltimaServices.GetService<WorldModel>();
+                world.Interaction.PickupItem(Item, m_PickupOffset, m_Slider.Value);
+            }
             Dispose();
         }
     }

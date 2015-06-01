@@ -22,6 +22,8 @@ namespace UltimaXNA.Ultima.UI.Controls
         public int EntryID = 0;
         public int LimitSize = 0;
         public bool IsPasswordField = false;
+        public bool ReplaceDefaultTextOnFirstKeypress = false;
+        public string HtmlTag = string.Empty;
 
         public string Text
         {
@@ -29,18 +31,19 @@ namespace UltimaXNA.Ultima.UI.Controls
             set;
         }
 
-        public string HtmlTag = string.Empty;
+        public bool LegacyCarat
+        {
+            get;
+            set;
+        }
 
-        bool m_legacyCarat = false;
-        public bool LegacyCarat { get { return m_legacyCarat; } set { m_legacyCarat = value; } }
+        private bool m_IsFocused = false;
+        private bool m_CaratBlinkOn = false;
+        private float m_MSSinceLastCaratBlink = 0f;
+        private const float c_MSBetweenCaratBlinks = 500f;
 
-        bool m_isFocused = false;
-        bool m_caratBlinkOn = false;
-        float m_MSSinceLastCaratBlink = 0f;
-        const float c_MSBetweenCaratBlinks = 500f;
-
-        RenderedText m_RenderedText;
-        RenderedText m_Carat;
+        private RenderedText m_RenderedText;
+        private RenderedText m_Carat;
 
         private UserInterfaceService m_UserInterface;
 
@@ -85,7 +88,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             EntryID = entryID;
             Text = text;
             LimitSize = limitSize;
-            m_caratBlinkOn = false;
+            m_CaratBlinkOn = false;
             m_RenderedText = new RenderedText(string.Empty, 1024);
             m_Carat = new RenderedText(string.Empty, 16);
         }
@@ -96,35 +99,37 @@ namespace UltimaXNA.Ultima.UI.Controls
             {
                 // if we're not already focused, turn the carat on immediately.
                 // if we're using the legacy carat, keep it visible. Else blink it every x seconds.
-                if (!m_isFocused)
+                if (!m_IsFocused)
                 {
-                    m_isFocused = true;
-                    m_caratBlinkOn = true;
+                    m_IsFocused = true;
+                    m_CaratBlinkOn = true;
                     m_MSSinceLastCaratBlink = 0f;
                 }
-                if (m_legacyCarat)
-                    m_caratBlinkOn = true;
+                if (LegacyCarat)
+                {
+                    m_CaratBlinkOn = true;
+                }
                 else
                 {
                     m_MSSinceLastCaratBlink += ((float)frameMS);
                     if (m_MSSinceLastCaratBlink >= c_MSBetweenCaratBlinks)
                     {
                         m_MSSinceLastCaratBlink = 0;
-                        if (m_caratBlinkOn == true)
-                            m_caratBlinkOn = false;
+                        if (m_CaratBlinkOn == true)
+                            m_CaratBlinkOn = false;
                         else
-                            m_caratBlinkOn = true;
+                            m_CaratBlinkOn = true;
                     }
                 }
             }
             else
             {
-                m_isFocused = false;
-                m_caratBlinkOn = false;
+                m_IsFocused = false;
+                m_CaratBlinkOn = false;
             }
 
             m_RenderedText.Text = HtmlTag + (IsPasswordField ? new string('*', Text.Length) : Text);
-            m_Carat.Text = HtmlTag + (m_legacyCarat ? "_" : "|");
+            m_Carat.Text = HtmlTag + (LegacyCarat ? "_" : "|");
 
             base.Update(totalMS, frameMS);
         }
@@ -146,13 +151,19 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
 
 
-            if (m_caratBlinkOn)
+            if (m_CaratBlinkOn)
                 m_Carat.Draw(spriteBatch, caratPosition, Utility.GetHueVector(Hue));
             base.Draw(spriteBatch, position);
         }
 
         protected override void OnKeyboardInput(InputEventKeyboard e)
         {
+            if (ReplaceDefaultTextOnFirstKeypress)
+            {
+                Text = string.Empty;
+                ReplaceDefaultTextOnFirstKeypress = false;
+            }
+
             switch (e.KeyCode)
             {
                 case WinKeys.Back:
