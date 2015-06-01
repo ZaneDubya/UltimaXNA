@@ -20,8 +20,9 @@ namespace UltimaXNA.Ultima.UI.Controls
     {
         Texture2D[] m_gumpUpButton = null;
         Texture2D[] m_gumpDownButton = null;
+        Texture2D[] m_gumpBackground = null; 
         Texture2D m_gumpSlider = null;
-        Texture2D[] m_gumpBackground = null;
+        
 
         float m_SliderPosition;
 
@@ -69,6 +70,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             if (!IsInitialized)
                 return 0f;
+            LoadGumpTextures();
             return BarHeight - m_gumpUpButton[0].Height - m_gumpDownButton[0].Height - m_gumpSlider.Height - 0;
         }
 
@@ -127,21 +129,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         public override void Update(double totalMS, double frameMS)
         {
-            if (m_gumpSlider == null)
-            {
-                m_gumpUpButton = new Texture2D[2];
-                m_gumpUpButton[0] = IO.GumpData.GetGumpXNA(251);
-                m_gumpUpButton[1] = IO.GumpData.GetGumpXNA(250);
-                m_gumpDownButton = new Texture2D[2];
-                m_gumpDownButton[0] = IO.GumpData.GetGumpXNA(253);
-                m_gumpDownButton[1] = IO.GumpData.GetGumpXNA(252);
-                m_gumpBackground = new Texture2D[3];
-                m_gumpBackground[0] = IO.GumpData.GetGumpXNA(257);
-                m_gumpBackground[1] = IO.GumpData.GetGumpXNA(256);
-                m_gumpBackground[2] = IO.GumpData.GetGumpXNA(255);
-                m_gumpSlider = IO.GumpData.GetGumpXNA(254);
-                Size = new Point(m_gumpBackground[0].Width, BarHeight);
-            }
+            LoadGumpTextures();
 
             if (m_btnUpClicked || m_btnDownClicked)
             {
@@ -167,6 +155,25 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
 
             base.Update(totalMS, frameMS);
+        }
+
+        private void LoadGumpTextures()
+        {
+            if (m_gumpSlider == null)
+            {
+                m_gumpUpButton = new Texture2D[2];
+                m_gumpUpButton[0] = IO.GumpData.GetGumpXNA(251);
+                m_gumpUpButton[1] = IO.GumpData.GetGumpXNA(250);
+                m_gumpDownButton = new Texture2D[2];
+                m_gumpDownButton[0] = IO.GumpData.GetGumpXNA(253);
+                m_gumpDownButton[1] = IO.GumpData.GetGumpXNA(252);
+                m_gumpBackground = new Texture2D[3];
+                m_gumpBackground[0] = IO.GumpData.GetGumpXNA(257);
+                m_gumpBackground[1] = IO.GumpData.GetGumpXNA(256);
+                m_gumpBackground[2] = IO.GumpData.GetGumpXNA(255);
+                m_gumpSlider = IO.GumpData.GetGumpXNA(254);
+                Size = new Point(m_gumpBackground[0].Width, BarHeight);
+            }
         }
 
         public override void Draw(SpriteBatchUI spriteBatch, Point position)
