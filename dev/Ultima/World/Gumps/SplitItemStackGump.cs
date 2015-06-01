@@ -52,6 +52,7 @@ namespace UltimaXNA.Ultima.World.Gumps
             m_AmountEntry.HtmlTag = "<big>";
             m_AmountEntry.LegacyCarat = true;
             m_AmountEntry.Hue = 1001;
+            m_AmountEntry.ReplaceDefaultTextOnFirstKeypress = true;
         }
 
         public override void Update(double totalMS, double frameMS)
