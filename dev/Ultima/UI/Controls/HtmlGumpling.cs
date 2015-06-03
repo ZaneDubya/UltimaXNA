@@ -19,22 +19,20 @@ namespace UltimaXNA.Ultima.UI.Controls
 {
     public class HtmlGumpling : AControl
     {
-        public int ScrollX = 0, ScrollY = 0;
-        ScrollBar m_scrollbar;
+        private ScrollBar m_Scrollbar;
+        private RenderedText m_RenderedText;
 
-        string m_text = string.Empty;
-        bool m_textChanged = false;
+        private bool m_IsMouseDown = false;
+        private int m_MouseDownHREF = -1;
+        private int m_MouseOverHREF = -1;
+
+        public int ScrollX = 0;
+        public int ScrollY = 0;
+
         public string Text
         {
-            get { return m_text; }
-            set
-            {
-                if (value != m_text)
-                {
-                    m_textChanged = true;
-                    m_text = value;
-                }
-            }
+            get { return m_RenderedText.Text; }
+            set { m_RenderedText.Text = value; }
         }
 
         public int Hue
@@ -43,18 +41,16 @@ namespace UltimaXNA.Ultima.UI.Controls
             set;
         }
 
-        bool m_background = false;
-        public bool Background
+        public bool HasBackground
         {
-            get { return m_background; }
-            set { m_background = value; }
+            get;
+            set;
         }
 
-        bool m_hasScrollbar = false;
         public bool HasScrollbar
         {
-            get { return m_hasScrollbar; }
-            set { m_hasScrollbar = value; }
+            get;
+            set;
         }
 
         public override int Width
@@ -68,24 +64,8 @@ namespace UltimaXNA.Ultima.UI.Controls
                 if (value != base.Width)
                 {
                     base.Width = value;
-                    if (m_RenderedText != null)
-                    {
-                        m_RenderedText.MaxWidth = ContentWidth;
-                        m_textChanged = true;
-                    }
+                    m_RenderedText.MaxWidth = ContentWidth;
                 }
-            }
-        }
-
-        public override int Height
-        {
-            get
-            {
-                return base.Height;
-            }
-            set
-            {
-                base.Height = value;
             }
         }
 
@@ -100,12 +80,10 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        RenderedText m_RenderedText;
-
         public HtmlGumpling(AControl owner, int page)
             : base(owner, page)
         {
-            m_textChanged = true;
+
         }
 
         public HtmlGumpling(AControl owner, int page, string[] arguements, string[] lines)
@@ -135,11 +113,11 @@ namespace UltimaXNA.Ultima.UI.Controls
             Width = width;
             Size = new Point(width, height);
             Text = text;
-            m_background = (background == 1) ? true : false;
-            m_hasScrollbar = (scrollbar == 1) ? true : false;
-            m_RenderedText = new RenderedText(text, Width - (HasScrollbar ? 15 : 0) - (Background ? 8 : 0));
+            HasBackground = (background == 1) ? true : false;
+            HasScrollbar = (scrollbar == 1) ? true : false;
+            m_RenderedText = new RenderedText(text, Width - (HasScrollbar ? 15 : 0) - (HasBackground ? 8 : 0));
 
-            if (Background)
+            if (HasBackground)
             {
                 this.AddControl(new ResizePic(this, 0, 0, 0, 0x2486, Width - (HasScrollbar ? 15 : 0), Height));
                 LastControl.HandlesMouseInput = false;
@@ -148,28 +126,22 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         public override void Update(double totalMS, double frameMS)
         {
-            m_hrefOver = -1; // this value is changed every frame if we mouse over a region.
-
-            if (m_textChanged)
-            {
-                m_textChanged = false;
-                m_RenderedText.Text = Text;
-            }
+            m_MouseOverHREF = -1; // this value is changed every frame if we mouse over a region.
 
             HandlesMouseInput = (m_RenderedText.Regions.Count > 0);
 
             if (HasScrollbar)
             {
-                if (m_scrollbar == null)
+                if (m_Scrollbar == null)
                 {
-                    AddControl(m_scrollbar = new ScrollBar(this, 0));
-                    m_scrollbar.Position = new Point(Width - 15, 0);
-                    m_scrollbar.Width = 15;
-                    m_scrollbar.Height = Height;
-                    m_scrollbar.MinValue = 0;
-                    m_scrollbar.MaxValue = m_RenderedText.Height - Height + (Background ? 8 : 0);
+                    AddControl(m_Scrollbar = new ScrollBar(this, 0));
+                    m_Scrollbar.Position = new Point(Width - 15, 0);
+                    m_Scrollbar.Width = 15;
+                    m_Scrollbar.Height = Height;
+                    m_Scrollbar.MinValue = 0;
+                    m_Scrollbar.MaxValue = m_RenderedText.Height - Height + (HasBackground ? 8 : 0);
                 }
-                ScrollY = m_scrollbar.Value;
+                ScrollY = m_Scrollbar.Value;
             }
 
             base.Update(totalMS, frameMS);
@@ -179,11 +151,11 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             base.Draw(spriteBatch, position);
 
-            m_RenderedText.ActiveRegion = m_hrefOver;
-            m_RenderedText.ActiveRegion_UseDownHue = m_clicked;
+            m_RenderedText.ActiveRegion = m_MouseOverHREF;
+            m_RenderedText.ActiveRegion_UseDownHue = m_IsMouseDown;
             m_RenderedText.Draw(spriteBatch,
-                new Rectangle(position.X + (Background ? 4 : 0), position.Y + (Background ? 4 : 0),
-                    Width - (Background ? 8 : 0), Height - (Background ? 8 : 0)), ScrollX, ScrollY);
+                new Rectangle(position.X + (HasBackground ? 4 : 0), position.Y + (HasBackground ? 4 : 0),
+                    Width - (HasBackground ? 8 : 0), Height - (HasBackground ? 8 : 0)), ScrollX, ScrollY);
         }
 
         protected override bool InternalHitTest(int x, int y)
@@ -191,7 +163,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             Point position = new Point(x + OwnerX + X, y + OwnerY + Y);
             if (HasScrollbar)
             {
-                if (m_scrollbar.HitTest(position, true) != null)
+                if (m_Scrollbar.HitTest(position, true) != null)
                     return true;
             }
 
@@ -200,37 +172,33 @@ namespace UltimaXNA.Ultima.UI.Controls
                 Region region = m_RenderedText.Regions.RegionfromPoint(new Point(x + ScrollX, y + ScrollY));
                 if (region != null)
                 {
-                    m_hrefOver = region.Index;
+                    m_MouseOverHREF = region.Index;
                     return true;
                 }
             }
             return false;
         }
 
-        bool m_clicked = false;
-        int m_hrefClicked = -1;
-        int m_hrefOver = -1;
-
         protected override void OnMouseDown(int x, int y, MouseButton button)
         {
-            m_clicked = true;
-            m_hrefClicked = m_hrefOver;
+            m_IsMouseDown = true;
+            m_MouseDownHREF = m_MouseOverHREF;
         }
 
         protected override void OnMouseUp(int x, int y, MouseButton button)
         {
-            m_clicked = false;
-            m_hrefClicked = -1;
+            m_IsMouseDown = false;
+            m_MouseDownHREF = -1;
         }
 
         protected override void OnMouseClick(int x, int y, MouseButton button)
         {
-            if (m_hrefOver != -1 && m_hrefClicked == m_hrefOver)
+            if (m_MouseOverHREF != -1 && m_MouseDownHREF == m_MouseOverHREF)
             {
                 if (button == MouseButton.Left)
                 {
-                    if (m_RenderedText.Regions.Region(m_hrefOver).HREFAttributes != null)
-                        ActivateByHREF(m_RenderedText.Regions.Region(m_hrefOver).HREFAttributes.HREF);
+                    if (m_RenderedText.Regions.Region(m_MouseOverHREF).HREFAttributes != null)
+                        ActivateByHREF(m_RenderedText.Regions.Region(m_MouseOverHREF).HREFAttributes.HREF);
                 }
             }
         }

@@ -10,11 +10,10 @@
 #region usings
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using System.Text;
+using UltimaXNA.Core.Graphics;
 using UltimaXNA.Ultima.Player;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
-using UltimaXNA.Core.Graphics;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Gumps
