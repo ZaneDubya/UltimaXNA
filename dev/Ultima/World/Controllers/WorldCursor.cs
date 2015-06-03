@@ -119,7 +119,16 @@ namespace UltimaXNA.Ultima.World.Controllers
                             }
                             else if (mouseOverEntity is Item)
                             {
-                                z += ((Item)mouseOverEntity).ItemData.Height;
+                                Item targetItem = mouseOverEntity as Item;
+                                if (targetItem.ItemID == HeldItem.ItemID && HeldItem.ItemData.IsGeneric)
+                                {
+                                    MergeHeldItem(targetItem);
+                                }
+                                else
+                                {
+                                    z += ((Item)mouseOverEntity).ItemData.Height;
+                                    DropHeldItemToWorld(x, y, z);
+                                }
                             }
                         }
                         else if (mouseOverEntity is Ground)
@@ -127,13 +136,13 @@ namespace UltimaXNA.Ultima.World.Controllers
                             x = (int)mouseOverEntity.Position.X;
                             y = (int)mouseOverEntity.Position.Y;
                             z = (int)mouseOverEntity.Z;
+                            DropHeldItemToWorld(x, y, z);
                         }
                         else
                         {
                             // over text?
                             return;
                         }
-                        DropHeldItemToWorld(x, y, z);
                     }
                 }
             }
