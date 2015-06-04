@@ -197,7 +197,7 @@ namespace UltimaXNA.Ultima.UI
         {
             foreach (AControl c in m_Controls)
             {
-                if (c.Serial == serial)
+                if (c.Serial == serial && !c.IsDisposed)
                     return c;
             }
             return null;
@@ -207,7 +207,7 @@ namespace UltimaXNA.Ultima.UI
         {
             foreach (AControl c in m_Controls)
             {
-                if (c.GetType() == typeof(T) && (!serial.HasValue || c.Serial == serial))
+                if (c.GetType() == typeof(T) && (!serial.HasValue || c.Serial == serial) && !c.IsDisposed)
                     return (T)c;
             }
             return null;
@@ -555,6 +555,19 @@ namespace UltimaXNA.Ultima.UI
                     m_DraggingControl = dragTarget;
                     m_DragOriginX = mousePosition.X;
                     m_DragOriginY = mousePosition.Y;
+                }
+            }
+
+            if (IsDraggingControl)
+            {
+
+                for (int i = 0; i < 5; i++)
+                {
+                    if (m_MouseDownControl[i] != null && m_MouseDownControl[i] != m_DraggingControl)
+                    {
+                        m_MouseDownControl[i].MouseUp(mousePosition, (MouseButton)i);
+                        m_MouseDownControl[i] = null;
+                    }
                 }
             }
         }

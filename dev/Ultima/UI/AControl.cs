@@ -364,7 +364,7 @@ namespace UltimaXNA.Ultima.UI
             {
                 if ((c.Page == 0) || (c.Page == ActivePage))
                 {
-                    if (c.IsInitialized)
+                    if (c.IsInitialized && c.IsVisible)
                     {
                         Point offset = new Point(c.Position.X + position.X, c.Position.Y + position.Y);
                         c.Draw(spriteBatch, offset);

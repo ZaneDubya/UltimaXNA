@@ -15,6 +15,7 @@ using UltimaXNA.Core.Graphics;
 using UltimaXNA.Ultima.Player;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Core.Input;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Gumps
@@ -61,10 +62,10 @@ namespace UltimaXNA.Ultima.World.Gumps
 
         public override void ActivateByHREF(string href)
         {
-            if (href.Substring(0, 6) == "skill=")
+            if (href.Substring(0, 6) == "skill=" || href.Substring(0, 9) == "skillbtn=")
             {
                 int skillIndex;
-                if (!int.TryParse(href.Substring(6), out skillIndex))
+                if (!int.TryParse(href.Substring(href.IndexOf('=') + 1), out skillIndex))
                         return;
                 m_World.Interaction.UseSkill(skillIndex);
             }
@@ -96,23 +97,27 @@ namespace UltimaXNA.Ultima.World.Gumps
 
         private void OnSkillDrag(string href)
         {
-            if (href.Substring(0, 6) == "skill=")
+            if (href.Substring(0, 9) == "skillbtn=")
             {
                 int skillIndex;
-                if (!int.TryParse(href.Substring(6), out skillIndex))
+                if (!int.TryParse(href.Substring(9), out skillIndex))
                     return;
-                m_World.Interaction.CreateUseSkillButton(skillIndex);
+                SkillEntry skill = PlayerState.Skills.SkillEntryByIndex(skillIndex);
+                InputManager input = UltimaServices.GetService<InputManager>();
+                UseSkillButtonGump gump = new UseSkillButtonGump(skill);
+                UserInterface.AddControl(gump, input.MousePosition.X - 60, input.MousePosition.Y - 20);
+                UserInterface.AttemptDragControl(gump, input.MousePosition, true);
             }
         }
 
         // 0 = skill index, 1 = skill name
-        const string kSkillName_HasUseButton = "<left><a href='skill={0}' color='#5b4f29' hovercolor='#857951' activecolor='#402708' text-decoration=none>" +
-                        "<gumpimg src='2103' hoversrc='2104' activesrc='2103'/><span width='2'/>{1}</a></left>";
+        const string kSkillName_HasUseButton = "<left><a href='skillbtn={0}'><gumpimg src='2103' hoversrc='2104' activesrc='2103'/><span width='2'/></a>" +
+                        "<a href='skill={0}' color='#5b4f29' hovercolor='#857951' activecolor='#402708' text-decoration=none>{1}</a></left>";
         const string kSkillName_NoUseButton = "<left><span width='14'/><medium color=#50422D>{1}</medium></left>";
         // 0 = skill value
         static string[] kSkillValues = new string[3] {
-            "<right>{0:0.0}<a href='skilllock={1}'><gumpimg src='2436'/></a>  </right><br/>",
-            "<right>{0:0.0}<a href='skilllock={1}'><gumpimg src='2438'/></a>  </right><br/>",
-            "<right>{0:0.0}<a href='skilllock={1}'><gumpimg src='2092'/></a>  </right><br/>" };
+            "<right>{0:0.0}<a href='skilllock={1}'><gumpimg src='2436'/></a><span width='2'/></right><br/>",
+            "<right>{0:0.0}<a href='skilllock={1}'><gumpimg src='2438'/></a><span width='2'/></right><br/>",
+            "<right>{0:0.0}<a href='skilllock={1}'><gumpimg src='2092'/></a><span width='2'/></right><br/>" };
     }
 }
