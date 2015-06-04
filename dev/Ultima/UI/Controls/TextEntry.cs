@@ -23,6 +23,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         public int LimitSize = 0;
         public bool IsPasswordField = false;
         public bool ReplaceDefaultTextOnFirstKeypress = false;
+        public bool NumericOnly = false;
         public string HtmlTag = string.Empty;
 
         public string Text
@@ -158,16 +159,21 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         protected override void OnKeyboardInput(InputEventKeyboard e)
         {
-            if (ReplaceDefaultTextOnFirstKeypress)
-            {
-                Text = string.Empty;
-                ReplaceDefaultTextOnFirstKeypress = false;
-            }
-
             switch (e.KeyCode)
             {
+                case WinKeys.Tab:
+                    Owner.KeyboardTabToNextFocus(this);
+                    break;
+                case WinKeys.Enter:
+                    Owner.ActivateByKeyboardReturn(EntryID, Text);
+                    break;
                 case WinKeys.Back:
-                    if (Text.Length > 0)
+                    if (ReplaceDefaultTextOnFirstKeypress)
+                    {
+                        Text = string.Empty;
+                        ReplaceDefaultTextOnFirstKeypress = false;
+                    }
+                    else if (Text.Length > 0)
                     {
                         int escapedLength;
                         if (HTML.EscapeCharacters.TryFindEscapeCharacterBackwards(Text, Text.Length - 1, out escapedLength))
@@ -180,13 +186,16 @@ namespace UltimaXNA.Ultima.UI.Controls
                         }
                     }
                     break;
-                case WinKeys.Tab:
-                    Owner.KeyboardTabToNextFocus(this);
-                    break;
-                case WinKeys.Enter:
-                    Owner.ActivateByKeyboardReturn(EntryID, Text);
-                    break;
                 default:
+                    if (NumericOnly && !char.IsNumber(e.KeyChar))
+                        return;
+
+                    if (ReplaceDefaultTextOnFirstKeypress)
+                    {
+                        Text = string.Empty;
+                        ReplaceDefaultTextOnFirstKeypress = false;
+                    }
+
                     if (e.IsChar)
                     {
                         string escapedCharacter;
