@@ -191,6 +191,7 @@
     <Compile Include="Ultima\Entities\Mobiles\MovementSpeed.cs" />
     <Compile Include="Ultima\IO\StaticTile.cs" />
     <Compile Include="Ultima\Login\LoginModel.cs" />
+    <Compile Include="Ultima\Network\Client\SetSkillLockPacket.cs" />
     <Compile Include="Ultima\Network\Client\UOSEKeepAlivePacket.cs" />
     <Compile Include="Ultima\Player\PlayerState.cs" />
     <Compile Include="Ultima\Player\Quest.cs" />

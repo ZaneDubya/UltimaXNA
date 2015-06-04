@@ -80,14 +80,8 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        public HtmlGumpling(AControl owner, int page)
-            : base(owner, page)
-        {
-
-        }
-
         public HtmlGumpling(AControl owner, int page, string[] arguements, string[] lines)
-            : this(owner, page)
+            : base(owner, page)
         {
             int x, y, width, height, textIndex, background, scrollbar;
             x = Int32.Parse(arguements[1]);
@@ -102,7 +96,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         }
 
         public HtmlGumpling(AControl owner, int page, int x, int y, int width, int height, int background, int scrollbar, string text)
-            : this(owner, page)
+            : base(owner, page)
         {
             buildGumpling(x, y, width, height, background, scrollbar, text);
         }
@@ -110,9 +104,8 @@ namespace UltimaXNA.Ultima.UI.Controls
         void buildGumpling(int x, int y, int width, int height, int background, int scrollbar, string text)
         {
             Position = new Point(x, y);
-            Width = width;
+            base.Width = width;
             Size = new Point(width, height);
-            Text = text;
             HasBackground = (background == 1) ? true : false;
             HasScrollbar = (scrollbar == 1) ? true : false;
             m_RenderedText = new RenderedText(text, Width - (HasScrollbar ? 15 : 0) - (HasBackground ? 8 : 0));
@@ -135,12 +128,12 @@ namespace UltimaXNA.Ultima.UI.Controls
                 if (m_Scrollbar == null)
                 {
                     AddControl(m_Scrollbar = new ScrollBar(this, 0));
-                    m_Scrollbar.Position = new Point(Width - 15, 0);
-                    m_Scrollbar.Width = 15;
-                    m_Scrollbar.Height = Height;
-                    m_Scrollbar.MinValue = 0;
-                    m_Scrollbar.MaxValue = m_RenderedText.Height - Height + (HasBackground ? 8 : 0);
                 }
+                m_Scrollbar.Position = new Point(Width - 15, 0);
+                m_Scrollbar.Width = 15;
+                m_Scrollbar.Height = Height;
+                m_Scrollbar.MinValue = 0;
+                m_Scrollbar.MaxValue = m_RenderedText.Height - Height + (HasBackground ? 8 : 0);
                 ScrollY = m_Scrollbar.Value;
             }
 

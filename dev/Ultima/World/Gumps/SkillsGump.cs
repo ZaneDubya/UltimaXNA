@@ -10,6 +10,7 @@
 #region usings
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using System.Text;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Ultima.Player;
 using UltimaXNA.Ultima.UI;
@@ -22,8 +23,7 @@ namespace UltimaXNA.Ultima.World.Gumps
     {
         // Private variables
         private ExpandableScroll m_Background;
-        private ScrollBar m_ScrollBar;
-        private List<RenderedText> m_SkillsList;
+        private HtmlGumpling m_SkillsHtml;
         // Services
         private WorldModel m_World;
 
@@ -37,15 +37,13 @@ namespace UltimaXNA.Ultima.World.Gumps
             AddControl(m_Background = new ExpandableScroll(this, 0, 0, 0, 200));
             m_Background.TitleGumpID = 0x834;
 
-            AddControl(m_ScrollBar = new ScrollBar(this, 0));
-            m_ScrollBar.IsVisible = false;
+            AddControl(m_SkillsHtml = new HtmlGumpling(this, 0, 36, 35, 230, Height - 100, 0, 1, string.Empty));
         }
 
         protected override void OnInitialize()
         {
             SetSavePositionName("skills");
-
-            m_SkillsList = new List<RenderedText>();
+            // m_SkillsList = new List<RenderedText>();
             InitializeSkillsList();
             PlayerState.Skills.OnSkillChanged += OnSkillChanged;
         }
@@ -54,17 +52,18 @@ namespace UltimaXNA.Ultima.World.Gumps
         {
             base.Update(totalMS, frameMS);
 
-            m_ScrollBar.Position = new Point(Width - 45, 35);
-            m_ScrollBar.Height = Height - 100;
-            CalculateScrollBarMaxValue();
-            m_ScrollBar.IsVisible = m_ScrollBar.MaxValue > m_ScrollBar.MinValue;
+            m_SkillsHtml.Height = Height - 100;
+            // m_ScrollBar.Position = new Point(Width - 45, 35);
+            // m_ScrollBar.Height = Height - 100;
+            // CalculateScrollBarMaxValue();
+            // m_ScrollBar.IsVisible = m_ScrollBar.MaxValue > m_ScrollBar.MinValue;
         }
 
         public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
             base.Draw(spriteBatch, position);
 
-            Point p = new Point(position.X + 36, position.Y + 35);
+            /*Point p = new Point(position.X + 36, position.Y + 35);
             int height = 0;
             int maxheight = m_ScrollBar.Value + m_ScrollBar.Height;
 
@@ -99,12 +98,12 @@ namespace UltimaXNA.Ultima.World.Gumps
                     // can't fit any more entries - so we break!
                     break;
                 }
-            }
+            }*/
         }
 
         private void CalculateScrollBarMaxValue()
         {
-            bool maxValue = m_ScrollBar.Value == m_ScrollBar.MaxValue;
+            /*bool maxValue = m_ScrollBar.Value == m_ScrollBar.MaxValue;
 
             int height = 0;
             for (int i = 0; i < m_SkillsList.Count; i++)
@@ -124,7 +123,7 @@ namespace UltimaXNA.Ultima.World.Gumps
             {
                 m_ScrollBar.MaxValue = 0;
                 m_ScrollBar.Value = 0;
-            }
+            }*/
         }
 
         public override void ActivateByHREF(string href)
@@ -136,25 +135,26 @@ namespace UltimaXNA.Ultima.World.Gumps
                         return;
                 m_World.Interaction.UseSkill(skillIndex);
             }
+            else if (href.Substring(0, 10) == "skilllock=")
+            {
+                int skillIndex;
+                if (!int.TryParse(href.Substring(10), out skillIndex))
+                    return;
+                m_World.Interaction.ChangeSkillLock(PlayerState.Skills.SkillEntryByIndex(skillIndex));
+            }
             base.ActivateByHREF(href);
-        }
-
-        private void AddSkillEntry(int key, SkillEntry skill)
-        {
-            m_SkillsList.Add(new RenderedText(
-                string.Format(skill.HasUseButton ? kSkillName_HasUseButton : kSkillName_NoUseButton, skill.Index, skill.Name) +
-                string.Format(kSkillValues[skill.LockType], skill.Value)));
-            m_ScrollBar.MaxValue += m_SkillsList[m_SkillsList.Count - 1].Height;
         }
 
         private void InitializeSkillsList()
         {
+            StringBuilder sb = new StringBuilder();
             foreach (KeyValuePair<int, SkillEntry> pair in PlayerState.Skills.List)
             {
-                AddSkillEntry(pair.Key, pair.Value);
+                SkillEntry skill = pair.Value;
+                sb.Append(string.Format(skill.HasUseButton ? kSkillName_HasUseButton : kSkillName_NoUseButton, skill.Index, skill.Name));
+                sb.Append(string.Format(kSkillValues[skill.LockType], skill.Value, skill.Index));
             }
-
-            m_ScrollBar.MinValue = 0;
+            m_SkillsHtml.Text = sb.ToString();
         }
 
         private void OnSkillChanged(SkillEntry entry)
@@ -168,8 +168,8 @@ namespace UltimaXNA.Ultima.World.Gumps
         const string kSkillName_NoUseButton = "<left><span width='14'/><medium color=#50422D>{1}</medium></left>";
         // 0 = skill value
         static string[] kSkillValues = new string[3] {
-            "<right>{0:0.0}<gumpimg src='2436'/></right><br/>",
-            "<right>{0:0.0}<gumpimg src='2438'/></right><br/>",
-            "<right>{0:0.0}<gumpimg src='2092'/></right><br/>" };
+            "<right>{0:0.0}<a href='skilllock={1}'><gumpimg src='2436'/></a>  </right><br/>",
+            "<right>{0:0.0}<a href='skilllock={1}'><gumpimg src='2438'/></a>  </right><br/>",
+            "<right>{0:0.0}<a href='skilllock={1}'><gumpimg src='2092'/></a>  </right><br/>" };
     }
 }

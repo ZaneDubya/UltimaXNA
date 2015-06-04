@@ -20,6 +20,7 @@ using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.World.Gumps;
 using UltimaXNA.Ultima.Entities.Items.Containers;
+using UltimaXNA.Ultima.Player;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Controllers
@@ -82,6 +83,18 @@ namespace UltimaXNA.Ultima.World.Controllers
         public void UseSkill(int index) // used by WorldInteraction
         {
             m_Network.Send(new RequestSkillUsePacket(index));
+        }
+
+
+        public void ChangeSkillLock(SkillEntry skill)
+        {
+            if (skill == null)
+                return;
+            byte nextLockState = (byte)(skill.LockType + 1);
+            if (nextLockState > 2)
+                nextLockState = 0;
+            m_Network.Send(new SetSkillLockPacket((ushort)skill.Index, nextLockState));
+            skill.LockType = nextLockState;
         }
 
         public Gump OpenContainerGump(AEntity entity) // used by ultimaclient.

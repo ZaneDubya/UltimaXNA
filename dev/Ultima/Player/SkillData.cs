@@ -42,6 +42,14 @@ namespace UltimaXNA.Ultima.Player
             else
                 return null;
         }
+
+        public SkillEntry SkillEntryByIndex(int index)
+        {
+            foreach (SkillEntry skill in m_Skills.Values)
+                if (skill.Index == index)
+                    return skill;
+            return null;
+        }
     }
 
     public class SkillEntry
