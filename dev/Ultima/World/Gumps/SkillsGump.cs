@@ -8,87 +8,116 @@
  *
  ***************************************************************************/
 #region usings
+using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 using System.Text;
+using UltimaXNA.Core.Graphics;
 using UltimaXNA.Ultima.Player;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
-using Microsoft.Xna.Framework;
+using UltimaXNA.Core.Input;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Gumps
 {
     class SkillsGump : Gump
     {
-        private ExpandableScroll m_scroll;
-        private HtmlGump m_list;
-
+        // Private variables
+        private ExpandableScroll m_Background;
+        private HtmlGumpling m_SkillsHtml;
+        private bool m_MustUpdateSkills = true;
+        // Services
         private WorldModel m_World;
 
         public SkillsGump()
             : base(0, 0)
         {
+            IsMovable = true;
+
             m_World = UltimaServices.GetService<WorldModel>();
 
-            AddControl(m_scroll = new ExpandableScroll(this, 0, 0, 0, 200));
-            m_scroll.TitleGumpID = 0x834;
+            AddControl(m_Background = new ExpandableScroll(this, 0, 0, 0, 200));
+            m_Background.TitleGumpID = 0x834;
 
-            AddControl(m_list = new HtmlGump(this, 0, 10, 20, 180, 100, 0, 1, ""));
+            AddControl(m_SkillsHtml = new HtmlGumpling(this, 0, 36, 35, 230, Height - 100, 0, 1, string.Empty));
+            m_SkillsHtml.OnDragHRef += OnSkillDrag;
         }
 
         protected override void OnInitialize()
         {
             SetSavePositionName("skills");
-            base.OnInitialize();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
+            PlayerState.Skills.OnSkillChanged += OnSkillChanged;
         }
 
         public override void Update(double totalMS, double frameMS)
         {
-            m_list.Position = new Point(26, 33);
-            m_list.Width = Width - 56;
-            m_list.Height = Height - 95;
-            m_list.Text = buildSkillsString();
             base.Update(totalMS, frameMS);
+            if (m_MustUpdateSkills)
+            {
+                InitializeSkillsList();
+                m_MustUpdateSkills = false;
+            }
+            m_SkillsHtml.Height = Height - 100;
         }
 
         public override void ActivateByHREF(string href)
         {
-            if (href.Substring(0, 6) == "skill=")
+            if (href.Substring(0, 6) == "skill=" || href.Substring(0, 9) == "skillbtn=")
             {
                 int skillIndex;
-                if (!int.TryParse(href.Substring(6), out skillIndex))
+                if (!int.TryParse(href.Substring(href.IndexOf('=') + 1), out skillIndex))
                         return;
                 m_World.Interaction.UseSkill(skillIndex);
             }
-            m_list.Text = buildSkillsString();
-            base.ActivateByHREF(href);
+            else if (href.Substring(0, 10) == "skilllock=")
+            {
+                int skillIndex;
+                if (!int.TryParse(href.Substring(10), out skillIndex))
+                    return;
+                m_World.Interaction.ChangeSkillLock(PlayerState.Skills.SkillEntryByIndex(skillIndex));
+            }
         }
 
-        private string buildSkillsString()
+        private void InitializeSkillsList()
         {
-            // m_lastUpdateCount = Ultima.ClientVars.Skills.UpdateCount; Could not resolve this...
-            StringBuilder str = new StringBuilder();
-
-            foreach (Player.SkillEntry skill in PlayerState.Skills.List.Values)
+            StringBuilder sb = new StringBuilder();
+            foreach (KeyValuePair<int, SkillEntry> pair in PlayerState.Skills.List)
             {
-                str.Append(string.Format(skill.HasUseButton ? kSkillName_UseButton : kSkillName_NoUseButton, skill.Index, skill.Name));
-                str.Append(string.Format(kSkillValues[skill.LockType], skill.Value));
+                SkillEntry skill = pair.Value;
+                sb.Append(string.Format(skill.HasUseButton ? kSkillName_HasUseButton : kSkillName_NoUseButton, skill.Index, skill.Name));
+                sb.Append(string.Format(kSkillValues[skill.LockType], skill.Value, skill.Index));
             }
-            return str.ToString();
+            m_SkillsHtml.Text = sb.ToString();
+        }
+
+        private void OnSkillChanged(SkillEntry entry)
+        {
+            m_MustUpdateSkills = true;
+        }
+
+        private void OnSkillDrag(string href)
+        {
+            if (href.Substring(0, 9) == "skillbtn=")
+            {
+                int skillIndex;
+                if (!int.TryParse(href.Substring(9), out skillIndex))
+                    return;
+                SkillEntry skill = PlayerState.Skills.SkillEntryByIndex(skillIndex);
+                InputManager input = UltimaServices.GetService<InputManager>();
+                UseSkillButtonGump gump = new UseSkillButtonGump(skill);
+                UserInterface.AddControl(gump, input.MousePosition.X - 60, input.MousePosition.Y - 20);
+                UserInterface.AttemptDragControl(gump, input.MousePosition, true);
+            }
         }
 
         // 0 = skill index, 1 = skill name
-        const string kSkillName_UseButton = "<left><a href='skill={0}' color='5b4f29' hovercolor='857951' activecolor='402708' text-decoration=none>" +
-                        "<gumpimg src='2103' hoversrc='2104' activesrc='2103'/><span width='2'/>{1}</a></left>";
-        const string kSkillName_NoUseButton = "<left><span width='14'/><medium color=50422D>{1}</medium></left>";
+        const string kSkillName_HasUseButton = "<left><a href='skillbtn={0}'><gumpimg src='2103' hoversrc='2104' activesrc='2103'/><span width='2'/></a>" +
+                        "<a href='skill={0}' color='#5b4f29' hovercolor='#857951' activecolor='#402708' text-decoration=none>{1}</a></left>";
+        const string kSkillName_NoUseButton = "<left><span width='14'/><medium color=#50422D>{1}</medium></left>";
         // 0 = skill value
         static string[] kSkillValues = new string[3] {
-            "<right>{0:0.0}<gumpimg src='2436' width='12' height='15'/></right><br/>",
-            "<right>{0:0.0}<gumpimg src='2438' width='12' height='15'/></right><br/>",
-            "<right>{0:0.0}<gumpimg src='2092' width='12' height='15'/></right><br/>" };
+            "<right>{0:0.0}<a href='skilllock={1}'><gumpimg src='2436'/></a><span width='2'/></right><br/>",
+            "<right>{0:0.0}<a href='skilllock={1}'><gumpimg src='2438'/></a><span width='2'/></right><br/>",
+            "<right>{0:0.0}<a href='skilllock={1}'><gumpimg src='2092'/></a><span width='2'/></right><br/>" };
     }
 }

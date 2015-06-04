@@ -207,11 +207,12 @@ namespace UltimaXNA.Ultima.UI
                 Rectangle sourceRect;
                 if (clipRectangle(new Point(xScroll, yScroll), image.Area, destRectangle, out position, out sourceRect))
                 {
-                    // is the mouse over this image?
-                    sourceRect.X = 0;
-                    sourceRect.Y = 0;
+                    Rectangle srcImage = new Rectangle(
+                        sourceRect.X - image.Area.X, sourceRect.Y - image.Area.Y, 
+                        sourceRect.Width, sourceRect.Height);
                     Texture2D texture = null;
 
+                    // is the mouse over this image?
                     if (image.RegionIndex == m_ActiveRegion)
                     {
                         if (ActiveRegion_UseDownHue)
@@ -224,7 +225,7 @@ namespace UltimaXNA.Ultima.UI
                         texture = image.Texture;
 
                     sb.Draw2D(texture, new Vector3(position.X, position.Y, 0),
-                        sourceRect, Utility.GetHueVector(0, false, false));
+                        srcImage, Utility.GetHueVector(0, false, false));
                 }
             }
         }
@@ -626,45 +627,41 @@ namespace UltimaXNA.Ultima.UI
                 width = widestLine;
         }
 
-        private bool clipRectangle(Point offset, Rectangle rect, Rectangle clip, out Point outPosition, out Rectangle outClipped)
+        private bool clipRectangle(Point offset, Rectangle srcRect, Rectangle clipTo, out Point posClipped, out Rectangle srcClipped)
         {
-            outPosition = new Point();
-            outClipped = new Rectangle();
+            posClipped = new Point(clipTo.X + srcRect.X - offset.X, clipTo.Y + srcRect.Y - offset.Y);
+            srcClipped = srcRect;
 
-            Rectangle scratchRect = rect;
-            Rectangle sourceRect = rect;
-            scratchRect.X += clip.X - offset.X;
-            scratchRect.Y += clip.Y - offset.Y;
+            Rectangle dstClipped = srcRect;
+            dstClipped.X += clipTo.X - offset.X;
+            dstClipped.Y += clipTo.Y - offset.Y;
 
-            if (scratchRect.Bottom < clip.Top)
+            if (dstClipped.Bottom < clipTo.Top)
                 return false;
-            if (scratchRect.Top < clip.Top)
+            if (dstClipped.Top < clipTo.Top)
             {
-                sourceRect.Y += (clip.Top - scratchRect.Top);
-                sourceRect.Height -= (clip.Top - scratchRect.Top);
-                scratchRect.Y += (clip.Top - scratchRect.Top);
+                srcClipped.Y += (clipTo.Top - dstClipped.Top);
+                srcClipped.Height -= (clipTo.Top - dstClipped.Top);
+                posClipped.Y += (clipTo.Top - dstClipped.Top);
             }
-            if (scratchRect.Top > clip.Bottom)
+            if (dstClipped.Top > clipTo.Bottom)
                 return false;
-            if (scratchRect.Bottom >= clip.Bottom)
-                sourceRect.Height += (clip.Bottom - scratchRect.Bottom);
+            if (dstClipped.Bottom > clipTo.Bottom)
+                srcClipped.Height += (clipTo.Bottom - dstClipped.Bottom);
 
-            if (scratchRect.Right < clip.Left)
+            if (dstClipped.Right < clipTo.Left)
                 return false;
-            if (scratchRect.Left < clip.Left)
+            if (dstClipped.Left < clipTo.Left)
             {
-                sourceRect.X += (clip.Left - scratchRect.Left);
-                scratchRect.Width = sourceRect.Width -= (clip.Left - scratchRect.Left);
-                scratchRect.X = clip.Left;
+                srcClipped.X += (clipTo.Left - dstClipped.Left);
+                srcClipped.Width -= (clipTo.Left - dstClipped.Left);
+                posClipped.X += (clipTo.Left - dstClipped.Left);
             }
-            if (scratchRect.Left > clip.Right)
+            if (dstClipped.Left > clipTo.Right)
                 return false;
-            if (scratchRect.Right >= clip.Right)
-                sourceRect.Width += (clip.Right - scratchRect.Right);
+            if (dstClipped.Right > clipTo.Right)
+                srcClipped.Width += (clipTo.Right - dstClipped.Right);
 
-            outPosition.X = scratchRect.X;
-            outPosition.Y = scratchRect.Y;
-            outClipped = sourceRect;
             return true;
         }
     }

@@ -22,7 +22,7 @@ namespace UltimaXNA.Ultima.UI
     public class MsgBox : Gump
     {
         string m_msg;
-        HtmlGump m_text;
+        HtmlGumpling m_text;
         MsgBoxTypes m_type;
 
         public Action OnClose;
@@ -42,7 +42,7 @@ namespace UltimaXNA.Ultima.UI
             {
                 ResizePic resize;
 
-                m_text = new HtmlGump(this, 0, 10, 10, 200, 200, 0, 0, m_msg);
+                m_text = new HtmlGumpling(this, 0, 10, 10, 200, 200, 0, 0, m_msg);
                 int width = m_text.Width + 20;
                 AddControl(resize = new ResizePic(this, 0, 0, 0, 9200, width, m_text.Height + 45));
                 AddControl(m_text);

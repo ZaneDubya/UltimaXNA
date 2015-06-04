@@ -43,11 +43,6 @@ namespace UltimaXNA.Ultima.World.Gumps
             base.OnInitialize();
         }
 
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-
         public override void Update(double totalMS, double frameMS)
         {
             if (m_GumpTexture == null || m_useLargeMap != EngineVars.MiniMap_LargeFormat)

@@ -7,12 +7,12 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using System;
+#region usings
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using UltimaXNA.Core.Graphics;
-using UltimaXNA.Core.Input.Windows;
-using UltimaXNA.Ultima.UI;
+#endregion
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
@@ -75,7 +75,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
             int centerWidth = Width - m_bgGumps[0].Width - m_bgGumps[2].Width;
-            int centerHeight = Height - m_bgGumps[0].Height - m_bgGumps[2].Height;
+            int centerHeight = Height - m_bgGumps[0].Height - m_bgGumps[6].Height;
             int line2Y = position.Y + m_bgGumps[0].Height;
             int line3Y = position.Y + Height - m_bgGumps[6].Height;
 

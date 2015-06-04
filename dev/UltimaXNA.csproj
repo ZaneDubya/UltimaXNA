@@ -191,6 +191,7 @@
     <Compile Include="Ultima\Entities\Mobiles\MovementSpeed.cs" />
     <Compile Include="Ultima\IO\StaticTile.cs" />
     <Compile Include="Ultima\Login\LoginModel.cs" />
+    <Compile Include="Ultima\Network\Client\SetSkillLockPacket.cs" />
     <Compile Include="Ultima\Network\Client\UOSEKeepAlivePacket.cs" />
     <Compile Include="Ultima\Player\PlayerState.cs" />
     <Compile Include="Ultima\Player\Quest.cs" />
@@ -217,6 +218,7 @@
     <Compile Include="Ultima\UI\Controls\CheckBox.cs" />
     <Compile Include="Ultima\UI\Controls\RadioButton.cs" />
     <Compile Include="Ultima\World\Gumps\SplitItemStackGump.cs" />
+    <Compile Include="Ultima\World\Gumps\UseSkillButtonGump.cs" />
     <Compile Include="Ultima\World\Gumps\WorldControl.cs" />
     <Compile Include="Ultima\UI\GumpLayer.cs" />
     <Compile Include="Ultima\UI\Tooltip.cs" />
@@ -465,7 +467,7 @@
     <Compile Include="Ultima\UI\Controls\GumpPic.cs" />
     <Compile Include="Ultima\UI\Controls\GumpPicContainer.cs" />
     <Compile Include="Ultima\UI\Controls\GumpPicTiled.cs" />
-    <Compile Include="Ultima\UI\Controls\HtmlGump.cs" />
+    <Compile Include="Ultima\UI\Controls\HtmlGumpling.cs" />
     <Compile Include="Ultima\UI\Controls\ResizePic.cs" />
     <Compile Include="Ultima\UI\Controls\HSliderBar.cs" />
     <Compile Include="Ultima\UI\Controls\TextEntry.cs" />

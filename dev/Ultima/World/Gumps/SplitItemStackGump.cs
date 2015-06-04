@@ -34,10 +34,11 @@ namespace UltimaXNA.Ultima.World.Gumps
         public SplitItemStackGump(Item item, Point pickupOffset)
             : base(0, 0)
         {
-            IsMovable = true;
-
             Item = item;
             m_PickupOffset = pickupOffset;
+
+            IsMovable = true;
+
             // Background
             AddControl(new GumpPic(this, 0, 0, 0, 0x085c, 0));
             // Slider

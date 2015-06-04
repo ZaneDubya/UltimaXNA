@@ -8,10 +8,10 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Core.Input.Windows;
 using Microsoft.Xna.Framework;
 using System;
 using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.Input.Windows;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.Controls
