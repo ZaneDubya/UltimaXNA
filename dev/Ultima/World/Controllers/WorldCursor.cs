@@ -472,10 +472,18 @@ namespace UltimaXNA.Ultima.World.Controllers
             get { return HeldItem != null; }
         }
 
+        /// <summary>
+        /// Picks up an item.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="amount">Optional, defaults to null. If null, and the item amount is greater than 1, a 'pick up how many' gump will appear?</param>
         private void PickUpItem(Item item, int x, int y, int? amount = null)
         {
+            // hold 'shift' to pick up an entire stack.
             // if in a bag and is a quantity, then show the 'lift amount' prompt, else just lift it outright.
-            if (!amount.HasValue && item.Amount > 1)
+            if (!m_Input.IsShiftDown && !amount.HasValue && item.Amount > 1)
             {
                 SplitItemStackGump gump = new SplitItemStackGump(item, new Point(x, y));
                 m_UserInterface.AddControl(gump, m_Input.MousePosition.X - 80, m_Input.MousePosition.Y - 40);
