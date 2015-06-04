@@ -29,7 +29,7 @@ namespace UltimaXNA.Ultima.Player
                 {
                     m_SkillsLoaded = true;
                     foreach (IO.Skill skill in IO.SkillsData.List)
-                        m_Skills.Add(skill.ID, new SkillEntry(skill.ID, skill.Index, skill.UseButton, skill.Name, 0.0f, 0.0f, 0, 0.0f));
+                        m_Skills.Add(skill.ID, new SkillEntry(this, skill.ID, skill.Index, skill.UseButton, skill.Name, 0.0f, 0.0f, 0, 0.0f));
                 }
                 return m_Skills;
             }
@@ -54,6 +54,8 @@ namespace UltimaXNA.Ultima.Player
 
     public class SkillEntry
     {
+        private SkillData m_Owner;
+
         private int m_id;
         private int m_index;
         private bool m_hasUseButton;
@@ -86,26 +88,47 @@ namespace UltimaXNA.Ultima.Player
         public float Value
         {
             get { return m_value; }
-            set { m_value = value; }
+            set
+            {
+                m_value = value;
+                if (m_Owner.OnSkillChanged != null)
+                    m_Owner.OnSkillChanged(this);
+            }
         }
         public float ValueUnmodified
         {
             get { return m_valueUnmodified; }
-            set { m_valueUnmodified = value; }
+            set
+            {
+                m_valueUnmodified = value;
+                if (m_Owner.OnSkillChanged != null)
+                    m_Owner.OnSkillChanged(this);
+            }
         }
         public byte LockType
         {
             get { return m_lockType; }
-            set { m_lockType = value; }
+            set
+            {
+                m_lockType = value;
+                if (m_Owner.OnSkillChanged != null)
+                    m_Owner.OnSkillChanged(this);
+            }
         }
         public float Cap
         {
             get { return m_cap; }
-            set { m_cap = value; }
+            set
+            {
+                m_cap = value;
+                if (m_Owner.OnSkillChanged != null)
+                    m_Owner.OnSkillChanged(this);
+            }
         }
 
-        public SkillEntry(int id, int index, bool useButton, string name, float value, float unmodified, byte locktype, float cap)
+        public SkillEntry(SkillData owner, int id, int index, bool useButton, string name, float value, float unmodified, byte locktype, float cap)
         {
+            m_Owner = owner;
             ID = id;
             Index = index;
             HasUseButton = useButton;

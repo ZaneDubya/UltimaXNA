@@ -19,15 +19,17 @@ namespace UltimaXNA.Ultima.UI.Controls
 {
     public class HtmlGumpling : AControl
     {
+        // private variables
         private ScrollBar m_Scrollbar;
         private RenderedText m_RenderedText;
-
         private bool m_IsMouseDown = false;
         private int m_MouseDownHREF = -1;
         private int m_MouseOverHREF = -1;
-
+        // public variables
         public int ScrollX = 0;
         public int ScrollY = 0;
+        // public events
+        public Action<string> OnDragHRef;
 
         public string Text
         {
@@ -198,7 +200,11 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         protected override void OnMouseOver(int x, int y)
         {
-
+            if (m_IsMouseDown && m_MouseDownHREF != -1 && m_MouseDownHREF != m_MouseOverHREF)
+            {
+                if (OnDragHRef != null)
+                    OnDragHRef(m_RenderedText.Regions.Region(m_MouseOverHREF).HREFAttributes.HREF);
+            }
         }
     }
 }

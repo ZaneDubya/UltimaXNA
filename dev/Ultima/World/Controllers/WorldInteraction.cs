@@ -97,6 +97,11 @@ namespace UltimaXNA.Ultima.World.Controllers
             skill.LockType = nextLockState;
         }
 
+        public void CreateUseSkillButton(int skillIndex)
+        {
+            UseSkillButtonGump gump;
+        }
+
         public Gump OpenContainerGump(AEntity entity) // used by ultimaclient.
         {
             Gump gump;
