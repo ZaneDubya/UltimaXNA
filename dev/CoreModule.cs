@@ -21,16 +21,16 @@ namespace UltimaXNA
             get { return "UltimaXNA Core Module"; }
         }
 
-        UltimaEngine m_Engine;
+        UltimaGame m_Engine;
 
         public void Load()
         {
-            m_Engine = ServiceRegistry.Register<UltimaEngine>(new UltimaEngine());
+            m_Engine = ServiceRegistry.Register<UltimaGame>(new UltimaGame());
         }
 
         public void Unload()
         {
-            ServiceRegistry.Unregister<UltimaEngine>();
+            ServiceRegistry.Unregister<UltimaGame>();
         }
     }
 }

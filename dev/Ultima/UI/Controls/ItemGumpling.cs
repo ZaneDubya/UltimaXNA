@@ -66,13 +66,13 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
            
 
-            if (clickedCanDrag && UltimaEngine.TotalMS >= pickUpTime)
+            if (clickedCanDrag && UltimaGame.TotalMS >= pickUpTime)
             {
                 clickedCanDrag = false;
                 AttemptPickUp();
             }
 
-            if (sendClickIfNoDoubleClick && UltimaEngine.TotalMS >= singleClickTime)
+            if (sendClickIfNoDoubleClick && UltimaGame.TotalMS >= singleClickTime)
             {
                 sendClickIfNoDoubleClick = false;
                 m_World.Interaction.SingleClick(Item);
@@ -127,7 +127,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             // if click, we wait for a moment before picking it up. This allows a single click.
             clickedCanDrag = true;
-            pickUpTime = (float)UltimaEngine.TotalMS + Settings.World.Mouse.ClickAndPickupMS;
+            pickUpTime = (float)UltimaGame.TotalMS + Settings.World.Mouse.ClickAndPickupMS;
             m_ClickPoint = new Point(x, y);
         }
 
@@ -147,7 +147,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             {
                 clickedCanDrag = false;
                 sendClickIfNoDoubleClick = true;
-                singleClickTime = (float)UltimaEngine.TotalMS + Settings.World.Mouse.DoubleClickMS;
+                singleClickTime = (float)UltimaGame.TotalMS + Settings.World.Mouse.DoubleClickMS;
             }
         }
 

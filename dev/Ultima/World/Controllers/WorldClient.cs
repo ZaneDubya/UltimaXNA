@@ -756,7 +756,7 @@ namespace UltimaXNA.Ultima.World.Controllers
         private void ReceivePopupMessage(IRecvPacket packet)
         {
             PopupMessagePacket p = (PopupMessagePacket)packet;
-            m_UserInterface.MsgBox(p.Message, MsgBoxTypes.OkOnly);
+            MsgBoxGump.Show(p.Message, MsgBoxTypes.OkOnly);
         }
 
         private void ReceiveOpenBuyWindow(IRecvPacket packet)

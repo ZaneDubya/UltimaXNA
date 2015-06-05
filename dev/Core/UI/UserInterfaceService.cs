@@ -67,20 +67,6 @@ namespace UltimaXNA.Core.UI
         public int Height { get { return m_SpriteBatch.GraphicsDevice.Viewport.Height; } }
 
         /// <summary>
-        /// Opens a modal message box with either 'OK' or 'OK and Cancel' buttons.
-        /// </summary>
-        /// <param name="msg"></param>
-        /// <param name="type"></param>
-        /// <returns>The created message box.</returns>
-        public MsgBox MsgBox(string msg, MsgBoxTypes type)
-        {
-            // pop up an error message, modal.
-            MsgBox msgbox = new MsgBox(msg, type);
-            AddControl(msgbox, 0, 0);
-            return msgbox;
-        }
-
-        /// <summary>
         /// Informs the server that we have activated a control.
         /// </summary>
         /// <param name="id"></param>

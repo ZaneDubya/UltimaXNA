@@ -219,7 +219,7 @@
     <Compile Include="Ultima\World\Gumps\SplitItemStackGump.cs" />
     <Compile Include="Ultima\World\Gumps\UseSkillButtonGump.cs" />
     <Compile Include="Ultima\World\Gumps\WorldControl.cs" />
-    <Compile Include="Core\UI\GumpLayer.cs" />
+    <Compile Include="Core\UI\UILayer.cs" />
     <Compile Include="Ultima\UI\Tooltip.cs" />
     <Compile Include="Core\UI\HTML\AAtom.cs" />
     <Compile Include="Core\UI\HTML\Atoms\CharacterAtom.cs" />
@@ -408,7 +408,7 @@
     <Compile Include="Ultima\IO\RadarColorData.cs" />
     <Compile Include="Ultima\IO\SoundData.cs" />
     <Compile Include="Ultima\IO\StringData.cs" />
-    <Compile Include="UltimaEngine.cs" />
+    <Compile Include="UltimaGame.cs" />
     <Compile Include="Ultima\IO\FileManager.cs" />
     <Compile Include="Ultima\Entities\Items\Containers\Container.cs" />
     <Compile Include="Ultima\Entities\Items\Containers\Corpse.cs" />
@@ -446,7 +446,7 @@
     <Compile Include="Ultima\World\Gumps\SkillsGump.cs" />
     <Compile Include="Ultima\World\Gumps\StatusGump.cs" />
     <Compile Include="Ultima\UI\Controls\ExpandableScroll.cs" />
-    <Compile Include="Core\UI\MsgBox.cs" />
+    <Compile Include="Ultima\UI\MsgBoxGump.cs" />
     <Compile Include="Ultima\World\Gumps\PaperDollGump.cs" />
     <Compile Include="Ultima\Login\Gumps\SelectServerGump.cs" />
     <Compile Include="Ultima\World\Gumps\TopMenuGump.cs" />

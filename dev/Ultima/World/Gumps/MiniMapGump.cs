@@ -78,7 +78,7 @@ namespace UltimaXNA.Ultima.World.Gumps
 
             spriteBatch.Draw(m_GumpTexture, v, Techniques.MiniMap);
 
-            if (UltimaEngine.TotalMS % 500f < 250f)
+            if (UltimaGame.TotalMS % 500f < 250f)
             {
                 if (m_PlayerIndicator == null)
                 {

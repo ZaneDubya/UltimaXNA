@@ -1,6 +1,7 @@
 ﻿/***************************************************************************
- *   Control.cs
- *   
+ *   AControl.cs
+ *   Copyright (c) 2015 UltimaXNA Development Team
+ * 
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 3 of the License, or
@@ -12,7 +13,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using UltimaXNA.Configuration;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
 #endregion
@@ -20,18 +20,29 @@ using UltimaXNA.Core.Input.Windows;
 namespace UltimaXNA.Core.UI
 {
     /// <summary>
-    /// The base class used by all GUI objects.
-    /// NOTE: Gumps MUST NOT inherit from Control. They must inherit from Gump instead.
+    /// The base class used by all UI controls.
     /// </summary>
     public abstract class AControl
     {
-        internal Action<int, int, MouseButton> MouseClickEvent;
-        internal Action<int, int, MouseButton> MouseDoubleClickEvent;
-        internal Action<int, int, MouseButton> MouseDownEvent;
-        internal Action<int, int, MouseButton> MouseUpEvent;
-        internal Action<int, int> MouseOverEvent;
-        internal Action<int, int> MouseOutEvent;
+        // ================================================================================
+        // Private variables
+        // ================================================================================
+        private Rectangle m_Area = new Rectangle();
+        private List<AControl> m_Children = null;
 
+        // ================================================================================
+        // Private services
+        // ================================================================================
+        protected UserInterfaceService UserInterface
+        {
+            get;
+            private set;
+        }
+
+        // ================================================================================
+        // Public properties
+        // ================================================================================
+        #region Public properties
         /// <summary>
         /// An identifier for this control.
         /// </summary>
@@ -47,7 +58,7 @@ namespace UltimaXNA.Core.UI
         public bool IsDisposed
         {
             get;
-            protected set;
+            private set;
         }
 
         /// <summary>
@@ -56,7 +67,7 @@ namespace UltimaXNA.Core.UI
         public bool IsEnabled
         {
             get;
-            protected set;
+            private set;
         }
 
         /// <summary>
@@ -114,75 +125,33 @@ namespace UltimaXNA.Core.UI
             get;
             set;
         }
+
         /// <summary>
-        /// This's control's drawing/input page index. On Update() and Draw(), only those controls with Page == 0 or
-        /// Page == Parent.ActivePage will accept input and be drawn.
+        /// If the control is a child of UserInterfaceService, this determines which layer the control is drawn to.
         /// </summary>
-        public int Page
+        public UILayer Layer
         {
             get;
-            set;
+            protected set;
         }
 
-        int m_ActivePage = 0; // we always draw m_activePage and Page 0.
         /// <summary>
-        /// This control's active page index. On Update and Draw(), this control will send update to and draw all children with Page == 0 or
-        /// Page == this.Page.
+        /// A list of all the child controls that this control owns.
         /// </summary>
-        public int ActivePage
+        public List<AControl> Children
         {
-            get { return m_ActivePage; }
-            set
+            get
             {
-                m_ActivePage = value;
-                // If we own the current KeyboardFocusControl, then we should clear it.
-                // UNLESS page = 0; in which case it still exists and should maintain focus.
-                // Clear the current keyboardfocus if we own it and it's page != 0
-                // If the page = 0, then it will still exist so it should maintain focus.
-                if (m_UserInterface.KeyboardFocusControl != null)
-                {
-                    if (Children.Contains(m_UserInterface.KeyboardFocusControl))
-                    {
-                        if (m_UserInterface.KeyboardFocusControl.Page != 0)
-                            m_UserInterface.KeyboardFocusControl = null;
-                    }
-                }
-                // When ActivePage changes, check to see if there are new text input boxes
-                // that we should redirect text input to.
-                foreach (AControl c in Children)
-                {
-                    if (c.HandlesKeyboardFocus && (c.Page == m_ActivePage))
-                    {
-                        m_UserInterface.KeyboardFocusControl = c;
-                        break;
-                    }
-                }
+                if (m_Children == null)
+                    m_Children = new List<AControl>();
+                return m_Children;
             }
         }
+        #endregion
 
-        Rectangle m_Area = Rectangle.Empty;
-        protected int OwnerX
-        {
-            get
-            {
-                if (Owner != null)
-                    return Owner.X + Owner.OwnerX;
-                else
-                    return 0;
-            }
-        }
-        protected int OwnerY
-        {
-            get
-            {
-                if (Owner != null)
-                    return Owner.Y + Owner.OwnerY;
-                else
-                    return 0;
-            }
-        }
-        public int X { get { return Position.X; } }
-        public int Y { get { return Position.Y; } }
+        #region Position and Area properties
+        public int X { get { return m_Area.X; } }
+        public int Y { get { return m_Area.Y; } }
 
         public int ScreenX
         {
@@ -222,13 +191,14 @@ namespace UltimaXNA.Core.UI
         {
             get
             {
-                return m_Position;
+                return new Point(m_Area.X, m_Area.Y);
             }
             set
             {
-                if (value != m_Position)
+                if (value.X != m_Area.X || value.Y != m_Area.Y)
                 {
-                    m_Position = value;
+                    m_Area.X = value.X;
+                    m_Area.Y = value.Y;
                     OnMove();
                 }
             }
@@ -242,54 +212,124 @@ namespace UltimaXNA.Core.UI
                 m_Area.Height = value.Y;
             }
         }
-        public Rectangle Area
+        #endregion
+
+        #region page
+        /// <summary>
+        /// This's control's drawing/input page index. On Update() and Draw(), only those controls with Page == 0 or
+        /// Page == Parent.ActivePage will accept input and be drawn.
+        /// </summary>
+        public int Page
         {
-            get { return m_Area; }
+            get;
+            set;
         }
 
+        int m_ActivePage = 0; // we always draw m_activePage and Page 0.
+        /// <summary>
+        /// This control's active page index. On Update and Draw(), this control will send update to and draw all children with Page == 0 or
+        /// Page == this.Page.
+        /// </summary>
+        public int ActivePage
+        {
+            get { return m_ActivePage; }
+            set
+            {
+                m_ActivePage = value;
+                // If we own the current KeyboardFocusControl, then we should clear it.
+                // UNLESS page = 0; in which case it still exists and should maintain focus.
+                // Clear the current keyboardfocus if we own it and it's page != 0
+                // If the page = 0, then it will still exist so it should maintain focus.
+                if (UserInterface.KeyboardFocusControl != null)
+                {
+                    if (Children.Contains(UserInterface.KeyboardFocusControl))
+                    {
+                        if (UserInterface.KeyboardFocusControl.Page != 0)
+                            UserInterface.KeyboardFocusControl = null;
+                    }
+                }
+                // When ActivePage changes, check to see if there are new text input boxes
+                // that we should redirect text input to.
+                if (UserInterface.KeyboardFocusControl == null)
+                {
+                    foreach (AControl c in Children)
+                    {
+                        if (c.HandlesKeyboardFocus && (c.Page == m_ActivePage))
+                        {
+                            UserInterface.KeyboardFocusControl = c;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region events
+        /// <summary>
+        /// An event that other objects can use to be notified when this control is clicked.
+        /// </summary>
+        internal Action<int, int, MouseButton> MouseClickEvent;
+        /// <summary>
+        /// An event that other objects can use to be notified when this control is double-clicked.
+        /// </summary>
+        internal Action<int, int, MouseButton> MouseDoubleClickEvent;
+        /// <summary>
+        /// An event that other objects can use to be notified when this control receives a mouse down event.
+        /// </summary>
+        internal Action<int, int, MouseButton> MouseDownEvent;
+        /// <summary>
+        /// An event that other objects can use to be notified when this control receives a mouse up event.
+        /// </summary>
+        internal Action<int, int, MouseButton> MouseUpEvent;
+        /// <summary>
+        /// An event that other objects can use to be notified when this control receives a mouse over event.
+        /// </summary>
+        internal Action<int, int> MouseOverEvent;
+        /// <summary>
+        /// An event that other objects can use to be notified when this control receives a mouse out event.
+        /// </summary>
+        internal Action<int, int> MouseOutEvent;
+        #endregion
+
+        #region Owner / OwnerX / OwnerY
         public AControl Owner
         {
             get;
             protected set;
         }
 
-        private List<AControl> m_Children = null;
-        public List<AControl> Children
+        private int OwnerX
         {
             get
             {
-                if (m_Children == null)
-                    m_Children = new List<AControl>();
-                return m_Children;
+                if (Owner != null)
+                    return Owner.X + Owner.OwnerX;
+                else
+                    return 0;
             }
         }
 
-        public void Center()
+        private int OwnerY
         {
-            Position = new Point(
-                (m_UserInterface.Width - Width) / 2,
-                (m_UserInterface.Height - Height) / 2);
+            get
+            {
+                if (Owner != null)
+                    return Owner.Y + Owner.OwnerY;
+                else
+                    return 0;
+            }
         }
+        #endregion
 
-        UserInterfaceService m_UserInterface;
-        protected UserInterfaceService UserInterface
-        {
-            get { return m_UserInterface; }
-        }
-
-        protected Point m_Position;
-
-        public UILayer Layer
-        {
-            get;
-            protected set;
-        }
-
+        // ================================================================================
+        // Ctor, Init, Dispose, Update, and Draw
+        // ================================================================================
         public AControl(AControl owner, int page)
         {
             Owner = owner;
             Page = page;
-            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
+            UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
         }
 
         public void Initialize()
@@ -298,7 +338,7 @@ namespace UltimaXNA.Core.UI
             IsEnabled = true;
             IsInitialized = true;
             IsVisible = true;
-            InitializeChildren();
+            InitializeControls();
             OnInitialize();
         }
 
@@ -313,49 +353,8 @@ namespace UltimaXNA.Core.UI
             if (!IsInitialized || IsDisposed)
                 return;
 
-            // update our area X and Y to reflect any movement.
-            m_Area.X = X;
-            m_Area.Y = Y;
-
-            InitializeChildren();
-            UpdateChildren(totalMS, frameMS);
-        }
-
-        private void InitializeChildren()
-        {
-            bool newlyInitializedChildReceivedKeyboardFocus = false;
-
-            foreach (AControl c in Children)
-            {
-                if (!c.IsInitialized)
-                {
-                    c.Initialize();
-                    if (!newlyInitializedChildReceivedKeyboardFocus && c.HandlesKeyboardFocus)
-                    {
-                        m_UserInterface.KeyboardFocusControl = c;
-                        newlyInitializedChildReceivedKeyboardFocus = true;
-                    }
-                }
-            }
-        }
-
-        private void UpdateChildren(double totalMS, double frameMS)
-        {
-            foreach (AControl c in Children)
-            {
-                c.Update(totalMS, frameMS);
-            }
-
-            List<AControl> disposedControls = new List<AControl>();
-            foreach (AControl c in Children)
-            {
-                if (c.IsDisposed)
-                    disposedControls.Add(c);
-            }
-            foreach (AControl c in disposedControls)
-            {
-                Children.Remove(c);
-            }
+            InitializeControls();
+            UpdateControls(totalMS, frameMS);
         }
 
         virtual public void Draw(SpriteBatchUI spriteBatch, Point position)
@@ -379,8 +378,9 @@ namespace UltimaXNA.Core.UI
             }
         }
 
-
-
+        // ================================================================================
+        // Child control methods
+        // ================================================================================
         public AControl AddControl(AControl c)
         {
             Children.Add(c);
@@ -399,13 +399,58 @@ namespace UltimaXNA.Core.UI
                     c.Dispose();
         }
 
+        private void InitializeControls()
+        {
+            bool newlyInitializedChildReceivedKeyboardFocus = false;
+
+            foreach (AControl c in Children)
+            {
+                if (!c.IsInitialized)
+                {
+                    c.Initialize();
+                    if (!newlyInitializedChildReceivedKeyboardFocus && c.HandlesKeyboardFocus)
+                    {
+                        UserInterface.KeyboardFocusControl = c;
+                        newlyInitializedChildReceivedKeyboardFocus = true;
+                    }
+                }
+            }
+        }
+
+        private void UpdateControls(double totalMS, double frameMS)
+        {
+            foreach (AControl c in Children)
+            {
+                c.Update(totalMS, frameMS);
+            }
+
+            List<AControl> disposedControls = new List<AControl>();
+            foreach (AControl c in Children)
+            {
+                if (c.IsDisposed)
+                    disposedControls.Add(c);
+            }
+            foreach (AControl c in disposedControls)
+            {
+                Children.Remove(c);
+            }
+        }
+
+        // ================================================================================
+        // Miscellaneous methods
+        // ================================================================================
+        public void Center()
+        {
+            Position = new Point(
+                (UserInterface.Width - Width) / 2,
+                (UserInterface.Height - Height) / 2);
+        }
+
         public void MakeThisADragger()
         {
             HandlesMouseInput = true;
             IsMovable = true;
         }
-
-
 
         public virtual void ActivateByButton(int buttonID)
         {
@@ -527,20 +572,17 @@ namespace UltimaXNA.Core.UI
         // Mouse handling code
         // ================================================================================
         #region MouseInput
-
         // private variables
-
         private bool m_HandlesMouseInput = false;
         private float m_MaxTimeForDoubleClick = 0f;
         private Point m_LastClickPosition;
 
         // public methods
-
         public bool IsMouseOver
         {
             get
             {
-                if (m_UserInterface.MouseOverControl == this)
+                if (UserInterface.MouseOverControl == this)
                     return true;
                 return false;
             }
@@ -607,7 +649,7 @@ namespace UltimaXNA.Core.UI
             bool doubleClick = false;
             if (m_MaxTimeForDoubleClick != 0f)
             {
-                if (UltimaEngine.TotalMS <= m_MaxTimeForDoubleClick)
+                if (UltimaGame.TotalMS <= m_MaxTimeForDoubleClick)
                 {
                     m_MaxTimeForDoubleClick = 0f;
                     doubleClick = true;
@@ -615,7 +657,7 @@ namespace UltimaXNA.Core.UI
             }
             else
             {
-                m_MaxTimeForDoubleClick = (float)UltimaEngine.TotalMS + Settings.World.Mouse.DoubleClickMS;
+                m_MaxTimeForDoubleClick = (float)UltimaGame.TotalMS + Settings.World.Mouse.DoubleClickMS;
             }
 
             OnMouseClick(x, y, button);
@@ -662,7 +704,7 @@ namespace UltimaXNA.Core.UI
         {
             List<AControl> focusedControls = new List<AControl>();
 
-            bool inBounds = Area.Contains((int)position.X - OwnerX, (int)position.Y - OwnerY);
+            bool inBounds = m_Area.Contains((int)position.X - OwnerX, (int)position.Y - OwnerY);
             if (inBounds)
             {
                 if (InternalHitTest((int)position.X - X - OwnerX, (int)position.Y - Y - OwnerY))
@@ -698,13 +740,10 @@ namespace UltimaXNA.Core.UI
         // Keyboard handling code
         // ================================================================================
         #region KeyboardInput
-
         // private variables
-
         private bool m_HandlesKeyboardFocus = false;
 
         // public methods
-
         public bool HandlesKeyboardFocus
         {
             get
@@ -746,7 +785,7 @@ namespace UltimaXNA.Core.UI
             {
                 if (Children[i].HandlesKeyboardFocus)
                 {
-                    m_UserInterface.KeyboardFocusControl = Children[i];
+                    UserInterface.KeyboardFocusControl = Children[i];
                     return;
                 }
             }
@@ -754,7 +793,7 @@ namespace UltimaXNA.Core.UI
             {
                 if (Children[i].HandlesKeyboardFocus)
                 {
-                    m_UserInterface.KeyboardFocusControl = Children[i];
+                    UserInterface.KeyboardFocusControl = Children[i];
                     return;
                 }
             }
@@ -778,31 +817,21 @@ namespace UltimaXNA.Core.UI
         // Debug control boundary drawing code
         // ================================================================================
         #region DebugBoundaryDrawing
-#if DEBUG
-        static Texture2D s_BoundsTexture;
-#endif
+        private Texture2D m_BoundsTexture;
 
         protected void DebugDrawBounds(SpriteBatchUI spriteBatch, Point position, Color color)
         {
-#if DEBUG
-            Rectangle drawArea = m_Area;
-            if (Owner == null)
+            if (m_BoundsTexture == null)
             {
-                m_Area.X -= X;
-                m_Area.Y -= Y;
+                m_BoundsTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
+                m_BoundsTexture.SetData<Color>(new Color[] { Color.White });
             }
 
-            if (s_BoundsTexture == null)
-            {
-                s_BoundsTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
-                s_BoundsTexture.SetData<Color>(new Color[] { Color.White });
-            }
-
-            spriteBatch.Draw2D(s_BoundsTexture, new Rectangle(position.X, position.Y, Width, 1), Vector3.Zero);
-            spriteBatch.Draw2D(s_BoundsTexture, new Rectangle(position.X, position.Y + Height - 1, Width, 1), Vector3.Zero);
-            spriteBatch.Draw2D(s_BoundsTexture, new Rectangle(position.X, position.Y, 1, Height), Vector3.Zero);
-            spriteBatch.Draw2D(s_BoundsTexture, new Rectangle(position.X + Width - 1, position.Y, 1, Height), Vector3.Zero);
-#endif
+            Rectangle drawArea = new Rectangle(ScreenX, ScreenY, Width, Height);
+            spriteBatch.Draw2D(m_BoundsTexture, new Rectangle(position.X, position.Y, Width, 1), Vector3.Zero);
+            spriteBatch.Draw2D(m_BoundsTexture, new Rectangle(position.X, position.Y + Height - 1, Width, 1), Vector3.Zero);
+            spriteBatch.Draw2D(m_BoundsTexture, new Rectangle(position.X, position.Y, 1, Height), Vector3.Zero);
+            spriteBatch.Draw2D(m_BoundsTexture, new Rectangle(position.X + Width - 1, position.Y, 1, Height), Vector3.Zero);
         #endregion
         }
     }

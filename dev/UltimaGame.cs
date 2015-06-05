@@ -29,11 +29,11 @@ using UltimaXNA.Ultima.Login;
 
 namespace UltimaXNA
 {
-    internal class UltimaEngine : Game
+    internal class UltimaGame : Game
     {
         public static double TotalMS = 0d;
 
-        public UltimaEngine()
+        public UltimaGame()
         {
             InitializeGraphicsDeviceAndWindow();
             InitializeExitGuard();

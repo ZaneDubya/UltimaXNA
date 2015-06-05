@@ -1,6 +1,7 @@
 ﻿/***************************************************************************
  *   MsgBox.cs
- *   
+ *   Copyright (c) 2015 UltimaXNA Development Team
+ * 
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 3 of the License, or
@@ -9,32 +10,45 @@
  ***************************************************************************/
 #region usings
 using System;
-using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.UI.Controls;
 #endregion
 
-namespace UltimaXNA.Core.UI
+namespace UltimaXNA.Ultima.UI
 {
     public enum MsgBoxTypes
     {
         OkOnly,
         OkCancel
     }
-    public class MsgBox : AControl
+
+    public class MsgBoxGump : Gump
     {
-        string m_msg;
-        HtmlGumpling m_text;
-        MsgBoxTypes m_type;
+        /// <summary>
+        /// Opens a modal message box with either 'OK' or 'OK and Cancel' buttons.
+        /// </summary>
+        /// <param name="msg"></param>
+        /// <param name="type"></param>
+        public static MsgBoxGump Show(string msg, MsgBoxTypes type)
+        {
+            MsgBoxGump gump = new MsgBoxGump(msg, type);
+            return gump;
+        }
+
+        private string m_msg;
+        private HtmlGumpling m_text;
+        private MsgBoxTypes m_type;
 
         public Action OnClose;
         public Action OnCancel;
 
-        public MsgBox(string msg, MsgBoxTypes msgBoxType)
-            : base(null, 0)
+        private MsgBoxGump(string msg, MsgBoxTypes msgBoxType)
+            : base(0, 0)
         {
             m_msg = "<big color=000000>" + msg;
             m_type = msgBoxType;
             IsModal = true;
+            UserInterface.AddControl(this, 0, 0);
         }
 
         public override void Update(double totalMS, double frameMS)

@@ -136,7 +136,7 @@ namespace UltimaXNA.Ultima.IO
 
             public void Play()
             {
-                float now = (float)UltimaEngine.TotalMS;
+                float now = (float)UltimaGame.TotalMS;
 
                 // Check to see if any existing instances of this sound effect have stopped playing. If
                 // they have, remove the reference to them so the garbage collector can collect them.

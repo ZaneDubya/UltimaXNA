@@ -156,7 +156,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         protected override bool InternalHitTest(int x, int y)
         {
-            Point position = new Point(x + OwnerX + X, y + OwnerY + Y);
+            Point position = new Point(x + ScreenX, y + ScreenY);
             if (HasScrollbar)
             {
                 if (m_Scrollbar.HitTest(position, true) != null)

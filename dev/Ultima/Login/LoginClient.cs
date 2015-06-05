@@ -29,7 +29,7 @@ namespace UltimaXNA.Ultima.Login
     public class LoginClient
     {
         private readonly INetworkClient m_Network;
-        private readonly UltimaEngine m_Engine;
+        private readonly UltimaGame m_Engine;
         private readonly UserInterfaceService m_UserInterface;
 
         private List<Tuple<int, TypedPacketReceiveHandler>> m_RegisteredHandlers;
@@ -53,7 +53,7 @@ namespace UltimaXNA.Ultima.Login
         public LoginClient()
         {
             m_Network = ServiceRegistry.GetService<INetworkClient>();
-            m_Engine = ServiceRegistry.GetService<UltimaEngine>();
+            m_Engine = ServiceRegistry.GetService<UltimaGame>();
             m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
 
             Status = LoginClientStatus.Unconnected;
@@ -232,7 +232,7 @@ namespace UltimaXNA.Ultima.Login
         private void ReceiveDeleteCharacterResponse(IRecvPacket packet)
         {
             DeleteCharacterResponsePacket p = (DeleteCharacterResponsePacket)packet;
-            m_UserInterface.MsgBox(p.Result, MsgBoxTypes.OkOnly);
+            MsgBoxGump.Show(p.Result, MsgBoxTypes.OkOnly);
         }
 
         private void ReceiveCharacterListUpdate(IRecvPacket packet)
