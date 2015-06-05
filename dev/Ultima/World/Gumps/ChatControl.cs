@@ -43,9 +43,9 @@ namespace UltimaXNA.Ultima.World.Gumps
             m_TextEntries = new List<ChatLineTimed>();
             m_MessageHistory = new List<string>();
 
-            m_Input = UltimaServices.GetService<InputManager>();
-            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
-            m_World = UltimaServices.GetService<WorldModel>();
+            m_Input = ServiceRegistry.GetService<InputManager>();
+            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
+            m_World = ServiceRegistry.GetService<WorldModel>();
 
             IsUncloseableWithRMB = true;
         }

@@ -42,7 +42,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             HandlesMouseInput = true;
 
-            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
+            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
         }
 
         public DropDownList(AControl owner, int page, int x, int y, int width, int index, int itemsVisible, string[] items, bool canBeNull)

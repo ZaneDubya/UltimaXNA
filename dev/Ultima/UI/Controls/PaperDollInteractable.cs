@@ -32,7 +32,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             Owner = owner;
             Position = new Point(x, y);
 
-            m_World = UltimaServices.GetService<WorldModel>();
+            m_World = ServiceRegistry.GetService<WorldModel>();
         }
 
         public override void Update(double totalMS, double frameMS)

@@ -1,6 +1,7 @@
 ﻿/***************************************************************************
  *   Overhead.cs
- *   
+ *   Copyright (c) 2015 UltimaXNA Development Team
+ * 
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 3 of the License, or
@@ -8,14 +9,6 @@
  *
  ***************************************************************************/
 #region usings
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
-using UltimaXNA.Ultima.World;
-using UltimaXNA.Ultima.World.Maps;
-using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.Data;
 #endregion
 
@@ -29,7 +22,7 @@ namespace UltimaXNA.Ultima.Entities
             private set;
         }
 
-        public MessageType MessageType
+        public MessageTypes MessageType
         {
             get;
             private set;
@@ -43,7 +36,7 @@ namespace UltimaXNA.Ultima.Entities
 
         private int m_TimePersist = 0;
 
-        public Overhead(AEntity parent, MessageType msgType, string text)
+        public Overhead(AEntity parent, MessageTypes msgType, string text)
             : base(parent.Serial, parent.Map)
         {
             Parent = parent;

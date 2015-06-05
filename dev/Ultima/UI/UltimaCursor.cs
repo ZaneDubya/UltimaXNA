@@ -62,7 +62,7 @@ namespace UltimaXNA.Ultima.UI
 
         public UltimaCursor()
         {
-            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
+            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
         }
 
         public virtual void Dispose()

@@ -50,8 +50,8 @@ namespace UltimaXNA.Ultima.World.Gumps
             AddControl(new Button(this, 2, 5, 3, 5537, 5539, 0, 1, 0));
             ((Button)LastControl).GumpOverID = 5538;
 
-            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
-            m_World = UltimaServices.GetService<WorldModel>();
+            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
+            m_World = ServiceRegistry.GetService<WorldModel>();
 
             IsUncloseableWithRMB = true;
 

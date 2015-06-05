@@ -47,9 +47,9 @@ namespace UltimaXNA.Ultima.World.Gumps
         {
             Parent = parent;
 
-            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
-            m_World = UltimaServices.GetService<WorldModel>();
-            m_Client = UltimaServices.GetService<INetworkClient>();
+            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
+            m_World = ServiceRegistry.GetService<WorldModel>();
+            m_Client = ServiceRegistry.GetService<INetworkClient>();
 
             IsMovable = true;
 

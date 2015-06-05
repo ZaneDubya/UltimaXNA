@@ -1,6 +1,7 @@
 /***************************************************************************
  *   UltimaEngine.cs
- *
+ *   Copyright (c) 2015 UltimaXNA Development Team
+ * 
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 3 of the License, or
@@ -18,12 +19,12 @@ using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Ultima;
+using UltimaXNA.Ultima.Audio;
 using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.IO.FontsNew;
 using UltimaXNA.Ultima.IO.FontsOld;
 using UltimaXNA.Ultima.Login;
 using UltimaXNA.Ultima.UI;
-using UltimaXNA.Ultima.Audio;
 #endregion
 
 namespace UltimaXNA
@@ -119,12 +120,12 @@ namespace UltimaXNA
             Content.RootDirectory = "Content";
 
             // Create all the services we need.
-            UltimaServices.Register<SpriteBatch3D>(new SpriteBatch3D(this));
-            UltimaServices.Register<SpriteBatchUI>(new SpriteBatchUI(this));
-            Network = UltimaServices.Register<INetworkClient>(new NetworkClient());
-            Input = UltimaServices.Register<InputManager>(new InputManager(Window.Handle));
-            UserInterface = UltimaServices.Register<UserInterfaceService>(new UserInterfaceService());
-            UltimaServices.Register<AudioService>(new AudioService());
+            ServiceRegistry.Register<SpriteBatch3D>(new SpriteBatch3D(this));
+            ServiceRegistry.Register<SpriteBatchUI>(new SpriteBatchUI(this));
+            Network = ServiceRegistry.Register<INetworkClient>(new NetworkClient());
+            Input = ServiceRegistry.Register<InputManager>(new InputManager(Window.Handle));
+            UserInterface = ServiceRegistry.Register<UserInterfaceService>(new UserInterfaceService());
+            ServiceRegistry.Register<AudioService>(new AudioService());
 
             // Make sure we have a UO installation before loading IO.
             if (FileManager.IsUODataPresent)

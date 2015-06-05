@@ -54,7 +54,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             HandlesMouseInput = true;
             HandlesKeyboardFocus = true;
 
-            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
+            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
         }
 
         public TextEntry(AControl owner, int page, string[] arguements, string[] lines)

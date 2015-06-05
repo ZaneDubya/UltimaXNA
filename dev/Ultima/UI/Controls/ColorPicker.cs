@@ -7,11 +7,12 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+#region usings
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
-using UltimaXNA.Ultima.UI;
+#endregion
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
@@ -58,7 +59,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             HandlesMouseInput = true;
 
-            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
+            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
         }
 
         public ColorPicker(AControl owner, int page, Rectangle area, int swatchWidth, int swatchHeight, int[] hues)

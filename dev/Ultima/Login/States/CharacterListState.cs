@@ -34,8 +34,8 @@ namespace UltimaXNA.Ultima.Login.States
         {
             base.Intitialize();
 
-            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
-            m_Login = UltimaServices.GetService<LoginModel>();
+            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
+            m_Login = ServiceRegistry.GetService<LoginModel>();
 
             m_CharListGump = (CharacterListGump)m_UserInterface.AddControl(new CharacterListGump(), 0, 0);
             m_CharListGump.OnBackToSelectServer += OnBackToSelectServer;

@@ -11,10 +11,9 @@
 #region usings
 using Microsoft.Xna.Framework;
 using System;
+using UltimaXNA.Configuration;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Ultima.Network.Client;
-using UltimaXNA.Core.Diagnostics;
-using UltimaXNA.Configuration;
 #endregion
 
 namespace UltimaXNA.Ultima.Entities.Mobiles

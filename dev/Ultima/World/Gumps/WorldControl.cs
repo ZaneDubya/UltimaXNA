@@ -20,17 +20,17 @@ namespace UltimaXNA.Ultima.UI.Controls
             Size = new Point(width, height);
 
             HandlesMouseInput = true;
-            UltimaServices.Register<WorldControl>(this);
+            ServiceRegistry.Register<WorldControl>(this);
         }
 
         protected override void OnInitialize()
         {
-            m_Model = UltimaServices.GetService<WorldModel>();
+            m_Model = ServiceRegistry.GetService<WorldModel>();
         }
 
         public override void Dispose()
         {
-            UltimaServices.Unregister<WorldControl>();
+            ServiceRegistry.Unregister<WorldControl>();
             base.Dispose();
         }
 

@@ -20,7 +20,7 @@ namespace UltimaXNA.Ultima.Login.States
         {
             OverHue = -1;
 
-            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
+            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
         }
 
         public static string Caption

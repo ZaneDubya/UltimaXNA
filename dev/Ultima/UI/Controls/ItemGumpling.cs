@@ -41,7 +41,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             buildGumpling(item);
             HandlesMouseInput = true;
 
-            m_World = UltimaServices.GetService<WorldModel>();
+            m_World = ServiceRegistry.GetService<WorldModel>();
         }
 
         void buildGumpling(Item item)

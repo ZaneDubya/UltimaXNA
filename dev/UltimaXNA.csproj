@@ -128,7 +128,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\GumpSettings.cs" />
-    <Compile Include="Configuration\Mouse.cs" />
+    <Compile Include="Configuration\MouseSettings.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Configuration\WorldSettings.cs" />
     <Compile Include="Core\ComponentModel\EqualityHelper.cs" />
@@ -143,10 +143,9 @@
     <Compile Include="Core\Graphics\Techniques.cs" />
     <Compile Include="Core\Network\INetworkClient.cs" />
     <Compile Include="Core\Patterns\IModule.cs" />
-    <Compile Include="UltimaServices.cs" />
+    <Compile Include="ServiceRegistry.cs" />
     <Compile Include="Ultima\Audio\AudioService.cs" />
     <Compile Include="Ultima\AUltimaModel.cs" />
-    <Compile Include="Core\Collections\SafeDictionary.cs" />
     <Compile Include="Configuration\DebugSettings.cs" />
     <Compile Include="Configuration\GameSettings.cs" />
     <Compile Include="Configuration\ServerSettings.cs" />
@@ -185,7 +184,7 @@
     <Compile Include="Ultima\Data\Body.cs" />
     <Compile Include="Ultima\Data\Seasons.cs" />
     <Compile Include="Ultima\Direction.cs" />
-    <Compile Include="Ultima\Data\MessageType.cs" />
+    <Compile Include="Ultima\Data\MessageTypes.cs" />
     <Compile Include="Ultima\Data\TileFlags.cs" />
     <Compile Include="Ultima\Entities\Mobiles\MobileSounds.cs" />
     <Compile Include="Ultima\Entities\Mobiles\MovementSpeed.cs" />

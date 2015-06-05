@@ -25,7 +25,7 @@ namespace UltimaXNA.Ultima.World.Gumps
         public DebugGump()
             : base(0, 0)
         {
-            m_World = UltimaServices.GetService<WorldModel>();
+            m_World = ServiceRegistry.GetService<WorldModel>();
 
             IsMovable = true;
 

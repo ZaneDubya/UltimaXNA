@@ -42,7 +42,7 @@ namespace UltimaXNA.Ultima.World.Views
 
         public void Initialize()
         {
-            m_SpriteBatch = UltimaServices.GetService<SpriteBatchUI>();
+            m_SpriteBatch = ServiceRegistry.GetService<SpriteBatchUI>();
             Texture = new Texture2D(m_SpriteBatch.GraphicsDevice, (int)Stride, (int)Stride);
 
             m_TextureData = new uint[Stride * Stride];

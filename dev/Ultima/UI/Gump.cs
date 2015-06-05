@@ -398,7 +398,7 @@ namespace UltimaXNA.Ultima.UI
 
         protected override void OnMove()
         {
-            SpriteBatchUI sb = UltimaServices.GetService<SpriteBatchUI>();
+            SpriteBatchUI sb = ServiceRegistry.GetService<SpriteBatchUI>();
             Point position = m_Position;
 
             int halfWidth = Width / 2;

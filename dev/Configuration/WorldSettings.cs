@@ -1,4 +1,14 @@
-﻿#region Usings
+﻿/***************************************************************************
+ *   WorldSettings.cs
+ *   Copyright (c) 2015 UltimaXNA Development Team
+ * 
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region Usings
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.Configuration;
 #endregion
@@ -12,7 +22,7 @@ namespace UltimaXNA.Configuration
         private Resolution m_WindowResolution;
         private Resolution m_WorldGumpResolution;
         private bool m_IsFullScreen;
-        private Mouse m_Mouse;
+        private MouseSettings m_Mouse;
         private bool m_AlwaysRun;
 
         public WorldSettings()
@@ -20,7 +30,7 @@ namespace UltimaXNA.Configuration
             WindowResolution = new Resolution(800, 600);
             GumpResolution = new Resolution(800, 600);
             IsMaximized = false;
-            Mouse = new Mouse(MouseButton.Left, MouseButton.Right);
+            Mouse = new MouseSettings(MouseButton.Left, MouseButton.Right);
             AlwaysRun = false;
         }
 
@@ -30,7 +40,7 @@ namespace UltimaXNA.Configuration
             set { SetProperty(ref m_IsFullScreen, value); }
         }
 
-        public Mouse Mouse
+        public MouseSettings Mouse
         {
             get { return m_Mouse; }
             set { SetProperty(ref m_Mouse, value); }

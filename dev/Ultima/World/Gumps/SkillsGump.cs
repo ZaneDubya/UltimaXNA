@@ -34,7 +34,7 @@ namespace UltimaXNA.Ultima.World.Gumps
         {
             IsMovable = true;
 
-            m_World = UltimaServices.GetService<WorldModel>();
+            m_World = ServiceRegistry.GetService<WorldModel>();
 
             AddControl(m_Background = new ExpandableScroll(this, 0, 0, 0, 200));
             m_Background.TitleGumpID = 0x834;
@@ -103,7 +103,7 @@ namespace UltimaXNA.Ultima.World.Gumps
                 if (!int.TryParse(href.Substring(9), out skillIndex))
                     return;
                 SkillEntry skill = PlayerState.Skills.SkillEntryByIndex(skillIndex);
-                InputManager input = UltimaServices.GetService<InputManager>();
+                InputManager input = ServiceRegistry.GetService<InputManager>();
                 UseSkillButtonGump gump = new UseSkillButtonGump(skill);
                 UserInterface.AddControl(gump, input.MousePosition.X - 60, input.MousePosition.Y - 20);
                 UserInterface.AttemptDragControl(gump, input.MousePosition, true);

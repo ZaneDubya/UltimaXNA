@@ -44,7 +44,7 @@ namespace UltimaXNA.Ultima.Login.States
 
         public virtual void Intitialize()
         {
-            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
+            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
         }
 
         public virtual void Update(double totalTime, double frameTime)

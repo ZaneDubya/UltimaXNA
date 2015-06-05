@@ -1,14 +1,21 @@
-﻿using System;
+﻿/***************************************************************************
+ *   MobileSounds.cs
+ *   Copyright (c) 2015 UltimaXNA Development Team
+ * 
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UltimaXNA.Ultima.Audio;
 
 namespace UltimaXNA.Ultima.Entities.Mobiles
 {
     public static class MobileSounds
     {
-        private static AudioService m_Audio = UltimaServices.GetService<AudioService>();
+        private static AudioService m_Audio = ServiceRegistry.GetService<AudioService>();
 
         private static Dictionary<Serial, MobileSoundData> m_Data = new Dictionary<Serial,MobileSoundData>();
 

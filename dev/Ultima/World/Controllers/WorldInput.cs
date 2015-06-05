@@ -47,9 +47,9 @@ namespace UltimaXNA.Ultima.World.Controllers
         {
             World = world;
 
-            m_Network = UltimaServices.GetService<INetworkClient>();
-            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
-            m_Input = UltimaServices.GetService<InputManager>();
+            m_Network = ServiceRegistry.GetService<INetworkClient>();
+            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
+            m_Input = ServiceRegistry.GetService<InputManager>();
 
             MousePick = new MousePicking();
         }
@@ -110,7 +110,7 @@ namespace UltimaXNA.Ultima.World.Controllers
         {
             get
             {
-                WorldControl world = UltimaServices.GetService<WorldControl>();
+                WorldControl world = ServiceRegistry.GetService<WorldControl>();
                 Point mouse = new Point(m_Input.MousePosition.X - world.ScreenX, m_Input.MousePosition.Y - world.ScreenY);
                 return mouse;
             }
@@ -344,7 +344,7 @@ namespace UltimaXNA.Ultima.World.Controllers
                 else if(overEntity is StaticItem)
                 {
                     // pop up name of item.
-                    overEntity.AddOverhead(MessageType.Label, "<outline>" + overEntity.Name, 0, 0);
+                    overEntity.AddOverhead(MessageTypes.Label, "<outline>" + overEntity.Name, 0, 0);
                     StaticManager.AddStaticThatNeedsUpdating(overEntity as StaticItem);
                 }
                 else if(overEntity is Item)

@@ -79,8 +79,8 @@ namespace UltimaXNA.Ultima.Login.States
 
         public StateManager()
         {
-            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
-            m_Login = UltimaServices.GetService<LoginModel>();
+            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
+            m_Login = ServiceRegistry.GetService<LoginModel>();
         }
 
         public void Update(double totalTime, double frameTime)

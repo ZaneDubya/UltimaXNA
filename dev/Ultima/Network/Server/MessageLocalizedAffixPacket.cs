@@ -20,7 +20,7 @@ namespace UltimaXNA.Ultima.Network.Server
         public bool IsSystemMessage { get { return (Serial == 0xFFFF); } }
         public readonly Serial Serial;
         public readonly int Body;
-        public readonly MessageType MessageType;
+        public readonly MessageTypes MessageType;
         public readonly int Hue;
         public readonly int Font;
         public readonly int CliLocNumber;
@@ -38,7 +38,7 @@ namespace UltimaXNA.Ultima.Network.Server
         {
             Serial = reader.ReadInt32(); // 0xffff for system message
             Body = reader.ReadInt16(); // (0xff for system message
-            MessageType = (MessageType)reader.ReadByte(); // 6 - lower left, 7 on player
+            MessageType = (MessageTypes)reader.ReadByte(); // 6 - lower left, 7 on player
             Hue = reader.ReadUInt16();
             Font = reader.ReadInt16();
             CliLocNumber = reader.ReadInt32();

@@ -26,7 +26,7 @@ namespace UltimaXNA.Ultima.Network.Server
     {
         readonly Serial m_serial;
         readonly short m_graphic;
-        readonly MessageType m_type;
+        readonly MessageTypes m_type;
         readonly short m_hue;
         readonly short m_font;
         readonly string m_name;
@@ -42,7 +42,7 @@ namespace UltimaXNA.Ultima.Network.Server
             get { return m_graphic; }
         }
 
-        public MessageType MsgType
+        public MessageTypes MsgType
         {
             get { return m_type; }
         }
@@ -73,7 +73,7 @@ namespace UltimaXNA.Ultima.Network.Server
         {
             m_serial = reader.ReadInt32();
             m_graphic = reader.ReadInt16();
-            m_type = (MessageType)reader.ReadByte();
+            m_type = (MessageTypes)reader.ReadByte();
             m_hue = reader.ReadInt16();
             m_font = reader.ReadInt16();
             m_name = reader.ReadString(30);

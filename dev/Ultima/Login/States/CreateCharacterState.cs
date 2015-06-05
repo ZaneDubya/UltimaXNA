@@ -47,8 +47,8 @@ namespace UltimaXNA.Ultima.Login.States
         public CreateCharacterState()
             : base()
         {
-            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
-            m_Login = UltimaServices.GetService<LoginModel>();
+            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
+            m_Login = ServiceRegistry.GetService<LoginModel>();
         }
 
         public override void Intitialize()

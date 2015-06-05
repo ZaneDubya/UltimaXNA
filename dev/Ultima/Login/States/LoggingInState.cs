@@ -36,8 +36,8 @@ namespace UltimaXNA.Ultima.Login.States
         {
             base.Intitialize();
 
-            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
-            m_Login = UltimaServices.GetService<LoginModel>();
+            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
+            m_Login = ServiceRegistry.GetService<LoginModel>();
 
             m_Gump = (LoggingInGump)m_UserInterface.AddControl(new LoggingInGump(), 0, 0);
             m_Gump.OnCancelLogin += OnCancelLogin;

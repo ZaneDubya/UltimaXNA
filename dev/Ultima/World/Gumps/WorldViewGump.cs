@@ -23,7 +23,7 @@ namespace UltimaXNA.Ultima.World.Gumps
             IsMovable = true;
             Layer = GumpLayer.Under;
 
-            m_Model = UltimaServices.GetService<WorldModel>();
+            m_Model = ServiceRegistry.GetService<WorldModel>();
 
             m_WorldWidth = Settings.World.GumpResolution.Width;
             m_WorldHeight = Settings.World.GumpResolution.Height;
@@ -53,7 +53,7 @@ namespace UltimaXNA.Ultima.World.Gumps
         protected override void OnMove()
         {
             // base.OnMove(); - this would make sure that the gump remained at least half on screen, but we want more fine-grained control over movement.
-            SpriteBatchUI sb = UltimaServices.GetService<SpriteBatchUI>();
+            SpriteBatchUI sb = ServiceRegistry.GetService<SpriteBatchUI>();
             Point position = Position;
 
             if (position.X < -BorderWidth)
@@ -70,8 +70,8 @@ namespace UltimaXNA.Ultima.World.Gumps
 
         private void OnResize()
         {
-            if (UltimaServices.ServiceExists<ChatControl>())
-                UltimaServices.Unregister<ChatControl>();
+            if (ServiceRegistry.ServiceExists<ChatControl>())
+                ServiceRegistry.Unregister<ChatControl>();
 
             ClearControls();
             // border for dragging
@@ -80,7 +80,7 @@ namespace UltimaXNA.Ultima.World.Gumps
             AddControl(new WorldControl(this, BorderWidth, BorderHeight, m_WorldWidth, m_WorldHeight));
             // chat!
             AddControl(m_ChatWindow = new ChatControl(this, BorderWidth, BorderHeight, 400, m_WorldHeight));
-            UltimaServices.Register<ChatControl>(m_ChatWindow);
+            ServiceRegistry.Register<ChatControl>(m_ChatWindow);
         }
     }
 }

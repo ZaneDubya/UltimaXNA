@@ -29,7 +29,7 @@ namespace UltimaXNA.Ultima.World.Gumps
         public MiniMapGump()
             : base(0, 0)
         {
-            m_World = UltimaServices.GetService<WorldModel>();
+            m_World = ServiceRegistry.GetService<WorldModel>();
 
             m_useLargeMap = EngineVars.MiniMap_LargeFormat;
 

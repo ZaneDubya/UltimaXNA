@@ -18,7 +18,7 @@ namespace UltimaXNA.Ultima.Login
         public LoginModel()
             : base()
         {
-            UltimaServices.Register<LoginModel>(this);
+            ServiceRegistry.Register<LoginModel>(this);
 
             Client = new LoginClient();
         }
@@ -30,9 +30,9 @@ namespace UltimaXNA.Ultima.Login
 
         protected override void OnInitialize()
         {
-            UltimaServices.GetService<UltimaEngine>().SetupWindowForLogin();
+            ServiceRegistry.GetService<UltimaEngine>().SetupWindowForLogin();
 
-            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
+            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
             m_UserInterface.Cursor = new UI.UltimaCursor();
 
             m_SceneManager = new StateManager();
@@ -41,7 +41,7 @@ namespace UltimaXNA.Ultima.Login
 
         protected override void OnDispose()
         {
-            UltimaServices.Unregister<LoginModel>();
+            ServiceRegistry.Unregister<LoginModel>();
 
             Client.Dispose();
             Client = null;

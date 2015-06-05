@@ -103,7 +103,7 @@ namespace UltimaXNA.Ultima.World
             m_Entities_Queued.Clear();
         }
 
-        public static Overhead AddOverhead(MessageType msgType, Serial serial, string text, int fontID, int hue)
+        public static Overhead AddOverhead(MessageTypes msgType, Serial serial, string text, int fontID, int hue)
         {
             if (m_Entities.ContainsKey(serial))
             {

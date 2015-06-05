@@ -110,11 +110,11 @@ namespace UltimaXNA.Ultima.World
         public WorldModel()
             : base()
         {
-            UltimaServices.Register<WorldModel>(this);
+            ServiceRegistry.Register<WorldModel>(this);
 
-            m_Engine = UltimaServices.GetService<UltimaEngine>();
-            m_Network = UltimaServices.GetService<INetworkClient>();
-            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
+            m_Engine = ServiceRegistry.GetService<UltimaEngine>();
+            m_Network = ServiceRegistry.GetService<INetworkClient>();
+            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
 
             Entities = new EntityManager(this);
             EntityManager.Reset(true);
@@ -153,7 +153,7 @@ namespace UltimaXNA.Ultima.World
         {
             m_Engine.SaveResolution();
 
-            UltimaServices.Unregister<WorldModel>();
+            ServiceRegistry.Unregister<WorldModel>();
 
             EntityManager.Reset();
             Entities = null;

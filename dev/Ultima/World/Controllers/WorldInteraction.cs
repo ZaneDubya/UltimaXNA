@@ -41,8 +41,8 @@ namespace UltimaXNA.Ultima.World.Controllers
 
         public WorldInteraction(WorldModel world)
         {
-            m_Network = UltimaServices.GetService<INetworkClient>();
-            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
+            m_Network = ServiceRegistry.GetService<INetworkClient>();
+            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
 
             World = world;
         }
@@ -136,7 +136,7 @@ namespace UltimaXNA.Ultima.World.Controllers
         {
             m_ChatQueue.Add(new QueuedMessage(text, hue, font));
 
-            ChatControl chat = UltimaServices.GetService<ChatControl>();
+            ChatControl chat = ServiceRegistry.GetService<ChatControl>();
             if (chat != null)
             {
                 foreach (QueuedMessage msg in m_ChatQueue)
@@ -161,7 +161,7 @@ namespace UltimaXNA.Ultima.World.Controllers
             }
         }
 
-        public void CreateLabel(MessageType msgType, Serial serial, string text, int hue, int font)
+        public void CreateLabel(MessageTypes msgType, Serial serial, string text, int hue, int font)
         {
             Overhead overhead;
 

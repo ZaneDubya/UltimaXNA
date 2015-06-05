@@ -46,9 +46,9 @@ namespace UltimaXNA.Ultima.World.Controllers
 
         public WorldCursor(WorldModel model)
         {
-            m_Network = UltimaServices.GetService<INetworkClient>();
-            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
-            m_Input = UltimaServices.GetService<InputManager>();
+            m_Network = ServiceRegistry.GetService<INetworkClient>();
+            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
+            m_Input = ServiceRegistry.GetService<InputManager>();
 
             World = model;
             InternalRegisterInteraction();

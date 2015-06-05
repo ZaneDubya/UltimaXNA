@@ -27,9 +27,9 @@ namespace UltimaXNA.Ultima.Login.States
         public LoginState()
             : base()
         {
-            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
-            m_Login = UltimaServices.GetService<LoginModel>();
-            m_Input = UltimaServices.GetService<InputManager>();
+            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
+            m_Login = ServiceRegistry.GetService<LoginModel>();
+            m_Input = ServiceRegistry.GetService<InputManager>();
         }
 
         public override void Intitialize()

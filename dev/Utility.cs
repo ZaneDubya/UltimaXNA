@@ -1,6 +1,7 @@
 ﻿/***************************************************************************
  *   Utility.cs
- *
+ *   Copyright (c) 2015 UltimaXNA Development Team
+ * 
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 3 of the License, or
@@ -8,10 +9,9 @@
  *
  ***************************************************************************/
 #region usings
-
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
@@ -20,7 +20,6 @@ using System.Net;
 using System.Reflection;
 using System.Text;
 using UltimaXNA.Ultima;
-using UltimaXNA.Ultima.Data;
 #endregion
 
 namespace UltimaXNA

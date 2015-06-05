@@ -28,9 +28,9 @@ namespace UltimaXNA.Ultima.UI
 
         public UserInterfaceService()
         {
-            m_Network = UltimaServices.GetService<INetworkClient>();
-            m_Input = UltimaServices.GetService<InputManager>();
-            m_SpriteBatch = UltimaServices.GetService<SpriteBatchUI>();
+            m_Network = ServiceRegistry.GetService<INetworkClient>();
+            m_Input = ServiceRegistry.GetService<InputManager>();
+            m_SpriteBatch = ServiceRegistry.GetService<SpriteBatchUI>();
 
             m_Controls = new List<AControl>();
             m_DisposedControls = new List<AControl>();

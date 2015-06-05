@@ -1,6 +1,7 @@
 ﻿/***************************************************************************
  *   AEntity.cs
- *      
+ *   Copyright (c) 2015 UltimaXNA Development Team
+ * 
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 3 of the License, or
@@ -182,7 +183,7 @@ namespace UltimaXNA.Ultima.Entities
             get { return m_Overheads; }
         }
 
-        public Overhead AddOverhead(MessageType msgType, string text, int fontID, int hue)
+        public Overhead AddOverhead(MessageTypes msgType, string text, int fontID, int hue)
         {
             Overhead overhead;
 
@@ -190,7 +191,7 @@ namespace UltimaXNA.Ultima.Entities
             {
                 overhead = m_Overheads[i];
                 // is this overhead an already active label?
-                if ((msgType  == MessageType.Label) && (overhead.Text == text) && (overhead.MessageType == msgType) && !(overhead.IsDisposed))
+                if ((msgType  == MessageTypes.Label) && (overhead.Text == text) && (overhead.MessageType == msgType) && !(overhead.IsDisposed))
                 {
                     // reset the timer for the object so it lasts longer.
                     overhead.ResetTimer();
@@ -211,7 +212,7 @@ namespace UltimaXNA.Ultima.Entities
 
         private void InternalInsertOverhead(Overhead overhead)
         {
-            if (m_Overheads.Count == 0 || (m_Overheads[0].MessageType != MessageType.Label))
+            if (m_Overheads.Count == 0 || (m_Overheads[0].MessageType != MessageTypes.Label))
                 m_Overheads.Insert(0, overhead);
             else
                 m_Overheads.Insert(1, overhead);

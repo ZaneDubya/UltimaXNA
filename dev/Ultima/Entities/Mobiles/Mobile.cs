@@ -1,6 +1,7 @@
 ﻿/***************************************************************************
  *   Mobile.cs
- *   
+ *   Copyright (c) 2015 UltimaXNA Development Team
+ * 
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 3 of the License, or
@@ -48,7 +49,7 @@ namespace UltimaXNA.Ultima.Entities.Mobiles
         {
             if (EngineVars.AllLabels)
             {
-                AddOverhead(MessageType.Label, "<outline>" + Name, 0, NotorietyHue);
+                AddOverhead(MessageTypes.Label, "<outline>" + Name, 0, NotorietyHue);
             }
 
             if (!m_movement.Position.IsNullPosition)

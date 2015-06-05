@@ -243,7 +243,7 @@ namespace UltimaXNA.Ultima.UI
                 if (Text != null)
                 {
                     
-                    SpriteBatchUI sb = UltimaServices.GetService<SpriteBatchUI>();
+                    SpriteBatchUI sb = ServiceRegistry.GetService<SpriteBatchUI>();
                     int width, height, ascender, linecount;
                     int[] lineWidths;
 

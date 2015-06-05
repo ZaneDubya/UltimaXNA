@@ -42,8 +42,8 @@ namespace UltimaXNA.Ultima.World.Controllers
 
             m_RegisteredHandlers = new List<Tuple<int, TypedPacketReceiveHandler>>();
 
-            m_Network = UltimaServices.GetService<INetworkClient>();
-            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
+            m_Network = ServiceRegistry.GetService<INetworkClient>();
+            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
         }
 
         public void Initialize()
@@ -686,14 +686,14 @@ namespace UltimaXNA.Ultima.World.Controllers
             return iConstruct;
         }
 
-        private void ReceiveTextMessage(MessageType msgType, string text, int hue, int font, Serial serial, string speakerName)
+        private void ReceiveTextMessage(MessageTypes msgType, string text, int hue, int font, Serial serial, string speakerName)
         {
             PlayerState.Journaling.AddEntry(text);
 
             Overhead overhead;
             switch (msgType)
             {
-                case MessageType.Regular:
+                case MessageTypes.Regular:
                     overhead = EntityManager.AddOverhead(msgType, serial, "<outline>" + text, font, hue);
                     if (overhead != null)
                     {
@@ -704,34 +704,34 @@ namespace UltimaXNA.Ultima.World.Controllers
                         World.Interaction.ChatMessage(text, font, hue);
                     }
                     break;
-                case MessageType.System:
+                case MessageTypes.System:
                     World.Interaction.ChatMessage("[SYSTEM] " + text, font, hue);
                     break;
-                case MessageType.Emote:
+                case MessageTypes.Emote:
                     World.Interaction.ChatMessage("[EMOTE] " + text, font, hue);
                     break;
-                case MessageType.Label:
+                case MessageTypes.Label:
                     World.Interaction.CreateLabel(msgType, serial, text, font, hue);
                     break;
-                case MessageType.Focus: // on player?
+                case MessageTypes.Focus: // on player?
                     World.Interaction.ChatMessage("[FOCUS] " + text, font, hue);
                     break;
-                case MessageType.Whisper:
+                case MessageTypes.Whisper:
                     World.Interaction.ChatMessage("[WHISPER] " + text, font, hue);
                     break;
-                case MessageType.Yell:
+                case MessageTypes.Yell:
                     World.Interaction.ChatMessage("[YELL] " + text, font, hue);
                     break;
-                case MessageType.Spell:
+                case MessageTypes.Spell:
                     World.Interaction.ChatMessage("[SPELL] " + text, font, hue);
                     break;
-                case MessageType.UIld:
+                case MessageTypes.UIld:
                     World.Interaction.ChatMessage("[UILD] " + text, font, hue);
                     break;
-                case MessageType.Alliance:
+                case MessageTypes.Alliance:
                     World.Interaction.ChatMessage("[ALLIANCE] " + text, font, hue);
                     break;
-                case MessageType.Command:
+                case MessageTypes.Command:
                     World.Interaction.ChatMessage("[COMMAND] " + text, font, hue);
                     break;
                 default:

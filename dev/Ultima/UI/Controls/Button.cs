@@ -72,7 +72,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             HandlesMouseInput = true;
 
-            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
+            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
         }
 
         public Button(AControl owner, int page, string[] arguements)

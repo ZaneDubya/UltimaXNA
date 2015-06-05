@@ -52,9 +52,9 @@ namespace UltimaXNA.Ultima.Login
 
         public LoginClient()
         {
-            m_Network = UltimaServices.GetService<INetworkClient>();
-            m_Engine = UltimaServices.GetService<UltimaEngine>();
-            m_UserInterface = UltimaServices.GetService<UserInterfaceService>();
+            m_Network = ServiceRegistry.GetService<INetworkClient>();
+            m_Engine = ServiceRegistry.GetService<UltimaEngine>();
+            m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
 
             Status = LoginClientStatus.Unconnected;
 

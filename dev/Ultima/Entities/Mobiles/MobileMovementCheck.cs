@@ -12,10 +12,10 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using UltimaXNA.Ultima.World.Maps;
 using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Entities.Items;
-using UltimaXNA.Ultima.Entities.Items.Containers;
+using UltimaXNA.Ultima.World.Maps;
+
 #endregion
 
 namespace UltimaXNA.Ultima.Entities.Mobiles

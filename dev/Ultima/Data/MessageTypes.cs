@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   Direction.cs
+ *   MessageTypes.cs
  *   Copyright (c) 2015 UltimaXNA Development Team
  * 
  *   This program is free software; you can redistribute it and/or modify
@@ -9,21 +9,23 @@
  *
  ***************************************************************************/
 
-namespace UltimaXNA.Ultima
+namespace UltimaXNA.Ultima.Data
 {
-    public enum Direction : byte
+    public enum MessageTypes
     {
-        North = 0x0,
-        Right = 0x1,
-        East = 0x2,
-        Down = 0x3,
-        South = 0x4,
-        Left = 0x5,
-        West = 0x6,
-        Up = 0x7,
-        FacingMask = 0x7,
-        Running = 0x80,
-        ValueMask = 0x87,
-        Nothing = 0xED
+        Regular = 0x00,
+        System = 0x01,
+        Emote = 0x02,
+        Label = 0x06,
+        Focus = 0x07,
+        Whisper = 0x08,
+        Yell = 0x09,
+        Spell = 0x0A,
+
+        UIld = 0x0D,
+        Alliance = 0x0E,
+        Command = 0x0F,
+
+        Encoded = 0xC0
     }
 }

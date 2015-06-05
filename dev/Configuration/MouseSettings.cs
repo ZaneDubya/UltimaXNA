@@ -1,3 +1,13 @@
+/***************************************************************************
+ *   MouseSettings.cs
+ *   Copyright (c) 2015 UltimaXNA Development Team
+ * 
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
 #region usings
 using UltimaXNA.Core.ComponentModel;
 using UltimaXNA.Core.Input.Windows;
@@ -6,20 +16,20 @@ using UltimaXNA.Core.Configuration;
 
 namespace UltimaXNA.Configuration
 {
-    public class Mouse : NotifyPropertyChangedBase
+    public class MouseSettings : NotifyPropertyChangedBase
     {
         private MouseButton m_InteractionButton;
         private MouseButton m_movementButton;
         private bool m_isEnabled;
 
-        public Mouse()
+        public MouseSettings()
         {
             InteractionButton = MouseButton.Left;
             MovementButton = MouseButton.Right;
             IsEnabled = true;
         }
 
-        public Mouse(MouseButton interaction, MouseButton movement)
+        public MouseSettings(MouseButton interaction, MouseButton movement)
         {
             InteractionButton = interaction;
             MovementButton = movement;
