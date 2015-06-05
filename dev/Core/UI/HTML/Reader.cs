@@ -14,13 +14,15 @@ using System.Collections.Generic;
 using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.UI.HTML.Atoms;
 using UltimaXNA.Core.Diagnostics.Tracing;
-using UltimaXNA.Ultima.IO; // !!! REMOVE
 #endregion
 
 namespace UltimaXNA.Core.UI.HTML
 {
     public class Reader
     {
+        // private services
+        IUIResourceProvider m_ResourceProvider;
+
         public List<AAtom> Atoms
         {
             get;
@@ -50,6 +52,8 @@ namespace UltimaXNA.Core.UI.HTML
 
         public Reader(string inText)
         {
+            m_ResourceProvider = ServiceRegistry.GetService<IUIResourceProvider>();
+
             Atoms = decodeText(inText);
         }
 
@@ -211,13 +215,13 @@ namespace UltimaXNA.Core.UI.HTML
                                                 switch (key)
                                                 {
                                                     case "color":
-                                                        openHREFs[openHREFs.Count - 1].UpHue = HuesXNA.GetWebSafeHue(c.Value);
+                                                        openHREFs[openHREFs.Count - 1].UpHue = m_ResourceProvider.GetWebSafeHue(c.Value);
                                                         break;
                                                     case "hovercolor":
-                                                        openHREFs[openHREFs.Count - 1].OverHue = HuesXNA.GetWebSafeHue(c.Value);
+                                                        openHREFs[openHREFs.Count - 1].OverHue = m_ResourceProvider.GetWebSafeHue(c.Value);
                                                         break;
                                                     case "activecolor":
-                                                        openHREFs[openHREFs.Count - 1].DownHue = HuesXNA.GetWebSafeHue(c.Value);
+                                                        openHREFs[openHREFs.Count - 1].DownHue = m_ResourceProvider.GetWebSafeHue(c.Value);
                                                         break;
                                                 }
                                             }
@@ -343,7 +347,7 @@ namespace UltimaXNA.Core.UI.HTML
 
         void addSpan(List<AAtom> outHTML, List<string> openTags, List<HREF_Attributes> openHREFs)
         {
-            SpanAtom atom = new SpanAtom();
+            SpanAtom atom = new SpanAtom(m_ResourceProvider);
             atom.Alignment = getAlignmentFromOpenTags(openTags);
 
             if (openHREFs.Count > 0)
@@ -354,7 +358,7 @@ namespace UltimaXNA.Core.UI.HTML
 
         void addGumpImage(List<AAtom> outHTML, List<string> openTags, List<HREF_Attributes> openHREFs)
         {
-            ImageAtom atom = new ImageAtom(-1);
+            ImageAtom atom = new ImageAtom(m_ResourceProvider, - 1);
             atom.Alignment = getAlignmentFromOpenTags(openTags);
 
             if (openHREFs.Count > 0)
@@ -365,7 +369,7 @@ namespace UltimaXNA.Core.UI.HTML
 
         void addCharacter(char inText, List<AAtom> outHTML, List<string> openTags, Color currentColor, List<HREF_Attributes> openHREFs)
         {
-            CharacterAtom c = new CharacterAtom(inText);
+            CharacterAtom c = new CharacterAtom(m_ResourceProvider, inText);
             c.Style_IsBold = hasTag(openTags, "b");
             c.Style_IsItalic = hasTag(openTags, "i");
             c.Style_IsUnderlined = hasTag(openTags, "u");

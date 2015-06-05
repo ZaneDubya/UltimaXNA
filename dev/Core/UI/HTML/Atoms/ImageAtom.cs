@@ -40,7 +40,7 @@ namespace UltimaXNA.Core.UI.HTML.Atoms
         public int ValueDown = -1;
         public int ValueOver = -1;
 
-        public ImageAtom(int value)
+        public ImageAtom(IUIResourceProvider provider, int value)
         {
             Value = value;
         }

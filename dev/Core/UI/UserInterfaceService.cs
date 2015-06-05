@@ -16,7 +16,6 @@ using System.Linq;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Input.Windows;
-using UltimaXNA.Ultima.UI; // REMOVE --- SHOULD NOT BE NECESSARY, USED ONLY FOR CURSOR
 #endregion
 
 namespace UltimaXNA.Core.UI
@@ -51,11 +50,10 @@ namespace UltimaXNA.Core.UI
         SpriteBatchUI m_SpriteBatch;
         internal SpriteBatchUI SpriteBatch { get { return m_SpriteBatch; } }
 
-        private UltimaCursor m_Cursor;
-        internal UltimaCursor Cursor
+        internal ICursor Cursor
         {
-            get { return m_Cursor; }
-            set { m_Cursor = value; }
+            get;
+            set;
         }
 
         public int Width { get { return m_SpriteBatch.GraphicsDevice.Viewport.Width; } }

@@ -144,6 +144,10 @@
     <Compile Include="Core\Network\INetworkClient.cs" />
     <Compile Include="Core\Patterns\IModule.cs" />
     <Compile Include="Core\UI\ControlAndMetaData.cs" />
+    <Compile Include="Core\UI\Interfaces\ICharacter.cs" />
+    <Compile Include="Core\UI\Interfaces\ICursor.cs" />
+    <Compile Include="Core\UI\Interfaces\IFont.cs" />
+    <Compile Include="Core\UI\Interfaces\IUIResourceProvider.cs" />
     <Compile Include="ServiceRegistry.cs" />
     <Compile Include="Ultima\Audio\AudioService.cs" />
     <Compile Include="Ultima\AUltimaModel.cs" />
@@ -217,6 +221,7 @@
     <Compile Include="Ultima\Network\Server\FeatureFlags.cs" />
     <Compile Include="Ultima\UI\Controls\CheckBox.cs" />
     <Compile Include="Ultima\UI\Controls\RadioButton.cs" />
+    <Compile Include="Ultima\UI\UltimaUIResourceProvider.cs" />
     <Compile Include="Ultima\World\Gumps\SplitItemStackGump.cs" />
     <Compile Include="Ultima\World\Gumps\UseSkillButtonGump.cs" />
     <Compile Include="Ultima\World\Gumps\WorldControl.cs" />

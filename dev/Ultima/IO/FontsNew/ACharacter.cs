@@ -1,11 +1,33 @@
 ﻿using Microsoft.Xna.Framework;
+using UltimaXNA.Core.UI;
 
 namespace UltimaXNA.Ultima.IO.FontsNew
 {
-    abstract internal class ACharacter
+    abstract internal class ACharacter : ICharacter
     {
-        public int Width, Height;
-        public int XOffset = 0, YOffset = 0;
+        public int Width
+        {
+            get;
+            set;
+        }
+
+        public int Height
+        {
+            get;
+            set;
+        }
+
+        public int XOffset
+        {
+            get;
+            protected set;
+        }
+
+        public int YOffset
+        {
+            get;
+            protected set;
+        }
 
         protected uint[] m_PixelData;
 

@@ -6,27 +6,26 @@ namespace UltimaXNA.Core.UI.HTML.Atoms
     {
         public override int Width
         {
-            get
-            {
-                if (Character < 32)
-                    return 0;
-                return TextUni.GetFont((int)Font).GetCharacter(Character).Width + (Style_IsBold ? 1 : 0) + 1;
-            }
+            get;
+            set;
         }
 
         public override int Height
         {
-            get
-            {
-                return TextUni.GetFont((int)Font).Height;
-            }
+            get;
+            set;
         }
 
         public char Character = ' ';
 
-        public CharacterAtom(char c)
+        public CharacterAtom(IUIResourceProvider provider, char c)
         {
             Character = c;
+            if (Character < 32)
+                Width = 0;
+            else
+                Width = provider.GetUnicodeFont((int)Font).GetCharacter(Character).Width + (Style_IsBold ? 1 : 0) + 1;
+            Height = provider.GetUnicodeFont((int)Font).Height;
         }
 
         public override string ToString()

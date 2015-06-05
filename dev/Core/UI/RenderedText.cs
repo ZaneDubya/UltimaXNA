@@ -14,14 +14,15 @@ using System.Collections.Generic;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.UI.HTML;
 using UltimaXNA.Core.UI.HTML.Atoms;
-using UltimaXNA.Ultima.IO;
-using UltimaXNA.Ultima.IO.FontsNew;
 #endregion
 
-namespace UltimaXNA.Ultima.UI
+namespace UltimaXNA.Core.UI
 {
     class RenderedText
     {
+        // private services
+        IUIResourceProvider m_ResourceProvider;
+
         public string Text
         {
             get { return m_Text; }
@@ -118,6 +119,8 @@ namespace UltimaXNA.Ultima.UI
 
         public RenderedText(string text, int maxWidth = DefaultRenderedTextWidth)
         {
+            m_ResourceProvider = ServiceRegistry.GetService<IUIResourceProvider>();
+
             Text = text;
             MaxWidth = maxWidth;
 
@@ -366,7 +369,7 @@ namespace UltimaXNA.Ultima.UI
         {
             for (int i = 0; i < atoms.Count; i++)
             {
-                AFont font = TextUni.GetFont((int)atoms[i].Font);
+                IFont font = m_ResourceProvider.GetUnicodeFont((int)atoms[i].Font);
                 if (lineheight < font.Height)
                     lineheight = font.Height;
 
@@ -375,7 +378,7 @@ namespace UltimaXNA.Ultima.UI
                     if (atoms[i] is CharacterAtom)
                     {
                         CharacterAtom atom = (CharacterAtom)atoms[i];
-                        ACharacter character = font.GetCharacter(atom.Character);
+                        ICharacter character = font.GetCharacter(atom.Character);
                         // HREF links should be colored white, because we will hue them at runtime.
                         uint color = atom.IsHREF ? 0xFFFFFFFF : Utility.UintFromColor(atom.Color);
                         character.WriteToBuffer(rPtr, x, y, linewidth, maxHeight, font.Baseline,
@@ -384,9 +387,9 @@ namespace UltimaXNA.Ultima.UI
                     else if (atoms[i] is ImageAtom)
                     {
                         ImageAtom atom = (ImageAtom)atoms[i];
-                        Texture2D standard = GumpData.GetGumpXNA(atom.Value);
-                        Texture2D over = GumpData.GetGumpXNA(atom.ValueOver);
-                        Texture2D down = GumpData.GetGumpXNA(atom.ValueDown);
+                        Texture2D standard = m_ResourceProvider.GetTexture(atom.Value);
+                        Texture2D over = m_ResourceProvider.GetTexture(atom.ValueOver);
+                        Texture2D down = m_ResourceProvider.GetTexture(atom.ValueDown);
 
                         if (lineheight < standard.Height)
                             lineheight = standard.Height;
@@ -528,8 +531,8 @@ namespace UltimaXNA.Ultima.UI
                     if (reader.Atoms[i] is CharacterAtom)
                     {
                         CharacterAtom atom = (CharacterAtom)reader.Atoms[i];
-                        AFont font = TextUni.GetFont((int)atom.Font);
-                        ACharacter ch = font.GetCharacter(atom.Character);
+                        IFont font = m_ResourceProvider.GetUnicodeFont((int)atom.Font);
+                        ICharacter ch = font.GetCharacter(atom.Character);
 
                         // italic characters need a little extra width if they are at the end of the line.
                         if (atom.Style_IsItalic)
@@ -585,7 +588,7 @@ namespace UltimaXNA.Ultima.UI
                                 }
                                 else
                                 {
-                                    reader.Atoms.Insert(i - word.Count, new CharacterAtom('\n'));
+                                    reader.Atoms.Insert(i - word.Count, new CharacterAtom(m_ResourceProvider, '\n'));
                                     i = i - word.Count;
                                 }
                                 word.Clear();
@@ -599,11 +602,11 @@ namespace UltimaXNA.Ultima.UI
                                 int iWordWidth = wordWidth;
                                 for (int j = word.Count - 1; j >= 1; j--)
                                 {
-                                    int iDashWidth = TextUni.GetFont((int)word[j].Font).GetCharacter('-').Width;
+                                    int iDashWidth = m_ResourceProvider.GetUnicodeFont((int)word[j].Font).GetCharacter('-').Width;
                                     if (iWordWidth + iDashWidth <= maxwidth)
                                     {
-                                        reader.Atoms.Insert(i - (word.Count - j) + 1, new CharacterAtom('\n'));
-                                        reader.Atoms.Insert(i - (word.Count - j) + 1, new CharacterAtom('-'));
+                                        reader.Atoms.Insert(i - (word.Count - j) + 1, new CharacterAtom(m_ResourceProvider, '\n'));
+                                        reader.Atoms.Insert(i - (word.Count - j) + 1, new CharacterAtom(m_ResourceProvider, '-'));
                                         break;
                                     }
                                     iWordWidth -= word[j].Width;

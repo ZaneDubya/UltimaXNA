@@ -17,7 +17,7 @@ using UltimaXNA.Core.UI;
 
 namespace UltimaXNA.Ultima.UI
 {
-    class UltimaCursor
+    class UltimaCursor : ICursor
     {
         private HuedTexture m_CursorSprite = null;
         private int m_CursorSpriteArtIndex = -1;
