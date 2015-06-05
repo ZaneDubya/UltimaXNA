@@ -77,6 +77,6 @@ namespace UltimaXNA.Ultima
 
         public static bool NewDiagonalMovement = false;
 
-        public static int MouseOverHue = 0x550;
+        public static int MouseOverHue = 0x038;
     }
 }
