@@ -28,6 +28,7 @@ namespace UltimaXNA.Core.UI
         // Private variables
         // ================================================================================
         private Rectangle m_Area = new Rectangle();
+        private ControlMetaData m_MetaData = null;
         private List<AControl> m_Children = null;
 
         // ================================================================================
@@ -50,6 +51,19 @@ namespace UltimaXNA.Core.UI
         {
             get;
             protected set;
+        }
+
+        /// <summary>
+        /// Information used by UserInterfaceService to display and update this control.
+        /// </summary>
+        public ControlMetaData MetaData
+        {
+            get
+            {
+                if (m_MetaData == null)
+                    m_MetaData = new ControlMetaData(this);
+                return m_MetaData;
+            }
         }
 
         /// <summary>

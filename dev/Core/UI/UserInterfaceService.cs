@@ -22,14 +22,31 @@ namespace UltimaXNA.Core.UI
 {
     public class UserInterfaceService
     {
+        // ======================================================================
+        // Private variables
+        // ======================================================================
+        // All open controls:
+        List<AControl> m_Controls = null;
+
+        // List of controls that the Cursor is over, with the control at index 0 being the frontmost control:
+        AControl m_MouseOverControl = null;
+
+        // Controls that the Cursor was over when a mouse button was clicked. We allow for five buttons:
+        AControl[] m_MouseDownControl = new AControl[5];
+
+        // private services
         private readonly InputManager m_Input;
+
+        // ======================================================================
+        // Ctor, Dispose, Update, and Draw
+        // ======================================================================
 
         public UserInterfaceService()
         {
             m_Input = ServiceRegistry.GetService<InputManager>();
             m_SpriteBatch = ServiceRegistry.GetService<SpriteBatchUI>();
 
-            m_Controls = new List<ControlMetaData>();
+            m_Controls = new List<AControl>();
         }
 
         public void Dispose()
@@ -42,8 +59,8 @@ namespace UltimaXNA.Core.UI
         /// </summary>
         public void Reset()
         {
-            foreach (ControlMetaData c in m_Controls)
-                c.Control.Dispose();
+            foreach (AControl c in m_Controls)
+                c.Dispose();
             m_Controls.Clear();
         }
 
@@ -59,12 +76,6 @@ namespace UltimaXNA.Core.UI
         public int Width { get { return m_SpriteBatch.GraphicsDevice.Viewport.Width; } }
         public int Height { get { return m_SpriteBatch.GraphicsDevice.Viewport.Height; } }
 
-        // All open controls:
-        List<ControlMetaData> m_Controls = null;
-        // List of controls that the Cursor is over, with the control at index 0 being the frontmost control:
-        AControl m_MouseOverControl = null;
-        // Controls that the Cursor was over when a mouse button was clicked. We allow for five buttons:
-        AControl[] m_MouseDownControl = new AControl[5];
         /// <summary>
         /// Returns the control directly under the Cursor.
         /// </summary>
@@ -101,12 +112,12 @@ namespace UltimaXNA.Core.UI
                     return null;
                 if (m_keyboardFocusControl == null)
                 {
-                    foreach (ControlMetaData c in m_Controls)
+                    foreach (AControl c in m_Controls)
                     {
-                        if (!c.Control.IsDisposed && c.Control.IsVisible && 
-                            c.Control.IsEnabled && c.Control.HandlesKeyboardFocus)
+                        if (!c.IsDisposed && c.IsVisible && 
+                            c.IsEnabled && c.HandlesKeyboardFocus)
                         {
-                            m_keyboardFocusControl = c.Control.FindControlThatAcceptsKeyboardFocus();
+                            m_keyboardFocusControl = c.FindControlThatAcceptsKeyboardFocus();
                             if (m_keyboardFocusControl != null)
                                 break;
                         }
@@ -124,8 +135,8 @@ namespace UltimaXNA.Core.UI
         {
             get
             {
-                foreach (ControlMetaData c in m_Controls)
-                    if (c.IsModal)
+                foreach (AControl c in m_Controls)
+                    if (c.MetaData.IsModal)
                         return true;
                 return false;
             }
@@ -142,20 +153,20 @@ namespace UltimaXNA.Core.UI
         public AControl AddControl(AControl control, int x, int y)
         {
             control.Position = new Point(x, y);
-            m_Controls.Insert(0, new ControlMetaData(control));
+            m_Controls.Insert(0, control);
             return control;
         }
 
         public void RemoveControl<T>(int? localID = null) where T : AControl
         {
-            foreach (ControlMetaData c in m_Controls)
+            foreach (AControl c in m_Controls)
             {
                 if (c.GetType() == typeof(T))
                 {
-                    if (!localID.HasValue || (c.Control.GumpLocalID == localID))
+                    if (!localID.HasValue || (c.GumpLocalID == localID))
                     {
-                        if (!c.Control.IsDisposed)
-                            c.Control.Dispose();
+                        if (!c.IsDisposed)
+                            c.Dispose();
                     }
                 }
             }
@@ -163,21 +174,21 @@ namespace UltimaXNA.Core.UI
 
         public AControl GetControl(int localID)
         {
-            foreach (ControlMetaData c in m_Controls)
+            foreach (AControl c in m_Controls)
             {
-                if (!c.Control.IsDisposed && c.Control.GumpLocalID == localID)
-                    return c.Control;
+                if (!c.IsDisposed && c.GumpLocalID == localID)
+                    return c;
             }
             return null;
         }
 
         public T GetControl<T>(int? localID = null) where T : AControl
         {
-            foreach (ControlMetaData c in m_Controls)
+            foreach (AControl c in m_Controls)
             {
-                if (!c.Control.IsDisposed && c.Control.GetType() == typeof(T) && 
-                    (!localID.HasValue || c.Control.GumpLocalID == localID))
-                    return (T)c.Control;
+                if (!c.IsDisposed && c.GetType() == typeof(T) && 
+                    (!localID.HasValue || c.GumpLocalID == localID))
+                    return (T)c;
             }
             return null;
         }
@@ -186,16 +197,16 @@ namespace UltimaXNA.Core.UI
         {
             OrderControlsBasedOnUILayerMetaData();
 
-            foreach (ControlMetaData c in m_Controls)
+            foreach (AControl c in m_Controls)
             {
-                if (!c.Control.IsInitialized)
-                    c.Control.Initialize();
-                c.Control.Update(totalMS, frameMS);
+                if (!c.IsInitialized)
+                    c.Initialize();
+                c.Update(totalMS, frameMS);
             }
 
             for (int i = 0; i < m_Controls.Count; i++)
             {
-                if (m_Controls[i].Control.IsDisposed)
+                if (m_Controls[i].IsDisposed)
                 {
                     m_Controls.RemoveAt(i);
                     i--;
@@ -213,10 +224,10 @@ namespace UltimaXNA.Core.UI
         {
             OrderControlsBasedOnUILayerMetaData();
 
-            foreach (ControlMetaData c in m_Controls.Reverse<ControlMetaData>())
+            foreach (AControl c in m_Controls.Reverse<AControl>())
             {
-                if (c.Control.IsInitialized)
-                    c.Control.Draw(m_SpriteBatch, c.Control.Position);
+                if (c.IsInitialized)
+                    c.Draw(m_SpriteBatch, c.Position);
             }
 
             if (Cursor != null)
@@ -245,29 +256,19 @@ namespace UltimaXNA.Core.UI
             }
         }
 
-        internal ControlMetaData GetControlMetaData(AControl control)
-        {
-            foreach (ControlMetaData c in m_Controls)
-            {
-                if (c.Control == control)
-                    return c;
-            }
-            return null;
-        }
-
         private void OrderControlsBasedOnUILayerMetaData()
         {
-            List<ControlMetaData> gumps = new List<ControlMetaData>();
+            List<AControl> gumps = new List<AControl>();
 
-            foreach (ControlMetaData c in m_Controls)
+            foreach (AControl c in m_Controls)
             {
-                if (c.Layer != UILayer.Default)
+                if (c.MetaData.Layer != UILayer.Default)
                     gumps.Add(c);
             }
 
-            foreach (ControlMetaData c in gumps)
+            foreach (AControl c in gumps)
             {
-                if (c.Layer == UILayer.Under)
+                if (c.MetaData.Layer == UILayer.Under)
                 {
                     for (int i = 0; i < m_Controls.Count; i++)
                     {
@@ -278,7 +279,7 @@ namespace UltimaXNA.Core.UI
                         }
                     }
                 }
-                else if (c.Layer == UILayer.Over)
+                else if (c.MetaData.Layer == UILayer.Over)
                 {
                     for (int i = 0; i < m_Controls.Count; i++)
                     {
@@ -398,9 +399,9 @@ namespace UltimaXNA.Core.UI
 
             for (int i = 0; i < m_Controls.Count; i++)
             {
-                if (m_Controls[i].Control == c)
+                if (m_Controls[i] == c)
                 {
-                    ControlMetaData cm = m_Controls[i];
+                    AControl cm = m_Controls[i];
                     m_Controls.RemoveAt(i);
                     m_Controls.Insert(0, cm);
                 }
@@ -414,12 +415,12 @@ namespace UltimaXNA.Core.UI
                 return m_DraggingControl;
             }
 
-            List<ControlMetaData> possibleControls;
+            List<AControl> possibleControls;
             if (IsModalControlOpen)
             {
-                possibleControls = new List<ControlMetaData>();
-                foreach (ControlMetaData c in m_Controls)
-                    if (c.IsModal)
+                possibleControls = new List<AControl>();
+                foreach (AControl c in m_Controls)
+                    if (c.MetaData.IsModal)
                         possibleControls.Add(c);
             }
             else
@@ -429,9 +430,9 @@ namespace UltimaXNA.Core.UI
 
             AControl[] mouseOverControls = null;
             // Get the list of controls under the mouse cursor
-            foreach (ControlMetaData c in possibleControls)
+            foreach (AControl c in possibleControls)
             {
-                AControl[] controls = c.Control.HitTest(atPosition, false);
+                AControl[] controls = c.HitTest(atPosition, false);
                 if (controls != null)
                 {
                     mouseOverControls = controls;

@@ -56,7 +56,7 @@ namespace UltimaXNA.Ultima.World.Gumps
 
             IsUncloseableWithRMB = true;
 
-            UserInterface.GetControlMetaData(this).Layer = UILayer.Over;
+            MetaData.Layer = UILayer.Over;
         }
 
         public override void ActivateByButton(int buttonID)

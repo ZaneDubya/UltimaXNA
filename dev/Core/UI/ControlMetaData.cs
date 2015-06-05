@@ -1,7 +1,7 @@
 ﻿
 namespace UltimaXNA.Core.UI
 {
-    class ControlMetaData
+    public class ControlMetaData
     {
         public UILayer Layer
         {
