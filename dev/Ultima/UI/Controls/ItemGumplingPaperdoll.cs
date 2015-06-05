@@ -27,6 +27,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             m_x = x;
             m_y = y;
+            HighlightOnMouseOver = false;
         }
 
         protected override Point InternalGetPickupOffset(Point offset)

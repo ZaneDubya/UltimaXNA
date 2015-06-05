@@ -34,15 +34,44 @@ namespace UltimaXNA.Ultima.World.Controllers
     /// </summary>
     class WorldCursor : UltimaCursor
     {
-        protected WorldModel World
-        {
-            get;
-            private set;
-        }
+        // private variables
+        private Item m_MouseOverItem;
+        private int m_MouseOverItemSavedHue;
 
+        // services
         private INetworkClient m_Network;
         private UserInterfaceService m_UserInterface;
         private InputManager m_Input;
+        private WorldModel m_World;
+
+        protected Item MouseOverItem
+        {
+            get
+            {
+                return m_MouseOverItem;
+            }
+            set
+            {
+                if (m_MouseOverItem == value)
+                    return;
+
+                if (m_MouseOverItem != null)
+                {
+                    m_MouseOverItem.Hue = m_MouseOverItemSavedHue;
+                }
+                if (value == null)
+                {
+                    m_MouseOverItem = null;
+                    m_MouseOverItemSavedHue = 0;
+                }
+                else
+                {
+                    m_MouseOverItem = value;
+                    m_MouseOverItemSavedHue = m_MouseOverItem.Hue;
+                    m_MouseOverItem.Hue = EngineVars.MouseOverHue;
+                }
+            }
+        }
 
         public WorldCursor(WorldModel model)
         {
@@ -50,15 +79,17 @@ namespace UltimaXNA.Ultima.World.Controllers
             m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
             m_Input = ServiceRegistry.GetService<InputManager>();
 
-            World = model;
+            m_World = model;
             InternalRegisterInteraction();
         }
 
         public override void Update()
         {
+            MouseOverItem = null;
+
             if (IsHoldingItem && m_Input.HandleMouseEvent(MouseEvent.Up, Settings.World.Mouse.InteractionButton))
             {
-                if (World.Input.IsMouseOverUI)
+                if (m_World.Input.IsMouseOverUI)
                 {
                     // mouse over ui
                     AControl target = m_UserInterface.MouseOverControl;
@@ -70,6 +101,8 @@ namespace UltimaXNA.Ultima.World.Controllers
                     if (target is ItemGumpling && !(target is ItemGumplingPaperdoll))
                     {
                         Item targetItem = ((ItemGumpling)target).Item;
+                        MouseOverItem = targetItem;
+
                         if (targetItem.ItemData.IsContainer)
                         {
                             DropHeldItemToContainer((Container)targetItem);
@@ -81,9 +114,12 @@ namespace UltimaXNA.Ultima.World.Controllers
                     }
                     else if (target is GumpPicContainer)
                     {
+                        Container targetItem = (Container)((GumpPicContainer)target).Item;
+                        MouseOverItem = targetItem;
+
                         int x = (int)m_Input.MousePosition.X - m_HeldItemOffset.X - (target.X + target.Owner.X);
                         int y = (int)m_Input.MousePosition.Y - m_HeldItemOffset.Y - (target.Y + target.Owner.Y);
-                        DropHeldItemToContainer((Container)((GumpPicContainer)target).Item, x, y);
+                        DropHeldItemToContainer(targetItem, x, y);
                     }
                     else if (target is ItemGumplingPaperdoll || (target is GumpPic && ((GumpPic)target).IsPaperdoll))
                     {
@@ -94,10 +130,10 @@ namespace UltimaXNA.Ultima.World.Controllers
                         DropHeldItemToContainer((Container)((GumpPicBackpack)target).BackpackItem);
                     }
                 }
-                else if (World.Input.IsMouseOverWorld)
+                else if (m_World.Input.IsMouseOverWorld)
                 {
                     // mouse over world
-                    AEntity mouseOverEntity = World.Input.MousePick.MouseOverObject;
+                    AEntity mouseOverEntity = m_World.Input.MousePick.MouseOverObject;
 
                     if (mouseOverEntity != null)
                     {
@@ -120,6 +156,8 @@ namespace UltimaXNA.Ultima.World.Controllers
                             else if (mouseOverEntity is Item)
                             {
                                 Item targetItem = mouseOverEntity as Item;
+                                MouseOverItem = targetItem;
+
                                 if (targetItem.ItemID == HeldItem.ItemID && HeldItem.ItemData.IsGeneric)
                                 {
                                     MergeHeldItem(targetItem);
@@ -161,7 +199,7 @@ namespace UltimaXNA.Ultima.World.Controllers
                     {
                         case TargetType.Object:
                         case TargetType.Position:
-                            if (World.Input.IsMouseOverUI)
+                            if (m_World.Input.IsMouseOverUI)
                             {
                                 // get object under mouse cursor. We can only hue items.
                                 // ItemGumping is the base class for all items, containers, and paperdoll items.
@@ -171,21 +209,29 @@ namespace UltimaXNA.Ultima.World.Controllers
                                     mouseTargetingEventObject(((ItemGumpling)target).Item);
                                 }
                             }
-                            else if (World.Input.IsMouseOverWorld)
+                            else if (m_World.Input.IsMouseOverWorld)
                             {
                                 // Send Select Object or Select XYZ packet, depending on the entity under the mouse cursor.
-                                World.Input.MousePick.PickOnly = PickType.PickStatics | PickType.PickObjects;
-                                mouseTargetingEventObject(World.Input.MousePick.MouseOverObject);
+                                m_World.Input.MousePick.PickOnly = PickType.PickStatics | PickType.PickObjects;
+                                mouseTargetingEventObject(m_World.Input.MousePick.MouseOverObject);
                             }
                             break;
                         case TargetType.MultiPlacement:
                             // select X, Y, Z
-                            mouseTargetingEventXYZ(World.Input.MousePick.MouseOverObject);
+                            mouseTargetingEventXYZ(m_World.Input.MousePick.MouseOverObject);
                             break;
                         default:
                             throw new Exception("Unknown targetting type!");
                     }
                 }
+            }
+
+            if (MouseOverItem == null && m_World.Input.MousePick.MouseOverObject is Item)
+            {
+                Item item = m_World.Input.MousePick.MouseOverObject as Item;
+                if (item is StaticItem || item.ItemData.Weight == 255)
+                    return;
+                MouseOverItem = m_World.Input.MousePick.MouseOverObject as Item;
             }
         }
 
@@ -228,7 +274,7 @@ namespace UltimaXNA.Ultima.World.Controllers
         protected override void BeforeDraw(SpriteBatchUI spritebatch, Point position)
         {
             // Hue the cursor if not in warmode and in trammel.
-            if (EngineVars.InWorld && !EntityManager.GetPlayerObject().Flags.IsWarMode && (World.MapIndex == 1))
+            if (EngineVars.InWorld && !EntityManager.GetPlayerObject().Flags.IsWarMode && (m_World.MapIndex == 1))
                 CursorHue = 2414;
             else
                 CursorHue = 0;
@@ -265,10 +311,10 @@ namespace UltimaXNA.Ultima.World.Controllers
                     // UNIMPLEMENTED !!! Draw a transparent multi
                 }*/
             }
-            else if ((World.Input.ContinuousMouseMovementCheck || World.Input.IsMouseOverWorld) && !m_UserInterface.IsModalControlOpen)
+            else if ((m_World.Input.ContinuousMouseMovementCheck || m_World.Input.IsMouseOverWorld) && !m_UserInterface.IsModalControlOpen)
             {
                 Resolution resolution = Settings.World.GumpResolution;
-                Direction mouseDirection = Utility.DirectionFromPoints(new Point(resolution.Width / 2, resolution.Height / 2), World.Input.MouseOverWorldPosition);
+                Direction mouseDirection = Utility.DirectionFromPoints(new Point(resolution.Width / 2, resolution.Height / 2), m_World.Input.MouseOverWorldPosition);
 
                 int artIndex = 0;
 
@@ -366,7 +412,7 @@ namespace UltimaXNA.Ultima.World.Controllers
                 else
                 {
                     // if we start targeting, we cancel movement.
-                    World.Input.ContinuousMouseMovementCheck = false;
+                    m_World.Input.ContinuousMouseMovementCheck = false;
                 }
                 m_Targeting = targeting;
                 m_TargetID = cursorID;
@@ -433,14 +479,14 @@ namespace UltimaXNA.Ultima.World.Controllers
 
         private void InternalRegisterInteraction()
         {
-            World.Interaction.OnPickupItem += PickUpItem;
-            World.Interaction.OnClearHolding += ClearHolding;
+            m_World.Interaction.OnPickupItem += PickUpItem;
+            m_World.Interaction.OnClearHolding += ClearHolding;
         }
 
         private void InternalUnregisterInteraction()
         {
-            World.Interaction.OnPickupItem -= PickUpItem;
-            World.Interaction.OnClearHolding -= ClearHolding;
+            m_World.Interaction.OnPickupItem -= PickUpItem;
+            m_World.Interaction.OnClearHolding -= ClearHolding;
         }
 
         // ======================================================================
@@ -536,7 +582,7 @@ namespace UltimaXNA.Ultima.World.Controllers
         private void DropHeldItemToWorld(int X, int Y, int Z)
         {
             Serial serial;
-            AEntity entity = World.Input.MousePick.MouseOverObject;
+            AEntity entity = m_World.Input.MousePick.MouseOverObject;
             if (entity is Item && ((Item)entity).ItemData.IsContainer)
             {
                 serial = entity.Serial;
