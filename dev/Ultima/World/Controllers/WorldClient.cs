@@ -191,6 +191,11 @@ namespace UltimaXNA.Ultima.World.Controllers
             m_Network.Send(new UOSEKeepAlivePacket());
         }
 
+        public void SendGumpMenuSelect(int id, int gumpId, int buttonId, int[] switchIds, Tuple<short, string>[] textEntries)
+        {
+            m_Network.Send(new GumpMenuSelectPacket(id, gumpId, buttonId, switchIds, textEntries));
+        }
+
         /// <summary>
         /// Sends the server the client version. Version is specified in EngineVars.
         /// </summary>

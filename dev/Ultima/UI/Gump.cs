@@ -15,6 +15,7 @@ using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Ultima.World;
 #endregion
 
 namespace UltimaXNA.Ultima.UI
@@ -102,7 +103,8 @@ namespace UltimaXNA.Ultima.UI
             {
                 if (buttonID == 0) // cancel
                 {
-                    UserInterface.GumpMenuSelect(Serial, m_GumpID, buttonID, null, null);
+                    WorldModel world = ServiceRegistry.GetService<WorldModel>();
+                    world.Client.SendGumpMenuSelect(Serial, m_GumpID, buttonID, null, null);
                 }
                 else
                 {
@@ -122,8 +124,8 @@ namespace UltimaXNA.Ultima.UI
                             textEntries.Add(new Tuple<short, string>((short)control.Serial, (control as TextEntry).Text));
                         }
                     }
-
-                    UserInterface.GumpMenuSelect(Serial, m_GumpID, buttonID, switchIDs.ToArray(), textEntries.ToArray());
+                    WorldModel world = ServiceRegistry.GetService<WorldModel>();
+                    world.Client.SendGumpMenuSelect(Serial, m_GumpID, buttonID, switchIDs.ToArray(), textEntries.ToArray());
                 }
                 Dispose();
             }

@@ -12,10 +12,10 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using UltimaXNA.Core.Graphics;
-using UltimaXNA.Ultima.IO;
-using UltimaXNA.Ultima.IO.FontsNew;
 using UltimaXNA.Core.UI.HTML;
 using UltimaXNA.Core.UI.HTML.Atoms;
+using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.IO.FontsNew;
 #endregion
 
 namespace UltimaXNA.Ultima.UI

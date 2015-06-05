@@ -1,6 +1,7 @@
 ﻿/***************************************************************************
- *   GUIManager.cs
- *   
+ *   UserInterfaceService.cs
+ *   Copyright (c) 2015 UltimaXNA Development Team
+ * 
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 3 of the License, or
@@ -10,27 +11,22 @@
 #region Usings
 using Microsoft.Xna.Framework;
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Input.Windows;
-using UltimaXNA.Core.Network;
-using UltimaXNA.Ultima.Network.Client;
-using UltimaXNA.Ultima.UI; // REMOVE --- SHOULD NOT BE NECESSARY
-using UltimaXNA.Ultima.IO; // SAME
+using UltimaXNA.Ultima.UI; // REMOVE --- SHOULD NOT BE NECESSARY, USED ONLY FOR CURSOR
 #endregion
 
 namespace UltimaXNA.Core.UI
 {
     public class UserInterfaceService
     {
-        private readonly INetworkClient m_Network;
         private readonly InputManager m_Input;
 
         public UserInterfaceService()
         {
-            m_Network = ServiceRegistry.GetService<INetworkClient>();
             m_Input = ServiceRegistry.GetService<InputManager>();
             m_SpriteBatch = ServiceRegistry.GetService<SpriteBatchUI>();
 
@@ -64,19 +60,6 @@ namespace UltimaXNA.Core.UI
 
         public int Width { get { return m_SpriteBatch.GraphicsDevice.Viewport.Width; } }
         public int Height { get { return m_SpriteBatch.GraphicsDevice.Viewport.Height; } }
-
-        /// <summary>
-        /// Informs the server that we have activated a control.
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="gumpId"></param>
-        /// <param name="buttonId"></param>
-        /// <param name="switchIds"></param>
-        /// <param name="textEntries"></param>
-        public void GumpMenuSelect(int id, int gumpId, int buttonId, int[] switchIds, Tuple<short, string>[] textEntries)
-        {
-            m_Network.Send(new GumpMenuSelectPacket(id, gumpId, buttonId, switchIds, textEntries));
-        }
 
         // All open controls:
         List<ControlAndMetaData> m_Controls = null;
