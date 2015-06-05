@@ -3,6 +3,7 @@ using UltimaXNA.Configuration;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Core.UI;
 
 namespace UltimaXNA.Ultima.World.Gumps
 {
@@ -21,7 +22,7 @@ namespace UltimaXNA.Ultima.World.Gumps
             IsUncloseableWithRMB = true;
             IsUncloseableWithEsc = true;
             IsMovable = true;
-            Layer = GumpLayer.Under;
+            Layer = UILayer.Under;
 
             m_Model = ServiceRegistry.GetService<WorldModel>();
 

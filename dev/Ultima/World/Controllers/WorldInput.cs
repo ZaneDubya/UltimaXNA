@@ -5,12 +5,12 @@ using UltimaXNA.Configuration;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.Network;
+using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Entities;
 using UltimaXNA.Ultima.Entities.Items;
 using UltimaXNA.Ultima.Entities.Mobiles;
 using UltimaXNA.Ultima.Network.Client;
-using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
 #endregion
 
@@ -531,7 +531,7 @@ namespace UltimaXNA.Ultima.World.Controllers
             m_QueuedEvent_InQueue = true;
             m_QueuedEntity = overEntity;
             m_QueuedEntityPosition = overEntityPoint;
-            m_QueuedEvent_DequeueAt = EngineVars.DoubleClickMS;
+            m_QueuedEvent_DequeueAt = Settings.World.Mouse.DoubleClickMS;
             m_QueuedEvent = e;
         }
 

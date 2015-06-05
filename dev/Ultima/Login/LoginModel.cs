@@ -1,6 +1,6 @@
 ﻿using InterXLib.Patterns.MVC;
+using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Login.States;
-using UltimaXNA.Ultima.UI;
 
 namespace UltimaXNA.Ultima.Login
 {

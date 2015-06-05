@@ -7,6 +7,7 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -16,6 +17,7 @@ using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.Network.Client;
+using UltimaXNA.Core.UI;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
@@ -125,7 +127,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             // if click, we wait for a moment before picking it up. This allows a single click.
             clickedCanDrag = true;
-            pickUpTime = (float)UltimaEngine.TotalMS + EngineVars.ClickAndPickUpMS;
+            pickUpTime = (float)UltimaEngine.TotalMS + Settings.World.Mouse.ClickAndPickupMS;
             m_ClickPoint = new Point(x, y);
         }
 
@@ -145,7 +147,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             {
                 clickedCanDrag = false;
                 sendClickIfNoDoubleClick = true;
-                singleClickTime = (float)UltimaEngine.TotalMS + EngineVars.DoubleClickMS;
+                singleClickTime = (float)UltimaEngine.TotalMS + Settings.World.Mouse.DoubleClickMS;
             }
         }
 

@@ -1,5 +1,5 @@
 ﻿using UltimaXNA.Core.Diagnostics.Tracing;
-using UltimaXNA.Ultima.UI;
+using UltimaXNA.Core.UI;
 
 namespace UltimaXNA.Ultima.Login.States
 {

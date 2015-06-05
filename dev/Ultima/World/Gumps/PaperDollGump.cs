@@ -8,12 +8,13 @@
  *
  ***************************************************************************/
 #region usings
+using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Network;
+using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Entities.Mobiles;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
-using Microsoft.Xna.Framework;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Gumps

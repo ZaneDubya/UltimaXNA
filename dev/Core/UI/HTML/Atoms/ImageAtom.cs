@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 
-namespace UltimaXNA.Ultima.UI.HTML.Atoms
+namespace UltimaXNA.Core.UI.HTML.Atoms
 {
     public class ImageAtom : AAtom
     {
@@ -17,8 +17,7 @@ namespace UltimaXNA.Ultima.UI.HTML.Atoms
             {
                 if (m_overrideWidth != -1)
                     return m_overrideWidth + 1;
-                Texture2D gump = IO.GumpData.GetGumpXNA(Value);
-                return gump.Width + 1;
+                return AssociatedImage.Texture.Width + 1;
             }
         }
 
@@ -33,16 +32,7 @@ namespace UltimaXNA.Ultima.UI.HTML.Atoms
             {
                 if (m_overrideHeight != -1)
                     return m_overrideHeight;
-                Texture2D gump = IO.GumpData.GetGumpXNA(Value);
-                return gump.Height;
-            }
-        }
-
-        public Texture2D Texture
-        {
-            get
-            {
-                return IO.GumpData.GetGumpXNA(Value);
+                return AssociatedImage.Texture.Height + 1;
             }
         }
 

@@ -17,7 +17,7 @@ using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
 #endregion
 
-namespace UltimaXNA.Ultima.UI
+namespace UltimaXNA.Core.UI
 {
     /// <summary>
     /// The base class used by all GUI objects.
@@ -278,6 +278,12 @@ namespace UltimaXNA.Ultima.UI
         }
 
         protected Point m_Position;
+
+        public UILayer Layer
+        {
+            get;
+            protected set;
+        }
 
         public AControl(AControl owner, int page)
         {
@@ -609,7 +615,7 @@ namespace UltimaXNA.Ultima.UI
             }
             else
             {
-                m_MaxTimeForDoubleClick = (float)UltimaEngine.TotalMS + EngineVars.DoubleClickMS;
+                m_MaxTimeForDoubleClick = (float)UltimaEngine.TotalMS + Settings.World.Mouse.DoubleClickMS;
             }
 
             OnMouseClick(x, y, button);
@@ -779,8 +785,6 @@ namespace UltimaXNA.Ultima.UI
         protected void DebugDrawBounds(SpriteBatchUI spriteBatch, Point position, Color color)
         {
 #if DEBUG
-            int hue = IO.HuesXNA.GetWebSafeHue(color);
-
             Rectangle drawArea = m_Area;
             if (Owner == null)
             {
@@ -794,10 +798,10 @@ namespace UltimaXNA.Ultima.UI
                 s_BoundsTexture.SetData<Color>(new Color[] { Color.White });
             }
 
-            spriteBatch.Draw2D(s_BoundsTexture, new Rectangle(position.X, position.Y, Width, 1), Utility.GetHueVector(hue));
-            spriteBatch.Draw2D(s_BoundsTexture, new Rectangle(position.X, position.Y + Height - 1, Width, 1), Utility.GetHueVector(hue));
-            spriteBatch.Draw2D(s_BoundsTexture, new Rectangle(position.X, position.Y, 1, Height), Utility.GetHueVector(hue));
-            spriteBatch.Draw2D(s_BoundsTexture, new Rectangle(position.X + Width - 1, position.Y, 1, Height), Utility.GetHueVector(hue));
+            spriteBatch.Draw2D(s_BoundsTexture, new Rectangle(position.X, position.Y, Width, 1), Vector3.Zero);
+            spriteBatch.Draw2D(s_BoundsTexture, new Rectangle(position.X, position.Y + Height - 1, Width, 1), Vector3.Zero);
+            spriteBatch.Draw2D(s_BoundsTexture, new Rectangle(position.X, position.Y, 1, Height), Vector3.Zero);
+            spriteBatch.Draw2D(s_BoundsTexture, new Rectangle(position.X + Width - 1, position.Y, 1, Height), Vector3.Zero);
 #endif
         #endregion
         }

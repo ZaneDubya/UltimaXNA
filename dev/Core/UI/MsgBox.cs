@@ -10,16 +10,17 @@
 #region usings
 using System;
 using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Core.UI;
 #endregion
 
-namespace UltimaXNA.Ultima.UI
+namespace UltimaXNA.Core.UI
 {
     public enum MsgBoxTypes
     {
         OkOnly,
         OkCancel
     }
-    public class MsgBox : Gump
+    public class MsgBox : AControl
     {
         string m_msg;
         HtmlGumpling m_text;
@@ -29,7 +30,7 @@ namespace UltimaXNA.Ultima.UI
         public Action OnCancel;
 
         public MsgBox(string msg, MsgBoxTypes msgBoxType)
-            : base(0, 0)
+            : base(null, 0)
         {
             m_msg = "<big color=000000>" + msg;
             m_type = msgBoxType;

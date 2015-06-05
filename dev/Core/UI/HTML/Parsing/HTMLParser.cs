@@ -144,7 +144,7 @@ using System.IO;
 using System.Collections;
 using System.Text;
 
-namespace UltimaXNA.Ultima.UI.HTML.Parsing
+namespace UltimaXNA.Core.UI.HTML.Parsing
 {
 	/// <summary>
 	/// Allows to parse HTML by splitting it into small token (HTMLchunks) such as tags, text, comments etc.

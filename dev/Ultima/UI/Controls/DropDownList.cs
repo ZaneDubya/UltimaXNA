@@ -7,11 +7,12 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using System.Collections.Generic;
+
 using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.IO.FontsOld;
-using UltimaXNA.Ultima.UI;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {

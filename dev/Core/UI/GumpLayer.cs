@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace UltimaXNA.Ultima.UI
+namespace UltimaXNA.Core.UI
 {
-    public enum GumpLayer
+    public enum UILayer
     {
         Default,
         Over,

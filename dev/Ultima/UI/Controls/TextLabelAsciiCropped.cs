@@ -7,11 +7,11 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using System;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Graphics;
-using UltimaXNA.Ultima.UI;
+using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.IO.FontsOld;
 
 namespace UltimaXNA.Ultima.UI.Controls

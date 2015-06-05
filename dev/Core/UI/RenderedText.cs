@@ -14,8 +14,8 @@ using System.Collections.Generic;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.IO.FontsNew;
-using UltimaXNA.Ultima.UI.HTML;
-using UltimaXNA.Ultima.UI.HTML.Atoms;
+using UltimaXNA.Core.UI.HTML;
+using UltimaXNA.Core.UI.HTML.Atoms;
 #endregion
 
 namespace UltimaXNA.Ultima.UI
@@ -384,10 +384,15 @@ namespace UltimaXNA.Ultima.UI
                     else if (atoms[i] is ImageAtom)
                     {
                         ImageAtom atom = (ImageAtom)atoms[i];
-                        if (lineheight < atom.Height)
-                            lineheight = atom.Height;
-                        Images.AddImage(new Rectangle(x, y + (lineheight - atom.Height) / 2, atom.Width, atom.Height),
-                                atom.Texture, GumpData.GetGumpXNA(atom.ValueOver), GumpData.GetGumpXNA(atom.ValueDown));
+                        Texture2D standard = GumpData.GetGumpXNA(atom.Value);
+                        Texture2D over = GumpData.GetGumpXNA(atom.ValueOver);
+                        Texture2D down = GumpData.GetGumpXNA(atom.ValueDown);
+
+                        if (lineheight < standard.Height)
+                            lineheight = standard.Height;
+                        Images.AddImage(
+                            new Rectangle(x, y + (lineheight - standard.Height) / 2, standard.Width, standard.Height),
+                            standard, over, down);
                         atom.AssociatedImage = Images[Images.Count - 1];
                     }
                 }

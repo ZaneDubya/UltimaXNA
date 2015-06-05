@@ -17,9 +17,11 @@ using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Ultima.Network.Client;
+using UltimaXNA.Ultima.UI; // REMOVE --- SHOULD NOT BE NECESSARY
+using UltimaXNA.Ultima.IO; // SAME
 #endregion
 
-namespace UltimaXNA.Ultima.UI
+namespace UltimaXNA.Core.UI
 {
     public class UserInterfaceService
     {
@@ -215,7 +217,7 @@ namespace UltimaXNA.Ultima.UI
 
         public void Update(double totalMS, double frameMS)
         {
-            ReorderGumps();
+            ReorderControls();
 
             foreach (AControl c in m_Controls)
             {
@@ -239,7 +241,7 @@ namespace UltimaXNA.Ultima.UI
 
         public void Draw(double frameTime)
         {
-            ReorderGumps();
+            ReorderControls();
 
             foreach (AControl c in m_Controls.Reverse<AControl>())
             {
@@ -273,29 +275,28 @@ namespace UltimaXNA.Ultima.UI
             }
         }
 
-        private void ReorderGumps()
+        private void ReorderControls()
         {
-            List<Gump> gumps = new List<Gump>();
+            List<AControl> gumps = new List<AControl>();
             List<AControl> controls = m_Controls;
 
             foreach (AControl control in controls)
             {
-                Gump gump = control as Gump;
-                if (gump != null)
+                if (control != null)
                 {
-                    if (gump.Layer != GumpLayer.Default)
-                        gumps.Add(gump);
+                    if (control.Layer != UILayer.Default)
+                        gumps.Add(control);
                 }
             }
 
-            foreach (Gump gump in gumps)
+            foreach (AControl gump in gumps)
             {
-                if (gump.Layer == GumpLayer.Under)
+                if (gump.Layer == UILayer.Under)
                 {
                     controls.Remove(gump);
                     controls.Insert(controls.Count, gump);
                 }
-                else if (gump.Layer == GumpLayer.Over)
+                else if (gump.Layer == UILayer.Over)
                 {
                     controls.Remove(gump);
                     controls.Insert(0, gump);
@@ -404,7 +405,7 @@ namespace UltimaXNA.Ultima.UI
         private void MakeTopMostGump(AControl control)
         {
             AControl c = control;
-            while ((c as Gump) == null || !m_Controls.Contains(c))
+            while (!m_Controls.Contains(c))
             {
                 if (c.Owner == null)
                     return;

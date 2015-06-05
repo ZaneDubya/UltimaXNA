@@ -11,10 +11,10 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using UltimaXNA.Configuration;
 using UltimaXNA.Core.Diagnostics.Tracing;
-using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.UI.Controls;
 #endregion
 
 namespace UltimaXNA.Ultima.UI
@@ -46,12 +46,6 @@ namespace UltimaXNA.Ultima.UI
             {
                 base.IsMovable = value;
             }
-        }
-
-        public GumpLayer Layer
-        {
-            get;
-            protected set;
         }
 
         public Gump(Serial serial, Serial gumpID)

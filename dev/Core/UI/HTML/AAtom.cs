@@ -9,10 +9,10 @@
  ***************************************************************************/
 #region usings
 using Microsoft.Xna.Framework;
-using UltimaXNA.Ultima.UI.HTML.Atoms;
+using UltimaXNA.Core.UI.HTML.Atoms;
 #endregion
 
-namespace UltimaXNA.Ultima.UI.HTML
+namespace UltimaXNA.Core.UI.HTML
 {
     public abstract class AAtom
     {

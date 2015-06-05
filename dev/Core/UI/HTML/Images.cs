@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace UltimaXNA.Ultima.UI.HTML
+namespace UltimaXNA.Core.UI.HTML
 {
     class Images
     {

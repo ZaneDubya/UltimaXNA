@@ -11,9 +11,10 @@
 #region Usings
 using System;
 using UltimaXNA.Core.Configuration;
+using UltimaXNA.Configuration;
 #endregion
 
-namespace UltimaXNA.Configuration
+namespace UltimaXNA
 {
     public class Settings
     {

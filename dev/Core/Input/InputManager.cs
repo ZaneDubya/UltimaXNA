@@ -247,7 +247,7 @@ namespace UltimaXNA.Core.Input
                 {
                     addEvent(new InputEventMouse(MouseEvent.Click, e));
 
-                    if((m_TheTime - m_LastMouseClickTime <= UltimaXNA.Ultima.EngineVars.DoubleClickMS) &&
+                    if((m_TheTime - m_LastMouseClickTime <= Settings.World.Mouse.DoubleClickMS) &&
                        !DistanceBetweenPoints(m_LastMouseClick.Position, e.Position, MouseClickMaxDelta))
                     {
                         m_LastMouseClickTime = 0f;

@@ -15,7 +15,7 @@ using System.Linq;
 using System.Text;
 #endregion
 
-namespace UltimaXNA.Ultima
+namespace UltimaXNA
 {
     public struct Serial : IComparable, IComparable<Serial>
     {

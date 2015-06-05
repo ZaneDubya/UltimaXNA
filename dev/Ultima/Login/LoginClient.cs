@@ -11,9 +11,9 @@
 using System;
 using System.Collections.Generic;
 using System.Security;
-using UltimaXNA.Configuration;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Network;
+using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Data.Accounts;
 using UltimaXNA.Ultima.Data.Servers;

@@ -9,6 +9,7 @@
  ***************************************************************************/
 #region usings
 using System.Collections.Generic;
+using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Entities;
 using UltimaXNA.Ultima.Entities.Items;
 using UltimaXNA.Ultima.Entities.Items.Containers;

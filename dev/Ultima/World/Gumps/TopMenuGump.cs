@@ -8,6 +8,7 @@
  *
  ***************************************************************************/
 #region usings
+using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Entities.Items.Containers;
 using UltimaXNA.Ultima.Entities.Mobiles;
 using UltimaXNA.Ultima.UI;
@@ -55,7 +56,7 @@ namespace UltimaXNA.Ultima.World.Gumps
 
             IsUncloseableWithRMB = true;
 
-            Layer = GumpLayer.Over;
+            Layer = UILayer.Over;
         }
 
         public override void ActivateByButton(int buttonID)

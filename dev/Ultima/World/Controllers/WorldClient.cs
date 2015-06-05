@@ -2,23 +2,21 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using UltimaXNA.Core.Diagnostics;
-using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Diagnostics.Tracing;
+using UltimaXNA.Core.Network;
+using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Entities;
 using UltimaXNA.Ultima.Entities.Items;
 using UltimaXNA.Ultima.Entities.Items.Containers;
 using UltimaXNA.Ultima.Entities.Mobiles;
 using UltimaXNA.Ultima.Entities.Multis;
-using UltimaXNA.Ultima.Entities.Effects;
-using UltimaXNA.Ultima.Player;
-using UltimaXNA.Ultima.UI;
-using UltimaXNA.Ultima.World.Gumps;
 using UltimaXNA.Ultima.Network;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.Network.Server;
-using UltimaXNA.Ultima.Data;
-using UltimaXNA.Configuration;
+using UltimaXNA.Ultima.Player;
+using UltimaXNA.Ultima.UI;
+using UltimaXNA.Ultima.World.Gumps;
 
 namespace UltimaXNA.Ultima.World.Controllers
 {

@@ -21,12 +21,16 @@ namespace UltimaXNA.Configuration
         private MouseButton m_InteractionButton;
         private MouseButton m_movementButton;
         private bool m_isEnabled;
+        private float m_ClickAndPickUpMS; // this is close to what the legacy client uses.
+        private float m_DoubleClickMS;
 
         public MouseSettings()
         {
             InteractionButton = MouseButton.Left;
             MovementButton = MouseButton.Right;
             IsEnabled = true;
+            m_ClickAndPickUpMS = 800f;
+            m_DoubleClickMS = 400;
         }
 
         public MouseSettings(MouseButton interaction, MouseButton movement)
@@ -53,5 +57,19 @@ namespace UltimaXNA.Configuration
             get { return m_InteractionButton; }
             set { SetProperty(ref m_InteractionButton, value); }
         }
+
+        public float ClickAndPickupMS
+        {
+            get { return m_ClickAndPickUpMS; }
+            set { SetProperty(ref m_ClickAndPickUpMS, value); }
+        }
+
+        public float DoubleClickMS
+        {
+            get { return m_DoubleClickMS; }
+            set { SetProperty(ref m_DoubleClickMS, value); }
+        }
+
+        
     }
 }

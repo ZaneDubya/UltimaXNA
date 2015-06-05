@@ -4,6 +4,7 @@ using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
 using System.IO;
 using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.UI;
 
 namespace UltimaXNA.Ultima.Login.States
 {

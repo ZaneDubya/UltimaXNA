@@ -1,6 +1,6 @@
 ﻿using InterXLib.Patterns.MVC;
 using UltimaXNA.Core.Network;
-using UltimaXNA.Ultima.Data;
+using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Entities;
 using UltimaXNA.Ultima.Login;
 using UltimaXNA.Ultima.UI;

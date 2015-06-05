@@ -12,6 +12,8 @@ using Microsoft.Xna.Framework;
 using System;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Core.UI;
+using UltimaXNA.Core.UI.HTML;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.Controls
@@ -176,7 +178,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                     else if (Text.Length > 0)
                     {
                         int escapedLength;
-                        if (HTML.EscapeCharacters.TryFindEscapeCharacterBackwards(Text, Text.Length - 1, out escapedLength))
+                        if (EscapeCharacters.TryFindEscapeCharacterBackwards(Text, Text.Length - 1, out escapedLength))
                         {
                             Text = Text.Substring(0, Text.Length - escapedLength);
                         }
@@ -199,7 +201,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                     if (e.IsChar)
                     {
                         string escapedCharacter;
-                        if (HTML.EscapeCharacters.TryMatchChar(e.KeyChar, out escapedCharacter))
+                        if (EscapeCharacters.TryMatchChar(e.KeyChar, out escapedCharacter))
                         {
                             Text += escapedCharacter;
                         }
