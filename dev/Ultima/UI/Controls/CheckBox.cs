@@ -55,7 +55,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             Position = new Point(x, y);
             Size = new Point(m_Inactive.Width, m_Inactive.Height);
             IsChecked = initialState;
-            Serial = switchID;
+            GumpLocalID = switchID;
         }
 
         public override void Draw(SpriteBatchUI spriteBatch, Point position)

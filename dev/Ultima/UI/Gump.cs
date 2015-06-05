@@ -24,7 +24,14 @@ namespace UltimaXNA.Ultima.UI
     /// </summary>
     public class Gump : AControl
     {
-        Serial m_GumpID;
+        /// <summary>
+        /// A unique identifier, assigned by the server, that is sent by the client when a button is pressed.
+        /// </summary>
+        public int GumpServerTypeID
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// If true, gump will not be moved.
@@ -47,15 +54,15 @@ namespace UltimaXNA.Ultima.UI
             }
         }
 
-        public Gump(Serial serial, Serial gumpID)
+        public Gump(int localID, int gumpTypeID)
             : base(null, 0)
         {
-            Serial = serial;
-            m_GumpID = gumpID;
+            GumpLocalID = localID;
+            GumpServerTypeID = gumpTypeID;
         }
 
-        public Gump(Serial serial, Serial gumpID, String[] pieces, String[] textlines)
-            : this(serial, gumpID)
+        public Gump(Serial localID, Serial gumpTypeID, String[] pieces, String[] textlines)
+            : this(localID, gumpTypeID)
         {
             // Add any gump pieces that have been given to the gump...
             GumpBuilder.BuildGump(this, pieces, textlines);
@@ -87,12 +94,12 @@ namespace UltimaXNA.Ultima.UI
 
         public override void ActivateByButton(int buttonID)
         {
-            if (Serial != 0)
+            if (GumpLocalID != 0)
             {
                 if (buttonID == 0) // cancel
                 {
                     WorldModel world = ServiceRegistry.GetService<WorldModel>();
-                    world.Client.SendGumpMenuSelect(Serial, m_GumpID, buttonID, null, null);
+                    world.Client.SendGumpMenuSelect(GumpLocalID, GumpServerTypeID, buttonID, null, null);
                 }
                 else
                 {
@@ -100,23 +107,33 @@ namespace UltimaXNA.Ultima.UI
                     foreach (AControl control in Children)
                     {
                         if (control is CheckBox && (control as CheckBox).IsChecked)
-                            switchIDs.Add(control.Serial);
+                            switchIDs.Add(control.GumpLocalID);
                         else if (control is RadioButton && (control as RadioButton).IsChecked)
-                            switchIDs.Add(control.Serial);
+                            switchIDs.Add(control.GumpLocalID);
                     }
                     List<Tuple<short, string>> textEntries = new List<Tuple<short, string>>();
                     foreach (AControl control in Children)
                     {
                         if (control is TextEntry)
                         {
-                            textEntries.Add(new Tuple<short, string>((short)control.Serial, (control as TextEntry).Text));
+                            textEntries.Add(new Tuple<short, string>((short)control.GumpLocalID, (control as TextEntry).Text));
                         }
                     }
                     WorldModel world = ServiceRegistry.GetService<WorldModel>();
-                    world.Client.SendGumpMenuSelect(Serial, m_GumpID, buttonID, switchIDs.ToArray(), textEntries.ToArray());
+                    world.Client.SendGumpMenuSelect(GumpLocalID, GumpServerTypeID, buttonID, switchIDs.ToArray(), textEntries.ToArray());
                 }
                 Dispose();
             }
+        }
+
+        protected override void CloseWithRightMouseButton()
+        {
+            if (IsUncloseableWithRMB)
+                return;
+            // send cancel message for server gump
+            if (GumpServerTypeID != 0)
+                ActivateByButton(0);
+            base.CloseWithRightMouseButton();
         }
 
         public override void ChangePage(int pageIndex)
@@ -162,8 +179,9 @@ namespace UltimaXNA.Ultima.UI
         #region Position Save and Restore
         private bool m_WillSavePosition = false, m_WillOffsetNextPosition = false;
         private string m_SavePositionName = null;
-        private static Point s_SavePositionOffsetAmount = new Point(24, 24);
         private bool m_HasRestoredPosition = false;
+
+        private static Point s_SavePositionOffsetAmount = new Point(24, 24);
 
         protected void SetSavePositionName(string positionName, bool offsetNext = false)
         {

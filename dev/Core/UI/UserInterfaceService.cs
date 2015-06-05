@@ -146,13 +146,13 @@ namespace UltimaXNA.Core.UI
             return control;
         }
 
-        public void RemoveControl<T>(Serial? serial = null) where T : AControl
+        public void RemoveControl<T>(int? localID = null) where T : AControl
         {
             foreach (ControlAndMetaData c in m_Controls)
             {
                 if (c.GetType() == typeof(T))
                 {
-                    if (!serial.HasValue || (c.Control.Serial == serial))
+                    if (!localID.HasValue || (c.Control.GumpLocalID == localID))
                     {
                         if (!c.Control.IsDisposed)
                             c.Control.Dispose();
@@ -161,23 +161,22 @@ namespace UltimaXNA.Core.UI
             }
         }
 
-        public AControl GetControl(Serial serial)
+        public AControl GetControl(int localID)
         {
             foreach (ControlAndMetaData c in m_Controls)
             {
-                if (c.Control.Serial == serial && !c.Control.IsDisposed)
+                if (!c.Control.IsDisposed && c.Control.GumpLocalID == localID)
                     return c.Control;
             }
             return null;
         }
 
-        public T GetControl<T>(Serial? serial = null) where T : AControl
+        public T GetControl<T>(int? localID = null) where T : AControl
         {
             foreach (ControlAndMetaData c in m_Controls)
             {
-                if (c.Control.GetType() == typeof(T) && 
-                    (!serial.HasValue || c.Control.Serial == serial) && 
-                    !c.Control.IsDisposed)
+                if (!c.Control.IsDisposed && c.Control.GetType() == typeof(T) && 
+                    (!localID.HasValue || c.Control.GumpLocalID == localID))
                     return (T)c.Control;
             }
             return null;

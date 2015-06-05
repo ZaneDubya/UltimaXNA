@@ -28,8 +28,8 @@ namespace UltimaXNA.Ultima.Network.Server
 {
     public class CompressedGumpPacket : RecvPacket
     {
-        public readonly Serial Serial;
-        public readonly Serial GumpID;
+        public readonly int GumpSerial;
+        public readonly int GumpTypeID;
         public readonly int X;
         public readonly int Y;
         public readonly string GumpData;
@@ -43,8 +43,8 @@ namespace UltimaXNA.Ultima.Network.Server
         public CompressedGumpPacket(PacketReader reader)
             : base(0xDD, "Compressed Gump")
         {
-            Serial = reader.ReadInt32();
-            GumpID = reader.ReadInt32();
+            GumpSerial = reader.ReadInt32();
+            GumpTypeID = reader.ReadInt32();
             X = reader.ReadInt32();
             Y = reader.ReadInt32();
             

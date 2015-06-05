@@ -44,9 +44,9 @@ namespace UltimaXNA.Core.UI
         // ================================================================================
         #region Public properties
         /// <summary>
-        /// An identifier for this control.
+        /// An identifier for this control. Used by UO as a 'Serial'
         /// </summary>
-        public int Serial
+        public int GumpLocalID
         {
             get;
             protected set;
@@ -700,7 +700,7 @@ namespace UltimaXNA.Core.UI
             }
         }
 
-        private void CloseWithRightMouseButton()
+        protected virtual void CloseWithRightMouseButton()
         {
             if (IsUncloseableWithRMB)
                 return;
@@ -711,10 +711,6 @@ namespace UltimaXNA.Core.UI
                     return;
                 parent = parent.Owner;
             }
-
-            // send cancel message for server gump
-            if (Serial != 0)
-                ActivateByButton(0);
 
             // dispose of this, or owner, if it has one, which will close this as a child.
             if (Owner == null)

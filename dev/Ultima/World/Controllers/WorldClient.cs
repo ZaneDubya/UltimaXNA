@@ -794,7 +794,7 @@ namespace UltimaXNA.Ultima.World.Controllers
                 string[] gumpPieces;
                 if (TryParseGumplings(p.GumpData, out gumpPieces))
                 {
-                    Gump g = (Gump)m_UserInterface.AddControl(new Gump(p.Serial, p.GumpID, gumpPieces, p.TextLines), p.X, p.Y);
+                    Gump g = (Gump)m_UserInterface.AddControl(new Gump(p.GumpSerial, p.GumpTypeID, gumpPieces, p.TextLines), p.X, p.Y);
                     g.IsMovable = true;
                 }
             }
