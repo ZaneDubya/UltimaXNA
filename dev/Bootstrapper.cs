@@ -154,7 +154,7 @@ namespace UltimaXNA
             Prepare();
             Configure();
 
-            using (UltimaEngine engine = ServiceRegistry.GetService<UltimaEngine>())
+            using (UltimaGame engine = ServiceRegistry.GetService<UltimaGame>())
             {
                 engine.Run();
             }

@@ -16,6 +16,7 @@ using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.Network;
+using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Entities;
 using UltimaXNA.Ultima.Entities.Items;
 using UltimaXNA.Ultima.Entities.Items.Containers;

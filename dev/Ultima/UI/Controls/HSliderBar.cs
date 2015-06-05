@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Core.UI;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.Controls
@@ -114,14 +115,14 @@ namespace UltimaXNA.Ultima.UI.Controls
             if (m_GumpSliderBackground != null)
             {
                 spriteBatch.Draw2D(m_GumpSliderBackground[0], new Vector3(position.X, position.Y, 0), Vector3.Zero);
-                spriteBatch.Draw2DTiled(m_GumpSliderBackground[1], new Rectangle(Area.X + m_GumpSliderBackground[0].Width, position.Y, BarWidth - m_GumpSliderBackground[2].Width - m_GumpSliderBackground[0].Width, m_GumpSliderBackground[1].Height), Vector3.Zero);
+                spriteBatch.Draw2DTiled(m_GumpSliderBackground[1], new Rectangle(this.X + m_GumpSliderBackground[0].Width, position.Y, BarWidth - m_GumpSliderBackground[2].Width - m_GumpSliderBackground[0].Width, m_GumpSliderBackground[1].Height), Vector3.Zero);
                 spriteBatch.Draw2D(m_GumpSliderBackground[2], new Vector3(position.X + BarWidth - m_GumpSliderBackground[2].Width, position.Y, 0), Vector3.Zero);
             }
             spriteBatch.Draw2D(m_GumpWidget, new Vector3(position.X + m_sliderX, position.Y, 0), Vector3.Zero);
             base.Draw(spriteBatch, position);
         }
 
-        protected override bool InternalHitTest(int x, int y)
+        protected override bool IsPointWithinControl(int x, int y)
         {
             if (new Rectangle(m_sliderX, 0, m_GumpWidget.Width, m_GumpWidget.Height).Contains(new Point(x, y)))
                 return true;

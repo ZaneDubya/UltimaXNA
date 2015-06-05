@@ -10,7 +10,7 @@
 #region usings
 using System.Security;
 using UltimaXNA.Core.Input;
-using UltimaXNA.Ultima.UI;
+using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Login.Gumps;
 #endregion
 

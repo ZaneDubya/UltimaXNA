@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Core.UI;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.Controls
@@ -204,7 +205,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Draw(spriteBatch, position);
         }
 
-        protected override bool InternalHitTest(int x, int y)
+        protected override bool IsPointWithinControl(int x, int y)
         {
             if (new Rectangle(0, 0, Width, Height).Contains(new Point(x, y)))
                 return true;

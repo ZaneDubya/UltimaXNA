@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Ultima.UI;
+using UltimaXNA.Core.UI;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
@@ -151,7 +152,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                 return m_gumpTextures[kGump_Up];
         }
 
-        protected override bool InternalHitTest(int x, int y)
+        protected override bool IsPointWithinControl(int x, int y)
         {
             Color[] pixelData;
             pixelData = new Color[1];

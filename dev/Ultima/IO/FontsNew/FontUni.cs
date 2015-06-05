@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using UltimaXNA.Core.UI;
 
 namespace UltimaXNA.Ultima.IO.FontsNew
 {
@@ -42,7 +43,7 @@ namespace UltimaXNA.Ultima.IO.FontsNew
             GetCharacter(' ').Width = GetCharacter('M').Width / 3;
         }
 
-        public override ACharacter GetCharacter(char character)
+        public override ICharacter GetCharacter(char character)
         {
             int index = ((int)character & 0xFFFFF) - 0x20;
             if (index < 0)

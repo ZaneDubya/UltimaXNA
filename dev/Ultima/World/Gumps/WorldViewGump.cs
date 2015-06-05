@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
-using UltimaXNA.Configuration;
 using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
 
@@ -21,7 +21,7 @@ namespace UltimaXNA.Ultima.World.Gumps
             IsUncloseableWithRMB = true;
             IsUncloseableWithEsc = true;
             IsMovable = true;
-            Layer = GumpLayer.Under;
+            MetaData.Layer = UILayer.Under;
 
             m_Model = ServiceRegistry.GetService<WorldModel>();
 
@@ -52,7 +52,7 @@ namespace UltimaXNA.Ultima.World.Gumps
 
         protected override void OnMove()
         {
-            // base.OnMove(); - this would make sure that the gump remained at least half on screen, but we want more fine-grained control over movement.
+            // base.OnMove() would make sure that the gump remained at least half on screen, but we want more fine-grained control over movement.
             SpriteBatchUI sb = ServiceRegistry.GetService<SpriteBatchUI>();
             Point position = Position;
 

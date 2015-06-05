@@ -4,6 +4,7 @@ using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
 using System.IO;
 using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.UI;
 
 namespace UltimaXNA.Ultima.Login.States
 {
@@ -133,7 +134,7 @@ namespace UltimaXNA.Ultima.Login.States
                 OverHue = -1;
             }
 
-            protected override bool InternalHitTest(int x, int y)
+            protected override bool IsPointWithinControl(int x, int y)
             {
                 if (m_texture != null)
                 {

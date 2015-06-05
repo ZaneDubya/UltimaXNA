@@ -12,6 +12,7 @@
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Entities.Mobiles;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;

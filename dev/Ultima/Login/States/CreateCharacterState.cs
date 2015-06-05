@@ -9,11 +9,12 @@
  ***************************************************************************/
 #region usings
 using System;
+using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Data.Accounts;
+using UltimaXNA.Ultima.Login.Gumps;
 using UltimaXNA.Ultima.Network;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.UI;
-using UltimaXNA.Ultima.Login.Gumps;
 #endregion
 
 namespace UltimaXNA.Ultima.Login.States
@@ -105,12 +106,12 @@ namespace UltimaXNA.Ultima.Login.States
             // if not, pop up an appropriate error message.
             if (m_CreateSkillsGump.Strength + m_CreateSkillsGump.Dexterity + m_CreateSkillsGump.Intelligence != 80)
             {
-                m_UserInterface.MsgBox("Error: your stat values did not add up to 80. Please logout and try to make another character.", MsgBoxTypes.OkOnly);
+                MsgBoxGump.Show("Error: your stat values did not add up to 80. Please logout and try to make another character.", MsgBoxTypes.OkOnly);
                 return false;
             }
             if (m_CreateSkillsGump.SkillPoints0 + m_CreateSkillsGump.SkillPoints1 + m_CreateSkillsGump.SkillPoints2 != 100)
             {
-                m_UserInterface.MsgBox("Error: your skill values did not add up to 100. Please logout and try to make another character.", MsgBoxTypes.OkOnly);
+                MsgBoxGump.Show("Error: your skill values did not add up to 100. Please logout and try to make another character.", MsgBoxTypes.OkOnly);
                 return false;
             }
             if (m_CreateSkillsGump.SkillIndex0 == -1 || m_CreateSkillsGump.SkillIndex1 == -1 || m_CreateSkillsGump.SkillIndex2 == -1 ||
@@ -118,7 +119,7 @@ namespace UltimaXNA.Ultima.Login.States
                 (m_CreateSkillsGump.SkillIndex1 == m_CreateSkillsGump.SkillIndex2) ||
                 (m_CreateSkillsGump.SkillIndex0 == m_CreateSkillsGump.SkillIndex2))
             {
-                m_UserInterface.MsgBox("You must have three unique skills chosen!", MsgBoxTypes.OkOnly);
+                MsgBoxGump.Show("You must have three unique skills chosen!", MsgBoxTypes.OkOnly);
                 return false;
             }
             // save the values;
@@ -150,12 +151,12 @@ namespace UltimaXNA.Ultima.Login.States
             // if not, pop up an appropriate error message.
             if (m_name.Length < 2)
             {
-                m_UserInterface.MsgBox(IO.StringData.Entry(1075458), MsgBoxTypes.OkOnly); // 1075458: Your character name is too short.
+                MsgBoxGump.Show(IO.StringData.Entry(1075458), MsgBoxTypes.OkOnly); // 1075458: Your character name is too short.
                 return false;
             }
             if (m_name[m_name.Length - 1] == '.')
             {
-                m_UserInterface.MsgBox(IO.StringData.Entry(1075457), MsgBoxTypes.OkOnly); // 1075457: Your character name cannot end with a period('.').
+                MsgBoxGump.Show(IO.StringData.Entry(1075457), MsgBoxTypes.OkOnly); // 1075457: Your character name cannot end with a period('.').
                 return false;
             }
             return true;

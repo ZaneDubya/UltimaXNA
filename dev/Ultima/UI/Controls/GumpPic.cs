@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Ultima.UI;
+using UltimaXNA.Core.UI;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
@@ -80,7 +81,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Draw(spriteBatch, position);
         }
 
-        protected override bool InternalHitTest(int x, int y)
+        protected override bool IsPointWithinControl(int x, int y)
         {
             Color[] pixelData;
             pixelData = new Color[1];

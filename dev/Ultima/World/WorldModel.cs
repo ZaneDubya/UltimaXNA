@@ -1,6 +1,6 @@
 ﻿using InterXLib.Patterns.MVC;
 using UltimaXNA.Core.Network;
-using UltimaXNA.Ultima.Data;
+using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Entities;
 using UltimaXNA.Ultima.Login;
 using UltimaXNA.Ultima.UI;
@@ -14,7 +14,7 @@ namespace UltimaXNA.Ultima.World
     {
         private INetworkClient m_Network;
         private UserInterfaceService m_UserInterface;
-        private UltimaEngine m_Engine;
+        private UltimaGame m_Engine;
 
         public EntityManager Entities
         {
@@ -112,7 +112,7 @@ namespace UltimaXNA.Ultima.World
         {
             ServiceRegistry.Register<WorldModel>(this);
 
-            m_Engine = ServiceRegistry.GetService<UltimaEngine>();
+            m_Engine = ServiceRegistry.GetService<UltimaGame>();
             m_Network = ServiceRegistry.GetService<INetworkClient>();
             m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
 
@@ -175,7 +175,7 @@ namespace UltimaXNA.Ultima.World
             {
                 if (m_UserInterface.IsModalControlOpen == false)
                 {
-                    MsgBox g = m_UserInterface.MsgBox("You have lost your connection with the server.", MsgBoxTypes.OkOnly);
+                    MsgBoxGump g = MsgBoxGump.Show("You have lost your connection with the server.", MsgBoxTypes.OkOnly);
                     g.OnClose = onCloseLostConnectionMsgBox;
                 }
             }

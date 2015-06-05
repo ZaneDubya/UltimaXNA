@@ -10,6 +10,7 @@
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Ultima.UI;
 using Microsoft.Xna.Framework;
+using UltimaXNA.Core.UI;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {

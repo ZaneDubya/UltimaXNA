@@ -7,10 +7,11 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+
 using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
-using UltimaXNA.Ultima.UI;
+using UltimaXNA.Core.UI;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
@@ -51,14 +52,14 @@ namespace UltimaXNA.Ultima.UI.Controls
             m_gumplingBottom = (GumpPic)AddControl(new GumpPic(this, 0, 0, 0, 0x0823, 0));
             m_gumplingExpander = (Button)AddControl(new Button(this, 0, 0, 0, 0x082E, 0x82F, ButtonTypes.Activate, 0, gumplingExpander_ButtonID));
             
-            m_gumplingExpander.MouseDownEvent = expander_OnMouseDown;
-            m_gumplingExpander.MouseUpEvent = expander_OnMouseUp;
-            m_gumplingExpander.MouseOverEvent = expander_OnMouseOver;
+            m_gumplingExpander.MouseDownEvent += expander_OnMouseDown;
+            m_gumplingExpander.MouseUpEvent += expander_OnMouseUp;
+            m_gumplingExpander.MouseOverEvent += expander_OnMouseOver;
         }
 
-        protected override bool InternalHitTest(int x, int y)
+        protected override bool IsPointWithinControl(int x, int y)
         {
-            Point position = new Point(x + OwnerX + X, y + OwnerY + Y);
+            Point position = new Point(x + ScreenX, y + ScreenY);
             if (m_gumplingTop.HitTest(position, true) != null)
                 return true;
             if (m_gumplingMiddle.HitTest(position, true) != null)
@@ -120,7 +121,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         void expander_OnMouseDown(int x, int y, MouseButton button)
         {
-            y += m_gumplingExpander.Y + OwnerY;
+            y += m_gumplingExpander.Y + ScreenY - Y;
             if (button == MouseButton.Left)
             {
                 m_isExpanding = true;
@@ -132,7 +133,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         void expander_OnMouseUp(int x, int y, MouseButton button)
         {
-            y += m_gumplingExpander.Y + OwnerY;
+            y += m_gumplingExpander.Y + ScreenY - Y;
             if (m_isExpanding)
             {
                 m_isExpanding = false;
@@ -142,7 +143,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         void expander_OnMouseOver(int x, int y)
         {
-            y += m_gumplingExpander.Y + OwnerY;
+            y += m_gumplingExpander.Y + ScreenY - Y;
             if (m_isExpanding && (y != m_isExpanding_InitialY))
             {
                 m_expandableScrollHeight = m_isExpanding_InitialHeight + (y - m_isExpanding_InitialY);

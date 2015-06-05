@@ -11,13 +11,13 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.World;
-
 #endregion
 
 namespace UltimaXNA.Ultima.UI
 {
-    class UltimaCursor
+    class UltimaCursor : ICursor
     {
         private HuedTexture m_CursorSprite = null;
         private int m_CursorSpriteArtIndex = -1;

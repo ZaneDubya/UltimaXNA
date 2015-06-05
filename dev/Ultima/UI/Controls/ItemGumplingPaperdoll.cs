@@ -7,10 +7,11 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+
 using Microsoft.Xna.Framework;
-using UltimaXNA.Ultima.Entities.Items;
 using UltimaXNA.Core.Graphics;
-using UltimaXNA.Ultima.UI;
+using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.Entities.Items;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {

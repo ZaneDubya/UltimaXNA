@@ -10,11 +10,10 @@
 #region usings
 using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
-using UltimaXNA.Ultima.UI;
-using UltimaXNA.Ultima.World;
-using UltimaXNA.Ultima.World.Maps;
-using UltimaXNA.Ultima.World.Controllers;
+using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Entities;
+using UltimaXNA.Ultima.World.Controllers;
+using UltimaXNA.Ultima.World.Maps;
 #endregion
 
 namespace UltimaXNA.Ultima.EntityViews

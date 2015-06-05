@@ -12,7 +12,8 @@ using Microsoft.Xna.Framework;
 using System;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
-using UltimaXNA.Ultima.UI.HTML;
+using UltimaXNA.Core.UI;
+using UltimaXNA.Core.UI.HTML;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.Controls
@@ -153,9 +154,9 @@ namespace UltimaXNA.Ultima.UI.Controls
                     Width - (HasBackground ? 8 : 0), Height - (HasBackground ? 8 : 0)), ScrollX, ScrollY);
         }
 
-        protected override bool InternalHitTest(int x, int y)
+        protected override bool IsPointWithinControl(int x, int y)
         {
-            Point position = new Point(x + OwnerX + X, y + OwnerY + Y);
+            Point position = new Point(x + ScreenX, y + ScreenY);
             if (HasScrollbar)
             {
                 if (m_Scrollbar.HitTest(position, true) != null)

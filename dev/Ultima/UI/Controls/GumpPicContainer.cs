@@ -7,8 +7,9 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+
+using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Entities.Items.Containers;
-using UltimaXNA.Ultima.UI;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {

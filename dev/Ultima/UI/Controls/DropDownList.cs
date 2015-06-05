@@ -7,11 +7,12 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using System.Collections.Generic;
+
 using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.IO.FontsOld;
-using UltimaXNA.Ultima.UI;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
@@ -61,9 +62,9 @@ namespace UltimaXNA.Ultima.UI.Controls
             m_canBeNull = canBeNull;
 
             m_resize = new ResizePic(Owner, Page, X, Y, 3000, m_width, IO.FontsOld.ASCIIText.Fonts[1].Height + 8);
-            m_resize.MouseClickEvent = onClickClosedList;
-            m_resize.MouseOverEvent = onMouseOverClosedList;
-            m_resize.MouseOutEvent = onMouseOutClosedList;
+            m_resize.MouseClickEvent += onClickClosedList;
+            m_resize.MouseOverEvent += onMouseOverClosedList;
+            m_resize.MouseOutEvent += onMouseOutClosedList;
             ((Gump)Owner).AddControl(m_resize);
             m_label = new TextLabelAscii(Owner, Page, X + 4, Y + 5, hue_Text, 1, string.Empty);
             ((Gump)Owner).AddControl(m_label);
@@ -117,9 +118,9 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             m_listOpen = true;
             m_openResizePic = new ResizePic(Owner, Page, X, Y, 3000, m_width, ASCIIText.Fonts[1].Height * m_visibleItems + 8);
-            m_openResizePic.MouseClickEvent = onClickOpenList;
-            m_openResizePic.MouseOverEvent = onMouseOverOpenList;
-            m_openResizePic.MouseOutEvent = onMouseOutOpenList;
+            m_openResizePic.MouseClickEvent += onClickOpenList;
+            m_openResizePic.MouseOverEvent += onMouseOverOpenList;
+            m_openResizePic.MouseOutEvent += onMouseOutOpenList;
             ((Gump)Owner).AddControl(m_openResizePic);
             // only show the scrollbar if we need to scroll
             if (m_visibleItems < m_items.Count)

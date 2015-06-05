@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.UI;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.Controls

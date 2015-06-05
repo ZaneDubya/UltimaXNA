@@ -36,8 +36,7 @@ namespace UltimaXNA.Ultima
         public static bool InWorld { get; set; }
         public static bool EngineRunning { get; set; } // false = engine immediately quits.
 
-        public const float ClickAndPickUpMS = 800f; // this is close to what the legacy client uses.
-        public const float DoubleClickMS = 400f;
+        
 
         public static Serial PlayerSerial
         {

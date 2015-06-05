@@ -3,11 +3,12 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using UltimaXNA.Core.Diagnostics;
+using UltimaXNA.Core.UI;
 #endregion
 
 namespace UltimaXNA.Ultima.IO.FontsNew
 {
-    abstract class AFont
+    abstract class AFont : IFont
     {
         public int Height
         {
@@ -31,36 +32,7 @@ namespace UltimaXNA.Ultima.IO.FontsNew
             }
         }
 
-        // public Texture2D Texture;
-
-        /*protected void InitializeTexture(GraphicsDevice device, bool bigTexture = false)
-        {
-            int textureSize = bigTexture ? 1024 : 512;
-
-            CygonRectanglePacker packer = new CygonRectanglePacker(textureSize, textureSize);
-            uint[] textureData = new uint[textureSize * textureSize];
-
-            // get the sprite data and get a place for each character in the texture, then write the character data to an array.
-            foreach (ACharacter ch in m_Characters)
-            {
-                Point uv;
-                if (packer.TryPack(ch.Width + 4, ch.Height + 4, out uv)) // allow a two-pixel buffer on each side of the character
-                {
-                    ch.TextureBounds = new Rectangle(uv.X + 2, uv.Y + 2, ch.Width, ch.Height);
-                    ch.WriteTextureData(textureData);
-                }
-                else
-                {
-                    Tracer.Critical("Could not pack font.mul texture.");
-                }
-            }
-
-            // write the completed array of character data to the texture.
-            Texture = new Texture2D(device, textureSize, textureSize);
-            Texture.SetData<uint>(textureData);
-        }*/
-
-        public abstract ACharacter GetCharacter(char character);
+        public abstract ICharacter GetCharacter(char character);
 
         public void GetTextDimensions(ref string text, ref int width, ref int height, int wrapwidth)
         {

@@ -7,6 +7,7 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -16,6 +17,7 @@ using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.World;
 using UltimaXNA.Ultima.Network.Client;
+using UltimaXNA.Core.UI;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
@@ -64,13 +66,13 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
            
 
-            if (clickedCanDrag && UltimaEngine.TotalMS >= pickUpTime)
+            if (clickedCanDrag && UltimaGame.TotalMS >= pickUpTime)
             {
                 clickedCanDrag = false;
                 AttemptPickUp();
             }
 
-            if (sendClickIfNoDoubleClick && UltimaEngine.TotalMS >= singleClickTime)
+            if (sendClickIfNoDoubleClick && UltimaGame.TotalMS >= singleClickTime)
             {
                 sendClickIfNoDoubleClick = false;
                 m_World.Interaction.SingleClick(Item);
@@ -90,7 +92,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Draw(spriteBatch, position);
         }
 
-        protected override bool InternalHitTest(int x, int y)
+        protected override bool IsPointWithinControl(int x, int y)
         {
             // Allow selection if there is a non-transparent pixel below the mouse cursor or at an offset of
             // (-1,0), (0,-1), (1,0), or (1,1). This will allow selection even when the mouse cursor is directly
@@ -125,7 +127,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             // if click, we wait for a moment before picking it up. This allows a single click.
             clickedCanDrag = true;
-            pickUpTime = (float)UltimaEngine.TotalMS + EngineVars.ClickAndPickUpMS;
+            pickUpTime = (float)UltimaGame.TotalMS + Settings.World.Mouse.ClickAndPickupMS;
             m_ClickPoint = new Point(x, y);
         }
 
@@ -145,7 +147,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             {
                 clickedCanDrag = false;
                 sendClickIfNoDoubleClick = true;
-                singleClickTime = (float)UltimaEngine.TotalMS + EngineVars.DoubleClickMS;
+                singleClickTime = (float)UltimaGame.TotalMS + Settings.World.Mouse.DoubleClickMS;
             }
         }
 

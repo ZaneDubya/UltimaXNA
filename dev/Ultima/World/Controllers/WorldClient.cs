@@ -2,23 +2,21 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using UltimaXNA.Core.Diagnostics;
-using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Diagnostics.Tracing;
+using UltimaXNA.Core.Network;
+using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Entities;
 using UltimaXNA.Ultima.Entities.Items;
 using UltimaXNA.Ultima.Entities.Items.Containers;
 using UltimaXNA.Ultima.Entities.Mobiles;
 using UltimaXNA.Ultima.Entities.Multis;
-using UltimaXNA.Ultima.Entities.Effects;
-using UltimaXNA.Ultima.Player;
-using UltimaXNA.Ultima.UI;
-using UltimaXNA.Ultima.World.Gumps;
 using UltimaXNA.Ultima.Network;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.Network.Server;
-using UltimaXNA.Ultima.Data;
-using UltimaXNA.Configuration;
+using UltimaXNA.Ultima.Player;
+using UltimaXNA.Ultima.UI;
+using UltimaXNA.Ultima.World.Gumps;
 
 namespace UltimaXNA.Ultima.World.Controllers
 {
@@ -191,6 +189,11 @@ namespace UltimaXNA.Ultima.World.Controllers
         private void SendKeepAlivePacket()
         {
             m_Network.Send(new UOSEKeepAlivePacket());
+        }
+
+        public void SendGumpMenuSelect(int id, int gumpId, int buttonId, int[] switchIds, Tuple<short, string>[] textEntries)
+        {
+            m_Network.Send(new GumpMenuSelectPacket(id, gumpId, buttonId, switchIds, textEntries));
         }
 
         /// <summary>
@@ -758,7 +761,7 @@ namespace UltimaXNA.Ultima.World.Controllers
         private void ReceivePopupMessage(IRecvPacket packet)
         {
             PopupMessagePacket p = (PopupMessagePacket)packet;
-            m_UserInterface.MsgBox(p.Message, MsgBoxTypes.OkOnly);
+            MsgBoxGump.Show(p.Message, MsgBoxTypes.OkOnly);
         }
 
         private void ReceiveOpenBuyWindow(IRecvPacket packet)
@@ -791,7 +794,7 @@ namespace UltimaXNA.Ultima.World.Controllers
                 string[] gumpPieces;
                 if (TryParseGumplings(p.GumpData, out gumpPieces))
                 {
-                    Gump g = (Gump)m_UserInterface.AddControl(new Gump(p.Serial, p.GumpID, gumpPieces, p.TextLines), p.X, p.Y);
+                    Gump g = (Gump)m_UserInterface.AddControl(new Gump(p.GumpSerial, p.GumpTypeID, gumpPieces, p.TextLines), p.X, p.Y);
                     g.IsMovable = true;
                 }
             }

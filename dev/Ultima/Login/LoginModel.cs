@@ -1,6 +1,6 @@
 ﻿using InterXLib.Patterns.MVC;
+using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Login.States;
-using UltimaXNA.Ultima.UI;
 
 namespace UltimaXNA.Ultima.Login
 {
@@ -30,7 +30,7 @@ namespace UltimaXNA.Ultima.Login
 
         protected override void OnInitialize()
         {
-            ServiceRegistry.GetService<UltimaEngine>().SetupWindowForLogin();
+            ServiceRegistry.GetService<UltimaGame>().SetupWindowForLogin();
 
             m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
             m_UserInterface.Cursor = new UI.UltimaCursor();

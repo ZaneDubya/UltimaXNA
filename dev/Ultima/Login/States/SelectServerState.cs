@@ -9,8 +9,8 @@
  ***************************************************************************/
 #region Usings
 using System;
+using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Data.Servers;
-using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.Login.Gumps;
 #endregion
 
