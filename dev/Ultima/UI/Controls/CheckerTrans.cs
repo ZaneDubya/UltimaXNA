@@ -28,7 +28,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                     Color[] data = new Color[32 * 32];
                     for (int h = 0; h < 32; h++)
                     {
-                        int i = h % 32;
+                        int i = h % 2;
                         for (int w = 0; w < 32; w++)
                         {
                             if (i++ >= 1)
