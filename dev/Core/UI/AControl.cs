@@ -105,7 +105,7 @@ namespace UltimaXNA.Core.UI
         public bool IsUncloseableWithRMB
         {
             get;
-            protected set;
+            set;
         }
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace UltimaXNA.Core.UI
         public bool IsUncloseableWithEsc
         {
             get;
-            protected set;
+            set;
         }
 
         /// <summary>
@@ -346,6 +346,7 @@ namespace UltimaXNA.Core.UI
 
             InitializeControls();
             UpdateControls(totalMS, frameMS);
+            ExpandToFitControls();
         }
 
         virtual public void Draw(SpriteBatchUI spriteBatch, Point position)
@@ -425,6 +426,37 @@ namespace UltimaXNA.Core.UI
             {
                 Children.Remove(c);
             }
+        }
+
+        private bool ExpandToFitControls()
+        {
+            bool changedDimensions = false;
+            if (Children.Count > 0)
+            {
+                int w = 0, h = 0;
+                foreach (AControl c in Children)
+                {
+                    if (c.Page == 0 || c.Page == ActivePage)
+                    {
+                        if (w < c.X + c.Width)
+                        {
+                            w = c.X + c.Width;
+                        }
+                        if (h < c.Y + c.Height)
+                        {
+                            h = c.Y + c.Height;
+                        }
+                    }
+                }
+
+                if (w != Width || h != Height)
+                {
+                    Width = w;
+                    Height = h;
+                    changedDimensions = true;
+                }
+            }
+            return changedDimensions;
         }
 
         // ================================================================================
