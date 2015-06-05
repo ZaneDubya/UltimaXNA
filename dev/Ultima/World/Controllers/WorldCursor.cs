@@ -140,10 +140,14 @@ namespace UltimaXNA.Ultima.World.Controllers
                     {
                         int x, y, z;
 
-                        if (mouseOverEntity is Mobile || mouseOverEntity is Corpse)
+                        if (mouseOverEntity is Mobile)
                         {
-                            // UNIMPLEMENTED: attempt to give this item to the mobile or corpse.
-                            return;
+                            // if ((mouseOverEntity as Mobile).IsClientEntity)
+                            MergeHeldItem(mouseOverEntity);
+                        }
+                        else if (mouseOverEntity is Corpse)
+                        {
+                            MergeHeldItem(mouseOverEntity);
                         }
                         else if (mouseOverEntity is Item || mouseOverEntity is StaticItem)
                         {
@@ -574,9 +578,9 @@ namespace UltimaXNA.Ultima.World.Controllers
             }
         }
 
-        private void MergeHeldItem(Item target)
+        private void MergeHeldItem(AEntity target)
         {
-            m_Network.Send(new DropItemPacket(HeldItem.Serial, 0, 0, 0, 0, target.Serial));
+            m_Network.Send(new DropItemPacket(HeldItem.Serial, 0xFFFF, 0xFFFF, 0, 0, target.Serial));
             ClearHolding();
         }
 
