@@ -47,8 +47,8 @@ namespace UltimaXNA.Ultima.UI
         {
             m_msg = "<big color=000000>" + msg;
             m_type = msgBoxType;
-            IsModal = true;
             UserInterface.AddControl(this, 0, 0);
+            UserInterface.GetControlMetaData(this).IsModal = true;
         }
 
         public override void Update(double totalMS, double frameMS)
@@ -77,7 +77,7 @@ namespace UltimaXNA.Ultima.UI
                 }
                 
                 base.Update(totalMS, frameMS);
-                Center();
+                CenterThisControlOnScreen();
             }
             base.Update(totalMS, frameMS);
         }

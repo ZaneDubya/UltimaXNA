@@ -134,7 +134,7 @@ namespace UltimaXNA.Ultima.Login.States
                 OverHue = -1;
             }
 
-            protected override bool InternalHitTest(int x, int y)
+            protected override bool IsPointWithinControl(int x, int y)
             {
                 if (m_texture != null)
                 {

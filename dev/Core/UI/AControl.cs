@@ -44,7 +44,7 @@ namespace UltimaXNA.Core.UI
         // ================================================================================
         #region Public properties
         /// <summary>
-        /// An identifier for this control. Used by UO as a 'Serial'
+        /// An identifier for this control. Can be used to differentiate controls of the same type. Used by UO as a 'Serial'
         /// </summary>
         public int GumpLocalID
         {
@@ -75,15 +75,6 @@ namespace UltimaXNA.Core.UI
         /// Controls that are not initialized do not update and do not draw.
         /// </summary>
         public bool IsInitialized
-        {
-            get;
-            protected set;
-        }
-
-        /// <summary>
-        /// If controls with IsModal are active, they appear on top of all other controls and block input to all other controls and the world.
-        /// </summary>
-        public bool IsModal
         {
             get;
             protected set;
@@ -205,7 +196,7 @@ namespace UltimaXNA.Core.UI
         }
         #endregion
 
-        #region page
+        #region Page
         /// <summary>
         /// This's control's drawing/input page index. On Update() and Draw(), only those controls with Page == 0 or
         /// Page == Parent.ActivePage will accept input and be drawn.
@@ -256,31 +247,31 @@ namespace UltimaXNA.Core.UI
         }
         #endregion
 
-        #region events
+        #region Events
         /// <summary>
         /// An event that other objects can use to be notified when this control is clicked.
         /// </summary>
-        internal Action<int, int, MouseButton> MouseClickEvent;
+        internal event Action<int, int, MouseButton> MouseClickEvent;
         /// <summary>
         /// An event that other objects can use to be notified when this control is double-clicked.
         /// </summary>
-        internal Action<int, int, MouseButton> MouseDoubleClickEvent;
+        internal event Action<int, int, MouseButton> MouseDoubleClickEvent;
         /// <summary>
         /// An event that other objects can use to be notified when this control receives a mouse down event.
         /// </summary>
-        internal Action<int, int, MouseButton> MouseDownEvent;
+        internal event Action<int, int, MouseButton> MouseDownEvent;
         /// <summary>
         /// An event that other objects can use to be notified when this control receives a mouse up event.
         /// </summary>
-        internal Action<int, int, MouseButton> MouseUpEvent;
+        internal event Action<int, int, MouseButton> MouseUpEvent;
         /// <summary>
         /// An event that other objects can use to be notified when this control receives a mouse over event.
         /// </summary>
-        internal Action<int, int> MouseOverEvent;
+        internal event Action<int, int> MouseOverEvent;
         /// <summary>
         /// An event that other objects can use to be notified when this control receives a mouse out event.
         /// </summary>
-        internal Action<int, int> MouseOutEvent;
+        internal event Action<int, int> MouseOutEvent;
         #endregion
 
         #region Owner / OwnerX / OwnerY
@@ -462,7 +453,7 @@ namespace UltimaXNA.Core.UI
         // ================================================================================
         // Miscellaneous methods
         // ================================================================================
-        public void Center()
+        public void CenterThisControlOnScreen()
         {
             Position = new Point(
                 (UserInterface.Width - Width) / 2,
@@ -548,7 +539,7 @@ namespace UltimaXNA.Core.UI
 
         }
 
-        protected virtual bool InternalHitTest(int x, int y)
+        protected virtual bool IsPointWithinControl(int x, int y)
         {
             return true;
         }
@@ -726,7 +717,7 @@ namespace UltimaXNA.Core.UI
             bool inBounds = m_Area.Contains((int)position.X - OwnerX, (int)position.Y - OwnerY);
             if (inBounds)
             {
-                if (InternalHitTest((int)position.X - X - OwnerX, (int)position.Y - Y - OwnerY))
+                if (IsPointWithinControl((int)position.X - X - OwnerX, (int)position.Y - Y - OwnerY))
                 {
                     if (alwaysHandleMouseInput || HandlesMouseInput)
                         focusedControls.Insert(0, this);

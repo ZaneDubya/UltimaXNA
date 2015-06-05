@@ -154,7 +154,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                     Width - (HasBackground ? 8 : 0), Height - (HasBackground ? 8 : 0)), ScrollX, ScrollY);
         }
 
-        protected override bool InternalHitTest(int x, int y)
+        protected override bool IsPointWithinControl(int x, int y)
         {
             Point position = new Point(x + ScreenX, y + ScreenY);
             if (HasScrollbar)

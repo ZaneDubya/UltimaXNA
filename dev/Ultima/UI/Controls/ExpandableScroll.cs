@@ -52,12 +52,12 @@ namespace UltimaXNA.Ultima.UI.Controls
             m_gumplingBottom = (GumpPic)AddControl(new GumpPic(this, 0, 0, 0, 0x0823, 0));
             m_gumplingExpander = (Button)AddControl(new Button(this, 0, 0, 0, 0x082E, 0x82F, ButtonTypes.Activate, 0, gumplingExpander_ButtonID));
             
-            m_gumplingExpander.MouseDownEvent = expander_OnMouseDown;
-            m_gumplingExpander.MouseUpEvent = expander_OnMouseUp;
-            m_gumplingExpander.MouseOverEvent = expander_OnMouseOver;
+            m_gumplingExpander.MouseDownEvent += expander_OnMouseDown;
+            m_gumplingExpander.MouseUpEvent += expander_OnMouseUp;
+            m_gumplingExpander.MouseOverEvent += expander_OnMouseOver;
         }
 
-        protected override bool InternalHitTest(int x, int y)
+        protected override bool IsPointWithinControl(int x, int y)
         {
             Point position = new Point(x + ScreenX, y + ScreenY);
             if (m_gumplingTop.HitTest(position, true) != null)

@@ -92,7 +92,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Draw(spriteBatch, position);
         }
 
-        protected override bool InternalHitTest(int x, int y)
+        protected override bool IsPointWithinControl(int x, int y)
         {
             // Allow selection if there is a non-transparent pixel below the mouse cursor or at an offset of
             // (-1,0), (0,-1), (1,0), or (1,1). This will allow selection even when the mouse cursor is directly
