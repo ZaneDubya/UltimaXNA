@@ -20,7 +20,7 @@ using UltimaXNA.Core.Input.Windows;
 namespace UltimaXNA.Core.UI
 {
     /// <summary>
-    /// The base class used by all UI controls.
+    /// The base class that all UI controls should inherit from.
     /// </summary>
     public abstract class AControl
     {
@@ -124,15 +124,6 @@ namespace UltimaXNA.Core.UI
         {
             get;
             set;
-        }
-
-        /// <summary>
-        /// If the control is a child of UserInterfaceService, this determines which layer the control is drawn to.
-        /// </summary>
-        public UILayer Layer
-        {
-            get;
-            protected set;
         }
 
         /// <summary>

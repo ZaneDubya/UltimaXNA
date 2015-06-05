@@ -22,7 +22,7 @@ namespace UltimaXNA.Ultima.World.Gumps
             IsUncloseableWithRMB = true;
             IsUncloseableWithEsc = true;
             IsMovable = true;
-            Layer = UILayer.Under;
+            UserInterface.SetControlLayer(this, UILayer.Under);
 
             m_Model = ServiceRegistry.GetService<WorldModel>();
 
