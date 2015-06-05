@@ -23,67 +23,66 @@ namespace UltimaXNA.Ultima.Network.Server
 {
     public class ContainerContentUpdatePacket : RecvPacket
     {
-        readonly Serial m_serial;
-        readonly int m_itemId;
-        readonly int m_amount;
-        readonly int m_x;
-        readonly int m_y;
-        readonly int m_gridLocation;
-        readonly Serial m_parentSerial;
-        readonly int m_hue;
-
         public int ItemId
         {
-            get { return m_itemId; }
+            get;
+            private set;
         }
 
         public int Amount
         {
-            get { return m_amount; }
+            get;
+            private set;
         }
 
         public int X
         {
-            get { return m_x; }
+            get;
+            private set;
         }
 
         public int Y
         {
-            get { return m_y; }
+            get;
+            private set;
         }
 
         public int GridLocation
         {
-            get { return m_gridLocation; }
+            get;
+            private set;
         }
 
         public Serial ContainerSerial
         {
-            get { return m_parentSerial; }
+            get;
+            private set;
         }
 
         public int Hue
         {
-            get { return m_hue; }
+            get;
+            private set;
         }
 
         public Serial Serial
         {
-            get { return m_serial; }
+            get;
+            private set;
         }
 
         public ContainerContentUpdatePacket(PacketReader reader)
             : base(0x25, "Add Single Item")
         {
-            m_serial = reader.ReadInt32();
-            m_itemId = reader.ReadUInt16();
+            Serial = reader.ReadInt32();
+            ItemId = reader.ReadUInt16();
             reader.ReadByte(); // unknown 
-            m_amount = reader.ReadUInt16();
-            m_x = reader.ReadInt16();
-            m_y = reader.ReadInt16();
-            m_gridLocation = reader.ReadByte(); // always 0 in RunUO.
-            m_parentSerial = (Serial)reader.ReadInt32();
-            m_hue = reader.ReadUInt16();
+            Amount = reader.ReadUInt16();
+            X = reader.ReadInt16();
+            Y = reader.ReadInt16();
+            GridLocation = reader.ReadByte(); // always 0 in RunUO.
+            ContainerSerial = (Serial)reader.ReadInt32();
+            Hue = reader.ReadUInt16();
         }
     }
 }

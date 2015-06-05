@@ -294,17 +294,14 @@ namespace UltimaXNA.Ultima.World.Controllers
             Item item = add_Item(p.Serial, p.ItemId, p.Hue, p.ContainerSerial, p.Amount);
             item.InContainerPosition = new Point(p.X, p.Y);
             // ... and add it the container contents of the container.
-            Container iContainerObject = EntityManager.GetObject<Container>(p.ContainerSerial, true);
-            if (iContainerObject != null)
-                iContainerObject.AddItem(item);
-            else
+            AEntity container = EntityManager.GetObject<AEntity>(p.ContainerSerial, true);
+            if (container is Container) // place in container
             {
-                // Special case for game boards... the server will sometimes send us game pieces for a game board before it sends 
-                // the game board! Right now, I am discarding these messages, it might be better to queue them up for when the game
-                // board actually exists.
-                // Let's throw an exception if anything other than a gameboard is ever sent to us.
-                // if (iObject.ItemData.Name != "game piece")
-                throw new Exception("Item {" + item.ToString() + "} received before containing object received.");
+                (container as Container).AddItem(item);
+            }
+            else if (container is Mobile) // secure trade
+            {
+
             }
         }
 
