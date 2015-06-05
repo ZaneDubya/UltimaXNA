@@ -25,25 +25,25 @@ namespace UltimaXNA.Ultima.UI.Controls
             {
                 if (s_CheckeredTransTexture == null)
                 {
-                    Color[] data = new Color[2 * 2];
-                    for (int h = 0; h < 2; h++)
+                    Color[] data = new Color[32 * 32];
+                    for (int h = 0; h < 32; h++)
                     {
-                        int i = h % 2;
-                        for (int w = 0; w < 2; w++)
+                        int i = h % 32;
+                        for (int w = 0; w < 32; w++)
                         {
                             if (i++ >= 1)
                             {
-                                data[h * 2 + w] = Color.Black;
+                                data[h * 32 + w] = Color.Black;
                                 i = 0;
                             }
                             else
                             {
-                                data[h * 2 + w] = Color.Transparent;
+                                data[h * 32 + w] = Color.Transparent;
                             }
                         }
                     }
                     SpriteBatchUI sb = ServiceRegistry.GetService<SpriteBatchUI>();
-                    s_CheckeredTransTexture = new Texture2D(sb.GraphicsDevice, 2, 2);
+                    s_CheckeredTransTexture = new Texture2D(sb.GraphicsDevice, 32, 32);
                     s_CheckeredTransTexture.SetData<Color>(data);
                 }
                 return s_CheckeredTransTexture;
