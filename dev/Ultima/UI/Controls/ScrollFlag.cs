@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   AScrollBar.cs
+ *   ScrollFlag.cs
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@ namespace UltimaXNA.Ultima.UI.Controls
     /// <summary>
     /// A base scrollbar with methods that control min, max, and value
     /// </summary>
-    class ScrollBar : AControl
+    class ScrollFlag : AControl
     {
         // ================================================================================
         // Private variables
@@ -92,17 +92,13 @@ namespace UltimaXNA.Ultima.UI.Controls
         }
 
         // ================================================================================
-        // Ctors, Initialize, Update, and Draw
+        // Ctor, Initialize, Update, and Draw
         // ================================================================================
-        public ScrollBar(AControl owner, int page)
+        public ScrollFlag(AControl owner, int page, int x, int y, int height, int minValue, int maxValue, int value)
             : base(owner, page)
         {
             HandlesMouseInput = true;
-        }
 
-        public ScrollBar(AControl owner, int page, int x, int y, int height, int minValue, int maxValue, int value)
-            : this(owner, page)
-        {
             Position = new Point(x, y);
             MinValue = minValue;
             MaxValue = maxValue;
@@ -131,7 +127,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         public override void Update(double totalMS, double frameMS)
         {
             base.Update(totalMS, frameMS);
-
+            
             if (MaxValue <= MinValue || MinValue >= MaxValue)
             {
                 Value = MaxValue = MinValue;
@@ -155,9 +151,6 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
-            if (Height <= 0)
-                return;
-
             // draw scrollbar background
             int middleHeight = Height - m_GumpUpButton[0].Height - m_GumpDownButton[0].Height - m_GumpBackground[0].Height - m_GumpBackground[2].Height;
             if (middleHeight > 0)

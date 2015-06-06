@@ -222,6 +222,8 @@ namespace UltimaXNA.Core.UI
                             texture = image.TextureDown;
                         if (texture == null)
                             texture = image.TextureOver;
+                        if (texture == null)
+                            texture = image.Texture;
                     }
 
                     if (texture == null)
@@ -269,6 +271,22 @@ namespace UltimaXNA.Core.UI
 
             Regions.Clear();
             Images.Clear();
+            // get all the images!
+            foreach (AAtom atom in m_HtmlParser.Atoms)
+            {
+                if (atom is ImageAtom)
+                {
+                    ImageAtom img = (ImageAtom)atom;
+                    Texture2D standard = m_ResourceProvider.GetTexture(img.Value);
+                    Texture2D over = m_ResourceProvider.GetTexture(img.ValueOver);
+                    Texture2D down = m_ResourceProvider.GetTexture(img.ValueDown);
+
+                    // x, y + (lineheight - standard.Height) / 2, standard.Width, standard.Height
+                    Images.AddImage(new Rectangle(), standard, over, down);
+                    img.AssociatedImage = Images[Images.Count - 1];
+                }
+            }
+
 
             if (maxWidth < 0)
             {
@@ -386,17 +404,10 @@ namespace UltimaXNA.Core.UI
                     }
                     else if (atoms[i] is ImageAtom)
                     {
-                        ImageAtom atom = (ImageAtom)atoms[i];
-                        Texture2D standard = m_ResourceProvider.GetTexture(atom.Value);
-                        Texture2D over = m_ResourceProvider.GetTexture(atom.ValueOver);
-                        Texture2D down = m_ResourceProvider.GetTexture(atom.ValueDown);
-
-                        if (lineheight < standard.Height)
-                            lineheight = standard.Height;
-                        Images.AddImage(
-                            new Rectangle(x, y + (lineheight - standard.Height) / 2, standard.Width, standard.Height),
-                            standard, over, down);
-                        atom.AssociatedImage = Images[Images.Count - 1];
+                        if (lineheight < atoms[i].Height)
+                            lineheight = atoms[i].Height;
+                        ImageAtom atom = (atoms[i] as ImageAtom);
+                        atom.AssociatedImage.Area = new Rectangle(x, y + (lineheight - atom.Height) / 2, atom.Width, atom.Height);
                     }
                 }
                 x += atoms[i].Width;
