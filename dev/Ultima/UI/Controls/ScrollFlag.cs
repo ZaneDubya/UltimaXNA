@@ -25,22 +25,15 @@ namespace UltimaXNA.Ultima.UI.Controls
         // ================================================================================
         // Private variables
         // ================================================================================
-        private Texture2D[] m_GumpUpButton = null;
-        private Texture2D[] m_GumpDownButton = null;
-        private Texture2D[] m_GumpBackground = null;
         private Texture2D m_GumpSlider = null;
 
+        private int m_SliderExtentTop, m_SliderExtentHeight;
         private float m_SliderPosition;
         private float m_Value;
         private int m_Max, m_Min;
 
-        private bool m_BtnUpClicked = false;
-        private bool m_BtnDownClicked = false;
         private bool m_BtnSliderClicked = false;
         private Point m_ClickPosition;
-
-        private float m_TimeUntilNextClick;
-        private const float c_TimeBetweenClicks = 500f;
 
         // ================================================================================
         // Public properties
@@ -100,9 +93,11 @@ namespace UltimaXNA.Ultima.UI.Controls
             HandlesMouseInput = true;
 
             Position = new Point(x, y);
+            m_SliderExtentTop = y;
+            m_SliderExtentHeight = height;
+
             MinValue = minValue;
             MaxValue = maxValue;
-            Height = height;
             Value = value;
         }
 
@@ -110,18 +105,8 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             base.OnInitialize();
 
-            m_GumpUpButton = new Texture2D[2];
-            m_GumpUpButton[0] = IO.GumpData.GetGumpXNA(251);
-            m_GumpUpButton[1] = IO.GumpData.GetGumpXNA(250);
-            m_GumpDownButton = new Texture2D[2];
-            m_GumpDownButton[0] = IO.GumpData.GetGumpXNA(253);
-            m_GumpDownButton[1] = IO.GumpData.GetGumpXNA(252);
-            m_GumpBackground = new Texture2D[3];
-            m_GumpBackground[0] = IO.GumpData.GetGumpXNA(257);
-            m_GumpBackground[1] = IO.GumpData.GetGumpXNA(256);
-            m_GumpBackground[2] = IO.GumpData.GetGumpXNA(255);
             m_GumpSlider = IO.GumpData.GetGumpXNA(254);
-            Size = new Point(m_GumpBackground[0].Width, Height);
+            Size = new Point(m_GumpSlider.Width, m_GumpSlider.Height);
         }
 
         public override void Update(double totalMS, double frameMS)
