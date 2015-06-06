@@ -47,7 +47,14 @@ namespace UltimaXNA.Ultima.EntityViews
             // Update hue vector.
             HueVector = Utility.GetHueVector(Entity.Hue, Entity.ItemData.IsPartialHue, false);
 
+            if (Entity.Amount > 1 && Entity.ItemData.IsGeneric)
+            {
+                int offset = Entity.ItemData.Unknown4;
+                Vector3 offsetDrawPosition = new Vector3(drawPosition.X - 5, drawPosition.Y - 5, 0);
+                base.Draw(spriteBatch, offsetDrawPosition, mouseOverList, map);
+            }
             bool drawn = base.Draw(spriteBatch, drawPosition, mouseOverList, map);
+
 
             DrawOverheads(spriteBatch, drawPosition, mouseOverList, map, (int)DrawArea.Y - 22);
 

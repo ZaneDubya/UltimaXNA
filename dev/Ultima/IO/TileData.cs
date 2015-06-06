@@ -97,11 +97,15 @@ namespace UltimaXNA.Ultima.IO
                     itemData.Weight = binaryReader.ReadByte();
                     itemData.Quality = binaryReader.ReadByte();
 
-                    binaryReader.BaseStream.Seek(3, SeekOrigin.Current);
+                    itemData.Unknown1 = binaryReader.ReadByte();
+                    itemData.Unknown2 = binaryReader.ReadByte();
+                    itemData.Unknown3 = binaryReader.ReadByte();
 
                     itemData.Quantity = binaryReader.ReadByte();
                     itemData.AnimID = binaryReader.ReadInt16();
-                    binaryReader.BaseStream.Seek(3, SeekOrigin.Current);
+
+                    binaryReader.BaseStream.Seek(2, SeekOrigin.Current); // hue?
+                    itemData.Unknown4 = binaryReader.ReadByte();
 
                     itemData.Value = binaryReader.ReadByte();
                     itemData.Height = binaryReader.ReadByte();
@@ -133,10 +137,9 @@ namespace UltimaXNA.Ultima.IO
         public int AnimID;
         public int Value;
         public string Name;
-		// Issue 5 - Statics (bridge, stairs, etc) should be walkable - http://code.google.com/p/ultimaxna/issues/detail?id=5 - Smjert
         public bool IsStairs;
-		// Issue 5 - End
 
+        public byte Unknown1, Unknown2, Unknown3, Unknown4;
 
         public bool IsBackground
         {
