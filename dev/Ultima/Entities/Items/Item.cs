@@ -123,7 +123,7 @@ namespace UltimaXNA.Ultima.Entities.Items
 
 		public bool IsCoin
         {
-			get { return m_ItemID == 0xEEA || m_ItemID == 0xEED || m_ItemID == 0xEF0; }
+			get { return m_ItemID >= 0xEEA && m_ItemID <= 0xEF2; }
 		}
 
         public int ContainerSlotIndex = 0;
