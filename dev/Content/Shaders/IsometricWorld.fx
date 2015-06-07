@@ -122,7 +122,7 @@ float4 PixelShader_Grayscale(PS_INPUT IN) : COLOR0
 	if (color.a == 0)
 		discard;
 
-	float greyscaleAverage = (int)round(0.2989 * color.r + 0.5870 * color.g + 0.1140 * color.b);
+	float greyscaleAverage = (0.2989 * color.r + 0.5870 * color.g + 0.1140 * color.b);
 	color = float4(greyscaleAverage, greyscaleAverage, greyscaleAverage, color.a);
 
 	return color;

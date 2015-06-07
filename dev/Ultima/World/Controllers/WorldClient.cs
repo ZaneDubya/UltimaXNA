@@ -471,7 +471,18 @@ namespace UltimaXNA.Ultima.World.Controllers
         private void ReceiveMobileAttributes(IRecvPacket packet)
         {
             MobileAttributesPacket p = (MobileAttributesPacket)packet;
-            announce_UnhandledPacket(packet);
+            Mobile mobile = EntityManager.GetObject<Mobile>(p.Serial, false);
+            if (mobile == null)
+                return;
+
+            mobile.Health.Current = p.CurrentHits;
+            mobile.Health.Max = p.MaxHits;
+
+            mobile.Mana.Current = p.CurrentMana;
+            mobile.Mana.Max = p.MaxMana;
+
+            mobile.Stamina.Current = p.CurrentStamina;
+            mobile.Stamina.Max = p.MaxStamina;
         }
 
         private void ReceiveMobileAnimation(IRecvPacket packet)

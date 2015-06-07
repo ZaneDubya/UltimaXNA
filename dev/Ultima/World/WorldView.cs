@@ -9,7 +9,11 @@
  ***************************************************************************/
 #region usings
 using InterXLib.Patterns.MVC;
+using UltimaXNA.Core.Graphics;
 using UltimaXNA.Ultima.World.Views;
+using UltimaXNA.Ultima.Entities;
+using UltimaXNA.Ultima.Entities.Mobiles;
+using UltimaXNA.Ultima.EntityViews;
 #endregion
 
 namespace UltimaXNA.Ultima.World
@@ -46,7 +50,9 @@ namespace UltimaXNA.Ultima.World
 
         public override void Draw(double frameTime)
         {
-            Position3D center = EntityManager.GetPlayerObject().Position;
+            AEntity player = EntityManager.GetPlayerObject();
+            Position3D center = player.Position;
+            AEntityView.s_Technique = (player as Mobile).IsAlive ? Techniques.Default : Techniques.Grayscale;
 
             Isometric.Update(Model.Map, center, Model.Input.MousePick);
             MiniMap.Update(Model.Map, center);

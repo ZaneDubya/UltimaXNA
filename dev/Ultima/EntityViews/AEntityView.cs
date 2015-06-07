@@ -1,12 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Graphics;
-using UltimaXNA.Ultima.World;
-using UltimaXNA.Ultima.World.Maps;
-using UltimaXNA.Ultima.World.Views;
-using UltimaXNA.Ultima.World.Controllers;
 using UltimaXNA.Ultima.Entities;
 using UltimaXNA.Ultima.Entities.Mobiles;
+using UltimaXNA.Ultima.World.Controllers;
+using UltimaXNA.Ultima.World.Maps;
+using UltimaXNA.Ultima.World.Views;
 
 namespace UltimaXNA.Ultima.EntityViews
 {
@@ -15,6 +14,8 @@ namespace UltimaXNA.Ultima.EntityViews
     /// </summary>
     public abstract class AEntityView
     {
+        public static Techniques s_Technique = Techniques.Default;
+
         private AEntity m_Entity = null;
         public AEntity Entity
         {
@@ -126,7 +127,7 @@ namespace UltimaXNA.Ultima.EntityViews
             if (vertexBuffer[0].Hue != HueVector)
                 vertexBuffer[0].Hue = vertexBuffer[1].Hue = vertexBuffer[2].Hue = vertexBuffer[3].Hue = HueVector;
 
-            if (!spriteBatch.Draw(DrawTexture, vertexBuffer))
+            if (!spriteBatch.Draw(DrawTexture, vertexBuffer, s_Technique))
             {
                 return false;
             }
