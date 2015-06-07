@@ -9,7 +9,13 @@
  ***************************************************************************/
 #region usings
 using InterXLib.Patterns.MVC;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Ultima.Entities;
+using UltimaXNA.Ultima.Entities.Mobiles;
+using UltimaXNA.Ultima.EntityViews;
 using UltimaXNA.Ultima.World.Views;
+using UltimaXNA.Ultima.World.Gumps;
+using UltimaXNA.Core.UI;
 #endregion
 
 namespace UltimaXNA.Ultima.World
@@ -42,14 +48,69 @@ namespace UltimaXNA.Ultima.World
 
             MiniMap = new MiniMapTexture();
             MiniMap.Initialize();
+
+            m_UI = ServiceRegistry.GetService<UserInterfaceService>();
         }
 
         public override void Draw(double frameTime)
         {
-            Position3D center = EntityManager.GetPlayerObject().Position;
+            AEntity player = EntityManager.GetPlayerObject();
+            Position3D center = player.Position;
+            if ((player as Mobile).IsAlive)
+            {
+                AEntityView.s_Technique = Techniques.Default;
+                m_ShowingDeathEffect = false;
+            }
+            else
+            {
+                if (!m_ShowingDeathEffect)
+                {
+                    m_ShowingDeathEffect = true;
+                    m_DeathEffectTime = 0;
+                    m_LightingGlobal = Isometric.OverallLightning;
+                    m_LightingPersonal = Isometric.PersonalLightning;
+                    m_UI.AddControl(m_YouAreDead = new YouAreDeadGump(), 0, 0);
+                }
+
+                double msFade = 2000d;
+                double msHold = 1000d;
+
+                if (m_DeathEffectTime < msFade)
+                {
+                    AEntityView.s_Technique = Techniques.Default;
+                    Isometric.OverallLightning = (int)(m_LightingGlobal + (0x1f - m_LightingGlobal) * ((m_DeathEffectTime / msFade)));
+                    Isometric.PersonalLightning = (int)(m_LightingPersonal * (1d - (m_DeathEffectTime / msFade)));
+                }
+                else if (m_DeathEffectTime < msFade + msHold)
+                {
+                    Isometric.OverallLightning = 0x1f;
+                    Isometric.PersonalLightning = 0x00;
+                }
+                else
+                {
+                    AEntityView.s_Technique = Techniques.Grayscale;
+                    Isometric.OverallLightning = (int)m_LightingGlobal;
+                    Isometric.PersonalLightning = (int)m_LightingPersonal;
+                    if (m_YouAreDead != null)
+                    {
+                        m_YouAreDead.Dispose();
+                        m_YouAreDead = null;
+                    }
+                }
+
+                m_DeathEffectTime += frameTime;
+            }
 
             Isometric.Update(Model.Map, center, Model.Input.MousePick);
             MiniMap.Update(Model.Map, center);
         }
+
+        private bool m_ShowingDeathEffect = false;
+        private double m_DeathEffectTime = 0d;
+        private double m_LightingGlobal;
+        private double m_LightingPersonal;
+        private YouAreDeadGump m_YouAreDead;
+
+        private UserInterfaceService m_UI;
     }
 }

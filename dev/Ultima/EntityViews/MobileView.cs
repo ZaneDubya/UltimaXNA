@@ -180,6 +180,9 @@ namespace UltimaXNA.Ultima.EntityViews
                     }
                     else if (Entity.Equipment[drawLayers[i]] != null && Entity.Equipment[drawLayers[i]].ItemData.AnimID != 0)
                     {
+                        // skip hair/facial hair for ghosts
+                        if (!Entity.IsAlive && (drawLayers[i] == (int)EquipLayer.Hair || drawLayers[i] == (int)EquipLayer.FacialHair))
+                            continue;
                         AddLayer(Entity.Equipment[drawLayers[i]].ItemData.AnimID, Entity.Equipment[drawLayers[i]].Hue);
                     }
                 }

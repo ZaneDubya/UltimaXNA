@@ -115,6 +115,29 @@ float4 PixelShader_MiniMap(PS_INPUT IN) : COLOR0
 	return color;
 }
 
+float4 PixelShader_Grayscale(PS_INPUT IN) : COLOR0
+{
+	// Get the initial pixel and discard it if the alpha == 0
+	float4 color = tex2D(DrawSampler, IN.TexCoord);
+	if (color.a == 0)
+		discard;
+
+	float greyscaleAverage = (0.2989 * color.r + 0.5870 * color.g + 0.1140 * color.b);
+	color = float4(greyscaleAverage, greyscaleAverage, greyscaleAverage, color.a);
+
+	// Darken the color based on the ambient lighting and the normal.
+	if (DrawLighting)
+	{
+		float3 light = normalize(lightDirection);
+			float3 normal = normalize(IN.Normal);
+			float3 nDotL = min(saturate(dot(light, normal)), 1.0f);
+
+			color.rgb = saturate((color.rgb * nDotL * lightIntensity * 0.2f + color.rgb * lightIntensity * 0.8f));
+	}
+
+	return color;
+}
+
 
 technique HueTechnique
 {
@@ -131,5 +154,14 @@ technique MiniMapTechnique
 	{
 		VertexShader = compile vs_2_0 VertexShaderFunction();
 		PixelShader = compile ps_2_0 PixelShader_MiniMap();
+	}
+}
+
+technique GrayscaleTechnique
+{
+	pass p0
+	{
+		VertexShader = compile vs_2_0 VertexShaderFunction();
+		PixelShader = compile ps_2_0 PixelShader_Grayscale();
 	}
 }

@@ -163,6 +163,9 @@ namespace UltimaXNA.Core.Graphics
                     case Techniques.MiniMap:
                         m_Effect.CurrentTechnique = m_Effect.Techniques["MiniMapTechnique"];
                         break;
+                    case Techniques.Grayscale:
+                        m_Effect.CurrentTechnique = m_Effect.Techniques["GrayscaleTechnique"];
+                        break;
                     default:
                         Tracer.Critical("Unknown effect in SpriteBatch3D.Flush(). Effect index is {0}", effect);
                         break;

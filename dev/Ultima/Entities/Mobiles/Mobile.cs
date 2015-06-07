@@ -107,9 +107,9 @@ namespace UltimaXNA.Ultima.Entities.Mobiles
 
         public int Notoriety;
 
-        public bool Alive
+        public bool IsAlive
         {
-            get { return Health.Current != 0; }
+            get { return Health.Current > 0; }
         }
 
         // ============================================================
