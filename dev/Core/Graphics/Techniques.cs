@@ -10,8 +10,9 @@ namespace UltimaXNA.Core.Graphics
     {
         Hued = 0,
         MiniMap = 1,
+        Grayscale = 2,
 
         Default = Hued,
-        Max = MiniMap
+        Max = Grayscale
     }
 }
