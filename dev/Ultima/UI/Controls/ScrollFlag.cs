@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.UI.Interfaces;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.Controls
@@ -20,7 +21,7 @@ namespace UltimaXNA.Ultima.UI.Controls
     /// <summary>
     /// A base scrollbar with methods that control min, max, and value
     /// </summary>
-    class ScrollFlag : AControl
+    class ScrollFlag : AControl, IScrollBar
     {
         // ================================================================================
         // Private variables
@@ -96,8 +97,6 @@ namespace UltimaXNA.Ultima.UI.Controls
         public ScrollFlag(AControl owner, int page, int x, int y, int height, int minValue, int maxValue, int value)
             : this(owner, page)
         {
-            
-
             Position = new Point(x, y);
             m_SliderExtentTop = y;
             m_SliderExtentHeight = height;
@@ -148,14 +147,23 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             if (!IsInitialized)
                 return 0f;
-            return m_SliderExtentHeight - m_GumpSlider.Height;
+            return Height - m_GumpSlider.Height;
+        }
+
+        protected override bool IsPointWithinControl(int x, int y)
+        {
+            Rectangle slider = new Rectangle(0, (int)m_SliderPosition, m_GumpSlider.Width, m_GumpSlider.Height);
+            return slider.Contains(x, y);
         }
 
         protected override void OnMouseDown(int x, int y, MouseButton button)
         {
-            // clicked on the slider
-            m_BtnSliderClicked = true;
-            m_ClickPosition = new Point(x, y);
+            if (IsPointWithinControl(x, y))
+            {
+                // clicked on the slider
+                m_BtnSliderClicked = true;
+                m_ClickPosition = new Point(x, y);
+            }
         }
 
         protected override void OnMouseUp(int x, int y, MouseButton button)
@@ -180,16 +188,15 @@ namespace UltimaXNA.Ultima.UI.Controls
 
                     m_ClickPosition = new Point(x, y);
 
-                    /*if (sliderY == 0 && m_ClickPosition.Y < m_GumpUpButton[0].Height + m_GumpSlider.Height / 2)
-                        m_ClickPosition.Y = m_GumpUpButton[0].Height + m_GumpSlider.Height / 2;
-
-                    if (sliderY == (scrollableArea) && m_ClickPosition.Y > Height - m_GumpDownButton[0].Height - m_GumpSlider.Height / 2)
-                        m_ClickPosition.Y = Height - m_GumpDownButton[0].Height - m_GumpSlider.Height / 2;*/
-
                     m_Value = ((sliderY / scrollableArea) * (float)((MaxValue - MinValue))) + MinValue;
                     m_SliderPosition = sliderY;
                 }
             }
+        }
+
+        public bool PointWithinControl(int x, int y)
+        {
+            return IsPointWithinControl(x, y);
         }
     }
 }

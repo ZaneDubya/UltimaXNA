@@ -8,7 +8,6 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-
 #region using
 using Microsoft.Xna.Framework;
 using System;
@@ -16,6 +15,7 @@ using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Core.UI.HTML;
+using UltimaXNA.Ultima.UI.Interfaces;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.Controls
@@ -23,7 +23,7 @@ namespace UltimaXNA.Ultima.UI.Controls
     public class HtmlGumpling : AControl
     {
         // private variables
-        private ScrollBar m_Scrollbar;
+        private IScrollBar m_Scrollbar;
         private RenderedText m_RenderedText;
         private bool m_IsMouseDown = false;
         private int m_MouseDownHREF = -1;
@@ -58,6 +58,12 @@ namespace UltimaXNA.Ultima.UI.Controls
             set;
         }
 
+        public bool UseFlagScrollbar
+        {
+            get;
+            set;
+        }
+
         public override int Width
         {
             get
@@ -69,19 +75,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                 if (value != base.Width)
                 {
                     base.Width = value;
-                    m_RenderedText.MaxWidth = ContentWidth;
                 }
-            }
-        }
-
-        public int ContentWidth
-        {
-            get
-            {
-                if (HasScrollbar)
-                    return base.Width - 20;
-                else
-                    return base.Width;
             }
         }
 
@@ -112,13 +106,28 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Width = width;
             Size = new Point(width, height);
             HasBackground = (background == 1) ? true : false;
-            HasScrollbar = (scrollbar == 1) ? true : false;
-            m_RenderedText = new RenderedText(text, Width - (HasScrollbar ? 15 : 0) - (HasBackground ? 8 : 0));
+            HasScrollbar = (scrollbar != 0) ? true : false;
+            UseFlagScrollbar = (HasScrollbar && scrollbar == 2) ? true : false;
+            m_RenderedText = new RenderedText(text, width - (HasScrollbar ? 15 : 0) - (HasBackground ? 8 : 0));
 
             if (HasBackground)
             {
                 this.AddControl(new ResizePic(this, 0, 0, 0, 0x2486, Width - (HasScrollbar ? 15 : 0), Height));
                 LastControl.HandlesMouseInput = false;
+            }
+
+            if (HasScrollbar)
+            {
+                if (UseFlagScrollbar)
+                    AddControl(new ScrollFlag(this, 0));
+                else
+                    AddControl(new ScrollBar(this, 0));
+                m_Scrollbar = LastControl as IScrollBar;
+                m_Scrollbar.Position = new Point(Width - 14, 0);
+                m_Scrollbar.Height = Height;
+                m_Scrollbar.MinValue = 0;
+                m_Scrollbar.MaxValue = m_RenderedText.Height - Height + (HasBackground ? 8 : 0);
+                ScrollY = m_Scrollbar.Value;
             }
         }
 
@@ -130,12 +139,6 @@ namespace UltimaXNA.Ultima.UI.Controls
 
             if (HasScrollbar)
             {
-                if (m_Scrollbar == null)
-                {
-                    AddControl(m_Scrollbar = new ScrollBar(this, 0));
-                }
-                m_Scrollbar.Position = new Point(Width - 15, 0);
-                m_Scrollbar.Width = 15;
                 m_Scrollbar.Height = Height;
                 m_Scrollbar.MinValue = 0;
                 m_Scrollbar.MaxValue = m_RenderedText.Height - Height + (HasBackground ? 8 : 0);
@@ -158,10 +161,9 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         protected override bool IsPointWithinControl(int x, int y)
         {
-            Point position = new Point(x + ScreenX, y + ScreenY);
             if (HasScrollbar)
             {
-                if (m_Scrollbar.HitTest(position, true) != null)
+                if (m_Scrollbar.PointWithinControl(x - m_Scrollbar.Position.X,  y - m_Scrollbar.Position.Y))
                     return true;
             }
 

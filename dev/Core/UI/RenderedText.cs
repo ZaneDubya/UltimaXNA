@@ -407,7 +407,7 @@ namespace UltimaXNA.Core.UI
                         if (lineheight < atoms[i].Height)
                             lineheight = atoms[i].Height;
                         ImageAtom atom = (atoms[i] as ImageAtom);
-                        atom.AssociatedImage.Area = new Rectangle(x, y + (lineheight - atom.Height) / 2, atom.Width, atom.Height);
+                        atom.AssociatedImage.Area = new Rectangle(x, y, atom.Width, atom.Height);
                     }
                 }
                 x += atoms[i].Width;

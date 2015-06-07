@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.UI.Interfaces;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.Controls
@@ -20,7 +21,7 @@ namespace UltimaXNA.Ultima.UI.Controls
     /// <summary>
     /// A base scrollbar with methods that control min, max, and value
     /// </summary>
-    class ScrollBar : AControl
+    class ScrollBar : AControl, IScrollBar
     {
         // ================================================================================
         // Private variables
@@ -261,6 +262,19 @@ namespace UltimaXNA.Ultima.UI.Controls
                     m_SliderPosition = sliderY;
                 }
             }
+        }
+
+        protected override bool IsPointWithinControl(int x, int y)
+        {
+            Rectangle bounds = new Rectangle(0, 0, Width, Height);
+            if (bounds.Contains(x, y))
+                return true;
+            return false;
+        }
+
+        public bool PointWithinControl(int x, int y)
+        {
+            return IsPointWithinControl(x, y);
         }
     }
 }
