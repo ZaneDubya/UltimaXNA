@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UltimaXNA.Core.Diagnostics.Tracing.Listeners
+namespace UltimaXNA.Core.Diagnostics.Listeners
 {
     public class ConsoleOutputEventListener : AEventListener
     {
@@ -9,7 +9,7 @@ namespace UltimaXNA.Core.Diagnostics.Tracing.Listeners
 
         }
 
-        public override void OnEventWritten(EventLevel level, string messag)
+        public override void OnEventWritten(EventLevel level, string message)
         {
             ConsoleColor color = ConsoleColor.Gray;
 
@@ -28,7 +28,7 @@ namespace UltimaXNA.Core.Diagnostics.Tracing.Listeners
             }
 
             ConsoleManager.PushColor(color);
-            Console.WriteLine(messag);
+            Console.WriteLine(message);
             ConsoleManager.PopColor();
         }
     }

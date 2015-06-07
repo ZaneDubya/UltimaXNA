@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace UltimaXNA.Core.Diagnostics.Tracing.Listeners
+namespace UltimaXNA.Core.Diagnostics.Listeners
 {
     public sealed class FileLogEventListener : StreamOuputEventListener
     {

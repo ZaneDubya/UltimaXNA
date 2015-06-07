@@ -135,9 +135,9 @@
     <Compile Include="Core\ComponentModel\NotifyPropertyChangedBase.cs" />
     <Compile Include="Configuration\Resolution.cs" />
     <Compile Include="Core\Configuration\TextSettingsFileWriter.cs" />
-    <Compile Include="Core\Diagnostics\Tracing\EventLevel.cs" />
-    <Compile Include="Core\Diagnostics\Tracing\Listeners\AEventListener.cs" />
-    <Compile Include="Core\Diagnostics\Tracing\Listeners\MsgBoxOnCriticalListener.cs" />
+    <Compile Include="Core\Diagnostics\EventLevel.cs" />
+    <Compile Include="Core\Diagnostics\Listeners\AEventListener.cs" />
+    <Compile Include="Core\Diagnostics\Listeners\MsgBoxOnCriticalListener.cs" />
     <Compile Include="Core\DpiManager.cs" />
     <Compile Include="Core\Extensions\StringExtensions.cs" />
     <Compile Include="Core\Graphics\Techniques.cs" />
@@ -158,13 +158,12 @@
     <Compile Include="Core\Configuration\ASettingsSection.cs" />
     <Compile Include="Configuration\UltimaOnlineSettings.cs" />
     <Compile Include="Core\ConsoleManager.cs" />
-    <Compile Include="CoreModule.cs" />
     <Compile Include="Core\Input\ActionBinder.cs" />
     <Compile Include="Core\Input\InputManager.cs" />
     <Compile Include="Core\Input\Windows\Enums.cs" />
     <Compile Include="Core\Input\Windows\InputEvent.cs" />
-    <Compile Include="Core\Input\Windows\InputEventKB.cs" />
-    <Compile Include="Core\Input\Windows\InputEventM.cs" />
+    <Compile Include="Core\Input\Windows\InputEventKeyboard.cs" />
+    <Compile Include="Core\Input\Windows\InputEventMouse.cs" />
     <Compile Include="Core\Input\Windows\Message.cs" />
     <Compile Include="Core\Input\Windows\MessageHook.cs" />
     <Compile Include="Core\IO\AsyncWriter.cs" />
@@ -179,10 +178,10 @@
     <Compile Include="Core\Patterns\MVC\AView.cs" />
     <Compile Include="Core\Diagnostics\Guard.cs" />
     <Compile Include="Core\Diagnostics\Tracing\ITracer.cs" />
-    <Compile Include="Core\Diagnostics\Tracing\Listeners\ConsoleOutputEventListener.cs" />
-    <Compile Include="Core\Diagnostics\Tracing\Listeners\DebugOutputEventListener.cs" />
-    <Compile Include="Core\Diagnostics\Tracing\Listeners\FileLogEventListener.cs" />
-    <Compile Include="Core\Diagnostics\Tracing\Listeners\StreamOuputEventListener.cs" />
+    <Compile Include="Core\Diagnostics\Listeners\ConsoleOutputEventListener.cs" />
+    <Compile Include="Core\Diagnostics\Listeners\DebugOutputEventListener.cs" />
+    <Compile Include="Core\Diagnostics\Listeners\FileLogEventListener.cs" />
+    <Compile Include="Core\Diagnostics\Listeners\StreamOuputEventListener.cs" />
     <Compile Include="Core\Diagnostics\Tracing\Tracer.cs" />
     <Compile Include="Core\Diagnostics\GeneralExceptionHandler.cs" />
     <Compile Include="Core\Configuration\SettingsFile.cs" />
@@ -579,7 +578,14 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Data\bodytable.cfg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\containers.cfg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

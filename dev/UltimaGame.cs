@@ -32,10 +32,18 @@ namespace UltimaXNA
 {
     internal class UltimaGame : Game
     {
+        public static UltimaGame Instance
+        {
+            get;
+            private set;
+        }
+
         public static double TotalMS = 0d;
 
         public UltimaGame()
         {
+            Instance = this;
+
             InitializeGraphicsDeviceAndWindow();
             InitializeExitGuard();
             SetupWindowForLogin();
@@ -120,6 +128,9 @@ namespace UltimaXNA
         {
             Content.RootDirectory = "Content";
 
+            // register this instance as a service
+            ServiceRegistry.Register<UltimaGame>(this);
+
             // Create all the services we need.
             ServiceRegistry.Register<SpriteBatch3D>(new SpriteBatch3D(this));
             ServiceRegistry.Register<SpriteBatchUI>(new SpriteBatchUI(this));
@@ -161,6 +172,7 @@ namespace UltimaXNA
 
         protected override void Dispose(bool disposing)
         {
+            ServiceRegistry.Unregister<UltimaGame>();
             UserInterface.Dispose();
             base.Dispose(disposing);
         }

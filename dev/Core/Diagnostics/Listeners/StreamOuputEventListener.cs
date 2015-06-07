@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 #endregion
 
-namespace UltimaXNA.Core.Diagnostics.Tracing.Listeners
+namespace UltimaXNA.Core.Diagnostics.Listeners
 {
     public class StreamOuputEventListener : AEventListener
     {

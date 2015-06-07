@@ -16,11 +16,10 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using UltimaXNA.Configuration;
 using UltimaXNA.Core;
 using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.Diagnostics.Tracing;
-using UltimaXNA.Core.Diagnostics.Tracing.Listeners;
+using UltimaXNA.Core.Diagnostics.Listeners;
 using UltimaXNA.Core.Patterns;
 #endregion
 
@@ -73,7 +72,6 @@ namespace UltimaXNA
 
         private void Configure()
         {
-            LoadModule(new CoreModule());
             ConfigurePlugins();
         }
 
@@ -152,10 +150,11 @@ namespace UltimaXNA
         private void StartEngine()
         {
             Prepare();
-            Configure();
 
-            using (UltimaGame engine = ServiceRegistry.GetService<UltimaGame>())
+            using (UltimaGame engine = new UltimaGame())
             {
+                Configure();
+
                 engine.Run();
             }
         }

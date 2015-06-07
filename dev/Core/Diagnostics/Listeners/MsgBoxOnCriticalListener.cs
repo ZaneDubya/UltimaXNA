@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace UltimaXNA.Core.Diagnostics.Tracing.Listeners
+namespace UltimaXNA.Core.Diagnostics.Listeners
 {
     class MsgBoxOnCriticalListener : AEventListener
     {
-        public override void OnEventWritten(EventLevel level, string messag)
+        public override void OnEventWritten(EventLevel level, string message)
         {
             if (level == EventLevel.Critical)
-                throw new Exception(messag);
+                throw new Exception(message);
         }
     }
 }

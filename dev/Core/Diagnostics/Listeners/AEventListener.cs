@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UltimaXNA.Core.Diagnostics.Tracing.Listeners
+namespace UltimaXNA.Core.Diagnostics.Listeners
 {
     public abstract class AEventListener
     {

@@ -1,5 +1,5 @@
 ﻿
-namespace UltimaXNA.Core.Diagnostics.Tracing
+namespace UltimaXNA.Core.Diagnostics
 {
     public enum EventLevel
     {
