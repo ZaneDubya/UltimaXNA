@@ -90,6 +90,8 @@ namespace UltimaXNA.Ultima.World.Gumps
 
         protected override void OnMouseDown(int x, int y, MouseButton button)
         {
+            if (button != MouseButton.Left)
+                return;
             m_IsMouseDown = true;
         }
 
@@ -100,6 +102,8 @@ namespace UltimaXNA.Ultima.World.Gumps
 
         protected override void OnMouseClick(int x, int y, MouseButton button)
         {
+            if (button != MouseButton.Left)
+                return;
             m_World.Interaction.UseSkill(m_Skill.Index);
         }
     }

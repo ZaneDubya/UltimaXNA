@@ -39,7 +39,7 @@ namespace UltimaXNA.Ultima.World.Gumps
             AddControl(m_Background = new ExpandableScroll(this, 0, 0, 0, 200));
             m_Background.TitleGumpID = 0x834;
 
-            AddControl(m_SkillsHtml = new HtmlGumpling(this, 0, 36, 35, 230, Height - 100, 0, 1, string.Empty));
+            AddControl(m_SkillsHtml = new HtmlGumpling(this, 0, 36, 35, 230, 200 - 100, 0, 2, string.Empty));
             m_SkillsHtml.OnDragHRef += OnSkillDrag;
         }
 
@@ -97,7 +97,7 @@ namespace UltimaXNA.Ultima.World.Gumps
 
         private void OnSkillDrag(string href)
         {
-            if (href.Substring(0, 9) == "skillbtn=")
+            if (href.Length >= 9 && href.Substring(0, 9) == "skillbtn=")
             {
                 int skillIndex;
                 if (!int.TryParse(href.Substring(9), out skillIndex))
