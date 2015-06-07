@@ -688,6 +688,12 @@ namespace UltimaXNA.Core.UI
                 m_MaxTimeForDoubleClick = (float)UltimaGame.TotalMS + Settings.World.Mouse.DoubleClickMS;
             }
 
+            if (button == MouseButton.Right && !IsUncloseableWithRMB)
+            {
+                CloseWithRightMouseButton();
+                return;
+            }
+
             OnMouseClick(x, y, button);
             if (MouseClickEvent != null)
                 MouseClickEvent(x, y, button);
@@ -697,11 +703,6 @@ namespace UltimaXNA.Core.UI
                 OnMouseDoubleClick(x, y, button);
                 if (MouseDoubleClickEvent != null)
                     MouseDoubleClickEvent(x, y, button);
-            }
-
-            if (button == MouseButton.Right)
-            {
-                CloseWithRightMouseButton();
             }
         }
 

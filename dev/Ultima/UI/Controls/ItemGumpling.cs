@@ -88,6 +88,11 @@ namespace UltimaXNA.Ultima.UI.Controls
                 Size = new Point(m_texture.Width, m_texture.Height);
             }
             Vector3 hue = Utility.GetHueVector(IsMouseOver && HighlightOnMouseOver ? EngineVars.MouseOverHue : Item.Hue);
+            if (Item.Amount > 1 && Item.ItemData.IsGeneric)
+            {
+                int offset = Item.ItemData.Unknown4;
+                spriteBatch.Draw2D(m_texture, new Vector3(position.X - offset, position.Y - offset, 0), hue);
+            }
             spriteBatch.Draw2D(m_texture, new Vector3(position.X, position.Y, 0), hue);
             base.Draw(spriteBatch, position);
         }
@@ -98,16 +103,32 @@ namespace UltimaXNA.Ultima.UI.Controls
             // (-1,0), (0,-1), (1,0), or (1,1). This will allow selection even when the mouse cursor is directly
             // over a transparent pixel, and will also increase the 'selection space' of an item by one pixel in
             // each dimension - thus a very thin object (2-3 pixels wide) will be increased.
+
+            if (isPointWithinControl(x, y))
+                return true;
+
+            if (Item.Amount > 1 && Item.ItemData.IsGeneric)
+            {
+                int offset = Item.ItemData.Unknown4;
+                if (isPointWithinControl(x + offset, y + offset))
+                    return true;
+            }
+
+            return false;
+        }
+
+        private bool isPointWithinControl(int x, int y)
+        {
             Color[] pixelData;
 
-            if (x == 0)
-                x++;
-            if (x == m_texture.Width - 1)
-                x--;
-            if (y == 0)
-                y++;
-            if (y == m_texture.Height - 1)
-                y--;
+            if (x <= 0)
+                x = 1;
+            if (x >= m_texture.Width - 1)
+                x = m_texture.Width - 2;
+            if (y <= 0)
+                y = 1;
+            if (y >= m_texture.Height - 1)
+                y = m_texture.Height - 2;
 
             pixelData = new Color[9];
             m_texture.GetData<Color>(0, new Rectangle(x - 1, y - 1, 3, 3), pixelData, 0, 9);

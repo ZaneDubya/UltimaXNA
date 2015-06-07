@@ -4,7 +4,13 @@ namespace UltimaXNA.Core.UI.HTML.Atoms
 {
     public class ImageAtom : AAtom
     {
-        public Image AssociatedImage;
+        public int Value = -1, ValueDown = -1, ValueOver = -1;
+
+        public Image AssociatedImage
+        {
+            get;
+            set;
+        }
 
         private int m_overrideWidth = -1;
         public override int Width
@@ -35,10 +41,6 @@ namespace UltimaXNA.Core.UI.HTML.Atoms
                 return AssociatedImage.Texture.Height + 1;
             }
         }
-
-        public int Value = -1;
-        public int ValueDown = -1;
-        public int ValueOver = -1;
 
         public ImageAtom(IUIResourceProvider provider, int value)
         {

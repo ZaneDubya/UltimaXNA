@@ -292,6 +292,11 @@ namespace UltimaXNA.Ultima.World.Controllers
                 {
                     m_ItemSprite.Hue = HeldItem.Hue;
                     m_ItemSprite.Offset = m_HeldItemOffset;
+                    if (HeldItem.Amount > 1 && HeldItem.ItemData.IsGeneric && HeldItem.ItemData.Unknown4 > 0)
+                    {
+                        int offset = HeldItem.ItemData.Unknown4;
+                        m_ItemSprite.Draw(spritebatch, new Point(position.X - offset, position.Y - offset));
+                    }
                     m_ItemSprite.Draw(spritebatch, position);
                 }
 
