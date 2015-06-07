@@ -61,7 +61,7 @@ namespace UltimaXNA.Ultima.UI
             GumpServerTypeID = gumpTypeID;
         }
 
-        public Gump(Serial localID, Serial gumpTypeID, String[] pieces, String[] textlines)
+        public Gump(int localID, int gumpTypeID, String[] pieces, String[] textlines)
             : this(localID, gumpTypeID)
         {
             // Add any gump pieces that have been given to the gump...

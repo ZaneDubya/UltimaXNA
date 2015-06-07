@@ -22,11 +22,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 {
     class ContainerGump : Gump
     {
-        ContainerData m_data;
-        Container m_item;
-        HtmlGumpling m_tickerText;
-        int m_updateTicker = 0;
-        public Serial ContainerSerial { get { return m_item.Serial; } }
+        private ContainerData m_data;
+        private Container m_item;
+        private HtmlGumpling m_tickerText;
+        private int m_updateTicker = 0;
 
         public ContainerGump(AEntity containerItem, int gumpID)
             : base(containerItem.Serial, 0)

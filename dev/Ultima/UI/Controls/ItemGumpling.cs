@@ -24,7 +24,6 @@ namespace UltimaXNA.Ultima.UI.Controls
     class ItemGumpling : AControl
     {
         protected Texture2D m_texture = null;
-        public Serial ContainerSerial { get { return Item.Parent.Serial; } }
         public bool CanPickUp = true;
         public bool HighlightOnMouseOver = true;
 

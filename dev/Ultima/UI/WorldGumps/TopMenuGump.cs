@@ -22,8 +22,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         UserInterfaceService m_UserInterface;
         WorldModel m_World;
 
-        public TopMenuGump(Serial serial)
-            : base(serial, 0)
+        public TopMenuGump()
+            : base(0, 0)
         {
             // maximized view
             AddControl(new ResizePic(this, 1, 0, 0, 9200, 610, 27));
