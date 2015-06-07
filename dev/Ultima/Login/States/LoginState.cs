@@ -11,7 +11,7 @@
 using System.Security;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.Login.Gumps;
+using UltimaXNA.Ultima.UI.LoginGumps;
 #endregion
 
 namespace UltimaXNA.Ultima.Login.States

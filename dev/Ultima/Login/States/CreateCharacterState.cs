@@ -10,8 +10,8 @@
 #region usings
 using System;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.Data.Accounts;
-using UltimaXNA.Ultima.Login.Gumps;
+using UltimaXNA.Ultima.Login.Accounts;
+using UltimaXNA.Ultima.UI.LoginGumps;
 using UltimaXNA.Ultima.Network;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.UI;

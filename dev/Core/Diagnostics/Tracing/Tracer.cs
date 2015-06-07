@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using UltimaXNA.Core.Diagnostics.Tracing.Listeners;
+using UltimaXNA.Core.Diagnostics.Listeners;
 
 namespace UltimaXNA.Core.Diagnostics.Tracing
 {

@@ -9,7 +9,7 @@
  ***************************************************************************/
 
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.Entities.Items.Containers;
+using UltimaXNA.Ultima.World.Entities.Items.Containers;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {

@@ -9,14 +9,13 @@
  *
  ***************************************************************************/
 #region usings
+using Microsoft.Xna.Framework.Audio;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using Microsoft.Xna.Framework.Audio;
 using UltimaXNA.Core.Diagnostics;
 #endregion
-
 
 namespace UltimaXNA.Ultima.IO
 {

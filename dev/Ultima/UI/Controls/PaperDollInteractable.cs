@@ -11,10 +11,10 @@
 using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.Entities;
-using UltimaXNA.Ultima.Entities.Items;
-using UltimaXNA.Ultima.Entities.Items.Containers;
-using UltimaXNA.Ultima.Entities.Mobiles;
+using UltimaXNA.Ultima.World.Entities;
+using UltimaXNA.Ultima.World.Entities.Items;
+using UltimaXNA.Ultima.World.Entities.Items.Containers;
+using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Ultima.World;
 #endregion
 

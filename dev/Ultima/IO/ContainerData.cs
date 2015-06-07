@@ -21,7 +21,7 @@ namespace UltimaXNA.Ultima.IO
         {
             m_Table = new Dictionary<int, ContainerData>();
 
-            string path = "..\\..\\..\\res\\containers.cfg";
+            string path = @"data\containers.cfg";
 
             if (!File.Exists(path))
             {

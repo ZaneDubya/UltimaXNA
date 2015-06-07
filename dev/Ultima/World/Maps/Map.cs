@@ -12,7 +12,7 @@
 using Microsoft.Xna.Framework;
 using System;
 using UltimaXNA.Ultima.Data;
-using UltimaXNA.Ultima.Entities.Multis;
+using UltimaXNA.Ultima.World.Entities.Multis;
 using UltimaXNA.Ultima.IO;
 #endregion
 

@@ -12,7 +12,7 @@ using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Network.Packets;
 using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.Diagnostics.Tracing;
-using UltimaXNA.Ultima.World.Controllers;
+using UltimaXNA.Ultima.World.Input;
 #endregion
 
 namespace UltimaXNA.Ultima.Network.Server

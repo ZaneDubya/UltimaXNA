@@ -1,5 +1,5 @@
 /***************************************************************************
- *   UltimaEngine.cs
+ *   UltimaGame.cs
  *   Copyright (c) 2015 UltimaXNA Development Team
  * 
  *   This program is free software; you can redistribute it and/or modify
@@ -24,7 +24,6 @@ using UltimaXNA.Ultima.Audio;
 using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.IO.FontsNew;
 using UltimaXNA.Ultima.IO.FontsOld;
-using UltimaXNA.Ultima.Login;
 using UltimaXNA.Ultima.UI;
 #endregion
 
@@ -32,6 +31,12 @@ namespace UltimaXNA
 {
     internal class UltimaGame : Game
     {
+        public static bool IsRunning // false = engine immediately quits.
+        {
+            get;
+            set;
+        }
+
         public static double TotalMS = 0d;
 
         public UltimaGame()
@@ -120,6 +125,9 @@ namespace UltimaXNA
         {
             Content.RootDirectory = "Content";
 
+            // register this instance as a service
+            ServiceRegistry.Register<UltimaGame>(this);
+
             // Create all the services we need.
             ServiceRegistry.Register<SpriteBatch3D>(new SpriteBatch3D(this));
             ServiceRegistry.Register<SpriteBatchUI>(new SpriteBatchUI(this));
@@ -148,8 +156,8 @@ namespace UltimaXNA
                 GraphicsDevice.Textures[1] = HuesXNA.HueTexture0;
                 GraphicsDevice.Textures[2] = HuesXNA.HueTexture1;
 
-                EngineVars.EngineRunning = true;
-                EngineVars.InWorld = false;
+                UltimaGame.IsRunning = true;
+                WorldModel.IsInWorld = false;
 
                 ActiveModel = new LoginModel();
             }
@@ -161,6 +169,7 @@ namespace UltimaXNA
 
         protected override void Dispose(bool disposing)
         {
+            ServiceRegistry.Unregister<UltimaGame>();
             UserInterface.Dispose();
             base.Dispose(disposing);
         }
@@ -169,7 +178,7 @@ namespace UltimaXNA
         {
             IsFixedTimeStep = Settings.Game.IsFixedTimeStep;
 
-            if(!EngineVars.EngineRunning)
+            if(!UltimaGame.IsRunning)
             {
                 Settings.Save();
                 Exit();
@@ -192,17 +201,15 @@ namespace UltimaXNA
             if(!IsMinimized)
             {
                 SpriteBatch3D.Reset();
-                GraphicsDevice.Clear(Color.Black);
+                GraphicsDevice.Clear(Color.Black);  
 
                 ActiveModel.GetView()
                     .Draw(gameTime.ElapsedGameTime.TotalMilliseconds);
                 UserInterface.Draw(gameTime.ElapsedGameTime.TotalMilliseconds);
 
-                EngineVars.UpdateFPS(gameTime.ElapsedGameTime.TotalMilliseconds);
-                Window.Title =
-                    Settings.Debug.ShowFps ?
-                        string.Format("UltimaXNA FPS:{0}", EngineVars.UpdateFPS(gameTime.ElapsedGameTime.TotalMilliseconds)) :
-                        "UltimaXNA";
+                // update fps and window caption.
+                int fps = Utility.UpdateFPS(gameTime.ElapsedGameTime.TotalMilliseconds);
+                Window.Title = Settings.Debug.ShowFps ? string.Format("UltimaXNA FPS:{0}", fps) : "UltimaXNA";
             }
         }
 

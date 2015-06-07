@@ -8,9 +8,9 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Ultima.Entities;
+using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.IO;
-using UltimaXNA.Ultima.Entities.Items;
+using UltimaXNA.Ultima.World.Entities.Items;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Maps

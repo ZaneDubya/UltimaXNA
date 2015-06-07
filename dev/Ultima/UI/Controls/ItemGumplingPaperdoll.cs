@@ -11,7 +11,7 @@
 using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.Entities.Items;
+using UltimaXNA.Ultima.World.Entities.Items;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {

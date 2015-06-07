@@ -11,7 +11,7 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Ultima.Entities.Items;
+using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Ultima.UI;
@@ -87,7 +87,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                 m_texture = IO.ArtData.GetStaticTexture(Item.DisplayItemID);
                 Size = new Point(m_texture.Width, m_texture.Height);
             }
-            Vector3 hue = Utility.GetHueVector(IsMouseOver && HighlightOnMouseOver ? EngineVars.MouseOverHue : Item.Hue);
+            Vector3 hue = Utility.GetHueVector(IsMouseOver && HighlightOnMouseOver ? WorldView.MouseOverHue : Item.Hue);
             if (Item.Amount > 1 && Item.ItemData.IsGeneric)
             {
                 int offset = Item.ItemData.Unknown4;

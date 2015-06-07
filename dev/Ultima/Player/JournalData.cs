@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using UltimaXNA.Ultima.World.Gumps;
+using UltimaXNA.Ultima.UI.WorldGumps;
 
 namespace UltimaXNA.Ultima.Player
 {

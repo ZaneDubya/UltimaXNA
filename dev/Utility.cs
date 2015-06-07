@@ -303,11 +303,6 @@ namespace UltimaXNA
         }
         #endregion
 
-        public static bool InRange(IPoint2D from, IPoint2D to, int range)
-        {
-            return (from.X >= (to.X - range)) && (from.X <= (to.X + range)) && (from.Y >= (to.Y - range)) && (from.Y <= (to.Y + range));
-        }
-
         public static int GetDistanceToSqrt(int orgx, int orgy, int goalx, int goaly)
         {
             int xDelta = goalx - orgx;
@@ -432,7 +427,7 @@ namespace UltimaXNA
                 {
                     Version v = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
                     DateTime d = new DateTime(v.Build * TimeSpan.TicksPerDay).AddYears(1999).AddDays(-1);
-                    m_versionString = string.Format("UltimaXNA PreAlpha v{0}.{1} ({2})", v.Major, v.Minor, String.Format("{0:MMMM d, yyyy}", d));
+                    m_versionString = string.Format("UltimaXNA PreAlpha Milestone {0}.{1} ({2})", v.Major, v.Minor, String.Format("{0:MMMM d, yyyy}", d));
                 }
                 return m_versionString;
             }
@@ -494,38 +489,6 @@ namespace UltimaXNA
 #pragma warning restore 618
         }
 
-        public static Direction DirectionFromPoints(Point from, Point to)
-        {
-            return DirectionFromVectors(new Vector2(from.X, from.Y), new Vector2(to.X, to.Y));
-        }
-
-        public static Direction DirectionFromVectors(Vector2 fromPosition, Vector2 toPosition)
-        {
-            double Angle = Math.Atan2(toPosition.Y - fromPosition.Y, toPosition.X - fromPosition.X);
-            if (Angle < 0)
-                Angle = Math.PI + (Math.PI + Angle);
-            double piPerSegment = (Math.PI * 2f) / 8f;
-            double segmentValue = (Math.PI * 2f) / 16f;
-            int direction = int.MaxValue;
-
-            for (int i = 0; i < 8; i++)
-            {
-                if (Angle >= segmentValue && Angle <= (segmentValue + piPerSegment))
-                {
-                    direction = i + 1;
-                    break;
-                }
-                segmentValue += piPerSegment;
-            }
-
-            if (direction == int.MaxValue)
-                direction = 0;
-
-            direction = (direction >= 7) ? (direction - 7) : (direction + 1);
-
-            return (Direction)direction;
-        }
-
         static Random m_random;
         public static int RandomValue(int low, int high)
         {
@@ -576,6 +539,28 @@ namespace UltimaXNA
         public static int DistanceBetweenTwoPoints(Point p1, Point p2)
         {
             return Convert.ToInt32(Math.Sqrt((p1.X - p2.X) * (p1.X - p2.X) + (p1.Y - p2.Y) * (p1.Y - p2.Y)));
+        }
+
+        // Maintain an accurate count of frames per second.
+        static List<float> m_FPS = new List<float>();
+        internal static int UpdateFPS(double frameMS)
+        {
+            if (frameMS > 0)
+            {
+                while (m_FPS.Count > 19)
+                    m_FPS.RemoveAt(0);
+                m_FPS.Add(1000.0f / (float)frameMS);
+            }
+
+            float count = 0.0f;
+            for (int i = 0; i < m_FPS.Count; i++)
+            {
+                count += m_FPS[i];
+            }
+
+            count /= m_FPS.Count;
+
+            return (int)System.Math.Ceiling(count);
         }
     }
 }

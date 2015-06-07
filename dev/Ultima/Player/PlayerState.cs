@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 namespace UltimaXNA.Ultima.Player
 {
     class PlayerState

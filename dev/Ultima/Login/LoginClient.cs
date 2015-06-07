@@ -15,9 +15,9 @@ using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Data;
-using UltimaXNA.Ultima.Data.Accounts;
-using UltimaXNA.Ultima.Data.Servers;
-using UltimaXNA.Ultima.Entities.Mobiles;
+using UltimaXNA.Ultima.Login.Accounts;
+using UltimaXNA.Ultima.Login.Servers;
+using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.Network.Server;
 using UltimaXNA.Ultima.UI;
@@ -251,7 +251,7 @@ namespace UltimaXNA.Ultima.Login
 
         private void ReceiveServerList(IRecvPacket packet)
         {
-            Servers.List = ((ServerListPacket)packet).Servers;
+            ServerList.List = ((ServerListPacket)packet).Servers;
             Status = LoginClientStatus.LoginServer_HasServerList;
         }
 
@@ -316,8 +316,8 @@ namespace UltimaXNA.Ultima.Login
         {
             m_QueuedLoginConfirmPacket = (LoginConfirmPacket)packet;
             // set the player serial and create the player entity. Don't need to do anything with it yet.
-            EngineVars.PlayerSerial = m_QueuedLoginConfirmPacket.Serial;
-            PlayerMobile player = EntityManager.GetObject<PlayerMobile>(m_QueuedLoginConfirmPacket.Serial, true);
+            WorldModel.PlayerSerial = m_QueuedLoginConfirmPacket.Serial;
+            PlayerMobile player = WorldModel.Entities.GetObject<PlayerMobile>(m_QueuedLoginConfirmPacket.Serial, true);
             if (player == null)
                 Tracer.Critical("Could not create player object.");
             CheckIfOkayToLogin();
@@ -343,9 +343,9 @@ namespace UltimaXNA.Ultima.Login
                     m_Engine.ActivateQueuedModel();
                     if (m_Engine.ActiveModel is WorldModel)
                     {
-                        ((WorldModel)m_Engine.ActiveModel).LoginSequence();
+                        ((WorldModel)m_Engine.ActiveModel).LoginToWorld();
                         LoginConfirmPacket packet = m_QueuedLoginConfirmPacket;
-                        PlayerMobile player = EntityManager.GetObject<PlayerMobile>(m_QueuedLoginConfirmPacket.Serial, true);
+                        PlayerMobile player = WorldModel.Entities.GetObject<PlayerMobile>(m_QueuedLoginConfirmPacket.Serial, true);
                         if (player == null)
                             Tracer.Critical("No player object ready in CheckIfOkayToLogin().");
                         player.Move_Instant(packet.X, packet.Y, packet.Z, packet.Direction);
