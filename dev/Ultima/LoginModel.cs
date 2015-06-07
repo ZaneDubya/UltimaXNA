@@ -8,7 +8,7 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using InterXLib.Patterns.MVC;
+using UltimaXNA.Core.Patterns.MVC;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Login.States;
 using UltimaXNA.Ultima.Login;

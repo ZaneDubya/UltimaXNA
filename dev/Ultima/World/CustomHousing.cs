@@ -7,10 +7,7 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Network.Compression;
 using UltimaXNA.Ultima.IO;

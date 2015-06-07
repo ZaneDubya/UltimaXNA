@@ -8,13 +8,13 @@
  *
  ***************************************************************************/
 #region usings
-using InterXLib.Patterns.MVC;
+using UltimaXNA.Core.Patterns.MVC;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.UI.WorldGumps;
 using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Ultima.World.EntityViews;
-using UltimaXNA.Ultima.UI.WorldGumps;
 using UltimaXNA.Ultima.World.WorldViews;
 #endregion
 

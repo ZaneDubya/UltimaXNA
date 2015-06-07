@@ -19,7 +19,6 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text;
-using UltimaXNA.Ultima;
 #endregion
 
 namespace UltimaXNA
