@@ -27,6 +27,9 @@ namespace UltimaXNA.Ultima.World.Views
 {
     public class IsometricRenderer
     {
+        public const float TileSizeF = 44.0f;
+        public const int TileSizeI = 44;
+
         public Texture2D Texture
         {
             get
@@ -194,11 +197,11 @@ namespace UltimaXNA.Ultima.World.Views
                 center.X + renderExtraColumnsAtSides - ((renderZOffset + 1) / 2),
                 center.Y - renderDimensionY - renderExtraColumnsAtSides - (renderZOffset / 2));
 
-            renderOffset.X = ((Settings.World.GumpResolution.Width + ((renderDimensionY) * 44)) / 2) - 22 + renderExtraColumnsAtSides * 44;
+            renderOffset.X = ((Settings.World.GumpResolution.Width + ((renderDimensionY) * TileSizeI)) / 2) - 22 + renderExtraColumnsAtSides * TileSizeI;
             renderOffset.X -= (int)((center.X_offset - center.Y_offset) * 22);
             renderOffset.X -= (firstTile.X - firstTile.Y) * 22;
 
-            renderOffset.Y = ((Settings.World.GumpResolution.Height - (renderDimensionY * 44)) / 2);
+            renderOffset.Y = ((Settings.World.GumpResolution.Height - (renderDimensionY * TileSizeI)) / 2);
             renderOffset.Y += (center.Z * 4) + (int)(center.Z_offset * 4);
             renderOffset.Y -= (int)((center.X_offset + center.Y_offset) * 22);
             renderOffset.Y -= (firstTile.X + firstTile.Y) * 22;
@@ -254,7 +257,7 @@ namespace UltimaXNA.Ultima.World.Views
                         tile.OnExit(deferred);
                     deferredToRemove.Clear();
 
-                    drawPosition.X -= 44f;
+                    drawPosition.X -= TileSizeF;
                 }
             }
 

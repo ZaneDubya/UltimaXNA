@@ -48,7 +48,7 @@ namespace UltimaXNA.Ultima.EntityViews
             {
                 m_DisplayItemID = displayItemdID;
                 DrawTexture = IO.ArtData.GetStaticTexture(m_DisplayItemID);
-                DrawArea = new Rectangle(DrawTexture.Width / 2 - 22, DrawTexture.Height - 44 + (Entity.Z * 4), DrawTexture.Width, DrawTexture.Height);
+                DrawArea = new Rectangle(DrawTexture.Width / 2 - 22, DrawTexture.Height - World.Views.IsometricRenderer.TileSizeI + (Entity.Z * 4), DrawTexture.Width, DrawTexture.Height);
                 PickType = PickType.PickNothing;
                 DrawFlip = false;
             }

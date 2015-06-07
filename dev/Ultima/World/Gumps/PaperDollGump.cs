@@ -59,7 +59,8 @@ namespace UltimaXNA.Ultima.World.Gumps
                 AddControl(new GumpPic(this, 0, 0, 0, 0x07d0, 0));
 
                 // HELP
-                AddControl(new Button(this, 0, 185, 44 + 27*0, 0x07ef, 0x07f0, ButtonTypes.Activate, 0,
+                AddControl(new Button(this, 0, 185, 
+                    + 27*0, 0x07ef, 0x07f0, ButtonTypes.Activate, 0,
                     (int) Buttons.Help));
                 ((Button) LastControl).GumpOverID = 0x07f1;
                 // OPTIONS
