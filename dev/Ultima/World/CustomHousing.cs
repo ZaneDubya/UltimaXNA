@@ -13,10 +13,11 @@ using System.Linq;
 using System.Text;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Network.Compression;
+using UltimaXNA.Ultima.IO;
 
-namespace UltimaXNA.Ultima.IO
+namespace UltimaXNA.Ultima.World
 {
-    class CustomHousingData
+    class CustomHousing
     {
         static Dictionary<Serial, CustomHouse> m_customHouses = new Dictionary<Serial,CustomHouse>();
 

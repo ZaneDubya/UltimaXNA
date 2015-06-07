@@ -397,7 +397,7 @@
     <Compile Include="Ultima\Network\Shared.cs" />
     <Compile Include="Ultima\IO\ArtData.cs" />
     <Compile Include="Ultima\IO\ContainerData.cs" />
-    <Compile Include="Ultima\IO\CustomHousingData.cs" />
+    <Compile Include="Ultima\World\CustomHousing.cs" />
     <Compile Include="Ultima\IO\HairStyles.cs" />
     <Compile Include="Ultima\IO\ParticleData.cs" />
     <Compile Include="Ultima\IO\SkillsData.cs" />
@@ -500,7 +500,7 @@
     <Compile Include="Ultima\Login\States\AState.cs" />
     <Compile Include="Ultima\Login\States\StateManager.cs" />
     <Compile Include="Ultima\Login\States\LoginState.cs" />
-    <Compile Include="Serial.cs" />
+    <Compile Include="Ultima\Serial.cs" />
     <Compile Include="Ultima\World\WorldViews\MiniMapBlock.cs" />
     <Compile Include="Ultima\World\WorldViews\MiniMapTexture.cs" />
     <Compile Include="Ultima\World\Maps\Map.cs" />

@@ -49,7 +49,7 @@ namespace UltimaXNA.Ultima.Login.States
         {
             base.Intitialize();
 
-            m_Gump = (Gump)m_UserInterface.AddControl(new Gump(Serial.Null, Serial.Null), 0, 0);
+            m_Gump = (Gump)m_UserInterface.AddControl(new Gump(0, 0), 0, 0);
             m_Gump.Size = new Point(800, 600);
             m_Gump.AddControl(new ResizePic(m_Gump, 0, 5, 5, 3000, 790, 590));
 

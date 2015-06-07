@@ -913,12 +913,12 @@ namespace UltimaXNA.Ultima.World
         private void ReceiveSendCustomHouse(IRecvPacket packet)
         {
             CustomHousePacket p = (CustomHousePacket)packet;
-            IO.CustomHousingData.UpdateCustomHouseData(p.HouseSerial, p.RevisionHash, p.PlaneCount, p.Planes);
+            CustomHousing.UpdateCustomHouseData(p.HouseSerial, p.RevisionHash, p.PlaneCount, p.Planes);
 
             Multi multi = WorldModel.Entities.GetObject<Multi>(p.HouseSerial, false);
             if (multi.CustomHouseRevision != p.RevisionHash)
             {
-                IO.CustomHouse house = IO.CustomHousingData.GetCustomHouseData(p.HouseSerial);
+                CustomHouse house = CustomHousing.GetCustomHouseData(p.HouseSerial);
                 multi.AddCustomHousingTiles(house);
             }
         }
@@ -1065,7 +1065,7 @@ namespace UltimaXNA.Ultima.World
                     }
                     break;
                 case 0x1D: // House revision state
-                    if (IO.CustomHousingData.IsHashCurrent(p.HouseRevisionState.Serial, p.HouseRevisionState.Hash))
+                    if (CustomHousing.IsHashCurrent(p.HouseRevisionState.Serial, p.HouseRevisionState.Hash))
                     {
                         Multi multi = WorldModel.Entities.GetObject<Multi>(p.HouseRevisionState.Serial, false);
                         if (multi == null)
@@ -1076,7 +1076,7 @@ namespace UltimaXNA.Ultima.World
                         {
                             if (multi.CustomHouseRevision != p.HouseRevisionState.Hash)
                             {
-                                IO.CustomHouse house = IO.CustomHousingData.GetCustomHouseData(p.HouseRevisionState.Serial);
+                                CustomHouse house = CustomHousing.GetCustomHouseData(p.HouseRevisionState.Serial);
                                 multi.AddCustomHousingTiles(house);
                             }
                         }
