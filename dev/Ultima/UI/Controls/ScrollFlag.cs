@@ -87,10 +87,16 @@ namespace UltimaXNA.Ultima.UI.Controls
         // ================================================================================
         // Ctor, Initialize, Update, and Draw
         // ================================================================================
-        public ScrollFlag(AControl owner, int page, int x, int y, int height, int minValue, int maxValue, int value)
+        public ScrollFlag(AControl owner, int page)
             : base(owner, page)
         {
             HandlesMouseInput = true;
+        }
+
+        public ScrollFlag(AControl owner, int page, int x, int y, int height, int minValue, int maxValue, int value)
+            : this(owner, page)
+        {
+            
 
             Position = new Point(x, y);
             m_SliderExtentTop = y;
@@ -105,7 +111,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             base.OnInitialize();
 
-            m_GumpSlider = IO.GumpData.GetGumpXNA(254);
+            m_GumpSlider = IO.GumpData.GetGumpXNA(0x0828);
             Size = new Point(m_GumpSlider.Width, m_GumpSlider.Height);
         }
 
@@ -119,46 +125,12 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
 
             m_SliderPosition = CalculateSliderYPosition();
-
-            if (m_BtnUpClicked || m_BtnDownClicked)
-            {
-                if (m_TimeUntilNextClick <= 0f)
-                {
-                    m_TimeUntilNextClick += c_TimeBetweenClicks;
-                    if (m_BtnUpClicked)
-                        Value -= 1;
-                    if (m_BtnDownClicked)
-                        Value += 1;
-                }
-                m_TimeUntilNextClick -= (float)totalMS;
-            }
         }
 
         public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
-            // draw scrollbar background
-            int middleHeight = Height - m_GumpUpButton[0].Height - m_GumpDownButton[0].Height - m_GumpBackground[0].Height - m_GumpBackground[2].Height;
-            if (middleHeight > 0)
-            {
-                spriteBatch.Draw2D(m_GumpBackground[0], new Vector3(position.X, position.Y + m_GumpUpButton[0].Height, 0), Vector3.Zero);
-                spriteBatch.Draw2DTiled(m_GumpBackground[1], new Rectangle(position.X, position.Y + m_GumpUpButton[0].Height + m_GumpBackground[0].Height, m_GumpBackground[0].Width, middleHeight), Vector3.Zero);
-                spriteBatch.Draw2D(m_GumpBackground[2], new Vector3(position.X, position.Y + Height - m_GumpDownButton[0].Height - m_GumpBackground[2].Height, 0), Vector3.Zero);
-            }
-            else
-            {
-                middleHeight = Height - m_GumpUpButton[0].Height - m_GumpDownButton[0].Height;
-                spriteBatch.Draw2DTiled(m_GumpBackground[1], new Rectangle(position.X, position.Y + m_GumpUpButton[0].Height, m_GumpBackground[0].Width, middleHeight), Vector3.Zero);
-            }
-
-            // draw up button
-            spriteBatch.Draw2D(m_BtnUpClicked ? m_GumpUpButton[1] : m_GumpUpButton[0], new Vector3(position.X, position.Y, 0), Vector3.Zero);
-
-            // draw down button
-            spriteBatch.Draw2D(m_BtnDownClicked ? m_GumpDownButton[1] : m_GumpDownButton[0], new Vector3(position.X, position.Y + Height - m_GumpDownButton[0].Height, 0), Vector3.Zero);
-
             // draw slider
-            if (MaxValue > MinValue && middleHeight > 0)
-                spriteBatch.Draw2D(m_GumpSlider, new Vector3(position.X + (m_GumpBackground[0].Width - m_GumpSlider.Width) / 2, position.Y + m_GumpUpButton[0].Height + m_SliderPosition, 0), Vector3.Zero);
+            spriteBatch.Draw2D(m_GumpSlider, new Vector3(position.X, position.Y + m_SliderPosition, 0), Vector3.Zero);
 
             base.Draw(spriteBatch, position);
         }
@@ -176,39 +148,18 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             if (!IsInitialized)
                 return 0f;
-            return Height - m_GumpUpButton[0].Height - m_GumpDownButton[0].Height - m_GumpSlider.Height;
+            return m_SliderExtentHeight - m_GumpSlider.Height;
         }
 
         protected override void OnMouseDown(int x, int y, MouseButton button)
         {
-            m_TimeUntilNextClick = 0f;
-            if (new Rectangle(0, Height - m_GumpDownButton[0].Height, m_GumpDownButton[0].Width, m_GumpDownButton[0].Height).Contains(new Point(x, y)))
-            {
-                // clicked on the down button
-                m_BtnDownClicked = true;
-            }
-            else if (new Rectangle(0, 0, m_GumpUpButton[0].Width, m_GumpUpButton[0].Height).Contains(new Point(x, y)))
-            {
-                // clicked on the up button
-                m_BtnUpClicked = true;
-            }
-            else if (new Rectangle((m_GumpBackground[0].Width - m_GumpSlider.Width) / 2, m_GumpUpButton[0].Height + (int)m_SliderPosition, m_GumpSlider.Width, m_GumpSlider.Height).Contains(new Point(x, y)))
-            {
-                // clicked on the slider
-                m_BtnSliderClicked = true;
-                m_ClickPosition = new Point(x, y);
-            }
-            else
-            {
-                // clicked on the bar. This should scroll up a full slider's height worth of entries.
-                // not coded yet, obviously.
-            }
+            // clicked on the slider
+            m_BtnSliderClicked = true;
+            m_ClickPosition = new Point(x, y);
         }
 
         protected override void OnMouseUp(int x, int y, MouseButton button)
         {
-            m_BtnUpClicked = false;
-            m_BtnDownClicked = false;
             m_BtnSliderClicked = false;
         }
 
@@ -229,11 +180,11 @@ namespace UltimaXNA.Ultima.UI.Controls
 
                     m_ClickPosition = new Point(x, y);
 
-                    if (sliderY == 0 && m_ClickPosition.Y < m_GumpUpButton[0].Height + m_GumpSlider.Height / 2)
+                    /*if (sliderY == 0 && m_ClickPosition.Y < m_GumpUpButton[0].Height + m_GumpSlider.Height / 2)
                         m_ClickPosition.Y = m_GumpUpButton[0].Height + m_GumpSlider.Height / 2;
 
                     if (sliderY == (scrollableArea) && m_ClickPosition.Y > Height - m_GumpDownButton[0].Height - m_GumpSlider.Height / 2)
-                        m_ClickPosition.Y = Height - m_GumpDownButton[0].Height - m_GumpSlider.Height / 2;
+                        m_ClickPosition.Y = Height - m_GumpDownButton[0].Height - m_GumpSlider.Height / 2;*/
 
                     m_Value = ((sliderY / scrollableArea) * (float)((MaxValue - MinValue))) + MinValue;
                     m_SliderPosition = sliderY;
