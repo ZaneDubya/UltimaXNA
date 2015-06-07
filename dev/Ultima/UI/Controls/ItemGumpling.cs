@@ -11,7 +11,7 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Ultima.Entities.Items;
+using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Ultima.UI;

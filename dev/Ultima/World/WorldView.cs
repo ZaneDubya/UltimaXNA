@@ -10,12 +10,12 @@
 #region usings
 using InterXLib.Patterns.MVC;
 using UltimaXNA.Core.Graphics;
-using UltimaXNA.Ultima.Entities;
-using UltimaXNA.Ultima.Entities.Mobiles;
-using UltimaXNA.Ultima.EntityViews;
-using UltimaXNA.Ultima.World.Views;
-using UltimaXNA.Ultima.World.Gumps;
 using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.World.Entities;
+using UltimaXNA.Ultima.World.Entities.Mobiles;
+using UltimaXNA.Ultima.World.EntityViews;
+using UltimaXNA.Ultima.UI.WorldGumps;
+using UltimaXNA.Ultima.World.WorldViews;
 #endregion
 
 namespace UltimaXNA.Ultima.World
@@ -54,7 +54,7 @@ namespace UltimaXNA.Ultima.World
 
         public override void Draw(double frameTime)
         {
-            AEntity player = EntityManager.GetPlayerObject();
+            AEntity player = WorldModel.Entities.GetPlayerObject();
             Position3D center = player.Position;
             if ((player as Mobile).IsAlive)
             {

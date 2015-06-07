@@ -7,12 +7,12 @@
  ***************************************************************************/
 #region usings
 using System.Collections.Generic;
-using UltimaXNA.Ultima.Entities;
-using UltimaXNA.Ultima.EntityViews;
-using UltimaXNA.Ultima.Entities.Effects;
-using UltimaXNA.Ultima.Entities.Items;
-using UltimaXNA.Ultima.Entities.Items.Containers;
-using UltimaXNA.Ultima.Entities.Mobiles;
+using UltimaXNA.Ultima.World.Entities;
+using UltimaXNA.Ultima.World.EntityViews;
+using UltimaXNA.Ultima.World.Entities.Effects;
+using UltimaXNA.Ultima.World.Entities.Items;
+using UltimaXNA.Ultima.World.Entities.Items.Containers;
+using UltimaXNA.Ultima.World.Entities.Mobiles;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Maps

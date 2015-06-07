@@ -1,5 +1,5 @@
 /***************************************************************************
- *   UltimaEngine.cs
+ *   UltimaGame.cs
  *   Copyright (c) 2015 UltimaXNA Development Team
  * 
  *   This program is free software; you can redistribute it and/or modify
@@ -24,7 +24,6 @@ using UltimaXNA.Ultima.Audio;
 using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.IO.FontsNew;
 using UltimaXNA.Ultima.IO.FontsOld;
-using UltimaXNA.Ultima.Login;
 using UltimaXNA.Ultima.UI;
 #endregion
 
@@ -204,17 +203,15 @@ namespace UltimaXNA
             if(!IsMinimized)
             {
                 SpriteBatch3D.Reset();
-                GraphicsDevice.Clear(Color.Black);
+                GraphicsDevice.Clear(Color.Black);  
 
                 ActiveModel.GetView()
                     .Draw(gameTime.ElapsedGameTime.TotalMilliseconds);
                 UserInterface.Draw(gameTime.ElapsedGameTime.TotalMilliseconds);
 
-                EngineVars.UpdateFPS(gameTime.ElapsedGameTime.TotalMilliseconds);
-                Window.Title =
-                    Settings.Debug.ShowFps ?
-                        string.Format("UltimaXNA FPS:{0}", EngineVars.UpdateFPS(gameTime.ElapsedGameTime.TotalMilliseconds)) :
-                        "UltimaXNA";
+                // update fps and window caption.
+                int fps = Utility.UpdateFPS(gameTime.ElapsedGameTime.TotalMilliseconds);
+                Window.Title = Settings.Debug.ShowFps ? string.Format("UltimaXNA FPS:{0}", fps) : "UltimaXNA";
             }
         }
 

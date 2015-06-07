@@ -10,8 +10,8 @@
 #region Usings
 using System;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.Data.Servers;
-using UltimaXNA.Ultima.Login.Gumps;
+using UltimaXNA.Ultima.Login.Servers;
+using UltimaXNA.Ultima.UI.LoginGumps;
 #endregion
 
 namespace UltimaXNA.Ultima.Login.States
@@ -51,7 +51,7 @@ namespace UltimaXNA.Ultima.Login.States
                 switch (m_Login.Client.Status)
                 {
                     case LoginClientStatus.LoginServer_HasServerList:
-                        if(Servers.List.Length == 1)
+                        if (ServerList.List.Length == 1)
                         {
                             OnSelectServer(0);
                         }

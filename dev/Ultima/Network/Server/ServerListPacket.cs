@@ -17,7 +17,7 @@
 #region usings
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Network.Packets;
-using UltimaXNA.Ultima.Data.Servers;
+using UltimaXNA.Ultima.Login.Servers;
 #endregion
 
 namespace UltimaXNA.Ultima.Network.Server

@@ -5,8 +5,8 @@ using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Patterns;
 using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.World.Maps;
-using UltimaXNA.Ultima.Entities;
-using UltimaXNA.Ultima.Entities.Items;
+using UltimaXNA.Ultima.World.Entities;
+using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.Data;
 
 namespace SeasonChangerPlugin
