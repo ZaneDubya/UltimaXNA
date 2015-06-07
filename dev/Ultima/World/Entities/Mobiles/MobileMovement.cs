@@ -23,7 +23,9 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         double m_playerMobile_NextMoveInMS;
 
         public static Action<MoveRequestPacket> SendMoveRequestPacket;
-        
+
+        public static bool NewDiagonalMovement = false;
+
         public bool RequiresUpdate
         {
             get;
@@ -293,7 +295,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             // The legacy client only allows alternative direction checking when moving in a cardinal (NSEW) direction.
             // This is checked by only checked alterate directions when the initial facing modulo 2 is 1.
             // By contrast, this client allows, when enabled, alternative direction checking in any direction.
-            if (EngineVars.NewDiagonalMovement || ((int)initialFacing % 2 == 1))
+            if (MobileMovement.NewDiagonalMovement || ((int)initialFacing % 2 == 1))
             {
                 // if blocked, attempt moving in the direction 1/8 counterclockwise to the direction specified.
                 if (!moveIsOkay)

@@ -47,7 +47,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
 
         public override void Update(double frameMS)
         {
-            if (EngineVars.AllLabels)
+            if (WorldView.AllLabels)
             {
                 AddOverhead(MessageTypes.Label, "<outline>" + Name, 0, NotorietyHue);
             }

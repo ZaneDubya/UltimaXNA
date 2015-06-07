@@ -26,10 +26,19 @@ namespace UltimaXNA.Ultima
 {
     class WorldModel : AUltimaModel
     {
+        // ================================================================================
+        // Private variables
+        // ================================================================================
+        private Map m_map = null;
+        private WorldCursor m_Cursor = null;
+        // services
         private INetworkClient m_Network;
         private UserInterfaceService m_UserInterface;
         private UltimaGame m_Engine;
 
+        // ================================================================================
+        // Public Static Properties
+        // ================================================================================
         public static Serial PlayerSerial
         {
             get;
@@ -54,6 +63,9 @@ namespace UltimaXNA.Ultima
             private set;
         }
 
+        // ================================================================================
+        // Public Properties
+        // ================================================================================
         public WorldClient Client
         {
             get;
@@ -71,8 +83,7 @@ namespace UltimaXNA.Ultima
             get;
             private set;
         }
-
-        private WorldCursor m_Cursor = null;
+        
         public WorldCursor Cursor
         {
             get { return m_Cursor; }
@@ -86,7 +97,12 @@ namespace UltimaXNA.Ultima
             }
         }
 
-        private Map m_map = null;
+        public int MapCount
+        {
+            get;
+            set;
+        }
+        
         public Map Map
         {
             get { return m_map; }
@@ -133,6 +149,15 @@ namespace UltimaXNA.Ultima
             }
         }
 
+        public static bool IsInWorld // InWorld allows us to tell when our character object has been loaded in the world.
+        {
+            get;
+            set;
+        }
+
+        // ================================================================================
+        // Ctor, Initialization, Dispose, Update
+        // ================================================================================
         public WorldModel()
             : base()
         {
@@ -152,28 +177,12 @@ namespace UltimaXNA.Ultima
             Client = new WorldClient(this);
         }
 
-        protected override AView CreateView()
-        {
-            //TODO: this needs to be resolved, not newed up.
-            return new WorldView(this);
-        }
-
         protected override void OnInitialize()
         {
             m_Engine.SetupWindowForWorld();
 
             m_UserInterface.Cursor = Cursor = new WorldCursor(this);
             Client.Initialize();
-        }
-
-        public void LoginSequence()
-        {
-            m_UserInterface.AddControl(new WorldViewGump(), 0, 0); // world gump will always place itself correctly.
-            m_UserInterface.AddControl(new TopMenuGump(0), 0, 0);
-
-            Client.SendWorldLoginPackets();
-            EngineVars.InWorld = true;
-            Client.StartKeepAlivePackets();
         }
 
         protected override void OnDispose()
@@ -203,7 +212,7 @@ namespace UltimaXNA.Ultima
                 if (m_UserInterface.IsModalControlOpen == false)
                 {
                     MsgBoxGump g = MsgBoxGump.Show("You have lost your connection with the server.", MsgBoxTypes.OkOnly);
-                    g.OnClose = onCloseLostConnectionMsgBox;
+                    g.OnClose = OnCloseLostConnectionMsgBox;
                 }
             }
             else
@@ -215,18 +224,37 @@ namespace UltimaXNA.Ultima
             }
         }
 
+        // ================================================================================
+        // Public Methods
+        // ================================================================================
+        public void LoginToWorld()
+        {
+            m_UserInterface.AddControl(new WorldViewGump(), 0, 0); // world gump will restore its position on load.
+            m_UserInterface.AddControl(new TopMenuGump(0), 0, 0); // always at the top of the screen.
+
+            Client.SendWorldLoginPackets();
+            WorldModel.IsInWorld = true;
+            Client.StartKeepAlivePackets();
+        }
+
         public void Disconnect()
         {
-            m_Network.Disconnect();
-            EngineVars.InWorld = false;
+            m_Network.Disconnect(); // stops keep alive packets.
+            WorldModel.IsInWorld = false;
             m_Engine.ActiveModel = new LoginModel();
         }
 
-        void onCloseLostConnectionMsgBox()
+        // ================================================================================
+        // Private/Protected Methods
+        // ================================================================================
+        protected override AView CreateView()
+        {
+            return new WorldView(this);
+        }
+
+        void OnCloseLostConnectionMsgBox()
         {
             Disconnect();
         }
-
-        public int MapCount { get; set; }
     }
 }

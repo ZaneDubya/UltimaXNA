@@ -75,7 +75,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             switch ((SelectServerGumpButtons)buttonID)
             {
                 case SelectServerGumpButtons.QuitButton:
-                    EngineVars.EngineRunning = false;
+                    UltimaGame.IsRunning = false;
                     break;
                 case SelectServerGumpButtons.BackButton:
                     OnBackToLoginScreen();

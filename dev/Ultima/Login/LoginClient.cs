@@ -343,7 +343,7 @@ namespace UltimaXNA.Ultima.Login
                     m_Engine.ActivateQueuedModel();
                     if (m_Engine.ActiveModel is WorldModel)
                     {
-                        ((WorldModel)m_Engine.ActiveModel).LoginSequence();
+                        ((WorldModel)m_Engine.ActiveModel).LoginToWorld();
                         LoginConfirmPacket packet = m_QueuedLoginConfirmPacket;
                         PlayerMobile player = WorldModel.Entities.GetObject<PlayerMobile>(m_QueuedLoginConfirmPacket.Serial, true);
                         if (player == null)

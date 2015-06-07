@@ -70,7 +70,7 @@ namespace UltimaXNA.Ultima.World.Managers
 
         public void Update(double frameMS)
         {
-            if (EngineVars.InWorld)
+            if (WorldModel.IsInWorld)
             {
                 updateEntities(frameMS);
             }

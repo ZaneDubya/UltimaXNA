@@ -26,12 +26,18 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         Texture2D m_GumpTexture;
         Texture2D m_PlayerIndicator;
 
+        public static bool MiniMap_LargeFormat
+        {
+            get;
+            set;
+        }
+
         public MiniMapGump()
             : base(0, 0)
         {
             m_World = ServiceRegistry.GetService<WorldModel>();
 
-            m_useLargeMap = EngineVars.MiniMap_LargeFormat;
+            m_useLargeMap = MiniMap_LargeFormat;
 
             IsMovable = true;
             MakeThisADragger();
@@ -45,9 +51,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         public override void Update(double totalMS, double frameMS)
         {
-            if (m_GumpTexture == null || m_useLargeMap != EngineVars.MiniMap_LargeFormat)
+            if (m_GumpTexture == null || m_useLargeMap != MiniMap_LargeFormat)
             {
-                m_useLargeMap = EngineVars.MiniMap_LargeFormat;
+                m_useLargeMap = MiniMap_LargeFormat;
                 if (m_GumpTexture != null)
                 {
                     m_GumpTexture = null;
@@ -93,7 +99,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
             if (button == MouseButton.Left)
             {
-                EngineVars.MiniMap_LargeFormat = !EngineVars.MiniMap_LargeFormat;
+                MiniMap_LargeFormat = !MiniMap_LargeFormat;
             }
         }
     }

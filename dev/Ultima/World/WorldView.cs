@@ -39,6 +39,17 @@ namespace UltimaXNA.Ultima.World
             get { return (WorldModel)base.Model; }
         }
 
+        /// <summary>
+        ///  When AllLabels is true, all entites should display their name above their object.
+        /// </summary>
+        public static bool AllLabels
+        {
+            get;
+            set;
+        }
+
+        public static int MouseOverHue = 0x038;
+
         public WorldView(WorldModel model)
             : base(model)
         {

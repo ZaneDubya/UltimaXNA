@@ -123,7 +123,7 @@ namespace UltimaXNA.Ultima.World.Input
 
         public void Update(double frameMS)
         {
-            if (EngineVars.InWorld && !m_UserInterface.IsModalControlOpen && m_Network.IsConnected)
+            if (WorldModel.IsInWorld && !m_UserInterface.IsModalControlOpen && m_Network.IsConnected)
             {
                 // always parse keyboard. (Is it possible there are some situations in which keyboard input is blocked???)
                 InternalParseKeyboard(frameMS);
@@ -441,7 +441,7 @@ namespace UltimaXNA.Ultima.World.Input
         private void InternalParseKeyboard(double frameMS)
         {
             // all names mode
-            EngineVars.AllLabels = (m_Input.IsShiftDown && m_Input.IsCtrlDown);
+            WorldView.AllLabels = (m_Input.IsShiftDown && m_Input.IsCtrlDown);
 
             // Warmode toggle:
             if(m_Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.Tab, false, false, false))

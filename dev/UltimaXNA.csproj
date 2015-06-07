@@ -272,7 +272,6 @@
     <Compile Include="Ultima\Login\Accounts\Characters.cs" />
     <Compile Include="Ultima\Login\Servers\ServerListEntry.cs" />
     <Compile Include="Ultima\Login\Servers\Servers.cs" />
-    <Compile Include="Ultima\EngineVars.cs" />
     <Compile Include="Ultima\Data\Features.cs" />
     <Compile Include="Ultima\Player\SkillData.cs" />
     <Compile Include="Ultima\Player\StatLockData.cs" />

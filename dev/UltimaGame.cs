@@ -31,18 +31,16 @@ namespace UltimaXNA
 {
     internal class UltimaGame : Game
     {
-        public static UltimaGame Instance
+        public static bool IsRunning // false = engine immediately quits.
         {
             get;
-            private set;
+            set;
         }
 
         public static double TotalMS = 0d;
 
         public UltimaGame()
         {
-            Instance = this;
-
             InitializeGraphicsDeviceAndWindow();
             InitializeExitGuard();
             SetupWindowForLogin();
@@ -158,8 +156,8 @@ namespace UltimaXNA
                 GraphicsDevice.Textures[1] = HuesXNA.HueTexture0;
                 GraphicsDevice.Textures[2] = HuesXNA.HueTexture1;
 
-                EngineVars.EngineRunning = true;
-                EngineVars.InWorld = false;
+                UltimaGame.IsRunning = true;
+                WorldModel.IsInWorld = false;
 
                 ActiveModel = new LoginModel();
             }
@@ -180,7 +178,7 @@ namespace UltimaXNA
         {
             IsFixedTimeStep = Settings.Game.IsFixedTimeStep;
 
-            if(!EngineVars.EngineRunning)
+            if(!UltimaGame.IsRunning)
             {
                 Settings.Save();
                 Exit();

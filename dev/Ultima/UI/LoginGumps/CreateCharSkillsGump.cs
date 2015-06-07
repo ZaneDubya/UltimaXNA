@@ -146,7 +146,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
                     OnForward();
                     break;
                 case Buttons.QuitButton:
-                    EngineVars.EngineRunning = false;
+                    UltimaGame.IsRunning = false;
                     break;
             }
         }
