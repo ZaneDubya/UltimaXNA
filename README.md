@@ -12,4 +12,4 @@ You should use [Visual Studio 2013](https://www.visualstudio.com/en-us/products/
 
 UltimaXNA does not include the Ultima Online resource files, and will not work on a computer that does not have Ultima Online installed. UltimaXNA is compatible with any Ultima Online client prior to the introduction of the *.UOP resource format, including Mondain's Legacy. [Download the client files for Mondain's Legacy here](http://games.mirrors.tds.net/pub/ea-games/uo/uoml_setup.exe).
 
-UltimaXNA is designed to work with all server software. The reccomended installation is RunUO 2.3, [which you can download here](https://code.google.com/p/runuo/downloads/list).
+UltimaXNA is designed to work with all server software. The recommended installation is RunUO 2.3, [which you can download here](https://code.google.com/p/runuo/downloads/list).
