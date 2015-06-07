@@ -36,10 +36,12 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
         public LoginGump()
             : base(0, 0)
         {
-            int hue = 1132; // dark brown
+            int hue = 902; // light blue
             // backdrop
-            AddControl(new GumpPicTiled(this, 0, 0, 0, 800, 600, 9274));
-            AddControl(new GumpPic(this, 0, 0, 0, 9001, 0));
+            AddControl(new GumpPicTiled(this, 0, 0, 0, 800, 600, 0x0588));
+            AddControl(new ResizePic(this, 0, 128, 285, 0x13BE, 520, 190));
+            AddControl(new GumpPic(this, 0, 0, 0, 0x157C, 0)); // 0x2329
+            AddControl(new GumpPic(this, 0, 354, 42, 0x058A, 0)); // 0x2329
             // quit button
             AddControl(new Button(this, 0, 554, 2, 5513, 5515, ButtonTypes.Activate, 0, (int)LoginGumpButtons.QuitButton));
             ((Button)LastControl).GumpOverID = 5514;
@@ -61,10 +63,10 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             AddControl(new ResizePic(this, g2));
             AddControl(g2);
             // login button
-            AddControl(new Button(this, 0, 610, 435, 5540, 5542, ButtonTypes.Activate, 0, (int)LoginGumpButtons.LoginButton));
+            AddControl(new Button(this, 0, 610, 439, 5540, 5542, ButtonTypes.Activate, 0, (int)LoginGumpButtons.LoginButton));
             ((Button)LastControl).GumpOverID = 5541;
             // Version information
-            AddControl(new TextLabelAscii(this, 0, 183, 421, hue, 9, Utility.VersionString));
+            AddControl(new HtmlGumpling(this, 0, 183, 440, 300, 20, 0, 0, "<medium><outline><font color='#AAAACC'>" + Utility.VersionString));
 
             IsUncloseableWithRMB = true;
         }

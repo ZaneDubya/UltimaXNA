@@ -427,7 +427,7 @@ namespace UltimaXNA
                 {
                     Version v = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
                     DateTime d = new DateTime(v.Build * TimeSpan.TicksPerDay).AddYears(1999).AddDays(-1);
-                    m_versionString = string.Format("UltimaXNA PreAlpha v{0}.{1} ({2})", v.Major, v.Minor, String.Format("{0:MMMM d, yyyy}", d));
+                    m_versionString = string.Format("UltimaXNA PreAlpha Milestone {0}.{1} ({2})", v.Major, v.Minor, String.Format("{0:MMMM d, yyyy}", d));
                 }
                 return m_versionString;
             }
