@@ -14,6 +14,8 @@ using UltimaXNA.Ultima.Entities;
 using UltimaXNA.Ultima.Entities.Mobiles;
 using UltimaXNA.Ultima.EntityViews;
 using UltimaXNA.Ultima.World.Views;
+using UltimaXNA.Ultima.World.Gumps;
+using UltimaXNA.Core.UI;
 #endregion
 
 namespace UltimaXNA.Ultima.World
@@ -46,6 +48,8 @@ namespace UltimaXNA.Ultima.World
 
             MiniMap = new MiniMapTexture();
             MiniMap.Initialize();
+
+            m_UI = ServiceRegistry.GetService<UserInterfaceService>();
         }
 
         public override void Draw(double frameTime)
@@ -65,10 +69,11 @@ namespace UltimaXNA.Ultima.World
                     m_DeathEffectTime = 0;
                     m_LightingGlobal = Isometric.OverallLightning;
                     m_LightingPersonal = Isometric.PersonalLightning;
+                    m_UI.AddControl(m_YouAreDead = new YouAreDeadGump(), 0, 0);
                 }
 
-                double msFade = 1000d;
-                double msHold = 1500d;
+                double msFade = 2000d;
+                double msHold = 1000d;
 
                 if (m_DeathEffectTime < msFade)
                 {
@@ -86,6 +91,11 @@ namespace UltimaXNA.Ultima.World
                     AEntityView.s_Technique = Techniques.Grayscale;
                     Isometric.OverallLightning = (int)m_LightingGlobal;
                     Isometric.PersonalLightning = (int)m_LightingPersonal;
+                    if (m_YouAreDead != null)
+                    {
+                        m_YouAreDead.Dispose();
+                        m_YouAreDead = null;
+                    }
                 }
 
                 m_DeathEffectTime += frameTime;
@@ -99,5 +109,8 @@ namespace UltimaXNA.Ultima.World
         private double m_DeathEffectTime = 0d;
         private double m_LightingGlobal;
         private double m_LightingPersonal;
+        private YouAreDeadGump m_YouAreDead;
+
+        private UserInterfaceService m_UI;
     }
 }
