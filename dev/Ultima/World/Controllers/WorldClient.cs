@@ -758,12 +758,16 @@ namespace UltimaXNA.Ultima.World.Controllers
 
         private void ReceiveResurrectionMenu(IRecvPacket packet)
         {
-            // int iAction = reader.ReadByte();
-            // 0: Server sent
-            // 1: Resurrect
-            // 2: Ghost
-            // The only use on OSI for this packet is now sending "2C02" for the "You Are Dead" screen upon character death.
-            announce_UnhandledPacket(packet);
+            ResurrectionMenuPacket p = (ResurrectionMenuPacket)packet;
+            switch (p.ResurrectionAction)
+            {
+                case 0x00: // Notify client of their death.
+                    break;
+                case 0x01: // Client has chosen to resurrect with penalties.
+                    break;
+                case 0x02: // Client has chosen to play as ghost.
+                    break;
+            }
         }
 
         private void ReceivePopupMessage(IRecvPacket packet)

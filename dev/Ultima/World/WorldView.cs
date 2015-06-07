@@ -10,10 +10,10 @@
 #region usings
 using InterXLib.Patterns.MVC;
 using UltimaXNA.Core.Graphics;
-using UltimaXNA.Ultima.World.Views;
 using UltimaXNA.Ultima.Entities;
 using UltimaXNA.Ultima.Entities.Mobiles;
 using UltimaXNA.Ultima.EntityViews;
+using UltimaXNA.Ultima.World.Views;
 #endregion
 
 namespace UltimaXNA.Ultima.World
@@ -52,10 +52,52 @@ namespace UltimaXNA.Ultima.World
         {
             AEntity player = EntityManager.GetPlayerObject();
             Position3D center = player.Position;
-            AEntityView.s_Technique = (player as Mobile).IsAlive ? Techniques.Default : Techniques.Grayscale;
+            if ((player as Mobile).IsAlive)
+            {
+                AEntityView.s_Technique = Techniques.Default;
+                m_ShowingDeathEffect = false;
+            }
+            else
+            {
+                if (!m_ShowingDeathEffect)
+                {
+                    m_ShowingDeathEffect = true;
+                    m_DeathEffectTime = 0;
+                    m_LightingGlobal = Isometric.OverallLightning;
+                    m_LightingPersonal = Isometric.PersonalLightning;
+                }
+
+                double msFade = 1000d;
+                double msHold = 1500d;
+
+                if (m_DeathEffectTime < msFade)
+                {
+                    AEntityView.s_Technique = Techniques.Default;
+                    Isometric.OverallLightning = (int)(m_LightingGlobal + (0x1f - m_LightingGlobal) * ((m_DeathEffectTime / msFade)));
+                    Isometric.PersonalLightning = (int)(m_LightingPersonal * (1d - (m_DeathEffectTime / msFade)));
+                }
+                else if (m_DeathEffectTime < msFade + msHold)
+                {
+                    Isometric.OverallLightning = 0x1f;
+                    Isometric.PersonalLightning = 0x00;
+                }
+                else
+                {
+                    AEntityView.s_Technique = Techniques.Grayscale;
+                    Isometric.OverallLightning = (int)m_LightingGlobal;
+                    Isometric.PersonalLightning = (int)m_LightingPersonal;
+                }
+
+                m_DeathEffectTime += frameTime;
+            }
 
             Isometric.Update(Model.Map, center, Model.Input.MousePick);
             MiniMap.Update(Model.Map, center);
         }
+
+        private bool m_ShowingDeathEffect = false;
+        private double m_DeathEffectTime = 0d;
+        private double m_LightingGlobal;
+        private double m_LightingPersonal;
     }
 }

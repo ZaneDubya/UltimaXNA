@@ -125,6 +125,16 @@ float4 PixelShader_Grayscale(PS_INPUT IN) : COLOR0
 	float greyscaleAverage = (0.2989 * color.r + 0.5870 * color.g + 0.1140 * color.b);
 	color = float4(greyscaleAverage, greyscaleAverage, greyscaleAverage, color.a);
 
+	// Darken the color based on the ambient lighting and the normal.
+	if (DrawLighting)
+	{
+		float3 light = normalize(lightDirection);
+			float3 normal = normalize(IN.Normal);
+			float3 nDotL = min(saturate(dot(light, normal)), 1.0f);
+
+			color.rgb = saturate((color.rgb * nDotL * lightIntensity * 0.2f + color.rgb * lightIntensity * 0.8f));
+	}
+
 	return color;
 }
 
