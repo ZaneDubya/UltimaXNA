@@ -5,10 +5,10 @@ using System.Text;
 
 namespace UltimaXNA.Ultima.Audio
 {
-    enum SoundState
+    enum VolumeState
     {
-        Unloaded,
-        Loading,
-        Loaded
+        Stationary,
+        Increasing,
+        Decreasing
     }
 }

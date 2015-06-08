@@ -1143,8 +1143,8 @@ namespace UltimaXNA.Ultima.World
         private void ReceivePlayMusic(IRecvPacket packet)
         {
             PlayMusicPacket p = (PlayMusicPacket)packet;
-            // System.Console.WriteLine ( "Play music, id={0}", p.MusicID );
-            IO.MusicData.PlayMusic(p.MusicID);
+            Audio.AudioService service = ServiceRegistry.GetService<Audio.AudioService>();
+            service.PlayMusic(p.MusicID);
         }
 
         private void ReceivePlaySoundEffect(IRecvPacket packet)

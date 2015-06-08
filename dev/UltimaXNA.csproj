@@ -153,6 +153,7 @@
     <Compile Include="Ultima\Audio\SoundState.cs" />
     <Compile Include="Ultima\Audio\UOMusic.cs" />
     <Compile Include="Ultima\Audio\UOSound.cs" />
+    <Compile Include="Ultima\Audio\VolumeState.cs" />
     <Compile Include="Ultima\AUltimaModel.cs" />
     <Compile Include="Configuration\DebugSettings.cs" />
     <Compile Include="Configuration\GameSettings.cs" />
