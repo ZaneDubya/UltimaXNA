@@ -14,7 +14,7 @@ using System.IO;
 using UltimaXNA.Core;
 using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.IO;
-
+using UltimaXNA.Core.Graphics;
 #endregion
 
 namespace UltimaXNA.Ultima.IO
@@ -40,9 +40,10 @@ namespace UltimaXNA.Ultima.IO
         private static GraphicsDevice m_graphics;
         private static int[] m_Table;
 
-        public static void Initialize(GraphicsDevice graphics)
+        static Animations()
         {
-            m_graphics = graphics;
+            SpriteBatch3D sb = ServiceRegistry.GetService<SpriteBatch3D>();
+            m_graphics = sb.GraphicsDevice;
         }
 
         public static int GetAnimationFrameCount(int body, int action, int direction, int hue)
