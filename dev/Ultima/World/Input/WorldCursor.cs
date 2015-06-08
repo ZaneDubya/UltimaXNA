@@ -124,7 +124,8 @@ namespace UltimaXNA.Ultima.World.Input
                     }
                     else if (target is ItemGumplingPaperdoll || (target is GumpPic && ((GumpPic)target).IsPaperdoll))
                     {
-                        WearHeldItem();
+                        if (HeldItem.ItemData.IsWearable)
+                            WearHeldItem();
                     }
                     else if (target is GumpPicBackpack)
                     {

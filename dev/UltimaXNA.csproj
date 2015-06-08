@@ -148,6 +148,7 @@
     <Compile Include="Core\UI\Interfaces\ICursor.cs" />
     <Compile Include="Core\UI\Interfaces\IFont.cs" />
     <Compile Include="Core\UI\Interfaces\IUIResourceProvider.cs" />
+    <Compile Include="Core\PluginManager.cs" />
     <Compile Include="ServiceRegistry.cs" />
     <Compile Include="Ultima\Audio\AudioService.cs" />
     <Compile Include="Ultima\Audio\SoundState.cs" />
