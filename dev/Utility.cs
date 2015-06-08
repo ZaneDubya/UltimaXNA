@@ -10,6 +10,7 @@
  ***************************************************************************/
 #region usings
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -560,6 +561,12 @@ namespace UltimaXNA
             count /= m_FPS.Count;
 
             return (int)System.Math.Ceiling(count);
+        }
+
+        public static void SaveTexture(Texture2D texture, string path)
+        {
+            if (texture != null)
+                texture.SaveAsPng(new FileStream(path, FileMode.Create), texture.Width, texture.Height);
         }
     }
 }

@@ -181,7 +181,6 @@ namespace UltimaXNA.Ultima.IO
             get { return (Flags & TileFlag.Foliage) != 0; }
         }
 
-        
         public bool IsGeneric
         {
             get { return (Flags & TileFlag.Generic) != 0; }
@@ -190,6 +189,11 @@ namespace UltimaXNA.Ultima.IO
         public bool IsImpassable
         {
             get { return (Flags & TileFlag.Impassable) != 0; }
+        }
+
+        public bool IsLightSource
+        {
+            get { return (Flags & TileFlag.LightSource) != 0; }
         }
 
         public bool IsPartialHue
@@ -215,6 +219,11 @@ namespace UltimaXNA.Ultima.IO
         public bool IsWall
         {
             get { return (Flags & TileFlag.Wall) != 0; }
+        }
+
+        public bool IsWearable
+        {
+            get { return (Flags & TileFlag.Wearable) != 0; }
         }
 
         public bool IsWet

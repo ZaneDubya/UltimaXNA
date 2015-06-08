@@ -140,6 +140,18 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             get { return (Equipment[(int)EquipLayer.FacialHair] == null) ? 0 : Equipment[(int)EquipLayer.FacialHair].Hue; }
         }
 
+        public int LightSourceBodyID
+        {
+            get
+            {
+                int bodyID = Equipment[(int)EquipLayer.TwoHanded] != null ? Equipment[(int)EquipLayer.TwoHanded].ItemData.AnimID : 0;
+                if (bodyID >= 500 && bodyID <= 505)
+                    return bodyID;
+                else
+                    return 0;
+            }
+        }
+
         public void WearItem(Item i, int slot)
         {
             Equipment[slot] = i;

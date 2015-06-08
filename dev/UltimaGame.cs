@@ -14,6 +14,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Windows.Forms;
 using UltimaXNA.Configuration;
+using UltimaXNA.Core;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
@@ -121,6 +122,12 @@ namespace UltimaXNA
             private set;
         }
 
+        protected PluginManager Plugins
+        {
+            get;
+            private set;
+        }
+
         protected override void Initialize()
         {
             Content.RootDirectory = "Content";
@@ -131,18 +138,22 @@ namespace UltimaXNA
             // Create all the services we need.
             ServiceRegistry.Register<SpriteBatch3D>(new SpriteBatch3D(this));
             ServiceRegistry.Register<SpriteBatchUI>(new SpriteBatchUI(this));
-            Network = ServiceRegistry.Register<INetworkClient>(new NetworkClient());
-            Input = ServiceRegistry.Register<InputManager>(new InputManager(Window.Handle));
-            UserInterface = ServiceRegistry.Register<UserInterfaceService>(new UserInterfaceService());
             ServiceRegistry.Register<AudioService>(new AudioService());
             ServiceRegistry.Register<IUIResourceProvider>(new UltimaUIResourceProvider());
             
+            Network = ServiceRegistry.Register<INetworkClient>(new NetworkClient());
+            Input = ServiceRegistry.Register<InputManager>(new InputManager(Window.Handle));
+            UserInterface = ServiceRegistry.Register<UserInterfaceService>(new UserInterfaceService());
+            ServiceRegistry.Register<IUIResourceProvider>(new UltimaUIResourceProvider());
+            Plugins = new PluginManager(AppDomain.CurrentDomain.BaseDirectory);
+
+            AudioService audio = ServiceRegistry.Register<AudioService>(new AudioService());
+
             // Make sure we have a UO installation before loading IO.
             if (FileManager.IsUODataPresent)
             {
                 // Initialize and load data
                 AnimData.Initialize();
-                Animations.Initialize(GraphicsDevice);
                 ArtData.Initialize(GraphicsDevice);
 
                 ASCIIText.Initialize(GraphicsDevice);
@@ -165,6 +176,8 @@ namespace UltimaXNA
             {
                 Tracer.Critical("Did not find a compatible UO Installation. UltimaXNA is compatible with any version of UO through Mondian's Legacy.");
             }
+
+            audio.PlayMusic(0);
         }
 
         protected override void Dispose(bool disposing)

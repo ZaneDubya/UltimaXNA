@@ -126,6 +126,9 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
         private AnimationFrame getFrame(int bodyID, int hue, int facing, int action, float frame)
         {
+            if (bodyID >= 500 && bodyID <= 505)
+                patchLightSourceAction(ref action, ref frame);
+
             AnimationFrame[] iFrames = IO.Animations.GetAnimation(bodyID, action, facing, hue);
             if (iFrames == null)
                 return null;
@@ -133,6 +136,14 @@ namespace UltimaXNA.Ultima.World.EntityViews
             if (iFrames[iFrame].Texture == null)
                 return null;
             return iFrames[iFrame];
+        }
+
+        private void patchLightSourceAction(ref int action, ref float frame)
+        {
+            if (action == (int)ActionIndexHumanoid.Walk)
+                action = (int)ActionIndexHumanoid.Walk_Armed;
+            else if (action == (int)ActionIndexHumanoid.Run)
+                action = (int)ActionIndexHumanoid.Run_Armed;
         }
 
         private int frameFromSequence(float frame, int maxFrames)
