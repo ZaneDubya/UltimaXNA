@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace InterXLib.Patterns.MVC
+namespace UltimaXNA.Core.Patterns.MVC
 {
     /// <summary>
     /// Abstract Model. Maintains the state, core data, and update logic of a model.

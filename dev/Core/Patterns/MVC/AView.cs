@@ -1,5 +1,5 @@
 ﻿
-namespace InterXLib.Patterns.MVC
+namespace UltimaXNA.Core.Patterns.MVC
 {
     /// <summary>
     /// Abstract Model - polls the state of a model, and renders it for the player.

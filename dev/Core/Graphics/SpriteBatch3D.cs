@@ -1,6 +1,7 @@
 ﻿/***************************************************************************
  *   SpriteBatch3D.cs
  *   Based on code from ClintXNA's renderer: http://www.runuo.com/forums/xna/92023-hi.html
+ *   Modifications Copyright (c) 2015 UltimaXNA Development Team
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by

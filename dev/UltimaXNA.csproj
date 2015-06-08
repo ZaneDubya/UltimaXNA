@@ -135,7 +135,7 @@
     <Compile Include="Core\ComponentModel\NotifyPropertyChangedBase.cs" />
     <Compile Include="Configuration\Resolution.cs" />
     <Compile Include="Core\Configuration\TextSettingsFileWriter.cs" />
-    <Compile Include="Core\Diagnostics\EventLevel.cs" />
+    <Compile Include="Core\Diagnostics\EventLevels.cs" />
     <Compile Include="Core\Diagnostics\Listeners\AEventListener.cs" />
     <Compile Include="Core\Diagnostics\Listeners\MsgBoxOnCriticalListener.cs" />
     <Compile Include="Core\DpiManager.cs" />
