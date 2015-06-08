@@ -17,8 +17,8 @@ namespace ExamplePlugin
 
         public void Load()
         {
-            CandleObjectDebugger candle = new CandleObjectDebugger();
-            candle.OutputAllCandleTextures();
+            // CandleObjectDebugger candle = new CandleObjectDebugger();
+            // candle.OutputAllCandleTextures();
         }
 
         public void Unload()

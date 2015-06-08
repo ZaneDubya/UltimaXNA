@@ -27,7 +27,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
         {
             get
             {
-                if (Parent.Body == 5 || Parent.Body == 6)
+                if (Parent.Body == 5 || Parent.Body == 6) // birds have weird action indexes. not sure if this is correct.
                     if (m_actionIndex > 8)
                         return m_actionIndex + 8;
                 return m_actionIndex;
@@ -62,9 +62,9 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
         // We use these variables to 'hold' the last frame of an animation before 
         // switching to Stand Action.
-        private bool m_holdAnimation = false;
-        private int m_holdAnimationTime = 0;
-        private int HoldAnimationMS
+        private bool m_IsAnimatationPaused = false;
+        private int m_AnimationPausedMS = 0;
+        private int PauseAnimationMS
         {
             get
             {
@@ -87,10 +87,10 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
             // If we are holding the current animation, then we should wait until our hold time is over
             // before switching to the queued Stand animation.
-            if (m_holdAnimation)
+            if (m_IsAnimatationPaused)
             {
-                m_holdAnimationTime -= msSinceLastUpdate;
-                if (m_holdAnimationTime >= 0)
+                m_AnimationPausedMS -= msSinceLastUpdate;
+                if (m_AnimationPausedMS >= 0)
                 {
                     // we are still holding. Do not update the current Animation frame.
                     return;
@@ -98,7 +98,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 else
                 {
                     // hold time is over, continue to Stand animation.
-                    unholdAnimation();
+                    UnPauseAnimation();
                     m_action = MobileAction.Stand;
                     m_actionIndex = getActionIndex(MobileAction.Stand);
                     m_animationFrame = 0f;
@@ -149,7 +149,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
                                 m_animationFrame -= m_FrameCount;
                             else
                                 m_animationFrame = m_FrameCount - 0.001f;
-                            holdAnimation();
+                            PauseAnimation();
                         }
                             
                     }
@@ -181,9 +181,9 @@ namespace UltimaXNA.Ultima.World.EntityViews
         {
             if (m_action == action)
             {
-                if (m_holdAnimation)
+                if (m_IsAnimatationPaused)
                 {
-                    unholdAnimation();
+                    UnPauseAnimation();
                 }
             }
 
@@ -198,12 +198,12 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 if (!(m_action == MobileAction.None) && (action == MobileAction.Stand && m_action != MobileAction.Stand))
                 {
                     if (m_action != MobileAction.None)
-                        holdAnimation();
+                        PauseAnimation();
                 }
                 else
                 {
                     m_action = action;
-                    unholdAnimation();
+                    UnPauseAnimation();
                     m_actionIndex = actionIndex;
                     m_animationFrame = 0f;
                     m_FrameCount = IO.Animations.GetAnimationFrameCount(
@@ -217,18 +217,18 @@ namespace UltimaXNA.Ultima.World.EntityViews
             }
         }
 
-        private void holdAnimation()
+        private void PauseAnimation()
         {
-            if (!m_holdAnimation)
+            if (!m_IsAnimatationPaused)
             {
-                m_holdAnimation = true;
-                m_holdAnimationTime = HoldAnimationMS;
+                m_IsAnimatationPaused = true;
+                m_AnimationPausedMS = PauseAnimationMS;
             }
         }
 
-        private void unholdAnimation()
+        private void UnPauseAnimation()
         {
-            m_holdAnimation = false;
+            m_IsAnimatationPaused = false;
         }
 
         private int getActionIndex(MobileAction action)
@@ -252,14 +252,23 @@ namespace UltimaXNA.Ultima.World.EntityViews
                                 return (int)ActionIndexHumanoid.Walk_Warmode;
                             else
                             {
-                                // Also check if is_armed.
-                                return (int)ActionIndexHumanoid.Walk;
+                                // if carrying a light source, return Walk_Armed.
+                                if (Parent.LightSourceBodyID != 0)
+                                    return (int)ActionIndexHumanoid.Walk_Armed;
+                                else
+                                    return (int)ActionIndexHumanoid.Walk;
                             }
                     case MobileAction.Run:
                         if (Parent.IsMounted)
                             return (int)ActionIndexHumanoid.Mounted_RideFast;
                         else
-                            return (int)ActionIndexHumanoid.Run;
+                        {
+                            // if carrying a light source, return Run_Armed.
+                            if (Parent.LightSourceBodyID != 0)
+                                return (int)ActionIndexHumanoid.Run_Armed;
+                            else
+                                return (int)ActionIndexHumanoid.Run;
+                        }
                     case MobileAction.Stand:
                         if (Parent.IsMounted)
                             return (int)ActionIndexHumanoid.Mounted_Stand;
