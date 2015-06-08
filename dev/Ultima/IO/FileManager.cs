@@ -252,5 +252,10 @@ namespace UltimaXNA.Ultima.IO
         {
             return GetFile(String.Format("{0}.{1}", name, type));
         }
+
+        public static string GetPath(string name)
+        {
+            return Path.Combine(m_FileDirectory, name);
+        }
     }
 }

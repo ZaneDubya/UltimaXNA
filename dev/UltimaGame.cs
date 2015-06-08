@@ -144,8 +144,11 @@ namespace UltimaXNA
             Network = ServiceRegistry.Register<INetworkClient>(new NetworkClient());
             Input = ServiceRegistry.Register<InputManager>(new InputManager(Window.Handle));
             UserInterface = ServiceRegistry.Register<UserInterfaceService>(new UserInterfaceService());
+            ServiceRegistry.Register<IUIResourceProvider>(new UltimaUIResourceProvider());
             Plugins = new PluginManager(AppDomain.CurrentDomain.BaseDirectory);
-            
+
+            AudioService audio = ServiceRegistry.Register<AudioService>(new AudioService());
+
             // Make sure we have a UO installation before loading IO.
             if (FileManager.IsUODataPresent)
             {
@@ -173,6 +176,8 @@ namespace UltimaXNA
             {
                 Tracer.Critical("Did not find a compatible UO Installation. UltimaXNA is compatible with any version of UO through Mondian's Legacy.");
             }
+
+            audio.PlayMusic(0);
         }
 
         protected override void Dispose(bool disposing)
