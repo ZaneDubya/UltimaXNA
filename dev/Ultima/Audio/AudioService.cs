@@ -18,9 +18,32 @@ namespace UltimaXNA.Ultima.Audio
 {
     public class AudioService
     {
+        private static Dictionary<int, UOSound> m_Sounds = new Dictionary<int, UOSound>();
+
         public void PlaySound(int soundIndex)
         {
-            SoundData.PlaySound(soundIndex - 1);
+            UOSound sound;
+            if (m_Sounds.TryGetValue(soundIndex, out sound))
+            {
+                if (sound.Status == SoundState.Loaded)
+                    sound.Play();
+            }
+            else
+            {
+                sound = new UOSound();
+                m_Sounds.Add(soundIndex, sound);
+                string name;
+                byte[] data;
+                if (SoundData.TryGetSoundData(soundIndex - 1, out data, out name))
+                {
+                    sound.Name = name;
+                    sound.WaveBuffer = data;
+                    sound.Status = SoundState.Loaded;
+                    sound.Play();
+                }
+            }
+
+
         }
     }
 }

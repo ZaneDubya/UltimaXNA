@@ -1150,7 +1150,8 @@ namespace UltimaXNA.Ultima.World
         private void ReceivePlaySoundEffect(IRecvPacket packet)
         {
             PlaySoundEffectPacket p = (PlaySoundEffectPacket)packet;
-            IO.SoundData.PlaySound(p.SoundModel);
+            Audio.AudioService service = ServiceRegistry.GetService<Audio.AudioService>();
+            service.PlaySound(p.SoundModel);
         }
 
         private void ReceiveQuestArrow(IRecvPacket packet)
