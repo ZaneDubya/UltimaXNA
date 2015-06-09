@@ -36,6 +36,12 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             Equipment = new MobileEquipment(this);
             m_movement = new MobileMovement(this);
             m_movement.RequiresUpdate = true;
+
+            Health = new CurrentMaxValue();
+            Stamina = new CurrentMaxValue();
+            Mana = new CurrentMaxValue();
+            Followers = new CurrentMaxValue();
+            Weight = new CurrentMaxValue();
         }
 
         public override void Dispose()

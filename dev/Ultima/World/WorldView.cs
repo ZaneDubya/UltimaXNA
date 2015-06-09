@@ -71,6 +71,11 @@ namespace UltimaXNA.Ultima.World
             {
                 AEntityView.s_Technique = Techniques.Default;
                 m_ShowingDeathEffect = false;
+                if (m_YouAreDead != null)
+                {
+                    m_YouAreDead.Dispose();
+                    m_YouAreDead = null;
+                }
             }
             else
             {
