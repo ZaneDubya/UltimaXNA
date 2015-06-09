@@ -37,7 +37,7 @@ namespace UltimaXNA.Ultima.Audio
                 m_Sounds.Add(soundIndex, sound);
                 string name;
                 byte[] data;
-                if (SoundData.TryGetSoundData(soundIndex - 1, out data, out name))
+                if (SoundData.TryGetSoundData(soundIndex, out data, out name))
                 {
                     sound.Name = name;
                     sound.WaveBuffer = data;
