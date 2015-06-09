@@ -138,15 +138,16 @@ namespace UltimaXNA
             // Create all the services we need.
             ServiceRegistry.Register<SpriteBatch3D>(new SpriteBatch3D(this));
             ServiceRegistry.Register<SpriteBatchUI>(new SpriteBatchUI(this));
-            ServiceRegistry.Register<AudioService>(new AudioService());
             ServiceRegistry.Register<IUIResourceProvider>(new UltimaUIResourceProvider());
+
+            AudioService audio = ServiceRegistry.Register<AudioService>(new AudioService());
             
             Network = ServiceRegistry.Register<INetworkClient>(new NetworkClient());
             Input = ServiceRegistry.Register<InputManager>(new InputManager(Window.Handle));
             UserInterface = ServiceRegistry.Register<UserInterfaceService>(new UserInterfaceService());
             Plugins = new PluginManager(AppDomain.CurrentDomain.BaseDirectory);
 
-            AudioService audio = ServiceRegistry.Register<AudioService>(new AudioService());
+            
 
             // Make sure we have a UO installation before loading IO.
             if (FileManager.IsUODataPresent)
