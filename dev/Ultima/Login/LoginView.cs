@@ -1,4 +1,4 @@
-﻿using InterXLib.Patterns.MVC;
+﻿using UltimaXNA.Core.Patterns.MVC;
 
 namespace UltimaXNA.Ultima.Login
 {

@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using UltimaXNA.Core.Input;
 
-namespace InterXLib.Patterns.MVC
+namespace UltimaXNA.Core.Patterns.MVC
 {
     /// <summary>
     /// Abstract Controller - receives input, interacts with state of model.

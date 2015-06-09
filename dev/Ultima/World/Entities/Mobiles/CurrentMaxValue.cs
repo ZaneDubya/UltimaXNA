@@ -10,12 +10,18 @@
  ***************************************************************************/
 namespace UltimaXNA.Ultima.World.Entities.Mobiles
 {
-    public struct CurrentMaxValue
+    public class CurrentMaxValue
     {
         public int Current;
         public int Max;
 
-        CurrentMaxValue(int current, int max)
+        public CurrentMaxValue()
+        {
+            Current = 1;
+            Max = 1;
+        }
+
+        public CurrentMaxValue(int current, int max)
         {
             Current = current;
             Max = max;

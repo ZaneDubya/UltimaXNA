@@ -9,10 +9,9 @@
  *
  ***************************************************************************/
 #region usings
-using System;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using UltimaXNA.Ultima.World;
+using System;
+
 #endregion
 
 namespace UltimaXNA.Ultima.World

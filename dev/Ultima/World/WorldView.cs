@@ -8,13 +8,13 @@
  *
  ***************************************************************************/
 #region usings
-using InterXLib.Patterns.MVC;
+using UltimaXNA.Core.Patterns.MVC;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.UI.WorldGumps;
 using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Ultima.World.EntityViews;
-using UltimaXNA.Ultima.UI.WorldGumps;
 using UltimaXNA.Ultima.World.WorldViews;
 #endregion
 
@@ -71,6 +71,11 @@ namespace UltimaXNA.Ultima.World
             {
                 AEntityView.s_Technique = Techniques.Default;
                 m_ShowingDeathEffect = false;
+                if (m_YouAreDead != null)
+                {
+                    m_YouAreDead.Dispose();
+                    m_YouAreDead = null;
+                }
             }
             else
             {

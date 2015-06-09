@@ -9,7 +9,7 @@
  *
  ***************************************************************************/
 #region usings
-using InterXLib.Patterns.MVC;
+using UltimaXNA.Core.Patterns.MVC;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.World.Entities;
