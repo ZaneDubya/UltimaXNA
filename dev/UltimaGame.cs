@@ -144,7 +144,6 @@ namespace UltimaXNA
             Network = ServiceRegistry.Register<INetworkClient>(new NetworkClient());
             Input = ServiceRegistry.Register<InputManager>(new InputManager(Window.Handle));
             UserInterface = ServiceRegistry.Register<UserInterfaceService>(new UserInterfaceService());
-            ServiceRegistry.Register<IUIResourceProvider>(new UltimaUIResourceProvider());
             Plugins = new PluginManager(AppDomain.CurrentDomain.BaseDirectory);
 
             AudioService audio = ServiceRegistry.Register<AudioService>(new AudioService());
