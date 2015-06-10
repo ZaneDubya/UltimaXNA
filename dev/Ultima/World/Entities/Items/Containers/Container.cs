@@ -9,6 +9,7 @@
  *
  ***************************************************************************/
 #region usings
+using System;
 using System.Collections.Generic;
 using UltimaXNA.Ultima.World.Maps;
 #endregion
@@ -17,8 +18,10 @@ namespace UltimaXNA.Ultima.World.Entities.Items.Containers
 {
     public class Container : Item
     {
-        public int UpdateTicker { get; internal set; }
-        List<Item> m_Contents;
+        public event OnEvent OnContentsUpdated;
+
+        private List<Item> m_Contents;
+        private bool m_ContentsUpdated = false;
 
         public List<Item> Contents
         {
@@ -33,12 +36,18 @@ namespace UltimaXNA.Ultima.World.Entities.Items.Containers
         public Container(Serial serial, Map map)
             : base(serial, map)
         {
-            UpdateTicker = 0;
+            m_ContentsUpdated = true;
         }
 
         public override void Update(double frameMS)
         {
             base.Update(frameMS);
+            if (m_ContentsUpdated)
+            {
+                if (OnContentsUpdated != null)
+                    OnContentsUpdated();
+                m_ContentsUpdated = false;
+            }
         }
 
         public override void Dispose()
@@ -57,7 +66,7 @@ namespace UltimaXNA.Ultima.World.Entities.Items.Containers
                 Contents.Add(item);
                 item.Parent = this;
             }
-            UpdateTicker++;
+            m_ContentsUpdated = true;
         }
 
         public void RemoveItem(Serial serial)
@@ -71,7 +80,7 @@ namespace UltimaXNA.Ultima.World.Entities.Items.Containers
                     break;
                 }
             }
-            UpdateTicker++;
+            m_ContentsUpdated = true;
         }
     }
 }
