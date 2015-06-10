@@ -96,12 +96,12 @@ namespace UltimaXNA.Ultima.IO
 
                 Metrics.ReportDataRead(length);
 
-                /*if (replaceMask080808)
+                if (replaceMask080808)
                 {
                     for (int i = 0; i < pixels.Length; i++)
-                        if (pixels[i] == 0xff080808)
-                            pixels[i] = 0xffff00ff;
-                }*/
+                        if (pixels[i] == 0x8421)
+                            pixels[i] = 0xFC1F;
+                }
 
                 Texture2D texture = new Texture2D(m_graphicsDevice, width, height, false, SurfaceFormat.Bgra5551);
                 texture.SetData(pixels);
