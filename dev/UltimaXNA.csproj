@@ -197,6 +197,8 @@
     <Compile Include="Ultima\Data\Seasons.cs" />
     <Compile Include="Ultima\Data\Genders.cs" />
     <Compile Include="Ultima\Data\SpellbookData.cs" />
+    <Compile Include="Ultima\World\Entities\Items\Containers\SpellBook.cs" />
+    <Compile Include="Ultima\Data\SpellBookTypes.cs" />
     <Compile Include="Ultima\Data\StatLocks.cs" />
     <Compile Include="Ultima\Player\SpellData.cs" />
     <Compile Include="Ultima\UI\WorldGumps\SpellbookGump.cs" />

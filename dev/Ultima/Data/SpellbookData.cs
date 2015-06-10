@@ -15,7 +15,7 @@ namespace UltimaXNA.Ultima.Data
     {
         public readonly Serial Serial;
         public readonly ushort ItemID;
-        public readonly Spellbooks BookType;
+        public readonly SpellBookTypes BookType;
         public readonly byte[] SpellBitfields;
 
         public SpellbookData(Serial serial, ushort itemID, ushort bookTypePacketID, byte[] spellBitFields)
@@ -25,7 +25,7 @@ namespace UltimaXNA.Ultima.Data
 
             if (spellBitFields == null || spellBitFields.Length != 8)
             {
-                BookType = Spellbooks.Unknown;
+                BookType = SpellBookTypes.Unknown;
                 SpellBitfields = null;
                 return;
             }
@@ -35,25 +35,25 @@ namespace UltimaXNA.Ultima.Data
             switch (bookTypePacketID)
             {
                 case 1:
-                    BookType = Spellbooks.Magic;
+                    BookType = SpellBookTypes.Magic;
                     break;
                 case 101:
-                    BookType = Spellbooks.Necro;
+                    BookType = SpellBookTypes.Necromancer;
                     break;
                 case 201:
-                    BookType = Spellbooks.Paladin;
+                    BookType = SpellBookTypes.Chivalry;
                     break;
                 case 401:
-                    BookType = Spellbooks.Bushido;
+                    BookType = SpellBookTypes.Bushido;
                     break;
                 case 501:
-                    BookType = Spellbooks.Ninjitsu;
+                    BookType = SpellBookTypes.Ninjitsu;
                     break;
                 case 601:
-                    BookType = Spellbooks.Spellweaving;
+                    BookType = SpellBookTypes.Spellweaving;
                     break;
                 default:
-                    BookType = Spellbooks.Unknown;
+                    BookType = SpellBookTypes.Unknown;
                     return;
             }
         }
@@ -67,16 +67,5 @@ namespace UltimaXNA.Ultima.Data
             return (SpellBitfields[byteIndex] & (1 << bitIndex)) != 0;
         }
 
-    }
-
-    enum Spellbooks
-    {
-        Magic,
-        Necro,
-        Paladin,
-        Bushido,
-        Ninjitsu,
-        Spellweaving,
-        Unknown
     }
 }
