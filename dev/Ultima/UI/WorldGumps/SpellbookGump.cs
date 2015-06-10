@@ -16,6 +16,7 @@ using UltimaXNA.Ultima.Player;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Core.Input;
+using UltimaXNA.Ultima.World.Entities.Items.Containers;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
@@ -23,14 +24,54 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
     class SpellbookGump : Gump
     {
         // Private variables
+        SpellBook m_Spellbook;
 
         // Services
         private WorldModel m_World;
 
-        public SpellbookGump()
+        public SpellbookGump(SpellBook entity, int itemID)
             : base(0, 0)
         {
+            m_Spellbook = entity;
+            m_Spellbook.OnEntityUpdated += OnEntityUpdate;
 
+            IsMovable = true;
+
+            if (m_Spellbook.BookType != Data.SpellBookTypes.Unknown)
+            {
+                CreateSpellbookGumplings();
+            }
+            else
+            {
+                // display a default spellbook graphic, based on the default spellbook type for this item ID.
+                // right now, I'm just using a magery background, but really the background should change based
+                // on the item id.
+                AddControl(new GumpPic(this, 0, 0, 0, 0x08AC, 0));
+            }
+        }
+
+        public override void Update(double totalMS, double frameMS)
+        {
+            base.Update(totalMS, frameMS);
+
+        }
+
+        public override void Dispose()
+        {
+            m_Spellbook.OnEntityUpdated -= OnEntityUpdate;
+            base.Dispose();
+        }
+
+        private void CreateSpellbookGumplings()
+        {
+            ClearControls();
+            AddControl(new GumpPic(this, 0, 0, 0, 0x08AC, 0));
+        }
+
+        private void OnEntityUpdate()
+        {
+            if (m_Spellbook.BookType != Data.SpellBookTypes.Unknown)
+                CreateSpellbookGumplings();
         }
     }
 }

@@ -55,6 +55,9 @@ namespace UltimaXNA.Ultima.World.Entities.Items.Containers
                 else
                     m_SpellData[i] = false;
             }
+
+            if (OnEntityUpdated != null)
+                OnEntityUpdated();
         }
     }
 }
