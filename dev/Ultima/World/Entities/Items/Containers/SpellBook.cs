@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UltimaXNA.Ultima.World.Maps;
+﻿using System.Linq;
 using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.World.Maps;
 
 namespace UltimaXNA.Ultima.World.Entities.Items.Containers
 {
@@ -44,16 +41,20 @@ namespace UltimaXNA.Ultima.World.Entities.Items.Containers
             m_SpellData = null;
         }
 
-        public void ReceiveSpellDataFromPacket(SpellbookData data)
+        public void ReceiveSpellData(SpellBookTypes sbType, byte[] sbBitfield)
         {
-            BookType = data.BookType;
+            BookType = sbType;
 
             if (m_SpellData == null)
                 m_SpellData = new bool[64];
 
             for (int i = 0; i < 64; i++)
-                if (data.HasSpell(i))
+            {
+                if ((sbBitfield[i / 8] & ((i % 8) << 8)) != 0)
                     m_SpellData[i] = true;
+                else
+                    m_SpellData[i] = false;
+            }
         }
     }
 }
