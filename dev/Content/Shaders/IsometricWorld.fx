@@ -51,8 +51,8 @@ float4 PixelShader_Hue(PS_INPUT IN) : COLOR0
 {	
 	// Get the initial pixel and discard it if the alpha == 0
 	float4 color = tex2D(DrawSampler, IN.TexCoord);
-	/*if (color.a == 0)
-		discard;*/
+	if (color.a == 0)
+		discard;
 
 	// Hue the color if the hue vector y component is greater than 0.
 	if (IN.Hue.y > 0)

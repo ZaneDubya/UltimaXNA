@@ -80,6 +80,7 @@ namespace UltimaXNA.Ultima.IO
                                 }
                                 else
                                 {
+                                    color |= 0x8000;
                                     /*uint color32 = 0xFF000000 + (
                                         ((((color >> 10) & 0x1F) * multiplier)) |
                                         ((((color >> 5) & 0x1F) * multiplier) << 8) |
