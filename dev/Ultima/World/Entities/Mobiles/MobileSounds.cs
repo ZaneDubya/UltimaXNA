@@ -19,8 +19,8 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
 
         private static Dictionary<Serial, MobileSoundData> m_Data = new Dictionary<Serial,MobileSoundData>();
 
-        private static int[] m_StepSFX = new int[] { 0x12C, 0x12D };
-        private static int[] m_StepMountedSFX = new int[] { 0x12A, 0x12B };
+        private static int[] m_StepSFX = new int[] { 0x12B, 0x12C };
+        private static int[] m_StepMountedSFX = new int[] { 0x129, 0x12A };
 
         public static void ResetFootstepSounds(Mobile mobile)
         {
