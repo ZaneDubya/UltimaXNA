@@ -77,7 +77,7 @@ namespace UltimaXNA.Ultima.IO
             if (reader == null)
                 return null;
 
-            uint[] data = new uint[44 * 44];
+            ushort[] data = new ushort[44 * 44];
 
             ushort[] fileData = reader.ReadUShorts(((44 + 2) / 2) * 44);
             int i = 0;
@@ -85,25 +85,26 @@ namespace UltimaXNA.Ultima.IO
             int count = 2;
             int offset = 21;
 
-            fixed (uint* pData = data)
+            fixed (ushort* pData = data)
             {
-                uint* dataRef = pData;
+                ushort* dataRef = pData;
 
                 for (int y = 0; y < 22; y++, count += 2, offset--, dataRef += 44)
                 {
-                    uint* start = dataRef + offset;
-                    uint* end = start + count;
+                    ushort* start = dataRef + offset;
+                    ushort* end = start + count;
 
                     Metrics.ReportDataRead(count * 2);
 
                     while (start < end)
                     {
-                        uint color = fileData[i++];
-                        *start++ = 0xFF000000 + (
+                        ushort color = fileData[i++];
+                        *start++ = (ushort)(color | 0x8000);
+                        /**start++ = 0xFF000000 + (
                                     ((((color >> 10) & 0x1F) * multiplier)) |
                                     ((((color >> 5) & 0x1F) * multiplier) << 8) |
                                     (((color & 0x1F) * multiplier) << 16)
-                                    );
+                                    );*/
                     }
                 }
 
@@ -112,26 +113,27 @@ namespace UltimaXNA.Ultima.IO
 
                 for (int y = 0; y < 22; y++, count -= 2, offset++, dataRef += 44)
                 {
-                    uint* start = dataRef + offset;
-                    uint* end = start + count;
+                    ushort* start = dataRef + offset;
+                    ushort* end = start + count;
 
                     Metrics.ReportDataRead(count * 2);
 
                     while (start < end)
                     {
-                        uint color = fileData[i++];
-                        *start++ = 0xFF000000 + (
+                        ushort color = fileData[i++];
+                        *start++ = (ushort)(color | 0x8000);
+                        /**start++ = 0xFF000000 + (
                                     ((((color >> 10) & 0x1F) * multiplier)) |
                                     ((((color >> 5) & 0x1F) * multiplier) << 8) |
                                     (((color & 0x1F) * multiplier) << 16)
-                                    );
+                                    );*/
                     }
                 }
             }
 
-            Texture2D texture = new Texture2D(m_graphics, 44, 44);
+            Texture2D texture = new Texture2D(m_graphics, 44, 44, false, SurfaceFormat.Bgra5551);
 
-            texture.SetData<uint>(data);
+            texture.SetData<ushort>(data);
 
             return texture;
         }
@@ -210,34 +212,35 @@ namespace UltimaXNA.Ultima.IO
             if (dataStart + readLength * 2 > reader.Stream.Length)
                 readLength = ((int)reader.Stream.Length - dataStart) >> 1;
             ushort[] fileData = reader.ReadUShorts(readLength);
-            uint[] pixelData = new uint[width * height];
+            ushort[] pixelData = new ushort[width * height];
 
-            fixed (uint* pData = pixelData)
+            fixed (ushort* pData = pixelData)
             {
-                uint* dataRef = pData;
+                ushort* dataRef = pData;
                 int i;
 
                 for (int y = 0; y < height; y++, dataRef += width)
                 {
                     i = lookups[y];
 
-                    uint* start = dataRef;
+                    ushort* start = dataRef;
 
                     int count, offset;
 
                     while (((offset = fileData[i++]) + (count = fileData[i++])) != 0)
                     {
                         start += offset;
-                        uint* end = start + count;
+                        ushort* end = start + count;
 
                         while (start < end)
                         {
-                            uint color = fileData[i++];
-                            *start++ = 0xFF000000 + (
+                            ushort color = fileData[i++];
+                            *start++ = (ushort)(color | 0x8000);
+                            /**start++ = 0xFF000000 + (
                                     ((((color >> 10) & 0x1F) * multiplier)) |
                                     ((((color >> 5) & 0x1F) * multiplier) << 8) |
                                     (((color & 0x1F) * multiplier) << 16)
-                                    );
+                                    );*/
                         }
                     }
                 }
@@ -245,9 +248,9 @@ namespace UltimaXNA.Ultima.IO
 
             Metrics.ReportDataRead(sizeof(ushort) * (fileData.Length + lookups.Length + 2));
 
-            Texture2D texture = new Texture2D(m_graphics, width, height);
+            Texture2D texture = new Texture2D(m_graphics, width, height, false, SurfaceFormat.Bgra5551);
 
-            texture.SetData<uint>(pixelData);
+            texture.SetData<ushort>(pixelData);
 
             return texture;
         }
