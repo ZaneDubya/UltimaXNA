@@ -233,11 +233,11 @@ namespace UltimaXNA.Ultima.World.Input
                     if (y == Texture.Height - 1)
                         y--;
 
-                    Color[] pixelData = new Color[9];
-                    Texture.GetData<Color>(0, new Rectangle(x - 1, y - 1, 3, 3), pixelData, 0, 9);
-                    if ((pixelData[1].A > 0) || (pixelData[3].A > 0) ||
-                        (pixelData[4].A > 0) || (pixelData[5].A > 0) ||
-                        (pixelData[7].A > 0))
+                    ushort[] pixelData = new ushort[9];
+                    Texture.GetData<ushort>(0, new Rectangle(x - 1, y - 1, 3, 3), pixelData, 0, 9);
+                    if ((pixelData[1] > 0) || (pixelData[3] > 0) ||
+                        (pixelData[4] > 0) || (pixelData[5] > 0) ||
+                        (pixelData[7] > 0))
                     {
                         InTexturePosition = new Vector2(x, y);
                         return true;
@@ -246,12 +246,12 @@ namespace UltimaXNA.Ultima.World.Input
             }
             else if (Entity is Mobile)
             {
-                Color[] iPixel = new Color[1];
                 Rectangle pRect = new Rectangle((int)mousePosition.X - (int)Position.X, (int)mousePosition.Y - (int)Position.Y, 1, 1);
                 if (Texture.Bounds.Contains(new Point(pRect.X, pRect.Y)))
                 {
-                    Texture.GetData<Color>(0, pRect, iPixel, 0, 1);
-                    if (iPixel[0].A != 0)
+                    ushort[] pixelData = new ushort[1];
+                    Texture.GetData<ushort>(0, pRect, pixelData, 0, 1);
+                    if (pixelData[0] > 0)
                         return true;
                 }
             }

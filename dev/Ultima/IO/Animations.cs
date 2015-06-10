@@ -78,7 +78,7 @@ namespace UltimaXNA.Ultima.IO
         public static AnimationFrame[] GetAnimation(BinaryFileReader reader)
         {
             
-            uint[] palette = getPalette(reader); // 0x100 * 2 = 0x0200 bytes
+            ushort[] palette = getPalette(reader); // 0x100 * 2 = 0x0200 bytes
             int read_start = (int)reader.Position; // save file position after palette.
 
             int frameCount = reader.ReadInt(); // 0x04 bytes
@@ -120,17 +120,17 @@ namespace UltimaXNA.Ultima.IO
             return reader.ReadBytes(length);
         }
 
-        private static uint[] getPalette(BinaryFileReader reader)
+        private static ushort[] getPalette(BinaryFileReader reader)
         {
-            uint[] pal = new uint[0x100];
+            ushort[] pal = new ushort[0x100];
             for (int i = 0; i < 0x100; ++i)
             {
-                uint color = reader.ReadUShort();
-                pal[i] = 0xFF000000 + (
+                pal[i] = (ushort)(reader.ReadUShort() | 0x8000);
+                /*pal[i] = 0xFF000000 + (
                     ((((color >> 10) & 0x1F) * 0xFF / 0x1F)) |
                     ((((color >> 5) & 0x1F) * 0xFF / 0x1F) << 8) |
                     (((color & 0x1F) * 0xFF / 0x1F) << 16)
-                    );
+                    );*/
             }
             return pal;
         }
@@ -315,30 +315,10 @@ namespace UltimaXNA.Ultima.IO
 
         private AnimationFrame()
         {
+
         }
 
-        public unsafe AnimationFrame(GraphicsDevice graphics, uint[] palette, byte[] frame, int width, int height, int xCenter, int yCenter)
-        {
-            palette[0] = 0xFFFFFFFF;
-            uint[] data = new uint[width * height];
-            fixed (uint* pData = data)
-            {
-                uint* dataRef = pData;
-                int frameIndex = 0;
-
-                while (frameIndex < frame.Length)
-                {
-                    *dataRef++ = palette[frame[frameIndex++]];
-                }
-            }
-
-            m_Center = new Microsoft.Xna.Framework.Point(xCenter, yCenter);
-            m_Texture = new Texture2D(graphics, width, height);
-            m_Texture.SetData<uint>(data);
-            palette[0] = 0;
-        }
-
-        public unsafe AnimationFrame(GraphicsDevice graphics, uint[] palette, BinaryFileReader reader)
+        public unsafe AnimationFrame(GraphicsDevice graphics, ushort[] palette, BinaryFileReader reader)
         {
             int xCenter = reader.ReadShort();
             int yCenter = reader.ReadShort();
@@ -353,16 +333,16 @@ namespace UltimaXNA.Ultima.IO
                 return;
             }
 
-            uint[] data = new uint[width * height];
+            ushort[] data = new ushort[width * height];
 
             int header;
 
             int xBase = xCenter - 0x200;
             int yBase = (yCenter + height) - 0x200;
 
-            fixed (uint* pData = data)
+            fixed (ushort* pData = data)
             {
-                uint* dataRef = pData;
+                ushort* dataRef = pData;
                 int delta = width;
 
                 int dataRead = 0;
@@ -374,8 +354,8 @@ namespace UltimaXNA.Ultima.IO
                 {
                     header ^= DoubleXor;
 
-                    uint* cur = dataRef + ((((header >> 12) & 0x3FF) * delta) + ((header >> 22) & 0x3FF));
-                    uint* end = cur + (header & 0xFFF);
+                    ushort* cur = dataRef + ((((header >> 12) & 0x3FF) * delta) + ((header >> 22) & 0x3FF));
+                    ushort* end = cur + (header & 0xFFF);
 
                     int filecounter = 0;
                     byte[] filedata = reader.ReadBytes(header & 0xFFF);
@@ -391,84 +371,8 @@ namespace UltimaXNA.Ultima.IO
 
             m_Center = new Microsoft.Xna.Framework.Point(xCenter, yCenter);
 
-            m_Texture = new Texture2D(graphics, width, height);
-            m_Texture.SetData<uint>(data);
-        }
-
-        public static unsafe byte[] Frame_ReadData(uint[] palette, BinaryReader bin, bool flip)
-        {
-            int dataStart = (int)bin.BaseStream.Position;
-
-            int xCenter = bin.ReadInt16();
-            int yCenter = bin.ReadInt16();
-
-            int width = bin.ReadUInt16();
-            int height = bin.ReadUInt16();
-
-            // Fix for animations with no IO.
-            if ((width == 0) || (height == 0))
-            {
-                return getData(bin, dataStart);
-            }
-
-            uint[] data = new uint[width * height];
-
-            // ushort* line = (ushort*)bd.Scan0;
-            // int delta = bd.Stride >> 1;
-
-            int header;
-
-            int xBase = xCenter - 0x200;
-            int yBase = (yCenter + height) - 0x200;
-
-            fixed (uint* pData = data)
-            {
-                uint* dataRef = pData;
-                int delta = width;
-
-                if (!flip)
-                {
-                    dataRef += xBase;
-                    dataRef += (yBase * delta);
-
-                    while ((header = bin.ReadInt32()) != 0x7FFF7FFF)
-                    {
-                        header ^= DoubleXor;
-
-                        uint* cur = dataRef + ((((header >> 12) & 0x3FF) * delta) + ((header >> 22) & 0x3FF));
-                        uint* end = cur + (header & 0xFFF);
-
-                        int filecounter = 0;
-                        byte[] filedata = bin.ReadBytes(header & 0xFFF);
-
-                        while (cur < end)
-                            *cur++ = palette[filedata[filecounter++]];
-                    }
-                }
-                else
-                {
-                    dataRef -= xBase - width + 1;
-                    dataRef += (yBase * delta);
-
-                    while ((header = bin.ReadInt32()) != 0x7FFF7FFF)
-                    {
-                        header ^= DoubleXor;
-
-                        uint* cur = dataRef + ((((header >> 12) & 0x3FF) * delta) - ((header >> 22) & 0x3FF));
-                        uint* end = cur - (header & 0xFFF);
-
-                        int filecounter = 0;
-                        byte[] filedata = bin.ReadBytes(header & 0xFFF);
-
-                        while (cur > end)
-                            *cur-- = palette[filedata[filecounter++]];
-                    }
-
-                    xCenter = width - xCenter;
-                }
-            }
-
-            return getData(bin, dataStart);
+            m_Texture = new Texture2D(graphics, width, height, false, SurfaceFormat.Bgra5551);
+            m_Texture.SetData<ushort>(data);
         }
 
         private static byte[] getData(BinaryReader bin, int start)

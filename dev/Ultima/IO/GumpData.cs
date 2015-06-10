@@ -56,9 +56,9 @@ namespace UltimaXNA.Ultima.IO
                 int[] lookups = reader.ReadInts(height);
                 ushort[] fileData = reader.ReadUShorts(length - (height * 2));
 
-                uint[] pixels = new uint[width * height];
+                ushort[] pixels = new ushort[width * height];
 
-                fixed (uint* line = &pixels[0])
+                fixed (ushort* line = &pixels[0])
                 {
                     fixed (ushort* data = &fileData[0])
                     {
@@ -66,13 +66,13 @@ namespace UltimaXNA.Ultima.IO
                         {
                             ushort* dataRef = data + (lookups[y] - height) * 2;
 
-                            uint* cur = line + (y * width);
-                            uint* end = cur + width;
+                            ushort* cur = line + (y * width);
+                            ushort* end = cur + width;
 
                             while (cur < end)
                             {
-                                uint color = *dataRef++;
-                                uint* next = cur + *dataRef++;
+                                ushort color = *dataRef++;
+                                ushort* next = cur + *dataRef++;
 
                                 if (color == 0)
                                 {
@@ -80,13 +80,14 @@ namespace UltimaXNA.Ultima.IO
                                 }
                                 else
                                 {
-                                    uint color32 = 0xFF000000 + (
+                                    color |= 0x8000;
+                                    /*uint color32 = 0xFF000000 + (
                                         ((((color >> 10) & 0x1F) * multiplier)) |
                                         ((((color >> 5) & 0x1F) * multiplier) << 8) |
                                         (((color & 0x1F) * multiplier) << 16)
-                                        );
+                                        );*/
                                     while (cur < next)
-                                        *cur++ = color32;
+                                        *cur++ = color;
                                 }
                             }
                         }
@@ -98,11 +99,11 @@ namespace UltimaXNA.Ultima.IO
                 if (replaceMask080808)
                 {
                     for (int i = 0; i < pixels.Length; i++)
-                        if (pixels[i] == 0xff080808)
-                            pixels[i] = 0xffff00ff;
+                        if (pixels[i] == 0x8421)
+                            pixels[i] = 0xFC1F;
                 }
 
-                Texture2D texture = new Texture2D(m_graphicsDevice, width, height, false, SurfaceFormat.Color);
+                Texture2D texture = new Texture2D(m_graphicsDevice, width, height, false, SurfaceFormat.Bgra5551);
                 texture.SetData(pixels);
                 m_cache[index] = texture;
             }
