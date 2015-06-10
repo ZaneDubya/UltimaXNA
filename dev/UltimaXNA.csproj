@@ -192,6 +192,7 @@
     <Compile Include="Core\Configuration\SettingsFile.cs" />
     <Compile Include="Ultima\Data\Body.cs" />
     <Compile Include="Ultima\Data\Seasons.cs" />
+    <Compile Include="Ultima\Player\SpellData.cs" />
     <Compile Include="Ultima\UI\WorldGumps\SpellbookGump.cs" />
     <Compile Include="Ultima\World\Direction.cs" />
     <Compile Include="Ultima\Data\MessageTypes.cs" />
