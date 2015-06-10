@@ -191,6 +191,8 @@ namespace UltimaXNA.Ultima
 
             ServiceRegistry.Unregister<WorldModel>();
 
+            m_UserInterface.Reset();
+
             Entities.Reset();
             Entities = null;
 
