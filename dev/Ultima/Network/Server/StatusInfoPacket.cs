@@ -1,13 +1,7 @@
 ﻿/***************************************************************************
  *   StatusInfoPacket.cs
+ *   Copyright (c) 2015 UltimaXNA Development Team
  *   
- *   begin                : May 31, 2009
- *   email                : poplicola@ultimaxna.com
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 3 of the License, or
@@ -15,9 +9,13 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Core.Network;
+using Microsoft.Xna.Framework;
+using System;
 using UltimaXNA.Core.Network.Packets;
+using UltimaXNA.Ultima.Data;
+using UltimaXNA.Core.Network;
 #endregion
+
 
 namespace UltimaXNA.Ultima.Network.Server
 {
@@ -29,7 +27,7 @@ namespace UltimaXNA.Ultima.Network.Server
         readonly short m_maxHealth;
         readonly byte m_nameChangeFlag;
         readonly byte m_statusTypeFlag;
-        readonly Sex sex;
+        readonly Genders sex;
         readonly short m_strength; 
         readonly short m_dexterity;
         readonly short m_intelligence;
@@ -41,7 +39,7 @@ namespace UltimaXNA.Ultima.Network.Server
         readonly short m_armorRating;
         readonly short m_weight;
         readonly short m_maxWeight;
-        readonly Race m_race;
+        readonly Races m_race;
         readonly short m_statCap;
         readonly byte m_followers;
         readonly byte m_maxFollowers;
@@ -84,7 +82,7 @@ namespace UltimaXNA.Ultima.Network.Server
             get { return m_statusTypeFlag; } 
         }
         
-        public Sex Sex 
+        public Genders Sex 
         {
             get { return sex; }
         }
@@ -144,7 +142,7 @@ namespace UltimaXNA.Ultima.Network.Server
             get { return m_maxWeight; } 
         }
         
-        public Race Race 
+        public Races Race 
         {
             get { return m_race; }
         } 
@@ -213,7 +211,7 @@ namespace UltimaXNA.Ultima.Network.Server
             m_maxHealth = reader.ReadInt16();
             m_nameChangeFlag = reader.ReadByte(); // 0x1 = allowed, 0 = not allowed
             m_statusTypeFlag = reader.ReadByte();
-            sex = (Sex)reader.ReadByte(); // 0=male, 1=female
+            sex = (Genders)reader.ReadByte(); // 0=male, 1=female
             m_strength = reader.ReadInt16();
             m_dexterity = reader.ReadInt16();
             m_intelligence = reader.ReadInt16();
@@ -228,7 +226,7 @@ namespace UltimaXNA.Ultima.Network.Server
             if (m_statusTypeFlag >= 5)
             {
                 m_maxWeight = reader.ReadInt16();
-                m_race = (Race)reader.ReadByte();
+                m_race = (Races)reader.ReadByte();
             }
 
             if (m_statusTypeFlag >= 3)

@@ -191,7 +191,13 @@
     <Compile Include="Core\Diagnostics\GeneralExceptionHandler.cs" />
     <Compile Include="Core\Configuration\SettingsFile.cs" />
     <Compile Include="Ultima\Data\Body.cs" />
+    <Compile Include="Ultima\Data\ContentItem.cs" />
+    <Compile Include="Ultima\Data\HouseRevisionState.cs" />
+    <Compile Include="Ultima\Data\Races.cs" />
     <Compile Include="Ultima\Data\Seasons.cs" />
+    <Compile Include="Ultima\Data\Genders.cs" />
+    <Compile Include="Ultima\Data\SpellbookData.cs" />
+    <Compile Include="Ultima\Data\StatLocks.cs" />
     <Compile Include="Ultima\Player\SpellData.cs" />
     <Compile Include="Ultima\UI\WorldGumps\SpellbookGump.cs" />
     <Compile Include="Ultima\World\Direction.cs" />
@@ -401,7 +407,6 @@
     <Compile Include="Ultima\Network\Server\WarModePacket.cs" />
     <Compile Include="Ultima\Network\Server\WeatherPacket.cs" />
     <Compile Include="Ultima\Network\Server\WornItemPacket.cs" />
-    <Compile Include="Ultima\Network\Shared.cs" />
     <Compile Include="Ultima\IO\ArtData.cs" />
     <Compile Include="Ultima\IO\ContainerData.cs" />
     <Compile Include="Ultima\World\CustomHousing.cs" />

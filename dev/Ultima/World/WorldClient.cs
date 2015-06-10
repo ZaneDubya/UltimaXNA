@@ -1064,6 +1064,9 @@ namespace UltimaXNA.Ultima.World
                         PlayerState.StatLocks.IntelligenceLock = p.StatisticLocks.Intelligence;
                     }
                     break;
+                case 0x1B: // spellbook data
+                    SpellbookData spellbook = p.Spellbook;
+                    break;
                 case 0x1D: // House revision state
                     if (CustomHousing.IsHashCurrent(p.HouseRevisionState.Serial, p.HouseRevisionState.Hash))
                     {

@@ -1,13 +1,7 @@
 ﻿/***************************************************************************
  *   CreateCharacterPacket.cs
+ *   Copyright (c) 2015 UltimaXNA Development Team
  *   
- *   begin                : May 31, 2009
- *   email                : poplicola@ultimaxna.com
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 3 of the License, or
@@ -15,19 +9,17 @@
  *
  ***************************************************************************/
 #region usings
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
+using System;
 using UltimaXNA.Core.Network.Packets;
+using UltimaXNA.Ultima.Data;
 #endregion
 
 namespace UltimaXNA.Ultima.Network.Client
 {
     public class CreateCharacterPacket : SendPacket
     {
-        public CreateCharacterPacket(string name, Sex sex, Race race,
+        public CreateCharacterPacket(string name, Genders sex, Races race,
             byte str, byte dex, byte intel, byte skill1, byte skill1Value,
             byte skill2, byte skill2Value, byte skill3, byte skill3Value, short skinColor,
             short hairStyle, short hairColor, short facialHairStyle, short facialHairColor,
