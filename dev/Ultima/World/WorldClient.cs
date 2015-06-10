@@ -326,9 +326,19 @@ namespace UltimaXNA.Ultima.World
             else
             {
                 if (IO.TileData.ItemData[itemID].IsContainer)
-                    item = WorldModel.Entities.GetObject<Container>((int)serial, true);
+                {
+                    // special case for spellbooks.
+                    if (SpellBook.IsSpellBookItem((ushort)itemID))
+                    {
+                        item = WorldModel.Entities.GetObject<SpellBook>(serial, true);
+                    }
+                    else
+                    {
+                        item = WorldModel.Entities.GetObject<Container>(serial, true);
+                    }
+                }
                 else
-                    item = WorldModel.Entities.GetObject<Item>((int)serial, true);
+                    item = WorldModel.Entities.GetObject<Item>(serial, true);
             }
             if (item == null)
                 return null;
@@ -411,7 +421,7 @@ namespace UltimaXNA.Ultima.World
         private void ReceiveDeleteObject(IRecvPacket packet)
         {
             RemoveEntityPacket p = (RemoveEntityPacket)packet;
-            WorldModel.Entities.RemoveObject(p.Serial);
+            WorldModel.Entities.RemoveEntity(p.Serial);
         }
 
         private void ReceiveMobileIncoming(IRecvPacket packet)
