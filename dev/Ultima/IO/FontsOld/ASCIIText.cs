@@ -74,7 +74,6 @@ namespace UltimaXNA.Ultima.IO.FontsOld
                                     m_fonts[i].Height = height;
                                 }
 
-                                Texture2D texture = new Texture2D(m_graphicsDevice, width, height, false, SurfaceFormat.Color);
                                 Color[] pixels = new Color[width * height];
 
                                 unsafe
@@ -103,6 +102,7 @@ namespace UltimaXNA.Ultima.IO.FontsOld
                                     }
                                 }
 
+                                Texture2D texture = new Texture2D(m_graphicsDevice, width, height, false, SurfaceFormat.Color);
                                 texture.SetData<Color>(pixels);
                                 m_fonts[i].Characters[k] = texture;
                             }

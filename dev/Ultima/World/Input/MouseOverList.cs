@@ -246,12 +246,12 @@ namespace UltimaXNA.Ultima.World.Input
             }
             else if (Entity is Mobile)
             {
-                Color[] iPixel = new Color[1];
                 Rectangle pRect = new Rectangle((int)mousePosition.X - (int)Position.X, (int)mousePosition.Y - (int)Position.Y, 1, 1);
                 if (Texture.Bounds.Contains(new Point(pRect.X, pRect.Y)))
                 {
-                    Texture.GetData<Color>(0, pRect, iPixel, 0, 1);
-                    if (iPixel[0].A != 0)
+                    ushort[] pixelData = new ushort[1];
+                    Texture.GetData<ushort>(0, pRect, pixelData, 0, 1);
+                    if (pixelData[0] > 0)
                         return true;
                 }
             }

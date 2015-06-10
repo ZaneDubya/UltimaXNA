@@ -118,8 +118,6 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         private bool isPointWithinControl(int x, int y)
         {
-            Color[] pixelData;
-
             if (x <= 0)
                 x = 1;
             if (x >= m_texture.Width - 1)
@@ -129,11 +127,11 @@ namespace UltimaXNA.Ultima.UI.Controls
             if (y >= m_texture.Height - 1)
                 y = m_texture.Height - 2;
 
-            pixelData = new Color[9];
-            m_texture.GetData<Color>(0, new Rectangle(x - 1, y - 1, 3, 3), pixelData, 0, 9);
-            if ((pixelData[1].A > 0) || (pixelData[3].A > 0) ||
-                (pixelData[4].A > 0) || (pixelData[5].A > 0) ||
-                (pixelData[7].A > 0))
+            ushort[] pixelData = new ushort[9];
+            m_texture.GetData<ushort>(0, new Rectangle(x - 1, y - 1, 3, 3), pixelData, 0, 9);
+            if ((pixelData[1] > 0) || (pixelData[3] > 0) ||
+                (pixelData[4] > 0) || (pixelData[5] > 0) ||
+                (pixelData[7] > 0))
             {
                 return true;
             }

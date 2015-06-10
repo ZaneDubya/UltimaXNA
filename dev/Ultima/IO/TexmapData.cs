@@ -61,31 +61,31 @@ namespace UltimaXNA.Ultima.IO
 
             int textureSize = (extra == 0) ? 64 : 128;
 
-            uint[] pixelData = new uint[textureSize * textureSize];
+            ushort[] pixelData = new ushort[textureSize * textureSize];
             ushort[] fileData = reader.ReadUShorts(textureSize * textureSize);
 
-            fixed (uint* pData = pixelData)
+            fixed (ushort* pData = pixelData)
             {
-                uint* pDataRef = pData;
+                ushort* pDataRef = pData;
 
                 int count = 0;
                 int max = textureSize * textureSize;
 
                 while (count < max)
                 {
-                    uint color = fileData[count];
-                    *pDataRef++ = 0xFF000000 + (
-                                    ((((color >> 10) & 0x1F) * multiplier)) |
-                                    ((((color >> 5) & 0x1F) * multiplier) << 8) |
-                                    (((color & 0x1F) * multiplier) << 16)
-                                    );
+                    ushort color = (ushort)(fileData[count] | 0x8000);
+                    *pDataRef++ = color; /* 0xFF000000 + (
+                                     ((((color >> 10) & 0x1F) * multiplier)) |
+                                     ((((color >> 5) & 0x1F) * multiplier) << 8) |
+                                     (((color & 0x1F) * multiplier) << 16)
+                                     );*/
                     count++;
                 }
             }
 
-            Texture2D texture = new Texture2D(m_graphics, textureSize, textureSize);
+            Texture2D texture = new Texture2D(m_graphics, textureSize, textureSize, false, SurfaceFormat.Bgra5551);
 
-            texture.SetData<uint>(pixelData);
+            texture.SetData<ushort>(pixelData);
 
             Metrics.ReportDataRead((int)reader.Position - metrics_dataread_start);
 

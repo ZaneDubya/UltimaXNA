@@ -25,7 +25,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             {
                 if (s_CheckeredTransTexture == null)
                 {
-                    Color[] data = new Color[32 * 32];
+                    ushort[] data = new ushort[32 * 32];
                     for (int h = 0; h < 32; h++)
                     {
                         int i = h % 2;
@@ -33,18 +33,18 @@ namespace UltimaXNA.Ultima.UI.Controls
                         {
                             if (i++ >= 1)
                             {
-                                data[h * 32 + w] = Color.Black;
+                                data[h * 32 + w] = 0x8000;
                                 i = 0;
                             }
                             else
                             {
-                                data[h * 32 + w] = Color.Transparent;
+                                data[h * 32 + w] = 0x0000;
                             }
                         }
                     }
                     SpriteBatchUI sb = ServiceRegistry.GetService<SpriteBatchUI>();
-                    s_CheckeredTransTexture = new Texture2D(sb.GraphicsDevice, 32, 32);
-                    s_CheckeredTransTexture.SetData<Color>(data);
+                    s_CheckeredTransTexture = new Texture2D(sb.GraphicsDevice, 32, 32, false, SurfaceFormat.Bgra5551);
+                    s_CheckeredTransTexture.SetData<ushort>(data);
                 }
                 return s_CheckeredTransTexture;
             }
