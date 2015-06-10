@@ -13,6 +13,7 @@ using UltimaXNA.Core.Network.Packets;
 using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Ultima.World.Input;
+using UltimaXNA.Ultima.Data;
 #endregion
 
 namespace UltimaXNA.Ultima.Network.Server
@@ -38,22 +39,28 @@ namespace UltimaXNA.Ultima.Network.Server
             get { return m_locks; }
         }
 
-        ContextMenu m_contextmenu;
         public ContextMenu ContextMenu
         {
-            get { return m_contextmenu; }
+            get;
+            private set;
         }
 
-        byte m_mapid;
         public byte MapID
         {
-            get { return m_mapid; }
+            get;
+            private set;
         }
 
-        int m_mapCount;
         public int MapCount
         {
-            get { return m_mapCount; }
+            get;
+            private set;
+        }
+
+        internal SpellbookData Spellbook
+        {
+            get;
+            private set;
         }
 
         public GeneralInfoPacket(PacketReader reader)
@@ -70,7 +77,7 @@ namespace UltimaXNA.Ultima.Network.Server
                     // party system, not implemented.
                     break;
                 case 0x8: // Set cursor color / set map
-                    m_mapid = reader.ReadByte();
+                    MapID = reader.ReadByte();
                     break;
                 case 0x14: // return context menu
                     receiveContextMenu(reader);
@@ -84,6 +91,9 @@ namespace UltimaXNA.Ultima.Network.Server
                 case 0x19: // Extended stats
                     receiveExtendedStats(reader);
                     break;
+                case 0x1B:
+                    receiveSpellBookContents(reader);
+                    break;
                 case 0x21: // (AOS) Ability icon confirm.
                     // no data, just (bf 00 05 00 21)
                     break;
@@ -93,6 +103,16 @@ namespace UltimaXNA.Ultima.Network.Server
             }
         }
 
+        private void receiveSpellBookContents(PacketReader reader)
+        {
+            ushort unknown = reader.ReadUInt16(); // always 1
+            Serial serial = (Serial)reader.ReadInt32();
+            ushort itemID = reader.ReadUInt16();
+            ushort spellbookType = reader.ReadUInt16(); // 1==regular, 101=necro, 201=paladin, 401=bushido, 501=ninjitsu, 601=spellweaving
+            byte[] spellBitfields = reader.ReadBytes(8); // first bit of first byte = spell #1, second bit of first byte = spell #2, first bit of second byte = spell #8, etc 
+
+            Spellbook = new SpellbookData(serial, itemID, spellbookType, spellBitfields);
+        }
 
         void receiveExtendedStats(PacketReader reader)
         {
@@ -138,8 +158,8 @@ namespace UltimaXNA.Ultima.Network.Server
 
         void receiveMapDiffManifest(PacketReader reader)
         {
-            m_mapCount = reader.ReadInt32();
-            for (int i = 0; i < m_mapCount; i++)
+            MapCount = reader.ReadInt32();
+            for (int i = 0; i < MapCount; i++)
             {
                 int mapPatches = reader.ReadInt32();
                 int staticPatches = reader.ReadInt32();
@@ -150,7 +170,7 @@ namespace UltimaXNA.Ultima.Network.Server
         {
             reader.ReadByte(); // unknown (0x00)
             int iSubCommand = reader.ReadByte(); // 0x01 for 2D, 0x02 for KR
-            m_contextmenu = new ContextMenu(reader.ReadInt32());
+            ContextMenu = new ContextMenu(reader.ReadInt32());
             int iNumEntriesInContext = reader.ReadByte();
 
             for (int i = 0; i < iNumEntriesInContext; i++)
@@ -163,9 +183,9 @@ namespace UltimaXNA.Ultima.Network.Server
                 {
                     iColor = reader.ReadUInt16();
                 }
-                m_contextmenu.AddItem(iUniqueID, iClilocID, iFlags, iColor);
+                ContextMenu.AddItem(iUniqueID, iClilocID, iFlags, iColor);
             }
-            m_contextmenu.FinalizeMenu();
+            ContextMenu.FinalizeMenu();
         }
     }
 }
