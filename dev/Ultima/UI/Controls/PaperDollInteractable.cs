@@ -121,6 +121,9 @@ namespace UltimaXNA.Ultima.UI.Controls
                     if (value is Mobile)
                     {
                         m_sourceEntity = value;
+                        // update the gump
+                        OnEntityUpdated();
+                        // if the entity changes in the future, update the gump again
                         m_sourceEntity.OnEntityUpdated += OnEntityUpdated;
                     }
                 }
