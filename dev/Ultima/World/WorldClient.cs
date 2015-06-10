@@ -372,18 +372,11 @@ namespace UltimaXNA.Ultima.World
                 if (item == null)
                 {
                     // log error - item does not exist
-                }
-                if (item is Corpse)
-                {
-                    m_World.Interaction.OpenCorpseGump(item);
-                }
-                else if (item is Container)
-                {
-                    m_World.Interaction.OpenContainerGump(item);
+                    m_World.Interaction.ChatMessage(string.Format("Client: Object {0} has no support for a container object!", item.Serial));
                 }
                 else
                 {
-                    m_World.Interaction.ChatMessage(string.Format("Client: Object {0} has no support for a container object!", item.Serial));
+                    m_World.Interaction.OpenContainerGump(item);
                 }
             }
         }
