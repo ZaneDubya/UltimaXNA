@@ -321,10 +321,10 @@ namespace UltimaXNA.Core.UI
         // ================================================================================
         // Ctor, Init, Dispose, Update, and Draw
         // ================================================================================
-        public AControl(AControl owner, int page)
+        public AControl(AControl owner)
         {
             Owner = owner;
-            Page = page;
+            Page = 0;
             UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
         }
 
@@ -378,8 +378,9 @@ namespace UltimaXNA.Core.UI
         // ================================================================================
         // Child control methods
         // ================================================================================
-        public AControl AddControl(AControl c)
+        public AControl AddControl(AControl c, int page = 0)
         {
+            c.Page = page;
             Children.Add(c);
             return LastControl;
         }

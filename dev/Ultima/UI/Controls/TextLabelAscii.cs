@@ -23,14 +23,14 @@ namespace UltimaXNA.Ultima.UI.Controls
         public string Text = string.Empty;
         Texture2D m_texture = null;
 
-        public TextLabelAscii(AControl owner, int page)
-            : base(owner, page)
+        public TextLabelAscii(AControl owner)
+            : base(owner)
         {
 
         }
 
-        public TextLabelAscii(AControl owner, int page, int x, int y, int hue, int fontid, string text)
-            : this(owner, page)
+        public TextLabelAscii(AControl owner, int x, int y, int hue, int fontid, string text)
+            : this(owner)
         {
             buildGumpling(x, y, hue, fontid, text);
         }

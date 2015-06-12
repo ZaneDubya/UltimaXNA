@@ -50,8 +50,8 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         private UserInterfaceService m_UserInterface;
 
-        public TextEntry(AControl owner, int page)
-            : base(owner, page)
+        public TextEntry(AControl owner)
+            : base(owner)
         {
             HandlesMouseInput = true;
             HandlesKeyboardFocus = true;
@@ -59,8 +59,8 @@ namespace UltimaXNA.Ultima.UI.Controls
             m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
         }
 
-        public TextEntry(AControl owner, int page, string[] arguements, string[] lines)
-            : this(owner, page)
+        public TextEntry(AControl owner, string[] arguements, string[] lines)
+            : this(owner)
         {
             int x, y, width, height, hue, entryID, textIndex, limitSize = 0;
             x = Int32.Parse(arguements[1]);
@@ -77,8 +77,8 @@ namespace UltimaXNA.Ultima.UI.Controls
             buildGumpling(x, y, width, height, hue, entryID, limitSize, lines[textIndex]);
         }
 
-        public TextEntry(AControl owner, int page, int x, int y, int width, int height, int hue, int entryID, int limitSize, string text)
-            : this(owner, page)
+        public TextEntry(AControl owner, int x, int y, int width, int height, int hue, int entryID, int limitSize, string text)
+            : this(owner)
         {
             buildGumpling(x, y, width, height, hue, entryID, limitSize, text);
         }

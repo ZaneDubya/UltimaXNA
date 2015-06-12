@@ -22,14 +22,14 @@ namespace UltimaXNA.Ultima.UI.Controls
         int Hue;
         int m_tileID;
 
-        public TilePic(AControl owner, int page)
-            : base(owner, page)
+        public TilePic(AControl owner)
+            : base(owner)
         {
 
         }
 
-        public TilePic(AControl owner, int page, string[] arguements)
-            : this(owner, page)
+        public TilePic(AControl owner, string[] arguements)
+            : this(owner)
         {
             int x, y, tileID, hue = 0;
             x = Int32.Parse(arguements[1]);
@@ -43,8 +43,8 @@ namespace UltimaXNA.Ultima.UI.Controls
             buildGumpling(x, y, tileID, hue);
         }
 
-        public TilePic(AControl owner, int page, int x, int y, int tileID, int hue)
-            : this(owner, page)
+        public TilePic(AControl owner, int x, int y, int tileID, int hue)
+            : this(owner)
         {
             buildGumpling(x, y, tileID, hue);
         }

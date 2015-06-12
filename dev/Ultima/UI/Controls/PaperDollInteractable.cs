@@ -27,7 +27,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         WorldModel m_World;
 
-        public PaperDollInteractable(AControl owner, int page, int x, int y)
+        public PaperDollInteractable(AControl owner, int x, int y)
             : base(0, 0)
         {
             Owner = owner;

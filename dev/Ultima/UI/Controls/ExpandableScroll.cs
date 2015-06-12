@@ -36,7 +36,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         bool m_isExpanding = false;
         int m_isExpanding_InitialX, m_isExpanding_InitialY, m_isExpanding_InitialHeight;
 
-        public ExpandableScroll(AControl owner, int page, int x, int y, int height)
+        public ExpandableScroll(AControl owner, int x, int y, int height)
             : base(0, 0)
         {
             Owner = owner;

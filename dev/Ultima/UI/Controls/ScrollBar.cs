@@ -95,14 +95,14 @@ namespace UltimaXNA.Ultima.UI.Controls
         // ================================================================================
         // Ctors, Initialize, Update, and Draw
         // ================================================================================
-        public ScrollBar(AControl owner, int page)
-            : base(owner, page)
+        public ScrollBar(AControl owner)
+            : base(owner)
         {
             HandlesMouseInput = true;
         }
 
-        public ScrollBar(AControl owner, int page, int x, int y, int height, int minValue, int maxValue, int value)
-            : this(owner, page)
+        public ScrollBar(AControl owner, int x, int y, int height, int minValue, int maxValue, int value)
+            : this(owner)
         {
             Position = new Point(x, y);
             MinValue = minValue;

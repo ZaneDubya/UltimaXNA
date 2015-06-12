@@ -38,16 +38,16 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         UserInterfaceService m_UserInterface;
 
-        public DropDownList(AControl owner, int page)
-            : base(owner, page)
+        public DropDownList(AControl owner)
+            : base(owner)
         {
             HandlesMouseInput = true;
 
             m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
         }
 
-        public DropDownList(AControl owner, int page, int x, int y, int width, int index, int itemsVisible, string[] items, bool canBeNull)
-            : this(owner, page)
+        public DropDownList(AControl owner, int x, int y, int width, int index, int itemsVisible, string[] items, bool canBeNull)
+            : this(owner)
         {
             buildGumpling(x, y, width, index, itemsVisible, items, canBeNull);
         }

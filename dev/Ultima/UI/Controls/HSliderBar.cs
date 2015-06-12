@@ -58,15 +58,15 @@ namespace UltimaXNA.Ultima.UI.Controls
         private int m_sliderX;
         private HSliderBarStyle Style;
 
-        public HSliderBar(AControl owner, int page)
-            : base(owner, page)
+        public HSliderBar(AControl owner)
+            : base(owner)
         {
             HandlesMouseInput = true;
             m_pairedSliders = new List<HSliderBar>();
         }
 
-        public HSliderBar(AControl owner, int page, int x, int y, int width, int minValue, int maxValue, int value, HSliderBarStyle style)
-            : this(owner, page)
+        public HSliderBar(AControl owner, int x, int y, int width, int minValue, int maxValue, int value, HSliderBarStyle style)
+            : this(owner)
         {
             buildGumpling(x, y, width, minValue, maxValue, value, style);
         }

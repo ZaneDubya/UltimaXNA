@@ -79,8 +79,8 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        public HtmlGumpling(AControl owner, int page, string[] arguements, string[] lines)
-            : base(owner, page)
+        public HtmlGumpling(AControl owner, string[] arguements, string[] lines)
+            : base(owner)
         {
             int x, y, width, height, textIndex, background, scrollbar;
             x = Int32.Parse(arguements[1]);
@@ -94,8 +94,8 @@ namespace UltimaXNA.Ultima.UI.Controls
             buildGumpling(x, y, width, height, background, scrollbar, "<font color=#000>" + lines[textIndex]);
         }
 
-        public HtmlGumpling(AControl owner, int page, int x, int y, int width, int height, int background, int scrollbar, string text)
-            : base(owner, page)
+        public HtmlGumpling(AControl owner, int x, int y, int width, int height, int background, int scrollbar, string text)
+            : base(owner)
         {
             buildGumpling(x, y, width, height, background, scrollbar, text);
         }
