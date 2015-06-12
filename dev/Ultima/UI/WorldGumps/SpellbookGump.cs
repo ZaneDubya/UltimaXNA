@@ -47,6 +47,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 // right now, I'm just using a magery background, but really the background should change based
                 // on the item id.
                 AddControl(new GumpPic(this, 0, 0, 0, 0x08AC, 0));
+                // other options? necro? spellweaving?
             }
         }
 
