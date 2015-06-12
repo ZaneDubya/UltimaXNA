@@ -126,10 +126,10 @@ namespace UltimaXNA.Ultima.UI.Controls
             {
                 if (m_ChildColorPicker == null)
                 {
-                    m_ChildColorPicker = new ColorPicker(Owner, Page, m_openArea, m_hueWidth, m_hueHeight, m_hues);
+                    m_ChildColorPicker = new ColorPicker(Owner, m_openArea, m_hueWidth, m_hueHeight, m_hues);
                     m_ChildColorPicker.IsChild = true;
                     m_ChildColorPicker.Parent = this;
-                    Owner.AddControl(m_ChildColorPicker);
+                    Owner.AddControl(m_ChildColorPicker, this.Page);
                 }
                 else
                 {

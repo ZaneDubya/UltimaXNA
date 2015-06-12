@@ -46,7 +46,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 // display a default spellbook graphic, based on the default spellbook type for this item ID.
                 // right now, I'm just using a magery background, but really the background should change based
                 // on the item id.
-                AddControl(new GumpPic(this, 0, 0, 0, 0x08AC, 0));
+                AddControl(new GumpPic(this, 0, 0, 0x08AC, 0));
                 // other options? necro? spellweaving?
             }
         }
@@ -66,7 +66,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         private void CreateSpellbookGumplings()
         {
             ClearControls();
-            AddControl(new GumpPic(this, 0, 0, 0, 0x08AC, 0));
+            AddControl(new GumpPic(this, 0, 0, 0x08AC, 0));
         }
 
         private void OnEntityUpdate()

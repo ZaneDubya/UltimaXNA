@@ -38,35 +38,35 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
         {
             int hue = 902; // light blue
             // backdrop
-            AddControl(new GumpPicTiled(this, 0, 0, 0, 800, 600, 0x0588));
-            AddControl(new ResizePic(this, 0, 128, 285, 0x13BE, 520, 190));
-            AddControl(new GumpPic(this, 0, 0, 0, 0x157C, 0)); // 0x2329
-            AddControl(new GumpPic(this, 0, 354, 42, 0x058A, 0)); // 0x2329
+            AddControl(new GumpPicTiled(this, 0, 0, 800, 600, 0x0588));
+            AddControl(new ResizePic(this, 128, 285, 0x13BE, 520, 190));
+            AddControl(new GumpPic(this, 0, 0, 0x157C, 0)); // 0x2329
+            AddControl(new GumpPic(this, 354, 42, 0x058A, 0)); // 0x2329
             // quit button
-            AddControl(new Button(this, 0, 554, 2, 5513, 5515, ButtonTypes.Activate, 0, (int)LoginGumpButtons.QuitButton));
+            AddControl(new Button(this, 554, 2, 5513, 5515, ButtonTypes.Activate, 0, (int)LoginGumpButtons.QuitButton));
             ((Button)LastControl).GumpOverID = 5514;
             // Log in to Ultima Online
-            AddControl(new TextLabelAscii(this, 0, 254, 305, hue, 2, IO.StringData.Entry(3000038)));
+            AddControl(new TextLabelAscii(this, 254, 305, hue, 2, IO.StringData.Entry(3000038)));
             // Account Name
-            AddControl(new TextLabelAscii(this, 0, 181, 346, hue, 2, IO.StringData.Entry(3000099)));
+            AddControl(new TextLabelAscii(this, 181, 346, hue, 2, IO.StringData.Entry(3000099)));
             // Password
-            AddControl(new TextLabelAscii(this, 0, 181, 386, hue, 2, IO.StringData.Entry(3000103)));
+            AddControl(new TextLabelAscii(this, 181, 386, hue, 2, IO.StringData.Entry(3000103)));
             // name field
-            TextEntry g1 = new TextEntry(this, 0, 332, 346, 200, 20, 0, (int)LoginGumpTextFields.AccountName, 32, Settings.Server.UserName);
+            TextEntry g1 = new TextEntry(this, 332, 346, 200, 20, 0, (int)LoginGumpTextFields.AccountName, 32, Settings.Server.UserName);
             g1.HtmlTag = "<basefont color=#000000><big>";
             AddControl(new ResizePic(this, g1));
             AddControl(g1);
             // password field
-            TextEntry g2 = new TextEntry(this, 0, 332, 386, 200, 20, 0, (int)LoginGumpTextFields.Password, 32, "");
+            TextEntry g2 = new TextEntry(this, 332, 386, 200, 20, 0, (int)LoginGumpTextFields.Password, 32, "");
             g2.IsPasswordField = true;
             g2.HtmlTag = "<basefont color=#000000><big>";
             AddControl(new ResizePic(this, g2));
             AddControl(g2);
             // login button
-            AddControl(new Button(this, 0, 610, 439, 5540, 5542, ButtonTypes.Activate, 0, (int)LoginGumpButtons.LoginButton));
+            AddControl(new Button(this, 610, 439, 5540, 5542, ButtonTypes.Activate, 0, (int)LoginGumpButtons.LoginButton));
             ((Button)LastControl).GumpOverID = 5541;
             // Version information
-            AddControl(new HtmlGumpling(this, 0, 183, 440, 300, 20, 0, 0, "<medium><outline><font color='#AAAACC'>" + Utility.VersionString));
+            AddControl(new HtmlGumpling(this, 183, 440, 300, 20, 0, 0, "<medium><outline><font color='#AAAACC'>" + Utility.VersionString));
 
             IsUncloseableWithRMB = true;
         }

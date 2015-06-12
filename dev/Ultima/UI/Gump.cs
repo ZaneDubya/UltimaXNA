@@ -55,7 +55,7 @@ namespace UltimaXNA.Ultima.UI
         }
 
         public Gump(int localID, int gumpTypeID)
-            : base(null, 0)
+            : base(null)
         {
             GumpLocalID = localID;
             GumpServerTypeID = gumpTypeID;

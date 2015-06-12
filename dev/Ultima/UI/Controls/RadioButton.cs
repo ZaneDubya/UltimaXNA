@@ -11,7 +11,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         }
 
         public RadioButton(AControl owner, int groupIndex, string[] arguements, string[] lines)
-            : base(owner, page, arguements, lines)
+            : base(owner, arguements, lines)
         {
             GroupIndex = groupIndex;
         }

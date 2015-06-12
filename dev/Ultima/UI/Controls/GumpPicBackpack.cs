@@ -12,7 +12,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         }
 
         public GumpPicBackpack(AControl owner, int x, int y, Item backpack)
-            : base(owner, page, x, y, 0xC4F6, 0)
+            : base(owner, x, y, 0xC4F6, 0)
         {
             BackpackItem = backpack;
         }

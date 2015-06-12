@@ -34,7 +34,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
             IsMovable = true;
 
-            AddControl(new GumpPicContainer(this, 0, 0, 0, m_data.GumpID, 0, m_item));
+            AddControl(new GumpPicContainer(this, 0, 0, m_data.GumpID, 0, m_item));
         }
 
         public override void Dispose()

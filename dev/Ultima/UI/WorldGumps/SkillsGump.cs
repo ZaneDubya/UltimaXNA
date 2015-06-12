@@ -36,10 +36,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
             m_World = ServiceRegistry.GetService<WorldModel>();
 
-            AddControl(m_Background = new ExpandableScroll(this, 0, 0, 0, 200));
+            AddControl(m_Background = new ExpandableScroll(this, 0, 0, 200));
             m_Background.TitleGumpID = 0x834;
 
-            AddControl(m_SkillsHtml = new HtmlGumpling(this, 0, 36, 35, 230, 200 - 100, 0, 2, string.Empty));
+            AddControl(m_SkillsHtml = new HtmlGumpling(this, 36, 35, 230, 200 - 100, 0, 2, string.Empty));
             m_SkillsHtml.OnDragHRef += OnSkillDrag;
         }
 

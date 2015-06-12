@@ -61,7 +61,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             if (true)
             {
                 int bodyID = 12 + (m_isElf ? 2 : 0) + (m_isFemale ? 1 : 0); // ((Mobile)m_sourceEntity).BodyID;
-                GumpPic paperdoll = (GumpPic)AddControl(new GumpPic(this, 0, 0, 0, bodyID, ((Mobile)m_sourceEntity).Hue));
+                GumpPic paperdoll = (GumpPic)AddControl(new GumpPic(this, 0, 0, bodyID, ((Mobile)m_sourceEntity).Hue));
                 paperdoll.HandlesMouseInput = true;
                 paperdoll.IsPaperdoll = true;
             }
@@ -93,7 +93,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             if (((Mobile)m_sourceEntity).GetItem((int)PaperDollEquipSlots.Backpack) != null)
             {
                 Item backpack = ((Mobile)m_sourceEntity).GetItem((int)PaperDollEquipSlots.Backpack);
-                AddControl(new GumpPicBackpack(this, 0, -5, 0, backpack));
+                AddControl(new GumpPicBackpack(this, -5, 0, backpack));
                 LastControl.HandlesMouseInput = true;
                 LastControl.MouseDoubleClickEvent += On_Dblclick_Backpack;
             }

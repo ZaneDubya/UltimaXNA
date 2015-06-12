@@ -15,7 +15,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         private Vector2 m_InputMultiplier = Vector2.One;
 
         public WorldControl(AControl owner, int x, int y, int width, int height)
-            : base(owner, 0)
+            : base(owner)
         {
             Position = new Point(x, y);
             Size = new Point(width, height);

@@ -43,10 +43,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             HandlesMouseInput = true;
 
             m_BG = new ResizePic[3];
-            m_BG[0] = (ResizePic)AddControl(new ResizePic(this, 0, 0, 0, 0x24B8, 120, 40));
-            m_BG[1] = (ResizePic)AddControl(new ResizePic(this, 0, 0, 0, 0x24EA, 120, 40));
-            m_BG[2] = (ResizePic)AddControl(new ResizePic(this, 0, 0, 0, 0x251C, 120, 40));
-            m_Caption = (HtmlGumpling)AddControl(new HtmlGumpling(this, 0, 0, 10, 120, 20, 0, 0, "<center>" + m_Skill.Name));
+            m_BG[0] = (ResizePic)AddControl(new ResizePic(this, 0, 0, 0x24B8, 120, 40));
+            m_BG[1] = (ResizePic)AddControl(new ResizePic(this, 0, 0, 0x24EA, 120, 40));
+            m_BG[2] = (ResizePic)AddControl(new ResizePic(this, 0, 0, 0x251C, 120, 40));
+            m_Caption = (HtmlGumpling)AddControl(new HtmlGumpling(this, 0, 10, 120, 20, 0, 0, "<center>" + m_Skill.Name));
 
             for (int i = 0; i < 3; i++)
             {

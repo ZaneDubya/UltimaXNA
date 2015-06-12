@@ -36,7 +36,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         int m_MessageHistoryIndex = -1;
 
         public ChatControl(AControl owner, int x, int y, int width, int height)
-            : base(owner, 0)
+            : base(owner)
         {
             Position = new Point(x, y);
             Size = new Point(width, height);
@@ -55,10 +55,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
             if (m_TextEntry == null)
             {
-                m_TextEntry = new TextEntry(this, 0, 1, Height - TextUni.GetFont(0).Height, Width, TextUni.GetFont(0).Height, 0, 0, MaxChatMessageLength, string.Empty);
+                m_TextEntry = new TextEntry(this, 1, Height - TextUni.GetFont(0).Height, Width, TextUni.GetFont(0).Height, 0, 0, MaxChatMessageLength, string.Empty);
                 m_TextEntry.LegacyCarat = true;
 
-                AddControl(new CheckerTrans(this, 0, 0, Height - 20, Width, 20));
+                AddControl(new CheckerTrans(this, 0, Height - 20, Width, 20));
                 AddControl(m_TextEntry);
             }
 

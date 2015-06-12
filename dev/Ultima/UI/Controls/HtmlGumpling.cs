@@ -112,16 +112,16 @@ namespace UltimaXNA.Ultima.UI.Controls
 
             if (HasBackground)
             {
-                this.AddControl(new ResizePic(this, 0, 0, 0, 0x2486, Width - (HasScrollbar ? 15 : 0), Height));
+                this.AddControl(new ResizePic(this, 0, 0, 0x2486, Width - (HasScrollbar ? 15 : 0), Height));
                 LastControl.HandlesMouseInput = false;
             }
 
             if (HasScrollbar)
             {
                 if (UseFlagScrollbar)
-                    AddControl(new ScrollFlag(this, 0));
+                    AddControl(new ScrollFlag(this));
                 else
-                    AddControl(new ScrollBar(this, 0));
+                    AddControl(new ScrollBar(this));
                 m_Scrollbar = LastControl as IScrollBar;
                 m_Scrollbar.Position = new Point(Width - 14, 0);
                 m_Scrollbar.Height = Height;

@@ -25,7 +25,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         public YouAreDeadGump()
             : base(0, 0)
         {
-            AddControl(new HtmlGumpling(this, 0, 0, 0, 200, 40, 0, 0, "<big><center>You are dead.</center></big>"));
+            AddControl(new HtmlGumpling(this, 0, 0, 200, 40, 0, 0, "<big><center>You are dead.</center></big>"));
         }
 
         public override void Update(double totalMS, double frameMS)
