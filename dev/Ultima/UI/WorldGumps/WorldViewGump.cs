@@ -75,7 +75,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
             ClearControls();
             // border for dragging
-            AddControl(new ResizePic(this, 0, 0, 0, 0xa3c, Width, Height));
+            AddControl(new ResizePic(this, 0, 0, 0xa3c, Width, Height));
             // world control!
             AddControl(new WorldControl(this, BorderWidth, BorderHeight, m_WorldWidth, m_WorldHeight));
             // chat!

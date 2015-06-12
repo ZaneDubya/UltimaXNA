@@ -91,9 +91,9 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
                 {
                     if (e.Name != string.Empty)
                     {
-                        m_characterNames[entryIndex] = new HtmlGumpling(this, 1, 228, 154 + 40 * entryIndex, 272, 22, 0, 0, formatHTMLCharName(entryIndex, e.Name, (m_charSelected == entryIndex ? 431 : 1278)));
-                        AddControl(new ResizePic(this, m_characterNames[entryIndex]));
-                        AddControl(m_characterNames[entryIndex]);
+                        m_characterNames[entryIndex] = new HtmlGumpling(this, 228, 154 + 40 * entryIndex, 272, 22, 0, 0, formatHTMLCharName(entryIndex, e.Name, (m_charSelected == entryIndex ? 431 : 1278)));
+                        AddControl(new ResizePic(this, m_characterNames[entryIndex]), 1);
+                        AddControl(m_characterNames[entryIndex], 1);
                     }
                     entryIndex++;
                 }
