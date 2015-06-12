@@ -55,22 +55,22 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         UserInterfaceService m_UserInterface;
 
-        public ColorPicker(AControl owner, int page)
-            : base(owner, page)
+        public ColorPicker(AControl owner)
+            : base(owner)
         {
             HandlesMouseInput = true;
 
             m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
         }
 
-        public ColorPicker(AControl owner, int page, Rectangle area, int swatchWidth, int swatchHeight, int[] hues)
-            : this(owner, page)
+        public ColorPicker(AControl owner, Rectangle area, int swatchWidth, int swatchHeight, int[] hues)
+            : this(owner)
         {
             buildGumpling(area, swatchWidth, swatchHeight, hues);
         }
 
-        public ColorPicker(AControl owner, int page, Rectangle closedArea, Rectangle openArea, int swatchWidth, int swatchHeight, int[] hues)
-            : this(owner, page)
+        public ColorPicker(AControl owner, Rectangle closedArea, Rectangle openArea, int swatchWidth, int swatchHeight, int[] hues)
+            : this(owner)
         {
             m_openArea = openArea;
             buildGumpling(closedArea, swatchWidth, swatchHeight, hues);

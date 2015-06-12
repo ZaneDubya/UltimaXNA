@@ -21,14 +21,14 @@ namespace UltimaXNA.Ultima.UI.Controls
         public string Text = string.Empty;
         RenderedText m_Texture;
 
-        public CroppedText(AControl owner, int page)
-            : base(owner, page)
+        public CroppedText(AControl owner)
+            : base(owner)
         {
 
         }
 
-        public CroppedText(AControl owner, int page, string[] arguements, string[] lines)
-            : this(owner, page)
+        public CroppedText(AControl owner, string[] arguements, string[] lines)
+            : this(owner)
         {
             int x, y, width, height, hue, textIndex;
             x = Int32.Parse(arguements[1]);
@@ -40,8 +40,8 @@ namespace UltimaXNA.Ultima.UI.Controls
             buildGumpling(x, y, width, height, hue, textIndex, lines);
         }
 
-        public CroppedText(AControl owner, int page, int x, int y, int width, int height, int hue, int textIndex, string[] lines)
-            : this(owner, page)
+        public CroppedText(AControl owner, int x, int y, int width, int height, int hue, int textIndex, string[] lines)
+            : this(owner)
         {
             buildGumpling(x, y, width, height, hue, textIndex, lines);
         }

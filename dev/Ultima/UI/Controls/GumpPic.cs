@@ -29,14 +29,14 @@ namespace UltimaXNA.Ultima.UI.Controls
             set { m_IsPaperdoll = value; }
         }
 
-        public GumpPic(AControl owner, int page)
-            : base(owner, page)
+        public GumpPic(AControl owner)
+            : base(owner)
         {
             MakeThisADragger();
         }
 
-        public GumpPic(AControl owner, int page, string[] arguements)
-            : this(owner, page)
+        public GumpPic(AControl owner, string[] arguements)
+            : this(owner)
         {
             int x, y, gumpID, hue = 0;
             x = Int32.Parse(arguements[1]);
@@ -50,8 +50,8 @@ namespace UltimaXNA.Ultima.UI.Controls
             buildGumpling(x, y, gumpID, hue);
         }
 
-        public GumpPic(AControl owner, int page, int x, int y, int gumpID, int hue)
-            : this(owner, page)
+        public GumpPic(AControl owner, int x, int y, int gumpID, int hue)
+            : this(owner)
         {
             buildGumpling(x, y, gumpID, hue);
         }

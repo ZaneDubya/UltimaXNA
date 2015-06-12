@@ -68,16 +68,16 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         UserInterfaceService m_UserInterface;
 
-        public Button(AControl owner, int page)
-            : base(owner, page)
+        public Button(AControl owner)
+            : base(owner)
         {
             HandlesMouseInput = true;
 
             m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
         }
 
-        public Button(AControl owner, int page, string[] arguements)
-            : this(owner, page)
+        public Button(AControl owner, string[] arguements)
+            : this(owner)
         {
             int x, y, gumpID1, gumpID2, buttonType, param, buttonID;
             x = Int32.Parse(arguements[1]);
@@ -90,8 +90,8 @@ namespace UltimaXNA.Ultima.UI.Controls
             buildGumpling(x, y, gumpID1, gumpID2, (ButtonTypes)buttonType, param, buttonID);
         }
 
-        public Button(AControl owner, int page, int x, int y, int gumpID1, int gumpID2, ButtonTypes buttonType, int param, int buttonID)
-            : this(owner, page)
+        public Button(AControl owner, int x, int y, int gumpID1, int gumpID2, ButtonTypes buttonType, int param, int buttonID)
+            : this(owner)
         {
             buildGumpling(x, y, gumpID1, gumpID2, buttonType, param, buttonID);
         }

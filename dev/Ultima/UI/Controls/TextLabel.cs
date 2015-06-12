@@ -41,14 +41,14 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         RenderedText m_textRenderer;
 
-        public TextLabel(AControl owner, int page)
-            : base(owner, page)
+        public TextLabel(AControl owner)
+            : base(owner)
         {
 
         }
 
-        public TextLabel(AControl owner, int page, string[] arguements, string[] lines)
-            : this(owner, page)
+        public TextLabel(AControl owner, string[] arguements, string[] lines)
+            : this(owner)
         {
             int x, y, hue, textIndex;
             x = Int32.Parse(arguements[1]);
@@ -58,8 +58,8 @@ namespace UltimaXNA.Ultima.UI.Controls
             buildGumpling(x, y, hue, lines[textIndex]);
         }
 
-        public TextLabel(AControl owner, int page, int x, int y, int hue, string text)
-            : this(owner, page)
+        public TextLabel(AControl owner, int x, int y, int hue, string text)
+            : this(owner)
         {
             buildGumpling(x, y, hue, text);
         }

@@ -71,14 +71,14 @@ namespace UltimaXNA.Ultima.UI.Controls
             get { return m_equipmentSlots[(int)slot]; }
         }
 
-        PaperdollLargeUninteractable(AControl owner, int page)
-            : base(owner, page)
+        PaperdollLargeUninteractable(AControl owner)
+            : base(owner)
         {
 
         }
 
-        public PaperdollLargeUninteractable(AControl owner, int page, int x, int y)
-            : this(owner, page)
+        public PaperdollLargeUninteractable(AControl owner, int x, int y)
+            : this(owner)
         {
             Position = new Point(x, y);
         }

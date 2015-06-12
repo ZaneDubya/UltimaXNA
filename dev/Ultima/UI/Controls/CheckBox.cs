@@ -19,14 +19,14 @@ namespace UltimaXNA.Ultima.UI.Controls
             protected set;
         }
 
-        public CheckBox(AControl owner, int page)
-            : base(owner, page)
+        public CheckBox(AControl owner)
+            : base(owner)
         {
             HandlesMouseInput = true;
         }
 
-        public CheckBox(AControl owner, int page, string[] arguements, string[] lines)
-            : this(owner, page)
+        public CheckBox(AControl owner, string[] arguements, string[] lines)
+            : this(owner)
         {
             int x, y, inactiveID, activeID, switchID;
             bool initialState;
@@ -41,8 +41,8 @@ namespace UltimaXNA.Ultima.UI.Controls
             buildGumpling(x, y, inactiveID, activeID, initialState, switchID);
         }
 
-        public CheckBox(AControl owner, int page, int x, int y, int inactiveID, int activeID, bool initialState, int switchID)
-            : this(owner, page)
+        public CheckBox(AControl owner, int x, int y, int inactiveID, int activeID, bool initialState, int switchID)
+            : this(owner)
         {
             buildGumpling(x, y, inactiveID, activeID, initialState, switchID);
         }
