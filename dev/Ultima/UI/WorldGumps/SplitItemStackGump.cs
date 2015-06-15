@@ -40,16 +40,16 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             IsMovable = true;
 
             // Background
-            AddControl(new GumpPic(this, 0, 0, 0, 0x085c, 0));
+            AddControl(new GumpPic(this, 0, 0, 0x085c, 0));
             // Slider
-            m_Slider = (HSliderBar)AddControl(new HSliderBar(this, 0, 30, 16, 104, 0, item.Amount, item.Amount, HSliderBarStyle.BlueWidgetNoBar));
+            m_Slider = (HSliderBar)AddControl(new HSliderBar(this, 30, 16, 104, 0, item.Amount, item.Amount, HSliderBarStyle.BlueWidgetNoBar));
             m_LastValue = m_Slider.Value;
             // Ok button
-            AddControl(new Button(this, 1, 102, 38, 0x085d, 0x085e, ButtonTypes.Default, 0, 0));
+            AddControl(new Button(this, 102, 38, 0x085d, 0x085e, ButtonTypes.Default, 0, 0));
             ((Button)LastControl).GumpOverID = 0x085f;
             ((Button)LastControl).MouseClickEvent += ClickOkayButton;
             // Text entry field
-            m_AmountEntry = (TextEntry)AddControl(new TextEntry(this, 0, 30, 39, 60, 16, 0, 0, 5, item.Amount.ToString()));
+            m_AmountEntry = (TextEntry)AddControl(new TextEntry(this, 30, 39, 60, 16, 0, 0, 5, item.Amount.ToString()));
             m_AmountEntry.HtmlTag = "<big>";
             m_AmountEntry.LegacyCarat = true;
             m_AmountEntry.Hue = 1001;

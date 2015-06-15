@@ -23,43 +23,43 @@ namespace UltimaXNA.Ultima.UI
                         // [released-id] and [pressed-id] specify the buttongraphic.
                         // If pressed check for [return-value].
                         // Use [page-id] to switch between pages and [quit]=1/0 to close the gump.
-                        gump.AddControl(new Controls.Button(gump, currentGUMPPage, gumpParams));
+                        gump.AddControl(new Controls.Button(gump, gumpParams), currentGUMPPage);
                         break;
                     case "buttontileart":
                         // ButtonTileArt [x] [y] [released-id] [pressed-id] [quit] [page-id] [return-value] [tilepic-id] [hue] [tile-x] [tile-y]
                         //  Adds a button to the gump with the specified coordinates and tilepic as graphic.
                         // [tile-x] and [tile-y] define the coordinates of the tile graphic and are relative to [x] and [y]. 
-                        gump.AddControl(new Controls.Button(gump, currentGUMPPage, int.Parse(gumpParams[1]), int.Parse(gumpParams[2]), int.Parse(gumpParams[3]), int.Parse(gumpParams[4]),
-                            (Controls.ButtonTypes)int.Parse(gumpParams[5]), int.Parse(gumpParams[6]), int.Parse(gumpParams[7])));
-                        gump.AddControl(new Controls.TilePic(gump, currentGUMPPage, int.Parse(gumpParams[1]) + int.Parse(gumpParams[10]), int.Parse(gumpParams[2]) + int.Parse(gumpParams[11]),
-                            int.Parse(gumpParams[8]), int.Parse(gumpParams[9])));
+                        gump.AddControl(new Controls.Button(gump, int.Parse(gumpParams[1]), int.Parse(gumpParams[2]), int.Parse(gumpParams[3]), int.Parse(gumpParams[4]),
+                            (Controls.ButtonTypes)int.Parse(gumpParams[5]), int.Parse(gumpParams[6]), int.Parse(gumpParams[7])), currentGUMPPage);
+                        gump.AddControl(new Controls.TilePic(gump, int.Parse(gumpParams[1]) + int.Parse(gumpParams[10]), int.Parse(gumpParams[2]) + int.Parse(gumpParams[11]),
+                            int.Parse(gumpParams[8]), int.Parse(gumpParams[9])), currentGUMPPage);
                         break;
                     case "checkertrans":
                         // CheckerTrans [x] [y] [width] [height]
                         // Creates a transparent rectangle on position [x,y] using [width] and [height].
-                        gump.AddControl(new Controls.CheckerTrans(gump, currentGUMPPage, gumpParams));
+                        gump.AddControl(new Controls.CheckerTrans(gump, gumpParams), currentGUMPPage);
                         break;
                     case "croppedtext":
                         // CroppedText [x] [y] [width] [height] [color] [text-id]
                         // Adds a text field to the gump. gump is similar to the text command, but the text is cropped to the defined area.
-                        gump.AddControl(new Controls.CroppedText(gump, currentGUMPPage, gumpParams, gumpLines));
+                        gump.AddControl(new Controls.CroppedText(gump, gumpParams, gumpLines), currentGUMPPage);
                         (gump.LastControl as Controls.CroppedText).Hue = 1;
                         break;
                     case "gumppic":
                         // GumpPic [x] [y] [id] hue=[color]
                         // Adds a graphic to the gump, where [id] ist the graphic id of an item. For example use InsideUO to get them. Optionaly there is a color parameter.
-                        gump.AddControl(new Controls.GumpPic(gump, currentGUMPPage, gumpParams));
+                        gump.AddControl(new Controls.GumpPic(gump, gumpParams), currentGUMPPage);
                         break;
                     case "gumppictiled":
                         // GumpPicTiled [x] [y] [width] [height] [id]
                         // Similar to GumpPic, but the gumppic is tiled to the given [height] and [width].
-                        gump.AddControl(new Controls.GumpPicTiled(gump, currentGUMPPage, gumpParams));
+                        gump.AddControl(new Controls.GumpPicTiled(gump, gumpParams), currentGUMPPage);
                         break;
                     case "htmlgump":
                         // HtmlGump [x] [y] [width] [height] [text-id] [background] [scrollbar]
                         // Defines a text-area where Html-commands are allowed.
                         // [background] and [scrollbar] can be 0 or 1 and define whether the background is transparent and a scrollbar is displayed.
-                        gump.AddControl(new Controls.HtmlGumpling(gump, currentGUMPPage, gumpParams, gumpLines));
+                        gump.AddControl(new Controls.HtmlGumpling(gump, gumpParams, gumpLines), currentGUMPPage);
                         break;
                     case "page":
                         // Page [Number]
@@ -69,33 +69,33 @@ namespace UltimaXNA.Ultima.UI
                     case "resizepic":
                         // ResizePic [x] [y] [gump-id] [width] [height]
                         // Similar to GumpPic but the pic is automatically resized to the given [width] and [height].
-                        gump.AddControl(new Controls.ResizePic(gump, currentGUMPPage, gumpParams));
+                        gump.AddControl(new Controls.ResizePic(gump, gumpParams), currentGUMPPage);
                         break;
                     case "text":
                         // Text [x] [y] [color] [text-id]
                         // Defines the position and color of a text (data) entry.
-                        gump.AddControl(new Controls.TextLabel(gump, currentGUMPPage, gumpParams, gumpLines));
+                        gump.AddControl(new Controls.TextLabel(gump, gumpParams, gumpLines), currentGUMPPage);
                         break;
                     case "textentry":
                         // TextEntry [x] [y] [width] [height] [color] [return-value] [default-text-id]
                         // Defines an area where the [default-text-id] is displayed.
                         // The player can modify gump data. To get gump data check the [return-value].
-                        gump.AddControl(new Controls.TextEntry(gump, currentGUMPPage, gumpParams, gumpLines));
+                        gump.AddControl(new Controls.TextEntry(gump, gumpParams, gumpLines), currentGUMPPage);
                         break;
                     case "textentrylimited":
                         // TextEntryLimited [x] [y] [width] [height] [color] [return-value] [default-text-id] [textlen]
                         // Similar to TextEntry but you can specify via [textlen] the maximum of characters the player can type in.
-                        gump.AddControl(new Controls.TextEntry(gump, currentGUMPPage, gumpParams, gumpLines));
+                        gump.AddControl(new Controls.TextEntry(gump, gumpParams, gumpLines), currentGUMPPage);
                         break;
                     case "tilepic":
                         // TilePic [x] [y] [id]
                         // Adds a Tilepicture to the gump. [id] defines the tile graphic-id. For example use InsideUO to get them.
-                        gump.AddControl(new Controls.TilePic(gump, currentGUMPPage, gumpParams));
+                        gump.AddControl(new Controls.TilePic(gump, gumpParams), currentGUMPPage);
                         break;
                     case "tilepichue":
                         // TilePicHue [x] [y] [id] [hue]
                         // Similar to the tilepic command, but with an additional hue parameter.
-                        gump.AddControl(new Controls.TilePic(gump, currentGUMPPage, gumpParams));
+                        gump.AddControl(new Controls.TilePic(gump, gumpParams), currentGUMPPage);
                         break;
                     case "noclose":
                         // NoClose 
@@ -125,27 +125,27 @@ namespace UltimaXNA.Ultima.UI
                     case "radio":
                         // Radio [x] [y] [released-id] [pressed-id] [status] [return-value]
                         // Same as Checkbox, but only one Radiobutton can be pressed at the same time, and they are linked via the 'Group' command.
-                        gump.AddControl(new Controls.RadioButton(gump, currentGUMPPage, currentRadioGroup, gumpParams, gumpLines));
+                        gump.AddControl(new Controls.RadioButton(gump, currentRadioGroup, gumpParams, gumpLines), currentGUMPPage);
                         break;
                     case "checkbox":
                         // CheckBox [x] [y] [released-id] [pressed-id] [status] [return-value]
                         // Adds a CheckBox to the gump. Multiple CheckBoxes can be pressed at the same time.
                         // Check the [return-value] if you want to know which CheckBoxes were selected.
-                        gump.AddControl(new Controls.CheckBox(gump, currentGUMPPage, gumpParams, gumpLines));
+                        gump.AddControl(new Controls.CheckBox(gump, gumpParams, gumpLines), currentGUMPPage);
                         break;
                     case "xmfhtmlgump":
                         // XmfHtmlGump [x] [y] [width] [height] [cliloc-nr] [background] [scrollbar]
                         // Similar to the htmlgump command, but in place of the [text-id] a CliLoc entry is used.
-                        gump.AddControl(new Controls.HtmlGumpling(gump, currentGUMPPage, int.Parse(gumpParams[1]), int.Parse(gumpParams[2]), int.Parse(gumpParams[3]), int.Parse(gumpParams[4]),
+                        gump.AddControl(new Controls.HtmlGumpling(gump, int.Parse(gumpParams[1]), int.Parse(gumpParams[2]), int.Parse(gumpParams[3]), int.Parse(gumpParams[4]),
                             int.Parse(gumpParams[6]), int.Parse(gumpParams[7]),
-                            "<font color=#000>" + IO.StringData.Entry(int.Parse(gumpParams[5]))));
+                            "<font color=#000>" + IO.StringData.Entry(int.Parse(gumpParams[5]))), currentGUMPPage);
                         break;
                     case "xmfhtmlgumpcolor":
                         // XmfHtmlGumpColor [x] [y] [width] [height] [cliloc-nr] [background] [scrollbar] [color]
                         // Similar to the xmfhtmlgump command, but additionally a [color] can be specified.
-                        gump.AddControl(new Controls.HtmlGumpling(gump, currentGUMPPage, int.Parse(gumpParams[1]), int.Parse(gumpParams[2]), int.Parse(gumpParams[3]), int.Parse(gumpParams[4]),
+                        gump.AddControl(new Controls.HtmlGumpling(gump, int.Parse(gumpParams[1]), int.Parse(gumpParams[2]), int.Parse(gumpParams[3]), int.Parse(gumpParams[4]),
                             int.Parse(gumpParams[6]), int.Parse(gumpParams[7]),
-                            string.Format("<font color=#{0}>{1}", Utility.GetColorFromUshortColor(ushort.Parse(gumpParams[8])), IO.StringData.Entry(int.Parse(gumpParams[5])))));
+                            string.Format("<font color=#{0}>{1}", Utility.GetColorFromUshortColor(ushort.Parse(gumpParams[8])), IO.StringData.Entry(int.Parse(gumpParams[5])))), currentGUMPPage);
                         (gump.LastControl as Controls.HtmlGumpling).Hue = 0;
                         break;
                     case "xmfhtmltok":
@@ -169,10 +169,10 @@ namespace UltimaXNA.Ultima.UI
                                 }
                             }
                         }
-                        gump.AddControl(new Controls.HtmlGumpling(gump, currentGUMPPage,
+                        gump.AddControl(new Controls.HtmlGumpling(gump, 
                             int.Parse(gumpParams[1]), int.Parse(gumpParams[2]), int.Parse(gumpParams[3]), int.Parse(gumpParams[4]),
                             int.Parse(gumpParams[5]), int.Parse(gumpParams[6]),
-                            string.Format("<font color=#{0}>{1}", Utility.GetColorFromUshortColor(ushort.Parse(gumpParams[7])), messageWithArgs)));
+                            string.Format("<font color=#{0}>{1}", Utility.GetColorFromUshortColor(ushort.Parse(gumpParams[7])), messageWithArgs)), currentGUMPPage);
                         (gump.LastControl as Controls.HtmlGumpling).Hue = 0;
                         Tracer.Warn(string.Format("GUMP: Unhandled {0}.", gumpParams[0]));
                         break;

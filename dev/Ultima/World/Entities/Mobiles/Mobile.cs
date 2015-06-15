@@ -48,7 +48,8 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         {
             base.Dispose();
             Equipment.ClearEquipment();
-            tickUpdateTicker();
+            if (OnEntityUpdated != null)
+                OnEntityUpdated();
         }
 
         public override void Update(double frameMS)
@@ -161,7 +162,8 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         public void WearItem(Item i, int slot)
         {
             Equipment[slot] = i;
-            tickUpdateTicker();
+            if (OnEntityUpdated != null)
+                OnEntityUpdated();
             if (slot == (int)EquipLayer.Mount)
             {
                 // Do we do something here?
@@ -171,7 +173,8 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         public void RemoveItem(Serial serial)
         {
             Equipment.RemoveBySerial(serial);
-            tickUpdateTicker();
+            if (OnEntityUpdated != null)
+                OnEntityUpdated();
         }
 
         public Item GetItem(int slot)
@@ -230,7 +233,8 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             set
             {
                 m_bodyID = value;
-                tickUpdateTicker();
+                if (OnEntityUpdated != null)
+                    OnEntityUpdated();
             }
         }
 
@@ -248,7 +252,8 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             set
             {
                 m_hue = value;
-                tickUpdateTicker();
+                if (OnEntityUpdated != null)
+                    OnEntityUpdated();
             }
         }
 
@@ -285,21 +290,6 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                         return 0;
                 }
             }
-        }
-
-        // ============================================================
-        // UpdateTicker - used by PaperdollGump to determine when
-        // equipment has changed, requiring a redraw.
-        // ============================================================
-
-        int m_updateTicker = 0;
-        void tickUpdateTicker()
-        {
-            m_updateTicker++;
-        }
-        public int UpdateTicker
-        {
-            get { return m_updateTicker; }
         }
 
         // ============================================================

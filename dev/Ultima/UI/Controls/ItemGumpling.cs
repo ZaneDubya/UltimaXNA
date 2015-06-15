@@ -42,7 +42,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         }
 
         public ItemGumpling(AControl owner, Item item)
-            : base(owner, 0)
+            : base(owner)
         {
             buildGumpling(item);
             HandlesMouseInput = true;

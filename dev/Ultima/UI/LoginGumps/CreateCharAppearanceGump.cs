@@ -93,64 +93,57 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             : base(0, 0)
         {
             // backdrop
-            AddControl(new GumpPicTiled(this, 0, 0, 0, 800, 600, 9274));
-            AddControl(new GumpPic(this, 0, 0, 0, 5500, 0));
+            AddControl(new GumpPicTiled(this, 0, 0, 800, 600, 9274));
+            AddControl(new GumpPic(this, 0, 0, 5500, 0));
             // character name 
-            AddControl(new GumpPic(this, 0, 280, 53, 1801, 0));
-            m_Name = new TextEntry(this, 0, 238, 70, 234, 20, 0, 0, 29, string.Empty);
+            AddControl(new GumpPic(this, 280, 53, 1801, 0));
+            m_Name = new TextEntry(this, 238, 70, 234, 20, 0, 0, 29, string.Empty);
             AddControl(new ResizePic(this, m_Name));
             AddControl(m_Name);
             // character window
-            AddControl(new GumpPic(this, 0, 238, 98, 1800, 0));
+            AddControl(new GumpPic(this, 238, 98, 1800, 0));
             // paperdoll
-            m_paperdoll = new PaperdollLargeUninteractable(this, 0, 237, 97);
+            m_paperdoll = new PaperdollLargeUninteractable(this, 237, 97);
             m_paperdoll.IsCharacterCreation = true;
             AddControl(m_paperdoll);
 
             // left option window
-            AddControl(new ResizePic(this, 0, 82, 125, 3600, 151, 310));
+            AddControl(new ResizePic(this, 82, 125, 3600, 151, 310));
             // this is the place where you would put the race selector.
             // if you do add it, move everything else in this left window down by 45 pixels
             // gender
-            AddControl(new TextLabelAscii(this, 1, 100, 141, 2037, 9, IO.StringData.Entry(3000120)));
-            m_Gender = new DropDownList(this, 0, 97, 154, 122, 0, 2, new string[] { IO.StringData.Entry(3000118), IO.StringData.Entry(3000119) }, false);
-            AddControl(m_Gender);
+            AddControl(new TextLabelAscii(this, 100, 141, 2037, 9, IO.StringData.Entry(3000120)), 1);
+            AddControl(m_Gender = new DropDownList(this, 97, 154, 122, 0, 2, new string[] { IO.StringData.Entry(3000118), IO.StringData.Entry(3000119) }, false));
             // hair (male)
-            AddControl(new TextLabelAscii(this, 1, 100, 186, 2037, 9, IO.StringData.Entry(3000121)));
-            m_HairMale = new DropDownList(this, 1, 97, 199, 122, 0, 6, IO.HairStyles.MaleHairNames, false);
-            AddControl(m_HairMale);
+            AddControl(new TextLabelAscii(this, 100, 186, 2037, 9, IO.StringData.Entry(3000121)), 1);
+            AddControl(m_HairMale = new DropDownList(this, 97, 199, 122, 0, 6, IO.HairStyles.MaleHairNames, false), 1);
             // facial hair (male)
-            AddControl(new TextLabelAscii(this, 1, 100, 231, 2037, 9, IO.StringData.Entry(3000122)));
-            m_FacialHairMale = new DropDownList(this, 1, 97, 244, 122, 0, 6, IO.HairStyles.FacialHair, false);
-            AddControl(m_FacialHairMale);
+            AddControl(new TextLabelAscii(this, 100, 231, 2037, 9, IO.StringData.Entry(3000122)), 1);
+            AddControl(m_FacialHairMale = new DropDownList(this, 97, 244, 122, 0, 6, IO.HairStyles.FacialHair, false), 1);
             // hair (female)
-            AddControl(new TextLabelAscii(this, 2, 100, 186, 2037, 9, IO.StringData.Entry(3000121)));
-            m_HairFemale = new DropDownList(this, 2, 97, 199, 122, 0, 6, IO.HairStyles.FemaleHairNames, false);
-            AddControl(m_HairFemale);
+            AddControl(new TextLabelAscii(this, 100, 186, 2037, 9, IO.StringData.Entry(3000121)), 2);
+            AddControl(m_HairFemale = new DropDownList(this, 97, 199, 122, 0, 6, IO.HairStyles.FemaleHairNames, false), 2);
 
             // right option window
-            AddControl(new ResizePic(this, 0, 475, 125, 3600, 151, 310));
+            AddControl(new ResizePic(this, 475, 125, 3600, 151, 310));
             // skin tone
-            AddControl(new TextLabelAscii(this, 0, 489, 141, 2037, 9, IO.StringData.Entry(3000183)));
-            m_SkinHue = new ColorPicker(this, 0, new Rectangle(490, 154, 120, 24), new Rectangle(490, 140, 120, 280), 7, 8, IO.HueData.SkinTones);
-            AddControl(m_SkinHue);
+            AddControl(new TextLabelAscii(this, 489, 141, 2037, 9, IO.StringData.Entry(3000183)));
+            AddControl(m_SkinHue = new ColorPicker(this, new Rectangle(490, 154, 120, 24), new Rectangle(490, 140, 120, 280), 7, 8, IO.HueData.SkinTones));
             // hair color
-            AddControl(new TextLabelAscii(this, 0, 489, 186, 2037, 9, IO.StringData.Entry(3000184)));
-            m_HairHue = new ColorPicker(this, 0, new Rectangle(490, 199, 120, 24), new Rectangle(490, 140, 120, 280), 8, 6, IO.HueData.HairTones);
-            AddControl(m_HairHue);
+            AddControl(new TextLabelAscii(this, 489, 186, 2037, 9, IO.StringData.Entry(3000184)));
+            AddControl(m_HairHue = new ColorPicker(this, new Rectangle(490, 199, 120, 24), new Rectangle(490, 140, 120, 280), 8, 6, IO.HueData.HairTones));
             // facial hair color (male)
-            AddControl(new TextLabelAscii(this, 1, 489, 231, 2037, 9, IO.StringData.Entry(3000185)));
-            m_FacialHairHue = new ColorPicker(this, 1, new Rectangle(490, 244, 120, 24), new Rectangle(490, 140, 120, 280), 8, 6, IO.HueData.HairTones);
-            AddControl(m_FacialHairHue);
+            AddControl(new TextLabelAscii(this, 489, 231, 2037, 9, IO.StringData.Entry(3000185)), 1);
+            AddControl(m_FacialHairHue = new ColorPicker(this, new Rectangle(490, 244, 120, 24), new Rectangle(490, 140, 120, 280), 8, 6, IO.HueData.HairTones), 1);
 
             // back button
-            AddControl(new Button(this, 1, 586, 435, 5537, 5539, ButtonTypes.Activate, 0, (int)Buttons.BackButton));
+            AddControl(new Button(this, 586, 435, 5537, 5539, ButtonTypes.Activate, 0, (int)Buttons.BackButton), 1);
             ((Button)LastControl).GumpOverID = 5538;
             // forward button
-            AddControl(new Button(this, 1, 610, 435, 5540, 5542, ButtonTypes.Activate, 0, (int)Buttons.ForwardButton));
+            AddControl(new Button(this, 610, 435, 5540, 5542, ButtonTypes.Activate, 0, (int)Buttons.ForwardButton), 1);
             ((Button)LastControl).GumpOverID = 5541;
             // quit button
-            AddControl(new Button(this, 0, 554, 2, 5513, 5515, ButtonTypes.Activate, 0, (int)Buttons.QuitButton));
+            AddControl(new Button(this, 554, 2, 5513, 5515, ButtonTypes.Activate, 0, (int)Buttons.QuitButton));
             ((Button)LastControl).GumpOverID = 5514;
 
             IsUncloseableWithRMB = true;

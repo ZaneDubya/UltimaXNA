@@ -15,6 +15,8 @@ using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.World.Maps;
 #endregion
 
+public delegate void OnEvent();
+
 namespace UltimaXNA.Ultima.World.Entities
 {
     /// <summary>
@@ -22,6 +24,8 @@ namespace UltimaXNA.Ultima.World.Entities
     /// </summary>
     public abstract class AEntity
     {
+        public OnEvent OnEntityUpdated;
+
         // ============================================================
         // Properties
         // ============================================================

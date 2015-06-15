@@ -96,28 +96,29 @@ namespace UltimaXNA.Ultima.World
         public Gump OpenContainerGump(AEntity entity) // used by ultimaclient.
         {
             Gump gump;
-
             if ((gump = (Gump)m_UserInterface.GetControl(entity.Serial)) != null)
             {
                 gump.Dispose();
             }
-
-            gump = new ContainerGump(entity, ((Container)entity).ItemID);
-            m_UserInterface.AddControl(gump, 64, 64);
-            return gump;
-        }
-
-        public Gump OpenCorpseGump(AEntity entity) // used by UltimaClient
-        {
-            Gump gump;
-
-            if ((gump = (Gump)m_UserInterface.GetControl(entity.Serial)) != null)
+            else
             {
-                gump.Dispose();
-            }
 
-            gump = new ContainerGump(entity, 0x2006);
-            m_UserInterface.AddControl(gump, 96, 96);
+                if (entity is Corpse)
+                {
+                    gump = new ContainerGump(entity, 0x2006);
+                    m_UserInterface.AddControl(gump, 96, 96);
+                }
+                else if (entity is SpellBook)
+                {
+                    gump = new SpellbookGump((SpellBook)entity, ((Container)entity).ItemID);
+                    m_UserInterface.AddControl(gump, 96, 96);
+                }
+                else
+                {
+                    gump = new ContainerGump(entity, ((Container)entity).ItemID);
+                    m_UserInterface.AddControl(gump, 64, 64);
+                }
+            }
             return gump;
         }
 

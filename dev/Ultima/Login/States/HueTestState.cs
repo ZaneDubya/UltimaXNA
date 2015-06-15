@@ -51,12 +51,12 @@ namespace UltimaXNA.Ultima.Login.States
 
             m_Gump = (Gump)m_UserInterface.AddControl(new Gump(0, 0), 0, 0);
             m_Gump.Size = new Point(800, 600);
-            m_Gump.AddControl(new ResizePic(m_Gump, 0, 5, 5, 3000, 790, 590));
+            m_Gump.AddControl(new ResizePic(m_Gump, 5, 5, 3000, 790, 590));
 
             int rowwidth = 60;
 
             // caption string
-            m_Label = (TextLabel)m_Gump.AddControl(new TextLabel(m_Gump, 0, 50, 8, 0, null));
+            m_Label = (TextLabel)m_Gump.AddControl(new TextLabel(m_Gump, 50, 8, 0, null));
 
             // object that is hued based on the current overhue.
             m_HueDisplay = (HuedControl)m_Gump.AddControl(new HuedControl(m_Gump, 8305));
@@ -103,7 +103,7 @@ namespace UltimaXNA.Ultima.Login.States
             private int m_StaticTextureID = 0;
 
             public HuedControl(AControl owner, int staticID = 0x1bf5)
-                : base(owner, 0)
+                : base(owner)
             {
                 HandlesMouseInput = true;
                 m_StaticTextureID = staticID;

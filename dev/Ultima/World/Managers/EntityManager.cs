@@ -9,14 +9,10 @@
  *
  ***************************************************************************/
 #region usings
-using System;
 using System.Collections.Generic;
 using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.World.Entities;
-using UltimaXNA.Ultima.World.Entities.Items;
-using UltimaXNA.Ultima.World.Entities.Items.Containers;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
-using UltimaXNA.Ultima.World.Entities.Multis;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Managers
@@ -55,7 +51,7 @@ namespace UltimaXNA.Ultima.World.Managers
                 AEntity player = GetPlayerObject();
                 m_Entities.Clear();
                 if (player != null)
-                    AddEntity(player);
+                    m_Entities.Add(player.Serial, player);
             }
         }
 
@@ -158,31 +154,9 @@ namespace UltimaXNA.Ultima.World.Managers
 
         T InternalCreateEntity<T>(Serial serial) where T : AEntity
         {
-            AEntity e;
-            Type t = typeof(T);
-            switch (t.Name)
-            {
-                case "Item":
-                    e = new Item(serial, m_Model.Map);
-                    break;
-                case "Container":
-                    e = new Container(serial, m_Model.Map);
-                    break;
-                case "Mobile":
-                    e = new Mobile(serial, m_Model.Map);
-                    break;
-                case "PlayerMobile":
-                    e = new PlayerMobile(serial, m_Model.Map);
-                    break;
-                case "Corpse":
-                    e = new Corpse(serial, m_Model.Map);
-                    break;
-                case "Multi":
-                    e = new Multi(serial, m_Model.Map);
-                    break;
-                default:
-                    throw new Exception("Unknown addObject type!");
-            }
+            var ctor = typeof(T).GetConstructor(new[] { typeof(Serial), typeof(Maps.Map) });
+
+            AEntity e = (T)ctor.Invoke(new object[] { serial, m_Model.Map });
 
             if (e.Serial == WorldModel.PlayerSerial)
                 e.IsClientEntity = true;
@@ -197,17 +171,12 @@ namespace UltimaXNA.Ultima.World.Managers
             return (T)e;
         }
 
-        public void RemoveObject(Serial serial)
+        public void RemoveEntity(Serial serial)
         {
             if (m_Entities.ContainsKey(serial))
             {
                 m_Entities[serial].Dispose();
             }
-        }
-
-        public void AddEntity(AEntity entity)
-        {
-            m_Entities.Add(entity.Serial, entity);
         }
     }
 }

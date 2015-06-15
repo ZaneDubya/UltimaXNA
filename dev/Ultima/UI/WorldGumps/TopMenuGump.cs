@@ -26,29 +26,29 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             : base(0, 0)
         {
             // maximized view
-            AddControl(new ResizePic(this, 1, 0, 0, 9200, 610, 27));
-            AddControl(new Button(this, 1, 5, 3, 5540, 5542, 0, 2, 0));
+            AddControl(new ResizePic(this, 0, 0, 9200, 610, 27), 1);
+            AddControl(new Button(this, 5, 3, 5540, 5542, 0, 2, 0), 1);
             ((Button)LastControl).GumpOverID = 5541;
             // buttons are 2443 small, 2445 big
             // 30, 93, 201, 309, 417, 480, 543
             // map, paperdollB, inventoryB, journalB, chat, help, < ? >
-            AddControl(new Button(this, 1, 30, 3, 2443, 2443, ButtonTypes.Activate, 0, (int)Buttons.Map));
+            AddControl(new Button(this, 30, 3, 2443, 2443, ButtonTypes.Activate, 0, (int)Buttons.Map), 1);
             ((Button)LastControl).Caption = "<basefont color=#000000>Map";
-            AddControl(new Button(this, 1, 93, 3, 2445, 2445, ButtonTypes.Activate, 0, (int)Buttons.Paperdoll));
+            AddControl(new Button(this, 93, 3, 2445, 2445, ButtonTypes.Activate, 0, (int)Buttons.Paperdoll), 1);
             ((Button)LastControl).Caption = "<basefont color=#000000>Paperdoll";
-            AddControl(new Button(this, 1, 201, 3, 2445, 2445, ButtonTypes.Activate, 0, (int)Buttons.Inventory));
+            AddControl(new Button(this, 201, 3, 2445, 2445, ButtonTypes.Activate, 0, (int)Buttons.Inventory), 1);
             ((Button)LastControl).Caption = "<basefont color=#000000>Inventory";
-            AddControl(new Button(this, 1, 309, 3, 2445, 2445, ButtonTypes.Activate, 0, (int)Buttons.Journal));
+            AddControl(new Button(this, 309, 3, 2445, 2445, ButtonTypes.Activate, 0, (int)Buttons.Journal), 1);
             ((Button)LastControl).Caption = "<basefont color=#000000>Journal";
-            AddControl(new Button(this, 1, 417, 3, 2443, 2443, ButtonTypes.Activate, 0, (int)Buttons.Chat));
+            AddControl(new Button(this, 417, 3, 2443, 2443, ButtonTypes.Activate, 0, (int)Buttons.Chat), 1);
             ((Button)LastControl).Caption = "<basefont color=#000000>Chat";
-            AddControl(new Button(this, 1, 480, 3, 2443, 2443, ButtonTypes.Activate, 0, (int)Buttons.Help));
+            AddControl(new Button(this, 480, 3, 2443, 2443, ButtonTypes.Activate, 0, (int)Buttons.Help), 1);
             ((Button)LastControl).Caption = "<basefont color=#000000>Help";
-            AddControl(new Button(this, 1, 543, 3, 2443, 2443, ButtonTypes.Activate, 0, (int)Buttons.Question));
+            AddControl(new Button(this, 543, 3, 2443, 2443, ButtonTypes.Activate, 0, (int)Buttons.Question), 1);
             ((Button)LastControl).Caption = "<basefont color=#000000>Debug";
             // minimized view
-            AddControl(new ResizePic(this, 2, 0, 0, 9200, 30, 27));
-            AddControl(new Button(this, 2, 5, 3, 5537, 5539, 0, 1, 0));
+            AddControl(new ResizePic(this, 0, 0, 9200, 30, 27), 2);
+            AddControl(new Button(this, 5, 3, 5537, 5539, 0, 1, 0), 2);
             ((Button)LastControl).GumpOverID = 5538;
 
             m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();

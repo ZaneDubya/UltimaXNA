@@ -1,5 +1,6 @@
 ﻿/***************************************************************************
  *   CreateCharacterScene.cs
+ *   Copyright (c) 2015 UltimaXNA Development Team
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -10,11 +11,11 @@
 #region usings
 using System;
 using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Login.Accounts;
-using UltimaXNA.Ultima.UI.LoginGumps;
-using UltimaXNA.Ultima.Network;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.UI;
+using UltimaXNA.Ultima.UI.LoginGumps;
 #endregion
 
 namespace UltimaXNA.Ultima.Login.States
@@ -238,7 +239,7 @@ namespace UltimaXNA.Ultima.Login.States
                     if (validateAppearance())
                     {
                         m_Login.Client.CreateCharacter(new CreateCharacterPacket(
-                            m_name, (Sex)m_gender, (Race)0, (byte)m_attributes[0], (byte)m_attributes[1], (byte)m_attributes[2], 
+                            m_name, (Genders)m_gender, (Races)0, (byte)m_attributes[0], (byte)m_attributes[1], (byte)m_attributes[2], 
                             (byte)m_skillIndexes[0], (byte)m_skillValues[0], (byte)m_skillIndexes[1], (byte)m_skillValues[1], (byte)m_skillIndexes[2], (byte)m_skillValues[2],
                             (short)m_skinHue, (short)m_hairStyleID, (short)m_hairHue, (short)m_facialHairStyleID, (short)m_facialHairHue,
                             0, (short)Characters.FirstEmptySlot, Utility.IPAddress, 0, 0));

@@ -326,9 +326,19 @@ namespace UltimaXNA.Ultima.World
             else
             {
                 if (IO.TileData.ItemData[itemID].IsContainer)
-                    item = WorldModel.Entities.GetObject<Container>((int)serial, true);
+                {
+                    // special case for spellbooks.
+                    if (SpellBook.IsSpellBookItem((ushort)itemID))
+                    {
+                        item = WorldModel.Entities.GetObject<SpellBook>(serial, true);
+                    }
+                    else
+                    {
+                        item = WorldModel.Entities.GetObject<Container>(serial, true);
+                    }
+                }
                 else
-                    item = WorldModel.Entities.GetObject<Item>((int)serial, true);
+                    item = WorldModel.Entities.GetObject<Item>(serial, true);
             }
             if (item == null)
                 return null;
@@ -362,18 +372,11 @@ namespace UltimaXNA.Ultima.World
                 if (item == null)
                 {
                     // log error - item does not exist
-                }
-                if (item is Corpse)
-                {
-                    m_World.Interaction.OpenCorpseGump(item);
-                }
-                else if (item is Container)
-                {
-                    m_World.Interaction.OpenContainerGump(item);
+                    m_World.Interaction.ChatMessage(string.Format("Client: Object {0} has no support for a container object!", item.Serial));
                 }
                 else
                 {
-                    m_World.Interaction.ChatMessage(string.Format("Client: Object {0} has no support for a container object!", item.Serial));
+                    m_World.Interaction.OpenContainerGump(item);
                 }
             }
         }
@@ -411,7 +414,7 @@ namespace UltimaXNA.Ultima.World
         private void ReceiveDeleteObject(IRecvPacket packet)
         {
             RemoveEntityPacket p = (RemoveEntityPacket)packet;
-            WorldModel.Entities.RemoveObject(p.Serial);
+            WorldModel.Entities.RemoveEntity(p.Serial);
         }
 
         private void ReceiveMobileIncoming(IRecvPacket packet)
@@ -1063,6 +1066,10 @@ namespace UltimaXNA.Ultima.World
                         PlayerState.StatLocks.DexterityLock = p.StatisticLocks.Dexterity;
                         PlayerState.StatLocks.IntelligenceLock = p.StatisticLocks.Intelligence;
                     }
+                    break;
+                case 0x1B: // spellbook data
+                    SpellbookData spellbook = p.Spellbook;
+                    WorldModel.Entities.GetObject<SpellBook>(spellbook.Serial, true).ReceiveSpellData(spellbook.BookType, spellbook.SpellBitfields);
                     break;
                 case 0x1D: // House revision state
                     if (CustomHousing.IsHashCurrent(p.HouseRevisionState.Serial, p.HouseRevisionState.Hash))

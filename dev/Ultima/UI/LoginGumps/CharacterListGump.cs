@@ -43,35 +43,35 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             : base(0, 0)
         {
             // backdrop
-            AddControl(new GumpPicTiled(this, 0, 0, 0, 800, 600, 9274));
-            AddControl(new GumpPic(this, 0, 0, 0, 5500, 0));
+            AddControl(new GumpPicTiled(this, 0, 0, 800, 600, 9274));
+            AddControl(new GumpPic(this, 0, 0, 5500, 0));
             // quit button
-            AddControl(new Button(this, 0, 554, 2, 5513, 5515, ButtonTypes.Activate, 0, (int)Buttons.QuitButton));
+            AddControl(new Button(this, 554, 2, 5513, 5515, ButtonTypes.Activate, 0, (int)Buttons.QuitButton));
             ((Button)LastControl).GumpOverID = 5514;
 
             // Page 1 - select a character
             // back button
-            AddControl(new Button(this, 1, 586, 435, 5537, 5539, ButtonTypes.Activate, 0, (int)Buttons.BackButton));
+            AddControl(new Button(this, 586, 435, 5537, 5539, ButtonTypes.Activate, 0, (int)Buttons.BackButton), 1);
             ((Button)LastControl).GumpOverID = 5538;
             // forward button
-            AddControl(new Button(this, 1, 610, 435, 5540, 5542, ButtonTypes.Activate, 0, (int)Buttons.ForwardButton));
+            AddControl(new Button(this, 610, 435, 5540, 5542, ButtonTypes.Activate, 0, (int)Buttons.ForwardButton), 1);
             ((Button)LastControl).GumpOverID = 5541;
             // center message window backdrop
-            AddControl(new ResizePic(this, 1, 160, 70, 2600, 408, 390));
-            AddControl(new TextLabelAscii(this, 1, 266, 112, 2017, 2, IO.StringData.Entry(3000050)));
+            AddControl(new ResizePic(this, 160, 70, 2600, 408, 390), 1);
+            AddControl(new TextLabelAscii(this, 266, 112, 2017, 2, IO.StringData.Entry(3000050)), 1);
             // display the character list.
             ReloadCharList();
             // delete button
-            AddControl(new Button(this, 1, 224, 398, 5530, 5532, ButtonTypes.Activate, 0, (int)Buttons.DeleteCharacterButton));
+            AddControl(new Button(this, 224, 398, 5530, 5532, ButtonTypes.Activate, 0, (int)Buttons.DeleteCharacterButton), 1);
             ((Button)LastControl).GumpOverID = 5531;
             // new button
-            AddControl(new Button(this, 1, 442, 398, 5533, 5535, ButtonTypes.Activate, 0, (int)Buttons.NewCharacterButton));
+            AddControl(new Button(this, 442, 398, 5533, 5535, ButtonTypes.Activate, 0, (int)Buttons.NewCharacterButton), 1);
             ((Button)LastControl).GumpOverID = 5534;
 
             // Page 2 - logging in to server
             // center message window backdrop
-            AddControl(new ResizePic(this, 2, 116, 95, 2600, 408, 288));
-            AddControl(new TextLabelAscii(this, 2, 166, 143, 2017, 2, IO.StringData.Entry(3000001)));
+            AddControl(new ResizePic(this, 116, 95, 2600, 408, 288), 2);
+            AddControl(new TextLabelAscii(this, 166, 143, 2017, 2, IO.StringData.Entry(3000001)), 2);
 
             IsUncloseableWithRMB = true;
         }
@@ -91,9 +91,9 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
                 {
                     if (e.Name != string.Empty)
                     {
-                        m_characterNames[entryIndex] = new HtmlGumpling(this, 1, 228, 154 + 40 * entryIndex, 272, 22, 0, 0, formatHTMLCharName(entryIndex, e.Name, (m_charSelected == entryIndex ? 431 : 1278)));
-                        AddControl(new ResizePic(this, m_characterNames[entryIndex]));
-                        AddControl(m_characterNames[entryIndex]);
+                        m_characterNames[entryIndex] = new HtmlGumpling(this, 228, 154 + 40 * entryIndex, 272, 22, 0, 0, formatHTMLCharName(entryIndex, e.Name, (m_charSelected == entryIndex ? 431 : 1278)));
+                        AddControl(new ResizePic(this, m_characterNames[entryIndex]), 1);
+                        AddControl(m_characterNames[entryIndex], 1);
                     }
                     entryIndex++;
                 }

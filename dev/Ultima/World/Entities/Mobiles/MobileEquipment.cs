@@ -17,12 +17,6 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
     {
         private Item[] m_Equipment;
         private Mobile m_Parent;
-        private int m_UpdateTicker = 0;
-
-        public int UpdateTicker
-        {
-            get { return m_UpdateTicker; }
-        }
 
         public MobileEquipment(Mobile parent)
         {
@@ -52,7 +46,6 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                     m_Equipment[index] = value;
                     value.Parent = m_Parent;
                 }
-                m_UpdateTicker++;
             }
         }
 
@@ -66,7 +59,6 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                     this[i] = null;
                 }
             }
-            m_UpdateTicker++;
         }
 
         public void RemoveBySerial(Serial serial)
@@ -80,7 +72,6 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
                         this[i] = null;
                     }
             }
-            m_UpdateTicker++;
         }
     }
 

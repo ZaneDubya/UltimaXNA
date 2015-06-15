@@ -21,14 +21,14 @@ namespace UltimaXNA.Ultima.UI.Controls
         Texture2D m_bgGump = null;
         int m_gumpID;
 
-        public GumpPicTiled(AControl owner, int page)
-            : base(owner, page)
+        public GumpPicTiled(AControl owner)
+            : base(owner)
         {
 
         }
 
-        public GumpPicTiled(AControl owner, int page, string[] arguements)
-            : this(owner, page)
+        public GumpPicTiled(AControl owner, string[] arguements)
+            : this(owner)
         {
             int x, y, gumpID, width, height;
             x = Int32.Parse(arguements[1]);
@@ -39,8 +39,8 @@ namespace UltimaXNA.Ultima.UI.Controls
             buildGumpling(x, y, width, height, gumpID);
         }
 
-        public GumpPicTiled(AControl owner, int page, int x, int y, int width, int height, int gumpID)
-            : this(owner, page)
+        public GumpPicTiled(AControl owner, int x, int y, int width, int height, int gumpID)
+            : this(owner)
         {
             buildGumpling(x, y, width, height, gumpID);
         }

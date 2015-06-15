@@ -30,10 +30,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
             IsMovable = true;
 
-            AddControl(m_Background = new ExpandableScroll(this, 0, 0, 0, 300));
+            AddControl(m_Background = new ExpandableScroll(this, 0, 0, 300));
             m_Background.TitleGumpID = 0x82A;
 
-            AddControl(m_ScrollBar = new ScrollBar(this, 0));
+            AddControl(m_ScrollBar = new ScrollBar(this));
             m_ScrollBar.IsVisible = false;
         }
 

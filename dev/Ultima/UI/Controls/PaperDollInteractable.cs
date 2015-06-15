@@ -27,7 +27,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         WorldModel m_World;
 
-        public PaperDollInteractable(AControl owner, int page, int x, int y)
+        public PaperDollInteractable(AControl owner, int x, int y)
             : base(0, 0)
         {
             Owner = owner;
@@ -36,86 +36,96 @@ namespace UltimaXNA.Ultima.UI.Controls
             m_World = ServiceRegistry.GetService<WorldModel>();
         }
 
+        public override void Dispose()
+        {
+            m_sourceEntity.OnEntityUpdated -= OnEntityUpdated;
+            base.Dispose();
+        }
+
         public override void Update(double totalMS, double frameMS)
         {
-            if (hasSourceEntity)
+            if (m_sourceEntity != null)
             {
                 m_isFemale = ((Mobile)m_sourceEntity).Flags.IsFemale;
                 m_isElf = false;
-                if (m_sourceEntityUpdateHash != ((Mobile)m_sourceEntity).UpdateTicker)
-                {
-                    // update our hash
-                    m_sourceEntityUpdateHash = ((Mobile)m_sourceEntity).UpdateTicker;
-
-                    // clear the existing Controls
-                    ClearControls();
-
-                    // Add the base gump - the semi-naked paper doll.
-                    if (true)
-                    {
-                        int bodyID = 12 + (m_isElf ? 2 : 0) + (m_isFemale ? 1 : 0); // ((Mobile)m_sourceEntity).BodyID;
-                        GumpPic paperdoll = (GumpPic)AddControl(new GumpPic(this, 0, 0, 0, bodyID, ((Mobile)m_sourceEntity).Hue));
-                        paperdoll.HandlesMouseInput = true;
-                        paperdoll.IsPaperdoll = true;
-                    }
-
-                    // Loop through the items on the mobile and create the gump pics.
-                    for (int i = 0; i < s_DrawOrder.Length; i++)
-                    {
-                        Item item = ((Mobile)m_sourceEntity).GetItem((int)s_DrawOrder[i]);
-                        if (item == null)
-                            continue;
-
-                        bool canPickUp = true;
-                        switch (s_DrawOrder[i])
-                        {
-                            case EquipSlots.FacialHair:
-                            case EquipSlots.Hair:
-                                canPickUp = false;
-                                break;
-                            default:
-                                break;
-                        }
-
-                        AddControl(new ItemGumplingPaperdoll(this, 0, 0, item));
-                        ((ItemGumplingPaperdoll)LastControl).SlotIndex = (int)i;
-                        ((ItemGumplingPaperdoll)LastControl).IsFemale = m_isFemale;
-                        ((ItemGumplingPaperdoll)LastControl).CanPickUp = canPickUp;
-                    }
-                    // If this object has a backpack, draw it last.
-                    if (((Mobile)m_sourceEntity).GetItem((int)EquipSlots.Backpack) != null)
-                    {
-                        Item backpack = ((Mobile)m_sourceEntity).GetItem((int)EquipSlots.Backpack);
-                        AddControl(new GumpPicBackpack(this, 0, -5, 0, backpack));
-                        LastControl.HandlesMouseInput = true;
-                        LastControl.MouseDoubleClickEvent += dblclick_Backpack;
-                    }
-                }
             }
             base.Update(totalMS, frameMS);
         }
 
-        void dblclick_Backpack(int x, int y, MouseButton button)
+        private void OnEntityUpdated()
+        {
+            // clear the existing Controls
+            ClearControls();
+
+            // Add the base gump - the semi-naked paper doll.
+            if (true)
+            {
+                int bodyID = 12 + (m_isElf ? 2 : 0) + (m_isFemale ? 1 : 0); // ((Mobile)m_sourceEntity).BodyID;
+                GumpPic paperdoll = (GumpPic)AddControl(new GumpPic(this, 0, 0, bodyID, ((Mobile)m_sourceEntity).Hue));
+                paperdoll.HandlesMouseInput = true;
+                paperdoll.IsPaperdoll = true;
+            }
+
+            // Loop through the items on the mobile and create the gump pics.
+            for (int i = 0; i < s_DrawOrder.Length; i++)
+            {
+                Item item = ((Mobile)m_sourceEntity).GetItem((int)s_DrawOrder[i]);
+                if (item == null)
+                    continue;
+
+                bool canPickUp = true;
+                switch (s_DrawOrder[i])
+                {
+                    case PaperDollEquipSlots.FacialHair:
+                    case PaperDollEquipSlots.Hair:
+                        canPickUp = false;
+                        break;
+                    default:
+                        break;
+                }
+
+                AddControl(new ItemGumplingPaperdoll(this, 0, 0, item));
+                ((ItemGumplingPaperdoll)LastControl).SlotIndex = (int)i;
+                ((ItemGumplingPaperdoll)LastControl).IsFemale = m_isFemale;
+                ((ItemGumplingPaperdoll)LastControl).CanPickUp = canPickUp;
+            }
+            // If this object has a backpack, add it last.
+            if (((Mobile)m_sourceEntity).GetItem((int)PaperDollEquipSlots.Backpack) != null)
+            {
+                Item backpack = ((Mobile)m_sourceEntity).GetItem((int)PaperDollEquipSlots.Backpack);
+                AddControl(new GumpPicBackpack(this, -5, 0, backpack));
+                LastControl.HandlesMouseInput = true;
+                LastControl.MouseDoubleClickEvent += On_Dblclick_Backpack;
+            }
+        }
+
+        void On_Dblclick_Backpack(int x, int y, MouseButton button)
         {
             Container backpack = ((Mobile)m_sourceEntity).Backpack;
             m_World.Interaction.DoubleClick(backpack);
         }
 
-        //void Interaction_OnItemPickUp(ItemGumplingPaperdoll Control)
-        // {
-        //     Control.Dispose();
-       // }
-
-        int m_sourceEntityUpdateHash = 0x7FFFFFFF;
         AEntity m_sourceEntity = null;
         public AEntity SourceEntity
         {
             set
             {
-                if ((value is Mobile) || value is PlayerMobile)
+                if (value != m_sourceEntity)
                 {
-                    m_sourceEntity = value;
-                    m_sourceEntityUpdateHash = 0x7FFFFFFF;
+                    if (m_sourceEntity != null)
+                    {
+                        m_sourceEntity.OnEntityUpdated -= OnEntityUpdated;
+                        m_sourceEntity = null;
+                    }
+
+                    if (value is Mobile)
+                    {
+                        m_sourceEntity = value;
+                        // update the gump
+                        OnEntityUpdated();
+                        // if the entity changes in the future, update the gump again
+                        m_sourceEntity.OnEntityUpdated += OnEntityUpdated;
+                    }
                 }
             }
             get
@@ -123,15 +133,8 @@ namespace UltimaXNA.Ultima.UI.Controls
                 return m_sourceEntity;
             }
         }
-        bool hasSourceEntity
-        {
-            get
-            {
-                return (m_sourceEntity == null) ? false : true;
-            }
-        }
 
-        public enum EquipSlots : int
+        private enum PaperDollEquipSlots : int
         {
             Body = 0,
             RightHand = 1,
@@ -160,28 +163,28 @@ namespace UltimaXNA.Ultima.UI.Controls
             // skip 24, inner legs (!!! do we really skip this?)
         }
 
-        private static EquipSlots[] s_DrawOrder = new EquipSlots[21] {
-            EquipSlots.Footwear,
-            EquipSlots.Legging,
-            EquipSlots.Shirt,
-            EquipSlots.Sleeves,
-            EquipSlots.Gloves,
-            EquipSlots.Ring,
-            EquipSlots.Talisman,
-            EquipSlots.Neck,
-            EquipSlots.Belt,
-            EquipSlots.Chest,
-            EquipSlots.Bracelet,
-            EquipSlots.Hair,
-            EquipSlots.FacialHair,
-            EquipSlots.Head,
-            EquipSlots.Sash,
-            EquipSlots.Earring,
-            EquipSlots.Back,
-            EquipSlots.Skirt,
-            EquipSlots.Robe,
-            EquipSlots.LeftHand,
-            EquipSlots.RightHand
+        private static PaperDollEquipSlots[] s_DrawOrder = new PaperDollEquipSlots[21] {
+            PaperDollEquipSlots.Footwear,
+            PaperDollEquipSlots.Legging,
+            PaperDollEquipSlots.Shirt,
+            PaperDollEquipSlots.Sleeves,
+            PaperDollEquipSlots.Gloves,
+            PaperDollEquipSlots.Ring,
+            PaperDollEquipSlots.Talisman,
+            PaperDollEquipSlots.Neck,
+            PaperDollEquipSlots.Belt,
+            PaperDollEquipSlots.Chest,
+            PaperDollEquipSlots.Bracelet,
+            PaperDollEquipSlots.Hair,
+            PaperDollEquipSlots.FacialHair,
+            PaperDollEquipSlots.Head,
+            PaperDollEquipSlots.Sash,
+            PaperDollEquipSlots.Earring,
+            PaperDollEquipSlots.Back,
+            PaperDollEquipSlots.Skirt,
+            PaperDollEquipSlots.Robe,
+            PaperDollEquipSlots.LeftHand,
+            PaperDollEquipSlots.RightHand
         };
     }
 }

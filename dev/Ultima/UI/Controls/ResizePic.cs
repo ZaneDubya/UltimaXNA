@@ -22,15 +22,15 @@ namespace UltimaXNA.Ultima.UI.Controls
         Texture2D[] m_bgGumps = null;
         int GumpID = 0;
 
-        public ResizePic(AControl owner, int page)
-            : base(owner, page)
+        public ResizePic(AControl owner)
+            : base(owner)
         {
             m_bgGumps = new Texture2D[9];
             MakeThisADragger();
         }
 
-        public ResizePic(AControl owner, int page, string[] arguements)
-            : this(owner, page)
+        public ResizePic(AControl owner, string[] arguements)
+            : this(owner)
         {
             int x, y, gumpID, width, height;
             x = Int32.Parse(arguements[1]);
@@ -41,16 +41,21 @@ namespace UltimaXNA.Ultima.UI.Controls
             buildGumpling(x, y, gumpID, width, height);
         }
 
-        public ResizePic(AControl owner, int page, int x, int y, int gumpID, int width, int height)
-            : this(owner, page)
+        public ResizePic(AControl owner, int x, int y, int gumpID, int width, int height)
+            : this(owner)
         {
             buildGumpling(x, y, gumpID, width, height);
         }
 
-        public ResizePic(AControl owner, AControl c)
-            : this(owner, c.Page)
+        public ResizePic(AControl owner, AControl createBackgroundAroundThisControl)
+            : this(owner)
         {
-            buildGumpling(c.X - 4, c.Y - 4, 9350, c.Width + 8, c.Height + 8);
+            buildGumpling(createBackgroundAroundThisControl.X - 4, 
+                createBackgroundAroundThisControl.Y - 4, 
+                9350,
+                createBackgroundAroundThisControl.Width + 8, 
+                createBackgroundAroundThisControl.Height + 8);
+            Page = createBackgroundAroundThisControl.Page;
         }
 
         void buildGumpling(int x, int y, int gumpID, int width, int height)

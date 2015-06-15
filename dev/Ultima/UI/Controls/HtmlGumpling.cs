@@ -79,8 +79,8 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        public HtmlGumpling(AControl owner, int page, string[] arguements, string[] lines)
-            : base(owner, page)
+        public HtmlGumpling(AControl owner, string[] arguements, string[] lines)
+            : base(owner)
         {
             int x, y, width, height, textIndex, background, scrollbar;
             x = Int32.Parse(arguements[1]);
@@ -94,8 +94,8 @@ namespace UltimaXNA.Ultima.UI.Controls
             buildGumpling(x, y, width, height, background, scrollbar, "<font color=#000>" + lines[textIndex]);
         }
 
-        public HtmlGumpling(AControl owner, int page, int x, int y, int width, int height, int background, int scrollbar, string text)
-            : base(owner, page)
+        public HtmlGumpling(AControl owner, int x, int y, int width, int height, int background, int scrollbar, string text)
+            : base(owner)
         {
             buildGumpling(x, y, width, height, background, scrollbar, text);
         }
@@ -112,16 +112,16 @@ namespace UltimaXNA.Ultima.UI.Controls
 
             if (HasBackground)
             {
-                this.AddControl(new ResizePic(this, 0, 0, 0, 0x2486, Width - (HasScrollbar ? 15 : 0), Height));
+                this.AddControl(new ResizePic(this, 0, 0, 0x2486, Width - (HasScrollbar ? 15 : 0), Height));
                 LastControl.HandlesMouseInput = false;
             }
 
             if (HasScrollbar)
             {
                 if (UseFlagScrollbar)
-                    AddControl(new ScrollFlag(this, 0));
+                    AddControl(new ScrollFlag(this));
                 else
-                    AddControl(new ScrollBar(this, 0));
+                    AddControl(new ScrollBar(this));
                 m_Scrollbar = LastControl as IScrollBar;
                 m_Scrollbar.Position = new Point(Width - 14, 0);
                 m_Scrollbar.Height = Height;

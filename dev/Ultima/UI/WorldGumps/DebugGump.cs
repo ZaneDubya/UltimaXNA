@@ -27,7 +27,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
             IsMovable = true;
 
-            AddControl(new ResizePic(this, 0, 0, 0, 0x2436, 256 + 16, 256 + 16));
+            AddControl(new ResizePic(this, 0, 0, 0x2436, 256 + 16, 256 + 16));
         }
 
         public override void Draw(SpriteBatchUI spriteBatch, Point position)

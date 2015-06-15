@@ -24,55 +24,59 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
     {
         private ContainerData m_data;
         private Container m_item;
-        private HtmlGumpling m_tickerText;
-        private int m_updateTicker = 0;
 
         public ContainerGump(AEntity containerItem, int gumpID)
             : base(containerItem.Serial, 0)
         {
             m_data = IO.ContainerData.GetData(gumpID);
             m_item = (Container)containerItem;
+            m_item.OnContentsUpdated += OnItemContentsUpdate;
+
             IsMovable = true;
 
-            AddControl(new GumpPicContainer(this, 0, 0, 0, m_data.GumpID, 0, m_item));
+            AddControl(new GumpPicContainer(this, 0, 0, m_data.GumpID, 0, m_item));
+        }
 
-            m_tickerText = (HtmlGumpling)AddControl(new HtmlGumpling(this, 0, 50, 50, 0, 0, 0, 0, string.Empty));
+        public override void Dispose()
+        {
+            m_item.OnContentsUpdated -= OnItemContentsUpdate;
+            base.Dispose();
         }
 
         public override void Update(double totalMS, double frameMS)
         {
             base.Update(totalMS, frameMS);
-            if (m_updateTicker != m_item.UpdateTicker)
+        }
+
+        private void OnItemContentsUpdate()
+        {
+            // delete any items in our pack that are no longer in the container.
+            List<AControl> ControlsToRemove = new List<AControl>();
+            foreach (AControl c in Children)
             {
-                m_updateTicker = m_item.UpdateTicker;
-                m_tickerText.Text = string.Format("Update#{0}", m_updateTicker);
-                // delete any items in our pack that are no longer in the container.
-                List<AControl> ControlsToRemove = new List<AControl>();
+                if (c is ItemGumpling && !m_item.Contents.Contains(((ItemGumpling)c).Item))
+                {
+                    ControlsToRemove.Add(c);
+                }
+            }
+            foreach (AControl c in ControlsToRemove)
+                Children.Remove(c);
+
+            // add any items in the container that are not in our pack.
+            foreach (Item item in m_item.Contents)
+            {
+                bool controlForThisItem = false;
                 foreach (AControl c in Children)
                 {
-                    if (c is ItemGumpling && !m_item.Contents.Contains(((ItemGumpling)c).Item))
+                    if (c is ItemGumpling && ((ItemGumpling)c).Item == item)
                     {
-                        ControlsToRemove.Add(c);
+                        controlForThisItem = true;
+                        break;
                     }
                 }
-                foreach (AControl c in ControlsToRemove)
-                    Children.Remove(c);
-                // add any items in the container that are not in our pack.
-                foreach (Item item in m_item.Contents)
+                if (!controlForThisItem)
                 {
-                    bool controlForThisItem = false;
-                    foreach (AControl c in Children)
-                    {
-                        if (c is ItemGumpling && ((ItemGumpling)c).Item == item)
-                        {
-                            controlForThisItem = true;
-                            break;
-                        }
-                    }
-                    if (!controlForThisItem)
-                    {
-                        AddControl(new ItemGumpling(this, item));
-                    }
+                    AddControl(new ItemGumpling(this, item));
                 }
             }
         }
