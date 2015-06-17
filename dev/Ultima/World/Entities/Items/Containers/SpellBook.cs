@@ -43,20 +43,45 @@ namespace UltimaXNA.Ultima.World.Entities.Items.Containers
 
         public void ReceiveSpellData(SpellBookTypes sbType, byte[] sbBitfield)
         {
-            BookType = sbType;
+            bool entityUpdated = false;
+
+            if (BookType != sbType)
+            {
+                BookType = sbType;
+                entityUpdated = true;
+            }
 
             if (m_SpellData == null)
+            {
                 m_SpellData = new bool[64];
+                entityUpdated = true;
+            }
+
+            
+
+
 
             for (int i = 0; i < 64; i++)
             {
                 if ((sbBitfield[i / 8] & ((i % 8) << 8)) != 0)
-                    m_SpellData[i] = true;
+                {
+                    if (m_SpellData[i] == false)
+                    {
+                        entityUpdated = true;
+                        m_SpellData[i] = true;
+                    }
+                }
                 else
-                    m_SpellData[i] = false;
+                {
+                    if (m_SpellData[i] == true)
+                    {
+                        entityUpdated = true;
+                        m_SpellData[i] = false;
+                    }
+                }
             }
 
-            if (OnEntityUpdated != null)
+            if (entityUpdated && OnEntityUpdated != null)
                 OnEntityUpdated();
         }
     }

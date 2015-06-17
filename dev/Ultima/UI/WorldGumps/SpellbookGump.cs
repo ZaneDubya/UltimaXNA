@@ -68,6 +68,13 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
             ClearControls();
             AddControl(new GumpPic(this, 0, 0, 0x08AC, 0));
+            AddControl(new GumpPic(this, 50, 8, 0x08BB, 0));
+            AddControl(new GumpPic(this, 321, 8, 0x08BC, 0));
+
+            for (int i = 0; i < 4; i++)
+                AddControl(new GumpPic(this, 60 + i * 35, 174, 0x08B1 + i, 0));
+            for (int i = 0; i < 4; i++)
+                AddControl(new GumpPic(this, 226 + i * 34, 174, 0x08B5 + i, 0));
         }
 
         private void OnEntityUpdate()
