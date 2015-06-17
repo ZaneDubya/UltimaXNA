@@ -26,10 +26,11 @@ namespace UltimaXNA.Ultima.IO
             using (FileStream index = new FileStream(FileManager.GetFilePath("Radarcol.mul"), FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 BinaryReader bin = new BinaryReader(index);
-                // initialize array length based on the filestream length / 2 to prevent an end of filestream exception with 7.0.7.1 and newer clients.
-                Colors = new uint[index.Length / 2];
 
-                for (int i = 0; i < Colors.Length; i++)
+                // Prior to 7.0.7.1, all clients have 0x10000 colors. Newer clients have fewer colors.
+                int colorCount = (int)index.Length / 2;
+
+                for (int i = 0; i < colorCount; i++)
                 {
                     uint c = bin.ReadUInt16();
                     Colors[i] = 0xFF000000 | (
@@ -38,6 +39,12 @@ namespace UltimaXNA.Ultima.IO
                             (((c & 0x1F) * multiplier) << 16)
                             );
                 }
+                // fill the remainder of the color table with non-transparent magenta.
+                for (int i = colorCount; i < Colors.Length; i++)
+                {
+                    Colors[i] = 0xFFFF00FF;
+                }
+
                 Metrics.ReportDataRead((int)bin.BaseStream.Position);
             }
         }
