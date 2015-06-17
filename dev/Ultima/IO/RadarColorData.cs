@@ -26,6 +26,9 @@ namespace UltimaXNA.Ultima.IO
             using (FileStream index = new FileStream(FileManager.GetFilePath("Radarcol.mul"), FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 BinaryReader bin = new BinaryReader(index);
+                // initialize array length based on the filestream length / 2 to prevent an end of filestream exception with 7.0.7.1 and newer clients.
+                Colors = new uint[index.Length / 2];
+
                 for (int i = 0; i < Colors.Length; i++)
                 {
                     uint c = bin.ReadUInt16();
