@@ -18,18 +18,18 @@ using UltimaXNA.Core.UI;
 
 namespace UltimaXNA.Ultima.IO.FontsNew
 {
-    internal class FontUni : AFont
+    internal class FontResourceUnicode : AFont
     {
         GraphicsDevice m_graphics = null;
         BinaryReader m_reader = null;
         private CharacterUni[] m_characters;
 
-        public FontUni()
+        public FontResourceUnicode()
         {
             m_characters = new CharacterUni[0x10000];
         }
 
-        public void Initialize(GraphicsDevice graphicsDevice, BinaryReader reader)
+        public override void Initialize(GraphicsDevice graphicsDevice, BinaryReader reader)
         {
             m_graphics = graphicsDevice;
             m_reader = reader;

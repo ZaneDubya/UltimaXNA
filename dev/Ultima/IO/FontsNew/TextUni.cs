@@ -19,13 +19,13 @@ namespace UltimaXNA.Ultima.IO.FontsNew
     public static class TextUni
     {
         public static int FontCount = 7;
-        private static FontUni[] m_fonts = new FontUni[FontCount];
+        private static AFont[] m_UnicodeFonts = new AFont[FontCount];
 
-        internal static FontUni GetFont(int index)
+        internal static AFont GetFont(int index)
         {
             if (index < 0 || index >= FontCount)
-                return m_fonts[0];
-            return m_fonts[index];
+                return m_UnicodeFonts[0];
+            return m_UnicodeFonts[index];
         }
 
         private static bool m_initialized;
@@ -61,18 +61,18 @@ namespace UltimaXNA.Ultima.IO.FontsNew
                 string path = FileManager.GetFilePath("unifont" + (iFont == 0 ? "" : iFont.ToString()) + ".mul");
                 if (path != null)
                 {
-                    m_fonts[iFont] = new FontUni();
-                    m_fonts[iFont].Initialize(m_graphicsDevice, new BinaryReader(new FileStream(path, FileMode.Open, FileAccess.Read)));
-                    if (m_fonts[iFont].Height > maxHeight)
-                        maxHeight = m_fonts[iFont].Height;
+                    m_UnicodeFonts[iFont] = new FontResourceUnicode();
+                    m_UnicodeFonts[iFont].Initialize(m_graphicsDevice, new BinaryReader(new FileStream(path, FileMode.Open, FileAccess.Read)));
+                    if (m_UnicodeFonts[iFont].Height > maxHeight)
+                        maxHeight = m_UnicodeFonts[iFont].Height;
                 }
             }
 
             for (int iFont = 0; iFont < FontCount; iFont++)
             {
-                if (m_fonts[iFont] == null)
+                if (m_UnicodeFonts[iFont] == null)
                     continue;
-                m_fonts[iFont].Height = maxHeight;
+                m_UnicodeFonts[iFont].Height = maxHeight;
             }
         }
     }

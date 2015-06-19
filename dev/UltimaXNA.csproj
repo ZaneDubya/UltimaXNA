@@ -259,7 +259,7 @@
     <Compile Include="Core\UI\RenderedText.cs" />
     <Compile Include="Ultima\IO\FontsNew\ACharacter.cs" />
     <Compile Include="Ultima\IO\FontsNew\CharacterUni.cs" />
-    <Compile Include="Ultima\IO\FontsNew\FontUni.cs" />
+    <Compile Include="Ultima\IO\FontsNew\FontResourceUnicode.cs" />
     <Compile Include="Ultima\IO\FontsNew\TextUni.cs" />
     <Compile Include="Ultima\UI\WorldGumps\JournalGump.cs" />
     <Compile Include="Ultima\Login\States\HueTestState.cs" />
