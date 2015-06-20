@@ -197,8 +197,8 @@ namespace UltimaXNA.Ultima.UI.Controls
             {
                 if (button == MouseButton.Left)
                 {
-                    if (m_RenderedText.Regions.Region(m_MouseOverHREF).HREFAttributes != null)
-                        ActivateByHREF(m_RenderedText.Regions.Region(m_MouseOverHREF).HREFAttributes.HREF);
+                    if (m_RenderedText.Regions.Region(m_MouseOverHREF).HREF != null)
+                        ActivateByHREF(m_RenderedText.Regions.Region(m_MouseOverHREF).HREF.HREF);
                 }
             }
         }
@@ -208,7 +208,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             if (m_IsMouseDown && m_MouseDownHREF != -1 && m_MouseDownHREF != m_MouseOverHREF)
             {
                 if (OnDragHRef != null)
-                    OnDragHRef(m_RenderedText.Regions.Region(m_MouseDownHREF).HREFAttributes.HREF);
+                    OnDragHRef(m_RenderedText.Regions.Region(m_MouseDownHREF).HREF.HREF);
             }
         }
     }

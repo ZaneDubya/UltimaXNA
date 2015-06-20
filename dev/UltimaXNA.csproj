@@ -144,6 +144,10 @@
     <Compile Include="Core\Network\INetworkClient.cs" />
     <Compile Include="Core\Patterns\IModule.cs" />
     <Compile Include="Core\UI\ControlMetaData.cs" />
+    <Compile Include="Core\UI\HTML\StyleManager.cs" />
+    <Compile Include="Core\UI\HTML\HREFAttributes.cs" />
+    <Compile Include="Core\UI\HTML\StyleState.cs" />
+    <Compile Include="Core\UI\HTML\StyleValue.cs" />
     <Compile Include="Core\UI\Interfaces\ICharacter.cs" />
     <Compile Include="Core\UI\Interfaces\ICursor.cs" />
     <Compile Include="Core\UI\Interfaces\IFont.cs" />
@@ -197,8 +201,8 @@
     <Compile Include="Ultima\Data\Seasons.cs" />
     <Compile Include="Ultima\Data\Genders.cs" />
     <Compile Include="Ultima\Data\SpellbookData.cs" />
-    <Compile Include="Ultima\IO\FontsNew\CharacterASCII.cs" />
-    <Compile Include="Ultima\IO\FontsNew\FontASCII.cs" />
+    <Compile Include="Ultima\IO\FontsNew\CharacterAscii.cs" />
+    <Compile Include="Ultima\IO\FontsNew\FontAscii.cs" />
     <Compile Include="Ultima\World\Entities\Items\Containers\SpellBook.cs" />
     <Compile Include="Ultima\Data\SpellBookTypes.cs" />
     <Compile Include="Ultima\Data\StatLocks.cs" />
@@ -260,7 +264,7 @@
     <Compile Include="Core\UI\HTML\Parsing\TagParser.cs" />
     <Compile Include="Core\UI\RenderedText.cs" />
     <Compile Include="Core\UI\Fonts\ACharacter.cs" />
-    <Compile Include="Ultima\IO\FontsNew\CharacterUni.cs" />
+    <Compile Include="Ultima\IO\FontsNew\CharacterUnicode.cs" />
     <Compile Include="Ultima\IO\FontsNew\FontUnicode.cs" />
     <Compile Include="Ultima\IO\FontsNew\TextUni.cs" />
     <Compile Include="Ultima\UI\WorldGumps\JournalGump.cs" />

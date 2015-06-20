@@ -34,15 +34,15 @@ namespace UltimaXNA.Core.UI.Fonts
         public int YOffset
         {
             get;
-            protected set;
+            set;
         }
+
+        protected bool UsePassedColor = true;
 
         protected uint[] m_PixelData;
 
-        public unsafe void WriteToBuffer(uint* dstPtr, int dx, int dy, int linewidth, int maxHeight, int baseLine,
-            bool isBold, bool isItalic, bool isUnderlined, bool isOutlined, uint color, uint outline)
+        public unsafe void WriteToBuffer(uint* dstPtr, int dx, int dy, int linewidth, int maxHeight, int baseLine, bool isBold, bool isItalic, bool isUnderlined, bool isOutlined, uint color, uint outline)
         {
-
             if (m_PixelData != null)
             {
                 fixed (uint* srcPtr = m_PixelData)
@@ -60,6 +60,9 @@ namespace UltimaXNA.Core.UI.Fonts
                         {
                             if (*src != 0x00000000)
                             {
+                                if (!UsePassedColor)
+                                    color = *src;
+
                                 if (isOutlined)
                                 {
                                     for (int iy = -1; iy <= 1; iy++)

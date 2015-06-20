@@ -18,9 +18,10 @@ namespace UltimaXNA.Core.UI.HTML.Atoms
             set { m_height = value; }
         }
 
-        public SpanAtom(IUIResourceProvider provider)
+        public SpanAtom(StyleState style)
+            : base(style)
         {
-            m_height = provider.GetUnicodeFont((int)Font).Height;
+            m_height = Style.Font.Height;
         }
     }
 }

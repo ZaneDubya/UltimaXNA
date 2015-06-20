@@ -35,7 +35,7 @@ namespace UltimaXNA.Core.UI.HTML
             get { return m_regions.Count; }
         }
 
-        public Region AddRegion(HREF_Attributes href)
+        public Region AddRegion(HREFAttributes href)
         {
             m_regions.Add(new Region(m_regions.Count, href));
             return m_regions[m_regions.Count - 1];
@@ -70,22 +70,13 @@ namespace UltimaXNA.Core.UI.HTML
     {
         public Rectangle Area;
         public int Index;
-        public HREF_Attributes HREFAttributes;
+        public HREFAttributes HREF;
 
-        public Region(int i, HREF_Attributes data)
+        public Region(int i, HREFAttributes href)
         {
             Area = new Rectangle();
-            HREFAttributes = data;
+            HREF = href;
             Index = i;
         }
-    }
-
-    public class HREF_Attributes
-    {
-        public string HREF;
-        public int UpHue = 4;
-        public int OverHue = 6;
-        public int DownHue = 2;
-        public bool Underline = true;
     }
 }

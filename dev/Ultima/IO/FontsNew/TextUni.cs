@@ -72,7 +72,7 @@ namespace UltimaXNA.Ultima.IO.FontsNew
             {
                 for (int iFont = 0; iFont < AsciiFontCount; iFont++)
                 {
-                    m_AsciiFonts[iFont] = new FontASCII();
+                    m_AsciiFonts[iFont] = new FontAscii();
                     m_AsciiFonts[iFont].Initialize(reader);
                 }
             }

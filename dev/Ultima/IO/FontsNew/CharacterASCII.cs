@@ -16,17 +16,19 @@ using UltimaXNA.Core.UI.Fonts;
 
 namespace UltimaXNA.Ultima.IO.FontsNew
 {
-    internal class CharacterASCII : ACharacter
+    internal class CharacterAscii : ACharacter
     {
-        public CharacterASCII()
+        public CharacterAscii()
         {
 
         }
 
-        public CharacterASCII(BinaryReader reader)
+        public CharacterAscii(BinaryReader reader)
         {
             Width = reader.ReadByte();
             Height = reader.ReadByte();
+            UsePassedColor = false;
+
             reader.ReadByte(); // byte delimeter?
 
             if (Width > 0 && Height > 0)

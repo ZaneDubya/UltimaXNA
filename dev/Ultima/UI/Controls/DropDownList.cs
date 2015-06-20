@@ -12,7 +12,8 @@ using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.IO.FontsOld;
+using UltimaXNA.Core.UI.Fonts;
+using UltimaXNA.Ultima.IO.FontsNew;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
@@ -37,8 +38,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         const int hue_TextSelected = 588;
 
         UserInterfaceService m_UserInterface;
-
-        ASCIIFontOld m_Font = ASCIIText.Fonts[1];
+        IFont m_Font;
 
         public DropDownList(AControl owner)
             : base(owner)
@@ -46,6 +46,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             HandlesMouseInput = true;
 
             m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
+            m_Font = ServiceRegistry.GetService<IUIResourceProvider>().GetAsciiFont(1);
         }
 
         public DropDownList(AControl owner, int x, int y, int width, int index, int itemsVisible, string[] items, bool canBeNull)

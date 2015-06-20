@@ -21,18 +21,18 @@ namespace UltimaXNA.Ultima.IO.FontsNew
     internal class FontUnicode : AFont
     {
         BinaryReader m_reader = null;
-        private CharacterUni[] m_characters;
+        private CharacterUnicode[] m_characters;
 
         public FontUnicode()
         {
-            m_characters = new CharacterUni[0x10000];
+            m_characters = new CharacterUnicode[0x10000];
         }
 
         public override void Initialize(BinaryReader reader)
         {
             m_reader = reader;
             // space characters have no data in UniFont files.
-            m_characters[0] = new CharacterUni();
+            m_characters[0] = new CharacterUnicode();
             // We load the first 96 characters to 'seed' the font with correct height values.
             for (int i = 33; i < 128; i++)
             {
@@ -49,7 +49,7 @@ namespace UltimaXNA.Ultima.IO.FontsNew
                 return NullCharacter;
             if (m_characters[index] == null)
             {
-                CharacterUni ch = loadCharacter(index + 0x20);
+                CharacterUnicode ch = loadCharacter(index + 0x20);
                 int height = ch.Height + ch.YOffset;
                 if (index < 128 && height > Height)
                 {
@@ -60,8 +60,8 @@ namespace UltimaXNA.Ultima.IO.FontsNew
             return m_characters[index];
         }
 
-        private CharacterUni NullCharacter = new CharacterUni();
-        CharacterUni loadCharacter(int index)
+        private CharacterUnicode NullCharacter = new CharacterUnicode();
+        CharacterUnicode loadCharacter(int index)
         {
             // get the lookup table - 0x10000 ints.
             m_reader.BaseStream.Position = index * 4;
@@ -75,7 +75,7 @@ namespace UltimaXNA.Ultima.IO.FontsNew
             else
             {
                 m_reader.BaseStream.Position = lookup;
-                CharacterUni character = new CharacterUni(m_reader);
+                CharacterUnicode character = new CharacterUnicode(m_reader);
                 return character;
             }
         }

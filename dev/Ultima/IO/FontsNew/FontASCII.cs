@@ -18,13 +18,13 @@ using UltimaXNA.Core.UI.Fonts;
 
 namespace UltimaXNA.Ultima.IO.FontsNew
 {
-    internal class FontASCII : AFont
+    internal class FontAscii : AFont
     {
-        private CharacterASCII[] m_characters;
+        private CharacterAscii[] m_characters;
 
-        public FontASCII()
+        public FontAscii()
         {
-            m_characters = new CharacterASCII[224];
+            m_characters = new CharacterAscii[224];
         }
 
         public override void Initialize(BinaryReader reader)
@@ -32,18 +32,21 @@ namespace UltimaXNA.Ultima.IO.FontsNew
             byte header = reader.ReadByte();
 
             // space characters have no data in AFont files.
-            m_characters[0] = new CharacterASCII();
+            m_characters[0] = new CharacterAscii();
 
             // We load all 224 characters; this seeds the font with correct height values.
             for (int i = 0; i < 224; i++)
             {
-                CharacterASCII ch = loadCharacter(reader);
+                CharacterAscii ch = loadCharacter(reader);
                 int height = ch.Height + ch.YOffset;
                 if (i < 96 && height > Height)
-                {
                     Height = height;
-                }
                 m_characters[i] = ch;
+            }
+
+            for (int i = 0; i < 224; i++)
+            {
+                m_characters[i].YOffset = Height - m_characters[i].Height;
             }
 
             // Determine the width of the space character - arbitrarily .333 the width of capital M (.333 em?).
@@ -61,10 +64,10 @@ namespace UltimaXNA.Ultima.IO.FontsNew
             return m_characters[index];
         }
 
-        private CharacterASCII NullCharacter = new CharacterASCII();
-        CharacterASCII loadCharacter(BinaryReader reader)
+        private CharacterAscii NullCharacter = new CharacterAscii();
+        CharacterAscii loadCharacter(BinaryReader reader)
         {
-            CharacterASCII character = new CharacterASCII(reader);
+            CharacterAscii character = new CharacterAscii(reader);
             return character;
         }
 

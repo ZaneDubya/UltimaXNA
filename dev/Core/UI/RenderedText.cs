@@ -186,16 +186,16 @@ namespace UltimaXNA.Core.UI
                     // only draw the font in a different color if this is a HREF region.
                     // otherwise it is a dummy region used to notify images that they are
                     // being mouse overed.
-                    if (r.HREFAttributes != null)
+                    if (r.HREF != null)
                     {
                         int linkHue = 0;
                         if (r.Index == m_ActiveRegion)
                             if (ActiveRegion_UseDownHue)
-                                linkHue = r.HREFAttributes.DownHue;
+                                linkHue = r.HREF.DownHue;
                             else
-                                linkHue = r.HREFAttributes.OverHue;
+                                linkHue = r.HREF.OverHue;
                         else
-                            linkHue = r.HREFAttributes.UpHue;
+                            linkHue = r.HREF.UpHue;
 
                         sb.Draw2D(m_Texture, new Vector3(position.X, position.Y, 0),
                             sourceRect, Utility.GetHueVector(linkHue));
@@ -277,11 +277,9 @@ namespace UltimaXNA.Core.UI
                 if (atom is ImageAtom)
                 {
                     ImageAtom img = (ImageAtom)atom;
-                    Texture2D standard = m_ResourceProvider.GetTexture(img.Value);
-                    Texture2D over = m_ResourceProvider.GetTexture(img.ValueOver);
-                    Texture2D down = m_ResourceProvider.GetTexture(img.ValueDown);
-
-                    // x, y + (lineheight - standard.Height) / 2, standard.Width, standard.Height
+                    Texture2D standard = m_ResourceProvider.GetTexture(img.Style.GumpImgSrc);
+                    Texture2D over = m_ResourceProvider.GetTexture(img.Style.GumpImgSrcOver);
+                    Texture2D down = m_ResourceProvider.GetTexture(img.Style.GumpImgSrcDown);
                     Images.AddImage(new Rectangle(), standard, over, down);
                     img.AssociatedImage = Images[Images.Count - 1];
                 }
@@ -332,7 +330,7 @@ namespace UltimaXNA.Core.UI
                     for (int i = 0; i < reader.Length; i++)
                     {
                         AAtom atom = reader.Atoms[i];
-                        alignedAtoms[(int)atom.Alignment].Add(atom);
+                        alignedAtoms[(int)atom.Style.Alignment].Add(atom);
 
                         if (atom.IsThisAtomALineBreak || (i == reader.Length - 1))
                         {
@@ -387,7 +385,7 @@ namespace UltimaXNA.Core.UI
         {
             for (int i = 0; i < atoms.Count; i++)
             {
-                IFont font = m_ResourceProvider.GetUnicodeFont((int)atoms[i].Font);
+                IFont font = atoms[i].Style.Font;
                 if (lineheight < font.Height)
                     lineheight = font.Height;
 
@@ -398,9 +396,9 @@ namespace UltimaXNA.Core.UI
                         CharacterAtom atom = (CharacterAtom)atoms[i];
                         ICharacter character = font.GetCharacter(atom.Character);
                         // HREF links should be colored white, because we will hue them at runtime.
-                        uint color = atom.IsHREF ? 0xFFFFFFFF : Utility.UintFromColor(atom.Color);
+                        uint color = atom.Style.IsHREF ? 0xFFFFFFFF : Utility.UintFromColor(atom.Style.Color);
                         character.WriteToBuffer(rPtr, x, y, linewidth, maxHeight, font.Baseline,
-                            atom.Style_IsBold, atom.Style_IsItalic, atom.Style_IsUnderlined, atom.Style_IsOutlined, color, 0xFF000008);
+                            atom.Style.IsBold, atom.Style.IsItalic, atom.Style.IsUnderlined, atom.Style.IsOutlined, color, 0xFF000008);
                     }
                     else if (atoms[i] is ImageAtom)
                     {
@@ -429,8 +427,8 @@ namespace UltimaXNA.Core.UI
                 {
                     AAtom atom = text[alignment][i];
 
-                    if ((region == null && atom.HREFAttributes != null) ||
-                        (region != null && atom.HREFAttributes != region.HREFAttributes))
+                    if ((region == null && atom.Style.HREF != null) ||
+                        (region != null && atom.Style.HREF != region.HREF))
                     {
                         // close the current href tag if one is open.
                         if (isRegionOpen)
@@ -442,10 +440,10 @@ namespace UltimaXNA.Core.UI
                         }
 
                         // did we open a href?
-                        if (atom.HREFAttributes != null)
+                        if (atom.Style.HREF != null)
                         {
                             isRegionOpen = true;
-                            region = regions.AddRegion(atom.HREFAttributes);
+                            region = regions.AddRegion(atom.Style.HREF);
                             region.Area.X = dx;
                             region.Area.Y = y;
                             regionHeight = 0;
@@ -462,7 +460,7 @@ namespace UltimaXNA.Core.UI
                         {
                             if (!isRegionOpen)
                             {
-                                region = regions.AddRegion(atom.HREFAttributes);
+                                region = regions.AddRegion(atom.Style.HREF);
                                 isRegionOpen = true;
                                 region.Area.X = dx;
                                 region.Area.Y = y;
@@ -475,9 +473,9 @@ namespace UltimaXNA.Core.UI
 
                     dx += atom.Width;
 
-                    if (atom is CharacterAtom && ((CharacterAtom)atom).Style_IsItalic)
+                    if (atom is CharacterAtom && ((CharacterAtom)atom).Style.IsItalic)
                         additionalwidth = 2;
-                    else if (atom is CharacterAtom && ((CharacterAtom)atom).Style_IsOutlined)
+                    else if (atom is CharacterAtom && ((CharacterAtom)atom).Style.IsOutlined)
                         additionalwidth = 2;
                     else
                         additionalwidth = 0;
@@ -542,13 +540,13 @@ namespace UltimaXNA.Core.UI
                     if (reader.Atoms[i] is CharacterAtom)
                     {
                         CharacterAtom atom = (CharacterAtom)reader.Atoms[i];
-                        IFont font = m_ResourceProvider.GetUnicodeFont((int)atom.Font);
+                        IFont font = atom.Style.Font;
                         ICharacter ch = font.GetCharacter(atom.Character);
 
                         // italic characters need a little extra width if they are at the end of the line.
-                        if (atom.Style_IsItalic)
+                        if (atom.Style.IsItalic)
                             styleWidth = font.Height / 2;
-                        if (atom.Style_IsOutlined)
+                        if (atom.Style.IsOutlined)
                             styleWidth += 2;
                         if (ch.YOffset + ch.Height - lineHeight > descenderHeight)
                             descenderHeight = ch.YOffset + ch.Height - lineHeight;
@@ -556,7 +554,7 @@ namespace UltimaXNA.Core.UI
                             ascender = ch.YOffset;
                     }
 
-                    if (reader.Atoms[i].Alignment != Alignments.Left)
+                    if (reader.Atoms[i].Style.Alignment != Alignments.Left)
                         widestLine = maxwidth;
 
                     if (i == reader.Length - 1 || reader.Atoms[i + 1].CanBreakAtThisAtom)
@@ -599,7 +597,8 @@ namespace UltimaXNA.Core.UI
                                 }
                                 else
                                 {
-                                    reader.Atoms.Insert(i - word.Count, new CharacterAtom(m_ResourceProvider, '\n'));
+                                    StyleState inheritedStyle = reader.Atoms[i - word.Count].Style;
+                                    reader.Atoms.Insert(i - word.Count, new CharacterAtom(inheritedStyle, '\n'));
                                     i = i - word.Count;
                                 }
                                 word.Clear();
@@ -613,11 +612,12 @@ namespace UltimaXNA.Core.UI
                                 int iWordWidth = wordWidth;
                                 for (int j = word.Count - 1; j >= 1; j--)
                                 {
-                                    int iDashWidth = m_ResourceProvider.GetUnicodeFont((int)word[j].Font).GetCharacter('-').Width;
+                                    int iDashWidth = word[j].Style.Font.GetCharacter('-').Width;
                                     if (iWordWidth + iDashWidth <= maxwidth)
                                     {
-                                        reader.Atoms.Insert(i - (word.Count - j) + 1, new CharacterAtom(m_ResourceProvider, '\n'));
-                                        reader.Atoms.Insert(i - (word.Count - j) + 1, new CharacterAtom(m_ResourceProvider, '-'));
+                                        StyleState inheritedStyle = reader.Atoms[i - (word.Count - j) + 1].Style;
+                                        reader.Atoms.Insert(i - (word.Count - j) + 1, new CharacterAtom(inheritedStyle, '\n'));
+                                        reader.Atoms.Insert(i - (word.Count - j) + 1, new CharacterAtom(inheritedStyle, '-'));
                                         break;
                                     }
                                     iWordWidth -= word[j].Width;

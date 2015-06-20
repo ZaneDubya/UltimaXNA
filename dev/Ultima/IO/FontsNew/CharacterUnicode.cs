@@ -16,14 +16,14 @@ using UltimaXNA.Core.UI.Fonts;
 
 namespace UltimaXNA.Ultima.IO.FontsNew
 {
-    internal class CharacterUni : ACharacter
+    internal class CharacterUnicode : ACharacter
     {
-        public CharacterUni()
+        public CharacterUnicode()
         {
 
         }
 
-        public CharacterUni(BinaryReader reader)
+        public CharacterUnicode(BinaryReader reader)
         {
             XOffset = (sbyte)reader.ReadByte();
             YOffset = (sbyte)reader.ReadByte();

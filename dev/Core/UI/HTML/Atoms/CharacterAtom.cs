@@ -4,8 +4,6 @@ namespace UltimaXNA.Core.UI.HTML.Atoms
 {
     public class CharacterAtom : AAtom
     {
-        private IUIResourceProvider m_Provider;
-
         public override int Width
         {
             get
@@ -13,7 +11,7 @@ namespace UltimaXNA.Core.UI.HTML.Atoms
                 if (Character < 32)
                     return 0;
                 else
-                    return m_Provider.GetUnicodeFont((int)Font).GetCharacter(Character).Width + (Style_IsBold ? 1 : 0) + 1;
+                    return Style.Font.GetCharacter(Character).Width + (Style.IsBold ? 1 : 0) + 1;
             }
         }
 
@@ -21,15 +19,15 @@ namespace UltimaXNA.Core.UI.HTML.Atoms
         {
             get
             {
-                return m_Provider.GetUnicodeFont((int)Font).Height;
+                return Style.Font.Height;
             }
         }
 
         public char Character = '\0';
 
-        public CharacterAtom(IUIResourceProvider provider, char c)
+        public CharacterAtom(StyleState style, char c)
+            : base(style)
         {
-            m_Provider = provider;
             Character = c;
         }
 

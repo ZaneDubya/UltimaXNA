@@ -21,8 +21,22 @@ namespace UltimaXNA.Ultima.UI.Controls
     {
         public int Hue = 0;
         public int FontID = 0;
-        public string Text = string.Empty;
-        Texture2D m_texture = null;
+
+        private RenderedText m_Rendered = new RenderedText(string.Empty, 400);
+        private string m_Text;
+
+        public string Text
+        {
+            get
+            {
+                return m_Text;
+            }
+            set
+            {
+                m_Text = value;
+                m_Rendered.Text = string.Format("<span style=\"font-family:ascii{0}\">{1}", FontID, m_Text);
+            }
+        }
 
         public TextLabelAscii(AControl owner)
             : base(owner)
@@ -44,20 +58,9 @@ namespace UltimaXNA.Ultima.UI.Controls
             Text = text;
         }
 
-        protected override void OnInitialize()
-        {
-            m_texture = ASCIIText.GetTextTexture(Text, FontID);
-        }
-
-        public override void Update(double totalMS, double frameMS)
-        {
-            base.Update(totalMS, frameMS);
-        }
-
         public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
-            
-            spriteBatch.Draw2D(m_texture, new Vector3(position.X, position.Y, 0), Utility.GetHueVector(Hue, true, false));
+            m_Rendered.Draw(spriteBatch, position, Utility.GetHueVector(Hue, true, false));
             base.Draw(spriteBatch, position);
         }
     }
