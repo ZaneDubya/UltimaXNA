@@ -8,5 +8,6 @@ namespace UltimaXNA.Core.UI
         Texture2D GetTexture(int textureID);
         ushort GetWebSafeHue(Color color);
         IFont GetUnicodeFont(int fontIndex);
+        IFont GetAsciiFont(int fontIndex);
     }
 }

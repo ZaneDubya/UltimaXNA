@@ -8,11 +8,11 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+#region usings
 using System;
-using System.Collections.Generic;
 using System.IO;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using UltimaXNA.Core.UI.Fonts;
+#endregion
 
 namespace UltimaXNA.Ultima.IO.FontsNew
 {

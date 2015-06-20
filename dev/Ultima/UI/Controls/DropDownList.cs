@@ -38,6 +38,8 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         UserInterfaceService m_UserInterface;
 
+        ASCIIFontOld m_Font = ASCIIText.Fonts[1];
+
         public DropDownList(AControl owner)
             : base(owner)
         {
@@ -61,7 +63,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             m_visibleItems = itemsVisible;
             m_canBeNull = canBeNull;
 
-            m_resize = new ResizePic(Owner, X, Y, 3000, m_width, IO.FontsOld.ASCIIText.Fonts[1].Height + 8);
+            m_resize = new ResizePic(Owner, X, Y, 3000, m_width, m_Font.Height + 8);
             m_resize.MouseClickEvent += onClickClosedList;
             m_resize.MouseOverEvent += onMouseOverClosedList;
             m_resize.MouseOutEvent += onMouseOutClosedList;
@@ -117,7 +119,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         void onClickClosedList(int x, int y, MouseButton button)
         {
             m_listOpen = true;
-            m_openResizePic = new ResizePic(Owner, X, Y, 3000, m_width, ASCIIText.Fonts[1].Height * m_visibleItems + 8);
+            m_openResizePic = new ResizePic(Owner, X, Y, 3000, m_width, m_Font.Height * m_visibleItems + 8);
             m_openResizePic.MouseClickEvent += onClickOpenList;
             m_openResizePic.MouseOverEvent += onMouseOverOpenList;
             m_openResizePic.MouseOutEvent += onMouseOutOpenList;
@@ -125,13 +127,13 @@ namespace UltimaXNA.Ultima.UI.Controls
             // only show the scrollbar if we need to scroll
             if (m_visibleItems < m_items.Count)
             {
-                m_openScrollBar = new ScrollBar(Owner, X + m_width - 20, Y + 4, ASCIIText.Fonts[1].Height * m_visibleItems, (m_canBeNull ? -1 : 0), m_items.Count - m_visibleItems, Index);
+                m_openScrollBar = new ScrollBar(Owner, X + m_width - 20, Y + 4, m_Font.Height * m_visibleItems, (m_canBeNull ? -1 : 0), m_items.Count - m_visibleItems, Index);
                 ((Gump)Owner).AddControl(m_openScrollBar, this.Page);
             }
             m_openLabels = new TextLabelAscii[m_visibleItems];
             for (int i = 0; i < m_visibleItems; i++)
             {
-                m_openLabels[i] = new TextLabelAscii(Owner, X + 4, Y + 5 + ASCIIText.Fonts[1].Height * i, 1107, 1, string.Empty);
+                m_openLabels[i] = new TextLabelAscii(Owner, X + 4, Y + 5 + m_Font.Height * i, 1107, 1, string.Empty);
                 ((Gump)Owner).AddControl(m_openLabels[i], this.Page);
             }
         }
@@ -174,12 +176,12 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         int getOpenListIndexFromPoint(int x, int y)
         {
-            Rectangle r = new Rectangle(4, 5, m_width - 20, ASCIIText.Fonts[1].Height);
+            Rectangle r = new Rectangle(4, 5, m_width - 20, m_Font.Height);
             for (int i = 0; i < m_openLabels.Length; i++)
             {
                 if (r.Contains(new Point(x, y)))
                     return i;
-                r.Y += ASCIIText.Fonts[1].Height;
+                r.Y += m_Font.Height;
             }
             return -1;
         }

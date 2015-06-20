@@ -367,6 +367,11 @@ namespace UltimaXNA.Core.UI.HTML
             outHTML.Add(atom);
         }
 
+        private static string[] m_FontTags = new string[] {
+            "big", "small", "medium", "basefont",
+        };
+        private static string[] m_AlignmentTags = new string[] { "center", "left", "right" };
+
         void addCharacter(char inText, List<AAtom> outHTML, List<string> openTags, Color currentColor, List<HREF_Attributes> openHREFs)
         {
             CharacterAtom c = new CharacterAtom(m_ResourceProvider, inText);
@@ -374,17 +379,18 @@ namespace UltimaXNA.Core.UI.HTML
             c.Style_IsItalic = hasTag(openTags, "i");
             c.Style_IsUnderlined = hasTag(openTags, "u");
             c.Style_IsOutlined = hasTag(openTags, "outline");
-            string fontTag = lastTag(openTags, new string[] { "big", "small", "medium", "basefont" });
+            string fontTag = lastTag(openTags, m_FontTags);
             switch (fontTag)
             {
                 case "big":
-                    c.Font = Fonts.Big;
+                    c.Font = Fonts.UnicodeBig;
                     break;
+                case "basefont":
                 case "medium":
                     c.Font = Fonts.Default;
                     break;
                 case "small":
-                    c.Font = Fonts.Small;
+                    c.Font = Fonts.UnicodeSmall;
                     break;
             }
 
@@ -395,10 +401,10 @@ namespace UltimaXNA.Core.UI.HTML
             outHTML.Add(c);
         }
 
-        static string[] alignmentTags = new string[] { "center", "left", "right" };
+        
         static Alignments getAlignmentFromOpenTags(List<string> openTags)
         {
-            string alignment = lastTag(openTags, alignmentTags);
+            string alignment = lastTag(openTags, m_AlignmentTags);
             switch (alignment)
             {
                 case "center":

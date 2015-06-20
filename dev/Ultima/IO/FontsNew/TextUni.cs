@@ -8,24 +8,34 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using System;
-using System.Collections.Generic;
-using System.IO;
-using Microsoft.Xna.Framework;
+#region usings
 using Microsoft.Xna.Framework.Graphics;
+using System.IO;
+using UltimaXNA.Core.UI.Fonts;
+#endregion
 
 namespace UltimaXNA.Ultima.IO.FontsNew
 {
     public static class TextUni
     {
-        public static int FontCount = 7;
-        private static AFont[] m_UnicodeFonts = new AFont[FontCount];
+        public static int UniFontCount = 7;
+        private static AFont[] m_UnicodeFonts = new AFont[UniFontCount];
 
-        internal static AFont GetFont(int index)
+        public static int AsciiFontCount = 10;
+        private static AFont[] m_AsciiFonts = new AFont[AsciiFontCount];
+
+        internal static AFont GetUniFont(int index)
         {
-            if (index < 0 || index >= FontCount)
+            if (index < 0 || index >= UniFontCount)
                 return m_UnicodeFonts[0];
             return m_UnicodeFonts[index];
+        }
+
+        internal static AFont GetAsciiFont(int index)
+        {
+            if (index < 0 || index >= AsciiFontCount)
+                return m_AsciiFonts[0];
+            return m_AsciiFonts[index];
         }
 
         private static bool m_initialized;
@@ -54,26 +64,46 @@ namespace UltimaXNA.Ultima.IO.FontsNew
 
         static void loadFonts()
         {
+            // ==============================================================================================================
+            // load Ascii fonts
+            // ==============================================================================================================
+
+            using (BinaryReader reader = new BinaryReader(new FileStream(FileManager.GetFilePath("fonts.mul"), FileMode.Open, FileAccess.Read)))
+            {
+                for (int iFont = 0; iFont < AsciiFontCount; iFont++)
+                {
+                    m_AsciiFonts[iFont] = new FontASCII();
+                    m_AsciiFonts[iFont].Initialize(reader);
+                }
+            }
+
+
+            // ==============================================================================================================
+            // load Unicode fonts
+            // ==============================================================================================================
+
             int maxHeight = 0; // because all unifonts are designed to be used together, they must all share a maxheight.
 
-            for (int iFont = 0; iFont < FontCount; iFont++)
+            for (int iFont = 0; iFont < UniFontCount; iFont++)
             {
                 string path = FileManager.GetFilePath("unifont" + (iFont == 0 ? "" : iFont.ToString()) + ".mul");
                 if (path != null)
                 {
-                    m_UnicodeFonts[iFont] = new FontResourceUnicode();
-                    m_UnicodeFonts[iFont].Initialize(m_graphicsDevice, new BinaryReader(new FileStream(path, FileMode.Open, FileAccess.Read)));
+                    m_UnicodeFonts[iFont] = new FontUnicode();
+                    m_UnicodeFonts[iFont].Initialize(new BinaryReader(new FileStream(path, FileMode.Open, FileAccess.Read)));
                     if (m_UnicodeFonts[iFont].Height > maxHeight)
                         maxHeight = m_UnicodeFonts[iFont].Height;
                 }
             }
 
-            for (int iFont = 0; iFont < FontCount; iFont++)
+            for (int iFont = 0; iFont < UniFontCount; iFont++)
             {
                 if (m_UnicodeFonts[iFont] == null)
                     continue;
                 m_UnicodeFonts[iFont].Height = maxHeight;
             }
+
+
         }
     }
 }

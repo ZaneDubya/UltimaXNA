@@ -17,23 +17,23 @@ using UltimaXNA.Core.Diagnostics;
 
 namespace UltimaXNA.Ultima.IO.FontsOld
 {
-    public static class ASCIIText
+    public static class ASCIITextOld
     {
         public const int FontCount = 10;
 
-        private static ASCIIFont[] m_fonts = new ASCIIFont[FontCount];
+        private static ASCIIFontOld[] m_fonts = new ASCIIFontOld[FontCount];
         private static bool m_initialized;
         private static GraphicsDevice m_graphicsDevice;
 
         //QUERY: Does this really need to be exposed?
-        public static ASCIIFont[] Fonts { get { return ASCIIText.m_fonts; } set { ASCIIText.m_fonts = value; } }
+        public static ASCIIFontOld[] Fonts { get { return ASCIITextOld.m_fonts; } set { ASCIITextOld.m_fonts = value; } }
 
         public static int MaxWidth
         {
             get { return m_graphicsDevice.Viewport.Width; }
         }
 
-        static ASCIIText()
+        static ASCIITextOld()
         {
 
         }
@@ -57,7 +57,7 @@ namespace UltimaXNA.Ultima.IO.FontsOld
 
                     for (int i = 0; i < FontCount; i++)
                     {
-                        m_fonts[i] = new ASCIIFont();
+                        m_fonts[i] = new ASCIIFontOld();
 
                         byte header = buffer[pos++];
 
@@ -145,7 +145,7 @@ namespace UltimaXNA.Ultima.IO.FontsOld
 
         private unsafe static Texture2D getTexture(string text, int fontId, int wrapwidth)
         {
-            ASCIIFont font = ASCIIFont.GetFixed(fontId);
+            ASCIIFontOld font = ASCIIFontOld.GetFixed(fontId);
 
             int width = 0, height = 0;
             if (wrapwidth == 0)

@@ -30,7 +30,12 @@ namespace UltimaXNA.Ultima.UI
 
         public IFont GetUnicodeFont(int fontIndex)
         {
-            return IO.FontsNew.TextUni.GetFont(fontIndex);
+            return IO.FontsNew.TextUni.GetUniFont(fontIndex);
+        }
+
+        public IFont GetAsciiFont(int fontIndex)
+        {
+            return IO.FontsNew.TextUni.GetAsciiFont(fontIndex);
         }
     }
 }

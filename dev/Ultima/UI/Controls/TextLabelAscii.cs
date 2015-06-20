@@ -7,12 +7,13 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-
+#region usings
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.IO.FontsOld;
+#endregion
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
@@ -43,6 +44,11 @@ namespace UltimaXNA.Ultima.UI.Controls
             Text = text;
         }
 
+        protected override void OnInitialize()
+        {
+            m_texture = ASCIIText.GetTextTexture(Text, FontID);
+        }
+
         public override void Update(double totalMS, double frameMS)
         {
             base.Update(totalMS, frameMS);
@@ -50,7 +56,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
-            m_texture = ASCIIText.GetTextTexture(Text, FontID);
+            
             spriteBatch.Draw2D(m_texture, new Vector3(position.X, position.Y, 0), Utility.GetHueVector(Hue, true, false));
             base.Draw(spriteBatch, position);
         }

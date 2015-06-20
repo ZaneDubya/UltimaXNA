@@ -156,7 +156,6 @@ namespace UltimaXNA
                 AnimData.Initialize();
                 ArtData.Initialize(GraphicsDevice);
 
-                ASCIIText.Initialize(GraphicsDevice);
                 TextUni.Initialize(GraphicsDevice);
 
                 GumpData.Initialize(GraphicsDevice);

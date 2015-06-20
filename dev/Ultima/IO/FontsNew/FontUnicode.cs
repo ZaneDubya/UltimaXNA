@@ -9,29 +9,27 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using System;
-using System.Collections.Generic;
-using System.IO;
-using Microsoft.Xna.Framework;
+#region usings
 using Microsoft.Xna.Framework.Graphics;
+using System.IO;
 using UltimaXNA.Core.UI;
+using UltimaXNA.Core.UI.Fonts;
+#endregion
 
 namespace UltimaXNA.Ultima.IO.FontsNew
 {
-    internal class FontResourceUnicode : AFont
+    internal class FontUnicode : AFont
     {
-        GraphicsDevice m_graphics = null;
         BinaryReader m_reader = null;
         private CharacterUni[] m_characters;
 
-        public FontResourceUnicode()
+        public FontUnicode()
         {
             m_characters = new CharacterUni[0x10000];
         }
 
-        public override void Initialize(GraphicsDevice graphicsDevice, BinaryReader reader)
+        public override void Initialize(BinaryReader reader)
         {
-            m_graphics = graphicsDevice;
             m_reader = reader;
             // space characters have no data in UniFont files.
             m_characters[0] = new CharacterUni();

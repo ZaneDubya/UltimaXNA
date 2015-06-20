@@ -17,7 +17,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace UltimaXNA.Ultima.IO.FontsOld
 {
     //QUERY: Does this really need to be exposed? Shouldnt this be a child class of ASCIIText?
-    public sealed class ASCIIFont
+    public sealed class ASCIIFontOld
     {
         private int m_Height;
         private Texture2D[] m_Characters;
@@ -25,7 +25,7 @@ namespace UltimaXNA.Ultima.IO.FontsOld
         public int Height { get { return m_Height; } set { m_Height = value; } }
         public Texture2D[] Characters { get { return m_Characters; } set { m_Characters = value; } }
 
-        public ASCIIFont()
+        public ASCIIFontOld()
         {
             Height = 0;
             Characters = new Texture2D[224];
@@ -155,14 +155,14 @@ namespace UltimaXNA.Ultima.IO.FontsOld
             getTextDimensions(ref text, ref width, ref height, wrapwidth);
         }
 
-        public static ASCIIFont GetFixed(int font)
+        public static ASCIIFontOld GetFixed(int font)
         {
             if (font < 0 || font > 9)
             {
-                return ASCIIText.Fonts[3];
+                return ASCIITextOld.Fonts[3];
             }
 
-            return ASCIIText.Fonts[font];
+            return ASCIITextOld.Fonts[font];
         }
     }
 }

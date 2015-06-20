@@ -9,16 +9,12 @@
  *
  ***************************************************************************/
 #region usings
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
-using UltimaXNA.Core.Diagnostics;
-using UltimaXNA.Core.UI;
-using UltimaXNA.Core.IO;
 using System.IO;
 #endregion
 
-namespace UltimaXNA.Ultima.IO.FontsNew
+namespace UltimaXNA.Core.UI.Fonts
 {
     abstract class AFont : IFont
     {
@@ -46,7 +42,7 @@ namespace UltimaXNA.Ultima.IO.FontsNew
 
         public abstract ICharacter GetCharacter(char character);
 
-        public abstract void Initialize(GraphicsDevice graphicsDevice, BinaryReader reader);
+        public abstract void Initialize(BinaryReader reader);
 
         public void GetTextDimensions(ref string text, ref int width, ref int height, int wrapwidth)
         {

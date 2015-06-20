@@ -7,11 +7,9 @@
  *   the Free Software Foundation; either version 3 of the License, or
  *   (at your option) any later version.
  *
- ***************************************************************************/
-using Microsoft.Xna.Framework;
-using UltimaXNA.Core.UI;
+ ***************************************************************************/ 
 
-namespace UltimaXNA.Ultima.IO.FontsNew
+namespace UltimaXNA.Core.UI.Fonts
 {
     abstract internal class ACharacter : ICharacter
     {
