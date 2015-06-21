@@ -25,7 +25,7 @@ namespace UltimaXNA.Core.UI.HTML
         UnicodeBig = 0,
         UnicodeMedium = 1,
         UnicodeSmall = 2,
-        AsciiFontsBegin = 3,
+        /*AsciiFontsBegin = 3,
         AsciiThickOutlined = 3, // ascii 0
         AsciiShadowed = 4, // ascii 1
         AsciiThickShadowed = 5, // ascii 2
@@ -35,6 +35,6 @@ namespace UltimaXNA.Core.UI.HTML
         AsciiScript = 9, // ascii 6
         AsciiScriptSoft = 10, // ascii 7
         AsciiRunes = 11, // ascii 8
-        AsciiMedium = 12, // ascii 9
+        AsciiMedium = 12, // ascii 9*/
     }
 }
