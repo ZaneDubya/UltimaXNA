@@ -10,19 +10,10 @@
  ***************************************************************************/
 #region usings
 using Microsoft.Xna.Framework;
-using System.Collections.Generic;
-using System.Text;
-using UltimaXNA.Core.Graphics;
-using UltimaXNA.Ultima.Player;
-using UltimaXNA.Ultima.UI;
-using UltimaXNA.Ultima.UI.Controls;
-using UltimaXNA.Core.Input;
-using UltimaXNA.Ultima.World.Entities.Items.Containers;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Graphics;
-using UltimaXNA.Ultima.World;
 using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.World;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.Controls

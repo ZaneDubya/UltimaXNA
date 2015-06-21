@@ -37,7 +37,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
         public LoginGump()
             : base(0, 0)
         {
-            int hue = 902; // light blue
+            int hue = 902; // dark grey
             // backdrop
             AddControl(new GumpPicTiled(this, 0, 0, 800, 600, 0x0588));
             AddControl(new ResizePic(this, 128, 285, 0x13BE, 520, 190));
@@ -67,7 +67,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             AddControl(new Button(this, 610, 439, 5540, 5542, ButtonTypes.Activate, 0, (int)LoginGumpButtons.LoginButton));
             ((Button)LastControl).GumpOverID = 5541;
             // Version information
-            AddControl(new HtmlGumpling(this, 183, 440, 300, 20, 0, 0, "<medium><outline><font color='#AAAACC'>" + Utility.VersionString));
+            AddControl(new HtmlGumpling(this, 183, 440, 300, 20, 0, 0, "<medium><outline><font color='#CCDDCC'>" + Utility.VersionString));
 
             IsUncloseableWithRMB = true;
         }

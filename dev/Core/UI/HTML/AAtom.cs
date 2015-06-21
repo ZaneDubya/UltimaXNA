@@ -72,34 +72,15 @@ namespace UltimaXNA.Core.UI.HTML
             }
         }
 
-        public bool Style_IsBold = false;
-        public bool Style_IsItalic = false;
-        public bool Style_IsOutlined = false;
-        bool m_isUnderlined = false;
-        public bool Style_IsUnderlined
-        {
-            get
-            {
-                if (HREFAttributes != null)
-                {
-                    return HREFAttributes.Underline;
-                }
-                else
-                {
-                    return m_isUnderlined;
-                }
-            }
-            set { m_isUnderlined = value; }
-        }
-        public Fonts Font = Fonts.Default;
-        public Alignments Alignment = Alignments.Default;
-        public Color Color = Color.White;
-        public HREF_Attributes HREFAttributes = null;
-        public bool IsHREF { get { return HREFAttributes != null; } }
+        public StyleState Style;
 
-        public AAtom()
+        /// <summary>
+        /// Creates a new atom.
+        /// </summary>
+        /// <param name="openTags">This atom will copy the styles from this parameter.</param>
+        public AAtom(StyleState style)
         {
-
+            Style = new StyleState(style);
         }
 
         public override string ToString()
