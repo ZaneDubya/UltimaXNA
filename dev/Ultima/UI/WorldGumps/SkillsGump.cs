@@ -117,8 +117,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         const string kSkillName_NoUseButton = "<left><span width='13'/><medium color=#50422D>{1}</medium></left>";
         // 0 = skill value
         static string[] kSkillValues = new string[3] {
-            "<right>{0:0.0}<a href='skilllock={1}'><gumpimg src='2436'/></a><span width='2'/></right><br/>",
-            "<right>{0:0.0}<a href='skilllock={1}'><gumpimg src='2438'/></a><span width='2'/></right><br/>",
-            "<right>{0:0.0}<a href='skilllock={1}'><gumpimg src='2092'/></a><span width='2'/></right><br/>" };
+            "<right><medium color=#50422D>{0:0.0}</medium><a href='skilllock={1}'><gumpimg src='2436'/></a><span width='2'/></right><br/>",
+            "<right><medium color=#50422D>{0:0.0}</medium><a href='skilllock={1}'><gumpimg src='2438'/></a><span width='2'/></right><br/>",
+            "<right><medium color=#50422D>{0:0.0}</medium><a href='skilllock={1}'><gumpimg src='2092'/></a><span width='2'/></right><br/>" };
     }
 }
