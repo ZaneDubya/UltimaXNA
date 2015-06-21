@@ -16,24 +16,11 @@ namespace UltimaXNA.Core.UI.HTML
 
         private IUIResourceProvider m_Provider;
         private List<HTMLchunk> m_OpenTags;
-        private List<HREFAttributes> m_HREFs;
-        private HREFAttributes LastHREF
-        {
-            get
-            {
-                if (m_HREFs == null)
-                    return null;
-                if (m_HREFs.Count == 0)
-                    return null;
-                return m_HREFs[m_HREFs.Count - 1];
-            }
-        }
 
         public StyleManager(IUIResourceProvider provider)
         {
             m_Provider = provider;
             m_OpenTags = new List<HTMLchunk>();
-            m_HREFs = new List<HREFAttributes>();
             RecalculateStyle();
         }
 
@@ -94,21 +81,19 @@ namespace UltimaXNA.Core.UI.HTML
         {
             if (chunk.bEndClosure)
             {
-                // solo anchors are meaningless.
+                // solo anchor elements are meaningless.
             }
 
             if (!chunk.bClosure)
             {
                 // hyperlink with attributes
-                HREFAttributes href = new HREFAttributes();
-                m_HREFs.Add(href);
+                Style.HREF = new HREFAttributes();
                 ParseTag(chunk);
             }
             else
             {
-                // closing a hyperlink - restore previous address, if any.
-                if (m_HREFs.Count > 0)
-                    m_HREFs.RemoveAt(m_HREFs.Count - 1);
+                // closing a hyperlink. Recalculating the styles will restore the previous link, if any.
+                RecalculateStyle();
             }
         }
 
@@ -173,7 +158,7 @@ namespace UltimaXNA.Core.UI.HTML
                         // href paramater can only be used on 'anchor' tags.
                         if (chunk.sTag == "a")
                         {
-                            m_HREFs[m_HREFs.Count - 1].HREF = value;
+                            Style.HREF.HREF = value;
                         }
                         break;
                     case "color":
@@ -205,13 +190,13 @@ namespace UltimaXNA.Core.UI.HTML
                                 switch (key)
                                 {
                                     case "color":
-                                        m_HREFs[m_HREFs.Count - 1].UpHue = m_Provider.GetWebSafeHue(c.Value);
+                                        Style.HREF.UpHue = m_Provider.GetWebSafeHue(c.Value);
                                         break;
                                     case "hovercolor":
-                                        m_HREFs[m_HREFs.Count - 1].OverHue = m_Provider.GetWebSafeHue(c.Value);
+                                        Style.HREF.OverHue = m_Provider.GetWebSafeHue(c.Value);
                                         break;
                                     case "activecolor":
-                                        m_HREFs[m_HREFs.Count - 1].DownHue = m_Provider.GetWebSafeHue(c.Value);
+                                        Style.HREF.DownHue = m_Provider.GetWebSafeHue(c.Value);
                                         break;
                                 }
                             }

@@ -9,10 +9,8 @@
  ***************************************************************************/
 
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.IO.FontsOld;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
@@ -33,7 +31,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             set
             {
                 m_Text = value;
-                m_Rendered.Text = string.Format("<span style=\"font-family='ascii{0}'\">{1}", FontID, m_Text);
+                m_Rendered.Text = string.Format("<span style=\"font-family=ascii{0}\">{1}", FontID, m_Text);
             }
         }
 

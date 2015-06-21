@@ -32,7 +32,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
         public LoggingInGump()
             : base(0, 0)
         {
-            int hue = 2017;
+            int hue = 902;
             // backdrop
             AddControl(new GumpPicTiled(this, 0, 0, 800, 600, 9274));
             AddControl(new GumpPic(this, 0, 0, 5500, 0));
@@ -63,7 +63,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             ((Button)LastControl).GumpOverID = 1154;
 
             // Page 5 - Your account has been blocked / banned
-            AddControl(new TextLabelAsciiCropped(this, 166, 143, 308, 308, 1107, 1, IO.StringData.Entry(3000035)), 5);
+            AddControl(new TextLabelAsciiCropped(this, 166, 143, 308, 308, 1107, 2, IO.StringData.Entry(3000035)), 5);
             AddControl(new Button(this, 305, 342, 1153, 1155, ButtonTypes.Activate, 0, (int)LoggingInGumpButtons.OKNoLoginButton), 5);
             ((Button)LastControl).GumpOverID = 1154;
 

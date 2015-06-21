@@ -4,7 +4,7 @@ namespace UltimaXNA.Core.UI.HTML
 {
     public class StyleState
     {
-        private StyleValue m_IsUnderlined = StyleValue.False;
+        private StyleValue m_IsUnderlined = StyleValue.Default;
         public bool IsUnderlined
         {
             set

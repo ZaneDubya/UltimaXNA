@@ -16,28 +16,39 @@ using UltimaXNA.Core.UI;
 using UltimaXNA.Core.UI.Fonts;
 #endregion
 
-namespace UltimaXNA.Ultima.IO.FontsNew
+namespace UltimaXNA.Ultima.IO.Fonts
 {
-    internal class FontUnicode : AFont
+    internal class FontAscii : AFont
     {
-        BinaryReader m_reader = null;
-        private CharacterUnicode[] m_characters;
+        private CharacterAscii[] m_characters;
 
-        public FontUnicode()
+        public FontAscii()
         {
-            m_characters = new CharacterUnicode[0x10000];
+            m_characters = new CharacterAscii[224];
         }
 
         public override void Initialize(BinaryReader reader)
         {
-            m_reader = reader;
-            // space characters have no data in UniFont files.
-            m_characters[0] = new CharacterUnicode();
-            // We load the first 96 characters to 'seed' the font with correct height values.
-            for (int i = 33; i < 128; i++)
+            byte header = reader.ReadByte();
+
+            // space characters have no data in AFont files.
+            m_characters[0] = new CharacterAscii();
+
+            // We load all 224 characters; this seeds the font with correct height values.
+            for (int i = 0; i < 224; i++)
             {
-                GetCharacter((char)i);
+                CharacterAscii ch = loadCharacter(reader);
+                int height = ch.Height + ch.YOffset;
+                if (i < 96 && height > Height)
+                    Height = height;
+                m_characters[i] = ch;
             }
+
+            for (int i = 0; i < 224; i++)
+            {
+                m_characters[i].YOffset = Height - m_characters[i].Height;
+            }
+
             // Determine the width of the space character - arbitrarily .333 the width of capital M (.333 em?).
             GetCharacter(' ').Width = GetCharacter('M').Width / 3;
         }
@@ -45,39 +56,19 @@ namespace UltimaXNA.Ultima.IO.FontsNew
         public override ICharacter GetCharacter(char character)
         {
             int index = ((int)character & 0xFFFFF) - 0x20;
+
             if (index < 0)
                 return NullCharacter;
-            if (m_characters[index] == null)
-            {
-                CharacterUnicode ch = loadCharacter(index + 0x20);
-                int height = ch.Height + ch.YOffset;
-                if (index < 128 && height > Height)
-                {
-                    Height = height;
-                }
-                m_characters[index] = ch;
-            }
+            if (index >= m_characters.Length)
+                return NullCharacter;
             return m_characters[index];
         }
 
-        private CharacterUnicode NullCharacter = new CharacterUnicode();
-        CharacterUnicode loadCharacter(int index)
+        private CharacterAscii NullCharacter = new CharacterAscii();
+        CharacterAscii loadCharacter(BinaryReader reader)
         {
-            // get the lookup table - 0x10000 ints.
-            m_reader.BaseStream.Position = index * 4;
-            int lookup = m_reader.ReadInt32();
-
-            if (lookup == 0)
-            {
-                // no character - so we just return null
-                return NullCharacter;
-            }
-            else
-            {
-                m_reader.BaseStream.Position = lookup;
-                CharacterUnicode character = new CharacterUnicode(m_reader);
-                return character;
-            }
+            CharacterAscii character = new CharacterAscii(reader);
+            return character;
         }
 
         public int GetWidth(char ch)

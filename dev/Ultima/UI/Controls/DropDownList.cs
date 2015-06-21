@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Core.UI.Fonts;
-using UltimaXNA.Ultima.IO.FontsNew;
+using UltimaXNA.Ultima.IO.Fonts;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
@@ -134,7 +134,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             m_openLabels = new TextLabelAscii[m_visibleItems];
             for (int i = 0; i < m_visibleItems; i++)
             {
-                m_openLabels[i] = new TextLabelAscii(Owner, X + 4, Y + 5 + m_Font.Height * i, 1107, 1, string.Empty);
+                m_openLabels[i] = new TextLabelAscii(Owner, X + 4, Y + 5 + m_Font.Height * i, 1106, 1, string.Empty);
                 ((Gump)Owner).AddControl(m_openLabels[i], this.Page);
             }
         }

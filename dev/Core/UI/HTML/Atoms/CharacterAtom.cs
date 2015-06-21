@@ -1,4 +1,4 @@
-﻿using UltimaXNA.Ultima.IO.FontsNew;
+﻿using UltimaXNA.Ultima.IO.Fonts;
 
 namespace UltimaXNA.Core.UI.HTML.Atoms
 {

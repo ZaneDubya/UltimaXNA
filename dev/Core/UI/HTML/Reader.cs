@@ -107,9 +107,14 @@ namespace UltimaXNA.Core.UI.HTML
                         switch (chunk.sTag)
                         {
                             // ======================================================================
-                            // These html elements are added as tags to the open tag collection.
+                            // Anchor elements are added to the open tag collection as HREFs.
                             // ======================================================================
                             case "a":
+                                tags.InterpretHREF(chunk);
+                                break;
+                            // ======================================================================
+                            // These html elements are added as tags to the open tag collection.
+                            // ======================================================================
                             case "body":
                             case "font":
                             case "b":
@@ -130,7 +135,7 @@ namespace UltimaXNA.Core.UI.HTML
                             // But are ignored if they are solo elements.
                             // ======================================================================
                             case "span":
-                                tags.InterpretHREF(chunk);
+                                tags.OpenTag(chunk);
                                 atom = new SpanAtom(tags.Style);
                                 break;
                             // ======================================================================
