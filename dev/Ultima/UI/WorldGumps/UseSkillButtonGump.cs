@@ -15,6 +15,7 @@ using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Ultima.Player;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Core.UI;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
@@ -51,9 +52,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
             for (int i = 0; i < 3; i++)
             {
-                m_BG[i].MouseDownEvent += OnMouseDown;
-                m_BG[i].MouseUpEvent += OnMouseUp;
-                m_BG[i].MouseClickEvent += OnMouseClick;
+                m_BG[i].MouseDownEvent += EventMouseDown;
+                m_BG[i].MouseUpEvent += EventMouseUp;
+                m_BG[i].MouseClickEvent += EventMouseClick;
             }
         }
 
@@ -87,6 +88,21 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
             if (m_IsMouseDown)
                 m_Caption.Position = new Point(m_Caption.Position.X, m_Caption.Position.Y - 1);
+        }
+
+        private void EventMouseDown(AControl sender, int x, int y, MouseButton button)
+        {
+            OnMouseDown(x, y, button);
+        }
+
+        private void EventMouseUp(AControl sender, int x, int y, MouseButton button)
+        {
+            OnMouseUp(x, y, button);
+        }
+
+        private void EventMouseClick(AControl sender, int x, int y, MouseButton button)
+        {
+            OnMouseClick(x, y, button);
         }
 
         protected override void OnMouseDown(int x, int y, MouseButton button)
