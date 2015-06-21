@@ -23,8 +23,7 @@ using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima;
 using UltimaXNA.Ultima.Audio;
 using UltimaXNA.Ultima.IO;
-using UltimaXNA.Ultima.IO.FontsNew;
-using UltimaXNA.Ultima.IO.FontsOld;
+using UltimaXNA.Ultima.IO.Fonts;
 using UltimaXNA.Ultima.UI;
 #endregion
 
@@ -156,7 +155,6 @@ namespace UltimaXNA
                 AnimData.Initialize();
                 ArtData.Initialize(GraphicsDevice);
 
-                ASCIIText.Initialize(GraphicsDevice);
                 TextUni.Initialize(GraphicsDevice);
 
                 GumpData.Initialize(GraphicsDevice);

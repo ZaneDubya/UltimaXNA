@@ -7,11 +7,9 @@
  *   the Free Software Foundation; either version 3 of the License, or
  *   (at your option) any later version.
  *
- ***************************************************************************/
-using Microsoft.Xna.Framework;
-using UltimaXNA.Core.UI;
+ ***************************************************************************/ 
 
-namespace UltimaXNA.Ultima.IO.FontsNew
+namespace UltimaXNA.Core.UI.Fonts
 {
     abstract internal class ACharacter : ICharacter
     {
@@ -36,15 +34,15 @@ namespace UltimaXNA.Ultima.IO.FontsNew
         public int YOffset
         {
             get;
-            protected set;
+            set;
         }
+
+        protected bool UsePassedColor = true;
 
         protected uint[] m_PixelData;
 
-        public unsafe void WriteToBuffer(uint* dstPtr, int dx, int dy, int linewidth, int maxHeight, int baseLine,
-            bool isBold, bool isItalic, bool isUnderlined, bool isOutlined, uint color, uint outline)
+        public unsafe void WriteToBuffer(uint* dstPtr, int dx, int dy, int linewidth, int maxHeight, int baseLine, bool isBold, bool isItalic, bool isUnderlined, bool isOutlined, uint color, uint outline)
         {
-
             if (m_PixelData != null)
             {
                 fixed (uint* srcPtr = m_PixelData)
@@ -62,6 +60,9 @@ namespace UltimaXNA.Ultima.IO.FontsNew
                         {
                             if (*src != 0x00000000)
                             {
+                                if (!UsePassedColor)
+                                    color = *src;
+
                                 if (isOutlined)
                                 {
                                     for (int iy = -1; iy <= 1; iy++)

@@ -8,22 +8,22 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+#region usings
 using System;
-using System.Collections.Generic;
 using System.IO;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using UltimaXNA.Core.UI.Fonts;
+#endregion
 
-namespace UltimaXNA.Ultima.IO.FontsNew
+namespace UltimaXNA.Ultima.IO.Fonts
 {
-    internal class CharacterUni : ACharacter
+    internal class CharacterUnicode : ACharacter
     {
-        public CharacterUni()
+        public CharacterUnicode()
         {
 
         }
 
-        public CharacterUni(BinaryReader reader)
+        public CharacterUnicode(BinaryReader reader)
         {
             XOffset = (sbyte)reader.ReadByte();
             YOffset = (sbyte)reader.ReadByte();

@@ -4,8 +4,6 @@ namespace UltimaXNA.Core.UI.HTML.Atoms
 {
     public class ImageAtom : AAtom
     {
-        public int Value = -1, ValueDown = -1, ValueOver = -1;
-
         public Image AssociatedImage
         {
             get;
@@ -22,8 +20,8 @@ namespace UltimaXNA.Core.UI.HTML.Atoms
             get
             {
                 if (m_overrideWidth != -1)
-                    return m_overrideWidth + 1;
-                return AssociatedImage.Texture.Width + 1;
+                    return m_overrideWidth;
+                return AssociatedImage.Texture.Width;
             }
         }
 
@@ -38,18 +36,19 @@ namespace UltimaXNA.Core.UI.HTML.Atoms
             {
                 if (m_overrideHeight != -1)
                     return m_overrideHeight;
-                return AssociatedImage.Texture.Height + 1;
+                return AssociatedImage.Texture.Height;
             }
         }
 
-        public ImageAtom(IUIResourceProvider provider, int value)
+        public ImageAtom(StyleState style)
+            : base(style)
         {
-            Value = value;
+
         }
 
         public override string ToString()
         {
-            return string.Format("<gImg {0}>", Value);
+            return string.Format("<gImg {0}>", Style.GumpImgSrc);
         }
     }
 }
