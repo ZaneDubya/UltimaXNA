@@ -353,6 +353,7 @@ namespace UltimaXNA.Core.UI.HTML
                         }
                         else
                         {
+                            // other possibilities? overline|line-through|initial|inherit;
                             Tracer.Warn("Unknown text-decoration parameter:{0}", param[i]);
                         }
                     }

@@ -143,12 +143,10 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             }
         }
 
-        static int m_kHoverHue = IO.HuesXNA.GetWebSafeHue("609");
-        static int m_kActivateHue = IO.HuesXNA.GetWebSafeHue("F00");
         string formatHTMLCharName(int index, string name, int hue)
         {
-            return string.Format("<center><big><a href=\"CHAR={0}\" style=\"colorhue: #{2}; hoverhue: #{3}; activatehue: #{4}; text-decoration: none\">{1}</a></big></center>", 
-                index, name, hue, m_kHoverHue, m_kActivateHue);
+            return string.Format("<center><big><a href=\"CHAR={0}\" color='#5b4f29' hovercolor='#857951' activecolor='#402708' style=\"text-decoration: none\">{1}</a></big></center>", 
+                index, name);
         }
     }
 }
