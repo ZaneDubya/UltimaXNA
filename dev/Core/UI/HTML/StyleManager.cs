@@ -1,4 +1,14 @@
-﻿using Microsoft.Xna.Framework;
+﻿/***************************************************************************
+ *   StyleManager.cs
+ *   Copyright (c) 2015 UltimaXNA Development Team
+ *   
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+using Microsoft.Xna.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using UltimaXNA.Core.Diagnostics.Tracing;
@@ -326,7 +336,25 @@ namespace UltimaXNA.Core.UI.HTML
                         if (int.TryParse(value.Replace("uni", string.Empty), out index))
                             Style.Font = m_Provider.GetUnicodeFont(index);
                         else
-                            Tracer.Warn("Unknown font-family parameter:{0}", key);
+                            Tracer.Warn("Unknown font-family parameter:{0}", value);
+                    }
+                    break;
+                case "text-decoration":
+                    string[] param = value.Trim().Split(' ');
+                    for (int i = 0; i < param.Length; i++)
+                    {
+                        if (param[i] == "none")
+                        {
+                            Style.IsUnderlined = false;
+                        }
+                        else if (param[i] == "underline")
+                        {
+                            Style.IsUnderlined = true;
+                        }
+                        else
+                        {
+                            Tracer.Warn("Unknown text-decoration parameter:{0}", param[i]);
+                        }
                     }
                     break;
                 default:
