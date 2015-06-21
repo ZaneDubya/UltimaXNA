@@ -146,17 +146,13 @@ namespace UltimaXNA
             UserInterface = ServiceRegistry.Register<UserInterfaceService>(new UserInterfaceService());
             Plugins = new PluginManager(AppDomain.CurrentDomain.BaseDirectory);
 
-            
-
             // Make sure we have a UO installation before loading IO.
             if (FileManager.IsUODataPresent)
             {
                 // Initialize and load data
                 AnimData.Initialize();
                 ArtData.Initialize(GraphicsDevice);
-
                 TextUni.Initialize(GraphicsDevice);
-
                 GumpData.Initialize(GraphicsDevice);
                 HuesXNA.Initialize(GraphicsDevice);
                 TexmapData.Initialize(GraphicsDevice);
