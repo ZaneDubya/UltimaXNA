@@ -25,21 +25,23 @@ namespace UltimaXNA.Core.UI.HTML
         public StyleState Style;
 
         private IUIResourceProvider m_Provider;
-        private List<HTMLchunk> m_OpenTags;
+        private List<OpenTag> m_OpenTags;
 
         public StyleManager(IUIResourceProvider provider)
         {
             m_Provider = provider;
-            m_OpenTags = new List<HTMLchunk>();
+            m_OpenTags = new List<OpenTag>();
             RecalculateStyle();
         }
 
         public void OpenTag(HTMLchunk chunk)
         {
+            OpenTag tag = new OpenTag(chunk);
+
             if (!chunk.bClosure || chunk.bEndClosure)
             {
-                m_OpenTags.Add(chunk);
-                ParseTag(chunk);
+                m_OpenTags.Add(tag);
+                ParseTag(tag);
             }
             else
             {
@@ -98,11 +100,12 @@ namespace UltimaXNA.Core.UI.HTML
             {
                 // hyperlink with attributes
                 Style.HREF = new HREFAttributes();
-                ParseTag(chunk);
+                OpenTag tag = new OpenTag(chunk);
+                ParseTag(tag);
             }
             else
             {
-                // closing a hyperlink. Recalculating the styles will restore the previous link, if any.
+                // closing a hyperlink. NOTE: Recalculating the styles will NOT restore the previous link. Is this worth fixing?
                 RecalculateStyle();
             }
         }
@@ -116,9 +119,9 @@ namespace UltimaXNA.Core.UI.HTML
             }
         }
 
-        private void ParseTag(HTMLchunk chunk)
+        private void ParseTag(OpenTag tag)
         {
-            switch (chunk.sTag)
+            switch (tag.sTag)
             {
                 case "b":
                     Style.IsBold = true;
@@ -153,7 +156,7 @@ namespace UltimaXNA.Core.UI.HTML
                     break;
             }
 
-            foreach (DictionaryEntry param in chunk.oParams)
+            foreach (DictionaryEntry param in tag.oParams)
             {
                 // get key and value for this tag param
                 string key = param.Key.ToString();
@@ -166,7 +169,7 @@ namespace UltimaXNA.Core.UI.HTML
                 {
                     case "href":
                         // href paramater can only be used on 'anchor' tags.
-                        if (chunk.sTag == "a")
+                        if (tag.sTag == "a")
                         {
                             Style.HREF.HREF = value;
                         }
@@ -195,7 +198,7 @@ namespace UltimaXNA.Core.UI.HTML
                         {
                             if (key == "color")
                                 Style.Color = c.Value;
-                            if (chunk.sTag == "a")
+                            if (tag.sTag == "a")
                             {
                                 switch (key)
                                 {
@@ -217,7 +220,7 @@ namespace UltimaXNA.Core.UI.HTML
                     case "src":
                     case "hoversrc":
                     case "activesrc":
-                        switch (chunk.sTag)
+                        switch (tag.sTag)
                         {
                             case "gumpimg":
                                 if (key == "src")
@@ -228,31 +231,31 @@ namespace UltimaXNA.Core.UI.HTML
                                     Style.GumpImgSrcDown = int.Parse(value);
                                 break;
                             default:
-                                Tracer.Warn("src param encountered within " + chunk.sTag + " which does not use this param.");
+                                Tracer.Warn("src param encountered within " + tag.sTag + " which does not use this param.");
                                 break;
                         }
                         break;
                     case "width":
-                        switch (chunk.sTag)
+                        switch (tag.sTag)
                         {
                             case "gumpimg":
                             case "span":
                                 Style.ElementWidth = int.Parse(value);
                                 break;
                             default:
-                                Tracer.Warn("width param encountered within " + chunk.sTag + " which does not use this param.");
+                                Tracer.Warn("width param encountered within " + tag.sTag + " which does not use this param.");
                                 break;
                         }
                         break;
                     case "height":
-                        switch (chunk.sTag)
+                        switch (tag.sTag)
                         {
                             case "gumpimg":
                             case "span":
                                 Style.ElementHeight = int.Parse(value);
                                 break;
                             default:
-                                Tracer.Warn("height param encountered within " + chunk.sTag + " which does not use this param.");
+                                Tracer.Warn("height param encountered within " + tag.sTag + " which does not use this param.");
                                 break;
                         }
                         break;

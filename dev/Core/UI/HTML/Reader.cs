@@ -133,7 +133,6 @@ namespace UltimaXNA.Core.UI.HTML
                                 break;
                             // ======================================================================
                             // Span elements are added as atoms (for layout) and tags (for styles!)
-                            // But are ignored if they are solo elements.
                             // ======================================================================
                             case "span":
                                 tags.OpenTag(chunk);
