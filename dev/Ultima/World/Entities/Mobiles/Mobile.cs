@@ -42,6 +42,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             Mana = new CurrentMaxValue();
             Followers = new CurrentMaxValue();
             Weight = new CurrentMaxValue();
+            Flags = new MobileFlags();
         }
 
         public override void Dispose()
