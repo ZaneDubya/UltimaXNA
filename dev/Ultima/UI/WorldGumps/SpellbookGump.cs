@@ -104,18 +104,27 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 AddControl(new GumpPic(this, 60 + i * 35, 174, 0x08B1 + i, 0));
                 LastControl.GumpLocalID = i + 1;
                 LastControl.MouseClickEvent += SpellCircle_MouseClickEvent;
+                LastControl.MouseDoubleClickEvent += SpellCircle_MouseDoubleClickEvent;
             }
             for (int i = 0; i < 4; i++) // spell circles 5 - 8
             {
                 AddControl(new GumpPic(this, 226 + i * 34, 174, 0x08B5 + i, 0));
                 LastControl.GumpLocalID = i + 5;
                 LastControl.MouseClickEvent += SpellCircle_MouseClickEvent;
+                LastControl.MouseDoubleClickEvent += SpellCircle_MouseDoubleClickEvent;
             }
         }
 
-        void SpellCircle_MouseClickEvent(AControl sender, int x, int y, MouseButton button)
+        private void SpellCircle_MouseClickEvent(AControl sender, int x, int y, MouseButton button)
         {
+            if (button != MouseButton.Left)
+                return;
+        }
 
+        private void SpellCircle_MouseDoubleClickEvent(AControl sender, int x, int y, MouseButton button)
+        {
+            if (button != MouseButton.Left)
+                return;
         }
     }
 }
