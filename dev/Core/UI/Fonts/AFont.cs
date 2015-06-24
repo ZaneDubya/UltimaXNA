@@ -31,14 +31,6 @@ namespace UltimaXNA.Core.UI.Fonts
             }
         }
 
-        public int Lineheight
-        {
-            get
-            {
-                return Baseline + 4;
-            }
-        }
-
         public abstract ICharacter GetCharacter(char character);
 
         public abstract void Initialize(BinaryReader reader);
