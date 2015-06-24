@@ -122,7 +122,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             for (int i = 0; i < 8; i++)
             {
                 m_Indexes[i] = (HtmlGumpling)AddControl(
-                    new HtmlGumpling(this, 68 + (i % 2) * 148, 8, 140, 200, 0, 0,
+                    new HtmlGumpling(this, 68 + (i % 2) * 154, 8, 120, 200, 0, 0,
                         string.Format("<span style='font-family=ascii6;'><span color='#008'><center>{0}</center></span><br/>",
                         Magery.CircleNames[i])), 
                     1 + (i / 2));
@@ -137,7 +137,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     int spellIndexAll = spellCircle * 8 + spellIndex;
                     if (m_Spellbook.HasSpell(spellIndexAll))
                     {
-                        m_Indexes[spellCircle].Text += string.Format("{0}<br/>", Magery.Spells[0].Name);
+                        m_Indexes[spellCircle].Text += string.Format("<a href='spell={1}' color='#654' hovercolor='#973' activecolor='#611' style='font-family=ascii9; text-decoration=none;'>{0}</a><br/>", Magery.Spells[0].Name, spellIndexAll);
                     }
                 }
             }
