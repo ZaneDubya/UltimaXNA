@@ -5,6 +5,7 @@ namespace UltimaXNA.Core.UI
     {
         int Height { get; set; }
         int Width { get; set; }
+        int ExtraWidth { get; set; }
 
         int YOffset { get; }
         int XOffset { get; }

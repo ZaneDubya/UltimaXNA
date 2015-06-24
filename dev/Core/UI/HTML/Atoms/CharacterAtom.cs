@@ -11,7 +11,10 @@ namespace UltimaXNA.Core.UI.HTML.Atoms
                 if (Character < 32)
                     return 0;
                 else
-                    return Style.Font.GetCharacter(Character).Width + (Style.IsBold ? 1 : 0) + 1;
+                {
+                    ICharacter ch = Style.Font.GetCharacter(Character);
+                    return ch.Width + ch.ExtraWidth + (Style.IsBold ? 1 : 0);
+                }
             }
         }
 
