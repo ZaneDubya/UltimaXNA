@@ -73,7 +73,7 @@ namespace UltimaXNA.Ultima.World.Entities.Items.Containers
 
             for (int i = 0; i < 64; i++)
             {
-                if ((sbBitfield[i / 8] & ((i % 8) << 8)) != 0)
+                if ((sbBitfield[i / 8] & (int)System.Math.Pow(2, i % 8)) != 0)
                 {
                     if (m_SpellData[i] == false)
                     {

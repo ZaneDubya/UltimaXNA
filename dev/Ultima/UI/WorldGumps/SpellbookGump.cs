@@ -20,6 +20,7 @@ using UltimaXNA.Core.Input;
 using UltimaXNA.Ultima.World.Entities.Items.Containers;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.Data;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
@@ -121,7 +122,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             for (int i = 0; i < 8; i++)
             {
                 m_Indexes[i] = (HtmlGumpling)AddControl(new HtmlGumpling(this,
-                    8 + (i % 2) * 200, 16, 200, 200, 0, 0, "<font family='ascii0'><center>INDEX</center></font><font family='ascii1'><br/>"), 1 + (i / 2));
+                    68 + (i % 2) * 148, 16, 140, 200, 0, 0, "<font family='ascii0'><center>INDEX</center></font><font family='ascii1'><br/>"), 1 + (i / 2));
             }
 
 
@@ -130,12 +131,15 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             {
                 for (int spellIndex = 0; spellIndex < 8; spellIndex++)
                 {
-                    if (m_Spellbook.HasSpell(spellCircle * 8 + spellIndex))
+                    int spellIndexAll = spellCircle * 8 + spellIndex;
+                    if (m_Spellbook.HasSpell(spellIndexAll))
                     {
-
+                        m_Indexes[spellCircle].Text += string.Format("{0}<br/>", Magery.Spells[0].Name);
                     }
                 }
             }
+
+            ActivePage = 1;
         }
 
         private void SpellCircle_MouseClickEvent(AControl sender, int x, int y, MouseButton button)
