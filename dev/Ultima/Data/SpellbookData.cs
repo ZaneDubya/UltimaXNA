@@ -66,6 +66,5 @@ namespace UltimaXNA.Ultima.Data
             int bitIndex = (index % 8);
             return (SpellBitfields[byteIndex] & (1 << bitIndex)) != 0;
         }
-
     }
 }

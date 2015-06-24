@@ -121,8 +121,11 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_Indexes = new HtmlGumpling[8];
             for (int i = 0; i < 8; i++)
             {
-                m_Indexes[i] = (HtmlGumpling)AddControl(new HtmlGumpling(this,
-                    68 + (i % 2) * 148, 16, 140, 200, 0, 0, "<font family='ascii0'><center>INDEX</center></font><font family='ascii1'><br/>"), 1 + (i / 2));
+                m_Indexes[i] = (HtmlGumpling)AddControl(
+                    new HtmlGumpling(this, 68 + (i % 2) * 148, 16, 140, 200, 0, 0,
+                        string.Format("<span color=#008 style='font-family=ascii6;'><center>{0}</center></span><br/><span style='font-family=ascii7;'>",
+                        Magery.CircleNames[i])), 
+                    1 + (i / 2));
             }
 
 

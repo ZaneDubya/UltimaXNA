@@ -15,5 +15,9 @@ namespace UltimaXNA.Ultima.Data
                 new SpellInfo("Clumsy", "Uus Jux", Reagents.Bloodmoss, Reagents.Nightshade),
             };
         }
+
+        public static string[] CircleNames = new string[] {
+            "First Circle", "Second Circle", "Third Circle", "Fourth Circle",
+            "Fifth Circle", "Sixth Circle", "Seventh Circle", "Eighth Circle" };
     }
 }
