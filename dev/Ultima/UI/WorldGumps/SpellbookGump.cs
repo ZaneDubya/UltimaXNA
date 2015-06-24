@@ -30,6 +30,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         // Private variables
         // ================================================================================
         SpellBook m_Spellbook;
+        HtmlGumpling[] m_Indexes;
 
         // ================================================================================
         // Private services 
@@ -49,7 +50,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
             if (m_Spellbook.BookType != Data.SpellBookTypes.Unknown)
             {
-                CreateSpellbookGumplings();
+                CreateMageryGumplings();
             }
             else
             {
@@ -77,8 +78,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         // ================================================================================
         private void OnEntityUpdate()
         {
-            if (m_Spellbook.BookType != Data.SpellBookTypes.Unknown)
-                CreateSpellbookGumplings();
+            if (m_Spellbook.BookType == Data.SpellBookTypes.Magic)
+                CreateMageryGumplings();
         }
 
         // ================================================================================
@@ -92,9 +93,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         private GumpPic m_PageCornerLeft;
         private GumpPic m_PageCornerRight;
 
-        private void CreateSpellbookGumplings()
+        private void CreateMageryGumplings()
         {
             ClearControls();
+
             AddControl(new GumpPic(this, 0, 0, 0x08AC, 0)); // spellbook background
             m_PageCornerLeft = (GumpPic)AddControl(new GumpPic(this, 50, 8, 0x08BB, 0)); // page turn left
             m_PageCornerRight = (GumpPic)AddControl(new GumpPic(this, 321, 8, 0x08BC, 0)); // page turn right
@@ -114,14 +116,24 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 LastControl.MouseDoubleClickEvent += SpellCircle_MouseDoubleClickEvent;
             }
 
-            // add indexes
-
-            // add spell pages
-            for (int i = 0; i < 64; i++)
+            // indexes are on pages 1 - 4. Spells are on pages 5+.
+            m_Indexes = new HtmlGumpling[8];
+            for (int i = 0; i < 8; i++)
             {
-                if (m_Spellbook.HasSpell(i))
+                m_Indexes[i] = (HtmlGumpling)AddControl(new HtmlGumpling(this,
+                    8 + (i % 2) * 200, 16, 200, 200, 0, 0, "<font family='ascii0'><center>INDEX</center></font><font family='ascii1'><br/>"), 1 + (i / 2));
+            }
+
+
+            // add indexes and spell pages.
+            for (int spellCircle = 0; spellCircle < 8; spellCircle++)
+            {
+                for (int spellIndex = 0; spellIndex < 8; spellIndex++)
                 {
-                    // add a page for this spell.
+                    if (m_Spellbook.HasSpell(spellCircle * 8 + spellIndex))
+                    {
+
+                    }
                 }
             }
         }
