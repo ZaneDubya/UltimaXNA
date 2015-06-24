@@ -393,6 +393,13 @@ namespace UltimaXNA
                 int b = (hexDigitToByte(hex[4]) << 4) + hexDigitToByte(hex[5]);
                 return new Color((byte)r, (byte)g, (byte)b);
             }
+            else if (hex.Length == 3)
+            {
+                int r = (hexDigitToByte(hex[0]) << 4) + hexDigitToByte(hex[0]);
+                int g = (hexDigitToByte(hex[1]) << 4) + hexDigitToByte(hex[1]);
+                int b = (hexDigitToByte(hex[2]) << 4) + hexDigitToByte(hex[2]);
+                return new Color((byte)r, (byte)g, (byte)b);
+            }
             else
                 return Color.Black;
         }
