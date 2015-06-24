@@ -8,11 +8,13 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+#region usings
 using Microsoft.Xna.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.UI.HTML.Parsing;
+#endregion
 
 namespace UltimaXNA.Core.UI.HTML
 {
