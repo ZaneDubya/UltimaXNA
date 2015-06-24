@@ -113,6 +113,17 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 LastControl.MouseClickEvent += SpellCircle_MouseClickEvent;
                 LastControl.MouseDoubleClickEvent += SpellCircle_MouseDoubleClickEvent;
             }
+
+            // add indexes
+
+            // add spell pages
+            for (int i = 0; i < 64; i++)
+            {
+                if (m_Spellbook.HasSpell(i))
+                {
+                    // add a page for this spell.
+                }
+            }
         }
 
         private void SpellCircle_MouseClickEvent(AControl sender, int x, int y, MouseButton button)

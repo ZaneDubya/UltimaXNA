@@ -33,6 +33,16 @@ namespace UltimaXNA.Ultima.World.Entities.Items.Containers
         }
 
         private bool[] m_SpellData;
+        public bool HasSpell(int index)
+        {
+            if (m_SpellData == null)
+                return false;
+            if (index < 0)
+                return false;
+            if (index >= m_SpellData.Length)
+                return false;
+            return m_SpellData[index];
+        }
 
         public SpellBook(Serial serial, Map map)
             : base(serial, map)
