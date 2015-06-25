@@ -50,7 +50,7 @@ namespace UltimaXNA.Ultima.IO.Fonts
             }
 
             // ascii fonts are so tall! why?
-            Height -= 1;
+            Height -= 2;
 
             // Determine the width of the space character - arbitrarily .333 the width of capital M (.333 em?).
             GetCharacter(' ').Width = GetCharacter('M').Width / 3;
