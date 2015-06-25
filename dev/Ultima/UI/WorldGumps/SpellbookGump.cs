@@ -144,7 +144,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     int spellIndexAll = spellCircle * 8 + spellIndex;
                     if (m_Spellbook.HasSpell(spellIndexAll))
                     {
-                        m_Indexes[spellCircle].Text += string.Format("<a href='page={1}' color='#654' hovercolor='#973' activecolor='#611' style='font-family=ascii9; text-decoration=none;'>{0}</a><br/>", Magery.Spells[0].Name, currentSpellPage);
+                        m_Indexes[spellCircle].Text += string.Format("<a href='page={1}' color='#654' hovercolor='#973' activecolor='#611' style='font-family=ascii9; text-decoration=none;'>{0}</a><br/>", Magery.Spells[spellIndexAll % 8].Name, currentSpellPage);
                         if (isRightPage)
                         {
                             currentSpellPage++;

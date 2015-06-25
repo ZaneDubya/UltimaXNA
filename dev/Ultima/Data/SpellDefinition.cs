@@ -5,16 +5,16 @@ using System.Text;
 
 namespace UltimaXNA.Ultima.Data
 {
-    struct SpellInfo
+    struct SpellDefinition
     {
         public readonly string Name;
-        public readonly string Mantra;
+        public readonly int GumpIconID;
         public readonly Reagents[] Regs;
 
-        public SpellInfo(string name, string mantra, params Reagents[] regs)
+        public SpellDefinition(string name, int gumpIconID, params Reagents[] regs)
         {
             Name = name;
-            Mantra = mantra;
+            GumpIconID = gumpIconID;
             Regs = regs;
         }
     }
