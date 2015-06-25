@@ -109,7 +109,7 @@ namespace UltimaXNA.Ultima.Network.Server
             Serial serial = (Serial)reader.ReadInt32();
             ushort itemID = reader.ReadUInt16();
             ushort spellbookType = reader.ReadUInt16(); // 1==regular, 101=necro, 201=paladin, 401=bushido, 501=ninjitsu, 601=spellweaving
-            byte[] spellBitfields = reader.ReadBytes(8); // first bit of first byte = spell #1, second bit of first byte = spell #2, first bit of second byte = spell #8, etc 
+            ulong spellBitfields = reader.ReadUInt64(); // first bit of first byte = spell #1, second bit of first byte = spell #2, first bit of second byte = spell #8, etc 
 
             Spellbook = new SpellbookData(serial, itemID, spellbookType, spellBitfields);
         }

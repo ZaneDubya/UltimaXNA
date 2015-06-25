@@ -32,26 +32,21 @@ namespace UltimaXNA.Ultima.World.Entities.Items.Containers
             private set;
         }
 
-        private bool[] m_SpellData;
+        private ulong m_SpellsBitfield;
         public bool HasSpell(int index)
         {
-            if (m_SpellData == null)
-                return false;
-            if (index < 0)
-                return false;
-            if (index >= m_SpellData.Length)
-                return false;
-            return m_SpellData[index];
+            ulong flag = 1U << index;
+            return (m_SpellsBitfield & flag) == flag;
         }
 
         public SpellBook(Serial serial, Map map)
             : base(serial, map)
         {
             BookType = SpellBookTypes.Unknown;
-            m_SpellData = null;
+            m_SpellsBitfield = 0;
         }
 
-        public void ReceiveSpellData(SpellBookTypes sbType, byte[] sbBitfield)
+        public void ReceiveSpellData(SpellBookTypes sbType, ulong sbBitfield)
         {
             bool entityUpdated = false;
 
@@ -61,35 +56,7 @@ namespace UltimaXNA.Ultima.World.Entities.Items.Containers
                 entityUpdated = true;
             }
 
-            if (m_SpellData == null)
-            {
-                m_SpellData = new bool[64];
-                entityUpdated = true;
-            }
-
-            
-
-
-
-            for (int i = 0; i < 64; i++)
-            {
-                if ((sbBitfield[i / 8] & (int)System.Math.Pow(2, i % 8)) != 0)
-                {
-                    if (m_SpellData[i] == false)
-                    {
-                        entityUpdated = true;
-                        m_SpellData[i] = true;
-                    }
-                }
-                else
-                {
-                    if (m_SpellData[i] == true)
-                    {
-                        entityUpdated = true;
-                        m_SpellData[i] = false;
-                    }
-                }
-            }
+            m_SpellsBitfield = sbBitfield;
 
             if (entityUpdated && OnEntityUpdated != null)
                 OnEntityUpdated();
