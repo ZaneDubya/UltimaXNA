@@ -79,11 +79,11 @@ namespace UltimaXNA.Ultima.Data
                 new SpellDefinition("Earthquake", 0x1B90, Reagents.Bloodmoss, Reagents.Ginseng, Reagents.MandrakeRoot, Reagents.SulfurousAsh),
                 new SpellDefinition("Energy Vortex", 0x1B91, Reagents.BlackPearl, Reagents.Bloodmoss, Reagents.MandrakeRoot, Reagents.Nightshade),
                 new SpellDefinition("Resurrection", 0x1B92, Reagents.Bloodmoss, Reagents.Ginseng, Reagents.Garlic),
-                new SpellDefinition("Summon Air Elemental", 0x1B93, Reagents.Bloodmoss, Reagents.MandrakeRoot, Reagents.SpidersSilk),
+                new SpellDefinition("Air Elemental", 0x1B93, Reagents.Bloodmoss, Reagents.MandrakeRoot, Reagents.SpidersSilk),
                 new SpellDefinition("Summon Daemon", 0x1B94, Reagents.Bloodmoss, Reagents.MandrakeRoot, Reagents.SpidersSilk, Reagents.SulfurousAsh),
-                new SpellDefinition("Summon Earth Elemental", 0x1B95, Reagents.Bloodmoss, Reagents.MandrakeRoot, Reagents.SpidersSilk),
-                new SpellDefinition("Summon Fire Elemental", 0x1B96, Reagents.Bloodmoss, Reagents.MandrakeRoot, Reagents.SpidersSilk, Reagents.SulfurousAsh),
-                new SpellDefinition("Summon Water Elemental", 0x1B97, Reagents.Bloodmoss, Reagents.MandrakeRoot, Reagents.SpidersSilk),
+                new SpellDefinition("Earth Elemental", 0x1B95, Reagents.Bloodmoss, Reagents.MandrakeRoot, Reagents.SpidersSilk),
+                new SpellDefinition("Fire Elemental", 0x1B96, Reagents.Bloodmoss, Reagents.MandrakeRoot, Reagents.SpidersSilk, Reagents.SulfurousAsh),
+                new SpellDefinition("Water Elemental", 0x1B97, Reagents.Bloodmoss, Reagents.MandrakeRoot, Reagents.SpidersSilk),
             };
         }
 

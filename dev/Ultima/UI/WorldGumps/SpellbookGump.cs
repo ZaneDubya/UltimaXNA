@@ -127,7 +127,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             for (int i = 0; i < 8; i++)
             {
                 m_Indexes[i] = (HtmlGumpling)AddControl(
-                    new HtmlGumpling(this, 68 + (i % 2) * 154, 8, 120, 200, 0, 0,
+                    new HtmlGumpling(this, 64 + (i % 2) * 156, 8, 130, 200, 0, 0,
                         string.Format("<span style='font-family=ascii6;'><span color='#008'><center>{0}</center></span><br/>",
                         Magery.CircleNames[i])), 
                     1 + (i / 2));
@@ -144,7 +144,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     int spellIndexAll = spellCircle * 8 + spellIndex;
                     if (m_Spellbook.HasSpell(spellIndexAll))
                     {
-                        m_Indexes[spellCircle].Text += string.Format("<a href='page={1}' color='#654' hovercolor='#973' activecolor='#611' style='font-family=ascii9; text-decoration=none;'>{0}</a><br/>", Magery.Spells[spellIndexAll % 8].Name, currentSpellPage);
+                        m_Indexes[spellCircle].Text += string.Format("<a href='page={1}' color='#654' hovercolor='#973' activecolor='#611' style='font-family=ascii9; text-decoration=none;'>{0}</a><br/>", Magery.Spells[spellIndexAll].Name, currentSpellPage);
                         if (isRightPage)
                         {
                             currentSpellPage++;
@@ -160,6 +160,16 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             }
 
             ActivePage = 1;
+        }
+
+        public override void ActivateByHREF(string href)
+        {
+            if (href.Length > 5 && href.Substring(0, 5) == "page=")
+            {
+                int value;
+                if (int.TryParse(href.Substring(6), out value))
+                    ActivePage = value;
+            }
         }
 
         private void SpellCircle_MouseClickEvent(AControl sender, int x, int y, MouseButton button)
