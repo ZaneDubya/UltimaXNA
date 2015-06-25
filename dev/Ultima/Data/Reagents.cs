@@ -20,7 +20,7 @@ namespace UltimaXNA.Ultima.Data
         MandrakeRoot,
         Nightshade,
         SulfurousAsh,
-        SpriderSilk,
+        SpidersSilk,
         // pagan reagents
         BatWing,
         GraveDust,
