@@ -89,32 +89,37 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         // 1. A list of all spells in the book. Clicking on a spell will turn to that spell's page.
         // 2. One page per spell in the book. Icon, runes, reagents, etc.
         // ================================================================================
-        private int[] m_PageNumbersForCircles, m_PageNumbersForSpells;
-        
         private GumpPic m_PageCornerLeft;
         private GumpPic m_PageCornerRight;
+        private int m_MaxPage = 0;
 
         private void CreateMageryGumplings()
         {
             ClearControls();
 
             AddControl(new GumpPic(this, 0, 0, 0x08AC, 0)); // spellbook background
+
             m_PageCornerLeft = (GumpPic)AddControl(new GumpPic(this, 50, 8, 0x08BB, 0)); // page turn left
+            LastControl.GumpLocalID = 0;
+            LastControl.MouseClickEvent += PageCorner_MouseClickEvent;
+            LastControl.MouseDoubleClickEvent += PageCorner_MouseDoubleClickEvent;
+
             m_PageCornerRight = (GumpPic)AddControl(new GumpPic(this, 321, 8, 0x08BC, 0)); // page turn right
+            LastControl.GumpLocalID = 1;
+            LastControl.MouseClickEvent += PageCorner_MouseClickEvent;
+            LastControl.MouseDoubleClickEvent += PageCorner_MouseDoubleClickEvent;
 
             for (int i = 0; i < 4; i++) // spell circles 1 - 4
             {
                 AddControl(new GumpPic(this, 60 + i * 35, 174, 0x08B1 + i, 0));
-                LastControl.GumpLocalID = i + 1;
+                LastControl.GumpLocalID = i;
                 LastControl.MouseClickEvent += SpellCircle_MouseClickEvent;
-                LastControl.MouseDoubleClickEvent += SpellCircle_MouseDoubleClickEvent;
             }
             for (int i = 0; i < 4; i++) // spell circles 5 - 8
             {
                 AddControl(new GumpPic(this, 226 + i * 34, 174, 0x08B5 + i, 0));
-                LastControl.GumpLocalID = i + 5;
+                LastControl.GumpLocalID = i + 4;
                 LastControl.MouseClickEvent += SpellCircle_MouseClickEvent;
-                LastControl.MouseDoubleClickEvent += SpellCircle_MouseDoubleClickEvent;
             }
 
             // indexes are on pages 1 - 4. Spells are on pages 5+.
@@ -128,8 +133,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     1 + (i / 2));
             }
 
-
             // add indexes and spell pages.
+            m_MaxPage = 5;
+            int currentSpellPage = 6;
+            bool isRightPage = false;
             for (int spellCircle = 0; spellCircle < 8; spellCircle++)
             {
                 for (int spellIndex = 0; spellIndex < 8; spellIndex++)
@@ -137,7 +144,17 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     int spellIndexAll = spellCircle * 8 + spellIndex;
                     if (m_Spellbook.HasSpell(spellIndexAll))
                     {
-                        m_Indexes[spellCircle].Text += string.Format("<a href='spell={1}' color='#654' hovercolor='#973' activecolor='#611' style='font-family=ascii9; text-decoration=none;'>{0}</a><br/>", Magery.Spells[0].Name, spellIndexAll);
+                        m_Indexes[spellCircle].Text += string.Format("<a href='page={1}' color='#654' hovercolor='#973' activecolor='#611' style='font-family=ascii9; text-decoration=none;'>{0}</a><br/>", Magery.Spells[0].Name, currentSpellPage);
+                        if (isRightPage)
+                        {
+                            currentSpellPage++;
+                            isRightPage = false;
+                        }
+                        else
+                        {
+                            m_MaxPage += 1;
+                            isRightPage = true;
+                        }
                     }
                 }
             }
@@ -149,12 +166,41 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
             if (button != MouseButton.Left)
                 return;
+            ActivePage = (sender.GumpLocalID / 2) + 1;
         }
 
-        private void SpellCircle_MouseDoubleClickEvent(AControl sender, int x, int y, MouseButton button)
+        private void PageCorner_MouseClickEvent(AControl sender, int x, int y, MouseButton button)
         {
             if (button != MouseButton.Left)
                 return;
+
+            if (sender.GumpLocalID == 0)
+            {
+                ActivePage -= 1;
+                if (ActivePage < 1)
+                    ActivePage = 1;
+            }
+            else
+            {
+                ActivePage += 1;
+                if (ActivePage > m_MaxPage)
+                    ActivePage = m_MaxPage;
+            }
+        }
+
+        private void PageCorner_MouseDoubleClickEvent(AControl sender, int x, int y, MouseButton button)
+        {
+            if (button != MouseButton.Left)
+                return;
+
+            if (sender.GumpLocalID == 0)
+            {
+                ActivePage = 1;
+            }
+            else
+            {
+                ActivePage = m_MaxPage;
+            }
         }
     }
 }
