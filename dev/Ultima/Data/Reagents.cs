@@ -24,7 +24,7 @@ namespace UltimaXNA.Ultima.Data
         // pagan reagents
         BatWing,
         GraveDust,
-        BaemonBlood,
+        DaemonBlood,
         NoxCrystal,
         PigIron
     }

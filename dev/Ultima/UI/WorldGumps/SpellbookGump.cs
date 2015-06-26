@@ -31,6 +31,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         // Private variables
         // ================================================================================
         SpellBook m_Spellbook;
+        HtmlGumpling[] m_CircleHeaders;
         HtmlGumpling[] m_Indexes;
 
         // ================================================================================
@@ -123,19 +124,25 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             }
 
             // indexes are on pages 1 - 4. Spells are on pages 5+.
+            m_CircleHeaders = new HtmlGumpling[8];
+            for (int i = 0; i < 8; i++)
+            {
+                m_CircleHeaders[i] = (HtmlGumpling)AddControl(
+                    new HtmlGumpling(this, 64 + (i % 2) * 148, 10, 130, 200, 0, 0,
+                        string.Format("<span color='#004' style='font-family=uni0;'><center>{0}</center></span>", Magery.CircleNames[i])),
+                        1 + (i / 2));
+            }
             m_Indexes = new HtmlGumpling[8];
             for (int i = 0; i < 8; i++)
             {
                 m_Indexes[i] = (HtmlGumpling)AddControl(
-                    new HtmlGumpling(this, 64 + (i % 2) * 156, 8, 130, 200, 0, 0,
-                        string.Format("<span style='font-family=ascii6;'><span color='#008'><center>{0}</center></span><br/>",
-                        Magery.CircleNames[i])), 
+                    new HtmlGumpling(this, 64 + (i % 2) * 156, 28, 130, 200, 0, 0, string.Empty),
                     1 + (i / 2));
             }
 
             // add indexes and spell pages.
-            m_MaxPage = 5;
-            int currentSpellPage = 6;
+            m_MaxPage = 4;
+            int currentSpellPage = 5;
             bool isRightPage = false;
             for (int spellCircle = 0; spellCircle < 8; spellCircle++)
             {
@@ -144,7 +151,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     int spellIndexAll = spellCircle * 8 + spellIndex;
                     if (m_Spellbook.HasSpell(spellIndexAll))
                     {
-                        m_Indexes[spellCircle].Text += string.Format("<a href='page={1}' color='#654' hovercolor='#973' activecolor='#611' style='font-family=ascii9; text-decoration=none;'>{0}</a><br/>", Magery.Spells[spellIndexAll].Name, currentSpellPage);
+                        m_Indexes[spellCircle].Text += string.Format("<a href='page={1}' color='#532' hovercolor='#f00' activecolor='#611' style='font-family=uni0; text-decoration=none;'>{0}</a><br/>",
+                            Magery.Spells[spellIndexAll].Name, 
+                            currentSpellPage);
+                        CreateSpellPage(currentSpellPage, isRightPage, spellCircle, Magery.Spells[spellIndexAll]);
                         if (isRightPage)
                         {
                             currentSpellPage++;
@@ -159,16 +169,31 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 }
             }
 
-            ActivePage = 1;
+            SetActivePage(1);
+        }
+
+        private void CreateSpellPage(int page, bool rightPage, int circle, SpellDefinition spell)
+        {
+            // header: "NTH CIRCLE"
+            AddControl(new HtmlGumpling(this, 64 + (rightPage ? 148 : 0), 10, 130, 200, 0, 0,
+                string.Format("<span color='#004' style='font-family=uni0;'><center>{0}</center></span>", Magery.CircleNames[circle])),
+                page);
+            // icon
+            AddControl(new GumpPic(this, 56 + (rightPage ? 156 : 0), 40, spell.GumpIconID - 0x1298, 0), page);
+            AddControl(new HtmlGumpling(this, 104 + (rightPage ? 156 : 0), 34, 88, 40, 0, 0, string.Format("<span color='#008' style='font-family=ascii6;'>{0}</span>", spell.Name)),
+                page);
+            // reagents string.
+            AddControl(new HtmlGumpling(this, 56 + (rightPage ? 156 : 0), 84, 132, 80, 0, 0, string.Format("<span color='#fff' style='font-family=ascii6;'>{0}</span>", spell.ReagentListString)),
+                page);
         }
 
         public override void ActivateByHREF(string href)
         {
             if (href.Length > 5 && href.Substring(0, 5) == "page=")
             {
-                int value;
-                if (int.TryParse(href.Substring(6), out value))
-                    ActivePage = value;
+                int page;
+                if (int.TryParse(href.Substring(5), out page))
+                    SetActivePage(page);
             }
         }
 
@@ -176,7 +201,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
             if (button != MouseButton.Left)
                 return;
-            ActivePage = (sender.GumpLocalID / 2) + 1;
+            SetActivePage(sender.GumpLocalID / 2 + 1);
         }
 
         private void PageCorner_MouseClickEvent(AControl sender, int x, int y, MouseButton button)
@@ -186,15 +211,11 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
             if (sender.GumpLocalID == 0)
             {
-                ActivePage -= 1;
-                if (ActivePage < 1)
-                    ActivePage = 1;
+                SetActivePage(ActivePage - 1);
             }
             else
             {
-                ActivePage += 1;
-                if (ActivePage > m_MaxPage)
-                    ActivePage = m_MaxPage;
+                SetActivePage(ActivePage + 1);
             }
         }
 
@@ -205,12 +226,24 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
             if (sender.GumpLocalID == 0)
             {
-                ActivePage = 1;
+                SetActivePage(1);
             }
             else
             {
-                ActivePage = m_MaxPage;
+                SetActivePage(m_MaxPage);
             }
+        }
+
+        private void SetActivePage(int page)
+        {
+            if (page < 1)
+                page = 1;
+            if (page > m_MaxPage)
+                page = m_MaxPage;
+            ActivePage = page;
+            // hide the page corners if we're at the first or final page.
+            m_PageCornerLeft.Page = (ActivePage != 1) ? 0 : int.MaxValue;
+            m_PageCornerRight.Page = (ActivePage != m_MaxPage) ? 0 : int.MaxValue;
         }
     }
 }

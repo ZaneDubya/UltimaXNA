@@ -23,13 +23,6 @@ namespace UltimaXNA.Ultima.Data
             Serial = serial;
             ItemID = itemID;
 
-            if (spellBitFields == null)
-            {
-                BookType = SpellBookTypes.Unknown;
-                SpellsBitfield = 0;
-                return;
-            }
-
             SpellsBitfield = spellBitFields;
 
             switch (bookTypePacketID)
