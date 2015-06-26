@@ -17,9 +17,9 @@ using UltimaXNA.Core.Diagnostics;
 
 namespace UltimaXNA.Ultima.IO
 {
-    public class HuesXNA
+    public class HueData
     {
-        public const int HueCount = 3000;
+        public const int HueCount = 4096;
 
         private static GraphicsDevice graphicsDevice;
         private static Texture2D m_HueTexture0, m_HueTexture1;
@@ -29,7 +29,7 @@ namespace UltimaXNA.Ultima.IO
 
         public static void Initialize(GraphicsDevice graphicsDevice)
         {
-            HuesXNA.graphicsDevice = graphicsDevice;
+            HueData.graphicsDevice = graphicsDevice;
             graphicsDevice.DeviceReset += graphicsDevice_DeviceReset;
             CreateTexture();
         }
@@ -81,6 +81,22 @@ namespace UltimaXNA.Ultima.IO
                 }
             }
             reader.Close();
+
+            int webSafeHuesBegin = m_HueTextureHeight * 2 - 216;
+            for (int b = 0; b < 6; b++)
+            {
+                for (int g = 0; g < 6; g++)
+                {
+                    for (int r = 0; r < 6; r++)
+                    {
+                        data[(webSafeHuesBegin + r + g * 6 + b * 36) * 32 + 31] = (uint)(
+                            0xff000000 +
+                            b * 0x00330000 +
+                            g * 0x00003300 +
+                            r * 0x00000033);
+                    }
+                }
+            }
             return data;
         }
 
