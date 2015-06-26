@@ -12,7 +12,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.IO;
-using System.Text;
 using UltimaXNA.Core.Diagnostics;
 #endregion
 
@@ -20,6 +19,8 @@ namespace UltimaXNA.Ultima.IO
 {
     public class HuesXNA
     {
+        public const int HueCount = 3000;
+
         private static GraphicsDevice graphicsDevice;
         private static Texture2D m_HueTexture0, m_HueTexture1;
         private const int m_HueTextureWidth = 32; // Each hue is 32 pixels wide
@@ -31,7 +32,6 @@ namespace UltimaXNA.Ultima.IO
             HuesXNA.graphicsDevice = graphicsDevice;
             graphicsDevice.DeviceReset += graphicsDevice_DeviceReset;
             CreateTexture();
-            // Hues.GetWebSafeColors();
         }
 
         static void graphicsDevice_DeviceReset(object sender, System.EventArgs e)
@@ -84,17 +84,33 @@ namespace UltimaXNA.Ultima.IO
             return data;
         }
 
-        public static Texture2D HueSwatch(int width, int height, int[] hues)
+        public static Texture2D CreateHueSwatch(int width, int height, int[] hues)
         {
-            Color[] pixels = new Color[width * height];
+            uint[] pixels = new uint[width * height];
             for (int i = 0; i < pixels.Length; i++)
             {
-                System.Drawing.Color c = HueData.GetHue(hues[i] - 1).GetColor(31);
-                pixels[i] = new Color(c.R, c.G, c.B, c.A);
+                int hue = hues[i] - 1;
+                uint[] pixel = new uint[1];
+                if (hue < m_HueTextureHeight)
+                    HueTexture0.GetData<uint>(0, new Rectangle(31, hue % m_HueTextureHeight, 1, 1), pixel, 1, 1);
+                else
+                    HueTexture1.GetData<uint>(0, new Rectangle(31, hue % m_HueTextureHeight, 1, 1), pixel, 1, 1);
+                pixels[i] = pixel[0];
             }
             Texture2D t = new Texture2D(graphicsDevice, width, height);
-            t.SetData<Color>(pixels);
+            t.SetData<uint>(pixels);
             return t;
+        }
+
+        public static uint[] GetAllHues()
+        {
+            uint[] hues = new uint[HueCount];
+            uint[] allHues = getTextureData();
+            for (int i = 0; i < HueCount; i++)
+            {
+                hues[i] = allHues[i * 32 + 31];
+            }
+            return hues;
         }
 
         public static Texture2D HueTexture0
@@ -113,57 +129,30 @@ namespace UltimaXNA.Ultima.IO
             }
         }
 
-
-        public static int GetWebSafeHue(string inColor)
-        {
-            if (inColor.Length == 3)
-                return GetWebSafeHue(
-                    inColor.Substring(0, 1) + inColor.Substring(0, 1) +
-                    inColor.Substring(1, 1) + inColor.Substring(1, 1) +
-                    inColor.Substring(2, 1) + inColor.Substring(2, 1));
-            else if (inColor.Length == 6)
-            {
-                return GetWebSafeHue(
-                    Utility.ColorFromHexString("00" + inColor));
-            }
-            else
-            {
-                return 0;
-            }
-        }
-
         public static int GetWebSafeHue(Color inColor)
         {
             return GetWebSafeHue(inColor.R, inColor.G, inColor.B);
         }
 
-        public static int GetWebSafeHue(int inColor)
-        {
-            
-            int r = inColor & 0x000000FF;
-            int g = (inColor & 0x0000FF00) >> 8;
-            int b = (inColor & 0x00FF0000) >> 16;
-            return GetWebSafeHue(r, g, b);
-        }
         public static int GetWebSafeHue(int r, int g, int b)
         {
             int index = 0;
             for (int i = 0; i < 6; i++)
                 if (r <= m_kCutOffValuesForWebSafeColors[i])
                 {
-                    index = i;
+                    index += i * 1;
                     break;
                 }
             for (int i = 0; i < 6; i++)
                 if (b <= m_kCutOffValuesForWebSafeColors[i])
                 {
-                    index += i * 6;
+                    index += i * 36;
                     break;
                 }
             for (int i = 0; i < 6; i++)
                 if (g <= m_kCutOffValuesForWebSafeColors[i])
                 {
-                    index += i * 36;
+                    index += i * 6;
                     break;
                 }
             return m_kWebSafeHues[index];
@@ -206,137 +195,5 @@ namespace UltimaXNA.Ultima.IO
             1178, 0078, 0079, 0070, 0060, 0055, 
             1684, 1065, 0084, 0080, 2946, 1673, 
             1576, 1576, 0089, 0090, 1153, 0000, };
-    }
-
-    public class HueData
-    {
-        private static Hue[] m_List;
-
-        public static Hue[] List { get { return m_List; } }
-
-        public static int[] SkinTones
-        {
-            get
-            {
-                int max = 7 * 8;
-                int[] hues = new int[max];
-                for (int i = 0; i < max; i++)
-                {
-                    hues[i] = (i < 37) ? i + 1002 : i + 1003;
-                }
-                return hues;
-            }
-        }
-
-        public static int[] HairTones
-        {
-            get
-            {
-                int max = 8 * 6;
-                int[] hues = new int[max];
-                for (int i = 0; i < max; i++)
-                {
-                    hues[i] = i + 1102;
-                }
-                return hues;
-            }
-        }
-
-        static HueData()
-        {
-            string path = FileManager.GetFilePath("hues.mul");
-            int index = 0;
-
-            m_List = new Hue[3000];
-
-            if (path != null)
-            {
-                using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
-                {
-                    BinaryReader bin = new BinaryReader(fs);
-
-                    int blockCount = (int)fs.Length / 708;
-
-                    if (blockCount > 375)
-                        blockCount = 375;
-
-                    for (int i = 0; i < blockCount; ++i)
-                    {
-                        bin.ReadInt32();
-
-                        for (int j = 0; j < 8; ++j, ++index)
-                            m_List[index] = new Hue(index, bin);
-                    }
-                }
-            }
-
-            for (; index < 3000; ++index)
-                m_List[index] = new Hue(index);
-        }
-
-        public static Hue GetHue(int index)
-        {
-            index &= 0x3FFF;
-
-            if (index >= 0 && index < 3000)
-                return m_List[index];
-
-            return m_List[0];
-        }
-    }
-
-    public class Hue
-    {
-        private int m_Index;
-        private short[] m_Colors;
-        private string m_Name;
-
-        public int Index { get { return m_Index; } }
-        public short[] Colors { get { return m_Colors; } }
-        public string Name { get { return m_Name; } }
-
-        public Hue(int index)
-        {
-            m_Name = "Null";
-            m_Index = index;
-            m_Colors = new short[34];
-        }
-
-        public System.Drawing.Color GetColor(int index)
-        {
-            int c16 = m_Colors[index];
-
-            return System.Drawing.Color.FromArgb((c16 & 0x7C00) >> 7, (c16 & 0x3E0) >> 2, (c16 & 0x1F) << 3);
-        }
-
-        public ushort GetColorUShort(int index)
-        {
-            return (ushort)m_Colors[index];
-        }
-
-        public Hue(int index, BinaryReader bin)
-        {
-            m_Index = index;
-            m_Colors = new short[34];
-
-            for (int i = 0; i < 34; ++i)
-                m_Colors[i] = (short)(bin.ReadUInt16() | 0x8000);
-
-            bool nulled = false;
-
-            StringBuilder sb = new StringBuilder(20, 20);
-
-            for (int i = 0; i < 20; ++i)
-            {
-                char c = (char)bin.ReadByte();
-
-                if (c == 0)
-                    nulled = true;
-                else if (!nulled)
-                    sb.Append(c);
-            }
-
-            m_Name = sb.ToString();
-        }
     }
 }

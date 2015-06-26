@@ -29,6 +29,7 @@ namespace ExamplePlugin
         {
             // CandleObjectDebugger candle = new CandleObjectDebugger();
             // candle.OutputAllCandleTextures();
+            WebSafeHueCreator.CreateHues();
         }
 
         public void Unload()
