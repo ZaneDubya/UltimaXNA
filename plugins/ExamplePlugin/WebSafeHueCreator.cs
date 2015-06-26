@@ -50,7 +50,14 @@ namespace ExamplePlugin
                 }
                 matches[i] = new Tuple<int, double>(nearestHue, distance);
             }
-
+            string m_kWebSafeHues = "static int[] m_kWebSafeHues = new int[216] {\n";
+            for (int i = 0; i < 36; i++)
+            {
+                m_kWebSafeHues += "            ";
+                for (int j = 0; j < 6; j++)
+                    m_kWebSafeHues += string.Format("{0:0000}, ", matches[i * 6 + j].Item1);
+                m_kWebSafeHues += "\n";
+            }
         }
     }
 }

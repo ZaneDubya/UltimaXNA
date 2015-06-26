@@ -145,7 +145,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
 
         string formatHTMLCharName(int index, string name, int hue)
         {
-            return string.Format("<center><big><a href=\"CHAR={0}\" color='#5b4f29' hovercolor='#857951' activecolor='#402708' style=\"text-decoration: none\">{1}</a></big></center>", 
+            return string.Format("<center><big><a href=\"CHAR={0}\" color='#6293BF' hovercolor='#67BCBF' activecolor='#3D4391' style=\"text-decoration: none\">{1}</a></big></center>", 
                 index, name);
         }
     }
