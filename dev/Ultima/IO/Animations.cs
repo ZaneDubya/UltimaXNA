@@ -271,7 +271,7 @@ namespace UltimaXNA.Ultima.IO
 
                 int vhue = (hue & 0x3FFF) - 1;
 
-                if (vhue < 0 || vhue >= HuesXNA.HueCount)
+                if (vhue < 0 || vhue >= HueData.HueCount)
                     hue = (table >> 15) & 0xFFFF;
             }
         }

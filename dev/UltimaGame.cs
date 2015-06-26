@@ -154,12 +154,12 @@ namespace UltimaXNA
                 ArtData.Initialize(GraphicsDevice);
                 TextUni.Initialize(GraphicsDevice);
                 GumpData.Initialize(GraphicsDevice);
-                HuesXNA.Initialize(GraphicsDevice);
+                HueData.Initialize(GraphicsDevice);
                 TexmapData.Initialize(GraphicsDevice);
                 StringData.LoadStringList("enu");
                 SkillsData.Initialize();
-                GraphicsDevice.Textures[1] = HuesXNA.HueTexture0;
-                GraphicsDevice.Textures[2] = HuesXNA.HueTexture1;
+                GraphicsDevice.Textures[1] = HueData.HueTexture0;
+                GraphicsDevice.Textures[2] = HueData.HueTexture1;
 
                 UltimaGame.IsRunning = true;
                 WorldModel.IsInWorld = false;

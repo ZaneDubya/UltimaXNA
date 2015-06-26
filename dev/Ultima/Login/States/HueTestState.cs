@@ -82,12 +82,12 @@ namespace UltimaXNA.Ultima.Login.States
 
             using (System.IO.FileStream file = new System.IO.FileStream("hues0.png", System.IO.FileMode.Create))
             {
-                IO.HuesXNA.HueTexture0.SaveAsPng(file, IO.HuesXNA.HueTexture0.Width, IO.HuesXNA.HueTexture0.Height);
+                IO.HueData.HueTexture0.SaveAsPng(file, IO.HueData.HueTexture0.Width, IO.HueData.HueTexture0.Height);
             }
 
             using (System.IO.FileStream file = new System.IO.FileStream("hues1.png", System.IO.FileMode.Create))
             {
-                IO.HuesXNA.HueTexture1.SaveAsPng(file, IO.HuesXNA.HueTexture1.Width, IO.HuesXNA.HueTexture1.Height);
+                IO.HueData.HueTexture1.SaveAsPng(file, IO.HueData.HueTexture1.Width, IO.HueData.HueTexture1.Height);
             }
         }
 

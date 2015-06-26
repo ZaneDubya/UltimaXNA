@@ -25,7 +25,7 @@ namespace UltimaXNA.Ultima.UI
 
         public ushort GetWebSafeHue(Color color)
         {
-            return (ushort)IO.HuesXNA.GetWebSafeHue(color);
+            return (ushort)IO.HueData.GetWebSafeHue(color);
         }
 
         public IFont GetUnicodeFont(int fontIndex)

@@ -92,12 +92,12 @@ namespace UltimaXNA.Ultima.UI.Controls
             {
                 if (IsChild) // is a child
                 {
-                    m_huesTexture = IO.HuesXNA.CreateHueSwatch(m_hueWidth, m_hueHeight, m_hues);
+                    m_huesTexture = IO.HueData.CreateHueSwatch(m_hueWidth, m_hueHeight, m_hues);
                     m_selectedIndicator = IO.GumpData.GetGumpXNA(6000);
                 }
                 else
                 {
-                    m_huesTexture = IO.HuesXNA.CreateHueSwatch(1, 1, new int[1] { m_hues[Index] });
+                    m_huesTexture = IO.HueData.CreateHueSwatch(1, 1, new int[1] { m_hues[Index] });
                 }
             }
         }
@@ -160,7 +160,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             {
                 m_ChildColorPicker.Dispose();
                 m_ChildColorPicker = null;
-                m_huesTexture = IO.HuesXNA.CreateHueSwatch(1, 1, new int[1] { m_hues[Index] });
+                m_huesTexture = IO.HueData.CreateHueSwatch(1, 1, new int[1] { m_hues[Index] });
             }
         }
     }
