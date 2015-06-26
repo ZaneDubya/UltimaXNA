@@ -9,7 +9,7 @@ namespace ExamplePlugin
     {
         public static void CreateHues()
         {
-            uint[] hues = UltimaXNA.Ultima.IO.HuesXNA.GetAllHues();
+            uint[] hues = UltimaXNA.Ultima.IO.HueData.GetAllHues();
 
             uint[] toMatches = new uint[216];
             for (int b = 0; b < 6; b++)
@@ -26,7 +26,7 @@ namespace ExamplePlugin
                 var dbl_input_red = toMatches[i] & 0x0000ff;
                 var dbl_input_green = (toMatches[i] & 0x00ff00) >> 8;
                 var dbl_input_blue = (toMatches[i] & 0xff0000) >> 16;
-                for (int j = 0; j < 3000; j++)
+                for (int j = 0; j < UltimaXNA.Ultima.IO.HueData.HueCount; j++)
                 {
                     // compute the Euclidean distance between the two colors
                     // note, that the alpha-component is not used in this example
@@ -50,14 +50,14 @@ namespace ExamplePlugin
                 }
                 matches[i] = new Tuple<int, double>(nearestHue, distance);
             }
-            string m_kWebSafeHues = "static int[] m_kWebSafeHues = new int[216] {\n";
+            string m_kWebSafeHues = "static int[] m_kWebSafeHues = new int[216] {";
             for (int i = 0; i < 36; i++)
             {
-                m_kWebSafeHues += "            ";
+                m_kWebSafeHues += "\n            ";
                 for (int j = 0; j < 6; j++)
                     m_kWebSafeHues += string.Format("{0:0000}, ", matches[i * 6 + j].Item1);
-                m_kWebSafeHues += "\n";
             }
+            m_kWebSafeHues += "};";
         }
     }
 }
