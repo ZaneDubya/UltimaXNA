@@ -317,6 +317,9 @@ namespace UltimaXNA.Core.UI
             }
 
             uint[] resultData = new uint[width * height];
+            /* DEBUG PURPOSES: Fill background with green.
+             * for (int i = 0; i < resultData.Length; i++)
+                resultData[i] = 0xff00ff00;*/
 
             unsafe
             {
