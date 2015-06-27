@@ -45,6 +45,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         public SpellbookGump(SpellBook entity, int itemID)
             : base(0, 0)
         {
+            m_World = ServiceRegistry.GetService<WorldModel>();
+
             m_Spellbook = entity;
             m_Spellbook.OnEntityUpdated += OnEntityUpdate;
 
@@ -208,13 +210,13 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             {
                 int spell;
                 if (int.TryParse(hrefs[1], out spell))
-                    m_World.Interaction.CastSpell(spell);
+                    m_World.Interaction.CastSpell(spell + 1);
             }
             else if (hrefs[0] == "spellicon")
             {
                 int spell;
                 if (int.TryParse(hrefs[1], out spell))
-                    m_World.Interaction.CastSpell(spell);
+                    m_World.Interaction.CastSpell(spell + 1);
             }
         }
 
