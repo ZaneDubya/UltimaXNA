@@ -151,7 +151,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     int spellIndexAll = spellCircle * 8 + spellIndex;
                     if (m_Spellbook.HasSpell(spellIndexAll))
                     {
-                        m_Indexes[spellCircle].Text += string.Format("<a href='page={1}' color='#532' hovercolor='#f00' activecolor='#611' style='font-family=uni0; text-decoration=none;'>{0}</a><br/>",
+                        m_Indexes[spellCircle].Text += string.Format("<a href='page={1}' color='#532' hovercolor='#800' activecolor='#611' style='font-family=uni0; text-decoration=none;'>{0}</a><br/>",
                             Magery.Spells[spellIndexAll].Name, 
                             currentSpellPage);
                         CreateSpellPage(currentSpellPage, isRightPage, spellCircle, Magery.Spells[spellIndexAll]);
@@ -180,10 +180,11 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 page);
             // icon
             AddControl(new GumpPic(this, 56 + (rightPage ? 156 : 0), 40, spell.GumpIconID - 0x1298, 0), page);
-            AddControl(new HtmlGumpling(this, 104 + (rightPage ? 156 : 0), 34, 88, 40, 0, 0, string.Format("<span color='#008' style='font-family=ascii6;'>{0}</span>", spell.Name)),
+            AddControl(new HtmlGumpling(this, 104 + (rightPage ? 156 : 0), 38, 88, 40, 0, 0, string.Format("<span color='#004' style='font-family=uni0;'>{0}</span>", spell.Name)),
                 page);
             // reagents string.
-            AddControl(new HtmlGumpling(this, 56 + (rightPage ? 156 : 0), 84, 132, 80, 0, 0, string.Format("<span color='#fff' style='font-family=ascii6;'>{0}</span>", spell.ReagentListString)),
+            AddControl(new HtmlGumpling(this, 56 + (rightPage ? 156 : 0), 84, 132, 80, 0, 0, string.Format(
+                "<span color='#400' style='font-family=uni0;'>Reagents</span><br/><span color='#004' style='font-family=uni0;'>{0}</span>", spell.CreateReagentListString(", "))),
                 page);
         }
 

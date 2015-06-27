@@ -18,63 +18,62 @@ namespace UltimaXNA.Ultima.Data
             Regs = regs;
         }
 
-        public string ReagentListString
+        public string CreateReagentListString(string separator)
         {
-            get
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < Regs.Length; i++)
             {
-                StringBuilder sb = new StringBuilder();
-                foreach (Reagents reg in Regs)
+                switch (Regs[i])
                 {
-                    switch (reg)
-                    {
-                        // britanian reagents
-                        case Reagents.BlackPearl:
-                            sb.Append("Black Pearl\n");
-                            break;
-                        case Reagents.Bloodmoss:
-                            sb.Append("Bloodmoss\n");
-                            break;
-                        case Reagents.Garlic:
-                            sb.Append("Garlic\n");
-                            break;
-                        case Reagents.Ginseng:
-                            sb.Append("Ginseng\n");
-                            break;
-                        case Reagents.MandrakeRoot:
-                            sb.Append("Mandrake Root\n");
-                            break;
-                        case Reagents.Nightshade:
-                            sb.Append("Nightshade\n");
-                            break;
-                        case Reagents.SulfurousAsh:
-                            sb.Append("Sulfurous Ash\n");
-                            break;
-                        case Reagents.SpidersSilk:
-                            sb.Append("Spiders' Silk\n");
-                            break;
-                        // pagan reagents
-                        case Reagents.BatWing:
-                            sb.Append("Bat Wing\n");
-                            break;
-                        case Reagents.GraveDust:
-                            sb.Append("Grave Dust\n");
-                            break;
-                        case Reagents.DaemonBlood:
-                            sb.Append("Daemon Blood\n");
-                            break;
-                        case Reagents.NoxCrystal:
-                            sb.Append("Nox Crystal\n");
-                            break;
-                        case Reagents.PigIron:
-                            sb.Append("Pig Iron\n");
-                            break;
-                        default:
-                            sb.Append("Unknown reagent\n");
-                            break;
-                    }
+                    // britanian reagents
+                    case Reagents.BlackPearl:
+                        sb.Append("Black Pearl");
+                        break;
+                    case Reagents.Bloodmoss:
+                        sb.Append("Bloodmoss");
+                        break;
+                    case Reagents.Garlic:
+                        sb.Append("Garlic");
+                        break;
+                    case Reagents.Ginseng:
+                        sb.Append("Ginseng");
+                        break;
+                    case Reagents.MandrakeRoot:
+                        sb.Append("Mandrake Root");
+                        break;
+                    case Reagents.Nightshade:
+                        sb.Append("Nightshade");
+                        break;
+                    case Reagents.SulfurousAsh:
+                        sb.Append("Sulfurous Ash");
+                        break;
+                    case Reagents.SpidersSilk:
+                        sb.Append("Spiders' Silk");
+                        break;
+                    // pagan reagents
+                    case Reagents.BatWing:
+                        sb.Append("Bat Wing");
+                        break;
+                    case Reagents.GraveDust:
+                        sb.Append("Grave Dust");
+                        break;
+                    case Reagents.DaemonBlood:
+                        sb.Append("Daemon Blood");
+                        break;
+                    case Reagents.NoxCrystal:
+                        sb.Append("Nox Crystal");
+                        break;
+                    case Reagents.PigIron:
+                        sb.Append("Pig Iron");
+                        break;
+                    default:
+                        sb.Append("Unknown reagent");
+                        break;
                 }
-                return sb.ToString();
+                if (i < Regs.Length - 1)
+                    sb.Append(separator);
             }
+            return sb.ToString();
         }
     }
 }
