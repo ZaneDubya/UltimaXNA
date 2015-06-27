@@ -183,11 +183,12 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             // icon and spell name
             AddControl(new HtmlGumpling(this, 56 + (rightPage ? 156 : 0), 38, 130, 44, 0, 0,
                 string.Format("<a href='spellicon={0}'><gumpimg src='{1}'/></a>",
-                spell.Index, spell.GumpIconID - 0x1298)),
+                spell.ID, spell.GumpIconID - 0x1298)),
                 page);
+            ((HtmlGumpling)LastControl).OnDragHRef += OnSpellDrag;
             AddControl(new HtmlGumpling(this, 104 + (rightPage ? 156 : 0), 38, 88, 40, 0, 0, string.Format(
                 "<a href='spell={0}' color='#542' hovercolor='#875' activecolor='#420' style='font-family=uni0; text-decoration=none;'>{1}</a>", 
-                spell.Index, spell.Name)), 
+                spell.ID, spell.Name)), 
                 page);
             // reagents.
             AddControl(new HtmlGumpling(this, 56 + (rightPage ? 156 : 0), 84, 146, 106, 0, 0, string.Format(
@@ -217,6 +218,24 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 int spell;
                 if (int.TryParse(hrefs[1], out spell))
                     m_World.Interaction.CastSpell(spell + 1);
+            }
+        }
+
+        private void OnSpellDrag(string href)
+        {
+            string[] hrefs = href.Split('=');
+            if (hrefs.Length != 2)
+                return;
+            if (hrefs[0] == "spellicon")
+            {
+                int spellIndex;
+                if (!int.TryParse(hrefs[1], out spellIndex))
+                    return;
+                SpellDefinition spell = Magery.Spells[spellIndex];
+                InputManager input = ServiceRegistry.GetService<InputManager>();
+                UseSpellButtonGump gump = new UseSpellButtonGump(spell);
+                UserInterface.AddControl(gump, input.MousePosition.X - 22, input.MousePosition.Y - 22);
+                UserInterface.AttemptDragControl(gump, input.MousePosition, true);
             }
         }
 

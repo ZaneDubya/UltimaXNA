@@ -1,22 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 
 namespace UltimaXNA.Ultima.Data
 {
-    struct SpellDefinition
+    public struct SpellDefinition
     {
         public readonly string Name;
-        public readonly int Index;
+        public readonly int ID;
         public readonly int GumpIconID;
+        public readonly int GumpIconSmallID;
         public readonly Reagents[] Regs;
 
         public SpellDefinition(string name, int index, int gumpIconID, params Reagents[] regs)
         {
             Name = name;
-            Index = index;
+            ID = index;
             GumpIconID = gumpIconID;
+            GumpIconSmallID = gumpIconID - 0x1298;
             Regs = regs;
         }
 

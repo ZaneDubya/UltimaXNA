@@ -102,7 +102,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         private void EventMouseClick(AControl sender, int x, int y, MouseButton button)
         {
-            OnMouseClick(x, y, button);
+            if (button == MouseButton.Left)
+                OnMouseClick(x, y, button);
         }
 
         protected override void OnMouseDown(int x, int y, MouseButton button)
