@@ -117,7 +117,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                 m_openLabels[i].Dispose();
         }
 
-        void onClickClosedList(int x, int y, MouseButton button)
+        void onClickClosedList(AControl control, int x, int y, MouseButton button)
         {
             m_listOpen = true;
             m_openResizePic = new ResizePic(Owner, X, Y, 3000, m_width, m_Font.Height * m_visibleItems + 8);
@@ -139,17 +139,17 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        void onMouseOverClosedList(int x, int y)
+        void onMouseOverClosedList(AControl control, int x, int y)
         {
             m_label.Hue = hue_TextSelected;
         }
 
-        void onMouseOutClosedList(int x, int y)
+        void onMouseOutClosedList(AControl control, int x, int y)
         {
             m_label.Hue = hue_Text;
         }
 
-        void onClickOpenList(int x, int y, MouseButton button)
+        void onClickOpenList(AControl control, int x, int y, MouseButton button)
         {
             int indexOver = getOpenListIndexFromPoint(x, y);
             if (indexOver != -1)
@@ -157,7 +157,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             closeOpenList();
         }
 
-        void onMouseOverOpenList(int x, int y)
+        void onMouseOverOpenList(AControl control, int x, int y)
         {
             int indexOver = getOpenListIndexFromPoint(x, y);
             for (int i = 0; i < m_openLabels.Length; i++)
@@ -169,7 +169,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        void onMouseOutOpenList(int x, int y)
+        void onMouseOutOpenList(AControl control, int x, int y)
         {
             for (int i = 0; i < m_openLabels.Length; i++)
                 m_openLabels[i].Hue = hue_Text;

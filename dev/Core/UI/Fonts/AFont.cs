@@ -9,7 +9,6 @@
  *
  ***************************************************************************/
 #region usings
-using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.IO;
 #endregion
@@ -29,14 +28,6 @@ namespace UltimaXNA.Core.UI.Fonts
             get
             {
                 return GetCharacter('M').Height + GetCharacter('M').YOffset;
-            }
-        }
-
-        public int Lineheight
-        {
-            get
-            {
-                return Baseline + 4;
             }
         }
 

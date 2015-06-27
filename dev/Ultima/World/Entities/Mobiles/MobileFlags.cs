@@ -59,5 +59,10 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
         {
             m_flags = flags;
         }
+
+        public MobileFlags()
+        {
+            m_flags = (MobileFlag)0;
+        }
     }
 }

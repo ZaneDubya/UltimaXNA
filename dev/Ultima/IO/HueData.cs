@@ -12,14 +12,15 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.IO;
-using System.Text;
 using UltimaXNA.Core.Diagnostics;
 #endregion
 
 namespace UltimaXNA.Ultima.IO
 {
-    public class HuesXNA
+    public class HueData
     {
+        public const int HueCount = 4096;
+
         private static GraphicsDevice graphicsDevice;
         private static Texture2D m_HueTexture0, m_HueTexture1;
         private const int m_HueTextureWidth = 32; // Each hue is 32 pixels wide
@@ -28,10 +29,9 @@ namespace UltimaXNA.Ultima.IO
 
         public static void Initialize(GraphicsDevice graphicsDevice)
         {
-            HuesXNA.graphicsDevice = graphicsDevice;
+            HueData.graphicsDevice = graphicsDevice;
             graphicsDevice.DeviceReset += graphicsDevice_DeviceReset;
             CreateTexture();
-            // Hues.GetWebSafeColors();
         }
 
         static void graphicsDevice_DeviceReset(object sender, System.EventArgs e)
@@ -81,20 +81,52 @@ namespace UltimaXNA.Ultima.IO
                 }
             }
             reader.Close();
+
+            int webSafeHuesBegin = m_HueTextureHeight * 2 - 216;
+            for (int b = 0; b < 6; b++)
+            {
+                for (int g = 0; g < 6; g++)
+                {
+                    for (int r = 0; r < 6; r++)
+                    {
+                        data[(webSafeHuesBegin + r + g * 6 + b * 36) * 32 + 31] = (uint)(
+                            0xff000000 +
+                            b * 0x00330000 +
+                            g * 0x00003300 +
+                            r * 0x00000033);
+                    }
+                }
+            }
             return data;
         }
 
-        public static Texture2D HueSwatch(int width, int height, int[] hues)
+        public static Texture2D CreateHueSwatch(int width, int height, int[] hues)
         {
-            Color[] pixels = new Color[width * height];
+            uint[] pixels = new uint[width * height];
             for (int i = 0; i < pixels.Length; i++)
             {
-                System.Drawing.Color c = HueData.GetHue(hues[i] - 1).GetColor(31);
-                pixels[i] = new Color(c.R, c.G, c.B, c.A);
+                int hue = hues[i] - 1;
+                uint[] pixel = new uint[1];
+                if (hue < m_HueTextureHeight)
+                    HueTexture0.GetData<uint>(0, new Rectangle(31, hue % m_HueTextureHeight, 1, 1), pixel, 1, 1);
+                else
+                    HueTexture1.GetData<uint>(0, new Rectangle(31, hue % m_HueTextureHeight, 1, 1), pixel, 1, 1);
+                pixels[i] = pixel[0];
             }
             Texture2D t = new Texture2D(graphicsDevice, width, height);
-            t.SetData<Color>(pixels);
+            t.SetData<uint>(pixels);
             return t;
+        }
+
+        public static uint[] GetAllHues()
+        {
+            uint[] hues = new uint[HueCount];
+            uint[] allHues = getTextureData();
+            for (int i = 0; i < HueCount; i++)
+            {
+                hues[i] = allHues[i * 32 + 31];
+            }
+            return hues;
         }
 
         public static Texture2D HueTexture0
@@ -113,55 +145,28 @@ namespace UltimaXNA.Ultima.IO
             }
         }
 
-
-        public static int GetWebSafeHue(string inColor)
-        {
-            if (inColor.Length == 3)
-                return GetWebSafeHue(
-                    inColor.Substring(0, 1) + inColor.Substring(0, 1) +
-                    inColor.Substring(1, 1) + inColor.Substring(1, 1) +
-                    inColor.Substring(2, 1) + inColor.Substring(2, 1));
-            else if (inColor.Length == 6)
-            {
-                return GetWebSafeHue(
-                    Utility.ColorFromHexString("00" + inColor));
-            }
-            else
-            {
-                return 0;
-            }
-        }
-
         public static int GetWebSafeHue(Color inColor)
         {
             return GetWebSafeHue(inColor.R, inColor.G, inColor.B);
         }
 
-        public static int GetWebSafeHue(int inColor)
-        {
-            
-            int r = inColor & 0x000000FF;
-            int g = (inColor & 0x0000FF00) >> 8;
-            int b = (inColor & 0x00FF0000) >> 16;
-            return GetWebSafeHue(r, g, b);
-        }
         public static int GetWebSafeHue(int r, int g, int b)
         {
             int index = 0;
             for (int i = 0; i < 6; i++)
                 if (r <= m_kCutOffValuesForWebSafeColors[i])
                 {
-                    index = i;
+                    index += i * 1;
                     break;
                 }
             for (int i = 0; i < 6; i++)
-                if (b <= m_kCutOffValuesForWebSafeColors[i])
+                if (g <= m_kCutOffValuesForWebSafeColors[i])
                 {
                     index += i * 6;
                     break;
                 }
             for (int i = 0; i < 6; i++)
-                if (g <= m_kCutOffValuesForWebSafeColors[i])
+                if (b <= m_kCutOffValuesForWebSafeColors[i])
                 {
                     index += i * 36;
                     break;
@@ -169,174 +174,42 @@ namespace UltimaXNA.Ultima.IO
             return m_kWebSafeHues[index];
         }
         static int[] m_kCutOffValuesForWebSafeColors = new int[6] { 0x19, 0x4C, 0x7F, 0xB2, 0xE5, 0xFF };
-        static int[] m_kWebSafeHues = new int[216] { 
-            1278, 1148, 1156, 1089, 0036, 1287, 
-            1064, 2052, 1272, 0231, 0132, 0032, 
-            1092, 1272, 1272, 0226, 0127, 0027, 
-            1261, 0206, 0211, 0216, 0021, 0022, 
-            1175, 0006, 0011, 0016, 1274, 1288, 
-            0002, 0007, 0007, 0012, 0017, 1288, 
-            2054, 1148, 1132, 1517, 0137, 0037, 
-            1588, 2050, 1146, 1608, 2117, 2116, 
-            1155, 0601, 0621, 0426, 0327, 0033, 
-            0296, 0401, 0411, 0517, 0322, 0028, 
-            1262, 0302, 0407, 0113, 0118, 0023, 
-            1182, 0003, 0008, 0013, 0018, 0018, 
-            1266, 1192, 1453, 1129, 1255, 0042, 
-            1068, 1154, 1443, 2317, 1550, 2116, 
-            1096, 0681, 1897, 1013, 1213, 1639, 
-            0291, 0491, 1315, 1241, 0428, 0029, 
-            0091, 0497, 0503, 0413, 0319, 0024, 
-            1281, 0098, 1363, 0009, 0019, 0019, 
-            1267, 0266, 0256, 0251, 1125, 2113, 
-            0271, 0466, 2005, 1449, 1711, 1719, 
-            0276, 0476, 1432, 1439, 2315, 0044, 
-            1159, 0587, 2222, 2030, 1002, 1627, 
-            1283, 0193, 0493, 1311, 1237, 0025, 
-            1264, 0093, 0099, 0005, 0015, 0020, 
-            0066, 0167, 1269, 0157, 1158, 1280, 
-            1455, 0367, 0362, 0357, 2214, 2212, 
-            0076, 1060, 0468, 1091, 2000, 0049, 
-            0081, 0382, 0478, 0669, 1190, 2006, 
-            0187, 0188, 0389, 2220, 2036, 2306, 
-            1282, 0088, 0089, 2119, 1194, 1071, 
-            0067, 1098, 1569, 0057, 0052, 1195, 
-            0072, 0068, 0063, 0058, 2125, 1259, 
-            1298, 0073, 0069, 0064, 0059, 0054, 
-            1178, 0078, 0079, 0070, 0060, 0055, 
-            1684, 1065, 0084, 0080, 2946, 1673, 
-            1576, 1576, 0089, 0090, 1153, 0000, };
-    }
-
-    public class HueData
-    {
-        private static Hue[] m_List;
-
-        public static Hue[] List { get { return m_List; } }
-
-        public static int[] SkinTones
-        {
-            get
-            {
-                int max = 7 * 8;
-                int[] hues = new int[max];
-                for (int i = 0; i < max; i++)
-                {
-                    hues[i] = (i < 37) ? i + 1002 : i + 1003;
-                }
-                return hues;
-            }
-        }
-
-        public static int[] HairTones
-        {
-            get
-            {
-                int max = 8 * 6;
-                int[] hues = new int[max];
-                for (int i = 0; i < max; i++)
-                {
-                    hues[i] = i + 1102;
-                }
-                return hues;
-            }
-        }
-
-        static HueData()
-        {
-            string path = FileManager.GetFilePath("hues.mul");
-            int index = 0;
-
-            m_List = new Hue[3000];
-
-            if (path != null)
-            {
-                using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
-                {
-                    BinaryReader bin = new BinaryReader(fs);
-
-                    int blockCount = (int)fs.Length / 708;
-
-                    if (blockCount > 375)
-                        blockCount = 375;
-
-                    for (int i = 0; i < blockCount; ++i)
-                    {
-                        bin.ReadInt32();
-
-                        for (int j = 0; j < 8; ++j, ++index)
-                            m_List[index] = new Hue(index, bin);
-                    }
-                }
-            }
-
-            for (; index < 3000; ++index)
-                m_List[index] = new Hue(index);
-        }
-
-        public static Hue GetHue(int index)
-        {
-            index &= 0x3FFF;
-
-            if (index >= 0 && index < 3000)
-                return m_List[index];
-
-            return m_List[0];
-        }
-    }
-
-    public class Hue
-    {
-        private int m_Index;
-        private short[] m_Colors;
-        private string m_Name;
-
-        public int Index { get { return m_Index; } }
-        public short[] Colors { get { return m_Colors; } }
-        public string Name { get { return m_Name; } }
-
-        public Hue(int index)
-        {
-            m_Name = "Null";
-            m_Index = index;
-            m_Colors = new short[34];
-        }
-
-        public System.Drawing.Color GetColor(int index)
-        {
-            int c16 = m_Colors[index];
-
-            return System.Drawing.Color.FromArgb((c16 & 0x7C00) >> 7, (c16 & 0x3E0) >> 2, (c16 & 0x1F) << 3);
-        }
-
-        public ushort GetColorUShort(int index)
-        {
-            return (ushort)m_Colors[index];
-        }
-
-        public Hue(int index, BinaryReader bin)
-        {
-            m_Index = index;
-            m_Colors = new short[34];
-
-            for (int i = 0; i < 34; ++i)
-                m_Colors[i] = (short)(bin.ReadUInt16() | 0x8000);
-
-            bool nulled = false;
-
-            StringBuilder sb = new StringBuilder(20, 20);
-
-            for (int i = 0; i < 20; ++i)
-            {
-                char c = (char)bin.ReadByte();
-
-                if (c == 0)
-                    nulled = true;
-                else if (!nulled)
-                    sb.Append(c);
-            }
-
-            m_Name = sb.ToString();
-        }
+        static int[] m_kWebSafeHues = new int[216] {
+            0000, 3881, 3882, 3883, 3884, 3885, 
+            3886, 3887, 3888, 3889, 3890, 3891, 
+            3892, 3893, 3894, 3895, 3896, 3897, 
+            3898, 3899, 3900, 3901, 3902, 3903, 
+            3904, 3905, 3906, 3907, 3908, 3909, 
+            3910, 3911, 3912, 3913, 3914, 3915, 
+            3916, 3917, 3918, 3919, 3920, 3921, 
+            3922, 3923, 3924, 3925, 3926, 3927, 
+            3928, 3929, 3930, 3931, 3932, 3933, 
+            3934, 3935, 3936, 3937, 3938, 3939, 
+            3940, 3941, 3942, 3943, 3944, 3945, 
+            3946, 3947, 3948, 3949, 3950, 3951, 
+            3952, 3953, 3954, 3955, 3956, 3957, 
+            3958, 3959, 3960, 3961, 3962, 3963, 
+            3964, 3965, 3966, 3967, 3968, 3969, 
+            3970, 3971, 3972, 3973, 3974, 3975, 
+            3976, 3977, 3978, 3979, 3980, 3981, 
+            3982, 3983, 3984, 3985, 3986, 3987, 
+            3988, 3989, 3990, 3991, 3992, 3993, 
+            3994, 3995, 3996, 3997, 3998, 3999, 
+            4000, 4001, 4002, 4003, 4004, 4005, 
+            4006, 4007, 4008, 4009, 4010, 4011, 
+            4012, 4013, 4014, 4015, 4016, 4017, 
+            4018, 4019, 4020, 4021, 4022, 4023, 
+            4024, 4025, 4026, 4027, 4028, 4029, 
+            4030, 4031, 4032, 4033, 4034, 4035, 
+            4036, 4037, 4038, 4039, 4040, 4041, 
+            4042, 4043, 4044, 4045, 4046, 4047, 
+            4048, 4049, 4050, 4051, 4052, 4053, 
+            4054, 4055, 4056, 4057, 4058, 4059, 
+            4060, 4061, 4062, 4063, 4064, 4065, 
+            4066, 4067, 4068, 4069, 4070, 4071, 
+            4072, 4073, 4074, 4075, 4076, 4077, 
+            4078, 4079, 4080, 4081, 4082, 4083, 
+            4084, 4085, 4086, 4087, 4088, 4089, 
+            4090, 4091, 4092, 4093, 4094, 4095, };
     }
 }

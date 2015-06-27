@@ -25,6 +25,12 @@ namespace UltimaXNA.Core.UI.Fonts
             set;
         }
 
+        public int ExtraWidth
+        {
+            get;
+            set;
+        }
+
         public int XOffset
         {
             get;

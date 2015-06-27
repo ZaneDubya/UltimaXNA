@@ -38,16 +38,19 @@ namespace UltimaXNA.Ultima.IO.Fonts
             for (int i = 0; i < 224; i++)
             {
                 CharacterAscii ch = loadCharacter(reader);
-                int height = ch.Height + ch.YOffset;
-                if (i < 96 && height > Height)
+                int height = ch.Height;
+                if (i > 32 && i < 90 && height > Height)
                     Height = height;
                 m_characters[i] = ch;
             }
 
             for (int i = 0; i < 224; i++)
             {
-                m_characters[i].YOffset = Height - m_characters[i].Height;
+                m_characters[i].YOffset = Height - (m_characters[i].Height + m_characters[i].YOffset);
             }
+
+            // ascii fonts are so tall! why?
+            Height -= 2;
 
             // Determine the width of the space character - arbitrarily .333 the width of capital M (.333 em?).
             GetCharacter(' ').Width = GetCharacter('M').Width / 3;

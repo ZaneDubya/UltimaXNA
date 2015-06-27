@@ -361,12 +361,12 @@ namespace UltimaXNA
                 case '7': return (byte)7;
                 case '8': return (byte)8;
                 case '9': return (byte)9;
-                case 'A': return (byte)10;
-                case 'B': return (byte)11;
-                case 'C': return (byte)12;
-                case 'D': return (byte)13;
-                case 'E': return (byte)14;
-                case 'F': return (byte)15;
+                case 'A': case 'a': return (byte)10;
+                case 'B': case 'b': return (byte)11;
+                case 'C': case 'c': return (byte)12;
+                case 'D': case 'd': return (byte)13;
+                case 'E': case 'e': return (byte)14;
+                case 'F': case 'f': return (byte)15;
             }
             return (byte)0;
         }
@@ -391,6 +391,13 @@ namespace UltimaXNA
                 int r = (hexDigitToByte(hex[0]) << 4) + hexDigitToByte(hex[1]);
                 int g = (hexDigitToByte(hex[2]) << 4) + hexDigitToByte(hex[3]);
                 int b = (hexDigitToByte(hex[4]) << 4) + hexDigitToByte(hex[5]);
+                return new Color((byte)r, (byte)g, (byte)b);
+            }
+            else if (hex.Length == 3)
+            {
+                int r = (hexDigitToByte(hex[0]) << 4) + hexDigitToByte(hex[0]);
+                int g = (hexDigitToByte(hex[1]) << 4) + hexDigitToByte(hex[1]);
+                int b = (hexDigitToByte(hex[2]) << 4) + hexDigitToByte(hex[2]);
                 return new Color((byte)r, (byte)g, (byte)b);
             }
             else

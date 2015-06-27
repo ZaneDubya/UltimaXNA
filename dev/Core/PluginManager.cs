@@ -1,15 +1,20 @@
-﻿#region Usings
+﻿/***************************************************************************
+ *   PluginManager.cs
+ *   Copyright (c) 2015 UltimaXNA Development Team
+ * 
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region Usings
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
-using UltimaXNA.Core;
-using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.Diagnostics.Tracing;
-using UltimaXNA.Core.Diagnostics.Listeners;
 using UltimaXNA.Core.Patterns;
 #endregion
 

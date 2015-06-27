@@ -50,7 +50,7 @@ namespace UltimaXNA.Core.UI
         public int GumpLocalID
         {
             get;
-            protected set;
+            set;
         }
 
         /// <summary>
@@ -265,27 +265,27 @@ namespace UltimaXNA.Core.UI
         /// <summary>
         /// An event that other objects can use to be notified when this control is clicked.
         /// </summary>
-        internal event Action<int, int, MouseButton> MouseClickEvent;
+        internal event Action<AControl, int, int, MouseButton> MouseClickEvent;
         /// <summary>
         /// An event that other objects can use to be notified when this control is double-clicked.
         /// </summary>
-        internal event Action<int, int, MouseButton> MouseDoubleClickEvent;
+        internal event Action<AControl, int, int, MouseButton> MouseDoubleClickEvent;
         /// <summary>
         /// An event that other objects can use to be notified when this control receives a mouse down event.
         /// </summary>
-        internal event Action<int, int, MouseButton> MouseDownEvent;
+        internal event Action<AControl, int, int, MouseButton> MouseDownEvent;
         /// <summary>
         /// An event that other objects can use to be notified when this control receives a mouse up event.
         /// </summary>
-        internal event Action<int, int, MouseButton> MouseUpEvent;
+        internal event Action<AControl, int, int, MouseButton> MouseUpEvent;
         /// <summary>
         /// An event that other objects can use to be notified when this control receives a mouse over event.
         /// </summary>
-        internal event Action<int, int> MouseOverEvent;
+        internal event Action<AControl, int, int> MouseOverEvent;
         /// <summary>
         /// An event that other objects can use to be notified when this control receives a mouse out event.
         /// </summary>
-        internal event Action<int, int> MouseOutEvent;
+        internal event Action<AControl, int, int> MouseOutEvent;
         #endregion
 
         #region Owner / OwnerX / OwnerY
@@ -636,7 +636,7 @@ namespace UltimaXNA.Core.UI
             int y = (int)position.Y - Y - OwnerY;
             OnMouseDown(x, y, button);
             if (MouseDownEvent != null)
-                MouseDownEvent(x, y, button);
+                MouseDownEvent(this, x, y, button);
         }
 
         public void MouseUp(Point position, MouseButton button)
@@ -645,7 +645,7 @@ namespace UltimaXNA.Core.UI
             int y = (int)position.Y - Y - OwnerY;
             OnMouseUp(x, y, button);
             if (MouseUpEvent != null)
-                MouseUpEvent(x, y, button);
+                MouseUpEvent(this, x, y, button);
         }
 
         public void MouseOver(Point position)
@@ -658,7 +658,7 @@ namespace UltimaXNA.Core.UI
             int y = (int)position.Y - Y - OwnerY;
             OnMouseOver(x, y);
             if (MouseOverEvent != null)
-                MouseOverEvent(x, y);
+                MouseOverEvent(this, x, y);
         }
 
         public void MouseOut(Point position)
@@ -667,7 +667,7 @@ namespace UltimaXNA.Core.UI
             int y = (int)position.Y - Y - OwnerY;
             OnMouseOut(x, y);
             if (MouseOutEvent != null)
-                MouseOutEvent(x, y);
+                MouseOutEvent(this, x, y);
         }
 
         public void MouseClick(Point position, MouseButton button)
@@ -697,13 +697,13 @@ namespace UltimaXNA.Core.UI
 
             OnMouseClick(x, y, button);
             if (MouseClickEvent != null)
-                MouseClickEvent(x, y, button);
+                MouseClickEvent(this, x, y, button);
 
             if (doubleClick)
             {
                 OnMouseDoubleClick(x, y, button);
                 if (MouseDoubleClickEvent != null)
-                    MouseDoubleClickEvent(x, y, button);
+                    MouseDoubleClickEvent(this, x, y, button);
             }
         }
 

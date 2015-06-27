@@ -9,11 +9,11 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Ultima.World.Entities.Items;
-using UltimaXNA.Ultima.UI;
-using UltimaXNA.Ultima.UI.Controls;
 using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Ultima.World.Entities.Items;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
@@ -99,7 +99,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_LastValue = m_Slider.Value;
         }
 
-        private void ClickOkayButton(int x, int y, MouseButton button)
+        private void ClickOkayButton(AControl sender, int x, int y, MouseButton button)
         {
             if (m_Slider.Value > 0)
             {

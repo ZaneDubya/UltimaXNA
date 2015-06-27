@@ -16,21 +16,14 @@ namespace UltimaXNA.Ultima.Data
         public readonly Serial Serial;
         public readonly ushort ItemID;
         public readonly SpellBookTypes BookType;
-        public readonly byte[] SpellBitfields;
+        public readonly ulong SpellsBitfield;
 
-        public SpellbookData(Serial serial, ushort itemID, ushort bookTypePacketID, byte[] spellBitFields)
+        public SpellbookData(Serial serial, ushort itemID, ushort bookTypePacketID, ulong spellBitFields)
         {
             Serial = serial;
             ItemID = itemID;
 
-            if (spellBitFields == null || spellBitFields.Length != 8)
-            {
-                BookType = SpellBookTypes.Unknown;
-                SpellBitfields = null;
-                return;
-            }
-
-            SpellBitfields = spellBitFields;
+            SpellsBitfield = spellBitFields;
 
             switch (bookTypePacketID)
             {
@@ -57,15 +50,5 @@ namespace UltimaXNA.Ultima.Data
                     return;
             }
         }
-
-        public bool HasSpell(int index)
-        {
-            if (index < 0 || index >= 64)
-                return false;
-            int byteIndex = index / 8;
-            int bitIndex = (index % 8);
-            return (SpellBitfields[byteIndex] & (1 << bitIndex)) != 0;
-        }
-
     }
 }

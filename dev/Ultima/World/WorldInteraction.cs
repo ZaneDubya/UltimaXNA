@@ -82,6 +82,11 @@ namespace UltimaXNA.Ultima.World
             m_Network.Send(new RequestSkillUsePacket(index));
         }
 
+        public void CastSpell(int index)
+        {
+            m_Network.Send(new CastSpellPacket(index));
+        }
+
         public void ChangeSkillLock(SkillEntry skill)
         {
             if (skill == null)

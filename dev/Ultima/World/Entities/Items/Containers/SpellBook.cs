@@ -32,31 +32,33 @@ namespace UltimaXNA.Ultima.World.Entities.Items.Containers
             private set;
         }
 
-        private bool[] m_SpellData;
+        private ulong m_SpellsBitfield;
+        public bool HasSpell(int index)
+        {
+            ulong flag = 1U << index;
+            return (m_SpellsBitfield & flag) == flag;
+        }
 
         public SpellBook(Serial serial, Map map)
             : base(serial, map)
         {
             BookType = SpellBookTypes.Unknown;
-            m_SpellData = null;
+            m_SpellsBitfield = 0;
         }
 
-        public void ReceiveSpellData(SpellBookTypes sbType, byte[] sbBitfield)
+        public void ReceiveSpellData(SpellBookTypes sbType, ulong sbBitfield)
         {
-            BookType = sbType;
+            bool entityUpdated = false;
 
-            if (m_SpellData == null)
-                m_SpellData = new bool[64];
-
-            for (int i = 0; i < 64; i++)
+            if (BookType != sbType)
             {
-                if ((sbBitfield[i / 8] & ((i % 8) << 8)) != 0)
-                    m_SpellData[i] = true;
-                else
-                    m_SpellData[i] = false;
+                BookType = sbType;
+                entityUpdated = true;
             }
 
-            if (OnEntityUpdated != null)
+            m_SpellsBitfield = sbBitfield;
+
+            if (entityUpdated && OnEntityUpdated != null)
                 OnEntityUpdated();
         }
     }

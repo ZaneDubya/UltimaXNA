@@ -143,6 +143,16 @@ namespace UltimaXNA.Core.Network
             return b;
         }
 
+        public ulong ReadUInt64()
+        {
+            if ((m_index + 8) > m_length)
+                return 0;
+
+            return (ulong)(
+                ((ulong)m_buffer[m_index++] << 56) | ((ulong)m_buffer[m_index++] << 48) | ((ulong)m_buffer[m_index++] << 40) | ((ulong)m_buffer[m_index++] << 32) |
+                ((ulong)m_buffer[m_index++] << 24) | ((ulong)m_buffer[m_index++] << 16) | ((ulong)m_buffer[m_index++] << 8) | (ulong)m_buffer[m_index++]);
+        }
+
         public uint ReadUInt32()
         {
             if ((m_index + 4) > m_length)
