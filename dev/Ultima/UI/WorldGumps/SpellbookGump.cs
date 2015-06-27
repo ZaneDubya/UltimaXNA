@@ -178,23 +178,43 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             AddControl(new HtmlGumpling(this, 64 + (rightPage ? 148 : 0), 10, 130, 200, 0, 0,
                 string.Format("<span color='#004' style='font-family=uni0;'><center>{0}</center></span>", Magery.CircleNames[circle])),
                 page);
-            // icon
-            AddControl(new GumpPic(this, 56 + (rightPage ? 156 : 0), 40, spell.GumpIconID - 0x1298, 0), page);
-            AddControl(new HtmlGumpling(this, 104 + (rightPage ? 156 : 0), 38, 88, 40, 0, 0, string.Format("<span color='#004' style='font-family=uni0;'>{0}</span>", spell.Name)),
+            // icon and spell name
+            AddControl(new HtmlGumpling(this, 56 + (rightPage ? 156 : 0), 38, 130, 44, 0, 0,
+                string.Format("<a href='spellicon={0}'><gumpimg src='{1}'/></a>",
+                spell.Index, spell.GumpIconID - 0x1298)),
                 page);
-            // reagents string.
-            AddControl(new HtmlGumpling(this, 56 + (rightPage ? 156 : 0), 84, 132, 80, 0, 0, string.Format(
-                "<span color='#400' style='font-family=uni0;'>Reagents</span><br/><span color='#004' style='font-family=uni0;'>{0}</span>", spell.CreateReagentListString(", "))),
+            AddControl(new HtmlGumpling(this, 104 + (rightPage ? 156 : 0), 38, 88, 40, 0, 0, string.Format(
+                "<a href='spell={0}' color='#542' hovercolor='#875' activecolor='#420' style='font-family=uni0; text-decoration=none;'>{1}</a>", 
+                spell.Index, spell.Name)), 
+                page);
+            // reagents.
+            AddControl(new HtmlGumpling(this, 56 + (rightPage ? 156 : 0), 84, 146, 106, 0, 0, string.Format(
+                "<span color='#400' style='font-family=uni0;'>Reagents:</span><br/><span style='font-family=ascii6;'>{0}</span>", spell.CreateReagentListString(", "))),
                 page);
         }
 
         public override void ActivateByHREF(string href)
         {
-            if (href.Length > 5 && href.Substring(0, 5) == "page=")
+            string[] hrefs = href.Split('=');
+            if (hrefs.Length != 2)
+                return;
+            if (hrefs[0] == "page")
             {
                 int page;
-                if (int.TryParse(href.Substring(5), out page))
+                if (int.TryParse(hrefs[1], out page))
                     SetActivePage(page);
+            }
+            else if (hrefs[0] == "spell")
+            {
+                int spell;
+                if (int.TryParse(hrefs[1], out spell))
+                    m_World.Interaction.CastSpell(spell);
+            }
+            else if (hrefs[0] == "spellicon")
+            {
+                int spell;
+                if (int.TryParse(hrefs[1], out spell))
+                    m_World.Interaction.CastSpell(spell);
             }
         }
 

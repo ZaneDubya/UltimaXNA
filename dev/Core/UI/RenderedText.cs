@@ -516,6 +516,11 @@ namespace UltimaXNA.Core.UI
 
             for (int i = 0; i < reader.Length; ++i)
             {
+                if (reader.Length > 500)
+                {
+
+                }
+
                 wordWidth += reader.Atoms[i].Width;
                 styleWidth -= reader.Atoms[i].Width;
                 if (styleWidth < 0)

@@ -208,6 +208,7 @@
     <Compile Include="Ultima\Data\SpellDefinition.cs" />
     <Compile Include="Ultima\IO\Fonts\CharacterAscii.cs" />
     <Compile Include="Ultima\IO\Fonts\FontAscii.cs" />
+    <Compile Include="Ultima\Network\Client\CastSpellPacket.cs" />
     <Compile Include="Ultima\World\Entities\Items\Containers\SpellBook.cs" />
     <Compile Include="Ultima\Data\SpellBookTypes.cs" />
     <Compile Include="Ultima\Data\StatLocks.cs" />
