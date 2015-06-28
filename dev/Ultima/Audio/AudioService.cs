@@ -9,18 +9,12 @@
  *
  ***************************************************************************/
 #region usings
-using Microsoft.Xna.Framework.Media;
-using System.Collections.Generic;
-using UltimaXNA.Core.Diagnostics.Tracing;
-using UltimaXNA.Ultima.IO;
 using System;
 using System.Collections.Generic;
-using System.Collections;
-using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using UltimaXNA.Core.Diagnostics.Tracing;
-using UltimaXNA.Core.Diagnostics;
+using UltimaXNA.Ultima.IO;
 #endregion
 
 namespace UltimaXNA.Ultima.Audio
@@ -123,8 +117,21 @@ namespace UltimaXNA.Ultima.Audio
         {
             if (m_MusicCurrentlyPlaying != null)
             {
-                MediaPlayer.Stop();
-                m_MusicCurrentlyPlaying = null;
+                // MediaPlayer.Stop();
+                // Stop playing
+                if (mciSendString(string.Format("stop {0}", c_InternalMusicName), null, 0, IntPtr.Zero) == 0)
+                {
+                    m_MusicCurrentlyPlaying = null;
+                    // close resource
+                    if (mciSendString(string.Format("close {0}", c_InternalMusicName), null, 0, IntPtr.Zero) != 0)
+                    {
+                        Tracer.Error("Error closing current mp3 file");
+                    }
+                }
+                else
+                {
+                    Tracer.Error("Error stopping current mp3 file");
+                }
             }
         }
     }
