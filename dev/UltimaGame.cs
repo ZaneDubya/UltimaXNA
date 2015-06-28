@@ -170,8 +170,6 @@ namespace UltimaXNA
             {
                 Tracer.Critical("Did not find a compatible UO Installation. UltimaXNA is compatible with any version of UO through Mondian's Legacy.");
             }
-
-            audio.PlayMusic(0);
         }
 
         protected override void Dispose(bool disposing)
