@@ -29,6 +29,7 @@ namespace UltimaXNA.Ultima.IO.Fonts
             YOffset = (sbyte)reader.ReadByte();
             Width = reader.ReadByte();
             Height = reader.ReadByte();
+            ExtraWidth = 1;
 
             // only read data if there is IO...
             if ((Width > 0) && (Height > 0))

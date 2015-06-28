@@ -119,7 +119,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Draw(spriteBatch, position);
         }
 
-        void expander_OnMouseDown(int x, int y, MouseButton button)
+        void expander_OnMouseDown(AControl control, int x, int y, MouseButton button)
         {
             y += m_gumplingExpander.Y + ScreenY - Y;
             if (button == MouseButton.Left)
@@ -131,7 +131,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        void expander_OnMouseUp(int x, int y, MouseButton button)
+        void expander_OnMouseUp(AControl control, int x, int y, MouseButton button)
         {
             y += m_gumplingExpander.Y + ScreenY - Y;
             if (m_isExpanding)
@@ -141,7 +141,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        void expander_OnMouseOver(int x, int y)
+        void expander_OnMouseOver(AControl control, int x, int y)
         {
             y += m_gumplingExpander.Y + ScreenY - Y;
             if (m_isExpanding && (y != m_isExpanding_InitialY))

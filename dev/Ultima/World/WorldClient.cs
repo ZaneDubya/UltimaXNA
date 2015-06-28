@@ -1069,7 +1069,7 @@ namespace UltimaXNA.Ultima.World
                     break;
                 case 0x1B: // spellbook data
                     SpellbookData spellbook = p.Spellbook;
-                    WorldModel.Entities.GetObject<SpellBook>(spellbook.Serial, true).ReceiveSpellData(spellbook.BookType, spellbook.SpellBitfields);
+                    WorldModel.Entities.GetObject<SpellBook>(spellbook.Serial, true).ReceiveSpellData(spellbook.BookType, spellbook.SpellsBitfield);
                     break;
                 case 0x1D: // House revision state
                     if (CustomHousing.IsHashCurrent(p.HouseRevisionState.Serial, p.HouseRevisionState.Hash))

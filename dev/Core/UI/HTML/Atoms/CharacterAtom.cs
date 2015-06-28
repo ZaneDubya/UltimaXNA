@@ -1,4 +1,13 @@
-﻿using UltimaXNA.Ultima.IO.Fonts;
+﻿/***************************************************************************
+ *   CharacterAtom.cs
+ *   Copyright (c) 2015 UltimaXNA Development Team
+ *   
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
 
 namespace UltimaXNA.Core.UI.HTML.Atoms
 {
@@ -11,7 +20,10 @@ namespace UltimaXNA.Core.UI.HTML.Atoms
                 if (Character < 32)
                     return 0;
                 else
-                    return Style.Font.GetCharacter(Character).Width + (Style.IsBold ? 1 : 0) + 1;
+                {
+                    ICharacter ch = Style.Font.GetCharacter(Character);
+                    return ch.Width + ch.ExtraWidth + (Style.IsBold ? 1 : 0);
+                }
             }
         }
 
