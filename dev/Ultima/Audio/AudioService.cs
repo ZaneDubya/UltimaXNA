@@ -13,6 +13,14 @@ using Microsoft.Xna.Framework.Media;
 using System.Collections.Generic;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Ultima.IO;
+using System;
+using System.Collections.Generic;
+using System.Collections;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Text;
+using UltimaXNA.Core.Diagnostics.Tracing;
+using UltimaXNA.Core.Diagnostics;
 #endregion
 
 namespace UltimaXNA.Ultima.Audio
@@ -21,7 +29,13 @@ namespace UltimaXNA.Ultima.Audio
     {
         private Dictionary<int, UOSound> m_Sounds = new Dictionary<int, UOSound>();
         private Dictionary<int, UOMusic> m_Music = new Dictionary<int, UOMusic>();
+
+        private const string c_InternalMusicName = "UltimaXNAMusic";
         private UOMusic m_MusicCurrentlyPlaying = null;
+
+        [DllImport("winmm.dll")]
+        private static extern int mciSendString(string lpCommand, StringBuilder lpReturn, int nReturnLength, IntPtr callBack);
+
 
         public void PlaySound(int soundIndex)
         {
@@ -77,10 +91,31 @@ namespace UltimaXNA.Ultima.Audio
                 // stop the current song
                 StopMusic();
 
-                m_MusicCurrentlyPlaying = toPlay;
-                if (m_MusicCurrentlyPlaying.Status != SoundState.Loaded)
-                    m_MusicCurrentlyPlaying.Load(); // this should really be threaded
-                MediaPlayer.Play(m_MusicCurrentlyPlaying.Song);
+                m_MusicCurrentlyPlaying = null;
+                // if (m_MusicCurrentlyPlaying.Status != SoundState.Loaded)
+                //    m_MusicCurrentlyPlaying.Load(); // this should really be threaded
+
+                // open resource
+                string mciCommand = string.Format("open \"{0}\" type MPEGVideo alias {1}", toPlay.Path, c_InternalMusicName);
+                int result = mciSendString(mciCommand, null, 0, IntPtr.Zero);
+                if (result == 0)
+                {
+                    m_MusicCurrentlyPlaying = toPlay;
+                    // start playing
+                    string playCommand = string.Format("play {0} from 0", c_InternalMusicName);
+                    if (m_MusicCurrentlyPlaying.DoLoop)
+                    {
+                        playCommand += " repeat";
+                    }
+                    if (mciSendString(playCommand, null, 0, IntPtr.Zero) != 0)
+                    {
+                        Tracer.Error("Error playing mp3 file {0}", toPlay.Path);
+                    }
+                }
+                else
+                {
+                    Tracer.Error("Error opening mp3 file {0}", toPlay.Path);
+                }
             }
         }
 

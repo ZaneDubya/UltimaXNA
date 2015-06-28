@@ -36,19 +36,26 @@ namespace UltimaXNA.Ultima.Audio
             DoLoop = loop;
         }
 
+        public string Path
+        {
+            get
+            {
+                string path = FileManager.GetPath(string.Format("Music\\Digital\\{0}.mp3", Name));
+                return path;
+            }
+        }
+
         public void Load()
         {
             if (Status == SoundState.Unloaded)
             {
                 Status = SoundState.Loading;
-
-                string path = FileManager.GetPath(string.Format("Music\\Digital\\{0}.mp3", Name));
                 // Static song ctor requires a URI, which is a pain in the butt,
                 // so we're going to just reflect out the ctor.
                 var ctor = typeof(Song).GetConstructor(
                     BindingFlags.NonPublic | BindingFlags.Instance, null,
                     new[] { typeof(string), typeof(string), typeof(int) }, null);
-                m_Song = (Song)ctor.Invoke(new object[] { Name, path, 0 });
+                m_Song = (Song)ctor.Invoke(new object[] { Name, Path, 0 });
                 Status = SoundState.Loaded;
             }
         }
