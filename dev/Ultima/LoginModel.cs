@@ -12,6 +12,7 @@ using UltimaXNA.Core.Patterns.MVC;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Login.States;
 using UltimaXNA.Ultima.Login;
+using UltimaXNA.Ultima.Audio;
 
 namespace UltimaXNA.Ultima
 {
@@ -48,10 +49,15 @@ namespace UltimaXNA.Ultima
 
             m_SceneManager = new StateManager();
             m_SceneManager.ResetToLoginScreen();
+
+            ServiceRegistry.GetService<AudioService>().PlayMusic(0);
+
         }
 
         protected override void OnDispose()
         {
+            ServiceRegistry.GetService<AudioService>().StopMusic();
+
             ServiceRegistry.Unregister<LoginModel>();
 
             Client.Dispose();
