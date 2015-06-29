@@ -91,7 +91,7 @@ namespace UltimaXNA.Ultima.Audio
 
                 // open resource
                 string mciCommand = string.Format("open \"{0}\" type MPEGVideo alias {1}", toPlay.Path, c_InternalMusicName);
-                int result = mciSendString(mciCommand, null, 0, IntPtr.Zero);
+                int result = SendMediaPlayerCommand(mciCommand, null, 0, IntPtr.Zero);
                 if (result == 0)
                 {
                     m_MusicCurrentlyPlaying = toPlay;
@@ -101,7 +101,7 @@ namespace UltimaXNA.Ultima.Audio
                     {
                         playCommand += " repeat";
                     }
-                    if (mciSendString(playCommand, null, 0, IntPtr.Zero) != 0)
+                    if (SendMediaPlayerCommand(playCommand, null, 0, IntPtr.Zero) != 0)
                     {
                         Tracer.Error("Error playing mp3 file {0}", toPlay.Path);
                     }
@@ -119,11 +119,11 @@ namespace UltimaXNA.Ultima.Audio
             {
                 // MediaPlayer.Stop();
                 // Stop playing
-                if (mciSendString(string.Format("stop {0}", c_InternalMusicName), null, 0, IntPtr.Zero) == 0)
+                if (SendMediaPlayerCommand(string.Format("stop {0}", c_InternalMusicName), null, 0, IntPtr.Zero) == 0)
                 {
                     m_MusicCurrentlyPlaying = null;
                     // close resource
-                    if (mciSendString(string.Format("close {0}", c_InternalMusicName), null, 0, IntPtr.Zero) != 0)
+                    if (SendMediaPlayerCommand(string.Format("close {0}", c_InternalMusicName), null, 0, IntPtr.Zero) != 0)
                     {
                         Tracer.Error("Error closing current mp3 file");
                     }
@@ -132,6 +132,20 @@ namespace UltimaXNA.Ultima.Audio
                 {
                     Tracer.Error("Error stopping current mp3 file");
                 }
+            }
+        }
+
+        private int SendMediaPlayerCommand(string lpCommand, StringBuilder lpReturn, int nReturnLength, IntPtr callBack)
+        {
+            try
+            {
+                int retval = mciSendString(lpCommand, lpReturn, nReturnLength, callBack);
+                return retval;
+            }
+            catch (Exception ex)
+            {
+                Tracer.Error("Error sending media player command: {0}", ex.Message);
+                return -1;
             }
         }
     }
