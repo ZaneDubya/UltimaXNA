@@ -133,6 +133,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 case Buttons.Help:
                     break;
                 case Buttons.Options:
+                    if (m_UserInterface.GetControl<OptionsGump>() == null)
+                        m_UserInterface.AddControl(new OptionsGump(), 80, 80);
+                    else
+                        m_UserInterface.RemoveControl<OptionsGump>();
                     break;
                 case Buttons.LogOut:
                     MsgBoxGump g = MsgBoxGump.Show("Quit Ultima Online?", MsgBoxTypes.OkCancel);
