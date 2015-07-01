@@ -36,11 +36,11 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             AddControl(new Button(this, 0, 250, 224, 223, ButtonTypes.Activate, 0, (int)Buttons.Chat), 1);
             AddControl(new Button(this, 0, 320, 237, 236, ButtonTypes.Activate, 0, (int)Buttons.Macros), 1);
             //right column
-            AddControl(new Button(this, 577, 40, 226, 225, ButtonTypes.Activate, 0, (int)Buttons.Interface), 1);
-            AddControl(new Button(this, 577, 110, 228, 227, ButtonTypes.Activate, 0, (int)Buttons.Display), 1);
-            AddControl(new Button(this, 577, 180, 230, 229, ButtonTypes.Activate, 0, (int)Buttons.Reputation), 1);
-            AddControl(new Button(this, 577, 250, 232, 231, ButtonTypes.Activate, 0, (int)Buttons.Miscellaneous), 1);
-            AddControl(new Button(this, 577, 320, 235, 234, ButtonTypes.Activate, 0, (int)Buttons.Filters), 1);
+            AddControl(new Button(this, 576, 40, 226, 225, ButtonTypes.Activate, 0, (int)Buttons.Interface), 1);
+            AddControl(new Button(this, 576, 110, 228, 227, ButtonTypes.Activate, 0, (int)Buttons.Display), 1);
+            AddControl(new Button(this, 576, 180, 230, 229, ButtonTypes.Activate, 0, (int)Buttons.Reputation), 1);
+            AddControl(new Button(this, 576, 250, 232, 231, ButtonTypes.Activate, 0, (int)Buttons.Miscellaneous), 1);
+            AddControl(new Button(this, 576, 320, 235, 234, ButtonTypes.Activate, 0, (int)Buttons.Filters), 1);
 
             m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
             m_World = ServiceRegistry.GetService<WorldModel>();
