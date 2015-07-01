@@ -15,6 +15,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Ultima.IO;
+using UltimaXNA.Configuration;
 #endregion
 
 namespace UltimaXNA.Ultima.Audio
@@ -33,82 +34,88 @@ namespace UltimaXNA.Ultima.Audio
 
         public void PlaySound(int soundIndex)
         {
-            UOSound sound;
-            if (m_Sounds.TryGetValue(soundIndex, out sound))
+            if (Settings.Audio.SoundOn)
             {
-                if (sound.Status == SoundState.Loaded)
-                    sound.Play();
-            }
-            else
-            {
-                sound = new UOSound();
-                m_Sounds.Add(soundIndex, sound);
-                string name;
-                byte[] data;
-                if (SoundData.TryGetSoundData(soundIndex, out data, out name))
+                UOSound sound;
+                if (m_Sounds.TryGetValue(soundIndex, out sound))
                 {
-                    sound.Name = name;
-                    sound.WaveBuffer = data;
-                    sound.Status = SoundState.Loaded;
-                    sound.Play();
+                    if (sound.Status == SoundState.Loaded)
+                        sound.Play();
+                }
+                else
+                {
+                    sound = new UOSound();
+                    m_Sounds.Add(soundIndex, sound);
+                    string name;
+                    byte[] data;
+                    if (SoundData.TryGetSoundData(soundIndex, out data, out name))
+                    {
+                        sound.Name = name;
+                        sound.WaveBuffer = data;
+                        sound.Status = SoundState.Loaded;
+                        sound.Play();
+                    }
                 }
             }
         }
 
         public void PlayMusic(int id)
         {
-            if (id < 0) // not a valid id, used to stop music.
+            if (Settings.Audio.MusicOn)
             {
-                StopMusic();
-                return;
-            }
-
-            if (!m_Music.ContainsKey(id))
-            {
-                string name;
-                bool loops;
-                if (UltimaXNA.Ultima.IO.MusicData.TryGetMusicData(id, out name, out loops))
+                if (id < 0) // not a valid id, used to stop music.
                 {
-                    m_Music.Add(id, new UOMusic(id, name, loops));
-                }
-                else
-                {
-                    Tracer.Error("Received unknown music id {0}", id);
+                    StopMusic();
                     return;
                 }
-            }
 
-            UOMusic toPlay = m_Music[id];
-
-            if (toPlay != m_MusicCurrentlyPlaying)
-            {
-                // stop the current song
-                StopMusic();
-
-                m_MusicCurrentlyPlaying = null;
-                // if (m_MusicCurrentlyPlaying.Status != SoundState.Loaded)
-                //    m_MusicCurrentlyPlaying.Load(); // this should really be threaded
-
-                // open resource
-                string mciCommand = string.Format("open \"{0}\" type MPEGVideo alias {1}", toPlay.Path, c_InternalMusicName);
-                int result = SendMediaPlayerCommand(mciCommand, null, 0, IntPtr.Zero);
-                if (result == 0)
+                if (!m_Music.ContainsKey(id))
                 {
-                    m_MusicCurrentlyPlaying = toPlay;
-                    // start playing
-                    string playCommand = string.Format("play {0} from 0", c_InternalMusicName);
-                    if (m_MusicCurrentlyPlaying.DoLoop)
+                    string name;
+                    bool loops;
+                    if (UltimaXNA.Ultima.IO.MusicData.TryGetMusicData(id, out name, out loops))
                     {
-                        playCommand += " repeat";
+                        m_Music.Add(id, new UOMusic(id, name, loops));
                     }
-                    if (SendMediaPlayerCommand(playCommand, null, 0, IntPtr.Zero) != 0)
+                    else
                     {
-                        Tracer.Error("Error playing mp3 file {0}", toPlay.Path);
+                        Tracer.Error("Received unknown music id {0}", id);
+                        return;
                     }
                 }
-                else
+
+                UOMusic toPlay = m_Music[id];
+
+                if (toPlay != m_MusicCurrentlyPlaying)
                 {
-                    Tracer.Error("Error opening mp3 file {0}", toPlay.Path);
+                    // stop the current song
+                    StopMusic();
+
+                    m_MusicCurrentlyPlaying = null;
+                    // if (m_MusicCurrentlyPlaying.Status != SoundState.Loaded)
+                    //    m_MusicCurrentlyPlaying.Load(); // this should really be threaded
+
+                    // open resource
+                    string mciCommand = string.Format("open \"{0}\" type MPEGVideo alias {1}", toPlay.Path, c_InternalMusicName);
+                    int result = SendMediaPlayerCommand(mciCommand, null, 0, IntPtr.Zero);
+                    if (result == 0)
+                    {
+                        m_MusicCurrentlyPlaying = toPlay;
+                        // start playing
+                        string playCommand = string.Format("play {0} from 0", c_InternalMusicName);
+                        if (m_MusicCurrentlyPlaying.DoLoop)
+                        {
+                            playCommand += " repeat";
+                        }
+                        if (SendMediaPlayerCommand(playCommand, null, 0, IntPtr.Zero) != 0)
+                        {
+                            Tracer.Error("Error playing mp3 file {0}", toPlay.Path);
+                        }
+                    }
+                    else
+                    {
+                        Tracer.Error("Error opening mp3 file {0}", toPlay.Path);
+                    }
                 }
             }
         }
