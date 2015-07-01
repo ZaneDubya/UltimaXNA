@@ -16,23 +16,23 @@ namespace UltimaXNA.Core.Network.Packets
 {
     public abstract class SendRecvPacket: ISendPacket, IRecvPacket
     {
-        readonly int id;
-        readonly int length;
-        readonly string name;
+        readonly int m_Id;
+        readonly int m_Length;
+        readonly string m_Name;
 
         public int Id
         {
-            get { return id; }
+            get { return m_Id; }
         }
 
         public string Name
         {
-            get { return name; }
+            get { return m_Name; }
         }
 
         public int Length
         {
-            get { return length; }
+            get { return m_Length; }
         }
 
         private const int BufferSize = 4096;
@@ -41,35 +41,35 @@ namespace UltimaXNA.Core.Network.Packets
 
         public SendRecvPacket(int id, string name)
         {
-            this.id = id;
-            this.name = name;
-            this.Stream = PacketWriter.CreateInstance(length);
-            this.Stream.Write(id);
-            this.Stream.Write((short)0);
+            m_Id = id;
+            m_Name = name;
+            Stream = PacketWriter.CreateInstance(m_Length);
+            Stream.Write(id);
+            Stream.Write((short)0);
         }
 
         public SendRecvPacket(int id, string name, int length)
         {
-            this.id = id;
-            this.name = name;
-            this.length = length;
+            m_Id = id;
+            m_Name = name;
+            m_Length = length;
 
-            this.Stream = PacketWriter.CreateInstance(length);
-            this.Stream.Write((byte)id);
+            Stream = PacketWriter.CreateInstance(length);
+            Stream.Write((byte)id);
         }
 
         public void EnsureCapacity(int length)
         {
             Stream = PacketWriter.CreateInstance(length);
-            Stream.Write((byte)id);
+            Stream.Write((byte)m_Id);
             Stream.Write((short)length);
         }
 
         public byte[] Compile()
         {
-            this.Stream.Flush();
+            Stream.Flush();
 
-            if (this.Length == 0)
+            if (Length == 0)
             {
                 long length = Stream.Length;
                 Stream.Seek((long)1, SeekOrigin.Begin);
@@ -82,7 +82,7 @@ namespace UltimaXNA.Core.Network.Packets
 
         public override string ToString()
         {
-            return string.Format("Id: {0:X2} Name: {1} Length: {2}", id, name, length);
+            return string.Format("Id: {0:X2} Name: {1} Length: {2}", m_Id, m_Name, m_Length);
         }
     }
 }

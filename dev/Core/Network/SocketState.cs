@@ -19,32 +19,32 @@ namespace UltimaXNA.Core.Network
 {
     public class SocketState
     {
-        private Socket socket;
-        private byte[] buffer;
-        private int dataLength;
+        private Socket m_Socket;
+        private byte[] m_Buffer;
+        private int m_DataLength;
 
         public Socket Socket
         {
-            get { return socket; }
+            get { return m_Socket; }
         }
 
         public byte[] Buffer
         {
-            get { return buffer; }
-            set { buffer = value; }
+            get { return m_Buffer; }
+            set { m_Buffer = value; }
         }
 
         public int DataLength
         {
-            get { return dataLength; }
-            set { dataLength = value; }
+            get { return m_DataLength; }
+            set { m_DataLength = value; }
         }
 
         public SocketState(Socket socket, int bufferSize)
         {
-            this.socket = socket;
-            this.buffer = new byte[bufferSize];
-            this.dataLength = 0;
+            m_Socket = socket;
+            m_Buffer = new byte[bufferSize];
+            m_DataLength = 0;
         }
     }
 }

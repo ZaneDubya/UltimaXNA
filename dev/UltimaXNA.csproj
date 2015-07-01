@@ -5,7 +5,7 @@
     <ProjectTypeGuids>{6D335F3A-9D43-41b4-9D22-F6F17C4BE596};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>UltimaXNA</RootNamespace>
     <AssemblyName>UltimaXNA</AssemblyName>
@@ -24,7 +24,8 @@
     </XnaUpgrade>
     <XnaOutputType>Game</XnaOutputType>
     <XnaProfile>Reach</XnaProfile>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
@@ -43,6 +44,7 @@
     <ApplicationVersion>0.1.0.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -53,7 +55,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoStdLib>true</NoStdLib>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
     <PlatformTarget>x86</PlatformTarget>
     <XnaCompressContent>false</XnaCompressContent>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -72,6 +74,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553">
       <Private>False</Private>
     </Reference>
@@ -110,6 +113,8 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml">
       <Private>False</Private>
@@ -122,288 +127,391 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\AUltimaModel.cs" />
-    <Compile Include="Entity\EntityViews\AEntityView.cs" />
-    <Compile Include="Entity\EntityViews\CorpseView.cs" />
-    <Compile Include="Entity\EntityViews\MobileDeferredView.cs" />
-    <Compile Include="Entity\MobileDeferred.cs" />
-    <Compile Include="Entity\Support\MobileFlags.cs" />
-    <Compile Include="UltimaWorld\Model\EntitySort.cs" />
-    <Compile Include="Entity\EntityViews\GroundView.cs" />
-    <Compile Include="Entity\EntityViews\ItemView.cs" />
-    <Compile Include="Entity\EntityViews\MobileView.cs" />
-    <Compile Include="Entity\Ground.cs" />
-    <Compile Include="Entity\StaticItem.cs" />
-    <Compile Include="UltimaData\BodyData.cs" />
-    <Compile Include="UltimaData\Fonts\ASCIIText.cs" />
-    <Compile Include="UltimaData\Fonts\UniCharacter.cs" />
-    <Compile Include="UltimaData\Fonts\UniText.cs" />
-    <Compile Include="UltimaGUI\Controls\GumpPicBackpack.cs" />
-    <Compile Include="UltimaGUI\GUISprite.cs" />
-    <Compile Include="UltimaGUI\UltimaCursor.cs" />
-    <Compile Include="UltimaGUI\WorldGumps\CorpseGump.cs" />
-    <Compile Include="UltimaInteraction.cs" />
-    <Compile Include="UltimaLogin\LoginModel.cs" />
-    <Compile Include="UltimaClientStatus.cs" />
-    <Compile Include="UltimaLogin\LoginView.cs" />
-    <Compile Include="UltimaVars\CharacterListEntry.cs" />
-    <Compile Include="UltimaVars\Characters.cs" />
-    <Compile Include="UltimaVars\ServerListEntry.cs" />
-    <Compile Include="UltimaVars\Servers.cs" />
-    <Compile Include="UltimaVars\EngineVars.cs" />
-    <Compile Include="UltimaVars\DebugVars.cs" />
-    <Compile Include="UltimaVars\Features.cs" />
-    <Compile Include="UltimaVars\Skills.cs" />
-    <Compile Include="UltimaVars\StatLocks.cs" />
-    <Compile Include="Core\BaseEngine.cs" />
-    <Compile Include="UltimaPackets\Client\AsciiSpeechPacket.cs" />
-    <Compile Include="UltimaPackets\Client\AttackRequestPacket.cs" />
-    <Compile Include="UltimaPackets\Client\BuyItemsPacket.cs" />
-    <Compile Include="UltimaPackets\Client\ClientVersionPacket.cs" />
-    <Compile Include="UltimaPackets\Client\CreateCharacterPacket.cs" />
-    <Compile Include="UltimaPackets\Client\DeleteCharacterPacket.cs" />
-    <Compile Include="UltimaPackets\Client\DisconnectNotificationPacket.cs" />
-    <Compile Include="UltimaPackets\Client\DoubleClickPacket.cs" />
-    <Compile Include="UltimaPackets\Client\DropItemPacket.cs" />
-    <Compile Include="UltimaPackets\Client\DropToLayerPacket.cs" />
-    <Compile Include="UltimaPackets\Client\GameLoginPacket.cs" />
-    <Compile Include="UltimaPackets\Client\GeneralInformationPackets.cs" />
-    <Compile Include="UltimaPackets\Client\GetPlayerStatusPacket.cs" />
-    <Compile Include="UltimaPackets\Client\GumpMenuSelectPacket.cs" />
-    <Compile Include="UltimaPackets\Client\GumpTextEntryDialogReplyPacket.cs" />
-    <Compile Include="UltimaPackets\Client\LoginCharacterPacket.cs" />
-    <Compile Include="UltimaPackets\Client\LoginPacket.cs" />
-    <Compile Include="UltimaPackets\Client\MoveRequestPacket.cs" />
-    <Compile Include="UltimaPackets\Client\PathfindingPacket.cs" />
-    <Compile Include="UltimaPackets\Client\PickupItemPacket.cs" />
-    <Compile Include="UltimaPackets\Client\QueryPropertiesPacket.cs" />
-    <Compile Include="UltimaPackets\Client\RenameCharacterPacket.cs" />
-    <Compile Include="UltimaPackets\Client\RequestHelpPacket.cs" />
-    <Compile Include="UltimaPackets\Client\RequestNamePacket.cs" />
-    <Compile Include="UltimaPackets\Client\RequestNoticePacket.cs" />
-    <Compile Include="UltimaPackets\Client\RequestSkillUsePacket.cs" />
-    <Compile Include="UltimaPackets\Client\RequestTipPacket.cs" />
-    <Compile Include="UltimaPackets\Client\RequestWarModePacket.cs" />
-    <Compile Include="UltimaPackets\Client\ResponseToDialogBoxPacket.cs" />
-    <Compile Include="UltimaPackets\Client\SeedPacket.cs" />
-    <Compile Include="UltimaPackets\Client\SelectServerPacket.cs" />
-    <Compile Include="UltimaPackets\Client\SellListReplyPacket.cs" />
-    <Compile Include="UltimaPackets\Client\SingleClickPacket.cs" />
-    <Compile Include="UltimaPackets\Client\TalkRequestPacket.cs" />
-    <Compile Include="UltimaPackets\Client\TargetCancelPacket.cs" />
-    <Compile Include="UltimaPackets\Client\TargetObjectPacket.cs" />
-    <Compile Include="UltimaPackets\Client\TargetXYZPacket.cs" />
-    <Compile Include="UltimaPackets\Client\UnicodeSpeechPacket.cs" />
-    <Compile Include="UltimaPackets\Client\UOGInfoRequestPacket.cs" />
-    <Compile Include="UltimaWorld\Controller\WorldClient.cs" />
-    <Compile Include="UltimaWorld\Model\ContextMenu.cs" />
-    <Compile Include="UltimaPackets\Server\CharacterListUpdatePacket.cs" />
-    <Compile Include="UltimaPackets\Incomplete\DisplayGumpFastPacket.cs" />
-    <Compile Include="UltimaPackets\Incomplete\DisplayMenuPacket.cs" />
-    <Compile Include="UltimaPackets\Incomplete\Extended0x78Packet.cs" />
-    <Compile Include="UltimaPackets\Server\GraphicEffectPacket.cs" />
-    <Compile Include="UltimaPackets\Incomplete\InvalidMapEnablePacket.cs" />
-    <Compile Include="UltimaPackets\Server\MessageLocalizedAffixPacket.cs" />
-    <Compile Include="UltimaPackets\Incomplete\ObjectHelpResponsePacket.cs" />
-    <Compile Include="UltimaPackets\Incomplete\OpenPaperdollPacket.cs" />
-    <Compile Include="UltimaPackets\Server\PlayMusicPacket.cs" />
-    <Compile Include="UltimaPackets\Incomplete\QuestArrowPacket.cs" />
-    <Compile Include="UltimaPackets\Incomplete\ResurrectionMenuPacket.cs" />
-    <Compile Include="UltimaPackets\Server\SendSkillsPacket.cs" />
-    <Compile Include="UltimaPackets\Server\TimePacket.cs" />
-    <Compile Include="UltimaPackets\Incomplete\TipNoticeWindowPacket.cs" />
-    <Compile Include="UltimaPackets\Incomplete\VendorSellListPacket.cs" />
+    <Compile Include="Configuration\GumpSettings.cs" />
+    <Compile Include="Configuration\MouseSettings.cs" />
+    <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Configuration\WorldSettings.cs" />
+    <Compile Include="Core\ComponentModel\EqualityHelper.cs" />
+    <Compile Include="Core\ComponentModel\NotifyPropertyChangedBase.cs" />
+    <Compile Include="Configuration\Resolution.cs" />
+    <Compile Include="Core\Configuration\TextSettingsFileWriter.cs" />
+    <Compile Include="Core\Diagnostics\EventLevels.cs" />
+    <Compile Include="Core\Diagnostics\Listeners\AEventListener.cs" />
+    <Compile Include="Core\Diagnostics\Listeners\MsgBoxOnCriticalListener.cs" />
+    <Compile Include="Core\DpiManager.cs" />
+    <Compile Include="Core\Extensions\StringExtensions.cs" />
+    <Compile Include="Core\Graphics\Techniques.cs" />
+    <Compile Include="Core\Network\INetworkClient.cs" />
+    <Compile Include="Core\Patterns\IModule.cs" />
+    <Compile Include="Core\UI\ControlMetaData.cs" />
+    <Compile Include="Core\UI\HTML\OpenTag.cs" />
+    <Compile Include="Core\UI\HTML\StyleManager.cs" />
+    <Compile Include="Core\UI\HTML\HREFAttributes.cs" />
+    <Compile Include="Core\UI\HTML\StyleState.cs" />
+    <Compile Include="Core\UI\HTML\StyleValue.cs" />
+    <Compile Include="Core\UI\Interfaces\ICharacter.cs" />
+    <Compile Include="Core\UI\Interfaces\ICursor.cs" />
+    <Compile Include="Core\UI\Interfaces\IFont.cs" />
+    <Compile Include="Core\UI\Interfaces\IUIResourceProvider.cs" />
+    <Compile Include="Core\PluginManager.cs" />
+    <Compile Include="ServiceRegistry.cs" />
+    <Compile Include="Ultima\Audio\AudioService.cs" />
+    <Compile Include="Ultima\Audio\SoundState.cs" />
+    <Compile Include="Ultima\Audio\UOMusic.cs" />
+    <Compile Include="Ultima\Audio\UOSound.cs" />
+    <Compile Include="Ultima\Audio\VolumeState.cs" />
+    <Compile Include="Ultima\AUltimaModel.cs" />
+    <Compile Include="Configuration\DebugSettings.cs" />
+    <Compile Include="Configuration\GameSettings.cs" />
+    <Compile Include="Configuration\ServerSettings.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="Core\Configuration\ASettingsSection.cs" />
+    <Compile Include="Configuration\UltimaOnlineSettings.cs" />
+    <Compile Include="Core\ConsoleManager.cs" />
+    <Compile Include="Core\Input\ActionBinder.cs" />
+    <Compile Include="Core\Input\InputManager.cs" />
+    <Compile Include="Core\Input\Windows\Enums.cs" />
+    <Compile Include="Core\Input\Windows\InputEvent.cs" />
+    <Compile Include="Core\Input\Windows\InputEventKeyboard.cs" />
+    <Compile Include="Core\Input\Windows\InputEventMouse.cs" />
+    <Compile Include="Core\Input\Windows\Message.cs" />
+    <Compile Include="Core\Input\Windows\MessageHook.cs" />
+    <Compile Include="Core\IO\AsyncWriter.cs" />
+    <Compile Include="Core\IO\BinaryFileReader.cs" />
+    <Compile Include="Core\IO\BinaryFileWriter.cs" />
+    <Compile Include="Core\IO\GenericReader.cs" />
+    <Compile Include="Core\IO\GenericWriter.cs" />
+    <Compile Include="Core\NativeMethods.cs" />
+    <Compile Include="Core\Input\Windows\WndProc.cs" />
+    <Compile Include="Core\Patterns\MVC\AController.cs" />
+    <Compile Include="Core\Patterns\MVC\AModel.cs" />
+    <Compile Include="Core\Patterns\MVC\AView.cs" />
+    <Compile Include="Core\Diagnostics\Guard.cs" />
+    <Compile Include="Core\Diagnostics\Tracing\ITracer.cs" />
+    <Compile Include="Core\Diagnostics\Listeners\ConsoleOutputEventListener.cs" />
+    <Compile Include="Core\Diagnostics\Listeners\DebugOutputEventListener.cs" />
+    <Compile Include="Core\Diagnostics\Listeners\FileLogEventListener.cs" />
+    <Compile Include="Core\Diagnostics\Listeners\StreamOuputEventListener.cs" />
+    <Compile Include="Core\Diagnostics\Tracing\Tracer.cs" />
+    <Compile Include="Core\Diagnostics\GeneralExceptionHandler.cs" />
+    <Compile Include="Core\Configuration\SettingsFile.cs" />
+    <Compile Include="Ultima\Data\Body.cs" />
+    <Compile Include="Ultima\Data\ContentItem.cs" />
+    <Compile Include="Ultima\Data\HouseRevisionState.cs" />
+    <Compile Include="Ultima\Data\Hues.cs" />
+    <Compile Include="Ultima\Data\Magery.cs" />
+    <Compile Include="Ultima\Data\Races.cs" />
+    <Compile Include="Ultima\Data\Reagents.cs" />
+    <Compile Include="Ultima\Data\Seasons.cs" />
+    <Compile Include="Ultima\Data\Genders.cs" />
+    <Compile Include="Ultima\Data\SpellbookData.cs" />
+    <Compile Include="Ultima\Data\SpellDefinition.cs" />
+    <Compile Include="Ultima\IO\Fonts\CharacterAscii.cs" />
+    <Compile Include="Ultima\IO\Fonts\FontAscii.cs" />
+    <Compile Include="Ultima\Network\Client\CastSpellPacket.cs" />
+    <Compile Include="Ultima\UI\WorldGumps\UseSpellButtonGump.cs" />
+    <Compile Include="Ultima\World\Entities\Items\Containers\SpellBook.cs" />
+    <Compile Include="Ultima\Data\SpellBookTypes.cs" />
+    <Compile Include="Ultima\Data\StatLocks.cs" />
+    <Compile Include="Ultima\Player\SpellData.cs" />
+    <Compile Include="Ultima\UI\WorldGumps\SpellbookGump.cs" />
+    <Compile Include="Ultima\World\Direction.cs" />
+    <Compile Include="Ultima\Data\MessageTypes.cs" />
+    <Compile Include="Ultima\Data\TileFlags.cs" />
+    <Compile Include="Ultima\World\Entities\Mobiles\MobileSounds.cs" />
+    <Compile Include="Ultima\World\Entities\Mobiles\MovementSpeed.cs" />
+    <Compile Include="Ultima\IO\StaticTile.cs" />
+    <Compile Include="Ultima\LoginModel.cs" />
+    <Compile Include="Ultima\Network\Client\SetSkillLockPacket.cs" />
+    <Compile Include="Ultima\Network\Client\UOSEKeepAlivePacket.cs" />
+    <Compile Include="Ultima\Player\PlayerState.cs" />
+    <Compile Include="Ultima\Player\Quest.cs" />
+    <Compile Include="Ultima\World\Entities\Mobiles\CurrentMaxValue.cs" />
+    <Compile Include="Ultima\IO\AnimData.cs" />
+    <Compile Include="Ultima\IO\VerData.cs" />
+    <Compile Include="Ultima\World\Entities\Effects\AEffect.cs" />
+    <Compile Include="Ultima\World\Entities\Effects\AnimatedItemEffect.cs" />
+    <Compile Include="Ultima\World\Entities\Effects\LightningEffect.cs" />
+    <Compile Include="Ultima\World\Entities\Effects\MovingEffect.cs" />
+    <Compile Include="Ultima\World\EntityViews\AEntityView.cs" />
+    <Compile Include="Ultima\World\EntityViews\CorpseView.cs" />
+    <Compile Include="Ultima\World\EntityViews\AnimatedItemEffectView.cs" />
+    <Compile Include="Ultima\World\EntityViews\LightningEffectView.cs" />
+    <Compile Include="Ultima\World\EntityViews\DeferredView.cs" />
+    <Compile Include="Ultima\World\EntityViews\MovingEffectView.cs" />
+    <Compile Include="Ultima\World\EntityViews\OverheadView.cs" />
+    <Compile Include="Ultima\World\Entities\DeferredEntity.cs" />
+    <Compile Include="Ultima\World\Entities\Mobiles\MobileFlags.cs" />
+    <Compile Include="Core\UI\Fonts\AFont.cs" />
+    <Compile Include="Ultima\Network\Server\FeatureFlags.cs" />
+    <Compile Include="Ultima\UI\Interfaces\IScrollBar.cs" />
+    <Compile Include="Ultima\UI\Controls\ScrollFlag.cs" />
+    <Compile Include="Ultima\UI\Controls\CheckBox.cs" />
+    <Compile Include="Ultima\UI\Controls\RadioButton.cs" />
+    <Compile Include="Ultima\UI\GumpBuilder.cs" />
+    <Compile Include="Ultima\UI\UltimaUIResourceProvider.cs" />
+    <Compile Include="Ultima\UI\WorldGumps\SplitItemStackGump.cs" />
+    <Compile Include="Ultima\UI\WorldGumps\UseSkillButtonGump.cs" />
+    <Compile Include="Ultima\UI\WorldGumps\WorldControl.cs" />
+    <Compile Include="Core\UI\UILayer.cs" />
+    <Compile Include="Ultima\UI\Tooltip.cs" />
+    <Compile Include="Core\UI\HTML\AAtom.cs" />
+    <Compile Include="Core\UI\HTML\Atoms\CharacterAtom.cs" />
+    <Compile Include="Core\UI\HTML\Atoms\ImageAtom.cs" />
+    <Compile Include="Core\UI\HTML\Atoms\SpanAtom.cs" />
+    <Compile Include="Core\UI\HTML\EscapeCharacters.cs" />
+    <Compile Include="Core\UI\HTML\Parsing\DynaString.cs" />
+    <Compile Include="Core\UI\HTML\Parsing\FastHash.cs" />
+    <Compile Include="Core\UI\HTML\Parsing\HTMLchunk.cs" />
+    <Compile Include="Core\UI\HTML\Parsing\HTMLentities.cs" />
+    <Compile Include="Core\UI\HTML\Parsing\HTMLheuristics.cs" />
+    <Compile Include="Core\UI\HTML\Parsing\HTMLparser.cs" />
+    <Compile Include="Core\UI\HTML\Parsing\TagParser.cs" />
+    <Compile Include="Core\UI\RenderedText.cs" />
+    <Compile Include="Core\UI\Fonts\ACharacter.cs" />
+    <Compile Include="Ultima\IO\Fonts\CharacterUnicode.cs" />
+    <Compile Include="Ultima\IO\Fonts\FontUnicode.cs" />
+    <Compile Include="Ultima\IO\Fonts\TextUni.cs" />
+    <Compile Include="Ultima\UI\WorldGumps\JournalGump.cs" />
+    <Compile Include="Ultima\Login\States\HueTestState.cs" />
+    <Compile Include="Ultima\Player\JournalData.cs" />
+    <Compile Include="Ultima\Login\LoginClient.cs" />
+    <Compile Include="Ultima\World\Input\MousePicking.cs" />
+    <Compile Include="Ultima\World\Input\PickType.cs" />
+    <Compile Include="Ultima\World\Managers\EffectManager.cs" />
+    <Compile Include="Ultima\UI\WorldGumps\WorldViewGump.cs" />
+    <Compile Include="Ultima\UI\WorldGumps\YouAreDeadGump.cs" />
+    <Compile Include="Ultima\World\Maps\TileSorter.cs" />
+    <Compile Include="Ultima\World\EntityViews\GroundView.cs" />
+    <Compile Include="Ultima\World\EntityViews\ItemView.cs" />
+    <Compile Include="Ultima\World\EntityViews\MobileView.cs" />
+    <Compile Include="Ultima\World\Entities\Ground.cs" />
+    <Compile Include="Ultima\World\Entities\Items\StaticItem.cs" />
+    <Compile Include="Ultima\IO\BodyData.cs" />
+    <Compile Include="Ultima\UI\Controls\GumpPicBackpack.cs" />
+    <Compile Include="Core\UI\HuedTexture.cs" />
+    <Compile Include="Ultima\UI\UltimaCursor.cs" />
+    <Compile Include="Ultima\World\WorldInteraction.cs" />
+    <Compile Include="Ultima\Login\LoginClientStatus.cs" />
+    <Compile Include="Ultima\Login\LoginView.cs" />
+    <Compile Include="Ultima\Login\Accounts\CharacterListEntry.cs" />
+    <Compile Include="Ultima\Login\Accounts\Characters.cs" />
+    <Compile Include="Ultima\Login\Servers\ServerListEntry.cs" />
+    <Compile Include="Ultima\Login\Servers\Servers.cs" />
+    <Compile Include="Ultima\Data\Features.cs" />
+    <Compile Include="Ultima\Player\SkillData.cs" />
+    <Compile Include="Ultima\Player\StatLockData.cs" />
+    <Compile Include="Ultima\Network\Client\AsciiSpeechPacket.cs" />
+    <Compile Include="Ultima\Network\Client\AttackRequestPacket.cs" />
+    <Compile Include="Ultima\Network\Client\BuyItemsPacket.cs" />
+    <Compile Include="Ultima\Network\Client\ClientVersionPacket.cs" />
+    <Compile Include="Ultima\Network\Client\CreateCharacterPacket.cs" />
+    <Compile Include="Ultima\Network\Client\DeleteCharacterPacket.cs" />
+    <Compile Include="Ultima\Network\Client\DisconnectNotificationPacket.cs" />
+    <Compile Include="Ultima\Network\Client\DoubleClickPacket.cs" />
+    <Compile Include="Ultima\Network\Client\DropItemPacket.cs" />
+    <Compile Include="Ultima\Network\Client\DropToLayerPacket.cs" />
+    <Compile Include="Ultima\Network\Client\GameLoginPacket.cs" />
+    <Compile Include="Ultima\Network\Client\GeneralInformationPackets.cs" />
+    <Compile Include="Ultima\Network\Client\GetPlayerStatusPacket.cs" />
+    <Compile Include="Ultima\Network\Client\GumpMenuSelectPacket.cs" />
+    <Compile Include="Ultima\Network\Client\GumpTextEntryDialogReplyPacket.cs" />
+    <Compile Include="Ultima\Network\Client\LoginCharacterPacket.cs" />
+    <Compile Include="Ultima\Network\Client\LoginPacket.cs" />
+    <Compile Include="Ultima\Network\Client\MoveRequestPacket.cs" />
+    <Compile Include="Ultima\Network\Client\PathfindingPacket.cs" />
+    <Compile Include="Ultima\Network\Client\PickupItemPacket.cs" />
+    <Compile Include="Ultima\Network\Client\QueryPropertiesPacket.cs" />
+    <Compile Include="Ultima\Network\Client\RenameCharacterPacket.cs" />
+    <Compile Include="Ultima\Network\Client\RequestHelpPacket.cs" />
+    <Compile Include="Ultima\Network\Client\RequestNamePacket.cs" />
+    <Compile Include="Ultima\Network\Client\RequestNoticePacket.cs" />
+    <Compile Include="Ultima\Network\Client\RequestSkillUsePacket.cs" />
+    <Compile Include="Ultima\Network\Client\RequestTipPacket.cs" />
+    <Compile Include="Ultima\Network\Client\RequestWarModePacket.cs" />
+    <Compile Include="Ultima\Network\Client\ResponseToDialogBoxPacket.cs" />
+    <Compile Include="Ultima\Network\Client\SeedPacket.cs" />
+    <Compile Include="Ultima\Network\Client\SelectServerPacket.cs" />
+    <Compile Include="Ultima\Network\Client\SellListReplyPacket.cs" />
+    <Compile Include="Ultima\Network\Client\SingleClickPacket.cs" />
+    <Compile Include="Ultima\Network\Client\TalkRequestPacket.cs" />
+    <Compile Include="Ultima\Network\Client\TargetCancelPacket.cs" />
+    <Compile Include="Ultima\Network\Client\TargetObjectPacket.cs" />
+    <Compile Include="Ultima\Network\Client\TargetXYZPacket.cs" />
+    <Compile Include="Ultima\Network\Client\UnicodeSpeechPacket.cs" />
+    <Compile Include="Ultima\Network\Client\UOGInfoRequestPacket.cs" />
+    <Compile Include="Ultima\World\WorldClient.cs" />
+    <Compile Include="Ultima\World\Input\ContextMenu.cs" />
+    <Compile Include="Ultima\Network\Server\CharacterListUpdatePacket.cs" />
+    <Compile Include="Ultima\Network\Incomplete\DisplayGumpFastPacket.cs" />
+    <Compile Include="Ultima\Network\Incomplete\DisplayMenuPacket.cs" />
+    <Compile Include="Ultima\Network\Incomplete\Extended0x78Packet.cs" />
+    <Compile Include="Ultima\Network\Server\GraphicEffectPacket.cs" />
+    <Compile Include="Ultima\Network\Incomplete\InvalidMapEnablePacket.cs" />
+    <Compile Include="Ultima\Network\Server\MessageLocalizedAffixPacket.cs" />
+    <Compile Include="Ultima\Network\Incomplete\ObjectHelpResponsePacket.cs" />
+    <Compile Include="Ultima\Network\Incomplete\OpenPaperdollPacket.cs" />
+    <Compile Include="Ultima\Network\Server\PlayMusicPacket.cs" />
+    <Compile Include="Ultima\Network\Incomplete\QuestArrowPacket.cs" />
+    <Compile Include="Ultima\Network\Incomplete\ResurrectionMenuPacket.cs" />
+    <Compile Include="Ultima\Network\Server\SendSkillsPacket.cs" />
+    <Compile Include="Ultima\Network\Server\TimePacket.cs" />
+    <Compile Include="Ultima\Network\Incomplete\TipNoticeWindowPacket.cs" />
+    <Compile Include="Ultima\Network\Incomplete\VendorSellListPacket.cs" />
     <Compile Include="Core\Network\Packets\RevcPacket.cs" />
     <Compile Include="Core\Network\Packets\SendPacket.cs" />
     <Compile Include="Core\Network\Packets\SendRecvPacket.cs" />
-    <Compile Include="UltimaPackets\Server\AsciiMessagePacket.cs" />
-    <Compile Include="UltimaPackets\Server\ChangeCombatantPacket.cs" />
-    <Compile Include="UltimaPackets\Server\CharacterCityListPacket.cs" />
-    <Compile Include="UltimaPackets\Server\ChatPacket.cs" />
-    <Compile Include="UltimaPackets\Server\CompressedGumpPacket.cs" />
-    <Compile Include="UltimaPackets\Server\ContainerContentPacket.cs" />
-    <Compile Include="UltimaPackets\Server\ContainerContentUpdatePacket.cs" />
-    <Compile Include="UltimaPackets\Server\ContainerPacket.cs" />
-    <Compile Include="UltimaPackets\Server\CorpseClothingPacket.cs" />
-    <Compile Include="UltimaPackets\Server\CustomHousePacket.cs" />
-    <Compile Include="UltimaPackets\Server\DamagePacket.cs" />
-    <Compile Include="UltimaPackets\Server\DeathAnimationPacket.cs" />
-    <Compile Include="UltimaPackets\Server\DeleteResultPacket.cs" />
-    <Compile Include="UltimaPackets\Server\DragEffectPacket.cs" />
-    <Compile Include="UltimaPackets\Server\EquipmentEntry.cs" />
-    <Compile Include="UltimaPackets\Server\GeneralInfoPacket.cs" />
-    <Compile Include="UltimaPackets\Server\GlobalQueueCountPacket.cs" />
-    <Compile Include="UltimaPackets\Server\LiftRejectionPacket.cs" />
-    <Compile Include="UltimaPackets\Server\LoginCompletePacket.cs" />
-    <Compile Include="UltimaPackets\Server\LoginConfirmPacket.cs" />
-    <Compile Include="UltimaPackets\Server\LoginRejectionPacket.cs" />
-    <Compile Include="UltimaPackets\Server\MessageLocalizedPacket.cs" />
-    <Compile Include="UltimaPackets\Server\MobileAnimationPacket.cs" />
-    <Compile Include="UltimaPackets\Server\MobileAttributesPacket.cs" />
-    <Compile Include="UltimaPackets\Server\MobileIncomingPacket.cs" />
-    <Compile Include="UltimaPackets\Server\MobileMovingPacket.cs" />
-    <Compile Include="UltimaPackets\Server\MobileUpdatePacket.cs" />
-    <Compile Include="UltimaPackets\Server\MoveAcknowledgePacket.cs" />
-    <Compile Include="UltimaPackets\Server\MovementRejectPacket.cs" />
-    <Compile Include="UltimaPackets\Server\ObjectInfoPacket.cs" />
-    <Compile Include="UltimaPackets\Server\ObjectPropertyListPacket.cs" />
-    <Compile Include="UltimaPackets\Server\ObjectPropertyListUpdatePacket.cs" />
-    <Compile Include="UltimaPackets\Server\OpenWebBrowserPacket.cs" />
-    <Compile Include="UltimaPackets\Server\OverallLightLevelPacket.cs" />
-    <Compile Include="UltimaPackets\Server\PersonalLightLevelPacket.cs" />
-    <Compile Include="UltimaPackets\Server\PlayerMovePacket.cs" />
-    <Compile Include="UltimaPackets\Server\PlaySoundEffectPacket.cs" />
-    <Compile Include="UltimaPackets\Server\PopupMessagePacket.cs" />
-    <Compile Include="UltimaPackets\Server\RemoveEntityPacket.cs" />
-    <Compile Include="UltimaPackets\Server\RequestNameResponsePacket.cs" />
-    <Compile Include="UltimaPackets\Server\SeasonChangePacket.cs" />
-    <Compile Include="UltimaPackets\Server\ServerListPacket.cs" />
-    <Compile Include="UltimaPackets\Server\ServerRelayPacket.cs" />
-    <Compile Include="UltimaPackets\Server\StatusInfoPacket.cs" />
-    <Compile Include="UltimaPackets\Server\SubServerPacket.cs" />
-    <Compile Include="UltimaPackets\Server\SupportedFeaturesPacket.cs" />
-    <Compile Include="UltimaPackets\Server\SwingPacket.cs" />
-    <Compile Include="UltimaPackets\Server\TargetCursorMulti.cs" />
-    <Compile Include="UltimaPackets\Server\TargetCursorPacket.cs" />
-    <Compile Include="UltimaPackets\Server\UnicodeMessagePacket.cs" />
-    <Compile Include="UltimaPackets\Server\UOGInfoResponsePacket.cs" />
-    <Compile Include="UltimaPackets\Server\UpdateHealthPacket.cs" />
-    <Compile Include="UltimaPackets\Server\UpdateManaPacket.cs" />
-    <Compile Include="UltimaPackets\Server\UpdateStaminaPacket.cs" />
-    <Compile Include="UltimaPackets\Server\VendorBuyListPacket.cs" />
-    <Compile Include="UltimaPackets\Server\VersionRequestPacket.cs" />
-    <Compile Include="UltimaPackets\Server\WarModePacket.cs" />
-    <Compile Include="UltimaPackets\Server\WeatherPacket.cs" />
-    <Compile Include="UltimaPackets\Server\WornItemPacket.cs" />
-    <Compile Include="UltimaPackets\Shared.cs" />
-    <Compile Include="Core\Program.cs" />
-    <Compile Include="UltimaClient.cs" />
-    <Compile Include="UltimaData\ArtData.cs" />
-    <Compile Include="UltimaData\Fonts\ASCIIFont.cs" />
-    <Compile Include="UltimaData\ContainerData.cs" />
-    <Compile Include="UltimaData\CustomHousingData.cs" />
-    <Compile Include="UltimaData\HairStyles.cs" />
-    <Compile Include="UltimaData\ParticleData.cs" />
-    <Compile Include="UltimaData\SkillsData.cs" />
-    <Compile Include="UltimaData\SpeechData.cs" />
-    <Compile Include="UltimaData\TileMatrix.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="UltimaData\TileMatrixRaw.cs" />
-    <Compile Include="Core\Diagnostics\Dynamic.cs" />
-    <Compile Include="UltimaWorld\Controller\TargetTypes.cs" />
-    <Compile Include="UltimaWorld\Controller\WorldInput.cs" />
-    <Compile Include="UltimaGUI\Controls\TextureGumpling.cs" />
-    <Compile Include="UltimaGUI\HTML\HTMLRegions.cs" />
-    <Compile Include="UltimaGUI\HTML\HTMLAtoms.cs" />
-    <Compile Include="UltimaGUI\HTML\Enums.cs" />
-    <Compile Include="UltimaGUI\HTML\HTMLImages.cs" />
-    <Compile Include="UltimaGUI\HTML\Parser.cs" />
+    <Compile Include="Ultima\Network\Server\AsciiMessagePacket.cs" />
+    <Compile Include="Ultima\Network\Server\ChangeCombatantPacket.cs" />
+    <Compile Include="Ultima\Network\Server\CharacterCityListPacket.cs" />
+    <Compile Include="Ultima\Network\Server\ChatPacket.cs" />
+    <Compile Include="Ultima\Network\Server\CompressedGumpPacket.cs" />
+    <Compile Include="Ultima\Network\Server\ContainerContentPacket.cs" />
+    <Compile Include="Ultima\Network\Server\ContainerContentUpdatePacket.cs" />
+    <Compile Include="Ultima\Network\Server\ContainerPacket.cs" />
+    <Compile Include="Ultima\Network\Server\CorpseClothingPacket.cs" />
+    <Compile Include="Ultima\Network\Server\CustomHousePacket.cs" />
+    <Compile Include="Ultima\Network\Server\DamagePacket.cs" />
+    <Compile Include="Ultima\Network\Server\DeathAnimationPacket.cs" />
+    <Compile Include="Ultima\Network\Server\DeleteResultPacket.cs" />
+    <Compile Include="Ultima\Network\Server\DragEffectPacket.cs" />
+    <Compile Include="Ultima\Network\Server\EquipmentEntry.cs" />
+    <Compile Include="Ultima\Network\Server\GeneralInfoPacket.cs" />
+    <Compile Include="Ultima\Network\Server\GlobalQueueCountPacket.cs" />
+    <Compile Include="Ultima\Network\Server\LiftRejectionPacket.cs" />
+    <Compile Include="Ultima\Network\Server\LoginCompletePacket.cs" />
+    <Compile Include="Ultima\Network\Server\LoginConfirmPacket.cs" />
+    <Compile Include="Ultima\Network\Server\LoginRejectionPacket.cs" />
+    <Compile Include="Ultima\Network\Server\MessageLocalizedPacket.cs" />
+    <Compile Include="Ultima\Network\Server\MobileAnimationPacket.cs" />
+    <Compile Include="Ultima\Network\Server\MobileAttributesPacket.cs" />
+    <Compile Include="Ultima\Network\Server\MobileIncomingPacket.cs" />
+    <Compile Include="Ultima\Network\Server\MobileMovingPacket.cs" />
+    <Compile Include="Ultima\Network\Server\MobileUpdatePacket.cs" />
+    <Compile Include="Ultima\Network\Server\MoveAcknowledgePacket.cs" />
+    <Compile Include="Ultima\Network\Server\MovementRejectPacket.cs" />
+    <Compile Include="Ultima\Network\Server\ObjectInfoPacket.cs" />
+    <Compile Include="Ultima\Network\Server\ObjectPropertyListPacket.cs" />
+    <Compile Include="Ultima\Network\Server\ObjectPropertyListUpdatePacket.cs" />
+    <Compile Include="Ultima\Network\Server\OpenWebBrowserPacket.cs" />
+    <Compile Include="Ultima\Network\Server\OverallLightLevelPacket.cs" />
+    <Compile Include="Ultima\Network\Server\PersonalLightLevelPacket.cs" />
+    <Compile Include="Ultima\Network\Server\PlayerMovePacket.cs" />
+    <Compile Include="Ultima\Network\Server\PlaySoundEffectPacket.cs" />
+    <Compile Include="Ultima\Network\Server\PopupMessagePacket.cs" />
+    <Compile Include="Ultima\Network\Server\RemoveEntityPacket.cs" />
+    <Compile Include="Ultima\Network\Server\RequestNameResponsePacket.cs" />
+    <Compile Include="Ultima\Network\Server\SeasonChangePacket.cs" />
+    <Compile Include="Ultima\Network\Server\ServerListPacket.cs" />
+    <Compile Include="Ultima\Network\Server\ServerRelayPacket.cs" />
+    <Compile Include="Ultima\Network\Server\StatusInfoPacket.cs" />
+    <Compile Include="Ultima\Network\Server\SubServerPacket.cs" />
+    <Compile Include="Ultima\Network\Server\SupportedFeaturesPacket.cs" />
+    <Compile Include="Ultima\Network\Server\SwingPacket.cs" />
+    <Compile Include="Ultima\Network\Server\TargetCursorMulti.cs" />
+    <Compile Include="Ultima\Network\Server\TargetCursorPacket.cs" />
+    <Compile Include="Ultima\Network\Server\UnicodeMessagePacket.cs" />
+    <Compile Include="Ultima\Network\Server\UOGInfoResponsePacket.cs" />
+    <Compile Include="Ultima\Network\Server\UpdateHealthPacket.cs" />
+    <Compile Include="Ultima\Network\Server\UpdateManaPacket.cs" />
+    <Compile Include="Ultima\Network\Server\UpdateStaminaPacket.cs" />
+    <Compile Include="Ultima\Network\Server\VendorBuyListPacket.cs" />
+    <Compile Include="Ultima\Network\Server\VersionRequestPacket.cs" />
+    <Compile Include="Ultima\Network\Server\WarModePacket.cs" />
+    <Compile Include="Ultima\Network\Server\WeatherPacket.cs" />
+    <Compile Include="Ultima\Network\Server\WornItemPacket.cs" />
+    <Compile Include="Ultima\IO\ArtData.cs" />
+    <Compile Include="Ultima\IO\ContainerData.cs" />
+    <Compile Include="Ultima\World\CustomHousing.cs" />
+    <Compile Include="Ultima\IO\HairStyles.cs" />
+    <Compile Include="Ultima\IO\ParticleData.cs" />
+    <Compile Include="Ultima\IO\SkillsData.cs" />
+    <Compile Include="Ultima\IO\SpeechData.cs" />
+    <Compile Include="Ultima\IO\TileMatrixClient.cs" />
+    <Compile Include="Ultima\World\Input\WorldInput.cs" />
+    <Compile Include="Core\UI\HTML\Regions.cs" />
+    <Compile Include="Core\UI\HTML\Enums.cs" />
+    <Compile Include="Core\UI\HTML\Images.cs" />
+    <Compile Include="Core\UI\HTML\Reader.cs" />
     <Compile Include="Core\Diagnostics\Metrics.cs" />
-    <Compile Include="UltimaData\GumpData.cs" />
-    <Compile Include="UltimaData\Mobtypes.cs" />
-    <Compile Include="UltimaData\MultiData.cs" />
-    <Compile Include="UltimaData\MusicData.cs" />
-    <Compile Include="UltimaData\RadarColorData.cs" />
-    <Compile Include="UltimaData\_SharedMethods.cs" />
-    <Compile Include="UltimaData\SoundData.cs" />
-    <Compile Include="UltimaData\StringData.cs" />
-    <Compile Include="UltimaData\Fonts\UniFont.cs" />
-    <Compile Include="Core\Diagnostics\Logger.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Core\Diagnostics\StatusLevel.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Core\Diagnostics\StatusUpdateEventArgs.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="UltimaEngine.cs" />
-    <Compile Include="UltimaData\FileManager.cs" />
-    <Compile Include="Core\Point.cs" />
-    <Compile Include="Entity\Container.cs" />
-    <Compile Include="Entity\Corpse.cs" />
-    <Compile Include="Entity\Effect.cs" />
-    <Compile Include="Entity\AEntity.cs" />
-    <Compile Include="UltimaWorld\Model\EntityManager.cs" />
-    <Compile Include="Position3D.cs" />
-    <Compile Include="Entity\Item.cs" />
-    <Compile Include="Entity\Mobile.cs" />
-    <Compile Include="Entity\EntityViews\MobileAnimation.cs" />
-    <Compile Include="Entity\MobileEquipment.cs" />
-    <Compile Include="Entity\MobileMovement.cs" />
-    <Compile Include="Entity\MobileMovementCheck.cs" />
-    <Compile Include="Entity\Multi.cs" />
-    <Compile Include="Entity\Support\Overhead.cs" />
-    <Compile Include="Entity\PlayerMobile.cs" />
-    <Compile Include="Entity\Support\PropertyList.cs" />
-    <Compile Include="Entity\Support\Shared.cs" />
-    <Compile Include="UltimaLogin\Scenes\CharacterListScene.cs" />
-    <Compile Include="UltimaLogin\Scenes\CreateCharacterScene.cs" />
-    <Compile Include="UltimaLogin\Scenes\LoggingInScene.cs" />
-    <Compile Include="UltimaLogin\Scenes\SelectServerScene.cs" />
-    <Compile Include="Core\Rendering\VectorPolygon.cs" />
-    <Compile Include="Core\Rendering\VectorRenderer.cs" />
-    <Compile Include="UltimaGUI\HTML\Parsing\DynaString.cs" />
-    <Compile Include="UltimaGUI\HTML\Parsing\FastHash.cs" />
-    <Compile Include="UltimaGUI\HTML\Parsing\HTMLchunk.cs" />
-    <Compile Include="UltimaGUI\HTML\Parsing\HTMLentities.cs" />
-    <Compile Include="UltimaGUI\HTML\Parsing\HTMLheuristics.cs" />
-    <Compile Include="UltimaGUI\HTML\Parsing\HTMLParser.cs" />
-    <Compile Include="UltimaGUI\HTML\Parsing\TagParser.cs" />
-    <Compile Include="UltimaWorld\Model\MapBlock.cs" />
-    <Compile Include="UltimaWorld\View\IsometricWorldView.cs" />
-    <Compile Include="UltimaWorld\Model\MapTile.cs" />
-    <Compile Include="UltimaWorld\Controller\MouseOverList.cs" />
-    <Compile Include="UltimaGUI\LoginGumps\CharacterListGump.cs" />
-    <Compile Include="UltimaGUI\WorldGumps\ChatWindow.cs" />
-    <Compile Include="UltimaGUI\WorldGumps\ContainerGump.cs" />
-    <Compile Include="UltimaGUI\LoginGumps\CreateCharSkillsGump.cs" />
-    <Compile Include="UltimaGUI\LoginGumps\CreateCharAppearanceGump.cs" />
-    <Compile Include="UltimaGUI\WorldGumps\DebugGump.cs" />
-    <Compile Include="UltimaGUI\LoginGumps\LoggingInGump.cs" />
-    <Compile Include="UltimaGUI\LoginGumps\LoginGump.cs" />
-    <Compile Include="UltimaGUI\WorldGumps\MiniMap.cs" />
-    <Compile Include="UltimaGUI\WorldGumps\SkillsGump.cs" />
-    <Compile Include="UltimaGUI\WorldGumps\StatusGump.cs" />
-    <Compile Include="UltimaGUI\Controls\ExpandableScroll.cs" />
-    <Compile Include="UltimaGUI\MsgBox.cs" />
-    <Compile Include="UltimaGUI\WorldGumps\PaperDollGump.cs" />
-    <Compile Include="UltimaGUI\LoginGumps\SelectServerGump.cs" />
-    <Compile Include="UltimaGUI\WorldGumps\TopMenu.cs" />
-    <Compile Include="UltimaGUI\Control.cs" />
-    <Compile Include="UltimaGUI\DropWidget.cs" />
-    <Compile Include="Core\Rendering\SpriteBatchUI.cs" />
-    <Compile Include="UltimaGUI\Gump.cs" />
-    <Compile Include="UltimaGUI\Controls\Button.cs" />
-    <Compile Include="UltimaGUI\Controls\CheckerTrans.cs" />
-    <Compile Include="UltimaGUI\Controls\ColorPicker.cs" />
-    <Compile Include="UltimaGUI\Controls\CroppedText.cs" />
-    <Compile Include="UltimaGUI\Controls\DropDownList.cs" />
-    <Compile Include="UltimaGUI\DragWidget.cs" />
-    <Compile Include="UltimaGUI\Controls\ItemGumplingPaperdoll.cs" />
-    <Compile Include="UltimaGUI\Controls\ItemGumpling.cs" />
-    <Compile Include="UltimaGUI\Controls\PaperdollLargeUninteractable.cs" />
-    <Compile Include="UltimaGUI\Controls\PaperDollInteractable.cs" />
-    <Compile Include="UltimaGUI\Controls\ScrollBar.cs" />
-    <Compile Include="UltimaGUI\Controls\GumpPic.cs" />
-    <Compile Include="UltimaGUI\Controls\GumpPicContainer.cs" />
-    <Compile Include="UltimaGUI\Controls\GumpPicTiled.cs" />
-    <Compile Include="UltimaGUI\Controls\HtmlGump.cs" />
-    <Compile Include="UltimaGUI\Controls\ResizePic.cs" />
-    <Compile Include="UltimaGUI\Controls\Slider.cs" />
-    <Compile Include="UltimaGUI\Controls\TextEntry.cs" />
-    <Compile Include="UltimaGUI\Controls\TextLabel.cs" />
-    <Compile Include="UltimaGUI\Controls\TextLabelAscii.cs" />
-    <Compile Include="UltimaGUI\Controls\TextLabelAsciiCropped.cs" />
-    <Compile Include="UltimaGUI\Controls\TilePic.cs" />
-    <Compile Include="UltimaGUI\TextRenderer.cs" />
-    <Compile Include="Core\GUIState.cs" />
-    <Compile Include="UltimaData\StaticTileList.cs" />
-    <Compile Include="UltimaData\TexmapData.cs" />
-    <Compile Include="UltimaData\TileData.cs" />
-    <Compile Include="UltimaData\TileMatrixPatch.cs" />
-    <Compile Include="Core\Network\Client.cs" />
+    <Compile Include="Ultima\IO\GumpData.cs" />
+    <Compile Include="Ultima\IO\Mobtypes.cs" />
+    <Compile Include="Ultima\IO\MultiData.cs" />
+    <Compile Include="Ultima\IO\MusicData.cs" />
+    <Compile Include="Ultima\IO\RadarColorData.cs" />
+    <Compile Include="Ultima\IO\SoundData.cs" />
+    <Compile Include="Ultima\IO\StringData.cs" />
+    <Compile Include="UltimaGame.cs" />
+    <Compile Include="Ultima\IO\FileManager.cs" />
+    <Compile Include="Ultima\World\Entities\Items\Containers\Container.cs" />
+    <Compile Include="Ultima\World\Entities\Items\Containers\Corpse.cs" />
+    <Compile Include="Ultima\World\Entities\AEntity.cs" />
+    <Compile Include="Ultima\World\Managers\EntityManager.cs" />
+    <Compile Include="Ultima\World\Position3D.cs" />
+    <Compile Include="Ultima\World\Entities\Items\Item.cs" />
+    <Compile Include="Ultima\World\Entities\Mobiles\Mobile.cs" />
+    <Compile Include="Ultima\World\EntityViews\MobileAnimation.cs" />
+    <Compile Include="Ultima\World\Entities\Mobiles\MobileEquipment.cs" />
+    <Compile Include="Ultima\World\Entities\Mobiles\MobileMovement.cs" />
+    <Compile Include="Ultima\World\Entities\Mobiles\MobileMovementCheck.cs" />
+    <Compile Include="Ultima\World\Entities\Multis\Multi.cs" />
+    <Compile Include="Ultima\World\Entities\Overhead.cs" />
+    <Compile Include="Ultima\World\Entities\Mobiles\PlayerMobile.cs" />
+    <Compile Include="Ultima\World\Entities\PropertyList.cs" />
+    <Compile Include="Ultima\Login\States\CharacterListState.cs" />
+    <Compile Include="Ultima\Login\States\CreateCharacterState.cs" />
+    <Compile Include="Ultima\Login\States\LoggingInState.cs" />
+    <Compile Include="Ultima\Login\States\SelectServerState.cs" />
+    <Compile Include="Ultima\World\Maps\MapBlock.cs" />
+    <Compile Include="Ultima\World\Managers\StaticManager.cs" />
+    <Compile Include="Ultima\World\WorldViews\IsometricView.cs" />
+    <Compile Include="Ultima\World\Maps\MapTile.cs" />
+    <Compile Include="Ultima\World\Input\MouseOverList.cs" />
+    <Compile Include="Ultima\UI\LoginGumps\CharacterListGump.cs" />
+    <Compile Include="Ultima\UI\WorldGumps\ChatControl.cs" />
+    <Compile Include="Ultima\UI\WorldGumps\ContainerGump.cs" />
+    <Compile Include="Ultima\UI\LoginGumps\CreateCharSkillsGump.cs" />
+    <Compile Include="Ultima\UI\LoginGumps\CreateCharAppearanceGump.cs" />
+    <Compile Include="Ultima\UI\WorldGumps\DebugGump.cs" />
+    <Compile Include="Ultima\UI\LoginGumps\LoggingInGump.cs" />
+    <Compile Include="Ultima\UI\LoginGumps\LoginGump.cs" />
+    <Compile Include="Ultima\UI\WorldGumps\MiniMapGump.cs" />
+    <Compile Include="Ultima\UI\WorldGumps\SkillsGump.cs" />
+    <Compile Include="Ultima\UI\WorldGumps\StatusGump.cs" />
+    <Compile Include="Ultima\UI\Controls\ExpandableScroll.cs" />
+    <Compile Include="Ultima\UI\MsgBoxGump.cs" />
+    <Compile Include="Ultima\UI\WorldGumps\PaperDollGump.cs" />
+    <Compile Include="Ultima\UI\LoginGumps\SelectServerGump.cs" />
+    <Compile Include="Ultima\UI\WorldGumps\TopMenuGump.cs" />
+    <Compile Include="Core\UI\AControl.cs" />
+    <Compile Include="Core\Graphics\SpriteBatchUI.cs" />
+    <Compile Include="Ultima\UI\Gump.cs" />
+    <Compile Include="Ultima\UI\Controls\Button.cs" />
+    <Compile Include="Ultima\UI\Controls\CheckerTrans.cs" />
+    <Compile Include="Ultima\UI\Controls\ColorPicker.cs" />
+    <Compile Include="Ultima\UI\Controls\CroppedText.cs" />
+    <Compile Include="Ultima\UI\Controls\DropDownList.cs" />
+    <Compile Include="Ultima\UI\Controls\ItemGumplingPaperdoll.cs" />
+    <Compile Include="Ultima\UI\Controls\ItemGumpling.cs" />
+    <Compile Include="Ultima\UI\Controls\PaperdollLargeUninteractable.cs" />
+    <Compile Include="Ultima\UI\Controls\PaperDollInteractable.cs" />
+    <Compile Include="Ultima\UI\Controls\ScrollBar.cs" />
+    <Compile Include="Ultima\UI\Controls\GumpPic.cs" />
+    <Compile Include="Ultima\UI\Controls\GumpPicContainer.cs" />
+    <Compile Include="Ultima\UI\Controls\GumpPicTiled.cs" />
+    <Compile Include="Ultima\UI\Controls\HtmlGumpling.cs" />
+    <Compile Include="Ultima\UI\Controls\ResizePic.cs" />
+    <Compile Include="Ultima\UI\Controls\HSliderBar.cs" />
+    <Compile Include="Ultima\UI\Controls\TextEntry.cs" />
+    <Compile Include="Ultima\UI\Controls\TextLabel.cs" />
+    <Compile Include="Ultima\UI\Controls\TextLabelAscii.cs" />
+    <Compile Include="Ultima\UI\Controls\TextLabelAsciiCropped.cs" />
+    <Compile Include="Ultima\UI\Controls\TilePic.cs" />
+    <Compile Include="Core\UI\UserInterfaceService.cs" />
+    <Compile Include="Ultima\IO\TexmapData.cs" />
+    <Compile Include="Ultima\IO\TileData.cs" />
+    <Compile Include="Ultima\IO\TileMatrixClientPatch.cs" />
+    <Compile Include="Core\Network\NetworkClient.cs" />
     <Compile Include="Core\Network\Compression\HuffmanDecompression.cs" />
     <Compile Include="Core\Network\Compression\ZlibDecompression.cs" />
     <Compile Include="Core\Network\IRecvPacket.cs" />
@@ -414,25 +522,25 @@
     <Compile Include="Core\Network\PacketHandler.cs" />
     <Compile Include="Core\Network\QueuedPacket.cs" />
     <Compile Include="Core\Network\SocketState.cs" />
-    <Compile Include="UltimaLogin\Scenes\AScene.cs" />
-    <Compile Include="UltimaLogin\Scenes\SceneManager.cs" />
-    <Compile Include="UltimaLogin\Scenes\LoginScene.cs" />
-    <Compile Include="Serial.cs" />
-    <Compile Include="UltimaData\_Enums.cs" />
-    <Compile Include="UltimaWorld\View\MiniMapWorldView.cs" />
-    <Compile Include="UltimaWorld\Model\Map.cs" />
-    <Compile Include="UltimaWorld\Controller\PickTypes.cs" />
-    <Compile Include="Core\Rendering\SpriteBatch3D.cs" />
-    <Compile Include="Core\Rendering\VertexPositionNormalTextureHue.cs" />
+    <Compile Include="Ultima\Login\States\AState.cs" />
+    <Compile Include="Ultima\Login\States\StateManager.cs" />
+    <Compile Include="Ultima\Login\States\LoginState.cs" />
+    <Compile Include="Ultima\Serial.cs" />
+    <Compile Include="Ultima\World\WorldViews\MiniMapBlock.cs" />
+    <Compile Include="Ultima\World\WorldViews\MiniMapTexture.cs" />
+    <Compile Include="Ultima\World\Maps\Map.cs" />
+    <Compile Include="Core\Graphics\SpriteBatch3D.cs" />
+    <Compile Include="Core\Graphics\VertexPositionNormalTextureHue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UltimaData\AnimationData.cs" />
-    <Compile Include="UltimaData\FileIndex.cs" />
-    <Compile Include="UltimaData\HueData.cs" />
-    <Compile Include="UltimaData\Versioning.cs" />
-    <Compile Include="UltimaWorld\Model\WorldCursor.cs" />
-    <Compile Include="UltimaWorld\WorldView.cs" />
+    <Compile Include="Ultima\IO\Animations.cs" />
+    <Compile Include="Ultima\IO\FileIndex.cs" />
+    <Compile Include="Ultima\IO\HueData.cs" />
+    <Compile Include="Ultima\IO\Entry5D.cs" />
+    <Compile Include="Ultima\World\Input\WorldCursor.cs" />
+    <Compile Include="Ultima\World\WorldViews\OverheadsView.cs" />
+    <Compile Include="Ultima\World\WorldView.cs" />
     <Compile Include="Utility.cs" />
-    <Compile Include="UltimaWorld\WorldModel.cs" />
+    <Compile Include="Ultima\WorldModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <NestedContentProject Include="Content\Content.contentproj">
@@ -483,16 +591,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Core\Network\Packets\Both\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="InterXLib\InterXLib.csproj">
-      <Project>{5de77709-9a9f-4059-9f8a-791f5042667a}</Project>
-      <Name>InterXLib</Name>
-    </ProjectReference>
     <ProjectReference Include="Content\UltimaXNAContent.contentproj">
       <Project>{C4D0357F-85DD-4418-ABA4-7C7875BB3129}</Project>
-      <Name>UltimaXNAContent %28Content%29</Name>
+      <Name>UltimaXNAContent</Name>
       <XnaReferenceType>Content</XnaReferenceType>
     </ProjectReference>
   </ItemGroup>
@@ -501,6 +602,15 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Data\bodytable.cfg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\containers.cfg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
