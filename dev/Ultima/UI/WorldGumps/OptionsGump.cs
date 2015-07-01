@@ -42,6 +42,11 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             AddControl(new Button(this, 576, 250, 232, 231, ButtonTypes.Activate, 0, (int)Buttons.Miscellaneous), 1);
             AddControl(new Button(this, 576, 320, 235, 234, ButtonTypes.Activate, 0, (int)Buttons.Filters), 1);
 
+            AddControl(new Button(this, 140, 410, 243, 241, ButtonTypes.Activate, 0, (int)Buttons.Cancel), 1);
+            AddControl(new Button(this, 240, 410, 239, 240, ButtonTypes.Activate, 0, (int)Buttons.Apply), 1);
+            AddControl(new Button(this, 340, 410, 246, 244, ButtonTypes.Activate, 0, (int)Buttons.Default), 1);
+            AddControl(new Button(this, 440, 410, 249, 248, ButtonTypes.Activate, 0, (int)Buttons.Okay), 1);
+
             m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
             m_World = ServiceRegistry.GetService<WorldModel>();
 
@@ -85,6 +90,19 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 case Buttons.Filters:
                     break;
 
+                case Buttons.Cancel:
+                    break;
+
+                case Buttons.Apply:
+                    break;
+
+                case Buttons.Default:
+                    break;
+
+                case Buttons.Okay:
+                    break;
+
+
             }
         }
 
@@ -98,7 +116,11 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             Display,
             Reputation,
             Miscellaneous,
-            Filters
+            Filters,
+            Cancel,
+            Apply,
+            Default,
+            Okay
         }
     }
 }
