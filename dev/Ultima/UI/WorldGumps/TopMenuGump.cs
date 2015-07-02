@@ -26,6 +26,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         public TopMenuGump()
             : base(0, 0)
         {
+            IsUncloseableWithRMB = true;
+            IsMovable = true;
+            
             // maximized view
             AddControl(new ResizePic(this, 0, 0, 9200, 610, 27), 1);
             AddControl(new Button(this, 5, 3, 5540, 5542, 0, 2, 0), 1);
@@ -55,9 +58,13 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
             m_World = ServiceRegistry.GetService<WorldModel>();
 
-            IsUncloseableWithRMB = true;
-
             MetaData.Layer = UILayer.Over;
+        }
+        
+        protected override void OnInitialize()
+        {
+            SetSavePositionName("topmenu");
+            base.OnInitialize();
         }
 
         public override void ActivateByButton(int buttonID)
