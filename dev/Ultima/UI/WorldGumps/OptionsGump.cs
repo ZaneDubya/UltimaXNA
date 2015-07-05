@@ -28,8 +28,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
             IsMovable = true;
 
-            // maximized view
             AddControl(new ResizePic(this, 40, 0, 2600, 550, 450), 1);
+            AddControl(new TextLabelAscii(this, 250, 20, 902, 2, @"Sound and Music"));
+            AddControl(new TextLabelAscii(this, 60, 45, 902, 1, @"These settting affect the sound and music you will hear while playing Ultima Online."));
             //left column
             AddControl(new Button(this, 0, 40, 218, 217, ButtonTypes.Activate, 0, (int)Buttons.Sound), 1);
             AddControl(new Button(this, 0, 110, 220, 219, ButtonTypes.Activate, 0, (int)Buttons.Help), 1);
@@ -41,7 +42,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             AddControl(new Button(this, 576, 180, 230, 229, ButtonTypes.Activate, 0, (int)Buttons.Reputation), 1);
             AddControl(new Button(this, 576, 250, 232, 231, ButtonTypes.Activate, 0, (int)Buttons.Miscellaneous), 1);
             AddControl(new Button(this, 576, 320, 235, 234, ButtonTypes.Activate, 0, (int)Buttons.Filters), 1);
-
+            //bottom buttons
             AddControl(new Button(this, 140, 410, 243, 241, ButtonTypes.Activate, 0, (int)Buttons.Cancel), 1);
             AddControl(new Button(this, 240, 410, 239, 240, ButtonTypes.Activate, 0, (int)Buttons.Apply), 1);
             AddControl(new Button(this, 340, 410, 246, 244, ButtonTypes.Activate, 0, (int)Buttons.Default), 1);
