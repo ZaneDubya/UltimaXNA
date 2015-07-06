@@ -47,48 +47,48 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_World = ServiceRegistry.GetService<WorldModel>();
 
             // page 1 Sound and Music
-            AddControl(new TextLabelAscii(this, 250, 20, 902, 2, @"Sound and Music"), 1);
-            AddControl(new TextLabelAscii(this, 60, 45, 902, 1, @"These settting affect the sound and music you will hear while playing Ultima Online."), 1);
+            AddControl(new TextLabelAscii(this, 250, 20, 1, 2, @"Sound and Music"), 1);
+            AddControl(new TextLabelAscii(this, 60, 45, 1, 9, @"These settting affect the sound and music you will hear while playing Ultima Online."), 1);
 
             // page 2 Pop-up Help
-            AddControl(new TextLabelAscii(this, 250, 20, 902, 2, @"Pop-up Help"), 2);
-            AddControl(new TextLabelAscii(this, 60, 45, 902, 1, @"These settting configure the behavior of the pop-up help."), 2);
+            AddControl(new TextLabelAscii(this, 250, 20, 1, 2, @"Pop-up Help"), 2);
+            AddControl(new TextLabelAscii(this, 60, 45, 1, 9, @"These settting configure the behavior of the pop-up help."), 2);
 
             // page 3 Chat
-            AddControl(new TextLabelAscii(this, 250, 20, 902, 2, @"Chat"), 3);
-            AddControl(new TextLabelAscii(this, 60, 45, 902, 1, @"These settting affect the interface display for chat system."), 3);
+            AddControl(new TextLabelAscii(this, 250, 20, 1, 2, @"Chat"), 3);
+            AddControl(new TextLabelAscii(this, 60, 45, 1, 9, @"These settting affect the interface display for chat system."), 3);
 
             // page 4 Macro Options
-            AddControl(new TextLabelAscii(this, 250, 20, 902, 2, @"Macro Options"), 4);
-            AddControl(new TextLabelAscii(this, 60, 45, 902, 1, @""), 4);
+            AddControl(new TextLabelAscii(this, 250, 20, 1, 2, @"Macro Options"), 4);
+            AddControl(new TextLabelAscii(this, 60, 45, 1, 9, @""), 4);
 
             // page 5 Interface
-            AddControl(new TextLabelAscii(this, 250, 20, 902, 2, @"Interface"), 5);
-            AddControl(new TextLabelAscii(this, 60, 45, 902, 1, @"These settting affect your interface."), 5);
+            AddControl(new TextLabelAscii(this, 250, 20, 1, 2, @"Interface"), 5);
+            AddControl(new TextLabelAscii(this, 60, 45, 1, 9, @"These settting affect your interface."), 5);
 
             // page 6 Display
-            AddControl(new TextLabelAscii(this, 250, 20, 902, 2, @"Display"), 6);
-            AddControl(new TextLabelAscii(this, 60, 45, 902, 1, @"These settting affect your display, and adjusting some of them may improve your graphics performance."), 6);
+            AddControl(new TextLabelAscii(this, 250, 20, 1, 2, @"Display"), 6);
+            AddControl(new TextLabelAscii(this, 60, 45, 1, 9, @"These settting affect your display, and adjusting some of them may improve your graphics performance."), 6);
             AddControl(new CheckBox(this, 60, 80, 210, 211, false, 61), 6);
-            AddControl(new TextLabelAscii(this, 85, 80, 902, 1, @"Some option"), 6);
+            AddControl(new TextLabelAscii(this, 85, 80, 1, 9, @"Some option"), 6);
             AddControl(new CheckBox(this, 60, 100, 210, 211, false, 62), 6);
-            AddControl(new TextLabelAscii(this, 85, 100, 902, 1, @"Another option"), 6);
+            AddControl(new TextLabelAscii(this, 85, 100, 1, 9, @"Another option"), 6);
             AddControl(new CheckBox(this, 60, 120, 210, 211, Settings.World.IsMaximized, (int)CheckBoxes.UseFullScreen), 6);
-            AddControl(new TextLabelAscii(this, 85, 120, 902, 1, @"Use full screen display"), 6);
+            AddControl(new TextLabelAscii(this, 85, 120, 1, 9, @"Use full screen display"), 6);
 
-            AddControl(new TextLabelAscii(this, 60, 140, 902, 1, @"Full screen resolution"), 6);
+            AddControl(new TextLabelAscii(this, 60, 140, 1, 9, @"Full screen resolution"), 6);
 
             // page 7 Reputation system
-            AddControl(new TextLabelAscii(this, 250, 20, 902, 2, @"Reputation system"), 7);
-            AddControl(new TextLabelAscii(this, 60, 45, 902, 1, @"These settting affect the reputation system, which is Ultima Online's system for controlling antisocial behavior."), 7);
+            AddControl(new TextLabelAscii(this, 250, 20, 1, 2, @"Reputation system"), 7);
+            AddControl(new TextLabelAscii(this, 60, 45, 1, 9, @"These settting affect the reputation system, which is Ultima Online's system for controlling antisocial behavior."), 7);
 
             // page 8 Miscellaneous
-            AddControl(new TextLabelAscii(this, 250, 20, 902, 2, @"Miscellaneous"), 8);
-            AddControl(new TextLabelAscii(this, 60, 45, 902, 1, @"Miscellaneous options."), 8);
+            AddControl(new TextLabelAscii(this, 250, 20, 1, 2, @"Miscellaneous"), 8);
+            AddControl(new TextLabelAscii(this, 60, 45, 1, 9, @"Miscellaneous options."), 8);
 
             // page 9 Filter Options
-            AddControl(new TextLabelAscii(this, 250, 20, 902, 2, @"Filter Options"), 9);
-            AddControl(new TextLabelAscii(this, 60, 45, 902, 1, @""), 9);
+            AddControl(new TextLabelAscii(this, 250, 20, 1, 2, @"Filter Options"), 9);
+            AddControl(new TextLabelAscii(this, 60, 45, 1, 9, @""), 9);
         }
 
         protected override void OnInitialize()
