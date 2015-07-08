@@ -50,6 +50,25 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             AddControl(new TextLabelAscii(this, 250, 20, 1, 2, @"Sound and Music"), 1);
             AddControl(new TextLabelAscii(this, 60, 45, 1, 9, @"These settting affect the sound and music you will hear while playing Ultima Online."), 1);
 
+            AddControl(new TextLabelAscii(this, 85, 85, 1, 9, @"Sound on/off"), 1);
+            AddControl(new CheckBox(this, 60, 80, 210, 211, Settings.Audio.SoundOn, 61), 1);
+
+            AddControl(new TextLabelAscii(this, 60, 110, 1, 9, @"Sound volume"), 1);
+            AddControl(new HSliderBar(this, 60, 130, 150, 0, 100, Settings.Audio.SoundVolume, HSliderBarStyle.MetalWidgetRecessedBar), 1);
+            AddControl(new TextLabelAscii(this, 220, 130, 1, 9, Settings.Audio.SoundVolume.ToString()), 1);
+
+
+            AddControl(new TextLabelAscii(this, 85, 155, 1, 9, @"Music on/off"), 1);
+            AddControl(new CheckBox(this, 60, 150, 210, 211, Settings.Audio.MusicOn, 62), 1);
+
+            AddControl(new TextLabelAscii(this, 60, 180, 1, 9, @"Music volume"), 1);
+            AddControl(new HSliderBar(this, 60, 200, 150, 0, 100, Settings.Audio.MusicVolume, HSliderBarStyle.MetalWidgetRecessedBar), 1);
+            AddControl(new TextLabelAscii(this, 220, 200, 1, 9, Settings.Audio.MusicVolume.ToString()), 1);
+
+            AddControl(new TextLabelAscii(this, 85, 225, 1, 9, @"Play footstep sound"), 1);
+            AddControl(new CheckBox(this, 60, 220, 210, 211, Settings.Audio.FootStepSoundOn, 62), 1);
+            
+
             // page 2 Pop-up Help
             AddControl(new TextLabelAscii(this, 250, 20, 1, 2, @"Pop-up Help"), 2);
             AddControl(new TextLabelAscii(this, 60, 45, 1, 9, @"These settting configure the behavior of the pop-up help."), 2);

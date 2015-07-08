@@ -23,6 +23,7 @@ namespace UltimaXNA.Configuration
         private int m_SoundVolume;
         private bool m_MusicOn;
         private bool m_SoundOn;
+        private bool m_FootStepSoundOn;
 
         public AudioSettings()
         {
@@ -31,6 +32,7 @@ namespace UltimaXNA.Configuration
 
             MusicOn = false;
             SoundOn = true;
+            FootStepSoundOn = true;
         }
 
         public int MusicVolume
@@ -55,6 +57,12 @@ namespace UltimaXNA.Configuration
         {
             get { return m_SoundOn; }
             set { SetProperty(ref m_SoundOn, value); }
+        }
+
+        public bool FootStepSoundOn
+        {
+            get { return m_FootStepSoundOn; }
+            set { SetProperty(ref m_FootStepSoundOn, value); }
         }
     }
 }
