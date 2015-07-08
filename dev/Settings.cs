@@ -27,6 +27,7 @@ namespace UltimaXNA
         private WorldSettings m_World;
         private ServerSettings m_Server;
         private UltimaOnlineSettings m_UltimaOnline;
+        private AudioSettings m_Audio;
 
         static Settings()
         {
@@ -39,6 +40,7 @@ namespace UltimaXNA
             m_Instance.m_Game = CreateOrOpenSection<GameSettings>(GameSettings.SectionName);
             m_Instance.m_World = CreateOrOpenSection<WorldSettings>(WorldSettings.SectionName);
             m_Instance.m_Gumps = CreateOrOpenSection<GumpSettings>(GumpSettings.SectionName);
+            m_Instance.m_Audio = CreateOrOpenSection<AudioSettings>(AudioSettings.SectionName);
             
             m_File.Load();
         }
@@ -76,6 +78,11 @@ namespace UltimaXNA
         public static WorldSettings World
         {
             get { return m_Instance.m_World; }
+        }
+
+        public static AudioSettings Audio
+        {
+            get { return m_Instance.m_Audio; }
         }
         
         internal static void Save()
