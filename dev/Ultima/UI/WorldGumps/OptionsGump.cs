@@ -52,6 +52,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_World = ServiceRegistry.GetService<WorldModel>();
 
             // page 1 Sound and Music
+            AddControl(new Button(this, 0, 40, 217, 217, ButtonTypes.SwitchPage, 1, (int)Buttons.Sound),1);
             AddControl(new TextLabelAscii(this, 250, 20, 1, 2, @"Sound and Music"), 1);
             AddControl(new TextLabelAscii(this, 60, 45, 1, 9, @"These settting affect the sound and music you will hear while playing Ultima Online."), 1);
 
@@ -73,22 +74,27 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_FootStepSoundOn = (CheckBox)AddControl(new CheckBox(this, 60, 220, 210, 211, Settings.Audio.FootStepSoundOn, 62), 1);
             
             // page 2 Pop-up Help
+            AddControl(new Button(this, 0, 110, 219, 219, ButtonTypes.SwitchPage, 2, (int)Buttons.Help),2);
             AddControl(new TextLabelAscii(this, 250, 20, 1, 2, @"Pop-up Help"), 2);
             AddControl(new TextLabelAscii(this, 60, 45, 1, 9, @"These settting configure the behavior of the pop-up help."), 2);
 
             // page 3 Chat
+            AddControl(new Button(this, 0, 250, 223, 223, ButtonTypes.SwitchPage, 3, (int)Buttons.Chat),3);
             AddControl(new TextLabelAscii(this, 250, 20, 1, 2, @"Chat"), 3);
             AddControl(new TextLabelAscii(this, 60, 45, 1, 9, @"These settting affect the interface display for chat system."), 3);
 
             // page 4 Macro Options
+            AddControl(new Button(this, 0, 320, 236, 236, ButtonTypes.SwitchPage, 4, (int)Buttons.Macros),4);
             AddControl(new TextLabelAscii(this, 250, 20, 1, 2, @"Macro Options"), 4);
             AddControl(new TextLabelAscii(this, 60, 45, 1, 9, @""), 4);
 
             // page 5 Interface
+            AddControl(new Button(this, 576, 40, 225, 225, ButtonTypes.SwitchPage, 5, (int)Buttons.Interface),5);
             AddControl(new TextLabelAscii(this, 250, 20, 1, 2, @"Interface"), 5);
             AddControl(new TextLabelAscii(this, 60, 45, 1, 9, @"These settting affect your interface."), 5);
 
             // page 6 Display
+            AddControl(new Button(this, 576, 110, 227, 227, ButtonTypes.SwitchPage, 6, (int)Buttons.Display),6);
             AddControl(new TextLabelAscii(this, 250, 20, 1, 2, @"Display"), 6);
             AddControl(new TextLabelAscii(this, 60, 45, 1, 9, @"These settting affect your display, and adjusting some of them may improve your graphics performance."), 6);
             AddControl(new CheckBox(this, 60, 80, 210, 211, false, 61), 6);
@@ -101,14 +107,17 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             AddControl(new TextLabelAscii(this, 60, 140, 1, 9, @"Full screen resolution"), 6);
 
             // page 7 Reputation system
+            AddControl(new Button(this, 576, 180, 229, 229, ButtonTypes.SwitchPage, 7, (int)Buttons.Reputation),7);
             AddControl(new TextLabelAscii(this, 250, 20, 1, 2, @"Reputation system"), 7);
             AddControl(new TextLabelAscii(this, 60, 45, 1, 9, @"These settting affect the reputation system, which is Ultima Online's system for controlling antisocial behavior."), 7);
 
             // page 8 Miscellaneous
+            AddControl(new Button(this, 576, 250, 231, 231, ButtonTypes.SwitchPage, 8, (int)Buttons.Miscellaneous),8);
             AddControl(new TextLabelAscii(this, 250, 20, 1, 2, @"Miscellaneous"), 8);
             AddControl(new TextLabelAscii(this, 60, 45, 1, 9, @"Miscellaneous options."), 8);
 
             // page 9 Filter Options
+            AddControl(new Button(this, 576, 320, 234, 234, ButtonTypes.SwitchPage, 9, (int)Buttons.Filters),9);
             AddControl(new TextLabelAscii(this, 250, 20, 1, 2, @"Filter Options"), 9);
             AddControl(new TextLabelAscii(this, 60, 45, 1, 9, @""), 9);
         }
