@@ -25,6 +25,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         CheckBox m_MusicOn;
         CheckBox m_SoundOn;
         CheckBox m_FootStepSoundOn;
+        CheckBox m_AlwaysRun;
+        CheckBox m_MenuBarDisabled;
 
         public OptionsGump()
             : base(0, 0)
@@ -93,6 +95,12 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             AddControl(new TextLabelAscii(this, 250, 20, 1, 2, @"Interface"), 5);
             AddControl(new TextLabelAscii(this, 60, 45, 1, 9, @"These settting affect your interface."), 5);
 
+            AddControl(new TextLabelAscii(this, 85, 85, 1, 9, @"Your character will always run if this is checked"), 5);
+            m_AlwaysRun = (CheckBox)AddControl(new CheckBox(this, 60, 80, 210, 211, Settings.World.AlwaysRun, 61), 5);
+
+            AddControl(new TextLabelAscii(this, 85, 115, 1, 9, @"Disable the Menu Bar"), 5);
+            m_MenuBarDisabled = (CheckBox)AddControl(new CheckBox(this, 60, 110, 210, 211, Settings.World.MenuBarDisabled, 61), 5);
+
             // page 6 Display
             AddControl(new Button(this, 576, 110, 227, 227, ButtonTypes.SwitchPage, 6, (int)Buttons.Display),6);
             AddControl(new TextLabelAscii(this, 250, 20, 1, 2, @"Display"), 6);
@@ -130,11 +138,16 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         public void SaveSettings()
         {
+            //audio
             Settings.Audio.MusicVolume = m_MusicVolume.Value;
             Settings.Audio.SoundVolume = m_SoundVolume.Value;
             Settings.Audio.MusicOn = m_MusicOn.IsChecked;
             Settings.Audio.SoundOn = m_SoundOn.IsChecked;
             Settings.Audio.FootStepSoundOn = m_FootStepSoundOn.IsChecked;
+
+            //interface
+            Settings.World.AlwaysRun = m_AlwaysRun.IsChecked;
+            Settings.World.MenuBarDisabled = m_MenuBarDisabled.IsChecked;
         }
 
         public override void ActivateByButton(int buttonID)
