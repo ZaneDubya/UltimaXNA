@@ -210,6 +210,7 @@
     <Compile Include="Ultima\IO\Fonts\CharacterAscii.cs" />
     <Compile Include="Ultima\IO\Fonts\FontAscii.cs" />
     <Compile Include="Ultima\Network\Client\CastSpellPacket.cs" />
+    <Compile Include="Ultima\UI\WorldGumps\OptionsGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\UseSpellButtonGump.cs" />
     <Compile Include="Ultima\World\Entities\Items\Containers\SpellBook.cs" />
     <Compile Include="Ultima\Data\SpellBookTypes.cs" />

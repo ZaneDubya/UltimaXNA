@@ -119,10 +119,13 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
                 m_animationFrame += (float)(frameMS / msPerFrame);
 
-                if (m_action == MobileAction.Walk || m_action == MobileAction.Run)
-                    MobileSounds.DoFootstepSounds(Parent as Mobile, m_animationFrame / m_FrameCount);
-                else
-                    MobileSounds.ResetFootstepSounds(Parent as Mobile);
+                if (Settings.Audio.FootStepSoundOn)
+                {
+                    if (m_action == MobileAction.Walk || m_action == MobileAction.Run)
+                        MobileSounds.DoFootstepSounds(Parent as Mobile, m_animationFrame / m_FrameCount);
+                    else
+                        MobileSounds.ResetFootstepSounds(Parent as Mobile);
+                }
 
                 // When animations reach their last frame, if we are queueing to stand, then
                 // hold the animation on the last frame.

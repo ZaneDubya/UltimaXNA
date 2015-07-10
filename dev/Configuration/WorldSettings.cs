@@ -24,6 +24,7 @@ namespace UltimaXNA.Configuration
         private bool m_IsFullScreen;
         private MouseSettings m_Mouse;
         private bool m_AlwaysRun;
+        private bool m_MenuBarDisabled;
 
         public WorldSettings()
         {
@@ -32,6 +33,7 @@ namespace UltimaXNA.Configuration
             IsMaximized = false;
             Mouse = new MouseSettings(MouseButton.Left, MouseButton.Right);
             AlwaysRun = false;
+            MenuBarDisabled = false;
         }
 
         public bool IsMaximized
@@ -62,6 +64,12 @@ namespace UltimaXNA.Configuration
         {
             get { return m_AlwaysRun; }
             set { SetProperty(ref m_AlwaysRun, value); }
+        }
+
+        public bool MenuBarDisabled
+        {
+            get { return m_MenuBarDisabled; }
+            set { SetProperty(ref m_MenuBarDisabled, value); }
         }
     }
 }

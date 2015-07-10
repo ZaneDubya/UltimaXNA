@@ -232,7 +232,10 @@ namespace UltimaXNA.Ultima
         public void LoginToWorld()
         {
             m_UserInterface.AddControl(new WorldViewGump(), 0, 0); // world gump will restore its position on load.
-            m_UserInterface.AddControl(new TopMenuGump(), 0, 0); // always at the top of the screen.
+            if (!Settings.World.MenuBarDisabled)
+            {
+                m_UserInterface.AddControl(new TopMenuGump(), 0, 0); // by default at the top of the screen.
+            }
 
             Client.SendWorldLoginPackets();
             WorldModel.IsInWorld = true;
