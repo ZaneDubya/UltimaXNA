@@ -1130,7 +1130,7 @@ namespace UltimaXNA.Ultima.World
 
             OverallLightLevelPacket p = (OverallLightLevelPacket)packet;
 
-            ((WorldView)m_World.GetView()).Isometric.OverallLightning = p.LightLevel;
+            ((WorldView)m_World.GetView()).Isometric.Lighting.OverallLightning = p.LightLevel;
         }
 
         private void ReceivePersonalLightLevel(IRecvPacket packet)
@@ -1144,7 +1144,7 @@ namespace UltimaXNA.Ultima.World
 
             PersonalLightLevelPacket p = (PersonalLightLevelPacket)packet;
 
-            ((WorldView)m_World.GetView()).Isometric.PersonalLightning = p.LightLevel;
+            ((WorldView)m_World.GetView()).Isometric.Lighting.PersonalLightning = p.LightLevel;
         }
 
         private void ReceivePlayMusic(IRecvPacket packet)

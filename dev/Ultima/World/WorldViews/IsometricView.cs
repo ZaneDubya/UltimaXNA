@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   IsometricRenderer.cs
+ *   IsometricView.cs
  *   Based on code from ClintXNA's renderer.
  *   
  *   This program is free software; you can redistribute it and/or modify
@@ -11,7 +11,6 @@
 #region usings
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Ultima.World.Entities;
@@ -25,101 +24,69 @@ namespace UltimaXNA.Ultima.World.WorldViews
 {
     public class IsometricRenderer
     {
-        public const float TileSizeF = 44.0f;
-        public const int TileSizeI = 44;
+        public const float TileSizeFloat = 44.0f;
+        public const int TileSizeInteger = 44;
 
-        public Texture2D Texture
-        {
-            get
-            {
-                return RenderTarget;
-            }
-        }
-
-        protected RenderTarget2D RenderTarget
+        /// <summary>
+        /// The number of entities drawn in the previous frame.
+        /// </summary>
+        public int CountEntitiesRendered
         {
             get;
             private set;
         }
 
-        #region RenderingVariables
+        /// <summary>
+        /// The texture of the last drawn frame.
+        /// </summary>
+        public Texture2D Texture
+        {
+            get
+            {
+                return m_RenderTarget;
+            }
+        }
+
+        public IsometricLighting Lighting
+        {
+            get;
+            private set;
+        }
+
+        private RenderTarget2D m_RenderTarget;
         private SpriteBatch3D m_SpriteBatch;
-        #endregion
-
-        #region LightingVariables
-        private int m_lightLevelPersonal = 9, m_lightLevelOverall = 9;
-        private float m_lightDirection = 4.12f, m_lightHeight = -0.75f;
-        public int PersonalLightning
-        {
-            set { m_lightLevelPersonal = value; recalculateLightning(); }
-            get { return m_lightLevelPersonal; }
-        }
-        public int OverallLightning
-        {
-            set { m_lightLevelOverall = value; recalculateLightning(); }
-            get { return m_lightLevelOverall; }
-        }
-        public float LightDirection
-        {
-            set { m_lightDirection = value; recalculateLightning(); }
-            get { return m_lightDirection; }
-        }
-        public float LightHeight
-        {
-            set { m_lightHeight = value; recalculateLightning(); }
-            get { return m_lightHeight; }
-        }
-        #endregion
-
-        private bool m_flag_HighlightMouseOver = false;
-        public bool Flag_HighlightMouseOver
-        {
-            get { return m_flag_HighlightMouseOver; }
-            set { m_flag_HighlightMouseOver = value; }
-        }
-
-        public int ObjectsRendered { get; internal set; }
-        public bool DrawTerrain = true;
-        private int m_maxItemAltitude;
-
-        Vector2 m_renderOffset;
-        public Vector2 RenderOffset
-        {
-            get { return m_renderOffset; }
-        }
+        private bool m_DrawTerrain = true;
+        private int m_DrawMaxItemAltitude = 0;
+        private Vector2 m_DrawOffset;
 
         public IsometricRenderer()
         {
             m_SpriteBatch = ServiceRegistry.GetService<SpriteBatch3D>();
-        }
-
-        public void Initialize()
-        {
-
+            Lighting = new IsometricLighting();
         }
 
         public void Update(Map map, Position3D center, MousePicking mousePick)
         {
-            if (RenderTarget == null || RenderTarget.Width != Settings.World.GumpResolution.Width || RenderTarget.Height != Settings.World.GumpResolution.Height)
+            if (m_RenderTarget == null || m_RenderTarget.Width != Settings.World.GumpResolution.Width || m_RenderTarget.Height != Settings.World.GumpResolution.Height)
             {
-                if (RenderTarget != null)
-                    RenderTarget.Dispose();
-                RenderTarget = new RenderTarget2D(m_SpriteBatch.GraphicsDevice, Settings.World.GumpResolution.Width, Settings.World.GumpResolution.Height, false, SurfaceFormat.Color, DepthFormat.Depth16, 0, RenderTargetUsage.DiscardContents);
+                if (m_RenderTarget != null)
+                    m_RenderTarget.Dispose();
+                m_RenderTarget = new RenderTarget2D(m_SpriteBatch.GraphicsDevice, Settings.World.GumpResolution.Width, Settings.World.GumpResolution.Height, false, SurfaceFormat.Color, DepthFormat.Depth16, 0, RenderTargetUsage.DiscardContents);
             }
 
-            InternalDetermineIfUnderEntity(map, center);
+            DetermineIfClientIsUnderEntity(map, center);
 
-            m_SpriteBatch.GraphicsDevice.SetRenderTarget(RenderTarget);
+            m_SpriteBatch.GraphicsDevice.SetRenderTarget(m_RenderTarget);
 
-            InternalDrawEntities(map, center, mousePick, out m_renderOffset);
+            DrawEntities(map, center, mousePick, out m_DrawOffset);
 
             m_SpriteBatch.GraphicsDevice.SetRenderTarget(null);
         }
 
-        private void InternalDetermineIfUnderEntity(Map map, Position3D center)
+        private void DetermineIfClientIsUnderEntity(Map map, Position3D center)
         {
             // Are we inside (under a roof)? Do not draw tiles above our head.
-            m_maxItemAltitude = 255;
+            m_DrawMaxItemAltitude = 255;
 
             MapTile t;
             if ((t = map.GetMapTile(center.X, center.Y)) != null)
@@ -128,7 +95,7 @@ namespace UltimaXNA.Ultima.World.WorldViews
                 t.IsZUnderEntityOrGround(center.Z, out underObject, out underTerrain);
 
                 // if we are under terrain, then do not draw any terrain at all.
-                DrawTerrain = (underTerrain == null);
+                m_DrawTerrain = (underTerrain == null);
 
                 if (!(underObject == null))
                 {
@@ -140,13 +107,13 @@ namespace UltimaXNA.Ultima.World.WorldViews
                     {
                         Item item = (Item)underObject;
                         if (item.ItemData.IsRoof)
-                            m_maxItemAltitude = center.Z - (center.Z % 20) + 20;
+                            m_DrawMaxItemAltitude = center.Z - (center.Z % 20) + 20;
                         else if (item.ItemData.IsSurface || item.ItemData.IsWall)
-                            m_maxItemAltitude = item.Z;
+                            m_DrawMaxItemAltitude = item.Z;
                         else
                         {
                             int z = center.Z + ((item.ItemData.Height > 20) ? item.ItemData.Height : 20);
-                            m_maxItemAltitude = (int)(z);// - (z % 20));
+                            m_DrawMaxItemAltitude = (int)(z);// - (z % 20));
                         }
                     }
 
@@ -161,19 +128,23 @@ namespace UltimaXNA.Ultima.World.WorldViews
                         }
 
                         if (!isRoofSouthEast)
-                            m_maxItemAltitude = 255;
+                            m_DrawMaxItemAltitude = 255;
                     }
                 }
             }
         }
 
-        private void InternalDrawEntities(Map map, Position3D center, MousePicking mousePicking, out Vector2 renderOffset)
+        private void DrawEntities(Map map, Position3D center, MousePicking mousePicking, out Vector2 renderOffset)
         {
             if (center == null)
             {
                 renderOffset = new Vector2();
                 return;
             }
+
+            // set the lighting variables.
+            m_SpriteBatch.SetLightIntensity(Lighting.IsometricLightLevel);
+            m_SpriteBatch.SetLightDirection(Lighting.IsometricLightDirection);
 
             int renderDimensionY = 16; // the number of tiles that are drawn for half the screen (doubled to fill the entire screen).
             int renderDimensionX = 18; // the number of tiles that are drawn in the x-direction ( + renderExtraColumnsAtSides * 2 ).
@@ -189,17 +160,17 @@ namespace UltimaXNA.Ultima.World.WorldViews
                 center.X + renderExtraColumnsAtSides - ((renderZOffset + 1) / 2),
                 center.Y - renderDimensionY - renderExtraColumnsAtSides - (renderZOffset / 2));
 
-            renderOffset.X = ((Settings.World.GumpResolution.Width + ((renderDimensionY) * TileSizeI)) / 2) - 22 + renderExtraColumnsAtSides * TileSizeI;
+            renderOffset.X = ((Settings.World.GumpResolution.Width + ((renderDimensionY) * TileSizeInteger)) / 2) - 22 + renderExtraColumnsAtSides * TileSizeInteger;
             renderOffset.X -= (int)((center.X_offset - center.Y_offset) * 22);
             renderOffset.X -= (firstTile.X - firstTile.Y) * 22;
 
-            renderOffset.Y = ((Settings.World.GumpResolution.Height - (renderDimensionY * TileSizeI)) / 2);
+            renderOffset.Y = ((Settings.World.GumpResolution.Height - (renderDimensionY * TileSizeInteger)) / 2);
             renderOffset.Y += (center.Z * 4) + (int)(center.Z_offset * 4);
             renderOffset.Y -= (int)((center.X_offset + center.Y_offset) * 22);
             renderOffset.Y -= (firstTile.X + firstTile.Y) * 22;
             renderOffset.Y -= (renderZOffset) * 22;
 
-            ObjectsRendered = 0; // Count of objects rendered for statistics and debug
+            CountEntitiesRendered = 0; // Count of objects rendered for statistics and debug
 
             MouseOverList overList = new MouseOverList(mousePicking); // List of entities mouse is over.
             List<AEntity> deferredToRemove = new List<AEntity>();
@@ -222,7 +193,7 @@ namespace UltimaXNA.Ultima.World.WorldViews
 
                     for (int i = 0; i < entities.Count; i++)
                     {
-                        if (!DrawTerrain)
+                        if (!m_DrawTerrain)
                         {
                             if (entities[i] is Ground)
                                 break;
@@ -230,14 +201,14 @@ namespace UltimaXNA.Ultima.World.WorldViews
                                 break;
                         }
 
-                        if (entities[i].Z >= m_maxItemAltitude && !(entities[i] is Ground))
+                        if (entities[i].Z >= m_DrawMaxItemAltitude && !(entities[i] is Ground))
                             continue;
 
                         AEntityView view = entities[i].GetView();
 
                         if (view != null)
                             if (view.Draw(m_SpriteBatch, drawPosition, overList, map))
-                                ObjectsRendered++;
+                                CountEntitiesRendered++;
 
                         if (entities[i] is DeferredEntity)
                         {
@@ -249,7 +220,7 @@ namespace UltimaXNA.Ultima.World.WorldViews
                         tile.OnExit(deferred);
                     deferredToRemove.Clear();
 
-                    drawPosition.X -= TileSizeF;
+                    drawPosition.X -= TileSizeFloat;
                 }
             }
 
@@ -260,21 +231,6 @@ namespace UltimaXNA.Ultima.World.WorldViews
 
             // Draw the objects we just send to the spritebatch.
             m_SpriteBatch.Flush(true);
-        }
-
-        private void recalculateLightning()
-        {
-            float light = Math.Min(30 - OverallLightning + PersonalLightning, 30f);
-            light = Math.Max(light, 0);
-            light /= 30; // bring it between 0-1
-
-            m_SpriteBatch.SetLightIntensity(light);
-
-
-            // i'd use a fixed lightning direction for now - maybe enable this effect with a custom packet?
-            m_lightDirection = 1.2f;
-            Vector3 lightDirection = Vector3.Normalize(new Vector3((float)Math.Cos(m_lightDirection), (float)Math.Sin(m_lightDirection), 1f));
-            m_SpriteBatch.SetLightDirection(lightDirection);
         }
     }
 }

@@ -511,6 +511,7 @@
     <Compile Include="Ultima\Login\States\SelectServerState.cs" />
     <Compile Include="Ultima\World\Maps\MapBlock.cs" />
     <Compile Include="Ultima\World\Managers\StaticManager.cs" />
+    <Compile Include="Ultima\World\WorldViews\IsometricLighting.cs" />
     <Compile Include="Ultima\World\WorldViews\IsometricView.cs" />
     <Compile Include="Ultima\World\Maps\MapTile.cs" />
     <Compile Include="Ultima\World\Input\MouseOverList.cs" />

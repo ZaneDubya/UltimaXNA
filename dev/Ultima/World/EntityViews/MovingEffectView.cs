@@ -54,7 +54,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             {
                 m_DisplayItemID = displayItemdID;
                 DrawTexture = IO.ArtData.GetStaticTexture(m_DisplayItemID);
-                DrawArea = new Rectangle(DrawTexture.Width / 2 - 22, DrawTexture.Height - World.WorldViews.IsometricRenderer.TileSizeI, DrawTexture.Width, DrawTexture.Height);
+                DrawArea = new Rectangle(DrawTexture.Width / 2 - 22, DrawTexture.Height - World.WorldViews.IsometricRenderer.TileSizeInteger, DrawTexture.Width, DrawTexture.Height);
                 PickType = PickType.PickNothing;
                 DrawFlip = false;
             }

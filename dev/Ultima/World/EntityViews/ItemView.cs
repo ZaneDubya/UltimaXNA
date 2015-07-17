@@ -39,7 +39,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
                     return false;
                 }
 
-                DrawArea = new Rectangle(DrawTexture.Width / 2 - 22, DrawTexture.Height - World.WorldViews.IsometricRenderer.TileSizeI + (Entity.Z * 4), DrawTexture.Width, DrawTexture.Height);
+                DrawArea = new Rectangle(DrawTexture.Width / 2 - 22, DrawTexture.Height - World.WorldViews.IsometricRenderer.TileSizeInteger + (Entity.Z * 4), DrawTexture.Width, DrawTexture.Height);
                 PickType = PickType.PickObjects;
                 DrawFlip = false;
             }

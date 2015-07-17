@@ -26,7 +26,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 DrawAs3DStretched = false;
 
                 DrawTexture = IO.ArtData.GetLandTexture(Entity.LandDataID);
-                DrawArea = new Rectangle(0, Entity.Z * 4, World.WorldViews.IsometricRenderer.TileSizeI, World.WorldViews.IsometricRenderer.TileSizeI);
+                DrawArea = new Rectangle(0, Entity.Z * 4, World.WorldViews.IsometricRenderer.TileSizeInteger, World.WorldViews.IsometricRenderer.TileSizeInteger);
             }
             else
             {
@@ -96,9 +96,9 @@ namespace UltimaXNA.Ultima.World.EntityViews
         private void updateVertexBuffer()
         {
             m_vertex0_yOffset = new Vector3(22, -(Entity.Z * 4), 0);
-            m_vertex1_yOffset = new Vector3(World.WorldViews.IsometricRenderer.TileSizeF, 22 - (m_SurroundingTiles.East * 4), 0);
+            m_vertex1_yOffset = new Vector3(World.WorldViews.IsometricRenderer.TileSizeFloat, 22 - (m_SurroundingTiles.East * 4), 0);
             m_vertex2_yOffset = new Vector3(0, 22 - (m_SurroundingTiles.South * 4), 0);
-            m_vertex3_yOffset = new Vector3(22, World.WorldViews.IsometricRenderer.TileSizeF - (m_SurroundingTiles.Down * 4), 0);
+            m_vertex3_yOffset = new Vector3(22, World.WorldViews.IsometricRenderer.TileSizeFloat - (m_SurroundingTiles.Down * 4), 0);
 
             m_vertexBufferAlternate[0].Normal = m_Normals[0];
             m_vertexBufferAlternate[1].Normal = m_Normals[1];

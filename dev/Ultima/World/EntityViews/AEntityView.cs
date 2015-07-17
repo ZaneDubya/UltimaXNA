@@ -53,7 +53,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
             if (Rotation != 0)
             {
-                Vector3 center = drawPosition - new Vector3(DrawArea.X - World.WorldViews.IsometricRenderer.TileSizeI + DrawArea.Width / 2, DrawArea.Y + DrawArea.Height / 2, 0);
+                Vector3 center = drawPosition - new Vector3(DrawArea.X - World.WorldViews.IsometricRenderer.TileSizeInteger + DrawArea.Width / 2, DrawArea.Y + DrawArea.Height / 2, 0);
                 float sinx = (float)System.Math.Sin(Rotation) * DrawArea.Width / 2f;
                 float cosx = (float)System.Math.Cos(Rotation) * DrawArea.Width / 2f;
                 float siny = (float)System.Math.Sin(Rotation) * -DrawArea.Height / 2f;
@@ -90,7 +90,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
                     // 3   1
                     vertexBuffer = VertexPositionNormalTextureHue.PolyBufferFlipped;
                     vertexBuffer[0].Position = drawPosition;
-                    vertexBuffer[0].Position.X += DrawArea.X + World.WorldViews.IsometricRenderer.TileSizeF;
+                    vertexBuffer[0].Position.X += DrawArea.X + World.WorldViews.IsometricRenderer.TileSizeFloat;
                     vertexBuffer[0].Position.Y -= DrawArea.Y;
 
                     vertexBuffer[1].Position = vertexBuffer[0].Position;

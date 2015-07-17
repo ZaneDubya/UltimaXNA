@@ -93,7 +93,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
                     HueVector = Utility.GetHueVector(m_MobileLayers[i].Hue);
 
                     Rectangle screenDest = new Rectangle(
-                        DrawFlip ? (int)drawPosition.X + DrawArea.X - DrawArea.Width + World.WorldViews.IsometricRenderer.TileSizeI : (int)drawPosition.X - DrawArea.X,
+                        DrawFlip ? (int)drawPosition.X + DrawArea.X - DrawArea.Width + World.WorldViews.IsometricRenderer.TileSizeInteger : (int)drawPosition.X - DrawArea.X,
                         (int)drawPosition.Y - DrawArea.Y,
                         DrawFlip ? DrawArea.Width : DrawArea.Width,
                         DrawArea.Height);
@@ -112,7 +112,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             }
             else
             {
-                yOffset = -(yOffset + World.WorldViews.IsometricRenderer.TileSizeI);
+                yOffset = -(yOffset + World.WorldViews.IsometricRenderer.TileSizeInteger);
             }
 
             DrawOverheads(spriteBatch, overheadDrawPosition, mouseOverList, map, (int)yOffset);
