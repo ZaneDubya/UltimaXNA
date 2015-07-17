@@ -138,9 +138,7 @@ namespace UltimaXNA
             ServiceRegistry.Register<SpriteBatch3D>(new SpriteBatch3D(this));
             ServiceRegistry.Register<SpriteBatchUI>(new SpriteBatchUI(this));
             ServiceRegistry.Register<IUIResourceProvider>(new UltimaUIResourceProvider());
-
-            AudioService audio = ServiceRegistry.Register<AudioService>(new AudioService());
-            
+            ServiceRegistry.Register<AudioService>(new AudioService());
             Network = ServiceRegistry.Register<INetworkClient>(new NetworkClient());
             Input = ServiceRegistry.Register<InputManager>(new InputManager(Window.Handle));
             UserInterface = ServiceRegistry.Register<UserInterfaceService>(new UserInterfaceService());
@@ -190,6 +188,7 @@ namespace UltimaXNA
             }
             else
             {
+                base.Update(gameTime);
                 double totalMS = gameTime.TotalGameTime.TotalMilliseconds;
                 double frameMS = gameTime.ElapsedGameTime.TotalMilliseconds;
 
