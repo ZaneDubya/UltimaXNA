@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BF3B29F8-DA04-4973-93DB-144A5BBE2472}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MP3Sharp</RootNamespace>
+    <AssemblyName>MP3Sharp</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Decoding\DecoderErrors.cs" />
+    <Compile Include="Decoding\Decoders\LayerIII\ChannelData.cs" />
+    <Compile Include="Decoding\Decoders\LayerIII\GranuleInfo.cs" />
+    <Compile Include="Decoding\Decoders\LayerIII\Layer3SideInfo.cs" />
+    <Compile Include="Decoding\Decoders\LayerIII\SBI.cs" />
+    <Compile Include="Decoding\Decoders\LayerIII\ScaleFactorData.cs" />
+    <Compile Include="Decoding\Decoders\LayerIII\ScaleFactorTable.cs" />
+    <Compile Include="Decoding\OutputChannelsEnum.cs" />
+    <Compile Include="Decoding\PushbackStream.cs" />
+    <Compile Include="Decoding\BitReserve.cs" />
+    <Compile Include="Decoding\Bitstream.cs" />
+    <Compile Include="Decoding\BitstreamErrors.cs" />
+    <Compile Include="Decoding\BitstreamException.cs" />
+    <Compile Include="Decoding\CircularByteBuffer.cs" />
+    <Compile Include="Decoding\Crc16.cs" />
+    <Compile Include="Decoding\Decoder.cs" />
+    <Compile Include="Decoding\DecoderException.cs" />
+    <Compile Include="Decoding\Decoders\ASubband.cs" />
+    <Compile Include="Decoding\Decoders\LayerI\SubbandLayer1Stereo.cs" />
+    <Compile Include="Decoding\Decoders\LayerI\SubbandLayer1.cs" />
+    <Compile Include="Decoding\Decoders\LayerI\SubbandLayer1IntensityStereo.cs" />
+    <Compile Include="Decoding\Decoders\LayerII\SubbandLayer2.cs" />
+    <Compile Include="Decoding\Decoders\LayerII\SubbandLayer2IntensityStereo.cs" />
+    <Compile Include="Decoding\Decoders\LayerII\SubbandLayer2Stereo.cs" />
+    <Compile Include="Decoding\Equalizer.cs" />
+    <Compile Include="Decoding\Header.cs" />
+    <Compile Include="Decoding\Huffman.cs" />
+    <Compile Include="Decoding\Decoders\IFrameDecoder.cs" />
+    <Compile Include="MP3SharpException.cs" />
+    <Compile Include="Decoding\Decoders\LayerIDecoder.cs" />
+    <Compile Include="Decoding\Decoders\LayerIIDecoder.cs" />
+    <Compile Include="Decoding\Decoders\LayerIIIDecoder.cs" />
+    <Compile Include="Decoding\ABuffer.cs" />
+    <Compile Include="Decoding\OutputChannels.cs" />
+    <Compile Include="Decoding\SampleBuffer.cs" />
+    <Compile Include="Buffer16BitStereo.cs" />
+    <Compile Include="SoundFormat.cs" />
+    <Compile Include="IO\RandomAccessFileStream.cs" />
+    <Compile Include="Support\SupportClass.cs" />
+    <Compile Include="Decoding\SynthesisFilter.cs" />
+    <Compile Include="MP3Stream.cs" />
+    <Compile Include="IO\RiffFile.cs" />
+    <Compile Include="IO\WaveFile.cs" />
+    <Compile Include="IO\WaveFileBuffer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
