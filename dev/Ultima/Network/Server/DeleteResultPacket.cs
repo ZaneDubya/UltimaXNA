@@ -17,6 +17,7 @@
 #region usings
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Network.Packets;
+using UltimaXNA.Ultima.IO;
 #endregion
 
 namespace UltimaXNA.Ultima.Network.Server
@@ -30,17 +31,17 @@ namespace UltimaXNA.Ultima.Network.Server
                 switch ((DeleteResultType)m_result)
                 {
                     case DeleteResultType.PasswordInvalid:
-                        return IO.StringData.Entry(3000018); // 3000018: That character password is invalid.
+                        return StringData.Entry(3000018); // 3000018: That character password is invalid.
                     case DeleteResultType.CharNotExist:
-                        return IO.StringData.Entry(3000019); // 3000019: That character does not exist.
+                        return StringData.Entry(3000019); // 3000019: That character does not exist.
                     case DeleteResultType.CharBeingPlayed:
-                        return IO.StringData.Entry(3000020); // 3000020: That character is being played right now.
+                        return StringData.Entry(3000020); // 3000020: That character is being played right now.
                     case DeleteResultType.CharTooYoung:
-                        return IO.StringData.Entry(3000021); // 3000021: That character is not old enough to delete. The character must be 7 days old before it can be deleted.
+                        return StringData.Entry(3000021); // 3000021: That character is not old enough to delete. The character must be 7 days old before it can be deleted.
                     case DeleteResultType.CharQueued:
-                        return IO.StringData.Entry(3000022); // 3000022: That character is currently queued for backup and cannot be deleted.
+                        return StringData.Entry(3000022); // 3000022: That character is currently queued for backup and cannot be deleted.
                     case DeleteResultType.BadRequest:
-                        return IO.StringData.Entry(3000023); // 3000023: Couldn't carry out your request.
+                        return StringData.Entry(3000023); // 3000023: Couldn't carry out your request.
                     default:
                         return "Could not delete character.";
                 }

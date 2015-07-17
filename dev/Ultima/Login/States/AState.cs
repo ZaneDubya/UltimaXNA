@@ -1,6 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using UltimaXNA.Core.UI;
 
 namespace UltimaXNA.Ultima.Login.States

@@ -9,9 +9,9 @@
  *
  ***************************************************************************/
 #region usings
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Items;
@@ -24,8 +24,8 @@ namespace UltimaXNA.Ultima.World.WorldViews
 {
     public class IsometricRenderer
     {
-        public const float TileSizeFloat = 44.0f;
-        public const int TileSizeInteger = 44;
+        public const float TILE_SIZE_FLOAT = 44.0f;
+        public const int TILE_SIZE_INTEGER = 44;
 
         /// <summary>
         /// The number of entities drawn in the previous frame.
@@ -56,7 +56,7 @@ namespace UltimaXNA.Ultima.World.WorldViews
         private RenderTarget2D m_RenderTarget;
         private SpriteBatch3D m_SpriteBatch;
         private bool m_DrawTerrain = true;
-        private int m_DrawMaxItemAltitude = 0;
+        private int m_DrawMaxItemAltitude;
         private Vector2 m_DrawOffset;
 
         public IsometricRenderer()
@@ -113,7 +113,7 @@ namespace UltimaXNA.Ultima.World.WorldViews
                         else
                         {
                             int z = center.Z + ((item.ItemData.Height > 20) ? item.ItemData.Height : 20);
-                            m_DrawMaxItemAltitude = (int)(z);// - (z % 20));
+                            m_DrawMaxItemAltitude = z;// - (z % 20));
                         }
                     }
 
@@ -160,11 +160,11 @@ namespace UltimaXNA.Ultima.World.WorldViews
                 center.X + renderExtraColumnsAtSides - ((renderZOffset + 1) / 2),
                 center.Y - renderDimensionY - renderExtraColumnsAtSides - (renderZOffset / 2));
 
-            renderOffset.X = ((Settings.World.GumpResolution.Width + ((renderDimensionY) * TileSizeInteger)) / 2) - 22 + renderExtraColumnsAtSides * TileSizeInteger;
+            renderOffset.X = ((Settings.World.GumpResolution.Width + ((renderDimensionY) * TILE_SIZE_INTEGER)) / 2) - 22 + renderExtraColumnsAtSides * TILE_SIZE_INTEGER;
             renderOffset.X -= (int)((center.X_offset - center.Y_offset) * 22);
             renderOffset.X -= (firstTile.X - firstTile.Y) * 22;
 
-            renderOffset.Y = ((Settings.World.GumpResolution.Height - (renderDimensionY * TileSizeInteger)) / 2);
+            renderOffset.Y = ((Settings.World.GumpResolution.Height - (renderDimensionY * TILE_SIZE_INTEGER)) / 2);
             renderOffset.Y += (center.Z * 4) + (int)(center.Z_offset * 4);
             renderOffset.Y -= (int)((center.X_offset + center.Y_offset) * 22);
             renderOffset.Y -= (firstTile.X + firstTile.Y) * 22;
@@ -220,7 +220,7 @@ namespace UltimaXNA.Ultima.World.WorldViews
                         tile.OnExit(deferred);
                     deferredToRemove.Clear();
 
-                    drawPosition.X -= TileSizeFloat;
+                    drawPosition.X -= TILE_SIZE_FLOAT;
                 }
             }
 

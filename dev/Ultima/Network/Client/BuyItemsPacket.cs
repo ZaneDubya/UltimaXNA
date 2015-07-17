@@ -16,7 +16,6 @@
  ***************************************************************************/
 #region usings
 using System;
-using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Network.Packets;
 #endregion
 

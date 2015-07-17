@@ -8,8 +8,9 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using UltimaXNA.Core.Input.Windows;
+
 using System.Collections.Generic;
+using UltimaXNA.Core.Input.Windows;
 
 namespace UltimaXNA.Core.Input
 {

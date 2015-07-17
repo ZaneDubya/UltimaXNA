@@ -8,7 +8,7 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Core.Network;
+
 #endregion
 
 namespace UltimaXNA.Core.Network.Packets

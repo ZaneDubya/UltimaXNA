@@ -133,7 +133,6 @@
 
 using System;
 using System.IO;
-using System.Collections;
 using System.Text;
 
 namespace UltimaXNA.Core.UI.HTML.Parsing

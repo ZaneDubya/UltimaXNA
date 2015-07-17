@@ -10,8 +10,10 @@
  ***************************************************************************/
 #region usings
 using Microsoft.Xna.Framework;
+using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.World.Entities.Items.Containers;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
+using UltimaXNA.Ultima.World.EntityViews;
 using UltimaXNA.Ultima.World.Maps;
 #endregion
 
@@ -58,9 +60,9 @@ namespace UltimaXNA.Ultima.World.Entities.Items
                 ((Container)Parent).RemoveItem(Serial);
         }
 
-        protected override EntityViews.AEntityView CreateView()
+        protected override AEntityView CreateView()
         {
-            return new EntityViews.ItemView(this);
+            return new ItemView(this);
         }
 
 		private int m_amount;
@@ -76,7 +78,7 @@ namespace UltimaXNA.Ultima.World.Entities.Items
             }
         }
 
-        public IO.ItemData ItemData;
+        public ItemData ItemData;
 
 		private int m_ItemID = 0;
         private int? m_DisplayItemID = null;
@@ -87,7 +89,7 @@ namespace UltimaXNA.Ultima.World.Entities.Items
             set
             {
 				m_ItemID = value;
-                ItemData = UltimaXNA.Ultima.IO.TileData.ItemData[m_ItemID & 0x3FFF];
+                ItemData = TileData.ItemData[m_ItemID & 0x3FFF];
             }
         }
 

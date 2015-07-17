@@ -8,11 +8,10 @@
  *
  ***************************************************************************/
 #region usings
-using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Ultima.World.Maps;
-using System.Collections.Generic;
 #endregion
 
 namespace UltimaXNA.Ultima.World.WorldViews

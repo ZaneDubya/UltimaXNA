@@ -7,10 +7,6 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace UltimaXNA.Ultima.IO
 {
@@ -27,7 +23,7 @@ namespace UltimaXNA.Ultima.IO
                     m_male = new string[m_maleStyles.Length];
                     for (int i = 0; i < m_maleStyles.Length; i++)
                     {
-                        m_male[i] = IO.StringData.Entry(m_maleStyles[i]);
+                        m_male[i] = StringData.Entry(m_maleStyles[i]);
                         if (m_male[i] == "Pigtails")
                             m_male[i] = "2 Tails";
                     }
@@ -65,7 +61,7 @@ namespace UltimaXNA.Ultima.IO
                     m_facial = new string[m_facialStyles.Length];
                     for (int i = 0; i < m_facialStyles.Length; i++)
                     {
-                        m_facial[i] = IO.StringData.Entry(m_facialStyles[i]);
+                        m_facial[i] = StringData.Entry(m_facialStyles[i]);
                     }
                 }
                 return m_facial;
@@ -100,7 +96,7 @@ namespace UltimaXNA.Ultima.IO
                     m_female = new string[m_femaleStyles.Length];
                     for (int i = 0; i < m_femaleStyles.Length; i++)
                     {
-                        m_female[i] = IO.StringData.Entry(m_femaleStyles[i]);
+                        m_female[i] = StringData.Entry(m_femaleStyles[i]);
                     }
                 }
                 return m_female;

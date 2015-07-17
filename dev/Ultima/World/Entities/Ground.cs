@@ -10,6 +10,7 @@
  ***************************************************************************/
 #region usings
 using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.World.EntityViews;
 using UltimaXNA.Ultima.World.Maps;
 #endregion
 
@@ -42,12 +43,12 @@ namespace UltimaXNA.Ultima.World.Entities
             : base(Serial.Null, map)
         {
             m_LandDataID = tileID;
-            LandData = IO.TileData.LandData[m_LandDataID & 0x3FFF];
+            LandData = TileData.LandData[m_LandDataID & 0x3FFF];
         }
 
-        protected override EntityViews.AEntityView CreateView()
+        protected override AEntityView CreateView()
         {
-            return new EntityViews.GroundView(this);
+            return new GroundView(this);
         }
     }
 }

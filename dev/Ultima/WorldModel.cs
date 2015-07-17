@@ -9,17 +9,17 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Core.Patterns.MVC;
+
 using UltimaXNA.Core.Network;
+using UltimaXNA.Core.Patterns.MVC;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.World.Entities;
-using UltimaXNA.Ultima.Login;
-using UltimaXNA.Ultima.World.Maps;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.WorldGumps;
 using UltimaXNA.Ultima.World;
+using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Input;
 using UltimaXNA.Ultima.World.Managers;
+using UltimaXNA.Ultima.World.Maps;
 #endregion
 
 namespace UltimaXNA.Ultima
@@ -29,12 +29,12 @@ namespace UltimaXNA.Ultima
         // ================================================================================
         // Private variables
         // ================================================================================
-        private Map m_map = null;
-        private WorldCursor m_Cursor = null;
+        private Map m_Map;
+        private WorldCursor m_Cursor;
         // services
-        private INetworkClient m_Network;
-        private UserInterfaceService m_UserInterface;
-        private UltimaGame m_Engine;
+        private readonly INetworkClient m_Network;
+        private readonly UserInterfaceService m_UserInterface;
+        private readonly UltimaGame m_Engine;
 
         // ================================================================================
         // Public Static Properties
@@ -105,17 +105,17 @@ namespace UltimaXNA.Ultima
         
         public Map Map
         {
-            get { return m_map; }
+            get { return m_Map; }
         }
 
         public uint MapIndex
         {
             get
             {
-                if (m_map == null)
+                if (m_Map == null)
                     return 0xFFFFFFFF;
                 else
-                    return m_map.Index;
+                    return m_Map.Index;
             }
             set
             {
@@ -123,7 +123,7 @@ namespace UltimaXNA.Ultima
                 {
                     // clear all entities
                     Entities.Reset(false);
-                    if (m_map != null)
+                    if (m_Map != null)
                     {
                         AEntity player = Entities.GetPlayerObject();
                         // save current player position
@@ -131,19 +131,19 @@ namespace UltimaXNA.Ultima
                         // place the player in null space (allows the map to be reloaded when we return to the same location in a different map).
                         player.SetMap(null);
                         // dispose of map
-                        m_map.Dispose();
-                        m_map = null;
+                        m_Map.Dispose();
+                        m_Map = null;
                         // add new map!
-                        m_map = new Map(value);
-                        player.SetMap(m_map);
+                        m_Map = new Map(value);
+                        player.SetMap(m_Map);
                         // restore previous player position
                         player.Position.Set(x, y, z);
                     }
                     else
                     {
                         AEntity player = Entities.GetPlayerObject();
-                        m_map = new Map(value);
-                        player.SetMap(m_map);
+                        m_Map = new Map(value);
+                        player.SetMap(m_Map);
                     }
                 }
             }
@@ -238,14 +238,14 @@ namespace UltimaXNA.Ultima
             }
 
             Client.SendWorldLoginPackets();
-            WorldModel.IsInWorld = true;
+            IsInWorld = true;
             Client.StartKeepAlivePackets();
         }
 
         public void Disconnect()
         {
             m_Network.Disconnect(); // stops keep alive packets.
-            WorldModel.IsInWorld = false;
+            IsInWorld = false;
             m_Engine.ActiveModel = new LoginModel();
         }
 

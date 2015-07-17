@@ -8,8 +8,8 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+
 using System;
-using System.Text;
 
 namespace UltimaXNA.Core.Diagnostics
 {

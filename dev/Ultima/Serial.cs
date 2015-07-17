@@ -9,10 +9,8 @@
  *
  ***************************************************************************/
 #region usings
+
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 #endregion
 
 namespace UltimaXNA.Ultima
@@ -21,7 +19,7 @@ namespace UltimaXNA.Ultima
     {
         public static Serial Null
         {
-            get { return (Serial)0; }
+            get { return 0; }
         }
 
         public static Serial World
@@ -29,18 +27,18 @@ namespace UltimaXNA.Ultima
             get { return unchecked((int)0xFFFFFFFF); }
         }
 
-        private readonly int m_serial;
+        private readonly int m_Serial;
 
         private Serial(int serial)
         {
-            m_serial = serial;
+            m_Serial = serial;
         }
 
         public int Value
         {
             get
             {
-                return m_serial;
+                return m_Serial;
             }
         }
 
@@ -48,7 +46,7 @@ namespace UltimaXNA.Ultima
         {
             get
             {
-                return (m_serial > 0 && m_serial < 0x40000000);
+                return (m_Serial > 0 && m_Serial < 0x40000000);
             }
         }
 
@@ -56,7 +54,7 @@ namespace UltimaXNA.Ultima
         {
             get
             {
-                return (m_serial >= 0x40000000 && m_serial <= 0x7FFFFFFF);
+                return (m_Serial >= 0x40000000);
             }
         }
 
@@ -64,7 +62,7 @@ namespace UltimaXNA.Ultima
         {
             get
             {
-                return (m_serial > 0);
+                return (m_Serial > 0);
             }
         }
 
@@ -72,24 +70,24 @@ namespace UltimaXNA.Ultima
         {
             get
             {
-                return (m_serial < 0);
+                return (m_Serial < 0);
             }
         }
 
-        private static int m_nextDynamicSerial = -1;
+        private static int s_NextDynamicSerial = -1;
         public static int NewDynamicSerial
         {
-            get { return m_nextDynamicSerial--; }
+            get { return s_NextDynamicSerial--; }
         }
 
         public override int GetHashCode()
         {
-            return m_serial;
+            return m_Serial;
         }
 
         public int CompareTo(Serial other)
         {
-            return m_serial.CompareTo(other.m_serial);
+            return m_Serial.CompareTo(other.m_Serial);
         }
 
         public int CompareTo(object other)
@@ -106,47 +104,47 @@ namespace UltimaXNA.Ultima
         {
             if (o == null || !(o is Serial)) return false;
 
-            return ((Serial)o).m_serial == m_serial;
+            return ((Serial)o).m_Serial == m_Serial;
         }
 
         public static bool operator ==(Serial l, Serial r)
         {
-            return l.m_serial == r.m_serial;
+            return l.m_Serial == r.m_Serial;
         }
 
         public static bool operator !=(Serial l, Serial r)
         {
-            return l.m_serial != r.m_serial;
+            return l.m_Serial != r.m_Serial;
         }
 
         public static bool operator >(Serial l, Serial r)
         {
-            return l.m_serial > r.m_serial;
+            return l.m_Serial > r.m_Serial;
         }
 
         public static bool operator <(Serial l, Serial r)
         {
-            return l.m_serial < r.m_serial;
+            return l.m_Serial < r.m_Serial;
         }
 
         public static bool operator >=(Serial l, Serial r)
         {
-            return l.m_serial >= r.m_serial;
+            return l.m_Serial >= r.m_Serial;
         }
 
         public static bool operator <=(Serial l, Serial r)
         {
-            return l.m_serial <= r.m_serial;
+            return l.m_Serial <= r.m_Serial;
         }
 
         public override string ToString()
         {
-            return String.Format("0x{0:X8}", m_serial);
+            return String.Format("0x{0:X8}", m_Serial);
         }
 
         public static implicit operator int(Serial a)
         {
-            return a.m_serial;
+            return a.m_Serial;
         }
 
         public static implicit operator Serial(int a)

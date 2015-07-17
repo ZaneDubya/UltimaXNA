@@ -8,11 +8,11 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-#region Usings
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
+#region usings
 using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Input.Windows;
 #endregion

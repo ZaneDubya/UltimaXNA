@@ -8,9 +8,7 @@
  *
  ***************************************************************************/
 #region usings
-using Microsoft.Xna.Framework;
 using System;
-using UltimaXNA.Ultima.World.Entities;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Input

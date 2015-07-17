@@ -9,10 +9,11 @@
  *
  ***************************************************************************/
 #region usings
+using System;
 using Microsoft.Xna.Framework;
 using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
-using UltimaXNA.Ultima.World;
+using UltimaXNA.Ultima.World.EntityViews;
 using UltimaXNA.Ultima.World.Maps;
 #endregion
 
@@ -138,7 +139,7 @@ namespace UltimaXNA.Ultima.World.Entities.Effects
             if (m_TimeUntilHit == 0f)
             {
                 m_TimeActive = 0f;
-                m_TimeUntilHit = (float)System.Math.Sqrt(System.Math.Pow((tx - sx), 2) + System.Math.Pow((ty - sy), 2) + System.Math.Pow((tz - sz), 2)) * 75f;
+                m_TimeUntilHit = (float)Math.Sqrt(Math.Pow((tx - sx), 2) + Math.Pow((ty - sy), 2) + Math.Pow((tz - sz), 2)) * 75f;
             }
             else
             {
@@ -158,7 +159,7 @@ namespace UltimaXNA.Ultima.World.Entities.Effects
                 z = (sz + (m_TimeActive / m_TimeUntilHit) * (float)(tz - sz));
                 Position.Set((int)x, (int)y, (int)z);
                 Position.Offset = new Vector3(x % 1, y % 1, z % 1);
-                AngleToTarget = -((float)System.Math.Atan2((ty - sy), (tx - sx)) + (float)(System.Math.PI) * (1f / 4f)); // In radians
+                AngleToTarget = -((float)Math.Atan2((ty - sy), (tx - sx)) + (float)(Math.PI) * (1f / 4f)); // In radians
             }
 
             // m_RenderMode:
@@ -173,9 +174,9 @@ namespace UltimaXNA.Ultima.World.Entities.Effects
         private float m_TimeActive = 0f;
         private float m_TimeUntilHit = 0f;
 
-        protected override EntityViews.AEntityView CreateView()
+        protected override AEntityView CreateView()
         {
-            return new EntityViews.MovingEffectView(this);
+            return new MovingEffectView(this);
         }
 
         public override string ToString()

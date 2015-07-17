@@ -1,4 +1,8 @@
-﻿using Microsoft.Win32;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using Microsoft.Win32;
+using UltimaXNA.Core.Diagnostics.Tracing;
 /***************************************************************************
  *   FileManager.cs
  *   Based on code from UltimaSDK: http://ultimasdk.codeplex.com/
@@ -9,12 +13,6 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using System;
-using System.IO;
-using UltimaXNA.Core.Diagnostics;
-using System.Collections.Generic;
-using UltimaXNA.Configuration;
-using UltimaXNA.Core.Diagnostics.Tracing;
 
 namespace UltimaXNA.Ultima.IO
 {

@@ -1,9 +1,9 @@
-﻿using Microsoft.Xna.Framework;
-using System.Collections.Generic;
-using UltimaXNA.Ultima.World.EntityViews;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
-using UltimaXNA.Ultima.World.Maps;
+using UltimaXNA.Ultima.World.EntityViews;
 using UltimaXNA.Ultima.World.Input;
+using UltimaXNA.Ultima.World.Maps;
 
 namespace UltimaXNA.Ultima.World.WorldViews
 {

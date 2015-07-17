@@ -14,10 +14,10 @@
 //  *
 //  ***************************************************************************/
 
-using UltimaXNA.Core.Audio.MP3Sharp.Support;
 using System;
 using System.IO;
 using System.Runtime.Serialization;
+using UltimaXNA.Core.Audio.MP3Sharp.Support;
 
 namespace UltimaXNA.Core.Audio.MP3Sharp
 {

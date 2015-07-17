@@ -10,10 +10,9 @@
  ***************************************************************************/
 #region usings
 using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World.Entities.Items.Containers;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
-using UltimaXNA.Ultima.UI;
-using UltimaXNA.Ultima.UI.Controls;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps

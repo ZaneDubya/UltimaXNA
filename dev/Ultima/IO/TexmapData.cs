@@ -10,10 +10,9 @@
  ***************************************************************************/
 #region usings
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Core;
 using UltimaXNA.Core.Diagnostics;
+using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.IO;
-
 #endregion
 
 namespace UltimaXNA.Ultima.IO
@@ -53,7 +52,7 @@ namespace UltimaXNA.Ultima.IO
                 return null;
             if (reader.Stream.Length == 0)
             {
-                UltimaXNA.Core.Diagnostics.Tracing.Tracer.Critical("Empty texmap texture with index {0}!", index);
+                Tracer.Critical("Empty texmap texture with index {0}!", index);
                 return null;
             }
 

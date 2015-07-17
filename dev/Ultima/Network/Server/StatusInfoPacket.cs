@@ -9,11 +9,9 @@
  *
  ***************************************************************************/
 #region usings
-using Microsoft.Xna.Framework;
-using System;
+using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Network.Packets;
 using UltimaXNA.Ultima.Data;
-using UltimaXNA.Core.Network;
 #endregion
 
 

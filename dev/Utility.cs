@@ -9,17 +9,16 @@
  *
  ***************************************************************************/
 #region usings
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 #endregion
 
 namespace UltimaXNA
@@ -67,7 +66,7 @@ namespace UltimaXNA
         /// <summary>
         /// Formats the stream buffer to an output to a hex editor view of the data
         /// </summary>
-        /// <param name="buffer">The stream to be formatted</param>
+        /// <param name="input">The stream to be formatted</param>
         /// <param name="length">The length in bytes to format</param>
         /// <returns>A System.String containing the formatted buffer</returns>
         public static string FormatBuffer(Stream input, int length)
@@ -84,7 +83,7 @@ namespace UltimaXNA
         /// Formats the stream buffer to an output to a hex editor view of the data
         /// </summary>
         /// <param name="builder">The string builder to output the formatted buffer to</param>
-        /// <param name="buffer">The stream to be formatted</param>
+        /// <param name="input">The stream to be formatted</param>
         /// <param name="length">The length in bytes to format</param>
         public static void FormatBuffer(StringBuilder builder, Stream input, int length)
         {
@@ -129,7 +128,7 @@ namespace UltimaXNA
 
                 builder.Append(byteIndex.ToString("X4"));
                 builder.Append("   ");
-                builder.Append(bytes.ToString());
+                builder.Append(bytes);
                 builder.Append("  ");
                 builder.AppendLine(chars.ToString());
             }
@@ -173,7 +172,7 @@ namespace UltimaXNA
 
                 builder.Append(byteIndex.ToString("X4"));
                 builder.Append("   ");
-                builder.Append(bytes.ToString());
+                builder.Append(bytes);
                 builder.Append("  ");
                 builder.AppendLine(chars.ToString());
             }
@@ -181,16 +180,18 @@ namespace UltimaXNA
         #endregion
 
         #region Encoding
-        private static Encoding utf8, utf8WithEncoding;
+
+        private static Encoding s_Utf8;
+        private static Encoding s_Utf8WithEncoding;
 
         public static Encoding UTF8
         {
             get
             {
-                if (utf8 == null)
-                    utf8 = new UTF8Encoding(false, false);
+                if (s_Utf8 == null)
+                    s_Utf8 = new UTF8Encoding(false, false);
 
-                return utf8;
+                return s_Utf8;
             }
         }
 
@@ -198,108 +199,11 @@ namespace UltimaXNA
         {
             get
             {
-                if (utf8WithEncoding == null)
-                    utf8WithEncoding = new UTF8Encoding(true, false);
+                if (s_Utf8WithEncoding == null)
+                    s_Utf8WithEncoding = new UTF8Encoding(true, false);
 
-                return utf8WithEncoding;
+                return s_Utf8WithEncoding;
             }
-        }
-        #endregion
-
-        #region Conversion
-        public static bool TryConvert<TConverFrom, UConvertTo>(TConverFrom convertFrom, out UConvertTo convertTo)
-        {
-            convertTo = default(UConvertTo);
-            bool converted = false;
-
-            TypeConverter converter = TypeDescriptor.GetConverter(convertFrom);
-
-            if (converter.CanConvertTo(typeof(UConvertTo)))
-            {
-                convertTo = (UConvertTo)converter.ConvertTo(convertFrom, typeof(UConvertTo));
-                converted = true;
-            }
-
-            return converted;
-        }
-
-        public static bool TryConvert(Type convertFrom, object from, Type convertTo, out object to)
-        {
-            to = null;
-            bool converted = false;
-
-            TypeConverter converter = TypeDescriptor.GetConverter(convertTo);
-
-            if (converter.CanConvertFrom(convertFrom))
-            {
-                to = converter.ConvertFrom(from);
-                converted = true;
-            }
-
-            return converted;
-        }
-
-        public static TConverFrom ConvertReferenceType<TConverFrom, UConvertTo>(UConvertTo value)
-        {
-            if (value == null)
-            {
-                return default(TConverFrom);
-            }
-            else if (typeof(TConverFrom).IsAssignableFrom(value.GetType()) == true)
-            {
-                return (TConverFrom)((object)value);
-            }
-
-            return default(TConverFrom);
-        }
-
-        public static TConverFrom ConvertValueType<TConverFrom, UConvertTo>(UConvertTo value)
-        {
-            IConvertible convertible = value as IConvertible;
-
-            if (convertible != null)
-            {
-                return (TConverFrom)System.Convert.ChangeType(convertible, typeof(TConverFrom));
-            }
-
-            TypeConverter converter = TypeDescriptor.GetConverter(value);
-
-            if (converter.CanConvertTo(typeof(TConverFrom)))
-            {
-                return (TConverFrom)converter.ConvertTo(value, typeof(TConverFrom));
-            }
-
-            if (value == null)
-            {
-                throw new InvalidCastException(string.Format(CultureInfo.InvariantCulture,
-                    "Unable to cast type '{0}'.", typeof(TConverFrom).Name));
-            }
-
-            return default(TConverFrom);
-        }
-
-        public static TConverFrom? ConvertNullableType<TConverFrom, UConvertTo>(UConvertTo value) where TConverFrom : struct
-        {
-            if (value == null)
-            {
-                return null;
-            }
-
-            IConvertible convertible = value as IConvertible;
-
-            if (convertible != null)
-            {
-                return (TConverFrom)System.Convert.ChangeType(convertible, typeof(TConverFrom));
-            }
-
-            TypeConverter converter = TypeDescriptor.GetConverter(value);
-
-            if (converter.CanConvertTo(typeof(TConverFrom)))
-            {
-                return (TConverFrom)converter.ConvertTo(value, typeof(TConverFrom));
-            }
-
-            return new TConverFrom?((TConverFrom)((object)value));
         }
         #endregion
 
@@ -328,7 +232,7 @@ namespace UltimaXNA
 
         // Color utilities, made freely available on http://snowxna.wordpress.com/
         #region ColorUtility
-        private static char[] m_hexDigits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+        private static readonly char[] HexDigits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
         public static string ColorToHexString(Color color)
         {
@@ -341,13 +245,13 @@ namespace UltimaXNA
             for(int i = 0; i < 4; i++)
             {
                 int b = bytes[i];
-                chars[i * 2] = m_hexDigits[b >> 4];
-                chars[i * 2 + 1] = m_hexDigits[b & 0xF];
+                chars[i * 2] = HexDigits[b >> 4];
+                chars[i * 2 + 1] = HexDigits[b & 0xF];
             }
             return new string(chars);
         }
 
-        static byte hexDigitToByte(char c)
+        static byte HexDigitToByte(char c)
         {
             switch(c)
             {
@@ -378,33 +282,36 @@ namespace UltimaXNA
 
         public static Color ColorFromHexString(string hex)
         {
-            if (hex.Length == 8)
+            switch (hex.Length)
             {
-                int a = (hexDigitToByte(hex[0]) << 4) + hexDigitToByte(hex[1]);
-                int r = (hexDigitToByte(hex[2]) << 4) + hexDigitToByte(hex[3]);
-                int g = (hexDigitToByte(hex[4]) << 4) + hexDigitToByte(hex[5]);
-                int b = (hexDigitToByte(hex[6]) << 4) + hexDigitToByte(hex[7]);
-                return new Color((byte)r, (byte)g, (byte)b, (byte)a);
+                case 8:
+                {
+                    int a = (HexDigitToByte(hex[0]) << 4) + HexDigitToByte(hex[1]);
+                    int r = (HexDigitToByte(hex[2]) << 4) + HexDigitToByte(hex[3]);
+                    int g = (HexDigitToByte(hex[4]) << 4) + HexDigitToByte(hex[5]);
+                    int b = (HexDigitToByte(hex[6]) << 4) + HexDigitToByte(hex[7]);
+                    return new Color((byte)r, (byte)g, (byte)b, (byte)a);
+                }
+                case 6:
+                {
+                    int r = (HexDigitToByte(hex[0]) << 4) + HexDigitToByte(hex[1]);
+                    int g = (HexDigitToByte(hex[2]) << 4) + HexDigitToByte(hex[3]);
+                    int b = (HexDigitToByte(hex[4]) << 4) + HexDigitToByte(hex[5]);
+                    return new Color((byte)r, (byte)g, (byte)b);
+                }
+                case 3:
+                {
+                    int r = (HexDigitToByte(hex[0]) << 4) + HexDigitToByte(hex[0]);
+                    int g = (HexDigitToByte(hex[1]) << 4) + HexDigitToByte(hex[1]);
+                    int b = (HexDigitToByte(hex[2]) << 4) + HexDigitToByte(hex[2]);
+                    return new Color((byte)r, (byte)g, (byte)b);
+                }
+                default:
+                    return Color.Black;
             }
-            else if (hex.Length == 6)
-            {
-                int r = (hexDigitToByte(hex[0]) << 4) + hexDigitToByte(hex[1]);
-                int g = (hexDigitToByte(hex[2]) << 4) + hexDigitToByte(hex[3]);
-                int b = (hexDigitToByte(hex[4]) << 4) + hexDigitToByte(hex[5]);
-                return new Color((byte)r, (byte)g, (byte)b);
-            }
-            else if (hex.Length == 3)
-            {
-                int r = (hexDigitToByte(hex[0]) << 4) + hexDigitToByte(hex[0]);
-                int g = (hexDigitToByte(hex[1]) << 4) + hexDigitToByte(hex[1]);
-                int b = (hexDigitToByte(hex[2]) << 4) + hexDigitToByte(hex[2]);
-                return new Color((byte)r, (byte)g, (byte)b);
-            }
-            else
-                return Color.Black;
         }
 
-        private static Dictionary<string, Color> colorTable = new Dictionary<string, Color>()
+        private static readonly Dictionary<string, Color> ColorTable = new Dictionary<string, Color>()
         {
             {"white", Color.White},
             {"red", Color.Red},
@@ -418,25 +325,25 @@ namespace UltimaXNA
         public static Color? ColorFromString(string color)
         {
             Color output;
-            if (!colorTable.TryGetValue(color.ToLower(), out output)) return null;
+            if (!ColorTable.TryGetValue(color.ToLower(), out output)) return null;
 
             return output;
         }
         #endregion
 
         // Version string.
-        static string m_versionString;
+        static string s_VersionString;
         public static string VersionString
         {
             get
             {
-                if (m_versionString == null)
+                if (s_VersionString == null)
                 {
-                    Version v = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+                    Version v = Assembly.GetExecutingAssembly().GetName().Version;
                     DateTime d = new DateTime(v.Build * TimeSpan.TicksPerDay).AddYears(1999).AddDays(-1);
-                    m_versionString = string.Format("UltimaXNA PreAlpha Milestone {0}.{1} ({2})", v.Major, v.Minor, String.Format("{0:MMMM d, yyyy}", d));
+                    s_VersionString = string.Format("UltimaXNA PreAlpha Milestone {0}.{1} ({2})", v.Major, v.Minor, string.Format("{0:MMMM d, yyyy}", d));
                 }
-                return m_versionString;
+                return s_VersionString;
             }
         }
 
@@ -483,7 +390,7 @@ namespace UltimaXNA
         {
             get
             {
-                byte[] iIPAdress = new byte[4] { 127, 0, 0, 1 };
+                byte[] iIPAdress = { 127, 0, 0, 1 };
                 int iAddress = BitConverter.ToInt32(iIPAdress, 0);
                 return iAddress;
             }
@@ -496,12 +403,12 @@ namespace UltimaXNA
 #pragma warning restore 618
         }
 
-        static Random m_random;
+        static Random s_Random;
         public static int RandomValue(int low, int high)
         {
-            if (m_random == null)
-                m_random = new Random();
-            int rnd = m_random.Next(low, high + 1);
+            if (s_Random == null)
+                s_Random = new Random();
+            int rnd = s_Random.Next(low, high + 1);
             return rnd; 
         }
 
@@ -534,11 +441,11 @@ namespace UltimaXNA
 
         public static string GetColorFromUshortColor(ushort color)
         {
-            const int multiplier = 0xFF / 0x1F;
+            const int MULTIPLIER = 0xFF / 0x1F;
             uint uintColor = (uint)(
-                ((((color >> 10) & 0x1F) * multiplier)) |
-                ((((color >> 5) & 0x1F) * multiplier) << 8) |
-                (((color & 0x1F) * multiplier) << 16)
+                ((((color >> 10) & 0x1F) * MULTIPLIER)) |
+                ((((color >> 5) & 0x1F) * MULTIPLIER) << 8) |
+                (((color & 0x1F) * MULTIPLIER) << 16)
                 );
             return string.Format("{0:X6}", uintColor);
         }
@@ -549,25 +456,25 @@ namespace UltimaXNA
         }
 
         // Maintain an accurate count of frames per second.
-        static List<float> m_FPS = new List<float>();
+        static readonly List<float> FPSHistory = new List<float>();
         internal static int UpdateFPS(double frameMS)
         {
             if (frameMS > 0)
             {
-                while (m_FPS.Count > 19)
-                    m_FPS.RemoveAt(0);
-                m_FPS.Add(1000.0f / (float)frameMS);
+                while (FPSHistory.Count > 19)
+                    FPSHistory.RemoveAt(0);
+                FPSHistory.Add(1000.0f / (float)frameMS);
             }
 
             float count = 0.0f;
-            for (int i = 0; i < m_FPS.Count; i++)
+            for (int i = 0; i < FPSHistory.Count; i++)
             {
-                count += m_FPS[i];
+                count += FPSHistory[i];
             }
 
-            count /= m_FPS.Count;
+            count /= FPSHistory.Count;
 
-            return (int)System.Math.Ceiling(count);
+            return (int)Math.Ceiling(count);
         }
 
         public static void SaveTexture(Texture2D texture, string path)

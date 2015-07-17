@@ -7,40 +7,41 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using Microsoft.Xna.Framework;
+
 using System;
+using Microsoft.Xna.Framework;
 
 namespace UltimaXNA.Ultima.World.WorldViews
 {
     public class IsometricLighting
     {
-        private int m_lightLevelPersonal = 9;
-        private int m_lightLevelOverall = 9;
-        private float m_lightDirection = 4.12f;
-        private float m_lightHeight = -0.75f;
+        private int m_LightLevelPersonal = 9;
+        private int m_LightLevelOverall = 9;
+        private float m_LightDirection = 4.12f;
+        private float m_LightHeight = -0.75f;
 
         public int PersonalLightning
         {
-            set { m_lightLevelPersonal = value; RecalculateLightningValues(); }
-            get { return m_lightLevelPersonal; }
+            set { m_LightLevelPersonal = value; RecalculateLightningValues(); }
+            get { return m_LightLevelPersonal; }
         }
 
         public int OverallLightning
         {
-            set { m_lightLevelOverall = value; RecalculateLightningValues(); }
-            get { return m_lightLevelOverall; }
+            set { m_LightLevelOverall = value; RecalculateLightningValues(); }
+            get { return m_LightLevelOverall; }
         }
 
         public float LightDirection
         {
-            set { m_lightDirection = value; RecalculateLightningValues(); }
-            get { return m_lightDirection; }
+            set { m_LightDirection = value; RecalculateLightningValues(); }
+            get { return m_LightDirection; }
         }
 
         public float LightHeight
         {
-            set { m_lightHeight = value; RecalculateLightningValues(); }
-            get { return m_lightHeight; }
+            set { m_LightHeight = value; RecalculateLightningValues(); }
+            get { return m_LightHeight; }
         }
 
         private void RecalculateLightningValues()
@@ -50,8 +51,8 @@ namespace UltimaXNA.Ultima.World.WorldViews
             IsometricLightLevel = light / 30; // bring it between 0-1
 
             // i'd use a fixed lightning direction for now - maybe enable this effect with a custom packet?
-            m_lightDirection = 1.2f;
-            IsometricLightDirection = Vector3.Normalize(new Vector3((float)Math.Cos(m_lightDirection), (float)Math.Sin(m_lightDirection), 1f));
+            m_LightDirection = 1.2f;
+            IsometricLightDirection = Vector3.Normalize(new Vector3((float)Math.Cos(m_LightDirection), (float)Math.Sin(m_LightDirection), 1f));
         }
 
         public float IsometricLightLevel

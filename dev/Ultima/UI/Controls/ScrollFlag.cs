@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.UI.Interfaces;
 #endregion
 
@@ -110,7 +111,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             base.OnInitialize();
 
-            m_GumpSlider = IO.GumpData.GetGumpXNA(0x0828);
+            m_GumpSlider = GumpData.GetGumpXNA(0x0828);
             Size = new Point(m_GumpSlider.Width, m_GumpSlider.Height);
         }
 

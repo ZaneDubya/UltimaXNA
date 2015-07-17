@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using UltimaXNA.Ultima.IO;
 
 namespace ExamplePlugin
 {
@@ -9,7 +7,7 @@ namespace ExamplePlugin
     {
         public static void CreateHues()
         {
-            uint[] hues = UltimaXNA.Ultima.IO.HueData.GetAllHues();
+            uint[] hues = HueData.GetAllHues();
 
             uint[] toMatches = new uint[216];
             for (int b = 0; b < 6; b++)
@@ -26,7 +24,7 @@ namespace ExamplePlugin
                 var dbl_input_red = toMatches[i] & 0x0000ff;
                 var dbl_input_green = (toMatches[i] & 0x00ff00) >> 8;
                 var dbl_input_blue = (toMatches[i] & 0xff0000) >> 16;
-                for (int j = 0; j < UltimaXNA.Ultima.IO.HueData.HueCount; j++)
+                for (int j = 0; j < HueData.HueCount; j++)
                 {
                     // compute the Euclidean distance between the two colors
                     // note, that the alpha-component is not used in this example

@@ -1,10 +1,11 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.IO;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Ultima.UI;
-using UltimaXNA.Ultima.UI.Controls;
-using System.IO;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.UI;
+using UltimaXNA.Ultima.UI.Controls;
 
 namespace UltimaXNA.Ultima.Login.States
 {
@@ -80,14 +81,14 @@ namespace UltimaXNA.Ultima.Login.States
                 ((HuedControl)m_Gump.LastControl).Hue = i + 2;
             }
 
-            using (System.IO.FileStream file = new System.IO.FileStream("hues0.png", System.IO.FileMode.Create))
+            using (FileStream file = new FileStream("hues0.png", FileMode.Create))
             {
-                IO.HueData.HueTexture0.SaveAsPng(file, IO.HueData.HueTexture0.Width, IO.HueData.HueTexture0.Height);
+                HueData.HueTexture0.SaveAsPng(file, HueData.HueTexture0.Width, HueData.HueTexture0.Height);
             }
 
-            using (System.IO.FileStream file = new System.IO.FileStream("hues1.png", System.IO.FileMode.Create))
+            using (FileStream file = new FileStream("hues1.png", FileMode.Create))
             {
-                IO.HueData.HueTexture1.SaveAsPng(file, IO.HueData.HueTexture1.Width, IO.HueData.HueTexture1.Height);
+                HueData.HueTexture1.SaveAsPng(file, HueData.HueTexture1.Width, HueData.HueTexture1.Height);
             }
         }
 
@@ -117,7 +118,7 @@ namespace UltimaXNA.Ultima.Login.States
             {
                 if (m_texture == null)
                 {
-                    m_texture = IO.ArtData.GetStaticTexture(m_StaticTextureID);
+                    m_texture = ArtData.GetStaticTexture(m_StaticTextureID);
                     Size = new Point(m_texture.Width, m_texture.Height);
                 }
                 spriteBatch.Draw2D(m_texture, new Vector3(position.X, position.Y, 0), Utility.GetHueVector(Hue));

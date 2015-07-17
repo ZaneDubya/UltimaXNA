@@ -9,6 +9,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace UltimaXNA.Core.Input.Windows
 {
@@ -77,19 +78,19 @@ namespace UltimaXNA.Core.Input.Windows
 
     // This is the class that brings back the alt messages
     // http://www.gamedev.net/community/forums/topic.asp?topic_id=554322
-    class InputMessageFilter : System.Windows.Forms.IMessageFilter
+    class InputMessageFilter : IMessageFilter
     {
         private WndProcHandler m_Hook;
 
         public InputMessageFilter(WndProcHandler hook)
         {
             m_Hook = hook;
-            System.Windows.Forms.Application.AddMessageFilter(this);
+            Application.AddMessageFilter(this);
         }
         [DllImport("user32.dll", EntryPoint = "TranslateMessage")]
         protected extern static bool m_TranslateMessage(ref System.Windows.Forms.Message m);
 
-        bool System.Windows.Forms.IMessageFilter.PreFilterMessage(ref System.Windows.Forms.Message m)
+        bool IMessageFilter.PreFilterMessage(ref System.Windows.Forms.Message m)
         {
             switch (m.Msg)
             {

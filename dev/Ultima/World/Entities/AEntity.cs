@@ -9,9 +9,10 @@
  *
  ***************************************************************************/
 #region usings
-using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.World.EntityViews;
 using UltimaXNA.Ultima.World.Maps;
 #endregion
 
@@ -158,14 +159,14 @@ namespace UltimaXNA.Ultima.World.Entities
         // Draw and View handling code
         // ============================================================
 
-        private EntityViews.AEntityView m_View = null;
+        private AEntityView m_View = null;
 
-        protected virtual EntityViews.AEntityView CreateView()
+        protected virtual AEntityView CreateView()
         {
             return null;
         }
 
-        public EntityViews.AEntityView GetView()
+        public AEntityView GetView()
         {
             if (m_View == null)
                 m_View = CreateView();

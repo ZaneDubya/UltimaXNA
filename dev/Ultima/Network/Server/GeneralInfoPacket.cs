@@ -8,12 +8,11 @@
  *
  ***************************************************************************/
 #region usings
+using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Network.Packets;
-using UltimaXNA.Core.Diagnostics;
-using UltimaXNA.Core.Diagnostics.Tracing;
-using UltimaXNA.Ultima.World.Input;
 using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.World.Input;
 #endregion
 
 namespace UltimaXNA.Ultima.Network.Server

@@ -11,13 +11,12 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
-using UltimaXNA.Ultima.UI;
-using UltimaXNA.Ultima.World;
-using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.World;
+using UltimaXNA.Ultima.World.Entities.Items;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
@@ -83,7 +82,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             if (m_texture == null)
             {
-                m_texture = IO.ArtData.GetStaticTexture(Item.DisplayItemID);
+                m_texture = ArtData.GetStaticTexture(Item.DisplayItemID);
                 Size = new Point(m_texture.Width, m_texture.Height);
             }
             Vector3 hue = Utility.GetHueVector(IsMouseOver && HighlightOnMouseOver ? WorldView.MouseOverHue : Item.Hue);
@@ -187,7 +186,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                 if (this is ItemGumplingPaperdoll)
                 {
                     int w, h;
-                    IO.ArtData.GetStaticDimensions(Item.DisplayItemID, out w, out h);
+                    ArtData.GetStaticDimensions(Item.DisplayItemID, out w, out h);
                     Point click_point = new Point(w / 2, h / 2);
                     m_World.Interaction.PickupItem(Item, InternalGetPickupOffset(click_point));
                 }

@@ -10,9 +10,9 @@
  ***************************************************************************/
 #region usings
 using System;
+using System.Collections.Generic;
 using System.IO;
 using UltimaXNA.Core;
-using System.Collections.Generic;
 #endregion
 
 namespace UltimaXNA.Ultima.IO

@@ -17,11 +17,10 @@ using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Login.Accounts;
 using UltimaXNA.Ultima.Login.Servers;
-using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.Network.Server;
 using UltimaXNA.Ultima.UI;
-using UltimaXNA.Ultima.World;
+using UltimaXNA.Ultima.World.Entities.Mobiles;
 #endregion
 
 namespace UltimaXNA.Ultima.Login

@@ -10,6 +10,7 @@
 #region usings
 using System;
 using System.Collections.Generic;
+using UltimaXNA.Ultima.IO;
 #endregion
 
 namespace UltimaXNA.Ultima.Player
@@ -28,7 +29,7 @@ namespace UltimaXNA.Ultima.Player
                 if (!m_SkillsLoaded)
                 {
                     m_SkillsLoaded = true;
-                    foreach (IO.Skill skill in IO.SkillsData.List)
+                    foreach (Skill skill in SkillsData.List)
                         m_Skills.Add(skill.ID, new SkillEntry(this, skill.ID, skill.Index, skill.UseButton, skill.Name, 0.0f, 0.0f, 0, 0.0f));
                 }
                 return m_Skills;

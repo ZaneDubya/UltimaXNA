@@ -10,6 +10,7 @@
 #region usings
 using System.Security;
 using UltimaXNA.Core.Input;
+using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.UI.LoginGumps;
 #endregion
@@ -44,7 +45,7 @@ namespace UltimaXNA.Ultima.Login.States
         {
             base.Update(totalTime, frameTime);
 
-            if (m_Input.HandleKeyboardEvent(Core.Input.Windows.KeyboardEventType.Down, Core.Input.Windows.WinKeys.D, false, false, true))
+            if (m_Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.D, false, false, true))
             {
                 Manager.CurrentState = new LoggingInState();
             }

@@ -1,17 +1,17 @@
-﻿#region Usings
-using Microsoft.Xna.Framework;
+﻿#region usings
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using UltimaXNA.Configuration;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.Network.Client;
+using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
-using UltimaXNA.Ultima.Network.Client;
-using UltimaXNA.Ultima.UI.Controls;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Input

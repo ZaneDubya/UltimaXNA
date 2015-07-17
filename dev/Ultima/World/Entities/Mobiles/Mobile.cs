@@ -9,17 +9,11 @@
  *
  ***************************************************************************/
 #region usings
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using UltimaXNA.Ultima.World;
-using UltimaXNA.Ultima.World.WorldViews;
-using UltimaXNA.Ultima.World.Maps;
-using UltimaXNA.Ultima.World.Entities;
+using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.Entities.Items.Containers;
-using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.World.EntityViews;
+using UltimaXNA.Ultima.World.Maps;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Entities.Mobiles
@@ -63,15 +57,15 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
             if (!m_movement.Position.IsNullPosition)
             {
                 m_movement.Update(frameMS);
-                ((EntityViews.MobileView)GetView()).Update(frameMS);
+                ((MobileView)GetView()).Update(frameMS);
             }
 
             base.Update(frameMS);
         }
 
-        protected override EntityViews.AEntityView CreateView()
+        protected override AEntityView CreateView()
         {
-            return new EntityViews.MobileView(this);
+            return new MobileView(this);
         }
 
         // ============================================================
@@ -299,7 +293,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
 
         public void Animate(int action, int frameCount, int repeatCount, bool reverse, bool repeat, int delay)
         {
-            ((EntityViews.MobileView)GetView()).m_Animation.Animate(action, frameCount, repeatCount, reverse, repeat, delay);
+            ((MobileView)GetView()).m_Animation.Animate(action, frameCount, repeatCount, reverse, repeat, delay);
         }
 
         public void Mobile_AddMoveEvent(int x, int y, int z, int facing)

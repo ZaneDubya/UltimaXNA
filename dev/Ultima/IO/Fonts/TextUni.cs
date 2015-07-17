@@ -9,8 +9,9 @@
  *
  ***************************************************************************/
 #region usings
-using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.IO;
+using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.UI.Fonts;
 #endregion
 
@@ -57,7 +58,7 @@ namespace UltimaXNA.Ultima.IO.Fonts
             }
         }
 
-        static void graphicsDevice_DeviceReset(object sender, System.EventArgs e)
+        static void graphicsDevice_DeviceReset(object sender, EventArgs e)
         {
             loadFonts();
         }

@@ -1,7 +1,7 @@
-﻿using UltimaXNA.Core.Input.Windows;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using System.Collections.Generic;
 using UltimaXNA.Core.Input;
+using UltimaXNA.Core.Input.Windows;
 
 namespace UltimaXNA.Core.Patterns.MVC
 {

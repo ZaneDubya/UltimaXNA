@@ -12,6 +12,7 @@
 using System;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.Login.Accounts;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.UI;
@@ -152,12 +153,12 @@ namespace UltimaXNA.Ultima.Login.States
             // if not, pop up an appropriate error message.
             if (m_name.Length < 2)
             {
-                MsgBoxGump.Show(IO.StringData.Entry(1075458), MsgBoxTypes.OkOnly); // 1075458: Your character name is too short.
+                MsgBoxGump.Show(StringData.Entry(1075458), MsgBoxTypes.OkOnly); // 1075458: Your character name is too short.
                 return false;
             }
             if (m_name[m_name.Length - 1] == '.')
             {
-                MsgBoxGump.Show(IO.StringData.Entry(1075457), MsgBoxTypes.OkOnly); // 1075457: Your character name cannot end with a period('.').
+                MsgBoxGump.Show(StringData.Entry(1075457), MsgBoxTypes.OkOnly); // 1075457: Your character name cannot end with a period('.').
                 return false;
             }
             return true;

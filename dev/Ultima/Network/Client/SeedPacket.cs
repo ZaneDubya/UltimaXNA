@@ -15,9 +15,8 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Core.Network.Packets;
 using UltimaXNA.Core.Diagnostics.Tracing;
-
+using UltimaXNA.Core.Network.Packets;
 #endregion
 
 namespace UltimaXNA.Ultima.Network.Client

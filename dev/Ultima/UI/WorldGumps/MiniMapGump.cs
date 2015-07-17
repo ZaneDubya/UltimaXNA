@@ -9,13 +9,13 @@
  *
  ***************************************************************************/
 #region usings
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.World.Entities;
-using UltimaXNA.Ultima.UI;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
@@ -59,7 +59,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 {
                     m_GumpTexture = null;
                 }
-                m_GumpTexture = IO.GumpData.GetGumpXNA((m_useLargeMap ? 5011 : 5010), true);
+                m_GumpTexture = GumpData.GetGumpXNA((m_useLargeMap ? 5011 : 5010), true);
                 Size = new Point(m_GumpTexture.Width, m_GumpTexture.Height);
             }
 

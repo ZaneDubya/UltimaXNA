@@ -11,7 +11,7 @@
 #region usings
 using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
-using UltimaXNA.Ultima.World;
+using UltimaXNA.Ultima.World.EntityViews;
 using UltimaXNA.Ultima.World.Maps;
 #endregion
 
@@ -98,9 +98,9 @@ namespace UltimaXNA.Ultima.World.Entities.Effects
             }
         }
 
-        protected override EntityViews.AEntityView CreateView()
+        protected override AEntityView CreateView()
         {
-            return new EntityViews.AnimatedItemEffectView(this);
+            return new AnimatedItemEffectView(this);
         }
 
         public override string ToString()

@@ -1,8 +1,6 @@
-﻿#region Usings
-
+﻿#region usings
 using System;
 using System.Net;
-
 #endregion
 
 namespace UltimaXNA.Core.IO

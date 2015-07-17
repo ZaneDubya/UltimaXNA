@@ -31,6 +31,7 @@
  ***************************************************************************/
 
 using System;
+using System.Globalization;
 using System.Text;
 
 namespace UltimaXNA.Core.UI.HTML.Parsing
@@ -198,7 +199,7 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 							sEntity=new String((sbyte*)pBuffer,iFrom,iEntLen,System.Text.Encoding.Default);
 #else
 					
-						sEntity=System.Text.Encoding.Default.GetString(bHTML,iFrom,iEntLen);
+						sEntity=Encoding.Default.GetString(bHTML,iFrom,iEntLen);
 #endif
 
 						if(bCharCode)
@@ -251,7 +252,7 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 									}
 #else
 
-									iChar=int.Parse(sEntity,System.Globalization.NumberStyles.HexNumber);
+									iChar=int.Parse(sEntity,NumberStyles.HexNumber);
 #endif
 								}
 								
@@ -470,7 +471,7 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 											if(!bCharCodeHex)
 												iChar=int.Parse(sEntity);
 											else
-												iChar=int.Parse(sEntity,System.Globalization.NumberStyles.HexNumber);
+												iChar=int.Parse(sEntity,NumberStyles.HexNumber);
 
 											bSuccess=true;
 										}

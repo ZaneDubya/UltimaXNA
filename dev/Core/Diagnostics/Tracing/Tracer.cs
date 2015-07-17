@@ -8,6 +8,7 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+
 using System;
 using System.Collections.Generic;
 using UltimaXNA.Core.Diagnostics.Listeners;

@@ -11,6 +11,7 @@
 #region usings
 using System;
 using System.IO;
+using System.Text;
 using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Ultima.Data;
 #endregion
@@ -110,7 +111,7 @@ namespace UltimaXNA.Ultima.IO
                     itemData.Value = binaryReader.ReadByte();
                     itemData.Height = binaryReader.ReadByte();
 
-                    itemData.Name = System.Text.ASCIIEncoding.ASCII.GetString((binaryReader.ReadBytes(20)));
+                    itemData.Name = ASCIIEncoding.ASCII.GetString((binaryReader.ReadBytes(20)));
                     itemData.Name = itemData.Name.Trim('\0');
                     // binaryReader.BaseStream.Seek(20, SeekOrigin.Current);
 

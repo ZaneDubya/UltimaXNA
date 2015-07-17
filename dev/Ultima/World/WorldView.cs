@@ -8,8 +8,8 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Core.Patterns.MVC;
 using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.Patterns.MVC;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.UI.WorldGumps;
 using UltimaXNA.Ultima.World.Entities;

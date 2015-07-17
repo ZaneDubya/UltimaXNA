@@ -1,8 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
-using UltimaXNA.Ultima.World;
-using UltimaXNA.Ultima.World.Maps;
 using UltimaXNA.Ultima.World.Input;
+using UltimaXNA.Ultima.World.Maps;
 
 namespace UltimaXNA.Ultima.World.EntityViews
 {

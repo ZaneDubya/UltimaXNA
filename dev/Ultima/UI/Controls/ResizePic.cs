@@ -8,11 +8,12 @@
  *
  ***************************************************************************/
 #region usings
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.IO;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.Controls
@@ -71,7 +72,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             {
                 for (int i = 0; i < 9; i++)
                 {
-                    m_bgGumps[i] = IO.GumpData.GetGumpXNA(GumpID + i);
+                    m_bgGumps[i] = GumpData.GetGumpXNA(GumpID + i);
                 }
             }
 

@@ -8,10 +8,9 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Ultima.IO;
-using UltimaXNA.Core.Diagnostics;
+using UltimaXNA.Ultima.World.Entities.Mobiles;
 #endregion
 
 namespace UltimaXNA.Ultima.World.EntityViews
@@ -209,7 +208,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
                     UnPauseAnimation();
                     m_actionIndex = actionIndex;
                     m_animationFrame = 0f;
-                    m_FrameCount = IO.Animations.GetAnimationFrameCount(
+                    m_FrameCount = Animations.GetAnimationFrameCount(
                         Parent.Body, actionIndex, (int)Parent.Facing, Parent.Hue);
                     m_FrameDelay = delay;
                     if (repeat == false)

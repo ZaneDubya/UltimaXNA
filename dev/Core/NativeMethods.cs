@@ -7,10 +7,10 @@
  *  
  ********************************************************/
 
-#region Usings
-using Microsoft.Win32.SafeHandles;
+#region usings
 using System;
 using System.Runtime.InteropServices;
+using Microsoft.Win32.SafeHandles;
 using UltimaXNA.Core.Input.Windows;
 #endregion
 

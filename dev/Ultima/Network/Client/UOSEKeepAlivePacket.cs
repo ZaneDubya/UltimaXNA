@@ -8,7 +8,6 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Network.Packets;
 #endregion
 

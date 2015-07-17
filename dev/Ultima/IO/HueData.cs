@@ -9,9 +9,10 @@
  *
  ***************************************************************************/
 #region usings
+using System;
+using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.IO;
 using UltimaXNA.Core.Diagnostics;
 #endregion
 
@@ -34,7 +35,7 @@ namespace UltimaXNA.Ultima.IO
             CreateTexture();
         }
 
-        static void graphicsDevice_DeviceReset(object sender, System.EventArgs e)
+        static void graphicsDevice_DeviceReset(object sender, EventArgs e)
         {
             CreateTexture();
         }

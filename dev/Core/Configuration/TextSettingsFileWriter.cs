@@ -26,7 +26,7 @@ namespace UltimaXNA.Core.Configuration
         public TextSettingsFileWriter(string filename)
         {
             m_Filename = filename;
-            m_Serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+            m_Serializer = new JavaScriptSerializer();
         }
 
         public void Serialize(Dictionary<string, ASettingsSection> sections)

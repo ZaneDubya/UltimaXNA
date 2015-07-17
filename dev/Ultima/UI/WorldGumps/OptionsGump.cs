@@ -11,7 +11,6 @@
 #region usings
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.UI.Controls;
-
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps

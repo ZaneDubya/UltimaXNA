@@ -9,13 +9,13 @@
  *
  ***************************************************************************/
 #region usings
-using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.Maps;
-
 #endregion
 
 namespace UltimaXNA.Ultima.World.Entities.Mobiles
@@ -310,7 +310,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
 			for (int i = 0; i < items.Count; ++i)
 			{
 				Item item = items[i];
-				IO.ItemData itemData = item.ItemData;
+				ItemData itemData = item.ItemData;
 				TileFlag flags = itemData.Flags;
 
 				if ((flags & ImpassableSurface) == TileFlag.Surface) // Surface && !Impassable && !Movable
@@ -412,7 +412,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
 			{
 				Item item = items[i];
 				int itemID = item.ItemID & 0x3FFF;
-				IO.ItemData itemData = IO.TileData.ItemData[itemID];
+				ItemData itemData = TileData.ItemData[itemID];
 				TileFlag flags = itemData.Flags;
 
 				if ((flags & ImpassableSurface) != 0) // Impassable || Surface
@@ -532,7 +532,7 @@ namespace UltimaXNA.Ultima.World.Entities.Mobiles
 			{
 				Item item = itemList[i];
 
-				IO.ItemData id = item.ItemData;
+				ItemData id = item.ItemData;
 
 				int calcTop = item.Z + id.CalcHeight;
 

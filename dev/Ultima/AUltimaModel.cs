@@ -9,19 +9,15 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Core.Patterns.MVC;
+
 using System;
+using UltimaXNA.Core.Patterns.MVC;
 #endregion
 
 namespace UltimaXNA.Ultima
 {
     abstract public class AUltimaModel : AModel
     {
-        protected AUltimaModel()
-        {
-
-        }
-
         private bool m_IsInitialized;
 
         public void Initialize()

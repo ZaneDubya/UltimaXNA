@@ -8,8 +8,8 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Items;
 #endregion
 
@@ -75,11 +75,11 @@ namespace UltimaXNA.Ultima.World.Maps
             int groundDataIndex = 0;
             for (int i = 0; i < 64; i++)
             {
-                int iTileID = groundData[groundDataIndex++] + (groundData[groundDataIndex++] << 8);
-                int iTileZ = (sbyte)groundData[groundDataIndex++];
+                int tileID = groundData[groundDataIndex++] + (groundData[groundDataIndex++] << 8);
+                int tileZ = (sbyte)groundData[groundDataIndex++];
 
-                Ground ground = new Ground(iTileID, map);
-                ground.Position.Set((int)BlockX * 8 + i % 8, (int)BlockY * 8 + (i / 8), iTileZ);
+                Ground ground = new Ground(tileID, map);
+                ground.Position.Set((int)BlockX * 8 + i % 8, (int)BlockY * 8 + (i / 8), tileZ);
             }
 
             // load the statics data into the tiles

@@ -8,12 +8,10 @@
  *
  ***************************************************************************/
 
-using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Core.UI.Fonts;
-using UltimaXNA.Ultima.IO.Fonts;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {

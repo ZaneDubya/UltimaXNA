@@ -9,7 +9,6 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Ultima.Network;
 using UltimaXNA.Ultima.Network.Server;
 #endregion
 
