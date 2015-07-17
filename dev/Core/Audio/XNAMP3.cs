@@ -25,7 +25,7 @@ namespace UltimaXNA.Core.Audio
         private MP3Stream m_Stream;
         private DynamicSoundEffectInstance m_Instance;
 
-        private const int NUMBER_OF_PCM_BYTES_TO_READ_PER_CHUNK = 4096;
+        private const int NUMBER_OF_PCM_BYTES_TO_READ_PER_CHUNK = 8192;
         private readonly byte[] m_WaveBuffer = new byte[NUMBER_OF_PCM_BYTES_TO_READ_PER_CHUNK];
 
         private bool m_Repeat;
@@ -35,6 +35,7 @@ namespace UltimaXNA.Core.Audio
         {
             m_Stream = new MP3Stream(path, NUMBER_OF_PCM_BYTES_TO_READ_PER_CHUNK);
             m_Instance = new DynamicSoundEffectInstance(m_Stream.Frequency, AudioChannels.Stereo);
+            m_Instance.BufferNeeded += instance_BufferNeeded;
         }
 
         public void Dispose()
@@ -62,7 +63,6 @@ namespace UltimaXNA.Core.Audio
             m_Repeat = repeat;
             
             SubmitBuffer(3);
-            m_Instance.BufferNeeded += instance_BufferNeeded;
             m_Instance.Play();
         }
 

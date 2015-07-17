@@ -132,7 +132,15 @@ namespace UltimaXNA.Core.Audio.MP3Sharp
         public override long Position
         {
             get { return m_SourceStream.Position; }
-            set { m_SourceStream.Position = value; }
+            set
+            {
+                if (value < 0)
+                    value = 0;
+                if (value > m_SourceStream.Length)
+                    value = m_SourceStream.Length;
+                m_SourceStream.Position = value;
+                IsEOF = (m_SourceStream.Position >= m_SourceStream.Length);
+            }
         }
 
         /// <summary>

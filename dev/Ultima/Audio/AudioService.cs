@@ -85,29 +85,24 @@ namespace UltimaXNA.Ultima.Audio
                     // stop the current song
                     StopMusic();
 
-                    // if (m_MusicCurrentlyPlaying.Status != SoundState.Loaded)
-                    //    m_MusicCurrentlyPlaying.Load(); // this should really be threaded
-
-                    // open resource
-                    string mciCommand = string.Format("open \"{0}\" type MPEGVideo alias {1}", toPlay.Path, c_InternalMusicName);
-                    int result = SendMediaPlayerCommand(mciCommand, null, 0, IntPtr.Zero);
-                    if (result == 0)
+                    try
                     {
                         m_MusicCurrentlyPlaying = toPlay;
-                        // start playing
-                        string playCommand = string.Format("play {0} from 0", c_InternalMusicName);
-                        if (m_MusicCurrentlyPlaying.DoLoop)
-                        {
-                            playCommand += " repeat";
-                        }
-                        if (SendMediaPlayerCommand(playCommand, null, 0, IntPtr.Zero) != 0)
-                        {
-                            Tracer.Error("Error playing mp3 file {0}", toPlay.Path);
-                        }
+                        m_MusicCurrentlyPlayingMP3 = new XNAMP3(toPlay.Path);
                     }
-                    else
+                    catch
                     {
                         Tracer.Error("Error opening mp3 file {0}", toPlay.Path);
+                        return;
+                    }
+
+                    try
+                    {
+                        m_MusicCurrentlyPlayingMP3.Play(toPlay.DoLoop);
+                    }
+                    catch
+                    {
+                        Tracer.Error("Error playing mp3 file {0}", toPlay.Path);
                     }
                 }
             }
@@ -119,6 +114,7 @@ namespace UltimaXNA.Ultima.Audio
             {
                 m_MusicCurrentlyPlayingMP3.Stop();
                 m_MusicCurrentlyPlayingMP3.Dispose();
+                m_MusicCurrentlyPlayingMP3 = null;
                 m_MusicCurrentlyPlaying = null;
             }
         }
