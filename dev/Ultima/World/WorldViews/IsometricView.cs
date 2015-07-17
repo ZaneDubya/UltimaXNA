@@ -1,6 +1,6 @@
 ﻿/***************************************************************************
  *   IsometricRenderer.cs
- *   Based on code from ClintXNA's renderer: http://www.runuo.com/forums/xna/92023-hi.html
+ *   Based on code from ClintXNA's renderer.
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -13,9 +13,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using UltimaXNA.Configuration;
 using UltimaXNA.Core.Graphics;
-using UltimaXNA.Core.Input;
 using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.EntityViews;
@@ -45,8 +43,7 @@ namespace UltimaXNA.Ultima.World.WorldViews
         }
 
         #region RenderingVariables
-        private SpriteBatch3D m_spriteBatch;
-        private VertexPositionNormalTextureHue[] m_vertexBufferStretched;
+        private SpriteBatch3D m_SpriteBatch;
         #endregion
 
         #region LightingVariables
@@ -93,17 +90,12 @@ namespace UltimaXNA.Ultima.World.WorldViews
 
         public IsometricRenderer()
         {
-            m_spriteBatch = ServiceRegistry.GetService<SpriteBatch3D>();
+            m_SpriteBatch = ServiceRegistry.GetService<SpriteBatch3D>();
         }
 
         public void Initialize()
         {
-            m_vertexBufferStretched = new [] {
-                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(0, 0, 0)),
-                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(1, 0, 0)),
-                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(0, 1, 0)),
-                new VertexPositionNormalTextureHue(new Vector3(), new Vector3(),  new Vector3(1, 1, 0))
-            };
+
         }
 
         public void Update(Map map, Position3D center, MousePicking mousePick)
@@ -112,16 +104,16 @@ namespace UltimaXNA.Ultima.World.WorldViews
             {
                 if (RenderTarget != null)
                     RenderTarget.Dispose();
-                RenderTarget = new RenderTarget2D(m_spriteBatch.GraphicsDevice, Settings.World.GumpResolution.Width, Settings.World.GumpResolution.Height, false, SurfaceFormat.Color, DepthFormat.Depth16, 0, RenderTargetUsage.DiscardContents);
+                RenderTarget = new RenderTarget2D(m_SpriteBatch.GraphicsDevice, Settings.World.GumpResolution.Width, Settings.World.GumpResolution.Height, false, SurfaceFormat.Color, DepthFormat.Depth16, 0, RenderTargetUsage.DiscardContents);
             }
 
             InternalDetermineIfUnderEntity(map, center);
 
-            m_spriteBatch.GraphicsDevice.SetRenderTarget(RenderTarget);
+            m_SpriteBatch.GraphicsDevice.SetRenderTarget(RenderTarget);
 
             InternalDrawEntities(map, center, mousePick, out m_renderOffset);
 
-            m_spriteBatch.GraphicsDevice.SetRenderTarget(null);
+            m_SpriteBatch.GraphicsDevice.SetRenderTarget(null);
         }
 
         private void InternalDetermineIfUnderEntity(Map map, Position3D center)
@@ -244,7 +236,7 @@ namespace UltimaXNA.Ultima.World.WorldViews
                         AEntityView view = entities[i].GetView();
 
                         if (view != null)
-                            if (view.Draw(m_spriteBatch, drawPosition, overList, map))
+                            if (view.Draw(m_SpriteBatch, drawPosition, overList, map))
                                 ObjectsRendered++;
 
                         if (entities[i] is DeferredEntity)
@@ -261,13 +253,13 @@ namespace UltimaXNA.Ultima.World.WorldViews
                 }
             }
 
-            OverheadRenderer.Render(m_spriteBatch, overList, map);
+            OverheadRenderer.Render(m_SpriteBatch, overList, map);
 
             // Update the MouseOver objects
             mousePicking.UpdateOverEntities(overList, mousePicking.Position);
 
             // Draw the objects we just send to the spritebatch.
-            m_spriteBatch.Flush(true);
+            m_SpriteBatch.Flush(true);
         }
 
         private void recalculateLightning()
@@ -276,13 +268,13 @@ namespace UltimaXNA.Ultima.World.WorldViews
             light = Math.Max(light, 0);
             light /= 30; // bring it between 0-1
 
-            m_spriteBatch.SetLightIntensity(light);
+            m_SpriteBatch.SetLightIntensity(light);
 
 
             // i'd use a fixed lightning direction for now - maybe enable this effect with a custom packet?
             m_lightDirection = 1.2f;
             Vector3 lightDirection = Vector3.Normalize(new Vector3((float)Math.Cos(m_lightDirection), (float)Math.Sin(m_lightDirection), 1f));
-            m_spriteBatch.SetLightDirection(lightDirection);
+            m_SpriteBatch.SetLightDirection(lightDirection);
         }
     }
 }
