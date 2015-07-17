@@ -30,7 +30,7 @@ namespace UltimaXNA.Configuration
             MusicVolume = 100;
             SoundVolume = 100;
 
-            MusicOn = false;
+            MusicOn = true;
             SoundOn = true;
             FootStepSoundOn = true;
         }
