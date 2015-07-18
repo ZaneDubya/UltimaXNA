@@ -106,12 +106,12 @@ namespace UltimaXNA.Ultima.IO
             uint[] pixels = new uint[width * height];
             for (int i = 0; i < pixels.Length; i++)
             {
-                int hue = hues[i] - 1;
+                int hue = hues[i];
                 uint[] pixel = new uint[1];
                 if (hue < m_HueTextureHeight)
-                    HueTexture0.GetData<uint>(0, new Rectangle(31, hue % m_HueTextureHeight, 1, 1), pixel, 1, 1);
+                    HueTexture0.GetData<uint>(0, new Rectangle(31, hue % m_HueTextureHeight, 1, 1), pixel, 0, 1);
                 else
-                    HueTexture1.GetData<uint>(0, new Rectangle(31, hue % m_HueTextureHeight, 1, 1), pixel, 1, 1);
+                    HueTexture1.GetData<uint>(0, new Rectangle(31, hue % m_HueTextureHeight, 1, 1), pixel, 0, 1);
                 pixels[i] = pixel[0];
             }
             Texture2D t = new Texture2D(graphicsDevice, width, height);
