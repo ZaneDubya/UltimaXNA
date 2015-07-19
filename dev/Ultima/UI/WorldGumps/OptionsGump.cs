@@ -12,7 +12,6 @@
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.UI.Controls;
 using System.Collections.Generic;
-
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
