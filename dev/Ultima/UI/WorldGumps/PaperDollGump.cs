@@ -44,7 +44,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         WorldModel m_World;
         INetworkClient m_Client;
 
-        public PaperDollGump(Mobile parent)
+        public PaperDollGump(Mobile parent, string nameAndTitle)
             : base(parent.Serial, 0)
         {
             Parent = parent;
@@ -92,7 +92,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     (int) Buttons.Status));
                 ((Button) LastControl).GumpOverID = 0x07ed;
 
-                // Paperdoll
+                // Paperdoll control!
                 AddControl(new PaperDollInteractable(this, 8, 21)
                 {
                     SourceEntity = Parent
@@ -108,6 +108,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     SourceEntity = Parent
                 });
             }
+
+            // name and title
+            AddControl(new HtmlGumpling(this, 36, 262, 180, 42, 0, 0, string.Format("<span color=#aaa style='font-family:uni0;'>{0}", nameAndTitle)));
+            AddControl(new HtmlGumpling(this, 35, 262, 180, 42, 0, 0, string.Format("<span color=#222 style='font-family:uni0;'>{0}", nameAndTitle)));
         }
 
         protected override void OnInitialize()
