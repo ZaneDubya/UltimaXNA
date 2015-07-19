@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   DeathAnimationPacket.cs
+ *   ClientPingPacket.cs
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -8,22 +8,20 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Core.Network;
+using System;
+using System.Collections.Generic;
 using UltimaXNA.Core.Network.Packets;
+using UltimaXNA.Ultima.IO;
 #endregion
 
-namespace UltimaXNA.Ultima.Network.Server
+namespace UltimaXNA.Ultima.Network.Client
 {
-    public class DeathAnimationPacket : RecvPacket
+    public class ClientPingPacket : SendPacket
     {
-        public readonly Serial PlayerSerial;
-        public readonly Serial CorpseSerial;
-        public DeathAnimationPacket(PacketReader reader)
-            : base(0xAF, "Death Animation")
+        public ClientPingPacket()
+            : base(0x73, "Ping Packet", 2)
         {
-            PlayerSerial = reader.ReadInt32();
-            CorpseSerial = reader.ReadInt32();
-            reader.ReadInt32(); // unknown - all zero's.
+            Stream.Write((byte)0);
         }
     }
 }

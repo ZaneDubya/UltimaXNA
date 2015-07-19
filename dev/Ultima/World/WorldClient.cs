@@ -35,7 +35,7 @@ using UltimaXNA.Ultima.World.Input;
 
 namespace UltimaXNA.Ultima.World
 {
-    class WorldClient
+    class WorldClient : IDisposable
     {
         private Timer m_KeepAliveTimer;
         private INetworkClient m_Network;

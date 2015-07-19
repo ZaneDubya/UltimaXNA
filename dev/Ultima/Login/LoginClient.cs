@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Security;
+using System.Threading;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI;
@@ -25,8 +26,10 @@ using UltimaXNA.Ultima.World.Entities.Mobiles;
 
 namespace UltimaXNA.Ultima.Login
 {
-    public class LoginClient
+    public class LoginClient : IDisposable
     {
+        private Timer m_KeepAliveTimer;
+
         private readonly INetworkClient m_Network;
         private readonly UltimaGame m_Engine;
         private readonly UserInterfaceService m_UserInterface;
@@ -69,6 +72,7 @@ namespace UltimaXNA.Ultima.Login
         {
             Register<LoginConfirmPacket>(0x1B, "Login Confirm", 37, ReceiveLoginConfirmPacket);
             Register<LoginCompletePacket>(0x55, "Login Complete", 1, ReceiveLoginComplete);
+            Register<ServerPingPacket>(0x73, "Server Ping Packet", 2, ReceivePingPacket);
             Register<LoginRejectionPacket>(0x82, "Login Rejection", 2, ReceiveLoginRejection);
             Register<DeleteCharacterResponsePacket>(0x85, "Delete Character Response", 2, ReceiveDeleteCharacterResponse);
             Register<CharacterListUpdatePacket>(0x86, "Character List Update", -1, ReceiveCharacterListUpdate);
@@ -79,8 +83,36 @@ namespace UltimaXNA.Ultima.Login
             Register<VersionRequestPacket>(0xBD, "Version Request", -1, ReceiveVersionRequest);
         }
 
+        public void StartKeepAlivePackets()
+        {
+            m_KeepAliveTimer = new Timer(
+                e => SendKeepAlivePacket(),
+                null,
+                TimeSpan.Zero,
+                TimeSpan.FromSeconds(60));
+        }
+
+        private void StopKeepAlivePackets()
+        {
+            if (m_KeepAliveTimer != null)
+                m_KeepAliveTimer.Dispose();
+        }
+
+        private void SendKeepAlivePacket()
+        {
+            if (!m_Network.IsConnected)
+            {
+                StopKeepAlivePackets();
+                return;
+            }
+
+            m_Network.Send(new ClientPingPacket());
+        }
+
         public void Dispose()
         {
+            StopKeepAlivePackets();
+
             for (int i = 0; i < m_RegisteredHandlers.Count; i++)
                 m_Network.Unregister(m_RegisteredHandlers[i].Item1, m_RegisteredHandlers[i].Item2);
             m_RegisteredHandlers.Clear();
@@ -114,7 +146,6 @@ namespace UltimaXNA.Ultima.Login
                     Tracer.Warn("Cannot send seed packet: Version array is incorrectly sized.");
                 else
                     m_Network.Send(new SeedPacket(1, clientVersion));
-                
             }
             else
             {
@@ -130,6 +161,7 @@ namespace UltimaXNA.Ultima.Login
         {
             if (m_Network.IsConnected)
             {
+                StopKeepAlivePackets();
                 m_Network.Disconnect();
             }
 
@@ -301,6 +333,11 @@ namespace UltimaXNA.Ultima.Login
         private void ReceiveVersionRequest(IRecvPacket packet)
         {
             SendClientVersion();
+        }
+
+        private void ReceivePingPacket(IRecvPacket packet)
+        {
+
         }
 
 
