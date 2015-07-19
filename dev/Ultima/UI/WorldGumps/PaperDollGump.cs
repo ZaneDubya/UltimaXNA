@@ -147,12 +147,14 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     m_Client.Send(new QuestGumpRequestPacket(Parent.Serial));
                     break;
                 case Buttons.Skills:
+                    m_Client.Send(new GetPlayerStatusPacket(0x05, Parent.Serial));
                     if (m_UserInterface.GetControl<SkillsGump>() == null)
                         m_UserInterface.AddControl(new SkillsGump(), 80, 80);
                     else
                         m_UserInterface.RemoveControl<SkillsGump>();
                     break;
                 case Buttons.Guild:
+                    m_Client.Send(new GuildGumpRequestPacket(Parent.Serial));
                     break;
                 case Buttons.PeaceWarToggle:
                     m_World.Interaction.ToggleWarMode();
