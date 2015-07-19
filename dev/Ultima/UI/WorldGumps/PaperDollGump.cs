@@ -15,6 +15,7 @@ using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
+using UltimaXNA.Ultima.Network.Client;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
@@ -130,6 +131,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             switch ((Buttons)buttonID)
             {
                 case Buttons.Help:
+                    m_Client.Send(new RequestHelpPacket());
                     break;
                 case Buttons.Options:
                     if (m_UserInterface.GetControl<OptionsGump>() == null)
@@ -167,22 +169,6 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
             m_World.Disconnect();
         }
-
-        /*public override bool Equals(object obj)
-        {
-            // base equality handles null and cannot cast to same type.
-            if (!base.Equals(obj))
-                return false;
-
-            // If parameter cannot be cast to PaperDollGump return false.
-            PaperDollGump p = obj as PaperDollGump;
-            if (p == null)
-            {
-                return false;
-            }
-
-            return p.Parent.Serial == Parent.Serial;
-        }*/
 
         public override int GetHashCode()
         {
