@@ -13,6 +13,8 @@ using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World.Entities.Items.Containers;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
+using UltimaXNA.Core.Network;
+using UltimaXNA.Ultima.Network.Client;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
@@ -21,6 +23,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
     {
         UserInterfaceService m_UserInterface;
         WorldModel m_World;
+        INetworkClient m_Client;
 
         public TopMenuGump()
             : base(0, 0)
@@ -56,6 +59,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
             m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
             m_World = ServiceRegistry.GetService<WorldModel>();
+            m_Client = ServiceRegistry.GetService<INetworkClient>();
 
             MetaData.Layer = UILayer.Over;
         }
@@ -79,7 +83,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 case Buttons.Paperdoll:
                     Mobile player = (Mobile)WorldModel.Entities.GetPlayerObject();
                     if (m_UserInterface.GetControl<PaperDollGump>(player.Serial) == null)
-                        m_UserInterface.AddControl(new PaperDollGump((Mobile)WorldModel.Entities.GetPlayerObject()), 400, 100);
+                        m_Client.Send(new DoubleClickPacket(player.Serial));
                     else
                         m_UserInterface.RemoveControl<PaperDollGump>(player.Serial);
                     break;

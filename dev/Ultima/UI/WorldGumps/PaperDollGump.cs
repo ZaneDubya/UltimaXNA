@@ -144,6 +144,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     g.OnClose = logout_OnClose;
                     break;
                 case Buttons.Quests:
+                    m_Client.Send(new QuestGumpRequestPacket(Parent.Serial));
                     break;
                 case Buttons.Skills:
                     if (m_UserInterface.GetControl<SkillsGump>() == null)

@@ -156,7 +156,7 @@ namespace UltimaXNA.Ultima.UI
                         // Similar to the xmfhtmlgump command, but additionally a [color] can be specified.
                         gump.AddControl(new HtmlGumpling(gump, int.Parse(gumpParams[1]), int.Parse(gumpParams[2]), int.Parse(gumpParams[3]), int.Parse(gumpParams[4]),
                             int.Parse(gumpParams[6]), int.Parse(gumpParams[7]),
-                            string.Format("<font color=#{0}>{1}", Utility.GetColorFromUshortColor(ushort.Parse(gumpParams[8])), StringData.Entry(int.Parse(gumpParams[5])))), currentGUMPPage);
+                            string.Format("<font color=#{0}>{1}", Utility.GetColorFromInt(int.Parse(gumpParams[8])), StringData.Entry(int.Parse(gumpParams[5])))), currentGUMPPage);
                         (gump.LastControl as HtmlGumpling).Hue = 0;
                         break;
                     case "xmfhtmltok":
@@ -183,7 +183,7 @@ namespace UltimaXNA.Ultima.UI
                         gump.AddControl(new HtmlGumpling(gump, 
                             int.Parse(gumpParams[1]), int.Parse(gumpParams[2]), int.Parse(gumpParams[3]), int.Parse(gumpParams[4]),
                             int.Parse(gumpParams[5]), int.Parse(gumpParams[6]),
-                            string.Format("<font color=#{0}>{1}", Utility.GetColorFromUshortColor(ushort.Parse(gumpParams[7])), messageWithArgs)), currentGUMPPage);
+                            string.Format("<font color=#{0}>{1}", Utility.GetColorFromUshort(ushort.Parse(gumpParams[7])), messageWithArgs)), currentGUMPPage);
                         (gump.LastControl as HtmlGumpling).Hue = 0;
                         Tracer.Warn(string.Format("GUMP: Unhandled {0}.", gumpParams[0]));
                         break;

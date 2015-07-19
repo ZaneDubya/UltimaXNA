@@ -439,7 +439,7 @@ namespace UltimaXNA
             return new Vector3(hue & 0x0FFF, partial ? 2 : 1, transparent ? 0.5f : 0);
         }
 
-        public static string GetColorFromUshortColor(ushort color)
+        public static string GetColorFromUshort(ushort color)
         {
             const int MULTIPLIER = 0xFF / 0x1F;
             uint uintColor = (uint)(
@@ -448,6 +448,11 @@ namespace UltimaXNA
                 (((color & 0x1F) * MULTIPLIER) << 16)
                 );
             return string.Format("{0:X6}", uintColor);
+        }
+
+        public static string GetColorFromInt(int color)
+        {
+            return string.Format("{0:X6}", color);
         }
 
         public static int DistanceBetweenTwoPoints(Point p1, Point p2)

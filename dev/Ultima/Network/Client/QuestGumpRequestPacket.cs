@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   DoubleClickPacket.cs
+ *   QuestGumpRequestPacket.cs
  *   
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -13,12 +13,14 @@ using UltimaXNA.Core.Network.Packets;
 
 namespace UltimaXNA.Ultima.Network.Client
 {
-    public class DoubleClickPacket : SendPacket
+    public class QuestGumpRequestPacket : SendPacket
     {
-        public DoubleClickPacket(Serial serial)
-            : base(0x06, "Double Click", 5)
+        public QuestGumpRequestPacket(Serial serial)
+            : base(0xD7, "Quest gump request")
         {
             Stream.Write(serial);
+            Stream.Write((ushort)0x0032);
+            Stream.Write((byte)0x00);
         }
     }
 }

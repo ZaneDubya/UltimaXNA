@@ -256,6 +256,7 @@
     <Compile Include="Ultima\IO\Fonts\FontAscii.cs" />
     <Compile Include="Ultima\Network\Client\CastSpellPacket.cs" />
     <Compile Include="Ultima\Network\Client\ClientPingPacket.cs" />
+    <Compile Include="Ultima\Network\Client\QuestGumpRequestPacket.cs" />
     <Compile Include="Ultima\Network\Server\ServerPingPacket.cs" />
     <Compile Include="Ultima\UI\WorldGumps\OptionsGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\UseSpellButtonGump.cs" />
