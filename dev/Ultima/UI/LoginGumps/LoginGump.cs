@@ -10,8 +10,7 @@
  ***************************************************************************/
 #region usings
 using System.Security;
-using UltimaXNA.Configuration;
-using UltimaXNA.Ultima.UI;
+using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.UI.Controls;
 #endregion
 
@@ -47,11 +46,11 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             AddControl(new Button(this, 554, 2, 5513, 5515, ButtonTypes.Activate, 0, (int)LoginGumpButtons.QuitButton));
             ((Button)LastControl).GumpOverID = 5514;
             // Log in to Ultima Online
-            AddControl(new TextLabelAscii(this, 254, 305, hue, 2, IO.StringData.Entry(3000038)));
+            AddControl(new TextLabelAscii(this, 254, 305, hue, 2, StringData.Entry(3000038)));
             // Account Name
-            AddControl(new TextLabelAscii(this, 181, 346, hue, 2, IO.StringData.Entry(3000099)));
+            AddControl(new TextLabelAscii(this, 181, 346, hue, 2, StringData.Entry(3000099)));
             // Password
-            AddControl(new TextLabelAscii(this, 181, 386, hue, 2, IO.StringData.Entry(3000103)));
+            AddControl(new TextLabelAscii(this, 181, 386, hue, 2, StringData.Entry(3000103)));
             // name field
             TextEntry g1 = new TextEntry(this, 332, 346, 200, 20, 0, (int)LoginGumpTextFields.AccountName, 32, Settings.Server.UserName);
             g1.HtmlTag = "<basefont color=#000000><big>";

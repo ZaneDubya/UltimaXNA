@@ -1,11 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.World.Entities.Effects;
-using UltimaXNA.Ultima.World;
-using UltimaXNA.Ultima.World.Maps;
 using UltimaXNA.Ultima.World.Input;
+using UltimaXNA.Ultima.World.Maps;
+using UltimaXNA.Ultima.World.WorldViews;
 
 namespace UltimaXNA.Ultima.World.EntityViews
 {
@@ -47,8 +46,8 @@ namespace UltimaXNA.Ultima.World.EntityViews
             if (displayItemdID != m_DisplayItemID)
             {
                 m_DisplayItemID = displayItemdID;
-                DrawTexture = IO.ArtData.GetStaticTexture(m_DisplayItemID);
-                DrawArea = new Rectangle(DrawTexture.Width / 2 - 22, DrawTexture.Height - World.WorldViews.IsometricRenderer.TileSizeI + (Entity.Z * 4), DrawTexture.Width, DrawTexture.Height);
+                DrawTexture = ArtData.GetStaticTexture(m_DisplayItemID);
+                DrawArea = new Rectangle(DrawTexture.Width / 2 - 22, DrawTexture.Height - IsometricRenderer.TILE_SIZE_INTEGER + (Entity.Z * 4), DrawTexture.Width, DrawTexture.Height);
                 PickType = PickType.PickNothing;
                 DrawFlip = false;
             }

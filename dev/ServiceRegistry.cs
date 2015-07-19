@@ -9,6 +9,7 @@
  *
  ***************************************************************************/
 #region usings
+
 using System;
 using System.Collections.Generic;
 using UltimaXNA.Core.Diagnostics.Tracing;
@@ -18,19 +19,19 @@ namespace UltimaXNA
 {
     public static class ServiceRegistry
     {
-        private static Dictionary<Type, object> m_Services = new Dictionary<Type, object>();
+        private static readonly Dictionary<Type, object> s_Services = new Dictionary<Type, object>();
 
         public static T Register<T>(T service)
         {
             Type type = typeof(T);
 
-            if (m_Services.ContainsKey(type))
+            if (s_Services.ContainsKey(type))
             {
-                Tracer.Critical(string.Format("Attempted to register service of type {0} twice.", type.ToString()));
-                m_Services.Remove(type);
+                Tracer.Critical(string.Format("Attempted to register service of type {0} twice.", type));
+                s_Services.Remove(type);
             }
 
-            m_Services.Add(type, service);
+            s_Services.Add(type, service);
             return service;
         }
 
@@ -38,13 +39,13 @@ namespace UltimaXNA
         {
             Type type = typeof(T);
 
-            if (m_Services.ContainsKey(type))
+            if (s_Services.ContainsKey(type))
             {
-                m_Services.Remove(type);
+                s_Services.Remove(type);
             }
             else
             {
-                Tracer.Critical(string.Format("Attempted to unregister service of type {0}, but no service of this type (or type and equality) is registered.", type.ToString()));
+                Tracer.Critical(string.Format("Attempted to unregister service of type {0}, but no service of this type (or type and equality) is registered.", type));
             }
         }
 
@@ -52,7 +53,7 @@ namespace UltimaXNA
         {
             Type type = typeof(T);
 
-            if (m_Services.ContainsKey(type))
+            if (s_Services.ContainsKey(type))
             {
                 return true;
             }
@@ -66,13 +67,13 @@ namespace UltimaXNA
         {
             Type type = typeof(T);
 
-            if (m_Services.ContainsKey(type))
+            if (s_Services.ContainsKey(type))
             {
-                return (T)m_Services[type];
+                return (T)s_Services[type];
             }
             else
             {
-                Tracer.Critical(string.Format("Attempted to get service service of type {0}, but no service of this type is registered.", type.ToString()));
+                Tracer.Critical(string.Format("Attempted to get service service of type {0}, but no service of this type is registered.", type));
                 return default(T);
             }
         }

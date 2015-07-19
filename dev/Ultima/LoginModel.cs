@@ -8,11 +8,13 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+
 using UltimaXNA.Core.Patterns.MVC;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.Login.States;
-using UltimaXNA.Ultima.Login;
 using UltimaXNA.Ultima.Audio;
+using UltimaXNA.Ultima.Login;
+using UltimaXNA.Ultima.Login.States;
+using UltimaXNA.Ultima.UI;
 
 namespace UltimaXNA.Ultima
 {
@@ -28,7 +30,6 @@ namespace UltimaXNA.Ultima
         }
 
         public LoginModel()
-            : base()
         {
             ServiceRegistry.Register<LoginModel>(this);
 
@@ -45,7 +46,7 @@ namespace UltimaXNA.Ultima
             ServiceRegistry.GetService<UltimaGame>().SetupWindowForLogin();
 
             m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
-            m_UserInterface.Cursor = new UI.UltimaCursor();
+            m_UserInterface.Cursor = new UltimaCursor();
 
             m_SceneManager = new StateManager();
             m_SceneManager.ResetToLoginScreen();

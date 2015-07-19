@@ -8,8 +8,6 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using UltimaXNA.Core.Diagnostics.Tracing;
-using UltimaXNA.Core.Patterns;
 
 /*namespace ExamplePlugin
 {

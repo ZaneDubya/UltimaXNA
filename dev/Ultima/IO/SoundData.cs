@@ -9,10 +9,9 @@
  *
  ***************************************************************************/
 #region usings
-using Microsoft.Xna.Framework.Audio;
-using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 using UltimaXNA.Core.Diagnostics;
 #endregion
@@ -71,7 +70,7 @@ namespace UltimaXNA.Ultima.IO
                 m_Stream.Read(stringBuffer, 0, 40);
                 m_Stream.Read(data, 0, length - 40);
 
-                name = System.Text.Encoding.ASCII.GetString(stringBuffer);
+                name = Encoding.ASCII.GetString(stringBuffer);
 
                 Metrics.ReportDataRead((int)m_Index.BaseStream.Position - streamStart);
 

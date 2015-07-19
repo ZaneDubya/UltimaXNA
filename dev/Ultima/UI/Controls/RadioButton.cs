@@ -1,4 +1,5 @@
-﻿using UltimaXNA.Core.UI;
+﻿using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Core.UI;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
@@ -16,7 +17,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             GroupIndex = groupIndex;
         }
 
-        protected override void OnMouseClick(int x, int y, Core.Input.Windows.MouseButton button)
+        protected override void OnMouseClick(int x, int y, MouseButton button)
         {
             base.OnMouseClick(x, y, button);
             if (Owner != null)

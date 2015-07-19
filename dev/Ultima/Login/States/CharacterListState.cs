@@ -26,7 +26,7 @@ namespace UltimaXNA.Ultima.Login.States
         public CharacterListState()
             : base()
         {
-
+            
         }
 
         public override void Intitialize()
@@ -35,6 +35,7 @@ namespace UltimaXNA.Ultima.Login.States
 
             m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
             m_Login = ServiceRegistry.GetService<LoginModel>();
+            m_Login.Client.StartKeepAlivePackets();
 
             m_CharListGump = (CharacterListGump)m_UserInterface.AddControl(new CharacterListGump(), 0, 0);
             m_CharListGump.OnBackToSelectServer += OnBackToSelectServer;

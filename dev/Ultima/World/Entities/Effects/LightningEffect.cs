@@ -9,11 +9,8 @@
  *
  ***************************************************************************/
 #region usings
-using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
-using UltimaXNA.Ultima.World.Entities;
+using UltimaXNA.Ultima.World.EntityViews;
 using UltimaXNA.Ultima.World.Maps;
-using UltimaXNA.Ultima.World;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Entities.Effects
@@ -72,9 +69,9 @@ namespace UltimaXNA.Ultima.World.Entities.Effects
             return string.Format("LightningEffect");
         }
 
-        protected override EntityViews.AEntityView CreateView()
+        protected override AEntityView CreateView()
         {
-            return new EntityViews.LightningEffectView(this);
+            return new LightningEffectView(this);
         }
     }
 }

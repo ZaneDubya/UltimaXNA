@@ -11,7 +11,6 @@
 #region usings
 using UltimaXNA.Core.ComponentModel;
 using UltimaXNA.Core.Input.Windows;
-using UltimaXNA.Core.Configuration;
 #endregion
 
 namespace UltimaXNA.Configuration

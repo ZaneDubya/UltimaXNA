@@ -9,14 +9,10 @@
  *
  ***************************************************************************/
 #region usings
-using System;
 using System.Collections.Generic;
-using UltimaXNA.Ultima.World.Entities;
-using UltimaXNA.Ultima.World.EntityViews;
 using UltimaXNA.Ultima.IO;
-using UltimaXNA.Ultima.World.WorldViews;
+using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Items;
-using UltimaXNA.Ultima.World.Entities.Items.Containers;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Maps
@@ -142,7 +138,7 @@ namespace UltimaXNA.Ultima.World.Maps
 
                 if (entities[i] is Item) // checks Item and StaticItem entities.
                 {
-                    IO.ItemData data = ((Item)entities[i]).ItemData;
+                    ItemData data = ((Item)entities[i]).ItemData;
                     if (data.IsRoof || data.IsSurface || (data.IsWall && data.IsImpassable))
                     {
                         if (underEntity == null || entities[i].Z < underEntity.Z)
@@ -181,6 +177,7 @@ namespace UltimaXNA.Ultima.World.Maps
 
             for (int i = 0; i < m_Entities.Count; i++)
             {
+                // !!! TODO: I think this is wrong...
                 for (int j = 0; j < removeIndex; j++)
                 {
                     if (itemsToRemove[j] == i)
@@ -248,7 +245,7 @@ namespace UltimaXNA.Ultima.World.Maps
         // Sorting
         // ============================================================
 
-        private bool m_NeedsSorting = false;
+        private bool m_NeedsSorting;
 
         public void ForceSort()
         {

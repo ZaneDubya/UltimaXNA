@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UltimaXNA.Ultima.IO;
-using UltimaXNA.Ultima.World.Maps;
+﻿using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Items;
+using UltimaXNA.Ultima.World.Maps;
 
 namespace UltimaXNA.Ultima.World.WorldViews
 {
@@ -31,7 +27,7 @@ namespace UltimaXNA.Ultima.World.WorldViews
             int groundDataIndex = 0;
             for (int i = 0; i < 64; i++)
             {
-                Colors[i] = IO.RadarColorData.Colors[groundData[groundDataIndex++] + (groundData[groundDataIndex++] << 8)];
+                Colors[i] = RadarColorData.Colors[groundData[groundDataIndex++] + (groundData[groundDataIndex++] << 8)];
                 m_Zs[i]= (sbyte)groundData[groundDataIndex++];
             }
 
@@ -52,14 +48,14 @@ namespace UltimaXNA.Ultima.World.WorldViews
                 {
                     if (iz > m_Zs[tile])
                     {
-                        Colors[tile] = IO.RadarColorData.Colors[itemID + 0x4000];
+                        Colors[tile] = RadarColorData.Colors[itemID + 0x4000];
                         m_Zs[tile] = (sbyte)iz;
                     }
                 }
 
                 if (iz > m_Zs[tile])
                 {
-                    Colors[tile] = IO.RadarColorData.Colors[itemID + 0x4000];
+                    Colors[tile] = RadarColorData.Colors[itemID + 0x4000];
                     m_Zs[tile] = (sbyte)iz;
                 }
             }
@@ -81,12 +77,12 @@ namespace UltimaXNA.Ultima.World.WorldViews
                     AEntity e = block.Tiles[tile].Entities[eIndex];
                     if (e is Ground)
                     {
-                        color = IO.RadarColorData.Colors[(e as Ground).LandDataID];
+                        color = RadarColorData.Colors[(e as Ground).LandDataID];
                         break;
                     }
                     else if (e is StaticItem)
                     {
-                        color = IO.RadarColorData.Colors[(e as StaticItem).ItemID + 0x4000];
+                        color = RadarColorData.Colors[(e as StaticItem).ItemID + 0x4000];
                         break;
                     }
                     eIndex--;

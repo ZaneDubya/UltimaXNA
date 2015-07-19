@@ -9,8 +9,8 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Core.UI.HTML.Parsing;
 using System.Collections;
+using UltimaXNA.Core.UI.HTML.Parsing;
 #endregion
 
 namespace UltimaXNA.Core.UI.HTML

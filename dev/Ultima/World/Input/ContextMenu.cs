@@ -8,13 +8,11 @@
  *
  ***************************************************************************/
 
-#region Usings
-
+#region usings
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UltimaXNA.Ultima.IO;
-
 #endregion
 
 namespace UltimaXNA.Ultima.World.Input

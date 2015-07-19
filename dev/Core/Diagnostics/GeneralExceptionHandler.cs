@@ -8,6 +8,7 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+
 using System;
 using UltimaXNA.Core.Diagnostics.Tracing;
 

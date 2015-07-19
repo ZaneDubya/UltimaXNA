@@ -9,15 +9,17 @@
  *
  ***************************************************************************/
 #region usings
-using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
+using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.Audio;
 using UltimaXNA.Ultima.Data;
-using UltimaXNA.Ultima.Network;
+using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.Network.Server;
 using UltimaXNA.Ultima.Player;
@@ -33,7 +35,7 @@ using UltimaXNA.Ultima.World.Input;
 
 namespace UltimaXNA.Ultima.World
 {
-    class WorldClient
+    class WorldClient : IDisposable
     {
         private Timer m_KeepAliveTimer;
         private INetworkClient m_Network;
@@ -182,7 +184,7 @@ namespace UltimaXNA.Ultima.World
 
         public void StartKeepAlivePackets()
         {
-            m_KeepAliveTimer = new System.Threading.Timer(
+            m_KeepAliveTimer = new Timer(
                 e => SendKeepAlivePacket(),
                 null,
                 TimeSpan.Zero,
@@ -325,7 +327,7 @@ namespace UltimaXNA.Ultima.World
             }
             else
             {
-                if (IO.TileData.ItemData[itemID].IsContainer)
+                if (TileData.ItemData[itemID].IsContainer)
                 {
                     // special case for spellbooks.
                     if (SpellBook.IsSpellBookItem((ushort)itemID))
@@ -663,7 +665,7 @@ namespace UltimaXNA.Ultima.World
         {
             MessageLocalizedPacket p = (MessageLocalizedPacket)packet;
 
-            string iCliLoc = constructCliLoc(IO.StringData.Entry(p.CliLocNumber), p.Arguements);
+            string iCliLoc = constructCliLoc(StringData.Entry(p.CliLocNumber), p.Arguements);
             ReceiveTextMessage(p.MessageType, iCliLoc, p.Hue, p.Font, p.Serial, p.SpeakerName);
         }
 
@@ -687,7 +689,7 @@ namespace UltimaXNA.Ultima.World
                 if ((iArgs[i].Length > 0) && (iArgs[i].Substring(0, 1) == "#"))
                 {
                     int clilocID = Convert.ToInt32(iArgs[i].Substring(1));
-                    iArgs[i] = IO.StringData.Entry(clilocID);
+                    iArgs[i] = StringData.Entry(clilocID);
                 }
             }
 
@@ -873,7 +875,7 @@ namespace UltimaXNA.Ultima.World
             MessageLocalizedAffixPacket p = (MessageLocalizedAffixPacket)packet;
 
             string localizedString = string.Format(p.Flag_IsPrefix ? "{1}{0}" : "{0}{1}",
-                constructCliLoc(IO.StringData.Entry(p.CliLocNumber), p.Arguements), p.Affix);
+                constructCliLoc(StringData.Entry(p.CliLocNumber), p.Arguements), p.Affix);
             ReceiveTextMessage(p.MessageType, localizedString, p.Hue, p.Font, p.Serial, p.SpeakerName);
         }
 
@@ -901,7 +903,7 @@ namespace UltimaXNA.Ultima.World
 
             for (int i = 0; i < p.CliLocs.Count; i++)
             {
-                string iCliLoc = IO.StringData.Entry(p.CliLocs[i]);
+                string iCliLoc = StringData.Entry(p.CliLocs[i]);
                 if (p.Arguements[i] == string.Empty)
                 {
                     entity.PropertyList.AddProperty(iCliLoc);
@@ -1117,7 +1119,7 @@ namespace UltimaXNA.Ultima.World
         private void ReceiveOpenWebBrowser(IRecvPacket packet)
         {
             OpenWebBrowserPacket p = (OpenWebBrowserPacket)packet;
-            System.Diagnostics.Process.Start("iexplore.exe", p.WebsiteUrl);
+            Process.Start("iexplore.exe", p.WebsiteUrl);
         }
 
         private void ReceiveOverallLightLevel(IRecvPacket packet)
@@ -1130,7 +1132,7 @@ namespace UltimaXNA.Ultima.World
 
             OverallLightLevelPacket p = (OverallLightLevelPacket)packet;
 
-            ((WorldView)m_World.GetView()).Isometric.OverallLightning = p.LightLevel;
+            ((WorldView)m_World.GetView()).Isometric.Lighting.OverallLightning = p.LightLevel;
         }
 
         private void ReceivePersonalLightLevel(IRecvPacket packet)
@@ -1144,20 +1146,20 @@ namespace UltimaXNA.Ultima.World
 
             PersonalLightLevelPacket p = (PersonalLightLevelPacket)packet;
 
-            ((WorldView)m_World.GetView()).Isometric.PersonalLightning = p.LightLevel;
+            ((WorldView)m_World.GetView()).Isometric.Lighting.PersonalLightning = p.LightLevel;
         }
 
         private void ReceivePlayMusic(IRecvPacket packet)
         {
             PlayMusicPacket p = (PlayMusicPacket)packet;
-            Audio.AudioService service = ServiceRegistry.GetService<Audio.AudioService>();
+            AudioService service = ServiceRegistry.GetService<AudioService>();
             service.PlayMusic(p.MusicID);
         }
 
         private void ReceivePlaySoundEffect(IRecvPacket packet)
         {
             PlaySoundEffectPacket p = (PlaySoundEffectPacket)packet;
-            Audio.AudioService service = ServiceRegistry.GetService<Audio.AudioService>();
+            AudioService service = ServiceRegistry.GetService<AudioService>();
             service.PlaySound(p.SoundModel);
         }
 

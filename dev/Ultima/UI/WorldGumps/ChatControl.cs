@@ -9,14 +9,13 @@
  *
  ***************************************************************************/
 #region usings
-using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.IO.Fonts;
-using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
 #endregion
 

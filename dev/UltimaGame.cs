@@ -8,11 +8,12 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-#region Usings
+#region usings
+using System;
+using System.ComponentModel;
+using System.Windows.Forms;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Windows.Forms;
 using UltimaXNA.Configuration;
 using UltimaXNA.Core;
 using UltimaXNA.Core.Diagnostics.Tracing;
@@ -37,7 +38,7 @@ namespace UltimaXNA
             set;
         }
 
-        public static double TotalMS = 0d;
+        public static double TotalMS;
 
         public UltimaGame()
         {
@@ -159,7 +160,7 @@ namespace UltimaXNA
                 GraphicsDevice.Textures[1] = HueData.HueTexture0;
                 GraphicsDevice.Textures[2] = HueData.HueTexture1;
 
-                UltimaGame.IsRunning = true;
+                IsRunning = true;
                 WorldModel.IsInWorld = false;
 
                 ActiveModel = new LoginModel();
@@ -181,7 +182,7 @@ namespace UltimaXNA
         {
             IsFixedTimeStep = Settings.Game.IsFixedTimeStep;
 
-            if(!UltimaGame.IsRunning)
+            if(!IsRunning)
             {
                 Settings.Save();
                 Exit();
@@ -252,7 +253,7 @@ namespace UltimaXNA
             form.Closing += ExitGuard;
         }
 
-        private void ExitGuard(object sender, System.ComponentModel.CancelEventArgs e)
+        private void ExitGuard(object sender, CancelEventArgs e)
         {
             // we should dispose of the active model BEFORE we dispose of the window.
             if (ActiveModel != null)

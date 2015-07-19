@@ -1,8 +1,10 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.IO;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
@@ -49,8 +51,8 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         void buildGumpling(int x, int y, int inactiveID, int activeID, bool initialState, int switchID)
         {
-            m_Inactive = IO.GumpData.GetGumpXNA(inactiveID);
-            m_Active = IO.GumpData.GetGumpXNA(activeID);
+            m_Inactive = GumpData.GetGumpXNA(inactiveID);
+            m_Active = GumpData.GetGumpXNA(activeID);
 
             Position = new Point(x, y);
             Size = new Point(m_Inactive.Width, m_Inactive.Height);
@@ -71,7 +73,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        protected override void OnMouseClick(int x, int y, Core.Input.Windows.MouseButton button)
+        protected override void OnMouseClick(int x, int y, MouseButton button)
         {
             IsChecked = !IsChecked;
         }

@@ -9,8 +9,7 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Configuration;
-using UltimaXNA.Ultima.UI;
+using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.UI.Controls;
 #endregion
 
@@ -55,12 +54,12 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             AddControl(new GumpPic(this, 214, 58, 1419, 0), 1);
             AddControl(new GumpPic(this, 300, 51, 5545, 0), 1);
             // title text
-            AddControl(new TextLabelAscii(this, 148, 132, 841, 2, IO.StringData.Entry(3000326)), 1);
+            AddControl(new TextLabelAscii(this, 148, 132, 841, 2, StringData.Entry(3000326)), 1);
 
             // strength, dexterity, intelligence
-            AddControl(new TextLabelAscii(this, 158, 170, 2430, 1, IO.StringData.Entry(3000111)), 1);
-            AddControl(new TextLabelAscii(this, 158, 250, 2430, 1, IO.StringData.Entry(3000112)), 1);
-            AddControl(new TextLabelAscii(this, 158, 330, 2430, 1, IO.StringData.Entry(3000113)), 1);
+            AddControl(new TextLabelAscii(this, 158, 170, 2430, 1, StringData.Entry(3000111)), 1);
+            AddControl(new TextLabelAscii(this, 158, 250, 2430, 1, StringData.Entry(3000112)), 1);
+            AddControl(new TextLabelAscii(this, 158, 330, 2430, 1, StringData.Entry(3000113)), 1);
             // sliders for attributes
             sliderAttributes = new HSliderBar[3];
             sliderAttributes[0] = new HSliderBar(this, 164, 196, 93, 10, 60, 60, HSliderBarStyle.MetalWidgetRecessedBar);
@@ -94,7 +93,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             lblSkills[2] = new TextLabelAscii(this, 494, 360, 2430, 1, string.Empty);
             // drop downs for skills
             listSkills = new DropDownList[3];
-            string[] skillList = IO.SkillsData.ListNames;
+            string[] skillList = SkillsData.ListNames;
             listSkills[0] = new DropDownList(this, 344, 172, 182, -1, 8, skillList, true);
             listSkills[1] = new DropDownList(this, 344, 252, 182, -1, 8, skillList, true);
             listSkills[2] = new DropDownList(this, 344, 332, 182, -1, 8, skillList, true);
@@ -109,9 +108,9 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
                 AddControl(lblSkills[i], 1);
                 AddControl(listSkills[i], 1);
             }
-            AddControl(new TextLabelAscii(this, 158, 170, 2430, 1, IO.StringData.Entry(3000111)), 1);
-            AddControl(new TextLabelAscii(this, 158, 250, 2430, 1, IO.StringData.Entry(3000112)), 1);
-            AddControl(new TextLabelAscii(this, 158, 330, 2430, 1, IO.StringData.Entry(3000113)), 1);
+            AddControl(new TextLabelAscii(this, 158, 170, 2430, 1, StringData.Entry(3000111)), 1);
+            AddControl(new TextLabelAscii(this, 158, 250, 2430, 1, StringData.Entry(3000112)), 1);
+            AddControl(new TextLabelAscii(this, 158, 330, 2430, 1, StringData.Entry(3000113)), 1);
 
             // back button
             AddControl(new Button(this, 586, 435, 5537, 5539, ButtonTypes.Activate, 0, (int)Buttons.BackButton), 1);

@@ -1,9 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
-using UltimaXNA.Ultima.World;
-using UltimaXNA.Ultima.World.Maps;
-using UltimaXNA.Ultima.World.Input;
+using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.World.Entities;
+using UltimaXNA.Ultima.World.Input;
+using UltimaXNA.Ultima.World.Maps;
+using UltimaXNA.Ultima.World.WorldViews;
 
 namespace UltimaXNA.Ultima.World.EntityViews
 {
@@ -25,14 +26,14 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 DrawFlip = false;
                 DrawAs3DStretched = false;
 
-                DrawTexture = IO.ArtData.GetLandTexture(Entity.LandDataID);
-                DrawArea = new Rectangle(0, Entity.Z * 4, World.WorldViews.IsometricRenderer.TileSizeI, World.WorldViews.IsometricRenderer.TileSizeI);
+                DrawTexture = ArtData.GetLandTexture(Entity.LandDataID);
+                DrawArea = new Rectangle(0, Entity.Z * 4, IsometricRenderer.TILE_SIZE_INTEGER, IsometricRenderer.TILE_SIZE_INTEGER);
             }
             else
             {
                 DrawFlip = false;
                 DrawAs3DStretched = true;
-                DrawTexture = IO.TexmapData.GetTexmapTexture(Entity.LandData.TextureID);
+                DrawTexture = TexmapData.GetTexmapTexture(Entity.LandData.TextureID);
             }
         }
 
@@ -96,9 +97,9 @@ namespace UltimaXNA.Ultima.World.EntityViews
         private void updateVertexBuffer()
         {
             m_vertex0_yOffset = new Vector3(22, -(Entity.Z * 4), 0);
-            m_vertex1_yOffset = new Vector3(World.WorldViews.IsometricRenderer.TileSizeF, 22 - (m_SurroundingTiles.East * 4), 0);
+            m_vertex1_yOffset = new Vector3(IsometricRenderer.TILE_SIZE_FLOAT, 22 - (m_SurroundingTiles.East * 4), 0);
             m_vertex2_yOffset = new Vector3(0, 22 - (m_SurroundingTiles.South * 4), 0);
-            m_vertex3_yOffset = new Vector3(22, World.WorldViews.IsometricRenderer.TileSizeF - (m_SurroundingTiles.Down * 4), 0);
+            m_vertex3_yOffset = new Vector3(22, IsometricRenderer.TILE_SIZE_FLOAT - (m_SurroundingTiles.Down * 4), 0);
 
             m_vertexBufferAlternate[0].Normal = m_Normals[0];
             m_vertexBufferAlternate[1].Normal = m_Normals[1];

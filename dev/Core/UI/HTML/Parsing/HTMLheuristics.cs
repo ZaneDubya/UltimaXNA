@@ -31,8 +31,8 @@
  ***************************************************************************/
 
 using System;
-using System.Text;
 using System.Collections;
+using System.Text;
 
 namespace UltimaXNA.Core.UI.HTML.Parsing
 {
@@ -217,7 +217,7 @@ namespace UltimaXNA.Core.UI.HTML.Parsing
 
 		public string GetTwoCharString(byte cChar1,byte cChar2)
 		{
-			return HTMLheuristics.sAllTwoCharStrings[cChar1,cChar2];
+			return sAllTwoCharStrings[cChar1,cChar2];
 		}
 
 		public byte[] GetStringData(int iID)

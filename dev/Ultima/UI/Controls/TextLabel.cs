@@ -8,8 +8,8 @@
  *
  ***************************************************************************/
 
-using Microsoft.Xna.Framework;
 using System;
+using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.UI;
 

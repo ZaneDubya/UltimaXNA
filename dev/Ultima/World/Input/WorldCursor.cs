@@ -8,23 +8,24 @@
  *
  ***************************************************************************/
 #region usings
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using UltimaXNA.Configuration;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.World.Entities;
-using UltimaXNA.Ultima.World.Entities.Items;
-using UltimaXNA.Ultima.World.Entities.Items.Containers;
-using UltimaXNA.Ultima.World.Entities.Mobiles;
+using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.UI.WorldGumps;
+using UltimaXNA.Ultima.World.Entities;
+using UltimaXNA.Ultima.World.Entities.Items;
+using UltimaXNA.Ultima.World.Entities.Items.Containers;
+using UltimaXNA.Ultima.World.Entities.Mobiles;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Input
@@ -262,7 +263,7 @@ namespace UltimaXNA.Ultima.World.Input
                 {
                     m_ItemSpriteArtIndex = value;
 
-                    Texture2D art = IO.ArtData.GetStaticTexture(m_ItemSpriteArtIndex);
+                    Texture2D art = ArtData.GetStaticTexture(m_ItemSpriteArtIndex);
                     if (art == null)
                     {
                         // shouldn't we have a debug texture to show that we are missing this cursor art? !!!
@@ -611,7 +612,7 @@ namespace UltimaXNA.Ultima.World.Input
         private void DropHeldItemToContainer(Container container)
         {
             // get random coords and drop the item there.
-            Rectangle bounds = IO.ContainerData.GetData(container.ItemID).Bounds;
+            Rectangle bounds = ContainerData.GetData(container.ItemID).Bounds;
             int x = Utility.RandomValue(bounds.Left, bounds.Right);
             int y = Utility.RandomValue(bounds.Top, bounds.Bottom);
             DropHeldItemToContainer(container, x, y);
@@ -619,8 +620,8 @@ namespace UltimaXNA.Ultima.World.Input
 
         private void DropHeldItemToContainer(Container container, int x, int y)
         {
-            Rectangle containerBounds = IO.ContainerData.GetData(container.ItemID).Bounds;
-            Texture2D itemTexture = IO.ArtData.GetStaticTexture(HeldItem.DisplayItemID);
+            Rectangle containerBounds = ContainerData.GetData(container.ItemID).Bounds;
+            Texture2D itemTexture = ArtData.GetStaticTexture(HeldItem.DisplayItemID);
             if (x < containerBounds.Left) x = containerBounds.Left;
             if (x > containerBounds.Right - itemTexture.Width) x = containerBounds.Right - itemTexture.Width;
             if (y < containerBounds.Top) y = containerBounds.Top;

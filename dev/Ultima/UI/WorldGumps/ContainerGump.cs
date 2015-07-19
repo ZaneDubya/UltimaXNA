@@ -11,12 +11,11 @@
 #region usings
 using System.Collections.Generic;
 using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.Entities.Items.Containers;
-using UltimaXNA.Ultima.IO;
-using UltimaXNA.Ultima.UI;
-using UltimaXNA.Ultima.UI.Controls;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
@@ -29,7 +28,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         public ContainerGump(AEntity containerItem, int gumpID)
             : base(containerItem.Serial, 0)
         {
-            m_data = IO.ContainerData.GetData(gumpID);
+            m_data = ContainerData.GetData(gumpID);
             m_item = (Container)containerItem;
             m_item.OnContentsUpdated += OnItemContentsUpdate;
 

@@ -8,14 +8,10 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+
 using System;
 using System.Collections.Generic;
-using System.Collections;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Text;
-using UltimaXNA.Core.Diagnostics.Tracing;
-using UltimaXNA.Core.Diagnostics;
 
 namespace UltimaXNA.Ultima.IO
 {

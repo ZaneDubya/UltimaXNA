@@ -8,9 +8,9 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-#region Usings
-using UltimaXNA.Core.Input.Windows;
+#region usings
 using UltimaXNA.Core.Configuration;
+using UltimaXNA.Core.Input.Windows;
 #endregion
 
 namespace UltimaXNA.Configuration

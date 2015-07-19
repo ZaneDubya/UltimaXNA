@@ -9,9 +9,9 @@
  *
  ***************************************************************************/
 #region usings
-using Microsoft.Xna.Framework;
 using System.Collections;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.UI.HTML.Parsing;
 #endregion

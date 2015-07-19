@@ -12,6 +12,7 @@
 using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.UI.Controls;
 #endregion
 
 namespace UltimaXNA.Ultima.UI
@@ -45,7 +46,7 @@ namespace UltimaXNA.Ultima.UI
                 m_RenderedText = new RenderedText(Caption, 200);
             }
 
-            spriteBatch.Draw2DTiled(Controls.CheckerTrans.CheckeredTransTexture, new Rectangle(x - 4, y - 4, m_RenderedText.Width + 8, m_RenderedText.Height + 8), Vector3.Zero);
+            spriteBatch.Draw2DTiled(CheckerTrans.CheckeredTransTexture, new Rectangle(x - 4, y - 4, m_RenderedText.Width + 8, m_RenderedText.Height + 8), Vector3.Zero);
 
             m_RenderedText.Draw(spriteBatch, new Point(x, y));
         }

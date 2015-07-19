@@ -8,6 +8,7 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+
 using UltimaXNA.Core.Network;
 
 namespace UltimaXNA.Ultima.Login.Accounts

@@ -8,11 +8,12 @@
  *
  ***************************************************************************/
 
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.IO;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
@@ -56,7 +57,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             if (m_bgGump == null)
             {
-                m_bgGump = IO.GumpData.GetGumpXNA(m_gumpID);
+                m_bgGump = GumpData.GetGumpXNA(m_gumpID);
             }
             base.Update(totalMS, frameMS);
         }

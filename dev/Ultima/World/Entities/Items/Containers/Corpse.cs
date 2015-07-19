@@ -12,6 +12,7 @@
 using System.Collections.Generic;
 using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.Network.Server;
+using UltimaXNA.Ultima.World.EntityViews;
 using UltimaXNA.Ultima.World.Maps;
 #endregion
 
@@ -37,9 +38,9 @@ namespace UltimaXNA.Ultima.World.Entities.Items.Containers
 
         }
 
-        protected override EntityViews.AEntityView CreateView()
+        protected override AEntityView CreateView()
         {
-            return new EntityViews.CorpseView(this);
+            return new CorpseView(this);
         }
 
         public override void Update(double frameMS)

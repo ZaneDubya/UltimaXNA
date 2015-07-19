@@ -8,9 +8,8 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-#region Usings
+#region usings
 using UltimaXNA.Core.ComponentModel;
-using UltimaXNA.Core.Configuration;
 #endregion
 
 namespace UltimaXNA.Configuration

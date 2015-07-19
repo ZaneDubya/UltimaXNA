@@ -1,5 +1,5 @@
-﻿using UltimaXNA.Ultima.World.Entities.Items;
-using UltimaXNA.Core.UI;
+﻿using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.World.Entities.Items;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {

@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using UltimaXNA.Ultima.Data;
 using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
+using UltimaXNA.Ultima.World.Maps;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Managers
@@ -154,7 +155,7 @@ namespace UltimaXNA.Ultima.World.Managers
 
         T InternalCreateEntity<T>(Serial serial) where T : AEntity
         {
-            var ctor = typeof(T).GetConstructor(new[] { typeof(Serial), typeof(Maps.Map) });
+            var ctor = typeof(T).GetConstructor(new[] { typeof(Serial), typeof(Map) });
 
             AEntity e = (T)ctor.Invoke(new object[] { serial, m_Model.Map });
 

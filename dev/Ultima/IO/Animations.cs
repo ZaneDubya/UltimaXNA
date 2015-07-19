@@ -9,12 +9,12 @@
  *
  ***************************************************************************/
 #region usings
-using Microsoft.Xna.Framework.Graphics;
 using System.IO;
-using UltimaXNA.Core;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Diagnostics;
-using UltimaXNA.Core.IO;
 using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.IO;
 #endregion
 
 namespace UltimaXNA.Ultima.IO
@@ -156,7 +156,7 @@ namespace UltimaXNA.Ultima.IO
         {
             Translate(ref body, ref hue);
 
-            int fileType = IO.BodyConverter.Convert(ref body);
+            int fileType = BodyConverter.Convert(ref body);
             switch (fileType)
             {
                 default:
@@ -302,11 +302,11 @@ namespace UltimaXNA.Ultima.IO
 
     public sealed class AnimationFrame
     {
-        private Microsoft.Xna.Framework.Point m_Center;
-        private Microsoft.Xna.Framework.Graphics.Texture2D m_Texture;
+        private Point m_Center;
+        private Texture2D m_Texture;
 
-        public Microsoft.Xna.Framework.Point Center { get { return m_Center; } }
-        public Microsoft.Xna.Framework.Graphics.Texture2D Texture { get { return m_Texture; } }
+        public Point Center { get { return m_Center; } }
+        public Texture2D Texture { get { return m_Texture; } }
 
         private const int DoubleXor = (0x200 << 22) | (0x200 << 12);
 
@@ -369,7 +369,7 @@ namespace UltimaXNA.Ultima.IO
                 Metrics.ReportDataRead(dataRead);
             }
 
-            m_Center = new Microsoft.Xna.Framework.Point(xCenter, yCenter);
+            m_Center = new Point(xCenter, yCenter);
 
             m_Texture = new Texture2D(graphics, width, height, false, SurfaceFormat.Bgra5551);
             m_Texture.SetData<ushort>(data);

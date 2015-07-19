@@ -255,6 +255,10 @@
     <Compile Include="Ultima\IO\Fonts\CharacterAscii.cs" />
     <Compile Include="Ultima\IO\Fonts\FontAscii.cs" />
     <Compile Include="Ultima\Network\Client\CastSpellPacket.cs" />
+    <Compile Include="Ultima\Network\Client\ClientPingPacket.cs" />
+    <Compile Include="Ultima\Network\Client\GuildGumpRequestPacket.cs" />
+    <Compile Include="Ultima\Network\Client\QuestGumpRequestPacket.cs" />
+    <Compile Include="Ultima\Network\Server\ServerPingPacket.cs" />
     <Compile Include="Ultima\UI\WorldGumps\OptionsGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\UseSpellButtonGump.cs" />
     <Compile Include="Ultima\World\Entities\Items\Containers\SpellBook.cs" />
@@ -511,6 +515,7 @@
     <Compile Include="Ultima\Login\States\SelectServerState.cs" />
     <Compile Include="Ultima\World\Maps\MapBlock.cs" />
     <Compile Include="Ultima\World\Managers\StaticManager.cs" />
+    <Compile Include="Ultima\World\WorldViews\IsometricLighting.cs" />
     <Compile Include="Ultima\World\WorldViews\IsometricView.cs" />
     <Compile Include="Ultima\World\Maps\MapTile.cs" />
     <Compile Include="Ultima\World\Input\MouseOverList.cs" />

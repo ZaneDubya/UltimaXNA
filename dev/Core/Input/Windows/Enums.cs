@@ -8,7 +8,6 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using System;
 
 namespace UltimaXNA.Core.Input.Windows
 {

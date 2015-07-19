@@ -10,9 +10,9 @@
  ***************************************************************************/
 #region usings
 using System;
+using System.Collections;
 using System.IO;
 using System.Text;
-using System.Collections;
 using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.Diagnostics.Tracing;
 #endregion
