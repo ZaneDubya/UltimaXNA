@@ -18,6 +18,7 @@ using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.EntityViews;
 using UltimaXNA.Ultima.World.Input;
 using UltimaXNA.Ultima.World.Maps;
+using UltimaXNA.Core.Diagnostics.Tracing;
 #endregion
 
 namespace UltimaXNA.Ultima.World.WorldViews
@@ -146,8 +147,10 @@ namespace UltimaXNA.Ultima.World.WorldViews
             m_SpriteBatch.SetLightIntensity(Lighting.IsometricLightLevel);
             m_SpriteBatch.SetLightDirection(Lighting.IsometricLightDirection);
 
-            int renderDimensionY = 16; // the number of tiles that are drawn for half the screen (doubled to fill the entire screen).
-            int renderDimensionX = 18; // the number of tiles that are drawn in the x-direction ( + renderExtraColumnsAtSides * 2 ).
+            //int renderDimensionY = 16; // the number of tiles that are drawn for half the screen (doubled to fill the entire screen).
+            //int renderDimensionX = 18; // the number of tiles that are drawn in the x-direction ( + renderExtraColumnsAtSides * 2 ).
+            int renderDimensionX = Settings.World.GumpResolution.Width / TILE_SIZE_INTEGER;
+            int renderDimensionY = Settings.World.GumpResolution.Height / TILE_SIZE_INTEGER;
             int renderExtraColumnsAtSides = 2; // the client draws additional tiles at the edge to make wide objects that are mostly offscreen visible.
 
 
@@ -169,6 +172,8 @@ namespace UltimaXNA.Ultima.World.WorldViews
             renderOffset.Y -= (int)((center.X_offset + center.Y_offset) * 22);
             renderOffset.Y -= (firstTile.X + firstTile.Y) * 22;
             renderOffset.Y -= (renderZOffset) * 22;
+
+            Tracer.Error("{0} and {1} Window size{2} and {3} View size{4} and {5}", renderOffset.X, renderOffset.Y, Settings.World.WindowResolution.Width, Settings.World.WindowResolution.Height, Settings.World.GumpResolution.Width, Settings.World.GumpResolution.Height);
 
             CountEntitiesRendered = 0; // Count of objects rendered for statistics and debug
 
