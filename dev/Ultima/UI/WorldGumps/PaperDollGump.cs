@@ -105,6 +105,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 AddControl(new GumpPic(this, 80, 8, 0x0071, 0));
                 LastControl.MouseDoubleClickEvent += VirtueMenu_MouseDoubleClickEvent;
 
+                // Special moves book
+                AddControl(new GumpPic(this, 158, 200, 0x2B34, 0));
+                LastControl.MouseDoubleClickEvent += SpecialMoves_MouseDoubleClickEvent;
+
                 // equipment slots for hat/earrings/neck/ring/bracelet
                 AddControl(new EquipmentSlot(this, 2, 76, mobile, EquipLayer.Helm));
                 AddControl(new EquipmentSlot(this, 2, 76 + 22 * 1, mobile, EquipLayer.Earrings));
@@ -132,6 +136,12 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             // name and title
             AddControl(new HtmlGumpling(this, 36, 262, 180, 42, 0, 0, string.Format("<span color=#aaa style='font-family:uni0;'>{0}", nameAndTitle)));
             AddControl(new HtmlGumpling(this, 35, 262, 180, 42, 0, 0, string.Format("<span color=#222 style='font-family:uni0;'>{0}", nameAndTitle)));
+        }
+
+        private void SpecialMoves_MouseDoubleClickEvent(AControl control, int x, int y, MouseButton button)
+        {
+            if (button == MouseButton.Left)
+                m_Client.Send(new RequestSpecialMovesPacket());
         }
 
         private void VirtueMenu_MouseDoubleClickEvent(AControl control, int x, int y, MouseButton button)
