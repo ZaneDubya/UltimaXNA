@@ -169,8 +169,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                         m_UserInterface.RemoveControl<OptionsGump>();
                     break;
                 case Buttons.LogOut:
-                    MsgBoxGump g = MsgBoxGump.Show("Quit Ultima Online?", MsgBoxTypes.OkCancel);
-                    g.OnClose = logout_OnClose;
+                    // MsgBoxGump g = MsgBoxGump.Show("Quit Ultima Online?", MsgBoxTypes.OkCancel);
+                    // g.OnClose = logout_OnClose;
+                    m_UserInterface.AddControl(new LogoutGump(), 0, 0);
                     break;
                 case Buttons.Quests:
                     m_Client.Send(new QuestGumpRequestPacket(Mobile.Serial));
