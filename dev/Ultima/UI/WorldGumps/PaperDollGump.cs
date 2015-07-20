@@ -44,6 +44,12 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         WorldModel m_World;
         INetworkClient m_Client;
 
+        private bool m_IsWarMode;
+        private Button m_WarModeBtn;
+
+        private readonly int[] PeaceModeBtnGumps = new int[] { 0x07e5, 0x07e6, 0x07e7 };
+        private readonly int[] WarModeBtnGumps = new int[] { 0x07e8, 0x07e9, 0x07ea };
+
         public PaperDollGump(Mobile parent, string nameAndTitle)
             : base(parent.Serial, 0)
         {
@@ -55,7 +61,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
             IsMovable = true;
 
-            if (parent == (Mobile)WorldModel.Entities.GetPlayerObject())
+            if (parent.IsClientEntity)
             {
                 AddControl(new GumpPic(this, 0, 0, 0x07d0, 0));
 
@@ -84,9 +90,11 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     (int) Buttons.Guild));
                 ((Button) LastControl).GumpOverID = 0x57b3;
                 // PEACE / WAR
-                AddControl(new Button(this, 185, 44 + 27*6, 0x07e5, 0x07e6, ButtonTypes.Activate, 0,
+                m_IsWarMode = parent.Flags.IsWarMode;
+                int[] btngumps = m_IsWarMode ? WarModeBtnGumps : PeaceModeBtnGumps;
+                m_WarModeBtn = (Button)AddControl(new Button(this, 185, 44 + 27 * 6, btngumps[0], btngumps[1], ButtonTypes.Activate, 0,
                     (int) Buttons.PeaceWarToggle));
-                ((Button) LastControl).GumpOverID = 0x07e7;
+                ((Button)LastControl).GumpOverID = btngumps[2];
                 // STATUS
                 AddControl(new Button(this, 185, 44 + 27*7, 0x07eb, 0x07ec, ButtonTypes.Activate, 0,
                     (int) Buttons.Status));
@@ -122,6 +130,16 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         public override void Update(double totalMS, double frameMS)
         {
+            // switch the graphics on the peace/war btn if this is the player entity and warmode flag has changed.
+            if (Parent.IsClientEntity && m_IsWarMode != Parent.Flags.IsWarMode)
+            {
+                m_IsWarMode = Parent.Flags.IsWarMode;
+                int[] btngumps = m_IsWarMode ? WarModeBtnGumps : PeaceModeBtnGumps;
+                m_WarModeBtn.GumpUpID = btngumps[0];
+                m_WarModeBtn.GumpDownID = btngumps[1];
+                m_WarModeBtn.GumpOverID = btngumps[2];
+            }
+
             base.Update(totalMS, frameMS);
         }
 
