@@ -476,11 +476,11 @@
     <Compile Include="Ultima\IO\ArtData.cs" />
     <Compile Include="Ultima\IO\ContainerData.cs" />
     <Compile Include="Ultima\World\CustomHousing.cs" />
-    <Compile Include="Ultima\IO\HairStyles.cs" />
+    <Compile Include="Ultima\Data\HairStyles.cs" />
     <Compile Include="Ultima\IO\ParticleData.cs" />
     <Compile Include="Ultima\IO\SkillsData.cs" />
     <Compile Include="Ultima\IO\SpeechData.cs" />
-    <Compile Include="Ultima\IO\TileMatrixClient.cs" />
+    <Compile Include="Ultima\IO\TileMatrixData.cs" />
     <Compile Include="Ultima\World\Input\WorldInput.cs" />
     <Compile Include="Core\UI\HTML\Regions.cs" />
     <Compile Include="Core\UI\HTML\Enums.cs" />
@@ -488,7 +488,7 @@
     <Compile Include="Core\UI\HTML\Reader.cs" />
     <Compile Include="Core\Diagnostics\Metrics.cs" />
     <Compile Include="Ultima\IO\GumpData.cs" />
-    <Compile Include="Ultima\IO\Mobtypes.cs" />
+    <Compile Include="Ultima\IO\MobtypeData.cs" />
     <Compile Include="Ultima\IO\MultiData.cs" />
     <Compile Include="Ultima\IO\MusicData.cs" />
     <Compile Include="Ultima\IO\RadarColorData.cs" />
@@ -564,7 +564,7 @@
     <Compile Include="Core\UI\UserInterfaceService.cs" />
     <Compile Include="Ultima\IO\TexmapData.cs" />
     <Compile Include="Ultima\IO\TileData.cs" />
-    <Compile Include="Ultima\IO\TileMatrixClientPatch.cs" />
+    <Compile Include="Ultima\IO\TileMatrixDataPatch.cs" />
     <Compile Include="Core\Network\NetworkClient.cs" />
     <Compile Include="Core\Network\Compression\HuffmanDecompression.cs" />
     <Compile Include="Core\Network\Compression\ZlibDecompression.cs" />
@@ -586,7 +586,7 @@
     <Compile Include="Core\Graphics\SpriteBatch3D.cs" />
     <Compile Include="Core\Graphics\VertexPositionNormalTextureHue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Ultima\IO\Animations.cs" />
+    <Compile Include="Ultima\IO\AnimationData.cs" />
     <Compile Include="Ultima\IO\FileIndex.cs" />
     <Compile Include="Ultima\IO\HueData.cs" />
     <Compile Include="Ultima\IO\Entry5D.cs" />

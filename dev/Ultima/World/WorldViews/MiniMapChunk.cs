@@ -12,7 +12,7 @@ namespace UltimaXNA.Ultima.World.WorldViews
         public uint[] Colors;
         private static sbyte[] m_Zs = new sbyte[64]; // shared between all instances of MiniMapChunk.
 
-        public MiniMapChunk(uint x, uint y, TileMatrixClient tileData)
+        public MiniMapChunk(uint x, uint y, TileMatrixData tileData)
         {
             X = x;
             Y = y;

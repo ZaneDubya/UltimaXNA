@@ -21,7 +21,7 @@ namespace UltimaXNA.Ultima.World.Maps
     public class Map
     {
         private MapChunk[] m_Chunks;
-        public TileMatrixClient MapData
+        public TileMatrixData MapData
         {
             get;
             private set;
@@ -42,7 +42,7 @@ namespace UltimaXNA.Ultima.World.Maps
         {
             Index = index;
 
-            MapData = new TileMatrixClient(Index);
+            MapData = new TileMatrixData(Index);
             TileHeight = MapData.ChunkHeight * 8;
             TileWidth = MapData.ChunkWidth * 8;
 

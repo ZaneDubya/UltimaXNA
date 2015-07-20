@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   TileMatrixClientPatch.cs
+ *   TileMatrixDataPatch.cs
  *   Based on TileMatrixPatch.cs (c) The RunUO Software Team
  *   
  *   This program is free software; you can redistribute it and/or modify
@@ -17,7 +17,7 @@ using UltimaXNA.Core;
 
 namespace UltimaXNA.Ultima.IO
 {
-    public class TileMatrixClientPatch
+    public class TileMatrixDataPatch
     {
         private static bool m_Enabled = true;
         public static bool Enabled
@@ -32,7 +32,7 @@ namespace UltimaXNA.Ultima.IO
         private Dictionary<uint, uint> m_LandPatchPtrs;
         private Dictionary<uint, Tuple<int, int>> m_StaticPatchPtrs;
 
-        public TileMatrixClientPatch(TileMatrixClient matrix, uint index)
+        public TileMatrixDataPatch(TileMatrixData matrix, uint index)
         {
             if (!m_Enabled)
             {
@@ -68,7 +68,7 @@ namespace UltimaXNA.Ultima.IO
             return false;
         }
 
-        private unsafe int LoadLandPatches(TileMatrixClient tileMatrix, string landPath, string indexPath)
+        private unsafe int LoadLandPatches(TileMatrixData tileMatrix, string landPath, string indexPath)
         {
             m_LandPatchPtrs = new Dictionary<uint, uint>();
 
@@ -140,7 +140,7 @@ namespace UltimaXNA.Ultima.IO
             }
         }
 
-        private unsafe int LoadStaticPatches(TileMatrixClient tileMatrix, string dataPath, string indexPath, string lookupPath)
+        private unsafe int LoadStaticPatches(TileMatrixData tileMatrix, string dataPath, string indexPath, string lookupPath)
         {
             m_StaticPatchPtrs = new Dictionary<uint, Tuple<int, int>>();
 

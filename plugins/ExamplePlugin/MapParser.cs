@@ -18,7 +18,7 @@ namespace ExamplePlugin
         {
             m_StaticCounts = new Dictionary<int, int>();
 
-            TileMatrixClient tileData = new TileMatrixClient(0);
+            TileMatrixData tileData = new TileMatrixData(0);
 
             Map map = new Map(0);
 
@@ -49,7 +49,7 @@ namespace ExamplePlugin
             }
         }
 
-        private void ParseMapBlock(TileMatrixClient tileData, uint x, uint y)
+        private void ParseMapBlock(TileMatrixData tileData, uint x, uint y)
         {
             byte[] groundData = tileData.GetLandChunk(x, y);
             int staticLength;

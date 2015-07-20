@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   TileMatrixClient.cs
+ *   TileMatrixData.cs
  *   Based on TileMatrix.cs (c) The RunUO Software Team
  *   
  *   This program is free software; you can redistribute it and/or modify
@@ -18,7 +18,7 @@ using UltimaXNA.Core.Diagnostics.Tracing;
 
 namespace UltimaXNA.Ultima.IO
 {
-    public class TileMatrixClient
+    public class TileMatrixData
     {
         private static uint[] m_MapChunkHeightList = new uint[] { 512, 512, 200, 256, 181 };
         private const int m_SizeLandChunk = 196;
@@ -33,7 +33,7 @@ namespace UltimaXNA.Ultima.IO
 
         private byte[] m_StaticTileLoadingBuffer;
 
-        private TileMatrixClientPatch m_Patch;
+        private TileMatrixDataPatch m_Patch;
 
         private readonly FileStream m_MapDataStream;
         private readonly FileStream m_StaticDataStream;
@@ -51,7 +51,7 @@ namespace UltimaXNA.Ultima.IO
             private set;
         }
 
-        public TileMatrixClient(uint index)
+        public TileMatrixData(uint index)
         {
             FileStream staticIndexStream;
 
@@ -89,7 +89,7 @@ namespace UltimaXNA.Ultima.IO
 
             m_StaticTileLoadingBuffer = new byte[2048];
 
-            m_Patch = new TileMatrixClientPatch(this, index);
+            m_Patch = new TileMatrixDataPatch(this, index);
         }
 
         public byte[] GetLandChunk(uint chunkX, uint chunkY)
