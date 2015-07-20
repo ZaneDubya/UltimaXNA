@@ -16,6 +16,7 @@ using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Ultima.Network.Client;
+using UltimaXNA.Core.Input.Windows;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
@@ -100,6 +101,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     (int) Buttons.Status));
                 ((Button) LastControl).GumpOverID = 0x07ed;
 
+                // Virtue menu
+                AddControl(new GumpPic(this, 80, 8, 0x0071, 0));
+                LastControl.MouseDoubleClickEvent += VirtueMenu_MouseDoubleClickEvent;
+
                 // equipment slots for hat/earrings/neck/ring/bracelet
                 AddControl(new EquipmentSlot(this, 2, 76, mobile, EquipLayer.Helm));
                 AddControl(new EquipmentSlot(this, 2, 76 + 22 * 1, mobile, EquipLayer.Earrings));
@@ -127,6 +132,12 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             // name and title
             AddControl(new HtmlGumpling(this, 36, 262, 180, 42, 0, 0, string.Format("<span color=#aaa style='font-family:uni0;'>{0}", nameAndTitle)));
             AddControl(new HtmlGumpling(this, 35, 262, 180, 42, 0, 0, string.Format("<span color=#222 style='font-family:uni0;'>{0}", nameAndTitle)));
+        }
+
+        private void VirtueMenu_MouseDoubleClickEvent(AControl control, int x, int y, MouseButton button)
+        {
+            if (button == MouseButton.Left)
+                m_Client.Send(new GumpMenuSelectPacket(Mobile.Serial, 0x000001CD, 0x00000001, new int[1] { Mobile.Serial }, null));
         }
 
         protected override void OnInitialize()
