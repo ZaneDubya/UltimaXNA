@@ -183,7 +183,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     break;
                 case Buttons.Status:
                     if (m_UserInterface.GetControl<StatusGump>() == null)
+                    {
+                        m_Client.Send(new GetPlayerStatusPacket(0x04, Parent.Serial));
                         m_UserInterface.AddControl(new StatusGump(), 200, 400);
+                    }
                     else
                         m_UserInterface.RemoveControl<StatusGump>();
                     break;
