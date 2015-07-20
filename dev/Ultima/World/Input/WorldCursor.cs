@@ -98,7 +98,7 @@ namespace UltimaXNA.Ultima.World.Input
                     // attempt to drop the item onto an interface. The only acceptable targets for dropping items are:
                     // 1. ItemGumplings that represent containers (like a bag icon)
                     // 2. Gumps that represent open Containers (GumpPicContainers, e.g. an open GumpPic of a chest)
-                    // 3. Paperdolls for my character.
+                    // 3. Paperdolls for my character and equipment slots.
                     // 4. Backpack gumppics (seen in paperdolls).
                     if (target is ItemGumpling && !(target is ItemGumplingPaperdoll))
                     {
@@ -123,7 +123,7 @@ namespace UltimaXNA.Ultima.World.Input
                         int y = (int)m_Input.MousePosition.Y - m_HeldItemOffset.Y - (target.Y + target.Owner.Y);
                         DropHeldItemToContainer(targetItem, x, y);
                     }
-                    else if (target is ItemGumplingPaperdoll || (target is GumpPic && ((GumpPic)target).IsPaperdoll))
+                    else if (target is ItemGumplingPaperdoll || (target is GumpPic && ((GumpPic)target).IsPaperdoll) || (target is EquipmentSlot))
                     {
                         if (HeldItem.ItemData.IsWearable)
                             WearHeldItem();
