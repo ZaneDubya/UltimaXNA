@@ -92,7 +92,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             if (((Mobile)m_sourceEntity).GetItem((int)PaperDollEquipSlots.Backpack) != null)
             {
                 Item backpack = ((Mobile)m_sourceEntity).GetItem((int)PaperDollEquipSlots.Backpack);
-                AddControl(new GumpPicBackpack(this, -5, 0, backpack));
+                AddControl(new GumpPicBackpack(this, -7, 0, backpack));
                 LastControl.HandlesMouseInput = true;
                 LastControl.MouseDoubleClickEvent += On_Dblclick_Backpack;
             }
