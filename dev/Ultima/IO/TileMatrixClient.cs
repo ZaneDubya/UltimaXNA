@@ -20,16 +20,16 @@ namespace UltimaXNA.Ultima.IO
 {
     public class TileMatrixClient
     {
-        private static uint[] m_MapBlockHeightList = new uint[] { 512, 512, 200, 256, 181 };
-        private const int m_SizeLandBlock = 196;
-        private const int m_SizeLandBlockData = 192;
+        private static uint[] m_MapChunkHeightList = new uint[] { 512, 512, 200, 256, 181 };
+        private const int m_SizeLandChunk = 196;
+        private const int m_SizeLandChunkData = 192;
 
-        private byte[] m_EmptyStaticsBlock;
-        private byte[] m_InvalidLandBlock;
+        private byte[] m_EmptyStaticsChunk;
+        private byte[] m_InvalidLandChunk;
 
-        private const uint m_bufferedLandBlocksMaxCount = 256; 
-        private byte[][] m_bufferedLandBlocks;
-        private uint[] m_bufferedLandBlocks_Keys;
+        private const uint m_bufferedLandChunksMaxCount = 256; 
+        private byte[][] m_bufferedLandChunks;
+        private uint[] m_bufferedLandChunks_Keys;
 
         private byte[] m_StaticTileLoadingBuffer;
 
@@ -39,13 +39,13 @@ namespace UltimaXNA.Ultima.IO
         private readonly FileStream m_StaticDataStream;
         private readonly BinaryReader m_StaticIndexReader;
 
-        public uint BlockHeight
+        public uint ChunkHeight
         {
             get;
             private set;
         }
 
-        public uint BlockWidth
+        public uint ChunkWidth
         {
             get;
             private set;
@@ -77,30 +77,30 @@ namespace UltimaXNA.Ultima.IO
 
             m_StaticIndexReader = new BinaryReader(staticIndexStream);
 
-            BlockHeight = m_MapBlockHeightList[index];
-            BlockWidth = (uint)m_MapDataStream.Length / (BlockHeight * m_SizeLandBlock);
+            ChunkHeight = m_MapChunkHeightList[index];
+            ChunkWidth = (uint)m_MapDataStream.Length / (ChunkHeight * m_SizeLandChunk);
 
-            m_EmptyStaticsBlock = new byte[0];
-            m_InvalidLandBlock = new byte[m_SizeLandBlockData];
-            m_bufferedLandBlocks_Keys = new uint[m_bufferedLandBlocksMaxCount];
-            m_bufferedLandBlocks = new byte[m_bufferedLandBlocksMaxCount][];
-            for (uint i = 0; i < m_bufferedLandBlocksMaxCount; i++)
-                m_bufferedLandBlocks[i] = new byte[m_SizeLandBlockData];
+            m_EmptyStaticsChunk = new byte[0];
+            m_InvalidLandChunk = new byte[m_SizeLandChunkData];
+            m_bufferedLandChunks_Keys = new uint[m_bufferedLandChunksMaxCount];
+            m_bufferedLandChunks = new byte[m_bufferedLandChunksMaxCount][];
+            for (uint i = 0; i < m_bufferedLandChunksMaxCount; i++)
+                m_bufferedLandChunks[i] = new byte[m_SizeLandChunkData];
 
             m_StaticTileLoadingBuffer = new byte[2048];
 
             m_Patch = new TileMatrixClientPatch(this, index);
         }
 
-        public byte[] GetLandBlock(uint blockX, uint blockY)
+        public byte[] GetLandChunk(uint chunkX, uint chunkY)
         {
             if (m_MapDataStream == null)
             {
-                return m_InvalidLandBlock;
+                return m_InvalidLandChunk;
             }
             else
             {
-                return readLandBlock(blockX, blockY);
+                return readLandChunk(chunkX, chunkY);
             }
         }
 
@@ -110,35 +110,35 @@ namespace UltimaXNA.Ultima.IO
         public void GetLandTile(uint tileX, uint tileY, out ushort TileID, out sbyte altitude)
         {
             uint index = (((tileX % 8) + (tileY % 8) * 8) * 3);
-            byte[] data = readLandBlock(tileX >> 3, tileY >> 3);
+            byte[] data = readLandChunk(tileX >> 3, tileY >> 3);
             TileID = BitConverter.ToUInt16(data, (int)index);
             altitude = (sbyte)data[index + 2];
         }
 
-        public byte[] GetStaticBlock(uint blockX, uint blockY, out int length)
+        public byte[] GetStaticChunk(uint chunkX, uint chunkY, out int length)
         {
-            blockX %= BlockWidth;
-            blockY %= BlockHeight;
+            chunkX %= ChunkWidth;
+            chunkY %= ChunkHeight;
 
             if (m_StaticDataStream == null || m_StaticIndexReader.BaseStream == null)
             {
                 length = 0;
-                return m_EmptyStaticsBlock;
+                return m_EmptyStaticsChunk;
             }
             else
             {
-                return readStaticBlock(blockX, blockY, out length);
+                return readStaticChunk(chunkX, chunkY, out length);
             }
         }
 
-        private unsafe byte[] readStaticBlock(uint blockX, uint blockY, out int length)
+        private unsafe byte[] readStaticChunk(uint chunkX, uint chunkY, out int length)
         {
-            // bounds check: keep block index within bounds of map
-            blockX %= BlockWidth;
-            blockY %= BlockHeight;
+            // bounds check: keep chunk index within bounds of map
+            chunkX %= ChunkWidth;
+            chunkY %= ChunkHeight;
 
-            // load the map block from a file. Check the patch file first (mapdif#.mul), then the base file (map#.mul).
-            if (m_Patch.TryGetStaticBlock(blockX, blockY, ref m_StaticTileLoadingBuffer, out length))
+            // load the map chunk from a file. Check the patch file first (mapdif#.mul), then the base file (map#.mul).
+            if (m_Patch.TryGetStaticChunk(chunkX, chunkY, ref m_StaticTileLoadingBuffer, out length))
             {
                 return m_StaticTileLoadingBuffer;
             }
@@ -146,14 +146,14 @@ namespace UltimaXNA.Ultima.IO
             {
                 try
                 {
-                    m_StaticIndexReader.BaseStream.Seek(((blockX * BlockHeight) + blockY) * 12, SeekOrigin.Begin);
+                    m_StaticIndexReader.BaseStream.Seek(((chunkX * ChunkHeight) + chunkY) * 12, SeekOrigin.Begin);
 
                     int lookup = m_StaticIndexReader.ReadInt32();
                     length = m_StaticIndexReader.ReadInt32();
 
                     if (lookup < 0 || length <= 0)
                     {
-                        return m_EmptyStaticsBlock;
+                        return m_EmptyStaticsChunk;
                     }
                     else
                     {
@@ -171,42 +171,42 @@ namespace UltimaXNA.Ultima.IO
                 }
                 catch (EndOfStreamException)
                 {
-                    throw new Exception("End of stream in static block!");
-                    // return m_EmptyStaticsBlock;
+                    throw new Exception("End of stream in static chunk!");
+                    // return m_EmptyStaticsChunk;
                 }
             }
         }
 
-        private unsafe byte[] readLandBlock(uint blockX, uint blockY)
+        private unsafe byte[] readLandChunk(uint chunkX, uint chunkY)
         {
-            // bounds check: keep block index within bounds of map
-            blockX %= BlockWidth;
-            blockY %= BlockHeight;
+            // bounds check: keep chunk index within bounds of map
+            chunkX %= ChunkWidth;
+            chunkY %= ChunkHeight;
 
-            // if this block is cached in the buffer, return the cached block.
-            uint key = (blockX << 16) + blockY;
-            uint index = blockX % 16 + ((blockY % 16) * 16);
-            if (m_bufferedLandBlocks_Keys[index] == key)
-                return m_bufferedLandBlocks[index];
+            // if this chunk is cached in the buffer, return the cached chunk.
+            uint key = (chunkX << 16) + chunkY;
+            uint index = chunkX % 16 + ((chunkY % 16) * 16);
+            if (m_bufferedLandChunks_Keys[index] == key)
+                return m_bufferedLandChunks[index];
 
             // if it was not cached in the buffer, we will be loading it.
-            m_bufferedLandBlocks_Keys[index] = key;
+            m_bufferedLandChunks_Keys[index] = key;
 
-            // load the map block from a file. Check the patch file first (mapdif#.mul), then the base file (map#.mul).
-            if (m_Patch.TryGetLandPatch(blockX, blockY, ref m_bufferedLandBlocks[index]))
+            // load the map chunk from a file. Check the patch file first (mapdif#.mul), then the base file (map#.mul).
+            if (m_Patch.TryGetLandPatch(chunkX, chunkY, ref m_bufferedLandChunks[index]))
             {
-                return m_bufferedLandBlocks[index];
+                return m_bufferedLandChunks[index];
             }
             else
             {
-                uint ptr = ((blockX * BlockHeight) + blockY) * m_SizeLandBlock + 4;
+                uint ptr = ((chunkX * ChunkHeight) + chunkY) * m_SizeLandChunk + 4;
                 m_MapDataStream.Seek(ptr, SeekOrigin.Begin);
-                fixed (byte* pData = m_bufferedLandBlocks[index])
+                fixed (byte* pData = m_bufferedLandChunks[index])
                 {
-                    NativeMethods.Read(m_MapDataStream.SafeFileHandle, pData, m_SizeLandBlockData);
+                    NativeMethods.Read(m_MapDataStream.SafeFileHandle, pData, m_SizeLandChunkData);
                 }
-                Metrics.ReportDataRead(m_SizeLandBlockData);
-                return m_bufferedLandBlocks[index];
+                Metrics.ReportDataRead(m_SizeLandChunkData);
+                return m_bufferedLandChunks[index];
             }
         }
 

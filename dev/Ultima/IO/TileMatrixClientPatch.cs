@@ -43,14 +43,14 @@ namespace UltimaXNA.Ultima.IO
             LoadStaticPatches(matrix, String.Format("stadif{0}.mul", index), String.Format("stadifl{0}.mul", index), String.Format("stadifi{0}.mul", index));
         }
 
-        private uint MakeBlockKey(uint blockX, uint blockY)
+        private uint MakeChunkKey(uint blockX, uint blockY)
         {
             return ((blockY & 0x0000ffff) << 16) | (blockX & 0x0000ffff);
         }
 
         public unsafe bool TryGetLandPatch(uint blockX, uint blockY, ref byte[] landData)
         {
-            uint key = MakeBlockKey(blockX, blockY);
+            uint key = MakeChunkKey(blockX, blockY);
             uint ptr;
 
             if (m_LandPatchPtrs.TryGetValue(key, out ptr))
@@ -86,9 +86,9 @@ namespace UltimaXNA.Ultima.IO
                 {
 
                     uint blockID = indexReader.ReadUInt32();
-                    uint x = blockID / tileMatrix.BlockHeight;
-                    uint y = blockID % tileMatrix.BlockHeight;
-                    uint key = MakeBlockKey(x, y);
+                    uint x = blockID / tileMatrix.ChunkHeight;
+                    uint y = blockID % tileMatrix.ChunkHeight;
+                    uint key = MakeChunkKey(x, y);
 
                     ptr += 4;
 
@@ -103,11 +103,11 @@ namespace UltimaXNA.Ultima.IO
             }
         }
 
-        public unsafe bool TryGetStaticBlock(uint blockX, uint blockY, ref byte[] staticData, out int length)
+        public unsafe bool TryGetStaticChunk(uint blockX, uint blockY, ref byte[] staticData, out int length)
         {
             try
             {
-                uint key = MakeBlockKey(blockX, blockY);
+                uint key = MakeChunkKey(blockX, blockY);
                 Tuple<int, int> ptr; // offset, length
                 if (m_StaticPatchPtrs.TryGetValue(key, out ptr))
                 {
@@ -158,9 +158,9 @@ namespace UltimaXNA.Ultima.IO
                     for (int i = 0; i < count; ++i)
                     {
                         uint blockID = indexReader.ReadUInt32();
-                        uint blockX = blockID / tileMatrix.BlockHeight;
-                        uint blockY = blockID % tileMatrix.BlockHeight;
-                        uint key = MakeBlockKey(blockX, blockY);
+                        uint blockX = blockID / tileMatrix.ChunkHeight;
+                        uint blockY = blockID % tileMatrix.ChunkHeight;
+                        uint key = MakeChunkKey(blockX, blockY);
 
                         int offset = lookupReader.ReadInt32();
                         int length = lookupReader.ReadInt32();

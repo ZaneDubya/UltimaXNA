@@ -28,23 +28,23 @@ namespace SeasonChangerPlugin
         public void Load()
         {
             m_TranslationTable = CreateTranslationTable();
-            Map.SeasonalTranslator += TranslateMapBlock;
+            Map.SeasonalTranslator += TranslateMapChunk;
         }
 
         public void Unload()
         {
-            Map.SeasonalTranslator -= TranslateMapBlock;
+            Map.SeasonalTranslator -= TranslateMapChunk;
             m_TranslationTable = null;
         }
 
-        private void TranslateMapBlock(MapBlock block, Seasons season)
+        private void TranslateMapChunk(MapChunk chunk, Seasons season)
         {
-            if (block == null)
+            if (chunk == null)
                 return;
 
             for (int tile = 0; tile < 64; tile++)
             {
-                foreach (AEntity e in block.Tiles[tile].Entities)
+                foreach (AEntity e in chunk.Tiles[tile].Entities)
                 {
                     int[] translations;
                     StaticItem si = (e as StaticItem);

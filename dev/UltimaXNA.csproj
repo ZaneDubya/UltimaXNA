@@ -515,7 +515,7 @@
     <Compile Include="Ultima\Login\States\CreateCharacterState.cs" />
     <Compile Include="Ultima\Login\States\LoggingInState.cs" />
     <Compile Include="Ultima\Login\States\SelectServerState.cs" />
-    <Compile Include="Ultima\World\Maps\MapBlock.cs" />
+    <Compile Include="Ultima\World\Maps\MapChunk.cs" />
     <Compile Include="Ultima\World\Managers\StaticManager.cs" />
     <Compile Include="Ultima\World\WorldViews\IsometricLighting.cs" />
     <Compile Include="Ultima\World\WorldViews\IsometricView.cs" />
@@ -580,7 +580,7 @@
     <Compile Include="Ultima\Login\States\StateManager.cs" />
     <Compile Include="Ultima\Login\States\LoginState.cs" />
     <Compile Include="Ultima\Serial.cs" />
-    <Compile Include="Ultima\World\WorldViews\MiniMapBlock.cs" />
+    <Compile Include="Ultima\World\WorldViews\MiniMapChunk.cs" />
     <Compile Include="Ultima\World\WorldViews\MiniMapTexture.cs" />
     <Compile Include="Ultima\World\Maps\Map.cs" />
     <Compile Include="Core\Graphics\SpriteBatch3D.cs" />

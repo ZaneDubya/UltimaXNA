@@ -5,23 +5,23 @@ using UltimaXNA.Ultima.World.Maps;
 
 namespace UltimaXNA.Ultima.World.WorldViews
 {
-    class MiniMapBlock
+    class MiniMapChunk
     {
         public uint X, Y;
 
         public uint[] Colors;
-        private static sbyte[] m_Zs = new sbyte[64]; // shared between all instances of MiniMapBlock.
+        private static sbyte[] m_Zs = new sbyte[64]; // shared between all instances of MiniMapChunk.
 
-        public MiniMapBlock(uint x, uint y, TileMatrixClient tileData)
+        public MiniMapChunk(uint x, uint y, TileMatrixClient tileData)
         {
             X = x;
             Y = y;
             Colors = new uint[64];
 
             // get data from the tile Matrix
-            byte[] groundData = tileData.GetLandBlock(x, y);
+            byte[] groundData = tileData.GetLandChunk(x, y);
             int staticLength;
-            byte[] staticsData = tileData.GetStaticBlock(x, y, out staticLength);
+            byte[] staticsData = tileData.GetStaticChunk(x, y, out staticLength);
 
             // get the ground colors
             int groundDataIndex = 0;
@@ -61,10 +61,10 @@ namespace UltimaXNA.Ultima.World.WorldViews
             }
         }
 
-        public MiniMapBlock(MapBlock block)
+        public MiniMapChunk(MapChunk block)
         {
-            X = (uint)block.BlockX;
-            Y = (uint)block.BlockY;
+            X = (uint)block.ChunkX;
+            Y = (uint)block.ChunkY;
             Colors = new uint[64];
 
             for (uint tile = 0; tile < 64; tile++)
