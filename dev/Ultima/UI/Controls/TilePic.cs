@@ -17,19 +17,22 @@ using UltimaXNA.Ultima.IO;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
-    class TilePic : AControl
+    /// <summary>
+    /// A gump that shows a static item.
+    /// </summary>
+    class StaticPic : AControl
     {
         Texture2D m_texture = null;
         int Hue;
         int m_tileID;
 
-        public TilePic(AControl owner)
+        public StaticPic(AControl owner)
             : base(owner)
         {
 
         }
 
-        public TilePic(AControl owner, string[] arguements)
+        public StaticPic(AControl owner, string[] arguements)
             : this(owner)
         {
             int x, y, tileID, hue = 0;
@@ -44,10 +47,10 @@ namespace UltimaXNA.Ultima.UI.Controls
             buildGumpling(x, y, tileID, hue);
         }
 
-        public TilePic(AControl owner, int x, int y, int tileID, int hue)
+        public StaticPic(AControl owner, int x, int y, int itemID, int hue)
             : this(owner)
         {
-            buildGumpling(x, y, tileID, hue);
+            buildGumpling(x, y, itemID, hue);
         }
 
         void buildGumpling(int x, int y, int tileID, int hue)

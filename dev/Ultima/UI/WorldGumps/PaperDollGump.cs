@@ -34,7 +34,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             Status
         }
 
-        public Mobile Parent
+        public Mobile Mobile
         {
             get;
             private set;
@@ -50,10 +50,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         private readonly int[] PeaceModeBtnGumps = new int[] { 0x07e5, 0x07e6, 0x07e7 };
         private readonly int[] WarModeBtnGumps = new int[] { 0x07e8, 0x07e9, 0x07ea };
 
-        public PaperDollGump(Mobile parent, string nameAndTitle)
-            : base(parent.Serial, 0)
+        public PaperDollGump(Mobile mobile, string nameAndTitle)
+            : base(mobile.Serial, 0)
         {
-            Parent = parent;
+            Mobile = mobile;
 
             m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
             m_World = ServiceRegistry.GetService<WorldModel>();
@@ -61,7 +61,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
             IsMovable = true;
 
-            if (parent.IsClientEntity)
+            if (mobile.IsClientEntity)
             {
                 AddControl(new GumpPic(this, 0, 0, 0x07d0, 0));
 
@@ -90,7 +90,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     (int) Buttons.Guild));
                 ((Button) LastControl).GumpOverID = 0x57b3;
                 // PEACE / WAR
-                m_IsWarMode = parent.Flags.IsWarMode;
+                m_IsWarMode = mobile.Flags.IsWarMode;
                 int[] btngumps = m_IsWarMode ? WarModeBtnGumps : PeaceModeBtnGumps;
                 m_WarModeBtn = (Button)AddControl(new Button(this, 185, 44 + 27 * 6, btngumps[0], btngumps[1], ButtonTypes.Activate, 0,
                     (int) Buttons.PeaceWarToggle));
@@ -100,10 +100,17 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     (int) Buttons.Status));
                 ((Button) LastControl).GumpOverID = 0x07ed;
 
+                // equipment slots for hat/earrings/neck/ring/bracelet
+                AddControl(new EquipmentSlot(this, 2, 76, mobile, EquipLayer.Helm));
+                AddControl(new EquipmentSlot(this, 2, 76 + 22 * 1, mobile, EquipLayer.Earrings));
+                AddControl(new EquipmentSlot(this, 2, 76 + 22 * 2, mobile, EquipLayer.Neck));
+                AddControl(new EquipmentSlot(this, 2, 76 + 22 * 3, mobile, EquipLayer.Ring));
+                AddControl(new EquipmentSlot(this, 2, 76 + 22 * 4, mobile, EquipLayer.Bracelet));
+
                 // Paperdoll control!
                 AddControl(new PaperDollInteractable(this, 8, 21)
                 {
-                    SourceEntity = Parent
+                    SourceEntity = Mobile
                 });
             }
             else
@@ -113,7 +120,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 // Paperdoll
                 AddControl(new PaperDollInteractable(this, 8, 21)
                 {
-                    SourceEntity = Parent
+                    SourceEntity = Mobile
                 });
             }
 
@@ -124,16 +131,16 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         protected override void OnInitialize()
         {
-            SetSavePositionName(Parent.IsClientEntity ? "paperdoll_self" : "paperdoll");
+            SetSavePositionName(Mobile.IsClientEntity ? "paperdoll_self" : "paperdoll");
             base.OnInitialize();
         }
 
         public override void Update(double totalMS, double frameMS)
         {
             // switch the graphics on the peace/war btn if this is the player entity and warmode flag has changed.
-            if (Parent.IsClientEntity && m_IsWarMode != Parent.Flags.IsWarMode)
+            if (Mobile.IsClientEntity && m_IsWarMode != Mobile.Flags.IsWarMode)
             {
-                m_IsWarMode = Parent.Flags.IsWarMode;
+                m_IsWarMode = Mobile.Flags.IsWarMode;
                 int[] btngumps = m_IsWarMode ? WarModeBtnGumps : PeaceModeBtnGumps;
                 m_WarModeBtn.GumpUpID = btngumps[0];
                 m_WarModeBtn.GumpDownID = btngumps[1];
@@ -166,17 +173,17 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     g.OnClose = logout_OnClose;
                     break;
                 case Buttons.Quests:
-                    m_Client.Send(new QuestGumpRequestPacket(Parent.Serial));
+                    m_Client.Send(new QuestGumpRequestPacket(Mobile.Serial));
                     break;
                 case Buttons.Skills:
-                    m_Client.Send(new GetPlayerStatusPacket(0x05, Parent.Serial));
+                    m_Client.Send(new GetPlayerStatusPacket(0x05, Mobile.Serial));
                     if (m_UserInterface.GetControl<SkillsGump>() == null)
                         m_UserInterface.AddControl(new SkillsGump(), 80, 80);
                     else
                         m_UserInterface.RemoveControl<SkillsGump>();
                     break;
                 case Buttons.Guild:
-                    m_Client.Send(new GuildGumpRequestPacket(Parent.Serial));
+                    m_Client.Send(new GuildGumpRequestPacket(Mobile.Serial));
                     break;
                 case Buttons.PeaceWarToggle:
                     m_World.Interaction.ToggleWarMode();
@@ -184,7 +191,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 case Buttons.Status:
                     if (m_UserInterface.GetControl<StatusGump>() == null)
                     {
-                        m_Client.Send(new GetPlayerStatusPacket(0x04, Parent.Serial));
+                        m_Client.Send(new GetPlayerStatusPacket(0x04, Mobile.Serial));
                         m_UserInterface.AddControl(new StatusGump(), 200, 400);
                     }
                     else
@@ -200,12 +207,12 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         public override int GetHashCode()
         {
-            if (Parent == null)
+            if (Mobile == null)
             {
                 return base.GetHashCode();
             }
 
-            else return Parent.Serial;
+            else return Mobile.Serial;
         }
     }
 }
