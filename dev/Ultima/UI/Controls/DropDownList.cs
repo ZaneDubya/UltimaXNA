@@ -121,6 +121,12 @@ namespace UltimaXNA.Ultima.UI.Controls
             m_openResizePic.MouseOverEvent += onMouseOverOpenList;
             m_openResizePic.MouseOutEvent += onMouseOutOpenList;
             ((Gump)Owner).AddControl(m_openResizePic, this.Page);
+
+            if (m_visibleItems > m_items.Count)
+            {
+                m_visibleItems = m_items.Count;
+            }
+
             // only show the scrollbar if we need to scroll
             if (m_visibleItems < m_items.Count)
             {
