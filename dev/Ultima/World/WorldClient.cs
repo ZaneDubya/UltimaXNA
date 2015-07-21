@@ -305,7 +305,7 @@ namespace UltimaXNA.Ultima.World
             Item item = add_Item(p.Serial, p.ItemId, p.Hue, p.ContainerSerial, p.Amount);
             item.InContainerPosition = new Point(p.X, p.Y);
             // ... and add it the container contents of the container.
-            AEntity container = WorldModel.Entities.GetObject<AEntity>(p.ContainerSerial, true);
+            Container container = WorldModel.Entities.GetObject<Container>(p.ContainerSerial, true);
             if (container is Container) // place in container
             {
                 (container as Container).AddItem(item);
