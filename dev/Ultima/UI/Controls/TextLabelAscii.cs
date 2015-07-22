@@ -31,8 +31,11 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
             set
             {
-                m_Text = value;
-                m_Rendered.Text = string.Format("<span style=\"font-family:ascii{0}\">{1}", FontID, m_Text);
+                if (m_Text != value)
+                {
+                    m_Text = value;
+                    m_Rendered.Text = string.Format("<span style=\"font-family:ascii{0}\">{1}", FontID, m_Text);
+                }
             }
         }
 

@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   TileMatrixClientPatch.cs
+ *   TileMatrixDataPatch.cs
  *   Based on TileMatrixPatch.cs (c) The RunUO Software Team
  *   
  *   This program is free software; you can redistribute it and/or modify
@@ -17,7 +17,7 @@ using UltimaXNA.Core;
 
 namespace UltimaXNA.Ultima.IO
 {
-    public class TileMatrixClientPatch
+    public class TileMatrixDataPatch
     {
         private static bool m_Enabled = true;
         public static bool Enabled
@@ -32,7 +32,7 @@ namespace UltimaXNA.Ultima.IO
         private Dictionary<uint, uint> m_LandPatchPtrs;
         private Dictionary<uint, Tuple<int, int>> m_StaticPatchPtrs;
 
-        public TileMatrixClientPatch(TileMatrixClient matrix, uint index)
+        public TileMatrixDataPatch(TileMatrixData matrix, uint index)
         {
             if (!m_Enabled)
             {
@@ -43,14 +43,14 @@ namespace UltimaXNA.Ultima.IO
             LoadStaticPatches(matrix, String.Format("stadif{0}.mul", index), String.Format("stadifl{0}.mul", index), String.Format("stadifi{0}.mul", index));
         }
 
-        private uint MakeBlockKey(uint blockX, uint blockY)
+        private uint MakeChunkKey(uint blockX, uint blockY)
         {
             return ((blockY & 0x0000ffff) << 16) | (blockX & 0x0000ffff);
         }
 
         public unsafe bool TryGetLandPatch(uint blockX, uint blockY, ref byte[] landData)
         {
-            uint key = MakeBlockKey(blockX, blockY);
+            uint key = MakeChunkKey(blockX, blockY);
             uint ptr;
 
             if (m_LandPatchPtrs.TryGetValue(key, out ptr))
@@ -68,7 +68,7 @@ namespace UltimaXNA.Ultima.IO
             return false;
         }
 
-        private unsafe int LoadLandPatches(TileMatrixClient tileMatrix, string landPath, string indexPath)
+        private unsafe int LoadLandPatches(TileMatrixData tileMatrix, string landPath, string indexPath)
         {
             m_LandPatchPtrs = new Dictionary<uint, uint>();
 
@@ -86,9 +86,9 @@ namespace UltimaXNA.Ultima.IO
                 {
 
                     uint blockID = indexReader.ReadUInt32();
-                    uint x = blockID / tileMatrix.BlockHeight;
-                    uint y = blockID % tileMatrix.BlockHeight;
-                    uint key = MakeBlockKey(x, y);
+                    uint x = blockID / tileMatrix.ChunkHeight;
+                    uint y = blockID % tileMatrix.ChunkHeight;
+                    uint key = MakeChunkKey(x, y);
 
                     ptr += 4;
 
@@ -103,11 +103,11 @@ namespace UltimaXNA.Ultima.IO
             }
         }
 
-        public unsafe bool TryGetStaticBlock(uint blockX, uint blockY, ref byte[] staticData, out int length)
+        public unsafe bool TryGetStaticChunk(uint blockX, uint blockY, ref byte[] staticData, out int length)
         {
             try
             {
-                uint key = MakeBlockKey(blockX, blockY);
+                uint key = MakeChunkKey(blockX, blockY);
                 Tuple<int, int> ptr; // offset, length
                 if (m_StaticPatchPtrs.TryGetValue(key, out ptr))
                 {
@@ -140,7 +140,7 @@ namespace UltimaXNA.Ultima.IO
             }
         }
 
-        private unsafe int LoadStaticPatches(TileMatrixClient tileMatrix, string dataPath, string indexPath, string lookupPath)
+        private unsafe int LoadStaticPatches(TileMatrixData tileMatrix, string dataPath, string indexPath, string lookupPath)
         {
             m_StaticPatchPtrs = new Dictionary<uint, Tuple<int, int>>();
 
@@ -158,9 +158,9 @@ namespace UltimaXNA.Ultima.IO
                     for (int i = 0; i < count; ++i)
                     {
                         uint blockID = indexReader.ReadUInt32();
-                        uint blockX = blockID / tileMatrix.BlockHeight;
-                        uint blockY = blockID % tileMatrix.BlockHeight;
-                        uint key = MakeBlockKey(blockX, blockY);
+                        uint blockX = blockID / tileMatrix.ChunkHeight;
+                        uint blockY = blockID % tileMatrix.ChunkHeight;
+                        uint key = MakeChunkKey(blockX, blockY);
 
                         int offset = lookupReader.ReadInt32();
                         int length = lookupReader.ReadInt32();

@@ -8,7 +8,9 @@
  *
  ***************************************************************************/
 
-namespace UltimaXNA.Ultima.IO
+using UltimaXNA.Ultima.IO;
+
+namespace UltimaXNA.Ultima.Data
 {
     class HairStyles
     {
