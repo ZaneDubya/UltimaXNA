@@ -120,12 +120,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             AddControl(new CheckBox(this, 60, 120, 210, 211, Settings.World.IsMaximized, 61), 6);
             AddControl(new TextLabelAscii(this, 85, 120, 1, 9, @"Use full screen display"), 6);
             
-            List<Resolution> res = SupportedResolutions();
-
+            List<string> res = SupportedResolutions();
+            string[] s = res.ToArray();
             AddControl(new TextLabelAscii(this, 60, 150, 1, 9, @"Full screen resolution"), 6);
-            m_Resolution = (DropDownList)AddControl(new DropDownList(this, 60, 170, 122, 0, 10, new string[] { "show", "resolutions","here","somehow..." }, false), 6);
-
-            
+            m_Resolution = (DropDownList)AddControl(new DropDownList(this, 60, 170, 122, 0, 10, s, false), 6);
 
             // page 7 Reputation system
             AddControl(new Button(this, 576, 180, 229, 229, ButtonTypes.SwitchPage, 7, (int)Buttons.Reputation),7);
@@ -162,17 +160,17 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             base.Update(totalMS, frameMS);
         }
 
-        public List<Resolution> SupportedResolutions()
+        public List<string> SupportedResolutions()
         {
-            List<Resolution> SupportedResolutions = new List<Resolution>();
+            List<string> SupportedResolutions = new List<string>();
 
             foreach (Microsoft.Xna.Framework.Graphics.DisplayMode mode in Microsoft.Xna.Framework.Graphics.GraphicsAdapter.DefaultAdapter.SupportedDisplayModes)
             {
-                Resolution resolution = new Resolution(mode.Width, mode.Height);
-                if (!SupportedResolutions.Contains(resolution))
+                string res = mode.Width + "x" + mode.Height;
+                if (!SupportedResolutions.Contains(res))
                 {
-                    SupportedResolutions.Add(resolution);
-                    Tracer.Info("Supported resolution {0}x{1}", resolution.Width, resolution.Height);
+                    SupportedResolutions.Add(res);
+                    Tracer.Info("Supported resolution STRING {0}", res);
                 }
             }
             return SupportedResolutions;
