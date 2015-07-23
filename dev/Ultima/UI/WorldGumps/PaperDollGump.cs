@@ -16,6 +16,7 @@ using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Ultima.Network.Client;
+using UltimaXNA.Core.Input.Windows;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
@@ -34,7 +35,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             Status
         }
 
-        public Mobile Parent
+        public Mobile Mobile
         {
             get;
             private set;
@@ -44,10 +45,16 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         WorldModel m_World;
         INetworkClient m_Client;
 
-        public PaperDollGump(Mobile parent)
-            : base(parent.Serial, 0)
+        private bool m_IsWarMode;
+        private Button m_WarModeBtn;
+
+        private readonly int[] PeaceModeBtnGumps = new int[] { 0x07e5, 0x07e6, 0x07e7 };
+        private readonly int[] WarModeBtnGumps = new int[] { 0x07e8, 0x07e9, 0x07ea };
+
+        public PaperDollGump(Mobile mobile, string nameAndTitle)
+            : base(mobile.Serial, 0)
         {
-            Parent = parent;
+            Mobile = mobile;
 
             m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
             m_World = ServiceRegistry.GetService<WorldModel>();
@@ -55,7 +62,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
             IsMovable = true;
 
-            if (parent == (Mobile)WorldModel.Entities.GetPlayerObject())
+            if (mobile.IsClientEntity)
             {
                 AddControl(new GumpPic(this, 0, 0, 0x07d0, 0));
 
@@ -84,18 +91,35 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     (int) Buttons.Guild));
                 ((Button) LastControl).GumpOverID = 0x57b3;
                 // PEACE / WAR
-                AddControl(new Button(this, 185, 44 + 27*6, 0x07e5, 0x07e6, ButtonTypes.Activate, 0,
+                m_IsWarMode = mobile.Flags.IsWarMode;
+                int[] btngumps = m_IsWarMode ? WarModeBtnGumps : PeaceModeBtnGumps;
+                m_WarModeBtn = (Button)AddControl(new Button(this, 185, 44 + 27 * 6, btngumps[0], btngumps[1], ButtonTypes.Activate, 0,
                     (int) Buttons.PeaceWarToggle));
-                ((Button) LastControl).GumpOverID = 0x07e7;
+                ((Button)LastControl).GumpOverID = btngumps[2];
                 // STATUS
                 AddControl(new Button(this, 185, 44 + 27*7, 0x07eb, 0x07ec, ButtonTypes.Activate, 0,
                     (int) Buttons.Status));
                 ((Button) LastControl).GumpOverID = 0x07ed;
 
-                // Paperdoll
+                // Virtue menu
+                AddControl(new GumpPic(this, 80, 8, 0x0071, 0));
+                LastControl.MouseDoubleClickEvent += VirtueMenu_MouseDoubleClickEvent;
+
+                // Special moves book
+                // AddControl(new GumpPic(this, 158, 200, 0x2B34, 0));
+                // LastControl.MouseDoubleClickEvent += SpecialMoves_MouseDoubleClickEvent;
+
+                // equipment slots for hat/earrings/neck/ring/bracelet
+                AddControl(new EquipmentSlot(this, 2, 76, mobile, EquipLayer.Helm));
+                AddControl(new EquipmentSlot(this, 2, 76 + 22 * 1, mobile, EquipLayer.Earrings));
+                AddControl(new EquipmentSlot(this, 2, 76 + 22 * 2, mobile, EquipLayer.Neck));
+                AddControl(new EquipmentSlot(this, 2, 76 + 22 * 3, mobile, EquipLayer.Ring));
+                AddControl(new EquipmentSlot(this, 2, 76 + 22 * 4, mobile, EquipLayer.Bracelet));
+
+                // Paperdoll control!
                 AddControl(new PaperDollInteractable(this, 8, 21)
                 {
-                    SourceEntity = Parent
+                    SourceEntity = Mobile
                 });
             }
             else
@@ -105,19 +129,47 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 // Paperdoll
                 AddControl(new PaperDollInteractable(this, 8, 21)
                 {
-                    SourceEntity = Parent
+                    SourceEntity = Mobile
                 });
             }
+
+            // name and title
+            AddControl(new HtmlGumpling(this, 36, 262, 180, 42, 0, 0, string.Format("<span color=#aaa style='font-family:uni0;'>{0}", nameAndTitle)));
+            AddControl(new HtmlGumpling(this, 35, 262, 180, 42, 0, 0, string.Format("<span color=#222 style='font-family:uni0;'>{0}", nameAndTitle)));
+        }
+
+        private void SpecialMoves_MouseDoubleClickEvent(AControl control, int x, int y, MouseButton button)
+        {
+            if (button == MouseButton.Left)
+            {
+                // open special moves book.
+            }
+        }
+
+        private void VirtueMenu_MouseDoubleClickEvent(AControl control, int x, int y, MouseButton button)
+        {
+            if (button == MouseButton.Left)
+                m_Client.Send(new GumpMenuSelectPacket(Mobile.Serial, 0x000001CD, 0x00000001, new int[1] { Mobile.Serial }, null));
         }
 
         protected override void OnInitialize()
         {
-            SetSavePositionName(Parent.IsClientEntity ? "paperdoll_self" : "paperdoll");
+            SetSavePositionName(Mobile.IsClientEntity ? "paperdoll_self" : "paperdoll");
             base.OnInitialize();
         }
 
         public override void Update(double totalMS, double frameMS)
         {
+            // switch the graphics on the peace/war btn if this is the player entity and warmode flag has changed.
+            if (Mobile.IsClientEntity && m_IsWarMode != Mobile.Flags.IsWarMode)
+            {
+                m_IsWarMode = Mobile.Flags.IsWarMode;
+                int[] btngumps = m_IsWarMode ? WarModeBtnGumps : PeaceModeBtnGumps;
+                m_WarModeBtn.GumpUpID = btngumps[0];
+                m_WarModeBtn.GumpDownID = btngumps[1];
+                m_WarModeBtn.GumpOverID = btngumps[2];
+            }
+
             base.Update(totalMS, frameMS);
         }
 
@@ -140,28 +192,32 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                         m_UserInterface.RemoveControl<OptionsGump>();
                     break;
                 case Buttons.LogOut:
-                    MsgBoxGump g = MsgBoxGump.Show("Quit Ultima Online?", MsgBoxTypes.OkCancel);
-                    g.OnClose = logout_OnClose;
+                    // MsgBoxGump g = MsgBoxGump.Show("Quit Ultima Online?", MsgBoxTypes.OkCancel);
+                    // g.OnClose = logout_OnClose;
+                    m_UserInterface.AddControl(new LogoutGump(), 0, 0);
                     break;
                 case Buttons.Quests:
-                    m_Client.Send(new QuestGumpRequestPacket(Parent.Serial));
+                    m_Client.Send(new QuestGumpRequestPacket(Mobile.Serial));
                     break;
                 case Buttons.Skills:
-                    m_Client.Send(new GetPlayerStatusPacket(0x05, Parent.Serial));
+                    m_Client.Send(new GetPlayerStatusPacket(0x05, Mobile.Serial));
                     if (m_UserInterface.GetControl<SkillsGump>() == null)
                         m_UserInterface.AddControl(new SkillsGump(), 80, 80);
                     else
                         m_UserInterface.RemoveControl<SkillsGump>();
                     break;
                 case Buttons.Guild:
-                    m_Client.Send(new GuildGumpRequestPacket(Parent.Serial));
+                    m_Client.Send(new GuildGumpRequestPacket(Mobile.Serial));
                     break;
                 case Buttons.PeaceWarToggle:
                     m_World.Interaction.ToggleWarMode();
                     break;
                 case Buttons.Status:
                     if (m_UserInterface.GetControl<StatusGump>() == null)
+                    {
+                        m_Client.Send(new GetPlayerStatusPacket(0x04, Mobile.Serial));
                         m_UserInterface.AddControl(new StatusGump(), 200, 400);
+                    }
                     else
                         m_UserInterface.RemoveControl<StatusGump>();
                     break;
@@ -175,12 +231,12 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         public override int GetHashCode()
         {
-            if (Parent == null)
+            if (Mobile == null)
             {
                 return base.GetHashCode();
             }
 
-            else return Parent.Serial;
+            else return Mobile.Serial;
         }
     }
 }

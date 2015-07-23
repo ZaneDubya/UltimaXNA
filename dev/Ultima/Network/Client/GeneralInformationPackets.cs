@@ -65,4 +65,14 @@ namespace UltimaXNA.Ultima.Network.Client
             Stream.WriteAsciiNull(locale);
         }
     }
+
+    public class RequestSpecialMovesPacket : SendPacket
+    {
+        public RequestSpecialMovesPacket()
+            : base(0xBF, "Request Special Moves book")
+        {
+            Stream.Write((short)0x24);
+            Stream.Write((byte)0x67);
+        }
+    }
 }

@@ -42,7 +42,7 @@ namespace UltimaXNA.Ultima.UI
                         // [tile-x] and [tile-y] define the coordinates of the tile graphic and are relative to [x] and [y]. 
                         gump.AddControl(new Button(gump, int.Parse(gumpParams[1]), int.Parse(gumpParams[2]), int.Parse(gumpParams[3]), int.Parse(gumpParams[4]),
                             (ButtonTypes)int.Parse(gumpParams[5]), int.Parse(gumpParams[6]), int.Parse(gumpParams[7])), currentGUMPPage);
-                        gump.AddControl(new TilePic(gump, int.Parse(gumpParams[1]) + int.Parse(gumpParams[10]), int.Parse(gumpParams[2]) + int.Parse(gumpParams[11]),
+                        gump.AddControl(new StaticPic(gump, int.Parse(gumpParams[1]) + int.Parse(gumpParams[10]), int.Parse(gumpParams[2]) + int.Parse(gumpParams[11]),
                             int.Parse(gumpParams[8]), int.Parse(gumpParams[9])), currentGUMPPage);
                         break;
                     case "checkertrans":
@@ -101,12 +101,12 @@ namespace UltimaXNA.Ultima.UI
                     case "tilepic":
                         // TilePic [x] [y] [id]
                         // Adds a Tilepicture to the gump. [id] defines the tile graphic-id. For example use InsideUO to get them.
-                        gump.AddControl(new TilePic(gump, gumpParams), currentGUMPPage);
+                        gump.AddControl(new StaticPic(gump, gumpParams), currentGUMPPage);
                         break;
                     case "tilepichue":
                         // TilePicHue [x] [y] [id] [hue]
                         // Similar to the tilepic command, but with an additional hue parameter.
-                        gump.AddControl(new TilePic(gump, gumpParams), currentGUMPPage);
+                        gump.AddControl(new StaticPic(gump, gumpParams), currentGUMPPage);
                         break;
                     case "noclose":
                         // NoClose 
@@ -149,14 +149,14 @@ namespace UltimaXNA.Ultima.UI
                         // Similar to the htmlgump command, but in place of the [text-id] a CliLoc entry is used.
                         gump.AddControl(new HtmlGumpling(gump, int.Parse(gumpParams[1]), int.Parse(gumpParams[2]), int.Parse(gumpParams[3]), int.Parse(gumpParams[4]),
                             int.Parse(gumpParams[6]), int.Parse(gumpParams[7]),
-                            "<font color=#000>" + StringData.Entry(int.Parse(gumpParams[5]))), currentGUMPPage);
+                            "<span color=#000>" + StringData.Entry(int.Parse(gumpParams[5]))), currentGUMPPage);
                         break;
                     case "xmfhtmlgumpcolor":
                         // XmfHtmlGumpColor [x] [y] [width] [height] [cliloc-nr] [background] [scrollbar] [color]
                         // Similar to the xmfhtmlgump command, but additionally a [color] can be specified.
                         gump.AddControl(new HtmlGumpling(gump, int.Parse(gumpParams[1]), int.Parse(gumpParams[2]), int.Parse(gumpParams[3]), int.Parse(gumpParams[4]),
                             int.Parse(gumpParams[6]), int.Parse(gumpParams[7]),
-                            string.Format("<font color=#{0}>{1}", Utility.GetColorFromInt(int.Parse(gumpParams[8])), StringData.Entry(int.Parse(gumpParams[5])))), currentGUMPPage);
+                            string.Format("<span color=#{0}>{1}", Utility.GetColorFromInt(int.Parse(gumpParams[8])), StringData.Entry(int.Parse(gumpParams[5])))), currentGUMPPage);
                         (gump.LastControl as HtmlGumpling).Hue = 0;
                         break;
                     case "xmfhtmltok":

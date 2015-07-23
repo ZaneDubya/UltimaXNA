@@ -9,17 +9,15 @@
  *
  ***************************************************************************/
 #region usings
+using System.Collections.Generic;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.UI.Controls;
-using System.Collections.Generic;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
 {
     class OptionsGump : Gump
     {
-        private List<AControl> ControlsToUpdate = new List<AControl>();
-
         UserInterfaceService m_UserInterface;
         WorldModel m_World;
         HSliderBar m_MusicVolume;
@@ -66,7 +64,6 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             AddControl(new TextLabelAscii(this, 60, 110, 1, 9, @"Sound volume"), 1);
             m_SoundVolume = (HSliderBar)AddControl(new HSliderBar(this, 60, 130, 150, 0, 100, Settings.Audio.SoundVolume, HSliderBarStyle.MetalWidgetRecessedBar), 1);
             AddControl(new TextLabelAscii(this, 220, 130, 1, 9, Settings.Audio.SoundVolume.ToString()), 1);
-            ControlsToUpdate.Add(LastControl);
 
             AddControl(new TextLabelAscii(this, 85, 155, 1, 9, @"Music on/off"), 1);
             m_MusicOn = (CheckBox)AddControl(new CheckBox(this, 60, 150, 210, 211, Settings.Audio.MusicOn, 62), 1);
@@ -75,7 +72,6 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_MusicVolume = (HSliderBar)AddControl(new HSliderBar(this, 60, 200, 150, 0, 100, Settings.Audio.MusicVolume, HSliderBarStyle.MetalWidgetRecessedBar), 1);
 
             AddControl(new TextLabelAscii(this, 220, 200, 1, 9, m_MusicVolume.Value.ToString()), 1);
-            ControlsToUpdate.Add(LastControl);
 
             AddControl(new TextLabelAscii(this, 85, 225, 1, 9, @"Play footstep sound"), 1);
             m_FootStepSoundOn = (CheckBox)AddControl(new CheckBox(this, 60, 220, 210, 211, Settings.Audio.FootStepSoundOn, 62), 1);
@@ -143,13 +139,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         public override void Update(double totalMS, double frameMS)
         {
-            foreach (AControl c in ControlsToUpdate)
-                Children.Remove(c);
-
-            AddControl(new TextLabelAscii(this, 220, 130, 1, 9, m_SoundVolume.Value.ToString()), 1);
+            /*AddControl(new TextLabelAscii(this, 220, 130, 1, 9, m_SoundVolume.Value.ToString()), 1);
             ControlsToUpdate.Add(LastControl);
             AddControl(new TextLabelAscii(this, 220, 200, 1, 9, m_MusicVolume.Value.ToString()), 1);
-            ControlsToUpdate.Add(LastControl);
+            ControlsToUpdate.Add(LastControl);*/
 
             base.Update(totalMS, frameMS);
         }

@@ -129,7 +129,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             if (bodyID >= 500 && bodyID <= 505)
                 patchLightSourceAction(ref action, ref frame);
 
-            AnimationFrame[] iFrames = Animations.GetAnimation(bodyID, action, facing, hue);
+            AnimationFrame[] iFrames = AnimationData.GetAnimation(bodyID, action, facing, hue);
             if (iFrames == null)
                 return null;
             int iFrame = (int)frame; // frameFromSequence(frame, iFrames.Length);
@@ -211,7 +211,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             float frame = m_Animation.AnimationFrame;
 
             m_MobileLayers[m_LayerCount++] = new MobileViewLayer(bodyID, hue, getFrame(bodyID, hue, facing, animation, frame));
-            m_FrameCount = Animations.GetAnimationFrameCount(bodyID, animation, facing, hue);
+            m_FrameCount = AnimationData.GetAnimationFrameCount(bodyID, animation, facing, hue);
         }
 
         public void ClearLayers()

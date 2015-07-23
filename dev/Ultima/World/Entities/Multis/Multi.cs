@@ -34,11 +34,11 @@ namespace UltimaXNA.Ultima.World.Entities.Multis
                 s_RegisteredMultis.Remove(multi);
         }
 
-        public static void AnnounceMapBlockLoaded(MapBlock block)
+        public static void AnnounceMapChunkLoaded(MapChunk chunk)
         {
             for (int i = 0; i < s_RegisteredMultis.Count; i++)
                 if (!s_RegisteredMultis[i].IsDisposed)
-                    s_RegisteredMultis[i].PlaceTilesIntoNewlyLoadedBlock(block);
+                    s_RegisteredMultis[i].PlaceTilesIntoNewlyLoadedChunk(chunk);
         }
 
         MultiComponentList m_Components;
@@ -107,12 +107,12 @@ namespace UltimaXNA.Ultima.World.Entities.Multis
             }
         }
 
-        private void PlaceTilesIntoNewlyLoadedBlock(MapBlock block)
+        private void PlaceTilesIntoNewlyLoadedChunk(MapChunk chunk)
         {
             int px = Position.X;
             int py = Position.Y;
 
-            Rectangle bounds = new Rectangle((int)block.BlockX * 8, (int)block.BlockY * 8, 8, 8);
+            Rectangle bounds = new Rectangle((int)chunk.ChunkX * 8, (int)chunk.ChunkY * 8, 8, 8);
 
             foreach (MultiComponentList.MultiItem item in m_Components.Items)
             {
@@ -121,7 +121,7 @@ namespace UltimaXNA.Ultima.World.Entities.Multis
 
                 if (bounds.Contains(x, y))
                 {
-                    // would it be faster to get the tile from the block?
+                    // would it be faster to get the tile from the chunk?
                     MapTile tile = Map.GetMapTile(x, y);
                     if (tile != null)
                     {

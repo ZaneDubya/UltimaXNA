@@ -305,7 +305,7 @@ namespace UltimaXNA.Ultima.World
             Item item = add_Item(p.Serial, p.ItemId, p.Hue, p.ContainerSerial, p.Amount);
             item.InContainerPosition = new Point(p.X, p.Y);
             // ... and add it the container contents of the container.
-            AEntity container = WorldModel.Entities.GetObject<AEntity>(p.ContainerSerial, true);
+            Container container = WorldModel.Entities.GetObject<Container>(p.ContainerSerial, true);
             if (container is Container) // place in container
             {
                 (container as Container).AddItem(item);
@@ -808,7 +808,7 @@ namespace UltimaXNA.Ultima.World
         {
             OpenPaperdollPacket p = packet as OpenPaperdollPacket;
             if (m_UserInterface.GetControl<JournalGump>(p.Serial) == null)
-                m_UserInterface.AddControl(new PaperDollGump(WorldModel.Entities.GetObject<Mobile>(p.Serial, false)), 400, 100);
+                m_UserInterface.AddControl(new PaperDollGump(WorldModel.Entities.GetObject<Mobile>(p.Serial, false), p.MobileName), 400, 100);
         }
 
         private void ReceiveCompressedGump(IRecvPacket packet)

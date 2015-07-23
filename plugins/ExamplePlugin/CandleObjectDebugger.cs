@@ -20,7 +20,7 @@ namespace ExamplePlugin
                 {
                     for (int direction = 0; direction < 8; direction++)
                     {
-                        AnimationFrame[] frames = Animations.GetAnimation(candleBodyID, action, direction, 0);
+                        AnimationFrame[] frames = AnimationData.GetAnimation(candleBodyID, action, direction, 0);
                         if (frames != null)
                         {
                             for (int i = 0; i < frames.Length; i++)

@@ -174,7 +174,6 @@ namespace UltimaXNA.Ultima.World.WorldViews
             renderOffset.Y -= (renderZOffset) * 22;
 
             Tracer.Error("{0} and {1} Window size{2} and {3} View size{4} and {5}", renderOffset.X, renderOffset.Y, Settings.World.WindowResolution.Width, Settings.World.WindowResolution.Height, Settings.World.GumpResolution.Width, Settings.World.GumpResolution.Height);
-
             CountEntitiesRendered = 0; // Count of objects rendered for statistics and debug
 
             MouseOverList overList = new MouseOverList(mousePicking); // List of entities mouse is over.

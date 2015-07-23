@@ -20,7 +20,7 @@ namespace UltimaXNA.Ultima.World.WorldViews
     {
         private uint[] m_TextureData;
         private uint[] m_BlockColors;
-        private MiniMapBlock[] m_BlockCache;
+        private MiniMapChunk[] m_BlockCache;
 
         public Texture2D Texture
         {
@@ -46,7 +46,7 @@ namespace UltimaXNA.Ultima.World.WorldViews
 
             m_TextureData = new uint[Stride * Stride];
             m_BlockColors = new uint[TilesPerBlock];
-            m_BlockCache = new MiniMapBlock[BlockCacheWidth * BlockCacheHeight];
+            m_BlockCache = new MiniMapChunk[BlockCacheWidth * BlockCacheHeight];
             m_MustRedrawEntireTexture = true;
 
             m_QueuedToDrawBlocks = new List<uint>();
@@ -168,55 +168,55 @@ namespace UltimaXNA.Ultima.World.WorldViews
 
         private void InternalQueueMapBlock(Map map, uint cellx, uint celly)
         {
-            uint blockIndex = (cellx % BlockCacheWidth) + (celly % BlockCacheHeight) * BlockCacheWidth;
+            uint chunkIndex = (cellx % BlockCacheWidth) + (celly % BlockCacheHeight) * BlockCacheWidth;
 
-            MiniMapBlock block = m_BlockCache[blockIndex];
-            if (block == null || block.X != cellx || block.Y != celly)
+            MiniMapChunk chunk = m_BlockCache[chunkIndex];
+            if (chunk == null || chunk.X != cellx || chunk.Y != celly)
             {
-                // the block is not in our cache! Try loading it from the map?
-                MapBlock mapBlock = map.GetMapBlock(cellx, celly);
+                // the chunk is not in our cache! Try loading it from the map?
+                MapChunk mapBlock = map.GetMapChunk(cellx, celly);
                 if (mapBlock == null)
                 {
-                    // if the block is not loaded in memory, load it from the filesystem.
-                    m_BlockCache[blockIndex] = new MiniMapBlock(cellx, celly, map.MapData);
+                    // if the chunk is not loaded in memory, load it from the filesystem.
+                    m_BlockCache[chunkIndex] = new MiniMapChunk(cellx, celly, map.MapData);
                 }
                 else
                 {
-                    // get the colors for this block from the map block, which will have already sorted the objects.
-                    m_BlockCache[blockIndex] = new MiniMapBlock(mapBlock);
+                    // get the colors for this chunk from the map chunk, which will have already sorted the objects.
+                    m_BlockCache[chunkIndex] = new MiniMapChunk(mapBlock);
                 }
             }
             else
             {
-                m_BlockColors = block.Colors;
+                m_BlockColors = chunk.Colors;
             }
 
-            m_QueuedToDrawBlocks.Add(blockIndex);
+            m_QueuedToDrawBlocks.Add(chunkIndex);
         }
 
         private void InternalDrawQueuedMapBlocks()
         {
-            IEnumerator<uint> blocks = m_QueuedToDrawBlocks.GetEnumerator();
+            IEnumerator<uint> chunks = m_QueuedToDrawBlocks.GetEnumerator();
 
             for (int i = 0; i < m_QueuedToDrawBlocks.Count; i++)
             {
-                MiniMapBlock block = m_BlockCache[m_QueuedToDrawBlocks[i]];
+                MiniMapChunk chunk = m_BlockCache[m_QueuedToDrawBlocks[i]];
 
-                uint cellX32 = block.X % 32, cellY32 = block.Y % 32;
-                m_BlockColors = block.Colors;
+                uint cellX32 = chunk.X % 32, cellY32 = chunk.Y % 32;
+                m_BlockColors = chunk.Colors;
 
-                // now draw the block
+                // now draw the chunk
                 if (cellX32 == 0 && cellY32 == 0)
                 {
-                    // draw the block split out over four corners of the texture.
-                    int blockindex = 0;
+                    // draw the chunk split out over four corners of the texture.
+                    int chunkindex = 0;
                     for (uint tiley = 0; tiley < 8; tiley++)
                     {
                         uint drawy = (cellX32 * 8 + cellY32 * 8 - 8 + tiley) % Stride;
                         uint drawx = (cellX32 * 8 - cellY32 * 8 - tiley) % Stride;
                         for (uint tilex = 0; tilex < 8; tilex++)
                         {
-                            uint color = m_BlockColors[blockindex++];
+                            uint color = m_BlockColors[chunkindex++];
                             m_TextureData[drawy * Stride + drawx] = color;
                             if (drawy == 255)
                                 m_TextureData[drawx] = color;
@@ -229,15 +229,15 @@ namespace UltimaXNA.Ultima.World.WorldViews
                 }
                 else if (cellX32 + cellY32 == 32)
                 {
-                    // draw the block split on the top and bottom of the texture.
-                    int blockindex = 0;
+                    // draw the chunk split on the top and bottom of the texture.
+                    int chunkindex = 0;
                     for (uint tiley = 0; tiley < 8; tiley++)
                     {
                         uint drawy = (cellX32 * 8 + cellY32 * 8 - 8 + tiley) % Stride;
                         uint drawx = (cellX32 * 8 - cellY32 * 8 - tiley) % Stride;
                         for (uint tilex = 0; tilex < 8; tilex++)
                         {
-                            uint color = m_BlockColors[blockindex++];
+                            uint color = m_BlockColors[chunkindex++];
                             m_TextureData[drawy * Stride + drawx] = color;
                             if (drawy == 255)
                                 m_TextureData[drawx] = color;
@@ -250,15 +250,15 @@ namespace UltimaXNA.Ultima.World.WorldViews
                 }
                 else if (cellX32 == cellY32)
                 {
-                    // draw the block split on the left and right side of the texture.
-                    int blockindex = 0;
+                    // draw the chunk split on the left and right side of the texture.
+                    int chunkindex = 0;
                     for (uint tiley = 0; tiley < 8; tiley++)
                     {
                         uint drawy = (cellX32 * 8 + cellY32 * 8 - 8 + tiley) % Stride;
                         uint drawx = (cellX32 * 8 - cellY32 * 8 - tiley) % Stride;
                         for (uint tilex = 0; tilex < 8; tilex++)
                         {
-                            uint color = m_BlockColors[blockindex++];
+                            uint color = m_BlockColors[chunkindex++];
                             m_TextureData[drawy * Stride + drawx] = color;
                             m_TextureData[drawy * Stride + Stride + drawx] = color;
                             drawx = (drawx + 1) % Stride;
@@ -268,15 +268,15 @@ namespace UltimaXNA.Ultima.World.WorldViews
                 }
                 else
                 {
-                    // draw the block normally.
-                    int blockindex = 0;
+                    // draw the chunk normally.
+                    int chunkindex = 0;
                     for (uint tiley = 0; tiley < 8; tiley++)
                     {
                         uint drawy = (cellX32 * 8 + cellY32 * 8 - 8 + tiley) % Stride;
                         uint drawx = (cellX32 * 8 - cellY32 * 8 - tiley) % Stride;
                         for (uint tilex = 0; tilex < 8; tilex++)
                         {
-                            uint color = m_BlockColors[blockindex++];
+                            uint color = m_BlockColors[chunkindex++];
                             m_TextureData[drawy * Stride + drawx] = color;
                             m_TextureData[drawy * Stride + Stride + drawx] = color;
                             drawx = (drawx + 1) % Stride;

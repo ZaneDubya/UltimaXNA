@@ -19,7 +19,7 @@ using UltimaXNA.Core.IO;
 
 namespace UltimaXNA.Ultima.IO
 {
-    public sealed class Animations
+    public sealed class AnimationData
     {
         private static FileIndex m_FileIndex = new FileIndex("Anim.idx", "Anim.mul", 0x40000, 6);
         public static FileIndex FileIndex { get { return m_FileIndex; } }
@@ -40,7 +40,7 @@ namespace UltimaXNA.Ultima.IO
         private static GraphicsDevice m_graphics;
         private static int[] m_Table;
 
-        static Animations()
+        static AnimationData()
         {
             SpriteBatch3D sb = ServiceRegistry.GetService<SpriteBatch3D>();
             m_graphics = sb.GraphicsDevice;

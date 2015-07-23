@@ -15,17 +15,17 @@ using UltimaXNA.Ultima.World.Entities.Items;
 
 namespace UltimaXNA.Ultima.World.Maps
 {
-    public class MapBlock
+    public class MapChunk
     {
         public MapTile[] Tiles;
 
-        public readonly uint BlockX;
-        public readonly uint BlockY;
+        public readonly uint ChunkX;
+        public readonly uint ChunkY;
 
-        public MapBlock(uint x, uint y)
+        public MapChunk(uint x, uint y)
         {
-            BlockX = x;
-            BlockY = y;
+            ChunkX = x;
+            ChunkY = y;
 
             Tiles = new MapTile[64];
             for (int i = 0; i < 64; i++)
@@ -64,12 +64,12 @@ namespace UltimaXNA.Ultima.World.Maps
             Tiles = null;
         }
 
-        public void Load(TileMatrixClient tileData, Map map)
+        public void Load(TileMatrixData tileData, Map map)
         {
             // get data from the tile Matrix
-            byte[] groundData = tileData.GetLandBlock(BlockX, BlockY);
+            byte[] groundData = tileData.GetLandChunk(ChunkX, ChunkY);
             int staticLength;
-            byte[] staticsData = tileData.GetStaticBlock(BlockX, BlockY, out staticLength);
+            byte[] staticsData = tileData.GetStaticChunk(ChunkX, ChunkY, out staticLength);
 
             // load the ground data into the tiles.
             int groundDataIndex = 0;
@@ -79,7 +79,7 @@ namespace UltimaXNA.Ultima.World.Maps
                 int tileZ = (sbyte)groundData[groundDataIndex++];
 
                 Ground ground = new Ground(tileID, map);
-                ground.Position.Set((int)BlockX * 8 + i % 8, (int)BlockY * 8 + (i / 8), tileZ);
+                ground.Position.Set((int)ChunkX * 8 + i % 8, (int)ChunkY * 8 + (i / 8), tileZ);
             }
 
             // load the statics data into the tiles
@@ -94,7 +94,7 @@ namespace UltimaXNA.Ultima.World.Maps
                 int hue = staticsData[staticDataIndex++] + (staticsData[staticDataIndex++] * 256);
 
                 StaticItem item = new StaticItem(iTileID, hue, i, map);
-                item.Position.Set((int)BlockX * 8 + iX, (int)BlockY * 8 + iY, iTileZ);
+                item.Position.Set((int)ChunkX * 8 + iX, (int)ChunkY * 8 + iY, iTileZ);
             }
         }
     }
