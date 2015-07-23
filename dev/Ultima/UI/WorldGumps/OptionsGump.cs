@@ -33,6 +33,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         CheckBox m_MenuBarDisabled;
         DropDownList m_Resolution;
 
+        Resolution[] ResolutionAsResolution;
+
+
         public OptionsGump()
             : base(0, 0)
         {
@@ -120,10 +123,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             AddControl(new CheckBox(this, 60, 120, 210, 211, Settings.World.IsMaximized, 61), 6);
             AddControl(new TextLabelAscii(this, 85, 120, 1, 9, @"Use full screen display"), 6);
             
-            List<string> res = SupportedResolutions();
-            string[] s = res.ToArray();
             AddControl(new TextLabelAscii(this, 60, 150, 1, 9, @"Full screen resolution"), 6);
-            m_Resolution = (DropDownList)AddControl(new DropDownList(this, 60, 170, 122, 0, 10, s, false), 6);
+            m_Resolution = (DropDownList)AddControl(new DropDownList(this, 60, 170, 122, 0, 10, ResolutionsInString(), false), 6);
 
             // page 7 Reputation system
             AddControl(new Button(this, 576, 180, 229, 229, ButtonTypes.SwitchPage, 7, (int)Buttons.Reputation),7);
@@ -160,20 +161,25 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             base.Update(totalMS, frameMS);
         }
 
-        public List<string> SupportedResolutions()
+        public string[] ResolutionsInString()
         {
-            List<string> SupportedResolutions = new List<string>();
+            List<Resolution> ResolutionsR = new List<Resolution>();
+            List<string> ResolutionsS = new List<string>();
 
             foreach (Microsoft.Xna.Framework.Graphics.DisplayMode mode in Microsoft.Xna.Framework.Graphics.GraphicsAdapter.DefaultAdapter.SupportedDisplayModes)
             {
-                string res = mode.Width + "x" + mode.Height;
-                if (!SupportedResolutions.Contains(res))
+                string resS = mode.Width + "x" + mode.Height;
+                Resolution resR = new Resolution(mode.Width, mode.Height);
+
+                if (!ResolutionsS.Contains(resS))
                 {
-                    SupportedResolutions.Add(res);
-                    Tracer.Info("Supported resolution STRING {0}", res);
+                    ResolutionsS.Add(resS);
+                    ResolutionsR.Add(resR);
                 }
             }
-            return SupportedResolutions;
+            string[] RS = ResolutionsS.ToArray();
+            ResolutionAsResolution = ResolutionsR.ToArray();
+            return RS;
         }
 
         public void SaveSettings()
@@ -188,6 +194,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             //interface
             Settings.World.AlwaysRun = m_AlwaysRun.IsChecked;
             Settings.World.MenuBarDisabled = m_MenuBarDisabled.IsChecked;
+            Settings.World.WindowResolution = new Resolution(ResolutionAsResolution[m_Resolution.Index].Width, ResolutionAsResolution[m_Resolution.Index].Height);
+            Settings.World.GumpResolution = new Resolution(ResolutionAsResolution[m_Resolution.Index].Width, ResolutionAsResolution[m_Resolution.Index].Height);
             SwitchTopMenuGump();
         }
 
