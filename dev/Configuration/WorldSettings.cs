@@ -28,8 +28,8 @@ namespace UltimaXNA.Configuration
 
         public WorldSettings()
         {
-            WindowResolution = new Resolution(2048, 1200);
-            GumpResolution = new Resolution(2048, 1200);
+            WindowResolution = new Resolution(1024, 768);
+            GumpResolution = new Resolution(1024, 768);
             IsMaximized = true;
             Mouse = new MouseSettings(MouseButton.Left, MouseButton.Right);
             AlwaysRun = false;
