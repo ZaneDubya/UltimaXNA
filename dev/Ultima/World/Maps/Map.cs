@@ -35,7 +35,7 @@ namespace UltimaXNA.Ultima.World.Maps
         // Any mobile / item beyond this range is removed from the client. RunUO's range is 24 tiles, which would equal 3 cells.
         // We keep 4 cells in memory to allow for drawing further, and also as a safety precaution - don't want to unload an 
         // entity at the edge of what we keep in memory just because of being slightly out of sync with the server.
-        private const int c_CellsInMemory = 4;
+        private const int c_CellsInMemory = 5;
         private const int c_CellsInMemorySpan = c_CellsInMemory * 2 + 1;
 
         public Map(uint index)
@@ -96,6 +96,8 @@ namespace UltimaXNA.Ultima.World.Maps
             MapChunk cell = m_Chunks[cellIndex];
             if (cell == null)
                 return null;
+            if (cell.ChunkX != cellX || cell.ChunkY != cellY)
+                return null;
             return cell.Tiles[(y % 8) * 8 + (x % 8)];
         }
 
@@ -110,7 +112,7 @@ namespace UltimaXNA.Ultima.World.Maps
                 {
                     uint cellX = (uint)(centerX + x) % MapData.ChunkWidth;
 
-                    uint cellIndex = (cellY % c_CellsInMemorySpan) * c_CellsInMemorySpan + cellX % c_CellsInMemorySpan;
+                    uint cellIndex = (cellY % c_CellsInMemorySpan) * c_CellsInMemorySpan + (cellX % c_CellsInMemorySpan);
                     if (m_Chunks[cellIndex] == null || m_Chunks[cellIndex].ChunkX != cellX || m_Chunks[cellIndex].ChunkY != cellY)
                     {
                         if (m_Chunks[cellIndex] != null)
