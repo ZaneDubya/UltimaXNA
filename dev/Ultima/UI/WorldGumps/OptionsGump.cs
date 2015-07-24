@@ -9,6 +9,7 @@
  *
  ***************************************************************************/
 #region usings
+using System;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.UI.Controls;
 using System.Collections.Generic;
@@ -34,6 +35,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         DropDownList m_Resolution;
 
         Resolution[] ResolutionAsResolution;
+        string[] RS;
 
 
         public OptionsGump()
@@ -124,7 +126,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             AddControl(new TextLabelAscii(this, 85, 120, 1, 9, @"Use full screen display"), 6);
             
             AddControl(new TextLabelAscii(this, 60, 150, 1, 9, @"Full screen resolution"), 6);
-            m_Resolution = (DropDownList)AddControl(new DropDownList(this, 60, 170, 122, 0, 10, ResolutionsInString(), false), 6);
+            m_Resolution = (DropDownList)AddControl(new DropDownList(this, 60, 170, 122, ResolutionsInString(), 10, ActualResolution(), false), 6);
 
             // page 7 Reputation system
             AddControl(new Button(this, 576, 180, 229, 229, ButtonTypes.SwitchPage, 7, (int)Buttons.Reputation),7);
@@ -161,6 +163,13 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             base.Update(totalMS, frameMS);
         }
 
+        public int ActualResolution()
+        {
+            string res = Settings.World.GumpResolution.Width + "x" + Settings.World.GumpResolution.Height;
+            int index = Array.IndexOf(RS, res);
+            return index;
+        }
+
         public string[] ResolutionsInString()
         {
             List<Resolution> ResolutionsR = new List<Resolution>();
@@ -177,7 +186,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     ResolutionsR.Add(resR);
                 }
             }
-            string[] RS = ResolutionsS.ToArray();
+            RS = ResolutionsS.ToArray();
             ResolutionAsResolution = ResolutionsR.ToArray();
             return RS;
         }
