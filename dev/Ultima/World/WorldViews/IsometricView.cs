@@ -19,6 +19,7 @@ using UltimaXNA.Ultima.World.EntityViews;
 using UltimaXNA.Ultima.World.Input;
 using UltimaXNA.Ultima.World.Maps;
 using UltimaXNA.Core.Diagnostics.Tracing;
+using System;
 #endregion
 
 namespace UltimaXNA.Ultima.World.WorldViews
@@ -147,49 +148,28 @@ namespace UltimaXNA.Ultima.World.WorldViews
             m_SpriteBatch.SetLightIntensity(Lighting.IsometricLightLevel);
             m_SpriteBatch.SetLightDirection(Lighting.IsometricLightDirection);
 
-            //int renderDimensionY = 16; // the number of tiles that are drawn for half the screen (doubled to fill the entire screen).
-            //int renderDimensionX = 18; // the number of tiles that are drawn in the x-direction ( + renderExtraColumnsAtSides * 2 ).
-            int renderDimensionX = Settings.World.GumpResolution.Width / TILE_SIZE_INTEGER;
-            int renderDimensionY = Settings.World.GumpResolution.Height / TILE_SIZE_INTEGER;
-            int renderExtraColumnsAtSides = 2; // the client draws additional tiles at the edge to make wide objects that are mostly offscreen visible.
-
-
-            // when the player entity is higher (z) in the world, we must offset the first row drawn. This variable MUST be a multiple of 2.
-            int renderZOffset = (center.Z / 14) * 2 + 4;
-            // this is used to draw tall objects that would otherwise not be visible until their ground tile was on screen. This may still skip VERY tall objects (those weird jungle trees?)
-            int renderExtraRowsAtBottom = renderZOffset + 10;
-
-            Point firstTile = new Point(
-                center.X + renderExtraColumnsAtSides - ((renderZOffset + 1) / 2),
-                center.Y - renderDimensionY - renderExtraColumnsAtSides - (renderZOffset / 2));
-
-            renderOffset.X = ((Settings.World.GumpResolution.Width + ((renderDimensionY) * TILE_SIZE_INTEGER)) / 2) - 22 + renderExtraColumnsAtSides * TILE_SIZE_INTEGER;
-            renderOffset.X -= (int)((center.X_offset - center.Y_offset) * 22);
-            renderOffset.X -= (firstTile.X - firstTile.Y) * 22;
-
-            renderOffset.Y = ((Settings.World.GumpResolution.Height - (renderDimensionY * TILE_SIZE_INTEGER)) / 2);
-            renderOffset.Y += (center.Z * 4) + (int)(center.Z_offset * 4);
-            renderOffset.Y -= (int)((center.X_offset + center.Y_offset) * 22);
-            renderOffset.Y -= (firstTile.X + firstTile.Y) * 22;
-            renderOffset.Y -= (renderZOffset) * 22;
-
-            Tracer.Error("{0} and {1} Window size{2} and {3} View size{4} and {5}", renderOffset.X, renderOffset.Y, Settings.World.WindowResolution.Width, Settings.World.WindowResolution.Height, Settings.World.GumpResolution.Width, Settings.World.GumpResolution.Height);
+            // get variables that describe the tiles drawn in the viewport: the first tile to draw,
+            // the offset to that tile, and the number of tiles drawn in the x and y dimensions.
+            Point firstTile, renderDimensions;
+            int overDrawTileCount = 2;
+            CalculateViewport(center, overDrawTileCount, out firstTile, out renderOffset, out renderDimensions);
+            
             CountEntitiesRendered = 0; // Count of objects rendered for statistics and debug
 
             MouseOverList overList = new MouseOverList(mousePicking); // List of entities mouse is over.
             List<AEntity> deferredToRemove = new List<AEntity>();
 
-            for (int col = 0; col < renderDimensionY * 2 + renderExtraRowsAtBottom; col++)
+            for (int y = 0; y < renderDimensions.Y; y++)
             {
                 Vector3 drawPosition = new Vector3();
-                drawPosition.X = (firstTile.X - firstTile.Y + (col % 2)) * 22 + renderOffset.X;
-                drawPosition.Y = (firstTile.X + firstTile.Y + col) * 22 + renderOffset.Y;
+                drawPosition.X = (firstTile.X - firstTile.Y + (y % 2)) * 22 + renderOffset.X;
+                drawPosition.Y = (firstTile.X + firstTile.Y + y) * 22 + renderOffset.Y;
 
-                Point index = new Point(firstTile.X + ((col + 1) / 2), firstTile.Y + (col / 2));
+                Point firstTileInRow = new Point(firstTile.X + ((y + 1) / 2), firstTile.Y + (y / 2));
 
-                for (int row = 0; row < renderDimensionX + renderExtraColumnsAtSides * 2; row++)
+                for (int x = 0; x < renderDimensions.X; x++)
                 {
-                    MapTile tile = map.GetMapTile(index.X - row, index.Y + row);
+                    MapTile tile = map.GetMapTile(firstTileInRow.X - x, firstTileInRow.Y + x);
                     if (tile == null)
                         continue;
 
@@ -235,6 +215,47 @@ namespace UltimaXNA.Ultima.World.WorldViews
 
             // Draw the objects we just send to the spritebatch.
             m_SpriteBatch.Flush(true);
+        }
+
+        private void CalculateViewport(Position3D center, int overDrawTileCount, out Point firstTile, out Vector2 renderOffset, out Point renderDimensions)
+        {
+            firstTile = Point.Zero;
+            renderOffset = Vector2.Zero;
+            renderDimensions = Point.Zero;
+
+            // the number of tiles that are drawn per row
+            renderDimensions.X = Settings.World.GumpResolution.Width / TILE_SIZE_INTEGER;// +overDrawTileCount * 2;
+            // the number of columns of tiles that are drawn.
+            renderDimensions.Y = Settings.World.GumpResolution.Height / TILE_SIZE_INTEGER;// +overDrawTileCount * 2;
+            // the difference between the width of the screen and the height of the screen.
+            int renderDimensionsDiff = Math.Abs(renderDimensions.X - renderDimensions.Y);
+
+            // when the player entity is higher (z) in the world, we must offset the first row drawn. This variable MUST be a multiple of 2.
+            int renderZOffset = (center.Z / 22) * 2;
+            // this is used to draw tall objects that would otherwise not be visible until their ground tile was on screen. This may still skip VERY tall objects (those weird jungle trees?)
+            int renderExtraRowsAtBottom = renderZOffset + 10;
+
+            firstTile = new Point(center.X, center.Y - ((renderDimensions.X + renderDimensions.Y) - renderDimensionsDiff));
+            if (renderDimensions.X - renderDimensions.Y < 0)
+            {
+                firstTile.X -= renderDimensionsDiff;
+                firstTile.Y -= renderDimensionsDiff;
+            }
+            else if (renderDimensions.X - renderDimensions.Y > 0)
+            {
+                firstTile.X += renderDimensionsDiff;
+                firstTile.Y -= renderDimensionsDiff;
+            }
+
+            renderOffset.X = ((Settings.World.GumpResolution.Width + ((renderDimensions.Y) * TILE_SIZE_INTEGER)) / 2) - 22;
+            renderOffset.X -= (int)((center.X_offset - center.Y_offset) * 22);
+            renderOffset.X -= (firstTile.X - firstTile.Y) * 22;
+
+            renderOffset.Y = ((Settings.World.GumpResolution.Height - (renderDimensions.Y * TILE_SIZE_INTEGER)) / 2);
+            renderOffset.Y += (center.Z * 4) + (int)(center.Z_offset * 4);
+            renderOffset.Y -= (int)((center.X_offset + center.Y_offset) * 22);
+            renderOffset.Y -= (firstTile.X + firstTile.Y) * 22;
+            renderOffset.Y -= (renderZOffset) * 22;
         }
     }
 }
