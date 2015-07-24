@@ -4,7 +4,7 @@
 
 UltimaXNA is an isometric massively multiplayer online role playing client that supports playing Ultima Online on your favorite freeshards!
 
-[![Video of UltimaXNA Alpha 0.4](https://cloud.githubusercontent.com/assets/7041719/7079845/179c2bd0-deef-11e4-83b0-f81723bb39d5.jpg)](http://www.youtube.com/watch?v=gUfpQkLBdzE)
+[![Video of UltimaXNA Alpha at Milestone 0.4 (April 4, 2015)](https://cloud.githubusercontent.com/assets/7041719/7079845/179c2bd0-deef-11e4-83b0-f81723bb39d5.jpg)](http://www.youtube.com/watch?v=gUfpQkLBdzE)
 
 **Getting started**
 
