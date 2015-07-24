@@ -94,9 +94,9 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             // drop downs for skills
             listSkills = new DropDownList[3];
             string[] skillList = SkillsData.ListNames;
-            listSkills[0] = new DropDownList(this, 344, 172, 182, -1, 8, skillList, true);
-            listSkills[1] = new DropDownList(this, 344, 252, 182, -1, 8, skillList, true);
-            listSkills[2] = new DropDownList(this, 344, 332, 182, -1, 8, skillList, true);
+            listSkills[0] = new DropDownList(this, 344, 172, 182, skillList, 8, -1, true);
+            listSkills[1] = new DropDownList(this, 344, 252, 182, skillList, 8, -1, true);
+            listSkills[2] = new DropDownList(this, 344, 332, 182, skillList, 8, -1, true);
             for (int i = 0; i < 3; i++)
             {
                 for (int j = 0; j < 3; j++)

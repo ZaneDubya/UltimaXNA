@@ -114,16 +114,16 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             // if you do add it, move everything else in this left window down by 45 pixels
             // gender
             AddControl(new TextLabelAscii(this, 100, 141, 2036, 9, StringData.Entry(3000120)), 1);
-            AddControl(m_Gender = new DropDownList(this, 97, 154, 122, 0, 2, new string[] { StringData.Entry(3000118), StringData.Entry(3000119) }, false));
+            AddControl(m_Gender = new DropDownList(this, 97, 154, 122, new string[] { StringData.Entry(3000118), StringData.Entry(3000119) }, 2, 0, false));
             // hair (male)
             AddControl(new TextLabelAscii(this, 100, 186, 2036, 9, StringData.Entry(3000121)), 1);
-            AddControl(m_HairMale = new DropDownList(this, 97, 199, 122, 0, 6, HairStyles.MaleHairNames, false), 1);
+            AddControl(m_HairMale = new DropDownList(this, 97, 199, 122, HairStyles.MaleHairNames, 6, 0, false), 1);
             // facial hair (male)
             AddControl(new TextLabelAscii(this, 100, 231, 2036, 9, StringData.Entry(3000122)), 1);
-            AddControl(m_FacialHairMale = new DropDownList(this, 97, 244, 122, 0, 6, HairStyles.FacialHair, false), 1);
+            AddControl(m_FacialHairMale = new DropDownList(this, 97, 244, 122, HairStyles.FacialHair, 6, 0, false), 1);
             // hair (female)
             AddControl(new TextLabelAscii(this, 100, 186, 2036, 9, StringData.Entry(3000121)), 2);
-            AddControl(m_HairFemale = new DropDownList(this, 97, 199, 122, 0, 6, HairStyles.FemaleHairNames, false), 2);
+            AddControl(m_HairFemale = new DropDownList(this, 97, 199, 122, HairStyles.FemaleHairNames, 6, 0, false), 2);
 
             // right option window
             AddControl(new ResizePic(this, 475, 125, 3600, 151, 310));
