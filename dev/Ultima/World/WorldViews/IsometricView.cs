@@ -79,6 +79,7 @@ namespace UltimaXNA.Ultima.World.WorldViews
             DetermineIfClientIsUnderEntity(map, center);
 
             m_SpriteBatch.GraphicsDevice.SetRenderTarget(m_RenderTarget);
+            m_SpriteBatch.GraphicsDevice.Clear(Color.Black);  
 
             DrawEntities(map, center, mousePick, out m_DrawOffset);
 
@@ -151,9 +152,9 @@ namespace UltimaXNA.Ultima.World.WorldViews
             // get variables that describe the tiles drawn in the viewport: the first tile to draw,
             // the offset to that tile, and the number of tiles drawn in the x and y dimensions.
             Point firstTile, renderDimensions;
-            int overDrawTilesOnSides = 2;
+            int overDrawTilesOnSides = 3;
             int overDrawTilesAtTopAndBottom = 6;
-            int overDrawAdditionalTilesOnBottom = 8;
+            int overDrawAdditionalTilesOnBottom = 10;
             CalculateViewport(center, overDrawTilesOnSides, overDrawTilesAtTopAndBottom, out firstTile, out renderOffset, out renderDimensions);
             
             CountEntitiesRendered = 0; // Count of objects rendered for statistics and debug
@@ -173,7 +174,10 @@ namespace UltimaXNA.Ultima.World.WorldViews
                 {
                     MapTile tile = map.GetMapTile(firstTileInRow.X - x, firstTileInRow.Y + x);
                     if (tile == null)
+                    {
+                        drawPosition.X -= TILE_SIZE_FLOAT;
                         continue;
+                    }
 
                     List<AEntity> entities = tile.Entities;
 
