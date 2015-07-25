@@ -44,7 +44,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             StringBuilder htmlContextItems = new StringBuilder();
             for (int i = 0; i < m_Data.Count; i++)
             {
-                htmlContextItems.Append(string.Format("<a href='{0}' color='#DDD' hovercolor='#FFF' style='text-decoration:none;'>{1}</a><br/>", m_Data[i].ResponseCode, m_Data[i].Caption));
+                htmlContextItems.Append(string.Format("<a href='{0}' color='#DDD' hovercolor='#FFF' activecolor='#BBB' style='text-decoration:none;'>{1}</a><br/>", m_Data[i].ResponseCode, m_Data[i].Caption));
             }
             m_MenuItems = (HtmlGumpling)AddControl(new HtmlGumpling(this, 10, 10, 200, font.Height * m_Data.Count, 0, 0, htmlContextItems.ToString()));
         }
