@@ -72,6 +72,9 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         public override void Update(double totalMS, double frameMS)
         {
+            if (Index <= m_items.Count)
+                Index = -1;
+
             if (m_listOpen)
             {
                 // if we have moused off the open list, close it. We check to see if the mouse is over:
