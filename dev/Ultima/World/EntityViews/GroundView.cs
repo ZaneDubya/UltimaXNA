@@ -15,16 +15,19 @@ namespace UltimaXNA.Ultima.World.EntityViews
             get { return (Ground)base.Entity; }
         }
 
+        private bool m_DrawAs3DStretched = false;
+        private bool m_NoDraw = false;
+
         public GroundView(Ground ground)
             : base(ground)
         {
             PickType = PickType.PickGroundTiles;
-            NoDraw = (Entity.LandDataID < 3 || (Entity.LandDataID >= 0x1AF && Entity.LandDataID <= 0x1B5));
+            m_NoDraw = (Entity.LandDataID < 3 || (Entity.LandDataID >= 0x1AF && Entity.LandDataID <= 0x1B5));
              
             if (Entity.LandData.TextureID <= 0)
             {
                 DrawFlip = false;
-                DrawAs3DStretched = false;
+                m_DrawAs3DStretched = false;
 
                 DrawTexture = ArtData.GetLandTexture(Entity.LandDataID);
                 DrawArea = new Rectangle(0, Entity.Z * 4, IsometricRenderer.TILE_SIZE_INTEGER, IsometricRenderer.TILE_SIZE_INTEGER);
@@ -32,17 +35,14 @@ namespace UltimaXNA.Ultima.World.EntityViews
             else
             {
                 DrawFlip = false;
-                DrawAs3DStretched = true;
+                m_DrawAs3DStretched = true;
                 DrawTexture = TexmapData.GetTexmapTexture(Entity.LandData.TextureID);
             }
         }
 
-        protected bool DrawAs3DStretched = false;
-        protected bool NoDraw = false;
-
         public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
         {
-            if (NoDraw)
+            if (m_NoDraw)
                 return false;
 
             if (m_MustUpdateSurroundings)
@@ -51,7 +51,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 m_MustUpdateSurroundings = false;
             }
 
-            if (!DrawAs3DStretched)
+            if (!m_DrawAs3DStretched)
                 return base.Draw(spriteBatch, drawPosition, mouseOverList, map);
             else
                 return Draw3DStretched(spriteBatch, drawPosition, mouseOverList, map);

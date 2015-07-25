@@ -120,7 +120,7 @@ namespace UltimaXNA.Ultima.World.Entities.Items
 
 		public bool NoDraw
 		{
-			get { return m_DisplayItemID <= 1; } // no draw
+			get { return m_ItemID <= 1 || m_DisplayItemID <= 1; } // no draw
 		}
 
 		public bool IsCoin
