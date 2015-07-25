@@ -69,11 +69,11 @@ namespace UltimaXNA.Ultima.World.WorldViews
 
         public void Update(Map map, Position3D center, MousePicking mousePick)
         {
-            if (m_RenderTarget == null || m_RenderTarget.Width != Settings.World.GumpResolution.Width || m_RenderTarget.Height != Settings.World.GumpResolution.Height)
+            if (m_RenderTarget == null || m_RenderTarget.Width != Settings.World.PlayWindowGumpResolution.Width || m_RenderTarget.Height != Settings.World.PlayWindowGumpResolution.Height)
             {
                 if (m_RenderTarget != null)
                     m_RenderTarget.Dispose();
-                m_RenderTarget = new RenderTarget2D(m_SpriteBatch.GraphicsDevice, Settings.World.GumpResolution.Width, Settings.World.GumpResolution.Height, false, SurfaceFormat.Color, DepthFormat.Depth16, 0, RenderTargetUsage.DiscardContents);
+                m_RenderTarget = new RenderTarget2D(m_SpriteBatch.GraphicsDevice, Settings.World.PlayWindowGumpResolution.Width, Settings.World.PlayWindowGumpResolution.Height, false, SurfaceFormat.Color, DepthFormat.Depth16, 0, RenderTargetUsage.DiscardContents);
             }
 
             DetermineIfClientIsUnderEntity(map, center);
@@ -225,8 +225,8 @@ namespace UltimaXNA.Ultima.World.WorldViews
 
         private void CalculateViewport(Position3D center, int overDrawTilesOnSides, int overDrawTilesOnTopAndBottom, out Point firstTile, out Vector2 renderOffset, out Point renderDimensions)
         {
-            renderDimensions.Y = Settings.World.GumpResolution.Height / TILE_SIZE_INTEGER + overDrawTilesOnTopAndBottom; // the number of tiles that are drawn for half the screen (doubled to fill the entire screen).
-            renderDimensions.X = Settings.World.GumpResolution.Width / TILE_SIZE_INTEGER + overDrawTilesOnSides; // the number of tiles that are drawn in the x-direction ( + renderExtraColumnsAtSides * 2 ).
+            renderDimensions.Y = Settings.World.PlayWindowGumpResolution.Height / TILE_SIZE_INTEGER + overDrawTilesOnTopAndBottom; // the number of tiles that are drawn for half the screen (doubled to fill the entire screen).
+            renderDimensions.X = Settings.World.PlayWindowGumpResolution.Width / TILE_SIZE_INTEGER + overDrawTilesOnSides; // the number of tiles that are drawn in the x-direction ( + renderExtraColumnsAtSides * 2 ).
             int renderDimensionsDiff = Math.Abs(renderDimensions.X - renderDimensions.Y);
             renderDimensionsDiff -= renderDimensionsDiff % 2; // make sure this is an even number...
 
@@ -246,12 +246,12 @@ namespace UltimaXNA.Ultima.World.WorldViews
                 firstTile.Y -= renderDimensionsDiff / 2;
             }
 
-            renderOffset.X = ((Settings.World.GumpResolution.Width + ((renderDimensions.Y) * TILE_SIZE_INTEGER)) / 2) - 22;
+            renderOffset.X = ((Settings.World.PlayWindowGumpResolution.Width + ((renderDimensions.Y) * TILE_SIZE_INTEGER)) / 2) - 22;
             renderOffset.X -= (int)((center.X_offset - center.Y_offset) * 22);
             renderOffset.X -= (firstTile.X - firstTile.Y) * 22;
             renderOffset.X += renderDimensionsDiff * 22;
 
-            renderOffset.Y = (Settings.World.GumpResolution.Height / 2 - (renderDimensions.Y * TILE_SIZE_INTEGER / 2));
+            renderOffset.Y = (Settings.World.PlayWindowGumpResolution.Height / 2 - (renderDimensions.Y * TILE_SIZE_INTEGER / 2));
             renderOffset.Y += ((center.Z + center.Z_offset) * 4);
             renderOffset.Y -= (int)((center.X_offset + center.Y_offset) * 22);
             renderOffset.Y -= (firstTile.X + firstTile.Y) * 22;

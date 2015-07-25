@@ -15,6 +15,7 @@ using UltimaXNA.Ultima.UI.Controls;
 using System.Collections.Generic;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Configuration;
+using Microsoft.Xna.Framework.Graphics;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
@@ -30,15 +31,17 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         CheckBox m_FootStepSoundOn;
         CheckBox m_AlwaysRun;
         CheckBox m_MenuBarDisabled;
-        DropDownList m_Resolution;
+        DropDownList m_DropDownFullScreenResolutions;
+        DropDownList m_DropDownPlayWindowResolutions;
 
-        Resolution[] ResolutionAsResolution;
-        string[] RS;
-
+        private List<Resolution> m_FullScreenResolutionsList;
+        private List<Resolution> m_PlayWindowResolutionsList;
 
         public OptionsGump()
             : base(0, 0)
         {
+            BuildResolutionsLists();
+
             IsMovable = true;
             AddControl(new ResizePic(this, 40, 0, 2600, 550, 450));
             //left column
@@ -113,7 +116,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             // page 6 Display
             AddControl(new Button(this, 576, 110, 227, 227, ButtonTypes.SwitchPage, 6, (int)Buttons.Display),6);
             AddControl(new TextLabelAscii(this, 250, 20, 1, 2, @"Display"), 6);
-            AddControl(new TextLabelAscii(this, 60, 45, 1, 9, @"These settting affect your display, and adjusting some of them may improve your graphics performance."), 6);
+            AddControl(new TextLabelAscii(this, 60, 45, 1, 9, @"These settting affect your display, and adjusting some of them may improve your graphics performance.", 430), 6);
             AddControl(new CheckBox(this, 60, 80, 210, 211, false, 61), 6);
             AddControl(new TextLabelAscii(this, 85, 80, 1, 9, @"Some option"), 6);
             AddControl(new CheckBox(this, 60, 100, 210, 211, false, 62), 6);
@@ -121,8 +124,11 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             AddControl(new CheckBox(this, 60, 120, 210, 211, Settings.World.IsMaximized, 61), 6);
             AddControl(new TextLabelAscii(this, 85, 120, 1, 9, @"Use full screen display"), 6);
             
-            AddControl(new TextLabelAscii(this, 60, 150, 1, 9, @"Full screen resolution"), 6);
-            m_Resolution = (DropDownList)AddControl(new DropDownList(this, 60, 170, 122, ResolutionsInString(), 10, ActualResolution(), false), 6);
+            AddControl(new TextLabelAscii(this, 60, 150, 1, 9, @"Full Screen Resolution:"), 6);
+            m_DropDownFullScreenResolutions = (DropDownList)AddControl(new DropDownList(this, 60, 165, 122, CreateResolutionsStringArrayFromList(m_FullScreenResolutionsList), 10, GetCurrentFullScreenIndex(), false), 6);
+
+            AddControl(new TextLabelAscii(this, 60, 190, 1, 9, @"Play Window Resolution:"), 6);
+            m_DropDownPlayWindowResolutions = (DropDownList)AddControl(new DropDownList(this, 60, 205, 122, CreateResolutionsStringArrayFromList(m_PlayWindowResolutionsList), 10, GetCurrentPlayWindowIndex(), false), 6);
 
             // page 7 Reputation system
             AddControl(new Button(this, 576, 180, 229, 229, ButtonTypes.SwitchPage, 7, (int)Buttons.Reputation),7);
@@ -156,32 +162,60 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             base.Update(totalMS, frameMS);
         }
 
-        public int ActualResolution()
+        public int GetCurrentFullScreenIndex()
         {
-            string res = Settings.World.GumpResolution.Width + "x" + Settings.World.GumpResolution.Height;
-            int index = Array.IndexOf(RS, res);
-            return index;
+            string res = string.Format("{0}x{1}", Settings.World.FullScreenResolution.Width, Settings.World.FullScreenResolution.Height);
+            for (int i = 0; i < m_FullScreenResolutionsList.Count; i++)
+            {
+                if (m_FullScreenResolutionsList[i].Width == Settings.World.FullScreenResolution.Width && m_FullScreenResolutionsList[i].Height == Settings.World.FullScreenResolution.Height)
+                    return i;
+            }
+            return -1;
         }
 
-        public string[] ResolutionsInString()
+        public int GetCurrentPlayWindowIndex()
         {
-            List<Resolution> ResolutionsR = new List<Resolution>();
-            List<string> ResolutionsS = new List<string>();
-
-            foreach (Microsoft.Xna.Framework.Graphics.DisplayMode mode in Microsoft.Xna.Framework.Graphics.GraphicsAdapter.DefaultAdapter.SupportedDisplayModes)
+            string res = string.Format("{0}x{1}", Settings.World.PlayWindowGumpResolution.Width, Settings.World.PlayWindowGumpResolution.Height);
+            for (int i = 0; i < m_FullScreenResolutionsList.Count; i++)
             {
-                string resS = mode.Width + "x" + mode.Height;
-                Resolution resR = new Resolution(mode.Width, mode.Height);
+                if (m_FullScreenResolutionsList[i].Width == Settings.World.PlayWindowGumpResolution.Width && m_FullScreenResolutionsList[i].Height == Settings.World.PlayWindowGumpResolution.Height)
+                    return i;
+            }
+            return -1;
+        }
 
-                if (!ResolutionsS.Contains(resS))
+        public void BuildResolutionsLists()
+        {
+            if (m_FullScreenResolutionsList != null)
+                m_FullScreenResolutionsList.Clear();
+            else
+                m_FullScreenResolutionsList = new List<Resolution>();
+
+            foreach (DisplayMode mode in GraphicsAdapter.DefaultAdapter.SupportedDisplayModes)
+            {
+                Resolution res = new Resolution(mode.Width, mode.Height);
+                if (!m_FullScreenResolutionsList.Contains(res))
                 {
-                    ResolutionsS.Add(resS);
-                    ResolutionsR.Add(resR);
+                    m_FullScreenResolutionsList.Add(res);
                 }
             }
-            RS = ResolutionsS.ToArray();
-            ResolutionAsResolution = ResolutionsR.ToArray();
-            return RS;
+
+            if (m_PlayWindowResolutionsList != null)
+                m_PlayWindowResolutionsList.Clear();
+            else
+                m_PlayWindowResolutionsList = new List<Resolution>();
+
+            m_PlayWindowResolutionsList.Add(new Resolution(640, 480));
+            m_PlayWindowResolutionsList.Add(new Resolution(800, 600));
+            m_PlayWindowResolutionsList.Add(new Resolution(1024, 768));
+        }
+
+        public string[] CreateResolutionsStringArrayFromList(List<Resolution> resolutions)
+        {
+            string[] array = new string[resolutions.Count];
+            for (int i = 0; i < resolutions.Count; i++)
+                array[i] = resolutions[i].ToString();
+            return array;
         }
 
         public void SaveSettings()
@@ -196,8 +230,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             //interface
             Settings.World.AlwaysRun = m_AlwaysRun.IsChecked;
             Settings.World.MenuBarDisabled = m_MenuBarDisabled.IsChecked;
-            Settings.World.WindowResolution = new Resolution(ResolutionAsResolution[m_Resolution.Index].Width, ResolutionAsResolution[m_Resolution.Index].Height);
-            Settings.World.GumpResolution = new Resolution(ResolutionAsResolution[m_Resolution.Index].Width, ResolutionAsResolution[m_Resolution.Index].Height);
+            Settings.World.FullScreenResolution = new Resolution(m_FullScreenResolutionsList[m_DropDownFullScreenResolutions.Index].Width, m_FullScreenResolutionsList[m_DropDownFullScreenResolutions.Index].Height);
+            Settings.World.PlayWindowGumpResolution = new Resolution(m_FullScreenResolutionsList[m_DropDownFullScreenResolutions.Index].Width, m_FullScreenResolutionsList[m_DropDownFullScreenResolutions.Index].Height);
             SwitchTopMenuGump();
         }
 
