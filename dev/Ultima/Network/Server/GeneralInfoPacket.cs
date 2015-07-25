@@ -12,7 +12,7 @@ using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Network.Packets;
 using UltimaXNA.Ultima.Data;
-using UltimaXNA.Ultima.World.Input;
+using UltimaXNA.Ultima.World.Data;
 #endregion
 
 namespace UltimaXNA.Ultima.Network.Server
@@ -38,7 +38,7 @@ namespace UltimaXNA.Ultima.Network.Server
             get { return m_locks; }
         }
 
-        public ContextMenu ContextMenu
+        public ContextMenuData ContextMenu
         {
             get;
             private set;
@@ -169,7 +169,7 @@ namespace UltimaXNA.Ultima.Network.Server
         {
             reader.ReadByte(); // unknown (0x00)
             int iSubCommand = reader.ReadByte(); // 0x01 for 2D, 0x02 for KR
-            ContextMenu = new ContextMenu(reader.ReadInt32());
+            ContextMenu = new ContextMenuData(reader.ReadInt32());
             int iNumEntriesInContext = reader.ReadByte();
 
             for (int i = 0; i < iNumEntriesInContext; i++)

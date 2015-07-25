@@ -15,7 +15,7 @@ using System.Linq;
 using UltimaXNA.Ultima.IO;
 #endregion
 
-namespace UltimaXNA.Ultima.World.Input
+namespace UltimaXNA.Ultima.World.Data
 {
     public class ContextMenuItem
     {
@@ -39,13 +39,13 @@ namespace UltimaXNA.Ultima.World.Input
         }
     }
 
-    public class ContextMenu
+    public class ContextMenuData
     {
         private readonly List<ContextMenuItem> m_entries = new List<ContextMenuItem>();
         private readonly Serial m_serial;
 
-        public bool CanBuy = false;
-        public bool CanSell = false;
+        public bool HasBuy = false;
+        public bool HasSell = false;
 
         // public bool HasContext_Bank = false;
         // public bool HasContext_Trainer = false;
@@ -54,7 +54,7 @@ namespace UltimaXNA.Ultima.World.Input
         // public bool HasContext_PaperDoll = false;
         // public bool HasContext_Inventory = false;
 
-        public ContextMenu(Serial serial)
+        public ContextMenuData(Serial serial)
         {
             m_serial = serial;
         }
@@ -71,7 +71,7 @@ namespace UltimaXNA.Ultima.World.Input
 
         public bool IsMerchant
         {
-            get { return ((CanBuy) || (CanSell)); }
+            get { return ((HasBuy) || (HasSell)); }
         }
 
         public ContextMenuItem GetContextEntry(string caption)
@@ -99,10 +99,10 @@ namespace UltimaXNA.Ultima.World.Input
                     switch(item.Caption)
                     {
                         case "Buy":
-                            CanBuy = true;
+                            HasBuy = true;
                             break;
                         case "Sell":
-                            CanSell = true;
+                            HasSell = true;
                             break;
                         case "Open Paperdoll":
                         case "Open Backpack":

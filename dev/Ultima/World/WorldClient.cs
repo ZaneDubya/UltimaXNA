@@ -25,6 +25,7 @@ using UltimaXNA.Ultima.Network.Server;
 using UltimaXNA.Ultima.Player;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.WorldGumps;
+using UltimaXNA.Ultima.World.Data;
 using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.Entities.Items.Containers;
@@ -305,7 +306,12 @@ namespace UltimaXNA.Ultima.World
             Item item = add_Item(p.Serial, p.ItemId, p.Hue, p.ContainerSerial, p.Amount);
             item.InContainerPosition = new Point(p.X, p.Y);
             // ... and add it the container contents of the container.
-            Container container = WorldModel.Entities.GetObject<Container>(p.ContainerSerial, true);
+            AEntity container = WorldModel.Entities.GetObject<AEntity>(p.ContainerSerial, false);
+            if (container == null)
+            {
+                // shouldn't we already have the container? Throw an error?
+                Tracer.Warn("SingleItemToContainer packet arrived before container entity created.");
+            }
             if (container is Container) // place in container
             {
                 (container as Container).AddItem(item);
@@ -1016,11 +1022,11 @@ namespace UltimaXNA.Ultima.World
             Tracer.Warn(string.Format("Client: Unhandled {0} [ID:{1}] {2}]", packet.Name, packet.Id, addendum));
         }
 
-        private void parseContextMenu(ContextMenu context)
+        private void parseContextMenu(ContextMenuData context)
         {
             if (context.HasContextMenu)
             {
-                if (context.CanSell)
+                if (context.HasSell)
                 {
                     m_Network.Send(new ContextMenuResponsePacket(context.Serial, (short)context.GetContextEntry("Sell").ResponseCode));
                 }
