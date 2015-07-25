@@ -1045,7 +1045,7 @@ namespace UltimaXNA.Ultima.World
                 case 0x14: // return context menu
                     {
                         InputManager input = ServiceRegistry.GetService<InputManager>();
-                        m_UserInterface.AddControl(new ContextMenuGump(p.ContextMenu), input.MousePosition.X, input.MousePosition.Y);
+                        m_UserInterface.AddControl(new ContextMenuGump(p.ContextMenu), input.MousePosition.X - 10, input.MousePosition.Y - 20);
                         break;
                     }
                 case 0x18: // Enable map-diff (files) / number of maps

@@ -55,6 +55,11 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_Background.Width = m_MenuItems.Width + 20;
         }
 
+        protected override void OnMouseOut(int x, int y)
+        {
+            Dispose();
+        }
+
         public override void ActivateByHREF(string href)
         {
             int contextMenuItemSelected;
