@@ -317,10 +317,10 @@ namespace UltimaXNA
             Resolution resolution = new Resolution(window.ClientBounds.Width, window.ClientBounds.Height);
             // this only occurs when the world is active. Make sure that we don't reduce the window size
             // smaller than the world gump size.
-            if (resolution.Width < Settings.World.GumpResolution.Width)
-                resolution.Width = Settings.World.GumpResolution.Width;
-            if (resolution.Height < Settings.World.GumpResolution.Height)
-                resolution.Height = Settings.World.GumpResolution.Height;
+            if (resolution.Width < Settings.World.PlayWindowGumpResolution.Width)
+                resolution.Width = Settings.World.PlayWindowGumpResolution.Width;
+            if (resolution.Height < Settings.World.PlayWindowGumpResolution.Height)
+                resolution.Height = Settings.World.PlayWindowGumpResolution.Height;
             SetGraphicsDeviceWidthHeight(resolution);
         }
 

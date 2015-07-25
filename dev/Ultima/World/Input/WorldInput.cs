@@ -162,7 +162,7 @@ namespace UltimaXNA.Ultima.World.Input
             // if the move button is pressed, change facing and move based on mouse cursor direction.
             if(ContinuousMouseMovementCheck)
             {
-                Resolution resolution = Settings.World.GumpResolution;
+                Resolution resolution = Settings.World.PlayWindowGumpResolution;
                 Point centerScreen = new Point(resolution.Width / 2, resolution.Height / 2);
                 Direction mouseDirection = DirectionHelper.DirectionFromPoints(centerScreen, MouseOverWorldPosition);
 

@@ -36,8 +36,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
             m_Model = ServiceRegistry.GetService<WorldModel>();
 
-            m_WorldWidth = Settings.World.GumpResolution.Width;
-            m_WorldHeight = Settings.World.GumpResolution.Height;
+            m_WorldWidth = Settings.World.PlayWindowGumpResolution.Width;
+            m_WorldHeight = Settings.World.PlayWindowGumpResolution.Height;
 
             Position = new Point(32, 32);
             Size = new Point(m_WorldWidth + BorderWidth * 2, m_WorldHeight + BorderHeight * 2);

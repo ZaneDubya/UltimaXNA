@@ -325,7 +325,7 @@ namespace UltimaXNA.Ultima.World.Input
             }
             else if ((m_World.Input.ContinuousMouseMovementCheck || m_World.Input.IsMouseOverWorld) && !m_UserInterface.IsModalControlOpen)
             {
-                Resolution resolution = Settings.World.GumpResolution;
+                Resolution resolution = Settings.World.PlayWindowGumpResolution;
                 Direction mouseDirection = DirectionHelper.DirectionFromPoints(new Point(resolution.Width / 2, resolution.Height / 2), m_World.Input.MouseOverWorldPosition);
 
                 int artIndex = 0;
