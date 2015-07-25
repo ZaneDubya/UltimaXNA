@@ -243,6 +243,7 @@
     <Compile Include="Core\Configuration\SettingsFile.cs" />
     <Compile Include="Ultima\Data\Body.cs" />
     <Compile Include="Ultima\Data\ContentItem.cs" />
+    <Compile Include="Ultima\Data\ContextMenuItem.cs" />
     <Compile Include="Ultima\Data\HouseRevisionState.cs" />
     <Compile Include="Ultima\Data\Hues.cs" />
     <Compile Include="Ultima\Data\Magery.cs" />
@@ -260,6 +261,7 @@
     <Compile Include="Ultima\Network\Client\QuestGumpRequestPacket.cs" />
     <Compile Include="Ultima\Network\Server\ServerPingPacket.cs" />
     <Compile Include="Ultima\UI\Controls\EquipmentSlot.cs" />
+    <Compile Include="Ultima\UI\WorldGumps\ContextMenuGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\LogoutGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\OptionsGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\UseSpellButtonGump.cs" />
@@ -394,7 +396,7 @@
     <Compile Include="Ultima\Network\Client\UnicodeSpeechPacket.cs" />
     <Compile Include="Ultima\Network\Client\UOGInfoRequestPacket.cs" />
     <Compile Include="Ultima\World\WorldClient.cs" />
-    <Compile Include="Ultima\World\Input\ContextMenu.cs" />
+    <Compile Include="Ultima\Data\ContextMenuData.cs" />
     <Compile Include="Ultima\Network\Server\CharacterListUpdatePacket.cs" />
     <Compile Include="Ultima\Network\Incomplete\DisplayGumpFastPacket.cs" />
     <Compile Include="Ultima\Network\Incomplete\DisplayMenuPacket.cs" />

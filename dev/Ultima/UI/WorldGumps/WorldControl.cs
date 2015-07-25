@@ -18,6 +18,9 @@ using UltimaXNA.Ultima.World;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
+    /// <summary>
+    /// A control that shows the current isometric view around the player.
+    /// </summary>
     class WorldControl : AControl
     {
         private WorldModel m_Model;

@@ -17,6 +17,9 @@ using UltimaXNA.Ultima.UI.Controls;
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
 {
+    /// <summary>
+    /// A bordered container that displays the world control.
+    /// </summary>
     class WorldViewGump : Gump
     {
         private WorldModel m_Model;

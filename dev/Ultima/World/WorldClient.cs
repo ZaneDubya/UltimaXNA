@@ -9,11 +9,11 @@
  *
  ***************************************************************************/
 #region usings
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
-using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI;
@@ -31,6 +31,7 @@ using UltimaXNA.Ultima.World.Entities.Items.Containers;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Ultima.World.Entities.Multis;
 using UltimaXNA.Ultima.World.Input;
+using UltimaXNA.Core.Input;
 #endregion
 
 namespace UltimaXNA.Ultima.World
@@ -305,7 +306,12 @@ namespace UltimaXNA.Ultima.World
             Item item = add_Item(p.Serial, p.ItemId, p.Hue, p.ContainerSerial, p.Amount);
             item.InContainerPosition = new Point(p.X, p.Y);
             // ... and add it the container contents of the container.
-            Container container = WorldModel.Entities.GetObject<Container>(p.ContainerSerial, true);
+            AEntity container = WorldModel.Entities.GetObject<AEntity>(p.ContainerSerial, false);
+            if (container == null)
+            {
+                // shouldn't we already have the container? Throw an error?
+                Tracer.Warn("SingleItemToContainer packet arrived before container entity created.");
+            }
             if (container is Container) // place in container
             {
                 (container as Container).AddItem(item);
@@ -1016,22 +1022,6 @@ namespace UltimaXNA.Ultima.World
             Tracer.Warn(string.Format("Client: Unhandled {0} [ID:{1}] {2}]", packet.Name, packet.Id, addendum));
         }
 
-        private void parseContextMenu(ContextMenu context)
-        {
-            if (context.HasContextMenu)
-            {
-                if (context.CanSell)
-                {
-                    m_Network.Send(new ContextMenuResponsePacket(context.Serial, (short)context.GetContextEntry("Sell").ResponseCode));
-                }
-            }
-            else
-            {
-                // no context menu entries are handled. Send a double click.
-                m_Network.Send(new DoubleClickPacket(context.Serial));
-            }
-        }
-
         private void ReceiveExtended0x78(IRecvPacket packet)
         {
             announce_UnhandledPacket(packet);
@@ -1053,8 +1043,11 @@ namespace UltimaXNA.Ultima.World
                     m_World.MapIndex = p.MapID;
                     break;
                 case 0x14: // return context menu
-                    parseContextMenu(p.ContextMenu);
-                    break;
+                    {
+                        InputManager input = ServiceRegistry.GetService<InputManager>();
+                        m_UserInterface.AddControl(new ContextMenuGump(p.ContextMenu), input.MousePosition.X - 10, input.MousePosition.Y - 20);
+                        break;
+                    }
                 case 0x18: // Enable map-diff (files) / number of maps
                     // as of 6.0.0.0, this only tells us the number of maps.
                     m_World.MapCount = p.MapCount;

@@ -304,7 +304,15 @@ namespace UltimaXNA.Core.UI
             // send that previous control a MouseOut event.
             AControl focusedControl = InternalGetMouseOverControl(clippedPosition);
             if ((MouseOverControl != null) && (focusedControl != MouseOverControl))
+            {
                 MouseOverControl.MouseOut(clippedPosition);
+                // Also let the owner control know we've been moused out (for gumps).
+                if (MouseOverControl.OwnerTopmost != null)
+                {
+                    if (focusedControl == null || MouseOverControl.OwnerTopmost != focusedControl.OwnerTopmost)
+                        MouseOverControl.OwnerTopmost.MouseOut(clippedPosition);
+                }
+            }
 
             if (focusedControl != null)
             {
