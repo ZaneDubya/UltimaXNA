@@ -1,4 +1,4 @@
-﻿/***************************************************************************
+/***************************************************************************
  *   StatusGump.cs
  *   Based on code by surcouf94
  *   
@@ -88,7 +88,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_Labels[(int)MobileStats.RP] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 352, 114, 1, 6, m_Mobile.ResistPoison.ToString()));
             m_Labels[(int)MobileStats.RE] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 352, 129, 1, 6, m_Mobile.ResistEnergy.ToString()));
 
-            m_Labels[(int)MobileStats.Damage] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 277, 70, 1, 6, ConcatCurrentMax(m_Mobile.DamageMin, m_Mobile.DamageMax)));        }
+            m_Labels[(int)MobileStats.Damage] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 277, 70, 1, 6, ConcatCurrentMax(m_Mobile.DamageMin, m_Mobile.DamageMax)));
+        }
 
         protected override void OnInitialize()
         {
