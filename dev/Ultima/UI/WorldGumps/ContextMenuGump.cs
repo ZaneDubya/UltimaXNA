@@ -9,18 +9,14 @@
  *
  ***************************************************************************/
 #region usings
-using System.Collections.Generic;
-using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.IO;
-using UltimaXNA.Ultima.UI.Controls;
-using UltimaXNA.Ultima.World.Entities;
-using UltimaXNA.Ultima.World.Entities.Items;
-using UltimaXNA.Ultima.World.Entities.Items.Containers;
-using UltimaXNA.Ultima.Data;
-using UltimaXNA.Core.UI.Fonts;
-using UltimaXNA.Ultima.IO.Fonts;
-using System;
 using System.Text;
+using UltimaXNA.Core.Network;
+using UltimaXNA.Core.UI.Fonts;
+using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.IO.Fonts;
+using UltimaXNA.Ultima.Network.Client;
+using UltimaXNA.Ultima.UI.Controls;
+
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
@@ -65,6 +61,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             int contextMenuItemSelected;
             if (int.TryParse(href, out contextMenuItemSelected))
             {
+                INetworkClient network = ServiceRegistry.GetService<INetworkClient>();
+                network.Send(new ContextMenuResponsePacket(m_Data.Serial, (short)contextMenuItemSelected));
                 this.Dispose();
             }
         }
