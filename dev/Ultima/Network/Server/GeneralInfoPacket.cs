@@ -166,12 +166,12 @@ namespace UltimaXNA.Ultima.Network.Server
 
         void receiveContextMenu(PacketReader reader)
         {
-            reader.ReadByte(); // unknown (0x00)
-            int iSubCommand = reader.ReadByte(); // 0x01 for 2D, 0x02 for KR
+            reader.ReadByte(); // unknown, always 0x00
+            int subcommand = reader.ReadByte(); // 0x01 for 2D, 0x02 for KR
             ContextMenu = new ContextMenuData(reader.ReadInt32());
-            int iNumEntriesInContext = reader.ReadByte();
+            int contextMenuChoiceCount = reader.ReadByte();
 
-            for (int i = 0; i < iNumEntriesInContext; i++)
+            for (int i = 0; i < contextMenuChoiceCount; i++)
             {
                 int iUniqueID = reader.ReadUInt16();
                 int iClilocID = reader.ReadUInt16() + 3000000;
@@ -183,7 +183,6 @@ namespace UltimaXNA.Ultima.Network.Server
                 }
                 ContextMenu.AddItem(iUniqueID, iClilocID, iFlags, iColor);
             }
-            ContextMenu.FinalizeMenu();
         }
     }
 }

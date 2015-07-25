@@ -16,13 +16,14 @@ using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.Entities.Items.Containers;
+using UltimaXNA.Ultima.Data;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
 {
     class ContextMenuGump : Gump
     {
-        public ContextMenuGump()
+        public ContextMenuGump(ContextMenuData data)
             : base(0, 0)
         {
 

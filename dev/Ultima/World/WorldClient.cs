@@ -31,6 +31,7 @@ using UltimaXNA.Ultima.World.Entities.Items.Containers;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Ultima.World.Entities.Multis;
 using UltimaXNA.Ultima.World.Input;
+using UltimaXNA.Core.Input;
 #endregion
 
 namespace UltimaXNA.Ultima.World
@@ -1021,22 +1022,6 @@ namespace UltimaXNA.Ultima.World
             Tracer.Warn(string.Format("Client: Unhandled {0} [ID:{1}] {2}]", packet.Name, packet.Id, addendum));
         }
 
-        private void parseContextMenu(ContextMenuData context)
-        {
-            if (context.HasContextMenu)
-            {
-                if (context.HasSell)
-                {
-                    m_Network.Send(new ContextMenuResponsePacket(context.Serial, (short)context.GetContextEntry("Sell").ResponseCode));
-                }
-            }
-            else
-            {
-                // no context menu entries are handled. Send a double click.
-                m_Network.Send(new DoubleClickPacket(context.Serial));
-            }
-        }
-
         private void ReceiveExtended0x78(IRecvPacket packet)
         {
             announce_UnhandledPacket(packet);
@@ -1058,8 +1043,11 @@ namespace UltimaXNA.Ultima.World
                     m_World.MapIndex = p.MapID;
                     break;
                 case 0x14: // return context menu
-                    parseContextMenu(p.ContextMenu);
-                    break;
+                    {
+                        InputManager input = ServiceRegistry.GetService<InputManager>();
+                        m_UserInterface.AddControl(new ContextMenuGump(p.ContextMenu), input.MousePosition.X, input.MousePosition.Y);
+                        break;
+                    }
                 case 0x18: // Enable map-diff (files) / number of maps
                     // as of 6.0.0.0, this only tells us the number of maps.
                     m_World.MapCount = p.MapCount;
