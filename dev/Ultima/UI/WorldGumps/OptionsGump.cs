@@ -124,7 +124,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             AddControl(new CheckBox(this, 60, 120, 210, 211, Settings.World.IsMaximized, 61), 6);
             AddControl(new TextLabelAscii(this, 85, 120, 1, 9, @"Use full screen display"), 6);
             
-            AddControl(new TextLabelAscii(this, 60, 150, 1, 9, @"Full Screen Resolution:"), 6);
+            AddControl(new TextLabelAscii(this, 60, 150, 1, 9, @"Client Window Resolution:"), 6);
             m_DropDownFullScreenResolutions = (DropDownList)AddControl(new DropDownList(this, 60, 165, 122, CreateResolutionsStringArrayFromList(m_FullScreenResolutionsList), 10, GetCurrentFullScreenIndex(), false), 6);
 
             AddControl(new TextLabelAscii(this, 60, 190, 1, 9, @"Play Window Resolution:"), 6);
@@ -197,7 +197,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 if (!m_FullScreenResolutionsList.Contains(res))
                 {
                     m_FullScreenResolutionsList.Add(res);
-                }
+                }                
             }
 
             if (m_PlayWindowResolutionsList != null)
@@ -205,9 +205,13 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             else
                 m_PlayWindowResolutionsList = new List<Resolution>();
 
-            m_PlayWindowResolutionsList.Add(new Resolution(640, 480));
-            m_PlayWindowResolutionsList.Add(new Resolution(800, 600));
-            m_PlayWindowResolutionsList.Add(new Resolution(1024, 768));
+            foreach (Resolution res in m_FullScreenResolutionsList)
+            {
+                if (!m_PlayWindowResolutionsList.Contains(res) && res.Width < 2048 && res.Height < 2048)
+                {
+                    m_PlayWindowResolutionsList.Add(res);
+                }
+            }
         }
 
         public string[] CreateResolutionsStringArrayFromList(List<Resolution> resolutions)
