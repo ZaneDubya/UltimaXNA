@@ -72,7 +72,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         public override void Update(double totalMS, double frameMS)
         {
-            if (Index <= m_items.Count)
+            if (Index < 0 || Index >= m_items.Count)
                 Index = -1;
 
             if (m_listOpen)

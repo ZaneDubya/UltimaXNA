@@ -176,9 +176,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         public int GetCurrentPlayWindowIndex()
         {
             string res = string.Format("{0}x{1}", Settings.World.PlayWindowGumpResolution.Width, Settings.World.PlayWindowGumpResolution.Height);
-            for (int i = 0; i < m_FullScreenResolutionsList.Count; i++)
+            for (int i = 0; i < m_PlayWindowResolutionsList.Count; i++)
             {
-                if (m_FullScreenResolutionsList[i].Width == Settings.World.PlayWindowGumpResolution.Width && m_FullScreenResolutionsList[i].Height == Settings.World.PlayWindowGumpResolution.Height)
+                if (m_PlayWindowResolutionsList[i].Width == Settings.World.PlayWindowGumpResolution.Width && m_PlayWindowResolutionsList[i].Height == Settings.World.PlayWindowGumpResolution.Height)
                     return i;
             }
             return -1;
