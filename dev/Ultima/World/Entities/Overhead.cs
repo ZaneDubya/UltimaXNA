@@ -10,6 +10,7 @@
  ***************************************************************************/
 #region usings
 using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.World.EntityViews;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Entities
@@ -63,9 +64,9 @@ namespace UltimaXNA.Ultima.World.Entities
         // View management
         // ============================================================
 
-        protected override EntityViews.AEntityView CreateView()
+        protected override AEntityView CreateView()
         {
-            return new EntityViews.OverheadView(this);
+            return new OverheadView(this);
         }
     }
 }

@@ -10,10 +10,8 @@
  ***************************************************************************/
 #region usings
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Core;
 using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.IO;
-
 #endregion
 
 namespace UltimaXNA.Ultima.IO

@@ -18,14 +18,14 @@ namespace ExamplePlugin
         {
             m_StaticCounts = new Dictionary<int, int>();
 
-            TileMatrixClient tileData = new TileMatrixClient(0);
+            TileMatrixData tileData = new TileMatrixData(0);
 
             Map map = new Map(0);
 
-            for (uint y = 0; y < tileData.BlockHeight; y++)
+            for (uint y = 0; y < tileData.ChunkHeight; y++)
             {
                 Tracer.Info("Map Parser: row {0}.", y);
-                for (uint x = 0; x < tileData.BlockWidth; x++)
+                for (uint x = 0; x < tileData.ChunkWidth; x++)
                 {
                     ParseMapBlock(tileData, x, y);
                 }
@@ -49,11 +49,11 @@ namespace ExamplePlugin
             }
         }
 
-        private void ParseMapBlock(TileMatrixClient tileData, uint x, uint y)
+        private void ParseMapBlock(TileMatrixData tileData, uint x, uint y)
         {
-            byte[] groundData = tileData.GetLandBlock(x, y);
+            byte[] groundData = tileData.GetLandChunk(x, y);
             int staticLength;
-            byte[] staticsData = tileData.GetStaticBlock(x, y, out staticLength);
+            byte[] staticsData = tileData.GetStaticChunk(x, y, out staticLength);
 
             // load the statics data
             int countStatics = staticLength / 7;

@@ -7,13 +7,14 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
-using UltimaXNA.Ultima.UI;
 using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.IO;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
@@ -113,7 +114,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             {
                 if (m_gumpID[i] != 0 && m_gumpTextures[i] == null)
                 {
-                    m_gumpTextures[i] = IO.GumpData.GetGumpXNA(m_gumpID[i]);
+                    m_gumpTextures[i] = GumpData.GetGumpXNA(m_gumpID[i]);
                 }
             }
 

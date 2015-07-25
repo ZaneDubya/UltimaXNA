@@ -8,7 +8,7 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-#region Usings
+#region usings
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Graphics;

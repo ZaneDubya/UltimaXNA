@@ -8,11 +8,12 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-#region Usings
+#region usings
+using System;
+using System.ComponentModel;
+using System.Windows.Forms;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Windows.Forms;
 using UltimaXNA.Configuration;
 using UltimaXNA.Core;
 using UltimaXNA.Core.Diagnostics.Tracing;
@@ -37,7 +38,7 @@ namespace UltimaXNA
             set;
         }
 
-        public static double TotalMS = 0d;
+        public static double TotalMS;
 
         public UltimaGame()
         {
@@ -138,9 +139,7 @@ namespace UltimaXNA
             ServiceRegistry.Register<SpriteBatch3D>(new SpriteBatch3D(this));
             ServiceRegistry.Register<SpriteBatchUI>(new SpriteBatchUI(this));
             ServiceRegistry.Register<IUIResourceProvider>(new UltimaUIResourceProvider());
-
-            AudioService audio = ServiceRegistry.Register<AudioService>(new AudioService());
-            
+            ServiceRegistry.Register<AudioService>(new AudioService());
             Network = ServiceRegistry.Register<INetworkClient>(new NetworkClient());
             Input = ServiceRegistry.Register<InputManager>(new InputManager(Window.Handle));
             UserInterface = ServiceRegistry.Register<UserInterfaceService>(new UserInterfaceService());
@@ -161,7 +160,7 @@ namespace UltimaXNA
                 GraphicsDevice.Textures[1] = HueData.HueTexture0;
                 GraphicsDevice.Textures[2] = HueData.HueTexture1;
 
-                UltimaGame.IsRunning = true;
+                IsRunning = true;
                 WorldModel.IsInWorld = false;
 
                 ActiveModel = new LoginModel();
@@ -183,13 +182,14 @@ namespace UltimaXNA
         {
             IsFixedTimeStep = Settings.Game.IsFixedTimeStep;
 
-            if(!UltimaGame.IsRunning)
+            if(!IsRunning)
             {
                 Settings.Save();
                 Exit();
             }
             else
             {
+                base.Update(gameTime);
                 double totalMS = gameTime.TotalGameTime.TotalMilliseconds;
                 double frameMS = gameTime.ElapsedGameTime.TotalMilliseconds;
 
@@ -253,7 +253,7 @@ namespace UltimaXNA
             form.Closing += ExitGuard;
         }
 
-        private void ExitGuard(object sender, System.ComponentModel.CancelEventArgs e)
+        private void ExitGuard(object sender, CancelEventArgs e)
         {
             // we should dispose of the active model BEFORE we dispose of the window.
             if (ActiveModel != null)
@@ -317,10 +317,10 @@ namespace UltimaXNA
             Resolution resolution = new Resolution(window.ClientBounds.Width, window.ClientBounds.Height);
             // this only occurs when the world is active. Make sure that we don't reduce the window size
             // smaller than the world gump size.
-            if (resolution.Width < Settings.World.GumpResolution.Width)
-                resolution.Width = Settings.World.GumpResolution.Width;
-            if (resolution.Height < Settings.World.GumpResolution.Height)
-                resolution.Height = Settings.World.GumpResolution.Height;
+            if (resolution.Width < Settings.World.PlayWindowGumpResolution.Width)
+                resolution.Width = Settings.World.PlayWindowGumpResolution.Width;
+            if (resolution.Height < Settings.World.PlayWindowGumpResolution.Height)
+                resolution.Height = Settings.World.PlayWindowGumpResolution.Height;
             SetGraphicsDeviceWidthHeight(resolution);
         }
 

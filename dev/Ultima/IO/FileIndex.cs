@@ -11,9 +11,7 @@
 #region usings
 using System.IO;
 using System.Runtime.InteropServices;
-using UltimaXNA.Core;
 using UltimaXNA.Core.IO;
-
 #endregion
 
 namespace UltimaXNA.Ultima.IO

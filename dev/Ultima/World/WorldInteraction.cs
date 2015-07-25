@@ -9,9 +9,9 @@
  *
  ***************************************************************************/
 #region usings
-using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Data;
@@ -61,9 +61,14 @@ namespace UltimaXNA.Ultima.World
             m_Network.Send(new AsciiSpeechPacket(AsciiSpeechPacketTypes.Normal, 0, 0, "ENU", text));
         }
 
-        public void SingleClick(AEntity item) // used by worldinput and itemgumpling.
+        /// <summary>
+        /// Informs the server we have single-clicked on an entity. Also requests a context menu.
+        /// </summary>
+        /// <param name="item">The entity clicked on.</param>
+        public void SingleClick(AEntity item)
         {
             m_Network.Send(new SingleClickPacket(item.Serial));
+            m_Network.Send(new RequestContextMenuPacket(item.Serial));
         }
 
         public void DoubleClick(AEntity item) // used by itemgumpling, paperdollinteractable, topmenu, worldinput.

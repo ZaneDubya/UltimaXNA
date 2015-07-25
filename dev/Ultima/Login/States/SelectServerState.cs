@@ -7,7 +7,7 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-#region Usings
+#region usings
 using System;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Login.Servers;

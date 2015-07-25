@@ -9,19 +9,19 @@
  *
  ***************************************************************************/
 #region usings
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System;
 using UltimaXNA.Core.Diagnostics;
 #endregion
 
 namespace UltimaXNA.Ultima.IO
 {
-    public sealed class Mobtypes
+    public sealed class MobtypeData
     {
         private static Dictionary<int,MobtypeEntry> m_entries = new Dictionary<int,MobtypeEntry>();
 
-        static Mobtypes()
+        static MobtypeData()
         {
             string path = FileManager.GetFilePath("mobtypes.txt");
             {

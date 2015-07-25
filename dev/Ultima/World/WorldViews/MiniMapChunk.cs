@@ -1,37 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UltimaXNA.Ultima.IO;
-using UltimaXNA.Ultima.World.Maps;
+﻿using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Items;
+using UltimaXNA.Ultima.World.Maps;
 
 namespace UltimaXNA.Ultima.World.WorldViews
 {
-    class MiniMapBlock
+    class MiniMapChunk
     {
         public uint X, Y;
 
         public uint[] Colors;
-        private static sbyte[] m_Zs = new sbyte[64]; // shared between all instances of MiniMapBlock.
+        private static sbyte[] m_Zs = new sbyte[64]; // shared between all instances of MiniMapChunk.
 
-        public MiniMapBlock(uint x, uint y, TileMatrixClient tileData)
+        public MiniMapChunk(uint x, uint y, TileMatrixData tileData)
         {
             X = x;
             Y = y;
             Colors = new uint[64];
 
             // get data from the tile Matrix
-            byte[] groundData = tileData.GetLandBlock(x, y);
+            byte[] groundData = tileData.GetLandChunk(x, y);
             int staticLength;
-            byte[] staticsData = tileData.GetStaticBlock(x, y, out staticLength);
+            byte[] staticsData = tileData.GetStaticChunk(x, y, out staticLength);
 
             // get the ground colors
             int groundDataIndex = 0;
             for (int i = 0; i < 64; i++)
             {
-                Colors[i] = IO.RadarColorData.Colors[groundData[groundDataIndex++] + (groundData[groundDataIndex++] << 8)];
+                Colors[i] = RadarColorData.Colors[groundData[groundDataIndex++] + (groundData[groundDataIndex++] << 8)];
                 m_Zs[i]= (sbyte)groundData[groundDataIndex++];
             }
 
@@ -52,23 +48,23 @@ namespace UltimaXNA.Ultima.World.WorldViews
                 {
                     if (iz > m_Zs[tile])
                     {
-                        Colors[tile] = IO.RadarColorData.Colors[itemID + 0x4000];
+                        Colors[tile] = RadarColorData.Colors[itemID + 0x4000];
                         m_Zs[tile] = (sbyte)iz;
                     }
                 }
 
                 if (iz > m_Zs[tile])
                 {
-                    Colors[tile] = IO.RadarColorData.Colors[itemID + 0x4000];
+                    Colors[tile] = RadarColorData.Colors[itemID + 0x4000];
                     m_Zs[tile] = (sbyte)iz;
                 }
             }
         }
 
-        public MiniMapBlock(MapBlock block)
+        public MiniMapChunk(MapChunk block)
         {
-            X = (uint)block.BlockX;
-            Y = (uint)block.BlockY;
+            X = (uint)block.ChunkX;
+            Y = (uint)block.ChunkY;
             Colors = new uint[64];
 
             for (uint tile = 0; tile < 64; tile++)
@@ -81,12 +77,12 @@ namespace UltimaXNA.Ultima.World.WorldViews
                     AEntity e = block.Tiles[tile].Entities[eIndex];
                     if (e is Ground)
                     {
-                        color = IO.RadarColorData.Colors[(e as Ground).LandDataID];
+                        color = RadarColorData.Colors[(e as Ground).LandDataID];
                         break;
                     }
                     else if (e is StaticItem)
                     {
-                        color = IO.RadarColorData.Colors[(e as StaticItem).ItemID + 0x4000];
+                        color = RadarColorData.Colors[(e as StaticItem).ItemID + 0x4000];
                         break;
                     }
                     eIndex--;

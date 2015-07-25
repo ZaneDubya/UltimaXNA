@@ -8,7 +8,7 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-#region Usings
+#region usings
 using System;
 using System.ComponentModel;
 using UltimaXNA.Core.ComponentModel;

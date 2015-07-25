@@ -8,22 +8,16 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+
 using UltimaXNA.Ultima.IO;
 
 namespace UltimaXNA.Ultima.Audio
 {
     class UOMusic
     {
-        // private Song m_Song;
-
         public readonly int Index;
         public readonly string Name;
         public readonly bool DoLoop;
-        
-        /*public Song Song
-        {
-            get { return m_Song; }
-        }*/
 
         public SoundState Status = SoundState.Unloaded;
 

@@ -10,7 +10,6 @@
  *
  ***************************************************************************/
 #region usings
-using Microsoft.Xna.Framework.Graphics;
 using System.IO;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Core.UI.Fonts;

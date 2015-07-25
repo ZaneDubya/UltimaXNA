@@ -32,7 +32,6 @@
 
 using System;
 using System.Text;
-using System.Collections;
 
 namespace UltimaXNA.Core.UI.HTML.Parsing
 {

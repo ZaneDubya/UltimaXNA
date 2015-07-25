@@ -8,6 +8,7 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+
 using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Ultima.World.Entities.Effects;

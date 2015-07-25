@@ -11,8 +11,8 @@
 #region usings
 using System.Collections.Generic;
 using UltimaXNA.Core.Diagnostics.Tracing;
-using UltimaXNA.Ultima.World.Entities.Effects;
 using UltimaXNA.Ultima.Network.Server;
+using UltimaXNA.Ultima.World.Entities.Effects;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Managers

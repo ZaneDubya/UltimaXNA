@@ -8,6 +8,7 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+
 using System.IO;
 
 namespace UltimaXNA.Core.Diagnostics.Listeners

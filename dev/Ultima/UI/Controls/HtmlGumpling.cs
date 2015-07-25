@@ -9,8 +9,9 @@
  *
  ***************************************************************************/
 #region using
-using Microsoft.Xna.Framework;
+
 using System;
+using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.UI;
@@ -145,6 +146,10 @@ namespace UltimaXNA.Ultima.UI.Controls
                 ScrollY = m_Scrollbar.Value;
             }
 
+            if (Width != m_RenderedText.Width)
+            {
+                Width = m_RenderedText.Width;
+            }
             base.Update(totalMS, frameMS);
         }
 

@@ -1,11 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.World.Entities.Effects;
-using UltimaXNA.Ultima.World;
-using UltimaXNA.Ultima.World.Maps;
 using UltimaXNA.Ultima.World.Input;
+using UltimaXNA.Ultima.World.Maps;
 
 namespace UltimaXNA.Ultima.World.EntityViews
 {
@@ -44,7 +42,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             if (displayItemdID != m_DisplayItemID)
             {
                 m_DisplayItemID = displayItemdID;
-                DrawTexture = IO.GumpData.GetGumpXNA(displayItemdID);
+                DrawTexture = GumpData.GetGumpXNA(displayItemdID);
                 Point offset = m_Offsets[m_DisplayItemID - 20000];
                 DrawArea = new Rectangle(offset.X, DrawTexture.Height - 33 + (Entity.Z * 4) + offset.Y, DrawTexture.Width, DrawTexture.Height);
                 PickType = PickType.PickNothing;

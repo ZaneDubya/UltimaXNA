@@ -12,6 +12,8 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.IO.Fonts;
 #endregion
 
 namespace UltimaXNA.Ultima.UI
@@ -20,22 +22,22 @@ namespace UltimaXNA.Ultima.UI
     {
         public Texture2D GetTexture(int textureID)
         {
-            return IO.GumpData.GetGumpXNA(textureID);
+            return GumpData.GetGumpXNA(textureID);
         }
 
         public ushort GetWebSafeHue(Color color)
         {
-            return (ushort)IO.HueData.GetWebSafeHue(color);
+            return (ushort)HueData.GetWebSafeHue(color);
         }
 
         public IFont GetUnicodeFont(int fontIndex)
         {
-            return IO.Fonts.TextUni.GetUniFont(fontIndex);
+            return TextUni.GetUniFont(fontIndex);
         }
 
         public IFont GetAsciiFont(int fontIndex)
         {
-            return IO.Fonts.TextUni.GetAsciiFont(fontIndex);
+            return TextUni.GetAsciiFont(fontIndex);
         }
     }
 }

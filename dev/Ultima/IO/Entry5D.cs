@@ -10,8 +10,6 @@
  ***************************************************************************/
 #region usings
 
-
-
 #endregion
 
 namespace UltimaXNA.Ultima.IO

@@ -9,18 +9,12 @@
  *
  ***************************************************************************/
 #region usings
-using Microsoft.Xna.Framework;
-using System.Collections.Generic;
-using System.Text;
-using UltimaXNA.Core.Graphics;
-using UltimaXNA.Ultima.Player;
-using UltimaXNA.Ultima.UI;
-using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Core.Input;
-using UltimaXNA.Ultima.World.Entities.Items.Containers;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Ultima.World.Entities.Items.Containers;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
@@ -52,7 +46,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
             IsMovable = true;
 
-            if (m_Spellbook.BookType != Data.SpellBookTypes.Unknown)
+            if (m_Spellbook.BookType != SpellBookTypes.Unknown)
             {
                 CreateMageryGumplings();
             }
@@ -82,7 +76,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         // ================================================================================
         private void OnEntityUpdate()
         {
-            if (m_Spellbook.BookType == Data.SpellBookTypes.Magic)
+            if (m_Spellbook.BookType == SpellBookTypes.Magic)
                 CreateMageryGumplings();
         }
 

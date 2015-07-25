@@ -1,9 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
-using UltimaXNA.Ultima.World;
-using UltimaXNA.Ultima.World.Maps;
-using UltimaXNA.Ultima.World.Input;
+using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.World.Entities;
+using UltimaXNA.Ultima.World.Input;
+using UltimaXNA.Ultima.World.Maps;
+using UltimaXNA.Ultima.World.WorldViews;
 
 namespace UltimaXNA.Ultima.World.EntityViews
 {
@@ -14,34 +15,34 @@ namespace UltimaXNA.Ultima.World.EntityViews
             get { return (Ground)base.Entity; }
         }
 
+        private bool m_DrawAs3DStretched = false;
+        private bool m_NoDraw = false;
+
         public GroundView(Ground ground)
             : base(ground)
         {
             PickType = PickType.PickGroundTiles;
-            NoDraw = (Entity.LandDataID < 3 || (Entity.LandDataID >= 0x1AF && Entity.LandDataID <= 0x1B5));
+            m_NoDraw = (Entity.LandDataID < 3 || (Entity.LandDataID >= 0x1AF && Entity.LandDataID <= 0x1B5));
              
             if (Entity.LandData.TextureID <= 0)
             {
                 DrawFlip = false;
-                DrawAs3DStretched = false;
+                m_DrawAs3DStretched = false;
 
-                DrawTexture = IO.ArtData.GetLandTexture(Entity.LandDataID);
-                DrawArea = new Rectangle(0, Entity.Z * 4, World.WorldViews.IsometricRenderer.TileSizeI, World.WorldViews.IsometricRenderer.TileSizeI);
+                DrawTexture = ArtData.GetLandTexture(Entity.LandDataID);
+                DrawArea = new Rectangle(0, Entity.Z * 4, IsometricRenderer.TILE_SIZE_INTEGER, IsometricRenderer.TILE_SIZE_INTEGER);
             }
             else
             {
                 DrawFlip = false;
-                DrawAs3DStretched = true;
-                DrawTexture = IO.TexmapData.GetTexmapTexture(Entity.LandData.TextureID);
+                m_DrawAs3DStretched = true;
+                DrawTexture = TexmapData.GetTexmapTexture(Entity.LandData.TextureID);
             }
         }
 
-        protected bool DrawAs3DStretched = false;
-        protected bool NoDraw = false;
-
         public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)
         {
-            if (NoDraw)
+            if (m_NoDraw)
                 return false;
 
             if (m_MustUpdateSurroundings)
@@ -50,7 +51,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 m_MustUpdateSurroundings = false;
             }
 
-            if (!DrawAs3DStretched)
+            if (!m_DrawAs3DStretched)
                 return base.Draw(spriteBatch, drawPosition, mouseOverList, map);
             else
                 return Draw3DStretched(spriteBatch, drawPosition, mouseOverList, map);
@@ -96,9 +97,9 @@ namespace UltimaXNA.Ultima.World.EntityViews
         private void updateVertexBuffer()
         {
             m_vertex0_yOffset = new Vector3(22, -(Entity.Z * 4), 0);
-            m_vertex1_yOffset = new Vector3(World.WorldViews.IsometricRenderer.TileSizeF, 22 - (m_SurroundingTiles.East * 4), 0);
+            m_vertex1_yOffset = new Vector3(IsometricRenderer.TILE_SIZE_FLOAT, 22 - (m_SurroundingTiles.East * 4), 0);
             m_vertex2_yOffset = new Vector3(0, 22 - (m_SurroundingTiles.South * 4), 0);
-            m_vertex3_yOffset = new Vector3(22, World.WorldViews.IsometricRenderer.TileSizeF - (m_SurroundingTiles.Down * 4), 0);
+            m_vertex3_yOffset = new Vector3(22, IsometricRenderer.TILE_SIZE_FLOAT - (m_SurroundingTiles.Down * 4), 0);
 
             m_vertexBufferAlternate[0].Normal = m_Normals[0];
             m_vertexBufferAlternate[1].Normal = m_Normals[1];

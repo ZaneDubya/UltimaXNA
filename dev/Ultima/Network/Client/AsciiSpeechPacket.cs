@@ -10,9 +10,8 @@
 #region usings
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UltimaXNA.Core.Network.Packets;
+using UltimaXNA.Ultima.IO;
 #endregion
 
 namespace UltimaXNA.Ultima.Network.Client
@@ -42,7 +41,7 @@ namespace UltimaXNA.Ultima.Network.Client
         {
             // get triggers
             int triggerCount; int[] triggers;
-            IO.SpeechData.GetSpeechTriggers(text, lang, out triggerCount, out triggers);
+            SpeechData.GetSpeechTriggers(text, lang, out triggerCount, out triggers);
             if (triggerCount > 0)
                 type = (AsciiSpeechPacketTypes)((byte)type | HasTriggers);
 

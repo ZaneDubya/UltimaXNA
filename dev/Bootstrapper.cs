@@ -9,18 +9,14 @@
  *
  ***************************************************************************/
 #region Usings
+
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using UltimaXNA.Core;
 using UltimaXNA.Core.Diagnostics;
-using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Diagnostics.Listeners;
-using UltimaXNA.Core.Patterns;
+using UltimaXNA.Core.Diagnostics.Tracing;
 #endregion
 
 namespace UltimaXNA

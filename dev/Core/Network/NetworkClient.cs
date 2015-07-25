@@ -13,7 +13,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
-using UltimaXNA.Configuration;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Network.Compression;
 #endregion

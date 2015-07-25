@@ -11,6 +11,7 @@
 #region usings
 using System.Collections.Generic;
 using UltimaXNA.Core.UI.HTML.Atoms;
+using UltimaXNA.Core.UI.HTML.Parsing;
 #endregion
 
 namespace UltimaXNA.Core.UI.HTML
@@ -84,8 +85,8 @@ namespace UltimaXNA.Core.UI.HTML
             }
             else
             {
-                Parsing.HTMLparser parser = new Parsing.HTMLparser(inText);
-                Parsing.HTMLchunk chunk;
+                HTMLparser parser = new HTMLparser(inText);
+                HTMLchunk chunk;
 
                 while ((chunk = parser.ParseNext()) != null)
                 {

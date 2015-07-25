@@ -1,11 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
-using UltimaXNA.Ultima.IO;
-using UltimaXNA.Ultima.World;
-using UltimaXNA.Ultima.World.Maps;
-using UltimaXNA.Ultima.World.Input;
-using UltimaXNA.Ultima.World.Entities.Items.Containers;
 using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.World.Entities.Items.Containers;
+using UltimaXNA.Ultima.World.Input;
+using UltimaXNA.Ultima.World.Maps;
 
 namespace UltimaXNA.Ultima.World.EntityViews
 {
@@ -38,7 +37,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
         private AnimationFrame getFrame(Body body, int facing, int frameIndex, int hue)
         {
-            AnimationFrame[] iFrames = Animations.GetAnimation(body, IO.BodyConverter.DeathAnimationIndex(body), facing, hue);
+            AnimationFrame[] iFrames = AnimationData.GetAnimation(body, BodyConverter.DeathAnimationIndex(body), facing, hue);
             if (iFrames == null)
                 return null;
             if (iFrames[frameIndex].Texture == null)

@@ -1,17 +1,17 @@
-﻿#region Usings
-using Microsoft.Xna.Framework;
+﻿#region usings
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using UltimaXNA.Configuration;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.Network.Client;
+using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
-using UltimaXNA.Ultima.Network.Client;
-using UltimaXNA.Ultima.UI.Controls;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Input
@@ -87,7 +87,7 @@ namespace UltimaXNA.Ultima.World.Input
                 if (m_UserInterface.IsMouseOverUI)
                 {
                     AControl over = m_UserInterface.MouseOverControl;
-                    return !(over is WorldControl);
+                    return !(over is WorldViewport);
                 }
                 return false;
             }
@@ -100,7 +100,7 @@ namespace UltimaXNA.Ultima.World.Input
                 if (m_UserInterface.IsMouseOverUI)
                 {
                     AControl over = m_UserInterface.MouseOverControl;
-                    return (over is WorldControl);
+                    return (over is WorldViewport);
                 }
                 return false;
             }
@@ -110,7 +110,7 @@ namespace UltimaXNA.Ultima.World.Input
         {
             get
             {
-                WorldControl world = ServiceRegistry.GetService<WorldControl>();
+                WorldViewport world = ServiceRegistry.GetService<WorldViewport>();
                 Point mouse = new Point(m_Input.MousePosition.X - world.ScreenX, m_Input.MousePosition.Y - world.ScreenY);
                 return mouse;
             }
@@ -162,7 +162,7 @@ namespace UltimaXNA.Ultima.World.Input
             // if the move button is pressed, change facing and move based on mouse cursor direction.
             if(ContinuousMouseMovementCheck)
             {
-                Resolution resolution = Settings.World.GumpResolution;
+                Resolution resolution = Settings.World.PlayWindowGumpResolution;
                 Point centerScreen = new Point(resolution.Width / 2, resolution.Height / 2);
                 Direction mouseDirection = DirectionHelper.DirectionFromPoints(centerScreen, MouseOverWorldPosition);
 

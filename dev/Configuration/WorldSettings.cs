@@ -8,9 +8,9 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-#region Usings
-using UltimaXNA.Core.Input.Windows;
+#region usings
 using UltimaXNA.Core.Configuration;
+using UltimaXNA.Core.Input.Windows;
 #endregion
 
 namespace UltimaXNA.Configuration
@@ -19,19 +19,23 @@ namespace UltimaXNA.Configuration
     {
         public const string SectionName = "world";
 
+        private Resolution m_FullScreenResolution;
         private Resolution m_WindowResolution;
         private Resolution m_WorldGumpResolution;
         private bool m_IsFullScreen;
         private MouseSettings m_Mouse;
         private bool m_AlwaysRun;
+        private bool m_MenuBarDisabled;
 
         public WorldSettings()
         {
-            WindowResolution = new Resolution(800, 600);
-            GumpResolution = new Resolution(800, 600);
-            IsMaximized = false;
+            FullScreenResolution = new Resolution(1024, 768);
+            WindowResolution = new Resolution(1024, 768);
+            PlayWindowGumpResolution = new Resolution(1024, 768);
+            IsMaximized = true;
             Mouse = new MouseSettings(MouseButton.Left, MouseButton.Right);
             AlwaysRun = false;
+            MenuBarDisabled = false;
         }
 
         public bool IsMaximized
@@ -46,13 +50,19 @@ namespace UltimaXNA.Configuration
             set { SetProperty(ref m_Mouse, value); }
         }
 
+        public Resolution FullScreenResolution
+        {
+            get { return m_FullScreenResolution; }
+            set { SetProperty(ref m_FullScreenResolution, value); }
+        }
+
         public Resolution WindowResolution
         {
             get { return m_WindowResolution; }
             set { SetProperty(ref m_WindowResolution, value); }
         }
 
-        public Resolution GumpResolution
+        public Resolution PlayWindowGumpResolution
         {
             get { return m_WorldGumpResolution; }
             set { SetProperty(ref m_WorldGumpResolution, value); }
@@ -62,6 +72,12 @@ namespace UltimaXNA.Configuration
         {
             get { return m_AlwaysRun; }
             set { SetProperty(ref m_AlwaysRun, value); }
+        }
+
+        public bool MenuBarDisabled
+        {
+            get { return m_MenuBarDisabled; }
+            set { SetProperty(ref m_MenuBarDisabled, value); }
         }
     }
 }

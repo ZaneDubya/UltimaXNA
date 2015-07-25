@@ -10,10 +10,9 @@
  ***************************************************************************/
 #region usings
 using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Core;
 using UltimaXNA.Core.Diagnostics;
+using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.IO;
-
 #endregion
 
 namespace UltimaXNA.Ultima.IO
@@ -36,6 +35,8 @@ namespace UltimaXNA.Ultima.IO
             if (m_Cache[i] == null)
             {
                 m_Cache[i] = readTexmapTexture(i);
+                if (m_Cache[i] == null)
+                    m_Cache[i] = GetTexmapTexture(127);
             }
 
             return m_Cache[i];
@@ -53,7 +54,7 @@ namespace UltimaXNA.Ultima.IO
                 return null;
             if (reader.Stream.Length == 0)
             {
-                UltimaXNA.Core.Diagnostics.Tracing.Tracer.Critical("Empty texmap texture with index {0}!", index);
+                Tracer.Warn("Requested texmap texture #{0} does not exist. Replacing with 'unused' graphic.", index);
                 return null;
             }
 

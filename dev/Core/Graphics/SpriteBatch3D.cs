@@ -9,11 +9,11 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-#region Usings
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+#region usings
 using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Diagnostics.Tracing;
 #endregion
 

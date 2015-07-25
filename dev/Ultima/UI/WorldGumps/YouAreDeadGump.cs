@@ -9,13 +9,6 @@
  *
  ***************************************************************************/
 #region usings
-using System.Collections.Generic;
-using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.World.Entities;
-using UltimaXNA.Ultima.World.Entities.Items;
-using UltimaXNA.Ultima.World.Entities.Items.Containers;
-using UltimaXNA.Ultima.IO;
-using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
 #endregion
 

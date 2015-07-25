@@ -8,10 +8,8 @@
 #region usings
 using System.Collections.Generic;
 using UltimaXNA.Ultima.World.Entities;
-using UltimaXNA.Ultima.World.EntityViews;
 using UltimaXNA.Ultima.World.Entities.Effects;
 using UltimaXNA.Ultima.World.Entities.Items;
-using UltimaXNA.Ultima.World.Entities.Items.Containers;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 #endregion
 
@@ -42,33 +40,33 @@ namespace UltimaXNA.Ultima.World.Maps
 
         public static int Compare(AEntity x, AEntity y)
         {
-            int x_z;
-            int x_threshold;
-            int x_type;
-            int x_tiebreaker;
-            int y_z;
-            int y_threshold;
-            int y_type;
-            int y_tiebreaker;
+            int xZ;
+            int xThreshold;
+            int xType;
+            int xTiebreaker;
+            int yZ;
+            int yThreshold;
+            int yType;
+            int yTiebreaker;
 
-            GetSortValues(x, out x_z, out x_threshold, out x_type, out x_tiebreaker);
-            GetSortValues(y, out y_z, out y_threshold, out y_type, out y_tiebreaker);
+            GetSortValues(x, out xZ, out xThreshold, out xType, out xTiebreaker);
+            GetSortValues(y, out yZ, out yThreshold, out yType, out yTiebreaker);
 
-            x_z += x_threshold;
-            y_z += y_threshold;
+            xZ += xThreshold;
+            yZ += yThreshold;
 
-            int comparison = x_z - y_z;
+            int comparison = xZ - yZ;
             if (comparison == 0)
             {
-                comparison = x_type - y_type;
+                comparison = xType - yType;
             }
             if (comparison == 0)
             {
-                comparison = x_threshold - y_threshold;
+                comparison = xThreshold - yThreshold;
             }
             if (comparison == 0)
             {
-                comparison = x_tiebreaker - y_tiebreaker;
+                comparison = xTiebreaker - yTiebreaker;
             }
             return comparison;
         }

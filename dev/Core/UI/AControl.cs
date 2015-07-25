@@ -9,10 +9,10 @@
  *
  ***************************************************************************/
 #region usings
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
 #endregion
@@ -288,11 +288,27 @@ namespace UltimaXNA.Core.UI
         internal event Action<AControl, int, int> MouseOutEvent;
         #endregion
 
-        #region Owner / OwnerX / OwnerY
+        #region Owner variables
         public AControl Owner
         {
             get;
             protected set;
+        }
+
+        /// <summary>
+        /// Gets the topmost owner of this control.
+        /// </summary>
+        public AControl OwnerTopmost
+        {
+            get
+            {
+                if (Owner == null)
+                    return null;
+                AControl owner = Owner;
+                while (owner.Owner != null)
+                    owner = owner.Owner;
+                return owner;
+            }
         }
 
         private int OwnerX

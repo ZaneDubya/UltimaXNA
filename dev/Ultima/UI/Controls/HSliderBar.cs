@@ -8,13 +8,14 @@
  *
  ***************************************************************************/
 #region usings
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.IO;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.Controls
@@ -90,13 +91,13 @@ namespace UltimaXNA.Ultima.UI.Controls
                     default:
                     case HSliderBarStyle.MetalWidgetRecessedBar:
                         m_GumpSliderBackground = new Texture2D[3];
-                        m_GumpSliderBackground[0] = IO.GumpData.GetGumpXNA(213);
-                        m_GumpSliderBackground[1] = IO.GumpData.GetGumpXNA(214);
-                        m_GumpSliderBackground[2] = IO.GumpData.GetGumpXNA(215);
-                        m_GumpWidget = IO.GumpData.GetGumpXNA(216);
+                        m_GumpSliderBackground[0] = GumpData.GetGumpXNA(213);
+                        m_GumpSliderBackground[1] = GumpData.GetGumpXNA(214);
+                        m_GumpSliderBackground[2] = GumpData.GetGumpXNA(215);
+                        m_GumpWidget = GumpData.GetGumpXNA(216);
                         break;
                     case HSliderBarStyle.BlueWidgetNoBar:
-                        m_GumpWidget = IO.GumpData.GetGumpXNA(0x845);
+                        m_GumpWidget = GumpData.GetGumpXNA(0x845);
                         break;
                 }
                 Size = new Point(BarWidth, m_GumpWidget.Height);
@@ -115,7 +116,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             if (m_GumpSliderBackground != null)
             {
                 spriteBatch.Draw2D(m_GumpSliderBackground[0], new Vector3(position.X, position.Y, 0), Vector3.Zero);
-                spriteBatch.Draw2DTiled(m_GumpSliderBackground[1], new Rectangle(this.X + m_GumpSliderBackground[0].Width, position.Y, BarWidth - m_GumpSliderBackground[2].Width - m_GumpSliderBackground[0].Width, m_GumpSliderBackground[1].Height), Vector3.Zero);
+                spriteBatch.Draw2DTiled(m_GumpSliderBackground[1], new Rectangle(position.X + m_GumpSliderBackground[0].Width, position.Y, BarWidth - m_GumpSliderBackground[2].Width - m_GumpSliderBackground[0].Width, m_GumpSliderBackground[1].Height), Vector3.Zero);
                 spriteBatch.Draw2D(m_GumpSliderBackground[2], new Vector3(position.X + BarWidth - m_GumpSliderBackground[2].Width, position.Y, 0), Vector3.Zero);
             }
             spriteBatch.Draw2D(m_GumpWidget, new Vector3(position.X + m_sliderX, position.Y, 0), Vector3.Zero);

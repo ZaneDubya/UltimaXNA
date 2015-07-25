@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.UI.Interfaces;
 #endregion
 
@@ -116,16 +117,16 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.OnInitialize();
 
             m_GumpUpButton = new Texture2D[2];
-            m_GumpUpButton[0] = IO.GumpData.GetGumpXNA(251);
-            m_GumpUpButton[1] = IO.GumpData.GetGumpXNA(250);
+            m_GumpUpButton[0] = GumpData.GetGumpXNA(251);
+            m_GumpUpButton[1] = GumpData.GetGumpXNA(250);
             m_GumpDownButton = new Texture2D[2];
-            m_GumpDownButton[0] = IO.GumpData.GetGumpXNA(253);
-            m_GumpDownButton[1] = IO.GumpData.GetGumpXNA(252);
+            m_GumpDownButton[0] = GumpData.GetGumpXNA(253);
+            m_GumpDownButton[1] = GumpData.GetGumpXNA(252);
             m_GumpBackground = new Texture2D[3];
-            m_GumpBackground[0] = IO.GumpData.GetGumpXNA(257);
-            m_GumpBackground[1] = IO.GumpData.GetGumpXNA(256);
-            m_GumpBackground[2] = IO.GumpData.GetGumpXNA(255);
-            m_GumpSlider = IO.GumpData.GetGumpXNA(254);
+            m_GumpBackground[0] = GumpData.GetGumpXNA(257);
+            m_GumpBackground[1] = GumpData.GetGumpXNA(256);
+            m_GumpBackground[2] = GumpData.GetGumpXNA(255);
+            m_GumpSlider = GumpData.GetGumpXNA(254);
             Size = new Point(m_GumpBackground[0].Width, Height);
         }
 

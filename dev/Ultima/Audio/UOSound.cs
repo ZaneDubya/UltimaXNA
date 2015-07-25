@@ -8,12 +8,10 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using Microsoft.Xna.Framework.Audio;
+
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text.RegularExpressions;
-using UltimaXNA.Core.Diagnostics;
+using Microsoft.Xna.Framework.Audio;
 
 namespace UltimaXNA.Ultima.Audio
 {
@@ -23,7 +21,7 @@ namespace UltimaXNA.Ultima.Audio
         public byte[] WaveBuffer;
         public SoundState Status = SoundState.Unloaded;
 
-        private List<Tuple<DynamicSoundEffectInstance, float>> m_Instances;
+        private readonly List<Tuple<DynamicSoundEffectInstance, float>> m_Instances;
 
         public UOSound()
         {

@@ -8,11 +8,11 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-#region Usings
-using Microsoft.Xna.Framework;
+#region usings
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Input.Windows;
@@ -304,7 +304,15 @@ namespace UltimaXNA.Core.UI
             // send that previous control a MouseOut event.
             AControl focusedControl = InternalGetMouseOverControl(clippedPosition);
             if ((MouseOverControl != null) && (focusedControl != MouseOverControl))
+            {
                 MouseOverControl.MouseOut(clippedPosition);
+                // Also let the owner control know we've been moused out (for gumps).
+                if (MouseOverControl.OwnerTopmost != null)
+                {
+                    if (focusedControl == null || MouseOverControl.OwnerTopmost != focusedControl.OwnerTopmost)
+                        MouseOverControl.OwnerTopmost.MouseOut(clippedPosition);
+                }
+            }
 
             if (focusedControl != null)
             {

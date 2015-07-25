@@ -1,10 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
-using UltimaXNA.Ultima.World;
-using UltimaXNA.Ultima.World.Maps;
 using UltimaXNA.Ultima.IO;
-using UltimaXNA.Ultima.World.Input;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
+using UltimaXNA.Ultima.World.Input;
+using UltimaXNA.Ultima.World.Maps;
+using UltimaXNA.Ultima.World.WorldViews;
 
 namespace UltimaXNA.Ultima.World.EntityViews
 {
@@ -93,7 +93,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
                     HueVector = Utility.GetHueVector(m_MobileLayers[i].Hue);
 
                     Rectangle screenDest = new Rectangle(
-                        DrawFlip ? (int)drawPosition.X + DrawArea.X - DrawArea.Width + World.WorldViews.IsometricRenderer.TileSizeI : (int)drawPosition.X - DrawArea.X,
+                        DrawFlip ? (int)drawPosition.X + DrawArea.X - DrawArea.Width + IsometricRenderer.TILE_SIZE_INTEGER : (int)drawPosition.X - DrawArea.X,
                         (int)drawPosition.Y - DrawArea.Y,
                         DrawFlip ? DrawArea.Width : DrawArea.Width,
                         DrawArea.Height);
@@ -112,7 +112,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             }
             else
             {
-                yOffset = -(yOffset + World.WorldViews.IsometricRenderer.TileSizeI);
+                yOffset = -(yOffset + IsometricRenderer.TILE_SIZE_INTEGER);
             }
 
             DrawOverheads(spriteBatch, overheadDrawPosition, mouseOverList, map, (int)yOffset);
@@ -129,7 +129,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             if (bodyID >= 500 && bodyID <= 505)
                 patchLightSourceAction(ref action, ref frame);
 
-            AnimationFrame[] iFrames = IO.Animations.GetAnimation(bodyID, action, facing, hue);
+            AnimationFrame[] iFrames = AnimationData.GetAnimation(bodyID, action, facing, hue);
             if (iFrames == null)
                 return null;
             int iFrame = (int)frame; // frameFromSequence(frame, iFrames.Length);
@@ -211,7 +211,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             float frame = m_Animation.AnimationFrame;
 
             m_MobileLayers[m_LayerCount++] = new MobileViewLayer(bodyID, hue, getFrame(bodyID, hue, facing, animation, frame));
-            m_FrameCount = IO.Animations.GetAnimationFrameCount(bodyID, animation, facing, hue);
+            m_FrameCount = AnimationData.GetAnimationFrameCount(bodyID, animation, facing, hue);
         }
 
         public void ClearLayers()
@@ -310,10 +310,10 @@ namespace UltimaXNA.Ultima.World.EntityViews
         struct MobileViewLayer
         {
             public int Hue;
-            public IO.AnimationFrame Frame;
+            public AnimationFrame Frame;
             public int BodyID;
 
-            public MobileViewLayer(int bodyID, int hue, IO.AnimationFrame frame)
+            public MobileViewLayer(int bodyID, int hue, AnimationFrame frame)
             {
                 BodyID = bodyID;
                 Hue = hue;

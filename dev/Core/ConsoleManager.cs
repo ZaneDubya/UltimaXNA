@@ -8,16 +8,14 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-#region Usings
-
+#region usings
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security;
-using UltimaXNA.Core.Diagnostics.Tracing;
-
 #endregion
 
 namespace UltimaXNA.Core
@@ -106,13 +104,13 @@ namespace UltimaXNA.Core
             Type type = typeof(Console);
 
             _FieldInfo output = type.GetField("_out",
-                System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
+                BindingFlags.Static | BindingFlags.NonPublic);
 
             _FieldInfo error = type.GetField("_error",
-                System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
+                BindingFlags.Static | BindingFlags.NonPublic);
 
             _MethodInfo initializeStdOutError = type.GetMethod("InitializeStdOutError",
-                System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
+                BindingFlags.Static | BindingFlags.NonPublic);
 
             Debug.Assert(output != null);
             Debug.Assert(error != null);

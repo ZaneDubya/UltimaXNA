@@ -11,7 +11,6 @@
 #region usings
 using System;
 using System.Collections.Generic;
-
 #endregion
 
 namespace UltimaXNA.Ultima.World.Entities

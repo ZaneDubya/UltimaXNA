@@ -1,9 +1,6 @@
 ﻿using System;
-using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
-using UltimaXNA.Core;
-using UltimaXNA.Core.Diagnostics;
 
 namespace UltimaXNA.Ultima.IO
 {

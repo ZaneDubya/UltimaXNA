@@ -8,8 +8,8 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Core.Patterns.MVC;
 using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.Patterns.MVC;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.UI.WorldGumps;
 using UltimaXNA.Ultima.World.Entities;
@@ -54,8 +54,7 @@ namespace UltimaXNA.Ultima.World
             : base(model)
         {
             Isometric = new IsometricRenderer();
-            Isometric.Initialize();
-            Isometric.LightDirection = -0.6f;
+            Isometric.Lighting.LightDirection = -0.6f;
 
             MiniMap = new MiniMapTexture();
             MiniMap.Initialize();
@@ -83,8 +82,8 @@ namespace UltimaXNA.Ultima.World
                 {
                     m_ShowingDeathEffect = true;
                     m_DeathEffectTime = 0;
-                    m_LightingGlobal = Isometric.OverallLightning;
-                    m_LightingPersonal = Isometric.PersonalLightning;
+                    m_LightingGlobal = Isometric.Lighting.OverallLightning;
+                    m_LightingPersonal = Isometric.Lighting.PersonalLightning;
                     m_UI.AddControl(m_YouAreDead = new YouAreDeadGump(), 0, 0);
                 }
 
@@ -94,19 +93,19 @@ namespace UltimaXNA.Ultima.World
                 if (m_DeathEffectTime < msFade)
                 {
                     AEntityView.s_Technique = Techniques.Default;
-                    Isometric.OverallLightning = (int)(m_LightingGlobal + (0x1f - m_LightingGlobal) * ((m_DeathEffectTime / msFade)));
-                    Isometric.PersonalLightning = (int)(m_LightingPersonal * (1d - (m_DeathEffectTime / msFade)));
+                    Isometric.Lighting.OverallLightning = (int)(m_LightingGlobal + (0x1f - m_LightingGlobal) * ((m_DeathEffectTime / msFade)));
+                    Isometric.Lighting.PersonalLightning = (int)(m_LightingPersonal * (1d - (m_DeathEffectTime / msFade)));
                 }
                 else if (m_DeathEffectTime < msFade + msHold)
                 {
-                    Isometric.OverallLightning = 0x1f;
-                    Isometric.PersonalLightning = 0x00;
+                    Isometric.Lighting.OverallLightning = 0x1f;
+                    Isometric.Lighting.PersonalLightning = 0x00;
                 }
                 else
                 {
                     AEntityView.s_Technique = Techniques.Grayscale;
-                    Isometric.OverallLightning = (int)m_LightingGlobal;
-                    Isometric.PersonalLightning = (int)m_LightingPersonal;
+                    Isometric.Lighting.OverallLightning = (int)m_LightingGlobal;
+                    Isometric.Lighting.PersonalLightning = (int)m_LightingPersonal;
                     if (m_YouAreDead != null)
                     {
                         m_YouAreDead.Dispose();

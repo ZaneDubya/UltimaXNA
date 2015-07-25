@@ -8,9 +8,9 @@
  *
  ***************************************************************************/
 #region usings
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Items;

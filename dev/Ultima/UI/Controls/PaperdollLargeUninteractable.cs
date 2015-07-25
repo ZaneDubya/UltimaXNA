@@ -7,10 +7,12 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using UltimaXNA.Core.Graphics;
-using UltimaXNA.Ultima.UI;
+
 using Microsoft.Xna.Framework;
+using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.IO;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
@@ -116,8 +118,8 @@ namespace UltimaXNA.Ultima.UI.Controls
                         if (equipmentSlot(EquipSlots.Hair) != 0)
                         {
                             bodyID = m_isFemale ?
-                                IO.HairStyles.FemaleGumpIDForCharacterCreationFromItemID(equipmentSlot(EquipSlots.Hair)) :
-                                IO.HairStyles.MaleGumpIDForCharacterCreationFromItemID(equipmentSlot(EquipSlots.Hair));
+                                HairStyles.FemaleGumpIDForCharacterCreationFromItemID(equipmentSlot(EquipSlots.Hair)) :
+                                HairStyles.MaleGumpIDForCharacterCreationFromItemID(equipmentSlot(EquipSlots.Hair));
                             hueGreyPixelsOnly = false;
                         }
                         break;
@@ -125,14 +127,14 @@ namespace UltimaXNA.Ultima.UI.Controls
                         if (equipmentSlot(EquipSlots.FacialHair) != 0)
                         {
                             bodyID = m_isFemale ?
-                                0 : IO.HairStyles.FacialHairGumpIDForCharacterCreationFromItemID(equipmentSlot(EquipSlots.FacialHair));
+                                0 : HairStyles.FacialHairGumpIDForCharacterCreationFromItemID(equipmentSlot(EquipSlots.FacialHair));
                             hueGreyPixelsOnly = false;
                         }
                         break;
                 }
 
                 if (bodyID != 0)
-                    spriteBatch.Draw2D(IO.GumpData.GetGumpXNA(bodyID), new Vector3(position.X, position.Y, 0), Utility.GetHueVector(hue, hueGreyPixelsOnly, false));
+                    spriteBatch.Draw2D(GumpData.GetGumpXNA(bodyID), new Vector3(position.X, position.Y, 0), Utility.GetHueVector(hue, hueGreyPixelsOnly, false));
             }
         }
 

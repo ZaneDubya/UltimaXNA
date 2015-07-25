@@ -15,7 +15,6 @@ using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.Entities.Items.Containers;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
-using UltimaXNA.Ultima.World;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.Controls
@@ -93,13 +92,13 @@ namespace UltimaXNA.Ultima.UI.Controls
             if (((Mobile)m_sourceEntity).GetItem((int)PaperDollEquipSlots.Backpack) != null)
             {
                 Item backpack = ((Mobile)m_sourceEntity).GetItem((int)PaperDollEquipSlots.Backpack);
-                AddControl(new GumpPicBackpack(this, -5, 0, backpack));
+                AddControl(new GumpPicBackpack(this, -7, 0, backpack));
                 LastControl.HandlesMouseInput = true;
                 LastControl.MouseDoubleClickEvent += On_Dblclick_Backpack;
             }
         }
 
-        void On_Dblclick_Backpack(AControl control, int x, int y, MouseButton button)
+        private void On_Dblclick_Backpack(AControl control, int x, int y, MouseButton button)
         {
             Container backpack = ((Mobile)m_sourceEntity).Backpack;
             m_World.Interaction.DoubleClick(backpack);

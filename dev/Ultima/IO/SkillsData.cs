@@ -13,9 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using UltimaXNA.Core;
 using UltimaXNA.Core.IO;
-
 #endregion
 
 namespace UltimaXNA.Ultima.IO
@@ -79,8 +77,8 @@ namespace UltimaXNA.Ultima.IO
             set2 = reader.ReadBytes(nameLength);
             set3 = reader.ReadBytes(1);
 
-            bool useBtn = SkillsData.ToBool(set1);
-            string name = SkillsData.ToString(set2);
+            bool useBtn = ToBool(set1);
+            string name = ToString(set2);
 
             return new Skill(new SkillVars(index, name, useBtn, extra, set3[0]));
         }

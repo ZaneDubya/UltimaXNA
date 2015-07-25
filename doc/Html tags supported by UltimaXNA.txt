@@ -1,0 +1,38 @@
+HtmlGumpling controls support a very limited subset of Html tags:
+
+<b>
+
+<i>
+
+<u>
+
+<outline>
+
+<big>
+
+<basefont> / <medium>
+
+<small>
+
+<left>
+
+<center>
+
+<right>
+
+<a>
+    supported attribute: href
+
+<gumpimg>
+    supported attributes: src, hoversrc, activesrc, width, height
+    
+<span>
+    attributes: width, height
+    
+All tags support the color, hovercolor, and activecolor attributes. However,
+note that ASCII fonts do not support coloring with these attributes.
+
+In addition, a very limited subset of CSS is supported using the "style=''"
+attribute:
+    font-family: ascii[0-9] / uni[0-2]
+    text-decoration: none / underline

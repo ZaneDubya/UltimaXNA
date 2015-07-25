@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.IO;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.Controls
@@ -92,12 +93,12 @@ namespace UltimaXNA.Ultima.UI.Controls
             {
                 if (IsChild) // is a child
                 {
-                    m_huesTexture = IO.HueData.CreateHueSwatch(m_hueWidth, m_hueHeight, m_hues);
-                    m_selectedIndicator = IO.GumpData.GetGumpXNA(6000);
+                    m_huesTexture = HueData.CreateHueSwatch(m_hueWidth, m_hueHeight, m_hues);
+                    m_selectedIndicator = GumpData.GetGumpXNA(6000);
                 }
                 else
                 {
-                    m_huesTexture = IO.HueData.CreateHueSwatch(1, 1, new int[1] { m_hues[Index] });
+                    m_huesTexture = HueData.CreateHueSwatch(1, 1, new int[1] { m_hues[Index] });
                 }
             }
         }
@@ -160,7 +161,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             {
                 m_ChildColorPicker.Dispose();
                 m_ChildColorPicker = null;
-                m_huesTexture = IO.HueData.CreateHueSwatch(1, 1, new int[1] { m_hues[Index] });
+                m_huesTexture = HueData.CreateHueSwatch(1, 1, new int[1] { m_hues[Index] });
             }
         }
     }

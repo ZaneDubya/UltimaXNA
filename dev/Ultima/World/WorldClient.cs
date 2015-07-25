@@ -12,12 +12,14 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.Audio;
 using UltimaXNA.Ultima.Data;
-using UltimaXNA.Ultima.Network;
+using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.Network.Server;
 using UltimaXNA.Ultima.Player;
@@ -29,11 +31,12 @@ using UltimaXNA.Ultima.World.Entities.Items.Containers;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Ultima.World.Entities.Multis;
 using UltimaXNA.Ultima.World.Input;
+using UltimaXNA.Core.Input;
 #endregion
 
 namespace UltimaXNA.Ultima.World
 {
-    class WorldClient
+    class WorldClient : IDisposable
     {
         private Timer m_KeepAliveTimer;
         private INetworkClient m_Network;
@@ -182,7 +185,7 @@ namespace UltimaXNA.Ultima.World
 
         public void StartKeepAlivePackets()
         {
-            m_KeepAliveTimer = new System.Threading.Timer(
+            m_KeepAliveTimer = new Timer(
                 e => SendKeepAlivePacket(),
                 null,
                 TimeSpan.Zero,
@@ -303,7 +306,12 @@ namespace UltimaXNA.Ultima.World
             Item item = add_Item(p.Serial, p.ItemId, p.Hue, p.ContainerSerial, p.Amount);
             item.InContainerPosition = new Point(p.X, p.Y);
             // ... and add it the container contents of the container.
-            AEntity container = WorldModel.Entities.GetObject<AEntity>(p.ContainerSerial, true);
+            AEntity container = WorldModel.Entities.GetObject<AEntity>(p.ContainerSerial, false);
+            if (container == null)
+            {
+                // shouldn't we already have the container? Throw an error?
+                Tracer.Warn("SingleItemToContainer packet arrived before container entity created.");
+            }
             if (container is Container) // place in container
             {
                 (container as Container).AddItem(item);
@@ -325,7 +333,7 @@ namespace UltimaXNA.Ultima.World
             }
             else
             {
-                if (IO.TileData.ItemData[itemID].IsContainer)
+                if (TileData.ItemData[itemID].IsContainer)
                 {
                     // special case for spellbooks.
                     if (SpellBook.IsSpellBookItem((ushort)itemID))
@@ -663,7 +671,7 @@ namespace UltimaXNA.Ultima.World
         {
             MessageLocalizedPacket p = (MessageLocalizedPacket)packet;
 
-            string iCliLoc = constructCliLoc(IO.StringData.Entry(p.CliLocNumber), p.Arguements);
+            string iCliLoc = constructCliLoc(StringData.Entry(p.CliLocNumber), p.Arguements);
             ReceiveTextMessage(p.MessageType, iCliLoc, p.Hue, p.Font, p.Serial, p.SpeakerName);
         }
 
@@ -687,7 +695,7 @@ namespace UltimaXNA.Ultima.World
                 if ((iArgs[i].Length > 0) && (iArgs[i].Substring(0, 1) == "#"))
                 {
                     int clilocID = Convert.ToInt32(iArgs[i].Substring(1));
-                    iArgs[i] = IO.StringData.Entry(clilocID);
+                    iArgs[i] = StringData.Entry(clilocID);
                 }
             }
 
@@ -806,7 +814,7 @@ namespace UltimaXNA.Ultima.World
         {
             OpenPaperdollPacket p = packet as OpenPaperdollPacket;
             if (m_UserInterface.GetControl<JournalGump>(p.Serial) == null)
-                m_UserInterface.AddControl(new PaperDollGump(WorldModel.Entities.GetObject<Mobile>(p.Serial, false)), 400, 100);
+                m_UserInterface.AddControl(new PaperDollGump(WorldModel.Entities.GetObject<Mobile>(p.Serial, false), p.MobileName), 400, 100);
         }
 
         private void ReceiveCompressedGump(IRecvPacket packet)
@@ -873,7 +881,7 @@ namespace UltimaXNA.Ultima.World
             MessageLocalizedAffixPacket p = (MessageLocalizedAffixPacket)packet;
 
             string localizedString = string.Format(p.Flag_IsPrefix ? "{1}{0}" : "{0}{1}",
-                constructCliLoc(IO.StringData.Entry(p.CliLocNumber), p.Arguements), p.Affix);
+                constructCliLoc(StringData.Entry(p.CliLocNumber), p.Arguements), p.Affix);
             ReceiveTextMessage(p.MessageType, localizedString, p.Hue, p.Font, p.Serial, p.SpeakerName);
         }
 
@@ -901,7 +909,7 @@ namespace UltimaXNA.Ultima.World
 
             for (int i = 0; i < p.CliLocs.Count; i++)
             {
-                string iCliLoc = IO.StringData.Entry(p.CliLocs[i]);
+                string iCliLoc = StringData.Entry(p.CliLocs[i]);
                 if (p.Arguements[i] == string.Empty)
                 {
                     entity.PropertyList.AddProperty(iCliLoc);
@@ -1014,22 +1022,6 @@ namespace UltimaXNA.Ultima.World
             Tracer.Warn(string.Format("Client: Unhandled {0} [ID:{1}] {2}]", packet.Name, packet.Id, addendum));
         }
 
-        private void parseContextMenu(ContextMenu context)
-        {
-            if (context.HasContextMenu)
-            {
-                if (context.CanSell)
-                {
-                    m_Network.Send(new ContextMenuResponsePacket(context.Serial, (short)context.GetContextEntry("Sell").ResponseCode));
-                }
-            }
-            else
-            {
-                // no context menu entries are handled. Send a double click.
-                m_Network.Send(new DoubleClickPacket(context.Serial));
-            }
-        }
-
         private void ReceiveExtended0x78(IRecvPacket packet)
         {
             announce_UnhandledPacket(packet);
@@ -1051,8 +1043,11 @@ namespace UltimaXNA.Ultima.World
                     m_World.MapIndex = p.MapID;
                     break;
                 case 0x14: // return context menu
-                    parseContextMenu(p.ContextMenu);
-                    break;
+                    {
+                        InputManager input = ServiceRegistry.GetService<InputManager>();
+                        m_UserInterface.AddControl(new ContextMenuGump(p.ContextMenu), input.MousePosition.X - 10, input.MousePosition.Y - 20);
+                        break;
+                    }
                 case 0x18: // Enable map-diff (files) / number of maps
                     // as of 6.0.0.0, this only tells us the number of maps.
                     m_World.MapCount = p.MapCount;
@@ -1117,7 +1112,7 @@ namespace UltimaXNA.Ultima.World
         private void ReceiveOpenWebBrowser(IRecvPacket packet)
         {
             OpenWebBrowserPacket p = (OpenWebBrowserPacket)packet;
-            System.Diagnostics.Process.Start("iexplore.exe", p.WebsiteUrl);
+            Process.Start("iexplore.exe", p.WebsiteUrl);
         }
 
         private void ReceiveOverallLightLevel(IRecvPacket packet)
@@ -1130,7 +1125,7 @@ namespace UltimaXNA.Ultima.World
 
             OverallLightLevelPacket p = (OverallLightLevelPacket)packet;
 
-            ((WorldView)m_World.GetView()).Isometric.OverallLightning = p.LightLevel;
+            ((WorldView)m_World.GetView()).Isometric.Lighting.OverallLightning = p.LightLevel;
         }
 
         private void ReceivePersonalLightLevel(IRecvPacket packet)
@@ -1144,20 +1139,20 @@ namespace UltimaXNA.Ultima.World
 
             PersonalLightLevelPacket p = (PersonalLightLevelPacket)packet;
 
-            ((WorldView)m_World.GetView()).Isometric.PersonalLightning = p.LightLevel;
+            ((WorldView)m_World.GetView()).Isometric.Lighting.PersonalLightning = p.LightLevel;
         }
 
         private void ReceivePlayMusic(IRecvPacket packet)
         {
             PlayMusicPacket p = (PlayMusicPacket)packet;
-            Audio.AudioService service = ServiceRegistry.GetService<Audio.AudioService>();
+            AudioService service = ServiceRegistry.GetService<AudioService>();
             service.PlayMusic(p.MusicID);
         }
 
         private void ReceivePlaySoundEffect(IRecvPacket packet)
         {
             PlaySoundEffectPacket p = (PlaySoundEffectPacket)packet;
-            Audio.AudioService service = ServiceRegistry.GetService<Audio.AudioService>();
+            AudioService service = ServiceRegistry.GetService<AudioService>();
             service.PlaySound(p.SoundModel);
         }
 

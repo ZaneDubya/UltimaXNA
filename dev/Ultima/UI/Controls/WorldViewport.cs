@@ -18,7 +18,10 @@ using UltimaXNA.Ultima.World;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
-    class WorldControl : AControl
+    /// <summary>
+    /// A control that shows the current isometric view around the player.
+    /// </summary>
+    class WorldViewport : AControl
     {
         private WorldModel m_Model;
 
@@ -26,14 +29,14 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         private Vector2 m_InputMultiplier = Vector2.One;
 
-        public WorldControl(AControl owner, int x, int y, int width, int height)
+        public WorldViewport(AControl owner, int x, int y, int width, int height)
             : base(owner)
         {
             Position = new Point(x, y);
             Size = new Point(width, height);
 
             HandlesMouseInput = true;
-            ServiceRegistry.Register<WorldControl>(this);
+            ServiceRegistry.Register<WorldViewport>(this);
         }
 
         protected override void OnInitialize()
@@ -43,7 +46,7 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         public override void Dispose()
         {
-            ServiceRegistry.Unregister<WorldControl>();
+            ServiceRegistry.Unregister<WorldViewport>();
             base.Dispose();
         }
 

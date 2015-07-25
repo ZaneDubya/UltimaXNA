@@ -8,11 +8,7 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-using System;
-using System.Collections.Generic;
-using System.IO;
-using Microsoft.Xna.Framework;
-using UltimaXNA.Core.Diagnostics;
+
 using UltimaXNA.Core.Diagnostics.Tracing;
 
 namespace UltimaXNA.Ultima.IO
@@ -88,13 +84,13 @@ namespace UltimaXNA.Ultima.IO
                 switch (Utility.RandomValue(0, 2))
                 {
                     case 0:
-                        return ParticleData.GetData(0x36B0);
+                        return GetData(0x36B0);
                     case 1:
-                        return ParticleData.GetData(0x36BD);
+                        return GetData(0x36BD);
                     case 2:
-                        return ParticleData.GetData(0x36CB);
+                        return GetData(0x36CB);
                     default:
-                        return ParticleData.GetData(0x36B0);
+                        return GetData(0x36B0);
                 }
             }
         }

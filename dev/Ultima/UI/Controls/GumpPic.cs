@@ -7,12 +7,13 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Graphics;
-using UltimaXNA.Ultima.UI;
 using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.IO;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
@@ -44,8 +45,9 @@ namespace UltimaXNA.Ultima.UI.Controls
             gumpID = Int32.Parse(arguements[3]);
             if (arguements.Length > 4)
             {
-                // has a HUE="XXX" arguement!
-                hue = Int32.Parse(arguements[4]);
+                // has a HUE=XXX arguement (and potentially a CLASS=XXX argument).
+                string huess = arguements[4].Substring(arguements[4].IndexOf('=') + 1);
+                hue = Int32.Parse(huess);
             }
             buildGumpling(x, y, gumpID, hue);
         }
@@ -67,7 +69,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             if (m_texture == null)
             {
-                m_texture = IO.GumpData.GetGumpXNA(m_gumpID);
+                m_texture = GumpData.GetGumpXNA(m_gumpID);
                 Size = new Point(m_texture.Width, m_texture.Height);
             }
 

@@ -9,6 +9,7 @@
  *
  ***************************************************************************/
 #region usings
+using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.Login.Servers;
 using UltimaXNA.Ultima.UI.Controls;
 #endregion
@@ -52,9 +53,9 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
 
             // center message window backdrop
             AddControl(new ResizePic(this, 152, 90, 3500, 382, 274));
-            AddControl(new HtmlGumpling(this, 158, 72, 200, 20, 0, 0, IO.StringData.Entry(1044579)), 1);
-            AddControl(new HtmlGumpling(this, 402, 72, 50, 20, 0, 0, IO.StringData.Entry(1044577)), 1);
-            AddControl(new HtmlGumpling(this, 472, 72, 80, 20, 0, 0, IO.StringData.Entry(1044578)), 1);
+            AddControl(new HtmlGumpling(this, 158, 72, 200, 20, 0, 0, StringData.Entry(1044579)), 1);
+            AddControl(new HtmlGumpling(this, 402, 72, 50, 20, 0, 0, StringData.Entry(1044577)), 1);
+            AddControl(new HtmlGumpling(this, 472, 72, 80, 20, 0, 0, StringData.Entry(1044578)), 1);
             // display the serverlist the server list.
             foreach (ServerListEntry e in ServerList.List)
             {
@@ -64,7 +65,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             // Page 2 - logging in to server ... with cancel login button
             // center message window backdrop
             AddControl(new ResizePic(this, 116, 95, 2600, 408, 288), 2);
-            AddControl(new TextLabelAscii(this, 166, 143, 2017, 2, IO.StringData.Entry(3000053) + "..."), 2);
+            AddControl(new TextLabelAscii(this, 166, 143, 2017, 2, StringData.Entry(3000053) + "..."), 2);
             AddControl(new Button(this, 305, 342, 1150, 1152, ButtonTypes.Activate, 0, (int)SelectServerGumpButtons.BackButton), 2);
             ((Button)LastControl).GumpOverID = 1151;
 

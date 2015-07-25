@@ -8,12 +8,10 @@
  *
  ***************************************************************************/
 
-using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Core.UI.Fonts;
-using UltimaXNA.Ultima.IO.Fonts;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
@@ -49,13 +47,13 @@ namespace UltimaXNA.Ultima.UI.Controls
             m_Font = ServiceRegistry.GetService<IUIResourceProvider>().GetAsciiFont(1);
         }
 
-        public DropDownList(AControl owner, int x, int y, int width, int index, int itemsVisible, string[] items, bool canBeNull)
+        public DropDownList(AControl owner, int x, int y, int width, string[] items, int itemsVisible, int index, bool canBeNull)
             : this(owner)
         {
-            buildGumpling(x, y, width, index, itemsVisible, items, canBeNull);
+            buildGumpling(x, y, width, items, itemsVisible, index, canBeNull);
         }
 
-        void buildGumpling(int x, int y, int width, int index, int itemsVisible, string[] items, bool canBeNull)
+        void buildGumpling(int x, int y, int width, string[] items, int itemsVisible, int index, bool canBeNull)
         {
             Position = new Point(x, y);
             m_items = new List<string>(items);
@@ -64,18 +62,19 @@ namespace UltimaXNA.Ultima.UI.Controls
             m_visibleItems = itemsVisible;
             m_canBeNull = canBeNull;
 
-            m_resize = new ResizePic(Owner, X, Y, 3000, m_width, m_Font.Height + 8);
+            m_resize = (ResizePic)AddControl(new ResizePic(this, 0, 0, 3000, m_width, m_Font.Height + 8), 0);
             m_resize.MouseClickEvent += onClickClosedList;
             m_resize.MouseOverEvent += onMouseOverClosedList;
             m_resize.MouseOutEvent += onMouseOutClosedList;
-            ((Gump)Owner).AddControl(m_resize, this.Page);
-            m_label = new TextLabelAscii(Owner, X + 4, Y + 5, hue_Text, 1, string.Empty);
-            ((Gump)Owner).AddControl(m_label, this.Page);
-            ((Gump)Owner).AddControl(new GumpPic(Owner, X + width - 22, Y + 5, 2086, 0), this.Page);
+            m_label = (TextLabelAscii)AddControl(new TextLabelAscii(this, 4, 5, hue_Text, 1, string.Empty), 0);
+            AddControl(new GumpPic(this, width - 22, 5, 2086, 0), 0);
         }
 
         public override void Update(double totalMS, double frameMS)
         {
+            if (Index < 0 || Index >= m_items.Count)
+                Index = -1;
+
             if (m_listOpen)
             {
                 // if we have moused off the open list, close it. We check to see if the mouse is over:
@@ -125,6 +124,12 @@ namespace UltimaXNA.Ultima.UI.Controls
             m_openResizePic.MouseOverEvent += onMouseOverOpenList;
             m_openResizePic.MouseOutEvent += onMouseOutOpenList;
             ((Gump)Owner).AddControl(m_openResizePic, this.Page);
+
+            if (m_visibleItems > m_items.Count)
+            {
+                m_visibleItems = m_items.Count;
+            }
+
             // only show the scrollbar if we need to scroll
             if (m_visibleItems < m_items.Count)
             {

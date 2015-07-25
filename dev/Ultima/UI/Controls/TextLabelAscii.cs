@@ -20,8 +20,9 @@ namespace UltimaXNA.Ultima.UI.Controls
         public int Hue = 0;
         public int FontID = 0;
 
-        private RenderedText m_Rendered = new RenderedText(string.Empty, 400);
+        private RenderedText m_Rendered;
         private string m_Text;
+        private int m_Width;
 
         public string Text
         {
@@ -31,19 +32,23 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
             set
             {
-                m_Text = value;
-                m_Rendered.Text = string.Format("<span style=\"font-family:ascii{0}\">{1}", FontID, m_Text);
+                if (m_Text != value)
+                {
+                    m_Text = value;
+                    m_Rendered.Text = string.Format("<span style=\"font-family:ascii{0}\">{1}", FontID, m_Text);
+                }
             }
         }
 
-        public TextLabelAscii(AControl owner)
+        public TextLabelAscii(AControl owner, int width = 400)
             : base(owner)
         {
-
+            m_Width = width;
+            m_Rendered = new RenderedText(string.Empty, m_Width);
         }
 
-        public TextLabelAscii(AControl owner, int x, int y, int hue, int fontid, string text)
-            : this(owner)
+        public TextLabelAscii(AControl owner, int x, int y, int hue, int fontid, string text, int width = 400)
+            : this(owner, width)
         {
             buildGumpling(x, y, hue, fontid, text);
         }

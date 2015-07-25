@@ -8,23 +8,16 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-#region Usings
+#region usings
 using UltimaXNA.Core.ComponentModel;
-using UltimaXNA.Core.Configuration;
 #endregion
 
 namespace UltimaXNA.Configuration
 {
     public class Resolution : NotifyPropertyChangedBase
     {
-        private int m_height;
-        private int m_width;
-
-        public Resolution()
-        {
-            Width = 800;
-            Height = 600;
-        }
+        private int m_Height;
+        private int m_Width;
 
         public Resolution(int width, int height)
         {
@@ -34,14 +27,19 @@ namespace UltimaXNA.Configuration
 
         public int Height
         {
-            get { return m_height; }
-            set { SetProperty(ref m_height, value); }
+            get { return m_Height; }
+            set { SetProperty(ref m_Height, value); }
         }
 
         public int Width
         {
-            get { return m_width; }
-            set { SetProperty(ref m_width, value); }
+            get { return m_Width; }
+            set { SetProperty(ref m_Width, value); }
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0}x{1}", m_Width, m_Height);
         }
     }
 }

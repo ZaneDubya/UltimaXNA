@@ -8,10 +8,9 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Ultima.IO;
-using UltimaXNA.Core.Diagnostics;
+using UltimaXNA.Ultima.World.Entities.Mobiles;
 #endregion
 
 namespace UltimaXNA.Ultima.World.EntityViews
@@ -119,10 +118,13 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
                 m_animationFrame += (float)(frameMS / msPerFrame);
 
-                if (m_action == MobileAction.Walk || m_action == MobileAction.Run)
-                    MobileSounds.DoFootstepSounds(Parent as Mobile, m_animationFrame / m_FrameCount);
-                else
-                    MobileSounds.ResetFootstepSounds(Parent as Mobile);
+                if (Settings.Audio.FootStepSoundOn)
+                {
+                    if (m_action == MobileAction.Walk || m_action == MobileAction.Run)
+                        MobileSounds.DoFootstepSounds(Parent as Mobile, m_animationFrame / m_FrameCount);
+                    else
+                        MobileSounds.ResetFootstepSounds(Parent as Mobile);
+                }
 
                 // When animations reach their last frame, if we are queueing to stand, then
                 // hold the animation on the last frame.
@@ -206,7 +208,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
                     UnPauseAnimation();
                     m_actionIndex = actionIndex;
                     m_animationFrame = 0f;
-                    m_FrameCount = IO.Animations.GetAnimationFrameCount(
+                    m_FrameCount = AnimationData.GetAnimationFrameCount(
                         Parent.Body, actionIndex, (int)Parent.Facing, Parent.Hue);
                     m_FrameDelay = delay;
                     if (repeat == false)

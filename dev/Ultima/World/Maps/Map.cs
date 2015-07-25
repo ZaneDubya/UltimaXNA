@@ -9,19 +9,19 @@
  *
  ***************************************************************************/
 #region usings
-using Microsoft.Xna.Framework;
 using System;
+using Microsoft.Xna.Framework;
 using UltimaXNA.Ultima.Data;
-using UltimaXNA.Ultima.World.Entities.Multis;
 using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.World.Entities.Multis;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Maps
 {
     public class Map
     {
-        private MapBlock[] m_Blocks;
-        public TileMatrixClient MapData
+        private MapChunk[] m_Chunks;
+        public TileMatrixData MapData
         {
             get;
             private set;
@@ -35,26 +35,26 @@ namespace UltimaXNA.Ultima.World.Maps
         // Any mobile / item beyond this range is removed from the client. RunUO's range is 24 tiles, which would equal 3 cells.
         // We keep 4 cells in memory to allow for drawing further, and also as a safety precaution - don't want to unload an 
         // entity at the edge of what we keep in memory just because of being slightly out of sync with the server.
-        private const int c_CellsInMemory = 4;
+        private const int c_CellsInMemory = 5;
         private const int c_CellsInMemorySpan = c_CellsInMemory * 2 + 1;
 
         public Map(uint index)
         {
             Index = index;
 
-            MapData = new TileMatrixClient(Index);
-            TileHeight = MapData.BlockHeight * 8;
-            TileWidth = MapData.BlockWidth * 8;
+            MapData = new TileMatrixData(Index);
+            TileHeight = MapData.ChunkHeight * 8;
+            TileWidth = MapData.ChunkWidth * 8;
 
-            m_Blocks = new MapBlock[c_CellsInMemorySpan * c_CellsInMemorySpan];
+            m_Chunks = new MapChunk[c_CellsInMemorySpan * c_CellsInMemorySpan];
         }
 
         public void Dispose()
         {
-            for (int i = 0; i < m_Blocks.Length; i++)
+            for (int i = 0; i < m_Chunks.Length; i++)
             {
-                if (m_Blocks[i] != null)
-                    m_Blocks[i].Unload();
+                if (m_Chunks[i] != null)
+                    m_Chunks[i].Unload();
             }
         }
 
@@ -72,13 +72,13 @@ namespace UltimaXNA.Ultima.World.Maps
             }
         }
 
-        public MapBlock GetMapBlock(uint x, uint y)
+        public MapChunk GetMapChunk(uint x, uint y)
         {
             uint cellIndex = (y % c_CellsInMemorySpan) * c_CellsInMemorySpan + (x % c_CellsInMemorySpan);
-            MapBlock cell = m_Blocks[cellIndex];
+            MapChunk cell = m_Chunks[cellIndex];
             if (cell == null)
                 return null;
-            if (cell.BlockX != x || cell.BlockY != y)
+            if (cell.ChunkX != x || cell.ChunkY != y)
                 return null;
             return cell;
         }
@@ -93,8 +93,10 @@ namespace UltimaXNA.Ultima.World.Maps
             uint cellX = (uint)x / 8, cellY = (uint)y / 8;
             uint cellIndex = (cellY % c_CellsInMemorySpan) * c_CellsInMemorySpan + (cellX % c_CellsInMemorySpan);
 
-            MapBlock cell = m_Blocks[cellIndex];
+            MapChunk cell = m_Chunks[cellIndex];
             if (cell == null)
+                return null;
+            if (cell.ChunkX != cellX || cell.ChunkY != cellY)
                 return null;
             return cell.Tiles[(y % 8) * 8 + (x % 8)];
         }
@@ -105,23 +107,23 @@ namespace UltimaXNA.Ultima.World.Maps
             uint centerY = ((uint)CenterPosition.Y / 8);
             for (int y = -c_CellsInMemory; y <= c_CellsInMemory; y++)
             {
-                uint cellY = (uint)(centerY + y) % MapData.BlockHeight;
+                uint cellY = (uint)(centerY + y) % MapData.ChunkHeight;
                 for (int x = -c_CellsInMemory; x <= c_CellsInMemory; x++)
                 {
-                    uint cellX = (uint)(centerX + x) % MapData.BlockWidth;
+                    uint cellX = (uint)(centerX + x) % MapData.ChunkWidth;
 
-                    uint cellIndex = (cellY % c_CellsInMemorySpan) * c_CellsInMemorySpan + cellX % c_CellsInMemorySpan;
-                    if (m_Blocks[cellIndex] == null || m_Blocks[cellIndex].BlockX != cellX || m_Blocks[cellIndex].BlockY != cellY)
+                    uint cellIndex = (cellY % c_CellsInMemorySpan) * c_CellsInMemorySpan + (cellX % c_CellsInMemorySpan);
+                    if (m_Chunks[cellIndex] == null || m_Chunks[cellIndex].ChunkX != cellX || m_Chunks[cellIndex].ChunkY != cellY)
                     {
-                        if (m_Blocks[cellIndex] != null)
-                            m_Blocks[cellIndex].Unload();
-                        m_Blocks[cellIndex] = new MapBlock(cellX, cellY);
-                        m_Blocks[cellIndex].Load(MapData, this);
+                        if (m_Chunks[cellIndex] != null)
+                            m_Chunks[cellIndex].Unload();
+                        m_Chunks[cellIndex] = new MapChunk(cellX, cellY);
+                        m_Chunks[cellIndex].Load(MapData, this);
                         // if we have a translator and it's not spring, change some statics!
                         if (Season != Seasons.Spring && SeasonalTranslator != null)
-                            SeasonalTranslator(m_Blocks[cellIndex], Season);
-                        // let any active multis know that a new map block is ready, so they can load in their pieces.
-                        Multi.AnnounceMapBlockLoaded(m_Blocks[cellIndex]);
+                            SeasonalTranslator(m_Chunks[cellIndex], Season);
+                        // let any active multis know that a new map chunk is ready, so they can load in their pieces.
+                        Multi.AnnounceMapChunkLoaded(m_Chunks[cellIndex]);
                     }
                 }
             }
@@ -196,12 +198,12 @@ namespace UltimaXNA.Ultima.World.Maps
                 {
                     m_Season = value;
                     if (SeasonalTranslator != null)
-                        foreach (MapBlock block in m_Blocks)
-                            SeasonalTranslator(block, Season);
+                        foreach (MapChunk chunk in m_Chunks)
+                            SeasonalTranslator(chunk, Season);
                 }
             }
         }
 
-        public static Action<MapBlock, Seasons> SeasonalTranslator = null;
+        public static Action<MapChunk, Seasons> SeasonalTranslator = null;
     }
 }

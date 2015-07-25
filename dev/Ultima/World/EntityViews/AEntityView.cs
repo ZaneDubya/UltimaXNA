@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Ultima.World.Entities;
@@ -41,7 +42,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
         // ======================================================================
 
         public float Rotation = 0f;
-        public static float PI = (float)System.Math.PI;
+        public static float PI = (float)Math.PI;
 
         protected bool DrawFlip = false;
         protected Rectangle DrawArea = Rectangle.Empty;
@@ -53,11 +54,11 @@ namespace UltimaXNA.Ultima.World.EntityViews
 
             if (Rotation != 0)
             {
-                Vector3 center = drawPosition - new Vector3(DrawArea.X - World.WorldViews.IsometricRenderer.TileSizeI + DrawArea.Width / 2, DrawArea.Y + DrawArea.Height / 2, 0);
-                float sinx = (float)System.Math.Sin(Rotation) * DrawArea.Width / 2f;
-                float cosx = (float)System.Math.Cos(Rotation) * DrawArea.Width / 2f;
-                float siny = (float)System.Math.Sin(Rotation) * -DrawArea.Height / 2f;
-                float cosy = (float)System.Math.Cos(Rotation) * -DrawArea.Height / 2f;
+                Vector3 center = drawPosition - new Vector3(DrawArea.X - IsometricRenderer.TILE_SIZE_INTEGER + DrawArea.Width / 2, DrawArea.Y + DrawArea.Height / 2, 0);
+                float sinx = (float)Math.Sin(Rotation) * DrawArea.Width / 2f;
+                float cosx = (float)Math.Cos(Rotation) * DrawArea.Width / 2f;
+                float siny = (float)Math.Sin(Rotation) * -DrawArea.Height / 2f;
+                float cosy = (float)Math.Cos(Rotation) * -DrawArea.Height / 2f;
                 // 2   0    
                 // |\  |     
                 // |  \|     
@@ -90,7 +91,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
                     // 3   1
                     vertexBuffer = VertexPositionNormalTextureHue.PolyBufferFlipped;
                     vertexBuffer[0].Position = drawPosition;
-                    vertexBuffer[0].Position.X += DrawArea.X + World.WorldViews.IsometricRenderer.TileSizeF;
+                    vertexBuffer[0].Position.X += DrawArea.X + IsometricRenderer.TILE_SIZE_FLOAT;
                     vertexBuffer[0].Position.Y -= DrawArea.Y;
 
                     vertexBuffer[1].Position = vertexBuffer[0].Position;

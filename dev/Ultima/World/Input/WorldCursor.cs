@@ -8,23 +8,24 @@
  *
  ***************************************************************************/
 #region usings
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using UltimaXNA.Configuration;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.World.Entities;
-using UltimaXNA.Ultima.World.Entities.Items;
-using UltimaXNA.Ultima.World.Entities.Items.Containers;
-using UltimaXNA.Ultima.World.Entities.Mobiles;
+using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.UI.WorldGumps;
+using UltimaXNA.Ultima.World.Entities;
+using UltimaXNA.Ultima.World.Entities.Items;
+using UltimaXNA.Ultima.World.Entities.Items.Containers;
+using UltimaXNA.Ultima.World.Entities.Mobiles;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Input
@@ -97,7 +98,7 @@ namespace UltimaXNA.Ultima.World.Input
                     // attempt to drop the item onto an interface. The only acceptable targets for dropping items are:
                     // 1. ItemGumplings that represent containers (like a bag icon)
                     // 2. Gumps that represent open Containers (GumpPicContainers, e.g. an open GumpPic of a chest)
-                    // 3. Paperdolls for my character.
+                    // 3. Paperdolls for my character and equipment slots.
                     // 4. Backpack gumppics (seen in paperdolls).
                     if (target is ItemGumpling && !(target is ItemGumplingPaperdoll))
                     {
@@ -122,7 +123,7 @@ namespace UltimaXNA.Ultima.World.Input
                         int y = (int)m_Input.MousePosition.Y - m_HeldItemOffset.Y - (target.Y + target.Owner.Y);
                         DropHeldItemToContainer(targetItem, x, y);
                     }
-                    else if (target is ItemGumplingPaperdoll || (target is GumpPic && ((GumpPic)target).IsPaperdoll))
+                    else if (target is ItemGumplingPaperdoll || (target is GumpPic && ((GumpPic)target).IsPaperdoll) || (target is EquipmentSlot))
                     {
                         if (HeldItem.ItemData.IsWearable)
                             WearHeldItem();
@@ -262,7 +263,7 @@ namespace UltimaXNA.Ultima.World.Input
                 {
                     m_ItemSpriteArtIndex = value;
 
-                    Texture2D art = IO.ArtData.GetStaticTexture(m_ItemSpriteArtIndex);
+                    Texture2D art = ArtData.GetStaticTexture(m_ItemSpriteArtIndex);
                     if (art == null)
                     {
                         // shouldn't we have a debug texture to show that we are missing this cursor art? !!!
@@ -324,7 +325,7 @@ namespace UltimaXNA.Ultima.World.Input
             }
             else if ((m_World.Input.ContinuousMouseMovementCheck || m_World.Input.IsMouseOverWorld) && !m_UserInterface.IsModalControlOpen)
             {
-                Resolution resolution = Settings.World.GumpResolution;
+                Resolution resolution = Settings.World.PlayWindowGumpResolution;
                 Direction mouseDirection = DirectionHelper.DirectionFromPoints(new Point(resolution.Width / 2, resolution.Height / 2), m_World.Input.MouseOverWorldPosition);
 
                 int artIndex = 0;
@@ -611,7 +612,7 @@ namespace UltimaXNA.Ultima.World.Input
         private void DropHeldItemToContainer(Container container)
         {
             // get random coords and drop the item there.
-            Rectangle bounds = IO.ContainerData.GetData(container.ItemID).Bounds;
+            Rectangle bounds = ContainerData.GetData(container.ItemID).Bounds;
             int x = Utility.RandomValue(bounds.Left, bounds.Right);
             int y = Utility.RandomValue(bounds.Top, bounds.Bottom);
             DropHeldItemToContainer(container, x, y);
@@ -619,8 +620,8 @@ namespace UltimaXNA.Ultima.World.Input
 
         private void DropHeldItemToContainer(Container container, int x, int y)
         {
-            Rectangle containerBounds = IO.ContainerData.GetData(container.ItemID).Bounds;
-            Texture2D itemTexture = IO.ArtData.GetStaticTexture(HeldItem.DisplayItemID);
+            Rectangle containerBounds = ContainerData.GetData(container.ItemID).Bounds;
+            Texture2D itemTexture = ArtData.GetStaticTexture(HeldItem.DisplayItemID);
             if (x < containerBounds.Left) x = containerBounds.Left;
             if (x > containerBounds.Right - itemTexture.Width) x = containerBounds.Right - itemTexture.Width;
             if (y < containerBounds.Top) y = containerBounds.Top;

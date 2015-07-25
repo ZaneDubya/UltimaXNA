@@ -8,8 +8,7 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-#region Usings
-using UltimaXNA.Core.Input.Windows;
+#region usings
 using UltimaXNA.Core.Configuration;
 #endregion
 
@@ -23,14 +22,16 @@ namespace UltimaXNA.Configuration
         private int m_SoundVolume;
         private bool m_MusicOn;
         private bool m_SoundOn;
+        private bool m_FootStepSoundOn;
 
         public AudioSettings()
         {
             MusicVolume = 100;
             SoundVolume = 100;
 
-            MusicOn = false;
+            MusicOn = true;
             SoundOn = true;
+            FootStepSoundOn = true;
         }
 
         public int MusicVolume
@@ -55,6 +56,12 @@ namespace UltimaXNA.Configuration
         {
             get { return m_SoundOn; }
             set { SetProperty(ref m_SoundOn, value); }
+        }
+
+        public bool FootStepSoundOn
+        {
+            get { return m_FootStepSoundOn; }
+            set { SetProperty(ref m_FootStepSoundOn, value); }
         }
     }
 }
