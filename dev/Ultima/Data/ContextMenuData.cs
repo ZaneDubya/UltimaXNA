@@ -15,30 +15,8 @@ using System.Linq;
 using UltimaXNA.Ultima.IO;
 #endregion
 
-namespace UltimaXNA.Ultima.World.Data
+namespace UltimaXNA.Ultima.Data
 {
-    public class ContextMenuItem
-    {
-        private readonly string m_caption;
-        private readonly int m_responseCode;
-
-        public ContextMenuItem(int nResponseCode, int iStringID, int iFlags, int iHue)
-        {
-            m_caption = StringData.Entry(iStringID);
-            m_responseCode = nResponseCode;
-        }
-
-        public int ResponseCode
-        {
-            get { return m_responseCode; }
-        }
-
-        public string Caption
-        {
-            get { return m_caption; }
-        }
-    }
-
     public class ContextMenuData
     {
         private readonly List<ContextMenuItem> m_entries = new List<ContextMenuItem>();

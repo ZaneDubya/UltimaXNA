@@ -9,11 +9,11 @@
  *
  ***************************************************************************/
 #region usings
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
-using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI;
@@ -25,7 +25,6 @@ using UltimaXNA.Ultima.Network.Server;
 using UltimaXNA.Ultima.Player;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.WorldGumps;
-using UltimaXNA.Ultima.World.Data;
 using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.Entities.Items.Containers;
