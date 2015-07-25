@@ -231,7 +231,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             Settings.World.AlwaysRun = m_AlwaysRun.IsChecked;
             Settings.World.MenuBarDisabled = m_MenuBarDisabled.IsChecked;
             Settings.World.FullScreenResolution = new Resolution(m_FullScreenResolutionsList[m_DropDownFullScreenResolutions.Index].Width, m_FullScreenResolutionsList[m_DropDownFullScreenResolutions.Index].Height);
-            Settings.World.PlayWindowGumpResolution = new Resolution(m_FullScreenResolutionsList[m_DropDownFullScreenResolutions.Index].Width, m_FullScreenResolutionsList[m_DropDownFullScreenResolutions.Index].Height);
+            Settings.World.PlayWindowGumpResolution = new Resolution(m_PlayWindowResolutionsList[m_DropDownPlayWindowResolutions.Index].Width, m_PlayWindowResolutionsList[m_DropDownPlayWindowResolutions.Index].Height);
             SwitchTopMenuGump();
         }
 

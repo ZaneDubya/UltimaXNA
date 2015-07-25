@@ -307,7 +307,7 @@
     <Compile Include="Ultima\UI\UltimaUIResourceProvider.cs" />
     <Compile Include="Ultima\UI\WorldGumps\SplitItemStackGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\UseSkillButtonGump.cs" />
-    <Compile Include="Ultima\UI\WorldGumps\WorldControl.cs" />
+    <Compile Include="Ultima\UI\Controls\WorldViewport.cs" />
     <Compile Include="Core\UI\UILayer.cs" />
     <Compile Include="Ultima\UI\Tooltip.cs" />
     <Compile Include="Core\UI\HTML\AAtom.cs" />

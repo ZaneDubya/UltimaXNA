@@ -87,7 +87,7 @@ namespace UltimaXNA.Ultima.World.Input
                 if (m_UserInterface.IsMouseOverUI)
                 {
                     AControl over = m_UserInterface.MouseOverControl;
-                    return !(over is WorldControl);
+                    return !(over is WorldViewport);
                 }
                 return false;
             }
@@ -100,7 +100,7 @@ namespace UltimaXNA.Ultima.World.Input
                 if (m_UserInterface.IsMouseOverUI)
                 {
                     AControl over = m_UserInterface.MouseOverControl;
-                    return (over is WorldControl);
+                    return (over is WorldViewport);
                 }
                 return false;
             }
@@ -110,7 +110,7 @@ namespace UltimaXNA.Ultima.World.Input
         {
             get
             {
-                WorldControl world = ServiceRegistry.GetService<WorldControl>();
+                WorldViewport world = ServiceRegistry.GetService<WorldViewport>();
                 Point mouse = new Point(m_Input.MousePosition.X - world.ScreenX, m_Input.MousePosition.Y - world.ScreenY);
                 return mouse;
             }
