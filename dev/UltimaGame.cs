@@ -9,13 +9,14 @@
  *
  ***************************************************************************/
 #region usings
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Configuration;
 using UltimaXNA.Core;
+using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
@@ -180,6 +181,10 @@ namespace UltimaXNA
 
         protected override void Update(GameTime gameTime)
         {
+            if (Profiler.InContext("OutOfContext"))
+                Profiler.ExitContext("OutOfContext");
+            Profiler.EnterContext("Update");
+
             IsFixedTimeStep = Settings.Game.IsFixedTimeStep;
 
             if(!IsRunning)
@@ -199,10 +204,19 @@ namespace UltimaXNA
                 Network.Slice();
                 ActiveModel.Update(totalMS, frameMS);
             }
+
+            Profiler.ExitContext("Update");
+            Profiler.EnterContext("OutOfContext");
         }
 
         protected override void Draw(GameTime gameTime)
         {
+            Profiler.EndFrame();
+            Profiler.BeginFrame();
+            if (Profiler.InContext("OutOfContext"))
+                Profiler.ExitContext("OutOfContext");
+            Profiler.EnterContext("RenderFrame");
+
             if(!IsMinimized)
             {
                 SpriteBatch3D.Reset();
@@ -211,11 +225,24 @@ namespace UltimaXNA
                 ActiveModel.GetView()
                     .Draw(gameTime.ElapsedGameTime.TotalMilliseconds);
                 UserInterface.Draw(gameTime.ElapsedGameTime.TotalMilliseconds);
-
-                // update fps and window caption.
-                int fps = Utility.UpdateFPS(gameTime.ElapsedGameTime.TotalMilliseconds);
-                Window.Title = Settings.Debug.ShowFps ? string.Format("UltimaXNA FPS:{0}", fps) : "UltimaXNA";
             }
+
+            Profiler.ExitContext("RenderFrame");
+            Profiler.EnterContext("OutOfContext");
+
+            double frame_time_drawing = Profiler.GetContext("RenderFrame").TimeSpent * 1000d;
+            double frame_time_updating = Profiler.GetContext("Update").TimeSpent * 1000d;
+            double frame_time = Profiler.TotalTimeMS;
+            double last_draw_ms = Profiler.GetContext("RenderFrame").AverageOfLast60Times * 1000d;
+            double other_time = Profiler.GetContext("OutOfContext").TimeSpent * 1000d;
+
+            double total_time_check = other_time + frame_time_drawing + frame_time_updating;
+
+            this.Window.Title = string.Format("UltimaXNA Draw:{0:0.00}% Update:{1:0.00}% AvgDraw:{2:0.00}ms {3}",
+                100d * (frame_time_drawing / frame_time),
+                100d * (frame_time_updating / frame_time),
+                last_draw_ms,
+                gameTime.IsRunningSlowly ? "IsRunningSlowly" : string.Empty);
         }
 
         public void SetupWindowForLogin()

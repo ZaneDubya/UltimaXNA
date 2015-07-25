@@ -10,10 +10,10 @@
  *
  ***************************************************************************/
 #region usings
-using System;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
 using UltimaXNA.Core.Diagnostics.Tracing;
 #endregion
 
@@ -134,23 +134,28 @@ namespace UltimaXNA.Core.Graphics
         public void Flush(bool doLighting)
         {
             //set up depth buffer
-            DepthStencilState depth = new DepthStencilState();
-            depth.DepthBufferEnable = true;
-            GraphicsDevice.DepthStencilState = depth;
+            DepthStencilState depthEnabled = new DepthStencilState();
+            depthEnabled.DepthBufferEnable = true;
+            GraphicsDevice.DepthStencilState = depthEnabled;
             // set up graphics device and texture sampling.
             GraphicsDevice.BlendState = BlendState.AlphaBlend;
             GraphicsDevice.RasterizerState = RasterizerState.CullNone;
-            GraphicsDevice.SamplerStates[0] = SamplerState.PointClamp;
-            GraphicsDevice.SamplerStates[1] = SamplerState.PointClamp;
-            GraphicsDevice.SamplerStates[2] = SamplerState.PointClamp;
-            GraphicsDevice.SamplerStates[3] = SamplerState.PointWrap;
-            // do normal lighting? Yes in world, no in UI.
+            GraphicsDevice.SamplerStates[0] = SamplerState.PointClamp; // the sprite texture sampler.
+            GraphicsDevice.SamplerStates[1] = SamplerState.PointClamp; // hue sampler (1/2)
+            GraphicsDevice.SamplerStates[2] = SamplerState.PointClamp; // hue sampler (2/2)
+            GraphicsDevice.SamplerStates[3] = SamplerState.PointWrap; // the minimap sampler.
+            // We use lighting parameters to shade vertexes when we're drawing the world.
             m_Effect.Parameters["DrawLighting"].SetValue(doLighting);
             // set up viewport.
             m_Effect.Parameters["ProjectionMatrix"].SetValue(ProjectionMatrixScreen);
             m_Effect.Parameters["WorldMatrix"].SetValue(ProjectionMatrixWorld);
             m_Effect.Parameters["Viewport"].SetValue(new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height));
 
+            DrawAllVertices(true);
+        }
+
+        private void DrawAllVertices(bool clearAfterDraw)
+        {
             Texture2D texture;
             List<VertexPositionNormalTextureHue> vertexList;
 
@@ -180,10 +185,16 @@ namespace UltimaXNA.Core.Graphics
                     vertexList = keyValuePairs.Current.Value;
                     GraphicsDevice.Textures[0] = texture;
                     GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertexList.ToArray(), 0, vertexList.Count, m_indexBuffer, 0, vertexList.Count / 2);
-                    vertexList.Clear();
-                    m_vertexListQueue.Enqueue(vertexList);
+                    if (clearAfterDraw)
+                    {
+                        vertexList.Clear();
+                        m_vertexListQueue.Enqueue(vertexList);
+                    }
                 }
-                m_drawQueue[(int)effect].Clear();
+                if (clearAfterDraw)
+                {
+                    m_drawQueue[(int)effect].Clear();
+                }
             }
         }
 
