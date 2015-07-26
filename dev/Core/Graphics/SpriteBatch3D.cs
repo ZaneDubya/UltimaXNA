@@ -133,10 +133,11 @@ namespace UltimaXNA.Core.Graphics
 
         public void Flush(bool doLighting)
         {
-            //set up depth buffer
-            DepthStencilState depthEnabled = new DepthStencilState();
-            depthEnabled.DepthBufferEnable = true;
-            GraphicsDevice.DepthStencilState = depthEnabled;
+            //set up depth buffers
+            DepthStencilState depthDefault = new DepthStencilState();
+            depthDefault.DepthBufferEnable = true;
+            depthDefault.DepthBufferWriteEnable = true;
+
             // set up graphics device and texture sampling.
             GraphicsDevice.BlendState = BlendState.AlphaBlend;
             GraphicsDevice.RasterizerState = RasterizerState.CullNone;
@@ -151,6 +152,7 @@ namespace UltimaXNA.Core.Graphics
             m_Effect.Parameters["WorldMatrix"].SetValue(ProjectionMatrixWorld);
             m_Effect.Parameters["Viewport"].SetValue(new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height));
 
+            GraphicsDevice.DepthStencilState = depthDefault;
             DrawAllVertices(true);
         }
 

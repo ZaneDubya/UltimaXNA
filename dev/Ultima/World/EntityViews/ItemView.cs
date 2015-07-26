@@ -46,7 +46,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             }
 
             // Update hue vector.
-            HueVector = Utility.GetHueVector(Entity.Hue, Entity.ItemData.IsPartialHue, true);
+            HueVector = Utility.GetHueVector(Entity.Hue, Entity.ItemData.IsPartialHue, false);
 
             if (Entity.Amount > 1 && Entity.ItemData.IsGeneric)
             {
