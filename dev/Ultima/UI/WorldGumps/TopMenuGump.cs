@@ -83,7 +83,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 case Buttons.Paperdoll:
                     Mobile player = (Mobile)WorldModel.Entities.GetPlayerObject();
                     if (m_UserInterface.GetControl<PaperDollGump>(player.Serial) == null)
-                        m_Client.Send(new DoubleClickPacket(player.Serial));
+                        m_Client.Send(new DoubleClickPacket(player.Serial | Serial.ProtectedAction)); // additional flag keeps us from being dismounted.
                     else
                         m_UserInterface.RemoveControl<PaperDollGump>(player.Serial);
                     break;
