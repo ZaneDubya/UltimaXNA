@@ -37,6 +37,15 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         private List<Resolution> m_FullScreenResolutionsList;
         private List<Resolution> m_PlayWindowResolutionsList;
 
+        double m_RefreshTime = 0d;
+        private TextLabelAscii[] m_Labels = new TextLabelAscii[2];
+
+        private enum Labels
+        {
+            SoundVolume,
+            MusicVolume
+        }
+
         public OptionsGump()
             : base(0, 0)
         {
@@ -74,15 +83,14 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
             AddControl(new TextLabelAscii(this, 60, 110, 1, 9, @"Sound volume"), 1);
             m_SoundVolume = (HSliderBar)AddControl(new HSliderBar(this, 60, 130, 150, 0, 100, Settings.Audio.SoundVolume, HSliderBarStyle.MetalWidgetRecessedBar), 1);
-            AddControl(new TextLabelAscii(this, 220, 130, 1, 9, Settings.Audio.SoundVolume.ToString()), 1);
+            m_Labels[(int)Labels.SoundVolume] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 220, 130, 1, 9, Settings.Audio.SoundVolume.ToString()), 1);
 
             AddControl(new TextLabelAscii(this, 85, 155, 1, 9, @"Music on/off"), 1);
             m_MusicOn = (CheckBox)AddControl(new CheckBox(this, 60, 150, 210, 211, Settings.Audio.MusicOn, 62), 1);
 
             AddControl(new TextLabelAscii(this, 60, 180, 1, 9, @"Music volume"), 1);
             m_MusicVolume = (HSliderBar)AddControl(new HSliderBar(this, 60, 200, 150, 0, 100, Settings.Audio.MusicVolume, HSliderBarStyle.MetalWidgetRecessedBar), 1);
-
-            AddControl(new TextLabelAscii(this, 220, 200, 1, 9, m_MusicVolume.Value.ToString()), 1);
+            m_Labels[(int)Labels.MusicVolume] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 220, 200, 1, 9, m_MusicVolume.Value.ToString()), 1);
 
             AddControl(new TextLabelAscii(this, 85, 225, 1, 9, @"Play footstep sound"), 1);
             m_FootStepSoundOn = (CheckBox)AddControl(new CheckBox(this, 60, 220, 210, 211, Settings.Audio.FootStepSoundOn, 62), 1);
@@ -124,7 +132,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             AddControl(new CheckBox(this, 60, 120, 210, 211, Settings.World.IsMaximized, 61), 6);
             AddControl(new TextLabelAscii(this, 85, 120, 1, 9, @"Use full screen display"), 6);
             
-            AddControl(new TextLabelAscii(this, 60, 150, 1, 9, @"Full Screen Resolution:"), 6);
+            AddControl(new TextLabelAscii(this, 60, 150, 1, 9, @"Client Window Resolution:"), 6);
             m_DropDownFullScreenResolutions = (DropDownList)AddControl(new DropDownList(this, 60, 165, 122, CreateResolutionsStringArrayFromList(m_FullScreenResolutionsList), 10, GetCurrentFullScreenIndex(), false), 6);
 
             AddControl(new TextLabelAscii(this, 60, 190, 1, 9, @"Play Window Resolution:"), 6);
@@ -154,10 +162,12 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         public override void Update(double totalMS, double frameMS)
         {
-            /*AddControl(new TextLabelAscii(this, 220, 130, 1, 9, m_SoundVolume.Value.ToString()), 1);
-            ControlsToUpdate.Add(LastControl);
-            AddControl(new TextLabelAscii(this, 220, 200, 1, 9, m_MusicVolume.Value.ToString()), 1);
-            ControlsToUpdate.Add(LastControl);*/
+            if (m_RefreshTime + 0.5d < totalMS) //need to update
+            {
+                m_RefreshTime = totalMS;
+                m_Labels[(int)Labels.MusicVolume].Text = m_MusicVolume.Value.ToString();
+                m_Labels[(int)Labels.SoundVolume].Text = m_SoundVolume.Value.ToString();
+            }
 
             base.Update(totalMS, frameMS);
         }
@@ -197,7 +207,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 if (!m_FullScreenResolutionsList.Contains(res))
                 {
                     m_FullScreenResolutionsList.Add(res);
-                }
+                }                
             }
 
             if (m_PlayWindowResolutionsList != null)
@@ -205,9 +215,13 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             else
                 m_PlayWindowResolutionsList = new List<Resolution>();
 
-            m_PlayWindowResolutionsList.Add(new Resolution(640, 480));
-            m_PlayWindowResolutionsList.Add(new Resolution(800, 600));
-            m_PlayWindowResolutionsList.Add(new Resolution(1024, 768));
+            foreach (Resolution res in m_FullScreenResolutionsList)
+            {
+                if (!m_PlayWindowResolutionsList.Contains(res) && res.Width < 2048 && res.Height < 2048)
+                {
+                    m_PlayWindowResolutionsList.Add(res);
+                }
+            }
         }
 
         public string[] CreateResolutionsStringArrayFromList(List<Resolution> resolutions)
