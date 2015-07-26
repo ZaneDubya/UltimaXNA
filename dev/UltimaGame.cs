@@ -230,6 +230,11 @@ namespace UltimaXNA
             Profiler.ExitContext("RenderFrame");
             Profiler.EnterContext("OutOfContext");
 
+            UpdateWindowCaption(gameTime);
+        }
+
+        private void UpdateWindowCaption(GameTime gameTime)
+        {
             double frame_time_drawing = Profiler.GetContext("RenderFrame").TimeSpent * 1000d;
             double frame_time_updating = Profiler.GetContext("Update").TimeSpent * 1000d;
             double frame_time = Profiler.TotalTimeMS;
