@@ -434,7 +434,7 @@ namespace UltimaXNA
                 partial = true;
 
             if (hue == 0)
-                return new Vector3(0);
+                return new Vector3(0, 0, transparent ? 0.5f : 0);
 
             return new Vector3(hue & 0x0FFF, partial ? 2 : 1, transparent ? 0.5f : 0);
         }
