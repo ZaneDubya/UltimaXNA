@@ -1,6 +1,6 @@
 float4x4 ProjectionMatrix;
 float4x4 WorldMatrix;
-float2	 Viewport;
+float2 Viewport;
 
 bool DrawLighting;
 float3 lightDirection;

@@ -32,7 +32,7 @@ namespace UltimaXNA.Configuration
             FullScreenResolution = new Resolution(1024, 768);
             WindowResolution = new Resolution(1024, 768);
             PlayWindowGumpResolution = new Resolution(1024, 768);
-            IsMaximized = true;
+            IsMaximized = false;
             Mouse = new MouseSettings(MouseButton.Left, MouseButton.Right);
             AlwaysRun = false;
             MenuBarDisabled = false;
