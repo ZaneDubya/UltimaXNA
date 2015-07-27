@@ -13,6 +13,15 @@ using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.UI.Controls;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.Input;
+using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.IO.Fonts;
+using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Ultima.World.Entities;
 #endregion
 
 namespace UltimaXNA.Ultima.UI
@@ -27,9 +36,22 @@ namespace UltimaXNA.Ultima.UI
 
         private RenderedText m_RenderedText;
 
+        private bool m_IsPropertyList = false;
+        private int m_PropertyListHash = 0;
+        private AEntity m_Entity;
+
         public Tooltip(string caption)
         {
             Caption = caption;
+            m_IsPropertyList = false;
+        }
+
+        public Tooltip(AEntity entity)
+        {
+            m_IsPropertyList = true;
+            m_Entity = entity;
+            m_PropertyListHash = m_Entity.PropertyList.Hash;
+            Caption = "<center>" + m_Entity.PropertyList.Properties;
         }
 
         public void Dispose()
@@ -39,15 +61,27 @@ namespace UltimaXNA.Ultima.UI
 
         public void Draw(SpriteBatchUI spriteBatch, int x, int y)
         {
-            // draw checkered trans underneath.
+            // determine if properties need to be updated.
+            if (m_IsPropertyList && m_PropertyListHash != m_Entity.PropertyList.Hash)
+            {
+                m_PropertyListHash = m_Entity.PropertyList.Hash;
+                Caption = "<center>" + m_Entity.PropertyList.Properties;
+            }
 
+            // update text if necessary.
             if (m_RenderedText == null)
             {
                 m_RenderedText = new RenderedText(Caption, 200);
             }
+            else if (m_RenderedText.Text != Caption)
+            {
+                m_RenderedText = null;
+                m_RenderedText = new RenderedText(Caption, 200);
+            }
 
+            // draw checkered trans underneath.
             spriteBatch.Draw2DTiled(CheckerTrans.CheckeredTransTexture, new Rectangle(x - 4, y - 4, m_RenderedText.Width + 8, m_RenderedText.Height + 8), Vector3.Zero);
-
+            // draw tooltip contents
             m_RenderedText.Draw(spriteBatch, new Point(x, y));
         }
     }

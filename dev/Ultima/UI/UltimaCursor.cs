@@ -22,6 +22,7 @@ namespace UltimaXNA.Ultima.UI
     {
         private HuedTexture m_CursorSprite = null;
         private int m_CursorSpriteArtIndex = -1;
+        private Tooltip m_Tooltip = null;
 
         public int CursorSpriteArtIndex
         {
@@ -125,6 +126,6 @@ namespace UltimaXNA.Ultima.UI
             }
         }
 
-        private Tooltip m_Tooltip = null;
+        
     }
 }
