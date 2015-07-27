@@ -240,11 +240,6 @@ namespace UltimaXNA.Ultima.World.Input
                     return;
                 MouseOverItem = m_World.Input.MousePick.MouseOverObject as Item;
             }
-
-            if (MouseOverItem != null)
-            {
-
-            }
         }
 
         public override void Dispose()
@@ -386,6 +381,46 @@ namespace UltimaXNA.Ultima.World.Input
             {
                 // cursor is over UI or there is a modal message box open. Set up to draw standard cursor sprite.
                 base.BeforeDraw(spritebatch, position);
+            }
+        }
+
+        protected override void DrawTooltip(SpriteBatchUI spritebatch, Point position)
+        {
+            if (MouseOverItem != null && MouseOverItem.PropertyList.HasProperties)
+            {
+                string caption = "<center>" + MouseOverItem.PropertyList.Properties;
+                if (m_Tooltip != null && m_Tooltip.Caption != caption)
+                {
+                    m_Tooltip.Dispose();
+                    m_Tooltip = null;
+                }
+                if (m_Tooltip == null)
+                {
+                    m_Tooltip = new Tooltip(caption);
+                }
+                m_Tooltip.Draw(spritebatch, position.X, position.Y + 24);
+            }
+            else if (m_UserInterface.IsMouseOverUI && 
+                m_UserInterface.MouseOverControl != null &&
+                m_UserInterface.MouseOverControl is ItemGumpling && 
+                (m_UserInterface.MouseOverControl as ItemGumpling).Item.PropertyList.HasProperties)
+            {
+                AEntity entity = (m_UserInterface.MouseOverControl as ItemGumpling).Item;
+                string caption = "<center>" + entity.PropertyList.Properties;
+                if (m_Tooltip != null && m_Tooltip.Caption != caption)
+                {
+                    m_Tooltip.Dispose();
+                    m_Tooltip = null;
+                }
+                if (m_Tooltip == null)
+                {
+                    m_Tooltip = new Tooltip(caption);
+                }
+                m_Tooltip.Draw(spritebatch, position.X, position.Y + 24);
+            }
+            else
+            {
+                base.DrawTooltip(spritebatch, position);
             }
         }
 

@@ -22,7 +22,7 @@ namespace UltimaXNA.Ultima.UI
     {
         private HuedTexture m_CursorSprite = null;
         private int m_CursorSpriteArtIndex = -1;
-        private Tooltip m_Tooltip = null;
+        protected Tooltip m_Tooltip = null;
 
         public int CursorSpriteArtIndex
         {
@@ -103,6 +103,11 @@ namespace UltimaXNA.Ultima.UI
                 m_CursorSprite.Draw(spritebatch, position);
             }
 
+            DrawTooltip(spritebatch, position);
+        }
+
+        protected virtual void DrawTooltip(SpriteBatchUI spritebatch, Point position)
+        {
             if (m_UserInterface.IsMouseOverUI && m_UserInterface.MouseOverControl != null && m_UserInterface.MouseOverControl.HasTooltip)
             {
                 if (m_Tooltip != null && m_Tooltip.Caption != m_UserInterface.MouseOverControl.Tooltip)
@@ -125,7 +130,5 @@ namespace UltimaXNA.Ultima.UI
                 }
             }
         }
-
-        
     }
 }

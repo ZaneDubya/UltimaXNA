@@ -13,14 +13,6 @@ using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.UI.Controls;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using UltimaXNA.Core.Graphics;
-using UltimaXNA.Core.Input;
-using UltimaXNA.Core.Input.Windows;
-using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.IO.Fonts;
-using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World.Entities;
 #endregion
 
