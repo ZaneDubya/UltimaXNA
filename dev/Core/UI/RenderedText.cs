@@ -252,6 +252,7 @@ namespace UltimaXNA.Core.UI
                     int width, height, ascender, linecount;
                     int[] lineWidths;
 
+                    Text = "<center>" + Text;
                     parseTextAndGetDimensions(Text, MaxWidth, out width, out height, out ascender, out linecount, out lineWidths);
                     LineCount = linecount;
                     m_LineWidths = lineWidths;
@@ -514,13 +515,20 @@ namespace UltimaXNA.Core.UI
             List<AAtom> word = new List<AAtom>();
             List<int> widths = new List<int>();
 
-            for (int i = 0; i < reader.Length; ++i)
+            bool hasLeftAlignment = false;
+            bool hasAnyOtherAlignment = false;
+            for (int i = 0; i < reader.Length; i++)
             {
-                if (reader.Length > 500)
-                {
+                hasLeftAlignment = (reader.Atoms[i].Style.Alignment == Alignments.Left);
+                hasAnyOtherAlignment = (reader.Atoms[i].Style.Alignment != Alignments.Left);
+            }
+            if (hasAnyOtherAlignment && hasLeftAlignment)
+            {
+                widestLine = maxwidth;
+            }
 
-                }
-
+            for (int i = 0; i < reader.Length; i++)
+            {
                 wordWidth += reader.Atoms[i].Width;
                 styleWidth -= reader.Atoms[i].Width;
                 if (styleWidth < 0)
@@ -561,9 +569,6 @@ namespace UltimaXNA.Core.UI
                         if (ch.YOffset < 0 && linecount == 0 && ascender > ch.YOffset)
                             ascender = ch.YOffset;
                     }
-
-                    if (reader.Atoms[i].Style.Alignment != Alignments.Left)
-                        widestLine = maxwidth;
 
                     if (i == reader.Length - 1 || reader.Atoms[i + 1].CanBreakAtThisAtom)
                     {

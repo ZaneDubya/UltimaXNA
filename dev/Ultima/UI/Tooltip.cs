@@ -63,12 +63,12 @@ namespace UltimaXNA.Ultima.UI
             // update text if necessary.
             if (m_RenderedText == null)
             {
-                m_RenderedText = new RenderedText(Caption, 200);
+                m_RenderedText = new RenderedText(Caption, 0);
             }
             else if (m_RenderedText.Text != Caption)
             {
                 m_RenderedText = null;
-                m_RenderedText = new RenderedText(Caption, 200);
+                m_RenderedText = new RenderedText(Caption, 0);
             }
 
             // draw checkered trans underneath.
