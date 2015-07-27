@@ -46,13 +46,13 @@ namespace UltimaXNA.Ultima.World.Input
         private InputManager m_Input;
         private WorldModel m_World;
 
-        protected Item MouseOverItem
+        public Item MouseOverItem
         {
             get
             {
                 return m_MouseOverItem;
             }
-            set
+            protected set
             {
                 if (m_MouseOverItem == value)
                     return;
@@ -239,6 +239,11 @@ namespace UltimaXNA.Ultima.World.Input
                 if (item is StaticItem || item.ItemData.Weight == 255)
                     return;
                 MouseOverItem = m_World.Input.MousePick.MouseOverObject as Item;
+            }
+
+            if (MouseOverItem != null)
+            {
+
             }
         }
 
