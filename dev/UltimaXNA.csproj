@@ -132,6 +132,7 @@
     <Compile Include="Configuration\MouseSettings.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Configuration\WorldSettings.cs" />
+    <Compile Include="Core\Audio\ASound.cs" />
     <Compile Include="Core\Audio\XNAMP3.cs" />
     <Compile Include="Core\ComponentModel\EqualityHelper.cs" />
     <Compile Include="Core\ComponentModel\NotifyPropertyChangedBase.cs" />
@@ -204,10 +205,9 @@
     <Compile Include="Core\PluginManager.cs" />
     <Compile Include="ServiceRegistry.cs" />
     <Compile Include="Ultima\Audio\AudioService.cs" />
-    <Compile Include="Ultima\Audio\SoundState.cs" />
     <Compile Include="Ultima\Audio\UOMusic.cs" />
     <Compile Include="Ultima\Audio\UOSound.cs" />
-    <Compile Include="Ultima\Audio\VolumeState.cs" />
+    <Compile Include="Core\Audio\VolumeState.cs" />
     <Compile Include="Ultima\AUltimaModel.cs" />
     <Compile Include="Configuration\DebugSettings.cs" />
     <Compile Include="Configuration\GameSettings.cs" />

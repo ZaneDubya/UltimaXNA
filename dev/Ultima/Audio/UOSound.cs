@@ -12,46 +12,28 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Audio;
+using UltimaXNA.Core.Audio;
 
 namespace UltimaXNA.Ultima.Audio
 {
-    class UOSound
+    class UOSound : ASound
     {
-        public string Name;
-        public byte[] WaveBuffer;
-        public SoundState Status = SoundState.Unloaded;
+        private byte[] m_WaveBuffer;
 
-        private readonly List<Tuple<DynamicSoundEffectInstance, float>> m_Instances;
-
-        public UOSound()
+        public UOSound(string name, byte[] buffer)
+            : base(name)
         {
-            m_Instances = new List<Tuple<DynamicSoundEffectInstance, float>>();
+            m_WaveBuffer = buffer;
         }
 
-        public void Play()
+        protected override void OnBufferNeeded(object sender, EventArgs e)
         {
-            float now = (float)UltimaGame.TotalMS;
-
-            // Check to see if any existing instances of this sound effect have stopped playing. If
-            // they have, remove the reference to them so the garbage collector can collect them.
-            for (int i = 0; i < m_Instances.Count; i++)
-                if (m_Instances[i].Item2 < now)
-                {
-                    m_Instances.RemoveAt(i);
-                    i--;
-                }
-
-            DynamicSoundEffectInstance instance = new DynamicSoundEffectInstance(22050, AudioChannels.Mono);
-            instance.BufferNeeded += new EventHandler<EventArgs>(instance_BufferNeeded);
-            instance.SubmitBuffer(WaveBuffer);
-            instance.Play();
-            m_Instances.Add(new Tuple<DynamicSoundEffectInstance, float>(instance,
-                now + (instance.GetSampleDuration(WaveBuffer.Length).Milliseconds)));
+            // not needed.
         }
 
-        void instance_BufferNeeded(object sender, EventArgs e)
+        protected override byte[] GetBuffer()
         {
-            // do nothing.
+            return m_WaveBuffer;
         }
     };
 }

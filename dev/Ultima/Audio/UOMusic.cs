@@ -10,25 +10,18 @@
  ***************************************************************************/
 
 using UltimaXNA.Ultima.IO;
+using UltimaXNA.Core.Audio;
 
 namespace UltimaXNA.Ultima.Audio
 {
-    class UOMusic
+    class UOMusic : ASound
     {
         public readonly int Index;
-        public readonly string Name;
         public readonly bool DoLoop;
 
-        public SoundState Status = SoundState.Unloaded;
+        private XNAMP3 m_MusicCurrentlyPlayingMP3 = null;
 
-        public UOMusic(int index, string name, bool loop)
-        {
-            Index = index;
-            Name = name;
-            DoLoop = loop;
-        }
-
-        public string Path
+        protected string Path
         {
             get
             {
@@ -37,20 +30,21 @@ namespace UltimaXNA.Ultima.Audio
             }
         }
 
-        public void Load()
+        public UOMusic(int index, string name, bool loop)
+            : base(name)
         {
-            if (Status == SoundState.Unloaded)
-            {
-                Status = SoundState.Loading;
-                // I commented out this code because we let windows handle loading mp3s.
-                // Static song ctor requires a URI, which is a pain in the butt,
-                // so we're going to just reflect out the ctor.
-                /*var ctor = typeof(Song).GetConstructor(
-                    BindingFlags.NonPublic | BindingFlags.Instance, null,
-                    new[] { typeof(string), typeof(string), typeof(int) }, null);*/
-                // m_Song = (Song)ctor.Invoke(new object[] { Name, Path, 0 });
-                Status = SoundState.Loaded;
-            }
+            Index = index;
+            DoLoop = loop;
+        }
+
+        protected override byte[] GetBuffer()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        protected override void OnBufferNeeded(object sender, System.EventArgs e)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
