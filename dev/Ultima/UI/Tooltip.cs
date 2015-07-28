@@ -28,22 +28,20 @@ namespace UltimaXNA.Ultima.UI
 
         private RenderedText m_RenderedText;
 
-        private bool m_IsPropertyList = false;
         private int m_PropertyListHash = 0;
         private AEntity m_Entity;
 
         public Tooltip(string caption)
         {
+            m_Entity = null;
             Caption = caption;
-            m_IsPropertyList = false;
         }
 
         public Tooltip(AEntity entity)
         {
-            m_IsPropertyList = true;
             m_Entity = entity;
             m_PropertyListHash = m_Entity.PropertyList.Hash;
-            Caption = "<center>" + m_Entity.PropertyList.Properties;
+            Caption = m_Entity.PropertyList.Properties;
         }
 
         public void Dispose()
@@ -54,27 +52,43 @@ namespace UltimaXNA.Ultima.UI
         public void Draw(SpriteBatchUI spriteBatch, int x, int y)
         {
             // determine if properties need to be updated.
-            if (m_IsPropertyList && m_PropertyListHash != m_Entity.PropertyList.Hash)
+            if (m_Entity != null && m_PropertyListHash != m_Entity.PropertyList.Hash)
             {
                 m_PropertyListHash = m_Entity.PropertyList.Hash;
-                Caption = "<center>" + m_Entity.PropertyList.Properties;
+                Caption = m_Entity.PropertyList.Properties;
             }
 
             // update text if necessary.
             if (m_RenderedText == null)
             {
-                m_RenderedText = new RenderedText(Caption, 0);
+                m_RenderedText = new RenderedText("<center>" + Caption, 0);
             }
-            else if (m_RenderedText.Text != Caption)
+            else if (m_RenderedText.Text != "<center>" + Caption)
             {
                 m_RenderedText = null;
-                m_RenderedText = new RenderedText(Caption, 0);
+                m_RenderedText = new RenderedText("<center>" + Caption, 0);
             }
 
             // draw checkered trans underneath.
             spriteBatch.Draw2DTiled(CheckerTrans.CheckeredTransTexture, new Rectangle(x - 4, y - 4, m_RenderedText.Width + 8, m_RenderedText.Height + 8), Vector3.Zero);
             // draw tooltip contents
             m_RenderedText.Draw(spriteBatch, new Point(x, y));
+        }
+
+        internal void UpdateEntity(AEntity entity)
+        {
+            if (m_Entity == null || m_Entity != entity || m_PropertyListHash != m_Entity.PropertyList.Hash)
+            {
+                m_Entity = entity;
+                m_PropertyListHash = m_Entity.PropertyList.Hash;
+                Caption = m_Entity.PropertyList.Properties;
+            }
+        }
+
+        internal void UpdateCaption(string caption)
+        {
+            m_Entity = null;
+            Caption = caption;
         }
     }
 }

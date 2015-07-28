@@ -388,16 +388,10 @@ namespace UltimaXNA.Ultima.World.Input
         {
             if (MouseOverItem != null && MouseOverItem.PropertyList.HasProperties)
             {
-                string caption = "<center>" + MouseOverItem.PropertyList.Properties;
-                if (m_Tooltip != null && m_Tooltip.Caption != caption)
-                {
-                    m_Tooltip.Dispose();
-                    m_Tooltip = null;
-                }
                 if (m_Tooltip == null)
-                {
-                    m_Tooltip = new Tooltip(caption);
-                }
+                    m_Tooltip = new Tooltip(MouseOverItem);
+                else
+                    m_Tooltip.UpdateEntity(MouseOverItem);
                 m_Tooltip.Draw(spritebatch, position.X, position.Y + 24);
             }
             else if (m_UserInterface.IsMouseOverUI && 
@@ -406,16 +400,10 @@ namespace UltimaXNA.Ultima.World.Input
                 (m_UserInterface.MouseOverControl as ItemGumpling).Item.PropertyList.HasProperties)
             {
                 AEntity entity = (m_UserInterface.MouseOverControl as ItemGumpling).Item;
-                string caption = "<center>" + entity.PropertyList.Properties;
-                if (m_Tooltip != null && m_Tooltip.Caption != caption)
-                {
-                    m_Tooltip.Dispose();
-                    m_Tooltip = null;
-                }
                 if (m_Tooltip == null)
-                {
-                    m_Tooltip = new Tooltip(caption);
-                }
+                    m_Tooltip = new Tooltip(entity);
+                else
+                    m_Tooltip.UpdateEntity(entity);
                 m_Tooltip.Draw(spritebatch, position.X, position.Y + 24);
             }
             else
