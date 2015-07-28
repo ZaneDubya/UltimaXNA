@@ -133,7 +133,6 @@
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Configuration\WorldSettings.cs" />
     <Compile Include="Core\Audio\ASound.cs" />
-    <Compile Include="Core\Audio\XNAMP3.cs" />
     <Compile Include="Core\ComponentModel\EqualityHelper.cs" />
     <Compile Include="Core\ComponentModel\NotifyPropertyChangedBase.cs" />
     <Compile Include="Configuration\Resolution.cs" />

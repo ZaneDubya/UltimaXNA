@@ -12,6 +12,9 @@ namespace UltimaXNA.Core.Audio
 
         private List<Tuple<DynamicSoundEffectInstance, double>> m_Instances;
 
+        protected int Frequency = 22050;
+        protected AudioChannels Channels = AudioChannels.Mono;
+
         public ASound(string name)
         {
             Name = name;
@@ -21,11 +24,12 @@ namespace UltimaXNA.Core.Audio
         public void Dispose()
         {
             Stop();
-            m_Instances = null;
         }
 
         public void Play()
         {
+            BeforePlay();
+            
             double now = UltimaGame.TotalMS;
 
             // Check to see if any existing instances of this sound effect have stopped playing. If
@@ -43,7 +47,7 @@ namespace UltimaXNA.Core.Audio
             byte[] buffer = GetBuffer();
             if (buffer != null && buffer.Length > 0)
             {
-                DynamicSoundEffectInstance instance = new DynamicSoundEffectInstance(22050, AudioChannels.Mono);
+                DynamicSoundEffectInstance instance = new DynamicSoundEffectInstance(Frequency, Channels);
                 instance.BufferNeeded += new EventHandler<EventArgs>(OnBufferNeeded);
                 instance.SubmitBuffer(buffer);
                 instance.Play();
@@ -57,14 +61,20 @@ namespace UltimaXNA.Core.Audio
             while (m_Instances.Count > 0)
             {
                 m_Instances[0].Item1.Stop();
+                m_Instances[0].Item1.BufferNeeded -= OnBufferNeeded;
                 m_Instances[0].Item1.Dispose();
                 m_Instances.RemoveAt(0);
             }
             m_Instances.Clear();
+
+            AfterStop();
         }
 
         abstract protected byte[] GetBuffer();
 
         abstract protected void OnBufferNeeded(object sender, EventArgs e);
+
+        virtual protected void AfterStop() { }
+        virtual protected void BeforePlay() { }
     }
 }

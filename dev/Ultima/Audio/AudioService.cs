@@ -88,9 +88,7 @@ namespace UltimaXNA.Ultima.Audio
             if (m_MusicCurrentlyPlaying != null)
             {
                 m_MusicCurrentlyPlaying.Stop();
-                m_MusicCurrentlyPlayingMP3.Stop();
-                m_MusicCurrentlyPlayingMP3.Dispose();
-                m_MusicCurrentlyPlayingMP3 = null;
+                m_MusicCurrentlyPlaying.Dispose();
                 m_MusicCurrentlyPlaying = null;
             }
         }
