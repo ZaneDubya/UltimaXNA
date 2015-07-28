@@ -252,7 +252,6 @@ namespace UltimaXNA.Core.UI
                     int width, height, ascender, linecount;
                     int[] lineWidths;
 
-                    Text = "<center>" + Text;
                     parseTextAndGetDimensions(Text, MaxWidth, out width, out height, out ascender, out linecount, out lineWidths);
                     LineCount = linecount;
                     m_LineWidths = lineWidths;
@@ -519,8 +518,8 @@ namespace UltimaXNA.Core.UI
             bool hasAnyOtherAlignment = false;
             for (int i = 0; i < reader.Length; i++)
             {
-                hasLeftAlignment = (reader.Atoms[i].Style.Alignment == Alignments.Left);
-                hasAnyOtherAlignment = (reader.Atoms[i].Style.Alignment != Alignments.Left);
+                hasLeftAlignment = hasLeftAlignment | (reader.Atoms[i].Style.Alignment == Alignments.Left);
+                hasAnyOtherAlignment = hasAnyOtherAlignment | (reader.Atoms[i].Style.Alignment != Alignments.Left);
             }
             if (hasAnyOtherAlignment && hasLeftAlignment)
             {
