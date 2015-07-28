@@ -10,7 +10,6 @@
  ***************************************************************************/
 #region usings
 using System.Collections.Generic;
-using UltimaXNA.Core.Audio;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Ultima.IO;
 #endregion
