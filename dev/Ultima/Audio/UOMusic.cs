@@ -10,25 +10,23 @@
  ***************************************************************************/
 
 using UltimaXNA.Ultima.IO;
+using UltimaXNA.Core.Audio;
+using System;
+using Microsoft.Xna.Framework.Audio;
+using UltimaXNA.Core.Audio.MP3Sharp;
 
 namespace UltimaXNA.Ultima.Audio
 {
-    class UOMusic
+    class UOMusic : ASound
     {
-        public readonly int Index;
-        public readonly string Name;
-        public readonly bool DoLoop;
+        private MP3Stream m_Stream;
+        private const int NUMBER_OF_PCM_BYTES_TO_READ_PER_CHUNK = 8192;
+        private readonly byte[] m_WaveBuffer = new byte[NUMBER_OF_PCM_BYTES_TO_READ_PER_CHUNK];
 
-        public SoundState Status = SoundState.Unloaded;
+        private bool m_Repeat;
+        private bool m_Playing;
 
-        public UOMusic(int index, string name, bool loop)
-        {
-            Index = index;
-            Name = name;
-            DoLoop = loop;
-        }
-
-        public string Path
+        protected string Path
         {
             get
             {
@@ -37,19 +35,71 @@ namespace UltimaXNA.Ultima.Audio
             }
         }
 
-        public void Load()
+        public UOMusic(int index, string name, bool loop)
+            : base(name)
         {
-            if (Status == SoundState.Unloaded)
+            m_Repeat = loop;
+            m_Playing = false;
+        }
+
+        protected override byte[] GetBuffer()
+        {
+            int bytesReturned = m_Stream.Read(m_WaveBuffer, 0, m_WaveBuffer.Length);
+            if (bytesReturned != NUMBER_OF_PCM_BYTES_TO_READ_PER_CHUNK)
             {
-                Status = SoundState.Loading;
-                // I commented out this code because we let windows handle loading mp3s.
-                // Static song ctor requires a URI, which is a pain in the butt,
-                // so we're going to just reflect out the ctor.
-                /*var ctor = typeof(Song).GetConstructor(
-                    BindingFlags.NonPublic | BindingFlags.Instance, null,
-                    new[] { typeof(string), typeof(string), typeof(int) }, null);*/
-                // m_Song = (Song)ctor.Invoke(new object[] { Name, Path, 0 });
-                Status = SoundState.Loaded;
+                if (m_Repeat)
+                {
+                    m_Stream.Position = 0;
+                    m_Stream.Read(m_WaveBuffer, bytesReturned, m_WaveBuffer.Length - bytesReturned);
+                }
+                else
+                {
+                    if (bytesReturned == 0)
+                    {
+                        Stop();
+                    }
+                }
+            }
+            return m_WaveBuffer;
+        }
+
+        protected override void OnBufferNeeded(object sender, System.EventArgs e)
+        {
+            if (m_Playing)
+            {
+                DynamicSoundEffectInstance instance = sender as DynamicSoundEffectInstance;
+                while (instance.PendingBufferCount < 3)
+                {
+                    byte[] buffer = GetBuffer();
+                    if (instance.IsDisposed)
+                        return;
+                    instance.SubmitBuffer(buffer);
+                }
+            }
+        }
+
+        protected override void BeforePlay()
+        {
+            if (m_Playing)
+            {
+                Stop();
+            }
+
+            m_Stream = new MP3Stream(Path, NUMBER_OF_PCM_BYTES_TO_READ_PER_CHUNK);
+            Frequency = m_Stream.Frequency;
+            Channels = AudioChannels.Stereo;
+
+            m_Playing = true;
+        }
+
+        protected override void AfterStop()
+        {
+            if (m_Playing)
+            {
+                m_Playing = false;
+
+                m_Stream.Close();
+                m_Stream = null;
             }
         }
     }

@@ -23,7 +23,6 @@ namespace UltimaXNA.Ultima.Audio
         private readonly Dictionary<int, UOMusic> m_Music = new Dictionary<int, UOMusic>();
 
         private UOMusic m_MusicCurrentlyPlaying = null;
-        private XNAMP3 m_MusicCurrentlyPlayingMP3 = null;
 
         public void PlaySound(int soundIndex)
         {
@@ -32,20 +31,16 @@ namespace UltimaXNA.Ultima.Audio
                 UOSound sound;
                 if (m_Sounds.TryGetValue(soundIndex, out sound))
                 {
-                    if (sound.Status == SoundState.Loaded)
-                        sound.Play();
+                    sound.Play();
                 }
                 else
                 {
-                    sound = new UOSound();
-                    m_Sounds.Add(soundIndex, sound);
                     string name;
                     byte[] data;
                     if (SoundData.TryGetSoundData(soundIndex, out data, out name))
                     {
-                        sound.Name = name;
-                        sound.WaveBuffer = data;
-                        sound.Status = SoundState.Loaded;
+                        sound = new UOSound(name, data);
+                        m_Sounds.Add(soundIndex, sound);
                         sound.Play();
                     }
                 }
@@ -59,7 +54,6 @@ namespace UltimaXNA.Ultima.Audio
                 if (id < 0) // not a valid id, used to stop music.
                 {
                     StopMusic();
-                    Tracer.Error("Received unknown music id {0}", id);
                     return;
                 }
 
@@ -83,26 +77,8 @@ namespace UltimaXNA.Ultima.Audio
                 {
                     // stop the current song
                     StopMusic();
-
-                    try
-                    {
-                        m_MusicCurrentlyPlaying = toPlay;
-                        m_MusicCurrentlyPlayingMP3 = new XNAMP3(toPlay.Path);
-                    }
-                    catch
-                    {
-                        Tracer.Error("Error opening mp3 file {0}", toPlay.Path);
-                        return;
-                    }
-
-                    try
-                    {
-                        m_MusicCurrentlyPlayingMP3.Play(toPlay.DoLoop);
-                    }
-                    catch
-                    {
-                        Tracer.Error("Error playing mp3 file {0}", toPlay.Path);
-                    }
+                    m_MusicCurrentlyPlaying = toPlay;
+                    m_MusicCurrentlyPlaying.Play();
                 }
             }
         }
@@ -111,9 +87,8 @@ namespace UltimaXNA.Ultima.Audio
         {
             if (m_MusicCurrentlyPlaying != null)
             {
-                m_MusicCurrentlyPlayingMP3.Stop();
-                m_MusicCurrentlyPlayingMP3.Dispose();
-                m_MusicCurrentlyPlayingMP3 = null;
+                m_MusicCurrentlyPlaying.Stop();
+                m_MusicCurrentlyPlaying.Dispose();
                 m_MusicCurrentlyPlaying = null;
             }
         }
