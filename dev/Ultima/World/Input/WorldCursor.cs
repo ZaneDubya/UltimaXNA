@@ -386,7 +386,21 @@ namespace UltimaXNA.Ultima.World.Input
 
         protected override void DrawTooltip(SpriteBatchUI spritebatch, Point position)
         {
-            if (MouseOverItem != null && MouseOverItem.PropertyList.HasProperties)
+            // Do not draw tooltips if:
+            // 1. Holding an item.
+            // Draw tooltips for items:
+            // 1. Items in the world (MouseOverItem)
+            // 2. ItemGumplings (both in paperdoll and in containers)
+            // 3. the Backpack icon (in paperdolls).
+            if (IsHoldingItem)
+            {
+                if (m_Tooltip != null)
+                {
+                    m_Tooltip.Dispose();
+                    m_Tooltip = null;
+                }
+            }
+            else if (MouseOverItem != null && MouseOverItem.PropertyList.HasProperties)
             {
                 if (m_Tooltip == null)
                     m_Tooltip = new Tooltip(MouseOverItem);
@@ -394,12 +408,20 @@ namespace UltimaXNA.Ultima.World.Input
                     m_Tooltip.UpdateEntity(MouseOverItem);
                 m_Tooltip.Draw(spritebatch, position.X, position.Y + 24);
             }
-            else if (m_UserInterface.IsMouseOverUI && 
-                m_UserInterface.MouseOverControl != null &&
-                m_UserInterface.MouseOverControl is ItemGumpling && 
-                (m_UserInterface.MouseOverControl as ItemGumpling).Item.PropertyList.HasProperties)
+            else if (m_UserInterface.IsMouseOverUI && m_UserInterface.MouseOverControl != null &&
+                m_UserInterface.MouseOverControl is ItemGumpling && (m_UserInterface.MouseOverControl as ItemGumpling).Item.PropertyList.HasProperties)
             {
                 AEntity entity = (m_UserInterface.MouseOverControl as ItemGumpling).Item;
+                if (m_Tooltip == null)
+                    m_Tooltip = new Tooltip(entity);
+                else
+                    m_Tooltip.UpdateEntity(entity);
+                m_Tooltip.Draw(spritebatch, position.X, position.Y + 24);
+            }
+            else if (m_UserInterface.IsMouseOverUI && m_UserInterface.MouseOverControl != null &&
+                m_UserInterface.MouseOverControl is GumpPicBackpack && (m_UserInterface.MouseOverControl as GumpPicBackpack).BackpackItem.PropertyList.HasProperties)
+            {
+                AEntity entity = (m_UserInterface.MouseOverControl as GumpPicBackpack).BackpackItem;
                 if (m_Tooltip == null)
                     m_Tooltip = new Tooltip(entity);
                 else
