@@ -671,8 +671,8 @@ namespace UltimaXNA.Ultima.World
         {
             MessageLocalizedPacket p = (MessageLocalizedPacket)packet;
 
-            string iCliLoc = constructCliLoc(StringData.Entry(p.CliLocNumber), p.Arguements);
-            ReceiveTextMessage(p.MessageType, iCliLoc, p.Hue, p.Font, p.Serial, p.SpeakerName);
+            string strCliLoc = constructCliLoc(StringData.Entry(p.CliLocNumber), p.Arguements);
+            ReceiveTextMessage(p.MessageType, strCliLoc, p.Hue, p.Font, p.Serial, p.SpeakerName);
         }
 
         private void ReceiveAsciiMessage(IRecvPacket packet)
@@ -687,34 +687,59 @@ namespace UltimaXNA.Ultima.World
             ReceiveTextMessage(p.MsgType, p.SpokenText, p.Hue, p.Font, p.Serial, p.SpeakerName);
         }
 
-        private string constructCliLoc(string nBase, string nArgs)
+        private string constructCliLoc(string baseCliloc, string arg = null, bool capitalize = false)
         {
-            string[] iArgs = nArgs.Split('\t');
-            for (int i = 0; i < iArgs.Length; i++)
-            {
-                if ((iArgs[i].Length > 0) && (iArgs[i].Substring(0, 1) == "#"))
-                {
-                    int clilocID = Convert.ToInt32(iArgs[i].Substring(1));
-                    iArgs[i] = StringData.Entry(clilocID);
-                }
-            }
+            if (string.IsNullOrEmpty(baseCliloc))
+                return string.Empty;
 
-            string iConstruct = nBase;
-            for (int i = 0; i < iArgs.Length; i++)
+            if (arg == null)
             {
-                int iBeginReplace = iConstruct.IndexOf('~', 0);
-                int iEndReplace = iConstruct.IndexOf('~', iBeginReplace + 1);
-                if ((iBeginReplace != -1) && (iEndReplace != -1))
+                if (capitalize)
                 {
-                    iConstruct = iConstruct.Substring(0, iBeginReplace) + iArgs[i] + iConstruct.Substring(iEndReplace + 1, iConstruct.Length - iEndReplace - 1);
+                    return char.ToUpper(baseCliloc[0]) + baseCliloc.Substring(1);
                 }
                 else
                 {
-                    iConstruct = nBase;
+                    return baseCliloc;
+                }
+            }
+            else
+            {
+                string[] args = arg.Split('\t');
+                for (int i = 0; i < args.Length; i++)
+                {
+                    if ((args[i].Length > 0) && (args[i].Substring(0, 1) == "#"))
+                    {
+                        int clilocID = Convert.ToInt32(args[i].Substring(1));
+                        args[i] = StringData.Entry(clilocID);
+                    }
                 }
 
+                string construct = baseCliloc;
+                for (int i = 0; i < args.Length; i++)
+                {
+                    int iBeginReplace = construct.IndexOf('~', 0);
+                    int iEndReplace = construct.IndexOf('~', iBeginReplace + 1);
+                    if ((iBeginReplace != -1) && (iEndReplace != -1))
+                    {
+                        construct = construct.Substring(0, iBeginReplace) + args[i] + construct.Substring(iEndReplace + 1, construct.Length - iEndReplace - 1);
+                    }
+                    else
+                    {
+                        construct = baseCliloc;
+                    }
+
+                }
+
+                if (capitalize)
+                {
+                    return char.ToUpper(construct[0]) + construct.Substring(1);
+                }
+                else
+                {
+                    return construct;
+                }
             }
-            return iConstruct;
         }
 
         private void ReceiveTextMessage(MessageTypes msgType, string text, int hue, int font, Serial serial, string speakerName)
@@ -909,14 +934,14 @@ namespace UltimaXNA.Ultima.World
 
             for (int i = 0; i < p.CliLocs.Count; i++)
             {
-                string iCliLoc = StringData.Entry(p.CliLocs[i]);
+                string strCliLoc = StringData.Entry(p.CliLocs[i]);
                 if (p.Arguements[i] == string.Empty)
                 {
-                    entity.PropertyList.AddProperty(iCliLoc);
+                    entity.PropertyList.AddProperty(constructCliLoc(strCliLoc, capitalize: true));
                 }
                 else
                 {
-                    entity.PropertyList.AddProperty(constructCliLoc(iCliLoc, p.Arguements[i]));
+                    entity.PropertyList.AddProperty(constructCliLoc(strCliLoc, p.Arguements[i], true));
                 }
             }
         }
