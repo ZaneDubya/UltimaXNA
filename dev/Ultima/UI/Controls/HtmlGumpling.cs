@@ -130,6 +130,9 @@ namespace UltimaXNA.Ultima.UI.Controls
                 m_Scrollbar.MaxValue = m_RenderedText.Height - Height + (HasBackground ? 8 : 0);
                 ScrollY = m_Scrollbar.Value;
             }
+
+            if (Width != m_RenderedText.Width)
+                Width = m_RenderedText.Width;
         }
 
         public override void Update(double totalMS, double frameMS)
@@ -147,9 +150,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
 
             if (Width != m_RenderedText.Width)
-            {
                 Width = m_RenderedText.Width;
-            }
             base.Update(totalMS, frameMS);
         }
 

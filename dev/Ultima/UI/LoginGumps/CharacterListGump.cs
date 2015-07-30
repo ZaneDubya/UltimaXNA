@@ -9,6 +9,7 @@
  *
  ***************************************************************************/
 #region usings
+using Microsoft.Xna.Framework;
 using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.Login.Accounts;
 using UltimaXNA.Ultima.UI.Controls;
@@ -144,7 +145,8 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
 
         string formatHTMLCharName(int index, string name, int hue)
         {
-            return string.Format("<center><big><a href=\"CHAR={0}\" color='#543' hovercolor='#345' activecolor='#222' style=\"text-decoration: none\">{1}</a></big></center>", 
+            // add a single char to the left so the width doesn't change.
+            return string.Format("<left> </left><center><big><a href=\"CHAR={0}\" color='#543' hovercolor='#345' activecolor='#222' style=\"text-decoration: none\">{1}</a></big></center>", 
                 index, name);
         }
     }
