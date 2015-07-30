@@ -935,16 +935,13 @@ namespace UltimaXNA.Ultima.World
             for (int i = 0; i < p.CliLocs.Count; i++)
             {
                 string strCliLoc = StringData.Entry(p.CliLocs[i]);
+                if (p.Arguements[i] == string.Empty)
+                    strCliLoc = constructCliLoc(strCliLoc, capitalize: true);
+                else
+                    strCliLoc = constructCliLoc(strCliLoc, p.Arguements[i], true);
                 if (i == 0)
                     strCliLoc = string.Format("<span color='#ff0'>{0}</span>", strCliLoc);
-                if (p.Arguements[i] == string.Empty)
-                {
-                    entity.PropertyList.AddProperty(constructCliLoc(strCliLoc, capitalize: true));
-                }
-                else
-                {
-                    entity.PropertyList.AddProperty(constructCliLoc(strCliLoc, p.Arguements[i], true));
-                }
+                entity.PropertyList.AddProperty(strCliLoc);
             }
         }
 
