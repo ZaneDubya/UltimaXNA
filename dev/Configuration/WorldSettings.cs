@@ -23,7 +23,7 @@ namespace UltimaXNA.Configuration
         private Resolution m_WindowResolution;
         private Resolution m_WorldGumpResolution;
         private bool m_IsFullScreen;
-        private MouseSettings m_Mouse;
+        private Mouse m_Mouse;
         private bool m_AlwaysRun;
         private bool m_MenuBarDisabled;
 
@@ -33,7 +33,7 @@ namespace UltimaXNA.Configuration
             WindowResolution = new Resolution(1024, 768);
             PlayWindowGumpResolution = new Resolution(1024, 768);
             IsMaximized = false;
-            Mouse = new MouseSettings(MouseButton.Left, MouseButton.Right);
+            Mouse = new Mouse();
             AlwaysRun = false;
             MenuBarDisabled = false;
         }
@@ -44,7 +44,7 @@ namespace UltimaXNA.Configuration
             set { SetProperty(ref m_IsFullScreen, value); }
         }
 
-        public MouseSettings Mouse
+        public Mouse Mouse
         {
             get { return m_Mouse; }
             set { SetProperty(ref m_Mouse, value); }
