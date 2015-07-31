@@ -30,27 +30,36 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         public MobileHealthTrackerGump(Mobile mobile)
             : base(mobile.Serial, 0)
         {
+            while (UserInterface.GetControl<MobileHealthTrackerGump>(mobile.Serial) != null)
+            {
+                UserInterface.GetControl<MobileHealthTrackerGump>(mobile.Serial).Dispose();
+            }
+
+            IsMovable = true;
+            HandlesMouseInput = true;
+
             m_Mobile = mobile;
 
             if (m_Mobile.IsClientEntity)
             {
                 AddControl(m_Background = new GumpPic(this, 0, 0, 0x0803, 0));
-                m_Bars = new GumpPicWithWidth[3];
-                AddControl(m_Bars[0] = new GumpPicWithWidth(this, 38, 12, 0x0806, 0, 1f));
-                AddControl(m_Bars[1] = new GumpPicWithWidth(this, 38, 26, 0x0806, 0, 1f));
-                AddControl(m_Bars[2] = new GumpPicWithWidth(this, 38, 40, 0x0806, 0, 1f));
                 m_BarBGs = new GumpPic[3];
-                AddControl(m_BarBGs[0] = new GumpPic(this, 38, 12, 0x0805, 0));
-                AddControl(m_BarBGs[1] = new GumpPic(this, 38, 26, 0x0805, 0));
-                AddControl(m_BarBGs[2] = new GumpPic(this, 38, 40, 0x0805, 0));
+                AddControl(m_BarBGs[0] = new GumpPic(this, 34, 10, 0x0805, 0));
+                AddControl(m_BarBGs[1] = new GumpPic(this, 34, 24, 0x0805, 0));
+                AddControl(m_BarBGs[2] = new GumpPic(this, 34, 38, 0x0805, 0));
+                m_Bars = new GumpPicWithWidth[3];
+                AddControl(m_Bars[0] = new GumpPicWithWidth(this, 34, 10, 0x0806, 0, 1f));
+                AddControl(m_Bars[1] = new GumpPicWithWidth(this, 34, 24, 0x0806, 0, 1f));
+                AddControl(m_Bars[2] = new GumpPicWithWidth(this, 34, 38, 0x0806, 0, 1f));
             }
             else
             {
                 AddControl(m_Background = new GumpPic(this, 0, 0, 0x0804, 0));
-                m_Bars = new GumpPicWithWidth[1];
-                AddControl(m_Bars[0] = new GumpPicWithWidth(this, 38, 12, 0x0806, 0, 1f));
                 m_BarBGs = new GumpPic[1];
-                AddControl(m_BarBGs[0] = new GumpPic(this, 38, 12, 0x0805, 0));
+                AddControl(m_BarBGs[0] = new GumpPic(this, 34, 38, 0x0805, 0));
+                m_Bars = new GumpPicWithWidth[1];
+                AddControl(m_Bars[0] = new GumpPicWithWidth(this, 34, 38, 0x0806, 0, 1f));
+                AddControl(new HtmlGumpling(this, 13, 13, 120, 20, 0, 0, String.Format("<span color='#000' style='font-family:uni0;'>{0}", mobile.Name)));
             }
         }
 
@@ -58,9 +67,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
             m_Bars[0].PercentWidthDrawn = ((float)m_Mobile.Health.Current / m_Mobile.Health.Max);
             if (m_Mobile.Flags.IsBlessed)
-                m_Bars[0].GumpID = 0x080?;
+                m_Bars[0].GumpID = 0x0809;
             else if (m_Mobile.Flags.IsPoisoned)
-                m_Bars[0].GumpID = 0x080?;
+                m_Bars[0].GumpID = 0x0808;
 
             if (m_Mobile.IsClientEntity)
             {
