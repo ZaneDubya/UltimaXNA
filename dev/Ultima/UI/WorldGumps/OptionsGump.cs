@@ -34,8 +34,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         DropDownList m_DropDownFullScreenResolutions;
         DropDownList m_DropDownPlayWindowResolutions;
 
-        private List<Resolution> m_FullScreenResolutionsList;
-        private List<Resolution> m_PlayWindowResolutionsList;
+        private List<ResolutionConfig> m_FullScreenResolutionsList;
+        private List<ResolutionConfig> m_PlayWindowResolutionsList;
 
         double m_RefreshTime = 0d;
         private TextLabelAscii[] m_Labels = new TextLabelAscii[2];
@@ -199,11 +199,11 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             if (m_FullScreenResolutionsList != null)
                 m_FullScreenResolutionsList.Clear();
             else
-                m_FullScreenResolutionsList = new List<Resolution>();
+                m_FullScreenResolutionsList = new List<ResolutionConfig>();
 
             foreach (DisplayMode mode in GraphicsAdapter.DefaultAdapter.SupportedDisplayModes)
             {
-                Resolution res = new Resolution(mode.Width, mode.Height);
+                ResolutionConfig res = new ResolutionConfig(mode.Width, mode.Height);
                 if (!m_FullScreenResolutionsList.Contains(res))
                 {
                     m_FullScreenResolutionsList.Add(res);
@@ -213,9 +213,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             if (m_PlayWindowResolutionsList != null)
                 m_PlayWindowResolutionsList.Clear();
             else
-                m_PlayWindowResolutionsList = new List<Resolution>();
+                m_PlayWindowResolutionsList = new List<ResolutionConfig>();
 
-            foreach (Resolution res in m_FullScreenResolutionsList)
+            foreach (ResolutionConfig res in m_FullScreenResolutionsList)
             {
                 if (!m_PlayWindowResolutionsList.Contains(res) && res.Width < 2048 && res.Height < 2048)
                 {
@@ -224,7 +224,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             }
         }
 
-        public string[] CreateResolutionsStringArrayFromList(List<Resolution> resolutions)
+        public string[] CreateResolutionsStringArrayFromList(List<ResolutionConfig> resolutions)
         {
             string[] array = new string[resolutions.Count];
             for (int i = 0; i < resolutions.Count; i++)
@@ -244,8 +244,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             //interface
             Settings.World.AlwaysRun = m_AlwaysRun.IsChecked;
             Settings.World.MenuBarDisabled = m_MenuBarDisabled.IsChecked;
-            Settings.World.FullScreenResolution = new Resolution(m_FullScreenResolutionsList[m_DropDownFullScreenResolutions.Index].Width, m_FullScreenResolutionsList[m_DropDownFullScreenResolutions.Index].Height);
-            Settings.World.PlayWindowGumpResolution = new Resolution(m_PlayWindowResolutionsList[m_DropDownPlayWindowResolutions.Index].Width, m_PlayWindowResolutionsList[m_DropDownPlayWindowResolutions.Index].Height);
+            Settings.World.FullScreenResolution = new ResolutionConfig(m_FullScreenResolutionsList[m_DropDownFullScreenResolutions.Index].Width, m_FullScreenResolutionsList[m_DropDownFullScreenResolutions.Index].Height);
+            Settings.World.PlayWindowGumpResolution = new ResolutionConfig(m_PlayWindowResolutionsList[m_DropDownPlayWindowResolutions.Index].Width, m_PlayWindowResolutionsList[m_DropDownPlayWindowResolutions.Index].Height);
             SwitchTopMenuGump();
         }
 

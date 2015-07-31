@@ -19,21 +19,21 @@ namespace UltimaXNA.Configuration
     {
         public const string SectionName = "world";
 
-        private Resolution m_FullScreenResolution;
-        private Resolution m_WindowResolution;
-        private Resolution m_WorldGumpResolution;
+        private ResolutionConfig m_FullScreenResolution;
+        private ResolutionConfig m_WindowResolution;
+        private ResolutionConfig m_WorldGumpResolution;
         private bool m_IsFullScreen;
-        private Mouse m_Mouse;
+        private MouseConfig m_Mouse;
         private bool m_AlwaysRun;
         private bool m_MenuBarDisabled;
 
         public WorldSettings()
         {
-            FullScreenResolution = new Resolution(1024, 768);
-            WindowResolution = new Resolution(1024, 768);
-            PlayWindowGumpResolution = new Resolution(1024, 768);
+            FullScreenResolution = new ResolutionConfig(1024, 768);
+            WindowResolution = new ResolutionConfig(1024, 768);
+            PlayWindowGumpResolution = new ResolutionConfig(1024, 768);
             IsMaximized = false;
-            Mouse = new Mouse();
+            Mouse = new MouseConfig();
             AlwaysRun = false;
             MenuBarDisabled = false;
         }
@@ -44,25 +44,25 @@ namespace UltimaXNA.Configuration
             set { SetProperty(ref m_IsFullScreen, value); }
         }
 
-        public Mouse Mouse
+        public MouseConfig Mouse
         {
             get { return m_Mouse; }
             set { SetProperty(ref m_Mouse, value); }
         }
 
-        public Resolution FullScreenResolution
+        public ResolutionConfig FullScreenResolution
         {
             get { return m_FullScreenResolution; }
             set { SetProperty(ref m_FullScreenResolution, value); }
         }
 
-        public Resolution WindowResolution
+        public ResolutionConfig WindowResolution
         {
             get { return m_WindowResolution; }
             set { SetProperty(ref m_WindowResolution, value); }
         }
 
-        public Resolution PlayWindowGumpResolution
+        public ResolutionConfig PlayWindowGumpResolution
         {
             get { return m_WorldGumpResolution; }
             set { SetProperty(ref m_WorldGumpResolution, value); }

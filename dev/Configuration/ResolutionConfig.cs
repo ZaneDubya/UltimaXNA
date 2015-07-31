@@ -17,17 +17,17 @@ namespace UltimaXNA.Configuration
     /// <summary>
     /// A class that describes a resolution width height pair. Defaults to 1024x768.
     /// </summary>
-    public class Resolution : NotifyPropertyChangedBase
+    public class ResolutionConfig : NotifyPropertyChangedBase
     {
         private int m_Height = 768;
         private int m_Width = 1024;
 
-        public Resolution()
+        public ResolutionConfig()
         {
 
         }
 
-        public Resolution(int width, int height)
+        public ResolutionConfig(int width, int height)
         {
             Width = width;
             Height = height;

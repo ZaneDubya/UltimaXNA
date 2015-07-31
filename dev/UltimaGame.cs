@@ -254,7 +254,7 @@ namespace UltimaXNA
         {
             Restore();
             Window.AllowUserResizing = false;
-            SetGraphicsDeviceWidthHeight(new Resolution(800, 600)); // a wee bit bigger than legacy. Looks nicer.
+            SetGraphicsDeviceWidthHeight(new ResolutionConfig(800, 600)); // a wee bit bigger than legacy. Looks nicer.
         }
 
         public void SetupWindowForWorld()
@@ -275,7 +275,7 @@ namespace UltimaXNA
             }
             else
             {
-                Settings.World.WindowResolution = new Resolution(GraphicsDeviceManager.PreferredBackBufferWidth, GraphicsDeviceManager.PreferredBackBufferHeight);
+                Settings.World.WindowResolution = new ResolutionConfig(GraphicsDeviceManager.PreferredBackBufferWidth, GraphicsDeviceManager.PreferredBackBufferHeight);
             }
         }
 
@@ -346,7 +346,7 @@ namespace UltimaXNA
         private void OnWindowSizeChanged(object sender, EventArgs e)
         {
             GameWindow window = (sender as GameWindow);
-            Resolution resolution = new Resolution(window.ClientBounds.Width, window.ClientBounds.Height);
+            ResolutionConfig resolution = new ResolutionConfig(window.ClientBounds.Width, window.ClientBounds.Height);
             // this only occurs when the world is active. Make sure that we don't reduce the window size
             // smaller than the world gump size.
             if (resolution.Width < Settings.World.PlayWindowGumpResolution.Width)
@@ -356,7 +356,7 @@ namespace UltimaXNA
             SetGraphicsDeviceWidthHeight(resolution);
         }
 
-        private void SetGraphicsDeviceWidthHeight(Resolution resolution)
+        private void SetGraphicsDeviceWidthHeight(ResolutionConfig resolution)
         {
             GraphicsDeviceManager.PreferredBackBufferWidth = resolution.Width;
             GraphicsDeviceManager.PreferredBackBufferHeight = resolution.Height;

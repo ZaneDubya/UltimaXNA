@@ -129,13 +129,13 @@
   <ItemGroup>
     <Compile Include="Configuration\AudioSettings.cs" />
     <Compile Include="Configuration\GumpSettings.cs" />
-    <Compile Include="Configuration\Mouse.cs" />
+    <Compile Include="Configuration\MouseConfig.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Configuration\WorldSettings.cs" />
     <Compile Include="Core\Audio\ASound.cs" />
     <Compile Include="Core\ComponentModel\EqualityHelper.cs" />
     <Compile Include="Core\ComponentModel\NotifyPropertyChangedBase.cs" />
-    <Compile Include="Configuration\Resolution.cs" />
+    <Compile Include="Configuration\ResolutionConfig.cs" />
     <Compile Include="Core\Configuration\TextSettingsFileWriter.cs" />
     <Compile Include="Core\Diagnostics\EventLevels.cs" />
     <Compile Include="Core\Diagnostics\HighPerformanceTimer.cs" />
