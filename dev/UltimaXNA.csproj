@@ -262,9 +262,10 @@
     <Compile Include="Ultima\Network\Client\QuestGumpRequestPacket.cs" />
     <Compile Include="Ultima\Network\Server\ServerPingPacket.cs" />
     <Compile Include="Ultima\UI\Controls\EquipmentSlot.cs" />
+    <Compile Include="Ultima\UI\Controls\GumpPicWithWidth.cs" />
     <Compile Include="Ultima\UI\WorldGumps\ContextMenuGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\LogoutGump.cs" />
-    <Compile Include="Ultima\UI\WorldGumps\MobileHealthTracker.cs" />
+    <Compile Include="Ultima\UI\WorldGumps\MobileHealthTrackerGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\OptionsGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\UseSpellButtonGump.cs" />
     <Compile Include="Ultima\World\Entities\Items\Containers\SpellBook.cs" />

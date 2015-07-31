@@ -208,12 +208,17 @@ namespace UltimaXNA.Ultima.World.Input
                         case TargetType.Position:
                             if (m_World.Input.IsMouseOverUI)
                             {
-                                // get object under mouse cursor. We can only hue items.
-                                // ItemGumping is the base class for all items, containers, and paperdoll items.
+                                // get object under mouse cursor.
                                 AControl target = m_UserInterface.MouseOverControl;
                                 if (target is ItemGumpling)
                                 {
+                                    // ItemGumping is the base class for all items, containers, and paperdoll items.
                                     mouseTargetingEventObject(((ItemGumpling)target).Item);
+                                }
+                                else if (target.OwnerTopmost is MobileHealthTrackerGump)
+                                {
+                                    // this is a mobile's mini-status gump (health bar, etc.) We can target it to cast spells on that mobile.
+                                    mouseTargetingEventObject(((MobileHealthTrackerGump)target.OwnerTopmost).Mobile);
                                 }
                             }
                             else if (m_World.Input.IsMouseOverWorld)
@@ -348,7 +353,7 @@ namespace UltimaXNA.Ultima.World.Input
                         artIndex = 8302;
                         break;
                     case Direction.South:
-                        CursorOffset = new Point(4, 28);
+                        CursorOffset = new Point(2, 26);
                         artIndex = 8303;
                         break;
                     case Direction.Left:

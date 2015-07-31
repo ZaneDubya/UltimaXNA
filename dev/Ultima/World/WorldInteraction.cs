@@ -169,25 +169,9 @@ namespace UltimaXNA.Ultima.World
 
         public void CreateLabel(MessageTypes msgType, Serial serial, string text, int hue, int font)
         {
-            Overhead overhead;
-
             if (serial.IsValid)
             {
-                overhead = WorldModel.Entities.AddOverhead(msgType, serial, "<outline>" + text, font, hue);
-                // Labels that are longer than the current name should be set as the name
-                if (serial.IsMobile)
-                {
-                    Mobile m = WorldModel.Entities.GetObject<Mobile>(serial, false);
-                    if (m == null)
-                    {
-                        // received a label for a mobile that does not exist!
-                    }
-                    else
-                    {
-                        if (m.Name == null || m.Name.Length < text.Length)
-                            m.Name = text;
-                    }
-                }
+                WorldModel.Entities.AddOverhead(msgType, serial, "<outline>" + text, font, hue);
             }
             else
             {

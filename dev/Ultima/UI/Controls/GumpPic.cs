@@ -19,15 +19,25 @@ namespace UltimaXNA.Ultima.UI.Controls
 {
     class GumpPic : AControl
     {
-        protected Texture2D m_texture = null;
-        int m_gumpID;
-        int m_hue;
+        protected Texture2D m_Texture = null;
+        private int m_LastFrameGumpID = -1;
 
-        private bool m_IsPaperdoll = false;
+        internal int GumpID
+        {
+            get;
+            set;
+        }
+
+        internal int Hue
+        {
+            get;
+            set;
+        }
+
         internal bool IsPaperdoll
         {
-            get { return m_IsPaperdoll; }
-            set { m_IsPaperdoll = value; }
+            get;
+            set;
         }
 
         public GumpPic(AControl owner)
@@ -46,8 +56,8 @@ namespace UltimaXNA.Ultima.UI.Controls
             if (arguements.Length > 4)
             {
                 // has a HUE=XXX arguement (and potentially a CLASS=XXX argument).
-                string huess = arguements[4].Substring(arguements[4].IndexOf('=') + 1);
-                hue = Int32.Parse(huess);
+                string hueArgument = arguements[4].Substring(arguements[4].IndexOf('=') + 1);
+                hue = Int32.Parse(hueArgument);
             }
             buildGumpling(x, y, gumpID, hue);
         }
@@ -61,16 +71,17 @@ namespace UltimaXNA.Ultima.UI.Controls
         void buildGumpling(int x, int y, int gumpID, int hue)
         {
             Position = new Point(x, y);
-            m_gumpID = gumpID;
-            m_hue = hue;
+            GumpID = gumpID;
+            Hue = hue;
         }
 
         public override void Update(double totalMS, double frameMS)
         {
-            if (m_texture == null)
+            if (m_Texture == null || GumpID != m_LastFrameGumpID)
             {
-                m_texture = GumpData.GetGumpXNA(m_gumpID);
-                Size = new Point(m_texture.Width, m_texture.Height);
+                m_LastFrameGumpID = GumpID;
+                m_Texture = GumpData.GetGumpXNA(GumpID);
+                Size = new Point(m_Texture.Width, m_Texture.Height);
             }
 
             base.Update(totalMS, frameMS);
@@ -78,8 +89,8 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
-            Vector3 hueVector = Utility.GetHueVector(m_hue);
-            spriteBatch.Draw2D(m_texture, new Vector3(position.X, position.Y, 0), hueVector);
+            Vector3 hueVector = Utility.GetHueVector(Hue);
+            spriteBatch.Draw2D(m_Texture, new Vector3(position.X, position.Y, 0), hueVector);
             base.Draw(spriteBatch, position);
         }
 
@@ -87,7 +98,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             ushort[] pixelData;
             pixelData = new ushort[1];
-            m_texture.GetData<ushort>(0, new Rectangle(x, y, 1, 1), pixelData, 0, 1);
+            m_Texture.GetData<ushort>(0, new Rectangle(x, y, 1, 1), pixelData, 0, 1);
             if (pixelData[0] > 0)
                 return true;
             else

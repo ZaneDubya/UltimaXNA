@@ -1,4 +1,14 @@
-﻿#region usings
+﻿/***************************************************************************
+ *   WorldInput.cs
+ *   Copyright (c) 2015 UltimaXNA Development Team
+ *   
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region usings
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using UltimaXNA.Configuration;
@@ -12,6 +22,7 @@ using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
+using UltimaXNA.Ultima.UI.WorldGumps;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Input
@@ -405,6 +416,9 @@ namespace UltimaXNA.Ultima.World.Input
                 else if(overEntity is Mobile)
                 {
                     // drag off a status gump for this mobile.
+                    MobileHealthTrackerGump gump = new MobileHealthTrackerGump(overEntity as Mobile);
+                    m_UserInterface.AddControl(gump, e.X - 77, e.Y - 30);
+                    m_UserInterface.AttemptDragControl(gump, new Point(e.X, e.Y), true);
                 }
             }
 
