@@ -21,7 +21,11 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 {
     class MobileHealthTrackerGump : Gump
     {
-        private Mobile m_Mobile;
+        public Mobile Mobile
+        {
+            get;
+            private set;
+        }
 
         private GumpPic m_Background;
         private GumpPicWithWidth[] m_Bars;
@@ -38,9 +42,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             IsMovable = true;
             HandlesMouseInput = true;
 
-            m_Mobile = mobile;
+            Mobile = mobile;
 
-            if (m_Mobile.IsClientEntity)
+            if (Mobile.IsClientEntity)
             {
                 AddControl(m_Background = new GumpPic(this, 0, 0, 0x0803, 0));
                 m_BarBGs = new GumpPic[3];
@@ -65,20 +69,20 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         public override void Update(double totalMS, double frameMS)
         {
-            m_Bars[0].PercentWidthDrawn = ((float)m_Mobile.Health.Current / m_Mobile.Health.Max);
-            if (m_Mobile.Flags.IsBlessed)
+            m_Bars[0].PercentWidthDrawn = ((float)Mobile.Health.Current / Mobile.Health.Max);
+            if (Mobile.Flags.IsBlessed)
                 m_Bars[0].GumpID = 0x0809;
-            else if (m_Mobile.Flags.IsPoisoned)
+            else if (Mobile.Flags.IsPoisoned)
                 m_Bars[0].GumpID = 0x0808;
 
-            if (m_Mobile.IsClientEntity)
+            if (Mobile.IsClientEntity)
             {
-                if (m_Mobile.Flags.IsWarMode)
+                if (Mobile.Flags.IsWarMode)
                     m_Background.GumpID = 0x0807;
                 else
                     m_Background.GumpID = 0x0803;
-                m_Bars[1].PercentWidthDrawn = ((float)m_Mobile.Stamina.Current / m_Mobile.Stamina.Max);
-                m_Bars[2].PercentWidthDrawn = ((float)m_Mobile.Mana.Current / m_Mobile.Mana.Max);
+                m_Bars[1].PercentWidthDrawn = ((float)Mobile.Stamina.Current / Mobile.Stamina.Max);
+                m_Bars[2].PercentWidthDrawn = ((float)Mobile.Mana.Current / Mobile.Mana.Max);
             }
             else
             {
