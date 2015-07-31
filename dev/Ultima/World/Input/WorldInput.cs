@@ -12,6 +12,7 @@ using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
+using UltimaXNA.Ultima.UI.WorldGumps;
 #endregion
 
 namespace UltimaXNA.Ultima.World.Input
@@ -405,6 +406,7 @@ namespace UltimaXNA.Ultima.World.Input
                 else if(overEntity is Mobile)
                 {
                     // drag off a status gump for this mobile.
+                    MobileHealthTrackerGump gump; // !!!
                 }
             }
 

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
 {
-    class MobileHealthTracker
+    class MobileHealthTrackerGump
     {
     }
 }
