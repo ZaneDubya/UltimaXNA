@@ -348,7 +348,7 @@ namespace UltimaXNA.Ultima.World.Input
                         artIndex = 8302;
                         break;
                     case Direction.South:
-                        CursorOffset = new Point(4, 28);
+                        CursorOffset = new Point(2, 26);
                         artIndex = 8303;
                         break;
                     case Direction.Left:
