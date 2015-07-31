@@ -129,7 +129,7 @@
   <ItemGroup>
     <Compile Include="Configuration\AudioSettings.cs" />
     <Compile Include="Configuration\GumpSettings.cs" />
-    <Compile Include="Configuration\MouseSettings.cs" />
+    <Compile Include="Configuration\Mouse.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Configuration\WorldSettings.cs" />
     <Compile Include="Core\Audio\ASound.cs" />

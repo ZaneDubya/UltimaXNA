@@ -14,10 +14,18 @@ using UltimaXNA.Core.ComponentModel;
 
 namespace UltimaXNA.Configuration
 {
+    /// <summary>
+    /// A class that describes a resolution width height pair. Defaults to 1024x768.
+    /// </summary>
     public class Resolution : NotifyPropertyChangedBase
     {
-        private int m_Height;
-        private int m_Width;
+        private int m_Height = 768;
+        private int m_Width = 1024;
+
+        public Resolution()
+        {
+
+        }
 
         public Resolution(int width, int height)
         {
