@@ -269,29 +269,29 @@ namespace UltimaXNA.Core.IO
 
         private class WorkerThread
         {
-            private readonly AsyncWriter m_Owner;
+            private readonly AsyncWriter m_Parent;
 
-            public WorkerThread(AsyncWriter owner)
+            public WorkerThread(AsyncWriter parent)
             {
-                m_Owner = owner;
+                m_Parent = parent;
             }
 
             public void Worker()
             {
                 m_ThreadCount++;
-                while(m_Owner.m_WriteQueue.Count > 0)
+                while(m_Parent.m_WriteQueue.Count > 0)
                 {
-                    MemoryStream mem = (MemoryStream)m_Owner.m_WriteQueue.Dequeue();
+                    MemoryStream mem = (MemoryStream)m_Parent.m_WriteQueue.Dequeue();
 
                     if(mem != null && mem.Length > 0)
                     {
-                        mem.WriteTo(m_Owner.m_File);
+                        mem.WriteTo(m_Parent.m_File);
                     }
                 }
 
-                if(m_Owner.m_Closed)
+                if(m_Parent.m_Closed)
                 {
-                    m_Owner.m_File.Close();
+                    m_Parent.m_File.Close();
                 }
 
                 m_ThreadCount--;

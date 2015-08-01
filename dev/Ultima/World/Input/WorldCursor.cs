@@ -119,8 +119,8 @@ namespace UltimaXNA.Ultima.World.Input
                         Container targetItem = (Container)((GumpPicContainer)target).Item;
                         MouseOverItem = targetItem;
 
-                        int x = (int)m_Input.MousePosition.X - m_HeldItemOffset.X - (target.X + target.Owner.X);
-                        int y = (int)m_Input.MousePosition.Y - m_HeldItemOffset.Y - (target.Y + target.Owner.Y);
+                        int x = (int)m_Input.MousePosition.X - m_HeldItemOffset.X - (target.X + target.Parent.X);
+                        int y = (int)m_Input.MousePosition.Y - m_HeldItemOffset.Y - (target.Y + target.Parent.Y);
                         DropHeldItemToContainer(targetItem, x, y);
                     }
                     else if (target is ItemGumplingPaperdoll || (target is GumpPic && ((GumpPic)target).IsPaperdoll) || (target is EquipmentSlot))
@@ -215,10 +215,10 @@ namespace UltimaXNA.Ultima.World.Input
                                     // ItemGumping is the base class for all items, containers, and paperdoll items.
                                     mouseTargetingEventObject(((ItemGumpling)target).Item);
                                 }
-                                else if (target.OwnerTopmost is MobileHealthTrackerGump)
+                                else if (target.RootParent is MobileHealthTrackerGump)
                                 {
                                     // this is a mobile's mini-status gump (health bar, etc.) We can target it to cast spells on that mobile.
-                                    mouseTargetingEventObject(((MobileHealthTrackerGump)target.OwnerTopmost).Mobile);
+                                    mouseTargetingEventObject(((MobileHealthTrackerGump)target.RootParent).Mobile);
                                 }
                             }
                             else if (m_World.Input.IsMouseOverWorld)

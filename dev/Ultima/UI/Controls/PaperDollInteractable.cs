@@ -26,10 +26,10 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         WorldModel m_World;
 
-        public PaperDollInteractable(AControl owner, int x, int y)
+        public PaperDollInteractable(AControl parent, int x, int y)
             : base(0, 0)
         {
-            Owner = owner;
+            Parent = parent;
             Position = new Point(x, y);
 
             m_World = ServiceRegistry.GetService<WorldModel>();

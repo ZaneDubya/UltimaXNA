@@ -24,8 +24,8 @@ namespace UltimaXNA.Ultima.UI.Controls
         private int m_x, m_y;
         private bool m_isBuilt = false;
 
-        public ItemGumplingPaperdoll(AControl owner, int x, int y, Item item)
-            : base(owner, item)
+        public ItemGumplingPaperdoll(AControl parent, int x, int y, Item item)
+            : base(parent, item)
         {
             m_x = x;
             m_y = y;

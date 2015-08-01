@@ -11,8 +11,8 @@ namespace UltimaXNA.Ultima.UI.Controls
             protected set;
         }
 
-        public RadioButton(AControl owner, int groupIndex, string[] arguements, string[] lines)
-            : base(owner, arguements, lines)
+        public RadioButton(AControl parent, int groupIndex, string[] arguements, string[] lines)
+            : base(parent, arguements, lines)
         {
             GroupIndex = groupIndex;
         }
@@ -20,9 +20,9 @@ namespace UltimaXNA.Ultima.UI.Controls
         protected override void OnMouseClick(int x, int y, MouseButton button)
         {
             base.OnMouseClick(x, y, button);
-            if (Owner != null)
+            if (Parent != null)
             {
-                foreach (AControl control in Owner.Children)
+                foreach (AControl control in Parent.Children)
                 {
                     if (control is RadioButton && (control as RadioButton).GroupIndex == GroupIndex)
                         (control as RadioButton).IsChecked = false;
