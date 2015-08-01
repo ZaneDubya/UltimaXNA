@@ -56,7 +56,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         public StatusGump()
             : base(0, 0)
         {
-            IsMovable = true;
+            IsMoveable = true;
             AddControl(new GumpPic(this, 0, 0, 0x2A6C, 0));
 
             m_Labels[(int)MobileStats.Name] = (TextLabelAscii)AddControl(new TextLabelAscii(this, 54, 44, 1, 6, m_Mobile.Name));

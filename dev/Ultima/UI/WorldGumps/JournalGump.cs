@@ -28,7 +28,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         public JournalGump()
             : base(0, 0)
         {
-            IsMovable = true;
+            IsMoveable = true;
 
             AddControl(m_Background = new ExpandableScroll(this, 0, 0, 300));
             m_Background.TitleGumpID = 0x82A;

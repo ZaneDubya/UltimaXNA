@@ -131,6 +131,7 @@
     <Compile Include="Configuration\GumpSettings.cs" />
     <Compile Include="Configuration\MouseConfig.cs" />
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Configuration\SavedGumpConfig.cs" />
     <Compile Include="Configuration\WorldSettings.cs" />
     <Compile Include="Core\Audio\ASound.cs" />
     <Compile Include="Core\ComponentModel\EqualityHelper.cs" />

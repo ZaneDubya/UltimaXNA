@@ -10,6 +10,7 @@
  ***************************************************************************/
 #region usings
 using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI;
@@ -60,7 +61,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_World = ServiceRegistry.GetService<WorldModel>();
             m_Client = ServiceRegistry.GetService<INetworkClient>();
 
-            IsMovable = true;
+            IsMoveable = true;
+            SaveOnWorldStop = true;
 
             if (mobile.IsClientEntity)
             {
@@ -237,6 +239,18 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             }
 
             else return Mobile.Serial;
+        }
+
+        public override bool SaveGump(out Dictionary<string, object> data)
+        {
+            data = new Dictionary<string, object>();
+            data.Add("serial", (int)Mobile.Serial);
+            return true;
+        }
+
+        public override bool RestoreGump(Dictionary<string, object> data)
+        {
+            return base.RestoreGump(data);
         }
     }
 }

@@ -38,7 +38,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_Spell = spell;
             m_World = ServiceRegistry.GetService<WorldModel>();
 
-            IsMovable = true;
+            IsMoveable = true;
             HandlesMouseInput = true;
 
             m_SpellButton = (GumpPic)AddControl(new GumpPic(this, 0, 0, spell.GumpIconSmallID, 0));

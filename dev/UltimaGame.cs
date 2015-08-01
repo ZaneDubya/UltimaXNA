@@ -201,7 +201,8 @@ namespace UltimaXNA
                 TotalMS = totalMS;
                 Input.Update(totalMS, frameMS);
                 UserInterface.Update(totalMS, frameMS);
-                Network.Slice();
+                if (Network.IsConnected)
+                    Network.Slice();
                 ActiveModel.Update(totalMS, frameMS);
             }
 

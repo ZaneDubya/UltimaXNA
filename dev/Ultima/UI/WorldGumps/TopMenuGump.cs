@@ -29,7 +29,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             : base(0, 0)
         {
             IsUncloseableWithRMB = true;
-            IsMovable = true;
+            IsMoveable = true;
             
             // maximized view
             AddControl(new ResizePic(this, 0, 0, 9200, 610, 27), 1);

@@ -38,7 +38,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             Item = item;
             m_PickupOffset = pickupOffset;
 
-            IsMovable = true;
+            IsMoveable = true;
 
             // Background
             AddControl(new GumpPic(this, 0, 0, 0x085c, 0));

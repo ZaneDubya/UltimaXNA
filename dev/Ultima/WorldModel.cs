@@ -9,7 +9,7 @@
  *
  ***************************************************************************/
 #region usings
-
+using System.Collections.Generic;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Patterns.MVC;
 using UltimaXNA.Core.UI;
@@ -180,6 +180,7 @@ namespace UltimaXNA.Ultima
         protected override void OnInitialize()
         {
             m_Engine.SetupWindowForWorld();
+            RestoreSavedGumps();
 
             m_UserInterface.Cursor = Cursor = new WorldCursor(this);
             Client.Initialize();
@@ -187,6 +188,7 @@ namespace UltimaXNA.Ultima
 
         protected override void OnDispose()
         {
+            SaveOpenGumps();
             m_Engine.SaveResolution();
 
             ServiceRegistry.Unregister<WorldModel>();
@@ -260,6 +262,34 @@ namespace UltimaXNA.Ultima
         void OnCloseLostConnectionMsgBox()
         {
             Disconnect();
+        }
+
+        private void SaveOpenGumps()
+        {
+            Settings.Gumps.SavedGumps.Clear();
+            foreach (AControl gump in m_UserInterface.Controls)
+            {
+                if (gump is Gump)
+                {
+                    if ((gump as Gump).SaveOnWorldStop)
+                    {
+                        Dictionary<string, object> data;
+                        if ((gump as Gump).SaveGump(out data))
+                        {
+                            Settings.Gumps.SavedGumps.Add(new Configuration.SavedGumpConfig(gump.GetType(), data));
+                        }
+                    }
+                }
+            }
+        }
+
+        private void RestoreSavedGumps()
+        {
+            foreach (Configuration.SavedGumpConfig savedGump in Settings.Gumps.SavedGumps)
+            {
+
+            }
+            Settings.Gumps.SavedGumps.Clear();
         }
     }
 }

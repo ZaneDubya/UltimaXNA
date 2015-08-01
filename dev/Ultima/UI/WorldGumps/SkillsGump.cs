@@ -30,7 +30,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         public SkillsGump()
             : base(0, 0)
         {
-            IsMovable = true;
+            IsMoveable = true;
 
             m_World = ServiceRegistry.GetService<WorldModel>();
 
