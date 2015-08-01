@@ -9,7 +9,10 @@
  *
  ***************************************************************************/
 #region usings
+using System;
 using System.Collections.Generic;
+using UltimaXNA.Core.Diagnostics.Tracing;
+using UltimaXNA.Core;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Patterns.MVC;
 using UltimaXNA.Core.UI;
@@ -180,8 +183,6 @@ namespace UltimaXNA.Ultima
         protected override void OnInitialize()
         {
             m_Engine.SetupWindowForWorld();
-            RestoreSavedGumps();
-
             m_UserInterface.Cursor = Cursor = new WorldCursor(this);
             Client.Initialize();
         }
@@ -242,6 +243,9 @@ namespace UltimaXNA.Ultima
             Client.SendWorldLoginPackets();
             IsInWorld = true;
             Client.StartKeepAlivePackets();
+            
+            // wait until we've received information about the entities around us before restoring saved gumps.
+            DelayedAction.Start(() => RestoreSavedGumps(), 1000);
         }
 
         public void Disconnect()
@@ -287,7 +291,30 @@ namespace UltimaXNA.Ultima
         {
             foreach (Configuration.SavedGumpConfig savedGump in Settings.Gumps.SavedGumps)
             {
-
+                try
+                {
+                    Type type = Type.GetType(savedGump.GumpType);
+                    object gump = System.Activator.CreateInstance(type);
+                    if (gump is Gump)
+                    {
+                        if ((gump as Gump).RestoreGump(savedGump.GumpData))
+                        {
+                            m_UserInterface.AddControl(gump as Gump, 0, 0);
+                        }
+                        else
+                        {
+                            Tracer.Error("Unable to restore saved gump with type {0}: Failed to restore gump.", savedGump.GumpType);
+                        }
+                    }
+                    else
+                    {
+                        Tracer.Error("Unable to restore saved gump with type {0}: Type does not derive from Gump.", savedGump.GumpType);
+                    }
+                }
+                catch
+                {
+                    Tracer.Error("Unable to restore saved gump with type {0}: Type cannot be Instanced.", savedGump.GumpType);
+                }
             }
             Settings.Gumps.SavedGumps.Clear();
         }
