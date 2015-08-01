@@ -215,10 +215,10 @@ namespace UltimaXNA.Ultima.World.Input
                                     // ItemGumping is the base class for all items, containers, and paperdoll items.
                                     mouseTargetingEventObject(((ItemGumpling)target).Item);
                                 }
-                                else if (target.OwnerTopmost is MobileHealthTrackerGump)
+                                else if (target.RootParent is MobileHealthTrackerGump)
                                 {
                                     // this is a mobile's mini-status gump (health bar, etc.) We can target it to cast spells on that mobile.
-                                    mouseTargetingEventObject(((MobileHealthTrackerGump)target.OwnerTopmost).Mobile);
+                                    mouseTargetingEventObject(((MobileHealthTrackerGump)target.RootParent).Mobile);
                                 }
                             }
                             else if (m_World.Input.IsMouseOverWorld)

@@ -36,7 +36,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         }
 
         public bool IsChild = false;
-        public ColorPicker Parent = null;
+        public ColorPicker ParentColorPicker = null;
 
         public int HueValue
         {
@@ -120,16 +120,16 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             if (IsChild) // is a child
             {
-                Parent.Index = this.Index;
-                Parent.CloseChildPicker();
+                ParentColorPicker.Index = this.Index;
+                ParentColorPicker.CloseChildPicker();
             }
             else
             {
                 if (m_ChildColorPicker == null)
                 {
-                    m_ChildColorPicker = new ColorPicker(Parent, m_openArea, m_hueWidth, m_hueHeight, m_hues);
+                    m_ChildColorPicker = new ColorPicker(ParentColorPicker, m_openArea, m_hueWidth, m_hueHeight, m_hues);
                     m_ChildColorPicker.IsChild = true;
-                    m_ChildColorPicker.Parent = this;
+                    m_ChildColorPicker.ParentColorPicker = this;
                     Parent.AddControl(m_ChildColorPicker, this.Page);
                 }
                 else
@@ -147,7 +147,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             {
                 int clickRow = x / (Width / m_hueWidth);
                 int clickColumn = y / (Height / m_hueHeight);
-                Parent.Index = Index = clickRow + clickColumn * m_hueWidth;
+                ParentColorPicker.Index = Index = clickRow + clickColumn * m_hueWidth;
             }
         }
 
