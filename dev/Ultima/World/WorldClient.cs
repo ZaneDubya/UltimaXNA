@@ -838,7 +838,7 @@ namespace UltimaXNA.Ultima.World
         {
             OpenPaperdollPacket p = packet as OpenPaperdollPacket;
             if (m_UserInterface.GetControl<JournalGump>(p.Serial) == null)
-                m_UserInterface.AddControl(new PaperDollGump(WorldModel.Entities.GetObject<Mobile>(p.Serial, false), p.MobileName), 400, 100);
+                m_UserInterface.AddControl(new PaperDollGump(WorldModel.Entities.GetObject<Mobile>(p.Serial, false)), 400, 100);
         }
 
         private void ReceiveCompressedGump(IRecvPacket packet)

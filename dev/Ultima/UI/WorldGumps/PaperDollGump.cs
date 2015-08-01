@@ -52,7 +52,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         private readonly int[] PeaceModeBtnGumps = new int[] { 0x07e5, 0x07e6, 0x07e7 };
         private readonly int[] WarModeBtnGumps = new int[] { 0x07e8, 0x07e9, 0x07ea };
 
-        public PaperDollGump(Mobile mobile, string nameAndTitle)
+        public PaperDollGump(Mobile mobile)
             : base(mobile.Serial, 0)
         {
             Mobile = mobile;
@@ -136,8 +136,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             }
 
             // name and title
-            AddControl(new HtmlGumpling(this, 36, 262, 180, 42, 0, 0, string.Format("<span color=#aaa style='font-family:uni0;'>{0}", nameAndTitle)));
-            AddControl(new HtmlGumpling(this, 35, 262, 180, 42, 0, 0, string.Format("<span color=#222 style='font-family:uni0;'>{0}", nameAndTitle)));
+            AddControl(new HtmlGumpling(this, 36, 262, 180, 42, 0, 0, string.Format("<span color=#aaa style='font-family:uni0;'>{0}", Mobile.Name)));
+            AddControl(new HtmlGumpling(this, 35, 262, 180, 42, 0, 0, string.Format("<span color=#222 style='font-family:uni0;'>{0}", Mobile.Name)));
         }
 
         private void SpecialMoves_MouseDoubleClickEvent(AControl control, int x, int y, MouseButton button)
