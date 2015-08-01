@@ -416,7 +416,9 @@ namespace UltimaXNA.Ultima.World.Input
                 else if(overEntity is Mobile)
                 {
                     // drag off a status gump for this mobile.
-                    MobileHealthTrackerGump gump; // !!!
+                    MobileHealthTrackerGump gump = new MobileHealthTrackerGump(overEntity as Mobile);
+                    m_UserInterface.AddControl(gump, e.X - 77, e.Y - 30);
+                    m_UserInterface.AttemptDragControl(gump, new Point(e.X, e.Y), true);
                 }
             }
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UltimaXNA.Core.UI;
 using Microsoft.Xna.Framework;
+using UltimaXNA.Core.Graphics;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
@@ -26,7 +27,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                     value = 0f;
                 else if (value > 1f)
                     value = 1f;
-                m_PercentWidthDrawn = 1f;
+                m_PercentWidthDrawn = value;
             }
         }
 
@@ -36,12 +37,12 @@ namespace UltimaXNA.Ultima.UI.Controls
             PercentWidthDrawn = percentWidth;
         }
 
-        public override void Draw(Core.Graphics.SpriteBatchUI spriteBatch, Microsoft.Xna.Framework.Point position)
+        public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
             Vector3 hueVector = Utility.GetHueVector(Hue);
             int width = (int)(m_PercentWidthDrawn * Width);
             spriteBatch.Draw2D(m_Texture, new Rectangle(position.X, position.Y, width, Height), new Rectangle(0, 0, width, Height), hueVector);
-            base.Draw(spriteBatch, position);
+            // base.Draw(spriteBatch, position);  - commented this out because we don't want to draw GumpPic's Draw method, but UGH we do want to call AControl's...
         }
     }
 }

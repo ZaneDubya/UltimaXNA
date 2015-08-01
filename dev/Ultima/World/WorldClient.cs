@@ -444,7 +444,7 @@ namespace UltimaXNA.Ultima.World
                     m_Network.Send(new QueryPropertiesPacket(item.Serial));
             }
 
-            if (mobile.Name == string.Empty)
+            if (mobile.Name == null || mobile.Name == string.Empty)
             {
                 mobile.Name = "Unknown";
                 m_Network.Send(new RequestNamePacket(p.Serial));
@@ -551,7 +551,7 @@ namespace UltimaXNA.Ultima.World
             mobile.Hue = (int)p.Hue;
             mobile.Move_Instant(p.X, p.Y, p.Z, p.Direction);
 
-            if (mobile.Name == string.Empty)
+            if (mobile.Name == null || mobile.Name == string.Empty)
             {
                 mobile.Name = "Unknown";
                 m_Network.Send(new RequestNamePacket(p.Serial));

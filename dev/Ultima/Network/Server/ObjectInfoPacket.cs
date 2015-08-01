@@ -24,8 +24,8 @@ namespace UltimaXNA.Ultima.Network.Server
     public class WorldItemPacket : RecvPacket
     {
         readonly Serial m_serial;
-        readonly short m_itemid;
-        readonly short m_amount;
+        readonly ushort m_itemid;
+        readonly ushort m_amount;
         readonly short m_x;
         readonly short m_y;
         readonly sbyte m_z;
@@ -38,12 +38,12 @@ namespace UltimaXNA.Ultima.Network.Server
             get { return m_serial; } 
         }
 
-        public short ItemID
+        public ushort ItemID
         {
             get { return m_itemid; }
         }
 
-        public short StackAmount 
+        public ushort StackAmount 
         {
             get { return m_amount; } 
         }
@@ -88,7 +88,7 @@ namespace UltimaXNA.Ultima.Network.Server
 
             if ((serial & 0x80000000) == 0x80000000)
             {
-                m_amount = reader.ReadInt16();
+                m_amount = reader.ReadUInt16();
             }
 
             ushort x = reader.ReadUInt16();
@@ -111,7 +111,7 @@ namespace UltimaXNA.Ultima.Network.Server
                 m_flags = reader.ReadByte();
 
             m_serial = (int)(serial &= 0x7FFFFFFF);
-            m_itemid = (short)(itemId &= 0x7FFF);
+            m_itemid = (ushort)(itemId &= 0x7FFF);
             m_x = (short)(x &= 0x7FFF);
             m_y = (short)(y &= 0x3FFF);
         }
