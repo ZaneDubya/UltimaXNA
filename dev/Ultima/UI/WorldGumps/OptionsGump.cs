@@ -51,7 +51,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
             BuildResolutionsLists();
 
-            IsMovable = true;
+            IsMoveable = true;
             AddControl(new ResizePic(this, 40, 0, 2600, 550, 450));
             //left column
             AddControl(new Button(this, 0, 40, 218, 217, ButtonTypes.SwitchPage, 1, (int)Buttons.Sound));

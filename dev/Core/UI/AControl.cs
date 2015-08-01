@@ -98,7 +98,7 @@ namespace UltimaXNA.Core.UI
         /// If true, control can be moved by click-dragging with left mouse button.
         /// A child control can be made a dragger for a parent control with MakeDragger().
         /// </summary>
-        public virtual bool IsMovable
+        public virtual bool IsMoveable
         {
             get;
             set;
@@ -491,10 +491,13 @@ namespace UltimaXNA.Core.UI
                 (UserInterface.Height - Height) / 2);
         }
 
+        /// <summary>
+        /// Convenience method: Sets this control to (1) handle mouse input and (2) make it moveable (which makes the parent control moveable).
+        /// </summary>
         public void MakeThisADragger()
         {
             HandlesMouseInput = true;
-            IsMovable = true;
+            IsMoveable = true;
         }
 
         public virtual void ActivateByButton(int buttonID)

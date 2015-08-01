@@ -26,9 +26,16 @@ namespace UltimaXNA.Configuration
             set;
         }
 
+        public List<SavedGumpConfig> SavedGumps
+        {
+            get;
+            set;
+        }
+
         public GumpSettings()
         {
             LastPositions = new Dictionary<string, Point>();
+            SavedGumps = new List<SavedGumpConfig>();
         }
 
         public Point GetLastPosition(string gumpID, Point defaultPosition)

@@ -39,7 +39,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 UserInterface.GetControl<MobileHealthTrackerGump>(mobile.Serial).Dispose();
             }
 
-            IsMovable = true;
+            IsMoveable = true;
             HandlesMouseInput = true;
 
             Mobile = mobile;

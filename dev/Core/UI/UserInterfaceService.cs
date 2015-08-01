@@ -38,6 +38,21 @@ namespace UltimaXNA.Core.UI
         private readonly InputManager m_Input;
 
         // ======================================================================
+        // Public properties
+        // ======================================================================
+
+        /// <summary>
+        /// An array of all open root controls in the user interface.
+        /// </summary>
+        public AControl[] Controls
+        {
+            get
+            {
+                return m_Controls.ToArray();
+            }
+        }
+
+        // ======================================================================
         // Ctor, Dispose, Update, and Draw
         // ======================================================================
 
@@ -526,13 +541,13 @@ namespace UltimaXNA.Core.UI
                 return;
 
             AControl dragTarget = control;
-            if (!dragTarget.IsMovable)
+            if (!dragTarget.IsMoveable)
                 return;
 
             while (dragTarget.Parent != null)
                 dragTarget = dragTarget.Parent;
 
-            if (dragTarget.IsMovable)
+            if (dragTarget.IsMoveable)
             {
                 if (attemptAlwaysSuccessful)
                 {

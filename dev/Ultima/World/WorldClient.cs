@@ -51,7 +51,6 @@ namespace UltimaXNA.Ultima.World
             m_World = world;
 
             m_RegisteredHandlers = new List<Tuple<int, TypedPacketReceiveHandler>>();
-
             m_Network = ServiceRegistry.GetService<INetworkClient>();
             m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
         }
@@ -839,7 +838,7 @@ namespace UltimaXNA.Ultima.World
         {
             OpenPaperdollPacket p = packet as OpenPaperdollPacket;
             if (m_UserInterface.GetControl<JournalGump>(p.Serial) == null)
-                m_UserInterface.AddControl(new PaperDollGump(WorldModel.Entities.GetObject<Mobile>(p.Serial, false), p.MobileName), 400, 100);
+                m_UserInterface.AddControl(new PaperDollGump(p.Serial), 400, 100);
         }
 
         private void ReceiveCompressedGump(IRecvPacket packet)
@@ -851,7 +850,7 @@ namespace UltimaXNA.Ultima.World
                 if (TryParseGumplings(p.GumpData, out gumpPieces))
                 {
                     Gump g = (Gump)m_UserInterface.AddControl(new Gump(p.GumpSerial, p.GumpTypeID, gumpPieces, p.TextLines), p.X, p.Y);
-                    g.IsMovable = true;
+                    g.IsMoveable = true;
                 }
             }
         }

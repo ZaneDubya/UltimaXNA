@@ -32,7 +32,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_item = (Container)containerItem;
             m_item.OnContentsUpdated += OnItemContentsUpdate;
 
-            IsMovable = true;
+            IsMoveable = true;
 
             AddControl(new GumpPicContainer(this, 0, 0, m_data.GumpID, 0, m_item));
         }

@@ -131,6 +131,7 @@
     <Compile Include="Configuration\GumpSettings.cs" />
     <Compile Include="Configuration\MouseConfig.cs" />
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Configuration\SavedGumpConfig.cs" />
     <Compile Include="Configuration\WorldSettings.cs" />
     <Compile Include="Core\Audio\ASound.cs" />
     <Compile Include="Core\ComponentModel\EqualityHelper.cs" />
@@ -190,6 +191,7 @@
     <Compile Include="Core\Audio\MP3Sharp\SoundFormat.cs" />
     <Compile Include="Core\Audio\MP3Sharp\Support\SupportClass.cs" />
     <Compile Include="Core\Network\INetworkClient.cs" />
+    <Compile Include="Core\DelayedAction.cs" />
     <Compile Include="Core\Patterns\IModule.cs" />
     <Compile Include="Core\UI\ControlMetaData.cs" />
     <Compile Include="Core\UI\HTML\OpenTag.cs" />
