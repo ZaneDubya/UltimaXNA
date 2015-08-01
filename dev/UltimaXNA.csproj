@@ -271,6 +271,8 @@
     <Compile Include="Ultima\UI\WorldGumps\MobileHealthTrackerGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\OptionsGump.cs" />
     <Compile Include="Ultima\UI\WorldGumps\UseSpellButtonGump.cs" />
+    <Compile Include="Ultima\UI\WorldGumps\VendorBuyGump.cs" />
+    <Compile Include="Ultima\UI\WorldGumps\VendorSellGump.cs" />
     <Compile Include="Ultima\World\Entities\Items\Containers\SpellBook.cs" />
     <Compile Include="Ultima\Data\SpellBookTypes.cs" />
     <Compile Include="Ultima\Data\StatLocks.cs" />
