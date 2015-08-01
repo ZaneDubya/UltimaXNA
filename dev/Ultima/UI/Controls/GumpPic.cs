@@ -17,37 +17,10 @@ using UltimaXNA.Ultima.IO;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
-    class GumpPic : AControl
+    class GumpPic : AGumpPic
     {
-        protected Texture2D m_Texture = null;
-        private int m_LastFrameGumpID = -1;
-
-        internal int GumpID
-        {
-            get;
-            set;
-        }
-
-        internal int Hue
-        {
-            get;
-            set;
-        }
-
-        internal bool IsPaperdoll
-        {
-            get;
-            set;
-        }
-
-        public GumpPic(AControl parent)
-            : base(parent)
-        {
-            MakeThisADragger();
-        }
-
         public GumpPic(AControl parent, string[] arguements)
-            : this(parent)
+            : base(parent)
         {
             int x, y, gumpID, hue = 0;
             x = Int32.Parse(arguements[1]);
@@ -63,28 +36,9 @@ namespace UltimaXNA.Ultima.UI.Controls
         }
 
         public GumpPic(AControl parent, int x, int y, int gumpID, int hue)
-            : this(parent)
+            : base(parent)
         {
             buildGumpling(x, y, gumpID, hue);
-        }
-
-        void buildGumpling(int x, int y, int gumpID, int hue)
-        {
-            Position = new Point(x, y);
-            GumpID = gumpID;
-            Hue = hue;
-        }
-
-        public override void Update(double totalMS, double frameMS)
-        {
-            if (m_Texture == null || GumpID != m_LastFrameGumpID)
-            {
-                m_LastFrameGumpID = GumpID;
-                m_Texture = GumpData.GetGumpXNA(GumpID);
-                Size = new Point(m_Texture.Width, m_Texture.Height);
-            }
-
-            base.Update(totalMS, frameMS);
         }
 
         public override void Draw(SpriteBatchUI spriteBatch, Point position)
@@ -94,15 +48,6 @@ namespace UltimaXNA.Ultima.UI.Controls
             base.Draw(spriteBatch, position);
         }
 
-        protected override bool IsPointWithinControl(int x, int y)
-        {
-            ushort[] pixelData;
-            pixelData = new ushort[1];
-            m_Texture.GetData<ushort>(0, new Rectangle(x, y, 1, 1), pixelData, 0, 1);
-            if (pixelData[0] > 0)
-                return true;
-            else
-                return false;
-        }
+        
     }
 }
