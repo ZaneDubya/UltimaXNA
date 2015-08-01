@@ -40,15 +40,15 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        public TextLabelAscii(AControl owner, int width = 400)
-            : base(owner)
+        public TextLabelAscii(AControl parent, int width = 400)
+            : base(parent)
         {
             m_Width = width;
             m_Rendered = new RenderedText(string.Empty, m_Width);
         }
 
-        public TextLabelAscii(AControl owner, int x, int y, int hue, int fontid, string text, int width = 400)
-            : this(owner, width)
+        public TextLabelAscii(AControl parent, int x, int y, int hue, int fontid, string text, int width = 400)
+            : this(parent, width)
         {
             buildGumpling(x, y, hue, fontid, text);
         }

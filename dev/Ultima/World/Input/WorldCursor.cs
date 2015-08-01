@@ -119,8 +119,8 @@ namespace UltimaXNA.Ultima.World.Input
                         Container targetItem = (Container)((GumpPicContainer)target).Item;
                         MouseOverItem = targetItem;
 
-                        int x = (int)m_Input.MousePosition.X - m_HeldItemOffset.X - (target.X + target.Owner.X);
-                        int y = (int)m_Input.MousePosition.Y - m_HeldItemOffset.Y - (target.Y + target.Owner.Y);
+                        int x = (int)m_Input.MousePosition.X - m_HeldItemOffset.X - (target.X + target.Parent.X);
+                        int y = (int)m_Input.MousePosition.Y - m_HeldItemOffset.Y - (target.Y + target.Parent.Y);
                         DropHeldItemToContainer(targetItem, x, y);
                     }
                     else if (target is ItemGumplingPaperdoll || (target is GumpPic && ((GumpPic)target).IsPaperdoll) || (target is EquipmentSlot))

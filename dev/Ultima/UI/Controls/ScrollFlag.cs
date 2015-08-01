@@ -89,14 +89,14 @@ namespace UltimaXNA.Ultima.UI.Controls
         // ================================================================================
         // Ctor, Initialize, Update, and Draw
         // ================================================================================
-        public ScrollFlag(AControl owner)
-            : base(owner)
+        public ScrollFlag(AControl parent)
+            : base(parent)
         {
             HandlesMouseInput = true;
         }
 
-        public ScrollFlag(AControl owner, int x, int y, int height, int minValue, int maxValue, int value)
-            : this(owner)
+        public ScrollFlag(AControl parent, int x, int y, int height, int minValue, int maxValue, int value)
+            : this(parent)
         {
             Position = new Point(x, y);
             m_SliderExtentTop = y;

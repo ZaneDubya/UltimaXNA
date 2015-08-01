@@ -35,8 +35,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         int m_MessageHistoryIndex = -1;
 
-        public ChatControl(AControl owner, int x, int y, int width, int height)
-            : base(owner)
+        public ChatControl(AControl parent, int x, int y, int width, int height)
+            : base(parent)
         {
             Position = new Point(x, y);
             Size = new Point(width, height);

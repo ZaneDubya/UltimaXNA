@@ -35,8 +35,8 @@ namespace UltimaXNA.Ultima.UI.Controls
         private bool m_SendClickIfNoDoubleClick = false;
         private float m_SingleClickTime;
 
-        public EquipmentSlot(AControl owner, int x, int y, Mobile entity, EquipLayer layer)
-            : base(owner)
+        public EquipmentSlot(AControl parent, int x, int y, Mobile entity, EquipLayer layer)
+            : base(parent)
         {
             HandlesMouseInput = true;
 

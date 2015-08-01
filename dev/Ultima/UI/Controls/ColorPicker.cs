@@ -56,22 +56,22 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         UserInterfaceService m_UserInterface;
 
-        public ColorPicker(AControl owner)
-            : base(owner)
+        public ColorPicker(AControl parent)
+            : base(parent)
         {
             HandlesMouseInput = true;
 
             m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
         }
 
-        public ColorPicker(AControl owner, Rectangle area, int swatchWidth, int swatchHeight, int[] hues)
-            : this(owner)
+        public ColorPicker(AControl parent, Rectangle area, int swatchWidth, int swatchHeight, int[] hues)
+            : this(parent)
         {
             buildGumpling(area, swatchWidth, swatchHeight, hues);
         }
 
-        public ColorPicker(AControl owner, Rectangle closedArea, Rectangle openArea, int swatchWidth, int swatchHeight, int[] hues)
-            : this(owner)
+        public ColorPicker(AControl parent, Rectangle closedArea, Rectangle openArea, int swatchWidth, int swatchHeight, int[] hues)
+            : this(parent)
         {
             m_openArea = openArea;
             buildGumpling(closedArea, swatchWidth, swatchHeight, hues);
@@ -127,10 +127,10 @@ namespace UltimaXNA.Ultima.UI.Controls
             {
                 if (m_ChildColorPicker == null)
                 {
-                    m_ChildColorPicker = new ColorPicker(Owner, m_openArea, m_hueWidth, m_hueHeight, m_hues);
+                    m_ChildColorPicker = new ColorPicker(Parent, m_openArea, m_hueWidth, m_hueHeight, m_hues);
                     m_ChildColorPicker.IsChild = true;
                     m_ChildColorPicker.Parent = this;
-                    Owner.AddControl(m_ChildColorPicker, this.Page);
+                    Parent.AddControl(m_ChildColorPicker, this.Page);
                 }
                 else
                 {
