@@ -191,6 +191,7 @@
     <Compile Include="Core\Audio\MP3Sharp\SoundFormat.cs" />
     <Compile Include="Core\Audio\MP3Sharp\Support\SupportClass.cs" />
     <Compile Include="Core\Network\INetworkClient.cs" />
+    <Compile Include="Core\DelayedAction.cs" />
     <Compile Include="Core\Patterns\IModule.cs" />
     <Compile Include="Core\UI\ControlMetaData.cs" />
     <Compile Include="Core\UI\HTML\OpenTag.cs" />
