@@ -1,11 +1,29 @@
-﻿using System;
+﻿/***************************************************************************
+ *   VendorBuyGump.cs
+ *   Copyright (c) 2015 UltimaXNA Development Team
+ *   
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ ***************************************************************************/
+#region usings
+using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.Network;
+using UltimaXNA.Core.UI;
+using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Ultima.World.Entities.Mobiles;
+using UltimaXNA.Ultima.Network.Client;
+using UltimaXNA.Core.Input.Windows;
+#endregion
+
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
 {
-    class VendorBuyGump
+    class VendorBuyGump 
     {
     }
 }
