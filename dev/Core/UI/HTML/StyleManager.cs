@@ -242,6 +242,7 @@ namespace UltimaXNA.Core.UI.HTML
                         switch (tag.sTag)
                         {
                             case "gumpimg":
+                            case "itemimg":
                             case "span":
                                 Style.ElementWidth = int.Parse(value);
                                 break;
@@ -254,6 +255,7 @@ namespace UltimaXNA.Core.UI.HTML
                         switch (tag.sTag)
                         {
                             case "gumpimg":
+                            case "itemimg":
                             case "span":
                                 Style.ElementHeight = int.Parse(value);
                                 break;

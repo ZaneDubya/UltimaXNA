@@ -31,30 +31,44 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 {
     class VendorBuyGump : Gump
     {
-        private ExpandableScroll m_ScrollBackground;
-        private HtmlGumpling m_ShopContents;
+        private ExpandableScroll m_Background;
+        private IScrollBar m_ScrollBar;
+        private RenderedTextList m_ShopContents;
 
         public VendorBuyGump(AEntity vendorBackpack, VendorBuyListPacket packet)
             : base(0, 0)
         {
             IsMoveable = true;
             // note: original gumplings start at index 0x0870.
-            AddControl(m_ScrollBackground = new ExpandableScroll(this, 0, 0, 320, false));
+            AddControl(m_Background = new ExpandableScroll(this, 0, 0, 360, false));
             AddControl(new HtmlGumpling(this, 0, 6, 300, 20, 0, 0, " <center><span color='#004' style='font-family:uni0;'>Shop Inventory"));
-            AddControl(m_ShopContents = new HtmlGumpling(this, 28, 32, 244, 254, 0, 2, BuildShopContentsHtml(vendorBackpack, packet)));
+
+            m_ScrollBar = (IScrollBar)AddControl(new ScrollFlag(this));
+            AddControl(m_ShopContents = new RenderedTextList(this, 30, 36, 242, 260, m_ScrollBar));
+
+            BuildShopContentsHtml(vendorBackpack, packet);
         }
 
-        private string BuildShopContentsHtml(AEntity vendorBackpack, VendorBuyListPacket packet)
+        public override void Update(double totalMS, double frameMS)
+        {
+            m_ShopContents.Height = Height - 69;
+            base.Update(totalMS, frameMS);
+        }
+
+        private void BuildShopContentsHtml(AEntity vendorBackpack, VendorBuyListPacket packet)
         {
             if (!(vendorBackpack is Container))
-                return "<span color='#800'>Err: vendorBackpack is not Container.";
+            {
+                m_ShopContents.AddEntry("<span color='#800'>Err: vendorBackpack is not Container.");
+                return;
+            }
 
             Container contents = (vendorBackpack as Container);
             if (contents.Contents.Count != packet.Items.Count)
-                return "<span color='#800'>Err: vendorBackpack item count and packet item count do not match.";
-
-            StringBuilder html = new StringBuilder();
-            html.Append("<span color='#001'>");
+            {
+                m_ShopContents.AddEntry("<span color='#800'>Err: vendorBackpack item count and packet item count do not match.");
+                return;
+            }
 
             for (int i = 0; i < packet.Items.Count; i++)
             {
@@ -70,15 +84,13 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 }
                 else
                 {
-                    description = Ultima.IO.StringData.Entry(clilocDescription);
+                    description = Utility.CapitalizeAllWords(Ultima.IO.StringData.Entry(clilocDescription));
                 }
-
                  
-                html.Append(string.Format("<itemimg src='{2}'/>{0}<right>{1}gp</right><br/>", 
-                    description, price.ToString(), item.DisplayItemID));
+                string html = string.Format("<itemimg src='{2}' width='44'  height='44' /><span color='#400'>{0}<right>{1}gp</right></span><br/>", 
+                    description, price.ToString(), item.DisplayItemID);
+                m_ShopContents.AddEntry(html);
             }
-
-            return html.ToString();
         }
     }
 }

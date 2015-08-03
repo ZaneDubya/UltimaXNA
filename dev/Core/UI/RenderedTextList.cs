@@ -41,11 +41,6 @@ namespace UltimaXNA.Core.UI
             Position = new Point(x, y);
             Width = width;
             Height = height;
-        }
-
-        protected override void OnInitialize()
-        {
-            base.OnInitialize();
             m_JournalEntries = new List<RenderedText>();
         }
 
@@ -134,7 +129,7 @@ namespace UltimaXNA.Core.UI
             {
                 m_JournalEntries.RemoveAt(0);
             }
-            m_JournalEntries.Add(new RenderedText(text, Width - 14));
+            m_JournalEntries.Add(new RenderedText(text, Width - 18));
             m_ScrollBar.MaxValue += m_JournalEntries[m_JournalEntries.Count - 1].Height;
             if (maxScroll)
             {
