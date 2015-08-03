@@ -695,7 +695,7 @@ namespace UltimaXNA.Ultima.World
             {
                 if (capitalize)
                 {
-                    return char.ToUpper(baseCliloc[0]) + baseCliloc.Substring(1);
+                    return Utility.CapitalizeFirstCharacter(baseCliloc);
                 }
                 else
                 {
@@ -732,7 +732,7 @@ namespace UltimaXNA.Ultima.World
 
                 if (capitalize)
                 {
-                    return char.ToUpper(construct[0]) + construct.Substring(1);
+                    return Utility.CapitalizeFirstCharacter(construct);
                 }
                 else
                 {
