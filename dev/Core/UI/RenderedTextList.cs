@@ -17,6 +17,7 @@ using UltimaXNA.Ultima.Player;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.UI.HTML;
+using UltimaXNA.Core.Diagnostics.Tracing;
 #endregion
 
 namespace UltimaXNA.Core.UI
@@ -205,6 +206,18 @@ namespace UltimaXNA.Core.UI
             {
                 m_ScrollBar.Value = m_ScrollBar.MaxValue;
             }
+        }
+
+        public void UpdateEntry(int index, string text)
+        {
+            if (index < 0 || index >= m_JournalEntries.Count)
+            {
+                Tracer.Error(string.Format("Bad index in RenderedTextList.UpdateEntry: {0}", index.ToString()));
+                return;
+            }
+
+            m_JournalEntries[index].Text = text;
+            CalculateScrollBarMaxValue();
         }
     }
 }
