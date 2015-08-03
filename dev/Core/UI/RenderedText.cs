@@ -18,6 +18,9 @@ using UltimaXNA.Core.UI.HTML.Atoms;
 
 namespace UltimaXNA.Core.UI
 {
+    /// <summary>
+    /// A texture containing rendered text. Can interpret html. Will automatically update.
+    /// </summary>
     class RenderedText
     {
         // private services
