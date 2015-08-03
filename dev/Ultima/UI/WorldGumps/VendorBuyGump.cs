@@ -33,8 +33,10 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             : base(0, 0)
         {
             IsMoveable = true;
-
+            // note: original gumplings start at index 0x0870.
             AddControl(m_ScrollBackground = new ExpandableScroll(this, 0, 0, 320, false));
+            AddControl(new HtmlGumpling(this, 0, 6, 300, 20, 0, 0, " <center><span color='#004' style='font-family:uni0;'>Shop Inventory"));
+            AddControl(new HtmlGumpling(this, 28, 32, 246, 254, 0, 1, "<span>Upper Left</span>"));
         }
     }
 }
