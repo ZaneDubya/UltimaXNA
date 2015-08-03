@@ -368,18 +368,13 @@ namespace UltimaXNA.Core.UI.HTML
                         }
                     }
                     break;
-                case "float":
-                    if (value.Trim() == "left")
+                case "top":
                     {
-                        Style.IsFlow = true;
-                    }
-                    else if (value.Trim() == "none")
-                    {
-                        Style.IsFlow = false;
-                    }
-                    else
-                    {
-                        Tracer.Warn("Unknown float parameter: {0}", value);
+                        int topValue = 0;
+                        if (int.TryParse(value, out topValue))
+                        {
+                            Style.ElementTop = topValue;
+                        }
                     }
                     break;
                 default:
