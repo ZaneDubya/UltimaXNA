@@ -163,6 +163,8 @@ namespace UltimaXNA.Core.UI.HTML
                 // get key and value for this tag param
                 string key = param.Key.ToString();
                 string value = param.Value.ToString();
+                if (value.StartsWith("0x"))
+                    value = Utility.ToInt32(value).ToString();
                 // trim trailing forward slash.
                 if (value.EndsWith("/"))
                     value = value.Substring(0, value.Length - 1);
@@ -364,6 +366,20 @@ namespace UltimaXNA.Core.UI.HTML
                             // other possibilities? overline|line-through|initial|inherit;
                             Tracer.Warn("Unknown text-decoration parameter:{0}", param[i]);
                         }
+                    }
+                    break;
+                case "float":
+                    if (value.Trim() == "left")
+                    {
+                        Style.IsFlow = true;
+                    }
+                    else if (value.Trim() == "none")
+                    {
+                        Style.IsFlow = false;
+                    }
+                    else
+                    {
+                        Tracer.Warn("Unknown float parameter: {0}", value);
                     }
                     break;
                 default:

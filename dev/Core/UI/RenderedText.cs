@@ -118,7 +118,6 @@ namespace UltimaXNA.Core.UI
         private bool m_MustRender = true;
         private int m_MaxWidth;
         private int m_ActiveRegion = -1;
-        private int[] m_LineWidths;
 
         public RenderedText(string text, int maxWidth = DefaultRenderedTextWidth)
         {
@@ -257,7 +256,6 @@ namespace UltimaXNA.Core.UI
 
                     parseTextAndGetDimensions(Text, MaxWidth, out width, out height, out ascender, out linecount, out lineWidths);
                     LineCount = linecount;
-                    m_LineWidths = lineWidths;
 
                     m_Texture = renderTexture(sb.GraphicsDevice, m_HtmlParser, width, height, ascender);
 
@@ -274,6 +272,7 @@ namespace UltimaXNA.Core.UI
 
             Regions.Clear();
             Images.Clear();
+
             // get all the images!
             foreach (AAtom atom in m_HtmlParser.Atoms)
             {
@@ -395,7 +394,7 @@ namespace UltimaXNA.Core.UI
             return result;
         }
 
-        // pass bool = false to get the width of the line to be drawn without actually drawing anything. Useful for aligning text.
+        // draw = false to get the width of the line to be drawn without actually drawing anything. Useful for aligning text.
         unsafe void renderTextureLine(List<AAtom> atoms, uint* rPtr, ref int x, int y, int linewidth, int maxHeight, ref int lineheight, bool draw)
         {
             for (int i = 0; i < atoms.Count; i++)
@@ -403,6 +402,11 @@ namespace UltimaXNA.Core.UI
                 IFont font = atoms[i].Style.Font;
                 if (lineheight < font.Height)
                     lineheight = font.Height;
+                if (atoms[i] is ImageAtom)
+                {
+                    if (lineheight < atoms[i].Height)
+                        lineheight = atoms[i].Height;
+                }
 
                 if (draw)
                 {
@@ -417,10 +421,13 @@ namespace UltimaXNA.Core.UI
                     }
                     else if (atoms[i] is ImageAtom)
                     {
-                        if (lineheight < atoms[i].Height)
-                            lineheight = atoms[i].Height;
                         ImageAtom atom = (atoms[i] as ImageAtom);
                         atom.AssociatedImage.Area = new Rectangle(x, y + ((lineheight - atom.Height) / 2), atom.Width, atom.Height);
+                    }
+
+                    if (atoms[i].Style.IsFlow)
+                    {
+
                     }
                 }
                 x += atoms[i].Width;
@@ -546,7 +553,16 @@ namespace UltimaXNA.Core.UI
                     styleWidth = 0;
 
                 if (lineHeight < reader.Atoms[i].Height)
-                    lineHeight = reader.Atoms[i].Height;
+                {
+                    if (reader.Atoms[i].Style.IsFlow)
+                    {
+                        AddFlowAtom(reader.Atoms[i], new Point(width, height));
+                    }
+                    else
+                    {
+                        lineHeight = reader.Atoms[i].Height;
+                    }
+                }
 
                 if (reader.Atoms[i].IsThisAtomALineBreak)
                 {
@@ -557,7 +573,7 @@ namespace UltimaXNA.Core.UI
                     linecount += 1;
                     descenderHeight = 0;
                     lineHeight = 0;
-                    width = 0;
+                    width = GetNextLineStart(new Point(0, height));
                 }
                 else
                 {
@@ -648,7 +664,7 @@ namespace UltimaXNA.Core.UI
                                 }
                                 i -= word.Count + 2;
                                 word.Clear();
-                                width = 0;
+                                width = GetNextLineStart(new Point(0, height));
                                 wordWidth = 0;
                                 if (i < 0)
                                 {
@@ -706,6 +722,37 @@ namespace UltimaXNA.Core.UI
                 srcClipped.Width += (clipTo.Right - dstClipped.Right);
 
             return true;
+        }
+
+        private List<Rectangle> m_FlowAtoms;
+
+        private void AddFlowAtom(AAtom flowed, Point position)
+        {
+            if (m_FlowAtoms == null)
+                m_FlowAtoms = new List<Rectangle>();
+            m_FlowAtoms.Add(new Rectangle(position.X, position.Y, flowed.Width, flowed.Height));
+        }
+
+        /// <summary>
+        /// Taking into account any flowed atoms, tells the renderer where the next line should begin (in the x dimension).
+        /// </summary>
+        /// <param name="guess"></param>
+        /// <returns></returns>
+        private int GetNextLineStart(Point guess)
+        {
+            if (m_FlowAtoms == null)
+                return guess.X;
+            for (int i = 0; i < m_FlowAtoms.Count; i++)
+            {
+                if (guess.Y >= m_FlowAtoms[i].Bottom)
+                {
+                    m_FlowAtoms.RemoveAt(i);
+                    continue;
+                }
+                if (m_FlowAtoms[i].Contains(guess))
+                    guess.X = m_FlowAtoms[i].Right;
+            }
+            return guess.X;
         }
     }
 }

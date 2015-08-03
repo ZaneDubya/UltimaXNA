@@ -63,6 +63,8 @@ namespace UltimaXNA.Core.UI.HTML
         public int ImgSrcOver = -1;
         public int ImgSrcDown = -1;
 
+        public bool IsFlow = false;
+
         public StyleState(IUIResourceProvider provider)
         {
             Font = provider.GetUnicodeFont((int)Fonts.Default);
@@ -83,6 +85,8 @@ namespace UltimaXNA.Core.UI.HTML
             ImgSrc = parent.ImgSrc;
             ImgSrcOver = parent.ImgSrcOver;
             ImgSrcDown = parent.ImgSrcDown;
+
+            IsFlow = parent.IsFlow;
         }
     }
 }
