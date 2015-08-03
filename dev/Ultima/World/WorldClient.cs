@@ -825,8 +825,8 @@ namespace UltimaXNA.Ultima.World
             Item entity = WorldModel.Entities.GetObject<Item>(p.VendorPackSerial, false);
             if (entity == null)
                 return;
-            // UserInterface.Merchant_Open(iObject, 0);
-            // !!!
+            m_UserInterface.RemoveControl<VendorBuyGump>();
+            m_UserInterface.AddControl(new VendorBuyGump(entity, p), 200, 200);
         }
 
         private void ReceiveSellList(IRecvPacket packet)

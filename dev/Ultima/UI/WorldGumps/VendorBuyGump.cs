@@ -18,12 +18,23 @@ using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Ultima.World.Entities;
+using UltimaXNA.Ultima.Network.Server;
 #endregion
 
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
 {
-    class VendorBuyGump 
+    class VendorBuyGump : Gump
     {
+        private ExpandableScroll m_ScrollBackground;
+
+        public VendorBuyGump(AEntity vendorBackpack, VendorBuyListPacket packet)
+            : base(0, 0)
+        {
+            IsMoveable = true;
+
+            AddControl(m_ScrollBackground = new ExpandableScroll(this, 0, 0, 320, false));
+        }
     }
 }
