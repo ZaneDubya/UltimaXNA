@@ -27,10 +27,10 @@ namespace UltimaXNA.Ultima.UI.Controls
         private const int c_ExpandableScrollHeight_Max = 1000; // arbitrary large number.
 
         private int m_GumplingMidY { get { return m_GumplingTop.Height; } }
-        private int m_GumplingMidHeight { get { return m_ExpandableScrollHeight - m_GumplingTop.Height - m_GumplingBottom.Height - m_GumplingExpander.Height; } }
-        private int m_GumplingBottomY { get { return m_ExpandableScrollHeight - m_GumplingBottom.Height - m_GumplingExpander.Height; } }
-        private int m_GumplingExpanderX { get { return (Width - m_GumplingExpander.Width) / 2; } }
-        private int m_GumplingExpanderY { get { return m_ExpandableScrollHeight - m_GumplingExpander.Height - c_GumplingExpanderY_Offset; } }
+        private int m_GumplingMidHeight { get { return m_ExpandableScrollHeight - m_GumplingTop.Height - m_GumplingBottom.Height - (m_GumplingExpander != null ? m_GumplingExpander.Height : 0); } }
+        private int m_GumplingBottomY { get { return m_ExpandableScrollHeight - m_GumplingBottom.Height - (m_GumplingExpander != null ? m_GumplingExpander.Height : 0); } }
+        private int m_GumplingExpanderX { get { return (Width - (m_GumplingExpander != null ? m_GumplingExpander.Width : 0)) / 2; } }
+        private int m_GumplingExpanderY { get { return m_ExpandableScrollHeight - (m_GumplingExpander != null ? m_GumplingExpander.Height : 0) - c_GumplingExpanderY_Offset; } }
         private const int c_GumplingExpanderY_Offset = 2; // this is the gap between the pixels of the btm Control texture and the height of the btm Control texture.
         private const int c_GumplingExpander_ButtonID = 0x7FBEEF;
 
@@ -107,7 +107,8 @@ namespace UltimaXNA.Ultima.UI.Controls
 
                 m_GumplingBottom.Position = new Point(17, m_GumplingBottomY);
 
-                m_GumplingExpander.Position = new Point(m_GumplingExpanderX, m_GumplingExpanderY);
+                if (m_IsResizable)
+                    m_GumplingExpander.Position = new Point(m_GumplingExpanderX, m_GumplingExpanderY);
 
                 if (m_gumplingTitle != null && m_gumplingTitle.IsInitialized)
                 {
