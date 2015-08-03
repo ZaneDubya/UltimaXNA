@@ -41,7 +41,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             // note: original gumplings start at index 0x0870.
             AddControl(m_ScrollBackground = new ExpandableScroll(this, 0, 0, 320, false));
             AddControl(new HtmlGumpling(this, 0, 6, 300, 20, 0, 0, " <center><span color='#004' style='font-family:uni0;'>Shop Inventory"));
-            AddControl(m_ShopContents = new HtmlGumpling(this, 28, 32, 246, 254, 0, 2, BuildShopContentsHtml(vendorBackpack, packet)));
+            AddControl(m_ShopContents = new HtmlGumpling(this, 28, 32, 239, 254, 0, 2, BuildShopContentsHtml(vendorBackpack, packet)));
         }
 
         private string BuildShopContentsHtml(AEntity vendorBackpack, VendorBuyListPacket packet)
@@ -74,7 +74,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                 }
 
                  
-                html.Append(string.Format("{0}<right>{1}</right></br>", description, price.ToString()));
+                html.Append(string.Format("<itemimg src='{2}'/>{0}<right>{1}gp</right><br/>", 
+                    description, price.ToString(), item.DisplayItemID));
             }
 
             return html.ToString();

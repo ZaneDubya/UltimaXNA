@@ -277,10 +277,19 @@ namespace UltimaXNA.Core.UI
                 if (atom is ImageAtom)
                 {
                     ImageAtom img = (ImageAtom)atom;
-                    Texture2D standard = m_ResourceProvider.GetTexture(img.Style.GumpImgSrc);
-                    Texture2D over = m_ResourceProvider.GetTexture(img.Style.GumpImgSrcOver);
-                    Texture2D down = m_ResourceProvider.GetTexture(img.Style.GumpImgSrcDown);
-                    Images.AddImage(new Rectangle(), standard, over, down);
+                    if (img.ImageType == ImageAtom.ImageTypes.UI)
+                    {
+                        Texture2D standard = m_ResourceProvider.GetUITexture(img.Style.ImgSrc);
+                        Texture2D over = m_ResourceProvider.GetUITexture(img.Style.ImgSrcOver);
+                        Texture2D down = m_ResourceProvider.GetUITexture(img.Style.ImgSrcDown);
+                        Images.AddImage(new Rectangle(), standard, over, down);
+                    }
+                    else if (img.ImageType == ImageAtom.ImageTypes.Item)
+                    {
+                        Texture2D standard, over, down;
+                        standard = over = down = m_ResourceProvider.GetItemTexture(img.Style.ImgSrc);
+                        Images.AddImage(new Rectangle(), standard, over, down);
+                    }
                     img.AssociatedImage = Images[Images.Count - 1];
                 }
             }

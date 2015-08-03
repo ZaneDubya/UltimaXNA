@@ -147,8 +147,15 @@ namespace UltimaXNA.Core.UI.HTML
                                 addCharacter('\n', atoms, tags);
                                 break;
                             case "gumpimg":
+                                // draw a gump image
                                 tags.OpenTag(chunk);
-                                atom = new ImageAtom(tags.Style);
+                                atom = new ImageAtom(tags.Style, ImageAtom.ImageTypes.UI);
+                                tags.CloseOneTag(chunk);
+                                break;
+                            case "itemimg":
+                                // draw a static image
+                                tags.OpenTag(chunk);
+                                atom = new ImageAtom(tags.Style, ImageAtom.ImageTypes.Item);
                                 tags.CloseOneTag(chunk);
                                 break;
                             // ======================================================================

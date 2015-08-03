@@ -225,15 +225,16 @@ namespace UltimaXNA.Core.UI.HTML
                         switch (tag.sTag)
                         {
                             case "gumpimg":
+                            case "itemimg":
                                 if (key == "src")
-                                    Style.GumpImgSrc = int.Parse(value);
+                                    Style.ImgSrc = int.Parse(value);
                                 else if (key == "hoversrc")
-                                    Style.GumpImgSrcOver = int.Parse(value);
+                                    Style.ImgSrcOver = int.Parse(value);
                                 else if (key == "activesrc")
-                                    Style.GumpImgSrcDown = int.Parse(value);
+                                    Style.ImgSrcDown = int.Parse(value);
                                 break;
                             default:
-                                Tracer.Warn("src param encountered within " + tag.sTag + " which does not use this param.");
+                                Tracer.Warn("{0} param encountered within {1} tag which does not use this param.", key, tag.sTag);
                                 break;
                         }
                         break;

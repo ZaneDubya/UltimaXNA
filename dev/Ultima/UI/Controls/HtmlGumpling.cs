@@ -123,7 +123,7 @@ namespace UltimaXNA.Ultima.UI.Controls
                 {
                     AddControl(new ScrollFlag(this));
                     m_Scrollbar = LastControl as IScrollBar;
-                    m_Scrollbar.Position = new Point(Width - 21, 0);
+                    m_Scrollbar.Position = new Point(Width - 14, 0);
                 }
                 else
                 {

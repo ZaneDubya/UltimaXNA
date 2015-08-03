@@ -49,15 +49,27 @@ namespace UltimaXNA.Core.UI.HTML.Atoms
             }
         }
 
-        public ImageAtom(StyleState style)
+        public ImageTypes ImageType
+        {
+            get;
+            private set;
+        }
+
+        public ImageAtom(StyleState style, ImageTypes imageType = ImageTypes.UI)
             : base(style)
         {
-
+            ImageType = imageType;
         }
 
         public override string ToString()
         {
-            return string.Format("<gImg {0}>", Style.GumpImgSrc);
+            return string.Format("<img {0} {1}>", Style.ImgSrc, ImageType.ToString());
+        }
+
+        public enum ImageTypes
+        {
+            UI,
+            Item
         }
     }
 }
