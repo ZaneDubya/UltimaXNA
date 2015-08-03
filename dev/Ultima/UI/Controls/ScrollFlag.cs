@@ -130,7 +130,14 @@ namespace UltimaXNA.Ultima.UI.Controls
         public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
             // draw slider
-            spriteBatch.Draw2D(m_GumpSlider, new Vector3(position.X, position.Y + m_SliderPosition, 0), Vector3.Zero);
+            if (MaxValue == MinValue)
+            {
+                // do nothing.
+            }
+            else
+            {
+                spriteBatch.Draw2D(m_GumpSlider, new Vector3(position.X, position.Y + m_SliderPosition, 0), Vector3.Zero);
+            }
 
             base.Draw(spriteBatch, position);
         }
