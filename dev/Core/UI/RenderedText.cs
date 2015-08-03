@@ -231,6 +231,11 @@ namespace UltimaXNA.Core.UI
                     if (texture == null)
                         texture = image.Texture;
 
+                    if (srcImage.Width > texture.Width)
+                        srcImage.Width = texture.Width;
+                    if (srcImage.Height > texture.Height)
+                        srcImage.Height = texture.Height;
+
                     sb.Draw2D(texture, new Vector3(position.X, position.Y, 0),
                         srcImage, Utility.GetHueVector(0, false, false));
                 }

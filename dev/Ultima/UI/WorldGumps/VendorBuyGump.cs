@@ -44,7 +44,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             AddControl(new HtmlGumpling(this, 0, 6, 300, 20, 0, 0, " <center><span color='#004' style='font-family:uni0;'>Shop Inventory"));
 
             m_ScrollBar = (IScrollBar)AddControl(new ScrollFlag(this));
-            AddControl(m_ShopContents = new RenderedTextList(this, 30, 36, 242, 260, m_ScrollBar));
+            AddControl(m_ShopContents = new RenderedTextList(this, 22, 36, 250, 260, m_ScrollBar));
 
             BuildShopContentsHtml(vendorBackpack, packet);
         }
@@ -87,7 +87,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     description = Utility.CapitalizeAllWords(Ultima.IO.StringData.Entry(clilocDescription));
                 }
 
-                string html = string.Format("<right><gumpimg src='0x9CF'/><span width='4'/><gumpimg src='0x9CE'/></right><span width='46'/><span color='#400'>{0}, {1}gp<br/><itemimg src='{2}' width='44' height='44' style='top: -18;'/>{3} available.</span><br/>", 
+                string html = string.Format("<right><gumpimg src='0x9CF'/><span width='4'/><gumpimg src='0x9CE'/></right><span width='54'/><span color='#400'>{0}, {1}gp<br/><itemimg src='{2}' width='52' height='44' style='top: -18;'/>{3} available.</span><br/>", 
                     description, price.ToString(), item.DisplayItemID, item.Amount);
                 m_ShopContents.AddEntry(html);
             }
