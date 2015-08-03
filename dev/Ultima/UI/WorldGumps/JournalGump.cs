@@ -132,7 +132,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             {
                 m_JournalEntries.RemoveAt(0);
             }
-            m_JournalEntries.Add(new RenderedText(string.Format("<left color=50422D><span width='14'/>{0}</left><br/>", text), 200));
+            m_JournalEntries.Add(new RenderedText(string.Format("<left color='#50422D'><span width='14'/>{0}</left><br/>", text), 200));
             m_ScrollBar.MaxValue += m_JournalEntries[m_JournalEntries.Count - 1].Height;
             if (maxScroll)
             {
