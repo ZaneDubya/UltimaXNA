@@ -10,23 +10,19 @@
  ***************************************************************************/
 #region usings
 using System;
-using System.Text;
-using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.Diagnostics.Tracing;
+using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.UI.Controls;
-using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Ultima.Network.Client;
-using UltimaXNA.Core.Input.Windows;
-using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.Network.Server;
+using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Items;
 using UltimaXNA.Ultima.World.Entities.Items.Containers;
-using UltimaXNA.Core.Diagnostics.Tracing;
+using UltimaXNA.Ultima.World.Entities.Mobiles;
 #endregion
-
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
 {
@@ -36,6 +32,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         private IScrollBar m_ScrollBar;
         private HtmlGumpling m_TotalCost;
 
+        private int m_VendorSerial;
         private VendorItemInfo[] m_Items;
         private RenderedTextList m_ShopContents;
 
@@ -53,6 +50,32 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
             AddControl(m_TotalCost = new HtmlGumpling(this, 44, 334, 200, 30, 0, 0, string.Empty));
             UpdateCost();
+
+            Button okButton = (Button)AddControl(new Button(this, 220, 333, 0x907, 0x908, ButtonTypes.Activate, 0, 0));
+            okButton.GumpOverID = 0x909;
+            okButton.MouseClickEvent += okButton_MouseClickEvent;
+        }
+
+        void okButton_MouseClickEvent(AControl control, int x, int y, MouseButton button)
+        {
+            if (button != MouseButton.Left)
+                return;
+
+            List<Tuple<int, short>> itemsToBuy = new List<Tuple<int, short>>();
+            for (int i = 0; i < m_Items.Length; i++)
+            {
+                if (m_Items[i].AmountToBuy > 0)
+                {
+                    itemsToBuy.Add(new Tuple<int, short>(m_Items[i].Item.Serial, (short)m_Items[i].AmountToBuy));
+                }
+            }
+
+            if (itemsToBuy.Count == 0)
+                return;
+
+            INetworkClient network = ServiceRegistry.GetService<INetworkClient>();
+            network.Send(new BuyItemsPacket(m_VendorSerial, itemsToBuy.ToArray()));
+            this.Dispose();
         }
 
         public override void Update(double totalMS, double frameMS)
@@ -71,35 +94,40 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             }
 
             Container contents = (vendorBackpack as Container);
-            if (contents.Contents.Count != packet.Items.Count)
+            AEntity vendor = contents.Parent;
+            if (vendor == null || !(vendor is Mobile))
             {
-                m_ShopContents.AddEntry("<span color='#800'>Err: vendorBackpack item count and packet item count do not match.");
+                m_ShopContents.AddEntry("<span color='#800'>Err: vendorBackpack item does not belong to a vendor Mobile.");
                 return;
             }
+            m_VendorSerial = vendor.Serial;
 
             m_Items = new VendorItemInfo[packet.Items.Count];
 
             for (int i = 0; i < packet.Items.Count; i++)
             {
                 Item item = contents.Contents[packet.Items.Count - 1 - i];
-                string cliLocAsString = packet.Items[i].Description;
-                int price = packet.Items[i].Price;
-
-                int clilocDescription;
-                string description;
-                if (!(int.TryParse(cliLocAsString, out clilocDescription)))
+                if (item.Amount > 0)
                 {
-                    description = cliLocAsString;
-                }
-                else
-                {
-                    description = Utility.CapitalizeAllWords(Ultima.IO.StringData.Entry(clilocDescription));
-                }
+                    string cliLocAsString = packet.Items[i].Description;
+                    int price = packet.Items[i].Price;
 
-                string html = string.Format(c_Format, description, price.ToString(), item.DisplayItemID, item.Amount, i);
-                m_ShopContents.AddEntry(html);
+                    int clilocDescription;
+                    string description;
+                    if (!(int.TryParse(cliLocAsString, out clilocDescription)))
+                    {
+                        description = cliLocAsString;
+                    }
+                    else
+                    {
+                        description = Utility.CapitalizeAllWords(Ultima.IO.StringData.Entry(clilocDescription));
+                    }
 
-                m_Items[i] = new VendorItemInfo(item, description, price, item.Amount);
+                    string html = string.Format(c_Format, description, price.ToString(), item.DisplayItemID, item.Amount, i);
+                    m_ShopContents.AddEntry(html);
+
+                    m_Items[i] = new VendorItemInfo(item, description, price, item.Amount);
+                }
             }
 
             // list starts displaying first item.
@@ -157,9 +185,12 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         private void UpdateCost()
         {
             int totalCost = 0;
-            for (int i = 0; i < m_Items.Length; i++)
+            if (m_Items != null)
             {
-                totalCost += m_Items[i].AmountToBuy * m_Items[i].Price;
+                for (int i = 0; i < m_Items.Length; i++)
+                {
+                    totalCost += m_Items[i].AmountToBuy * m_Items[i].Price;
+                }
             }
             m_TotalCost.Text = string.Format("<span style='font-family:uni0;' color='#008'>Total: </span><span color='#400'>{0}gp</span>", totalCost);
         }

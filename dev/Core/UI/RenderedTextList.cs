@@ -28,7 +28,7 @@ namespace UltimaXNA.Core.UI
     /// </summary>
     class RenderedTextList : AControl
     {
-        private List<RenderedText> m_JournalEntries;
+        private List<RenderedText> m_Entries;
         private IScrollBar m_ScrollBar;
 
         private bool m_IsMouseDown = false;
@@ -52,7 +52,7 @@ namespace UltimaXNA.Core.UI
             Position = new Point(x, y);
             Width = width;
             Height = height;
-            m_JournalEntries = new List<RenderedText>();
+            m_Entries = new List<RenderedText>();
         }
 
         public override void Draw(SpriteBatchUI spriteBatch, Point position)
@@ -63,34 +63,34 @@ namespace UltimaXNA.Core.UI
             int height = 0;
             int maxheight = m_ScrollBar.Value + m_ScrollBar.Height;
 
-            for (int i = 0; i < m_JournalEntries.Count; i++)
+            for (int i = 0; i < m_Entries.Count; i++)
             {
-                if (height + m_JournalEntries[i].Height <= m_ScrollBar.Value)
+                if (height + m_Entries[i].Height <= m_ScrollBar.Value)
                 {
                     // this entry is above the renderable area.
-                    height += m_JournalEntries[i].Height;
+                    height += m_Entries[i].Height;
                 }
-                else if (height + m_JournalEntries[i].Height <= maxheight)
+                else if (height + m_Entries[i].Height <= maxheight)
                 {
                     int y = height - m_ScrollBar.Value;
                     if (y < 0)
                     {
                         // this entry starts above the renderable area, but exists partially within it.
-                        m_JournalEntries[i].Draw(spriteBatch, new Rectangle(p.X, position.Y, m_JournalEntries[i].Width, m_JournalEntries[i].Height + y), 0, -y);
-                        p.Y += m_JournalEntries[i].Height + y;
+                        m_Entries[i].Draw(spriteBatch, new Rectangle(p.X, position.Y, m_Entries[i].Width, m_Entries[i].Height + y), 0, -y);
+                        p.Y += m_Entries[i].Height + y;
                     }
                     else
                     {
                         // this entry is completely within the renderable area.
-                        m_JournalEntries[i].Draw(spriteBatch, p);
-                        p.Y += m_JournalEntries[i].Height;
+                        m_Entries[i].Draw(spriteBatch, p);
+                        p.Y += m_Entries[i].Height;
                     }
-                    height += m_JournalEntries[i].Height;
+                    height += m_Entries[i].Height;
                 }
                 else
                 {
                     int y = maxheight - height;
-                    m_JournalEntries[i].Draw(spriteBatch, new Rectangle(p.X, position.Y + m_ScrollBar.Height - y, m_JournalEntries[i].Width, y), 0, 0);
+                    m_Entries[i].Draw(spriteBatch, new Rectangle(p.X, position.Y + m_ScrollBar.Height - y, m_Entries[i].Width, y), 0, 0);
                     // can't fit any more entries - so we break!
                     break;
                 }
@@ -113,9 +113,9 @@ namespace UltimaXNA.Core.UI
             m_MouseOverHREF = -1; // this value is changed every frame if we mouse over a region.
 
             int height = 0;
-            for (int i = 0; i < m_JournalEntries.Count; i++)
+            for (int i = 0; i < m_Entries.Count; i++)
             {
-                RenderedText rendered = m_JournalEntries[i];
+                RenderedText rendered = m_Entries[i];
                 if (rendered.Regions.Count > 0)
                 {
                     Region region = rendered.Regions.RegionfromPoint(new Point(x, y - height + m_ScrollBar.Value));
@@ -151,8 +151,8 @@ namespace UltimaXNA.Core.UI
             {
                 if (button == MouseButton.Left)
                 {
-                    if (m_JournalEntries[m_MouseOverText].Regions.Region(m_MouseOverHREF).HREF != null)
-                        ActivateByHREF(m_JournalEntries[m_MouseOverText].Regions.Region(m_MouseOverHREF).HREF.HREF);
+                    if (m_Entries[m_MouseOverText].Regions.Region(m_MouseOverHREF).HREF != null)
+                        ActivateByHREF(m_Entries[m_MouseOverText].Regions.Region(m_MouseOverHREF).HREF.HREF);
                 }
             }
         }
@@ -172,9 +172,9 @@ namespace UltimaXNA.Core.UI
             bool maxValue = m_ScrollBar.Value == m_ScrollBar.MaxValue;
 
             int height = 0;
-            for (int i = 0; i < m_JournalEntries.Count; i++)
+            for (int i = 0; i < m_Entries.Count; i++)
             {
-                height += m_JournalEntries[i].Height;
+                height += m_Entries[i].Height;
             }
 
             height -= m_ScrollBar.Height;
@@ -196,12 +196,12 @@ namespace UltimaXNA.Core.UI
         {
             bool maxScroll = (m_ScrollBar.Value == m_ScrollBar.MaxValue);
 
-            while (m_JournalEntries.Count > 99)
+            while (m_Entries.Count > 99)
             {
-                m_JournalEntries.RemoveAt(0);
+                m_Entries.RemoveAt(0);
             }
-            m_JournalEntries.Add(new RenderedText(text, Width - 18));
-            m_ScrollBar.MaxValue += m_JournalEntries[m_JournalEntries.Count - 1].Height;
+            m_Entries.Add(new RenderedText(text, Width - 18));
+            m_ScrollBar.MaxValue += m_Entries[m_Entries.Count - 1].Height;
             if (maxScroll)
             {
                 m_ScrollBar.Value = m_ScrollBar.MaxValue;
@@ -210,13 +210,13 @@ namespace UltimaXNA.Core.UI
 
         public void UpdateEntry(int index, string text)
         {
-            if (index < 0 || index >= m_JournalEntries.Count)
+            if (index < 0 || index >= m_Entries.Count)
             {
                 Tracer.Error(string.Format("Bad index in RenderedTextList.UpdateEntry: {0}", index.ToString()));
                 return;
             }
 
-            m_JournalEntries[index].Text = text;
+            m_Entries[index].Text = text;
             CalculateScrollBarMaxValue();
         }
     }
