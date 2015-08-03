@@ -15,6 +15,8 @@ using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Player;
 using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Core.UI.HTML;
 #endregion
 
 namespace UltimaXNA.Core.UI
@@ -28,6 +30,12 @@ namespace UltimaXNA.Core.UI
         private List<RenderedText> m_JournalEntries;
         private IScrollBar m_ScrollBar;
 
+        private bool m_IsMouseDown = false;
+        private int m_MouseDownHREF = -1;
+        private int m_MouseDownText = -1;
+        private int m_MouseOverHREF = -1;
+        private int m_MouseOverText = -1;
+
         /// <summary>
         /// Creates a RenderedTextList.
         /// Note that the scrollBarControl must be created and added to the parent gump before passing it as a param.
@@ -37,6 +45,8 @@ namespace UltimaXNA.Core.UI
         {
             m_ScrollBar = scrollBarControl;
             m_ScrollBar.IsVisible = false;
+
+            HandlesMouseInput = true;
 
             Position = new Point(x, y);
             Width = width;
@@ -94,6 +104,66 @@ namespace UltimaXNA.Core.UI
             m_ScrollBar.Height = Height;
             CalculateScrollBarMaxValue();
             m_ScrollBar.IsVisible = m_ScrollBar.MaxValue > m_ScrollBar.MinValue;
+        }
+
+        protected override bool IsPointWithinControl(int x, int y)
+        {
+            m_MouseOverText = -1; // this value is changed every frame if we mouse over a region.
+            m_MouseOverHREF = -1; // this value is changed every frame if we mouse over a region.
+
+            int height = 0;
+            for (int i = 0; i < m_JournalEntries.Count; i++)
+            {
+                RenderedText rendered = m_JournalEntries[i];
+                if (rendered.Regions.Count > 0)
+                {
+                    Region region = rendered.Regions.RegionfromPoint(new Point(x, y - height + m_ScrollBar.Value));
+                    if (region != null)
+                    {
+                        m_MouseOverText = i;
+                        m_MouseOverHREF = region.Index;
+                        return true;
+                    }
+                }
+                height += rendered.Height;
+            }
+            return false;
+        }
+
+        protected override void OnMouseDown(int x, int y, MouseButton button)
+        {
+            m_IsMouseDown = true;
+            m_MouseDownText = m_MouseOverText;
+            m_MouseDownHREF = m_MouseOverHREF;
+        }
+
+        protected override void OnMouseUp(int x, int y, MouseButton button)
+        {
+            m_IsMouseDown = false;
+            m_MouseDownText = -1;
+            m_MouseDownHREF = -1;
+        }
+
+        protected override void OnMouseClick(int x, int y, MouseButton button)
+        {
+            if (m_MouseOverText != -1 && m_MouseOverHREF != -1 && m_MouseDownText == m_MouseOverText && m_MouseDownHREF == m_MouseOverHREF)
+            {
+                if (button == MouseButton.Left)
+                {
+                    if (m_JournalEntries[m_MouseOverText].Regions.Region(m_MouseOverHREF).HREF != null)
+                        ActivateByHREF(m_JournalEntries[m_MouseOverText].Regions.Region(m_MouseOverHREF).HREF.HREF);
+                }
+            }
+        }
+
+        protected override void OnMouseOver(int x, int y)
+        {
+            if (m_IsMouseDown && m_MouseDownText != -1 && m_MouseDownHREF != -1 && m_MouseDownHREF != m_MouseOverHREF)
+            {
+                // no need for dragging in this control - yet. Wouldn't be too hard to add. See HtmlGumpling for how to do it.
+                /*if (OnDragHRef != null)
+                    OnDragHRef(m_RenderedText.Regions.Region(m_MouseDownHREF).HREF.HREF);*/
+            }
         }
 
         private void CalculateScrollBarMaxValue()

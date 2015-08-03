@@ -87,13 +87,18 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     description = Utility.CapitalizeAllWords(Ultima.IO.StringData.Entry(clilocDescription));
                 }
 
-                string html = string.Format("<right><gumpimg src='0x9CF'/><span width='4'/><gumpimg src='0x9CE'/></right><span width='54'/><span color='#400'>{0}, {1}gp<br/><itemimg src='{2}' width='52' height='44' style='top: -18;'/>{3} available.</span><br/>", 
-                    description, price.ToString(), item.DisplayItemID, item.Amount);
+                string html = string.Format("<right><a href='add={4}'><gumpimg src='0x9CF'/></a><span width='4'/><a href='remove={4}'><gumpimg src='0x9CE'/></a></right><span width='54'/><span color='#400'>{0}, {1}gp<br/><itemimg src='{2}' width='52' height='44' style='top: -18;'/>{3} available.</span><br/>", 
+                    description, price.ToString(), item.DisplayItemID, item.Amount, i);
                 m_ShopContents.AddEntry(html);
             }
 
             // list starts displaying first item.
             m_ScrollBar.Value = 0;
+        }
+
+        public override void ActivateByHREF(string href)
+        {
+
         }
     }
 }
