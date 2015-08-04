@@ -831,7 +831,9 @@ namespace UltimaXNA.Ultima.World
 
         private void ReceiveSellList(IRecvPacket packet)
         {
-            announce_UnhandledPacket(packet);
+            VendorSellListPacket p = (VendorSellListPacket)packet;
+            m_UserInterface.RemoveControl<VendorSellGump>();
+            m_UserInterface.AddControl(new VendorSellGump(p), 200, 200);
         }
 
         private void ReceiveOpenPaperdoll(IRecvPacket packet)
