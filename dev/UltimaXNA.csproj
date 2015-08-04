@@ -263,6 +263,7 @@
     <Compile Include="Ultima\Network\Client\ClientPingPacket.cs" />
     <Compile Include="Ultima\Network\Client\GuildGumpRequestPacket.cs" />
     <Compile Include="Ultima\Network\Client\QuestGumpRequestPacket.cs" />
+    <Compile Include="Ultima\Network\Client\SellItemsPacket.cs" />
     <Compile Include="Ultima\Network\Server\ServerPingPacket.cs" />
     <Compile Include="Ultima\UI\Controls\AGumpPic.cs" />
     <Compile Include="Ultima\UI\Controls\EquipmentSlot.cs" />
@@ -307,7 +308,7 @@
     <Compile Include="Ultima\World\Entities\DeferredEntity.cs" />
     <Compile Include="Ultima\World\Entities\Mobiles\MobileFlags.cs" />
     <Compile Include="Core\UI\Fonts\AFont.cs" />
-    <Compile Include="Ultima\Network\Server\FeatureFlags.cs" />
+    <Compile Include="Ultima\Data\FeatureFlags.cs" />
     <Compile Include="Core\UI\Interfaces\IScrollBar.cs" />
     <Compile Include="Ultima\UI\Controls\ScrollFlag.cs" />
     <Compile Include="Ultima\UI\Controls\CheckBox.cs" />
