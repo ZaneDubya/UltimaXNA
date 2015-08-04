@@ -38,8 +38,10 @@ namespace UltimaXNA.Core.Graphics
 
         public bool Draw2D(Texture2D texture, Vector3 position, Rectangle sourceRect, Vector3 hue)
         {
-            float minX = sourceRect.X / (float)texture.Width, maxX = (sourceRect.X + sourceRect.Width) / (float)texture.Width;
-            float minY = sourceRect.Y / (float)texture.Height, maxY = (sourceRect.Y + sourceRect.Height) / (float)texture.Height;
+            float minX = sourceRect.X / (float)texture.Width;
+            float maxX = (sourceRect.X + sourceRect.Width) / (float)texture.Width;
+            float minY = sourceRect.Y / (float)texture.Height;
+            float maxY = (sourceRect.Y + sourceRect.Height) / (float)texture.Height;
 
             VertexPositionNormalTextureHue[] v =
             {

@@ -9,14 +9,12 @@
  *
  ***************************************************************************/
 #region using
-
 using System;
 using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Core.UI.HTML;
-using UltimaXNA.Ultima.UI.Interfaces;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.Controls
@@ -62,7 +60,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         public bool UseFlagScrollbar
         {
             get;
-            set;
+            private set;
         }
 
         public override int Width
@@ -120,11 +118,17 @@ namespace UltimaXNA.Ultima.UI.Controls
             if (HasScrollbar)
             {
                 if (UseFlagScrollbar)
+                {
                     AddControl(new ScrollFlag(this));
+                    m_Scrollbar = LastControl as IScrollBar;
+                    m_Scrollbar.Position = new Point(Width - 14, 0);
+                }
                 else
+                {
                     AddControl(new ScrollBar(this));
-                m_Scrollbar = LastControl as IScrollBar;
-                m_Scrollbar.Position = new Point(Width - 14, 0);
+                    m_Scrollbar = LastControl as IScrollBar;
+                    m_Scrollbar.Position = new Point(Width - 14, 0);
+                }
                 m_Scrollbar.Height = Height;
                 m_Scrollbar.MinValue = 0;
                 m_Scrollbar.MaxValue = m_RenderedText.Height - Height + (HasBackground ? 8 : 0);

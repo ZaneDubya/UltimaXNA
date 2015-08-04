@@ -248,7 +248,7 @@ namespace UltimaXNA
                 100d * (frame_time_drawing / frame_time),
                 100d * (frame_time_updating / frame_time),
                 last_draw_ms,
-                gameTime.IsRunningSlowly ? "IsRunningSlowly" : string.Empty);
+                gameTime.IsRunningSlowly ? "*" : string.Empty);
         }
 
         public void SetupWindowForLogin()

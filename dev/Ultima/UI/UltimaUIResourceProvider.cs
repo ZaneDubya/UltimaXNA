@@ -20,9 +20,14 @@ namespace UltimaXNA.Ultima.UI
 {
     class UltimaUIResourceProvider : IUIResourceProvider
     {
-        public Texture2D GetTexture(int textureID)
+        public Texture2D GetUITexture(int textureID)
         {
             return GumpData.GetGumpXNA(textureID);
+        }
+
+        public Texture2D GetItemTexture(int textureID)
+        {
+            return ArtData.GetStaticTexture(textureID);
         }
 
         public ushort GetWebSafeHue(Color color)

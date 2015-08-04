@@ -695,7 +695,7 @@ namespace UltimaXNA.Ultima.World
             {
                 if (capitalize)
                 {
-                    return char.ToUpper(baseCliloc[0]) + baseCliloc.Substring(1);
+                    return Utility.CapitalizeFirstCharacter(baseCliloc);
                 }
                 else
                 {
@@ -732,7 +732,7 @@ namespace UltimaXNA.Ultima.World
 
                 if (capitalize)
                 {
-                    return char.ToUpper(construct[0]) + construct.Substring(1);
+                    return Utility.CapitalizeFirstCharacter(construct);
                 }
                 else
                 {
@@ -825,13 +825,15 @@ namespace UltimaXNA.Ultima.World
             Item entity = WorldModel.Entities.GetObject<Item>(p.VendorPackSerial, false);
             if (entity == null)
                 return;
-            // UserInterface.Merchant_Open(iObject, 0);
-            // !!!
+            m_UserInterface.RemoveControl<VendorBuyGump>();
+            m_UserInterface.AddControl(new VendorBuyGump(entity, p), 200, 200);
         }
 
         private void ReceiveSellList(IRecvPacket packet)
         {
-            announce_UnhandledPacket(packet);
+            VendorSellListPacket p = (VendorSellListPacket)packet;
+            m_UserInterface.RemoveControl<VendorSellGump>();
+            m_UserInterface.AddControl(new VendorSellGump(p), 200, 200);
         }
 
         private void ReceiveOpenPaperdoll(IRecvPacket packet)

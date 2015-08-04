@@ -5,7 +5,8 @@ namespace UltimaXNA.Core.UI
 {
     public interface IUIResourceProvider
     {
-        Texture2D GetTexture(int textureID);
+        Texture2D GetUITexture(int textureID);
+        Texture2D GetItemTexture(int textureID);
         ushort GetWebSafeHue(Color color);
         IFont GetUnicodeFont(int fontIndex);
         IFont GetAsciiFont(int fontIndex);

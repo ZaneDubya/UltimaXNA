@@ -14,7 +14,6 @@ using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.IO;
-using UltimaXNA.Ultima.UI.Interfaces;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.Controls

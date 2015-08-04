@@ -163,6 +163,8 @@ namespace UltimaXNA.Core.UI.HTML
                 // get key and value for this tag param
                 string key = param.Key.ToString();
                 string value = param.Value.ToString();
+                if (value.StartsWith("0x"))
+                    value = Utility.ToInt32(value).ToString();
                 // trim trailing forward slash.
                 if (value.EndsWith("/"))
                     value = value.Substring(0, value.Length - 1);
@@ -225,15 +227,16 @@ namespace UltimaXNA.Core.UI.HTML
                         switch (tag.sTag)
                         {
                             case "gumpimg":
+                            case "itemimg":
                                 if (key == "src")
-                                    Style.GumpImgSrc = int.Parse(value);
+                                    Style.ImgSrc = int.Parse(value);
                                 else if (key == "hoversrc")
-                                    Style.GumpImgSrcOver = int.Parse(value);
+                                    Style.ImgSrcOver = int.Parse(value);
                                 else if (key == "activesrc")
-                                    Style.GumpImgSrcDown = int.Parse(value);
+                                    Style.ImgSrcDown = int.Parse(value);
                                 break;
                             default:
-                                Tracer.Warn("src param encountered within " + tag.sTag + " which does not use this param.");
+                                Tracer.Warn("{0} param encountered within {1} tag which does not use this param.", key, tag.sTag);
                                 break;
                         }
                         break;
@@ -241,6 +244,7 @@ namespace UltimaXNA.Core.UI.HTML
                         switch (tag.sTag)
                         {
                             case "gumpimg":
+                            case "itemimg":
                             case "span":
                                 Style.ElementWidth = int.Parse(value);
                                 break;
@@ -253,6 +257,7 @@ namespace UltimaXNA.Core.UI.HTML
                         switch (tag.sTag)
                         {
                             case "gumpimg":
+                            case "itemimg":
                             case "span":
                                 Style.ElementHeight = int.Parse(value);
                                 break;
@@ -360,6 +365,15 @@ namespace UltimaXNA.Core.UI.HTML
                         {
                             // other possibilities? overline|line-through|initial|inherit;
                             Tracer.Warn("Unknown text-decoration parameter:{0}", param[i]);
+                        }
+                    }
+                    break;
+                case "top":
+                    {
+                        int topValue = 0;
+                        if (int.TryParse(value, out topValue))
+                        {
+                            Style.ElementTop = topValue;
                         }
                     }
                     break;
