@@ -109,8 +109,8 @@ namespace UltimaXNA.Ultima.UI.Controls
             if (IsChild && IsMouseOver)
             {
                 spriteBatch.Draw2D(m_selectedIndicator, new Vector3(
-                    (int)(X + (float)(Width / m_hueWidth) * ((Index % m_hueWidth) + 0.5f) - m_selectedIndicator.Width / 2),
-                    (int)(Y + (float)(Height / m_hueHeight) * ((Index / m_hueWidth) + 0.5f) - m_selectedIndicator.Height / 2),
+                    (int)(position.X + (float)(Width / m_hueWidth) * ((Index % m_hueWidth) + 0.5f) - m_selectedIndicator.Width / 2),
+                    (int)(position.Y + (float)(Height / m_hueHeight) * ((Index / m_hueWidth) + 0.5f) - m_selectedIndicator.Height / 2),
                     0), Vector3.Zero);
             }
             base.Draw(spriteBatch, position);
@@ -127,7 +127,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             {
                 if (m_ChildColorPicker == null)
                 {
-                    m_ChildColorPicker = new ColorPicker(ParentColorPicker, m_openArea, m_hueWidth, m_hueHeight, m_hues);
+                    m_ChildColorPicker = new ColorPicker(this.Parent, m_openArea, m_hueWidth, m_hueHeight, m_hues);
                     m_ChildColorPicker.IsChild = true;
                     m_ChildColorPicker.ParentColorPicker = this;
                     Parent.AddControl(m_ChildColorPicker, this.Page);

@@ -29,5 +29,19 @@
                 return hues;
             }
         }
+
+        public static int[] TextTones
+        {
+            get
+            {
+                int max = 1024;
+                int[] hues = new int[max];
+                for (int i = 0; i < max; i++)
+                {
+                    hues[i] = i+2;
+                }
+                return hues;
+            }
+        }
     }
 }
