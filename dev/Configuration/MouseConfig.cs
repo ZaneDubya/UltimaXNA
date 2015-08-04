@@ -15,33 +15,29 @@ using UltimaXNA.Core.Input.Windows;
 
 namespace UltimaXNA.Configuration
 {
-    public class MouseSettings : NotifyPropertyChangedBase
+    public class MouseConfig : NotifyPropertyChangedBase
     {
-        private MouseButton m_InteractionButton;
-        private MouseButton m_movementButton;
-        private bool m_isEnabled;
-        private float m_ClickAndPickUpMS;
-        private float m_DoubleClickMS;
+        private MouseButton m_InteractionButton = MouseButton.Left;
+        private MouseButton m_MovementButton = MouseButton.Right;
+        private bool m_IsEnabled = true;
+        private float m_ClickAndPickUpMS = 800f; // this is close to what the legacy client uses.
+        private float m_DoubleClickMS = 400f;
 
-        public MouseSettings(MouseButton interaction, MouseButton movement)
+        public MouseConfig()
         {
-            InteractionButton = interaction;
-            MovementButton = movement;
-            IsEnabled = true;
-            m_ClickAndPickUpMS = 800f; // this is close to what the legacy client uses.
-            m_DoubleClickMS = 400;
+
         }
 
         public bool IsEnabled
         {
-            get { return m_isEnabled; }
-            set { SetProperty(ref m_isEnabled, value); }
+            get { return m_IsEnabled; }
+            set { SetProperty(ref m_IsEnabled, value); }
         }
 
         public MouseButton MovementButton
         {
-            get { return m_movementButton; }
-            set { SetProperty(ref m_movementButton, value); }
+            get { return m_MovementButton; }
+            set { SetProperty(ref m_MovementButton, value); }
         }
 
         public MouseButton InteractionButton

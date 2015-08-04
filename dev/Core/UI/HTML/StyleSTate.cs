@@ -58,10 +58,11 @@ namespace UltimaXNA.Core.UI.HTML
 
         public int ElementWidth = 0;
         public int ElementHeight = 0;
+        public int ElementTop = 0;
 
-        public int GumpImgSrc = -1;
-        public int GumpImgSrcOver = -1;
-        public int GumpImgSrcDown = -1;
+        public int ImgSrc = -1;
+        public int ImgSrcOver = -1;
+        public int ImgSrcDown = -1;
 
         public StyleState(IUIResourceProvider provider)
         {
@@ -80,9 +81,10 @@ namespace UltimaXNA.Core.UI.HTML
             HREF = parent.HREF;
             ElementWidth = parent.ElementWidth;
             ElementHeight = parent.ElementHeight;
-            GumpImgSrc = parent.GumpImgSrc;
-            GumpImgSrcOver = parent.GumpImgSrcOver;
-            GumpImgSrcDown = parent.GumpImgSrcDown;
+            ElementTop = parent.ElementTop;
+            ImgSrc = parent.ImgSrc;
+            ImgSrcOver = parent.ImgSrcOver;
+            ImgSrcDown = parent.ImgSrcDown;
         }
     }
 }

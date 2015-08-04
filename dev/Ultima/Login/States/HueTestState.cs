@@ -103,8 +103,8 @@ namespace UltimaXNA.Ultima.Login.States
         {
             private int m_StaticTextureID = 0;
 
-            public HuedControl(AControl owner, int staticID = 0x1bf5)
-                : base(owner)
+            public HuedControl(AControl parent, int staticID = 0x1bf5)
+                : base(parent)
             {
                 HandlesMouseInput = true;
                 m_StaticTextureID = staticID;

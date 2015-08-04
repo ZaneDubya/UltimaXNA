@@ -36,7 +36,7 @@ namespace UltimaXNA.Ultima.UI.Controls
         }
 
         public bool IsChild = false;
-        public ColorPicker Parent = null;
+        public ColorPicker ParentColorPicker = null;
 
         public int HueValue
         {
@@ -56,22 +56,22 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         UserInterfaceService m_UserInterface;
 
-        public ColorPicker(AControl owner)
-            : base(owner)
+        public ColorPicker(AControl parent)
+            : base(parent)
         {
             HandlesMouseInput = true;
 
             m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
         }
 
-        public ColorPicker(AControl owner, Rectangle area, int swatchWidth, int swatchHeight, int[] hues)
-            : this(owner)
+        public ColorPicker(AControl parent, Rectangle area, int swatchWidth, int swatchHeight, int[] hues)
+            : this(parent)
         {
             buildGumpling(area, swatchWidth, swatchHeight, hues);
         }
 
-        public ColorPicker(AControl owner, Rectangle closedArea, Rectangle openArea, int swatchWidth, int swatchHeight, int[] hues)
-            : this(owner)
+        public ColorPicker(AControl parent, Rectangle closedArea, Rectangle openArea, int swatchWidth, int swatchHeight, int[] hues)
+            : this(parent)
         {
             m_openArea = openArea;
             buildGumpling(closedArea, swatchWidth, swatchHeight, hues);
@@ -109,8 +109,8 @@ namespace UltimaXNA.Ultima.UI.Controls
             if (IsChild && IsMouseOver)
             {
                 spriteBatch.Draw2D(m_selectedIndicator, new Vector3(
-                    (int)(X + (float)(Width / m_hueWidth) * ((Index % m_hueWidth) + 0.5f) - m_selectedIndicator.Width / 2),
-                    (int)(Y + (float)(Height / m_hueHeight) * ((Index / m_hueWidth) + 0.5f) - m_selectedIndicator.Height / 2),
+                    (int)(position.X + (float)(Width / m_hueWidth) * ((Index % m_hueWidth) + 0.5f) - m_selectedIndicator.Width / 2),
+                    (int)(position.Y + (float)(Height / m_hueHeight) * ((Index / m_hueWidth) + 0.5f) - m_selectedIndicator.Height / 2),
                     0), Vector3.Zero);
             }
             base.Draw(spriteBatch, position);
@@ -120,17 +120,17 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             if (IsChild) // is a child
             {
-                Parent.Index = this.Index;
-                Parent.CloseChildPicker();
+                ParentColorPicker.Index = this.Index;
+                ParentColorPicker.CloseChildPicker();
             }
             else
             {
                 if (m_ChildColorPicker == null)
                 {
-                    m_ChildColorPicker = new ColorPicker(Owner, m_openArea, m_hueWidth, m_hueHeight, m_hues);
+                    m_ChildColorPicker = new ColorPicker(this.Parent, m_openArea, m_hueWidth, m_hueHeight, m_hues);
                     m_ChildColorPicker.IsChild = true;
-                    m_ChildColorPicker.Parent = this;
-                    Owner.AddControl(m_ChildColorPicker, this.Page);
+                    m_ChildColorPicker.ParentColorPicker = this;
+                    Parent.AddControl(m_ChildColorPicker, this.Page);
                 }
                 else
                 {
@@ -147,7 +147,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             {
                 int clickRow = x / (Width / m_hueWidth);
                 int clickColumn = y / (Height / m_hueHeight);
-                Parent.Index = Index = clickRow + clickColumn * m_hueWidth;
+                ParentColorPicker.Index = Index = clickRow + clickColumn * m_hueWidth;
             }
         }
 

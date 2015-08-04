@@ -37,7 +37,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             HandlesMouseInput = false;
             IsUncloseableWithRMB = true;
             IsUncloseableWithEsc = true;
-            IsMovable = true;
+            IsMoveable = true;
             MetaData.Layer = UILayer.Under;
 
             m_Model = ServiceRegistry.GetService<WorldModel>();

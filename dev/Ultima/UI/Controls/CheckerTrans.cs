@@ -50,14 +50,14 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        public CheckerTrans(AControl owner)
-            : base(owner)
+        public CheckerTrans(AControl parent)
+            : base(parent)
         {
 
         }
 
-        public CheckerTrans(AControl owner, string[] arguements)
-            : this(owner)
+        public CheckerTrans(AControl parent, string[] arguements)
+            : this(parent)
         {
             int x, y, width, height;
             x = Int32.Parse(arguements[1]);
@@ -68,8 +68,8 @@ namespace UltimaXNA.Ultima.UI.Controls
             buildGumpling(x, y, width, height);
         }
 
-        public CheckerTrans(AControl owner, int x, int y, int width, int height)
-            : this(owner)
+        public CheckerTrans(AControl parent, int x, int y, int width, int height)
+            : this(parent)
         {
             buildGumpling(x, y, width, height);
         }

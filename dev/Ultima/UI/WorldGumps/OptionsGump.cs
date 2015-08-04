@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   TopMenu.cs
+ *   OptionsGump.cs
  *   Copyright (c) 2015 UltimaXNA Development Team
  *   
  *   This program is free software; you can redistribute it and/or modify
@@ -48,8 +48,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         DropDownList m_DropDownFullScreenResolutions;
         DropDownList m_DropDownPlayWindowResolutions;
 
-        private List<Resolution> m_FullScreenResolutionsList;
-        private List<Resolution> m_PlayWindowResolutionsList;
+        private List<ResolutionConfig> m_FullScreenResolutionsList;
+        private List<ResolutionConfig> m_PlayWindowResolutionsList;
 
         double m_RefreshTime = 0d;
         private TextLabelAscii[] m_Labels = new TextLabelAscii[2];
@@ -65,7 +65,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
             BuildResolutionsLists();
 
-            IsMovable = true;
+            IsMoveable = true;
             AddControl(new ResizePic(this, 40, 0, 2600, 550, 450));
             //left column
             AddControl(new Button(this, 0, 40, 218, 217, ButtonTypes.SwitchPage, 1, (int)Buttons.Sound));
@@ -156,22 +156,22 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_DropDownPlayWindowResolutions = (DropDownList)AddControl(new DropDownList(this, 60, 205, 122, CreateResolutionsStringArrayFromList(m_PlayWindowResolutionsList), 10, GetCurrentPlayWindowIndex(), false), 6);
 
             AddControl(new TextLabelAscii(this, 85, 235, 1, 9, @"Speech color"), 6);
-            m_SpeechColor = (ColorPicker)AddControl(new ColorPicker(this, new Rectangle(60, 235, 15, 15), new Rectangle(60, 255, 150, 150), 16, 16, Hues.TextTones), 6);
+            m_SpeechColor = (ColorPicker)AddControl(new ColorPicker(this, new Rectangle(60, 235, 15, 15), new Rectangle(84, 235, 450, 150), 30, 10, Hues.TextTones), 6);
 
             AddControl(new TextLabelAscii(this, 85, 255, 1, 9, @"Emote color"), 6);
-            m_EmoteColor = (ColorPicker)AddControl(new ColorPicker(this, new Rectangle(60, 255, 15, 15), new Rectangle(60, 275, 150, 150), 16, 16, Hues.TextTones), 6);
+            m_EmoteColor = (ColorPicker)AddControl(new ColorPicker(this, new Rectangle(60, 255, 15, 15), new Rectangle(84, 235, 450, 150), 30, 10, Hues.TextTones), 6);
 
             AddControl(new TextLabelAscii(this, 85, 275, 1, 9, @"Party message color"), 6);
-            m_PartyMsgColor = (ColorPicker)AddControl(new ColorPicker(this, new Rectangle(60, 275, 15, 15), new Rectangle(60, 295, 150, 150), 16, 16, Hues.TextTones), 6);
+            m_PartyMsgColor = (ColorPicker)AddControl(new ColorPicker(this, new Rectangle(60, 275, 15, 15), new Rectangle(84, 235, 450, 150), 30, 10, Hues.TextTones), 6);
 
             AddControl(new TextLabelAscii(this, 85, 295, 1, 9, @"Guild message color"), 6);
-            m_GuildMsgColor = (ColorPicker)AddControl(new ColorPicker(this, new Rectangle(60, 295, 15, 15), new Rectangle(60, 315, 150, 150), 16, 16, Hues.TextTones), 6);
+            m_GuildMsgColor = (ColorPicker)AddControl(new ColorPicker(this, new Rectangle(60, 295, 15, 15), new Rectangle(84, 235, 450, 150), 30, 10, Hues.TextTones), 6);
 
             AddControl(new TextLabelAscii(this, 85, 315, 1, 9, @"Ignore guild messages"), 6);
             m_IgnoreGuildMsg = (CheckBox)AddControl(new CheckBox(this, 60, 315, 210, 211, false, 62), 6);
 
             AddControl(new TextLabelAscii(this, 85, 335, 1, 9, @"Alliance message color"), 6);
-            m_AllianceMsgColor = (ColorPicker)AddControl(new ColorPicker(this, new Rectangle(60, 335, 15, 15), new Rectangle(60, 355, 150, 150), 16, 16, Hues.TextTones), 6);
+            m_AllianceMsgColor = (ColorPicker)AddControl(new ColorPicker(this, new Rectangle(60, 335, 15, 15), new Rectangle(84, 235, 450, 150), 30, 10, Hues.TextTones), 6);
 
             AddControl(new TextLabelAscii(this, 85, 355, 1, 9, @"Ignore alliance messages"), 6);
             m_IgnoreAllianceMsg = (CheckBox)AddControl(new CheckBox(this, 60, 355, 210, 211, false, 62), 6);
@@ -243,11 +243,11 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             if (m_FullScreenResolutionsList != null)
                 m_FullScreenResolutionsList.Clear();
             else
-                m_FullScreenResolutionsList = new List<Resolution>();
+                m_FullScreenResolutionsList = new List<ResolutionConfig>();
 
             foreach (DisplayMode mode in GraphicsAdapter.DefaultAdapter.SupportedDisplayModes)
             {
-                Resolution res = new Resolution(mode.Width, mode.Height);
+                ResolutionConfig res = new ResolutionConfig(mode.Width, mode.Height);
                 if (!m_FullScreenResolutionsList.Contains(res))
                 {
                     m_FullScreenResolutionsList.Add(res);
@@ -257,9 +257,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             if (m_PlayWindowResolutionsList != null)
                 m_PlayWindowResolutionsList.Clear();
             else
-                m_PlayWindowResolutionsList = new List<Resolution>();
+                m_PlayWindowResolutionsList = new List<ResolutionConfig>();
 
-            foreach (Resolution res in m_FullScreenResolutionsList)
+            foreach (ResolutionConfig res in m_FullScreenResolutionsList)
             {
                 if (!m_PlayWindowResolutionsList.Contains(res) && res.Width < 2048 && res.Height < 2048)
                 {
@@ -268,7 +268,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             }
         }
 
-        public string[] CreateResolutionsStringArrayFromList(List<Resolution> resolutions)
+        public string[] CreateResolutionsStringArrayFromList(List<ResolutionConfig> resolutions)
         {
             string[] array = new string[resolutions.Count];
             for (int i = 0; i < resolutions.Count; i++)
@@ -288,8 +288,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             //interface
             Settings.World.AlwaysRun = m_AlwaysRun.IsChecked;
             Settings.World.MenuBarDisabled = m_MenuBarDisabled.IsChecked;
-            Settings.World.FullScreenResolution = new Resolution(m_FullScreenResolutionsList[m_DropDownFullScreenResolutions.Index].Width, m_FullScreenResolutionsList[m_DropDownFullScreenResolutions.Index].Height);
-            Settings.World.PlayWindowGumpResolution = new Resolution(m_PlayWindowResolutionsList[m_DropDownPlayWindowResolutions.Index].Width, m_PlayWindowResolutionsList[m_DropDownPlayWindowResolutions.Index].Height);
+            Settings.World.FullScreenResolution = new ResolutionConfig(m_FullScreenResolutionsList[m_DropDownFullScreenResolutions.Index].Width, m_FullScreenResolutionsList[m_DropDownFullScreenResolutions.Index].Height);
+            Settings.World.PlayWindowGumpResolution = new ResolutionConfig(m_PlayWindowResolutionsList[m_DropDownPlayWindowResolutions.Index].Width, m_PlayWindowResolutionsList[m_DropDownPlayWindowResolutions.Index].Height);
             Settings.Game.IsVSyncEnabled = m_IsVSyncEnabled.IsChecked;
             Settings.Debug.IsConsoleEnabled = m_IsConsoleEnabled.IsChecked;
             Settings.Debug.ShowFps = m_ShowFps.IsChecked;

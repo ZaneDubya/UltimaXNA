@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   ServiceRegistry.cs
+ *   PropertyList.cs
  *   Copyright (c) 2015 UltimaXNA Development Team
  * 
  *   This program is free software; you can redistribute it and/or modify

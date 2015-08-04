@@ -40,7 +40,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_Skill = skill;
             m_World = ServiceRegistry.GetService<WorldModel>();
 
-            IsMovable = true;
+            IsMoveable = true;
             HandlesMouseInput = true;
 
             m_BG = new ResizePic[3];

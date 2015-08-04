@@ -50,8 +50,8 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         private UserInterfaceService m_UserInterface;
 
-        public TextEntry(AControl owner)
-            : base(owner)
+        public TextEntry(AControl parent)
+            : base(parent)
         {
             HandlesMouseInput = true;
             HandlesKeyboardFocus = true;
@@ -59,8 +59,8 @@ namespace UltimaXNA.Ultima.UI.Controls
             m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
         }
 
-        public TextEntry(AControl owner, string[] arguements, string[] lines)
-            : this(owner)
+        public TextEntry(AControl parent, string[] arguements, string[] lines)
+            : this(parent)
         {
             int x, y, width, height, hue, entryID, textIndex, limitSize = 0;
             x = Int32.Parse(arguements[1]);
@@ -77,8 +77,8 @@ namespace UltimaXNA.Ultima.UI.Controls
             buildGumpling(x, y, width, height, hue, entryID, limitSize, lines[textIndex]);
         }
 
-        public TextEntry(AControl owner, int x, int y, int width, int height, int hue, int entryID, int limitSize, string text)
-            : this(owner)
+        public TextEntry(AControl parent, int x, int y, int width, int height, int hue, int entryID, int limitSize, string text)
+            : this(parent)
         {
             buildGumpling(x, y, width, height, hue, entryID, limitSize, text);
         }
@@ -164,10 +164,10 @@ namespace UltimaXNA.Ultima.UI.Controls
             switch (e.KeyCode)
             {
                 case WinKeys.Tab:
-                    Owner.KeyboardTabToNextFocus(this);
+                    Parent.KeyboardTabToNextFocus(this);
                     break;
                 case WinKeys.Enter:
-                    Owner.ActivateByKeyboardReturn(EntryID, Text);
+                    Parent.ActivateByKeyboardReturn(EntryID, Text);
                     break;
                 case WinKeys.Back:
                     if (ReplaceDefaultTextOnFirstKeypress)

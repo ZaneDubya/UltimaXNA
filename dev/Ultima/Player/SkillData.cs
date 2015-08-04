@@ -55,7 +55,7 @@ namespace UltimaXNA.Ultima.Player
 
     public class SkillEntry
     {
-        private SkillData m_Owner;
+        private SkillData m_DataParent;
 
         private int m_id;
         private int m_index;
@@ -92,8 +92,8 @@ namespace UltimaXNA.Ultima.Player
             set
             {
                 m_value = value;
-                if (m_Owner.OnSkillChanged != null)
-                    m_Owner.OnSkillChanged(this);
+                if (m_DataParent.OnSkillChanged != null)
+                    m_DataParent.OnSkillChanged(this);
             }
         }
         public float ValueUnmodified
@@ -102,8 +102,8 @@ namespace UltimaXNA.Ultima.Player
             set
             {
                 m_valueUnmodified = value;
-                if (m_Owner.OnSkillChanged != null)
-                    m_Owner.OnSkillChanged(this);
+                if (m_DataParent.OnSkillChanged != null)
+                    m_DataParent.OnSkillChanged(this);
             }
         }
         public byte LockType
@@ -112,8 +112,8 @@ namespace UltimaXNA.Ultima.Player
             set
             {
                 m_lockType = value;
-                if (m_Owner.OnSkillChanged != null)
-                    m_Owner.OnSkillChanged(this);
+                if (m_DataParent.OnSkillChanged != null)
+                    m_DataParent.OnSkillChanged(this);
             }
         }
         public float Cap
@@ -122,14 +122,14 @@ namespace UltimaXNA.Ultima.Player
             set
             {
                 m_cap = value;
-                if (m_Owner.OnSkillChanged != null)
-                    m_Owner.OnSkillChanged(this);
+                if (m_DataParent.OnSkillChanged != null)
+                    m_DataParent.OnSkillChanged(this);
             }
         }
 
-        public SkillEntry(SkillData owner, int id, int index, bool useButton, string name, float value, float unmodified, byte locktype, float cap)
+        public SkillEntry(SkillData dataParent, int id, int index, bool useButton, string name, float value, float unmodified, byte locktype, float cap)
         {
-            m_Owner = owner;
+            m_DataParent = dataParent;
             ID = id;
             Index = index;
             HasUseButton = useButton;

@@ -51,7 +51,6 @@ namespace UltimaXNA.Ultima.World
             m_World = world;
 
             m_RegisteredHandlers = new List<Tuple<int, TypedPacketReceiveHandler>>();
-
             m_Network = ServiceRegistry.GetService<INetworkClient>();
             m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
         }
@@ -444,7 +443,7 @@ namespace UltimaXNA.Ultima.World
                     m_Network.Send(new QueryPropertiesPacket(item.Serial));
             }
 
-            if (mobile.Name == string.Empty)
+            if (mobile.Name == null || mobile.Name == string.Empty)
             {
                 mobile.Name = "Unknown";
                 m_Network.Send(new RequestNamePacket(p.Serial));
@@ -551,7 +550,7 @@ namespace UltimaXNA.Ultima.World
             mobile.Hue = (int)p.Hue;
             mobile.Move_Instant(p.X, p.Y, p.Z, p.Direction);
 
-            if (mobile.Name == string.Empty)
+            if (mobile.Name == null || mobile.Name == string.Empty)
             {
                 mobile.Name = "Unknown";
                 m_Network.Send(new RequestNamePacket(p.Serial));
@@ -671,8 +670,8 @@ namespace UltimaXNA.Ultima.World
         {
             MessageLocalizedPacket p = (MessageLocalizedPacket)packet;
 
-            string iCliLoc = constructCliLoc(StringData.Entry(p.CliLocNumber), p.Arguements);
-            ReceiveTextMessage(p.MessageType, iCliLoc, p.Hue, p.Font, p.Serial, p.SpeakerName);
+            string strCliLoc = constructCliLoc(StringData.Entry(p.CliLocNumber), p.Arguements);
+            ReceiveTextMessage(p.MessageType, strCliLoc, p.Hue, p.Font, p.Serial, p.SpeakerName);
         }
 
         private void ReceiveAsciiMessage(IRecvPacket packet)
@@ -687,34 +686,59 @@ namespace UltimaXNA.Ultima.World
             ReceiveTextMessage(p.MsgType, p.SpokenText, p.Hue, p.Font, p.Serial, p.SpeakerName);
         }
 
-        private string constructCliLoc(string nBase, string nArgs)
+        private string constructCliLoc(string baseCliloc, string arg = null, bool capitalize = false)
         {
-            string[] iArgs = nArgs.Split('\t');
-            for (int i = 0; i < iArgs.Length; i++)
-            {
-                if ((iArgs[i].Length > 0) && (iArgs[i].Substring(0, 1) == "#"))
-                {
-                    int clilocID = Convert.ToInt32(iArgs[i].Substring(1));
-                    iArgs[i] = StringData.Entry(clilocID);
-                }
-            }
+            if (string.IsNullOrEmpty(baseCliloc))
+                return string.Empty;
 
-            string iConstruct = nBase;
-            for (int i = 0; i < iArgs.Length; i++)
+            if (arg == null)
             {
-                int iBeginReplace = iConstruct.IndexOf('~', 0);
-                int iEndReplace = iConstruct.IndexOf('~', iBeginReplace + 1);
-                if ((iBeginReplace != -1) && (iEndReplace != -1))
+                if (capitalize)
                 {
-                    iConstruct = iConstruct.Substring(0, iBeginReplace) + iArgs[i] + iConstruct.Substring(iEndReplace + 1, iConstruct.Length - iEndReplace - 1);
+                    return Utility.CapitalizeFirstCharacter(baseCliloc);
                 }
                 else
                 {
-                    iConstruct = nBase;
+                    return baseCliloc;
+                }
+            }
+            else
+            {
+                string[] args = arg.Split('\t');
+                for (int i = 0; i < args.Length; i++)
+                {
+                    if ((args[i].Length > 0) && (args[i].Substring(0, 1) == "#"))
+                    {
+                        int clilocID = Convert.ToInt32(args[i].Substring(1));
+                        args[i] = StringData.Entry(clilocID);
+                    }
                 }
 
+                string construct = baseCliloc;
+                for (int i = 0; i < args.Length; i++)
+                {
+                    int iBeginReplace = construct.IndexOf('~', 0);
+                    int iEndReplace = construct.IndexOf('~', iBeginReplace + 1);
+                    if ((iBeginReplace != -1) && (iEndReplace != -1))
+                    {
+                        construct = construct.Substring(0, iBeginReplace) + args[i] + construct.Substring(iEndReplace + 1, construct.Length - iEndReplace - 1);
+                    }
+                    else
+                    {
+                        construct = baseCliloc;
+                    }
+
+                }
+
+                if (capitalize)
+                {
+                    return Utility.CapitalizeFirstCharacter(construct);
+                }
+                else
+                {
+                    return construct;
+                }
             }
-            return iConstruct;
         }
 
         private void ReceiveTextMessage(MessageTypes msgType, string text, int hue, int font, Serial serial, string speakerName)
@@ -801,20 +825,22 @@ namespace UltimaXNA.Ultima.World
             Item entity = WorldModel.Entities.GetObject<Item>(p.VendorPackSerial, false);
             if (entity == null)
                 return;
-            // UserInterface.Merchant_Open(iObject, 0);
-            // !!!
+            m_UserInterface.RemoveControl<VendorBuyGump>();
+            m_UserInterface.AddControl(new VendorBuyGump(entity, p), 200, 200);
         }
 
         private void ReceiveSellList(IRecvPacket packet)
         {
-            announce_UnhandledPacket(packet);
+            VendorSellListPacket p = (VendorSellListPacket)packet;
+            m_UserInterface.RemoveControl<VendorSellGump>();
+            m_UserInterface.AddControl(new VendorSellGump(p), 200, 200);
         }
 
         private void ReceiveOpenPaperdoll(IRecvPacket packet)
         {
             OpenPaperdollPacket p = packet as OpenPaperdollPacket;
             if (m_UserInterface.GetControl<JournalGump>(p.Serial) == null)
-                m_UserInterface.AddControl(new PaperDollGump(WorldModel.Entities.GetObject<Mobile>(p.Serial, false), p.MobileName), 400, 100);
+                m_UserInterface.AddControl(new PaperDollGump(p.Serial), 400, 100);
         }
 
         private void ReceiveCompressedGump(IRecvPacket packet)
@@ -826,7 +852,7 @@ namespace UltimaXNA.Ultima.World
                 if (TryParseGumplings(p.GumpData, out gumpPieces))
                 {
                     Gump g = (Gump)m_UserInterface.AddControl(new Gump(p.GumpSerial, p.GumpTypeID, gumpPieces, p.TextLines), p.X, p.Y);
-                    g.IsMovable = true;
+                    g.IsMoveable = true;
                 }
             }
         }
@@ -909,15 +935,14 @@ namespace UltimaXNA.Ultima.World
 
             for (int i = 0; i < p.CliLocs.Count; i++)
             {
-                string iCliLoc = StringData.Entry(p.CliLocs[i]);
+                string strCliLoc = StringData.Entry(p.CliLocs[i]);
                 if (p.Arguements[i] == string.Empty)
-                {
-                    entity.PropertyList.AddProperty(iCliLoc);
-                }
+                    strCliLoc = constructCliLoc(strCliLoc, capitalize: true);
                 else
-                {
-                    entity.PropertyList.AddProperty(constructCliLoc(iCliLoc, p.Arguements[i]));
-                }
+                    strCliLoc = constructCliLoc(strCliLoc, p.Arguements[i], true);
+                if (i == 0)
+                    strCliLoc = string.Format("<span color='#ff0'>{0}</span>", strCliLoc);
+                entity.PropertyList.AddProperty(strCliLoc);
             }
         }
 

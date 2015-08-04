@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace UltimaXNA.Ultima.UI.Interfaces
+namespace UltimaXNA.Core.UI
 {
     interface IScrollBar
     {
@@ -12,5 +12,7 @@ namespace UltimaXNA.Ultima.UI.Interfaces
         int Height { get; set; }
 
         bool PointWithinControl(int x, int y);
+
+        bool IsVisible { get; set; } // from AControl
     }
 }
