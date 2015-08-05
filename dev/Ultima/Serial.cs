@@ -17,6 +17,8 @@ namespace UltimaXNA.Ultima
 {
     public struct Serial : IComparable, IComparable<Serial>
     {
+        public static Serial ProtectedAction = int.MinValue;
+
         public static Serial Null
         {
             get { return 0; }

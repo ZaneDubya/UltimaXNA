@@ -46,13 +46,13 @@ namespace UltimaXNA.Ultima.World.Input
         private InputManager m_Input;
         private WorldModel m_World;
 
-        protected Item MouseOverItem
+        public Item MouseOverItem
         {
             get
             {
                 return m_MouseOverItem;
             }
-            set
+            protected set
             {
                 if (m_MouseOverItem == value)
                     return;
@@ -119,8 +119,8 @@ namespace UltimaXNA.Ultima.World.Input
                         Container targetItem = (Container)((GumpPicContainer)target).Item;
                         MouseOverItem = targetItem;
 
-                        int x = (int)m_Input.MousePosition.X - m_HeldItemOffset.X - (target.X + target.Owner.X);
-                        int y = (int)m_Input.MousePosition.Y - m_HeldItemOffset.Y - (target.Y + target.Owner.Y);
+                        int x = (int)m_Input.MousePosition.X - m_HeldItemOffset.X - (target.X + target.Parent.X);
+                        int y = (int)m_Input.MousePosition.Y - m_HeldItemOffset.Y - (target.Y + target.Parent.Y);
                         DropHeldItemToContainer(targetItem, x, y);
                     }
                     else if (target is ItemGumplingPaperdoll || (target is GumpPic && ((GumpPic)target).IsPaperdoll) || (target is EquipmentSlot))
@@ -208,12 +208,17 @@ namespace UltimaXNA.Ultima.World.Input
                         case TargetType.Position:
                             if (m_World.Input.IsMouseOverUI)
                             {
-                                // get object under mouse cursor. We can only hue items.
-                                // ItemGumping is the base class for all items, containers, and paperdoll items.
+                                // get object under mouse cursor.
                                 AControl target = m_UserInterface.MouseOverControl;
                                 if (target is ItemGumpling)
                                 {
+                                    // ItemGumping is the base class for all items, containers, and paperdoll items.
                                     mouseTargetingEventObject(((ItemGumpling)target).Item);
+                                }
+                                else if (target.RootParent is MobileHealthTrackerGump)
+                                {
+                                    // this is a mobile's mini-status gump (health bar, etc.) We can target it to cast spells on that mobile.
+                                    mouseTargetingEventObject(((MobileHealthTrackerGump)target.RootParent).Mobile);
                                 }
                             }
                             else if (m_World.Input.IsMouseOverWorld)
@@ -325,7 +330,7 @@ namespace UltimaXNA.Ultima.World.Input
             }
             else if ((m_World.Input.ContinuousMouseMovementCheck || m_World.Input.IsMouseOverWorld) && !m_UserInterface.IsModalControlOpen)
             {
-                Resolution resolution = Settings.World.PlayWindowGumpResolution;
+                ResolutionConfig resolution = Settings.World.PlayWindowGumpResolution;
                 Direction mouseDirection = DirectionHelper.DirectionFromPoints(new Point(resolution.Width / 2, resolution.Height / 2), m_World.Input.MouseOverWorldPosition);
 
                 int artIndex = 0;
@@ -348,7 +353,7 @@ namespace UltimaXNA.Ultima.World.Input
                         artIndex = 8302;
                         break;
                     case Direction.South:
-                        CursorOffset = new Point(4, 28);
+                        CursorOffset = new Point(2, 26);
                         artIndex = 8303;
                         break;
                     case Direction.Left:
@@ -381,6 +386,56 @@ namespace UltimaXNA.Ultima.World.Input
             {
                 // cursor is over UI or there is a modal message box open. Set up to draw standard cursor sprite.
                 base.BeforeDraw(spritebatch, position);
+            }
+        }
+
+        protected override void DrawTooltip(SpriteBatchUI spritebatch, Point position)
+        {
+            // Do not draw tooltips if:
+            // 1. Holding an item.
+            // Draw tooltips for items:
+            // 1. Items in the world (MouseOverItem)
+            // 2. ItemGumplings (both in paperdoll and in containers)
+            // 3. the Backpack icon (in paperdolls).
+            if (IsHoldingItem)
+            {
+                if (m_Tooltip != null)
+                {
+                    m_Tooltip.Dispose();
+                    m_Tooltip = null;
+                }
+            }
+            else if (MouseOverItem != null && MouseOverItem.PropertyList.HasProperties)
+            {
+                if (m_Tooltip == null)
+                    m_Tooltip = new Tooltip(MouseOverItem);
+                else
+                    m_Tooltip.UpdateEntity(MouseOverItem);
+                m_Tooltip.Draw(spritebatch, position.X, position.Y + 24);
+            }
+            else if (m_UserInterface.IsMouseOverUI && m_UserInterface.MouseOverControl != null &&
+                m_UserInterface.MouseOverControl is ItemGumpling && (m_UserInterface.MouseOverControl as ItemGumpling).Item.PropertyList.HasProperties)
+            {
+                AEntity entity = (m_UserInterface.MouseOverControl as ItemGumpling).Item;
+                if (m_Tooltip == null)
+                    m_Tooltip = new Tooltip(entity);
+                else
+                    m_Tooltip.UpdateEntity(entity);
+                m_Tooltip.Draw(spritebatch, position.X, position.Y + 24);
+            }
+            else if (m_UserInterface.IsMouseOverUI && m_UserInterface.MouseOverControl != null &&
+                m_UserInterface.MouseOverControl is GumpPicBackpack && (m_UserInterface.MouseOverControl as GumpPicBackpack).BackpackItem.PropertyList.HasProperties)
+            {
+                AEntity entity = (m_UserInterface.MouseOverControl as GumpPicBackpack).BackpackItem;
+                if (m_Tooltip == null)
+                    m_Tooltip = new Tooltip(entity);
+                else
+                    m_Tooltip.UpdateEntity(entity);
+                m_Tooltip.Draw(spritebatch, position.X, position.Y + 24);
+            }
+            else
+            {
+                base.DrawTooltip(spritebatch, position);
             }
         }
 

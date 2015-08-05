@@ -26,7 +26,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
             m_World = ServiceRegistry.GetService<WorldModel>();
 
-            IsMovable = true;
+            IsMoveable = true;
 
             AddControl(new ResizePic(this, 0, 0, 0x2436, 256 + 16, 256 + 16));
         }

@@ -1,13 +1,7 @@
 ﻿/***************************************************************************
  *   VendorBuyListPacket.cs
- *   
- *   begin                : May 31, 2009
- *   email                : poplicola@ultimaxna.com
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
+ *   Copyright (c) 2015 UltimaXNA Development Team
+ * 
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 3 of the License, or
@@ -17,50 +11,51 @@
 #region usings
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Network.Packets;
+using System.Collections.Generic;
 #endregion
 
 namespace UltimaXNA.Ultima.Network.Server
 {
     public class VendorBuyListPacket : RecvPacket
     {
-        readonly Serial m_vendorPackSerial;
-        readonly int m_itemCount;
-        readonly int[] m_prices;
-        readonly string[] m_descriptions;
-
         public Serial VendorPackSerial
         {
-            get { return m_vendorPackSerial; }
+            get;
+            private set;
         }
 
-        public int ItemCount
-        {
-            get { return m_vendorPackSerial; }
-        }
 
-        public int[] Prices
+        public List<VendorBuyItem> Items
         {
-            get { return m_prices; } 
-        }
-
-        public string[] Descriptions
-        {
-            get { return m_descriptions; }
+            get;
+            private set;
         }
 
         public VendorBuyListPacket(PacketReader reader)
             : base(0x74, "Open Buy Window")
         {
-            m_vendorPackSerial = reader.ReadInt32();
-            m_itemCount = reader.ReadByte();
-            m_prices = new int[m_itemCount];
-            m_descriptions = new string[m_itemCount];
-
-            for (int i = 0; i < m_itemCount; i++)
+            VendorPackSerial = reader.ReadInt32();
+            int count = reader.ReadByte();
+            Items = new List<VendorBuyItem>();
+            for (int i = 0; i < count; i++)
             {
-                m_prices[i] = reader.ReadInt32();
+                int price = reader.ReadInt32();
                 int descriptionLegnth = reader.ReadByte();
-                m_descriptions[i] = reader.ReadString(descriptionLegnth);
+                string description = reader.ReadString(descriptionLegnth);
+
+                Items.Add(new VendorBuyItem(price, description));
+            }
+        }
+
+        public class VendorBuyItem
+        {
+            public readonly int Price;
+            public readonly string Description;
+
+            public VendorBuyItem(int price, string description)
+            {
+                Price = price;
+                Description = description;
             }
         }
     }

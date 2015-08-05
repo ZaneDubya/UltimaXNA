@@ -30,7 +30,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             QuitButton
         }
 
-        public string Name { get { return m_Name.Text; } set { m_Name.Text = value; } }
+        public string Name { get { return m_TxtName.Text; } set { m_TxtName.Text = value; } }
         public int Gender { get { return m_Gender.Index; } set { } }
         public int Race { get { return 1; } set { } } // hard coded to human
         public int HairID
@@ -80,7 +80,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             set { m_FacialHairHue.HueValue = value; }
         }
 
-        TextEntry m_Name;
+        TextEntry m_TxtName;
         DropDownList m_Gender;
         DropDownList m_HairMale;
         DropDownList m_FacialHairMale;
@@ -98,9 +98,10 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             AddControl(new GumpPic(this, 0, 0, 5500, 0));
             // character name 
             AddControl(new GumpPic(this, 280, 53, 1801, 0));
-            m_Name = new TextEntry(this, 238, 70, 234, 20, 0, 0, 29, string.Empty);
-            AddControl(new ResizePic(this, m_Name));
-            AddControl(m_Name);
+            m_TxtName = new TextEntry(this, 238, 70, 234, 20, 0, 0, 29, string.Empty);
+            m_TxtName.HtmlTag = "<span color='#000' style='font-family:uni0;'>";
+            AddControl(new ResizePic(this, m_TxtName));
+            AddControl(m_TxtName);
             // character window
             AddControl(new GumpPic(this, 238, 98, 1800, 0));
             // paperdoll

@@ -40,7 +40,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
             m_useLargeMap = MiniMap_LargeFormat;
 
-            IsMovable = true;
+            IsMoveable = true;
             MakeThisADragger();
         }
 

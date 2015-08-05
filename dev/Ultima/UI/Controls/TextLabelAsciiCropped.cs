@@ -35,14 +35,14 @@ namespace UltimaXNA.Ultima.UI.Controls
             }
         }
 
-        public TextLabelAsciiCropped(AControl owner)
-            : base(owner)
+        public TextLabelAsciiCropped(AControl parent)
+            : base(parent)
         {
 
         }
 
-        public TextLabelAsciiCropped(AControl owner, int x, int y, int width, int height, int hue, int fontid, string text)
-            : this(owner)
+        public TextLabelAsciiCropped(AControl parent, int x, int y, int width, int height, int hue, int fontid, string text)
+            : this(parent)
         {
             buildGumpling(x, y, width, height, hue, fontid, text);
         }

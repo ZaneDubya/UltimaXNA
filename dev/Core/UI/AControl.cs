@@ -98,7 +98,7 @@ namespace UltimaXNA.Core.UI
         /// If true, control can be moved by click-dragging with left mouse button.
         /// A child control can be made a dragger for a parent control with MakeDragger().
         /// </summary>
-        public virtual bool IsMovable
+        public virtual bool IsMoveable
         {
             get;
             set;
@@ -153,7 +153,7 @@ namespace UltimaXNA.Core.UI
         {
             get
             {
-                return OwnerX + X;
+                return ParentX + X;
             }
         }
 
@@ -161,7 +161,7 @@ namespace UltimaXNA.Core.UI
         {
             get
             {
-                return OwnerY + Y;
+                return ParentY + Y;
             }
         }
 
@@ -288,46 +288,46 @@ namespace UltimaXNA.Core.UI
         internal event Action<AControl, int, int> MouseOutEvent;
         #endregion
 
-        #region Owner variables
-        public AControl Owner
+        #region Parent control variables
+        public AControl Parent
         {
             get;
             protected set;
         }
 
         /// <summary>
-        /// Gets the topmost owner of this control.
+        /// Gets the root (topmost, or final) parent of this control.
         /// </summary>
-        public AControl OwnerTopmost
+        public AControl RootParent
         {
             get
             {
-                if (Owner == null)
+                if (Parent == null)
                     return null;
-                AControl owner = Owner;
-                while (owner.Owner != null)
-                    owner = owner.Owner;
-                return owner;
+                AControl parent = Parent;
+                while (parent.Parent != null)
+                    parent = parent.Parent;
+                return parent;
             }
         }
 
-        private int OwnerX
+        private int ParentX
         {
             get
             {
-                if (Owner != null)
-                    return Owner.X + Owner.OwnerX;
+                if (Parent != null)
+                    return Parent.X + Parent.ParentX;
                 else
                     return 0;
             }
         }
 
-        private int OwnerY
+        private int ParentY
         {
             get
             {
-                if (Owner != null)
-                    return Owner.Y + Owner.OwnerY;
+                if (Parent != null)
+                    return Parent.Y + Parent.ParentY;
                 else
                     return 0;
             }
@@ -337,9 +337,9 @@ namespace UltimaXNA.Core.UI
         // ================================================================================
         // Ctor, Init, Dispose, Update, and Draw
         // ================================================================================
-        public AControl(AControl owner)
+        public AControl(AControl parent)
         {
-            Owner = owner;
+            Parent = parent;
             Page = 0;
             UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
         }
@@ -491,34 +491,37 @@ namespace UltimaXNA.Core.UI
                 (UserInterface.Height - Height) / 2);
         }
 
+        /// <summary>
+        /// Convenience method: Sets this control to (1) handle mouse input and (2) make it moveable (which makes the parent control moveable).
+        /// </summary>
         public void MakeThisADragger()
         {
             HandlesMouseInput = true;
-            IsMovable = true;
+            IsMoveable = true;
         }
 
         public virtual void ActivateByButton(int buttonID)
         {
-            if (Owner != null)
-                Owner.ActivateByButton(buttonID);
+            if (Parent != null)
+                Parent.ActivateByButton(buttonID);
         }
 
         public virtual void ActivateByHREF(string href)
         {
-            if (Owner != null)
-                Owner.ActivateByHREF(href);
+            if (Parent != null)
+                Parent.ActivateByHREF(href);
         }
 
         public virtual void ActivateByKeyboardReturn(int textID, string text)
         {
-            if (Owner != null)
-                Owner.ActivateByKeyboardReturn(textID, text);
+            if (Parent != null)
+                Parent.ActivateByKeyboardReturn(textID, text);
         }
 
         public virtual void ChangePage(int pageIndex)
         {
-            if (Owner != null)
-                Owner.ChangePage(pageIndex);
+            if (Parent != null)
+                Parent.ChangePage(pageIndex);
         }
 
         // ================================================================================
@@ -648,8 +651,8 @@ namespace UltimaXNA.Core.UI
         public void MouseDown(Point position, MouseButton button)
         {
             m_LastClickPosition = position;
-            int x = (int)position.X - X - OwnerX;
-            int y = (int)position.Y - Y - OwnerY;
+            int x = (int)position.X - X - ParentX;
+            int y = (int)position.Y - Y - ParentY;
             OnMouseDown(x, y, button);
             if (MouseDownEvent != null)
                 MouseDownEvent(this, x, y, button);
@@ -657,8 +660,8 @@ namespace UltimaXNA.Core.UI
 
         public void MouseUp(Point position, MouseButton button)
         {
-            int x = (int)position.X - X - OwnerX;
-            int y = (int)position.Y - Y - OwnerY;
+            int x = (int)position.X - X - ParentX;
+            int y = (int)position.Y - Y - ParentY;
             OnMouseUp(x, y, button);
             if (MouseUpEvent != null)
                 MouseUpEvent(this, x, y, button);
@@ -670,8 +673,8 @@ namespace UltimaXNA.Core.UI
             if (Math.Abs(m_LastClickPosition.X - position.X) + Math.Abs(m_LastClickPosition.Y - position.Y) > 3)
                 m_MaxTimeForDoubleClick = 0.0f;
 
-            int x = (int)position.X - X - OwnerX;
-            int y = (int)position.Y - Y - OwnerY;
+            int x = (int)position.X - X - ParentX;
+            int y = (int)position.Y - Y - ParentY;
             OnMouseOver(x, y);
             if (MouseOverEvent != null)
                 MouseOverEvent(this, x, y);
@@ -679,8 +682,8 @@ namespace UltimaXNA.Core.UI
 
         public void MouseOut(Point position)
         {
-            int x = (int)position.X - X - OwnerX;
-            int y = (int)position.Y - Y - OwnerY;
+            int x = (int)position.X - X - ParentX;
+            int y = (int)position.Y - Y - ParentY;
             OnMouseOut(x, y);
             if (MouseOutEvent != null)
                 MouseOutEvent(this, x, y);
@@ -688,8 +691,8 @@ namespace UltimaXNA.Core.UI
 
         public void MouseClick(Point position, MouseButton button)
         {
-            int x = (int)position.X - X - OwnerX;
-            int y = (int)position.Y - Y - OwnerY;
+            int x = (int)position.X - X - ParentX;
+            int y = (int)position.Y - Y - ParentY;
 
             bool doubleClick = false;
             if (m_MaxTimeForDoubleClick != 0f)
@@ -727,29 +730,29 @@ namespace UltimaXNA.Core.UI
         {
             if (IsUncloseableWithRMB)
                 return;
-            AControl parent = Owner;
+            AControl parent = Parent;
             while (parent != null)
             {
                 if (parent.IsUncloseableWithRMB)
                     return;
-                parent = parent.Owner;
+                parent = parent.Parent;
             }
 
-            // dispose of this, or owner, if it has one, which will close this as a child.
-            if (Owner == null)
+            // dispose of this, or the parent if it has one, which will close this as a child.
+            if (Parent == null)
                 Dispose();
             else
-                Owner.CloseWithRightMouseButton();
+                Parent.CloseWithRightMouseButton();
         }
 
         public AControl[] HitTest(Point position, bool alwaysHandleMouseInput)
         {
             List<AControl> focusedControls = new List<AControl>();
 
-            bool inBounds = m_Area.Contains((int)position.X - OwnerX, (int)position.Y - OwnerY);
+            bool inBounds = m_Area.Contains((int)position.X - ParentX, (int)position.Y - ParentY);
             if (inBounds)
             {
-                if (IsPointWithinControl((int)position.X - X - OwnerX, (int)position.Y - Y - OwnerY))
+                if (IsPointWithinControl((int)position.X - X - ParentX, (int)position.Y - Y - ParentY))
                 {
                     if (alwaysHandleMouseInput || HandlesMouseInput)
                         focusedControls.Insert(0, this);

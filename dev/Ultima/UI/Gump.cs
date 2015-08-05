@@ -9,9 +9,9 @@
  *
  ***************************************************************************/
 #region usings
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.UI.Controls;
@@ -34,7 +34,16 @@ namespace UltimaXNA.Ultima.UI
         }
 
         /// <summary>
-        /// If true, gump will not be moved.
+        /// If this is true, SaveGump() will be called when the World stops, and LoadGump() will be called when the World starts.
+        /// </summary>
+        public bool SaveOnWorldStop
+        {
+            get;
+            protected set;
+        }
+
+        /// <summary>
+        /// If true, gump will not be moved by mouse movement, even if IsMoveable is true.
         /// </summary>
         public bool BlockMovement
         {
@@ -42,15 +51,15 @@ namespace UltimaXNA.Ultima.UI
             set;
         }
 
-        public override bool IsMovable
+        public override bool IsMoveable
         {
             get
             {
-                return !BlockMovement && base.IsMovable;
+                return !BlockMovement && base.IsMoveable;
             }
             set
             {
-                base.IsMovable = value;
+                base.IsMoveable = value;
             }
         }
 
@@ -222,5 +231,25 @@ namespace UltimaXNA.Ultima.UI
             }
         }
         #endregion
+
+        /// <summary>
+        /// Called when a gump asks to be restored on login. Should return a dictionary of data needed to restore the gump. Return false to not save this gump.
+        /// </summary>
+        /// <returns></returns>
+        public virtual bool SaveGump(out Dictionary<string, object> data)
+        {
+            data = null;
+            return false;
+        }
+
+        /// <summary>
+        /// Called to restore a gump that asked to be restored on login.
+        /// </summary>
+        /// <param name="data">A dictionary of data needed to restore the gump.</param>
+        /// <returns>Return false to cancel restoring this gump.</returns>
+        public virtual bool RestoreGump(Dictionary<string, object> data)
+        {
+            return false;
+        }
     }
 }

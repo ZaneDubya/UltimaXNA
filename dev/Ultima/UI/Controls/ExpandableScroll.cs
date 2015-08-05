@@ -7,76 +7,82 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
-
+#region usings
 using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.UI;
+#endregion
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
     class ExpandableScroll : Gump
     {
-        GumpPic m_gumplingTop, m_gumplingBottom;
-        GumpPicTiled m_gumplingMiddle;
-        Button m_gumplingExpander;
+        private GumpPic m_GumplingTop, m_GumplingBottom;
+        private GumpPicTiled m_GumplingMiddle;
+        private Button m_GumplingExpander;
         
-        int m_expandableScrollHeight;
-        const int m_expandableScrollHeight_Min = 274; // this is the min from the client.
-        const int m_expandableScrollHeight_Max = 1000; // arbitrary large number.
+        private int m_ExpandableScrollHeight;
+        private const int c_ExpandableScrollHeight_Min = 274; // this is the min from the client.
+        private const int c_ExpandableScrollHeight_Max = 1000; // arbitrary large number.
 
-        int gumplingMidY { get { return m_gumplingTop.Height; } }
-        int gumplingMidHeight { get { return m_expandableScrollHeight - m_gumplingTop.Height - m_gumplingBottom.Height - m_gumplingExpander.Height; } }
-        int gumplingBottomY { get { return m_expandableScrollHeight - m_gumplingBottom.Height - m_gumplingExpander.Height; } }
-        int gumplingExpanderX { get { return (Width - m_gumplingExpander.Width) / 2; } }
-        int gumplingExpanderY { get { return m_expandableScrollHeight - m_gumplingExpander.Height - gumplingExpanderY_Offset; } }
-        const int gumplingExpanderY_Offset = 2; // this is the gap between the pixels of the btm Control texture and the height of the btm Control texture.
-        const int gumplingExpander_ButtonID = 0x7FBEEF;
+        private int m_GumplingMidY { get { return m_GumplingTop.Height; } }
+        private int m_GumplingMidHeight { get { return m_ExpandableScrollHeight - m_GumplingTop.Height - m_GumplingBottom.Height - (m_GumplingExpander != null ? m_GumplingExpander.Height : 0); } }
+        private int m_GumplingBottomY { get { return m_ExpandableScrollHeight - m_GumplingBottom.Height - (m_GumplingExpander != null ? m_GumplingExpander.Height : 0); } }
+        private int m_GumplingExpanderX { get { return (Width - (m_GumplingExpander != null ? m_GumplingExpander.Width : 0)) / 2; } }
+        private int m_GumplingExpanderY { get { return m_ExpandableScrollHeight - (m_GumplingExpander != null ? m_GumplingExpander.Height : 0) - c_GumplingExpanderY_Offset; } }
+        private const int c_GumplingExpanderY_Offset = 2; // this is the gap between the pixels of the btm Control texture and the height of the btm Control texture.
+        private const int c_GumplingExpander_ButtonID = 0x7FBEEF;
 
-        bool m_isExpanding = false;
-        int m_isExpanding_InitialX, m_isExpanding_InitialY, m_isExpanding_InitialHeight;
+        private bool m_IsResizable = true;
+        private bool m_IsExpanding = false;
+        private int m_isExpanding_InitialX, m_isExpanding_InitialY, m_isExpanding_InitialHeight;
 
-        public ExpandableScroll(AControl owner, int x, int y, int height)
+        public ExpandableScroll(AControl parent, int x, int y, int height, bool isResizable = true)
             : base(0, 0)
         {
-            Owner = owner;
+            Parent = parent;
             Position = new Point(x, y);
-            m_expandableScrollHeight = height;
+            m_ExpandableScrollHeight = height;
+            m_IsResizable = isResizable;
             MakeThisADragger();
         }
 
         protected override void OnInitialize()
         {
-            m_gumplingTop = (GumpPic)AddControl(new GumpPic(this, 0, 0, 0x0820, 0));
-            m_gumplingMiddle = (GumpPicTiled)AddControl(new GumpPicTiled(this, 0, 0, 0, 0, 0x0822));
-            m_gumplingBottom = (GumpPic)AddControl(new GumpPic(this, 0, 0, 0x0823, 0));
-            m_gumplingExpander = (Button)AddControl(new Button(this, 0, 0, 0x082E, 0x82F, ButtonTypes.Activate, 0, gumplingExpander_ButtonID));
-            
-            m_gumplingExpander.MouseDownEvent += expander_OnMouseDown;
-            m_gumplingExpander.MouseUpEvent += expander_OnMouseUp;
-            m_gumplingExpander.MouseOverEvent += expander_OnMouseOver;
+            m_GumplingTop = (GumpPic)AddControl(new GumpPic(this, 0, 0, 0x0820, 0));
+            m_GumplingMiddle = (GumpPicTiled)AddControl(new GumpPicTiled(this, 0, 0, 0, 0, 0x0822));
+            m_GumplingBottom = (GumpPic)AddControl(new GumpPic(this, 0, 0, 0x0823, 0));
+
+            if (m_IsResizable)
+            {
+                m_GumplingExpander = (Button)AddControl(new Button(this, 0, 0, 0x082E, 0x82F, ButtonTypes.Activate, 0, c_GumplingExpander_ButtonID));
+                m_GumplingExpander.MouseDownEvent += expander_OnMouseDown;
+                m_GumplingExpander.MouseUpEvent += expander_OnMouseUp;
+                m_GumplingExpander.MouseOverEvent += expander_OnMouseOver;
+            }
         }
 
         protected override bool IsPointWithinControl(int x, int y)
         {
             Point position = new Point(x + ScreenX, y + ScreenY);
-            if (m_gumplingTop.HitTest(position, true) != null)
+            if (m_GumplingTop.HitTest(position, true) != null)
                 return true;
-            if (m_gumplingMiddle.HitTest(position, true) != null)
+            if (m_GumplingMiddle.HitTest(position, true) != null)
                 return true;
-            if (m_gumplingBottom.HitTest(position, true) != null)
+            if (m_GumplingBottom.HitTest(position, true) != null)
                 return true;
-            if (m_gumplingExpander.HitTest(position, true) != null)
+            if (m_IsResizable && m_GumplingExpander.HitTest(position, true) != null)
                 return true;
             return false;
         }
 
         public override void Update(double totalMS, double frameMS)
         {
-            if (m_expandableScrollHeight < m_expandableScrollHeight_Min)
-                m_expandableScrollHeight = m_expandableScrollHeight_Min;
-            if (m_expandableScrollHeight > m_expandableScrollHeight_Max)
-                m_expandableScrollHeight = m_expandableScrollHeight_Max;
+            if (m_ExpandableScrollHeight < c_ExpandableScrollHeight_Min)
+                m_ExpandableScrollHeight = c_ExpandableScrollHeight_Min;
+            if (m_ExpandableScrollHeight > c_ExpandableScrollHeight_Max)
+                m_ExpandableScrollHeight = c_ExpandableScrollHeight_Max;
 
             if (m_gumplingTitleGumpIDDelta)
             {
@@ -86,28 +92,29 @@ namespace UltimaXNA.Ultima.UI.Controls
                 m_gumplingTitle = (GumpPic)AddControl(new GumpPic(this, 0, 0, m_gumplingTitleGumpID, 0));
             }
 
-            if (!m_gumplingTop.IsInitialized)
+            if (!m_GumplingTop.IsInitialized)
             {
                 IsVisible = false;
             }
             else 
             {
                 IsVisible = true;
-                m_gumplingTop.Position = new Point(0, 0);
+                m_GumplingTop.Position = new Point(0, 0);
 
-                m_gumplingMiddle.Position = new Point(17, gumplingMidY);
-                m_gumplingMiddle.Width = 263;
-                m_gumplingMiddle.Height = gumplingMidHeight;
+                m_GumplingMiddle.Position = new Point(17, m_GumplingMidY);
+                m_GumplingMiddle.Width = 263;
+                m_GumplingMiddle.Height = m_GumplingMidHeight;
 
-                m_gumplingBottom.Position = new Point(17, gumplingBottomY);
+                m_GumplingBottom.Position = new Point(17, m_GumplingBottomY);
 
-                m_gumplingExpander.Position = new Point(gumplingExpanderX, gumplingExpanderY);
+                if (m_IsResizable)
+                    m_GumplingExpander.Position = new Point(m_GumplingExpanderX, m_GumplingExpanderY);
 
                 if (m_gumplingTitle != null && m_gumplingTitle.IsInitialized)
                 {
                     m_gumplingTitle.Position = new Point(
-                        (m_gumplingTop.Width - m_gumplingTitle.Width) / 2,
-                        (m_gumplingTop.Height - m_gumplingTitle.Height) / 2);
+                        (m_GumplingTop.Width - m_gumplingTitle.Width) / 2,
+                        (m_GumplingTop.Height - m_gumplingTitle.Height) / 2);
                 }
             }
 
@@ -121,11 +128,11 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         void expander_OnMouseDown(AControl control, int x, int y, MouseButton button)
         {
-            y += m_gumplingExpander.Y + ScreenY - Y;
+            y += m_GumplingExpander.Y + ScreenY - Y;
             if (button == MouseButton.Left)
             {
-                m_isExpanding = true;
-                m_isExpanding_InitialHeight = m_expandableScrollHeight;
+                m_IsExpanding = true;
+                m_isExpanding_InitialHeight = m_ExpandableScrollHeight;
                 m_isExpanding_InitialX = x;
                 m_isExpanding_InitialY = y;
             }
@@ -133,20 +140,20 @@ namespace UltimaXNA.Ultima.UI.Controls
 
         void expander_OnMouseUp(AControl control, int x, int y, MouseButton button)
         {
-            y += m_gumplingExpander.Y + ScreenY - Y;
-            if (m_isExpanding)
+            y += m_GumplingExpander.Y + ScreenY - Y;
+            if (m_IsExpanding)
             {
-                m_isExpanding = false;
-                m_expandableScrollHeight = m_isExpanding_InitialHeight + (y - m_isExpanding_InitialY);
+                m_IsExpanding = false;
+                m_ExpandableScrollHeight = m_isExpanding_InitialHeight + (y - m_isExpanding_InitialY);
             }
         }
 
         void expander_OnMouseOver(AControl control, int x, int y)
         {
-            y += m_gumplingExpander.Y + ScreenY - Y;
-            if (m_isExpanding && (y != m_isExpanding_InitialY))
+            y += m_GumplingExpander.Y + ScreenY - Y;
+            if (m_IsExpanding && (y != m_isExpanding_InitialY))
             {
-                m_expandableScrollHeight = m_isExpanding_InitialHeight + (y - m_isExpanding_InitialY);
+                m_ExpandableScrollHeight = m_isExpanding_InitialHeight + (y - m_isExpanding_InitialY);
             }
         }
 

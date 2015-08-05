@@ -14,7 +14,6 @@ using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.IO;
-using UltimaXNA.Ultima.UI.Interfaces;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.Controls
@@ -96,14 +95,14 @@ namespace UltimaXNA.Ultima.UI.Controls
         // ================================================================================
         // Ctors, Initialize, Update, and Draw
         // ================================================================================
-        public ScrollBar(AControl owner)
-            : base(owner)
+        public ScrollBar(AControl parent)
+            : base(parent)
         {
             HandlesMouseInput = true;
         }
 
-        public ScrollBar(AControl owner, int x, int y, int height, int minValue, int maxValue, int value)
-            : this(owner)
+        public ScrollBar(AControl parent, int x, int y, int height, int minValue, int maxValue, int value)
+            : this(parent)
         {
             Position = new Point(x, y);
             MinValue = minValue;

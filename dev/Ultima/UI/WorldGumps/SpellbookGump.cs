@@ -44,7 +44,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_Spellbook = entity;
             m_Spellbook.OnEntityUpdated += OnEntityUpdate;
 
-            IsMovable = true;
+            IsMoveable = true;
 
             if (m_Spellbook.BookType != SpellBookTypes.Unknown)
             {

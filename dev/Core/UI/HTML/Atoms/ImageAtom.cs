@@ -19,45 +19,55 @@ namespace UltimaXNA.Core.UI.HTML.Atoms
             set;
         }
 
-        private int m_overrideWidth = -1;
         public override int Width
         {
             set
             {
-                m_overrideWidth = value;
+                Style.ElementWidth = value;
             }
             get
             {
-                if (m_overrideWidth != -1)
-                    return m_overrideWidth;
+                if (Style.ElementWidth != 0)
+                    return Style.ElementWidth;
                 return AssociatedImage.Texture.Width;
             }
         }
 
-        private int m_overrideHeight = -1;
         public override int Height
         {
             set
             {
-                m_overrideHeight = value;
+                Style.ElementHeight = value;
             }
             get
             {
-                if (m_overrideHeight != -1)
-                    return m_overrideHeight;
+                if (Style.ElementHeight != 0)
+                    return Style.ElementHeight;
                 return AssociatedImage.Texture.Height;
             }
         }
 
-        public ImageAtom(StyleState style)
+        public ImageTypes ImageType
+        {
+            get;
+            private set;
+        }
+
+        public ImageAtom(StyleState style, ImageTypes imageType = ImageTypes.UI)
             : base(style)
         {
-
+            ImageType = imageType;
         }
 
         public override string ToString()
         {
-            return string.Format("<gImg {0}>", Style.GumpImgSrc);
+            return string.Format("<img {0} {1}>", Style.ImgSrc, ImageType.ToString());
+        }
+
+        public enum ImageTypes
+        {
+            UI,
+            Item
         }
     }
 }

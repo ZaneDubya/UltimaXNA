@@ -18,6 +18,9 @@ using UltimaXNA.Core.UI.HTML.Atoms;
 
 namespace UltimaXNA.Core.UI
 {
+    /// <summary>
+    /// A texture containing rendered text. Can interpret html. Will automatically update.
+    /// </summary>
     class RenderedText
     {
         // private services
@@ -115,7 +118,6 @@ namespace UltimaXNA.Core.UI
         private bool m_MustRender = true;
         private int m_MaxWidth;
         private int m_ActiveRegion = -1;
-        private int[] m_LineWidths;
 
         public RenderedText(string text, int maxWidth = DefaultRenderedTextWidth)
         {
@@ -229,6 +231,11 @@ namespace UltimaXNA.Core.UI
                     if (texture == null)
                         texture = image.Texture;
 
+                    if (srcImage.Width > texture.Width)
+                        srcImage.Width = texture.Width;
+                    if (srcImage.Height > texture.Height)
+                        srcImage.Height = texture.Height;
+
                     sb.Draw2D(texture, new Vector3(position.X, position.Y, 0),
                         srcImage, Utility.GetHueVector(0, false, false));
                 }
@@ -250,11 +257,9 @@ namespace UltimaXNA.Core.UI
                     
                     SpriteBatchUI sb = ServiceRegistry.GetService<SpriteBatchUI>();
                     int width, height, ascender, linecount;
-                    int[] lineWidths;
 
-                    parseTextAndGetDimensions(Text, MaxWidth, out width, out height, out ascender, out linecount, out lineWidths);
+                    parseTextAndGetDimensions(Text, MaxWidth, out width, out height, out ascender, out linecount);
                     LineCount = linecount;
-                    m_LineWidths = lineWidths;
 
                     m_Texture = renderTexture(sb.GraphicsDevice, m_HtmlParser, width, height, ascender);
 
@@ -263,7 +268,7 @@ namespace UltimaXNA.Core.UI
             }
         }
 
-        private void parseTextAndGetDimensions(string textToRender, int maxWidth, out int width, out int height, out int ascender, out int linecount, out int[] lineWidths)
+        private void parseTextAndGetDimensions(string textToRender, int maxWidth, out int width, out int height, out int ascender, out int linecount)
         {
             if (m_HtmlParser != null)
                 m_HtmlParser = null;
@@ -271,16 +276,26 @@ namespace UltimaXNA.Core.UI
 
             Regions.Clear();
             Images.Clear();
+
             // get all the images!
             foreach (AAtom atom in m_HtmlParser.Atoms)
             {
                 if (atom is ImageAtom)
                 {
                     ImageAtom img = (ImageAtom)atom;
-                    Texture2D standard = m_ResourceProvider.GetTexture(img.Style.GumpImgSrc);
-                    Texture2D over = m_ResourceProvider.GetTexture(img.Style.GumpImgSrcOver);
-                    Texture2D down = m_ResourceProvider.GetTexture(img.Style.GumpImgSrcDown);
-                    Images.AddImage(new Rectangle(), standard, over, down);
+                    if (img.ImageType == ImageAtom.ImageTypes.UI)
+                    {
+                        Texture2D standard = m_ResourceProvider.GetUITexture(img.Style.ImgSrc);
+                        Texture2D over = m_ResourceProvider.GetUITexture(img.Style.ImgSrcOver);
+                        Texture2D down = m_ResourceProvider.GetUITexture(img.Style.ImgSrcDown);
+                        Images.AddImage(new Rectangle(), standard, over, down);
+                    }
+                    else if (img.ImageType == ImageAtom.ImageTypes.Item)
+                    {
+                        Texture2D standard, over, down;
+                        standard = over = down = m_ResourceProvider.GetItemTexture(img.Style.ImgSrc);
+                        Images.AddImage(new Rectangle(), standard, over, down);
+                    }
                     img.AssociatedImage = Images[Images.Count - 1];
                 }
             }
@@ -292,14 +307,13 @@ namespace UltimaXNA.Core.UI
                 height = 0;
                 ascender = 0;
                 linecount = 0;
-                lineWidths = null;
             }
             else
             {
                 if (maxWidth == 0)
-                    getTextDimensions(m_HtmlParser, DefaultRenderedTextWidth, 0, out width, out height, out ascender, out linecount, out lineWidths);
+                    getTextDimensions(m_HtmlParser, DefaultRenderedTextWidth, 0, out width, out height, out ascender, out linecount);
                 else
-                    getTextDimensions(m_HtmlParser, maxWidth, 0, out width, out height, out ascender, out linecount, out lineWidths);
+                    getTextDimensions(m_HtmlParser, maxWidth, 0, out width, out height, out ascender, out linecount);
             }
         }
 
@@ -383,7 +397,7 @@ namespace UltimaXNA.Core.UI
             return result;
         }
 
-        // pass bool = false to get the width of the line to be drawn without actually drawing anything. Useful for aligning text.
+        // draw = false to get the width of the line to be drawn without actually drawing anything. Useful for aligning text.
         unsafe void renderTextureLine(List<AAtom> atoms, uint* rPtr, ref int x, int y, int linewidth, int maxHeight, ref int lineheight, bool draw)
         {
             for (int i = 0; i < atoms.Count; i++)
@@ -391,6 +405,8 @@ namespace UltimaXNA.Core.UI
                 IFont font = atoms[i].Style.Font;
                 if (lineheight < font.Height)
                     lineheight = font.Height;
+                if (lineheight < atoms[i].Height + atoms[i].Style.ElementTop)
+                    lineheight = atoms[i].Height + atoms[i].Style.ElementTop;
 
                 if (draw)
                 {
@@ -405,10 +421,8 @@ namespace UltimaXNA.Core.UI
                     }
                     else if (atoms[i] is ImageAtom)
                     {
-                        if (lineheight < atoms[i].Height)
-                            lineheight = atoms[i].Height;
                         ImageAtom atom = (atoms[i] as ImageAtom);
-                        atom.AssociatedImage.Area = new Rectangle(x, y + ((lineheight - atom.Height) / 2), atom.Width, atom.Height);
+                        atom.AssociatedImage.Area = new Rectangle(x, y + ((lineheight - atom.Height + atoms[i].Style.ElementTop) / 2), atom.Width, atom.Height);
                     }
                 }
                 x += atoms[i].Width;
@@ -497,14 +511,13 @@ namespace UltimaXNA.Core.UI
             }
         }
 
-        void getTextDimensions(Reader reader, int maxwidth, int maxheight, out int width, out int height, out int ascender, out int linecount, out int[] lineWidths)
+        void getTextDimensions(Reader reader, int maxwidth, int maxheight, out int width, out int height, out int ascender, out int linecount)
         {
             // default values for out variables.
             width = 0;
             height = 0;
             ascender = 0;
             linecount = 0;
-            lineWidths = null;
             // local variables
             int descenderHeight = 0;
             int lineHeight = 0;
@@ -512,26 +525,33 @@ namespace UltimaXNA.Core.UI
             int widestLine = 0;
             int wordWidth = 0;
             List<AAtom> word = new List<AAtom>();
-            List<int> widths = new List<int>();
 
-            for (int i = 0; i < reader.Length; ++i)
+            bool hasLeftAlignment = false;
+            bool hasAnyOtherAlignment = false;
+            for (int i = 0; i < reader.Length; i++)
             {
-                if (reader.Length > 500)
-                {
+                hasLeftAlignment = hasLeftAlignment | (reader.Atoms[i].Style.Alignment == Alignments.Left);
+                hasAnyOtherAlignment = hasAnyOtherAlignment | (reader.Atoms[i].Style.Alignment != Alignments.Left);
+            }
+            if (hasAnyOtherAlignment && hasLeftAlignment)
+            {
+                widestLine = maxwidth;
+            }
 
-                }
-
+            for (int i = 0; i < reader.Length; i++)
+            {
                 wordWidth += reader.Atoms[i].Width;
                 styleWidth -= reader.Atoms[i].Width;
                 if (styleWidth < 0)
                     styleWidth = 0;
 
-                if (lineHeight < reader.Atoms[i].Height)
-                    lineHeight = reader.Atoms[i].Height;
+                if (lineHeight < reader.Atoms[i].Height + reader.Atoms[i].Style.ElementTop)
+                {
+                    lineHeight = reader.Atoms[i].Height + reader.Atoms[i].Style.ElementTop;
+                }
 
                 if (reader.Atoms[i].IsThisAtomALineBreak)
                 {
-                    widths.Add(width + styleWidth);
                     if (width + styleWidth > widestLine)
                         widestLine = width + styleWidth;
                     height += lineHeight;
@@ -561,9 +581,6 @@ namespace UltimaXNA.Core.UI
                         if (ch.YOffset < 0 && linecount == 0 && ascender > ch.YOffset)
                             ascender = ch.YOffset;
                     }
-
-                    if (reader.Atoms[i].Style.Alignment != Alignments.Left)
-                        widestLine = maxwidth;
 
                     if (i == reader.Length - 1 || reader.Atoms[i + 1].CanBreakAtThisAtom)
                     {
@@ -649,7 +666,6 @@ namespace UltimaXNA.Core.UI
             width += styleWidth;
             height += lineHeight + descenderHeight;
             linecount += 1;
-            widths.Add(width);
             if (widestLine > width)
                 width = widestLine;
         }

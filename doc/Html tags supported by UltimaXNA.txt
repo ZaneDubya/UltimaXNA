@@ -25,6 +25,8 @@ HtmlGumpling controls support a very limited subset of Html tags:
 
 <gumpimg>
     supported attributes: src, hoversrc, activesrc, width, height
+
+<itemimg>
     
 <span>
     attributes: width, height
@@ -36,3 +38,4 @@ In addition, a very limited subset of CSS is supported using the "style=''"
 attribute:
     font-family: ascii[0-9] / uni[0-2]
     text-decoration: none / underline
+    top: integer, negative or positive.
