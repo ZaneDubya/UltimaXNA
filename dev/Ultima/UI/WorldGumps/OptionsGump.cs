@@ -37,12 +37,12 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         CheckBox m_IsVSyncEnabled;
         CheckBox m_ShowFps;
         CheckBox m_IsConsoleEnabled;
-        ColorPicker m_SpeechColor;
-        ColorPicker m_EmoteColor;
-        ColorPicker m_PartyMsgColor;
-        ColorPicker m_GuildMsgColor;
+        ColorPickerBox m_SpeechColor;
+        ColorPickerBox m_EmoteColor;
+        ColorPickerBox m_PartyMsgColor;
+        ColorPickerBox m_GuildMsgColor;
         CheckBox m_IgnoreGuildMsg;
-        ColorPicker m_AllianceMsgColor;
+        ColorPickerBox m_AllianceMsgColor;
         CheckBox m_IgnoreAllianceMsg;
 
         DropDownList m_DropDownFullScreenResolutions;
@@ -156,25 +156,25 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             m_DropDownPlayWindowResolutions = (DropDownList)AddControl(new DropDownList(this, 60, 205, 122, CreateResolutionsStringArrayFromList(m_PlayWindowResolutionsList), 10, GetCurrentPlayWindowIndex(), false), 6);
 
             AddControl(new TextLabelAscii(this, 85, 235, 1, 9, @"Speech color"), 6);
-            m_SpeechColor = (ColorPicker)AddControl(new ColorPicker(this, new Rectangle(60, 235, 15, 15), new Rectangle(84, 235, 450, 150), 30, 10, Hues.TextTones), 6);
+            m_SpeechColor = (ColorPickerBox)AddControl(new ColorPickerBox(this, new Rectangle(60, 235, 15, 15), new Rectangle(60, 235, 450, 150), 30, 10, Hues.TextTones, Settings.Game.SpeechColor), 6);
 
             AddControl(new TextLabelAscii(this, 85, 255, 1, 9, @"Emote color"), 6);
-            m_EmoteColor = (ColorPicker)AddControl(new ColorPicker(this, new Rectangle(60, 255, 15, 15), new Rectangle(84, 235, 450, 150), 30, 10, Hues.TextTones), 6);
+            m_EmoteColor = (ColorPickerBox)AddControl(new ColorPickerBox(this, new Rectangle(60, 255, 15, 15), new Rectangle(60, 255, 450, 150), 30, 10, Hues.TextTones, Settings.Game.EmoteColor), 6);
 
             AddControl(new TextLabelAscii(this, 85, 275, 1, 9, @"Party message color"), 6);
-            m_PartyMsgColor = (ColorPicker)AddControl(new ColorPicker(this, new Rectangle(60, 275, 15, 15), new Rectangle(84, 235, 450, 150), 30, 10, Hues.TextTones), 6);
+            m_PartyMsgColor = (ColorPickerBox)AddControl(new ColorPickerBox(this, new Rectangle(60, 275, 15, 15), new Rectangle(60, 275, 450, 150), 30, 10, Hues.TextTones, Settings.Game.PartyMsgColor), 6);
 
             AddControl(new TextLabelAscii(this, 85, 295, 1, 9, @"Guild message color"), 6);
-            m_GuildMsgColor = (ColorPicker)AddControl(new ColorPicker(this, new Rectangle(60, 295, 15, 15), new Rectangle(84, 235, 450, 150), 30, 10, Hues.TextTones), 6);
+            m_GuildMsgColor = (ColorPickerBox)AddControl(new ColorPickerBox(this, new Rectangle(60, 295, 15, 15), new Rectangle(60, 295, 450, 150), 30, 10, Hues.TextTones, Settings.Game.GuildMsgColor), 6);
 
             AddControl(new TextLabelAscii(this, 85, 315, 1, 9, @"Ignore guild messages"), 6);
-            m_IgnoreGuildMsg = (CheckBox)AddControl(new CheckBox(this, 60, 315, 210, 211, false, 62), 6);
+            m_IgnoreGuildMsg = (CheckBox)AddControl(new CheckBox(this, 60, 315, 210, 211, Settings.Game.IgnoreGuildMsg, 62), 6);
 
             AddControl(new TextLabelAscii(this, 85, 335, 1, 9, @"Alliance message color"), 6);
-            m_AllianceMsgColor = (ColorPicker)AddControl(new ColorPicker(this, new Rectangle(60, 335, 15, 15), new Rectangle(84, 235, 450, 150), 30, 10, Hues.TextTones), 6);
+            m_AllianceMsgColor = (ColorPickerBox)AddControl(new ColorPickerBox(this, new Rectangle(60, 335, 15, 15), new Rectangle(60, 335, 450, 150), 30, 10, Hues.TextTones, Settings.Game.AllianceMsgColor), 6);
 
             AddControl(new TextLabelAscii(this, 85, 355, 1, 9, @"Ignore alliance messages"), 6);
-            m_IgnoreAllianceMsg = (CheckBox)AddControl(new CheckBox(this, 60, 355, 210, 211, false, 62), 6);
+            m_IgnoreAllianceMsg = (CheckBox)AddControl(new CheckBox(this, 60, 355, 210, 211, Settings.Game.IgnoreAllianceMsg, 62), 6);
 
             // page 7 Reputation system
             AddControl(new Button(this, 576, 180, 229, 229, ButtonTypes.SwitchPage, 7, (int)Buttons.Reputation),7);
@@ -293,6 +293,14 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
             Settings.Game.IsVSyncEnabled = m_IsVSyncEnabled.IsChecked;
             Settings.Debug.IsConsoleEnabled = m_IsConsoleEnabled.IsChecked;
             Settings.Debug.ShowFps = m_ShowFps.IsChecked;
+
+            Settings.Game.SpeechColor = m_SpeechColor.Index;
+            Settings.Game.EmoteColor = m_EmoteColor.Index;
+            Settings.Game.PartyMsgColor = m_PartyMsgColor.Index;
+            Settings.Game.GuildMsgColor = m_GuildMsgColor.Index;
+            Settings.Game.IgnoreGuildMsg = m_IgnoreGuildMsg.IsChecked;
+            Settings.Game.AllianceMsgColor = m_AllianceMsgColor.Index;
+            Settings.Game.IgnoreAllianceMsg = m_IgnoreAllianceMsg.IsChecked;
             SwitchTopMenuGump();
         }
 
