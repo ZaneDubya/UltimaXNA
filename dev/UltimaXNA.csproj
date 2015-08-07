@@ -423,7 +423,7 @@
     <Compile Include="Ultima\Network\Server\SendSkillsPacket.cs" />
     <Compile Include="Ultima\Network\Server\TimePacket.cs" />
     <Compile Include="Ultima\Network\Incomplete\TipNoticeWindowPacket.cs" />
-    <Compile Include="Ultima\Network\Incomplete\VendorSellListPacket.cs" />
+    <Compile Include="Ultima\Network\Server\VendorSellListPacket.cs" />
     <Compile Include="Core\Network\Packets\RevcPacket.cs" />
     <Compile Include="Core\Network\Packets\SendPacket.cs" />
     <Compile Include="Core\Network\Packets\SendRecvPacket.cs" />
