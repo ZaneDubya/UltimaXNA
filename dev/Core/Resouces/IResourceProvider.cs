@@ -16,6 +16,7 @@ namespace UltimaXNA.Core.Resources
         ushort GetWebSafeHue(Color color);
         IFont GetUnicodeFont(int fontIndex);
         IFont GetAsciiFont(int fontIndex);
+        string GetString(int strIndex);
 
         void RegisterResource<T>(IResource<T> resource);
         T GetResource<T>(int resourceIndex);

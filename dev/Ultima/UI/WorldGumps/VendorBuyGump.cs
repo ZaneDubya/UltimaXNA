@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.Network;
+using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.Network.Server;
@@ -120,7 +121,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     }
                     else
                     {
-                        description = Utility.CapitalizeAllWords(Ultima.Resources.StringData.Entry(clilocDescription));
+                        // get the resource provider
+                        IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                        description = Utility.CapitalizeAllWords(provider.GetString(clilocDescription));
                     }
 
                     string html = string.Format(c_Format, description, price.ToString(), item.DisplayItemID, item.Amount, i);

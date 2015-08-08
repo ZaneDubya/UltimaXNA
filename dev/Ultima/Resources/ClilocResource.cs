@@ -20,39 +20,45 @@ using UltimaXNA.Ultima.IO;
 
 namespace UltimaXNA.Ultima.Resources
 {
-    public class StringData
+    public class ClilocResource
     {
-        private static Hashtable m_Table;
-        private static StringEntry[] m_Entries;
-        private static string m_Language;
-
-        public static StringEntry[] Entries { get { return m_Entries; } }
-        public static Hashtable Table { get { return m_Table; } }
-        public static string Language { get { return m_Language; } }
-
-        private static byte[] m_Buffer = new byte[1024];
-
-        public static string Entry(int index)
+        public Hashtable Table
         {
-            if (m_Table[index] == null)
-            {
-                Tracer.Warn("Missing cliloc with index {0}. Client version is lower than expected by Server.", index);
-                return string.Format("<Error : Cliloc Entry {0} not found.>", index);
-            }
-            else
-                return m_Table[index].ToString();
+            get;
+            private set;
         }
 
-        public static void LoadStringList(string language)
+        public string Language
         {
-            m_Language = language;
-            m_Table = new Hashtable();
+            get;
+            private set;
+        }
+
+        public ClilocResource(string language)
+        {
+            LoadStringList(language);
+        }
+
+        public string GetString(int index)
+        {
+            if (Table[index] == null)
+            {
+                Tracer.Warn("Missing cliloc with index {0}. Client version is lower than expected by Server.", index);
+                return string.Format("Err: Cliloc Entry {0} not found.", index);
+            }
+            else
+                return Table[index].ToString();
+        }
+
+        public void LoadStringList(string language)
+        {
+            Language = language;
+            Table = new Hashtable();
 
             string path = FileManager.GetFilePath(String.Format("cliloc.{0}", language));
 
             if (path == null)
             {
-                m_Entries = new StringEntry[0];
                 return;
             }
 
@@ -75,39 +81,23 @@ namespace UltimaXNA.Ultima.Resources
                 string text = Encoding.UTF8.GetString(buffer, pos + 7, length);
                 pos += length + 7;
                 list.Add(new StringEntry(number, text));
-                m_Table[number] = text;
+                Table[number] = text;
             }
-
-            m_Entries = (StringEntry[])list.ToArray(typeof(StringEntry));
         }
 
-        public static void Debug_WriteStringList()
+        private class StringEntry
         {
-            // create a writer and open the file
-            TextWriter tw = new StreamWriter("cliloc.txt");
-            for (int i = 0; i < m_Entries.Length; i++)
+            private int m_Number;
+            private string m_Text;
+
+            public int Number { get { return m_Number; } }
+            public string Text { get { return m_Text; } }
+
+            public StringEntry(int number, string text)
             {
-                // write a line of text to the file
-                tw.WriteLine(m_Entries[i].Number + ": " + m_Entries[i].Text);
+                m_Number = number;
+                m_Text = text;
             }
-
-            // close the stream
-            tw.Close();
-        }
-    }
-
-    public class StringEntry
-    {
-        private int m_Number;
-        private string m_Text;
-
-        public int Number { get { return m_Number; } }
-        public string Text { get { return m_Text; } }
-
-        public StringEntry(int number, string text)
-        {
-            m_Number = number;
-            m_Text = text;
         }
     }
 }

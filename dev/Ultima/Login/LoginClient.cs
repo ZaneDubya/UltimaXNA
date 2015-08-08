@@ -75,7 +75,7 @@ namespace UltimaXNA.Ultima.Login
             Register<LoginCompletePacket>(0x55, "Login Complete", 1, ReceiveLoginComplete);
             Register<ServerPingPacket>(0x73, "Server Ping Packet", 2, ReceivePingPacket);
             Register<LoginRejectionPacket>(0x82, "Login Rejection", 2, ReceiveLoginRejection);
-            Register<DeleteCharacterResponsePacket>(0x85, "Delete Character Response", 2, ReceiveDeleteCharacterResponse);
+            Register<DeleteResultPacket>(0x85, "Delete Character Response", 2, ReceiveDeleteCharacterResponse);
             Register<CharacterListUpdatePacket>(0x86, "Character List Update", -1, ReceiveCharacterListUpdate);
             Register<ServerRelayPacket>(0x8C, "ServerRelay", 11, ReceiveServerRelay);
             Register<ServerListPacket>(0xA8, "Game Server List", -1, ReceiveServerList);
@@ -263,7 +263,7 @@ namespace UltimaXNA.Ultima.Login
 
         private void ReceiveDeleteCharacterResponse(IRecvPacket packet)
         {
-            DeleteCharacterResponsePacket p = (DeleteCharacterResponsePacket)packet;
+            DeleteResultPacket p = (DeleteResultPacket)packet;
             MsgBoxGump.Show(p.Result, MsgBoxTypes.OkOnly);
         }
 

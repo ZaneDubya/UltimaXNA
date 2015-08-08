@@ -155,7 +155,6 @@ namespace UltimaXNA
                 ServiceRegistry.Register<IResourceProvider>(provider);
 
                 HueData.Initialize(GraphicsDevice);
-                StringData.LoadStringList("enu");
                 SkillsData.Initialize();
                 GraphicsDevice.Textures[1] = HueData.HueTexture0;
                 GraphicsDevice.Textures[2] = HueData.HueTexture1;

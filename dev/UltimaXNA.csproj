@@ -508,7 +508,7 @@
     <Compile Include="Ultima\Resources\MusicData.cs" />
     <Compile Include="Ultima\Resources\RadarColorData.cs" />
     <Compile Include="Ultima\Resources\SoundData.cs" />
-    <Compile Include="Ultima\Resources\StringData.cs" />
+    <Compile Include="Ultima\Resources\ClilocResource.cs" />
     <Compile Include="UltimaGame.cs" />
     <Compile Include="Ultima\IO\FileManager.cs" />
     <Compile Include="Ultima\World\Entities\Items\Containers\Container.cs" />

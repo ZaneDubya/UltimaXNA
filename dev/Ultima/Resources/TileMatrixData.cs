@@ -14,6 +14,7 @@ using System.IO;
 using UltimaXNA.Core;
 using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.Diagnostics.Tracing;
+using UltimaXNA.Ultima.IO;
 #endregion
 
 namespace UltimaXNA.Ultima.Resources

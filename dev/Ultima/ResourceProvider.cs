@@ -24,6 +24,7 @@ namespace UltimaXNA.Ultima
     class ResourceProvider : IResourceProvider
     {
         private ArtMulResource m_Art;
+        private ClilocResource m_Cliloc;
         private EffectDataResource m_Effects;
         private FontsResource m_Fonts;
         private GumpMulResource m_Gumps;
@@ -33,6 +34,7 @@ namespace UltimaXNA.Ultima
         public ResourceProvider(Game game)
         {
             m_Art = new ArtMulResource(game.GraphicsDevice);
+            m_Cliloc = new ClilocResource("enu");
             m_Effects = new EffectDataResource();
             m_Fonts = new FontsResource(game.GraphicsDevice);
             m_Gumps = new GumpMulResource(game.GraphicsDevice);
@@ -82,6 +84,11 @@ namespace UltimaXNA.Ultima
         public IFont GetAsciiFont(int fontIndex)
         {
             return m_Fonts.GetAsciiFont(fontIndex);
+        }
+
+        public string GetString(int clilocIndex)
+        {
+            return m_Cliloc.GetString(clilocIndex);
         }
 
         
