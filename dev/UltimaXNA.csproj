@@ -500,7 +500,7 @@
     <Compile Include="Core\UI\HTML\Images.cs" />
     <Compile Include="Core\UI\HTML\Reader.cs" />
     <Compile Include="Core\Diagnostics\Metrics.cs" />
-    <Compile Include="Ultima\Resources\GumpData.cs" />
+    <Compile Include="Ultima\Resources\GumpMulResource.cs" />
     <Compile Include="Ultima\Resources\MobtypeData.cs" />
     <Compile Include="Ultima\Resources\MultiData.cs" />
     <Compile Include="Ultima\Resources\MusicData.cs" />

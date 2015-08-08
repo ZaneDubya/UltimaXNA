@@ -153,7 +153,7 @@ namespace UltimaXNA
                 AnimDataResouce.Initialize();
                 // ArtData.Initialize(GraphicsDevice);
                 // FontsResource.Initialize(GraphicsDevice);
-                GumpData.Initialize(GraphicsDevice);
+                // GumpMulResource.Initialize(GraphicsDevice);
                 HueData.Initialize(GraphicsDevice);
                 TexmapData.Initialize(GraphicsDevice);
                 StringData.LoadStringList("enu");

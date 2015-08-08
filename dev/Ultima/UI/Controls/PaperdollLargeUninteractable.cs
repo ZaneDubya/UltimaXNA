@@ -10,9 +10,9 @@
 
 using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Data;
-using UltimaXNA.Ultima.Resources;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
@@ -134,7 +134,11 @@ namespace UltimaXNA.Ultima.UI.Controls
                 }
 
                 if (bodyID != 0)
-                    spriteBatch.Draw2D(GumpData.GetGumpXNA(bodyID), new Vector3(position.X, position.Y, 0), Utility.GetHueVector(hue, hueGreyPixelsOnly, false));
+                {
+                    // this is silly, we should be keeping a local copy of the body texture.
+                    IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                    spriteBatch.Draw2D(provider.GetUITexture(bodyID), new Vector3(position.X, position.Y, 0), Utility.GetHueVector(hue, hueGreyPixelsOnly, false));
+                }
             }
         }
 

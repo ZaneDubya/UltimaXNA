@@ -6,7 +6,7 @@ namespace UltimaXNA.Core.Resources
 {
     public interface IResourceProvider
     {
-        Texture2D GetUITexture(int textureID);
+        Texture2D GetUITexture(int textureID, bool replaceMask080808 = false);
         Texture2D GetItemTexture(int textureID);
         Texture2D GetLandTexture(int textureID);
         void GetItemDimensions(int textureID, out int width, out int height);

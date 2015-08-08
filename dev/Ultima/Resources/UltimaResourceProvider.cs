@@ -22,16 +22,18 @@ namespace UltimaXNA.Ultima.Resources
     {
         private ArtMulResource m_Art;
         private FontsResource m_Fonts;
+        private GumpMulResource m_Gumps;
 
         public UltimaResourceProvider(Game game)
         {
             m_Art = new ArtMulResource(game.GraphicsDevice);
             m_Fonts = new FontsResource(game.GraphicsDevice);
+            m_Gumps = new GumpMulResource(game.GraphicsDevice);
         }
 
-        public Texture2D GetUITexture(int textureIndex)
+        public Texture2D GetUITexture(int textureIndex, bool replaceMask080808 = false)
         {
-            return GumpData.GetGumpXNA(textureIndex);
+            return m_Gumps.GetGumpXNA(textureIndex);
         }
 
         public Texture2D GetItemTexture(int itemIndex)
