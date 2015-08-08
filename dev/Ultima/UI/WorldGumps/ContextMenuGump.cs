@@ -33,7 +33,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
             m_Data = data;
 
-            AFont font = TextUni.GetUniFont(1);
+            AFont font = FontsResource.GetUniFont(1);
 
             m_Background = (ResizePic)AddControl(new ResizePic(this, 0, 0, 0x0A3C, 50, font.Height * m_Data.Count + 20));
 

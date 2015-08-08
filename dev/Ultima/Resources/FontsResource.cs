@@ -13,57 +13,59 @@ using System;
 using System.IO;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.UI.Fonts;
+using UltimaXNA.Ultima.Resources.Fonts;
+using Microsoft.Xna.Framework;
 #endregion
 
-namespace UltimaXNA.Ultima.Resources.Fonts
+namespace UltimaXNA.Ultima.Resources
 {
-    public static class TextUni
+    public class FontsResource
     {
-        public static int UniFontCount = 7;
-        private static AFont[] m_UnicodeFonts = new AFont[UniFontCount];
+        public const int UniFontCount = 7;
+        private AFont[] m_UnicodeFonts = new AFont[UniFontCount];
 
-        public static int AsciiFontCount = 10;
-        private static AFont[] m_AsciiFonts = new AFont[AsciiFontCount];
+        public const int AsciiFontCount = 10;
+        private AFont[] m_AsciiFonts = new AFont[AsciiFontCount];
 
-        internal static AFont GetUniFont(int index)
+        internal AFont GetUniFont(int index)
         {
             if (index < 0 || index >= UniFontCount)
                 return m_UnicodeFonts[0];
             return m_UnicodeFonts[index];
         }
 
-        internal static AFont GetAsciiFont(int index)
+        internal AFont GetAsciiFont(int index)
         {
             if (index < 0 || index >= AsciiFontCount)
                 return m_AsciiFonts[0];
             return m_AsciiFonts[index];
         }
 
-        private static bool m_initialized;
-        private static GraphicsDevice m_graphicsDevice;
+        private bool m_initialized;
+        private GraphicsDevice m_GraphicsDevice;
 
-        static TextUni()
+        public FontsResource(GraphicsDevice graphics)
         {
-
+            m_GraphicsDevice = graphics;
         }
 
-        public static void Initialize(GraphicsDevice graphicsDevice)
+        public void Initialize(GraphicsDevice graphicsDevice)
         {
             if (!m_initialized)
             {
                 m_initialized = true;
-                m_graphicsDevice = graphicsDevice;
+                m_GraphicsDevice = graphicsDevice;
                 graphicsDevice.DeviceReset += graphicsDevice_DeviceReset;
                 loadFonts();
             }
         }
 
-        static void graphicsDevice_DeviceReset(object sender, EventArgs e)
+        void graphicsDevice_DeviceReset(object sender, EventArgs e)
         {
             loadFonts();
         }
 
-        static void loadFonts()
+        void loadFonts()
         {
             // ==============================================================================================================
             // load Ascii fonts
@@ -77,7 +79,6 @@ namespace UltimaXNA.Ultima.Resources.Fonts
                     m_AsciiFonts[iFont].Initialize(reader);
                 }
             }
-
 
             // ==============================================================================================================
             // load Unicode fonts
@@ -103,8 +104,6 @@ namespace UltimaXNA.Ultima.Resources.Fonts
                     continue;
                 m_UnicodeFonts[iFont].Height = maxHeight;
             }
-
-
         }
     }
 }

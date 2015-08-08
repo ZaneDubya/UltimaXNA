@@ -21,32 +21,39 @@ namespace UltimaXNA.Ultima.Resources
     class UltimaResourceProvider : IResourceProvider
     {
         private ArtMulResource m_Art;
+        private FontsResource m_Fonts;
 
         public UltimaResourceProvider(Game game)
         {
             m_Art = new ArtMulResource(game.GraphicsDevice);
+            m_Fonts = new FontsResource(game.GraphicsDevice);
         }
 
-        public Texture2D GetUITexture(int textureID)
+        public Texture2D GetUITexture(int textureIndex)
         {
-            return GumpData.GetGumpXNA(textureID);
+            return GumpData.GetGumpXNA(textureIndex);
         }
 
-        public Texture2D GetItemTexture(int textureID)
+        public Texture2D GetItemTexture(int itemIndex)
         {
-            return m_Art.GetStaticTexture(textureID);
+            return m_Art.GetStaticTexture(itemIndex);
         }
 
-        public Texture2D GetLandTexture(int textureID)
+        public Texture2D GetLandTexture(int landIndex)
         {
-            return m_Art.GetLandTexture(textureID);
+            return m_Art.GetLandTexture(landIndex);
         }
 
-        public void GetItemDimensions(int textureID, out int width, out int height)
+        public void GetItemDimensions(int itemIndex, out int width, out int height)
         {
-            m_Art.GetStaticDimensions(textureID, out width, out height);
+            m_Art.GetStaticDimensions(itemIndex, out width, out height);
         }
 
+        /// <summary>
+        /// Returns a Ultima Online Hue index that approximates the passed color.
+        /// </summary>
+        /// <param name="color"></param>
+        /// <returns></returns>
         public ushort GetWebSafeHue(Color color)
         {
             return (ushort)HueData.GetWebSafeHue(color);
@@ -54,12 +61,12 @@ namespace UltimaXNA.Ultima.Resources
 
         public IFont GetUnicodeFont(int fontIndex)
         {
-            return TextUni.GetUniFont(fontIndex);
+            return m_Fonts.GetUniFont(fontIndex);
         }
 
         public IFont GetAsciiFont(int fontIndex)
         {
-            return TextUni.GetAsciiFont(fontIndex);
+            return m_Fonts.GetAsciiFont(fontIndex);
         }
     }
 }

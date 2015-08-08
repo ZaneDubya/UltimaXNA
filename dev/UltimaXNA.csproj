@@ -338,7 +338,7 @@
     <Compile Include="Core\UI\Fonts\ACharacter.cs" />
     <Compile Include="Ultima\Resources\Fonts\CharacterUnicode.cs" />
     <Compile Include="Ultima\Resources\Fonts\FontUnicode.cs" />
-    <Compile Include="Ultima\Resources\Fonts\TextUni.cs" />
+    <Compile Include="Ultima\Resources\FontsResource.cs" />
     <Compile Include="Ultima\UI\WorldGumps\JournalGump.cs" />
     <Compile Include="Ultima\Login\States\HueTestState.cs" />
     <Compile Include="Ultima\Player\JournalData.cs" />
