@@ -1,5 +1,5 @@
 ﻿/***************************************************************************
- *   AnimationData.cs
+ *   AnimationResource.cs
  *   Based on code from UltimaSDK: http://ultimasdk.codeplex.com/
  *   
  *   This program is free software; you can redistribute it and/or modify
@@ -15,56 +15,56 @@ using System.IO;
 using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.IO;
+using UltimaXNA.Core.Resources;
 using UltimaXNA.Ultima.IO;
 #endregion
 
 namespace UltimaXNA.Ultima.Resources
 {
-    public sealed class AnimationData
+    internal sealed class AnimationResource
     {
-        private static FileIndex m_FileIndex = new FileIndex("Anim.idx", "Anim.mul", 0x40000, 6);
-        public static FileIndex FileIndex { get { return m_FileIndex; } }
+        private FileIndex m_FileIndex = new FileIndex("Anim.idx", "Anim.mul", 0x40000, 6);
+        public FileIndex FileIndex { get { return m_FileIndex; } }
 
-        private static FileIndex m_FileIndex2 = new FileIndex("Anim2.idx", "Anim2.mul", 0x10000, -1);
-        public static FileIndex FileIndex2 { get { return m_FileIndex2; } }
+        private FileIndex m_FileIndex2 = new FileIndex("Anim2.idx", "Anim2.mul", 0x10000, -1);
+        public FileIndex FileIndex2 { get { return m_FileIndex2; } }
 
-        private static FileIndex m_FileIndex3 = new FileIndex("Anim3.idx", "Anim3.mul", 0x20000, -1);
-        public static FileIndex FileIndex3 { get { return m_FileIndex3; } }
+        private FileIndex m_FileIndex3 = new FileIndex("Anim3.idx", "Anim3.mul", 0x20000, -1);
+        public FileIndex FileIndex3 { get { return m_FileIndex3; } }
 
-        private static FileIndex m_FileIndex4 = new FileIndex("Anim4.idx", "Anim4.mul", 0x20000, -1);
-        public static FileIndex FileIndex4 { get { return m_FileIndex4; } }
+        private FileIndex m_FileIndex4 = new FileIndex("Anim4.idx", "Anim4.mul", 0x20000, -1);
+        public FileIndex FileIndex4 { get { return m_FileIndex4; } }
 
-        private static FileIndex m_FileIndex5 = new FileIndex("Anim5.idx", "Anim5.mul", 0x20000, -1);
-        public static FileIndex FileIndex5 { get { return m_FileIndex5; } }
+        private FileIndex m_FileIndex5 = new FileIndex("Anim5.idx", "Anim5.mul", 0x20000, -1);
+        public FileIndex FileIndex5 { get { return m_FileIndex5; } }
 
-        private static AnimationFrame[][][][] m_Cache;
-        private static GraphicsDevice m_graphics;
-        private static int[] m_Table;
+        private IAnimationFrame[][][][] m_Cache;
+        private GraphicsDevice m_Graphics;
+        private int[] m_Table;
 
-        static AnimationData()
+        public AnimationResource(GraphicsDevice graphics)
         {
-            SpriteBatch3D sb = ServiceRegistry.GetService<SpriteBatch3D>();
-            m_graphics = sb.GraphicsDevice;
+            m_Graphics = graphics;
         }
 
-        public static int GetAnimationFrameCount(int body, int action, int direction, int hue)
+        public int GetAnimationFrameCount(int body, int action, int direction, int hue)
         {
-            AnimationFrame[] frames = GetAnimation(body, action, direction, hue);
+            IAnimationFrame[] frames = GetAnimation(body, action, direction, hue);
             if (frames == null)
                 return 0;
             return frames.Length;
         }
 
-        public static AnimationFrame[] GetAnimation(int body, int action, int direction, int hue)
+        public IAnimationFrame[] GetAnimation(int body, int action, int direction, int hue)
         {
             int animIndex;
             FileIndex fileIndex;
             int length, extra;
             bool patched;
 
-            getIndexes(ref body, ref hue, action, direction, out animIndex, out fileIndex);
+            GetIndexes(ref body, ref hue, action, direction, out animIndex, out fileIndex);
 
-            AnimationFrame[] f = checkCache(body, action, direction);
+            IAnimationFrame[] f = CheckCache(body, action, direction);
             if (f != null)
                 return f;
 
@@ -72,14 +72,13 @@ namespace UltimaXNA.Ultima.Resources
             if (reader == null)
                 return null;
 
-            AnimationFrame[] frames = GetAnimation(reader);
+            IAnimationFrame[] frames = LoadAnimation(reader);
             return m_Cache[body][action][direction] = frames;
         }
 
-        public static AnimationFrame[] GetAnimation(BinaryFileReader reader)
+        private IAnimationFrame[] LoadAnimation(BinaryFileReader reader)
         {
-            
-            ushort[] palette = getPalette(reader); // 0x100 * 2 = 0x0200 bytes
+            ushort[] palette = GetPalette(reader); // 0x100 * 2 = 0x0200 bytes
             int read_start = (int)reader.Position; // save file position after palette.
 
             int frameCount = reader.ReadInt(); // 0x04 bytes
@@ -87,7 +86,7 @@ namespace UltimaXNA.Ultima.Resources
             int[] lookups = new int[frameCount]; // frameCount * 0x04 bytes
             for (int i = 0; i < frameCount; ++i) { lookups[i] = reader.ReadInt(); }
 
-            AnimationFrame[] frames = new AnimationFrame[frameCount];
+            IAnimationFrame[] frames = new AnimationFrame[frameCount];
             for (int i = 0; i < frameCount; ++i)
             {
                 if (lookups[i] < lookups[0])
@@ -97,13 +96,13 @@ namespace UltimaXNA.Ultima.Resources
                 else
                 {
                     reader.Seek(read_start + lookups[i], SeekOrigin.Begin);
-                    frames[i] = new AnimationFrame(m_graphics, palette, reader);
+                    frames[i] = new AnimationFrame(m_Graphics, palette, reader);
                 }
             }
             return frames;
         }
 
-        public static byte[] GetData(int body, int action, int direction, int hue)
+        /*public byte[] GetData(int body, int action, int direction, int hue)
         {
             int animIndex;
             FileIndex fileIndex;
@@ -119,41 +118,36 @@ namespace UltimaXNA.Ultima.Resources
                 return null;
 
             return reader.ReadBytes(length);
-        }
+        }*/
 
-        private static ushort[] getPalette(BinaryFileReader reader)
+        private ushort[] GetPalette(BinaryFileReader reader)
         {
             ushort[] pal = new ushort[0x100];
             for (int i = 0; i < 0x100; ++i)
             {
                 pal[i] = (ushort)(reader.ReadUShort() | 0x8000);
-                /*pal[i] = 0xFF000000 + (
-                    ((((color >> 10) & 0x1F) * 0xFF / 0x1F)) |
-                    ((((color >> 5) & 0x1F) * 0xFF / 0x1F) << 8) |
-                    (((color & 0x1F) * 0xFF / 0x1F) << 16)
-                    );*/
             }
             return pal;
         }
 
-        private static AnimationFrame[] checkCache(int body, int action, int direction)
+        private IAnimationFrame[] CheckCache(int body, int action, int direction)
         {
             // Make sure the cache is complete.
             // max number of bodies is about 0x1000
-            if (m_Cache == null) m_Cache = new AnimationFrame[0x1000][][][];
+            if (m_Cache == null) m_Cache = new IAnimationFrame[0x1000][][][];
             if (m_Cache[body] == null)
-                m_Cache[body] = new AnimationFrame[35][][];
+                m_Cache[body] = new IAnimationFrame[35][][];
             if (m_Cache[body][action] == null)
-                m_Cache[body][action] = new AnimationFrame[8][];
+                m_Cache[body][action] = new IAnimationFrame[8][];
             if (m_Cache[body][action][direction] == null)
-                m_Cache[body][action][direction] = new AnimationFrame[1];
+                m_Cache[body][action][direction] = new IAnimationFrame[1];
             if (m_Cache[body][action][direction][0] != null)
                 return m_Cache[body][action][direction];
             else
                 return null;
         }
 
-        private static void getIndexes(ref int body, ref int hue, int action, int direction, out int index, out FileIndex fileIndex)
+        private void GetIndexes(ref int body, ref int hue, int action, int direction, out int index, out FileIndex fileIndex)
         {
             Translate(ref body, ref hue);
 
@@ -239,7 +233,7 @@ namespace UltimaXNA.Ultima.Resources
             }
         }
 
-        public static void Translate(ref int body)
+        public void Translate(ref int body)
         {
             if (m_Table == null)
                 LoadTable();
@@ -253,7 +247,7 @@ namespace UltimaXNA.Ultima.Resources
             body = (m_Table[body] & 0x7FFF);
         }
 
-        public static void Translate(ref int body, ref int hue)
+        public void Translate(ref int body, ref int hue)
         {
             if (m_Table == null)
                 LoadTable();
@@ -277,7 +271,7 @@ namespace UltimaXNA.Ultima.Resources
             }
         }
 
-        private static void LoadTable()
+        private void LoadTable()
         {
             int count = 400 + ((m_FileIndex.Index.Length - 35000) / 175);
 
@@ -298,90 +292,6 @@ namespace UltimaXNA.Ultima.Resources
                     m_Table[i] = bte.m_OldID | (1 << 31) | (((bte.m_NewHue ^ 0x8000) & 0xFFFF) << 15);
                 }
             }
-        }
-    }
-
-    public sealed class AnimationFrame
-    {
-        private Point m_Center;
-        private Texture2D m_Texture;
-
-        public Point Center { get { return m_Center; } }
-        public Texture2D Texture { get { return m_Texture; } }
-
-        private const int DoubleXor = (0x200 << 22) | (0x200 << 12);
-
-        public static readonly AnimationFrame Empty = new AnimationFrame();
-        public static readonly AnimationFrame[] EmptyFrames = new AnimationFrame[1] { Empty };
-
-        private AnimationFrame()
-        {
-
-        }
-
-        public unsafe AnimationFrame(GraphicsDevice graphics, ushort[] palette, BinaryFileReader reader)
-        {
-            int xCenter = reader.ReadShort();
-            int yCenter = reader.ReadShort();
-
-            int width = reader.ReadUShort();
-            int height = reader.ReadUShort();
-
-            // Fix for animations with no IO.
-            if ((width == 0) || (height == 0))
-            {
-                m_Texture = null;
-                return;
-            }
-
-            ushort[] data = new ushort[width * height];
-
-            int header;
-
-            int xBase = xCenter - 0x200;
-            int yBase = (yCenter + height) - 0x200;
-
-            fixed (ushort* pData = data)
-            {
-                ushort* dataRef = pData;
-                int delta = width;
-
-                int dataRead = 0;
-
-                dataRef += xBase;
-                dataRef += (yBase * delta);
-
-                while ((header = reader.ReadInt()) != 0x7FFF7FFF)
-                {
-                    header ^= DoubleXor;
-
-                    ushort* cur = dataRef + ((((header >> 12) & 0x3FF) * delta) + ((header >> 22) & 0x3FF));
-                    ushort* end = cur + (header & 0xFFF);
-
-                    int filecounter = 0;
-                    byte[] filedata = reader.ReadBytes(header & 0xFFF);
-
-                    while (cur < end)
-                        *cur++ = palette[filedata[filecounter++]];
-
-                    dataRead += header & 0xFFF;
-                }
-
-                Metrics.ReportDataRead(dataRead);
-            }
-
-            m_Center = new Point(xCenter, yCenter);
-
-            m_Texture = new Texture2D(graphics, width, height, false, SurfaceFormat.Bgra5551);
-            m_Texture.SetData<ushort>(data);
-        }
-
-        private static byte[] getData(BinaryReader bin, int start)
-        {
-            int length = (int)bin.BaseStream.Position - start;
-            bin.BaseStream.Position = start;
-            byte[] b = bin.ReadBytes(length);
-            return b;
         }
     }
 } 

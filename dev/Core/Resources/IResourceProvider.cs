@@ -6,6 +6,7 @@ namespace UltimaXNA.Core.Resources
 {
     public interface IResourceProvider
     {
+        IAnimationFrame[] GetAnimation(int body, int action, int direction, int hue);
         Texture2D GetUITexture(int textureID, bool replaceMask080808 = false);
         Texture2D GetItemTexture(int textureID);
         Texture2D GetLandTexture(int textureID);

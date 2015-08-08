@@ -12,7 +12,7 @@ namespace UltimaXNA.Ultima.Resources
 {
     /// <summary>
     /// Contains translation tables used for mapping body values to file subsets.
-    /// <seealso cref="AnimationData" />
+    /// <seealso cref="AnimationResource" />
     /// </summary>
     public sealed class BodyConverter
     {

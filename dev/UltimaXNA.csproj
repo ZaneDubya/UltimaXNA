@@ -193,7 +193,8 @@
     <Compile Include="Core\Network\INetworkClient.cs" />
     <Compile Include="Core\DelayedAction.cs" />
     <Compile Include="Core\Patterns\IModule.cs" />
-    <Compile Include="Core\Resouces\IResource.cs" />
+    <Compile Include="Core\Resources\IAnimationFrame.cs" />
+    <Compile Include="Core\Resources\IResource.cs" />
     <Compile Include="Core\UI\ControlMetaData.cs" />
     <Compile Include="Core\UI\HTML\OpenTag.cs" />
     <Compile Include="Core\UI\HTML\StyleManager.cs" />
@@ -203,7 +204,7 @@
     <Compile Include="Core\UI\Interfaces\ICharacter.cs" />
     <Compile Include="Core\UI\Interfaces\ICursor.cs" />
     <Compile Include="Core\UI\Interfaces\IFont.cs" />
-    <Compile Include="Core\Resouces\IResourceProvider.cs" />
+    <Compile Include="Core\Resources\IResourceProvider.cs" />
     <Compile Include="Core\PluginManager.cs" />
     <Compile Include="Core\UI\RenderedTextList.cs" />
     <Compile Include="ServiceRegistry.cs" />
@@ -259,6 +260,7 @@
     <Compile Include="Ultima\Data\Genders.cs" />
     <Compile Include="Ultima\Data\SpellbookData.cs" />
     <Compile Include="Ultima\Data\SpellDefinition.cs" />
+    <Compile Include="Ultima\Resources\AnimationFrame.cs" />
     <Compile Include="Ultima\Resources\ArtMulResource.cs" />
     <Compile Include="Ultima\Resources\EffectData.cs" />
     <Compile Include="Ultima\Resources\Fonts\CharacterAscii.cs" />
@@ -601,7 +603,7 @@
     <Compile Include="Core\Graphics\SpriteBatch3D.cs" />
     <Compile Include="Core\Graphics\VertexPositionNormalTextureHue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Ultima\Resources\AnimationData.cs" />
+    <Compile Include="Ultima\Resources\AnimationResource.cs" />
     <Compile Include="Ultima\IO\FileIndex.cs" />
     <Compile Include="Ultima\Resources\HueData.cs" />
     <Compile Include="Ultima\IO\Entry5D.cs" />
