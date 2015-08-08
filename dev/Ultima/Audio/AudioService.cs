@@ -11,23 +11,24 @@
 #region usings
 using System.Collections.Generic;
 using UltimaXNA.Core.Diagnostics.Tracing;
-using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.Resources;
+using UltimaXNA.Core.Audio;
 #endregion
 
 namespace UltimaXNA.Ultima.Audio
 {
     public class AudioService
     {
-        private readonly Dictionary<int, UOSound> m_Sounds = new Dictionary<int, UOSound>();
-        private readonly Dictionary<int, UOMusic> m_Music = new Dictionary<int, UOMusic>();
+        private readonly Dictionary<int, ASound> m_Sounds = new Dictionary<int, ASound>();
+        private readonly Dictionary<int, ASound> m_Music = new Dictionary<int, ASound>();
 
-        private UOMusic m_MusicCurrentlyPlaying = null;
+        private ASound m_MusicCurrentlyPlaying = null;
 
         public void PlaySound(int soundIndex)
         {
             if (Settings.Audio.SoundOn)
             {
-                UOSound sound;
+                ASound sound;
                 if (m_Sounds.TryGetValue(soundIndex, out sound))
                 {
                     sound.Play();
@@ -71,7 +72,7 @@ namespace UltimaXNA.Ultima.Audio
                     }
                 }
 
-                UOMusic toPlay = m_Music[id];
+                ASound toPlay = m_Music[id];
                 if (toPlay != m_MusicCurrentlyPlaying)
                 {
                     // stop the current song

@@ -11,7 +11,7 @@
 using System.Collections.Generic;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.Network.Compression;
-using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.Resources;
 
 namespace UltimaXNA.Ultima.World
 {

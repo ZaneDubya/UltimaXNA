@@ -8,10 +8,11 @@
  *
  ***************************************************************************/
 #region usings
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI.HTML;
 using UltimaXNA.Core.UI.HTML.Atoms;
 #endregion
@@ -24,7 +25,7 @@ namespace UltimaXNA.Core.UI
     class RenderedText
     {
         // private services
-        IUIResourceProvider m_ResourceProvider;
+        IResourceProvider m_ResourceProvider;
 
         public string Text
         {
@@ -121,7 +122,7 @@ namespace UltimaXNA.Core.UI
 
         public RenderedText(string text, int maxWidth = DefaultRenderedTextWidth)
         {
-            m_ResourceProvider = ServiceRegistry.GetService<IUIResourceProvider>();
+            m_ResourceProvider = ServiceRegistry.GetService<IResourceProvider>();
 
             Text = text;
             MaxWidth = maxWidth;

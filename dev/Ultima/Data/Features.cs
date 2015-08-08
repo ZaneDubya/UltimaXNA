@@ -15,96 +15,96 @@ namespace UltimaXNA.Ultima.Data
 {
     internal static class Features
     {
-        private static FeatureFlags m_flags;
+        private static FeatureFlags m_Flags;
 
         public static bool EnableT2A
         {
-            get { return m_flags.HasFlag(FeatureFlags.TheSecondAge); }
+            get { return m_Flags.HasFlag(FeatureFlags.TheSecondAge); }
         }
 
         public static bool EnableRen
         {
-            get { return m_flags.HasFlag(FeatureFlags.Renaissance); }
+            get { return m_Flags.HasFlag(FeatureFlags.Renaissance); }
         }
 
         public static bool EnableThirdDawn
         {
-            get { return m_flags.HasFlag(FeatureFlags.ThirdDawn); }
+            get { return m_Flags.HasFlag(FeatureFlags.ThirdDawn); }
         }
 
         public static bool EnableLBR
         {
-            get { return m_flags.HasFlag(FeatureFlags.LordBlackthornsRevenge); }
+            get { return m_Flags.HasFlag(FeatureFlags.LordBlackthornsRevenge); }
         }
 
         public static bool EnableAOS
         {
-            get { return m_flags.HasFlag(FeatureFlags.AgeOfShadows); }
+            get { return m_Flags.HasFlag(FeatureFlags.AgeOfShadows); }
         }
 
         public static bool Enable6CharSlots
         {
-            get { return m_flags.HasFlag(FeatureFlags.CharacterSlot6); }
+            get { return m_Flags.HasFlag(FeatureFlags.CharacterSlot6); }
         }
 
         public static bool EnableSE
         {
-            get { return m_flags.HasFlag(FeatureFlags.SameraiEmpire); }
+            get { return m_Flags.HasFlag(FeatureFlags.SameraiEmpire); }
         }
 
         public static bool EnableML
         {
-            get { return m_flags.HasFlag(FeatureFlags.MondainsLegacy); }
+            get { return m_Flags.HasFlag(FeatureFlags.MondainsLegacy); }
         }
 
         public static bool Enable8thSplash
         {
-            get { return m_flags.HasFlag(FeatureFlags.Splash8); }
+            get { return m_Flags.HasFlag(FeatureFlags.Splash8); }
         }
 
         public static bool Enable9thSplash
         {
-            get { return m_flags.HasFlag(FeatureFlags.Splash9); }
+            get { return m_Flags.HasFlag(FeatureFlags.Splash9); }
         }
 
         public static bool Enable10thAge
         {
-            get { return m_flags.HasFlag(FeatureFlags.TenthAge); }
+            get { return m_Flags.HasFlag(FeatureFlags.TenthAge); }
         }
 
         public static bool EnableMoreStorage
         {
-            get { return m_flags.HasFlag(FeatureFlags.MoreStorage); }
+            get { return m_Flags.HasFlag(FeatureFlags.MoreStorage); }
         }
 
         public static bool Enable7CharSlots
         {
-            get { return m_flags.HasFlag(FeatureFlags.TheSecondAge); }
+            get { return m_Flags.HasFlag(FeatureFlags.TheSecondAge); }
         }
 
         public static bool Enable10thAgeFaces
         {
-            get { return m_flags.HasFlag(FeatureFlags.TenthAgeFaces); }
+            get { return m_Flags.HasFlag(FeatureFlags.TenthAgeFaces); }
         }
 
         public static bool EnableTrialAccount
         {
-            get { return m_flags.HasFlag(FeatureFlags.TrialAccount); }
+            get { return m_Flags.HasFlag(FeatureFlags.TrialAccount); }
         }
 
         public static bool Enable11thAge
         {
-            get { return m_flags.HasFlag(FeatureFlags.EleventhAge); }
+            get { return m_Flags.HasFlag(FeatureFlags.EleventhAge); }
         }
 
         public static bool EnableSA
         {
-            get { return m_flags.HasFlag(FeatureFlags.StygianAbys); }
+            get { return m_Flags.HasFlag(FeatureFlags.StygianAbys); }
         }
         
         public static void SetFlags(FeatureFlags flags)
         {
-            m_flags |= flags;
+            m_Flags |= flags;
         }
     }
 }

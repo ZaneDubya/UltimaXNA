@@ -12,11 +12,11 @@
 using System;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Data;
-using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.Login.Accounts;
 using UltimaXNA.Ultima.Network.Client;
-using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.LoginGumps;
+using UltimaXNA.Ultima.UI;
+using UltimaXNA.Ultima.Resources;
 #endregion
 
 namespace UltimaXNA.Ultima.Login.States

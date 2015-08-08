@@ -15,14 +15,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using UltimaXNA.Core.Diagnostics.Tracing;
+using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Audio;
 using UltimaXNA.Ultima.Data;
-using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.Network.Server;
 using UltimaXNA.Ultima.Player;
+using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.WorldGumps;
 using UltimaXNA.Ultima.World.Entities;
@@ -31,7 +32,6 @@ using UltimaXNA.Ultima.World.Entities.Items.Containers;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Ultima.World.Entities.Multis;
 using UltimaXNA.Ultima.World.Input;
-using UltimaXNA.Core.Input;
 #endregion
 
 namespace UltimaXNA.Ultima.World
@@ -285,7 +285,7 @@ namespace UltimaXNA.Ultima.World
         private void ReceiveAddMultipleItemsToContainer(IRecvPacket packet)
         {
             ContainerContentPacket p = (ContainerContentPacket)packet;
-            foreach (ContentItem i in p.Items)
+            foreach (ItemInContainer i in p.Items)
             {
                 // Add the item...
                 Item item = add_Item(i.Serial, i.ItemID, i.Hue, i.ContainerSerial, i.Amount);

@@ -13,7 +13,7 @@ using System.Text;
 using UltimaXNA.Core.Network;
 using UltimaXNA.Core.UI.Fonts;
 using UltimaXNA.Ultima.Data;
-using UltimaXNA.Ultima.IO.Fonts;
+using UltimaXNA.Ultima.Resources.Fonts;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.UI.Controls;
 

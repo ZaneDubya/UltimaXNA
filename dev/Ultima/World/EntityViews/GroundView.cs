@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
-using UltimaXNA.Ultima.IO;
+using UltimaXNA.Core.Resources;
+using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Input;
 using UltimaXNA.Ultima.World.Maps;
@@ -29,7 +30,9 @@ namespace UltimaXNA.Ultima.World.EntityViews
                 DrawFlip = false;
                 m_DrawAs3DStretched = false;
 
-                DrawTexture = ArtData.GetLandTexture(Entity.LandDataID);
+                IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                DrawTexture = provider.GetLandTexture(Entity.LandDataID);
+
                 DrawArea = new Rectangle(0, Entity.Z * 4, IsometricRenderer.TILE_SIZE_INTEGER, IsometricRenderer.TILE_SIZE_INTEGER);
             }
             else

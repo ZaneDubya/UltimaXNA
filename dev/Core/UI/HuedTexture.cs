@@ -14,7 +14,7 @@ using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Graphics;
 #endregion
 
-namespace UltimaXNA.Ultima.UI
+namespace UltimaXNA.Ultima.Resources
 {
     public class HuedTexture
     {

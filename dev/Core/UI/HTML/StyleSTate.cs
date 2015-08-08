@@ -10,6 +10,7 @@
  ***************************************************************************/
 
 using Microsoft.Xna.Framework;
+using UltimaXNA.Core.Resources;
 
 namespace UltimaXNA.Core.UI.HTML
 {
@@ -64,7 +65,7 @@ namespace UltimaXNA.Core.UI.HTML
         public int ImgSrcOver = -1;
         public int ImgSrcDown = -1;
 
-        public StyleState(IUIResourceProvider provider)
+        public StyleState(IResourceProvider provider)
         {
             Font = provider.GetUnicodeFont((int)Fonts.Default);
         }

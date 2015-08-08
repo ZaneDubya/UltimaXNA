@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 using UltimaXNA.Core.Diagnostics.Tracing;
-using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.World.Maps;
 
 namespace ExamplePlugin

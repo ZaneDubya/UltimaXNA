@@ -8,9 +8,10 @@
  *
  ***************************************************************************/
 
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI;
 
 namespace UltimaXNA.Ultima.UI.Controls
@@ -44,7 +45,7 @@ namespace UltimaXNA.Ultima.UI.Controls
             HandlesMouseInput = true;
 
             m_UserInterface = ServiceRegistry.GetService<UserInterfaceService>();
-            m_Font = ServiceRegistry.GetService<IUIResourceProvider>().GetAsciiFont(1);
+            m_Font = ServiceRegistry.GetService<IResourceProvider>().GetAsciiFont(1);
         }
 
         public DropDownList(AControl parent, int x, int y, int width, string[] items, int itemsVisible, int index, bool canBeNull)

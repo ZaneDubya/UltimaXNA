@@ -9,7 +9,7 @@
  ***************************************************************************/
 
 #region usings
-using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.Resources;
 #endregion
 
 namespace UltimaXNA.Ultima.Data

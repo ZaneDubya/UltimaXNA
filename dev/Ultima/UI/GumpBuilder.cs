@@ -11,7 +11,7 @@
 #region usings
 using System;
 using UltimaXNA.Core.Diagnostics.Tracing;
-using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.UI.Controls;
 #endregion
 

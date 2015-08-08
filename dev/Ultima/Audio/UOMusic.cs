@@ -9,7 +9,7 @@
  *
  ***************************************************************************/
 
-using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Core.Audio;
 using System;
 using Microsoft.Xna.Framework.Audio;

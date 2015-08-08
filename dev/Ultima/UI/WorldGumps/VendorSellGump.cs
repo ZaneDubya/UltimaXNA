@@ -104,7 +104,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     }
                     else
                     {
-                        description = Utility.CapitalizeAllWords(Ultima.IO.StringData.Entry(clilocDescription));
+                        description = Utility.CapitalizeAllWords(Ultima.Resources.StringData.Entry(clilocDescription));
                     }
 
                     string html = string.Format(c_Format, description, item.Price.ToString(), item.ItemID, item.Amount, i);

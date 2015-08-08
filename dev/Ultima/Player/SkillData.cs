@@ -10,7 +10,7 @@
 #region usings
 using System;
 using System.Collections.Generic;
-using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.Resources;
 #endregion
 
 namespace UltimaXNA.Ultima.Player

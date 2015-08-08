@@ -1,11 +1,12 @@
-﻿using System.IO;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.IO;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.IO;
-using UltimaXNA.Ultima.UI;
+using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Ultima.UI;
+using UltimaXNA.Core.Resources;
 
 namespace UltimaXNA.Ultima.Login.States
 {
@@ -118,7 +119,8 @@ namespace UltimaXNA.Ultima.Login.States
             {
                 if (m_texture == null)
                 {
-                    m_texture = ArtData.GetStaticTexture(m_StaticTextureID);
+                    IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                    m_texture = provider.GetItemTexture(m_StaticTextureID);
                     Size = new Point(m_texture.Width, m_texture.Height);
                 }
                 spriteBatch.Draw2D(m_texture, new Vector3(position.X, position.Y, 0), Utility.GetHueVector(Hue));

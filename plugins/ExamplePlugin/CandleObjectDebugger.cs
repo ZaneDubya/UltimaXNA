@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using UltimaXNA;
-using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.Resources;
 
 namespace ExamplePlugin
 {
