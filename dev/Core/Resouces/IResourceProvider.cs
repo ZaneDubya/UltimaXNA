@@ -9,10 +9,15 @@ namespace UltimaXNA.Core.Resources
         Texture2D GetUITexture(int textureID, bool replaceMask080808 = false);
         Texture2D GetItemTexture(int textureID);
         Texture2D GetLandTexture(int textureID);
+        Texture2D GetTexmapTexture(int textureID);
+
         void GetItemDimensions(int textureID, out int width, out int height);
 
         ushort GetWebSafeHue(Color color);
         IFont GetUnicodeFont(int fontIndex);
         IFont GetAsciiFont(int fontIndex);
+
+        void RegisterResource<T>(IResource<T> resource);
+        T GetResource<T>(int resourceIndex);
     }
 }

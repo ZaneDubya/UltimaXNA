@@ -5,6 +5,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Ultima.Data;
+using UltimaXNA.Ultima.IO;
 #endregion
 
 namespace UltimaXNA.Ultima.Resources

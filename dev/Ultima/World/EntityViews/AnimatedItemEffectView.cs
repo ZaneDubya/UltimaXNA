@@ -19,7 +19,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             }
         }
 
-        AnimDataResouce.AnimDataEntry m_AnimData;
+        EffectData m_AnimData;
         bool m_Animated;
         int m_DisplayItemID = -1;
 
@@ -27,7 +27,8 @@ namespace UltimaXNA.Ultima.World.EntityViews
             : base(effect)
         {
             m_Animated = true;
-            m_AnimData = AnimDataResouce.GetAnimData(Effect.ItemID & 0x3fff);
+            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            m_AnimData = provider.GetResource<EffectData>(Effect.ItemID);
         }
 
         public override bool Draw(SpriteBatch3D spriteBatch, Vector3 drawPosition, MouseOverList mouseOverList, Map map)

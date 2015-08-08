@@ -14,6 +14,7 @@ using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Diagnostics;
+using UltimaXNA.Ultima.IO;
 #endregion
 
 namespace UltimaXNA.Ultima.Resources
@@ -24,7 +25,7 @@ namespace UltimaXNA.Ultima.Resources
 
         private static GraphicsDevice graphicsDevice;
         private static Texture2D m_HueTexture0, m_HueTexture1;
-        private const int m_HueTextureWidth = 32; // Each hue is 32 pixels wide
+        private const int m_HueTextureWidth = 32; // Each hue is 32 colors
         private const int m_HueTextureHeight = 2048;
         private const int multiplier = 0xFF / 0x1F;
 

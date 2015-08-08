@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using UltimaXNA.Core;
+using UltimaXNA.Ultima.IO;
 #endregion
 
 namespace UltimaXNA.Ultima.Resources

@@ -11,24 +11,32 @@
 #region usings
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
+using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.Resources.Fonts;
+using UltimaXNA.Ultima.Resources;
 #endregion
 
-namespace UltimaXNA.Ultima.Resources
+namespace UltimaXNA.Ultima
 {
-    class UltimaResourceProvider : IResourceProvider
+    class ResourceProvider : IResourceProvider
     {
         private ArtMulResource m_Art;
+        private EffectDataResource m_Effects;
         private FontsResource m_Fonts;
         private GumpMulResource m_Gumps;
+        private TexmapResource m_Texmaps;
+        private Dictionary<Type, object> m_Resources = new Dictionary<Type, object>();
 
-        public UltimaResourceProvider(Game game)
+        public ResourceProvider(Game game)
         {
             m_Art = new ArtMulResource(game.GraphicsDevice);
+            m_Effects = new EffectDataResource();
             m_Fonts = new FontsResource(game.GraphicsDevice);
             m_Gumps = new GumpMulResource(game.GraphicsDevice);
+            m_Texmaps = new TexmapResource(game.GraphicsDevice);
         }
 
         public Texture2D GetUITexture(int textureIndex, bool replaceMask080808 = false)
@@ -51,6 +59,11 @@ namespace UltimaXNA.Ultima.Resources
             m_Art.GetStaticDimensions(itemIndex, out width, out height);
         }
 
+        public Texture2D GetTexmapTexture(int textureIndex)
+        {
+            return m_Texmaps.GetTexmapTexture(textureIndex);
+        }
+
         /// <summary>
         /// Returns a Ultima Online Hue index that approximates the passed color.
         /// </summary>
@@ -69,6 +82,37 @@ namespace UltimaXNA.Ultima.Resources
         public IFont GetAsciiFont(int fontIndex)
         {
             return m_Fonts.GetAsciiFont(fontIndex);
+        }
+
+        
+
+        public void RegisterResource<T>(IResource<T> resource)
+        {
+            Type type = typeof(T);
+
+            if (m_Resources.ContainsKey(type))
+            {
+                Tracer.Critical(string.Format("Attempted to register resource provider of type {0} twice.", type));
+                m_Resources.Remove(type);
+            }
+
+            m_Resources.Add(type, resource);
+        }
+
+        public T GetResource<T>(int resourceIndex)
+        {
+            Type type = typeof(T);
+
+            if (m_Resources.ContainsKey(type))
+            {
+                IResource<T> resource = (IResource<T>)m_Resources[type];
+                return (T)resource.GetResource(resourceIndex);
+            }
+            else
+            {
+                Tracer.Critical(string.Format("Attempted to get resource provider of type {0}, but no provider with this type is registered.", type));
+                return default(T);
+            }
         }
     }
 }

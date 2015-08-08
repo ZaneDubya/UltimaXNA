@@ -15,6 +15,7 @@ using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.UI.Fonts;
 using UltimaXNA.Ultima.Resources.Fonts;
 using Microsoft.Xna.Framework;
+using UltimaXNA.Ultima.IO;
 #endregion
 
 namespace UltimaXNA.Ultima.Resources
@@ -47,15 +48,15 @@ namespace UltimaXNA.Ultima.Resources
         public FontsResource(GraphicsDevice graphics)
         {
             m_GraphicsDevice = graphics;
+            Initialize();
         }
 
-        public void Initialize(GraphicsDevice graphicsDevice)
+        private void Initialize()
         {
             if (!m_initialized)
             {
                 m_initialized = true;
-                m_GraphicsDevice = graphicsDevice;
-                graphicsDevice.DeviceReset += graphicsDevice_DeviceReset;
+                m_GraphicsDevice.DeviceReset += graphicsDevice_DeviceReset; // this is neat. Does it really work this way?
                 loadFonts();
             }
         }

@@ -13,38 +13,37 @@ using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.IO;
+using UltimaXNA.Ultima.IO;
 #endregion
 
 namespace UltimaXNA.Ultima.Resources
 {
-    class TexmapData
+    class TexmapResource
     {
-        private static Texture2D[] m_Cache = new Texture2D[0x4000];
-        private static FileIndex m_Index = new FileIndex("texidx.mul", "texmaps.mul", 0x4000, -1); // !!! must find patch file reference for artdata.
-        private static GraphicsDevice m_graphics;
+        private Texture2D[] m_Cache = new Texture2D[0x4000];
+        private FileIndex m_Index = new FileIndex("texidx.mul", "texmaps.mul", 0x4000, -1); // !!! must find patch file reference for texmap.
+        private GraphicsDevice m_Graphics;
 
-        public static void Initialize(GraphicsDevice graphics)
+        public TexmapResource(GraphicsDevice graphics)
         {
-            m_graphics = graphics;
+            m_Graphics = graphics;
         }
 
-        public static Texture2D GetTexmapTexture(int index)
+        public Texture2D GetTexmapTexture(int index)
         {
-            int i = index & 0x3FFF;
+            index &= 0x3FFF;
 
-            if (m_Cache[i] == null)
+            if (m_Cache[index] == null)
             {
-                m_Cache[i] = readTexmapTexture(i);
-                if (m_Cache[i] == null)
-                    m_Cache[i] = GetTexmapTexture(127);
+                m_Cache[index] = readTexmapTexture(index);
+                if (m_Cache[index] == null)
+                    m_Cache[index] = GetTexmapTexture(127);
             }
 
-            return m_Cache[i];
+            return m_Cache[index];
         }
 
-        const int multiplier = 0xFF / 0x1F;
-
-        private static unsafe Texture2D readTexmapTexture(int index)
+        private unsafe Texture2D readTexmapTexture(int index)
         {
             int length, extra;
             bool is_patched;
@@ -75,16 +74,12 @@ namespace UltimaXNA.Ultima.Resources
                 while (count < max)
                 {
                     ushort color = (ushort)(fileData[count] | 0x8000);
-                    *pDataRef++ = color; /* 0xFF000000 + (
-                                     ((((color >> 10) & 0x1F) * multiplier)) |
-                                     ((((color >> 5) & 0x1F) * multiplier) << 8) |
-                                     (((color & 0x1F) * multiplier) << 16)
-                                     );*/
+                    *pDataRef++ = color;
                     count++;
                 }
             }
 
-            Texture2D texture = new Texture2D(m_graphics, textureSize, textureSize, false, SurfaceFormat.Bgra5551);
+            Texture2D texture = new Texture2D(m_Graphics, textureSize, textureSize, false, SurfaceFormat.Bgra5551);
 
             texture.SetData<ushort>(pixelData);
 

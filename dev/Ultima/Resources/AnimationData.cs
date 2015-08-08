@@ -9,12 +9,13 @@
  *
  ***************************************************************************/
 #region usings
-using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.IO;
 using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.IO;
+using UltimaXNA.Ultima.IO;
 #endregion
 
 namespace UltimaXNA.Ultima.Resources

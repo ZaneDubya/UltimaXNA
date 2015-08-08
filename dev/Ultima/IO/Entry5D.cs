@@ -12,7 +12,7 @@
 
 #endregion
 
-namespace UltimaXNA.Ultima.Resources
+namespace UltimaXNA.Ultima.IO
 {
     public struct Entry5D
     {

@@ -39,7 +39,8 @@ namespace UltimaXNA.Ultima.World.EntityViews
             {
                 DrawFlip = false;
                 m_DrawAs3DStretched = true;
-                DrawTexture = TexmapData.GetTexmapTexture(Entity.LandData.TextureID);
+                IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                DrawTexture = provider.GetTexmapTexture(Entity.LandData.TextureID);
             }
         }
 

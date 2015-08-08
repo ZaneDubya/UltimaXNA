@@ -14,7 +14,7 @@ using System.Runtime.InteropServices;
 using UltimaXNA.Core.IO;
 #endregion
 
-namespace UltimaXNA.Ultima.Resources
+namespace UltimaXNA.Ultima.IO
 {
     public class FileIndex
     {

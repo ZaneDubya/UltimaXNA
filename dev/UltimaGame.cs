@@ -27,6 +27,7 @@ using UltimaXNA.Ultima.Audio;
 using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.Resources.Fonts;
 using UltimaXNA.Core.Resources;
+using UltimaXNA.Ultima.IO;
 #endregion
 
 namespace UltimaXNA
@@ -139,7 +140,6 @@ namespace UltimaXNA
             // Create all the services we need.
             ServiceRegistry.Register<SpriteBatch3D>(new SpriteBatch3D(this));
             ServiceRegistry.Register<SpriteBatchUI>(new SpriteBatchUI(this));
-            ServiceRegistry.Register<IResourceProvider>(new UltimaResourceProvider(this));
             ServiceRegistry.Register<AudioService>(new AudioService());
             Network = ServiceRegistry.Register<INetworkClient>(new NetworkClient());
             Input = ServiceRegistry.Register<InputManager>(new InputManager(Window.Handle));
@@ -150,12 +150,11 @@ namespace UltimaXNA
             if (FileManager.IsUODataPresent)
             {
                 // Initialize and load data
-                AnimDataResouce.Initialize();
-                // ArtData.Initialize(GraphicsDevice);
-                // FontsResource.Initialize(GraphicsDevice);
-                // GumpMulResource.Initialize(GraphicsDevice);
+                IResourceProvider provider = new ResourceProvider(this);
+                provider.RegisterResource<EffectData>(new EffectDataResource());
+                ServiceRegistry.Register<IResourceProvider>(provider);
+
                 HueData.Initialize(GraphicsDevice);
-                TexmapData.Initialize(GraphicsDevice);
                 StringData.LoadStringList("enu");
                 SkillsData.Initialize();
                 GraphicsDevice.Textures[1] = HueData.HueTexture0;

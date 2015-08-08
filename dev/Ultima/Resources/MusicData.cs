@@ -12,6 +12,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using UltimaXNA.Ultima.IO;
 
 namespace UltimaXNA.Ultima.Resources
 {

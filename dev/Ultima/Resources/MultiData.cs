@@ -13,6 +13,7 @@ using System.Drawing;
 using System.Linq;
 using UltimaXNA.Core.Diagnostics;
 using UltimaXNA.Core.IO;
+using UltimaXNA.Ultima.IO;
 #endregion
 
 namespace UltimaXNA.Ultima.Resources
