@@ -143,7 +143,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         private const string c_Format = 
             "<right><a href='add={4}'><gumpimg src='0x9CF'/></a><span width='4'/><a href='remove={4}'><gumpimg src='0x9CE'/></a></right>" +
-            "<span width='54'/><span color='#400'>{0}<br/><itemimg src='{2}' width='52' height='44' style='top: -18;'/>{1}gp, {3} available.</span><br/>";
+            "<itemimg src='{2}' style='position: absolute; top: 0; left: 0;'/><span color='#400'>{0}<br/>{1}gp, {3} available.</span>";
 
         public override void ActivateByHREF(string href)
         {

@@ -405,8 +405,8 @@ namespace UltimaXNA.Core.UI
                 IFont font = atoms[i].Style.Font;
                 if (lineheight < font.Height)
                     lineheight = font.Height;
-                if (lineheight < atoms[i].Height + atoms[i].Style.ElementTop)
-                    lineheight = atoms[i].Height + atoms[i].Style.ElementTop;
+                if (lineheight < atoms[i].Height + atoms[i].Style.ElementTopOffset)
+                    lineheight = atoms[i].Height + atoms[i].Style.ElementTopOffset;
 
                 if (draw)
                 {
@@ -422,7 +422,7 @@ namespace UltimaXNA.Core.UI
                     else if (atoms[i] is ImageAtom)
                     {
                         ImageAtom atom = (atoms[i] as ImageAtom);
-                        atom.AssociatedImage.Area = new Rectangle(x, y + ((lineheight - atom.Height + atoms[i].Style.ElementTop) / 2), atom.Width, atom.Height);
+                        atom.AssociatedImage.Area = new Rectangle(x, y + ((lineheight - atom.Height + atoms[i].Style.ElementTopOffset) / 2), atom.Width, atom.Height);
                     }
                 }
                 x += atoms[i].Width;
@@ -545,9 +545,9 @@ namespace UltimaXNA.Core.UI
                 if (styleWidth < 0)
                     styleWidth = 0;
 
-                if (lineHeight < reader.Atoms[i].Height + reader.Atoms[i].Style.ElementTop)
+                if (lineHeight < reader.Atoms[i].Height + reader.Atoms[i].Style.ElementTopOffset)
                 {
-                    lineHeight = reader.Atoms[i].Height + reader.Atoms[i].Style.ElementTop;
+                    lineHeight = reader.Atoms[i].Height + reader.Atoms[i].Style.ElementTopOffset;
                 }
 
                 if (reader.Atoms[i].IsThisAtomALineBreak)

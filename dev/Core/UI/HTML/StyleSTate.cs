@@ -50,15 +50,18 @@ namespace UltimaXNA.Core.UI.HTML
         public bool IsOutlined = false;
 
         public IFont Font; // default value set in manager ctor.
-        public Alignments Alignment = Alignments.Default;
         public Color Color = Color.White;
+
+        public Alignments Alignment = Alignments.Default;
+        public PositionTypes PositionType = PositionTypes.Static;
 
         public HREFAttributes HREF = null;
         public bool IsHREF { get { return HREF != null; } }
 
         public int ElementWidth = 0;
         public int ElementHeight = 0;
-        public int ElementTop = 0;
+        public int ElementTopOffset = 0;
+        public int ElementLeftOffset = 0;
 
         public int ImgSrc = -1;
         public int ImgSrcOver = -1;
@@ -81,7 +84,8 @@ namespace UltimaXNA.Core.UI.HTML
             HREF = parent.HREF;
             ElementWidth = parent.ElementWidth;
             ElementHeight = parent.ElementHeight;
-            ElementTop = parent.ElementTop;
+            ElementTopOffset = parent.ElementTopOffset;
+            ElementLeftOffset = parent.ElementLeftOffset;
             ImgSrc = parent.ImgSrc;
             ImgSrcOver = parent.ImgSrcOver;
             ImgSrcDown = parent.ImgSrcDown;

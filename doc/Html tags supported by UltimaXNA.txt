@@ -1,3 +1,9 @@
+UltimaXNA includes a VERY limited HTML parser and layout engine. This parser
+does not conform to standard HTML practices, but rather implements the subset
+of HTML implemented by the legacy UO client. In addition, I've added some tags
+to help prettify text and layout, but these are VERY basic. For better or worse,
+the parser will ignore almost anything that it doesn't understand.
+
 HtmlGumpling controls support a very limited subset of Html tags:
 
 <b>
@@ -36,6 +42,8 @@ note that ASCII fonts do not support coloring with these attributes.
 
 In addition, a very limited subset of CSS is supported using the "style=''"
 attribute:
-    font-family: ascii[0-9] / uni[0-2]
-    text-decoration: none / underline
-    top: integer, negative or positive.
+    "font-family: ascii[0-9] / uni[0-2];"
+    "text-decoration: none / underline;"
+    "top/left: 5;" sets the initial position of this element. Kinda like margin.
+    "position: absolute;" takes the element out of the layout engine.
+    

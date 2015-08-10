@@ -368,12 +368,38 @@ namespace UltimaXNA.Core.UI.HTML
                         }
                     }
                     break;
+                case "position":
+                    {
+                        if (value == "static")
+                        {
+                            Style.PositionType = PositionTypes.Static;
+                        }
+                        else if (value == "absolute")
+                        {
+                            Style.PositionType = PositionTypes.Absolute;
+                        }
+                        else
+                        {
+                            // other possibilities? fixed|relative|initial|inherit;
+                            Tracer.Warn("Unknown position parameter:{0}", value);
+                        }
+                    }
+                    break;
                 case "top":
                     {
                         int topValue = 0;
                         if (int.TryParse(value, out topValue))
                         {
-                            Style.ElementTop = topValue;
+                            Style.ElementTopOffset = topValue;
+                        }
+                    }
+                    break;
+                case "left":
+                    {
+                        int leftValue = 0;
+                        if (int.TryParse(value, out leftValue))
+                        {
+                            Style.ElementLeftOffset = leftValue;
                         }
                     }
                     break;
