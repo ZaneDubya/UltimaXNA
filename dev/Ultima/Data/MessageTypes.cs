@@ -16,6 +16,7 @@ namespace UltimaXNA.Ultima.Data
         Regular = 0x00,
         System = 0x01,
         Emote = 0x02,
+        SpeechUnknown = 0x03,
         Label = 0x06,
         Focus = 0x07,
         Whisper = 0x08,

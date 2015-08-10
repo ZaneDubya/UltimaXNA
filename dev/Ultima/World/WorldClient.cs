@@ -749,6 +749,7 @@ namespace UltimaXNA.Ultima.World
             switch (msgType)
             {
                 case MessageTypes.Regular:
+                case MessageTypes.SpeechUnknown:
                     overhead = WorldModel.Entities.AddOverhead(msgType, serial, "<outline>" + text, font, hue);
                     if (overhead != null)
                     {
@@ -790,7 +791,7 @@ namespace UltimaXNA.Ultima.World
                     m_World.Interaction.ChatMessage("[COMMAND] " + text, font, hue);
                     break;
                 default:
-                    m_World.Interaction.ChatMessage("[[ERROR UNKNOWN COMMAND]] " + msgType.ToString());
+                    Tracer.Warn("Speech packet with unknown msgType parameter received. MsgType={0} Msg={1}", msgType, text);
                     break;
             }
         }
