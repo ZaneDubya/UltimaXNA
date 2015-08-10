@@ -273,6 +273,7 @@
     <Compile Include="Ultima\Network\Client\SellItemsPacket.cs" />
     <Compile Include="Ultima\Network\Server\ServerPingPacket.cs" />
     <Compile Include="Ultima\UI\Controls\AGumpPic.cs" />
+    <Compile Include="Ultima\UI\Controls\ColorPickerBox.cs" />
     <Compile Include="Ultima\UI\Controls\EquipmentSlot.cs" />
     <Compile Include="Ultima\UI\Controls\GumpPicWithWidth.cs" />
     <Compile Include="Ultima\UI\WorldGumps\ContextMenuGump.cs" />
@@ -429,7 +430,7 @@
     <Compile Include="Ultima\Network\Server\SendSkillsPacket.cs" />
     <Compile Include="Ultima\Network\Server\TimePacket.cs" />
     <Compile Include="Ultima\Network\Incomplete\TipNoticeWindowPacket.cs" />
-    <Compile Include="Ultima\Network\Incomplete\VendorSellListPacket.cs" />
+    <Compile Include="Ultima\Network\Server\VendorSellListPacket.cs" />
     <Compile Include="Core\Network\Packets\RevcPacket.cs" />
     <Compile Include="Core\Network\Packets\SendPacket.cs" />
     <Compile Include="Core\Network\Packets\SendRecvPacket.cs" />

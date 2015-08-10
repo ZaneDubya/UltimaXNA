@@ -69,7 +69,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             AddControl(new Button(this, 610, 439, 5540, 5542, ButtonTypes.Activate, 0, (int)LoginGumpButtons.LoginButton));
             ((Button)LastControl).GumpOverID = 5541;
             // Version information
-            AddControl(new HtmlGumpling(this, 183, 440, 300, 20, 0, 0, "<medium><outline><font color='#CCDDCC'>" + Utility.VersionString));
+            AddControl(new HtmlGumpling(this, 220, 440, 400, 20, 0, 0, "<medium><outline><font color='#CCDDCC'>" + Utility.VersionString));
 
             IsUncloseableWithRMB = true;
         }

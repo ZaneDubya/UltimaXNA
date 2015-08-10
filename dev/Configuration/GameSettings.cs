@@ -22,6 +22,13 @@ namespace UltimaXNA.Configuration
         private string m_LastCharacterName;
         private bool m_IsVSyncEnabled;
         private bool m_IsFixedTimeStep;
+        private int m_SpeechColor;
+        private int m_EmoteColor;
+        private int m_PartyMsgColor;
+        private int m_GuildMsgColor;
+        private bool m_IgnoreGuildMsg;
+        private int m_AllianceMsgColor;
+        private bool m_IgnoreAllianceMsg;
 
         public GameSettings()
         {
@@ -53,6 +60,48 @@ namespace UltimaXNA.Configuration
         {
             get { return m_AutoSelectLastCharacter; }
             set { SetProperty(ref m_AutoSelectLastCharacter, value); }
+        }
+
+        public int SpeechColor
+        {
+            get { return m_SpeechColor; }
+            set { SetProperty(ref m_SpeechColor, value); }
+        }
+
+        public int EmoteColor
+        {
+            get { return m_EmoteColor; }
+            set { SetProperty(ref m_EmoteColor, value); }
+        }
+
+        public int PartyMsgColor
+        {
+            get { return m_PartyMsgColor; }
+            set { SetProperty(ref m_PartyMsgColor, value); }
+        }
+
+        public int GuildMsgColor
+        {
+            get { return m_GuildMsgColor; }
+            set { SetProperty(ref m_GuildMsgColor, value); }
+        }
+
+        public bool IgnoreGuildMsg
+        {
+            get { return m_IgnoreGuildMsg; }
+            set { SetProperty(ref m_IgnoreGuildMsg, value); }
+        }
+
+        public int AllianceMsgColor
+        {
+            get { return m_AllianceMsgColor; }
+            set { SetProperty(ref m_AllianceMsgColor, value); }
+        }
+
+        public bool IgnoreAllianceMsg
+        {
+            get { return m_IgnoreAllianceMsg; }
+            set { SetProperty(ref m_IgnoreAllianceMsg, value); }
         }
     }
 }
