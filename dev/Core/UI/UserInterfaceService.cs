@@ -167,6 +167,11 @@ namespace UltimaXNA.Core.UI
         /// <returns>If the control was added to the list of active controls, then returns the added control. If the control was not added, returns null.</returns>
         public AControl AddControl(AControl control, int x, int y)
         {
+            if (control.IsDisposed)
+            {
+                return null;
+            }
+
             control.Position = new Point(x, y);
             m_Controls.Insert(0, control);
             return control;

@@ -39,6 +39,13 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         public VendorBuyGump(AEntity vendorBackpack, VendorBuyListPacket packet)
             : base(0, 0)
         {
+            // sanity checking: don't show buy gumps for empty containers.
+            if (!(vendorBackpack is Container) || ((vendorBackpack as Container).Contents.Count <= 0) || (packet.Items.Count <= 0))
+            {
+                Dispose();
+                return;
+            }
+
             IsMoveable = true;
             // note: original gumplings start at index 0x0870.
             AddControl(m_Background = new ExpandableScroll(this, 0, 0, 360, false));
