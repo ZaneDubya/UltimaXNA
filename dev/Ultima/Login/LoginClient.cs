@@ -353,7 +353,7 @@ namespace UltimaXNA.Ultima.Login
             m_QueuedLoginConfirmPacket = (LoginConfirmPacket)packet;
             // set the player serial and create the player entity. Don't need to do anything with it yet.
             WorldModel.PlayerSerial = m_QueuedLoginConfirmPacket.Serial;
-            PlayerMobile player = WorldModel.Entities.GetObject<PlayerMobile>(m_QueuedLoginConfirmPacket.Serial, true);
+            Mobile player = WorldModel.Entities.GetObject<Mobile>(m_QueuedLoginConfirmPacket.Serial, true);
             if (player == null)
                 Tracer.Critical("Could not create player object.");
             CheckIfOkayToLogin();
@@ -381,7 +381,7 @@ namespace UltimaXNA.Ultima.Login
                     {
                         ((WorldModel)m_Engine.ActiveModel).LoginToWorld();
                         LoginConfirmPacket packet = m_QueuedLoginConfirmPacket;
-                        PlayerMobile player = WorldModel.Entities.GetObject<PlayerMobile>(m_QueuedLoginConfirmPacket.Serial, true);
+                        Mobile player = WorldModel.Entities.GetObject<Mobile>(m_QueuedLoginConfirmPacket.Serial, true);
                         if (player == null)
                             Tracer.Critical("No player object ready in CheckIfOkayToLogin().");
                         player.Move_Instant(packet.X, packet.Y, packet.Z, packet.Direction);

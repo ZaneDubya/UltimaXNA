@@ -67,7 +67,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
         {
             get
             {
-                if (Parent is PlayerMobile)
+                if (Parent.IsClientEntity)
                     return 100;
                 else
                     return 250;

@@ -21,7 +21,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 {
     class StatusGump : Gump
     {
-        private PlayerMobile m_Mobile = (PlayerMobile)WorldModel.Entities.GetPlayerObject();
+        private Mobile m_Mobile = WorldModel.Entities.GetPlayerEntity();
         double m_RefreshTime = 0d;
 
         private TextLabelAscii[] m_Labels = new TextLabelAscii[(int)MobileStats.Max];

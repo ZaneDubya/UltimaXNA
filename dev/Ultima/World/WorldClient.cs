@@ -525,7 +525,7 @@ namespace UltimaXNA.Ultima.World
             mobile.Flags = p.Flags;
             mobile.Notoriety = p.Notoriety;
 
-            if (mobile is PlayerMobile)
+            if (mobile.IsClientEntity)
                 return;
 
             if (mobile.Position.IsNullPosition)
@@ -560,7 +560,7 @@ namespace UltimaXNA.Ultima.World
         private void ReceiveMoveAck(IRecvPacket packet)
         {
             MoveAcknowledgePacket p = (MoveAcknowledgePacket)packet;
-            Mobile player = (Mobile)WorldModel.Entities.GetPlayerObject();
+            Mobile player = (Mobile)WorldModel.Entities.GetPlayerEntity();
             player.PlayerMobile_MoveEventAck(p.Sequence);
             player.Notoriety = p.Notoriety;
         }
@@ -568,7 +568,7 @@ namespace UltimaXNA.Ultima.World
         private void ReceiveMoveRej(IRecvPacket packet)
         {
             MovementRejectPacket p = (MovementRejectPacket)packet;
-            Mobile player = (Mobile)WorldModel.Entities.GetPlayerObject();
+            Mobile player = (Mobile)WorldModel.Entities.GetPlayerEntity();
             player.PlayerMobile_MoveEventRej(p.Sequence, p.X, p.Y, p.Z, p.Direction);
         }
 
@@ -632,7 +632,7 @@ namespace UltimaXNA.Ultima.World
         private void ReceiveWarMode(IRecvPacket packet)
         {
             WarModePacket p = (WarModePacket)packet;
-            ((Mobile)WorldModel.Entities.GetPlayerObject()).Flags.IsWarMode = p.WarMode;
+            ((Mobile)WorldModel.Entities.GetPlayerEntity()).Flags.IsWarMode = p.WarMode;
         }
 
         private void ReceiveUpdateMana(IRecvPacket packet)

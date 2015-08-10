@@ -64,7 +64,7 @@ namespace UltimaXNA.Ultima.World
 
         public override void Draw(double frameTime)
         {
-            AEntity player = WorldModel.Entities.GetPlayerObject();
+            AEntity player = WorldModel.Entities.GetPlayerEntity();
             Position3D center = player.Position;
             if ((player as Mobile).IsAlive)
             {

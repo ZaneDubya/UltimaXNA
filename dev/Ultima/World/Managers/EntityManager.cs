@@ -49,18 +49,18 @@ namespace UltimaXNA.Ultima.World.Managers
                     if (!entity.IsClientEntity)
                         entity.Dispose();
                 }
-                AEntity player = GetPlayerObject();
+                AEntity player = GetPlayerEntity();
                 m_Entities.Clear();
                 if (player != null)
                     m_Entities.Add(player.Serial, player);
             }
         }
 
-        public PlayerMobile GetPlayerObject()
+        public Mobile GetPlayerEntity()
         {
             // This could be cached to save time.
             if (m_Entities.ContainsKey(WorldModel.PlayerSerial))
-                return (PlayerMobile)m_Entities[WorldModel.PlayerSerial];
+                return (Mobile)m_Entities[WorldModel.PlayerSerial];
             else
                 return null;
         }

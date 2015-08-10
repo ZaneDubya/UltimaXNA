@@ -82,7 +82,7 @@ namespace UltimaXNA.Ultima.UI
             // Over the interface or not in world. Display a default cursor.
             int artworkIndex = 8305;
 
-            if (WorldModel.IsInWorld && WorldModel.Entities.GetPlayerObject().Flags.IsWarMode)
+            if (WorldModel.IsInWorld && WorldModel.Entities.GetPlayerEntity().Flags.IsWarMode)
             {
                 // if in warmode, show the red-hued cursor.
                 artworkIndex -= 23;

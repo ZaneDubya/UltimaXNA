@@ -128,7 +128,7 @@ namespace UltimaXNA.Ultima
                     Entities.Reset(false);
                     if (m_Map != null)
                     {
-                        AEntity player = Entities.GetPlayerObject();
+                        AEntity player = Entities.GetPlayerEntity();
                         // save current player position
                         int x = player.X, y = player.Y, z = player.Z;
                         // place the player in null space (allows the map to be reloaded when we return to the same location in a different map).
@@ -144,7 +144,7 @@ namespace UltimaXNA.Ultima
                     }
                     else
                     {
-                        AEntity player = Entities.GetPlayerObject();
+                        AEntity player = Entities.GetPlayerEntity();
                         m_Map = new Map(value);
                         player.SetMap(m_Map);
                     }

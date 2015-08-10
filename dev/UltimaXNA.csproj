@@ -522,7 +522,6 @@
     <Compile Include="Ultima\World\Entities\Mobiles\MobileMovementCheck.cs" />
     <Compile Include="Ultima\World\Entities\Multis\Multi.cs" />
     <Compile Include="Ultima\World\Entities\Overhead.cs" />
-    <Compile Include="Ultima\World\Entities\Mobiles\PlayerMobile.cs" />
     <Compile Include="Ultima\World\Entities\PropertyList.cs" />
     <Compile Include="Ultima\Login\States\CharacterListState.cs" />
     <Compile Include="Ultima\Login\States\CreateCharacterState.cs" />

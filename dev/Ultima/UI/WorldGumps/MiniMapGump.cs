@@ -68,7 +68,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
 
         public override void Draw(SpriteBatchUI spriteBatch, Point position)
         {
-            AEntity player = WorldModel.Entities.GetPlayerObject();
+            AEntity player = WorldModel.Entities.GetPlayerEntity();
             float x = (float)Math.Round((player.Position.X % 256) + player.Position.X_offset) / 256f;
             float y = (float)Math.Round((player.Position.Y % 256) + player.Position.Y_offset) / 256f;
             Vector3 playerPosition = new Vector3(x - y, x + y, 0f);

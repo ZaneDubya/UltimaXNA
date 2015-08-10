@@ -193,7 +193,7 @@ namespace UltimaXNA.Ultima.World.Input
                     }
 
                     // Tell the player to Move.
-                    Mobile m = (Mobile)WorldModel.Entities.GetPlayerObject();
+                    Mobile m = (Mobile)WorldModel.Entities.GetPlayerEntity();
                     m.PlayerMobile_Move(moveDirection);
                 }
                 else
@@ -201,7 +201,7 @@ namespace UltimaXNA.Ultima.World.Input
                     // Get the move direction.
                     Direction facing = mouseDirection;
 
-                    Mobile m = (Mobile)WorldModel.Entities.GetPlayerObject();
+                    Mobile m = (Mobile)WorldModel.Entities.GetPlayerEntity();
                     if(m.Facing != facing)
                     {
                         // Tell the player entity to change facing to this direction.
@@ -215,7 +215,7 @@ namespace UltimaXNA.Ultima.World.Input
             {
                 m_TimeSinceMovementButtonPressed = 0d;
                 // Tell the player to stop moving.
-                Mobile m = (Mobile)WorldModel.Entities.GetPlayerObject();
+                Mobile m = (Mobile)WorldModel.Entities.GetPlayerEntity();
                 m.PlayerMobile_Move(Direction.Nothing);
             }
         }
@@ -242,7 +242,7 @@ namespace UltimaXNA.Ultima.World.Input
                 }
             }
 
-            Mobile m = (Mobile)WorldModel.Entities.GetPlayerObject();
+            Mobile m = (Mobile)WorldModel.Entities.GetPlayerEntity();
             bool up = m_Input.IsKeyDown(WinKeys.Up);
             bool left = m_Input.IsKeyDown(WinKeys.Left);
             bool right = m_Input.IsKeyDown(WinKeys.Right);
@@ -392,7 +392,7 @@ namespace UltimaXNA.Ultima.World.Input
                     World.Interaction.DoubleClick(overEntity);
                     World.Interaction.LastTarget = overEntity.Serial;
 
-                    if (WorldModel.Entities.GetPlayerObject().Flags.IsWarMode)
+                    if (WorldModel.Entities.GetPlayerEntity().Flags.IsWarMode)
                     {
                         m_Network.Send(new AttackRequestPacket(overEntity.Serial));
                     }
@@ -460,7 +460,7 @@ namespace UltimaXNA.Ultima.World.Input
             // Warmode toggle:
             if(m_Input.HandleKeyboardEvent(KeyboardEventType.Down, WinKeys.Tab, false, false, false))
             {
-                m_Network.Send(new RequestWarModePacket(!WorldModel.Entities.GetPlayerObject().Flags.IsWarMode));
+                m_Network.Send(new RequestWarModePacket(!WorldModel.Entities.GetPlayerEntity().Flags.IsWarMode));
             }
 
             // movement with arrow keys if the player is not moving and the mouse isn't moving the player.

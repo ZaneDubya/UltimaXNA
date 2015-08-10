@@ -79,7 +79,7 @@ namespace UltimaXNA.Ultima.World
 
         public void ToggleWarMode() // used by paperdollgump.
         {
-            m_Network.Send(new RequestWarModePacket(!((Mobile)WorldModel.Entities.GetPlayerObject()).Flags.IsWarMode));
+            m_Network.Send(new RequestWarModePacket(!((Mobile)WorldModel.Entities.GetPlayerEntity()).Flags.IsWarMode));
         }
 
         public void UseSkill(int index) // used by WorldInteraction

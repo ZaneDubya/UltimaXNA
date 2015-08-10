@@ -81,7 +81,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                         m_UserInterface.RemoveControl<MiniMapGump>();
                     break;
                 case Buttons.Paperdoll:
-                    Mobile player = (Mobile)WorldModel.Entities.GetPlayerObject();
+                    Mobile player = (Mobile)WorldModel.Entities.GetPlayerEntity();
                     if (m_UserInterface.GetControl<PaperDollGump>(player.Serial) == null)
                         m_Client.Send(new DoubleClickPacket(player.Serial | Serial.ProtectedAction)); // additional flag keeps us from being dismounted.
                     else
@@ -89,7 +89,7 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
                     break;
                 case Buttons.Inventory:
                     // opens the player's backpack.
-                    PlayerMobile mobile = (PlayerMobile)WorldModel.Entities.GetPlayerObject();
+                    Mobile mobile = WorldModel.Entities.GetPlayerEntity();
                     Container backpack = mobile.Backpack;
                     m_World.Interaction.DoubleClick(backpack);
                     break;
