@@ -26,6 +26,8 @@ HtmlGumpling controls support a very limited subset of Html tags:
 
 <right>
 
+<div>
+
 <a>
     supported attribute: href
 
@@ -33,9 +35,6 @@ HtmlGumpling controls support a very limited subset of Html tags:
     supported attributes: src, hoversrc, activesrc, width, height
 
 <itemimg>
-    
-<span>
-    attributes: width, height
     
 All tags support the color, hovercolor, and activecolor attributes. However,
 note that ASCII fonts do not support coloring with these attributes.
