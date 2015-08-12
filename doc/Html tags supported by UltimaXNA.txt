@@ -46,4 +46,8 @@ attribute:
     "text-decoration: none / underline;"
     "top/left: 5;" sets the initial position of this element. Kinda like margin.
     "position: absolute;" takes the element out of the layout engine.
-    
+
+Ideally, the HTML renderer, which is very limited at the moment, will lay out
+things in a new (but still limited) box model. In this model, there will be
+content tags and box tags. Box tags will effect layout; content tags will be
+moved inside the boxes.
