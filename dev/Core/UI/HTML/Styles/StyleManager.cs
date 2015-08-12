@@ -330,6 +330,7 @@ namespace UltimaXNA.Core.UI.HTML.Styles
 
         private void ParseOneStyle(string key, string value)
         {
+            value = value.Trim();
             switch (key.ToLower().Trim())
             {
                 case "font-family":
@@ -369,15 +370,15 @@ namespace UltimaXNA.Core.UI.HTML.Styles
                         }
                     }
                     break;
-                case "position":
+                case "layer":
                     {
-                        if (value == "static")
+                        if (value == "default")
                         {
-                            Style.PositionType = PositionTypes.Static;
+                            Style.Layer = Layers.Default;
                         }
-                        else if (value == "absolute")
+                        else if (value == "background")
                         {
-                            Style.PositionType = PositionTypes.Absolute;
+                            Style.Layer = Layers.Background;
                         }
                         else
                         {

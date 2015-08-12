@@ -54,7 +54,7 @@ namespace UltimaXNA.Core.UI.HTML.Styles
         public Color Color = Color.White;
 
         public Alignments Alignment = Alignments.Default;
-        public PositionTypes PositionType = PositionTypes.Static;
+        public Layers Layer = Layers.Default;
 
         public HREFAttributes HREF = null;
         public bool IsHREF { get { return HREF != null; } }

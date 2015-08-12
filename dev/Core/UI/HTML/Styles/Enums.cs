@@ -38,15 +38,15 @@ namespace UltimaXNA.Core.UI.HTML.Styles
         AsciiMedium = 12, // ascii 9*/
     }
 
-    public enum PositionTypes
+    public enum Layers
     {
         /// <summary>
         /// Default value. Elements render in order, as they appear in the document flow
         /// </summary>
-        Static = 0,
+        Default = 0,
         /// <summary>
-        /// The element is positioned relative to its first positioned (not static) ancestor element. Does not effect document flow. Does effect document width/height.
+        /// The element is positioned relative to its first positioned ancestor element. Does not effect document flow. Does effect document width/height.
         /// </summary>
-        Absolute = 1
+        Background = 1
     }
 }
