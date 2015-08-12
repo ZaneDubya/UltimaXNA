@@ -11,9 +11,9 @@
 
 using UltimaXNA.Core.UI.HTML.Styles;
 
-namespace UltimaXNA.Core.UI.HTML.Atoms
+namespace UltimaXNA.Core.UI.HTML.Elements
 {
-    public class ImageAtom : AAtom
+    public class ImageElement : AElement
     {
         public HtmlImage AssociatedImage
         {
@@ -61,7 +61,7 @@ namespace UltimaXNA.Core.UI.HTML.Atoms
             private set;
         }
 
-        public ImageAtom(StyleState style, ImageTypes imageType = ImageTypes.UI)
+        public ImageElement(StyleState style, ImageTypes imageType = ImageTypes.UI)
             : base(style)
         {
             ImageType = imageType;

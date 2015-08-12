@@ -11,9 +11,9 @@
 
 using UltimaXNA.Core.UI.HTML.Styles;
 
-namespace UltimaXNA.Core.UI.HTML.Atoms
+namespace UltimaXNA.Core.UI.HTML.Elements
 {
-    public class CharacterAtom : AAtom
+    public class CharacterElement : AElement
     {
         public override int Width
         {
@@ -41,7 +41,7 @@ namespace UltimaXNA.Core.UI.HTML.Atoms
 
         public char Character = '\0';
 
-        public CharacterAtom(StyleState style, char c)
+        public CharacterElement(StyleState style, char c)
             : base(style)
         {
             Character = c;
@@ -49,6 +49,8 @@ namespace UltimaXNA.Core.UI.HTML.Atoms
 
         public override string ToString()
         {
+            if (IsThisAtomALineBreak)
+                return "\n";
             return Character.ToString();
         }
     }

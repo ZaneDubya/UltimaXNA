@@ -3,17 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
-using UltimaXNA.Core.UI.HTML.Atoms;
+using UltimaXNA.Core.UI.HTML.Elements;
 using UltimaXNA.Core.UI.HTML.Styles;
 
-namespace UltimaXNA.Core.UI.HTML
+namespace UltimaXNA.Core.UI.HTML.Elements
 {
     /// <summary>
     /// Blocks fit their content. They can be assigned width, height, and alignment.
     /// </summary>
-    class HtmlBlock : AAtom
+    class BlockElement : AElement
     {
-        public List<AAtom> Contents = new List<AAtom>();
+        public List<AElement> Contents = new List<AElement>();
+        public BlockElement Parent;
+
+        public string Tag;
 
         private Rectangle m_Area;
 
@@ -49,15 +52,22 @@ namespace UltimaXNA.Core.UI.HTML
 
         public Alignments Alignment = Alignments.Default;
 
-        public HtmlBlock(StyleState style)
+        public BlockElement(string tag, StyleState style)
             : base(style)
         {
-
+            Tag = tag;
         }
 
-        public void AddAtom(AAtom atom)
+        public void AddAtom(AElement atom)
         {
             Contents.Add(atom);
+            if (atom is BlockElement)
+                (atom as BlockElement).Parent = this;
+        }
+
+        public override string ToString()
+        {
+            return Tag;
         }
     }
 }

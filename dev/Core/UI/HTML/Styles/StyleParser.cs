@@ -15,7 +15,7 @@ using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.UI.HTML.Parsing;
 using UltimaXNA.Core.Resources;
-using UltimaXNA.Core.UI.HTML.Atoms;
+using UltimaXNA.Core.UI.HTML.Elements;
 #endregion
 
 namespace UltimaXNA.Core.UI.HTML.Styles
@@ -38,7 +38,7 @@ namespace UltimaXNA.Core.UI.HTML.Styles
             RecalculateStyle();
         }
 
-        public void ParseTag(HTMLchunk chunk, AAtom atom)
+        public void ParseTag(HTMLchunk chunk, AElement atom)
         {
             if (!chunk.bClosure || chunk.bEndClosure)
             {
@@ -100,7 +100,7 @@ namespace UltimaXNA.Core.UI.HTML.Styles
             }
         }
 
-        public void InterpretHREF(HTMLchunk chunk, AAtom atom)
+        public void InterpretHREF(HTMLchunk chunk, AElement atom)
         {
             if (chunk.bEndClosure)
             {
@@ -129,7 +129,7 @@ namespace UltimaXNA.Core.UI.HTML.Styles
             }
         }
 
-        private void ParseTag(OpenTag tag, AAtom atom = null)
+        private void ParseTag(OpenTag tag, AElement atom = null)
         {
             switch (tag.sTag)
             {
@@ -156,16 +156,16 @@ namespace UltimaXNA.Core.UI.HTML.Styles
                     Style.Font = m_Provider.GetUnicodeFont((int)Fonts.UnicodeSmall);
                     break;
                 case "left":
-                    if (atom != null && atom is HtmlBlock)
-                        (atom as HtmlBlock).Alignment = Alignments.Left;
+                    if (atom != null && atom is BlockElement)
+                        (atom as BlockElement).Alignment = Alignments.Left;
                     break;
                 case "center":
-                    if (atom != null && atom is HtmlBlock)
-                        (atom as HtmlBlock).Alignment = Alignments.Center;
+                    if (atom != null && atom is BlockElement)
+                        (atom as BlockElement).Alignment = Alignments.Center;
                     break;
                 case "right":
-                    if (atom != null && atom is HtmlBlock)
-                        (atom as HtmlBlock).Alignment = Alignments.Right;
+                    if (atom != null && atom is BlockElement)
+                        (atom as BlockElement).Alignment = Alignments.Right;
                     break;
             }
 
@@ -241,14 +241,14 @@ namespace UltimaXNA.Core.UI.HTML.Styles
                     case "src":
                     case "hoversrc":
                     case "activesrc":
-                        if (atom is ImageAtom)
+                        if (atom is ImageElement)
                         {
                             if (key == "src")
-                                (atom as ImageAtom).ImgSrc = int.Parse(value);
+                                (atom as ImageElement).ImgSrc = int.Parse(value);
                             else if (key == "hoversrc")
-                                (atom as ImageAtom).ImgSrcOver = int.Parse(value);
+                                (atom as ImageElement).ImgSrcOver = int.Parse(value);
                             else if (key == "activesrc")
-                                (atom as ImageAtom).ImgSrcDown = int.Parse(value);
+                                (atom as ImageElement).ImgSrcDown = int.Parse(value);
                             break;
                         }
                         else
@@ -258,7 +258,7 @@ namespace UltimaXNA.Core.UI.HTML.Styles
                         break;
                     case "width":
                         {
-                            if (atom is ImageAtom || atom is SpanAtom || atom is HtmlBlock)
+                            if (atom is ImageElement || atom is BlockElement)
                             {
                                 atom.Width = int.Parse(value);
                             }
@@ -270,7 +270,7 @@ namespace UltimaXNA.Core.UI.HTML.Styles
                         break;
                     case "height":
                         {
-                            if (atom is ImageAtom || atom is SpanAtom || atom is HtmlBlock)
+                            if (atom is ImageElement || atom is BlockElement)
                             {
                                 atom.Height = int.Parse(value);
                             }

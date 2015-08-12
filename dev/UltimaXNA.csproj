@@ -199,7 +199,7 @@
     <Compile Include="Core\Resources\IResource.cs" />
     <Compile Include="Core\UI\ControlMetaData.cs" />
     <Compile Include="Core\UI\HTML\HtmlImage.cs" />
-    <Compile Include="Core\UI\HTML\HtmlBlock.cs" />
+    <Compile Include="Core\UI\HTML\Elements\BlockElement.cs" />
     <Compile Include="Core\UI\HTML\HtmlDocument.cs" />
     <Compile Include="Core\UI\HTML\HtmlLink.cs" />
     <Compile Include="Core\UI\HTML\Styles\OpenTag.cs" />
@@ -333,10 +333,9 @@
     <Compile Include="Ultima\UI\Controls\WorldViewport.cs" />
     <Compile Include="Core\UI\UILayer.cs" />
     <Compile Include="Ultima\UI\Tooltip.cs" />
-    <Compile Include="Core\UI\HTML\Atoms\AAtom.cs" />
-    <Compile Include="Core\UI\HTML\Atoms\CharacterAtom.cs" />
-    <Compile Include="Core\UI\HTML\Atoms\ImageAtom.cs" />
-    <Compile Include="Core\UI\HTML\Atoms\SpanAtom.cs" />
+    <Compile Include="Core\UI\HTML\Elements\AElement.cs" />
+    <Compile Include="Core\UI\HTML\Elements\CharacterElement.cs" />
+    <Compile Include="Core\UI\HTML\Elements\ImageElement.cs" />
     <Compile Include="Core\UI\HTML\EscapeCharacters.cs" />
     <Compile Include="Core\UI\HTML\Parsing\DynaString.cs" />
     <Compile Include="Core\UI\HTML\Parsing\FastHash.cs" />
@@ -508,7 +507,6 @@
     <Compile Include="Core\UI\HTML\HtmlLinkList.cs" />
     <Compile Include="Core\UI\HTML\Styles\Enums.cs" />
     <Compile Include="Core\UI\HTML\HtmlImageList.cs" />
-    <Compile Include="Core\UI\HTML\Atoms\Atomizer.cs" />
     <Compile Include="Core\Diagnostics\Metrics.cs" />
     <Compile Include="Ultima\Resources\GumpMulResource.cs" />
     <Compile Include="Ultima\Resources\MobtypeData.cs" />

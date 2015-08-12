@@ -9,13 +9,13 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Core.UI.HTML.Atoms;
+using UltimaXNA.Core.UI.HTML.Elements;
 using UltimaXNA.Core.UI.HTML.Styles;
 #endregion
 
-namespace UltimaXNA.Core.UI.HTML.Atoms
+namespace UltimaXNA.Core.UI.HTML.Elements
 {
-    public abstract class AAtom
+    public abstract class AElement
     {
         public abstract int Width { get; set; }
         public abstract int Height { get; set; }
@@ -24,9 +24,9 @@ namespace UltimaXNA.Core.UI.HTML.Atoms
         {
             get
             {
-                if (this is CharacterAtom)
+                if (this is CharacterElement)
                 {
-                    CharacterAtom atom = (CharacterAtom)this;
+                    CharacterElement atom = (CharacterElement)this;
                     if (atom.Character == ' ' || atom.Character == '\n')
                         return true;
                     else
@@ -40,9 +40,9 @@ namespace UltimaXNA.Core.UI.HTML.Atoms
         {
             get
             {
-                if (this is CharacterAtom)
+                if (this is CharacterElement)
                 {
-                    CharacterAtom atom = (CharacterAtom)this;
+                    CharacterElement atom = (CharacterElement)this;
                     if (atom.Character == ' ')
                         return true;
                 }
@@ -54,9 +54,9 @@ namespace UltimaXNA.Core.UI.HTML.Atoms
         {
             get
             {
-                if (this is CharacterAtom)
+                if (this is CharacterElement)
                 {
-                    CharacterAtom atom = (CharacterAtom)this;
+                    CharacterElement atom = (CharacterElement)this;
                     if (atom.Character == '\n')
                         return true;
                 }
@@ -70,7 +70,7 @@ namespace UltimaXNA.Core.UI.HTML.Atoms
         /// Creates a new atom.
         /// </summary>
         /// <param name="openTags">This atom will copy the styles from this parameter.</param>
-        public AAtom(StyleState style)
+        public AElement(StyleState style)
         {
             Style = new StyleState(style);
         }
