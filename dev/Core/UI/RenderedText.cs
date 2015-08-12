@@ -297,20 +297,23 @@ namespace UltimaXNA.Core.UI
 
                 if (Text != null)
                 {
-                    
-                    SpriteBatchUI sb = ServiceRegistry.GetService<SpriteBatchUI>();
-                    int width, height, ascender;
-
-                    List<AAtom> atoms = Atomizer.AtomizeHtml(Text);
-                    GetAllImages(atoms);
-                    Regions.Clear();
-
-                    GetTextDimensions(atoms, MaxWidth, out width, out height, out ascender);
-                    m_Texture = RenderTexture(sb.GraphicsDevice, atoms, width, height, ascender);
-
+                    DoLayoutAndRender(Text, MaxWidth);
                     m_MustRender = false;
                 }
             }
+        }
+
+        private void DoLayoutAndRender(string html, int maxWidth)
+        {
+            SpriteBatchUI sb = ServiceRegistry.GetService<SpriteBatchUI>();
+            int width, height, ascender;
+
+            List<AAtom> atoms = Atomizer.AtomizeHtml(Text);
+            GetAllImages(atoms);
+            Regions.Clear();
+
+            GetTextDimensions(atoms, MaxWidth, out width, out height, out ascender);
+            m_Texture = RenderTexture(sb.GraphicsDevice, atoms, width, height, ascender);
         }
 
         private void GetAllImages(List<AAtom> atoms)
