@@ -17,11 +17,11 @@ namespace UltimaXNA.Ultima.Data
         public int Dexterity;
         public int Intelligence;
 
-        public StatLocks(int s, int d, int i)
+        public StatLocks(int stren, int dexte, int intel)
         {
-            Strength = s;
-            Dexterity = d;
-            Intelligence = i;
+            Strength = stren;
+            Dexterity = dexte;
+            Intelligence = intel;
         }
     }
 }

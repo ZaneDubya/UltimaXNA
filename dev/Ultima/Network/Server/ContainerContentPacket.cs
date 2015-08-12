@@ -21,9 +21,9 @@ namespace UltimaXNA.Ultima.Network.Server
     {
         public static bool NextContainerContentsIsPre6017 = false;
 
-        private ContentItem[] m_items;
+        private ItemInContainer[] m_items;
 
-        public ContentItem[] Items
+        public ItemInContainer[] Items
         {
             get { return m_items; }
             set { m_items = value; }
@@ -33,7 +33,7 @@ namespace UltimaXNA.Ultima.Network.Server
             : base(0x3C, "Container ContentPacket")
         {
             int itemCount = reader.ReadUInt16();
-            List<ContentItem> items = new List<ContentItem>(itemCount);
+            List<ItemInContainer> items = new List<ItemInContainer>(itemCount);
 
             for (int i = 0; i < itemCount; i++)
             {
@@ -49,7 +49,7 @@ namespace UltimaXNA.Ultima.Network.Server
                 int iContainerSerial = reader.ReadInt32();
                 int iHue = reader.ReadUInt16();
 
-                items.Add(new ContentItem(serial, iItemID, iAmount, iX, iY, iGridLocation, iContainerSerial, iHue));
+                items.Add(new ItemInContainer(serial, iItemID, iAmount, iX, iY, iGridLocation, iContainerSerial, iHue));
             }
 
             m_items = items.ToArray();

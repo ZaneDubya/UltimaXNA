@@ -9,8 +9,9 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Core.Resources;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.LoginGumps
@@ -45,6 +46,9 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
         public CreateCharSkillsGump()
             : base(0, 0)
         {
+            // get the resource provider
+            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+
             // backdrop
             AddControl(new GumpPicTiled(this, 0, 0, 800, 600, 9274));
             AddControl(new GumpPic(this, 0, 0, 5500, 0));
@@ -54,12 +58,12 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             AddControl(new GumpPic(this, 214, 58, 1419, 0), 1);
             AddControl(new GumpPic(this, 300, 51, 5545, 0), 1);
             // title text
-            AddControl(new TextLabelAscii(this, 148, 132, 841, 2, StringData.Entry(3000326)), 1);
+            AddControl(new TextLabelAscii(this, 148, 132, 841, 2, provider.GetString(3000326)), 1);
 
             // strength, dexterity, intelligence
-            AddControl(new TextLabelAscii(this, 158, 170, 2430, 1, StringData.Entry(3000111)), 1);
-            AddControl(new TextLabelAscii(this, 158, 250, 2430, 1, StringData.Entry(3000112)), 1);
-            AddControl(new TextLabelAscii(this, 158, 330, 2430, 1, StringData.Entry(3000113)), 1);
+            AddControl(new TextLabelAscii(this, 158, 170, 2430, 1, provider.GetString(3000111)), 1);
+            AddControl(new TextLabelAscii(this, 158, 250, 2430, 1, provider.GetString(3000112)), 1);
+            AddControl(new TextLabelAscii(this, 158, 330, 2430, 1, provider.GetString(3000113)), 1);
             // sliders for attributes
             sliderAttributes = new HSliderBar[3];
             sliderAttributes[0] = new HSliderBar(this, 164, 196, 93, 10, 60, 60, HSliderBarStyle.MetalWidgetRecessedBar);
@@ -108,9 +112,9 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
                 AddControl(lblSkills[i], 1);
                 AddControl(listSkills[i], 1);
             }
-            AddControl(new TextLabelAscii(this, 158, 170, 2430, 1, StringData.Entry(3000111)), 1);
-            AddControl(new TextLabelAscii(this, 158, 250, 2430, 1, StringData.Entry(3000112)), 1);
-            AddControl(new TextLabelAscii(this, 158, 330, 2430, 1, StringData.Entry(3000113)), 1);
+            AddControl(new TextLabelAscii(this, 158, 170, 2430, 1, provider.GetString(3000111)), 1);
+            AddControl(new TextLabelAscii(this, 158, 250, 2430, 1, provider.GetString(3000112)), 1);
+            AddControl(new TextLabelAscii(this, 158, 330, 2430, 1, provider.GetString(3000113)), 1);
 
             // back button
             AddControl(new Button(this, 586, 435, 5537, 5539, ButtonTypes.Activate, 0, (int)Buttons.BackButton), 1);

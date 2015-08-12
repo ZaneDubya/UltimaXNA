@@ -8,15 +8,14 @@
  *
  ***************************************************************************/
 
-using System;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using UltimaXNA.Core.Graphics;
+using System;
 using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.IO;
-using UltimaXNA.Ultima.World.Entities.Mobiles;
+using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.World.Entities.Items;
+using UltimaXNA.Ultima.World.Entities.Mobiles;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
@@ -132,7 +131,8 @@ namespace UltimaXNA.Ultima.UI.Controls
         private void AttemptPickUp()
         {
             int w, h;
-            ArtData.GetStaticDimensions(m_Item.DisplayItemID, out w, out h);
+            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            provider.GetItemDimensions(m_Item.DisplayItemID, out w, out h);
             Point clickPoint = new Point(w / 2, h / 2);
             m_World.Interaction.PickupItem(m_Item, clickPoint);
         }

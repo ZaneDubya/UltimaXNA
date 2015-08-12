@@ -10,6 +10,7 @@
  ***************************************************************************/
 #region usings
 using System.Collections.Generic;
+using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI.HTML.Atoms;
 using UltimaXNA.Core.UI.HTML.Parsing;
 #endregion
@@ -27,7 +28,7 @@ namespace UltimaXNA.Core.UI.HTML
         // ================================================================================
         // Private services
         // ================================================================================
-        private IUIResourceProvider m_ResourceProvider;
+        private IResourceProvider m_ResourceProvider;
 
         // ================================================================================
         // Public properties
@@ -64,7 +65,7 @@ namespace UltimaXNA.Core.UI.HTML
         // ================================================================================
         public Reader(string inText)
         {
-            m_ResourceProvider = ServiceRegistry.GetService<IUIResourceProvider>();
+            m_ResourceProvider = ServiceRegistry.GetService<IResourceProvider>();
 
             Atoms = decodeText(inText);
         }

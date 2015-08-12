@@ -12,11 +12,12 @@
 using System;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Data;
-using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.Login.Accounts;
 using UltimaXNA.Ultima.Network.Client;
-using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.LoginGumps;
+using UltimaXNA.Ultima.UI;
+using UltimaXNA.Ultima.Resources;
+using UltimaXNA.Core.Resources;
 #endregion
 
 namespace UltimaXNA.Ultima.Login.States
@@ -140,6 +141,9 @@ namespace UltimaXNA.Ultima.Login.States
 
         bool validateAppearance()
         {
+            // get the resource provider
+            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+
             // save the values
             m_appearanceSet = true;
             m_name = m_CreateAppearanceGump.Name;
@@ -153,12 +157,12 @@ namespace UltimaXNA.Ultima.Login.States
             // if not, pop up an appropriate error message.
             if (m_name.Length < 2)
             {
-                MsgBoxGump.Show(StringData.Entry(1075458), MsgBoxTypes.OkOnly); // 1075458: Your character name is too short.
+                MsgBoxGump.Show(provider.GetString(1075458), MsgBoxTypes.OkOnly); // 1075458: Your character name is too short.
                 return false;
             }
             if (m_name[m_name.Length - 1] == '.')
             {
-                MsgBoxGump.Show(StringData.Entry(1075457), MsgBoxTypes.OkOnly); // 1075457: Your character name cannot end with a period('.').
+                MsgBoxGump.Show(provider.GetString(1075457), MsgBoxTypes.OkOnly); // 1075457: Your character name cannot end with a period('.').
                 return false;
             }
             return true;

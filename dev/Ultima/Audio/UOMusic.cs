@@ -9,11 +9,10 @@
  *
  ***************************************************************************/
 
-using UltimaXNA.Ultima.IO;
-using UltimaXNA.Core.Audio;
-using System;
 using Microsoft.Xna.Framework.Audio;
+using UltimaXNA.Core.Audio;
 using UltimaXNA.Core.Audio.MP3Sharp;
+using UltimaXNA.Ultima.IO;
 
 namespace UltimaXNA.Ultima.Audio
 {

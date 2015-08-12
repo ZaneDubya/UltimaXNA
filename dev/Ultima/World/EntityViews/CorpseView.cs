@@ -1,10 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Ultima.Data;
-using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.World.Entities.Items.Containers;
 using UltimaXNA.Ultima.World.Input;
 using UltimaXNA.Ultima.World.Maps;
+using UltimaXNA.Core.Resources;
 
 namespace UltimaXNA.Ultima.World.EntityViews
 {
@@ -26,7 +27,7 @@ namespace UltimaXNA.Ultima.World.EntityViews
             int facing = MirrorFacingForDraw(Entity.Facing);
             int frameIndex = (int)(Entity.Frame * BodyConverter.DeathAnimationFrameCount(Entity.Body));
 
-            AnimationFrame animationFrame = getFrame(Entity.Body, facing, frameIndex, Entity.Hue);
+            IAnimationFrame animationFrame = getFrame(Entity.Body, facing, frameIndex, Entity.Hue);
 
             DrawTexture = animationFrame.Texture;
             DrawArea = new Rectangle(0, 0, DrawTexture.Width, DrawTexture.Height);
@@ -35,14 +36,16 @@ namespace UltimaXNA.Ultima.World.EntityViews
             return base.Draw(spriteBatch, drawPosition, mouseOverList, map);
         }
 
-        private AnimationFrame getFrame(Body body, int facing, int frameIndex, int hue)
+        private IAnimationFrame getFrame(Body body, int facing, int frameIndex, int hue)
         {
-            AnimationFrame[] iFrames = AnimationData.GetAnimation(body, BodyConverter.DeathAnimationIndex(body), facing, hue);
-            if (iFrames == null)
+            // get the resource provider
+            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            IAnimationFrame[] frames = provider.GetAnimation(body, BodyConverter.DeathAnimationIndex(body), facing, hue);
+            if (frames == null)
                 return null;
-            if (iFrames[frameIndex].Texture == null)
+            if (frames[frameIndex].Texture == null)
                 return null;
-            return iFrames[frameIndex];
+            return frames[frameIndex];
         }
 
         private int MirrorFacingForDraw(Direction facing)

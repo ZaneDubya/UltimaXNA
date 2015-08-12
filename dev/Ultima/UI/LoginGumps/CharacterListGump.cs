@@ -10,9 +10,10 @@
  ***************************************************************************/
 #region usings
 using Microsoft.Xna.Framework;
-using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.Login.Accounts;
 using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Core.Resources;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.LoginGumps
@@ -43,6 +44,9 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
         public CharacterListGump()
             : base(0, 0)
         {
+            // get the resource provider
+            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+
             // backdrop
             AddControl(new GumpPicTiled(this, 0, 0, 800, 600, 9274));
             AddControl(new GumpPic(this, 0, 0, 5500, 0));
@@ -59,7 +63,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             ((Button)LastControl).GumpOverID = 5541;
             // center message window backdrop
             AddControl(new ResizePic(this, 160, 70, 2600, 408, 390), 1);
-            AddControl(new TextLabelAscii(this, 266, 112, 2016, 2, StringData.Entry(3000050)), 1);
+            AddControl(new TextLabelAscii(this, 266, 112, 2016, 2, provider.GetString(3000050)), 1);
             // display the character list.
             ReloadCharList();
             // delete button
@@ -72,7 +76,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             // Page 2 - logging in to server
             // center message window backdrop
             AddControl(new ResizePic(this, 116, 95, 2600, 408, 288), 2);
-            AddControl(new TextLabelAscii(this, 166, 143, 2016, 2, StringData.Entry(3000001)), 2);
+            AddControl(new TextLabelAscii(this, 166, 143, 2016, 2, provider.GetString(3000001)), 2);
 
             IsUncloseableWithRMB = true;
         }

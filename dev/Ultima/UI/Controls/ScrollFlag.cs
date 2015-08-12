@@ -12,8 +12,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.Resources;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.Controls
@@ -110,7 +111,8 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             base.OnInitialize();
 
-            m_GumpSlider = GumpData.GetGumpXNA(0x0828);
+            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            m_GumpSlider = provider.GetUITexture(0x0828);
             Size = new Point(m_GumpSlider.Width, m_GumpSlider.Height);
         }
 

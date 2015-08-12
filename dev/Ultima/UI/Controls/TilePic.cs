@@ -8,12 +8,12 @@
  *
  ***************************************************************************/
 
-using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.IO;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
@@ -64,7 +64,8 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             if (m_texture == null)
             {
-                m_texture = ArtData.GetStaticTexture(m_tileID);
+                IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                m_texture = provider.GetItemTexture(m_tileID);
                 Size = new Point(m_texture.Width, m_texture.Height);
             }
             base.Update(totalMS, frameMS);

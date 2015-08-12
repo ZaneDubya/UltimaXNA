@@ -11,8 +11,9 @@
 #region usings
 using Microsoft.Xna.Framework;
 using UltimaXNA.Ultima.Data;
-using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.UI.Controls;
+using UltimaXNA.Core.Resources;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.LoginGumps
@@ -93,6 +94,9 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
         public CreateCharAppearanceGump()
             : base(0, 0)
         {
+            // get the resource provider
+            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+
             // backdrop
             AddControl(new GumpPicTiled(this, 0, 0, 800, 600, 9274));
             AddControl(new GumpPic(this, 0, 0, 5500, 0));
@@ -114,28 +118,28 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             // this is the place where you would put the race selector.
             // if you do add it, move everything else in this left window down by 45 pixels
             // gender
-            AddControl(new TextLabelAscii(this, 100, 141, 2036, 9, StringData.Entry(3000120)), 1);
-            AddControl(m_Gender = new DropDownList(this, 97, 154, 122, new string[] { StringData.Entry(3000118), StringData.Entry(3000119) }, 2, 0, false));
+            AddControl(new TextLabelAscii(this, 100, 141, 2036, 9, provider.GetString(3000120)), 1);
+            AddControl(m_Gender = new DropDownList(this, 97, 154, 122, new string[] { provider.GetString(3000118), provider.GetString(3000119) }, 2, 0, false));
             // hair (male)
-            AddControl(new TextLabelAscii(this, 100, 186, 2036, 9, StringData.Entry(3000121)), 1);
+            AddControl(new TextLabelAscii(this, 100, 186, 2036, 9, provider.GetString(3000121)), 1);
             AddControl(m_HairMale = new DropDownList(this, 97, 199, 122, HairStyles.MaleHairNames, 6, 0, false), 1);
             // facial hair (male)
-            AddControl(new TextLabelAscii(this, 100, 231, 2036, 9, StringData.Entry(3000122)), 1);
+            AddControl(new TextLabelAscii(this, 100, 231, 2036, 9, provider.GetString(3000122)), 1);
             AddControl(m_FacialHairMale = new DropDownList(this, 97, 244, 122, HairStyles.FacialHair, 6, 0, false), 1);
             // hair (female)
-            AddControl(new TextLabelAscii(this, 100, 186, 2036, 9, StringData.Entry(3000121)), 2);
+            AddControl(new TextLabelAscii(this, 100, 186, 2036, 9, provider.GetString(3000121)), 2);
             AddControl(m_HairFemale = new DropDownList(this, 97, 199, 122, HairStyles.FemaleHairNames, 6, 0, false), 2);
 
             // right option window
             AddControl(new ResizePic(this, 475, 125, 3600, 151, 310));
             // skin tone
-            AddControl(new TextLabelAscii(this, 489, 141, 2036, 9, StringData.Entry(3000183)));
+            AddControl(new TextLabelAscii(this, 489, 141, 2036, 9, provider.GetString(3000183)));
             AddControl(m_SkinHue = new ColorPicker(this, new Rectangle(490, 154, 120, 24), new Rectangle(490, 140, 120, 280), 7, 8, Hues.SkinTones));
             // hair color
-            AddControl(new TextLabelAscii(this, 489, 186, 2036, 9, StringData.Entry(3000184)));
+            AddControl(new TextLabelAscii(this, 489, 186, 2036, 9, provider.GetString(3000184)));
             AddControl(m_HairHue = new ColorPicker(this, new Rectangle(490, 199, 120, 24), new Rectangle(490, 140, 120, 280), 8, 6, Hues.HairTones));
             // facial hair color (male)
-            AddControl(new TextLabelAscii(this, 489, 231, 2036, 9, StringData.Entry(3000185)), 1);
+            AddControl(new TextLabelAscii(this, 489, 231, 2036, 9, provider.GetString(3000185)), 1);
             AddControl(m_FacialHairHue = new ColorPicker(this, new Rectangle(490, 244, 120, 24), new Rectangle(490, 140, 120, 280), 8, 6, Hues.HairTones), 1);
 
             // back button

@@ -1,10 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
-using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Ultima.World.Input;
 using UltimaXNA.Ultima.World.Maps;
 using UltimaXNA.Ultima.World.WorldViews;
+using UltimaXNA.Core.Resources;
 
 namespace UltimaXNA.Ultima.World.EntityViews
 {
@@ -124,18 +125,23 @@ namespace UltimaXNA.Ultima.World.EntityViews
         // Code to get frames for drawing
         // ======================================================================
 
-        private AnimationFrame getFrame(int bodyID, int hue, int facing, int action, float frame)
+        private IAnimationFrame getFrame(int bodyID, int hue, int facing, int action, float frame, out int frameCount)
         {
             if (bodyID >= 500 && bodyID <= 505)
                 patchLightSourceAction(ref action, ref frame);
 
-            AnimationFrame[] iFrames = AnimationData.GetAnimation(bodyID, action, facing, hue);
-            if (iFrames == null)
+            frameCount = 0;
+
+            // get the resource provider
+            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            IAnimationFrame[] frames = provider.GetAnimation(bodyID, action, facing, hue);
+            if (frames == null)
                 return null;
+            frameCount = frames.Length;
             int iFrame = (int)frame; // frameFromSequence(frame, iFrames.Length);
-            if (iFrames[iFrame].Texture == null)
+            if (frames[iFrame].Texture == null)
                 return null;
-            return iFrames[iFrame];
+            return frames[iFrame];
         }
 
         private void patchLightSourceAction(ref int action, ref float frame)
@@ -210,8 +216,9 @@ namespace UltimaXNA.Ultima.World.EntityViews
             int animation = m_Animation.ActionIndex;
             float frame = m_Animation.AnimationFrame;
 
-            m_MobileLayers[m_LayerCount++] = new MobileViewLayer(bodyID, hue, getFrame(bodyID, hue, facing, animation, frame));
-            m_FrameCount = AnimationData.GetAnimationFrameCount(bodyID, animation, facing, hue);
+            int frameCount;
+            m_MobileLayers[m_LayerCount++] = new MobileViewLayer(bodyID, hue, getFrame(bodyID, hue, facing, animation, frame, out frameCount));
+            m_FrameCount = frameCount;
         }
 
         public void ClearLayers()
@@ -310,10 +317,10 @@ namespace UltimaXNA.Ultima.World.EntityViews
         struct MobileViewLayer
         {
             public int Hue;
-            public AnimationFrame Frame;
+            public IAnimationFrame Frame;
             public int BodyID;
 
-            public MobileViewLayer(int bodyID, int hue, AnimationFrame frame)
+            public MobileViewLayer(int bodyID, int hue, IAnimationFrame frame)
             {
                 BodyID = bodyID;
                 Hue = hue;

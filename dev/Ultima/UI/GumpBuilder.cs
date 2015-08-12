@@ -11,7 +11,7 @@
 #region usings
 using System;
 using UltimaXNA.Core.Diagnostics.Tracing;
-using UltimaXNA.Ultima.IO;
+using UltimaXNA.Core.Resources;
 using UltimaXNA.Ultima.UI.Controls;
 #endregion
 
@@ -23,6 +23,9 @@ namespace UltimaXNA.Ultima.UI
         {
             int currentGUMPPage = 0;
             int currentRadioGroup = 0;
+
+            // get the resource provider
+            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
 
             for (int i = 0; i < gumpPieces.Length; i++)
             {
@@ -149,14 +152,14 @@ namespace UltimaXNA.Ultima.UI
                         // Similar to the htmlgump command, but in place of the [text-id] a CliLoc entry is used.
                         gump.AddControl(new HtmlGumpling(gump, int.Parse(gumpParams[1]), int.Parse(gumpParams[2]), int.Parse(gumpParams[3]), int.Parse(gumpParams[4]),
                             int.Parse(gumpParams[6]), int.Parse(gumpParams[7]),
-                            "<span color=#000>" + StringData.Entry(int.Parse(gumpParams[5]))), currentGUMPPage);
+                            "<span color=#000>" + provider.GetString(int.Parse(gumpParams[5]))), currentGUMPPage);
                         break;
                     case "xmfhtmlgumpcolor":
                         // XmfHtmlGumpColor [x] [y] [width] [height] [cliloc-nr] [background] [scrollbar] [color]
                         // Similar to the xmfhtmlgump command, but additionally a [color] can be specified.
                         gump.AddControl(new HtmlGumpling(gump, int.Parse(gumpParams[1]), int.Parse(gumpParams[2]), int.Parse(gumpParams[3]), int.Parse(gumpParams[4]),
                             int.Parse(gumpParams[6]), int.Parse(gumpParams[7]),
-                            string.Format("<span color=#{0}>{1}", Utility.GetColorFromInt(int.Parse(gumpParams[8])), StringData.Entry(int.Parse(gumpParams[5])))), currentGUMPPage);
+                            string.Format("<span color=#{0}>{1}", Utility.GetColorFromInt(int.Parse(gumpParams[8])), provider.GetString(int.Parse(gumpParams[5])))), currentGUMPPage);
                         (gump.LastControl as HtmlGumpling).Hue = 0;
                         break;
                     case "xmfhtmltok":
@@ -164,7 +167,7 @@ namespace UltimaXNA.Ultima.UI
                         // Similar to xmfhtmlgumpcolor command, but the parameter order is different and an additionally
                         // [argument] entry enclosed with @'s can be used. With gump you can specify texts that will be
                         // added to the CliLoc entry. 
-                        string messageWithArgs = StringData.Entry(1070788);
+                        string messageWithArgs = provider.GetString(1070788);
                         int argReplaceBegin = messageWithArgs.IndexOf("~1");
                         if (argReplaceBegin != -1)
                         {
@@ -188,9 +191,9 @@ namespace UltimaXNA.Ultima.UI
                         Tracer.Warn(string.Format("GUMP: Unhandled {0}.", gumpParams[0]));
                         break;
                     case "tooltip":
-                        // Tooltip [cliloc-nr]
-                        // Adds to the previous layoutarray entry a Tooltip with the in [cliloc-nr] defined CliLoc entry.
-                        string cliloc = StringData.Entry(int.Parse(gumpPieces[1]));
+                        // Tooltip [cliloc-number]
+                        // Adds to the previous layoutarray entry a Tooltip with the in [cliloc-number] defined CliLoc entry.
+                        string cliloc = provider.GetString(int.Parse(gumpPieces[1]));
                         if (gump.LastControl != null)
                             gump.LastControl.SetTooltip(cliloc);
                         else

@@ -8,7 +8,8 @@
  *
  ***************************************************************************/
 
-using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.Resources;
+using UltimaXNA.Core.Resources;
 
 namespace UltimaXNA.Ultima.Data
 {
@@ -22,10 +23,13 @@ namespace UltimaXNA.Ultima.Data
             {
                 if (m_male == null)
                 {
+                    // get the resource provider
+                    IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+
                     m_male = new string[m_maleStyles.Length];
                     for (int i = 0; i < m_maleStyles.Length; i++)
                     {
-                        m_male[i] = StringData.Entry(m_maleStyles[i]);
+                        m_male[i] = provider.GetString(m_maleStyles[i]);
                         if (m_male[i] == "Pigtails")
                             m_male[i] = "2 Tails";
                     }
@@ -60,10 +64,13 @@ namespace UltimaXNA.Ultima.Data
             {
                 if (m_facial == null)
                 {
+                    // get the resource provider
+                    IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+
                     m_facial = new string[m_facialStyles.Length];
                     for (int i = 0; i < m_facialStyles.Length; i++)
                     {
-                        m_facial[i] = StringData.Entry(m_facialStyles[i]);
+                        m_facial[i] = provider.GetString(m_facialStyles[i]);
                     }
                 }
                 return m_facial;
@@ -95,10 +102,13 @@ namespace UltimaXNA.Ultima.Data
             {
                 if (m_female == null)
                 {
+                    // get the resource provider
+                    IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+
                     m_female = new string[m_femaleStyles.Length];
                     for (int i = 0; i < m_femaleStyles.Length; i++)
                     {
-                        m_female[i] = StringData.Entry(m_femaleStyles[i]);
+                        m_female[i] = provider.GetString(m_femaleStyles[i]);
                     }
                 }
                 return m_female;

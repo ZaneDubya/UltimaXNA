@@ -14,8 +14,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.Resources;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.Controls
@@ -86,18 +87,19 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             if (m_GumpWidget == null)
             {
+                IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
                 switch (Style)
                 {
                     default:
                     case HSliderBarStyle.MetalWidgetRecessedBar:
                         m_GumpSliderBackground = new Texture2D[3];
-                        m_GumpSliderBackground[0] = GumpData.GetGumpXNA(213);
-                        m_GumpSliderBackground[1] = GumpData.GetGumpXNA(214);
-                        m_GumpSliderBackground[2] = GumpData.GetGumpXNA(215);
-                        m_GumpWidget = GumpData.GetGumpXNA(216);
+                        m_GumpSliderBackground[0] = provider.GetUITexture(213);
+                        m_GumpSliderBackground[1] = provider.GetUITexture(214);
+                        m_GumpSliderBackground[2] = provider.GetUITexture(215);
+                        m_GumpWidget = provider.GetUITexture(216);
                         break;
                     case HSliderBarStyle.BlueWidgetNoBar:
-                        m_GumpWidget = GumpData.GetGumpXNA(0x845);
+                        m_GumpWidget = provider.GetUITexture(0x845);
                         break;
                 }
                 Size = new Point(BarWidth, m_GumpWidget.Height);

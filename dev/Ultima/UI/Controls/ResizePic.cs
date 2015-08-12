@@ -12,8 +12,9 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Graphics;
+using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.Resources;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.Controls
@@ -70,9 +71,10 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             if (m_bgGumps[0] == null)
             {
+                IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
                 for (int i = 0; i < 9; i++)
                 {
-                    m_bgGumps[i] = GumpData.GetGumpXNA(GumpID + i);
+                    m_bgGumps[i] = provider.GetUITexture(GumpID + i);
                 }
             }
 

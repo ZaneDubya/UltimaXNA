@@ -13,8 +13,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.Resources;
 
 namespace UltimaXNA.Ultima.UI.Controls
 {
@@ -114,7 +115,8 @@ namespace UltimaXNA.Ultima.UI.Controls
             {
                 if (m_gumpID[i] != 0 && m_gumpTextures[i] == null)
                 {
-                    m_gumpTextures[i] = GumpData.GetGumpXNA(m_gumpID[i]);
+                    IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                    m_gumpTextures[i] = provider.GetUITexture(m_gumpID[i]);
                 }
             }
 

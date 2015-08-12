@@ -11,12 +11,12 @@
 #region usings
 using System.Text;
 using UltimaXNA.Core.Network;
+using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI.Fonts;
 using UltimaXNA.Ultima.Data;
-using UltimaXNA.Ultima.IO.Fonts;
+using UltimaXNA.Ultima.Resources.Fonts;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.UI.Controls;
-
 #endregion
 
 namespace UltimaXNA.Ultima.UI.WorldGumps
@@ -33,7 +33,8 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
             m_Data = data;
 
-            AFont font = TextUni.GetUniFont(1);
+            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            AFont font = (AFont)provider.GetUnicodeFont(1);
 
             m_Background = (ResizePic)AddControl(new ResizePic(this, 0, 0, 0x0A3C, 50, font.Height * m_Data.Count + 20));
 

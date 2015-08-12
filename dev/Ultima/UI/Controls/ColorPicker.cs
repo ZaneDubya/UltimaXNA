@@ -12,8 +12,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.Resources;
 #endregion
 
 namespace UltimaXNA.Ultima.UI.Controls
@@ -93,8 +94,9 @@ namespace UltimaXNA.Ultima.UI.Controls
             {
                 if (IsChild) // is a child
                 {
+                    IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
                     m_huesTexture = HueData.CreateHueSwatch(m_hueWidth, m_hueHeight, m_hues);
-                    m_selectedIndicator = GumpData.GetGumpXNA(6000);
+                    m_selectedIndicator = provider.GetUITexture(6000);
                 }
                 else
                 {

@@ -8,17 +8,18 @@
  *
  ***************************************************************************/
 #region usings
-using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using UltimaXNA.Configuration;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Input.Windows;
 using UltimaXNA.Core.Network;
+using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.Network.Client;
+using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.Controls;
 using UltimaXNA.Ultima.UI.WorldGumps;
@@ -268,7 +269,8 @@ namespace UltimaXNA.Ultima.World.Input
                 {
                     m_ItemSpriteArtIndex = value;
 
-                    Texture2D art = ArtData.GetStaticTexture(m_ItemSpriteArtIndex);
+                    IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                    Texture2D art = provider.GetItemTexture(m_ItemSpriteArtIndex);
                     if (art == null)
                     {
                         // shouldn't we have a debug texture to show that we are missing this cursor art? !!!
@@ -676,7 +678,8 @@ namespace UltimaXNA.Ultima.World.Input
         private void DropHeldItemToContainer(Container container, int x, int y)
         {
             Rectangle containerBounds = ContainerData.GetData(container.ItemID).Bounds;
-            Texture2D itemTexture = ArtData.GetStaticTexture(HeldItem.DisplayItemID);
+            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            Texture2D itemTexture = provider.GetItemTexture(HeldItem.DisplayItemID);
             if (x < containerBounds.Left) x = containerBounds.Left;
             if (x > containerBounds.Right - itemTexture.Width) x = containerBounds.Right - itemTexture.Width;
             if (y < containerBounds.Top) y = containerBounds.Top;

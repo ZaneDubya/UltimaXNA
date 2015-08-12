@@ -8,7 +8,7 @@
  *
  ***************************************************************************/
 #region usings
-using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.World.Entities;
 using UltimaXNA.Ultima.World.Entities.Items;
 #endregion

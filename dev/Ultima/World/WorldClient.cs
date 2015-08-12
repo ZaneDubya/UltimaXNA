@@ -15,14 +15,16 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using UltimaXNA.Core.Diagnostics.Tracing;
+using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Network;
+using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI;
 using UltimaXNA.Ultima.Audio;
 using UltimaXNA.Ultima.Data;
-using UltimaXNA.Ultima.IO;
 using UltimaXNA.Ultima.Network.Client;
 using UltimaXNA.Ultima.Network.Server;
 using UltimaXNA.Ultima.Player;
+using UltimaXNA.Ultima.Resources;
 using UltimaXNA.Ultima.UI;
 using UltimaXNA.Ultima.UI.WorldGumps;
 using UltimaXNA.Ultima.World.Entities;
@@ -31,7 +33,6 @@ using UltimaXNA.Ultima.World.Entities.Items.Containers;
 using UltimaXNA.Ultima.World.Entities.Mobiles;
 using UltimaXNA.Ultima.World.Entities.Multis;
 using UltimaXNA.Ultima.World.Input;
-using UltimaXNA.Core.Input;
 #endregion
 
 namespace UltimaXNA.Ultima.World
@@ -285,7 +286,7 @@ namespace UltimaXNA.Ultima.World
         private void ReceiveAddMultipleItemsToContainer(IRecvPacket packet)
         {
             ContainerContentPacket p = (ContainerContentPacket)packet;
-            foreach (ContentItem i in p.Items)
+            foreach (ItemInContainer i in p.Items)
             {
                 // Add the item...
                 Item item = add_Item(i.Serial, i.ItemID, i.Hue, i.ContainerSerial, i.Amount);
@@ -670,7 +671,9 @@ namespace UltimaXNA.Ultima.World
         {
             MessageLocalizedPacket p = (MessageLocalizedPacket)packet;
 
-            string strCliLoc = constructCliLoc(StringData.Entry(p.CliLocNumber), p.Arguements);
+            // get the resource provider
+            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            string strCliLoc = constructCliLoc(provider.GetString(p.CliLocNumber), p.Arguements);
             ReceiveTextMessage(p.MessageType, strCliLoc, p.Hue, p.Font, p.Serial, p.SpeakerName);
         }
 
@@ -691,6 +694,9 @@ namespace UltimaXNA.Ultima.World
             if (string.IsNullOrEmpty(baseCliloc))
                 return string.Empty;
 
+            // get the resource provider
+            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+
             if (arg == null)
             {
                 if (capitalize)
@@ -710,7 +716,7 @@ namespace UltimaXNA.Ultima.World
                     if ((args[i].Length > 0) && (args[i].Substring(0, 1) == "#"))
                     {
                         int clilocID = Convert.ToInt32(args[i].Substring(1));
-                        args[i] = StringData.Entry(clilocID);
+                        args[i] = provider.GetString(clilocID);
                     }
                 }
 
@@ -907,8 +913,10 @@ namespace UltimaXNA.Ultima.World
         {
             MessageLocalizedAffixPacket p = (MessageLocalizedAffixPacket)packet;
 
+            // get the resource provider
+            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
             string localizedString = string.Format(p.Flag_IsPrefix ? "{1}{0}" : "{0}{1}",
-                constructCliLoc(StringData.Entry(p.CliLocNumber), p.Arguements), p.Affix);
+                constructCliLoc(provider.GetString(p.CliLocNumber), p.Arguements), p.Affix);
             ReceiveTextMessage(p.MessageType, localizedString, p.Hue, p.Font, p.Serial, p.SpeakerName);
         }
 
@@ -927,6 +935,9 @@ namespace UltimaXNA.Ultima.World
         {
             ObjectPropertyListPacket p = (ObjectPropertyListPacket)packet;
 
+            // get the resource provider
+            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+
             AEntity entity = WorldModel.Entities.GetObject<AEntity>(p.Serial, false);
             if (entity == null)
                 return; // received property list for entity that does not exist.
@@ -936,7 +947,7 @@ namespace UltimaXNA.Ultima.World
 
             for (int i = 0; i < p.CliLocs.Count; i++)
             {
-                string strCliLoc = StringData.Entry(p.CliLocs[i]);
+                string strCliLoc = provider.GetString(p.CliLocs[i]);
                 if (p.Arguements[i] == string.Empty)
                     strCliLoc = constructCliLoc(strCliLoc, capitalize: true);
                 else

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.IO;
 using UltimaXNA;
-using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.Resources;
+using UltimaXNA.Core.Resources;
 
 namespace ExamplePlugin
 {
@@ -20,7 +21,9 @@ namespace ExamplePlugin
                 {
                     for (int direction = 0; direction < 8; direction++)
                     {
-                        AnimationFrame[] frames = AnimationData.GetAnimation(candleBodyID, action, direction, 0);
+                        // get the resource provider
+                        IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                        IAnimationFrame[] frames = provider.GetAnimation(candleBodyID, action, direction, 0);
                         if (frames != null)
                         {
                             for (int i = 0; i < frames.Length; i++)

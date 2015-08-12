@@ -14,8 +14,9 @@ using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Input;
 using UltimaXNA.Core.Input.Windows;
+using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI;
-using UltimaXNA.Ultima.IO.Fonts;
+using UltimaXNA.Ultima.Resources.Fonts;
 using UltimaXNA.Ultima.UI.Controls;
 #endregion
 
@@ -55,7 +56,9 @@ namespace UltimaXNA.Ultima.UI.WorldGumps
         {
             if (m_TextEntry == null)
             {
-                m_TextEntry = new TextEntry(this, 1, Height - TextUni.GetUniFont(0).Height, Width, TextUni.GetUniFont(0).Height, 0, 0, MaxChatMessageLength, string.Empty);
+                IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+                IFont font = provider.GetUnicodeFont(0);
+                m_TextEntry = new TextEntry(this, 1, Height - font.Height, Width, font.Height, 0, 0, MaxChatMessageLength, string.Empty);
                 m_TextEntry.LegacyCarat = true;
 
                 AddControl(new CheckerTrans(this, 0, Height - 20, Width, 20));

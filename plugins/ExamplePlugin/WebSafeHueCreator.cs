@@ -1,5 +1,5 @@
 ﻿using System;
-using UltimaXNA.Ultima.IO;
+using UltimaXNA.Ultima.Resources;
 
 namespace ExamplePlugin
 {

@@ -9,7 +9,7 @@
  ***************************************************************************/
 
 #region usings
-using UltimaXNA.Ultima.IO;
+using UltimaXNA.Core.Resources;
 #endregion
 
 namespace UltimaXNA.Ultima.Data
@@ -21,7 +21,9 @@ namespace UltimaXNA.Ultima.Data
 
         public ContextMenuItem(int responseCode, int stringID, int flags, int hue)
         {
-            m_Caption = StringData.Entry(stringID);
+            // get the resource provider
+            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+            m_Caption = provider.GetString(stringID);
             m_ResponseCode = responseCode;
         }
 

@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.UI.HTML.Parsing;
+using UltimaXNA.Core.Resources;
 #endregion
 
 namespace UltimaXNA.Core.UI.HTML
@@ -26,10 +27,10 @@ namespace UltimaXNA.Core.UI.HTML
     {
         public StyleState Style;
 
-        private IUIResourceProvider m_Provider;
+        private IResourceProvider m_Provider;
         private List<OpenTag> m_OpenTags;
 
-        public StyleManager(IUIResourceProvider provider)
+        public StyleManager(IResourceProvider provider)
         {
             m_Provider = provider;
             m_OpenTags = new List<OpenTag>();
