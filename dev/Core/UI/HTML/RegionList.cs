@@ -14,7 +14,7 @@ using Microsoft.Xna.Framework;
 
 namespace UltimaXNA.Core.UI.HTML
 {
-    public class Regions
+    public class RegionList
     {
         List<Region> m_regions = new List<Region>();
 
@@ -65,20 +65,6 @@ namespace UltimaXNA.Core.UI.HTML
         public Region Region(int index)
         {
             return m_regions[index];
-        }
-    }
-
-    public class Region
-    {
-        public Rectangle Area;
-        public int Index;
-        public HREFAttributes HREF;
-
-        public Region(int i, HREFAttributes href)
-        {
-            Area = new Rectangle();
-            HREF = href;
-            Index = i;
         }
     }
 }

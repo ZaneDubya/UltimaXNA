@@ -29,6 +29,13 @@ namespace UltimaXNA.Core.UI.HTML.Layout
             private set;
         }
 
+        public RegionList Regions
+        {
+
+        }
+
+        public 
+
         // ======================================================================
         // Ctor
         // ======================================================================

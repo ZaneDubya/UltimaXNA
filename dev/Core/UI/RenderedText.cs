@@ -70,7 +70,7 @@ namespace UltimaXNA.Core.UI
             }
         }
 
-        public Regions Regions
+        public RegionList Regions
         {
             get;
             private set;
@@ -88,7 +88,7 @@ namespace UltimaXNA.Core.UI
             set;
         }
 
-        public Images Images
+        public ImageList Images
         {
             get;
             private set;
@@ -123,8 +123,8 @@ namespace UltimaXNA.Core.UI
             Text = text;
             MaxWidth = maxWidth;
 
-            Regions = new Regions();
-            Images = new Images();
+            Regions = new RegionList();
+            Images = new ImageList();
         }
 
         // ======================================================================
@@ -455,7 +455,7 @@ namespace UltimaXNA.Core.UI
             }
         }
 
-        void GetHREFRegions(Regions regions, List<AAtom>[] text, int[] x, int y)
+        void GetHREFRegions(RegionList regions, List<AAtom>[] text, int[] x, int y)
         {
             for (int alignment = 0; alignment < 3; alignment++)
             {
