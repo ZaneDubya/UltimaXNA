@@ -23,6 +23,8 @@ namespace UltimaXNA.Core.UI.HTML
 {
     class HtmlDocument
     {
+        private List<HtmlBox> m_Boxes = null;
+
         // ======================================================================
         // Public properties
         // ======================================================================
@@ -34,12 +36,6 @@ namespace UltimaXNA.Core.UI.HTML
         }
 
         public int Height
-        {
-            get;
-            private set;
-        }
-
-        public List<HtmlBox> Boxes
         {
             get;
             private set;
@@ -64,19 +60,30 @@ namespace UltimaXNA.Core.UI.HTML
         }
 
         // ======================================================================
-        // Ctor
+        // Ctor and Dipose
         // ======================================================================
 
         public HtmlDocument(string html, int maxWidth)
         {
+            m_Boxes = new List<HtmlBox>();
+        }
 
+        public void Dispose()
+        {
+            // !!! we need to handle disposing the ImageList better.
+            Images.Clear();
+            Images = null;
+            Regions.Clear();
+            Regions = null;
+            if (Texture != null)
+                Texture.Dispose();
         }
 
         // ======================================================================
         // Parse methods
         // ======================================================================
 
-        private List<AAtom> decodeText(string inText, IResourceProvider provider)
+        private List<AAtom> decodeText(string html, IResourceProvider provider)
         {
             List<AAtom> atoms = new List<AAtom>();
             StyleParser tags = new StyleParser(provider);
@@ -85,14 +92,14 @@ namespace UltimaXNA.Core.UI.HTML
             bool parseHTML = true;
             if (!parseHTML)
             {
-                for (int i = 0; i < inText.Length; i++)
+                for (int i = 0; i < html.Length; i++)
                 {
-                    addCharacter(inText[i], atoms, tags);
+                    addCharacter(html[i], atoms, tags);
                 }
             }
             else
             {
-                HTMLparser parser = new HTMLparser(inText);
+                HTMLparser parser = new HTMLparser(html);
                 HTMLchunk chunk;
 
                 while ((chunk = parser.ParseNext()) != null)
@@ -171,7 +178,7 @@ namespace UltimaXNA.Core.UI.HTML
                             default:
                                 for (int i = 0; i < chunk.iChunkLength; i++)
                                 {
-                                    addCharacter(char.Parse(inText.Substring(i + chunk.iChunkOffset, 1)), atoms, tags);
+                                    addCharacter(char.Parse(html.Substring(i + chunk.iChunkOffset, 1)), atoms, tags);
                                 }
                                 break;
                         }
@@ -187,10 +194,10 @@ namespace UltimaXNA.Core.UI.HTML
             return atoms;
         }
 
-        void addCharacter(char inText, List<AAtom> outHTML, StyleParser openTags)
+        void addCharacter(char html, List<AAtom> atoms, StyleParser styles)
         {
-            CharacterAtom c = new CharacterAtom(openTags.Style, inText);
-            outHTML.Add(c);
+            CharacterAtom c = new CharacterAtom(styles.Style, html);
+            atoms.Add(c);
         }
 
         // ======================================================================
