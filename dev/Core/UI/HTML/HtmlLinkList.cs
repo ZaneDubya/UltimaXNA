@@ -15,7 +15,7 @@ using UltimaXNA.Core.UI.HTML.Styles;
 
 namespace UltimaXNA.Core.UI.HTML
 {
-    public class HtmlListList
+    public class HtmlLinkList
     {
         List<HtmlLink> m_regions = new List<HtmlLink>();
 

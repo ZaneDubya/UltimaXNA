@@ -57,8 +57,6 @@ namespace UltimaXNA.Core.UI.HTML.Styles
         public int ActiveColorHue = 0;
         public int HoverColorHue = 0;
 
-        public Layers Layer = Layers.Default;
-
         public string HREF = null;
         public bool IsHREF { get { return HREF != null; } }
 

@@ -212,7 +212,7 @@
     <Compile Include="Core\Resources\IResourceProvider.cs" />
     <Compile Include="Core\PluginManager.cs" />
     <Compile Include="Core\UI\RenderedTextList.cs" />
-    <Compile Include="Core\UI\RenderedTextNew.cs" />
+    <Compile Include="Core\UI\RenderedText.cs" />
     <Compile Include="ServiceRegistry.cs" />
     <Compile Include="Ultima\Audio\AudioService.cs" />
     <Compile Include="Ultima\Audio\UOMusic.cs" />
@@ -345,7 +345,6 @@
     <Compile Include="Core\UI\HTML\Parsing\HTMLheuristics.cs" />
     <Compile Include="Core\UI\HTML\Parsing\HTMLparser.cs" />
     <Compile Include="Core\UI\HTML\Parsing\TagParser.cs" />
-    <Compile Include="Core\UI\RenderedText.cs" />
     <Compile Include="Core\UI\Fonts\ACharacter.cs" />
     <Compile Include="Ultima\Resources\Fonts\CharacterUnicode.cs" />
     <Compile Include="Ultima\Resources\Fonts\FontUnicode.cs" />
@@ -506,7 +505,7 @@
     <Compile Include="Ultima\Resources\SpeechData.cs" />
     <Compile Include="Ultima\Resources\TileMatrixData.cs" />
     <Compile Include="Ultima\World\Input\WorldInput.cs" />
-    <Compile Include="Core\UI\HTML\HtmlListList.cs" />
+    <Compile Include="Core\UI\HTML\HtmlLinkList.cs" />
     <Compile Include="Core\UI\HTML\Styles\Enums.cs" />
     <Compile Include="Core\UI\HTML\HtmlImageList.cs" />
     <Compile Include="Core\UI\HTML\Atoms\Atomizer.cs" />

@@ -45,6 +45,13 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             AddControl(new ResizePic(this, 128, 285, 0x13BE, 520, 190));
             AddControl(new GumpPic(this, 0, 0, 0x157C, 0)); // 0x2329
             AddControl(new GumpPic(this, 354, 42, 0x058A, 0)); // 0x2329
+
+            // debug !!!!
+            AddControl(new HtmlGumpling(this, 100, 100, 300, 200, 0, 0, 
+                string.Format("<right><a href='add={4}'><gumpimg src='0x9CF'/></a><span width='4'/><a href='remove={4}'><gumpimg src='0x9CE'/></a></right>" +
+                "<itemimg src='{2}'/><span color='#400'>{0}<br/>{1}gp, {3} available.</span>",
+                "A magic sword", 200, 5000, 13, 1)));
+
             // quit button
             AddControl(new Button(this, 554, 2, 5513, 5515, ButtonTypes.Activate, 0, (int)LoginGumpButtons.QuitButton));
             ((Button)LastControl).GumpOverID = 5514;

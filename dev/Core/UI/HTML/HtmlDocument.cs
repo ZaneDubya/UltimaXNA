@@ -46,7 +46,7 @@ namespace UltimaXNA.Core.UI.HTML
             private set;
         }
 
-        public HtmlListList Regions
+        public HtmlLinkList Regions
         {
             get;
             private set;
@@ -367,7 +367,7 @@ namespace UltimaXNA.Core.UI.HTML
             }
         }
 
-        void GetHREFRegions(HtmlListList regions, List<AAtom>[] text, int[] x, int y)
+        void GetHREFRegions(HtmlLinkList regions, List<AAtom>[] text, int[] x, int y)
         {
             for (int alignment = 0; alignment < 3; alignment++)
             {
