@@ -281,10 +281,6 @@ namespace UltimaXNA.Core.UI
             return true;
         }
 
-        // ======================================================================
-        // Parse / Layout methods
-        // ======================================================================
-
         private void RenderIfNecessary()
         {
             if (m_Texture == null || m_MustRender)
@@ -302,6 +298,10 @@ namespace UltimaXNA.Core.UI
                 }
             }
         }
+
+        // ======================================================================
+        // Parse / Layout methods
+        // ======================================================================
 
         private void DoLayoutAndRender(string html, int maxWidth)
         {

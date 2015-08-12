@@ -9,8 +9,8 @@
  *
  ***************************************************************************/
 
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 
 namespace UltimaXNA.Core.UI.HTML
 {
