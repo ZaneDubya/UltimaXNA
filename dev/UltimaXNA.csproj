@@ -199,7 +199,7 @@
     <Compile Include="Core\Resources\IResource.cs" />
     <Compile Include="Core\UI\ControlMetaData.cs" />
     <Compile Include="Core\UI\HTML\HtmlImage.cs" />
-    <Compile Include="Core\UI\HTML\HtmlBox.cs" />
+    <Compile Include="Core\UI\HTML\HtmlBlock.cs" />
     <Compile Include="Core\UI\HTML\HtmlDocument.cs" />
     <Compile Include="Core\UI\HTML\HtmlLink.cs" />
     <Compile Include="Core\UI\HTML\Styles\OpenTag.cs" />

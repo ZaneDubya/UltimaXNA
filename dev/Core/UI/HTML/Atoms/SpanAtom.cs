@@ -33,7 +33,7 @@ namespace UltimaXNA.Core.UI.HTML.Atoms
             : base(style)
         {
             m_height = Style.Font.Height;
-            m_width = Style.ElementWidth;
+            m_width = 0;
         }
     }
 }

@@ -8,7 +8,10 @@ using UltimaXNA.Core.UI.HTML.Styles;
 
 namespace UltimaXNA.Core.UI.HTML
 {
-    class HtmlBox : AAtom
+    /// <summary>
+    /// Blocks fit their content. They can be assigned width, height, and alignment.
+    /// </summary>
+    class HtmlBlock : AAtom
     {
         public List<AAtom> Contents = new List<AAtom>();
 
@@ -44,7 +47,9 @@ namespace UltimaXNA.Core.UI.HTML
             }
         }
 
-        public HtmlBox(StyleState style)
+        public Alignments Alignment = Alignments.Default;
+
+        public HtmlBlock(StyleState style)
             : base(style)
         {
 

@@ -15,6 +15,7 @@ using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Diagnostics.Tracing;
 using UltimaXNA.Core.UI.HTML.Parsing;
 using UltimaXNA.Core.Resources;
+using UltimaXNA.Core.UI.HTML.Atoms;
 #endregion
 
 namespace UltimaXNA.Core.UI.HTML.Styles
@@ -37,14 +38,21 @@ namespace UltimaXNA.Core.UI.HTML.Styles
             RecalculateStyle();
         }
 
-        public void OpenTag(HTMLchunk chunk)
+        public void ParseTag(HTMLchunk chunk, AAtom atom)
         {
-            OpenTag tag = new OpenTag(chunk);
-
             if (!chunk.bClosure || chunk.bEndClosure)
             {
+                // create the tag and add it to the list of open tags.
+                OpenTag tag = new OpenTag(chunk);
                 m_OpenTags.Add(tag);
-                ParseTag(tag);
+                // parse the tag (which will update the StyleParser's current style
+                ParseTag(tag, atom);
+                // if the style has changed and atom is not null, set the atom's style to the current style.
+                if (atom != null)
+                    atom.Style = Style;
+                // if this is a self-closing tag (<br/>) close it!
+                if (chunk.bEndClosure)
+                    CloseOneTag(chunk);
             }
             else
             {
@@ -92,7 +100,7 @@ namespace UltimaXNA.Core.UI.HTML.Styles
             }
         }
 
-        public void InterpretHREF(HTMLchunk chunk)
+        public void InterpretHREF(HTMLchunk chunk, AAtom atom)
         {
             if (chunk.bEndClosure)
             {
@@ -101,9 +109,9 @@ namespace UltimaXNA.Core.UI.HTML.Styles
 
             if (!chunk.bClosure)
             {
-                // hyperlink with attributes
+                // opening a hyperlink!
                 OpenTag tag = new OpenTag(chunk);
-                ParseTag(tag);
+                ParseTag(tag, atom);
             }
             else
             {
@@ -121,7 +129,7 @@ namespace UltimaXNA.Core.UI.HTML.Styles
             }
         }
 
-        private void ParseTag(OpenTag tag)
+        private void ParseTag(OpenTag tag, AAtom atom = null)
         {
             switch (tag.sTag)
             {
@@ -148,13 +156,16 @@ namespace UltimaXNA.Core.UI.HTML.Styles
                     Style.Font = m_Provider.GetUnicodeFont((int)Fonts.UnicodeSmall);
                     break;
                 case "left":
-                    Style.Alignment = Alignments.Left;
+                    if (atom != null && atom is HtmlBlock)
+                        (atom as HtmlBlock).Alignment = Alignments.Left;
                     break;
                 case "center":
-                    Style.Alignment = Alignments.Center;
+                    if (atom != null && atom is HtmlBlock)
+                        (atom as HtmlBlock).Alignment = Alignments.Center;
                     break;
                 case "right":
-                    Style.Alignment = Alignments.Right;
+                    if (atom != null && atom is HtmlBlock)
+                        (atom as HtmlBlock).Alignment = Alignments.Right;
                     break;
             }
 
@@ -230,46 +241,43 @@ namespace UltimaXNA.Core.UI.HTML.Styles
                     case "src":
                     case "hoversrc":
                     case "activesrc":
-                        switch (tag.sTag)
+                        if (atom is ImageAtom)
                         {
-                            case "gumpimg":
-                            case "itemimg":
-                                if (key == "src")
-                                    Style.ImgSrc = int.Parse(value);
-                                else if (key == "hoversrc")
-                                    Style.ImgSrcOver = int.Parse(value);
-                                else if (key == "activesrc")
-                                    Style.ImgSrcDown = int.Parse(value);
-                                break;
-                            default:
-                                Tracer.Warn("{0} param encountered within {1} tag which does not use this param.", key, tag.sTag);
-                                break;
+                            if (key == "src")
+                                (atom as ImageAtom).ImgSrc = int.Parse(value);
+                            else if (key == "hoversrc")
+                                (atom as ImageAtom).ImgSrcOver = int.Parse(value);
+                            else if (key == "activesrc")
+                                (atom as ImageAtom).ImgSrcDown = int.Parse(value);
+                            break;
+                        }
+                        else
+                        {
+                            Tracer.Warn("{0} param encountered within {1} tag which does not use this param.", key, tag.sTag);
                         }
                         break;
                     case "width":
-                        switch (tag.sTag)
                         {
-                            case "gumpimg":
-                            case "itemimg":
-                            case "span":
-                                Style.ElementWidth = int.Parse(value);
-                                break;
-                            default:
+                            if (atom is ImageAtom || atom is SpanAtom || atom is HtmlBlock)
+                            {
+                                atom.Width = int.Parse(value);
+                            }
+                            else
+                            {
                                 Tracer.Warn("width param encountered within " + tag.sTag + " which does not use this param.");
-                                break;
+                            }
                         }
                         break;
                     case "height":
-                        switch (tag.sTag)
                         {
-                            case "gumpimg":
-                            case "itemimg":
-                            case "span":
-                                Style.ElementHeight = int.Parse(value);
-                                break;
-                            default:
-                                Tracer.Warn("height param encountered within " + tag.sTag + " which does not use this param.");
-                                break;
+                            if (atom is ImageAtom || atom is SpanAtom || atom is HtmlBlock)
+                            {
+                                atom.Height = int.Parse(value);
+                            }
+                            else
+                            {
+                                Tracer.Warn("width param encountered within " + tag.sTag + " which does not use this param.");
+                            }
                         }
                         break;
                     case "style":
@@ -372,41 +380,6 @@ namespace UltimaXNA.Core.UI.HTML.Styles
                         {
                             // other possibilities? overline|line-through|initial|inherit;
                             Tracer.Warn("Unknown text-decoration parameter:{0}", param[i]);
-                        }
-                    }
-                    break;
-                case "layer":
-                    {
-                        if (value == "default")
-                        {
-                            Style.Layer = Layers.Default;
-                        }
-                        else if (value == "background")
-                        {
-                            Style.Layer = Layers.Background;
-                        }
-                        else
-                        {
-                            // other possibilities? fixed|relative|initial|inherit;
-                            Tracer.Warn("Unknown position parameter:{0}", value);
-                        }
-                    }
-                    break;
-                case "top":
-                    {
-                        int topValue = 0;
-                        if (int.TryParse(value, out topValue))
-                        {
-                            Style.ElementTopOffset = topValue;
-                        }
-                    }
-                    break;
-                case "left":
-                    {
-                        int leftValue = 0;
-                        if (int.TryParse(value, out leftValue))
-                        {
-                            Style.ElementLeftOffset = leftValue;
                         }
                     }
                     break;

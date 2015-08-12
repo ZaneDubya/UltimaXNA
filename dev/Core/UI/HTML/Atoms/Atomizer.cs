@@ -70,7 +70,7 @@ namespace UltimaXNA.Core.UI.HTML.Atoms
                             // Anchor elements are added to the open tag collection as HREFs.
                             // ======================================================================
                             case "a":
-                                tags.InterpretHREF(chunk);
+                                tags.InterpretHREF(chunk, null);
                                 break;
                             // ======================================================================
                             // These html elements are added as tags to the open tag collection.
@@ -88,13 +88,13 @@ namespace UltimaXNA.Core.UI.HTML.Atoms
                             case "center":
                             case "left":
                             case "right":
-                                tags.OpenTag(chunk);
+                                tags.ParseTag(chunk, null);
                                 break;
                             // ======================================================================
                             // Span elements are added as atoms (for layout) and tags (for styles!)
                             // ======================================================================
                             case "span":
-                                tags.OpenTag(chunk);
+                                tags.ParseTag(chunk, null);
                                 atom = new SpanAtom(tags.Style);
                                 break;
                             // ======================================================================
@@ -106,13 +106,13 @@ namespace UltimaXNA.Core.UI.HTML.Atoms
                                 break;
                             case "gumpimg":
                                 // draw a gump image
-                                tags.OpenTag(chunk);
+                                tags.ParseTag(chunk, null);
                                 atom = new ImageAtom(tags.Style, ImageAtom.ImageTypes.UI);
                                 tags.CloseOneTag(chunk);
                                 break;
                             case "itemimg":
                                 // draw a static image
-                                tags.OpenTag(chunk);
+                                tags.ParseTag(chunk, null);
                                 atom = new ImageAtom(tags.Style, ImageAtom.ImageTypes.Item);
                                 tags.CloseOneTag(chunk);
                                 break;

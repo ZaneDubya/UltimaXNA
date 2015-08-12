@@ -22,7 +22,7 @@ namespace UltimaXNA.Core.UI.HTML
 {
     class HtmlDocument
     {
-        private List<HtmlBox> m_Boxes = null;
+        private HtmlBlock Root = null;
 
         // ======================================================================
         // Public properties
@@ -64,7 +64,7 @@ namespace UltimaXNA.Core.UI.HTML
 
         public HtmlDocument(string html, int maxWidth)
         {
-            m_Boxes = ParseHtmlToBoxes(html);
+            Root = ParseHtmlToBoxes(html);
         }
 
         public void Dispose()
@@ -79,25 +79,29 @@ namespace UltimaXNA.Core.UI.HTML
         }
 
         // ======================================================================
-        // Parse methods
+        // Parse and create boxes
         // ======================================================================
 
-        private List<HtmlBox> ParseHtmlToBoxes(string html)
+        private HtmlBlock CreateBox(List<HtmlBlock> boxes, StyleState style)
+        {
+            HtmlBlock box = new HtmlBlock(style);
+            boxes.Add(box);
+            return box;
+        }
+
+        private HtmlBlock ParseHtmlToBoxes(string html)
         {
             IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
-            StyleParser tags = new StyleParser(provider);
+            StyleParser styles = new StyleParser(provider);
 
-            HtmlBox box = new HtmlBox(tags.Style);
-            List<HtmlBox> boxes = new List<HtmlBox>();
+            HtmlBlock currentBox = new HtmlBlock(styles.Style); // this is the root!
 
             // if this is not HTML, do not parse tags. Otherwise search out and interpret tags.
             bool parseHTML = true;
             if (!parseHTML)
             {
                 for (int i = 0; i < html.Length; i++)
-                {
-                    addCharacter(html[i], boxes, tags);
-                }
+                    currentBox.AddAtom(new CharacterAtom(styles.Style, html[i]));
             }
             else
             {
@@ -109,12 +113,12 @@ namespace UltimaXNA.Core.UI.HTML
                     if (!(chunk.oHTML == string.Empty))
                     {
                         // This is a span of text.
-                        string span = chunk.oHTML;
+                        string text = chunk.oHTML;
                         // make sure to replace escape characters!
-                        span = EscapeCharacters.ReplaceEscapeCharacters(span);
-                        //Add the characters to the outText list.
-                        for (int i = 0; i < span.Length; i++)
-                            addCharacter(span[i], boxes, tags);
+                        text = EscapeCharacters.ReplaceEscapeCharacters(text);
+                        //Add the characters to the current box
+                        for (int i = 0; i < text.Length; i++)
+                            currentBox.AddAtom(new CharacterAtom(styles.Style, text[i]));
                     }
                     else
                     {
@@ -128,12 +132,23 @@ namespace UltimaXNA.Core.UI.HTML
                             // Anchor elements are added to the open tag collection as HREFs.
                             // ======================================================================
                             case "a":
-                                tags.InterpretHREF(chunk);
+                                styles.InterpretHREF(chunk, null);
                                 break;
                             // ======================================================================
-                            // These html elements are added as tags to the open tag collection.
+                            // These html elements are ignored.
                             // ======================================================================
                             case "body":
+                                break;
+                            // ======================================================================
+                            // These html elements are blocks.
+                            // ======================================================================
+                            case "center":
+                            case "left":
+                            case "right":
+                                break;
+                            // ======================================================================
+                            // These html elements are styles, and are added to the StyleParser.
+                            // ======================================================================
                             case "font":
                             case "b":
                             case "i":
@@ -143,63 +158,53 @@ namespace UltimaXNA.Core.UI.HTML
                             case "basefont":
                             case "medium":
                             case "small":
-                            case "center":
-                            case "left":
-                            case "right":
-                                tags.OpenTag(chunk);
+                                styles.ParseTag(chunk, null);
                                 break;
                             // ======================================================================
                             // Span elements are added as atoms (for layout) and tags (for styles!)
                             // ======================================================================
                             case "span":
-                                tags.OpenTag(chunk);
-                                atom = new SpanAtom(tags.Style);
+                                atom = new SpanAtom(styles.Style);
+                                styles.ParseTag(chunk, atom);
                                 break;
                             // ======================================================================
                             // These html elements are added as atoms only. They cannot impart style
                             // onto other atoms.
                             // ======================================================================
                             case "br":
-                                addCharacter('\n', boxes, tags);
+                                currentBox.AddAtom(new CharacterAtom(styles.Style, '\n'));
                                 break;
                             case "gumpimg":
                                 // draw a gump image
-                                tags.OpenTag(chunk);
-                                atom = new ImageAtom(tags.Style, ImageAtom.ImageTypes.UI);
-                                tags.CloseOneTag(chunk);
+                                atom = new ImageAtom(styles.Style, ImageAtom.ImageTypes.UI);
+                                styles.ParseTag(chunk, atom);
                                 break;
                             case "itemimg":
                                 // draw a static image
-                                tags.OpenTag(chunk);
-                                atom = new ImageAtom(tags.Style, ImageAtom.ImageTypes.Item);
-                                tags.CloseOneTag(chunk);
+                                atom = new ImageAtom(styles.Style, ImageAtom.ImageTypes.Item);
+                                styles.ParseTag(chunk, atom);
                                 break;
                             // ======================================================================
                             // Every other element is not interpreted, but rendered as text. Easy!
                             // ======================================================================
                             default:
-                                for (int i = 0; i < chunk.iChunkLength; i++)
                                 {
-                                    addCharacter(char.Parse(html.Substring(i + chunk.iChunkOffset, 1)), boxes, tags);
+                                    string text = html.Substring(chunk.iChunkOffset, chunk.iChunkLength);
+                                    // make sure to replace escape characters!
+                                    text = EscapeCharacters.ReplaceEscapeCharacters(text);
+                                    //Add the characters to the current box
+                                    for (int i = 0; i < text.Length; i++)
+                                        currentBox.AddAtom(new CharacterAtom(styles.Style, text[i]));
                                 }
                                 break;
                         }
 
-                        if (atom != null)
-                            boxes.Add(atom);
-
-                        tags.CloseAnySoloTags();
+                        styles.CloseAnySoloTags();
                     }
                 }
             }
 
-            return boxes;
-        }
-
-        void addCharacter(char html, List<AAtom> atoms, StyleParser styles)
-        {
-            CharacterAtom c = new CharacterAtom(styles.Style, html);
-            atoms.Add(c);
+            return currentBox;
         }
 
         // ======================================================================
@@ -232,15 +237,15 @@ namespace UltimaXNA.Core.UI.HTML
                     ImageAtom img = (ImageAtom)atom;
                     if (img.ImageType == ImageAtom.ImageTypes.UI)
                     {
-                        Texture2D standard = provider.GetUITexture(img.Style.ImgSrc);
-                        Texture2D over = provider.GetUITexture(img.Style.ImgSrcOver);
-                        Texture2D down = provider.GetUITexture(img.Style.ImgSrcDown);
+                        Texture2D standard = provider.GetUITexture(img.ImgSrc);
+                        Texture2D over = provider.GetUITexture(img.ImgSrcOver);
+                        Texture2D down = provider.GetUITexture(img.ImgSrcDown);
                         images.AddImage(new Rectangle(), standard, over, down);
                     }
                     else if (img.ImageType == ImageAtom.ImageTypes.Item)
                     {
                         Texture2D standard, over, down;
-                        standard = over = down = provider.GetItemTexture(img.Style.ImgSrc);
+                        standard = over = down = provider.GetItemTexture(img.ImgSrc);
                         images.AddImage(new Rectangle(), standard, over, down);
                     }
                     img.AssociatedImage = Images[Images.Count - 1];
@@ -280,7 +285,7 @@ namespace UltimaXNA.Core.UI.HTML
                     for (int i = 0; i < atoms.Count; i++)
                     {
                         AAtom atom = atoms[i];
-                        alignedAtoms[(int)atom.Style.Alignment].Add(atom);
+                        // !!! alignedAtoms[(int)atom.Style.Alignment].Add(atom);
 
                         if (atom.IsThisAtomALineBreak || (i == atoms.Count - 1))
                         {
@@ -338,8 +343,8 @@ namespace UltimaXNA.Core.UI.HTML
                 IFont font = atoms[i].Style.Font;
                 if (lineheight < font.Height)
                     lineheight = font.Height;
-                if (lineheight < atoms[i].Height + atoms[i].Style.ElementTopOffset)
-                    lineheight = atoms[i].Height + atoms[i].Style.ElementTopOffset;
+                if (lineheight < atoms[i].Height)
+                    lineheight = atoms[i].Height;
 
                 if (draw)
                 {
@@ -355,7 +360,7 @@ namespace UltimaXNA.Core.UI.HTML
                     else if (atoms[i] is ImageAtom)
                     {
                         ImageAtom atom = (atoms[i] as ImageAtom);
-                        atom.AssociatedImage.Area = new Rectangle(x, y + ((lineheight - atom.Height + atoms[i].Style.ElementTopOffset) / 2), atom.Width, atom.Height);
+                        atom.AssociatedImage.Area = new Rectangle(x, y + ((lineheight - atom.Height) / 2), atom.Width, atom.Height);
                     }
                 }
                 x += atoms[i].Width;
@@ -454,22 +459,10 @@ namespace UltimaXNA.Core.UI.HTML
             int descenderHeight = 0;
             int lineHeight = 0;
             int styleWidth = 0; // italic + outlined characters need more room for the slant/outline.
-            int widestLine = 0;
+            int widestLine = maxwidth; // we automatically set the content to fill the specified width.
             int wordWidth = 0;
             bool firstLine = true;
             List<AAtom> word = new List<AAtom>();
-
-            bool hasLeftAlignment = false;
-            bool hasAnyOtherAlignment = false;
-            for (int i = 0; i < atoms.Count; i++)
-            {
-                hasLeftAlignment = hasLeftAlignment | (atoms[i].Style.Alignment == Alignments.Left);
-                hasAnyOtherAlignment = hasAnyOtherAlignment | (atoms[i].Style.Alignment != Alignments.Left);
-            }
-            if (hasAnyOtherAlignment && hasLeftAlignment)
-            {
-                widestLine = maxwidth;
-            }
 
             for (int i = 0; i < atoms.Count; i++)
             {
@@ -478,9 +471,9 @@ namespace UltimaXNA.Core.UI.HTML
                 if (styleWidth < 0)
                     styleWidth = 0;
 
-                if (lineHeight < atoms[i].Height + atoms[i].Style.ElementTopOffset)
+                if (lineHeight < atoms[i].Height)
                 {
-                    lineHeight = atoms[i].Height + atoms[i].Style.ElementTopOffset;
+                    lineHeight = atoms[i].Height;
                 }
 
                 if (atoms[i].IsThisAtomALineBreak)
