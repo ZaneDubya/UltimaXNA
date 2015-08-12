@@ -102,7 +102,6 @@ namespace UltimaXNA.Core.UI.HTML.Styles
             if (!chunk.bClosure)
             {
                 // hyperlink with attributes
-                Style.HREF = new HREFAttributes();
                 OpenTag tag = new OpenTag(chunk);
                 ParseTag(tag);
             }
@@ -176,7 +175,7 @@ namespace UltimaXNA.Core.UI.HTML.Styles
                         // href paramater can only be used on 'anchor' tags.
                         if (tag.sTag == "a")
                         {
-                            Style.HREF.HREF = value;
+                            Style.HREF = value;
                         }
                         break;
                     case "color":
@@ -202,19 +201,25 @@ namespace UltimaXNA.Core.UI.HTML.Styles
                         if (c.HasValue)
                         {
                             if (key == "color")
+                            {
                                 Style.Color = c.Value;
+                            }
                             if (tag.sTag == "a")
                             {
+                                // a tag colors are override, they are rendered white and then hued with a websafe hue.
                                 switch (key)
                                 {
                                     case "color":
-                                        Style.HREF.UpHue = m_Provider.GetWebSafeHue(c.Value);
+                                        Style.ColorHue = m_Provider.GetWebSafeHue(c.Value);
                                         break;
                                     case "hovercolor":
-                                        Style.HREF.OverHue = m_Provider.GetWebSafeHue(c.Value);
+                                        Style.HoverColorHue = m_Provider.GetWebSafeHue(c.Value);
                                         break;
                                     case "activecolor":
-                                        Style.HREF.DownHue = m_Provider.GetWebSafeHue(c.Value);
+                                        Style.ActiveColorHue = m_Provider.GetWebSafeHue(c.Value);
+                                        break;
+                                    default:
+                                        Tracer.Warn("Only anchor <a> tags can have attribute {0}.", key);
                                         break;
                                 }
                             }

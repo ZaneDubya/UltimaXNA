@@ -11,14 +11,15 @@
 
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using UltimaXNA.Core.UI.HTML.Styles;
 
 namespace UltimaXNA.Core.UI.HTML
 {
-    public class RegionList
+    public class HtmlListList
     {
-        List<Region> m_regions = new List<Region>();
+        List<HtmlLink> m_regions = new List<HtmlLink>();
 
-        public Region this[int index]
+        public HtmlLink this[int index]
         {
             get
             {
@@ -37,9 +38,9 @@ namespace UltimaXNA.Core.UI.HTML
             get { return m_regions.Count; }
         }
 
-        public Region AddRegion(HREFAttributes href)
+        public HtmlLink AddLink(string href, StyleState style)
         {
-            m_regions.Add(new Region(m_regions.Count, href));
+            m_regions.Add(new HtmlLink(m_regions.Count, href, style));
             return m_regions[m_regions.Count - 1];
         }
 
@@ -48,7 +49,7 @@ namespace UltimaXNA.Core.UI.HTML
             m_regions.Clear();
         }
 
-        public Region RegionfromPoint(Point p)
+        public HtmlLink RegionfromPoint(Point p)
         {
             int index = -1;
             for (int i = 0; i < m_regions.Count; i++)
@@ -62,7 +63,7 @@ namespace UltimaXNA.Core.UI.HTML
                 return m_regions[index];
         }
 
-        public Region Region(int index)
+        public HtmlLink Region(int index)
         {
             return m_regions[index];
         }

@@ -3,20 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using UltimaXNA.Core.UI.HTML.Styles;
 
 namespace UltimaXNA.Core.UI.HTML
 {
-    public class Region
+    public class HtmlLink
     {
         public Rectangle Area;
         public int Index;
-        public HREFAttributes HREF;
+        public string HREF;
+        public StyleState Style;
 
-        public Region(int i, HREFAttributes href)
+        public HtmlLink(int i, string href, StyleState style)
         {
             Area = new Rectangle();
-            HREF = href;
             Index = i;
+            HREF = href;
+            Style = style;
         }
     }
 }

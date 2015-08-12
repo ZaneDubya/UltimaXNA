@@ -11,6 +11,7 @@
 
 using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Resources;
+using UltimaXNA.Core.Extensions;
 
 namespace UltimaXNA.Core.UI.HTML.Styles
 {
@@ -52,11 +53,14 @@ namespace UltimaXNA.Core.UI.HTML.Styles
 
         public IFont Font; // default value set in manager ctor.
         public Color Color = Color.White;
+        public int ColorHue = 0;
+        public int ActiveColorHue = 0;
+        public int HoverColorHue = 0;
 
         public Alignments Alignment = Alignments.Default;
         public Layers Layer = Layers.Default;
 
-        public HREFAttributes HREF = null;
+        public string HREF = null;
         public bool IsHREF { get { return HREF != null; } }
 
         public int ElementWidth = 0;
@@ -82,6 +86,9 @@ namespace UltimaXNA.Core.UI.HTML.Styles
             Font = parent.Font;
             Alignment = parent.Alignment;
             Color = parent.Color;
+            ColorHue = parent.ColorHue;
+            ActiveColorHue = parent.ActiveColorHue;
+            HoverColorHue = parent.HoverColorHue;
             HREF = parent.HREF;
             ElementWidth = parent.ElementWidth;
             ElementHeight = parent.ElementHeight;

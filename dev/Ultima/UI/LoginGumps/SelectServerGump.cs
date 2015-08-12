@@ -63,7 +63,7 @@ namespace UltimaXNA.Ultima.UI.LoginGumps
             // display the serverlist the server list.
             foreach (ServerListEntry e in ServerList.List)
             {
-                AddControl(new HtmlGumpling(this, 224, 104, 200, 20, 0, 0, "<big><a href=\"SHARD=" + e.Index + "\" style=\"colorhue: #1278; hoverhue: #836; activatehue: #796; text-decoration: none\">" + e.Name + "</a></big>"), 1);
+                AddControl(new HtmlGumpling(this, 224, 104, 200, 20, 0, 0, "<big><a href=\"SHARD=" + e.Index + "\" style=\"text-decoration: none\">" + e.Name + "</a></big>"), 1);
             }
 
             // Page 2 - logging in to server ... with cancel login button

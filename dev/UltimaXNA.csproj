@@ -144,6 +144,7 @@
     <Compile Include="Core\Diagnostics\Listeners\MsgBoxOnCriticalListener.cs" />
     <Compile Include="Core\Diagnostics\Profiler.cs" />
     <Compile Include="Core\DpiManager.cs" />
+    <Compile Include="Core\Extensions\ColorExtensions.cs" />
     <Compile Include="Core\Extensions\StringExtensions.cs" />
     <Compile Include="Core\Graphics\Techniques.cs" />
     <Compile Include="Core\Audio\MP3Sharp\Buffer16BitStereo.cs" />
@@ -197,12 +198,12 @@
     <Compile Include="Core\Resources\IAnimationFrame.cs" />
     <Compile Include="Core\Resources\IResource.cs" />
     <Compile Include="Core\UI\ControlMetaData.cs" />
-    <Compile Include="Core\UI\HTML\Images.cs" />
-    <Compile Include="Core\UI\HTML\Layout\Box.cs" />
-    <Compile Include="Core\UI\HTML\Layout\LayoutTree.cs" />
-    <Compile Include="Core\UI\HTML\Region.cs" />
+    <Compile Include="Core\UI\HTML\Image.cs" />
+    <Compile Include="Core\UI\HTML\HtmlBox.cs" />
+    <Compile Include="Core\UI\HTML\HtmlDocument.cs" />
+    <Compile Include="Core\UI\HTML\HtmlLink.cs" />
     <Compile Include="Core\UI\HTML\Styles\OpenTag.cs" />
-    <Compile Include="Core\UI\HTML\Styles\StyleManager.cs" />
+    <Compile Include="Core\UI\HTML\Styles\StyleParser.cs" />
     <Compile Include="Core\UI\HTML\HREFAttributes.cs" />
     <Compile Include="Core\UI\HTML\Styles\StyleState.cs" />
     <Compile Include="Core\UI\HTML\Styles\StyleValue.cs" />
@@ -505,7 +506,7 @@
     <Compile Include="Ultima\Resources\SpeechData.cs" />
     <Compile Include="Ultima\Resources\TileMatrixData.cs" />
     <Compile Include="Ultima\World\Input\WorldInput.cs" />
-    <Compile Include="Core\UI\HTML\RegionList.cs" />
+    <Compile Include="Core\UI\HTML\HtmlListList.cs" />
     <Compile Include="Core\UI\HTML\Styles\Enums.cs" />
     <Compile Include="Core\UI\HTML\ImageList.cs" />
     <Compile Include="Core\UI\HTML\Atoms\Atomizer.cs" />

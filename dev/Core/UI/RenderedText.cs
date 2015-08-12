@@ -70,7 +70,7 @@ namespace UltimaXNA.Core.UI
             }
         }
 
-        public RegionList Regions
+        public HtmlListList Regions
         {
             get;
             private set;
@@ -123,7 +123,7 @@ namespace UltimaXNA.Core.UI
             Text = text;
             MaxWidth = maxWidth;
 
-            Regions = new RegionList();
+            Regions = new HtmlListList();
             Images = new ImageList();
         }
 
@@ -181,7 +181,7 @@ namespace UltimaXNA.Core.UI
 
             for (int i = 0; i < Regions.Count; i++)
             {
-                Region r = Regions[i];
+                HtmlLink r = Regions[i];
                 Point position;
                 Rectangle sourceRect;
                 if (ClipRectangle(new Point(xScroll, yScroll), r.Area, destRectangle, out position, out sourceRect))
@@ -194,11 +194,11 @@ namespace UltimaXNA.Core.UI
                         int linkHue = 0;
                         if (r.Index == MouseOverRegionID)
                             if (IsMouseDown)
-                                linkHue = r.HREF.DownHue;
+                                linkHue = r.Style.ActiveColorHue;
                             else
-                                linkHue = r.HREF.OverHue;
+                                linkHue = r.Style.HoverColorHue;
                         else
-                            linkHue = r.HREF.UpHue;
+                            linkHue = r.Style.ColorHue;
 
                         sb.Draw2D(m_Texture, new Vector3(position.X, position.Y, 0),
                             sourceRect, Utility.GetHueVector(linkHue));
@@ -455,13 +455,13 @@ namespace UltimaXNA.Core.UI
             }
         }
 
-        void GetHREFRegions(RegionList regions, List<AAtom>[] text, int[] x, int y)
+        void GetHREFRegions(HtmlListList regions, List<AAtom>[] text, int[] x, int y)
         {
             for (int alignment = 0; alignment < 3; alignment++)
             {
                 // variables for the open href region
                 bool isRegionOpen = false;
-                Region region = null;
+                HtmlLink region = null;
                 int regionHeight = 0;
                 int additionalwidth = 0;
 
@@ -486,7 +486,7 @@ namespace UltimaXNA.Core.UI
                         if (atom.Style.HREF != null)
                         {
                             isRegionOpen = true;
-                            region = regions.AddRegion(atom.Style.HREF);
+                            region = regions.AddLink(atom.Style.HREF, atom.Style);
                             region.Area.X = dx;
                             region.Area.Y = y;
                             regionHeight = 0;
@@ -503,7 +503,7 @@ namespace UltimaXNA.Core.UI
                         {
                             if (!isRegionOpen)
                             {
-                                region = regions.AddRegion(atom.Style.HREF);
+                                region = regions.AddLink(atom.Style.HREF, atom.Style);
                                 isRegionOpen = true;
                                 region.Area.X = dx;
                                 region.Area.Y = y;
