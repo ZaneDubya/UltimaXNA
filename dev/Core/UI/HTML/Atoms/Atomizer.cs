@@ -16,65 +16,21 @@ using UltimaXNA.Core.UI.HTML.Parsing;
 using UltimaXNA.Core.UI.HTML.Styles;
 #endregion
 
-namespace UltimaXNA.Core.UI.HTML
+namespace UltimaXNA.Core.UI.HTML.Atoms
 {
-    public class Reader
+    public static class Atomizer
     {
-        // ================================================================================
-        // Private variables
-        // ================================================================================
-        private static string[] m_FontTags = new string[] { "big", "small", "medium", "basefont" };
-        private static string[] m_AlignmentTags = new string[] { "center", "left", "right" };
-
-        // ================================================================================
-        // Private services
-        // ================================================================================
-        private IResourceProvider m_ResourceProvider;
-
-        // ================================================================================
-        // Public properties
-        // ================================================================================
-        public List<AAtom> Atoms
+        public static List<AAtom> AtomizeHtml(string html)
         {
-            get;
-            private set;
+            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
+
+            return decodeText(html, provider);
         }
 
-        public string Text
-        {
-            get
-            {
-                string text = string.Empty;
-                for (int i = 0; i < Atoms.Count; i++)
-                {
-                    text += Atoms[i].ToString();
-                }
-                return text;
-            }
-        }
-
-        public int Length
-        {
-            get
-            {
-                return Atoms.Count;
-            }
-        }
-
-        // ================================================================================
-        // Ctor, Init, Dispose, Update, and Draw
-        // ================================================================================
-        public Reader(string inText)
-        {
-            m_ResourceProvider = ServiceRegistry.GetService<IResourceProvider>();
-
-            Atoms = decodeText(inText);
-        }
-
-        private List<AAtom> decodeText(string inText)
+        private static List<AAtom> decodeText(string inText, IResourceProvider provider)
         {
             List<AAtom> atoms = new List<AAtom>();
-            StyleManager tags = new StyleManager(m_ResourceProvider);
+            StyleManager tags = new StyleManager(provider);
 
             // if this is not HTML, do not parse tags. Otherwise search out and interpret tags.
             bool parseHTML = true;
@@ -182,7 +138,7 @@ namespace UltimaXNA.Core.UI.HTML
             return atoms;
         }
 
-        void addCharacter(char inText, List<AAtom> outHTML, StyleManager openTags)
+        static void addCharacter(char inText, List<AAtom> outHTML, StyleManager openTags)
         {
             CharacterAtom c = new CharacterAtom(openTags.Style, inText);
             outHTML.Add(c);

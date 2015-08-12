@@ -70,12 +70,6 @@ namespace UltimaXNA.Core.UI
             }
         }
 
-        public int LineCount
-        {
-            get;
-            private set;
-        }
-
         public Regions Regions
         {
             get;
@@ -115,7 +109,6 @@ namespace UltimaXNA.Core.UI
 
         private const int DefaultRenderedTextWidth = 200;
         private Texture2D m_Texture;
-        private Reader m_HtmlParser;
         private string m_Text = string.Empty;
         private bool m_MustRender = true;
         private int m_MaxWidth;
@@ -258,29 +251,27 @@ namespace UltimaXNA.Core.UI
                 {
                     
                     SpriteBatchUI sb = ServiceRegistry.GetService<SpriteBatchUI>();
-                    int width, height, ascender, linecount;
+                    int width, height, ascender;
+                    List<AAtom> atoms;
 
-                    parseTextAndGetDimensions(Text, MaxWidth, out width, out height, out ascender, out linecount);
-                    LineCount = linecount;
+                    parseTextAndGetDimensions(Text, MaxWidth, out width, out height, out ascender, out atoms);
 
-                    m_Texture = renderTexture(sb.GraphicsDevice, m_HtmlParser, width, height, ascender);
+                    m_Texture = renderTexture(sb.GraphicsDevice, atoms, width, height, ascender);
 
                     m_MustRender = false;
                 }
             }
         }
 
-        private void parseTextAndGetDimensions(string textToRender, int maxWidth, out int width, out int height, out int ascender, out int linecount)
+        private void parseTextAndGetDimensions(string textToRender, int maxWidth, out int width, out int height, out int ascender, out List<AAtom> atoms)
         {
-            if (m_HtmlParser != null)
-                m_HtmlParser = null;
-            m_HtmlParser = new Reader(textToRender);
+            atoms = Atomizer.AtomizeHtml(textToRender);
 
             Regions.Clear();
             Images.Clear();
 
             // get all the images!
-            foreach (AAtom atom in m_HtmlParser.Atoms)
+            foreach (AAtom atom in atoms)
             {
                 if (atom is ImageAtom)
                 {
@@ -308,18 +299,17 @@ namespace UltimaXNA.Core.UI
                 width = 0;
                 height = 0;
                 ascender = 0;
-                linecount = 0;
             }
             else
             {
                 if (maxWidth == 0)
-                    getTextDimensions(m_HtmlParser, DefaultRenderedTextWidth, 0, out width, out height, out ascender, out linecount);
+                    getTextDimensions(atoms, DefaultRenderedTextWidth, 0, out width, out height, out ascender);
                 else
-                    getTextDimensions(m_HtmlParser, maxWidth, 0, out width, out height, out ascender, out linecount);
+                    getTextDimensions(atoms, maxWidth, 0, out width, out height, out ascender);
             }
         }
 
-        Texture2D renderTexture(GraphicsDevice graphics, Reader reader, int width, int height, int ascender)
+        Texture2D renderTexture(GraphicsDevice graphics, List<AAtom> atoms, int width, int height, int ascender)
         {
             if (width == 0) // empty text string
                 return new Texture2D(graphics, 1, 1);
@@ -346,12 +336,12 @@ namespace UltimaXNA.Core.UI
                     for (int i = 0; i < 3; i++)
                         alignedAtoms[i] = new List<AAtom>();
 
-                    for (int i = 0; i < reader.Length; i++)
+                    for (int i = 0; i < atoms.Count; i++)
                     {
-                        AAtom atom = reader.Atoms[i];
+                        AAtom atom = atoms[i];
                         alignedAtoms[(int)atom.Style.Alignment].Add(atom);
 
-                        if (atom.IsThisAtomALineBreak || (i == reader.Length - 1))
+                        if (atom.IsThisAtomALineBreak || (i == atoms.Count - 1))
                         {
                             // write left aligned text.
                             int dx;
@@ -513,63 +503,63 @@ namespace UltimaXNA.Core.UI
             }
         }
 
-        void getTextDimensions(Reader reader, int maxwidth, int maxheight, out int width, out int height, out int ascender, out int linecount)
+        void getTextDimensions(List<AAtom> atoms, int maxwidth, int maxheight, out int width, out int height, out int ascender)
         {
             // default values for out variables.
             width = 0;
             height = 0;
             ascender = 0;
-            linecount = 0;
             // local variables
             int descenderHeight = 0;
             int lineHeight = 0;
             int styleWidth = 0; // italic + outlined characters need more room for the slant/outline.
             int widestLine = 0;
             int wordWidth = 0;
+            bool firstLine = true;
             List<AAtom> word = new List<AAtom>();
 
             bool hasLeftAlignment = false;
             bool hasAnyOtherAlignment = false;
-            for (int i = 0; i < reader.Length; i++)
+            for (int i = 0; i < atoms.Count; i++)
             {
-                hasLeftAlignment = hasLeftAlignment | (reader.Atoms[i].Style.Alignment == Alignments.Left);
-                hasAnyOtherAlignment = hasAnyOtherAlignment | (reader.Atoms[i].Style.Alignment != Alignments.Left);
+                hasLeftAlignment = hasLeftAlignment | (atoms[i].Style.Alignment == Alignments.Left);
+                hasAnyOtherAlignment = hasAnyOtherAlignment | (atoms[i].Style.Alignment != Alignments.Left);
             }
             if (hasAnyOtherAlignment && hasLeftAlignment)
             {
                 widestLine = maxwidth;
             }
 
-            for (int i = 0; i < reader.Length; i++)
+            for (int i = 0; i < atoms.Count; i++)
             {
-                wordWidth += reader.Atoms[i].Width;
-                styleWidth -= reader.Atoms[i].Width;
+                wordWidth += atoms[i].Width;
+                styleWidth -= atoms[i].Width;
                 if (styleWidth < 0)
                     styleWidth = 0;
 
-                if (lineHeight < reader.Atoms[i].Height + reader.Atoms[i].Style.ElementTopOffset)
+                if (lineHeight < atoms[i].Height + atoms[i].Style.ElementTopOffset)
                 {
-                    lineHeight = reader.Atoms[i].Height + reader.Atoms[i].Style.ElementTopOffset;
+                    lineHeight = atoms[i].Height + atoms[i].Style.ElementTopOffset;
                 }
 
-                if (reader.Atoms[i].IsThisAtomALineBreak)
+                if (atoms[i].IsThisAtomALineBreak)
                 {
                     if (width + styleWidth > widestLine)
                         widestLine = width + styleWidth;
                     height += lineHeight;
-                    linecount += 1;
                     descenderHeight = 0;
                     lineHeight = 0;
                     width = 0;
+                    firstLine = false;
                 }
                 else
                 {
-                    word.Add(reader.Atoms[i]);
+                    word.Add(atoms[i]);
 
                     // we may need to add additional width for special style characters.
-                    if (reader.Atoms[i] is CharacterAtom)
+                    if (atoms[i] is CharacterAtom)
                     {
-                        CharacterAtom atom = (CharacterAtom)reader.Atoms[i];
+                        CharacterAtom atom = (CharacterAtom)atoms[i];
                         IFont font = atom.Style.Font;
                         ICharacter ch = font.GetCharacter(atom.Character);
 
@@ -580,11 +570,11 @@ namespace UltimaXNA.Core.UI
                             styleWidth += 2;
                         if (ch.YOffset + ch.Height - lineHeight > descenderHeight)
                             descenderHeight = ch.YOffset + ch.Height - lineHeight;
-                        if (ch.YOffset < 0 && linecount == 0 && ascender > ch.YOffset)
+                        if (ch.YOffset < 0 && firstLine && ascender > ch.YOffset)
                             ascender = ch.YOffset;
                     }
 
-                    if (i == reader.Length - 1 || reader.Atoms[i + 1].CanBreakAtThisAtom)
+                    if (i == atoms.Count - 1 || atoms[i + 1].CanBreakAtThisAtom)
                     {
                         // Now make sure this line can fit the word.
                         if (width + wordWidth + styleWidth <= maxwidth)
@@ -594,9 +584,9 @@ namespace UltimaXNA.Core.UI
                             wordWidth = 0;
                             word.Clear();
                             // if this word is followed by a space, does it fit? If not, drop it entirely and insert \n after the word.
-                            if (!(i == reader.Length - 1) && reader.Atoms[i + 1].IsThisAtomABreakingSpace)
+                            if (!(i == atoms.Count - 1) && atoms[i + 1].IsThisAtomABreakingSpace)
                             {
-                                int charwidth = reader.Atoms[i + 1].Width;
+                                int charwidth = atoms[i + 1].Width;
                                 if (width + charwidth <= maxwidth)
                                 {
                                     // we can fit an extra space here.
@@ -606,7 +596,7 @@ namespace UltimaXNA.Core.UI
                                 else
                                 {
                                     // can't fit an extra space on the end of the line. replace the space with a \n.
-                                    ((CharacterAtom)reader.Atoms[i + 1]).Character = '\n';
+                                    ((CharacterAtom)atoms[i + 1]).Character = '\n';
                                 }
                             }
                         }
@@ -617,15 +607,15 @@ namespace UltimaXNA.Core.UI
                             {
                                 // if this is the last word in a line. Replace the last space character with a line break
                                 // and back up to the beginning of this word.
-                                if (reader.Atoms[i - word.Count].IsThisAtomABreakingSpace)
+                                if (atoms[i - word.Count].IsThisAtomABreakingSpace)
                                 {
-                                    ((CharacterAtom)reader.Atoms[i - word.Count]).Character = '\n';
+                                    ((CharacterAtom)atoms[i - word.Count]).Character = '\n';
                                     i = i - word.Count - 1;
                                 }
                                 else
                                 {
-                                    StyleState inheritedStyle = reader.Atoms[i - word.Count].Style;
-                                    reader.Atoms.Insert(i - word.Count, new CharacterAtom(inheritedStyle, '\n'));
+                                    StyleState inheritedStyle = atoms[i - word.Count].Style;
+                                    atoms.Insert(i - word.Count, new CharacterAtom(inheritedStyle, '\n'));
                                     i = i - word.Count;
                                 }
                                 word.Clear();
@@ -642,9 +632,9 @@ namespace UltimaXNA.Core.UI
                                     int iDashWidth = word[j].Style.Font.GetCharacter('-').Width;
                                     if (iWordWidth + iDashWidth <= maxwidth)
                                     {
-                                        StyleState inheritedStyle = reader.Atoms[i - (word.Count - j) + 1].Style;
-                                        reader.Atoms.Insert(i - (word.Count - j) + 1, new CharacterAtom(inheritedStyle, '\n'));
-                                        reader.Atoms.Insert(i - (word.Count - j) + 1, new CharacterAtom(inheritedStyle, '-'));
+                                        StyleState inheritedStyle = atoms[i - (word.Count - j) + 1].Style;
+                                        atoms.Insert(i - (word.Count - j) + 1, new CharacterAtom(inheritedStyle, '\n'));
+                                        atoms.Insert(i - (word.Count - j) + 1, new CharacterAtom(inheritedStyle, '-'));
                                         break;
                                     }
                                     iWordWidth -= word[j].Width;
@@ -667,7 +657,6 @@ namespace UltimaXNA.Core.UI
 
             width += styleWidth;
             height += lineHeight + descenderHeight;
-            linecount += 1;
             if (widestLine > width)
                 width = widestLine;
         }
