@@ -198,13 +198,12 @@
     <Compile Include="Core\Resources\IAnimationFrame.cs" />
     <Compile Include="Core\Resources\IResource.cs" />
     <Compile Include="Core\UI\ControlMetaData.cs" />
-    <Compile Include="Core\UI\HTML\Image.cs" />
+    <Compile Include="Core\UI\HTML\HtmlImage.cs" />
     <Compile Include="Core\UI\HTML\HtmlBox.cs" />
     <Compile Include="Core\UI\HTML\HtmlDocument.cs" />
     <Compile Include="Core\UI\HTML\HtmlLink.cs" />
     <Compile Include="Core\UI\HTML\Styles\OpenTag.cs" />
     <Compile Include="Core\UI\HTML\Styles\StyleParser.cs" />
-    <Compile Include="Core\UI\HTML\HREFAttributes.cs" />
     <Compile Include="Core\UI\HTML\Styles\StyleState.cs" />
     <Compile Include="Core\UI\HTML\Styles\StyleValue.cs" />
     <Compile Include="Core\UI\Interfaces\ICharacter.cs" />
@@ -213,6 +212,7 @@
     <Compile Include="Core\Resources\IResourceProvider.cs" />
     <Compile Include="Core\PluginManager.cs" />
     <Compile Include="Core\UI\RenderedTextList.cs" />
+    <Compile Include="Core\UI\RenderedTextNew.cs" />
     <Compile Include="ServiceRegistry.cs" />
     <Compile Include="Ultima\Audio\AudioService.cs" />
     <Compile Include="Ultima\Audio\UOMusic.cs" />
@@ -508,7 +508,7 @@
     <Compile Include="Ultima\World\Input\WorldInput.cs" />
     <Compile Include="Core\UI\HTML\HtmlListList.cs" />
     <Compile Include="Core\UI\HTML\Styles\Enums.cs" />
-    <Compile Include="Core\UI\HTML\ImageList.cs" />
+    <Compile Include="Core\UI\HTML\HtmlImageList.cs" />
     <Compile Include="Core\UI\HTML\Atoms\Atomizer.cs" />
     <Compile Include="Core\Diagnostics\Metrics.cs" />
     <Compile Include="Ultima\Resources\GumpMulResource.cs" />

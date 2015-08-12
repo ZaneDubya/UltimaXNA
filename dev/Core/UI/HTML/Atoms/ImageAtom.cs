@@ -15,7 +15,7 @@ namespace UltimaXNA.Core.UI.HTML.Atoms
 {
     public class ImageAtom : AAtom
     {
-        public Image AssociatedImage
+        public HtmlImage AssociatedImage
         {
             get;
             set;

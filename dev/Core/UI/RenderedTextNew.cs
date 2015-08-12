@@ -23,7 +23,7 @@ namespace UltimaXNA.Core.UI
     /// <summary>
     /// A texture containing rendered text. Can interpret html. Will automatically update.
     /// </summary>
-    class RenderedText
+    class RenderedTextNew
     {
         // private services
         IResourceProvider m_ResourceProvider;
@@ -116,7 +116,7 @@ namespace UltimaXNA.Core.UI
         private bool m_MustRender = true;
         private int m_MaxWidth;
 
-        public RenderedText(string text, int maxWidth = DefaultRenderedTextWidth)
+        public RenderedTextNew(string text, int maxWidth = DefaultRenderedTextWidth)
         {
             m_ResourceProvider = ServiceRegistry.GetService<IResourceProvider>();
 
@@ -214,7 +214,7 @@ namespace UltimaXNA.Core.UI
                 if (ClipRectangle(new Point(xScroll, yScroll), image.Area, destRectangle, out position, out sourceRect))
                 {
                     Rectangle srcImage = new Rectangle(
-                        sourceRect.X - image.Area.X, sourceRect.Y - image.Area.Y, 
+                        sourceRect.X - image.Area.X, sourceRect.Y - image.Area.Y,
                         sourceRect.Width, sourceRect.Height);
                     Texture2D texture = null;
 
@@ -695,6 +695,6 @@ namespace UltimaXNA.Core.UI
                 width = widestLine;
         }
 
-        
+
     }
 }

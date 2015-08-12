@@ -23,14 +23,14 @@ namespace UltimaXNA.Core.UI.HTML.Styles
     /// Style manager. As you parse html tags, add them to a manager TagCollection.
     /// Then, when you add an element, use the manager to generate an object that will contain all the styles for that element.
     /// </summary>
-    public class StyleManager
+    public class StyleParser
     {
         public StyleState Style;
 
         private IResourceProvider m_Provider;
         private List<OpenTag> m_OpenTags;
 
-        public StyleManager(IResourceProvider provider)
+        public StyleParser(IResourceProvider provider)
         {
             m_Provider = provider;
             m_OpenTags = new List<OpenTag>();

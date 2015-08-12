@@ -15,11 +15,11 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace UltimaXNA.Core.UI.HTML
 {
-    class ImageList
+    class HtmlImageList
     {
-        List<Image> m_images = new List<Image>();
+        List<HtmlImage> m_images = new List<HtmlImage>();
 
-        public Image this[int index]
+        public HtmlImage this[int index]
         {
             get
             {
@@ -40,7 +40,7 @@ namespace UltimaXNA.Core.UI.HTML
 
         public void AddImage(Rectangle area, Texture2D image)
         {
-            m_images.Add(new Image(area, image));
+            m_images.Add(new HtmlImage(area, image));
         }
 
         public void AddImage(Rectangle area, Texture2D image, Texture2D overimage, Texture2D downimage)

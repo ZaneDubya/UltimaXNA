@@ -45,7 +45,7 @@ namespace UltimaXNA.Core.UI.HTML
             private set;
         }
 
-        public ImageList Images
+        public HtmlImageList Images
         {
             get;
             private set;
@@ -79,7 +79,7 @@ namespace UltimaXNA.Core.UI.HTML
         private List<AAtom> decodeText(string inText, IResourceProvider provider)
         {
             List<AAtom> atoms = new List<AAtom>();
-            StyleManager tags = new StyleManager(provider);
+            StyleParser tags = new StyleParser(provider);
 
             // if this is not HTML, do not parse tags. Otherwise search out and interpret tags.
             bool parseHTML = true;
@@ -187,7 +187,7 @@ namespace UltimaXNA.Core.UI.HTML
             return atoms;
         }
 
-        void addCharacter(char inText, List<AAtom> outHTML, StyleManager openTags)
+        void addCharacter(char inText, List<AAtom> outHTML, StyleParser openTags)
         {
             CharacterAtom c = new CharacterAtom(openTags.Style, inText);
             outHTML.Add(c);
@@ -210,9 +210,9 @@ namespace UltimaXNA.Core.UI.HTML
             Texture = RenderTexture(sb.GraphicsDevice, atoms, width, height, ascender);
         }
 
-        private ImageList GetAllImages(List<AAtom> atoms)
+        private HtmlImageList GetAllImages(List<AAtom> atoms)
         {
-            ImageList images = new ImageList();
+            HtmlImageList images = new HtmlImageList();
 
             IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
 
@@ -396,7 +396,7 @@ namespace UltimaXNA.Core.UI.HTML
                         // we need regions for images so that we can do mouse over images.
                         // if we're currently in an open href region, we'll use that one.
                         // if we don't have an open region, we'll create one just for this image.
-                        Image image = ((ImageAtom)atom).AssociatedImage;
+                        HtmlImage image = ((ImageAtom)atom).AssociatedImage;
                         if (image != null)
                         {
                             if (!isRegionOpen)

@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace UltimaXNA.Core.UI.HTML
 {
-    public class Image
+    public class HtmlImage
     {
         public Rectangle Area;
         public Texture2D Texture;
@@ -15,7 +15,7 @@ namespace UltimaXNA.Core.UI.HTML
         public Texture2D TextureDown;
         public int RegionIndex = -1;
 
-        public Image(Rectangle area, Texture2D image)
+        public HtmlImage(Rectangle area, Texture2D image)
         {
             Area = area;
             Texture = image;

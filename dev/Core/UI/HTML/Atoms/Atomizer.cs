@@ -30,7 +30,7 @@ namespace UltimaXNA.Core.UI.HTML.Atoms
         private static List<AAtom> decodeText(string inText, IResourceProvider provider)
         {
             List<AAtom> atoms = new List<AAtom>();
-            StyleManager tags = new StyleManager(provider);
+            StyleParser tags = new StyleParser(provider);
 
             // if this is not HTML, do not parse tags. Otherwise search out and interpret tags.
             bool parseHTML = true;
@@ -138,7 +138,7 @@ namespace UltimaXNA.Core.UI.HTML.Atoms
             return atoms;
         }
 
-        static void addCharacter(char inText, List<AAtom> outHTML, StyleManager openTags)
+        static void addCharacter(char inText, List<AAtom> outHTML, StyleParser openTags)
         {
             CharacterAtom c = new CharacterAtom(openTags.Style, inText);
             outHTML.Add(c);
