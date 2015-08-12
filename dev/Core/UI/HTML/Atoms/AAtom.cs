@@ -17,17 +17,8 @@ namespace UltimaXNA.Core.UI.HTML.Atoms
 {
     public abstract class AAtom
     {
-        public virtual int Width
-        {
-            set { }
-            get { return 0; }
-        }
-
-        public virtual int Height
-        {
-            set { }
-            get { return 0; }
-        }
+        public abstract int Width { get; set; }
+        public abstract int Height { get; set; }
 
         public bool CanBreakAtThisAtom
         {

@@ -13,10 +13,9 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Resources;
-using UltimaXNA.Core.UI.HTML;
 using UltimaXNA.Core.UI.HTML.Atoms;
-using UltimaXNA.Core.UI.HTML.Styles;
 using UltimaXNA.Core.UI.HTML.Parsing;
+using UltimaXNA.Core.UI.HTML.Styles;
 #endregion
 
 namespace UltimaXNA.Core.UI.HTML
@@ -65,7 +64,7 @@ namespace UltimaXNA.Core.UI.HTML
 
         public HtmlDocument(string html, int maxWidth)
         {
-            m_Boxes = new List<HtmlBox>();
+            m_Boxes = ParseHtmlToBoxes(html);
         }
 
         public void Dispose()
@@ -83,10 +82,13 @@ namespace UltimaXNA.Core.UI.HTML
         // Parse methods
         // ======================================================================
 
-        private List<AAtom> decodeText(string html, IResourceProvider provider)
+        private List<HtmlBox> ParseHtmlToBoxes(string html)
         {
-            List<AAtom> atoms = new List<AAtom>();
+            IResourceProvider provider = ServiceRegistry.GetService<IResourceProvider>();
             StyleParser tags = new StyleParser(provider);
+
+            HtmlBox box = new HtmlBox(tags.Style);
+            List<HtmlBox> boxes = new List<HtmlBox>();
 
             // if this is not HTML, do not parse tags. Otherwise search out and interpret tags.
             bool parseHTML = true;
@@ -94,7 +96,7 @@ namespace UltimaXNA.Core.UI.HTML
             {
                 for (int i = 0; i < html.Length; i++)
                 {
-                    addCharacter(html[i], atoms, tags);
+                    addCharacter(html[i], boxes, tags);
                 }
             }
             else
@@ -112,7 +114,7 @@ namespace UltimaXNA.Core.UI.HTML
                         span = EscapeCharacters.ReplaceEscapeCharacters(span);
                         //Add the characters to the outText list.
                         for (int i = 0; i < span.Length; i++)
-                            addCharacter(span[i], atoms, tags);
+                            addCharacter(span[i], boxes, tags);
                     }
                     else
                     {
@@ -158,7 +160,7 @@ namespace UltimaXNA.Core.UI.HTML
                             // onto other atoms.
                             // ======================================================================
                             case "br":
-                                addCharacter('\n', atoms, tags);
+                                addCharacter('\n', boxes, tags);
                                 break;
                             case "gumpimg":
                                 // draw a gump image
@@ -178,20 +180,20 @@ namespace UltimaXNA.Core.UI.HTML
                             default:
                                 for (int i = 0; i < chunk.iChunkLength; i++)
                                 {
-                                    addCharacter(char.Parse(html.Substring(i + chunk.iChunkOffset, 1)), atoms, tags);
+                                    addCharacter(char.Parse(html.Substring(i + chunk.iChunkOffset, 1)), boxes, tags);
                                 }
                                 break;
                         }
 
                         if (atom != null)
-                            atoms.Add(atom);
+                            boxes.Add(atom);
 
                         tags.CloseAnySoloTags();
                     }
                 }
             }
 
-            return atoms;
+            return boxes;
         }
 
         void addCharacter(char html, List<AAtom> atoms, StyleParser styles)

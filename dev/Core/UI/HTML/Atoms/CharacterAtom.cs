@@ -27,6 +27,7 @@ namespace UltimaXNA.Core.UI.HTML.Atoms
                     return ch.Width + ch.ExtraWidth + (Style.IsBold ? 1 : 0);
                 }
             }
+            set { }
         }
 
         public override int Height
@@ -35,6 +36,7 @@ namespace UltimaXNA.Core.UI.HTML.Atoms
             {
                 return Style.Font.Height;
             }
+            set { }
         }
 
         public char Character = '\0';
