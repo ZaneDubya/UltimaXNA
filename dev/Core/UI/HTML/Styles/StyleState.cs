@@ -12,7 +12,7 @@
 using Microsoft.Xna.Framework;
 using UltimaXNA.Core.Resources;
 
-namespace UltimaXNA.Core.UI.HTML
+namespace UltimaXNA.Core.UI.HTML.Styles
 {
     public class StyleState
     {

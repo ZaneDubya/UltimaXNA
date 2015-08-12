@@ -10,6 +10,7 @@
  ***************************************************************************/
 #region usings
 using UltimaXNA.Core.UI.HTML.Atoms;
+using UltimaXNA.Core.UI.HTML.Styles;
 #endregion
 
 namespace UltimaXNA.Core.UI.HTML

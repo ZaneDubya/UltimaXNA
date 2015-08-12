@@ -9,7 +9,7 @@
  *
  ***************************************************************************/
 
-namespace UltimaXNA.Core.UI.HTML
+namespace UltimaXNA.Core.UI.HTML.Styles
 {
     public enum Alignments
     {

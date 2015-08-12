@@ -15,6 +15,7 @@ using UltimaXNA.Core.Graphics;
 using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI.HTML;
 using UltimaXNA.Core.UI.HTML.Atoms;
+using UltimaXNA.Core.UI.HTML.Styles;
 #endregion
 
 namespace UltimaXNA.Core.UI

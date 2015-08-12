@@ -17,7 +17,7 @@ using UltimaXNA.Core.UI.HTML.Parsing;
 using UltimaXNA.Core.Resources;
 #endregion
 
-namespace UltimaXNA.Core.UI.HTML
+namespace UltimaXNA.Core.UI.HTML.Styles
 {
     /// <summary>
     /// Style manager. As you parse html tags, add them to a manager TagCollection.

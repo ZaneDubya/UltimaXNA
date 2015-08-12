@@ -197,11 +197,11 @@
     <Compile Include="Core\Resources\IAnimationFrame.cs" />
     <Compile Include="Core\Resources\IResource.cs" />
     <Compile Include="Core\UI\ControlMetaData.cs" />
-    <Compile Include="Core\UI\HTML\OpenTag.cs" />
-    <Compile Include="Core\UI\HTML\StyleManager.cs" />
+    <Compile Include="Core\UI\HTML\Styles\OpenTag.cs" />
+    <Compile Include="Core\UI\HTML\Styles\StyleManager.cs" />
     <Compile Include="Core\UI\HTML\HREFAttributes.cs" />
-    <Compile Include="Core\UI\HTML\StyleState.cs" />
-    <Compile Include="Core\UI\HTML\StyleValue.cs" />
+    <Compile Include="Core\UI\HTML\Styles\StyleState.cs" />
+    <Compile Include="Core\UI\HTML\Styles\StyleValue.cs" />
     <Compile Include="Core\UI\Interfaces\ICharacter.cs" />
     <Compile Include="Core\UI\Interfaces\ICursor.cs" />
     <Compile Include="Core\UI\Interfaces\IFont.cs" />
@@ -502,7 +502,7 @@
     <Compile Include="Ultima\Resources\TileMatrixData.cs" />
     <Compile Include="Ultima\World\Input\WorldInput.cs" />
     <Compile Include="Core\UI\HTML\Regions.cs" />
-    <Compile Include="Core\UI\HTML\Enums.cs" />
+    <Compile Include="Core\UI\HTML\Styles\Enums.cs" />
     <Compile Include="Core\UI\HTML\Images.cs" />
     <Compile Include="Core\UI\HTML\Reader.cs" />
     <Compile Include="Core\Diagnostics\Metrics.cs" />

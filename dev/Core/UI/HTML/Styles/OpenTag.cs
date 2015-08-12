@@ -13,7 +13,7 @@ using System.Collections;
 using UltimaXNA.Core.UI.HTML.Parsing;
 #endregion
 
-namespace UltimaXNA.Core.UI.HTML
+namespace UltimaXNA.Core.UI.HTML.Styles
 {
     class OpenTag
     {

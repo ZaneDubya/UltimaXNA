@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using UltimaXNA.Core.Resources;
 using UltimaXNA.Core.UI.HTML.Atoms;
 using UltimaXNA.Core.UI.HTML.Parsing;
+using UltimaXNA.Core.UI.HTML.Styles;
 #endregion
 
 namespace UltimaXNA.Core.UI.HTML

@@ -9,6 +9,8 @@
  *
  ***************************************************************************/
 
+using UltimaXNA.Core.UI.HTML.Styles;
+
 namespace UltimaXNA.Core.UI.HTML.Atoms
 {
     public class CharacterAtom : AAtom
