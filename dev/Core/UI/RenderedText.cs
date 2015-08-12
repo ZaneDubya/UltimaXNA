@@ -76,13 +76,13 @@ namespace UltimaXNA.Core.UI
             private set;
         }
 
-        public int ActiveRegion
+        public int MouseOverRegionID
         {
             get;
             set;
         }
 
-        public bool ActiveRegion_UseDownHue
+        public bool IsMouseDown
         {
             get;
             set;
@@ -99,6 +99,8 @@ namespace UltimaXNA.Core.UI
             get { return m_MaxWidth; }
             set
             {
+                if (value <= 0)
+                    value = DefaultRenderedTextWidth;
                 if (m_MaxWidth != value)
                 {
                     m_MustRender = true;
@@ -108,6 +110,7 @@ namespace UltimaXNA.Core.UI
         }
 
         private const int DefaultRenderedTextWidth = 200;
+
         private Texture2D m_Texture;
         private string m_Text = string.Empty;
         private bool m_MustRender = true;
@@ -189,8 +192,8 @@ namespace UltimaXNA.Core.UI
                     if (r.HREF != null)
                     {
                         int linkHue = 0;
-                        if (r.Index == ActiveRegion)
-                            if (ActiveRegion_UseDownHue)
+                        if (r.Index == MouseOverRegionID)
+                            if (IsMouseDown)
                                 linkHue = r.HREF.DownHue;
                             else
                                 linkHue = r.HREF.OverHue;
@@ -216,9 +219,9 @@ namespace UltimaXNA.Core.UI
                     Texture2D texture = null;
 
                     // is the mouse over this image?
-                    if (image.RegionIndex == ActiveRegion)
+                    if (image.RegionIndex == MouseOverRegionID)
                     {
-                        if (ActiveRegion_UseDownHue)
+                        if (IsMouseDown)
                             texture = image.TextureDown;
                         if (texture == null)
                             texture = image.TextureOver;
@@ -302,8 +305,7 @@ namespace UltimaXNA.Core.UI
                     GetAllImages(atoms);
                     Regions.Clear();
 
-                    GetTextDimensions(atoms, MaxWidth <= 0 ? DefaultRenderedTextWidth : MaxWidth, out width, out height, out ascender);
-
+                    GetTextDimensions(atoms, MaxWidth, out width, out height, out ascender);
                     m_Texture = RenderTexture(sb.GraphicsDevice, atoms, width, height, ascender);
 
                     m_MustRender = false;

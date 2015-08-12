@@ -162,8 +162,8 @@ namespace UltimaXNA.Ultima.UI.Controls
         {
             base.Draw(spriteBatch, position);
 
-            m_RenderedText.ActiveRegion = m_MouseOverHREF;
-            m_RenderedText.ActiveRegion_UseDownHue = m_IsMouseDown;
+            m_RenderedText.MouseOverRegionID = m_MouseOverHREF;
+            m_RenderedText.IsMouseDown = m_IsMouseDown;
             m_RenderedText.Draw(spriteBatch,
                 new Rectangle(position.X + (HasBackground ? 4 : 0), position.Y + (HasBackground ? 4 : 0),
                     Width - (HasBackground ? 8 : 0), Height - (HasBackground ? 8 : 0)), ScrollX, ScrollY);
